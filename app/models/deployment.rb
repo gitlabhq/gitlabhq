@@ -119,6 +119,8 @@ class Deployment < ApplicationRecord
       next if transition.loopback?
 
       deployment.run_after_commit do
+        next unless deployment.project.jira_subscription_exists?
+
         ::JiraConnect::SyncDeploymentsWorker.perform_async(id)
       end
     end
@@ -126,6 +128,8 @@ class Deployment < ApplicationRecord
 
   after_create unless: :importing? do |deployment|
     run_after_commit do
+      next unless deployment.project.jira_subscription_exists?
+
       ::JiraConnect::SyncDeploymentsWorker.perform_async(deployment.id)
     end
   end

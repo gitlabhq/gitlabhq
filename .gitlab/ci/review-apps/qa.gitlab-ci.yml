@@ -26,6 +26,9 @@
     - export CI_ENVIRONMENT_URL="$(cat environment_url.txt)"
     - echo "${CI_ENVIRONMENT_URL}"
     - cd qa
+    - if [ -n "$KNAPSACK_REPORT_PATH" ]; then
+        bundle exec rake knapsack:download;
+      fi
   artifacts:
     paths:
       - qa/tmp
@@ -34,15 +37,22 @@
 
 .parallel-qa-base:
   parallel: 5
+  variables:
+    KNAPSACK_TEST_FILE_PATTERN: "qa/specs/features/**/*_spec.rb"
   script:
-    - export KNAPSACK_REPORT_PATH=knapsack/master_report.json
-    - export KNAPSACK_TEST_FILE_PATTERN=qa/specs/features/**/*_spec.rb
     - |
       bin/test "${QA_SCENARIO}" "${CI_ENVIRONMENT_URL}" \
         -- \
         --color --format documentation \
         --format RspecJunitFormatter --out tmp/rspec.xml
+  after_script:
+    - if [ -n "$KNAPSACK_GENERATE_REPORT" ]; then
+        mv qa/${KNAPSACK_REPORT_PATH} qa/knapsack/gcs/regenerated-${CI_NODE_INDEX}.json;
+      fi
   artifacts:
+    paths:
+      - qa/tmp # we can't merge list so need to include explicitly once more
+      - qa/knapsack/gcs/regenerated-*.json
     reports:
       junit: qa/tmp/rspec.xml
 
@@ -69,6 +79,16 @@
         --ignore-missing-results \
         --color
 
+.knapsack-upload-base:
+  image:
+    name: ${QA_IMAGE}
+    entrypoint: [""]
+  stage: post-qa
+  before_script:
+    - cd qa
+  script:
+    - bundle exec rake 'knapsack:upload[knapsack/gcs/regenerated-*.json]'
+
 review-qa-smoke:
   extends:
     - .review-qa-base
@@ -88,6 +108,7 @@ review-qa-reliable:
   variables:
     QA_RUN_TYPE: review-qa-reliable
     QA_SCENARIO: Test::Instance::Reliable
+    KNAPSACK_REPORT_PATH: knapsack/gcs/review-qa-reliable.json
 
 review-qa-all:
   extends:
@@ -97,6 +118,7 @@ review-qa-all:
   variables:
     QA_RUN_TYPE: review-qa-all
     QA_SCENARIO: Test::Instance::All
+    KNAPSACK_REPORT_PATH: knapsack/gcs/review-qa-all.json
 
 review-performance:
   extends:
@@ -141,3 +163,19 @@ allure-report-qa-all:
   variables:
     ALLURE_REPORT_PATH_PREFIX: gitlab-review-all
     ALLURE_JOB_NAME: review-qa-all
+
+knapsack-report-qa-all:
+  extends:
+    - .knapsack-upload-base
+    - .review:rules:knapsack-report-qa-all
+  needs: ["review-qa-all"]
+  variables:
+    KNAPSACK_REPORT_PATH: knapsack/gcs/review-qa-all.json
+
+knapsack-report-qa-reliable:
+  extends:
+    - .knapsack-upload-base
+    - .review:rules:knapsack-report-qa-reliable
+  needs: ["review-qa-reliable"]
+  variables:
+    KNAPSACK_REPORT_PATH: knapsack/gcs/review-qa-reliable.json

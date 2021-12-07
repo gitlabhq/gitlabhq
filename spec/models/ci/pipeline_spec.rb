@@ -1356,12 +1356,26 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
     describe 'synching status to Jira' do
       let(:worker) { ::JiraConnect::SyncBuildsWorker }
 
-      %i[prepare! run! skip! drop! succeed! cancel! block! delay!].each do |event|
-        context "when we call pipeline.#{event}" do
-          it 'triggers a Jira synch worker' do
-            expect(worker).to receive(:perform_async).with(pipeline.id, Integer)
+      context 'when Jira Connect subscription does not exist' do
+        it 'does not trigger a Jira synch worker' do
+          expect(worker).not_to receive(:perform_async)
 
-            pipeline.send(event)
+          pipeline.prepare!
+        end
+      end
+
+      context 'when Jira Connect subscription exists' do
+        before_all do
+          create(:jira_connect_subscription, namespace: project.namespace)
+        end
+
+        %i[prepare! run! skip! drop! succeed! cancel! block! delay!].each do |event|
+          context "when we call pipeline.#{event}" do
+            it 'triggers a Jira synch worker' do
+              expect(worker).to receive(:perform_async).with(pipeline.id, Integer)
+
+              pipeline.send(event)
+            end
           end
         end
       end

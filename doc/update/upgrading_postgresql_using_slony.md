@@ -113,7 +113,7 @@ CREATE ROLE slony WITH SUPERUSER LOGIN REPLICATION ENCRYPTED PASSWORD 'password 
 ALTER ROLE slony SET statement_timeout TO 0;
 ```
 
-Make sure you replace "password string here" with the actual password for the
+Make sure you replace "password string here" with an actual password for the
 user. A password is required. This user must be created on both the old and
 new database server using the same password.
 
@@ -230,7 +230,7 @@ Now run the following commands:
 \i /tmp/migrations.sql
 ```
 
-To verify if the structure is in place close the session, start it again, then
+To verify if the structure is in place close the session (`\q`), start it again, then
 run `\d`. If all went well you should see output along the lines of the
 following:
 
@@ -459,7 +459,7 @@ main
 Upload this script to the _target_ server and execute it as follows:
 
 ```shell
-bash path/to/the/script/above.sh
+sudo bash path/to/the/script/above.sh
 ```
 
 This corrects the ownership of sequences and reset the next value for the

@@ -38,16 +38,19 @@ module Gitlab
         end
 
         def host_stats
-          return [] unless ActiveRecord::Base.connected?
+          Gitlab::Database.database_base_models.each_value.with_object([]) do |base_model, stats|
+            next unless base_model.connected?
 
-          [{ labels: labels_for_class(ActiveRecord::Base), stats: ActiveRecord::Base.connection_pool.stat }]
+            stats << { labels: labels_for_class(base_model), stats: base_model.connection_pool.stat }
+          end
         end
 
         def labels_for_class(klass)
           {
             host: klass.connection_db_config.host,
             port: klass.connection_db_config.configuration_hash[:port],
-            class: klass.to_s
+            class: klass.to_s,
+            db_config_name: klass.connection_db_config.name
           }
         end
       end

@@ -648,6 +648,8 @@
       changes: *ci-patterns
     - <<: *if-automated-merge-request
       changes: *code-backstage-patterns
+    - <<: *if-security-merge-request
+      changes: *code-backstage-patterns
     - <<: *if-default-refs
       changes: *backend-patterns
     - <<: *if-merge-request-not-approved
@@ -660,6 +662,8 @@
     - <<: *if-merge-request-approved
       when: never
     - <<: *if-automated-merge-request
+      when: never
+    - <<: *if-security-merge-request
       when: never
     - <<: *if-merge-request-labels-run-all-jest
       when: never
@@ -815,6 +819,8 @@
       changes: *db-patterns
     - <<: *if-automated-merge-request
       changes: *db-patterns
+    - <<: *if-security-merge-request
+      changes: *db-patterns
     - <<: *if-merge-request-not-approved
       when: never
     - changes: *db-patterns
@@ -824,6 +830,8 @@
     - <<: *if-merge-request-approved
       when: never
     - <<: *if-automated-merge-request
+      when: never
+    - <<: *if-security-merge-request
       when: never
     - <<: *if-merge-request-labels-run-all-rspec
       when: never
@@ -860,6 +868,8 @@
       changes: *ci-patterns
     - <<: *if-automated-merge-request
       changes: *backend-patterns
+    - <<: *if-security-merge-request
+      changes: *backend-patterns
     - <<: *if-merge-request-not-approved
       when: never
     - changes: *backend-patterns
@@ -869,6 +879,8 @@
     - <<: *if-merge-request-approved
       when: never
     - <<: *if-automated-merge-request
+      when: never
+    - <<: *if-security-merge-request
       when: never
     - <<: *if-merge-request-labels-run-all-rspec
       when: never
@@ -890,6 +902,8 @@
       changes: *ci-patterns
     - <<: *if-automated-merge-request
       changes: *backend-patterns
+    - <<: *if-security-merge-request
+      changes: *backend-patterns
     - <<: *if-merge-request-not-approved
       when: never
     - changes: *backend-patterns
@@ -899,6 +913,8 @@
     - <<: *if-merge-request-approved
       when: never
     - <<: *if-automated-merge-request
+      when: never
+    - <<: *if-security-merge-request
       when: never
     - <<: *if-merge-request-labels-run-all-rspec
       when: never
@@ -920,6 +936,8 @@
       changes: *ci-patterns
     - <<: *if-automated-merge-request
       changes: *code-backstage-patterns
+    - <<: *if-security-merge-request
+      changes: *code-backstage-patterns
     - <<: *if-merge-request-not-approved
       when: never
     - changes: *code-backstage-patterns
@@ -929,6 +947,8 @@
     - <<: *if-merge-request-approved
       when: never
     - <<: *if-automated-merge-request
+      when: never
+    - <<: *if-security-merge-request
       when: never
     - <<: *if-merge-request-labels-run-all-rspec
       when: never
@@ -950,6 +970,8 @@
       changes: *ci-patterns
     - <<: *if-automated-merge-request
       changes: ["config/**/*"]
+    - <<: *if-security-merge-request
+      changes: ["config/**/*"]
     - <<: *if-merge-request-not-approved
       when: never
     - changes: ["config/**/*"]
@@ -959,6 +981,8 @@
     - <<: *if-merge-request-approved
       when: never
     - <<: *if-automated-merge-request
+      when: never
+    - <<: *if-security-merge-request
       when: never
     - <<: *if-merge-request-labels-run-all-rspec
       when: never
@@ -989,6 +1013,8 @@
       changes: *db-patterns
     - <<: *if-automated-merge-request
       changes: *db-patterns
+    - <<: *if-security-merge-request
+      changes: *db-patterns
     - <<: *if-merge-request-not-approved
       when: never
     - changes: *db-patterns
@@ -1000,6 +1026,8 @@
     - <<: *if-merge-request-approved
       when: never
     - <<: *if-automated-merge-request
+      when: never
+    - <<: *if-security-merge-request
       when: never
     - <<: *if-merge-request-labels-run-all-rspec
       when: never
@@ -1024,6 +1052,8 @@
       changes: *ci-patterns
     - <<: *if-automated-merge-request
       changes: *backend-patterns
+    - <<: *if-security-merge-request
+      changes: *backend-patterns
     - <<: *if-merge-request-not-approved
       when: never
     - changes: *backend-patterns
@@ -1035,6 +1065,8 @@
     - <<: *if-merge-request-approved
       when: never
     - <<: *if-automated-merge-request
+      when: never
+    - <<: *if-security-merge-request
       when: never
     - <<: *if-merge-request-labels-run-all-rspec
       when: never
@@ -1058,6 +1090,8 @@
       changes: *ci-patterns
     - <<: *if-automated-merge-request
       changes: *backend-patterns
+    - <<: *if-security-merge-request
+      changes: *backend-patterns
     - <<: *if-merge-request-not-approved
       when: never
     - changes: *backend-patterns
@@ -1069,6 +1103,8 @@
     - <<: *if-merge-request-approved
       when: never
     - <<: *if-automated-merge-request
+      when: never
+    - <<: *if-security-merge-request
       when: never
     - <<: *if-merge-request-labels-run-all-rspec
       when: never
@@ -1092,6 +1128,8 @@
       changes: *ci-patterns
     - <<: *if-automated-merge-request
       changes: *code-backstage-patterns
+    - <<: *if-security-merge-request
+      changes: *code-backstage-patterns
     - <<: *if-merge-request-not-approved
       when: never
     - changes: *code-backstage-patterns
@@ -1103,6 +1141,8 @@
     - <<: *if-merge-request-approved
       when: never
     - <<: *if-automated-merge-request
+      when: never
+    - <<: *if-security-merge-request
       when: never
     - <<: *if-merge-request-labels-run-all-rspec
       when: never
@@ -1130,6 +1170,8 @@
       changes: *db-patterns
     - <<: *if-automated-merge-request
       changes: *db-patterns
+    - <<: *if-security-merge-request
+      changes: *db-patterns
     - <<: *if-merge-request-not-approved
       when: never
 
@@ -1141,14 +1183,13 @@
       when: never
     - <<: *if-automated-merge-request
       when: never
+    - <<: *if-security-merge-request
+      when: never
     - <<: *if-merge-request
       changes: *core-backend-patterns
       when: never
     - <<: *if-merge-request
       changes: *ci-patterns
-      when: never
-    - <<: *if-security-merge-request
-      changes: *db-patterns
       when: never
     - <<: *if-merge-request-labels-as-if-foss
       changes: *db-patterns
@@ -1165,10 +1206,10 @@
       changes: *ci-patterns
     - <<: *if-automated-merge-request
       changes: *backend-patterns
-    - <<: *if-merge-request-not-approved
-      when: never
     - <<: *if-security-merge-request
       changes: *backend-patterns
+    - <<: *if-merge-request-not-approved
+      when: never
     - <<: *if-merge-request-labels-as-if-foss
       changes: *backend-patterns
 
@@ -1180,14 +1221,14 @@
       when: never
     - <<: *if-automated-merge-request
       when: never
+    - <<: *if-security-merge-request
+      when: never
     - <<: *if-merge-request
       changes: *core-backend-patterns
       when: never
     - <<: *if-merge-request
       changes: *ci-patterns
       when: never
-    - <<: *if-security-merge-request
-      changes: *backend-patterns
     - <<: *if-merge-request-labels-as-if-foss
       changes: *backend-patterns
 
@@ -1202,10 +1243,10 @@
       changes: *ci-patterns
     - <<: *if-automated-merge-request
       changes: *backend-patterns
-    - <<: *if-merge-request-not-approved
-      when: never
     - <<: *if-security-merge-request
       changes: *backend-patterns
+    - <<: *if-merge-request-not-approved
+      when: never
     - <<: *if-merge-request-labels-as-if-foss
       changes: *backend-patterns
 
@@ -1217,14 +1258,14 @@
       when: never
     - <<: *if-automated-merge-request
       when: never
+    - <<: *if-security-merge-request
+      when: never
     - <<: *if-merge-request
       changes: *core-backend-patterns
       when: never
     - <<: *if-merge-request
       changes: *ci-patterns
       when: never
-    - <<: *if-security-merge-request
-      changes: *backend-patterns
     - <<: *if-merge-request-labels-as-if-foss
       changes: *backend-patterns
 
@@ -1239,10 +1280,10 @@
       changes: *ci-patterns
     - <<: *if-automated-merge-request
       changes: *code-backstage-patterns
-    - <<: *if-merge-request-not-approved
-      when: never
     - <<: *if-security-merge-request
       changes: *code-backstage-patterns
+    - <<: *if-merge-request-not-approved
+      when: never
     - <<: *if-merge-request-labels-as-if-foss
       changes: *code-backstage-patterns
 
@@ -1254,14 +1295,14 @@
       when: never
     - <<: *if-automated-merge-request
       when: never
+    - <<: *if-security-merge-request
+      when: never
     - <<: *if-merge-request
       changes: *core-backend-patterns
       when: never
     - <<: *if-merge-request
       changes: *ci-patterns
       when: never
-    - <<: *if-security-merge-request
-      changes: *code-backstage-patterns
     - <<: *if-merge-request-labels-as-if-foss
       changes: *code-backstage-patterns
 
@@ -1621,6 +1662,10 @@
 
 .review:rules:review-qa-reliable:
   rules:
+    - <<: *if-dot-com-ee-2-hourly-schedule
+      allow_failure: true
+      variables:
+        KNAPSACK_GENERATE_REPORT: "true"
     - when: on_success
       allow_failure: true
 
@@ -1631,6 +1676,10 @@
       changes: *code-patterns
       when: manual
       allow_failure: true # manual jobs needs to be allowd to fail, otherwise they block the pipeline
+    - <<: *if-dot-com-ee-2-hourly-schedule
+      allow_failure: true
+      variables:
+        KNAPSACK_GENERATE_REPORT: "true"
     - when: on_success
       allow_failure: true
 
@@ -1644,6 +1693,20 @@
     - when: on_success
       allow_failure: true
     - when: on_failure
+      allow_failure: true
+
+# Generate knapsack report on successful runs only
+# Reliable suite will pass most of the time so this should yield best distribution
+.review:rules:knapsack-report-qa-reliable:
+  rules:
+    - <<: *if-dot-com-ee-2-hourly-schedule
+      when: on_success
+      allow_failure: true
+
+.review:rules:knapsack-report-qa-all:
+  rules:
+    - <<: *if-dot-com-ee-2-hourly-schedule
+      when: always
       allow_failure: true
 
 .review:rules:review-cleanup:

@@ -235,6 +235,12 @@ module Ci
         pipeline.run_after_commit do
           PipelineHooksWorker.perform_async(pipeline.id)
 
+          if pipeline.project.jira_subscription_exists?
+            # Passing the seq-id ensures this is idempotent
+            seq_id = ::Atlassian::JiraConnect::Client.generate_update_sequence_id
+            ::JiraConnect::SyncBuildsWorker.perform_async(pipeline.id, seq_id)
+          end
+
           if Feature.enabled?(:expire_job_and_pipeline_cache_synchronously, pipeline.project, default_enabled: :yaml)
             Ci::ExpirePipelineCacheService.new.execute(pipeline) # rubocop: disable CodeReuse/ServiceClass
           else
@@ -271,14 +277,6 @@ module Ci
 
         pipeline.run_after_commit do
           ::Ci::PipelineBridgeStatusWorker.perform_async(pipeline.id)
-        end
-      end
-
-      after_transition any => any do |pipeline|
-        pipeline.run_after_commit do
-          # Passing the seq-id ensures this is idempotent
-          seq_id = ::Atlassian::JiraConnect::Client.generate_update_sequence_id
-          ::JiraConnect::SyncBuildsWorker.perform_async(pipeline.id, seq_id)
         end
       end
 

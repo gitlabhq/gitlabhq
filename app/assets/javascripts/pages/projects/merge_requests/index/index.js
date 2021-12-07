@@ -4,8 +4,8 @@ import IssuableFilteredSearchTokenKeys from '~/filtered_search/issuable_filtered
 import initCsvImportExportButtons from '~/issuable/init_csv_import_export_buttons';
 import initIssuableByEmail from '~/issuable/init_issuable_by_email';
 import IssuableIndex from '~/issuable/issuable_index';
-import { FILTERED_SEARCH } from '~/pages/constants';
-import { ISSUABLE_INDEX } from '~/pages/projects/constants';
+import { FILTERED_SEARCH } from '~/filtered_search/constants';
+import { ISSUABLE_INDEX } from '~/issuable/constants';
 import initFilteredSearch from '~/pages/search/init_filtered_search';
 import UsersSelect from '~/users_select';
 

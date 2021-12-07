@@ -2,7 +2,7 @@ import IssuableFilteredSearchTokenKeys from 'ee_else_ce/filtered_search/issuable
 import issuableInitBulkUpdateSidebar from '~/issuable/bulk_update_sidebar/issuable_init_bulk_update_sidebar';
 import { mountIssuablesListApp, mountIssuesListApp } from '~/issues_list';
 import initManualOrdering from '~/manual_ordering';
-import { FILTERED_SEARCH } from '~/pages/constants';
+import { FILTERED_SEARCH } from '~/filtered_search/constants';
 import initFilteredSearch from '~/pages/search/init_filtered_search';
 import projectSelect from '~/project_select';
 

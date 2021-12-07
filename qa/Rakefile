@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 # rubocop:disable Rails/RakeEnvironment
 
-load 'tasks/webdrivers.rake'
-load 'tasks/reliable_report.rake'
+Dir['tasks/*.rake'].each { |file| load file }
 
 require_relative 'qa/tools/revoke_all_personal_access_tokens'
 require_relative 'qa/tools/delete_subgroups'

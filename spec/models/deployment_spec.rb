@@ -269,30 +269,45 @@ RSpec.describe Deployment do
     end
 
     describe 'synching status to Jira' do
-      let(:deployment) { create(:deployment) }
+      let_it_be(:project) { create(:project, :repository) }
 
+      let(:deployment) { create(:deployment, project: project) }
       let(:worker) { ::JiraConnect::SyncDeploymentsWorker }
 
-      it 'calls the worker on creation' do
-        expect(worker).to receive(:perform_async).with(Integer)
+      context 'when Jira Connect subscription does not exist' do
+        it 'does not call the worker' do
+          expect(worker).not_to receive(:perform_async)
 
-        deployment
+          deployment
+        end
       end
 
-      it 'does not call the worker for skipped deployments' do
-        expect(deployment).to be_present # warm-up, ignore the creation trigger
+      context 'when Jira Connect subscription exists' do
+        before_all do
+          create(:jira_connect_subscription, namespace: project.namespace)
+        end
 
-        expect(worker).not_to receive(:perform_async)
+        it 'calls the worker on creation' do
+          expect(worker).to receive(:perform_async).with(Integer)
 
-        deployment.skip!
-      end
+          deployment
+        end
 
-      %i[run! succeed! drop! cancel!].each do |event|
-        context "when we call pipeline.#{event}" do
-          it 'triggers a Jira synch worker' do
-            expect(worker).to receive(:perform_async).with(deployment.id)
+        it 'does not call the worker for skipped deployments' do
+          expect(deployment).to be_present # warm-up, ignore the creation trigger
 
-            deployment.send(event)
+          expect(worker).not_to receive(:perform_async)
+
+          deployment.skip!
+        end
+
+        %i[run! succeed! drop! cancel!].each do |event|
+          context "when we call pipeline.#{event}" do
+            it 'triggers a Jira synch worker' do
+              expect(worker).to receive(:perform_async).with(deployment.id)
+
+              deployment.send(event)
+            end
           end
         end
       end
