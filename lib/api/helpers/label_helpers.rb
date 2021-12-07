@@ -105,7 +105,11 @@ module API
       end
 
       def promote_label(parent)
-        authorize! :admin_label, parent
+        unless parent.group
+          render_api_error!('Failed to promote project label to group label', 400)
+        end
+
+        authorize! :admin_label, parent.group
 
         label = find_label(parent, params[:name], include_ancestor_groups: false)
 

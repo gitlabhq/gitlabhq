@@ -30097,9 +30097,6 @@ msgstr ""
 msgid "Runners|Architecture"
 msgstr ""
 
-msgid "Runners|Are you sure you want to delete this runner?"
-msgstr ""
-
 msgid "Runners|Associated with one or more projects"
 msgstr ""
 
@@ -30119,6 +30116,12 @@ msgid "Runners|Copy instructions"
 msgstr ""
 
 msgid "Runners|Copy registration token"
+msgstr ""
+
+msgid "Runners|Delete runner"
+msgstr ""
+
+msgid "Runners|Delete runner %{name}?"
 msgstr ""
 
 msgid "Runners|Deploy GitLab Runner in AWS"
@@ -30241,6 +30244,9 @@ msgstr ""
 msgid "Runners|Runner #%{runner_id}"
 msgstr ""
 
+msgid "Runners|Runner %{name} was deleted"
+msgstr ""
+
 msgid "Runners|Runner ID"
 msgstr ""
 
@@ -30296,6 +30302,9 @@ msgid "Runners|Stop the runner from accepting new jobs."
 msgstr ""
 
 msgid "Runners|Tags"
+msgstr ""
+
+msgid "Runners|The runner will be permanently deleted and no longer available for projects or groups in the instance. Are you sure you want to continue?"
 msgstr ""
 
 msgid "Runners|This runner has never connected to this instance"

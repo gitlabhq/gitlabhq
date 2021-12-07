@@ -120,6 +120,7 @@ export const issuableLabelsQueryResponse = {
     workspace: {
       id: 'workspace-1',
       issuable: {
+        __typename: 'Issue',
         id: '1',
         labels: {
           nodes: [
@@ -131,6 +132,21 @@ export const issuableLabelsQueryResponse = {
               textColor: '#000000',
             },
           ],
+        },
+      },
+    },
+  },
+};
+
+export const updateLabelsMutationResponse = {
+  data: {
+    updateIssuableLabels: {
+      errors: [],
+      issuable: {
+        __typename: 'Issue',
+        id: '1',
+        labels: {
+          nodes: [],
         },
       },
     },

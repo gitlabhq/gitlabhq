@@ -303,7 +303,7 @@ module API
       desc 'Get the context commits of a merge request' do
         success Entities::Commit
       end
-      get ':id/merge_requests/:merge_request_iid/context_commits', feature_category: :code_review do
+      get ':id/merge_requests/:merge_request_iid/context_commits', feature_category: :code_review, urgency: :high do
         merge_request = find_merge_request_with_access(params[:merge_request_iid])
         project = merge_request.project
 

@@ -283,8 +283,7 @@ Gitaly Cluster provides the following features:
 - [Replication factor](#replication-factor) of repositories for increased redundancy.
 - [Automatic failover](praefect.md#automatic-failover-and-primary-election-strategies) from the
   primary Gitaly node to secondary Gitaly nodes.
-- Reporting of possible [data loss](praefect.md#check-for-data-loss) if replication queue is
-  non-empty.
+- Reporting of possible [data loss](recovery.md#check-for-data-loss) if replication queue isn't empty.
 
 Follow the [Gitaly Cluster epic](https://gitlab.com/groups/gitlab-org/-/epics/1489) for improvements
 including [horizontally distributing reads](https://gitlab.com/groups/gitlab-org/-/epics/2013).
@@ -523,6 +522,10 @@ To monitor [strong consistency](#strong-consistency), you can use the following 
   the transaction to be committed.
 
 You can also monitor the [Praefect logs](../logs.md#praefect-logs).
+
+## Recover from failure
+
+Gitaly Cluster can [recover from certain types of failure](recovery.md).
 
 ## Do not bypass Gitaly
 

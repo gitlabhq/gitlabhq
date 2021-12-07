@@ -236,14 +236,20 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigration, type: :m
     end
   end
 
-  shared_examples_for 'an attr_writer that demodulizes assigned class names' do |attribute_name|
+  shared_examples_for 'an attr_writer that assigns class names' do |attribute_name|
     let(:batched_migration) { build(:batched_background_migration) }
 
     context 'when a module name exists' do
-      it 'removes the module name' do
+      it 'keeps the class with module name' do
+        batched_migration.public_send(:"#{attribute_name}=", 'Foo::Bar')
+
+        expect(batched_migration[attribute_name]).to eq('Foo::Bar')
+      end
+
+      it 'removes leading namespace resolution operator' do
         batched_migration.public_send(:"#{attribute_name}=", '::Foo::Bar')
 
-        expect(batched_migration[attribute_name]).to eq('Bar')
+        expect(batched_migration[attribute_name]).to eq('Foo::Bar')
       end
     end
 
@@ -293,11 +299,11 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigration, type: :m
   end
 
   describe '#job_class_name=' do
-    it_behaves_like 'an attr_writer that demodulizes assigned class names', :job_class_name
+    it_behaves_like 'an attr_writer that assigns class names', :job_class_name
   end
 
   describe '#batch_class_name=' do
-    it_behaves_like 'an attr_writer that demodulizes assigned class names', :batch_class_name
+    it_behaves_like 'an attr_writer that assigns class names', :batch_class_name
   end
 
   describe '#migrated_tuple_count' do

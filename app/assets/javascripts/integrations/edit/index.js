@@ -85,7 +85,7 @@ function parseDatasetToProps(data) {
   };
 }
 
-export default (el, defaultEl) => {
+export default (el, defaultEl, formSelector) => {
   if (!el) {
     return null;
   }
@@ -112,6 +112,7 @@ export default (el, defaultEl) => {
       return createElement(IntegrationForm, {
         props: {
           helpHtml,
+          formSelector,
         },
       });
     },

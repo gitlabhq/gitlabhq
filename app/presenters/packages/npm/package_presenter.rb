@@ -12,10 +12,9 @@ module Packages
 
       attr_reader :name, :packages
 
-      def initialize(name, packages, include_metadata: false)
+      def initialize(name, packages)
         @name = name
         @packages = packages
-        @include_metadata = include_metadata
       end
 
       def versions
@@ -24,10 +23,7 @@ module Packages
         packages.each_batch do |relation|
           batched_packages = relation.including_dependency_links
                                      .preload_files
-
-          if @include_metadata
-            batched_packages = batched_packages.preload_npm_metadatum
-          end
+                                     .preload_npm_metadatum
 
           batched_packages.each do |package|
             package_file = package.package_files.last
@@ -92,8 +88,6 @@ module Packages
       end
 
       def abbreviated_package_json(package)
-        return {} unless @include_metadata
-
         json = package.npm_metadatum&.package_json || {}
         json.slice(*PACKAGE_JSON_ALLOWED_FIELDS)
       end

@@ -37,11 +37,20 @@ export default {
   },
   mixins: [glFeatureFlagsMixin()],
   props: {
+    formSelector: {
+      type: String,
+      required: true,
+    },
     helpHtml: {
       type: String,
       required: false,
       default: '',
     },
+  },
+  data() {
+    return {
+      integrationActive: false,
+    };
   },
   computed: {
     ...mapGetters(['currentKey', 'propsSource', 'isDisabled']),
@@ -71,7 +80,7 @@ export default {
   },
   mounted() {
     // this form element is defined in Haml
-    this.form = document.querySelector('.js-integration-settings-form');
+    this.form = document.querySelector(this.formSelector);
   },
   methods: {
     ...mapActions([
@@ -84,11 +93,15 @@ export default {
     ]),
     onSaveClick() {
       this.setIsSaving(true);
-      eventHub.$emit(SAVE_INTEGRATION_EVENT);
+
+      const formValid = this.form.checkValidity() || this.integrationActive === false;
+      eventHub.$emit(SAVE_INTEGRATION_EVENT, formValid);
     },
     onTestClick() {
       this.setIsTesting(true);
-      eventHub.$emit(TEST_INTEGRATION_EVENT);
+
+      const formValid = this.form.checkValidity();
+      eventHub.$emit(TEST_INTEGRATION_EVENT, formValid);
     },
     onResetClick() {
       this.fetchResetIntegration();
@@ -96,6 +109,19 @@ export default {
     onRequestJiraIssueTypes() {
       const formData = new FormData(this.form);
       this.requestJiraIssueTypes(formData);
+    },
+    onToggleIntegrationState(integrationActive) {
+      this.integrationActive = integrationActive;
+      if (!this.form) {
+        return;
+      }
+
+      // If integration will be active, enable form validation.
+      if (integrationActive) {
+        this.form.removeAttribute('novalidate');
+      } else {
+        this.form.setAttribute('novalidate', true);
+      }
     },
   },
   helpHtmlConfig: {
@@ -123,7 +149,11 @@ export default {
         <!-- helpHtml is trusted input -->
         <div v-if="helpHtml" v-safe-html:[$options.helpHtmlConfig]="helpHtml"></div>
 
-        <active-checkbox v-if="propsSource.showActive" :key="`${currentKey}-active-checkbox`" />
+        <active-checkbox
+          v-if="propsSource.showActive"
+          :key="`${currentKey}-active-checkbox`"
+          @toggle-integration-active="onToggleIntegrationState"
+        />
         <jira-trigger-fields
           v-if="isJira"
           :key="`${currentKey}-jira-trigger-fields`"
@@ -167,6 +197,7 @@ export default {
             type="submit"
             :loading="isSaving"
             :disabled="isDisabled"
+            data-testid="save-button"
             data-qa-selector="save_changes_button"
             @click.prevent="onSaveClick"
           >
@@ -180,6 +211,7 @@ export default {
             :loading="isTesting"
             :disabled="isDisabled"
             :href="propsSource.testPath"
+            data-testid="test-button"
             @click.prevent="onTestClick"
           >
             {{ __('Test settings') }}

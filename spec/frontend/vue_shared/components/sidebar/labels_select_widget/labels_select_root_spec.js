@@ -10,15 +10,25 @@ import DropdownContents from '~/vue_shared/components/sidebar/labels_select_widg
 import DropdownValue from '~/vue_shared/components/sidebar/labels_select_widget/dropdown_value.vue';
 import DropdownValueCollapsed from '~/vue_shared/components/sidebar/labels_select_widget/dropdown_value_collapsed.vue';
 import issueLabelsQuery from '~/vue_shared/components/sidebar/labels_select_widget/graphql/issue_labels.query.graphql';
+import updateIssueLabelsMutation from '~/boards/graphql/issue_set_labels.mutation.graphql';
+import updateMergeRequestLabelsMutation from '~/sidebar/queries/update_merge_request_labels.mutation.graphql';
+import updateEpicLabelsMutation from '~/vue_shared/components/sidebar/labels_select_widget/graphql/epic_update_labels.mutation.graphql';
 import LabelsSelectRoot from '~/vue_shared/components/sidebar/labels_select_widget/labels_select_root.vue';
-import { mockConfig, issuableLabelsQueryResponse } from './mock_data';
+import { mockConfig, issuableLabelsQueryResponse, updateLabelsMutationResponse } from './mock_data';
 
 jest.mock('~/flash');
 
 Vue.use(VueApollo);
 
 const successfulQueryHandler = jest.fn().mockResolvedValue(issuableLabelsQueryResponse);
+const successfulMutationHandler = jest.fn().mockResolvedValue(updateLabelsMutationResponse);
 const errorQueryHandler = jest.fn().mockRejectedValue('Houston, we have a problem');
+
+const updateLabelsMutation = {
+  [IssuableType.Issue]: updateIssueLabelsMutation,
+  [IssuableType.MergeRequest]: updateMergeRequestLabelsMutation,
+  [IssuableType.Epic]: updateEpicLabelsMutation,
+};
 
 describe('LabelsSelectRoot', () => {
   let wrapper;
@@ -31,16 +41,21 @@ describe('LabelsSelectRoot', () => {
   const createComponent = ({
     config = mockConfig,
     slots = {},
+    issuableType = IssuableType.Issue,
     queryHandler = successfulQueryHandler,
+    mutationHandler = successfulMutationHandler,
   } = {}) => {
-    const mockApollo = createMockApollo([[issueLabelsQuery, queryHandler]]);
+    const mockApollo = createMockApollo([
+      [issueLabelsQuery, queryHandler],
+      [updateLabelsMutation[issuableType], mutationHandler],
+    ]);
 
     wrapper = shallowMount(LabelsSelectRoot, {
       slots,
       apolloProvider: mockApollo,
       propsData: {
         ...config,
-        issuableType: IssuableType.Issue,
+        issuableType,
         labelCreateType: 'project',
         workspaceType: 'project',
       },
@@ -132,5 +147,47 @@ describe('LabelsSelectRoot', () => {
 
     findDropdownContents().vm.$emit('setLabels', [label]);
     expect(wrapper.emitted('updateSelectedLabels')).toEqual([[{ labels: [label] }]]);
+  });
+
+  describe.each`
+    issuableType
+    ${IssuableType.Issue}
+    ${IssuableType.MergeRequest}
+    ${IssuableType.Epic}
+  `('when updating labels for $issuableType', ({ issuableType }) => {
+    const label = { id: 'gid://gitlab/ProjectLabel/2' };
+
+    it('sets the loading state', async () => {
+      createComponent({ issuableType });
+      await nextTick();
+      findDropdownContents().vm.$emit('setLabels', [label]);
+      await nextTick();
+
+      expect(findSidebarEditableItem().props('loading')).toBe(true);
+    });
+
+    it('updates labels correctly after successful mutation', async () => {
+      createComponent({ issuableType });
+      await nextTick();
+      findDropdownContents().vm.$emit('setLabels', [label]);
+      await waitForPromises();
+
+      expect(findDropdownValue().props('selectedLabels')).toEqual(
+        updateLabelsMutationResponse.data.updateIssuableLabels.issuable.labels.nodes,
+      );
+    });
+
+    it('displays an error if mutation was rejected', async () => {
+      createComponent({ issuableType, mutationHandler: errorQueryHandler });
+      await nextTick();
+      findDropdownContents().vm.$emit('setLabels', [label]);
+      await waitForPromises();
+
+      expect(createFlash).toHaveBeenCalledWith({
+        captureError: true,
+        error: expect.anything(),
+        message: 'An error occurred while updating labels.',
+      });
+    });
   });
 });

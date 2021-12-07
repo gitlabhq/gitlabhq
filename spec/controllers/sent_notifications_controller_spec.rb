@@ -10,19 +10,19 @@ RSpec.describe SentNotificationsController do
 
   let(:issue) do
     create(:issue, project: target_project) do |issue|
-      issue.subscriptions.create(user: user, project: target_project, subscribed: true)
+      issue.subscriptions.create!(user: user, project: target_project, subscribed: true)
     end
   end
 
   let(:confidential_issue) do
     create(:issue, project: target_project, confidential: true) do |issue|
-      issue.subscriptions.create(user: user, project: target_project, subscribed: true)
+      issue.subscriptions.create!(user: user, project: target_project, subscribed: true)
     end
   end
 
   let(:merge_request) do
     create(:merge_request, source_project: target_project, target_project: target_project) do |mr|
-      mr.subscriptions.create(user: user, project: target_project, subscribed: true)
+      mr.subscriptions.create!(user: user, project: target_project, subscribed: true)
     end
   end
 
@@ -213,7 +213,7 @@ RSpec.describe SentNotificationsController do
       context 'when the force param is not passed' do
         let(:merge_request) do
           create(:merge_request, source_project: project, author: user) do |merge_request|
-            merge_request.subscriptions.create(user: user, project: project, subscribed: true)
+            merge_request.subscriptions.create!(user: user, project: project, subscribed: true)
           end
         end
 

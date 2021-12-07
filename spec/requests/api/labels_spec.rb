@@ -589,6 +589,15 @@ RSpec.describe API::Labels do
       expect(response).to have_gitlab_http_status(:forbidden)
     end
 
+    it 'returns 403 if reporter promotes label' do
+      reporter = create(:user)
+      project.add_reporter(reporter)
+
+      put api("/projects/#{project.id}/labels/promote", reporter), params: { name: label1.name }
+
+      expect(response).to have_gitlab_http_status(:forbidden)
+    end
+
     it 'returns 404 if label does not exist' do
       put api("/projects/#{project.id}/labels/promote", user), params: { name: 'unknown' }
 
@@ -600,6 +609,13 @@ RSpec.describe API::Labels do
 
       expect(response).to have_gitlab_http_status(:bad_request)
       expect(json_response['error']).to eq('name is missing')
+    end
+
+    it 'returns 400 if project does not have a group' do
+      project = create(:project, creator_id: user.id, namespace: user.namespace)
+      put api("/projects/#{project.id}/labels/promote", user), params: { name: label1.name }
+
+      expect(response).to have_gitlab_http_status(:bad_request)
     end
   end
 

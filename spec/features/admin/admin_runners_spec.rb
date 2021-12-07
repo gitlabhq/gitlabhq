@@ -59,6 +59,42 @@ RSpec.describe "Admin Runners" do
         end
       end
 
+      describe 'delete runner' do
+        let!(:runner) { create(:ci_runner, description: 'runner-foo') }
+
+        before do
+          visit admin_runners_path
+
+          within "[data-testid='runner-row-#{runner.id}']" do
+            click_on 'Delete runner'
+          end
+        end
+
+        it 'shows a confirmation modal' do
+          expect(page).to have_text "Delete runner ##{runner.id} (#{runner.short_sha})?"
+          expect(page).to have_text "Are you sure you want to continue?"
+        end
+
+        it 'deletes a runner' do
+          within '.modal' do
+            click_on 'Delete runner'
+          end
+
+          expect(page.find('.gl-toast')).to have_text(/Runner .+ deleted/)
+          expect(page).not_to have_content 'runner-foo'
+        end
+
+        it 'cancels runner deletion' do
+          within '.modal' do
+            click_on 'Cancel'
+          end
+
+          wait_for_requests
+
+          expect(page).to have_content 'runner-foo'
+        end
+      end
+
       describe 'search' do
         before do
           create(:ci_runner, :instance, description: 'runner-foo')

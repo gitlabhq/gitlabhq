@@ -59,6 +59,8 @@ class GroupsController < Groups::ApplicationController
   feature_category :projects, [:projects]
   feature_category :importers, [:export, :download_export]
 
+  urgency :high, [:unfoldered_environment_names]
+
   def index
     redirect_to(current_user ? dashboard_groups_path : explore_groups_path)
   end

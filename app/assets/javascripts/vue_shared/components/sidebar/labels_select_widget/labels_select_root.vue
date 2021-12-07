@@ -225,16 +225,13 @@ export default {
           variables: { input: inputVariables },
         })
         .then(({ data }) => {
-          const { mutationName } = issuableLabelsQueries[this.issuableType];
-
-          if (data[mutationName]?.errors?.length) {
+          if (data.updateIssuableLabels?.errors?.length) {
             throw new Error();
           }
 
-          this.issuableLabels = data[mutationName]?.[this.issuableType]?.labels?.nodes;
           this.$emit('updateSelectedLabels', {
-            id: data[mutationName]?.[this.issuableType]?.id,
-            labels: this.issuableLabels,
+            id: data.updateIssuableLabels?.issuable?.id,
+            labels: data.updateIssuableLabels?.issuable?.labels?.nodes,
           });
         })
         .catch((error) =>

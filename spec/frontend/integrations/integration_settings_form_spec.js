@@ -6,7 +6,6 @@ import toast from '~/vue_shared/plugins/global_toast';
 import {
   I18N_SUCCESSFUL_CONNECTION_MESSAGE,
   I18N_DEFAULT_ERROR_MESSAGE,
-  TOGGLE_INTEGRATION_EVENT,
   TEST_INTEGRATION_EVENT,
   SAVE_INTEGRATION_EVENT,
 } from '~/integrations/constants';
@@ -16,6 +15,7 @@ jest.mock('~/vue_shared/plugins/global_toast');
 jest.mock('lodash/delay', () => (callback) => callback());
 
 const FIXTURE = 'services/edit_service.html';
+const mockFormSelector = '.js-integration-settings-form';
 
 describe('IntegrationSettingsForm', () => {
   let integrationSettingsForm;
@@ -25,7 +25,7 @@ describe('IntegrationSettingsForm', () => {
   beforeEach(() => {
     loadFixtures(FIXTURE);
 
-    integrationSettingsForm = new IntegrationSettingsForm('.js-integration-settings-form');
+    integrationSettingsForm = new IntegrationSettingsForm(mockFormSelector);
     integrationSettingsForm.init();
   });
 
@@ -33,7 +33,7 @@ describe('IntegrationSettingsForm', () => {
     it('should initialize form element refs on class object', () => {
       expect(integrationSettingsForm.$form).toBeDefined();
       expect(integrationSettingsForm.$form.nodeName).toBe('FORM');
-      expect(integrationSettingsForm.formActive).toBeDefined();
+      expect(integrationSettingsForm.formSelector).toBe(mockFormSelector);
     });
 
     it('should initialize form metadata on class object', () => {
@@ -47,6 +47,8 @@ describe('IntegrationSettingsForm', () => {
     beforeEach(() => {
       mockAxios = new MockAdaptor(axios);
       jest.spyOn(axios, 'put');
+      jest.spyOn(integrationSettingsForm, 'testSettings');
+      jest.spyOn(integrationSettingsForm.$form, 'submit');
     });
 
     afterEach(() => {
@@ -54,28 +56,10 @@ describe('IntegrationSettingsForm', () => {
       eventHub.dispose(); // clear event hub handlers
     });
 
-    describe('when event hub receives `TOGGLE_INTEGRATION_EVENT`', () => {
-      it('should remove `novalidate` attribute to form when called with `true`', () => {
-        eventHub.$emit(TOGGLE_INTEGRATION_EVENT, true);
-
-        expect(integrationSettingsForm.$form.getAttribute('novalidate')).toBe(null);
-      });
-
-      it('should set `novalidate` attribute to form when called with `false`', () => {
-        eventHub.$emit(TOGGLE_INTEGRATION_EVENT, false);
-
-        expect(integrationSettingsForm.$form.getAttribute('novalidate')).toBe('novalidate');
-      });
-    });
-
     describe('when event hub receives `TEST_INTEGRATION_EVENT`', () => {
       describe('when form is valid', () => {
-        beforeEach(() => {
-          jest.spyOn(integrationSettingsForm.$form, 'checkValidity').mockReturnValue(true);
-        });
-
         it('should make an ajax request with provided `formData`', async () => {
-          eventHub.$emit(TEST_INTEGRATION_EVENT);
+          eventHub.$emit(TEST_INTEGRATION_EVENT, true);
           await waitForPromises();
 
           expect(axios.put).toHaveBeenCalledWith(
@@ -91,7 +75,7 @@ describe('IntegrationSettingsForm', () => {
             error: false,
           });
 
-          eventHub.$emit(TEST_INTEGRATION_EVENT);
+          eventHub.$emit(TEST_INTEGRATION_EVENT, true);
           await waitForPromises();
 
           expect(toast).toHaveBeenCalledWith(I18N_SUCCESSFUL_CONNECTION_MESSAGE);
@@ -108,7 +92,7 @@ describe('IntegrationSettingsForm', () => {
             test_failed: false,
           });
 
-          eventHub.$emit(TEST_INTEGRATION_EVENT);
+          eventHub.$emit(TEST_INTEGRATION_EVENT, true);
           await waitForPromises();
 
           expect(toast).toHaveBeenCalledWith(`${errorMessage} ${serviceResponse}`);
@@ -117,7 +101,7 @@ describe('IntegrationSettingsForm', () => {
         it('should show error message if ajax request failed', async () => {
           mockAxios.onPut(integrationSettingsForm.testEndPoint).networkError();
 
-          eventHub.$emit(TEST_INTEGRATION_EVENT);
+          eventHub.$emit(TEST_INTEGRATION_EVENT, true);
           await waitForPromises();
 
           expect(toast).toHaveBeenCalledWith(I18N_DEFAULT_ERROR_MESSAGE);
@@ -127,7 +111,7 @@ describe('IntegrationSettingsForm', () => {
           const dispatchSpy = mockStoreDispatch();
           mockAxios.onPut(integrationSettingsForm.testEndPoint).networkError();
 
-          eventHub.$emit(TEST_INTEGRATION_EVENT);
+          eventHub.$emit(TEST_INTEGRATION_EVENT, true);
           await waitForPromises();
 
           expect(dispatchSpy).toHaveBeenCalledWith('setIsTesting', false);
@@ -135,15 +119,10 @@ describe('IntegrationSettingsForm', () => {
       });
 
       describe('when form is invalid', () => {
-        beforeEach(() => {
-          jest.spyOn(integrationSettingsForm.$form, 'checkValidity').mockReturnValue(false);
-          jest.spyOn(integrationSettingsForm, 'testSettings');
-        });
-
         it('should dispatch `setIsTesting` with `false` and not call `testSettings`', async () => {
           const dispatchSpy = mockStoreDispatch();
 
-          eventHub.$emit(TEST_INTEGRATION_EVENT);
+          eventHub.$emit(TEST_INTEGRATION_EVENT, false);
           await waitForPromises();
 
           expect(dispatchSpy).toHaveBeenCalledWith('setIsTesting', false);
@@ -154,13 +133,8 @@ describe('IntegrationSettingsForm', () => {
 
     describe('when event hub receives `SAVE_INTEGRATION_EVENT`', () => {
       describe('when form is valid', () => {
-        beforeEach(() => {
-          jest.spyOn(integrationSettingsForm.$form, 'checkValidity').mockReturnValue(true);
-          jest.spyOn(integrationSettingsForm.$form, 'submit');
-        });
-
         it('should submit the form', async () => {
-          eventHub.$emit(SAVE_INTEGRATION_EVENT);
+          eventHub.$emit(SAVE_INTEGRATION_EVENT, true);
           await waitForPromises();
 
           expect(integrationSettingsForm.$form.submit).toHaveBeenCalled();
@@ -169,15 +143,10 @@ describe('IntegrationSettingsForm', () => {
       });
 
       describe('when form is invalid', () => {
-        beforeEach(() => {
-          jest.spyOn(integrationSettingsForm.$form, 'checkValidity').mockReturnValue(false);
-          jest.spyOn(integrationSettingsForm.$form, 'submit');
-        });
-
         it('should dispatch `setIsSaving` with `false` and not submit form', async () => {
           const dispatchSpy = mockStoreDispatch();
 
-          eventHub.$emit(SAVE_INTEGRATION_EVENT);
+          eventHub.$emit(SAVE_INTEGRATION_EVENT, false);
 
           await waitForPromises();
 

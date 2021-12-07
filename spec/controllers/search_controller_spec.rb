@@ -328,6 +328,7 @@ RSpec.describe SearchController do
     describe 'GET #autocomplete' do
       it_behaves_like 'when the user cannot read cross project', :autocomplete, { term: 'hello' }
       it_behaves_like 'with external authorization service enabled', :autocomplete, { term: 'hello' }
+      it_behaves_like 'support for active record query timeouts', :autocomplete, { term: 'hello' }, :project, :json
     end
 
     describe '#append_info_to_payload' do

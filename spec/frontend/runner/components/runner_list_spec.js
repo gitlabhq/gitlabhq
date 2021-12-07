@@ -52,6 +52,12 @@ describe('RunnerList', () => {
     ]);
   });
 
+  it('Sets runner id as a row key', () => {
+    createComponent({}, shallowMount);
+
+    expect(findTable().attributes('primary-key')).toBe('id');
+  });
+
   it('Displays a list of runners', () => {
     expect(findRows()).toHaveLength(4);
 

@@ -8,6 +8,10 @@ module API
 
     feature_category :global_search
 
+    rescue_from ActiveRecord::QueryCanceled do |e|
+      render_api_error!({ error: 'Request timed out' }, 408)
+    end
+
     helpers do
       SCOPE_ENTITY = {
         merge_requests: Entities::MergeRequestBasic,

@@ -81,6 +81,7 @@ export default {
       :tbody-tr-attr="runnerTrAttr"
       data-testid="runner-list"
       stacked="md"
+      primary-key="id"
       fixed
     >
       <template v-if="!runners.length" #table-busy>

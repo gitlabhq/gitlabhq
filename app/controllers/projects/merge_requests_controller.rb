@@ -79,6 +79,8 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   feature_category :infrastructure_as_code, [:terraform_reports]
   feature_category :continuous_integration, [:pipeline_status, :pipelines, :exposed_artifacts]
 
+  urgency :high, [:export_csv]
+
   def index
     @merge_requests = @issuables
 

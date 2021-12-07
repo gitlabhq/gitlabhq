@@ -5,7 +5,6 @@ import eventHub from './edit/event_hub';
 import {
   TEST_INTEGRATION_EVENT,
   SAVE_INTEGRATION_EVENT,
-  TOGGLE_INTEGRATION_EVENT,
   VALIDATE_INTEGRATION_FORM_EVENT,
   I18N_DEFAULT_ERROR_MESSAGE,
   I18N_SUCCESSFUL_CONNECTION_MESSAGE,
@@ -14,8 +13,8 @@ import { testIntegrationSettings } from './edit/api';
 
 export default class IntegrationSettingsForm {
   constructor(formSelector) {
+    this.formSelector = formSelector;
     this.$form = document.querySelector(formSelector);
-    this.formActive = false;
 
     this.vue = null;
 
@@ -28,26 +27,22 @@ export default class IntegrationSettingsForm {
     this.vue = initForm(
       document.querySelector('.js-vue-integration-settings'),
       document.querySelector('.js-vue-default-integration-settings'),
+      this.formSelector,
     );
-    eventHub.$on(TOGGLE_INTEGRATION_EVENT, (active) => {
-      this.formActive = active;
-      this.toggleServiceState();
+    eventHub.$on(TEST_INTEGRATION_EVENT, (formValid) => {
+      this.testIntegration(formValid);
     });
-    eventHub.$on(TEST_INTEGRATION_EVENT, () => {
-      this.testIntegration();
-    });
-    eventHub.$on(SAVE_INTEGRATION_EVENT, () => {
-      this.saveIntegration();
+    eventHub.$on(SAVE_INTEGRATION_EVENT, (formValid) => {
+      this.saveIntegration(formValid);
     });
   }
 
-  saveIntegration() {
+  saveIntegration(formValid) {
     // Save Service if not active and check the following if active;
     // 1) If form contents are valid
     // 2) If this service can be saved
     // If both conditions are true, we override form submission
     // and save the service using provided configuration.
-    const formValid = this.$form.checkValidity() || this.formActive === false;
 
     if (formValid) {
       delay(() => {
@@ -59,28 +54,17 @@ export default class IntegrationSettingsForm {
     }
   }
 
-  testIntegration() {
+  testIntegration(formValid) {
     // Service was marked active so now we check;
     // 1) If form contents are valid
     // 2) If this service can be tested
     // If both conditions are true, we override form submission
     // and test the service using provided configuration.
-    if (this.$form.checkValidity()) {
+    if (formValid) {
       this.testSettings(new FormData(this.$form));
     } else {
       eventHub.$emit(VALIDATE_INTEGRATION_FORM_EVENT);
       this.vue.$store.dispatch('setIsTesting', false);
-    }
-  }
-
-  /**
-   * Change Form's validation enforcement based on service status (active/inactive)
-   */
-  toggleServiceState() {
-    if (this.formActive) {
-      this.$form.removeAttribute('novalidate');
-    } else if (!this.$form.getAttribute('novalidate')) {
-      this.$form.setAttribute('novalidate', 'novalidate');
     }
   }
 

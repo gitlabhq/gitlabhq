@@ -1,27 +1,29 @@
 <script>
-import { GlButton, GlButtonGroup, GlTooltipDirective } from '@gitlab/ui';
+import { GlButton, GlButtonGroup, GlModalDirective, GlTooltipDirective } from '@gitlab/ui';
 import createFlash from '~/flash';
-import { __, s__ } from '~/locale';
+import { __, s__, sprintf } from '~/locale';
 import runnerDeleteMutation from '~/runner/graphql/runner_delete.mutation.graphql';
 import runnerActionsUpdateMutation from '~/runner/graphql/runner_actions_update.mutation.graphql';
 import { captureException } from '~/runner/sentry_utils';
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import RunnerDeleteModal from '../runner_delete_modal.vue';
 
-const i18n = {
-  I18N_EDIT: __('Edit'),
-  I18N_PAUSE: __('Pause'),
-  I18N_RESUME: __('Resume'),
-  I18N_REMOVE: __('Remove'),
-  I18N_REMOVE_CONFIRMATION: s__('Runners|Are you sure you want to delete this runner?'),
-};
+const I18N_EDIT = __('Edit');
+const I18N_PAUSE = __('Pause');
+const I18N_RESUME = __('Resume');
+const I18N_DELETE = s__('Runners|Delete runner');
+const I18N_DELETED_TOAST = s__('Runners|Runner %{name} was deleted');
 
 export default {
   name: 'RunnerActionsCell',
   components: {
     GlButton,
     GlButtonGroup,
+    RunnerDeleteModal,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
+    GlModal: GlModalDirective,
   },
   props: {
     runner: {
@@ -48,21 +50,29 @@ export default {
         // mouseout listeners don't run leaving the tooltip stuck
         return '';
       }
-      return this.isActive ? i18n.I18N_PAUSE : i18n.I18N_RESUME;
+      return this.isActive ? I18N_PAUSE : I18N_RESUME;
     },
     deleteTitle() {
-      // Prevent a "sticky" tooltip: If element gets removed,
-      // mouseout listeners don't run and leaving the tooltip stuck
-      return this.deleting ? '' : i18n.I18N_REMOVE;
+      if (this.deleting) {
+        // Prevent a "sticky" tooltip: If this button is disabled,
+        // mouseout listeners don't run leaving the tooltip stuck
+        return '';
+      }
+      return I18N_DELETE;
+    },
+    runnerId() {
+      return getIdFromGraphQLId(this.runner.id);
+    },
+    runnerName() {
+      return `#${this.runnerId} (${this.runner.shortSha})`;
+    },
+    runnerDeleteModalId() {
+      return `delete-runner-modal-${this.runnerId}`;
     },
   },
   methods: {
     async onToggleActive() {
       this.updating = true;
-      // TODO In HAML iteration we had a confirmation modal via:
-      //   data-confirm="_('Are you sure?')"
-      // this may not have to ported, this is an easily reversible operation
-
       try {
         const toggledActive = !this.runner.active;
 
@@ -91,12 +101,8 @@ export default {
     },
 
     async onDelete() {
-      // TODO Replace confirmation with gl-modal
-      // eslint-disable-next-line no-alert
-      if (!window.confirm(i18n.I18N_REMOVE_CONFIRMATION)) {
-        return;
-      }
-
+      // Deleting stays "true" until this row is removed,
+      // should only change back if the operation fails.
       this.deleting = true;
       try {
         const {
@@ -115,11 +121,13 @@ export default {
         });
         if (errors && errors.length) {
           throw new Error(errors.join(' '));
+        } else {
+          // Use $root to have the toast message stay after this element is removed
+          this.$root.$toast?.show(sprintf(I18N_DELETED_TOAST, { name: this.runnerName }));
         }
       } catch (e) {
-        this.onError(e);
-      } finally {
         this.deleting = false;
+        this.onError(e);
       }
     },
 
@@ -133,14 +141,15 @@ export default {
       captureException({ error, component: this.$options.name });
     },
   },
-  i18n,
+  I18N_EDIT,
+  I18N_DELETE,
 };
 </script>
 
 <template>
   <gl-button-group>
     <!--
-      This button appears for administratos: those with
+      This button appears for administrators: those with
       access to the adminUrl. More advanced permissions policies
       will allow more granular permissions.
 
@@ -148,16 +157,14 @@ export default {
     -->
     <gl-button
       v-if="runner.adminUrl"
-      v-gl-tooltip.hover.viewport
+      v-gl-tooltip.hover.viewport="$options.I18N_EDIT"
       :href="runner.adminUrl"
-      :title="$options.i18n.I18N_EDIT"
-      :aria-label="$options.i18n.I18N_EDIT"
+      :aria-label="$options.I18N_EDIT"
       icon="pencil"
       data-testid="edit-runner"
     />
     <gl-button
-      v-gl-tooltip.hover.viewport
-      :title="toggleActiveTitle"
+      v-gl-tooltip.hover.viewport="toggleActiveTitle"
       :aria-label="toggleActiveTitle"
       :icon="toggleActiveIcon"
       :loading="updating"
@@ -165,14 +172,20 @@ export default {
       @click="onToggleActive"
     />
     <gl-button
-      v-gl-tooltip.hover.viewport
-      :title="deleteTitle"
+      v-gl-tooltip.hover.viewport="deleteTitle"
+      v-gl-modal="runnerDeleteModalId"
       :aria-label="deleteTitle"
       icon="close"
       :loading="deleting"
       variant="danger"
       data-testid="delete-runner"
-      @click="onDelete"
+    />
+
+    <runner-delete-modal
+      :ref="runnerDeleteModalId"
+      :modal-id="runnerDeleteModalId"
+      :runner-name="runnerName"
+      @primary="onDelete"
     />
   </gl-button-group>
 </template>

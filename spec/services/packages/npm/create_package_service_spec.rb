@@ -89,17 +89,6 @@ RSpec.describe Packages::Npm::CreatePackageService do
         end
       end
     end
-
-    context 'with packages_npm_abbreviated_metadata disabled' do
-      before do
-        stub_feature_flags(packages_npm_abbreviated_metadata: false)
-      end
-
-      it 'creates a package without metadatum' do
-        expect { subject }
-          .not_to change { Packages::Npm::Metadatum.count }
-      end
-    end
   end
 
   describe '#execute' do

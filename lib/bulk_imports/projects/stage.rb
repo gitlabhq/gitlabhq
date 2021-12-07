@@ -59,6 +59,14 @@ module BulkImports
             pipeline: BulkImports::Projects::Pipelines::ProjectFeaturePipeline,
             stage: 4
           },
+          container_expiration_policy: {
+            pipeline: BulkImports::Projects::Pipelines::ContainerExpirationPolicyPipeline,
+            stage: 4
+          },
+          service_desk_setting: {
+            pipeline: BulkImports::Projects::Pipelines::ServiceDeskSettingPipeline,
+            stage: 4
+          },
           wiki: {
             pipeline: BulkImports::Common::Pipelines::WikiPipeline,
             stage: 5

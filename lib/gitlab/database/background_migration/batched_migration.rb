@@ -94,11 +94,11 @@ module Gitlab
         end
 
         def job_class_name=(class_name)
-          write_attribute(:job_class_name, class_name.demodulize)
+          write_attribute(:job_class_name, class_name.delete_prefix("::"))
         end
 
         def batch_class_name=(class_name)
-          write_attribute(:batch_class_name, class_name.demodulize)
+          write_attribute(:batch_class_name, class_name.delete_prefix("::"))
         end
 
         def migrated_tuple_count

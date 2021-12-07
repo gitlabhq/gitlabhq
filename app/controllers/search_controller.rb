@@ -5,7 +5,7 @@ class SearchController < ApplicationController
   include SearchHelper
   include RedisTracking
 
-  RESCUE_FROM_TIMEOUT_ACTIONS = [:count, :show].freeze
+  RESCUE_FROM_TIMEOUT_ACTIONS = [:count, :show, :autocomplete].freeze
 
   track_redis_hll_event :show, name: 'i_search_total'
 
@@ -74,11 +74,7 @@ class SearchController < ApplicationController
   def autocomplete
     term = params[:term]
 
-    if params[:project_id].present?
-      @project = Project.find_by(id: params[:project_id])
-      @project = nil unless can?(current_user, :read_project, @project)
-    end
-
+    @project = search_service.project
     @ref = params[:project_ref] if params[:project_ref].present?
 
     render json: search_autocomplete_opts(term).to_json
@@ -189,15 +185,14 @@ class SearchController < ApplicationController
 
     @timeout = true
 
-    if count_action_name?
+    case action_name.to_sym
+    when :count
       render json: {}, status: :request_timeout
+    when :autocomplete
+      render json: [], status: :request_timeout
     else
       render status: :request_timeout
     end
-  end
-
-  def count_action_name?
-    action_name.to_sym == :count
   end
 
   def strip_surrounding_whitespace_from_search

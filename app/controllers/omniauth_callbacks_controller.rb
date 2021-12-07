@@ -162,6 +162,10 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     user = auth_user.find_and_update!
 
     if auth_user.valid_sign_in?
+      # In this case the `#current_user` would not be set. So we can't fetch it
+      # from that in `#context_user`. Pushing it manually here makes the information
+      # available in the logs for this request.
+      Gitlab::ApplicationContext.push(user: user)
       log_audit_event(user, with: oauth['provider'])
 
       set_remember_me(user)
@@ -286,10 +290,6 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
   def fail_admin_mode_invalid_credentials
     redirect_to new_admin_session_path, alert: _('Invalid login or password')
-  end
-
-  def context_user
-    current_user
   end
 end
 

@@ -122,6 +122,23 @@ RSpec.describe API::Search do
       end
     end
 
+    context 'when DB timeouts occur from global searches', :aggregate_errors do
+      %w(
+        issues
+        merge_requests
+        milestones
+        projects
+        snippet_titles
+        users
+      ).each do |scope|
+        it "returns a 408 error if search with scope: #{scope} times out" do
+          allow(SearchService).to receive(:new).and_raise ActiveRecord::QueryCanceled
+          get api(endpoint, user), params: { scope: scope, search: 'awesome' }
+          expect(response).to have_gitlab_http_status(:request_timeout)
+        end
+      end
+    end
+
     context 'when scope is not supported' do
       it 'returns 400 error' do
         get api(endpoint, user), params: { scope: 'unsupported', search: 'awesome' }
