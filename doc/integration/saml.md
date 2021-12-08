@@ -163,6 +163,74 @@ On the sign in page there should now be a SAML button below the regular sign in 
 Click the icon to begin the authentication process. If everything goes well the user
 is returned to GitLab and signed in.
 
+### Use multiple SAML identity providers
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/14361) in GitLab 14.6.
+
+You can configure GitLab to use multiple SAML identity providers if:
+
+- Each provider has a unique name set that matches a name set in `args`.
+- The providers' names are:
+  - Used in OmniAuth configuration for properties based on the provider name. For example, `allowBypassTwoFactor`, `allowSingleSignOn`, and
+    `syncProfileFromProvider`.
+  - Used for association to each existing user as an additional identity.
+- The `assertion_consumer_service_url` matches the provider name.
+- The `strategy_class` is explicitly set because it cannot be inferred from provider name.
+
+Example multiple providers configuration for Omnibus GitLab:
+
+```ruby
+gitlab_rails['omniauth_providers'] = [
+  {
+    name: 'saml_1',
+    args: {
+            name: 'saml_1', # This is mandatory and must match the provider name
+            strategy_class: 'OmniAuth::Strategies::SAML'
+            assertion_consumer_service_url: 'https://gitlab.example.com/users/auth/saml_1/callback', # URL must match the name of the provider
+            ... # Put here all the required arguments similar to a single provider
+          },
+    label: 'Provider 1' # Differentiate the two buttons and providers in the UI
+  },
+  {
+    name: 'saml_2',
+    args: {
+            name: 'saml_2', # This is mandatory and must match the provider name
+            strategy_class: 'OmniAuth::Strategies::SAML'
+            assertion_consumer_service_url: 'https://gitlab.example.com/users/auth/saml_2/callback', # URL must match the name of the provider
+            ... # Put here all the required arguments similar to a single provider
+          },
+    label: 'Provider 2' # Differentiate the two buttons and providers in the UI
+  }
+]
+```
+
+Example providers configuration for installations from source:
+
+```yaml
+omniauth:
+  providers:
+    - {
+      name: 'saml_1',
+      args: {
+        name: 'saml_1', # This is mandatory and must match the provider name
+        strategy_class: 'OmniAuth::Strategies::SAML',
+        assertion_consumer_service_url: 'https://gitlab.example.com/users/auth/saml_1/callback', # URL must match the name of the provider
+        ... # Put here all the required arguments similar to a single provider
+      },
+      label: 'Provider 1' # Differentiate the two buttons and providers in the UI
+    }
+    - {
+      name: 'saml_2',
+      args: {
+        name: 'saml_2', # This is mandatory and must match the provider name
+        strategy_class: 'OmniAuth::Strategies::SAML',
+        assertion_consumer_service_url: 'https://gitlab.example.com/users/auth/saml_2/callback', # URL must match the name of the provider
+        ... # Put here all the required arguments similar to a single provider
+      },
+      label: 'Provider 2' # Differentiate the two buttons and providers in the UI
+    }
+```
+
 ### Notes on configuring your identity provider
 
 When configuring a SAML app on the IdP, you need at least:

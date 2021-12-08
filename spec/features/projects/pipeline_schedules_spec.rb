@@ -42,7 +42,7 @@ RSpec.describe 'Pipeline Schedules', :js do
           click_link 'Take ownership'
           page.within('.pipeline-schedule-table-row') do
             expect(page).not_to have_content('No owner')
-            expect(page).to have_link('John Doe')
+            expect(page).to have_link('Sidney Jones')
           end
         end
 

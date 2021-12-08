@@ -29,5 +29,30 @@ export const resolvers = {
         workItem,
       };
     },
+
+    updateWorkItem(_, { input }, { cache }) {
+      const workItemTitle = {
+        __typename: 'TitleWidget',
+        type: 'TITLE',
+        enabled: true,
+        contentText: input.title,
+      };
+      const workItem = {
+        __typename: 'WorkItem',
+        type: 'FEATURE',
+        id: input.id,
+        widgets: {
+          __typename: 'WorkItemWidgetConnection',
+          nodes: [workItemTitle],
+        },
+      };
+
+      cache.writeQuery({ query: workItemQuery, variables: { id: input.id }, data: { workItem } });
+
+      return {
+        __typename: 'UpdateWorkItemPayload',
+        workItem,
+      };
+    },
   },
 };

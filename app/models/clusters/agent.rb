@@ -4,6 +4,8 @@ module Clusters
   class Agent < ApplicationRecord
     self.table_name = 'cluster_agents'
 
+    INACTIVE_AFTER = 1.hour.freeze
+
     belongs_to :created_by_user, class_name: 'User', optional: true
     belongs_to :project, class_name: '::Project' # Otherwise, it will load ::Clusters::Project
 
@@ -32,6 +34,10 @@ module Clusters
 
     def has_access_to?(requested_project)
       requested_project == project
+    end
+
+    def active?
+      agent_tokens.where("last_used_at > ?", INACTIVE_AFTER.ago).exists?
     end
   end
 end

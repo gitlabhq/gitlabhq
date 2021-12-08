@@ -62,7 +62,7 @@ const createFlashEl = (message, type) => `
   </div>
 `;
 
-const removeFlashClickListener = (flashEl, fadeTransition) => {
+const addDismissFlashClickListener = (flashEl, fadeTransition) => {
   // There are some flash elements which do not have a closeEl.
   // https://gitlab.com/gitlab-org/gitlab/blob/763426ef344488972eb63ea5be8744e0f8459e6b/ee/app/views/layouts/header/_read_only_banner.html.haml
   getCloseEl(flashEl)?.addEventListener('click', () => hideFlash(flashEl, fadeTransition));
@@ -113,7 +113,7 @@ const createFlash = function createFlash({
     }
   }
 
-  removeFlashClickListener(flashEl, fadeTransition);
+  addDismissFlashClickListener(flashEl, fadeTransition);
 
   flashContainer.classList.add('gl-display-block');
 
@@ -130,9 +130,8 @@ const createFlash = function createFlash({
 
 export {
   createFlash as default,
-  createAction,
   hideFlash,
-  removeFlashClickListener,
+  addDismissFlashClickListener,
   FLASH_TYPES,
   FLASH_CLOSED_EVENT,
 };

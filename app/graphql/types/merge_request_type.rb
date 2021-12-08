@@ -96,7 +96,7 @@ module Types
           description: 'Rebase commit SHA of the merge request.'
     field :rebase_in_progress, GraphQL::Types::Boolean, method: :rebase_in_progress?, null: false, calls_gitaly: true,
           description: 'Indicates if there is a rebase currently in progress for the merge request.'
-    field :default_merge_commit_message, GraphQL::Types::String, null: true,
+    field :default_merge_commit_message, GraphQL::Types::String, null: true, calls_gitaly: true,
           description: 'Default merge commit message of the merge request.'
     field :default_merge_commit_message_with_description, GraphQL::Types::String, null: true,
           description: 'Default merge commit message of the merge request with description. Will have the same value as `defaultMergeCommitMessage` when project has `mergeCommitTemplate` set.',

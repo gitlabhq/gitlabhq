@@ -5,7 +5,7 @@ import {
   GlLoadingIcon,
   GlTooltip,
   GlSprintf,
-  GlLink,
+  GlButton,
 } from '@gitlab/ui';
 import createFlash from '~/flash';
 import { INCIDENT_SEVERITY, ISSUABLE_TYPES, I18N } from './constants';
@@ -20,7 +20,7 @@ export default {
     GlSprintf,
     GlDropdown,
     GlDropdownItem,
-    GlLink,
+    GlButton,
     SeverityToken,
   },
   inject: ['canUpdate'],
@@ -150,23 +150,25 @@ export default {
 
     <div class="hide-collapsed">
       <p
-        class="gl-line-height-20 gl-mb-0 gl-text-gray-900 gl-display-flex gl-justify-content-space-between"
+        class="gl-line-height-20 gl-mb-2 gl-text-gray-900 gl-display-flex gl-justify-content-space-between"
       >
         {{ $options.i18n.SEVERITY }}
-        <gl-link
+        <gl-button
           v-if="canUpdate"
+          category="tertiary"
+          size="small"
           data-testid="editButton"
-          href="#"
           @click="toggleFormDropdown"
           @keydown.esc="hideDropdown"
         >
           {{ $options.i18n.EDIT }}
-        </gl-link>
+        </gl-button>
       </p>
 
       <gl-dropdown
         :class="dropdownClass"
         block
+        :header-text="__('Assign severity')"
         :text="selectedItem.label"
         toggle-class="dropdown-menu-toggle gl-mb-2"
         @keydown.esc.native="hideDropdown"

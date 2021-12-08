@@ -79,14 +79,6 @@ RSpec.describe ApplicationExperiment, :experiment do
       application_experiment.publish
     end
 
-    it "publishes to the database if we've opted for that" do
-      application_experiment.record!
-
-      expect(application_experiment).to receive(:publish_to_database)
-
-      application_experiment.publish
-    end
-
     context 'when we should not track' do
       let(:should_track) { false }
 

@@ -220,16 +220,17 @@ export default {
         class="gl-text-gray-900 gl-mb-2 gl-line-height-20 gl-display-flex gl-justify-content-space-between"
       >
         {{ __('Assignee') }}
-        <a
+        <gl-button
           v-if="isEditable"
           ref="editButton"
-          class="btn-link"
-          href="#"
+          category="tertiary"
+          size="small"
+          class="gl-text-black-normal!"
           @click="toggleFormDropdown"
           @keydown.esc="hideDropdown"
         >
           {{ __('Edit') }}
-        </a>
+        </gl-button>
       </p>
 
       <gl-dropdown

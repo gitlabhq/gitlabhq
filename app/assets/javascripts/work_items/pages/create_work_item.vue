@@ -2,10 +2,13 @@
 import { GlButton, GlAlert } from '@gitlab/ui';
 import createWorkItemMutation from '../graphql/create_work_item.mutation.graphql';
 
+import ItemTitle from '../components/item_title.vue';
+
 export default {
   components: {
     GlButton,
     GlAlert,
+    ItemTitle,
   },
   data() {
     return {
@@ -37,6 +40,9 @@ export default {
         this.error = true;
       }
     },
+    handleTitleInput(title) {
+      this.title = title;
+    },
   },
 };
 </script>
@@ -46,15 +52,7 @@ export default {
     <gl-alert v-if="error" variant="danger" @dismiss="error = false">{{
       __('Something went wrong when creating a work item. Please try again')
     }}</gl-alert>
-    <label for="title" class="gl-sr-only">{{ __('Title') }}</label>
-    <input
-      id="title"
-      v-model.trim="title"
-      type="text"
-      class="gl-font-size-h-display gl-font-weight-bold gl-my-5 gl-border-none gl-w-full gl-pl-2"
-      data-testid="title-input"
-      :placeholder="__('Add a title…')"
-    />
+    <item-title data-testid="title-input" @title-input="handleTitleInput" />
     <div class="gl-bg-gray-10 gl-py-5 gl-px-6">
       <gl-button
         variant="confirm"

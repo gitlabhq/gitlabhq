@@ -2,7 +2,7 @@ import loadAwardsHandler from '~/awards_handler';
 import ShortcutsIssuable from '~/behaviors/shortcuts/shortcuts_issuable';
 import initIssuableSidebar from '~/issuable/init_issuable_sidebar';
 import { IssuableType } from '~/vue_shared/issuable/show/constants';
-import Issue from '~/issue';
+import Issue from '~/issues/issue';
 import { initIncidentApp, initIncidentHeaderActions } from '~/issues/show/incident';
 import { initIssuableApp, initIssueHeaderActions } from '~/issues/show/issue';
 import { parseIssuableData } from '~/issues/show/utils/parse_data';

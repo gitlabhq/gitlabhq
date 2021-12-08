@@ -28,8 +28,12 @@ module Clusters
 
       cache_attributes(track_values)
 
-      # Use update_column so updated_at is skipped
-      update_columns(track_values) if can_update_track_values?
+      if can_update_track_values?
+        log_activity_event!(track_values[:last_used_at]) unless agent.active?
+
+        # Use update_column so updated_at is skipped
+        update_columns(track_values)
+      end
     end
 
     private
@@ -43,6 +47,15 @@ module Clusters
       # Handle too many updates from high token traffic
       real_last_used_at.nil? ||
         (Time.current - real_last_used_at) >= last_used_at_max_age
+    end
+
+    def log_activity_event!(recorded_at)
+      agent.activity_events.create!(
+        kind: :agent_connected,
+        level: :info,
+        recorded_at: recorded_at,
+        agent_token: self
+      )
     end
   end
 end

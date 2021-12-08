@@ -1,7 +1,7 @@
 <script>
 import { GlIcon } from '@gitlab/ui';
 import $ from 'jquery';
-import IssuableTemplateSelectors from '~/templates/issuable_template_selectors';
+import IssuableTemplateSelectors from '~/issuable/issuable_template_selectors';
 
 export default {
   components: {

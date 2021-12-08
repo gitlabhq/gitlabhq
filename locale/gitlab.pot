@@ -2036,7 +2036,7 @@ msgstr ""
 msgid "Add a task list"
 msgstr ""
 
-msgid "Add a title…"
+msgid "Add a title..."
 msgstr ""
 
 msgid "Add a to do"
@@ -4767,6 +4767,9 @@ msgid "Assign reviewer"
 msgstr ""
 
 msgid "Assign reviewer(s)"
+msgstr ""
+
+msgid "Assign severity"
 msgstr ""
 
 msgid "Assign some issues to this milestone."
@@ -32838,6 +32841,9 @@ msgid "Something went wrong while updating a requirement."
 msgstr ""
 
 msgid "Something went wrong while updating assignees"
+msgstr ""
+
+msgid "Something went wrong while updating work item. Please try again"
 msgstr ""
 
 msgid "Something went wrong while updating your list settings"

@@ -3,6 +3,7 @@
 class ProjectMember < Member
   extend ::Gitlab::Utils::Override
   SOURCE_TYPE = 'Project'
+  SOURCE_TYPE_FORMAT = /\AProject\z/.freeze
 
   belongs_to :project, foreign_key: 'source_id'
 
@@ -10,8 +11,7 @@ class ProjectMember < Member
 
   # Make sure project member points only to project as it source
   default_value_for :source_type, SOURCE_TYPE
-  validates :source_type, format: { with: /\AProject\z/ }
-  validates :access_level, inclusion: { in: Gitlab::Access.values }
+  validates :source_type, format: { with: SOURCE_TYPE_FORMAT }
   default_scope { where(source_type: SOURCE_TYPE) } # rubocop:disable Cop/DefaultScope
 
   scope :in_project, ->(project) { where(source_id: project.id) }
@@ -91,6 +91,13 @@ class ProjectMember < Member
   end
 
   private
+
+  override :access_level_inclusion
+  def access_level_inclusion
+    return if access_level.in?(Gitlab::Access.values)
+
+    errors.add(:access_level, "is not included in the list")
+  end
 
   override :refresh_member_authorized_projects
   def refresh_member_authorized_projects(blocking:)

@@ -6,6 +6,7 @@ class GroupMember < Member
   include CreatedAtFilterable
 
   SOURCE_TYPE = 'Namespace'
+  SOURCE_TYPE_FORMAT = /\ANamespace\z/.freeze
 
   belongs_to :group, foreign_key: 'source_id'
   alias_attribute :namespace_id, :source_id
@@ -13,9 +14,7 @@ class GroupMember < Member
 
   # Make sure group member points only to group as it source
   default_value_for :source_type, SOURCE_TYPE
-  validates :source_type, format: { with: /\ANamespace\z/ }
-  validates :access_level, presence: true
-  validate :access_level_inclusion
+  validates :source_type, format: { with: SOURCE_TYPE_FORMAT }
 
   default_scope { where(source_type: SOURCE_TYPE) } # rubocop:disable Cop/DefaultScope
 
@@ -63,12 +62,6 @@ class GroupMember < Member
     return if destroyed_by_association.present?
 
     super
-  end
-
-  def access_level_inclusion
-    return if access_level.in?(Gitlab::Access.all_values)
-
-    errors.add(:access_level, "is not included in the list")
   end
 
   def send_invite

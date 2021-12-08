@@ -5,6 +5,7 @@ import { shallowMount } from '@vue/test-utils';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import CreateWorkItem from '~/work_items/pages/create_work_item.vue';
+import ItemTitle from '~/work_items/components/item_title.vue';
 import { resolvers } from '~/work_items/graphql/resolvers';
 
 Vue.use(VueApollo);
@@ -14,9 +15,9 @@ describe('Create work item component', () => {
   let fakeApollo;
 
   const findAlert = () => wrapper.findComponent(GlAlert);
+  const findTitleInput = () => wrapper.findComponent(ItemTitle);
   const findCreateButton = () => wrapper.find('[data-testid="create-button"]');
   const findCancelButton = () => wrapper.find('[data-testid="cancel-button"]');
-  const findTitleInput = () => wrapper.find('[data-testid="title-input"]');
 
   const createComponent = ({ data = {} } = {}) => {
     fakeApollo = createMockApollo([], resolvers);
@@ -70,9 +71,10 @@ describe('Create work item component', () => {
   });
 
   describe('when title input field has a text', () => {
-    beforeEach(() => {
+    beforeEach(async () => {
+      const mockTitle = 'Test title';
       createComponent();
-      findTitleInput().setValue('Test title');
+      await findTitleInput().vm.$emit('title-input', mockTitle);
     });
 
     it('renders a non-disabled Create button', () => {

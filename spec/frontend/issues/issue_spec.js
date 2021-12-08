@@ -1,7 +1,7 @@
 import { getByText } from '@testing-library/dom';
 import MockAdapter from 'axios-mock-adapter';
 import { EVENT_ISSUABLE_VUE_APP_CHANGE } from '~/issuable/constants';
-import Issue from '~/issue';
+import Issue from '~/issues/issue';
 import axios from '~/lib/utils/axios_utils';
 
 describe('Issue', () => {

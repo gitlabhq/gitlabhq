@@ -70,6 +70,14 @@ RSpec.describe MergeRequests::ToggleAttentionRequestedService do
 
         service.execute
       end
+
+      it 'removes attention requested state' do
+        expect(MergeRequests::RemoveAttentionRequestedService).to receive(:new)
+          .with(project: project, current_user: current_user, merge_request: merge_request, user: current_user)
+          .and_call_original
+
+        service.execute
+      end
     end
 
     context 'assignee exists' do
@@ -98,6 +106,14 @@ RSpec.describe MergeRequests::ToggleAttentionRequestedService do
 
       it 'creates a request attention system note' do
         expect(SystemNoteService).to receive(:request_attention).with(merge_request, merge_request.project, current_user, assignee_user)
+
+        service.execute
+      end
+
+      it 'removes attention requested state' do
+        expect(MergeRequests::RemoveAttentionRequestedService).to receive(:new)
+          .with(project: project, current_user: current_user, merge_request: merge_request, user: current_user)
+          .and_call_original
 
         service.execute
       end

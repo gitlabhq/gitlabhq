@@ -47,7 +47,13 @@ export const projectMock = {
   id: '1234',
   userPermissions: userPermissionsMock,
   pathLocks: {
-    nodes: [],
+    nodes: [
+      {
+        id: 'test',
+        path: simpleViewerMock.path,
+        user: { id: '123', username: 'root' },
+      },
+    ],
   },
   repository: {
     empty: false,

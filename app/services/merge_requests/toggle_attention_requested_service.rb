@@ -21,6 +21,10 @@ module MergeRequests
         if reviewer&.attention_requested? || assignee&.attention_requested?
           create_attention_request_note
           notity_user
+
+          if current_user.id != user.id
+            remove_attention_requested(merge_request, current_user)
+          end
         else
           create_remove_attention_request_note
         end

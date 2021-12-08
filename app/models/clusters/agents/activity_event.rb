@@ -18,7 +18,10 @@ module Clusters
       nullify_if_blank :detail
 
       enum kind: {
-        token_created: 0
+        token_created: 0,
+        token_revoked: 1,
+        agent_connected: 2,
+        agent_disconnected: 3
       }, _prefix: true
 
       enum level: {

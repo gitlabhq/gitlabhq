@@ -1,5 +1,3 @@
-/* eslint-disable no-new, class-methods-use-this */
-
 import $ from 'jquery';
 import IssuableTemplateSelector from './issuable_template_selector';
 
@@ -10,6 +8,8 @@ export default class IssuableTemplateSelectors {
 
     this.$dropdowns.each((i, dropdown) => {
       const $dropdown = $(dropdown);
+
+      // eslint-disable-next-line no-new
       new IssuableTemplateSelector({
         pattern: /(\.md)/,
         data: $dropdown.data('data'),
@@ -21,6 +21,7 @@ export default class IssuableTemplateSelectors {
     });
   }
 
+  // eslint-disable-next-line class-methods-use-this
   initEditor() {
     const editor = $('.markdown-area');
     // Proxy ace-editor's .setValue to jQuery's .val

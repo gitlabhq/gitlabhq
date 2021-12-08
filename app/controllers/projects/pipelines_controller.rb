@@ -312,7 +312,7 @@ class Projects::PipelinesController < Projects::ApplicationController
 
       e.control {}
       e.candidate {}
-      e.record!
+      e.publish_to_database
     end
   end
 
@@ -325,7 +325,7 @@ class Projects::PipelinesController < Projects::ApplicationController
 
       e.control {}
       e.candidate {}
-      e.record!
+      e.publish_to_database
     end
   end
 

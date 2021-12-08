@@ -1,9 +1,7 @@
-/* eslint-disable no-useless-return */
-
 import $ from 'jquery';
+import TemplateSelector from '~/blob/template_selector';
 import { __ } from '~/locale';
 import Api from '../api';
-import TemplateSelector from '../blob/template_selector';
 
 export default class IssuableTemplateSelector extends TemplateSelector {
   constructor(...args) {
@@ -109,7 +107,5 @@ export default class IssuableTemplateSelector extends TemplateSelector {
     } else {
       this.setEditorContent(this.currentTemplate, { skipFocus: false });
     }
-
-    return;
   }
 }

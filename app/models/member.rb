@@ -52,6 +52,7 @@ class Member < ApplicationRecord
       message: _('project bots cannot be added to other groups / projects')
     },
     if: :project_bot?
+  validate :access_level_inclusion
 
   scope :with_invited_user_state, -> do
     joins('LEFT JOIN users as invited_user ON invited_user.email = members.invite_email')
@@ -381,6 +382,12 @@ class Member < ApplicationRecord
   end
 
   private
+
+  def access_level_inclusion
+    return if access_level.in?(Gitlab::Access.all_values)
+
+    errors.add(:access_level, "is not included in the list")
+  end
 
   def send_invite
     # override in subclass

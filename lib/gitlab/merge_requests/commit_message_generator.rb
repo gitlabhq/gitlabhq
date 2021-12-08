@@ -35,7 +35,9 @@ module Gitlab
           "Closes #{closes_issues_references.to_sentence}"
         end,
         'description' => ->(merge_request) { merge_request.description.presence || '' },
-        'reference' => ->(merge_request) { merge_request.to_reference(full: true) }
+        'reference' => ->(merge_request) { merge_request.to_reference(full: true) },
+        'first_commit' => -> (merge_request) { merge_request.first_commit&.safe_message&.strip.presence || '' },
+        'first_multiline_commit' => -> (merge_request) { merge_request.first_multiline_commit&.safe_message&.strip.presence || merge_request.title }
       }.freeze
 
       PLACEHOLDERS_REGEX = Regexp.union(PLACEHOLDERS.keys.map do |key|

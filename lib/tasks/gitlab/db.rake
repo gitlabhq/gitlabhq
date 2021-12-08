@@ -243,7 +243,9 @@ namespace :gitlab do
     # Only for development environments,
     # we execute pending data migrations inline for convenience.
     Rake::Task['db:migrate'].enhance do
-      Rake::Task['gitlab:db:execute_batched_migrations'].invoke if Rails.env.development?
+      if Rails.env.development? && Gitlab::Database::BackgroundMigration::BatchedMigration.table_exists?
+        Rake::Task['gitlab:db:execute_batched_migrations'].invoke
+      end
     end
   end
 end

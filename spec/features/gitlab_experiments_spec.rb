@@ -31,9 +31,10 @@ RSpec.describe "Gitlab::Experiment", :js do
 
       expect(page).to have_content('Abuse Reports')
 
-      published_experiments = page.evaluate_script('window.gon.experiment')
+      published_experiments = page.evaluate_script('window.gl.experiments')
       expect(published_experiments).to include({
         'null_hypothesis' => {
+          'excluded' => false,
           'experiment' => 'null_hypothesis',
           'key' => anything,
           'variant' => 'candidate'

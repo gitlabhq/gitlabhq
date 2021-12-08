@@ -16,6 +16,7 @@ RSpec.describe Gitlab::MergeRequests::CommitMessageGenerator do
   end
 
   let(:user) { project.creator }
+  let(:source_branch) { 'feature' }
   let(:merge_request_description) { "Merge Request Description\nNext line" }
   let(:merge_request_title) { 'Bugfix' }
   let(:merge_request) do
@@ -24,6 +25,8 @@ RSpec.describe Gitlab::MergeRequests::CommitMessageGenerator do
       :simple,
       source_project: project,
       target_project: project,
+      target_branch: 'master',
+      source_branch: source_branch,
       author: user,
       description: merge_request_description,
       title: merge_request_title
@@ -224,6 +227,50 @@ RSpec.describe Gitlab::MergeRequests::CommitMessageGenerator do
 
             See merge request #{merge_request.to_reference(full: true)}
           MSG
+        end
+      end
+
+      context 'when project has merge commit template with first_commit' do
+        let(message_template_name) { <<~MSG.rstrip }
+          Message: %{first_commit}
+        MSG
+
+        it 'uses first commit' do
+          expect(result_message).to eq <<~MSG.rstrip
+            Message: Feature added
+
+            Signed-off-by: Dmitriy Zaporozhets <dmitriy.zaporozhets@gmail.com>
+          MSG
+        end
+
+        context 'when branch has no unmerged commits' do
+          let(:source_branch) { 'v1.1.0' }
+
+          it 'is an empty string' do
+            expect(result_message).to eq 'Message: '
+          end
+        end
+      end
+
+      context 'when project has merge commit template with first_multiline_commit' do
+        let(message_template_name) { <<~MSG.rstrip }
+          Message: %{first_multiline_commit}
+        MSG
+
+        it 'uses first multiline commit' do
+          expect(result_message).to eq <<~MSG.rstrip
+            Message: Feature added
+
+            Signed-off-by: Dmitriy Zaporozhets <dmitriy.zaporozhets@gmail.com>
+          MSG
+        end
+
+        context 'when branch has no multiline commits' do
+          let(:source_branch) { 'spooky-stuff' }
+
+          it 'is mr title' do
+            expect(result_message).to eq 'Message: Bugfix'
+          end
         end
       end
     end

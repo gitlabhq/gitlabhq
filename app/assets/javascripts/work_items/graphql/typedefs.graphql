@@ -37,7 +37,16 @@ type CreateWorkItemInput {
   title: String!
 }
 
+type UpdateWorkItemInput {
+  id: ID!
+  title: String
+}
+
 type CreateWorkItemPayload {
+  workItem: WorkItem!
+}
+
+type UpdateWorkItemPayload {
   workItem: WorkItem!
 }
 
@@ -47,4 +56,5 @@ extend type Query {
 
 extend type Mutation {
   createWorkItem(input: CreateWorkItemInput!): CreateWorkItemPayload!
+  updateWorkItem(input: UpdateWorkItemInput!): UpdateWorkItemPayload!
 }

@@ -26,7 +26,7 @@ module API
           use :pagination
         end
 
-        get ":id/#{eventables_str}/:eventable_id/resource_milestone_events", feature_category: feature_category do
+        get ":id/#{eventables_str}/:eventable_id/resource_milestone_events", feature_category: feature_category, urgency: :low do
           eventable = find_noteable(eventable_type, params[:eventable_id])
 
           events = ResourceMilestoneEventFinder.new(current_user, eventable).execute

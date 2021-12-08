@@ -79,6 +79,20 @@ export default class SidebarMediator {
           }),
         );
       } else {
+        const currentUserId = gon.current_user_id;
+
+        if (currentUserId !== user.id) {
+          const currentUserReviewerOrAssignee = isReviewer
+            ? this.store.findReviewer({ id: currentUserId })
+            : this.store.findAssignee({ id: currentUserId });
+
+          if (currentUserReviewerOrAssignee?.attention_requested) {
+            // Update current users attention_requested state
+            this.store.updateReviewer(currentUserId, 'attention_requested');
+            this.store.updateAssignee(currentUserId, 'attention_requested');
+          }
+        }
+
         toast(sprintf(__('Requested attention from @%{username}'), { username: user.username }));
       }
 

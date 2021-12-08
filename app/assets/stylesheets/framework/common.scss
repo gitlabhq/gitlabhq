@@ -479,6 +479,13 @@ img.emoji {
   border-top: 1px solid $border-color;
 }
 
+.gl-pseudo-placeholder:empty::before {
+  content: attr(data-placeholder);
+  font-weight: $gl-font-weight-normal;
+  color: $gl-text-color-secondary;
+  cursor: text;
+}
+
 /**
 🚨 Do not use these classes — they clash with the Gitlab UI design system and will be removed. 🚨
 See https://gitlab.com/gitlab-org/gitlab/issues/36857 for more details.

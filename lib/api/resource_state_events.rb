@@ -25,7 +25,7 @@ module API
           use :pagination
         end
 
-        get ":id/#{eventable_name.pluralize}/:eventable_iid/resource_state_events", feature_category: feature_category do
+        get ":id/#{eventable_name.pluralize}/:eventable_iid/resource_state_events", feature_category: feature_category, urgency: :low do
           eventable = find_noteable(eventable_class, params[:eventable_iid])
 
           events = ResourceStateEventFinder.new(current_user, eventable).execute

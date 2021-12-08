@@ -65,6 +65,9 @@ GitLab creates a squash commit message with this template:
 
 ## Supported variables in commit templates
 
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/20263) in GitLab 14.5.
+> - [Added](https://gitlab.com/gitlab-org/gitlab/-/issues/346805) `first_commit` and `first_multiline_commit` variables in GitLab 14.6.
+
 Commit message templates support these variables:
 
 | Variable | Description | Output example |
@@ -73,8 +76,10 @@ Commit message templates support these variables:
 | `%{target_branch}` | The name of the branch that the changes are applied to. | `main` |
 | `%{title}`         | Title of the merge request. | `Fix tests and translations` |
 | `%{issues}`        | String with phrase `Closes <issue numbers>`. Contains all issues mentioned in the merge request description that match [issue closing patterns](../issues/managing_issues.md#closing-issues-automatically). Empty if no issues are mentioned. | `Closes #465, #190 and #400` |
-| `%{description}`   | Description of the merge request. | `Merge request description.<br>Can be multiline.` |
+| `%{description}`   | Description of the merge request. | `Merge request description.`<br>`Can be multiline.` |
 | `%{reference}`     | Reference to the merge request. | `group-name/project-name!72359` |
+| `%{first_commit}`  | Full message of the first commit in merge request diff. | `Update README.md` |
+| `%{first_multiline_commit}` | Full message of the first commit that's not a merge commit and has more than one line in message body. Merge Request title if all commits aren't multiline. | `Update README.md`<br><br>`Improved project description in readme file.` |
 
 Empty variables that are the only word in a line are removed, along with all newline characters preceding it.
 

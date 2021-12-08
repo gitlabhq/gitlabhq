@@ -13,7 +13,6 @@ class ApplicationExperiment < Gitlab::Experiment # rubocop:disable Gitlab/Namesp
     super
 
     publish_to_client
-    publish_to_database if @record
   end
 
   def publish_to_client
@@ -25,6 +24,8 @@ class ApplicationExperiment < Gitlab::Experiment # rubocop:disable Gitlab/Namesp
   end
 
   def publish_to_database
+    ActiveSupport::Deprecation.warn('publish_to_database is deprecated and should not be used for reporting anymore')
+
     return unless should_track?
 
     # if the context contains a namespace, group, project, user, or actor
@@ -34,10 +35,6 @@ class ApplicationExperiment < Gitlab::Experiment # rubocop:disable Gitlab/Namesp
 
     variant_name = :experimental if variant&.name != 'control'
     Experiment.add_subject(name, variant: variant_name || :control, subject: subject)
-  end
-
-  def record!
-    @record = true
   end
 
   def control_behavior

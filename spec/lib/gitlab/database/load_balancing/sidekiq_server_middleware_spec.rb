@@ -5,7 +5,9 @@ require 'spec_helper'
 RSpec.describe Gitlab::Database::LoadBalancing::SidekiqServerMiddleware, :clean_gitlab_redis_queues do
   let(:middleware) { described_class.new }
   let(:worker) { worker_class.new }
-  let(:job) { { "retry" => 3, "job_id" => "a180b47c-3fd6-41b8-81e9-34da61c3400e", 'database_replica_location' => '0/D525E3A8' } }
+  let(:location) {'0/D525E3A8' }
+  let(:wal_locations) { { Gitlab::Database::MAIN_DATABASE_NAME.to_sym => location } }
+  let(:job) { { "retry" => 3, "job_id" => "a180b47c-3fd6-41b8-81e9-34da61c3400e", 'wal_locations' => wal_locations } }
 
   before do
     skip_feature_flags_yaml_validation
@@ -60,9 +62,6 @@ RSpec.describe Gitlab::Database::LoadBalancing::SidekiqServerMiddleware, :clean_
     end
 
     shared_examples_for 'replica is up to date' do |expected_strategy|
-      let(:location) {'0/D525E3A8' }
-      let(:wal_locations) { { Gitlab::Database::MAIN_DATABASE_NAME.to_sym => location } }
-
       it 'does not stick to the primary', :aggregate_failures do
         expect(ActiveRecord::Base.load_balancer)
           .to receive(:select_up_to_date_host)
@@ -114,19 +113,6 @@ RSpec.describe Gitlab::Database::LoadBalancing::SidekiqServerMiddleware, :clean_
         it_behaves_like 'replica is up to date', 'replica'
       end
 
-      context 'when legacy wal location is set' do
-        let(:job) { { 'job_id' => 'a180b47c-3fd6-41b8-81e9-34da61c3400e', 'database_write_location' => '0/D525E3A8' } }
-
-        before do
-          allow(ActiveRecord::Base.load_balancer)
-            .to receive(:select_up_to_date_host)
-            .with('0/D525E3A8')
-            .and_return(true)
-        end
-
-        it_behaves_like 'replica is up to date', 'replica'
-      end
-
       context 'when database location is not set' do
         let(:job) { { 'job_id' => 'a180b47c-3fd6-41b8-81e9-34da61c3400e' } }
 
@@ -146,7 +132,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::SidekiqServerMiddleware, :clean_
       end
 
       context 'when WAL locations are present', :freeze_time do
-        let(:job) { { "retry" => 3, "job_id" => "a180b47c-3fd6-41b8-81e9-34da61c3400e", "database_replica_location" => "0/D525E3A8", "created_at" => Time.current.to_f - elapsed_time } }
+        let(:job) { { "retry" => 3, "job_id" => "a180b47c-3fd6-41b8-81e9-34da61c3400e", 'wal_locations' => wal_locations, "created_at" => Time.current.to_f - elapsed_time } }
 
         context 'when delay interval has not elapsed' do
           let(:elapsed_time) { described_class::MINIMUM_DELAY_INTERVAL - 0.3 }
@@ -192,7 +178,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::SidekiqServerMiddleware, :clean_
       include_examples 'stick to the primary', 'primary'
 
       context 'when delay interval has not elapsed', :freeze_time do
-        let(:job) { { "retry" => 3, "job_id" => "a180b47c-3fd6-41b8-81e9-34da61c3400e", 'database_replica_location' => '0/D525E3A8', "created_at" => Time.current.to_f - elapsed_time } }
+        let(:job) { { "retry" => 3, "job_id" => "a180b47c-3fd6-41b8-81e9-34da61c3400e", 'wal_locations' => wal_locations, "created_at" => Time.current.to_f - elapsed_time } }
         let(:elapsed_time) { described_class::MINIMUM_DELAY_INTERVAL - 0.3 }
 
         it 'does not sleep' do
@@ -235,7 +221,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::SidekiqServerMiddleware, :clean_
         end
 
         context 'when job is retried' do
-          let(:job) { { "retry" => 3, "job_id" => "a180b47c-3fd6-41b8-81e9-34da61c3400e", 'database_replica_location' => '0/D525E3A8', 'retry_count' => 0 } }
+          let(:job) { { "retry" => 3, "job_id" => "a180b47c-3fd6-41b8-81e9-34da61c3400e", 'wal_locations' => wal_locations, 'retry_count' => 0 } }
 
           context 'and replica still lagging behind' do
             include_examples 'stick to the primary', 'primary'

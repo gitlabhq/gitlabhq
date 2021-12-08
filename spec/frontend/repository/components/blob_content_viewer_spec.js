@@ -318,8 +318,14 @@ describe('Blob content viewer component', () => {
         repository: { empty },
       } = projectMock;
 
+      afterEach(() => {
+        delete gon.current_user_id;
+        delete gon.current_username;
+      });
+
       it('renders component', async () => {
         window.gon.current_user_id = 1;
+        window.gon.current_username = 'root';
 
         await createComponent({ pushCode, downloadCode, empty }, mount);
 
@@ -330,28 +336,34 @@ describe('Blob content viewer component', () => {
           deletePath: webPath,
           canPushCode: pushCode,
           canLock: true,
-          isLocked: false,
+          isLocked: true,
           emptyRepo: empty,
         });
       });
 
       it.each`
-        canPushCode | canDownloadCode | canLock
-        ${true}     | ${true}         | ${true}
-        ${false}    | ${true}         | ${false}
-        ${true}     | ${false}        | ${false}
-      `('passes the correct lock states', async ({ canPushCode, canDownloadCode, canLock }) => {
-        await createComponent(
-          {
-            pushCode: canPushCode,
-            downloadCode: canDownloadCode,
-            empty,
-          },
-          mount,
-        );
+        canPushCode | canDownloadCode | username   | canLock
+        ${true}     | ${true}         | ${'root'}  | ${true}
+        ${false}    | ${true}         | ${'root'}  | ${false}
+        ${true}     | ${false}        | ${'root'}  | ${false}
+        ${true}     | ${true}         | ${'peter'} | ${false}
+      `(
+        'passes the correct lock states',
+        async ({ canPushCode, canDownloadCode, username, canLock }) => {
+          gon.current_username = username;
 
-        expect(findBlobButtonGroup().props('canLock')).toBe(canLock);
-      });
+          await createComponent(
+            {
+              pushCode: canPushCode,
+              downloadCode: canDownloadCode,
+              empty,
+            },
+            mount,
+          );
+
+          expect(findBlobButtonGroup().props('canLock')).toBe(canLock);
+        },
+      );
 
       it('does not render if not logged in', async () => {
         isLoggedIn.mockReturnValueOnce(false);

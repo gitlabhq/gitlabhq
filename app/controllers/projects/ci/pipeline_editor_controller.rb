@@ -23,7 +23,7 @@ class Projects::Ci::PipelineEditorController < Projects::ApplicationController
   def setup_walkthrough_experiment
     experiment(:pipeline_editor_walkthrough, namespace: @project.namespace, sticky_to: current_user) do |e|
       e.candidate {}
-      e.record!
+      e.publish_to_database
     end
   end
 end

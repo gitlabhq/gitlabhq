@@ -7,7 +7,7 @@ import Diff from '~/diff';
 import GLForm from '~/gl_form';
 import LabelsSelect from '~/labels/labels_select';
 import MilestoneSelect from '~/milestones/milestone_select';
-import IssuableTemplateSelectors from '~/templates/issuable_template_selectors';
+import IssuableTemplateSelectors from '~/issuable/issuable_template_selectors';
 
 export default () => {
   new Diff();

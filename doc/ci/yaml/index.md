@@ -2128,9 +2128,7 @@ from the latest pipeline that completed successfully.
 
 **Possible inputs**:
 
-- `needs:project`: A full project path, including namespace and group. If the
-  project is in the same group or namespace, you can omit them from the `project`
-  keyword. For example: `project: group/project-name` or `project: project-name`.
+- `needs:project`: A full project path, including namespace and group.
 - `job`: The job to download artifacts from.
 - `ref`: The ref to download artifacts from.
 - `artifacts`: Must be `true` to download artifacts.

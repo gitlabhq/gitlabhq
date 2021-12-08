@@ -9,7 +9,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
   after_action :verify_known_sign_in
 
-  protect_from_forgery except: [:kerberos, :saml, :cas3, :failure], with: :exception, prepend: true
+  protect_from_forgery except: [:kerberos, :saml, :cas3, :failure] + AuthHelper.saml_providers, with: :exception, prepend: true
 
   feature_category :authentication_and_authorization
 

@@ -156,27 +156,23 @@ export const securityFeatures = [
     // https://gitlab.com/gitlab-org/gitlab/-/issues/331621
     canEnableByMergeRequest: true,
   },
-  ...(gon?.features?.configureIacScanningViaMr
-    ? [
-        {
-          name: SAST_IAC_NAME,
-          shortName: SAST_IAC_SHORT_NAME,
-          description: SAST_IAC_DESCRIPTION,
-          helpPath: SAST_IAC_HELP_PATH,
-          configurationHelpPath: SAST_IAC_CONFIG_HELP_PATH,
-          type: REPORT_TYPE_SAST_IAC,
+  {
+    name: SAST_IAC_NAME,
+    shortName: SAST_IAC_SHORT_NAME,
+    description: SAST_IAC_DESCRIPTION,
+    helpPath: SAST_IAC_HELP_PATH,
+    configurationHelpPath: SAST_IAC_CONFIG_HELP_PATH,
+    type: REPORT_TYPE_SAST_IAC,
 
-          // This field is currently hardcoded because SAST IaC is always available.
-          // It will eventually come from the Backend, the progress is tracked in
-          // https://gitlab.com/gitlab-org/gitlab/-/issues/331622
-          available: true,
+    // This field is currently hardcoded because SAST IaC is always available.
+    // It will eventually come from the Backend, the progress is tracked in
+    // https://gitlab.com/gitlab-org/gitlab/-/issues/331622
+    available: true,
 
-          // This field will eventually come from the backend, the progress is
-          // tracked in https://gitlab.com/gitlab-org/gitlab/-/issues/331621
-          canEnableByMergeRequest: true,
-        },
-      ]
-    : []),
+    // This field will eventually come from the backend, the progress is
+    // tracked in https://gitlab.com/gitlab-org/gitlab/-/issues/331621
+    canEnableByMergeRequest: true,
+  },
   {
     name: DAST_NAME,
     shortName: DAST_SHORT_NAME,
@@ -278,21 +274,17 @@ export const featureToMutationMap = {
       },
     }),
   },
-  ...(gon?.features?.configureIacScanningViaMr
-    ? {
-        [REPORT_TYPE_SAST_IAC]: {
-          mutationId: 'configureSastIac',
-          getMutationPayload: (projectPath) => ({
-            mutation: configureSastIacMutation,
-            variables: {
-              input: {
-                projectPath,
-              },
-            },
-          }),
+  [REPORT_TYPE_SAST_IAC]: {
+    mutationId: 'configureSastIac',
+    getMutationPayload: (projectPath) => ({
+      mutation: configureSastIacMutation,
+      variables: {
+        input: {
+          projectPath,
         },
-      }
-    : {}),
+      },
+    }),
+  },
   [REPORT_TYPE_SECRET_DETECTION]: {
     mutationId: 'configureSecretDetection',
     getMutationPayload: (projectPath) => ({

@@ -86,6 +86,17 @@ module AuthHelper
     auth_providers.select { |provider| form_based_provider?(provider) }
   end
 
+  def saml_providers
+    auth_providers.select { |provider| auth_strategy_class(provider) == 'OmniAuth::Strategies::SAML' }
+  end
+
+  def auth_strategy_class(provider)
+    config = Gitlab::Auth::OAuth::Provider.config_for(provider)
+    return if config.nil? || config['args'].blank?
+
+    config.args['strategy_class']
+  end
+
   def any_form_based_providers_enabled?
     form_based_providers.any? { |provider| form_enabled_for_sign_in?(provider) }
   end

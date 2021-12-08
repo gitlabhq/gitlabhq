@@ -16,7 +16,7 @@ import * as popovers from '~/popovers';
 import * as tooltips from '~/tooltips';
 import { initHeaderSearchApp } from '~/header_search';
 import initAlertHandler from './alert_handler';
-import { removeFlashClickListener } from './flash';
+import { addDismissFlashClickListener } from './flash';
 import initTodoToggle from './header';
 import initLayoutNav from './layout_nav';
 import { logHelloDeferred } from './lib/logger/hello_deferred';
@@ -259,7 +259,7 @@ if (flashContainer && flashContainer.children.length) {
   flashContainer
     .querySelectorAll('.flash-alert, .flash-notice, .flash-success')
     .forEach((flashEl) => {
-      removeFlashClickListener(flashEl);
+      addDismissFlashClickListener(flashEl);
     });
 }
 

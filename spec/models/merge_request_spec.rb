@@ -1648,6 +1648,9 @@ RSpec.describe MergeRequest, factory_default: :keep do
 
     it 'uses template from target project' do
       request = build(:merge_request, title: 'Fix everything')
+      request.compare_commits = [
+        double(safe_message: 'Commit message', gitaly_commit?: true, merge_commit?: false, description?: false)
+      ]
       subject.target_project.merge_commit_template = '%{title}'
 
       expect(request.default_merge_commit_message)

@@ -11,6 +11,10 @@ query getBlobInfo($projectPath: ID!, $filePath: String!, $ref: String!) {
       nodes {
         id
         path
+        user {
+          id
+          username
+        }
       }
     }
     repository {
