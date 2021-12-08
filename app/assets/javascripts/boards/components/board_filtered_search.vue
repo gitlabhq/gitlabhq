@@ -50,21 +50,21 @@ export default {
 
       if (authorUsername) {
         filteredSearchValue.push({
-          type: 'author_username',
+          type: 'author',
           value: { data: authorUsername, operator: '=' },
         });
       }
 
       if (assigneeUsername) {
         filteredSearchValue.push({
-          type: 'assignee_username',
+          type: 'assignee',
           value: { data: assigneeUsername, operator: '=' },
         });
       }
 
       if (types) {
         filteredSearchValue.push({
-          type: 'types',
+          type: 'type',
           value: { data: types, operator: '=' },
         });
       }
@@ -72,7 +72,7 @@ export default {
       if (labelName?.length) {
         filteredSearchValue.push(
           ...labelName.map((label) => ({
-            type: 'label_name',
+            type: 'label',
             value: { data: label, operator: '=' },
           })),
         );
@@ -101,7 +101,7 @@ export default {
 
       if (myReactionEmoji) {
         filteredSearchValue.push({
-          type: 'my_reaction_emoji',
+          type: 'my-reaction',
           value: { data: myReactionEmoji, operator: '=' },
         });
       }
@@ -115,14 +115,14 @@ export default {
 
       if (epicId) {
         filteredSearchValue.push({
-          type: 'epic_id',
+          type: 'epic',
           value: { data: epicId, operator: '=' },
         });
       }
 
       if (this.filterParams['not[authorUsername]']) {
         filteredSearchValue.push({
-          type: 'author_username',
+          type: 'author',
           value: { data: this.filterParams['not[authorUsername]'], operator: '!=' },
         });
       }
@@ -150,7 +150,7 @@ export default {
 
       if (this.filterParams['not[assigneeUsername]']) {
         filteredSearchValue.push({
-          type: 'assignee_username',
+          type: 'assignee',
           value: { data: this.filterParams['not[assigneeUsername]'], operator: '!=' },
         });
       }
@@ -158,7 +158,7 @@ export default {
       if (this.filterParams['not[labelName]']) {
         filteredSearchValue.push(
           ...this.filterParams['not[labelName]'].map((label) => ({
-            type: 'label_name',
+            type: 'label',
             value: { data: label, operator: '!=' },
           })),
         );
@@ -166,21 +166,21 @@ export default {
 
       if (this.filterParams['not[types]']) {
         filteredSearchValue.push({
-          type: 'types',
+          type: 'type',
           value: { data: this.filterParams['not[types]'], operator: '!=' },
         });
       }
 
       if (this.filterParams['not[epicId]']) {
         filteredSearchValue.push({
-          type: 'epic_id',
+          type: 'epic',
           value: { data: this.filterParams['not[epicId]'], operator: '!=' },
         });
       }
 
       if (this.filterParams['not[myReactionEmoji]']) {
         filteredSearchValue.push({
-          type: 'my_reaction_emoji',
+          type: 'my-reaction',
           value: { data: this.filterParams['not[myReactionEmoji]'], operator: '!=' },
         });
       }
@@ -281,16 +281,16 @@ export default {
 
       filters.forEach((filter) => {
         switch (filter.type) {
-          case 'author_username':
+          case 'author':
             filterParams.authorUsername = filter.value.data;
             break;
-          case 'assignee_username':
+          case 'assignee':
             filterParams.assigneeUsername = filter.value.data;
             break;
-          case 'types':
+          case 'type':
             filterParams.types = filter.value.data;
             break;
-          case 'label_name':
+          case 'label':
             labels.push(filter.value.data);
             break;
           case 'milestone':
@@ -302,10 +302,10 @@ export default {
           case 'weight':
             filterParams.weight = filter.value.data;
             break;
-          case 'epic_id':
+          case 'epic':
             filterParams.epicId = filter.value.data;
             break;
-          case 'my_reaction_emoji':
+          case 'my-reaction':
             filterParams.myReactionEmoji = filter.value.data;
             break;
           case 'release':

@@ -70,10 +70,13 @@ RSpec.describe Deployments::OlderDeploymentsDropService do
             let(:older_deployment) { create(:deployment, :created, environment: environment, deployable: build) }
             let(:build) { create(:ci_build, :manual) }
 
-            it 'does not drop any builds nor track the exception' do
-              expect(Gitlab::ErrorTracking).not_to receive(:track_exception)
+            it 'drops the older deployment' do
+              deployable = older_deployment.deployable
+              expect(deployable.failed?).to be_falsey
 
-              expect { subject }.not_to change { Ci::Build.failed.count }
+              subject
+
+              expect(deployable.reload.failed?).to be_truthy
             end
           end
 

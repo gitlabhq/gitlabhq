@@ -29,7 +29,8 @@ class CommitStatusPresenter < Gitlab::View::Presenter::Delegated
     no_matching_runner: 'No matching runner available',
     trace_size_exceeded: 'The job log size limit was reached',
     builds_disabled: 'The CI/CD is disabled for this project',
-    environment_creation_failure: 'This job could not be executed because it would create an environment with an invalid parameter.'
+    environment_creation_failure: 'This job could not be executed because it would create an environment with an invalid parameter.',
+    deployment_rejected: 'This deployment job was rejected.'
   }.freeze
 
   TROUBLESHOOTING_DOC = {

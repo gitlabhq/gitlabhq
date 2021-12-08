@@ -544,7 +544,7 @@ export const mockMoveData = {
 };
 
 export const mockEmojiToken = {
-  type: 'my_reaction_emoji',
+  type: 'my-reaction',
   icon: 'thumb-up',
   title: 'My-Reaction',
   unique: true,
@@ -556,7 +556,7 @@ export const mockTokens = (fetchLabels, fetchAuthors, fetchMilestones, hasEmoji)
   {
     icon: 'user',
     title: __('Assignee'),
-    type: 'assignee_username',
+    type: 'assignee',
     operators: [
       { value: '=', description: 'is' },
       { value: '!=', description: 'is not' },
@@ -569,7 +569,7 @@ export const mockTokens = (fetchLabels, fetchAuthors, fetchMilestones, hasEmoji)
   {
     icon: 'pencil',
     title: __('Author'),
-    type: 'author_username',
+    type: 'author',
     operators: [
       { value: '=', description: 'is' },
       { value: '!=', description: 'is not' },
@@ -583,7 +583,7 @@ export const mockTokens = (fetchLabels, fetchAuthors, fetchMilestones, hasEmoji)
   {
     icon: 'labels',
     title: __('Label'),
-    type: 'label_name',
+    type: 'label',
     operators: [
       { value: '=', description: 'is' },
       { value: '!=', description: 'is not' },
@@ -606,7 +606,7 @@ export const mockTokens = (fetchLabels, fetchAuthors, fetchMilestones, hasEmoji)
   {
     icon: 'issues',
     title: __('Type'),
-    type: 'types',
+    type: 'type',
     token: GlFilteredSearchToken,
     unique: true,
     options: [

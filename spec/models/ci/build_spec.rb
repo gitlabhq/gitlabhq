@@ -1994,6 +1994,14 @@ RSpec.describe Ci::Build do
 
           it { is_expected.not_to be_retryable }
         end
+
+        context 'when deployment is rejected' do
+          before do
+            build.drop!(:deployment_rejected)
+          end
+
+          it { is_expected.not_to be_retryable }
+        end
       end
     end
 

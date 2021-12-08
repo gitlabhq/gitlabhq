@@ -46,9 +46,10 @@ class Deployment < ApplicationRecord
   scope :for_project, -> (project_id) { where(project_id: project_id) }
   scope :for_projects, -> (projects) { where(project: projects) }
 
-  scope :visible, -> { where(status: %i[running success failed canceled]) }
+  scope :visible, -> { where(status: %i[running success failed canceled blocked]) }
   scope :stoppable, -> { where.not(on_stop: nil).where.not(deployable_id: nil).success }
   scope :active, -> { where(status: %i[created running]) }
+  scope :upcoming, -> { where(status: %i[blocked running]) }
   scope :older_than, -> (deployment) { where('deployments.id < ?', deployment.id) }
   scope :with_api_entity_associations, -> { preload({ deployable: { runner: [], tags: [], user: [], job_artifacts_archive: [] } }) }
 
@@ -62,6 +63,10 @@ class Deployment < ApplicationRecord
   state_machine :status, initial: :created do
     event :run do
       transition created: :running
+    end
+
+    event :block do
+      transition created: :blocked
     end
 
     event :succeed do
@@ -140,7 +145,8 @@ class Deployment < ApplicationRecord
     success: 2,
     failed: 3,
     canceled: 4,
-    skipped: 5
+    skipped: 5,
+    blocked: 6
   }
 
   def self.archivables_in(project, limit:)
@@ -391,6 +397,8 @@ class Deployment < ApplicationRecord
       cancel!
     when 'skipped'
       skip!
+    when 'blocked'
+      block!
     else
       raise ArgumentError, "The status #{status.inspect} is invalid"
     end

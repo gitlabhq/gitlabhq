@@ -765,6 +765,14 @@ RSpec.describe CommitStatus do
 
       it_behaves_like 'incrementing failure reason counter'
     end
+
+    context 'when status is manual' do
+      let(:commit_status) { create(:commit_status, :manual) }
+
+      it 'is able to be dropped' do
+        expect { commit_status.drop! }.to change { commit_status.status }.from('manual').to('failed')
+      end
+    end
   end
 
   describe 'ensure stage assignment' do

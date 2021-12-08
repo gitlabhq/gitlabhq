@@ -31,7 +31,7 @@ class Environment < ApplicationRecord
   has_one :last_visible_deployable, through: :last_visible_deployment, source: 'deployable', source_type: 'CommitStatus', disable_joins: true
   has_one :last_visible_pipeline, through: :last_visible_deployable, source: 'pipeline', disable_joins: true
 
-  has_one :upcoming_deployment, -> { running.distinct_on_environment }, class_name: 'Deployment', inverse_of: :environment
+  has_one :upcoming_deployment, -> { upcoming.distinct_on_environment }, class_name: 'Deployment', inverse_of: :environment
   has_one :latest_opened_most_severe_alert, -> { order_severity_with_open_prometheus_alert }, class_name: 'AlertManagement::Alert', inverse_of: :environment
 
   before_validation :generate_slug, if: ->(env) { env.slug.blank? }

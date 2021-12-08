@@ -80,7 +80,7 @@ export default {
         {
           icon: 'user',
           title: assignee,
-          type: 'assignee_username',
+          type: 'assignee',
           operators: OPERATOR_IS_AND_IS_NOT,
           token: AuthorToken,
           unique: true,
@@ -90,7 +90,7 @@ export default {
         {
           icon: 'pencil',
           title: author,
-          type: 'author_username',
+          type: 'author',
           operators: OPERATOR_IS_AND_IS_NOT,
           symbol: '@',
           token: AuthorToken,
@@ -101,7 +101,7 @@ export default {
         {
           icon: 'labels',
           title: label,
-          type: 'label_name',
+          type: 'label',
           operators: OPERATOR_IS_AND_IS_NOT,
           token: LabelToken,
           unique: false,
@@ -111,7 +111,7 @@ export default {
         ...(this.isSignedIn
           ? [
               {
-                type: 'my_reaction_emoji',
+                type: 'my-reaction',
                 title: TOKEN_TITLE_MY_REACTION,
                 icon: 'thumb-up',
                 token: EmojiToken,
@@ -146,7 +146,7 @@ export default {
         {
           icon: 'issues',
           title: type,
-          type: 'types',
+          type: 'type',
           token: GlFilteredSearchToken,
           unique: true,
           options: [

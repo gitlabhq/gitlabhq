@@ -960,8 +960,15 @@ An on-demand scan can be run in active or passive mode:
 
 ### View on-demand DAST scans
 
-To view running and completed on-demand DAST scans for a project, go to
+To view running completed and scheduled on-demand DAST scans for a project, go to
 **Security & Compliance > On-demand Scans** in the left sidebar.
+
+- To view both running and completed scans, select **All**.
+- To view running scans only, select **Running**.
+- To view finished scans, select **Finished**. A finished scan is a scan that either succeeded,
+  failed, or was canceled.
+- To view scheduled scans, select **Scheduled**. It shows on-demand scans that have a schedule
+  set up. Those are _not_ included in the **All** tab.
 
 ### Run an on-demand DAST scan
 

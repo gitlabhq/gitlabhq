@@ -18,7 +18,7 @@ describe('BoardFilteredSearch', () => {
     {
       icon: 'labels',
       title: __('Label'),
-      type: 'label_name',
+      type: 'label',
       operators: [
         { value: '=', description: 'is' },
         { value: '!=', description: 'is not' },
@@ -31,7 +31,7 @@ describe('BoardFilteredSearch', () => {
     {
       icon: 'pencil',
       title: __('Author'),
-      type: 'author_username',
+      type: 'author',
       operators: [
         { value: '=', description: 'is' },
         { value: '!=', description: 'is not' },
@@ -97,7 +97,7 @@ describe('BoardFilteredSearch', () => {
       createComponent({ props: { eeFilters: { labelName: ['label'] } } });
 
       expect(findFilteredSearch().props('initialFilterValue')).toEqual([
-        { type: 'label_name', value: { data: 'label', operator: '=' } },
+        { type: 'label', value: { data: 'label', operator: '=' } },
       ]);
     });
   });
@@ -117,11 +117,11 @@ describe('BoardFilteredSearch', () => {
 
     it('sets the url params to the correct results', async () => {
       const mockFilters = [
-        { type: 'author_username', value: { data: 'root', operator: '=' } },
-        { type: 'label_name', value: { data: 'label', operator: '=' } },
-        { type: 'label_name', value: { data: 'label2', operator: '=' } },
+        { type: 'author', value: { data: 'root', operator: '=' } },
+        { type: 'label', value: { data: 'label', operator: '=' } },
+        { type: 'label', value: { data: 'label2', operator: '=' } },
         { type: 'milestone', value: { data: 'New Milestone', operator: '=' } },
-        { type: 'types', value: { data: 'INCIDENT', operator: '=' } },
+        { type: 'type', value: { data: 'INCIDENT', operator: '=' } },
         { type: 'weight', value: { data: '2', operator: '=' } },
         { type: 'iteration', value: { data: '3341', operator: '=' } },
         { type: 'release', value: { data: 'v1.0.0', operator: '=' } },
@@ -147,8 +147,8 @@ describe('BoardFilteredSearch', () => {
 
     it('passes the correct props to FilterSearchBar', () => {
       expect(findFilteredSearch().props('initialFilterValue')).toEqual([
-        { type: 'author_username', value: { data: 'root', operator: '=' } },
-        { type: 'label_name', value: { data: 'label', operator: '=' } },
+        { type: 'author', value: { data: 'root', operator: '=' } },
+        { type: 'label', value: { data: 'label', operator: '=' } },
       ]);
     });
   });

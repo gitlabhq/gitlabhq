@@ -131,7 +131,7 @@ domain to the same website, for instance, `example.com` and `www.example.com`.
 
 They require:
 
-- A DNS A record for the domain.
+- A DNS `A` record for the domain.
 - A DNS `ALIAS`/`CNAME` record for the subdomain.
 - A DNS `TXT` record for each.
 
@@ -148,7 +148,7 @@ If you're using Cloudflare, check
 
 > **Notes**:
 >
-> - **Do not** use a CNAME record if you want to point your
+> - **Do not** use a `CNAME` record if you want to point your
   `domain.com` to your GitLab Pages site. Use an `A` record instead.
 > - **Do not** add any special chars after the default Pages
   domain. For example, don't point `subdomain.domain.com` to
@@ -232,7 +232,7 @@ If you use Cloudflare, you can redirect `www` to `domain.com`
 without adding both `www.domain.com` and `domain.com` to GitLab.
 
 To do so, you can use Cloudflare's page rules associated to a
-CNAME record to redirect `www.domain.com` to `domain.com`. You
+`CNAME` record to redirect `www.domain.com` to `domain.com`. You
 can use the following setup:
 
 1. In Cloudflare, create a DNS `A` record pointing `domain.com` to `35.185.44.232`.

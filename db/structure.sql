@@ -13410,6 +13410,24 @@ CREATE SEQUENCE deploy_tokens_id_seq
 
 ALTER SEQUENCE deploy_tokens_id_seq OWNED BY deploy_tokens.id;
 
+CREATE TABLE deployment_approvals (
+    id bigint NOT NULL,
+    deployment_id bigint NOT NULL,
+    user_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    status smallint NOT NULL
+);
+
+CREATE SEQUENCE deployment_approvals_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE deployment_approvals_id_seq OWNED BY deployment_approvals.id;
+
 CREATE TABLE deployment_clusters (
     deployment_id integer NOT NULL,
     cluster_id integer NOT NULL,
@@ -18696,7 +18714,9 @@ CREATE TABLE protected_environments (
     updated_at timestamp with time zone NOT NULL,
     name character varying NOT NULL,
     group_id bigint,
-    CONSTRAINT protected_environments_project_or_group_existence CHECK (((project_id IS NULL) <> (group_id IS NULL)))
+    required_approval_count integer DEFAULT 0 NOT NULL,
+    CONSTRAINT protected_environments_project_or_group_existence CHECK (((project_id IS NULL) <> (group_id IS NULL))),
+    CONSTRAINT protected_environments_required_approval_count_positive CHECK ((required_approval_count >= 0))
 );
 
 CREATE SEQUENCE protected_environments_id_seq
@@ -21517,6 +21537,8 @@ ALTER TABLE ONLY deploy_keys_projects ALTER COLUMN id SET DEFAULT nextval('deplo
 
 ALTER TABLE ONLY deploy_tokens ALTER COLUMN id SET DEFAULT nextval('deploy_tokens_id_seq'::regclass);
 
+ALTER TABLE ONLY deployment_approvals ALTER COLUMN id SET DEFAULT nextval('deployment_approvals_id_seq'::regclass);
+
 ALTER TABLE ONLY deployments ALTER COLUMN id SET DEFAULT nextval('deployments_id_seq'::regclass);
 
 ALTER TABLE ONLY description_versions ALTER COLUMN id SET DEFAULT nextval('description_versions_id_seq'::regclass);
@@ -23085,6 +23107,9 @@ ALTER TABLE ONLY deploy_keys_projects
 
 ALTER TABLE ONLY deploy_tokens
     ADD CONSTRAINT deploy_tokens_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY deployment_approvals
+    ADD CONSTRAINT deployment_approvals_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY deployment_clusters
     ADD CONSTRAINT deployment_clusters_pkey PRIMARY KEY (deployment_id);
@@ -25830,6 +25855,10 @@ CREATE UNIQUE INDEX index_deploy_tokens_on_token ON deploy_tokens USING btree (t
 CREATE INDEX index_deploy_tokens_on_token_and_expires_at_and_id ON deploy_tokens USING btree (token, expires_at, id) WHERE (revoked IS FALSE);
 
 CREATE UNIQUE INDEX index_deploy_tokens_on_token_encrypted ON deploy_tokens USING btree (token_encrypted);
+
+CREATE UNIQUE INDEX index_deployment_approvals_on_deployment_id_and_user_id ON deployment_approvals USING btree (deployment_id, user_id);
+
+CREATE INDEX index_deployment_approvals_on_user_id ON deployment_approvals USING btree (user_id);
 
 CREATE UNIQUE INDEX index_deployment_clusters_on_cluster_id_and_deployment_id ON deployment_clusters USING btree (cluster_id, deployment_id);
 
@@ -28974,6 +29003,9 @@ ALTER TABLE ONLY lists
 ALTER TABLE ONLY ci_unit_test_failures
     ADD CONSTRAINT fk_0f09856e1f FOREIGN KEY (build_id) REFERENCES ci_builds(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY deployment_approvals
+    ADD CONSTRAINT fk_0f58311058 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY project_pages_metadata
     ADD CONSTRAINT fk_0fd5b22688 FOREIGN KEY (pages_deployment_id) REFERENCES pages_deployments(id) ON DELETE SET NULL;
 
@@ -29081,6 +29113,9 @@ ALTER TABLE ONLY coverage_fuzzing_corpuses
 
 ALTER TABLE ONLY agent_group_authorizations
     ADD CONSTRAINT fk_2c9f941965 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY deployment_approvals
+    ADD CONSTRAINT fk_2d060dfc73 FOREIGN KEY (deployment_id) REFERENCES deployments(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY ci_freeze_periods
     ADD CONSTRAINT fk_2e02bbd1a6 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

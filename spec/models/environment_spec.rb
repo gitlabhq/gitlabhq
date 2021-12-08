@@ -947,6 +947,12 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching do
 
       it { is_expected.to eq(deployment) }
     end
+
+    context 'when environment has a blocked deployment' do
+      let!(:deployment) { create(:deployment, :blocked, environment: environment, project: project) }
+
+      it { is_expected.to eq(deployment) }
+    end
   end
 
   describe '#has_terminals?' do
