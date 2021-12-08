@@ -31,6 +31,11 @@ permission level, who added a new user, or who removed a user.
 - Track which users have access to a certain group of projects
   in GitLab, and who gave them that permission level.
 
+## Retention policy
+
+There is no retention policy in place for audit events.
+See the [Specify a retention period for audit events](https://gitlab.com/gitlab-org/gitlab/-/issues/8137) for more information.
+
 ## List of events
 
 There are two kinds of events logged:

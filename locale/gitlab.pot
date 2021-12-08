@@ -3416,6 +3416,9 @@ msgstr ""
 msgid "All groups and projects"
 msgstr ""
 
+msgid "All issues"
+msgstr ""
+
 msgid "All issues for this milestone are closed."
 msgstr ""
 

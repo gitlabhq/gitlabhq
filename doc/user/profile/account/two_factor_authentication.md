@@ -84,7 +84,7 @@ in a safe place.
 > - It's deployed behind a feature flag, disabled by default.
 > - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-fortiauthenticator-integration).
 
-You can use FortiAuthenticator as an OTP provider in GitLab. Users must exist in
+You can use FortiAuthenticator as a one-time password (OTP) provider in GitLab. Users must exist in
 both FortiAuthenticator and GitLab with the exact same username, and users must
 have FortiToken configured in FortiAuthenticator.
 
@@ -163,7 +163,7 @@ Feature.enable(:forti_authenticator, User.find(<user ID>))
 WARNING:
 This feature might not be available to you. Check the **version history** note above for details.
 
-You can use FortiToken Cloud as an OTP provider in GitLab. Users must exist in
+You can use FortiToken Cloud as a one-time password (OTP) provider in GitLab. Users must exist in
 both FortiToken Cloud and GitLab with the exact same username, and users must
 have FortiToken configured in FortiToken Cloud.
 
@@ -478,7 +478,7 @@ request a GitLab global administrator disable two-factor authentication for your
 
 - You need to take special care to that 2FA keeps working after
   [restoring a GitLab backup](../../../raketasks/backup_restore.md).
-- To ensure 2FA authorizes correctly with TOTP server, you may want to ensure
+- To ensure 2FA authorizes correctly with time-based one time passwords (TOTP) server, you may want to ensure
   your GitLab server's time is synchronized via a service like NTP. Otherwise,
   you may have cases where authorization always fails because of time differences.
 - The GitLab U2F implementation does _not_ work when the GitLab instance is accessed from

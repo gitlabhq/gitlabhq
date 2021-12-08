@@ -234,8 +234,7 @@ To enable or disable the banner:
 
 NOTE:
 An alternative [compliance solution](../../project/settings/index.md#compliance-pipeline-configuration)
-is available for Ultimate tier users on both SaaS and self-managed instances.
-We recommend this alternative solution for Ultimate-tier users because it provides greater flexibility,
+is available. We recommend this alternative solution because it provides greater flexibility,
 allowing required pipelines to be assigned to specific compliance framework labels.
 
 You can set a [CI/CD template](../../../ci/examples/index.md#cicd-templates)

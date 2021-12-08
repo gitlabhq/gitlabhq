@@ -1,11 +1,11 @@
 ---
-# Warning: gitlab.Acronyms
+# Warning: gitlab.Uppercase
 #
-# Checks for unexpanded acronyms.
+# Checks for use of all uppercase letters with unknown reason.
 #
-# For a list of all options, see https://errata-ai.gitbook.io/vale/getting-started/styles
+# For a list of all options, see https://docs.errata.ai/vale/styles.
 extends: conditional
-message: '"%s" has no definition.'
+message: "'%s' is uppercase. Use lowercase or `backticks` if possible. Otherwise add this word to the rule's exception list."
 link: https://about.gitlab.com/handbook/marketing/growth-marketing/content/editorial-team/#acronyms
 level: warning
 ignorecase: false
