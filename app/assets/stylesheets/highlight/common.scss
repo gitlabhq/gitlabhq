@@ -45,12 +45,12 @@
   }
 }
 
-@mixin line-number-hover($color) {
-  background-color: $color;
-  border-color: darken($color, 5%);
+@mixin line-number-hover {
+  background-color: $purple-100;
+  border-color: $purple-200;
 
   a {
-    color: darken($color, 15%);
+    color: $gray-600;
   }
 }
 

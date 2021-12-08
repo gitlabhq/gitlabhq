@@ -12,7 +12,8 @@ RSpec.describe MetricsServer do # rubocop:disable RSpec/FilePath
     let(:env) do
       {
         'METRICS_SERVER_TARGET' => 'sidekiq',
-        'GITLAB_CONFIG' => nil
+        'GITLAB_CONFIG' => nil,
+        'WIPE_METRICS_DIR' => 'false'
       }
     end
 
@@ -32,7 +33,7 @@ RSpec.describe MetricsServer do # rubocop:disable RSpec/FilePath
     let(:metrics_dir) { Dir.mktmpdir }
     let(:settings_double) { double(:settings, sidekiq_exporter: {}) }
 
-    subject(:metrics_server) { described_class.new('fake', metrics_dir)}
+    subject(:metrics_server) { described_class.new('fake', metrics_dir, true)}
 
     before do
       stub_env('prometheus_multiproc_dir', metrics_dir)
@@ -42,6 +43,7 @@ RSpec.describe MetricsServer do # rubocop:disable RSpec/FilePath
     end
 
     after do
+      ::Prometheus::CleanupMultiprocDirService.new.execute
       Dir.rmdir(metrics_dir)
     end
 
@@ -59,10 +61,24 @@ RSpec.describe MetricsServer do # rubocop:disable RSpec/FilePath
       metrics_server.start
     end
 
-    it 'removes any old metrics files' do
-      FileUtils.touch("#{metrics_dir}/remove_this.db")
+    context 'when wipe_metrics_dir is true' do
+      subject(:metrics_server) { described_class.new('fake', metrics_dir, true)}
 
-      expect { metrics_server.start }.to change { Dir.empty?(metrics_dir) }.from(false).to(true)
+      it 'removes any old metrics files' do
+        FileUtils.touch("#{metrics_dir}/remove_this.db")
+
+        expect { metrics_server.start }.to change { Dir.empty?(metrics_dir) }.from(false).to(true)
+      end
+    end
+
+    context 'when wipe_metrics_dir is false' do
+      subject(:metrics_server) { described_class.new('fake', metrics_dir, false)}
+
+      it 'does not remove any old metrics files' do
+        FileUtils.touch("#{metrics_dir}/remove_this.db")
+
+        expect { metrics_server.start }.not_to change { Dir.empty?(metrics_dir) }.from(false)
+      end
     end
 
     it 'starts a metrics server' do

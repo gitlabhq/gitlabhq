@@ -47,15 +47,6 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     push_frontend_feature_flag(:users_expanding_widgets_usage_data, @project, default_enabled: :yaml)
     push_frontend_feature_flag(:diff_settings_usage_data, default_enabled: :yaml)
     push_frontend_feature_flag(:diff_searching_usage_data, @project, default_enabled: :yaml)
-
-    experiment(:invite_members_in_comment, namespace: @project.root_ancestor) do |experiment_instance|
-      experiment_instance.exclude! unless helpers.can_admin_project_member?(@project)
-
-      experiment_instance.use {}
-      experiment_instance.try(:invite_member_link) {}
-
-      experiment_instance.track(:view, property: @project.root_ancestor.id.to_s)
-    end
   end
 
   before_action do

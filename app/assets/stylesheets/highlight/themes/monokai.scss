@@ -15,7 +15,6 @@ $monokai-line-empty-bg: #49483e;
 $monokai-line-empty-border: darken($monokai-line-empty-bg, 15%);
 $monokai-diff-border: #808080;
 $monokai-highlight-bg: #ffe792;
-$monokai-over-bg: #9f9ab5;
 $monokai-expanded-bg: #3e3e3e;
 $monokai-coverage: #a6e22e;
 $monokai-no-coverage: #fd971f;
@@ -172,14 +171,14 @@ $monokai-gh: #75715e;
     .diff-grid-left:hover,
     .diff-grid-right:hover {
       .diff-line-num:not(.empty-cell) {
-        @include line-number-hover($monokai-over-bg);
+        @include line-number-hover;
       }
     }
 
     .diff-line-num {
       &.is-over,
       &.hll:not(.empty-cell).is-over {
-        @include line-number-hover($monokai-over-bg);
+        @include line-number-hover;
       }
     }
 

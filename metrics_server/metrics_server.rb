@@ -1,16 +1,17 @@
 # frozen_string_literal: true
 
-require_relative '../config/bundler_setup'
+require_relative '../config/boot'
 
 require_relative 'dependencies'
 
 class MetricsServer # rubocop:disable Gitlab/NamespacedClass
   class << self
-    def spawn(target, gitlab_config: nil)
+    def spawn(target, gitlab_config: nil, wipe_metrics_dir: false)
       cmd = "#{Rails.root}/bin/metrics-server"
       env = {
         'METRICS_SERVER_TARGET' => target,
-        'GITLAB_CONFIG' => gitlab_config
+        'GITLAB_CONFIG' => gitlab_config,
+        'WIPE_METRICS_DIR' => wipe_metrics_dir.to_s
       }
 
       Process.spawn(env, cmd, err: $stderr, out: $stdout).tap do |pid|
@@ -19,9 +20,10 @@ class MetricsServer # rubocop:disable Gitlab/NamespacedClass
     end
   end
 
-  def initialize(target, metrics_dir)
+  def initialize(target, metrics_dir, wipe_metrics_dir)
     @target = target
     @metrics_dir = metrics_dir
+    @wipe_metrics_dir = wipe_metrics_dir
   end
 
   def start
@@ -30,7 +32,7 @@ class MetricsServer # rubocop:disable Gitlab/NamespacedClass
     end
 
     FileUtils.mkdir_p(@metrics_dir, mode: 0700)
-    ::Prometheus::CleanupMultiprocDirService.new.execute
+    ::Prometheus::CleanupMultiprocDirService.new.execute if @wipe_metrics_dir
 
     settings = Settings.monitoring.sidekiq_exporter
     exporter_class = "Gitlab::Metrics::Exporter::#{@target.camelize}Exporter".constantize

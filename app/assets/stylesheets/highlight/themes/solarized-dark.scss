@@ -19,7 +19,6 @@ $solarized-dark-line-color-new: #5a766c;
 $solarized-dark-line-color-old: #7a6c71;
 $solarized-dark-highlight: #094554;
 $solarized-dark-hll-bg: #174652;
-$solarized-dark-over-bg: #9f9ab5;
 $solarized-dark-expanded-bg: #010d10;
 $solarized-dark-coverage: #859900;
 $solarized-dark-no-coverage: #cb4b16;
@@ -151,7 +150,7 @@ $solarized-dark-il: #2aa198;
     .diff-grid-left:hover,
     .diff-grid-right:hover {
       .diff-line-num:not(.empty-cell) {
-        @include line-number-hover($solarized-dark-over-bg);
+        @include line-number-hover;
       }
     }
 
@@ -182,7 +181,7 @@ $solarized-dark-il: #2aa198;
     .diff-line-num {
       &.is-over,
       &.hll:not(.empty-cell).is-over {
-        @include line-number-hover($solarized-dark-over-bg);
+        @include line-number-hover;
       }
     }
 

@@ -20,7 +20,6 @@ $solarized-light-line-color-new: #a1a080;
 $solarized-light-line-color-old: #ad9186;
 $solarized-light-highlight: #eee8d5;
 $solarized-light-hll-bg: #ddd8c5;
-$solarized-light-over-bg: #ded7fc;
 $solarized-light-expanded-border: #d2cdbd;
 $solarized-light-expanded-bg: #ece6d4;
 $solarized-light-coverage: #859900;
@@ -171,7 +170,7 @@ $solarized-light-il: #2aa198;
     .diff-grid-left:hover,
     .diff-grid-right:hover {
       .diff-line-num:not(.empty-cell) {
-        @include line-number-hover($solarized-light-over-bg);
+        @include line-number-hover;
       }
     }
 
@@ -190,7 +189,7 @@ $solarized-light-il: #2aa198;
     .diff-line-num {
       &.is-over,
       &.hll:not(.empty-cell).is-over {
-        @include line-number-hover($solarized-light-over-bg);
+        @include line-number-hover;
       }
     }
 

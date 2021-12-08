@@ -43,7 +43,6 @@
   }
 
   // Diff line
-  $none-over-bg: #ded7fc;
   $none-expanded-border: #e0e0e0;
   $none-expanded-bg: #e0e0e0;
 
@@ -69,7 +68,7 @@
     .diff-grid-left:hover,
     .diff-grid-right:hover {
       .diff-line-num:not(.empty-cell) {
-        @include line-number-hover($none-over-bg);
+        @include line-number-hover;
       }
     }
 
@@ -88,7 +87,7 @@
 
       &.is-over,
       &.hll:not(.empty-cell).is-over {
-        @include line-number-hover($none-over-bg);
+        @include line-number-hover;
       }
 
       &.hll:not(.empty-cell) {

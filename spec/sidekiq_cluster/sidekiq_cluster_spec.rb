@@ -13,6 +13,8 @@ RSpec.describe Gitlab::SidekiqCluster do # rubocop:disable RSpec/FilePath
         out: $stdout
       }
 
+      expect(Bundler).to receive(:with_original_env).and_call_original.twice
+
       expect(Process).to receive(:spawn).ordered.with({
           "ENABLE_SIDEKIQ_CLUSTER" => "1",
           "SIDEKIQ_WORKER_ID" => "0"

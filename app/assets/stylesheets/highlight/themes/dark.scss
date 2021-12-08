@@ -22,7 +22,6 @@ $dark-highlight-bg: #ffe792;
 $dark-highlight-color: $black;
 $dark-pre-hll-bg: #373b41;
 $dark-hll-bg: #373b41;
-$dark-over-bg: #9f9ab5;
 $dark-expanded-bg: #3e3e3e;
 $dark-coverage: #b3e841;
 $dark-no-coverage: #ff4f33;
@@ -93,7 +92,7 @@ $dark-il: #de935f;
   .file-line-num {
     @include line-number-link($dark-line-num-color);
   }
-  
+
   .line-numbers,
   .diff-line-num {
     background-color: $dark-main-bg;
@@ -171,14 +170,14 @@ $dark-il: #de935f;
     .diff-grid-left:hover,
     .diff-grid-right:hover {
       .diff-line-num:not(.empty-cell) {
-        @include line-number-hover($dark-over-bg);
+        @include line-number-hover;
       }
     }
 
     .diff-line-num {
       &.is-over,
       &.hll:not(.empty-cell).is-over {
-        @include line-number-hover($dark-over-bg);
+        @include line-number-hover;
       }
     }
 

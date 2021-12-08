@@ -8,8 +8,9 @@ begin
   raise "Required: METRICS_SERVER_TARGET=[sidekiq]" unless target == 'sidekiq'
 
   metrics_dir = ENV["prometheus_multiproc_dir"] || File.absolute_path("tmp/prometheus_multiproc_dir/#{target}")
+  wipe_metrics_dir = Gitlab::Utils.to_boolean(ENV['WIPE_METRICS_DIR']) || false
 
   # Re-raise exceptions in threads on the main thread.
   Thread.abort_on_exception = true
-  MetricsServer.new(target, metrics_dir).start
+  MetricsServer.new(target, metrics_dir, wipe_metrics_dir).start
 end

@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require_relative 'dependencies'
 require_relative '../lib/gitlab/process_management'
 
 module Gitlab
@@ -67,14 +66,19 @@ module Gitlab
         return
       end
 
-      pid = Process.spawn(
-        { 'ENABLE_SIDEKIQ_CLUSTER' => '1',
-          'SIDEKIQ_WORKER_ID' => worker_id.to_s },
-        *cmd,
-        pgroup: true,
-        err: $stderr,
-        out: $stdout
-      )
+      # We need to remove Bundler specific env vars, since otherwise the
+      # child process will think we are passing an alternative Gemfile
+      # and will clear and reset LOAD_PATH.
+      pid = Bundler.with_original_env do
+        Process.spawn(
+          { 'ENABLE_SIDEKIQ_CLUSTER' => '1',
+            'SIDEKIQ_WORKER_ID' => worker_id.to_s },
+          *cmd,
+          pgroup: true,
+          err: $stderr,
+          out: $stdout
+        )
+      end
 
       ProcessManagement.wait_async(pid)
 

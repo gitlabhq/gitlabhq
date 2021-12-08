@@ -70,9 +70,15 @@ module Gitlab
     end
 
     def self.process_alive?(pid)
+      return false if pid.nil?
+
       # Signal 0 tests whether the process exists and we have access to send signals
       # but is otherwise a noop (doesn't actually send a signal to the process)
       signal(pid, 0)
+    end
+
+    def self.process_died?(pid)
+      !process_alive?(pid)
     end
 
     def self.write_pid(path)

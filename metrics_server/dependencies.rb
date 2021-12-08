@@ -13,6 +13,7 @@ require 'rack'
 require_relative 'settings_overrides'
 
 require_relative '../lib/gitlab/daemon'
+require_relative '../lib/gitlab/utils'
 require_relative '../lib/gitlab/utils/strong_memoize'
 require_relative '../lib/prometheus/cleanup_multiproc_dir_service'
 require_relative '../lib/gitlab/metrics/prometheus'

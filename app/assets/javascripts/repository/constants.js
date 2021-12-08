@@ -23,3 +23,5 @@ export const I18N_COMMIT_DATA_FETCH_ERROR = __('An error occurred while fetching
 
 export const PDF_MAX_FILE_SIZE = 10000000; // 10 MB
 export const PDF_MAX_PAGE_LIMIT = 50;
+
+export const ROW_APPEAR_DELAY = 150;

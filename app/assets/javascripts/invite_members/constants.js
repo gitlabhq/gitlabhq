@@ -2,7 +2,6 @@ import { __, s__ } from '~/locale';
 
 export const SEARCH_DELAY = 200;
 
-export const INVITE_MEMBERS_IN_COMMENT = 'invite_members_in_comment';
 export const INVITE_MEMBERS_FOR_TASK = {
   minimum_access_level: 30,
   name: 'invite_members_for_task',

@@ -20,7 +20,6 @@ import { BV_SHOW_MODAL } from '~/lib/utils/constants';
 import { getParameterValues } from '~/lib/utils/url_utility';
 import { sprintf } from '~/locale';
 import {
-  INVITE_MEMBERS_IN_COMMENT,
   GROUP_FILTERS,
   USERS_FILTER_ALL,
   INVITE_MEMBERS_FOR_TASK,
@@ -254,11 +253,6 @@ export default {
         this.submitInviteMembers();
       }
     },
-    trackInvite() {
-      if (this.source === INVITE_MEMBERS_IN_COMMENT) {
-        this.trackEvent(INVITE_MEMBERS_IN_COMMENT, 'comment_invite_success');
-      }
-    },
     trackinviteMembersForTask() {
       const label = 'selected_tasks_to_be_done';
       const property = this.selectedTasksToBeDone.join(',');
@@ -312,7 +306,6 @@ export default {
 
         promises.push(apiAddByUserId(this.id, this.addByUserIdPostData(usersToAddById)));
       }
-      this.trackInvite();
       this.trackinviteMembersForTask();
 
       Promise.all(promises)

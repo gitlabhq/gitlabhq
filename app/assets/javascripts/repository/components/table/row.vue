@@ -13,7 +13,7 @@ import {
 import { escapeRegExp } from 'lodash';
 import paginatedTreeQuery from 'shared_queries/repository/paginated_tree.query.graphql';
 import { escapeFileUrl } from '~/lib/utils/url_utility';
-import { TREE_PAGE_SIZE } from '~/repository/constants';
+import { TREE_PAGE_SIZE, ROW_APPEAR_DELAY } from '~/repository/constants';
 import FileIcon from '~/vue_shared/components/file_icon.vue';
 import TimeagoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
@@ -128,6 +128,7 @@ export default {
     return {
       commit: null,
       hasRowAppeared: false,
+      delayedRowAppear: null,
     };
   },
   computed: {
@@ -202,14 +203,19 @@ export default {
     rowAppeared() {
       this.hasRowAppeared = true;
 
+      if (this.commitInfo) {
+        return;
+      }
+
       if (this.glFeatures.lazyLoadCommits) {
-        this.$emit('row-appear', {
-          rowNumber: this.rowNumber,
-          hasCommit: Boolean(this.commitInfo),
-        });
+        this.delayedRowAppear = setTimeout(
+          () => this.$emit('row-appear', this.rowNumber),
+          ROW_APPEAR_DELAY,
+        );
       }
     },
     rowDisappeared() {
+      clearTimeout(this.delayedRowAppear);
       this.hasRowAppeared = false;
     },
   },

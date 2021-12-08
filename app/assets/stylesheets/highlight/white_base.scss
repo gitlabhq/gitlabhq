@@ -9,7 +9,6 @@ $white-code-color: $gl-text-color;
 $white-highlight: #fafe3d;
 $white-pre-hll-bg: #f8eec7;
 $white-hll-bg: #f8f8f8;
-$white-over-bg: #ded7fc;
 $white-expanded-border: #e0e0e0;
 $white-expanded-bg: #f7f7f7;
 $white-c: #998;
@@ -131,7 +130,7 @@ pre.code,
   .diff-grid-left:hover,
   .diff-grid-right:hover {
     .diff-line-num:not(.empty-cell):not(.conflict_marker_their):not(.conflict_marker_our) {
-      @include line-number-hover($white-over-bg);
+      @include line-number-hover;
     }
   }
 
@@ -156,7 +155,7 @@ pre.code,
 
     &.is-over,
     &.hll:not(.empty-cell).is-over {
-      @include line-number-hover($white-over-bg);
+      @include line-number-hover;
     }
 
     &.hll:not(.empty-cell) {

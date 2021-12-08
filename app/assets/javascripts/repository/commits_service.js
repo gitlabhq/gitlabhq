@@ -52,14 +52,9 @@ export const loadCommits = async (projectPath, path, ref, offset) => {
   }
 
   // We fetch in batches of 25, so this ensures we don't refetch
-  Array.from(Array(COMMIT_BATCH_SIZE)).forEach((_, i) => {
-    addRequestedOffset(offset - i);
-    addRequestedOffset(offset + i);
-  });
+  Array.from(Array(COMMIT_BATCH_SIZE)).forEach((_, i) => addRequestedOffset(offset + i));
 
-  // Since a user could scroll either up or down, we want to support lazy loading in both directions
-  const commitsBatchUp = await fetchData(projectPath, path, ref, offset - COMMIT_BATCH_SIZE);
-  const commitsBatchDown = await fetchData(projectPath, path, ref, offset);
+  const commits = await fetchData(projectPath, path, ref, offset);
 
-  return commitsBatchUp.concat(commitsBatchDown);
+  return commits;
 };

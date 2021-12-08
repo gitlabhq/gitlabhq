@@ -29,7 +29,7 @@ RSpec.describe 'bin/metrics-server', :aggregate_failures do
 
       config_file.write(YAML.dump(config))
       config_file.close
-      @pid = MetricsServer.spawn('sidekiq', gitlab_config: config_file.path)
+      @pid = MetricsServer.spawn('sidekiq', gitlab_config: config_file.path, wipe_metrics_dir: true)
     end
 
     after do

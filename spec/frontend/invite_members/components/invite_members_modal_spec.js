@@ -17,7 +17,6 @@ import InviteMembersModal from '~/invite_members/components/invite_members_modal
 import ModalConfetti from '~/invite_members/components/confetti.vue';
 import MembersTokenSelect from '~/invite_members/components/members_token_select.vue';
 import {
-  INVITE_MEMBERS_IN_COMMENT,
   INVITE_MEMBERS_FOR_TASK,
   CANCEL_BUTTON_TEXT,
   INVITE_BUTTON_TEXT,
@@ -746,7 +745,6 @@ describe('InviteMembersModal', () => {
           wrapper.vm.$toast = { show: jest.fn() };
           jest.spyOn(Api, 'inviteGroupMembersByEmail').mockResolvedValue({ data: postData });
           jest.spyOn(Api, 'addGroupMembersByUserId').mockResolvedValue({ data: postData });
-          jest.spyOn(wrapper.vm, 'trackInvite');
         });
 
         describe('when triggered from regular mounting', () => {
@@ -862,31 +860,6 @@ describe('InviteMembersModal', () => {
 
         wrapper.vm.$toast = { show: jest.fn() };
         jest.spyOn(Api, 'inviteGroupMembersByEmail').mockResolvedValue({});
-      });
-
-      it('tracks the invite', () => {
-        eventHub.$emit('openModal', { inviteeType: 'members', source: INVITE_MEMBERS_IN_COMMENT });
-
-        clickInviteButton();
-
-        expect(ExperimentTracking).toHaveBeenCalledWith(INVITE_MEMBERS_IN_COMMENT);
-        expect(ExperimentTracking.prototype.event).toHaveBeenCalledWith('comment_invite_success');
-      });
-
-      it('does not track invite for unknown source', () => {
-        eventHub.$emit('openModal', { inviteeType: 'members', source: 'unknown' });
-
-        clickInviteButton();
-
-        expect(ExperimentTracking).not.toHaveBeenCalledWith(INVITE_MEMBERS_IN_COMMENT);
-      });
-
-      it('does not track invite undefined source', () => {
-        eventHub.$emit('openModal', { inviteeType: 'members' });
-
-        clickInviteButton();
-
-        expect(ExperimentTracking).not.toHaveBeenCalledWith(INVITE_MEMBERS_IN_COMMENT);
       });
 
       it('tracks the view for learn_gitlab source', () => {

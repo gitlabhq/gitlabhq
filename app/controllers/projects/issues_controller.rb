@@ -52,15 +52,6 @@ class Projects::IssuesController < Projects::ApplicationController
     push_frontend_feature_flag(:confidential_notes, @project, default_enabled: :yaml)
     push_frontend_feature_flag(:issue_assignees_widget, @project, default_enabled: :yaml)
     push_frontend_feature_flag(:paginated_issue_discussions, @project, default_enabled: :yaml)
-
-    experiment(:invite_members_in_comment, namespace: @project.root_ancestor) do |experiment_instance|
-      experiment_instance.exclude! unless helpers.can_admin_project_member?(@project)
-
-      experiment_instance.use {}
-      experiment_instance.try(:invite_member_link) {}
-
-      experiment_instance.track(:view, property: @project.root_ancestor.id.to_s)
-    end
   end
 
   around_action :allow_gitaly_ref_name_caching, only: [:discussions]
