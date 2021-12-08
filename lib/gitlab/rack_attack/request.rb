@@ -139,14 +139,12 @@ module Gitlab
 
       def throttle_unauthenticated_files_api?
         files_api_path? &&
-        Feature.enabled?(:files_api_throttling, default_enabled: :yaml) &&
         Gitlab::Throttle.settings.throttle_unauthenticated_files_api_enabled &&
         unauthenticated?
       end
 
       def throttle_authenticated_files_api?
         files_api_path? &&
-        Feature.enabled?(:files_api_throttling, default_enabled: :yaml) &&
         Gitlab::Throttle.settings.throttle_authenticated_files_api_enabled
       end
 

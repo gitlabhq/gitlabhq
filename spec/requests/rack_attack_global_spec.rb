@@ -720,19 +720,6 @@ RSpec.describe 'Rack Attack global throttles', :use_clean_rails_memory_store_cac
           expect_rejection { do_request }
         end
 
-        context 'when feature flag is off' do
-          before do
-            stub_feature_flags(files_api_throttling: false)
-          end
-
-          it 'allows requests over the rate limit' do
-            (1 + requests_per_period).times do
-              do_request
-              expect(response).to have_gitlab_http_status(:ok)
-            end
-          end
-        end
-
         context 'when unauthenticated api throttle is lower' do
           before do
             settings_to_set[:throttle_unauthenticated_api_requests_per_period] = 0
@@ -815,19 +802,6 @@ RSpec.describe 'Rack Attack global throttles', :use_clean_rails_memory_store_cac
               end
 
               expect_rejection { do_request }
-            end
-          end
-
-          context 'when feature flag is off' do
-            before do
-              stub_feature_flags(files_api_throttling: false)
-            end
-
-            it 'allows requests over the rate limit' do
-              (1 + requests_per_period).times do
-                do_request
-                expect(response).to have_gitlab_http_status(:ok)
-              end
             end
           end
         end

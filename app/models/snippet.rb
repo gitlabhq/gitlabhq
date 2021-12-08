@@ -197,6 +197,13 @@ class Snippet < ApplicationRecord
       Snippet.find_by(id: id, project: project)
     end
 
+    def find_by_project_title_trunc_created_at(project, title, created_at)
+      where(project: project, title: title)
+        .find_by(
+          "date_trunc('second', created_at at time zone :tz) at time zone :tz = :created_at",
+          tz: created_at.zone, created_at: created_at)
+    end
+
     def max_file_limit
       MAX_FILE_COUNT
     end

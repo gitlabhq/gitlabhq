@@ -7,13 +7,8 @@ type: reference
 
 # Files API rate limits **(FREE SELF)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68561) in GitLab 14.3.
-
-FLAG:
-On self-managed GitLab, by default this feature is not available. To make it
-available, ask an administrator to [enable the `files_api_throttling` flag](../../../administration/feature_flags.md).
-On GitLab.com, this feature is available but can be configured by GitLab.com
-administrators only. The feature is not ready for production use.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68561) in GitLab 14.3.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/75918) in GitLab 14.6. [Feature flag files_api_throttling](https://gitlab.com/gitlab-org/gitlab/-/issues/338903) removed.
 
 The [Repository files API](../../../api/repository_files.md) enables you to
 fetch, create, update, and delete files in your repository. To improve the security
@@ -29,10 +24,9 @@ the general user and IP rate limits for requests to the
 and IP rate limits already in place, and increase or decrease the rate limits
 for the Files API. No other new features are provided by this override.
 
-Prerequisites:
+Prerequisite:
 
 - You must have the Administrator role for your instance.
-- The `files_api_throttling` feature flag must be enabled.
 
 To override the general user and IP rate limits for requests to the Repository files API:
 

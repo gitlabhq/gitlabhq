@@ -13,8 +13,7 @@
         = sprite_icon('tag')
         = @tag.name
       - if protected_tag?(@project, @tag)
-        %span.badge.badge-success
-          = s_('TagsPage|protected')
+        = gl_badge_tag s_('TagsPage|protected'), variant: :success
 
     - if user
       = link_to user_path(user) do

@@ -73,6 +73,10 @@ export const mockPipelineResponse = {
                             __typename: 'CiBuildNeedConnection',
                             nodes: [],
                           },
+                          previousStageJobsOrNeeds: {
+                            __typename: 'CiJobConnection',
+                            nodes: [],
+                          },
                         },
                       ],
                     },
@@ -116,6 +120,10 @@ export const mockPipelineResponse = {
                           },
                           needs: {
                             __typename: 'CiBuildNeedConnection',
+                            nodes: [],
+                          },
+                          previousStageJobsOrNeeds: {
+                            __typename: 'CiJobConnection',
                             nodes: [],
                           },
                         },
@@ -163,6 +171,10 @@ export const mockPipelineResponse = {
                             __typename: 'CiBuildNeedConnection',
                             nodes: [],
                           },
+                          previousStageJobsOrNeeds: {
+                            __typename: 'CiJobConnection',
+                            nodes: [],
+                          },
                         },
                       ],
                     },
@@ -208,6 +220,10 @@ export const mockPipelineResponse = {
                             __typename: 'CiBuildNeedConnection',
                             nodes: [],
                           },
+                          previousStageJobsOrNeeds: {
+                            __typename: 'CiJobConnection',
+                            nodes: [],
+                          },
                         },
                         {
                           __typename: 'CiJob',
@@ -235,6 +251,10 @@ export const mockPipelineResponse = {
                             __typename: 'CiBuildNeedConnection',
                             nodes: [],
                           },
+                          previousStageJobsOrNeeds: {
+                            __typename: 'CiJobConnection',
+                            nodes: [],
+                          },
                         },
                         {
                           __typename: 'CiJob',
@@ -260,6 +280,10 @@ export const mockPipelineResponse = {
                           },
                           needs: {
                             __typename: 'CiBuildNeedConnection',
+                            nodes: [],
+                          },
+                          previousStageJobsOrNeeds: {
+                            __typename: 'CiJobConnection',
                             nodes: [],
                           },
                         },
@@ -320,6 +344,27 @@ export const mockPipelineResponse = {
                           },
                           needs: {
                             __typename: 'CiBuildNeedConnection',
+                            nodes: [
+                              {
+                                __typename: 'CiBuildNeed',
+                                id: '37',
+                                name: 'build_c',
+                              },
+                              {
+                                __typename: 'CiBuildNeed',
+                                id: '38',
+                                name: 'build_b',
+                              },
+                              {
+                                __typename: 'CiBuildNeed',
+                                id: '39',
+                                name:
+                                  'build_a_nlfjkdnlvskfnksvjknlfdjvlvnjdkjdf_nvjkenjkrlngjeknjkl',
+                              },
+                            ],
+                          },
+                          previousStageJobsOrNeeds: {
+                            __typename: 'CiJobConnection',
                             nodes: [
                               {
                                 __typename: 'CiBuildNeed',
@@ -411,6 +456,37 @@ export const mockPipelineResponse = {
                               },
                             ],
                           },
+                          previousStageJobsOrNeeds: {
+                            __typename: 'CiJobConnection',
+                            nodes: [
+                              {
+                                __typename: 'CiBuildNeed',
+                                id: '45',
+                                name: 'build_d 3/3',
+                              },
+                              {
+                                __typename: 'CiBuildNeed',
+                                id: '46',
+                                name: 'build_d 2/3',
+                              },
+                              {
+                                __typename: 'CiBuildNeed',
+                                id: '47',
+                                name: 'build_d 1/3',
+                              },
+                              {
+                                __typename: 'CiBuildNeed',
+                                id: '48',
+                                name: 'build_b',
+                              },
+                              {
+                                __typename: 'CiBuildNeed',
+                                id: '49',
+                                name:
+                                  'build_a_nlfjkdnlvskfnksvjknlfdjvlvnjdkjdf_nvjkenjkrlngjeknjkl',
+                              },
+                            ],
+                          },
                         },
                         {
                           __typename: 'CiJob',
@@ -436,6 +512,37 @@ export const mockPipelineResponse = {
                           },
                           needs: {
                             __typename: 'CiBuildNeedConnection',
+                            nodes: [
+                              {
+                                __typename: 'CiBuildNeed',
+                                id: '52',
+                                name: 'build_d 3/3',
+                              },
+                              {
+                                __typename: 'CiBuildNeed',
+                                id: '53',
+                                name: 'build_d 2/3',
+                              },
+                              {
+                                __typename: 'CiBuildNeed',
+                                id: '54',
+                                name: 'build_d 1/3',
+                              },
+                              {
+                                __typename: 'CiBuildNeed',
+                                id: '55',
+                                name: 'build_b',
+                              },
+                              {
+                                __typename: 'CiBuildNeed',
+                                id: '56',
+                                name:
+                                  'build_a_nlfjkdnlvskfnksvjknlfdjvlvnjdkjdf_nvjkenjkrlngjeknjkl',
+                              },
+                            ],
+                          },
+                          previousStageJobsOrNeeds: {
+                            __typename: 'CiJobConnection',
                             nodes: [
                               {
                                 __typename: 'CiBuildNeed',
@@ -503,6 +610,10 @@ export const mockPipelineResponse = {
                             __typename: 'CiBuildNeedConnection',
                             nodes: [],
                           },
+                          previousStageJobsOrNeeds: {
+                            __typename: 'CiJobConnection',
+                            nodes: [],
+                          },
                         },
                       ],
                     },
@@ -539,6 +650,16 @@ export const mockPipelineResponse = {
                           },
                           needs: {
                             __typename: 'CiBuildNeedConnection',
+                            nodes: [
+                              {
+                                __typename: 'CiBuildNeed',
+                                id: '65',
+                                name: 'build_b',
+                              },
+                            ],
+                          },
+                          previousStageJobsOrNeeds: {
+                            __typename: 'CiJobConnection',
                             nodes: [
                               {
                                 __typename: 'CiBuildNeed',
@@ -718,6 +839,10 @@ export const wrappedPipelineReturn = {
                           scheduledAt: null,
                           needs: {
                             __typename: 'CiBuildNeedConnection',
+                            nodes: [],
+                          },
+                          previousStageJobsOrNeeds: {
+                            __typename: 'CiJobConnection',
                             nodes: [],
                           },
                           status: {

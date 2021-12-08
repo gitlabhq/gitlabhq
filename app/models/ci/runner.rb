@@ -60,8 +60,8 @@ module Ci
 
     before_save :ensure_token
 
-    scope :active, -> { where(active: true) }
-    scope :paused, -> { where(active: false) }
+    scope :active, -> (value = true) { where(active: value) }
+    scope :paused, -> { active(false) }
     scope :online, -> { where('contacted_at > ?', online_contact_time_deadline) }
     scope :recent, -> { where('ci_runners.created_at >= :date OR ci_runners.contacted_at >= :date', date: stale_deadline) }
     scope :stale, -> { where('ci_runners.created_at < :date AND (ci_runners.contacted_at IS NULL OR ci_runners.contacted_at < :date)', date: stale_deadline) }

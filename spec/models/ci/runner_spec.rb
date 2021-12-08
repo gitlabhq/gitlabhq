@@ -302,6 +302,44 @@ RSpec.describe Ci::Runner do
     it { is_expected.to eq([runner1, runner3, runner4])}
   end
 
+  describe '.active' do
+    subject { described_class.active(active_value) }
+
+    let!(:runner1) { create(:ci_runner, :instance, active: false) }
+    let!(:runner2) { create(:ci_runner, :instance) }
+
+    context 'with active_value set to false' do
+      let(:active_value) { false }
+
+      it 'returns inactive runners' do
+        is_expected.to match_array([runner1])
+      end
+    end
+
+    context 'with active_value set to true' do
+      let(:active_value) { true }
+
+      it 'returns active runners' do
+        is_expected.to match_array([runner2])
+      end
+    end
+  end
+
+  describe '.paused' do
+    before do
+      expect(described_class).to receive(:active).with(false).and_call_original
+    end
+
+    subject { described_class.paused }
+
+    let!(:runner1) { create(:ci_runner, :instance, active: false) }
+    let!(:runner2) { create(:ci_runner, :instance) }
+
+    it 'returns inactive runners' do
+      is_expected.to match_array([runner1])
+    end
+  end
+
   describe '.stale' do
     subject { described_class.stale }
 

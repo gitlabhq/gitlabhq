@@ -35,6 +35,10 @@ module BulkImports
             pipeline: BulkImports::Projects::Pipelines::SnippetsPipeline,
             stage: 3
           },
+          snippets_repository: {
+            pipeline: BulkImports::Projects::Pipelines::SnippetsRepositoryPipeline,
+            stage: 4
+          },
           boards: {
             pipeline: BulkImports::Common::Pipelines::BoardsPipeline,
             stage: 4

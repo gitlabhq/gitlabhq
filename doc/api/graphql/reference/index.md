@@ -370,6 +370,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="queryrunnersactive"></a>`active` | [`Boolean`](#boolean) | Filter runners by active (true) or paused (false) status. |
 | <a id="queryrunnerssearch"></a>`search` | [`String`](#string) | Filter by full token or partial text in description field. |
 | <a id="queryrunnerssort"></a>`sort` | [`CiRunnerSort`](#cirunnersort) | Sort order of results. |
 | <a id="queryrunnersstatus"></a>`status` | [`CiRunnerStatus`](#cirunnerstatus) | Filter runners by status. |
@@ -10917,6 +10918,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="grouprunnersactive"></a>`active` | [`Boolean`](#boolean) | Filter runners by active (true) or paused (false) status. |
 | <a id="grouprunnersmembership"></a>`membership` | [`RunnerMembershipFilter`](#runnermembershipfilter) | Control which runners to include in the results. |
 | <a id="grouprunnerssearch"></a>`search` | [`String`](#string) | Filter by full token or partial text in description field. |
 | <a id="grouprunnerssort"></a>`sort` | [`CiRunnerSort`](#cirunnersort) | Sort order of results. |
@@ -15312,6 +15314,7 @@ Represents a vulnerability.
 | <a id="vulnerabilityconfirmedat"></a>`confirmedAt` | [`Time`](#time) | Timestamp of when the vulnerability state was changed to confirmed. |
 | <a id="vulnerabilityconfirmedby"></a>`confirmedBy` | [`UserCore`](#usercore) | User that confirmed the vulnerability. |
 | <a id="vulnerabilitydescription"></a>`description` | [`String`](#string) | Description of the vulnerability. |
+| <a id="vulnerabilitydescriptionhtml"></a>`descriptionHtml` | [`String`](#string) | The GitLab Flavored Markdown rendering of `description`. |
 | <a id="vulnerabilitydetails"></a>`details` | [`[VulnerabilityDetail!]!`](#vulnerabilitydetail) | Details of the vulnerability. |
 | <a id="vulnerabilitydetectedat"></a>`detectedAt` | [`Time!`](#time) | Timestamp of when the vulnerability was first detected. |
 | <a id="vulnerabilitydiscussions"></a>`discussions` | [`DiscussionConnection!`](#discussionconnection) | All discussions on this noteable. (see [Connections](#connections)) |

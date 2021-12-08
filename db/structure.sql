@@ -25610,9 +25610,13 @@ CREATE INDEX index_ci_runner_projects_on_runner_id ON ci_runner_projects USING b
 
 CREATE INDEX index_ci_runners_on_contacted_at_and_id_desc ON ci_runners USING btree (contacted_at, id DESC);
 
+CREATE INDEX index_ci_runners_on_contacted_at_and_id_where_inactive ON ci_runners USING btree (contacted_at DESC, id DESC) WHERE (active = false);
+
 CREATE INDEX index_ci_runners_on_contacted_at_desc_and_id_desc ON ci_runners USING btree (contacted_at DESC, id DESC);
 
 CREATE INDEX index_ci_runners_on_created_at_and_id_desc ON ci_runners USING btree (created_at, id DESC);
+
+CREATE INDEX index_ci_runners_on_created_at_and_id_where_inactive ON ci_runners USING btree (created_at DESC, id DESC) WHERE (active = false);
 
 CREATE INDEX index_ci_runners_on_created_at_desc_and_id_desc ON ci_runners USING btree (created_at DESC, id DESC);
 
