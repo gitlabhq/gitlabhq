@@ -1,12 +1,12 @@
 import { GlModal } from '@gitlab/ui';
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
+import Vue from 'vue';
 import Vuex from 'vuex';
 import { BV_SHOW_MODAL, BV_HIDE_MODAL } from '~/lib/utils/constants';
 import GlModalVuex from '~/vue_shared/components/gl_modal_vuex.vue';
 import createState from '~/vuex_shared/modules/modal/state';
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 const TEST_SLOT = 'Lorem ipsum modal dolar sit.';
 const TEST_MODAL_ID = 'my-modal-id';
@@ -36,7 +36,6 @@ describe('GlModalVuex', () => {
 
     wrapper = shallowMount(GlModalVuex, {
       ...options,
-      localVue,
       store,
       propsData,
       stubs: {

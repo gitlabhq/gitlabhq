@@ -1,13 +1,12 @@
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
+import Vue from 'vue';
 import mockProjects from 'test_fixtures_static/projects.json';
 import { trimText } from 'helpers/text_helper';
 import ProjectAvatar from '~/vue_shared/components/deprecated_project_avatar/default.vue';
 import ProjectListItem from '~/vue_shared/components/project_selector/project_list_item.vue';
 
-const localVue = createLocalVue();
-
 describe('ProjectListItem component', () => {
-  const Component = localVue.extend(ProjectListItem);
+  const Component = Vue.extend(ProjectListItem);
   let wrapper;
   let vm;
   let options;
@@ -20,7 +19,6 @@ describe('ProjectListItem component', () => {
         project,
         selected: false,
       },
-      localVue,
     };
   });
 

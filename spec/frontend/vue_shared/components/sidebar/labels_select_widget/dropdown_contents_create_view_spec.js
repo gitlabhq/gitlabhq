@@ -1,6 +1,6 @@
 import { GlLoadingIcon, GlLink } from '@gitlab/ui';
-import { shallowMount, createLocalVue } from '@vue/test-utils';
-import { nextTick } from 'vue';
+import { shallowMount } from '@vue/test-utils';
+import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -18,8 +18,7 @@ jest.mock('~/flash');
 
 const colors = Object.keys(mockSuggestedColors);
 
-const localVue = createLocalVue();
-localVue.use(VueApollo);
+Vue.use(VueApollo);
 
 const userRecoverableError = {
   ...createLabelSuccessfulResponse,
@@ -63,7 +62,6 @@ describe('DropdownContentsCreateView', () => {
     });
 
     wrapper = shallowMount(DropdownContentsCreateView, {
-      localVue,
       apolloProvider: mockApollo,
       propsData: {
         fullPath: '',

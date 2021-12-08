@@ -4,8 +4,8 @@ import {
   GlDropdownItem,
   GlIntersectionObserver,
 } from '@gitlab/ui';
-import { shallowMount, createLocalVue } from '@vue/test-utils';
-import { nextTick } from 'vue';
+import { shallowMount } from '@vue/test-utils';
+import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -19,8 +19,7 @@ import { mockConfig, workspaceLabelsQueryResponse } from './mock_data';
 
 jest.mock('~/flash');
 
-const localVue = createLocalVue();
-localVue.use(VueApollo);
+Vue.use(VueApollo);
 
 const localSelectedLabels = [
   {
@@ -47,7 +46,6 @@ describe('DropdownContentsLabelsView', () => {
     const mockApollo = createMockApollo([[projectLabelsQuery, queryHandler]]);
 
     wrapper = shallowMount(DropdownContentsLabelsView, {
-      localVue,
       apolloProvider: mockApollo,
       provide: {
         variant: DropdownVariant.Sidebar,

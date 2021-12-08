@@ -6,22 +6,13 @@ module Gitlab
       private
 
       def find_handler
-        return unless service_desk_key
+        return unless mail_key
 
-        Gitlab::Email::Handler::ServiceDeskHandler.new(mail, nil, service_desk_key: service_desk_key)
+        Gitlab::Email::Handler::ServiceDeskHandler.new(mail, nil, service_desk_key: mail_key)
       end
 
-      def service_desk_key
-        strong_memoize(:service_desk_key) do
-          find_service_desk_key
-        end
-      end
-
-      def find_service_desk_key
-        mail.to.find do |address|
-          key = ::Gitlab::ServiceDeskEmail.key_from_address(address)
-          break key if key
-        end
+      def email_class
+        ::Gitlab::ServiceDeskEmail
       end
     end
   end

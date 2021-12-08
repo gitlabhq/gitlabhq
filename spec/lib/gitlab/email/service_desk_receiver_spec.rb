@@ -9,9 +9,7 @@ RSpec.describe Gitlab::Email::ServiceDeskReceiver do
   context 'when the email contains a valid email address' do
     before do
       stub_service_desk_email_setting(enabled: true, address: 'support+%{key}@example.com')
-    end
 
-    it 'finds the service desk key' do
       handler = double(execute: true, metrics_event: true, metrics_params: true)
       expected_params = [
         an_instance_of(Mail::Message), nil,
@@ -20,8 +18,38 @@ RSpec.describe Gitlab::Email::ServiceDeskReceiver do
 
       expect(Gitlab::Email::Handler::ServiceDeskHandler)
         .to receive(:new).with(*expected_params).and_return(handler)
+    end
 
-      receiver.execute
+    context 'when in a To header' do
+      it 'finds the service desk key' do
+        receiver.execute
+      end
+    end
+
+    context 'when the email contains a valid email address in a header' do
+      context 'when in a Delivered-To header' do
+        let(:email) { fixture_file('emails/service_desk_custom_address_reply.eml') }
+
+        it 'finds the service desk key' do
+          receiver.execute
+        end
+      end
+
+      context 'when in a Envelope-To header' do
+        let(:email) { fixture_file('emails/service_desk_custom_address_envelope_to.eml') }
+
+        it 'finds the service desk key' do
+          receiver.execute
+        end
+      end
+
+      context 'when in a X-Envelope-To header' do
+        let(:email) { fixture_file('emails/service_desk_custom_address_x_envelope_to.eml') }
+
+        it 'finds the service desk key' do
+          receiver.execute
+        end
+      end
     end
   end
 

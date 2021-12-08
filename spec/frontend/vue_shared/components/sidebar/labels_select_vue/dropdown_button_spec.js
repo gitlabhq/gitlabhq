@@ -1,5 +1,6 @@
 import { GlIcon, GlButton } from '@gitlab/ui';
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
+import Vue from 'vue';
 import Vuex from 'vuex';
 
 import DropdownButton from '~/vue_shared/components/sidebar/labels_select_vue/dropdown_button.vue';
@@ -9,8 +10,7 @@ import labelSelectModule from '~/vue_shared/components/sidebar/labels_select_vue
 import { mockConfig } from './mock_data';
 
 let store;
-const localVue = createLocalVue();
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 const createComponent = (initialState = mockConfig) => {
   store = new Vuex.Store(labelSelectModule());
@@ -18,7 +18,6 @@ const createComponent = (initialState = mockConfig) => {
   store.dispatch('setInitialState', initialState);
 
   return shallowMount(DropdownButton, {
-    localVue,
     store,
   });
 };

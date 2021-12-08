@@ -1,7 +1,7 @@
 import { GlAlert, GlModal, GlButton, GlLoadingIcon, GlSkeletonLoader } from '@gitlab/ui';
 import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
-import { shallowMount, createLocalVue } from '@vue/test-utils';
-import { nextTick } from 'vue';
+import { shallowMount } from '@vue/test-utils';
+import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
@@ -16,8 +16,7 @@ import {
   mockGraphqlInstructionsWindows,
 } from './mock_data';
 
-const localVue = createLocalVue();
-localVue.use(VueApollo);
+Vue.use(VueApollo);
 
 let resizeCallback;
 const MockResizeObserver = {
@@ -33,7 +32,7 @@ const MockResizeObserver = {
   },
 };
 
-localVue.directive('gl-resize-observer', MockResizeObserver);
+Vue.directive('gl-resize-observer', MockResizeObserver);
 
 jest.mock('@gitlab/ui/dist/utils');
 
@@ -67,7 +66,6 @@ describe('RunnerInstructionsModal component', () => {
           registrationToken: 'MY_TOKEN',
           ...props,
         },
-        localVue,
         apolloProvider: fakeApollo,
         ...options,
       }),

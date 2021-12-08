@@ -19,6 +19,9 @@ export const AWS_TIP_MESSAGE = __(
   '%{deployLinkStart}Use a template to deploy to ECS%{deployLinkEnd}, or use a docker image to %{commandsLinkStart}run AWS commands in GitLab CI/CD%{commandsLinkEnd}.',
 );
 
+export const EVENT_LABEL = 'ci_variable_modal';
+export const EVENT_ACTION = 'validation_error';
+
 // AWS TOKEN CONSTANTS
 export const AWS_ACCESS_KEY_ID = 'AWS_ACCESS_KEY_ID';
 export const AWS_DEFAULT_REGION = 'AWS_DEFAULT_REGION';

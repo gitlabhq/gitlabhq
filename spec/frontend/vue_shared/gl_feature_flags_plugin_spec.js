@@ -1,8 +1,7 @@
-import { createLocalVue, shallowMount } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
+import Vue from 'vue';
 import GlFeatureFlags from '~/vue_shared/gl_feature_flags_plugin';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-
-const localVue = createLocalVue();
 
 describe('GitLab Feature Flags Plugin', () => {
   beforeEach(() => {
@@ -17,7 +16,7 @@ describe('GitLab Feature Flags Plugin', () => {
       },
     };
 
-    localVue.use(GlFeatureFlags);
+    Vue.use(GlFeatureFlags);
   });
 
   it('should provide glFeatures to components', () => {
@@ -25,7 +24,7 @@ describe('GitLab Feature Flags Plugin', () => {
       template: `<span></span>`,
       inject: ['glFeatures'],
     };
-    const wrapper = shallowMount(component, { localVue });
+    const wrapper = shallowMount(component);
     expect(wrapper.vm.glFeatures).toEqual({
       aFeature: true,
       bFeature: false,
@@ -39,7 +38,7 @@ describe('GitLab Feature Flags Plugin', () => {
       template: `<span></span>`,
       mixins: [glFeatureFlagsMixin()],
     };
-    const wrapper = shallowMount(component, { localVue });
+    const wrapper = shallowMount(component);
     expect(wrapper.vm.glFeatures).toEqual({
       aFeature: true,
       bFeature: false,

@@ -17,6 +17,7 @@ import {
 import Cookies from 'js-cookie';
 import { mapActions, mapState } from 'vuex';
 import { __ } from '~/locale';
+import Tracking from '~/tracking';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { mapComputed } from '~/vuex_shared/bindings';
 import {
@@ -25,9 +26,13 @@ import {
   AWS_TIP_DISMISSED_COOKIE_NAME,
   AWS_TIP_MESSAGE,
   CONTAINS_VARIABLE_REFERENCE_MESSAGE,
+  EVENT_LABEL,
+  EVENT_ACTION,
 } from '../constants';
 import CiEnvironmentsDropdown from './ci_environments_dropdown.vue';
 import { awsTokens, awsTokenList } from './ci_variable_autocomplete_tokens';
+
+const trackingMixin = Tracking.mixin({ label: EVENT_LABEL });
 
 export default {
   modalId: ADD_CI_VARIABLE_MODAL_ID,
@@ -51,10 +56,11 @@ export default {
     GlModal,
     GlSprintf,
   },
-  mixins: [glFeatureFlagsMixin()],
+  mixins: [glFeatureFlagsMixin(), trackingMixin],
   data() {
     return {
       isTipDismissed: Cookies.get(AWS_TIP_DISMISSED_COOKIE_NAME) === 'true',
+      validationErrorEventProperty: '',
     };
   },
   computed: {
@@ -147,6 +153,14 @@ export default {
       return this.variable.secret_value === '' || (this.tokenValidationState && this.maskedState);
     },
   },
+  watch: {
+    variable: {
+      handler() {
+        this.trackVariableValidationErrors();
+      },
+      deep: true,
+    },
+  },
   methods: {
     ...mapActions([
       'addVariable',
@@ -179,6 +193,7 @@ export default {
 
       this.clearModal();
       this.resetSelectedEnvironment();
+      this.resetValidationErrorEvents();
     },
     updateOrAddVariable() {
       if (this.variableBeingEdited) {
@@ -192,6 +207,31 @@ export default {
       if (this.isProtectedByDefault && !this.variableBeingEdited) {
         this.setVariableProtected();
       }
+    },
+    trackVariableValidationErrors() {
+      const property = this.getTrackingErrorProperty();
+      if (!this.validationErrorEventProperty && property) {
+        this.track(EVENT_ACTION, { property });
+        this.validationErrorEventProperty = property;
+      }
+    },
+    getTrackingErrorProperty() {
+      let property;
+      if (this.variable.secret_value?.length && !property) {
+        if (this.displayMaskedError && this.maskableRegex?.length) {
+          const supportedChars = this.maskableRegex.replace('^', '').replace(/{(\d,)}\$/, '');
+          const regex = new RegExp(supportedChars, 'g');
+          property = this.variable.secret_value.replace(regex, '');
+        }
+        if (this.containsVariableReference) {
+          property = '$';
+        }
+      }
+
+      return property;
+    },
+    resetValidationErrorEvents() {
+      this.validationErrorEventProperty = '';
     },
   },
 };

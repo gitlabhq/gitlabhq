@@ -5,7 +5,8 @@ import {
   GlSearchBoxByType,
   GlLink,
 } from '@gitlab/ui';
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
+import Vue from 'vue';
 import Vuex from 'vuex';
 import { UP_KEY_CODE, DOWN_KEY_CODE, ENTER_KEY_CODE, ESC_KEY_CODE } from '~/lib/utils/keycodes';
 import DropdownContentsLabelsView from '~/vue_shared/components/sidebar/labels_select_vue/dropdown_contents_labels_view.vue';
@@ -18,8 +19,7 @@ import defaultState from '~/vue_shared/components/sidebar/labels_select_vue/stor
 
 import { mockConfig, mockLabels, mockRegularLabel } from './mock_data';
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 describe('DropdownContentsLabelsView', () => {
   let wrapper;
@@ -43,7 +43,6 @@ describe('DropdownContentsLabelsView', () => {
     store.dispatch('receiveLabelsSuccess', mockLabels);
 
     wrapper = shallowMount(DropdownContentsLabelsView, {
-      localVue,
       store,
     });
   };

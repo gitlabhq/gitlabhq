@@ -1,4 +1,4 @@
-import { createLocalVue } from '@vue/test-utils';
+import Vue from 'vue';
 import Vuex from 'vuex';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
@@ -9,8 +9,7 @@ import IssuableHeaderWarnings from '~/issuable/components/issuable_header_warnin
 const ISSUABLE_TYPE_ISSUE = 'issue';
 const ISSUABLE_TYPE_MR = 'merge request';
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 describe('IssuableHeaderWarnings', () => {
   let wrapper;
@@ -24,7 +23,6 @@ describe('IssuableHeaderWarnings', () => {
   const createComponent = ({ store, provide }) => {
     wrapper = shallowMountExtended(IssuableHeaderWarnings, {
       store,
-      localVue,
       provide,
       directives: {
         GlTooltip: createMockDirective(),

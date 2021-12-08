@@ -1,10 +1,10 @@
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
+import Vue from 'vue';
 import Vuex from 'vuex';
 import IssuePlaceholderNote from '~/vue_shared/components/notes/placeholder_note.vue';
 import { userDataMock } from '../../../notes/mock_data';
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 const getters = {
   getUserData: () => userDataMock,
@@ -17,7 +17,6 @@ describe('Issue placeholder note component', () => {
 
   const createComponent = (isIndividual = false) => {
     wrapper = shallowMount(IssuePlaceholderNote, {
-      localVue,
       store: new Vuex.Store({
         getters,
       }),

@@ -1,5 +1,6 @@
 import { GlButton, GlFormInput, GlLink, GlLoadingIcon } from '@gitlab/ui';
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
+import Vue from 'vue';
 import Vuex from 'vuex';
 
 import DropdownContentsCreateView from '~/vue_shared/components/sidebar/labels_select_vue/dropdown_contents_create_view.vue';
@@ -8,8 +9,7 @@ import labelSelectModule from '~/vue_shared/components/sidebar/labels_select_vue
 
 import { mockConfig, mockSuggestedColors } from './mock_data';
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 const createComponent = (initialState = mockConfig) => {
   const store = new Vuex.Store(labelSelectModule());
@@ -17,7 +17,6 @@ const createComponent = (initialState = mockConfig) => {
   store.dispatch('setInitialState', initialState);
 
   return shallowMount(DropdownContentsCreateView, {
-    localVue,
     store,
   });
 };
