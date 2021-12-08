@@ -7,8 +7,10 @@ exports[`EmptyStateComponent should render content 1`] = `
   </div>
   <div class=\\"col-12\\">
     <div class=\\"text-content gl-mx-auto gl-my-0 gl-p-5\\">
-      <h1 class=\\"h4\\">Getting started with serverless</h1>
-      <p>In order to start using functions as a service, you must first install Knative on your Kubernetes cluster. <gl-link-stub href=\\"/help\\">More information</gl-link-stub>
+      <h1 class=\\"gl-font-size-h-display gl-line-height-36 h4\\">
+        Getting started with serverless
+      </h1>
+      <p class=\\"gl-mt-3\\">In order to start using functions as a service, you must first install Knative on your Kubernetes cluster. <gl-link-stub href=\\"/help\\">More information</gl-link-stub>
       </p>
       <div class=\\"gl-display-flex gl-flex-wrap gl-justify-content-center\\">
         <!---->

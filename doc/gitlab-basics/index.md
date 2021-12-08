@@ -27,7 +27,7 @@ The following are guides to basic GitLab functionality:
   projects together.
 - [Create a branch](create-branch.md), to make changes to files stored in a project's repository.
 - [Feature branch workflow](feature_branch_workflow.md).
-- [Fork a project](../user/project/working_with_projects.md#fork-a-project), to duplicate projects so they can be worked on in parallel.
+- [Fork a project](../user/project/repository/forking_workflow.md#creating-a-fork), to duplicate projects so they can be worked on in parallel.
 - [Add a file](add-file.md), to add new files to a project's repository.
 - [Create an issue](../user/project/issues/managing_issues.md#create-a-new-issue),
   to start collaborating within a project.

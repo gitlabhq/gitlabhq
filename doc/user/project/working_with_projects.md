@@ -9,21 +9,22 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 Most work in GitLab is done in a [project](../../user/project/index.md). Files and
 code are saved in projects, and most features are in the scope of projects.
 
-## Explore projects
+## View projects
 
-You can explore other popular projects available on GitLab. To explore projects:
+To explore projects:
 
 1. On the top bar, select **Menu > Projects**.
 1. Select **Explore projects**.
 
-GitLab displays a list of projects, sorted by last updated date. To view
-projects with the most [stars](#star-a-project), click **Most stars**. To view
-projects with the largest number of comments in the past month, click **Trending**.
+GitLab displays a list of projects, sorted by last updated date. 
+
+- To view projects with the most [stars](#star-a-project), select **Most stars**. 
+- To view projects with the largest number of comments in the past month, select **Trending**.
 
 NOTE:
-By default, `/explore` is visible to unauthenticated users. However, if the
+The **Explore projects** tab is visible to unauthenticated users unless the
 [**Public** visibility level](../admin_area/settings/visibility_and_access_controls.md#restrict-visibility-levels)
-is restricted, `/explore` is visible only to signed-in users.
+is restricted. Then the tab is visible only to signed-in users.
 
 ## Explore topics
 
@@ -44,239 +45,259 @@ If you're an instance administrator, you can administer all project topics from 
 
 To create a project in GitLab:
 
-1. In your dashboard, select **New project** or use the **New...** **{plus-square}** icon
-on the top bar. The **New project** page opens.
+1. On the top bar, select **Menu > Project**. 
+1. Select **Create new project**.
 1. On the **New project** page, choose if you want to:
-   - Create a [blank project](#blank-projects).
-   - Create a project using one of the available [project templates](#project-templates).
-   - [Import a project](../../user/project/import/index.md) from a different repository,
-     if enabled on your GitLab instance. Contact your GitLab administrator if this is unavailable.
-   - Run [CI/CD pipelines for external repositories](../../ci/ci_cd_for_external_repos/index.md). **(PREMIUM)**
+   - Create a [blank project](#create-a-blank-project).
+   - Create a project from a:
+      - [built-in template](#create-a-project-from-a-built-in-template). 
+      - [custom template](#create-a-project-from-a-custom-template).  
+      - [HIPAA audit protocol template](#create-a-project-from-the-hipaa-audit-protocol-template).
+   - [Import a project](../../user/project/import/index.md) 
+   from a different repository. Contact your GitLab administrator if this option is not available.
+   - [Connect an external repository to GitLab CI/CD](../../ci/ci_cd_for_external_repos/index.md).
 
 NOTE:
 For a list of words that can't be used as project names see
-[Reserved project and group names](../../user/reserved_names.md).
+[reserved project and group names](../../user/reserved_names.md).
 
-### Blank projects
+## Create a blank project
 
-To create a new blank project on the **New project** page:
+To create a blank project:
 
-1. Click **Create blank project**
-1. Provide the following information:
-   - The name of your project in the **Project name** field. You can't use
-     special characters, but you can use spaces, hyphens, underscores, or even
-     emoji. When adding the name, the **Project slug** auto populates.
-     The slug is what the GitLab instance uses as the URL path to the project.
-     If you want a different slug, input the project name first,
-     then change the slug after.
-   - The path to your project in the **Project slug** field. This is the URL
-     path for your project that the GitLab instance uses. If the
-     **Project name** is blank, it auto populates when you fill in
-     the **Project slug**.
-   - The **Project description (optional)** field enables you to enter a
-     description for your project's dashboard, which helps others
-     understand what your project is about. Though it's not required, it's a good
-     idea to fill this in.
-   - Changing the **Visibility Level** modifies the project's
-     [viewing and access rights](../../public_access/public_access.md) for users.
-   - Selecting the **Initialize repository with a README** option creates a
-     README file so that the Git repository is initialized, has a default branch, and
-     can be cloned.
-1. Click **Create project**.
+1. On the top bar, select **Menu > Project**. 
+1. Select **Create new project**.
+1. Select **Create blank project**.
+1. Enter the project details:
+   - In the **Project name** field, enter the name of your project. You can use spaces, hyphens, 
+     underscores, and emoji. You cannot use special characters. After you enter the name, 
+     the **Project slug** populates.
+   - In the **Project slug** field, enter the path to your project. The GitLab instance uses the 
+     slug as the URL path to the project. To change the slug, first enter the project name, 
+     then change the slug. 
+   - In the **Project description (optional)** field, enter the description of your project's dashboard.
+   - To modify the project's [viewing and access rights](../../public_access/public_access.md) for 
+   users, change the **Visibility Level**.
+   - To create README file so that the Git repository is initialized, has a default branch, and
+     can be cloned, select **Initialize repository with a README**.
+   - To analyze the source code in the project for known security vulnerabilities, 
+   select **Enable Static Application Security Testing (SAST)**.   
+1. Select **Create project**.
 
-### Project templates
+## Create a project from a built-in template
 
-Project templates can pre-populate a new project with the necessary files to get you
-started quickly.
+A built-in project template populates a new project with files to get you started.
+Built-in templates are sourced from the following groups:
 
-There are two main types of project templates:
+- [`project-templates`](https://gitlab.com/gitlab-org/project-templates)
+- [`pages`](https://gitlab.com/pages)
 
-- [Built-in templates](#built-in-templates), sourced from the following groups:
-  - [`project-templates`](https://gitlab.com/gitlab-org/project-templates)
-  - [`pages`](https://gitlab.com/pages)
-- [Custom project templates](#custom-project-templates), for custom templates
-  configured by GitLab administrators and users.
+Anyone can contribute a built-in template by following [these steps](https://about.gitlab.com/community/contribute/project-templates/).
 
-#### Built-in templates
+To create a project from a built-in template:
 
-Built-in templates are project templates that are:
-
-- Developed and maintained in the [`project-templates`](https://gitlab.com/gitlab-org/project-templates)
-  and [`pages`](https://gitlab.com/pages) groups.
-- Released with GitLab.
-- Anyone can contribute a built-in template by following [these steps](https://about.gitlab.com/community/contribute/project-templates/).
-
-To use a built-in template on the **New project** page:
-
-1. Click **Create from template**
+1. On the top bar, select **Menu > Project**.
+1. Select **Create new project**.
+1. Select **Create from template**.
 1. Select the **Built-in** tab.
-1. From the list of available built-in templates, click the:
-   - **Preview** button to look at the template source itself.
-   - **Use template** button to start creating the project.
-1. Finish creating the project by filling out the project's details. The process is
-   the same as creating a [blank project](#blank-projects).
+1. From the list of templates:
+   - To view a preview of the template, select **Preview**.
+   - To use a template for the project, select **Use template**.
+1. Enter the project details:
+   - In the **Project name** field, enter the name of your project. You can use spaces, hyphens, 
+     underscores, and emoji. You cannot use special characters. After you enter the name, 
+     the **Project slug** populates.
+   - In the **Project slug** field, enter the path to your project. The GitLab instance uses the 
+     slug as the URL path to the project. To change the slug, first enter the project name, 
+     then change the slug. 
+   - In the **Project description (optional)** field, enter the description of your project's dashboard.
+   - To modify the project's [viewing and access rights](../../public_access/public_access.md) for users, 
+      change the **Visibility Level**.
+1. Select **Create project**.      
 
-##### Enterprise templates **(ULTIMATE)**
-
-GitLab is developing Enterprise templates to help you streamline audit management with selected regulatory standards. These templates automatically import issues that correspond to each regulatory requirement.
-
-To create a new project with an Enterprise template, on the **New project** page:
-
-1. Click **Create from template**
-1. Select the **Built-in** tab.
-1. From the list of available built-in Enterprise templates, click the:
-   - **Preview** button to look at the template source itself.
-   - **Use template** button to start creating the project.
-1. Finish creating the project by filling out the project's details. The process is the same as creating a [blank project](#blank-projects).
-
-Available Enterprise templates include:
-
-- HIPAA Audit Protocol template ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13756) in GitLab 12.10)
-
-NOTE:
-You can improve the existing built-in templates or contribute new ones in the
-[`project-templates`](https://gitlab.com/gitlab-org/project-templates) and
-[`pages`](https://gitlab.com/pages) groups by following [these steps](https://gitlab.com/gitlab-org/project-templates/contributing).
-
-##### Custom project templates **(PREMIUM)**
+## Create a project from a custom template **(PREMIUM)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/6860) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.2.
 
-Creating new projects based on custom project templates is a convenient option for
-quickly starting projects.
+Custom project templates are available at:
 
-Custom projects are available at the [instance-level](../../user/admin_area/custom_project_templates.md)
-from the **Instance** tab, or at the [group-level](../../user/group/custom_project_templates.md)
-from the **Group** tab, on the **Create from template** page.
+- The [instance-level](../../user/admin_area/custom_project_templates.md)
+- The [group-level](../../user/group/custom_project_templates.md)
 
-To use a custom project template on the **New project** page:
+1. On the top bar, select **Menu > Project**. 
+1. Select **Create new project**.
+1. Select **Create from template**.
+1. Select the **Instance** or **Group** tab.
+1. From the list of templates:
+   - To view a preview of the template, select **Preview**.
+   - To use a template for the project, select **Use template**.
+1. Enter the project details:
+   - In the **Project name** field, enter the name of your project. You can use spaces, hyphens, 
+     underscores, and emoji. You cannot use special characters. After you enter the name, 
+     the **Project slug** populates.
+   - In the **Project slug** field, enter the path to your project. The GitLab instance uses the 
+     slug as the URL path to the project. To change the slug, first enter the project name, 
+     then change the slug. 
+   - The description of your project's dashboard in the **Project description (optional)** field.
+   - To modify the project's [viewing and access rights](../../public_access/public_access.md) for users, 
+      change the **Visibility Level**.
+1. Select **Create project**.
 
-1. Click **Create from template**
-1. Select the **Instance** tab or the **Group** tab.
-1. From the list of available custom templates, click the:
-   - **Preview** button to look at the template source itself.
-   - **Use template** button to start creating the project.
-1. Finish creating the project by filling out the project's details. The process is
-   the same as creating a [blank project](#blank-projects).
+## Create a project from the HIPAA Audit Protocol template **(ULTIMATE)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13756) in GitLab 12.10
+
+The HIPAA Audit Protocol template contains issues for audit inquiries in the 
+HIPAA Audit Protocol published by the U.S Department of Health and Human Services.
+
+To create a project from the HIPAA Audit Protocol template:
+
+1. On the top bar, select **Menu > Project**.
+1. Select **Create new project**.
+1. Select **Create from template**.
+1. Select the **Built-in** tab.
+1. Locate the **HIPAA Audit Protocol** template:
+   - To view a preview of the template, select **Preview**.
+   - To use the template for the project, select **Use template**.
+1. Enter the project details:
+   - In the **Project name** field, enter the name of your project. You can use spaces, hyphens, 
+     underscores, and emoji. You cannot use special characters. After you enter the name, 
+     the **Project slug** populates.
+   - In the **Project slug** field, enter the path to your project. The GitLab instance uses the 
+     slug as the URL path to the project. To change the slug, first enter the project name, 
+     then change the slug. 
+   - In the **Project description (optional)** field, enter the description of your project's dashboard.
+   - To modify the project's [viewing and access rights](../../public_access/public_access.md) for users, 
+      change the **Visibility Level**.
+1. Select **Create project**.
 
 ## Push to create a new project
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/26388) in GitLab 10.5.
 
-When you create a new repository locally, you don't have to sign in to the GitLab
-interface to create a project and
-[clone its repository](../../gitlab-basics/start-using-git.md#clone-a-repository).
-You can directly push your new repository to GitLab, which creates your new project
-without leaving your terminal.
+Use `git push` to push a local project repository to GitLab. After you push a repository, 
+GitLab creates your project in your chosen namespace.
 
-To push a new project:
+You cannot use `git push` to create projects with project paths that:
 
-1. Identify the [namespace](../group/index.md#namespaces) you want to add the new
-   project to, as you need this information in a future step. To determine if you have
-   permission to create new projects in a namespace, view the group's page in a
-   web browser and confirm the page displays a **New project** button.
+- Have previously been used.
+- Have been [renamed](settings/index.md#renaming-a-repository). 
 
-   NOTE:
-   As project creation permissions can have many factors, contact your
-   GitLab administrator if you're unsure.
+Previously used project paths have a redirect. The redirect causes push attempts to redirect requests 
+to the renamed project location, instead of creating a new project. To create a new project for a previously 
+used or renamed project, use the [UI](#create-a-project) or the [Projects API](../../api/projects.md#create-project).
 
-1. If you want to push using SSH, ensure you have [created a SSH key](../../ssh/index.md) and
-   [added it to your GitLab account](../../ssh/index.md#add-an-ssh-key-to-your-gitlab-account).
-1. Push with one of the following methods. Replace `gitlab.example.com` with the
-   domain name of the machine that hosts your Git repository, `namespace` with the name of
-   your namespace, and `myproject` with the name of your new project:
-   - To push with SSH: `git push --set-upstream git@gitlab.example.com:namespace/myproject.git master`
-   - To push with HTTPS: `git push --set-upstream https://gitlab.example.com/namespace/myproject.git master`
-   Optional: to export existing repository tags, append the `--tags` flag to your `git push` command.
-1. When the push completes, GitLab displays a message:
+Prerequisites:
 
-   ```plaintext
-   remote: The private project namespace/myproject was created.
+- To push with SSH, you must have [an SSH key](../../ssh/index.md) that is
+[added to your GitLab account](../../ssh/index.md#add-an-ssh-key-to-your-gitlab-account).
+- You must have permission to add new projects to a namespace. To check if you have permission:
+
+  1. On the top bar, select **Menu > Project**.
+  1. Select **Groups**.
+  1. Select a group.
+  1. Confirm that **New project** is visible in the upper right 
+     corner. Contact your GitLab 
+     administrator if you require permission.
+
+To push your repository and create a project:
+
+1. Push with SSH or HTTPS:
+   - To push with SSH: 
+
+      ```shell
+      git push --set-upstream git@gitlab.example.com:namespace/myproject.git master
+      ```
+
+   - To push with HTTPS: 
+
+      ```shell
+      git push --set-upstream https://gitlab.example.com/namespace/myproject.git master
+      ```
+
+   - For `gitlab.example.com`, use the domain name of the machine that hosts your Git repository.
+   - For `namespace`, use the name of your [namespace](../group/index.md#namespaces).
+   - For `myproject`, use the name of your project.
+   - Optional. To export existing repository tags, append the `--tags` flag to your `git push` command.
+1. Optional. To configure the remote:
+   
+   ```shell
+   git remote add origin https://gitlab.example.com/namespace/myproject.git
    ```
 
-1. Optional. To configure the remote, alter the command
-   `git remote add origin https://gitlab.example.com/namespace/myproject.git`
-   to match your namespace and project names.
+When the push completes, GitLab displays the message:
 
-You can view your new project at `https://gitlab.example.com/namespace/myproject`.
-Your project's visibility is set to **Private** by default, but you can change it
-in your [project's settings](../../public_access/public_access.md#change-project-visibility)).
+```shell
+remote: The private project namespace/myproject was created.
+```
 
-This feature does not work for project paths that have previously been in use and
-[renamed](settings/index.md#renaming-a-repository). A redirect exists over the previous project path
-that causes push attempts to redirect requests to the renamed project location, instead of creating
-a new project. To create a new project, use the [Web UI](#create-a-project) or the
-[Projects API](../../api/projects.md#create-project).
-
-## Fork a project
-
-A fork is a copy of an original repository that you put in another namespace
-where you can experiment and apply changes that you can later decide whether or
-not to share, without affecting the original project.
-
-It takes just a few steps to [fork a project in GitLab](repository/forking_workflow.md#creating-a-fork).
+To view your new project, go to `https://gitlab.example.com/namespace/myproject`.
+Your project's visibility is set to **Private** by default. To change project visibility, adjust your 
+[project's settings](../../public_access/public_access.md#change-project-visibility).
 
 ## Star a project
 
-You can star a project to make it easier to find projects you frequently use.
-The number of stars a project has can indicate its popularity.
+You can add a star to projects you use frequently to make them easier to find.
 
-To star a project:
+To add a star to a project:
 
-1. Go to the home page of the project you want to star.
-1. In the upper right corner of the page, click **Star**.
+1. On the top bar, select **Menu > Project**.
+1. Select **Your projects** or **Explore projects**.
+1. Select a project.
+1. In the upper right corner of the page, select **Star**.
 
-To view your starred projects:
+## View starred projects
 
-1. On the top bar, select **Menu > Projects**.
-1. Select **Starred Projects**.
+1. On the top bar, select **Menu > Project**.
+1. Select **Starred projects**.
 1. GitLab displays information about your starred projects, including:
 
-   - Project description, including name, description, and icon
-   - Number of times this project has been starred
-   - Number of times this project has been forked
-   - Number of open merge requests
-   - Number of open issues
+   - Project description, including name, description, and icon.
+   - Number of times this project has been starred.
+   - Number of times this project has been forked.
+   - Number of open merge requests.
+   - Number of open issues.
 
 ## Delete a project
 
-To delete a project, first navigate to the home page for that project.
+After you delete a project, projects in personal namespaces are deleted immediately. You can 
+[enable delayed project removal](../group/index.md#enable-delayed-project-deletion) to 
+delay deletion of projects in a group.
 
-1. Navigate to **Settings > General**.
+To delete a project:
+
+1. On the top bar, select **Menu > Project**.
+1. Select **Your projects** or **Explore projects**.
+1. Select a project.
+1. Select **Settings > General**.
 1. Expand the **Advanced** section.
 1. Scroll down to the **Delete project** section.
-1. Click **Delete project**
-1. Confirm this action by typing in the expected text.
+1. Select **Delete project**
+1. Confirm this action by completing the field.
 
-Projects in personal namespaces are deleted immediately on request. For information on delayed deletion of projects in a group, please see [delayed project deletion](settings/index.md#delayed-project-deletion).
-
-## Project settings
-
-Set the project's visibility level and the access levels to its various pages
-and perform actions like archiving, renaming or transferring a project.
-
-Read through the documentation on [project settings](settings/index.md).
-
-## Project activity
+## View project activity
 
 To view the activity of a project:
 
+1. On the top bar, select **Menu > Project**.
+1. Select **Your projects** or **Explore projects**.
+1. Select a project.
 1. On the left sidebar, select **Project information > Activity**.
-1. Select a tab to view **All** the activity, or to filter it by any of these criteria:
-   - **Push events**
-   - **Merge events**
-   - **Issue events**
-   - **Comments**
-   - **Team**
-   - **Wiki**
+1. Select a tab to view the type of project activity.
 
-### Leave a project
+## Leave a project
 
-**Leave project** only displays on the project's dashboard
-when a project is part of a group (under a
-[group namespace](../group/index.md#namespaces)).
-If you choose to leave a project you are no longer a project
-member, and cannot contribute.
+If you leave a project you are no longer a project
+member and cannot contribute.
+
+To leave a project:
+
+1. On the top bar, select **Menu > Project**.
+1. Select **Your projects** or **Explore projects**.
+1. Select a project.
+1. Select **Leave project**. The **Leave project** option only displays 
+on the project dashboard when a project is part of a group under a 
+[group namespace](../group/index.md#namespaces).
 
 ## Use your project as a Go package
 
@@ -285,8 +306,8 @@ and `godoc.org` discovery requests, including the
 [`go-import`](https://golang.org/cmd/go/#hdr-Remote_import_paths) and
 [`go-source`](https://github.com/golang/gddo/wiki/Source-Code-Links) meta tags.
 
-Private projects, including projects in subgroups, can be used as a Go package,
-but may require configuration to work correctly. GitLab responds correctly
+Private projects, including projects in subgroups, can be used as a Go package.
+These projects may require configuration to work correctly. GitLab responds correctly
 to `go get` discovery requests for projects that *are not* in subgroups,
 regardless of authentication or authorization.
 [Authentication](#authenticate-go-requests) is required to use a private project
@@ -427,3 +448,10 @@ For users without permissions to view the project's code, GitLab displays:
 
 - The wiki homepage, if any.
 - The list of issues in the project.
+
+## Related topics
+
+- [Import a project](../../user/project/import/index.md).
+- [Connect an external repository to GitLab CI/CD](../../ci/ci_cd_for_external_repos/index.md).
+- [Fork a project](repository/forking_workflow.md#creating-a-fork).
+- [Adjust project visibility and access levels](settings/index.md#sharing-and-permissions).

@@ -16,7 +16,7 @@ Labels are a key part of [issue boards](issue_board.md). With labels you can:
 - Categorize epics, issues, and merge requests using colors and descriptive titles like
 `bug`, `feature request`, or `docs`.
 - Dynamically filter and manage epics, issues, and merge requests.
-- [Search lists of issues, merge requests, and epics](../search/index.md#issues-and-merge-requests),
+- [Search lists of issues, merge requests, and epics](../search/index.md#search-issues-and-merge-requests),
   as well as [issue boards](../search/index.md#issue-boards).
 
 ## Project labels and group labels
@@ -189,7 +189,7 @@ For example, filtering by the `platform::*` label returns issues that have `plat
 `platform::Android`, or `platform::Linux` labels.
 
 NOTE:
-This is not available on the [issues or merge requests dashboard pages](../search/index.md#issues-and-merge-requests).
+This is not available on the [issues or merge requests dashboard pages](../search/index.md#search-issues-and-merge-requests).
 
 ### Workflows with scoped labels
 

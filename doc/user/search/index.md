@@ -5,25 +5,19 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 type: index, reference, howto
 ---
 
-# Search through GitLab **(FREE)**
+# Searching in GitLab **(FREE)**
 
-## Issues and merge requests
+## Search issues and merge requests
 
-To search through issues and merge requests in multiple projects, use the **Issues** or **Merge Requests** links
-in the top-right part of your screen. These instructions are valid for both.
+To search through issues and merge requests in multiple projects, on the top bar, select the **Issues** or **Merge Requests** links.
 
-The numbers in the right-hand side of the top menu indicate how many issues, merge requests,
-and to-do items are assigned to you:
+The numbers indicate how many issues, merge requests, and to-do items are assigned to you:
 
-![issues and MRs dashboard links](img/dashboard_links_v13_11.png)
+![issues and MRs dashboard links](img/dashboard_links_v14_6.png)
 
 - **{issues}** **Issues**: The open issues assigned to you.
 - **{merge-request-open}** **Merge requests**: The [merge requests](../project/merge_requests/index.md) assigned to you.
 - **{todo-done}** **To-do items**: The [to-do items](../todos.md) assigned to you.
-
-When you click **Issues**, GitLab shows the opened issues assigned to you:
-
-![Issues assigned to you](img/issues_assigned_to_you.png)
 
 You can search through **Open**, **Closed**, or **All** issues.
 
@@ -35,7 +29,7 @@ You can also filter the results using the search and filter field, as described 
 GitLab shows shortcuts to issues and merge requests created by you or assigned to you
 in the search field in the upper right corner:
 
-![shortcut to your issues and merge requests](img/issues_mrs_shortcut_v14_4.png)
+![shortcut to your issues and merge requests](img/issues_mrs_shortcut_v14_6.png)
 
 ### Filter issue and merge request lists
 
@@ -63,24 +57,12 @@ groups:
    - `=`: Is
    - `!=`: Is not ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/18059) in GitLab 12.7)
 1. Enter the text to [filter the attribute by](#filters-autocomplete).
+   You can filter some attributes by **None** or **Any**.
 1. Repeat this process to filter by multiple attributes. Multiple attributes are joined by a logical
-   `AND`. For example, filtering by an Author and Milestone `!=` 12.6 filters for the issues where the
-   author matches your selection, and the milestone is not 12.6:
-
-   ![filter issues in a project](img/issue_search_filter_v12_7.png)
+   `AND`.
 
 GitLab displays the results on-screen, but you can also
 [retrieve them as an RSS feed](#retrieve-search-results-as-feed).
-
-### Filtering by **None** / **Any**
-
-Some filter fields like milestone and assignee, allow you to filter by **None** or **Any**.
-
-![filter by none any](img/issues_filter_none_any.png)
-
-Selecting **None** returns results that have an empty value for that field. For example: no milestone, no assignee.
-
-Selecting **Any** does the opposite. It returns results that have a non-empty value for that field.
 
 ### Searching for specific terms
 
@@ -94,8 +76,6 @@ You can filter issues and merge requests by specific terms included in titles or
   - For performance reasons, terms shorter than 3 chars are ignored. For example: searching
     issues for `included in titles` is same as `included titles`
   - Search is limited to 4096 characters and 64 terms per query.
-
-![filter issues by specific terms](img/issue_search_by_term.png)
 
 ### Retrieve search results as feed
 
@@ -128,7 +108,7 @@ You can filter the **Issues** list to individual instances by their ID. For exam
 To filter merge requests by an individual approver, you can type (or select from
 the dropdown) **Approver** and select the user.
 
-![Filter MRs by an approver](img/filter_approver_merge_requests.png)
+![Filter MRs by an approver](img/filter_approver_merge_requests_v14_6.png)
 
 ### Filtering merge requests by "approved by" **(PREMIUM)**
 
@@ -138,7 +118,7 @@ the dropdown) **Approver** and select the user.
 To filter merge requests already approved by a specific individual, you can type (or select from
 the dropdown) **Approved-By** and select the user.
 
-![Filter MRs by approved by](img/filter_approved_by_merge_requests_v13_0.png)
+![Filter MRs by approved by](img/filter_approved_by_merge_requests_v14_6.png)
 
 ### Filtering merge requests by reviewer **(FREE)**
 
@@ -161,13 +141,13 @@ you can type (or select from the dropdown) the following:
 When filtering by an environment, a dropdown presents all environments that
 you can choose from:
 
-![Filter MRs by their environment](img/filtering_merge_requests_by_environment_v13_6.png)
+![Filter MRs by their environment](img/filtering_merge_requests_by_environment_v14_6.png)
 
 When filtering by a deploy date, you must enter the date manually. Deploy dates
 use the format `YYYY-MM-DD`, and must be quoted if you wish to specify
 both a date and time (`"YYYY-MM-DD HH:MM"`):
 
-![Filter MRs by a deploy date](img/filtering_merge_requests_by_date_v13_6.png)
+![Filter MRs by a deploy date](img/filtering_merge_requests_by_date_v14_6.png)
 
 ## Filters autocomplete
 
@@ -245,20 +225,9 @@ and **Labels**, select multiple issues to add to a list of your choice:
 
 ![search and select issues to add to board](img/search_issues_board.png)
 
-## Shortcut
+## Autocomplete suggestions
 
-To view issues and merge requests created or assigned to you in a project:
-
-1. Go to your project.
-1. In the top navigation bar, click the search box to display a list of issues and
-   merge requests.
-1. Select your desired issue or merge request:
-
-   ![search per project - shortcut](img/project_search.png)
-
-### Autocomplete suggestions
-
-You can also type in this search bar to see autocomplete suggestions for:
+In the search bar, you can view autocomplete suggestions for:
 
 - Projects and groups
 - Various help pages (try and type **API help**)

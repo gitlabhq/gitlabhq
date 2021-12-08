@@ -228,7 +228,7 @@ RSpec.describe Clusters::Platforms::Kubernetes do
               ca_pem: cert_chain)
       end
 
-      it 'includes chain of certificates' do
+      it 'includes chain of certificates', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/347425' do
         cert1_file = File.read(Rails.root.join('spec/fixtures/clusters/root_certificate.pem'))
         cert1 = OpenSSL::X509::Certificate.new(cert1_file)
 

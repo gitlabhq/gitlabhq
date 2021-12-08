@@ -35,12 +35,16 @@ exports[`PackagesListApp renders 1`] = `
           class="text-content gl-mx-auto gl-my-0 gl-p-5"
         >
           <h1
-            class="h4"
+            class="gl-font-size-h-display gl-line-height-36 h4"
           >
-            There are no packages yet
+            
+        There are no packages yet
+      
           </h1>
            
-          <p>
+          <p
+            class="gl-mt-3"
+          >
             Learn how to 
             <b-link-stub
               class="gl-link"

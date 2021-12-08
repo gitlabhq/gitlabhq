@@ -254,7 +254,7 @@ export default {
       </smart-virtual-list>
       <div
         :class="{ show: showFade }"
-        class="fade mr-extenson-scrim gl-absolute gl-left-0 gl-bottom-0 gl-w-full gl-h-7"
+        class="fade mr-extenson-scrim gl-absolute gl-left-0 gl-bottom-0 gl-w-full gl-h-7 gl-pointer-events-none"
       ></div>
     </div>
   </section>

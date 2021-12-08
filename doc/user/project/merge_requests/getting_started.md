@@ -88,7 +88,7 @@ Choose an assignee to designate someone as the person responsible
 for the first [review of the merge request](reviews/index.md).
 Open the drop down box to search for the user you wish to assign,
 and the merge request is added to their
-[assigned merge request list](../../search/index.md#issues-and-merge-requests).
+[assigned merge request list](../../search/index.md#search-issues-and-merge-requests).
 
 #### Multiple assignees **(PREMIUM)**
 

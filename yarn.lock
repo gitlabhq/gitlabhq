@@ -914,20 +914,20 @@
     stylelint-declaration-strict-value "1.7.7"
     stylelint-scss "3.18.0"
 
-"@gitlab/svgs@1.225.0":
-  version "1.225.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-1.225.0.tgz#a77f7118903586c1770736201693dd4f861120d9"
-  integrity sha512-ws58e2iNxtPBZbKGL/6ghH2BCtpX18j8mXO3H3QG+ooJHMnWVo3tn6/NuYDT1LPWIndrZRUX+Vg/KoPRpbQOJw==
+"@gitlab/svgs@1.226.0":
+  version "1.226.0"
+  resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-1.226.0.tgz#f590545df4bf871a9653f2ac93029fbc1bfd2788"
+  integrity sha512-oSPbwkPJ8yDttTy+zcqtA9TIPOGiTUXlgIf1XnlrMHUoQmzUUqkJMql6LDcP4xAqX0n+7Kinoxl8gmMSwMKYjw==
 
 "@gitlab/tributejs@1.0.0":
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@gitlab/tributejs/-/tributejs-1.0.0.tgz#672befa222aeffc83e7d799b0500a7a4418e59b8"
   integrity sha512-nmKw1+hB6MHvlmPz63yPwVs1qQkycHwsKgxpEbzmky16Y6mL4EJMk3w1b8QlOAF/AIAzjCERPhe/R4MJiohbZw==
 
-"@gitlab/ui@32.43.0":
-  version "32.43.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-32.43.0.tgz#950d189ff50693bdec29edb3fd002aa409410d3f"
-  integrity sha512-OTKRW3PahpONXirVvV+jBMNVfZLgQtE7x2Q13cBfgDYt5fsPpHstUFv4+hKzV6D/aoVDRuw80HjAcnw/QtS73A==
+"@gitlab/ui@32.43.2":
+  version "32.43.2"
+  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-32.43.2.tgz#df1e86493354db61da60e2eb8e9e67c79e9c402c"
+  integrity sha512-BJZJeXqi9MrJ5xAQ8rA2t95udSxsRGPeeCzlb6HI26j8LAJpVj9ArbiehoMZ45aGpX0+gnElMUGNOcZ8XHlQqw==
   dependencies:
     "@babel/standalone" "^7.0.0"
     bootstrap-vue "2.20.1"
@@ -4918,10 +4918,15 @@ domhandler@^4.0.0, domhandler@^4.2.0:
   dependencies:
     domelementtype "^2.2.0"
 
-dompurify@2.3.3, dompurify@^2.3.3:
+dompurify@2.3.3:
   version "2.3.3"
   resolved "https://registry.yarnpkg.com/dompurify/-/dompurify-2.3.3.tgz#c1af3eb88be47324432964d8abc75cf4b98d634c"
   integrity sha512-dqnqRkPMAjOZE0FogZ+ceJNM2dZ3V/yNOuFB7+39qpO93hHhfRpHw3heYQC7DPK9FqbQTfBKUJhiSfz4MvXYwg==
+
+dompurify@^2.3.3, dompurify@^2.3.4:
+  version "2.3.4"
+  resolved "https://registry.yarnpkg.com/dompurify/-/dompurify-2.3.4.tgz#1cf5cf0105ccb4debdf6db162525bd41e6ddacc6"
+  integrity sha512-6BVcgOAVFXjI0JTjEvZy901Rghm+7fDQOrNIcxB4+gdhj6Kwp6T9VBhBY/AbagKHJocRkDYGd6wvI+p4/10xtQ==
 
 domutils@^1.5.1:
   version "1.7.0"
