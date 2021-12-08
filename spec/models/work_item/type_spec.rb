@@ -19,10 +19,10 @@ RSpec.describe WorkItem::Type do
       it 'deletes type but not unrelated issues' do
         type = create(:work_item_type)
 
-        expect(WorkItem::Type.count).to eq(5)
+        expect(WorkItem::Type.count).to eq(6)
 
         expect { type.destroy! }.not_to change(Issue, :count)
-        expect(WorkItem::Type.count).to eq(4)
+        expect(WorkItem::Type.count).to eq(5)
       end
     end
 

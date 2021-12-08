@@ -40,6 +40,7 @@ export const viewerProps = (type, blob) => {
     },
     pdf: {
       url: blob.rawPath,
+      fileSize: blob.rawSize,
     },
   }[type];
 };

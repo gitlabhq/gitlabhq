@@ -69,7 +69,8 @@ module QA
         {
           path: path,
           name: path,
-          visibility: 'public'
+          visibility: 'public',
+          avatar: avatar
         }
       end
 

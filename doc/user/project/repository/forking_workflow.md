@@ -26,17 +26,17 @@ To fork an existing project in GitLab:
 
 1. Select the project to fork to:
 
-   - *(Recommended method)* Below **Select a namespace to fork the project**, identify
+   - Recommended method. Below **Select a namespace to fork the project**, identify
      the project you want to fork to, and click **Select**. Only namespaces you have
      Developer and higher [permissions](../../permissions.md) for are shown.
 
      ![Choose namespace](img/forking_workflow_choose_namespace_v13_10.png)
 
-   - *(Experimental method)* If your GitLab administrator has
+   - Experimental method. If your GitLab administrator has
      [enabled the experimental fork project form](#enable-or-disable-the-fork-project-form), read
      [Create a fork with the fork project form](#create-a-fork-with-the-fork-project-form).
-     Only namespaces you have Developer and higher
-     [permissions](../../permissions.md) for are shown.
+     Only namespaces you have at least the Developer
+     [role](../../permissions.md) for are shown.
 
    NOTE:
    The project path must be unique in the namespace.

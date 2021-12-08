@@ -7,7 +7,7 @@ module QA
     class GroupBase < Base
       include Members
 
-      attr_accessor :path
+      attr_accessor :path, :avatar
 
       attributes :id,
                  :runners_token,

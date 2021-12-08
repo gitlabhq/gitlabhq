@@ -38,7 +38,13 @@ export default {
     <div v-if="loading && !error" class="text-center loading">
       <gl-loading-icon class="mt-5" size="lg" />
     </div>
-    <pdf-lab v-if="!loadError" :pdf="pdf" @pdflabload="onLoad" @pdflaberror="onError" />
+    <pdf-lab
+      v-if="!loadError"
+      :pdf="pdf"
+      @pdflabload="onLoad"
+      @pdflaberror="onError"
+      v-on="$listeners"
+    />
     <p v-if="error" class="text-center">
       <span v-if="loadError" ref="loadError">
         {{ __('An error occurred while loading the file. Please try again later.') }}

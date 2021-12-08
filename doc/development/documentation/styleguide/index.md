@@ -1162,6 +1162,17 @@ review app in the merge request. Make sure the image isn't blurry or overwhelmin
 - **Be consistent.** Coordinate screenshots with the other screenshots already on
   a documentation page for a consistent reading experience.
 
+### Add callouts
+
+If you need to emphasize an area in a screenshot, use an arrow.
+
+- For color, use `#EE2604`. If you use the Preview application on macOS, this is the default red.
+- For the line width, use 3 pt. If you use the Preview application on macOS, this is the third line in the list.
+- Use the arrow style shown in the following image.
+- If you have multiple arrows, make them parallel when possible.
+
+![callout example](img/callouts.png)
+
 ### Save the image
 
 - Resize any wide or tall screenshots if needed, but make sure the screenshot is

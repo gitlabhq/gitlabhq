@@ -1197,6 +1197,15 @@ RSpec.describe Projects::IssuesController do
       end
     end
 
+    context 'when trying to create a task' do
+      it 'defaults to issue type' do
+        issue = post_new_issue(issue_type: 'task')
+
+        expect(issue.issue_type).to eq('issue')
+        expect(issue.work_item_type.base_type).to eq('issue')
+      end
+    end
+
     it 'creates the issue successfully', :aggregate_failures do
       issue = post_new_issue
 

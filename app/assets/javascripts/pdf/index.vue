@@ -45,7 +45,7 @@ export default {
         .promise.then(this.renderPages)
         .then((pages) => {
           this.pages = pages;
-          this.$emit('pdflabload');
+          this.$emit('pdflabload', pages.length);
         })
         .catch((error) => {
           this.$emit('pdflaberror', error);

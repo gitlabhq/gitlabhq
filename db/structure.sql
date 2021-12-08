@@ -10479,6 +10479,7 @@ CREATE TABLE application_settings (
     sentry_environment text,
     max_ssh_key_lifetime integer,
     static_objects_external_storage_auth_token_encrypted text,
+    future_subscriptions jsonb DEFAULT '[]'::jsonb NOT NULL,
     CONSTRAINT app_settings_container_reg_cleanup_tags_max_list_size_positive CHECK ((container_registry_cleanup_tags_service_max_list_size >= 0)),
     CONSTRAINT app_settings_dep_proxy_ttl_policies_worker_capacity_positive CHECK ((dependency_proxy_ttl_group_policy_worker_capacity >= 0)),
     CONSTRAINT app_settings_ext_pipeline_validation_service_url_text_limit CHECK ((char_length(external_pipeline_validation_service_url) <= 255)),
@@ -27105,6 +27106,8 @@ CREATE INDEX index_projects_api_vis20_name ON projects USING btree (name, id) WH
 CREATE INDEX index_projects_api_vis20_path ON projects USING btree (path, id) WHERE (visibility_level = 20);
 
 CREATE INDEX index_projects_api_vis20_updated_at ON projects USING btree (updated_at, id) WHERE (visibility_level = 20);
+
+CREATE INDEX index_projects_not_aimed_for_deletion ON projects USING btree (id) WHERE (marked_for_deletion_at IS NULL);
 
 CREATE INDEX index_projects_on_created_at_and_id ON projects USING btree (created_at, id);
 
