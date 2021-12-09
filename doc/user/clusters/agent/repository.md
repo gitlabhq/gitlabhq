@@ -4,20 +4,20 @@ group: Configure
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 ---
 
-# Kubernetes Agent configuration repository **(FREE)**
+# Agent configuration repository **(FREE)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/259669) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.7.
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3834) in GitLab 13.11, the Kubernetes Agent became available on GitLab.com.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3834) in GitLab 13.11, the GitLab Agent became available on GitLab.com.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/332227) in GitLab 14.0, the `resource_inclusions` and `resource_exclusions` attributes were removed and `reconcile_timeout`, `dry_run_strategy`, `prune`, `prune_timeout`, `prune_propagation_policy`, and `inventory_policy` attributes were added.
 > - The `ci_access` attribute was [introduced](https://gitlab.com/groups/gitlab-org/-/epics/5784) in GitLab 14.3.
-> - The GitLab Kubernetes Agent was [moved](https://gitlab.com/groups/gitlab-org/-/epics/6290) to GitLab Free in 14.5.
+> - The GitLab Agent was [moved](https://gitlab.com/groups/gitlab-org/-/epics/6290) to GitLab Free in 14.5.
 
 WARNING:
 This feature might not be available to you. Check the **version history** note above for details.
 
-The [GitLab Kubernetes Agent integration](index.md) supports hosting your configuration for
-multiple GitLab Kubernetes Agents in a single repository. These agents can be running
-in the same cluster or in multiple clusters, and potentially with more than one Agent per cluster.
+The [GitLab Agent](index.md) supports hosting your configuration for
+multiple agents in a single repository. These agents can be running
+in the same cluster or in multiple clusters, and potentially with more than one agent per cluster.
 
 The Agent bootstraps with the GitLab installation URL and an authentication token,
 and you provide the rest of the configuration in your repository, following
@@ -128,7 +128,7 @@ operations. If such functionality is needed, you may use multiple agents reading
 manifests from the same repository.
 
 Ensure not to specify "overlapping" globs to avoid synchronizing the same files more than once.
-This is detected by the GitLab Kubernetes Agent and leads to an error.
+This is detected by the Agent and leads to an error.
 
 INCORRECT - both globs match `*.yaml` files in the root directory:
 
@@ -385,7 +385,7 @@ In this example, the following resources are scanned:
 
 ## Debugging
 
-To debug the cluster-side component (`agentk`) of the GitLab Kubernetes Agent, set the log
+To debug the cluster-side component (`agentk`) of the Agent, set the log
 level according to the available options:
 
 - `off`

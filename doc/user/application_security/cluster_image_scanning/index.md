@@ -29,7 +29,7 @@ To integrate GitLab with security scanners other than those listed here, see
 You can use cluster image scanning through the following methods:
 
 - [The cluster image scanning analyzer](#use-the-cluster-image-scanning-analyzer)
-- [The GitLab Kubernetes agent](#cluster-image-scanning-with-the-gitlab-kubernetes-agent)
+- [The GitLab Agent](#cluster-image-scanning-with-the-gitlab-agent)
 
 ## Use the cluster image scanning analyzer
 
@@ -274,26 +274,22 @@ Here's an example cluster image scanning report:
 }
 ```
 
-## Cluster image scanning with the GitLab Kubernetes Agent
+## Cluster image scanning with the GitLab Agent
 
-You can use the [GitLab Kubernetes Agent](../../clusters/agent/index.md) to
+You can use the [GitLab Agent](../../clusters/agent/index.md) to
 scan images from within your Kubernetes cluster and record the vulnerabilities in GitLab.
 
 ### Prerequisites
 
 - [Starboard Operator](https://aquasecurity.github.io/starboard/v0.10.3/operator/installation/kubectl/)
   installed and configured in your cluster.
-- [GitLab Kubernetes Agent](../../clusters/agent/install/index.md)
+- [GitLab Agent](../../clusters/agent/install/index.md)
   set up in GitLab, installed in your cluster, and configured using a configuration repository.
 
 ### Configuration
 
-The GitLab Kubernetes agent begins to run cluster image scanning once the `cluster_image_scanning`
-directive is added to your Kubernetes Agent configuration repository.
-
-See the [Kubernetes agent configuration repository](../../clusters/agent/repository.md#scan-your-container-images-for-vulnerabilities)
-reference to learn more about the cluster image scanning configuration options for the
-GitLab Kubernetes agent.
+The Agent runs the cluster image scanning once the `cluster_image_scanning`
+directive is added to your [Agent's configuration repository](../../clusters/agent/repository.md#scan-your-container-images-for-vulnerabilities).
 
 ## Security Dashboard
 

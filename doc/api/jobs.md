@@ -470,12 +470,12 @@ Example of response
 }
 ```
 
-## Get Kubernetes Agents by `CI_JOB_TOKEN` **(PREMIUM)**
+## Get GitLab Agent by `CI_JOB_TOKEN` **(PREMIUM)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/324269) in GitLab 13.11.
 
-Retrieve the job that generated the `CI_JOB_TOKEN`, along with a list of allowed GitLab
-Kubernetes Agents.
+Retrieve the job that generated the `CI_JOB_TOKEN`, along with a list of allowed
+[agents](../user/clusters/agent/index.md).
 
 ```plaintext
 GET /job/allowed_agents

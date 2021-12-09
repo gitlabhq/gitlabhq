@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/25318) in GitLab 12.10 with Helmfile support via Helm v2.
 > - Helm v2 support was [dropped](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/63577) in GitLab 14.0. Use Helm v3 instead.
-> - [Migrated](https://gitlab.com/gitlab-org/project-templates/cluster-management/-/merge_requests/24) to the GitLab Kubernetes Agent in GitLab 14.5.
+> - [Migrated](https://gitlab.com/gitlab-org/project-templates/cluster-management/-/merge_requests/24) to the GitLab Agent in GitLab 14.5.
 
 Use a repository to install, manage, and deploy clusters applications through code.
 
@@ -31,10 +31,10 @@ you can manage cluster applications with [Helm v3](https://helm.sh/).
 - An `applications` directory with a `helmfile.yaml` configured for each
 application available in the template.
 
-## Use the Kubernetes Agent with the Cluster Management Project Template
+## Use the Agent with the Cluster Management Project Template
 
 To use a new project created from the Cluster Management Project Template
-with a cluster connected to GitLab through the [GitLab Kubernetes Agent](agent/index.md),
+with a cluster connected to GitLab through the [GitLab Agent](agent/index.md),
 you have two options:
 
 - [Use one single project](#single-project) to configure the Agent and manage cluster applications.

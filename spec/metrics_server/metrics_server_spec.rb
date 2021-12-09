@@ -32,6 +32,7 @@ RSpec.describe MetricsServer do # rubocop:disable RSpec/FilePath
     let(:prometheus_config) { ::Prometheus::Client::Configuration.new }
     let(:metrics_dir) { Dir.mktmpdir }
     let(:settings_double) { double(:settings, sidekiq_exporter: {}) }
+    let!(:old_metrics_dir) { ::Prometheus::Client.configuration.multiprocess_files_dir }
 
     subject(:metrics_server) { described_class.new('fake', metrics_dir, true)}
 
@@ -43,8 +44,11 @@ RSpec.describe MetricsServer do # rubocop:disable RSpec/FilePath
     end
 
     after do
+      Gitlab::Metrics.reset_registry!
+
       ::Prometheus::CleanupMultiprocDirService.new.execute
       Dir.rmdir(metrics_dir)
+      ::Prometheus::Client.configuration.multiprocess_files_dir = old_metrics_dir
     end
 
     it 'configures ::Prometheus::Client' do

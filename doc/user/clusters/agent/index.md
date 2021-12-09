@@ -4,15 +4,16 @@ group: Configure
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# GitLab Kubernetes Agent **(FREE)**
+# GitLab Agent for Kubernetes **(FREE)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/223061) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.4.
 > - Support for `grpcs` [introduced](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/issues/7) in GitLab 13.6.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/300960) in GitLab 13.10, KAS became available on GitLab.com under `wss://kas.gitlab.com` through an Early Adopter Program.
-> - Introduced in GitLab 13.11, the GitLab Kubernetes Agent became available to every project on GitLab.com.
-> - The GitLab Kubernetes Agent was [moved](https://gitlab.com/groups/gitlab-org/-/epics/6290) to GitLab Free in 14.5.
+> - Introduced in GitLab 13.11, the GitLab Agent became available to every project on GitLab.com.
+> - The GitLab Agent was [moved](https://gitlab.com/groups/gitlab-org/-/epics/6290) to GitLab Free in 14.5.
+> - [Renamed](https://gitlab.com/groups/gitlab-org/-/epics/7167) from "GitLab Kubernetes Agent" to "GitLab Agent for Kubernetes" in GitLab 14.6.
 
-The [GitLab Kubernetes Agent](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent) ("Agent", for short)
+The [GitLab Agent for Kubernetes](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent) ("Agent", for short)
 is an active in-cluster component for connecting Kubernetes clusters to GitLab safely to support cloud-native deployment, management, and monitoring.
 
 The Agent is installed into the cluster through code, providing you with a fast, safe, stable, and scalable solution.
@@ -38,7 +39,7 @@ the all-in-one DevOps platform for your product and your team.
 
 ## Agent's features
 
-By using the GitLab Kubernetes Agent, you can:
+By using the Agent, you can:
 
 - Connect GitLab with a Kubernetes cluster behind a firewall or a
 Network Address Translation (NAT).
@@ -53,7 +54,7 @@ from GitLab CI/CD jobs while keeping the cluster's APIs safe and unexposed
 to the internet.
 - [Deploy the GitLab Runner in a Kubernetes cluster](https://docs.gitlab.com/runner/install/kubernetes-agent.html).
 
-See the [GitLab Kubernetes Agent roadmap](https://gitlab.com/groups/gitlab-org/-/epics/3329) to track its development.
+See the [Agent roadmap](https://gitlab.com/groups/gitlab-org/-/epics/3329) to track its development.
 
 To contribute to the Agent, see the [Agent's development documentation](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/tree/master/doc).
 
@@ -68,7 +69,7 @@ sequenceDiagram
   participant D as Developer
   participant A as Application code repository
   participant M as Manifest repository
-  participant K as Kubernetes Agent
+  participant K as GitLab Agent
   participant C as Agent configuration repository
   loop Regularly
     K-->>C: Grab the configuration
@@ -85,7 +86,7 @@ For more details, refer to our [architecture documentation](https://gitlab.com/g
 
 ## Install the Agent in your cluster
 
-See how to [install the GitLab Kubernetes Agent in your cluster](install/index.md).
+See how to [install the Agent in your cluster](install/index.md).
 
 ## GitOps deployments **(PREMIUM)**
 
@@ -133,7 +134,7 @@ with the following differences:
 - When you define a configuration repository, you must do so with [Cilium settings](repository.md#surface-network-security-alerts-from-cluster-to-gitlab).
 - You do not need to specify the `gitops` configuration section.
 
-## Remove the GitLab Kubernetes Agent
+## Remove an agent
 
 1. Get the `<cluster-agent-id>` and the `<cluster-agent-token-id>` from a query in the interactive GraphQL explorer.
 For GitLab.com, go to <https://gitlab.com/-/graphql-explorer> to open GraphQL Explorer.
@@ -183,7 +184,7 @@ For self-managed GitLab instances, go to `https://gitlab.example.com/-/graphql-e
    }
    ```
 
-1. Delete the GitLab Kubernetes Agent in your cluster:
+1. Delete the Agent in your cluster:
 
    ```shell
    kubectl delete -n gitlab-kubernetes-agent -f ./resources.yml
@@ -191,14 +192,14 @@ For self-managed GitLab instances, go to `https://gitlab.example.com/-/graphql-e
 
 ## Troubleshooting
 
-If you face any issues while using GitLab Kubernetes Agent, you can read the
-service logs with the following command
+If you face any issues while using the Agent, read the
+service logs with the following command:
 
 ```shell
 kubectl logs -f -l=app=gitlab-kubernetes-agent -n gitlab-kubernetes-agent
 ```
 
-GitLab administrators can additionally view the [Kubernetes Agent Server logs](../../../administration/clusters/kas.md#troubleshooting).
+GitLab administrators can additionally view the [GitLab Agent Server logs](../../../administration/clusters/kas.md#troubleshooting).
 
 ### Agent logs
 

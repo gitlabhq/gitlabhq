@@ -4,15 +4,15 @@ group: Configure
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Install the Kubernetes Agent Server (KAS) **(FREE SELF)**
+# Install the GitLab Agent Server (KAS) **(FREE SELF)**
 
 > [Moved](https://gitlab.com/groups/gitlab-org/-/epics/6290) from GitLab Premium to GitLab Free in 14.5.
 
-The Kubernetes Agent Server (KAS) is a GitLab backend service dedicated to
-managing [Kubernetes Agents](../../user/clusters/agent/index.md).
+The GitLab Agent Server (KAS) is a GitLab backend service dedicated to
+managing the [GitLab Agent](../../user/clusters/agent/index.md).
 
 The KAS is already installed and available in GitLab.com under `wss://kas.gitlab.com`.
-See [how to use GitLab.com's KAS](../../user/clusters/agent/install/index.md#set-up-the-kubernetes-agent-server).
+See [how to use GitLab.com's KAS](../../user/clusters/agent/install/index.md#set-up-the-agent-server).
 This document describes how to install a KAS for GitLab self-managed instances.
 
 ## Installation options
@@ -29,7 +29,7 @@ You can also opt to use an [external KAS](#use-an-external-kas-installation).
 
 For [Omnibus](https://docs.gitlab.com/omnibus/) package installations:
 
-1. Edit `/etc/gitlab/gitlab.rb` to enable the Kubernetes Agent Server:
+1. Edit `/etc/gitlab/gitlab.rb` to enable the Agent Server:
 
    ```ruby
    gitlab_kas['enable'] = true

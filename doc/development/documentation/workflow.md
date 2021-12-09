@@ -4,66 +4,44 @@ group: unassigned
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Documentation process
+# How to update GitLab documentation
 
-The process for creating and maintaining GitLab product documentation allows
-anyone to contribute a merge request or create an issue for GitLab
-documentation.
-
-Documentation updates relating to new features or feature enhancements must
-use the [feature workflow process](https://about.gitlab.com/handbook/engineering/ux/technical-writing/workflow/#for-a-product-change) described in the GitLab Handbook.
-
-## Who updates the docs?
-
-*Anyone* can contribute! You can create a merge request for documentation when:
+Anyone can contribute to the GitLab documentation! You can create a merge request for documentation when:
 
 - You find errors or other room for improvement in existing documentation.
 - You have an idea for all-new documentation that would help a GitLab user or administrator to
   accomplish their work with GitLab.
 
-## Documentation labels
-
-Regardless of the type of issue or merge request, certain labels are required when documentation
-is added or updated. The following are added by the issue or merge request author:
-
-- An appropriate [type label](../contributing/issue_workflow.md#type-labels).
-- The [stage label](../contributing/issue_workflow.md#stage-labels) and
-  [group label](../contributing/issue_workflow.md#group-labels). For example, `~devops::create` and
-  `~group::source code`.
-- The `~documentation` [specialization label](../contributing/issue_workflow.md#specialization-labels).
-
-The following are also added by members of the Technical Writing team:
-
-- A documentation [scoped label](../../user/project/labels.md#scoped-labels) with the
-  `docs::` prefix. For example, `~docs::improvement`.
-- The `~Technical Writing` [team label](../contributing/issue_workflow.md#team-labels).
-
-Documentation changes that are not associated with the release of a new or updated feature
-do not take the `~"type::feature"` label, but still need the `~documentation` label.
-
-They may include:
-
-- Documentation created or updated to improve accuracy, completeness, ease of use, or any reason
-  other than a [feature change](https://about.gitlab.com/handbook/engineering/ux/technical-writing/workflow/#for-a-product-change).
-- Addressing gaps in existing documentation, or making improvements to existing documentation.
-- Work on special projects related to the documentation.
+If you are working on a feature or enhancement, use the
+[feature workflow process described in the GitLab Handbook](https://about.gitlab.com/handbook/engineering/ux/technical-writing/workflow/#for-a-product-change).
 
 ## How to update the docs
 
-To update GitLab documentation:
+If you are not a GitLab team member, or do not have the Developer role for the GitLab repository, to update GitLab documentation:
 
-1. Either:
-   - Click the **Edit this Page** link at the bottom of any page on <https://docs.gitlab.com>.
-   - Navigate to one of the repositories and documentation paths listed on the
-     [GitLab Documentation guidelines](index.md) page.
-1. Follow the described standards and processes listed on the page, including:
-   - The [Structure and template](structure.md) page.
-   - The [Style Guide](styleguide/index.md).
-   - The [Markdown Guide](https://about.gitlab.com/handbook/markdown-guide/).
-1. Follow the [Merge Request Guidelines](../contributing/merge_request_workflow.md#merge-request-guidelines).
+1. Select an issue you'd like to work on.
+   - You don't need an issue to open a merge request.
+   - For a Hackathon, in the issue, in a comment, mention the person who opened the issue and ask for the issue to be assigned to you.
+     To be fair to other contributors, if you see someone has already asked to work on the issue, choose another issue.
+     If you are looking for issues to work on and don't see any that suit you, you can always fix [Vale](testing.md#vale) issues.
+1. Go to the [GitLab repository](https://gitlab.com/gitlab-org/gitlab).
+1. In the top-right, select **Fork**. Forking makes a copy of the repository on GitLab.com.
+1. In your fork, find the documentation page by going to the `\doc` directory.
+1. If you know Git, make your changes and open a merge request.
+   If not, follow these steps:
+   1. In the top right, select **Edit**, make the changes, and **Save**.
+   1. From the left menu, select **Merge requests**.
+   1. For the source branch, select your fork and branch. If you did not create a branch, select `master`.
+      For the target branch, select the [GitLab repository](https://gitlab.com/gitlab-org/gitlab) `master` branch.
+   1. For the commit message, use 3-5 words, start with a capital letter, and do not end with a period.
+   1. Select **Commit changes**. A merge request opens.
+   1. Select the **Documentation** template. In the description, write a brief summary of the changes and link to the related issue, if there is one.
 
-NOTE:
-Work in a fork if you do not have the Developer role in the GitLab project.
+If you need help while working on the page, view:
+
+- The [Style Guide](styleguide/index.md).
+- The [Word list](styleguide/word_list.md)
+- The [Markdown Guide](https://about.gitlab.com/handbook/markdown-guide/).
 
 ### Ask for help
 
@@ -82,6 +60,22 @@ To identify someone who can help you:
    - If non-urgent help is required, ping the Technical Writer in the issue or merge request.
 
 If you are a member of the GitLab Slack workspace, you can request help in `#docs`.
+
+## Documentation labels
+
+When you author an issue or merge request, you must add these labels:
+
+- A [type label](../contributing/issue_workflow.md#type-labels).
+- A [stage label](../contributing/issue_workflow.md#stage-labels) and [group label](../contributing/issue_workflow.md#group-labels).
+  For example, `~devops::create` and `~group::source code`.
+- A `~documentation` [specialization label](../contributing/issue_workflow.md#specialization-labels).
+
+A member of the Technical Writing team adds these labels:
+
+- A [documentation scoped label](../../user/project/labels.md#scoped-labels) with the
+  `docs::` prefix. For example, `~docs::improvement`.
+- The [`~Technical Writing` team label](../contributing/issue_workflow.md#team-labels).
+- A type label: either `~"type::feature"` or `~"type::maintenance"`.
 
 ### Reviewing and merging
 

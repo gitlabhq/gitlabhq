@@ -23,9 +23,10 @@ describe('~/frontend/environments/graphql/resolvers', () => {
   describe('environmentApp', () => {
     it('should fetch environments and map them to frontend data', async () => {
       const cache = { writeQuery: jest.fn() };
-      mock.onGet(ENDPOINT, { params: { nested: true } }).reply(200, environmentsApp, {});
+      const scope = 'available';
+      mock.onGet(ENDPOINT, { params: { nested: true, scope } }).reply(200, environmentsApp, {});
 
-      const app = await mockResolvers.Query.environmentApp(null, null, { cache });
+      const app = await mockResolvers.Query.environmentApp(null, { scope }, { cache });
       expect(app).toEqual(resolvedEnvironmentsApp);
       expect(cache.writeQuery).toHaveBeenCalledWith({
         query: pollIntervalQuery,
@@ -34,11 +35,12 @@ describe('~/frontend/environments/graphql/resolvers', () => {
     });
     it('should set the poll interval when there is one', async () => {
       const cache = { writeQuery: jest.fn() };
+      const scope = 'stopped';
       mock
-        .onGet(ENDPOINT, { params: { nested: true } })
+        .onGet(ENDPOINT, { params: { nested: true, scope } })
         .reply(200, environmentsApp, { 'poll-interval': 3000 });
 
-      await mockResolvers.Query.environmentApp(null, null, { cache });
+      await mockResolvers.Query.environmentApp(null, { scope }, { cache });
       expect(cache.writeQuery).toHaveBeenCalledWith({
         query: pollIntervalQuery,
         data: { interval: 3000 },

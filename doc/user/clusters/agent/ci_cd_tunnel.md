@@ -19,7 +19,7 @@ Only CI/CD jobs set in the configuration project can access one of the configure
 
 ## Prerequisites
 
-- A running [`kas` instance](install/index.md#set-up-the-kubernetes-agent-server).
+- A running [`kas` instance](install/index.md#set-up-the-agent-server).
 - A [configuration repository](install/index.md#define-a-configuration-repository) with an Agent config file
   installed (`.gitlab/agents/<agent-name>/config.yaml`).
 - An [Agent record](install/index.md#create-an-agent-record-in-gitlab).

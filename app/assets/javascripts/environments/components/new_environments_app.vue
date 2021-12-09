@@ -1,6 +1,6 @@
 <script>
 import { GlBadge, GlTab, GlTabs } from '@gitlab/ui';
-import { s__ } from '~/locale';
+import { __, s__ } from '~/locale';
 import environmentAppQuery from '../graphql/queries/environment_app.query.graphql';
 import pollIntervalQuery from '../graphql/queries/poll_interval.query.graphql';
 import EnvironmentFolder from './new_environment_folder.vue';
@@ -17,6 +17,11 @@ export default {
   apollo: {
     environmentApp: {
       query: environmentAppQuery,
+      variables() {
+        return {
+          scope: this.scope,
+        };
+      },
       pollInterval() {
         return this.interval;
       },
@@ -29,10 +34,13 @@ export default {
   i18n: {
     newEnvironmentButtonLabel: s__('Environments|New environment'),
     reviewAppButtonLabel: s__('Environments|Enable review app'),
+    available: __('Available'),
+    stopped: __('Stopped'),
   },
   modalId: 'enable-review-app-info',
   data() {
-    return { interval: undefined, isReviewAppModalVisible: false };
+    const scope = new URLSearchParams(window.location.search).get('scope') || 'available';
+    return { interval: undefined, scope, isReviewAppModalVisible: false };
   },
   computed: {
     canSetupReviewApp() {
@@ -71,10 +79,24 @@ export default {
         },
       };
     },
+    stoppedCount() {
+      return this.environmentApp?.stoppedCount;
+    },
   },
   methods: {
     showReviewAppModal() {
       this.isReviewAppModalVisible = true;
+    },
+    setScope(scope) {
+      this.scope = scope;
+      this.$apollo.queries.environmentApp.stopPolling();
+      this.$nextTick(() => {
+        if (this.interval) {
+          this.$apollo.queries.environmentApp.startPolling(this.interval);
+        } else {
+          this.$apollo.queries.environmentApp.refetch({ scope });
+        }
+      });
     },
   },
 };
@@ -90,22 +112,32 @@ export default {
     <gl-tabs
       :action-secondary="addEnvironment"
       :action-primary="openReviewAppModal"
+      sync-active-tab-with-query-params
+      query-param-name="scope"
       @primary="showReviewAppModal"
     >
-      <gl-tab>
+      <gl-tab query-param-value="available" @click="setScope('available')">
         <template #title>
-          <span>{{ __('Available') }}</span>
+          <span>{{ $options.i18n.available }}</span>
           <gl-badge size="sm" class="gl-tab-counter-badge">
             {{ availableCount }}
           </gl-badge>
         </template>
-        <environment-folder
-          v-for="folder in folders"
-          :key="folder.name"
-          class="gl-mb-3"
-          :nested-environment="folder"
-        />
+      </gl-tab>
+      <gl-tab query-param-value="stopped" @click="setScope('stopped')">
+        <template #title>
+          <span>{{ $options.i18n.stopped }}</span>
+          <gl-badge size="sm" class="gl-tab-counter-badge">
+            {{ stoppedCount }}
+          </gl-badge>
+        </template>
       </gl-tab>
     </gl-tabs>
+    <environment-folder
+      v-for="folder in folders"
+      :key="folder.name"
+      class="gl-mb-3"
+      :nested-environment="folder"
+    />
   </div>
 </template>

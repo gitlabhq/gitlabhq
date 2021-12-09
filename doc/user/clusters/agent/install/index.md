@@ -4,11 +4,11 @@ group: Configure
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Install the GitLab Kubernetes Agent **(FREE)**
+# Install the GitLab Agent **(FREE)**
 
 > [Moved](https://gitlab.com/groups/gitlab-org/-/epics/6290) to GitLab Free in 14.5.
 
-To get started with the GitLab Kubernetes Agent, install it in your cluster.
+To get started with the Agent, install it in your cluster.
 
 Pre-requisites:
 
@@ -17,9 +17,9 @@ Pre-requisites:
 
 ## Installation steps
 
-To install the [GitLab Kubernetes Agent](../index.md) in your cluster:
+To install the [Agent](../index.md) in your cluster:
 
-1. [Set up the Kubernetes Agent Server](#set-up-the-kubernetes-agent-server) for your GitLab instance.
+1. [Set up the Agent Server](#set-up-the-agent-server) for your GitLab instance.
 1. [Define a configuration repository](#define-a-configuration-repository).
 1. [Create an Agent record in GitLab](#create-an-agent-record-in-gitlab).
 1. [Install the Agent into the cluster](#install-the-agent-into-the-cluster).
@@ -28,13 +28,13 @@ To install the [GitLab Kubernetes Agent](../index.md) in your cluster:
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> Watch a GitLab 14.2 [walking-through video](https://www.youtube.com/watch?v=XuBpKtsgGkE) with this process.
 
-### Set up the Kubernetes Agent Server
+### Set up the Agent Server
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3834) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.10, the GitLab Kubernetes Agent Server (KAS) became available on GitLab.com under `wss://kas.gitlab.com`.
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3834) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.10, the Agent Server (KAS) became available on GitLab.com under `wss://kas.gitlab.com`.
 
 To use the KAS:
 
-- If you are a self-managed user, follow the instructions to [install the Kubernetes Agent Server](../../../../administration/clusters/kas.md).
+- If you are a self-managed user, follow the instructions to [install the Agent Server](../../../../administration/clusters/kas.md).
 - If you are a GitLab.com user, when you [set up the configuration repository](#define-a-configuration-repository) for your agent, use `wss://kas.gitlab.com` as the `--kas-address`.
 
 ### Define a configuration repository
@@ -76,7 +76,7 @@ gitops:
     - glob: '/**/*.{yaml,yml,json}'
 ```
 
-All the options for the [Kubernetes Agent configuration repository](../repository.md) are documented separately.
+All the options for the [Agent configuration repository](../repository.md) are documented separately.
 
 ### Create an Agent record in GitLab
 
@@ -113,7 +113,7 @@ To perform a one-liner installation, run the command below. Make sure to replace
 
 - `your-agent-token` with the token received from the previous step (identified as `secret` in the JSON output).
 - `gitlab-kubernetes-agent` with the namespace you defined in the previous step.
-- `wss://kas.gitlab.example.com` with the configured access of the Kubernetes Agent Server (KAS). For GitLab.com users, the KAS is available under `wss://kas.gitlab.com`.
+- `wss://kas.gitlab.example.com` with the configured access of the Agent Server (KAS). For GitLab.com users, the KAS is available under `wss://kas.gitlab.com`.
 - `--agent-version=vX.Y.Z` with the latest released patch version matching your GitLab installation's major and minor versions. For example, for GitLab v13.9.0, use `--agent-version=v13.9.1`. You can find your GitLab version under the "Help/Help" menu.
 
 ```shell
@@ -151,7 +151,7 @@ Kubernetes resources required for the Agent to be installed. You can modify this
 example [`resources.yml` file](#example-resourcesyml-file) in the following ways:
 
 - Replace `namespace: gitlab-kubernetes-agent` with `namespace: <YOUR-DESIRED-NAMESPACE>`.
-- You can configure `kas-address` (Kubernetes Agent Server) in several ways.
+- You can configure `kas-address` (Agent Server) in several ways.
   The agent can use the WebSockets or gRPC protocols to connect to the Agent Server.
   Select the option appropriate for your cluster configuration and GitLab architecture:
   - The `wss` scheme (an encrypted WebSockets connection) is specified by default
@@ -334,7 +334,7 @@ data:
 
 ## Example projects
 
-The following example projects can help you get started with the Kubernetes Agent.
+The following example projects can help you get started with the Agent.
 
 - [Configuration repository](https://gitlab.com/gitlab-org/configure/examples/kubernetes-agent)
 - This basic GitOps example deploys NGINX: [Manifest repository](https://gitlab.com/gitlab-org/configure/examples/gitops-project)
@@ -342,18 +342,18 @@ The following example projects can help you get started with the Kubernetes Agen
 ## View installed Agents
 
 Users with at least the [Developer](../../../permissions.md) can access the user interface
-for the GitLab Kubernetes Agent at **Infrastructure > Kubernetes clusters**, under the
+for the Agent at **Infrastructure > Kubernetes clusters**, under the
 **Agent** tab. This page lists all registered agents for the current project,
 and the configuration directory for each agent:
 
-![GitLab Kubernetes Agent list UI](../../img/kubernetes-agent-ui-list_v14_5.png)
+![GitLab Agent list UI](../../img/kubernetes-agent-ui-list_v14_5.png)
 
-Additional management interfaces are planned for the GitLab Kubernetes Agent.
+Additional management interfaces are planned for the GitLab Agent.
 [Provide more feedback in the related epic](https://gitlab.com/groups/gitlab-org/-/epics/4739).
 
 ## Upgrades and version compatibility
 
-The GitLab Kubernetes Agent is comprised of two major components: `agentk` and `kas`.
+The Agent is comprised of two major components: `agentk` and `kas`.
 As we provide `kas` installers built into the various GitLab installation methods, the required `kas` version corresponds to the GitLab `major.minor` (X.Y) versions.
 
 At the same time, `agentk` and `kas` can differ by 1 minor version in either direction. For example,

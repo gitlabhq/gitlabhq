@@ -19,12 +19,12 @@ const mapEnvironment = (env) => ({
 
 export const resolvers = (endpoint) => ({
   Query: {
-    environmentApp(_context, _variables, { cache }) {
-      return axios.get(endpoint, { params: { nested: true } }).then((res) => {
+    environmentApp(_context, { scope }, { cache }) {
+      return axios.get(endpoint, { params: { nested: true, scope } }).then((res) => {
         const interval = res.headers['poll-interval'];
 
         if (interval) {
-          cache.writeQuery({ query: pollIntervalQuery, data: { interval } });
+          cache.writeQuery({ query: pollIntervalQuery, data: { interval: parseFloat(interval) } });
         } else {
           cache.writeQuery({ query: pollIntervalQuery, data: { interval: undefined } });
         }

@@ -4,7 +4,7 @@ group: Global Search
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Troubleshooting Elasticsearch
+# Troubleshooting Elasticsearch **(PREMIUM SELF)**
 
 To install and configure Elasticsearch, and for common and known issues,
 visit the [administrator documentation](../../integration/elasticsearch.md).
