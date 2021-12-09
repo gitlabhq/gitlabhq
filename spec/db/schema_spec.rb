@@ -81,7 +81,6 @@ RSpec.describe 'Database schema' do
     subscriptions: %w[user_id subscribable_id],
     suggestions: %w[commit_id],
     taggings: %w[tag_id taggable_id tagger_id],
-    terraform_state_versions: %w[ci_build_id],
     timelogs: %w[user_id],
     todos: %w[target_id commit_id],
     uploads: %w[model_id],

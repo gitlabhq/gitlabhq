@@ -45,10 +45,6 @@ module QA
           element :tree_holder, '.tree-holder' # rubocop:disable QA/ElementWithPattern
         end
 
-        view 'app/views/projects/buttons/_dropdown.html.haml' do
-          element :create_new_dropdown
-        end
-
         view 'app/views/projects/buttons/_fork.html.haml' do
           element :fork_label, "%span= s_('ProjectOverview|Fork')" # rubocop:disable QA/ElementWithPattern
           element :fork_link, "link_to new_project_fork_path(@project)" # rubocop:disable QA/ElementWithPattern

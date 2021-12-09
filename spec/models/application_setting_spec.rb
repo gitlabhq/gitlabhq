@@ -1239,4 +1239,30 @@ RSpec.describe ApplicationSetting do
       expect(subject.kroki_formats_excalidraw).to eq(true)
     end
   end
+
+  describe '#static_objects_external_storage_auth_token=' do
+    subject { setting.static_objects_external_storage_auth_token = token }
+
+    let(:token) { 'Test' }
+
+    it 'stores an encrypted version of the token' do
+      subject
+
+      expect(setting[:static_objects_external_storage_auth_token]).to be_nil
+      expect(setting[:static_objects_external_storage_auth_token_encrypted]).to be_present
+      expect(setting.static_objects_external_storage_auth_token).to eq('Test')
+    end
+
+    context 'when token is empty' do
+      let(:token) { '' }
+
+      it 'removes an encrypted version of the token' do
+        subject
+
+        expect(setting[:static_objects_external_storage_auth_token]).to be_nil
+        expect(setting[:static_objects_external_storage_auth_token_encrypted]).to be_nil
+        expect(setting.static_objects_external_storage_auth_token).to be_nil
+      end
+    end
+  end
 end

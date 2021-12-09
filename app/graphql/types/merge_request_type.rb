@@ -148,7 +148,8 @@ module Types
     field :author, Types::UserType, null: true,
           description: 'User who created this merge request.'
     field :participants, Types::UserType.connection_type, null: true, complexity: 15,
-          description: 'Participants in the merge request. This includes the author, assignees, reviewers, and users mentioned in notes.'
+          description: 'Participants in the merge request. This includes the author, assignees, reviewers, and users mentioned in notes.',
+          resolver: Resolvers::Users::ParticipantsResolver
     field :subscribed, GraphQL::Types::Boolean, method: :subscribed?, null: false, complexity: 5,
           description: 'Indicates if the currently logged in user is subscribed to this merge request.'
     field :labels, Types::LabelType.connection_type, null: true, complexity: 5,

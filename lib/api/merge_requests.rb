@@ -282,7 +282,7 @@ module API
       get ':id/merge_requests/:merge_request_iid/participants', feature_category: :code_review, urgency: :low do
         merge_request = find_merge_request_with_access(params[:merge_request_iid])
 
-        participants = ::Kaminari.paginate_array(merge_request.participants)
+        participants = ::Kaminari.paginate_array(merge_request.visible_participants(current_user))
 
         present paginate(participants), with: Entities::UserBasic
       end

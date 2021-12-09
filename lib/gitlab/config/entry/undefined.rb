@@ -31,6 +31,10 @@ module Gitlab
           false
         end
 
+        def type
+          nil
+        end
+
         def inspect
           "#<#{self.class.name}>"
         end

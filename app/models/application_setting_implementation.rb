@@ -363,6 +363,14 @@ module ApplicationSettingImplementation
     super(levels&.map { |level| Gitlab::VisibilityLevel.level_value(level) })
   end
 
+  def static_objects_external_storage_auth_token=(token)
+    if token.present?
+      set_static_objects_external_storage_auth_token(token)
+    else
+      self.static_objects_external_storage_auth_token_encrypted = nil
+    end
+  end
+
   def performance_bar_allowed_group
     Group.find_by_id(performance_bar_allowed_group_id)
   end

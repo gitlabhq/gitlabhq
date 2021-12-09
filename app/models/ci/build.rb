@@ -59,7 +59,7 @@ module Ci
     has_one :runner_session, class_name: 'Ci::BuildRunnerSession', validate: true, inverse_of: :build
     has_one :trace_metadata, class_name: 'Ci::BuildTraceMetadata', inverse_of: :build
 
-    has_many :terraform_state_versions, class_name: 'Terraform::StateVersion', dependent: :nullify, inverse_of: :build, foreign_key: :ci_build_id # rubocop:disable Cop/ActiveRecordDependent
+    has_many :terraform_state_versions, class_name: 'Terraform::StateVersion', inverse_of: :build, foreign_key: :ci_build_id
 
     accepts_nested_attributes_for :runner_session, update_only: true
     accepts_nested_attributes_for :job_variables

@@ -29,7 +29,7 @@ RSpec.describe Ci::Build do
   it { is_expected.to have_one(:deployment) }
   it { is_expected.to have_one(:runner_session) }
   it { is_expected.to have_one(:trace_metadata) }
-  it { is_expected.to have_many(:terraform_state_versions).dependent(:nullify).inverse_of(:build) }
+  it { is_expected.to have_many(:terraform_state_versions).inverse_of(:build) }
 
   it { is_expected.to validate_presence_of(:ref) }
 

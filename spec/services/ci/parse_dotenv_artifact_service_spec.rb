@@ -23,6 +23,20 @@ RSpec.describe Ci::ParseDotenvArtifactService do
           hash_including('key' => 'KEY2', 'value' => 'VAR2'))
       end
 
+      context 'when dotenv variables are conflicting against manual variables' do
+        before do
+          create(:ci_job_variable, job: build, key: 'KEY1')
+        end
+
+        it 'returns an error message that there is a duplicate variable' do
+          subject
+
+          expect(subject[:status]).to eq(:error)
+          expect(subject[:message]).to include("Key (key, job_id)=(KEY1, #{build.id}) already exists.")
+          expect(subject[:http_status]).to eq(:bad_request)
+        end
+      end
+
       context 'when parse error happens' do
         before do
           allow(service).to receive(:scan_line!) { raise described_class::ParserError, 'Invalid Format' }

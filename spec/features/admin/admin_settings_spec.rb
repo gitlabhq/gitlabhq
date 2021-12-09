@@ -445,6 +445,24 @@ RSpec.describe 'Admin updates settings' do
 
         expect(current_settings.repository_storages_weighted).to eq('default' => 50)
       end
+
+      context 'External storage for repository static objects' do
+        it 'changes Repository external storage settings' do
+          encrypted_token = Gitlab::CryptoHelper.aes256_gcm_encrypt('OldToken')
+          current_settings.update_attribute :static_objects_external_storage_auth_token_encrypted, encrypted_token
+
+          visit repository_admin_application_settings_path
+
+          page.within('.as-repository-static-objects') do
+            fill_in 'application_setting_static_objects_external_storage_url', with: 'http://example.com'
+            fill_in 'application_setting_static_objects_external_storage_auth_token', with: 'Token'
+            click_button 'Save changes'
+          end
+
+          expect(current_settings.static_objects_external_storage_url).to eq('http://example.com')
+          expect(current_settings.static_objects_external_storage_auth_token).to eq('Token')
+        end
+      end
     end
 
     context 'Reporting page' do

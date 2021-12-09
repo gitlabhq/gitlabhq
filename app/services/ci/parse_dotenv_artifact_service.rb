@@ -14,7 +14,7 @@ module Ci
       Ci::JobVariable.bulk_insert!(variables)
 
       success
-    rescue SizeLimitError, ParserError, ActiveRecord::RecordInvalid => error
+    rescue SizeLimitError, ParserError, ActiveRecord::RecordInvalid, ActiveRecord::RecordNotUnique => error
       Gitlab::ErrorTracking.track_exception(error, job_id: artifact.job_id)
       error(error.message, :bad_request)
     end

@@ -873,7 +873,7 @@ RSpec.describe API::Issues do
     end
 
     it 'returns 404 if the issue is confidential' do
-      post api("/projects/#{project.id}/issues/#{confidential_issue.iid}/participants", non_member)
+      get api("/projects/#{project.id}/issues/#{confidential_issue.iid}/participants", non_member)
 
       expect(response).to have_gitlab_http_status(:not_found)
     end

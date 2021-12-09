@@ -41,3 +41,7 @@ pages_deployments:
   - table: ci_builds
     column: ci_build_id
     on_delete: async_nullify
+terraform_state_versions:
+  - table: ci_builds
+    column: ci_build_id
+    on_delete: async_nullify

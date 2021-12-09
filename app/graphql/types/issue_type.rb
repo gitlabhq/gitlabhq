@@ -80,7 +80,8 @@ module Types
           description: 'Relative position of the issue (used for positioning in epic tree and issue boards).'
 
     field :participants, Types::UserType.connection_type, null: true, complexity: 5,
-          description: 'List of participants in the issue.'
+          description: 'List of participants in the issue.',
+          resolver: Resolvers::Users::ParticipantsResolver
     field :emails_disabled, GraphQL::Types::Boolean, null: false,
           method: :project_emails_disabled?,
           description: 'Indicates if a project has email notifications disabled: `true` if email notifications are disabled.'
