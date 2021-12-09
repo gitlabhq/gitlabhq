@@ -349,6 +349,11 @@ Ensure your SAML identity provider sends an attribute statement named `Groups` o
 </saml:AttributeStatement>
 ```
 
+Other attribute names such as `http://schemas.microsoft.com/ws/2008/06/identity/claims/groups`
+are not accepted as a source of groups.
+See the [SAML troubleshooting page](../../../administration/troubleshooting/group_saml_scim.md)
+for examples on configuring the required attribute name in the SAML identity provider's settings.
+
 NOTE:
 The value for `Groups` or `groups` in the SAML response can be either the group name or the group ID.
 To inspect the SAML response, you can use one of these [SAML debugging tools](#saml-debugging-tools).

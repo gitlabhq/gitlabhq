@@ -3991,6 +3991,12 @@ msgstr ""
 msgid "An example showing how to use Jsonnet with GitLab dynamic child pipelines"
 msgstr ""
 
+msgid "An incident has been resolved in %{project_path}."
+msgstr ""
+
+msgid "An incident has been triggered in %{project_path}."
+msgstr ""
+
 msgid "An integer value is required for seconds"
 msgstr ""
 
@@ -13930,6 +13936,9 @@ msgstr ""
 msgid "Escalation policies must have at least one rule"
 msgstr ""
 
+msgid "Escalation policy:"
+msgstr ""
+
 msgid "EscalationPolicies|%{clockIcon} IF alert is not %{alertStatus} in %{minutes}"
 msgstr ""
 
@@ -22244,6 +22253,9 @@ msgid "Metrics Dashboard YAML definition is valid."
 msgstr ""
 
 msgid "Metrics and profiling"
+msgstr ""
+
+msgid "Metrics:"
 msgstr ""
 
 msgid "MetricsDashboardAnnotation|Annotation can't belong to both a cluster and an environment at the same time"
@@ -38614,6 +38626,12 @@ msgid "View group in admin area"
 msgstr ""
 
 msgid "View group labels"
+msgstr ""
+
+msgid "View incident details at"
+msgstr ""
+
+msgid "View incident details."
 msgstr ""
 
 msgid "View incident issues."

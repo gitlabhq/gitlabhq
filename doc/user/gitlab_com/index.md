@@ -149,16 +149,16 @@ The [maximum file size](../../administration/instance_limits.md#file-size-limits
 for a package uploaded to the [GitLab Package Registry](../../user/packages/package_registry/index.md)
 varies by format:
 
-| Package type | GitLab.com | Default |
-|--------------|------------|---------|
-| Conan        | 5 GB       | 3 GB    |
-| Generic      | 5 GB       | 5 GB    |
-| Helm         | 5 MB       | 5 MB    |
-| Maven        | 5 GB       | 3 GB    |
-| npm:         | 5 GB       | 500 MB  |
-| NuGet        | 5 GB       | 500 MB  |
-| PyPI         | 5 GB       | 3 GB    |
-| Terraform    | 1 GB       | 1 GB    |
+| Package type | GitLab.com |
+|--------------|------------|
+| Conan        | 5 GB       |
+| Generic      | 5 GB       |
+| Helm         | 5 MB       |
+| Maven        | 5 GB       |
+| npm:         | 5 GB       |
+| NuGet        | 5 GB       |
+| PyPI         | 5 GB       |
+| Terraform    | 1 GB       |
 
 ## Account and limit settings
 

@@ -1,0 +1,8 @@
+---
+name: incident_escalations
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/74337
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/345769
+milestone: '14.6'
+type: development
+group: group::monitor
+default_enabled: false

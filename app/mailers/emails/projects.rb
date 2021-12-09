@@ -59,6 +59,7 @@ module Emails
     def prometheus_alert_fired_email(project, user, alert)
       @project = project
       @alert = alert.present
+      @incident = alert.issue
 
       add_project_headers
       add_alert_headers
@@ -80,11 +81,10 @@ module Emails
     end
 
     def add_incident_headers
-      incident = @alert.issue
-      return unless incident
+      return unless @incident
 
-      headers['X-GitLab-Incident-ID'] = incident.id
-      headers['X-GitLab-Incident-IID'] = incident.iid
+      headers['X-GitLab-Incident-ID'] = @incident.id
+      headers['X-GitLab-Incident-IID'] = @incident.iid
     end
   end
 end
