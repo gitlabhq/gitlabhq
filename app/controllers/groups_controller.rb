@@ -60,6 +60,7 @@ class GroupsController < Groups::ApplicationController
   feature_category :importers, [:export, :download_export]
 
   urgency :high, [:unfoldered_environment_names]
+  urgency :low, [:merge_requests]
 
   def index
     redirect_to(current_user ? dashboard_groups_path : explore_groups_path)

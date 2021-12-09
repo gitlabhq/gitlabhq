@@ -14,6 +14,13 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
 
   after_action :track_viewed_diffs_events, only: [:diffs_batch]
 
+  urgency :low, [
+    :show,
+    :diff_for_path,
+    :diffs_batch,
+    :diffs_metadata
+  ]
+
   def show
     render_diffs
   end

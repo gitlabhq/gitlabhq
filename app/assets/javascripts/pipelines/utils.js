@@ -1,6 +1,6 @@
 import * as Sentry from '@sentry/browser';
 import { pickBy } from 'lodash';
-import { SUPPORTED_FILTER_PARAMETERS, NEEDS_PROPERTY } from './constants';
+import { SUPPORTED_FILTER_PARAMETERS } from './constants';
 
 /*
     The following functions are the main engine in transforming the data as
@@ -35,11 +35,11 @@ import { SUPPORTED_FILTER_PARAMETERS, NEEDS_PROPERTY } from './constants';
     10 -> value (constant)
   */
 
-export const createNodeDict = (nodes, { needsKey = NEEDS_PROPERTY } = {}) => {
+export const createNodeDict = (nodes) => {
   return nodes.reduce((acc, node) => {
     const newNode = {
       ...node,
-      needs: node.jobs.map((job) => job[needsKey] || []).flat(),
+      needs: node.jobs.map((job) => job.needs || []).flat(),
     };
 
     if (node.size > 1) {

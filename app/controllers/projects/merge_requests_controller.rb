@@ -71,6 +71,21 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   feature_category :continuous_integration, [:pipeline_status, :pipelines, :exposed_artifacts]
 
   urgency :high, [:export_csv]
+  urgency :low, [
+    :index,
+    :show,
+    :commits,
+    :bulk_update,
+    :edit,
+    :update,
+    :cancel_auto_merge,
+    :merge,
+    :ci_environments_status,
+    :destroy,
+    :rebase,
+    :discussions,
+    :description_diff
+  ]
 
   def index
     @merge_requests = @issuables

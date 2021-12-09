@@ -9,6 +9,13 @@ class Projects::MergeRequests::DraftsController < Projects::MergeRequests::Appli
   before_action :authorize_admin_draft!, only: [:update, :destroy]
   before_action :authorize_admin_draft!, if: -> { action_name == 'publish' && params[:id].present? }
 
+  urgency :low, [
+    :create,
+    :update,
+    :destroy,
+    :publish
+  ]
+
   def index
     drafts = prepare_notes_for_rendering(draft_notes)
     render json: DraftNoteSerializer.new(current_user: current_user).represent(drafts)

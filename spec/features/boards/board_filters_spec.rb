@@ -12,7 +12,7 @@ RSpec.describe 'Issue board filters', :js do
   let_it_be(:release) { create(:release, tag: 'v1.0', project: project, milestones: [milestone_1]) }
   let_it_be(:release_2) { create(:release, tag: 'v2.0', project: project, milestones: [milestone_2]) }
   let_it_be(:issue_1) { create(:issue, project: project, milestone: milestone_1, author: user) }
-  let_it_be(:issue_2) { create(:labeled_issue, project: project, milestone: milestone_2, assignees: [user], labels: [project_label]) }
+  let_it_be(:issue_2) { create(:labeled_issue, project: project, milestone: milestone_2, assignees: [user], labels: [project_label], confidential: true) }
   let_it_be(:award_emoji1) { create(:award_emoji, name: 'thumbsup', user: user, awardable: issue_1) }
 
   let(:filtered_search) { find('[data-testid="issue_1-board-filtered-search"]') }
@@ -97,6 +97,25 @@ RSpec.describe 'Issue board filters', :js do
 
       expect(find('.board:nth-child(1)')).to have_selector('.board-card', count: 1)
       expect(find('.board-card')).to have_content(issue_1.title)
+    end
+  end
+
+  describe 'filters by confidentiality' do
+    before do
+      filter_input.click
+      filter_input.set("confidential:")
+    end
+
+    it 'loads all the confidentiality options when opened and submit one as filter', :aggregate_failures do
+      expect(find('.board:nth-child(1)')).to have_selector('.board-card', count: 2)
+
+      expect_filtered_search_dropdown_results(filter_dropdown, 2)
+
+      filter_dropdown.click_on 'Yes'
+      filter_submit.click
+
+      expect(find('.board:nth-child(1)')).to have_selector('.board-card', count: 1)
+      expect(find('.board-card')).to have_content(issue_2.title)
     end
   end
 

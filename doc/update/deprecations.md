@@ -213,6 +213,12 @@ In GitLab 14.5, we introduced the command `gitlab-ctl promote` to promote any Ge
 
 Announced: 2021-11-22
 
+### Remove `type` and `types` keyword in CI/CD configuration
+
+The `type` and `types` CI/CD keywords will be removed in GitLab 15.0. Pipelines that use these keywords will stop working, so you must switch to `stage` and `stages`, which have the same behavior.
+
+Announced: 2021-12-22
+
 ### Remove the `:dependency_proxy_for_private_groups` feature flag
 
 We added a feature flag because [GitLab-#11582](https://gitlab.com/gitlab-org/gitlab/-/issues/11582) changed how public groups use the Dependency Proxy. Prior to this change, you could use the Dependency Proxy without authentication. The change requires authentication to use the Dependency Proxy.

@@ -45,6 +45,7 @@ export default {
         epicId,
         myReactionEmoji,
         releaseTag,
+        confidential,
       } = this.filterParams;
       const filteredSearchValue = [];
 
@@ -110,6 +111,13 @@ export default {
         filteredSearchValue.push({
           type: 'release',
           value: { data: releaseTag, operator: '=' },
+        });
+      }
+
+      if (confidential !== undefined) {
+        filteredSearchValue.push({
+          type: 'confidential',
+          value: { data: confidential },
         });
       }
 
@@ -211,6 +219,7 @@ export default {
         myReactionEmoji,
         iterationId,
         releaseTag,
+        confidential,
       } = this.filterParams;
       let notParams = {};
 
@@ -245,6 +254,7 @@ export default {
         epic_id: isGid(epicId) ? getIdFromGraphQLId(epicId) : epicId,
         my_reaction_emoji: myReactionEmoji,
         release_tag: releaseTag,
+        confidential,
       };
     },
   },
@@ -310,6 +320,9 @@ export default {
             break;
           case 'release':
             filterParams.releaseTag = filter.value.data;
+            break;
+          case 'confidential':
+            filterParams.confidential = filter.value.data;
             break;
           case 'filtered-search-term':
             if (filter.value.data) plainText.push(filter.value.data);

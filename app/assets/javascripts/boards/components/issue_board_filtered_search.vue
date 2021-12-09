@@ -13,6 +13,7 @@ import { __ } from '~/locale';
 import {
   TOKEN_TITLE_MY_REACTION,
   OPERATOR_IS_AND_IS_NOT,
+  OPERATOR_IS_ONLY,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import AuthorToken from '~/vue_shared/components/filtered_search_bar/tokens/author_token.vue';
 import EmojiToken from '~/vue_shared/components/filtered_search_bar/tokens/emoji_token.vue';
@@ -36,6 +37,7 @@ export default {
     issue: __('Issue'),
     milestone: __('Milestone'),
     release: __('Release'),
+    confidential: __('Confidential'),
   },
   components: { BoardFilteredSearch },
   inject: ['isSignedIn', 'releasesFetchPath'],
@@ -68,6 +70,7 @@ export default {
         type,
         milestone,
         release,
+        confidential,
       } = this.$options.i18n;
       const { types } = this.$options;
       const { fetchAuthors, fetchLabels } = issueBoardFilters(
@@ -131,6 +134,18 @@ export default {
                       return { data };
                     });
                 },
+              },
+              {
+                type: 'confidential',
+                icon: 'eye-slash',
+                title: confidential,
+                unique: true,
+                token: GlFilteredSearchToken,
+                operators: OPERATOR_IS_ONLY,
+                options: [
+                  { icon: 'eye-slash', value: 'yes', title: __('Yes') },
+                  { icon: 'eye', value: 'no', title: __('No') },
+                ],
               },
             ]
           : []),

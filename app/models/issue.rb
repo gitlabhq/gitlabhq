@@ -229,9 +229,37 @@ class Issue < ApplicationRecord
     end
   end
 
+  def next_object_by_relative_position(ignoring: nil, order: :asc)
+    return super unless Feature.enabled?(:optimized_issue_neighbor_queries, project, default_enabled: :yaml)
+
+    array_mapping_scope = -> (id_expression) do
+      relation = Issue.where(Issue.arel_table[:project_id].eq(id_expression))
+
+      if order == :asc
+        relation.where(Issue.arel_table[:relative_position].gt(relative_position))
+      else
+        relation.where(Issue.arel_table[:relative_position].lt(relative_position))
+      end
+    end
+
+    relation = Gitlab::Pagination::Keyset::InOperatorOptimization::QueryBuilder.new(
+      scope: Issue.order(relative_position: order, id: order),
+      array_scope: relative_positioning_parent_projects,
+      array_mapping_scope: array_mapping_scope,
+      finder_query: -> (_, id_expression) { Issue.where(Issue.arel_table[:id].eq(id_expression)) }
+    ).execute
+
+    relation = exclude_self(relation, excluded: ignoring) if ignoring.present?
+
+    relation.take
+  end
+
+  def relative_positioning_parent_projects
+    project.group&.root_ancestor&.all_projects&.select(:id) || Project.id_in(project).select(:id)
+  end
+
   def self.relative_positioning_query_base(issue)
-    projects = issue.project.group&.root_ancestor&.all_projects || issue.project
-    in_projects(projects)
+    in_projects(issue.relative_positioning_parent_projects)
   end
 
   def self.relative_positioning_parent_column

@@ -2,42 +2,35 @@
 
 class SearchService
   include Gitlab::Allowable
+  include Gitlab::Utils::StrongMemoize
 
-  SEARCH_TERM_LIMIT = 64
-  SEARCH_CHAR_LIMIT = 4096
   DEFAULT_PER_PAGE = Gitlab::SearchResults::DEFAULT_PER_PAGE
   MAX_PER_PAGE = 200
 
   def initialize(current_user, params = {})
     @current_user = current_user
-    @params = params.dup
+    @params = Gitlab::Search::Params.new(params, detect_abuse: prevent_abusive_searches?)
   end
 
   # rubocop: disable CodeReuse/ActiveRecord
   def project
-    return @project if defined?(@project)
-
-    @project =
-      if params[:project_id].present?
+    strong_memoize(:project) do
+      if params[:project_id].present? && valid_request?
         the_project = Project.find_by(id: params[:project_id])
         can?(current_user, :read_project, the_project) ? the_project : nil
-      else
-        nil
       end
+    end
   end
   # rubocop: enable CodeReuse/ActiveRecord
 
   # rubocop: disable CodeReuse/ActiveRecord
   def group
-    return @group if defined?(@group)
-
-    @group =
-      if params[:group_id].present?
+    strong_memoize(:group) do
+      if params[:group_id].present? && valid_request?
         the_group = Group.find_by(id: params[:group_id])
         can?(current_user, :read_group, the_group) ? the_group : nil
-      else
-        nil
       end
+    end
   end
   # rubocop: enable CodeReuse/ActiveRecord
 
@@ -55,18 +48,13 @@ class SearchService
     @show_snippets = params[:snippets] == 'true'
   end
 
-  def valid_query_length?
-    params[:search].length <= SEARCH_CHAR_LIMIT
-  end
-
-  def valid_terms_count?
-    params[:search].split.count { |word| word.length >= 3 } <= SEARCH_TERM_LIMIT
-  end
-
   delegate :scope, to: :search_service
+  delegate :valid_terms_count?, :valid_query_length?, to: :params
 
   def search_results
-    @search_results ||= search_service.execute
+    strong_memoize(:search_results) do
+      abuse_detected? ? Gitlab::EmptySearchResults.new : search_service.execute
+    end
   end
 
   def search_objects(preload_method = nil)
@@ -83,7 +71,29 @@ class SearchService
     search_results.aggregations(scope)
   end
 
+  def abuse_detected?
+    strong_memoize(:abuse_detected) do
+      params.abusive?
+    end
+  end
+
+  def abuse_messages
+    return [] unless params.abusive?
+
+    params.abuse_detection.errors.messages
+  end
+
+  def valid_request?
+    strong_memoize(:valid_request) do
+      params.valid?
+    end
+  end
+
   private
+
+  def prevent_abusive_searches?
+    Feature.enabled?(:prevent_abusive_searches, current_user)
+  end
 
   def page
     [1, params[:page].to_i].max

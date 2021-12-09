@@ -9,7 +9,7 @@
         %a.js-retry-load{ href: '#' }
           = s_('UserProfile|Retry')
     .user-calendar-activities
-- if @user.user_readme
+- if @user.user_readme&.rich_viewer
   .row.justify-content-center
     .col-12.col-md-10.col-lg-8.gl-my-6
       .gl-display-flex

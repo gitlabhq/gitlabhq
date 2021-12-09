@@ -1,6 +1,5 @@
 import { memoize } from 'lodash';
 import { createNodeDict } from '../utils';
-import { EXPLICIT_NEEDS_PROPERTY, NEEDS_PROPERTY } from '../constants';
 import { createSankey } from './dag/drawing_utils';
 
 /*
@@ -16,14 +15,12 @@ const deduplicate = (item, itemIndex, arr) => {
   return foundIdx === itemIndex;
 };
 
-export const makeLinksFromNodes = (nodes, nodeDict, { needsKey = NEEDS_PROPERTY } = {}) => {
+export const makeLinksFromNodes = (nodes, nodeDict) => {
   const constantLinkValue = 10; // all links are the same weight
   return nodes
     .map(({ jobs, name: groupName }) =>
-      jobs.map((job) => {
-        const needs = job[needsKey] || [];
-
-        return needs.reduce((acc, needed) => {
+      jobs.map(({ needs = [] }) =>
+        needs.reduce((acc, needed) => {
           // It's possible that we have an optional job, which
           // is being needed by another job. In that scenario,
           // the needed job doesn't exist, so we don't want to
@@ -37,8 +34,8 @@ export const makeLinksFromNodes = (nodes, nodeDict, { needsKey = NEEDS_PROPERTY 
           }
 
           return acc;
-        }, []);
-      }),
+        }, []),
+      ),
     )
     .flat(2);
 };
@@ -79,9 +76,9 @@ export const filterByAncestors = (links, nodeDict) =>
     return !allAncestors.includes(source);
   });
 
-export const parseData = (nodes, { needsKey = NEEDS_PROPERTY } = {}) => {
-  const nodeDict = createNodeDict(nodes, { needsKey });
-  const allLinks = makeLinksFromNodes(nodes, nodeDict, { needsKey });
+export const parseData = (nodes) => {
+  const nodeDict = createNodeDict(nodes);
+  const allLinks = makeLinksFromNodes(nodes, nodeDict);
   const filteredLinks = allLinks.filter(deduplicate);
   const links = filterByAncestors(filteredLinks, nodeDict);
 
@@ -126,8 +123,7 @@ export const removeOrphanNodes = (sankeyfiedNodes) => {
 export const listByLayers = ({ stages }) => {
   const arrayOfJobs = stages.flatMap(({ groups }) => groups);
   const parsedData = parseData(arrayOfJobs);
-  const explicitParsedData = parseData(arrayOfJobs, { needsKey: EXPLICIT_NEEDS_PROPERTY });
-  const dataWithLayers = createSankey()(explicitParsedData);
+  const dataWithLayers = createSankey()(parsedData);
 
   const pipelineLayers = dataWithLayers.nodes.reduce((acc, { layer, name }) => {
     /* sort groups by layer */

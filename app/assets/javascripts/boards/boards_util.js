@@ -220,6 +220,10 @@ export const FiltersInfo = {
   types: {
     negatedSupport: true,
   },
+  confidential: {
+    negatedSupport: false,
+    transform: (val) => val === 'yes',
+  },
   search: {
     negatedSupport: false,
   },

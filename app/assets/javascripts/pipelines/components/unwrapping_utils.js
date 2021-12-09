@@ -1,5 +1,4 @@
 import { reportToSentry } from '../utils';
-import { EXPLICIT_NEEDS_PROPERTY, NEEDS_PROPERTY } from '../constants';
 
 const unwrapGroups = (stages) => {
   return stages.map((stage, idx) => {
@@ -28,16 +27,12 @@ const unwrapNodesWithName = (jobArray, prop, field = 'name') => {
   }
 
   return jobArray.map((job) => {
-    if (job[prop]) {
-      return { ...job, [prop]: job[prop].nodes.map((item) => item[field] || '') };
-    }
-    return job;
+    return { ...job, [prop]: job[prop].nodes.map((item) => item[field] || '') };
   });
 };
 
 const unwrapJobWithNeeds = (denodedJobArray) => {
-  const explicitNeedsUnwrapped = unwrapNodesWithName(denodedJobArray, EXPLICIT_NEEDS_PROPERTY);
-  return unwrapNodesWithName(explicitNeedsUnwrapped, NEEDS_PROPERTY);
+  return unwrapNodesWithName(denodedJobArray, 'needs');
 };
 
 const unwrapStagesWithNeedsAndLookup = (denodedStages) => {

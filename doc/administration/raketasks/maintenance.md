@@ -268,7 +268,7 @@ sudo -u git -H bundle exec rake gitlab:tcp_check[example.com,80] RAILS_ENV=produ
 GitLab uses a shared lock mechanism: `ExclusiveLease` to prevent simultaneous operations
 in a shared resource. An example is running periodic garbage collection on repositories.
 
-In very specific situations, a operation locked by an Exclusive Lease can fail without
+In very specific situations, an operation locked by an Exclusive Lease can fail without
 releasing the lock. If you can't wait for it to expire, you can run this task to manually
 clear it.
 

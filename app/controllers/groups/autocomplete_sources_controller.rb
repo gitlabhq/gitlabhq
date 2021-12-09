@@ -5,6 +5,8 @@ class Groups::AutocompleteSourcesController < Groups::ApplicationController
   feature_category :team_planning, [:issues, :labels, :milestones, :commands]
   feature_category :code_review, [:merge_requests]
 
+  urgency :low, [:merge_requests]
+
   def members
     render json: ::Groups::ParticipantsService.new(@group, current_user).execute(target)
   end

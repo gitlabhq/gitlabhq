@@ -42,6 +42,11 @@ system note in the issue's comments.
 
 ![Confidential issues system notes](img/confidential_issues_system_notes.png)
 
+When an issue is made confidential, only users with at least the [Reporter role](../../permissions.md)
+for the project have access to the issue.
+Users with Guest or [Minimal](../../permissions.md#users-with-minimal-access) roles can't access
+the issue even if they were actively participating before the change.
+
 ## Indications of a confidential issue
 
 There are a few things that visually separate a confidential issue from a

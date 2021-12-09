@@ -552,7 +552,20 @@ export const mockEmojiToken = {
   fetchEmojis: expect.any(Function),
 };
 
-export const mockTokens = (fetchLabels, fetchAuthors, fetchMilestones, hasEmoji) => [
+export const mockConfidentialToken = {
+  type: 'confidential',
+  icon: 'eye-slash',
+  title: 'Confidential',
+  unique: true,
+  token: GlFilteredSearchToken,
+  operators: [{ value: '=', description: 'is' }],
+  options: [
+    { icon: 'eye-slash', value: 'yes', title: 'Yes' },
+    { icon: 'eye', value: 'no', title: 'No' },
+  ],
+};
+
+export const mockTokens = (fetchLabels, fetchAuthors, fetchMilestones, isSignedIn) => [
   {
     icon: 'user',
     title: __('Assignee'),
@@ -593,7 +606,7 @@ export const mockTokens = (fetchLabels, fetchAuthors, fetchMilestones, hasEmoji)
     symbol: '~',
     fetchLabels,
   },
-  ...(hasEmoji ? [mockEmojiToken] : []),
+  ...(isSignedIn ? [mockEmojiToken, mockConfidentialToken] : []),
   {
     icon: 'clock',
     title: __('Milestone'),

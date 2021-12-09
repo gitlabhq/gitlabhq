@@ -12,7 +12,6 @@ class SearchController < ApplicationController
   around_action :allow_gitaly_ref_name_caching
 
   before_action :block_anonymous_global_searches, :check_scope_global_search_enabled, except: :opensearch
-  before_action :strip_surrounding_whitespace_from_search, except: :opensearch
   skip_before_action :authenticate_user!
   requires_cross_project_access if: -> do
     search_term_present = params[:search].present? || params[:term].present?
@@ -93,12 +92,12 @@ class SearchController < ApplicationController
 
   def search_term_valid?
     unless search_service.valid_query_length?
-      flash[:alert] = t('errors.messages.search_chars_too_long', count: SearchService::SEARCH_CHAR_LIMIT)
+      flash[:alert] = t('errors.messages.search_chars_too_long', count: Gitlab::Search::Params::SEARCH_CHAR_LIMIT)
       return false
     end
 
     unless search_service.valid_terms_count?
-      flash[:alert] = t('errors.messages.search_terms_too_long', count: SearchService::SEARCH_TERM_LIMIT)
+      flash[:alert] = t('errors.messages.search_terms_too_long', count: Gitlab::Search::Params::SEARCH_TERM_LIMIT)
       return false
     end
 
@@ -143,6 +142,11 @@ class SearchController < ApplicationController
     payload[:metadata]['meta.search.filters.confidential'] = params[:confidential]
     payload[:metadata]['meta.search.filters.state'] = params[:state]
     payload[:metadata]['meta.search.force_search_results'] = params[:force_search_results]
+
+    if search_service.abuse_detected?
+      payload[:metadata]['abuse.confidence'] = Gitlab::Abuse.confidence(:certain)
+      payload[:metadata]['abuse.messages'] = search_service.abuse_messages
+    end
   end
 
   def block_anonymous_global_searches
@@ -193,10 +197,6 @@ class SearchController < ApplicationController
     else
       render status: :request_timeout
     end
-  end
-
-  def strip_surrounding_whitespace_from_search
-    %i(term search).each { |param| params[param]&.strip! }
   end
 end
 

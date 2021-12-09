@@ -104,6 +104,7 @@ export const FilterFields = {
     'assigneeUsername',
     'assigneeWildcardId',
     'authorUsername',
+    'confidential',
     'labelName',
     'milestoneTitle',
     'milestoneWildcardId',

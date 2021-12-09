@@ -20,6 +20,7 @@ RSpec.describe SearchService do
 
   let(:page) { 1 }
   let(:per_page) { described_class::DEFAULT_PER_PAGE }
+  let(:valid_search) { "what is love?" }
 
   subject(:search_service) { described_class.new(user, search: search, scope: scope, page: page, per_page: per_page) }
 
@@ -30,7 +31,7 @@ RSpec.describe SearchService do
   describe '#project' do
     context 'when the project is accessible' do
       it 'returns the project' do
-        project = described_class.new(user, project_id: accessible_project.id).project
+        project = described_class.new(user, project_id: accessible_project.id, search: valid_search).project
 
         expect(project).to eq accessible_project
       end
@@ -39,7 +40,7 @@ RSpec.describe SearchService do
         search_project = create :project
         search_project.add_guest(user)
 
-        project = described_class.new(user, project_id: search_project.id).project
+        project = described_class.new(user, project_id: search_project.id, search: valid_search).project
 
         expect(project).to eq search_project
       end
@@ -47,7 +48,7 @@ RSpec.describe SearchService do
 
     context 'when the project is not accessible' do
       it 'returns nil' do
-        project = described_class.new(user, project_id: inaccessible_project.id).project
+        project = described_class.new(user, project_id: inaccessible_project.id, search: valid_search).project
 
         expect(project).to be_nil
       end
@@ -55,7 +56,7 @@ RSpec.describe SearchService do
 
     context 'when there is no project_id' do
       it 'returns nil' do
-        project = described_class.new(user).project
+        project = described_class.new(user, search: valid_search).project
 
         expect(project).to be_nil
       end
@@ -65,7 +66,7 @@ RSpec.describe SearchService do
   describe '#group' do
     context 'when the group is accessible' do
       it 'returns the group' do
-        group = described_class.new(user, group_id: accessible_group.id).group
+        group = described_class.new(user, group_id: accessible_group.id, search: valid_search).group
 
         expect(group).to eq accessible_group
       end
@@ -73,7 +74,7 @@ RSpec.describe SearchService do
 
     context 'when the group is not accessible' do
       it 'returns nil' do
-        group = described_class.new(user, group_id: inaccessible_group.id).group
+        group = described_class.new(user, group_id: inaccessible_group.id, search: valid_search).group
 
         expect(group).to be_nil
       end
@@ -81,7 +82,7 @@ RSpec.describe SearchService do
 
     context 'when there is no group_id' do
       it 'returns nil' do
-        group = described_class.new(user).group
+        group = described_class.new(user, search: valid_search).group
 
         expect(group).to be_nil
       end
@@ -118,7 +119,7 @@ RSpec.describe SearchService do
     context 'with accessible project_id' do
       context 'and allowed scope' do
         it 'returns the specified scope' do
-          scope = described_class.new(user, project_id: accessible_project.id, scope: 'notes').scope
+          scope = described_class.new(user, project_id: accessible_project.id, scope: 'notes', search: valid_search).scope
 
           expect(scope).to eq 'notes'
         end
@@ -126,7 +127,7 @@ RSpec.describe SearchService do
 
       context 'and disallowed scope' do
         it 'returns the default scope' do
-          scope = described_class.new(user, project_id: accessible_project.id, scope: 'projects').scope
+          scope = described_class.new(user, project_id: accessible_project.id, scope: 'projects', search: valid_search).scope
 
           expect(scope).to eq 'blobs'
         end
@@ -134,7 +135,7 @@ RSpec.describe SearchService do
 
       context 'and no scope' do
         it 'returns the default scope' do
-          scope = described_class.new(user, project_id: accessible_project.id).scope
+          scope = described_class.new(user, project_id: accessible_project.id, search: valid_search).scope
 
           expect(scope).to eq 'blobs'
         end
@@ -549,6 +550,68 @@ RSpec.describe SearchService do
           # Users are always visible to everyone
           expect(result).to contain_exactly(user, other_user)
         end
+      end
+    end
+  end
+
+  describe '#valid_request?' do
+    let(:scope) { 'issues' }
+    let(:search) { 'foobar' }
+    let(:params) { instance_double(Gitlab::Search::Params) }
+
+    before do
+      allow(Gitlab::Search::Params).to receive(:new).and_return(params)
+      allow(params).to receive(:valid?).and_return double(:valid?)
+    end
+
+    it 'is the return value of params.valid?' do
+      expect(subject.valid_request?).to eq(params.valid?)
+    end
+  end
+
+  describe 'abusive search handling' do
+    subject { described_class.new(user, raw_params) }
+
+    let(:raw_params) { { search: search, scope: scope } }
+    let(:search) { 'foobar' }
+
+    let(:search_service) { double(:search_service) }
+
+    before do
+      stub_feature_flags(prevent_abusive_searches: should_detect_abuse)
+      expect(Gitlab::Search::Params).to receive(:new)
+        .with(raw_params, detect_abuse: should_detect_abuse).and_call_original
+
+      allow(subject).to receive(:search_service).and_return search_service
+    end
+
+    context 'when abusive search but prevent_abusive_searches FF is disabled' do
+      let(:should_detect_abuse) { false }
+      let(:scope) { '1;drop%20table' }
+
+      it 'executes search even if params are abusive' do
+        expect(search_service).to receive(:execute)
+        subject.search_results
+      end
+    end
+
+    context 'a search is abusive' do
+      let(:should_detect_abuse) { true }
+      let(:scope) { '1;drop%20table' }
+
+      it 'does NOT execute search service' do
+        expect(search_service).not_to receive(:execute)
+        subject.search_results
+      end
+    end
+
+    context 'a search is NOT abusive' do
+      let(:should_detect_abuse) { true }
+      let(:scope) { 'issues' }
+
+      it 'executes search service' do
+        expect(search_service).to receive(:execute)
+        subject.search_results
       end
     end
   end

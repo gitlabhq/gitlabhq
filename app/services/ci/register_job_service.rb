@@ -269,14 +269,7 @@ module Ci
       {
         missing_dependency_failure: -> (build, _) { !build.has_valid_build_dependencies? },
         runner_unsupported: -> (build, params) { !build.supported_runner?(params.dig(:info, :features)) },
-        archived_failure: -> (build, _) { build.archived? }
-      }.merge(builds_enabled_checks)
-    end
-
-    def builds_enabled_checks
-      return {} unless ::Feature.enabled?(:ci_queueing_builds_enabled_checks, runner, default_enabled: :yaml)
-
-      {
+        archived_failure: -> (build, _) { build.archived? },
         project_deleted: -> (build, _) { build.project.pending_delete? },
         builds_disabled: -> (build, _) { !build.project.builds_enabled? }
       }

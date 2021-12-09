@@ -13,6 +13,11 @@ class Projects::MergeRequests::ContentController < Projects::MergeRequests::Appl
   FAST_POLLING_INTERVAL = 10.seconds.in_milliseconds
   SLOW_POLLING_INTERVAL = 5.minutes.in_milliseconds
 
+  urgency :low, [
+    :widget,
+    :cached_widget
+  ]
+
   def widget
     respond_to do |format|
       format.json do
