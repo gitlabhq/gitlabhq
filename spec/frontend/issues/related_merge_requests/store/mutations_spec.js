@@ -1,5 +1,5 @@
-import * as types from '~/related_merge_requests/store/mutation_types';
-import mutations from '~/related_merge_requests/store/mutations';
+import * as types from '~/issues/related_merge_requests/store/mutation_types';
+import mutations from '~/issues/related_merge_requests/store/mutations';
 
 describe('RelatedMergeRequests Store Mutations', () => {
   describe('SET_INITIAL_STATE', () => {

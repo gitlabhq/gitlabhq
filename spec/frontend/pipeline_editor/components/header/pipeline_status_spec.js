@@ -39,8 +39,6 @@ describe('Pipeline Status', () => {
   const findPipelineId = () => wrapper.find('[data-testid="pipeline-id"]');
   const findPipelineCommit = () => wrapper.find('[data-testid="pipeline-commit"]');
   const findPipelineErrorMsg = () => wrapper.find('[data-testid="pipeline-error-msg"]');
-  const findPipelineNotTriggeredErrorMsg = () =>
-    wrapper.find('[data-testid="pipeline-not-triggered-error-msg"]');
   const findPipelineLoadingMsg = () => wrapper.find('[data-testid="pipeline-loading-msg"]');
   const findPipelineViewBtn = () => wrapper.find('[data-testid="pipeline-view-btn"]');
   const findStatusIcon = () => wrapper.find('[data-testid="pipeline-status-icon"]');
@@ -119,8 +117,7 @@ describe('Pipeline Status', () => {
         await waitForPromises();
       });
 
-      it('renders api error', () => {
-        expect(findPipelineNotTriggeredErrorMsg().exists()).toBe(false);
+      it('renders error', () => {
         expect(findIcon().attributes('name')).toBe('warning-solid');
         expect(findPipelineErrorMsg().text()).toBe(i18n.fetchError);
       });
@@ -130,23 +127,6 @@ describe('Pipeline Status', () => {
         expect(findPipelineId().exists()).toBe(false);
         expect(findPipelineCommit().exists()).toBe(false);
         expect(findPipelineViewBtn().exists()).toBe(false);
-      });
-    });
-
-    describe('when pipeline is null', () => {
-      beforeEach(() => {
-        mockPipelineQuery.mockResolvedValue({
-          data: { project: { id: '1', pipeline: null } },
-        });
-
-        createComponentWithApollo();
-        waitForPromises();
-      });
-
-      it('renders pipeline not triggered error', () => {
-        expect(findPipelineErrorMsg().exists()).toBe(false);
-        expect(findIcon().attributes('name')).toBe('information-o');
-        expect(findPipelineNotTriggeredErrorMsg().text()).toBe(i18n.pipelineNotTriggeredMsg);
       });
     });
   });

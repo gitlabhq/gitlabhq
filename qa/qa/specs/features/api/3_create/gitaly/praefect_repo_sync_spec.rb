@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Create' do
-    context 'Praefect repository commands', :orchestrated, :gitaly_cluster do
+    context 'Praefect repository commands', :orchestrated, :gitaly_cluster, quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/347415', type: :investigating } do
       let(:praefect_manager) { Service::PraefectManager.new }
 
       let(:repo1) { { "relative_path" => "@hashed/repo1.git", "storage" => "gitaly1", "virtual_storage" => "default" } }

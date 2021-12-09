@@ -8,8 +8,8 @@ import { initIssuableApp, initIssueHeaderActions } from '~/issues/show/issue';
 import { parseIssuableData } from '~/issues/show/utils/parse_data';
 import initNotesApp from '~/notes';
 import { store } from '~/notes/stores';
-import initRelatedMergeRequestsApp from '~/related_merge_requests';
-import initSentryErrorStackTraceApp from '~/sentry_error_stack_trace';
+import initRelatedMergeRequestsApp from '~/issues/related_merge_requests';
+import initSentryErrorStackTraceApp from '~/issues/sentry_error_stack_trace';
 import initIssuableHeaderWarning from '~/issuable/init_issuable_header_warning';
 import ZenMode from '~/zen_mode';
 

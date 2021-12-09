@@ -130,9 +130,9 @@ immediately after merge by the developer or maintainer. For this,
 create an issue using the [Doc Review description template](https://gitlab.com/gitlab-org/gitlab/-/issues/new?issuable_template=Doc%20Review)
 and link to it from the merged merge request that introduced the documentation change.
 
-Circumstances, where a regular pre-merge Technical Writer review might be skipped, include:
+Circumstances in which a regular pre-merge Technical Writer review might be skipped include:
 
-- There is a short amount of time left before the milestone release. If less than three
+- There is a short amount of time left before the milestone release. If fewer than three
  days are remaining, seek a post-merge review and ping the writer via Slack to ensure the review is
   completed as soon as possible.
 - The size of the change is small and you have a high degree of confidence

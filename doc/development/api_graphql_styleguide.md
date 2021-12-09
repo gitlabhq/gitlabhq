@@ -833,7 +833,7 @@ field :id, GraphQL::Types::ID, description: 'ID of the resource.'
 Descriptions of fields and arguments are viewable to users through:
 
 - The [GraphiQL explorer](#graphiql).
-- The [static GraphQL API reference](../api/graphql/#reference).
+- The [static GraphQL API reference](../api/graphql/reference/index.md).
 
 ### Description style guide
 

@@ -6,27 +6,29 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # GraphQL API **(FREE)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/19008) in GitLab 11.0 (enabled by feature flag `graphql`).
-> - [Always enabled](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/30444) in GitLab 12.1.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/19008) in GitLab 11.0 [with a flag](../../administration/feature_flags.md) named `graphql`.
+> - [Enabled](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/30444) in GitLab 12.1.
 
-## Getting Started
+[GraphQL](https://graphql.org/) is a query language for APIs. You can use it to
+request the exact data you need, and therefore limit the number of requests you need.
 
-For those new to the GitLab GraphQL API, see
-[Getting started with GitLab GraphQL API](getting_started.md).
+GraphQL data is arranged in types, so your client can use
+[client-side GraphQL libraries](https://graphql.org/code/#graphql-clients)
+to consume the API and avoid manual parsing.
 
-### Quick Reference
+There are no fixed endpoints and no data model, so you can add
+to the API without creating [breaking changes](../../development/contributing/#breaking-changes).
+This enables us to have a [versionless API](https://graphql.org/learn/best-practices/#versioning).
 
-- The GitLab GraphQL API endpoint is located at `/api/graphql`.
-- Get an [introduction to GraphQL from graphql.org](https://graphql.org/).
-- GitLab supports a wide range of resources, listed in the [GraphQL API Reference](reference/index.md).
+## Work with GraphQL
 
-### Examples
+If you're new to the GitLab GraphQL API, see [Get started with GitLab GraphQL API](getting_started.md).
 
-To work with sample queries that pull data from public projects on GitLab.com,
-see the menu options in the left-hand
-documentation menu, under API > GraphQL at `https://docs.gitlab.com/ee/api/graphql/`.
+You can view the available resources in the [GraphQL API reference](reference/index.md).
+The reference is automatically generated from the GitLab GraphQL schema and
+written to a Markdown file.
 
-The [Getting started](getting_started.md) page includes different methods to customize GraphQL queries.
+The GitLab GraphQL API endpoint is located at `/api/graphql`.
 
 ### GraphiQL
 
@@ -34,23 +36,26 @@ Explore the GraphQL API using the interactive [GraphiQL explorer](https://gitlab
 or on your self-managed GitLab instance on
 `https://<your-gitlab-site.com>/-/graphql-explorer`.
 
-See the [GitLab GraphQL overview](getting_started.md#graphiql) for more information about the GraphiQL Explorer.
+For more information, see [GraphiQL](getting_started.md#graphiql).
 
-## What is GraphQL?
+### View GraphQL examples
 
-[GraphQL](https://graphql.org/) is a query language for APIs that
-allows clients to request exactly the data they need, making it
-possible to get all required data in a limited number of requests.
+You can work with sample queries that pull data from public projects on GitLab.com:
 
-The GraphQL data (fields) can be described in the form of types,
-allowing clients to use [client-side GraphQL
-libraries](https://graphql.org/code/#graphql-clients) to consume the
-API and avoid manual parsing.
+- [Create an audit report](audit_report.md)
+- [Identify issue boards](sample_issue_boards.md)
+- [Query users](users_example.md)
+- [Use custom emojis](custom_emoji.md)
 
-Since there's no fixed endpoints and data model, new abilities can be
-added to the API without creating [breaking changes](../../development/contributing/#breaking-changes). This allows us to
-have a versionless API as described in [the GraphQL
-documentation](https://graphql.org/learn/best-practices/#versioning).
+The [get started](getting_started.md) page includes different methods to customize GraphQL queries.
+
+### Update the GraphQL API reference
+
+If you change the GraphQL schema, create a merge request to get your changes approved.
+To generate the required documentation and schema, see
+[Rake tasks for developers](../../development/rake_tasks.md#update-graphql-documentation-and-schema-definitions).
+
+Run the commands using the [GitLab Development Kit](https://gitlab.com/gitlab-org/gitlab-development-kit/).
 
 ## Vision
 
@@ -240,17 +245,3 @@ If mutation is detected as potential spam and a CAPTCHA service is configured:
   }
 }
 ```
-
-## Reference
-
-The GitLab GraphQL reference [is available](reference/index.md).
-
-It is automatically generated from the GitLab GraphQL schema and embedded in a Markdown file.
-
-## Generate updates for documentation
-
-If you've changed the GraphQL schema, you should set up an MR to gain approval of your changes.
-To generate the required documentation and schema, follow the instructions given in the
-[Rake tasks for developers](../../development/rake_tasks.md#update-graphql-documentation-and-schema-definitions) page.
-
-Be sure to run these commands using the [GitLab Development Kit](https://gitlab.com/gitlab-org/gitlab-development-kit/).

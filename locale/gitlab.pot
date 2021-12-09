@@ -26000,9 +26000,6 @@ msgstr ""
 msgid "Pipeline|Merged result pipeline"
 msgstr ""
 
-msgid "Pipeline|No pipeline was triggered for the latest changes due to the current CI/CD configuration."
-msgstr ""
-
 msgid "Pipeline|Passed"
 msgstr ""
 
