@@ -82,7 +82,7 @@ The final comment in the issue **has to have**:
 
 ## Example
 
-User configuration available in `/etc/gitlab/gitlab.rb` was introduced in GitLab version 10.0, `gitlab_rails['configuration'] = true`. In GitLab version 10.4.0, a new change was introduced that requires rename of this configuration option. New configuration option is `gitlab_rails['better_configuration'] = true`. Development team translates the old configuration into a new one 
+User configuration available in `/etc/gitlab/gitlab.rb` was introduced in GitLab version 10.0, `gitlab_rails['configuration'] = true`. In GitLab version 10.4.0, a new change was introduced that requires rename of this configuration option. New configuration option is `gitlab_rails['better_configuration'] = true`. Development team translates the old configuration into a new one
 and triggers a deprecation procedure.
 
 This means that these two configuration

@@ -12,6 +12,7 @@ import UsersSelect from '~/users_select';
 new IssuableIndex(ISSUABLE_INDEX.MERGE_REQUEST); // eslint-disable-line no-new
 
 addExtraTokensForMergeRequests(IssuableFilteredSearchTokenKeys);
+IssuableFilteredSearchTokenKeys.removeTokensForKeys('iteration');
 
 initFilteredSearch({
   page: FILTERED_SEARCH.MERGE_REQUESTS,

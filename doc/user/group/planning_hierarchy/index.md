@@ -47,7 +47,7 @@ classDiagram
   class Issue
 
   Epic *-- "0..7" Epic
-  Epic "1" *-- "0..*" Issue
+Epic "1"*-- "0..*" Issue
 ```
 
  -->

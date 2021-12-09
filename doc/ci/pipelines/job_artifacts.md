@@ -379,7 +379,7 @@ By default artifacts are always kept for the most recent successful pipeline for
 each ref. This means that the latest artifacts do not immediately expire according
 to the `expire_in` specification.
 
-If a new pipeline for the same ref completes successfully, the previous pipeline's 
+If a new pipeline for the same ref completes successfully, the previous pipeline's
 artifacts are deleted according to the `expire_in` configuration. The artifacts
 of the new pipeline are kept automatically.  
 

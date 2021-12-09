@@ -181,9 +181,9 @@ to integrate GitLab and Jenkins.
 
 ### Error during GitLab configuration - "Connection failed. Please check your settings"
 
-If you get this error message while configuring GitLab, the following are possible causes: 
+If you get this error message while configuring GitLab, the following are possible causes:
 
-- GitLab is unable to reach your Jenkins instance at the address. If your GitLab instance is self-managed, try pinging the 
+- GitLab is unable to reach your Jenkins instance at the address. If your GitLab instance is self-managed, try pinging the
   Jenkins instance at the domain provided on the GitLab instance.
 - The Jenkins instance is at a local address and is not included in the
   [GitLab installation's allowlist](../security/webhooks.md#allowlist-for-local-requests).

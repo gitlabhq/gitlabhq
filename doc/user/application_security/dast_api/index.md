@@ -1218,7 +1218,7 @@ Please use `~"Category:API Security"` [label](../../../development/contributing/
 
 [Search the issue tracker](https://gitlab.com/gitlab-org/gitlab/-/issues) for similar entries before submitting your own, there's a good chance somebody else had the same issue or feature proposal. Show your support with an award emoji and or join the discussion.
 
-When experiencing a behavior not working as expected, consider providing contextual information: 
+When experiencing a behavior not working as expected, consider providing contextual information:
 
 - GitLab version if using a self-managed instance.
 - `.gitlab-ci.yml` job definition.

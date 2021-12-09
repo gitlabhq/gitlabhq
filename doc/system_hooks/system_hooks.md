@@ -44,6 +44,10 @@ denied access.
 System hooks can be used, for example, for logging or changing information in an
 LDAP server.
 
+In addition to these default events, you can enable triggers for other events,
+such as push events, and disable the `repository_update` event 
+when you create a system hook.
+
 NOTE:
 We follow the same structure and deprecations as [Webhooks](../user/project/integrations/webhooks.md)
 for Push and Tag events, but we never display commits.
@@ -55,7 +59,7 @@ To create a system hook:
 1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **System Hooks**.
 1. Provide the **URL** and **Secret Token**.
-1. Select the checkbox next to each **Trigger** you want to enable.
+1. Select the checkbox next to each optional **Trigger** you want to enable.
 1. Select **Enable SSL verification**, if desired.
 1. Click **Add system hook**.
 
