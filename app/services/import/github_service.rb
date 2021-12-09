@@ -10,7 +10,7 @@ module Import
 
     def execute(access_params, provider)
       if blocked_url?
-        return log_and_return_error("Invalid URL: #{url}", :bad_request)
+        return log_and_return_error("Invalid URL: #{url}", _("Invalid URL: %{url}") % { url: url }, :bad_request)
       end
 
       unless authorized?
@@ -118,6 +118,15 @@ module Import
       )
 
       error(_('Import failed due to a GitHub error: %{original}') % { original: exception.response_body }, :unprocessable_entity)
+    end
+
+    def log_and_return_error(message, translated_message, http_status)
+      Gitlab::GithubImport::Logger.error(
+        message: 'Error while attempting to import from GitHub',
+        error: message
+      )
+
+      error(translated_message, http_status)
     end
   end
 end

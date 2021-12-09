@@ -8,6 +8,7 @@ import initUserPopovers from '~/user_popovers';
 import {
   FIELDS,
   ACTIVE_TAB_QUERY_PARAM_NAME,
+  TAB_QUERY_PARAM_VALUES,
   MEMBER_STATE_AWAITING,
   USER_STATE_BLOCKED_PENDING_APPROVAL,
   BADGE_LABELS_PENDING_OWNER_APPROVAL,
@@ -81,6 +82,9 @@ export default {
       const { paramName, currentPage, perPage, totalItems } = this.pagination;
 
       return paramName && currentPage && perPage && totalItems;
+    },
+    isInvitedUser() {
+      return this.tabQueryParamValue === TAB_QUERY_PARAM_VALUES.invite;
     },
   },
   mounted() {
@@ -275,6 +279,7 @@ export default {
           <member-action-buttons
             :member-type="memberType"
             :is-current-user="isCurrentUser"
+            :is-invited-user="isInvitedUser"
             :permissions="permissions"
             :member="member"
           />

@@ -14,6 +14,7 @@ describe('MemberActionButtons', () => {
     wrapper = shallowMount(MemberActionButtons, {
       propsData: {
         isCurrentUser: false,
+        isInvitedUser: false,
         permissions: {
           canRemove: true,
         },

@@ -840,7 +840,7 @@ RSpec.describe API::Ci::Pipelines do
         it 'exposes the coverage' do
           get api("/projects/#{project.id}/pipelines/#{pipeline.id}", user)
 
-          expect(json_response["coverage"].to_i).to eq(30)
+          expect(json_response["coverage"]).to eq('30.00')
         end
       end
     end

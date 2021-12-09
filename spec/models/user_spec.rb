@@ -2602,26 +2602,18 @@ RSpec.describe User do
   end
 
   describe '.find_by_full_path' do
-    using RSpec::Parameterized::TableSyntax
+    let!(:user) { create(:user, namespace: create(:user_namespace)) }
 
-    # TODO: this `where/when` can be removed in issue https://gitlab.com/gitlab-org/gitlab/-/issues/341070
-    #       At that point we only need to check `user_namespace`
-    where(namespace_type: [:namespace, :user_namespace])
+    context 'with a route matching the given path' do
+      let!(:route) { user.namespace.route }
 
-    with_them do
-      let!(:user) { create(:user, namespace: create(namespace_type)) }
+      it 'returns the user' do
+        expect(described_class.find_by_full_path(route.path)).to eq(user)
+      end
 
-      context 'with a route matching the given path' do
-        let!(:route) { user.namespace.route }
-
-        it 'returns the user' do
-          expect(described_class.find_by_full_path(route.path)).to eq(user)
-        end
-
-        it 'is case-insensitive' do
-          expect(described_class.find_by_full_path(route.path.upcase)).to eq(user)
-          expect(described_class.find_by_full_path(route.path.downcase)).to eq(user)
-        end
+      it 'is case-insensitive' do
+        expect(described_class.find_by_full_path(route.path.upcase)).to eq(user)
+        expect(described_class.find_by_full_path(route.path.downcase)).to eq(user)
       end
 
       context 'with a redirect route matching the given path' do

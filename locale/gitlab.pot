@@ -12381,13 +12381,13 @@ msgstr ""
 msgid "Discover|GitLab will perform static and dynamic tests on the code of your application, looking for known flaws and report them in the merge request so you can fix them before merging."
 msgstr ""
 
-msgid "Discover|Give feedback for this page"
-msgstr ""
-
 msgid "Discover|Security capabilities, integrated into your development lifecycle"
 msgstr ""
 
 msgid "Discover|See the other features of the %{linkStart}ultimate plan%{linkEnd}"
+msgstr ""
+
+msgid "Discover|Send feedback"
 msgstr ""
 
 msgid "Discover|Start a free trial"
@@ -19069,6 +19069,9 @@ msgid "Invalid OS"
 msgstr ""
 
 msgid "Invalid URL"
+msgstr ""
+
+msgid "Invalid URL: %{url}"
 msgstr ""
 
 msgid "Invalid container_name"

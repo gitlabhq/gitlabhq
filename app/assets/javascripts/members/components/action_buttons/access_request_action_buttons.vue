@@ -53,6 +53,7 @@ export default {
         :title="s__('Member|Deny access')"
         :is-access-request="true"
         icon="close"
+        button-category="primary"
       />
     </div>
   </action-button-group>

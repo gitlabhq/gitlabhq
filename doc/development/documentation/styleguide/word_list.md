@@ -376,6 +376,19 @@ Do not use **build** to be synonymous with **job**. A job is defined in the `.gi
 
 If you want to use **CI** with the word **job**, use **CI/CD job** rather than **CI job**.
 
+## Kubernetes executor
+
+GitLab Runner can run jobs on a Kubernetes cluster. To do this, GitLab Runner uses the Kubernetes executor.
+
+When referring to this feature, use:
+
+- Kubernetes executor for GitLab Runner
+- Kubernetes executor
+
+Do not use:
+
+- GitLab Runner Kubernetes executor, because this can infringe on the Kubernetes trademark.
+
 ## later
 
 Use **later** when talking about version numbers.

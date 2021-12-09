@@ -112,10 +112,8 @@ class User < ApplicationRecord
   #
 
   # Namespace for personal projects
-  # TODO: change to `:namespace, -> { where(type: Namespaces::UserNamespace.sti_name}, class_name: 'Namespaces::UserNamespace'...`
-  #       when working on issue https://gitlab.com/gitlab-org/gitlab/-/issues/341070
   has_one :namespace,
-          -> { where(type: [nil, Namespaces::UserNamespace.sti_name]) },
+          -> { where(type: Namespaces::UserNamespace.sti_name) },
           dependent: :destroy, # rubocop:disable Cop/ActiveRecordDependent
           foreign_key: :owner_id,
           inverse_of: :owner,

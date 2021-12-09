@@ -3,7 +3,6 @@
 - "./ee/spec/mailers/notify_spec.rb"
 - "./ee/spec/models/ci/bridge_spec.rb"
 - "./ee/spec/models/ci/build_spec.rb"
-- "./ee/spec/models/ci/minutes/additional_pack_spec.rb"
 - "./ee/spec/models/ee/ci/job_artifact_spec.rb"
 - "./ee/spec/models/group_member_spec.rb"
 - "./ee/spec/replicators/geo/pipeline_artifact_replicator_spec.rb"
