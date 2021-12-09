@@ -1,3 +1,3 @@
-import initForm from '~/milestones/form';
+import { initForm } from '~/milestones';
 
 initForm();

@@ -20,6 +20,7 @@ import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import AccessorUtilities from '../../lib/utils/accessor';
 import { inactiveId, LIST, ListType, toggleFormEventPrefix } from '../constants';
 import eventHub from '../eventhub';
+import listQuery from '../graphql/board_lists_deferred.query.graphql';
 import ItemCount from './item_count.vue';
 
 export default {
@@ -74,7 +75,7 @@ export default {
     },
   },
   computed: {
-    ...mapState(['activeId']),
+    ...mapState(['activeId', 'filterParams']),
     ...mapGetters(['isEpicBoard', 'isSwimlanesOn']),
     isLoggedIn() {
       return Boolean(this.currentUserId);
@@ -119,14 +120,11 @@ export default {
       }
       return false;
     },
-    itemsCount() {
-      return this.list.issuesCount;
-    },
     countIcon() {
       return 'issues';
     },
     itemsTooltipLabel() {
-      return n__(`%d issue`, `%d issues`, this.itemsCount);
+      return n__(`%d issue`, `%d issues`, this.boardLists?.issuesCount);
     },
     chevronTooltip() {
       return this.list.collapsed ? this.$options.i18n.expand : this.$options.i18n.collapse;
@@ -157,6 +155,23 @@ export default {
     },
     userCanDrag() {
       return !this.disabled && isListDraggable(this.list);
+    },
+    isLoading() {
+      return this.$apollo.queries.boardList.loading;
+    },
+  },
+  apollo: {
+    boardList: {
+      query: listQuery,
+      variables() {
+        return {
+          id: this.list.id,
+          filters: this.filterParams,
+        };
+      },
+      skip() {
+        return this.isEpicBoard;
+      },
     },
   },
   created() {
@@ -375,10 +390,10 @@ export default {
           </gl-sprintf>
         </div>
         <div v-else>• {{ itemsTooltipLabel }}</div>
-        <div v-if="weightFeatureAvailable">
+        <div v-if="weightFeatureAvailable && !isLoading">
           •
           <gl-sprintf :message="__('%{totalWeight} total weight')">
-            <template #totalWeight>{{ list.totalWeight }}</template>
+            <template #totalWeight>{{ boardList.totalWeight }}</template>
           </gl-sprintf>
         </div>
       </gl-tooltip>
@@ -396,14 +411,18 @@ export default {
           <gl-tooltip :target="() => $refs.itemCount" :title="itemsTooltipLabel" />
           <span ref="itemCount" class="gl-display-inline-flex gl-align-items-center">
             <gl-icon class="gl-mr-2" :name="countIcon" />
-            <item-count :items-size="itemsCount" :max-issue-count="list.maxIssueCount" />
+            <item-count
+              v-if="!isLoading"
+              :items-size="isEpicBoard ? list.epicsCount : boardList.issuesCount"
+              :max-issue-count="list.maxIssueCount"
+            />
           </span>
           <!-- EE start -->
-          <template v-if="weightFeatureAvailable && !isEpicBoard">
+          <template v-if="weightFeatureAvailable && !isEpicBoard && !isLoading">
             <gl-tooltip :target="() => $refs.weightTooltip" :title="weightCountToolTip" />
             <span ref="weightTooltip" class="gl-display-inline-flex gl-ml-3">
               <gl-icon class="gl-mr-2" name="weight" />
-              {{ list.totalWeight }}
+              {{ boardList.totalWeight }}
             </span>
           </template>
           <!-- EE end -->

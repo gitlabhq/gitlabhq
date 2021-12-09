@@ -1241,6 +1241,7 @@ describe('updateIssueOrder', () => {
         moveBeforeId: undefined,
         moveAfterId: undefined,
       },
+      update: expect.anything(),
     };
     jest.spyOn(gqlClient, 'mutate').mockResolvedValue({
       data: {
@@ -1447,6 +1448,7 @@ describe('addListNewIssue', () => {
       variables: {
         input: formatIssueInput(mockIssue, stateWithBoardConfig.boardConfig),
       },
+      update: expect.anything(),
     });
   });
 
@@ -1478,6 +1480,7 @@ describe('addListNewIssue', () => {
       variables: {
         input: formatIssueInput(issue, stateWithBoardConfig.boardConfig),
       },
+      update: expect.anything(),
     });
     expect(payload.labelIds).toEqual(['gid://gitlab/GroupLabel/4', 'gid://gitlab/GroupLabel/5']);
     expect(payload.assigneeIds).toEqual(['gid://gitlab/User/1', 'gid://gitlab/User/2']);

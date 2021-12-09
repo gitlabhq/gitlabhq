@@ -12,6 +12,7 @@ import {
   isInIncidentPage,
   parseBoolean,
 } from '~/lib/utils/common_utils';
+import { __ } from '~/locale';
 import CollapsedAssigneeList from '~/sidebar/components/assignees/collapsed_assignee_list.vue';
 import SidebarAssigneesWidget from '~/sidebar/components/assignees/sidebar_assignees_widget.vue';
 import SidebarConfidentialityWidget from '~/sidebar/components/confidential/sidebar_confidentiality_widget.vue';
@@ -23,10 +24,11 @@ import SidebarTodoWidget from '~/sidebar/components/todo_toggle/sidebar_todo_wid
 import { apolloProvider } from '~/sidebar/graphql';
 import trackShowInviteMemberLink from '~/sidebar/track_invite_members';
 import { DropdownVariant } from '~/vue_shared/components/sidebar/labels_select_vue/constants';
+import LabelsSelectWidget from '~/vue_shared/components/sidebar/labels_select_widget/labels_select_root.vue';
+import { LabelType } from '~/vue_shared/components/sidebar/labels_select_widget/constants';
 import Translate from '../vue_shared/translate';
 import SidebarAssignees from './components/assignees/sidebar_assignees.vue';
 import CopyEmailToClipboard from './components/copy_email_to_clipboard.vue';
-import SidebarLabels from './components/labels/sidebar_labels.vue';
 import IssuableLockForm from './components/lock/issuable_lock_form.vue';
 import SidebarReviewers from './components/reviewers/sidebar_reviewers.vue';
 import SidebarSeverity from './components/severity/sidebar_severity.vue';
@@ -264,7 +266,6 @@ function mountMilestoneSelect() {
 
 export function mountSidebarLabels() {
   const el = document.querySelector('.js-sidebar-labels');
-  const { fullPath } = getSidebarOptions();
 
   if (!el) {
     return false;
@@ -273,22 +274,43 @@ export function mountSidebarLabels() {
   return new Vue({
     el,
     apolloProvider,
+
+    components: {
+      LabelsSelectWidget,
+    },
     provide: {
       ...el.dataset,
-      fullPath,
+      canUpdate: parseBoolean(el.dataset.canEdit),
       allowLabelCreate: parseBoolean(el.dataset.allowLabelCreate),
       allowLabelEdit: parseBoolean(el.dataset.canEdit),
       allowScopedLabels: parseBoolean(el.dataset.allowScopedLabels),
-      initiallySelectedLabels: JSON.parse(el.dataset.selectedLabels),
-      variant: DropdownVariant.Sidebar,
-      canUpdate: parseBoolean(el.dataset.canEdit),
       isClassicSidebar: true,
-      issuableType:
-        isInIssuePage() || isInIncidentPage() || isInDesignPage()
-          ? IssuableType.Issue
-          : IssuableType.MergeRequest,
     },
-    render: (createElement) => createElement(SidebarLabels),
+    render: (createElement) =>
+      createElement('labels-select-widget', {
+        props: {
+          iid: String(el.dataset.iid),
+          fullPath: el.dataset.projectPath,
+          allowLabelRemove: parseBoolean(el.dataset.canEdit),
+          allowMultiselect: true,
+          footerCreateLabelTitle: __('Create project label'),
+          footerManageLabelTitle: __('Manage project labels'),
+          labelsCreateTitle: __('Create project label'),
+          labelsFilterBasePath: el.dataset.projectIssuesPath,
+          variant: DropdownVariant.Sidebar,
+          issuableType:
+            isInIssuePage() || isInIncidentPage() || isInDesignPage()
+              ? IssuableType.Issue
+              : IssuableType.MergeRequest,
+          workspaceType: 'project',
+          attrWorkspacePath: el.dataset.projectPath,
+          labelCreateType: LabelType.project,
+        },
+        class: ['block labels js-labels-block'],
+        scopedSlots: {
+          default: () => __('None'),
+        },
+      }),
   });
 }
 

@@ -1,5 +1,5 @@
 import { useFakeDate } from 'helpers/fake_date';
-import { sortMilestonesByDueDate } from '~/milestones/milestone_utils';
+import { sortMilestonesByDueDate } from '~/milestones/utils';
 
 describe('sortMilestonesByDueDate', () => {
   useFakeDate(2021, 6, 22);

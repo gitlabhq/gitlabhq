@@ -662,3 +662,14 @@ export const mockGroupLabelsResponse = {
     },
   },
 };
+
+export const boardListQueryResponse = (issuesCount = 20) => ({
+  data: {
+    boardList: {
+      __typename: 'BoardList',
+      id: 'gid://gitlab/BoardList/5',
+      totalWeight: 5,
+      issuesCount,
+    },
+  },
+});

@@ -1,6 +1,6 @@
 #import "ee_else_ce/boards/graphql/issue.fragment.graphql"
 
-query BoardListEE(
+query BoardListsEE(
   $fullPath: ID!
   $boardId: ID!
   $id: ID

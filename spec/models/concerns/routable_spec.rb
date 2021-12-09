@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.shared_examples '.find_by_full_path' do
+RSpec.shared_examples 'routable resource' do
   describe '.find_by_full_path', :aggregate_failures do
     it 'finds records by their full path' do
       expect(described_class.find_by_full_path(record.full_path)).to eq(record)
@@ -52,19 +52,41 @@ RSpec.shared_examples '.find_by_full_path' do
   end
 end
 
-RSpec.describe Routable do
-  it_behaves_like '.find_by_full_path' do
-    let_it_be(:record) { create(:group) }
+RSpec.shared_examples 'routable resource with parent' do
+  it_behaves_like 'routable resource'
+
+  describe '#full_path' do
+    it { expect(record.full_path).to eq "#{record.parent.full_path}/#{record.path}" }
+
+    it 'hits the cache when not preloaded' do
+      forcibly_hit_cached_lookup(record, :full_path)
+
+      expect(record.full_path).to eq("#{record.parent.full_path}/#{record.path}")
+    end
   end
 
-  it_behaves_like '.find_by_full_path' do
-    let_it_be(:record) { create(:project) }
+  describe '#full_name' do
+    it { expect(record.full_name).to eq "#{record.parent.human_name} / #{record.name}" }
+
+    it 'hits the cache when not preloaded' do
+      forcibly_hit_cached_lookup(record, :full_name)
+
+      expect(record.full_name).to eq("#{record.parent.human_name} / #{record.name}")
+    end
   end
 end
 
 RSpec.describe Group, 'Routable', :with_clean_rails_cache do
   let_it_be_with_reload(:group) { create(:group, name: 'foo') }
   let_it_be(:nested_group) { create(:group, parent: group) }
+
+  it_behaves_like 'routable resource' do
+    let_it_be(:record) { group }
+  end
+
+  it_behaves_like 'routable resource with parent' do
+    let_it_be(:record) { nested_group }
+  end
 
   describe 'Validations' do
     it { is_expected.to validate_presence_of(:route) }
@@ -116,24 +138,6 @@ RSpec.describe Group, 'Routable', :with_clean_rails_cache do
         expect(project.full_name).to eq('Jaen Did / Work stuff')
         expect(project.full_path).to eq('jaen/work-stuff')
       end
-    end
-  end
-
-  describe '.find_by_full_path' do
-    it_behaves_like '.find_by_full_path' do
-      let_it_be(:record) { group }
-    end
-
-    it_behaves_like '.find_by_full_path' do
-      let_it_be(:record) { nested_group }
-    end
-
-    it 'does not find projects with a matching path' do
-      project = create(:project)
-      redirect_route = create(:redirect_route, source: project)
-
-      expect(described_class.find_by_full_path(project.full_path)).to be_nil
-      expect(described_class.find_by_full_path(redirect_route.path, follow_redirects: true)).to be_nil
     end
   end
 
@@ -195,64 +199,39 @@ RSpec.describe Group, 'Routable', :with_clean_rails_cache do
       expect(group.route_loaded?).to be_truthy
     end
   end
-
-  describe '#full_path' do
-    it { expect(group.full_path).to eq(group.path) }
-    it { expect(nested_group.full_path).to eq("#{group.full_path}/#{nested_group.path}") }
-
-    it 'hits the cache when not preloaded' do
-      forcibly_hit_cached_lookup(nested_group, :full_path)
-
-      expect(nested_group.full_path).to eq("#{group.full_path}/#{nested_group.path}")
-    end
-  end
-
-  describe '#full_name' do
-    it { expect(group.full_name).to eq(group.name) }
-    it { expect(nested_group.full_name).to eq("#{group.name} / #{nested_group.name}") }
-
-    it 'hits the cache when not preloaded' do
-      forcibly_hit_cached_lookup(nested_group, :full_name)
-
-      expect(nested_group.full_name).to eq("#{group.name} / #{nested_group.name}")
-    end
-  end
 end
 
 RSpec.describe Project, 'Routable', :with_clean_rails_cache do
   let_it_be(:namespace) { create(:namespace) }
   let_it_be(:project) { create(:project, namespace: namespace) }
 
-  it_behaves_like '.find_by_full_path' do
+  it_behaves_like 'routable resource with parent' do
     let_it_be(:record) { project }
   end
+end
 
-  it 'does not find groups with a matching path' do
-    group = create(:group)
-    redirect_route = create(:redirect_route, source: group)
-
-    expect(described_class.find_by_full_path(group.full_path)).to be_nil
-    expect(described_class.find_by_full_path(redirect_route.path, follow_redirects: true)).to be_nil
-  end
-
-  describe '#full_path' do
-    it { expect(project.full_path).to eq "#{namespace.full_path}/#{project.path}" }
-
-    it 'hits the cache when not preloaded' do
-      forcibly_hit_cached_lookup(project, :full_path)
-
-      expect(project.full_path).to eq("#{namespace.full_path}/#{project.path}")
+RSpec.describe Namespaces::ProjectNamespace, 'Routable', :with_clean_rails_cache do
+  let_it_be(:group) { create(:group) }
+  let_it_be(:project_namespace) do
+    # For now we create only project namespace w/o project, otherwise same path
+    # would be used for project and project namespace.
+    # This can be removed when route is created automatically for project namespaces.
+    # https://gitlab.com/gitlab-org/gitlab/-/issues/346448
+    create(:project_namespace, project: nil, parent: group,
+           visibility_level: Gitlab::VisibilityLevel::PUBLIC,
+           path: 'foo', name: 'foo').tap do |project_namespace|
+      Route.create!(source: project_namespace, path: project_namespace.full_path,
+                    name: project_namespace.full_name)
     end
   end
 
-  describe '#full_name' do
-    it { expect(project.full_name).to eq "#{namespace.human_name} / #{project.name}" }
+  # we have couple of places where we use generic Namespace, in that case
+  # we don't want to include ProjectNamespace routes yet
+  it 'ignores project namespace when searching for generic namespace' do
+    redirect_route = create(:redirect_route, source: project_namespace)
 
-    it 'hits the cache when not preloaded' do
-      forcibly_hit_cached_lookup(project, :full_name)
-
-      expect(project.full_name).to eq("#{namespace.human_name} / #{project.name}")
-    end
+    expect(Namespace.find_by_full_path(project_namespace.full_path)).to be_nil
+    expect(Namespace.find_by_full_path(redirect_route.path, follow_redirects: true)).to be_nil
   end
 end
 

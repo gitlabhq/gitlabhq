@@ -36,6 +36,10 @@ graph TD
 With the addition of [multi-level epics](../epics/manage_epics.md#multi-level-child-epics) and up to
 seven levels of nested epics, you can achieve the following hierarchy:
 
+<!--
+Image below was generated with the following Mermaid code.
+Attached as an image because a rendered diagram doesn't look clear on the docs page.
+
 ```mermaid
 classDiagram
   direction TD
@@ -45,6 +49,10 @@ classDiagram
   Epic *-- "0..7" Epic
   Epic "1" *-- "0..*" Issue
 ```
+
+ -->
+
+![Diagram showing possible relationships of multi-level epics](img/hierarchy_with_multi_level_epics.png)
 
 ## View ancestry of an epic
 

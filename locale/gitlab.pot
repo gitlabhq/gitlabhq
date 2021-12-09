@@ -3650,9 +3650,6 @@ msgstr ""
 msgid "An error occurred previewing the blob"
 msgstr ""
 
-msgid "An error occurred when removing the label."
-msgstr ""
-
 msgid "An error occurred when updating the title"
 msgstr ""
 
@@ -7048,9 +7045,6 @@ msgid "Choose any color."
 msgstr ""
 
 msgid "Choose file…"
-msgstr ""
-
-msgid "Choose labels"
 msgstr ""
 
 msgid "Choose specific groups or storage shards"
@@ -19537,9 +19531,6 @@ msgid "IssueAnalytics|Status"
 msgstr ""
 
 msgid "IssueAnalytics|Weight"
-msgstr ""
-
-msgid "IssueBoards|An error occurred while setting notifications status. Please try again."
 msgstr ""
 
 msgid "IssueBoards|Board"

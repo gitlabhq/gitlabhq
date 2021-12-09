@@ -291,6 +291,7 @@ export default {
       'is-standalone': isDropdownVariantStandalone(variant),
       'is-embedded': isDropdownVariantEmbedded(variant),
     }"
+    data-qa-selector="labels_block"
   >
     <template v-if="isDropdownVariantSidebar(variant)">
       <dropdown-value-collapsed

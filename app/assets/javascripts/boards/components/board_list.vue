@@ -8,6 +8,7 @@ import defaultSortableConfig from '~/sortable/sortable_config';
 import Tracking from '~/tracking';
 import { toggleFormEventPrefix, DraggableItemTypes } from '../constants';
 import eventHub from '../eventhub';
+import listQuery from '../graphql/board_lists_deferred.query.graphql';
 import BoardCard from './board_card.vue';
 import BoardNewIssue from './board_new_issue.vue';
 
@@ -50,11 +51,22 @@ export default {
       showEpicForm: false,
     };
   },
+  apollo: {
+    boardList: {
+      query: listQuery,
+      variables() {
+        return {
+          id: this.list.id,
+          filters: this.filterParams,
+        };
+      },
+    },
+  },
   computed: {
-    ...mapState(['pageInfoByListId', 'listsFlags']),
+    ...mapState(['pageInfoByListId', 'listsFlags', 'filterParams']),
     ...mapGetters(['isEpicBoard']),
     listItemsCount() {
-      return this.isEpicBoard ? this.list.epicsCount : this.list.issuesCount;
+      return this.isEpicBoard ? this.list.epicsCount : this.boardList?.issuesCount;
     },
     paginatedIssueText() {
       return sprintf(__('Showing %{pageSize} of %{total} %{issuableType}'), {

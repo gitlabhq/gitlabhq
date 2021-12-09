@@ -958,7 +958,7 @@ module Ci
                                         .limit(100)
                                         .pluck(:expanded_environment_name)
 
-        Environment.where(project: project, name: expanded_environment_names).with_deployments
+        Environment.where(project: project, name: expanded_environment_names).with_deployment(sha)
       else
         environment_ids = self_and_descendants.joins(:deployments).select(:'deployments.environment_id')
 

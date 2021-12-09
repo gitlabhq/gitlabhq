@@ -3205,10 +3205,20 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
 
     context 'when pipeline is not child nor parent' do
       let_it_be(:pipeline) { create(:ci_pipeline, :created) }
-      let_it_be(:build) { create(:ci_build, :with_deployment, :deploy_to_production, pipeline: pipeline) }
+      let_it_be(:build, refind: true) { create(:ci_build, :with_deployment, :deploy_to_production, pipeline: pipeline) }
 
       it 'returns just the pipeline environment' do
         expect(subject).to contain_exactly(build.deployment.environment)
+      end
+
+      context 'when deployment SHA is not matched' do
+        before do
+          build.deployment.update!(sha: 'old-sha')
+        end
+
+        it 'does not return environments' do
+          expect(subject).to be_empty
+        end
       end
     end
 

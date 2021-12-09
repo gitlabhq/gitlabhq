@@ -1,4 +1,5 @@
 import { createLocalVue, shallowMount } from '@vue/test-utils';
+import VueApollo from 'vue-apollo';
 import Vuex from 'vuex';
 
 import BoardCard from '~/boards/components/board_card.vue';
@@ -6,7 +7,15 @@ import BoardList from '~/boards/components/board_list.vue';
 import BoardNewIssue from '~/boards/components/board_new_issue.vue';
 import BoardNewItem from '~/boards/components/board_new_item.vue';
 import defaultState from '~/boards/stores/state';
-import { mockList, mockIssuesByListId, issues, mockGroupProjects } from './mock_data';
+import createMockApollo from 'helpers/mock_apollo_helper';
+import listQuery from '~/boards/graphql/board_lists_deferred.query.graphql';
+import {
+  mockList,
+  mockIssuesByListId,
+  issues,
+  mockGroupProjects,
+  boardListQueryResponse,
+} from './mock_data';
 
 export default function createComponent({
   listIssueProps = {},
@@ -15,15 +24,22 @@ export default function createComponent({
   actions = {},
   getters = {},
   provide = {},
+  data = {},
   state = defaultState,
   stubs = {
     BoardNewIssue,
     BoardNewItem,
     BoardCard,
   },
+  issuesCount,
 } = {}) {
   const localVue = createLocalVue();
+  localVue.use(VueApollo);
   localVue.use(Vuex);
+
+  const fakeApollo = createMockApollo([
+    [listQuery, jest.fn().mockResolvedValue(boardListQueryResponse(issuesCount))],
+  ]);
 
   const store = new Vuex.Store({
     state: {
@@ -68,6 +84,7 @@ export default function createComponent({
   }
 
   const component = shallowMount(BoardList, {
+    apolloProvider: fakeApollo,
     localVue,
     store,
     propsData: {
@@ -87,6 +104,11 @@ export default function createComponent({
       ...provide,
     },
     stubs,
+    data() {
+      return {
+        ...data,
+      };
+    },
   });
 
   return component;

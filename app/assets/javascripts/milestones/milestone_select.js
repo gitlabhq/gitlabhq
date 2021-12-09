@@ -6,7 +6,7 @@ import { template, escape } from 'lodash';
 import Api from '~/api';
 import initDeprecatedJQueryDropdown from '~/deprecated_jquery_dropdown';
 import { __, sprintf } from '~/locale';
-import { sortMilestonesByDueDate } from '~/milestones/milestone_utils';
+import { sortMilestonesByDueDate } from '~/milestones/utils';
 import axios from '~/lib/utils/axios_utils';
 import { timeFor, parsePikadayDate, dateInWords } from '~/lib/utils/datetime_utility';
 

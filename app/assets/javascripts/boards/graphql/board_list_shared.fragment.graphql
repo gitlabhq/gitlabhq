@@ -4,7 +4,6 @@ fragment BoardListShared on BoardList {
   position
   listType
   collapsed
-  issuesCount
   label {
     id
     title

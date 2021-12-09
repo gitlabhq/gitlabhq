@@ -18,7 +18,7 @@ module QA
               element :more_assignees_link
             end
 
-            base.view 'app/assets/javascripts/sidebar/components/labels/sidebar_labels.vue' do
+            base.view 'app/assets/javascripts/vue_shared/components/sidebar/labels_select_widget/labels_select_root.vue' do
               element :labels_block
             end
 

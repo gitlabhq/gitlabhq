@@ -38,7 +38,7 @@ describe('Board list component', () => {
 
   describe('When Expanded', () => {
     beforeEach(() => {
-      wrapper = createComponent();
+      wrapper = createComponent({ issuesCount: 1 });
     });
 
     it('renders component', () => {
@@ -97,14 +97,6 @@ describe('Board list component', () => {
       await wrapper.vm.$nextTick();
       expect(wrapper.find('.board-list-count').attributes('data-issue-id')).toBe('-1');
     });
-
-    it('shows how many more issues to load', async () => {
-      wrapper.vm.showCount = true;
-      wrapper.setProps({ list: { issuesCount: 20 } });
-
-      await wrapper.vm.$nextTick();
-      expect(wrapper.find('.board-list-count').text()).toBe('Showing 1 of 20 issues');
-    });
   });
 
   describe('load more issues', () => {
@@ -113,9 +105,7 @@ describe('Board list component', () => {
     };
 
     beforeEach(() => {
-      wrapper = createComponent({
-        listProps: { issuesCount: 25 },
-      });
+      wrapper = createComponent();
     });
 
     it('does not load issues if already loading', () => {
@@ -131,12 +121,26 @@ describe('Board list component', () => {
     it('shows loading more spinner', async () => {
       wrapper = createComponent({
         state: { listsFlags: { 'gid://gitlab/List/1': { isLoadingMore: true } } },
+        data: {
+          showCount: true,
+        },
       });
-      wrapper.vm.showCount = true;
 
       await wrapper.vm.$nextTick();
 
       expect(findIssueCountLoadingIcon().exists()).toBe(true);
+    });
+
+    it('shows how many more issues to load', async () => {
+      // wrapper.vm.showCount = true;
+      wrapper = createComponent({
+        data: {
+          showCount: true,
+        },
+      });
+
+      await wrapper.vm.$nextTick();
+      expect(wrapper.find('.board-list-count').text()).toBe('Showing 1 of 20 issues');
     });
   });
 
