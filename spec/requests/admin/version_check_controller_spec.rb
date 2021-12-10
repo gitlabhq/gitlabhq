@@ -24,7 +24,7 @@ RSpec.describe Admin::VersionCheckController, :enable_admin_mode do
       end
 
       it 'sets no-cache headers' do
-        expect(response.headers['Cache-Control']).to eq('private, no-store')
+        expect(response.headers['Cache-Control']).to eq('max-age=0, private, must-revalidate')
       end
     end
 
@@ -43,10 +43,7 @@ RSpec.describe Admin::VersionCheckController, :enable_admin_mode do
       end
 
       it 'sets proper cache headers' do
-        # TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/346999
-        # The Cache-Control header is not set correctly for tests
-        # expect(response.headers['Cache-Control']).to eq('max-age=60, private')
-        expect(response.headers['Cache-Control']).to eq('private, no-store')
+        expect(response.headers['Cache-Control']).to eq('max-age=60, private')
       end
     end
   end

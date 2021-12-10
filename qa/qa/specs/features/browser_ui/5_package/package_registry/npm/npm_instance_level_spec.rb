@@ -156,13 +156,15 @@ module QA
         end
 
         it "push and pull a npm package via CI using a #{params[:token_name]}" do
-          Resource::Repository::Commit.fabricate_via_api! do |commit|
-            commit.project = project
-            commit.commit_message = 'Add .gitlab-ci.yml'
-            commit.add_files([
-                              gitlab_ci_deploy_yaml,
-                              package_json
-                            ])
+          Support::Retrier.retry_on_exception(max_attempts: 3, sleep_interval: 2) do
+            Resource::Repository::Commit.fabricate_via_api! do |commit|
+              commit.project = project
+              commit.commit_message = 'Add .gitlab-ci.yml'
+              commit.add_files([
+                                gitlab_ci_deploy_yaml,
+                                package_json
+                              ])
+            end
           end
 
           project.visit!
@@ -176,12 +178,14 @@ module QA
             expect(job).to be_successful(timeout: 800)
           end
 
-          Resource::Repository::Commit.fabricate_via_api! do |commit|
-            commit.project = another_project
-            commit.commit_message = 'Add .gitlab-ci.yml'
-            commit.add_files([
-                              gitlab_ci_install_yaml
-            ])
+          Support::Retrier.retry_on_exception(max_attempts: 3, sleep_interval: 2) do
+            Resource::Repository::Commit.fabricate_via_api! do |commit|
+              commit.project = another_project
+              commit.commit_message = 'Add .gitlab-ci.yml'
+              commit.add_files([
+                                gitlab_ci_install_yaml
+              ])
+            end
           end
 
           another_project.visit!

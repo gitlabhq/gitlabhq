@@ -139,11 +139,12 @@ module QA
         end
 
         it "pushes and pulls a maven package via gradle using #{params[:authentication_token_type]}" do
-          # pushing
-          Resource::Repository::Commit.fabricate_via_api! do |commit|
-            commit.project = package_project
-            commit.commit_message = 'Add .gitlab-ci.yml'
-            commit.add_files([package_gitlab_ci_file, package_build_gradle_file])
+          Support::Retrier.retry_on_exception(max_attempts: 3, sleep_interval: 2) do
+            Resource::Repository::Commit.fabricate_via_api! do |commit|
+              commit.project = package_project
+              commit.commit_message = 'Add .gitlab-ci.yml'
+              commit.add_files([package_gitlab_ci_file, package_build_gradle_file])
+            end
           end
 
           package_project.visit!
@@ -170,11 +171,12 @@ module QA
             expect(show).to have_package_info(package_name, package_version)
           end
 
-          # pulling
-          Resource::Repository::Commit.fabricate_via_api! do |commit|
-            commit.project = client_project
-            commit.commit_message = 'Add .gitlab-ci.yml'
-            commit.add_files([client_gitlab_ci_file, client_build_gradle_file])
+          Support::Retrier.retry_on_exception(max_attempts: 3, sleep_interval: 2) do
+            Resource::Repository::Commit.fabricate_via_api! do |commit|
+              commit.project = client_project
+              commit.commit_message = 'Add .gitlab-ci.yml'
+              commit.add_files([client_gitlab_ci_file, client_build_gradle_file])
+            end
           end
 
           client_project.visit!

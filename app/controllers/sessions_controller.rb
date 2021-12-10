@@ -84,6 +84,8 @@ class SessionsController < Devise::SessionsController
   end
 
   def destroy
+    headers['Clear-Site-Data'] = '"*"'
+
     Gitlab::AppLogger.info("User Logout: username=#{current_user.username} ip=#{request.remote_ip}")
     super
     # hide the signed_out notice

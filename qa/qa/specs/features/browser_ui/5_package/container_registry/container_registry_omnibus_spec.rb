@@ -79,29 +79,31 @@ module QA
 
         context "when tls is disabled" do
           it "using a #{params[:token_name]}, pushes image and deletes tag", :registry do
-            Resource::Repository::Commit.fabricate_via_api! do |commit|
-              commit.project = project
-              commit.commit_message = 'Add .gitlab-ci.yml'
-              commit.add_files([{
-                                  file_path: '.gitlab-ci.yml',
-                                  content:
-                                      <<~YAML
-                                        build:
-                                          image: docker:19.03.12
-                                          stage: build
-                                          services:
-                                          - name: docker:19.03.12-dind
-                                            command: ["--insecure-registry=gitlab.test:5050"]                                
-                                          variables:
-                                            IMAGE_TAG: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
-                                          script:
-                                            - docker login -u #{auth_user} -p #{auth_token} gitlab.test:5050
-                                            - docker build -t $IMAGE_TAG .
-                                            - docker push $IMAGE_TAG
-                                          tags:
-                                            - "runner-for-#{project.name}"
-                                      YAML
-                              }])
+            Support::Retrier.retry_on_exception(max_attempts: 3, sleep_interval: 2) do
+              Resource::Repository::Commit.fabricate_via_api! do |commit|
+                commit.project = project
+                commit.commit_message = 'Add .gitlab-ci.yml'
+                commit.add_files([{
+                                    file_path: '.gitlab-ci.yml',
+                                    content:
+                                        <<~YAML
+                                          build:
+                                            image: docker:19.03.12
+                                            stage: build
+                                            services:
+                                            - name: docker:19.03.12-dind
+                                              command: ["--insecure-registry=gitlab.test:5050"]                                
+                                            variables:
+                                              IMAGE_TAG: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
+                                            script:
+                                              - docker login -u #{auth_user} -p #{auth_token} gitlab.test:5050
+                                              - docker build -t $IMAGE_TAG .
+                                              - docker push $IMAGE_TAG
+                                            tags:
+                                              - "runner-for-#{project.name}"
+                                        YAML
+                                }])
+              end
             end
 
             Flow::Pipeline.visit_latest_pipeline
@@ -131,36 +133,38 @@ module QA
 
       context "when tls is enabled" do
         it "pushes image and deletes tag", :registry_tls, testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/2378' do
-          Resource::Repository::Commit.fabricate_via_api! do |commit|
-            commit.project = project
-            commit.commit_message = 'Add .gitlab-ci.yml'
-            commit.add_files([{
-                                file_path: '.gitlab-ci.yml',
-                                content:
-                                    <<~YAML
-                                      build:
-                                        image: docker:19.03.12
-                                        stage: build
-                                        services:
-                                        - name: docker:19.03.12-dind
-                                          command:
-                                          - /bin/sh
-                                          - -c
-                                          - |
-                                            apk add --no-cache openssl
-                                            true | openssl s_client -showcerts -connect gitlab.test:5050 > /usr/local/share/ca-certificates/gitlab.test.crt
-                                            update-ca-certificates
-                                            dockerd-entrypoint.sh || exit                                
-                                        variables:
-                                          IMAGE_TAG: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
-                                        script:
-                                          - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD gitlab.test:5050
-                                          - docker build -t $IMAGE_TAG .
-                                          - docker push $IMAGE_TAG
-                                        tags:
-                                          - "runner-for-#{project.name}"
-                                    YAML
-                            }])
+          Support::Retrier.retry_on_exception(max_attempts: 3, sleep_interval: 2) do
+            Resource::Repository::Commit.fabricate_via_api! do |commit|
+              commit.project = project
+              commit.commit_message = 'Add .gitlab-ci.yml'
+              commit.add_files([{
+                                  file_path: '.gitlab-ci.yml',
+                                  content:
+                                      <<~YAML
+                                        build:
+                                          image: docker:19.03.12
+                                          stage: build
+                                          services:
+                                          - name: docker:19.03.12-dind
+                                            command:
+                                            - /bin/sh
+                                            - -c
+                                            - |
+                                              apk add --no-cache openssl
+                                              true | openssl s_client -showcerts -connect gitlab.test:5050 > /usr/local/share/ca-certificates/gitlab.test.crt
+                                              update-ca-certificates
+                                              dockerd-entrypoint.sh || exit                                
+                                          variables:
+                                            IMAGE_TAG: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
+                                          script:
+                                            - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD gitlab.test:5050
+                                            - docker build -t $IMAGE_TAG .
+                                            - docker push $IMAGE_TAG
+                                          tags:
+                                            - "runner-for-#{project.name}"
+                                      YAML
+                              }])
+            end
           end
 
           Flow::Pipeline.visit_latest_pipeline

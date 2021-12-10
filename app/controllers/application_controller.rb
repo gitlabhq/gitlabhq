@@ -66,10 +66,6 @@ class ApplicationController < ActionController::Base
     :manifest_import_enabled?, :phabricator_import_enabled?,
     :masked_page_url
 
-  # Adds `no-store` to the DEFAULT_CACHE_CONTROL, to prevent security
-  # concerns due to caching private data.
-  DEFAULT_GITLAB_CACHE_CONTROL = "#{ActionDispatch::Http::Cache::Response::DEFAULT_CACHE_CONTROL}, no-store"
-
   def self.endpoint_id_for_action(action_name)
     "#{self.name}##{action_name}"
   end
@@ -283,10 +279,7 @@ class ApplicationController < ActionController::Base
   end
 
   def default_cache_headers
-    if current_user
-      headers['Cache-Control'] = default_cache_control
-      headers['Pragma'] = 'no-cache' # HTTP 1.0 compatibility
-    end
+    headers['Pragma'] = 'no-cache' # HTTP 1.0 compatibility
   end
 
   def stream_csv_headers(csv_filename)
@@ -295,14 +288,6 @@ class ApplicationController < ActionController::Base
 
     headers['Content-Type'] = 'text/csv; charset=utf-8; header=present'
     headers['Content-Disposition'] = "attachment; filename=\"#{csv_filename}\""
-  end
-
-  def default_cache_control
-    if request.xhr?
-      ActionDispatch::Http::Cache::Response::DEFAULT_CACHE_CONTROL
-    else
-      DEFAULT_GITLAB_CACHE_CONTROL
-    end
   end
 
   def validate_user_service_ticket!

@@ -2,20 +2,18 @@
 stage: Verify
 group: Testing
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
-type: reference, howto
 ---
 
 # Jobs artifacts administration **(FREE SELF)**
 
 This is the administration documentation. For the user guide see [pipelines/job_artifacts](../ci/pipelines/job_artifacts.md).
 
-Artifacts is a list of files and directories which are attached to a job after it
-finishes. This feature is enabled by default in all GitLab installations. Keep reading
-if you want to know how to disable it.
+An artifact is a list of files and directories attached to a job after it
+finishes. This feature is enabled by default in all GitLab installations.
 
 ## Disabling job artifacts
 
-To disable artifacts site-wide, follow the steps below.
+To disable artifacts site-wide:
 
 **In Omnibus installations:**
 
@@ -41,7 +39,7 @@ To disable artifacts site-wide, follow the steps below.
 ## Storing job artifacts
 
 GitLab Runner can upload an archive containing the job artifacts to GitLab. By default,
-this is done when the job succeeds, but can also be done on failure, or always, via the
+this is done when the job succeeds, but can also be done on failure, or always, with the
 [`artifacts:when`](../ci/yaml/index.md#artifactswhen) parameter.
 
 Most artifacts are compressed by GitLab Runner before being sent to the coordinator. The exception to this is
@@ -84,8 +82,6 @@ _The artifacts are stored by default in
 
 ### Using object storage
 
-> Introduced in GitLab 11.0: Support for `direct_upload` to S3.
-
 If you don't want to use the local disk where GitLab is installed to store the
 artifacts, you can use an object storage like AWS S3 instead.
 This configuration relies on valid AWS credentials to be configured already.
@@ -108,7 +104,9 @@ In GitLab 13.2 and later, we recommend using the
 [consolidated object storage settings](object_storage.md#consolidated-object-storage-configuration).
 This section describes the earlier configuration format.
 
-For source installations the following settings are nested under `artifacts:` and then `object_store:`. On Omnibus GitLab installs they are prefixed by `artifacts_object_store_`.
+For source installations the following settings are nested under `artifacts:`
+and then `object_store:`. On Omnibus GitLab installs they are prefixed by
+`artifacts_object_store_`.
 
 | Setting             | Default | Description |
 |---------------------|---------|-------------|
@@ -143,8 +141,9 @@ _The artifacts are stored by default in
    }
    ```
 
-   NOTE: For GitLab 9.4+, if you're using AWS IAM profiles, be sure to omit the
-   AWS access key and secret access key/value pairs. For example:
+   NOTE:
+   If you're using AWS IAM profiles, omit the AWS access key and secret access
+   key/value pairs. For example:
 
    ```ruby
    gitlab_rails['artifacts_object_store_connection'] = {
@@ -161,7 +160,7 @@ _The artifacts are stored by default in
    gitlab-rake gitlab:artifacts:migrate
    ```
 
-1. Optional: Verify all files migrated properly.
+1. Optional. Verify all files migrated properly.
    From [PostgreSQL console](https://docs.gitlab.com/omnibus/settings/database.html#connecting-to-the-bundled-postgresql-database)
    (`sudo gitlab-psql -d gitlabhq_production`) verify `objectstg` below (where `file_store=2`) has count of all artifacts:
 
@@ -503,13 +502,13 @@ If you need to manually remove job artifacts associated with multiple jobs while
    - `3.months.ago`
    - `1.year.ago`
 
-   `erase_erasable_artifacts!` is a synchronous method, and upon execution, the artifacts are removed immediately.
-   They are not scheduled via some background queue.
+   `erase_erasable_artifacts!` is a synchronous method, and upon execution the artifacts are immediately removed;
+   they are not scheduled by a background queue.
 
 #### Delete job artifacts and logs from jobs completed before a specific date
 
 WARNING:
-These commands remove data permanently from the database and from disk. We
+These commands remove data permanently from both the database and from disk. We
 highly recommend running them only under the guidance of a Support Engineer, or
 running them in a test environment with a backup of the instance ready to be
 restored, just in case.
@@ -517,7 +516,7 @@ restored, just in case.
 If you need to manually remove **all** job artifacts associated with multiple jobs,
 **including job logs**, this can be done from the Rails console (`sudo gitlab-rails console`):
 
-1. Select jobs to be deleted:
+1. Select the jobs to be deleted:
 
    To select jobs with artifacts for a single project:
 
@@ -538,7 +537,7 @@ If you need to manually remove **all** job artifacts associated with multiple jo
    admin_user = User.find_by(username: 'username')
    ```
 
-1. Erase job artifacts and logs older than a specific date:
+1. Erase the job artifacts and logs older than a specific date:
 
    ```ruby
    builds_to_clear = builds_with_artifacts.where("finished_at < ?", 1.week.ago)
@@ -563,34 +562,34 @@ If you need to manually remove **all** job artifacts associated with multiple jo
 
 ### Error `Downloading artifacts from coordinator... not found`
 
-When a job tries to download artifacts from an earlier job, you might receive an error similar to:
+When a job attempts to download artifacts from an earlier job, you might receive an error message similar to:
 
 ```plaintext
 Downloading artifacts from coordinator... not found  id=12345678 responseStatus=404 Not Found
 ```
 
-This might be caused by a `gitlab.rb` file with the following configuration:
+This can be caused by a `gitlab.rb` file with the following configuration:
 
 ```ruby
 gitlab_rails['artifacts_object_store_background_upload'] = false
 gitlab_rails['artifacts_object_store_direct_upload'] = true
 ```
 
-To prevent this, comment out or remove those lines, or switch to their [default values](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/files/gitlab-config-template/gitlab.rb.template),
+To prevent this, comment out or remove those lines, or switch to their [default values](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/files/gitlab-config-template/gitlab.rb.template), and
 then run `sudo gitlab-ctl reconfigure`.
 
 ### Job artifact upload fails with error 500
 
 If you are using object storage for artifacts and a job artifact fails to upload,
-you can check:
+review:
 
-- The job log for an error similar to:
+- The job log for an error message similar to:
 
   ```plaintext
   WARNING: Uploading artifacts as "archive" to coordinator... failed id=12345 responseStatus=500 Internal Server Error status=500 token=abcd1234
   ```
 
-- The [workhorse log](logs.md#workhorse-logs) for an error similar to:
+- The [workhorse log](logs.md#workhorse-logs) for an error message similar to:
 
   ```json
   {"error":"MissingRegion: could not find region configuration","level":"error","msg":"error uploading S3 session","time":"2021-03-16T22:10:55-04:00"}

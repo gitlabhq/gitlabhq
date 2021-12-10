@@ -324,7 +324,7 @@ RSpec.describe SearchController do
 
         expect(response).to have_gitlab_http_status(:ok)
 
-        expect(response.headers['Cache-Control']).to eq('private, no-store')
+        expect(response.headers['Cache-Control']).to eq('max-age=60, private')
       end
 
       it 'does NOT blow up if search param is NOT a string' do

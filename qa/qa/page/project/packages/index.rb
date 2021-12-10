@@ -15,7 +15,7 @@ module QA
           end
 
           def has_package?(name)
-            has_element?(:package_link, text: name)
+            has_element?(:package_link, text: name, wait: 20)
           end
 
           def has_no_package?(name)

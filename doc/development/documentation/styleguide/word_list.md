@@ -511,6 +511,19 @@ In this example, **only** modifies the noun **projects**. The sentence means you
 In this example, **only** modifies the verb **create**. This sentence means that you can't perform other actions,
 like deleting private projects, or adding users to them.
 
+## override
+
+Use **override** to indicate temporary replacement.
+
+For example, a value might be overridden when a job runs. The
+original value does not change.
+
+## overwrite
+
+Use **overwrite** to indicate permanent replacement.
+
+For example, a log file might overwrite a log file of the same name.
+
 ## Owner
 
 When writing about the Owner role:
