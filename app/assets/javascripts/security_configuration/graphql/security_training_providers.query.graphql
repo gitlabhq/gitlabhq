@@ -1,0 +1,9 @@
+query Query {
+  securityTrainingProviders @client {
+    name
+    id
+    description
+    isEnabled
+    url
+  }
+}

@@ -1,10 +1,10 @@
-import { GlLink, GlToggle, GlCard } from '@gitlab/ui';
+import { GlLink, GlToggle, GlCard, GlSkeletonLoader } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import TrainingProviderList from '~/security_configuration/components/training_provider_list.vue';
-import { TRAINING_PROVIDERS } from '~/security_configuration/components/app.vue';
+import { securityTrainingProviders } from '../mock_data';
 
 const DEFAULT_PROPS = {
-  providers: TRAINING_PROVIDERS,
+  providers: securityTrainingProviders,
 };
 
 describe('TrainingProviderList component', () => {
@@ -22,6 +22,7 @@ describe('TrainingProviderList component', () => {
   const findCards = () => wrapper.findAllComponents(GlCard);
   const findLinks = () => wrapper.findAllComponents(GlLink);
   const findToggles = () => wrapper.findAllComponents(GlToggle);
+  const findLoader = () => wrapper.findComponent(GlSkeletonLoader);
 
   afterEach(() => {
     wrapper.destroy();
@@ -55,6 +56,25 @@ describe('TrainingProviderList component', () => {
       it(`shows the toggle with the correct value for card ${index}`, () => {
         expect(findToggles().at(index).props('value')).toEqual(isEnabled);
       });
+    });
+  });
+
+  describe('loading', () => {
+    beforeEach(() => {
+      createComponent({ loading: true });
+    });
+
+    it('shows the loader', () => {
+      expect(findLoader().exists()).toBe(true);
+    });
+
+    it('does not show the cards', () => {
+      expect(findCards().exists()).toBe(false);
+    });
+
+    it('does not show loader when not loading', () => {
+      createComponent({ loading: false });
+      expect(findLoader().exists()).toBe(false);
     });
   });
 });

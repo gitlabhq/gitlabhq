@@ -4,6 +4,7 @@ import { __, s__ } from '~/locale';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import UserCalloutDismisser from '~/vue_shared/components/user_callout_dismisser.vue';
+import securityTrainingProvidersQuery from '../graphql/security_training_providers.query.graphql';
 import AutoDevOpsAlert from './auto_dev_ops_alert.vue';
 import AutoDevOpsEnabledAlert from './auto_dev_ops_enabled_alert.vue';
 import { AUTO_DEVOPS_ENABLED_ALERT_DISMISSED_STORAGE_KEY } from './constants';
@@ -29,28 +30,8 @@ export const i18n = {
   securityTraining: s__('SecurityConfiguration|Security training'),
 };
 
-// This will be removed and replaced with GraphQL query:
-// https://gitlab.com/gitlab-org/gitlab/-/issues/346480
-export const TRAINING_PROVIDERS = [
-  {
-    id: 101,
-    name: __('Kontra'),
-    description: __('Interactive developer security education.'),
-    url: 'https://application.security/',
-    isEnabled: false,
-  },
-  {
-    id: 102,
-    name: __('SecureCodeWarrior'),
-    description: __('Security training with guide and learning pathways.'),
-    url: 'https://www.securecodewarrior.com/',
-    isEnabled: true,
-  },
-];
-
 export default {
   i18n,
-  TRAINING_PROVIDERS,
   components: {
     AutoDevOpsAlert,
     AutoDevOpsEnabledAlert,
@@ -107,6 +88,7 @@ export default {
     return {
       autoDevopsEnabledAlertDismissedProjects: [],
       errorMessage: '',
+      securityTrainingProviders: [],
     };
   },
   computed: {
@@ -126,6 +108,11 @@ export default {
         this.autoDevopsEnabled &&
         !this.autoDevopsEnabledAlertDismissedProjects.includes(this.projectPath)
       );
+    },
+  },
+  apollo: {
+    securityTrainingProviders: {
+      query: securityTrainingProvidersQuery,
     },
   },
   methods: {
@@ -264,7 +251,10 @@ export default {
       >
         <section-layout :heading="$options.i18n.securityTraining">
           <template #features>
-            <training-provider-list :providers="$options.TRAINING_PROVIDERS" />
+            <training-provider-list
+              :loading="$apollo.queries.securityTrainingProviders.loading"
+              :providers="securityTrainingProviders"
+            />
           </template>
         </section-layout>
       </gl-tab>
