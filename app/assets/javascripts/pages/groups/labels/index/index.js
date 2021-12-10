@@ -1,5 +1,4 @@
-import initDeleteLabelModal from '~/labels/delete_label_modal';
-import initLabels from '~/labels/init_labels';
+import { initDeleteLabelModal, initLabels } from '~/labels';
 
 initLabels();
 initDeleteLabelModal();

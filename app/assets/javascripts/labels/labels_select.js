@@ -9,7 +9,7 @@ import { isScopedLabel } from '~/lib/utils/common_utils';
 import createFlash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { sprintf, __ } from '~/locale';
-import CreateLabelDropdown from './create_label';
+import CreateLabelDropdown from './create_label_dropdown';
 
 export default class LabelsSelect {
   constructor(els, options = {}) {

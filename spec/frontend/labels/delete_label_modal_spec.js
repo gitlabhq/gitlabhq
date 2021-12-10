@@ -1,5 +1,5 @@
 import { TEST_HOST } from 'helpers/test_constants';
-import initDeleteLabelModal from '~/labels/delete_label_modal';
+import { initDeleteLabelModal } from '~/labels';
 
 describe('DeleteLabelModal', () => {
   const buttons = [

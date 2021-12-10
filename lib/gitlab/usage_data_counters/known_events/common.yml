@@ -355,6 +355,19 @@
   category: testing
   aggregation: weekly
   feature_flag: users_expanding_widgets_usage_data
+- name: users_expanding_testing_license_compliance_report
+  redis_slot: testing
+  category: testing
+  aggregation: weekly
+  feature_flag: users_expanding_widgets_usage_data
+- name: users_visiting_testing_license_compliance_full_report
+  redis_slot: testing
+  category: testing
+  aggregation: weekly
+- name: users_visiting_testing_manage_license_compliance
+  redis_slot: testing
+  category: testing
+  aggregation: weekly
 # Container Security - Network Policies
 - name: clusters_using_network_policies_ui
   redis_slot: network_policies

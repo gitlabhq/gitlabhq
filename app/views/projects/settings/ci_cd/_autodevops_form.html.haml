@@ -23,7 +23,7 @@
                   = form.label :enabled, class: 'form-check-label' do
                     %strong= s_('CICD|Default to Auto DevOps pipeline')
                     - if auto_devops_enabled
-                      %span.badge.badge-info.js-instance-default-badge= badge_for_auto_devops_scope(@project)
+                      = gl_badge_tag badge_for_auto_devops_scope(@project), { variant: :info }, { class: 'js-instance-default-badge'}
                   .form-text.text-muted
                     = s_('CICD|The Auto DevOps pipeline runs if no alternative CI configuration file is found.')
                     = link_to _('Learn more.'), help_page_path('topics/autodevops/index.md'), target: '_blank'

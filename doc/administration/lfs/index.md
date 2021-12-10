@@ -56,7 +56,7 @@ In `config/gitlab.yml`:
 ## Storing LFS objects in remote object storage
 
 You can store LFS objects in remote object storage. This allows you
-to offload reads and writes to the local disk, and free up disk space significantly.
+to reduce reads and writes to the local disk, and free up disk space significantly.
 GitLab is tightly integrated with `Fog`, so you can refer to its [documentation](http://fog.io/about/provider_documentation.html)
 to check which storage services can be integrated with GitLab.
 You can also use external object storage in a private local network. For example,
@@ -98,32 +98,6 @@ See [the available connection settings for different providers](../object_storag
 
 Here is a configuration example with S3.
 
-### Manual uploading to an object storage
-
-There are two ways to manually do the same thing as automatic uploading (described above).
-
-**Option 1: Rake task**
-
-```shell
-gitlab-rake gitlab:lfs:migrate
-```
-
-**Option 2: Rails console**
-
-Log into the Rails console:
-
-```shell
-sudo gitlab-rails console
-```
-
-Upload LFS files manually
-
-```ruby
-LfsObject.where(file_store: [nil, 1]).find_each do |lfs_object|
-  lfs_object.file.migrate!(ObjectStorage::Store::REMOTE) if lfs_object.file.file.exists?
-end
-```
-
 ### S3 for Omnibus installations
 
 On Omnibus GitLab installations, the settings are prefixed by `lfs_object_store_`:
@@ -146,32 +120,10 @@ On Omnibus GitLab installations, the settings are prefixed by `lfs_object_store_
    ```
 
 1. Save the file, and then [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
-1. Migrate any existing local LFS objects to the object storage:
-
-   ```shell
-   gitlab-rake gitlab:lfs:migrate
-   ```
-
-   This migrates existing LFS objects to object storage. New LFS objects
+1. [Migrate any existing local LFS objects to the object storage](#migrating-to-object-storage).
+   New LFS objects
    are forwarded to object storage unless
    `gitlab_rails['lfs_object_store_background_upload']` and `gitlab_rails['lfs_object_store_direct_upload']` is set to `false`.
-1. Optional. Verify all files migrated properly.
-   From [PostgreSQL console](https://docs.gitlab.com/omnibus/settings/database.html#connecting-to-the-bundled-postgresql-database)
-   (`sudo gitlab-psql -d gitlabhq_production`) verify `objectstg` below (where `file_store=2`) has count of all artifacts:
-
-   ```shell
-   gitlabhq_production=# SELECT count(*) AS total, sum(case when file_store = '1' then 1 else 0 end) AS filesystem, sum(case when file_store = '2' then 1 else 0 end) AS objectstg FROM lfs_objects;
-
-   total | filesystem | objectstg
-   ------+------------+-----------
-    2409 |          0 |      2409
-   ```
-
-   Verify no files on disk in `artifacts` folder:
-
-   ```shell
-   sudo find /var/opt/gitlab/gitlab-rails/shared/lfs-objects -type f | grep -v tmp/cache | wc -l
-   ```
 
 ### S3 for installations from source
 
@@ -199,31 +151,68 @@ For source installations the settings are nested under `lfs:` and then
    ```
 
 1. Save the file, and then [restart GitLab](../restart_gitlab.md#installations-from-source) for the changes to take effect.
-1. Migrate any existing local LFS objects to the object storage:
+1. [Migrate any existing local LFS objects to the object storage](#migrating-to-object-storage).
+   New LFS objects
+   are forwarded to object storage unless
+   `background_upload` and `direct_upload` is set to `false`.
 
-   ```shell
-   sudo -u git -H bundle exec rake gitlab:lfs:migrate RAILS_ENV=production
-   ```
+### Migrating to object storage
 
-   This migrates existing LFS objects to object storage. New LFS objects
-   are forwarded to object storage unless `background_upload` and `direct_upload` is set to
-   `false`.
-1. Optional. Verify all files migrated properly.
-   From PostgreSQL console (`sudo -u git -H psql -d gitlabhq_production`) verify `objectstg` below (where `file_store=2`) has count of all artifacts:
+**Option 1: Rake task**
 
-   ```shell
-   gitlabhq_production=# SELECT count(*) AS total, sum(case when file_store = '1' then 1 else 0 end) AS filesystem, sum(case when file_store = '2' then 1 else 0 end) AS objectstg FROM lfs_objects;
+After [configuring the object storage](#storing-lfs-objects-in-remote-object-storage), use the following task to
+migrate existing LFS objects from the local storage to the remote storage.
+The processing is done in a background worker and requires **no downtime**.
 
-   total | filesystem | objectstg
-   ------+------------+-----------
-    2409 |          0 |      2409
-   ```
+For Omnibus GitLab:
 
-   Verify no files on disk in `artifacts` folder:
+```shell
+sudo gitlab-rake "gitlab:lfs:migrate"
+```
 
-   ```shell
-   sudo find /var/opt/gitlab/gitlab-rails/shared/lfs-objects -type f | grep -v tmp/cache | wc -l
-   ```
+For installations from source:
+
+```shell
+RAILS_ENV=production sudo -u git -H bundle exec rake gitlab:lfs:migrate
+```
+
+You can optionally track progress and verify that all packages migrated successfully using the
+[PostgreSQL console](https://docs.gitlab.com/omnibus/settings/database.html#connecting-to-the-bundled-postgresql-database):
+
+- `sudo gitlab-rails dbconsole` for Omnibus GitLab instances.
+- `sudo -u git -H psql -d gitlabhq_production` for source-installed instances.
+
+Verify `objectstg` below (where `store=2`) has count of all LFS objects:
+
+```shell
+gitlabhq_production=# SELECT count(*) AS total, sum(case when file_store = '1' then 1 else 0 end) AS filesystem, sum(case when file_store = '2' then 1 else 0 end) AS objectstg FROM lfs_objects;
+
+total | filesystem | objectstg
+------+------------+-----------
+ 2409 |          0 |      2409
+```
+
+Verify that there are no files on disk in the `objects` folder:
+
+```shell
+sudo find /var/opt/gitlab/gitlab-rails/shared/lfs-objects -type f | grep -v tmp | wc -l
+```
+
+**Option 2: Rails console**
+
+Log into the Rails console:
+
+```shell
+sudo gitlab-rails console
+```
+
+Upload LFS files manually
+
+```ruby
+LfsObject.where(file_store: [nil, 1]).find_each do |lfs_object|
+  lfs_object.file.migrate!(ObjectStorage::Store::REMOTE) if lfs_object.file.file.exists?
+end
+```
 
 ### Migrating back to local storage
 

@@ -45,7 +45,6 @@ module Gitlab
           end
 
           def overwrite_headers(message, signed_email)
-            message.content_disposition = signed_email.content_disposition
             message.content_transfer_encoding = signed_email.content_transfer_encoding
             message.content_type = signed_email.content_type
           end

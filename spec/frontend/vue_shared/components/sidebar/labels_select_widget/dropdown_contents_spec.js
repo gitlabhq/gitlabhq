@@ -124,19 +124,7 @@ describe('DropdownContent', () => {
     expect(wrapper.emitted('setLabels')).toEqual([[[updatedLabel]]]);
   });
 
-  it('does not render header on standalone variant', () => {
-    createComponent({ props: { variant: DropdownVariant.Standalone } });
-
-    expect(findDropdownHeader().exists()).toBe(false);
-  });
-
-  it('renders header on embedded variant', () => {
-    createComponent({ props: { variant: DropdownVariant.Embedded } });
-
-    expect(findDropdownHeader().exists()).toBe(true);
-  });
-
-  it('renders header on sidebar variant', () => {
+  it('renders header', () => {
     createComponent();
 
     expect(findDropdownHeader().exists()).toBe(true);

@@ -195,12 +195,12 @@ export default {
   >
     <template #header>
       <dropdown-header
-        v-if="!isStandalone"
         ref="header"
-        v-model="searchKey"
+        :search-key="searchKey"
         :labels-create-title="labelsCreateTitle"
         :labels-list-title="labelsListTitle"
         :show-dropdown-contents-create-view="showDropdownContentsCreateView"
+        :is-standalone="isStandalone"
         @toggleDropdownContentsCreateView="toggleDropdownContent"
         @closeDropdown="$emit('closeDropdown')"
         @input="debouncedSearchKeyUpdate"

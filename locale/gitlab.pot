@@ -6785,7 +6785,7 @@ msgstr ""
 msgid "Checkout"
 msgstr ""
 
-msgid "Checkout|$%{selectedPlanPrice} per 10 GB storage per pack"
+msgid "Checkout|$%{selectedPlanPrice} per 10 GB storage pack per year"
 msgstr ""
 
 msgid "Checkout|$%{selectedPlanPrice} per pack of 1,000 minutes"

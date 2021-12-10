@@ -9,6 +9,7 @@ describe('DropdownHeader', () => {
   const createComponent = ({
     showDropdownContentsCreateView = false,
     labelsFetchInProgress = false,
+    isStandalone = false,
   } = {}) => {
     wrapper = extendedWrapper(
       shallowMount(DropdownHeader, {
@@ -18,6 +19,7 @@ describe('DropdownHeader', () => {
           labelsCreateTitle: 'Create label',
           labelsListTitle: 'Select label',
           searchKey: '',
+          isStandalone,
         },
         stubs: {
           GlSearchBoxByType,
@@ -32,6 +34,7 @@ describe('DropdownHeader', () => {
 
   const findSearchInput = () => wrapper.findComponent(GlSearchBoxByType);
   const findGoBackButton = () => wrapper.findByTestId('go-back-button');
+  const findDropdownTitle = () => wrapper.findByTestId('dropdown-header-title');
 
   beforeEach(() => {
     createComponent();
@@ -71,5 +74,19 @@ describe('DropdownHeader', () => {
         expect(findSearchInput().props('disabled')).toBe(disabled);
       },
     );
+  });
+
+  describe('Standalone variant', () => {
+    beforeEach(() => {
+      createComponent({ isStandalone: true });
+    });
+
+    it('renders search input', () => {
+      expect(findSearchInput().exists()).toBe(true);
+    });
+
+    it('does not render title', async () => {
+      expect(findDropdownTitle().exists()).toBe(false);
+    });
   });
 });

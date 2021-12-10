@@ -6,9 +6,6 @@ export default {
     GlButton,
     GlSearchBoxByType,
   },
-  model: {
-    prop: 'searchKey',
-  },
   props: {
     labelsCreateTitle: {
       type: String,
@@ -31,6 +28,11 @@ export default {
       type: String,
       required: true,
     },
+    isStandalone: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   computed: {
     dropdownTitle() {
@@ -47,7 +49,11 @@ export default {
 
 <template>
   <div data-testid="dropdown-header">
-    <div class="dropdown-title gl-display-flex gl-align-items-center gl-pt-0 gl-pb-3!">
+    <div
+      v-if="!isStandalone"
+      class="dropdown-title gl-display-flex gl-align-items-center gl-pt-0 gl-pb-3!"
+      data-testid="dropdown-header-title"
+    >
       <gl-button
         v-if="showDropdownContentsCreateView"
         :aria-label="__('Go back')"

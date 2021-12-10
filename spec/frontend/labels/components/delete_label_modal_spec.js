@@ -3,7 +3,7 @@ import { mount } from '@vue/test-utils';
 import { stubComponent } from 'helpers/stub_component';
 import { TEST_HOST } from 'helpers/test_constants';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
-import DeleteLabelModal from '~/vue_shared/components/delete_label_modal.vue';
+import DeleteLabelModal from '~/labels/components/delete_label_modal.vue';
 
 const MOCK_MODAL_DATA = {
   labelName: 'label 1',
@@ -11,7 +11,7 @@ const MOCK_MODAL_DATA = {
   destroyPath: `${TEST_HOST}/1`,
 };
 
-describe('vue_shared/components/delete_label_modal', () => {
+describe('~/labels/components/delete_label_modal', () => {
   let wrapper;
 
   const createComponent = () => {

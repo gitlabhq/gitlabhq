@@ -26,7 +26,6 @@ module Git
       enqueue_detect_repository_languages
 
       execute_related_hooks
-      perform_housekeeping
 
       stop_environments
       unlock_artifacts
@@ -69,13 +68,6 @@ module Git
 
     def execute_related_hooks
       BranchHooksService.new(project, current_user, params).execute
-    end
-
-    def perform_housekeeping
-      housekeeping = Repositories::HousekeepingService.new(project)
-      housekeeping.increment!
-      housekeeping.execute if housekeeping.needed?
-    rescue Repositories::HousekeepingService::LeaseTaken
     end
 
     def removing_branch?

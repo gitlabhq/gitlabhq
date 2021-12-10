@@ -69,7 +69,7 @@ RSpec.describe 'Query current user todos' do
       QUERY
     end
 
-    it 'avoids N+1 queries', :request_store do
+    it 'avoids N+1 queries', :request_store, quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/338671' do
       control = ActiveRecord::QueryRecorder.new { post_graphql(query, current_user: current_user) }
 
       project2 = create(:project)

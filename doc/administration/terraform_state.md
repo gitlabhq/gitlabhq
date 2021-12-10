@@ -130,6 +130,28 @@ For GitLab 13.8 and earlier versions, you can use a workaround for the Rake task
    end
    ```
 
+You can optionally track progress and verify that all packages migrated successfully using the
+[PostgreSQL console](https://docs.gitlab.com/omnibus/settings/database.html#connecting-to-the-bundled-postgresql-database):
+
+- `sudo gitlab-rails dbconsole` for Omnibus GitLab instances.
+- `sudo -u git -H psql -d gitlabhq_production` for source-installed instances.
+
+Verify `objectstg` below (where `store=2`) has count of all states:
+
+```shell
+gitlabhq_production=# SELECT count(*) AS total, sum(case when store = '1' then 1 else 0 end) AS filesystem, sum(case when store = '2' then 1 else 0 end) AS objectstg FROM terraform_states;
+
+total | filesystem | objectstg
+------+------------+-----------
+   15 |          0 |      15
+```
+
+Verify that there are no files on disk in the `terraform_state` folder:
+
+```shell
+sudo find /var/opt/gitlab/gitlab-rails/shared/terraform_state -type f | wc -l
+```
+
 ### S3-compatible connection settings
 
 See [the available connection settings for different providers](object_storage.md#connection-settings).
@@ -162,11 +184,7 @@ See [the available connection settings for different providers](object_storage.m
    ```
 
 1. Save the file and [reconfigure GitLab](restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
-1. Migrate any existing local states to the object storage (GitLab 13.9 and later):
-
-   ```shell
-   gitlab-rake gitlab:terraform_states:migrate
-   ```
+1. [Migrate any existing local states to the object storage](#migrate-to-object-storage)
 
 **In installations from source:**
 
@@ -187,8 +205,4 @@ See [the available connection settings for different providers](object_storage.m
    ```
 
 1. Save the file and [restart GitLab](restart_gitlab.md#installations-from-source) for the changes to take effect.
-1. Migrate any existing local states to the object storage (GitLab 13.9 and later):
-
-   ```shell
-   sudo -u git -H bundle exec rake gitlab:terraform_states:migrate RAILS_ENV=production
-   ```
+1. [Migrate any existing local states to the object storage](#migrate-to-object-storage)
