@@ -3,7 +3,6 @@
 module NotesActions
   include RendersNotes
   include Gitlab::Utils::StrongMemoize
-  include CheckRateLimit
   extend ActiveSupport::Concern
 
   # last_fetched_at is an integer number of microseconds, which is the same
@@ -16,7 +15,11 @@ module NotesActions
     before_action :require_noteable!, only: [:index, :create]
     before_action :authorize_admin_note!, only: [:update, :destroy]
     before_action :note_project, only: [:create]
-    before_action -> { check_rate_limit(:notes_create) }, only: [:create]
+    before_action -> {
+      check_rate_limit!(:notes_create,
+        scope: current_user,
+        users_allowlist: Gitlab::CurrentSettings.current_application_settings.notes_create_limit_allowlist)
+    }, only: [:create]
   end
 
   def index

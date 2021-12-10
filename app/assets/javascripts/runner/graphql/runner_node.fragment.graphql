@@ -8,6 +8,7 @@ fragment RunnerNode on CiRunner {
   ipAddress
   active
   locked
+  jobCount
   tagList
   contactedAt
   status(legacyMode: null)

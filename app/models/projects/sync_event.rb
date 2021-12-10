@@ -1,0 +1,16 @@
+# frozen_string_literal: true
+
+# This model serves to keep track of changes to the namespaces table in the main database as they relate to projects,
+# allowing to safely replicate changes to other databases.
+class Projects::SyncEvent < ApplicationRecord
+  self.table_name = 'projects_sync_events'
+
+  belongs_to :project
+
+  scope :preload_synced_relation, -> { preload(:project) }
+  scope :order_by_id_asc, -> { order(id: :asc) }
+
+  def self.enqueue_worker
+    ::Projects::ProcessSyncEventsWorker.perform_async # rubocop:disable CodeReuse/Worker
+  end
+end

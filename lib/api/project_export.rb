@@ -25,7 +25,7 @@ module API
         detail 'This feature was introduced in GitLab 10.6.'
       end
       get ':id/export/download' do
-        check_rate_limit! :project_download_export, [current_user, user_project]
+        check_rate_limit! :project_download_export, scope: [current_user, user_project]
 
         if user_project.export_file_exists?
           if user_project.export_archive_exists?
@@ -49,7 +49,7 @@ module API
         end
       end
       post ':id/export' do
-        check_rate_limit! :project_export, [current_user]
+        check_rate_limit! :project_export, scope: current_user
 
         user_project.remove_exports
 

@@ -2492,6 +2492,15 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: namespaces_process_sync_events
+  :worker_name: Namespaces::ProcessSyncEventsWorker
+  :feature_category: :sharding
+  :has_external_dependencies:
+  :urgency: :high
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: new_issue
   :worker_name: NewIssueWorker
   :feature_category: :team_planning
@@ -2659,6 +2668,15 @@
   :feature_category: :source_code_management
   :has_external_dependencies:
   :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+- :name: projects_process_sync_events
+  :worker_name: Projects::ProcessSyncEventsWorker
+  :feature_category: :sharding
+  :has_external_dependencies:
+  :urgency: :high
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: true

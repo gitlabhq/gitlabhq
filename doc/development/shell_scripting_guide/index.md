@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 GitLab consists of many various services and sub-projects. The majority of
 their backend code is written in [Ruby](https://www.ruby-lang.org) and
-[Go](https://golang.org). However, some of them use shell scripts for
+[Go](https://go.dev/). However, some of them use shell scripts for
 automation of routine system administration tasks like deployment,
 installation, etc. It's being done either for historical reasons or as an effort
 to minimize the dependencies, for instance, for Docker images.

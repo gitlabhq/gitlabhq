@@ -80,7 +80,7 @@ class SearchService
   def abuse_messages
     return [] unless params.abusive?
 
-    params.abuse_detection.errors.messages
+    params.abuse_detection.errors.full_messages
   end
 
   def valid_request?

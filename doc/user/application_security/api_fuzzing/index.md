@@ -14,7 +14,7 @@ miss.
 
 INFO:
 Try fuzz testing in GitLab Ultimate.
-[It's free for 30 days](https://about.gitlab.com/free-trial?glm_source=docs.gitlab.com&glm_content=u-api-fuzzing-docs).
+[It's free for 30 days](https://about.gitlab.com/free-trial/index.html?glm_source=docs.gitlab.com&glm_content=u-api-fuzzing-docs).
 
 We recommend that you use fuzz testing in addition to [GitLab Secure](../index.md)'s
 other security scanners and your own test processes. If you're using [GitLab CI/CD](../../../ci/index.md),

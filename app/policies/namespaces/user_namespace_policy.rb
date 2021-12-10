@@ -4,7 +4,6 @@ module Namespaces
   class UserNamespacePolicy < ::NamespacePolicy
     rule { anonymous }.prevent_all
 
-    condition(:personal_project, scope: :subject) { @subject.kind == 'user' }
     condition(:can_create_personal_project, scope: :user) { @user.can_create_project? }
     condition(:owner) { @subject.owner == @user }
 
@@ -19,7 +18,7 @@ module Namespaces
       enable :read_package_settings
     end
 
-    rule { personal_project & ~can_create_personal_project }.prevent :create_projects
+    rule { ~can_create_personal_project }.prevent :create_projects
 
     rule { (owner | admin) & can?(:create_projects) }.enable :transfer_projects
   end

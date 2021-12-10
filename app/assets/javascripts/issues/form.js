@@ -4,8 +4,7 @@ import $ from 'jquery';
 import IssuableForm from 'ee_else_ce/issuable/issuable_form';
 import ShortcutsNavigation from '~/behaviors/shortcuts/shortcuts_navigation';
 import GLForm from '~/gl_form';
-import initSuggestions from '~/issues/suggestions';
-import initIssuableTypeSelector from '~/issues/type_selector';
+import { initTitleSuggestions, initTypePopover } from '~/issues/new';
 import LabelsSelect from '~/labels/labels_select';
 import MilestoneSelect from '~/milestones/milestone_select';
 import IssuableTemplateSelectors from '~/issuable/issuable_template_selectors';
@@ -20,6 +19,6 @@ export default () => {
     warnTemplateOverride: true,
   });
 
-  initSuggestions();
-  initIssuableTypeSelector();
+  initTitleSuggestions();
+  initTypePopover();
 };

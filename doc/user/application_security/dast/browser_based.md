@@ -61,14 +61,14 @@ The browser-based crawler can be configured using CI/CD variables.
 | `DAST_BROWSER_NUMBER_OF_BROWSERS`            | number          | `3`                               | The maximum number of concurrent browser instances to use. For shared runners on GitLab.com, we recommended a maximum of three. Private runners with more resources may benefit from a higher number, but are likely to produce little benefit after five to seven instances. |
 | `DAST_BROWSER_COOKIES`                       | dictionary      | `abtesting_group:3,region:locked` | A cookie name and value to be added to every request. |
 | `DAST_BROWSER_LOG`                           | List of strings | `brows:debug,auth:debug`          | A list of modules and their intended log level. |
-| `DAST_BROWSER_NAVIGATION_TIMEOUT`            | [Duration string](https://golang.org/pkg/time/#ParseDuration) | `15s`   | The maximum amount of time to wait for a browser to navigate from one page to another. |
-| `DAST_BROWSER_ACTION_TIMEOUT`                | [Duration string](https://golang.org/pkg/time/#ParseDuration) | `7s`    | The maximum amount of time to wait for a browser to complete an action. |
-| `DAST_BROWSER_STABILITY_TIMEOUT`             | [Duration string](https://golang.org/pkg/time/#ParseDuration) | `7s`    | The maximum amount of time to wait for a browser to consider a page loaded and ready for analysis. |
-| `DAST_BROWSER_NAVIGATION_STABILITY_TIMEOUT`  | [Duration string](https://golang.org/pkg/time/#ParseDuration) | `7s`    | The maximum amount of time to wait for a browser to consider a page loaded and ready for analysis after a navigation completes. |
-| `DAST_BROWSER_ACTION_STABILITY_TIMEOUT`      | [Duration string](https://golang.org/pkg/time/#ParseDuration) | `800ms` | The maximum amount of time to wait for a browser to consider a page loaded and ready for analysis after completing an action. |
-| `DAST_BROWSER_SEARCH_ELEMENT_TIMEOUT`        | [Duration string](https://golang.org/pkg/time/#ParseDuration) | `3s`    | The maximum amount of time to allow the browser to search for new elements or navigations. |
-| `DAST_BROWSER_EXTRACT_ELEMENT_TIMEOUT`       | [Duration string](https://golang.org/pkg/time/#ParseDuration) | `5s`    | The maximum amount of time to allow the browser to extract newly found elements or navigations. |
-| `DAST_BROWSER_ELEMENT_TIMEOUT`               | [Duration string](https://golang.org/pkg/time/#ParseDuration) | `600ms` | The maximum amount of time to wait for an element before determining it is ready for analysis. |
+| `DAST_BROWSER_NAVIGATION_TIMEOUT`            | [Duration string](https://pkg.go.dev/time#ParseDuration) | `15s`   | The maximum amount of time to wait for a browser to navigate from one page to another. |
+| `DAST_BROWSER_ACTION_TIMEOUT`                | [Duration string](https://pkg.go.dev/time#ParseDuration) | `7s`    | The maximum amount of time to wait for a browser to complete an action. |
+| `DAST_BROWSER_STABILITY_TIMEOUT`             | [Duration string](https://pkg.go.dev/time#ParseDuration) | `7s`    | The maximum amount of time to wait for a browser to consider a page loaded and ready for analysis. |
+| `DAST_BROWSER_NAVIGATION_STABILITY_TIMEOUT`  | [Duration string](https://pkg.go.dev/time#ParseDuration) | `7s`    | The maximum amount of time to wait for a browser to consider a page loaded and ready for analysis after a navigation completes. |
+| `DAST_BROWSER_ACTION_STABILITY_TIMEOUT`      | [Duration string](https://pkg.go.dev/time#ParseDuration) | `800ms` | The maximum amount of time to wait for a browser to consider a page loaded and ready for analysis after completing an action. |
+| `DAST_BROWSER_SEARCH_ELEMENT_TIMEOUT`        | [Duration string](https://pkg.go.dev/time#ParseDuration) | `3s`    | The maximum amount of time to allow the browser to search for new elements or navigations. |
+| `DAST_BROWSER_EXTRACT_ELEMENT_TIMEOUT`       | [Duration string](https://pkg.go.dev/time#ParseDuration) | `5s`    | The maximum amount of time to allow the browser to extract newly found elements or navigations. |
+| `DAST_BROWSER_ELEMENT_TIMEOUT`               | [Duration string](https://pkg.go.dev/time#ParseDuration) | `600ms` | The maximum amount of time to wait for an element before determining it is ready for analysis. |
 | `DAST_BROWSER_PAGE_READY_SELECTOR`           | selector | `css:#page-is-ready`                               | Selector that when detected as visible on the page, indicates to the analyzer that the page has finished loading and the scan can continue. Note: When this selector is set, but the element is not found, the scanner waits for the period defined in `DAST_BROWSER_STABILITY_TIMEOUT` before continuing the scan. This can significantly increase scanning time if the element is not present on multiple pages within the site. |
 
 The [DAST variables](index.md#available-cicd-variables) `SECURE_ANALYZERS_PREFIX`, `DAST_FULL_SCAN_ENABLED`, `DAST_AUTO_UPDATE_ADDONS`, `DAST_EXCLUDE_RULES`, `DAST_REQUEST_HEADERS`, `DAST_HTML_REPORT`, `DAST_MARKDOWN_REPORT`, `DAST_XML_REPORT`,
@@ -100,7 +100,7 @@ You can manage the trade-off between coverage and scan time with the following m
 
 Due to poor network conditions or heavy application load, the default timeouts may not be applicable to your application.
 
-Browser-based scans offer the ability to adjust various timeouts to ensure it continues smoothly as it transitions from one page to the next. These values are configured using a [Duration string](https://golang.org/pkg/time/#ParseDuration), which allow you to configure durations with a prefix: `m` for minutes, `s` for seconds, and `ms` for milliseconds.
+Browser-based scans offer the ability to adjust various timeouts to ensure it continues smoothly as it transitions from one page to the next. These values are configured using a [Duration string](https://pkg.go.dev/time#ParseDuration), which allow you to configure durations with a prefix: `m` for minutes, `s` for seconds, and `ms` for milliseconds.
 
 Navigations, or the act of loading a new page, usually require the most amount of time because they are
 loading multiple new resources such as JavaScript or CSS files. Depending on the size of these resources, or the speed at which they are returned, the default `DAST_BROWSER_NAVIGATION_TIMEOUT` may not be sufficient.

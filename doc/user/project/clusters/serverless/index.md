@@ -539,7 +539,7 @@ server that has Python 3 installed, and may not work on other operating systems
 or with other versions of Python.
 
 1. Install Certbot by running the
-   [`certbot-auto` wrapper script](https://certbot.eff.org/docs/install.html#certbot-auto).
+   [`certbot-auto` wrapper script](https://eff-certbot.readthedocs.io/install.html#certbot-auto).
    On the command line of your server, run the following commands:
 
    ```shell

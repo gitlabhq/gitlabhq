@@ -12,7 +12,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 INFO:
 Check out [multi-level child epics](manage_epics.md#multi-level-child-epics) with a
-[free 30-day trial of GitLab Ultimate](https://about.gitlab.com/free-trial?glm_source=docs.gitlab.com&glm_content=p-epics-docs).
+[free 30-day trial of GitLab Ultimate](https://about.gitlab.com/free-trial/index.html?glm_source=docs.gitlab.com&glm_content=p-epics-docs).
 
 When [issues](../../project/issues/index.md) share a theme across projects and milestones,
 you can manage them by using epics.

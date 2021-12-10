@@ -2,7 +2,8 @@
 
 Gitlab::Database::Partitioning.register_models([
   AuditEvent,
-  WebHookLog
+  WebHookLog,
+  LooseForeignKeys::DeletedRecord
 ])
 
 if Gitlab.ee?

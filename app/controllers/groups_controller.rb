@@ -37,7 +37,7 @@ class GroupsController < Groups::ApplicationController
     push_frontend_feature_flag(:iteration_cadences, @group, default_enabled: :yaml)
   end
 
-  before_action :export_rate_limit, only: [:export, :download_export]
+  before_action :check_export_rate_limit!, only: [:export, :download_export]
 
   helper_method :captcha_required?
 
@@ -314,16 +314,12 @@ class GroupsController < Groups::ApplicationController
     url_for(safe_params)
   end
 
-  def export_rate_limit
+  def check_export_rate_limit!
     prefixed_action = "group_#{params[:action]}".to_sym
 
     scope = params[:action] == :download_export ? @group : nil
 
-    if Gitlab::ApplicationRateLimiter.throttled?(prefixed_action, scope: [current_user, scope].compact)
-      Gitlab::ApplicationRateLimiter.log_request(request, "#{prefixed_action}_request_limit".to_sym, current_user)
-
-      render plain: _('This endpoint has been requested too many times. Try again later.'), status: :too_many_requests
-    end
+    check_rate_limit!(prefixed_action, scope: [current_user, scope].compact)
   end
 
   def ensure_export_enabled

@@ -298,7 +298,7 @@ this makes it possible to debug the problem without having to change the log lev
 
 #### common `logutil` package
 
-If you are using [go](https://golang.org/) and
+If you are using [go](https://go.dev/) and
 [common](https://gitlab.com/gitlab-org/security-products/analyzers/common),
 then it is suggested that you use [Logrus](https://github.com/Sirupsen/logrus)
 and [common's `logutil` package](https://gitlab.com/gitlab-org/security-products/analyzers/common/-/tree/master/logutil)

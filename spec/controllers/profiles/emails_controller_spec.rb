@@ -33,7 +33,7 @@ RSpec.describe Profiles::EmailsController do
         subject
 
         expect(response).to have_gitlab_http_status(:redirect)
-        expect(flash[:alert]).to eq(_('This action has been performed too many times. Try again later.'))
+        expect(flash[:alert]).to eq(_('This endpoint has been requested too many times. Try again later.'))
       end
     end
   end

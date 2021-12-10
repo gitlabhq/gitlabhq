@@ -9,6 +9,7 @@ module Projects
 
       layout 'project_settings'
       before_action :authorize_admin_pipeline!
+      before_action :check_builds_available!
       before_action :define_variables
       before_action do
         push_frontend_feature_flag(:ajax_new_deploy_token, @project)

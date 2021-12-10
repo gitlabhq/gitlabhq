@@ -4,12 +4,7 @@ module Gitlab
   # This class implements a simple rate limiter that can be used to throttle
   # certain actions. Unlike Rack Attack and Rack::Throttle, which operate at
   # the middleware level, this can be used at the controller or API level.
-  #
-  # @example
-  #  if Gitlab::ApplicationRateLimiter.throttled?(:project_export, scope: [@project, @current_user])
-  #   flash[:alert] = 'error!'
-  #   redirect_to(edit_project_path(@project), status: :too_many_requests)
-  # end
+  # See CheckRateLimit concern for usage.
   class ApplicationRateLimiter
     InvalidKeyError = Class.new(StandardError)
 
@@ -47,7 +42,7 @@ module Gitlab
           project_import:               { threshold: -> { application_settings.project_import_limit }, interval: 1.minute },
           project_testing_hook:         { threshold: 5, interval: 1.minute },
           play_pipeline_schedule:       { threshold: 1, interval: 1.minute },
-          show_raw_controller:          { threshold: -> { application_settings.raw_blob_request_limit }, interval: 1.minute },
+          raw_blob:                     { threshold: -> { application_settings.raw_blob_request_limit }, interval: 1.minute },
           group_export:                 { threshold: -> { application_settings.group_export_limit }, interval: 1.minute },
           group_download_export:        { threshold: -> { application_settings.group_download_export_limit }, interval: 1.minute },
           group_import:                 { threshold: -> { application_settings.group_import_limit }, interval: 1.minute },

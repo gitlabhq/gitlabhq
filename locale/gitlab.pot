@@ -8813,6 +8813,15 @@ msgstr ""
 msgid "ComplianceFramework|New compliance framework"
 msgstr ""
 
+msgid "ComplianceReport|Approved by author"
+msgstr ""
+
+msgid "ComplianceReport|Approved by committer"
+msgstr ""
+
+msgid "ComplianceReport|Less than 2 approvers"
+msgstr ""
+
 msgid "Component"
 msgstr ""
 
@@ -35576,9 +35585,6 @@ msgstr ""
 msgid "This action cannot be undone, and will permanently delete the %{key} SSH key"
 msgstr ""
 
-msgid "This action has been performed too many times. Try again later."
-msgstr ""
-
 msgid "This action will %{strongOpen}permanently delete%{strongClose} %{codeOpen}%{project}%{codeClose} %{strongOpen}immediately%{strongClose}, including its repositories and all related resources, including issues and merge requests."
 msgstr ""
 
@@ -35601,6 +35607,9 @@ msgid "This application was created for group %{group_link}."
 msgstr ""
 
 msgid "This application will be able to:"
+msgstr ""
+
+msgid "This archive has been requested too many times. Try again later."
 msgstr ""
 
 msgid "This attachment has been truncated to avoid exceeding the maximum allowed attachment size of %{size_limit}. %{written_count} of %{count} %{issuables} have been included. Consider re-exporting with a narrower selection of %{issuables}."

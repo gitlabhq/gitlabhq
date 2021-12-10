@@ -23,6 +23,7 @@ class ApplicationController < ActionController::Base
   include Gitlab::Utils::StrongMemoize
   include ::Gitlab::EndpointAttributes
   include FlocOptOut
+  include CheckRateLimit
 
   before_action :authenticate_user!, except: [:route_not_found]
   before_action :enforce_terms!, if: :should_enforce_terms?

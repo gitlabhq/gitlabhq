@@ -45,7 +45,7 @@ module API
     end
     resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       helpers do
-        include ::Gitlab::RateLimitHelpers
+        include Gitlab::RepositoryArchiveRateLimiter
 
         def handle_project_member_errors(errors)
           if errors[:project_access].any?
@@ -150,8 +150,8 @@ module API
         optional :path, type: String, desc: 'Subfolder of the repository to be downloaded'
       end
       get ':id/repository/archive', requirements: { format: Gitlab::PathRegex.archive_formats_regex } do
-        if archive_rate_limit_reached?(current_user, user_project)
-          render_api_error!({ error: ::Gitlab::RateLimitHelpers::ARCHIVE_RATE_LIMIT_REACHED_MESSAGE }, 429)
+        check_archive_rate_limit!(current_user, user_project) do
+          render_api_error!({ error: _('This archive has been requested too many times. Try again later.') }, 429)
         end
 
         not_acceptable! if Gitlab::HotlinkingDetector.intercept_hotlinking?(request)

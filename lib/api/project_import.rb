@@ -81,7 +81,7 @@ module API
       post 'import' do
         require_gitlab_workhorse!
 
-        check_rate_limit! :project_import, [current_user, :project_import]
+        check_rate_limit! :project_import, scope: [current_user, :project_import]
 
         Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/21041')
 
@@ -135,7 +135,7 @@ module API
       post 'remote-import' do
         not_found! unless ::Feature.enabled?(:import_project_from_remote_file)
 
-        check_rate_limit! :project_import, [current_user, :project_import]
+        check_rate_limit! :project_import, scope: [current_user, :project_import]
 
         response = ::Import::GitlabProjects::CreateProjectFromRemoteFileService.new(
           current_user,

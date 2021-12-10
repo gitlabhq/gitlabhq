@@ -32,7 +32,7 @@ Individual Golang projects need to support multiple Go versions because:
 - We must support the [official Omnibus GitLab Go version](#updating-go-version), which may be behind the latest minor release.
 - When Omnibus switches Go version, we still may need to support the old one for security backports.
 
-These 3 requirements may easily be satisfied by keeping support for the [3 latest minor versions of Go](https://golang.org/dl/).
+These 3 requirements may easily be satisfied by keeping support for the [3 latest minor versions of Go](https://go.dev/dl/).
 
 It is ok to drop support for the oldest Go version and support only the 2 latest releases,
 if this is enough to support backports to the last 3 minor GitLab releases.
@@ -52,12 +52,12 @@ in case of a critical security release.
 We should always:
 
 - Use the same Go version for Omnibus GitLab and Cloud Native GitLab.
-- Use a [supported version](https://golang.org/doc/devel/release#policy).
+- Use a [supported version](https://go.dev/doc/devel/release#policy).
 - Use the most recent patch-level for that version to keep up with security fixes.
 
 Changing the version affects every project being compiled, so it's important to
 ensure that all projects have been updated to test against the new Go version
-before changing the package builders to use it. Despite [Go's compatibility promise](https://golang.org/doc/go1compat),
+before changing the package builders to use it. Despite [Go's compatibility promise](https://go.dev/doc/go1compat),
 changes between minor versions can expose bugs or cause problems in our projects.
 
 ### Upgrade process

@@ -273,6 +273,8 @@
   - 1
 - - namespaces_onboarding_user_added
   - 1
+- - namespaces_process_sync_events
+  - 1
 - - namespaces_sync_namespace_name
   - 1
 - - new_epic
@@ -338,6 +340,8 @@
 - - projects_git_garbage_collect
   - 1
 - - projects_post_creation
+  - 1
+- - projects_process_sync_events
   - 1
 - - projects_schedule_bulk_repository_shard_moves
   - 1

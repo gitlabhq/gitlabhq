@@ -6,7 +6,7 @@ class Projects::HooksController < Projects::ApplicationController
   # Authorize
   before_action :authorize_admin_project!
   before_action :hook_logs, only: :edit
-  before_action -> { create_rate_limit(:project_testing_hook, @project) }, only: :test
+  before_action -> { check_rate_limit!(:project_testing_hook, scope: [@project, current_user]) }, only: :test
 
   respond_to :html
 

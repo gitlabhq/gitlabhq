@@ -19,9 +19,9 @@ export default {
 
 <template>
   <span id="popovercontainer">
-    <gl-icon id="issuable-type-info" name="question-o" class="gl-ml-5 gl-text-gray-500" />
+    <gl-icon id="issue-type-info" name="question-o" class="gl-ml-5 gl-text-gray-500" />
     <gl-popover
-      target="issuable-type-info"
+      target="issue-type-info"
       container="popovercontainer"
       :title="$options.i18n.issueTypes"
       triggers="focus hover"

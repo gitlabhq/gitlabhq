@@ -102,6 +102,8 @@ class Project < ApplicationRecord
 
   after_save :update_project_statistics, if: :saved_change_to_namespace_id?
 
+  after_save :schedule_sync_event_worker, if: -> { saved_change_to_id? || saved_change_to_namespace_id? }
+
   after_save :create_import_state, if: ->(project) { project.import? && project.import_state.nil? }
 
   after_save :save_topics
@@ -393,6 +395,9 @@ class Project < ApplicationRecord
   has_many :error_tracking_client_keys, inverse_of: :project, class_name: 'ErrorTracking::ClientKey'
 
   has_many :timelogs
+
+  has_one :ci_project_mirror, class_name: 'Ci::ProjectMirror'
+  has_many :sync_events, class_name: 'Projects::SyncEvent'
 
   accepts_nested_attributes_for :variables, allow_destroy: true
   accepts_nested_attributes_for :project_feature, update_only: true
@@ -2937,6 +2942,13 @@ class Project < ApplicationRecord
     project_namespace.parent = namespace
     project_namespace.shared_runners_enabled = shared_runners_enabled
     project_namespace.visibility_level = visibility_level
+  end
+
+  # SyncEvents are created by PG triggers (with the function `insert_projects_sync_event`)
+  def schedule_sync_event_worker
+    run_after_commit do
+      Projects::SyncEvent.enqueue_worker
+    end
   end
 end
 

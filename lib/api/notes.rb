@@ -79,7 +79,7 @@ module API
         post ":id/#{noteables_str}/:noteable_id/notes", feature_category: feature_category do
           allowlist =
             Gitlab::CurrentSettings.current_application_settings.notes_create_limit_allowlist
-          check_rate_limit! :notes_create, [current_user], allowlist
+          check_rate_limit! :notes_create, scope: current_user, users_allowlist: allowlist
           noteable = find_noteable(noteable_type, params[:noteable_id])
 
           opts = {

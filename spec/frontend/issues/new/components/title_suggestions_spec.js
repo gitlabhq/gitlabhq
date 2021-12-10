@@ -1,12 +1,12 @@
 import { shallowMount } from '@vue/test-utils';
-import App from '~/issues/suggestions/components/app.vue';
-import Suggestion from '~/issues/suggestions/components/item.vue';
+import TitleSuggestions from '~/issues/new/components/title_suggestions.vue';
+import TitleSuggestionsItem from '~/issues/new/components/title_suggestions_item.vue';
 
-describe('Issuable suggestions app component', () => {
+describe('Issue title suggestions component', () => {
   let wrapper;
 
   function createComponent(search = 'search') {
-    wrapper = shallowMount(App, {
+    wrapper = shallowMount(TitleSuggestions, {
       propsData: {
         search,
         projectPath: 'project',
@@ -77,7 +77,7 @@ describe('Issuable suggestions app component', () => {
       wrapper.setData(data);
 
       return wrapper.vm.$nextTick(() => {
-        expect(wrapper.findAll(Suggestion).length).toBe(2);
+        expect(wrapper.findAll(TitleSuggestionsItem).length).toBe(2);
       });
     });
 

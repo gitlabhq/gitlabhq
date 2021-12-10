@@ -13,7 +13,7 @@ class Projects::RawController < Projects::ApplicationController
   before_action :set_ref_and_path
   before_action :require_non_empty_project
   before_action :authorize_download_code!
-  before_action :show_rate_limit, only: [:show], unless: :external_storage_request?
+  before_action :check_show_rate_limit!, only: [:show], unless: :external_storage_request?
   before_action :redirect_to_external_storage, only: :show, if: :static_objects_external_storage_enabled?
 
   feature_category :source_code_management
@@ -33,22 +33,10 @@ class Projects::RawController < Projects::ApplicationController
     @ref, @path = extract_ref(get_id)
   end
 
-  def show_rate_limit
-    if rate_limiter.throttled?(:show_raw_controller, scope: [@project, @path], threshold: raw_blob_request_limit)
-      rate_limiter.log_request(request, :raw_blob_request_limit, current_user)
-
+  def check_show_rate_limit!
+    check_rate_limit!(:raw_blob, scope: [@project, @path]) do
       render plain: _('You cannot access the raw file. Please wait a minute.'), status: :too_many_requests
     end
-  end
-
-  def rate_limiter
-    ::Gitlab::ApplicationRateLimiter
-  end
-
-  def raw_blob_request_limit
-    Gitlab::CurrentSettings
-      .current_application_settings
-      .raw_blob_request_limit
   end
 end
 

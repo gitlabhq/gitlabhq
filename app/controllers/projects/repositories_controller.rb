@@ -3,16 +3,16 @@
 class Projects::RepositoriesController < Projects::ApplicationController
   include ExtractsPath
   include StaticObjectExternalStorage
-  include Gitlab::RateLimitHelpers
   include HotlinkInterceptor
+  include Gitlab::RepositoryArchiveRateLimiter
 
   prepend_before_action(only: [:archive]) { authenticate_sessionless_user!(:archive) }
 
   skip_before_action :default_cache_headers, only: :archive
 
   # Authorize
+  before_action :check_archive_rate_limiting!, only: :archive
   before_action :require_non_empty_project, except: :create
-  before_action :archive_rate_limit!, only: :archive
   before_action :intercept_hotlinking!, only: :archive
   before_action :assign_archive_vars, only: :archive
   before_action :assign_append_sha, only: :archive
@@ -41,12 +41,6 @@ class Projects::RepositoriesController < Projects::ApplicationController
   end
 
   private
-
-  def archive_rate_limit!
-    if archive_rate_limit_reached?(current_user, @project)
-      render plain: ::Gitlab::RateLimitHelpers::ARCHIVE_RATE_LIMIT_REACHED_MESSAGE, status: :too_many_requests
-    end
-  end
 
   def repo_params
     @repo_params ||= { ref: @ref, path: params[:path], format: params[:format], append_sha: @append_sha }
@@ -123,6 +117,12 @@ class Projects::RepositoriesController < Projects::ApplicationController
       [data[1], data[2]]
     else
       [path, nil]
+    end
+  end
+
+  def check_archive_rate_limiting!
+    check_archive_rate_limit!(current_user, @project) do
+      render(plain: _('This archive has been requested too many times. Try again later.'), status: :too_many_requests)
     end
   end
 end

@@ -799,7 +799,7 @@ Incorrect configuration of these values may result in intermittent
 or persistent errors, or the Pages Daemon serving old content.
 
 NOTE:
-Expiry, interval and timeout flags use [Golang's duration formatting](https://golang.org/pkg/time/#ParseDuration).
+Expiry, interval and timeout flags use [Golang's duration formatting](https://pkg.go.dev/time#ParseDuration).
 A duration string is a possibly signed sequence of decimal numbers,
 each with optional fraction and a unit suffix, such as `300ms`, `1.5h` or `2h45m`.
 Valid time units are `ns`, `us` (or `µs`), `ms`, `s`, `m`, `h`.
@@ -1286,7 +1286,7 @@ in all of your GitLab Pages instances.
 ### 500 error with `securecookie: failed to generate random iv` and `Failed to save the session`
 
 This problem most likely results from an [out-dated operating system](../package_information/supported_os.md#os-versions-that-are-no-longer-supported).
-The [Pages daemon uses the `securecookie` library](https://gitlab.com/search?group_id=9970&project_id=734943&repository_ref=master&scope=blobs&search=securecookie&snippets=false) to get random strings via [`crypto/rand` in Go](https://golang.org/pkg/crypto/rand/#pkg-variables).
+The [Pages daemon uses the `securecookie` library](https://gitlab.com/search?group_id=9970&project_id=734943&repository_ref=master&scope=blobs&search=securecookie&snippets=false) to get random strings via [`crypto/rand` in Go](https://pkg.go.dev/crypto/rand#pkg-variables).
 This requires the `getrandom` system call or `/dev/urandom` to be available on the host OS.
 Upgrading to an [officially supported operating system](https://about.gitlab.com/install/) is recommended.
 

@@ -2,12 +2,12 @@
 import { GlTooltipDirective, GlIcon } from '@gitlab/ui';
 import { __ } from '~/locale';
 import query from '../queries/issues.query.graphql';
-import Suggestion from './item.vue';
+import TitleSuggestionsItem from './title_suggestions_item.vue';
 
 export default {
   components: {
-    Suggestion,
     GlIcon,
+    TitleSuggestionsItem,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -66,7 +66,7 @@ export default {
 </script>
 
 <template>
-  <div v-show="showSuggestions" class="form-group row issuable-suggestions">
+  <div v-show="showSuggestions" class="form-group row">
     <div v-once class="col-form-label col-sm-2 pt-0">
       {{ __('Similar issues') }}
       <gl-icon
@@ -86,7 +86,7 @@ export default {
             'gl-mb-3': index !== issues.length - 1,
           }"
         >
-          <suggestion :suggestion="suggestion" />
+          <title-suggestions-item :suggestion="suggestion" />
         </li>
       </ul>
     </div>

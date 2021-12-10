@@ -20,7 +20,7 @@ The Agent is installed into the cluster through code, providing you with a fast,
 
 INFO:
 Get Network Security Alerts in GitLab by upgrading to Ultimate.
-[Try a free 30-day trial now](https://about.gitlab.com/free-trial?glm_source=docs.gitlab.com&glm_content=p-cluster-agent-docs).
+[Try a free 30-day trial now](https://about.gitlab.com/free-trial/index.html?glm_source=docs.gitlab.com&glm_content=p-cluster-agent-docs).
 
 With GitOps, you can manage containerized clusters and applications from a Git repository that:
 

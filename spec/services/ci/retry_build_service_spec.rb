@@ -128,25 +128,9 @@ RSpec.describe Ci::RetryBuildService do
         expect(new_build.needs).not_to match(build.needs)
       end
 
-      context 'when clone_job_variables_at_job_retry is enabled' do
-        before do
-          stub_feature_flags(clone_job_variables_at_job_retry: true)
-        end
-
-        it 'clones only internal job variables' do
-          expect(new_build.job_variables.count).to eq(1)
-          expect(new_build.job_variables).to contain_exactly(having_attributes(key: internal_job_variable.key, value: internal_job_variable.value))
-        end
-      end
-
-      context 'when clone_job_variables_at_job_retry is not enabled' do
-        before do
-          stub_feature_flags(clone_job_variables_at_job_retry: false)
-        end
-
-        it 'does not clone internal job variables' do
-          expect(new_build.job_variables.count).to eq(0)
-        end
+      it 'clones only internal job variables' do
+        expect(new_build.job_variables.count).to eq(1)
+        expect(new_build.job_variables).to contain_exactly(having_attributes(key: internal_job_variable.key, value: internal_job_variable.value))
       end
     end
 
@@ -170,7 +154,7 @@ RSpec.describe Ci::RetryBuildService do
         Ci::Build.attribute_names.map(&:to_sym) +
         Ci::Build.attribute_aliases.keys.map(&:to_sym) +
         Ci::Build.reflect_on_all_associations.map(&:name) +
-        [:tag_list, :needs_attributes] -
+        [:tag_list, :needs_attributes, :job_variables_attributes] -
         # ee-specific accessors should be tested in ee/spec/services/ci/retry_build_service_spec.rb instead
         described_class.extra_accessors -
         [:dast_site_profiles_build, :dast_scanner_profiles_build] # join tables

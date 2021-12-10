@@ -1,14 +1,19 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createDefaultClient from '~/lib/graphql';
-import App from './components/app.vue';
+import TitleSuggestions from './components/title_suggestions.vue';
+import TypePopover from './components/type_popover.vue';
 
-Vue.use(VueApollo);
+export function initTitleSuggestions() {
+  Vue.use(VueApollo);
 
-export default function initIssuableSuggestions() {
   const el = document.getElementById('js-suggestions');
   const issueTitle = document.getElementById('issue_title');
-  const { projectPath } = el.dataset;
+
+  if (!el) {
+    return undefined;
+  }
+
   const apolloProvider = new VueApollo({
     defaultClient: createDefaultClient(),
   });
@@ -26,13 +31,26 @@ export default function initIssuableSuggestions() {
         this.search = issueTitle.value;
       });
     },
-    render(h) {
-      return h(App, {
+    render(createElement) {
+      return createElement(TitleSuggestions, {
         props: {
-          projectPath,
+          projectPath: el.dataset.projectPath,
           search: this.search,
         },
       });
     },
+  });
+}
+
+export function initTypePopover() {
+  const el = document.getElementById('js-type-popover');
+
+  if (!el) {
+    return undefined;
+  }
+
+  return new Vue({
+    el,
+    render: (createElement) => createElement(TypePopover),
   });
 }

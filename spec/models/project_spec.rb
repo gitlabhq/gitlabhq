@@ -7480,6 +7480,77 @@ RSpec.describe Project, factory_default: :keep do
     let(:factory_name) { :project }
   end
 
+  context 'Projects::SyncEvent' do
+    let!(:project) { create(:project) }
+
+    let_it_be(:new_namespace1) { create(:namespace) }
+    let_it_be(:new_namespace2) { create(:namespace) }
+
+    context 'when creating the project' do
+      it 'creates a projects_sync_event record' do
+        expect(project.sync_events.count).to eq(1)
+      end
+
+      it 'enqueues ProcessProjectSyncEventsWorker' do
+        expect(Projects::ProcessSyncEventsWorker).to receive(:perform_async)
+
+        create(:project)
+      end
+    end
+
+    context 'when updating project namespace_id' do
+      it 'creates a projects_sync_event record' do
+        expect do
+          project.update!(namespace_id: new_namespace1.id)
+        end.to change(Projects::SyncEvent, :count).by(1)
+
+        expect(project.sync_events.count).to eq(2)
+      end
+
+      it 'enqueues ProcessProjectSyncEventsWorker' do
+        expect(Projects::ProcessSyncEventsWorker).to receive(:perform_async)
+
+        project.update!(namespace_id: new_namespace1.id)
+      end
+    end
+
+    context 'when updating project other attribute' do
+      it 'creates a projects_sync_event record' do
+        expect do
+          project.update!(name: 'hello')
+        end.not_to change(Projects::SyncEvent, :count)
+      end
+    end
+
+    context 'in the same transaction' do
+      context 'when updating different namespace_id' do
+        it 'creates two projects_sync_event records' do
+          expect do
+            Project.transaction do
+              project.update!(namespace_id: new_namespace1.id)
+              project.update!(namespace_id: new_namespace2.id)
+            end
+          end.to change(Projects::SyncEvent, :count).by(2)
+
+          expect(project.sync_events.count).to eq(3)
+        end
+      end
+
+      context 'when updating the same namespace_id' do
+        it 'creates one projects_sync_event record' do
+          expect do
+            Project.transaction do
+              project.update!(namespace_id: new_namespace1.id)
+              project.update!(namespace_id: new_namespace1.id)
+            end
+          end.to change(Projects::SyncEvent, :count).by(1)
+
+          expect(project.sync_events.count).to eq(2)
+        end
+      end
+    end
+  end
+
   private
 
   def finish_job(export_job)

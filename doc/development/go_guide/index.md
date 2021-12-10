@@ -7,7 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # Go standards and style guidelines
 
 This document describes various guidelines and best practices for GitLab
-projects using the [Go language](https://golang.org).
+projects using the [Go language](https://go.dev/).
 
 ## Overview
 
@@ -103,7 +103,7 @@ projects:
 - Use `goimports` before committing.
   [`goimports`](https://pkg.go.dev/golang.org/x/tools/cmd/goimports)
   is a tool that automatically formats Go source code using
-  [`Gofmt`](https://golang.org/cmd/gofmt/), in addition to formatting import lines,
+  [`Gofmt`](https://pkg.go.dev/cmd/gofmt), in addition to formatting import lines,
   adding missing ones and removing unreferenced ones.
 
   Most editors/IDEs allow you to run commands before/after saving a file, you can set it
@@ -196,7 +196,7 @@ deploy a new pod, migrating the data automatically.
 ### Testing frameworks
 
 We should not use any specific library or framework for testing, as the
-[standard library](https://golang.org/pkg/) provides already everything to get
+[standard library](https://pkg.go.dev/std) provides already everything to get
 started. If there is a need for more sophisticated testing tools, the following
 external dependencies might be worth considering in case we decide to use a specific
 library or framework:
@@ -279,7 +279,7 @@ to make the test output easily readable.
 ### Benchmarks
 
 Programs handling a lot of IO or complex operations should always include
-[benchmarks](https://golang.org/pkg/testing/#hdr-Benchmarks), to ensure
+[benchmarks](https://pkg.go.dev/testing#hdr-Benchmarks), to ensure
 performance consistency over time.
 
 ## Error handling
@@ -435,7 +435,7 @@ The following are some style guidelines that are specific to the Secure Team.
 Use `goimports -local gitlab.com/gitlab-org` before committing.
 [`goimports`](https://pkg.go.dev/golang.org/x/tools/cmd/goimports)
 is a tool that automatically formats Go source code using
-[`Gofmt`](https://golang.org/cmd/gofmt/), in addition to formatting import lines,
+[`Gofmt`](https://pkg.go.dev/cmd/gofmt), in addition to formatting import lines,
 adding missing ones and removing unreferenced ones.
 By using the `-local gitlab.com/gitlab-org` option, `goimports` groups locally referenced
 packages separately from external ones. See

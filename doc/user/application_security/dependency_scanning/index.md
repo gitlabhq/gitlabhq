@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 INFO:
 Try out Dependency Scanning in GitLab Ultimate.
-[It's free for 30 days](https://about.gitlab.com/free-trial?glm_source=docs.gitlab.com&glm_content=u-dependency-scanning-docs).
+[It's free for 30 days](https://about.gitlab.com/free-trial/index.html?glm_source=docs.gitlab.com&glm_content=u-dependency-scanning-docs).
 
 The Dependency Scanning feature can automatically find security vulnerabilities in your
 dependencies while you're developing and testing your applications. For example, dependency scanning
@@ -146,7 +146,7 @@ table.supported-languages ul {
     <tr>
       <td>Go</td>
       <td>N/A</td>
-      <td><a href="https://golang.org/">Go</a></td>
+      <td><a href="https://go.dev/">Go</a></td>
       <td><code>go.sum</code></td>
       <td><a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium">Gemnasium</a></td>
       <td>Y</td>

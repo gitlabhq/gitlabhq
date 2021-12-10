@@ -259,7 +259,7 @@ replication job is scheduled only if there are no other replication jobs pending
 repository.
 
 The reconciliation frequency can be changed via the configuration. The value can be any valid
-[Go duration value](https://golang.org/pkg/time/#ParseDuration). Values below 0 disable the feature.
+[Go duration value](https://pkg.go.dev/time#ParseDuration). Values below 0 disable the feature.
 
 Examples:
 

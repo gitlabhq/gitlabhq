@@ -1,12 +1,12 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Issuable type info popover renders 1`] = `
+exports[`Issue type info popover renders 1`] = `
 <span
   id="popovercontainer"
 >
   <gl-icon-stub
     class="gl-ml-5 gl-text-gray-500"
-    id="issuable-type-info"
+    id="issue-type-info"
     name="question-o"
     size="16"
   />
@@ -14,7 +14,7 @@ exports[`Issuable type info popover renders 1`] = `
   <gl-popover-stub
     container="popovercontainer"
     cssclasses=""
-    target="issuable-type-info"
+    target="issue-type-info"
     title="Issue types"
     triggers="focus hover"
   >

@@ -320,6 +320,7 @@ namespace_package_settings: :gitlab_main
 namespace_root_storage_statistics: :gitlab_main
 namespace_settings: :gitlab_main
 namespaces: :gitlab_main
+namespaces_sync_events: :gitlab_main
 namespace_statistics: :gitlab_main
 note_diff_files: :gitlab_main
 notes: :gitlab_main
@@ -414,6 +415,7 @@ project_repository_storage_moves: :gitlab_main
 project_security_settings: :gitlab_main
 project_settings: :gitlab_main
 projects: :gitlab_main
+projects_sync_events: :gitlab_main
 project_statistics: :gitlab_main
 project_topics: :gitlab_main
 project_tracing_settings: :gitlab_main

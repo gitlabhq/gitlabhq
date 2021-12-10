@@ -2059,4 +2059,75 @@ RSpec.describe Namespace do
   it_behaves_like 'it has loose foreign keys' do
     let(:factory_name) { :group }
   end
+
+  context 'Namespaces::SyncEvent' do
+    let!(:namespace) { create(:group) }
+
+    let_it_be(:new_namespace1) { create(:group) }
+    let_it_be(:new_namespace2) { create(:group) }
+
+    context 'when creating the namespace' do
+      it 'creates a namespaces_sync_event record' do
+        expect(namespace.sync_events.count).to eq(1)
+      end
+
+      it 'enqueues ProcessSyncEventsWorker' do
+        expect(Namespaces::ProcessSyncEventsWorker).to receive(:perform_async)
+
+        create(:namespace)
+      end
+    end
+
+    context 'when updating namespace parent_id' do
+      it 'creates a namespaces_sync_event record' do
+        expect do
+          namespace.update!(parent_id: new_namespace1.id)
+        end.to change(Namespaces::SyncEvent, :count).by(1)
+
+        expect(namespace.sync_events.count).to eq(2)
+      end
+
+      it 'enqueues ProcessSyncEventsWorker' do
+        expect(Namespaces::ProcessSyncEventsWorker).to receive(:perform_async)
+
+        namespace.update!(parent_id: new_namespace1.id)
+      end
+    end
+
+    context 'when updating namespace other attribute' do
+      it 'creates a namespaces_sync_event record' do
+        expect do
+          namespace.update!(name: 'hello')
+        end.not_to change(Namespaces::SyncEvent, :count)
+      end
+    end
+
+    context 'in the same transaction' do
+      context 'when updating different parent_id' do
+        it 'creates two namespaces_sync_event records' do
+          expect do
+            Namespace.transaction do
+              namespace.update!(parent_id: new_namespace1.id)
+              namespace.update!(parent_id: new_namespace2.id)
+            end
+          end.to change(Namespaces::SyncEvent, :count).by(2)
+
+          expect(namespace.sync_events.count).to eq(3)
+        end
+      end
+
+      context 'when updating the same parent_id' do
+        it 'creates one namespaces_sync_event record' do
+          expect do
+            Namespace.transaction do
+              namespace.update!(parent_id: new_namespace1.id)
+              namespace.update!(parent_id: new_namespace1.id)
+            end
+          end.to change(Namespaces::SyncEvent, :count).by(1)
+
+          expect(namespace.sync_events.count).to eq(2)
+        end
+      end
+    end
+  end
 end

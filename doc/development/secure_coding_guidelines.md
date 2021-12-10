@@ -188,7 +188,7 @@ and [possessive quantifiers](https://www.regular-expressions.info/possessive.htm
 
 #### Go
 
-Go's [`regexp`](https://golang.org/pkg/regexp/) package uses `re2` and isn't vulnerable to backtracking issues.
+Go's [`regexp`](https://pkg.go.dev/regexp) package uses `re2` and isn't vulnerable to backtracking issues.
 
 ## Further Links
 

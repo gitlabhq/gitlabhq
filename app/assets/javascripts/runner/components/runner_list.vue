@@ -2,8 +2,9 @@
 import { GlTable, GlTooltipDirective, GlSkeletonLoader } from '@gitlab/ui';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate/tooltip_on_truncate.vue';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
-import { __, s__ } from '~/locale';
+import { formatNumber, __, s__ } from '~/locale';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
+import { RUNNER_JOB_COUNT_LIMIT } from '../constants';
 import RunnerActionsCell from './cells/runner_actions_cell.vue';
 import RunnerSummaryCell from './cells/runner_summary_cell.vue';
 import RunnerStatusCell from './cells/runner_status_cell.vue';
@@ -52,6 +53,12 @@ export default {
     },
   },
   methods: {
+    formatJobCount(jobCount) {
+      if (jobCount > RUNNER_JOB_COUNT_LIMIT) {
+        return `${formatNumber(RUNNER_JOB_COUNT_LIMIT)}+`;
+      }
+      return formatNumber(jobCount);
+    },
     runnerTrAttr(runner) {
       if (runner) {
         return {
@@ -66,6 +73,7 @@ export default {
     tableField({ key: 'summary', label: s__('Runners|Runner ID'), thClasses: ['gl-lg-w-25p'] }),
     tableField({ key: 'version', label: __('Version') }),
     tableField({ key: 'ipAddress', label: __('IP Address') }),
+    tableField({ key: 'jobCount', label: __('Jobs') }),
     tableField({ key: 'tagList', label: __('Tags'), thClasses: ['gl-lg-w-25p'] }),
     tableField({ key: 'contactedAt', label: __('Last contact') }),
     tableField({ key: 'actions', label: '' }),
@@ -110,6 +118,10 @@ export default {
         <tooltip-on-truncate class="gl-display-block gl-text-truncate" :title="ipAddress">
           {{ ipAddress }}
         </tooltip-on-truncate>
+      </template>
+
+      <template #cell(jobCount)="{ item: { jobCount } }">
+        {{ formatJobCount(jobCount) }}
       </template>
 
       <template #cell(tagList)="{ item: { tagList } }">

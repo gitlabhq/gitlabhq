@@ -90,7 +90,7 @@ RSpec.describe LooseForeignKeys::BatchCleanerService do
 
       described_class.new(parent_table: '_test_loose_fk_parent_table',
                           loose_foreign_key_definitions: loose_foreign_key_definitions,
-                          deleted_parent_records: LooseForeignKeys::DeletedRecord.status_pending.all
+                          deleted_parent_records: LooseForeignKeys::DeletedRecord.load_batch_for_table('public._test_loose_fk_parent_table', 100)
                          ).execute
     end
 

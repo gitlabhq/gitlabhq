@@ -25,6 +25,17 @@ RSpec.describe Projects::Settings::CiCdController do
       expect(response).to render_template(:show)
     end
 
+    context 'with CI/CD disabled' do
+      before do
+        project.project_feature.update_attribute(:builds_access_level, ProjectFeature::DISABLED)
+      end
+
+      it 'renders show with 404 status code' do
+        get :show, params: { namespace_id: project.namespace, project_id: project }
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
     context 'with group runners' do
       let_it_be(:group_runner) { create(:ci_runner, :group, groups: [group]) }
       let_it_be(:project_runner) { create(:ci_runner, :project, projects: [other_project]) }

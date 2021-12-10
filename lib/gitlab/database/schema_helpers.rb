@@ -25,6 +25,7 @@ module Gitlab
           CREATE TRIGGER #{name}
           #{fires} ON #{table_name}
           FOR EACH ROW
+          #{yield if block_given?}
           EXECUTE FUNCTION #{function_name}()
         SQL
       end

@@ -331,7 +331,7 @@ Prerequisites:
 
 To use a project as a Go package, use the `go get` and `godoc.org` discovery requests. You can use the meta tags:
 
-- [`go-import`](https://golang.org/cmd/go/#hdr-Remote_import_paths) 
+- [`go-import`](https://pkg.go.dev/cmd/go#hdr-Remote_import_paths)
 - [`go-source`](https://github.com/golang/gddo/wiki/Source-Code-Links)
 
 ### Authenticate Go requests to private projects

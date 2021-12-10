@@ -3,7 +3,6 @@
 module Ci
   class PipelinePresenter < Gitlab::View::Presenter::Delegated
     include Gitlab::Utils::StrongMemoize
-    include ActionView::Helpers::UrlHelper
 
     delegator_override_with Gitlab::Utils::StrongMemoize # TODO: Remove `Gitlab::Utils::StrongMemoize` inclusion as it's duplicate
     delegator_override_with ActionView::Helpers::TagHelper # TODO: Remove `ActionView::Helpers::UrlHelper` inclusion as it overrides `Ci::Pipeline#tag`
@@ -108,7 +107,7 @@ module Ci
     end
 
     def link_to_pipeline_ref
-      link_to(pipeline.ref,
+      ApplicationController.helpers.link_to(pipeline.ref,
         project_commits_path(pipeline.project, pipeline.ref),
         class: "ref-name")
     end
@@ -116,7 +115,7 @@ module Ci
     def link_to_merge_request
       return unless merge_request_presenter
 
-      link_to(merge_request_presenter.to_reference,
+      ApplicationController.helpers.link_to(merge_request_presenter.to_reference,
         project_merge_request_path(merge_request_presenter.project, merge_request_presenter),
         class: 'mr-iid')
     end
@@ -143,7 +142,7 @@ module Ci
     private
 
     def plain_ref_name
-      content_tag(:span, pipeline.ref, class: 'ref-name')
+      ApplicationController.helpers.content_tag(:span, pipeline.ref, class: 'ref-name')
     end
 
     def merge_request_presenter
@@ -160,7 +159,7 @@ module Ci
       all_related_merge_requests.first(limit).map do |merge_request|
         mr_path = project_merge_request_path(merge_request.project, merge_request)
 
-        link_to "#{merge_request.to_reference} #{merge_request.title}", mr_path, class: 'mr-iid'
+        ApplicationController.helpers.link_to "#{merge_request.to_reference} #{merge_request.title}", mr_path, class: 'mr-iid'
       end
     end
 

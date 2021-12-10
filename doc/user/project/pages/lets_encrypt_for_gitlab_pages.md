@@ -69,7 +69,7 @@ might be slightly different. Follow the
 
    NOTE:
    Read through CertBot's documentation on their
-   [command line options](https://certbot.eff.org/docs/using.html#certbot-command-line-options).
+   [command line options](https://eff-certbot.readthedocs.io/using.html#certbot-command-line-options).
 
 1. You're prompted with a message to agree with their terms.
    Press `A` to agree and `Y` to let they log your IP.

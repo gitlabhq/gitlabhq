@@ -13,7 +13,7 @@ type: reference
 
 INFO:
 Get access to Code Owners and more with a
-[free 30-day trial of GitLab Ultimate](https://about.gitlab.com/free-trial?glm_source=docs.gitlab.com&glm_content=p-code-owners-docs).
+[free 30-day trial of GitLab Ultimate](https://about.gitlab.com/free-trial/index.html?glm_source=docs.gitlab.com&glm_content=p-code-owners-docs).
 
 Code Owners define who owns specific files or directories in a repository.
 

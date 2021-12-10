@@ -37,7 +37,9 @@ class Projects::IssuesController < Projects::ApplicationController
   before_action :authorize_download_code!, only: [:related_branches]
 
   # Limit the amount of issues created per minute
-  before_action :create_rate_limit, only: [:create], if: -> { Feature.disabled?('rate_limited_service_issues_create', project, default_enabled: :yaml) }
+  before_action -> { check_rate_limit!(:issues_create, scope: [@project, @current_user])},
+                only: [:create],
+                if: -> { Feature.disabled?('rate_limited_service_issues_create', project, default_enabled: :yaml) }
 
   before_action do
     push_frontend_feature_flag(:tribute_autocomplete, @project)
@@ -361,20 +363,6 @@ class Projects::IssuesController < Projects::ApplicationController
 
   def branch_link(branch)
     project_compare_path(project, from: project.default_branch, to: branch[:name])
-  end
-
-  def create_rate_limit
-    key = :issues_create
-
-    if rate_limiter.throttled?(key, scope: [@project, @current_user])
-      rate_limiter.log_request(request, "#{key}_request_limit".to_sym, current_user)
-
-      render plain: _('This endpoint has been requested too many times. Try again later.'), status: :too_many_requests
-    end
-  end
-
-  def rate_limiter
-    ::Gitlab::ApplicationRateLimiter
   end
 
   def service_desk?

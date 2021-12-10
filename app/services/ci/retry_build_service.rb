@@ -7,7 +7,7 @@ module Ci
          allow_failure stage stage_id stage_idx trigger_request
          yaml_variables when environment coverage_regex
          description tag_list protected needs_attributes
-         resource_group scheduling_type].freeze
+         job_variables_attributes resource_group scheduling_type].freeze
     end
 
     def self.extra_accessors
@@ -68,13 +68,7 @@ module Ci
     end
 
     def build_attributes(build)
-      clone_attributes = if ::Feature.enabled?(:clone_job_variables_at_job_retry, build.project, default_enabled: :yaml)
-                           self.class.clone_accessors + [:job_variables_attributes]
-                         else
-                           self.class.clone_accessors
-                         end
-
-      attributes = clone_attributes.to_h do |attribute|
+      attributes = self.class.clone_accessors.to_h do |attribute|
         [attribute, build.public_send(attribute)] # rubocop:disable GitlabSecurity/PublicSend
       end
 

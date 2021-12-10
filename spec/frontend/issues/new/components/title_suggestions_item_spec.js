@@ -1,15 +1,15 @@
 import { GlTooltip, GlLink, GlIcon } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { TEST_HOST } from 'helpers/test_constants';
-import Suggestion from '~/issues/suggestions/components/item.vue';
+import TitleSuggestionsItem from '~/issues/new/components/title_suggestions_item.vue';
 import UserAvatarImage from '~/vue_shared/components/user_avatar/user_avatar_image.vue';
 import mockData from '../mock_data';
 
-describe('Issuable suggestions suggestion component', () => {
+describe('Issue title suggestions item component', () => {
   let wrapper;
 
   function createComponent(suggestion = {}) {
-    wrapper = shallowMount(Suggestion, {
+    wrapper = shallowMount(TitleSuggestionsItem, {
       propsData: {
         suggestion: {
           ...mockData(),

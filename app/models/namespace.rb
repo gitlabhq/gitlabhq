@@ -64,6 +64,9 @@ class Namespace < ApplicationRecord
   has_one :admin_note, inverse_of: :namespace
   accepts_nested_attributes_for :admin_note, update_only: true
 
+  has_one :ci_namespace_mirror, class_name: 'Ci::NamespaceMirror'
+  has_many :sync_events, class_name: 'Namespaces::SyncEvent'
+
   validates :owner, presence: true, if: ->(n) { n.owner_required? }
   validates :name,
     presence: true,
@@ -103,6 +106,8 @@ class Namespace < ApplicationRecord
 
   delegate :name, to: :owner, allow_nil: true, prefix: true
   delegate :avatar_url, to: :owner, allow_nil: true
+
+  after_save :schedule_sync_event_worker, if: -> { saved_change_to_id? || saved_change_to_parent_id? }
 
   after_commit :refresh_access_of_projects_invited_groups, on: :update, if: -> { previous_changes.key?('share_with_group_lock') }
 
@@ -608,6 +613,13 @@ class Namespace < ApplicationRecord
 
   def enforce_minimum_path_length?
     path_changed? && !project_namespace?
+  end
+
+  # SyncEvents are created by PG triggers (with the function `insert_namespaces_sync_event`)
+  def schedule_sync_event_worker
+    run_after_commit do
+      Namespaces::SyncEvent.enqueue_worker
+    end
   end
 end
 

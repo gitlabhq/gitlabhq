@@ -161,7 +161,7 @@ curl --request PUT \
      --data "name=topic1" \
      --header "PRIVATE-TOKEN: <your_access_token>" \
      "https://gitlab.example.com/api/v4/topics/1"
-
+```
 
 Example response:
 

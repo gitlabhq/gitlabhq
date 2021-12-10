@@ -86,7 +86,7 @@ RSpec.describe Projects::RepositoriesController do
 
       describe 'rate limiting' do
         it 'rate limits user when thresholds hit' do
-          expect(controller).to receive(:archive_rate_limit_reached?).and_return(true)
+          allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?).and_return(true)
 
           get :archive, params: { namespace_id: project.namespace, project_id: project, id: 'master' }, format: "html"
 

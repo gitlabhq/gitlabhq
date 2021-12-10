@@ -18,7 +18,7 @@ module API
         detail 'This feature was introduced in GitLab 12.5.'
       end
       get ':id/export/download' do
-        check_rate_limit! :group_download_export, [current_user, user_group]
+        check_rate_limit! :group_download_export, scope: [current_user, user_group]
 
         if user_group.export_file_exists?
           if user_group.export_archive_exists?
@@ -35,7 +35,7 @@ module API
         detail 'This feature was introduced in GitLab 12.5.'
       end
       post ':id/export' do
-        check_rate_limit! :group_export, [current_user]
+        check_rate_limit! :group_export, scope: current_user
 
         export_service = ::Groups::ImportExport::ExportService.new(group: user_group, user: current_user)
 

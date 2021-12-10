@@ -13,7 +13,7 @@ last_update: 2019-07-03
 
 INFO:
 Get merge trains and more in GitLab Ultimate.
-[Try a free 30-day trial now](https://about.gitlab.com/free-trial?glm_source=docs.gitlab.com&glm_content=p-ci-cd-external-docs).
+[Try a free 30-day trial now](https://about.gitlab.com/free-trial/index.html?glm_source=docs.gitlab.com&glm_content=p-ci-cd-external-docs).
 
 For more information about why you might want to use merge trains, read [How merge trains keep your master green](https://about.gitlab.com/blog/2020/01/30/all-aboard-merge-trains/).
 

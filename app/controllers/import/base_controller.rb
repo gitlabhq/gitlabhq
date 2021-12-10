@@ -3,7 +3,7 @@
 class Import::BaseController < ApplicationController
   include ActionView::Helpers::SanitizeHelper
 
-  before_action :import_rate_limit, only: [:create]
+  before_action -> { check_rate_limit!(:project_import, scope: [current_user, :project_import], redirect_back: true) }, only: [:create]
   feature_category :importers
 
   def status
@@ -97,19 +97,5 @@ class Import::BaseController < ApplicationController
   # deprecated: being replaced by app/services/import/base_service.rb
   def project_save_error(project)
     project.errors.full_messages.join(', ')
-  end
-
-  def import_rate_limit
-    key = "project_import".to_sym
-
-    if rate_limiter.throttled?(key, scope: [current_user, key])
-      rate_limiter.log_request(request, "#{key}_request_limit".to_sym, current_user)
-
-      redirect_back_or_default(options: { alert: _('This endpoint has been requested too many times. Try again later.') })
-    end
-  end
-
-  def rate_limiter
-    ::Gitlab::ApplicationRateLimiter
   end
 end

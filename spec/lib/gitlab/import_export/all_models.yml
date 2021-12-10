@@ -597,6 +597,8 @@ project:
 - security_scans
 - ci_feature_usages
 - bulk_import_exports
+- ci_project_mirror
+- sync_events
 award_emoji:
 - awardable
 - user

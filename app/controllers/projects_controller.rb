@@ -30,7 +30,7 @@ class ProjectsController < Projects::ApplicationController
   before_action :event_filter, only: [:show, :activity]
 
   # Project Export Rate Limit
-  before_action :export_rate_limit, only: [:export, :download_export, :generate_new_export]
+  before_action :check_export_rate_limit!, only: [:export, :download_export, :generate_new_export]
 
   before_action do
     push_frontend_feature_flag(:lazy_load_commits, @project, default_enabled: :yaml)
@@ -544,20 +544,12 @@ class ProjectsController < Projects::ApplicationController
     @project = @project.present(current_user: current_user)
   end
 
-  def export_rate_limit
+  def check_export_rate_limit!
     prefixed_action = "project_#{params[:action]}".to_sym
 
     project_scope = params[:action] == 'download_export' ? @project : nil
 
-    if rate_limiter.throttled?(prefixed_action, scope: [current_user, project_scope].compact)
-      rate_limiter.log_request(request, "#{prefixed_action}_request_limit".to_sym, current_user)
-
-      render plain: _('This endpoint has been requested too many times. Try again later.'), status: :too_many_requests
-    end
-  end
-
-  def rate_limiter
-    ::Gitlab::ApplicationRateLimiter
+    check_rate_limit!(prefixed_action, scope: [current_user, project_scope].compact)
   end
 
   def render_edit

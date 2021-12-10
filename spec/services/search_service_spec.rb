@@ -569,6 +569,27 @@ RSpec.describe SearchService do
     end
   end
 
+  describe '#abuse_messages' do
+    let(:scope) { 'issues' }
+    let(:search) { 'foobar' }
+    let(:params) { instance_double(Gitlab::Search::Params) }
+
+    before do
+      allow(Gitlab::Search::Params).to receive(:new).and_return(params)
+    end
+
+    it 'returns an empty array when not abusive' do
+      allow(params).to receive(:abusive?).and_return false
+      expect(subject.abuse_messages).to match_array([])
+    end
+
+    it 'calls on abuse_detection.errors.full_messages when abusive' do
+      allow(params).to receive(:abusive?).and_return true
+      expect(params).to receive_message_chain(:abuse_detection, :errors, :full_messages)
+      subject.abuse_messages
+    end
+  end
+
   describe 'abusive search handling' do
     subject { described_class.new(user, raw_params) }
 

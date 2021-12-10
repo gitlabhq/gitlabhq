@@ -59,6 +59,19 @@ RSpec.describe "Admin Runners" do
         end
       end
 
+      it 'shows a job count' do
+        runner = create(:ci_runner, :project, projects: [project])
+
+        create(:ci_build, runner: runner)
+        create(:ci_build, runner: runner)
+
+        visit admin_runners_path
+
+        within "[data-testid='runner-row-#{runner.id}'] [data-label='Jobs']" do
+          expect(page).to have_content '2'
+        end
+      end
+
       describe 'delete runner' do
         let!(:runner) { create(:ci_runner, description: 'runner-foo') }
 

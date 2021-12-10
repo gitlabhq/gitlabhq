@@ -74,4 +74,26 @@ RSpec.describe Namespaces::UserNamespacePolicy do
       it { is_expected.to be_disallowed(:create_jira_connect_subscription) }
     end
   end
+
+  describe 'create projects' do
+    using RSpec::Parameterized::TableSyntax
+
+    let(:current_user) { owner }
+
+    context 'when user can create projects' do
+      before do
+        allow(current_user).to receive(:can_create_project?).and_return(true)
+      end
+
+      it { is_expected.to be_allowed(:create_projects) }
+    end
+
+    context 'when user cannot create projects' do
+      before do
+        allow(current_user).to receive(:can_create_project?).and_return(false)
+      end
+
+      it { is_expected.to be_disallowed(:create_projects) }
+    end
+  end
 end

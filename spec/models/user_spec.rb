@@ -1540,7 +1540,11 @@ RSpec.describe User do
         allow(user).to receive(:update_highest_role)
       end
 
-      expect(SecureRandom).to receive(:hex).and_return('3b8ca303')
+      allow_next_instance_of(Namespaces::UserNamespace) do |namespace|
+        allow(namespace).to receive(:schedule_sync_event_worker)
+      end
+
+      expect(SecureRandom).to receive(:hex).with(no_args).and_return('3b8ca303')
 
       user = create(:user)
 

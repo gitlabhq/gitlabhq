@@ -24,7 +24,7 @@ RSpec.describe API::ErrorTracking::Collector do
   end
 
   RSpec.shared_examples 'successful request' do
-    it 'writes to the database and returns OK' do
+    it 'writes to the database and returns OK', :aggregate_failures do
       expect { subject }.to change { ErrorTracking::ErrorEvent.count }.by(1)
 
       expect(response).to have_gitlab_http_status(:ok)
@@ -39,6 +39,8 @@ RSpec.describe API::ErrorTracking::Collector do
     let(:headers) { { 'X-Sentry-Auth' => "Sentry sentry_key=#{client_key.public_key}" } }
 
     subject { post api(url), params: params, headers: headers }
+
+    it_behaves_like 'successful request'
 
     context 'error tracking feature is disabled' do
       before do
@@ -109,8 +111,6 @@ RSpec.describe API::ErrorTracking::Collector do
 
       it_behaves_like 'successful request'
     end
-
-    it_behaves_like 'successful request'
   end
 
   describe "POST /error_tracking/collector/api/:id/store" do
@@ -161,6 +161,12 @@ RSpec.describe API::ErrorTracking::Collector do
       end
 
       let(:params) { ActiveSupport::Gzip.compress(raw_event) }
+
+      it_behaves_like 'successful request'
+    end
+
+    context 'body contains nullbytes' do
+      let_it_be(:raw_event) { fixture_file('error_tracking/parsed_event_nullbytes.json') }
 
       it_behaves_like 'successful request'
     end

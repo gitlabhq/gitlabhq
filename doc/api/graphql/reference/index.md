@@ -3758,7 +3758,7 @@ Input type: `ProjectSetComplianceFrameworkInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationprojectsetcomplianceframeworkclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationprojectsetcomplianceframeworkcomplianceframeworkid"></a>`complianceFrameworkId` | [`ComplianceManagementFrameworkID`](#compliancemanagementframeworkid) | ID of the compliance framework to assign to the project. |
+| <a id="mutationprojectsetcomplianceframeworkcomplianceframeworkid"></a>`complianceFrameworkId` | [`ComplianceManagementFrameworkID`](#compliancemanagementframeworkid) | ID of the compliance framework to assign to the project. Set to `null` to unset. |
 | <a id="mutationprojectsetcomplianceframeworkprojectid"></a>`projectId` | [`ProjectID!`](#projectid) | ID of the project to change the compliance framework of. |
 
 #### Fields

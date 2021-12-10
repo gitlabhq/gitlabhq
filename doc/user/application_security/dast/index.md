@@ -18,7 +18,7 @@ tool [OWASP Zed Attack Proxy](https://www.zaproxy.org/) for analysis.
 
 INFO:
 Want to try out security scanning?
-[Try GitLab Ultimate free for 30 days](https://about.gitlab.com/free-trial?glm_source=docs.gitlab.com&glm_content=u-dast-docs).
+[Try GitLab Ultimate free for 30 days](https://about.gitlab.com/free-trial/index.html?glm_source=docs.gitlab.com&glm_content=u-dast-docs).
 
 After DAST creates its report, GitLab evaluates it for discovered
 vulnerabilities between the source and target branches. Relevant

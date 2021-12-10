@@ -1040,4 +1040,15 @@ describe('common_utils', () => {
       expect(result).toEqual(['hello', 'helloWorld']);
     });
   });
+
+  describe('convertArrayOfObjectsToCamelCase', () => {
+    it('returns a new array with snake_case object property names converted camelCase', () => {
+      const result = commonUtils.convertArrayOfObjectsToCamelCase([
+        { hello: '' },
+        { hello_world: '' },
+      ]);
+
+      expect(result).toEqual([{ hello: '' }, { helloWorld: '' }]);
+    });
+  });
 });

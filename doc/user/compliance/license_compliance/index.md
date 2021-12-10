@@ -16,7 +16,7 @@ is incompatible with yours, then you can deny the use of that license.
 
 INFO:
 Try License Compliance scanning to search project dependencies in GitLab Ultimate.
-[It's free for 30 days](https://about.gitlab.com/free-trial?glm_source=docs.gitlab.com&glm_content=u-compliance-docs).
+[It's free for 30 days](https://about.gitlab.com/free-trial/index.html?glm_source=docs.gitlab.com&glm_content=u-compliance-docs).
 
 You can take advantage of License Compliance by either:
 
@@ -545,24 +545,24 @@ configured to use this as the default `CA_CERT_PATH`.
 ### Configuring Go projects
 
 To configure [Go modules](https://github.com/golang/go/wiki/Modules)
-based projects, specify [CI/CD variables](https://golang.org/pkg/cmd/go/#hdr-Environment_variables)
+based projects, specify [CI/CD variables](https://pkg.go.dev/cmd/go#hdr-Environment_variables)
 in the `license_scanning` job's [variables](#available-cicd-variables) section in `.gitlab-ci.yml`.
 
-If a project has [vendored](https://golang.org/pkg/cmd/go/#hdr-Vendor_Directories) its modules,
+If a project has [vendored](https://pkg.go.dev/cmd/go#hdr-Vendor_Directories) its modules,
 then the combination of the `vendor` directory and `mod.sum` file are used to detect the software
 licenses associated with the Go module dependencies.
 
 #### Using private Go registries
 
-You can use the [`GOPRIVATE`](https://golang.org/pkg/cmd/go/#hdr-Environment_variables)
-and [`GOPROXY`](https://golang.org/pkg/cmd/go/#hdr-Environment_variables)
+You can use the [`GOPRIVATE`](https://pkg.go.dev/cmd/go#hdr-Environment_variables)
+and [`GOPROXY`](https://pkg.go.dev/cmd/go#hdr-Environment_variables)
 environment variables to control where modules are sourced from. Alternatively, you can use
-[`go mod vendor`](https://golang.org/ref/mod#tmp_28) to vendor a project's modules.
+[`go mod vendor`](https://go.dev/ref/mod#tmp_28) to vendor a project's modules.
 
 #### Custom root certificates for Go
 
-You can specify the [`-insecure`](https://golang.org/pkg/cmd/go/internal/get/) flag by exporting the
-[`GOFLAGS`](https://golang.org/cmd/go/#hdr-Environment_variables)
+You can specify the [`-insecure`](https://pkg.go.dev/cmd/go/internal/get) flag by exporting the
+[`GOFLAGS`](https://pkg.go.dev/cmd/go#hdr-Environment_variables)
 environment variable. For example:
 
 ```yaml
