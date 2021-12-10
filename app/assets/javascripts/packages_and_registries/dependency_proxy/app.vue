@@ -4,7 +4,6 @@ import {
   GlEmptyState,
   GlFormGroup,
   GlFormInputGroup,
-  GlLink,
   GlSkeletonLoader,
   GlSprintf,
 } from '@gitlab/ui';
@@ -16,10 +15,7 @@ import {
   DEPENDENCY_PROXY_SETTINGS_DESCRIPTION,
   DEPENDENCY_PROXY_DOCS_PATH,
 } from '~/packages_and_registries/settings/group/constants';
-import {
-  GRAPHQL_PAGE_SIZE,
-  ENABLE_DEPENDENCY_PROXY_DOCS_PATH,
-} from '~/packages_and_registries/dependency_proxy/constants';
+import { GRAPHQL_PAGE_SIZE } from '~/packages_and_registries/dependency_proxy/constants';
 
 import getDependencyProxyDetailsQuery from '~/packages_and_registries/dependency_proxy/graphql/queries/get_dependency_proxy_details.query.graphql';
 
@@ -29,7 +25,6 @@ export default {
     GlEmptyState,
     GlFormGroup,
     GlFormInputGroup,
-    GlLink,
     GlSkeletonLoader,
     GlSprintf,
     ClipboardButton,
@@ -41,9 +36,6 @@ export default {
     proxyNotAvailableText: s__(
       'DependencyProxy|Dependency Proxy feature is limited to public groups for now.',
     ),
-    proxyDisabledText: s__(
-      'DependencyProxy|The Dependency Proxy is disabled. %{docLinkStart}Learn how to enable it%{docLinkEnd}.',
-    ),
     proxyImagePrefix: s__('DependencyProxy|Dependency Proxy image prefix'),
     copyImagePrefixText: s__('DependencyProxy|Copy prefix'),
     blobCountAndSize: s__('DependencyProxy|Contains %{count} blobs of images (%{size})'),
@@ -52,7 +44,6 @@ export default {
   },
   links: {
     DEPENDENCY_PROXY_DOCS_PATH,
-    ENABLE_DEPENDENCY_PROXY_DOCS_PATH,
   },
   data() {
     return {
@@ -79,9 +70,7 @@ export default {
         },
       ];
     },
-    dependencyProxyEnabled() {
-      return this.group?.dependencyProxySetting?.enabled;
-    },
+
     queryVariables() {
       return { fullPath: this.groupPath, first: GRAPHQL_PAGE_SIZE };
     },
@@ -131,7 +120,7 @@ export default {
 
     <gl-skeleton-loader v-else-if="$apollo.queries.group.loading" />
 
-    <div v-else-if="dependencyProxyEnabled" data-testid="main-area">
+    <div v-else data-testid="main-area">
       <gl-form-group :label="$options.i18n.proxyImagePrefix">
         <gl-form-input-group
           readonly
@@ -170,12 +159,5 @@ export default {
         :title="$options.i18n.noManifestTitle"
       />
     </div>
-    <gl-alert v-else :dismissible="false" data-testid="proxy-disabled">
-      <gl-sprintf :message="$options.i18n.proxyDisabledText">
-        <template #docLink="{ content }">
-          <gl-link :href="$options.links.ENABLE_DEPENDENCY_PROXY_DOCS_PATH">{{ content }}</gl-link>
-        </template>
-      </gl-sprintf>
-    </gl-alert>
   </div>
 </template>

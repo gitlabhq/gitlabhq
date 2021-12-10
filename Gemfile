@@ -476,7 +476,7 @@ gem 'sshkey', '~> 2.0'
 # Required for ED25519 SSH host key support
 group :ed25519 do
   gem 'ed25519', '~> 1.2'
-  gem 'bcrypt_pbkdf', '~> 1.0'
+  gem 'bcrypt_pbkdf', '~> 1.1'
 end
 
 # Spamcheck GRPC protocol definitions

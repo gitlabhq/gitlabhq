@@ -3,8 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe Groups::DependencyProxiesController do
-  let(:group) { create(:group) }
-  let(:user)  { create(:user) }
+  let_it_be(:group) { create(:group) }
+  let_it_be_with_reload(:dependency_proxy_group_setting) { create(:dependency_proxy_group_setting, group: group) }
+  let_it_be(:user) { create(:user) }
 
   before do
     group.add_owner(user)
@@ -12,62 +13,37 @@ RSpec.describe Groups::DependencyProxiesController do
   end
 
   describe 'GET #show' do
-    context 'feature enabled' do
-      before do
-        enable_dependency_proxy
-      end
+    subject { get :show, params: { group_id: group.to_param } }
 
-      it 'returns 200 and renders the view' do
-        get :show, params: { group_id: group.to_param }
-
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(response).to render_template('groups/dependency_proxies/show')
-      end
+    before do
+      stub_config(dependency_proxy: { enabled: config_enabled })
     end
 
-    it 'returns 404 when feature is disabled' do
-      disable_dependency_proxy
+    context 'with global config enabled' do
+      let(:config_enabled) { true }
 
-      get :show, params: { group_id: group.to_param }
+      context 'with the setting enabled' do
+        it 'returns 200 and renders the view' do
+          subject
 
-      expect(response).to have_gitlab_http_status(:not_found)
-    end
-  end
-
-  describe 'PUT #update' do
-    context 'feature enabled' do
-      before do
-        enable_dependency_proxy
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to render_template('groups/dependency_proxies/show')
+        end
       end
 
-      it 'redirects back to show page' do
-        put :update, params: update_params
+      context 'with the setting disabled' do
+        before do
+          dependency_proxy_group_setting.update!(enabled: false)
+        end
 
-        expect(response).to have_gitlab_http_status(:found)
+        it_behaves_like 'returning response status', :not_found
       end
     end
 
-    it 'returns 404 when feature is disabled' do
-      put :update, params: update_params
+    context 'with global config disabled' do
+      let(:config_enabled) { false }
 
-      expect(response).to have_gitlab_http_status(:not_found)
+      it_behaves_like 'returning response status', :not_found
     end
-
-    def update_params
-      {
-        group_id: group.to_param,
-        dependency_proxy_group_setting: { enabled: true }
-      }
-    end
-  end
-
-  def enable_dependency_proxy
-    stub_config(dependency_proxy: { enabled: true })
-
-    group.create_dependency_proxy_setting!(enabled: true)
-  end
-
-  def disable_dependency_proxy
-    group.create_dependency_proxy_setting!(enabled: false)
   end
 end

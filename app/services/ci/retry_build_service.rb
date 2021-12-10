@@ -2,6 +2,8 @@
 
 module Ci
   class RetryBuildService < ::BaseService
+    include Gitlab::Utils::StrongMemoize
+
     def self.clone_accessors
       %i[pipeline project ref tag options name
          allow_failure stage stage_id stage_idx trigger_request
@@ -45,6 +47,11 @@ module Ci
           job.save!
         end
       end
+
+      if create_deployment_in_separate_transaction?
+        clone_deployment!(new_build, build)
+      end
+
       build.reset # refresh the data to get new values of `retried` and `processed`.
 
       new_build
@@ -63,13 +70,20 @@ module Ci
 
     def clone_build(build)
       project.builds.new(build_attributes(build)).tap do |new_build|
-        new_build.assign_attributes(deployment_attributes_for(new_build, build))
+        unless create_deployment_in_separate_transaction?
+          new_build.assign_attributes(deployment_attributes_for(new_build, build))
+        end
       end
     end
 
     def build_attributes(build)
       attributes = self.class.clone_accessors.to_h do |attribute|
         [attribute, build.public_send(attribute)] # rubocop:disable GitlabSecurity/PublicSend
+      end
+
+      if create_deployment_in_separate_transaction? && build.persisted_environment.present?
+        attributes[:metadata_attributes] ||= {}
+        attributes[:metadata_attributes][:expanded_environment_name] = build.expanded_environment_name
       end
 
       attributes[:user] = current_user
@@ -79,6 +93,26 @@ module Ci
     def deployment_attributes_for(new_build, old_build)
       ::Gitlab::Ci::Pipeline::Seed::Build
         .deployment_attributes_for(new_build, old_build.persisted_environment)
+    end
+
+    def clone_deployment!(new_build, old_build)
+      return unless old_build.deployment.present?
+
+      # We should clone the previous deployment attributes instead of initializing
+      # new object with `Seed::Deployment`.
+      # See https://gitlab.com/gitlab-org/gitlab/-/issues/347206
+      deployment = ::Gitlab::Ci::Pipeline::Seed::Deployment
+        .new(new_build, old_build.persisted_environment).to_resource
+
+      return unless deployment
+
+      new_build.create_deployment!(deployment.attributes)
+    end
+
+    def create_deployment_in_separate_transaction?
+      strong_memoize(:create_deployment_in_separate_transaction) do
+        ::Feature.enabled?(:create_deployment_in_separate_transaction, project, default_enabled: :yaml)
+      end
     end
   end
 end

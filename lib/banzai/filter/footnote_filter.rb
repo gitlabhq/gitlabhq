@@ -37,7 +37,7 @@ module Banzai
       XPATH_SECTION_OLD                   = Gitlab::Utils::Nokogiri.css_to_xpath(CSS_SECTION_OLD).freeze
 
       def call
-        if Feature.enabled?(:use_cmark_renderer)
+        if Feature.enabled?(:use_cmark_renderer, default_enabled: :yaml)
           # Sanitization stripped off the section class - add it back in
           return doc unless section_node = doc.at_xpath(XPATH_SECTION)
 
@@ -52,26 +52,26 @@ module Banzai
         rand_suffix = "-#{random_number}"
         modified_footnotes = {}
 
-        xpath_footnote = if Feature.enabled?(:use_cmark_renderer)
+        xpath_footnote = if Feature.enabled?(:use_cmark_renderer, default_enabled: :yaml)
                            XPATH_FOOTNOTE
                          else
                            Gitlab::Utils::Nokogiri.css_to_xpath('sup > a[id]')
                          end
 
         doc.xpath(xpath_footnote).each do |link_node|
-          if Feature.enabled?(:use_cmark_renderer)
+          if Feature.enabled?(:use_cmark_renderer, default_enabled: :yaml)
             ref_num = link_node[:id].delete_prefix(FOOTNOTE_LINK_ID_PREFIX)
             ref_num.gsub!(/[[:punct:]]/, '\\\\\&')
           else
             ref_num = link_node[:id].delete_prefix(FOOTNOTE_LINK_ID_PREFIX_OLD)
           end
 
-          css = Feature.enabled?(:use_cmark_renderer) ? "section[data-footnotes] li[id=#{fn_id(ref_num)}]" : "li[id=#{fn_id(ref_num)}]"
+          css = Feature.enabled?(:use_cmark_renderer, default_enabled: :yaml) ? "section[data-footnotes] li[id=#{fn_id(ref_num)}]" : "li[id=#{fn_id(ref_num)}]"
           node_xpath = Gitlab::Utils::Nokogiri.css_to_xpath(css)
           footnote_node = doc.at_xpath(node_xpath)
 
           if footnote_node || modified_footnotes[ref_num]
-            next if Feature.disabled?(:use_cmark_renderer) && !INTEGER_PATTERN.match?(ref_num)
+            next if Feature.disabled?(:use_cmark_renderer, default_enabled: :yaml) && !INTEGER_PATTERN.match?(ref_num)
 
             link_node[:href] += rand_suffix
             link_node[:id]   += rand_suffix
@@ -103,12 +103,12 @@ module Banzai
       end
 
       def fn_id(num)
-        prefix = Feature.enabled?(:use_cmark_renderer) ? FOOTNOTE_ID_PREFIX : FOOTNOTE_ID_PREFIX_OLD
+        prefix = Feature.enabled?(:use_cmark_renderer, default_enabled: :yaml) ? FOOTNOTE_ID_PREFIX : FOOTNOTE_ID_PREFIX_OLD
         "#{prefix}#{num}"
       end
 
       def fnref_id(num)
-        prefix = Feature.enabled?(:use_cmark_renderer) ? FOOTNOTE_LINK_ID_PREFIX : FOOTNOTE_LINK_ID_PREFIX_OLD
+        prefix = Feature.enabled?(:use_cmark_renderer, default_enabled: :yaml) ? FOOTNOTE_LINK_ID_PREFIX : FOOTNOTE_LINK_ID_PREFIX_OLD
         "#{prefix}#{num}"
       end
     end

@@ -96,7 +96,7 @@ module Gitlab
           it "does not convert dangerous fenced code with inline script into HTML" do
             input = '```mypre"><script>alert(3)</script>'
             output =
-              if Feature.enabled?(:use_cmark_renderer)
+              if Feature.enabled?(:use_cmark_renderer, default_enabled: :yaml)
                 "<div>\n<div>\n<pre class=\"code highlight js-syntax-highlight language-plaintext\" lang=\"plaintext\" v-pre=\"true\"><code></code></pre>\n</div>\n</div>"
               else
                 "<div>\n<div>\n<pre class=\"code highlight js-syntax-highlight language-plaintext\" lang=\"plaintext\" v-pre=\"true\"><code><span id=\"LC1\" class=\"line\" lang=\"plaintext\">\"&gt;</span></code></pre>\n</div>\n</div>"

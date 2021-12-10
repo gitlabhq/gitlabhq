@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe UserCalloutsController do
+RSpec.describe Users::CalloutsController do
   let_it_be(:user) { create(:user) }
 
   before do
@@ -15,11 +15,11 @@ RSpec.describe UserCalloutsController do
     subject { post :create, params: params, format: :json }
 
     context 'with valid feature name' do
-      let(:feature_name) { UserCallout.feature_names.each_key.first }
+      let(:feature_name) { Users::Callout.feature_names.each_key.first }
 
       context 'when callout entry does not exist' do
         it 'creates a callout entry with dismissed state' do
-          expect { subject }.to change { UserCallout.count }.by(1)
+          expect { subject }.to change { Users::Callout.count }.by(1)
         end
 
         it 'returns success' do
@@ -30,10 +30,10 @@ RSpec.describe UserCalloutsController do
       end
 
       context 'when callout entry already exists' do
-        let!(:callout) { create(:user_callout, feature_name: UserCallout.feature_names.each_key.first, user: user) }
+        let!(:callout) { create(:callout, feature_name: Users::Callout.feature_names.each_key.first, user: user) }
 
         it 'returns success', :aggregate_failures do
-          expect { subject }.not_to change { UserCallout.count }
+          expect { subject }.not_to change { Users::Callout.count }
           expect(response).to have_gitlab_http_status(:ok)
         end
       end

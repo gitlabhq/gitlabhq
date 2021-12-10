@@ -15769,6 +15769,27 @@ CREATE SEQUENCE lfs_file_locks_id_seq
 
 ALTER SEQUENCE lfs_file_locks_id_seq OWNED BY lfs_file_locks.id;
 
+CREATE TABLE lfs_object_states (
+    verification_started_at timestamp with time zone,
+    verification_retry_at timestamp with time zone,
+    verified_at timestamp with time zone,
+    lfs_object_id bigint NOT NULL,
+    verification_state smallint DEFAULT 0 NOT NULL,
+    verification_retry_count smallint,
+    verification_checksum bytea,
+    verification_failure text,
+    CONSTRAINT check_efe45a8ab3 CHECK ((char_length(verification_failure) <= 255))
+);
+
+CREATE SEQUENCE lfs_object_states_lfs_object_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE lfs_object_states_lfs_object_id_seq OWNED BY lfs_object_states.lfs_object_id;
+
 CREATE TABLE lfs_objects (
     id integer NOT NULL,
     oid character varying NOT NULL,
@@ -21795,6 +21816,8 @@ ALTER TABLE ONLY ldap_group_links ALTER COLUMN id SET DEFAULT nextval('ldap_grou
 
 ALTER TABLE ONLY lfs_file_locks ALTER COLUMN id SET DEFAULT nextval('lfs_file_locks_id_seq'::regclass);
 
+ALTER TABLE ONLY lfs_object_states ALTER COLUMN lfs_object_id SET DEFAULT nextval('lfs_object_states_lfs_object_id_seq'::regclass);
+
 ALTER TABLE ONLY lfs_objects ALTER COLUMN id SET DEFAULT nextval('lfs_objects_id_seq'::regclass);
 
 ALTER TABLE ONLY lfs_objects_projects ALTER COLUMN id SET DEFAULT nextval('lfs_objects_projects_id_seq'::regclass);
@@ -23512,6 +23535,9 @@ ALTER TABLE ONLY ldap_group_links
 
 ALTER TABLE ONLY lfs_file_locks
     ADD CONSTRAINT lfs_file_locks_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY lfs_object_states
+    ADD CONSTRAINT lfs_object_states_pkey PRIMARY KEY (lfs_object_id);
 
 ALTER TABLE ONLY lfs_objects
     ADD CONSTRAINT lfs_objects_pkey PRIMARY KEY (id);
@@ -26528,6 +26554,16 @@ CREATE INDEX index_labels_on_type_and_project_id ON labels USING btree (type, pr
 CREATE UNIQUE INDEX index_lfs_file_locks_on_project_id_and_path ON lfs_file_locks USING btree (project_id, path);
 
 CREATE INDEX index_lfs_file_locks_on_user_id ON lfs_file_locks USING btree (user_id);
+
+CREATE INDEX index_lfs_object_states_failed_verification ON lfs_object_states USING btree (verification_retry_at NULLS FIRST) WHERE (verification_state = 3);
+
+CREATE INDEX index_lfs_object_states_needs_verification ON lfs_object_states USING btree (verification_state) WHERE ((verification_state = 0) OR (verification_state = 3));
+
+CREATE INDEX index_lfs_object_states_on_lfs_object_id ON lfs_object_states USING btree (lfs_object_id);
+
+CREATE INDEX index_lfs_object_states_on_verification_state ON lfs_object_states USING btree (verification_state);
+
+CREATE INDEX index_lfs_object_states_pending_verification ON lfs_object_states USING btree (verified_at NULLS FIRST) WHERE (verification_state = 0);
 
 CREATE INDEX index_lfs_objects_on_file_store ON lfs_objects USING btree (file_store);
 
@@ -30332,6 +30368,9 @@ ALTER TABLE ONLY description_versions
 
 ALTER TABLE ONLY clusters_kubernetes_namespaces
     ADD CONSTRAINT fk_rails_40cc7ccbc3 FOREIGN KEY (cluster_project_id) REFERENCES cluster_projects(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY lfs_object_states
+    ADD CONSTRAINT fk_rails_4188448cd5 FOREIGN KEY (lfs_object_id) REFERENCES lfs_objects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY geo_node_namespace_links
     ADD CONSTRAINT fk_rails_41ff5fb854 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;

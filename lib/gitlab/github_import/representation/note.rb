@@ -63,6 +63,14 @@ module Gitlab
           @attributes = attributes
         end
 
+        def discussion_id
+          Discussion.discussion_id(
+            Struct
+            .new(:noteable_id, :noteable_type)
+            .new(noteable_id, noteable_type)
+          )
+        end
+
         alias_method :issuable_type, :noteable_type
 
         def github_identifiers

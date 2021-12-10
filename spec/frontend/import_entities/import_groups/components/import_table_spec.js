@@ -40,6 +40,10 @@ describe('import table', () => {
     wrapper.findAll('button').wrappers.filter((w) => w.text() === 'Import');
   const findPaginationDropdown = () => wrapper.find('[aria-label="Page size"]');
   const findPaginationDropdownText = () => findPaginationDropdown().find('button').text();
+  const findSelectionCount = () => wrapper.find('[data-test-id="selection-count"]');
+
+  const triggerSelectAllCheckbox = () =>
+    wrapper.find('thead input[type=checkbox]').trigger('click');
 
   const selectRow = (idx) =>
     wrapper.findAll('tbody td input[type=checkbox]').at(idx).trigger('click');
@@ -313,6 +317,21 @@ describe('import table', () => {
   });
 
   describe('bulk operations', () => {
+    it('import all button correctly selects/deselects all groups', async () => {
+      createComponent({
+        bulkImportSourceGroups: () => ({
+          nodes: FAKE_GROUPS,
+          pageInfo: FAKE_PAGE_INFO,
+        }),
+      });
+      await waitForPromises();
+      expect(findSelectionCount().text()).toMatchInterpolatedText('0 selected');
+      await triggerSelectAllCheckbox();
+      expect(findSelectionCount().text()).toMatchInterpolatedText('2 selected');
+      await triggerSelectAllCheckbox();
+      expect(findSelectionCount().text()).toMatchInterpolatedText('0 selected');
+    });
+
     it('import selected button is disabled when no groups selected', async () => {
       createComponent({
         bulkImportSourceGroups: () => ({

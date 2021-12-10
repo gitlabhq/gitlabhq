@@ -57,9 +57,9 @@ module Sidebars
             data: { trigger: 'manual',
               container: 'body',
               placement: 'right',
-              highlight: UserCalloutsHelper::GKE_CLUSTER_INTEGRATION,
-              highlight_priority: UserCallout.feature_names[:GKE_CLUSTER_INTEGRATION],
-              dismiss_endpoint: user_callouts_path,
+              highlight: Users::CalloutsHelper::GKE_CLUSTER_INTEGRATION,
+              highlight_priority: Users::Callout.feature_names[:GKE_CLUSTER_INTEGRATION],
+              dismiss_endpoint: callouts_path,
               auto_devops_help_path: help_page_path('topics/autodevops/index.md') } }
         end
 

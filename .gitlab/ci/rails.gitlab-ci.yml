@@ -342,8 +342,8 @@ rspec fast_spec_helper minimal:
 db:rollback:
   extends: .db-job-base
   script:
-    - bundle exec rake db:migrate VERSION=20181228175414
-    - bundle exec rake db:migrate SKIP_SCHEMA_VERSION_CHECK=true
+    - bundle exec rake db:migrate:main VERSION=20181228175414
+    - bundle exec rake db:migrate:main SKIP_SCHEMA_VERSION_CHECK=true
 
 db:migrate:reset:
   extends: .db-job-base
@@ -368,7 +368,7 @@ db:migrate-from-previous-major-version:
     - git checkout -f $CI_COMMIT_SHA
     - SETUP_DB=false USE_BUNDLE_INSTALL=true bash scripts/prepare_build.sh
   script:
-    - run_timed_command "bundle exec rake db:migrate"
+    - run_timed_command "bundle exec rake db:migrate:main"
 
 db:check-schema:
   extends:
@@ -377,7 +377,7 @@ db:check-schema:
   variables:
     TAG_TO_CHECKOUT: "v14.4.0"
   script:
-    - run_timed_command "bundle exec rake db:migrate"
+    - run_timed_command "bundle exec rake db:migrate:main"
     - scripts/schema_changed.sh
     - scripts/validate_migration_timestamps
 
@@ -900,8 +900,8 @@ db:rollback geo:
     - db:rollback
     - .rails:rules:ee-only-migration
   script:
-    - bundle exec rake geo:db:migrate VERSION=20170627195211
-    - bundle exec rake geo:db:migrate
+    - bundle exec rake db:migrate:geo VERSION=20170627195211
+    - bundle exec rake db:migrate:geo
 # EE: default refs (MRs, default branch, schedules) jobs #
 ##################################################
 

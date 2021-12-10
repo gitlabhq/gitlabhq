@@ -1,3 +1,2 @@
-%ul.nav-links.new-session-tabs.single-tab.nav-tabs.nav
-  %li.nav-item
-    %a.nav-link.active= tab_title
+= gl_tabs_nav({ class: 'new-session-tabs gl-border-0' }) do
+  = gl_tab_link_to tab_title, '#', { item_active: true, class: 'gl-cursor-default!', tab_class: 'gl-bg-transparent!', tabindex: '-1' }

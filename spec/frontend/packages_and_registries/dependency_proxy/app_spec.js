@@ -3,7 +3,6 @@ import {
   GlFormGroup,
   GlSkeletonLoader,
   GlSprintf,
-  GlLink,
   GlEmptyState,
 } from '@gitlab/ui';
 import { createLocalVue } from '@vue/test-utils';
@@ -12,10 +11,7 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { stripTypenames } from 'helpers/graphql_helpers';
 import waitForPromises from 'helpers/wait_for_promises';
-import {
-  GRAPHQL_PAGE_SIZE,
-  ENABLE_DEPENDENCY_PROXY_DOCS_PATH,
-} from '~/packages_and_registries/dependency_proxy/constants';
+import { GRAPHQL_PAGE_SIZE } from '~/packages_and_registries/dependency_proxy/constants';
 
 import DependencyProxyApp from '~/packages_and_registries/dependency_proxy/app.vue';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
@@ -58,8 +54,6 @@ describe('DependencyProxyApp', () => {
   }
 
   const findProxyNotAvailableAlert = () => wrapper.findByTestId('proxy-not-available');
-  const findProxyDisabledAlert = () => wrapper.findByTestId('proxy-disabled');
-  const findDisabledAlertLink = () => findProxyDisabledAlert().findComponent(GlLink);
   const findClipBoardButton = () => wrapper.findComponent(ClipboardButton);
   const findFormGroup = () => wrapper.findComponent(GlFormGroup);
   const findFormInputGroup = () => wrapper.findComponent(GlFormInputGroup);
@@ -221,36 +215,6 @@ describe('DependencyProxyApp', () => {
                 fullPath: provideDefaults.groupPath,
               });
             });
-          });
-        });
-      });
-
-      describe('when the dependency proxy is disabled', () => {
-        beforeEach(() => {
-          resolver = jest
-            .fn()
-            .mockResolvedValue(proxyDetailsQuery({ extendSettings: { enabled: false } }));
-          createComponent();
-          return waitForPromises();
-        });
-
-        it('does not show the main area', () => {
-          expect(findMainArea().exists()).toBe(false);
-        });
-
-        it('does not show the loader', () => {
-          expect(findSkeletonLoader().exists()).toBe(false);
-        });
-
-        it('shows a proxy disabled alert', () => {
-          expect(findProxyDisabledAlert().text()).toMatchInterpolatedText(
-            DependencyProxyApp.i18n.proxyDisabledText,
-          );
-        });
-
-        it('disabled alert has a link to the docs', () => {
-          expect(findDisabledAlertLink().attributes()).toMatchObject({
-            href: ENABLE_DEPENDENCY_PROXY_DOCS_PATH,
           });
         });
       });

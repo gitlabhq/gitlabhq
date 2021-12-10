@@ -52,6 +52,7 @@ RSpec.describe Gitlab::GithubImport::Importer::NoteImporter do
                   project_id: project.id,
                   author_id: user.id,
                   note: 'This is my note',
+                  discussion_id: match(/\A[0-9a-f]{40}\z/),
                   system: false,
                   created_at: created_at,
                   updated_at: updated_at
@@ -82,6 +83,7 @@ RSpec.describe Gitlab::GithubImport::Importer::NoteImporter do
                   project_id: project.id,
                   author_id: project.creator_id,
                   note: "*Created by: alice*\n\nThis is my note",
+                  discussion_id: match(/\A[0-9a-f]{40}\z/),
                   system: false,
                   created_at: created_at,
                   updated_at: updated_at

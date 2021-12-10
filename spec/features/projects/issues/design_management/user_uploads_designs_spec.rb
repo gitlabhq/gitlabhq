@@ -10,6 +10,9 @@ RSpec.describe 'User uploads new design', :js do
   let(:issue) { create(:issue, project: project) }
 
   before do
+    # Cause of raising query limiting threshold https://gitlab.com/gitlab-org/gitlab/-/issues/347334
+    stub_const("Gitlab::QueryLimiting::Transaction::THRESHOLD", 102)
+
     sign_in(user)
     enable_design_management(feature_enabled)
     visit project_issue_path(project, issue)

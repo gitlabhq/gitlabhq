@@ -2,7 +2,7 @@
 
 module Users
   class GroupCallout < ApplicationRecord
-    include Calloutable
+    include Users::Calloutable
 
     self.table_name = 'user_group_callouts'
 

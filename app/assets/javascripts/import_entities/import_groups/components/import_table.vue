@@ -170,7 +170,7 @@ export default {
     },
 
     availableGroupsForImport() {
-      return this.groupsTableData.filter((g) => g.flags.isAvailableForImport && g.flags.isInvalid);
+      return this.groupsTableData.filter((g) => g.flags.isAvailableForImport && !g.flags.isInvalid);
     },
 
     humanizedTotal() {
@@ -521,13 +521,15 @@ export default {
       />
       <template v-else>
         <div
-          class="gl-bg-gray-10 gl-border-solid gl-border-gray-200 gl-border-0 gl-border-b-1 gl-p-4 gl-display-flex gl-align-items-center"
+          class="gl-bg-gray-10 gl-border-solid gl-border-gray-200 gl-border-0 gl-border-b-1 gl-px-4 gl-display-flex gl-align-items-center import-table-bar"
         >
-          <gl-sprintf :message="__('%{count} selected')">
-            <template #count>
-              {{ selectedGroupsIds.length }}
-            </template>
-          </gl-sprintf>
+          <span data-test-id="selection-count">
+            <gl-sprintf :message="__('%{count} selected')">
+              <template #count>
+                {{ selectedGroupsIds.length }}
+              </template>
+            </gl-sprintf>
+          </span>
           <gl-button
             category="primary"
             variant="confirm"
@@ -539,7 +541,7 @@ export default {
         </div>
         <gl-table
           ref="table"
-          class="gl-w-full"
+          class="gl-w-full import-table"
           data-qa-selector="import_table"
           :tbody-tr-class="rowClasses"
           :tbody-tr-attr="qaRowAttributes"

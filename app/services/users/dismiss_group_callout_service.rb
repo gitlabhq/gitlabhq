@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Users
-  class DismissGroupCalloutService < DismissUserCalloutService
+  class DismissGroupCalloutService < DismissCalloutService
     private
 
     def callout

@@ -18,5 +18,6 @@ export default {
     <span v-for="(token, tokenIndex) in tokens" :key="tokenIndex" :class="token.class">{{
       token.value
     }}</span>
+    <br />
   </span>
 </template>

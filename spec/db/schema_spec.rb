@@ -169,7 +169,7 @@ RSpec.describe 'Database schema' do
     'PrometheusMetric' => %w[group],
     'ResourceLabelEvent' => %w[action],
     'User' => %w[layout dashboard project_view],
-    'UserCallout' => %w[feature_name],
+    'Users::Callout' => %w[feature_name],
     'PrometheusAlert' => %w[operator]
   }.freeze
 

@@ -31,6 +31,10 @@ module Gitlab
           else
             import_with_legacy_diff_note
           end
+        rescue ::DiffNote::NoteDiffFileCreationError => e
+          Logger.warn(message: e.message, 'error.class': e.class.name)
+
+          import_with_legacy_diff_note
         rescue ActiveRecord::InvalidForeignKey => e
           # It's possible the project and the issue have been deleted since
           # scheduling this job. In this case we'll just skip creating the note

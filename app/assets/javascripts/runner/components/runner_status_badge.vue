@@ -9,6 +9,7 @@ import {
   I18N_STALE_RUNNER_DESCRIPTION,
   STATUS_ONLINE,
   STATUS_NOT_CONNECTED,
+  STATUS_NEVER_CONTACTED,
   STATUS_OFFLINE,
   STATUS_STALE,
 } from '../constants';
@@ -45,6 +46,7 @@ export default {
             }),
           };
         case STATUS_NOT_CONNECTED:
+        case STATUS_NEVER_CONTACTED:
           return {
             variant: 'muted',
             label: s__('Runners|not connected'),

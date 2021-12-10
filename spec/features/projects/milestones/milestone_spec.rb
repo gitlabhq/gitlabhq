@@ -2,10 +2,11 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Project milestone' do
+RSpec.describe 'Project milestone', :js do
   let(:user) { create(:user) }
   let(:project) { create(:project, name: 'test', namespace: user.namespace) }
   let(:milestone) { create(:milestone, project: project) }
+  let(:active_tab_selector) { '[role="tab"][aria-selected="true"]' }
 
   def toggle_sidebar
     find('.milestone-sidebar .gutter-toggle').click
@@ -31,8 +32,9 @@ RSpec.describe 'Project milestone' do
     it 'shows issues tab' do
       within('#content-body') do
         expect(page).to have_link 'Issues', href: '#tab-issues'
-        expect(page).to have_selector '.nav-links li a.active', count: 1
-        expect(find('.nav-links li a.active')).to have_content 'Issues'
+        expect(page).to have_selector active_tab_selector, count: 1
+        expect(find(active_tab_selector)).to have_content 'Issues'
+        expect(page).to have_text('Unstarted Issues')
       end
     end
 
@@ -49,6 +51,35 @@ RSpec.describe 'Project milestone' do
     end
   end
 
+  context 'when clicking on other tabs' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:tab_text, :href, :panel_content) do
+      'Merge requests' | '#tab-merge-requests' | 'Work in progress'
+      'Participants'   | '#tab-participants'   | nil
+      'Labels'         | '#tab-labels'         | nil
+    end
+
+    with_them do
+      before do
+        visit project_milestone_path(project, milestone)
+        click_link(tab_text, href: href)
+      end
+
+      it 'shows the merge requests tab and panel' do
+        within('#content-body') do
+          expect(find(active_tab_selector)).to have_content tab_text
+          expect(find(href)).to be_visible
+          expect(page).to have_text(panel_content) if panel_content
+        end
+      end
+
+      it 'sets the location hash' do
+        expect(current_url).to end_with(href)
+      end
+    end
+  end
+
   context 'when project has disabled issues' do
     before do
       create(:issue, project: project, milestone: milestone)
@@ -59,7 +90,7 @@ RSpec.describe 'Project milestone' do
 
     it 'does not show any issues under the issues tab' do
       within('#content-body') do
-        expect(find('.nav-links li a.active')).to have_content 'Issues'
+        expect(find(active_tab_selector)).to have_content 'Issues'
         expect(page).not_to have_selector '.issuable-row'
       end
     end

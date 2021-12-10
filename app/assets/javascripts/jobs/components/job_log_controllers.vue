@@ -5,7 +5,7 @@ import { __, s__, sprintf } from '~/locale';
 
 export default {
   i18n: {
-    eraseLogButtonLabel: s__('Job|Erase job log'),
+    eraseLogButtonLabel: s__('Job|Erase job log and artifacts'),
     scrollToBottomButtonLabel: s__('Job|Scroll to bottom'),
     scrollToTopButtonLabel: s__('Job|Scroll to top'),
     showRawButtonLabel: s__('Job|Show complete raw'),

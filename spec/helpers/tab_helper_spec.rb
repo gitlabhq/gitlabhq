@@ -7,15 +7,11 @@ RSpec.describe TabHelper do
 
   describe 'gl_tabs_nav' do
     it 'creates a tabs navigation' do
-      expect(helper.gl_tabs_nav).to match(%r{<ul class=".*" role="tablist"><\/ul>})
+      expect(helper.gl_tabs_nav).to match(%r{<ul class="nav gl-tabs-nav"><\/ul>})
     end
 
     it 'captures block output' do
       expect(helper.gl_tabs_nav { "block content" }).to match(/block content/)
-    end
-
-    it 'adds styles classes' do
-      expect(helper.gl_tabs_nav).to match(/class="nav gl-tabs-nav"/)
     end
 
     it 'adds custom class' do
@@ -29,7 +25,7 @@ RSpec.describe TabHelper do
     end
 
     it 'creates a tab' do
-      expect(helper.gl_tab_link_to('Link', '/url')).to eq('<li class="nav-item" role="presentation"><a class="nav-link gl-tab-nav-item" href="/url">Link</a></li>')
+      expect(helper.gl_tab_link_to('Link', '/url')).to eq('<li class="nav-item"><a class="nav-link gl-tab-nav-item" href="/url">Link</a></li>')
     end
 
     it 'creates a tab with block output' do

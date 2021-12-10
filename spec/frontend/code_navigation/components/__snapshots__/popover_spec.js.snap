@@ -42,6 +42,8 @@ exports[`Code navigation popover component renders popover 1`] = `
               <span>
                  main() {
               </span>
+               
+              <br />
             </span>
             <span
               class="line"
@@ -50,6 +52,8 @@ exports[`Code navigation popover component renders popover 1`] = `
               <span>
                 }
               </span>
+               
+              <br />
             </span>
           </pre>
         </div>

@@ -1,7 +1,11 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'store ActiveRecord info in RequestStore' do |db_role|
-  let(:db_config_name) { ::Gitlab::Database.db_config_names.first }
+  let(:db_config_name) do
+    db_config_name = ::Gitlab::Database.db_config_names.first
+    db_config_name += "_replica" if db_role == :secondary
+    db_config_name
+  end
 
   let(:expected_payload_defaults) do
     result = {}
@@ -39,15 +43,15 @@ RSpec.shared_examples 'store ActiveRecord info in RequestStore' do |db_role|
                        db_write_count: record_write_query ? 1 : 0,
                        db_cached_count: record_cached_query ? 1 : 0,
                        db_primary_cached_count: record_cached_query ? 1 : 0,
-                       "db_primary_#{db_config_name}_cached_count": record_cached_query ? 1 : 0,
+                       "db_#{db_config_name}_cached_count": record_cached_query ? 1 : 0,
                        db_primary_count: record_query ? 1 : 0,
-                       "db_primary_#{db_config_name}_count": record_query ? 1 : 0,
+                       "db_#{db_config_name}_count": record_query ? 1 : 0,
                        db_primary_duration_s: record_query ? 0.002 : 0.0,
-                       "db_primary_#{db_config_name}_duration_s": record_query ? 0.002 : 0.0,
+                       "db_#{db_config_name}_duration_s": record_query ? 0.002 : 0.0,
                        db_primary_wal_count: record_wal_query ? 1 : 0,
-                       "db_primary_#{db_config_name}_wal_count": record_wal_query ? 1 : 0,
+                       "db_#{db_config_name}_wal_count": record_wal_query ? 1 : 0,
                        db_primary_wal_cached_count: record_wal_query && record_cached_query ? 1 : 0,
-                       "db_primary_#{db_config_name}_wal_cached_count": record_wal_query && record_cached_query ? 1 : 0
+                       "db_#{db_config_name}_wal_cached_count": record_wal_query && record_cached_query ? 1 : 0
                      })
                    elsif db_role == :replica
                      transform_hash(expected_payload_defaults, {
@@ -55,15 +59,15 @@ RSpec.shared_examples 'store ActiveRecord info in RequestStore' do |db_role|
                        db_write_count: record_write_query ? 1 : 0,
                        db_cached_count: record_cached_query ? 1 : 0,
                        db_replica_cached_count: record_cached_query ? 1 : 0,
-                       "db_replica_#{db_config_name}_cached_count": record_cached_query ? 1 : 0,
+                       "db_#{db_config_name}_cached_count": record_cached_query ? 1 : 0,
                        db_replica_count: record_query ? 1 : 0,
-                       "db_replica_#{db_config_name}_count": record_query ? 1 : 0,
+                       "db_#{db_config_name}_count": record_query ? 1 : 0,
                        db_replica_duration_s: record_query ? 0.002 : 0.0,
-                       "db_replica_#{db_config_name}_duration_s": record_query ? 0.002 : 0.0,
+                       "db_#{db_config_name}_duration_s": record_query ? 0.002 : 0.0,
                        db_replica_wal_count: record_wal_query ? 1 : 0,
-                       "db_replica_#{db_config_name}_wal_count": record_wal_query ? 1 : 0,
+                       "db_#{db_config_name}_wal_count": record_wal_query ? 1 : 0,
                        db_replica_wal_cached_count: record_wal_query && record_cached_query ? 1 : 0,
-                       "db_replica_#{db_config_name}_wal_cached_count": record_wal_query && record_cached_query ? 1 : 0
+                       "db_#{db_config_name}_wal_cached_count": record_wal_query && record_cached_query ? 1 : 0
                      })
                    else
                      transform_hash(expected_payload_defaults, {
@@ -71,15 +75,15 @@ RSpec.shared_examples 'store ActiveRecord info in RequestStore' do |db_role|
                        db_write_count: record_write_query ? 1 : 0,
                        db_cached_count: record_cached_query ? 1 : 0,
                        db_primary_cached_count: 0,
-                       "db_primary_#{db_config_name}_cached_count": 0,
+                       "db_#{db_config_name}_cached_count": 0,
                        db_primary_count: 0,
-                       "db_primary_#{db_config_name}_count": 0,
+                       "db_#{db_config_name}_count": 0,
                        db_primary_duration_s: 0.0,
-                       "db_primary_#{db_config_name}_duration_s": 0.0,
+                       "db_#{db_config_name}_duration_s": 0.0,
                        db_primary_wal_count: 0,
-                       "db_primary_#{db_config_name}_wal_count": 0,
+                       "db_#{db_config_name}_wal_count": 0,
                        db_primary_wal_cached_count: 0,
-                       "db_primary_#{db_config_name}_wal_cached_count": 0
+                       "db_#{db_config_name}_wal_cached_count": 0
                      })
                    end
 
@@ -105,7 +109,11 @@ RSpec.shared_examples 'store ActiveRecord info in RequestStore' do |db_role|
 end
 
 RSpec.shared_examples 'record ActiveRecord metrics in a metrics transaction' do |db_role|
-  let(:db_config_name) { ::Gitlab::Database.db_config_name(ApplicationRecord.retrieve_connection) }
+  let(:db_config_name) do
+    db_config_name = ::Gitlab::Database.db_config_names.first
+    db_config_name += "_replica" if db_role == :secondary
+    db_config_name
+  end
 
   it 'increments only db counters' do
     if record_query

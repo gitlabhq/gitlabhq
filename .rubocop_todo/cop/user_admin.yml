@@ -16,7 +16,7 @@ Cop/UserAdmin:
   - app/helpers/nav_helper.rb
   - app/helpers/projects_helper.rb
   - app/helpers/search_helper.rb
-  - app/helpers/user_callouts_helper.rb
+  - app/helpers/users/callouts_helper.rb
   - app/helpers/users_helper.rb
   - app/helpers/visibility_level_helper.rb
   - app/models/concerns/protected_ref_access.rb
@@ -38,7 +38,7 @@ Cop/UserAdmin:
   - ee/app/helpers/ee/dashboard_helper.rb
   - ee/app/helpers/ee/import_helper.rb
   - ee/app/helpers/ee/subscribable_banner_helper.rb
-  - ee/app/helpers/ee/user_callouts_helper.rb
+  - ee/app/helpers/ee/users/callouts_helper.rb
   - ee/app/helpers/license_monitoring_helper.rb
   - ee/app/helpers/push_rules_helper.rb
   - ee/app/models/concerns/ee/protected_ref_access.rb

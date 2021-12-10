@@ -15,7 +15,7 @@
         track_label: 'invite_members_banner',
         invite_members_path: group_group_members_path(@group),
         callouts_path: group_callouts_path,
-        callouts_feature_id: UserCalloutsHelper::INVITE_MEMBERS_BANNER,
+        callouts_feature_id: Users::GroupCalloutsHelper::INVITE_MEMBERS_BANNER,
         group_id: @group.id } }
   = render 'groups/invite_members_modal', group: @group
 

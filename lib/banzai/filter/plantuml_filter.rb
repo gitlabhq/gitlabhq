@@ -26,7 +26,7 @@ module Banzai
 
       def lang_tag
         @lang_tag ||=
-          if Feature.enabled?(:use_cmark_renderer)
+          if Feature.enabled?(:use_cmark_renderer, default_enabled: :yaml)
             Gitlab::Utils::Nokogiri.css_to_xpath('pre[lang="plantuml"] > code').freeze
           else
             Gitlab::Utils::Nokogiri.css_to_xpath('pre > code[lang="plantuml"]').freeze

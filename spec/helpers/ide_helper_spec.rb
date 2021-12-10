@@ -61,7 +61,7 @@ RSpec.describe IdeHelper do
 
         context 'and the callout has been dismissed' do
           it 'disables environment guidance' do
-            callout = create(:user_callout, feature_name: :web_ide_ci_environments_guidance, user: project.creator)
+            callout = create(:callout, feature_name: :web_ide_ci_environments_guidance, user: project.creator)
             callout.update!(dismissed_at: Time.now - 1.week)
             allow(helper).to receive(:current_user).and_return(User.find(project.creator.id))
             expect(helper.ide_data).to include('enable-environments-guidance' => 'false')

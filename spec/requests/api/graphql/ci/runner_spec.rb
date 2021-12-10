@@ -223,20 +223,22 @@ RSpec.describe 'Query.runner(id)' do
 
   describe 'for runner with status' do
     let_it_be(:stale_runner) { create(:ci_runner, description: 'Stale runner 1', created_at: 3.months.ago) }
+    let_it_be(:never_contacted_instance_runner) { create(:ci_runner, description: 'Missing runner 1', created_at: 1.month.ago, contacted_at: nil) }
+
+    let(:status_fragment) do
+      %(
+        status
+        legacyStatusWithExplicitVersion: status(legacyMode: "14.5")
+        newStatus: status(legacyMode: null)
+      )
+    end
 
     let(:query) do
       %(
         query {
-          staleRunner: runner(id: "#{stale_runner.to_global_id}") {
-            status
-            legacyStatusWithExplicitVersion: status(legacyMode: "14.5")
-            newStatus: status(legacyMode: null)
-          }
-          pausedRunner: runner(id: "#{inactive_instance_runner.to_global_id}") {
-            status
-            legacyStatusWithExplicitVersion: status(legacyMode: "14.5")
-            newStatus: status(legacyMode: null)
-          }
+          staleRunner: runner(id: "#{stale_runner.to_global_id}") { #{status_fragment} }
+          pausedRunner: runner(id: "#{inactive_instance_runner.to_global_id}") { #{status_fragment} }
+          neverContactedInstanceRunner: runner(id: "#{never_contacted_instance_runner.to_global_id}") { #{status_fragment} }
         }
       )
     end
@@ -256,6 +258,13 @@ RSpec.describe 'Query.runner(id)' do
         'status' => 'PAUSED',
         'legacyStatusWithExplicitVersion' => 'PAUSED',
         'newStatus' => 'OFFLINE'
+      )
+
+      never_contacted_instance_runner_data = graphql_data_at(:never_contacted_instance_runner)
+      expect(never_contacted_instance_runner_data).to match a_hash_including(
+        'status' => 'NOT_CONNECTED',
+        'legacyStatusWithExplicitVersion' => 'NOT_CONNECTED',
+        'newStatus' => 'NEVER_CONTACTED'
       )
     end
   end

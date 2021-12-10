@@ -23,7 +23,7 @@ module Ci
           icon = 'status-paused'
           span_class = 'gl-text-gray-600'
         end
-      when :not_connected
+      when :not_connected, :never_contacted
         title = s_("Runners|New runner, has not connected yet")
         icon = 'warning-solid'
       when :offline

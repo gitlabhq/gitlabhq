@@ -25,13 +25,17 @@ module Types
             value: :offline
 
       value 'STALE',
-            description: "Runner that has not contacted this instance within the last #{::Ci::Runner::STALE_TIMEOUT.inspect}. Only available if legacyMode is null. Will be a possible return value starting in 15.0",
+            description: "Runner that has not contacted this instance within the last #{::Ci::Runner::STALE_TIMEOUT.inspect}. Only available if legacyMode is null. Will be a possible return value starting in 15.0.",
             value: :stale
 
       value 'NOT_CONNECTED',
             description: 'Runner that has never contacted this instance.',
-            deprecated: { reason: 'This field will have a slightly different scope starting in 15.0, with STALE being returned after a certain period of no contact', milestone: '14.6' },
+            deprecated: { reason: "Use NEVER_CONTACTED instead. NEVER_CONTACTED will have a slightly different scope starting in 15.0, with STALE being returned instead after #{::Ci::Runner::STALE_TIMEOUT.inspect} of no contact", milestone: '14.6' },
             value: :not_connected
+
+      value 'NEVER_CONTACTED',
+            description: 'Runner that has never contacted this instance. Set legacyMode to null to utilize this value. Will replace NOT_CONNECTED starting in 15.0.',
+            value: :never_contacted
     end
   end
 end

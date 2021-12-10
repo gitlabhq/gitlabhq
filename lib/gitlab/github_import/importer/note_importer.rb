@@ -29,6 +29,7 @@ module Gitlab
             project_id: project.id,
             author_id: author_id,
             note: note_body,
+            discussion_id: note.discussion_id,
             system: false,
             created_at: note.created_at,
             updated_at: note.updated_at

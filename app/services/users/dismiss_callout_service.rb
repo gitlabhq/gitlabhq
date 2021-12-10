@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Users
-  class DismissUserCalloutService < BaseContainerService
+  class DismissCalloutService < BaseContainerService
     def execute
       callout.tap do |record|
         record.update(dismissed_at: Time.current) if record.valid?

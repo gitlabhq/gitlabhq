@@ -40,7 +40,7 @@ RSpec.describe Banzai::Filter::SyntaxHighlightFilter do
 
     context "when a valid language is specified" do
       it "highlights as that language" do
-        result = if Feature.enabled?(:use_cmark_renderer)
+        result = if Feature.enabled?(:use_cmark_renderer, default_enabled: :yaml)
                    filter('<pre lang="ruby"><code>def fun end</code></pre>')
                  else
                    filter('<pre><code lang="ruby">def fun end</code></pre>')
@@ -54,7 +54,7 @@ RSpec.describe Banzai::Filter::SyntaxHighlightFilter do
 
     context "when an invalid language is specified" do
       it "highlights as plaintext" do
-        result = if Feature.enabled?(:use_cmark_renderer)
+        result = if Feature.enabled?(:use_cmark_renderer, default_enabled: :yaml)
                    filter('<pre lang="gnuplot"><code>This is a test</code></pre>')
                  else
                    filter('<pre><code lang="gnuplot">This is a test</code></pre>')
@@ -73,7 +73,7 @@ RSpec.describe Banzai::Filter::SyntaxHighlightFilter do
       %w(math mermaid plantuml suggestion).each do |lang|
         context "when #{lang} is specified" do
           it "highlights as plaintext but with the correct language attribute and class" do
-            result = if Feature.enabled?(:use_cmark_renderer)
+            result = if Feature.enabled?(:use_cmark_renderer, default_enabled: :yaml)
                        filter(%{<pre lang="#{lang}"><code>This is a test</code></pre>})
                      else
                        filter(%{<pre><code lang="#{lang}">This is a test</code></pre>})
@@ -89,7 +89,7 @@ RSpec.describe Banzai::Filter::SyntaxHighlightFilter do
           let(:lang_params) { 'foo-bar-kux' }
 
           let(:xss_lang) do
-            if Feature.enabled?(:use_cmark_renderer)
+            if Feature.enabled?(:use_cmark_renderer, default_enabled: :yaml)
               "#{lang} data-meta=\"foo-bar-kux\"&lt;script&gt;alert(1)&lt;/script&gt;"
             else
               "#{lang}#{described_class::LANG_PARAMS_DELIMITER}&lt;script&gt;alert(1)&lt;/script&gt;"
@@ -97,7 +97,7 @@ RSpec.describe Banzai::Filter::SyntaxHighlightFilter do
           end
 
           it "includes data-lang-params tag with extra information" do
-            result = if Feature.enabled?(:use_cmark_renderer)
+            result = if Feature.enabled?(:use_cmark_renderer, default_enabled: :yaml)
                        filter(%{<pre lang="#{lang}" data-meta="#{lang_params}"><code>This is a test</code></pre>})
                      else
                        filter(%{<pre><code lang="#{lang}#{delimiter}#{lang_params}">This is a test</code></pre>})
@@ -108,7 +108,7 @@ RSpec.describe Banzai::Filter::SyntaxHighlightFilter do
 
           include_examples "XSS prevention", lang
 
-          if Feature.enabled?(:use_cmark_renderer)
+          if Feature.enabled?(:use_cmark_renderer, default_enabled: :yaml)
             include_examples "XSS prevention",
                              "#{lang} data-meta=\"foo-bar-kux\"&lt;script&gt;alert(1)&lt;/script&gt;"
           else
@@ -131,7 +131,7 @@ RSpec.describe Banzai::Filter::SyntaxHighlightFilter do
 
         context 'when delimiter is space' do
           it 'delimits on the first appearance' do
-            if Feature.enabled?(:use_cmark_renderer)
+            if Feature.enabled?(:use_cmark_renderer, default_enabled: :yaml)
               result = filter(%{<pre lang="#{lang}" data-meta="#{lang_params} more-things"><code>This is a test</code></pre>})
 
               expect(result.to_html).to eq(expected_result)
@@ -147,7 +147,7 @@ RSpec.describe Banzai::Filter::SyntaxHighlightFilter do
           it 'delimits on the first appearance' do
             result = filter(%{<pre lang="#{lang}#{delimiter}#{lang_params} more-things"><code>This is a test</code></pre>})
 
-            if Feature.enabled?(:use_cmark_renderer)
+            if Feature.enabled?(:use_cmark_renderer, default_enabled: :yaml)
               expect(result.to_html).to eq(expected_result)
             else
               expect(result.to_html).to eq(%{<pre class=\"code highlight js-syntax-highlight language-plaintext\" lang=\"plaintext\" v-pre=\"true\"><code><span id=\"LC1\" class=\"line\" lang=\"plaintext\">This is a test</span></code></pre>})
@@ -173,7 +173,7 @@ RSpec.describe Banzai::Filter::SyntaxHighlightFilter do
       end
 
       it "highlights as plaintext" do
-        result = if Feature.enabled?(:use_cmark_renderer)
+        result = if Feature.enabled?(:use_cmark_renderer, default_enabled: :yaml)
                    filter('<pre lang="ruby"><code>This is a test</code></pre>')
                  else
                    filter('<pre><code lang="ruby">This is a test</code></pre>')

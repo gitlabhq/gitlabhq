@@ -71,7 +71,7 @@ RSpec.describe Banzai::Pipeline::PlainMarkdownPipeline do
         let(:markdown) { %Q(``` foo\\@bar\nfoo\n```) }
 
         it 'renders correct html' do
-          if Feature.enabled?(:use_cmark_renderer)
+          if Feature.enabled?(:use_cmark_renderer, default_enabled: :yaml)
             correct_html_included(markdown, %Q(<pre data-sourcepos="1:1-3:3" lang="foo@bar"><code>foo\n</code></pre>))
           else
             correct_html_included(markdown, %Q(<code lang="foo@bar">foo\n</code>))

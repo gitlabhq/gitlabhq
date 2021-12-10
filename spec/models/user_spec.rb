@@ -124,7 +124,7 @@ RSpec.describe User do
     it { is_expected.to have_many(:created_custom_emoji).inverse_of(:creator) }
     it { is_expected.to have_many(:in_product_marketing_emails) }
     it { is_expected.to have_many(:timelogs) }
-    it { is_expected.to have_many(:callouts).class_name('UserCallout') }
+    it { is_expected.to have_many(:callouts).class_name('Users::Callout') }
     it { is_expected.to have_many(:group_callouts).class_name('Users::GroupCallout') }
 
     describe '#user_detail' do
@@ -5589,7 +5589,7 @@ RSpec.describe User do
 
   describe '#dismissed_callout?' do
     let_it_be(:user, refind: true) { create(:user) }
-    let_it_be(:feature_name) { UserCallout.feature_names.each_key.first }
+    let_it_be(:feature_name) { Users::Callout.feature_names.each_key.first }
 
     context 'when no callout dismissal record exists' do
       it 'returns false when no ignore_dismissal_earlier_than provided' do
@@ -5599,7 +5599,7 @@ RSpec.describe User do
 
     context 'when dismissed callout exists' do
       before_all do
-        create(:user_callout, user: user, feature_name: feature_name, dismissed_at: 4.months.ago)
+        create(:callout, user: user, feature_name: feature_name, dismissed_at: 4.months.ago)
       end
 
       it 'returns true when no ignore_dismissal_earlier_than provided' do
@@ -5618,12 +5618,12 @@ RSpec.describe User do
 
   describe '#find_or_initialize_callout' do
     let_it_be(:user, refind: true) { create(:user) }
-    let_it_be(:feature_name) { UserCallout.feature_names.each_key.first }
+    let_it_be(:feature_name) { Users::Callout.feature_names.each_key.first }
 
     subject(:find_or_initialize_callout) { user.find_or_initialize_callout(feature_name) }
 
     context 'when callout exists' do
-      let!(:callout) { create(:user_callout, user: user, feature_name: feature_name) }
+      let!(:callout) { create(:callout, user: user, feature_name: feature_name) }
 
       it 'returns existing callout' do
         expect(find_or_initialize_callout).to eq(callout)
@@ -5633,7 +5633,7 @@ RSpec.describe User do
     context 'when callout does not exist' do
       context 'when feature name is valid' do
         it 'initializes a new callout' do
-          expect(find_or_initialize_callout).to be_a_new(UserCallout)
+          expect(find_or_initialize_callout).to be_a_new(Users::Callout)
         end
 
         it 'is valid' do
@@ -5645,7 +5645,7 @@ RSpec.describe User do
         let(:feature_name) { 'notvalid' }
 
         it 'initializes a new callout' do
-          expect(find_or_initialize_callout).to be_a_new(UserCallout)
+          expect(find_or_initialize_callout).to be_a_new(Users::Callout)
         end
 
         it 'is not valid' do

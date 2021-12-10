@@ -173,9 +173,11 @@ RSpec.describe Gitlab::GithubImport::Importer::DiffNoteImporter, :aggregate_fail
             EOB
           end
 
-          it 'imports the note as diff note' do
+          before do
             stub_user_finder(user.id, true)
+          end
 
+          it 'imports the note as diff note' do
             expect { subject.execute }
               .to change(DiffNote, :count)
               .by(1)
@@ -211,6 +213,29 @@ RSpec.describe Gitlab::GithubImport::Importer::DiffNoteImporter, :aggregate_fail
               what do you think to do it like this
               ```
               NOTE
+          end
+
+          context 'when the note diff file creation fails' do
+            it 'falls back to the LegacyDiffNote' do
+              exception = ::DiffNote::NoteDiffFileCreationError.new('Failed to create diff note file')
+
+              expect_next_instance_of(::Import::Github::Notes::CreateService) do |service|
+                expect(service)
+                  .to receive(:execute)
+                  .and_raise(exception)
+              end
+
+              expect(Gitlab::GithubImport::Logger)
+                .to receive(:warn)
+                .with(
+                  message: 'Failed to create diff note file',
+                  'error.class': 'DiffNote::NoteDiffFileCreationError'
+                )
+
+              expect { subject.execute }
+                .to change(LegacyDiffNote, :count)
+                .and not_change(DiffNote, :count)
+            end
           end
         end
       end

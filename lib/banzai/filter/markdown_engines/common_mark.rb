@@ -42,11 +42,11 @@ module Banzai
 
         def initialize(context)
           @context = context
-          @renderer = Banzai::Renderer::CommonMark::HTML.new(options: render_options) if Feature.disabled?(:use_cmark_renderer)
+          @renderer = Banzai::Renderer::CommonMark::HTML.new(options: render_options) if Feature.disabled?(:use_cmark_renderer, default_enabled: :yaml)
         end
 
         def render(text)
-          if Feature.enabled?(:use_cmark_renderer)
+          if Feature.enabled?(:use_cmark_renderer, default_enabled: :yaml)
             CommonMarker.render_html(text, render_options, extensions)
           else
             doc = CommonMarker.render_doc(text, PARSE_OPTIONS, extensions)
@@ -58,7 +58,7 @@ module Banzai
         private
 
         def extensions
-          if Feature.enabled?(:use_cmark_renderer)
+          if Feature.enabled?(:use_cmark_renderer, default_enabled: :yaml)
             EXTENSIONS
           else
             EXTENSIONS + [
@@ -72,7 +72,7 @@ module Banzai
         end
 
         def render_options_no_sourcepos
-          Feature.enabled?(:use_cmark_renderer) ? RENDER_OPTIONS_C : RENDER_OPTIONS_RUBY
+          Feature.enabled?(:use_cmark_renderer, default_enabled: :yaml) ? RENDER_OPTIONS_C : RENDER_OPTIONS_RUBY
         end
 
         def render_options_sourcepos

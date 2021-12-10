@@ -61,6 +61,7 @@ export const STATUS_PAUSED = 'PAUSED';
 
 export const STATUS_ONLINE = 'ONLINE';
 export const STATUS_NOT_CONNECTED = 'NOT_CONNECTED';
+export const STATUS_NEVER_CONTACTED = 'NEVER_CONTACTED';
 export const STATUS_OFFLINE = 'OFFLINE';
 export const STATUS_STALE = 'STALE';
 

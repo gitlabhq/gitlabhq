@@ -1,43 +1,43 @@
-import $ from 'jquery';
 import createFlash from '~/flash';
+import { sanitize } from '~/lib/dompurify';
 import axios from '~/lib/utils/axios_utils';
+import { historyPushState } from '~/lib/utils/common_utils';
 import { __ } from '~/locale';
+import { GlTabsBehavior, TAB_SHOWN_EVENT } from '~/tabs';
 
 export default class Milestone {
   constructor() {
+    this.tabsEl = document.querySelector('.js-milestone-tabs');
+    this.glTabs = new GlTabsBehavior(this.tabsEl);
+    this.loadedTabs = new WeakSet();
+
     this.bindTabsSwitching();
     this.loadInitialTab();
   }
 
   bindTabsSwitching() {
-    return $('a[data-toggle="tab"]').on('show.bs.tab', (e) => {
-      const $target = $(e.target);
-
-      window.location.hash = $target.attr('href');
-      this.loadTab($target);
+    this.tabsEl.addEventListener(TAB_SHOWN_EVENT, (event) => {
+      const tab = event.target;
+      const { activeTabPanel } = event.detail;
+      historyPushState(tab.getAttribute('href'));
+      this.loadTab(tab, activeTabPanel);
     });
   }
 
   loadInitialTab() {
-    const $target = $(`.js-milestone-tabs a:not(.active)[href="${window.location.hash}"]`);
-
-    if ($target.length) {
-      $target.tab('show');
-    } else {
-      this.loadTab($('.js-milestone-tabs a.active'));
-    }
+    const tab = this.tabsEl.querySelector(`a[href="${window.location.hash}"]`);
+    this.glTabs.activateTab(tab || this.glTabs.activeTab);
   }
-  // eslint-disable-next-line class-methods-use-this
-  loadTab($target) {
-    const endpoint = $target.data('endpoint');
-    const tabElId = $target.attr('href');
+  loadTab(tab, tabPanel) {
+    const { endpoint } = tab.dataset;
 
-    if (endpoint && !$target.hasClass('is-loaded')) {
+    if (endpoint && !this.loadedTabs.has(tab)) {
       axios
         .get(endpoint)
         .then(({ data }) => {
-          $(tabElId).html(data.html);
-          $target.addClass('is-loaded');
+          // eslint-disable-next-line no-param-reassign
+          tabPanel.innerHTML = sanitize(data.html);
+          this.loadedTabs.add(tab);
         })
         .catch(() =>
           createFlash({

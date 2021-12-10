@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+databases = ActiveRecord::Tasks::DatabaseTasks.setup_initial_database_yaml
+
 namespace :gitlab do
   namespace :db do
     desc 'GitLab | DB | Manually insert schema migration version'
@@ -83,7 +85,7 @@ namespace :gitlab do
     desc 'GitLab | DB | Sets up EE specific database functionality'
 
     if Gitlab.ee?
-      task setup_ee: %w[geo:db:drop geo:db:create geo:db:schema:load geo:db:migrate]
+      task setup_ee: %w[db:drop:geo db:create:geo db:schema:load:geo db:migrate:geo]
     else
       task :setup_ee
     end
@@ -114,6 +116,19 @@ namespace :gitlab do
     # Inform Rake that custom tasks should be run every time rake db:schema:dump is run
     Rake::Task['db:schema:dump'].enhance do
       Rake::Task['gitlab:db:clean_structure_sql'].invoke
+    end
+
+    ActiveRecord::Tasks::DatabaseTasks.for_each(databases) do |name|
+      # Inform Rake that custom tasks should be run every time rake db:structure:dump is run
+      #
+      # Rails 6.1 deprecates db:structure:dump in favor of db:schema:dump
+      Rake::Task["db:structure:dump:#{name}"].enhance do
+        Rake::Task['gitlab:db:clean_structure_sql'].invoke
+      end
+
+      Rake::Task["db:schema:dump:#{name}"].enhance do
+        Rake::Task['gitlab:db:clean_structure_sql'].invoke
+      end
     end
 
     desc 'Create missing dynamic database partitions'

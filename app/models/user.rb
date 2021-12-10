@@ -204,7 +204,7 @@ class User < ApplicationRecord
   has_many :bulk_imports
 
   has_many :custom_attributes, class_name: 'UserCustomAttribute'
-  has_many :callouts, class_name: 'UserCallout'
+  has_many :callouts, class_name: 'Users::Callout'
   has_many :group_callouts, class_name: 'Users::GroupCallout'
   has_many :term_agreements
   belongs_to :accepted_term, class_name: 'ApplicationSetting::Term'
@@ -1947,7 +1947,7 @@ class User < ApplicationRecord
   end
 
   def find_or_initialize_callout(feature_name)
-    callouts.find_or_initialize_by(feature_name: ::UserCallout.feature_names[feature_name])
+    callouts.find_or_initialize_by(feature_name: ::Users::Callout.feature_names[feature_name])
   end
 
   def find_or_initialize_group_callout(feature_name, group_id)

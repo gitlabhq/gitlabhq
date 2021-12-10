@@ -5,13 +5,13 @@ module DependencyProxy
     extend ActiveSupport::Concern
 
     included do
-      before_action :verify_dependency_proxy_enabled!
+      before_action :verify_dependency_proxy_available!
       before_action :authorize_read_dependency_proxy!
     end
 
     private
 
-    def verify_dependency_proxy_enabled!
+    def verify_dependency_proxy_available!
       render_404 unless group&.dependency_proxy_feature_available?
     end
 

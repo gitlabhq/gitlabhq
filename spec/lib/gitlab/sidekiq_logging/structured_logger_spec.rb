@@ -272,12 +272,12 @@ RSpec.describe Gitlab::SidekiqLogging::StructuredLogger do
         expected_end_payload.merge(
           'db_duration_s' => a_value >= 0.1,
           'db_count' => a_value >= 1,
-          "db_replica_#{db_config_name}_count" => 0,
+          "db_#{db_config_name}_replica_count" => 0,
           'db_replica_duration_s' => a_value >= 0,
           'db_primary_count' => a_value >= 1,
-          "db_primary_#{db_config_name}_count" => a_value >= 1,
+          "db_#{db_config_name}_count" => a_value >= 1,
           'db_primary_duration_s' => a_value > 0,
-          "db_primary_#{db_config_name}_duration_s" => a_value > 0
+          "db_#{db_config_name}_duration_s" => a_value > 0
         )
       end
 

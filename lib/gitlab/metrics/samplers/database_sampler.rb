@@ -38,10 +38,24 @@ module Gitlab
         end
 
         def host_stats
+          connection_class_stats + replica_host_stats
+        end
+
+        def connection_class_stats
           Gitlab::Database.database_base_models.each_value.with_object([]) do |base_model, stats|
             next unless base_model.connected?
 
             stats << { labels: labels_for_class(base_model), stats: base_model.connection_pool.stat }
+          end
+        end
+
+        def replica_host_stats
+          Gitlab::Database::LoadBalancing.each_load_balancer.with_object([]) do |load_balancer, stats|
+            next if load_balancer.primary_only?
+
+            load_balancer.host_list.hosts.each do |host|
+              stats << { labels: labels_for_replica_host(load_balancer, host), stats: host.connection.pool.stat }
+            end
           end
         end
 
@@ -51,6 +65,15 @@ module Gitlab
             port: klass.connection_db_config.configuration_hash[:port],
             class: klass.to_s,
             db_config_name: klass.connection_db_config.name
+          }
+        end
+
+        def labels_for_replica_host(load_balancer, host)
+          {
+            host: host.host,
+            port: host.port,
+            class: load_balancer.configuration.primary_connection_specification_name,
+            db_config_name: Gitlab::Database.db_config_name(host.connection)
           }
         end
       end

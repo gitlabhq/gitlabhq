@@ -32,7 +32,6 @@ Gitlab/NamespacedClass:
   - app/controllers/sessions_controller.rb
   - app/controllers/snippets_controller.rb
   - app/controllers/uploads_controller.rb
-  - app/controllers/user_callouts_controller.rb
   - app/controllers/users_controller.rb
   - app/controllers/whats_new_controller.rb
   - app/finders/abuse_reports_finder.rb
@@ -351,7 +350,6 @@ Gitlab/NamespacedClass:
   - app/models/upload.rb
   - app/models/user.rb
   - app/models/user_agent_detail.rb
-  - app/models/user_callout.rb
   - app/models/user_canonical_email.rb
   - app/models/user_custom_attribute.rb
   - app/models/user_detail.rb

@@ -317,7 +317,7 @@ RSpec.describe Ci::RetryBuildService do
         expect(build).to be_processed
       end
 
-      context 'when build with deployment is retried' do
+      shared_examples_for 'when build with deployment is retried' do
         let!(:build) do
           create(:ci_build, :with_deployment, :deploy_to_production,
                  pipeline: pipeline, stage_id: stage.id, project: project)
@@ -336,7 +336,7 @@ RSpec.describe Ci::RetryBuildService do
         end
       end
 
-      context 'when build with dynamic environment is retried' do
+      shared_examples_for 'when build with dynamic environment is retried' do
         let_it_be(:other_developer) { create(:user).tap { |u| project.add_developer(other_developer) } }
 
         let(:environment_name) { 'review/$CI_COMMIT_REF_SLUG-$GITLAB_USER_ID' }
@@ -361,6 +361,18 @@ RSpec.describe Ci::RetryBuildService do
         it 'does not create a new environment' do
           expect { new_build }.not_to change { Environment.count }
         end
+      end
+
+      it_behaves_like 'when build with deployment is retried'
+      it_behaves_like 'when build with dynamic environment is retried'
+
+      context 'when create_deployment_in_separate_transaction feature flag is disabled' do
+        before do
+          stub_feature_flags(create_deployment_in_separate_transaction: false)
+        end
+
+        it_behaves_like 'when build with deployment is retried'
+        it_behaves_like 'when build with dynamic environment is retried'
       end
 
       context 'when build has needs' do

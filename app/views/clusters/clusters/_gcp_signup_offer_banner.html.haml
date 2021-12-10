@@ -1,5 +1,5 @@
 - link = link_to(s_('ClusterIntegration|sign up'), 'https://console.cloud.google.com/freetrial?utm_campaign=2018_cpanel&utm_source=gitlab&utm_medium=referral', target: '_blank', rel: 'noopener noreferrer')
-.gcp-signup-offer.gl-alert.gl-alert-info.gl-my-3{ role: 'alert', data: { feature_id: UserCalloutsHelper::GCP_SIGNUP_OFFER, dismiss_endpoint: user_callouts_path } }
+.gcp-signup-offer.gl-alert.gl-alert-info.gl-my-3{ role: 'alert', data: { feature_id: Users::CalloutsHelper::GCP_SIGNUP_OFFER, dismiss_endpoint: callouts_path } }
   .gl-alert-container
     %button.js-close.btn.gl-dismiss-btn.btn-default.btn-sm.gl-button.btn-default-tertiary.btn-icon{ type: 'button', 'aria-label' => _('Dismiss') }
       = sprite_icon('close', size: 16, css_class: 'gl-icon')

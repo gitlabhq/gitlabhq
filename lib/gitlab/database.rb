@@ -72,6 +72,10 @@ module Gitlab
       }.with_indifferent_access.freeze
     end
 
+    def self.all_database_names
+      DATABASE_NAMES
+    end
+
     # We configure the database connection pool size automatically based on the
     # configured concurrency. We also add some headroom, to make sure we don't
     # run out of connections when more threads besides the 'user-facing' ones

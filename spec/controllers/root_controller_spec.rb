@@ -142,8 +142,8 @@ RSpec.describe RootController do
 
         context 'without customize homepage banner' do
           before do
-            Users::DismissUserCalloutService.new(
-              container: nil, current_user: user, params: { feature_name: UserCalloutsHelper::CUSTOMIZE_HOMEPAGE }
+            Users::DismissCalloutService.new(
+              container: nil, current_user: user, params: { feature_name: Users::CalloutsHelper::CUSTOMIZE_HOMEPAGE }
             ).execute
           end
 

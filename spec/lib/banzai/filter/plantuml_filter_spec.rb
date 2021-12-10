@@ -9,7 +9,7 @@ RSpec.describe Banzai::Filter::PlantumlFilter do
     it 'replaces plantuml pre tag with img tag' do
       stub_application_setting(plantuml_enabled: true, plantuml_url: "http://localhost:8080")
 
-      input = if Feature.enabled?(:use_cmark_renderer)
+      input = if Feature.enabled?(:use_cmark_renderer, default_enabled: :yaml)
                 '<pre lang="plantuml"><code>Bob -> Sara : Hello</code></pre>'
               else
                 '<pre><code lang="plantuml">Bob -> Sara : Hello</code></pre>'
@@ -24,7 +24,7 @@ RSpec.describe Banzai::Filter::PlantumlFilter do
     it 'does not replace plantuml pre tag with img tag if disabled' do
       stub_application_setting(plantuml_enabled: false)
 
-      if Feature.enabled?(:use_cmark_renderer)
+      if Feature.enabled?(:use_cmark_renderer, default_enabled: :yaml)
         input = '<pre lang="plantuml"><code>Bob -> Sara : Hello</code></pre>'
         output = '<pre lang="plantuml"><code>Bob -&gt; Sara : Hello</code></pre>'
       else
@@ -40,7 +40,7 @@ RSpec.describe Banzai::Filter::PlantumlFilter do
     it 'does not replace plantuml pre tag with img tag if url is invalid' do
       stub_application_setting(plantuml_enabled: true, plantuml_url: "invalid")
 
-      input = if Feature.enabled?(:use_cmark_renderer)
+      input = if Feature.enabled?(:use_cmark_renderer, default_enabled: :yaml)
                 '<pre lang="plantuml"><code>Bob -> Sara : Hello</code></pre>'
               else
                 '<pre><code lang="plantuml">Bob -> Sara : Hello</code></pre>'

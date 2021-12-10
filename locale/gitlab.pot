@@ -5421,9 +5421,6 @@ msgstr ""
 msgid "BillingPlans|per user"
 msgstr ""
 
-msgid "BillingPlan|Contact sales"
-msgstr ""
-
 msgid "BillingPlan|Upgrade"
 msgstr ""
 
@@ -11087,6 +11084,9 @@ msgstr ""
 msgid "Date"
 msgstr ""
 
+msgid "Date merged"
+msgstr ""
+
 msgid "Date picker"
 msgstr ""
 
@@ -11568,9 +11568,6 @@ msgid "DependencyProxy|Image list"
 msgstr ""
 
 msgid "DependencyProxy|Storage settings"
-msgstr ""
-
-msgid "DependencyProxy|The Dependency Proxy is disabled. %{docLinkStart}Learn how to enable it%{docLinkEnd}."
 msgstr ""
 
 msgid "DependencyProxy|There are no images in the cache"
@@ -20187,7 +20184,7 @@ msgstr ""
 msgid "Job|Download"
 msgstr ""
 
-msgid "Job|Erase job log"
+msgid "Job|Erase job log and artifacts"
 msgstr ""
 
 msgid "Job|Job artifacts"
@@ -29916,6 +29913,9 @@ msgstr ""
 msgid "Resync"
 msgstr ""
 
+msgid "Retrieving the compliance report failed. Please refresh the page and try again."
+msgstr ""
+
 msgid "Retry"
 msgstr ""
 
@@ -29923,6 +29923,12 @@ msgid "Retry job"
 msgstr ""
 
 msgid "Retry migration"
+msgstr ""
+
+msgid "Retry the downstream pipeline"
+msgstr ""
+
+msgid "Retry the trigger job"
 msgstr ""
 
 msgid "Retry this job"
@@ -34764,6 +34770,9 @@ msgstr ""
 msgid "The compliance report captures merged changes that violate compliance best practices."
 msgstr ""
 
+msgid "The compliance report shows the merge request violations merged in protected environments."
+msgstr ""
+
 msgid "The connection will time out after %{timeout}. For repositories that take longer, use a clone/push combination."
 msgstr ""
 
@@ -35892,6 +35901,9 @@ msgid "This job requires a manual action"
 msgstr ""
 
 msgid "This job requires manual intervention to start. Before starting this job, you can add variables below for last-minute configuration changes."
+msgstr ""
+
+msgid "This job triggers a downstream pipeline"
 msgstr ""
 
 msgid "This job will automatically run after its timer finishes. Often they are used for incremental roll-out deploys to production environments. When unscheduled it converts into a manual action."
@@ -38599,6 +38611,9 @@ msgstr ""
 msgid "View documentation"
 msgstr ""
 
+msgid "View downstream pipeline"
+msgstr ""
+
 msgid "View eligible approvers"
 msgstr ""
 
@@ -38724,6 +38739,9 @@ msgid "Viewed"
 msgstr ""
 
 msgid "Viewing commit"
+msgstr ""
+
+msgid "Violation"
 msgstr ""
 
 msgid "Visibility"

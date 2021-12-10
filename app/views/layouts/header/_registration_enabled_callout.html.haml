@@ -4,7 +4,7 @@
   title: _('Open registration is enabled on your instance.'),
   variant: :warning,
   alert_class: 'js-registration-enabled-callout',
-  alert_data: { feature_id: UserCalloutsHelper::REGISTRATION_ENABLED_CALLOUT, dismiss_endpoint: user_callouts_path },
+  alert_data: { feature_id: Users::CalloutsHelper::REGISTRATION_ENABLED_CALLOUT, dismiss_endpoint: callouts_path },
   close_button_data: { testid: 'close-registration-enabled-callout' } do
   .gl-alert-body
     = html_escape(_('%{anchorOpen}Learn more%{anchorClose} about how you can customize / disable registration on your instance.')) % { anchorOpen: "<a href=\"#{help_page_path('user/admin_area/settings/sign_up_restrictions')}\" class=\"gl-link\">".html_safe, anchorClose: '</a>'.html_safe }

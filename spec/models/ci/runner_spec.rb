@@ -753,7 +753,7 @@ RSpec.describe Ci::Runner do
           runner.created_at = 1.day.ago
         end
 
-        it { is_expected.to eq(:not_connected) }
+        it { is_expected.to eq(:never_contacted) }
       end
     end
 
