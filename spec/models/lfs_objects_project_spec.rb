@@ -25,6 +25,28 @@ RSpec.describe LfsObjectsProject do
     end
   end
 
+  describe '#link_to_project!' do
+    it 'does not throw error when duplicate exists' do
+      subject
+
+      expect do
+        result = described_class.link_to_project!(subject.lfs_object, subject.project)
+        expect(result).to be_a(LfsObjectsProject)
+      end.not_to change { described_class.count }
+    end
+
+    it 'upserts a new entry and updates the project cache' do
+      new_project = create(:project)
+
+      allow(ProjectCacheWorker).to receive(:perform_async).and_call_original
+      expect(ProjectCacheWorker).to receive(:perform_async).with(new_project.id, [], [:lfs_objects_size])
+      expect { described_class.link_to_project!(subject.lfs_object, new_project) }
+        .to change { described_class.count }
+
+      expect(described_class.find_by(lfs_object_id: subject.lfs_object.id, project_id: new_project.id)).to be_present
+    end
+  end
+
   describe '#update_project_statistics' do
     it 'updates project statistics when the object is added' do
       expect(ProjectCacheWorker).to receive(:perform_async)

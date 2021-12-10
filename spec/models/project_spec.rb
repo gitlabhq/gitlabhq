@@ -3581,6 +3581,29 @@ RSpec.describe Project, factory_default: :keep do
         expect(project.forks).to contain_exactly(forked_project)
       end
     end
+
+    describe '#lfs_object_oids_from_fork_source' do
+      let_it_be(:lfs_object) { create(:lfs_object) }
+      let_it_be(:another_lfs_object) { create(:lfs_object) }
+
+      let(:oids) { [lfs_object.oid, another_lfs_object.oid] }
+
+      context 'when fork has one of two LFS objects' do
+        before do
+          create(:lfs_objects_project, lfs_object: lfs_object, project: project)
+          create(:lfs_objects_project, lfs_object: another_lfs_object, project: forked_project)
+        end
+
+        it 'returns OIDs of owned LFS objects', :aggregate_failures do
+          expect(forked_project.lfs_objects_oids_from_fork_source(oids: oids)).to eq([lfs_object.oid])
+          expect(forked_project.lfs_objects_oids(oids: oids)).to eq([another_lfs_object.oid])
+        end
+
+        it 'returns empty when project is not a fork' do
+          expect(project.lfs_objects_oids_from_fork_source(oids: oids)).to eq([])
+        end
+      end
+    end
   end
 
   it_behaves_like 'can housekeep repository' do

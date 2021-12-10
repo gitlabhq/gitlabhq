@@ -899,9 +899,33 @@ RSpec.describe ProjectsController do
   describe '#transfer', :enable_admin_mode do
     render_views
 
-    let_it_be(:project, reload: true) { create(:project) }
+    let(:project) { create(:project) }
+
     let_it_be(:admin) { create(:admin) }
     let_it_be(:new_namespace) { create(:namespace) }
+
+    shared_examples 'project namespace is not changed' do |flash_message|
+      it 'project namespace is not changed' do
+        controller.instance_variable_set(:@project, project)
+        sign_in(admin)
+
+        old_namespace = project.namespace
+
+        put :transfer,
+            params: {
+              namespace_id: old_namespace.path,
+              new_namespace_id: new_namespace_id,
+              id: project.path
+            },
+            format: :js
+
+        project.reload
+
+        expect(project.namespace).to eq(old_namespace)
+        expect(response).to redirect_to(edit_project_path(project))
+        expect(flash[:alert]).to eq flash_message
+      end
+    end
 
     it 'updates namespace' do
       sign_in(admin)
@@ -921,26 +945,15 @@ RSpec.describe ProjectsController do
     end
 
     context 'when new namespace is empty' do
-      it 'project namespace is not changed' do
-        controller.instance_variable_set(:@project, project)
-        sign_in(admin)
+      let(:new_namespace_id) { nil }
 
-        old_namespace = project.namespace
+      it_behaves_like 'project namespace is not changed', s_('TransferProject|Please select a new namespace for your project.')
+    end
 
-        put :transfer,
-            params: {
-              namespace_id: old_namespace.path,
-              new_namespace_id: nil,
-              id: project.path
-            },
-            format: :js
+    context 'when new namespace is the same as the current namespace' do
+      let(:new_namespace_id) { project.namespace.id }
 
-        project.reload
-
-        expect(project.namespace).to eq(old_namespace)
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(flash[:alert]).to eq s_('TransferProject|Please select a new namespace for your project.')
-      end
+      it_behaves_like 'project namespace is not changed', s_('TransferProject|Project is already in this namespace.')
     end
   end
 

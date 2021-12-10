@@ -4,7 +4,7 @@ group: Workspace
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments"
 ---
 
-# Working with projects **(FREE)**
+# Manage projects **(FREE)**
 
 Most work in GitLab is done in a [project](../../user/project/index.md). Files and
 code are saved in projects, and most features are in the scope of projects.
@@ -16,7 +16,7 @@ To explore projects:
 1. On the top bar, select **Menu > Projects**.
 1. Select **Explore projects**.
 
-GitLab displays a list of projects, sorted by last updated date.
+The **Projects** page shows a list of projects, sorted by last updated date. 
 
 - To view projects with the most [stars](#star-a-project), select **Most stars**.
 - To view projects with the largest number of comments in the past month, select **Trending**.
@@ -26,14 +26,37 @@ The **Explore projects** tab is visible to unauthenticated users unless the
 [**Public** visibility level](../admin_area/settings/visibility_and_access_controls.md#restrict-visibility-levels)
 is restricted. Then the tab is visible only to signed-in users.
 
+### Who can view the **Projects** page
+
+When you select a project, the project landing page shows the project contents.
+
+For public projects, and members of internal and private projects
+with [permissions to view the project's code](../permissions.md#project-members-permissions),
+the project landing page shows:
+
+- A [`README` or index file](repository/index.md#readme-and-index-files).
+- A list of directories in the project's repository.
+
+For users without permission to view the project's code, the landing page shows:
+
+- The wiki homepage.
+- The list of issues in the project.
+
+### Access a project page with the project ID
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/53671) in GitLab 11.8.
+
+To access a project from the GitLab UI using the project ID,
+visit the `/projects/:id` URL in your browser or other tool accessing the project.
+
 ## Explore topics
 
-You can explore popular project topics available on GitLab. To explore project topics:
+To explore project topics:
 
 1. On the top bar, select **Menu > Projects**.
 1. Select **Explore topics**.
 
-GitLab displays a list of topics sorted by the number of associated projects.
+The **Projects** page shows list of topics sorted by the number of associated projects.
 To view projects associated with a topic, select a topic from the list.
 
 You can assign topics to a project on the [Project Settings page](settings/index.md#topics).
@@ -260,9 +283,8 @@ To add a star to a project:
 
 ## Delete a project
 
-After you delete a project, projects in personal namespaces are deleted immediately. You can
-[enable delayed project removal](../group/index.md#enable-delayed-project-deletion) to
-delay deletion of projects in a group.
+After you delete a project, projects in personal namespaces are deleted immediately. To delay deletion of projects in a group
+you can [enable delayed project removal](../group/index.md#enable-delayed-project-deletion).
 
 To delete a project:
 
@@ -299,56 +321,27 @@ To leave a project:
 on the project dashboard when a project is part of a group under a
 [group namespace](../group/index.md#namespaces).
 
-## Use your project as a Go package
+## Use a project as a Go package
 
-Any project can be used as a Go package. GitLab responds correctly to `go get`
-and `godoc.org` discovery requests, including the
-[`go-import`](https://golang.org/cmd/go/#hdr-Remote_import_paths) and
-[`go-source`](https://github.com/golang/gddo/wiki/Source-Code-Links) meta tags.
+Prerequisites:
 
-Private projects, including projects in subgroups, can be used as a Go package.
-These projects may require configuration to work correctly. GitLab responds correctly
-to `go get` discovery requests for projects that *are not* in subgroups,
-regardless of authentication or authorization.
-[Authentication](#authenticate-go-requests) is required to use a private project
-in a subgroup as a Go package. Otherwise, GitLab truncates the path for
-private projects in subgroups to the first two segments, causing `go get` to
-fail.
+- Contact your administrator to enable the [GitLab Go Proxy](../packages/go_proxy/index.md).
+- To use a private project in a subgroup as a Go package, you must [authenticate Go requests](#authenticate-go-requests-to-private-projects). Go requests that are not authenticated cause 
+`go get` to fail. You don't need to authenticate Go requests for projects that are not in subgroups.
 
-GitLab implements its own Go proxy. This feature must be enabled by an
-administrator and requires additional configuration. See [GitLab Go
-Proxy](../packages/go_proxy/index.md).
+To use a project as a Go package, use the `go get` and `godoc.org` discovery requests. You can use the meta tags:
 
-### Disable Go module features for private projects
+- [`go-import`](https://golang.org/cmd/go/#hdr-Remote_import_paths) 
+- [`go-source`](https://github.com/golang/gddo/wiki/Source-Code-Links)
 
-In Go 1.12 and later, Go queries module proxies and checksum databases in the
-process of [fetching a
-module](../../development/go_guide/dependencies.md#fetching). This can be
-selectively disabled with `GOPRIVATE` (disable both),
-[`GONOPROXY`](../../development/go_guide/dependencies.md#proxies) (disable proxy
-queries), and [`GONOSUMDB`](../../development/go_guide/dependencies.md#fetching)
-(disable checksum queries).
+### Authenticate Go requests to private projects
 
-`GOPRIVATE`, `GONOPROXY`, and `GONOSUMDB` are comma-separated lists of Go
-modules and Go module prefixes. For example,
-`GOPRIVATE=gitlab.example.com/my/private/project` disables queries for that
-one project, but `GOPRIVATE=gitlab.example.com` disables queries for *all*
-projects on GitLab.com. Go does not query module proxies if the module name or a
-prefix of it appears in `GOPRIVATE` or `GONOPROXY`. Go does not query checksum
-databases if the module name or a prefix of it appears in `GONOPRIVATE` or
-`GONOSUMDB`.
+Prerequisites:
 
-### Authenticate Go requests
+- Your GitLab instance must be accessible with HTTPS.
+- You must have a [personal access token](../profile/personal_access_tokens.md).
 
-To authenticate requests to private projects made by Go, use a [`.netrc`
-file](https://everything.curl.dev/usingcurl/netrc) and a [personal access
-token](../profile/personal_access_tokens.md) in the password field. **This only
-works if your GitLab instance can be accessed with HTTPS.** The `go` command
-does not transmit credentials over insecure connections. This authenticates
-all HTTPS requests made directly by Go, but does not authenticate requests made
-through Git.
-
-For example:
+To authenticate Go requests, create a [`.netrc`](https://everything.curl.dev/usingcurl/netrc) file with the following information:
 
 ```plaintext
 machine gitlab.example.com
@@ -356,98 +349,106 @@ login <gitlab_user_name>
 password <personal_access_token>
 ```
 
-NOTE:
 On Windows, Go reads `~/_netrc` instead of `~/.netrc`.
 
-### Authenticate Git fetches
+The `go` command does not transmit credentials over insecure connections. It authenticates
+HTTPS requests made by Go, but does not authenticate requests made
+through Git.
 
-If a module cannot be fetched from a proxy, Go falls back to using Git (for
-GitLab projects). Git uses `.netrc` to authenticate requests. You can also
-configure Git to either:
+### Authenticate Git requests
 
-- Embed specific credentials in the request URL.
-- Use SSH instead of HTTPS, as Go always uses HTTPS to fetch Git repositories.
+If Go cannot fetch a module from a proxy, it uses Git. Git uses a `.netrc` file to authenticate requests, but you can
+configure other authentication methods.
 
-```shell
-# Embed credentials in any request to GitLab.com:
-git config --global url."https://${user}:${personal_access_token}@gitlab.example.com".insteadOf "https://gitlab.example.com"
+Configure Git to either:
 
-# Use SSH instead of HTTPS:
-git config --global url."git@gitlab.example.com".insteadOf "https://gitlab.example.com"
-```
+- Embed credentials in the request URL:
+
+    ```shell
+    git config --global url."https://${user}:${personal_access_token}@gitlab.example.com".insteadOf "https://gitlab.example.com"
+    ```
+
+- Use SSH instead of HTTPS:
+
+    ```shell
+    git config --global url."git@gitlab.example.com".insteadOf "https://gitlab.example.com"
+    ```
+
+### Disable Go module fetching for private projects
+
+To [fetch modules or packages](../../development/go_guide/dependencies.md#fetching), Go uses
+the [environment variables](../../development/go_guide/dependencies.md#proxies):
+
+- `GOPRIVATE`
+- `GONOPROXY`
+- `GONOSUMDB`
+
+To disable fetching:
+
+1. Disable `GOPRIVATE`:
+    - To disable queries for one project, disable `GOPRIVATE=gitlab.example.com/my/private/project`.
+    - To disable queries for all projects on GitLab.com, disable `GOPRIVATE=gitlab.example.com`.
+1. Disable proxy queries in `GONOPROXY`.
+1. Disable checksum queries in `GONOSUMDB`.
+
+- If the module name or its prefix is in `GOPRIVATE` or `GONOPROXY`, Go does not query module
+proxies.
+- If the module name or its prefix is in `GONOPRIVATE` or `GONOSUMDB`, Go does not query
+Checksum databases.
 
 ### Fetch Go modules from Geo secondary sites
 
-As Go modules are stored in Git repositories, you can use the [Geo](../../administration/geo/index.md)
-feature that allows Git repositories to be accessed on the secondary Geo servers.
+Use [Geo](../../administration/geo/index.md) to access Git repositories that contain Go modules
+on secondary Geo servers.
 
-In the following examples, the primary's site domain name is `gitlab.example.com`,
-and the secondary's is `gitlab-secondary.example.com`.
+You can use SSH or HTTP to access the Geo secondary server.
 
-`go get` will initially generate some HTTP traffic to the primary, but when the module
-download commences, the `insteadOf` configuration sends the traffic to the secondary.
+#### Use SSH to access the Geo secondary server
 
-#### Use SSH to access the Geo secondary
-
-To fetch Go modules from the secondary using SSH:
+To access the Geo secondary server with SSH:
 
 1. Reconfigure Git on the client to send traffic for the primary to the secondary:
 
-   ```plaintext
+   ```shell
    git config --global url."git@gitlab-secondary.example.com".insteadOf "https://gitlab.example.com"
    git config --global url."git@gitlab-secondary.example.com".insteadOf "http://gitlab.example.com"
    ```
 
-1. Ensure the client is set up for SSH access to GitLab repositories. This can be tested on the primary,
-   and GitLab will replicate the public key to the secondary.
+    - For `gitlab.example.com`, use the primary site domain name.
+    - For `gitlab-secondary.example.com`, use the secondary site domain name.
+
+1. Ensure the client is set up for SSH access to GitLab repositories. You can test this on the primary,
+   and GitLab replicates the public key to the secondary.
+
+The `go get` request generates HTTP traffic to the primary Geo server. When the module
+download starts, the `insteadOf` configuration sends the traffic to the secondary Geo server.
 
 #### Use HTTP to access the Geo secondary
 
-Using HTTP to fetch Go modules does not work with CI/CD job tokens, only with
-persistent access tokens that are replicated to the secondary.
+You must use persistent access tokens that replicate to the secondary server. You cannot use
+CI/CD job tokens to fetch Go modules with HTTP.
 
-To fetch Go modules from the secondary using HTTP:
+To access the Geo secondary server with HTTP:
 
-1. Put in place a Git `insteadOf` redirect on the client:
+1. Add a Git `insteadOf` redirect on the client:
 
-   ```plaintext
+   ```shell
    git config --global url."https://gitlab-secondary.example.com".insteadOf "https://gitlab.example.com"
    ```
 
-1. Generate a [personal access token](../profile/personal_access_tokens.md) and
-   provide those credentials in the client's `~/.netrc` file:
+   - For `gitlab.example.com`, use the primary site domain name.
+   - For `gitlab-secondary.example.com`, use the secondary site domain name.
 
-   ```plaintext
+1. Generate a [personal access token](../profile/personal_access_tokens.md) and
+   add the credentials in the client's `~/.netrc` file:
+
+   ```shell
    machine gitlab.example.com login USERNAME password TOKEN
    machine gitlab-secondary.example.com login USERNAME password TOKEN
    ```
 
-## Access project page with project ID
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/53671) in GitLab 11.8.
-
-To quickly access a project from the GitLab UI using the project ID,
-visit the `/projects/:id` URL in your browser or other tool accessing the project.
-
-## Project's landing page
-
-The project's landing page shows different information depending on
-the project's visibility settings and user permissions.
-
-For public projects, and to members of internal and private projects
-with [permissions to view the project's code](../permissions.md#project-members-permissions):
-
-- The content of a
-  [`README` or an index file](repository/index.md#readme-and-index-files)
-  is displayed (if any), followed by the list of directories in the
-  project's repository.
-- If the project doesn't contain either of these files, the
-  visitor sees the list of files and directories of the repository.
-
-For users without permissions to view the project's code, GitLab displays:
-
-- The wiki homepage, if any.
-- The list of issues in the project.
+The `go get` request generates HTTP traffic to the primary Geo server. When the module
+download starts, the `insteadOf` configuration sends the traffic to the secondary Geo server.
 
 ## Related topics
 

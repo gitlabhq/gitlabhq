@@ -119,7 +119,10 @@ class ProjectsController < Projects::ApplicationController
 
     if @project.errors[:new_namespace].present?
       flash[:alert] = @project.errors[:new_namespace].first
+      return redirect_to edit_project_path(@project)
     end
+
+    render_edit
   end
   # rubocop: enable CodeReuse/ActiveRecord
 

@@ -1569,6 +1569,12 @@ class Project < ApplicationRecord
     oids(lfs_objects, oids: oids)
   end
 
+  def lfs_objects_oids_from_fork_source(oids: [])
+    return [] unless forked?
+
+    oids(fork_source.lfs_objects, oids: oids)
+  end
+
   def personal?
     !group
   end

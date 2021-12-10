@@ -76,7 +76,10 @@ module Repositories
       existing_oids = project.lfs_objects_oids(oids: objects_oids)
 
       objects.each do |object|
-        object[:actions] = upload_actions(object) unless existing_oids.include?(object[:oid])
+        next if existing_oids.include?(object[:oid])
+        next if should_auto_link? && oids_from_fork.include?(object[:oid]) && link_to_project!(object)
+
+        object[:actions] = upload_actions(object)
       end
 
       objects
@@ -149,6 +152,26 @@ module Repositories
       return unless user
 
       Gitlab::LfsToken.new(user).basic_encoding
+    end
+
+    def should_auto_link?
+      return false unless Feature.enabled?(:lfs_auto_link_fork_source, project)
+      return false unless project.forked?
+
+      # Sanity check in case for some reason the user doesn't have access to the parent
+      can?(user, :download_code, project.fork_source)
+    end
+
+    def oids_from_fork
+      @oids_from_fork ||= project.lfs_objects_oids_from_fork_source(oids: objects_oids)
+    end
+
+    def link_to_project!(object)
+      lfs_object = LfsObject.for_oid_and_size(object[:oid], object[:size])
+
+      return unless lfs_object
+
+      LfsObjectsProject.link_to_project!(lfs_object, project)
     end
   end
 end

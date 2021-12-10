@@ -11,11 +11,11 @@
 variables:
     FUZZAPI_VERSION: "1"
     SECURE_ANALYZERS_PREFIX: "registry.gitlab.com/gitlab-org/security-products/analyzers"
-    FUZZAPI_IMAGE: ${SECURE_ANALYZERS_PREFIX}/api-fuzzing:${FUZZAPI_VERSION}
+    FUZZAPI_IMAGE: api-fuzzing
 
 apifuzzer_fuzz:
     stage: fuzz
-    image: $FUZZAPI_IMAGE
+    image: $SECURE_ANALYZERS_PREFIX/$FUZZAPI_IMAGE:$FUZZAPI_VERSION
     allow_failure: true
     rules:
         - if: $API_FUZZING_DISABLED

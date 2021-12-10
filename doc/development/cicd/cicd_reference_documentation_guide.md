@@ -9,14 +9,14 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 The CI/CD YAML reference uses a standard style to make it easier to use and update.
 
 The reference information should be kept as simple as possible, and expanded details
-and examples documented in a separate page.
+and examples should be documented on other pages.
 
 ## YAML reference structure
 
 Every YAML keyword must have its own section in the reference. The sections should
 be nested so that the keywords follow a logical tree structure. For example:
 
-```plaintext
+```markdown
 ### `artifacts`
 #### `artifacts:name`
 #### `artifacts:paths`
@@ -27,128 +27,127 @@ be nested so that the keywords follow a logical tree structure. For example:
 
 ## YAML reference style
 
-Each keyword entry in the reference should use the following style:
+Each keyword entry in the reference:
 
-````markdown
-### `keyword-name`
+- Must have a simple introductory section. The introduction should give the fundamental
+  information needed to use the keyword. Advanced details and tasks should be in
+  feature pages, not the reference page.
 
-> Version information
+- Must use the keyword name as the title, for example:
 
-Keyword description and main details.
+  ```markdown
+  ### `artifacts`
+  ```
 
-**Keyword type**:
+- Should include the following sections:
+  - [Keyword type](#keyword-type)
+  - [Possible inputs](#possible-inputs)
+  - [Example of `keyword-name`](#example-of-keyword-name)
+- (Optional) Can also include the following sections when needed:
+  - [Additional details](#additional-details)
+  - [Related topics](#related-topics)
 
+The keyword name must always be in backticks without a final `:`, like `artifacts`, not `artifacts:`.
+If it is a subkey of another keyword, write out all the subkeys to the "parent" key the first time it
+is used, like `artifacts:reports:dast`. Afterwards, you can use just the subkey alone, like `dast`.
+
+## Keyword type
+
+The keyword can be either a job or global keyword. If it can be used in a `default`
+section, make not of that as well, for example:
+
+- `**Keyword type**: Global keyword.`
+- `**Keyword type**: Job keyword. You can use it only as part of a job.`
+- ``**Keyword type**: Job keyword. You can use it only as part of a job or in the [`default:` section](#default).``
+
+### Possible inputs
+
+List all the possible inputs, and any extra details about the inputs, such as defaults
+or changes due to different GitLab versions, for example:
+
+```markdown
 **Possible inputs**:
 
-**Example of `keyword-name`**:
-
-(optional) In this example...
-
-(optional) **Additional details**:
-
-- List of extra details.
-
-(optional) **Related topics**:
-
-- List of links to topics related to the keyword.
-````
-
-- ``### `keyword-name` ``: The keyword name must always be in backticks.
-  If it is a subkey of another keyword, write out all the keywords, with each separated
-  by `:`, for example: `artifacts:reports:dast`.
-
-- ``> Version information``: The [version history details](../documentation/styleguide/index.md#version-text-in-the-version-history).
-  If the keyword is feature flagged, see the [feature flag documentation guide](../documentation/feature_flags.md)
-  as well.
-
-- `Keyword description and main details.`: A simple description of the keyword, and
-  how to use it. Additional use cases and benefits should be added to a page outside
-  the reference document. Link to that document in this section.
-
-- `**Keyword type**:`: Most keywords are defined at the job level, like `script`,
-  or at the pipeline level, like `stages`. Add the appropriate line:
-
-  - `**Keyword type**: Job keyword. You can use it only as part of a job.`
-  - `**Keyword type**: Pipeline keyword. You cannot use it as part of a job.`
-
-  If a keyword can be used at both the job and pipeline level, like `variables`,
-  explain it in detail instead of using the pre-written lines above.
-
-- `**Possible inputs**:`: Explain in detail which inputs the keyword can accept.
-  You can add the details in a sentence, paragraph, or list.
-
-- ``**Example of `keyword-name`**:``: An example configuration that uses the keyword.
-  Do not add extra keywords that are not required to understand the behavior.
-
-- (optional) `In this example...`: If the example needs extra details,
-  add the clarification text below the example.
-
-- (optional) `**Additional details**:` If there are any caveats or extra details you
-  want to document along with the keyword, add each one as a list item here.
-
-- (optional) `**Related topics**:` If there are any other keywords or pages that
-  relate to this keyword, add these links as list items here.
-
-### YAML reference style example
-
-See the [`only:changes` / `except:changes`](../../ci/yaml/index.md#onlychanges--exceptchanges)
-documentation for an example of the YAML reference style. The following example is a
-shortened version of that documentation's Markdown:
-
-````markdown
-#### `only:changes` / `except:changes`
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/19232) in GitLab 11.4.
-
-Use the `changes` keyword with `only` to run a job, or with `except` to skip a job,
-when a Git push event modifies a file.
-
-Use `changes` in pipelines with the following refs:
-
-- `branches`
-- `external_pull_requests`
-- `merge_requests` (see additional details about [using `only:changes` with pipelines for merge requests](../jobs/job_control.md#use-onlychanges-with-pipelines-for-merge-requests))
-
-**Keyword type**: Job keyword. You can use it only as part of a job.
-
-**Possible inputs**: An array including any number of:
-
-- Paths to files.
-- Wildcard paths for single directories, for example `path/to/directory/*`, or a directory
-  and all its subdirectories, for example `path/to/directory/**/*`.
-
-**Example of `only:changes`**:
-
-```yaml
-docker build:
-  script: docker build -t my-image:$CI_COMMIT_REF_SLUG .
-  only:
-    refs:
-      - branches
-    changes:
-      - Dockerfile
-      - docker/scripts/*
-      - dockerfiles/**/*
+- `true` (default if not defined) or `false`.
 ```
 
-In this example, `docker build` only runs in branch pipelines, and only if at least one of
-these files changed:
+```markdown
+**Possible inputs**:
 
-- `Dockerfile`.
-- Any file in `docker/scripts`
-- Any file in `dockerfiles/` or any of its subdirectories.
+- A single exit code.
+- An array of exit codes.
+```
 
+```markdown
+**Possible inputs**:
+
+- A string with the long description.
+- The path to a file that contains the description. Introduced in [GitLab 13.7](https://gitlab.com/gitlab-org/release-cli/-/merge_requests/67).
+  - The file location must be relative to the project directory (`$CI_PROJECT_DIR`).
+  - If the file is a symbolic link, it must be in the `$CI_PROJECT_DIR`.
+  - The `./path/to/file` and filename can't contain spaces.
+```
+
+### Example of `keyword-name`
+
+An example of the keyword. Use the minimum number of other keywords necessary
+to make the example valid. If the example needs explanation, add it after the example,
+for example:
+
+````markdown
+**Example of `dast`**:
+
+```yaml
+stages:
+  - build
+  - dast
+
+include:
+  - template: DAST.gitlab-ci.yml
+
+dast:
+  dast_configuration:
+    site_profile: "Example Co"
+    scanner_profile: "Quick Passive Test"
+```
+
+In this example, the `dast` job extends the `dast` configuration added with the `include:` keyword
+to select a specific site profile and scanner profile.
+````
+
+### Additional details
+
+The additional details should be an unordered list of extra information that is
+useful to know, but not important enough to put in the introduction. This information
+can include changes introduced in different GitLab versions. For example:
+
+```markdown
 **Additional details**:
 
-- If you use refs other than `branches`, `external_pull_requests`, or `merge_requests`,
-  `changes` can't determine if a given file is new or old and always returns `true`.
-- If you use `only: changes` with other refs, jobs ignore the changes and always run.
-- If you use `except: changes` with other refs, jobs ignore the changes and never run.
+- The expiration time period begins when the artifact is uploaded and stored on GitLab.
+  If the expiry time is not defined, it defaults to the [instance wide setting](../../user/admin_area/settings/continuous_integration.md#default-artifacts-expiration).
+- To override the expiration date and protect artifacts from being automatically deleted:
+  - Select **Keep** on the job page.
+  - [In GitLab 13.3 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/22761), set the value of
+    `expire_in` to `never`.
+```
 
+### Related topics
+
+The related topics should be an unordered list of crosslinks to related pages, including:
+
+- Specific tasks that you can accomplish with the keyword.
+- Advanced examples of the keyword.
+- Other related keywords that can be used together with this keyword.
+
+For example:
+
+```markdown
 **Related topics**:
 
-- [`only: changes` and `except: changes` examples](../jobs/job_control.md#onlychanges--exceptchanges-examples).
-- If you use `changes` with [only allow merge requests to be merged if the pipeline succeeds](../../user/project/merge_requests/merge_when_pipeline_succeeds.md#only-allow-merge-requests-to-be-merged-if-the-pipeline-succeeds),
-  you should [also use `only:merge_requests`](../jobs/job_control.md#use-onlychanges-with-pipelines-for-merge-requests).
-- Use `changes` with [scheduled pipelines](../jobs/job_control.md#use-onlychanges-with-scheduled-pipelines).
-````
+- You can specify a [fallback cache key](../caching/index.md#use-a-fallback-cache-key)
+  to use if the specified `cache:key` is not found.
+- You can [use multiple cache keys](../caching/index.md#use-multiple-caches) in a single job.
+- See the [common `cache` use cases](../caching/index.md#common-use-cases-for-caches) for more
+  `cache:key` examples.
+```

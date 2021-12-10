@@ -4,147 +4,227 @@ group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Managing issues **(FREE)**
+# Manage issues **(FREE)**
 
 [GitLab Issues](index.md) are the fundamental medium for collaborating on ideas and
 planning work in GitLab.
 
-Key actions for issues include:
+## Create an issue
 
-- [Creating issues](#create-a-new-issue)
-- [Moving issues](#moving-issues)
-- [Closing issues](#closing-issues)
-- [Deleting issues](#deleting-issues)
-- [Promoting issues](#promote-an-issue-to-an-epic) **(PREMIUM)**
-
-## Create a new issue
-
-When you create a new issue, you are prompted to enter the fields of the issue.
+When you create an issue, you are prompted to enter the fields of the issue.
 If you know the values you want to assign to an issue, you can use
 [quick actions](../quick_actions.md) to enter them.
 
-While creating an issue, you can associate it to an existing epic from current group by
-selecting it using **Epic** dropdown.
+You can create an issue in many ways in GitLab:
 
-### Accessing the New Issue form
+- [From a project](#from-a-project)
+- [From a group](#from-a-group)
+- [From another issue](#from-another-issue)
+- [From an issue board](#from-an-issue-board)
+- [By sending an email](#by-sending-an-email)
+- Using a URL with prefilled fields
+- [Using Service Desk](#using-service-desk)
 
-There are many ways to get to the New Issue form from a project's page:
+### From a project
 
-- Navigate to your **Project's Dashboard** > **Issues** > **New Issue**:
+Prerequisites:
 
-  ![New issue from the issue list view](img/new_issue_from_tracker_list.png)
+- You must have at least the [Guest role](../../permissions.md) for the project.
 
-- From an **open issue** in your project, click the vertical ellipsis (**{ellipsis_v}**) button
-  to open a dropdown menu, and then click **New Issue** to create a new issue in the same project:
+To create an issue:
 
-  ![New issue from an open issue](img/new_issue_from_open_issue_v13_6.png)
+1. On the top bar, select **Menu > Projects** and find your project.
+1. Either:
 
-- From your **Project's Dashboard**, click the plus sign (**+**) to open a dropdown
-  menu with a few options. Select **New Issue** to create an issue in that project:
+   - On the left sidebar, select **Issues**, and then, in the top right corner, select **New issue**.
+   - On the top bar, select the plus sign (**{plus-square}**) and then, under **This project**,
+     select **New issue**.
 
-  ![New issue from a project's dashboard](img/new_issue_from_projects_dashboard.png)
+1. Complete the [fields](#fields-in-the-new-issue-form).
+1. Select **Create issue**.
 
-- From an **issue board**, create a new issue by clicking on the plus sign (**+**) at the top of a list.
-  It opens a new issue for that project, pre-labeled with its respective list.
+The newly created issue opens.
 
-  ![From the issue board](img/new_issue_from_issue_board.png)
+### From a group
 
-### Elements of the New Issue form
+Issues belong to projects, but when you're in a group, you can access and create issues that belong
+to the projects in the group.
 
-> Ability to add the new issue to an epic [was introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13847) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.1.
+Prerequisites:
 
-![New issue from the issues list](img/new_issue_v13_1.png)
+- You must have at least the [Guest role](../../permissions.md) for a project in the group.
 
-When you're creating a new issue, these are the fields you can fill in:
+To create an issue from a group:
 
-- Title
-- Description
-- Checkbox to make the issue [confidential](confidential_issues.md)
-- Assignee
-- Weight
-- [Epic](../../group/epics/index.md)
-- Due date
-- Milestone
-- Labels
-
-### New issue from the group-level issue tracker
-
-To visit the issue tracker for all projects in your group:
-
-1. Go to the group dashboard.
+1. On the top bar, select **Menu > Groups** and find your group.
 1. On the left sidebar, select **Issues**.
-1. In the top-right, select the **Select project to create issue** button.
+1. In the top right corner, select **Select project to create issue**.
 1. Select the project you'd like to create an issue for. The button now reflects the selected
    project.
-1. Select the button to create an issue in the selected project.
+1. Select **New issue in `<project name>`**.
+1. Complete the [fields](#fields-in-the-new-issue-form).
+1. Select **Create issue**.
 
-![Select project to create issue](img/select_project_from_group_level_issue_tracker_v13_11.png)
+The newly created issue opens.
 
 The project you selected most recently becomes the default for your next visit.
-This should save you a lot of time and clicks, if you mostly create issues for the same project.
+This can save you a lot of time and clicks, if you mostly create issues for the same project.
 
-### New issue via Service Desk
+### From another issue
 
-Enable [Service Desk](../service_desk.md) for your project and offer email support.
-Now, when your customer sends a new email, a new issue can be created in
-the appropriate project and followed up from there.
+> New issue becoming linked to the issue of origin [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68226) in GitLab 14.3.
 
-### New issue via email
+You can create a new issue from an existing one. The two issues can then be marked as related.
 
-A link to **Email a new issue to this project** is displayed at the bottom of a project's
-**Issues List** page. The link is shown only if your GitLab instance has [incoming email](../../../administration/incoming_email.md)
-configured and there is at least one issue in the issue list.
+Prerequisites:
 
-![Bottom of a project issues page](img/new_issue_from_email.png)
+- You must have at least the [Guest role](../../permissions.md) for the project.
 
-When you click this link, an email address is generated and displayed, which should be used
-by **you only**, to create issues in this project. You can save this address as a
-contact in your email client for quick access.
+To create an issue from another issue:
+
+1. In an existing issue, select the vertical ellipsis (**{ellipsis_v}**).
+1. Select **New issue**.
+1. Complete the [fields](#fields-in-the-new-issue-form).
+   The new issue's description is prefilled with `Related to #123`, where `123` is the ID of the
+   issue of origin. If you keep this mention in the description, the two issues become
+   [linked](related_issues.md).
+1. Select **Create issue**.
+
+The newly created issue opens.
+
+### From an issue board
+
+You can create a new issue from an [issue board](../issue_board.md).
+
+Prerequisites:
+
+- You must have at least the [Guest role](../../permissions.md) for the project.
+
+To create an issue from a project issue board:
+
+1. On the top bar, select **Menu > Projects** and find your project.
+1. Select **Issues > Boards**.
+1. At the top of a board list, select **New issue** (**{plus-square}**).
+1. Enter the issue's title.
+1. Select **Create issue**.
+
+To create an issue from a group issue board:
+
+1. On the top bar, select **Menu > Groups** and find your group.
+1. Select **Issues > Boards**.
+1. At the top of a board list, select **New issue** (**{plus-square}**).
+1. Enter the issue's title.
+1. Under **Projects**, select the project in the group that the issue should belong to.
+1. Select **Create issue**.
+
+The issue is created and shows up in the board list. It shares the list's characteristic, so, for
+example, if the list is scoped to a label `Frontend`, the new issue also has this label.
+
+### By sending an email
+
+> Generated email address format changed in GitLab 11.7.
+> The older format is still supported, so existing aliases and contacts still work.
+
+You can send an email to create an issue in a project on the project's
+**Issues List** page.
+
+Prerequisites:
+
+- Your GitLab instance must have [incoming email](../../../administration/incoming_email.md)
+  configured.
+- There must be at least one issue in the issue list.
+- You must have at least the [Guest role](../../permissions.md) for the project.
+
+To email an issue to a project:
+
+1. On the top bar, select **Menu > Projects** and find your project.
+1. Select **Issues**.
+1. At the bottom of the page, select **Email a new issue to this project**.
+1. To copy the email address, select **Copy** (**{copy-to-clipboard}**).
+1. From your email client, send an email to this address.
+   The subject is used as the title of the new issue, and the email body becomes the description.
+   You can use [Markdown](../../markdown.md) and [quick actions](../quick_actions.md).
+
+A new issue is created, with your user as the author.
+You can save this address as a contact in your email client to use it again.
 
 WARNING:
-This is a private email address, generated just for you. **Keep it to yourself**,
-as anyone who knows it can create issues or merge requests as if they
-were you. If the address is compromised, or you want to regenerate it,
-click **Email a new issue to this project**, followed by **reset it**.
+The email address you see is a private email address, generated just for you.
+**Keep it to yourself**, because anyone who knows it can create issues or merge requests as if they
+were you.
 
-Sending an email to this address creates a new issue associated with your account for
-this project, where:
+To regenerate the email address:
 
-- The email subject becomes the issue title.
-- The email body becomes the issue description.
-- [Markdown](../../markdown.md) and [quick actions](../quick_actions.md) are supported.
+1. On the issues list, select **Email a new issue to this project**.
+1. Select **reset this token**.
 
-NOTE:
-In GitLab 11.7, we updated the format of the generated email address. However the
-older format is still supported, allowing existing aliases or contacts to continue working.
-
-### New issue via URL with prefilled fields
+### Using a URL with prefilled values
 
 To link directly to the new issue page with prefilled fields, use query
 string parameters in a URL. You can embed a URL in an external
-HTML page to create issues with certain
-fields prefilled.
+HTML page to create issues with certain fields prefilled.
 
-| Field                | URL Parameter Name    | Notes                                                 |
-|----------------------|-----------------------|-------------------------------------------------------|
-| title                | `issue[title]`        |                                                       |
-| description          | `issue[description]`  | Cannot be used at the same time as `issuable_template`. |
-| description template | `issuable_template`   | Cannot be used at the same time as `issue[description]`.  |
-| issue type           | `issue[issue_type]`   | Either `incident` or `issue`.                         |
-| confidential         | `issue[confidential]` | Parameter value must be `true` to set to confidential. |
+| Field                | URL parameter         | Notes                                                                                                                           |
+| -------------------- | --------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| Title                | `issue[title]`        | Must be [URL-encoded](../../../api/index.md#namespaced-path-encoding).                                                          |
+| Issue type           | `issue[issue_type]`   | Either `incident` or `issue`.                                                                                                   |
+| Description template | `issuable_template`   | Cannot be used at the same time as `issue[description]`. Must be [URL-encoded](../../../api/index.md#namespaced-path-encoding). |
+| Description          | `issue[description]`  | Cannot be used at the same time as `issuable_template`. Must be [URL-encoded](../../../api/index.md#namespaced-path-encoding).  |
+| Confidential         | `issue[confidential]` | If `true`, the issue is marked as confidential.                                                                                 |
 
-Follow these examples to form your new issue URL with prefilled fields.
+Adapt these examples to form your new issue URL with prefilled fields.
+To create an issue in the GitLab project:
 
-- For a new issue in the GitLab Community Edition project with a pre-filled title
-  and a pre-filled description, the URL would be `https://gitlab.com/gitlab-org/gitlab-foss/-/issues/new?issue[title]=Validate%20new%20concept&issue[description]=Research%20idea`
-- For a new issue in the GitLab Community Edition project with a pre-filled title
-  and a pre-filled description template, the URL would be `https://gitlab.com/gitlab-org/gitlab-foss/-/issues/new?issue[title]=Validate%20new%20concept&issuable_template=Research%20proposal`
-- For a new issue in the GitLab Community Edition project with a pre-filled title,
-  a pre-filled description, and the confidential flag set, the URL would be `https://gitlab.com/gitlab-org/gitlab-foss/-/issues/new?issue[title]=Validate%20new%20concept&issue[description]=Research%20idea&issue[confidential]=true`
+- With a prefilled title and description:
+
+  ```plaintext
+  https://gitlab.com/gitlab-org/gitlab/-/issues/new?issue[title]=Whoa%2C%20we%27re%20half-way%20there&issue[description]=Whoa%2C%20livin%27%20in%20a%20URL
+  ```
+
+- With a prefilled title and description template:
+
+  ```plaintext
+  https://gitlab.com/gitlab-org/gitlab/-/issues/new?issue[title]=Validate%20new%20concept&issuable_template=Feature%20Proposal%20-%20basic
+  ```
+
+- With a prefilled title, description, and marked as confidential:
+
+  ```plaintext
+  https://gitlab.com/gitlab-org/gitlab/-/issues/new?issue[title]=Validate%20new%20concept&issue[description]=Research%20idea&issue[confidential]=true
+  ```
+
+### Using Service Desk
+
+To offer email support, enable [Service Desk](../service_desk.md) for your project.
+
+Now, when your customer sends a new email, a new issue can be created in
+the appropriate project and followed up from there.
+
+### Fields in the new issue form
+
+> Adding the new issue to an epic [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13847) in GitLab 13.1.
+
+When you're creating a new issue, you can complete the following fields:
+
+- Title
+- Type: either issue (default) or incident
+- [Description template](../description_templates.md): overwrites anything in the Description text box
+- Description: you can use [Markdown](../../markdown.md) and [quick actions](../quick_actions.md)
+- Checkbox to make the issue [confidential](confidential_issues.md)
+- [Assignees](#assignee)
+- [Weight](issue_weight.md)
+- [Epic](../../group/epics/index.md)
+- [Due date](due_dates.md)
+- [Milestone](../milestones/index.md)
+- [Labels](../labels.md)
 
 ## Edit an issue
 
 You can edit an issue's title and description.
+
+Prerequisites:
+
+- You must have at least the [Reporter role](../../permissions.md) for a project.
 
 To edit an issue, select **Edit title and description** (**{pencil}**).
 

@@ -20,6 +20,7 @@ RSpec.describe Gitlab::Graphql::Tracers::TimerTracer do
 
   before do
     current_time = 0
+    allow(tracer_spy).to receive(:trace)
     allow(Gitlab::Metrics::System).to receive(:monotonic_time) do
       current_time += expected_duration
     end
@@ -30,6 +31,18 @@ RSpec.describe Gitlab::Graphql::Tracers::TimerTracer do
 
     dummy_schema.execute(query_string)
 
+    expect_to_have_traced(tracer_spy, expected_duration, query_string)
+  end
+
+  it "adds a duration_s even if the query failed" do
+    query_string = "query fooOperation { breakingField }"
+
+    expect { dummy_schema.execute(query_string) }.to raise_error(/This field is supposed to break/)
+
+    expect_to_have_traced(tracer_spy, expected_duration, query_string)
+  end
+
+  def expect_to_have_traced(tracer_spy, expected_duration, query_string)
     # "parse" and "execute_query" are just arbitrary trace events
     expect(tracer_spy).to have_received(:trace).with("parse", {
       duration_s: expected_duration,

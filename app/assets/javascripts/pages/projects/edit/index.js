@@ -6,9 +6,9 @@ import initFilePickers from '~/file_pickers';
 import mountBadgeSettings from '~/pages/shared/mount_badge_settings';
 import initProjectDeleteButton from '~/projects/project_delete_button';
 import initServiceDesk from '~/projects/settings_service_desk';
+import initTransferProjectForm from '~/projects/settings/init_transfer_project_form';
 import initSearchSettings from '~/search_settings';
 import initSettingsPanels from '~/settings_panels';
-import setupTransferEdit from '~/transfer_edit';
 import UserCallout from '~/user_callout';
 import initTopicsTokenSelector from '~/projects/settings/topics';
 import initProjectPermissionsSettings from '../shared/permissions';
@@ -26,7 +26,7 @@ initServiceDesk();
 
 initProjectLoadingSpinner();
 initProjectPermissionsSettings();
-setupTransferEdit('.js-project-transfer-form', 'select.select2');
+initTransferProjectForm();
 
 dirtySubmitFactory(document.querySelectorAll('.js-general-settings-form, .js-mr-settings-form'));
 

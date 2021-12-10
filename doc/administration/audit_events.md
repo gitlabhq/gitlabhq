@@ -9,8 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 GitLab offers a way to view the changes made within the GitLab server for owners and administrators
 on a [paid plan](https://about.gitlab.com/pricing/).
 
-GitLab system administrators can also take advantage of the logs located on the
-file system. See [the logs system documentation](logs.md#audit_jsonlog) for more details.
+GitLab system administrators can also view all audit events by accessing the [`audit_json.log` file](logs.md#audit_jsonlog).
 
 You can:
 

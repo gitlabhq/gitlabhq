@@ -11,19 +11,20 @@ module Gitlab
         end
 
         def trace(key, data)
-          result = yield
-
+          yield
+        rescue StandardError => e
+          data[:exception] = e
+          raise e
+        ensure
           case key
           when "execute_query"
             log_execute_query(**data)
           end
-
-          result
         end
 
         private
 
-        def log_execute_query(query: nil, duration_s: 0)
+        def log_execute_query(query: nil, duration_s: 0, exception: nil)
           # execute_query should always have :query, but we're just being defensive
           return unless query
 
@@ -38,6 +39,8 @@ module Gitlab
             variables: clean_variables(query.provided_variables),
             query_string: query.query_string
           }
+
+          Gitlab::ExceptionLogFormatter.format!(exception, info)
 
           info.merge!(::Gitlab::ApplicationContext.current)
           info.merge!(analysis_info) if analysis_info

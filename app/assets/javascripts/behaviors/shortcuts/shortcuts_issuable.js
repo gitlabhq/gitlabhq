@@ -118,7 +118,10 @@ export default class ShortcutsIssuable extends Shortcuts {
     // Wait for the sidebar to trigger('click') open
     // so it doesn't cause our dropdown to close preemptively
     setTimeout(() => {
-      document.querySelector(`.block.${name} .shortcut-sidebar-dropdown-toggle`).click();
+      const editBtn =
+        document.querySelector(`.block.${name} .shortcut-sidebar-dropdown-toggle`) ||
+        document.querySelector(`.block.${name} .edit-link`);
+      editBtn.click();
     }, DEBOUNCE_DROPDOWN_DELAY);
     return false;
   }

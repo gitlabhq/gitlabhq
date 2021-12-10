@@ -1,0 +1,52 @@
+# To contribute improvements to CI/CD templates, please follow the Development guide at:
+# https://docs.gitlab.com/ee/development/cicd/templates.html
+# This specific template is located at:
+# https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/Dast-API.gitlab-ci.yml
+
+# To use this template, add the following to your .gitlab-ci.yml file:
+#
+# include:
+#   template: DAST-API.latest.gitlab-ci.yml
+#
+# You also need to add a `dast` stage to your `stages:` configuration. A sample configuration for DAST API:
+#
+# stages:
+#   - build
+#   - test
+#   - deploy
+#   - dast
+
+# Read more about this feature here: https://docs.gitlab.com/ee/user/application_security/dast_api/index.html
+
+# Configure DAST API scanning with CI/CD variables (https://docs.gitlab.com/ee/ci/variables/index.html).
+# List of available variables: https://docs.gitlab.com/ee/user/application_security/dast_api/index.html#available-cicd-variables
+
+variables:
+  # Setting this variable affects all Security templates
+  # (SAST, Dependency Scanning, ...)
+  SECURE_ANALYZERS_PREFIX: "registry.gitlab.com/gitlab-org/security-products/analyzers"
+  #
+  DAST_API_VERSION: "1"
+  DAST_API_IMAGE: api-fuzzing
+
+dast_api:
+  stage: dast
+  image: $SECURE_ANALYZERS_PREFIX/$DAST_API_IMAGE:$DAST_API_VERSION
+  allow_failure: true
+  rules:
+    - if: $DAST_API_DISABLED
+      when: never
+    - if: $DAST_API_DISABLED_FOR_DEFAULT_BRANCH &&
+          $CI_DEFAULT_BRANCH == $CI_COMMIT_REF_NAME
+      when: never
+    - if: $CI_COMMIT_BRANCH
+  script:
+    - /peach/analyzer-dast-api
+  artifacts:
+    when: always
+    paths:
+      - gl-assets
+      - gl-dast-api-report.json
+      - gl-*.log
+    reports:
+      dast: gl-dast-api-report.json
