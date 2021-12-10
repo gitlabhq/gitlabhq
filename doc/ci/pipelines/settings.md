@@ -134,7 +134,7 @@ For example:
 - `my/path/.my-custom-file.yml@mygroup/another-project`
 - `my/path/.my-custom-file.yml@mygroup/another-project:refname`
 
-If the configuration file is in a separate project, you can more set more granular permissions. For example:
+If the configuration file is in a separate project, you can set more granular permissions. For example:
 
 - Create a public project to host the configuration file.
 - Give write permissions on the project only to users who are allowed to edit the file.
