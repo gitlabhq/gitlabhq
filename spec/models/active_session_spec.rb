@@ -3,6 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe ActiveSession, :clean_gitlab_redis_sessions do
+  let(:lookup_key) { described_class.lookup_key_name(user.id) }
   let(:user) do
     create(:user).tap do |user|
       user.current_sign_in_at = Time.current
@@ -43,46 +44,82 @@ RSpec.describe ActiveSession, :clean_gitlab_redis_sessions do
   end
 
   describe '.list' do
+    def make_session(id)
+      described_class.new(session_id: id)
+    end
+
     it 'returns all sessions by user' do
       Gitlab::Redis::Sessions.with do |redis|
-        redis.set("session:user:gitlab:#{user.id}:6919a6f1bb119dd7396fadc38fd18d0d", Marshal.dump({ session_id: 'a' }))
-        redis.set("session:user:gitlab:#{user.id}:59822c7d9fcdfa03725eff41782ad97d", Marshal.dump({ session_id: 'b' }))
-        redis.set("session:user:gitlab:9999:5c8611e4f9c69645ad1a1492f4131358", '')
+        # Some deprecated sessions
+        redis.set(described_class.key_name_v1(user.id, "6919a6f1bb119dd7396fadc38fd18d0d"), Marshal.dump(make_session('a')))
+        redis.set(described_class.key_name_v1(user.id, "59822c7d9fcdfa03725eff41782ad97d"), Marshal.dump(make_session('b')))
+        # Some new sessions
+        redis.set(described_class.key_name(user.id, 'some-unique-id-x'), make_session('c').dump)
+        redis.set(described_class.key_name(user.id, 'some-unique-id-y'), make_session('d').dump)
+        # Some red herrings
+        redis.set(described_class.key_name(9999, "5c8611e4f9c69645ad1a1492f4131358"), 'irrelevant')
+        redis.set(described_class.key_name_v1(9999, "5c8611e4f9c69645ad1a1492f4131358"), 'irrelevant')
 
         redis.sadd(
-          "session:lookup:user:gitlab:#{user.id}",
+          lookup_key,
           %w[
             6919a6f1bb119dd7396fadc38fd18d0d
             59822c7d9fcdfa03725eff41782ad97d
+            some-unique-id-x
+            some-unique-id-y
           ]
         )
       end
 
-      expect(ActiveSession.list(user)).to match_array [{ session_id: 'a' }, { session_id: 'b' }]
+      expect(described_class.list(user)).to contain_exactly(
+        have_attributes(session_id: 'a'),
+        have_attributes(session_id: 'b'),
+        have_attributes(session_id: 'c'),
+        have_attributes(session_id: 'd')
+      )
     end
 
-    it 'does not return obsolete entries and cleans them up' do
-      Gitlab::Redis::Sessions.with do |redis|
-        redis.set("session:user:gitlab:#{user.id}:6919a6f1bb119dd7396fadc38fd18d0d", Marshal.dump({ session_id: 'a' }))
+    shared_examples 'ignoring obsolete entries' do
+      let(:session_id) { '6919a6f1bb119dd7396fadc38fd18d0d' }
+      let(:session) { described_class.new(session_id: 'a') }
 
-        redis.sadd(
-          "session:lookup:user:gitlab:#{user.id}",
-          %w[
-            6919a6f1bb119dd7396fadc38fd18d0d
-            59822c7d9fcdfa03725eff41782ad97d
-          ]
-        )
-      end
+      it 'does not return obsolete entries and cleans them up' do
+        Gitlab::Redis::Sessions.with do |redis|
+          redis.set(session_key, serialized_session)
 
-      expect(ActiveSession.list(user)).to eq [{ session_id: 'a' }]
+          redis.sadd(
+            lookup_key,
+            [
+              session_id,
+              '59822c7d9fcdfa03725eff41782ad97d'
+            ]
+          )
+        end
 
-      Gitlab::Redis::Sessions.with do |redis|
-        expect(redis.sscan_each("session:lookup:user:gitlab:#{user.id}").to_a).to eq ['6919a6f1bb119dd7396fadc38fd18d0d']
+        expect(ActiveSession.list(user)).to contain_exactly(session)
+
+        Gitlab::Redis::Sessions.with do |redis|
+          expect(redis.sscan_each(lookup_key)).to contain_exactly session_id
+        end
       end
     end
 
-    it 'returns an empty array if the use does not have any active session' do
-      expect(ActiveSession.list(user)).to eq []
+    context 'when the current session is in the old format' do
+      let(:session_key) { described_class.key_name_v1(user.id, session_id) }
+      let(:serialized_session) { Marshal.dump(session) }
+
+      it_behaves_like 'ignoring obsolete entries'
+    end
+
+    context 'when the current session is in the new format' do
+      let(:session_key) { described_class.key_name(user.id, session_id) }
+      let(:serialized_session) { session.dump }
+
+      it_behaves_like 'ignoring obsolete entries'
+    end
+
+    it 'returns an empty array if the user does not have any active session' do
+      expect(ActiveSession.list(user)).to be_empty
     end
   end
 
@@ -107,13 +144,11 @@ RSpec.describe ActiveSession, :clean_gitlab_redis_sessions do
 
   describe '.session_ids_for_user' do
     it 'uses the user lookup table to return session ids' do
-      session_ids = ['59822c7d9fcdfa03725eff41782ad97d']
-
       Gitlab::Redis::Sessions.with do |redis|
-        redis.sadd("session:lookup:user:gitlab:#{user.id}", session_ids)
+        redis.sadd(lookup_key, %w[a b c])
       end
 
-      expect(ActiveSession.session_ids_for_user(user.id).map(&:to_s)).to eq(session_ids)
+      expect(ActiveSession.session_ids_for_user(user.id).map(&:to_s)).to match_array(%w[a b c])
     end
   end
 
@@ -151,49 +186,67 @@ RSpec.describe ActiveSession, :clean_gitlab_redis_sessions do
     it 'sets a new redis entry for the user session and a lookup entry' do
       ActiveSession.set(user, request)
 
+      session_id = "2::418729c72310bbf349a032f0bb6e3fce9f5a69df8f000d8ae0ac5d159d8f21ae"
+
       Gitlab::Redis::Sessions.with do |redis|
         expect(redis.scan_each.to_a).to include(
-          "session:user:gitlab:#{user.id}:2::418729c72310bbf349a032f0bb6e3fce9f5a69df8f000d8ae0ac5d159d8f21ae",
-          "session:lookup:user:gitlab:#{user.id}"
+          described_class.key_name(user.id, session_id),    # current session
+          described_class.key_name_v1(user.id, session_id), # support for mixed deployment
+          lookup_key
         )
       end
     end
 
     it 'adds timestamps and information from the request' do
-      Timecop.freeze(Time.zone.parse('2018-03-12 09:06')) do
-        ActiveSession.set(user, request)
+      time = Time.zone.parse('2018-03-12 09:06')
 
-        session = ActiveSession.list(user)
+      travel_to(time) do
+        described_class.set(user, request)
 
-        expect(session.count).to eq 1
-        expect(session.first).to have_attributes(
+        sessions = described_class.list(user)
+
+        expect(sessions).to contain_exactly have_attributes(
           ip_address: '127.0.0.1',
           browser: 'Mobile Safari',
           os: 'iOS',
           device_name: 'iPhone 6',
           device_type: 'smartphone',
-          created_at: Time.zone.parse('2018-03-12 09:06'),
-          updated_at: Time.zone.parse('2018-03-12 09:06')
+          created_at: eq(time),
+          updated_at: eq(time)
         )
       end
     end
 
-    it 'keeps the created_at from the login on consecutive requests' do
-      now = Time.zone.parse('2018-03-12 09:06')
+    it 'is possible to log in only using the old session key' do
+      session_id = "2::418729c72310bbf349a032f0bb6e3fce9f5a69df8f000d8ae0ac5d159d8f21ae"
+      ActiveSession.set(user, request)
 
-      Timecop.freeze(now) do
+      Gitlab::Redis::SharedState.with do |redis|
+        redis.del(described_class.key_name(user.id, session_id))
+      end
+
+      sessions = ActiveSession.list(user)
+
+      expect(sessions).to be_present
+    end
+
+    it 'keeps the created_at from the login on consecutive requests' do
+      created_at = Time.zone.parse('2018-03-12 09:06')
+      updated_at = created_at + 1.minute
+
+      travel_to(created_at) do
+        ActiveSession.set(user, request)
+      end
+
+      travel_to(updated_at) do
         ActiveSession.set(user, request)
 
-        Timecop.freeze(now + 1.minute) do
-          ActiveSession.set(user, request)
+        session = ActiveSession.list(user)
 
-          session = ActiveSession.list(user)
-
-          expect(session.first).to have_attributes(
-            created_at: Time.zone.parse('2018-03-12 09:06'),
-            updated_at: Time.zone.parse('2018-03-12 09:07')
-          )
-        end
+        expect(session.first).to have_attributes(
+          created_at: eq(created_at),
+          updated_at: eq(updated_at)
+        )
       end
     end
   end
@@ -206,10 +259,8 @@ RSpec.describe ActiveSession, :clean_gitlab_redis_sessions do
           # Emulate redis-rack: https://github.com/redis-store/redis-rack/blob/c75f7f1a6016ee224e2615017fbfee964f23a837/lib/rack/session/redis.rb#L88
           redis.set("session:gitlab:#{rack_session.private_id}", '')
 
-          redis.set(described_class.key_name(user.id, active_session_lookup_key),
-                    Marshal.dump(active_session))
-          redis.sadd(described_class.lookup_key_name(user.id),
-                     active_session_lookup_key)
+          redis.set(session_key, serialized_session)
+          redis.sadd(lookup_key, active_session_lookup_key)
         end
       end
 
@@ -225,7 +276,7 @@ RSpec.describe ActiveSession, :clean_gitlab_redis_sessions do
         subject
 
         Gitlab::Redis::Sessions.with do |redis|
-          expect(redis.scan_each(match: "session:lookup:user:gitlab:#{user.id}").to_a).to be_empty
+          expect(redis.scan_each(match: lookup_key).to_a).to be_empty
         end
       end
 
@@ -253,7 +304,19 @@ RSpec.describe ActiveSession, :clean_gitlab_redis_sessions do
         let(:active_session) { ActiveSession.new(session_private_id: rack_session.private_id) }
         let(:active_session_lookup_key) { rack_session.private_id }
 
-        include_examples 'removes all session data'
+        context 'when using old session key serialization' do
+          let(:session_key) { described_class.key_name_v1(user.id, active_session_lookup_key) }
+          let(:serialized_session) { Marshal.dump(active_session) }
+
+          include_examples 'removes all session data'
+        end
+
+        context 'when using new session key serialization' do
+          let(:session_key) { described_class.key_name(user.id, active_session_lookup_key) }
+          let(:serialized_session) { active_session.dump }
+
+          include_examples 'removes all session data'
+        end
       end
     end
   end
@@ -265,7 +328,7 @@ RSpec.describe ActiveSession, :clean_gitlab_redis_sessions do
       ActiveSession.destroy_all_but_current(user, nil)
     end
 
-    context 'with user sessions' do
+    shared_examples 'with user sessions' do
       let(:current_session_id) { '6919a6f1bb119dd7396fadc38fd18d0d' }
 
       before do
@@ -274,10 +337,8 @@ RSpec.describe ActiveSession, :clean_gitlab_redis_sessions do
           [current_session_id, '59822c7d9fcdfa03725eff41782ad97d'].each do |session_public_id|
             session_private_id = Rack::Session::SessionId.new(session_public_id).private_id
             active_session = ActiveSession.new(session_private_id: session_private_id)
-            redis.set(described_class.key_name(user.id, session_private_id),
-                      Marshal.dump(active_session))
-            redis.sadd(described_class.lookup_key_name(user.id),
-                       session_private_id)
+            redis.set(key_name(user.id, session_private_id), dump_session(active_session))
+            redis.sadd(lookup_key, session_private_id)
           end
 
           # setup for unrelated user
@@ -285,10 +346,8 @@ RSpec.describe ActiveSession, :clean_gitlab_redis_sessions do
           session_private_id = Rack::Session::SessionId.new('5c8611e4f9c69645ad1a1492f4131358').private_id
           active_session = ActiveSession.new(session_private_id: session_private_id)
 
-          redis.set(described_class.key_name(unrelated_user_id, session_private_id),
-                    Marshal.dump(active_session))
-          redis.sadd(described_class.lookup_key_name(unrelated_user_id),
-                     session_private_id)
+          redis.set(key_name(unrelated_user_id, session_private_id), dump_session(active_session))
+          redis.sadd(described_class.lookup_key_name(unrelated_user_id), session_private_id)
         end
       end
 
@@ -304,24 +363,46 @@ RSpec.describe ActiveSession, :clean_gitlab_redis_sessions do
         ActiveSession.destroy_all_but_current(user, request.session)
 
         Gitlab::Redis::Sessions.with do |redis|
-          expect(
-            redis.smembers(described_class.lookup_key_name(user.id))
-          ).to eq([session_private_id])
+          expect(redis.smembers(lookup_key)).to contain_exactly session_private_id
         end
       end
 
       it 'does not remove impersonated sessions' do
         impersonated_session_id = '6919a6f1bb119dd7396fadc38fd18eee'
         Gitlab::Redis::Sessions.with do |redis|
-          redis.set(described_class.key_name(user.id, impersonated_session_id),
-            Marshal.dump(ActiveSession.new(session_id: Rack::Session::SessionId.new(impersonated_session_id), is_impersonated: true)))
-          redis.sadd(described_class.lookup_key_name(user.id), impersonated_session_id)
+          redis.set(key_name(user.id, impersonated_session_id),
+            dump_session(ActiveSession.new(session_id: Rack::Session::SessionId.new(impersonated_session_id), is_impersonated: true)))
+          redis.sadd(lookup_key, impersonated_session_id)
         end
 
         expect { ActiveSession.destroy_all_but_current(user, request.session) }.to change { ActiveSession.session_ids_for_user(user.id).size }.from(3).to(2)
 
         expect(ActiveSession.session_ids_for_user(9999).size).to eq(1)
       end
+    end
+
+    context 'with legacy sessions' do
+      def key_name(user_id, id)
+        described_class.key_name_v1(user_id, id)
+      end
+
+      def dump_session(session)
+        Marshal.dump(session)
+      end
+
+      it_behaves_like 'with user sessions'
+    end
+
+    context 'with new sessions' do
+      def key_name(user_id, id)
+        described_class.key_name(user_id, id)
+      end
+
+      def dump_session(session)
+        session.dump
+      end
+
+      it_behaves_like 'with user sessions'
     end
   end
 
@@ -330,148 +411,258 @@ RSpec.describe ActiveSession, :clean_gitlab_redis_sessions do
       stub_const("ActiveSession::ALLOWED_NUMBER_OF_ACTIVE_SESSIONS", 5)
     end
 
-    it 'removes obsolete lookup entries' do
-      Gitlab::Redis::Sessions.with do |redis|
-        redis.set("session:user:gitlab:#{user.id}:6919a6f1bb119dd7396fadc38fd18d0d", '')
-        redis.sadd("session:lookup:user:gitlab:#{user.id}", '6919a6f1bb119dd7396fadc38fd18d0d')
-        redis.sadd("session:lookup:user:gitlab:#{user.id}", '59822c7d9fcdfa03725eff41782ad97d')
-      end
+    shared_examples 'cleaning up' do
+      context 'when removing obsolete sessions' do
+        let(:current_session_id) { '6919a6f1bb119dd7396fadc38fd18d0d' }
 
-      ActiveSession.cleanup(user)
-
-      Gitlab::Redis::Sessions.with do |redis|
-        expect(redis.smembers("session:lookup:user:gitlab:#{user.id}")).to eq ['6919a6f1bb119dd7396fadc38fd18d0d']
-      end
-    end
-
-    it 'does not bail if there are no lookup entries' do
-      ActiveSession.cleanup(user)
-    end
-
-    context 'cleaning up old sessions' do
-      let(:max_number_of_sessions_plus_one) { ActiveSession::ALLOWED_NUMBER_OF_ACTIVE_SESSIONS + 1 }
-      let(:max_number_of_sessions_plus_two) { ActiveSession::ALLOWED_NUMBER_OF_ACTIVE_SESSIONS + 2 }
-
-      before do
-        Gitlab::Redis::Sessions.with do |redis|
-          (1..max_number_of_sessions_plus_two).each do |number|
-            redis.set(
-              "session:user:gitlab:#{user.id}:#{number}",
-              Marshal.dump(ActiveSession.new(session_id: number.to_s, updated_at: number.days.ago))
-            )
-            redis.sadd(
-              "session:lookup:user:gitlab:#{user.id}",
-              "#{number}"
-            )
-          end
-        end
-      end
-
-      it 'removes obsolete active sessions entries' do
-        ActiveSession.cleanup(user)
-
-        Gitlab::Redis::Sessions.with do |redis|
-          sessions = redis.scan_each(match: "session:user:gitlab:#{user.id}:*").to_a
-
-          expect(sessions.count).to eq(ActiveSession::ALLOWED_NUMBER_OF_ACTIVE_SESSIONS)
-          expect(sessions).not_to include("session:user:gitlab:#{user.id}:#{max_number_of_sessions_plus_one}", "session:user:gitlab:#{user.id}:#{max_number_of_sessions_plus_two}")
-        end
-      end
-
-      it 'removes obsolete lookup entries' do
-        ActiveSession.cleanup(user)
-
-        Gitlab::Redis::Sessions.with do |redis|
-          lookup_entries = redis.smembers("session:lookup:user:gitlab:#{user.id}")
-
-          expect(lookup_entries.count).to eq(ActiveSession::ALLOWED_NUMBER_OF_ACTIVE_SESSIONS)
-          expect(lookup_entries).not_to include(max_number_of_sessions_plus_one.to_s, max_number_of_sessions_plus_two.to_s)
-        end
-      end
-
-      it 'removes obsolete lookup entries even without active session' do
-        Gitlab::Redis::Sessions.with do |redis|
-          redis.sadd(
-            "session:lookup:user:gitlab:#{user.id}",
-            "#{max_number_of_sessions_plus_two + 1}"
-          )
-        end
-
-        ActiveSession.cleanup(user)
-
-        Gitlab::Redis::Sessions.with do |redis|
-          lookup_entries = redis.smembers("session:lookup:user:gitlab:#{user.id}")
-
-          expect(lookup_entries.count).to eq(ActiveSession::ALLOWED_NUMBER_OF_ACTIVE_SESSIONS)
-          expect(lookup_entries).not_to include(
-            max_number_of_sessions_plus_one.to_s,
-            max_number_of_sessions_plus_two.to_s,
-            (max_number_of_sessions_plus_two + 1).to_s
-          )
-        end
-      end
-
-      context 'when the number of active sessions is lower than the limit' do
-        before do
+        it 'removes obsolete lookup entries' do
           Gitlab::Redis::Sessions.with do |redis|
-            ((max_number_of_sessions_plus_two - 4)..max_number_of_sessions_plus_two).each do |number|
-              redis.del("session:user:gitlab:#{user.id}:#{number}")
-            end
-          end
-        end
-
-        it 'does not remove active session entries, but removes lookup entries' do
-          lookup_entries_before_cleanup = Gitlab::Redis::Sessions.with do |redis|
-            redis.smembers("session:lookup:user:gitlab:#{user.id}")
-          end
-
-          sessions_before_cleanup = Gitlab::Redis::Sessions.with do |redis|
-            redis.scan_each(match: "session:user:gitlab:#{user.id}:*").to_a
+            redis.set(session_key, '')
+            redis.sadd(lookup_key, current_session_id)
+            redis.sadd(lookup_key, '59822c7d9fcdfa03725eff41782ad97d')
           end
 
           ActiveSession.cleanup(user)
 
           Gitlab::Redis::Sessions.with do |redis|
-            lookup_entries = redis.smembers("session:lookup:user:gitlab:#{user.id}")
-            sessions = redis.scan_each(match: "session:user:gitlab:#{user.id}:*").to_a
-            expect(sessions.count).to eq(sessions_before_cleanup.count)
-            expect(lookup_entries.count).to be < lookup_entries_before_cleanup.count
+            expect(redis.smembers(lookup_key)).to contain_exactly current_session_id
+          end
+        end
+      end
+
+      it 'does not bail if there are no lookup entries' do
+        ActiveSession.cleanup(user)
+      end
+
+      context 'cleaning up old sessions' do
+        let(:max_number_of_sessions_plus_one) { ActiveSession::ALLOWED_NUMBER_OF_ACTIVE_SESSIONS + 1 }
+        let(:max_number_of_sessions_plus_two) { ActiveSession::ALLOWED_NUMBER_OF_ACTIVE_SESSIONS + 2 }
+
+        before do
+          Gitlab::Redis::Sessions.with do |redis|
+            max_number_of_sessions_plus_two.times do |number|
+              redis.set(
+                key_name(user.id, number),
+                dump_session(ActiveSession.new(session_id: number.to_s, updated_at: number.days.ago))
+              )
+              redis.sadd(lookup_key, number.to_s)
+            end
+          end
+        end
+
+        it 'removes obsolete active sessions entries' do
+          ActiveSession.cleanup(user)
+
+          Gitlab::Redis::Sessions.with do |redis|
+            sessions = described_class.list(user)
+
+            expect(sessions.count).to eq(ActiveSession::ALLOWED_NUMBER_OF_ACTIVE_SESSIONS)
+            expect(sessions).not_to include(
+              have_attributes(session_id: max_number_of_sessions_plus_one),
+              have_attributes(session_id: max_number_of_sessions_plus_two)
+            )
+          end
+        end
+
+        it 'removes obsolete lookup entries' do
+          ActiveSession.cleanup(user)
+
+          Gitlab::Redis::Sessions.with do |redis|
+            lookup_entries = redis.smembers(lookup_key)
+
+            expect(lookup_entries.count).to eq(ActiveSession::ALLOWED_NUMBER_OF_ACTIVE_SESSIONS)
+            expect(lookup_entries).not_to include(max_number_of_sessions_plus_one.to_s, max_number_of_sessions_plus_two.to_s)
+          end
+        end
+
+        it 'removes obsolete lookup entries even without active session' do
+          Gitlab::Redis::Sessions.with do |redis|
+            redis.sadd(lookup_key, "#{max_number_of_sessions_plus_two + 1}")
+          end
+
+          ActiveSession.cleanup(user)
+
+          Gitlab::Redis::Sessions.with do |redis|
+            lookup_entries = redis.smembers(lookup_key)
+
+            expect(lookup_entries.count).to eq(ActiveSession::ALLOWED_NUMBER_OF_ACTIVE_SESSIONS)
+            expect(lookup_entries).not_to include(
+              max_number_of_sessions_plus_one.to_s,
+              max_number_of_sessions_plus_two.to_s,
+              (max_number_of_sessions_plus_two + 1).to_s
+            )
+          end
+        end
+
+        context 'when the number of active sessions is lower than the limit' do
+          before do
+            Gitlab::Redis::Sessions.with do |redis|
+              ((max_number_of_sessions_plus_two - 4)..max_number_of_sessions_plus_two).each do |number|
+                redis.del(key_name(user.id, number))
+              end
+            end
+          end
+
+          it 'does not remove active session entries, but removes lookup entries' do
+            lookup_entries_before_cleanup = Gitlab::Redis::Sessions.with do |redis|
+              redis.smembers(lookup_key)
+            end
+
+            sessions_before_cleanup = described_class.list(user)
+
+            described_class.cleanup(user)
+
+            Gitlab::Redis::Sessions.with do |redis|
+              lookup_entries = redis.smembers(lookup_key)
+              sessions = described_class.list(user)
+
+              expect(sessions.count).to eq(sessions_before_cleanup.count)
+              expect(lookup_entries.count).to be < lookup_entries_before_cleanup.count
+            end
+          end
+        end
+      end
+
+      context 'cleaning up old sessions stored by Rack::Session::SessionId#private_id' do
+        let(:max_number_of_sessions_plus_one) { ActiveSession::ALLOWED_NUMBER_OF_ACTIVE_SESSIONS + 1 }
+        let(:max_number_of_sessions_plus_two) { ActiveSession::ALLOWED_NUMBER_OF_ACTIVE_SESSIONS + 2 }
+
+        before do
+          Gitlab::Redis::Sessions.with do |redis|
+            (1..max_number_of_sessions_plus_two).each do |number|
+              redis.set(
+                key_name(user.id, number),
+                dump_session(ActiveSession.new(session_private_id: number.to_s, updated_at: number.days.ago))
+              )
+              redis.sadd(lookup_key, number.to_s)
+            end
+          end
+        end
+
+        it 'removes obsolete active sessions entries' do
+          described_class.cleanup(user)
+
+          Gitlab::Redis::Sessions.with do |redis|
+            sessions = described_class.list(user)
+
+            expect(sessions.count).to eq(described_class::ALLOWED_NUMBER_OF_ACTIVE_SESSIONS)
+            expect(sessions).not_to include(
+              key_name(user.id, max_number_of_sessions_plus_one),
+              key_name(user.id, max_number_of_sessions_plus_two)
+            )
           end
         end
       end
     end
 
-    context 'cleaning up old sessions stored by Rack::Session::SessionId#private_id' do
-      let(:max_number_of_sessions_plus_one) { ActiveSession::ALLOWED_NUMBER_OF_ACTIVE_SESSIONS + 1 }
-      let(:max_number_of_sessions_plus_two) { ActiveSession::ALLOWED_NUMBER_OF_ACTIVE_SESSIONS + 2 }
+    context 'with legacy sessions' do
+      let(:session_key) { described_class.key_name_v1(user.id, current_session_id) }
+
+      def key_name(user_id, session_id)
+        described_class.key_name_v1(user_id, session_id)
+      end
+
+      def dump_session(session)
+        Marshal.dump(session)
+      end
+
+      it_behaves_like 'cleaning up'
+    end
+
+    context 'with new sessions' do
+      let(:session_key) { described_class.key_name(user.id, current_session_id) }
+
+      def key_name(user_id, session_id)
+        described_class.key_name(user_id, session_id)
+      end
+
+      def dump_session(session)
+        session.dump
+      end
+
+      it_behaves_like 'cleaning up'
+    end
+  end
+
+  describe '.cleaned_up_lookup_entries' do
+    before do
+      stub_const("ActiveSession::ALLOWED_NUMBER_OF_ACTIVE_SESSIONS", 5)
+    end
+
+    shared_examples 'cleaning up lookup entries' do
+      let(:current_session_id) { '6919a6f1bb119dd7396fadc38fd18d0d' }
+      let(:active_count) { 3 }
 
       before do
-        Gitlab::Redis::Sessions.with do |redis|
-          (1..max_number_of_sessions_plus_two).each do |number|
+        Gitlab::Redis::SharedState.with do |redis|
+          active_count.times do |number|
             redis.set(
-              "session:user:gitlab:#{user.id}:#{number}",
-              Marshal.dump(ActiveSession.new(session_private_id: number.to_s, updated_at: number.days.ago))
+              key_name(user.id, number),
+              dump_session(ActiveSession.new(session_id: number.to_s, updated_at: number.days.ago))
             )
-            redis.sadd(
-              "session:lookup:user:gitlab:#{user.id}",
-              "#{number}"
-            )
+
+            redis.sadd(lookup_key, number.to_s)
           end
+
+          redis.sadd(lookup_key, (active_count + 1).to_s)
+          redis.sadd(lookup_key, (active_count + 2).to_s)
         end
       end
 
-      it 'removes obsolete active sessions entries' do
-        ActiveSession.cleanup(user)
+      it 'removes obsolete lookup entries' do
+        active = Gitlab::Redis::SharedState.with do |redis|
+          ActiveSession.cleaned_up_lookup_entries(redis, user)
+        end
 
-        Gitlab::Redis::Sessions.with do |redis|
-          sessions = redis.scan_each(match: "session:user:gitlab:#{user.id}:*").to_a
+        expect(active.count).to eq(active_count)
 
-          expect(sessions.count).to eq(ActiveSession::ALLOWED_NUMBER_OF_ACTIVE_SESSIONS)
-          expect(sessions).not_to(
-            include("session:user:gitlab:#{user.id}:#{max_number_of_sessions_plus_one}",
-                    "session:user:gitlab:#{user.id}:#{max_number_of_sessions_plus_two}"))
+        Gitlab::Redis::SharedState.with do |redis|
+          lookup_entries = redis.smembers(lookup_key)
+
+          expect(lookup_entries.count).to eq(active_count)
+          expect(lookup_entries).not_to include(
+            (active_count + 1).to_s,
+            (active_count + 2).to_s
+          )
         end
       end
+
+      it 'reports the removed entries' do
+        removed = []
+        Gitlab::Redis::SharedState.with do |redis|
+          ActiveSession.cleaned_up_lookup_entries(redis, user, removed)
+        end
+
+        expect(removed.count).to eq(2)
+      end
+    end
+
+    context 'with legacy sessions' do
+      let(:session_key) { described_class.key_name_v1(user.id, current_session_id) }
+
+      def key_name(user_id, session_id)
+        described_class.key_name_v1(user_id, session_id)
+      end
+
+      def dump_session(session)
+        Marshal.dump(session)
+      end
+
+      it_behaves_like 'cleaning up lookup entries'
+    end
+
+    context 'with new sessions' do
+      let(:session_key) { described_class.key_name(user.id, current_session_id) }
+
+      def key_name(user_id, session_id)
+        described_class.key_name(user_id, session_id)
+      end
+
+      def dump_session(session)
+        session.dump
+      end
+
+      it_behaves_like 'cleaning up lookup entries'
     end
   end
 end

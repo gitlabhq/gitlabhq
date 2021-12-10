@@ -92,6 +92,23 @@ RSpec.describe Gitlab::Database::QueryAnalyzers::PreventCrossDatabaseModificatio
           end
         end
       end
+
+      context 'when comments are added to the front of query strings' do
+        around do |example|
+          prepend_comment_was = Marginalia::Comment.prepend_comment
+          Marginalia::Comment.prepend_comment = true
+
+          example.run
+
+          Marginalia::Comment.prepend_comment = prepend_comment_was
+        end
+
+        it 'raises error' do
+          Project.transaction do
+            expect { run_queries }.to raise_error /Cross-database data modification/
+          end
+        end
+      end
     end
 
     context 'when executing a SELECT FOR UPDATE query' do

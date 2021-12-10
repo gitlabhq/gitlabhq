@@ -217,4 +217,15 @@ describe('InputCopyToggleVisibility', () => {
 
     expect(findCopyButton().props('title')).toBe('Copy token');
   });
+
+  it('renders slots in `gl-form-group`', () => {
+    const description = 'Mock input description';
+    createComponent({
+      slots: {
+        description,
+      },
+    });
+
+    expect(wrapper.findByText(description).exists()).toBe(true);
+  });
 });

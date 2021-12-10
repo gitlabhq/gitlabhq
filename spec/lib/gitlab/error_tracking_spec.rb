@@ -215,6 +215,16 @@ RSpec.describe Gitlab::ErrorTracking do
         expect(sentry_event.dig('extra', 'sql')).to eq('SELECT "users".* FROM "users" WHERE "users"."id" = $2 AND "users"."foo" = $1')
       end
     end
+
+    context 'when the `ActiveRecord::StatementInvalid` is a bad query' do
+      it 'injects the query as-is into extra' do
+        allow(exception).to receive(:cause).and_return(ActiveRecord::StatementInvalid.new(sql: 'SELECT SELECT FROM SELECT'))
+
+        track_exception
+
+        expect(sentry_event.dig('extra', 'sql')).to eq('SELECT SELECT FROM SELECT')
+      end
+    end
   end
 
   context 'event processors' do

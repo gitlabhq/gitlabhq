@@ -294,6 +294,7 @@ The `failed_relations` array is capped to 100 items.
   "path_with_namespace": "gitlab-org/gitlab-test",
   "created_at": "2017-08-29T04:36:44.383Z",
   "import_status": "started",
+  "import_type": "github",
   "correlation_id": "mezklWso3Za",
   "failed_relations": [
     {
@@ -302,8 +303,58 @@ The `failed_relations` array is capped to 100 items.
       "exception_class": "RuntimeError",
       "exception_message": "A failure occurred",
       "source": "custom error context",
-      "relation_name": "merge_requests"
+      "relation_name": "merge_requests",
+      "line_number": 0
     }
   ]
+}
+```
+
+When importing from GitHub, the a `stats` field lists how many objects were already fetched from
+GitHub and how many were already imported:
+
+```json
+{
+  "id": 1,
+  "description": "Itaque perspiciatis minima aspernatur corporis consequatur.",
+  "name": "Gitlab Test",
+  "name_with_namespace": "Gitlab Org / Gitlab Test",
+  "path": "gitlab-test",
+  "path_with_namespace": "gitlab-org/gitlab-test",
+  "created_at": "2017-08-29T04:36:44.383Z",
+  "import_status": "started",
+  "import_type": "github",
+  "correlation_id": "mezklWso3Za",
+  "failed_relations": [
+    {
+      "id": 42,
+      "created_at": "2020-04-02T14:48:59.526Z",
+      "exception_class": "RuntimeError",
+      "exception_message": "A failure occurred",
+      "source": "custom error context",
+      "relation_name": "merge_requests",
+      "line_number": 0
+    }
+  ],
+  "stats": {
+    "fetched": {
+      "diff_note": 19,
+      "issue": 3,
+      "label": 1,
+      "note": 3,
+      "pull_request": 2,
+      "pull_request_merged_by": 1,
+      "pull_request_review": 16
+    },
+    "imported": {
+      "diff_note": 19,
+      "issue": 3,
+      "label": 1,
+      "note": 3,
+      "pull_request": 2,
+      "pull_request_merged_by": 1,
+      "pull_request_review": 16
+    }
+  }
 }
 ```

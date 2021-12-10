@@ -16731,7 +16731,16 @@ msgstr ""
 msgid "GroupSAML|Active SAML Group Links (%{count})"
 msgstr ""
 
+msgid "GroupSAML|An error occurred generating your SCIM token. Please try again."
+msgstr ""
+
+msgid "GroupSAML|An error occurred resetting your SCIM token. Please try again."
+msgstr ""
+
 msgid "GroupSAML|Are you sure you want to remove the SAML group link?"
+msgstr ""
+
+msgid "GroupSAML|Are you sure you want to reset the SCIM token? SCIM provisioning will stop working until the new token is updated."
 msgstr ""
 
 msgid "GroupSAML|Before enforcing SSO, enable SAML authentication."
@@ -16806,6 +16815,9 @@ msgstr ""
 msgid "GroupSAML|Prohibit outer forks for this group"
 msgstr ""
 
+msgid "GroupSAML|Reset SCIM token"
+msgstr ""
+
 msgid "GroupSAML|Role to assign members of this SAML group."
 msgstr ""
 
@@ -16845,6 +16857,9 @@ msgstr ""
 msgid "GroupSAML|The SCIM token is now hidden. To see the value of the token again, you need to "
 msgstr ""
 
+msgid "GroupSAML|The SCIM token is now hidden. To see the value of the token again, you need to %{linkStart}reset it%{linkEnd}."
+msgstr ""
+
 msgid "GroupSAML|The case-sensitive group name that will be sent by the SAML identity provider."
 msgstr ""
 
@@ -16876,6 +16891,18 @@ msgid "GroupSAML|must match stored NameID of \"%{extern_uid}\" to identify user 
 msgstr ""
 
 msgid "GroupSAML|recommend persistent ID instead of email"
+msgstr ""
+
+msgid "GroupSaml|Copy SCIM API endpoint URL"
+msgstr ""
+
+msgid "GroupSaml|Copy SCIM token"
+msgstr ""
+
+msgid "GroupSaml|SCIM API endpoint URL"
+msgstr ""
+
+msgid "GroupSaml|Your SCIM token"
 msgstr ""
 
 msgid "GroupSelect|No matching results"
@@ -31062,6 +31089,9 @@ msgid "SecurityOrchestration|%{branches} %{plural}"
 msgstr ""
 
 msgid "SecurityOrchestration|%{branches} and %{lastBranch} %{plural}"
+msgstr ""
+
+msgid "SecurityOrchestration|.yaml preview"
 msgstr ""
 
 msgid "SecurityOrchestration|Action"

@@ -192,11 +192,10 @@ violations but don't block any traffic. To set Cilium to Blocking mode, you must
 lines to the `applications/cilium/values.yaml` file in your cluster management project:
 
 ```yaml
-config:
-  policyAuditMode: false
+policyEnforcementMode: "always"
 
 monitor:
-  eventTypes: ["drop"]
+  eventTypes: ["drop", "policy-verdict"]
 ```
 
 ### Traffic is not being allowed as expected

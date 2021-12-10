@@ -67,8 +67,6 @@ module Gitlab
         end
       end
 
-      private
-
       # Enable query analyzers
       def begin!
         analyzers = all_analyzers.select do |analyzer|
@@ -96,6 +94,8 @@ module Gitlab
 
         Thread.current[:query_analyzer_enabled_analyzers] = nil
       end
+
+      private
 
       def enabled_analyzers
         Thread.current[:query_analyzer_enabled_analyzers]

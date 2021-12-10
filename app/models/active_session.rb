@@ -4,7 +4,7 @@
 #
 # The raw session information is stored by the Rails session store
 # (config/initializers/session_store.rb). These entries are accessible by the
-# rack_key_name class method and consistute the base of the session data
+# rack_key_name class method and constitute the base of the session data
 # entries. All other entries in the session store can be traced back to these
 # entries.
 #
@@ -26,10 +26,19 @@ class ActiveSession
   SESSION_BATCH_SIZE = 200
   ALLOWED_NUMBER_OF_ACTIVE_SESSIONS = 100
 
-  attr_accessor :created_at, :updated_at,
-    :ip_address, :browser, :os,
-    :device_name, :device_type,
-    :is_impersonated, :session_id, :session_private_id
+  attr_accessor :ip_address, :browser, :os,
+                :device_name, :device_type,
+                :is_impersonated, :session_id, :session_private_id
+
+  attr_reader :created_at, :updated_at
+
+  def created_at=(time)
+    @created_at = time.is_a?(String) ? Time.zone.parse(time) : time
+  end
+
+  def updated_at=(time)
+    @updated_at = time.is_a?(String) ? Time.zone.parse(time) : time
+  end
 
   def current?(rack_session)
     return false if session_private_id.nil? || rack_session.id.nil?
@@ -37,6 +46,19 @@ class ActiveSession
     # Rack v2.0.8+ added private_id, which uses the hash of the
     # public_id to avoid timing attacks.
     session_private_id == rack_session.id.private_id
+  end
+
+  def eql?(other)
+    other.is_a?(self.class) && id == other.id
+  end
+  alias_method :==, :eql?
+
+  def id
+    session_private_id.presence || session_id
+  end
+
+  def ids
+    [session_private_id, session_id].compact
   end
 
   def human_device_type
@@ -48,6 +70,7 @@ class ActiveSession
       session_private_id = request.session.id.private_id
       client = DeviceDetector.new(request.user_agent)
       timestamp = Time.current
+      expiry = Settings.gitlab['session_expire_delay'] * 60
 
       active_user_session = new(
         ip_address: request.remote_ip,
@@ -64,7 +87,14 @@ class ActiveSession
       redis.pipelined do
         redis.setex(
           key_name(user.id, session_private_id),
-          Settings.gitlab['session_expire_delay'] * 60,
+          expiry,
+          active_user_session.dump
+        )
+
+        # Deprecated legacy format - temporary to support mixed deployments
+        redis.setex(
+          key_name_v1(user.id, session_private_id),
+          expiry,
           Marshal.dump(active_user_session)
         )
 
@@ -92,7 +122,10 @@ class ActiveSession
   end
 
   def self.destroy_sessions(redis, user, session_ids)
+    return if session_ids.empty?
+
     key_names = session_ids.map { |session_id| key_name(user.id, session_id) }
+    key_names += session_ids.map { |session_id| key_name_v1(user.id, session_id) }
 
     redis.srem(lookup_key_name(user.id), session_ids)
 
@@ -115,20 +148,25 @@ class ActiveSession
     sessions.reject! { |session| session.current?(current_rack_session) } if current_rack_session
 
     redis_store_class.with do |redis|
-      session_ids = (sessions.map(&:session_id) | sessions.map(&:session_private_id)).compact
+      session_ids = sessions.flat_map(&:ids)
       destroy_sessions(redis, user, session_ids) if session_ids.any?
     end
   end
 
-  def self.not_impersonated(user)
+  private_class_method def self.not_impersonated(user)
     list(user).reject(&:is_impersonated)
   end
 
-  def self.rack_key_name(session_id)
+  private_class_method def self.rack_key_name(session_id)
     "#{Gitlab::Redis::Sessions::SESSION_NAMESPACE}:#{session_id}"
   end
 
   def self.key_name(user_id, session_id = '*')
+    "#{Gitlab::Redis::Sessions::USER_SESSIONS_NAMESPACE}::v2:#{user_id}:#{session_id}"
+  end
+
+  # Deprecated
+  def self.key_name_v1(user_id, session_id = '*')
     "#{Gitlab::Redis::Sessions::USER_SESSIONS_NAMESPACE}:#{user_id}:#{session_id}"
   end
 
@@ -170,73 +208,102 @@ class ActiveSession
     end
   end
 
-  # Deserializes a session Hash object from Redis.
-  #
+  def dump
+    "v2:#{Gitlab::Json.dump(self)}"
+  end
+
+  # Private:
+
   # raw_session - Raw bytes from Redis
   #
-  # Returns an ActiveSession object
-  def self.load_raw_session(raw_session)
-    # rubocop:disable Security/MarshalLoad
-    # Explanation of why this Marshal.load call is OK:
-    # https://gitlab.com/gitlab-com/gl-security/appsec/appsec-reviews/-/issues/124#note_744576714
-    Marshal.load(raw_session)
-    # rubocop:enable Security/MarshalLoad
-  end
+  # Returns an instance of this class
+  private_class_method def self.load_raw_session(raw_session)
+    return unless raw_session
 
-  def self.rack_session_keys(rack_session_ids)
-    rack_session_ids.map { |session_id| rack_key_name(session_id)}
-  end
-
-  def self.raw_active_session_entries(redis, session_ids, user_id)
-    return [] if session_ids.empty?
-
-    entry_keys = session_ids.map { |session_id| key_name(user_id, session_id) }
-
-    Gitlab::Instrumentation::RedisClusterValidator.allow_cross_slot_commands do
-      redis.mget(entry_keys)
+    if raw_session.start_with?('v2:')
+      session_data = Gitlab::Json.parse(raw_session[3..]).symbolize_keys
+      new(**session_data)
+    else
+      # Deprecated legacy format. To be removed in 15.0
+      # See: https://gitlab.com/gitlab-org/gitlab/-/issues/30516
+      # Explanation of why this Marshal.load call is OK:
+      # https://gitlab.com/gitlab-com/gl-security/appsec/appsec-reviews/-/issues/124#note_744576714
+      # rubocop:disable Security/MarshalLoad
+      Marshal.load(raw_session)
+      # rubocop:enable Security/MarshalLoad
     end
   end
 
-  def self.active_session_entries(session_ids, user_id, redis)
-    return [] if session_ids.empty?
-
-    entry_keys = raw_active_session_entries(redis, session_ids, user_id)
-
-    entry_keys.compact.map do |raw_session|
-      load_raw_session(raw_session)
-    end
+  private_class_method def self.rack_session_keys(rack_session_ids)
+    rack_session_ids.map { |session_id| rack_key_name(session_id) }
   end
 
-  def self.clean_up_old_sessions(redis, user)
+  private_class_method def self.raw_active_session_entries(redis, session_ids, user_id)
+    return {} if session_ids.empty?
+
+    found = Gitlab::Instrumentation::RedisClusterValidator.allow_cross_slot_commands do
+      entry_keys = session_ids.map { |session_id| key_name(user_id, session_id) }
+      session_ids.zip(redis.mget(entry_keys)).to_h
+    end
+
+    found.compact!
+    missing = session_ids - found.keys
+    return found if missing.empty?
+
+    fallbacks = Gitlab::Instrumentation::RedisClusterValidator.allow_cross_slot_commands do
+      entry_keys = missing.map { |session_id| key_name_v1(user_id, session_id) }
+      missing.zip(redis.mget(entry_keys)).to_h
+    end
+
+    fallbacks.merge(found.compact)
+  end
+
+  private_class_method def self.active_session_entries(session_ids, user_id, redis)
+    return [] if session_ids.empty?
+
+    raw_active_session_entries(redis, session_ids, user_id)
+      .values
+      .compact
+      .map { load_raw_session(_1) }
+  end
+
+  private_class_method def self.clean_up_old_sessions(redis, user)
     session_ids = session_ids_for_user(user.id)
 
     return if session_ids.count <= ALLOWED_NUMBER_OF_ACTIVE_SESSIONS
 
-    # remove sessions if there are more than ALLOWED_NUMBER_OF_ACTIVE_SESSIONS.
     sessions = active_session_entries(session_ids, user.id, redis)
-    sessions.sort_by! {|session| session.updated_at }.reverse!
-    destroyable_sessions = sessions.drop(ALLOWED_NUMBER_OF_ACTIVE_SESSIONS)
-    destroyable_session_ids = destroyable_sessions.flat_map { |session| [session.session_id, session.session_private_id] }.compact
-    destroy_sessions(redis, user, destroyable_session_ids) if destroyable_session_ids.any?
+    sessions.sort_by!(&:updated_at).reverse!
+
+    # remove sessions if there are more than ALLOWED_NUMBER_OF_ACTIVE_SESSIONS.
+    destroyable_session_ids = sessions
+      .drop(ALLOWED_NUMBER_OF_ACTIVE_SESSIONS)
+      .flat_map(&:ids)
+
+    destroy_sessions(redis, user, destroyable_session_ids)
   end
 
   # Cleans up the lookup set by removing any session IDs that are no longer present.
   #
   # Returns an array of marshalled ActiveModel objects that are still active.
-  def self.cleaned_up_lookup_entries(redis, user)
+  # Records removed keys in the optional `removed` argument array.
+  def self.cleaned_up_lookup_entries(redis, user, removed = [])
+    lookup_key = lookup_key_name(user.id)
     session_ids = session_ids_for_user(user.id)
-    entries = raw_active_session_entries(redis, session_ids, user.id)
+    session_ids_and_entries = raw_active_session_entries(redis, session_ids, user.id)
 
     # remove expired keys.
     # only the single key entries are automatically expired by redis, the
     # lookup entries in the set need to be removed manually.
-    session_ids_and_entries = session_ids.zip(entries)
     redis.pipelined do |pipeline|
-      session_ids_and_entries.reject { |_session_id, entry| entry }.each do |session_id, _entry|
-        pipeline.srem(lookup_key_name(user.id), session_id)
+      session_ids_and_entries.each do |session_id, entry|
+        next if entry
+
+        pipeline.srem(lookup_key, session_id)
+        removed << session_id
       end
     end
 
-    entries.compact
+    session_ids_and_entries.values.compact
   end
 end

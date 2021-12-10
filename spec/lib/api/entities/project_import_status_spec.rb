@@ -17,6 +17,7 @@ RSpec.describe API::Entities::ProjectImportStatus, :aggregate_failures do
         expect(subject[:correlation_id]).to be_nil
         expect(subject[:import_error]).to be_nil
         expect(subject[:failed_relations]).to eq([])
+        expect(subject[:stats]).to be_nil
       end
     end
 
@@ -74,6 +75,23 @@ RSpec.describe API::Entities::ProjectImportStatus, :aggregate_failures do
         expect(subject[:correlation_id]).to eq(correlation_id)
         expect(subject[:import_error]).to eq('error')
         expect(subject[:failed_relations]).to eq([])
+      end
+    end
+
+    context 'when importing from github', :clean_gitlab_redis_cache do
+      let(:project) { create(:project, :import_failed, import_type: 'github') }
+      let(:entity) { described_class.new(project) }
+
+      before do
+        ::Gitlab::GithubImport::ObjectCounter.increment(project, :issues, :fetched, value: 10)
+        ::Gitlab::GithubImport::ObjectCounter.increment(project, :issues, :imported, value: 8)
+      end
+
+      it 'exposes the import stats' do
+        expect(subject[:stats]).to eq(
+          'fetched' => { 'issues' => 10 },
+          'imported' => { 'issues' => 8 }
+        )
       end
     end
   end

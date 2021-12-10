@@ -19648,6 +19648,7 @@ CREATE TABLE sprints (
     description_html text,
     state_enum smallint DEFAULT 1 NOT NULL,
     iterations_cadence_id integer,
+    sequence integer,
     CONSTRAINT sprints_must_belong_to_project_or_group CHECK ((((project_id <> NULL::bigint) AND (group_id IS NULL)) OR ((group_id <> NULL::bigint) AND (project_id IS NULL)))),
     CONSTRAINT sprints_title CHECK ((char_length(title) <= 255))
 );
@@ -24045,6 +24046,9 @@ ALTER TABLE ONLY sent_notifications
 
 ALTER TABLE ONLY sentry_issues
     ADD CONSTRAINT sentry_issues_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY sprints
+    ADD CONSTRAINT sequence_is_unique_per_iterations_cadence_id UNIQUE (iterations_cadence_id, sequence) DEFERRABLE INITIALLY DEFERRED;
 
 ALTER TABLE ONLY serverless_domain_cluster
     ADD CONSTRAINT serverless_domain_cluster_pkey PRIMARY KEY (uuid);

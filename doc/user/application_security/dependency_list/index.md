@@ -7,7 +7,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Dependency list **(ULTIMATE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/10075) in GitLab 12.0.
+> - Application dependencies [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/10075) in GitLab 12.0.
+> - System dependencies [introduced](https://gitlab.com/groups/gitlab-org/-/epics/6698) in GitLab 14.6.
 
 Use the dependency list to review your project's dependencies and key
 details about those dependencies, including their known vulnerabilities. It is a collection of dependencies in your project, including existing and new findings.
@@ -22,8 +23,9 @@ The dependency list only shows the results of the last successful pipeline to ru
 
 To view your project's dependencies, ensure you meet the following requirements:
 
-- The [Dependency Scanning](../dependency_scanning/index.md) CI job must be
-  configured for your project.
+- The [Dependency Scanning](../dependency_scanning/index.md)
+  or [Container Scanning](../container_scanning/index.md)
+  CI job must be configured for your project.
 - Your project uses at least one of the
   [languages and package managers](../dependency_scanning/index.md#supported-languages-and-package-managers)
   supported by Gemnasium.
@@ -38,7 +40,7 @@ GitLab displays dependencies with the following information:
 |-----------|-------------|
 | Component | The dependency's name and version. |
 | Packager  | The packager used to install the dependency. |
-| Location  | A link to the packager-specific lock file in your project that declared the dependency. It also shows the [dependency path](#dependency-paths) to a top-level dependency, if any, and if supported. |
+| Location  | For system dependencies, this lists the image that was scanned. For application dependencies, this shows a link to the packager-specific lock file in your project that declared the dependency. It also shows the [dependency path](#dependency-paths) to a top-level dependency, if any, and if supported. |
 | License   | Links to dependency's software licenses. |
 
 Displayed dependencies are initially sorted by the severity of their known vulnerabilities, if any. They

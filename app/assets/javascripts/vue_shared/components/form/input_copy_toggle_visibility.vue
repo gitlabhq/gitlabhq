@@ -120,5 +120,8 @@ export default {
         />
       </template>
     </gl-form-input-group>
+    <template v-for="slot in Object.keys($slots)" #[slot]>
+      <slot :name="slot"></slot>
+    </template>
   </gl-form-group>
 </template>

@@ -66,6 +66,14 @@ Announced: 2021-11-22
 
 ## 15.0
 
+### API: `stale` status returned instead of `offline` or `not_connected`
+
+A breaking change will occur for the Runner [API](https://docs.gitlab.com/ee/api/runners.html#runners-api) endpoints in 15.0.
+
+Instead of the GitLab Runner API endpoints returning `offline` and `not_connected` for runners that have not contacted the GitLab instance in the past three months, the API endpoints will return the `stale` value, which was introduced in 14.6.
+
+Announced: 2021-12-22
+
 ### Audit events for repository push events
 
 Audit events for [repository events](https://docs.gitlab.com/ee/administration/audit_events.html#repository-push) are now deprecated and will be removed in GitLab 15.0.

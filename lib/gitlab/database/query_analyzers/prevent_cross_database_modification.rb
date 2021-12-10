@@ -45,11 +45,11 @@ module Gitlab
 
           # We ignore BEGIN in tests as this is the outer transaction for
           # DatabaseCleaner
-          if sql.start_with?('SAVEPOINT') || (!Rails.env.test? && sql.start_with?('BEGIN'))
+          if self.transaction_begin?(parsed)
             context[:transaction_depth_by_db][database] += 1
 
             return
-          elsif sql.start_with?('RELEASE SAVEPOINT', 'ROLLBACK TO SAVEPOINT') || (!Rails.env.test? && sql.start_with?('ROLLBACK', 'COMMIT'))
+          elsif self.transaction_end?(parsed)
             context[:transaction_depth_by_db][database] -= 1
             if context[:transaction_depth_by_db][database] <= 0
               context[:modified_tables_by_db][database].clear
@@ -96,6 +96,42 @@ module Gitlab
           raise if raise_exception?
         end
         # rubocop:enable Metrics/AbcSize
+
+        def self.transaction_begin?(parsed)
+          # We ignore BEGIN or START in tests
+          unless Rails.env.test?
+            return true if transaction_stmt?(parsed, :TRANS_STMT_BEGIN)
+            return true if transaction_stmt?(parsed, :TRANS_STMT_START)
+          end
+
+          # SAVEPOINT
+          return true if transaction_stmt?(parsed, :TRANS_STMT_SAVEPOINT)
+
+          false
+        end
+
+        def self.transaction_end?(parsed)
+          # We ignore ROLLBACK or COMMIT in tests
+          unless Rails.env.test?
+            return true if transaction_stmt?(parsed, :TRANS_STMT_COMMIT)
+            return true if transaction_stmt?(parsed, :TRANS_STMT_COMMIT_PREPARED)
+            return true if transaction_stmt?(parsed, :TRANS_STMT_ROLLBACK)
+            return true if transaction_stmt?(parsed, :TRANS_STMT_ROLLBACK_PREPARED)
+          end
+
+          # RELEASE (SAVEPOINT) or ROLLBACK TO (SAVEPOINT)
+          return true if transaction_stmt?(parsed, :TRANS_STMT_RELEASE)
+          return true if transaction_stmt?(parsed, :TRANS_STMT_ROLLBACK_TO)
+
+          false
+        end
+
+        # Known kinds: https://github.com/pganalyze/pg_query/blob/f6588703deb9d7a94b87b34b7c3bab240087fbc4/ext/pg_query/include/nodes/parsenodes.h#L3050
+        def self.transaction_stmt?(parsed, kind)
+          parsed.pg.tree.stmts.map(&:stmt).any? do |stmt|
+            stmt.node == :transaction_stmt && stmt.transaction_stmt.kind == kind
+          end
+        end
 
         # We only raise in tests for now otherwise some features will be broken
         # in development. For now we've mostly only added allowlist based on

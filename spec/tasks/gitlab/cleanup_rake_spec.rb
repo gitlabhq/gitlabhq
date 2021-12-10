@@ -174,9 +174,9 @@ RSpec.describe 'gitlab:cleanup rake tasks', :silence_stdout do
 
       before do
         Gitlab::Redis::Sessions.with do |redis|
-          redis.set("session:user:gitlab:#{user.id}:#{existing_session_id}",
-                    Marshal.dump(true))
-          redis.sadd("session:lookup:user:gitlab:#{user.id}", (1..10).to_a)
+          redis.set(ActiveSession.key_name(user.id, existing_session_id),
+                    ActiveSession.new(session_id: 'x').dump)
+          redis.sadd(ActiveSession.lookup_key_name(user.id), (1..10).to_a)
         end
       end
 
@@ -186,10 +186,10 @@ RSpec.describe 'gitlab:cleanup rake tasks', :silence_stdout do
 
       it 'removes expired active session lookup keys' do
         Gitlab::Redis::Sessions.with do |redis|
-          lookup_key = "session:lookup:user:gitlab:#{user.id}"
+          lookup_key = ActiveSession.lookup_key_name(user.id)
+
           expect { subject }.to change { redis.scard(lookup_key) }.from(10).to(1)
-          expect(redis.smembers("session:lookup:user:gitlab:#{user.id}")).to(
-            eql([existing_session_id]))
+          expect(redis.smembers(lookup_key)).to contain_exactly existing_session_id
         end
       end
     end

@@ -1078,6 +1078,19 @@ PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 
 You may want to add the `-m` flag to [remove untagged manifests and unreferenced layers](#removing-untagged-manifests-and-unreferenced-layers).
 
+### Stop garbage collection
+
+If you anticipate stopping garbage collection, you should manually run garbage collection as
+described in [Performing garbage collection without downtime](#performing-garbage-collection-without-downtime).
+You can then stop garbage collection by pressing <kbd>Control</kbd>+<kbd>C</kbd>.
+
+Otherwise, interrupting `gitlab-ctl` could leave your registry service in a down state. In this
+case, you must find the [garbage collection process](https://gitlab.com/gitlab-org/omnibus-gitlab/-/blob/master/files/gitlab-ctl-commands/registry_garbage_collect.rb#L26-35)
+itself on the system so that the `gitlab-ctl` command can bring the registry service back up again.
+
+Also, there's no way to save progress or results during the mark phase of the process. Only once
+blobs start being deleted is anything permanent done.
+
 ## Configuring GitLab and Registry to run on separate nodes (Omnibus GitLab)
 
 By default, package assumes that both services are running on the same node.
