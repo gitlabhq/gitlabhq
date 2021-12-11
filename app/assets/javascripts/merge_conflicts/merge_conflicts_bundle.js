@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import initIssuableSidebar from '~/issuable/init_issuable_sidebar';
+import { initIssuableSidebar } from '~/issuable';
 import MergeConflictsResolverApp from './merge_conflict_resolver_app.vue';
 import { createStore } from './store';
 

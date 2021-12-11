@@ -1,6 +1,6 @@
 import loadAwardsHandler from '~/awards_handler';
 import ShortcutsIssuable from '~/behaviors/shortcuts/shortcuts_issuable';
-import initIssuableSidebar from '~/issuable/init_issuable_sidebar';
+import { initIssuableHeaderWarnings, initIssuableSidebar } from '~/issuable';
 import { IssuableType } from '~/vue_shared/issuable/show/constants';
 import Issue from '~/issues/issue';
 import { initIncidentApp, initIncidentHeaderActions } from '~/issues/show/incident';
@@ -10,7 +10,6 @@ import initNotesApp from '~/notes';
 import { store } from '~/notes/stores';
 import initRelatedMergeRequestsApp from '~/issues/related_merge_requests';
 import initSentryErrorStackTraceApp from '~/issues/sentry_error_stack_trace';
-import initIssuableHeaderWarning from '~/issuable/init_issuable_header_warning';
 import ZenMode from '~/zen_mode';
 
 export default function initShowIssue() {
@@ -33,7 +32,7 @@ export default function initShowIssue() {
       break;
   }
 
-  initIssuableHeaderWarning(store);
+  initIssuableHeaderWarnings(store);
   initSentryErrorStackTraceApp();
   initRelatedMergeRequestsApp();
 

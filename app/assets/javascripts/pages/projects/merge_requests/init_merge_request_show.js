@@ -3,7 +3,7 @@ import VueApollo from 'vue-apollo';
 import loadAwardsHandler from '~/awards_handler';
 import ShortcutsIssuable from '~/behaviors/shortcuts/shortcuts_issuable';
 import { initPipelineCountListener } from '~/commit/pipelines/utils';
-import initIssuableSidebar from '~/issuable/init_issuable_sidebar';
+import { initIssuableSidebar } from '~/issuable';
 import StatusBox from '~/issuable/components/status_box.vue';
 import createDefaultClient from '~/lib/graphql';
 import initSourcegraph from '~/sourcegraph';

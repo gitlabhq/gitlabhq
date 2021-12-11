@@ -12,10 +12,10 @@ class Gitlab::Seeder::Crm
   def seed!
     organization_ids = []
 
-    organizations_per_group.times do
+    organizations_per_group.times do |index|
       organization_ids << ::CustomerRelations::Organization.create!(
         group_id: group.id,
-        name: FFaker::Company.name
+        name: "#{FFaker::Company.name}-#{index}"
       ).id
 
       print '.'
