@@ -4,7 +4,6 @@ Gitlab/DelegatePredicateMethods:
   - app/models/clusters/cluster.rb
   - app/models/clusters/platforms/kubernetes.rb
   - app/models/concerns/ci/metadatable.rb
-  - app/models/concerns/diff_positionable_note.rb
   - app/models/concerns/integrations/base_data_fields.rb
   - app/models/concerns/resolvable_discussion.rb
   - app/models/project.rb
