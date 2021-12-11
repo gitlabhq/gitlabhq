@@ -5,7 +5,8 @@ require 'spec_helper'
 RSpec.describe BulkImports::TreeExportService do
   let_it_be(:project) { create(:project) }
   let_it_be(:export_path) { Dir.mktmpdir }
-  let_it_be(:relation) { 'issues' }
+
+  let(:relation) { 'issues' }
 
   subject(:service) { described_class.new(project, export_path, relation) }
 
@@ -25,11 +26,31 @@ RSpec.describe BulkImports::TreeExportService do
         expect { service.execute }.to raise_error(BulkImports::Error, 'Unsupported relation export type')
       end
     end
+
+    context 'when relation is self' do
+      let(:relation) { 'self' }
+
+      it 'executes export on portable itself' do
+        expect_next_instance_of(Gitlab::ImportExport::Json::StreamingSerializer) do |serializer|
+          expect(serializer).to receive(:serialize_root)
+        end
+
+        subject.execute
+      end
+    end
   end
 
   describe '#exported_filename' do
     it 'returns filename of the exported file' do
       expect(subject.exported_filename).to eq('issues.ndjson')
+    end
+
+    context 'when relation is self' do
+      let(:relation) { 'self' }
+
+      it 'returns filename of the exported file' do
+        expect(subject.exported_filename).to eq('self.json')
+      end
     end
   end
 end

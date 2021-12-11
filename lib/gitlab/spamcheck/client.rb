@@ -21,14 +21,16 @@ module Gitlab
         update: ::Spamcheck::Action::UPDATE
       }.freeze
 
+      URL_SCHEME_REGEX = %r{^grpc://|^tls://}.freeze
+
       def initialize
         @endpoint_url = Gitlab::CurrentSettings.current_application_settings.spam_check_endpoint_url
 
-        # remove the `grpc://` as it's only useful to ensure we're expecting to
-        # connect with Spamcheck
-        @endpoint_url = @endpoint_url.gsub(%r(^grpc:\/\/), '')
+        @creds = client_creds(@endpoint_url)
 
-        @creds = stub_creds
+        # remove the `grpc://` or 'tls://' as it's only useful to ensure we're expecting to
+        # connect with Spamcheck
+        @endpoint_url = @endpoint_url.sub(URL_SCHEME_REGEX, '')
       end
 
       def issue_spam?(spam_issue:, user:, context: {})
@@ -96,11 +98,11 @@ module Gitlab
                                         nanos: ar_timestamp.to_time.nsec)
       end
 
-      def stub_creds
-        if Rails.env.development? || Rails.env.test?
-          :this_channel_is_insecure
+      def client_creds(url)
+        if URI(url).scheme == 'tls' || Rails.env.production?
+          GRPC::Core::ChannelCredentials.new(::Gitlab::X509::Certificate.ca_certs_bundle)
         else
-          GRPC::Core::ChannelCredentials.new ::Gitlab::X509::Certificate.ca_certs_bundle
+          :this_channel_is_insecure
         end
       end
 

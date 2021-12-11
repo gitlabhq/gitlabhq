@@ -247,6 +247,7 @@ RSpec.describe ApplicationSetting do
         end
 
         it { is_expected.to allow_value('grpc://example.org/spam_check').for(:spam_check_endpoint_url) }
+        it { is_expected.to allow_value('tls://example.org/spam_check').for(:spam_check_endpoint_url) }
         it { is_expected.not_to allow_value('https://example.org/spam_check').for(:spam_check_endpoint_url) }
         it { is_expected.not_to allow_value('nonsense').for(:spam_check_endpoint_url) }
         it { is_expected.not_to allow_value(nil).for(:spam_check_endpoint_url) }
@@ -259,6 +260,7 @@ RSpec.describe ApplicationSetting do
         end
 
         it { is_expected.to allow_value('grpc://example.org/spam_check').for(:spam_check_endpoint_url) }
+        it { is_expected.to allow_value('tls://example.org/spam_check').for(:spam_check_endpoint_url) }
         it { is_expected.not_to allow_value('https://example.org/spam_check').for(:spam_check_endpoint_url) }
         it { is_expected.not_to allow_value('nonsense').for(:spam_check_endpoint_url) }
         it { is_expected.to allow_value(nil).for(:spam_check_endpoint_url) }

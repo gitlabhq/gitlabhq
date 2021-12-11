@@ -10,6 +10,8 @@ module BulkImports
     end
 
     def execute
+      return serializer.serialize_root(config.class::SELF_RELATION) if self_relation?
+
       relation_definition = config.tree_relation_definition_for(relation)
 
       raise BulkImports::Error, 'Unsupported relation export type' unless relation_definition
@@ -18,6 +20,8 @@ module BulkImports
     end
 
     def exported_filename
+      return "#{relation}.json" if self_relation?
+
       "#{relation}.ndjson"
     end
 
@@ -38,6 +42,10 @@ module BulkImports
 
     def json_writer
       ::Gitlab::ImportExport::Json::NdjsonWriter.new(export_path)
+    end
+
+    def self_relation?
+      relation == config.class::SELF_RELATION
     end
   end
 end

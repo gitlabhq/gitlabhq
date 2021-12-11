@@ -6,6 +6,7 @@ module BulkImports
       include Gitlab::Utils::StrongMemoize
 
       UPLOADS_RELATION = 'uploads'
+      SELF_RELATION = 'self'
 
       def initialize(portable)
         @portable = portable
@@ -28,7 +29,11 @@ module BulkImports
       end
 
       def portable_relations
-        tree_relations + file_relations - skipped_relations
+        tree_relations + file_relations + self_relation - skipped_relations
+      end
+
+      def self_relation?(relation)
+        relation == SELF_RELATION
       end
 
       def tree_relation?(relation)
@@ -43,6 +48,10 @@ module BulkImports
         return unless tree_relation?(relation)
 
         portable_tree[:include].find { |include| include[relation.to_sym] }
+      end
+
+      def portable_relations_tree
+        @portable_relations_tree ||= attributes_finder.find_relations_tree(portable_class_sym).deep_stringify_keys
       end
 
       private
@@ -67,10 +76,6 @@ module BulkImports
         @portable_class_sym ||= portable_class.to_s.demodulize.underscore.to_sym
       end
 
-      def portable_relations_tree
-        @portable_relations_tree ||= attributes_finder.find_relations_tree(portable_class_sym).deep_stringify_keys
-      end
-
       def import_export_yaml
         raise NotImplementedError
       end
@@ -85,6 +90,10 @@ module BulkImports
 
       def skipped_relations
         []
+      end
+
+      def self_relation
+        [SELF_RELATION]
       end
     end
   end

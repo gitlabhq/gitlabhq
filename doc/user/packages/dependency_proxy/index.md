@@ -204,7 +204,7 @@ on the GitLab server. The next time you pull the same image, GitLab gets the lat
 information about the image from Docker Hub, but serves the existing blobs
 from the GitLab server.
 
-## Clear the Dependency Proxy cache
+## Reduce storage usage
 
 Blobs are kept forever on the GitLab server, and there is no hard limit on how much data can be
 stored.
@@ -218,6 +218,16 @@ cache.
 If you clear the cache, the next time a pipeline runs it must pull an image or tag from Docker Hub.
 
 ### Cleanup policies
+
+#### Enable cleanup policies from within GitLab
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/340777) in GitLab 14.6
+
+You can enable an automatic time-to-live (TTL) policy for the Dependency Proxy from the user
+interface. To do this, navigate to your group's **Settings > Packages & Registries > Dependency Proxy**
+and enable the setting to automatically clear items from the cache after 90 days.
+
+#### Enable cleanup policies with GraphQL 
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/294187) in GitLab 14.4.
 
@@ -249,8 +259,7 @@ mutation {
 ```
 
 See the [Getting started with GraphQL](../../../api/graphql/getting_started.md)
-guide to learn how to make GraphQL queries. Support for enabling and configuring cleanup policies in
-the UI is tracked in [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/340777).
+guide to learn how to make GraphQL queries. 
 
 When the policy is initially enabled, the default TTL setting is 90 days. Once enabled, stale
 dependency proxy files are queued for deletion each day. Deletion may not occur right away due to

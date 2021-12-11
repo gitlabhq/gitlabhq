@@ -398,6 +398,16 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="querysnippetstype"></a>`type` | [`TypeEnum`](#typeenum) | Type of snippet. |
 | <a id="querysnippetsvisibility"></a>`visibility` | [`VisibilityScopesEnum`](#visibilityscopesenum) | Visibility of the snippet. |
 
+### `Query.subscriptionFutureEntries`
+
+Fields related to entries in future subscriptions.
+
+Returns [`SubscriptionFutureEntryConnection`](#subscriptionfutureentryconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, `last: Int`.
+
 ### `Query.timelogs`
 
 Find timelogs visible to the current user.
@@ -7565,6 +7575,29 @@ The edge type for [`Submodule`](#submodule).
 | ---- | ---- | ----------- |
 | <a id="submoduleedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="submoduleedgenode"></a>`node` | [`Submodule`](#submodule) | The item at the end of the edge. |
+
+#### `SubscriptionFutureEntryConnection`
+
+The connection type for [`SubscriptionFutureEntry`](#subscriptionfutureentry).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="subscriptionfutureentryconnectionedges"></a>`edges` | [`[SubscriptionFutureEntryEdge]`](#subscriptionfutureentryedge) | A list of edges. |
+| <a id="subscriptionfutureentryconnectionnodes"></a>`nodes` | [`[SubscriptionFutureEntry]`](#subscriptionfutureentry) | A list of nodes. |
+| <a id="subscriptionfutureentryconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `SubscriptionFutureEntryEdge`
+
+The edge type for [`SubscriptionFutureEntry`](#subscriptionfutureentry).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="subscriptionfutureentryedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="subscriptionfutureentryedgenode"></a>`node` | [`SubscriptionFutureEntry`](#subscriptionfutureentry) | The item at the end of the edge. |
 
 #### `TerraformStateConnection`
 
@@ -14738,6 +14771,23 @@ Represents the Geo sync and verification state of a snippet repository.
 | <a id="submoduletreeurl"></a>`treeUrl` | [`String`](#string) | Tree URL for the sub-module. |
 | <a id="submoduletype"></a>`type` | [`EntryType!`](#entrytype) | Type of tree entry. |
 | <a id="submoduleweburl"></a>`webUrl` | [`String`](#string) | Web URL for the sub-module. |
+
+### `SubscriptionFutureEntry`
+
+Represents an entry from the future subscriptions.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="subscriptionfutureentrycompany"></a>`company` | [`String`](#string) | Company of the licensee. |
+| <a id="subscriptionfutureentryemail"></a>`email` | [`String`](#string) | Email of the licensee. |
+| <a id="subscriptionfutureentryexpiresat"></a>`expiresAt` | [`Date`](#date) | Date when the license expires. |
+| <a id="subscriptionfutureentryname"></a>`name` | [`String`](#string) | Name of the licensee. |
+| <a id="subscriptionfutureentryplan"></a>`plan` | [`String!`](#string) | Name of the subscription plan. |
+| <a id="subscriptionfutureentrystartsat"></a>`startsAt` | [`Date`](#date) | Date when the license started. |
+| <a id="subscriptionfutureentrytype"></a>`type` | [`String!`](#string) | Type of license the subscription will yield. |
+| <a id="subscriptionfutureentryusersinlicensecount"></a>`usersInLicenseCount` | [`Int`](#int) | Number of paid user seats. |
 
 ### `TaskCompletionStatus`
 

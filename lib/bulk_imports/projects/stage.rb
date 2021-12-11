@@ -15,6 +15,10 @@ module BulkImports
             pipeline: BulkImports::Projects::Pipelines::RepositoryPipeline,
             stage: 1
           },
+          project_attributes: {
+            pipeline: BulkImports::Projects::Pipelines::ProjectAttributesPipeline,
+            stage: 1
+          },
           labels: {
             pipeline: BulkImports::Common::Pipelines::LabelsPipeline,
             stage: 2
