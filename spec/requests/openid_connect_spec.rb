@@ -37,7 +37,10 @@ RSpec.describe 'OpenID Connect requests' do
       'website'        => 'https://example.com',
       'profile'        => 'http://localhost/alice',
       'picture'        => "http://localhost/uploads/-/system/user/avatar/#{user.id}/dk.png",
-      'groups'         => kind_of(Array)
+      'groups'         => kind_of(Array),
+      'https://gitlab.org/claims/groups/owner'      => kind_of(Array),
+      'https://gitlab.org/claims/groups/maintainer' => kind_of(Array),
+      'https://gitlab.org/claims/groups/developer'  => kind_of(Array)
     }
   end
 
@@ -119,6 +122,7 @@ RSpec.describe 'OpenID Connect requests' do
       before do
         group1.add_user(user, GroupMember::OWNER)
         group3.add_user(user, Gitlab::Access::DEVELOPER)
+        group4.add_user(user, Gitlab::Access::MAINTAINER)
 
         request_user_info!
       end
@@ -129,6 +133,10 @@ RSpec.describe 'OpenID Connect requests' do
         expected_groups = [group1.full_path, group3.full_path]
         expected_groups << group4.full_path
         expect(json_response['groups']).to match_array(expected_groups)
+
+        expect(json_response['https://gitlab.org/claims/groups/owner']).to match_array([group1.full_path])
+        expect(json_response['https://gitlab.org/claims/groups/maintainer']).to match_array([group4.full_path])
+        expect(json_response['https://gitlab.org/claims/groups/developer']).to match_array([group3.full_path])
       end
 
       it 'does not include any unknown claims' do
