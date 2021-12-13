@@ -2,7 +2,7 @@
 import { GlModal, GlSprintf, GlKeysetPagination } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import PackagesListRow from '~/packages_and_registries/package_registry/components/list/package_list_row.vue';
-import PackagesListLoader from '~/packages/shared/components/packages_list_loader.vue';
+import PackagesListLoader from '~/packages_and_registries/shared/components/packages_list_loader.vue';
 import {
   DELETE_PACKAGE_TRACKING_ACTION,
   REQUEST_DELETE_PACKAGE_TRACKING_ACTION,

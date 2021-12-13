@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils';
-import PackageTags from '~/packages/shared/components/package_tags.vue';
+import PackageTags from '~/packages_and_registries/shared/components/package_tags.vue';
 import { mockTags } from 'jest/packages_and_registries/infrastructure_registry/components/mock_data';
 
 describe('PackageTags', () => {

@@ -100,7 +100,7 @@ export default {
 </script>
 
 <template>
-  <div class="issuable-show-container">
+  <div class="issuable-show-container" data-qa-selector="issuable_show_container">
     <issuable-header
       :status-badge-class="statusBadgeClass"
       :status-icon="statusIcon"

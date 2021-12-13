@@ -1,4 +1,4 @@
-import { beautifyPath } from '~/packages/shared/utils';
+import { beautifyPath } from '~/packages_and_registries/shared/utils';
 import { LIST_KEY_PROJECT } from '../constants';
 
 export default (state) =>

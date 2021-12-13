@@ -1,6 +1,6 @@
 <script>
 import { GlIcon, GlLink, GlModal, GlModalDirective, GlLoadingIcon } from '@gitlab/ui';
-import { IssuableType } from '~/issues/show/constants';
+import { IssuableType } from '~/issues/constants';
 import { s__, __ } from '~/locale';
 import { timeTrackingQueries } from '~/sidebar/constants';
 

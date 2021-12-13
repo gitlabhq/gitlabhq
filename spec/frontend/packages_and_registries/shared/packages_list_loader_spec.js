@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils';
-import PackagesListLoader from '~/packages/shared/components/packages_list_loader.vue';
+import PackagesListLoader from '~/packages_and_registries/shared/components/packages_list_loader.vue';
 
 describe('PackagesListLoader', () => {
   let wrapper;

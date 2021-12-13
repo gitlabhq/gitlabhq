@@ -30,7 +30,7 @@ export default {
 
         const {
           data: {
-            createWorkItem: {
+            localCreateWorkItem: {
               workItem: { id },
             },
           },
@@ -60,11 +60,10 @@ export default {
         class="gl-mr-3"
         data-testid="create-button"
         type="submit"
-        @click="createWorkItem"
       >
         {{ __('Create') }}
       </gl-button>
-      <gl-button data-testid="cancel-button" @click="$router.go(-1)">
+      <gl-button type="button" data-testid="cancel-button" @click="$router.go(-1)">
         {{ __('Cancel') }}
       </gl-button>
     </div>

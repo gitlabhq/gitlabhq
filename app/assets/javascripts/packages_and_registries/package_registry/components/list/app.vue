@@ -3,7 +3,7 @@ import { GlEmptyState, GlLink, GlSprintf } from '@gitlab/ui';
 import createFlash from '~/flash';
 import { historyReplaceState } from '~/lib/utils/common_utils';
 import { s__ } from '~/locale';
-import { SHOW_DELETE_SUCCESS_ALERT } from '~/packages/shared/constants';
+import { SHOW_DELETE_SUCCESS_ALERT } from '~/packages_and_registries/shared/constants';
 import {
   PROJECT_RESOURCE_TYPE,
   GROUP_RESOURCE_TYPE,

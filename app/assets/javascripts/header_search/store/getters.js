@@ -1,3 +1,4 @@
+import { omitBy, isNil } from 'lodash';
 import { objectToQuery } from '~/lib/utils/url_utility';
 
 import {
@@ -12,23 +13,29 @@ import {
 } from '../constants';
 
 export const searchQuery = (state) => {
-  const query = {
-    search: state.search,
-    nav_source: 'navbar',
-    project_id: state.searchContext.project?.id,
-    group_id: state.searchContext.group?.id,
-    scope: state.searchContext.scope,
-  };
+  const query = omitBy(
+    {
+      search: state.search,
+      nav_source: 'navbar',
+      project_id: state.searchContext.project?.id,
+      group_id: state.searchContext.group?.id,
+      scope: state.searchContext?.scope,
+    },
+    isNil,
+  );
 
   return `${state.searchPath}?${objectToQuery(query)}`;
 };
 
 export const autocompleteQuery = (state) => {
-  const query = {
-    term: state.search,
-    project_id: state.searchContext.project?.id,
-    project_ref: state.searchContext.ref,
-  };
+  const query = omitBy(
+    {
+      term: state.search,
+      project_id: state.searchContext.project?.id,
+      project_ref: state.searchContext?.ref,
+    },
+    isNil,
+  );
 
   return `${state.autocompletePath}?${objectToQuery(query)}`;
 };
@@ -82,42 +89,43 @@ export const defaultSearchOptions = (state, getters) => {
 };
 
 export const projectUrl = (state) => {
-  if (!state.searchContext.project || !state.searchContext.group) {
-    return null;
-  }
-
-  const query = {
-    search: state.search,
-    nav_source: 'navbar',
-    project_id: state.searchContext.project.id,
-    group_id: state.searchContext.group.id,
-    scope: state.searchContext.scope,
-  };
+  const query = omitBy(
+    {
+      search: state.search,
+      nav_source: 'navbar',
+      project_id: state.searchContext?.project?.id,
+      group_id: state.searchContext?.group?.id,
+      scope: state.searchContext?.scope,
+    },
+    isNil,
+  );
 
   return `${state.searchPath}?${objectToQuery(query)}`;
 };
 
 export const groupUrl = (state) => {
-  if (!state.searchContext.group) {
-    return null;
-  }
-
-  const query = {
-    search: state.search,
-    nav_source: 'navbar',
-    group_id: state.searchContext.group.id,
-    scope: state.searchContext.scope,
-  };
+  const query = omitBy(
+    {
+      search: state.search,
+      nav_source: 'navbar',
+      group_id: state.searchContext?.group?.id,
+      scope: state.searchContext?.scope,
+    },
+    isNil,
+  );
 
   return `${state.searchPath}?${objectToQuery(query)}`;
 };
 
 export const allUrl = (state) => {
-  const query = {
-    search: state.search,
-    nav_source: 'navbar',
-    scope: state.searchContext.scope,
-  };
+  const query = omitBy(
+    {
+      search: state.search,
+      nav_source: 'navbar',
+      scope: state.searchContext?.scope,
+    },
+    isNil,
+  );
 
   return `${state.searchPath}?${objectToQuery(query)}`;
 };

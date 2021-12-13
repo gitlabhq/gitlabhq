@@ -5,9 +5,9 @@ import Vuex from 'vuex';
 import stubChildren from 'helpers/stub_children';
 import PackagesList from '~/packages_and_registries/infrastructure_registry/list/components/packages_list.vue';
 import PackagesListRow from '~/packages_and_registries/infrastructure_registry/shared/package_list_row.vue';
-import PackagesListLoader from '~/packages/shared/components/packages_list_loader.vue';
-import { TrackingActions } from '~/packages/shared/constants';
-import * as SharedUtils from '~/packages/shared/utils';
+import PackagesListLoader from '~/packages_and_registries/shared/components/packages_list_loader.vue';
+import { TRACKING_ACTIONS } from '~/packages_and_registries/shared/constants';
+import { TRACK_CATEGORY } from '~/packages_and_registries/infrastructure_registry/shared/constants';
 import Tracking from '~/tracking';
 import { packageList } from '../../mock_data';
 
@@ -190,26 +190,18 @@ describe('packages_list', () => {
 
   describe('tracking', () => {
     let eventSpy;
-    let utilSpy;
-    const category = 'foo';
 
     beforeEach(() => {
       mountComponent();
       eventSpy = jest.spyOn(Tracking, 'event');
-      utilSpy = jest.spyOn(SharedUtils, 'packageTypeToTrackCategory').mockReturnValue(category);
       wrapper.setData({ itemToBeDeleted: { package_type: 'conan' } });
-    });
-
-    it('tracking category calls packageTypeToTrackCategory', () => {
-      expect(wrapper.vm.tracking.category).toBe(category);
-      expect(utilSpy).toHaveBeenCalledWith('conan');
     });
 
     it('deleteItemConfirmation calls event', () => {
       wrapper.vm.deleteItemConfirmation();
       expect(eventSpy).toHaveBeenCalledWith(
-        category,
-        TrackingActions.DELETE_PACKAGE,
+        TRACK_CATEGORY,
+        TRACKING_ACTIONS.DELETE_PACKAGE,
         expect.any(Object),
       );
     });

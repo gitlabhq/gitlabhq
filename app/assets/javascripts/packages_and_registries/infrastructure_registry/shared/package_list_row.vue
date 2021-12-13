@@ -3,11 +3,13 @@ import { GlButton, GlLink, GlSprintf, GlTooltipDirective, GlTruncate } from '@gi
 import { s__ } from '~/locale';
 import ListItem from '~/vue_shared/components/registry/list_item.vue';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
-import { PACKAGE_ERROR_STATUS, PACKAGE_DEFAULT_STATUS } from '~/packages/shared/constants';
-import { getPackageTypeLabel } from '~/packages/shared/utils';
-import PackagePath from '~/packages/shared/components/package_path.vue';
-import PackageTags from '~/packages/shared/components/package_tags.vue';
-import PublishMethod from '~/packages/shared/components/publish_method.vue';
+import {
+  PACKAGE_ERROR_STATUS,
+  PACKAGE_DEFAULT_STATUS,
+} from '~/packages_and_registries/shared/constants';
+import PackagePath from '~/packages_and_registries/shared/components/package_path.vue';
+import PackageTags from '~/packages_and_registries/shared/components/package_tags.vue';
+import PublishMethod from '~/packages_and_registries/shared/components/publish_method.vue';
 import InfrastructureIconAndName from '~/packages_and_registries/infrastructure_registry/shared/infrastructure_icon_and_name.vue';
 
 export default {
@@ -53,9 +55,6 @@ export default {
     },
   },
   computed: {
-    packageType() {
-      return getPackageTypeLabel(this.packageEntity.package_type);
-    },
     hasPipeline() {
       return Boolean(this.packageEntity.pipeline);
     },
@@ -120,9 +119,7 @@ export default {
           </gl-sprintf>
         </div>
 
-        <infrastructure-icon-and-name v-if="showPackageType">
-          {{ packageType }}
-        </infrastructure-icon-and-name>
+        <infrastructure-icon-and-name v-if="showPackageType" />
 
         <package-path
           v-if="hasProjectLink"

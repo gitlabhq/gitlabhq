@@ -166,6 +166,8 @@ export default {
     class="issue gl-display-flex! gl-px-5!"
     :class="{ closed: issuable.closedAt, today: createdInPastDay }"
     :data-labels="labelIdsString"
+    data-qa-selector="issuable_item_container"
+    :data-qa-issue-id="issuableId"
   >
     <gl-form-checkbox
       v-if="showCheckbox"

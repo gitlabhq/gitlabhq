@@ -262,5 +262,16 @@ RSpec.describe GraphqlController do
       expect(controller).to have_received(:append_info_to_payload)
       expect(log_payload.dig(:metadata, :graphql)).to match_array(expected_logs)
     end
+
+    it 'appends the exception in case of errors' do
+      exception = StandardError.new('boom')
+
+      expect(controller).to receive(:execute).and_raise(exception)
+
+      post :execute, params: { _json: graphql_queries }
+
+      expect(controller).to have_received(:append_info_to_payload)
+      expect(log_payload.dig(:exception_object)).to eq(exception)
+    end
   end
 end

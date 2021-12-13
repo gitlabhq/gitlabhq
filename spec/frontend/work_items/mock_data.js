@@ -1,13 +1,13 @@
 export const workItemQueryResponse = {
   workItem: {
-    __typename: 'WorkItem',
+    __typename: 'LocalWorkItem',
     id: '1',
     type: 'FEATURE',
     widgets: {
-      __typename: 'WorkItemWidgetConnection',
+      __typename: 'LocalWorkItemWidgetConnection',
       nodes: [
         {
-          __typename: 'TitleWidget',
+          __typename: 'LocalTitleWidget',
           type: 'TITLE',
           contentText: 'Test',
         },
@@ -17,15 +17,15 @@ export const workItemQueryResponse = {
 };
 
 export const updateWorkItemMutationResponse = {
-  __typename: 'UpdateWorkItemPayload',
+  __typename: 'LocalUpdateWorkItemPayload',
   workItem: {
-    __typename: 'WorkItem',
+    __typename: 'LocalWorkItem',
     id: '1',
     widgets: {
-      __typename: 'WorkItemWidgetConnection',
+      __typename: 'LocalWorkItemWidgetConnection',
       nodes: [
         {
-          __typename: 'TitleWidget',
+          __typename: 'LocalTitleWidget',
           type: 'TITLE',
           enabled: true,
           contentText: 'Updated title',

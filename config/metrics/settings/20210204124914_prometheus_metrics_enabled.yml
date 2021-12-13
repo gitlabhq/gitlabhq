@@ -1,5 +1,5 @@
 ---
-data_category: optional
+data_category: operational
 key_path: prometheus_metrics_enabled
 description: Whether Prometheus Metrics endpoint is enabled
 product_section: growth

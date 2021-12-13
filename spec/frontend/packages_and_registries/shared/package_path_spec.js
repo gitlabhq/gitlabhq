@@ -1,6 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
-import PackagePath from '~/packages/shared/components/package_path.vue';
+import PackagePath from '~/packages_and_registries/shared/components/package_path.vue';
 
 describe('PackagePath', () => {
   let wrapper;

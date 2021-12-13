@@ -17,7 +17,7 @@ import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import createFlash from '~/flash';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
-import { IssuableType } from '~/issues/show/constants';
+import { IssuableType } from '~/issues/constants';
 import { timeFor } from '~/lib/utils/datetime_utility';
 import SidebarDropdownWidget from '~/sidebar/components/sidebar_dropdown_widget.vue';
 import SidebarEditableItem from '~/sidebar/components/sidebar_editable_item.vue';

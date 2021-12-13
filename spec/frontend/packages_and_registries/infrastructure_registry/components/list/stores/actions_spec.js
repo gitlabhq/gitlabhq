@@ -6,7 +6,7 @@ import createFlash from '~/flash';
 import { MISSING_DELETE_PATH_ERROR } from '~/packages_and_registries/infrastructure_registry/list/constants';
 import * as actions from '~/packages_and_registries/infrastructure_registry/list/stores/actions';
 import * as types from '~/packages_and_registries/infrastructure_registry/list/stores/mutation_types';
-import { DELETE_PACKAGE_ERROR_MESSAGE } from '~/packages/shared/constants';
+import { DELETE_PACKAGE_ERROR_MESSAGE } from '~/packages_and_registries/shared/constants';
 
 jest.mock('~/flash.js');
 jest.mock('~/api.js');

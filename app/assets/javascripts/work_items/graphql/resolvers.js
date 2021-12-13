@@ -3,17 +3,17 @@ import workItemQuery from './work_item.query.graphql';
 
 export const resolvers = {
   Mutation: {
-    createWorkItem(_, { input }, { cache }) {
+    localCreateWorkItem(_, { input }, { cache }) {
       const id = uuids()[0];
       const workItem = {
-        __typename: 'WorkItem',
+        __typename: 'LocalWorkItem',
         type: 'FEATURE',
         id,
         widgets: {
-          __typename: 'WorkItemWidgetConnection',
+          __typename: 'LocalWorkItemWidgetConnection',
           nodes: [
             {
-              __typename: 'TitleWidget',
+              __typename: 'LocalTitleWidget',
               type: 'TITLE',
               enabled: true,
               contentText: input.title,
@@ -25,24 +25,24 @@ export const resolvers = {
       cache.writeQuery({ query: workItemQuery, variables: { id }, data: { workItem } });
 
       return {
-        __typename: 'CreateWorkItemPayload',
+        __typename: 'LocalCreateWorkItemPayload',
         workItem,
       };
     },
 
-    updateWorkItem(_, { input }, { cache }) {
+    localUpdateWorkItem(_, { input }, { cache }) {
       const workItemTitle = {
-        __typename: 'TitleWidget',
+        __typename: 'LocalTitleWidget',
         type: 'TITLE',
         enabled: true,
         contentText: input.title,
       };
       const workItem = {
-        __typename: 'WorkItem',
+        __typename: 'LocalWorkItem',
         type: 'FEATURE',
         id: input.id,
         widgets: {
-          __typename: 'WorkItemWidgetConnection',
+          __typename: 'LocalWorkItemWidgetConnection',
           nodes: [workItemTitle],
         },
       };
@@ -50,7 +50,7 @@ export const resolvers = {
       cache.writeQuery({ query: workItemQuery, variables: { id: input.id }, data: { workItem } });
 
       return {
-        __typename: 'UpdateWorkItemPayload',
+        __typename: 'LocalUpdateWorkItemPayload',
         workItem,
       };
     },

@@ -6,8 +6,11 @@ import createFlash from '~/flash';
 import * as commonUtils from '~/lib/utils/common_utils';
 import PackageListApp from '~/packages_and_registries/infrastructure_registry/list/components/packages_list_app.vue';
 import { DELETE_PACKAGE_SUCCESS_MESSAGE } from '~/packages_and_registries/infrastructure_registry/list/constants';
-import { SHOW_DELETE_SUCCESS_ALERT } from '~/packages/shared/constants';
-import { FILTERED_SEARCH_TERM } from '~/packages_and_registries/shared/constants';
+import {
+  SHOW_DELETE_SUCCESS_ALERT,
+  FILTERED_SEARCH_TERM,
+} from '~/packages_and_registries/shared/constants';
+
 import * as packageUtils from '~/packages_and_registries/shared/utils';
 import InfrastructureSearch from '~/packages_and_registries/infrastructure_registry/list/components/infrastructure_search.vue';
 

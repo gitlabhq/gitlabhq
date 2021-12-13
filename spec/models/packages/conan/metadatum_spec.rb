@@ -54,23 +54,17 @@ RSpec.describe Packages::Conan::Metadatum, type: :model do
 
       subject { metadatum.valid? }
 
-      where(:username, :channel, :feature_flag, :valid) do
-        'username' | 'channel' | true  | true
-        'username' | '_'       | true  | false
-        '_'        | 'channel' | true  | false
-        '_'        | '_'       | true  | true
-
-        'username' | 'channel' | false | true
-        'username' | '_'       | false | false
-        '_'        | 'channel' | false | false
-        '_'        | '_'       | false | false
+      where(:username, :channel, :valid) do
+        'username' | 'channel' | true
+        'username' | '_'       | false
+        '_'        | 'channel' | false
+        '_'        | '_'       | true
       end
 
       with_them do
         before do
           metadatum.package_username = username
           metadatum.package_channel = channel
-          stub_feature_flags(packages_conan_allow_empty_username_channel: feature_flag)
         end
 
         it { is_expected.to eq(valid) }

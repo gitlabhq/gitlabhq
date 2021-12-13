@@ -50,6 +50,8 @@ class GraphqlController < ApplicationController
   end
 
   rescue_from StandardError do |exception|
+    @exception_object = exception
+
     log_exception(exception)
 
     if Rails.env.test? || Rails.env.development?
@@ -197,7 +199,9 @@ class GraphqlController < ApplicationController
 
     # Merging to :metadata will ensure these are logged as top level keys
     payload[:metadata] ||= {}
-    payload[:metadata].merge!(graphql: logs)
+    payload[:metadata][:graphql] = logs
+
+    payload[:exception_object] = @exception_object if @exception_object
   end
 
   def logs

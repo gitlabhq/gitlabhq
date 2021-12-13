@@ -28,3 +28,13 @@ export const extractFilterAndSorting = (queryObject) => {
   }
   return { filters, sorting };
 };
+
+export const beautifyPath = (path) => (path ? path.split('/').join(' / ') : '');
+
+export const getCommitLink = ({ project_path: projectPath, pipeline = {} }, isGroup = false) => {
+  if (isGroup) {
+    return `/${projectPath}/commit/${pipeline.sha}`;
+  }
+
+  return `../commit/${pipeline.sha}`;
+};

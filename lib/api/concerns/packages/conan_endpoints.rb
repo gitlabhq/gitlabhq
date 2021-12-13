@@ -27,6 +27,7 @@ module API
 
         PACKAGE_COMPONENT_REGEX = Gitlab::Regex.conan_recipe_component_regex
         CONAN_REVISION_REGEX = Gitlab::Regex.conan_revision_regex
+        CONAN_REVISION_USER_CHANNEL_REGEX = Gitlab::Regex.conan_recipe_user_channel_regex
 
         CONAN_FILES = (Gitlab::Regex::Packages::CONAN_RECIPE_FILES + Gitlab::Regex::Packages::CONAN_PACKAGE_FILES).freeze
 
@@ -105,12 +106,12 @@ module API
           params do
             requires :package_name, type: String, regexp: PACKAGE_COMPONENT_REGEX, desc: 'Package name'
             requires :package_version, type: String, regexp: PACKAGE_COMPONENT_REGEX, desc: 'Package version'
-            requires :package_username, type: String, packages_conan_user_channel: true, desc: 'Package username'
-            requires :package_channel, type: String, packages_conan_user_channel: true, desc: 'Package channel'
+            requires :package_username, type: String, regexp: CONAN_REVISION_USER_CHANNEL_REGEX, desc: 'Package username'
+            requires :package_channel, type: String, regexp: CONAN_REVISION_USER_CHANNEL_REGEX, desc: 'Package channel'
           end
           namespace 'conans/:package_name/:package_version/:package_username/:package_channel', requirements: PACKAGE_REQUIREMENTS do
             after_validation do
-              check_username_channel if Feature.enabled?(:packages_conan_allow_empty_username_channel)
+              check_username_channel
             end
 
             # Get the snapshot
@@ -268,8 +269,8 @@ module API
           params do
             requires :package_name, type: String, regexp: PACKAGE_COMPONENT_REGEX, desc: 'Package name'
             requires :package_version, type: String, regexp: PACKAGE_COMPONENT_REGEX, desc: 'Package version'
-            requires :package_username, type: String, packages_conan_user_channel: true, desc: 'Package username'
-            requires :package_channel, type: String, packages_conan_user_channel: true, desc: 'Package channel'
+            requires :package_username, type: String, regexp: CONAN_REVISION_USER_CHANNEL_REGEX, desc: 'Package username'
+            requires :package_channel, type: String, regexp: CONAN_REVISION_USER_CHANNEL_REGEX, desc: 'Package channel'
             requires :recipe_revision, type: String, regexp: CONAN_REVISION_REGEX, desc: 'Conan Recipe Revision'
           end
           namespace 'files/:package_name/:package_version/:package_username/:package_channel/:recipe_revision', requirements: PACKAGE_REQUIREMENTS do
@@ -278,7 +279,7 @@ module API
             end
 
             after_validation do
-              check_username_channel if Feature.enabled?(:packages_conan_allow_empty_username_channel)
+              check_username_channel
             end
 
             params do

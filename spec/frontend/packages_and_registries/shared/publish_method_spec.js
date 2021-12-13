@@ -1,5 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
-import PublishMethod from '~/packages/shared/components/publish_method.vue';
+import PublishMethod from '~/packages_and_registries/shared/components/publish_method.vue';
 import { packageList } from 'jest/packages_and_registries/infrastructure_registry/components/mock_data';
 
 describe('publish_method', () => {

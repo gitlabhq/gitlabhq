@@ -1,6 +1,6 @@
 import { GlIcon } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import PackageIconAndName from '~/packages/shared/components/package_icon_and_name.vue';
+import PackageIconAndName from '~/packages_and_registries/shared/components/package_icon_and_name.vue';
 
 describe('PackageIconAndName', () => {
   let wrapper;

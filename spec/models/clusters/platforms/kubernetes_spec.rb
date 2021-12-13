@@ -201,7 +201,7 @@ RSpec.describe Clusters::Platforms::Kubernetes do
     it { is_expected.to be_an_instance_of(Gitlab::Kubernetes::KubeClient) }
 
     context 'ca_pem is a single certificate' do
-      let(:ca_pem) { File.read(Rails.root.join('spec/fixtures/clusters/ca_certificate.pem')) }
+      let(:ca_pem) { File.read(Rails.root.join('spec/fixtures/clusters/root_certificate.pem')) }
       let(:kubernetes) do
         build(:cluster_platform_kubernetes,
               :configured,
@@ -228,21 +228,22 @@ RSpec.describe Clusters::Platforms::Kubernetes do
               ca_pem: cert_chain)
       end
 
-      it 'includes chain of certificates', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/347425' do
-        cert1_file = File.read(Rails.root.join('spec/fixtures/clusters/root_certificate.pem'))
-        cert1 = OpenSSL::X509::Certificate.new(cert1_file)
+      where(:fixture_path) do
+        %w[
+          spec/fixtures/clusters/root_certificate.pem
+          spec/fixtures/clusters/intermediate_certificate.pem
+          spec/fixtures/clusters/leaf_certificate.pem
+        ]
+      end
 
-        cert2_file = File.read(Rails.root.join('spec/fixtures/clusters/intermediate_certificate.pem'))
-        cert2 = OpenSSL::X509::Certificate.new(cert2_file)
+      with_them do
+        it 'includes chain of certificates' do
+          cert_store = kubernetes.kubeclient.kubeclient_options[:ssl_options][:cert_store]
+          cert_file = File.read(Rails.root.join(fixture_path))
+          certificate = OpenSSL::X509::Certificate.new(cert_file)
 
-        cert3_file = File.read(Rails.root.join('spec/fixtures/clusters/ca_certificate.pem'))
-        cert3 = OpenSSL::X509::Certificate.new(cert3_file)
-
-        cert_store = kubernetes.kubeclient.kubeclient_options[:ssl_options][:cert_store]
-
-        expect(cert_store.verify(cert1)).to be true
-        expect(cert_store.verify(cert2)).to be true
-        expect(cert_store.verify(cert3)).to be true
+          expect(cert_store.verify(certificate)).to be true
+        end
       end
     end
   end

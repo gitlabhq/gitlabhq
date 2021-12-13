@@ -1,1 +1,1 @@
-{"__schema":{"types":[{"kind":"INTERFACE","name":"WorkItemWidget","possibleTypes":[{"name":"TitleWidget"}]}]}}
+{"__schema":{"types":[{"kind":"INTERFACE","name":"LocalWorkItemWidget","possibleTypes":[{"name":"LocalTitleWidget"}]}]}}

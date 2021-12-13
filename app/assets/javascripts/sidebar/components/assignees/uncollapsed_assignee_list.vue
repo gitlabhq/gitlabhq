@@ -1,6 +1,6 @@
 <script>
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import { IssuableType } from '~/issues/show/constants';
+import { IssuableType } from '~/issues/constants';
 import { __, sprintf } from '~/locale';
 import AttentionRequestedToggle from '../attention_requested_toggle.vue';
 import AssigneeAvatarLink from './assignee_avatar_link.vue';

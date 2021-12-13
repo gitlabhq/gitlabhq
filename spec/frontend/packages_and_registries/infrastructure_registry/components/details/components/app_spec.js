@@ -10,9 +10,9 @@ import PackageFiles from '~/packages_and_registries/infrastructure_registry/deta
 import PackageHistory from '~/packages_and_registries/infrastructure_registry/details/components/package_history.vue';
 import * as getters from '~/packages_and_registries/infrastructure_registry/details/store/getters';
 import PackageListRow from '~/packages_and_registries/infrastructure_registry/shared/package_list_row.vue';
-import PackagesListLoader from '~/packages/shared/components/packages_list_loader.vue';
-import { TrackingActions } from '~/packages/shared/constants';
-import * as SharedUtils from '~/packages/shared/utils';
+import PackagesListLoader from '~/packages_and_registries/shared/components/packages_list_loader.vue';
+import { TRACKING_ACTIONS } from '~/packages_and_registries/shared/constants';
+import { TRACK_CATEGORY } from '~/packages_and_registries/infrastructure_registry/shared/constants';
 import TerraformTitle from '~/packages_and_registries/infrastructure_registry/details/components/details_title.vue';
 import TerraformInstallation from '~/packages_and_registries/infrastructure_registry/details/components/terraform_installation.vue';
 import Tracking from '~/tracking';
@@ -232,87 +232,78 @@ describe('PackagesApp', () => {
 
     describe('tracking', () => {
       let eventSpy;
-      let utilSpy;
-      const category = 'foo';
 
       beforeEach(() => {
         eventSpy = jest.spyOn(Tracking, 'event');
-        utilSpy = jest.spyOn(SharedUtils, 'packageTypeToTrackCategory').mockReturnValue(category);
       });
 
-      it('tracking category calls packageTypeToTrackCategory', () => {
-        createComponent({ packageEntity: npmPackage });
-        expect(wrapper.vm.tracking.category).toBe(category);
-        expect(utilSpy).toHaveBeenCalledWith('npm');
-      });
-
-      it(`delete button on delete modal call event with ${TrackingActions.DELETE_PACKAGE}`, () => {
+      it(`delete button on delete modal call event with ${TRACKING_ACTIONS.DELETE_PACKAGE}`, () => {
         createComponent({ packageEntity: npmPackage });
         findDeleteModal().vm.$emit('primary');
         expect(eventSpy).toHaveBeenCalledWith(
-          category,
-          TrackingActions.DELETE_PACKAGE,
+          TRACK_CATEGORY,
+          TRACKING_ACTIONS.DELETE_PACKAGE,
           expect.any(Object),
         );
       });
 
-      it(`canceling a package deletion tracks  ${TrackingActions.CANCEL_DELETE_PACKAGE}`, () => {
+      it(`canceling a package deletion tracks  ${TRACKING_ACTIONS.CANCEL_DELETE_PACKAGE}`, () => {
         createComponent({ packageEntity: npmPackage });
 
         findDeleteModal().vm.$emit('canceled');
 
         expect(eventSpy).toHaveBeenCalledWith(
-          category,
-          TrackingActions.CANCEL_DELETE_PACKAGE,
+          TRACK_CATEGORY,
+          TRACKING_ACTIONS.CANCEL_DELETE_PACKAGE,
           expect.any(Object),
         );
       });
 
-      it(`request a file deletion tracks  ${TrackingActions.REQUEST_DELETE_PACKAGE_FILE}`, () => {
+      it(`request a file deletion tracks  ${TRACKING_ACTIONS.REQUEST_DELETE_PACKAGE_FILE}`, () => {
         createComponent({ packageEntity: npmPackage });
 
         findPackageFiles().vm.$emit('delete-file', mavenFiles[0]);
 
         expect(eventSpy).toHaveBeenCalledWith(
-          category,
-          TrackingActions.REQUEST_DELETE_PACKAGE_FILE,
+          TRACK_CATEGORY,
+          TRACKING_ACTIONS.REQUEST_DELETE_PACKAGE_FILE,
           expect.any(Object),
         );
       });
 
-      it(`confirming a file deletion tracks  ${TrackingActions.DELETE_PACKAGE_FILE}`, () => {
+      it(`confirming a file deletion tracks  ${TRACKING_ACTIONS.DELETE_PACKAGE_FILE}`, () => {
         createComponent({ packageEntity: npmPackage });
 
         findPackageFiles().vm.$emit('delete-file', npmPackage);
         findDeleteFileModal().vm.$emit('primary');
 
         expect(eventSpy).toHaveBeenCalledWith(
-          category,
-          TrackingActions.REQUEST_DELETE_PACKAGE_FILE,
+          TRACK_CATEGORY,
+          TRACKING_ACTIONS.REQUEST_DELETE_PACKAGE_FILE,
           expect.any(Object),
         );
       });
 
-      it(`canceling a file deletion tracks  ${TrackingActions.CANCEL_DELETE_PACKAGE_FILE}`, () => {
+      it(`canceling a file deletion tracks  ${TRACKING_ACTIONS.CANCEL_DELETE_PACKAGE_FILE}`, () => {
         createComponent({ packageEntity: npmPackage });
 
         findPackageFiles().vm.$emit('delete-file', npmPackage);
         findDeleteFileModal().vm.$emit('canceled');
 
         expect(eventSpy).toHaveBeenCalledWith(
-          category,
-          TrackingActions.CANCEL_DELETE_PACKAGE_FILE,
+          TRACK_CATEGORY,
+          TRACKING_ACTIONS.CANCEL_DELETE_PACKAGE_FILE,
           expect.any(Object),
         );
       });
 
-      it(`file download link call event with ${TrackingActions.PULL_PACKAGE}`, () => {
+      it(`file download link call event with ${TRACKING_ACTIONS.PULL_PACKAGE}`, () => {
         createComponent({ packageEntity: npmPackage });
 
         findPackageFiles().vm.$emit('download-file');
         expect(eventSpy).toHaveBeenCalledWith(
-          category,
-          TrackingActions.PULL_PACKAGE,
+          TRACK_CATEGORY,
+          TRACKING_ACTIONS.PULL_PACKAGE,
           expect.any(Object),
         );
       });

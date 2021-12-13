@@ -3,7 +3,7 @@ import { GlIcon, GlSprintf, GlBadge, GlResizeObserverDirective } from '@gitlab/u
 import { GlBreakpointInstance } from '@gitlab/ui/dist/utils';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
 import { __ } from '~/locale';
-import PackageTags from '~/packages/shared/components/package_tags.vue';
+import PackageTags from '~/packages_and_registries/shared/components/package_tags.vue';
 import { PACKAGE_TYPE_NUGET } from '~/packages_and_registries/package_registry/constants';
 import { getPackageTypeLabel } from '~/packages_and_registries/package_registry/utils';
 import MetadataItem from '~/vue_shared/components/registry/metadata_item.vue';

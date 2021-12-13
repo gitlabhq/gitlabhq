@@ -18,8 +18,7 @@
           = render 'delete_project_button', project: project
 
         .stats
-          %span.badge.badge-pill
-            = storage_counter(project.statistics&.storage_size)
+          = gl_badge_tag storage_counter(project.statistics&.storage_size)
           = render 'project_badges', project: project
 
         .title

@@ -143,7 +143,7 @@ RSpec.describe CreateCommitSignatureWorker do
       let(:type) { :X509 }
 
       it 'performs a single query for commit signatures' do
-        expect(X509CommitSignature).to receive(:by_commit_sha).with(commit_shas).once.and_return([])
+        expect(CommitSignatures::X509CommitSignature).to receive(:by_commit_sha).with(commit_shas).once.and_return([])
 
         subject
       end
@@ -153,7 +153,7 @@ RSpec.describe CreateCommitSignatureWorker do
       let(:type) { :PGP }
 
       it 'performs a single query for commit signatures' do
-        expect(GpgSignature).to receive(:by_commit_sha).with(commit_shas).once.and_return([])
+        expect(CommitSignatures::GpgSignature).to receive(:by_commit_sha).with(commit_shas).once.and_return([])
 
         subject
       end

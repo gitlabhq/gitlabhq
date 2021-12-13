@@ -4,9 +4,9 @@ import { mapState, mapGetters } from 'vuex';
 import { s__ } from '~/locale';
 import Tracking from '~/tracking';
 import PackagesListRow from '~/packages_and_registries/infrastructure_registry/shared/package_list_row.vue';
-import PackagesListLoader from '~/packages/shared/components/packages_list_loader.vue';
-import { TrackingActions } from '~/packages/shared/constants';
-import { packageTypeToTrackCategory } from '~/packages/shared/utils';
+import PackagesListLoader from '~/packages_and_registries/shared/components/packages_list_loader.vue';
+import { TRACKING_ACTIONS } from '~/packages_and_registries/shared/constants';
+import { TRACK_CATEGORY } from '~/packages_and_registries/infrastructure_registry/shared/constants';
 
 export default {
   components: {
@@ -49,27 +49,24 @@ export default {
       return this.itemToBeDeleted?.name ?? '';
     },
     tracking() {
-      const category = this.itemToBeDeleted
-        ? packageTypeToTrackCategory(this.itemToBeDeleted.package_type)
-        : undefined;
       return {
-        category,
+        category: TRACK_CATEGORY,
       };
     },
   },
   methods: {
     setItemToBeDeleted(item) {
       this.itemToBeDeleted = { ...item };
-      this.track(TrackingActions.REQUEST_DELETE_PACKAGE);
+      this.track(TRACKING_ACTIONS.REQUEST_DELETE_PACKAGE);
       this.$refs.packageListDeleteModal.show();
     },
     deleteItemConfirmation() {
       this.$emit('package:delete', this.itemToBeDeleted);
-      this.track(TrackingActions.DELETE_PACKAGE);
+      this.track(TRACKING_ACTIONS.DELETE_PACKAGE);
       this.itemToBeDeleted = null;
     },
     deleteItemCanceled() {
-      this.track(TrackingActions.CANCEL_DELETE_PACKAGE);
+      this.track(TRACKING_ACTIONS.CANCEL_DELETE_PACKAGE);
       this.itemToBeDeleted = null;
     },
   },

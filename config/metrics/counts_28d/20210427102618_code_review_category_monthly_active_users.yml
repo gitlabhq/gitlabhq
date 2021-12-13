@@ -1,11 +1,11 @@
 ---
-data_category: optional
+data_category: operational
 key_path: counts_monthly.aggregated_metrics.code_review_category_monthly_active_users
 description: Unique users performing actions on code review events
 product_section: dev
 product_stage: devops::create
 product_group: group::code review
-product_category: 
+product_category:
 value_type: number
 status: active
 milestone: "13.12"

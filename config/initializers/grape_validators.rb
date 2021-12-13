@@ -11,6 +11,3 @@ Grape::Validations.register_validator(:untrusted_regexp, ::API::Validations::Val
 Grape::Validations.register_validator(:email_or_email_list, ::API::Validations::Validators::EmailOrEmailList)
 Grape::Validations.register_validator(:iteration_id, ::API::Validations::Validators::IntegerOrCustomValue)
 Grape::Validations.register_validator(:project_portable, ::API::Validations::Validators::ProjectPortable)
-# TODO Delete this validator along with the packages_conan_allow_empty_username_channel feature flag
-# # https://gitlab.com/gitlab-org/gitlab/-/issues/346006
-Grape::Validations.register_validator('packages_conan_user_channel', ::API::Validations::Validators::PackagesConanUserChannel)

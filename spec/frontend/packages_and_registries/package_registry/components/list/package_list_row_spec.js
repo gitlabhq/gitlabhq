@@ -3,9 +3,9 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 
 import PackagesListRow from '~/packages_and_registries/package_registry/components/list/package_list_row.vue';
-import PackagePath from '~/packages/shared/components/package_path.vue';
-import PackageTags from '~/packages/shared/components/package_tags.vue';
-import PackageIconAndName from '~/packages/shared/components/package_icon_and_name.vue';
+import PackagePath from '~/packages_and_registries/shared/components/package_path.vue';
+import PackageTags from '~/packages_and_registries/shared/components/package_tags.vue';
+import PackageIconAndName from '~/packages_and_registries/shared/components/package_icon_and_name.vue';
 import PublishMethod from '~/packages_and_registries/package_registry/components/list/publish_method.vue';
 import TimeagoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import { PACKAGE_ERROR_STATUS } from '~/packages_and_registries/package_registry/constants';

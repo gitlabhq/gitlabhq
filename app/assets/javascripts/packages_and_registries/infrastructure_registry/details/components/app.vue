@@ -17,9 +17,12 @@ import TerraformTitle from '~/packages_and_registries/infrastructure_registry/de
 import TerraformInstallation from '~/packages_and_registries/infrastructure_registry/details/components/terraform_installation.vue';
 import Tracking from '~/tracking';
 import PackageListRow from '~/packages_and_registries/infrastructure_registry/shared/package_list_row.vue';
-import PackagesListLoader from '~/packages/shared/components/packages_list_loader.vue';
-import { TrackingActions, SHOW_DELETE_SUCCESS_ALERT } from '~/packages/shared/constants';
-import { packageTypeToTrackCategory } from '~/packages/shared/utils';
+import PackagesListLoader from '~/packages_and_registries/shared/components/packages_list_loader.vue';
+import {
+  TRACKING_ACTIONS,
+  SHOW_DELETE_SUCCESS_ALERT,
+} from '~/packages_and_registries/shared/constants';
+import { TRACK_CATEGORY } from '~/packages_and_registries/infrastructure_registry/shared/constants';
 import PackageFiles from './package_files.vue';
 import PackageHistory from './package_history.vue';
 
@@ -44,7 +47,7 @@ export default {
     GlModal: GlModalDirective,
   },
   mixins: [Tracking.mixin()],
-  trackingActions: { ...TrackingActions },
+  trackingActions: { ...TRACKING_ACTIONS },
   data() {
     return {
       fileToDelete: null,
@@ -68,7 +71,7 @@ export default {
     },
     tracking() {
       return {
-        category: packageTypeToTrackCategory(this.packageEntity.package_type),
+        category: TRACK_CATEGORY,
       };
     },
     hasVersions() {
@@ -86,7 +89,7 @@ export default {
       }
     },
     async confirmPackageDeletion() {
-      this.track(TrackingActions.DELETE_PACKAGE);
+      this.track(TRACKING_ACTIONS.DELETE_PACKAGE);
       await this.deletePackage();
       const returnTo =
         !this.groupListUrl || document.referrer.includes(this.projectName)
@@ -96,12 +99,12 @@ export default {
       window.location.replace(`${returnTo}?${modalQuery}`);
     },
     handleFileDelete(file) {
-      this.track(TrackingActions.REQUEST_DELETE_PACKAGE_FILE);
+      this.track(TRACKING_ACTIONS.REQUEST_DELETE_PACKAGE_FILE);
       this.fileToDelete = { ...file };
       this.$refs.deleteFileModal.show();
     },
     confirmFileDelete() {
-      this.track(TrackingActions.DELETE_PACKAGE_FILE);
+      this.track(TRACKING_ACTIONS.DELETE_PACKAGE_FILE);
       this.deletePackageFile(this.fileToDelete.id);
       this.fileToDelete = null;
     },

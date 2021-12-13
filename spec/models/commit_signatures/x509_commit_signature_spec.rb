@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe X509CommitSignature do
+RSpec.describe CommitSignatures::X509CommitSignature do
   let(:commit_sha) { '189a6c924013fc3fe40d6f1ec1dc20214183bc97' }
   let(:project) { create(:project, :public, :repository) }
   let!(:commit) { create(:commit, project: project, sha: commit_sha) }

@@ -183,16 +183,11 @@ RSpec.shared_examples 'handling empty values for username and channel' do
 
   let(:recipe_path) { "#{package.name}/#{package.version}/#{package_username}/#{channel}" }
 
-  where(:username, :channel, :feature_flag, :status) do
-    'username' | 'channel' | true  | :ok
-    'username' | '_'       | true  | :bad_request
-    '_'        | 'channel' | true  | :bad_request_or_not_found
-    '_'        | '_'       | true  | :ok_or_not_found
-
-    'username' | 'channel' | false | :ok
-    'username' | '_'       | false | :bad_request
-    '_'        | 'channel' | false | :bad_request
-    '_'        | '_'       | false | :bad_request
+  where(:username, :channel, :status) do
+    'username' | 'channel' | :ok
+    'username' | '_'       | :bad_request
+    '_'        | 'channel' | :bad_request_or_not_found
+    '_'        | '_'       | :ok_or_not_found
   end
 
   with_them do
@@ -205,7 +200,6 @@ RSpec.shared_examples 'handling empty values for username and channel' do
     end
 
     before do
-      stub_feature_flags(packages_conan_allow_empty_username_channel: feature_flag)
       project.add_maintainer(user) # avoid any permission issue
     end
 

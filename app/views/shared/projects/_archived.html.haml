@@ -1,3 +1,2 @@
 - if project.archived
-  %span.d-flex.badge-pill.gl-badge.badge-warning.gl-ml-3
-    = _('archived')
+  = gl_badge_tag _('archived'), { variant: :warning }, { class: 'gl-display-flex gl-ml-3' }

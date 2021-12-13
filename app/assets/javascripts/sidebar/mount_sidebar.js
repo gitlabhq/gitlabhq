@@ -5,7 +5,7 @@ import { TYPE_ISSUE, TYPE_MERGE_REQUEST } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import initInviteMembersModal from '~/invite_members/init_invite_members_modal';
 import initInviteMembersTrigger from '~/invite_members/init_invite_members_trigger';
-import { IssuableType } from '~/issues/show/constants';
+import { IssuableType } from '~/issues/constants';
 import {
   isInIssuePage,
   isInDesignPage,

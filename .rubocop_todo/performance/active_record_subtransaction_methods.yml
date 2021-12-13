@@ -10,7 +10,6 @@ Performance/ActiveRecordSubtransactionMethods:
   - app/models/design_management/design_collection.rb
   - app/models/error_tracking/error.rb
   - app/models/external_pull_request.rb
-  - app/models/gpg_signature.rb
   - app/models/merge_request.rb
   - app/models/plan.rb
   - app/models/project.rb
@@ -18,6 +17,7 @@ Performance/ActiveRecordSubtransactionMethods:
   - app/models/x509_certificate.rb
   - app/models/x509_commit_signature.rb
   - app/models/x509_issuer.rb
+  - app/models/concerns/commit_signature.rb
   - app/services/bulk_imports/relation_export_service.rb
   - app/services/ci/update_build_state_service.rb
   - app/services/event_create_service.rb

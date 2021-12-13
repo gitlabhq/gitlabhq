@@ -5,7 +5,7 @@ import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import createFlash from '~/flash';
-import { IssuableType } from '~/issues/show/constants';
+import { IssuableType } from '~/issues/constants';
 import SidebarAssigneesRealtime from '~/sidebar/components/assignees/assignees_realtime.vue';
 import IssuableAssignees from '~/sidebar/components/assignees/issuable_assignees.vue';
 import SidebarAssigneesWidget from '~/sidebar/components/assignees/sidebar_assignees_widget.vue';

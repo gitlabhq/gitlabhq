@@ -2,7 +2,7 @@
 import { GlAlert } from '@gitlab/ui';
 import $ from 'jquery';
 import Autosave from '~/autosave';
-import { IssuableType } from '~/issues/show/constants';
+import { IssuableType } from '~/issues/constants';
 import eventHub from '../event_hub';
 import EditActions from './edit_actions.vue';
 import DescriptionField from './fields/description.vue';

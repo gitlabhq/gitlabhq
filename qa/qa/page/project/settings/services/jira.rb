@@ -23,6 +23,11 @@ module QA
               element :save_changes_button
             end
 
+            view 'app/assets/javascripts/integrations/edit/components/jira_issues_fields.vue' do
+              element :service_jira_issues_enabled_checkbox
+              element :service_jira_project_key_field
+            end
+
             def setup_service_with(url:)
               QA::Runtime::Logger.info "Setting up JIRA"
 
@@ -34,10 +39,20 @@ module QA
               use_custom_transitions
               set_transition_ids('11,21,31,41')
 
+              yield self if block_given?
+
               click_save_changes_button
               wait_until(reload: false) do
                 has_element?(:save_changes_button, wait: 1) ? !find_element(:save_changes_button).disabled? : true
               end
+            end
+
+            def enable_jira_issues
+              check_element(:service_jira_issues_enabled_checkbox, true)
+            end
+
+            def set_jira_project_key(key)
+              fill_element(:service_jira_project_key_field, key)
             end
 
             private

@@ -3,7 +3,7 @@ import { GlDropdownItem } from '@gitlab/ui';
 import { cloneDeep } from 'lodash';
 import Vue from 'vue';
 import createFlash from '~/flash';
-import { IssuableType } from '~/issues/show/constants';
+import { IssuableType } from '~/issues/constants';
 import { __, n__ } from '~/locale';
 import SidebarAssigneesRealtime from '~/sidebar/components/assignees/assignees_realtime.vue';
 import IssuableAssignees from '~/sidebar/components/assignees/issuable_assignees.vue';

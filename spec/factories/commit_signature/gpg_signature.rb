@@ -1,10 +1,11 @@
 # frozen_string_literal: true
 
 FactoryBot.define do
-  factory :x509_commit_signature do
+  factory :gpg_signature, class: 'CommitSignatures::GpgSignature' do
     commit_sha { Digest::SHA1.hexdigest(SecureRandom.hex) }
     project
-    x509_certificate
+    gpg_key
+    gpg_key_primary_keyid { gpg_key.keyid }
     verification_status { :verified }
   end
 end

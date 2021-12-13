@@ -16,7 +16,8 @@
   }
 
   .line-numbers,
-  .diff-line-num {
+  .diff-line-num,
+  .code-search-line {
     background-color: $gray-light;
   }
 
@@ -66,7 +67,8 @@
     }
 
     .diff-grid-left:hover,
-    .diff-grid-right:hover {
+    .diff-grid-right:hover,
+    &.code-search-line:hover {
       .diff-line-num:not(.empty-cell) {
         @include line-number-hover;
       }

@@ -1,60 +1,60 @@
-enum WorkItemType {
+enum LocalWorkItemType {
   FEATURE
 }
 
-enum WidgetType {
+enum LocalWidgetType {
   TITLE
 }
 
-interface WorkItemWidget {
-  type: WidgetType!
+interface LocalWorkItemWidget {
+  type: LocalWidgetType!
 }
 
 # Replicating Relay connection type for client schema
-type WorkItemWidgetEdge {
+type LocalWorkItemWidgetEdge {
   cursor: String!
-  node: WorkItemWidget
+  node: LocalWorkItemWidget
 }
 
-type WorkItemWidgetConnection {
-  edges: [WorkItemWidgetEdge]
-  nodes: [WorkItemWidget]
+type LocalWorkItemWidgetConnection {
+  edges: [LocalWorkItemWidgetEdge]
+  nodes: [LocalWorkItemWidget]
   pageInfo: PageInfo!
 }
 
-type TitleWidget implements WorkItemWidget {
-  type: WidgetType!
+type LocalTitleWidget implements LocalWorkItemWidget {
+  type: LocalWidgetType!
   contentText: String!
 }
 
-type WorkItem {
+type LocalWorkItem {
   id: ID!
-  type: WorkItemType!
-  widgets: [WorkItemWidgetConnection]
+  type: LocalWorkItemType!
+  widgets: [LocalWorkItemWidgetConnection]
 }
 
-type CreateWorkItemInput {
+type LocalCreateWorkItemInput {
   title: String!
 }
 
-type UpdateWorkItemInput {
+type LocalUpdateWorkItemInput {
   id: ID!
   title: String
 }
 
-type CreateWorkItemPayload {
-  workItem: WorkItem!
+type LocalCreateWorkItemPayload {
+  workItem: LocalWorkItem!
 }
 
-type UpdateWorkItemPayload {
-  workItem: WorkItem!
+type LocalUpdateWorkItemPayload {
+  workItem: LocalWorkItem!
 }
 
 extend type Query {
-  workItem(id: ID!): WorkItem!
+  workItem(id: ID!): LocalWorkItem!
 }
 
 extend type Mutation {
-  createWorkItem(input: CreateWorkItemInput!): CreateWorkItemPayload!
-  updateWorkItem(input: UpdateWorkItemInput!): UpdateWorkItemPayload!
+  localCreateWorkItem(input: LocalCreateWorkItemInput!): LocalCreateWorkItemPayload!
+  localUpdateWorkItem(input: LocalUpdateWorkItemInput!): LocalUpdateWorkItemPayload!
 }

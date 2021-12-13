@@ -3,7 +3,7 @@ import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import { IssuableType } from '~/issues/show/constants';
+import { IssuableType } from '~/issues/constants';
 import SidebarReferenceWidget from '~/sidebar/components/reference/sidebar_reference_widget.vue';
 import issueReferenceQuery from '~/sidebar/queries/issue_reference.query.graphql';
 import mergeRequestReferenceQuery from '~/sidebar/queries/merge_request_reference.query.graphql';

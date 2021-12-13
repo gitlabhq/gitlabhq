@@ -10,17 +10,10 @@ class Packages::Conan::Metadatum < ApplicationRecord
   validates :package_username,
             :package_channel,
             presence: true,
-            format: { with: Gitlab::Regex.conan_recipe_component_regex },
-            if: -> { Feature.disabled?(:packages_conan_allow_empty_username_channel) }
-
-  validates :package_username,
-            :package_channel,
-            presence: true,
-            format: { with: Gitlab::Regex.conan_recipe_user_channel_regex },
-            if: -> { Feature.enabled?(:packages_conan_allow_empty_username_channel) }
+            format: { with: Gitlab::Regex.conan_recipe_user_channel_regex }
 
   validate :conan_package_type
-  validate :username_channel_none_values, if: -> { Feature.enabled?(:packages_conan_allow_empty_username_channel) }
+  validate :username_channel_none_values
 
   def recipe
     "#{package.name}/#{package.version}@#{package_username}/#{package_channel}"

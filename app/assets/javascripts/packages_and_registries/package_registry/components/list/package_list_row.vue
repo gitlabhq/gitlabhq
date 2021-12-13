@@ -6,11 +6,11 @@ import {
   PACKAGE_ERROR_STATUS,
   PACKAGE_DEFAULT_STATUS,
 } from '~/packages_and_registries/package_registry/constants';
-import { getPackageTypeLabel } from '~/packages/shared/utils';
-import PackagePath from '~/packages/shared/components/package_path.vue';
-import PackageTags from '~/packages/shared/components/package_tags.vue';
+import { getPackageTypeLabel } from '~/packages_and_registries/package_registry/utils';
+import PackagePath from '~/packages_and_registries/shared/components/package_path.vue';
+import PackageTags from '~/packages_and_registries/shared/components/package_tags.vue';
 import PublishMethod from '~/packages_and_registries/package_registry/components/list/publish_method.vue';
-import PackageIconAndName from '~/packages/shared/components/package_icon_and_name.vue';
+import PackageIconAndName from '~/packages_and_registries/shared/components/package_icon_and_name.vue';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import TimeagoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 
@@ -40,7 +40,7 @@ export default {
   },
   computed: {
     packageType() {
-      return getPackageTypeLabel(this.packageEntity.packageType.toLowerCase());
+      return getPackageTypeLabel(this.packageEntity.packageType);
     },
     packageLink() {
       const { project, id } = this.packageEntity;

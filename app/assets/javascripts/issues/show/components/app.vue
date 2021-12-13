@@ -2,18 +2,11 @@
 import { GlIcon, GlIntersectionObserver, GlTooltipDirective } from '@gitlab/ui';
 import Visibility from 'visibilityjs';
 import createFlash from '~/flash';
+import { IssuableStatus, IssuableStatusText, IssuableType } from '~/issues/constants';
 import Poll from '~/lib/utils/poll';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { __, sprintf } from '~/locale';
-import {
-  IssuableStatus,
-  IssuableStatusText,
-  IssuableType,
-  IssueTypePath,
-  IncidentTypePath,
-  IncidentType,
-  POLLING_DELAY,
-} from '../constants';
+import { IssueTypePath, IncidentTypePath, IncidentType, POLLING_DELAY } from '../constants';
 import eventHub from '../event_hub';
 import getIssueStateQuery from '../queries/get_issue_state.query.graphql';
 import Service from '../services/index';

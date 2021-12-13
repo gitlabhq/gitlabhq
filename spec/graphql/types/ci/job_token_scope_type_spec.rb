@@ -12,7 +12,7 @@ RSpec.describe GitlabSchema.types['CiJobTokenScopeType'] do
   end
 
   describe 'query' do
-    let_it_be(:project) { create(:project, ci_job_token_scope_enabled: true).tap(&:save!) }
+    let(:project) { create(:project, ci_job_token_scope_enabled: true).tap(&:save!) }
     let_it_be(:current_user) { create(:user) }
 
     let(:query) do
@@ -65,8 +65,12 @@ RSpec.describe GitlabSchema.types['CiJobTokenScopeType'] do
             project.ci_cd_settings.update!(job_token_scope_enabled: false)
           end
 
+          it 'does not return an error' do
+            expect(subject['errors']).to be_nil
+          end
+
           it 'returns nil' do
-            expect(subject.dig('data', 'project', 'ciJobTokenScope')).to be_nil
+            expect(subject['data']['project']['ciJobTokenScope']).to be_nil
           end
         end
       end
