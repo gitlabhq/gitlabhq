@@ -2,6 +2,8 @@
 
 module ProtectedBranches
   class BaseService < ::BaseService
+    include ProtectedRefNameSanitizer
+
     # current_user - The user that performs the action
     # params - A hash of parameters
     def initialize(project, current_user = nil, params = {})
@@ -14,22 +16,13 @@ module ProtectedBranches
       # overridden in EE::ProtectedBranches module
     end
 
+    private
+
     def filtered_params
       return unless params
 
-      params[:name] = sanitize_branch_name(params[:name]) if params[:name].present?
+      params[:name] = sanitize_name(params[:name]) if params[:name].present?
       params
-    end
-
-    private
-
-    def sanitize_branch_name(name)
-      name = CGI.unescapeHTML(name)
-      name = Sanitize.fragment(name)
-
-      # Sanitize.fragment escapes HTML chars, so unescape again to allow names
-      # like `feature->master`
-      CGI.unescapeHTML(name)
     end
   end
 end

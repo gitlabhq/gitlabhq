@@ -87,6 +87,9 @@ export default {
     deleteModalTitle() {
       return sprintf(__('Delete %{name}'), { name: this.name });
     },
+    lockBtnQASelector() {
+      return this.canLock ? 'lock_button' : 'disabled_lock_button';
+    },
   },
 };
 </script>
@@ -102,7 +105,7 @@ export default {
         :is-locked="isLocked"
         :can-lock="canLock"
         data-testid="lock"
-        data-qa-selector="lock_button"
+        :data-qa-selector="lockBtnQASelector"
       />
       <gl-button v-gl-modal="replaceModalId" data-testid="replace">
         {{ $options.i18n.replace }}

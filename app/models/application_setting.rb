@@ -144,10 +144,6 @@ class ApplicationSetting < ApplicationRecord
             length: { maximum: 2000, message: _('is too long (maximum is %{count} characters)') },
             allow_blank: true
 
-  validates :spam_check_api_key,
-            presence: true,
-            if: :spam_check_endpoint_enabled
-
   validates :unique_ips_limit_per_user,
             numericality: { greater_than_or_equal_to: 1 },
             presence: true,

@@ -51,7 +51,7 @@ class Projects::IssuesController < Projects::ApplicationController
 
   before_action only: :show do
     push_frontend_feature_flag(:real_time_issue_sidebar, @project, default_enabled: :yaml)
-    push_frontend_feature_flag(:confidential_notes, @project, default_enabled: :yaml)
+    push_frontend_feature_flag(:confidential_notes, project&.group, default_enabled: :yaml)
     push_frontend_feature_flag(:issue_assignees_widget, @project, default_enabled: :yaml)
     push_frontend_feature_flag(:paginated_issue_discussions, @project, default_enabled: :yaml)
   end

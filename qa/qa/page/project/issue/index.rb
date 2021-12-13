@@ -5,9 +5,9 @@ module QA
     module Project
       module Issue
         class Index < Page::Base
-          view 'app/assets/javascripts/issues_list/components/issuable.vue' do
-            element :issue_container
-            element :issue_link
+          view 'app/assets/javascripts/vue_shared/issuable/list/components/issuable_list_root.vue' do
+            element :issuable_container
+            element :issuable_search_container
           end
 
           view 'app/assets/javascripts/vue_shared/components/issue/issue_assignees.vue' do
@@ -25,8 +25,8 @@ module QA
             element :import_issues_dropdown
           end
 
-          view 'app/views/shared/issuable/_nav.html.haml' do
-            element :closed_issues_link
+          view 'app/assets/javascripts/vue_shared/issuable/list/components/issuable_tabs.vue' do
+            element :closed_issuables_tab, ':data-qa-selector="`${tab.name}_issuables_tab`"' # rubocop:disable QA/ElementWithPattern
           end
 
           def avatar_counter
@@ -37,8 +37,8 @@ module QA
             click_link(title)
           end
 
-          def click_closed_issues_link
-            click_element :closed_issues_link
+          def click_closed_issues_tab
+            click_element(:closed_issuables_tab)
           end
 
           def click_export_as_csv_button
@@ -73,11 +73,17 @@ module QA
           end
 
           def has_issue?(issue)
-            has_element? :issue_container, issue_title: issue.title
+            has_element? :issuable_container, issuable_title: issue.title
           end
 
           def has_no_issue?(issue)
-            has_no_element? :issue_container, issue_title: issue.title
+            has_no_element? :issuable_container, issuable_title: issue.title
+          end
+
+          def wait_for_vue_issues_list_ff
+            Support::Retrier.retry_until(max_duration: 60, reload_page: page, retry_on_exception: true, sleep_interval: 5) do
+              find_element(:closed_issuables_tab)
+            end
           end
         end
       end

@@ -3,63 +3,94 @@
 describe QA::Tools::ReliableReport do
   include QA::Support::Helpers::StubEnv
 
-  subject(:reporter) { described_class.new(run_type, range) }
+  subject(:run) { described_class.run(range: range, report_in_issue_and_slack: create_issue) }
 
+  let(:gitlab_response) { instance_double("RestClient::Response", code: 200, body: { web_url: issue_url }.to_json) }
   let(:slack_notifier) { instance_double("Slack::Notifier", post: nil) }
   let(:influx_client) { instance_double("InfluxDB2::Client", create_query_api: query_api) }
   let(:query_api) { instance_double("InfluxDB2::QueryApi") }
 
   let(:slack_channel) { "#quality-reports" }
-  let(:run_type) { "package-and-qa" }
-  let(:range) { 30 }
-  let(:results) { 2 }
+  let(:range) { 14 }
+  let(:issue_url) { "https://gitlab.com/issue/1" }
 
-  let(:runs) { { 0 => stable_spec, 1 => unstable_spec } }
-
-  let(:spec_values) { { "file_path" => "some/spec.rb", "stage" => "manage" } }
-  let(:stable_spec) do
-    values = { "name" => "stable spec", "status" => "passed", **spec_values }
-    instance_double(
-      "InfluxDB2::FluxTable",
-      records: [
-        instance_double("InfluxDB2::FluxRecord", values: values),
-        instance_double("InfluxDB2::FluxRecord", values: values),
-        instance_double("InfluxDB2::FluxRecord", values: values)
-      ]
-    )
+  let(:runs) do
+    values = { "name" => "stable spec", "status" => "passed", "file_path" => "some/spec.rb", "stage" => "manage" }
+    {
+      0 => instance_double(
+        "InfluxDB2::FluxTable",
+        records: [
+          instance_double("InfluxDB2::FluxRecord", values: values),
+          instance_double("InfluxDB2::FluxRecord", values: values),
+          instance_double("InfluxDB2::FluxRecord", values: values)
+        ]
+      )
+    }
   end
 
-  let(:unstable_spec) do
-    values = { "name" => "unstable spec", "status" => "failed", **spec_values }
-    instance_double(
-      "InfluxDB2::FluxTable",
-      records: [
-        instance_double("InfluxDB2::FluxRecord", values: { **values, "status" => "passed" }),
-        instance_double("InfluxDB2::FluxRecord", values: values),
-        instance_double("InfluxDB2::FluxRecord", values: values)
-      ]
-    )
+  let(:reliable_runs) do
+    values = { "name" => "unstable spec", "status" => "failed", "file_path" => "some/spec.rb", "stage" => "create" }
+    {
+      0 => instance_double(
+        "InfluxDB2::FluxTable",
+        records: [
+          instance_double("InfluxDB2::FluxRecord", values: { **values, "status" => "passed" }),
+          instance_double("InfluxDB2::FluxRecord", values: values),
+          instance_double("InfluxDB2::FluxRecord", values: values)
+        ]
+      )
+    }
   end
 
-  def flux_query(reliable)
+  def flux_query(reliable:)
     <<~QUERY
-        from(bucket: "e2e-test-stats")
-          |> range(start: -#{range}d)
-          |> filter(fn: (r) => r._measurement == "test-stats" and
-            r.run_type == "#{run_type}" and
-            r.status != "pending" and
-            r.merge_request == "false" and
-            r.quarantined == "false" and
-            r.reliable == "#{reliable}" and
-            r._field == "id"
-          )
-          |> group(columns: ["name"])
+      from(bucket: "e2e-test-stats")
+        |> range(start: -#{range}d)
+        |> filter(fn: (r) => r._measurement == "test-stats")
+        |> filter(fn: (r) => r.run_type == "staging-full" or
+          r.run_type == "staging-sanity" or
+          r.run_type == "staging-sanity-no-admin" or
+          r.run_type == "production-full" or
+          r.run_type == "production-sanity" or
+          r.run_type == "package-and-qa" or
+          r.run_type == "nightly"
+        )
+        |> filter(fn: (r) => r.status != "pending" and
+          r.merge_request == "false" and
+          r.quarantined == "false" and
+          r.reliable == "#{reliable}" and
+          r._field == "id"
+        )
+        |> group(columns: ["name"])
     QUERY
   end
 
-  def table(rows, title = nil)
+  def markdown_section(summary, result, stage, type)
+    <<~SECTION.strip
+      ```
+      #{summary_table(summary, type)}
+      ```
+
+      ## #{stage}
+
+      <details>
+      <summary>Executions table</summary>
+
+      ```
+      #{table(result, ['NAME', 'RUNS', 'FAILURES', 'FAILURE RATE'], "Top #{type} specs in '#{stage}' stage for past #{range} days")}
+      ```
+
+      </details>
+    SECTION
+  end
+
+  def summary_table(summary, type)
+    table(summary, %w[STAGE COUNT], "#{type.capitalize} spec summary for past #{range} days".ljust(50))
+  end
+
+  def table(rows, headings, title)
     Terminal::Table.new(
-      headings: ["name", "runs", "failed", "failure rate"],
+      headings: headings,
       style: { all_separators: true },
       title: title,
       rows: rows
@@ -68,7 +99,7 @@ describe QA::Tools::ReliableReport do
 
   def name_column(spec_name)
     name = "name: '#{spec_name}'"
-    file = "file: 'spec.rb'".ljust(110)
+    file = "file: 'spec.rb'".ljust(160)
 
     "#{name}\n#{file}"
   end
@@ -76,73 +107,85 @@ describe QA::Tools::ReliableReport do
   before do
     stub_env("QA_INFLUXDB_URL", "url")
     stub_env("QA_INFLUXDB_TOKEN", "token")
-    stub_env("CI_SLACK_WEBHOOK_URL", "slack_url")
+    stub_env("SLACK_WEBHOOK", "slack_url")
+    stub_env("CI_API_V4_URL", "gitlab_api_url")
+    stub_env("GITLAB_ACCESS_TOKEN", "gitlab_token")
 
+    allow(RestClient::Request).to receive(:execute).and_return(gitlab_response)
     allow(Slack::Notifier).to receive(:new).and_return(slack_notifier)
     allow(InfluxDB2::Client).to receive(:new).and_return(influx_client)
-    allow(query_api).to receive(:query).with(query: query).and_return(runs)
+
+    allow(query_api).to receive(:query).with(query: flux_query(reliable: false)).and_return(runs)
+    allow(query_api).to receive(:query).with(query: flux_query(reliable: true)).and_return(reliable_runs)
   end
 
-  context "with stable spec report" do
-    let(:query) { flux_query(false) }
-    let(:fetch_message) { "Fetching data on test execution for past #{range} days in '#{run_type}' runs" }
-    let(:slack_send_message) { "Sending top stable spec report to #{slack_channel} slack channel" }
-    let(:message_title) { "Top #{results} stable specs for past #{range} days in '#{run_type}' runs" }
-    let(:table_title) { "Top stable specs in 'manage' stage" }
-    let(:rows) do
-      [
-        [name_column("stable spec"), 3, 0, "0%"],
-        [name_column("unstable spec"), 3, 2, "66.67%"]
-      ]
-    end
+  context "without report creation" do
+    let(:create_issue) { "false" }
 
-    it "prints top stable spec report to console" do
-      expect { reporter.show_top_stable }.to output("#{fetch_message}\n\n#{table(rows, table_title)}\n\n").to_stdout
-    end
+    it "does not create report issue", :aggregate_failures do
+      expect { run }.to output.to_stdout
 
-    it "sends top stable spec report to slack" do
-      slack_args = { icon_emoji: ":mtg_green:", username: "Stable Spec Report" }
-
-      expect { reporter.notify_top_stable }.to output("\n#{slack_send_message}\n#{fetch_message}\n\n").to_stdout
-      expect(slack_notifier).to have_received(:post).with(text: "*#{message_title}*", **slack_args)
-      expect(slack_notifier).to have_received(:post).with(text: "```#{table(rows, table_title)}```", **slack_args)
-    end
-  end
-
-  context "with unstable spec report" do
-    let(:query) { flux_query(true) }
-    let(:fetch_message) { "Fetching data on reliable test execution for past #{range} days in '#{run_type}' runs" }
-    let(:slack_send_message) { "Sending top unstable reliable spec report to #{slack_channel} slack channel" }
-    let(:message_title) { "Top #{results} unstable reliable specs for past #{range} days in '#{run_type}' runs" }
-    let(:table_title) { "Top unstable specs in 'manage' stage" }
-    let(:rows) { [[name_column("unstable spec"), 3, 2, "66.67%"]] }
-
-    it "prints top unstable spec report to console" do
-      expect { reporter.show_top_unstable }.to output("#{fetch_message}\n\n#{table(rows, table_title)}\n\n").to_stdout
-    end
-
-    it "sends top unstable reliable spec report to slack" do
-      slack_args = { icon_emoji: ":sadpanda:", username: "Unstable Spec Report" }
-
-      expect { reporter.notify_top_unstable }.to output("#{fetch_message}\n\n\n#{slack_send_message}\n").to_stdout
-      expect(slack_notifier).to have_received(:post).with(text: "*#{message_title}*", **slack_args)
-      expect(slack_notifier).to have_received(:post).with(text: "```#{table(rows, table_title)}```", **slack_args)
-    end
-  end
-
-  context "without unstable reliable specs" do
-    let(:query) { flux_query(true) }
-    let(:runs) { { 0 => stable_spec } }
-    let(:fetch_message) { "Fetching data on reliable test execution for past #{range} days in '#{run_type}' runs" }
-    let(:no_result_message) { "No unstable tests present!" }
-
-    it "prints no result message to console" do
-      expect { reporter.show_top_unstable }.to output("#{fetch_message}\n\n#{no_result_message}\n").to_stdout
-    end
-
-    it "skips slack notification" do
-      expect { reporter.notify_top_unstable }.to output("#{fetch_message}\n\n#{no_result_message}\n").to_stdout
+      expect(RestClient::Request).not_to have_received(:execute)
       expect(slack_notifier).not_to have_received(:post)
+    end
+  end
+
+  context "with report creation" do
+    let(:create_issue) { "true" }
+    let(:issue_body) do
+      <<~TXT.strip
+        [[_TOC_]]
+
+        # Candidates for promotion to reliable
+
+        #{markdown_section([['manage', 1]], [[name_column('stable spec'), 3, 0, '0%']], 'manage', 'stable')}
+
+        # Reliable specs with failures
+
+        #{markdown_section([['create', 1]], [[name_column('unstable spec'), 3, 2, '66.67%']], 'create', 'unstable')}
+      TXT
+    end
+
+    it "creates report issue", :aggregate_failures do
+      expect { run }.to output.to_stdout
+
+      expect(RestClient::Request).to have_received(:execute).with(
+        method: :post,
+        url: "gitlab_api_url/projects/278964/issues",
+        verify_ssl: false,
+        headers: { "PRIVATE-TOKEN" => "gitlab_token" },
+        payload: {
+          title: "Reliable spec report",
+          description: issue_body,
+          labels: "Quality,test"
+        }
+      )
+      expect(slack_notifier).to have_received(:post).with(
+        icon_emoji: ":tanuki-protect:",
+        text: <<~TEXT
+          ```#{summary_table([['manage', 1]], 'stable')}```
+          ```#{summary_table([['create', 1]], 'unstable')}```
+
+          #{issue_url}
+        TEXT
+      )
+    end
+  end
+
+  context "with failure" do
+    let(:create_issue) { "true" }
+
+    before do
+      allow(query_api).to receive(:query).and_raise("Connection error!")
+    end
+
+    it "notifies failure", :aggregate_failures do
+      expect { expect { run }.to raise_error(SystemExit) }.to output.to_stdout
+
+      expect(slack_notifier).to have_received(:post).with(
+        icon_emoji: ":sadpanda:",
+        text: "Reliable reporter failed to create report. Error: ```Connection error!```"
+      )
     end
   end
 end

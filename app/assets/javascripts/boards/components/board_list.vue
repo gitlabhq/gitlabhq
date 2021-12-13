@@ -6,9 +6,9 @@ import { sortableStart, sortableEnd } from '~/boards/mixins/sortable_default_opt
 import { sprintf, __ } from '~/locale';
 import defaultSortableConfig from '~/sortable/sortable_config';
 import Tracking from '~/tracking';
+import listQuery from 'ee_else_ce/boards/graphql/board_lists_deferred.query.graphql';
 import { toggleFormEventPrefix, DraggableItemTypes } from '../constants';
 import eventHub from '../eventhub';
-import listQuery from '../graphql/board_lists_deferred.query.graphql';
 import BoardCard from './board_card.vue';
 import BoardNewIssue from './board_new_issue.vue';
 

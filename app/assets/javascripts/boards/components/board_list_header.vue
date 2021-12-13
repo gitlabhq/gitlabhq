@@ -17,10 +17,10 @@ import sidebarEventHub from '~/sidebar/event_hub';
 import Tracking from '~/tracking';
 import { formatDate } from '~/lib/utils/datetime_utility';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import listQuery from 'ee_else_ce/boards/graphql/board_lists_deferred.query.graphql';
 import AccessorUtilities from '../../lib/utils/accessor';
 import { inactiveId, LIST, ListType, toggleFormEventPrefix } from '../constants';
 import eventHub from '../eventhub';
-import listQuery from '../graphql/board_lists_deferred.query.graphql';
 import ItemCount from './item_count.vue';
 
 export default {

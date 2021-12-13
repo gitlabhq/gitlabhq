@@ -1,18 +1,25 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Plan', :smoke do
+  # TODO: Remove :requires_admin when the `Runtime::Feature.enable` method call is removed
+  RSpec.describe 'Plan', :smoke, :requires_admin do
     describe 'Issue creation' do
-      let(:closed_issue) { Resource::Issue.fabricate_via_api! }
+      let(:project) { Resource::Project.fabricate_via_api! }
+      let(:closed_issue) { Resource::Issue.fabricate_via_api! { |issue| issue.project = project } }
 
       before do
+        Runtime::Feature.enable(:vue_issues_list, group: project.group)
+
         Flow::Login.sign_in
       end
 
       it 'creates an issue', :mobile, testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1185' do
-        issue = Resource::Issue.fabricate_via_browser_ui!
+        issue = Resource::Issue.fabricate_via_browser_ui! { |issue| issue.project = project }
 
         Page::Project::Menu.perform(&:click_issues)
+
+        # TODO: Remove this method when the `Runtime::Feature.enable` method call is removed
+        Page::Project::Issue::Index.perform(&:wait_for_vue_issues_list_ff)
 
         Page::Project::Issue::Index.perform do |index|
           expect(index).to have_issue(issue)
@@ -29,10 +36,14 @@ module QA
         end
 
         Page::Project::Menu.perform(&:click_issues)
+
+        # TODO: Remove this method when the `Runtime::Feature.enable` method call is removed
+        Page::Project::Issue::Index.perform(&:wait_for_vue_issues_list_ff)
+
         Page::Project::Issue::Index.perform do |index|
           expect(index).not_to have_issue(closed_issue)
 
-          index.click_closed_issues_link
+          index.click_closed_issues_tab
 
           expect(index).to have_issue(closed_issue)
         end
@@ -45,7 +56,7 @@ module QA
         end
 
         before do
-          Resource::Issue.fabricate_via_api!.visit!
+          Resource::Issue.fabricate_via_api! { |issue| issue.project = project }.visit!
         end
 
         # The following example is excluded from running in `review-qa-smoke` job

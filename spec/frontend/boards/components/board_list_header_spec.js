@@ -8,7 +8,7 @@ import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import { boardListQueryResponse, mockLabelList } from 'jest/boards/mock_data';
 import BoardListHeader from '~/boards/components/board_list_header.vue';
 import { ListType } from '~/boards/constants';
-import listQuery from '~/boards/graphql/board_lists_deferred.query.graphql';
+import listQuery from 'ee_else_ce/boards/graphql/board_lists_deferred.query.graphql';
 
 Vue.use(VueApollo);
 Vue.use(Vuex);

@@ -523,15 +523,6 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting do
       end
     end
 
-    context "missing spam_check_api_key value when spam_check_endpoint_enabled is true" do
-      it "returns a blank parameter error message" do
-        put api("/application/settings", admin), params: { spam_check_endpoint_enabled: true, spam_check_endpoint_url: "https://example.com/spam_check" }
-
-        expect(response).to have_gitlab_http_status(:bad_request)
-        expect(json_response['error']).to eq('spam_check_api_key is missing')
-      end
-    end
-
     context "overly long spam_check_api_key" do
       it "fails to update the settings with too long spam_check_api_key" do
         put api("/application/settings", admin), params: { spam_check_api_key: "0123456789" * 500 }

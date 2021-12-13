@@ -8,7 +8,7 @@ import BoardNewIssue from '~/boards/components/board_new_issue.vue';
 import BoardNewItem from '~/boards/components/board_new_item.vue';
 import defaultState from '~/boards/stores/state';
 import createMockApollo from 'helpers/mock_apollo_helper';
-import listQuery from '~/boards/graphql/board_lists_deferred.query.graphql';
+import listQuery from 'ee_else_ce/boards/graphql/board_lists_deferred.query.graphql';
 import {
   mockList,
   mockIssuesByListId,

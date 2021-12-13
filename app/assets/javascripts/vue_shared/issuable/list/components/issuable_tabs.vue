@@ -46,7 +46,9 @@ export default {
         @click="$emit('click', tab.name)"
       >
         <template #title>
-          <span :title="tab.titleTooltip">{{ tab.title }}</span>
+          <span :title="tab.titleTooltip" :data-qa-selector="`${tab.name}_issuables_tab`">
+            {{ tab.title }}
+          </span>
           <gl-badge
             v-if="tabCounts && isTabCountNumeric(tab)"
             variant="muted"
