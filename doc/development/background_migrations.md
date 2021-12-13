@@ -165,7 +165,8 @@ big JSON blob) to column `bar` (containing a string). The process for this would
 roughly be as follows:
 
 1. Release A:
-   1. Create a migration class that perform the migration for a row with a given ID.
+   1. Create a migration class that performs the migration for a row with a given ID.
+      You can use [background jobs tracking](#background-jobs-tracking) to simplify cleaning up.
    1. Deploy the code for this release, this should include some code that will
       schedule jobs for newly created data (for example, using an `after_create` hook).
    1. Schedule jobs for all existing rows in a post-deployment migration. It's
@@ -174,8 +175,10 @@ roughly be as follows:
 1. Release B:
    1. Deploy code so that the application starts using the new column and stops
       scheduling jobs for newly created data.
-   1. In a post-deployment migration use `finalize_background_migration` from
-      `BackgroundMigrationHelpers` to ensure no jobs remain. This helper will:
+   1. In a post-deployment migration, finalize all jobs that have not succeeded by now.
+      If you used [background jobs tracking](#background-jobs-tracking) in release A,
+      you can use `finalize_background_migration` from `BackgroundMigrationHelpers` to ensure no jobs remain.
+      This helper will:
          1. Use `Gitlab::BackgroundMigration.steal` to process any remaining
             jobs in Sidekiq.
          1. Reschedule the migration to be run directly (that is, not through Sidekiq)

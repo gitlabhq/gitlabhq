@@ -10,7 +10,11 @@ import {
 import { debounce } from 'lodash';
 
 import { DEBOUNCE_DELAY, FILTER_NONE_ANY, OPERATOR_IS_NOT } from '../constants';
-import { getRecentlyUsedSuggestions, setTokenValueToRecentlyUsed } from '../filtered_search_utils';
+import {
+  getRecentlyUsedSuggestions,
+  setTokenValueToRecentlyUsed,
+  stripQuotes,
+} from '../filtered_search_utils';
 
 export default {
   components: {
@@ -163,7 +167,14 @@ export default {
       this.searchKey = data;
 
       if (!this.suggestionsLoading && !this.activeTokenValue) {
-        const search = this.searchTerm ? this.searchTerm : data;
+        let search = this.searchTerm ? this.searchTerm : data;
+
+        if (search.startsWith('"') && search.endsWith('"')) {
+          search = stripQuotes(search);
+        } else if (search.startsWith('"')) {
+          search = search.slice(1, search.length);
+        }
+
         this.$emit('fetch-suggestions', search);
       }
     }, DEBOUNCE_DELAY),

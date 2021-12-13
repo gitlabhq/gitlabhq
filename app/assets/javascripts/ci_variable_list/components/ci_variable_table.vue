@@ -1,5 +1,5 @@
 <script>
-import { GlTable, GlButton, GlModalDirective, GlIcon } from '@gitlab/ui';
+import { GlTable, GlButton, GlModalDirective, GlIcon, GlTooltipDirective } from '@gitlab/ui';
 import { mapState, mapActions } from 'vuex';
 import { s__, __ } from '~/locale';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
@@ -59,6 +59,7 @@ export default {
   },
   directives: {
     GlModalDirective,
+    GlTooltip: GlTooltipDirective,
   },
   mixins: [glFeatureFlagsMixin()],
   computed: {
@@ -102,27 +103,38 @@ export default {
         <col v-for="field in scope.fields" :key="field.key" :style="field.customStyle" />
       </template>
       <template #cell(key)="{ item }">
-        <div class="d-flex truncated-container">
-          <span :id="`ci-variable-key-${item.id}`" class="d-inline-block mw-100 text-truncate">{{
-            item.key
-          }}</span>
-          <ci-variable-popover
-            :target="`ci-variable-key-${item.id}`"
-            :value="item.key"
-            :tooltip-text="__('Copy key')"
+        <div class="gl-display-flex truncated-container gl-align-items-center">
+          <span
+            :id="`ci-variable-key-${item.id}`"
+            class="gl-display-inline-block gl-max-w-full gl-text-truncate"
+            >{{ item.key }}</span
+          >
+          <gl-button
+            v-gl-tooltip
+            category="tertiary"
+            icon="copy-to-clipboard"
+            :title="__('Copy key')"
+            :data-clipboard-text="item.key"
+            :aria-label="__('Copy to clipboard')"
           />
         </div>
       </template>
       <template #cell(value)="{ item }">
-        <span v-if="valuesHidden">*********************</span>
-        <div v-else class="d-flex truncated-container">
-          <span :id="`ci-variable-value-${item.id}`" class="d-inline-block mw-100 text-truncate">{{
-            item.value
-          }}</span>
-          <ci-variable-popover
-            :target="`ci-variable-value-${item.id}`"
-            :value="item.value"
-            :tooltip-text="__('Copy value')"
+        <div class="gl-display-flex gl-align-items-center truncated-container">
+          <span v-if="valuesHidden">*********************</span>
+          <span
+            v-else
+            :id="`ci-variable-value-${item.id}`"
+            class="gl-display-inline-block gl-max-w-full gl-text-truncate"
+            >{{ item.value }}</span
+          >
+          <gl-button
+            v-gl-tooltip
+            category="tertiary"
+            icon="copy-to-clipboard"
+            :title="__('Copy value')"
+            :data-clipboard-text="item.value"
+            :aria-label="__('Copy to clipboard')"
           />
         </div>
       </template>

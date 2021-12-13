@@ -941,7 +941,7 @@ RSpec.describe ProjectsController do
       project.reload
 
       expect(project.namespace).to eq(new_namespace)
-      expect(response).to have_gitlab_http_status(:ok)
+      expect(response).to redirect_to(edit_project_path(project))
     end
 
     context 'when new namespace is empty' do

@@ -122,7 +122,7 @@ class ProjectsController < Projects::ApplicationController
       return redirect_to edit_project_path(@project)
     end
 
-    render_edit
+    redirect_to edit_project_path(@project)
   end
   # rubocop: enable CodeReuse/ActiveRecord
 

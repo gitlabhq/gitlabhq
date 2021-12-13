@@ -14,7 +14,13 @@ import BaseToken from '~/vue_shared/components/filtered_search_bar/tokens/base_t
 
 import { mockLabelToken } from '../mock_data';
 
-jest.mock('~/vue_shared/components/filtered_search_bar/filtered_search_utils');
+jest.mock('~/vue_shared/components/filtered_search_bar/filtered_search_utils', () => ({
+  getRecentlyUsedSuggestions: jest.fn(),
+  setTokenValueToRecentlyUsed: jest.fn(),
+  stripQuotes: jest.requireActual(
+    '~/vue_shared/components/filtered_search_bar/filtered_search_utils',
+  ).stripQuotes,
+}));
 
 const mockStorageKey = 'recent-tokens-label_name';
 
@@ -231,6 +237,7 @@ describe('BaseToken', () => {
             stubs: { Portal: true },
           });
         });
+
         it('emits `fetch-suggestions` event on component after a delay when component emits `input` event', async () => {
           jest.useFakeTimers();
 
@@ -241,6 +248,32 @@ describe('BaseToken', () => {
 
           expect(wrapperWithNoStubs.emitted('fetch-suggestions')).toBeTruthy();
           expect(wrapperWithNoStubs.emitted('fetch-suggestions')[2]).toEqual(['foo']);
+        });
+
+        describe('when search is started with a quote', () => {
+          it('emits `fetch-suggestions` with filtered value', async () => {
+            jest.useFakeTimers();
+
+            wrapperWithNoStubs.find(GlFilteredSearchToken).vm.$emit('input', { data: '"foo' });
+            await wrapperWithNoStubs.vm.$nextTick();
+
+            jest.runAllTimers();
+
+            expect(wrapperWithNoStubs.emitted('fetch-suggestions')[2]).toEqual(['foo']);
+          });
+        });
+
+        describe('when search starts and ends with a quote', () => {
+          it('emits `fetch-suggestions` with filtered value', async () => {
+            jest.useFakeTimers();
+
+            wrapperWithNoStubs.find(GlFilteredSearchToken).vm.$emit('input', { data: '"foo"' });
+            await wrapperWithNoStubs.vm.$nextTick();
+
+            jest.runAllTimers();
+
+            expect(wrapperWithNoStubs.emitted('fetch-suggestions')[2]).toEqual(['foo']);
+          });
         });
       });
     });

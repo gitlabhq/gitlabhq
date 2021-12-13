@@ -145,7 +145,7 @@ version prior to upgrading the application server.
 
 If you're using Geo:
 
-- Review [Geo upgrade documentation](../administration/geo/replication/updating_the_geo_nodes.md).
+- Review [Geo upgrade documentation](../administration/geo/replication/updating_the_geo_sites.md).
 - Read about the [Geo version-specific update instructions](../administration/geo/replication/version_specific_updates.md).
 - Review Geo-specific steps when [updating the database](https://docs.gitlab.com/omnibus/settings/database.html#upgrading-a-geo-instance).
 - Create an upgrade and rollback plan for _each_ Geo node (primary and each secondary).

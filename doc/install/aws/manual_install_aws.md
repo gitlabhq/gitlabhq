@@ -658,12 +658,6 @@ Since we are using the [AWS IAM profile](#create-an-iam-role) we created earlier
 
 Remember to run `sudo gitlab-ctl reconfigure` after saving the changes to the `gitlab.rb` file.
 
-NOTE:
-One current feature of GitLab that still requires a shared directory (NFS) is
-[GitLab Pages](../../user/project/pages/index.md).
-There is [work in progress](https://gitlab.com/gitlab-org/gitlab-pages/-/issues/196)
-to eliminate the need for NFS to support GitLab Pages.
-
 ---
 
 That concludes the configuration changes for our GitLab instance. Next, we'll create a custom AMI based on this instance to use for our launch configuration and auto scaling group.

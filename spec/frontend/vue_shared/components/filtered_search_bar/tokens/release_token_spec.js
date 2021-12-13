@@ -8,7 +8,7 @@ import { mockReleaseToken } from '../mock_data';
 jest.mock('~/flash');
 
 describe('ReleaseToken', () => {
-  const id = 123;
+  const id = '123';
   let wrapper;
 
   const createComponent = ({ config = mockReleaseToken, value = { data: '' } } = {}) =>

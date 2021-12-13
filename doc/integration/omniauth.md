@@ -165,7 +165,7 @@ can disable the entire OmniAuth subsystem by modifying the configuration file:
   gitlab_rails['omniauth_enabled'] = false
   ```
 
-- **For installations from source**:
+- **For installations from source**
 
   ```yaml
   omniauth:
