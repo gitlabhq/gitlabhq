@@ -519,6 +519,8 @@ class Repository
     raw_repository.batch_blobs(items, blob_size_limit: blob_size_limit).map do |blob|
       Blob.decorate(blob, container)
     end
+  rescue Gitlab::Git::Repository::NoRepository
+    []
   end
 
   def root_ref

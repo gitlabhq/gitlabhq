@@ -2,6 +2,7 @@ import axios from '~/lib/utils/axios_utils';
 import { s__ } from '~/locale';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import pollIntervalQuery from './queries/poll_interval.query.graphql';
+import environmentToRollbackQuery from './queries/environment_to_rollback.query.graphql';
 
 const buildErrors = (errors = []) => ({
   errors,
@@ -83,6 +84,12 @@ export const resolvers = (endpoint) => ({
                 ),
           ]);
         });
+    },
+    setEnvironmentToRollback(_, { environment }, { client }) {
+      client.writeQuery({
+        query: environmentToRollbackQuery,
+        data: { environmentToRollback: environment },
+      });
     },
     cancelAutoStop(_, { environment: { autoStopPath } }) {
       return axios

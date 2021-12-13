@@ -13,7 +13,7 @@ import createFlash from '~/flash';
 import Issuable from '~/issues_list/components/issuable.vue';
 import IssuablesListApp from '~/issues_list/components/issuables_list_app.vue';
 import { PAGE_SIZE, PAGE_SIZE_MANUAL, RELATIVE_POSITION } from '~/issues_list/constants';
-import issueablesEventBus from '~/issues_list/eventhub';
+import issuablesEventBus from '~/issues_list/eventhub';
 import FilteredSearchBar from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
 
 jest.mock('~/flash');
@@ -185,8 +185,8 @@ describe('Issuables list component', () => {
 
   describe('with bulk editing enabled', () => {
     beforeEach(() => {
-      issueablesEventBus.$on.mockReset();
-      issueablesEventBus.$emit.mockReset();
+      issuablesEventBus.$on.mockReset();
+      issuablesEventBus.$emit.mockReset();
 
       setupApiMock(() => [200, MOCK_ISSUES.slice(0)]);
       factory({ canBulkEdit: true });
@@ -239,19 +239,19 @@ describe('Issuables list component', () => {
     });
 
     it('broadcasts a message to the bulk edit sidebar when a value is added to selection', () => {
-      issueablesEventBus.$emit.mockReset();
+      issuablesEventBus.$emit.mockReset();
       const i1 = wrapper.vm.issuables[1];
 
       wrapper.vm.onSelectIssuable({ issuable: i1, selected: true });
 
       return wrapper.vm.$nextTick().then(() => {
-        expect(issueablesEventBus.$emit).toHaveBeenCalledTimes(1);
-        expect(issueablesEventBus.$emit).toHaveBeenCalledWith('issuables:updateBulkEdit');
+        expect(issuablesEventBus.$emit).toHaveBeenCalledTimes(1);
+        expect(issuablesEventBus.$emit).toHaveBeenCalledWith('issuables:updateBulkEdit');
       });
     });
 
     it('does not broadcast a message to the bulk edit sidebar when a value is not added to selection', () => {
-      issueablesEventBus.$emit.mockReset();
+      issuablesEventBus.$emit.mockReset();
 
       return wrapper.vm
         .$nextTick()
@@ -263,19 +263,19 @@ describe('Issuables list component', () => {
         })
         .then(wrapper.vm.$nextTick)
         .then(() => {
-          expect(issueablesEventBus.$emit).toHaveBeenCalledTimes(0);
+          expect(issuablesEventBus.$emit).toHaveBeenCalledTimes(0);
         });
     });
 
     it('listens to a message to toggle bulk editing', () => {
       expect(wrapper.vm.isBulkEditing).toBe(false);
-      expect(issueablesEventBus.$on.mock.calls[0][0]).toBe('issuables:toggleBulkEdit');
-      issueablesEventBus.$on.mock.calls[0][1](true); // Call the message handler
+      expect(issuablesEventBus.$on.mock.calls[0][0]).toBe('issuables:toggleBulkEdit');
+      issuablesEventBus.$on.mock.calls[0][1](true); // Call the message handler
 
       return waitForPromises()
         .then(() => {
           expect(wrapper.vm.isBulkEditing).toBe(true);
-          issueablesEventBus.$on.mock.calls[0][1](false);
+          issuablesEventBus.$on.mock.calls[0][1](false);
         })
         .then(() => {
           expect(wrapper.vm.isBulkEditing).toBe(false);

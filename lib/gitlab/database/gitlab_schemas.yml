@@ -371,6 +371,7 @@ packages_pypi_metadata: :gitlab_main
 packages_rubygems_metadata: :gitlab_main
 packages_tags: :gitlab_main
 pages_deployments: :gitlab_main
+pages_deployment_states: :gitlab_main
 pages_domain_acme_orders: :gitlab_main
 pages_domains: :gitlab_main
 partitioned_foreign_keys: :gitlab_main

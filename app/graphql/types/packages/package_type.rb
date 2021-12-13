@@ -21,7 +21,8 @@ module Types
       field :tags, Types::Packages::PackageTagType.connection_type, null: true, description: 'Package tags.'
       field :project, Types::ProjectType, null: false, description: 'Project where the package is stored.'
       field :pipelines, Types::Ci::PipelineType.connection_type, null: true,
-        description: 'Pipelines that built the package.'
+            description: 'Pipelines that built the package.',
+            deprecated: { reason: 'Due to scalability concerns, this field is going to be removed', milestone: '14.6' }
       field :metadata, Types::Packages::MetadataType, null: true,
         description: 'Package metadata.'
       field :versions, ::Types::Packages::PackageType.connection_type, null: true,

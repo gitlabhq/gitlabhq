@@ -17,7 +17,7 @@ const setupHTML = (initialData) => {
 };
 
 describe('Issue show index', () => {
-  describe('initIssueableApp', () => {
+  describe('initIssuableApp', () => {
     it('should initialize app with no potential XSS attack', async () => {
       const alertSpy = jest.spyOn(window, 'alert').mockImplementation(() => {});
       const parseDataSpy = jest.spyOn(parseData, 'parseIssuableData');

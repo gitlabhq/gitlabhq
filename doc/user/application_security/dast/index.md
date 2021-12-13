@@ -975,6 +975,11 @@ To view running completed and scheduled on-demand DAST scans for a project, go t
 To cancel a pending or running on-demand scan, select **Cancel** (**{cancel}**) in the
 on-demand scans list.
 
+#### Retry an on-demand scan
+
+To retry a scan that failed or succeeded with warnings, select **Retry** (**{retry}**) in the
+on-demand scans list.
+
 ### Run an on-demand DAST scan
 
 Prerequisites:

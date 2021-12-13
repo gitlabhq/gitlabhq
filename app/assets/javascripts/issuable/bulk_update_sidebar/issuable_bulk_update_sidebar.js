@@ -3,7 +3,7 @@
 import $ from 'jquery';
 import { property } from 'lodash';
 
-import issueableEventHub from '~/issues_list/eventhub';
+import issuableEventHub from '~/issues_list/eventhub';
 import LabelsSelect from '~/labels/labels_select';
 import MilestoneSelect from '~/milestones/milestone_select';
 import initIssueStatusSelect from './init_issue_status_select';
@@ -50,8 +50,8 @@ export default class IssuableBulkUpdateSidebar {
     // The event hub connects this bulk update logic with `issues_list_app.vue`.
     // We can remove it once we've refactored the issues list page bulk edit sidebar to Vue.
     // https://gitlab.com/gitlab-org/gitlab/-/issues/325874
-    issueableEventHub.$on('issuables:enableBulkEdit', () => this.toggleBulkEdit(null, true));
-    issueableEventHub.$on('issuables:updateBulkEdit', () => this.updateFormState());
+    issuableEventHub.$on('issuables:enableBulkEdit', () => this.toggleBulkEdit(null, true));
+    issuableEventHub.$on('issuables:updateBulkEdit', () => this.updateFormState());
   }
 
   initDropdowns() {
@@ -110,7 +110,7 @@ export default class IssuableBulkUpdateSidebar {
   toggleBulkEdit(e, enable) {
     e?.preventDefault();
 
-    issueableEventHub.$emit('issuables:toggleBulkEdit', enable);
+    issuableEventHub.$emit('issuables:toggleBulkEdit', enable);
 
     this.toggleSidebarDisplay(enable);
     this.toggleBulkEditButtonDisabled(enable);

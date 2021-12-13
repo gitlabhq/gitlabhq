@@ -5481,7 +5481,13 @@ msgstr ""
 msgid "Billing|An error occurred while loading billable members list"
 msgstr ""
 
+msgid "Billing|An error occurred while loading pending members list"
+msgstr ""
+
 msgid "Billing|An error occurred while removing a billable member"
+msgstr ""
+
+msgid "Billing|Awaiting member signup"
 msgstr ""
 
 msgid "Billing|Cannot remove user"
@@ -24482,6 +24488,9 @@ msgid "OnDemandScans|Target"
 msgstr ""
 
 msgid "OnDemandScans|The scan could not be canceled."
+msgstr ""
+
+msgid "OnDemandScans|The scan could not be retried."
 msgstr ""
 
 msgid "OnDemandScans|There are no finished scans."

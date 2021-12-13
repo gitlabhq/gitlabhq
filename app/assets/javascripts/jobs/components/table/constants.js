@@ -17,6 +17,9 @@ export const DEFAULT = 'default';
 /* Job Status Constants */
 export const JOB_SCHEDULED = 'SCHEDULED';
 
+/* Artifact file types */
+export const FILE_TYPE_ARCHIVE = 'ARCHIVE';
+
 /* i18n */
 export const ACTIONS_DOWNLOAD_ARTIFACTS = __('Download artifacts');
 export const ACTIONS_START_NOW = s__('DelayedJobs|Start now');

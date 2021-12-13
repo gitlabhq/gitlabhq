@@ -115,7 +115,7 @@ export default {
     });
     // Add uniqueIds to add it as argument for _.intersection
     labelIds.unshift(uniqueIds);
-    // Return IDs that are present but not in all selected issueables
+    // Return IDs that are present but not in all selected issuables
     return uniqueIds.filter((x) => !intersection.apply(this, labelIds).includes(x));
   },
 

@@ -127,6 +127,15 @@ In milestone 15.0, we will completely remove `Version` from `PackageType`.
 Announced: 2021-11-22
 Planned removal: 2022-05-22
 
+### Deprecate `pipelines` fields in the Package GraphQL types
+
+As part of the work to create a [Package Registry GraphQL API](https://gitlab.com/groups/gitlab-org/-/epics/6318), the Package group deprecated the `pipelines` fields in all Package-related GraphQL types. As of GitLab 14.6, the `pipelines` field is deprecated in [`Package`](https://docs.gitlab.com/ee/api/graphql/reference/index.html#package) and [`PackageDetailsType`](https://docs.gitlab.com/ee/api/graphql/reference/index.html#packagedetailstype) due to scalability and performance concerns.
+
+In milestone 15.0, we will completely remove `pipelines` from `Package` and `PackageDetailsType`. You can follow and contribute to work on a replacement in the epic [GitLab-#7214](https://gitlab.com/groups/gitlab-org/-/epics/7214).
+
+Announced: 2021-12-22
+Planned removal: 2022-05-22
+
 ### Deprecate legacy approval status names from License Compliance API
 
 We deprecated legacy names for approval status of license policy (blacklisted, approved) in the `managed_licenses` API but they are still used in our API queries and responses. They will be removed in 15.0. 

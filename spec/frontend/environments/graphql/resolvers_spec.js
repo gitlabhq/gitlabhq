@@ -1,19 +1,31 @@
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
 import { resolvers } from '~/environments/graphql/resolvers';
+import environmentToRollback from '~/environments/graphql/queries/environment_to_rollback.query.graphql';
+import createMockApollo from 'helpers/mock_apollo_helper';
 import pollIntervalQuery from '~/environments/graphql/queries/poll_interval.query.graphql';
 import { TEST_HOST } from 'helpers/test_constants';
-import { environmentsApp, resolvedEnvironmentsApp, folder, resolvedFolder } from './mock_data';
+import {
+  environmentsApp,
+  resolvedEnvironmentsApp,
+  resolvedEnvironment,
+  folder,
+  resolvedFolder,
+} from './mock_data';
 
 const ENDPOINT = `${TEST_HOST}/environments`;
 
 describe('~/frontend/environments/graphql/resolvers', () => {
   let mockResolvers;
   let mock;
+  let mockApollo;
+  let localState;
 
   beforeEach(() => {
     mockResolvers = resolvers(ENDPOINT);
     mock = new MockAdapter(axios);
+    mockApollo = createMockApollo();
+    localState = mockApollo.defaultClient.localState;
   });
 
   afterEach(() => {
@@ -106,6 +118,21 @@ describe('~/frontend/environments/graphql/resolvers', () => {
       expect(mock.history.post).toContainEqual(
         expect.objectContaining({ url: ENDPOINT, method: 'post' }),
       );
+    });
+  });
+  describe('setEnvironmentToRollback', () => {
+    it('should write the given environment to the cache', () => {
+      localState.client.writeQuery = jest.fn();
+      mockResolvers.Mutation.setEnvironmentToRollback(
+        null,
+        { environment: resolvedEnvironment },
+        localState,
+      );
+
+      expect(localState.client.writeQuery).toHaveBeenCalledWith({
+        query: environmentToRollback,
+        data: { environmentToRollback: resolvedEnvironment },
+      });
     });
   });
 });

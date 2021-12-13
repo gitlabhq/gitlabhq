@@ -101,7 +101,7 @@ export default class LabelsSelect {
               if (IS_EE) {
                 /**
                  * For Scoped labels, the last label selected with the
-                 * same key will be applied to the current issueable.
+                 * same key will be applied to the current issuable.
                  *
                  * If these are the labels - priority::1, priority::2; and if
                  * we apply them in the same order, only priority::2 will stick

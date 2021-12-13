@@ -30,9 +30,12 @@ module ResolvableDiscussion
 
     delegate  :resolved_at,
               :resolved_by,
-              :resolved_by_push?,
               to: :last_resolved_note,
               allow_nil: true
+  end
+
+  def resolved_by_push?
+    !!last_resolved_note&.resolved_by_push?
   end
 
   def resolvable?

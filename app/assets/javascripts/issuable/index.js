@@ -56,7 +56,7 @@ export function initCsvImportExportButtons() {
 export function initIssuableByEmail() {
   Vue.use(GlToast);
 
-  const el = document.querySelector('.js-issueable-by-email');
+  const el = document.querySelector('.js-issuable-by-email');
 
   if (!el) return null;
 

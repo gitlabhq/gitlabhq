@@ -58,6 +58,14 @@ describe('Job actions cell', () => {
     wrapper.destroy();
   });
 
+  it('displays the artifacts download button with correct link', () => {
+    createComponent(playableJob);
+
+    expect(findDownloadArtifactsButton().attributes('href')).toBe(
+      playableJob.artifacts.nodes[0].downloadPath,
+    );
+  });
+
   it('does not display an artifacts download button', () => {
     createComponent(retryableJob);
 

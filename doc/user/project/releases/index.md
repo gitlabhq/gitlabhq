@@ -595,6 +595,29 @@ links to a release is not recommended, because artifacts are ephemeral and
 are used to pass data in the same pipeline. This means there's a risk that
 they could either expire or someone might manually delete them.
 
+#### Number of new and total features **(FREE SAAS)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/235618) in GitLab 13.5.
+
+On [GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/releases), you can view the number of new and total features in the project.
+
+![Feature count](img/feature_count_v14_6.png "Number of features in a release")
+
+The totals are displayed on [shields](https://shields.io/) and are generated per release by
+[a Rake task in the `www-gitlab-com` repo](https://gitlab.com/gitlab-com/www-gitlab-com/-/blob/master/lib/tasks/update_gitlab_project_releases_page.rake).
+
+| Item    | Formula |
+| ------  | ------ |
+| `New features`   | Total count of release posts across all tiers for a single release in the project. |
+| `Total features` | Total count of release posts in reverse order for all releases in the project. |
+
+The counts are also shown by license tier.
+
+| Item    | Formula |
+| ------  | ------ |
+| `New features`   | Total count of release posts across a single tier for a single release in the project. |
+| `Total features` | Total count of release posts across a single tier in reverse order for all releases in the project. |
+
 ## Release evidence
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/26019) in GitLab 12.6.

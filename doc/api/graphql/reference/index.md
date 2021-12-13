@@ -12497,7 +12497,7 @@ Represents a package in the Package Registry. Note that this type is in beta and
 | <a id="packagemetadata"></a>`metadata` | [`PackageMetadata`](#packagemetadata) | Package metadata. |
 | <a id="packagename"></a>`name` | [`String!`](#string) | Name of the package. |
 | <a id="packagepackagetype"></a>`packageType` | [`PackageTypeEnum!`](#packagetypeenum) | Package type. |
-| <a id="packagepipelines"></a>`pipelines` | [`PipelineConnection`](#pipelineconnection) | Pipelines that built the package. (see [Connections](#connections)) |
+| <a id="packagepipelines"></a>`pipelines` **{warning-solid}** | [`PipelineConnection`](#pipelineconnection) | **Deprecated** in 14.6. Due to scalability concerns, this field is going to be removed. |
 | <a id="packageproject"></a>`project` | [`Project!`](#project) | Project where the package is stored. |
 | <a id="packagestatus"></a>`status` | [`PackageStatus!`](#packagestatus) | Package status. |
 | <a id="packagetags"></a>`tags` | [`PackageTagConnection`](#packagetagconnection) | Package tags. (see [Connections](#connections)) |
@@ -12559,7 +12559,7 @@ Represents a package details in the Package Registry. Note that this type is in 
 | <a id="packagedetailstypename"></a>`name` | [`String!`](#string) | Name of the package. |
 | <a id="packagedetailstypepackagefiles"></a>`packageFiles` | [`PackageFileConnection`](#packagefileconnection) | Package files. (see [Connections](#connections)) |
 | <a id="packagedetailstypepackagetype"></a>`packageType` | [`PackageTypeEnum!`](#packagetypeenum) | Package type. |
-| <a id="packagedetailstypepipelines"></a>`pipelines` | [`PipelineConnection`](#pipelineconnection) | Pipelines that built the package. (see [Connections](#connections)) |
+| <a id="packagedetailstypepipelines"></a>`pipelines` **{warning-solid}** | [`PipelineConnection`](#pipelineconnection) | **Deprecated** in 14.6. Due to scalability concerns, this field is going to be removed. |
 | <a id="packagedetailstypeproject"></a>`project` | [`Project!`](#project) | Project where the package is stored. |
 | <a id="packagedetailstypestatus"></a>`status` | [`PackageStatus!`](#packagestatus) | Package status. |
 | <a id="packagedetailstypetags"></a>`tags` | [`PackageTagConnection`](#packagetagconnection) | Package tags. (see [Connections](#connections)) |

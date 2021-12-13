@@ -339,27 +339,24 @@ experience in the Wiki. To opt in for the new editor:
 
 1. Create a new wiki page, or edit an existing one.
 1. Ensure the wiki page uses the Markdown format. Other formats are not yet supported.
-1. Below the **Format** select box, select **Use the new editor**:
+1. Above the content field, select **Edit rich text**:
 
-   ![Use new editor button image](img/use_new_editor_button_v14.0.png)
+   ![Use new editor button image](img/use_new_editor_button_v14.6.png)
 
 ### Use the Content Editor
 
 1. [Create](#create-a-new-wiki-page) a new wiki page, or [edit](#edit-a-wiki-page) an existing one.
 1. Select **Markdown** as your format.
-1. Below the **Format** select box, select **Use new editor**.
+1. Above **Content**, select **Edit rich text**.
 1. Customize your page's content using the various formatting options available in the content editor.
 1. Select **Create page** for a new page, or **Save changes** for an existing page:
 
-   ![Content Editor in Wikis image](img/content_editor_v14.0.png)
+   ![Content Editor in Wikis image](img/content_editor_v14.6.png)
 
 ### Switch back to the old editor
 
 1. *If you're editing the page in the content editor,* scroll to **Content**.
-1. Select **Switch me back to the classic editor**.
-1. Select **Switch to classic editor** in the confirmation popup to confirm.
-
-When you switch back to the old editor, any unsaved changes are lost.
+1. Select **Edit source**.
 
 ### GitLab Flavored Markdown support
 

@@ -1,0 +1,3 @@
+mutation SetEnvironmentToRollback($environment: Environment) {
+  setEnvironmentToRollback(environment: $environment) @client
+}

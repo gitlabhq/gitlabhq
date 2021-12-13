@@ -21,7 +21,7 @@ import {
   PAGE_SIZE_MANUAL,
   LOADING_LIST_ITEMS_LENGTH,
 } from '../constants';
-import issueableEventHub from '../eventhub';
+import issuableEventHub from '../eventhub';
 import { emptyStateHelper } from '../service_desk_helper';
 import Issuable from './issuable.vue';
 
@@ -192,7 +192,7 @@ export default {
       // We need to call nextTick here to wait for all of the boxes to be checked and rendered
       // before we query the dom in issuable_bulk_update_actions.js.
       this.$nextTick(() => {
-        issueableEventHub.$emit('issuables:updateBulkEdit');
+        issuableEventHub.$emit('issuables:updateBulkEdit');
       });
     },
     issuables() {
@@ -203,7 +203,7 @@ export default {
   },
   mounted() {
     if (this.canBulkEdit) {
-      this.unsubscribeToggleBulkEdit = issueableEventHub.$on('issuables:toggleBulkEdit', (val) => {
+      this.unsubscribeToggleBulkEdit = issuableEventHub.$on('issuables:toggleBulkEdit', (val) => {
         this.isBulkEditing = val;
       });
     }
@@ -211,7 +211,7 @@ export default {
   },
   beforeDestroy() {
     // eslint-disable-next-line @gitlab/no-global-event-off
-    issueableEventHub.$off('issuables:toggleBulkEdit');
+    issuableEventHub.$off('issuables:toggleBulkEdit');
   },
   methods: {
     isSelected(issuableId) {

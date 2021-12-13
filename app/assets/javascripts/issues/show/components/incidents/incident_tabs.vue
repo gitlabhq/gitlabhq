@@ -16,7 +16,7 @@ export default {
     GlTab,
     GlTabs,
     HighlightBar,
-    MetricsTab: () => import('ee_component/issue_show/components/incidents/metrics_tab.vue'),
+    MetricsTab: () => import('ee_component/issues/show/components/incidents/metrics_tab.vue'),
   },
   inject: ['fullPath', 'iid', 'uploadMetricsFeatureAvailable'],
   apollo: {

@@ -370,10 +370,17 @@ WARNING:
 Deleting images is a destructive action and can't be undone. To restore
 a deleted image, you must rebuild and re-upload it.
 
-NOTE:
-Administrators should review how to
-[garbage collect](../../../administration/packages/container_registry.md#container-registry-garbage-collection)
-the deleted images.
+On self-managed instances, deleting an image doesn't free up storage space - it only marks the image
+as eligible for deletion. To actually delete images and recover storage space, in case they're
+unreferenced, administrators must run [garbage collection](../../../administration/packages/container_registry.md#container-registry-garbage-collection).
+
+On GitLab.com, the latest version of the Container Registry includes an automatic online garbage
+collector. For more information, see [this blog post](https://about.gitlab.com/blog/2021/10/25/gitlab-com-container-registry-update/).
+This is an instance-wide feature, rolling out gradually to a subset of the user base, so some new image repositories created
+from GitLab 14.5 onwards are served by this new version of the Container Registry. In this new
+version of the Container Registry, layers that aren't referenced by any image manifest, and image
+manifests that have no tags and aren't referenced by another manifest (such as multi-architecture
+images), are automatically scheduled for deletion after 24 hours if left unreferenced.
 
 ### Delete images from within GitLab
 

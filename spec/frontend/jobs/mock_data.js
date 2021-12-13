@@ -1489,15 +1489,18 @@ export const mockJobsQueryResponse = {
               nodes: [
                 {
                   downloadPath: '/root/ci-project/-/jobs/2336/artifacts/download?file_type=trace',
+                  fileType: 'TRACE',
                   __typename: 'CiJobArtifact',
                 },
                 {
                   downloadPath:
                     '/root/ci-project/-/jobs/2336/artifacts/download?file_type=metadata',
+                  fileType: 'METADATA',
                   __typename: 'CiJobArtifact',
                 },
                 {
                   downloadPath: '/root/ci-project/-/jobs/2336/artifacts/download?file_type=archive',
+                  fileType: 'ARCHIVE',
                   __typename: 'CiJobArtifact',
                 },
               ],
@@ -1586,7 +1589,16 @@ export const mockJobsQueryEmptyResponse = {
 };
 
 export const retryableJob = {
-  artifacts: { nodes: [], __typename: 'CiJobArtifactConnection' },
+  artifacts: {
+    nodes: [
+      {
+        downloadPath: '/root/ci-project/-/jobs/847/artifacts/download?file_type=trace',
+        fileType: 'TRACE',
+        __typename: 'CiJobArtifact',
+      },
+    ],
+    __typename: 'CiJobArtifactConnection',
+  },
   allowFailure: false,
   status: 'SUCCESS',
   scheduledAt: null,
@@ -1650,7 +1662,18 @@ export const playableJob = {
   artifacts: {
     nodes: [
       {
-        downloadPath: '/root/test-job-artifacts/-/jobs/1982/artifacts/download?file_type=trace',
+        downloadPath: '/root/ci-project/-/jobs/621/artifacts/download?file_type=archive',
+        fileType: 'ARCHIVE',
+        __typename: 'CiJobArtifact',
+      },
+      {
+        downloadPath: '/root/ci-project/-/jobs/621/artifacts/download?file_type=metadata',
+        fileType: 'METADATA',
+        __typename: 'CiJobArtifact',
+      },
+      {
+        downloadPath: '/root/ci-project/-/jobs/621/artifacts/download?file_type=trace',
+        fileType: 'TRACE',
         __typename: 'CiJobArtifact',
       },
     ],

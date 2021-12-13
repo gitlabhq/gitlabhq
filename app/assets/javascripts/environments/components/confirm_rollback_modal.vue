@@ -7,6 +7,7 @@ import { escape } from 'lodash';
 import csrf from '~/lib/utils/csrf';
 import { __, s__, sprintf } from '~/locale';
 
+import rollbackEnvironment from '../graphql/mutations/rollback_environment.mutation.graphql';
 import eventHub from '../event_hub';
 
 export default {
@@ -40,10 +41,15 @@ export default {
       required: false,
       default: null,
     },
+    graphql: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   computed: {
     modalTitle() {
-      const title = this.environment.isLastDeployment
+      const title = this.isLastDeployment
         ? s__('Environments|Re-deploy environment %{name}?')
         : s__('Environments|Rollback environment %{name}?');
 
@@ -53,6 +59,11 @@ export default {
     },
     commitShortSha() {
       if (this.hasMultipleCommits) {
+        if (this.graphql) {
+          const { lastDeployment } = this.environment;
+          return this.commitData(lastDeployment, 'shortId');
+        }
+
         const { last_deployment } = this.environment;
         return this.commitData(last_deployment, 'short_id');
       }
@@ -61,6 +72,11 @@ export default {
     },
     commitUrl() {
       if (this.hasMultipleCommits) {
+        if (this.graphql) {
+          const { lastDeployment } = this.environment;
+          return this.commitData(lastDeployment, 'commitPath');
+        }
+
         const { last_deployment } = this.environment;
         return this.commitData(last_deployment, 'commit_path');
       }
@@ -68,9 +84,7 @@ export default {
       return this.environment.commitUrl;
     },
     modalActionText() {
-      return this.environment.isLastDeployment
-        ? s__('Environments|Re-deploy')
-        : s__('Environments|Rollback');
+      return this.isLastDeployment ? s__('Environments|Re-deploy') : s__('Environments|Rollback');
     },
     primaryProps() {
       let attributes = [{ variant: 'danger' }];
@@ -84,20 +98,27 @@ export default {
         attributes,
       };
     },
+    isLastDeployment() {
+      // eslint-disable-next-line @gitlab/require-i18n-strings
+      return this.environment?.isLastDeployment || this.environment?.lastDeployment?.['last?'];
+    },
   },
   methods: {
     handleChange(event) {
       this.$emit('change', event);
     },
     onOk() {
-      eventHub.$emit('rollbackEnvironment', this.environment);
+      if (this.graphql) {
+        this.$apollo.mutate({
+          mutation: rollbackEnvironment,
+          variables: { environment: this.environment },
+        });
+      } else {
+        eventHub.$emit('rollbackEnvironment', this.environment);
+      }
     },
     commitData(lastDeployment, key) {
-      if (lastDeployment && lastDeployment.commit) {
-        return lastDeployment.commit[key];
-      }
-
-      return '';
+      return lastDeployment?.commit?.[key] ?? '';
     },
   },
   csrf,

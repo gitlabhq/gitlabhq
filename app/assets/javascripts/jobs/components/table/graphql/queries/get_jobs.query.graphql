@@ -19,6 +19,7 @@ query getJobs(
         artifacts {
           nodes {
             downloadPath
+            fileType
           }
         }
         allowFailure

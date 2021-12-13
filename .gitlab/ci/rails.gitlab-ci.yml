@@ -342,9 +342,8 @@ rspec fast_spec_helper minimal:
 db:rollback:
   extends: .db-job-base
   script:
-    - if [[ -d "ee/" ]]; then task="db:migrate:main"; else task="db:migrate"; fi
-    - bundle exec rake "${task}" VERSION=20181228175414
-    - bundle exec rake "${task}" SKIP_SCHEMA_VERSION_CHECK=true
+    - scripts/db_migrate VERSION=20181228175414
+    - scripts/db_migrate SKIP_SCHEMA_VERSION_CHECK=true
 
 db:migrate:reset:
   extends: .db-job-base
@@ -369,8 +368,7 @@ db:migrate-from-previous-major-version:
     - git checkout -f $CI_COMMIT_SHA
     - SETUP_DB=false USE_BUNDLE_INSTALL=true bash scripts/prepare_build.sh
   script:
-    - if [[ -d "ee/" ]]; then task="db:migrate:main"; else task="db:migrate"; fi
-    - run_timed_command "bundle exec rake ${task}"
+    - run_timed_command "scripts/db_migrate"
 
 db:check-schema:
   extends:
@@ -379,8 +377,7 @@ db:check-schema:
   variables:
     TAG_TO_CHECKOUT: "v14.4.0"
   script:
-    - if [[ -d "ee/" ]]; then task="db:migrate:main"; else task="db:migrate"; fi
-    - run_timed_command "bundle exec rake ${task}"
+    - run_timed_command "scripts/db_migrate"
     - scripts/schema_changed.sh
     - scripts/validate_migration_timestamps
 

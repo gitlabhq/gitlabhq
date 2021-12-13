@@ -5,7 +5,7 @@ import { formatDate } from '~/lib/utils/datetime_utility';
 export default {
   components: {
     GlLink,
-    IncidentSla: () => import('ee_component/issue_show/components/incidents/incident_sla.vue'),
+    IncidentSla: () => import('ee_component/issues/show/components/incidents/incident_sla.vue'),
   },
   directives: {
     GlTooltip: GlTooltipDirective,
