@@ -353,6 +353,69 @@ that do not exist in a repository.
 
 The following sections provide possible solutions to Gitaly Cluster errors.
 
+### Check cluster health
+
+> [Introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/) in GitLab 14.6.
+
+The `check` Praefect sub-command runs a series of checks to determine the health of the Gitaly Cluster.
+
+```shell
+gitlab-ctl praefect check
+```
+
+The following sections describe the checks that are run.
+
+#### Praefect migrations
+
+Because Database migrations must be up to date for Praefect to work correctly, checks if Praefect migrations are up to date.
+
+If this check fails:
+
+1. See the `schema_migrations` table in the database to see which migrations have run.
+1. Run `praefect sql-migrate` to bring the migrations up to date.
+
+#### Node connectivity and disk access
+
+Checks if Praefect can reach all of its Gitaly nodes, and if each Gitaly node has read and write access to all of its storages.
+
+If this check fails:
+
+1. Confirm the network addresses and tokens are set up correctly:
+   - In the Praefect configuration.
+   - In each Gitaly node's configuration.
+1. On the Gitaly nodes, check that the `gitaly` process being run as `git`. There might be a permissions issue that is preventing Gitaly from
+   accessing its storage directories.
+1. Confirm that there are no issues with the network that connects Praefect to Gitaly nodes.
+
+#### Database read and write access
+
+Checks if Praefect can read from and write to the database.
+
+If this check fails:
+
+1. See if the Praefect database is in recovery mode. In recovery mode, tables may be read only. To check, run:
+
+   ```sql
+   select pg_is_in_recovery()
+   ```
+
+1. Confirm that the user that Praefect uses to connect to PostgreSQL has read and write access to the database.
+1. See if the database has been placed into read-only mode. To check, run:
+
+   ```sql
+   show default_transaction_read_only
+   ```
+
+#### Inaccessible repositories
+
+Checks how many repositories are inaccessible because they are missing a primary assignment, or their primary is unavailable.
+
+If this check fails:
+
+1. See if any Gitaly nodes are down. Run `praefect ping-nodes` to check.
+1. Check if there is a high load on the Praefect database. If the Praefect database is slow to respond, it can lead health checks failing to persist
+   to the database, leading Praefect to think nodes are unhealthy.
+
 ### Praefect errors in logs
 
 If you receive an error, check `/var/log/gitlab/gitlab-rails/production.log`.

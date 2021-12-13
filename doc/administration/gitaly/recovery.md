@@ -295,17 +295,27 @@ sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.t
 
 ### Manually remove repositories
 
-> [Introduced](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/3767) in GitLab 14.3.
+> - [Introduced](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/3767) in GitLab 14.3.
+> - [Introduced](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/4054) in GitLab 14.6, support for dry-run mode.
 
-The `remove-repository` Praefect sub-command removes repositories from a Gitaly Cluster. It removes
-all state associated with a given repository including:
+The `remove-repository` Praefect sub-command removes a repository from a Gitaly Cluster, and all state associated with a given repository including:
 
 - On-disk repositories on all relevant Gitaly nodes.
 - Any database state tracked by Praefect.
 
+In GitLab 14.6 and later, by default, the command operates in dry-run mode. In earlier versions, the command didn't support dry-run mode. For example:
+
 ```shell
 sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml remove-repository -virtual-storage <virtual-storage> -repository <repository>
 ```
+
+- Replace `<virtual-storage>` with the name of the virtual storage containing the repository.
+- Replace `<repository>` with the relative path of the repository to remove.
+- In GitLab 14.6 and later, add `-apply` to run the command outside of dry-run mode and remove the repository. For example:
+
+  ```shell
+  sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml remove-repository -virtual-storage <virtual-storage> -repository <repository> -apply
+  ```
 
 - `-virtual-storage` is the virtual storage the repository is located in. Virtual storages are configured in `/etc/gitlab/gitlab.rb` under `praefect['virtual_storages]` and looks like the following:
 

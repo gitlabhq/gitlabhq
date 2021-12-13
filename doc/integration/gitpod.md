@@ -5,7 +5,7 @@ group: Editor
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments"
 ---
 
-# Gitpod Integration **(FREE)**
+# Gitpod integration **(FREE)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/228893) in GitLab 13.4.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/258206) in GitLab 13.8
@@ -38,7 +38,7 @@ With the Gitpod integration enabled for your GitLab instance, to enable it for y
 1. In the top-right corner, select your avatar.
 1. Select **Preferences**.
 1. Under **Preferences**, locate the **Integrations** section.
-1. Check the **Enable Gitpod integration** checkbox and select the **Save changes** button.
+1. Select the **Enable Gitpod integration** checkbox and select **Save changes**.
 
 ## Configure a self-managed instance **(FREE SELF)**
 
@@ -50,9 +50,9 @@ For GitLab self-managed instances, a GitLab administrator needs to:
    1. On the top bar, select **Menu > Admin**.
    1. On the left sidebar, select **Settings > General**.
    1. Expand the **Gitpod** configuration section.
-   1. Check the **Enable Gitpod integration** checkbox.
+   1. Select the **Enable Gitpod integration** checkbox.
    1. Add your Gitpod instance URL (for example, `https://gitpod.example.com`).
-   1. Select the **Save changes** button.
+   1. Select **Save changes**.
 
 Your users can then [enable it for themselves](#enable-gitpod-in-your-user-settings).
 
