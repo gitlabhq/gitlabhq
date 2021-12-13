@@ -33,11 +33,11 @@ type LocalWorkItem {
   widgets: [LocalWorkItemWidgetConnection]
 }
 
-type LocalCreateWorkItemInput {
+input LocalCreateWorkItemInput {
   title: String!
 }
 
-type LocalUpdateWorkItemInput {
+input LocalUpdateWorkItemInput {
   id: ID!
   title: String
 }

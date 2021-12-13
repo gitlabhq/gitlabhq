@@ -12,6 +12,8 @@ module Deployments
       return unless @deployment&.running?
 
       older_deployments_builds.each do |build|
+        next if build.manual?
+
         Gitlab::OptimisticLocking.retry_lock(build, name: 'older_deployments_drop') do |build|
           build.drop(:forward_deployment_failure)
         end

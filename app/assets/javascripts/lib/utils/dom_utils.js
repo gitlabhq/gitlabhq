@@ -89,3 +89,17 @@ export const getParents = (element) => {
 
   return parents;
 };
+
+/**
+ * This method takes a HTML element and an object of attributes
+ * to save repeated calls to `setAttribute` when multiple
+ * attributes need to be set.
+ *
+ * @param {HTMLElement} el
+ * @param {Object} attributes
+ */
+export const setAttributes = (el, attributes) => {
+  Object.keys(attributes).forEach((key) => {
+    el.setAttribute(key, attributes[key]);
+  });
+};

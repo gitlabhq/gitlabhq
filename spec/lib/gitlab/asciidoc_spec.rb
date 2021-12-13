@@ -97,9 +97,9 @@ module Gitlab
             input = '```mypre"><script>alert(3)</script>'
             output =
               if Feature.enabled?(:use_cmark_renderer, default_enabled: :yaml)
-                "<div>\n<div>\n<pre class=\"code highlight js-syntax-highlight language-plaintext\" lang=\"plaintext\" v-pre=\"true\"><code></code></pre>\n</div>\n</div>"
+                "<div>\n<div>\n<div class=\"gl-relative markdown-code-block js-markdown-code\">\n<pre class=\"code highlight js-syntax-highlight language-plaintext\" lang=\"plaintext\" v-pre=\"true\"><code></code></pre>\n<copy-code></copy-code>\n</div>\n</div>\n</div>"
               else
-                "<div>\n<div>\n<pre class=\"code highlight js-syntax-highlight language-plaintext\" lang=\"plaintext\" v-pre=\"true\"><code><span id=\"LC1\" class=\"line\" lang=\"plaintext\">\"&gt;</span></code></pre>\n</div>\n</div>"
+                "<div>\n<div>\n<div class=\"gl-relative markdown-code-block js-markdown-code\">\n<pre class=\"code highlight js-syntax-highlight language-plaintext\" lang=\"plaintext\" v-pre=\"true\"><code><span id=\"LC1\" class=\"line\" lang=\"plaintext\">\"&gt;</span></code></pre>\n<copy-code></copy-code>\n</div>\n</div>\n</div>"
               end
 
             expect(render(input, context)).to include(output)
@@ -365,7 +365,10 @@ module Gitlab
             output = <<~HTML
               <div>
               <div>
+              <div class="gl-relative markdown-code-block js-markdown-code">
               <pre class="code highlight js-syntax-highlight language-javascript" lang="javascript" v-pre="true"><code><span id="LC1" class="line" lang="javascript"><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="dl">'</span><span class="s1">hello world</span><span class="dl">'</span><span class="p">)</span></span></code></pre>
+              <copy-code></copy-code>
+              </div>
               </div>
               </div>
             HTML
@@ -392,11 +395,14 @@ module Gitlab
               <div>
               <div>class.cpp</div>
               <div>
+              <div class="gl-relative markdown-code-block js-markdown-code">
               <pre class="code highlight js-syntax-highlight language-cpp" lang="cpp" v-pre="true"><code><span id="LC1" class="line" lang="cpp"><span class="cp">#include &lt;stdio.h&gt;</span></span>
               <span id="LC2" class="line" lang="cpp"></span>
               <span id="LC3" class="line" lang="cpp"><span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">5</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span></span>
               <span id="LC4" class="line" lang="cpp">  <span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="o">&lt;&lt;</span><span class="s">"*"</span><span class="o">&lt;&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span></span>
               <span id="LC5" class="line" lang="cpp"><span class="p">}</span></span></code></pre>
+              <copy-code></copy-code>
+              </div>
               </div>
               </div>
             HTML

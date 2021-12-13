@@ -17,7 +17,7 @@ export default CodeBlockLowlight.extend({
     };
   },
   renderHTML({ HTMLAttributes }) {
-    return ['pre', HTMLAttributes, ['code', {}, 0]];
+    return ['div', ['pre', HTMLAttributes, ['code', {}, 0]]];
   },
 }).configure({
   lowlight,

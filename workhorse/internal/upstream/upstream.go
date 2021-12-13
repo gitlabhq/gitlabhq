@@ -239,5 +239,5 @@ func (u *upstream) updateGeoProxyFields(geoProxyURL *url.URL) {
 	geoProxyRoundTripper := roundtripper.NewBackendRoundTripper(u.geoProxyBackend, "", u.ProxyHeadersTimeout, u.DevelopmentMode)
 	geoProxyUpstream := proxypkg.NewProxy(u.geoProxyBackend, u.Version, geoProxyRoundTripper)
 	u.geoProxyCableRoute = u.wsRoute(`^/-/cable\z`, geoProxyUpstream)
-	u.geoProxyRoute = u.route("", "", geoProxyUpstream)
+	u.geoProxyRoute = u.route("", "", geoProxyUpstream, withGeoProxy())
 }

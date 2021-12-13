@@ -47,13 +47,13 @@ RSpec.describe 'Issues csv', :js do
     expect(page).to have_content "emailed to #{user.notification_email_or_default}"
   end
 
-  it 'includes a csv attachment', :sidekiq_might_not_need_inline do
+  it 'includes a csv attachment', :sidekiq_inline do
     request_csv
 
     expect(attachment.content_type).to include('text/csv')
   end
 
-  it 'ignores pagination', :sidekiq_might_not_need_inline do
+  it 'ignores pagination', :sidekiq_inline do
     create_list(:issue, 30, project: project, author: user)
 
     request_csv
@@ -61,13 +61,13 @@ RSpec.describe 'Issues csv', :js do
     expect(csv.count).to eq 31
   end
 
-  it 'uses filters from issue index', :sidekiq_might_not_need_inline do
+  it 'uses filters from issue index', :sidekiq_inline do
     request_csv(state: :closed)
 
     expect(csv.count).to eq 0
   end
 
-  it 'ignores sorting from issue index', :sidekiq_might_not_need_inline do
+  it 'ignores sorting from issue index', :sidekiq_inline do
     issue2 = create(:labeled_issue, project: project, author: user, labels: [feature_label])
 
     request_csv(sort: :label_priority)
@@ -76,23 +76,11 @@ RSpec.describe 'Issues csv', :js do
     expect(csv.map { |row| row['Issue ID'] }).to eq expected
   end
 
-  it 'uses array filters, such as label_name', :sidekiq_might_not_need_inline do
+  it 'uses array filters, such as label_name', :sidekiq_inline do
     issue.update!(labels: [idea_label])
 
     request_csv("label_name[]" => 'Bug')
 
     expect(csv.count).to eq 0
-  end
-
-  it 'avoids excessive database calls' do
-    control_count = ActiveRecord::QueryRecorder.new { request_csv }.count
-    create_list(:labeled_issue,
-                10,
-                project: project,
-                assignees: [user],
-                author: user,
-                milestone: milestone,
-                labels: [feature_label, idea_label])
-    expect { request_csv }.not_to exceed_query_limit(control_count + 5)
   end
 end

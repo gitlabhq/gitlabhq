@@ -36,6 +36,7 @@ import GlFieldErrors from './gl_field_errors';
 import initUserPopovers from './user_popovers';
 import initBroadcastNotifications from './broadcast_notification';
 import { initTopNav } from './nav';
+import { initCopyCodeButton } from './behaviors/copy_code';
 
 import 'ee_else_ce/main_ee';
 import 'jh_else_ce/main_jh';
@@ -97,6 +98,7 @@ function deferredInitialisation() {
   initPersistentUserCallouts();
   initDefaultTrackers();
   initFeatureHighlight();
+  initCopyCodeButton();
 
   if (gon.features?.newHeaderSearch) {
     initHeaderSearchApp();

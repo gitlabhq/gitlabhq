@@ -1931,7 +1931,7 @@
   :urgency: :low
   :resource_boundary: :unknown
   :weight: 1
-  :idempotent:
+  :idempotent: true
   :tags: []
 - :name: bulk_imports_export_request
   :worker_name: BulkImports::ExportRequestWorker

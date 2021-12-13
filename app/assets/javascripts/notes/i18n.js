@@ -12,7 +12,9 @@ export const COMMENT_FORM = {
   epic: __('epic'),
   bodyPlaceholder: __('Write a comment or drag your files here…'),
   confidential: s__('Notes|Make this comment confidential'),
-  confidentialVisibility: s__('Notes|Confidential comments are only visible to project members'),
+  confidentialVisibility: s__(
+    'Notes|Confidential comments are only visible to members with the role of Reporter or higher',
+  ),
   discussionThatNeedsResolution: __(
     'Discuss a specific suggestion or question that needs to be resolved.',
   ),

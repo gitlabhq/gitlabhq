@@ -60,18 +60,8 @@ RSpec.describe BulkImports::PipelineWorker do
       create(
         :bulk_import_tracker,
         entity: entity,
-        pipeline_name: 'FakePipeline'
-      )
-    end
-  end
-
-  it_behaves_like 'successfully runs the pipeline' do
-    let(:pipeline_tracker) do
-      create(
-        :bulk_import_tracker,
-        :started,
-        entity: entity,
-        pipeline_name: 'FakePipeline'
+        pipeline_name: 'FakePipeline',
+        status_event: 'enqueue'
       )
     end
   end
@@ -109,7 +99,8 @@ RSpec.describe BulkImports::PipelineWorker do
       pipeline_tracker = create(
         :bulk_import_tracker,
         entity: entity,
-        pipeline_name: 'InexistentPipeline'
+        pipeline_name: 'InexistentPipeline',
+        status_event: 'enqueue'
       )
 
       expect_next_instance_of(Gitlab::Import::Logger) do |logger|
@@ -150,7 +141,8 @@ RSpec.describe BulkImports::PipelineWorker do
         pipeline_tracker = create(
           :bulk_import_tracker,
           entity: entity,
-          pipeline_name: 'FakePipeline'
+          pipeline_name: 'FakePipeline',
+          status_event: 'enqueue'
         )
 
         exception = BulkImports::NetworkError.new(
@@ -163,7 +155,21 @@ RSpec.describe BulkImports::PipelineWorker do
             .and_raise(exception)
         end
 
-        expect(subject).to receive(:jid).and_return('jid')
+        expect(subject).to receive(:jid).and_return('jid').twice
+
+        expect_any_instance_of(BulkImports::Tracker) do |tracker|
+          expect(tracker).to receive(:retry).and_call_original
+        end
+
+        expect_next_instance_of(Gitlab::Import::Logger) do |logger|
+          expect(logger)
+            .to receive(:info)
+            .with(
+              worker: described_class.name,
+              pipeline_name: 'FakePipeline',
+              entity_id: entity.id
+            )
+        end
 
         expect(described_class)
           .to receive(:perform_in)
@@ -175,6 +181,10 @@ RSpec.describe BulkImports::PipelineWorker do
           )
 
         subject.perform(pipeline_tracker.id, pipeline_tracker.stage, entity.id)
+
+        pipeline_tracker.reload
+
+        expect(pipeline_tracker.enqueued?).to be_truthy
       end
     end
   end
@@ -200,7 +210,8 @@ RSpec.describe BulkImports::PipelineWorker do
       create(
         :bulk_import_tracker,
         entity: entity,
-        pipeline_name: 'NdjsonPipeline'
+        pipeline_name: 'NdjsonPipeline',
+        status_event: 'enqueue'
       )
     end
 

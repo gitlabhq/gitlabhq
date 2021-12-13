@@ -2,6 +2,7 @@
 import { EXTENSION_ICONS } from '../constants';
 import issuesCollapsedQuery from './issues_collapsed.query.graphql';
 import issuesQuery from './issues.query.graphql';
+import { n__, sprintf } from '~/locale';
 
 export default {
   // Give the extension a name
@@ -20,7 +21,14 @@ export default {
     // Small summary text to be displayed in the collapsed state
     // Receives the collapsed data as an argument
     summary(count) {
-      return 'Summary text<br/>Second line';
+      return sprintf(
+        n__(
+          'ciReport|Load performance test metrics detected %{strong_start}%{changesFound}%{strong_end} change',
+          'ciReport|Load performance test metrics detected %{strong_start}%{changesFound}%{strong_end} changes',
+          changesFound,
+        ),
+        { changesFound },
+      );
     },
     // Status icon to be used next to the summary text
     // Receives the collapsed data as an argument
@@ -57,9 +65,13 @@ export default {
         .query({ query: issuesQuery, variables: { projectPath: targetProjectFullPath } })
         .then(({ data }) => {
           // Return some transformed data to be rendered in the expanded state
-          return data.project.issues.nodes.map((issue) => ({
+          return data.project.issues.nodes.map((issue, i) => ({
             id: issue.id, // Required: The ID of the object
-            text: issue.title, // Required: The text to get used on each row
+            header: ['New', 'This is an %{strong_start}issue%{strong_end} row'],
+            text:
+              '%{critical_start}1 Critical%{critical_end}, %{danger_start}1 High%{danger_end}, and %{strong_start}1 Other%{strong_end}. %{small_start}Some smaller text%{small_end}', // Required: The text to get used on each row
+            subtext:
+              'Reported resource changes: %{strong_start}2%{strong_end} to add, 0 to change, 0 to delete', // Optional: The sub-text to get displayed below each rows main content
             // Icon to get rendered on the side of each row
             icon: {
               // Required: Name maps to an icon in GitLabs SVG

@@ -451,3 +451,16 @@ fieldset[disabled] .btn,
   box-shadow: none;
   border-width: 1px;
 }
+
+copy-code {
+  @include gl-absolute;
+  @include gl-transition-medium;
+  @include gl-opacity-0;
+
+  top: 7px;
+  right: $input-horizontal-padding;
+
+  .markdown-code-block:hover & {
+    @include gl-opacity-10;
+  }
+}

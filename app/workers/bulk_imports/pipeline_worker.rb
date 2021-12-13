@@ -16,7 +16,7 @@ module BulkImports
 
     def perform(pipeline_tracker_id, stage, entity_id)
       pipeline_tracker = ::BulkImports::Tracker
-        .with_status(:created, :started)
+        .with_status(:enqueued)
         .find_by_id(pipeline_tracker_id)
 
       if pipeline_tracker.present?
@@ -67,6 +67,8 @@ module BulkImports
           pipeline_name: pipeline_tracker.pipeline_name,
           message: "Retrying error: #{e.message}"
         )
+
+        pipeline_tracker.update!(status_event: 'retry', jid: jid)
 
         reenqueue(pipeline_tracker, delay: e.retry_delay)
       else

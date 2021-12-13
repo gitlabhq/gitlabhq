@@ -42,8 +42,9 @@ type routeEntry struct {
 }
 
 type routeOptions struct {
-	tracing  bool
-	matchers []matcherFunc
+	tracing         bool
+	isGeoProxyRoute bool
+	matchers        []matcherFunc
 }
 
 type uploadPreparers struct {
@@ -94,7 +95,13 @@ func withoutTracing() func(*routeOptions) {
 	}
 }
 
-func (u *upstream) observabilityMiddlewares(handler http.Handler, method string, regexpStr string) http.Handler {
+func withGeoProxy() func(*routeOptions) {
+	return func(options *routeOptions) {
+		options.isGeoProxyRoute = true
+	}
+}
+
+func (u *upstream) observabilityMiddlewares(handler http.Handler, method string, regexpStr string, opts *routeOptions) http.Handler {
 	handler = log.AccessLogger(
 		handler,
 		log.WithAccessLogger(u.accessLogger),
@@ -106,6 +113,11 @@ func (u *upstream) observabilityMiddlewares(handler http.Handler, method string,
 	)
 
 	handler = instrumentRoute(handler, method, regexpStr) // Add prometheus metrics
+
+	if opts != nil && opts.isGeoProxyRoute {
+		handler = instrumentGeoProxyRoute(handler, method, regexpStr) // Add Geo prometheus metrics
+	}
+
 	return handler
 }
 
@@ -119,7 +131,7 @@ func (u *upstream) route(method, regexpStr string, handler http.Handler, opts ..
 		f(&options)
 	}
 
-	handler = u.observabilityMiddlewares(handler, method, regexpStr)
+	handler = u.observabilityMiddlewares(handler, method, regexpStr, &options)
 	handler = denyWebsocket(handler) // Disallow websockets
 	if options.tracing {
 		// Add distributed tracing
@@ -136,7 +148,7 @@ func (u *upstream) route(method, regexpStr string, handler http.Handler, opts ..
 
 func (u *upstream) wsRoute(regexpStr string, handler http.Handler, matchers ...matcherFunc) routeEntry {
 	method := "GET"
-	handler = u.observabilityMiddlewares(handler, method, regexpStr)
+	handler = u.observabilityMiddlewares(handler, method, regexpStr, nil)
 
 	return routeEntry{
 		method:   method,

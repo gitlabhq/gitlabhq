@@ -903,8 +903,9 @@ RSpec.describe Ci::Runner do
 
   describe '#heartbeat' do
     let(:runner) { create(:ci_runner, :project) }
+    let(:executor) { 'shell' }
 
-    subject { runner.heartbeat(architecture: '18-bit', config: { gpus: "all" }) }
+    subject { runner.heartbeat(architecture: '18-bit', config: { gpus: "all" }, executor: executor) }
 
     context 'when database was updated recently' do
       before do
@@ -940,6 +941,26 @@ RSpec.describe Ci::Runner do
         expect_redis_update
         does_db_update
       end
+
+      %w(custom shell docker docker-windows docker-ssh ssh parallels virtualbox docker+machine docker-ssh+machine kubernetes some-unknown-type).each do |executor|
+        context "with #{executor} executor" do
+          let(:executor) { executor }
+
+          it 'updates with expected executor type' do
+            expect_redis_update
+
+            subject
+
+            expect(runner.reload.read_attribute(:executor_type)).to eq(expected_executor_type)
+          end
+
+          def expected_executor_type
+            return 'unknown' if executor == 'some-unknown-type'
+
+            executor.gsub(/[+-]/, '_')
+          end
+        end
+      end
     end
 
     def expect_redis_update
@@ -953,6 +974,7 @@ RSpec.describe Ci::Runner do
       expect { subject }.to change { runner.reload.read_attribute(:contacted_at) }
         .and change { runner.reload.read_attribute(:architecture) }
         .and change { runner.reload.read_attribute(:config) }
+        .and change { runner.reload.read_attribute(:executor_type) }
     end
   end
 

@@ -9,10 +9,27 @@ type LocalEnvironment {
   autoStopPath: String
 }
 
+input LocalEnvironmentInput {
+  id: Int!
+  globalId: ID!
+  name: String!
+  folderPath: String
+  stopPath: String
+  deletePath: String
+  retryUrl: String
+  autoStopPath: String
+}
+
 type NestedLocalEnvironment {
   name: String!
   size: Int!
   latest: LocalEnvironment!
+}
+
+input NestedLocalEnvironmentInput {
+  name: String!
+  size: Int!
+  latest: LocalEnvironmentInput!
 }
 
 type LocalEnvironmentFolder {
@@ -40,13 +57,13 @@ type LocalErrors {
 
 extend type Query {
   environmentApp: LocalEnvironmentApp
-  folder(environment: NestedLocalEnvironment): LocalEnvironmentFolder
+  folder(environment: NestedLocalEnvironmentInput): LocalEnvironmentFolder
   isLastDeployment: Boolean
 }
 
 extend type Mutation {
-  stopEnvironment(environment: LocalEnvironment): LocalErrors
-  deleteEnvironment(environment: LocalEnvironment): LocalErrors
-  rollbackEnvironment(environment: LocalEnvironment): LocalErrors
-  cancelAutoStop(environment: LocalEnvironment): LocalErrors
+  stopEnvironment(environment: LocalEnvironmentInput): LocalErrors
+  deleteEnvironment(environment: LocalEnvironmentInput): LocalErrors
+  rollbackEnvironment(environment: LocalEnvironmentInput): LocalErrors
+  cancelAutoStop(environment: LocalEnvironmentInput): LocalErrors
 }

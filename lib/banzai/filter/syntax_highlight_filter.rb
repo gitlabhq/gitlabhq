@@ -58,10 +58,10 @@ module Banzai
 
         sourcepos_attr = sourcepos ? "data-sourcepos=\"#{sourcepos}\"" : ''
 
-        highlighted = %(<pre #{sourcepos_attr} class="#{css_classes}"
+        highlighted = %(<div class="gl-relative markdown-code-block js-markdown-code"><pre #{sourcepos_attr} class="#{css_classes}"
                              lang="#{language}"
                              #{lang_params}
-                             v-pre="true"><code>#{code}</code></pre>)
+                             v-pre="true"><code>#{code}</code></pre><copy-code></copy-code></div>)
 
         # Extracted to a method to measure it
         replace_parent_pre_element(node, highlighted)

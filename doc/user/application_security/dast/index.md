@@ -970,6 +970,11 @@ To view running completed and scheduled on-demand DAST scans for a project, go t
 - To view scheduled scans, select **Scheduled**. It shows on-demand scans that have a schedule
   set up. Those are _not_ included in the **All** tab.
 
+#### Cancel an on-demand scan
+
+To cancel a pending or running on-demand scan, select **Cancel** (**{cancel}**) in the
+on-demand scans list.
+
 ### Run an on-demand DAST scan
 
 Prerequisites:

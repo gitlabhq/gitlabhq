@@ -101,6 +101,16 @@ var (
 		},
 		[]string{"code", "method", "route"},
 	)
+
+	httpGeoProxiedRequestsTotal = promauto.NewCounterVec(
+		prometheus.CounterOpts{
+			Namespace: namespace,
+			Subsystem: httpSubsystem,
+			Name:      "geo_proxied_requests_total",
+			Help:      "A counter for Geo proxied requests through workhorse.",
+		},
+		[]string{"code", "method", "route"},
+	)
 )
 
 func instrumentRoute(next http.Handler, method string, regexpStr string) http.Handler {
@@ -114,4 +124,8 @@ func instrumentRoute(next http.Handler, method string, regexpStr string) http.Ha
 	handler = promhttp.InstrumentHandlerTimeToWriteHeader(httpTimeToWriteHeaderSeconds.MustCurryWith(map[string]string{"route": regexpStr}), handler)
 
 	return handler
+}
+
+func instrumentGeoProxyRoute(next http.Handler, method string, regexpStr string) http.Handler {
+	return promhttp.InstrumentHandlerCounter(httpGeoProxiedRequestsTotal.MustCurryWith(map[string]string{"route": regexpStr}), next)
 }

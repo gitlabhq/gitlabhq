@@ -2,6 +2,7 @@
   announcement_milestone: "14.5"
   announcement_date: "2021-11-15"
   removal_milestone: "15.0"
+  removal_date: "2022-05-22" # the date of the milestone release when this feature is planned to be removed
   body: |
     [We are deprecating the certificate-based integration with Kubernetes](https://about.gitlab.com/blog/2021/11/15/deprecating-the-cert-based-kubernetes-integration/).
     The timeline of removal of the integration from the product is not yet planned and we will communicate
@@ -16,4 +17,3 @@
   tiers: [Free, Silver, Gold, Core, Premium, Ultimate]
   issue_url: 'https://gitlab.com/groups/gitlab-org/configure/-/epics/8'
   documentation_url: 'https://docs.gitlab.com/ee/user/infrastructure/clusters/#certificate-based-kubernetes-integration-deprecated'
-  removal_date: # (optional - may be required in the future) YYYY-MM-DD format. This should almost always be the 22nd of a month (YYYY-MM-22), the date of the milestone release when this feature is planned to be removed

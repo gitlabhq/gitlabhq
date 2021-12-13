@@ -138,7 +138,16 @@ const defaultSerializerConfig = {
       state.write('```');
       state.closeBlock(node);
     },
-    [Division.name]: renderHTMLNode('div'),
+    [Division.name]: (state, node) => {
+      if (node.attrs.className?.includes('js-markdown-code')) {
+        state.renderInline(node);
+      } else {
+        const newNode = node;
+        delete newNode.attrs.className;
+
+        renderHTMLNode('div')(state, newNode);
+      }
+    },
     [DescriptionList.name]: renderHTMLNode('dl', true),
     [DescriptionItem.name]: (state, node, parent, index) => {
       if (index === 1) state.ensureNewLine();

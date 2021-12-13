@@ -26,6 +26,21 @@ module Ci
       project_type: 3
     }
 
+    enum executor_type: {
+      unknown: 0,
+      custom: 1,
+      shell: 2,
+      docker: 3,
+      docker_windows: 4,
+      docker_ssh: 5,
+      ssh: 6,
+      parallels: 7,
+      virtualbox: 8,
+      docker_machine: 9,
+      docker_ssh_machine: 10,
+      kubernetes: 11
+    }, _suffix: true
+
     # This `ONLINE_CONTACT_TIMEOUT` needs to be larger than
     #   `RUNNER_QUEUE_EXPIRY_TIME+UPDATE_CONTACT_COLUMN_EVERY`
     #
@@ -152,7 +167,7 @@ module Ci
 
     after_destroy :cleanup_runner_queue
 
-    cached_attr_reader :version, :revision, :platform, :architecture, :ip_address, :contacted_at
+    cached_attr_reader :version, :revision, :platform, :architecture, :ip_address, :contacted_at, :executor_type
 
     chronic_duration_attr :maximum_timeout_human_readable, :maximum_timeout,
         error_message: 'Maximum job timeout has a value which could not be accepted'
@@ -398,8 +413,9 @@ module Ci
       # database after heartbeat write happens.
       #
       ::Gitlab::Database::LoadBalancing::Session.without_sticky_writes do
-        values = values&.slice(:version, :revision, :platform, :architecture, :ip_address, :config) || {}
+        values = values&.slice(:version, :revision, :platform, :architecture, :ip_address, :config, :executor) || {}
         values[:contacted_at] = Time.current
+        values[:executor_type] = EXECUTOR_NAME_TO_TYPES.fetch(values.delete(:executor), :unknown)
 
         cache_attributes(values)
 
@@ -423,6 +439,20 @@ module Ci
     end
 
     private
+
+    EXECUTOR_NAME_TO_TYPES = {
+      'custom' => :custom,
+      'shell' => :shell,
+      'docker' => :docker,
+      'docker-windows' => :docker_windows,
+      'docker-ssh' => :docker_ssh,
+      'ssh' => :ssh,
+      'parallels' => :parallels,
+      'virtualbox' => :virtualbox,
+      'docker+machine' => :docker_machine,
+      'docker-ssh+machine' => :docker_ssh_machine,
+      'kubernetes' => :kubernetes
+    }.freeze
 
     def cleanup_runner_queue
       Gitlab::Redis::SharedState.with do |redis|

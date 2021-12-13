@@ -133,7 +133,7 @@ export default {
       }
     },
   },
-  safeHtmlConfig: { ADD_TAGS: ['gl-emoji'] },
+  safeHtmlConfig: { ADD_TAGS: ['gl-emoji', 'copy-code'] },
 };
 </script>
 
