@@ -156,7 +156,8 @@ module Trigger
         'QA_BRANCH' => ENV['QA_BRANCH'] || 'master',
         'CACHE_UPDATE' => ENV['OMNIBUS_GITLAB_CACHE_UPDATE'],
         'GITLAB_QA_OPTIONS' => ENV['GITLAB_QA_OPTIONS'],
-        'QA_TESTS' => ENV['QA_TESTS']
+        'QA_TESTS' => ENV['QA_TESTS'],
+        'ALLURE_JOB_NAME' => ENV['ALLURE_JOB_NAME']
       }
     end
   end

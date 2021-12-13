@@ -56,7 +56,7 @@ module QA
         @runner.remove_via_api! if @runner
       end
 
-      it 'user starts the web terminal', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1593' do
+      it 'user starts the web terminal', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347737' do
         Page::Project::Show.perform(&:open_web_ide!)
 
         # Start the web terminal and check that there were no errors

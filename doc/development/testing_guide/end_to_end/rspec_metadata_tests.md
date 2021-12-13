@@ -44,6 +44,6 @@ This is a partial list of the [RSpec metadata](https://relishapp.com/rspec/rspec
 | `:skip_signup_disabled` | The test uses UI to sign up a new user and is skipped in any environment that does not allow new user registration via the UI. |
 | `:smoke`          | The test belongs to the test suite which verifies basic functionality of a GitLab instance.|
 | `:smtp`           | The test requires a GitLab instance to be configured to use an SMTP server. Tests SMTP notification email delivery from GitLab by using MailHog. |
-| `:testcase`       | The link to the test case issue in the [Quality Test Cases project](https://gitlab.com/gitlab-org/quality/testcases/). |
+| `:testcase`       | The link to the test case issue in the [GitLab Project Test Cases](https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases). |
 | `:transient`      | The test tests transient bugs. It is excluded by default. |
 | `:issue`, `:issue_${num}` | Optional links to issues which might be related to the spec. Helps keeping track of related issues and can also be used by tools that create test reports. Currently added automatically to `Allure` test report. Multiple tags can be used by adding optional number postfix like `issue_1`, `issue_2` etc. |

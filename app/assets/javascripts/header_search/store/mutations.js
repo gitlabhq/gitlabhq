@@ -15,6 +15,9 @@ export default {
     state.loading = false;
     state.autocompleteOptions = [];
   },
+  [types.CLEAR_AUTOCOMPLETE](state) {
+    state.autocompleteOptions = [];
+  },
   [types.SET_SEARCH](state, value) {
     state.search = value;
   },

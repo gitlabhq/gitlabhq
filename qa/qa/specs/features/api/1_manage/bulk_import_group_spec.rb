@@ -84,7 +84,7 @@ module QA
 
         it(
           'successfully imports groups and labels',
-          testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1873'
+          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347674'
         ) do
           expect { imported_group.import_status }.to eventually_eq('finished').within(import_wait_duration)
 
@@ -123,7 +123,7 @@ module QA
 
         it(
           'successfully imports group milestones and badges',
-          testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/2245'
+          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347628'
         ) do
           expect { imported_group.import_status }.to eventually_eq('finished').within(import_wait_duration)
 
@@ -162,7 +162,7 @@ module QA
 
         it(
           'adds members for imported group',
-          testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/2310'
+          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347609'
         ) do
           expect { imported_group.import_status }.to eventually_eq('finished').within(import_wait_duration)
 

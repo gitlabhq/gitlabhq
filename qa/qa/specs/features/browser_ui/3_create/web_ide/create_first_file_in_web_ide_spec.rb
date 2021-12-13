@@ -16,7 +16,7 @@ module QA
         Flow::Login.sign_in
       end
 
-      it "creates the first file in an empty project via Web IDE", testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1353' do
+      it "creates the first file in an empty project via Web IDE", testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347803' do
         project.visit!
         Page::Project::Show.perform(&:create_first_new_file!)
 

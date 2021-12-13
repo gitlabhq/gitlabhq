@@ -43,7 +43,7 @@ module QA
         find('pre').text
       end
 
-      it 'user views raw email patch', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1566' do
+      it 'user views raw email patch', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347755' do
         view_commit
 
         Page::Project::Commit::Show.perform(&:select_email_patches)
@@ -53,7 +53,7 @@ module QA
         expect(page).to have_content('diff --git a/second b/second')
       end
 
-      it 'user views raw commit diff', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1568' do
+      it 'user views raw commit diff', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347754' do
         view_commit
 
         Page::Project::Commit::Show.perform(&:select_plain_diff)

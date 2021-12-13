@@ -14,6 +14,10 @@ export const fetchAutocompleteOptions = ({ commit, getters }) => {
     });
 };
 
+export const clearAutocomplete = ({ commit }) => {
+  commit(types.CLEAR_AUTOCOMPLETE);
+};
+
 export const setSearch = ({ commit }, value) => {
   commit(types.SET_SEARCH, value);
 };

@@ -21,7 +21,7 @@ module QA
         snippet.remove_via_api!
       end
 
-      it 'user creates a project snippet', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1358' do
+      it 'user creates a project snippet', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347798' do
         snippet.visit!
 
         Page::Dashboard::Snippet::Show.perform do |snippet|

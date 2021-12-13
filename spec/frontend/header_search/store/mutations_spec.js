@@ -41,6 +41,14 @@ describe('Header Search Store Mutations', () => {
     });
   });
 
+  describe('CLEAR_AUTOCOMPLETE', () => {
+    it('empties autocompleteOptions array', () => {
+      mutations[types.CLEAR_AUTOCOMPLETE](state);
+
+      expect(state.autocompleteOptions).toStrictEqual([]);
+    });
+  });
+
   describe('SET_SEARCH', () => {
     it('sets search to value', () => {
       mutations[types.SET_SEARCH](state, MOCK_SEARCH);

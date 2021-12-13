@@ -38,6 +38,16 @@ module RspecFlaky
       rspec_example.respond_to?(:attempts) ? rspec_example.attempts : 1
     end
 
+    def to_h
+      {
+        example_id: example_id,
+        file: file,
+        line: line,
+        description: description,
+        last_attempts_count: attempts
+      }
+    end
+
     private
 
     attr_reader :rspec_example

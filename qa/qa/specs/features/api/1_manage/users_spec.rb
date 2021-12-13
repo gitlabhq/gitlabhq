@@ -8,13 +8,13 @@ module QA
       let(:api_client) { Runtime::API::Client.new(:gitlab) }
       let(:request) { Runtime::API::Request.new(api_client, '/users') }
 
-      it 'GET /users', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1552' do
+      it 'GET /users', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347882' do
         get request.url
 
         expect_status(200)
       end
 
-      it 'GET /users/:username with a valid username', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1544' do
+      it 'GET /users/:username with a valid username', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347886' do
         get request.url, { params: { username: Runtime::User.username } }
 
         expect_status(200)
@@ -23,7 +23,7 @@ module QA
         )
       end
 
-      it 'GET /users/:username with an invalid username', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1551' do
+      it 'GET /users/:username with an invalid username', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347883' do
         get request.url, { params: { username: SecureRandom.hex(10) } }
 
         expect_status(200)

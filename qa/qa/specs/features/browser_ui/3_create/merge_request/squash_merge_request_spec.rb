@@ -31,7 +31,7 @@ module QA
         merge_request.visit!
       end
 
-      it 'user squashes commits while merging', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1583' do
+      it 'user squashes commits while merging', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347744' do
         Page::MergeRequest::Show.perform do |merge_request_page|
           merge_request_page.retry_on_exception(reload: true) do
             expect(merge_request_page).to have_text('to be squashed')

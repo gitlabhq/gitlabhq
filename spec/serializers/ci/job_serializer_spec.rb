@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe BuildSerializer do
+RSpec.describe Ci::JobSerializer do
   let(:user) { create(:user) }
 
   let(:serializer) do

@@ -30,6 +30,7 @@ describe('HeaderSearchApp', () => {
   const actionSpies = {
     setSearch: jest.fn(),
     fetchAutocompleteOptions: jest.fn(),
+    clearAutocomplete: jest.fn(),
   };
 
   const createComponent = (initialState, mockGetters) => {
@@ -217,16 +218,40 @@ describe('HeaderSearchApp', () => {
       });
 
       describe('onInput', () => {
-        beforeEach(() => {
-          findHeaderSearchInput().vm.$emit('input', MOCK_SEARCH);
+        describe('when search has text', () => {
+          beforeEach(() => {
+            findHeaderSearchInput().vm.$emit('input', MOCK_SEARCH);
+          });
+
+          it('calls setSearch with search term', () => {
+            expect(actionSpies.setSearch).toHaveBeenCalledWith(expect.any(Object), MOCK_SEARCH);
+          });
+
+          it('calls fetchAutocompleteOptions', () => {
+            expect(actionSpies.fetchAutocompleteOptions).toHaveBeenCalled();
+          });
+
+          it('does not call clearAutocomplete', () => {
+            expect(actionSpies.clearAutocomplete).not.toHaveBeenCalled();
+          });
         });
 
-        it('calls setSearch with search term', () => {
-          expect(actionSpies.setSearch).toHaveBeenCalledWith(expect.any(Object), MOCK_SEARCH);
-        });
+        describe('when search is emptied', () => {
+          beforeEach(() => {
+            findHeaderSearchInput().vm.$emit('input', '');
+          });
 
-        it('calls fetchAutocompleteOptions', () => {
-          expect(actionSpies.fetchAutocompleteOptions).toHaveBeenCalled();
+          it('calls setSearch with empty term', () => {
+            expect(actionSpies.setSearch).toHaveBeenCalledWith(expect.any(Object), '');
+          });
+
+          it('does not call fetchAutocompleteOptions', () => {
+            expect(actionSpies.fetchAutocompleteOptions).not.toHaveBeenCalled();
+          });
+
+          it('calls clearAutocomplete', () => {
+            expect(actionSpies.clearAutocomplete).toHaveBeenCalled();
+          });
         });
       });
     });

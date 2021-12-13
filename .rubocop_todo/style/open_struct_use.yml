@@ -47,5 +47,3 @@ Style/OpenStructUse:
   - spec/support/helpers/import_spec_helper.rb
   - spec/support/helpers/login_helpers.rb
   - spec/support/helpers/repo_helpers.rb
-  - spec/tooling/rspec_flaky/flaky_example_spec.rb
-  - tooling/rspec_flaky/flaky_example.rb

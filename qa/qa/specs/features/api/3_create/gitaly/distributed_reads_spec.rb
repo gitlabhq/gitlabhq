@@ -25,7 +25,7 @@ module QA
           praefect_manager.start_all_nodes
         end
 
-        it 'reads from each node', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1264' do
+        it 'reads from each node', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347833' do
           pre_read_data = praefect_manager.query_read_distribution
 
           wait_for_reads_to_increase(project, number_of_reads_per_loop, pre_read_data)
@@ -52,7 +52,7 @@ module QA
             praefect_manager.start_all_nodes
           end
 
-          it 'does not read from the unhealthy node', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1263' do
+          it 'does not read from the unhealthy node', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347834' do
             pre_read_data = praefect_manager.query_read_distribution
 
             read_from_project(project, number_of_reads_per_loop * 10)

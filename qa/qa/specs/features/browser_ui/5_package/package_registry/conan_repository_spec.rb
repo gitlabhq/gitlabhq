@@ -41,7 +41,7 @@ module QA
         package.remove_via_api!
       end
 
-      it 'publishes, installs, and deletes a Conan package', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1638' do
+      it 'publishes, installs, and deletes a Conan package', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348014' do
         Flow::Login.sign_in
 
         Support::Retrier.retry_on_exception(max_attempts: 3, sleep_interval: 2) do

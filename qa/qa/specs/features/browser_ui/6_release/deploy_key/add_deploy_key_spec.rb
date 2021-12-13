@@ -3,7 +3,7 @@
 module QA
   RSpec.describe 'Release' do
     describe 'Deploy key creation' do
-      it 'user adds a deploy key', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1602' do
+      it 'user adds a deploy key', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348023' do
         Flow::Login.sign_in
 
         key = Runtime::Key::RSA.new

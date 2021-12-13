@@ -1,7 +1,9 @@
 <script>
 import { GlSearchBoxByType, GlOutsideDirective as Outside } from '@gitlab/ui';
 import { mapState, mapActions, mapGetters } from 'vuex';
+import { debounce } from 'lodash';
 import { visitUrl } from '~/lib/utils/url_utility';
+import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { s__, sprintf } from '~/locale';
 import DropdownKeyboardNavigation from '~/vue_shared/components/dropdown_keyboard_navigation.vue';
 import {
@@ -106,7 +108,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions(['setSearch', 'fetchAutocompleteOptions']),
+    ...mapActions(['setSearch', 'fetchAutocompleteOptions', 'clearAutocomplete']),
     openDropdown() {
       this.showDropdown = true;
     },
@@ -116,13 +118,13 @@ export default {
     submitSearch() {
       return visitUrl(this.currentFocusedOption?.url || this.searchQuery);
     },
-    getAutocompleteOptions(searchTerm) {
+    getAutocompleteOptions: debounce(function debouncedSearch(searchTerm) {
       if (!searchTerm) {
-        return;
+        this.clearAutocomplete();
+      } else {
+        this.fetchAutocompleteOptions();
       }
-
-      this.fetchAutocompleteOptions();
-    },
+    }, DEFAULT_DEBOUNCE_AND_THROTTLE_MS),
   },
   SEARCH_BOX_INDEX,
   SEARCH_INPUT_DESCRIPTION,
@@ -141,7 +143,6 @@ export default {
       v-model="searchText"
       role="searchbox"
       class="gl-z-index-1"
-      :debounce="500"
       autocomplete="off"
       :placeholder="$options.i18n.searchPlaceholder"
       :aria-activedescendant="currentFocusedId"

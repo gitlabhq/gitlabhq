@@ -13,7 +13,7 @@ module QA
         Flow::Login.sign_in
       end
 
-      it 'creates an issue', :mobile, testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1185' do
+      it 'creates an issue', :mobile, testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347989' do
         issue = Resource::Issue.fabricate_via_browser_ui! { |issue| issue.project = project }
 
         Page::Project::Menu.perform(&:click_issues)
@@ -26,7 +26,7 @@ module QA
         end
       end
 
-      it 'closes an issue', :mobile, testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1222' do
+      it 'closes an issue', :mobile, testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347967' do
         closed_issue.visit!
 
         Page::Project::Issue::Show.perform do |issue_page|
@@ -62,7 +62,7 @@ module QA
         # The following example is excluded from running in `review-qa-smoke` job
         # as it proved to be flaky when running against Review App
         # See https://gitlab.com/gitlab-com/www-gitlab-com/-/issues/11568#note_621999351
-        it 'comments on an issue with an attachment', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1599', except: { job: 'review-qa-smoke' } do
+        it 'comments on an issue with an attachment', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347946', except: { job: 'review-qa-smoke' } do
           Page::Project::Issue::Show.perform do |show|
             show.comment('See attached image for scale', attachment: file_to_attach)
 

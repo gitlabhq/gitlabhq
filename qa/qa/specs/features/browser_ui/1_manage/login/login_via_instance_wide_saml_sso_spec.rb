@@ -5,7 +5,7 @@ module QA
     describe 'Instance wide SAML SSO' do
       it(
         'user logs in to gitlab with SAML SSO',
-        testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1453'
+        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347895'
       ) do
         Runtime::Browser.visit(:gitlab, Page::Main::Login)
 

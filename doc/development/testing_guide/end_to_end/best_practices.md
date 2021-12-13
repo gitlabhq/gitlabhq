@@ -16,7 +16,7 @@ In case custom inflection logic is needed, custom inflectors are added in the [q
 
 ## Link a test to its test case
 
-Every test should have a corresponding test case as well as a results issue in the [Quality Test Cases project](https://gitlab.com/gitlab-org/quality/testcases/).
+Every test should have a corresponding test case in the [GitLab project Test Cases](https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases) as well as a results issue in the [Quality Test Cases project](https://gitlab.com/gitlab-org/quality/testcases/-/issues).
 It's recommended that you reuse the issue created to plan the test as the results issue. If a test case or results issue does not already exist you
 can create them yourself. Alternatively, you can run the test in a pipeline that has reporting
 enabled and the test-case reporter will automatically create a new test case and/or results issue and link the results issue to it's corresponding test case.
@@ -30,11 +30,11 @@ For example:
 ```ruby
 RSpec.describe 'Stage' do
   describe 'General description of the feature under test' do
-    it 'test name', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/:test_case_id' do
+    it 'test name', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/:test_case_id' do
       ...
     end
 
-    it 'another test', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/:another_test_case_id' do
+    it 'another test', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/:another_test_case_id' do
       ...
     end
   end
@@ -92,7 +92,7 @@ end
 
 There would be two associated test cases, one for each shared example, with the following content:
 
-[Test 1 Test Case](https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1491):
+[Test 1 Test Case](https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347774):
 
 ````markdown
 ```markdown
@@ -115,12 +115,12 @@ pushes and merges
 
 Active and historical test results:
 
-https://gitlab.com/gitlab-org/quality/testcases/-/issues/600
+https://gitlab.com/gitlab-org/quality/testcases/-/issues/2177
 
 ```
 ````
 
-[Test 1 Results Issue](https://gitlab.com/gitlab-org/quality/testcases/-/issues/600):
+[Test 1 Results Issue](https://gitlab.com/gitlab-org/quality/testcases/-/issues/2177):
 
 ````markdown
 ```markdown
@@ -142,7 +142,7 @@ pushes and merges
 ```
 ````
 
-[Test 2 Test Case](https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/602):
+[Test 2 Test Case](https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347775):
 
 ````markdown
 ```markdown
@@ -165,12 +165,12 @@ user fails to push
 
 Active and historical test results:
 
-https://gitlab.com/gitlab-org/quality/testcases/-/issues/602
+https://gitlab.com/gitlab-org/quality/testcases/-/issues/2176
 
 ```
 ````
 
-[Test 2 Results Issue](https://gitlab.com/gitlab-org/quality/testcases/-/issues/602):
+[Test 2 Results Issue](https://gitlab.com/gitlab-org/quality/testcases/-/issues/2176):
 
 ````markdown
 ```markdown

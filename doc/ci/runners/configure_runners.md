@@ -297,6 +297,7 @@ globally or for individual jobs:
 - [`TRANSFER_METER_FREQUENCY`](#artifact-and-cache-settings) (artifact/cache meter update frequency)
 - [`ARTIFACT_COMPRESSION_LEVEL`](#artifact-and-cache-settings) (artifact archiver compression level)
 - [`CACHE_COMPRESSION_LEVEL`](#artifact-and-cache-settings) (cache archiver compression level)
+- [`CACHE_REQUEST_TIMEOUT`](#artifact-and-cache-settings) (cache request timeout)
 
 You can also use variables to configure how many times a runner
 [attempts certain stages of job execution](#job-stages-attempts).
@@ -637,7 +638,10 @@ For [GitLab Pages](../../user/project/pages/index.md) to serve
 should use the `ARTIFACT_COMPRESSION_LEVEL: fastest` setting, as only uncompressed zip archives
 support this feature.
 
-A meter can also be enabled to provide the rate of transfer for uploads and downloads.
+A meter can be enabled to provide the rate of transfer for uploads and downloads.
+
+You can set a maximum time for cache upload and download with the `CACHE_REQUEST_TIMEOUT` setting. 
+This setting can be useful when slow cache uploads substantially increase the duration of your job.
 
 ```yaml
 variables:
@@ -649,6 +653,9 @@ variables:
 
   # Use no compression for caches
   CACHE_COMPRESSION_LEVEL: "fastest"
+
+  # Set maximum duration of cache upload and download
+  CACHE_REQUEST_TIMEOUT: 5
 ```
 
 | Variable                        | Description                                            |
@@ -656,3 +663,4 @@ variables:
 | `TRANSFER_METER_FREQUENCY`      | Specify how often to print the meter's transfer rate. It can be set to a duration (for example, `1s` or `1m30s`). A duration of `0` disables the meter (default). When a value is set, the pipeline shows a progress meter for artifact and cache uploads and downloads. |
 | `ARTIFACT_COMPRESSION_LEVEL`    | To adjust compression ratio, set to `fastest`, `fast`, `default`, `slow`, or `slowest`. This setting works with the Fastzip archiver only, so the GitLab Runner feature flag [`FF_USE_FASTZIP`](https://docs.gitlab.com/runner/configuration/feature-flags.html#available-feature-flags) must also be enabled. |
 | `CACHE_COMPRESSION_LEVEL`       | To adjust compression ratio, set to `fastest`, `fast`, `default`, `slow`, or `slowest`. This setting works with the Fastzip archiver only, so the GitLab Runner feature flag [`FF_USE_FASTZIP`](https://docs.gitlab.com/runner/configuration/feature-flags.html#available-feature-flags) must also be enabled. |
+| `CACHE_REQUEST_TIMEOUT`         | Configure the maximum duration of cache upload and download operations for a single job in minutes. Default is `10` minutes. |

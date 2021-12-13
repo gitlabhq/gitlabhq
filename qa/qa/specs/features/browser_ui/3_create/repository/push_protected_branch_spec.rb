@@ -18,7 +18,7 @@ module QA
       end
 
       context 'when developers and maintainers are allowed to push to a protected branch' do
-        it 'user with push rights successfully pushes to the protected branch', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1563' do
+        it 'user with push rights successfully pushes to the protected branch', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347756' do
           create_protected_branch(allowed_to_push: {
             roles: Resource::ProtectedBranch::Roles::DEVS_AND_MAINTAINERS
           })
@@ -30,7 +30,7 @@ module QA
       end
 
       context 'when developers and maintainers are not allowed to push to a protected branch' do
-        it 'user without push rights fails to push to the protected branch', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1562' do
+        it 'user without push rights fails to push to the protected branch', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347757' do
           create_protected_branch(allowed_to_push: {
             roles: Resource::ProtectedBranch::Roles::NO_ONE
           })

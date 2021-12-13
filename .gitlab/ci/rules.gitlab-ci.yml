@@ -650,8 +650,6 @@
       changes: *code-backstage-patterns
     - <<: *if-security-merge-request
       changes: *code-backstage-patterns
-    - <<: *if-default-refs
-      changes: *backend-patterns
     - <<: *if-merge-request-not-approved
       when: never
     - <<: *if-default-refs
@@ -669,9 +667,6 @@
       when: never
     - <<: *if-default-refs
       changes: *core-frontend-patterns
-      when: never
-    - <<: *if-default-refs
-      changes: *backend-patterns
       when: never
     - <<: *if-merge-request
       changes: *ci-patterns
@@ -1623,6 +1618,9 @@
       allow_failure: true
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *qa-patterns
+    - <<: *if-dot-com-gitlab-org-schedule
+      variables:
+        KNAPSACK_GENERATE_REPORT: "true"
 
 .review:rules:review-build-cng:
   rules:
@@ -1662,10 +1660,6 @@
 
 .review:rules:review-qa-reliable:
   rules:
-    - <<: *if-dot-com-ee-2-hourly-schedule
-      allow_failure: true
-      variables:
-        KNAPSACK_GENERATE_REPORT: "true"
     - when: on_success
       allow_failure: true
 
@@ -1676,10 +1670,6 @@
       changes: *code-patterns
       when: manual
       allow_failure: true # manual jobs needs to be allowd to fail, otherwise they block the pipeline
-    - <<: *if-dot-com-ee-2-hourly-schedule
-      allow_failure: true
-      variables:
-        KNAPSACK_GENERATE_REPORT: "true"
     - when: on_success
       allow_failure: true
 
@@ -1699,13 +1689,13 @@
 # Reliable suite will pass most of the time so this should yield best distribution
 .review:rules:knapsack-report-qa-reliable:
   rules:
-    - <<: *if-dot-com-ee-2-hourly-schedule
+    - if: '$KNAPSACK_GENERATE_REPORT == "true"'
       when: on_success
       allow_failure: true
 
 .review:rules:knapsack-report-qa-all:
   rules:
-    - <<: *if-dot-com-ee-2-hourly-schedule
+    - if: '$KNAPSACK_GENERATE_REPORT == "true"'
       when: always
       allow_failure: true
 

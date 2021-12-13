@@ -3,7 +3,7 @@
 module QA
   RSpec.describe 'Release' do
     describe 'Deploy token creation' do
-      it 'user adds a deploy token', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1582' do
+      it 'user adds a deploy token', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348028' do
         Flow::Login.sign_in
 
         deploy_token_name = 'deploy token name'

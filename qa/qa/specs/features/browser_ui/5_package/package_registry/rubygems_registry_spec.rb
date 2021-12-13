@@ -43,7 +43,7 @@ module QA
         project.remove_via_api!
       end
 
-      it 'publishes and deletes a Ruby gem', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1906' do
+      it 'publishes and deletes a Ruby gem', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347649' do
         Flow::Login.sign_in
 
         Support::Retrier.retry_on_exception(max_attempts: 3, sleep_interval: 2) do

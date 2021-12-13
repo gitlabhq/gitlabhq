@@ -27,7 +27,7 @@ class DeploymentEntity < Grape::Entity
   expose :deployable, if: -> (deployment) { deployment.deployable.present? } do |deployment, opts|
     deployment.deployable.yield_self do |deployable|
       if include_details?
-        JobEntity.represent(deployable, opts)
+        Ci::JobEntity.represent(deployable, opts)
       elsif can_read_deployables?
         { name: deployable.name,
           build_path: project_job_path(deployable.project, deployable) }
@@ -36,10 +36,10 @@ class DeploymentEntity < Grape::Entity
   end
 
   expose :commit, using: CommitEntity, if: -> (*) { include_details? }
-  expose :manual_actions, using: JobEntity, if: -> (*) { include_details? && can_create_deployment? }
-  expose :scheduled_actions, using: JobEntity, if: -> (*) { include_details? && can_create_deployment? }
+  expose :manual_actions, using: Ci::JobEntity, if: -> (*) { include_details? && can_create_deployment? }
+  expose :scheduled_actions, using: Ci::JobEntity, if: -> (*) { include_details? && can_create_deployment? }
   expose :playable_build, if: -> (deployment) { include_details? && can_create_deployment? && deployment.playable_build } do |deployment, options|
-    JobEntity.represent(deployment.playable_build, options.merge(only: [:play_path, :retry_path]))
+    Ci::JobEntity.represent(deployment.playable_build, options.merge(only: [:play_path, :retry_path]))
   end
 
   expose :cluster do |deployment, options|

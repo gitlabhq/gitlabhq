@@ -132,7 +132,7 @@ module QA
       end
 
       context "when tls is enabled" do
-        it "pushes image and deletes tag", :registry_tls, testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/2378' do
+        it "pushes image and deletes tag", :registry_tls, testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347591' do
           Support::Retrier.retry_on_exception(max_attempts: 3, sleep_interval: 2) do
             Resource::Repository::Commit.fabricate_via_api! do |commit|
               commit.project = project

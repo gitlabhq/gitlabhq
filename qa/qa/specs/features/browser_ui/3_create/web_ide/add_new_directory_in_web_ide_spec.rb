@@ -35,7 +35,7 @@ module QA
           Page::Project::Show.perform(&:open_web_ide!)
         end
 
-        it 'throws an error', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1618' do
+        it 'throws an error', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347733' do
           Page::Project::WebIDE::Edit.perform do |ide|
             ide.add_directory(directory_name)
           end
@@ -51,7 +51,7 @@ module QA
           Page::Project::Show.perform(&:open_web_ide!)
         end
 
-        it 'shows in the tree view but cannot be committed', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1619' do
+        it 'shows in the tree view but cannot be committed', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347732' do
           Page::Project::WebIDE::Edit.perform do |ide|
             ide.add_directory(directory_name)
 

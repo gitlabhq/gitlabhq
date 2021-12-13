@@ -16,7 +16,7 @@ module QA
         Flow::Login.sign_in
       end
 
-      it 'comments with mention on a discussion in an issue', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1816' do
+      it 'comments with mention on a discussion in an issue', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347940' do
         Runtime::Env.transient_trials.times do |i|
           QA::Runtime::Logger.info("Transient bug test action - Trial #{i}")
 

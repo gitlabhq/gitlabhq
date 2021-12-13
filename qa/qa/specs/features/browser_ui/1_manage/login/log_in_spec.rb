@@ -3,7 +3,7 @@
 module QA
   RSpec.describe 'Manage', :smoke, :mobile do
     describe 'basic user login' do
-      it 'user logs in using basic credentials and logs out', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1578' do
+      it 'user logs in using basic credentials and logs out', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347880' do
         Flow::Login.sign_in
 
         Page::Main::Menu.perform do |menu|

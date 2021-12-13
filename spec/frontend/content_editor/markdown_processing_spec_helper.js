@@ -30,8 +30,7 @@ const getPendingReason = (pendingStringOrObject) => {
   return null;
 };
 
-// eslint-disable-next-line jest/no-export
-export const loadMarkdownApiExamples = (markdownYamlPath) => {
+const loadMarkdownApiExamples = (markdownYamlPath) => {
   const apiMarkdownYamlText = fs.readFileSync(markdownYamlPath);
   const apiMarkdownExampleObjects = jsYaml.safeLoad(apiMarkdownYamlText);
 
@@ -59,17 +58,29 @@ const testSerializesHtmlToMarkdownForElement = async ({ markdown, html }) => {
   expect(serializedContent).toBe(markdown);
 };
 
+// describeMarkdownProcesssing
+//
+// This is used to dynamically generate examples (for both CE and EE) to ensure
+// we generate same markdown that was provided to Markdown API.
+//
 // eslint-disable-next-line jest/no-export
-export const createSharedExamples = (name, { pendingReason, ...example }) => {
-  const exampleName = 'correctly serializes HTML to markdown';
-  if (pendingReason) {
-    it.todo(`${exampleName}: ${pendingReason}`);
-  } else {
-    it(exampleName, async () => {
-      if (name === 'frontmatter_toml') {
-        setTestTimeoutOnce(2000);
+export const describeMarkdownProcessing = (description, markdownYamlPath) => {
+  const examples = loadMarkdownApiExamples(markdownYamlPath);
+
+  describe(description, () => {
+    describe.each(examples)('%s', (name, { pendingReason, ...example }) => {
+      const exampleName = 'correctly serializes HTML to markdown';
+      if (pendingReason) {
+        it.todo(`${exampleName}: ${pendingReason}`);
+        return;
       }
-      await testSerializesHtmlToMarkdownForElement(example);
+
+      it(exampleName, async () => {
+        if (name === 'frontmatter_toml') {
+          setTestTimeoutOnce(2000);
+        }
+        await testSerializesHtmlToMarkdownForElement(example);
+      });
     });
-  }
+  });
 };

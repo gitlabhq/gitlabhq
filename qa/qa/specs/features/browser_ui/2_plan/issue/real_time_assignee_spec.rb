@@ -28,7 +28,7 @@ module QA
         Runtime::Feature.disable(:invite_members_group_modal, project: project)
       end
 
-      it 'update without refresh', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1644' do
+      it 'update without refresh', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347941' do
         issue = Resource::Issue.fabricate_via_api! do |issue|
           issue.project = project
           issue.assignee_ids = [user1.id]

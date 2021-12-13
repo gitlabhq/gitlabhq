@@ -26,7 +26,7 @@ module QA
         praefect_manager.start_all_nodes
       end
 
-      it 'automatically fails over', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1267' do
+      it 'automatically fails over', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347830' do
         # Create a new project with a commit and wait for it to replicate
 
         # make sure that our project is published to the 'primary' node
@@ -71,7 +71,7 @@ module QA
       end
 
       context 'when recovering from dataloss after failover' do
-        it 'automatically reconciles', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1266' do
+        it 'automatically reconciles', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347831' do
           # Start the old primary node again
           praefect_manager.start_primary_node
           praefect_manager.wait_for_primary_node_health_check

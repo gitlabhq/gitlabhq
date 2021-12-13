@@ -5,8 +5,8 @@ require 'spec_helper'
 RSpec.describe BuildDetailsEntity do
   include ProjectForksHelper
 
-  it 'inherits from JobEntity' do
-    expect(described_class).to be < JobEntity
+  it 'inherits from Ci::JobEntity' do
+    expect(described_class).to be < Ci::JobEntity
   end
 
   describe '#as_json' do

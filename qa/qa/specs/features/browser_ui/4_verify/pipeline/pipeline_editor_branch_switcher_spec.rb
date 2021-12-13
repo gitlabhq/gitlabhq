@@ -66,7 +66,7 @@ module QA
         project.remove_via_api!
       end
 
-      it 'can switch branches and target branch field updates accordingly', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1891' do
+      it 'can switch branches and target branch field updates accordingly', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347661' do
         Page::Project::Menu.perform(&:go_to_pipeline_editor)
         Page::Project::PipelineEditor::Show.perform do |show|
           show.open_branch_selector_dropdown

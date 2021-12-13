@@ -5,7 +5,7 @@ review-cleanup:
   image: registry.gitlab.com/gitlab-org/gitlab-build-images:gitlab-helm3-kubectl1.14
   stage: prepare
   environment:
-    name: review/auto-cleanup
+    name: review/${CI_COMMIT_REF_SLUG}${FREQUENCY}
     action: stop
   before_script:
     - source scripts/utils.sh
@@ -13,6 +13,8 @@ review-cleanup:
     - install_gitlab_gem
     - setup_gcp_dependencies
   script:
+    - delete_release
+    - delete_k8s_release_namespace
     - ruby -rrubygems scripts/review_apps/automated_cleanup.rb
     - gcp_cleanup
 

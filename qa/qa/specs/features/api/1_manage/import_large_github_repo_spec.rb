@@ -121,7 +121,7 @@ module QA
 
       it(
         'imports large Github repo via api',
-        testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1880'
+        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347668'
       ) do
         start = Time.now
 

@@ -64,6 +64,9 @@ Your `config.yaml` file specifies all configurations of the Agent, such as:
 - The groups that can access this Agent via the [CI/CD Tunnel](../ci_cd_tunnel.md).
 - The address of the `hubble-relay` for the Network Security policy integrations.
 
+WARNING:
+The agent is only recognized if you use `.yaml` extension for the `config.yaml` file. The extension `.yml` is **not** recognized.
+
 As an example, a minimal Agent configuration that sets up only the manifest
 synchronizations is:
 

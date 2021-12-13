@@ -42,7 +42,7 @@ class Projects::JobsController < Projects::ApplicationController
       format.json do
         Gitlab::PollingInterval.set_header(response, interval: 10_000)
 
-        render json: BuildSerializer
+        render json: Ci::JobSerializer
           .new(project: @project, current_user: @current_user)
           .represent(@build.present(current_user: current_user), {}, BuildDetailsEntity)
       end
@@ -118,7 +118,7 @@ class Projects::JobsController < Projects::ApplicationController
   end
 
   def status
-    render json: BuildSerializer
+    render json: Ci::JobSerializer
       .new(project: @project, current_user: @current_user)
       .represent_status(@build.present(current_user: current_user))
   end

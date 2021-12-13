@@ -47,6 +47,16 @@ describe('Header Search Store Actions', () => {
     });
   });
 
+  describe('clearAutocomplete', () => {
+    it('calls the CLEAR_AUTOCOMPLETE mutation', () => {
+      return testAction({
+        action: actions.clearAutocomplete,
+        state,
+        expectedMutations: [{ type: types.CLEAR_AUTOCOMPLETE }],
+      });
+    });
+  });
+
   describe('setSearch', () => {
     it('calls the SET_SEARCH mutation', () => {
       return testAction({

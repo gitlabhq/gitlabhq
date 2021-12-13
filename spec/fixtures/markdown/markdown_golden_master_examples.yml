@@ -8,7 +8,7 @@
 # For EE, these files are used:
 # EE Data:     ee/spec/fixtures/markdown/markdown_golden_master_examples.yml
 # EE Backend:  ee/spec/requests/api/markdown_golden_master_spec.rb
-# EE Frontend: ee/spec/frontend/content_editor/markdown_processing_spec.js
+# EE Frontend: ee/spec/frontend/content_editor/ee_markdown_processing_spec.js
 #
 #
 # Requirements:

@@ -26,7 +26,7 @@ module QA
         end
       end
 
-      it 'sets labels', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1244' do
+      it 'sets labels', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347839' do
         create_new_mr_via_push
 
         merge_request = project.merge_request_with_title(title)
@@ -40,7 +40,7 @@ module QA
           create_new_mr_via_push
         end
 
-        it 'removes them on subsequent push', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1243' do
+        it 'removes them on subsequent push', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347840' do
           Resource::Repository::ProjectPush.fabricate! do |push|
             push.project = project
             push.file_content = "Unlabel test #{SecureRandom.hex(8)}"

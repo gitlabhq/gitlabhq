@@ -16,7 +16,7 @@ module RspecFlaky
         collection.map do |uid, example|
           [
             uid,
-            example.is_a?(RspecFlaky::FlakyExample) ? example : RspecFlaky::FlakyExample.new(example)
+            RspecFlaky::FlakyExample.new(example.to_h.symbolize_keys)
           ]
         end
 

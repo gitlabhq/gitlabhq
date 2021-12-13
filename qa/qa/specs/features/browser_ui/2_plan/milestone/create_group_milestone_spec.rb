@@ -14,7 +14,7 @@ module QA
         Flow::Login.sign_in
       end
 
-      it 'creates a group milestone', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1203' do
+      it 'creates a group milestone', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347975' do
         group_milestone = Resource::GroupMilestone.fabricate_via_browser_ui! do |milestone|
           milestone.title = title
           milestone.description = description

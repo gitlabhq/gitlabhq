@@ -19,7 +19,7 @@ module QA
         enable_2fa_for_user(user)
       end
 
-      it 'allows 2FA code recovery via ssh', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1227' do
+      it 'allows 2FA code recovery via ssh', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347938' do
         recovery_code = Support::SSH.perform do |ssh|
           ssh.key = ssh_key
           ssh.uri = address.gsub(/(?<=:)(#{uri.port})/, ssh_port)

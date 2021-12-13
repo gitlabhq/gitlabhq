@@ -49,7 +49,7 @@ module QA
         registry_repository&.remove_via_api!
       end
 
-      it 'pushes project image to the container registry and deletes tag', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1833' do
+      it 'pushes project image to the container registry and deletes tag', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347687' do
         Flow::Login.sign_in
         project.visit!
 
