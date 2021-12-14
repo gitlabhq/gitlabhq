@@ -226,11 +226,11 @@ These kind of tests ensure that individual parts of the application work well
 together, without the overhead of the actual app environment (such as the browser).
 These tests should assert at the request/response level: status code, headers,
 body.
-They're useful to test permissions, redirections, what view is rendered etc.
+They're useful, for example, to test permissions, redirections, API endpoints, what view is rendered, and so forth.
 
 | Code path | Tests path | Testing engine | Notes |
 | --------- | ---------- | -------------- | ----- |
-| `app/controllers/` | `spec/requests/`, `spec/controllers` | RSpec | Request specs are preferred over legacy controller specs. |
+| `app/controllers/` | `spec/requests/`, `spec/controllers` | RSpec | Request specs are preferred over legacy controller specs. Request specs are encouraged for API endpoints. |
 | `app/mailers/` | `spec/mailers/` | RSpec | |
 | `lib/api/` | `spec/requests/api/` | RSpec | |
 | `app/assets/javascripts/` | `spec/frontend/` | Jest | [More details below](#frontend-integration-tests) |

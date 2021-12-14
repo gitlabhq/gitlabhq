@@ -2462,6 +2462,15 @@ msgstr ""
 msgid "AdminDashboard|Error loading the statistics. Please try again"
 msgstr ""
 
+msgid "AdminLabels|Define your default set of project labels"
+msgstr ""
+
+msgid "AdminLabels|Labels created here will be automatically added to new projects."
+msgstr ""
+
+msgid "AdminLabels|They can be used to categorize issues and merge requests."
+msgstr ""
+
 msgid "AdminProjects| You’re about to permanently delete the project %{projectName}, its repository, and all related resources, including issues and merge requests. After you confirm and press %{strong_start}Delete project%{strong_end}, it cannot be undone or recovered."
 msgstr ""
 
@@ -35280,9 +35289,6 @@ msgid "There are no issues to show"
 msgstr ""
 
 msgid "There are no issues with the selected labels"
-msgstr ""
-
-msgid "There are no labels yet"
 msgstr ""
 
 msgid "There are no matching files"

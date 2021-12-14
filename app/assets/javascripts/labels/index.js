@@ -113,8 +113,9 @@ export function initLabelIndex() {
 }
 
 export function initAdminLabels() {
-  const pagination = document.querySelector('.labels .gl-pagination');
-  const emptyState = document.querySelector('.labels .nothing-here-block.hidden');
+  const labelsContainer = document.querySelector('.js-admin-labels-container');
+  const pagination = labelsContainer?.querySelector('.gl-pagination');
+  const emptyState = document.querySelector('.js-admin-labels-empty-state');
 
   function removeLabelSuccessCallback() {
     this.closest('li').classList.add('gl-display-none!');
@@ -125,7 +126,8 @@ export function initAdminLabels() {
 
     // display the empty state if there are no more labels
     if (labelsCount < 1 && !pagination && emptyState) {
-      emptyState.classList.remove('hidden');
+      emptyState.classList.remove('gl-display-none');
+      labelsContainer.classList.add('gl-display-none');
     }
   }
 
