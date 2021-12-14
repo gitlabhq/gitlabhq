@@ -5,6 +5,7 @@ RSpec.shared_examples 'issue boards sidebar' do
 
   before do
     first_card.click
+    wait_for_requests
   end
 
   it 'shows sidebar when clicking issue' do
@@ -39,6 +40,10 @@ RSpec.shared_examples 'issue boards sidebar' do
     it 'closes sidebar when clicking close button' do
       expect(page).not_to have_selector('[data-testid="issue-boards-sidebar"]')
     end
+  end
+
+  context 'editing issue milestone', :js do
+    it_behaves_like 'milestone sidebar widget'
   end
 
   context 'in notifications subscription' do

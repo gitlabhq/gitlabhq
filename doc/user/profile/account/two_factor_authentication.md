@@ -80,7 +80,7 @@ in a safe place.
 
 ### One-time password via FortiAuthenticator
 
-> - Introduced in [GitLab 13.5](https://gitlab.com/gitlab-org/gitlab/-/issues/212312)
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/212312) in GitLab 13.5.
 > - It's deployed behind a feature flag, disabled by default.
 > - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-fortiauthenticator-integration).
 
@@ -154,7 +154,7 @@ Feature.enable(:forti_authenticator, User.find(<user ID>))
 
 ### One-time password via FortiToken Cloud
 
-> - Introduced in [GitLab 13.7](https://gitlab.com/gitlab-org/gitlab/-/issues/212313).
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/212313) in GitLab 13.7.
 > - It's deployed behind a feature flag, disabled by default.
 > - It's disabled on GitLab.com.
 > - It's not recommended for production use.
@@ -273,7 +273,7 @@ Click on **Register U2F Device** to complete the process.
 > - It's [deployed behind a feature flag](../../feature_flags.md), disabled by default.
 > - It's disabled on GitLab.com.
 > - It's not recommended for production use.
-> - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-webauthn). **(FREE SELF)**
+> - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-webauthn).
 
 The WebAuthn workflow is [supported by](https://caniuse.com/#search=webauthn) the
 following desktop browsers:

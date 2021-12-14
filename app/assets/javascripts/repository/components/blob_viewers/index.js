@@ -4,7 +4,10 @@ export const loadViewer = (type) => {
       return () => import(/* webpackChunkName: 'blob_empty_viewer' */ './empty_viewer.vue');
     case 'text':
       return gon.features.highlightJs
-        ? () => import(/* webpackChunkName: 'blob_text_viewer' */ './text_viewer.vue')
+        ? () =>
+            import(
+              /* webpackChunkName: 'blob_text_viewer' */ '~/vue_shared/components/source_viewer.vue'
+            )
         : null;
     case 'download':
       return () => import(/* webpackChunkName: 'blob_download_viewer' */ './download_viewer.vue');
@@ -23,8 +26,7 @@ export const viewerProps = (type, blob) => {
   return {
     text: {
       content: blob.rawTextBlob,
-      fileName: blob.name,
-      readOnly: true,
+      autoDetect: true, // We'll eventually disable autoDetect and pass the language explicitly to reduce the footprint (https://gitlab.com/gitlab-org/gitlab/-/issues/348145)
     },
     download: {
       fileName: blob.name,

@@ -5,7 +5,7 @@ group: Access
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Deleting a User account
+# Deleting a User account **(FREE)**
 
 Users can be deleted from a GitLab instance, either by:
 
@@ -24,7 +24,7 @@ As a user, to delete your own account:
 1. On the left sidebar, select **Account**.
 1. Select **Delete account**.
 
-## As an administrator
+## As an administrator **(FREE SELF)**
 
 As an administrator, to delete a user account:
 
@@ -42,11 +42,12 @@ Using the **Delete user and contributions** option may result
 in removing more data than intended. Please see [associated records](#associated-records)
 below for additional details.
 
-## Associated Records
+### Associated Records
 
-> - Introduced for issues in [GitLab 9.0](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/7393).
-> - Introduced for merge requests, award emoji, notes, and abuse reports in [GitLab 9.1](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/10467).
-> - Hard deletion from abuse reports and spam logs was introduced in [GitLab 9.1](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/10273), and from the API in [GitLab 9.3](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/11853).
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/7393) for issues in GitLab 9.0.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/10467) for merge requests, award emoji, notes, and abuse reports in GitLab 9.1.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/10273) hard deletion from abuse reports and spam logs in GitLab 9.1.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/11853) hard deletion from the API in GitLab 9.3.
 
 There are two options for deleting users:
 

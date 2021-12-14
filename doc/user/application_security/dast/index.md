@@ -980,6 +980,14 @@ on-demand scans list.
 To retry a scan that failed or succeeded with warnings, select **Retry** (**{retry}**) in the
 on-demand scans list.
 
+#### View an on-demand scan's results
+
+To view a finished scan's results, select **View results** in the on-demand scans list.
+
+#### Edit an on-demand scan
+
+To edit an on-demand scan's settings, select **Edit** (**{pencil}**) in the **Scheduled** tab.
+
 ### Run an on-demand DAST scan
 
 Prerequisites:

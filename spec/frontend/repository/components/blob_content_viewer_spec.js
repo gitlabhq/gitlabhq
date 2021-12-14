@@ -15,7 +15,7 @@ import ForkSuggestion from '~/repository/components/fork_suggestion.vue';
 import { loadViewer, viewerProps } from '~/repository/components/blob_viewers';
 import DownloadViewer from '~/repository/components/blob_viewers/download_viewer.vue';
 import EmptyViewer from '~/repository/components/blob_viewers/empty_viewer.vue';
-import TextViewer from '~/repository/components/blob_viewers/text_viewer.vue';
+import SourceViewer from '~/vue_shared/components/source_viewer.vue';
 import blobInfoQuery from '~/repository/queries/blob_info.query.graphql';
 import { redirectTo } from '~/lib/utils/url_utility';
 import { isLoggedIn } from '~/lib/utils/common_utils';
@@ -215,7 +215,7 @@ describe('Blob content viewer component', () => {
       viewer        | loadViewerReturnValue | viewerPropsReturnValue
       ${'empty'}    | ${EmptyViewer}        | ${{}}
       ${'download'} | ${DownloadViewer}     | ${{ filePath: '/some/file/path', fileName: 'test.js', fileSize: 100 }}
-      ${'text'}     | ${TextViewer}         | ${{ content: 'test', fileName: 'test.js', readOnly: true }}
+      ${'text'}     | ${SourceViewer}       | ${{ content: 'test', autoDetect: true }}
     `(
       'renders viewer component for $viewer files',
       async ({ viewer, loadViewerReturnValue, viewerPropsReturnValue }) => {

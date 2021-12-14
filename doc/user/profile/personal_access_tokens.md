@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # Personal access tokens **(FREE)**
 
 > - Introduced in GitLab 12.6: [Notifications for expiring tokens](https://gitlab.com/gitlab-org/gitlab/-/issues/3649).
-> - Introduced in GitLab Ultimate 12.6: [Token lifetime limits](https://gitlab.com/gitlab-org/gitlab/-/issues/3649).
+> - Introduced in GitLab 12.6: [Token lifetime limits](https://gitlab.com/gitlab-org/gitlab/-/issues/3649).
 > - Introduced in GitLab 13.3: [Additional notifications for expiring tokens](https://gitlab.com/gitlab-org/gitlab/-/issues/214721).
 > - Introduced in GitLab 14.1: [Prefill token name and scopes](https://gitlab.com/gitlab-org/gitlab/-/issues/334664).
 

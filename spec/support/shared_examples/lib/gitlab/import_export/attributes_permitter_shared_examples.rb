@@ -26,7 +26,7 @@ RSpec.shared_examples 'a permitted attribute' do |relation_sym, permitted_attrib
     end
 
     it 'does not contain attributes that would be cleaned with AttributeCleaner' do
-      expect((cleaned_hash.keys + additional_attributes.to_a.map(&:to_s))).to include(*permitted_hash.keys)
+      expect(cleaned_hash.keys + additional_attributes.to_a.map(&:to_s)).to include(*permitted_hash.keys)
     end
 
     it 'does not contain prohibited attributes that are not related to given relation' do
