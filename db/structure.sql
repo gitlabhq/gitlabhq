@@ -30338,9 +30338,6 @@ ALTER TABLE ONLY container_repositories
 ALTER TABLE ONLY clusters_applications_jupyter
     ADD CONSTRAINT fk_rails_331f0aff78 FOREIGN KEY (oauth_application_id) REFERENCES oauth_applications(id) ON DELETE SET NULL;
 
-ALTER TABLE ONLY merge_request_metrics
-    ADD CONSTRAINT fk_rails_33ae169d48 FOREIGN KEY (pipeline_id) REFERENCES ci_pipelines(id) ON DELETE CASCADE;
-
 ALTER TABLE ONLY suggestions
     ADD CONSTRAINT fk_rails_33b03a535c FOREIGN KEY (note_id) REFERENCES notes(id) ON DELETE CASCADE;
 

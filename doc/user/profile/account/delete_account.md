@@ -42,7 +42,7 @@ Using the **Delete user and contributions** option may result
 in removing more data than intended. Please see [associated records](#associated-records)
 below for additional details.
 
-### Associated Records
+### Associated records
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/7393) for issues in GitLab 9.0.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/10467) for merge requests, award emoji, notes, and abuse reports in GitLab 9.1.

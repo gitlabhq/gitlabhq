@@ -98,15 +98,23 @@ RSpec.describe Gitlab::Lograge::CustomOptions do
 
     context  'when feature flags are present', :request_store do
       before do
-        allow(Feature::Definition).to receive(:valid_usage!).and_return(true)
-
         allow(Feature).to receive(:log_feature_flag_states?).and_return(false)
+
+        definitions = {}
+        [:enabled_feature, :disabled_feature].each do |flag_name|
+          definitions[flag_name] = Feature::Definition.new("development/enabled_feature.yml",
+                                                           name: flag_name,
+                                                           type: 'development',
+                                                           log_state_changes: true,
+                                                           default_enabled: false)
+
+          allow(Feature).to receive(:log_feature_flag_states?).with(flag_name).and_call_original
+        end
+
+        allow(Feature::Definition).to receive(:definitions).and_return(definitions)
 
         Feature.enable(:enabled_feature)
         Feature.disable(:disabled_feature)
-
-        allow(Feature).to receive(:log_feature_flag_states?).with(:enabled_feature).and_call_original
-        allow(Feature).to receive(:log_feature_flag_states?).with(:disabled_feature).and_call_original
       end
 
       context 'and :feature_flag_log_states is enabled' do

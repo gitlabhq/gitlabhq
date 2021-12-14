@@ -11,7 +11,7 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import BranchSwitcher from '~/pipeline_editor/components/file_nav/branch_switcher.vue';
 import { DEFAULT_FAILURE } from '~/pipeline_editor/constants';
-import getAvailableBranchesQuery from '~/pipeline_editor/graphql/queries/available_branches.graphql';
+import getAvailableBranchesQuery from '~/pipeline_editor/graphql/queries/available_branches.query.graphql';
 import {
   mockBranchPaginationLimit,
   mockDefaultBranch,

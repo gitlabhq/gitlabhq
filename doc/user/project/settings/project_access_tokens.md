@@ -12,111 +12,88 @@ type: reference, howto
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/235765) in GitLab 13.5.
 > - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/342327) in GitLab 14.5. Default prefix added.
 
-Project access tokens are similar to [personal access tokens](../../profile/personal_access_tokens.md)
-except they are attached to a project rather than a user. They can be used to:
+You can use a project access token to authenticate:
 
-- Authenticate with the [GitLab API](../../../api/index.md#personalproject-access-tokens).
-- Authenticate with Git using HTTP Basic Authentication. If you are asked for a username when
-  authenticating, you can use any non-empty value because only the token is needed.
+- With the [GitLab API](../../../api/index.md#personalproject-access-tokens).
+- With Git, when using HTTP Basic Authentication.
 
-Project access tokens:
+After you configure a project access token, you don't need a password when you authenticate.
+Instead, you can enter any non-blank value.
 
-- Expire on the date you define, at midnight UTC.
-- Are supported for self-managed instances on Free tier and above. Free self-managed instances
-  should:
-  - Review their security and compliance policies with regards to
+Project access tokens are similar to [personal access tokens](../../profile/personal_access_tokens.md),
+except they are associated with a project rather than a user.
+
+You can use project access tokens:
+
+- On GitLab SaaS if you have the Premium license tier or higher. Personal access tokens are not available with a [trial license](https://about.gitlab.com/free-trial/).
+- On self-managed instances of GitLab, with any license tier. If you have the Free tier:
+  - Review your security and compliance policies around
     [user self-enrollment](../../admin_area/settings/sign_up_restrictions.md#disable-new-sign-ups).
   - Consider [disabling project access tokens](#enable-or-disable-project-access-token-creation) to
     lower potential abuse.
-- Are also supported on GitLab SaaS Premium and above (excluding [trial licenses](https://about.gitlab.com/free-trial/).)
 
-For examples of how you can use a project access token to authenticate with the API, see the
-[relevant section from our API Docs](../../../api/index.md#personalproject-access-tokens).
+## Create a project access token
 
-NOTE:
-For GitLab.com and self-managed instances, the default prefix is `glpat-`.
+To create a project access token:
 
-## Creating a project access token
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > Access Tokens**.
+1. Enter a name.
+1. Optional. Enter an expiry date for the token. The token will expire on that date at midnight UTC.
+1. Select a role for the token.
+1. Select the [desired scopes](#scopes-for-a-project-access-token).
+1. Select  **Create project access token**.
 
-1. Log in to GitLab.
-1. Navigate to the project you would like to create an access token for.
-1. In the **Settings** menu choose **Access Tokens**.
-1. Choose a name and optional expiry date for the token.
-1. Choose a role for the token.
-1. Choose the [desired scopes](#limiting-scopes-of-a-project-access-token).
-1. Click the **Create project access token** button.
-1. Save the project access token somewhere safe. Once you leave or refresh
-   the page, you don't have access to it again.
+A project access token is displayed. Save the project access token somewhere safe. After you leave or refresh the page, you can't view it again.
 
-## Project bot users
+## Revoke a project access token
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/210181) in GitLab 13.0.
-> - [Excluded from license seat use](https://gitlab.com/gitlab-org/gitlab/-/issues/223695) in GitLab 13.5.
+To revoke a project access token:
 
-Project bot users are [GitLab-created service accounts](../../../subscriptions/self_managed/index.md#billable-users) and do not count as licensed seats.
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > Access Tokens**.
+1. Next to the project access token to revoke, select **Revoke**.
 
-For each project access token created, a bot user is created and added to the project with
-the [specified level permissions](../../permissions.md#project-members-permissions).
+## Scopes for a project access token
 
-For the bot:
+The scope determines the actions you can perform when you authenticate with a project access token.
 
-- The name is set to the name of the token.
-- The username is set to `project_{project_id}_bot` for the first access token, such as `project_123_bot`.
-- The email is set to `project{project_id}_bot@example.com`, for example `project123_bot@example.com`.
-- For additional access tokens in the same project, the username is set to `project_{project_id}_bot{bot_count}`, for example `project_123_bot1`.
-- For additional access tokens in the same project, the email is set to `project{project_id}_bot{bot_count}@example.com`, for example `project123_bot1@example.com`
-
-API calls made with a project access token are associated with the corresponding bot user.
-
-These bot users are included in a project's **Project information > Members** list but cannot be modified. Also, a bot
-user cannot be added to any other project.
-
-When the project access token is [revoked](#revoking-a-project-access-token), the bot user is deleted
-and all records are moved to a system-wide user with the username "Ghost User". For more
-information, see [Associated Records](../../profile/account/delete_account.md#associated-records).
-
-## Revoking a project access token
-
-At any time, you can revoke any project access token by clicking the
-respective **Revoke** button in **Settings > Access Tokens**.
-
-## Limiting scopes of a project access token
-
-Project access tokens can be created with one or more scopes that allow various
-actions that a given token can perform. The available scopes are depicted in
-the following table.
-
-| Scope              |  Description |
-| ------------------ |  ----------- |
-| `api`              | Grants complete read/write access to the scoped project API, including the [Package Registry](../../packages/package_registry/index.md). |
-| `read_api`         | Grants read access to the scoped project API, including the [Package Registry](../../packages/package_registry/index.md). |
-| `read_registry`    | Allows read-access (pull) to [container registry](../../packages/container_registry/index.md) images if a project is private and authorization is required. |
-| `write_registry`   | Allows write-access (push) to [container registry](../../packages/container_registry/index.md). |
-| `read_repository`  | Allows read-only access (pull) to the repository. |
-| `write_repository` | Allows read-write access (pull, push) to the repository. |
+| Scope              | Description                                                                                                                                                 |
+|:-------------------|:------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `api`              | Grants complete read and write access to the scoped project API, including the [Package Registry](../../packages/package_registry/index.md).                |
+| `read_api`         | Grants read access to the scoped project API, including the [Package Registry](../../packages/package_registry/index.md).                                   |
+| `read_registry`    | Allows read access (pull) to the [Container Registry](../../packages/container_registry/index.md) images if a project is private and authorization is required. |
+| `write_registry`   | Allows write access (push) to the [Container Registry](../../packages/container_registry/index.md).                                                             |
+| `read_repository`  | Allows read access (pull) to the repository.                                                                                                                |
+| `write_repository` | Allows read and write access (pull and push) to the repository.                                                                                             |
 
 ## Enable or disable project access token creation
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/287707) in GitLab 13.11.
 
-You may enable or disable project access token creation for all projects in a group in **Group > Settings > General > Permissions, LFS, 2FA > Allow project access token creation**.
-Even when creation is disabled, you can still use and revoke existing project access tokens.
-This setting is available only on top-level groups.
+To enable or disable project access token creation for all projects in a top-level group:
 
-## Group access token workaround **(FREE SELF)**
+1. On the top bar, select **Menu > Groups** and find your group.
+1. On the left sidebar, select **Settings > General**.
+1. Expand **Permissions, LFS, 2FA**.
+1. Under **Permissions**, turn on or off **Allow project access token creation**.
+
+Even when creation is disabled, you can still use and revoke existing project access tokens.
+
+## Group access tokens **(FREE SELF)**
+
+With group access tokens, you can use a single token to:
+
+- Perform actions for groups.
+- Manage the projects within the group.
+- In [GitLab 14.2](https://gitlab.com/gitlab-org/gitlab/-/issues/330718) and later, authenticate with Git over HTTPS.
 
 NOTE:
-This section describes a workaround and is subject to change.
+You cannot use the UI to create a group access token. [An issue exists](https://gitlab.com/gitlab-org/gitlab/-/issues/214045)
+to add this functionality. This section describes a workaround.
 
-Group access tokens let you use a single token to:
-
-- Perform actions at the group level.
-- Manage the projects within the group.
-- In [GitLab 14.2](https://gitlab.com/gitlab-org/gitlab/-/issues/330718) and later, authenticate
-  with Git over HTTPS.
-
-We don't support group access tokens in the GitLab UI, though GitLab self-managed
-administrators can create them using the [Rails console](../../../administration/operations/rails_console.md).
+If you are an administrator of a self-managed GitLab instance, you can create a group access token in the
+[Rails console](../../../administration/operations/rails_console.md).
 
 <div class="video-fallback">
   For a demo of the group access token workaround, see <a href="https://www.youtube.com/watch?v=W2fg1P1xmU0">Demo: Group Level Access Tokens</a>.
@@ -127,37 +104,71 @@ administrators can create them using the [Rails console](../../../administration
 
 ### Create a group access token
 
-To create a group access token, run the following in a Rails console:
+To create a group access token:
 
-```ruby
-admin = User.find(1) # group admin
-group = Group.find(109) # the group you want to create a token for
-bot = Users::CreateService.new(admin, { name: 'group_token', username: "group_#{group.id}_bot", email: "group_#{group.id}_bot@example.com", user_type: :project_bot }).execute # create the group bot user
-# for further group access tokens, the username should be group_#{group.id}_bot#{bot_count}, e.g. group_109_bot2, and their email should be group_109_bot2@example.com
-bot.confirm # confirm the bot
-group.add_user(bot, :maintainer) # add the bot to the group at the desired access level
-token = bot.personal_access_tokens.create(scopes:[:api, :write_repository], name: 'group_token') # give it a PAT
-gtoken = token.token # get the token value
-```
+1. Run the following commands in a [Rails console](../../../administration/operations/rails_console.md):
 
-Test if the generated group access token works:
+   ```ruby
+   admin = User.find(1) # group admin
+   group = Group.find(109) # the group you want to create a token for
+   bot = Users::CreateService.new(admin, { name: 'group_token', username: "group_#{group.id}_bot", email: "group_#{group.id}_bot@example.com", user_type: :project_bot }).execute # create the group bot user
+   # for further group access tokens, the username should be group_#{group.id}_bot#{bot_count}, e.g. group_109_bot2, and their email should be group_109_bot2@example.com
+   bot.confirm # confirm the bot
+   group.add_user(bot, :maintainer) # add the bot to the group at the desired access level
+   token = bot.personal_access_tokens.create(scopes:[:api, :write_repository], name: 'group_token') # give it a PAT
+   gtoken = token.token # get the token value
+   ```
 
-1. Pass the group access token in the `PRIVATE-TOKEN` header to GitLab REST APIs. For example:
+1. Test if the generated group access token works:
 
-   - [Create an epic](../../../api/epics.md#new-epic) on the group.
-   - [Create a project pipeline](../../../api/pipelines.md#create-a-new-pipeline)
-     in one of the group's projects.
-   - [Create an issue](../../../api/issues.md#new-issue) in one of the group's projects.
-
-1. Use the group token to [clone a group's project](../../../gitlab-basics/start-using-git.md#clone-with-https)
-   using HTTPS.
+   1. Use the group access token in the `PRIVATE-TOKEN` header with GitLab REST APIs. For example:
+  
+      - [Create an epic](../../../api/epics.md#new-epic) in the group.
+      - [Create a project pipeline](../../../api/pipelines.md#create-a-new-pipeline) in one of the group's projects.
+      - [Create an issue](../../../api/issues.md#new-issue) in one of the group's projects.
+  
+   1. Use the group token to [clone a group's project](../../../gitlab-basics/start-using-git.md#clone-with-https)
+      using HTTPS.
 
 ### Revoke a group access token
 
-To revoke a group access token, run the following in a Rails console:
+To revoke a group access token, run the following command in a [Rails console](../../../administration/operations/rails_console.md):
 
 ```ruby
 bot = User.find_by(username: 'group_109_bot') # the owner of the token you want to revoke
 token = bot.personal_access_tokens.last # the token you want to revoke
 token.revoke!
 ```
+
+## Project bot users
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/210181) in GitLab 13.0.
+> - [Excluded from license seat use](https://gitlab.com/gitlab-org/gitlab/-/issues/223695) in GitLab 13.5.
+
+Project bot users are [GitLab-created service accounts](../../../subscriptions/self_managed/index.md#billable-users).
+Each time you create a project access token, a bot user is created and added to the project.
+These bot users do not count as licensed seats.
+
+The bot users have [permissions](../../permissions.md#project-members-permissions) that correspond with the
+selected role and [scope](#scopes-for-a-project-access-token) of the project access token.
+
+- The name is set to the name of the token.
+- The username is set to `project_{project_id}_bot` for the first access token. For example, `project_123_bot`.
+- The email is set to `project{project_id}_bot@example.com`. For example, `project123_bot@example.com`.
+- For additional access tokens in the same project, the username is set to `project_{project_id}_bot{bot_count}`. For
+  example, `project_123_bot1`.
+- For additional access tokens in the same project, the email is set to `project{project_id}_bot{bot_count}@example.com`.
+  For example, `project123_bot1@example.com`.
+
+API calls made with a project access token are associated with the corresponding bot user.
+
+Bot users:
+
+- Are included in a project's member list but cannot be modified.
+- Cannot be added to any other project.
+
+When the project access token is [revoked](#revoke-a-project-access-token):
+
+- The bot user is deleted.
+- All records are moved to a system-wide user with the username `Ghost User`. For more information, see
+  [associated records](../../profile/account/delete_account.md#associated-records).

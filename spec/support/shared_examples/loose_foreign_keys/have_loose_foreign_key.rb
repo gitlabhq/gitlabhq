@@ -47,3 +47,28 @@ RSpec.shared_examples 'it has loose foreign keys' do
     expect(deleted_records.status_processed.count).to be(1)
   end
 end
+
+RSpec.shared_examples 'cleanup by a loose foreign key' do
+  let(:foreign_key_definition) do
+    foreign_keys_for_parent = Gitlab::Database::LooseForeignKeys.definitions_by_table[parent.class.table_name]
+    foreign_keys_for_parent.find { |definition| definition.from_table == model.class.table_name }
+  end
+
+  def find_model
+    model.class.find_by(id: model.id)
+  end
+
+  it 'deletes the model' do
+    parent.delete
+
+    expect(find_model).to be_present
+
+    LooseForeignKeys::ProcessDeletedRecordsService.new(connection: model.connection).execute
+
+    if foreign_key_definition.on_delete.eql?(:async_delete)
+      expect(find_model).not_to be_present
+    else
+      expect(find_model[foreign_key_definition.column]).to eq(nil)
+    end
+  end
+end

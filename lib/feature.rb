@@ -159,7 +159,7 @@ class Feature
     end
 
     def log_feature_flag_states?(key)
-      key != :feature_flag_state_logs && Feature.enabled?(:feature_flag_state_logs, type: :ops)
+      Feature::Definition.log_states?(key)
     end
 
     def log_feature_flag_state(key, feature_value)

@@ -18,9 +18,9 @@ import {
   BRANCH_SEARCH_DEBOUNCE,
   DEFAULT_FAILURE,
 } from '~/pipeline_editor/constants';
-import updateCurrentBranchMutation from '~/pipeline_editor/graphql/mutations/update_current_branch.mutation.graphql';
-import getAvailableBranchesQuery from '~/pipeline_editor/graphql/queries/available_branches.graphql';
-import getCurrentBranchQuery from '~/pipeline_editor/graphql/queries/client/current_branch.graphql';
+import updateCurrentBranchMutation from '~/pipeline_editor/graphql/mutations/client/update_current_branch.mutation.graphql';
+import getAvailableBranchesQuery from '~/pipeline_editor/graphql/queries/available_branches.query.graphql';
+import getCurrentBranchQuery from '~/pipeline_editor/graphql/queries/client/current_branch.query.graphql';
 import getLastCommitBranchQuery from '~/pipeline_editor/graphql/queries/client/last_commit_branch.query.graphql';
 
 export default {

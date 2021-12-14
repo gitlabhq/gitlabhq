@@ -17,7 +17,7 @@ import {
   TABS_INDEX,
   VISUALIZE_TAB,
 } from '../constants';
-import getAppStatus from '../graphql/queries/client/app_status.graphql';
+import getAppStatus from '../graphql/queries/client/app_status.query.graphql';
 import CiConfigMergedPreview from './editor/ci_config_merged_preview.vue';
 import CiEditorHeader from './editor/ci_editor_header.vue';
 import TextEditor from './editor/text_editor.vue';

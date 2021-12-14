@@ -82,6 +82,16 @@ class Feature
       attributes
     end
 
+    def for_upcoming_milestone?
+      return false unless milestone
+
+      Gitlab::VersionInfo.parse(milestone + '.999') >= Gitlab.version_info
+    end
+
+    def force_log_state_changes?
+      attributes[:log_state_changes]
+    end
+
     class << self
       def paths
         @paths ||= [Rails.root.join('config', 'feature_flags', '**', '*.yml')]
@@ -104,6 +114,14 @@ class Feature
 
       def has_definition?(key)
         definitions.has_key?(key.to_sym)
+      end
+
+      def log_states?(key)
+        return false if key == :feature_flag_state_logs
+        return false if Feature.disabled?(:feature_flag_state_logs, type: :ops)
+        return false unless (feature = get(key))
+
+        feature.force_log_state_changes? || feature.for_upcoming_milestone?
       end
 
       def valid_usage!(key, type:, default_enabled:)

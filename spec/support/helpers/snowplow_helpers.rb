@@ -48,11 +48,15 @@ module SnowplowHelpers
   #   )
   def expect_snowplow_event(category:, action:, context: nil, **kwargs)
     if context
-      kwargs[:context] = []
-      context.each do |c|
-        expect(SnowplowTracker::SelfDescribingJson).to have_received(:new)
-          .with(c[:schema], c[:data]).at_least(:once)
-        kwargs[:context] << an_instance_of(SnowplowTracker::SelfDescribingJson)
+      if context.is_a?(Array)
+        kwargs[:context] = []
+        context.each do |c|
+          expect(SnowplowTracker::SelfDescribingJson).to have_received(:new)
+            .with(c[:schema], c[:data]).at_least(:once)
+          kwargs[:context] << an_instance_of(SnowplowTracker::SelfDescribingJson)
+        end
+      else
+        kwargs[:context] = context
       end
     end
 

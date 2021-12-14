@@ -886,7 +886,7 @@ Here, the apollo query is watching for changes in `graphqlResourceEtag`. If your
 You can see an example of this in the pipeline status of the pipeline editor. The pipeline editor watches for changes in the latest pipeline. When the user creates a new commit, we update the pipeline query to poll for changes in the new pipeline.
 
 ```graphql
-# pipeline_etag.graphql
+# pipeline_etag.query.graphql
 
 query getPipelineEtag {
   pipelineEtag @client
@@ -896,7 +896,7 @@ query getPipelineEtag {
 ```javascript
 /* pipeline_editor/components/header/pipeline_status.vue */
 
-import getPipelineEtag from '~/pipeline_editor/graphql/queries/client/pipeline_etag.graphql';
+import getPipelineEtag from '~/pipeline_editor/graphql/queries/client/pipeline_etag.query.graphql';
 
 apollo: {
   pipelineEtag: {

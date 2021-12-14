@@ -17,11 +17,11 @@ import {
   LOAD_FAILURE_UNKNOWN,
   STARTER_TEMPLATE_NAME,
 } from './constants';
-import updateAppStatus from './graphql/mutations/update_app_status.mutation.graphql';
-import getBlobContent from './graphql/queries/blob_content.graphql';
-import getCiConfigData from './graphql/queries/ci_config.graphql';
-import getAppStatus from './graphql/queries/client/app_status.graphql';
-import getCurrentBranch from './graphql/queries/client/current_branch.graphql';
+import updateAppStatus from './graphql/mutations/client/update_app_status.mutation.graphql';
+import getBlobContent from './graphql/queries/blob_content.query.graphql';
+import getCiConfigData from './graphql/queries/ci_config.query.graphql';
+import getAppStatus from './graphql/queries/client/app_status.query.graphql';
+import getCurrentBranch from './graphql/queries/client/current_branch.query.graphql';
 import getTemplate from './graphql/queries/get_starter_template.query.graphql';
 import getLatestCommitShaQuery from './graphql/queries/latest_commit_sha.query.graphql';
 import PipelineEditorHome from './pipeline_editor_home.vue';

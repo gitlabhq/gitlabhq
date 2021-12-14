@@ -3,8 +3,8 @@ import { GlButton, GlIcon, GlLink, GlLoadingIcon, GlSprintf, GlTooltipDirective 
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { truncateSha } from '~/lib/utils/text_utility';
 import { s__ } from '~/locale';
-import getPipelineQuery from '~/pipeline_editor/graphql/queries/client/pipeline.graphql';
-import getPipelineEtag from '~/pipeline_editor/graphql/queries/client/pipeline_etag.graphql';
+import getPipelineQuery from '~/pipeline_editor/graphql/queries/pipeline.query.graphql';
+import getPipelineEtag from '~/pipeline_editor/graphql/queries/client/pipeline_etag.query.graphql';
 import {
   getQueryHeaders,
   toggleQueryPollingByVisibility,

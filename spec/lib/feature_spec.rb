@@ -186,6 +186,17 @@ RSpec.describe Feature, stub_feature_flags: false do
     context 'logging is enabled', :request_store do
       before do
         allow(Feature).to receive(:log_feature_flag_states?).and_call_original
+
+        definition = Feature::Definition.new("development/enabled_feature_flag.yml",
+                                                         name: :enabled_feature_flag,
+                                                         type: 'development',
+                                                         log_state_changes: true,
+                                                         default_enabled: false)
+
+        allow(Feature::Definition).to receive(:definitions) do
+          { definition.key => definition }
+        end
+
         described_class.enable(:feature_flag_state_logs)
         described_class.enable(:enabled_feature_flag)
         described_class.enabled?(:enabled_feature_flag)
@@ -510,6 +521,82 @@ RSpec.describe Feature, stub_feature_flags: false do
 
         expect(described_class.remove(:persisted_feature_flag)).to be_truthy
       end
+    end
+  end
+
+  describe '.log_feature_flag_states?' do
+    let(:log_state_changes) { false }
+    let(:milestone) { "0.0" }
+    let(:flag_name) { :some_flag }
+    let(:definition) do
+      Feature::Definition.new("development/#{flag_name}.yml",
+                              name: flag_name,
+                              type: 'development',
+                              milestone: milestone,
+                              log_state_changes: log_state_changes,
+                              default_enabled: false)
+    end
+
+    before do
+      Feature.enable(:feature_flag_state_logs)
+      Feature.enable(:some_flag)
+
+      allow(Feature).to receive(:log_feature_flag_states?).and_return(false)
+      allow(Feature).to receive(:log_feature_flag_states?).with(:feature_flag_state_logs).and_call_original
+      allow(Feature).to receive(:log_feature_flag_states?).with(:some_flag).and_call_original
+
+      allow(Feature::Definition).to receive(:definitions) do
+        { definition.key => definition }
+      end
+    end
+
+    subject { described_class.log_feature_flag_states?(flag_name) }
+
+    context 'when flag is feature_flag_state_logs' do
+      let(:milestone) { "14.6" }
+      let(:flag_name) { :feature_flag_state_logs }
+      let(:log_state_changes) { true }
+
+      it { is_expected.to be_falsey }
+    end
+
+    context 'when flag is old' do
+      it { is_expected.to be_falsey }
+    end
+
+    context 'when flag is old while log_state_changes is not present ' do
+      let(:definition) do
+        Feature::Definition.new("development/#{flag_name}.yml",
+                                name: flag_name,
+                                type: 'development',
+                                milestone: milestone,
+                                default_enabled: false)
+      end
+
+      it { is_expected.to be_falsey }
+    end
+
+    context 'when flag is old but log_state_changes is true' do
+      let(:log_state_changes) { true }
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'when flag is new and not feature_flag_state_logs' do
+      let(:milestone) { "14.6" }
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'when milestone is nil' do
+      let(:definition) do
+        Feature::Definition.new("development/#{flag_name}.yml",
+                                name: flag_name,
+                                type: 'development',
+                                default_enabled: false)
+      end
+
+      it { is_expected.to be_falsey }
     end
   end
 

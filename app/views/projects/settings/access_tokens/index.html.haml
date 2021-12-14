@@ -39,7 +39,7 @@
           access_levels: ProjectMember.access_level_roles,
           default_access_level: Gitlab::Access::MAINTAINER,
           prefix: :project_access_token,
-          help_path: help_page_path('user/project/settings/project_access_tokens', anchor: 'limiting-scopes-of-a-project-access-token')
+          help_path: help_page_path('user/project/settings/project_access_tokens', anchor: 'scopes-for-a-project-access-token')
 
     = render 'shared/access_tokens/table',
         active_tokens: @active_project_access_tokens,

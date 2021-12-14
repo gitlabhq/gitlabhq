@@ -9,12 +9,11 @@ import PipelineEditorTabs from '~/pipeline_editor/components/pipeline_editor_tab
 import PipelineEditorEmptyState from '~/pipeline_editor/components/ui/pipeline_editor_empty_state.vue';
 import PipelineEditorMessages from '~/pipeline_editor/components/ui/pipeline_editor_messages.vue';
 import { COMMIT_SUCCESS, COMMIT_FAILURE, LOAD_FAILURE_UNKNOWN } from '~/pipeline_editor/constants';
-import getBlobContent from '~/pipeline_editor/graphql/queries/blob_content.graphql';
-import getCiConfigData from '~/pipeline_editor/graphql/queries/ci_config.graphql';
+import getBlobContent from '~/pipeline_editor/graphql/queries/blob_content.query.graphql';
+import getCiConfigData from '~/pipeline_editor/graphql/queries/ci_config.query.graphql';
 import getTemplate from '~/pipeline_editor/graphql/queries/get_starter_template.query.graphql';
 import getLatestCommitShaQuery from '~/pipeline_editor/graphql/queries/latest_commit_sha.query.graphql';
-
-import getPipelineQuery from '~/pipeline_editor/graphql/queries/client/pipeline.graphql';
+import getPipelineQuery from '~/pipeline_editor/graphql/queries/pipeline.query.graphql';
 
 import PipelineEditorApp from '~/pipeline_editor/pipeline_editor_app.vue';
 import PipelineEditorHome from '~/pipeline_editor/pipeline_editor_home.vue';

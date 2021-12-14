@@ -1,8 +1,8 @@
 import axios from '~/lib/utils/axios_utils';
-import getAppStatus from './queries/client/app_status.graphql';
-import getCurrentBranchQuery from './queries/client/current_branch.graphql';
+import getAppStatus from './queries/client/app_status.query.graphql';
+import getCurrentBranchQuery from './queries/client/current_branch.query.graphql';
 import getLastCommitBranchQuery from './queries/client/last_commit_branch.query.graphql';
-import getPipelineEtag from './queries/client/pipeline_etag.graphql';
+import getPipelineEtag from './queries/client/pipeline_etag.query.graphql';
 
 export const resolvers = {
   Mutation: {

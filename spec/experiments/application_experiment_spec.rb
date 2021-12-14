@@ -233,6 +233,75 @@ RSpec.describe ApplicationExperiment, :experiment do
         ]
       )
     end
+
+    context "when using known context resources" do
+      let(:user) { build(:user, id: non_existing_record_id) }
+      let(:project) { build(:project, id: non_existing_record_id) }
+      let(:namespace) { build(:namespace, id: non_existing_record_id) }
+      let(:group) { build(:group, id: non_existing_record_id) }
+      let(:actor) { user }
+
+      let(:context) { { user: user, project: project, namespace: namespace } }
+
+      it "includes those using the gitlab standard context" do
+        subject.track(:action)
+
+        expect_snowplow_event(
+          category: 'namespaced/stub',
+          action: 'action',
+          user: user,
+          project: project,
+          namespace: namespace,
+          context: an_instance_of(Array)
+        )
+      end
+
+      it "falls back to using the group key" do
+        subject.context(namespace: nil, group: group)
+
+        subject.track(:action)
+
+        expect_snowplow_event(
+          category: 'namespaced/stub',
+          action: 'action',
+          user: user,
+          project: project,
+          namespace: group,
+          context: an_instance_of(Array)
+        )
+      end
+
+      context "with the actor key" do
+        it "provides it to the tracking call as the user" do
+          subject.context(user: nil, actor: actor)
+
+          subject.track(:action)
+
+          expect_snowplow_event(
+            category: 'namespaced/stub',
+            action: 'action',
+            user: actor,
+            project: project,
+            namespace: namespace,
+            context: an_instance_of(Array)
+          )
+        end
+
+        it "handles when it's not a user record" do
+          subject.context(user: nil, actor: nil)
+
+          subject.track(:action)
+
+          expect_snowplow_event(
+            category: 'namespaced/stub',
+            action: 'action',
+            project: project,
+            namespace: namespace,
+            context: an_instance_of(Array)
+          )
+        end
+      end
+    end
   end
 
   describe "#key_for" do

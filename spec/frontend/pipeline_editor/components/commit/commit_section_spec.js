@@ -12,7 +12,7 @@ import {
   COMMIT_SUCCESS,
 } from '~/pipeline_editor/constants';
 import commitCreate from '~/pipeline_editor/graphql/mutations/commit_ci_file.mutation.graphql';
-import updatePipelineEtag from '~/pipeline_editor/graphql/mutations/update_pipeline_etag.mutation.graphql';
+import updatePipelineEtag from '~/pipeline_editor/graphql/mutations/client/update_pipeline_etag.mutation.graphql';
 
 import {
   mockCiConfigPath,

@@ -161,6 +161,41 @@ RSpec.describe Feature::Definition do
     end
   end
 
+  describe '.for_upcoming_milestone?' do
+    using RSpec::Parameterized::TableSyntax
+
+    let(:definition) do
+      Feature::Definition.new("development/enabled_feature_flag.yml",
+                              name: :enabled_feature_flag,
+                              type: 'development',
+                              milestone: milestone,
+                              default_enabled: false)
+    end
+
+    before do
+      allow(Feature::Definition).to receive(:definitions) do
+        { definition.key => definition }
+      end
+
+      allow(Gitlab).to receive(:version_info).and_return(Gitlab::VersionInfo.parse(current_milestone))
+    end
+
+    subject { definition.for_upcoming_milestone? }
+
+    where(:ctx, :milestone, :current_milestone, :expected) do
+      'no milestone'               | nil     | '1.0.0'   | false
+      'upcoming milestone - major' | '2.3'   | '1.9.999' | true
+      'upcoming milestone - minor' | '2.3'   | '2.2.999' | true
+      'current milestone'          | '2.3'   | '2.3.999' | true
+      'past milestone - major'     | '1.9'   | '2.3.999' | false
+      'past milestone - minor'     | '2.2'   | '2.3.999' | false
+    end
+
+    with_them do
+      it {is_expected.to be(expected)}
+    end
+  end
+
   describe '.valid_usage!' do
     before do
       allow(described_class).to receive(:definitions) do
@@ -215,7 +250,42 @@ RSpec.describe Feature::Definition do
     end
   end
 
-  describe '.defaul_enabled?' do
+  describe '.log_states?' do
+    using RSpec::Parameterized::TableSyntax
+
+    let(:definition) do
+      Feature::Definition.new("development/enabled_feature_flag.yml",
+                              name: :enabled_feature_flag,
+                              type: 'development',
+                              milestone: milestone,
+                              log_state_changes: log_state_change,
+                              default_enabled: false)
+    end
+
+    before do
+      allow(Feature::Definition).to receive(:definitions) do
+        { definition.key => definition }
+      end
+
+      allow(Gitlab).to receive(:version_info).and_return(Gitlab::VersionInfo.new(10, 0, 0))
+    end
+
+    subject { Feature::Definition.log_states?(key) }
+
+    where(:ctx, :key, :milestone, :log_state_change, :expected) do
+      'When flag does not exist'                    | :no_flag              | "0.0"  | true  | false
+      'When flag is old, and logging is not forced' | :enabled_feature_flag | "0.0"  | false | false
+      'When flag is old, but logging is forced'     | :enabled_feature_flag | "0.0"  | true  | true
+      'When flag is current'                        | :enabled_feature_flag | "10.0" | true  | true
+      'Flag is upcoming'                            | :enabled_feature_flag | "10.0" | true  | true
+    end
+
+    with_them do
+      it { is_expected.to be(expected) }
+    end
+  end
+
+  describe '.default_enabled?' do
     subject { described_class.default_enabled?(key) }
 
     context 'when feature flag exist' do

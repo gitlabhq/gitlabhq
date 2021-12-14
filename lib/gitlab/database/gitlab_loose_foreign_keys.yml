@@ -45,3 +45,7 @@ terraform_state_versions:
   - table: ci_builds
     column: ci_build_id
     on_delete: async_nullify
+merge_request_metrics:
+  - table: ci_pipelines
+    column: pipeline_id
+    on_delete: async_delete
