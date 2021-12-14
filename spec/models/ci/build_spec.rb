@@ -2506,7 +2506,7 @@ RSpec.describe Ci::Build do
       it { is_expected.to start_with(project.web_url[0..6]) }
       it { is_expected.to include(build.token) }
       it { is_expected.to include('gitlab-ci-token') }
-      it { is_expected.to include(project.web_url[7..-1]) }
+      it { is_expected.to include(project.web_url[7..]) }
     end
 
     context 'when token is empty' do

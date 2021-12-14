@@ -4,7 +4,7 @@ exports[`PackagesListApp renders 1`] = `
 <div>
   <package-title-stub
     count="2"
-    helpurl="packageHelpUrl"
+    helpurl="/help/user/packages/index"
   />
    
   <package-search-stub />
@@ -49,7 +49,7 @@ exports[`PackagesListApp renders 1`] = `
             <b-link-stub
               class="gl-link"
               event="click"
-              href="emptyListHelpUrl"
+              href="/help/user/packages/package_registry/index"
               routertag="a"
               target="_blank"
             >

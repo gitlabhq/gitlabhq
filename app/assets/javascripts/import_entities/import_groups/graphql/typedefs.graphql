@@ -16,6 +16,7 @@ type ClientBulkImportSourceGroupConnection {
 type ClientBulkImportProgress {
   id: ID!
   status: String!
+  message: String
 }
 
 type ClientBulkImportValidationError {

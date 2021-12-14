@@ -58,8 +58,7 @@ it was originally composed for, if it is helpful to any of our audiences, we can
 include it.
 
 - If you use an image that has a separate source file (for example, a vector or
-  diagram format), link the image to the source file so that it may be reused or
-  updated by anyone.
+  diagram format), link the image to the source file so that anyone can update or reuse it.
 - Do not copy and paste content from other sources unless it is a limited
   quotation with the source cited. Typically it is better to either rephrase
   relevant information in your own words or link out to the other source.

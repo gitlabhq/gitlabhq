@@ -1,4 +1,5 @@
 import { s__, __ } from '~/locale';
+import { helpPagePath } from '~/helpers/help_page_helper';
 
 export {
   DELETE_PACKAGE_TRACKING_ACTION,
@@ -136,3 +137,8 @@ export const PACKAGE_TYPES = [
   s__('PackageRegistry|Debian'),
   s__('PackageRegistry|Helm'),
 ];
+
+// links
+
+export const EMPTY_LIST_HELP_URL = helpPagePath('user/packages/package_registry/index');
+export const PACKAGE_HELP_URL = helpPagePath('user/packages/index');

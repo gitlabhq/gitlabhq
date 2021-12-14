@@ -44,20 +44,23 @@ RSpec.describe Gitlab::Redis::Sessions do
   describe '#store' do
     subject { described_class.store(namespace: described_class::SESSION_NAMESPACE) }
 
-    context 'when redis.sessions configuration is provided' do
+    context 'when redis.sessions configuration is NOT provided' do
       it 'instantiates ::Redis instance' do
         expect(described_class).to receive(:config_fallback?).and_return(true)
         expect(subject).to be_instance_of(::Redis::Store)
       end
     end
 
-    context 'when redis.sessions configuration is not provided' do
+    context 'when redis.sessions configuration is provided' do
+      before do
+        allow(described_class).to receive(:config_fallback?).and_return(false)
+      end
+
       it 'instantiates an instance of MultiStore' do
-        expect(described_class).to receive(:config_fallback?).and_return(false)
         expect(subject).to be_instance_of(::Gitlab::Redis::MultiStore)
       end
-    end
 
-    it_behaves_like 'multi store feature flags', :use_primary_and_secondary_stores_for_sessions, :use_primary_store_as_default_for_sessions
+      it_behaves_like 'multi store feature flags', :use_primary_and_secondary_stores_for_sessions, :use_primary_store_as_default_for_sessions
+    end
   end
 end

@@ -314,9 +314,8 @@ export default {
           variables: { importRequests },
         });
       } catch (error) {
-        const message = error?.networkError?.response?.data?.error ?? i18n.ERROR_IMPORT;
         createFlash({
-          message,
+          message: i18n.ERROR_IMPORT,
           captureError: true,
           error,
         });

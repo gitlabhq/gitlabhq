@@ -33,6 +33,7 @@ RSpec.describe API::Ci::Pipelines do
         expect(json_response).to be_an Array
         expect(json_response.first['sha']).to match(/\A\h{40}\z/)
         expect(json_response.first['id']).to eq pipeline.id
+        expect(json_response.first['iid']).to eq pipeline.iid
         expect(json_response.first['web_url']).to be_present
       end
 
@@ -40,7 +41,7 @@ RSpec.describe API::Ci::Pipelines do
         it 'includes pipeline source' do
           get api("/projects/#{project.id}/pipelines", user)
 
-          expect(json_response.first.keys).to contain_exactly(*%w[id project_id sha ref status web_url created_at updated_at source])
+          expect(json_response.first.keys).to contain_exactly(*%w[id iid project_id sha ref status web_url created_at updated_at source])
         end
       end
 

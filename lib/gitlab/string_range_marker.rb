@@ -99,7 +99,7 @@ module Gitlab
 
       start = prev = positions[0]
       range = MarkerRange.new(start, prev, mode: mode)
-      positions[1..-1].each do |pos|
+      positions[1..].each do |pos|
         if pos == prev + 1
           range = MarkerRange.new(start, pos, mode: mode)
           prev = pos

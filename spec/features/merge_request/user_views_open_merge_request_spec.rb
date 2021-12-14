@@ -20,7 +20,7 @@ RSpec.describe 'User views an open merge request' do
 
       # Work around a weird Capybara behavior where calling `parent` on a node
       # returns the whole document, not the node's actual parent element
-      expect(find(:xpath, "#{node.path}/..").text).to eq(merge_request.description[2..-1])
+      expect(find(:xpath, "#{node.path}/..").text).to eq(merge_request.description[2..])
 
       expect(page).to have_content(merge_request.title)
     end

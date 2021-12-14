@@ -138,7 +138,7 @@ module GpgHelpers
     end
 
     def primary_keyid
-      fingerprint[-16..-1]
+      fingerprint[-16..]
     end
 
     def fingerprint
@@ -281,7 +281,7 @@ module GpgHelpers
     end
 
     def primary_keyid2
-      fingerprint2[-16..-1]
+      fingerprint2[-16..]
     end
 
     def fingerprint2
@@ -374,7 +374,7 @@ module GpgHelpers
     end
 
     def primary_keyid
-      fingerprint[-16..-1]
+      fingerprint[-16..]
     end
 
     def fingerprint
@@ -776,7 +776,7 @@ module GpgHelpers
     end
 
     def primary_keyid
-      fingerprint[-16..-1]
+      fingerprint[-16..]
     end
 
     def fingerprint

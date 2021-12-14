@@ -204,7 +204,7 @@ module Namespaces
         end
 
         if bottom
-          skope = skope.where(id: bottom.traversal_ids[0..-1])
+          skope = skope.where(id: bottom.traversal_ids)
         end
 
         # The original `with_depth` attribute in ObjectHierarchy increments as you

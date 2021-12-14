@@ -139,6 +139,10 @@
   font-family: $monospace-font !important;
 }
 
+.suggestions.md > .markdown-code-block {
+  @include gl-static;
+}
+
 .md-suggestion-header {
   height: $suggestion-header-height;
   display: flex;

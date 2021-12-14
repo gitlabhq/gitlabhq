@@ -36,7 +36,7 @@ module Gitlab
         end
 
         def strip_diff_frontmatter(diff_content)
-          diff_content.scan(/.*\n/)[2..-1]&.join('') if diff_content.present?
+          diff_content.scan(/.*\n/)[2..]&.join('') if diff_content.present?
         end
 
         def blobs_with_transformed_diffs

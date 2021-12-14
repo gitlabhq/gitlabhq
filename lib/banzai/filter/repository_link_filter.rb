@@ -174,7 +174,7 @@ module Banzai
       def build_relative_path(path, request_path)
         return request_path if path.empty?
         return path unless request_path
-        return path[1..-1] if path.start_with?('/')
+        return path[1..] if path.start_with?('/')
 
         parts = request_path.split('/')
 

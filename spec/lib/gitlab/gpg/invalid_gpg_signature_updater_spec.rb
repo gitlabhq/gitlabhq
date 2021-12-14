@@ -192,7 +192,7 @@ RSpec.describe Gitlab::Gpg::InvalidGpgSignatureUpdater do
           project: project,
           commit_sha: commit_sha,
           gpg_key: nil,
-          gpg_key_primary_keyid: GpgHelpers::User3.subkey_fingerprints.last[24..-1],
+          gpg_key_primary_keyid: GpgHelpers::User3.subkey_fingerprints.last[24..],
           verification_status: 'unknown_key'
       end
 

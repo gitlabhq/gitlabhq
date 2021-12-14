@@ -488,6 +488,11 @@ rspec:coverage:
     - rspec unit pg12 minimal
     - rspec integration pg12 minimal
     - rspec system pg12 minimal
+    # FOSS/EE decomposed jobs
+    - rspec migration pg12 decomposed
+    - rspec unit pg12 decomposed
+    - rspec integration pg12 decomposed
+    - rspec system pg12 decomposed
     # EE jobs
     - rspec-ee migration pg12
     - rspec-ee unit pg12
@@ -498,6 +503,11 @@ rspec:coverage:
     - rspec-ee unit pg12 minimal
     - rspec-ee integration pg12 minimal
     - rspec-ee system pg12 minimal
+    # EE decomposed jobs
+    - rspec-ee migration pg12 decomposed
+    - rspec-ee unit pg12 decomposed
+    - rspec-ee integration pg12 decomposed
+    - rspec-ee system pg12 decomposed
     # Geo jobs
     - rspec-ee unit pg12 geo
     - rspec-ee integration pg12 geo

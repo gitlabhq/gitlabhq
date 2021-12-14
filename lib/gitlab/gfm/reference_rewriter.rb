@@ -57,7 +57,7 @@ module Gitlab
 
       def unfold_reference(reference, match, target_parent)
         before = @text[0...match.begin(0)]
-        after = @text[match.end(0)..-1]
+        after = @text[match.end(0)..]
 
         referable = find_referable(reference)
         return reference unless referable

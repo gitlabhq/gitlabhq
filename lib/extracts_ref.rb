@@ -113,7 +113,7 @@ module ExtractsRef
     best_match = valid_refs.max_by(&:length)
 
     # Partition the string into the ref and the path, ignoring the empty first value
-    id.partition(best_match)[1..-1]
+    id.partition(best_match)[1..]
   end
 
   def use_first_path_segment?(ref)

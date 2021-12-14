@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 def match_mr1_note(content_regex)
-  MergeRequest.find_by(title: 'MR1').notes.select { |n| n.note.match(/#{content_regex}/)}.first
+  MergeRequest.find_by(title: 'MR1').notes.find { |n| n.note.match(/#{content_regex}/) }
 end
 
 RSpec.describe Gitlab::ImportExport::Project::TreeRestorer do
@@ -75,7 +75,7 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer do
           context 'for an Issue' do
             it 'does not import note_html' do
               note_content = 'Quo reprehenderit aliquam qui dicta impedit cupiditate eligendi'
-              issue_note = Issue.find_by(description: 'Aliquam enim illo et possimus.').notes.select { |n| n.note.match(/#{note_content}/)}.first
+              issue_note = Issue.find_by(description: 'Aliquam enim illo et possimus.').notes.find { |n| n.note.match(/#{note_content}/) }
 
               expect(issue_note.note_html).to match(/#{note_content}/)
             end
@@ -552,7 +552,7 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer do
 
         it 'issue system note metadata restored successfully' do
           note_content = 'created merge request !1 to address this issue'
-          note = project.issues.first.notes.select { |n| n.note.match(/#{note_content}/)}.first
+          note = project.issues.first.notes.find { |n| n.note.match(/#{note_content}/)}
 
           expect(note.noteable_type).to eq('Issue')
           expect(note.system).to eq(true)

@@ -51,7 +51,7 @@ module Gitlab
 
           def replace_with!(other)
             instance_variables.each do |ivar|
-              instance_variable_set(ivar, other.public_send(ivar.to_s[1..-1])) # rubocop:disable GitlabSecurity/PublicSend
+              instance_variable_set(ivar, other.public_send(ivar.to_s[1..])) # rubocop:disable GitlabSecurity/PublicSend
             end
           end
 

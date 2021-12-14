@@ -16,7 +16,7 @@ module Gitlab
           # we remove the leading `//` and add `descendant-or-self::`
           # in order to ensure we're searching from this node and all
           # descendants.
-          xpath.map { |t| "descendant-or-self::#{t[2..-1]}" }.join('|')
+          xpath.map { |t| "descendant-or-self::#{t[2..]}" }.join('|')
         end
       end
     end

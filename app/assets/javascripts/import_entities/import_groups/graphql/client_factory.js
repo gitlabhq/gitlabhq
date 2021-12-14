@@ -142,9 +142,7 @@ export function createResolvers({ endpoints }) {
           };
         });
 
-        const {
-          data: { id: jobId },
-        } = await axios.post(endpoints.createBulkImport, {
+        const { data: originalResponse } = await axios.post(endpoints.createBulkImport, {
           bulk_import: importOperations.map((op) => ({
             source_type: 'group_entity',
             source_full_path: op.group.fullPath,
@@ -153,15 +151,21 @@ export function createResolvers({ endpoints }) {
           })),
         });
 
-        return importOperations.map((op) => {
+        const responses = Array.isArray(originalResponse)
+          ? originalResponse
+          : [{ success: true, id: originalResponse.id }];
+
+        return importOperations.map((op, idx) => {
+          const response = responses[idx];
           const lastImportTarget = {
             targetNamespace: op.targetNamespace,
             newName: op.newName,
           };
 
           const progress = {
-            id: jobId,
-            status: STATUSES.CREATED,
+            id: response.id || `local-${Date.now()}-${idx}`,
+            status: response.success ? STATUSES.CREATED : STATUSES.FAILED,
+            message: response.message || null,
           };
 
           localStorageCache.set(op.group.webUrl, { progress, lastImportTarget });

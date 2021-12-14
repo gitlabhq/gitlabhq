@@ -15,6 +15,8 @@ Read more on [pagination](index.md#pagination).
 
 ## List project pipelines
 
+> `iid` in response [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/342223) in GitLab 14.6.
+
 List pipelines in a project. Child pipelines are not included in the results,
 but you can [get child pipeline](pipelines.md#get-a-single-pipeline) individually.
 
@@ -73,6 +75,8 @@ Example of response
 ```
 
 ## Get a single pipeline
+
+> `iid` in response [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/342223) in GitLab 14.6.
 
 Get one pipeline from a project.
 
@@ -267,6 +271,8 @@ Sample response:
 
 ## Create a new pipeline
 
+> `iid` in response [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/342223) in GitLab 14.6.
+
 ```plaintext
 POST /projects/:id/pipeline
 ```
@@ -315,6 +321,8 @@ Example of response
 ```
 
 ## Retry jobs in a pipeline
+
+> `iid` in response [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/342223) in GitLab 14.6.
 
 ```plaintext
 POST /projects/:id/pipelines/:pipeline_id/retry

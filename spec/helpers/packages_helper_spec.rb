@@ -260,34 +260,4 @@ RSpec.describe PackagesHelper do
       end
     end
   end
-
-  describe '#packages_list_data' do
-    let_it_be(:resource) { project }
-    let_it_be(:type) { 'project' }
-
-    let(:expected_result) do
-      {
-        resource_id: resource.id,
-        full_path: resource.full_path,
-        page_type: type
-      }
-    end
-
-    subject(:result) { helper.packages_list_data(type, resource) }
-
-    context 'at a project level' do
-      it 'populates presenter data' do
-        expect(result).to match(hash_including(expected_result))
-      end
-    end
-
-    context 'at a group level' do
-      let_it_be(:resource) { create(:group) }
-      let_it_be(:type) { 'group' }
-
-      it 'populates presenter data' do
-        expect(result).to match(hash_including(expected_result))
-      end
-    end
-  end
 end

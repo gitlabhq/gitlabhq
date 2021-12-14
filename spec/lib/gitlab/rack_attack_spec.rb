@@ -78,7 +78,7 @@ RSpec.describe Gitlab::RackAttack, :aggregate_failures do
 
     it 'configures tracks and throttles with a selected set of dry-runs' do
       dry_run_throttles = throttles.each_key.first(2)
-      regular_throttles = throttles.keys[2..-1]
+      regular_throttles = throttles.keys[2..]
       stub_env('GITLAB_THROTTLE_DRY_RUN', dry_run_throttles.join(','))
 
       described_class.configure(fake_rack_attack)

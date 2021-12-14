@@ -123,13 +123,22 @@ describe('import target cell', () => {
   });
 
   describe('when entity is available for import', () => {
+    const FAKE_PROGRESS_MESSAGE = 'progress message';
     beforeEach(() => {
-      group = generateFakeTableEntry({ id: 1, flags: { isAvailableForImport: true } });
+      group = generateFakeTableEntry({
+        id: 1,
+        flags: { isAvailableForImport: true },
+        progress: { message: FAKE_PROGRESS_MESSAGE },
+      });
       createComponent({ group });
     });
 
     it('renders namespace dropdown as enabled', () => {
       expect(findNamespaceDropdown().attributes('disabled')).toBe(undefined);
+    });
+
+    it('renders progress message as error if it exists', () => {
+      expect(wrapper.find('[role=alert]').text()).toBe(FAKE_PROGRESS_MESSAGE);
     });
   });
 });

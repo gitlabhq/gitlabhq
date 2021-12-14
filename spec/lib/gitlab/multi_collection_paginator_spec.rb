@@ -40,7 +40,7 @@ RSpec.describe Gitlab::MultiCollectionPaginator do
     end
 
     it 'fils the last page with elements from the second collection' do
-      expected_collection = all_groups[-2..-1]
+      expected_collection = all_groups[-2..]
 
       expect(paginator.paginate(3)).to eq(expected_collection)
     end

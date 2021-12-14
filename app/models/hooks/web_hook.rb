@@ -34,9 +34,19 @@ class WebHook < ApplicationRecord
   end
 
   def executable?
-    return true unless web_hooks_disable_failed?
+    !temporarily_disabled? && !permanently_disabled?
+  end
 
-    recent_failures <= FAILURE_THRESHOLD && (disabled_until.nil? || disabled_until < Time.current)
+  def temporarily_disabled?
+    return false unless web_hooks_disable_failed?
+
+    disabled_until.present? && disabled_until >= Time.current
+  end
+
+  def permanently_disabled?
+    return false unless web_hooks_disable_failed?
+
+    recent_failures > FAILURE_THRESHOLD
   end
 
   # rubocop: disable CodeReuse/ServiceClass
@@ -69,6 +79,8 @@ class WebHook < ApplicationRecord
   end
 
   def disable!
+    return if permanently_disabled?
+
     update_attribute(:recent_failures, FAILURE_THRESHOLD + 1)
   end
 
@@ -80,7 +92,7 @@ class WebHook < ApplicationRecord
   end
 
   def backoff!
-    return if backoff_count >= MAX_FAILURES && disabled_until && disabled_until > Time.current
+    return if permanently_disabled? || (backoff_count >= MAX_FAILURES && temporarily_disabled?)
 
     assign_attributes(disabled_until: next_backoff.from_now, backoff_count: backoff_count.succ.clamp(0, MAX_FAILURES))
     save(validate: false)
@@ -93,7 +105,19 @@ class WebHook < ApplicationRecord
     save(validate: false)
   end
 
-  # Overridden in ProjectHook and GroupHook, other webhooks are not rate-limited.
+  # @return [Boolean] Whether or not the WebHook is currently throttled.
+  def rate_limited?
+    return false unless rate_limit
+
+    Gitlab::ApplicationRateLimiter.peek(
+      :web_hook_calls,
+      scope: [self],
+      threshold: rate_limit
+    )
+  end
+
+  # Threshold for the rate-limit.
+  # Overridden in ProjectHook and GroupHook, other WebHooks are not rate-limited.
   def rate_limit
     nil
   end

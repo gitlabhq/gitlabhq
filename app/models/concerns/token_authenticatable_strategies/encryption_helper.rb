@@ -11,7 +11,7 @@ module TokenAuthenticatableStrategies
       # The pattern of the token is "#{DYNAMIC_NONCE_IDENTIFIER}#{token}#{iv_of_12_characters}"
       if token.start_with?(DYNAMIC_NONCE_IDENTIFIER) && token.size > NONCE_SIZE + DYNAMIC_NONCE_IDENTIFIER.size
         token_to_decrypt = token[1...-NONCE_SIZE]
-        iv = token[-NONCE_SIZE..-1]
+        iv = token[-NONCE_SIZE..]
 
         Gitlab::CryptoHelper.aes256_gcm_decrypt(token_to_decrypt, nonce: iv)
       else

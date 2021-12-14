@@ -283,7 +283,7 @@ module DiffHelper
 
     return path unless path.size > max && max > 3
 
-    "...#{path[-(max - 3)..-1]}"
+    "...#{path[-(max - 3)..]}"
   end
 
   def code_navigation_path(diffs)

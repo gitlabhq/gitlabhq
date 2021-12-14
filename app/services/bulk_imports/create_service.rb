@@ -59,7 +59,7 @@ module BulkImports
         )
         bulk_import.create_configuration!(credentials.slice(:url, :access_token))
 
-        params.each do |entity|
+        Array.wrap(params).each do |entity|
           BulkImports::Entity.create!(
             bulk_import: bulk_import,
             source_type: entity[:source_type],

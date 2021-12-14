@@ -168,6 +168,41 @@ module QA
         )
       end
 
+      # Object comparison
+      #
+      # @param [QA::Resource::MergeRequest] other
+      # @return [Boolean]
+      def ==(other)
+        other.is_a?(MergeRequest) && comparable_mr == other.comparable_mr
+      end
+
+      # Override inspect for a better rspec failure diff output
+      #
+      # @return [String]
+      def inspect
+        JSON.pretty_generate(comparable_mr)
+      end
+
+      protected
+
+      # Return subset of fields for comparing merge requests
+      #
+      # @return [Hash]
+      def comparable_mr
+        reload! if api_response.nil?
+
+        api_resource.except(
+          :id,
+          :web_url,
+          :project_id,
+          :source_project_id,
+          :target_project_id,
+          # these can differ depending on user fetching mr
+          :subscribed,
+          :first_contribution
+        ).merge({ references: api_resource[:references].except(:full) })
+      end
+
       private
 
       def transform_api_resource(api_resource)

@@ -224,6 +224,7 @@ ci_pipelines:
 - ci_ref
 - stages
 - statuses
+- statuses_order_id_desc
 - latest_statuses_ordered_by_stage
 - builds
 - bridges

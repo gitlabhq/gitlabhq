@@ -9,13 +9,15 @@ import {
   GROUP_RESOURCE_TYPE,
   GRAPHQL_PAGE_SIZE,
   DELETE_PACKAGE_SUCCESS_MESSAGE,
+  EMPTY_LIST_HELP_URL,
+  PACKAGE_HELP_URL,
 } from '~/packages_and_registries/package_registry/constants';
 import getPackagesQuery from '~/packages_and_registries/package_registry/graphql/queries/get_packages.query.graphql';
 
 import DeletePackage from '~/packages_and_registries/package_registry/components/functional/delete_package.vue';
-import PackageTitle from './package_title.vue';
-import PackageSearch from './package_search.vue';
-import PackageList from './packages_list.vue';
+import PackageTitle from '~/packages_and_registries/package_registry/components/list/package_title.vue';
+import PackageSearch from '~/packages_and_registries/package_registry/components/list/package_search.vue';
+import PackageList from '~/packages_and_registries/package_registry/components/list/packages_list.vue';
 
 export default {
   components: {
@@ -27,13 +29,7 @@ export default {
     PackageSearch,
     DeletePackage,
   },
-  inject: [
-    'packageHelpUrl',
-    'emptyListIllustration',
-    'emptyListHelpUrl',
-    'isGroupPage',
-    'fullPath',
-  ],
+  inject: ['emptyListIllustration', 'isGroupPage', 'fullPath'],
   data() {
     return {
       packages: {},
@@ -156,12 +152,16 @@ export default {
       'PackageRegistry|Learn how to %{noPackagesLinkStart}publish and share your packages%{noPackagesLinkEnd} with GitLab.',
     ),
   },
+  links: {
+    EMPTY_LIST_HELP_URL,
+    PACKAGE_HELP_URL,
+  },
 };
 </script>
 
 <template>
   <div>
-    <package-title :help-url="packageHelpUrl" :count="packagesCount" />
+    <package-title :help-url="$options.links.PACKAGE_HELP_URL" :count="packagesCount" />
     <package-search @update="handleSearchUpdate" />
 
     <delete-package
@@ -185,7 +185,9 @@ export default {
                 <gl-sprintf v-if="hasFilters" :message="$options.i18n.widenFilters" />
                 <gl-sprintf v-else :message="$options.i18n.noResultsText">
                   <template #noPackagesLink="{ content }">
-                    <gl-link :href="emptyListHelpUrl" target="_blank">{{ content }}</gl-link>
+                    <gl-link :href="$options.links.EMPTY_LIST_HELP_URL" target="_blank">{{
+                      content
+                    }}</gl-link>
                   </template>
                 </gl-sprintf>
               </template>

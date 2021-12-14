@@ -108,7 +108,7 @@ module WikiCloth
           "<span class=\"error\">#{I18n.t('template loop detected', :tree => debug_tree)}</span>"
         else
           key = params[0].to_s.strip
-          key_options = params[1..-1].collect { |p| p.is_a?(Hash) ? { :name => p[:name].strip, :value => p[:value].strip } : p.strip }
+          key_options = params[1..].collect { |p| p.is_a?(Hash) ? { :name => p[:name].strip, :value => p[:value].strip } : p.strip }
           key_options ||= []
           key_digest = Digest::MD5.hexdigest(key_options.to_a.sort {|x,y| (x.is_a?(Hash) ? x[:name] : x) <=> (y.is_a?(Hash) ? y[:name] : y) }.inspect)
 

@@ -338,7 +338,7 @@ class WikiPage
     current_dirname = File.dirname(title)
 
     if persisted?
-      return title[1..-1] if current_dirname == '/'
+      return title[1..] if current_dirname == '/'
       return File.join([directory.presence, title].compact) if current_dirname == '.'
     end
 

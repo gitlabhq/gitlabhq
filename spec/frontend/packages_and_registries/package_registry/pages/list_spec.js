@@ -6,7 +6,7 @@ import { nextTick } from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import PackageListApp from '~/packages_and_registries/package_registry/components/list/app.vue';
+import ListPage from '~/packages_and_registries/package_registry/pages/list.vue';
 import PackageTitle from '~/packages_and_registries/package_registry/components/list/package_title.vue';
 import PackageSearch from '~/packages_and_registries/package_registry/components/list/package_search.vue';
 import OriginalPackageList from '~/packages_and_registries/package_registry/components/list/packages_list.vue';
@@ -16,11 +16,13 @@ import {
   PROJECT_RESOURCE_TYPE,
   GROUP_RESOURCE_TYPE,
   GRAPHQL_PAGE_SIZE,
+  EMPTY_LIST_HELP_URL,
+  PACKAGE_HELP_URL,
 } from '~/packages_and_registries/package_registry/constants';
 
 import getPackagesQuery from '~/packages_and_registries/package_registry/graphql/queries/get_packages.query.graphql';
 
-import { packagesListQuery, packageData, pagination } from '../../mock_data';
+import { packagesListQuery, packageData, pagination } from '../mock_data';
 
 jest.mock('~/lib/utils/common_utils');
 jest.mock('~/flash');
@@ -32,9 +34,7 @@ describe('PackagesListApp', () => {
   let apolloProvider;
 
   const defaultProvide = {
-    packageHelpUrl: 'packageHelpUrl',
     emptyListIllustration: 'emptyListIllustration',
-    emptyListHelpUrl: 'emptyListHelpUrl',
     isGroupPage: true,
     fullPath: 'gitlab-org',
   };
@@ -66,7 +66,7 @@ describe('PackagesListApp', () => {
     const requestHandlers = [[getPackagesQuery, resolver]];
     apolloProvider = createMockApollo(requestHandlers);
 
-    wrapper = shallowMountExtended(PackageListApp, {
+    wrapper = shallowMountExtended(ListPage, {
       localVue,
       apolloProvider,
       provide,
@@ -113,7 +113,10 @@ describe('PackagesListApp', () => {
     await waitForFirstRequest();
 
     expect(findPackageTitle().exists()).toBe(true);
-    expect(findPackageTitle().props('count')).toBe(2);
+    expect(findPackageTitle().props()).toMatchObject({
+      count: 2,
+      helpUrl: PACKAGE_HELP_URL,
+    });
   });
 
   describe('search component', () => {
@@ -213,12 +216,12 @@ describe('PackagesListApp', () => {
     it('generate the correct empty list link', () => {
       const link = findListComponent().findComponent(GlLink);
 
-      expect(link.attributes('href')).toBe(defaultProvide.emptyListHelpUrl);
+      expect(link.attributes('href')).toBe(EMPTY_LIST_HELP_URL);
       expect(link.text()).toBe('publish and share your packages');
     });
 
     it('includes the right content on the default tab', () => {
-      expect(findEmptyState().text()).toContain(PackageListApp.i18n.emptyPageTitle);
+      expect(findEmptyState().text()).toContain(ListPage.i18n.emptyPageTitle);
     });
   });
 
@@ -234,8 +237,8 @@ describe('PackagesListApp', () => {
     });
 
     it('should show specific empty message', () => {
-      expect(findEmptyState().text()).toContain(PackageListApp.i18n.noResultsTitle);
-      expect(findEmptyState().text()).toContain(PackageListApp.i18n.widenFilters);
+      expect(findEmptyState().text()).toContain(ListPage.i18n.noResultsTitle);
+      expect(findEmptyState().text()).toContain(ListPage.i18n.widenFilters);
     });
   });
 

@@ -38,17 +38,6 @@ module PackagesHelper
     "#{Gitlab.config.gitlab.host}/#{group_id}"
   end
 
-  def packages_list_data(type, resource)
-    {
-      resource_id: resource.id,
-      full_path: resource.full_path,
-      page_type: type,
-      empty_list_help_url: help_page_path('user/packages/package_registry/index'),
-      empty_list_illustration: image_path('illustrations/no-packages.svg'),
-      package_help_url: help_page_path('user/packages/index')
-    }
-  end
-
   def track_package_event(event_name, scope, **args)
     ::Packages::CreateEventService.new(nil, current_user, event_name: event_name, scope: scope).execute
     category = args.delete(:category) || self.class.name
