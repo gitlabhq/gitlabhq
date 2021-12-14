@@ -173,3 +173,65 @@ RSpec.shared_examples 'rejects Composer access with unknown project id' do
     end
   end
 end
+
+RSpec.shared_examples 'Composer access with deploy tokens' do
+  shared_examples 'a deploy token for Composer GET requests' do
+    context 'with deploy token headers' do
+      let(:headers) { basic_auth_header(deploy_token.username, deploy_token.token) }
+
+      before do
+        group.update!(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
+      end
+
+      context 'valid token' do
+        it_behaves_like 'returning response status', :success
+      end
+
+      context 'invalid token' do
+        let(:headers) { basic_auth_header(deploy_token.username, 'bar') }
+
+        it_behaves_like 'returning response status', :not_found
+      end
+    end
+  end
+
+  context 'group deploy token' do
+    let(:deploy_token) { deploy_token_for_group }
+
+    it_behaves_like 'a deploy token for Composer GET requests'
+  end
+
+  context 'project deploy token' do
+    let(:deploy_token) { deploy_token_for_project }
+
+    it_behaves_like 'a deploy token for Composer GET requests'
+  end
+end
+
+RSpec.shared_examples 'Composer publish with deploy tokens' do
+  shared_examples 'a deploy token for Composer publish requests' do
+    let(:headers) { basic_auth_header(deploy_token.username, deploy_token.token) }
+
+    context 'valid token' do
+      it_behaves_like 'returning response status', :success
+    end
+
+    context 'invalid token' do
+      let(:headers) { basic_auth_header(deploy_token.username, 'bar') }
+
+      it_behaves_like 'returning response status', :unauthorized
+    end
+  end
+
+  context 'group deploy token' do
+    let(:deploy_token) { deploy_token_for_group }
+
+    it_behaves_like 'a deploy token for Composer publish requests'
+  end
+
+  context 'group deploy token' do
+    let(:deploy_token) { deploy_token_for_project }
+
+    it_behaves_like 'a deploy token for Composer publish requests'
+  end
+end

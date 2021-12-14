@@ -2139,7 +2139,7 @@ module Gitlab
         end
       end
 
-      context 'with when/rules conflict' do
+      context 'with when/rules' do
         subject { Gitlab::Ci::YamlProcessor.new(YAML.dump(config)).execute }
 
         let(:config) do
@@ -2174,7 +2174,7 @@ module Gitlab
             }
           end
 
-          it_behaves_like 'returns errors', /may not be used with `rules`: when/
+          it { is_expected.to be_valid }
         end
 
         context 'used with job-level when:delayed' do
@@ -2190,7 +2190,7 @@ module Gitlab
             }
           end
 
-          it_behaves_like 'returns errors', /may not be used with `rules`: when, start_in/
+          it_behaves_like 'returns errors', /may not be used with `rules`: start_in/
         end
       end
 

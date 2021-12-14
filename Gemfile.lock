@@ -906,7 +906,7 @@ GEM
     orm_adapter (0.5.0)
     os (1.1.1)
     parallel (1.20.1)
-    parser (3.0.2.0)
+    parser (3.0.3.2)
       ast (~> 2.4.1)
     parslet (1.8.2)
     pastel (0.8.0)

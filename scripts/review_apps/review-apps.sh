@@ -263,6 +263,12 @@ function deploy() {
   gitaly_image_tag=$(parse_gitaly_image_tag)
   gitlab_shell_image_repository="${IMAGE_REPOSITORY}/gitlab-shell"
   gitlab_workhorse_image_repository="${IMAGE_REPOSITORY}/gitlab-workhorse-ee"
+  sentry_enabled="false"
+
+  if [ -n ${REVIEW_APPS_SENTRY_DSN} ]; then
+    echo "REVIEW_APPS_SENTRY_DSN detected, enabling Sentry"
+    sentry_enabled="true"
+  fi
 
   ensure_namespace "${namespace}"
   label_namespace "${namespace}" "tls=review-apps-tls" # label namespace for kubed to sync tls
@@ -283,6 +289,9 @@ HELM_CMD=$(cat << EOF
     --set releaseOverride="${release}" \
     --set global.hosts.hostSuffix="${HOST_SUFFIX}" \
     --set global.hosts.domain="${REVIEW_APPS_DOMAIN}" \
+    --set global.sentry.enabled="${sentry_enabled}" \
+    --set global.sentry.dsn="${REVIEW_APPS_SENTRY_DSN}" \
+    --set global.sentry.environment="review" \
     --set gitlab.migrations.image.repository="${gitlab_toolbox_image_repository}" \
     --set gitlab.migrations.image.tag="${CI_COMMIT_REF_SLUG}" \
     --set gitlab.gitaly.image.repository="${gitlab_gitaly_image_repository}" \

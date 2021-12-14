@@ -29,7 +29,7 @@ RSpec.describe BuildDetailsEntity do
     end
 
     it 'contains the needed key value pairs' do
-      expect(subject).to include(:coverage, :erased_at, :duration)
+      expect(subject).to include(:coverage, :erased_at, :finished_at, :duration)
       expect(subject).to include(:runner, :pipeline)
       expect(subject).to include(:raw_path, :new_issue_path)
     end

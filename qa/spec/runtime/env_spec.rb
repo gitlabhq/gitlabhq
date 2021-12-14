@@ -169,6 +169,10 @@ RSpec.describe QA::Runtime::Env do
   end
 
   describe '.knapsack?' do
+    before do
+      stub_env('CI_NODE_TOTAL', '2')
+    end
+
     it 'returns true if KNAPSACK_GENERATE_REPORT is defined' do
       stub_env('KNAPSACK_GENERATE_REPORT', 'true')
 
@@ -190,28 +194,11 @@ RSpec.describe QA::Runtime::Env do
     it 'returns false if neither KNAPSACK_GENERATE_REPORT nor KNAPSACK_REPORT_PATH nor KNAPSACK_TEST_FILE_PATTERN are defined' do
       expect(described_class.knapsack?).to be_falsey
     end
-  end
 
-  describe '.knapsack?' do
-    it 'returns true if KNAPSACK_GENERATE_REPORT is defined' do
+    it 'returns false if not running in parallel job' do
+      stub_env('CI_NODE_TOTAL', '1')
       stub_env('KNAPSACK_GENERATE_REPORT', 'true')
 
-      expect(described_class.knapsack?).to be_truthy
-    end
-
-    it 'returns true if KNAPSACK_REPORT_PATH is defined' do
-      stub_env('KNAPSACK_REPORT_PATH', '/a/path')
-
-      expect(described_class.knapsack?).to be_truthy
-    end
-
-    it 'returns true if KNAPSACK_TEST_FILE_PATTERN is defined' do
-      stub_env('KNAPSACK_TEST_FILE_PATTERN', '/a/**/pattern')
-
-      expect(described_class.knapsack?).to be_truthy
-    end
-
-    it 'returns false if neither KNAPSACK_GENERATE_REPORT nor KNAPSACK_REPORT_PATH nor KNAPSACK_TEST_FILE_PATTERN are defined' do
       expect(described_class.knapsack?).to be_falsey
     end
   end

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class BuildDetailsEntity < Ci::JobEntity
-  expose :coverage, :erased_at, :duration
+  expose :coverage, :erased_at, :finished_at, :duration
   expose :tag_list, as: :tags
   expose :has_trace?, as: :has_trace
   expose :stage

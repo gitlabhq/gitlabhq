@@ -47,9 +47,9 @@ This is more complicated than is ideal. It makes the query construction more
 prone to errors (such as
 [issue #15557](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/15557)).
 
-## Attempt A: WHERE EXISTS
+## Attempt A: `WHERE EXISTS`
 
-### Attempt A1: use multiple subqueries with WHERE EXISTS
+### Attempt A1: use multiple subqueries with `WHERE EXISTS`
 
 In [issue #37137](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/37137)
 and its associated [merge request](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/14022),
@@ -82,7 +82,7 @@ AND (EXISTS (
 While this worked without schema changes, and did improve readability somewhat,
 it did not improve query performance.
 
-### Attempt A2: use label IDs in the WHERE EXISTS clause
+### Attempt A2: use label IDs in the `WHERE EXISTS` clause
 
 In [merge request #34503](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/34503), we followed a similar approach to A1. But this time, we
 did a separate query to fetch the IDs of the labels used in the filter so that we avoid the `JOIN` in the `EXISTS` clause and filter directly by

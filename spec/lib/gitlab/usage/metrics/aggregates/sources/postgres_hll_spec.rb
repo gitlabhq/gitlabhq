@@ -11,6 +11,7 @@ RSpec.describe Gitlab::Usage::Metrics::Aggregates::Sources::PostgresHll, :clean_
   let(:metric_1) { 'metric_1' }
   let(:metric_2) { 'metric_2' }
   let(:metric_names) { [metric_1, metric_2] }
+  let(:error_rate) { Gitlab::Database::PostgresHll::BatchDistinctCounter::ERROR_RATE }
 
   describe 'metric calculations' do
     before do
@@ -38,7 +39,7 @@ RSpec.describe Gitlab::Usage::Metrics::Aggregates::Sources::PostgresHll, :clean_
       end
 
       it 'returns the number of unique events in the union of all metrics' do
-        expect(calculate_metrics_union.round(2)).to eq(3.12)
+        expect(calculate_metrics_union.round(2)).to be_within(error_rate).percent_of(3)
       end
 
       context 'when there is no aggregated data saved' do
@@ -53,7 +54,7 @@ RSpec.describe Gitlab::Usage::Metrics::Aggregates::Sources::PostgresHll, :clean_
         let(:metric_names) { [metric_1] }
 
         it 'returns the number of unique events for that metric' do
-          expect(calculate_metrics_union.round(2)).to eq(2.08)
+          expect(calculate_metrics_union.round(2)).to be_within(error_rate).percent_of(2)
         end
       end
     end
@@ -64,7 +65,7 @@ RSpec.describe Gitlab::Usage::Metrics::Aggregates::Sources::PostgresHll, :clean_
       end
 
       it 'returns the number of common events in the intersection of all metrics' do
-        expect(calculate_metrics_intersections.round(2)).to eq(1.04)
+        expect(calculate_metrics_intersections.round(2)).to be_within(error_rate).percent_of(1)
       end
 
       context 'when there is no aggregated data saved' do
@@ -79,7 +80,7 @@ RSpec.describe Gitlab::Usage::Metrics::Aggregates::Sources::PostgresHll, :clean_
         let(:metric_names) { [metric_1] }
 
         it 'returns the number of common/unique events for the intersection of that metric' do
-          expect(calculate_metrics_intersections.round(2)).to eq(2.08)
+          expect(calculate_metrics_intersections.round(2)).to be_within(error_rate).percent_of(2)
         end
       end
     end

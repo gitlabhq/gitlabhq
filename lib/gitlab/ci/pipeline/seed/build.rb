@@ -28,7 +28,7 @@ module Gitlab
             @except = Gitlab::Ci::Build::Policy
               .fabricate(attributes.delete(:except))
             @rules = Gitlab::Ci::Build::Rules
-              .new(attributes.delete(:rules), default_when: 'on_success')
+              .new(attributes.delete(:rules), default_when: attributes[:when])
             @cache = Gitlab::Ci::Build::Cache
               .new(attributes.delete(:cache), @pipeline)
 

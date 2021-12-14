@@ -118,7 +118,7 @@ RSpec.describe Gitlab::Utils::UsageData do
       # build_needs set: ['1', '2', '3', '4', '5']
       # ci_build set ['a', 'b']
       # with them, current implementation is expected to consistently report
-      # 5.217656147118495 and 2.0809220082170614 values
+      # the same static values
       # This test suite is expected to assure, that HyperLogLog implementation
       # behaves consistently between changes made to other parts of codebase.
       # In case of fine tuning or changes to HyperLogLog algorithm implementation
@@ -130,8 +130,8 @@ RSpec.describe Gitlab::Utils::UsageData do
 
       let(:model) { Ci::BuildNeed }
       let(:column) { :name }
-      let(:build_needs_estimated_cardinality) { 5.217656147118495 }
-      let(:ci_builds_estimated_cardinality) { 2.0809220082170614 }
+      let(:build_needs_estimated_cardinality) { 5.024574181542231 }
+      let(:ci_builds_estimated_cardinality) { 2.003916452421793 }
 
       before do
         allow(model.connection).to receive(:transaction_open?).and_return(false)

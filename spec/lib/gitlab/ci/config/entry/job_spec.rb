@@ -118,6 +118,20 @@ RSpec.describe Gitlab::Ci::Config::Entry::Job do
         end
       end
 
+      context 'when config uses both "when:" and "rules:"' do
+        let(:config) do
+          {
+            script: 'echo',
+            when: 'on_failure',
+            rules: [{ if: '$VARIABLE', when: 'on_success' }]
+          }
+        end
+
+        it 'is valid' do
+          expect(entry).to be_valid
+        end
+      end
+
       context 'when delayed job' do
         context 'when start_in is specified' do
           let(:config) { { script: 'echo', when: 'delayed', start_in: '1 week' } }
@@ -265,21 +279,6 @@ RSpec.describe Gitlab::Ci::Config::Entry::Job do
             expect(entry.errors)
               .to include 'parallel config missing required keys: matrix'
           end
-        end
-      end
-
-      context 'when it uses both "when:" and "rules:"' do
-        let(:config) do
-          {
-            script: 'echo',
-            when: 'on_failure',
-            rules: [{ if: '$VARIABLE', when: 'on_success' }]
-          }
-        end
-
-        it 'returns an error about when: being combined with rules' do
-          expect(entry).not_to be_valid
-          expect(entry.errors).to include 'job config key may not be used with `rules`: when'
         end
       end
 

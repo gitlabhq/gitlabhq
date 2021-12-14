@@ -6,7 +6,7 @@ module Gitlab
       class SidekiqServerMiddleware
         JobReplicaNotUpToDate = Class.new(StandardError)
 
-        MINIMUM_DELAY_INTERVAL = 1
+        MINIMUM_DELAY_INTERVAL_SECONDS = 0.8
 
         def call(worker, job, _queue)
           worker_class = worker.class
@@ -46,11 +46,13 @@ module Gitlab
 
           return :primary_no_wal if wal_locations.blank?
 
+          # Happy case: we can read from a replica.
+          return replica_strategy(worker_class, job) if databases_in_sync?(wal_locations)
+
           sleep_if_needed(job)
 
           if databases_in_sync?(wal_locations)
-            # Happy case: we can read from a replica.
-            retried_before?(worker_class, job) ? :replica_retried : :replica
+            replica_strategy(worker_class, job)
           elsif can_retry?(worker_class, job)
             # Optimistic case: The worker allows retries and we have retries left.
             :retry
@@ -61,9 +63,9 @@ module Gitlab
         end
 
         def sleep_if_needed(job)
-          remaining_delay = MINIMUM_DELAY_INTERVAL - (Time.current.to_f - job['created_at'].to_f)
+          remaining_delay = MINIMUM_DELAY_INTERVAL_SECONDS - (Time.current.to_f - job['created_at'].to_f)
 
-          sleep remaining_delay if remaining_delay > 0 && remaining_delay < MINIMUM_DELAY_INTERVAL
+          sleep remaining_delay if remaining_delay > 0 && remaining_delay < MINIMUM_DELAY_INTERVAL_SECONDS
         end
 
         def get_wal_locations(job)
@@ -78,6 +80,10 @@ module Gitlab
 
         def can_retry?(worker_class, job)
           worker_class.get_data_consistency == :delayed && not_yet_retried?(job)
+        end
+
+        def replica_strategy(worker_class, job)
+          retried_before?(worker_class, job) ? :replica_retried : :replica
         end
 
         def retried_before?(worker_class, job)

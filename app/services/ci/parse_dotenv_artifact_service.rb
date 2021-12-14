@@ -33,13 +33,13 @@ module Ci
     end
 
     def parse!(artifact)
-      variables = []
+      variables = {}
 
       artifact.each_blob do |blob|
         blob.each_line do |line|
           key, value = scan_line!(line)
 
-          variables << Ci::JobVariable.new(job_id: artifact.job_id,
+          variables[key] = Ci::JobVariable.new(job_id: artifact.job_id,
             source: :dotenv, key: key, value: value)
         end
       end
@@ -49,7 +49,7 @@ module Ci
           "Dotenv files cannot have more than #{dotenv_variable_limit} variables"
       end
 
-      variables
+      variables.values
     end
 
     def scan_line!(line)

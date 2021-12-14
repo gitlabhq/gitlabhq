@@ -9,6 +9,10 @@ RSpec.describe API::ComposerPackages do
   let_it_be(:personal_access_token) { create(:personal_access_token, user: user) }
   let_it_be(:package_name) { 'package-name' }
   let_it_be(:project, reload: true) { create(:project, :custom_repo, files: { 'composer.json' => { name: package_name }.to_json }, group: group) }
+  let_it_be(:deploy_token_for_project) { create(:deploy_token, read_package_registry: true, write_package_registry: true) }
+  let_it_be(:project_deploy_token) { create(:project_deploy_token, deploy_token: deploy_token_for_project, project: project) }
+  let_it_be(:deploy_token_for_group) { create(:deploy_token, :group, read_package_registry: true, write_package_registry: true) }
+  let_it_be(:group_deploy_token) { create(:group_deploy_token, deploy_token: deploy_token_for_group, group: group) }
 
   let(:snowplow_gitlab_standard_context) { { project: project, namespace: project.namespace, user: user } }
   let(:headers) { {} }
@@ -92,6 +96,8 @@ RSpec.describe API::ComposerPackages do
           group.update!(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
         end
 
+        it_behaves_like 'Composer access with deploy tokens'
+
         context 'with access to the api' do
           where(:project_visibility_level, :user_role, :member, :user_token, :include_package) do
             'PRIVATE' | :developer  | true  | true  | :include_package
@@ -162,6 +168,8 @@ RSpec.describe API::ComposerPackages do
           it_behaves_like params[:shared_examples_name], params[:user_role], params[:expected_status], params[:member]
         end
       end
+
+      it_behaves_like 'Composer access with deploy tokens'
     end
 
     it_behaves_like 'rejects Composer access with unknown group id'
@@ -219,6 +227,8 @@ RSpec.describe API::ComposerPackages do
           end
         end
       end
+
+      it_behaves_like 'Composer access with deploy tokens'
     end
 
     it_behaves_like 'rejects Composer access with unknown group id'
@@ -265,6 +275,8 @@ RSpec.describe API::ComposerPackages do
           it_behaves_like params[:shared_examples_name], params[:user_role], params[:expected_status], params[:member]
         end
       end
+
+      it_behaves_like 'Composer access with deploy tokens'
     end
 
     it_behaves_like 'rejects Composer access with unknown group id'
@@ -308,6 +320,8 @@ RSpec.describe API::ComposerPackages do
             it_behaves_like params[:shared_examples_name], params[:user_role], params[:expected_status], params[:member]
           end
         end
+
+        it_behaves_like 'Composer publish with deploy tokens'
       end
 
       it_behaves_like 'rejects Composer access with unknown project id'

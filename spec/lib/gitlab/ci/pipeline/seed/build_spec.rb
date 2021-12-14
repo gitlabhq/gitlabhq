@@ -9,7 +9,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build do
   let(:pipeline) { build(:ci_empty_pipeline, project: project, sha: head_sha) }
   let(:root_variables) { [] }
   let(:seed_context) { double(pipeline: pipeline, root_variables: root_variables) }
-  let(:attributes) { { name: 'rspec', ref: 'master', scheduling_type: :stage } }
+  let(:attributes) { { name: 'rspec', ref: 'master', scheduling_type: :stage, when: 'on_success' } }
   let(:previous_stages) { [] }
   let(:current_stage) { double(seeds_names: [attributes[:name]]) }
 
@@ -61,17 +61,35 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build do
       end
     end
 
-    context 'with job:rules but no explicit when:' do
-      context 'is matched' do
-        let(:attributes) { { name: 'rspec', ref: 'master', rules: [{ if: '$VAR == null' }] } }
+    context 'with job: rules but no explicit when:' do
+      let(:base_attributes) { { name: 'rspec', ref: 'master' } }
 
-        it { is_expected.to include(when: 'on_success') }
+      context 'with a manual job' do
+        context 'with a matched rule' do
+          let(:attributes) { base_attributes.merge(when: 'manual', rules: [{ if: '$VAR == null' }]) }
+
+          it { is_expected.to include(when: 'manual') }
+        end
+
+        context 'is not matched' do
+          let(:attributes) { base_attributes.merge(when: 'manual', rules: [{ if: '$VAR != null' }]) }
+
+          it { is_expected.to include(when: 'never') }
+        end
       end
 
-      context 'is not matched' do
-        let(:attributes) { { name: 'rspec', ref: 'master', rules: [{ if: '$VAR != null' }] } }
+      context 'with an automatic job' do
+        context 'is matched' do
+          let(:attributes) { base_attributes.merge(when: 'on_success', rules: [{ if: '$VAR == null' }]) }
 
-        it { is_expected.to include(when: 'never') }
+          it { is_expected.to include(when: 'on_success') }
+        end
+
+        context 'is not matched' do
+          let(:attributes) { base_attributes.merge(when: 'on_success', rules: [{ if: '$VAR != null' }]) }
+
+          it { is_expected.to include(when: 'never') }
+        end
       end
     end
 
@@ -901,7 +919,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build do
     context 'using rules:' do
       using RSpec::Parameterized
 
-      let(:attributes) { { name: 'rspec', rules: rule_set } }
+      let(:attributes) { { name: 'rspec', rules: rule_set, when: 'on_success' } }
 
       context 'with a matching if: rule' do
         context 'with an explicit `when: never`' do

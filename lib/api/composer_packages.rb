@@ -70,7 +70,7 @@ module API
       end
 
       desc 'Composer packages endpoint at group level'
-      route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
+      route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true, deploy_token_allowed: true
       get ':id/-/packages/composer/packages' do
         presenter.root
       end
@@ -79,7 +79,7 @@ module API
       params do
         requires :sha, type: String, desc: 'Shasum of current json'
       end
-      route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
+      route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true, deploy_token_allowed: true
       get ':id/-/packages/composer/p/:sha' do
         presenter.provider
       end
@@ -88,7 +88,7 @@ module API
       params do
         requires :package_name, type: String, file_path: true, desc: 'The Composer package name'
       end
-      route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
+      route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true, deploy_token_allowed: true
       get ':id/-/packages/composer/p2/*package_name', requirements: COMPOSER_ENDPOINT_REQUIREMENTS, file_path: true do
         not_found! if packages.empty?
 
@@ -99,7 +99,7 @@ module API
       params do
         requires :package_name, type: String, file_path: true, desc: 'The Composer package name'
       end
-      route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
+      route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true, deploy_token_allowed: true
       get ':id/-/packages/composer/*package_name', requirements: COMPOSER_ENDPOINT_REQUIREMENTS, file_path: true do
         not_found! if packages.empty?
         not_found! if params[:sha].blank?
@@ -119,7 +119,7 @@ module API
 
       desc 'Composer packages endpoint for registering packages'
       namespace ':id/packages/composer' do
-        route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
+        route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true, deploy_token_allowed: true
 
         params do
           optional :branch, type: String, desc: 'The name of the branch'

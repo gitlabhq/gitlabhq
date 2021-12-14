@@ -37,6 +37,32 @@ RSpec.describe Ci::ParseDotenvArtifactService do
         end
       end
 
+      context 'when dotenv variables have duplicate variables' do
+        let!(:artifact) { create(:ci_job_artifact, :dotenv, job: build) }
+        let(:blob) do
+          <<~EOS
+            KEY1=VAR1
+            KEY2=VAR2
+            KEY2=VAR3
+            KEY1=VAR4
+          EOS
+        end
+
+        before do
+          allow(artifact).to receive(:each_blob).and_yield(blob)
+        end
+
+        it 'latest values get used' do
+          subject
+
+          expect(subject[:status]).to eq(:success)
+
+          expect(build.job_variables.as_json).to contain_exactly(
+            hash_including('key' => 'KEY1', 'value' => 'VAR4'),
+            hash_including('key' => 'KEY2', 'value' => 'VAR3'))
+        end
+      end
+
       context 'when parse error happens' do
         before do
           allow(service).to receive(:scan_line!) { raise described_class::ParserError, 'Invalid Format' }

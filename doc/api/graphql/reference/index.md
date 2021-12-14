@@ -15635,6 +15635,19 @@ Represents a link related to a vulnerability.
 | <a id="vulnerabilitylinkname"></a>`name` | [`String`](#string) | Name of the link. |
 | <a id="vulnerabilitylinkurl"></a>`url` | [`String!`](#string) | URL of the link. |
 
+### `VulnerabilityLocationClusterImageScanning`
+
+Represents the location of a vulnerability found by a cluster image scan.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="vulnerabilitylocationclusterimagescanningdependency"></a>`dependency` | [`VulnerableDependency`](#vulnerabledependency) | Dependency containing the vulnerability. |
+| <a id="vulnerabilitylocationclusterimagescanningimage"></a>`image` | [`String`](#string) | Name of the vulnerable container image. |
+| <a id="vulnerabilitylocationclusterimagescanningkubernetesresource"></a>`kubernetesResource` | [`VulnerableKubernetesResource`](#vulnerablekubernetesresource) | Kubernetes resource which uses the vulnerable container image. |
+| <a id="vulnerabilitylocationclusterimagescanningoperatingsystem"></a>`operatingSystem` | [`String`](#string) | Operating system that runs on the vulnerable container image. |
+
 ### `VulnerabilityLocationContainerScanning`
 
 Represents the location of a vulnerability found by a container security scan.
@@ -15784,6 +15797,21 @@ Represents a vulnerable dependency. Used in vulnerability location data.
 | ---- | ---- | ----------- |
 | <a id="vulnerabledependencypackage"></a>`package` | [`VulnerablePackage`](#vulnerablepackage) | Package associated with the vulnerable dependency. |
 | <a id="vulnerabledependencyversion"></a>`version` | [`String`](#string) | Version of the vulnerable dependency. |
+
+### `VulnerableKubernetesResource`
+
+Represents a vulnerable Kubernetes resource. Used in vulnerability location data.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="vulnerablekubernetesresourceagent"></a>`agent` | [`ClusterAgent`](#clusteragent) | Kubernetes Agent which performed the scan. |
+| <a id="vulnerablekubernetesresourceclusterid"></a>`clusterId` | [`ClustersClusterID`](#clustersclusterid) | ID of the Cluster integration which was used to perform the scan. |
+| <a id="vulnerablekubernetesresourcecontainername"></a>`containerName` | [`String!`](#string) | Name of the container that had its image scanned. |
+| <a id="vulnerablekubernetesresourcekind"></a>`kind` | [`String!`](#string) | Kind of the Kubernetes resource. |
+| <a id="vulnerablekubernetesresourcename"></a>`name` | [`String!`](#string) | Name of the Kubernetes resource. |
+| <a id="vulnerablekubernetesresourcenamespace"></a>`namespace` | [`String!`](#string) | Kubernetes namespace which the resource resides in. |
 
 ### `VulnerablePackage`
 
@@ -17967,6 +17995,7 @@ Represents a vulnerability location. The fields with data will depend on the vul
 
 One of:
 
+- [`VulnerabilityLocationClusterImageScanning`](#vulnerabilitylocationclusterimagescanning)
 - [`VulnerabilityLocationContainerScanning`](#vulnerabilitylocationcontainerscanning)
 - [`VulnerabilityLocationCoverageFuzzing`](#vulnerabilitylocationcoveragefuzzing)
 - [`VulnerabilityLocationDast`](#vulnerabilitylocationdast)

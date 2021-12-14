@@ -281,6 +281,8 @@ module QA
       end
 
       def knapsack?
+        return false unless ENV['CI_NODE_TOTAL'].to_i > 1
+
         !!(ENV['KNAPSACK_GENERATE_REPORT'] || ENV['KNAPSACK_REPORT_PATH'] || ENV['KNAPSACK_TEST_FILE_PATTERN'])
       end
 

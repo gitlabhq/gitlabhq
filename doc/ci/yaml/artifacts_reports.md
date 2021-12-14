@@ -169,6 +169,11 @@ The `dotenv` report collects a set of environment variables as artifacts.
 The collected variables are registered as runtime-created variables of the job,
 which you can use to [set dynamic environment URLs after a job finishes](../environments/index.md#set-dynamic-environment-urls-after-a-job-finishes).
 
+If duplicate environment variables are present in a `dotenv` report:
+
+- In GitLab 14.6 and later, the last one specified is used.
+- In GitLab 14.5 and earlier, an error occurs.
+
 The exceptions to the [original dotenv rules](https://github.com/motdotla/dotenv#rules) are:
 
 - The variable key can contain only letters, digits, and underscores (`_`).
