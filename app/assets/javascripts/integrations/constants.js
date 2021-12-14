@@ -1,6 +1,5 @@
 import { s__, __ } from '~/locale';
 
-export const TEST_INTEGRATION_EVENT = 'testIntegration';
 export const SAVE_INTEGRATION_EVENT = 'saveIntegration';
 export const VALIDATE_INTEGRATION_FORM_EVENT = 'validateIntegrationForm';
 

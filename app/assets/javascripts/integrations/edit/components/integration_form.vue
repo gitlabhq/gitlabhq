@@ -1,14 +1,18 @@
 <script>
 import { GlButton, GlModalDirective, GlSafeHtmlDirective as SafeHtml } from '@gitlab/ui';
+import * as Sentry from '@sentry/browser';
 import { mapState, mapActions, mapGetters } from 'vuex';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import {
-  TEST_INTEGRATION_EVENT,
   SAVE_INTEGRATION_EVENT,
+  VALIDATE_INTEGRATION_FORM_EVENT,
+  I18N_FETCH_TEST_SETTINGS_DEFAULT_ERROR_MESSAGE,
+  I18N_DEFAULT_ERROR_MESSAGE,
+  I18N_SUCCESSFUL_CONNECTION_MESSAGE,
   integrationLevels,
 } from '~/integrations/constants';
 import eventHub from '../event_hub';
-
+import { testIntegrationSettings } from '../api';
 import ActiveCheckbox from './active_checkbox.vue';
 import ConfirmationModal from './confirmation_modal.vue';
 import DynamicField from './dynamic_field.vue';
@@ -50,18 +54,12 @@ export default {
   data() {
     return {
       integrationActive: false,
+      testingLoading: false,
     };
   },
   computed: {
     ...mapGetters(['currentKey', 'propsSource', 'isDisabled']),
-    ...mapState([
-      'defaultState',
-      'customState',
-      'override',
-      'isSaving',
-      'isTesting',
-      'isResetting',
-    ]),
+    ...mapState(['defaultState', 'customState', 'override', 'isSaving', 'isResetting']),
     isEditable() {
       return this.propsSource.editable;
     },
@@ -74,8 +72,17 @@ export default {
         this.customState.integrationLevel === integrationLevels.GROUP
       );
     },
-    showReset() {
+    showResetButton() {
       return this.isInstanceOrGroupLevel && this.propsSource.resetPath;
+    },
+    showTestButton() {
+      return this.propsSource.canTest;
+    },
+    disableSaveButton() {
+      return Boolean(this.isResetting || this.testingLoading);
+    },
+    disableResetButton() {
+      return Boolean(this.isSaving || this.testingLoading);
     },
   },
   mounted() {
@@ -86,7 +93,6 @@ export default {
     ...mapActions([
       'setOverride',
       'setIsSaving',
-      'setIsTesting',
       'setIsResetting',
       'fetchResetIntegration',
       'requestJiraIssueTypes',
@@ -98,17 +104,39 @@ export default {
       eventHub.$emit(SAVE_INTEGRATION_EVENT, formValid);
     },
     onTestClick() {
-      this.setIsTesting(true);
+      this.testingLoading = true;
 
-      const formValid = this.form.checkValidity();
-      eventHub.$emit(TEST_INTEGRATION_EVENT, formValid);
+      if (!this.form.checkValidity()) {
+        eventHub.$emit(VALIDATE_INTEGRATION_FORM_EVENT);
+        return;
+      }
+
+      testIntegrationSettings(this.propsSource.testPath, this.getFormData())
+        .then(({ data: { error, message = I18N_FETCH_TEST_SETTINGS_DEFAULT_ERROR_MESSAGE } }) => {
+          if (error) {
+            eventHub.$emit(VALIDATE_INTEGRATION_FORM_EVENT);
+            this.$toast.show(message);
+            return;
+          }
+
+          this.$toast.show(I18N_SUCCESSFUL_CONNECTION_MESSAGE);
+        })
+        .catch((error) => {
+          this.$toast.show(I18N_DEFAULT_ERROR_MESSAGE);
+          Sentry.captureException(error);
+        })
+        .finally(() => {
+          this.testingLoading = false;
+        });
     },
     onResetClick() {
       this.fetchResetIntegration();
     },
     onRequestJiraIssueTypes() {
-      const formData = new FormData(this.form);
-      this.requestJiraIssueTypes(formData);
+      this.requestJiraIssueTypes(this.getFormData());
+    },
+    getFormData() {
+      return new FormData(this.form);
     },
     onToggleIntegrationState(integrationActive) {
       this.integrationActive = integrationActive;
@@ -183,7 +211,7 @@ export default {
               category="primary"
               variant="confirm"
               :loading="isSaving"
-              :disabled="isDisabled"
+              :disabled="disableSaveButton"
               data-qa-selector="save_changes_button"
             >
               {{ __('Save changes') }}
@@ -196,7 +224,7 @@ export default {
             variant="confirm"
             type="submit"
             :loading="isSaving"
-            :disabled="isDisabled"
+            :disabled="disableSaveButton"
             data-testid="save-button"
             data-qa-selector="save_changes_button"
             @click.prevent="onSaveClick"
@@ -205,25 +233,24 @@ export default {
           </gl-button>
 
           <gl-button
-            v-if="propsSource.canTest"
+            v-if="showTestButton"
             category="secondary"
             variant="confirm"
-            :loading="isTesting"
+            :loading="testingLoading"
             :disabled="isDisabled"
-            :href="propsSource.testPath"
             data-testid="test-button"
             @click.prevent="onTestClick"
           >
             {{ __('Test settings') }}
           </gl-button>
 
-          <template v-if="showReset">
+          <template v-if="showResetButton">
             <gl-button
               v-gl-modal.confirmResetIntegration
               category="secondary"
               variant="confirm"
               :loading="isResetting"
-              :disabled="isDisabled"
+              :disabled="disableResetButton"
               data-testid="reset-button"
             >
               {{ __('Reset') }}

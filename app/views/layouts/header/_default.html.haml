@@ -36,7 +36,9 @@
                   'issues-path' => issues_dashboard_path,
                   'mr-path' => merge_requests_dashboard_path,
                   'autocomplete-path' => search_autocomplete_path } }
-                    %input{ type: "text", placeholder: _('Search or jump to...'), class: 'form-control gl-form-input' }
+                    .gl-search-box-by-type
+                      = sprite_icon('search', css_class: 'gl-search-box-by-type-search-icon gl-icon')
+                      %input{ type: "text", placeholder: _('Search or jump to...'), class: 'form-control gl-form-input gl-search-box-by-type-input', id: 'search', autocomplete: 'off' }
                 - else
                   = render 'layouts/search'
             %li.nav-item{ class: 'd-none d-sm-inline-block d-lg-none' }

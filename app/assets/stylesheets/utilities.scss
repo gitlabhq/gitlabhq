@@ -291,18 +291,6 @@ $gl-line-height-42: px-to-rem(42px);
   @include gl-focus($gl-border-size-1, $gray-900, true);
 }
 
-// Will be moved to @gitlab/ui by https://gitlab.com/gitlab-org/gitlab-ui/-/merge_requests/2476
-.gl-md-max-w-50p {
-  @include gl-media-breakpoint-up(md) {
-    max-width: 50%;
-  }
-}
-
-// Will be moved to @gitlab/ui by https://gitlab.com/gitlab-org/gitlab-ui/-/merge_requests/2497
-.gl-z-index-200 {
-  z-index: 200;
-}
-
 // Will be moved to @gitlab/ui by https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1637
 .gl-lg-w-25p {
   @include gl-media-breakpoint-up(lg) {

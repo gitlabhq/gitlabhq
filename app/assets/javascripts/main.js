@@ -14,7 +14,6 @@ import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
 import { initRails } from '~/lib/utils/rails_ujs';
 import * as popovers from '~/popovers';
 import * as tooltips from '~/tooltips';
-import { initHeaderSearchApp } from '~/header_search';
 import initAlertHandler from './alert_handler';
 import { addDismissFlashClickListener } from './flash';
 import initTodoToggle from './header';
@@ -100,24 +99,29 @@ function deferredInitialisation() {
   initFeatureHighlight();
   initCopyCodeButton();
 
-  if (gon.features?.newHeaderSearch) {
-    initHeaderSearchApp();
-  } else {
-    const search = document.querySelector('#search');
-    if (search) {
-      search.addEventListener(
-        'focus',
-        () => {
+  const search = document.querySelector('#search');
+  if (search) {
+    search.addEventListener(
+      'focus',
+      () => {
+        if (gon.features?.newHeaderSearch) {
+          import(/* webpackChunkName: 'globalSearch' */ '~/header_search')
+            .then(async ({ initHeaderSearchApp }) => {
+              await initHeaderSearchApp();
+              document.querySelector('#search').focus();
+            })
+            .catch(() => {});
+        } else {
           import(/* webpackChunkName: 'globalSearch' */ './search_autocomplete')
             .then(({ default: initSearchAutocomplete }) => {
               const searchDropdown = initSearchAutocomplete();
               searchDropdown.onSearchInputFocus();
             })
             .catch(() => {});
-        },
-        { once: true },
-      );
-    }
+        }
+      },
+      { once: true },
+    );
   }
 
   addSelectOnFocusBehaviour('.js-select-on-focus');

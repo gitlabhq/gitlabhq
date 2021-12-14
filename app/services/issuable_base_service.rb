@@ -56,6 +56,8 @@ class IssuableBaseService < ::BaseProjectService
     # confidential attribute is a special type of metadata and needs to be allowed to be set
     # by non-members on issues in public projects so that security issues can be reported as confidential.
     params.delete(:confidential) unless can?(current_user, :set_confidentiality, issuable)
+    params.delete(:add_contacts) unless can?(current_user, :set_issue_crm_contacts, issuable)
+    params.delete(:remove_contacts) unless can?(current_user, :set_issue_crm_contacts, issuable)
 
     filter_assignees(issuable)
     filter_milestone
@@ -206,6 +208,9 @@ class IssuableBaseService < ::BaseProjectService
       params[:assignee_ids] = process_assignee_ids(params, extra_assignee_ids: issuable.assignee_ids.to_a)
     end
 
+    params.delete(:remove_contacts)
+    add_crm_contact_emails = params.delete(:add_contacts)
+
     issuable.assign_attributes(allowed_create_params(params))
 
     before_create(issuable)
@@ -219,6 +224,7 @@ class IssuableBaseService < ::BaseProjectService
       handle_changes(issuable, { params: params })
 
       after_create(issuable)
+      set_crm_contacts(issuable, add_crm_contact_emails)
       execute_hooks(issuable)
 
       users_to_invalidate = issuable.allows_reviewers? ? issuable.assignees | issuable.reviewers : issuable.assignees
@@ -227,6 +233,12 @@ class IssuableBaseService < ::BaseProjectService
     end
 
     issuable
+  end
+
+  def set_crm_contacts(issuable, add_crm_contact_emails, remove_crm_contact_emails = [])
+    return unless add_crm_contact_emails.present? || remove_crm_contact_emails.present?
+
+    ::Issues::SetCrmContactsService.new(project: project, current_user: current_user, params: { add_emails: add_crm_contact_emails, remove_emails: remove_crm_contact_emails }).execute(issuable)
   end
 
   def before_create(issuable)
@@ -254,6 +266,7 @@ class IssuableBaseService < ::BaseProjectService
 
     assign_requested_labels(issuable)
     assign_requested_assignees(issuable)
+    assign_requested_crm_contacts(issuable)
 
     if issuable.changed? || params.present?
       issuable.assign_attributes(allowed_update_params(params))
@@ -412,6 +425,12 @@ class IssuableBaseService < ::BaseProjectService
 
     params[:label_ids] = label_ids
     issuable.touch
+  end
+
+  def assign_requested_crm_contacts(issuable)
+    add_crm_contact_emails = params.delete(:add_contacts)
+    remove_crm_contact_emails = params.delete(:remove_contacts)
+    set_crm_contacts(issuable, add_crm_contact_emails, remove_crm_contact_emails)
   end
 
   def assign_requested_assignees(issuable)

@@ -230,7 +230,7 @@ export default {
           <gl-button
             category="primary"
             type="submit"
-            variant="success"
+            variant="confirm"
             :disabled="updatePrevented"
             data-qa-selector="submit_button"
             data-testid="snippet-submit-btn"

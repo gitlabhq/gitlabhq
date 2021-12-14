@@ -2253,35 +2253,29 @@ RSpec.describe QuickActions::InterpretService do
         end
 
         it 'add_contacts command does not add the contact' do
-          add_command
+          _, updates, _ = add_command
 
-          expect(issue.reload.customer_relations_contacts).to match_array([existing_contact])
+          expect(updates).to be_empty
         end
 
         it 'remove_contacts command does not remove the contact' do
-          remove_command
+          _, updates, _ = remove_command
 
-          expect(issue.reload.customer_relations_contacts).to match_array([existing_contact])
+          expect(updates).to be_empty
         end
       end
 
       it 'add_contacts command adds the contact' do
-        _, _, message = add_command
+        _, updates, message = add_command
 
-        expect(issue.reload.customer_relations_contacts).to match_array([existing_contact, new_contact])
+        expect(updates).to eq(add_contacts: [new_contact.email])
         expect(message).to eq('One or more contacts were successfully added.')
       end
 
-      it 'add_contacts command returns the correct error when something goes wrong' do
-        _, _, message = service.execute("/add_contacts #{new_contact.email} #{new_contact.email} #{new_contact.email} #{new_contact.email} #{new_contact.email} #{new_contact.email} #{new_contact.email}", issue)
-
-        expect(message).to eq('You can only add up to 6 contacts at one time')
-      end
-
       it 'remove_contacts command removes the contact' do
-        _, _, message = remove_command
+        _, updates, message = remove_command
 
-        expect(issue.reload.customer_relations_contacts).to be_empty
+        expect(updates).to eq(remove_contacts: [existing_contact.email])
         expect(message).to eq('One or more contacts were successfully removed.')
       end
     end

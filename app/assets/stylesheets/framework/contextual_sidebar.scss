@@ -376,6 +376,18 @@
       }
     }
   }
+
+  li > a.gl-link {
+    // undo gl-link text items for things in the sidebar - including sub menus
+    // defined in https://gitlab.com/gitlab-org/gitlab-ui/-/blob/5431e0ca5149d4e02e3d5d617d194ac9609bb82d/src/components/base/link/link.scss
+    @include gl-text-body;
+
+    &:active,
+    &:focus,
+    &:focus:active {
+      @include gl-text-decoration-none;
+    }
+  }
 }
 
 .sidebar-sub-level-items {

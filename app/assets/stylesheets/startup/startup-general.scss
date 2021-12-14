@@ -388,6 +388,34 @@ h1 {
 .gl-form-input.form-control::placeholder {
   color: #868686;
 }
+.gl-icon {
+  fill: currentColor;
+}
+.gl-icon.s12 {
+  width: 12px;
+  height: 12px;
+}
+.gl-icon.s16 {
+  width: 16px;
+  height: 16px;
+}
+.gl-icon.s32 {
+  width: 32px;
+  height: 32px;
+}
+.gl-link {
+  font-size: 0.875rem;
+  color: #1f75cb;
+}
+.gl-link:active {
+  color: #0b5cad;
+}
+.gl-link:active {
+  text-decoration: underline;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.4),
+    0 0 0 4px rgba(31, 117, 203, 0.48);
+  outline: none;
+}
 .gl-button {
   display: inline-flex;
 }
@@ -419,6 +447,29 @@ h1 {
     0 0 0 4px rgba(31, 117, 203, 0.48);
   outline: none;
   background-color: #dbdbdb;
+}
+.gl-button.gl-button.btn-default:active .gl-icon,
+.gl-button.gl-button.btn-default.active .gl-icon {
+  color: #303030;
+}
+.gl-button.gl-button.btn-default .gl-icon {
+  color: #666;
+}
+.gl-search-box-by-type-search-icon {
+  margin: 0.5rem;
+  color: #666;
+  width: 1rem;
+  position: absolute;
+}
+.gl-search-box-by-type {
+  display: flex;
+  position: relative;
+}
+.gl-search-box-by-type-input,
+.gl-search-box-by-type-input.gl-form-input {
+  height: 2rem;
+  padding-right: 2rem;
+  padding-left: 1.75rem;
 }
 body,
 .form-control,
@@ -1314,6 +1365,12 @@ input {
 .sidebar-top-level-items > li.active .badge.badge-pill {
   font-weight: 400;
   color: #0b5cad;
+}
+.sidebar-top-level-items li > a.gl-link {
+  color: #303030;
+}
+.sidebar-top-level-items li > a.gl-link:active {
+  text-decoration: none;
 }
 .sidebar-sub-level-items {
   padding-top: 0;

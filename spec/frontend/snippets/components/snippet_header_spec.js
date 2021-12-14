@@ -252,7 +252,7 @@ describe('Snippet header component', () => {
           disabled: false,
           href: `/foo/-/snippets/new`,
           text: 'New snippet',
-          variant: 'success',
+          variant: 'confirm',
         },
       ]),
     );

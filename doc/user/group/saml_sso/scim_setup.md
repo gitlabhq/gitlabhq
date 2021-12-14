@@ -303,3 +303,12 @@ As a workaround, try an alternate mapping:
 1. Follow the Azure mapping instructions from above.
 1. Delete the `name.formatted` target attribute entry.
 1. Change the `displayName` source attribute to have `name.formatted` target attribute.
+
+#### Failed to match an entry in the source and target systems Group 'Group-Name'
+
+Group provisioning in Azure can fail with the `Failed to match an entry in the source and target systems Group 'Group-Name'` error message,
+and the error response can include a HTML result of the GitLab URL `https://gitlab.com/users/sign_in`.
+
+This error is harmless and occurs because Group provisioning was turned on but GitLab SCIM integration does not support it nor require it. To
+remove the error, follow the instructions in the Azure configuration guide to disable the option
+[`Synchronize Azure Active Directory Groups to AppName`](#azure-configuration-steps).

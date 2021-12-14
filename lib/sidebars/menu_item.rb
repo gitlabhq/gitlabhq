@@ -2,6 +2,8 @@
 
 module Sidebars
   class MenuItem
+    include ::Sidebars::Concerns::LinkWithHtmlOptions
+
     attr_reader :title, :link, :active_routes, :item_id, :container_html_options, :sprite_icon, :sprite_icon_html_options, :hint_html_options
 
     def initialize(title:, link:, active_routes:, item_id: nil, container_html_options: {}, sprite_icon: nil, sprite_icon_html_options: {}, hint_html_options: {})

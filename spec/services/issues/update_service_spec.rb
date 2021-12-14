@@ -29,6 +29,8 @@ RSpec.describe Issues::UpdateService, :mailer do
   end
 
   describe 'execute' do
+    let_it_be(:contact) { create(:contact, group: group) }
+
     def find_note(starting_with)
       issue.notes.find do |note|
         note && note.note.start_with?(starting_with)
@@ -57,7 +59,8 @@ RSpec.describe Issues::UpdateService, :mailer do
           due_date: Date.tomorrow,
           discussion_locked: true,
           severity: 'low',
-          milestone_id: milestone.id
+          milestone_id: milestone.id,
+          add_contacts: [contact.email]
         }
       end
 
@@ -76,6 +79,7 @@ RSpec.describe Issues::UpdateService, :mailer do
         expect(issue.discussion_locked).to be_truthy
         expect(issue.confidential).to be_falsey
         expect(issue.milestone).to eq milestone
+        expect(issue.issue_customer_relations_contacts.last.contact).to eq contact
       end
 
       it 'updates issue milestone when passing `milestone` param' do

@@ -6,7 +6,6 @@ describe('Integration form state factory', () => {
       defaultState: null,
       customState: {},
       isSaving: false,
-      isTesting: false,
       isResetting: false,
       override: false,
       isLoadingJiraIssueTypes: false,

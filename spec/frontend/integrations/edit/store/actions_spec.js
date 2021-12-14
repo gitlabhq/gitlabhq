@@ -5,7 +5,6 @@ import { I18N_FETCH_TEST_SETTINGS_DEFAULT_ERROR_MESSAGE } from '~/integrations/c
 import {
   setOverride,
   setIsSaving,
-  setIsTesting,
   setIsResetting,
   requestResetIntegration,
   receiveResetIntegrationSuccess,
@@ -43,12 +42,6 @@ describe('Integration form store actions', () => {
   describe('setIsSaving', () => {
     it('should commit isSaving mutation', () => {
       return testAction(setIsSaving, true, state, [{ type: types.SET_IS_SAVING, payload: true }]);
-    });
-  });
-
-  describe('setIsTesting', () => {
-    it('should commit isTesting mutation', () => {
-      return testAction(setIsTesting, true, state, [{ type: types.SET_IS_TESTING, payload: true }]);
     });
   });
 

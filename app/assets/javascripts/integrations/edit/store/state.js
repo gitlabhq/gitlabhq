@@ -6,7 +6,6 @@ export default ({ defaultState = null, customState = {} } = {}) => {
     defaultState,
     customState,
     isSaving: false,
-    isTesting: false,
     isResetting: false,
     isLoadingJiraIssueTypes: false,
     loadingJiraIssueTypesErrorMessage: '',

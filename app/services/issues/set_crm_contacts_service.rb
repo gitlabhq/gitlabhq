@@ -12,7 +12,7 @@ module Issues
       return error_no_permissions unless allowed?
       return error_invalid_params unless valid_params?
 
-      @existing_ids = issue.issue_customer_relations_contacts.map(&:contact_id)
+      @existing_ids = issue.customer_relations_contact_ids
       determine_changes if params[:replace_ids].present?
       return error_too_many if too_many?
 
@@ -24,6 +24,7 @@ module Issues
 
       if issue.valid?
         GraphqlTriggers.issue_crm_contacts_updated(issue)
+        issue.touch
         ServiceResponse.success(payload: issue)
       else
         # The default error isn't very helpful: "Issue customer relations contacts is invalid"

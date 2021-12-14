@@ -292,17 +292,11 @@ module Gitlab
         condition do
           current_user.can?(:set_issue_crm_contacts, quick_action_target)
         end
+        execution_message do
+          _('One or more contacts were successfully added.')
+        end
         command :add_contacts do |contact_emails|
-          result = ::Issues::SetCrmContactsService
-            .new(project: project, current_user: current_user, params: { add_emails: contact_emails.split(' ') })
-            .execute(quick_action_target)
-
-          @execution_message[:add_contacts] =
-            if result.success?
-              _('One or more contacts were successfully added.')
-            else
-              result.message
-            end
+          @updates[:add_contacts] = contact_emails.split(' ')
         end
 
         desc _('Remove customer relation contacts')
@@ -312,17 +306,11 @@ module Gitlab
         condition do
           current_user.can?(:set_issue_crm_contacts, quick_action_target)
         end
+        execution_message do
+          _('One or more contacts were successfully removed.')
+        end
         command :remove_contacts do |contact_emails|
-          result = ::Issues::SetCrmContactsService
-            .new(project: project, current_user: current_user, params: { remove_emails: contact_emails.split(' ') })
-            .execute(quick_action_target)
-
-          @execution_message[:remove_contacts] =
-            if result.success?
-              _('One or more contacts were successfully removed.')
-            else
-              result.message
-            end
+          @updates[:remove_contacts] = contact_emails.split(' ')
         end
 
         private

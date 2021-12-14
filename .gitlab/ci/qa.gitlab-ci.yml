@@ -57,11 +57,12 @@ update-qa-cache:
     - install_gitlab_gem
     - tooling/bin/find_change_diffs ${CHANGES_DIFFS_DIR}
   script:
+    - tooling/bin/qa/check_if_qa_only_spec_changes ${CHANGES_FILE} ${ONLY_QA_CHANGES_FILE}
+    - '[ -f $ONLY_QA_CHANGES_FILE ] && export QA_TESTS="`cat $ONLY_QA_CHANGES_FILE`"'
+    - 'echo "QA_TESTS: $QA_TESTS"'
+    - exit_code=0 && tooling/bin/qa/package_and_qa_check ${CHANGES_DIFFS_DIR} || exit_code=$?
+    - echo $exit_code
     - |
-      tooling/bin/qa/check_if_qa_only_spec_changes ${CHANGES_FILE} ${ONLY_QA_CHANGES_FILE}
-      [ -f $ONLY_QA_CHANGES_FILE ] && export QA_TESTS="`cat $ONLY_QA_CHANGES_FILE`"
-      echo "QA_TESTS: $QA_TESTS"
-      tooling/bin/qa/package_and_qa_check ${CHANGES_DIFFS_DIR} && exit_code=$?
       if [ $exit_code -eq 0 ]; then
         ./scripts/trigger-build omnibus
       elif [ $exit_code -eq 1 ]; then

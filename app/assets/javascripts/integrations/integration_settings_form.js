@@ -1,15 +1,7 @@
 import { delay } from 'lodash';
-import toast from '~/vue_shared/plugins/global_toast';
 import initForm from './edit';
 import eventHub from './edit/event_hub';
-import {
-  TEST_INTEGRATION_EVENT,
-  SAVE_INTEGRATION_EVENT,
-  VALIDATE_INTEGRATION_FORM_EVENT,
-  I18N_DEFAULT_ERROR_MESSAGE,
-  I18N_SUCCESSFUL_CONNECTION_MESSAGE,
-} from './constants';
-import { testIntegrationSettings } from './edit/api';
+import { SAVE_INTEGRATION_EVENT, VALIDATE_INTEGRATION_FORM_EVENT } from './constants';
 
 export default class IntegrationSettingsForm {
   constructor(formSelector) {
@@ -29,9 +21,6 @@ export default class IntegrationSettingsForm {
       document.querySelector('.js-vue-default-integration-settings'),
       this.formSelector,
     );
-    eventHub.$on(TEST_INTEGRATION_EVENT, (formValid) => {
-      this.testIntegration(formValid);
-    });
     eventHub.$on(SAVE_INTEGRATION_EVENT, (formValid) => {
       this.saveIntegration(formValid);
     });
@@ -52,48 +41,5 @@ export default class IntegrationSettingsForm {
       eventHub.$emit(VALIDATE_INTEGRATION_FORM_EVENT);
       this.vue.$store.dispatch('setIsSaving', false);
     }
-  }
-
-  testIntegration(formValid) {
-    // Service was marked active so now we check;
-    // 1) If form contents are valid
-    // 2) If this service can be tested
-    // If both conditions are true, we override form submission
-    // and test the service using provided configuration.
-    if (formValid) {
-      this.testSettings(new FormData(this.$form));
-    } else {
-      eventHub.$emit(VALIDATE_INTEGRATION_FORM_EVENT);
-      this.vue.$store.dispatch('setIsTesting', false);
-    }
-  }
-
-  /**
-   * Get a list of Jira issue types for the currently configured project
-   *
-   * @param {string} formData - URL encoded string containing the form data
-   *
-   * @return {Promise}
-   */
-
-  /**
-   * Test Integration config
-   */
-  testSettings(formData) {
-    return testIntegrationSettings(this.testEndPoint, formData)
-      .then(({ data }) => {
-        if (data.error) {
-          toast(`${data.message} ${data.service_response}`);
-        } else {
-          this.vue.$store.dispatch('receiveJiraIssueTypesSuccess', data.issuetypes);
-          toast(I18N_SUCCESSFUL_CONNECTION_MESSAGE);
-        }
-      })
-      .catch(() => {
-        toast(I18N_DEFAULT_ERROR_MESSAGE);
-      })
-      .finally(() => {
-        this.vue.$store.dispatch('setIsTesting', false);
-      });
   }
 }
