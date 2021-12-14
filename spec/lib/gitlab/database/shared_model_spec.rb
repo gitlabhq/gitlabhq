@@ -84,4 +84,16 @@ RSpec.describe Gitlab::Database::SharedModel do
       expect(described_class.connection).to be(original_connection)
     end
   end
+
+  describe '#connection_db_config' do
+    it 'returns the class connection_db_config' do
+      shared_model_class = Class.new(described_class) do
+        self.table_name = 'postgres_async_indexes'
+      end
+
+      shared_model = shared_model_class.new
+
+      expect(shared_model.connection_db_config). to eq(described_class.connection_db_config)
+    end
+  end
 end

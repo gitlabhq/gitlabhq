@@ -203,43 +203,38 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout do
   end
 
   describe 'reindex' do
-    let(:reindex) { double('reindex') }
-    let(:indexes) { double('indexes') }
-    let(:databases) { Gitlab::Database.database_base_models }
-    let(:databases_count) { databases.count }
-
-    it 'cleans up any leftover indexes' do
-      expect(Gitlab::Database::Reindexing).to receive(:cleanup_leftovers!).exactly(databases_count).times
+    it 'delegates to Gitlab::Database::Reindexing' do
+      expect(Gitlab::Database::Reindexing).to receive(:invoke)
 
       run_rake_task('gitlab:db:reindex')
     end
 
-    context 'when async index creation is enabled' do
-      it 'executes async index creation prior to any reindexing actions' do
-        stub_feature_flags(database_async_index_creation: true)
-
-        expect(Gitlab::Database::AsyncIndexes).to receive(:create_pending_indexes!).ordered.exactly(databases_count).times
-        expect(Gitlab::Database::Reindexing).to receive(:automatic_reindexing).ordered.exactly(databases_count).times
+    context 'when reindexing is not enabled' do
+      it 'is a no-op' do
+        expect(Gitlab::Database::Reindexing).to receive(:enabled?).and_return(false)
+        expect(Gitlab::Database::Reindexing).not_to receive(:invoke)
 
         run_rake_task('gitlab:db:reindex')
       end
     end
+  end
 
-    context 'when async index creation is disabled' do
-      it 'does not execute async index creation' do
-        stub_feature_flags(database_async_index_creation: false)
+  databases = ActiveRecord::Tasks::DatabaseTasks.setup_initial_database_yaml
+  ActiveRecord::Tasks::DatabaseTasks.for_each(databases) do |database_name|
+    describe "reindex:#{database_name}" do
+      it 'delegates to Gitlab::Database::Reindexing' do
+        expect(Gitlab::Database::Reindexing).to receive(:invoke).with(database_name)
 
-        expect(Gitlab::Database::AsyncIndexes).not_to receive(:create_pending_indexes!)
-
-        run_rake_task('gitlab:db:reindex')
+        run_rake_task("gitlab:db:reindex:#{database_name}")
       end
-    end
 
-    context 'calls automatic reindexing' do
-      it 'uses all candidate indexes' do
-        expect(Gitlab::Database::Reindexing).to receive(:automatic_reindexing).exactly(databases_count).times
+      context 'when reindexing is not enabled' do
+        it 'is a no-op' do
+          expect(Gitlab::Database::Reindexing).to receive(:enabled?).and_return(false)
+          expect(Gitlab::Database::Reindexing).not_to receive(:invoke).with(database_name)
 
-        run_rake_task('gitlab:db:reindex')
+          run_rake_task("gitlab:db:reindex:#{database_name}")
+        end
       end
     end
   end

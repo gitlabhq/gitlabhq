@@ -22,6 +22,8 @@ class DeploymentEntity < Grape::Entity
   expose :deployed_at
   expose :tag
   expose :last?
+  expose :last?, as: :is_last
+
   expose :deployed_by, as: :user, using: UserEntity
 
   expose :deployable, if: -> (deployment) { deployment.deployable.present? } do |deployment, opts|

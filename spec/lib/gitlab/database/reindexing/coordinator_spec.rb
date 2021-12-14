@@ -15,9 +15,17 @@ RSpec.describe Gitlab::Database::Reindexing::Coordinator do
     let(:action) { create(:reindex_action, index: index) }
 
     let!(:lease) { stub_exclusive_lease(lease_key, uuid, timeout: lease_timeout) }
-    let(:lease_key) { 'gitlab/database/reindexing/coordinator' }
+    let(:lease_key) { "gitlab/database/reindexing/coordinator/#{Gitlab::Database::PRIMARY_DATABASE_NAME}" }
     let(:lease_timeout) { 1.day }
     let(:uuid) { 'uuid' }
+
+    around do |example|
+      model = Gitlab::Database.database_base_models[Gitlab::Database::PRIMARY_DATABASE_NAME]
+
+      Gitlab::Database::SharedModel.using_connection(model.connection) do
+        example.run
+      end
+    end
 
     before do
       swapout_view_for_table(:postgres_indexes)

@@ -53,6 +53,10 @@ module Gitlab
         def lease_timeout
           TIMEOUT_PER_ACTION
         end
+
+        def lease_key
+          [super, index.connection_db_config.name].join('/')
+        end
       end
     end
   end

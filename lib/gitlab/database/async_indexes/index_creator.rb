@@ -47,6 +47,10 @@ module Gitlab
           TIMEOUT_PER_ACTION
         end
 
+        def lease_key
+          [super, async_index.connection_db_config.name].join('/')
+        end
+
         def set_statement_timeout
           connection.execute("SET statement_timeout TO '%ds'" % STATEMENT_TIMEOUT)
           yield

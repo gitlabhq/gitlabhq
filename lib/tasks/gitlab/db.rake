@@ -175,24 +175,30 @@ namespace :gitlab do
       Rake::Task['gitlab:db:create_dynamic_partitions'].invoke
     end
 
-    desc 'execute reindexing without downtime to eliminate bloat'
+    desc "Reindex database without downtime to eliminate bloat"
     task reindex: :environment do
-      unless Feature.enabled?(:database_reindexing, type: :ops, default_enabled: :yaml)
+      unless Gitlab::Database::Reindexing.enabled?
         puts "This feature (database_reindexing) is currently disabled.".color(:yellow)
         exit
       end
 
-      Gitlab::Database::EachDatabase.each_database_connection do |connection, connection_name|
-        Gitlab::Database::SharedModel.logger = Logger.new($stdout) if Gitlab::Utils.to_boolean(ENV['LOG_QUERIES_TO_CONSOLE'], default: false)
+      Gitlab::Database::Reindexing.invoke
+    end
 
-        # Hack: Before we do actual reindexing work, create async indexes
-        Gitlab::Database::AsyncIndexes.create_pending_indexes! if Feature.enabled?(:database_async_index_creation, type: :ops)
+    namespace :reindex do
+      databases = ActiveRecord::Tasks::DatabaseTasks.setup_initial_database_yaml
 
-        Gitlab::Database::Reindexing.automatic_reindexing
+      ActiveRecord::Tasks::DatabaseTasks.for_each(databases) do |database_name|
+        desc "Reindex #{database_name} database without downtime to eliminate bloat"
+        task database_name => :environment do
+          unless Gitlab::Database::Reindexing.enabled?
+            puts "This feature (database_reindexing) is currently disabled.".color(:yellow)
+            exit
+          end
+
+          Gitlab::Database::Reindexing.invoke(database_name)
+        end
       end
-    rescue StandardError => e
-      Gitlab::AppLogger.error(e)
-      raise
     end
 
     desc 'Enqueue an index for reindexing'
