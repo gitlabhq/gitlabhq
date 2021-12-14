@@ -53,7 +53,7 @@ generate-apollo-graphl-schema:
     - .static-analysis-base
     - .frontend:rules:default-frontend-jobs
   image:
-    name: registry.gitlab.com/gitlab-org/gitlab-build-images:apollo
+    name: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:apollo
     entrypoint: [""]
   needs: ['graphql-schema-dump']
   variables:

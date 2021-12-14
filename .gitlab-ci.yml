@@ -16,7 +16,7 @@ stages:
 # in cases where jobs require Docker-in-Docker, the job
 # definition must be extended with `.use-docker-in-docker`
 default:
-  image: "registry.gitlab.com/gitlab-org/gitlab-build-images:ruby-2.7.patched-golang-1.16-git-2.33-lfs-2.9-chrome-89-node-14.15-yarn-1.22-postgresql-11-graphicsmagick-1.3.36"
+  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:ruby-2.7.patched-golang-1.16-git-2.33-lfs-2.9-chrome-89-node-14.15-yarn-1.22-postgresql-11-graphicsmagick-1.3.36
   tags:
     - gitlab-org
   # All jobs are interruptible by default
@@ -95,6 +95,9 @@ variables:
   QA_IMAGE: "${CI_REGISTRY}/${CI_PROJECT_PATH}/gitlab-ee-qa:${CI_COMMIT_SHA}"
   # Default latest tag for particular branch
   QA_IMAGE_BRANCH: "${CI_REGISTRY}/${CI_PROJECT_PATH}/gitlab-ee-qa:${CI_COMMIT_REF_SLUG}"
+
+  REGISTRY_HOST: "registry.gitlab.com"
+  REGISTRY_GROUP: "gitlab-org"
 
   # Preparing custom clone path to reduce space used by all random forks
   # on GitLab.com's Shared Runners. Our main forks - especially the security

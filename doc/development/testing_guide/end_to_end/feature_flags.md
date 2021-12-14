@@ -67,6 +67,57 @@ If no scope is provided, the feature flag is set instance-wide:
 Runtime::Feature.enable(:feature_flag_name)
 ```
 
+## Working with selectors
+
+A new feature often replaces a `vue` component or a `haml` file with a new one.
+In most cases, the new file or component is accessible only with a feature flag.
+This approach becomes problematic when tests must pass both with, and without,
+the feature flag enabled. To ensure tests pass in both scenarios:
+
+1. Create another selector inside the new component or file.
+1. Give it the same name as the old one.
+
+Selectors are connected to a specific frontend file in the [page object](page_objects.md),
+and checked for availability inside our `qa:selectors` test. If the mentioned selector
+is missing inside that frontend file, the test fails. To ensure selectors are
+available when a feature flag is enabled or disabled, add the new selector to the
+[page object](page_objects.md), leaving the old selector in place.
+The test uses the correct selector and still detects missing selectors.
+
+If a new feature changes an existing frontend file that already has a selector,
+you can add a new selector with the same name. However, only one of the selectors
+displays on the page. You should:
+
+1. Disable the other with the feature flag.
+1. Add a comment in the frontend file to delete the old selector from the frontend
+   file and from the page object file when the feature flag is removed.
+
+### Example before
+
+```ruby
+# This is the link to the old file
+view 'app/views/devise/passwords/edit.html.haml' do
+  # The new selector should have the same name
+  element :password_field
+  ...
+end
+```
+
+### Example after
+
+```ruby
+view 'app/views/devise/passwords/edit.html.haml' do
+  element :password_field
+  ...
+end
+
+# Now it can verify the selector is available
+view 'app/views/devise/passwords/new_edit_behind_ff.html.haml' do
+  # The selector has the same name
+  element :password_field
+end
+```
+
 ## Running a scenario with a feature flag enabled
 
 It's also possible to run an entire scenario with a feature flag enabled, without having to edit

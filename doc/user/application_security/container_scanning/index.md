@@ -71,7 +71,7 @@ The included template:
 GitLab saves the results as a
 [Container Scanning report artifact](../../../ci/yaml/artifacts_reports.md#artifactsreportscontainer_scanning)
 that you can download and analyze later. When downloading, you always receive the most-recent
-artifact. If [dependency scan is enabled](#enable-dependency-scan),
+artifact. If [dependency scan is enabled](#dependency-list),
 a [Dependency Scanning report artifact](../../../ci/yaml/artifacts_reports.md#artifactsreportsdependency_scanning)
 is also created.
 
@@ -148,13 +148,14 @@ include:
     DOCKER_PASSWORD: "$AWS_ECR_PASSWORD"
 ```
 
-#### Enable dependency scan
+#### Dependency list
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/345434) in GitLab 14.6.
 
-The `CS_DISABLE_DEPENDENCY_SCAN` CI/CD variable controls whether the scan creates a [Dependency List](../dependency_list/)
-report. For the scan to create this report, you must set this variable to `false` (the default value
-is `true`).
+The `CS_DISABLE_DEPENDENCY_LIST` CI/CD variable controls whether the scan creates a
+[Dependency List](../dependency_list/)
+report. The variable's default setting of `false` causes the scan to create the report. To disable
+the report, set the variable to `true`:
 
 For example:
 
@@ -164,7 +165,7 @@ include:
 
 container_scanning:
   variables:
-    CS_DISABLE_DEPENDENCY_SCAN: "false"
+    CS_DISABLE_DEPENDENCY_LIST: "true"
 ```
 
 #### Available CI/CD variables
@@ -178,7 +179,7 @@ You can [configure](#customizing-the-container-scanning-settings) analyzers by u
 | `CI_APPLICATION_TAG`           | `$CI_COMMIT_SHA` | Docker repository tag for the image to be scanned. | All |
 | `CS_ANALYZER_IMAGE`            | `registry.gitlab.com/security-products/container-scanning:4` | Docker image of the analyzer. | All |
 | `CS_DEFAULT_BRANCH_IMAGE`      | `""` | The name of the `DOCKER_IMAGE` on the default branch. See [Setting the default branch image](#setting-the-default-branch-image) for more details. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/338877) in GitLab 14.5. | All |
-| `CS_DISABLE_DEPENDENCY_SCAN`   | `"true"`      | Disable Dependency Scanning for packages installed in the scanned image. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/345434) in GitLab 14.6. | All |
+| `CS_DISABLE_DEPENDENCY_LIST`   | `"false"`      | Disable Dependency Scanning for packages installed in the scanned image. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/345434) in GitLab 14.6. | All |
 | `CS_DOCKER_INSECURE`           | `"false"`     | Allow access to secure Docker registries using HTTPS without validating the certificates. | All |
 | `CS_REGISTRY_INSECURE`         | `"false"`     | Allow access to insecure registries (HTTP only). Should only be set to `true` when testing the image locally. Works with all scanners, but the registry must listen on port `80/tcp` for Trivy to work. | All |
 | `CS_SEVERITY_THRESHOLD`        | `UNKNOWN`     | Severity level threshold. The scanner outputs vulnerabilities with severity level higher than or equal to this threshold. Supported levels are Unknown, Low, Medium, High, and Critical. | Trivy |

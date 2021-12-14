@@ -34,7 +34,7 @@ review-build-cng:
 .review-workflow-base:
   extends:
     - .default-retry
-  image: registry.gitlab.com/gitlab-org/gitlab-build-images:gitlab-helm3.5-kubectl1.17
+  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:gitlab-helm3.5-kubectl1.17
   resource_group: "review/${CI_COMMIT_REF_NAME}"
   variables:
     HOST_SUFFIX: "${CI_ENVIRONMENT_SLUG}"

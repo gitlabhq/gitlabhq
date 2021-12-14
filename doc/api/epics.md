@@ -49,6 +49,8 @@ NOTE:
 
 ## List epics for a group
 
+> `parent_iid` and `_links[parent]` in response were [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/347527) in GitLab 14.6.
+
 Gets all epics of the requested group and its subgroups.
 
 ```plaintext
@@ -89,6 +91,7 @@ Example response:
   "iid": 4,
   "group_id": 7,
   "parent_id": 23,
+  "parent_iid": 3,
   "title": "Accusamus iste et ullam ratione voluptatem omnis debitis dolor est.",
   "description": "Molestias dolorem eos vitae expedita impedit necessitatibus quo voluptatum.",
   "state": "opened",
@@ -128,7 +131,8 @@ Example response:
   "_links":{
       "self": "http://gitlab.example.com/api/v4/groups/7/epics/4",
       "epic_issues": "http://gitlab.example.com/api/v4/groups/7/epics/4/issues",
-      "group":"http://gitlab.example.com/api/v4/groups/7"
+      "group":"http://gitlab.example.com/api/v4/groups/7",
+      "parent":"http://gitlab.example.com/api/v4/groups/7/epics/3"
   }
   },
   {
@@ -136,6 +140,7 @@ Example response:
   "iid": 35,
   "group_id": 17,
   "parent_id": 19,
+  "parent_iid": 1,
   "title": "Accusamus iste et ullam ratione voluptatem omnis debitis dolor est.",
   "description": "Molestias dolorem eos vitae expedita impedit necessitatibus quo voluptatum.",
   "state": "opened",
@@ -174,13 +179,16 @@ Example response:
   "_links":{
       "self": "http://gitlab.example.com/api/v4/groups/17/epics/35",
       "epic_issues": "http://gitlab.example.com/api/v4/groups/17/epics/35/issues",
-      "group":"http://gitlab.example.com/api/v4/groups/17"
+      "group":"http://gitlab.example.com/api/v4/groups/17",
+      "parent":"http://gitlab.example.com/api/v4/groups/17/epics/1"
   }
   }
 ]
 ```
 
 ## Single epic
+
+> `parent_iid` and `_links[parent]` in response were [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/347527) in GitLab 14.6.
 
 Gets a single epic
 
@@ -204,6 +212,8 @@ Example response:
   "id": 30,
   "iid": 5,
   "group_id": 7,
+  "parent_id": null,
+  "parent_iid": null,
   "title": "Ea cupiditate dolores ut vero consequatur quasi veniam voluptatem et non.",
   "description": "Molestias dolorem eos vitae expedita impedit necessitatibus quo voluptatum.",
   "state": "opened",
@@ -243,12 +253,15 @@ Example response:
   "_links":{
       "self": "http://gitlab.example.com/api/v4/groups/7/epics/5",
       "epic_issues": "http://gitlab.example.com/api/v4/groups/7/epics/5/issues",
-      "group":"http://gitlab.example.com/api/v4/groups/7"
+      "group":"http://gitlab.example.com/api/v4/groups/7",
+      "parent": null
   }
 }
 ```
 
 ## New epic
+
+> `parent_iid` and `_links[parent]` in response were [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/347527) in GitLab 14.6.
 
 Creates a new epic.
 
@@ -276,7 +289,7 @@ POST /groups/:id/epics
 | `parent_id`         | integer/string   | no         | The ID of a parent epic (in GitLab 11.11 and later) |
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/1/epics?title=Epic&description=Epic%20description"
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/1/epics?title=Epic&description=Epic%20description&parent_id=29"
 ```
 
 Example response:
@@ -286,6 +299,8 @@ Example response:
   "id": 33,
   "iid": 6,
   "group_id": 7,
+  "parent_id": 29,
+  "parent_iid": 4,
   "title": "Epic",
   "description": "Epic description",
   "state": "opened",
@@ -325,12 +340,15 @@ Example response:
   "_links":{
     "self": "http://gitlab.example.com/api/v4/groups/7/epics/6",
     "epic_issues": "http://gitlab.example.com/api/v4/groups/7/epics/6/issues",
-    "group":"http://gitlab.example.com/api/v4/groups/7"
+    "group":"http://gitlab.example.com/api/v4/groups/7",
+    "parent": "http://gitlab.example.com/api/v4/groups/7/epics/4"
   }
 }
 ```
 
 ## Update epic
+
+> `parent_iid` and `_links[parent]` in response were [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/347527) in GitLab 14.6.
 
 Updates an epic.
 
@@ -371,6 +389,8 @@ Example response:
   "id": 33,
   "iid": 6,
   "group_id": 7,
+  "parent_id": null,
+  "parent_iid": null,
   "title": "New Title",
   "description": "Epic description",
   "state": "opened",

@@ -1556,6 +1556,9 @@ msgstr ""
 msgid "A project’s repository name defines its URL (the one you use to access the project via a browser) and its place on the file disk where GitLab is installed. %{link_start}Learn more.%{link_end}"
 msgstr ""
 
+msgid "A quarterly reconciliation is due on %{date}"
+msgstr ""
+
 msgid "A ready-to-go template for use with Android apps"
 msgstr ""
 
@@ -36675,6 +36678,9 @@ msgstr ""
 msgid "To receive alerts from manually configured Prometheus services, add the following URL and Authorization key to your Prometheus webhook config file. Learn more about %{linkStart}configuring Prometheus%{linkEnd} to send alerts to GitLab."
 msgstr ""
 
+msgid "To renew, export your license usage file and email it to %{renewal_service_email}. A new license will be emailed to the email address registered in the %{customers_dot}. You can upload this license to your instance."
+msgstr ""
+
 msgid "To resolve this, try to:"
 msgstr ""
 
@@ -40284,6 +40290,12 @@ msgstr ""
 msgid "You have insufficient permissions to view shifts for this rotation"
 msgstr ""
 
+msgid "You have more active users than are allowed by your license. Before %{date} GitLab must reconcile your subscription. To complete this process, export your license usage file and email it to %{renewal_service_email}. A new license will be emailed to the email address registered in the %{customers_dot}. You can upload this license to your instance."
+msgstr ""
+
+msgid "You have more active users than are allowed by your license. GitLab must now reconcile your subscription. To complete this process, export your license usage file and email it to %{renewal_service_email}. A new license will be emailed to the email address registered in the %{customers_dot}. You can upload this license to your instance."
+msgstr ""
+
 msgid "You have no permissions"
 msgstr ""
 
@@ -40471,6 +40483,12 @@ msgid "Your %{group} membership will now expire in %{days}."
 msgstr ""
 
 msgid "Your %{host} account was signed in to from a new location"
+msgstr ""
+
+msgid "Your %{plan} subscription expired on %{expiry_date}"
+msgstr ""
+
+msgid "Your %{plan} subscription expires on %{expiry_date}"
 msgstr ""
 
 msgid "Your %{strong}%{plan_name}%{strong_close} subscription expires on %{strong}%{expires_on}%{strong_close}. After that date, you cannot create issues or merge requests, or use many other features."
@@ -40762,6 +40780,9 @@ msgid "Your snippets"
 msgstr ""
 
 msgid "Your subscription expired!"
+msgstr ""
+
+msgid "Your subscription is now expired. To renew, export your license usage file and email it to %{renewal_service_email}. A new license will be emailed to the email address registered in the %{customers_dot}. You can upload this license to your instance. To use Free tier, remove your current license."
 msgstr ""
 
 msgid "Your subscription will expire in %{remaining_days} day."

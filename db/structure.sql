@@ -20416,7 +20416,9 @@ CREATE TABLE users (
     last_name character varying(255),
     static_object_token character varying(255),
     role smallint,
-    user_type smallint
+    user_type smallint,
+    static_object_token_encrypted text,
+    CONSTRAINT check_7bde697e8e CHECK ((char_length(static_object_token_encrypted) <= 255))
 );
 
 CREATE SEQUENCE users_id_seq
@@ -29058,9 +29060,15 @@ CREATE TRIGGER chat_names_loose_fk_trigger AFTER DELETE ON chat_names REFERENCIN
 
 CREATE TRIGGER ci_builds_loose_fk_trigger AFTER DELETE ON ci_builds REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
 
+CREATE TRIGGER ci_job_artifacts_loose_fk_trigger AFTER DELETE ON ci_job_artifacts REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
+
 CREATE TRIGGER ci_pipelines_loose_fk_trigger AFTER DELETE ON ci_pipelines REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
 
 CREATE TRIGGER ci_runners_loose_fk_trigger AFTER DELETE ON ci_runners REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
+
+CREATE TRIGGER external_pull_requests_loose_fk_trigger AFTER DELETE ON external_pull_requests REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
+
+CREATE TRIGGER merge_requests_loose_fk_trigger AFTER DELETE ON merge_requests REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
 
 CREATE TRIGGER namespaces_loose_fk_trigger AFTER DELETE ON namespaces REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
 
@@ -29091,6 +29099,8 @@ CREATE TRIGGER trigger_projects_parent_id_on_insert AFTER INSERT ON projects FOR
 CREATE TRIGGER trigger_projects_parent_id_on_update AFTER UPDATE ON projects FOR EACH ROW WHEN ((old.namespace_id IS DISTINCT FROM new.namespace_id)) EXECUTE FUNCTION insert_projects_sync_event();
 
 CREATE TRIGGER trigger_type_new_on_insert AFTER INSERT ON integrations FOR EACH ROW EXECUTE FUNCTION integrations_set_type_new();
+
+CREATE TRIGGER users_loose_fk_trigger AFTER DELETE ON users REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
 
 ALTER TABLE ONLY chat_names
     ADD CONSTRAINT fk_00797a2bf9 FOREIGN KEY (service_id) REFERENCES integrations(id) ON DELETE CASCADE;

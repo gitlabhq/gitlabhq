@@ -62,6 +62,10 @@ module Gitlab
       "#{self.subscriptions_url}/gitlab/namespaces/#{group_id}/renew"
     end
 
+    def self.edit_account_url
+      "#{self.subscriptions_url}/customers/edit"
+    end
+
     def self.subscription_portal_admin_email
       ENV.fetch('SUBSCRIPTION_PORTAL_ADMIN_EMAIL', 'gl_com_api@gitlab.com')
     end
@@ -69,9 +73,14 @@ module Gitlab
     def self.subscription_portal_admin_token
       ENV.fetch('SUBSCRIPTION_PORTAL_ADMIN_TOKEN', 'customer_admin_token')
     end
+
+    def self.renewal_service_email
+      'renewals-support@gitlab.com'
+    end
   end
 end
 
 Gitlab::SubscriptionPortal.prepend_mod
 Gitlab::SubscriptionPortal::SUBSCRIPTIONS_URL = Gitlab::SubscriptionPortal.subscriptions_url.freeze
 Gitlab::SubscriptionPortal::PAYMENT_FORM_URL = Gitlab::SubscriptionPortal.payment_form_url.freeze
+Gitlab::SubscriptionPortal::RENEWAL_SERVICE_EMAIL = Gitlab::SubscriptionPortal.renewal_service_email.freeze
