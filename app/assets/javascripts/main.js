@@ -14,6 +14,7 @@ import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
 import { initRails } from '~/lib/utils/rails_ujs';
 import * as popovers from '~/popovers';
 import * as tooltips from '~/tooltips';
+import { initPrefetchLinks } from '~/lib/utils/navigation_utility';
 import initAlertHandler from './alert_handler';
 import { addDismissFlashClickListener } from './flash';
 import initTodoToggle from './header';
@@ -90,6 +91,7 @@ function deferredInitialisation() {
   initTopNav();
   initBreadcrumbs();
   initTodoToggle();
+  initPrefetchLinks('.js-prefetch-document');
   initLogoAnimation();
   initServicePingConsent();
   initUserPopovers();

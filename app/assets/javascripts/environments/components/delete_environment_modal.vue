@@ -1,7 +1,9 @@
 <script>
 import { GlTooltipDirective, GlModal } from '@gitlab/ui';
+import createFlash from '~/flash';
 import { __, s__, sprintf } from '~/locale';
 import eventHub from '../event_hub';
+import deleteEnvironmentMutation from '../graphql/mutations/delete_environment.mutation.graphql';
 
 export default {
   id: 'delete-environment-modal',
@@ -16,6 +18,11 @@ export default {
     environment: {
       type: Object,
       required: true,
+    },
+    graphql: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
   },
   computed: {
@@ -49,7 +56,29 @@ export default {
   },
   methods: {
     onSubmit() {
-      eventHub.$emit('deleteEnvironment', this.environment);
+      if (this.graphql) {
+        this.$apollo
+          .mutate({
+            mutation: deleteEnvironmentMutation,
+            variables: { environment: this.environment },
+          })
+          .then(([message]) => {
+            if (message) {
+              createFlash({ message });
+            }
+          })
+          .catch((error) =>
+            createFlash({
+              message: s__(
+                'Environments|An error occurred while deleting the environment. Check if the environment stopped; if not, stop it and try again.',
+              ),
+              error,
+              captureError: true,
+            }),
+          );
+      } else {
+        eventHub.$emit('deleteEnvironment', this.environment);
+      }
     },
   },
 };

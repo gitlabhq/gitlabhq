@@ -46,7 +46,7 @@
                 = sprite_icon(search_menu_item.fetch(:icon))
           - if header_link?(:issues)
             = nav_link(path: 'dashboard#issues', html_options: { class: "user-counter" }) do
-              = link_to assigned_issues_dashboard_path, title: _('Issues'), class: 'dashboard-shortcuts-issues', aria: { label: _('Issues') },
+              = link_to assigned_issues_dashboard_path, title: _('Issues'), class: 'dashboard-shortcuts-issues js-prefetch-document', aria: { label: _('Issues') },
                 data: { qa_selector: 'issues_shortcut_button', toggle: 'tooltip', placement: 'bottom',
                 track_label: 'main_navigation',
                 track_action: 'click_issues_link',
@@ -75,18 +75,18 @@
                   %li.dropdown-header
                     = _('Merge requests')
                   %li
-                    = link_to assigned_mrs_dashboard_path, class: 'gl-display-flex! gl-align-items-center' do
+                    = link_to assigned_mrs_dashboard_path, class: 'gl-display-flex! gl-align-items-center js-prefetch-document' do
                       = _('Assigned to you')
                       %span.badge.gl-badge.badge-pill.badge-muted.merge-request-badge.gl-ml-auto.js-assigned-mr-count{ class: "" }
                         = user_merge_requests_counts[:assigned]
                   %li
-                    = link_to reviewer_mrs_dashboard_path, class: 'gl-display-flex! gl-align-items-center' do
+                    = link_to reviewer_mrs_dashboard_path, class: 'gl-display-flex! gl-align-items-center js-prefetch-document' do
                       = _('Review requests for you')
                       %span.badge.gl-badge.badge-pill.badge-muted.merge-request-badge.gl-ml-auto.js-reviewer-mr-count{ class: "" }
                         = user_merge_requests_counts[:review_requested]
           - if header_link?(:todos)
             = nav_link(controller: 'dashboard/todos', html_options: { class: "user-counter" }) do
-              = link_to dashboard_todos_path, title: _('To-Do List'), aria: { label: _('To-Do List') }, class: 'shortcuts-todos',
+              = link_to dashboard_todos_path, title: _('To-Do List'), aria: { label: _('To-Do List') }, class: 'shortcuts-todos js-prefetch-document',
                 data: { qa_selector: 'todos_shortcut_button', toggle: 'tooltip', placement: 'bottom',
                 track_label: 'main_navigation',
                 track_action: 'click_to_do_link',

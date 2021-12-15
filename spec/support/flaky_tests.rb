@@ -11,7 +11,7 @@ RSpec.configure do |config|
     raise "$SUITE_FLAKY_RSPEC_REPORT_PATH is empty." if ENV['SUITE_FLAKY_RSPEC_REPORT_PATH'].to_s.empty?
     raise "#{ENV['SUITE_FLAKY_RSPEC_REPORT_PATH']} doesn't exist" unless File.exist?(ENV['SUITE_FLAKY_RSPEC_REPORT_PATH'])
 
-    RspecFlaky::Report.load(ENV['SUITE_FLAKY_RSPEC_REPORT_PATH']).map { |_, flaky_test_data| flaky_test_data["example_id"] }
+    RspecFlaky::Report.load(ENV['SUITE_FLAKY_RSPEC_REPORT_PATH']).map { |_, flaky_test_data| flaky_test_data.to_h[:example_id] }
   rescue => e # rubocop:disable Style/RescueStandardError
     puts e
     []

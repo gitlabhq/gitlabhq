@@ -218,8 +218,8 @@ We recommend using the [consolidated object storage settings](../object_storage.
 
 ### Migrating local packages to object storage
 
-After [configuring the object storage](#using-object-storage), you may use the
-following task to migrate existing packages from the local storage to the remote one.
+After [configuring the object storage](#using-object-storage), use the following task to
+migrate existing packages from the local storage to the remote storage.
 The processing is done in a background worker and requires **no downtime**.
 
 For Omnibus GitLab:
@@ -234,11 +234,13 @@ For installations from source:
 RAILS_ENV=production sudo -u git -H bundle exec rake gitlab:packages:migrate
 ```
 
-You can optionally track progress and verify that all packages migrated successfully.
+You can optionally track progress and verify that all packages migrated successfully using the
+[PostgreSQL console](https://docs.gitlab.com/omnibus/settings/database.html#connecting-to-the-bundled-postgresql-database):
 
-From the [PostgreSQL console](https://docs.gitlab.com/omnibus/settings/database.html#connecting-to-the-bundled-postgresql-database)
-(`sudo gitlab-psql -d gitlabhq_production` for Omnibus GitLab), verify that `objectstg` below (where
-`file_store=2`) has the count of all packages:
+- `sudo gitlab-rails dbconsole` for Omnibus GitLab instances.
+- `sudo -u git -H psql -d gitlabhq_production` for source-installed instances.
+
+Verify `objectstg` below (where `store=2`) has count of all packages:
 
 ```shell
 gitlabhq_production=# SELECT count(*) AS total, sum(case when file_store = '1' then 1 else 0 end) AS filesystem, sum(case when file_store = '2' then 1 else 0 end) AS objectstg FROM packages_package_files;
@@ -246,4 +248,10 @@ gitlabhq_production=# SELECT count(*) AS total, sum(case when file_store = '1' t
 total | filesystem | objectstg
 ------+------------+-----------
  34   |          0 |        34
+```
+
+Verify that there are no files on disk in the `packages` folder:
+
+```shell
+sudo find /var/opt/gitlab/gitlab-rails/shared/packages -type f | grep -v tmp | wc -l
 ```

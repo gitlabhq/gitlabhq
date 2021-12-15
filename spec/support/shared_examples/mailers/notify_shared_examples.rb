@@ -161,6 +161,12 @@ RSpec.shared_examples 'it should not have Gmail Actions links' do
   end
 end
 
+RSpec.shared_examples 'it should show Gmail Actions Join now link' do
+  it_behaves_like 'it should have Gmail Actions links'
+
+  it { is_expected.to have_body_text('Join now') }
+end
+
 RSpec.shared_examples 'it should show Gmail Actions View Issue link' do
   it_behaves_like 'it should have Gmail Actions links'
 

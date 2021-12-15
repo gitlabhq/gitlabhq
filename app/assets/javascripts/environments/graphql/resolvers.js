@@ -3,6 +3,7 @@ import { s__ } from '~/locale';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import pollIntervalQuery from './queries/poll_interval.query.graphql';
 import environmentToRollbackQuery from './queries/environment_to_rollback.query.graphql';
+import environmentToDeleteQuery from './queries/environment_to_delete.query.graphql';
 
 const buildErrors = (errors = []) => ({
   errors,
@@ -67,7 +68,16 @@ export const resolvers = (endpoint) => ({
         });
     },
     deleteEnvironment(_, { environment: { deletePath } }) {
-      return axios.delete(deletePath);
+      return axios
+        .delete(deletePath)
+        .then(() => buildErrors())
+        .catch(() =>
+          buildErrors([
+            s__(
+              'Environments|An error occurred while deleting the environment. Check if the environment stopped; if not, stop it and try again.',
+            ),
+          ]),
+        );
     },
     rollbackEnvironment(_, { environment, isLastDeployment }) {
       return axios
@@ -84,6 +94,12 @@ export const resolvers = (endpoint) => ({
                 ),
           ]);
         });
+    },
+    setEnvironmentToDelete(_, { environment }, { client }) {
+      client.writeQuery({
+        query: environmentToDeleteQuery,
+        data: { environmentToDelete: environment },
+      });
     },
     setEnvironmentToRollback(_, { environment }, { client }) {
       client.writeQuery({

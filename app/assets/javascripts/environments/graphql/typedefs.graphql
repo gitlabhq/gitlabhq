@@ -58,6 +58,7 @@ type LocalErrors {
 extend type Query {
   environmentApp: LocalEnvironmentApp
   folder(environment: NestedLocalEnvironmentInput): LocalEnvironmentFolder
+  environmentToDelete: LocalEnvironment
   environmentToRollback: LocalEnvironment
   isLastDeployment: Boolean
 }
@@ -67,5 +68,6 @@ extend type Mutation {
   deleteEnvironment(environment: LocalEnvironmentInput): LocalErrors
   rollbackEnvironment(environment: LocalEnvironmentInput): LocalErrors
   cancelAutoStop(environment: LocalEnvironmentInput): LocalErrors
+  setEnvironmentToDelete(environment: LocalEnvironmentInput): LocalErrors
   setEnvironmentToRollback(environment: LocalEnvironmentInput): LocalErrors
 }

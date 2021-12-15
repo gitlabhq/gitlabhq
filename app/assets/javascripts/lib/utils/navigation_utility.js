@@ -13,3 +13,42 @@ export default function findAndFollowLink(selector) {
     visitUrl(link);
   }
 }
+
+export function prefetchDocument(url) {
+  const newPrefetchLink = document.createElement('link');
+  newPrefetchLink.rel = 'prefetch';
+  newPrefetchLink.href = url;
+  newPrefetchLink.setAttribute('as', 'document');
+  document.head.appendChild(newPrefetchLink);
+}
+
+export function initPrefetchLinks(selector) {
+  document.querySelectorAll(selector).forEach((el) => {
+    let mouseOverTimer;
+
+    const mouseOutHandler = () => {
+      if (mouseOverTimer) {
+        clearTimeout(mouseOverTimer);
+        mouseOverTimer = undefined;
+      }
+    };
+
+    const mouseOverHandler = () => {
+      el.addEventListener('mouseout', mouseOutHandler, { once: true, passive: true });
+
+      mouseOverTimer = setTimeout(() => {
+        if (el.href) prefetchDocument(el.href);
+
+        // Only execute once
+        el.removeEventListener('mouseover', mouseOverHandler, true);
+
+        mouseOverTimer = undefined;
+      }, 100);
+    };
+
+    el.addEventListener('mouseover', mouseOverHandler, {
+      capture: true,
+      passive: true,
+    });
+  });
+}

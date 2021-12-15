@@ -1,0 +1,3 @@
+mutation SetEnvironmentToDelete($environment: Environment) {
+  setEnvironmentToDelete(environment: $environment) @client
+}

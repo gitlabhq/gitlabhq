@@ -2,6 +2,7 @@ import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
 import { resolvers } from '~/environments/graphql/resolvers';
 import environmentToRollback from '~/environments/graphql/queries/environment_to_rollback.query.graphql';
+import environmentToDelete from '~/environments/graphql/queries/environment_to_delete.query.graphql';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import pollIntervalQuery from '~/environments/graphql/queries/poll_interval.query.graphql';
 import { TEST_HOST } from 'helpers/test_constants';
@@ -132,6 +133,21 @@ describe('~/frontend/environments/graphql/resolvers', () => {
       expect(localState.client.writeQuery).toHaveBeenCalledWith({
         query: environmentToRollback,
         data: { environmentToRollback: resolvedEnvironment },
+      });
+    });
+  });
+  describe('setEnvironmentToDelete', () => {
+    it('should write the given environment to the cache', () => {
+      localState.client.writeQuery = jest.fn();
+      mockResolvers.Mutation.setEnvironmentToDelete(
+        null,
+        { environment: resolvedEnvironment },
+        localState,
+      );
+
+      expect(localState.client.writeQuery).toHaveBeenCalledWith({
+        query: environmentToDelete,
+        data: { environmentToDelete: resolvedEnvironment },
       });
     });
   });

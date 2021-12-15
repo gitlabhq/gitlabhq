@@ -154,7 +154,9 @@ To change the namespace linked to a subscription:
    [linked](#change-the-linked-account) GitLab SaaS account.
 1. Navigate to the **Manage Purchases** page.
 1. Select **Change linked namespace**.
-1. Select the desired group from the **This subscription is for** dropdown.
+1. Select the desired group from the **This subscription is for** dropdown. For a group to appear
+   here, you must have the Owner [role](../user/permissions.md)
+   for that group.
 1. Select **Proceed to checkout**.
 
 Subscription charges are calculated based on the total number of users in a group, including its subgroups and nested projects. If the total number of users exceeds the number of seats in your subscription, your account is charged for the additional users.

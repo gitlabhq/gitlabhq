@@ -7,6 +7,7 @@
 import { GlDropdownItem, GlModalDirective } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import eventHub from '../event_hub';
+import setEnvironmentToDelete from '../graphql/mutations/set_environment_to_delete.mutation.graphql';
 
 export default {
   components: {
@@ -20,6 +21,11 @@ export default {
       type: Object,
       required: true,
     },
+    graphql: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -30,14 +36,25 @@ export default {
     title: s__('Environments|Delete environment'),
   },
   mounted() {
-    eventHub.$on('deleteEnvironment', this.onDeleteEnvironment);
+    if (!this.graphql) {
+      eventHub.$on('deleteEnvironment', this.onDeleteEnvironment);
+    }
   },
   beforeDestroy() {
-    eventHub.$off('deleteEnvironment', this.onDeleteEnvironment);
+    if (!this.graphql) {
+      eventHub.$off('deleteEnvironment', this.onDeleteEnvironment);
+    }
   },
   methods: {
     onClick() {
-      eventHub.$emit('requestDeleteEnvironment', this.environment);
+      if (this.graphql) {
+        this.$apollo.mutate({
+          mutation: setEnvironmentToDelete,
+          variables: { environment: this.environment },
+        });
+      } else {
+        eventHub.$emit('requestDeleteEnvironment', this.environment);
+      }
     },
     onDeleteEnvironment(environment) {
       if (this.environment.id === environment.id) {
