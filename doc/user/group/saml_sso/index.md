@@ -111,7 +111,7 @@ The certificate [fingerprint algorithm](../../../integration/saml.md#notes-on-co
 > - [Improved](https://gitlab.com/gitlab-org/gitlab/-/issues/211962) in GitLab 13.8 with allowing group owners to not go through SSO.
 > - [Improved](https://gitlab.com/gitlab-org/gitlab/-/issues/9152) in GitLab 13.11 with enforcing open SSO session to use Git if this setting is switched on.
 
-With this option enabled, users (except owners) must go through your group's GitLab single sign-on URL if they wish to access group resources through the UI. Users can't be manually added as members.
+With this option enabled, users (except users with the Owner role) must access GitLab using your group GitLab single sign-on URL to access group resources. Users added manually as members can't access group resources.
 
 SSO enforcement does not affect sign in or access to any resources outside of the group. Users can view which groups and projects they are a member of without SSO sign in.
 

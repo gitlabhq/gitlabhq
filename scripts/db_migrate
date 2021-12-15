@@ -2,7 +2,7 @@
 
 root_path="$(cd "$(dirname "$0")/.." || exit ; pwd -P)"
 
-if [[ -d "${root_path}/ee/" ]]; then
+if [[ -d "${root_path}/ee/" || "${GITLAB_MIGRATE_MAIN_ONLY}" == "true" ]]; then
 	task="db:migrate:main"
 else
 	task="db:migrate"

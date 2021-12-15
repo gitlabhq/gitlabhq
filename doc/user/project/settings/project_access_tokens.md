@@ -109,14 +109,26 @@ To create a group access token:
 1. Run the following commands in a [Rails console](../../../administration/operations/rails_console.md):
 
    ```ruby
-   admin = User.find(1) # group admin
-   group = Group.find(109) # the group you want to create a token for
-   bot = Users::CreateService.new(admin, { name: 'group_token', username: "group_#{group.id}_bot", email: "group_#{group.id}_bot@example.com", user_type: :project_bot }).execute # create the group bot user
-   # for further group access tokens, the username should be group_#{group.id}_bot#{bot_count}, e.g. group_109_bot2, and their email should be group_109_bot2@example.com
-   bot.confirm # confirm the bot
-   group.add_user(bot, :maintainer) # add the bot to the group at the desired access level
-   token = bot.personal_access_tokens.create(scopes:[:api, :write_repository], name: 'group_token') # give it a PAT
-   gtoken = token.token # get the token value
+   # Set the GitLab administration user to use. If user ID 1 is not available or is not an adinistrator, use 'admin = User.admins.first' instead to select an admininistrator.
+   admin = User.find(1)
+
+   # Set the group group you want to create a token for. For example, group with ID 109.
+   group = Group.find(109)
+
+   # Create the group bot user. For further group access tokens, the username should be group_#{group.id}_bot#{bot_count}. For example, group_109_bot2 and email address group_109_bot2@example.com.
+   bot = Users::CreateService.new(admin, { name: 'group_token', username: "group_#{group.id}_bot", email: "group_#{group.id}_bot@example.com", user_type: :project_bot }).execute
+   
+   # Confirm the group bot.
+   bot.confirm
+
+   # Add the bot to the group with the required role.
+   group.add_user(bot, :maintainer)
+
+   # Give the bot a personal access token.
+   token = bot.personal_access_tokens.create(scopes:[:api, :write_repository], name: 'group_token')
+
+   # Get the token value.
+   gtoken = token.token
    ```
 
 1. Test if the generated group access token works:

@@ -18,9 +18,13 @@
   variables:
     RSPEC_TESTS_MAPPING_ENABLED: "true"
 
-.decomposed-database-rspec:
+.decomposed-database:
   variables:
     DECOMPOSED_DB: "true"
+
+.decomposed-database-rspec:
+  extends: .decomposed-database
+  variables:
     GITLAB_LOAD_BALANCING_REUSE_PRIMARY_ci: "main"
     GITLAB_USE_MODEL_LOAD_BALANCING: "true"
 
@@ -370,9 +374,16 @@ db:migrate-from-previous-major-version:
   script:
     - run_timed_command "scripts/db_migrate"
 
-db:check-schema:
+db:migrate-from-previous-major-version-decomposed:
   extends:
     - db:migrate-from-previous-major-version
+    - .decomposed-database
+    - .rails:rules:decomposed-databases
+  variables:
+    GITLAB_MIGRATE_MAIN_ONLY: "true"
+
+.db:check-schema-base:
+  extends:
     - .rails:rules:ee-mr-and-default-branch-only
   variables:
     TAG_TO_CHECKOUT: "v14.4.0"
@@ -380,6 +391,16 @@ db:check-schema:
     - run_timed_command "scripts/db_migrate"
     - scripts/schema_changed.sh
     - scripts/validate_migration_timestamps
+
+db:check-schema:
+  extends:
+    - db:migrate-from-previous-major-version
+    - .db:check-schema-base
+
+db:check-schema-decomposed:
+  extends:
+    - db:migrate-from-previous-major-version-decomposed
+    - .db:check-schema-base
 
 db:check-migrations:
   extends:

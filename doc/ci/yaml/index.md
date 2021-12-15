@@ -868,6 +868,11 @@ This example creates an artifact with `.config` and all the files in the `binari
 > - It's disabled on GitLab.com.
 > - It's recommended for production use.
 
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available,
+ask an administrator to [enable the feature flag](../../administration/feature_flags.md) named `non_public_artifacts`. On
+GitLab.com, this feature is not available.
+
 Use `artifacts:public` to determine whether the job artifacts should be
 publicly available.
 
