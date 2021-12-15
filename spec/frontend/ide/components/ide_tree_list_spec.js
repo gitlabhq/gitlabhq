@@ -38,7 +38,14 @@ describe('IDE tree list', () => {
     beforeEach(() => {
       bootstrapWithTree();
 
+      jest.spyOn(vm, '$emit').mockImplementation(() => {});
+
       vm.$mount();
+    });
+
+    it('emits tree-ready event', () => {
+      expect(vm.$emit).toHaveBeenCalledTimes(1);
+      expect(vm.$emit).toHaveBeenCalledWith('tree-ready');
     });
 
     it('renders loading indicator', (done) => {
@@ -61,7 +68,13 @@ describe('IDE tree list', () => {
     beforeEach(() => {
       bootstrapWithTree(emptyBranchTree);
 
+      jest.spyOn(vm, '$emit').mockImplementation(() => {});
+
       vm.$mount();
+    });
+
+    it('still emits tree-ready event', () => {
+      expect(vm.$emit).toHaveBeenCalledWith('tree-ready');
     });
 
     it('does not load files if the branch is empty', () => {

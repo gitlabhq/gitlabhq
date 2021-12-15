@@ -34,7 +34,7 @@ RSpec.describe IdeHelper do
         self.instance_variable_set(:@fork_info, fork_info)
         self.instance_variable_set(:@project, project)
 
-        serialized_project = API::Entities::Project.represent(project).to_json
+        serialized_project = API::Entities::Project.represent(project, current_user: project.creator).to_json
 
         expect(helper.ide_data)
           .to include(

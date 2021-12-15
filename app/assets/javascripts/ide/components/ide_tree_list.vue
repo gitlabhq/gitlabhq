@@ -29,14 +29,20 @@ export default {
     },
   },
   watch: {
-    showLoading(newVal) {
-      if (!newVal) {
-        this.$emit('tree-ready');
-      }
+    showLoading() {
+      this.notifyTreeReady();
     },
+  },
+  mounted() {
+    this.notifyTreeReady();
   },
   methods: {
     ...mapActions(['toggleTreeOpen']),
+    notifyTreeReady() {
+      if (!this.showLoading) {
+        this.$emit('tree-ready');
+      }
+    },
     clickedFile() {
       performanceMarkAndMeasure({ mark: WEBIDE_MARK_FILE_CLICKED });
     },

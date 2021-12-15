@@ -1,35 +1,44 @@
 import { escape } from 'lodash';
 import createFlash from '~/flash';
 import { __, sprintf } from '~/locale';
+import { logError } from '~/lib/logger';
 import api from '../../../api';
 import service from '../../services';
 import * as types from '../mutation_types';
 
-export const getProjectData = ({ commit, state }, { namespace, projectId, force = false } = {}) =>
-  new Promise((resolve, reject) => {
-    if (!state.projects[`${namespace}/${projectId}`] || force) {
-      commit(types.TOGGLE_LOADING, { entry: state });
-      service
-        .getProjectData(namespace, projectId)
-        .then((res) => res.data)
-        .then((data) => {
-          commit(types.TOGGLE_LOADING, { entry: state });
-          commit(types.SET_PROJECT, { projectPath: `${namespace}/${projectId}`, project: data });
-          commit(types.SET_CURRENT_PROJECT, `${namespace}/${projectId}`);
-          resolve(data);
-        })
-        .catch(() => {
-          createFlash({
-            message: __('Error loading project data. Please try again.'),
-            fadeTransition: false,
-            addBodyClass: true,
-          });
-          reject(new Error(`Project not loaded ${namespace}/${projectId}`));
-        });
-    } else {
-      resolve(state.projects[`${namespace}/${projectId}`]);
-    }
+const ERROR_LOADING_PROJECT = __('Error loading project data. Please try again.');
+
+const errorFetchingData = (e) => {
+  logError(ERROR_LOADING_PROJECT, e);
+
+  createFlash({
+    message: ERROR_LOADING_PROJECT,
+    fadeTransition: false,
+    addBodyClass: true,
   });
+};
+
+export const setProject = ({ commit }, { project } = {}) => {
+  if (!project) {
+    return;
+  }
+  const projectPath = project.path_with_namespace;
+  commit(types.SET_PROJECT, { projectPath, project });
+  commit(types.SET_CURRENT_PROJECT, projectPath);
+};
+
+export const fetchProjectPermissions = ({ commit, state }) => {
+  const projectPath = state.currentProjectId;
+  if (!projectPath) {
+    return undefined;
+  }
+  return service
+    .getProjectPermissionsData(projectPath)
+    .then((permissions) => {
+      commit(types.UPDATE_PROJECT, { projectPath, props: permissions });
+    })
+    .catch(errorFetchingData);
+};
 
 export const refreshLastCommitData = ({ commit }, { projectId, branchId } = {}) =>
   service

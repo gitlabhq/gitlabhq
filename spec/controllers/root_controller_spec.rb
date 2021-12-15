@@ -131,28 +131,10 @@ RSpec.describe RootController do
       context 'who uses the default dashboard setting', :aggregate_failures do
         render_views
 
-        context 'with customize homepage banner' do
-          it 'renders the default dashboard' do
-            get :index
+        it 'renders the default dashboard' do
+          get :index
 
-            expect(response).to render_template 'root/index'
-            expect(response.body).to have_css('.js-customize-homepage-banner')
-          end
-        end
-
-        context 'without customize homepage banner' do
-          before do
-            Users::DismissCalloutService.new(
-              container: nil, current_user: user, params: { feature_name: Users::CalloutsHelper::CUSTOMIZE_HOMEPAGE }
-            ).execute
-          end
-
-          it 'renders the default dashboard' do
-            get :index
-
-            expect(response).to render_template 'root/index'
-            expect(response.body).not_to have_css('.js-customize-homepage-banner')
-          end
+          expect(response).to render_template 'dashboard/projects/index'
         end
       end
     end

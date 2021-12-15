@@ -1037,3 +1037,19 @@ scan occurs. Because the cache is downloaded before the analyzer run occurs, the
 file in the `CI_BUILDS_DIR` directory triggers the dependency scanning job.
 
 We recommend committing the lock files, which prevents this warning.
+
+### I no longer get the latest Docker image after setting `DS_MAJOR_VERSION` or `DS_ANALYZER_IMAGE`
+
+If you have manually set `DS_MAJOR_VERSION` or `DS_ANALYZER_IMAGE` for specific reasons,
+and now must update your configuration to again get the latest patched versions of our
+analyzers, edit your `gitlab-ci.yml` file and either: 
+
+- Set your `DS_MAJOR_VERSION` to match the latest version as seen in
+  [our current Dependency Scanning template](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Security/Dependency-Scanning.gitlab-ci.yml#L18). 
+- If you hardcoded the `DS_ANALYZER_IMAGE` variable directly, change it to match the latest
+  line as found in our [current Dependency Scanning template](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Security/Dependency-Scanning.gitlab-ci.yml).
+  The line number will vary depending on which scanning job you edited.
+
+  For example, currently the `gemnasium-maven-dependency_scanning` job pulls the latest
+  `gemnasium-maven` Docker image because `DS_ANALYZER_IMAGE` is set to
+  `"$SECURE_ANALYZERS_PREFIX/gemnasium-maven:$DS_MAJOR_VERSION"`.

@@ -253,7 +253,6 @@ MergeRequestDiffFile:
 - b_mode
 - too_large
 - binary
-- diff
 MergeRequestContextCommit:
 - id
 - authored_date

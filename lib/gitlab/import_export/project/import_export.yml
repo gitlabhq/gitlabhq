@@ -413,7 +413,6 @@ included_attributes:
     - :b_mode
     - :too_large
     - :binary
-    - :diff
   metrics:
     - :created_at
     - :updated_at
@@ -797,6 +796,7 @@ excluded_attributes:
     - :verification_checksum
     - :verification_failure
   merge_request_diff_files:
+    - :diff
     - :external_diff_offset
     - :external_diff_size
     - :merge_request_diff_id

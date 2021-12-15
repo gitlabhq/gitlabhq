@@ -545,6 +545,27 @@ RSpec.describe Projects::DestroyService, :aggregate_failures do
     end
   end
 
+  context 'when project has events' do
+    let!(:event) { create(:event, :created, project: project, target: project, author: user) }
+
+    it 'deletes events from the project' do
+      expect do
+        destroy_project(project, user)
+      end.to change(Event, :count).by(-1)
+    end
+
+    context 'when an error is returned while deleting events' do
+      it 'does not delete project' do
+        allow_next_instance_of(Events::DestroyService) do |instance|
+          allow(instance).to receive(:execute).and_return(ServiceResponse.error(message: 'foo'))
+        end
+
+        expect(destroy_project(project, user)).to be_falsey
+        expect(project.delete_error).to include('Failed to remove events')
+      end
+    end
+  end
+
   context 'error while destroying', :sidekiq_inline do
     let!(:pipeline) { create(:ci_pipeline, project: project) }
     let!(:builds) { create_list(:ci_build, 2, :artifacts, pipeline: pipeline) }

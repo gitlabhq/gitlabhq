@@ -844,10 +844,6 @@ class User < ApplicationRecord
   # Instance methods
   #
 
-  def default_dashboard?
-    dashboard == self.class.column_defaults['dashboard']
-  end
-
   def full_path
     username
   end

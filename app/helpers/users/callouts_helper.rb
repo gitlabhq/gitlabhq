@@ -6,7 +6,6 @@ module Users
     GCP_SIGNUP_OFFER = 'gcp_signup_offer'
     SUGGEST_POPOVER_DISMISSED = 'suggest_popover_dismissed'
     TABS_POSITION_HIGHLIGHT = 'tabs_position_highlight'
-    CUSTOMIZE_HOMEPAGE = 'customize_homepage'
     FEATURE_FLAGS_NEW_VERSION = 'feature_flags_new_version'
     REGISTRATION_ENABLED_CALLOUT = 'registration_enabled_callout'
     UNFINISHED_TAG_CLEANUP_CALLOUT = 'unfinished_tag_cleanup_callout'
@@ -34,10 +33,6 @@ module Users
 
     def show_suggest_popover?
       !user_dismissed?(SUGGEST_POPOVER_DISMISSED)
-    end
-
-    def show_customize_homepage_banner?
-      current_user.default_dashboard? && !user_dismissed?(CUSTOMIZE_HOMEPAGE)
     end
 
     def show_feature_flags_new_version?

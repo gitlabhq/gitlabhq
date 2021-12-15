@@ -61,36 +61,6 @@ RSpec.describe Users::CalloutsHelper do
     end
   end
 
-  describe '.show_customize_homepage_banner?' do
-    subject { helper.show_customize_homepage_banner? }
-
-    context 'when user has not dismissed' do
-      before do
-        allow(helper).to receive(:user_dismissed?).with(described_class::CUSTOMIZE_HOMEPAGE) { false }
-      end
-
-      context 'when user is on the default dashboard' do
-        it { is_expected.to be true }
-      end
-
-      context 'when user is not on the default dashboard' do
-        before do
-          user.dashboard = 'stars'
-        end
-
-        it { is_expected.to be false }
-      end
-    end
-
-    context 'when user dismissed' do
-      before do
-        allow(helper).to receive(:user_dismissed?).with(described_class::CUSTOMIZE_HOMEPAGE) { true }
-      end
-
-      it { is_expected.to be false }
-    end
-  end
-
   describe '.render_flash_user_callout' do
     it 'renders the flash_user_callout partial' do
       expect(helper).to receive(:render)

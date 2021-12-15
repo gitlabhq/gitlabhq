@@ -1,22 +1,11 @@
-import getIdeProject from 'ee_else_ce/ide/queries/get_ide_project.query.graphql';
 import Api from '~/api';
+import getIdeProject from 'ee_else_ce/ide/queries/get_ide_project.query.graphql';
 import dismissUserCallout from '~/graphql_shared/mutations/dismiss_user_callout.mutation.graphql';
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import axios from '~/lib/utils/axios_utils';
 import { joinPaths, escapeFileUrl } from '~/lib/utils/url_utility';
 import ciConfig from '~/pipeline_editor/graphql/queries/ci_config.query.graphql';
-import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { query, mutate } from './gql';
-
-const fetchApiProjectData = (projectPath) => Api.project(projectPath).then(({ data }) => data);
-
-const fetchGqlProjectData = (projectPath) =>
-  query({
-    query: getIdeProject,
-    variables: { projectPath },
-  }).then(({ data }) => ({
-    ...data.project,
-    id: getIdFromGraphQLId(data.project.id),
-  }));
 
 export default {
   getFileData(endpoint) {
@@ -65,18 +54,6 @@ export default {
       )
       .then(({ data }) => data);
   },
-  getProjectData(namespace, project) {
-    const projectPath = `${namespace}/${project}`;
-
-    return Promise.all([fetchApiProjectData(projectPath), fetchGqlProjectData(projectPath)]).then(
-      ([apiProjectData, gqlProjectData]) => ({
-        data: {
-          ...apiProjectData,
-          ...gqlProjectData,
-        },
-      }),
-    );
-  },
   getProjectMergeRequests(projectId, params = {}) {
     return Api.projectMergeRequests(projectId, params);
   },
@@ -118,5 +95,14 @@ export default {
       mutation: dismissUserCallout,
       variables: { input: { featureName: name } },
     }).then(({ data }) => data);
+  },
+  getProjectPermissionsData(projectPath) {
+    return query({
+      query: getIdeProject,
+      variables: { projectPath },
+    }).then(({ data }) => ({
+      ...data.project,
+      id: getIdFromGraphQLId(data.project.id),
+    }));
   },
 };

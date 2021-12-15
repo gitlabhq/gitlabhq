@@ -10444,15 +10444,6 @@ msgstr ""
 msgid "Customize your pipeline configuration."
 msgstr ""
 
-msgid "CustomizeHomepageBanner|Do you want to customize this page?"
-msgstr ""
-
-msgid "CustomizeHomepageBanner|Go to preferences"
-msgstr ""
-
-msgid "CustomizeHomepageBanner|This page shows a list of your projects by default but it can be changed to show projects' activity, groups, your to-do list, assigned issues, assigned merge requests, and more. You can change this under \"Homepage content\" in your preferences"
-msgstr ""
-
 msgid "Cycle Time"
 msgstr ""
 
@@ -11417,6 +11408,9 @@ msgid "Delete user list"
 msgstr ""
 
 msgid "Delete variable"
+msgstr ""
+
+msgid "DeleteProject|Failed to remove events. Please try again or contact administrator."
 msgstr ""
 
 msgid "DeleteProject|Failed to remove project repository. Please try again or contact administrator."
@@ -13900,9 +13894,6 @@ msgid "Error uploading file: %{stripped}"
 msgstr ""
 
 msgid "Error while loading the merge request. Please try again."
-msgstr ""
-
-msgid "Error while loading the project data. Please try again."
 msgstr ""
 
 msgid "Error while migrating %{upload_id}: %{error_message}"
@@ -17183,6 +17174,9 @@ msgstr ""
 msgid "GroupsNew|%{linkStart}Groups%{linkEnd} allow you to manage and collaborate across multiple projects. Members of a group have access to all of its projects."
 msgstr ""
 
+msgid "GroupsNew|Ask your administrator to %{enable_link_start}enable%{enable_link_end} Group Migration."
+msgstr ""
+
 msgid "GroupsNew|Assemble related projects together and grant members access to several projects at once."
 msgstr ""
 
@@ -17235,6 +17229,9 @@ msgid "GroupsNew|Please fill in your personal access token."
 msgstr ""
 
 msgid "GroupsNew|Provide credentials for another instance of GitLab to import your groups directly."
+msgstr ""
+
+msgid "GroupsNew|This feature is deprecated and replaced by %{docs_link_start}Group Migration%{docs_link_end}."
 msgstr ""
 
 msgid "GroupsNew|To import a group, navigate to the group settings for the GitLab source instance, %{link_start}generate an export file%{link_end}, and upload it here."
@@ -28336,9 +28333,6 @@ msgstr ""
 msgid "Promotions|This feature is locked."
 msgstr ""
 
-msgid "Promotions|Track activity with Contribution Analytics."
-msgstr ""
-
 msgid "Promotions|Try it for free"
 msgstr ""
 
@@ -28349,9 +28343,6 @@ msgid "Promotions|Upgrade your plan to activate Advanced Search."
 msgstr ""
 
 msgid "Promotions|Upgrade your plan to activate Audit Events."
-msgstr ""
-
-msgid "Promotions|Upgrade your plan to activate Contribution Analytics."
 msgstr ""
 
 msgid "Promotions|Upgrade your plan to activate Group Webhooks."
@@ -28376,9 +28367,6 @@ msgid "Promotions|Weighting your issue"
 msgstr ""
 
 msgid "Promotions|When you have a lot of issues, it can be hard to get an overview. By adding a weight to your issues, you can get a better idea of the effort, cost, required time, or value of each, and so better manage them."
-msgstr ""
-
-msgid "Promotions|With Contribution Analytics you can have an overview for the activity of issues, merge requests, and push events of your organization and its members."
 msgstr ""
 
 msgid "Promotions|You can restrict access to protected branches by choosing a role (Maintainers, Developers) as well as certain users."
@@ -39427,6 +39415,9 @@ msgstr ""
 msgid "Webhooks|Tag push events"
 msgstr ""
 
+msgid "Webhooks|The webhook was triggered more than %{limit} times per minute and is now disabled. To re-enable this webhook, fix the problems shown in %{strong_start}Recent events%{strong_end}, then re-test your settings. %{support_link_start}Contact Support%{support_link_end} if you need help re-enabling your webhook."
+msgstr ""
+
 msgid "Webhooks|Trigger"
 msgstr ""
 
@@ -39482,6 +39473,9 @@ msgid "Webhooks|URL must be percent-encoded if neccessary."
 msgstr ""
 
 msgid "Webhooks|Use this token to validate received payloads. It is sent with the request in the X-Gitlab-Token HTTP header."
+msgstr ""
+
+msgid "Webhooks|Webhook was automatically disabled"
 msgstr ""
 
 msgid "Webhooks|Wiki page events"

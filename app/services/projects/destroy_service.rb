@@ -75,6 +75,18 @@ module Projects
       response.success?
     end
 
+    def destroy_events!
+      unless remove_events
+        raise_error(s_('DeleteProject|Failed to remove events. Please try again or contact administrator.'))
+      end
+    end
+
+    def remove_events
+      response = ::Events::DestroyService.new(project).execute
+
+      response.success?
+    end
+
     def remove_repository(repository)
       return true unless repository
 
@@ -117,6 +129,7 @@ module Projects
       log_destroy_event
       trash_relation_repositories!
       trash_project_repositories!
+      destroy_events!
       destroy_web_hooks!
       destroy_project_bots!
 

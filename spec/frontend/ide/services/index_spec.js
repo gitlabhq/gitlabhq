@@ -216,35 +216,6 @@ describe('IDE services', () => {
     );
   });
 
-  describe('getProjectData', () => {
-    it('combines gql and API requests', () => {
-      const gqlProjectData = {
-        id: 'gid://gitlab/Project/1',
-        userPermissions: {
-          bogus: true,
-        },
-      };
-      const expectedResponse = {
-        ...projectData,
-        ...gqlProjectData,
-        id: 1,
-      };
-      Api.project.mockReturnValue(Promise.resolve({ data: { ...projectData } }));
-      query.mockReturnValue(Promise.resolve({ data: { project: gqlProjectData } }));
-
-      return services.getProjectData(TEST_NAMESPACE, TEST_PROJECT).then((response) => {
-        expect(response).toEqual({ data: expectedResponse });
-        expect(Api.project).toHaveBeenCalledWith(TEST_PROJECT_ID);
-        expect(query).toHaveBeenCalledWith({
-          query: getIdeProject,
-          variables: {
-            projectPath: TEST_PROJECT_ID,
-          },
-        });
-      });
-    });
-  });
-
   describe('getFiles', () => {
     let mock;
     let relativeUrlRoot;
@@ -333,6 +304,40 @@ describe('IDE services', () => {
           mutation: dismissUserCallout,
           variables: { input: { featureName: 'test' } },
         });
+      });
+    });
+  });
+
+  describe('getProjectPermissionsData', () => {
+    const TEST_PROJECT_PATH = 'foo/bar';
+
+    it('queries for the project permissions', () => {
+      const result = { data: { project: projectData } };
+      query.mockResolvedValue(result);
+
+      return services.getProjectPermissionsData(TEST_PROJECT_PATH).then((data) => {
+        expect(data).toEqual(result.data.project);
+        expect(query).toHaveBeenCalledWith(
+          expect.objectContaining({
+            query: getIdeProject,
+            variables: { projectPath: TEST_PROJECT_PATH },
+          }),
+        );
+      });
+    });
+
+    it('converts the returned GraphQL id to the regular ID number', () => {
+      const projectId = 2;
+      const gqlProjectData = {
+        id: `gid://gitlab/Project/${projectId}`,
+        userPermissions: {
+          bogus: true,
+        },
+      };
+
+      query.mockResolvedValue({ data: { project: gqlProjectData } });
+      return services.getProjectPermissionsData(TEST_PROJECT_PATH).then((data) => {
+        expect(data.id).toBe(projectId);
       });
     });
   });

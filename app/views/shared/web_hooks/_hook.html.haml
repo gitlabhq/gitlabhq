@@ -1,7 +1,11 @@
 %li
   .row
     .col-md-8.col-lg-7
-      %strong.light-header= hook.url
+      %strong.light-header
+        = hook.url
+        - if hook.rate_limited?
+          %span.gl-badge.badge-danger.badge-pill.sm= _('Disabled')
+
       %div
         - hook.class.triggers.each_value do |trigger|
           - if hook.public_send(trigger)

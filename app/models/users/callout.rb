@@ -24,7 +24,6 @@ module Users
       buy_pipeline_minutes_notification_dot: 19, # EE-only
       personal_access_token_expiry: 21,          # EE-only
       suggest_pipeline: 22,
-      customize_homepage: 23,
       feature_flags_new_version: 24,
       registration_enabled_callout: 25,
       new_user_signups_cap_reached: 26,          # EE-only

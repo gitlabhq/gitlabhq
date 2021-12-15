@@ -5,9 +5,11 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 description: 'Writing styles, markup, formatting, and other standards for GitLab Documentation.'
 ---
 
-# A-Z word list
+# Recommended word list
 
-To help ensure consistency in the documentation, follow this guidance.
+To help ensure consistency in the documentation, the Technical Writing team
+recommends these wording choices. The GitLab handbook also maintains a list of
+[top misused terms](https://about.gitlab.com/handbook/communication/top-misused-terms/).
 
 For guidance not on this page, we defer to these style guides:
 
@@ -769,7 +771,7 @@ Use **you**, **your**, and **yours** instead of [**the user** and **the user's**
 Documentation should be from the [point of view](https://design.gitlab.com/content/voice-tone#point-of-view) of the reader.
 
 - Do: You can configure a pipeline.
-- Do not: Users can configure a pipeline. 
+- Do not: Users can configure a pipeline.
 
 <!-- vale on -->
 <!-- markdownlint-enable -->

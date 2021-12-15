@@ -1,3 +1,4 @@
+import Vue from 'vue';
 import * as types from '../mutation_types';
 
 export default {
@@ -22,6 +23,17 @@ export default {
   [types.TOGGLE_EMPTY_STATE](state, { projectPath, value }) {
     Object.assign(state.projects[projectPath], {
       empty_repo: value,
+    });
+  },
+  [types.UPDATE_PROJECT](state, { projectPath, props }) {
+    const project = state.projects[projectPath];
+
+    if (!project || !props) {
+      return;
+    }
+
+    Object.keys(props).forEach((key) => {
+      Vue.set(project, key, props[key]);
     });
   },
 };
