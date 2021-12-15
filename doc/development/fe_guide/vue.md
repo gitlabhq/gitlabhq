@@ -308,7 +308,7 @@ This folder holds all components that are specific to this new feature.
 If you need to use or create a component that is likely to be used somewhere
 else, please refer to `vue_shared/components`.
 
-A good rule of thumb to know when you should create a component is to think if
+A good guideline to know when you should create a component is to think if
 it could be reusable elsewhere.
 
 For example, tables are used in a quite amount of places across GitLab, a table
@@ -336,7 +336,7 @@ In the [Vue documentation](https://vuejs.org/v2/api/#Options-Data) the Data func
 
 > The data object for the Vue instance. Vue recursively converts its properties into getter/setters
 to make it "reactive". The object must be plain: native objects such as browser API objects and
-prototype properties are ignored. A rule of thumb is that data should just be data - it is not
+prototype properties are ignored. A guideline is that data should just be data - it is not
 recommended to observe objects with their own stateful behavior.
 
 Based on the Vue guidance:

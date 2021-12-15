@@ -57,7 +57,7 @@ Redis version 6.0 or higher is recommended, as this is what ships with
 
 ### Storage
 
-The necessary hard drive space largely depends on the size of the repositories you want to store in GitLab but as a *rule of thumb* you should have at least as much free space as all your repositories combined take up.
+The necessary hard drive space largely depends on the size of the repositories you want to store in GitLab but as a *guideline* you should have at least as much free space as all your repositories combined take up.
 
 The Omnibus GitLab package requires about 2.5 GB of storage space for installation.
 

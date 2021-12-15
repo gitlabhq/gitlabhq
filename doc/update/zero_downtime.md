@@ -56,7 +56,7 @@ increasing the number of Sidekiq workers that can process jobs in the
 `background_migration` queue. To see the size of this queue,
 [Check for background migrations before upgrading](index.md#checking-for-background-migrations-before-upgrading).
 
-As a rule of thumb, any database smaller than 10 GB doesn't take too much time to
+As a guideline, any database smaller than 10 GB doesn't take too much time to
 upgrade; perhaps an hour at most per minor release. Larger databases however may
 require more time, but this is highly dependent on the size of the database and
 the migrations that are being performed.

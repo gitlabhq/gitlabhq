@@ -33,6 +33,14 @@ Refer to the [OAuth guide](oauth_provider.md) for basic information on how to se
 applications in GitLab. To enable OIDC for an application, all you have to do
 is select the `openid` scope in the application settings.
 
+## Settings discovery
+
+If your client allows importing OIDC settings from a discovery URL, you can use the following URL to automatically find the correct settings:
+
+```plaintext
+https://gitlab.example.com/.well-known/openid-configuration
+```
+
 ## Shared information
 
 The following user information is shared with clients:

@@ -5181,9 +5181,6 @@ msgstr ""
 msgid "Avatar for %{assigneeName}"
 msgstr ""
 
-msgid "Avatar for %{name}"
-msgstr ""
-
 msgid "Avatar will be removed. Are you sure?"
 msgstr ""
 
@@ -41886,9 +41883,6 @@ msgid "metric_id must be unique across a project"
 msgstr ""
 
 msgid "missing"
-msgstr ""
-
-msgid "more information"
 msgstr ""
 
 msgid "most recent deployment"

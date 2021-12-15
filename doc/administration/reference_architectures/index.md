@@ -166,7 +166,7 @@ that can also be promoted in case of disaster.
 
 ## Deviating from the suggested reference architectures
 
-As a general rule of thumb, the further away you move from the Reference Architectures,
+As a general guideline, the further away you move from the Reference Architectures,
 the harder it will be get support for it. With any deviation, you're introducing
 a layer of complexity that will add challenges to finding out where potential
 issues might lie.
