@@ -19916,7 +19916,7 @@ CREATE TABLE timelogs (
     updated_at timestamp without time zone NOT NULL,
     issue_id integer,
     merge_request_id integer,
-    spent_at timestamp without time zone,
+    spent_at timestamp without time zone DEFAULT now(),
     note_id integer,
     project_id integer,
     summary text,

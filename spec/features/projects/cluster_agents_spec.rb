@@ -44,8 +44,17 @@ RSpec.describe 'ClusterAgents', :js do
         visit project_cluster_agent_path(project, agent.name)
       end
 
-      it 'displays agent and token information', :aggregate_failures do
+      it 'displays agent information', :aggregate_failures do
         expect(page).to have_content(agent.name)
+      end
+
+      it 'displays agent activity tab', :aggregate_failures do
+        expect(page).to have_content('Activity')
+      end
+
+      it 'displays agent tokens tab', :aggregate_failures do
+        expect(page).to have_content('Access tokens')
+        click_link 'Access tokens'
         expect(page).to have_content(token.description)
       end
     end

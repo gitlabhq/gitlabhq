@@ -83,7 +83,14 @@ export default {
       </gl-link>
     </div>
 
-    <gl-table :items="tokens" :fields="fields" fixed stacked="md">
+    <gl-table
+      :items="tokens"
+      :fields="fields"
+      fixed
+      stacked="md"
+      head-variant="white"
+      thead-class="gl-border-b-solid gl-border-b-2 gl-border-b-gray-100"
+    >
       <template #cell(lastUsed)="{ item }">
         <time-ago-tooltip v-if="item.lastUsedAt" :time="item.lastUsedAt" />
         <span v-else>{{ $options.i18n.neverUsed }}</span>

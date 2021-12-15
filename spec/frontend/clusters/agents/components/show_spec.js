@@ -5,6 +5,7 @@ import VueApollo from 'vue-apollo';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import ClusterAgentShow from '~/clusters/agents/components/show.vue';
 import TokenTable from '~/clusters/agents/components/token_table.vue';
+import ActivityEvents from '~/clusters/agents/components/activity_events_list.vue';
 import getAgentQuery from '~/clusters/agents/graphql/queries/get_cluster_agent.query.graphql';
 import { useFakeDate } from 'helpers/fake_date';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -72,6 +73,7 @@ describe('ClusterAgentShow', () => {
   const findPaginationButtons = () => wrapper.findComponent(GlKeysetPagination);
   const findTokenCount = () => wrapper.findByTestId('cluster-agent-token-count').text();
   const findEESecurityTabSlot = () => wrapper.findByTestId('ee-security-tab');
+  const findActivity = () => wrapper.findComponent(ActivityEvents);
 
   afterEach(() => {
     wrapper.destroy();
@@ -102,6 +104,10 @@ describe('ClusterAgentShow', () => {
 
     it('should not render pagination buttons when there are no additional pages', () => {
       expect(findPaginationButtons().exists()).toBe(false);
+    });
+
+    it('renders activity events list', () => {
+      expect(findActivity().exists()).toBe(true);
     });
   });
 

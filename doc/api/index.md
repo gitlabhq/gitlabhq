@@ -8,16 +8,16 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 Use the GitLab APIs to automate GitLab.
 
-You can also use a partial [OpenAPI definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/api/openapi/openapi.yaml),
-to test the API directly from the GitLab user interface.
-Contributions are welcome.
-
 ## REST API
 
 A REST API is available in GitLab.
 Usage instructions are below.
 For a list of the available resources and their endpoints, see
 [REST API resources](api_resources.md).
+
+You can also use a partial [OpenAPI definition](openapi/openapi_interactive.md),
+to test the API directly from the GitLab user interface.
+Contributions are welcome.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For an introduction and basic steps, see

@@ -354,6 +354,32 @@ and the configuration directory for each agent:
 Additional management interfaces are planned for the GitLab Agent.
 [Provide more feedback in the related epic](https://gitlab.com/groups/gitlab-org/-/epics/4739).
 
+## View Agent activity information
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/277323) in GitLab 14.6.
+
+Users with at least the [Developer](../../../permissions.md) can view the Agent's activity events.
+The activity logs help you to identify problems and get the information you need for troubleshooting.
+You can see events from a week before the current date.
+To access an agent's activity:
+
+1. Go to your agent's configuration repository.
+1. From the sidebar, select **Infrastructure > Kubernetes clusters**.
+1. Select the **Agent** tab.
+1. Select the agent you want to see the activity.
+
+You can see the following events on the activity list:
+
+- Agent registration:
+  - When a new token is **created**.
+- Connection events:
+  - When an agent is successfully **connected** to a cluster.
+
+Note that the connection status is logged when you connect an agent for the first time
+or after more than an hour of inactivity.
+
+![GitLab Agent activity events UI](../../img/gitlab_agent_activity_events_v14_6.png)
+
 ## Upgrades and version compatibility
 
 The Agent is comprised of two major components: `agentk` and `kas`.

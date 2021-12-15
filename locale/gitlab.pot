@@ -7452,6 +7452,18 @@ msgstr ""
 msgid "ClusterAgents|%{number} of %{total} clusters connected through cluster certificates"
 msgstr ""
 
+msgid "ClusterAgents|%{titleIcon}Connected"
+msgstr ""
+
+msgid "ClusterAgents|%{titleIcon}Not connected"
+msgstr ""
+
+msgid "ClusterAgents|%{tokenName} created"
+msgstr ""
+
+msgid "ClusterAgents|%{tokenName} revoked"
+msgstr ""
+
 msgid "ClusterAgents|Access tokens"
 msgstr ""
 
@@ -7462,6 +7474,12 @@ msgid "ClusterAgents|Advanced installation methods"
 msgstr ""
 
 msgid "ClusterAgents|Agent"
+msgstr ""
+
+msgid "ClusterAgents|Agent %{strongStart}connected%{strongEnd}"
+msgstr ""
+
+msgid "ClusterAgents|Agent %{strongStart}disconnected%{strongEnd}"
 msgstr ""
 
 msgid "ClusterAgents|Agent might not be connected to GitLab"
@@ -7477,6 +7495,9 @@ msgid "ClusterAgents|An error occurred while loading your GitLab Agents"
 msgstr ""
 
 msgid "ClusterAgents|An error occurred while loading your agent"
+msgstr ""
+
+msgid "ClusterAgents|An error occurred while retrieving GitLab Agent activity. Reload the page to try again."
 msgstr ""
 
 msgid "ClusterAgents|An unknown error occurred. Please try again."
@@ -7531,6 +7552,9 @@ msgid "ClusterAgents|Deprecated"
 msgstr ""
 
 msgid "ClusterAgents|Description"
+msgstr ""
+
+msgid "ClusterAgents|Event occurred"
 msgstr ""
 
 msgid "ClusterAgents|Failed to register an agent"
@@ -7608,6 +7632,9 @@ msgstr ""
 msgid "ClusterAgents|Security"
 msgstr ""
 
+msgid "ClusterAgents|See Agent activity updates such as tokens created or revoked and clusters connected or not connected."
+msgstr ""
+
 msgid "ClusterAgents|Select an agent"
 msgstr ""
 
@@ -7626,10 +7653,21 @@ msgstr ""
 msgid "ClusterAgents|The registration token will be used to connect the agent on your cluster to GitLab. %{linkStart}What are registration tokens?%{linkEnd}"
 msgstr ""
 
+msgid "ClusterAgents|There's no activity from the past day"
+msgid_plural "ClusterAgents|There's no activity from the past %d days"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "ClusterAgents|This agent has no tokens"
 msgstr ""
 
 msgid "ClusterAgents|To install a new agent, first add the agent's configuration file to this repository. %{linkStart}What's the agent's configuration file?%{linkEnd}"
+msgstr ""
+
+msgid "ClusterAgents|Token created by %{userName}"
+msgstr ""
+
+msgid "ClusterAgents|Token revoked by %{userName}"
 msgstr ""
 
 msgid "ClusterAgents|Unknown user"

@@ -247,7 +247,7 @@ You can safely skip this step if your **primary** site uses a CA-issued HTTPS ce
 If your **primary** site is using a self-signed certificate for *HTTPS* support, you
 need to add that certificate to the **secondary** site's trust store. Retrieve the
 certificate from the **primary** site and follow
-[these instructions](https://docs.gitlab.com/omnibus/settings/ssl.html)
+[these instructions](https://docs.gitlab.com/omnibus/settings/ssl.html#install-custom-public-certificates)
 on the **secondary** site.
 
 ### Step 5. Enable Git access over HTTP/HTTPS
