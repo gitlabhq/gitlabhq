@@ -3,4 +3,6 @@
 #js-project-pipelines-charts-app{ data: { project_path: @project.full_path,
   should_render_dora_charts: should_render_dora_charts.to_s,
   should_render_quality_summary: should_render_quality_summary.to_s,
-  failed_pipelines_link: project_pipelines_path(@project, page: '1', scope: 'all', status: 'failed') } }
+  failed_pipelines_link: project_pipelines_path(@project, page: '1', scope: 'all', status: 'failed'),
+  coverage_chart_path: charts_project_graph_path(@project, @project.default_branch),
+  default_branch: @project.default_branch } }

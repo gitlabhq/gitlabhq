@@ -10,10 +10,16 @@ RSpec.describe RuboCop::Cop::Graphql::OldTypes do
   subject(:cop) { described_class.new }
 
   where(:old_type, :message) do
-    'GraphQL::ID_TYPE'      | 'Avoid using GraphQL::ID_TYPE. Use GraphQL::Types::ID instead'
-    'GraphQL::INT_TYPE'     | 'Avoid using GraphQL::INT_TYPE. Use GraphQL::Types::Int instead'
-    'GraphQL::STRING_TYPE'  | 'Avoid using GraphQL::STRING_TYPE. Use GraphQL::Types::String instead'
-    'GraphQL::BOOLEAN_TYPE' | 'Avoid using GraphQL::BOOLEAN_TYPE. Use GraphQL::Types::Boolean instead'
+    'GraphQL::ID_TYPE'        | 'Avoid using GraphQL::ID_TYPE. Use GraphQL::Types::ID instead'
+    'GraphQL::INT_TYPE'       | 'Avoid using GraphQL::INT_TYPE. Use GraphQL::Types::Int instead'
+    'GraphQL::STRING_TYPE'    | 'Avoid using GraphQL::STRING_TYPE. Use GraphQL::Types::String instead'
+    'GraphQL::BOOLEAN_TYPE'   | 'Avoid using GraphQL::BOOLEAN_TYPE. Use GraphQL::Types::Boolean instead'
+    'GraphQL::FLOAT_TYPE'     | 'Avoid using GraphQL::FLOAT_TYPE. Use GraphQL::Types::Float instead'
+    '::GraphQL::ID_TYPE'      | 'Avoid using GraphQL::ID_TYPE. Use GraphQL::Types::ID instead'
+    '::GraphQL::INT_TYPE'     | 'Avoid using GraphQL::INT_TYPE. Use GraphQL::Types::Int instead'
+    '::GraphQL::STRING_TYPE'  | 'Avoid using GraphQL::STRING_TYPE. Use GraphQL::Types::String instead'
+    '::GraphQL::BOOLEAN_TYPE' | 'Avoid using GraphQL::BOOLEAN_TYPE. Use GraphQL::Types::Boolean instead'
+    '::GraphQL::FLOAT_TYPE'   | 'Avoid using GraphQL::FLOAT_TYPE. Use GraphQL::Types::Float instead'
   end
 
   with_them do
@@ -27,7 +33,7 @@ RSpec.describe RuboCop::Cop::Graphql::OldTypes do
         RUBY
       end
 
-      it "adds an offense when an old type is used with other keywords" do
+      it 'adds an offense when an old type is used with other keywords' do
         expect_offense(<<~RUBY)
         class MyType
           field :some_field, #{old_type}, null: true, description: 'My description'

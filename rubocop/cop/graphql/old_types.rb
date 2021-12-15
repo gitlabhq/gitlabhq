@@ -24,11 +24,12 @@ module RuboCop
         MSG_INT     = 'Avoid using GraphQL::INT_TYPE. Use GraphQL::Types::Int instead'
         MSG_STRING  = 'Avoid using GraphQL::STRING_TYPE. Use GraphQL::Types::String instead'
         MSG_BOOLEAN = 'Avoid using GraphQL::BOOLEAN_TYPE. Use GraphQL::Types::Boolean instead'
+        MSG_FLOAT   = 'Avoid using GraphQL::FLOAT_TYPE. Use GraphQL::Types::Float instead'
 
         def_node_matcher :has_old_type?, <<~PATTERN
           (send nil? {:field :argument}
             (sym _)
-            (const (const nil? :GraphQL) ${:ID_TYPE :INT_TYPE :STRING_TYPE :BOOLEAN_TYPE})
+            (const {(const nil? :GraphQL) (const (cbase) :GraphQL)} ${:ID_TYPE :INT_TYPE :STRING_TYPE :BOOLEAN_TYPE :FLOAT_TYPE})
             (...)?)
         PATTERN
 

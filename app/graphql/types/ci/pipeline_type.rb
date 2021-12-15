@@ -45,7 +45,7 @@ module Types
       field :queued_duration, Types::DurationType, null: true,
             description: 'How long the pipeline was queued before starting.'
 
-      field :coverage, GraphQL::FLOAT_TYPE, null: true,
+      field :coverage, GraphQL::Types::Float, null: true,
             description: 'Coverage percentage.'
 
       field :created_at, Types::TimeType, null: false,

@@ -438,12 +438,12 @@ RSpec.describe Tooling::Graphql::Docs::Renderer do
         mutation.description 'Make everything very pretty.'
 
         mutation.argument :prettiness_factor,
-                          type: GraphQL::FLOAT_TYPE,
+                          type: GraphQL::Types::Float,
                           required: true,
                           description: 'How much prettier?'
 
         mutation.argument :pulchritude,
-                          type: GraphQL::FLOAT_TYPE,
+                          type: GraphQL::Types::Float,
                           required: false,
                           description: 'How much prettier?',
                           deprecated: {

@@ -76,7 +76,7 @@ module Types
             description: 'Indicates the job is active.'
       field :stuck, GraphQL::Types::Boolean, null: false, method: :stuck?,
             description: 'Indicates the job is stuck.'
-      field :coverage, GraphQL::FLOAT_TYPE, null: true,
+      field :coverage, GraphQL::Types::Float, null: true,
             description: 'Coverage level of the job.'
       field :created_by_tag, GraphQL::Types::Boolean, null: false,
             description: 'Whether the job was created by a tag.'

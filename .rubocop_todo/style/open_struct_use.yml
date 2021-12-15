@@ -13,7 +13,6 @@ Style/OpenStructUse:
   - lib/gitlab/testing/request_inspector_middleware.rb
   - lib/mattermost/session.rb
   - spec/controllers/groups/clusters_controller_spec.rb
-  - spec/controllers/import/fogbugz_controller_spec.rb
   - spec/controllers/import/gitlab_controller_spec.rb
   - spec/controllers/projects/clusters_controller_spec.rb
   - spec/factories/go_module_versions.rb
@@ -32,7 +31,6 @@ Style/OpenStructUse:
   - spec/lib/gitlab/database/migrations/runner_spec.rb
   - spec/lib/gitlab/gitaly_client/blobs_stitcher_spec.rb
   - spec/lib/gitlab/gitaly_client/diff_stitcher_spec.rb
-  - spec/lib/gitlab/graphql/pagination/keyset/connection_spec.rb
   - spec/lib/gitlab/legacy_github_import/project_creator_spec.rb
   - spec/lib/gitlab/quick_actions/command_definition_spec.rb
   - spec/models/design_management/design_action_spec.rb

@@ -152,8 +152,8 @@ The `iid`, `title` and `description` are _scalar_ GraphQL types.
 `title` and `description` are regular `GraphQL::Types::String` types.
 
 Note that the old scalar types `GraphQL:ID`, `GraphQL::INT_TYPE`, `GraphQL::STRING_TYPE`,
-and `GraphQL:BOOLEAN_TYPE` are no longer allowed. Please use `GraphQL::Types::ID`,
-`GraphQL::Types::Int`, `GraphQL::Types::String`, and `GraphQL::Types::Boolean`.
+`GraphQL:BOOLEAN_TYPE`, and `GraphQL::FLOAT_TYPE` are no longer allowed. Please use `GraphQL::Types::ID`,
+`GraphQL::Types::Int`, `GraphQL::Types::String`, `GraphQL::Types::Boolean`, and `GraphQL::Types::Float`.
 
 When exposing a model through the GraphQL API, we do so by creating a
 new type in `app/graphql/types`. You can also declare custom GraphQL data types

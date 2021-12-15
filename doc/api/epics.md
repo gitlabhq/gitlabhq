@@ -77,6 +77,7 @@ GET /groups/:id/epics?state=opened
 | `include_ancestor_groups` | boolean    | no         | Include epics from the requested group's ancestors. Default is `false`                                                      |
 | `include_descendant_groups` | boolean  | no         | Include epics from the requested group's descendants. Default is `true`                                                     |
 | `my_reaction_emoji` | string           | no         | Return epics reacted by the authenticated user by the given emoji. `None` returns epics not given a reaction. `Any` returns epics given at least one reaction. Available in [GitLab 13.0](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/31479) and later |
+| `not` | Hash | no | Return epics that do not match the parameters supplied. Accepts: `author_id` and `labels`. Available in [GitLab 14.6](https://gitlab.com/gitlab-org/gitlab/-/issues/347525) and later |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/1/epics"

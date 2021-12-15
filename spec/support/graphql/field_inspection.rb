@@ -22,7 +22,7 @@ module Graphql
       @type ||= begin
         field_type = @field.type.respond_to?(:to_graphql) ? @field.type.to_graphql : @field.type
 
-        # The type could be nested. For example `[GraphQL::STRING_TYPE]`:
+        # The type could be nested. For example `[GraphQL::Types::String]`:
         # - List
         # - String!
         # - String

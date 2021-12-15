@@ -791,6 +791,9 @@ This is overridden by the [documentation-specific punctuation rules](#punctuatio
   for review, based upon the [product category](https://about.gitlab.com/handbook/product/categories/).
   This is to ensure that no document with wrong heading is going live without an
   audit, thus preventing dead links and redirection issues when corrected.
+- Use the context provided by parent section headings. That is, don't repeat the parent heading's text in each
+  subsection's heading.
+- Use articles and prepositions in headings where it would make sense in regular text.
 - Leave exactly one blank line before and after a heading.
 - Do not use links in headings.
 - Add the corresponding [product badge](#product-tier-badges) according to the tier the

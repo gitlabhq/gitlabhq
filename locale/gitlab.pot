@@ -27332,6 +27332,48 @@ msgstr ""
 msgid "ProjectPage|Project ID: %{project_id}"
 msgstr ""
 
+msgid "ProjectQualitySummary|An error occurred while trying to fetch project quality statistics"
+msgstr ""
+
+msgid "ProjectQualitySummary|Coverage"
+msgstr ""
+
+msgid "ProjectQualitySummary|Failure"
+msgstr ""
+
+msgid "ProjectQualitySummary|Latest pipeline results"
+msgstr ""
+
+msgid "ProjectQualitySummary|Learn more about test coverage"
+msgstr ""
+
+msgid "ProjectQualitySummary|Learn more about test reports"
+msgstr ""
+
+msgid "ProjectQualitySummary|Measure of how much of your code is covered by tests."
+msgstr ""
+
+msgid "ProjectQualitySummary|See full report"
+msgstr ""
+
+msgid "ProjectQualitySummary|See project Code Coverage Statistics"
+msgstr ""
+
+msgid "ProjectQualitySummary|Skipped"
+msgstr ""
+
+msgid "ProjectQualitySummary|Success"
+msgstr ""
+
+msgid "ProjectQualitySummary|Test coverage"
+msgstr ""
+
+msgid "ProjectQualitySummary|Test runs"
+msgstr ""
+
+msgid "ProjectQualitySummary|The percentage of tests that succeed, fail, or are skipped."
+msgstr ""
+
 msgid "ProjectSelect| or group"
 msgstr ""
 
@@ -33750,6 +33792,12 @@ msgid "Subscription successfully created."
 msgstr ""
 
 msgid "Subscription successfully deleted."
+msgstr ""
+
+msgid "SubscriptionBanner|Export license usage file"
+msgstr ""
+
+msgid "SubscriptionBanner|Upload new license"
 msgstr ""
 
 msgid "SubscriptionTable|Add seats"
