@@ -20,6 +20,6 @@
 - [json schema](https://gitlab.com/gitlab-org/iglu/-/blob/master/public/schemas/com.gitlab/gitlab_experiment/jsonschema/0-3-0) used in `gitlab-experiment` tracking.
 - see [taxonomy](https://docs.gitlab.com/ee/development/snowplow/index.html#structured-event-taxonomy) for a guide.
 
-| activity | category | action | label | context | property | value |
+| sequence | activity | category | action | label | property | value |
 | -------- | -------- | ------ | ----- | ------- | -------- | ----- |
-|  |  |  |  | json schema |  |  |
+|  |  |  |  |  |  |  |
