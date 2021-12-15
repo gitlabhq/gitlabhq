@@ -1,13 +1,16 @@
 import { Range } from 'monaco-editor';
-import { waitForCSSLoaded } from '~/helpers/startup_css_helper';
-import { ERROR_INSTANCE_REQUIRED_FOR_EXTENSION, EDITOR_TYPE_CODE } from '../constants';
+import {
+  EDITOR_TYPE_CODE,
+  EXTENSION_BASE_LINE_LINK_ANCHOR_CLASS,
+  EXTENSION_BASE_LINE_NUMBERS_CLASS,
+} from '../constants';
 
 const hashRegexp = new RegExp('#?L', 'g');
 
 const createAnchor = (href) => {
   const fragment = new DocumentFragment();
   const el = document.createElement('a');
-  el.classList.add('link-anchor');
+  el.classList.add(EXTENSION_BASE_LINE_LINK_ANCHOR_CLASS);
   el.href = href;
   fragment.appendChild(el);
   el.addEventListener('contextmenu', (e) => {
@@ -17,38 +20,46 @@ const createAnchor = (href) => {
 };
 
 export class SourceEditorExtension {
-  constructor({ instance, ...options } = {}) {
-    if (instance) {
-      Object.assign(instance, options);
-      SourceEditorExtension.highlightLines(instance);
-      if (instance.getEditorType && instance.getEditorType() === EDITOR_TYPE_CODE) {
-        SourceEditorExtension.setupLineLinking(instance);
-      }
-      SourceEditorExtension.deferRerender(instance);
-    } else if (Object.entries(options).length) {
-      throw new Error(ERROR_INSTANCE_REQUIRED_FOR_EXTENSION);
+  static get extensionName() {
+    return 'BaseExtension';
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  onUse(instance) {
+    SourceEditorExtension.highlightLines(instance);
+    if (instance.getEditorType && instance.getEditorType() === EDITOR_TYPE_CODE) {
+      SourceEditorExtension.setupLineLinking(instance);
     }
   }
 
-  static deferRerender(instance) {
-    waitForCSSLoaded(() => {
-      instance.layout();
+  static onMouseMoveHandler(e) {
+    const target = e.target.element;
+    if (target.classList.contains(EXTENSION_BASE_LINE_NUMBERS_CLASS)) {
+      const lineNum = e.target.position.lineNumber;
+      const hrefAttr = `#L${lineNum}`;
+      let lineLink = target.querySelector('a');
+      if (!lineLink) {
+        lineLink = createAnchor(hrefAttr);
+        target.appendChild(lineLink);
+      }
+    }
+  }
+
+  static setupLineLinking(instance) {
+    instance.onMouseMove(SourceEditorExtension.onMouseMoveHandler);
+    instance.onMouseDown((e) => {
+      const isCorrectAnchor = e.target.element.classList.contains(
+        EXTENSION_BASE_LINE_LINK_ANCHOR_CLASS,
+      );
+      if (!isCorrectAnchor) {
+        return;
+      }
+      if (instance.lineDecorations) {
+        instance.deltaDecorations(instance.lineDecorations, []);
+      }
     });
   }
 
-  static removeHighlights(instance) {
-    Object.assign(instance, {
-      lineDecorations: instance.deltaDecorations(instance.lineDecorations || [], []),
-    });
-  }
-
-  /**
-   * Returns a function that can only be invoked once between
-   * each browser screen repaint.
-   * @param {Object} instance - The Source Editor instance
-   * @param {Array} bounds - The [start, end] array with start
-   * and end coordinates for highlighting
-   */
   static highlightLines(instance, bounds = null) {
     const [start, end] =
       bounds && Array.isArray(bounds)
@@ -74,29 +85,29 @@ export class SourceEditorExtension {
     }
   }
 
-  static onMouseMoveHandler(e) {
-    const target = e.target.element;
-    if (target.classList.contains('line-numbers')) {
-      const lineNum = e.target.position.lineNumber;
-      const hrefAttr = `#L${lineNum}`;
-      let el = target.querySelector('a');
-      if (!el) {
-        el = createAnchor(hrefAttr);
-        target.appendChild(el);
-      }
-    }
-  }
+  // eslint-disable-next-line class-methods-use-this
+  provides() {
+    return {
+      /**
+       * Removes existing line decorations and updates the reference on the instance
+       * @param {module:source_editor_instance~EditorInstance} instance - The Source Editor instance
+       */
+      removeHighlights: (instance) => {
+        Object.assign(instance, {
+          lineDecorations: instance.deltaDecorations(instance.lineDecorations || [], []),
+        });
+      },
 
-  static setupLineLinking(instance) {
-    instance.onMouseMove(SourceEditorExtension.onMouseMoveHandler);
-    instance.onMouseDown((e) => {
-      const isCorrectAnchor = e.target.element.classList.contains('link-anchor');
-      if (!isCorrectAnchor) {
-        return;
-      }
-      if (instance.lineDecorations) {
-        instance.deltaDecorations(instance.lineDecorations, []);
-      }
-    });
+      /**
+       * Returns a function that can only be invoked once between
+       * each browser screen repaint.
+       * @param {Array} bounds - The [start, end] array with start
+       * @param {module:source_editor_instance~EditorInstance} instance - The Source Editor instance
+       * and end coordinates for highlighting
+       */
+      highlightLines(instance, bounds = null) {
+        SourceEditorExtension.highlightLines(instance, bounds);
+      },
+    };
   }
 }

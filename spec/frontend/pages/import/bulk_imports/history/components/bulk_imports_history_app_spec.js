@@ -2,7 +2,7 @@ import { GlEmptyState, GlLoadingIcon, GlTable } from '@gitlab/ui';
 import { mount, shallowMount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
-import PaginationBar from '~/import_entities/components/pagination_bar.vue';
+import PaginationBar from '~/vue_shared/components/pagination_bar/pagination_bar.vue';
 import BulkImportsHistoryApp from '~/pages/import/bulk_imports/history/components/bulk_imports_history_app.vue';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 

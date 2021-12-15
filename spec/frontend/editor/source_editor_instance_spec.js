@@ -32,11 +32,17 @@ describe('Source Editor Instance', () => {
   ];
 
   const fooFn = jest.fn();
+  const fooProp = 'foo';
   class DummyExt {
+    // eslint-disable-next-line class-methods-use-this
+    get extensionName() {
+      return 'DummyExt';
+    }
     // eslint-disable-next-line class-methods-use-this
     provides() {
       return {
         fooFn,
+        fooProp,
       };
     }
   }
@@ -64,13 +70,20 @@ describe('Source Editor Instance', () => {
   });
 
   describe('proxy', () => {
-    it('returns prop from an extension if extension provides it', () => {
+    it('returns a method from an extension if extension provides it', () => {
       seInstance = new SourceEditorInstance();
       seInstance.use({ definition: DummyExt });
 
       expect(fooFn).not.toHaveBeenCalled();
       seInstance.fooFn();
       expect(fooFn).toHaveBeenCalled();
+    });
+
+    it('returns a prop from an extension if extension provides it', () => {
+      seInstance = new SourceEditorInstance();
+      seInstance.use({ definition: DummyExt });
+
+      expect(seInstance.fooProp).toBe('foo');
     });
 
     it.each`
@@ -118,20 +131,20 @@ describe('Source Editor Instance', () => {
 
     it("correctly sets the context of the 'this' keyword for the extension's methods", () => {
       seInstance = new SourceEditorInstance();
-      seInstance.use({ definition: SEWithSetupExt });
+      const extension = seInstance.use({ definition: SEWithSetupExt });
 
-      expect(seInstance.giveMeContext().constructor).toEqual(SEWithSetupExt);
+      expect(seInstance.giveMeContext()).toEqual(extension.obj);
     });
 
     it('returns props from SE instance itself if no extension provides the prop', () => {
       seInstance = new SourceEditorInstance({
         use: fooFn,
       });
-      jest.spyOn(seInstance, 'use').mockImplementation(() => {});
-      expect(seInstance.use).not.toHaveBeenCalled();
+      const spy = jest.spyOn(seInstance.constructor.prototype, 'use').mockImplementation(() => {});
+      expect(spy).not.toHaveBeenCalled();
       expect(fooFn).not.toHaveBeenCalled();
       seInstance.use();
-      expect(seInstance.use).toHaveBeenCalled();
+      expect(spy).toHaveBeenCalled();
       expect(fooFn).not.toHaveBeenCalled();
     });
 

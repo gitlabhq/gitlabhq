@@ -9,7 +9,6 @@ describe('Markdown Extension for Source Editor', () => {
   let instance;
   let editorEl;
   let mockAxios;
-  const previewMarkdownPath = '/gitlab/fooGroup/barProj/preview_markdown';
   const firstLine = 'This is a';
   const secondLine = 'multiline';
   const thirdLine = 'string with some **markup**';
@@ -36,7 +35,7 @@ describe('Markdown Extension for Source Editor', () => {
       blobPath: markdownPath,
       blobContent: text,
     });
-    instance.use(new EditorMarkdownExtension({ instance, previewMarkdownPath }));
+    instance.use({ definition: EditorMarkdownExtension });
   });
 
   afterEach(() => {
@@ -164,13 +163,11 @@ describe('Markdown Extension for Source Editor', () => {
     });
 
     it('does not fail when only `toSelect` is supplied and fetches the text from selection', () => {
-      jest.spyOn(instance, 'getSelectedText');
       const toSelect = 'string';
       selectSecondAndThirdLines();
 
       instance.selectWithinSelection(toSelect);
 
-      expect(instance.getSelectedText).toHaveBeenCalled();
       expect(selectionToString()).toBe(`[3,1 -> 3,${toSelect.length + 1}]`);
     });
 

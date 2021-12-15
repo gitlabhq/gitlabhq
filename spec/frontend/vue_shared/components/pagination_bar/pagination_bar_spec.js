@@ -1,16 +1,16 @@
 import { GlPagination, GlDropdown, GlDropdownItem } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
-import PaginationBar from '~/import_entities/components/pagination_bar.vue';
+import PaginationBar from '~/vue_shared/components/pagination_bar/pagination_bar.vue';
 import PaginationLinks from '~/vue_shared/components/pagination_links.vue';
 
 describe('Pagination bar', () => {
   const DEFAULT_PROPS = {
     pageInfo: {
       total: 50,
-      page: 1,
+      totalPages: 3,
+      page: 3,
       perPage: 20,
     },
-    itemsCount: 17,
   };
   let wrapper;
 
@@ -73,7 +73,7 @@ describe('Pagination bar', () => {
     createComponent();
 
     expect(wrapper.find('[data-testid="information"]').text()).toMatchInterpolatedText(
-      'Showing 1 - 17 of 50',
+      'Showing 41 - 50 of 50',
     );
   });
 
@@ -82,11 +82,12 @@ describe('Pagination bar', () => {
       pageInfo: {
         ...DEFAULT_PROPS.pageInfo,
         total: 1200,
+        page: 2,
       },
     });
 
     expect(wrapper.find('[data-testid="information"]').text()).toMatchInterpolatedText(
-      'Showing 1 - 17 of 1000+',
+      'Showing 21 - 40 of 1000+',
     );
   });
 });

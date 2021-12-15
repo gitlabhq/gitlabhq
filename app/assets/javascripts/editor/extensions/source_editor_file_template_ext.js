@@ -1,8 +1,16 @@
 import { Position } from 'monaco-editor';
-import { SourceEditorExtension } from './source_editor_extension_base';
 
-export class FileTemplateExtension extends SourceEditorExtension {
-  navigateFileStart() {
-    this.setPosition(new Position(1, 1));
+export class FileTemplateExtension {
+  static get extensionName() {
+    return 'FileTemplate';
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  provides() {
+    return {
+      navigateFileStart: (instance) => {
+        instance.setPosition(new Position(1, 1));
+      },
+    };
   }
 }

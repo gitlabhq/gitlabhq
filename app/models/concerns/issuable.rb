@@ -61,6 +61,11 @@ module Issuable
         # We check first if we're loaded to not load unnecessarily.
         loaded? && to_a.all? { |note| note.association(:award_emoji).loaded? }
       end
+
+      def projects_loaded?
+        # We check first if we're loaded to not load unnecessarily.
+        loaded? && to_a.all? { |note| note.association(:project).loaded? }
+      end
     end
 
     has_many :note_authors, -> { distinct }, through: :notes, source: :author
@@ -524,6 +529,7 @@ module Issuable
     includes = []
     includes << :author unless notes.authors_loaded?
     includes << :award_emoji unless notes.award_emojis_loaded?
+    includes << :project unless notes.projects_loaded?
 
     if includes.any?
       notes.includes(includes)

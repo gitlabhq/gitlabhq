@@ -2,6 +2,10 @@ import { Document } from 'yaml';
 import SourceEditor from '~/editor/source_editor';
 import { YamlEditorExtension } from '~/editor/extensions/source_editor_yaml_ext';
 import { SourceEditorExtension } from '~/editor/extensions/source_editor_extension_base';
+import { spyOnApi } from 'jest/editor/helpers';
+
+let baseExtension;
+let yamlExtension;
 
 const getEditorInstance = (editorInstanceOptions = {}) => {
   setFixtures('<div id="editor"></div>');
@@ -16,7 +20,10 @@ const getEditorInstance = (editorInstanceOptions = {}) => {
 const getEditorInstanceWithExtension = (extensionOptions = {}, editorInstanceOptions = {}) => {
   setFixtures('<div id="editor"></div>');
   const instance = getEditorInstance(editorInstanceOptions);
-  instance.use(new YamlEditorExtension({ instance, ...extensionOptions }));
+  [baseExtension, yamlExtension] = instance.use([
+    { definition: SourceEditorExtension },
+    { definition: YamlEditorExtension, setupOptions: extensionOptions },
+  ]);
 
   // Remove the below once
   // https://gitlab.com/gitlab-org/gitlab/-/issues/325992 is resolved
@@ -29,19 +36,16 @@ const getEditorInstanceWithExtension = (extensionOptions = {}, editorInstanceOpt
 
 describe('YamlCreatorExtension', () => {
   describe('constructor', () => {
-    it('saves constructor options', () => {
+    it('saves setupOptions options on the extension, but does not expose those to instance', () => {
+      const highlightPath = 'foo';
       const instance = getEditorInstanceWithExtension({
-        highlightPath: 'foo',
+        highlightPath,
         enableComments: true,
       });
-      expect(instance).toEqual(
-        expect.objectContaining({
-          options: expect.objectContaining({
-            highlightPath: 'foo',
-            enableComments: true,
-          }),
-        }),
-      );
+      expect(yamlExtension.obj.highlightPath).toBe(highlightPath);
+      expect(yamlExtension.obj.enableComments).toBe(true);
+      expect(instance.highlightPath).toBeUndefined();
+      expect(instance.enableComments).toBeUndefined();
     });
 
     it('dumps values loaded with the model constructor options', () => {
@@ -55,7 +59,7 @@ describe('YamlCreatorExtension', () => {
     it('registers the onUpdate() function', () => {
       const instance = getEditorInstance();
       const onDidChangeModelContent = jest.spyOn(instance, 'onDidChangeModelContent');
-      instance.use(new YamlEditorExtension({ instance }));
+      instance.use({ definition: YamlEditorExtension });
       expect(onDidChangeModelContent).toHaveBeenCalledWith(expect.any(Function));
     });
 
@@ -82,21 +86,21 @@ describe('YamlCreatorExtension', () => {
     it('should call transformComments if enableComments is true', () => {
       const instance = getEditorInstanceWithExtension({ enableComments: true });
       const transformComments = jest.spyOn(YamlEditorExtension, 'transformComments');
-      YamlEditorExtension.initFromModel(instance, model);
+      instance.initFromModel(model);
       expect(transformComments).toHaveBeenCalled();
     });
 
     it('should not call transformComments if enableComments is false', () => {
       const instance = getEditorInstanceWithExtension({ enableComments: false });
       const transformComments = jest.spyOn(YamlEditorExtension, 'transformComments');
-      YamlEditorExtension.initFromModel(instance, model);
+      instance.initFromModel(model);
       expect(transformComments).not.toHaveBeenCalled();
     });
 
     it('should call setValue with the stringified model', () => {
       const instance = getEditorInstanceWithExtension();
       const setValue = jest.spyOn(instance, 'setValue');
-      YamlEditorExtension.initFromModel(instance, model);
+      instance.initFromModel(model);
       expect(setValue).toHaveBeenCalledWith(doc.toString());
     });
   });
@@ -240,26 +244,35 @@ foo:
     it("should call setValue with the stringified doc if the editor's value is empty", () => {
       const instance = getEditorInstanceWithExtension();
       const setValue = jest.spyOn(instance, 'setValue');
-      const updateValue = jest.spyOn(instance, 'updateValue');
+      const updateValueSpy = jest.fn();
+      spyOnApi(yamlExtension, {
+        updateValue: updateValueSpy,
+      });
       instance.setDoc(doc);
       expect(setValue).toHaveBeenCalledWith(doc.toString());
-      expect(updateValue).not.toHaveBeenCalled();
+      expect(updateValueSpy).not.toHaveBeenCalled();
     });
 
     it("should call updateValue with the stringified doc if the editor's value is not empty", () => {
       const instance = getEditorInstanceWithExtension({}, { value: 'asjkdhkasjdh' });
       const setValue = jest.spyOn(instance, 'setValue');
-      const updateValue = jest.spyOn(instance, 'updateValue');
+      const updateValueSpy = jest.fn();
+      spyOnApi(yamlExtension, {
+        updateValue: updateValueSpy,
+      });
       instance.setDoc(doc);
       expect(setValue).not.toHaveBeenCalled();
-      expect(updateValue).toHaveBeenCalledWith(doc.toString());
+      expect(updateValueSpy).toHaveBeenCalledWith(instance, doc.toString());
     });
 
     it('should trigger the onUpdate method', () => {
       const instance = getEditorInstanceWithExtension();
-      const onUpdate = jest.spyOn(instance, 'onUpdate');
+      const onUpdateSpy = jest.fn();
+      spyOnApi(yamlExtension, {
+        onUpdate: onUpdateSpy,
+      });
       instance.setDoc(doc);
-      expect(onUpdate).toHaveBeenCalled();
+      expect(onUpdateSpy).toHaveBeenCalled();
     });
   });
 
@@ -320,9 +333,12 @@ foo:
     it('calls highlight', () => {
       const highlightPath = 'foo';
       const instance = getEditorInstanceWithExtension({ highlightPath });
-      instance.highlight = jest.fn();
+      // Here we do not spy on the public API method of the extension, but rather
+      // the public method of the extension's instance.
+      // This is required based on how `onUpdate` works
+      const highlightSpy = jest.spyOn(yamlExtension.obj, 'highlight');
       instance.onUpdate();
-      expect(instance.highlight).toHaveBeenCalledWith(highlightPath);
+      expect(highlightSpy).toHaveBeenCalledWith(instance, highlightPath);
     });
   });
 
@@ -350,8 +366,12 @@ foo:
 
     beforeEach(() => {
       instance = getEditorInstanceWithExtension({ highlightPath: highlightPathOnSetup }, { value });
-      highlightLinesSpy = jest.spyOn(SourceEditorExtension, 'highlightLines');
-      removeHighlightsSpy = jest.spyOn(SourceEditorExtension, 'removeHighlights');
+      highlightLinesSpy = jest.fn();
+      removeHighlightsSpy = jest.fn();
+      spyOnApi(baseExtension, {
+        highlightLines: highlightLinesSpy,
+        removeHighlights: removeHighlightsSpy,
+      });
     });
 
     afterEach(() => {
@@ -361,7 +381,7 @@ foo:
     it('saves the highlighted path in highlightPath', () => {
       const path = 'foo.bar';
       instance.highlight(path);
-      expect(instance.options.highlightPath).toEqual(path);
+      expect(yamlExtension.obj.highlightPath).toEqual(path);
     });
 
     it('calls highlightLines with a number of lines', () => {
@@ -374,14 +394,14 @@ foo:
       instance.highlight(null);
       expect(removeHighlightsSpy).toHaveBeenCalledWith(instance);
       expect(highlightLinesSpy).not.toHaveBeenCalled();
-      expect(instance.options.highlightPath).toBeNull();
+      expect(yamlExtension.obj.highlightPath).toBeNull();
     });
 
     it('throws an error if path is invalid and does not change the highlighted path', () => {
       expect(() => instance.highlight('invalidPath[0]')).toThrow(
         'The node invalidPath[0] could not be found inside the document.',
       );
-      expect(instance.options.highlightPath).toEqual(highlightPathOnSetup);
+      expect(yamlExtension.obj.highlightPath).toEqual(highlightPathOnSetup);
       expect(highlightLinesSpy).not.toHaveBeenCalled();
       expect(removeHighlightsSpy).not.toHaveBeenCalled();
     });

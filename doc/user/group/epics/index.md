@@ -1,5 +1,4 @@
 ---
-type: reference, howto
 stage: Plan
 group: Product Planning
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
@@ -7,8 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Epics **(PREMIUM)**
 
-> - Introduced in GitLab 10.2.
-> - Single-level epics were [moved](https://gitlab.com/gitlab-org/gitlab/-/issues/37081) from GitLab Ultimate to GitLab Premium in 12.8.
+> Single-level epics were [moved](https://gitlab.com/gitlab-org/gitlab/-/issues/37081) from GitLab Ultimate to GitLab Premium in 12.8.
 
 INFO:
 Check out [multi-level child epics](manage_epics.md#multi-level-child-epics) with a
@@ -44,8 +42,6 @@ graph TD
 Also, read more about possible [planning hierarchies](../planning_hierarchy/index.md).
 
 ## Roadmap in epics **(ULTIMATE)**
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/7327) in GitLab 11.10.
 
 If your epic contains one or more [child epics](manage_epics.md#multi-level-child-epics) that
 have a start or due date, a visual

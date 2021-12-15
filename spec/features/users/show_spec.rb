@@ -243,6 +243,10 @@ RSpec.describe 'User page' do
       expect(page).to have_content("@#{user.username}")
     end
 
+    it 'shows default avatar' do
+      expect(page).to have_css('//img[data-src^="/assets/no_avatar"]')
+    end
+
     it_behaves_like 'default brand title page meta description'
   end
 
@@ -284,6 +288,10 @@ RSpec.describe 'User page' do
 
       it 'shows private profile message' do
         expect(page).to have_content("This user has a private profile")
+      end
+
+      it 'shows default avatar' do
+        expect(page).to have_css('//img[data-src^="/assets/no_avatar"]')
       end
 
       it_behaves_like 'default brand title page meta description'

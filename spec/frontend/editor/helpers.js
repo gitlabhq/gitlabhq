@@ -1,4 +1,22 @@
+/* eslint-disable max-classes-per-file */
+
+// Helpers
+export const spyOnApi = (extension, spiesObj = {}) => {
+  const origApi = extension.api;
+  if (extension?.obj) {
+    jest.spyOn(extension.obj, 'provides').mockReturnValue({
+      ...origApi,
+      ...spiesObj,
+    });
+  }
+};
+
+// Dummy Extensions
 export class SEClassExtension {
+  static get extensionName() {
+    return 'SEClassExtension';
+  }
+
   // eslint-disable-next-line class-methods-use-this
   provides() {
     return {
@@ -10,6 +28,7 @@ export class SEClassExtension {
 
 export function SEFnExtension() {
   return {
+    extensionName: 'SEFnExtension',
     fnExtMethod: () => 'fn own method',
     provides: () => {
       return {
@@ -21,6 +40,7 @@ export function SEFnExtension() {
 
 export const SEConstExt = () => {
   return {
+    extensionName: 'SEConstExt',
     provides: () => {
       return {
         constExtMethod: () => 'const own method',
@@ -29,36 +49,39 @@ export const SEConstExt = () => {
   };
 };
 
-export function SEWithSetupExt() {
-  return {
-    onSetup: (instance, setupOptions = {}) => {
-      if (setupOptions && !Array.isArray(setupOptions)) {
-        Object.entries(setupOptions).forEach(([key, value]) => {
-          Object.assign(instance, {
-            [key]: value,
-          });
+export class SEWithSetupExt {
+  static get extensionName() {
+    return 'SEWithSetupExt';
+  }
+  // eslint-disable-next-line class-methods-use-this
+  onSetup(instance, setupOptions = {}) {
+    if (setupOptions && !Array.isArray(setupOptions)) {
+      Object.entries(setupOptions).forEach(([key, value]) => {
+        Object.assign(instance, {
+          [key]: value,
         });
-      }
-    },
-    provides: () => {
-      return {
-        returnInstanceAndProps: (instance, stringProp, objProp = {}) => {
-          return [stringProp, objProp, instance];
-        },
-        returnInstance: (instance) => {
-          return instance;
-        },
-        giveMeContext: () => {
-          return this;
-        },
-      };
-    },
-  };
+      });
+    }
+  }
+  provides() {
+    return {
+      returnInstanceAndProps: (instance, stringProp, objProp = {}) => {
+        return [stringProp, objProp, instance];
+      },
+      returnInstance: (instance) => {
+        return instance;
+      },
+      giveMeContext: () => {
+        return this;
+      },
+    };
+  }
 }
 
 export const conflictingExtensions = {
   WithInstanceExt: () => {
     return {
+      extensionName: 'WithInstanceExt',
       provides: () => {
         return {
           use: () => 'A conflict with instance',
@@ -69,6 +92,7 @@ export const conflictingExtensions = {
   },
   WithAnotherExt: () => {
     return {
+      extensionName: 'WithAnotherExt',
       provides: () => {
         return {
           shared: () => 'A conflict with extension',

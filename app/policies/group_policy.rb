@@ -157,6 +157,7 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     enable :destroy_package
     enable :create_projects
     enable :admin_pipeline
+    enable :admin_group_runners
     enable :admin_build
     enable :read_cluster
     enable :add_cluster

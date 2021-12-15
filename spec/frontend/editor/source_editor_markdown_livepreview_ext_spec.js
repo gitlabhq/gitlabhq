@@ -13,6 +13,7 @@ import SourceEditor from '~/editor/source_editor';
 import createFlash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import syntaxHighlight from '~/syntax_highlight';
+import { spyOnApi } from './helpers';
 
 jest.mock('~/syntax_highlight');
 jest.mock('~/flash');
@@ -23,6 +24,7 @@ describe('Markdown Live Preview Extension for Source Editor', () => {
   let editorEl;
   let panelSpy;
   let mockAxios;
+  let extension;
   const previewMarkdownPath = '/gitlab/fooGroup/barProj/preview_markdown';
   const firstLine = 'This is a';
   const secondLine = 'multiline';
@@ -47,8 +49,11 @@ describe('Markdown Live Preview Extension for Source Editor', () => {
       blobPath: markdownPath,
       blobContent: text,
     });
-    instance.use(new EditorMarkdownPreviewExtension({ instance, previewMarkdownPath }));
-    panelSpy = jest.spyOn(EditorMarkdownPreviewExtension, 'togglePreviewPanel');
+    extension = instance.use({
+      definition: EditorMarkdownPreviewExtension,
+      setupOptions: { previewMarkdownPath },
+    });
+    panelSpy = jest.spyOn(extension.obj.constructor.prototype, 'togglePreviewPanel');
   });
 
   afterEach(() => {
@@ -57,14 +62,14 @@ describe('Markdown Live Preview Extension for Source Editor', () => {
     mockAxios.restore();
   });
 
-  it('sets up the instance', () => {
-    expect(instance.preview).toEqual({
+  it('sets up the preview on the instance', () => {
+    expect(instance.markdownPreview).toEqual({
       el: undefined,
       action: expect.any(Object),
       shown: false,
       modelChangeListener: undefined,
+      path: previewMarkdownPath,
     });
-    expect(instance.previewMarkdownPath).toBe(previewMarkdownPath);
   });
 
   describe('model language changes listener', () => {
@@ -72,14 +77,22 @@ describe('Markdown Live Preview Extension for Source Editor', () => {
     let actionSpy;
 
     beforeEach(async () => {
-      cleanupSpy = jest.spyOn(instance, 'cleanup');
-      actionSpy = jest.spyOn(instance, 'setupPreviewAction');
+      cleanupSpy = jest.fn();
+      actionSpy = jest.fn();
+      spyOnApi(extension, {
+        cleanup: cleanupSpy,
+        setupPreviewAction: actionSpy,
+      });
       await togglePreview();
     });
 
+    afterEach(() => {
+      jest.clearAllMocks();
+    });
+
     it('cleans up when switching away from markdown', () => {
-      expect(instance.cleanup).not.toHaveBeenCalled();
-      expect(instance.setupPreviewAction).not.toHaveBeenCalled();
+      expect(cleanupSpy).not.toHaveBeenCalled();
+      expect(actionSpy).not.toHaveBeenCalled();
 
       instance.updateModelLanguage(plaintextPath);
 
@@ -110,8 +123,12 @@ describe('Markdown Live Preview Extension for Source Editor', () => {
     let actionSpy;
 
     beforeEach(() => {
-      cleanupSpy = jest.spyOn(instance, 'cleanup');
-      actionSpy = jest.spyOn(instance, 'setupPreviewAction');
+      cleanupSpy = jest.fn();
+      actionSpy = jest.fn();
+      spyOnApi(extension, {
+        cleanup: cleanupSpy,
+        setupPreviewAction: actionSpy,
+      });
       instance.togglePreview();
     });
 
@@ -153,14 +170,17 @@ describe('Markdown Live Preview Extension for Source Editor', () => {
     });
 
     it('disposes the modelChange listener and does not fetch preview on content changes', () => {
-      expect(instance.preview.modelChangeListener).toBeDefined();
-      jest.spyOn(instance, 'fetchPreview');
+      expect(instance.markdownPreview.modelChangeListener).toBeDefined();
+      const fetchPreviewSpy = jest.fn();
+      spyOnApi(extension, {
+        fetchPreview: fetchPreviewSpy,
+      });
 
       instance.cleanup();
       instance.setValue('Foo Bar');
       jest.advanceTimersByTime(EXTENSION_MARKDOWN_PREVIEW_UPDATE_DELAY);
 
-      expect(instance.fetchPreview).not.toHaveBeenCalled();
+      expect(fetchPreviewSpy).not.toHaveBeenCalled();
     });
 
     it('removes the contextual menu action', () => {
@@ -172,13 +192,13 @@ describe('Markdown Live Preview Extension for Source Editor', () => {
     });
 
     it('toggles the `shown` flag', () => {
-      expect(instance.preview.shown).toBe(true);
+      expect(instance.markdownPreview.shown).toBe(true);
       instance.cleanup();
-      expect(instance.preview.shown).toBe(false);
+      expect(instance.markdownPreview.shown).toBe(false);
     });
 
     it('toggles the panel only if the preview is visible', () => {
-      const { el: previewEl } = instance.preview;
+      const { el: previewEl } = instance.markdownPreview;
       const parentEl = previewEl.parentElement;
 
       expect(previewEl).toBeVisible();
@@ -200,7 +220,7 @@ describe('Markdown Live Preview Extension for Source Editor', () => {
     it('toggles the layout only if the preview is visible', () => {
       const { width } = instance.getLayoutInfo();
 
-      expect(instance.preview.shown).toBe(true);
+      expect(instance.markdownPreview.shown).toBe(true);
 
       instance.cleanup();
 
@@ -234,13 +254,13 @@ describe('Markdown Live Preview Extension for Source Editor', () => {
     });
 
     it('puts the fetched content into the preview DOM element', async () => {
-      instance.preview.el = editorEl.parentElement;
+      instance.markdownPreview.el = editorEl.parentElement;
       await fetchPreview();
-      expect(instance.preview.el.innerHTML).toEqual(responseData);
+      expect(instance.markdownPreview.el.innerHTML).toEqual(responseData);
     });
 
     it('applies syntax highlighting to the preview content', async () => {
-      instance.preview.el = editorEl.parentElement;
+      instance.markdownPreview.el = editorEl.parentElement;
       await fetchPreview();
       expect(syntaxHighlight).toHaveBeenCalled();
     });
@@ -266,14 +286,17 @@ describe('Markdown Live Preview Extension for Source Editor', () => {
     });
 
     it('toggles preview when the action is triggered', () => {
-      jest.spyOn(instance, 'togglePreview').mockImplementation();
+      const togglePreviewSpy = jest.fn();
+      spyOnApi(extension, {
+        togglePreview: togglePreviewSpy,
+      });
 
-      expect(instance.togglePreview).not.toHaveBeenCalled();
+      expect(togglePreviewSpy).not.toHaveBeenCalled();
 
       const action = instance.getAction(EXTENSION_MARKDOWN_PREVIEW_ACTION_ID);
       action.run();
 
-      expect(instance.togglePreview).toHaveBeenCalled();
+      expect(togglePreviewSpy).toHaveBeenCalled();
     });
   });
 
@@ -283,39 +306,39 @@ describe('Markdown Live Preview Extension for Source Editor', () => {
     });
 
     it('toggles preview flag on instance', () => {
-      expect(instance.preview.shown).toBe(false);
+      expect(instance.markdownPreview.shown).toBe(false);
 
       instance.togglePreview();
-      expect(instance.preview.shown).toBe(true);
+      expect(instance.markdownPreview.shown).toBe(true);
 
       instance.togglePreview();
-      expect(instance.preview.shown).toBe(false);
+      expect(instance.markdownPreview.shown).toBe(false);
     });
 
     describe('panel DOM element set up', () => {
       it('sets up an element to contain the preview and stores it on instance', () => {
-        expect(instance.preview.el).toBeUndefined();
+        expect(instance.markdownPreview.el).toBeUndefined();
 
         instance.togglePreview();
 
-        expect(instance.preview.el).toBeDefined();
-        expect(instance.preview.el.classList.contains(EXTENSION_MARKDOWN_PREVIEW_PANEL_CLASS)).toBe(
-          true,
-        );
+        expect(instance.markdownPreview.el).toBeDefined();
+        expect(
+          instance.markdownPreview.el.classList.contains(EXTENSION_MARKDOWN_PREVIEW_PANEL_CLASS),
+        ).toBe(true);
       });
 
       it('re-uses existing preview DOM element on repeated calls', () => {
         instance.togglePreview();
-        const origPreviewEl = instance.preview.el;
+        const origPreviewEl = instance.markdownPreview.el;
         instance.togglePreview();
 
-        expect(instance.preview.el).toBe(origPreviewEl);
+        expect(instance.markdownPreview.el).toBe(origPreviewEl);
       });
 
       it('hides the preview DOM element by default', () => {
         panelSpy.mockImplementation();
         instance.togglePreview();
-        expect(instance.preview.el.style.display).toBe('none');
+        expect(instance.markdownPreview.el.style.display).toBe('none');
       });
     });
 
@@ -350,9 +373,9 @@ describe('Markdown Live Preview Extension for Source Editor', () => {
 
       it('toggles visibility of the preview DOM element', async () => {
         await togglePreview();
-        expect(instance.preview.el.style.display).toBe('block');
+        expect(instance.markdownPreview.el.style.display).toBe('block');
         await togglePreview();
-        expect(instance.preview.el.style.display).toBe('none');
+        expect(instance.markdownPreview.el.style.display).toBe('none');
       });
 
       describe('hidden preview DOM element', () => {
@@ -367,9 +390,9 @@ describe('Markdown Live Preview Extension for Source Editor', () => {
         });
 
         it('stores disposable listener for model changes', async () => {
-          expect(instance.preview.modelChangeListener).toBeUndefined();
+          expect(instance.markdownPreview.modelChangeListener).toBeUndefined();
           await togglePreview();
-          expect(instance.preview.modelChangeListener).toBeDefined();
+          expect(instance.markdownPreview.modelChangeListener).toBeDefined();
         });
       });
 
@@ -386,7 +409,7 @@ describe('Markdown Live Preview Extension for Source Editor', () => {
 
         it('disposes the model change event listener', () => {
           const disposeSpy = jest.fn();
-          instance.preview.modelChangeListener = {
+          instance.markdownPreview.modelChangeListener = {
             dispose: disposeSpy,
           };
           instance.togglePreview();

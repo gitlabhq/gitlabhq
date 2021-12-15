@@ -9,7 +9,7 @@ import waitUsingRealTimer from 'helpers/wait_using_real_timer';
 import { exampleConfigs, exampleFiles } from 'jest/ide/lib/editorconfig/mock_data';
 import { EDITOR_CODE_INSTANCE_FN, EDITOR_DIFF_INSTANCE_FN } from '~/editor/constants';
 import { EditorMarkdownExtension } from '~/editor/extensions/source_editor_markdown_ext';
-import { EditorWebIdeExtension } from '~/editor/extensions/source_editor_webide_ext';
+import { EditorMarkdownPreviewExtension } from '~/editor/extensions/source_editor_markdown_livepreview_ext';
 import SourceEditor from '~/editor/source_editor';
 import RepoEditor from '~/ide/components/repo_editor.vue';
 import {
@@ -23,6 +23,8 @@ import service from '~/ide/services';
 import { createStoreOptions } from '~/ide/stores';
 import axios from '~/lib/utils/axios_utils';
 import ContentViewer from '~/vue_shared/components/content_viewer/content_viewer.vue';
+import SourceEditorInstance from '~/editor/source_editor_instance';
+import { spyOnApi } from 'jest/editor/helpers';
 import { file } from '../helpers';
 
 const PREVIEW_MARKDOWN_PATH = '/foo/bar/preview_markdown';
@@ -101,6 +103,7 @@ describe('RepoEditor', () => {
   let createDiffInstanceSpy;
   let createModelSpy;
   let applyExtensionSpy;
+  let extensionsStore;
 
   const waitForEditorSetup = () =>
     new Promise((resolve) => {
@@ -120,6 +123,7 @@ describe('RepoEditor', () => {
     });
     await waitForPromises();
     vm = wrapper.vm;
+    extensionsStore = wrapper.vm.globalEditor.extensionsStore;
     jest.spyOn(vm, 'getFileData').mockResolvedValue();
     jest.spyOn(vm, 'getRawFileData').mockResolvedValue();
   };
@@ -127,28 +131,12 @@ describe('RepoEditor', () => {
   const findEditor = () => wrapper.find('[data-testid="editor-container"]');
   const findTabs = () => wrapper.findAll('.ide-mode-tabs .nav-links li');
   const findPreviewTab = () => wrapper.find('[data-testid="preview-tab"]');
-  const expectEditorMarkdownExtension = (shouldHaveExtension) => {
-    if (shouldHaveExtension) {
-      expect(applyExtensionSpy).toHaveBeenCalledWith(
-        wrapper.vm.editor,
-        expect.any(EditorMarkdownExtension),
-      );
-      // TODO: spying on extensions causes Jest to blow up, so we have to assert on
-      // the public property the extension adds, as opposed to the args passed to the ctor
-      expect(wrapper.vm.editor.previewMarkdownPath).toBe(PREVIEW_MARKDOWN_PATH);
-    } else {
-      expect(applyExtensionSpy).not.toHaveBeenCalledWith(
-        wrapper.vm.editor,
-        expect.any(EditorMarkdownExtension),
-      );
-    }
-  };
 
   beforeEach(() => {
     createInstanceSpy = jest.spyOn(SourceEditor.prototype, EDITOR_CODE_INSTANCE_FN);
     createDiffInstanceSpy = jest.spyOn(SourceEditor.prototype, EDITOR_DIFF_INSTANCE_FN);
     createModelSpy = jest.spyOn(monacoEditor, 'createModel');
-    applyExtensionSpy = jest.spyOn(SourceEditor, 'instanceApplyExtension');
+    applyExtensionSpy = jest.spyOn(SourceEditorInstance.prototype, 'use');
     jest.spyOn(service, 'getFileData').mockResolvedValue();
     jest.spyOn(service, 'getRawFileData').mockResolvedValue();
   });
@@ -275,14 +263,13 @@ describe('RepoEditor', () => {
     );
 
     it('installs the WebIDE extension', async () => {
-      const extensionSpy = jest.spyOn(SourceEditor, 'instanceApplyExtension');
       await createComponent();
-      expect(extensionSpy).toHaveBeenCalled();
-      Reflect.ownKeys(EditorWebIdeExtension.prototype)
-        .filter((fn) => fn !== 'constructor')
-        .forEach((fn) => {
-          expect(vm.editor[fn]).toBe(EditorWebIdeExtension.prototype[fn]);
-        });
+      expect(applyExtensionSpy).toHaveBeenCalled();
+      const ideExtensionApi = extensionsStore.get('EditorWebIde').api;
+      Reflect.ownKeys(ideExtensionApi).forEach((fn) => {
+        expect(vm.editor[fn]).toBeDefined();
+        expect(vm.editor.methods[fn]).toBe('EditorWebIde');
+      });
     });
 
     it.each`
@@ -301,7 +288,20 @@ describe('RepoEditor', () => {
       async ({ activeFile, viewer, shouldHaveMarkdownExtension } = {}) => {
         await createComponent({ state: { viewer }, activeFile });
 
-        expectEditorMarkdownExtension(shouldHaveMarkdownExtension);
+        if (shouldHaveMarkdownExtension) {
+          expect(applyExtensionSpy).toHaveBeenCalledWith({
+            definition: EditorMarkdownPreviewExtension,
+            setupOptions: { previewMarkdownPath: PREVIEW_MARKDOWN_PATH },
+          });
+          // TODO: spying on extensions causes Jest to blow up, so we have to assert on
+          // the public property the extension adds, as opposed to the args passed to the ctor
+          expect(wrapper.vm.editor.markdownPreview.path).toBe(PREVIEW_MARKDOWN_PATH);
+        } else {
+          expect(applyExtensionSpy).not.toHaveBeenCalledWith(
+            wrapper.vm.editor,
+            expect.any(EditorMarkdownExtension),
+          );
+        }
       },
     );
   });
@@ -329,18 +329,6 @@ describe('RepoEditor', () => {
       expect(vm.model).toBe(existingModel);
     });
 
-    it('adds callback methods', () => {
-      jest.spyOn(vm.editor, 'onPositionChange');
-      jest.spyOn(vm.model, 'onChange');
-      jest.spyOn(vm.model, 'updateOptions');
-
-      vm.setupEditor();
-
-      expect(vm.editor.onPositionChange).toHaveBeenCalledTimes(1);
-      expect(vm.model.onChange).toHaveBeenCalledTimes(1);
-      expect(vm.model.updateOptions).toHaveBeenCalledWith(vm.rules);
-    });
-
     it('updates state with the value of the model', () => {
       const newContent = 'As Gregor Samsa\n awoke one morning\n';
       vm.model.setValue(newContent);
@@ -366,53 +354,48 @@ describe('RepoEditor', () => {
 
   describe('editor updateDimensions', () => {
     let updateDimensionsSpy;
-    let updateDiffViewSpy;
     beforeEach(async () => {
       await createComponent();
-      updateDimensionsSpy = jest.spyOn(vm.editor, 'updateDimensions');
-      updateDiffViewSpy = jest.spyOn(vm.editor, 'updateDiffView').mockImplementation();
+      const ext = extensionsStore.get('EditorWebIde');
+      updateDimensionsSpy = jest.fn();
+      spyOnApi(ext, {
+        updateDimensions: updateDimensionsSpy,
+      });
     });
 
     it('calls updateDimensions only when panelResizing is false', async () => {
       expect(updateDimensionsSpy).not.toHaveBeenCalled();
-      expect(updateDiffViewSpy).not.toHaveBeenCalled();
       expect(vm.$store.state.panelResizing).toBe(false); // default value
 
       vm.$store.state.panelResizing = true;
       await vm.$nextTick();
 
       expect(updateDimensionsSpy).not.toHaveBeenCalled();
-      expect(updateDiffViewSpy).not.toHaveBeenCalled();
 
       vm.$store.state.panelResizing = false;
       await vm.$nextTick();
 
       expect(updateDimensionsSpy).toHaveBeenCalledTimes(1);
-      expect(updateDiffViewSpy).toHaveBeenCalledTimes(1);
 
       vm.$store.state.panelResizing = true;
       await vm.$nextTick();
 
       expect(updateDimensionsSpy).toHaveBeenCalledTimes(1);
-      expect(updateDiffViewSpy).toHaveBeenCalledTimes(1);
     });
 
     it('calls updateDimensions when rightPane is toggled', async () => {
       expect(updateDimensionsSpy).not.toHaveBeenCalled();
-      expect(updateDiffViewSpy).not.toHaveBeenCalled();
       expect(vm.$store.state.rightPane.isOpen).toBe(false); // default value
 
       vm.$store.state.rightPane.isOpen = true;
       await vm.$nextTick();
 
       expect(updateDimensionsSpy).toHaveBeenCalledTimes(1);
-      expect(updateDiffViewSpy).toHaveBeenCalledTimes(1);
 
       vm.$store.state.rightPane.isOpen = false;
       await vm.$nextTick();
 
       expect(updateDimensionsSpy).toHaveBeenCalledTimes(2);
-      expect(updateDiffViewSpy).toHaveBeenCalledTimes(2);
     });
   });
 
@@ -447,7 +430,11 @@ describe('RepoEditor', () => {
         activeFile: dummyFile.markdown,
       });
 
-      updateDimensionsSpy = jest.spyOn(vm.editor, 'updateDimensions');
+      const ext = extensionsStore.get('EditorWebIde');
+      updateDimensionsSpy = jest.fn();
+      spyOnApi(ext, {
+        updateDimensions: updateDimensionsSpy,
+      });
 
       changeViewMode(FILE_VIEW_MODE_PREVIEW);
       await vm.$nextTick();

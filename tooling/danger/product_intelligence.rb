@@ -13,7 +13,7 @@ module Tooling
       ].freeze
 
       def missing_labels
-        return [] if !helper.ci? || helper.mr_has_labels?('growth experiment')
+        return [] unless helper.ci?
 
         labels = []
         labels << 'product intelligence' unless helper.mr_has_labels?('product intelligence')
@@ -24,6 +24,10 @@ module Tooling
 
       def has_approved_label?
         helper.mr_labels.include?(APPROVED_LABEL)
+      end
+
+      def skip_review?
+        helper.mr_has_labels?('growth experiment')
       end
 
       private

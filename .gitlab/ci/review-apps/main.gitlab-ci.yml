@@ -105,4 +105,4 @@ review-stop:
   stage: deploy
   needs: []
   script:
-    - delete_k8s_release_namespace
+    - delete_namespace

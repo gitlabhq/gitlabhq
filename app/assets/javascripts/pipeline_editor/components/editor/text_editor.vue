@@ -19,7 +19,7 @@ export default {
       if (this.glFeatures.schemaLinting) {
         const editorInstance = this.$refs.editor.getEditor();
 
-        editorInstance.use(new CiSchemaExtension({ instance: editorInstance }));
+        editorInstance.use({ definition: CiSchemaExtension });
         editorInstance.registerCiSchema();
       }
     },

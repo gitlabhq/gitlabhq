@@ -421,6 +421,13 @@ Snowplow Inspector Chrome Extension is a browser extension for testing frontend 
 Docker-based solution for testing backend and frontend in a local development environment. Snowplow Micro
 records the same events as the full Snowplow pipeline. To query events, use the Snowplow Micro API.
 
+It can be set up automatically using [GitLab Development Kit (GDK)](https://gitlab.com/gitlab-org/gitlab-development-kit).
+See the [how-to docs](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/snowplow_micro.md) for more details.
+
+Optionally, you can set it up manually, using the following instructions.
+
+#### Set up Snowplow Micro manually
+
 To install and run Snowplow Micro, complete these steps to modify the
 [GitLab Development Kit (GDK)](https://gitlab.com/gitlab-org/gitlab-development-kit):
 

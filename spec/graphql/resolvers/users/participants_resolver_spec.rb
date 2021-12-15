@@ -49,6 +49,19 @@ RSpec.describe Resolvers::Users::ParticipantsResolver do
       it 'returns all participants for this user' do
         is_expected.to match_array([issue.author, note.author])
       end
+
+      it 'does not execute N+1 for project relation' do
+        query = -> { resolve(described_class, args: {}, ctx: { current_user: current_user }, obj: issue)&.items }
+
+        # warm-up
+        query.call
+
+        control_count = ActiveRecord::QueryRecorder.new { query.call }
+
+        create(:note, :confidential, project: project, noteable: issue, author: create(:user))
+
+        expect { query.call }.not_to exceed_query_limit(control_count)
+      end
     end
   end
 end

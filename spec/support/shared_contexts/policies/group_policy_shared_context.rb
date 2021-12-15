@@ -48,6 +48,7 @@ RSpec.shared_context 'GroupPolicy context' do
       destroy_package
       create_projects
       read_cluster create_cluster update_cluster admin_cluster add_cluster
+      admin_group_runners
     ]
   end
 

@@ -111,7 +111,7 @@ categories << :ux if (["UX", "Community contribution"] - helper.mr_labels).empty
 categories << :product_intelligence if helper.mr_labels.include?("product intelligence::review pending")
 
 # Skip Product intelligence reviews for growth experiment MRs
-categories.delete(:product_intelligence) unless helper.mr_labels.include?("growth experiment")
+categories.delete(:product_intelligence) if helper.mr_labels.include?("growth experiment")
 
 if changes.any?
   random_roulette_spins = roulette.spin(nil, categories, timezone_experiment: false)

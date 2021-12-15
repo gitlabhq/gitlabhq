@@ -23,7 +23,7 @@ describe('~/editor/editor_ci_config_ext', () => {
       blobPath,
       blobContent: '',
     });
-    instance.use(new CiSchemaExtension());
+    instance.use({ definition: CiSchemaExtension });
   };
 
   beforeAll(() => {

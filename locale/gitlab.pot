@@ -25258,9 +25258,6 @@ msgstr ""
 msgid "Page settings"
 msgstr ""
 
-msgid "Page size"
-msgstr ""
-
 msgid "PagerDutySettings|Active"
 msgstr ""
 
@@ -28556,6 +28553,9 @@ msgid "ProtectedEnvironment|Your environment has been protected."
 msgstr ""
 
 msgid "ProtectedEnvironment|Your environment has been unprotected"
+msgstr ""
+
+msgid "ProtectedTags|default"
 msgstr ""
 
 msgid "ProtectedTag|By default, protected branches restrict who can modify the tag."

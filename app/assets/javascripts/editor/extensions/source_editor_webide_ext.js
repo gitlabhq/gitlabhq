@@ -1,7 +1,15 @@
+/**
+ * A WebIDE Extension options for Source Editor
+ * @typedef {Object} WebIDEExtensionOptions
+ * @property {Object} modelManager The root manager for WebIDE models
+ * @property {Object} store The state store for communication
+ * @property {Object} file
+ * @property {Object} options The Monaco editor options
+ */
+
 import { debounce } from 'lodash';
 import { KeyCode, KeyMod, Range } from 'monaco-editor';
 import { EDITOR_TYPE_DIFF } from '~/editor/constants';
-import { SourceEditorExtension } from '~/editor/extensions/source_editor_extension_base';
 import Disposable from '~/ide/lib/common/disposable';
 import { editorOptions } from '~/ide/lib/editor_options';
 import keymap from '~/ide/lib/keymap.json';
@@ -11,154 +19,168 @@ const isDiffEditorType = (instance) => {
 };
 
 export const UPDATE_DIMENSIONS_DELAY = 200;
+const defaultOptions = {
+  modelManager: undefined,
+  store: undefined,
+  file: undefined,
+  options: {},
+};
 
-export class EditorWebIdeExtension extends SourceEditorExtension {
-  constructor({ instance, modelManager, ...options } = {}) {
-    super({
-      instance,
-      ...options,
-      modelManager,
-      disposable: new Disposable(),
-      debouncedUpdate: debounce(() => {
-        instance.updateDimensions();
-      }, UPDATE_DIMENSIONS_DELAY),
+const addActions = (instance, store) => {
+  const getKeyCode = (key) => {
+    const monacoKeyMod = key.indexOf('KEY_') === 0;
+
+    return monacoKeyMod ? KeyCode[key] : KeyMod[key];
+  };
+
+  keymap.forEach((command) => {
+    const { bindings, id, label, action } = command;
+
+    const keybindings = bindings.map((binding) => {
+      const keys = binding.split('+');
+
+      // eslint-disable-next-line no-bitwise
+      return keys.length > 1 ? getKeyCode(keys[0]) | getKeyCode(keys[1]) : getKeyCode(keys[0]);
     });
 
-    window.addEventListener('resize', instance.debouncedUpdate, false);
+    instance.addAction({
+      id,
+      label,
+      keybindings,
+      run() {
+        store.dispatch(action.name, action.params);
+        return null;
+      },
+    });
+  });
+};
+
+const renderSideBySide = (domElement) => {
+  return domElement.offsetWidth >= 700;
+};
+
+const updateInstanceDimensions = (instance) => {
+  instance.layout();
+  if (isDiffEditorType(instance)) {
+    instance.updateOptions({
+      renderSideBySide: renderSideBySide(instance.getDomNode()),
+    });
+  }
+};
+
+export class EditorWebIdeExtension {
+  static get extensionName() {
+    return 'EditorWebIde';
+  }
+
+  /**
+   * Set up the WebIDE extension for Source Editor
+   * @param {module:source_editor_instance~EditorInstance} instance - The Source Editor instance
+   * @param {WebIDEExtensionOptions} setupOptions
+   */
+  onSetup(instance, setupOptions = defaultOptions) {
+    this.modelManager = setupOptions.modelManager;
+    this.store = setupOptions.store;
+    this.file = setupOptions.file;
+    this.options = setupOptions.options;
+
+    this.disposable = new Disposable();
+    this.debouncedUpdate = debounce(() => {
+      updateInstanceDimensions(instance);
+    }, UPDATE_DIMENSIONS_DELAY);
+
+    addActions(instance, setupOptions.store);
+  }
+
+  onUse(instance) {
+    window.addEventListener('resize', this.debouncedUpdate, false);
 
     instance.onDidDispose(() => {
-      window.removeEventListener('resize', instance.debouncedUpdate);
+      this.onUnuse();
+    });
+  }
 
-      // catch any potential errors with disposing the error
-      // this is mainly for tests caused by elements not existing
-      try {
-        instance.disposable.dispose();
-      } catch (e) {
-        if (process.env.NODE_ENV !== 'test') {
-          // eslint-disable-next-line no-console
-          console.error(e);
-        }
+  onUnuse() {
+    window.removeEventListener('resize', this.debouncedUpdate);
+
+    // catch any potential errors with disposing the error
+    // this is mainly for tests caused by elements not existing
+    try {
+      this.disposable.dispose();
+    } catch (e) {
+      if (process.env.NODE_ENV !== 'test') {
+        // eslint-disable-next-line no-console
+        console.error(e);
       }
-    });
-
-    EditorWebIdeExtension.addActions(instance);
-  }
-
-  static addActions(instance) {
-    const { store } = instance;
-    const getKeyCode = (key) => {
-      const monacoKeyMod = key.indexOf('KEY_') === 0;
-
-      return monacoKeyMod ? KeyCode[key] : KeyMod[key];
-    };
-
-    keymap.forEach((command) => {
-      const { bindings, id, label, action } = command;
-
-      const keybindings = bindings.map((binding) => {
-        const keys = binding.split('+');
-
-        // eslint-disable-next-line no-bitwise
-        return keys.length > 1 ? getKeyCode(keys[0]) | getKeyCode(keys[1]) : getKeyCode(keys[0]);
-      });
-
-      instance.addAction({
-        id,
-        label,
-        keybindings,
-        run() {
-          store.dispatch(action.name, action.params);
-          return null;
-        },
-      });
-    });
-  }
-
-  createModel(file, head = null) {
-    return this.modelManager.addModel(file, head);
-  }
-
-  attachModel(model) {
-    if (isDiffEditorType(this)) {
-      this.setModel({
-        original: model.getOriginalModel(),
-        modified: model.getModel(),
-      });
-
-      return;
     }
+  }
 
-    this.setModel(model.getModel());
-
-    this.updateOptions(
-      editorOptions.reduce((acc, obj) => {
-        Object.keys(obj).forEach((key) => {
-          Object.assign(acc, {
-            [key]: obj[key](model),
+  provides() {
+    return {
+      createModel: (instance, file, head = null) => {
+        return this.modelManager.addModel(file, head);
+      },
+      attachModel: (instance, model) => {
+        if (isDiffEditorType(instance)) {
+          instance.setModel({
+            original: model.getOriginalModel(),
+            modified: model.getModel(),
           });
+
+          return;
+        }
+
+        instance.setModel(model.getModel());
+
+        instance.updateOptions(
+          editorOptions.reduce((acc, obj) => {
+            Object.keys(obj).forEach((key) => {
+              Object.assign(acc, {
+                [key]: obj[key](model),
+              });
+            });
+            return acc;
+          }, {}),
+        );
+      },
+      attachMergeRequestModel: (instance, model) => {
+        instance.setModel({
+          original: model.getBaseModel(),
+          modified: model.getModel(),
         });
-        return acc;
-      }, {}),
-    );
-  }
+      },
+      updateDimensions: (instance) => updateInstanceDimensions(instance),
+      setPos: (instance, { lineNumber, column }) => {
+        instance.revealPositionInCenter({
+          lineNumber,
+          column,
+        });
+        instance.setPosition({
+          lineNumber,
+          column,
+        });
+      },
+      onPositionChange: (instance, cb) => {
+        if (typeof instance.onDidChangeCursorPosition !== 'function') {
+          return;
+        }
 
-  attachMergeRequestModel(model) {
-    this.setModel({
-      original: model.getBaseModel(),
-      modified: model.getModel(),
-    });
-  }
+        this.disposable.add(instance.onDidChangeCursorPosition((e) => cb(instance, e)));
+      },
+      replaceSelectedText: (instance, text) => {
+        let selection = instance.getSelection();
+        const range = new Range(
+          selection.startLineNumber,
+          selection.startColumn,
+          selection.endLineNumber,
+          selection.endColumn,
+        );
 
-  updateDimensions() {
-    this.layout();
-    this.updateDiffView();
-  }
+        instance.executeEdits('', [{ range, text }]);
 
-  setPos({ lineNumber, column }) {
-    this.revealPositionInCenter({
-      lineNumber,
-      column,
-    });
-    this.setPosition({
-      lineNumber,
-      column,
-    });
-  }
-
-  onPositionChange(cb) {
-    if (!this.onDidChangeCursorPosition) {
-      return;
-    }
-
-    this.disposable.add(this.onDidChangeCursorPosition((e) => cb(this, e)));
-  }
-
-  updateDiffView() {
-    if (!isDiffEditorType(this)) {
-      return;
-    }
-
-    this.updateOptions({
-      renderSideBySide: EditorWebIdeExtension.renderSideBySide(this.getDomNode()),
-    });
-  }
-
-  replaceSelectedText(text) {
-    let selection = this.getSelection();
-    const range = new Range(
-      selection.startLineNumber,
-      selection.startColumn,
-      selection.endLineNumber,
-      selection.endColumn,
-    );
-
-    this.executeEdits('', [{ range, text }]);
-
-    selection = this.getSelection();
-    this.setPosition({ lineNumber: selection.endLineNumber, column: selection.endColumn });
-  }
-
-  static renderSideBySide(domElement) {
-    return domElement.offsetWidth >= 700;
+        selection = instance.getSelection();
+        instance.setPosition({ lineNumber: selection.endLineNumber, column: selection.endColumn });
+      },
+    };
   }
 }

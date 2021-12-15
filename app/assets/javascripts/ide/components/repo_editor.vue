@@ -7,6 +7,7 @@ import {
   EDITOR_CODE_INSTANCE_FN,
   EDITOR_DIFF_INSTANCE_FN,
 } from '~/editor/constants';
+import { SourceEditorExtension } from '~/editor/extensions/source_editor_extension_base';
 import { EditorWebIdeExtension } from '~/editor/extensions/source_editor_webide_ext';
 import SourceEditor from '~/editor/source_editor';
 import createFlash from '~/flash';
@@ -302,30 +303,32 @@ export default {
           ...instanceOptions,
           ...this.editorOptions,
         });
-
-        this.editor.use(
-          new EditorWebIdeExtension({
-            instance: this.editor,
-            modelManager: this.modelManager,
-            store: this.$store,
-            file: this.file,
-            options: this.editorOptions,
-          }),
-        );
+        this.editor.use([
+          {
+            definition: SourceEditorExtension,
+          },
+          {
+            definition: EditorWebIdeExtension,
+            setupOptions: {
+              modelManager: this.modelManager,
+              store: this.$store,
+              file: this.file,
+              options: this.editorOptions,
+            },
+          },
+        ]);
 
         if (
           this.fileType === MARKDOWN_FILE_TYPE &&
           this.editor?.getEditorType() === EDITOR_TYPE_CODE &&
           this.previewMarkdownPath
         ) {
-          import('~/editor/extensions/source_editor_markdown_ext')
-            .then(({ EditorMarkdownExtension: MarkdownExtension } = {}) => {
-              this.editor.use(
-                new MarkdownExtension({
-                  instance: this.editor,
-                  previewMarkdownPath: this.previewMarkdownPath,
-                }),
-              );
+          import('~/editor/extensions/source_editor_markdown_livepreview_ext')
+            .then(({ EditorMarkdownPreviewExtension: MarkdownLivePreview }) => {
+              this.editor.use({
+                definition: MarkdownLivePreview,
+                setupOptions: { previewMarkdownPath: this.previewMarkdownPath },
+              });
             })
             .catch((e) =>
               createFlash({

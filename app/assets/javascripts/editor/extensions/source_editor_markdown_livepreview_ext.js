@@ -12,9 +12,8 @@ import {
   EXTENSION_MARKDOWN_PREVIEW_PANEL_PARENT_CLASS,
   EXTENSION_MARKDOWN_PREVIEW_UPDATE_DELAY,
 } from '../constants';
-import { SourceEditorExtension } from './source_editor_extension_base';
 
-const getPreview = (text, previewMarkdownPath) => {
+const fetchPreview = (text, previewMarkdownPath) => {
   return axios
     .post(previewMarkdownPath, {
       text,
@@ -34,19 +33,20 @@ const setupDomElement = ({ injectToEl = null } = {}) => {
   return previewEl;
 };
 
-export class EditorMarkdownPreviewExtension extends SourceEditorExtension {
-  constructor({ instance, previewMarkdownPath, ...args } = {}) {
-    super({ instance, ...args });
-    Object.assign(instance, {
-      previewMarkdownPath,
-      preview: {
-        el: undefined,
-        action: undefined,
-        shown: false,
-        modelChangeListener: undefined,
-      },
-    });
-    this.setupPreviewAction.call(instance);
+export class EditorMarkdownPreviewExtension {
+  static get extensionName() {
+    return 'EditorMarkdownPreview';
+  }
+
+  onSetup(instance, setupOptions) {
+    this.preview = {
+      el: undefined,
+      action: undefined,
+      shown: false,
+      modelChangeListener: undefined,
+      path: setupOptions.previewMarkdownPath,
+    };
+    this.setupPreviewAction(instance);
 
     instance.getModel().onDidChangeLanguage(({ newLanguage, oldLanguage } = {}) => {
       if (newLanguage === 'markdown' && oldLanguage !== newLanguage) {
@@ -68,43 +68,31 @@ export class EditorMarkdownPreviewExtension extends SourceEditorExtension {
     });
   }
 
-  static togglePreviewLayout() {
-    const { width, height } = this.getLayoutInfo();
+  togglePreviewLayout(instance) {
+    const { width, height } = instance.getLayoutInfo();
     const newWidth = this.preview.shown
       ? width / EXTENSION_MARKDOWN_PREVIEW_PANEL_WIDTH
       : width * EXTENSION_MARKDOWN_PREVIEW_PANEL_WIDTH;
-    this.layout({ width: newWidth, height });
+    instance.layout({ width: newWidth, height });
   }
 
-  static togglePreviewPanel() {
-    const parentEl = this.getDomNode().parentElement;
+  togglePreviewPanel(instance) {
+    const parentEl = instance.getDomNode().parentElement;
     const { el: previewEl } = this.preview;
     parentEl.classList.toggle(EXTENSION_MARKDOWN_PREVIEW_PANEL_PARENT_CLASS);
 
     if (previewEl.style.display === 'none') {
       // Show the preview panel
-      this.fetchPreview();
+      this.fetchPreview(instance);
     } else {
       // Hide the preview panel
       previewEl.style.display = 'none';
     }
   }
 
-  cleanup() {
-    if (this.preview.modelChangeListener) {
-      this.preview.modelChangeListener.dispose();
-    }
-    this.preview.action.dispose();
-    if (this.preview.shown) {
-      EditorMarkdownPreviewExtension.togglePreviewPanel.call(this);
-      EditorMarkdownPreviewExtension.togglePreviewLayout.call(this);
-    }
-    this.preview.shown = false;
-  }
-
-  fetchPreview() {
+  fetchPreview(instance) {
     const { el: previewEl } = this.preview;
-    getPreview(this.getValue(), this.previewMarkdownPath)
+    fetchPreview(instance.getValue(), this.preview.path)
       .then((data) => {
         previewEl.innerHTML = sanitize(data);
         syntaxHighlight(previewEl.querySelectorAll('.js-syntax-highlight'));
@@ -113,10 +101,10 @@ export class EditorMarkdownPreviewExtension extends SourceEditorExtension {
       .catch(() => createFlash(BLOB_PREVIEW_ERROR));
   }
 
-  setupPreviewAction() {
-    if (this.getAction(EXTENSION_MARKDOWN_PREVIEW_ACTION_ID)) return;
+  setupPreviewAction(instance) {
+    if (instance.getAction(EXTENSION_MARKDOWN_PREVIEW_ACTION_ID)) return;
 
-    this.preview.action = this.addAction({
+    this.preview.action = instance.addAction({
       id: EXTENSION_MARKDOWN_PREVIEW_ACTION_ID,
       label: __('Preview Markdown'),
       keybindings: [
@@ -128,27 +116,52 @@ export class EditorMarkdownPreviewExtension extends SourceEditorExtension {
 
       // Method that will be executed when the action is triggered.
       // @param ed The editor instance is passed in as a convenience
-      run(instance) {
-        instance.togglePreview();
+      run(inst) {
+        inst.togglePreview();
       },
     });
   }
 
-  togglePreview() {
-    if (!this.preview?.el) {
-      this.preview.el = setupDomElement({ injectToEl: this.getDomNode().parentElement });
-    }
-    EditorMarkdownPreviewExtension.togglePreviewLayout.call(this);
-    EditorMarkdownPreviewExtension.togglePreviewPanel.call(this);
+  provides() {
+    return {
+      markdownPreview: this.preview,
 
-    if (!this.preview?.shown) {
-      this.preview.modelChangeListener = this.onDidChangeModelContent(
-        debounce(this.fetchPreview.bind(this), EXTENSION_MARKDOWN_PREVIEW_UPDATE_DELAY),
-      );
-    } else {
-      this.preview.modelChangeListener.dispose();
-    }
+      cleanup: (instance) => {
+        if (this.preview.modelChangeListener) {
+          this.preview.modelChangeListener.dispose();
+        }
+        this.preview.action.dispose();
+        if (this.preview.shown) {
+          this.togglePreviewPanel(instance);
+          this.togglePreviewLayout(instance);
+        }
+        this.preview.shown = false;
+      },
 
-    this.preview.shown = !this.preview?.shown;
+      fetchPreview: (instance) => this.fetchPreview(instance),
+
+      setupPreviewAction: (instance) => this.setupPreviewAction(instance),
+
+      togglePreview: (instance) => {
+        if (!this.preview?.el) {
+          this.preview.el = setupDomElement({ injectToEl: instance.getDomNode().parentElement });
+        }
+        this.togglePreviewLayout(instance);
+        this.togglePreviewPanel(instance);
+
+        if (!this.preview?.shown) {
+          this.preview.modelChangeListener = instance.onDidChangeModelContent(
+            debounce(
+              this.fetchPreview.bind(this, instance),
+              EXTENSION_MARKDOWN_PREVIEW_UPDATE_DELAY,
+            ),
+          );
+        } else {
+          this.preview.modelChangeListener.dispose();
+        }
+
+        this.preview.shown = !this.preview?.shown;
+      },
+    };
   }
 }

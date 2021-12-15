@@ -1,4 +1,5 @@
 import { editor as monacoEditor, Uri } from 'monaco-editor';
+import { waitForCSSLoaded } from '~/helpers/startup_css_helper';
 import { defaultEditorOptions } from '~/ide/lib/editor_options';
 import languages from '~/ide/lib/languages';
 import { registerLanguages } from '~/ide/utils';
@@ -11,10 +12,39 @@ import {
   EDITOR_TYPE_DIFF,
 } from './constants';
 import { clearDomElement, setupEditorTheme, getBlobLanguage } from './utils';
+import EditorInstance from './source_editor_instance';
+
+const instanceRemoveFromRegistry = (editor, instance) => {
+  const index = editor.instances.findIndex((inst) => inst === instance);
+  editor.instances.splice(index, 1);
+};
+
+const instanceDisposeModels = (editor, instance, model) => {
+  const instanceModel = instance.getModel() || model;
+  if (!instanceModel) {
+    return;
+  }
+  if (instance.getEditorType() === EDITOR_TYPE_DIFF) {
+    const { original, modified } = instanceModel;
+    if (original) {
+      original.dispose();
+    }
+    if (modified) {
+      modified.dispose();
+    }
+  } else {
+    instanceModel.dispose();
+  }
+};
 
 export default class SourceEditor {
+  /**
+   * Constructs a global editor.
+   * @param {Object} options - Monaco config options used to create the editor
+   */
   constructor(options = {}) {
     this.instances = [];
+    this.extensionsStore = new Map();
     this.options = {
       extraEditorClassName: 'gl-source-editor',
       ...defaultEditorOptions,
@@ -24,19 +54,6 @@ export default class SourceEditor {
     setupEditorTheme();
 
     registerLanguages(...languages);
-  }
-
-  static mixIntoInstance(source, inst) {
-    if (!inst) {
-      return;
-    }
-    const isClassInstance = source.constructor.prototype !== Object.prototype;
-    const sanitizedSource = isClassInstance ? source.constructor.prototype : source;
-    Object.getOwnPropertyNames(sanitizedSource).forEach((prop) => {
-      if (prop !== 'constructor') {
-        Object.assign(inst, { [prop]: source[prop] });
-      }
-    });
   }
 
   static prepareInstance(el) {
@@ -78,71 +95,17 @@ export default class SourceEditor {
     return diffModel;
   }
 
-  static convertMonacoToELInstance = (inst) => {
-    const sourceEditorInstanceAPI = {
-      updateModelLanguage: (path) => {
-        return SourceEditor.instanceUpdateLanguage(inst, path);
-      },
-      use: (exts = []) => {
-        return SourceEditor.instanceApplyExtension(inst, exts);
-      },
-    };
-    const handler = {
-      get(target, prop, receiver) {
-        if (Reflect.has(sourceEditorInstanceAPI, prop)) {
-          return sourceEditorInstanceAPI[prop];
-        }
-        return Reflect.get(target, prop, receiver);
-      },
-    };
-    return new Proxy(inst, handler);
-  };
-
-  static instanceUpdateLanguage(inst, path) {
-    const lang = getBlobLanguage(path);
-    const model = inst.getModel();
-    return monacoEditor.setModelLanguage(model, lang);
-  }
-
-  static instanceApplyExtension(inst, exts = []) {
-    const extensions = [].concat(exts);
-    extensions.forEach((extension) => {
-      SourceEditor.mixIntoInstance(extension, inst);
-    });
-    return inst;
-  }
-
-  static instanceRemoveFromRegistry(editor, instance) {
-    const index = editor.instances.findIndex((inst) => inst === instance);
-    editor.instances.splice(index, 1);
-  }
-
-  static instanceDisposeModels(editor, instance, model) {
-    const instanceModel = instance.getModel() || model;
-    if (!instanceModel) {
-      return;
-    }
-    if (instance.getEditorType() === EDITOR_TYPE_DIFF) {
-      const { original, modified } = instanceModel;
-      if (original) {
-        original.dispose();
-      }
-      if (modified) {
-        modified.dispose();
-      }
-    } else {
-      instanceModel.dispose();
-    }
-  }
-
   /**
-   * Creates a monaco instance with the given options.
-   *
-   * @param {Object} options Options used to initialize monaco.
-   * @param {Element} options.el The element which will be used to create the monacoEditor.
+   * Creates a Source Editor Instance with the given options.
+   * @param {Object} options Options used to initialize the instance.
+   * @param {Element} options.el The element to attach the instance for.
    * @param {string} options.blobPath The path used as the URI of the model. Monaco uses the extension of this path to determine the language.
    * @param {string} options.blobContent The content to initialize the monacoEditor.
+   * @param {string} options.blobOriginalContent The original blob's content. Is used when creating a Diff Instance.
    * @param {string} options.blobGlobalId This is used to help globally identify monaco instances that are created with the same blobPath.
+   * @param {Boolean} options.isDiff Flag to enable creation of a Diff Instance?
+   * @param {...*} options.instanceOptions Configuration options used to instantiate an instance.
+   * @returns {EditorInstance}
    */
   createInstance({
     el = undefined,
@@ -156,12 +119,17 @@ export default class SourceEditor {
     SourceEditor.prepareInstance(el);
 
     const createEditorFn = isDiff ? 'createDiffEditor' : 'create';
-    const instance = SourceEditor.convertMonacoToELInstance(
+    const instance = new EditorInstance(
       monacoEditor[createEditorFn].call(this, el, {
         ...this.options,
         ...instanceOptions,
       }),
+      this.extensionsStore,
     );
+
+    waitForCSSLoaded(() => {
+      instance.layout();
+    });
 
     let model;
     if (instanceOptions.model !== null) {
@@ -176,8 +144,8 @@ export default class SourceEditor {
     }
 
     instance.onDidDispose(() => {
-      SourceEditor.instanceRemoveFromRegistry(this, instance);
-      SourceEditor.instanceDisposeModels(this, instance, model);
+      instanceRemoveFromRegistry(this, instance);
+      instanceDisposeModels(this, instance, model);
     });
 
     this.instances.push(instance);
@@ -185,6 +153,11 @@ export default class SourceEditor {
     return instance;
   }
 
+  /**
+   * Create a Diff Instance
+   * @param {Object} args Options to be passed further down to createInstance() with the same signature
+   * @returns {EditorInstance}
+   */
   createDiffInstance(args) {
     return this.createInstance({
       ...args,
@@ -192,6 +165,10 @@ export default class SourceEditor {
     });
   }
 
+  /**
+   * Dispose global editor
+   * Automatically disposes all the instances registered for this editor
+   */
   dispose() {
     this.instances.forEach((instance) => instance.dispose());
   }

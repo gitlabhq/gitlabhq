@@ -9,12 +9,13 @@ review-cleanup:
     action: stop
   before_script:
     - source scripts/utils.sh
+    - source scripts/review_apps/review-apps.sh
     - source scripts/review_apps/gcp_cleanup.sh
     - install_gitlab_gem
     - setup_gcp_dependencies
   script:
     - delete_release
-    - delete_k8s_release_namespace
+    - delete_namespace
     - ruby -rrubygems scripts/review_apps/automated_cleanup.rb
     - gcp_cleanup
 

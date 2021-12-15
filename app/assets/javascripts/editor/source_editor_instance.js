@@ -13,7 +13,7 @@
  * A Source Editor Extension
  * @typedef {Object} SourceEditorExtension
  * @property {Object} obj
- * @property {string} name
+ * @property {string} extensionName
  * @property {Object} api
  */
 
@@ -43,12 +43,12 @@ const utils = {
     }
   },
 
-  getStoredExtension: (extensionsStore, name) => {
+  getStoredExtension: (extensionsStore, extensionName) => {
     if (!extensionsStore) {
       logError(EDITOR_EXTENSION_STORE_IS_MISSING_ERROR);
       return undefined;
     }
-    return extensionsStore.get(name);
+    return extensionsStore.get(extensionName);
   },
 };
 
@@ -73,30 +73,18 @@ export default class EditorInstance {
         if (methodExtension) {
           const extension = extensionsStore.get(methodExtension);
 
-          return (...args) => extension.api[prop].call(seInstance, receiver, ...args);
+          if (typeof extension.api[prop] === 'function') {
+            return extension.api[prop].bind(extension.obj, receiver);
+          }
+
+          return extension.api[prop];
         }
         return Reflect.get(seInstance[prop] ? seInstance : target, prop, receiver);
-      },
-      set(target, prop, value) {
-        Object.assign(seInstance, {
-          [prop]: value,
-        });
-        return true;
       },
     };
     const instProxy = new Proxy(rootInstance, getHandler);
 
-    /**
-     * Main entry point to apply an extension to the instance
-     * @param {SourceEditorExtensionDefinition}
-     */
-    this.use = EditorInstance.useUnuse.bind(instProxy, extensionsStore, this.useExtension);
-
-    /**
-     * Main entry point to un-use an extension and remove it from the instance
-     * @param {SourceEditorExtension}
-     */
-    this.unuse = EditorInstance.useUnuse.bind(instProxy, extensionsStore, this.unuseExtension);
+    this.dispatchExtAction = EditorInstance.useUnuse.bind(instProxy, extensionsStore);
 
     return instProxy;
   }
@@ -141,7 +129,7 @@ export default class EditorInstance {
     }
 
     // Existing Extension Path
-    const existingExt = utils.getStoredExtension(extensionsStore, definition.name);
+    const existingExt = utils.getStoredExtension(extensionsStore, definition.extensionName);
     if (existingExt) {
       if (isEqual(extension.setupOptions, existingExt.setupOptions)) {
         return existingExt;
@@ -168,14 +156,14 @@ export default class EditorInstance {
    * @param {Map} extensionsStore - The global registry for the extension instances
    */
   registerExtension(extension, extensionsStore) {
-    const { name } = extension;
+    const { extensionName } = extension;
     const hasExtensionRegistered =
-      extensionsStore.has(name) &&
-      isEqual(extension.setupOptions, extensionsStore.get(name).setupOptions);
+      extensionsStore.has(extensionName) &&
+      isEqual(extension.setupOptions, extensionsStore.get(extensionName).setupOptions);
     if (hasExtensionRegistered) {
       return;
     }
-    extensionsStore.set(name, extension);
+    extensionsStore.set(extensionName, extension);
     const { obj: extensionObj } = extension;
     if (extensionObj.onUse) {
       extensionObj.onUse(this);
@@ -187,7 +175,7 @@ export default class EditorInstance {
    * @param {SourceEditorExtension} extension - Instance of Source Editor extension
    */
   registerExtensionMethods(extension) {
-    const { api, name } = extension;
+    const { api, extensionName } = extension;
 
     if (!api) {
       return;
@@ -197,7 +185,7 @@ export default class EditorInstance {
       if (this[prop]) {
         logError(sprintf(EDITOR_EXTENSION_NAMING_CONFLICT_ERROR, { prop }));
       } else {
-        this.methods[prop] = name;
+        this.methods[prop] = extensionName;
       }
     }, this);
   }
@@ -215,10 +203,10 @@ export default class EditorInstance {
     if (!extension) {
       throw new Error(EDITOR_EXTENSION_NOT_SPECIFIED_FOR_UNUSE_ERROR);
     }
-    const { name } = extension;
-    const existingExt = utils.getStoredExtension(extensionsStore, name);
+    const { extensionName } = extension;
+    const existingExt = utils.getStoredExtension(extensionsStore, extensionName);
     if (!existingExt) {
-      throw new Error(sprintf(EDITOR_EXTENSION_NOT_REGISTERED_ERROR, { name }));
+      throw new Error(sprintf(EDITOR_EXTENSION_NOT_REGISTERED_ERROR, { extensionName }));
     }
     const { obj: extensionObj } = existingExt;
     if (extensionObj.onBeforeUnuse) {
@@ -235,12 +223,12 @@ export default class EditorInstance {
    * @param {SourceEditorExtension} extension - Instance of Source Editor extension to un-use
    */
   unregisterExtensionMethods(extension) {
-    const { api, name } = extension;
+    const { api, extensionName } = extension;
     if (!api) {
       return;
     }
     Object.keys(api).forEach((method) => {
-      utils.removeExtFromMethod(method, name, this.methods);
+      utils.removeExtFromMethod(method, extensionName, this.methods);
     });
   }
 
@@ -257,6 +245,24 @@ export default class EditorInstance {
     const model = this.getModel();
     // return monacoEditor.setModelLanguage(model, lang);
     monacoEditor.setModelLanguage(model, lang);
+  }
+
+  /**
+   * Main entry point to apply an extension to the instance
+   * @param {SourceEditorExtensionDefinition[]|SourceEditorExtensionDefinition} extDefs - The extension(s) to use
+   * @returns {EditorExtension|*}
+   */
+  use(extDefs) {
+    return this.dispatchExtAction(this.useExtension, extDefs);
+  }
+
+  /**
+   * Main entry point to remove an extension to the instance
+   * @param {SourceEditorExtension[]|SourceEditorExtension} exts -
+   * @returns {*}
+   */
+  unuse(exts) {
+    return this.dispatchExtAction(this.unuseExtension, exts);
   }
 
   /**

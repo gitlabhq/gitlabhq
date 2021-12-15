@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe AvatarsHelper do
   include UploadHelpers
+  include Devise::Test::ControllerHelpers
 
   let_it_be(:user) { create(:user) }
 
@@ -145,11 +146,48 @@ RSpec.describe AvatarsHelper do
 
   describe '#avatar_icon_for_user' do
     let(:user) { create(:user, avatar: File.open(uploaded_image_temp_path)) }
+    let(:helper_args) { [user] }
+
+    shared_examples 'blocked or unconfirmed user with avatar' do
+      it 'returns the default avatar' do
+        expect(helper.avatar_icon_for_user(user).to_s)
+          .to match_asset_path(described_class::DEFAULT_AVATAR_PATH)
+      end
+
+      context 'when the current user is an admin', :enable_admin_mode do
+        let(:current_user) { create(:user, :admin) }
+
+        before do
+          allow(helper).to receive(:current_user).and_return(current_user)
+        end
+
+        it 'returns the user avatar' do
+          expect(helper.avatar_icon_for_user(user).to_s)
+            .to eq(user.avatar.url)
+        end
+      end
+    end
 
     context 'with a user object passed' do
       it 'returns a relative URL for the avatar' do
         expect(helper.avatar_icon_for_user(user).to_s)
           .to eq(user.avatar.url)
+      end
+
+      context 'when the user is blocked' do
+        before do
+          user.block!
+        end
+
+        it_behaves_like 'blocked or unconfirmed user with avatar'
+      end
+
+      context 'when the user is unconfirmed' do
+        before do
+          user.update!(confirmed_at: nil)
+        end
+
+        it_behaves_like 'blocked or unconfirmed user with avatar'
       end
     end
 
@@ -171,7 +209,7 @@ RSpec.describe AvatarsHelper do
       end
 
       it 'returns a generic avatar' do
-        expect(helper.gravatar_icon(user_email)).to match_asset_path('no_avatar.png')
+        expect(helper.gravatar_icon(user_email)).to match_asset_path(described_class::DEFAULT_AVATAR_PATH)
       end
     end
 
@@ -181,7 +219,7 @@ RSpec.describe AvatarsHelper do
       end
 
       it 'returns a generic avatar when email is blank' do
-        expect(helper.gravatar_icon('')).to match_asset_path('no_avatar.png')
+        expect(helper.gravatar_icon('')).to match_asset_path(described_class::DEFAULT_AVATAR_PATH)
       end
 
       it 'returns a valid Gravatar URL' do

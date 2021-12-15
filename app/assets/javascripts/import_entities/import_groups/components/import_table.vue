@@ -2,8 +2,6 @@
 import {
   GlButton,
   GlEmptyState,
-  GlDropdown,
-  GlDropdownItem,
   GlIcon,
   GlLink,
   GlLoadingIcon,
@@ -15,7 +13,7 @@ import {
 import { debounce } from 'lodash';
 import createFlash from '~/flash';
 import { s__, __, n__ } from '~/locale';
-import PaginationLinks from '~/vue_shared/components/pagination_links.vue';
+import PaginationBar from '~/vue_shared/components/pagination_bar/pagination_bar.vue';
 import { getGroupPathAvailability } from '~/rest_api';
 import axios from '~/lib/utils/axios_utils';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
@@ -44,8 +42,6 @@ export default {
   components: {
     GlButton,
     GlEmptyState,
-    GlDropdown,
-    GlDropdownItem,
     GlIcon,
     GlLink,
     GlLoadingIcon,
@@ -57,7 +53,7 @@ export default {
     ImportTargetCell,
     ImportStatusCell,
     ImportActionsCell,
-    PaginationLinks,
+    PaginationBar,
   },
 
   props: {
@@ -600,49 +596,13 @@ export default {
             />
           </template>
         </gl-table>
-        <div v-if="hasGroups" class="gl-display-flex gl-mt-3 gl-align-items-center">
-          <pagination-links
-            :change="setPage"
-            :page-info="bulkImportSourceGroups.pageInfo"
-            class="gl-m-0"
-          />
-          <gl-dropdown category="tertiary" :aria-label="__('Page size')" class="gl-ml-auto">
-            <template #button-content>
-              <span class="font-weight-bold">
-                <gl-sprintf :message="__('%{count} items per page')">
-                  <template #count>
-                    {{ perPage }}
-                  </template>
-                </gl-sprintf>
-              </span>
-              <gl-icon class="gl-button-icon dropdown-chevron" name="chevron-down" />
-            </template>
-            <gl-dropdown-item
-              v-for="size in $options.PAGE_SIZES"
-              :key="size"
-              @click="setPageSize(size)"
-            >
-              <gl-sprintf :message="__('%{count} items per page')">
-                <template #count>
-                  {{ size }}
-                </template>
-              </gl-sprintf>
-            </gl-dropdown-item>
-          </gl-dropdown>
-          <div class="gl-ml-2">
-            <gl-sprintf :message="s__('BulkImport|Showing %{start}-%{end} of %{total}')">
-              <template #start>
-                {{ paginationInfo.start }}
-              </template>
-              <template #end>
-                {{ paginationInfo.end }}
-              </template>
-              <template #total>
-                {{ humanizedTotal }}
-              </template>
-            </gl-sprintf>
-          </div>
-        </div>
+        <pagination-bar
+          v-if="hasGroups"
+          :page-info="bulkImportSourceGroups.pageInfo"
+          class="gl-mt-3"
+          @set-page="setPage"
+          @set-page-size="setPageSize"
+        />
       </template>
     </template>
   </div>

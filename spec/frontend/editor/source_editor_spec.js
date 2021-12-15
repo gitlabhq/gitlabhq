@@ -1,14 +1,27 @@
-/* eslint-disable max-classes-per-file */
 import { editor as monacoEditor, languages as monacoLanguages } from 'monaco-editor';
 import {
   SOURCE_EDITOR_INSTANCE_ERROR_NO_EL,
   URI_PREFIX,
   EDITOR_READY_EVENT,
 } from '~/editor/constants';
-import { SourceEditorExtension } from '~/editor/extensions/source_editor_extension_base';
 import SourceEditor from '~/editor/source_editor';
 import { DEFAULT_THEME, themes } from '~/ide/lib/themes';
 import { joinPaths } from '~/lib/utils/url_utility';
+
+jest.mock('~/helpers/startup_css_helper', () => {
+  return {
+    waitForCSSLoaded: jest.fn().mockImplementation((cb) => {
+      // We have to artificially put the callback's execution
+      // to the end of the current call stack to be able to
+      // test that the callback is called after waitForCSSLoaded.
+      // setTimeout with 0 delay does exactly that.
+      // Otherwise we might end up with false positive results
+      setTimeout(() => {
+        cb.apply();
+      }, 0);
+    }),
+  };
+});
 
 describe('Base editor', () => {
   let editorEl;
@@ -18,7 +31,6 @@ describe('Base editor', () => {
   const blobContent = 'Foo Bar';
   const blobPath = 'test.md';
   const blobGlobalId = 'snippet_777';
-  const fakeModel = { foo: 'bar', dispose: jest.fn() };
 
   beforeEach(() => {
     setFixtures('<div id="editor" data-editor-loading></div>');
@@ -51,16 +63,6 @@ describe('Base editor', () => {
   describe('instance of the Source Editor', () => {
     let modelSpy;
     let instanceSpy;
-    const setModel = jest.fn();
-    const dispose = jest.fn();
-    const mockModelReturn = (res = fakeModel) => {
-      modelSpy = jest.spyOn(monacoEditor, 'createModel').mockImplementation(() => res);
-    };
-    const mockDecorateInstance = (decorations = {}) => {
-      jest.spyOn(SourceEditor, 'convertMonacoToELInstance').mockImplementation((inst) => {
-        return Object.assign(inst, decorations);
-      });
-    };
 
     beforeEach(() => {
       modelSpy = jest.spyOn(monacoEditor, 'createModel');
@@ -72,46 +74,38 @@ describe('Base editor', () => {
       });
 
       it('throws an error if no dom element is supplied', () => {
-        mockDecorateInstance();
-        expect(() => {
+        const create = () => {
           editor.createInstance();
-        }).toThrow(SOURCE_EDITOR_INSTANCE_ERROR_NO_EL);
+        };
+        expect(create).toThrow(SOURCE_EDITOR_INSTANCE_ERROR_NO_EL);
 
         expect(modelSpy).not.toHaveBeenCalled();
         expect(instanceSpy).not.toHaveBeenCalled();
-        expect(SourceEditor.convertMonacoToELInstance).not.toHaveBeenCalled();
       });
 
-      it('creates model to be supplied to Monaco editor', () => {
-        mockModelReturn();
-        mockDecorateInstance({
-          setModel,
-        });
-        editor.createInstance(defaultArguments);
+      it('creates model and attaches it to the instance', () => {
+        jest.spyOn(monacoEditor, 'createModel');
+        const instance = editor.createInstance(defaultArguments);
 
-        expect(modelSpy).toHaveBeenCalledWith(
+        expect(monacoEditor.createModel).toHaveBeenCalledWith(
           blobContent,
           undefined,
           expect.objectContaining({
             path: uriFilePath,
           }),
         );
-        expect(setModel).toHaveBeenCalledWith(fakeModel);
+        expect(instance.getModel().getValue()).toEqual(defaultArguments.blobContent);
       });
 
       it('does not create a model automatically if model is passed as `null`', () => {
-        mockDecorateInstance({
-          setModel,
-        });
-        editor.createInstance({ ...defaultArguments, model: null });
-        expect(modelSpy).not.toHaveBeenCalled();
-        expect(setModel).not.toHaveBeenCalled();
+        const instance = editor.createInstance({ ...defaultArguments, model: null });
+        expect(instance.getModel()).toBeNull();
       });
 
       it('initializes the instance on a supplied DOM node', () => {
         editor.createInstance({ el: editorEl });
 
-        expect(editor.editorEl).not.toBe(null);
+        expect(editor.editorEl).not.toBeNull();
         expect(instanceSpy).toHaveBeenCalledWith(editorEl, expect.anything());
       });
 
@@ -142,32 +136,43 @@ describe('Base editor', () => {
       });
 
       it('disposes instance when the global editor is disposed', () => {
-        mockDecorateInstance({
-          dispose,
-        });
-        editor.createInstance(defaultArguments);
+        const instance = editor.createInstance(defaultArguments);
+        instance.dispose = jest.fn();
 
-        expect(dispose).not.toHaveBeenCalled();
+        expect(instance.dispose).not.toHaveBeenCalled();
 
         editor.dispose();
 
-        expect(dispose).toHaveBeenCalled();
+        expect(instance.dispose).toHaveBeenCalled();
       });
 
       it("removes the disposed instance from the global editor's storage and disposes the associated model", () => {
-        mockModelReturn();
-        mockDecorateInstance({
-          setModel,
-        });
         const instance = editor.createInstance(defaultArguments);
 
         expect(editor.instances).toHaveLength(1);
-        expect(fakeModel.dispose).not.toHaveBeenCalled();
+        expect(instance.getModel()).not.toBeNull();
 
         instance.dispose();
 
         expect(editor.instances).toHaveLength(0);
-        expect(fakeModel.dispose).toHaveBeenCalled();
+        expect(instance.getModel()).toBeNull();
+      });
+
+      it('resets the layout in waitForCSSLoaded callback', async () => {
+        const layoutSpy = jest.fn();
+        jest.spyOn(monacoEditor, 'create').mockReturnValue({
+          layout: layoutSpy,
+          setModel: jest.fn(),
+          onDidDispose: jest.fn(),
+          dispose: jest.fn(),
+        });
+        editor.createInstance(defaultArguments);
+        expect(layoutSpy).not.toHaveBeenCalled();
+
+        // We're waiting for the waitForCSSLoaded mock to kick in
+        await jest.runOnlyPendingTimers();
+
+        expect(layoutSpy).toHaveBeenCalled();
       });
     });
 
@@ -213,26 +218,17 @@ describe('Base editor', () => {
       });
 
       it('correctly disposes the diff editor model', () => {
-        const modifiedModel = fakeModel;
-        const originalModel = { ...fakeModel };
-        mockDecorateInstance({
-          getModel: jest.fn().mockReturnValue({
-            original: originalModel,
-            modified: modifiedModel,
-          }),
-        });
-
         const instance = editor.createDiffInstance({ ...defaultArguments, blobOriginalContent });
 
         expect(editor.instances).toHaveLength(1);
-        expect(originalModel.dispose).not.toHaveBeenCalled();
-        expect(modifiedModel.dispose).not.toHaveBeenCalled();
+        expect(instance.getOriginalEditor().getModel()).not.toBeNull();
+        expect(instance.getModifiedEditor().getModel()).not.toBeNull();
 
         instance.dispose();
 
         expect(editor.instances).toHaveLength(0);
-        expect(originalModel.dispose).toHaveBeenCalled();
-        expect(modifiedModel.dispose).toHaveBeenCalled();
+        expect(instance.getOriginalEditor().getModel()).toBeNull();
+        expect(instance.getModifiedEditor().getModel()).toBeNull();
       });
     });
   });
@@ -354,196 +350,19 @@ describe('Base editor', () => {
       expect(instance.getValue()).toBe(blobContent);
     });
 
-    it('is capable of changing the language of the model', () => {
-      // ignore warnings and errors Monaco posts during setup
-      // (due to being called from Jest/Node.js environment)
-      jest.spyOn(console, 'warn').mockImplementation(() => {});
-      jest.spyOn(console, 'error').mockImplementation(() => {});
-
-      const blobRenamedPath = 'test.js';
-
-      expect(instance.getModel().getLanguageIdentifier().language).toBe('markdown');
-      instance.updateModelLanguage(blobRenamedPath);
-
-      expect(instance.getModel().getLanguageIdentifier().language).toBe('javascript');
-    });
-
-    it('falls back to plaintext if there is no language associated with an extension', () => {
-      const blobRenamedPath = 'test.myext';
-      const spy = jest.spyOn(console, 'error').mockImplementation(() => {});
-
-      instance.updateModelLanguage(blobRenamedPath);
-
-      expect(spy).not.toHaveBeenCalled();
-      expect(instance.getModel().getLanguageIdentifier().language).toBe('plaintext');
-    });
-  });
-
-  describe('extensions', () => {
-    let instance;
-    const alphaRes = jest.fn();
-    const betaRes = jest.fn();
-    const fooRes = jest.fn();
-    const barRes = jest.fn();
-    class AlphaClass {
-      constructor() {
-        this.res = alphaRes;
-      }
-      alpha() {
-        return this?.nonExistentProp || alphaRes;
-      }
-    }
-    class BetaClass {
-      beta() {
-        return this?.nonExistentProp || betaRes;
-      }
-    }
-    class WithStaticMethod {
-      constructor({ instance: inst, ...options } = {}) {
-        Object.assign(inst, options);
-      }
-      static computeBoo(a) {
-        return a + 1;
-      }
-      boo() {
-        return WithStaticMethod.computeBoo(this.base);
-      }
-    }
-    class WithStaticMethodExtended extends SourceEditorExtension {
-      static computeBoo(a) {
-        return a + 1;
-      }
-      boo() {
-        return WithStaticMethodExtended.computeBoo(this.base);
-      }
-    }
-    const AlphaExt = new AlphaClass();
-    const BetaExt = new BetaClass();
-    const FooObjExt = {
-      foo() {
-        return fooRes;
-      },
-    };
-    const BarObjExt = {
-      bar() {
-        return barRes;
-      },
-    };
-
-    describe('basic functionality', () => {
-      beforeEach(() => {
-        instance = editor.createInstance({ el: editorEl, blobPath, blobContent });
-      });
-
-      it('does not fail if no extensions supplied', () => {
-        const spy = jest.spyOn(global.console, 'error');
-        instance.use();
-
-        expect(spy).not.toHaveBeenCalled();
-      });
-
-      it("does not extend instance with extension's constructor", () => {
-        expect(instance.constructor).toBeDefined();
-        const { constructor } = instance;
-
-        expect(AlphaExt.constructor).toBeDefined();
-        expect(AlphaExt.constructor).not.toEqual(constructor);
-
-        instance.use(AlphaExt);
-        expect(instance.constructor).toBe(constructor);
-      });
-
-      it.each`
-        type                                        | extensions                | methods              | expectations
-        ${'ES6 classes'}                            | ${AlphaExt}               | ${['alpha']}         | ${[alphaRes]}
-        ${'multiple ES6 classes'}                   | ${[AlphaExt, BetaExt]}    | ${['alpha', 'beta']} | ${[alphaRes, betaRes]}
-        ${'simple objects'}                         | ${FooObjExt}              | ${['foo']}           | ${[fooRes]}
-        ${'multiple simple objects'}                | ${[FooObjExt, BarObjExt]} | ${['foo', 'bar']}    | ${[fooRes, barRes]}
-        ${'combination of ES6 classes and objects'} | ${[AlphaExt, BarObjExt]}  | ${['alpha', 'bar']}  | ${[alphaRes, barRes]}
-      `('is extensible with $type', ({ extensions, methods, expectations } = {}) => {
-        methods.forEach((method) => {
-          expect(instance[method]).toBeUndefined();
-        });
-
-        instance.use(extensions);
-
-        methods.forEach((method) => {
-          expect(instance[method]).toBeDefined();
-        });
-
-        expectations.forEach((expectation, i) => {
-          expect(instance[methods[i]].call()).toEqual(expectation);
-        });
-      });
-
-      it('does not extend instance with private data of an extension', () => {
-        const ext = new WithStaticMethod({ instance });
-        ext.staticMethod = () => {
-          return 'foo';
+    it('emits the EDITOR_READY_EVENT event after setting up the instance', () => {
+      jest.spyOn(monacoEditor, 'create').mockImplementation(() => {
+        return {
+          setModel: jest.fn(),
+          onDidDispose: jest.fn(),
+          layout: jest.fn(),
         };
-        ext.staticProp = 'bar';
-
-        expect(instance.boo).toBeUndefined();
-        expect(instance.staticMethod).toBeUndefined();
-        expect(instance.staticProp).toBeUndefined();
-
-        instance.use(ext);
-
-        expect(instance.boo).toBeDefined();
-        expect(instance.staticMethod).toBeUndefined();
-        expect(instance.staticProp).toBeUndefined();
       });
-
-      it.each([WithStaticMethod, WithStaticMethodExtended])(
-        'properly resolves data for an extension with private data',
-        (ExtClass) => {
-          const base = 1;
-          expect(instance.base).toBeUndefined();
-          expect(instance.boo).toBeUndefined();
-
-          const ext = new ExtClass({ instance, base });
-
-          instance.use(ext);
-          expect(instance.base).toBe(1);
-          expect(instance.boo()).toBe(2);
-        },
-      );
-
-      it('uses the last definition of a method in case of an overlap', () => {
-        const FooObjExt2 = { foo: 'foo2' };
-        instance.use([FooObjExt, BarObjExt, FooObjExt2]);
-        expect(instance).toMatchObject({
-          foo: 'foo2',
-          ...BarObjExt,
-        });
-      });
-
-      it('correctly resolves references withing extensions', () => {
-        const FunctionExt = {
-          inst() {
-            return this;
-          },
-          mod() {
-            return this.getModel();
-          },
-        };
-        instance.use(FunctionExt);
-        expect(instance.inst()).toEqual(editor.instances[0]);
-      });
-
-      it('emits the EDITOR_READY_EVENT event after setting up the instance', () => {
-        jest.spyOn(monacoEditor, 'create').mockImplementation(() => {
-          return {
-            setModel: jest.fn(),
-            onDidDispose: jest.fn(),
-          };
-        });
-        const eventSpy = jest.fn();
-        editorEl.addEventListener(EDITOR_READY_EVENT, eventSpy);
-        expect(eventSpy).not.toHaveBeenCalled();
-        instance = editor.createInstance({ el: editorEl });
-        expect(eventSpy).toHaveBeenCalled();
-      });
+      const eventSpy = jest.fn();
+      editorEl.addEventListener(EDITOR_READY_EVENT, eventSpy);
+      expect(eventSpy).not.toHaveBeenCalled();
+      editor.createInstance({ el: editorEl });
+      expect(eventSpy).toHaveBeenCalled();
     });
   });
 

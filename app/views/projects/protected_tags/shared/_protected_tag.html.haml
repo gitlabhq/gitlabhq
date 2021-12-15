@@ -3,7 +3,7 @@
     %span.ref-name= protected_tag.name
 
     - if @project.root_ref?(protected_tag.name)
-      %span.badge.badge-info.gl-ml-2 default
+      = gl_badge_tag s_('ProtectedTags|default'), variant: :info, class: 'gl-ml-2'
   %td
     - if protected_tag.wildcard?
       - matching_tags = protected_tag.matching(repository.tags)

@@ -40,7 +40,7 @@ describe('Editor Extension', () => {
 
       expect(extension).toEqual(
         expect.objectContaining({
-          name: expectedName,
+          extensionName: expectedName,
           setupOptions,
         }),
       );

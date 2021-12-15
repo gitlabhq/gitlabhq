@@ -38,7 +38,7 @@ describe('import table', () => {
     wrapper.findAll('button').wrappers.find((w) => w.text() === 'Import selected');
   const findImportButtons = () =>
     wrapper.findAll('button').wrappers.filter((w) => w.text() === 'Import');
-  const findPaginationDropdown = () => wrapper.find('[aria-label="Page size"]');
+  const findPaginationDropdown = () => wrapper.find('[data-testid="page-size"]');
   const findPaginationDropdownText = () => findPaginationDropdown().find('button').text();
   const findSelectionCount = () => wrapper.find('[data-test-id="selection-count"]');
 
@@ -209,7 +209,12 @@ describe('import table', () => {
       const otherOption = findPaginationDropdown().findAll('li p').at(1);
       expect(otherOption.text()).toMatchInterpolatedText('50 items per page');
 
+      bulkImportSourceGroupsQueryMock.mockResolvedValue({
+        nodes: [FAKE_GROUP],
+        pageInfo: { ...FAKE_PAGE_INFO, perPage: 50 },
+      });
       await otherOption.trigger('click');
+
       await waitForPromises();
 
       expect(findPaginationDropdownText()).toMatchInterpolatedText('50 items per page');
