@@ -1,10 +1,7 @@
 
 - if runner.instance_type?
-  %span.badge.badge-pill.gl-badge.badge-success
-    = s_('Runners|shared')
+  = gl_badge_tag s_('Runners|shared'), variant: :success
 - elsif runner.group_type?
-  %span.badge.badge-pill.gl-badge.badge-success
-    = s_('Runners|group')
+  = gl_badge_tag s_('Runners|group'), variant: :success
 - else
-  %span.badge.badge-pill.gl-badge.badge-info
-    = s_('Runners|specific')
+  = gl_badge_tag s_('Runners|specific'), variant: :info

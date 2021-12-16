@@ -761,7 +761,7 @@ Run `gitlab-ctl patroni members` to query Patroni for a summary of the cluster s
 To verify the status of replication:
 
 ```shell
-echo 'select * from pg_stat_wal_receiver\x\g\x \n select * from pg_stat_replication\x\g\x' | gitlab-psql
+echo -e 'select * from pg_stat_wal_receiver\x\g\x \n select * from pg_stat_replication\x\g\x' | gitlab-psql
 ```
 
 The same command can be run on all three database servers. It returns any information

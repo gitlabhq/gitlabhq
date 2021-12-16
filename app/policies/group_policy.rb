@@ -77,6 +77,11 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
 
   condition(:crm_enabled, score: 0, scope: :subject) { Feature.enabled?(:customer_relations, @subject) }
 
+  with_scope :subject
+  condition(:group_runner_registration_allowed, score: 0, scope: :subject) do
+    Feature.disabled?(:runner_registration_control) || Gitlab::CurrentSettings.valid_runner_registrars.include?('group')
+  end
+
   rule { can?(:read_group) & design_management_enabled }.policy do
     enable :read_design_activity
   end
@@ -200,6 +205,10 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     enable :read_nested_project_resources
   end
 
+  rule { can?(:admin_group_runners) }.policy do
+    enable :register_group_runners
+  end
+
   rule { owner }.enable :create_subgroup
   rule { maintainer & maintainer_can_create_group }.enable :create_subgroup
 
@@ -260,6 +269,10 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     prevent :read_crm_organization
     prevent :admin_crm_contact
     prevent :admin_crm_organization
+  end
+
+  rule { ~group_runner_registration_allowed }.policy do
+    prevent :register_group_runners
   end
 
   def access_level(for_any_session: false)
