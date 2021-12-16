@@ -11,7 +11,6 @@ RSpec.describe 'Issue Sidebar' do
   let_it_be(:label) { create(:label, project: project, title: 'bug') }
   let_it_be(:issue) { create(:labeled_issue, project: project, labels: [label]) }
   let_it_be(:mock_date) { Date.today.at_beginning_of_month + 2.days }
-  let_it_be(:issue_with_due_date) { create(:issue, project: project, due_date: mock_date) }
   let_it_be(:xss_label) { create(:label, project: project, title: '&lt;script&gt;alert("xss");&lt;&#x2F;script&gt;') }
 
   before do
@@ -201,30 +200,6 @@ RSpec.describe 'Issue Sidebar' do
       end
     end
 
-    context 'due date widget', :js do
-      let(:due_date_value) { find('[data-testid="due-date"] [data-testid="sidebar-date-value"]') }
-
-      context 'when no due date exists' do
-        before do
-          visit_issue(project, issue)
-        end
-
-        it "displays 'None'" do
-          expect(due_date_value.text).to have_content 'None'
-        end
-      end
-
-      context 'when due date exists' do
-        before do
-          visit_issue(project, issue_with_due_date)
-        end
-
-        it "displays the due date" do
-          expect(due_date_value.text).to have_content mock_date.strftime('%b %-d, %Y')
-        end
-      end
-    end
-
     context 'as an allowed user' do
       before do
         project.add_developer(user)
@@ -260,6 +235,10 @@ RSpec.describe 'Issue Sidebar' do
 
       context 'editing issue milestone', :js do
         it_behaves_like 'milestone sidebar widget'
+      end
+
+      context 'editing issue due date', :js do
+        it_behaves_like 'date sidebar widget'
       end
 
       context 'editing issue labels', :js do

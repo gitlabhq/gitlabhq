@@ -115,12 +115,7 @@ configuration. Otherwise, the Okta SCIM app may not work properly.
 
 1. Sign in to Okta.
 1. Ensure you are in the Admin section by selecting the **Admin** button located in the top right. The admin button is not visible from the admin page.
-
-   NOTE:
-   If you're using the Developer Console, select **Developer Console** in the top
-   bar and then select **Classic UI**. Otherwise, you may not see the buttons described in the following steps:
-
-1. In the **Application** tab, select **Add Application**.
+1. In the **Application** tab, select **Browse App Catalog**.
 1. Search for **GitLab**, find and select on the 'GitLab' application.
 1. On the GitLab application overview page, select **Add**.
 1. Under **Application Visibility** select both checkboxes. Currently the GitLab application does not support SAML authentication so the icon should not be shown to users.

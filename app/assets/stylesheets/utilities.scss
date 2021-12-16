@@ -226,6 +226,16 @@ $gl-line-height-42: px-to-rem(42px);
   max-height: none !important;
 }
 
+// Will be moved to @gitlab/ui in https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1655
+.gl-max-w-62 {
+  max-width: $grid-size * 62;
+}
+
+// Will be moved to @gitlab/ui in https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1655
+.gl-max-w-26 {
+  max-width: $grid-size * 26;
+}
+
 .gl-max-w-50p {
   max-width: 50%;
 }

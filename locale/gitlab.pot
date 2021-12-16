@@ -4353,7 +4353,13 @@ msgstr[1] ""
 msgid "ApprovalRule|%{firstLabel} +%{numberOfAdditionalLabels} more"
 msgstr ""
 
+msgid "ApprovalRule|A merge request author collaborating with a merge request approver"
+msgstr ""
+
 msgid "ApprovalRule|Add approvers"
+msgstr ""
+
+msgid "ApprovalRule|Add required approvers to improve your code review process"
 msgstr ""
 
 msgid "ApprovalRule|All scanners"
@@ -4386,6 +4392,9 @@ msgstr ""
 msgid "ApprovalRule|Approvers"
 msgstr ""
 
+msgid "ApprovalRule|Assign approvers by area of expertise."
+msgstr ""
+
 msgid "ApprovalRule|Confirmed"
 msgstr ""
 
@@ -4393,6 +4402,15 @@ msgid "ApprovalRule|Dismissed"
 msgstr ""
 
 msgid "ApprovalRule|Examples: QA, Security."
+msgstr ""
+
+msgid "ApprovalRule|Increase your organization’s code quality."
+msgstr ""
+
+msgid "ApprovalRule|Learn more about merge request approval."
+msgstr ""
+
+msgid "ApprovalRule|Let GitLab designate eligible approvers based on the files changed."
 msgstr ""
 
 msgid "ApprovalRule|Name"
@@ -4417,6 +4435,9 @@ msgid "ApprovalRule|Please select at least one vulnerability state"
 msgstr ""
 
 msgid "ApprovalRule|Previously detected"
+msgstr ""
+
+msgid "ApprovalRule|Reduce the overall time to merge."
 msgstr ""
 
 msgid "ApprovalRule|Resolved"
@@ -4444,6 +4465,9 @@ msgid "ApprovalRule|Severity levels"
 msgstr ""
 
 msgid "ApprovalRule|Target branch"
+msgstr ""
+
+msgid "ApprovalRule|Try it for free"
 msgstr ""
 
 msgid "ApprovalRule|Vulnerabilities allowed"

@@ -46,6 +46,10 @@ RSpec.shared_examples 'issue boards sidebar' do
     it_behaves_like 'milestone sidebar widget'
   end
 
+  context 'editing issue due date', :js do
+    it_behaves_like 'date sidebar widget'
+  end
+
   context 'in notifications subscription' do
     it 'displays notifications toggle', :aggregate_failures do
       page.within('[data-testid="sidebar-notifications"]') do

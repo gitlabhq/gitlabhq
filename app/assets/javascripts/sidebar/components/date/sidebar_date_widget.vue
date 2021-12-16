@@ -154,7 +154,7 @@ export default {
           };
     },
     dataTestId() {
-      return this.dateType === dateTypes.start ? 'start-date' : 'due-date';
+      return this.dateType === dateTypes.start ? 'sidebar-start-date' : 'sidebar-due-date';
     },
   },
   methods: {

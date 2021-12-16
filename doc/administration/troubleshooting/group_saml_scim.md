@@ -72,6 +72,10 @@ Self-managed instance example:
 
 ![Okta admin panel view](img/okta_admin_panel_v13_9.png)
 
+Setting the username for the newly provisioned users when assigning them the SCIM app:
+
+![Assigning SCIM app to users on Okta](img/okta_setting_username.png)
+
 ## OneLogin
 
 Application details:
