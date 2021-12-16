@@ -29040,6 +29040,15 @@ msgstr ""
 msgid "Registration Features include:"
 msgstr ""
 
+msgid "RegistrationFeatures|Enable Service Ping and register for this feature."
+msgstr ""
+
+msgid "RegistrationFeatures|Read more about the %{linkStart}Registration Features Program%{linkEnd}."
+msgstr ""
+
+msgid "RegistrationFeatures|Want to use this feature for free?"
+msgstr ""
+
 msgid "Registration|Checkout"
 msgstr ""
 

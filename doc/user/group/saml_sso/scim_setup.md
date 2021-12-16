@@ -170,14 +170,11 @@ During provisioning:
 - Duplicate usernames are also handled, by adding suffix `1` upon user creation. For example,
   due to already existing `test_user` username, `test_user1` is used.
 
-As long as [Group SAML](index.md) has been configured, existing GitLab.com users can link to their accounts in one of the following ways:
+If [Group SAML](index.md) has been configured and you have an existing GitLab.com account, you can link your SCIM and SAML identities:
 
-- By updating their *primary* email address in their GitLab.com user account to match their identity provider's user profile email address.
-- By following these steps:
-
-  1. Sign in to GitLab.com if needed.
-  1. In the identity provider's dashboard select the GitLab app or visit the **GitLab single sign-on URL**.
-  1. Select the **Authorize**.
+1. Update the [primary email](../../profile/index.md#change-your-primary-email) address in your GitLab.com user account to match the
+   user profile email address in your identity provider.
+1. [Link your SAML identity](index.md#linking-saml-to-your-existing-gitlabcom-account).
 
 We recommend users do this prior to turning on sync, because while synchronization is active, there may be provisioning errors for existing users.
 
