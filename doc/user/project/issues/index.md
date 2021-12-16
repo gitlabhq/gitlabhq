@@ -34,7 +34,7 @@ To learn how the GitLab Strategic Marketing department uses GitLab issues with [
 - [Edit issues](managing_issues.md#edit-an-issue)
 - [Move issues](managing_issues.md#moving-issues)
 - [Close issues](managing_issues.md#closing-issues)
-- [Delete issues](managing_issues.md#deleting-issues)
+- [Delete issues](managing_issues.md#delete-an-issue)
 - [Promote issues](managing_issues.md#promote-an-issue-to-an-epic)
 - [Set a due date](due_dates.md)
 - [Import issues](csv_import.md)

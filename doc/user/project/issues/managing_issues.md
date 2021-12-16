@@ -439,12 +439,23 @@ can change an issue's type. To do this, edit the issue and select an issue type 
 
 ![Change the issue type](img/issue_type_change_v13_12.png)
 
-## Deleting issues
+## Delete an issue
 
-Users with the [Owner role](../../permissions.md) can delete an issue by
-editing it and selecting **Delete issue**.
+> Deleting from the vertical ellipsis menu [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/299933) in GitLab 14.6.
 
-![delete issue - button](img/delete_issue_v13_11.png)
+Prerequisites:
+
+- You must have the [Owner role](../../permissions.md) for a project.
+
+To delete an issue:
+
+1. In an issue, select the vertical ellipsis (**{ellipsis_v}**).
+1. Select **Delete issue**.
+
+Alternatively:
+
+1. In an issue, select **Edit title and description** (**{pencil}**).
+1. Select **Delete issue**.
 
 ## Promote an issue to an epic **(PREMIUM)**
 

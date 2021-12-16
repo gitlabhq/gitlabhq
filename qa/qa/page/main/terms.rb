@@ -8,7 +8,7 @@ module QA
           element :user_avatar, required: true
         end
 
-        view 'app/views/users/terms/index.html.haml' do
+        view 'app/assets/javascripts/terms/components/app.vue' do
           element :terms_content, required: true
 
           element :accept_terms_button

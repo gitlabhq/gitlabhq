@@ -1,0 +1,21 @@
+description: "Reply comment on design annotations"
+category: default
+action: click_button
+label_description: ""
+property_description: ""
+value_description: ""
+extra_properties:
+identifiers:
+product_section: ""
+product_stage: ""
+product_group: ""
+product_category:
+milestone:
+introduced_by_url:
+distributions:
+- ce
+- ee
+tiers:
+- free
+- premium
+- ultimate

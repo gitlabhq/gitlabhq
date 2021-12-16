@@ -8,7 +8,6 @@ import { IssuableType } from '~/issues/constants';
 import SidebarEditableItem from '~/sidebar/components/sidebar_editable_item.vue';
 import DropdownContents from '~/vue_shared/components/sidebar/labels_select_widget/dropdown_contents.vue';
 import DropdownValue from '~/vue_shared/components/sidebar/labels_select_widget/dropdown_value.vue';
-import DropdownValueCollapsed from '~/vue_shared/components/sidebar/labels_select_widget/dropdown_value_collapsed.vue';
 import issueLabelsQuery from '~/vue_shared/components/sidebar/labels_select_widget/graphql/issue_labels.query.graphql';
 import updateIssueLabelsMutation from '~/boards/graphql/issue_set_labels.mutation.graphql';
 import updateMergeRequestLabelsMutation from '~/sidebar/queries/update_merge_request_labels.mutation.graphql';
@@ -35,7 +34,6 @@ describe('LabelsSelectRoot', () => {
 
   const findSidebarEditableItem = () => wrapper.findComponent(SidebarEditableItem);
   const findDropdownValue = () => wrapper.findComponent(DropdownValue);
-  const findDropdownValueCollapsed = () => wrapper.findComponent(DropdownValueCollapsed);
   const findDropdownContents = () => wrapper.findComponent(DropdownContents);
 
   const createComponent = ({
@@ -120,9 +118,6 @@ describe('LabelsSelectRoot', () => {
       it('renders dropdown value component when query labels is resolved', () => {
         expect(findDropdownValue().exists()).toBe(true);
         expect(findDropdownValue().props('selectedLabels')).toEqual(
-          issuableLabelsQueryResponse.data.workspace.issuable.labels.nodes,
-        );
-        expect(findDropdownValueCollapsed().props('labels')).toEqual(
           issuableLabelsQueryResponse.data.workspace.issuable.labels.nodes,
         );
       });

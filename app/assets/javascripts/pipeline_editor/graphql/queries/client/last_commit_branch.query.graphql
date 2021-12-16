@@ -1,3 +1,7 @@
 query getLastCommitBranchQuery {
-  lastCommitBranch @client
+  workBranches @client {
+    lastCommit {
+      name
+    }
+  }
 }

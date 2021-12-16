@@ -13,6 +13,7 @@ describe('Inline edit form component', () => {
   let wrapper;
   const defaultProps = {
     canDestroy: true,
+    endpoint: 'gitlab-org/gitlab-test/-/issues/1',
     formState: {
       title: 'b',
       description: 'a',

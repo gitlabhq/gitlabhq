@@ -7,7 +7,7 @@ import { EDITOR_APP_STATUS_LOADING } from './constants';
 import { CODE_SNIPPET_SOURCE_SETTINGS } from './components/code_snippet_alert/constants';
 import getCurrentBranch from './graphql/queries/client/current_branch.query.graphql';
 import getAppStatus from './graphql/queries/client/app_status.query.graphql';
-import getLastCommitBranchQuery from './graphql/queries/client/last_commit_branch.query.graphql';
+import getLastCommitBranch from './graphql/queries/client/last_commit_branch.query.graphql';
 import getPipelineEtag from './graphql/queries/client/pipeline_etag.query.graphql';
 import { resolvers } from './graphql/resolvers';
 import typeDefs from './graphql/typedefs.graphql';
@@ -68,28 +68,46 @@ export const initPipelineEditor = (selector = '#js-pipeline-editor') => {
   cache.writeQuery({
     query: getAppStatus,
     data: {
-      appStatus: EDITOR_APP_STATUS_LOADING,
+      app: {
+        __typename: 'PipelineEditorApp',
+        status: EDITOR_APP_STATUS_LOADING,
+      },
     },
   });
 
   cache.writeQuery({
     query: getCurrentBranch,
     data: {
-      currentBranch: initialBranchName || defaultBranch,
+      workBranches: {
+        __typename: 'BranchList',
+        current: {
+          __typename: 'WorkBranch',
+          name: initialBranchName || defaultBranch,
+        },
+      },
+    },
+  });
+
+  cache.writeQuery({
+    query: getLastCommitBranch,
+    data: {
+      workBranches: {
+        __typename: 'BranchList',
+        lastCommit: {
+          __typename: 'WorkBranch',
+          name: '',
+        },
+      },
     },
   });
 
   cache.writeQuery({
     query: getPipelineEtag,
     data: {
-      pipelineEtag,
-    },
-  });
-
-  cache.writeQuery({
-    query: getLastCommitBranchQuery,
-    data: {
-      lastCommitBranch: '',
+      etags: {
+        __typename: 'EtagValues',
+        pipeline: pipelineEtag,
+      },
     },
   });
 

@@ -1,0 +1,21 @@
+description: "Go to review app"
+category: default
+action: open_review_app
+label_description: "`review_app`"
+property_description: ""
+value_description: ""
+extra_properties:
+identifiers:
+product_section: ops
+product_stage: verify
+product_group: group::testing
+product_category:
+milestone: "12.6"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/18141
+distributions:
+- ce
+- ee
+tiers:
+- free
+- premium
+- ultimate

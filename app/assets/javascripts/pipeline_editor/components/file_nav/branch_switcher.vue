@@ -20,8 +20,8 @@ import {
 } from '~/pipeline_editor/constants';
 import updateCurrentBranchMutation from '~/pipeline_editor/graphql/mutations/client/update_current_branch.mutation.graphql';
 import getAvailableBranchesQuery from '~/pipeline_editor/graphql/queries/available_branches.query.graphql';
-import getCurrentBranchQuery from '~/pipeline_editor/graphql/queries/client/current_branch.query.graphql';
-import getLastCommitBranchQuery from '~/pipeline_editor/graphql/queries/client/last_commit_branch.query.graphql';
+import getCurrentBranch from '~/pipeline_editor/graphql/queries/client/current_branch.query.graphql';
+import getLastCommitBranch from '~/pipeline_editor/graphql/queries/client/last_commit_branch.query.graphql';
 
 export default {
   i18n: {
@@ -61,8 +61,8 @@ export default {
   },
   data() {
     return {
-      branchSelected: null,
       availableBranches: [],
+      branchSelected: null,
       filteredBranches: [],
       isSearchingBranches: false,
       pageLimit: this.paginationLimit,
@@ -93,15 +93,25 @@ export default {
       },
     },
     currentBranch: {
-      query: getCurrentBranchQuery,
+      query: getCurrentBranch,
+      update(data) {
+        return data.workBranches.current.name;
+      },
     },
     lastCommitBranch: {
-      query: getLastCommitBranchQuery,
-      result({ data: { lastCommitBranch } }) {
-        if (lastCommitBranch === '' || this.availableBranches.includes(lastCommitBranch)) {
-          return;
+      query: getLastCommitBranch,
+      update(data) {
+        return data.workBranches.lastCommit.name;
+      },
+      result({ data }) {
+        if (data) {
+          const { name: lastCommitBranch } = data.workBranches.lastCommit;
+          if (lastCommitBranch === '' || this.availableBranches.includes(lastCommitBranch)) {
+            return;
+          }
+
+          this.availableBranches.unshift(lastCommitBranch);
         }
-        this.availableBranches.unshift(lastCommitBranch);
       },
     },
   },
@@ -109,11 +119,11 @@ export default {
     branches() {
       return this.searchTerm.length > 0 ? this.filteredBranches : this.availableBranches;
     },
-    isBranchesLoading() {
-      return this.$apollo.queries.availableBranches.loading || this.isSearchingBranches;
-    },
     enableBranchSwitcher() {
       return this.branches.length > 0 || this.searchTerm.length > 0;
+    },
+    isBranchesLoading() {
+      return this.$apollo.queries.availableBranches.loading || this.isSearchingBranches;
     },
   },
   watch: {

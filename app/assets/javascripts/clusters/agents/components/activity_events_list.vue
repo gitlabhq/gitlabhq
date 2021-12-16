@@ -1,5 +1,12 @@
 <script>
-import { GlLoadingIcon, GlEmptyState, GlLink, GlIcon, GlAlert } from '@gitlab/ui';
+import {
+  GlLoadingIcon,
+  GlEmptyState,
+  GlLink,
+  GlIcon,
+  GlAlert,
+  GlTooltipDirective,
+} from '@gitlab/ui';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { n__, s__, __ } from '~/locale';
 import { formatDate, getDayDifference, isToday } from '~/lib/utils/datetime_utility';
@@ -16,10 +23,14 @@ export default {
     GlIcon,
     ActivityHistoryItem,
   },
+  directives: {
+    GlTooltip: GlTooltipDirective,
+  },
   i18n: {
     emptyText: s__(
       'ClusterAgents|See Agent activity updates such as tokens created or revoked and clusters connected or not connected.',
     ),
+    emptyTooltip: s__('ClusterAgents|What is GitLab Agent activity?'),
     error: s__(
       'ClusterAgents|An error occurred while retrieving GitLab Agent activity. Reload the page to try again.',
     ),
@@ -150,12 +161,15 @@ export default {
       :svg-path="activityEmptyStateImage"
       :svg-height="150"
     >
-      <template #description>
-        <div>
-          <span>{{ $options.i18n.emptyText }}</span>
-
-          <gl-link :href="$options.emptyHelpLink"><gl-icon name="question" :size="14" /></gl-link>
-        </div>
+      <template #description
+        >{{ $options.i18n.emptyText }}
+        <gl-link
+          v-gl-tooltip
+          :href="$options.emptyHelpLink"
+          :title="$options.i18n.emptyTooltip"
+          :aria-label="$options.i18n.emptyTooltip"
+          ><gl-icon name="question" :size="14"
+        /></gl-link>
       </template>
     </gl-empty-state>
   </div>

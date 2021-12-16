@@ -20,3 +20,11 @@ export const securityTrainingProvidersResponse = {
     securityTrainingProviders,
   },
 };
+
+export const mockResolvers = {
+  Query: {
+    securityTrainingProviders() {
+      return securityTrainingProviders;
+    },
+  },
+};

@@ -9,7 +9,6 @@ import { issuableLabelsQueries } from '~/sidebar/constants';
 import { DEBOUNCE_DROPDOWN_DELAY, DropdownVariant } from './constants';
 import DropdownContents from './dropdown_contents.vue';
 import DropdownValue from './dropdown_value.vue';
-import DropdownValueCollapsed from './dropdown_value_collapsed.vue';
 import {
   isDropdownVariantSidebar,
   isDropdownVariantStandalone,
@@ -20,7 +19,6 @@ export default {
   components: {
     DropdownValue,
     DropdownContents,
-    DropdownValueCollapsed,
     SidebarEditableItem,
   },
   inject: {
@@ -294,11 +292,6 @@ export default {
     data-qa-selector="labels_block"
   >
     <template v-if="isDropdownVariantSidebar(variant)">
-      <dropdown-value-collapsed
-        ref="dropdownButtonCollapsed"
-        :labels="issuableLabels"
-        @onValueClick="handleCollapsedValueClick"
-      />
       <sidebar-editable-item
         ref="editable"
         :title="__('Labels')"
@@ -314,6 +307,7 @@ export default {
             :labels-filter-base-path="labelsFilterBasePath"
             :labels-filter-param="labelsFilterParam"
             @onLabelRemove="handleLabelRemove"
+            @onCollapsedValueClick="handleCollapsedValueClick"
           >
             <slot></slot>
           </dropdown-value>

@@ -1,0 +1,21 @@
+description: "Select comment type from dropdown"
+category: default
+action: click_button
+label_description: "`[comment_button_title]_button`"
+property_description: ""
+value_description: ""
+extra_properties:
+identifiers:
+product_section: dev
+product_stage: plan
+product_group: group::product_planning
+product_category:
+milestone: "13.10"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/50933
+distributions:
+- ce
+- ee
+tiers:
+- free
+- premium
+- ultimate

@@ -1,6 +1,5 @@
 <script>
 import { GlModal } from '@gitlab/ui';
-import { mapGetters } from 'vuex';
 
 import { __ } from '~/locale';
 
@@ -9,15 +8,10 @@ export default {
     GlModal,
   },
   computed: {
-    ...mapGetters(['isDisabled']),
     primaryProps() {
       return {
         text: __('Reset'),
-        attributes: [
-          { variant: 'warning' },
-          { category: 'primary' },
-          { disabled: this.isDisabled },
-        ],
+        attributes: [{ variant: 'warning' }, { category: 'primary' }],
       };
     },
     cancelProps() {

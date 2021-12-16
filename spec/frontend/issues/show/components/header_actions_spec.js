@@ -1,8 +1,11 @@
 import { GlButton, GlDropdown, GlDropdownItem, GlLink, GlModal } from '@gitlab/ui';
-import { createLocalVue, shallowMount } from '@vue/test-utils';
+import Vue from 'vue';
+import { shallowMount } from '@vue/test-utils';
 import Vuex from 'vuex';
+import { mockTracking } from 'helpers/tracking_helper';
 import createFlash, { FLASH_TYPES } from '~/flash';
 import { IssuableType } from '~/vue_shared/issuable/show/constants';
+import DeleteIssueModal from '~/issues/show/components/delete_issue_modal.vue';
 import HeaderActions from '~/issues/show/components/header_actions.vue';
 import { IssuableStatus } from '~/issues/constants';
 import { IssueStateEvent } from '~/issues/show/constants';
@@ -19,18 +22,20 @@ describe('HeaderActions component', () => {
   let wrapper;
   let visitUrlSpy;
 
-  const localVue = createLocalVue();
-  localVue.use(Vuex);
+  Vue.use(Vuex);
+
   const store = createStore();
 
   const defaultProps = {
     canCreateIssue: true,
+    canDestroyIssue: true,
     canPromoteToEpic: true,
     canReopenIssue: true,
     canReportSpam: true,
     canUpdateIssue: true,
     iid: '32',
     isIssueAuthor: true,
+    issuePath: 'gitlab-org/gitlab-test/-/issues/1',
     issueType: IssuableType.Issue,
     newIssuePath: 'gitlab-org/gitlab-test/-/issues/new',
     projectPath: 'gitlab-org/gitlab-test',
@@ -61,17 +66,12 @@ describe('HeaderActions component', () => {
     },
   };
 
-  const findToggleIssueStateButton = () => wrapper.find(GlButton);
-
-  const findDropdownAt = (index) => wrapper.findAll(GlDropdown).at(index);
-
-  const findMobileDropdownItems = () => findDropdownAt(0).findAll(GlDropdownItem);
-
-  const findDesktopDropdownItems = () => findDropdownAt(1).findAll(GlDropdownItem);
-
-  const findModal = () => wrapper.find(GlModal);
-
-  const findModalLinkAt = (index) => findModal().findAll(GlLink).at(index);
+  const findToggleIssueStateButton = () => wrapper.findComponent(GlButton);
+  const findDropdownAt = (index) => wrapper.findAllComponents(GlDropdown).at(index);
+  const findMobileDropdownItems = () => findDropdownAt(0).findAllComponents(GlDropdownItem);
+  const findDesktopDropdownItems = () => findDropdownAt(1).findAllComponents(GlDropdownItem);
+  const findModal = () => wrapper.findComponent(GlModal);
+  const findModalLinkAt = (index) => findModal().findAllComponents(GlLink).at(index);
 
   const mountComponent = ({
     props = {},
@@ -87,7 +87,6 @@ describe('HeaderActions component', () => {
     });
 
     return shallowMount(HeaderActions, {
-      localVue,
       store,
       provide: {
         ...defaultProps,
@@ -168,17 +167,19 @@ describe('HeaderActions component', () => {
       ${'desktop dropdown'} | ${false}                | ${findDesktopDropdownItems}
     `('$description', ({ isCloseIssueItemVisible, findDropdownItems }) => {
       describe.each`
-        description                               | itemText                | isItemVisible              | canUpdateIssue | canCreateIssue | isIssueAuthor | canReportSpam | canPromoteToEpic
-        ${`when user can update ${issueType}`}    | ${`Close ${issueType}`} | ${isCloseIssueItemVisible} | ${true}        | ${true}        | ${true}       | ${true}       | ${true}
-        ${`when user cannot update ${issueType}`} | ${`Close ${issueType}`} | ${false}                   | ${false}       | ${true}        | ${true}       | ${true}       | ${true}
-        ${`when user can create ${issueType}`}    | ${`New ${issueType}`}   | ${true}                    | ${true}        | ${true}        | ${true}       | ${true}       | ${true}
-        ${`when user cannot create ${issueType}`} | ${`New ${issueType}`}   | ${false}                   | ${true}        | ${false}       | ${true}       | ${true}       | ${true}
-        ${'when user can promote to epic'}        | ${'Promote to epic'}    | ${true}                    | ${true}        | ${true}        | ${true}       | ${true}       | ${true}
-        ${'when user cannot promote to epic'}     | ${'Promote to epic'}    | ${false}                   | ${true}        | ${true}        | ${true}       | ${true}       | ${false}
-        ${'when user can report abuse'}           | ${'Report abuse'}       | ${true}                    | ${true}        | ${true}        | ${false}      | ${true}       | ${true}
-        ${'when user cannot report abuse'}        | ${'Report abuse'}       | ${false}                   | ${true}        | ${true}        | ${true}       | ${true}       | ${true}
-        ${'when user can submit as spam'}         | ${'Submit as spam'}     | ${true}                    | ${true}        | ${true}        | ${true}       | ${true}       | ${true}
-        ${'when user cannot submit as spam'}      | ${'Submit as spam'}     | ${false}                   | ${true}        | ${true}        | ${true}       | ${false}      | ${true}
+        description                               | itemText                 | isItemVisible              | canUpdateIssue | canCreateIssue | isIssueAuthor | canReportSpam | canPromoteToEpic | canDestroyIssue
+        ${`when user can update ${issueType}`}    | ${`Close ${issueType}`}  | ${isCloseIssueItemVisible} | ${true}        | ${true}        | ${true}       | ${true}       | ${true}          | ${true}
+        ${`when user cannot update ${issueType}`} | ${`Close ${issueType}`}  | ${false}                   | ${false}       | ${true}        | ${true}       | ${true}       | ${true}          | ${true}
+        ${`when user can create ${issueType}`}    | ${`New ${issueType}`}    | ${true}                    | ${true}        | ${true}        | ${true}       | ${true}       | ${true}          | ${true}
+        ${`when user cannot create ${issueType}`} | ${`New ${issueType}`}    | ${false}                   | ${true}        | ${false}       | ${true}       | ${true}       | ${true}          | ${true}
+        ${'when user can promote to epic'}        | ${'Promote to epic'}     | ${true}                    | ${true}        | ${true}        | ${true}       | ${true}       | ${true}          | ${true}
+        ${'when user cannot promote to epic'}     | ${'Promote to epic'}     | ${false}                   | ${true}        | ${true}        | ${true}       | ${true}       | ${false}         | ${true}
+        ${'when user can report abuse'}           | ${'Report abuse'}        | ${true}                    | ${true}        | ${true}        | ${false}      | ${true}       | ${true}          | ${true}
+        ${'when user cannot report abuse'}        | ${'Report abuse'}        | ${false}                   | ${true}        | ${true}        | ${true}       | ${true}       | ${true}          | ${true}
+        ${'when user can submit as spam'}         | ${'Submit as spam'}      | ${true}                    | ${true}        | ${true}        | ${true}       | ${true}       | ${true}          | ${true}
+        ${'when user cannot submit as spam'}      | ${'Submit as spam'}      | ${false}                   | ${true}        | ${true}        | ${true}       | ${false}      | ${true}          | ${true}
+        ${`when user can delete ${issueType}`}    | ${`Delete ${issueType}`} | ${true}                    | ${true}        | ${true}        | ${true}       | ${true}       | ${true}          | ${true}
+        ${`when user cannot delete ${issueType}`} | ${`Delete ${issueType}`} | ${false}                   | ${true}        | ${true}        | ${true}       | ${true}       | ${true}          | ${false}
       `(
         '$description',
         ({
@@ -189,6 +190,7 @@ describe('HeaderActions component', () => {
           isIssueAuthor,
           canReportSpam,
           canPromoteToEpic,
+          canDestroyIssue,
         }) => {
           beforeEach(() => {
             wrapper = mountComponent({
@@ -199,6 +201,7 @@ describe('HeaderActions component', () => {
                 issueType,
                 canReportSpam,
                 canPromoteToEpic,
+                canDestroyIssue,
               },
             });
           });
@@ -212,6 +215,23 @@ describe('HeaderActions component', () => {
           });
         },
       );
+    });
+  });
+
+  describe('delete issue button', () => {
+    let trackingSpy;
+
+    beforeEach(() => {
+      wrapper = mountComponent();
+      trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
+    });
+
+    it('tracks clicking on button', () => {
+      findDesktopDropdownItems().at(3).vm.$emit('click');
+
+      expect(trackingSpy).toHaveBeenCalledWith(undefined, 'click_dropdown', {
+        label: 'delete_issue',
+      });
     });
   });
 
@@ -268,7 +288,7 @@ describe('HeaderActions component', () => {
 
       it('shows an error message', () => {
         expect(createFlash).toHaveBeenCalledWith({
-          message: promoteToEpicMutationErrorResponse.data.promoteToEpic.errors.join('; '),
+          message: HeaderActions.i18n.promoteErrorMessage,
         });
       });
     });
@@ -294,7 +314,7 @@ describe('HeaderActions component', () => {
     });
   });
 
-  describe('modal', () => {
+  describe('blocked by issues modal', () => {
     const blockedByIssues = [
       { iid: 13, web_url: 'gitlab-org/gitlab-test/-/issues/13' },
       { iid: 79, web_url: 'gitlab-org/gitlab-test/-/issues/79' },
@@ -343,6 +363,19 @@ describe('HeaderActions component', () => {
 
       it('has url', () => {
         expect(findModalLinkAt(index).attributes('href')).toBe(blockedByIssues[index].web_url);
+      });
+    });
+  });
+
+  describe('delete issue modal', () => {
+    it('renders', () => {
+      wrapper = mountComponent();
+
+      expect(wrapper.findComponent(DeleteIssueModal).props()).toEqual({
+        issuePath: defaultProps.issuePath,
+        issueType: defaultProps.issueType,
+        modalId: HeaderActions.deleteModalId,
+        title: 'Delete issue',
       });
     });
   });

@@ -1,0 +1,21 @@
+description: "Toggle labels on boards"
+category: default
+action: toggle
+label_description: "`show_labels`"
+property_description: "`[on | off]`"
+value_description: ""
+extra_properties:
+identifiers:
+product_section: ""
+product_stage: ""
+product_group: ""
+product_category:
+milestone:
+introduced_by_url:
+distributions:
+- ce
+- ee
+tiers:
+- free
+- premium
+- ultimate

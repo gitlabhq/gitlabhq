@@ -7718,6 +7718,9 @@ msgstr ""
 msgid "ClusterAgents|View all %{number} clusters"
 msgstr ""
 
+msgid "ClusterAgents|What is GitLab Agent activity?"
+msgstr ""
+
 msgid "ClusterAgents|You cannot see this token again after you close this window."
 msgstr ""
 
@@ -13777,9 +13780,6 @@ msgid "Error creating repository for snippet with id %{snippet_id}"
 msgstr ""
 
 msgid "Error creating the snippet"
-msgstr ""
-
-msgid "Error deleting %{issuableType}"
 msgstr ""
 
 msgid "Error deleting project. Check logs for error details."

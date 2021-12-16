@@ -1,3 +1,5 @@
 query getAppStatus {
-  appStatus @client
+  app @client {
+    status
+  }
 }

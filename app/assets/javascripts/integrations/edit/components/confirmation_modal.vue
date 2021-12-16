@@ -1,22 +1,17 @@
 <script>
 import { GlModal } from '@gitlab/ui';
-import { mapGetters } from 'vuex';
 import { __ } from '~/locale';
 
 export default {
   components: {
     GlModal,
   },
+
   computed: {
-    ...mapGetters(['isDisabled']),
     primaryProps() {
       return {
         text: __('Save'),
-        attributes: [
-          { variant: 'confirm' },
-          { category: 'primary' },
-          { disabled: this.isDisabled },
-        ],
+        attributes: [{ variant: 'confirm' }, { category: 'primary' }],
       };
     },
     cancelProps() {

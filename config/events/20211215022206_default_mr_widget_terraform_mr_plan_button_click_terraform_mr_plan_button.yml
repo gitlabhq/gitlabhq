@@ -1,0 +1,21 @@
+description: "Click Terraform MR plan button"
+category: default
+action: click_terraform_mr_plan_button
+label_description: "mr_widget_terraform_mr_plan_button"
+property_description: "`terraform_mr_plan_button`"
+value_description: ""
+extra_properties:
+identifiers:
+product_section: ops
+product_stage: configure
+product_group: group::configure
+product_category:
+milestone: "13.2"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/34392
+distributions:
+- ce
+- ee
+tiers:
+- free
+- premium
+- ultimate

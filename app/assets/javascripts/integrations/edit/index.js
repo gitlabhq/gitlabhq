@@ -85,28 +85,31 @@ function parseDatasetToProps(data) {
   };
 }
 
-export default (el, defaultEl, formSelector) => {
-  if (!el) {
+export default function initIntegrationSettingsForm(formSelector) {
+  const customSettingsEl = document.querySelector('.js-vue-integration-settings');
+  const defaultSettingsEl = document.querySelector('.js-vue-default-integration-settings');
+
+  if (!customSettingsEl) {
     return null;
   }
 
-  const props = parseDatasetToProps(el.dataset);
+  const customSettingsProps = parseDatasetToProps(customSettingsEl.dataset);
   const initialState = {
     defaultState: null,
-    customState: props,
+    customState: customSettingsProps,
   };
-  if (defaultEl) {
-    initialState.defaultState = Object.freeze(parseDatasetToProps(defaultEl.dataset));
+  if (defaultSettingsEl) {
+    initialState.defaultState = Object.freeze(parseDatasetToProps(defaultSettingsEl.dataset));
   }
 
   // Here, we capture the "helpHtml", so we can pass it to the Vue component
   // to position it where ever it wants.
   // Because this node is a _child_ of `el`, it will be removed when the Vue component is mounted,
   // so we don't need to manually remove it.
-  const helpHtml = el.querySelector('.js-integration-help-html')?.innerHTML;
+  const helpHtml = customSettingsEl.querySelector('.js-integration-help-html')?.innerHTML;
 
   return new Vue({
-    el,
+    el: customSettingsEl,
     store: createStore(initialState),
     render(createElement) {
       return createElement(IntegrationForm, {
@@ -117,4 +120,4 @@ export default (el, defaultEl, formSelector) => {
       });
     },
   });
-};
+}

@@ -43,6 +43,9 @@ export default {
   apollo: {
     appStatus: {
       query: getAppStatus,
+      update(data) {
+        return data.app.status;
+      },
     },
   },
   computed: {

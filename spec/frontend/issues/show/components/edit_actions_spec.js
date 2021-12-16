@@ -1,24 +1,24 @@
-import { GlButton, GlModal } from '@gitlab/ui';
-import { createLocalVue } from '@vue/test-utils';
+import { GlButton } from '@gitlab/ui';
+import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
+import { mockTracking } from 'helpers/tracking_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import IssuableEditActions from '~/issues/show/components/edit_actions.vue';
+import DeleteIssueModal from '~/issues/show/components/delete_issue_modal.vue';
 import eventHub from '~/issues/show/event_hub';
-
 import {
   getIssueStateQueryResponse,
   updateIssueStateQueryResponse,
 } from '../mock_data/apollo_mock';
 
-const localVue = createLocalVue();
-localVue.use(VueApollo);
-
 describe('Edit Actions component', () => {
   let wrapper;
   let fakeApollo;
   let mockIssueStateData;
+
+  Vue.use(VueApollo);
 
   const mockResolvers = {
     Query: {
@@ -43,6 +43,7 @@ describe('Edit Actions component', () => {
           title: 'GitLab Issue',
         },
         canDestroy: true,
+        endpoint: 'gitlab-org/gitlab-test/-/issues/1',
         issuableType: 'issue',
         ...props,
       },
@@ -56,11 +57,7 @@ describe('Edit Actions component', () => {
     });
   };
 
-  async function deleteIssuable(localWrapper) {
-    localWrapper.findComponent(GlModal).vm.$emit('primary');
-  }
-
-  const findModal = () => wrapper.findComponent(GlModal);
+  const findModal = () => wrapper.findComponent(DeleteIssueModal);
   const findEditButtons = () => wrapper.findAllComponents(GlButton);
   const findDeleteButton = () => wrapper.findByTestId('issuable-delete-button');
   const findSaveButton = () => wrapper.findByTestId('issuable-save-button');
@@ -123,9 +120,30 @@ describe('Edit Actions component', () => {
     });
   });
 
-  describe('renders create modal with the correct information', () => {
-    it('renders correct modal id', () => {
-      expect(findModal().attributes('modalid')).toBe(modalId);
+  describe('delete issue button', () => {
+    let trackingSpy;
+
+    beforeEach(() => {
+      trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
+    });
+
+    it('tracks clicking on button', () => {
+      findDeleteButton().vm.$emit('click');
+
+      expect(trackingSpy).toHaveBeenCalledWith(undefined, 'click_button', {
+        label: 'delete_issue',
+      });
+    });
+  });
+
+  describe('delete issue modal', () => {
+    it('renders', () => {
+      expect(findModal().props()).toEqual({
+        issuePath: 'gitlab-org/gitlab-test/-/issues/1',
+        issueType: 'Issue',
+        modalId,
+        title: 'Delete issue',
+      });
     });
   });
 
@@ -141,8 +159,8 @@ describe('Edit Actions component', () => {
 
     it('sends the `delete.issuable` event when clicking the delete confirm button', async () => {
       expect(eventHub.$emit).toHaveBeenCalledTimes(0);
-      await deleteIssuable(wrapper);
-      expect(eventHub.$emit).toHaveBeenCalledWith('delete.issuable', { destroy_confirm: true });
+      findModal().vm.$emit('delete');
+      expect(eventHub.$emit).toHaveBeenCalledWith('delete.issuable');
       expect(eventHub.$emit).toHaveBeenCalledTimes(1);
     });
   });

@@ -326,44 +326,6 @@ describe('Issuable output', () => {
     });
   });
 
-  describe('deleteIssuable', () => {
-    it('changes URL when deleted', () => {
-      jest.spyOn(wrapper.vm.service, 'deleteIssuable').mockResolvedValue({
-        data: {
-          web_url: '/test',
-        },
-      });
-
-      return wrapper.vm.deleteIssuable().then(() => {
-        expect(visitUrl).toHaveBeenCalledWith('/test');
-      });
-    });
-
-    it('stops polling when deleting', () => {
-      const spy = jest.spyOn(wrapper.vm.poll, 'stop');
-      jest.spyOn(wrapper.vm.service, 'deleteIssuable').mockResolvedValue({
-        data: {
-          web_url: '/test',
-        },
-      });
-
-      return wrapper.vm.deleteIssuable().then(() => {
-        expect(spy).toHaveBeenCalledWith();
-      });
-    });
-
-    it('closes form on error', () => {
-      jest.spyOn(wrapper.vm.service, 'deleteIssuable').mockRejectedValue();
-
-      return wrapper.vm.deleteIssuable().then(() => {
-        expect(eventHub.$emit).not.toHaveBeenCalledWith('close.form');
-        expect(document.querySelector('.flash-container .flash-text').innerText.trim()).toBe(
-          'Error deleting issue',
-        );
-      });
-    });
-  });
-
   describe('updateAndShowForm', () => {
     it('shows locked warning if form is open & data is different', () => {
       return wrapper.vm

@@ -278,11 +278,13 @@ RSpec.describe IssuesHelper do
     it 'returns expected result' do
       expected = {
         can_create_issue: 'true',
+        can_destroy_issue: 'true',
         can_reopen_issue: 'true',
         can_report_spam: 'false',
         can_update_issue: 'true',
         iid: issue.iid,
         is_issue_author: 'false',
+        issue_path: issue_path(issue),
         issue_type: 'issue',
         new_issue_path: new_project_issue_path(project, { issue: { description: "Related to \##{issue.iid}.\n\n" } }),
         project_path: project.full_path,

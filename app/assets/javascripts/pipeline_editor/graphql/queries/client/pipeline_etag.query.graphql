@@ -1,3 +1,5 @@
 query getPipelineEtag {
-  pipelineEtag @client
+  etags @client {
+    pipeline
+  }
 }

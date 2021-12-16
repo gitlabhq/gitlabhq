@@ -193,11 +193,13 @@ module IssuesHelper
     {
       can_create_issue: show_new_issue_link?(project).to_s,
       can_create_incident: create_issue_type_allowed?(project, :incident).to_s,
+      can_destroy_issue: can?(current_user, :"destroy_#{issuable.to_ability_name}", issuable).to_s,
       can_reopen_issue: can?(current_user, :reopen_issue, issuable).to_s,
       can_report_spam: issuable.submittable_as_spam_by?(current_user).to_s,
       can_update_issue: can?(current_user, :update_issue, issuable).to_s,
       iid: issuable.iid,
       is_issue_author: (issuable.author == current_user).to_s,
+      issue_path: issuable_path(issuable),
       issue_type: issuable_display_type(issuable),
       new_issue_path: new_project_issue_path(project, new_issuable_params),
       project_path: project.full_path,

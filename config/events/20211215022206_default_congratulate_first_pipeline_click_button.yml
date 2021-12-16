@@ -1,0 +1,21 @@
+description: "Go to pipeline on pipeline celebration"
+category: default
+action: click_button
+label_description: "`congratulate_first_pipeline`"
+property_description: "`[admin | maintainer | developer | owner]`"
+value_description: "`10`"
+extra_properties:
+identifiers:
+product_section: growth
+product_stage: growth
+product_group: group::expansion
+product_category:
+milestone: "12.10"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28378
+distributions:
+- ce
+- ee
+tiers:
+- free
+- premium
+- ultimate

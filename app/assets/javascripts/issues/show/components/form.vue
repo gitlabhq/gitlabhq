@@ -26,6 +26,10 @@ export default {
       type: Boolean,
       required: true,
     },
+    endpoint: {
+      type: String,
+      required: true,
+    },
     formState: {
       type: Object,
       required: true,
@@ -213,6 +217,7 @@ export default {
       :enable-autocomplete="enableAutocomplete"
     />
     <edit-actions
+      :endpoint="endpoint"
       :form-state="formState"
       :can-destroy="canDestroy"
       :show-delete-button="showDeleteButton"

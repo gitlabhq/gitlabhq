@@ -1,10 +1,12 @@
 <script>
-import { GlButton, GlModal, GlModalDirective } from '@gitlab/ui';
+import { GlButton, GlModalDirective } from '@gitlab/ui';
 import { uniqueId } from 'lodash';
 import { __, sprintf } from '~/locale';
+import Tracking from '~/tracking';
 import eventHub from '../event_hub';
 import updateMixin from '../mixins/update';
 import getIssueStateQuery from '../queries/get_issue_state.query.graphql';
+import DeleteIssueModal from './delete_issue_modal.vue';
 
 const issuableTypes = {
   issue: __('Issue'),
@@ -12,19 +14,25 @@ const issuableTypes = {
   incident: __('Incident'),
 };
 
+const trackingMixin = Tracking.mixin({ label: 'delete_issue' });
+
 export default {
   components: {
+    DeleteIssueModal,
     GlButton,
-    GlModal,
   },
   directives: {
     GlModal: GlModalDirective,
   },
-  mixins: [updateMixin],
+  mixins: [trackingMixin, updateMixin],
   props: {
     canDestroy: {
       type: Boolean,
       required: true,
+    },
+    endpoint: {
+      required: true,
+      type: String,
     },
     formState: {
       type: Object,
@@ -65,26 +73,8 @@ export default {
         issuableType: this.typeToShow.toLowerCase(),
       });
     },
-    deleteIssuableModalText() {
-      return this.issuableType === 'epic'
-        ? __('Delete this epic and all descendants?')
-        : sprintf(__('%{issuableType} will be removed! Are you sure?'), {
-            issuableType: this.typeToShow,
-          });
-    },
     isSubmitEnabled() {
       return this.formState.title.trim() !== '';
-    },
-    modalActionProps() {
-      return {
-        primary: {
-          text: this.deleteIssuableButtonText,
-          attributes: [{ variant: 'danger' }, { loading: this.deleteLoading }],
-        },
-        cancel: {
-          text: __('Cancel'),
-        },
-      };
     },
     shouldShowDeleteButton() {
       return this.canDestroy && this.showDeleteButton;
@@ -101,7 +91,7 @@ export default {
     },
     deleteIssuable() {
       this.deleteLoading = true;
-      eventHub.$emit('delete.issuable', { destroy_confirm: true });
+      eventHub.$emit('delete.issuable');
     },
   },
 };
@@ -135,22 +125,17 @@ export default {
         variant="danger"
         class="qa-delete-button"
         data-testid="issuable-delete-button"
+        @click="track('click_button')"
       >
         {{ deleteIssuableButtonText }}
       </gl-button>
-      <gl-modal
-        ref="removeModal"
+      <delete-issue-modal
+        :issue-path="endpoint"
+        :issue-type="typeToShow"
         :modal-id="modalId"
-        size="sm"
-        :action-primary="modalActionProps.primary"
-        :action-cancel="modalActionProps.cancel"
-        @primary="deleteIssuable"
-      >
-        <template #modal-title>{{ deleteIssuableButtonText }}</template>
-        <div>
-          <p class="gl-mb-1">{{ deleteIssuableModalText }}</p>
-        </div>
-      </gl-modal>
+        :title="deleteIssuableButtonText"
+        @delete="deleteIssuable"
+      />
     </div>
   </div>
 </template>

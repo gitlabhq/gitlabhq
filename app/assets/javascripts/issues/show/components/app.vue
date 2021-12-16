@@ -289,13 +289,11 @@ export default {
 
     window.addEventListener('beforeunload', this.handleBeforeUnloadEvent);
 
-    eventHub.$on('delete.issuable', this.deleteIssuable);
     eventHub.$on('update.issuable', this.updateIssuable);
     eventHub.$on('close.form', this.closeForm);
     eventHub.$on('open.form', this.openForm);
   },
   beforeDestroy() {
-    eventHub.$off('delete.issuable', this.deleteIssuable);
     eventHub.$off('update.issuable', this.updateIssuable);
     eventHub.$off('close.form', this.closeForm);
     eventHub.$off('open.form', this.openForm);
@@ -418,25 +416,6 @@ export default {
         });
     },
 
-    deleteIssuable(payload) {
-      return this.service
-        .deleteIssuable(payload)
-        .then((res) => res.data)
-        .then((data) => {
-          // Stop the poll so we don't get 404's with the issuable not existing
-          this.poll.stop();
-
-          visitUrl(data.web_url);
-        })
-        .catch(() => {
-          createFlash({
-            message: sprintf(__('Error deleting %{issuableType}'), {
-              issuableType: this.issuableType,
-            }),
-          });
-        });
-    },
-
     hideStickyHeader() {
       this.isStickyHeaderShowing = false;
     },
@@ -475,6 +454,7 @@ export default {
   <div>
     <div v-if="canUpdate && showForm">
       <form-component
+        :endpoint="endpoint"
         :form-state="formState"
         :initial-description-text="initialDescriptionText"
         :can-destroy="canDestroy"

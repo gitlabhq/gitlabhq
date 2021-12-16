@@ -1,12 +1,10 @@
 import { GlTab } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
-import Vue, { nextTick } from 'vue';
-import VueApollo from 'vue-apollo';
+import { nextTick } from 'vue';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import { makeMockUserCalloutDismisser } from 'helpers/mock_user_callout_dismisser';
 import stubChildren from 'helpers/stub_children';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
-import createMockApollo from 'helpers/mock_apollo_helper';
 import SecurityConfigurationApp, { i18n } from '~/security_configuration/components/app.vue';
 import AutoDevopsAlert from '~/security_configuration/components/auto_dev_ops_alert.vue';
 import AutoDevopsEnabledAlert from '~/security_configuration/components/auto_dev_ops_enabled_alert.vue';
@@ -29,8 +27,6 @@ import {
   REPORT_TYPE_LICENSE_COMPLIANCE,
   REPORT_TYPE_SAST,
 } from '~/vue_shared/security_reports/constants';
-import waitForPromises from 'helpers/wait_for_promises';
-import { securityTrainingProviders } from '../mock_data';
 
 const upgradePath = '/upgrade';
 const autoDevopsHelpPagePath = '/autoDevopsHelpPagePath';
@@ -39,21 +35,10 @@ const gitlabCiHistoryPath = 'test/historyPath';
 const projectPath = 'namespace/project';
 
 useLocalStorageSpy();
-Vue.use(VueApollo);
 
 describe('App component', () => {
   let wrapper;
   let userCalloutDismissSpy;
-  let mockApollo;
-  let mockSecurityTrainingProvidersData;
-
-  const mockResolvers = {
-    Query: {
-      securityTrainingProviders() {
-        return securityTrainingProviders;
-      },
-    },
-  };
 
   const createComponent = ({
     shouldShowCallout = true,
@@ -61,11 +46,9 @@ describe('App component', () => {
     ...propsData
   }) => {
     userCalloutDismissSpy = jest.fn();
-    mockApollo = createMockApollo([], mockResolvers);
 
     wrapper = extendedWrapper(
       mount(SecurityConfigurationApp, {
-        apolloProvider: mockApollo,
         propsData,
         provide: {
           upgradePath,
@@ -148,14 +131,10 @@ describe('App component', () => {
 
   afterEach(() => {
     wrapper.destroy();
-    mockApollo = null;
   });
 
   describe('basic structure', () => {
     beforeEach(() => {
-      mockSecurityTrainingProvidersData = jest.fn();
-      mockSecurityTrainingProvidersData.mockResolvedValue(securityTrainingProviders);
-
       createComponent({
         augmentedSecurityFeatures: securityFeaturesMock,
         augmentedComplianceFeatures: complianceFeaturesMock,
@@ -204,9 +183,8 @@ describe('App component', () => {
       expect(findSecurityViewHistoryLink().exists()).toBe(false);
     });
 
-    it('renders training provider list with correct props', async () => {
-      await waitForPromises();
-      expect(findTrainingProviderList().props('providers')).toEqual(securityTrainingProviders);
+    it('renders TrainingProviderList component', () => {
+      expect(findTrainingProviderList().exists()).toBe(true);
     });
   });
 

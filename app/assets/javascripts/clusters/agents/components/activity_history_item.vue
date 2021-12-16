@@ -64,12 +64,12 @@ export default {
       <p class="gl-mt-2 gl-mb-0 gl-pb-2" :class="bodyClass">
         <gl-sprintf :message="eventDetails.body">
           <template #userName>
-            <strong>{{ eventDetails.user.name }}</strong>
+            <span class="gl-font-weight-bold">{{ eventDetails.user.name }}</span>
             <gl-link :href="eventDetails.user.webUrl">@{{ eventDetails.user.username }}</gl-link>
           </template>
 
           <template #strong="{ content }">
-            <strong> {{ content }} </strong>
+            <span class="gl-font-weight-bold"> {{ content }} </span>
           </template>
         </gl-sprintf>
         <time-ago-tooltip :time="eventDetails.recordedAt" />

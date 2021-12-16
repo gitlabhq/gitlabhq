@@ -17,14 +17,6 @@ describe('Integration form store mutations', () => {
     });
   });
 
-  describe(`${types.SET_IS_SAVING}`, () => {
-    it('sets isSaving', () => {
-      mutations[types.SET_IS_SAVING](state, true);
-
-      expect(state.isSaving).toBe(true);
-    });
-  });
-
   describe(`${types.SET_IS_RESETTING}`, () => {
     it('sets isResetting', () => {
       mutations[types.SET_IS_RESETTING](state, true);

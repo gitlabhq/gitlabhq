@@ -160,6 +160,9 @@ export default {
     },
     appStatus: {
       query: getAppStatus,
+      update(data) {
+        return data.app.status;
+      },
     },
     commitSha: {
       query: getLatestCommitShaQuery,
@@ -184,6 +187,9 @@ export default {
     },
     currentBranch: {
       query: getCurrentBranch,
+      update(data) {
+        return data.workBranches.current.name;
+      },
     },
     starterTemplate: {
       query: getTemplate,

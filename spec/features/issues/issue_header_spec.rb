@@ -4,7 +4,8 @@ require 'spec_helper'
 
 RSpec.describe 'issue header', :js do
   let_it_be(:user) { create(:user) }
-  let_it_be(:project) { create(:project) }
+  let_it_be(:group) { create(:group) }
+  let_it_be(:project) { create(:project, group: group) }
   let_it_be(:issue) { create(:issue, project: project) }
   let_it_be(:closed_issue) { create(:issue, :closed, project: project) }
   let_it_be(:closed_locked_issue) { create(:issue, :closed, :locked, project: project) }
@@ -12,7 +13,7 @@ RSpec.describe 'issue header', :js do
 
   context 'when user has permission to update' do
     before do
-      project.add_maintainer(user)
+      group.add_owner(user)
       sign_in(user)
     end
 
@@ -24,9 +25,10 @@ RSpec.describe 'issue header', :js do
         click_button 'Issue actions'
       end
 
-      it 'only shows the "New issue" and "Report abuse" items', :aggregate_failures do
+      it 'shows the "New issue", "Report abuse", and "Delete issue" items', :aggregate_failures do
         expect(page).to have_link 'New issue'
         expect(page).to have_link 'Report abuse'
+        expect(page).to have_button 'Delete issue'
         expect(page).not_to have_link 'Submit as spam'
       end
     end
@@ -116,6 +118,7 @@ RSpec.describe 'issue header', :js do
         expect(page).to have_link 'New issue'
         expect(page).to have_link 'Report abuse'
         expect(page).not_to have_link 'Submit as spam'
+        expect(page).not_to have_button 'Delete issue'
       end
     end
 

@@ -60,6 +60,9 @@ export default {
   apollo: {
     currentBranch: {
       query: getCurrentBranch,
+      update(data) {
+        return data.workBranches.current.name;
+      },
     },
   },
   computed: {

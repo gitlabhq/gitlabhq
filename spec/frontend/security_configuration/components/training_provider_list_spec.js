@@ -1,43 +1,66 @@
 import { GlLink, GlToggle, GlCard, GlSkeletonLoader } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
+import Vue from 'vue';
+import VueApollo from 'vue-apollo';
+import createMockApollo from 'helpers/mock_apollo_helper';
 import TrainingProviderList from '~/security_configuration/components/training_provider_list.vue';
-import { securityTrainingProviders } from '../mock_data';
+import waitForPromises from 'helpers/wait_for_promises';
+import { securityTrainingProviders, mockResolvers } from '../mock_data';
 
-const DEFAULT_PROPS = {
-  providers: securityTrainingProviders,
-};
+Vue.use(VueApollo);
 
 describe('TrainingProviderList component', () => {
   let wrapper;
+  let mockApollo;
+  let mockSecurityTrainingProvidersData;
 
-  const createComponent = (props = {}) => {
+  const createComponent = () => {
+    mockApollo = createMockApollo([], mockResolvers);
+
     wrapper = shallowMount(TrainingProviderList, {
-      propsData: {
-        ...DEFAULT_PROPS,
-        ...props,
-      },
+      apolloProvider: mockApollo,
     });
   };
+
+  const waitForQueryToBeLoaded = () => waitForPromises();
 
   const findCards = () => wrapper.findAllComponents(GlCard);
   const findLinks = () => wrapper.findAllComponents(GlLink);
   const findToggles = () => wrapper.findAllComponents(GlToggle);
   const findLoader = () => wrapper.findComponent(GlSkeletonLoader);
 
+  beforeEach(() => {
+    mockSecurityTrainingProvidersData = jest.fn();
+    mockSecurityTrainingProvidersData.mockResolvedValue(securityTrainingProviders);
+
+    createComponent();
+  });
+
   afterEach(() => {
     wrapper.destroy();
+    mockApollo = null;
+  });
+
+  describe('when loading', () => {
+    it('shows the loader', () => {
+      expect(findLoader().exists()).toBe(true);
+    });
+
+    it('does not show the cards', () => {
+      expect(findCards().exists()).toBe(false);
+    });
   });
 
   describe('basic structure', () => {
-    beforeEach(() => {
-      createComponent();
+    beforeEach(async () => {
+      await waitForQueryToBeLoaded();
     });
 
     it('renders correct amount of cards', () => {
-      expect(findCards()).toHaveLength(DEFAULT_PROPS.providers.length);
+      expect(findCards()).toHaveLength(securityTrainingProviders.length);
     });
 
-    DEFAULT_PROPS.providers.forEach(({ name, description, url, isEnabled }, index) => {
+    securityTrainingProviders.forEach(({ name, description, url, isEnabled }, index) => {
       it(`shows the name for card ${index}`, () => {
         expect(findCards().at(index).text()).toContain(name);
       });
@@ -56,25 +79,10 @@ describe('TrainingProviderList component', () => {
       it(`shows the toggle with the correct value for card ${index}`, () => {
         expect(findToggles().at(index).props('value')).toEqual(isEnabled);
       });
-    });
-  });
 
-  describe('loading', () => {
-    beforeEach(() => {
-      createComponent({ loading: true });
-    });
-
-    it('shows the loader', () => {
-      expect(findLoader().exists()).toBe(true);
-    });
-
-    it('does not show the cards', () => {
-      expect(findCards().exists()).toBe(false);
-    });
-
-    it('does not show loader when not loading', () => {
-      createComponent({ loading: false });
-      expect(findLoader().exists()).toBe(false);
+      it('does not show loader when query is populated', () => {
+        expect(findLoader().exists()).toBe(false);
+      });
     });
   });
 });

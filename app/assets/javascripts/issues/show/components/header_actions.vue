@@ -1,5 +1,13 @@
 <script>
-import { GlButton, GlDropdown, GlDropdownItem, GlLink, GlModal } from '@gitlab/ui';
+import {
+  GlButton,
+  GlDropdown,
+  GlDropdownDivider,
+  GlDropdownItem,
+  GlLink,
+  GlModal,
+  GlModalDirective,
+} from '@gitlab/ui';
 import { mapActions, mapGetters, mapState } from 'vuex';
 import createFlash, { FLASH_TYPES } from '~/flash';
 import { EVENT_ISSUABLE_VUE_APP_CHANGE } from '~/issuable/constants';
@@ -10,23 +18,21 @@ import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { s__, __, sprintf } from '~/locale';
 import eventHub from '~/notes/event_hub';
+import Tracking from '~/tracking';
 import promoteToEpicMutation from '../queries/promote_to_epic.mutation.graphql';
 import updateIssueMutation from '../queries/update_issue.mutation.graphql';
+import DeleteIssueModal from './delete_issue_modal.vue';
+
+const trackingMixin = Tracking.mixin({ label: 'delete_issue' });
 
 export default {
-  components: {
-    GlButton,
-    GlDropdown,
-    GlDropdownItem,
-    GlLink,
-    GlModal,
-  },
   actionCancel: {
     text: __('Cancel'),
   },
   actionPrimary: {
     text: __('Yes, close issue'),
   },
+  deleteModalId: 'delete-modal-id',
   i18n: {
     promoteErrorMessage: __(
       'Something went wrong while promoting the issue to an epic. Please try again.',
@@ -35,8 +41,24 @@ export default {
       'The issue was successfully promoted to an epic. Redirecting to epic...',
     ),
   },
+  components: {
+    DeleteIssueModal,
+    GlButton,
+    GlDropdown,
+    GlDropdownDivider,
+    GlDropdownItem,
+    GlLink,
+    GlModal,
+  },
+  directives: {
+    GlModal: GlModalDirective,
+  },
+  mixins: [trackingMixin],
   inject: {
     canCreateIssue: {
+      default: false,
+    },
+    canDestroyIssue: {
       default: false,
     },
     canPromoteToEpic: {
@@ -56,6 +78,9 @@ export default {
     },
     isIssueAuthor: {
       default: false,
+    },
+    issuePath: {
+      default: '',
     },
     issueType: {
       default: IssuableType.Issue,
@@ -91,6 +116,9 @@ export default {
       return this.isClosed
         ? sprintf(__('Reopen %{issueType}'), { issueType: this.issueTypeText })
         : sprintf(__('Close %{issueType}'), { issueType: this.issueTypeText });
+    },
+    deleteButtonText() {
+      return sprintf(__('Delete %{issuableType}'), { issuableType: this.issueTypeText });
     },
     qaSelector() {
       return this.isClosed ? 'reopen_issue_button' : 'close_issue_button';
@@ -141,8 +169,7 @@ export default {
         })
         .then(({ data }) => {
           if (data.updateIssue.errors.length) {
-            createFlash({ message: data.updateIssue.errors.join('. ') });
-            return;
+            throw new Error();
           }
 
           const payload = {
@@ -175,8 +202,7 @@ export default {
         })
         .then(({ data }) => {
           if (data.promoteToEpic.errors.length) {
-            createFlash({ message: data.promoteToEpic.errors.join('; ') });
-            return;
+            throw new Error();
           }
 
           createFlash({
@@ -228,6 +254,16 @@ export default {
       >
         {{ __('Submit as spam') }}
       </gl-dropdown-item>
+      <template v-if="canDestroyIssue">
+        <gl-dropdown-divider />
+        <gl-dropdown-item
+          v-gl-modal="$options.deleteModalId"
+          variant="danger"
+          @click="track('click_dropdown')"
+        >
+          {{ deleteButtonText }}
+        </gl-dropdown-item>
+      </template>
     </gl-dropdown>
 
     <gl-button
@@ -271,6 +307,16 @@ export default {
       >
         {{ __('Submit as spam') }}
       </gl-dropdown-item>
+      <template v-if="canDestroyIssue">
+        <gl-dropdown-divider />
+        <gl-dropdown-item
+          v-gl-modal="$options.deleteModalId"
+          variant="danger"
+          @click="track('click_dropdown')"
+        >
+          {{ deleteButtonText }}
+        </gl-dropdown-item>
+      </template>
     </gl-dropdown>
 
     <gl-modal
@@ -288,5 +334,12 @@ export default {
         </li>
       </ul>
     </gl-modal>
+
+    <delete-issue-modal
+      :issue-path="issuePath"
+      :issue-type="issueType"
+      :modal-id="$options.deleteModalId"
+      :title="deleteButtonText"
+    />
   </div>
 </template>

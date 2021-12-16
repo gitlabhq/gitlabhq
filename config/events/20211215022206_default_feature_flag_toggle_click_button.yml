@@ -1,0 +1,21 @@
+description: "Click feature flag toggle button"
+category: default
+action: click_button
+label_description: "`feature_flag_toggle`"
+property_description: ""
+value_description: ""
+extra_properties:
+identifiers:
+product_section: ops
+product_stage: release
+product_group: group::release
+product_category:
+milestone: "13.4"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/40023
+distributions:
+- ce
+- ee
+tiers:
+- free
+- premium
+- ultimate

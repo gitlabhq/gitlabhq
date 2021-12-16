@@ -51,6 +51,17 @@ RSpec.describe 'Pipeline Editor', :js do
         expect(page).not_to have_content(default_branch)
       end
     end
+
+    it 'displays new branch as selected after commiting on a new branch' do
+      find('#target-branch-field').set('new_branch', clear: :backspace)
+
+      click_button 'Commit changes'
+
+      page.within('[data-testid="branch-selector"]') do
+        expect(page).to have_content('new_branch')
+        expect(page).not_to have_content(default_branch)
+      end
+    end
   end
 
   context 'Editor content' do

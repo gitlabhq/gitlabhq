@@ -1,5 +1,6 @@
 <script>
 import { GlCard, GlToggle, GlLink, GlSkeletonLoader } from '@gitlab/ui';
+import securityTrainingProvidersQuery from '../graphql/security_training_providers.query.graphql';
 
 export default {
   components: {
@@ -8,15 +9,19 @@ export default {
     GlLink,
     GlSkeletonLoader,
   },
-  props: {
-    providers: {
-      type: Array,
-      required: true,
+  apollo: {
+    securityTrainingProviders: {
+      query: securityTrainingProvidersQuery,
     },
-    loading: {
-      type: Boolean,
-      required: false,
-      default: false,
+  },
+  data() {
+    return {
+      securityTrainingProviders: [],
+    };
+  },
+  computed: {
+    isLoading() {
+      return this.$apollo.queries.securityTrainingProviders.loading;
     },
   },
 };
@@ -24,7 +29,7 @@ export default {
 
 <template>
   <div
-    v-if="loading"
+    v-if="isLoading"
     class="gl-bg-white gl-py-6 gl-rounded-base gl-border-1 gl-border-solid gl-border-gray-100"
   >
     <gl-skeleton-loader :width="350" :height="44">
@@ -34,7 +39,11 @@ export default {
     </gl-skeleton-loader>
   </div>
   <ul v-else class="gl-list-style-none gl-m-0 gl-p-0">
-    <li v-for="{ id, isEnabled, name, description, url } in providers" :key="id" class="gl-mb-6">
+    <li
+      v-for="{ id, isEnabled, name, description, url } in securityTrainingProviders"
+      :key="id"
+      class="gl-mb-6"
+    >
       <gl-card>
         <div class="gl-display-flex">
           <gl-toggle :value="isEnabled" :label="__('Training mode')" label-position="hidden" />

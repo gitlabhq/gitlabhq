@@ -4,7 +4,6 @@ import * as Sentry from '@sentry/browser';
 import { mapState, mapActions, mapGetters } from 'vuex';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import {
-  SAVE_INTEGRATION_EVENT,
   VALIDATE_INTEGRATION_FORM_EVENT,
   I18N_FETCH_TEST_SETTINGS_DEFAULT_ERROR_MESSAGE,
   I18N_DEFAULT_ERROR_MESSAGE,
@@ -54,12 +53,13 @@ export default {
   data() {
     return {
       integrationActive: false,
-      testingLoading: false,
+      isTesting: false,
+      isSaving: false,
     };
   },
   computed: {
-    ...mapGetters(['currentKey', 'propsSource', 'isDisabled']),
-    ...mapState(['defaultState', 'customState', 'override', 'isSaving', 'isResetting']),
+    ...mapGetters(['currentKey', 'propsSource']),
+    ...mapState(['defaultState', 'customState', 'override', 'isResetting']),
     isEditable() {
       return this.propsSource.editable;
     },
@@ -78,11 +78,8 @@ export default {
     showTestButton() {
       return this.propsSource.canTest;
     },
-    disableSaveButton() {
-      return Boolean(this.isResetting || this.testingLoading);
-    },
-    disableResetButton() {
-      return Boolean(this.isSaving || this.testingLoading);
+    disableButtons() {
+      return Boolean(this.isSaving || this.isResetting || this.isTesting);
     },
   },
   mounted() {
@@ -90,21 +87,20 @@ export default {
     this.form = document.querySelector(this.formSelector);
   },
   methods: {
-    ...mapActions([
-      'setOverride',
-      'setIsSaving',
-      'setIsResetting',
-      'fetchResetIntegration',
-      'requestJiraIssueTypes',
-    ]),
+    ...mapActions(['setOverride', 'fetchResetIntegration', 'requestJiraIssueTypes']),
     onSaveClick() {
-      this.setIsSaving(true);
+      this.isSaving = true;
 
-      const formValid = this.form.checkValidity() || this.integrationActive === false;
-      eventHub.$emit(SAVE_INTEGRATION_EVENT, formValid);
+      if (this.integrationActive && !this.form.checkValidity()) {
+        this.isSaving = false;
+        eventHub.$emit(VALIDATE_INTEGRATION_FORM_EVENT);
+        return;
+      }
+
+      this.form.submit();
     },
     onTestClick() {
-      this.testingLoading = true;
+      this.isTesting = true;
 
       if (!this.form.checkValidity()) {
         eventHub.$emit(VALIDATE_INTEGRATION_FORM_EVENT);
@@ -126,7 +122,7 @@ export default {
           Sentry.captureException(error);
         })
         .finally(() => {
-          this.testingLoading = false;
+          this.isTesting = false;
         });
     },
     onResetClick() {
@@ -211,7 +207,7 @@ export default {
               category="primary"
               variant="confirm"
               :loading="isSaving"
-              :disabled="disableSaveButton"
+              :disabled="disableButtons"
               data-qa-selector="save_changes_button"
             >
               {{ __('Save changes') }}
@@ -224,7 +220,7 @@ export default {
             variant="confirm"
             type="submit"
             :loading="isSaving"
-            :disabled="disableSaveButton"
+            :disabled="disableButtons"
             data-testid="save-button"
             data-qa-selector="save_changes_button"
             @click.prevent="onSaveClick"
@@ -236,8 +232,8 @@ export default {
             v-if="showTestButton"
             category="secondary"
             variant="confirm"
-            :loading="testingLoading"
-            :disabled="isDisabled"
+            :loading="isTesting"
+            :disabled="disableButtons"
             data-testid="test-button"
             @click.prevent="onTestClick"
           >
@@ -250,7 +246,7 @@ export default {
               category="secondary"
               variant="confirm"
               :loading="isResetting"
-              :disabled="disableResetButton"
+              :disabled="disableButtons"
               data-testid="reset-button"
             >
               {{ __('Reset') }}

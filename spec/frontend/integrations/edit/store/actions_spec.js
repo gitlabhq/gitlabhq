@@ -4,7 +4,6 @@ import testAction from 'helpers/vuex_action_helper';
 import { I18N_FETCH_TEST_SETTINGS_DEFAULT_ERROR_MESSAGE } from '~/integrations/constants';
 import {
   setOverride,
-  setIsSaving,
   setIsResetting,
   requestResetIntegration,
   receiveResetIntegrationSuccess,
@@ -36,12 +35,6 @@ describe('Integration form store actions', () => {
   describe('setOverride', () => {
     it('should commit override mutation', () => {
       return testAction(setOverride, true, state, [{ type: types.SET_OVERRIDE, payload: true }]);
-    });
-  });
-
-  describe('setIsSaving', () => {
-    it('should commit isSaving mutation', () => {
-      return testAction(setIsSaving, true, state, [{ type: types.SET_IS_SAVING, payload: true }]);
     });
   });
 

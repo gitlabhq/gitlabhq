@@ -48,6 +48,9 @@ export default {
   apollo: {
     pipelineEtag: {
       query: getPipelineEtag,
+      update(data) {
+        return data.etags.pipeline;
+      },
     },
     pipeline: {
       context() {

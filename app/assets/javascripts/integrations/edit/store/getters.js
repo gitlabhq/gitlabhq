@@ -1,7 +1,5 @@
 export const isInheriting = (state) => (state.defaultState === null ? false : !state.override);
 
-export const isDisabled = (state) => state.isSaving || state.isResetting;
-
 export const propsSource = (state, getters) =>
   getters.isInheriting ? state.defaultState : state.customState;
 

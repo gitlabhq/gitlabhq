@@ -1,3 +1,7 @@
 query getCurrentBranch {
-  currentBranch @client
+  workBranches @client {
+    current {
+      name
+    }
+  }
 }

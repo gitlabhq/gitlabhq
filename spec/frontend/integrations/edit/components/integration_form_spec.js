@@ -18,7 +18,6 @@ import {
   integrationLevels,
   I18N_SUCCESSFUL_CONNECTION_MESSAGE,
   VALIDATE_INTEGRATION_FORM_EVENT,
-  SAVE_INTEGRATION_EVENT,
   I18N_DEFAULT_ERROR_MESSAGE,
 } from '~/integrations/constants';
 import { createStore } from '~/integrations/edit/store';
@@ -34,6 +33,7 @@ describe('IntegrationForm', () => {
   let wrapper;
   let dispatch;
   let mockAxios;
+  let mockForm;
 
   const createComponent = ({
     customStateProps = {},
@@ -69,11 +69,10 @@ describe('IntegrationForm', () => {
   };
 
   const createForm = ({ isValid = true } = {}) => {
-    const mockForm = document.createElement('form');
+    mockForm = document.createElement('form');
     jest.spyOn(document, 'querySelector').mockReturnValue(mockForm);
     jest.spyOn(mockForm, 'checkValidity').mockReturnValue(isValid);
-
-    return mockForm;
+    jest.spyOn(mockForm, 'submit');
   };
 
   const findOverrideDropdown = () => wrapper.findComponent(OverrideDropdown);
@@ -365,12 +364,8 @@ describe('IntegrationForm', () => {
     `(
       'when `toggle-integration-active` is emitted with $formActive',
       ({ formActive, novalidate }) => {
-        let mockForm;
-
         beforeEach(async () => {
-          mockForm = document.createElement('form');
-          jest.spyOn(document, 'querySelector').mockReturnValue(mockForm);
-
+          createForm();
           createComponent({
             customStateProps: {
               showActive: true,
@@ -389,41 +384,86 @@ describe('IntegrationForm', () => {
   });
 
   describe('when `save` button is clicked', () => {
-    let mockForm;
+    describe('buttons', () => {
+      beforeEach(async () => {
+        createForm();
+        createComponent({
+          customStateProps: {
+            showActive: true,
+            canTest: true,
+            initialActivated: true,
+          },
+        });
+
+        await findSaveButton().vm.$emit('click', new Event('click'));
+      });
+
+      it('sets save button `loading` prop to `true`', () => {
+        expect(findSaveButton().props('loading')).toBe(true);
+      });
+
+      it('sets test button `disabled` prop to `true`', () => {
+        expect(findTestButton().props('disabled')).toBe(true);
+      });
+    });
 
     describe.each`
-      checkValidityReturn | integrationActive | formValid
-      ${true}             | ${false}          | ${true}
-      ${true}             | ${true}           | ${true}
-      ${false}            | ${true}           | ${false}
-      ${false}            | ${false}          | ${true}
+      checkValidityReturn | integrationActive
+      ${true}             | ${false}
+      ${true}             | ${true}
+      ${false}            | ${false}
     `(
-      'when form checkValidity returns $checkValidityReturn and integrationActive is $integrationActive',
-      ({ formValid, integrationActive, checkValidityReturn }) => {
-        beforeEach(() => {
-          mockForm = document.createElement('form');
-          jest.spyOn(document, 'querySelector').mockReturnValue(mockForm);
-          jest.spyOn(mockForm, 'checkValidity').mockReturnValue(checkValidityReturn);
-
+      'when form is valid (checkValidity returns $checkValidityReturn and integrationActive is $integrationActive)',
+      ({ integrationActive, checkValidityReturn }) => {
+        beforeEach(async () => {
+          createForm({ isValid: checkValidityReturn });
           createComponent({
             customStateProps: {
               showActive: true,
+              canTest: true,
               initialActivated: integrationActive,
             },
           });
 
-          findSaveButton().vm.$emit('click', new Event('click'));
+          await findSaveButton().vm.$emit('click', new Event('click'));
         });
 
-        it('dispatches setIsSaving action', () => {
-          expect(dispatch).toHaveBeenCalledWith('setIsSaving', true);
-        });
-
-        it(`emits \`SAVE_INTEGRATION_EVENT\` event with payload \`${formValid}\``, () => {
-          expect(eventHub.$emit).toHaveBeenCalledWith(SAVE_INTEGRATION_EVENT, formValid);
+        it('submit form', () => {
+          expect(mockForm.submit).toHaveBeenCalledTimes(1);
         });
       },
     );
+
+    describe('when form is invalid (checkValidity returns false and integrationActive is true)', () => {
+      beforeEach(async () => {
+        createForm({ isValid: false });
+        createComponent({
+          customStateProps: {
+            showActive: true,
+            canTest: true,
+            initialActivated: true,
+          },
+        });
+
+        await findSaveButton().vm.$emit('click', new Event('click'));
+      });
+
+      it('does not submit form', () => {
+        expect(mockForm.submit).not.toHaveBeenCalled();
+      });
+
+      it('sets save button `loading` prop to `false`', () => {
+        expect(findSaveButton().props('loading')).toBe(false);
+      });
+
+      it('sets test button `disabled` prop to `false`', () => {
+        expect(findTestButton().props('disabled')).toBe(false);
+      });
+
+      it('emits `VALIDATE_INTEGRATION_FORM_EVENT`', () => {
+        expect(eventHub.$emit).toHaveBeenCalledWith(VALIDATE_INTEGRATION_FORM_EVENT);
+      });
+    });
   });
 
   describe('when `test` button is clicked', () => {
