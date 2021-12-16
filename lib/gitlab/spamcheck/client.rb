@@ -99,7 +99,7 @@ module Gitlab
       end
 
       def client_creds(url)
-        if URI(url).scheme == 'tls' || Rails.env.production?
+        if URI(url).scheme == 'tls'
           GRPC::Core::ChannelCredentials.new(::Gitlab::X509::Certificate.ca_certs_bundle)
         else
           :this_channel_is_insecure

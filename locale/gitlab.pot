@@ -11491,13 +11491,7 @@ msgstr ""
 msgid "Deleted"
 msgstr ""
 
-msgid "Deleted Projects"
-msgstr ""
-
 msgid "Deleted chat nickname: %{chat_name}!"
-msgstr ""
-
-msgid "Deleted projects"
 msgstr ""
 
 msgid "Deleted projects cannot be restored!"
@@ -25489,7 +25483,13 @@ msgstr ""
 msgid "Pending"
 msgstr ""
 
+msgid "Pending Deletion"
+msgstr ""
+
 msgid "Pending comments"
+msgstr ""
+
+msgid "Pending deletion"
 msgstr ""
 
 msgid "Pending owner approval"
@@ -29399,10 +29399,10 @@ msgstr ""
 msgid "Removed upload with id %{id}"
 msgstr ""
 
-msgid "RemovedProjects|Projects which are removed and are yet to be permanently removed are visible here."
+msgid "RemovedProjects|No projects pending deletion found"
 msgstr ""
 
-msgid "RemovedProjects|You haven’t removed any projects."
+msgid "RemovedProjects|Projects that are pending deletion that you have access to are listed here."
 msgstr ""
 
 msgid "Removes %{assignee_text} %{assignee_references}."
@@ -31591,6 +31591,9 @@ msgstr ""
 msgid "SecurityReports|Take survey"
 msgstr ""
 
+msgid "SecurityReports|The Composition Analysis group is planning significant updates to how we make available the list of software and container dependency information in your projects. Therefore, we ask that you assist us by taking a short -no longer than 5 minute- survey to help align our direction with your needs."
+msgstr ""
+
 msgid "SecurityReports|The Vulnerability Report shows the results of the latest successful pipeline on your project's default branch, as well as vulnerabilities from your latest container scan. %{linkStart}Learn more.%{linkEnd}"
 msgstr ""
 
@@ -31664,6 +31667,9 @@ msgid "SecurityReports|You do not have sufficient permissions to access this rep
 msgstr ""
 
 msgid "SecurityReports|You must sign in as an authorized user to see this report"
+msgstr ""
+
+msgid "SecurityReports|Your feedback is important to us! We will ask again in 7 days."
 msgstr ""
 
 msgid "SecurityReports|Your feedback is important to us! We will ask again in a week."
@@ -39433,6 +39439,12 @@ msgstr ""
 msgid "Webhooks|Enable SSL verification"
 msgstr ""
 
+msgid "Webhooks|Failed to connect"
+msgstr ""
+
+msgid "Webhooks|Fails to connect"
+msgstr ""
+
 msgid "Webhooks|Feature flag events"
 msgstr ""
 
@@ -39467,6 +39479,12 @@ msgid "Webhooks|Subgroup events"
 msgstr ""
 
 msgid "Webhooks|Tag push events"
+msgstr ""
+
+msgid "Webhooks|The webhook %{help_link_start}failed to connect%{help_link_end}, and will retry in %{retry_time}. To re-enable it, check %{strong_start}Recent events%{strong_end} for error details, then test your settings below."
+msgstr ""
+
+msgid "Webhooks|The webhook failed to connect, and is disabled. To re-enable it, check %{strong_start}Recent events%{strong_end} for error details, then test your settings below."
 msgstr ""
 
 msgid "Webhooks|The webhook was triggered more than %{limit} times per minute and is now disabled. To re-enable this webhook, fix the problems shown in %{strong_start}Recent events%{strong_end}, then re-test your settings. %{support_link_start}Contact Support%{support_link_end} if you need help re-enabling your webhook."
@@ -39527,6 +39545,12 @@ msgid "Webhooks|URL must be percent-encoded if neccessary."
 msgstr ""
 
 msgid "Webhooks|Use this token to validate received payloads. It is sent with the request in the X-Gitlab-Token HTTP header."
+msgstr ""
+
+msgid "Webhooks|Webhook failed to connect"
+msgstr ""
+
+msgid "Webhooks|Webhook fails to connect"
 msgstr ""
 
 msgid "Webhooks|Webhook was automatically disabled"

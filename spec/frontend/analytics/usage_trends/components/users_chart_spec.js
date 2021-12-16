@@ -1,6 +1,7 @@
 import { GlAlert } from '@gitlab/ui';
 import { GlAreaChart } from '@gitlab/ui/dist/charts';
-import { createLocalVue, shallowMount } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
+import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import UsersChart from '~/analytics/usage_trends/components/users_chart.vue';
@@ -13,8 +14,7 @@ import {
   roundedSortedCountsMonthlyChartData2,
 } from '../mock_data';
 
-const localVue = createLocalVue();
-localVue.use(VueApollo);
+Vue.use(VueApollo);
 
 describe('UsersChart', () => {
   let wrapper;
@@ -34,7 +34,6 @@ describe('UsersChart', () => {
         endDate: new Date(2020, 10, 1),
         totalDataPoints: mockCountsData2.length,
       },
-      localVue,
       apolloProvider: createMockApollo([[usersQuery, queryHandler]]),
       data() {
         return { loadingError };

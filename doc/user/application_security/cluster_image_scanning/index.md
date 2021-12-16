@@ -177,6 +177,7 @@ You can [configure](#customize-the-cluster-image-scanning-settings) analyzers by
 | `CIS_RESOURCE_NAMESPACE` | `""` | Namespace of the Kubernetes resource you want to filter vulnerabilities for. For example, `production`.   |
 | `CIS_RESOURCE_KIND` | `""` | Kind of the Kubernetes resource you want to filter vulnerabilities for. For example, `deployment`.  |
 | `CIS_CLUSTER_IDENTIFIER` | `""` | ID of the Kubernetes cluster integrated with GitLab. This is used to map vulnerabilities to the cluster so they can be filtered in the Vulnerability Report page. |
+| `CIS_CLUSTER_AGENT_IDENTIFIER` | `""` | ID of the Kubernetes cluster agent integrated with GitLab. This maps vulnerabilities to the agent so they can be filtered in the Vulnerability Report page. |
 
 #### Override the cluster image scanning template
 

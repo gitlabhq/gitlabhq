@@ -22,7 +22,14 @@ resource :profile, only: [:show, :update] do
     end
 
     resource :notifications, only: [:show, :update] do
-      resources :groups, only: :update, constraints: { id: Gitlab::PathRegex.full_namespace_route_regex }
+      scope(path: 'groups/*id',
+        id: Gitlab::PathRegex.full_namespace_route_regex,
+        as: :group,
+        controller: :groups,
+        constraints: { format: /(html|json)/ }) do
+        patch '/', action: :update
+        put '/', action: :update
+      end
     end
 
     resource :password, only: [:new, :create, :edit, :update] do

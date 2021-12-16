@@ -30,4 +30,29 @@ RSpec.describe 'projects/hooks/edit' do
       expect(rendered).to have_text(s_('Webhooks|Webhook was automatically disabled'))
     end
   end
+
+  context 'webhook is permanently disabled' do
+    before do
+      allow(hook).to receive(:permanently_disabled?).and_return(true)
+    end
+
+    it 'renders alert' do
+      render
+
+      expect(rendered).to have_text(s_('Webhooks|Webhook failed to connect'))
+    end
+  end
+
+  context 'webhook is temporarily disabled' do
+    before do
+      allow(hook).to receive(:temporarily_disabled?).and_return(true)
+      allow(hook).to receive(:disabled_until).and_return(Time.now + 10.minutes)
+    end
+
+    it 'renders alert' do
+      render
+
+      expect(rendered).to have_text(s_('Webhooks|Webhook fails to connect'))
+    end
+  end
 end

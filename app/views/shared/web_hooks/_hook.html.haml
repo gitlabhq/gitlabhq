@@ -5,6 +5,10 @@
         = hook.url
         - if hook.rate_limited?
           %span.gl-badge.badge-danger.badge-pill.sm= _('Disabled')
+        - elsif hook.permanently_disabled?
+          %span.gl-badge.badge-danger.badge-pill.sm= s_('Webhooks|Failed to connect')
+        - elsif hook.temporarily_disabled?
+          %span.gl-badge.badge-warning.badge-pill.sm= s_('Webhooks|Fails to connect')
 
       %div
         - hook.class.triggers.each_value do |trigger|

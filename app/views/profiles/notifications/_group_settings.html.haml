@@ -13,5 +13,5 @@
       .js-vue-notification-dropdown{ data: { disabled: emails_disabled.to_s, dropdown_items: notification_dropdown_items(setting).to_json, notification_level: setting.level, group_id: group.id, container_class: 'gl-mr-3', show_label: "true" } }
 
   .table-section.section-30
-    = form_for setting, url: profile_notifications_group_path(group), method: :put, html: { class: 'update-notifications gl-display-flex' } do |f|
+    = form_for setting, url: profile_group_notifications_path(group), method: :put, html: { class: 'update-notifications gl-display-flex' } do |f|
       = f.select :notification_email, @user.public_verified_emails, { include_blank: 'Global notification email' }, class: 'select2 js-group-notification-email'

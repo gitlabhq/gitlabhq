@@ -2,19 +2,7 @@
 - add_to_breadcrumbs _('Webhook Settings'), project_hooks_path(@project)
 - page_title _('Webhook')
 
-- if @hook.rate_limited?
-  - placeholders = { strong_start: '<strong>'.html_safe,
-    strong_end: '</strong>'.html_safe,
-    limit: @hook.rate_limit,
-    support_link_start: '<a href="https://support.gitlab.com/hc/en-us/requests/new">'.html_safe,
-    support_link_end: '</a>'.html_safe }
-  = render 'shared/global_alert',
-    title: s_('Webhooks|Webhook was automatically disabled'),
-    variant: :danger,
-    is_contained: true,
-    close_button_class: 'js-close' do
-    .gl-alert-body
-      = s_('Webhooks|The webhook was triggered more than %{limit} times per minute and is now disabled. To re-enable this webhook, fix the problems shown in %{strong_start}Recent events%{strong_end}, then re-test your settings. %{support_link_start}Contact Support%{support_link_end} if you need help re-enabling your webhook.').html_safe % placeholders
+= render 'shared/web_hooks/hook_errors', hook: @hook
 
 .row.gl-mt-3
   .col-lg-3

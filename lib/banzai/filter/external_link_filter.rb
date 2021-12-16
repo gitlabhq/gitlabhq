@@ -112,7 +112,9 @@ module Banzai
 
       def add_nofollow!(uri, node)
         if SCHEMES.include?(uri&.scheme)
+          license = true if node.attribute('rel')&.value == 'license'
           node.set_attribute('rel', 'nofollow noreferrer noopener')
+          node.kwattr_append('rel', 'license') if license
           node.set_attribute('target', '_blank')
         end
       end

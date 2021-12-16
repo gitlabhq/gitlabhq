@@ -153,7 +153,7 @@ gem 'faraday_middleware-aws-sigv4', '~>0.3.0'
 # Markdown and HTML processing
 gem 'html-pipeline', '~> 2.13.2'
 gem 'deckar01-task_list', '2.3.1'
-gem 'gitlab-markup', '~> 1.7.1'
+gem 'gitlab-markup', '~> 1.8.0'
 gem 'github-markup', '~> 1.7.0', require: 'github/markup'
 gem 'commonmarker', '~> 0.23.2'
 gem 'kramdown', '~> 2.3.1'

@@ -1,5 +1,5 @@
 import { GlTable, GlSkeletonLoader } from '@gitlab/ui';
-import { createLocalVue } from '@vue/test-utils';
+import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -16,8 +16,7 @@ import { users, paths, createGroupCountResponse } from '../mock_data';
 
 jest.mock('~/flash');
 
-const localVue = createLocalVue();
-localVue.use(VueApollo);
+Vue.use(VueApollo);
 
 describe('AdminUsersTable component', () => {
   let wrapper;
@@ -48,7 +47,6 @@ describe('AdminUsersTable component', () => {
 
   const initComponent = (props = {}, resolverMock = fetchGroupCountsResponse) => {
     wrapper = mountExtended(AdminUsersTable, {
-      localVue,
       apolloProvider: createMockApolloProvider(resolverMock),
       propsData: {
         users,

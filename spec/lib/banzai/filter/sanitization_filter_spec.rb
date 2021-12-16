@@ -115,6 +115,11 @@ RSpec.describe Banzai::Filter::SanitizationFilter do
       expect(filter(act).to_html).to eq exp
     end
 
+    it 'allows `rel=license` in links' do
+      exp = act = '<a rel="license" href="http://example.com">rel-license</a>'
+      expect(filter(act).to_html).to eq exp
+    end
+
     it 'allows `data-math-style` attribute on `code` and `pre` elements' do
       html = <<-HTML
       <pre class="code" data-math-style="inline">something</pre>

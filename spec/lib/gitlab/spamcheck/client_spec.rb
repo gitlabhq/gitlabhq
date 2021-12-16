@@ -56,36 +56,6 @@ RSpec.describe Gitlab::Spamcheck::Client do
     end
   end
 
-  describe "Rails environment" do
-    let(:stub) { double(:spamcheck_stub, check_for_spam_issue: response) }
-
-    context "production" do
-      before do
-        allow(Rails.env).to receive(:production?).and_return(true)
-      end
-
-      it 'uses secure connection' do
-        expect(Spamcheck::SpamcheckService::Stub).to receive(:new).with(endpoint.sub(%r{^grpc://}, ''),
-                                                                        instance_of(GRPC::Core::ChannelCredentials),
-                                                                        anything).and_return(stub)
-        subject
-      end
-    end
-
-    context "not production" do
-      before do
-        allow(Rails.env).to receive(:production?).and_return(false)
-      end
-
-      it 'uses insecure connection' do
-        expect(Spamcheck::SpamcheckService::Stub).to receive(:new).with(endpoint.sub(%r{^grpc://}, ''),
-                                                                        :this_channel_is_insecure,
-                                                                        anything).and_return(stub)
-        subject
-      end
-    end
-  end
-
   describe '#issue_spam?' do
     before do
       allow_next_instance_of(::Spamcheck::SpamcheckService::Stub) do |instance|
