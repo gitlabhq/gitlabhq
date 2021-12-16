@@ -2,7 +2,7 @@
 - page_title _('Two-Factor Authentication'), _('Account')
 - add_to_breadcrumbs _('Account'), profile_account_path
 - @content_class = "limit-container-width" unless fluid_layout
-- webauthn_enabled = Feature.enabled?(:webauthn)
+- webauthn_enabled = Feature.enabled?(:webauthn, default_enabled: :yaml)
 
 .js-two-factor-auth{ 'data-two-factor-skippable' => "#{two_factor_skippable?}", 'data-two_factor_skip_url' => skip_profile_two_factor_auth_path }
   .row.gl-mt-3

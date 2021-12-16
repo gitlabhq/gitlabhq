@@ -3,14 +3,10 @@
 
 require_relative '../metrics_server/metrics_server'
 
-begin
-  target = ENV['METRICS_SERVER_TARGET']
-  raise "Required: METRICS_SERVER_TARGET=[sidekiq]" unless target == 'sidekiq'
+target = ENV['METRICS_SERVER_TARGET']
+raise "METRICS_SERVER_TARGET cannot be blank" if target.blank?
 
-  metrics_dir = ENV["prometheus_multiproc_dir"] || File.absolute_path("tmp/prometheus_multiproc_dir/#{target}")
-  wipe_metrics_dir = Gitlab::Utils.to_boolean(ENV['WIPE_METRICS_DIR']) || false
+metrics_dir = ENV["prometheus_multiproc_dir"] || File.absolute_path("tmp/prometheus_multiproc_dir/#{target}")
+wipe_metrics_dir = Gitlab::Utils.to_boolean(ENV['WIPE_METRICS_DIR']) || false
 
-  # Re-raise exceptions in threads on the main thread.
-  Thread.abort_on_exception = true
-  MetricsServer.new(target, metrics_dir, wipe_metrics_dir).start
-end
+Process.wait(MetricsServer.spawn(target, metrics_dir: metrics_dir, wipe_metrics_dir: wipe_metrics_dir))

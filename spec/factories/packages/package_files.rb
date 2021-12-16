@@ -323,6 +323,14 @@ FactoryBot.define do
       size { 1149.bytes }
     end
 
+    trait(:generic_zip) do
+      package
+      file_fixture { 'spec/fixtures/packages/generic/myfile.zip' }
+      file_name { "#{package.name}.zip" }
+      file_sha256 { '3559e770bd493b326e8ec5e6242f7206d3fbf94fa47c16f82d34a037daa113e5' }
+      size { 3989.bytes }
+    end
+
     trait(:object_storage) do
       file_store { Packages::PackageFileUploader::Store::REMOTE }
     end

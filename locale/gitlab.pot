@@ -1805,6 +1805,15 @@ msgstr ""
 msgid "AccessTokens|Are you sure? Any issue email addresses currently in use will stop working."
 msgstr ""
 
+msgid "AccessTokens|Copy feed token"
+msgstr ""
+
+msgid "AccessTokens|Copy incoming email token"
+msgstr ""
+
+msgid "AccessTokens|Copy static object token"
+msgstr ""
+
 msgid "AccessTokens|Created"
 msgstr ""
 
@@ -1817,10 +1826,19 @@ msgstr ""
 msgid "AccessTokens|It cannot be used to access any other data."
 msgstr ""
 
+msgid "AccessTokens|Keep this token secret. Anyone who has it can access repository static objects as if they were you. If that ever happens, %{linkStart}reset this token%{linkEnd}."
+msgstr ""
+
 msgid "AccessTokens|Keep this token secret. Anyone who has it can access repository static objects as if they were you. If that ever happens, %{reset_link_start}reset this token%{reset_link_end}."
 msgstr ""
 
+msgid "AccessTokens|Keep this token secret. Anyone who has it can create issues as if they were you. If that happens, %{linkStart}reset this token%{linkEnd}."
+msgstr ""
+
 msgid "AccessTokens|Keep this token secret. Anyone who has it can create issues as if they were you. If that happens, %{link_reset_it}."
+msgstr ""
+
+msgid "AccessTokens|Keep this token secret. Anyone who has it can read activity and issue RSS feeds or your calendar feed as if they were you. If that happens, %{linkStart}reset this token%{linkEnd}."
 msgstr ""
 
 msgid "AccessTokens|Keep this token secret. Anyone who has it can read activity and issue RSS feeds or your calendar feed as if they were you. If that happens, %{link_reset_it}."
@@ -10264,6 +10282,9 @@ msgstr ""
 msgid "Crm|Contact has been added"
 msgstr ""
 
+msgid "Crm|Contact has been updated"
+msgstr ""
+
 msgid "Crm|Create new contact"
 msgstr ""
 
@@ -10273,6 +10294,9 @@ msgstr ""
 msgid "Crm|Description (optional)"
 msgstr ""
 
+msgid "Crm|Edit contact"
+msgstr ""
+
 msgid "Crm|Email"
 msgstr ""
 
@@ -10280,9 +10304,6 @@ msgid "Crm|First name"
 msgstr ""
 
 msgid "Crm|Last name"
-msgstr ""
-
-msgid "Crm|New Contact"
 msgstr ""
 
 msgid "Crm|New contact"

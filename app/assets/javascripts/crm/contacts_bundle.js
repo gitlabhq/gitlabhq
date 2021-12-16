@@ -4,6 +4,7 @@ import VueApollo from 'vue-apollo';
 import VueRouter from 'vue-router';
 import createDefaultClient from '~/lib/graphql';
 import CrmContactsRoot from './components/contacts_root.vue';
+import routes from './routes';
 
 Vue.use(VueApollo);
 Vue.use(VueRouter);
@@ -25,14 +26,7 @@ export default () => {
   const router = new VueRouter({
     base: basePath,
     mode: 'history',
-    routes: [
-      {
-        // eslint-disable-next-line @gitlab/require-i18n-strings
-        name: 'Contacts List',
-        path: '/',
-        component: CrmContactsRoot,
-      },
-    ],
+    routes,
   });
 
   return new Vue({

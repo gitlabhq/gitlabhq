@@ -4,7 +4,8 @@ import { produce } from 'immer';
 import { __, s__ } from '~/locale';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { TYPE_GROUP } from '~/graphql_shared/constants';
-import createContact from './queries/create_contact.mutation.graphql';
+import createContactMutation from './queries/create_contact.mutation.graphql';
+import updateContactMutation from './queries/update_contact.mutation.graphql';
 import getGroupContactsQuery from './queries/get_group_contacts.query.graphql';
 
 export default {
@@ -21,6 +22,11 @@ export default {
       type: Boolean,
       required: true,
     },
+    contact: {
+      type: Object,
+      required: false,
+      default: () => {},
+    },
   },
   data() {
     return {
@@ -35,66 +41,111 @@ export default {
   },
   computed: {
     invalid() {
-      return this.firstName === '' || this.lastName === '' || this.email === '';
+      const { firstName, lastName, email } = this;
+
+      return firstName.trim() === '' || lastName.trim() === '' || email.trim() === '';
     },
+    editMode() {
+      return Boolean(this.contact);
+    },
+    title() {
+      return this.editMode ? this.$options.i18n.editTitle : this.$options.i18n.newTitle;
+    },
+    buttonLabel() {
+      return this.editMode
+        ? this.$options.i18n.editButtonLabel
+        : this.$options.i18n.createButtonLabel;
+    },
+    mutation() {
+      return this.editMode ? updateContactMutation : createContactMutation;
+    },
+    variables() {
+      const { contact, firstName, lastName, phone, email, description, editMode, groupId } = this;
+
+      const variables = {
+        input: {
+          firstName,
+          lastName,
+          phone,
+          email,
+          description,
+        },
+      };
+
+      if (editMode) {
+        variables.input.id = contact.id;
+      } else {
+        variables.input.groupId = convertToGraphQLId(TYPE_GROUP, groupId);
+      }
+
+      return variables;
+    },
+  },
+  mounted() {
+    if (this.editMode) {
+      const { contact } = this;
+
+      this.firstName = contact.firstName || '';
+      this.lastName = contact.lastName || '';
+      this.phone = contact.phone || '';
+      this.email = contact.email || '';
+      this.description = contact.description || '';
+    }
   },
   methods: {
     save() {
+      const { mutation, variables, updateCache, close } = this;
+
       this.submitting = true;
+
       return this.$apollo
         .mutate({
-          mutation: createContact,
-          variables: {
-            input: {
-              groupId: convertToGraphQLId(TYPE_GROUP, this.groupId),
-              firstName: this.firstName,
-              lastName: this.lastName,
-              phone: this.phone,
-              email: this.email,
-              description: this.description,
-            },
-          },
-          update: this.updateCache,
+          mutation,
+          variables,
+          update: updateCache,
         })
         .then(({ data }) => {
-          if (data.customerRelationsContactCreate.errors.length === 0) this.close(true);
+          if (
+            data.customerRelationsContactCreate?.errors.length === 0 ||
+            data.customerRelationsContactUpdate?.errors.length === 0
+          ) {
+            close(true);
+          }
 
           this.submitting = false;
         })
         .catch(() => {
-          this.errorMessages = [__('Something went wrong. Please try again.')];
+          this.errorMessages = [this.$options.i18n.somethingWentWrong];
           this.submitting = false;
         });
     },
     close(success) {
       this.$emit('close', success);
     },
-    updateCache(store, { data: { customerRelationsContactCreate } }) {
-      if (customerRelationsContactCreate.errors.length > 0) {
-        this.errorMessages = customerRelationsContactCreate.errors;
+    updateCache(store, { data }) {
+      const mutationData =
+        data.customerRelationsContactCreate || data.customerRelationsContactUpdate;
+
+      if (mutationData?.errors.length > 0) {
+        this.errorMessages = mutationData.errors;
         return;
       }
 
-      const variables = {
-        groupFullPath: this.groupFullPath,
-      };
-      const sourceData = store.readQuery({
+      const queryArgs = {
         query: getGroupContactsQuery,
-        variables,
-      });
+        variables: { groupFullPath: this.groupFullPath },
+      };
 
-      const data = produce(sourceData, (draftState) => {
+      const sourceData = store.readQuery(queryArgs);
+
+      queryArgs.data = produce(sourceData, (draftState) => {
         draftState.group.contacts.nodes = [
-          ...sourceData.group.contacts.nodes,
-          customerRelationsContactCreate.contact,
+          ...sourceData.group.contacts.nodes.filter(({ id }) => id !== this.contact?.id),
+          mutationData.contact,
         ];
       });
 
-      store.writeQuery({
-        query: getGroupContactsQuery,
-        variables,
-        data,
-      });
+      store.writeQuery(queryArgs);
     },
     getDrawerHeaderHeight() {
       const wrapperEl = document.querySelector('.content-wrapper');
@@ -107,14 +158,17 @@ export default {
     },
   },
   i18n: {
-    buttonLabel: s__('Crm|Create new contact'),
+    createButtonLabel: s__('Crm|Create new contact'),
+    editButtonLabel: __('Save changes'),
     cancel: __('Cancel'),
     firstName: s__('Crm|First name'),
     lastName: s__('Crm|Last name'),
     email: s__('Crm|Email'),
     phone: s__('Crm|Phone number (optional)'),
     description: s__('Crm|Description (optional)'),
-    title: s__('Crm|New Contact'),
+    newTitle: s__('Crm|New contact'),
+    editTitle: s__('Crm|Edit contact'),
+    somethingWentWrong: __('Something went wrong. Please try again.'),
   },
 };
 </script>
@@ -127,7 +181,7 @@ export default {
     @close="close(false)"
   >
     <template #title>
-      <h4>{{ $options.i18n.title }}</h4>
+      <h3>{{ title }}</h3>
     </template>
     <gl-alert v-if="errorMessages.length" variant="danger" @dismiss="errorMessages = []">
       <ul class="gl-mb-0! gl-ml-5">
@@ -160,9 +214,9 @@ export default {
           variant="confirm"
           :disabled="invalid"
           :loading="submitting"
-          data-testid="create-new-contact-button"
+          data-testid="save-contact-button"
           type="submit"
-          >{{ $options.i18n.buttonLabel }}</gl-button
+          >{{ buttonLabel }}</gl-button
         >
       </span>
     </form>

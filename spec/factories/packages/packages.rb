@@ -247,6 +247,12 @@ FactoryBot.define do
       sequence(:name) { |n| "generic-package-#{n}" }
       version { '1.0.0' }
       package_type { :generic }
+
+      trait(:with_zip_file) do
+        after :create do |package|
+          create :package_file, :generic_zip, package: package
+        end
+      end
     end
   end
 end

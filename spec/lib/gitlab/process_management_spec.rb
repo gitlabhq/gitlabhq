@@ -12,21 +12,12 @@ RSpec.describe Gitlab::ProcessManagement do
     end
   end
 
-  describe '.trap_terminate' do
-    it 'traps the termination signals' do
-      expect(described_class).to receive(:trap_signals)
-                                   .with(described_class::TERMINATE_SIGNALS)
+  describe '.modify_signals' do
+    it 'traps the given signals with the given command' do
+      expect(described_class).to receive(:trap).ordered.with(:INT, 'DEFAULT')
+      expect(described_class).to receive(:trap).ordered.with(:HUP, 'DEFAULT')
 
-      described_class.trap_terminate { }
-    end
-  end
-
-  describe '.trap_forward' do
-    it 'traps the signals to forward' do
-      expect(described_class).to receive(:trap_signals)
-                                   .with(described_class::FORWARD_SIGNALS)
-
-      described_class.trap_forward { }
+      described_class.modify_signals(%i(INT HUP), 'DEFAULT')
     end
   end
 

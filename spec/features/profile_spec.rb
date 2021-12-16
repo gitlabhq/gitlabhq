@@ -63,11 +63,24 @@ RSpec.describe 'Profile account page', :js do
   end
 
   describe 'when I reset feed token' do
-    before do
+    it 'resets feed token with `hide_access_tokens` feature flag enabled' do
       visit profile_personal_access_tokens_path
+
+      within('[data-testid="feed-token-container"]') do
+        previous_token = find_field('Feed token').value
+
+        accept_confirm { click_link('reset this token') }
+
+        click_button('Click to reveal')
+
+        expect(find_field('Feed token').value).not_to eq(previous_token)
+      end
     end
 
-    it 'resets feed token' do
+    it 'resets feed token with `hide_access_tokens` feature flag disabled' do
+      stub_feature_flags(hide_access_tokens: false)
+      visit profile_personal_access_tokens_path
+
       within('.feed-token-reset') do
         previous_token = find("#feed_token").value
 
@@ -82,10 +95,26 @@ RSpec.describe 'Profile account page', :js do
     before do
       allow(Gitlab.config.incoming_email).to receive(:enabled).and_return(true)
       stub_feature_flags(bootstrap_confirmation_modals: false)
-      visit profile_personal_access_tokens_path
     end
 
-    it 'resets incoming email token' do
+    it 'resets incoming email token with `hide_access_tokens` feature flag enabled' do
+      visit profile_personal_access_tokens_path
+
+      within('[data-testid="incoming-email-token-container"]') do
+        previous_token = find_field('Incoming email token').value
+
+        accept_confirm { click_link('reset this token') }
+
+        click_button('Click to reveal')
+
+        expect(find_field('Incoming email token').value).not_to eq(previous_token)
+      end
+    end
+
+    it 'resets incoming email token with `hide_access_tokens` feature flag disabled' do
+      stub_feature_flags(hide_access_tokens: false)
+      visit profile_personal_access_tokens_path
+
       within('.incoming-email-token-reset') do
         previous_token = find('#incoming_email_token').value
 

@@ -63,6 +63,12 @@ class MemberEntity < Grape::Entity
       member.respond_to?(:invited_user_state) ? member.invited_user_state : ""
     end
   end
+
+  private
+
+  def current_user
+    options[:current_user]
+  end
 end
 
 MemberEntity.prepend_mod_with('MemberEntity')

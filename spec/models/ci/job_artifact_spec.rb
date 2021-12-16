@@ -700,4 +700,8 @@ RSpec.describe Ci::JobArtifact do
       when changes or new entries are made.
     MSG
   end
+
+  it_behaves_like 'it has loose foreign keys' do
+    let(:factory_name) { :ci_job_artifact }
+  end
 end

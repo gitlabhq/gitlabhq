@@ -16,3 +16,6 @@ export const CATEGORY_ICON_MAP = {
 export const EMOJIS_PER_ROW = 9;
 export const EMOJI_ROW_HEIGHT = 34;
 export const CATEGORY_ROW_HEIGHT = 37;
+
+export const CACHE_VERSION_KEY = 'gl-emoji-map-version';
+export const CACHE_KEY = 'gl-emoji-map';

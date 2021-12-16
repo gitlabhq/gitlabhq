@@ -8,52 +8,67 @@ require_relative '../support/helpers/next_instance_of'
 RSpec.describe MetricsServer do # rubocop:disable RSpec/FilePath
   include NextInstanceOf
 
+  before do
+    # We do not want this to have knock-on effects on the test process.
+    allow(Gitlab::ProcessManagement).to receive(:modify_signals)
+  end
+
   describe '.spawn' do
-    let(:env) do
-      {
-        'METRICS_SERVER_TARGET' => 'sidekiq',
-        'GITLAB_CONFIG' => nil,
-        'WIPE_METRICS_DIR' => 'false'
-      }
+    context 'when in parent process' do
+      it 'forks into a new process and detaches it' do
+        expect(Process).to receive(:fork).and_return(99)
+        expect(Process).to receive(:detach).with(99)
+
+        described_class.spawn('sidekiq', metrics_dir: 'path/to/metrics')
+      end
     end
 
-    it 'spawns a process with the correct environment variables and detaches it' do
-      expect(Process).to receive(:spawn).with(env, anything, err: $stderr, out: $stdout).and_return(99)
-      expect(Process).to receive(:detach).with(99)
+    context 'when in child process' do
+      before do
+        # This signals the process that it's "inside" the fork
+        expect(Process).to receive(:fork).and_return(nil)
+        expect(Process).not_to receive(:detach)
+      end
 
-      described_class.spawn('sidekiq')
+      it 'starts the metrics server with the given arguments' do
+        expect_next_instance_of(MetricsServer) do |server|
+          expect(server).to receive(:start)
+        end
+
+        described_class.spawn('sidekiq', metrics_dir: 'path/to/metrics')
+      end
+
+      it 'resets signal handlers from parent process' do
+        expect(Gitlab::ProcessManagement).to receive(:modify_signals).with(%i[A B], 'DEFAULT')
+
+        described_class.spawn('sidekiq', metrics_dir: 'path/to/metrics', trapped_signals: %i[A B])
+      end
     end
   end
 
   describe '#start' do
     let(:exporter_class) { Class.new(Gitlab::Metrics::Exporter::BaseExporter) }
     let(:exporter_double) { double('fake_exporter', start: true) }
-    let(:prometheus_client_double) { double(::Prometheus::Client) }
-    let(:prometheus_config) { ::Prometheus::Client::Configuration.new }
+    let(:prometheus_config) { ::Prometheus::Client.configuration }
     let(:metrics_dir) { Dir.mktmpdir }
-    let(:settings_double) { double(:settings, sidekiq_exporter: {}) }
-    let!(:old_metrics_dir) { ::Prometheus::Client.configuration.multiprocess_files_dir }
+    let(:settings) { { "fake_exporter" => { "enabled" => true } } }
+    let!(:old_metrics_dir) { prometheus_config.multiprocess_files_dir }
 
     subject(:metrics_server) { described_class.new('fake', metrics_dir, true)}
 
     before do
-      stub_env('prometheus_multiproc_dir', metrics_dir)
       stub_const('Gitlab::Metrics::Exporter::FakeExporter', exporter_class)
-      allow(exporter_class).to receive(:instance).with({}, synchronous: true).and_return(exporter_double)
-      allow(Settings).to receive(:monitoring).and_return(settings_double)
+      expect(exporter_class).to receive(:instance).with(settings['fake_exporter'], synchronous: true).and_return(exporter_double)
+      expect(Settings).to receive(:monitoring).and_return(settings)
     end
 
     after do
       Gitlab::Metrics.reset_registry!
-
-      ::Prometheus::CleanupMultiprocDirService.new.execute
-      Dir.rmdir(metrics_dir)
-      ::Prometheus::Client.configuration.multiprocess_files_dir = old_metrics_dir
+      FileUtils.rm_rf(metrics_dir, secure: true)
+      prometheus_config.multiprocess_files_dir = old_metrics_dir
     end
 
     it 'configures ::Prometheus::Client' do
-      allow(prometheus_client_double).to receive(:configuration).and_return(prometheus_config)
-
       metrics_server.start
 
       expect(prometheus_config.multiprocess_files_dir).to eq metrics_dir
@@ -87,13 +102,6 @@ RSpec.describe MetricsServer do # rubocop:disable RSpec/FilePath
 
     it 'starts a metrics server' do
       expect(exporter_double).to receive(:start)
-
-      metrics_server.start
-    end
-
-    it 'sends the correct Settings to the exporter instance' do
-      expect(Settings).to receive(:monitoring).and_return(settings_double)
-      expect(settings_double).to receive(:sidekiq_exporter)
 
       metrics_server.start
     end

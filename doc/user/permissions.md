@@ -119,7 +119,7 @@ The following table lists project permissions available for each role:
 | [Merge requests](project/merge_requests/index.md):<br>Apply code change suggestions                                     |          |          | ✓         | ✓          | ✓     |
 | [Merge requests](project/merge_requests/index.md):<br>Approve (*9*)                                                     |          |          | ✓         | ✓          | ✓     |
 | [Merge requests](project/merge_requests/index.md):<br>Assign                                                            |          |          | ✓         | ✓          | ✓     |
-| [Merge requests](project/merge_requests/index.md):<br>Create                                                            |          |          | ✓         | ✓          | ✓     |
+| [Merge requests](project/merge_requests/index.md):<br>Create (*18*)                                                          |          |          | ✓         | ✓          | ✓     |
 | [Merge requests](project/merge_requests/index.md):<br>Add labels                                                        |          |          | ✓         | ✓          | ✓     |
 | [Merge requests](project/merge_requests/index.md):<br>Lock threads                                                      |          |          | ✓         | ✓          | ✓     |
 | [Merge requests](project/merge_requests/index.md):<br>Manage or accept                                                  |          |          | ✓         | ✓          | ✓     |
@@ -233,6 +233,7 @@ The following table lists project permissions available for each role:
 1. Guest users can only set metadata (for example, labels, assignees, or milestones)
    when creating an issue. They cannot change the metadata on existing issues.
 1. In GitLab 14.5 or later, Guests are not allowed to [create incidents](../operations/incident_management/incidents.md#incident-creation).
+1. In projects that accept contributions from external members, users can create, edit, and close their own merge requests.
 
 ## Project features permissions
 

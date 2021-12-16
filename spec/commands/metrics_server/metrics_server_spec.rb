@@ -29,17 +29,27 @@ RSpec.describe 'bin/metrics-server', :aggregate_failures do
 
       config_file.write(YAML.dump(config))
       config_file.close
-      @pid = MetricsServer.spawn('sidekiq', gitlab_config: config_file.path, wipe_metrics_dir: true)
+
+      env = {
+        'GITLAB_CONFIG' => config_file.path,
+        'METRICS_SERVER_TARGET' => 'sidekiq',
+        'WIPE_METRICS_DIR' => '1'
+      }
+      @pid = Process.spawn(env, 'bin/metrics-server', pgroup: true)
     end
 
     after do
       webmock_enable!
 
       if @pid
+        pgrp = Process.getpgid(@pid)
+
         Timeout.timeout(5) do
-          Process.kill('TERM', @pid)
+          Process.kill('TERM', -pgrp)
           Process.waitpid(@pid)
         end
+
+        expect(Gitlab::ProcessManagement.process_alive?(@pid)).to be(false)
       end
     rescue Errno::ESRCH => _
       # 'No such process' means the process died before

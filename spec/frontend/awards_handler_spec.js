@@ -1,15 +1,12 @@
-import MockAdapter from 'axios-mock-adapter';
 import $ from 'jquery';
 import Cookies from 'js-cookie';
+import { initEmojiMock, clearEmojiMock } from 'helpers/emoji';
 import { useFakeRequestAnimationFrame } from 'helpers/fake_request_animation_frame';
 import loadAwardsHandler from '~/awards_handler';
-import { EMOJI_VERSION } from '~/emoji';
-import axios from '~/lib/utils/axios_utils';
 
 window.gl = window.gl || {};
 window.gon = window.gon || {};
 
-let mock;
 let awardsHandler = null;
 const urlRoot = gon.relative_url_root;
 
@@ -76,8 +73,7 @@ describe('AwardsHandler', () => {
   };
 
   beforeEach(async () => {
-    mock = new MockAdapter(axios);
-    mock.onGet(`/-/emojis/${EMOJI_VERSION}/emojis.json`).reply(200, emojiData);
+    await initEmojiMock(emojiData);
 
     loadFixtures('snippets/show.html');
 
@@ -89,7 +85,7 @@ describe('AwardsHandler', () => {
     // restore original url root value
     gon.relative_url_root = urlRoot;
 
-    mock.restore();
+    clearEmojiMock();
 
     // Undo what we did to the shared <body>
     $('body').removeAttr('data-page');

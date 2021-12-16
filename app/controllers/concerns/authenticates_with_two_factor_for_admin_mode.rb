@@ -11,7 +11,7 @@ module AuthenticatesWithTwoFactorForAdminMode
     return handle_locked_user(user) unless user.can?(:log_in)
 
     session[:otp_user_id] = user.id
-    push_frontend_feature_flag(:webauthn)
+    push_frontend_feature_flag(:webauthn, default_enabled: :yaml)
 
     if user.two_factor_webauthn_enabled?
       setup_webauthn_authentication(user)

@@ -1806,7 +1806,9 @@ after the heading text. For example:
 # Heading title **(FREE)**
 ```
 
-Do not add tier badges inline with other text. The single source of truth for a feature should be the heading where the functionality is described.
+Do not add tier badges inline with other text, except for [API attributes](../restful_api_styleguide.md).
+The single source of truth for a feature should be the heading where the
+functionality is described.
 
 #### Available product tier badges
 

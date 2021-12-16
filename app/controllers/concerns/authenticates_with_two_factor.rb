@@ -23,9 +23,9 @@ module AuthenticatesWithTwoFactor
 
     session[:otp_user_id] = user.id
     session[:user_password_hash] = Digest::SHA256.hexdigest(user.encrypted_password)
-    push_frontend_feature_flag(:webauthn)
+    push_frontend_feature_flag(:webauthn, default_enabled: :yaml)
 
-    if Feature.enabled?(:webauthn)
+    if Feature.enabled?(:webauthn, default_enabled: :yaml)
       setup_webauthn_authentication(user)
     else
       setup_u2f_authentication(user)

@@ -2,12 +2,6 @@
 
 module Gitlab
   module ProcessManagement
-    # The signals that should terminate both the master and workers.
-    TERMINATE_SIGNALS = %i(INT TERM).freeze
-
-    # The signals that should simply be forwarded to the workers.
-    FORWARD_SIGNALS = %i(TTIN USR1 USR2 HUP).freeze
-
     # Traps the given signals and yields the block whenever these signals are
     # received.
     #
@@ -26,12 +20,13 @@ module Gitlab
       end
     end
 
-    def self.trap_terminate(&block)
-      trap_signals(TERMINATE_SIGNALS, &block)
-    end
-
-    def self.trap_forward(&block)
-      trap_signals(FORWARD_SIGNALS, &block)
+    # Traps the given signals with the given command.
+    #
+    # Example:
+    #
+    #     modify_signals(%i(HUP TERM), 'DEFAULT')
+    def self.modify_signals(signals, command)
+      signals.each { |signal| trap(signal, command) }
     end
 
     def self.signal(pid, signal)

@@ -187,8 +187,8 @@ class User < ApplicationRecord
   has_one  :abuse_report,             dependent: :destroy, foreign_key: :user_id # rubocop:disable Cop/ActiveRecordDependent
   has_many :reported_abuse_reports,   dependent: :destroy, foreign_key: :reporter_id, class_name: "AbuseReport" # rubocop:disable Cop/ActiveRecordDependent
   has_many :spam_logs,                dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
-  has_many :builds,                   dependent: :nullify, class_name: 'Ci::Build' # rubocop:disable Cop/ActiveRecordDependent
-  has_many :pipelines,                dependent: :nullify, class_name: 'Ci::Pipeline' # rubocop:disable Cop/ActiveRecordDependent
+  has_many :builds,                   class_name: 'Ci::Build'
+  has_many :pipelines,                class_name: 'Ci::Pipeline'
   has_many :todos
   has_many :notification_settings
   has_many :award_emoji,              dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
@@ -911,7 +911,7 @@ class User < ApplicationRecord
   end
 
   def two_factor_u2f_enabled?
-    return false if Feature.enabled?(:webauthn)
+    return false if Feature.enabled?(:webauthn, default_enabled: :yaml)
 
     if u2f_registrations.loaded?
       u2f_registrations.any?
@@ -925,7 +925,7 @@ class User < ApplicationRecord
   end
 
   def two_factor_webauthn_enabled?
-    return false unless Feature.enabled?(:webauthn)
+    return false unless Feature.enabled?(:webauthn, default_enabled: :yaml)
 
     (webauthn_registrations.loaded? && webauthn_registrations.any?) || (!webauthn_registrations.loaded? && webauthn_registrations.exists?)
   end
@@ -1790,7 +1790,7 @@ class User < ApplicationRecord
   # we do this on read since migrating all existing users is not a feasible
   # solution.
   def feed_token
-    Gitlab::CurrentSettings.disable_feed_token ? nil : ensure_feed_token!
+    ensure_feed_token! unless Gitlab::CurrentSettings.disable_feed_token
   end
 
   # Each existing user needs to have a `static_object_token`.
@@ -1798,6 +1798,14 @@ class User < ApplicationRecord
   # solution.
   def static_object_token
     ensure_static_object_token!
+  end
+
+  def enabled_static_object_token
+    static_object_token if Gitlab::CurrentSettings.static_objects_external_storage_enabled?
+  end
+
+  def enabled_incoming_email_token
+    incoming_email_token if Gitlab::IncomingEmail.supports_issue_creation?
   end
 
   def sync_attribute?(attribute)

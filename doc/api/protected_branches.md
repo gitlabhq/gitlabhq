@@ -197,18 +197,18 @@ POST /projects/:id/protected_branches
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/protected_branches?name=*-stable&push_access_level=30&merge_access_level=30&unprotect_access_level=40"
 ```
 
-| Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `id`                            | integer/string | yes | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user |
-| `name`                          | string         | yes | The name of the branch or wildcard |
-| `push_access_level`             | string         | no  | Access levels allowed to push (defaults: `40`, Maintainer role) |
-| `merge_access_level`            | string         | no  | Access levels allowed to merge (defaults: `40`, Maintainer role) |
-| `unprotect_access_level`        | string         | no  | Access levels allowed to unprotect (defaults: `40`, Maintainer role) |
-| `allow_force_push`              | boolean        | no  | Allow all users with push access to force push. (default: `false`) |
-| `allowed_to_push`               | array          | no  | **(PREMIUM)** Array of access levels allowed to push, with each described by a hash |
-| `allowed_to_merge`              | array          | no  | **(PREMIUM)** Array of access levels allowed to merge, with each described by a hash |
-| `allowed_to_unprotect`          | array          | no  | **(PREMIUM)** Array of access levels allowed to unprotect, with each described by a hash |
-| `code_owner_approval_required`  | boolean        | no  | **(PREMIUM)** Prevent pushes to this branch if it matches an item in the [`CODEOWNERS` file](../user/project/code_owners.md). (defaults: false) |
+| Attribute                                    | Type | Required | Description |
+| -------------------------------------------- | ---- | -------- | ----------- |
+| `id`                                         | integer/string | yes | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user |
+| `name`                                       | string         | yes | The name of the branch or wildcard |
+| `push_access_level`                          | string         | no  | Access levels allowed to push (defaults: `40`, Maintainer role) |
+| `merge_access_level`                         | string         | no  | Access levels allowed to merge (defaults: `40`, Maintainer role) |
+| `unprotect_access_level`                     | string         | no  | Access levels allowed to unprotect (defaults: `40`, Maintainer role) |
+| `allow_force_push`                           | boolean        | no  | Allow all users with push access to force push. (default: `false`) |
+| `allowed_to_push` **(PREMIUM)**              | array          | no  | Array of access levels allowed to push, with each described by a hash |
+| `allowed_to_merge` **(PREMIUM)**             | array          | no  | Array of access levels allowed to merge, with each described by a hash |
+| `allowed_to_unprotect` **(PREMIUM)**         | array          | no  | Array of access levels allowed to unprotect, with each described by a hash |
+| `code_owner_approval_required` **(PREMIUM)** | boolean        | no  | Prevent pushes to this branch if it matches an item in the [`CODEOWNERS` file](../user/project/code_owners.md). (defaults: false) |
 
 Example response:
 
@@ -414,8 +414,8 @@ PATCH /projects/:id/protected_branches/:name
 curl --request PATCH --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/protected_branches/feature-branch"
 ```
 
-| Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `id` | integer/string | yes | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user |
-| `name` | string | yes | The name of the branch |
-| `code_owner_approval_required`  | boolean        | no  | **(PREMIUM)** Prevent pushes to this branch if it matches an item in the [`CODEOWNERS` file](../user/project/code_owners.md). (defaults: false)|
+| Attribute                                    | Type | Required | Description |
+| -------------------------------------------- | ---- | -------- | ----------- |
+| `id`                                         | integer/string | yes | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user |
+| `name`                                       | string         | yes | The name of the branch |
+| `code_owner_approval_required` **(PREMIUM)** | boolean        | no  | Prevent pushes to this branch if it matches an item in the [`CODEOWNERS` file](../user/project/code_owners.md). (defaults: false)|

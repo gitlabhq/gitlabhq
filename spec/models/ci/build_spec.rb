@@ -5421,4 +5421,9 @@ RSpec.describe Ci::Build do
   it_behaves_like 'it has loose foreign keys' do
     let(:factory_name) { :ci_build }
   end
+
+  it_behaves_like 'cleanup by a loose foreign key' do
+    let!(:model) { create(:ci_build, user: create(:user)) }
+    let!(:parent) { model.user }
+  end
 end

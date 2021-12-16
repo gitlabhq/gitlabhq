@@ -75,21 +75,21 @@ If you choose a size larger than the configured value for the web server,
 you may receive errors. See the [troubleshooting section](#troubleshooting) for more
 details.
 
-## Personal Access Token prefix
+## Personal access token prefix
 
-> [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/342327) in GitLab 14.5. Default prefix added.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20968) in GitLab 13.7.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/342327) in GitLab 14.5, a default prefix.
 
-You can set a global prefix for all generated Personal Access Tokens.
+You can specify a prefix for personal access tokens. You might use a prefix
+to find tokens more quickly, or for use with automation tools.
 
-A prefix can help you identify PATs visually, as well as with automation tools.
+The default prefix is `glpat-` but administrators can change it.
 
-NOTE:
-For GitLab.com and self-managed instances, the default prefix is `glpat-`.
+[Project access tokens](../../project/settings/project_access_tokens.md) also inherit this prefix.
 
 ### Set a prefix
 
-Only a GitLab administrator can set the prefix, which is a global setting applied
-to any PAT generated in the system by any user:
+To change the default global prefix:
 
 1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Settings > General**.
@@ -97,8 +97,8 @@ to any PAT generated in the system by any user:
 1. Fill in the **Personal Access Token prefix** field.
 1. Click **Save changes**.
 
-It is also possible to configure the prefix via the [settings API](../../../api/settings.md)
-using the `personal_access_token_prefix` field.
+You can also configure the prefix by using the
+[settings API](../../../api/settings.md).
 
 ## Repository size limit **(PREMIUM SELF)**
 

@@ -5042,4 +5042,8 @@ RSpec.describe MergeRequest, factory_default: :keep do
       expect(described_class.from_fork).to eq([fork_mr])
     end
   end
+
+  it_behaves_like 'it has loose foreign keys' do
+    let(:factory_name) { :merge_request }
+  end
 end

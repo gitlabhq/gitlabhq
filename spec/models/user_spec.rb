@@ -110,8 +110,8 @@ RSpec.describe User do
     it { is_expected.to have_many(:spam_logs).dependent(:destroy) }
     it { is_expected.to have_many(:todos) }
     it { is_expected.to have_many(:award_emoji).dependent(:destroy) }
-    it { is_expected.to have_many(:builds).dependent(:nullify) }
-    it { is_expected.to have_many(:pipelines).dependent(:nullify) }
+    it { is_expected.to have_many(:builds) }
+    it { is_expected.to have_many(:pipelines) }
     it { is_expected.to have_many(:chat_names).dependent(:destroy) }
     it { is_expected.to have_many(:uploads) }
     it { is_expected.to have_many(:reported_abuse_reports).dependent(:destroy).class_name('AbuseReport') }
@@ -1613,6 +1613,46 @@ RSpec.describe User do
 
       expect(static_object_token).not_to be_blank
       expect(user.reload.static_object_token).to eq static_object_token
+    end
+  end
+
+  describe 'enabled_static_object_token' do
+    let_it_be(:static_object_token) { 'ilqx6jm1u945macft4eff0nw' }
+
+    it 'returns incoming email token when supported' do
+      allow(Gitlab::CurrentSettings).to receive(:static_objects_external_storage_enabled?).and_return(true)
+
+      user = create(:user, static_object_token: static_object_token)
+
+      expect(user.enabled_static_object_token).to eq(static_object_token)
+    end
+
+    it 'returns `nil` when not supported' do
+      allow(Gitlab::CurrentSettings).to receive(:static_objects_external_storage_enabled?).and_return(false)
+
+      user = create(:user, static_object_token: static_object_token)
+
+      expect(user.enabled_static_object_token).to be_nil
+    end
+  end
+
+  describe 'enabled_incoming_email_token' do
+    let_it_be(:incoming_email_token) { 'ilqx6jm1u945macft4eff0nw' }
+
+    it 'returns incoming email token when supported' do
+      allow(Gitlab::IncomingEmail).to receive(:supports_issue_creation?).and_return(true)
+
+      user = create(:user, incoming_email_token: incoming_email_token)
+
+      expect(user.enabled_incoming_email_token).to eq(incoming_email_token)
+    end
+
+    it 'returns `nil` when not supported' do
+      allow(Gitlab::IncomingEmail).to receive(:supports_issue_creation?).and_return(false)
+
+      user = create(:user, incoming_email_token: incoming_email_token)
+
+      expect(user.enabled_incoming_email_token).to be_nil
     end
   end
 
@@ -6288,5 +6328,9 @@ RSpec.describe User do
 
       expect(user.user_readme).to be(nil)
     end
+  end
+
+  it_behaves_like 'it has loose foreign keys' do
+    let(:factory_name) { :user }
   end
 end

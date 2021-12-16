@@ -168,6 +168,36 @@ container_scanning:
     CS_DISABLE_DEPENDENCY_LIST: "true"
 ```
 
+#### Report language-specific findings
+
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/7277) in GitLab 14.6.
+
+The `CS_DISABLE_LANGUAGE_VULNERABILITY_SCAN` CI/CD variable controls whether the scan reports
+findings related to programming languages. The languages supported depend on the
+[scanner used](#change-scanners):
+
+- [Trivy](https://aquasecurity.github.io/trivy/latest/vulnerability/detection/language/).
+- [Grype](https://github.com/anchore/grype#features).
+
+By default, the report only includes packages managed by the Operating System (OS) package manager
+(for example, `yum`, `apt`, `apk`, `tdnf`). To report security findings in non-OS packages, set
+`CS_DISABLE_LANGUAGE_VULNERABILITY_SCAN` to `"false"`:
+
+```yaml
+include:
+  - template: Security/Container-Scanning.gitlab-ci.yml
+
+container_scanning:
+  variables:
+    CS_DISABLE_LANGUAGE_VULNERABILITY_SCAN: "false"
+```
+
+When you enable this feature, you may see [duplicate findings](../terminology/#duplicate-finding)
+in the [Vulnerability Report](../vulnerability_report/)
+if [Dependency Scanning](../dependency_scanning/)
+is enabled for your project. This happens because GitLab can't automatically deduplicate the
+findings reported by the two different analyzers.
+
 #### Available CI/CD variables
 
 You can [configure](#customizing-the-container-scanning-settings) analyzers by using the following CI/CD variables:

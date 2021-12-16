@@ -914,27 +914,28 @@
     stylelint-declaration-strict-value "1.7.7"
     stylelint-scss "3.18.0"
 
-"@gitlab/svgs@1.226.0":
-  version "1.226.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-1.226.0.tgz#f590545df4bf871a9653f2ac93029fbc1bfd2788"
-  integrity sha512-oSPbwkPJ8yDttTy+zcqtA9TIPOGiTUXlgIf1XnlrMHUoQmzUUqkJMql6LDcP4xAqX0n+7Kinoxl8gmMSwMKYjw==
+"@gitlab/svgs@1.229.0":
+  version "1.229.0"
+  resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-1.229.0.tgz#1ee863320ea3e0ff6b670dac59373b8b49e31388"
+  integrity sha512-10OLT3gj9AQ5DmcqaRcblkIY1dwr0danjaKl+hzjcA9sjvGuTNn3P/rQZglFanM2eI6MkoHG1YP7UeSs7cFuCQ==
 
 "@gitlab/tributejs@1.0.0":
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@gitlab/tributejs/-/tributejs-1.0.0.tgz#672befa222aeffc83e7d799b0500a7a4418e59b8"
   integrity sha512-nmKw1+hB6MHvlmPz63yPwVs1qQkycHwsKgxpEbzmky16Y6mL4EJMk3w1b8QlOAF/AIAzjCERPhe/R4MJiohbZw==
 
-"@gitlab/ui@32.43.2":
-  version "32.43.2"
-  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-32.43.2.tgz#df1e86493354db61da60e2eb8e9e67c79e9c402c"
-  integrity sha512-BJZJeXqi9MrJ5xAQ8rA2t95udSxsRGPeeCzlb6HI26j8LAJpVj9ArbiehoMZ45aGpX0+gnElMUGNOcZ8XHlQqw==
+"@gitlab/ui@32.49.0":
+  version "32.49.0"
+  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-32.49.0.tgz#d899e2e2487bb0e23a408386acc04eac14808de5"
+  integrity sha512-QB1M1/8vc1o0hAm5tg8tWIEcj5Isy2JxHFWKtDNnFqPvbb0QNBsoEazz9DNra3dNSRzt8zF8NJPqmuRT8WAvQA==
   dependencies:
     "@babel/standalone" "^7.0.0"
     bootstrap-vue "2.20.1"
     copy-to-clipboard "^3.0.8"
-    dompurify "^2.3.3"
+    dompurify "^2.3.4"
     echarts "^5.2.1"
     highlight.js "^10.6.0"
+    iframe-resizer "^4.3.2"
     js-beautify "^1.8.8"
     lodash "^4.17.20"
     portal-vue "^2.1.6"
@@ -3789,10 +3790,10 @@ core-js-pure@^3.0.0:
   resolved "https://registry.yarnpkg.com/core-js-pure/-/core-js-pure-3.6.5.tgz#c79e75f5e38dbc85a662d91eea52b8256d53b813"
   integrity sha512-lacdXOimsiD0QyNf9BC/mxivNJ/ybBGJXQFKzRekp1WTHoVUWsUHEn+2T8GJAzzIhyOuXA+gOxCVN3l+5PLPUA==
 
-core-js@^3.19.3:
-  version "3.19.3"
-  resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.19.3.tgz#6df8142a996337503019ff3235a7022d7cdf4559"
-  integrity sha512-LeLBMgEGSsG7giquSzvgBrTS7V5UL6ks3eQlUSbN8dJStlLFiRzUm5iqsRyzUB8carhfKjkJ2vzKqE6z1Vga9g==
+core-js@^3.20.0:
+  version "3.20.0"
+  resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.20.0.tgz#1c5ac07986b8d15473ab192e45a2e115a4a95b79"
+  integrity sha512-KjbKU7UEfg4YPpskMtMXPhUKn7m/1OdTHTVjy09ScR2LVaoUXe8Jh0UdvN2EKUR6iKTJph52SJP95mAB0MnVLQ==
 
 core-js@~2.3.0:
   version "2.3.0"
@@ -4923,7 +4924,7 @@ dompurify@2.3.3:
   resolved "https://registry.yarnpkg.com/dompurify/-/dompurify-2.3.3.tgz#c1af3eb88be47324432964d8abc75cf4b98d634c"
   integrity sha512-dqnqRkPMAjOZE0FogZ+ceJNM2dZ3V/yNOuFB7+39qpO93hHhfRpHw3heYQC7DPK9FqbQTfBKUJhiSfz4MvXYwg==
 
-dompurify@^2.3.3, dompurify@^2.3.4:
+dompurify@^2.3.4:
   version "2.3.4"
   resolved "https://registry.yarnpkg.com/dompurify/-/dompurify-2.3.4.tgz#1cf5cf0105ccb4debdf6db162525bd41e6ddacc6"
   integrity sha512-6BVcgOAVFXjI0JTjEvZy901Rghm+7fDQOrNIcxB4+gdhj6Kwp6T9VBhBY/AbagKHJocRkDYGd6wvI+p4/10xtQ==
@@ -5041,7 +5042,12 @@ emittery@^0.7.1:
   resolved "https://registry.yarnpkg.com/emittery/-/emittery-0.7.1.tgz#c02375a927a40948c0345cc903072597f5270451"
   integrity sha512-d34LN4L6h18Bzz9xpoku2nPwKxCPlPMr3EEKTkoEBi+1/+b0lcRkRJ1UVyyZaKNeqGR3swcGl6s390DNO4YVgQ==
 
-emoji-regex@^7.0.1, emoji-regex@^7.0.3:
+emoji-regex@^10.0.0:
+  version "10.0.0"
+  resolved "https://registry.yarnpkg.com/emoji-regex/-/emoji-regex-10.0.0.tgz#96559e19f82231b436403e059571241d627c42b8"
+  integrity sha512-KmJa8l6uHi1HrBI34udwlzZY1jOEuID/ft4d8BSSEdRyap7PwBEt910453PJa5MuGvxkLqlt4Uvhu7tttFHViw==
+
+emoji-regex@^7.0.1:
   version "7.0.3"
   resolved "https://registry.yarnpkg.com/emoji-regex/-/emoji-regex-7.0.3.tgz#933a04052860c85e83c122479c4748a8e4c72156"
   integrity sha512-CwBLREIQ7LvYFB0WyRvwhq5N5qPhc6PMjD6bYggFlI5YyDgl+0vxq5VHbMOFqLg7hfWzmu8T5Z1QofhmTIhItA==
@@ -6612,6 +6618,11 @@ iferr@^0.1.5:
   version "0.1.5"
   resolved "https://registry.yarnpkg.com/iferr/-/iferr-0.1.5.tgz#c60eed69e6d8fdb6b3104a1fcbca1c192dc5b501"
   integrity sha1-xg7taebY/bazEEofy8ocGS3FtQE=
+
+iframe-resizer@^4.3.2:
+  version "4.3.2"
+  resolved "https://registry.yarnpkg.com/iframe-resizer/-/iframe-resizer-4.3.2.tgz#42dd88345d18b9e377b6044dddb98c664ab0ce6b"
+  integrity sha512-gOWo2hmdPjMQsQ+zTKbses08mDfDEMh4NneGQNP4qwePYujY1lguqP6gnbeJkf154gojWlBhIltlgnMfYjGHWA==
 
 ignore-by-default@^1.0.1:
   version "1.0.1"

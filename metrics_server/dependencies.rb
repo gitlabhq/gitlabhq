@@ -22,5 +22,6 @@ require_relative '../lib/gitlab/metrics/exporter/base_exporter'
 require_relative '../lib/gitlab/metrics/exporter/sidekiq_exporter'
 require_relative '../lib/gitlab/health_checks/probes/collection'
 require_relative '../lib/gitlab/health_checks/probes/status'
+require_relative '../lib/gitlab/process_management'
 
 # rubocop:enable Naming/FileName

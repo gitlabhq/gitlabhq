@@ -3,7 +3,7 @@ import MockAdapter from 'axios-mock-adapter';
 import $ from 'jquery';
 import labelsFixture from 'test_fixtures/autocomplete_sources/labels.json';
 import GfmAutoComplete, { membersBeforeSave, highlighter } from 'ee_else_ce/gfm_auto_complete';
-import { initEmojiMock } from 'helpers/emoji';
+import { initEmojiMock, clearEmojiMock } from 'helpers/emoji';
 import '~/lib/utils/jquery_at_who';
 import { TEST_HOST } from 'helpers/test_constants';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -803,8 +803,6 @@ describe('GfmAutoComplete', () => {
   });
 
   describe('emoji', () => {
-    let mock;
-
     const mockItem = {
       'atwho-at': ':',
       emoji: {
@@ -818,14 +816,14 @@ describe('GfmAutoComplete', () => {
     };
 
     beforeEach(async () => {
-      mock = await initEmojiMock();
+      await initEmojiMock();
 
       await new GfmAutoComplete({}).loadEmojiData({ atwho() {}, trigger() {} }, ':');
       if (!GfmAutoComplete.glEmojiTag) throw new Error('emoji not loaded');
     });
 
     afterEach(() => {
-      mock.restore();
+      clearEmojiMock();
     });
 
     describe('Emoji.templateFunction', () => {

@@ -8,7 +8,7 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
   helper_method :current_password_required?
 
   before_action do
-    push_frontend_feature_flag(:webauthn)
+    push_frontend_feature_flag(:webauthn, default_enabled: :yaml)
   end
 
   feature_category :authentication_and_authorization
@@ -44,7 +44,7 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
     @qr_code = build_qr_code
     @account_string = account_string
 
-    if Feature.enabled?(:webauthn)
+    if Feature.enabled?(:webauthn, default_enabled: :yaml)
       setup_webauthn_registration
     else
       setup_u2f_registration
@@ -69,7 +69,7 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
       @error = { message: _('Invalid pin code.') }
       @qr_code = build_qr_code
 
-      if Feature.enabled?(:webauthn)
+      if Feature.enabled?(:webauthn, default_enabled: :yaml)
         setup_webauthn_registration
       else
         setup_u2f_registration

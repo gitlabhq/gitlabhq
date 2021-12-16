@@ -20,6 +20,14 @@ require_relative 'sidekiq_cluster'
 module Gitlab
   module SidekiqCluster
     class CLI
+      THREAD_NAME = 'supervisor'
+
+      # The signals that should terminate both the master and workers.
+      TERMINATE_SIGNALS = %i(INT TERM).freeze
+
+      # The signals that should simply be forwarded to the workers.
+      FORWARD_SIGNALS = %i(TTIN USR1 USR2 HUP).freeze
+
       CommandError = Class.new(StandardError)
 
       def initialize(log_output = $stderr)
@@ -27,6 +35,7 @@ module Gitlab
         @max_concurrency = 50
         @min_concurrency = 0
         @environment = ENV['RAILS_ENV'] || 'development'
+        @metrics_dir = ENV["prometheus_multiproc_dir"] || File.absolute_path("tmp/prometheus_multiproc_dir/sidekiq")
         @pid = nil
         @interval = 5
         @alive = true
@@ -39,6 +48,8 @@ module Gitlab
       end
 
       def run(argv = ARGV)
+        Thread.current.name = THREAD_NAME
+
         if argv.empty?
           raise CommandError,
             'You must specify at least one queue to start a worker for'
@@ -144,13 +155,13 @@ module Gitlab
       end
 
       def trap_signals
-        ProcessManagement.trap_terminate do |signal|
+        ProcessManagement.trap_signals(TERMINATE_SIGNALS) do |signal|
           @alive = false
           ProcessManagement.signal_processes(@processes, signal)
           wait_for_termination
         end
 
-        ProcessManagement.trap_forward do |signal|
+        ProcessManagement.trap_signals(FORWARD_SIGNALS) do |signal|
           ProcessManagement.signal_processes(@processes, signal)
         end
       end
@@ -180,7 +191,12 @@ module Gitlab
         return unless metrics_server_enabled?
 
         @logger.info("Starting metrics server on port #{sidekiq_exporter_port}")
-        @metrics_server_pid = MetricsServer.spawn('sidekiq', wipe_metrics_dir: wipe_metrics_dir)
+        @metrics_server_pid = MetricsServer.spawn(
+          'sidekiq',
+          metrics_dir: @metrics_dir,
+          wipe_metrics_dir: wipe_metrics_dir,
+          trapped_signals: TERMINATE_SIGNALS + FORWARD_SIGNALS
+        )
       end
 
       def sidekiq_exporter_enabled?

@@ -22,6 +22,20 @@ ci_namespace_mirrors:
   - table: namespaces
     column: namespace_id
     on_delete: async_delete
+ci_builds:
+  - table: users
+    column: user_id
+    on_delete: async_nullify
+ci_pipelines:
+  - table: merge_requests
+    column: merge_request_id
+    on_delete: async_delete
+  - table: external_pull_requests
+    column: external_pull_request_id
+    on_delete: async_nullify
+  - table: users
+    column: user_id
+    on_delete: async_nullify
 ci_project_mirrors:
   - table: projects
     column: project_id
@@ -49,3 +63,7 @@ merge_request_metrics:
   - table: ci_pipelines
     column: pipeline_id
     on_delete: async_delete
+project_pages_metadata:
+  - table: ci_job_artifacts
+    column: artifacts_archive_id
+    on_delete: async_nullify

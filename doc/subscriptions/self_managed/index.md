@@ -283,6 +283,30 @@ It also displays the following important statistics:
 | Maximum users      | The highest number of billable users on your system during the term of the loaded license. |
 | Users over license | Calculated as `Maximum users` - `Users in License` for the current license term. This number incurs a retroactive charge that needs to be paid for at renewal. |
 
+## Export your license usage
+
+> Introduced in GitLab 14.6.
+
+If you are an administrator, you can export your license usage into a CSV:
+
+1. On the top bar, select **Menu > Admin**.
+1. On the left sidebar, select **Subscription**.
+1. In the top right, select **Export license usage file**.
+
+This file contains all the information GitLab needs to manually process quarterly reconciliations or renewals. If your instance is firewalled or air-gapped, you can provide GitLab with this information.
+
+The **License Usage** CSV includes the following details:
+
+- License key
+- Email
+- License start date
+- License end date
+- Company
+- Generated at (the timestamp for when the file was exported)
+- Table of historical user counts for each day in the period:
+  - Date the count was recorded
+  - Active user count
+
 ## Renew your subscription
 
 To renew your subscription,

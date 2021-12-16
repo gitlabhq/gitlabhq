@@ -106,3 +106,31 @@ export const createContactMutationErrorResponse = {
     },
   },
 };
+
+export const updateContactMutationResponse = {
+  data: {
+    customerRelationsContactUpdate: {
+      __typeName: 'CustomerRelationsContactCreatePayload',
+      contact: {
+        __typename: 'CustomerRelationsContact',
+        id: 'gid://gitlab/CustomerRelations::Contact/1',
+        firstName: 'First',
+        lastName: 'Last',
+        email: 'email@example.com',
+        phone: null,
+        description: null,
+        organization: null,
+      },
+      errors: [],
+    },
+  },
+};
+
+export const updateContactMutationErrorResponse = {
+  data: {
+    customerRelationsContactUpdate: {
+      contact: null,
+      errors: ['Email is invalid.'],
+    },
+  },
+};

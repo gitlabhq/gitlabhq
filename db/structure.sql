@@ -25870,7 +25870,7 @@ CREATE INDEX index_container_repository_on_name_trigram ON container_repositorie
 
 CREATE UNIQUE INDEX index_content_blocked_states_on_container_id_commit_sha_path ON content_blocked_states USING btree (container_identifier, commit_sha, path);
 
-CREATE INDEX index_coverage_fuzzing_corpuses_on_package_id ON coverage_fuzzing_corpuses USING btree (package_id);
+CREATE UNIQUE INDEX index_coverage_fuzzing_corpuses_on_package_id ON coverage_fuzzing_corpuses USING btree (package_id);
 
 CREATE INDEX index_coverage_fuzzing_corpuses_on_project_id ON coverage_fuzzing_corpuses USING btree (project_id);
 

@@ -258,6 +258,17 @@ RSpec.describe Gitlab::SidekiqCluster::CLI do # rubocop:disable RSpec/FilePath
     end
 
     context 'metrics server' do
+      let(:trapped_signals) { described_class::TERMINATE_SIGNALS + described_class::FORWARD_SIGNALS }
+      let(:metrics_dir) { Dir.mktmpdir }
+
+      before do
+        stub_env('prometheus_multiproc_dir', metrics_dir)
+      end
+
+      after do
+        FileUtils.rm_rf(metrics_dir, secure: true)
+      end
+
       context 'starting the server' do
         context 'without --dryrun' do
           context 'when there are no sidekiq_health_checks settings set' do
@@ -342,31 +353,33 @@ RSpec.describe Gitlab::SidekiqCluster::CLI do # rubocop:disable RSpec/FilePath
             end
           end
 
-          using RSpec::Parameterized::TableSyntax
+          context 'with valid settings' do
+            using RSpec::Parameterized::TableSyntax
 
-          where(:sidekiq_exporter_enabled, :sidekiq_exporter_port, :sidekiq_health_checks_port, :start_metrics_server) do
-            true  | '3807' | '3907' | true
-            true  | '3807' | '3807' | false
-            false | '3807' | '3907' | false
-            false | '3807' | '3907' | false
-          end
-
-          with_them do
-            before do
-              allow(Gitlab::SidekiqCluster).to receive(:start)
-              allow(cli).to receive(:write_pid)
-              allow(cli).to receive(:trap_signals)
-              allow(cli).to receive(:start_loop)
+            where(:sidekiq_exporter_enabled, :sidekiq_exporter_port, :sidekiq_health_checks_port, :start_metrics_server) do
+              true  | '3807' | '3907' | true
+              true  | '3807' | '3807' | false
+              false | '3807' | '3907' | false
+              false | '3807' | '3907' | false
             end
 
-            specify do
-              if start_metrics_server
-                expect(MetricsServer).to receive(:spawn).with('sidekiq', wipe_metrics_dir: true)
-              else
-                expect(MetricsServer).not_to receive(:spawn)
+            with_them do
+              before do
+                allow(Gitlab::SidekiqCluster).to receive(:start)
+                allow(cli).to receive(:write_pid)
+                allow(cli).to receive(:trap_signals)
+                allow(cli).to receive(:start_loop)
               end
 
-              cli.run(%w(foo))
+              specify do
+                if start_metrics_server
+                  expect(MetricsServer).to receive(:spawn).with('sidekiq', metrics_dir: metrics_dir, wipe_metrics_dir: true, trapped_signals: trapped_signals)
+                else
+                  expect(MetricsServer).not_to receive(:spawn)
+                end
+
+                cli.run(%w(foo))
+              end
             end
           end
         end
@@ -388,7 +401,7 @@ RSpec.describe Gitlab::SidekiqCluster::CLI do # rubocop:disable RSpec/FilePath
 
         before do
           allow(cli).to receive(:sleep).with(a_kind_of(Numeric))
-          allow(MetricsServer).to receive(:spawn).with('sidekiq', wipe_metrics_dir: false).and_return(99)
+          allow(MetricsServer).to receive(:spawn).and_return(99)
           cli.start_metrics_server
         end
 
@@ -407,7 +420,9 @@ RSpec.describe Gitlab::SidekiqCluster::CLI do # rubocop:disable RSpec/FilePath
           allow(Gitlab::ProcessManagement).to receive(:all_alive?).with(an_instance_of(Array)).and_return(false)
           allow(cli).to receive(:stop_metrics_server)
 
-          expect(MetricsServer).to receive(:spawn).with('sidekiq', wipe_metrics_dir: false)
+          expect(MetricsServer).to receive(:spawn).with(
+            'sidekiq', metrics_dir: metrics_dir, wipe_metrics_dir: false, trapped_signals: trapped_signals
+          )
 
           cli.start_loop
         end
@@ -484,9 +499,9 @@ RSpec.describe Gitlab::SidekiqCluster::CLI do # rubocop:disable RSpec/FilePath
   end
 
   describe '#trap_signals' do
-    it 'traps the termination and forwarding signals' do
-      expect(Gitlab::ProcessManagement).to receive(:trap_terminate)
-      expect(Gitlab::ProcessManagement).to receive(:trap_forward)
+    it 'traps termination and sidekiq specific signals' do
+      expect(Gitlab::ProcessManagement).to receive(:trap_signals).with(%i[INT TERM])
+      expect(Gitlab::ProcessManagement).to receive(:trap_signals).with(%i[TTIN USR1 USR2 HUP])
 
       cli.trap_signals
     end

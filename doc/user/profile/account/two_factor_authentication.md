@@ -20,8 +20,7 @@ password secret.
 NOTE:
 When you enable 2FA, don't forget to back up your [recovery codes](#recovery-codes)!
 
-In addition to time-based one time passwords (TOTP), GitLab supports U2F
-(universal 2nd factor) and WebAuthn (experimental) devices as the second factor
+In addition to time-based one time passwords (TOTP), GitLab supports WebAuthn devices as the second factor
 of authentication. After being enabled, in addition to supplying your username
 and password to sign in, you're prompted to activate your U2F / WebAuthn device
 (usually by pressing a button on it) which performs secure authentication on
@@ -269,11 +268,11 @@ Click on **Register U2F Device** to complete the process.
 
 ### WebAuthn device
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/22506) in GitLab 13.4.
-> - It's [deployed behind a feature flag](../../feature_flags.md), disabled by default.
-> - It's disabled on GitLab.com.
-> - It's not recommended for production use.
-> - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-webauthn).
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/22506) in GitLab 13.4 [with a flag](../../../administration/feature_flags.md) named `webauthn`. Disabled by default.
+> - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/232671) in GitLab 14.6.
+
+FLAG:
+On self-managed GitLab, by default this feature is available. To disable the feature, ask an administrator to [disable the feature flag](../../../administration/feature_flags.md) named `webauthn`. If you disable the WebAuthn feature flag after WebAuthn devices have been registered, these devices are not usable until you re-enable this feature. On GitLab.com, this feature is available.
 
 The WebAuthn workflow is [supported by](https://caniuse.com/#search=webauthn) the
 following desktop browsers:
@@ -350,7 +349,7 @@ request, and you're automatically signed in.
 ### Sign in by using a WebAuthn device
 
 In supported browsers you should be automatically prompted to activate your WebAuthn device
-(for example, by touching/pressing its button) after entering your credentials.
+(for example, by touching or pressing its button) after entering your credentials.
 
 A message displays, indicating that your device responded to the authentication
 request and you're automatically signed in.
@@ -494,25 +493,6 @@ request a GitLab global administrator disable two-factor authentication for your
     the U2F key has only been registered on `first.host.xyz`.
 
 - To enforce 2FA at the system or group levels see [Enforce Two-factor Authentication](../../../security/two_factor_authentication.md).
-
-## Enable or disable WebAuthn **(FREE SELF)**
-
-Support for WebAuthn is under development and not ready for production use. It is
-deployed behind a feature flag that is **disabled by default**.
-[GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md)
-can enable it.
-
-To enable it:
-
-```ruby
-Feature.enable(:webauthn)
-```
-
-To disable it:
-
-```ruby
-Feature.disable(:webauthn)
-```
 
 ## Troubleshooting
 
