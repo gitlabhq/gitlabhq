@@ -134,3 +134,28 @@ export const updateContactMutationErrorResponse = {
     },
   },
 };
+
+export const createOrganizationMutationResponse = {
+  data: {
+    customerRelationsOrganizationCreate: {
+      __typeName: 'CustomerRelationsOrganizationCreatePayload',
+      organization: {
+        __typename: 'CustomerRelationsOrganization',
+        id: 'gid://gitlab/CustomerRelations::Organization/2',
+        name: 'A',
+        defaultRate: null,
+        description: null,
+      },
+      errors: [],
+    },
+  },
+};
+
+export const createOrganizationMutationErrorResponse = {
+  data: {
+    customerRelationsOrganizationCreate: {
+      organization: null,
+      errors: ['Name cannot be blank.'],
+    },
+  },
+};

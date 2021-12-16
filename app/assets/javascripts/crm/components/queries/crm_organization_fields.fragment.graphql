@@ -1,0 +1,7 @@
+fragment OrganizationFragment on CustomerRelationsOrganization {
+  __typename
+  id
+  name
+  defaultRate
+  description
+}

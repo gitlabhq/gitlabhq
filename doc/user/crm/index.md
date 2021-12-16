@@ -22,6 +22,8 @@ To read more about what is planned for the future, see [issue 2256](https://gitl
 
 ## Contacts
 
+### View contacts linked to a group
+
 To view a group's contacts:
 
 1. On the top bar, select **Menu > Groups** and find your group.
@@ -29,11 +31,35 @@ To view a group's contacts:
 
 ![Contacts list](crm_contacts_v14_6.png)
 
-You can only [create](../../api/graphql/reference/index.md#mutationcustomerrelationscontactcreate)
-or [update](../../api/graphql/reference/index.md#mutationcustomerrelationscontactupdate)
+### Create a contact
+
+To create a contact:
+
+1. On the top bar, select **Menu > Groups** and find your group.
+1. On the left sidebar, select **Customer relations > Contacts**.
+1. Select **New contact**.
+1. Complete all required fields.
+1. Select **Create new contact**.
+
+You can also [create](../../api/graphql/reference/index.md#mutationcustomerrelationscontactcreate)
+contacts using the GraphQL API.
+
+### Edit a contact
+
+To edit an existing contact:
+
+1. On the top bar, select **Menu > Groups** and find your group.
+1. On the left sidebar, select **Customer relations > Contacts**.
+1. Next to the contact you wish to edit, select **Edit** (**{pencil}**).
+1. Edit the required fields.
+1. Select **Save changes**.
+
+You can also [edit](../../api/graphql/reference/index.md#mutationcustomerrelationscontactupdate)
 contacts using the GraphQL API.
 
 ## Organizations
+
+### View organizations
 
 To view a group's organizations:
 
@@ -42,13 +68,43 @@ To view a group's organizations:
 
 ![Organizations list](crm_organizations_v14_6.png)
 
-You can only [create](../../api/graphql/reference/index.md#mutationcustomerrelationsorganizationcreate)
-or [update](../../api/graphql/reference/index.md#mutationcustomerrelationsorganizationupdate)
+### Create an organization
+
+To create an organization:
+
+1. On the top bar, select **Menu > Groups** and find your group.
+1. On the left sidebar, select **Customer relations > Organizations**.
+1. Select **New organization**.
+1. Complete all required fields.
+1. Select **Create new organization**.
+
+You can also [create](../../api/graphql/reference/index.md#mutationcustomerrelationsorganizationcreate)
+organizations using the GraphQL API.
+
+### Edit an organization
+
+You can only [edit](../../api/graphql/reference/index.md#mutationcustomerrelationsorganizationupdate)
 organizations using the GraphQL API.
 
 ## Issues
 
-### View issue contacts
+### View issues linked to a contact
+
+To view a contact's issues:
+
+1. On the top bar, select **Menu > Groups** and find your group.
+1. On the left sidebar, select **Customer relations > Contacts**.
+1. Next to the contact whose issues you wish to view, select **View issues** (**{issues}**).
+
+### View issues linked to an organization
+
+To view an organization's issues:
+
+1. On the top bar, select **Menu > Groups** and find your group.
+1. On the left sidebar, select **Customer relations > Organizations**.
+1. Next to the organization whose issues you wish to view, select **View issues** (**{issues}**).
+
+### View contacts linked to an issue
 
 You can view contacts associated with an issue in the right sidebar.
 
@@ -66,8 +122,16 @@ Prerequisites:
 
 - You must have at least the [Developer role](../permissions.md#project-members-permissions) for a group.
 
+### Add contacts to an issue
+
 To add contacts to an issue use the `/add_contacts`
 [quick action](../project/quick_actions.md).
+
+You can also add, remove, or replace issue contacts using the
+[GraphQL](../../api/graphql/reference/index.md#mutationissuesetcrmcontacts)
+API.
+
+### Remove contacts from an issue
 
 To remove contacts from an issue use the `/remove_contacts`
 [quick action](../project/quick_actions.md).

@@ -5,6 +5,10 @@ class Groups::Crm::OrganizationsController < Groups::ApplicationController
 
   before_action :authorize_read_crm_organization!
 
+  def new
+    render action: "index"
+  end
+
   private
 
   def authorize_read_crm_organization!

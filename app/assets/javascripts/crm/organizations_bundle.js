@@ -1,9 +1,14 @@
+import { GlToast } from '@gitlab/ui';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import VueRouter from 'vue-router';
 import createDefaultClient from '~/lib/graphql';
 import CrmOrganizationsRoot from './components/organizations_root.vue';
+import routes from './routes';
 
 Vue.use(VueApollo);
+Vue.use(VueRouter);
+Vue.use(GlToast);
 
 export default () => {
   const el = document.getElementById('js-crm-organizations-app');
@@ -16,12 +21,19 @@ export default () => {
     return false;
   }
 
-  const { groupFullPath, groupIssuesPath } = el.dataset;
+  const { basePath, canAdminCrmOrganization, groupFullPath, groupId, groupIssuesPath } = el.dataset;
+
+  const router = new VueRouter({
+    base: basePath,
+    mode: 'history',
+    routes,
+  });
 
   return new Vue({
     el,
+    router,
     apolloProvider,
-    provide: { groupFullPath, groupIssuesPath },
+    provide: { canAdminCrmOrganization, groupFullPath, groupId, groupIssuesPath },
     render(createElement) {
       return createElement(CrmOrganizationsRoot);
     },

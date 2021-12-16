@@ -10315,7 +10315,16 @@ msgstr ""
 msgid "Crm|Create new contact"
 msgstr ""
 
+msgid "Crm|Create organization"
+msgstr ""
+
 msgid "Crm|Customer Relations Contacts"
+msgstr ""
+
+msgid "Crm|Customer Relations Organizations"
+msgstr ""
+
+msgid "Crm|Default rate (optional)"
 msgstr ""
 
 msgid "Crm|Description (optional)"
@@ -10333,13 +10342,22 @@ msgstr ""
 msgid "Crm|Last name"
 msgstr ""
 
+msgid "Crm|New Organization"
+msgstr ""
+
 msgid "Crm|New contact"
+msgstr ""
+
+msgid "Crm|New organization"
 msgstr ""
 
 msgid "Crm|No contacts found"
 msgstr ""
 
 msgid "Crm|No organizations found"
+msgstr ""
+
+msgid "Crm|Organization has been added"
 msgstr ""
 
 msgid "Crm|Phone number (optional)"

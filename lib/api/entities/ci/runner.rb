@@ -14,7 +14,7 @@ module API
         expose :online?, as: :online
         # DEPRECATED
         # TODO Remove in %15.0 in favor of `status` for REST calls, see https://gitlab.com/gitlab-org/gitlab/-/issues/344648
-        expose :status, as: :deprecated_rest_status
+        expose :deprecated_rest_status, as: :status
       end
     end
   end

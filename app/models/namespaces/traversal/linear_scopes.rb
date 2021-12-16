@@ -105,7 +105,7 @@ module Namespaces
             :traversal_ids,
             'LEAD (namespaces.traversal_ids, 1) OVER (ORDER BY namespaces.traversal_ids ASC) next_traversal_ids'
           )
-          base_cte = Gitlab::SQL::CTE.new(:base_cte, base)
+          base_cte = Gitlab::SQL::CTE.new(:descendants_base_cte, base)
 
           namespaces = Arel::Table.new(:namespaces)
 

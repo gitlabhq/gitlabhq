@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # CI/CD YAML reference style guide **(FREE)**
 
-The CI/CD YAML reference uses a standard style to make it easier to use and update.
+The [CI/CD YAML reference](../../ci/yaml/index.md) uses a standard style to make it easier to use and update.
 
 The reference information should be kept as simple as possible, and expanded details
 and examples should be documented on other pages.

@@ -14,6 +14,13 @@ module Types
 
       field :dependency_links, Types::Packages::PackageDependencyLinkType.connection_type, null: true, description: 'Dependency link.'
 
+      # this is an override of Types::Packages::PackageType.pipelines
+      # in order to use a custom resolver: Resolvers::PackagePipelinesResolver
+      field :pipelines,
+            resolver: Resolvers::PackagePipelinesResolver,
+            description: 'Pipelines that built the package.',
+            deprecated: { reason: 'Due to scalability concerns, this field is going to be removed', milestone: '14.6' }
+
       def versions
         object.versions
       end

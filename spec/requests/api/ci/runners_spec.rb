@@ -254,6 +254,7 @@ RSpec.describe API::Ci::Runners do
           expect(response).to have_gitlab_http_status(:ok)
           expect(json_response['description']).to eq(shared_runner.description)
           expect(json_response['maximum_timeout']).to be_nil
+          expect(json_response['status']).to eq("not_connected")
         end
       end
 

@@ -10,4 +10,13 @@ RSpec.describe GitlabSchema.types['PackageDetailsType'] do
 
     expect(described_class).to include_graphql_fields(*expected_fields)
   end
+
+  it 'overrides the pipelines field' do
+    field = described_class.fields['pipelines']
+
+    expect(field).to have_graphql_type(Types::Ci::PipelineType.connection_type)
+    expect(field).to have_graphql_extension(Gitlab::Graphql::Extensions::ExternallyPaginatedArrayExtension)
+    expect(field).to have_graphql_resolver(Resolvers::PackagePipelinesResolver)
+    expect(field).not_to be_connection
+  end
 end

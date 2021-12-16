@@ -464,7 +464,7 @@ gem 'health_check', '~> 3.0'
 
 # System information
 gem 'vmstat', '~> 2.3.0'
-gem 'sys-filesystem', '~> 1.1.6'
+gem 'sys-filesystem', '~> 1.4.3'
 
 # NTP client
 gem 'net-ntp'

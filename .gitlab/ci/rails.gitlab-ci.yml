@@ -540,6 +540,19 @@ rspec:coverage:
     # Memory jobs
     - memory-static
     - memory-on-boot
+    # As-if-FOSS jobs
+    - rspec migration pg12-as-if-foss
+    - rspec migration pg12-as-if-foss minimal
+    - rspec migration pg12-as-if-foss decomposed
+    - rspec unit pg12-as-if-foss
+    - rspec unit pg12-as-if-foss minimal
+    - rspec unit pg12-as-if-foss decomposed
+    - rspec integration pg12-as-if-foss
+    - rspec integration pg12-as-if-foss minimal
+    - rspec integration pg12-as-if-foss decomposed
+    - rspec system pg12-as-if-foss
+    - rspec system pg12-as-if-foss minimal
+    - rspec system pg12-as-if-foss decomposed
   script:
     - run_timed_command "bundle exec scripts/merge-simplecov"
     - run_timed_command "bundle exec scripts/gather-test-memory-data"
