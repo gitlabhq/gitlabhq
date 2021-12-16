@@ -8,6 +8,7 @@ import {
   GlSprintf,
   GlTooltipDirective,
 } from '@gitlab/ui';
+import * as Sentry from '@sentry/browser';
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
 import getIssuesQuery from 'ee_else_ce/issues_list/queries/get_issues.query.graphql';
 import getIssuesCountsQuery from 'ee_else_ce/issues_list/queries/get_issues_counts.query.graphql';
@@ -138,6 +139,9 @@ export default {
     initialEmail: {
       default: '',
     },
+    isAnonymousSearchDisabled: {
+      default: false,
+    },
     isIssueRepositioningDisabled: {
       default: false,
     },
@@ -183,12 +187,22 @@ export default {
       sortKey = defaultSortKey;
     }
 
+    const isSearchDisabled =
+      this.isAnonymousSearchDisabled &&
+      !this.isSignedIn &&
+      window.location.search.includes('search=');
+
+    if (isSearchDisabled) {
+      this.showAnonymousSearchingMessage();
+    }
+
     return {
       dueDateFilter: getDueDateValue(getParameterByName(PARAM_DUE_DATE)),
       exportCsvPathWithQuery: this.getExportCsvPathWithQuery(),
-      filterTokens: getFilterTokens(window.location.search),
+      filterTokens: isSearchDisabled ? [] : getFilterTokens(window.location.search),
       issues: [],
       issuesCounts: {},
+      issuesError: null,
       pageInfo: {},
       pageParams: getInitialPageParams(sortKey),
       showBulkEditSidebar: false,
@@ -210,7 +224,8 @@ export default {
         this.exportCsvPathWithQuery = this.getExportCsvPathWithQuery();
       },
       error(error) {
-        createFlash({ message: this.$options.i18n.errorFetchingIssues, captureError: true, error });
+        this.issuesError = this.$options.i18n.errorFetchingIssues;
+        Sentry.captureException(error);
       },
       skip() {
         return !this.hasAnyIssues;
@@ -226,7 +241,8 @@ export default {
         return data[this.namespace] ?? {};
       },
       error(error) {
-        createFlash({ message: this.$options.i18n.errorFetchingCounts, captureError: true, error });
+        this.issuesError = this.$options.i18n.errorFetchingCounts;
+        Sentry.captureException(error);
       },
       skip() {
         return !this.hasAnyIssues;
@@ -387,6 +403,8 @@ export default {
         tokens.push(...this.eeSearchTokens);
       }
 
+      tokens.sort((a, b) => a.title.localeCompare(b.title));
+
       return tokens;
     },
     showPaginationControls() {
@@ -518,7 +536,14 @@ export default {
       }
       this.state = state;
     },
+    handleDismissAlert() {
+      this.issuesError = null;
+    },
     handleFilter(filter) {
+      if (this.isAnonymousSearchDisabled && !this.isSignedIn) {
+        this.showAnonymousSearchingMessage();
+        return;
+      }
       this.pageParams = getInitialPageParams(this.sortKey);
       this.filterTokens = filter;
     },
@@ -569,7 +594,8 @@ export default {
           });
         })
         .catch((error) => {
-          createFlash({ message: this.$options.i18n.reorderError, captureError: true, error });
+          this.issuesError = this.$options.i18n.reorderError;
+          Sentry.captureException(error);
         });
     },
     handleSort(sortKey) {
@@ -582,6 +608,12 @@ export default {
         this.pageParams = getInitialPageParams(sortKey);
       }
       this.sortKey = sortKey;
+    },
+    showAnonymousSearchingMessage() {
+      createFlash({
+        message: this.$options.i18n.anonymousSearchingMessage,
+        type: FLASH_TYPES.NOTICE,
+      });
     },
     showIssueRepositioningMessage() {
       createFlash({
@@ -607,6 +639,7 @@ export default {
       :sort-options="sortOptions"
       :initial-sort-by="sortKey"
       :issuables="issues"
+      :error="issuesError"
       label-filter-param="label_name"
       :tabs="$options.IssuableListTabs"
       :current-tab="state"
@@ -620,6 +653,7 @@ export default {
       :has-previous-page="pageInfo.hasPreviousPage"
       :url-params="urlParams"
       @click-tab="handleClickTab"
+      @dismiss-alert="handleDismissAlert"
       @filter="handleFilter"
       @next-page="handleNextPage"
       @previous-page="handlePreviousPage"

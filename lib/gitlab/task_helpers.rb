@@ -190,6 +190,9 @@ module Gitlab
     end
 
     def checkout_version(version, target_dir)
+      # Explicitly setting the git protocol version to v2 allows older Git binaries
+      # to do have a shallow clone obtain objects by object ID.
+      run_command!(%W[#{Gitlab.config.git.bin_path} -C #{target_dir} config protocol.version 2])
       run_command!(%W[#{Gitlab.config.git.bin_path} -C #{target_dir} fetch --quiet origin #{version}])
       run_command!(%W[#{Gitlab.config.git.bin_path} -C #{target_dir} checkout -f --quiet FETCH_HEAD --])
     end

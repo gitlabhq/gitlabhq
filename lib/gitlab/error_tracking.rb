@@ -140,19 +140,9 @@ module Gitlab
       end
 
       def inject_context_for_exception(event, ex)
-        case ex
-        when ActiveRecord::StatementInvalid
-          # StatementInvalid may be caused by a statement timeout or a bad query
-          event.extra[:sql] = normalize_query(ex.sql.to_s)
-        else
-          inject_context_for_exception(event, ex.cause) if ex.cause.present?
-        end
-      end
+        sql = Gitlab::ExceptionLogFormatter.find_sql(ex)
 
-      def normalize_query(sql)
-        PgQuery.normalize(sql)
-      rescue PgQuery::ParseError
-        sql
+        event.extra[:sql] = sql if sql
       end
     end
   end

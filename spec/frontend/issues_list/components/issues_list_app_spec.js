@@ -1,4 +1,5 @@
 import { GlButton, GlEmptyState, GlLink } from '@gitlab/ui';
+import * as Sentry from '@sentry/browser';
 import { mount, shallowMount } from '@vue/test-utils';
 import AxiosMockAdapter from 'axios-mock-adapter';
 import { cloneDeep } from 'lodash';
@@ -47,6 +48,7 @@ import axios from '~/lib/utils/axios_utils';
 import { scrollUp } from '~/lib/utils/scroll_utils';
 import { joinPaths } from '~/lib/utils/url_utility';
 
+jest.mock('@sentry/browser');
 jest.mock('~/flash');
 jest.mock('~/lib/utils/scroll_utils', () => ({
   scrollUp: jest.fn().mockName('scrollUpMock'),
@@ -357,6 +359,27 @@ describe('CE IssuesListApp component', () => {
 
         expect(findIssuableList().props('initialFilterValue')).toEqual(filteredTokens);
       });
+
+      describe('when anonymous searching is performed', () => {
+        beforeEach(() => {
+          setWindowLocation(locationSearch);
+
+          wrapper = mountComponent({
+            provide: { isAnonymousSearchDisabled: true, isSignedIn: false },
+          });
+        });
+
+        it('is not set from url params', () => {
+          expect(findIssuableList().props('initialFilterValue')).toEqual([]);
+        });
+
+        it('shows an alert to tell the user they must be signed in to search', () => {
+          expect(createFlash).toHaveBeenCalledWith({
+            message: IssuesListApp.i18n.anonymousSearchingMessage,
+            type: FLASH_TYPES.NOTICE,
+          });
+        });
+      });
     });
   });
 
@@ -505,11 +528,7 @@ describe('CE IssuesListApp component', () => {
 
     describe('when user is signed out', () => {
       beforeEach(() => {
-        wrapper = mountComponent({
-          provide: {
-            isSignedIn: false,
-          },
-        });
+        wrapper = mountComponent({ provide: { isSignedIn: false } });
       });
 
       it('does not render My-Reaction or Confidential tokens', () => {
@@ -541,20 +560,20 @@ describe('CE IssuesListApp component', () => {
         window.gon = originalGon;
       });
 
-      it('renders all tokens', () => {
+      it('renders all tokens alphabetically', () => {
         const preloadedAuthors = [
           { ...mockCurrentUser, id: convertToGraphQLId('User', mockCurrentUser.id) },
         ];
 
         expect(findIssuableList().props('searchTokens')).toMatchObject([
-          { type: TOKEN_TYPE_AUTHOR, preloadedAuthors },
           { type: TOKEN_TYPE_ASSIGNEE, preloadedAuthors },
-          { type: TOKEN_TYPE_MILESTONE },
-          { type: TOKEN_TYPE_LABEL },
-          { type: TOKEN_TYPE_TYPE },
-          { type: TOKEN_TYPE_RELEASE },
-          { type: TOKEN_TYPE_MY_REACTION },
+          { type: TOKEN_TYPE_AUTHOR, preloadedAuthors },
           { type: TOKEN_TYPE_CONFIDENTIAL },
+          { type: TOKEN_TYPE_LABEL },
+          { type: TOKEN_TYPE_MILESTONE },
+          { type: TOKEN_TYPE_MY_REACTION },
+          { type: TOKEN_TYPE_RELEASE },
+          { type: TOKEN_TYPE_TYPE },
         ]);
       });
     });
@@ -574,12 +593,17 @@ describe('CE IssuesListApp component', () => {
       });
 
       it('shows an error message', () => {
-        expect(createFlash).toHaveBeenCalledWith({
-          captureError: true,
-          error: new Error('Network error: ERROR'),
-          message,
-        });
+        expect(findIssuableList().props('error')).toBe(message);
+        expect(Sentry.captureException).toHaveBeenCalledWith(new Error('Network error: ERROR'));
       });
+    });
+
+    it('clears error message when "dismiss-alert" event is emitted from IssuableList', () => {
+      wrapper = mountComponent({ issuesQueryResponse: jest.fn().mockRejectedValue(new Error()) });
+
+      findIssuableList().vm.$emit('dismiss-alert');
+
+      expect(findIssuableList().props('error')).toBeNull();
     });
   });
 
@@ -705,11 +729,10 @@ describe('CE IssuesListApp component', () => {
 
           await waitForPromises();
 
-          expect(createFlash).toHaveBeenCalledWith({
-            message: IssuesListApp.i18n.reorderError,
-            captureError: true,
-            error: new Error('Request failed with status code 500'),
-          });
+          expect(findIssuableList().props('error')).toBe(IssuesListApp.i18n.reorderError);
+          expect(Sentry.captureException).toHaveBeenCalledWith(
+            new Error('Request failed with status code 500'),
+          );
         });
       });
     });
@@ -770,14 +793,36 @@ describe('CE IssuesListApp component', () => {
     });
 
     describe('when "filter" event is emitted by IssuableList', () => {
-      beforeEach(() => {
+      it('updates IssuableList with url params', async () => {
         wrapper = mountComponent();
 
         findIssuableList().vm.$emit('filter', filteredTokens);
+        await nextTick();
+
+        expect(findIssuableList().props('urlParams')).toMatchObject(urlParams);
       });
 
-      it('updates IssuableList with url params', () => {
-        expect(findIssuableList().props('urlParams')).toMatchObject(urlParams);
+      describe('when anonymous searching is performed', () => {
+        beforeEach(() => {
+          wrapper = mountComponent({
+            provide: { isAnonymousSearchDisabled: true, isSignedIn: false },
+          });
+
+          findIssuableList().vm.$emit('filter', filteredTokens);
+        });
+
+        it('does not update IssuableList with url params ', async () => {
+          const defaultParams = { sort: 'created_date', state: 'opened' };
+
+          expect(findIssuableList().props('urlParams')).toEqual(defaultParams);
+        });
+
+        it('shows an alert to tell the user they must be signed in to search', () => {
+          expect(createFlash).toHaveBeenCalledWith({
+            message: IssuesListApp.i18n.anonymousSearchingMessage,
+            type: FLASH_TYPES.NOTICE,
+          });
+        });
       });
     });
   });

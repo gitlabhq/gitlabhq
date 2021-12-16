@@ -18,8 +18,12 @@ module GitalySetup
     Logger.new($stdout, level: level, formatter: ->(_, _, _, msg) { msg })
   end
 
+  def expand_path(path)
+    File.expand_path(path, File.join(__dir__, '../../..'))
+  end
+
   def tmp_tests_gitaly_dir
-    File.expand_path('../../../tmp/tests/gitaly', __dir__)
+    expand_path('tmp/tests/gitaly')
   end
 
   def tmp_tests_gitaly_bin_dir
@@ -27,11 +31,11 @@ module GitalySetup
   end
 
   def tmp_tests_gitlab_shell_dir
-    File.expand_path('../../../tmp/tests/gitlab-shell', __dir__)
+    expand_path('tmp/tests/gitlab-shell')
   end
 
   def rails_gitlab_shell_secret
-    File.expand_path('../../../.gitlab_shell_secret', __dir__)
+    expand_path('.gitlab_shell_secret')
   end
 
   def gemfile
@@ -48,7 +52,7 @@ module GitalySetup
 
   def env
     {
-      'HOME' => File.expand_path('tmp/tests'),
+      'HOME' => expand_path('tmp/tests'),
       'GEM_PATH' => Gem.path.join(':'),
       'BUNDLE_APP_CONFIG' => File.join(gemfile_dir, '.bundle'),
       'BUNDLE_INSTALL_FLAGS' => nil,
@@ -67,7 +71,7 @@ module GitalySetup
     system('bundle config set --local retry 3', chdir: gemfile_dir)
 
     if ENV['CI']
-      bundle_path = File.expand_path('../../../vendor/gitaly-ruby', __dir__)
+      bundle_path = expand_path('vendor/gitaly-ruby')
       system('bundle', 'config', 'set', '--local', 'path', bundle_path, chdir: gemfile_dir)
     end
   end
@@ -154,7 +158,7 @@ module GitalySetup
 
     LOGGER.debug "Checking gitaly-ruby bundle...\n"
     out = ENV['CI'] ? $stdout : '/dev/null'
-    abort 'bundle check failed' unless system(env, 'bundle', 'check', out: out, chdir: File.dirname(gemfile))
+    abort 'bundle check failed' unless system(env, 'bundle', 'check', out: out, chdir: gemfile_dir)
   end
 
   def read_socket_path(service)

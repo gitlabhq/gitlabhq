@@ -532,6 +532,14 @@ RSpec.describe 'Git LFS API and storage' do
                     end
 
                     it 'links existing LFS objects to other project' do
+                      expect(Gitlab::AppJsonLogger).to receive(:info).with(
+                        message: "LFS object auto-linked to forked project",
+                        lfs_object_oid: lfs_object.oid,
+                        lfs_object_size: lfs_object.size,
+                        source_project_id: other_project.id,
+                        source_project_path: other_project.full_path,
+                        target_project_id: project.id,
+                        target_project_path: project.full_path).and_call_original
                       expect(json_response['objects']).to be_kind_of(Array)
                       expect(json_response['objects'].first).to include(sample_object)
                       expect(json_response['objects'].first).not_to have_key('actions')

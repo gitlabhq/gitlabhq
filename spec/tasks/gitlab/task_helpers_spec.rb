@@ -72,6 +72,8 @@ RSpec.describe Gitlab::TaskHelpers do
   describe '#checkout_version' do
     it 'clones the repo in the target dir' do
       expect(subject)
+        .to receive(:run_command!).with(%W[#{Gitlab.config.git.bin_path} -C #{clone_path} config protocol.version 2])
+      expect(subject)
         .to receive(:run_command!).with(%W[#{Gitlab.config.git.bin_path} -C #{clone_path} fetch --quiet origin #{tag}])
       expect(subject)
         .to receive(:run_command!).with(%W[#{Gitlab.config.git.bin_path} -C #{clone_path} checkout -f --quiet FETCH_HEAD --])

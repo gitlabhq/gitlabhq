@@ -321,6 +321,7 @@ RSpec.describe IssuesHelper do
         has_any_issues: project_issues(project).exists?.to_s,
         import_csv_issues_path: '#',
         initial_email: project.new_issuable_address(current_user, 'issue'),
+        is_anonymous_search_disabled: 'true',
         is_issue_repositioning_disabled: 'true',
         is_project: 'true',
         is_signed_in: current_user.present?.to_s,
@@ -342,6 +343,10 @@ RSpec.describe IssuesHelper do
   end
 
   describe '#project_issues_list_data' do
+    before do
+      stub_feature_flags(disable_anonymous_search: true)
+    end
+
     context 'when user is signed in' do
       it_behaves_like 'issues list data' do
         let(:current_user) { double.as_null_object }

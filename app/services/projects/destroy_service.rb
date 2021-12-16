@@ -28,9 +28,7 @@ module Projects
       # Git data (e.g. a list of branch names).
       flush_caches(project)
 
-      if Feature.enabled?(:abort_deleted_project_pipelines, default_enabled: :yaml)
-        ::Ci::AbortPipelinesService.new.execute(project.all_pipelines, :project_deleted)
-      end
+      ::Ci::AbortPipelinesService.new.execute(project.all_pipelines, :project_deleted)
 
       Projects::UnlinkForkService.new(project, current_user).execute
 
@@ -133,9 +131,7 @@ module Projects
       destroy_web_hooks!
       destroy_project_bots!
 
-      if ::Feature.enabled?(:ci_optimize_project_records_destruction, project, default_enabled: :yaml) &&
-        Feature.enabled?(:abort_deleted_project_pipelines, default_enabled: :yaml)
-
+      if ::Feature.enabled?(:ci_optimize_project_records_destruction, project, default_enabled: :yaml)
         destroy_ci_records!
       end
 

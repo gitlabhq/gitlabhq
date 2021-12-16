@@ -346,8 +346,8 @@ rspec fast_spec_helper minimal:
 db:rollback:
   extends: .db-job-base
   script:
-    - scripts/db_migrate VERSION=20181228175414
-    - scripts/db_migrate SKIP_SCHEMA_VERSION_CHECK=true
+    - scripts/db_tasks db:migrate VERSION=20181228175414
+    - scripts/db_tasks db:migrate SKIP_SCHEMA_VERSION_CHECK=true
 
 db:migrate:reset:
   extends: .db-job-base
@@ -372,15 +372,13 @@ db:migrate-from-previous-major-version:
     - git checkout -f $CI_COMMIT_SHA
     - SETUP_DB=false USE_BUNDLE_INSTALL=true bash scripts/prepare_build.sh
   script:
-    - run_timed_command "scripts/db_migrate"
+    - run_timed_command "scripts/db_tasks db:migrate"
 
 db:migrate-from-previous-major-version-decomposed:
   extends:
     - db:migrate-from-previous-major-version
     - .decomposed-database
     - .rails:rules:decomposed-databases
-  variables:
-    GITLAB_MIGRATE_MAIN_ONLY: "true"
 
 .db:check-schema-base:
   extends:
@@ -388,7 +386,7 @@ db:migrate-from-previous-major-version-decomposed:
   variables:
     TAG_TO_CHECKOUT: "v14.4.0"
   script:
-    - run_timed_command "scripts/db_migrate"
+    - run_timed_command "scripts/db_tasks db:migrate"
     - scripts/schema_changed.sh
     - scripts/validate_migration_timestamps
 
@@ -410,6 +408,12 @@ db:check-migrations:
     - git fetch origin $CI_MERGE_REQUEST_TARGET_BRANCH_NAME:$CI_MERGE_REQUEST_TARGET_BRANCH_NAME --depth 20
     - scripts/validate_migration_schema
   allow_failure: true
+
+db:check-migrations-decomposed:
+  extends:
+    - db:check-migrations
+    - .decomposed-database
+    - .rails:rules:decomposed-databases
 
 db:gitlabcom-database-testing:
   extends: .rails:rules:db:gitlabcom-database-testing

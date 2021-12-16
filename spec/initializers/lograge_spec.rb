@@ -157,6 +157,16 @@ RSpec.describe 'lograge', type: :request do
         expect(log_data['exception.message']).to eq('bad request')
         expect(log_data['exception.backtrace']).to eq(Gitlab::BacktraceCleaner.clean_backtrace(backtrace))
       end
+
+      context 'with an ActiveRecord::StatementInvalid' do
+        let(:exception) { ActiveRecord::StatementInvalid.new(sql: 'SELECT "users".* FROM "users" WHERE "users"."id" = 1 AND "users"."foo" = $1') }
+
+        it 'adds the SQL query to the log' do
+          subscriber.process_action(event)
+
+          expect(log_data['exception.sql']).to eq('SELECT "users".* FROM "users" WHERE "users"."id" = $2 AND "users"."foo" = $1')
+        end
+      end
     end
 
     describe 'with etag_route' do

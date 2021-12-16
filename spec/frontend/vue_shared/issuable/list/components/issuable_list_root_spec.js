@@ -1,4 +1,4 @@
-import { GlKeysetPagination, GlSkeletonLoading, GlPagination } from '@gitlab/ui';
+import { GlAlert, GlKeysetPagination, GlSkeletonLoading, GlPagination } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import VueDraggable from 'vuedraggable';
 
@@ -36,6 +36,7 @@ const createComponent = ({ props = {}, data = {} } = {}) =>
 describe('IssuableListRoot', () => {
   let wrapper;
 
+  const findAlert = () => wrapper.findComponent(GlAlert);
   const findFilteredSearchBar = () => wrapper.findComponent(FilteredSearchBar);
   const findGlKeysetPagination = () => wrapper.findComponent(GlKeysetPagination);
   const findGlPagination = () => wrapper.findComponent(GlPagination);
@@ -308,6 +309,30 @@ describe('IssuableListRoot', () => {
       expect(findGlKeysetPagination().props()).toMatchObject({
         hasNextPage: true,
         hasPreviousPage: true,
+      });
+    });
+
+    describe('alert', () => {
+      const error = 'oopsie!';
+
+      it('shows alert when there is an error', () => {
+        wrapper = createComponent({ props: { error } });
+
+        expect(findAlert().text()).toBe(error);
+      });
+
+      it('emits "dismiss-alert" event when dismissed', () => {
+        wrapper = createComponent({ props: { error } });
+
+        findAlert().vm.$emit('dismiss');
+
+        expect(wrapper.emitted('dismiss-alert')).toEqual([[]]);
+      });
+
+      it('does not render when there is no error', () => {
+        wrapper = createComponent();
+
+        expect(findAlert().exists()).toBe(false);
       });
     });
   });

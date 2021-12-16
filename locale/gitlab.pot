@@ -41531,6 +41531,9 @@ msgstr ""
 msgid "committed"
 msgstr ""
 
+msgid "compliance violation has already been recorded"
+msgstr ""
+
 msgid "container_name can contain only lowercase letters, digits, '-', and '.' and must start and end with an alphanumeric character"
 msgstr ""
 

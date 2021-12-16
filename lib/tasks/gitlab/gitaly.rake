@@ -37,8 +37,8 @@ namespace :gitlab do
       raise
     end
 
-    desc 'GitLab | Gitaly | Install or upgrade gitaly'
-    task :install, [:dir, :storage_path, :repo] => :gitlab_environment do |t, args|
+    desc 'GitLab | Gitaly | Clone and checkout gitaly'
+    task :clone, [:dir, :storage_path, :repo] => :gitlab_environment do |t, args|
       warn_user_is_not_gitlab
 
       unless args.dir.present? && args.storage_path.present?
@@ -51,6 +51,11 @@ Usage: rake "gitlab:gitaly:install[/installation/dir,/storage/path]")
       version = Gitlab::GitalyClient.expected_server_version
 
       checkout_or_clone_version(version: version, repo: args.repo, target_dir: args.dir, clone_opts: %w[--depth 1])
+    end
+
+    desc 'GitLab | Gitaly | Install or upgrade gitaly'
+    task :install, [:dir, :storage_path, :repo] => [:gitlab_environment, 'gitlab:gitaly:clone'] do |t, args|
+      warn_user_is_not_gitlab
 
       storage_paths = { 'default' => args.storage_path }
       Gitlab::SetupHelper::Gitaly.create_configuration(args.dir, storage_paths)

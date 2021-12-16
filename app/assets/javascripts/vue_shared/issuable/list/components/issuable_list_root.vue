@@ -1,5 +1,5 @@
 <script>
-import { GlKeysetPagination, GlSkeletonLoading, GlPagination } from '@gitlab/ui';
+import { GlAlert, GlKeysetPagination, GlSkeletonLoading, GlPagination } from '@gitlab/ui';
 import { uniqueId } from 'lodash';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { updateHistory, setUrlParams } from '~/lib/utils/url_utility';
@@ -19,6 +19,7 @@ export default {
     tag: 'ul',
   },
   components: {
+    GlAlert,
     GlKeysetPagination,
     GlSkeletonLoading,
     IssuableTabs,
@@ -156,6 +157,11 @@ export default {
       required: false,
       default: false,
     },
+    error: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   data() {
     return {
@@ -277,6 +283,7 @@ export default {
       @onFilter="$emit('filter', $event)"
       @onSort="$emit('sort', $event)"
     />
+    <gl-alert v-if="error" variant="danger" @dismiss="$emit('dismiss-alert')">{{ error }}</gl-alert>
     <issuable-bulk-edit-sidebar :expanded="showBulkEditSidebar">
       <template #bulk-edit-actions>
         <slot name="bulk-edit-actions" :checked-issuables="bulkEditIssuables"></slot>

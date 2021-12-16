@@ -66,6 +66,7 @@ export const availableSortOptionsJira = [
 ];
 
 export const i18n = {
+  anonymousSearchingMessage: __('You must sign in to search for specific terms.'),
   calendarLabel: __('Subscribe to calendar'),
   closed: __('CLOSED'),
   closedMoved: __('CLOSED (MOVED)'),
@@ -136,6 +137,7 @@ export const DUE_DATE_VALUES = [
   DUE_DATE_NEXT_MONTH_AND_PREVIOUS_TWO_WEEKS,
 ];
 
+export const BLOCKING_ISSUES_ASC = 'BLOCKING_ISSUES_ASC';
 export const BLOCKING_ISSUES_DESC = 'BLOCKING_ISSUES_DESC';
 export const CREATED_ASC = 'CREATED_ASC';
 export const CREATED_DESC = 'CREATED_DESC';
@@ -157,42 +159,28 @@ export const UPDATED_DESC = 'UPDATED_DESC';
 export const WEIGHT_ASC = 'WEIGHT_ASC';
 export const WEIGHT_DESC = 'WEIGHT_DESC';
 
-const PRIORITY_ASC_SORT = 'priority_asc';
-const CREATED_DATE_SORT = 'created_date';
-const CREATED_ASC_SORT = 'created_asc';
-const UPDATED_DESC_SORT = 'updated_desc';
-const UPDATED_ASC_SORT = 'updated_asc';
-const MILESTONE_SORT = 'milestone';
-const MILESTONE_DUE_DESC_SORT = 'milestone_due_desc';
-const DUE_DATE_DESC_SORT = 'due_date_desc';
-const LABEL_PRIORITY_ASC_SORT = 'label_priority_asc';
-const POPULARITY_ASC_SORT = 'popularity_asc';
-const WEIGHT_DESC_SORT = 'weight_desc';
-const BLOCKING_ISSUES_DESC_SORT = 'blocking_issues_desc';
-const TITLE_ASC_SORT = 'title_asc';
-const TITLE_DESC_SORT = 'title_desc';
-
 export const urlSortParams = {
-  [PRIORITY_ASC]: PRIORITY_ASC_SORT,
-  [PRIORITY_DESC]: PRIORITY,
-  [CREATED_ASC]: CREATED_ASC_SORT,
-  [CREATED_DESC]: CREATED_DATE_SORT,
-  [UPDATED_ASC]: UPDATED_ASC_SORT,
-  [UPDATED_DESC]: UPDATED_DESC_SORT,
-  [MILESTONE_DUE_ASC]: MILESTONE_SORT,
-  [MILESTONE_DUE_DESC]: MILESTONE_DUE_DESC_SORT,
-  [DUE_DATE_ASC]: DUE_DATE,
-  [DUE_DATE_DESC]: DUE_DATE_DESC_SORT,
-  [POPULARITY_ASC]: POPULARITY_ASC_SORT,
-  [POPULARITY_DESC]: POPULARITY,
-  [LABEL_PRIORITY_ASC]: LABEL_PRIORITY_ASC_SORT,
-  [LABEL_PRIORITY_DESC]: LABEL_PRIORITY,
+  [PRIORITY_ASC]: 'priority',
+  [PRIORITY_DESC]: 'priority_desc',
+  [CREATED_ASC]: 'created_asc',
+  [CREATED_DESC]: 'created_date',
+  [UPDATED_ASC]: 'updated_asc',
+  [UPDATED_DESC]: 'updated_desc',
+  [MILESTONE_DUE_ASC]: 'milestone',
+  [MILESTONE_DUE_DESC]: 'milestone_due_desc',
+  [DUE_DATE_ASC]: 'due_date',
+  [DUE_DATE_DESC]: 'due_date_desc',
+  [POPULARITY_ASC]: 'popularity_asc',
+  [POPULARITY_DESC]: 'popularity',
+  [LABEL_PRIORITY_ASC]: 'label_priority',
+  [LABEL_PRIORITY_DESC]: 'label_priority_desc',
   [RELATIVE_POSITION_ASC]: RELATIVE_POSITION,
-  [WEIGHT_ASC]: WEIGHT,
-  [WEIGHT_DESC]: WEIGHT_DESC_SORT,
-  [BLOCKING_ISSUES_DESC]: BLOCKING_ISSUES_DESC_SORT,
-  [TITLE_ASC]: TITLE_ASC_SORT,
-  [TITLE_DESC]: TITLE_DESC_SORT,
+  [WEIGHT_ASC]: 'weight',
+  [WEIGHT_DESC]: 'weight_desc',
+  [BLOCKING_ISSUES_ASC]: 'blocking_issues_asc',
+  [BLOCKING_ISSUES_DESC]: 'blocking_issues_desc',
+  [TITLE_ASC]: 'title_asc',
+  [TITLE_DESC]: 'title_desc',
 };
 
 export const MAX_LIST_SIZE = 10;

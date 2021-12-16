@@ -52,7 +52,7 @@ to the projects in the group.
 
 Prerequisites:
 
-- You must have at least the [Guest role](../../permissions.md) for a project in the group.
+- You must have at least the [Guest role](../../permissions.md) for the project in the group.
 
 To create an issue from a group:
 
@@ -224,170 +224,191 @@ You can edit an issue's title and description.
 
 Prerequisites:
 
-- You must have at least the [Reporter role](../../permissions.md) for a project.
+- You must have at least the [Reporter role](../../permissions.md) for the project.
 
-To edit an issue, select **Edit title and description** (**{pencil}**).
+To edit an issue:
 
-### Bulk edit issues at the project level
+1. To the right of the title, select **Edit title and description** (**{pencil}**).
+1. Edit the available fields.
+1. Select **Save changes**.
 
-> - Assigning epic ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/210470) in GitLab 13.2.
+### Bulk edit issues from a project
+
+> - Assigning epic [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/210470) in GitLab 13.2.
 > - Editing health status [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/218395) in GitLab 13.2.
 > - Editing iteration [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/196806) in GitLab 13.9.
 
-Users with permission level of [Reporter or higher](../../permissions.md) can manage issues.
+You can edit multiple issues at a time when you're in a project.
+
+Prerequisites:
+
+- You must have at least the [Reporter role](../../permissions.md) for the project.
+
+To edit multiple issues at the same time:
+
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Issues**.
+1. Select **Edit issues**. A sidebar on the right of your screen appears.
+1. Select the checkboxes next to each issue you want to edit.
+1. From the sidebar, edit the available fields.
+1. Select **Update all**.
 
 When bulk editing issues in a project, you can edit the following attributes:
 
-- Status (open/closed)
-- Assignee
+- Status (open or closed)
+- [Assignees](#assignee)
 - [Epic](../../group/epics/index.md)
 - [Milestone](../milestones/index.md)
 - [Labels](../labels.md)
 - [Health status](#health-status)
-- Notification subscription
+- [Notification](../../profile/notifications.md) subscription
 - [Iteration](../../group/iterations/index.md)
 
-To update multiple project issues at the same time:
-
-1. In a project, go to **Issues > List**.
-1. Click **Edit issues**. A sidebar on the right-hand side of your screen appears with editable fields.
-1. Select the checkboxes next to each issue you want to edit.
-1. Select the appropriate fields and their values from the sidebar.
-1. Click **Update all**.
-
-### Bulk edit issues at the group level
+### Bulk edit issues from a group
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/7249) in GitLab 12.1.
-> - Assigning epic ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/210470) in GitLab 13.2.
+> - Assigning epic [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/210470) in GitLab 13.2.
 > - Editing health status [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/218395) in GitLab 13.2.
 > - Editing iteration [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/196806) in GitLab 13.9.
 
-Users with permission level of [Reporter or higher](../../permissions.md) can manage issues.
+You can edit multiple issues across multiple projects when you're in a group.
+
+Prerequisites:
+
+- You must have at least the [Reporter role](../../permissions.md) for a group.
+
+To edit multiple issues at the same time:
+
+1. On the top bar, select **Menu > Groups** and find your group.
+1. On the left sidebar, select **Issues**.
+1. Select **Edit issues**. A sidebar on the right of your screen appears.
+1. Select the checkboxes next to each issue you want to edit.
+1. From the sidebar, edit the available fields.
+1. Select **Update all**.
 
 When bulk editing issues in a group, you can edit the following attributes:
 
 - [Epic](../../group/epics/index.md)
 - [Milestone](../milestones/index.md)
+- [Iteration](../../group/iterations/index.md)
 - [Labels](../labels.md)
 - [Health status](#health-status)
-- [Iteration](../../group/iterations/index.md)
 
-To update multiple project issues at the same time:
+## Move an issue
 
-1. In a group, go to **Issues > List**.
-1. Click **Edit issues**. A sidebar on the right-hand side of your screen appears with editable fields.
-1. Select the checkboxes next to each issue you want to edit.
-1. Select the appropriate fields and their values from the sidebar.
-1. Click **Update all**.
-
-## Moving issues
-
-Moving an issue copies it to the target project, and closes it in the originating project.
+When you move an issue, it's closed and copied to the target project.
 The original issue is not deleted. A system note, which indicates
 where it came from and went to, is added to both issues.
 
-The "Move issue" button is at the bottom of the right-sidebar when viewing the issue.
+Prerequisites:
 
-![move issue - button](img/sidebar_move_issue.png)
+- You must have at least the [Reporter role](../../permissions.md) for the project.
 
-### Moving issues in bulk **(FREE SELF)**
+To move an issue:
 
-If you have advanced technical skills you can also bulk move all the issues from
-one project to another in the rails console. The below script moves all issues
-that are not in status **closed** from one project to another.
+1. Go to the issue.
+1. On the right sidebar, select **Move issue**.
+1. Search for a project to move the issue to.
+1. Select **Move**.
 
-To access rails console run `sudo gitlab-rails console` on the GitLab server and run the below
-script. Please be sure to change `project`, `admin_user`, and `target_project` to your values.
-We do also recommend [creating a backup](../../../raketasks/backup_restore.md) before
-attempting any changes in the console.
+### Bulk move issues **(FREE SELF)**
 
-```ruby
-project = Project.find_by_full_path('full path of the project where issues are moved from')
-issues = project.issues
-admin_user = User.find_by_username('username of admin user') # make sure user has permissions to move the issues
-target_project = Project.find_by_full_path('full path of target project where issues moved to')
+You can move all open issues from one project to another.
 
-issues.each do |issue|
-   if issue.state != "closed" && issue.moved_to.nil?
-      Issues::MoveService.new(project, admin_user).execute(issue, target_project)
-   else
-      puts "issue with id: #{issue.id} and title: #{issue.title} was not moved"
-   end
-end; nil
-```
+Prerequisites:
 
-## Closing issues
+- You must have at least the [Reporter role](../../permissions.md) for the project.
 
-When you decide that an issue is resolved, or no longer needed, you can close the issue.
+To do it:
+
+1. Optional (but recommended). [Create a backup](../../../raketasks/backup_restore.md) before
+   attempting any changes in the console.
+1. Open the [Rails console](../../../administration/operations/rails_console.md).
+1. Run the following script. Make sure to change `project`, `admin_user`, and `target_project` to
+   your values.
+
+   ```ruby
+   project = Project.find_by_full_path('full path of the project where issues are moved from')
+   issues = project.issues
+   admin_user = User.find_by_username('username of admin user') # make sure user has permissions to move the issues
+   target_project = Project.find_by_full_path('full path of target project where issues moved to')
+
+   issues.each do |issue|
+      if issue.state != "closed" && issue.moved_to.nil?
+         Issues::MoveService.new(project, admin_user).execute(issue, target_project)
+      else
+         puts "issue with id: #{issue.id} and title: #{issue.title} was not moved"
+      end
+   end; nil
+   ```
+
+1. To exit the Rails console, enter `quit`.
+
+## Close an issue
+
+When you decide that an issue is resolved or no longer needed, you can close it.
 The issue is marked as closed but is not deleted.
+
+Prerequisites:
+
+- You must have at least the [Reporter role](../../permissions.md) for the project.
 
 To close an issue, you can do the following:
 
-- Select **Close issue**:
-
-  ![close issue - button](img/button_close_issue_v13_6.png)
-
+- At the top of the issue, select **Close issue**.
 - In an [issue board](../issue_board.md), drag an issue card from its list into the **Closed** list.
 
   ![close issue from the issue board](img/close_issue_from_board.gif)
 
 ### Reopen a closed issue
 
-To reopen a closed issue, select **Reopen issue**.
+Prerequisites:
+
+- You must have at least the [Reporter role](../../permissions.md) for the project.
+
+To reopen a closed issue, at the top of the issue, select **Reopen issue**.
 A reopened issue is no different from any other open issue.
 
 ### Closing issues automatically
 
-When a commit or merge request resolves issues, the issues
-can be closed automatically when the commit reaches the project's default branch.
+You can close issues automatically by using certain words in the commit message or MR description.
 
-If a commit message or merge request description contains text matching a [defined pattern](#default-closing-pattern),
-all issues referenced in the matched text are closed. This happens when the commit
-is pushed to a project's [**default** branch](../repository/branches/default.md),
-or when a commit or merge request is merged into it.
+If a commit message or merge request description contains text matching the [defined pattern](#default-closing-pattern),
+all issues referenced in the matched text are closed when either:
 
-For example, if `Closes #4, #6, Related to #5` is included in a Merge Request
-description, issues `#4` and `#6` are closed automatically when the MR is merged, but not `#5`.
-Using `Related to` flags `#5` as a [related issue](related_issues.md),
-but is not closed automatically.
+- The commit is pushed to a project's [**default** branch](../repository/branches/default.md).
+- The commit or merge request is merged into the default branch.
 
-![merge request closing issue when merged](img/merge_request_closes_issue_v13_11.png)
+For example, if you include `Closes #4, #6, Related to #5` in a merge request
+description:
 
-If the issue is in a different repository than the MR, add the full URL for the issue(s):
-
-```markdown
-Closes #4, #6, and https://gitlab.com/<username>/<projectname>/issues/<xxx>
-```
-
-For performance reasons, automatic issue closing is disabled for the very first
-push from an existing repository.
+- Issues `#4` and `#6` are closed automatically when the MR is merged.
+- Issue `#5` is marked as a [related issue](related_issues.md), but it's not closed automatically.
 
 Alternatively, when you [create a merge request from an issue](../merge_requests/getting_started.md#merge-requests-to-close-issues),
 it inherits the issue's milestone and labels.
 
+For performance reasons, automatic issue closing is disabled for the very first
+push from an existing repository.
+
 #### Default closing pattern
 
-When not specified, this default issue closing pattern is used:
+To automatically close an issue, use the following keywords followed by the issue reference.
 
-```shell
-\b((?:[Cc]los(?:e[sd]?|ing)|\b[Ff]ix(?:e[sd]|ing)?|\b[Rr]esolv(?:e[sd]?|ing)|\b[Ii]mplement(?:s|ed|ing)?)(:?) +(?:(?:issues? +)?%{issue_ref}(?:(?: *,? +and +| *,? *)?)|([A-Z][A-Z0-9_]+-\d+))+)
-```
-
-This translates to the following keywords:
+Available keywords:
 
 - Close, Closes, Closed, Closing, close, closes, closed, closing
 - Fix, Fixes, Fixed, Fixing, fix, fixes, fixed, fixing
 - Resolve, Resolves, Resolved, Resolving, resolve, resolves, resolved, resolving
 - Implement, Implements, Implemented, Implementing, implement, implements, implemented, implementing
 
-Note that `%{issue_ref}` is a complex regular expression defined inside the GitLab
-source code that can match references to:
+Available issue reference formats:
 
 - A local issue (`#123`).
 - A cross-project issue (`group/project#123`).
-- A link to an issue (`https://gitlab.example.com/group/project/issues/123`).
+- The full URL of an issue (`https://gitlab.example.com/group/project/issues/123`).
 
-For example the following commit message:
+For example:
 
 ```plaintext
 Awesome commit message
@@ -397,47 +418,75 @@ This commit is also related to #17 and fixes #18, #19
 and https://gitlab.example.com/group/otherproject/issues/23.
 ```
 
-closes `#18`, `#19`, `#20`, and `#21` in the project this commit is pushed to,
+The previous commit message closes `#18`, `#19`, `#20`, and `#21` in the project this commit is pushed to,
 as well as `#22` and `#23` in `group/otherproject`. `#17` is not closed as it does
-not match the pattern. It works with multi-line commit messages as well as one-liners
-when used from the command line with `git commit -m`.
+not match the pattern.
 
-#### Disabling automatic issue closing
+You can use the closing patterns in multi-line commit messages or one-liners
+done from the command line with `git commit -m`.
+
+The default issue closing pattern regex:
+
+```shell
+\b((?:[Cc]los(?:e[sd]?|ing)|\b[Ff]ix(?:e[sd]|ing)?|\b[Rr]esolv(?:e[sd]?|ing)|\b[Ii]mplement(?:s|ed|ing)?)(:?) +(?:(?:issues? +)?%{issue_ref}(?:(?: *,? +and +| *,? *)?)|([A-Z][A-Z0-9_]+-\d+))+)
+```
+
+#### Disable automatic issue closing
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/19754) in GitLab 12.7.
 
-The automatic issue closing feature can be disabled on a per-project basis
-in the [project's repository settings](../settings/index.md). Referenced
-issues are still displayed, but are not closed automatically.
+You can disable the automatic issue closing feature on a per-project basis
+in the [project's settings](../settings/index.md).
 
-![disable issue auto close - settings](img/disable_issue_auto_close.png)
+Prerequisites:
 
-The automatic issue closing is also disabled in a project if the project has the issue tracker
+- You must have at least the [Maintainer role](../../permissions.md) for the project.
+
+To disable automatic issue closing:
+
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > Repository**.
+1. Expand **Default branch**.
+1. Select **Auto-close referenced issues on default branch**.
+1. Select **Save changes**.
+
+Referenced issues are still displayed, but are not closed automatically.
+
+The automatic issue closing is disabled by default in a project if the project has the issue tracker
 disabled. If you want to enable automatic issue closing, make sure to
 [enable GitLab Issues](../settings/index.md#sharing-and-permissions).
 
-This only applies to issues affected by new merge requests or commits. Already
-closed issues remain as-is.
+Changing this setting applies only to new merge requests or commits. Already
+closed issues remain as they are.
 If issue tracking is enabled, disabling automatic issue closing only applies to merge requests
-attempting to automatically close issues within the same project.
+attempting to automatically close issues in the same project.
 Merge requests in other projects can still close another project's issues.
 
-#### Customizing the issue closing pattern **(FREE SELF)**
+#### Customize the issue closing pattern **(FREE SELF)**
 
-In order to change the default issue closing pattern, GitLab administrators must edit the
+Prerequisites:
+
+- You must have the [administrator access level](../../../administration/index.md) for your GitLab instance.
+
+To change the default issue closing pattern, edit the
 [`gitlab.rb` or `gitlab.yml` file](../../../administration/issue_closing_pattern.md)
 of your installation.
 
 ## Change the issue type
 
-Users with the [Developer role](../../permissions.md)
-can change an issue's type. To do this, edit the issue and select an issue type from the
-**Issue type** selector menu:
+Prerequisites:
 
-- [Issue](index.md)
-- [Incident](../../../operations/incident_management/index.md)
+- You must be the issue author or have at least the [Reporter role](../../permissions.md) for the project.
 
-![Change the issue type](img/issue_type_change_v13_12.png)
+To change issue type:
+
+1. To the right of the title, select **Edit title and description** (**{pencil}**).
+1. Edit the issue and select an issue type from the **Issue type** dropdown list:
+
+   - Issue
+   - [Incident](../../../operations/incident_management/index.md)
+
+1. Select **Save changes**.
 
 ## Delete an issue
 
@@ -463,16 +512,16 @@ Alternatively:
 > - Moved to GitLab Premium in 12.8.
 > - Promoting issues to epics via the UI [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/233974) in GitLab Premium 13.6.
 
-You can promote an issue to an epic in the immediate parent group.
+You can promote an issue to an [epic](../../group/epics/index.md) in the immediate parent group.
 
 To promote an issue to an epic:
 
-1. In an issue, select the vertical ellipsis (**{ellipsis_v}**) button.
+1. In an issue, select the vertical ellipsis (**{ellipsis_v}**).
 1. Select **Promote to epic**.
 
 Alternatively, you can use the `/promote` [quick action](../quick_actions.md#issues-merge-requests-and-epics).
 
-Read more about promoting an issue to an epic on the [Manage epics page](../../group/epics/manage_epics.md#promote-an-issue-to-an-epic).
+Read more about [promoting an issues to epics](../../group/epics/manage_epics.md#promote-an-issue-to-an-epic).
 
 ## Add an issue to an iteration **(PREMIUM)**
 
@@ -481,14 +530,12 @@ Read more about promoting an issue to an epic on the [Manage epics page](../../g
 
 To add an issue to an [iteration](../../group/iterations/index.md):
 
-1. Go to your issue.
+1. Go to the issue.
 1. On the right sidebar, in the **Iteration** section, select **Edit**.
 1. From the dropdown list, select the iteration to associate this issue with.
 1. Select any area outside the dropdown list.
 
-You can also use the `/iteration`
-[quick action](../quick_actions.md#issues-merge-requests-and-epics)
-in a comment or description field.
+Alternatively, you can use the `/iteration` [quick action](../quick_actions.md#issues-merge-requests-and-epics).
 
 ## Copy issue reference
 
@@ -509,15 +556,15 @@ Read more about issue references in [GitLab-Flavored Markdown](../../markdown.md
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/18816) in GitLab 13.8.
 
 You can create a comment in an issue by sending an email.
+Sending an email to this address creates a comment that contains the email body.
+
+To learn more about creating comments by sending an email and the necessary configuration, see
+[Reply to a comment by sending email](../../discussions/index.md#reply-to-a-comment-by-sending-email).
 
 To copy the issue's email address:
 
 1. Go to the issue.
 1. On the right sidebar, next to **Issue email**, select **Copy Reference** (**{copy-to-clipboard}**).
-
-Sending an email to this address creates a comment containing the email body.
-To learn more about creating comments by sending an email and the necessary configuration, see
-[Reply to a comment by sending email](../../discussions/index.md#reply-to-a-comment-by-sending-email).
 
 ## Real-time sidebar
 
@@ -552,36 +599,45 @@ To change the assignee on an issue:
 
 ## Similar issues
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/22866) in GitLab 11.6.
+To prevent duplication of issues on the same topic, GitLab searches for similar issues
+when you create a new issue.
 
-To prevent duplication of issues for the same topic, GitLab searches for similar issues
-when new issues are being created.
+Prerequisites:
 
-As you type in the title field of the **New Issue** page, GitLab searches titles and descriptions
-across all issues to in the current project. Only issues you have access to are returned.
-Up to five similar issues, sorted by most recently updated, are displayed below the title box.
-[GraphQL](../../../api/graphql/index.md) must be enabled to use this feature.
+- [GraphQL](../../../api/graphql/index.md) must be enabled.
 
-![Similar issues](img/similar_issues.png)
+As you type in the title text box of the **New issue** page, GitLab searches titles and descriptions
+across all issues in the current project. Only issues you have access to are returned.
+Up to five similar issues, sorted by most recently updated, are displayed below the title text box.
 
 ## Health status **(ULTIMATE)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/36427) in GitLab Ultimate 12.10.
-> - Health status of closed issues [can't be edited](https://gitlab.com/gitlab-org/gitlab/-/issues/220867) in GitLab Ultimate 13.4 and later.
-> - Issue health status visible in issue lists [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/45141) in GitLab Ultimate 13.6.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/36427) in GitLab 12.10.
+> - Health status of closed issues [can't be edited](https://gitlab.com/gitlab-org/gitlab/-/issues/220867) in GitLab 13.4 and later.
+> - Issue health status visible in issue lists [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/45141) in GitLab 13.6.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/213567) in GitLab 13.7.
 
 To help you track issue statuses, you can assign a status to each issue.
-This marks issues as progressing as planned or needs attention to keep on schedule:
+This status marks issues as progressing as planned or needing attention to keep on schedule.
 
-- On track (green)
-- Needs attention (amber)
-- At risk (red)
+Prerequisites:
+
+- You must have at least the [Reporter role](../../permissions.md) for the project.
+
+To edit health status of an issue:
+
+1. Go to the issue.
+1. On the right sidebar, in the **Health status** section, select **Edit**.
+1. From the dropdown list, select the status to add to this issue:
+
+   - On track (green)
+   - Needs attention (amber)
+   - At risk (red)
+
+You can then see the issue's status in the issues list and the epic tree.
 
 After an issue is closed, its health status can't be edited and the **Edit** button becomes disabled
 until the issue is reopened.
-
-You can then see issue statuses in the issues list and the epic tree.
 
 ## Publish an issue **(ULTIMATE)**
 
@@ -591,3 +647,16 @@ If a status page application is associated with the project, you can use the `/p
 [quick action](../quick_actions.md) to publish the issue.
 
 For more information, see [GitLab Status Page](../../../operations/incident_management/status_page.md).
+
+## Issue-related quick actions
+
+You can also use [quick actions](../quick_actions.md#issues-merge-requests-and-epics) to manage issues.
+
+Some actions don't have corresponding UI buttons yet.
+You can do the following **only by using quick actions**:
+
+- [Add or remove a Zoom meeting](associate_zoom_meeting.md) (`/zoom` and `/remove_zoom`).
+- [Publish an issue](#publish-an-issue) (`/publish`).
+- Clone an issue to the same or another project (`/clone`).
+- Close an issue and mark as a duplicate of another issue (`/duplicate`).
+- Copy labels and milestone from another merge request in the project (`/copy_metadata`).

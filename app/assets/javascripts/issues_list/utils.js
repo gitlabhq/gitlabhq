@@ -1,5 +1,6 @@
 import {
   API_PARAM,
+  BLOCKING_ISSUES_ASC,
   BLOCKING_ISSUES_DESC,
   CREATED_ASC,
   CREATED_DESC,
@@ -143,7 +144,7 @@ export const getSortOptions = (hasIssueWeightsFeature, hasBlockedIssuesFeature) 
       id: sortOptions.length + 1,
       title: __('Blocking'),
       sortDirection: {
-        ascending: BLOCKING_ISSUES_DESC,
+        ascending: BLOCKING_ISSUES_ASC,
         descending: BLOCKING_ISSUES_DESC,
       },
     });

@@ -214,6 +214,7 @@ module IssuesHelper
       calendar_path: url_for(safe_params.merge(calendar_url_options)),
       empty_state_svg_path: image_path('illustrations/issues.svg'),
       full_path: namespace.full_path,
+      is_anonymous_search_disabled: Feature.enabled?(:disable_anonymous_search, type: :ops).to_s,
       is_issue_repositioning_disabled: issue_repositioning_disabled?.to_s,
       is_signed_in: current_user.present?.to_s,
       jira_integration_path: help_page_url('integration/jira/issues', anchor: 'view-jira-issues'),

@@ -594,6 +594,8 @@ module TestEnv
     # Not a git SHA, so return early
     return false unless expected_version =~ ::Gitlab::Git::COMMIT_ID
 
+    return false unless Dir.exist?(component_folder)
+
     sha, exit_status = Gitlab::Popen.popen(%W(#{Gitlab.config.git.bin_path} rev-parse HEAD), component_folder)
     return false if exit_status != 0
 

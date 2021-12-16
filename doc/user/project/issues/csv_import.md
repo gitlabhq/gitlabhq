@@ -10,7 +10,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 Issues can be imported to a project by uploading a CSV file with the columns
 `title` and `description`. Other columns are **not** imported. If you want to
-retain columns such as labels and milestones, consider the [Move Issue feature](managing_issues.md#moving-issues).
+retain columns such as labels and milestones, consider the [Move Issue feature](managing_issues.md#move-an-issue).
 
 The user uploading the CSV file is set as the author of the imported issues.
 

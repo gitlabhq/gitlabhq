@@ -103,6 +103,7 @@ The following table lists project permissions available for each role:
 | [Issues](project/issues/index.md):<br>View related issues                                                               | ✓        | ✓        | ✓         | ✓          | ✓     |
 | [Issues](project/issues/index.md):<br>Set weight                                                                        | ✓ (*16*) | ✓        | ✓         | ✓          | ✓     |
 | [Issues](project/issues/index.md):<br>View [confidential issues](project/issues/confidential_issues.md)                 | (*2*)    | ✓        | ✓         | ✓          | ✓     |
+| [Issues](project/issues/index.md):<br>Close / reopen                                                                    |          | ✓        | ✓         | ✓          | ✓     |
 | [Issues](project/issues/index.md):<br>Lock threads                                                                      |          | ✓        | ✓         | ✓          | ✓     |
 | [Issues](project/issues/index.md):<br>Manage related issues                                                             |          | ✓        | ✓         | ✓          | ✓     |
 | [Issues](project/issues/index.md):<br>Manage tracker                                                                    |          | ✓        | ✓         | ✓          | ✓     |
