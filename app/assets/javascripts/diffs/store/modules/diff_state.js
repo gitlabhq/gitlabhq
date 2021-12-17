@@ -21,6 +21,7 @@ export default () => ({
   startVersion: null, // Null unless a target diff is selected for comparison that is not the "base" diff
   diffFiles: [],
   coverageFiles: {},
+  coverageLoaded: false,
   mergeRequestDiffs: [],
   mergeRequestDiff: null,
   diffViewType: getViewTypeFromQueryString() || viewTypeFromCookie || defaultViewType,

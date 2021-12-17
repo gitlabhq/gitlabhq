@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Redis::Sessions do
-  include_examples "redis_new_instance_shared_examples", 'sessions', Gitlab::Redis::SharedState
+  it_behaves_like "redis_new_instance_shared_examples", 'sessions', Gitlab::Redis::SharedState
 
   describe 'redis instance used in connection pool' do
     before do
@@ -42,25 +42,51 @@ RSpec.describe Gitlab::Redis::Sessions do
   end
 
   describe '#store' do
-    subject { described_class.store(namespace: described_class::SESSION_NAMESPACE) }
+    subject(:store) { described_class.store(namespace: described_class::SESSION_NAMESPACE) }
 
     context 'when redis.sessions configuration is NOT provided' do
       it 'instantiates ::Redis instance' do
         expect(described_class).to receive(:config_fallback?).and_return(true)
-        expect(subject).to be_instance_of(::Redis::Store)
+        expect(store).to be_instance_of(::Redis::Store)
       end
     end
 
     context 'when redis.sessions configuration is provided' do
+      let(:config_new_format_host) { "spec/fixtures/config/redis_new_format_host.yml" }
+      let(:config_new_format_socket) { "spec/fixtures/config/redis_new_format_socket.yml" }
+
       before do
+        redis_clear_raw_config!(Gitlab::Redis::Sessions)
+        redis_clear_raw_config!(Gitlab::Redis::SharedState)
         allow(described_class).to receive(:config_fallback?).and_return(false)
       end
 
-      it 'instantiates an instance of MultiStore' do
-        expect(subject).to be_instance_of(::Gitlab::Redis::MultiStore)
+      after do
+        redis_clear_raw_config!(Gitlab::Redis::Sessions)
+        redis_clear_raw_config!(Gitlab::Redis::SharedState)
       end
 
-      it_behaves_like 'multi store feature flags', :use_primary_and_secondary_stores_for_sessions, :use_primary_store_as_default_for_sessions
+      # Check that Gitlab::Redis::Sessions is configured as MultiStore with proper attrs.
+      it 'instantiates an instance of MultiStore', :aggregate_failures do
+        expect(described_class).to receive(:config_file_name).and_return(config_new_format_host)
+        expect(::Gitlab::Redis::SharedState).to receive(:config_file_name).and_return(config_new_format_socket)
+
+        expect(store).to be_instance_of(::Gitlab::Redis::MultiStore)
+
+        expect(store.primary_store.to_s).to eq("Redis Client connected to test-host:6379 against DB 99 with namespace session:gitlab")
+        expect(store.secondary_store.to_s).to eq("Redis Client connected to /path/to/redis.sock against DB 0 with namespace session:gitlab")
+
+        expect(store.instance_name).to eq('Sessions')
+      end
+
+      context 'when MultiStore correctly configured' do
+        before do
+          allow(described_class).to receive(:config_file_name).and_return(config_new_format_host)
+          allow(::Gitlab::Redis::SharedState).to receive(:config_file_name).and_return(config_new_format_socket)
+        end
+
+        it_behaves_like 'multi store feature flags', :use_primary_and_secondary_stores_for_sessions, :use_primary_store_as_default_for_sessions
+      end
     end
   end
 end

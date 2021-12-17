@@ -8,13 +8,13 @@ RSpec.shared_examples "redis_new_instance_shared_examples" do |name, fallback_cl
   let(:fallback_config_file) { nil }
 
   before do
-    fallback_class.remove_instance_variable(:@_raw_config) rescue nil
+    redis_clear_raw_config!(fallback_class)
 
     allow(fallback_class).to receive(:config_file_name).and_return(fallback_config_file)
   end
 
   after do
-    fallback_class.remove_instance_variable(:@_raw_config) rescue nil
+    redis_clear_raw_config!(fallback_class)
   end
 
   it_behaves_like "redis_shared_examples"

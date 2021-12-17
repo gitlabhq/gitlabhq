@@ -3,6 +3,7 @@ import { __ } from '~/locale';
 import createDagApp from './pipeline_details_dag';
 import { createPipelinesDetailApp } from './pipeline_details_graph';
 import { createPipelineHeaderApp } from './pipeline_details_header';
+import { createPipelineJobsApp } from './pipeline_details_jobs';
 import { apolloProvider } from './pipeline_shared_client';
 import { createTestDetails } from './pipeline_test_details';
 
@@ -11,6 +12,7 @@ const SELECTORS = {
   PIPELINE_GRAPH: '#js-pipeline-graph-vue',
   PIPELINE_HEADER: '#js-pipeline-header-vue',
   PIPELINE_TESTS: '#js-pipeline-tests-detail',
+  PIPELINE_JOBS: '#js-pipeline-jobs-vue',
 };
 
 export default async function initPipelineDetailsBundle() {
@@ -53,6 +55,16 @@ export default async function initPipelineDetailsBundle() {
   } catch {
     createFlash({
       message: __('An error occurred while loading the Test Reports tab.'),
+    });
+  }
+
+  try {
+    if (gon.features?.jobsTabVue) {
+      createPipelineJobsApp(SELECTORS.PIPELINE_JOBS);
+    }
+  } catch {
+    createFlash({
+      message: __('An error occurred while loading the Jobs tab.'),
     });
   }
 }

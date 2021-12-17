@@ -66,6 +66,24 @@ This solution is relatively simple to set up: you just need to create an email
 address dedicated to receive your users' replies to GitLab notifications. However,
 this method only supports replies, and not the other features of [incoming email](#incoming-email).
 
+## Accepted headers
+
+Email is processed correctly when a configured email address is present in one of the following headers:
+
+- `To`
+- `Delivered-To`
+- `Envelope-To` or `X-Envelope-To`
+
+In GitLab 14.6 and later, [Service Desk](../user/project/service_desk.md)
+also checks these additional headers.
+
+Usually, the "To" field contains the email address of the primary receiver.
+However, it might not include the configured GitLab email address if:
+
+- The address is in the "CC" field.
+- The address was included when using "Reply all".
+- The email was forwarded.
+
 ## Set it up
 
 If you want to use Gmail / Google Apps for incoming email, make sure you have

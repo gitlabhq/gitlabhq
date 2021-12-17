@@ -94,6 +94,20 @@ export default {
     tertiaryActionsButtons() {
       return this.tertiaryButtons ? this.tertiaryButtons() : undefined;
     },
+    hydratedSummary() {
+      const structuredOutput = this.summary(this.collapsedData);
+      const summary = {
+        subject: generateText(
+          typeof structuredOutput === 'string' ? structuredOutput : structuredOutput.subject,
+        ),
+      };
+
+      if (structuredOutput.meta) {
+        summary.meta = generateText(structuredOutput.meta);
+      }
+
+      return summary;
+    },
   },
   watch: {
     isCollapsed(newVal) {
@@ -182,7 +196,13 @@ export default {
         <div class="gl-flex-grow-1">
           <template v-if="isLoadingSummary">{{ widgetLoadingText }}</template>
           <template v-else-if="hasFetchError">{{ widgetErrorText }}</template>
-          <div v-else v-safe-html="generateText(summary(collapsedData))"></div>
+          <div v-else>
+            <span v-safe-html="hydratedSummary.subject"></span>
+            <template v-if="hydratedSummary.meta">
+              <br />
+              <span v-safe-html="hydratedSummary.meta" class="gl-font-sm"></span>
+            </template>
+          </div>
         </div>
         <actions
           :widget="$options.label || $options.name"

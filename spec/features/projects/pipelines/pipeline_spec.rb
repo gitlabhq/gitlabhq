@@ -53,6 +53,7 @@ RSpec.describe 'Pipeline', :js do
                                      pipeline: pipeline,
                                      name: 'jenkins',
                                      stage: 'external',
+                                     ref: 'master',
                                      target_url: 'http://gitlab.com/status')
     end
   end
@@ -915,7 +916,7 @@ RSpec.describe 'Pipeline', :js do
     end
   end
 
-  describe 'GET /:project/-/pipelines/:id/builds' do
+  describe 'GET /:project/-/pipelines/:id/builds with jobs_tab_vue feature flag turned off' do
     include_context 'pipeline builds'
 
     let_it_be(:project) { create(:project, :repository) }
@@ -923,6 +924,7 @@ RSpec.describe 'Pipeline', :js do
     let(:pipeline) { create(:ci_pipeline, project: project, ref: 'master', sha: project.commit.id) }
 
     before do
+      stub_feature_flags(jobs_tab_vue: false)
       visit builds_project_pipeline_path(project, pipeline)
     end
 

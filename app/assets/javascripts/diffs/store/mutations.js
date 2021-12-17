@@ -86,7 +86,7 @@ export default {
   },
 
   [types.SET_COVERAGE_DATA](state, coverageFiles) {
-    Object.assign(state, { coverageFiles });
+    Object.assign(state, { coverageFiles, coverageLoaded: true });
   },
 
   [types.RENDER_FILE](state, file) {

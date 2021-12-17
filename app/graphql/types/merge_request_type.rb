@@ -21,10 +21,8 @@ module Types
           description: 'Internal ID of the merge request.'
     field :title, GraphQL::Types::String, null: false,
           description: 'Title of the merge request.'
-    markdown_field :title_html, null: true
     field :description, GraphQL::Types::String, null: true,
           description: 'Description of the merge request (Markdown rendered as HTML for caching).'
-    markdown_field :description_html, null: true
     field :state, MergeRequestStateEnum, null: false,
           description: 'State of the merge request.'
     field :created_at, Types::TimeType, null: false,
@@ -201,6 +199,9 @@ module Types
           description: 'User who merged this merge request.'
     field :timelogs, Types::TimelogType.connection_type, null: false,
           description: 'Timelogs on the merge request.'
+
+    markdown_field :title_html, null: true
+    markdown_field :description_html, null: true
 
     def approved_by
       object.approved_by_users

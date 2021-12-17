@@ -52,7 +52,7 @@ export default {
   },
   computed: {
     ...mapGetters('diffs', ['commitId', 'fileLineCoverage']),
-    ...mapState('diffs', ['codequalityDiff', 'highlightedRow']),
+    ...mapState('diffs', ['codequalityDiff', 'highlightedRow', 'coverageLoaded']),
     ...mapState({
       selectedCommentPosition: ({ notes }) => notes.selectedCommentPosition,
       selectedCommentPositionHover: ({ notes }) => notes.selectedCommentPositionHover,
@@ -180,6 +180,7 @@ export default {
         :index="index"
         :is-highlighted="isHighlighted(line)"
         :file-line-coverage="fileLineCoverage"
+        :coverage-loaded="coverageLoaded"
         @showCommentForm="(code) => singleLineComment(code, line)"
         @setHighlightedRow="setHighlightedRow"
         @toggleLineDiscussions="

@@ -5,9 +5,6 @@ GraphQL/FieldDefinitions:
   - app/graphql/types/group_type.rb
   - app/graphql/types/issue_type.rb
   - app/graphql/types/label_type.rb
-  - app/graphql/types/merge_request_type.rb
-  - app/graphql/types/namespace_type.rb
-  - app/graphql/types/notes/note_type.rb
   - app/graphql/types/project_type.rb
   - app/graphql/types/projects/topic_type.rb
   - app/graphql/types/release_type.rb

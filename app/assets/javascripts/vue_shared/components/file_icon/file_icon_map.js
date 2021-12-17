@@ -388,6 +388,10 @@ const fileExtensionIcons = {
   log: 'log',
 };
 
+const twoFileExtensionIcons = {
+  'gradle.kts': 'gradle',
+};
+
 const fileNameIcons = {
   '.jscsrc': 'json',
   '.jshintrc': 'json',
@@ -598,6 +602,9 @@ const fileNameIcons = {
 
 export default function getIconForFile(name) {
   return (
-    fileNameIcons[name] || fileExtensionIcons[name ? name.split('.').pop().toLowerCase() : ''] || ''
+    fileNameIcons[name] ||
+    twoFileExtensionIcons[name ? name.split('.').slice(-2).join('.') : ''] ||
+    fileExtensionIcons[name ? name.split('.').pop().toLowerCase() : ''] ||
+    ''
   );
 }

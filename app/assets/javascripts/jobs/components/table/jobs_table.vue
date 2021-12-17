@@ -1,75 +1,17 @@
 <script>
 import { GlTable } from '@gitlab/ui';
-import { DEFAULT_TH_CLASSES } from '~/lib/utils/constants';
-import { s__, __ } from '~/locale';
+import { s__ } from '~/locale';
 import CiBadge from '~/vue_shared/components/ci_badge_link.vue';
 import ActionsCell from './cells/actions_cell.vue';
 import DurationCell from './cells/duration_cell.vue';
 import JobCell from './cells/job_cell.vue';
 import PipelineCell from './cells/pipeline_cell.vue';
-
-const defaultTableClasses = {
-  tdClass: 'gl-p-5!',
-  thClass: DEFAULT_TH_CLASSES,
-};
-// eslint-disable-next-line @gitlab/require-i18n-strings
-const coverageTdClasses = `${defaultTableClasses.tdClass} gl-display-none! gl-lg-display-table-cell!`;
+import { DEFAULT_FIELDS } from './constants';
 
 export default {
   i18n: {
     emptyText: s__('Jobs|No jobs to show'),
   },
-  fields: [
-    {
-      key: 'status',
-      label: __('Status'),
-      ...defaultTableClasses,
-      columnClass: 'gl-w-10p',
-    },
-    {
-      key: 'job',
-      label: __('Job'),
-      ...defaultTableClasses,
-      columnClass: 'gl-w-20p',
-    },
-    {
-      key: 'pipeline',
-      label: __('Pipeline'),
-      ...defaultTableClasses,
-      columnClass: 'gl-w-10p',
-    },
-    {
-      key: 'stage',
-      label: __('Stage'),
-      ...defaultTableClasses,
-      columnClass: 'gl-w-10p',
-    },
-    {
-      key: 'name',
-      label: __('Name'),
-      ...defaultTableClasses,
-      columnClass: 'gl-w-15p',
-    },
-    {
-      key: 'duration',
-      label: __('Duration'),
-      ...defaultTableClasses,
-      columnClass: 'gl-w-15p',
-    },
-    {
-      key: 'coverage',
-      label: __('Coverage'),
-      tdClass: coverageTdClasses,
-      thClass: defaultTableClasses.thClass,
-      columnClass: 'gl-w-10p',
-    },
-    {
-      key: 'actions',
-      label: '',
-      ...defaultTableClasses,
-      columnClass: 'gl-w-10p',
-    },
-  ],
   components: {
     ActionsCell,
     CiBadge,
@@ -83,6 +25,11 @@ export default {
       type: Array,
       required: true,
     },
+    tableFields: {
+      type: Array,
+      required: false,
+      default: () => DEFAULT_FIELDS,
+    },
   },
   methods: {
     formatCoverage(coverage) {
@@ -95,7 +42,7 @@ export default {
 <template>
   <gl-table
     :items="jobs"
-    :fields="$options.fields"
+    :fields="tableFields"
     :tbody-tr-attr="{ 'data-testid': 'jobs-table-row' }"
     :empty-text="$options.i18n.emptyText"
     show-empty

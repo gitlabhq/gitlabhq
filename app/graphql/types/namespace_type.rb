@@ -20,7 +20,6 @@ module Types
 
     field :description, GraphQL::Types::String, null: true,
           description: 'Description of the namespace.'
-    markdown_field :description_html, null: true
 
     field :visibility, GraphQL::Types::String, null: true,
           description: 'Visibility of the namespace.'
@@ -46,6 +45,8 @@ module Types
           Types::Namespace::SharedRunnersSettingEnum,
           null: true,
           description: "Shared runners availability for the namespace and its descendants."
+
+    markdown_field :description_html, null: true
 
     def root_storage_statistics
       Gitlab::Graphql::Loaders::BatchRootStorageStatisticsLoader.new(object.id).find

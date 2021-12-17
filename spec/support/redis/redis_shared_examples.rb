@@ -20,11 +20,11 @@ RSpec.shared_examples "redis_shared_examples" do
 
   before do
     allow(described_class).to receive(:config_file_name).and_return(Rails.root.join(config_file_name).to_s)
-    clear_raw_config
+    redis_clear_raw_config!(described_class)
   end
 
   after do
-    clear_raw_config
+    redis_clear_raw_config!(described_class)
   end
 
   describe '.config_file_name' do
@@ -397,12 +397,6 @@ RSpec.shared_examples "redis_shared_examples" do
 
       expect(subject.send(:raw_config_hash)).to include(url: a_string_matching(%r{\Aredis://localhost:638[012]\Z}))
     end
-  end
-
-  def clear_raw_config
-    described_class.remove_instance_variable(:@_raw_config)
-  rescue NameError
-    # raised if @_raw_config was not set; ignore
   end
 
   def clear_pool
