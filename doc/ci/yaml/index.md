@@ -16,6 +16,8 @@ This document lists the configuration options for your GitLab `.gitlab-ci.yml` f
 When you are editing your `.gitlab-ci.yml` file, you can validate it with the
 [CI Lint](../lint.md) tool.
 
+If you are editing this page, make sure you follow the [CI/CD YAML reference style guide](../../development/cicd/cicd_reference_documentation_guide.md).
+
 ## Keywords
 
 A GitLab CI/CD pipeline configuration includes:

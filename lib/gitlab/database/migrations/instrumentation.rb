@@ -14,11 +14,11 @@ module Gitlab
           @result_dir = result_dir
         end
 
-        def observe(version:, name:, &block)
+        def observe(version:, name:, connection:, &block)
           observation = Observation.new(version, name)
           observation.success = true
 
-          observers = observer_classes.map { |c| c.new(observation, @result_dir) }
+          observers = observer_classes.map { |c| c.new(observation, @result_dir, connection) }
 
           exception = nil
 

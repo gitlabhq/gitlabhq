@@ -13,6 +13,10 @@ module Gitlab
       'https://staging.gitlab.com'
     end
 
+    def self.canary_toggle_com_url
+      'https://next.gitlab.com'
+    end
+
     def self.subdomain_regex
       %r{\Ahttps://[a-z0-9]+\.gitlab\.com\z}.freeze
     end

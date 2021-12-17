@@ -16406,6 +16406,9 @@ msgstr ""
 msgid "Go to next page"
 msgstr ""
 
+msgid "Go to page %{page}"
+msgstr ""
+
 msgid "Go to parent"
 msgstr ""
 

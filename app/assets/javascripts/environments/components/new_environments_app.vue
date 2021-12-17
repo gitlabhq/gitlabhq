@@ -1,8 +1,10 @@
 <script>
-import { GlBadge, GlTab, GlTabs } from '@gitlab/ui';
-import { __, s__ } from '~/locale';
+import { GlBadge, GlPagination, GlTab, GlTabs } from '@gitlab/ui';
+import { s__, __, sprintf } from '~/locale';
+import { updateHistory, setUrlParams, queryToObject } from '~/lib/utils/url_utility';
 import environmentAppQuery from '../graphql/queries/environment_app.query.graphql';
 import pollIntervalQuery from '../graphql/queries/poll_interval.query.graphql';
+import pageInfoQuery from '../graphql/queries/page_info.query.graphql';
 import EnvironmentFolder from './new_environment_folder.vue';
 import EnableReviewAppModal from './enable_review_app_modal.vue';
 
@@ -11,6 +13,7 @@ export default {
     EnvironmentFolder,
     EnableReviewAppModal,
     GlBadge,
+    GlPagination,
     GlTab,
     GlTabs,
   },
@@ -20,6 +23,7 @@ export default {
       variables() {
         return {
           scope: this.scope,
+          page: this.page ?? 1,
         };
       },
       pollInterval() {
@@ -29,6 +33,9 @@ export default {
     interval: {
       query: pollIntervalQuery,
     },
+    pageInfo: {
+      query: pageInfoQuery,
+    },
   },
   inject: ['newEnvironmentPath', 'canCreateEnvironment'],
   i18n: {
@@ -36,11 +43,21 @@ export default {
     reviewAppButtonLabel: s__('Environments|Enable review app'),
     available: __('Available'),
     stopped: __('Stopped'),
+    prevPage: __('Go to previous page'),
+    nextPage: __('Go to next page'),
+    next: __('Next'),
+    prev: __('Prev'),
+    goto: (page) => sprintf(__('Go to page %{page}'), { page }),
   },
   modalId: 'enable-review-app-info',
   data() {
-    const scope = new URLSearchParams(window.location.search).get('scope') || 'available';
-    return { interval: undefined, scope, isReviewAppModalVisible: false };
+    const { page = '1', scope = 'available' } = queryToObject(window.location.search);
+    return {
+      interval: undefined,
+      isReviewAppModalVisible: false,
+      page: parseInt(page, 10),
+      scope,
+    };
   },
   computed: {
     canSetupReviewApp() {
@@ -82,6 +99,19 @@ export default {
     stoppedCount() {
       return this.environmentApp?.stoppedCount;
     },
+    totalItems() {
+      return this.pageInfo?.total;
+    },
+    itemsPerPage() {
+      return this.pageInfo?.perPage;
+    },
+  },
+  mounted() {
+    window.addEventListener('popstate', this.syncPageFromQueryParams);
+  },
+  destroyed() {
+    window.removeEventListener('popstate', this.syncPageFromQueryParams);
+    this.$apollo.queries.environmentApp.stopPolling();
   },
   methods: {
     showReviewAppModal() {
@@ -89,12 +119,30 @@ export default {
     },
     setScope(scope) {
       this.scope = scope;
+      this.resetPolling();
+    },
+    movePage(direction) {
+      this.moveToPage(this.pageInfo[`${direction}Page`]);
+    },
+    moveToPage(page) {
+      this.page = page;
+      updateHistory({
+        url: setUrlParams({ page: this.page }),
+        title: document.title,
+      });
+      this.resetPolling();
+    },
+    syncPageFromQueryParams() {
+      const { page = '1' } = queryToObject(window.location.search);
+      this.page = parseInt(page, 10);
+    },
+    resetPolling() {
       this.$apollo.queries.environmentApp.stopPolling();
       this.$nextTick(() => {
         if (this.interval) {
           this.$apollo.queries.environmentApp.startPolling(this.interval);
         } else {
-          this.$apollo.queries.environmentApp.refetch({ scope });
+          this.$apollo.queries.environmentApp.refetch({ scope: this.scope, page: this.page });
         }
       });
     },
@@ -138,6 +186,20 @@ export default {
       :key="folder.name"
       class="gl-mb-3"
       :nested-environment="folder"
+    />
+    <gl-pagination
+      align="center"
+      :total-items="totalItems"
+      :per-page="itemsPerPage"
+      :value="page"
+      :next="$options.i18n.next"
+      :prev="$options.i18n.prev"
+      :label-previous-page="$options.prevPage"
+      :label-next-page="$options.nextPage"
+      :label-page="$options.goto"
+      @next="movePage('next')"
+      @previous="movePage('previous')"
+      @input="moveToPage"
     />
   </div>
 </template>

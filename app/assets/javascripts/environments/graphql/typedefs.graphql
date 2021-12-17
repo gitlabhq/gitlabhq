@@ -55,10 +55,18 @@ type LocalErrors {
   errors: [String!]!
 }
 
+type LocalPageInfo {
+  total: Int!
+  perPage: Int!
+  nextPage: Int!
+  previousPage: Int!
+}
+
 extend type Query {
-  environmentApp: LocalEnvironmentApp
+  environmentApp(page: Int, scope: String): LocalEnvironmentApp
   folder(environment: NestedLocalEnvironmentInput): LocalEnvironmentFolder
   environmentToDelete: LocalEnvironment
+  pageInfo: LocalPageInfo
   environmentToRollback: LocalEnvironment
   isLastDeployment: Boolean
 }

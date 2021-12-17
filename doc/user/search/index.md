@@ -143,7 +143,9 @@ you can choose from:
 
 ![Filter MRs by their environment](img/filtering_merge_requests_by_environment_v14_6.png)
 
-When filtering by a deploy date, you must enter the date manually. Deploy dates
+When filtering by `Deployed-before` or `Deployed-after`, the date refers to when 
+the deployment to an environment (triggered by the merge commit) completed successfully.
+You must enter the deploy date manually. Deploy dates
 use the format `YYYY-MM-DD`, and must be quoted if you wish to specify
 both a date and time (`"YYYY-MM-DD HH:MM"`):
 

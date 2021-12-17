@@ -1,5 +1,5 @@
-query getEnvironmentApp($scope: String) {
-  environmentApp(scope: $scope) @client {
+query getEnvironmentApp($page: Int, $scope: String) {
+  environmentApp(page: $page, scope: $scope) @client {
     availableCount
     stoppedCount
     environments

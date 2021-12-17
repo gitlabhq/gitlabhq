@@ -5,6 +5,7 @@ import environmentToRollback from '~/environments/graphql/queries/environment_to
 import environmentToDelete from '~/environments/graphql/queries/environment_to_delete.query.graphql';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import pollIntervalQuery from '~/environments/graphql/queries/poll_interval.query.graphql';
+import pageInfoQuery from '~/environments/graphql/queries/page_info.query.graphql';
 import { TEST_HOST } from 'helpers/test_constants';
 import {
   environmentsApp,
@@ -37,9 +38,11 @@ describe('~/frontend/environments/graphql/resolvers', () => {
     it('should fetch environments and map them to frontend data', async () => {
       const cache = { writeQuery: jest.fn() };
       const scope = 'available';
-      mock.onGet(ENDPOINT, { params: { nested: true, scope } }).reply(200, environmentsApp, {});
+      mock
+        .onGet(ENDPOINT, { params: { nested: true, scope, page: 1 } })
+        .reply(200, environmentsApp, {});
 
-      const app = await mockResolvers.Query.environmentApp(null, { scope }, { cache });
+      const app = await mockResolvers.Query.environmentApp(null, { scope, page: 1 }, { cache });
       expect(app).toEqual(resolvedEnvironmentsApp);
       expect(cache.writeQuery).toHaveBeenCalledWith({
         query: pollIntervalQuery,
@@ -49,14 +52,70 @@ describe('~/frontend/environments/graphql/resolvers', () => {
     it('should set the poll interval when there is one', async () => {
       const cache = { writeQuery: jest.fn() };
       const scope = 'stopped';
+      const interval = 3000;
       mock
-        .onGet(ENDPOINT, { params: { nested: true, scope } })
-        .reply(200, environmentsApp, { 'poll-interval': 3000 });
+        .onGet(ENDPOINT, { params: { nested: true, scope, page: 1 } })
+        .reply(200, environmentsApp, {
+          'poll-interval': interval,
+        });
 
-      await mockResolvers.Query.environmentApp(null, { scope }, { cache });
+      await mockResolvers.Query.environmentApp(null, { scope, page: 1 }, { cache });
       expect(cache.writeQuery).toHaveBeenCalledWith({
         query: pollIntervalQuery,
-        data: { interval: 3000 },
+        data: { interval },
+      });
+    });
+    it('should set page info if there is any', async () => {
+      const cache = { writeQuery: jest.fn() };
+      const scope = 'stopped';
+      mock
+        .onGet(ENDPOINT, { params: { nested: true, scope, page: 1 } })
+        .reply(200, environmentsApp, {
+          'x-next-page': '2',
+          'x-page': '1',
+          'X-Per-Page': '2',
+          'X-Prev-Page': '',
+          'X-TOTAL': '37',
+          'X-Total-Pages': '5',
+        });
+
+      await mockResolvers.Query.environmentApp(null, { scope, page: 1 }, { cache });
+      expect(cache.writeQuery).toHaveBeenCalledWith({
+        query: pageInfoQuery,
+        data: {
+          pageInfo: {
+            total: 37,
+            perPage: 2,
+            previousPage: NaN,
+            totalPages: 5,
+            nextPage: 2,
+            page: 1,
+            __typename: 'LocalPageInfo',
+          },
+        },
+      });
+    });
+    it('should not set page info if there is none', async () => {
+      const cache = { writeQuery: jest.fn() };
+      const scope = 'stopped';
+      mock
+        .onGet(ENDPOINT, { params: { nested: true, scope, page: 1 } })
+        .reply(200, environmentsApp, {});
+
+      await mockResolvers.Query.environmentApp(null, { scope, page: 1 }, { cache });
+      expect(cache.writeQuery).toHaveBeenCalledWith({
+        query: pageInfoQuery,
+        data: {
+          pageInfo: {
+            __typename: 'LocalPageInfo',
+            nextPage: NaN,
+            page: NaN,
+            perPage: NaN,
+            previousPage: NaN,
+            total: NaN,
+            totalPages: NaN,
+          },
+        },
       });
     });
   });

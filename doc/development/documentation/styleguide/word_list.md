@@ -33,9 +33,14 @@ Try to avoid using **above** when referring to an example or table in a document
 
 Do not use **above** when referring to versions of the product. Use [**later**](#later) instead.
 
-- Do: In GitLab 14.4 and later...
-- Do not: In GitLab 14.4 and above...
-- Do not: In GitLab 14.4 and higher...
+Use:
+
+- In GitLab 14.4 and later...
+
+Instead of:
+
+- In GitLab 14.4 and above...
+- In GitLab 14.4 and higher...
 
 ## access level
 
@@ -56,9 +61,14 @@ To view the administrator access level, in the GitLab UI, go to the Admin Area a
 
 An **administrator** is not a [role](#roles) or [permission](#permissions).
 
-- Do: To do this thing, you must be an administrator.
-- Do: To do this thing, you must have the administrator access level.
-- Do not: To do this thing, you must have the Admin role.
+Use:
+
+- To do this thing, you must be an administrator.
+- To do this thing, you must have the administrator access level.
+
+Instead of:
+
+- To do this thing, you must have the Admin role.
 
 ## Admin Area
 
@@ -67,10 +77,16 @@ This area of the UI says **Admin Area** at the top of the page and on the menu.
 
 ## allow, enable
 
-Try to avoid **allow** and **enable**, unless you are talking about security-related features. For example:
+Try to avoid **allow** and **enable**, unless you are talking about security-related features.
 
-- Do: Use this feature to create a pipeline.
-- Do not: This feature allows you to create a pipeline.
+Use:
+
+- You can add a file to your repository.
+
+Instead of:
+
+- This feature allows you to add a file to your repository.
+- This feature enables users to add files to their repository.
 
 This phrasing is more active and is from the user perspective, rather than the person who implemented the feature.
 [View details in the Microsoft style guide](https://docs.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/a/allow-allows).
@@ -126,8 +142,13 @@ Use **text box** to refer to the UI field. Do not use **field** or **box**. For 
 
 Don't use a descriptor with **button**.
 
-- Do: Select **Run pipelines**.
-- Do not: Select the **Run pipelines** button.
+Use:
+
+- Select **Run pipelines**.
+
+Instead of:
+
+- Select the **Run pipelines** button.
 
 ## cannot, can not
 
@@ -194,8 +215,8 @@ When writing about the Developer role:
 - Do not use the phrase, **if you are a developer** to mean someone who is assigned the Developer
   role. Instead, write it out. For example, **if you are assigned the Developer role**.
 - To describe a situation where the Developer role is the minimum required:
-  - Do: at least the Developer role
-  - Do not: the Developer role or higher
+  - Use: at least the Developer role
+  - Instead of: the Developer role or higher
 
 Do not use **Developer permissions**. A user who is assigned the Developer role has a set of associated permissions.
 
@@ -217,8 +238,13 @@ For example:
 
 Use **earlier** when talking about version numbers.
 
-- Do: In GitLab 14.1 and earlier.
-- Do not: In GitLab 14.1 and lower.
+Use:
+
+- In GitLab 14.1 and earlier.
+
+Instead of:
+
+- In GitLab 14.1 and lower.
 
 ## easily
 
@@ -254,8 +280,13 @@ Use lowercase for **epic board**.
 Try to avoid **etc.**. Be as specific as you can. Do not use
 [**and so on**](#and-so-on) as a replacement.
 
-- Do: You can update objects, like merge requests and issues.
-- Do not: You can update objects, like merge requests, issues, etc.
+Use:
+
+- You can update objects, like merge requests and issues.
+
+Instead of:
+
+- You can update objects, like merge requests, issues, etc.
 
 ## expand
 
@@ -265,8 +296,13 @@ Use **expand** instead of **open** when you are talking about expanding or colla
 
 Use **box** instead of **field** or **text box**.
 
-- Do: In the **Variable name** box, enter `my text`.
-- Do not: In the **Variable name** field, enter `my text`.
+Use:
+
+- In the **Variable name** box, enter `my text`.
+
+Instead of:
+
+- In the **Variable name** field, enter `my text`.
 
 However, you can make an exception when you are writing a task and you need to refer to all
 of the fields at once. For example:
@@ -320,8 +356,8 @@ When writing about the Guest role:
 - Do not use the phrase, **if you are a guest** to mean someone who is assigned the Guest
   role. Instead, write it out. For example, **if you are assigned the Guest role**.
 - To describe a situation where the Guest role is the minimum required:
-  - Do: at least the Guest role
-  - Do not: the Guest role or higher
+  - Use: at least the Guest role
+  - Instead of: the Guest role or higher
 
 Do not use **Guest permissions**. A user who is assigned the Guest role has a set of associated permissions.
 
@@ -337,16 +373,26 @@ Do not use **high availability** or **HA**. Instead, direct readers to the GitLa
 
 Do not use **higher** when talking about version numbers.
 
-- Do: In GitLab 14.4 and later...
-- Do not: In GitLab 14.4 and higher...
-- Do not: In GitLab 14.4 and above...
+Use:
+
+- In GitLab 14.4 and later...
+
+Instead of:
+
+- In GitLab 14.4 and higher...
+- In GitLab 14.4 and above...
 
 ## hit
 
 Don't use **hit** to mean **press**.
 
-- Do: Press **ENTER**.
-- Do not: Hit the **ENTER** button.
+Use:
+
+- Press **ENTER**.
+
+Instead of:
+
+- Hit the **ENTER** button.
 
 ## I
 
@@ -395,9 +441,14 @@ Do not use:
 
 Use **later** when talking about version numbers.
 
-- Do: In GitLab 14.1 and later...
-- Do not: In GitLab 14.1 and higher...
-- Do not: In GitLab 14.1 and above...
+Use:
+
+- In GitLab 14.1 and later...
+
+Instead of:
+
+- In GitLab 14.1 and higher...
+- In GitLab 14.1 and above...
 
 ## list
 
@@ -412,8 +463,13 @@ Do not use **log in** or **log on**. Use [sign in](#sign-in) instead. If the use
 
 Do not use **lower** when talking about version numbers.
 
-- Do: In GitLab 14.1 and earlier.
-- Do not: In GitLab 14.1 and lower.
+Use:
+
+- In GitLab 14.1 and earlier.
+
+Instead of:
+
+- In GitLab 14.1 and lower.
 
 ## Maintainer
 
@@ -424,8 +480,8 @@ When writing about the Maintainer role:
 - Do not use the phrase, **if you are a maintainer** to mean someone who is assigned the Maintainer
   role. Instead, write it out. For example, **if you are assigned the Maintainer role**.
 - To describe a situation where the Maintainer role is the minimum required:
-  - Do: at least the Maintainer role
-  - Do not: the Maintainer role or higher
+  - Use: at least the Maintainer role
+  - Instead of: the Maintainer role or higher
 
 Do not use **Maintainer permissions**. A user who is assigned the Maintainer role has a set of associated permissions.
 
@@ -468,8 +524,14 @@ Do not use **navigate**. Use **go** instead. For example:
 
 Try to avoid **needs to**, because it's wordy. Avoid **should** when you can be more specific. If something is required, use **must**.
 
-- Do: You must set the variable. Or: Set the variable.
-- Do not: You need to set the variable.
+Use:
+
+- You must set the variable.
+- Set the variable.
+
+Instead of:
+
+- You need to set the variable.
 
 **Should** is acceptable for recommended actions or items, or in cases where an event may not
 happen. For example:
@@ -483,22 +545,37 @@ happen. For example:
 
 Do not use **note that** because it's wordy.
 
-- Do: You can change the settings.
-- Do not: Note that you can change the settings.
+Use:
+
+- You can change the settings.
+
+Instead of:
+
+- Note that you can change the settings.
 
 ## on
 
 When documenting how to select high-level UI elements, use the word **on**.
 
-- Do: `On the left sidebar...`
+Use:
+
+- `On the left sidebar...`
+
+Instead of:
+
 - Do not: `From the left sidebar...` or `In the left sidebar...`
 
 ## once
 
 The word **once** means **one time**. Don't use it to mean **after** or **when**.
 
-- Do: When the process is complete...
-- Do not: Once the process is complete...
+Use:
+
+- When the process is complete...
+
+Instead of:
+
+- Once the process is complete...
 
 ## only
 
@@ -566,8 +643,8 @@ When writing about the Reporter role:
 - Do not use the phrase, **if you are a reporter** to mean someone who is assigned the Reporter
   role. Instead, write it out. For example, **if you are assigned the Reporter role**.
 - To describe a situation where the Reporter role is the minimum required:
-  - Do: at least the Reporter role
-  - Do not: the Reporter role or higher
+  - Use: at least the Reporter role
+  - Instead of: the Reporter role or higher
 
 Do not use **Reporter permissions**. A user who is assigned the Reporter role has a set of associated permissions.
 
@@ -589,8 +666,13 @@ Use lowercase for **runners**. These are the agents that run CI/CD jobs. See als
 
 Do not use **(s)** to make a word optionally plural. It can slow down comprehension. For example:
 
-- Do: Select the jobs you want.
-- Do not: Select the job(s) you want.
+Use:
+
+- Select the jobs you want.
+
+Instead of:
+
+- Select the job(s) you want.
 
 If you can select multiples of something, then write the word as plural.
 
@@ -612,7 +694,12 @@ into separate areas, refer to these areas as sections.
 We often think of expandable/collapsible areas as **sections**. When you refer to expanding
 or collapsing a section, don't include the word **section**.
 
-- Do: Expand **Auto DevOps**.
+Use:
+
+- Expand **Auto DevOps**.
+
+Instead of:
+
 - Do not: Expand the **Auto DevOps** section.
 
 ## select
@@ -645,8 +732,13 @@ Do not use **simply** or **simple**. If the user doesn't find the process to be 
 
 The word **since** indicates a timeframe. For example, **Since 1984, Bon Jovi has existed**. Don't use **since** to mean **because**.
 
-- Do: Because you have the Developer role, you can delete the widget.
-- Do not: Since you have the Developer role, you can delete the widget.
+Use:
+
+- Because you have the Developer role, you can delete the widget.
+
+Instead of:
+
+- Since you have the Developer role, you can delete the widget.
 
 ## slashes
 
@@ -664,8 +756,13 @@ Use **subgroup** (no hyphen) instead of **sub-group**. ([Vale](../testing.md#val
 
 Do not use **that** when describing a noun. For example:
 
-- Do: The file you save...
-- Do not: The file **that** you save...
+Use:
+
+- The file you save...
+
+Instead of:
+
+- The file **that** you save...
 
 See also [this, these, that, those](#this-these-that-those).
 
@@ -684,8 +781,13 @@ Use **text box** instead of **field** or **box** when referring to the UI elemen
 
 Try to avoid **there is** and **there are**. These phrases hide the subject.
 
-- Do: The bucket has holes.
-- Do not: There are holes in the bucket.
+Use:
+
+- The bucket has holes.
+
+Instead of:
+
+- There are holes in the bucket.
 
 ## they
 
@@ -697,17 +799,17 @@ a gender-neutral pronoun.
 
 Always follow these words with a noun. For example:
 
-- Do: **This setting** improves performance.
-- Do not: **This** improves performance.
+- Use: **This setting** improves performance.
+- Instead of: **This** improves performance.
 
-- Do: **These pants** are the best.
-- Do not: **These** are the best.
+- Use: **These pants** are the best.
+- Instead of: **These** are the best.
 
-- Do: **That droid** is the one you are looking for.
-- Do not: **That** is the one you are looking for.
+- Use: **That droid** is the one you are looking for.
+- Instead of: **That** is the one you are looking for.
 
-- Do: **Those settings** need to be configured. (Or even better, **Configure those settings.**)
-- Do not: **Those** need to be configured.
+- Use: **Those settings** need to be configured. (Or even better, **Configure those settings.**)
+- Instead of: **Those** need to be configured.
 
 ## to-do item
 
@@ -736,8 +838,13 @@ Do not use **useful**. If the user doesn't find the process to be useful, we los
 When possible, address the reader directly, instead of calling them **users**.
 Use the [second person](#you-your-yours), **you**, instead.
 
-- Do: You can configure a pipeline.
-- Do not: Users can configure a pipeline.
+Use:
+
+- You can configure a pipeline.
+
+Instead of:
+
+- Users can configure a pipeline.
 
 ## utilize
 
@@ -756,8 +863,13 @@ Do not use Latin abbreviations. Use **with**, **through**, or **by using** inste
 
 Try to avoid **we** and focus instead on how the user can accomplish something in GitLab.
 
-- Do: Use widgets when you have work you want to organize.
-- Do not: We created a feature for you to add widgets.
+Use:
+
+- Use widgets when you have work you want to organize.
+
+Instead of:
+
+- We created a feature for you to add widgets.
 
 One exception: You can use **we recommend** instead of **it is recommended** or **GitLab recommends**. ([Vale](../testing.md#vale) rule: [`SubstitutionSuggestions.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/SubstitutionSuggestions.yml))
 
@@ -770,8 +882,13 @@ Do not use **whitelist**. Another option is **allowlist**. ([Vale](../testing.md
 Use **you**, **your**, and **yours** instead of [**the user** and **the user's**](#user-users).
 Documentation should be from the [point of view](https://design.gitlab.com/content/voice-tone#point-of-view) of the reader.
 
-- Do: You can configure a pipeline.
-- Do not: Users can configure a pipeline.
+Use:
+
+- You can configure a pipeline.
+
+Instead of:
+
+- Users can configure a pipeline.
 
 <!-- vale on -->
 <!-- markdownlint-enable -->

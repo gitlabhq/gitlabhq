@@ -1,15 +1,12 @@
--  count_badge_classes = 'badge badge-muted badge-pill gl-badge gl-tab-counter-badge sm gl-display-none gl-sm-display-inline-flex'
+-  count_badge_classes = 'gl-display-none gl-sm-display-inline-flex'
 
 = gl_tabs_nav( {class: 'gl-border-b-0 gl-flex-grow-1', data: { testid: 'milestones-filter' } } ) do
   = gl_tab_link_to milestones_filter_path(state: 'opened'), { item_active: params[:state].blank? || params[:state] == 'opened' } do
     = _('Open')
-    %span{ class: count_badge_classes }
-      = counts[:opened]
+    = gl_tab_counter_badge counts[:opened], { class: count_badge_classes }
   = gl_tab_link_to milestones_filter_path(state: 'closed', sort: 'due_date_desc'), { item_active: params[:state] == 'closed' } do
     = _('Closed')
-    %span{ class: count_badge_classes }
-      = counts[:closed]
+    = gl_tab_counter_badge counts[:closed], { class: count_badge_classes }
   = gl_tab_link_to milestones_filter_path(state: 'all', sort: 'due_date_desc'), { item_active: params[:state] == 'all' } do
     = _('All')
-    %span{ class: count_badge_classes }
-      = counts[:all]
+    = gl_tab_counter_badge counts[:all], { class: count_badge_classes }

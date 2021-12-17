@@ -15,7 +15,7 @@
               %span.logo-text.d-none.d-lg-block.gl-ml-3
                 = logo_text
           - if Gitlab.com_and_canary?
-            = link_to 'https://next.gitlab.com', class: 'canary-badge bg-transparent', data: { qa_selector: 'canary_badge_link' }, target: :_blank, rel: :_noopener do
+            = link_to Gitlab::Saas.canary_toggle_com_url, class: 'canary-badge bg-transparent', data: { qa_selector: 'canary_badge_link' }, target: :_blank, rel: 'noopener noreferrer' do
               %span.gl-badge.gl-bg-green-500.gl-text-white.gl-rounded-pill.gl-font-weight-bold.gl-py-1
                 = _('Next')
 

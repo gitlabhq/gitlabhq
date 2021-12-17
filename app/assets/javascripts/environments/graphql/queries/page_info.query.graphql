@@ -1,0 +1,8 @@
+query getPageInfo {
+  pageInfo @client {
+    total
+    perPage
+    nextPage
+    previousPage
+  }
+}

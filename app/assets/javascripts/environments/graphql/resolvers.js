@@ -1,9 +1,15 @@
 import axios from '~/lib/utils/axios_utils';
 import { s__ } from '~/locale';
-import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
+import {
+  convertObjectPropsToCamelCase,
+  parseIntPagination,
+  normalizeHeaders,
+} from '~/lib/utils/common_utils';
+
 import pollIntervalQuery from './queries/poll_interval.query.graphql';
 import environmentToRollbackQuery from './queries/environment_to_rollback.query.graphql';
 import environmentToDeleteQuery from './queries/environment_to_delete.query.graphql';
+import pageInfoQuery from './queries/page_info.query.graphql';
 
 const buildErrors = (errors = []) => ({
   errors,
@@ -21,15 +27,22 @@ const mapEnvironment = (env) => ({
 
 export const resolvers = (endpoint) => ({
   Query: {
-    environmentApp(_context, { scope }, { cache }) {
-      return axios.get(endpoint, { params: { nested: true, scope } }).then((res) => {
-        const interval = res.headers['poll-interval'];
+    environmentApp(_context, { page, scope }, { cache }) {
+      return axios.get(endpoint, { params: { nested: true, page, scope } }).then((res) => {
+        const headers = normalizeHeaders(res.headers);
+        const interval = headers['POLL-INTERVAL'];
+        const pageInfo = { ...parseIntPagination(headers), __typename: 'LocalPageInfo' };
 
         if (interval) {
           cache.writeQuery({ query: pollIntervalQuery, data: { interval: parseFloat(interval) } });
         } else {
           cache.writeQuery({ query: pollIntervalQuery, data: { interval: undefined } });
         }
+
+        cache.writeQuery({
+          query: pageInfoQuery,
+          data: { pageInfo },
+        });
 
         return {
           availableCount: res.data.available_count,

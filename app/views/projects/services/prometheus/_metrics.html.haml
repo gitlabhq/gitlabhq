@@ -12,7 +12,7 @@
     .card-header
       %strong
         = s_('PrometheusService|Common metrics')
-      %span.badge.badge-pill.js-monitored-count 0
+      = gl_badge_tag 0, nil, class: 'js-monitored-count'
     .card-body
       .loading-metrics.js-loading-metrics
         %p.m-3
@@ -28,7 +28,7 @@
       = sprite_icon('chevron-lg-right', css_class: 'panel-toggle js-panel-toggle-right' )
       = sprite_icon('chevron-lg-down', css_class: 'panel-toggle js-panel-toggle-down hidden' )
       = s_('PrometheusService|Missing environment variable')
-      %span.badge.badge-pill.js-env-var-count 0
+      = gl_badge_tag 0, nil, class: 'js-env-var-count'
     .card-body.hidden
       .flash-container
         .flash-notice
