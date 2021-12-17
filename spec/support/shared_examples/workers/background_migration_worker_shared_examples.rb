@@ -59,11 +59,11 @@ RSpec.shared_examples 'it runs background migration jobs' do |tracking_database,
       allow(Postgresql::ReplicationSlot).to receive(:lag_too_great?).and_return(false)
     end
 
-    it 'performs jobs using the coordinator for the correct database' do
+    it 'performs jobs using the coordinator for the worker' do
       expect_next_instance_of(Gitlab::BackgroundMigration::JobCoordinator) do |coordinator|
         allow(coordinator).to receive(:with_shared_connection).and_yield
 
-        expect(coordinator.database).to eq(tracking_database)
+        expect(coordinator.worker_class).to eq(described_class)
         expect(coordinator).to receive(:perform).with('Foo', [10, 20])
       end
 

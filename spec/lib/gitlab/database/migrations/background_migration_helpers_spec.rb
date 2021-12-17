@@ -356,7 +356,7 @@ RSpec.describe Gitlab::Database::Migrations::BackgroundMigrationHelpers do
   end
 
   describe '#finalized_background_migration' do
-    let(:job_coordinator) { Gitlab::BackgroundMigration::JobCoordinator.new(:main, BackgroundMigrationWorker) }
+    let(:job_coordinator) { Gitlab::BackgroundMigration::JobCoordinator.new(BackgroundMigrationWorker) }
 
     let!(:job_class_name) { 'TestJob' }
     let!(:job_class) { Class.new }
@@ -378,7 +378,7 @@ RSpec.describe Gitlab::Database::Migrations::BackgroundMigrationHelpers do
       job_class.define_method(:perform, job_perform_method)
 
       allow(Gitlab::BackgroundMigration).to receive(:coordinator_for_database)
-        .with(:main).and_return(job_coordinator)
+        .with('main').and_return(job_coordinator)
 
       expect(job_coordinator).to receive(:migration_class_for)
         .with(job_class_name).at_least(:once) { job_class }

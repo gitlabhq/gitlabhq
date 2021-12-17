@@ -914,20 +914,20 @@
     stylelint-declaration-strict-value "1.7.7"
     stylelint-scss "3.18.0"
 
-"@gitlab/svgs@1.229.0":
-  version "1.229.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-1.229.0.tgz#1ee863320ea3e0ff6b670dac59373b8b49e31388"
-  integrity sha512-10OLT3gj9AQ5DmcqaRcblkIY1dwr0danjaKl+hzjcA9sjvGuTNn3P/rQZglFanM2eI6MkoHG1YP7UeSs7cFuCQ==
+"@gitlab/svgs@2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-2.0.0.tgz#06af5e91c36498ccf7e3e30e432eefcb3b1276c2"
+  integrity sha512-kBq7RZ0N+h41b4JbPOmwzx1X++fD+tz8HhaBmHTkOmRFY/7Ygvt2A8GodUUtpFK/NxRxy8O+knZvLNdfMLAIoQ==
 
 "@gitlab/tributejs@1.0.0":
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@gitlab/tributejs/-/tributejs-1.0.0.tgz#672befa222aeffc83e7d799b0500a7a4418e59b8"
   integrity sha512-nmKw1+hB6MHvlmPz63yPwVs1qQkycHwsKgxpEbzmky16Y6mL4EJMk3w1b8QlOAF/AIAzjCERPhe/R4MJiohbZw==
 
-"@gitlab/ui@32.49.0":
-  version "32.49.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-32.49.0.tgz#d899e2e2487bb0e23a408386acc04eac14808de5"
-  integrity sha512-QB1M1/8vc1o0hAm5tg8tWIEcj5Isy2JxHFWKtDNnFqPvbb0QNBsoEazz9DNra3dNSRzt8zF8NJPqmuRT8WAvQA==
+"@gitlab/ui@32.50.0":
+  version "32.50.0"
+  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-32.50.0.tgz#ac50617a8b84f78949e177f495ade276f8560679"
+  integrity sha512-7wPEgbOn7M9hqzq5LZND5b8/OEajoFCjwaXzO42FBNJ+pb80JBsTg1Mu8dyXMGQP/SPcxO58BdQLUSjE0WER4w==
   dependencies:
     "@babel/standalone" "^7.0.0"
     bootstrap-vue "2.20.1"

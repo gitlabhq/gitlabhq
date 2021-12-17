@@ -3,11 +3,12 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::BackgroundMigration do
-  let(:coordinator) { described_class::JobCoordinator.for_database(:main) }
+  let(:default_tracking_database) { described_class::DEFAULT_TRACKING_DATABASE }
+  let(:coordinator) { described_class::JobCoordinator.for_tracking_database(default_tracking_database) }
 
   before do
     allow(described_class).to receive(:coordinator_for_database)
-      .with(:main)
+      .with(default_tracking_database)
       .and_return(coordinator)
   end
 
