@@ -27,6 +27,7 @@ class User < ApplicationRecord
   include HasUserType
   include Gitlab::Auth::Otp::Fortinet
   include RestrictedSignup
+  include StripAttribute
 
   DEFAULT_NOTIFICATION_LEVEL = :participating
 
@@ -465,6 +466,8 @@ class User < ApplicationRecord
   scope :with_no_activity, -> { with_state(:active).human_or_service_user.where(last_activity_on: nil) }
   scope :by_provider_and_extern_uid, ->(provider, extern_uid) { joins(:identities).merge(Identity.with_extern_uid(provider, extern_uid)) }
   scope :get_ids_by_username, -> (username) { where(username: username).pluck(:id) }
+
+  strip_attributes! :name
 
   def preferred_language
     read_attribute('preferred_language') ||

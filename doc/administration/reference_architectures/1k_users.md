@@ -29,6 +29,40 @@ many organizations.
 | Up to 500    | 4 vCPU, 3.6 GB memory   | `n1-highcpu-4` | `c5.xlarge`  | `F4s v2` |
 | Up to 1,000  | 8 vCPU, 7.2 GB memory   | `n1-highcpu-8` | `c5.2xlarge` | `F8s v2` |
 
+```plantuml
+@startuml 1k
+card "**Prometheus + Grafana**" as monitor #7FFFD4
+package "GitLab Single Server" as gitlab-single-server {
+together {
+  card "**GitLab Rails**" as gitlab #32CD32
+  card "**Gitaly**" as gitaly #FF8C00
+  card "**PostgreSQL**" as postgres #4EA7FF
+  card "**Redis**" as redis #FF6347
+  card "**Sidekiq**" as sidekiq #ff8dd1
+}
+card "Local Storage" as local_storage #white
+}
+
+gitlab -[#32CD32]--> gitaly
+gitlab -[#32CD32]--> postgres
+gitlab -[#32CD32]--> redis
+gitlab -[#32CD32]--> sidekiq
+gitaly -[#32CD32]--> local_storage
+postgres -[#32CD32]--> local_storage
+sidekiq -[#32CD32]--> local_storage
+gitlab -[#32CD32]--> local_storage
+
+monitor .[#7FFFD4]u-> gitlab
+monitor .[#7FFFD4]u-> sidekiq
+monitor .[#7FFFD4]-> postgres
+monitor .[#7FFFD4]-> gitaly
+monitor .[#7FFFD4,norank]--> redis
+
+@enduml
+```
+
+The diagram above shows that while GitLab can be installed on a single server, it is internally composed of multiple services. As a GitLab instance is scaled, each of these services are broken out and independently scaled according to the demands placed on them. In some cases PaaS can be leveraged for some services (e.g. Cloud Object Storage for some file systems). For the sake of redundancy some of the services become clusters of nodes storing the same data. In a horizontal configuration of GitLab there are various ancillary services required to coordinate clusters or discover of resources (e.g. PgBouncer for Postgres connection management, Consul for Prometheus end point discovery).
+
 ## Requirements
 
 Before starting, you should take note of the following requirements / guidance for this reference architecture.

@@ -219,30 +219,9 @@ sudo -u git -H bundle exec rake gitlab:elastic:list_pending_migrations
 
 See [how to retry a halted migration](../integration/elasticsearch.md#retry-a-halted-migration).
 
-## Upgrade paths
+## Upgrading without downtime
 
-Upgrading across multiple GitLab versions in one go is *only possible by accepting downtime*.
-The following examples assume downtime is acceptable while upgrading.
-If you don't want any downtime, read how to [upgrade with zero downtime](zero_downtime.md).
-
-Find where your version sits in the upgrade path below, and upgrade GitLab
-accordingly, while also consulting the
-[version-specific upgrade instructions](#version-specific-upgrading-instructions):
-
-`8.11.Z` -> `8.12.0` -> `8.17.7` -> `9.5.10` -> `10.8.7` -> [`11.11.8`](#1200) -> `12.0.12` -> [`12.1.17`](#1210) -> `12.10.14` -> `13.0.14` -> [`13.1.11`](#1310) -> [`13.8.8`](#1388) -> [`13.12.15`](https://about.gitlab.com/releases/categories/releases/) -> [latest `14.0.Z`](#1400) -> [latest `14.1.Z`](#1410) -> [latest `14.Y.Z`](https://about.gitlab.com/releases/categories/releases/)
-
-The following table, while not exhaustive, shows some examples of the supported
-upgrade paths.
-
-| Target version | Your version | Supported upgrade path                                                                               | Note                                                                                                                              |
-| -------------- | ------------ | ---------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
-| `14.1.6`       | `13.9.2`     | `13.9.2` -> `13.12.12` -> `14.0.11` -> `14.1.6`                                                        | Two intermediate versions are required: `13.12` and `14.0`, then `14.1`.                                                          |
-| `13.12.10`     | `12.9.2`     | `12.9.2` -> `12.10.14` -> `13.0.14`  -> `13.1.11` -> `13.8.8` -> `13.12.10`                          | Four intermediate versions are required: `12.10`, `13.0`, `13.1` and `13.8.8`, then `13.12.10`.                               |
-| `13.2.10`      | `11.5.0`     | `11.5.0` -> `11.11.8` -> `12.0.12` -> `12.1.17` -> `12.10.14` -> `13.0.14` -> `13.1.11` -> `13.2.10` | Six intermediate versions are required: `11.11`, `12.0`, `12.1`, `12.10`, `13.0` and `13.1`, then `13.2.10`.                      |
-| `12.10.14`     | `11.3.4`     | `11.3.4` -> `11.11.8` -> `12.0.12` -> `12.1.17` -> `12.10.14`                                        | Three intermediate versions are required: `11.11`, `12.0` and `12.1`, then `12.10.14`.                                            |
-| `12.9.5`       | `10.4.5`     | `10.4.5` -> `10.8.7` -> `11.11.8` -> `12.0.12` -> `12.1.17` -> `12.9.5`                              | Four intermediate versions are required: `10.8`, `11.11`, `12.0` and `12.1`, then `12.9.5`.                                       |
-| `12.2.5`       | `9.2.6`      | `9.2.6` -> `9.5.10` -> `10.8.7` -> `11.11.8` -> `12.0.12` -> `12.1.17` -> `12.2.5`                   | Five intermediate versions are required: `9.5`, `10.8`, `11.11`, `12.0`, `12.1`, then `12.2.5`.                                   |
-| `11.3.4`       | `8.13.4`     | `8.13.4` -> `8.17.7` -> `9.5.10` -> `10.8.7` -> `11.3.4`                                             | `8.17.7` is the last version in version 8, `9.5.10` is the last version in version 9, `10.8.7` is the last version in version 10. |
+Read how to [upgrade without downtime](zero_downtime.md).
 
 ## Upgrading to a new major version
 
@@ -254,8 +233,9 @@ cannot guarantee that upgrading between major versions is seamless.
 It is required to follow the following upgrade steps to ensure a successful *major* version upgrade:
 
 1. Upgrade to the latest minor version of the preceding major version.
-1. Upgrade to the first minor version (`X.0.Z`) of the target major version.
-1. Proceed with upgrading to a newer release.
+1. Upgrade to the next major version (`X.0.Z`).
+1. Upgrade to its first minor version (`X.1.Z`).
+1. Proceed with upgrading to a newer releases of that major version.
 
 Identify a [supported upgrade path](#upgrade-paths).
 
@@ -273,9 +253,32 @@ If your GitLab instance has any runners associated with it, it is very
 important to upgrade GitLab Runner to match the GitLab minor version that was
 upgraded to. This is to ensure [compatibility with GitLab versions](https://docs.gitlab.com/runner/#gitlab-runner-versions).
 
-## Upgrading without downtime
+## Upgrade paths
 
-Read how to [upgrade without downtime](zero_downtime.md).
+Upgrading across multiple GitLab versions in one go is *only possible by accepting downtime*.
+The following examples assume downtime is acceptable while upgrading.
+If you don't want any downtime, read how to [upgrade with zero downtime](zero_downtime.md).
+
+Find where your version sits in the upgrade path below, and upgrade GitLab
+accordingly, while also consulting the
+[version-specific upgrade instructions](#version-specific-upgrading-instructions):
+
+`8.11.Z` -> `8.12.0` -> `8.17.7` -> `9.5.10` -> `10.8.7` -> [`11.11.8`](#1200) -> `12.0.12` -> [`12.1.17`](#1210) -> `12.10.14` -> `13.0.14` -> [`13.1.11`](#1310) -> [`13.8.8`](#1388) -> [latest `13.12.Z`](https://about.gitlab.com/releases/categories/releases/) -> [latest `14.0.Z`](#1400) -> [latest `14.1.Z`](#1410) -> [latest `14.Y.Z`](https://about.gitlab.com/releases/categories/releases/)
+
+The following table, while not exhaustive, shows some examples of the supported
+upgrade paths.
+Additional steps between the mentioned versions are possible. We list the minimally necessary steps only.
+
+| Target version | Your version | Supported upgrade path                                                                               | Note                                                                                                                              |
+| -------------- | ------------ | ---------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| `14.2.6`       | `13.10.2`    | `13.10.2` -> `13.12.12` -> `14.0.11` -> `14.1.8` -> `14.2.6`                                         | Three intermediate versions are required: `13.12`, `14.0`, and `14.1`, then `14.2.6`.                                             |
+| `14.1.8`       | `13.9.2`     | `13.9.2` -> `13.12.12` -> `14.0.11` -> `14.1.8`                                                      | Two intermediate versions are required: `13.12` and `14.0`, then `14.1.8`.                                                        |
+| `13.12.10`     | `12.9.2`     | `12.9.2` -> `12.10.14` -> `13.0.14`  -> `13.1.11` -> `13.8.8` -> `13.12.10`                          | Four intermediate versions are required: `12.10`, `13.0`, `13.1` and `13.8.8`, then `13.12.10`.                                   |
+| `13.2.10`      | `11.5.0`     | `11.5.0` -> `11.11.8` -> `12.0.12` -> `12.1.17` -> `12.10.14` -> `13.0.14` -> `13.1.11` -> `13.2.10` | Six intermediate versions are required: `11.11`, `12.0`, `12.1`, `12.10`, `13.0` and `13.1`, then `13.2.10`.                      |
+| `12.10.14`     | `11.3.4`     | `11.3.4` -> `11.11.8` -> `12.0.12` -> `12.1.17` -> `12.10.14`                                        | Three intermediate versions are required: `11.11`, `12.0` and `12.1`, then `12.10.14`.                                            |
+| `12.9.5`       | `10.4.5`     | `10.4.5` -> `10.8.7` -> `11.11.8` -> `12.0.12` -> `12.1.17` -> `12.9.5`                              | Four intermediate versions are required: `10.8`, `11.11`, `12.0` and `12.1`, then `12.9.5`.                                       |
+| `12.2.5`       | `9.2.6`      | `9.2.6` -> `9.5.10` -> `10.8.7` -> `11.11.8` -> `12.0.12` -> `12.1.17` -> `12.2.5`                   | Five intermediate versions are required: `9.5`, `10.8`, `11.11`, `12.0`, and `12.1`, then `12.2.5`.                               |
+| `11.3.4`       | `8.13.4`     | `8.13.4` -> `8.17.7` -> `9.5.10` -> `10.8.7` -> `11.3.4`                                             | `8.17.7` is the last version in version 8, `9.5.10` is the last version in version 9, `10.8.7` is the last version in version 10. |
 
 ## Upgrading between editions
 

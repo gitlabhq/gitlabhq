@@ -1422,6 +1422,13 @@ after which users must reactivate 2FA.
    DELETE FROM ci_variables;
    ```
 
+1. If you know the specific group or project from which you wish to delete variables, you can include a `WHERE` statement to specify that in your `DELETE`:
+
+   ```sql
+   DELETE FROM ci_group_variables WHERE group_id = <GROUPID>;
+   DELETE FROM ci_variables WHERE project_id = <PROJECTID>;
+   ```
+
 You may need to reconfigure or restart GitLab for the changes to take effect.
 
 #### Reset runner registration tokens

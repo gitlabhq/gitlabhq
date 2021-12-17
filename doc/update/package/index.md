@@ -159,7 +159,7 @@ install GitLab for the first time or update it.
 To download and install GitLab:
 
 1. Visit the [official repository](#upgrade-using-the-official-repositories) of your package.
-1. Filter the list by searching for the version you want to install (for example 14.1.6).
+1. Filter the list by searching for the version you want to install (for example 14.1.8).
    Multiple packages may exist for a single version, one for each supported distribution
    and architecture. Next to the filename is a label indicating the distribution,
    as the filenames may be the same.

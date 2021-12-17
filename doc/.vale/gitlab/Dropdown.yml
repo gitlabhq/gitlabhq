@@ -1,0 +1,14 @@
+---
+# Suggestion: gitlab.Dropdown
+#
+# Catches many ways the phrase 'dropdown list' can be fumbled.
+#
+# For a list of all options, see https://errata-ai.github.io/vale/styles/
+extends: existence
+message: 'Use "dropdown list".'
+link: https://docs.gitlab.com/ee/development/documentation/styleguide/word_list.html#dropdown-list
+level: suggestion
+ignorecase: true
+tokens:
+  - drop-down( [\w]*)?
+  - dropdown(?! list)

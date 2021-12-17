@@ -57,14 +57,17 @@ export default {
     };
   },
   computed: {
+    trimmedUsername() {
+      return this.username.trim();
+    },
     modalTitle() {
-      return sprintf(this.title, { username: this.username }, false);
+      return sprintf(this.title, { username: this.trimmedUsername }, false);
     },
     secondaryButtonLabel() {
       return s__('AdminUsers|Block user');
     },
     canSubmit() {
-      return this.enteredUsername === this.username;
+      return this.enteredUsername === this.trimmedUsername;
     },
     obstacles() {
       try {
@@ -104,7 +107,7 @@ export default {
     <p>
       <gl-sprintf :message="content">
         <template #username>
-          <strong>{{ username }}</strong>
+          <strong>{{ trimmedUsername }}</strong>
         </template>
         <template #strong="props">
           <strong>{{ props.content }}</strong>
@@ -115,13 +118,13 @@ export default {
     <user-deletion-obstacles-list
       v-if="obstacles.length"
       :obstacles="obstacles"
-      :user-name="username"
+      :user-name="trimmedUsername"
     />
 
     <p>
       <gl-sprintf :message="s__('AdminUsers|To confirm, type %{username}')">
         <template #username>
-          <code class="gl-white-space-pre-wrap">{{ username }}</code>
+          <code class="gl-white-space-pre-wrap">{{ trimmedUsername }}</code>
         </template>
       </gl-sprintf>
     </p>

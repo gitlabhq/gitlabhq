@@ -5,131 +5,121 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: tutorial
 ---
 
-# Triggering pipelines through the API **(FREE)**
+# Trigger pipelines by using the API **(FREE)**
 
-Triggers can be used to force a pipeline rerun of a specific `ref` (branch or
-tag) with an API call.
+To trigger a pipeline for a specific branch or tag, you can use an API call
+to the [pipeline triggers API endpoint](../../api/pipeline_triggers.md).
 
-## Authentication tokens
+When authenticating with the API, you can use:
 
-The following methods of authentication are supported:
+- A [trigger token](#create-a-trigger-token) to trigger a branch or tag pipeline.
+- A [CI/CD job token](../jobs/ci_job_token.md) to trigger a [multi-project pipeline](../pipelines/multi_project_pipelines.md#create-multi-project-pipelines-by-using-the-api).
 
-- Trigger tokens: A unique trigger token can be obtained when [adding a new trigger](#adding-a-new-trigger).
-- [CI job tokens](../jobs/ci_job_token.md).
+## Create a trigger token
 
-If using the `$CI_PIPELINE_SOURCE` [predefined CI/CD variable](../variables/predefined_variables.md)
-to limit which jobs run in a pipeline, the value could be either `pipeline` or `trigger`,
-depending on which trigger method is used.
+You can trigger a pipeline for a branch or tag by generating a trigger token and using it
+to authenticate an API call. The token impersonates a user's project access and permissions.
 
-| `$CI_PIPELINE_SOURCE` value | Trigger method |
-|-----------------------------|----------------|
-| `pipeline`                  | Using the `trigger` keyword in the CI/CD configuration file, or using the trigger API with `$CI_JOB_TOKEN`. |
-| `trigger`                   | Using the trigger API using a generated trigger token |
+Prerequisite:
 
-This also applies when using the `pipelines` or `triggers` keywords with the legacy [`only/except` basic syntax](../yaml/index.md#only--except).
+- You must have at least the [Maintainer role](../../user/permissions.md) for the project.
 
-## Adding a new trigger
+To create a trigger token:
 
-Go to your
-**Settings > CI/CD** under **Triggers** to add a new trigger. The **Add trigger** button creates
-a new token which you can then use to trigger a rerun of this
-particular project's pipeline.
-
-Every new trigger you create, gets assigned a different token which you can
-then use inside your scripts or `.gitlab-ci.yml`. You also have a nice
-overview of the time the triggers were last used.
-
-![Triggers page overview](img/triggers_page.png)
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > CI/CD**.
+1. Expand **Pipeline triggers**.
+1. Enter a description and select **Add trigger**.
+   - You can view and copy the full token for all triggers you have created.
+   - You can only see the first 4 characters for tokens created by other project members.
 
 WARNING:
-Passing plain text tokens in public projects is a security issue. Potential
-attackers can impersonate the user that exposed their trigger token publicly in
-their `.gitlab-ci.yml` file. Use [CI/CD variables](../variables/index.md)
-to protect trigger tokens.
+It is a security risk to save tokens in plain text in public projects. Potential
+attackers could use a trigger token exposed in the `.gitlab-ci.yml` file to impersonate
+the user that created the token. Use [masked CI/CD variables](../variables/index.md#mask-a-cicd-variable)
+to improve the security of trigger tokens.
 
-## Revoking a trigger
+## Trigger a pipeline
 
-You can revoke a trigger any time by going at your project's
-**Settings > CI/CD** under **Triggers** and hitting the **Revoke** button.
-The action is irreversible.
+After you [create a trigger token](#create-a-trigger-token), you can use it to trigger
+pipelines with a tool that can access the API, or a webhook.
 
-## Triggering a pipeline
+### Use cURL
 
-To trigger a pipeline you need to send a `POST` request to the GitLab API endpoint:
+You can use cURL to trigger pipelines with the [pipeline triggers API endpoint](../../api/pipeline_triggers.md).
+For example:
 
-```plaintext
-POST /projects/:id/trigger/pipeline
-```
+- Use a multiline cURL command:
 
-The required parameters are the [trigger's `token`](#authentication-tokens)
-and the Git `ref` on which the trigger is performed. Valid refs are
-branches or tags. The `:id` of a project can be found by
-[querying the API](../../api/projects.md) or by visiting the **CI/CD**
-settings page which provides self-explanatory examples.
+  ```shell
+  curl --request POST \
+       --form token=<token> \
+       --formref=<ref_name> \
+       "https://gitlab.example.com/api/v4/projects/<project_id>/trigger/pipeline"
+  ```
 
-When a rerun of a pipeline is triggered, jobs are labeled as `triggered` in
-**CI/CD > Jobs**.
+- Use cURL and pass the `<token>` and `<ref_name>` in the query string:
 
-You can see which trigger caused a job to run by visiting the single job page.
-A part of the trigger's token is exposed in the UI as you can see from the image
-below.
+  ```shell
+  curl --request POST \
+      "https://gitlab.example.com/api/v4/projects/<project_id>/trigger/pipeline?token=<token>&ref=<ref_name>"
+  ```
 
-![Marked as triggered on a single job page](img/trigger_single_job.png)
+In each example, replace:
 
-By using cURL you can trigger a pipeline rerun with minimal effort, for example:
+- The URL with `https://gitlab.com` or the URL of your instance.
+- `<token>` with your trigger token.
+- `<ref_name>` with a branch or tag name, like `main`.
+- `<project_id>` with your project ID, like `123456`. The project ID is displayed
+  at the top of every project's landing page.
 
-```shell
-curl --request POST \
-     --form token=TOKEN \
-     --form ref=main \
-     "https://gitlab.example.com/api/v4/projects/9/trigger/pipeline"
-```
+### Use a CI/CD job
 
-In this case, the pipeline for the project with ID `9` runs on the `main` branch.
+You can use a CI/CD job with a triggers token to trigger pipelines when another pipeline
+runs.
 
-Alternatively, you can pass the `token` and `ref` arguments in the query string:
-
-```shell
-curl --request POST \
-    "https://gitlab.example.com/api/v4/projects/9/trigger/pipeline?token=TOKEN&ref=main"
-```
-
-You can also benefit by using triggers in your `.gitlab-ci.yml`. Let's say that
-you have two projects, A and B, and you want to trigger a pipeline on the `main`
-branch of project B whenever a tag on project A is created. This is the job you
-need to add in project A's `.gitlab-ci.yml`:
+For example, to trigger a pipeline on the `main` branch of `project-B` when a tag
+is created in `project-A`, add the following job to project A's `.gitlab-ci.yml` file:
 
 ```yaml
 trigger_pipeline:
   stage: deploy
   script:
-    - 'curl --request POST --form token=TOKEN --form ref=main "https://gitlab.example.com/api/v4/projects/9/trigger/pipeline"'
+    - 'curl --fail --request POST --form token=$MY_TRIGGER_TOKEN --form ref=main "https://gitlab.example.com/api/v4/projects/123456/trigger/pipeline"'
   rules:
     - if: $CI_COMMIT_TAG
 ```
 
-This means that whenever a new tag is pushed on project A, the job runs and the
-`trigger_pipeline` job is executed, triggering the pipeline for project B. The
-`stage: deploy` ensures that this job runs only after all jobs with
-`stage: test` complete successfully.
+In this example:
 
-NOTE:
-You [cannot use the API to start `when:manual` trigger jobs](https://gitlab.com/gitlab-org/gitlab/-/issues/284086).
+- `1234` is the project ID for `project-B`. The project ID is displayed at the top
+  of every project's landing page.
+- The [`rules`](../yaml/index.md#rules) cause the job to run every time a tag is added to `project-A`.
+- `MY_TRIGGER_TOKEN` is a [masked CI/CD variables](../variables/index.md#mask-a-cicd-variable)
+  that contains the trigger token.
 
-## Triggering a pipeline from a webhook
+### Use a webhook
 
-To trigger a job from a webhook of another project you need to add the following
-webhook URL for Push and Tag events (change the project ID, ref and token):
+To trigger a pipeline from another project's webhook, use a webhook URL like the following
+for push and tag events:
 
 ```plaintext
 https://gitlab.example.com/api/v4/projects/9/ref/main/trigger/pipeline?token=TOKEN
 ```
 
-You should pass `ref` as part of the URL, to take precedence over `ref` from
-the webhook body that designates the branch ref that fired the trigger in the
-source repository. Be sure to URL-encode `ref` if it contains slashes.
+Replace:
 
-### Using webhook payload in the triggered pipeline
+- The URL with `https://gitlab.com` or the URL of your instance.
+- `<token>` with your trigger token.
+- `<ref_name>` with a branch or tag name, like `main`.
+- `<project_id>` with your project ID, like `123456`. The project ID is displayed
+  at the top of the project's landing page.
+
+The `ref` in the URL takes precedence over the `ref` in the webhook payload. The
+payload `ref` is the branch that fired the trigger in the source repository.
+You must URL-encode `ref` if it contains slashes.
+
+#### Use a webhook payload
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/31197) in GitLab 13.9.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/321027) in GitLab 13.11.
@@ -139,94 +129,68 @@ the `TRIGGER_PAYLOAD` [predefined CI/CD variable](../variables/predefined_variab
 The payload is exposed as a [file-type variable](../variables/index.md#cicd-variable-types),
 so you can access the data with `cat $TRIGGER_PAYLOAD` or a similar command.
 
-## Making use of trigger variables
+### Pass CI/CD variables in the API call
 
-You can pass any number of arbitrary variables in the trigger API call and they
-are available in GitLab CI/CD so that they can be used in your `.gitlab-ci.yml`
-file. The parameter is of the form:
+You can pass any number of [CI/CD variables](../variables/index.md) in the trigger API call.
+These variables have the [highest precedence](../variables/index.md#cicd-variable-precedence),
+and override all variables with the same name.
 
-```plaintext
-variables[key]=value
-```
-
-This information is also exposed in the UI. _Values_ are only viewable by users with the Owner and Maintainer role.
-
-![Job variables in UI](img/trigger_variables.png)
-
-Using trigger variables can be proven useful for a variety of reasons:
-
-- Identifiable jobs. Since the variable is exposed in the UI you can know
-  why the pipeline was triggered if you pass a variable that explains the
-  purpose.
-- Conditional job processing. You can have conditional jobs that run whenever
-  a certain variable is present.
-
-Consider the following `.gitlab-ci.yml` where we set three
-[stages](../yaml/index.md#stages) and the `upload_package` job is run only
-when all jobs from the test and build stages pass. When the `UPLOAD_TO_S3`
-variable is non-zero, `make upload` is run.
-
-```yaml
-stages:
-  - test
-  - build
-  - package
-
-run_tests:
-  stage: test
-  script:
-    - make test
-
-build_package:
-  stage: build
-  script:
-    - make build
-
-upload_package:
-  stage: package
-  script:
-    - if [ -n "${UPLOAD_TO_S3}" ]; then make upload; fi
-```
-
-You can then trigger a pipeline while you pass the `UPLOAD_TO_S3` variable
-and the script of the `upload_package` job is run:
+The parameter is of the form `variables[key]=value`, for example:
 
 ```shell
 curl --request POST \
   --form token=TOKEN \
   --form ref=main \
   --form "variables[UPLOAD_TO_S3]=true" \
-  "https://gitlab.example.com/api/v4/projects/9/trigger/pipeline"
+  "https://gitlab.example.com/api/v4/projects/123456/trigger/pipeline"
 ```
 
-Trigger variables have the [highest priority](../variables/index.md#cicd-variable-precedence)
-of all types of variables.
+CI/CD variables in triggered pipelines display on each job's page, but only
+users with the Owner and Maintainer role can view the values.
 
-## Using cron to trigger nightly pipelines
+![Job variables in UI](img/trigger_variables.png)
 
-Whether you craft a script or just run cURL directly, you can trigger jobs
-in conjunction with cron. The example below triggers a job on the `main` branch
-of project with ID `9` every night at `00:30`:
+## Revoke a trigger token
 
-```shell
-30 0 * * * curl --request POST --form token=TOKEN --form ref=main "https://gitlab.example.com/api/v4/projects/9/trigger/pipeline"
-```
+To revoke a trigger token:
 
-This behavior can also be achieved through the GitLab UI with
-[pipeline schedules](../pipelines/schedules.md).
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > CI/CD**.
+1. Expand **Pipeline triggers**.
+1. To the left of the trigger token you want to revoke, select **Revoke** (**{remove}**).
 
-## Legacy triggers
+A revoked trigger token cannot be added back.
 
-Old triggers, created before GitLab 9.0 are marked as legacy.
+## Configure CI/CD jobs to run in triggered pipelines
 
-Triggers with the legacy label do not have an associated user and only have
-access to the current project. They are considered deprecated and might be
-removed with one of the future versions of GitLab.
+To [configure when to run jobs](../jobs/job_control.md) in triggered pipelines:
+
+- Use [`rules`](../yaml/index.md#rules) with the `$CI_PIPELINE_SOURCE` [predefined CI/CD variable](../variables/predefined_variables.md).
+- Use [`only`/`except`](../yaml/index.md#onlyrefs--exceptrefs) keywords.
+
+| `$CI_PIPELINE_SOURCE` value | `only`/`except` keywords | Trigger method      |
+|-----------------------------|--------------------------|---------------------|
+| `trigger`                   | `triggers`               | In pipelines triggered with the [pipeline triggers API](../../api/pipeline_triggers.md) by using a [trigger token](#create-a-trigger-token). |
+| `pipeline`                  | `pipelines`              | In [multi-project pipelines](../pipelines/multi_project_pipelines.md#create-multi-project-pipelines-by-using-the-api) triggered with the [pipeline triggers API](../../api/pipeline_triggers.md) by using the [`$CI_JOB_TOKEN`](../jobs/ci_job_token.md), or by using the [`trigger`](../yaml/index.md#trigger) keyword in the CI/CD configuration file. |
+
+Additionally, the `$CI_PIPELINE_TRIGGERED` predefined CI/CD variable is set to `true`
+in pipelines triggered with a trigger token.
+
+## See which trigger token was used
+
+You can see which trigger caused a job to run by visiting the single job page.
+A part of the trigger's token displays on the right of the page, under the job details:
+
+![Marked as triggered on a single job page](img/trigger_single_job.png)
+
+In pipelines triggered with a trigger token, jobs are labeled as `triggered` in
+**CI/CD > Jobs**.
 
 ## Troubleshooting
 
-### '404 not found' when triggering a pipeline
+### `404 not found` when triggering a pipeline
 
 A response of `{"message":"404 Not Found"}` when triggering a pipeline might be caused
-by using a Personal Access Token instead of a trigger token. [Add a new trigger](#adding-a-new-trigger)
-and use that token to authenticate when triggering a pipeline.
+by using a [personal access token](../../user/profile/personal_access_tokens.md)
+instead of a trigger token. [Create a new trigger token](#create-a-trigger-token)
+and use it instead of the personal access token.

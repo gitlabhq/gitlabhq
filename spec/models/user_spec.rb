@@ -1080,6 +1080,16 @@ RSpec.describe User do
     end
   end
 
+  context 'strip attributes' do
+    context 'name' do
+      let(:user) { User.new(name: ' John Smith ') }
+
+      it 'strips whitespaces on validation' do
+        expect { user.valid? }.to change { user.name }.to('John Smith')
+      end
+    end
+  end
+
   describe 'Respond to' do
     it { is_expected.to respond_to(:admin?) }
     it { is_expected.to respond_to(:name) }

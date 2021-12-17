@@ -612,7 +612,7 @@ which variables take precedence.
 
 The order of precedence for variables is (from highest to lowest):
 
-1. [Trigger variables](../triggers/index.md#making-use-of-trigger-variables),
+1. [Trigger variables](../triggers/index.md#pass-cicd-variables-in-the-api-call),
    [scheduled pipeline variables](../pipelines/schedules.md#using-variables),
    and [manual pipeline run variables](#override-a-variable-when-running-a-pipeline-manually).
 1. Project [variables](#custom-cicd-variables).
@@ -646,7 +646,7 @@ You can override the value of a variable when you:
 1. Create a pipeline by using [the API](../../api/pipelines.md#create-a-new-pipeline).
 1. Run a job manually in the UI.
 1. Use [push options](../../user/project/push_options.md#push-options-for-gitlab-cicd).
-1. Trigger a pipeline by using [the API](../triggers/index.md#making-use-of-trigger-variables).
+1. Trigger a pipeline by using [the API](../triggers/index.md#pass-cicd-variables-in-the-api-call).
 1. Pass variables to a downstream pipeline [by using the `variable` keyword](../pipelines/multi_project_pipelines.md#pass-cicd-variables-to-a-downstream-pipeline-by-using-the-variables-keyword)
    or [by using variable inheritance](../pipelines/multi_project_pipelines.md#pass-cicd-variables-to-a-downstream-pipeline-by-using-variable-inheritance).
 

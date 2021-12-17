@@ -178,7 +178,7 @@
         .card-header
           %strong= @group.name
           = _('group members')
-          %span.badge.badge-pill= @group_members.size
+          = gl_badge_tag @group_members.size
           = render 'shared/members/manage_access_button', path: group_group_members_path(@group)
         %ul.content-list.members-list
           = render partial: 'shared/members/member',
@@ -195,7 +195,7 @@
       .card-header
         %strong= @project.name
         = _('project members')
-        %span.badge.badge-pill= @project.users.size
+        = gl_badge_tag @project.users.size
         = render 'shared/members/manage_access_button', path: project_project_members_path(@project)
       %ul.content-list.project_members.members-list
         = render partial: 'shared/members/member',

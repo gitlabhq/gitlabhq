@@ -130,10 +130,7 @@ module Projects
       destroy_events!
       destroy_web_hooks!
       destroy_project_bots!
-
-      if ::Feature.enabled?(:ci_optimize_project_records_destruction, project, default_enabled: :yaml)
-        destroy_ci_records!
-      end
+      destroy_ci_records!
 
       # Rails attempts to load all related records into memory before
       # destroying: https://github.com/rails/rails/issues/22510

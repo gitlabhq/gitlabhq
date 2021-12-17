@@ -77,7 +77,7 @@ There are also a number of [variables you can use to configure runner behavior](
 | `CI_PAGES_URL`                           | 11.8   | all    | The URL for a GitLab Pages site. Always a subdomain of `CI_PAGES_DOMAIN`. |
 | `CI_PIPELINE_ID`                         | 8.10   | all    | The instance-level ID of the current pipeline. This ID is unique across all projects on the GitLab instance. |
 | `CI_PIPELINE_IID`                        | 11.0   | all    | The project-level IID (internal ID) of the current pipeline. This ID is unique only within the current project. |
-| `CI_PIPELINE_SOURCE`                     | 10.0   | all    | How the pipeline was triggered. Can be `push`, `web`, `schedule`, `api`, `external`, `chat`, `webide`, `merge_request_event`, `external_pull_request_event`, `parent_pipeline`, [`trigger`, or `pipeline`](../triggers/index.md#authentication-tokens). |
+| `CI_PIPELINE_SOURCE`                     | 10.0   | all    | How the pipeline was triggered. Can be `push`, `web`, `schedule`, `api`, `external`, `chat`, `webide`, `merge_request_event`, `external_pull_request_event`, `parent_pipeline`, [`trigger`, or `pipeline`](../triggers/index.md#configure-cicd-jobs-to-run-in-triggered-pipelines). |
 | `CI_PIPELINE_TRIGGERED`                  | all    | all    | `true` if the job was [triggered](../triggers/index.md). |
 | `CI_PIPELINE_URL`                        | 11.1   | 0.5    | The URL for the pipeline details. |
 | `CI_PIPELINE_CREATED_AT`                 | 13.10  | all    | The UTC datetime when the pipeline was created, in [ISO 8601](https://tools.ietf.org/html/rfc3339#appendix-A) format. |
@@ -124,7 +124,7 @@ There are also a number of [variables you can use to configure runner behavior](
 | `GITLAB_USER_ID`                         | 8.12   | all    | The ID of the user who started the job. |
 | `GITLAB_USER_LOGIN`                      | 10.0   | all    | The username of the user who started the job. |
 | `GITLAB_USER_NAME`                       | 10.0   | all    | The name of the user who started the job. |
-| `TRIGGER_PAYLOAD`                        | 13.9   | all    | The webhook payload. Only available when a pipeline is [triggered with a webhook](../triggers/index.md#using-webhook-payload-in-the-triggered-pipeline). |
+| `TRIGGER_PAYLOAD`                        | 13.9   | all    | The webhook payload. Only available when a pipeline is [triggered with a webhook](../triggers/index.md#use-a-webhook-payload). |
 
 ## Predefined variables for merge request pipelines
 

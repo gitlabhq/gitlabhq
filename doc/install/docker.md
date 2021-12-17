@@ -81,6 +81,7 @@ sudo docker run --detach \
   --volume $GITLAB_HOME/config:/etc/gitlab \
   --volume $GITLAB_HOME/logs:/var/log/gitlab \
   --volume $GITLAB_HOME/data:/var/opt/gitlab \
+  --shm-size 256m \
   gitlab/gitlab-ee:latest
 ```
 
@@ -99,6 +100,7 @@ sudo docker run --detach \
   --volume $GITLAB_HOME/config:/etc/gitlab:Z \
   --volume $GITLAB_HOME/logs:/var/log/gitlab:Z \
   --volume $GITLAB_HOME/data:/var/opt/gitlab:Z \
+  --shm-size 256m \
   gitlab/gitlab-ee:latest
 ```
 
@@ -155,6 +157,7 @@ install, and upgrade your Docker-based GitLab installation:
        - '$GITLAB_HOME/config:/etc/gitlab'
        - '$GITLAB_HOME/logs:/var/log/gitlab'
        - '$GITLAB_HOME/data:/var/opt/gitlab'
+     shm_size: '256m'
    ```
 
 1. Make sure you are in the same directory as `docker-compose.yml` and start
@@ -188,6 +191,7 @@ web:
     - '$GITLAB_HOME/config:/etc/gitlab'
     - '$GITLAB_HOME/logs:/var/log/gitlab'
     - '$GITLAB_HOME/data:/var/opt/gitlab'
+  shm_size: '256m'
 ```
 
 This is the same as using `--publish 8929:8929 --publish 2224:22`.
@@ -221,6 +225,7 @@ Here's an example that deploys GitLab with four runners as a [stack](https://doc
          - $GITLAB_HOME/data:/var/opt/gitlab
          - $GITLAB_HOME/logs:/var/log/gitlab
          - $GITLAB_HOME/config:/etc/gitlab
+       shm_size: '256m'
        environment:
          GITLAB_OMNIBUS_CONFIG: "from_file('/omnibus_config.rb')"
        configs:
@@ -325,6 +330,7 @@ sudo docker run --detach \
   --volume $GITLAB_HOME/config:/etc/gitlab \
   --volume $GITLAB_HOME/logs:/var/log/gitlab \
   --volume $GITLAB_HOME/data:/var/opt/gitlab \
+  --shm-size 256m \
   gitlab/gitlab-ee:latest
 ```
 
@@ -361,6 +367,7 @@ sudo docker run --detach \
   --volume $GITLAB_HOME/config:/etc/gitlab \
   --volume $GITLAB_HOME/logs:/var/log/gitlab \
   --volume $GITLAB_HOME/data:/var/opt/gitlab \
+  --shm-size 256m \
   gitlab/gitlab-ee:latest
 ```
 
@@ -388,6 +395,7 @@ port `2289`:
      --volume $GITLAB_HOME/config:/etc/gitlab \
      --volume $GITLAB_HOME/logs:/var/log/gitlab \
      --volume $GITLAB_HOME/data:/var/opt/gitlab \
+     --shm-size 256m \
      gitlab/gitlab-ee:latest
    ```
 
@@ -477,6 +485,7 @@ To update GitLab that was [installed using Docker Engine](#install-gitlab-using-
    --volume $GITLAB_HOME/config:/etc/gitlab \
    --volume $GITLAB_HOME/logs:/var/log/gitlab \
    --volume $GITLAB_HOME/data:/var/opt/gitlab \
+   --shm-size 256m \
    gitlab/gitlab-ee:latest
    ```
 

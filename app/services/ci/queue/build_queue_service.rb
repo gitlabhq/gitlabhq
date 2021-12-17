@@ -24,7 +24,7 @@ module Ci
 
       # rubocop:disable CodeReuse/ActiveRecord
       def builds_for_group_runner
-        if strategy.use_denormalized_namespace_traversal_ids?
+        if strategy.use_denormalized_data_strategy?
           strategy.builds_for_group_runner
         else
           # Workaround for weird Rails bug, that makes `runner.groups.to_sql` to return `runner_id = NULL`

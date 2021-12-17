@@ -2369,7 +2369,7 @@ pipeline based on branch names or pipeline types.
   | `pushes`                 | For pipelines triggered by a `git push` event, including for branches and tags. |
   | `schedules`              | For [scheduled pipelines](../pipelines/schedules.md). |
   | `tags`                   | When the Git reference for a pipeline is a tag. |
-  | `triggers`               | For pipelines created by using a [trigger token](../triggers/index.md#authentication-tokens). |
+  | `triggers`               | For pipelines created by using a [trigger token](../triggers/index.md#configure-cicd-jobs-to-run-in-triggered-pipelines). |
   | `web`                    | For pipelines created by selecting **Run pipeline** in the GitLab UI, from the project's **CI/CD > Pipelines** section. |
 
 **Example of `only:refs` and `except:refs`**:
@@ -3635,6 +3635,7 @@ trigger_job:
 - Jobs with `trigger` can only use a [limited set of keywords](../pipelines/multi_project_pipelines.md#define-multi-project-pipelines-in-your-gitlab-ciyml-file).
   For example, you can't run commands with [`script`](#script), [`before_script`](#before_script),
   or [`after_script`](#after_script).
+- You [cannot use the API to start `when:manual` trigger jobs](https://gitlab.com/gitlab-org/gitlab/-/issues/284086).
 - In [GitLab 13.5 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/201938), you
   can use [`when:manual`](#when) in the same job as `trigger`. In GitLab 13.4 and
   earlier, using them together causes the error `jobs:#{job-name} when should be on_success, on_failure or always`.
@@ -3645,8 +3646,8 @@ trigger_job:
 
 - [Multi-project pipeline configuration examples](../pipelines/multi_project_pipelines.md#define-multi-project-pipelines-in-your-gitlab-ciyml-file).
 - [Child pipeline configuration examples](../pipelines/parent_child_pipelines.md#examples).
-- To force a rebuild of a specific branch, tag, or commit, you can
-  [use an API call with a trigger token](../triggers/index.md).
+- To run a pipeline for a specific branch, tag, or commit, you can use a [trigger token](../triggers/index.md)
+  to authenticate with the [pipeline triggers API](../../api/pipeline_triggers.md).
   The trigger token is different than the `trigger` keyword.
 
 #### `trigger:strategy`

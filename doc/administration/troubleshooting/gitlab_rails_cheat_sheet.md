@@ -824,28 +824,28 @@ conflicting_permanent_redirects.destroy_all
 ### Close a merge request properly (if merged but still marked as open)
 
 ```ruby
-p = Project.find_by_full_path('<full/path/to/project>')
-m = p.merge_requests.find_by(iid: <iid>)
 u = User.find_by_username('<username>')
-MergeRequests::PostMergeService.new(p, u).execute(m)
+p = Project.find_by_full_path('<namespace/project>')
+m = p.merge_requests.find_by(iid: <iid>)
+MergeRequests::PostMergeService.new(project: p, current_user: u).execute(m)
 ```
 
 ### Delete a merge request
 
 ```ruby
 u = User.find_by_username('<username>')
-p = Project.find_by_full_path('<group>/<project>')
-m = p.merge_requests.find_by(iid: <IID>)
-Issuable::DestroyService.new(m.project, u).execute(m)
+p = Project.find_by_full_path('<namespace/project>')
+m = p.merge_requests.find_by(iid: <iid>)
+Issuable::DestroyService.new(project: m.project, current_user: u).execute(m)
 ```
 
 ### Rebase manually
 
 ```ruby
-p = Project.find_by_full_path('<project_path>')
-m = project.merge_requests.find_by(iid: )
 u = User.find_by_username('<username>')
-MergeRequests::RebaseService.new(m.target_project, u).execute(m)
+p = Project.find_by_full_path('<namespace/project>')
+m = p.merge_requests.find_by(iid: <iid>)
+MergeRequests::RebaseService.new(project: m.target_project, current_user: u).execute(m)
 ```
 
 ## CI
@@ -1264,6 +1264,9 @@ registry.replicator.send(:sync_repository)
 
 ## Generate Service Ping
 
+The [Service Ping Guide](../../development/service_ping/index.md) in our developer documentation 
+has more information about Service Ping. 
+
 ### Generate or get the cached Service Ping
 
 ```ruby
@@ -1284,6 +1287,12 @@ Generates Service Ping data in JSON format.
 
 ```shell
 rake gitlab:usage_data:generate
+```
+
+Generates Service Ping data in YAML format:
+
+```shell 
+rake gitlab:usage_data:dump_sql_in_yaml
 ```
 
 ### Generate and send Service Ping

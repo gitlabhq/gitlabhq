@@ -117,7 +117,7 @@ trigger_pipeline:
 ```
 
 If you use the `CI_PIPELINE_SOURCE` [predefined CI/CD variable](../variables/predefined_variables.md)
-in a pipeline triggered this way, [the value is `pipeline` (not `triggered`)](../triggers/index.md#authentication-tokens).
+in a pipeline triggered this way, [the value is `pipeline` (not `triggered`)](../triggers/index.md#configure-cicd-jobs-to-run-in-triggered-pipelines).
 
 ## Download an artifact from a different pipeline **(PREMIUM)**
 
