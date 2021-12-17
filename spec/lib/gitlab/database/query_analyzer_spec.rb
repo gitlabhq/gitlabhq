@@ -128,7 +128,16 @@ RSpec.describe Gitlab::Database::QueryAnalyzer, query_analyzers: false do
 
     it 'does not call analyze on suppressed analyzers' do
       expect(analyzer).to receive(:suppressed?).and_return(true)
+      expect(analyzer).to receive(:requires_tracking?).and_return(false)
       expect(analyzer).not_to receive(:analyze)
+
+      expect { process_sql("SELECT 1 FROM projects") }.not_to raise_error
+    end
+
+    it 'does call analyze on suppressed analyzers if some queries require tracking' do
+      expect(analyzer).to receive(:suppressed?).and_return(true)
+      expect(analyzer).to receive(:requires_tracking?).and_return(true)
+      expect(analyzer).to receive(:analyze)
 
       expect { process_sql("SELECT 1 FROM projects") }.not_to raise_error
     end

@@ -4,7 +4,7 @@ module Gitlab
   module Database
     module QueryAnalyzers
       class PreventCrossDatabaseModification < Database::QueryAnalyzers::Base
-        CrossDatabaseModificationAcrossUnsupportedTablesError = Class.new(StandardError)
+        CrossDatabaseModificationAcrossUnsupportedTablesError = Class.new(QueryAnalyzerError)
 
         # This method will allow cross database modifications within the block
         # Example:
@@ -36,10 +36,13 @@ module Gitlab
             Feature.enabled?(:detect_cross_database_modification, default_enabled: :yaml)
         end
 
+        def self.requires_tracking?(parsed)
+          # The transaction boundaries always needs to be tracked regardless of suppress behavior
+          self.transaction_begin?(parsed) || self.transaction_end?(parsed)
+        end
+
         # rubocop:disable Metrics/AbcSize
         def self.analyze(parsed)
-          return if in_factory_bot_create?
-
           database = ::Gitlab::Database.db_config_name(parsed.connection)
           sql = parsed.sql
 
@@ -51,14 +54,18 @@ module Gitlab
             return
           elsif self.transaction_end?(parsed)
             context[:transaction_depth_by_db][database] -= 1
-            if context[:transaction_depth_by_db][database] <= 0
+            if context[:transaction_depth_by_db][database] == 0
               context[:modified_tables_by_db][database].clear
+            elsif context[:transaction_depth_by_db][database] < 0
+              context[:transaction_depth_by_db][database] = 0
+              raise CrossDatabaseModificationAcrossUnsupportedTablesError, "Misaligned cross-DB transactions discovered at query #{sql}. This could be a bug in #{self.class} or a valid issue to investigate. Read more at https://docs.gitlab.com/ee/development/database/multiple_databases.html#removing-cross-database-transactions ."
             end
 
             return
           end
 
-          return if context[:transaction_depth_by_db].values.all?(&:zero?)
+          return unless self.in_transaction?
+          return if in_factory_bot_create?
 
           # PgQuery might fail in some cases due to limited nesting:
           # https://github.com/pganalyze/pg_query/issues/209
@@ -141,13 +148,21 @@ module Gitlab
           Rails.env.test?
         end
 
+        def self.in_transaction?
+          context[:transaction_depth_by_db].values.any?(&:positive?)
+        end
+
         # We ignore execution in the #create method from FactoryBot
         # because it is not representative of real code we run in
         # production. There are far too many false positives caused
         # by instantiating objects in different `gitlab_schema` in a
         # FactoryBot `create`.
         def self.in_factory_bot_create?
-          Rails.env.test? && caller_locations.any? { |l| l.path.end_with?('lib/factory_bot/evaluation.rb') && l.label == 'create' }
+          Rails.env.test? && caller_locations.any? do |l|
+            l.path.end_with?('lib/factory_bot/evaluation.rb') && l.label == 'create' ||
+            l.path.end_with?('lib/factory_bot/strategy/create.rb') ||
+            l.path.end_with?('shoulda/matchers/active_record/validate_uniqueness_of_matcher.rb') && l.label == 'create_existing_record'
+          end
         end
       end
     end

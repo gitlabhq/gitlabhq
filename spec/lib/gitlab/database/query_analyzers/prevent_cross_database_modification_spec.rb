@@ -181,4 +181,49 @@ RSpec.describe Gitlab::Database::QueryAnalyzers::PreventCrossDatabaseModificatio
       end.to raise_error /Cross-database data modification.*The gitlab_schema was undefined/
     end
   end
+
+  context 'when execution is rescued with StandardError' do
+    it 'raises cross-database data modification exception' do
+      expect do
+        Project.transaction do
+          project.touch
+          project.connection.execute('UPDATE foo_bars_undefined_table SET a=1 WHERE id = -1')
+        end
+      rescue StandardError
+        # Ensures that standard rescue does not silence errors
+      end.to raise_error /Cross-database data modification.*The gitlab_schema was undefined/
+    end
+  end
+
+  context 'when uniquiness validation is tested', type: :model do
+    subject { build(:ci_variable) }
+
+    it 'does not raise exceptions' do
+      expect do
+        is_expected.to validate_uniqueness_of(:key).scoped_to(:project_id, :environment_scope).with_message(/\(\w+\) has already been taken/)
+      end.not_to raise_error
+    end
+  end
+
+  context 'when doing rollback in a suppressed block' do
+    it 'does not raise misaligned transactions exception' do
+      expect do
+        # This is non-materialised transaction:
+        # 1. the transaction will be open on a write (project.touch) (in a suppressed block)
+        # 2. the rescue will be handled outside of suppressed block
+        #
+        # This will create misaligned boundaries since BEGIN
+        # of transaction will be executed within a suppressed block
+        Project.transaction do
+          described_class.with_suppressed do
+            project.touch
+
+            raise 'force rollback'
+          end
+
+          # the ensure of `.transaction` executes `ROLLBACK TO SAVEPOINT`
+        end
+      end.to raise_error /force rollback/
+    end
+  end
 end
