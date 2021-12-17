@@ -10,7 +10,7 @@ module QA
             element :issuable_search_container
           end
 
-          view 'app/assets/javascripts/vue_shared/components/issue/issue_assignees.vue' do
+          view 'app/assets/javascripts/issuable/components/issue_assignees.vue' do
             element :assignee_link
             element :avatar_counter_content
           end

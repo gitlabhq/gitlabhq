@@ -6087,13 +6087,19 @@ msgstr ""
 msgid "Bulk update"
 msgstr ""
 
-msgid "BulkImports|Re-import creates a new group. It does not sync with the existing group."
+msgid "BulkImport| %{host} is running outdated GitLab version (v%{version})"
+msgstr ""
+
+msgid "BulkImport|%{feature} (require v%{version})"
 msgstr ""
 
 msgid "BulkImport|Existing groups"
 msgstr ""
 
 msgid "BulkImport|Filter by source group"
+msgstr ""
+
+msgid "BulkImport|Following data will not be migrated: %{bullets} Contact system administrator of %{host} to upgrade GitLab if you need this data in your migration"
 msgstr ""
 
 msgid "BulkImport|From source group"
@@ -6133,6 +6139,9 @@ msgid "BulkImport|No history is available"
 msgstr ""
 
 msgid "BulkImport|No parent"
+msgstr ""
+
+msgid "BulkImport|Re-import creates a new group. It does not sync with the existing group."
 msgstr ""
 
 msgid "BulkImport|Showing %{start}-%{end} of %{total}"
@@ -29095,6 +29104,36 @@ msgid "RegistrationFeatures|Read more about the %{linkStart}Registration Feature
 msgstr ""
 
 msgid "RegistrationFeatures|Want to use this feature for free?"
+msgstr ""
+
+msgid "RegistrationVerification|Are you sure you want to skip this step?"
+msgstr ""
+
+msgid "RegistrationVerification|Enable free CI/CD minutes"
+msgstr ""
+
+msgid "RegistrationVerification|GitLab will not charge your card, it will only be used for validation."
+msgstr ""
+
+msgid "RegistrationVerification|Pipelines using shared GitLab runners will fail until you validate your account."
+msgstr ""
+
+msgid "RegistrationVerification|Skip this for now"
+msgstr ""
+
+msgid "RegistrationVerification|To keep GitLab spam and abuse free we ask that you verify your identity with a valid payment method, such as a debit or credit card. Until then, you can't use free CI/CD minutes to build your application."
+msgstr ""
+
+msgid "RegistrationVerification|Validate account"
+msgstr ""
+
+msgid "RegistrationVerification|Verify your identity"
+msgstr ""
+
+msgid "RegistrationVerification|Yes, I'd like to skip"
+msgstr ""
+
+msgid "RegistrationVerification|You can alway verify your account at a later time."
 msgstr ""
 
 msgid "Registration|Checkout"

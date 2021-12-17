@@ -6513,6 +6513,29 @@ The edge type for [`JiraProject`](#jiraproject).
 | <a id="jiraprojectedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="jiraprojectedgenode"></a>`node` | [`JiraProject`](#jiraproject) | The item at the end of the edge. |
 
+#### `JobNeedUnionConnection`
+
+The connection type for [`JobNeedUnion`](#jobneedunion).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="jobneedunionconnectionedges"></a>`edges` | [`[JobNeedUnionEdge]`](#jobneedunionedge) | A list of edges. |
+| <a id="jobneedunionconnectionnodes"></a>`nodes` | [`[JobNeedUnion]`](#jobneedunion) | A list of nodes. |
+| <a id="jobneedunionconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `JobNeedUnionEdge`
+
+The edge type for [`JobNeedUnion`](#jobneedunion).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="jobneedunionedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="jobneedunionedgenode"></a>`node` | [`JobNeedUnion`](#jobneedunion) | The item at the end of the edge. |
+
 #### `LabelConnection`
 
 The connection type for [`Label`](#label).
@@ -8619,7 +8642,7 @@ Represents the total number of issues and their weights for a particular day.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="cibuildneedid"></a>`id` | [`ID!`](#id) | ID of the job we need to complete. |
+| <a id="cibuildneedid"></a>`id` | [`ID!`](#id) | ID of the BuildNeed. |
 | <a id="cibuildneedname"></a>`name` | [`String`](#string) | Name of the job we need to complete. |
 
 ### `CiConfig`
@@ -8723,7 +8746,7 @@ Represents the total number of issues and their weights for a particular day.
 | <a id="cijobneeds"></a>`needs` | [`CiBuildNeedConnection`](#cibuildneedconnection) | References to builds that must complete before the jobs run. (see [Connections](#connections)) |
 | <a id="cijobpipeline"></a>`pipeline` | [`Pipeline`](#pipeline) | Pipeline the job belongs to. |
 | <a id="cijobplayable"></a>`playable` | [`Boolean!`](#boolean) | Indicates the job can be played. |
-| <a id="cijobpreviousstagejobsorneeds"></a>`previousStageJobsOrNeeds` | [`CiJobConnection`](#cijobconnection) | Jobs that must complete before the job runs. Returns needed jobs if the job uses the `needs` keyword, and returns previous stage jobs otherwise. (see [Connections](#connections)) |
+| <a id="cijobpreviousstagejobsorneeds"></a>`previousStageJobsOrNeeds` | [`JobNeedUnionConnection`](#jobneedunionconnection) | Jobs that must complete before the job runs. Returns `BuildNeed`, which is the needed jobs if the job uses the `needs` keyword, or the previous stage jobs otherwise. (see [Connections](#connections)) |
 | <a id="cijobqueuedat"></a>`queuedAt` | [`Time`](#time) | When the job was enqueued and marked as pending. |
 | <a id="cijobqueuedduration"></a>`queuedDuration` | [`Duration`](#duration) | How long the job was enqueued before starting. |
 | <a id="cijobrefname"></a>`refName` | [`String`](#string) | Ref name of the job. |
@@ -17948,6 +17971,13 @@ One of:
 - [`Epic`](#epic)
 - [`Issue`](#issue)
 - [`MergeRequest`](#mergerequest)
+
+#### `JobNeedUnion`
+
+One of:
+
+- [`CiBuildNeed`](#cibuildneed)
+- [`CiJob`](#cijob)
 
 #### `NoteableType`
 

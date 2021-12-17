@@ -50,6 +50,7 @@ module Issues
     def after_create(issue)
       user_agent_detail_service.create
       resolve_discussions_with_issue(issue)
+      create_escalation_status(issue)
 
       super
     end
@@ -79,6 +80,10 @@ module Issues
     private
 
     attr_reader :spam_params
+
+    def create_escalation_status(issue)
+      ::IncidentManagement::IssuableEscalationStatuses::CreateService.new(issue).execute if issue.supports_escalation?
+    end
 
     def user_agent_detail_service
       UserAgentDetailService.new(spammable: @issue, spam_params: spam_params)

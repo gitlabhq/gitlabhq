@@ -185,10 +185,12 @@ Secret Detection can be customized by defining available CI/CD variables:
 
 ### Custom rulesets **(ULTIMATE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/211387) in GitLab 13.5.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/211387) in GitLab 13.5.
+> - [Added](https://gitlab.com/gitlab-org/gitlab/-/issues/339614) support for
+>   passthrough chains. Expanded to include additional passthrough types of `file`, `git`, and `url` in GitLab 14.6.
 
 You can customize the default secret detection rules provided with GitLab.
-Customization allows replace the default secret detection rules with rules that you define.
+Customization allows replacing the default secret detection rules with rules that you define.
 
 To create a custom ruleset:
 
@@ -225,6 +227,9 @@ To create a custom ruleset:
          target = "gitleaks.toml"
          value = "config/gitleaks.toml"
      ```
+
+Passthroughs can also be chained to build more complex configurations.
+For more details, see [SAST Customize ruleset section](../sast/index.md#customize-rulesets).
 
 ### Logging level
 

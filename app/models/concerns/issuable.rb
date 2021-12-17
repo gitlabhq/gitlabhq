@@ -188,6 +188,10 @@ module Issuable
       incident?
     end
 
+    def supports_escalation?
+      incident?
+    end
+
     def incident?
       is_a?(Issue) && super
     end

@@ -216,3 +216,82 @@ We considered using these Rails features as an alternative to foreign keys but t
 1. These run on a different connection in the context of a transaction [which we do not allow](multiple_databases.md#removing-cross-database-transactions).
 1. These can lead to severe performance degradation as we load all records from PostgreSQL, loop over them in Ruby, and call individual `DELETE` queries.
 1. These can miss data as they only cover the case when the `destroy` method is called directly on the model. There are other cases including `delete_all` and cascading deletes from another parent table that could mean these are missed.
+
+## Risks of loose foreign keys and possible mitigations
+
+In general, the loose foreign keys architecture is eventually consistent and
+the cleanup latency might lead to problems visible to GitLab users or
+operators. We consider the tradeoff as acceptable, but there might be
+cases where the problems are too frequent or too severe, and we must
+implement a mitigation strategy. A general mitigation strategy might be to have
+an "urgent" queue for cleanup of records that have higher impact with a delayed
+cleanup.
+
+Below are some more specific examples of problems that might occur and how we
+might mitigate them. In all the listed cases we might still consider the problem
+described to be low risk and low impact, and in that case we would choose to not
+implement any mitigation.
+
+### The record should be deleted but it shows up in a view
+
+This hypothetical example might happen with a foreign key like:
+
+```sql
+ALTER TABLE ONLY vulnerability_occurrence_pipelines
+    ADD CONSTRAINT fk_rails_6421e35d7d FOREIGN KEY (pipeline_id) REFERENCES ci_pipelines(id) ON DELETE CASCADE;
+```
+
+In this example we expect to delete all associated `vulnerability_occurrence_pipelines` records
+whenever we delete the `ci_pipelines` record associated with them. In this case
+you might end up with some vulnerability page in GitLab which shows an occurrence
+of a vulnerability. However, when you try to click a link to the pipeline, you get
+a 404, because the pipeline is deleted. Then, when you navigate back you might find the
+occurrence has disappeared too.
+
+**Mitigation**
+
+When rendering the vulnerability occurrences on the vulnerability page we could
+try to load the corresponding pipeline and choose to skip displaying that
+occurrence if pipeline is not found.
+
+### The deleted parent record is needed to render a view and causes a `500` error
+
+This hypothetical example might happen with a foreign key like:
+
+```sql
+ALTER TABLE ONLY vulnerability_occurrence_pipelines
+    ADD CONSTRAINT fk_rails_6421e35d7d FOREIGN KEY (pipeline_id) REFERENCES ci_pipelines(id) ON DELETE CASCADE;
+```
+
+In this example we expect to delete all associated `vulnerability_occurrence_pipelines` records
+whenever we delete the `ci_pipelines` record associated with them. In this case
+you might end up with a vulnerability page in GitLab which shows an "occurrence"
+of a vulnerability. However, when rendering the occurrence we try to load, for example,
+`occurrence.pipeline.created_at`, which causes a 500 for the user.
+
+**Mitigation**
+
+When rendering the vulnerability occurrences on the vulnerability page we could
+try to load the corresponding pipeline and choose to skip displaying that
+occurrence if pipeline is not found.
+
+### The deleted parent record is accessed in a Sidekiq worker and causes a failed job
+
+This hypothetical example might happen with a foreign key like:
+
+```sql
+ALTER TABLE ONLY vulnerability_occurrence_pipelines
+    ADD CONSTRAINT fk_rails_6421e35d7d FOREIGN KEY (pipeline_id) REFERENCES ci_pipelines(id) ON DELETE CASCADE;
+```
+
+In this example we expect to delete all associated `vulnerability_occurrence_pipelines` records
+whenever we delete the `ci_pipelines` record associated with them. In this case
+you might end up with a Sidekiq worker that is responsible for processing a
+vulnerability and looping over all occurrences causing a Sidekiq job to fail if
+it executes `occurrence.pipeline.created_at`.
+
+**Mitigation**
+
+When looping through the vulnerability occurrences in the Sidekiq worker, we
+could try to load the corresponding pipeline and choose to skip processing that
+occurrence if pipeline is not found.

@@ -1,4 +1,4 @@
-import { GlEmptyState, GlLoadingIcon } from '@gitlab/ui';
+import { GlAlert, GlEmptyState, GlLoadingIcon } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
@@ -33,6 +33,12 @@ describe('import table', () => {
     generateFakeEntry({ id: 2, status: STATUSES.FINISHED }),
   ];
   const FAKE_PAGE_INFO = { page: 1, perPage: 20, total: 40, totalPages: 2 };
+  const FAKE_VERSION_VALIDATION = {
+    features: {
+      projectMigration: { available: false, minVersion: '14.8.0' },
+      sourceInstanceVersion: '14.6.0',
+    },
+  };
 
   const findImportSelectedButton = () =>
     wrapper.findAll('button').wrappers.find((w) => w.text() === 'Import selected');
@@ -108,6 +114,7 @@ describe('import table', () => {
         bulkImportSourceGroups: () => ({
           nodes: [],
           pageInfo: FAKE_PAGE_INFO,
+          versionValidation: FAKE_VERSION_VALIDATION,
         }),
       });
       await waitForPromises();
@@ -121,6 +128,7 @@ describe('import table', () => {
       bulkImportSourceGroups: () => ({
         nodes: FAKE_GROUPS,
         pageInfo: FAKE_PAGE_INFO,
+        versionValidation: FAKE_VERSION_VALIDATION,
       }),
     });
     await waitForPromises();
@@ -133,6 +141,7 @@ describe('import table', () => {
       bulkImportSourceGroups: jest.fn().mockResolvedValue({
         nodes: [],
         pageInfo: FAKE_PAGE_INFO,
+        versionValidation: FAKE_VERSION_VALIDATION,
       }),
     });
     await waitForPromises();
@@ -142,7 +151,11 @@ describe('import table', () => {
 
   it('invokes importGroups mutation when row button is clicked', async () => {
     createComponent({
-      bulkImportSourceGroups: () => ({ nodes: [FAKE_GROUP], pageInfo: FAKE_PAGE_INFO }),
+      bulkImportSourceGroups: () => ({
+        nodes: [FAKE_GROUP],
+        pageInfo: FAKE_PAGE_INFO,
+        versionValidation: FAKE_VERSION_VALIDATION,
+      }),
     });
 
     jest.spyOn(apolloProvider.defaultClient, 'mutate');
@@ -166,7 +179,11 @@ describe('import table', () => {
 
   it('displays error if importing group fails', async () => {
     createComponent({
-      bulkImportSourceGroups: () => ({ nodes: [FAKE_GROUP], pageInfo: FAKE_PAGE_INFO }),
+      bulkImportSourceGroups: () => ({
+        nodes: [FAKE_GROUP],
+        pageInfo: FAKE_PAGE_INFO,
+        versionValidation: FAKE_VERSION_VALIDATION,
+      }),
       importGroups: () => {
         throw new Error();
       },
@@ -186,9 +203,11 @@ describe('import table', () => {
   });
 
   describe('pagination', () => {
-    const bulkImportSourceGroupsQueryMock = jest
-      .fn()
-      .mockResolvedValue({ nodes: [FAKE_GROUP], pageInfo: FAKE_PAGE_INFO });
+    const bulkImportSourceGroupsQueryMock = jest.fn().mockResolvedValue({
+      nodes: [FAKE_GROUP],
+      pageInfo: FAKE_PAGE_INFO,
+      versionValidation: FAKE_VERSION_VALIDATION,
+    });
 
     beforeEach(() => {
       createComponent({
@@ -212,6 +231,7 @@ describe('import table', () => {
       bulkImportSourceGroupsQueryMock.mockResolvedValue({
         nodes: [FAKE_GROUP],
         pageInfo: { ...FAKE_PAGE_INFO, perPage: 50 },
+        versionValidation: FAKE_VERSION_VALIDATION,
       });
       await otherOption.trigger('click');
 
@@ -243,6 +263,7 @@ describe('import table', () => {
           perPage: 20,
           totalPages: 2,
         },
+        versionValidation: FAKE_VERSION_VALIDATION,
       });
       wrapper.find(PaginationLinks).props().change(REQUESTED_PAGE);
       await waitForPromises();
@@ -252,9 +273,11 @@ describe('import table', () => {
   });
 
   describe('filters', () => {
-    const bulkImportSourceGroupsQueryMock = jest
-      .fn()
-      .mockResolvedValue({ nodes: [FAKE_GROUP], pageInfo: FAKE_PAGE_INFO });
+    const bulkImportSourceGroupsQueryMock = jest.fn().mockResolvedValue({
+      nodes: [FAKE_GROUP],
+      pageInfo: FAKE_PAGE_INFO,
+      versionValidation: FAKE_VERSION_VALIDATION,
+    });
 
     beforeEach(() => {
       createComponent({
@@ -327,6 +350,7 @@ describe('import table', () => {
         bulkImportSourceGroups: () => ({
           nodes: FAKE_GROUPS,
           pageInfo: FAKE_PAGE_INFO,
+          versionValidation: FAKE_VERSION_VALIDATION,
         }),
       });
       await waitForPromises();
@@ -342,6 +366,7 @@ describe('import table', () => {
         bulkImportSourceGroups: () => ({
           nodes: FAKE_GROUPS,
           pageInfo: FAKE_PAGE_INFO,
+          versionValidation: FAKE_VERSION_VALIDATION,
         }),
       });
       await waitForPromises();
@@ -354,6 +379,7 @@ describe('import table', () => {
         bulkImportSourceGroups: () => ({
           nodes: FAKE_GROUPS,
           pageInfo: FAKE_PAGE_INFO,
+          versionValidation: FAKE_VERSION_VALIDATION,
         }),
       });
       await waitForPromises();
@@ -370,6 +396,7 @@ describe('import table', () => {
         bulkImportSourceGroups: () => ({
           nodes: NEW_GROUPS,
           pageInfo: FAKE_PAGE_INFO,
+          versionValidation: FAKE_VERSION_VALIDATION,
         }),
       });
       await waitForPromises();
@@ -392,6 +419,7 @@ describe('import table', () => {
         bulkImportSourceGroups: () => ({
           nodes: NEW_GROUPS,
           pageInfo: FAKE_PAGE_INFO,
+          versionValidation: FAKE_VERSION_VALIDATION,
         }),
       });
       await waitForPromises();
@@ -415,6 +443,7 @@ describe('import table', () => {
         bulkImportSourceGroups: () => ({
           nodes: NEW_GROUPS,
           pageInfo: FAKE_PAGE_INFO,
+          versionValidation: FAKE_VERSION_VALIDATION,
         }),
       });
       jest.spyOn(apolloProvider.defaultClient, 'mutate');
@@ -443,6 +472,40 @@ describe('import table', () => {
           ],
         },
       });
+    });
+  });
+
+  describe('unavailable features warning', () => {
+    it('renders alert when there are unavailable features', async () => {
+      createComponent({
+        bulkImportSourceGroups: () => ({
+          nodes: FAKE_GROUPS,
+          pageInfo: FAKE_PAGE_INFO,
+          versionValidation: FAKE_VERSION_VALIDATION,
+        }),
+      });
+      await waitForPromises();
+
+      expect(wrapper.find(GlAlert).exists()).toBe(true);
+      expect(wrapper.find(GlAlert).text()).toContain('projects (require v14.8.0)');
+    });
+
+    it('does not renders alert when there are no unavailable features', async () => {
+      createComponent({
+        bulkImportSourceGroups: () => ({
+          nodes: FAKE_GROUPS,
+          pageInfo: FAKE_PAGE_INFO,
+          versionValidation: {
+            features: {
+              projectMigration: { available: true, minVersion: '14.8.0' },
+              sourceInstanceVersion: '14.6.0',
+            },
+          },
+        }),
+      });
+      await waitForPromises();
+
+      expect(wrapper.find(GlAlert).exists()).toBe(false);
     });
   });
 });

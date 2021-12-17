@@ -5,7 +5,7 @@ import {
   defaultProps,
   issuable1,
   issuable2,
-} from 'jest/vue_shared/components/issue/related_issuable_mock_data';
+} from 'jest/issuable/components/related_issuable_mock_data';
 import createFlash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import RelatedIssuesRoot from '~/related_issues/components/related_issues_root.vue';

@@ -1,5 +1,6 @@
 <script>
 import {
+  GlAlert,
   GlButton,
   GlEmptyState,
   GlIcon,
@@ -12,7 +13,7 @@ import {
 } from '@gitlab/ui';
 import { debounce } from 'lodash';
 import createFlash from '~/flash';
-import { s__, __, n__ } from '~/locale';
+import { s__, __, n__, sprintf } from '~/locale';
 import PaginationBar from '~/vue_shared/components/pagination_bar/pagination_bar.vue';
 import { getGroupPathAvailability } from '~/rest_api';
 import axios from '~/lib/utils/axios_utils';
@@ -40,6 +41,7 @@ const DEFAULT_TD_CLASSES = 'gl-vertical-align-top!';
 
 export default {
   components: {
+    GlAlert,
     GlButton,
     GlEmptyState,
     GlIcon,
@@ -79,6 +81,7 @@ export default {
       selectedGroupsIds: [],
       pendingGroupsIds: [],
       importTargets: {},
+      unavailableFeaturesAlertVisible: true,
     };
   },
 
@@ -199,6 +202,23 @@ export default {
       const end = start + this.groups.length - 1;
 
       return { start, end, total };
+    },
+
+    unavailableFeatures() {
+      if (!this.hasGroups) {
+        return [];
+      }
+
+      return Object.entries(this.bulkImportSourceGroups.versionValidation.features)
+        .filter(([, { available }]) => available === false)
+        .map(([k, v]) => ({ title: i18n.features[k] || k, version: v.minVersion }));
+    },
+
+    unavailableFeaturesAlertTitle() {
+      return sprintf(s__('BulkImport| %{host} is running outdated GitLab version (v%{version})'), {
+        host: this.sourceUrl,
+        version: this.bulkImportSourceGroups.versionValidation.features.sourceInstanceVersion,
+      });
     },
   },
 
@@ -471,6 +491,38 @@ export default {
       <img :src="$options.gitlabLogo" class="gl-w-6 gl-h-6 gl-mb-2 gl-display-inline gl-mr-2" />
       {{ s__('BulkImport|Import groups from GitLab') }}
     </h1>
+    <gl-alert
+      v-if="unavailableFeatures.length > 0 && unavailableFeaturesAlertVisible"
+      variant="warning"
+      :title="unavailableFeaturesAlertTitle"
+      @dismiss="unavailableFeaturesAlertVisible = false"
+    >
+      <gl-sprintf
+        :message="
+          s__(
+            'BulkImport|Following data will not be migrated: %{bullets} Contact system administrator of %{host} to upgrade GitLab if you need this data in your migration',
+          )
+        "
+      >
+        <template #host>
+          <gl-link :href="sourceUrl" target="_blank">
+            {{ sourceUrl }}<gl-icon name="external-link" class="vertical-align-middle" />
+          </gl-link>
+        </template>
+        <template #bullets>
+          <ul>
+            <li v-for="feature in unavailableFeatures" :key="feature.title">
+              <gl-sprintf :message="s__('BulkImport|%{feature} (require v%{version})')">
+                <template #feature>{{ feature.title }}</template>
+                <template #version>
+                  <strong>{{ feature.version }}</strong>
+                </template>
+              </gl-sprintf>
+            </li>
+          </ul>
+        </template>
+      </gl-sprintf>
+    </gl-alert>
     <div
       class="gl-py-5 gl-border-solid gl-border-gray-200 gl-border-0 gl-border-b-1 gl-display-flex"
     >
@@ -490,7 +542,7 @@ export default {
           </template>
           <template #link>
             <gl-link :href="sourceUrl" target="_blank">
-              {{ sourceUrl }} <gl-icon name="external-link" class="vertical-align-middle" />
+              {{ sourceUrl }}<gl-icon name="external-link" class="vertical-align-middle" />
             </gl-link>
           </template>
         </gl-sprintf>

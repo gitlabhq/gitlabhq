@@ -2145,7 +2145,7 @@ but with smaller performance requirements, several modifications can be consider
 - Lowering node specs: Depending on your user count, you can lower all suggested node specs as desired. However, it's recommended that you don't go lower than the [general requirements](../../install/requirements.md).
 - Combining select nodes: Some nodes can be combined to reduce complexity at the cost of some performance:
   - GitLab Rails and Sidekiq: Sidekiq nodes can be removed and the component instead enabled on the GitLab Rails nodes.
-  - PostgreSQL and PgBouncer: PgBouncer nodes can be removed and the component instead enabled on PostgreSQL with the Internal Load Balancer pointing to them instead.
+  - PostgreSQL and PgBouncer: PgBouncer nodes could be removed and instead be enabled on PostgreSQL nodes with the Internal Load Balancer pointing to them. However, to enable [Database Load Balancing](../postgresql/database_load_balancing.md), a separate PgBouncer array is still required.
 - Reducing the node counts: Some node types do not need consensus and can run with fewer nodes (but more than one for redundancy). This will also lead to reduced performance.
   - GitLab Rails and Sidekiq: Stateless services don't have a minimum node count. Two are enough for redundancy.
   - Gitaly and Praefect: A quorum is not strictly necessary. Two Gitaly nodes and two Praefect nodes are enough for redundancy.

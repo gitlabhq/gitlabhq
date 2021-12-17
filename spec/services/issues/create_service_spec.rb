@@ -108,6 +108,13 @@ RSpec.describe Issues::CreateService do
               .to change { Label.where(incident_label_attributes).count }.by(1)
           end
 
+          it 'calls IncidentManagement::Incidents::CreateEscalationStatusService' do
+            expect_next(::IncidentManagement::IssuableEscalationStatuses::CreateService, a_kind_of(Issue))
+              .to receive(:execute)
+
+            issue
+          end
+
           context 'when invalid' do
             before do
               opts.merge!(title: '')

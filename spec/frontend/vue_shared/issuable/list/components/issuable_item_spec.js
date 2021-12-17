@@ -2,7 +2,7 @@ import { GlLink, GlLabel, GlIcon, GlFormCheckbox, GlSprintf } from '@gitlab/ui';
 import { useFakeDate } from 'helpers/fake_date';
 import { shallowMountExtended as shallowMount } from 'helpers/vue_test_utils_helper';
 import IssuableItem from '~/vue_shared/issuable/list/components/issuable_item.vue';
-import IssuableAssignees from '~/vue_shared/components/issue/issue_assignees.vue';
+import IssuableAssignees from '~/issuable/components/issue_assignees.vue';
 
 import { mockIssuable, mockRegularLabel, mockScopedLabel } from '../mock_data';
 

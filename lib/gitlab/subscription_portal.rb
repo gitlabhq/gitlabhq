@@ -18,6 +18,10 @@ module Gitlab
       "#{self.subscriptions_url}/payment_forms/cc_validation"
     end
 
+    def self.registration_validation_form_url
+      "#{self.subscriptions_url}/payment_forms/cc_registration_validation"
+    end
+
     def self.subscriptions_comparison_url
       'https://about.gitlab.com/pricing/gitlab-com/feature-comparison'
     end
@@ -84,3 +88,4 @@ Gitlab::SubscriptionPortal.prepend_mod
 Gitlab::SubscriptionPortal::SUBSCRIPTIONS_URL = Gitlab::SubscriptionPortal.subscriptions_url.freeze
 Gitlab::SubscriptionPortal::PAYMENT_FORM_URL = Gitlab::SubscriptionPortal.payment_form_url.freeze
 Gitlab::SubscriptionPortal::RENEWAL_SERVICE_EMAIL = Gitlab::SubscriptionPortal.renewal_service_email.freeze
+Gitlab::SubscriptionPortal::REGISTRATION_VALIDATION_FORM_URL = Gitlab::SubscriptionPortal.registration_validation_form_url.freeze

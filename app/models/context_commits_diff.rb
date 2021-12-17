@@ -3,6 +3,7 @@
 class ContextCommitsDiff
   include ActsAsPaginatedDiff
 
+  delegate :head, :base, to: :compare
   attr_reader :merge_request
 
   def initialize(merge_request)

@@ -6,7 +6,7 @@ import { isScopedLabel } from '~/lib/utils/common_utils';
 import { differenceInSeconds, getTimeago, SECONDS_IN_DAY } from '~/lib/utils/datetime_utility';
 import { isExternal, setUrlFragment } from '~/lib/utils/url_utility';
 import { __, n__, sprintf } from '~/locale';
-import IssuableAssignees from '~/vue_shared/components/issue/issue_assignees.vue';
+import IssuableAssignees from '~/issuable/components/issue_assignees.vue';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
 
 export default {

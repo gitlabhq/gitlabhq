@@ -5,14 +5,14 @@ require 'spec_helper'
 RSpec.describe API::Topics do
   include WorkhorseHelpers
 
-  let_it_be(:topic_1) { create(:topic, name: 'Git', total_projects_count: 1) }
+  let_it_be(:file) { fixture_file_upload('spec/fixtures/dk.png') }
+
+  let_it_be(:topic_1) { create(:topic, name: 'Git', total_projects_count: 1, avatar: file) }
   let_it_be(:topic_2) { create(:topic, name: 'GitLab', total_projects_count: 2) }
   let_it_be(:topic_3) { create(:topic, name: 'other-topic', total_projects_count: 3) }
 
   let_it_be(:admin) { create(:user, :admin) }
   let_it_be(:user) { create(:user) }
-
-  let(:file) { fixture_file_upload('spec/fixtures/dk.png') }
 
   describe 'GET /topics', :aggregate_failures do
     it 'returns topics ordered by total_projects_count' do
@@ -184,6 +184,14 @@ RSpec.describe API::Topics do
         expect(json_response['avatar_url']).to end_with('dk.png')
       end
 
+      it 'keeps avatar when updating other fields' do
+        put api("/topics/#{topic_1.id}", admin), params: { name: 'my-topic' }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['name']).to eq('my-topic')
+        expect(topic_1.reload.avatar_url).not_to be_nil
+      end
+
       it 'returns 404 for non existing id' do
         put api("/topics/#{non_existing_record_id}", admin), params: { name: 'my-topic' }
 
@@ -195,6 +203,32 @@ RSpec.describe API::Topics do
 
         expect(response).to have_gitlab_http_status(:bad_request)
         expect(json_response['error']).to eql('id is invalid')
+      end
+
+      context 'with blank avatar' do
+        it 'removes avatar' do
+          put api("/topics/#{topic_1.id}", admin), params: { avatar: '' }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['avatar_url']).to be_nil
+          expect(topic_3.reload.avatar_url).to be_nil
+        end
+
+        it 'removes avatar besides other changes' do
+          put api("/topics/#{topic_1.id}", admin), params: { name: 'new-topic-name', avatar: '' }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['name']).to eq('new-topic-name')
+          expect(json_response['avatar_url']).to be_nil
+          expect(topic_1.reload.avatar_url).to be_nil
+        end
+
+        it 'does not remove avatar in case of other errors' do
+          put api("/topics/#{topic_1.id}", admin), params: { name: topic_2.name, avatar: '' }
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+          expect(topic_1.reload.avatar_url).not_to be_nil
+        end
       end
     end
 

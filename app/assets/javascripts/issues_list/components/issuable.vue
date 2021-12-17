@@ -28,7 +28,7 @@ import { convertToCamelCase } from '~/lib/utils/text_utility';
 import { mergeUrlParams, setUrlFragment, isExternal } from '~/lib/utils/url_utility';
 import { sprintf, __ } from '~/locale';
 import initUserPopovers from '~/user_popovers';
-import IssueAssignees from '~/vue_shared/components/issue/issue_assignees.vue';
+import IssueAssignees from '~/issuable/components/issue_assignees.vue';
 
 export default {
   i18n: {

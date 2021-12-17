@@ -11,6 +11,7 @@ RSpec.describe IncidentManagement::IssuableEscalationStatus do
 
   describe 'associations' do
     it { is_expected.to belong_to(:issue) }
+    it { is_expected.to have_one(:project).through(:issue) }
   end
 
   describe 'validatons' do

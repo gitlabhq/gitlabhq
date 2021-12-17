@@ -149,6 +149,19 @@ ORDER BY page_view_start DESC
 LIMIT 100
 ```
 
+#### Query JSON formatted data
+
+```sql
+SELECT
+  derived_tstamp,
+  contexts:data[0]:data:extra:old_format as CURRENT_FORMAT,
+  contexts:data[0]:data:extra:value as UPDATED_FORMAT
+FROM legacy.snowplow_structured_events_all
+WHERE event_action in ('wiki_format_updated')
+ORDER BY derived_tstamp DESC
+LIMIT 100
+```
+
 ### Web-specific parameters
 
 Snowplow JavaScript adds [web-specific parameters](https://docs.snowplowanalytics.com/docs/collecting-data/collecting-from-own-applications/snowplow-tracker-protocol/#Web-specific_parameters) to all web events by default.

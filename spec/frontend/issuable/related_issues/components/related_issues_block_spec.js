@@ -4,7 +4,7 @@ import {
   issuable1,
   issuable2,
   issuable3,
-} from 'jest/vue_shared/components/issue/related_issuable_mock_data';
+} from 'jest/issuable/components/related_issuable_mock_data';
 import RelatedIssuesBlock from '~/related_issues/components/related_issues_block.vue';
 import {
   linkedIssueTypesMap,

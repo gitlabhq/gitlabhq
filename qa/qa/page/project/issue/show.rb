@@ -11,7 +11,7 @@ module QA
           include Page::Component::Issuable::Sidebar
           prepend Mobile::Page::Project::Issue::Show if Runtime::Env.mobile_layout?
 
-          view 'app/assets/javascripts/vue_shared/components/issue/related_issuable_item.vue' do
+          view 'app/assets/javascripts/issuable/components/related_issuable_item.vue' do
             element :remove_related_issue_button
           end
 

@@ -11,6 +11,7 @@ type ClientBulkImportTarget {
 type ClientBulkImportSourceGroupConnection {
   nodes: [ClientBulkImportSourceGroup!]!
   pageInfo: ClientBulkImportPageInfo!
+  versionValidation: ClientBulkImportVersionValidation!
 }
 
 type ClientBulkImportProgress {
@@ -44,6 +45,20 @@ type ClientBulkImportNamespaceSuggestion {
   id: ID!
   exists: Boolean!
   suggestions: [String!]!
+}
+
+type ClientBulkImportVersionValidation {
+  features: ClientBulkImportVersionValidationFeatures!
+}
+
+type ClientBulkImportVersionValidationFeatures {
+  project_migration: ClientBulkImportVersionValidationFeature!
+  sourceInstanceVersion: String!
+}
+
+type ClientBulkImportVersionValidationFeature {
+  available: Boolean!
+  min_version: String!
 }
 
 extend type Query {

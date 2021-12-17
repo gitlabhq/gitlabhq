@@ -14,6 +14,9 @@ export const clientTypenames = {
   BulkImportPageInfo: 'ClientBulkImportPageInfo',
   BulkImportTarget: 'ClientBulkImportTarget',
   BulkImportProgress: 'ClientBulkImportProgress',
+  BulkImportVersionValidation: 'ClientBulkImportVersionValidation',
+  BulkImportVersionValidationFeature: 'ClientBulkImportVersionValidationFeature',
+  BulkImportVersionValidationFeatures: 'ClientBulkImportVersionValidationFeatures',
 };
 
 function makeLastImportTarget(data) {
@@ -91,6 +94,18 @@ export function createResolvers({ endpoints }) {
           pageInfo: {
             __typename: clientTypenames.BulkImportPageInfo,
             ...pagination,
+          },
+          versionValidation: {
+            __typename: clientTypenames.BulkImportVersionValidation,
+            features: {
+              __typename: clientTypenames.BulkImportVersionValidationFeatures,
+              sourceInstanceVersion: data.version_validation.features.source_instance_version,
+              projectMigration: {
+                __typename: clientTypenames.BulkImportVersionValidationFeature,
+                available: data.version_validation.features.project_migration.available,
+                minVersion: data.version_validation.features.project_migration.min_version,
+              },
+            },
           },
         };
         return response;

@@ -9,8 +9,8 @@ import {
 } from '@gitlab/ui';
 import IssueDueDate from '~/boards/components/issue_due_date.vue';
 import { sprintf } from '~/locale';
-import relatedIssuableMixin from '../../mixins/related_issuable_mixin';
-import CiIcon from '../ci_icon.vue';
+import CiIcon from '~/vue_shared/components/ci_icon.vue';
+import relatedIssuableMixin from '../mixins/related_issuable_mixin';
 import IssueAssignees from './issue_assignees.vue';
 import IssueMilestone from './issue_milestone.vue';
 

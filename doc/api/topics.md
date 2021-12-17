@@ -188,3 +188,18 @@ curl --request PUT \
      "https://gitlab.example.com/api/v4/topics/1" \
      --form "avatar=@/tmp/example.png"
 ```
+
+### Remove a topic avatar
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/348148) in GitLab 14.6.
+
+To remove a topic avatar, use a blank value for the `avatar` attribute.
+
+Example request:
+
+```shell
+curl --request PUT \
+     --data "avatar=" \
+     --header "PRIVATE-TOKEN: <your_access_token>" \
+     "https://gitlab.example.com/api/v4/topics/1"
+```

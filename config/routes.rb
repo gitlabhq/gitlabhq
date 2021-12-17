@@ -72,6 +72,7 @@ Rails.application.routes.draw do
       resources :groups_projects, only: [:new, :create] do
         post :import, on: :collection
       end
+      draw :verification
     end
   end
 

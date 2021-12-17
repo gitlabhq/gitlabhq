@@ -50,8 +50,8 @@ module Types
             null: true,
             description: 'How long the job was enqueued before starting.'
 
-      field :previous_stage_jobs_or_needs, Types::Ci::JobType.connection_type, null: true,
-            description: 'Jobs that must complete before the job runs. Returns needed jobs if the job uses the `needs` keyword, and returns previous stage jobs otherwise.'
+      field :previous_stage_jobs_or_needs, Types::Ci::JobNeedUnion.connection_type, null: true,
+            description: 'Jobs that must complete before the job runs. Returns `BuildNeed`, which is the needed jobs if the job uses the `needs` keyword, or the previous stage jobs otherwise.'
       field :detailed_status, Types::Ci::DetailedStatusType, null: true,
             description: 'Detailed status of the job.'
       field :artifacts, Types::Ci::JobArtifactType.connection_type, null: true,

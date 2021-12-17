@@ -11,5 +11,14 @@ query bulkImportSourceGroups($page: Int = 1, $perPage: Int = 20, $filter: String
       total
       totalPages
     }
+    versionValidation {
+      features {
+        sourceInstanceVersion
+        projectMigration {
+          available
+          minVersion
+        }
+      }
+    }
   }
 }

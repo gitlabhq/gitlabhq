@@ -8,7 +8,7 @@ module Types
       graphql_name 'CiBuildNeed'
 
       field :id, GraphQL::Types::ID, null: false,
-            description: 'ID of the job we need to complete.'
+            description: 'ID of the BuildNeed.'
       field :name, GraphQL::Types::String, null: true,
             description: 'Name of the job we need to complete.'
     end

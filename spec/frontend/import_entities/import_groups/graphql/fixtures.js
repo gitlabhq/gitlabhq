@@ -50,6 +50,12 @@ export const statusEndpointFixture = {
       web_url: 'https://gitlab.com/groups/gitlab-examples',
     },
   ],
+  version_validation: {
+    features: {
+      project_migration: { available: false, min_version: '14.8.0' },
+      source_instance_version: '14.6.0',
+    },
+  },
 };
 
 export const availableNamespacesFixture = Object.freeze([

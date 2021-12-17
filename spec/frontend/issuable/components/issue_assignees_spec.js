@@ -1,6 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
 import { mockAssigneesList } from 'jest/boards/mock_data';
-import IssueAssignees from '~/vue_shared/components/issue/issue_assignees.vue';
+import IssueAssignees from '~/issuable/components/issue_assignees.vue';
 import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
 
 const TEST_CSS_CLASSES = 'test-classes';

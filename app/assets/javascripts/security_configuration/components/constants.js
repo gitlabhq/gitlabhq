@@ -22,6 +22,7 @@ import configureSecretDetectionMutation from '../graphql/configure_secret_detect
 
 /**
  * Translations & helpPagePaths for Security Configuration Page
+ * Make sure to add new scanner translations to the SCANNER_NAMES_MAP below.
  */
 
 export const SAST_NAME = __('Static Application Security Testing (SAST)');
@@ -137,6 +138,18 @@ export const LICENSE_COMPLIANCE_DESCRIPTION = __(
 export const LICENSE_COMPLIANCE_HELP_PATH = helpPagePath(
   'user/compliance/license_compliance/index',
 );
+
+export const SCANNER_NAMES_MAP = {
+  SAST: SAST_SHORT_NAME,
+  SAST_IAC: SAST_IAC_NAME,
+  DAST: DAST_SHORT_NAME,
+  API_FUZZING: API_FUZZING_NAME,
+  CONTAINER_SCANNING: CONTAINER_SCANNING_NAME,
+  CLUSTER_IMAGE_SCANNING: CLUSTER_IMAGE_SCANNING_NAME,
+  COVERAGE_FUZZING: COVERAGE_FUZZING_NAME,
+  SECRET_DETECTION: SECRET_DETECTION_NAME,
+  DEPENDENCY_SCANNING: DEPENDENCY_SCANNING_NAME,
+};
 
 export const securityFeatures = [
   {

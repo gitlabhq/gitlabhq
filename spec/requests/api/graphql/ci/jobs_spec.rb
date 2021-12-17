@@ -50,8 +50,13 @@ RSpec.describe 'Query.project.pipeline' do
                 }
                 previousStageJobsOrNeeds {
                   nodes {
-                    name
-                  }
+                      ... on CiBuildNeed {
+                        #{all_graphql_fields_for('CiBuildNeed')}
+                      }
+                      ... on CiJob {
+                        #{all_graphql_fields_for('CiJob')}
+                      }
+                    }
                 }
                 detailedStatus {
                   id
@@ -99,7 +104,7 @@ RSpec.describe 'Query.project.pipeline' do
             'name' => 'docker 1 2',
             'needs' => { 'nodes' => [] },
             'previousStageJobsOrNeeds' => { 'nodes' => [
-              { 'name' => 'my test job' }
+              a_hash_including( 'name' => 'my test job' )
             ] }
           ),
           a_hash_including(
@@ -111,14 +116,15 @@ RSpec.describe 'Query.project.pipeline' do
             'name' => 'rspec 1 2',
             'needs' => { 'nodes' => [] },
             'previousStageJobsOrNeeds' => { 'nodes' => [
-              { 'name' => 'docker 1 2' }, { 'name' => 'docker 2 2' }
+              a_hash_including('name' => 'docker 1 2'),
+              a_hash_including('name' => 'docker 2 2')
             ] }
           ),
           a_hash_including(
             'name' => 'rspec 2 2',
             'needs' => { 'nodes' => [a_hash_including('name' => 'my test job')] },
             'previousStageJobsOrNeeds' => { 'nodes' => [
-              { 'name' => 'my test job' }
+              a_hash_including('name' => 'my test job' )
             ] }
           )
         )

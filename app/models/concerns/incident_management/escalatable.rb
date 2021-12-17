@@ -102,3 +102,5 @@ module IncidentManagement
     end
   end
 end
+
+::IncidentManagement::Escalatable.prepend_mod

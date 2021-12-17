@@ -460,7 +460,8 @@ copy-code {
   top: 7px;
   right: $input-horizontal-padding;
 
-  .markdown-code-block:hover & {
+  .markdown-code-block:hover &,
+  &:focus-within {
     @include gl-opacity-10;
   }
 }

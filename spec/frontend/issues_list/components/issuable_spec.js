@@ -7,7 +7,7 @@ import { isScopedLabel } from '~/lib/utils/common_utils';
 import { formatDate } from '~/lib/utils/datetime_utility';
 import { mergeUrlParams } from '~/lib/utils/url_utility';
 import initUserPopovers from '~/user_popovers';
-import IssueAssignees from '~/vue_shared/components/issue/issue_assignees.vue';
+import IssueAssignees from '~/issuable/components/issue_assignees.vue';
 import { simpleIssue, testAssignees, testLabels } from '../issuable_list_test_data';
 
 jest.mock('~/user_popovers');

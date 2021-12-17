@@ -286,16 +286,16 @@ spotbugs-sast:
 
 ### Customize rulesets **(ULTIMATE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/235382) in GitLab 13.5.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/235382) in GitLab 13.5.
+> - [Added](https://gitlab.com/gitlab-org/gitlab/-/issues/339614) support for
+>   passthrough chains. Expanded to include additional passthrough types of `file`, `git`, and `url` in GitLab 14.6.
 
 You can customize the default scanning rules provided by our SAST analyzers.
+Ruleset customization supports two capabilities that can be used
+simultaneously:
 
-Ruleset customization supports two capabilities:
-
-1. Disabling predefined rules (available for all analyzers).
-1. Modifying the default behavior of a given analyzer (only available for `nodejs-scan` and `gosec`).
-
-These capabilities can be used simultaneously.
+- [Disabling predefined rules](index.md#disable-predefined-analyzer-rules). Available for all analyzers.
+- Modifying the default behavior of a given analyzer by [synthesizing and passing a custom configuration](index.md#synthesize-a-custom-configuration). Available for only `nodejs-scan`, `gosec`, and `semgrep`.
 
 To customize the default scanning rules, create a file containing custom rules. These rules
 are passed through to the analyzer's underlying scanner tools.
@@ -304,81 +304,303 @@ To create a custom ruleset:
 
 1. Create a `.gitlab` directory at the root of your project, if one doesn't already exist.
 1. Create a custom ruleset file named `sast-ruleset.toml` in the `.gitlab` directory.
-1. In the `sast-ruleset.toml` file, do one of the following:
 
-   - Disable predefined rules belonging to SAST analyzers. In this example, the three disabled rules
-     belong to `eslint` and `sobelow` by matching the corresponding identifiers' `type` and `value`:
+#### Disable predefined analyzer rules
 
-     ```toml
-     [eslint]
-       [[eslint.ruleset]]
-         disable = true
-         [eslint.ruleset.identifier]
-           type = "eslint_rule_id"
-           value = "security/detect-object-injection"
+To disable analyzer rules:
 
-       [[eslint.ruleset]]
-         disable = true
-         [eslint.ruleset.identifier]
-           type = "cwe"
-           value = "185"
+1. Set the `disabled` flag to `true` in the context of a `ruleset` section
 
-     [sobelow]
-       [[sobelow.ruleset]]
-         disable = true
-         [sobelow.ruleset.identifier]
-           type = "sobelow_rule_id"
-           value = "sql_injection"
-     ```
+1. In one or more `ruleset.identifier` sub sections, list the rules that you want disabled. Every `ruleset.identifier` section has: 
 
-   - Define a custom analyzer configuration. In this example, customized rules are defined for the
-     `nodejs-scan` scanner:
+- a `type` field, to name the predefined rule identifier that the targeted analyzer uses. 
 
-     ```toml
-     [nodejs-scan]
-       description = 'custom ruleset for nodejs-scan'
+- a `value` field, to name the rule to be disabled.
 
-       [[nodejs-scan.passthrough]]
-         type  = "raw"
-         value = '''
-     - nodejs-extensions:
-       - .js
+##### Example: Disable predefined rules of SAST analyzers
 
-       template-extensions:
-       - .new
-       - .hbs
-       - ''
+In the following example, the disabled rules are assigned to `eslint`
+and `sobelow` by matching the `type` and `value` of identifiers:
 
-       ignore-filenames:
-     - skip.js
+```toml
+[eslint]
+  [[eslint.ruleset]]
+    disable = true
+    [eslint.ruleset.identifier]
+      type = "eslint_rule_id"
+      value = "security/detect-object-injection"
 
-       ignore-paths:
-       - __MACOSX
-       - skip_dir
-       - node_modules
+  [[eslint.ruleset]]
+    disable = true
+    [eslint.ruleset.identifier]
+      type = "cwe"
+      value = "185"
 
-       ignore-extensions:
-       - .hbs
+[sobelow]
+  [[sobelow.ruleset]]
+    disable = true
+    [sobelow.ruleset.identifier]
+      type = "sobelow_rule_id"
+      value = "sql_injection"
+```
 
-       ignore-rules:
-       - regex_injection_dos
-       - pug_jade_template
-       - express_xss
+#### Synthesize a custom configuration
 
-     '''
-     ```
+To create a custom configuration, you can use passthrough chains. 
 
-   - Provide the name of the file containing a custom analyzer configuration. In this example,
-     customized rules for the `gosec` scanner are contained in the file `gosec-config.json`:
+A passthrough is a single step in a passthrough chain. The passthrough is evaluated
+in a sequence to incrementally build a configuration. The configuration is then
+passed to the target analyzer.
 
-     ```toml
-     [gosec]
-       description = 'custom ruleset for gosec'
+A configuration section for an analyzer has the following
+parameters:
 
-       [[gosec.passthrough]]
-         type  = "file"
-         value = "gosec-config.json"
-     ```
+| Parameter     | Explanation |
+| ------------- | ------ |
+| `description` | Description about the analyzer configuration section. |
+| `targetdir`   | The `targetdir` parameter defines the directory where the final configuration is located. If `targetdir` is empty, the analyzer uses a random directory. The maximum size of `targetdir` is 100MB. |
+| `validate`    | If set to `true`, the target files for passthroughs (`raw`, `file` and `url`) are validated. The validation works for `yaml`, `xml`, `json` and `toml` files. The proper validator is identified based on the extension of the target file. By default, `validate` is set to `false`. |
+| `interpolate` | If set to `true`, environment variable interpolation is enabled so that the configuration uses secrets/tokens. We advise using this feature with caution to not leak any secrets. By default, `interpolate` is set to `false`. | 
+| `timeout`     | The total `timeout` for the evaluation of a passthrough chain is set to 60 seconds. If `timeout` is not set, the default timeout is 60 seconds. The timeout cannot exceed 300 seconds. | 
+
+A configuration section can include one or more passthrough sections. The maximum number of passthrough sections is 20.
+There are several types of passthroughs:
+
+| Type   | Description |
+| ------ | ------ |
+| `file` | Use a file that is already available in the Git repository. |
+| `raw`  | Provide the configuration inline. |
+| `git`  | Pull the configuration from a remote Git repository. |
+| `url`  | Fetch the analyzer configuration through HTTP. |
+
+If multiple passthrough sections are defined in a passthrough chain, their
+position in the chain defines the order in which they are evaluated. 
+
+- Passthroughs listed later in the chain sequence have a higher precedence. 
+- Passthroughs with a higher precedence overwrite (default) and append data
+  yielded by previous passthroughs. This is useful for cases where you need to
+  use or modify an existing configuration. 
+
+Configure a passthrough these parameters:
+
+| Parameter     | Explanation |
+| ------------ | ----------- |
+| `type`       | One of `file`, `raw`, `git` or `url`. |
+| `target`     | The target file that contains the data written by the passthrough evaluation. If no value is provided, a random target file is generated. |
+| `mode`       | `overwrite`: if `target` exists, overwrites the file; `append`: append to file instead. The default is `overwrite`. |
+| `ref`        | This option only applies to the `git` passthrough type and contains the name of the branch or the SHA to be used. |
+| `subdir`     | This option only applies to the `git` passthrough type and can be used to only consider a certain subdirectory of the source Git repository. |
+| `value`      | For the `file` `url` and `git` types, `value` defines the source location of the file/Git repository; for the `raw` type, `value` carries the raw content to be passed through. |
+| `validator`  | Can be used to explicitly invoke validators (`xml`, `yaml`, `json`, `toml`) on the target files after the application of a passthrough. Per default, no validator is set. |
+
+The amount of data generated by a single passthrough is limited to 1MB.
+
+#### Passthrough configuration examples
+
+##### Raw passthrough for nodejs-scan
+
+Define a custom analyzer configuration. In this example, customized rules are
+defined for the `nodejs-scan` scanner:
+
+```toml
+[nodejs-scan]
+  description = 'custom ruleset for nodejs-scan'
+
+  [[nodejs-scan.passthrough]]
+    type  = "raw"
+    value = '''
+- nodejs-extensions:
+  - .js
+
+  template-extensions:
+  - .new
+  - .hbs
+  - ''
+
+  ignore-filenames:
+- skip.js
+
+  ignore-paths:
+  - __MACOSX
+  - skip_dir
+  - node_modules
+
+  ignore-extensions:
+  - .hbs
+
+  ignore-rules:
+  - regex_injection_dos
+  - pug_jade_template
+  - express_xss
+
+'''
+```
+
+##### File passthrough for gosec
+
+Provide the name of the file containing a custom analyzer configuration. In
+this example, customized rules for the `gosec` scanner are contained in the
+file `gosec-config.json`:
+
+```toml
+[gosec]
+  description = 'custom ruleset for gosec'
+
+  [[gosec.passthrough]]
+    type  = "file"
+    value = "gosec-config.json"
+```
+
+##### Passthrough chain for semgrep
+
+In the below example, we generate a custom configuration under the `/sgrules`
+target directory with a total `timeout` of 60 seconds. 
+
+Several passthrouh types generate a configuration for the target analyzer:
+
+- Two `git` passthrough sections pull the head of branch
+  `refs/remotes/origin/test` from the `myrules` Git repository, and revision
+  `97f7686` from the `sast-rules` Git repostory. From the `sast-rules` Git
+  repository, only data from the `go` subdirectory is considered.
+  - The `sast-rules` entry has a higher precedence because it appears later in
+    the configuration. 
+  - If there is a filename collision between files in both repositories, files
+    from the `sast` repository overwrite files from the `myrules` repository,
+    as `sast-rules` has higher precedence.  
+- The `raw` entry creates a file named `insecure.yml` under `/sgrules`. The
+  full path is `/sgrules/insecure.yml`. 
+- The `url` entry fetches a configuration made available through a URL and
+  stores it in the `/sgrules/gosec.yml` file. 
+
+Afterwards, semgrep is invoked with the final configuration located under
+`/sgrules`. 
+
+```toml
+[semgrep]
+  description = 'semgrep custom rules configuration'
+  targetdir = "/sgrules"
+  timeout = 60
+
+  [[semgrep.passthrough]]
+    type  = "git"
+    value = "https://gitlab.com/user/myrules.git"
+    ref = "refs/remotes/origin/test"
+
+  [[semgrep.passthrough]]
+    type  = "git"
+    value = "https://gitlab.com/gitlab-org/secure/gsoc-sast-vulnerability-rules/playground/sast-rules.git"
+    ref = "97f7686db058e2141c0806a477c1e04835c4f395"
+    subdir = "go"
+
+  [[semgrep.passthrough]]
+    type  = "raw"
+    target = "insecure.yml"
+    value = """
+rules:
+- id: "insecure"
+  patterns:
+  - pattern: "func insecure() {...}"
+  message: |
+    Insecure function insecure detected
+  metadata:
+    cwe: "CWE-200: Exposure of Sensitive Information to an Unauthorized Actor"
+  severity: "ERROR"
+  languages:
+  - "go"
+    """
+
+  [[semgrep.passthrough]]
+    type  = "url"
+    value = "https://semgrep.dev/c/p/gosec"
+    target = "gosec.yml"
+```
+
+##### Interpolation
+
+The code snippet below shows an example configuration that uses an environment
+variable `$GITURL` to access a private repositories with a Git URL. The variable contains
+a username and token in the `value` field (for example `https://user:token@url`).
+It does not explicitly store credentials in the configuration file. To reduce the risk of leaking secrets through created paths and files, use this feature with caution.
+
+```toml
+[semgrep]
+  description = 'semgrep custom rules configuration'
+  targetdir = "/sgrules"
+  interpolate = true
+
+  [[semgrep.passthrough]]
+    type  = "git"
+    value = "$GITURL"
+    ref = "refs/remotes/origin/main"
+```
+
+##### Configure the append mode for passthroughs
+
+To append data to previous passthroughs, use the `append` mode for the
+passthrough types `file`, `url`, and `raw`. 
+
+Passthroughs in `override` mode overwrite files
+created when preceding passthroughs in the chain find a naming
+collision. If `mode` is set to `append`, a passthrough appends data to the
+files created by its predecessors instead of overwriting. 
+
+In the below semgrep configuration,`/sgrules/insecure.yml` assembles two passthroughs. The rules are:
+
+- `insecure`
+- `secret` 
+
+These rules add a search pattern to the analyzer and extends semgrep capabilities.
+
+For passthrough chains we recommend that you enable validation. To enable validation,
+you can either:
+
+- set `validate` to `true`
+
+- set a passthrough `validator` to `xml`, `json`, `yaml`, or `toml`.
+
+```toml
+[semgrep]
+  description = 'semgrep custom rules configuration'
+  targetdir = "/sgrules"
+  validate = true
+
+  [[semgrep.passthrough]]
+    type  = "raw"
+    target = "insecure.yml"
+    value = """
+rules:
+- id: "insecure"
+  patterns:
+  - pattern: "func insecure() {...}"
+  message: |
+    Insecure function insecure detected
+  metadata:
+    cwe: "...
+  severity: "ERROR"
+  languages:
+  - "go"
+"""
+
+  [[semgrep.passthrough]]
+    type  = "raw"
+    mode  = "append"
+    target = "insecure.yml"
+    value = """
+- id: "secret"
+  patterns:
+  - pattern-either:
+    - pattern: "$MASK = \"...\""
+  - metavariable-regex:
+      metavariable: "$MASK"
+      regex: "(password|pass|passwd|pwd|secret|token)"
+  message: |
+    Use of Hard-coded Password
+    cwe: "..."
+  severity: "ERROR"
+  languages:
+  - "go"
+"""
+```
 
 ### False Positive Detection **(ULTIMATE)**
 

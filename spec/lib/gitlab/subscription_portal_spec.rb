@@ -56,6 +56,7 @@ RSpec.describe ::Gitlab::SubscriptionPortal do
     where(:method_name, :result) do
       :default_subscriptions_url         | 'https://customers.staging.gitlab.com'
       :payment_form_url                  | 'https://customers.staging.gitlab.com/payment_forms/cc_validation'
+      :registration_validation_form_url  | 'https://customers.staging.gitlab.com/payment_forms/cc_registration_validation'
       :subscriptions_graphql_url         | 'https://customers.staging.gitlab.com/graphql'
       :subscriptions_more_minutes_url    | 'https://customers.staging.gitlab.com/buy_pipeline_minutes'
       :subscriptions_more_storage_url    | 'https://customers.staging.gitlab.com/buy_storage'
