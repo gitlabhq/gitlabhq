@@ -233,7 +233,7 @@ that were not removed along with the Kubernetes resources.
 The cluster is configured via Terraform in the [`engineering-productivity-infrastructure`](https://gitlab.com/gitlab-org/quality/engineering-productivity-infrastructure) project.
 
 Node pool image type must be `Container-Optimized OS (cos)`, not `Container-Optimized OS with Containerd (cos_containerd)`,
-due to this [known issue on GitLab Runner Kubernetes executor](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/4755)
+due to this [known issue on the Kubernetes executor for GitLab Runner](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/4755)
 
 ### Helm
 

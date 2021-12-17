@@ -12,9 +12,39 @@ Try out Dependency Scanning in GitLab Ultimate.
 [It's free for 30 days](https://about.gitlab.com/free-trial/index.html?glm_source=docs.gitlab.com&glm_content=u-dependency-scanning-docs).
 
 The Dependency Scanning feature can automatically find security vulnerabilities in your
-dependencies while you're developing and testing your applications. For example, dependency scanning
-lets you know if your application uses an external (open source) library that is known to be
-vulnerable. You can then take action to protect your application.
+software dependencies while you're developing and testing your applications. For example,
+dependency scanning lets you know if your application uses an external (open source)
+library that is known to be vulnerable. You can then take action to protect your application.
+
+Dependency Scanning is often considered part of Software Composition Analysis (SCA).
+SCA can contain various aspects of inspecting the items used in your code. These items
+typically include both application dependencies and system dependencies that are
+almost always imported from external sources, rather than sourced from items you wrote yourself.
+
+At GitLab, we use two separate scanning capabilities to ensure coverage for all of
+these dependency types: Dependency Scanning and Container Scanning. Both are included
+in GitLab Ultimate. We encourage you to use all of our scanners whenever possible
+to cover as much of your risk area as possible:
+
+- Dependency Scanning analyzes your project and tells you which software dependencies,
+  including upstream dependencies, have been included in your project, and what known
+  risks the dependencies contain. Dependency Scanning modifies its behavior based
+  on the language and package manager of the project. It typically looks for a lock file
+  then performs a build to fetch upstream dependency information. In the case of
+  containers, Dependency Scanning uses the compatible manifest and reports only these
+  declared software dependencies (and those installed as a sub-dependency).
+  Dependency Scanning can not detect software dependencies that are pre-bundled
+  into the container's base image. To identify pre-bundled dependencies, enable
+  [Container Scanning](../container_scanning/) language scanning using the
+  [`CS_DISABLE_LANGUAGE_VULNERABILITY_SCAN` variable](../container_scanning/#report-language-specific-findings).
+- [Container Scanning](../container_scanning/) analyzes your containers and tells
+  you about known risks in the operating system's (OS) packages. You can configure it
+  to also report on software and language dependencies, if you enable it and use
+  the [`CS_DISABLE_LANGUAGE_VULNERABILITY_SCAN` variable](../container_scanning/#report-language-specific-findings).
+  Turning this variable on can result in some duplicate findings, as we do not yet
+  de-duplicate results between Container Scanning and Dependency Scanning. For more details,
+  efforts to de-duplicate these findings can be tracked in
+  [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/348655).
 
 ## Overview
 
@@ -1042,10 +1072,10 @@ We recommend committing the lock files, which prevents this warning.
 
 If you have manually set `DS_MAJOR_VERSION` or `DS_ANALYZER_IMAGE` for specific reasons,
 and now must update your configuration to again get the latest patched versions of our
-analyzers, edit your `gitlab-ci.yml` file and either: 
+analyzers, edit your `gitlab-ci.yml` file and either:
 
 - Set your `DS_MAJOR_VERSION` to match the latest version as seen in
-  [our current Dependency Scanning template](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Security/Dependency-Scanning.gitlab-ci.yml#L18). 
+  [our current Dependency Scanning template](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Security/Dependency-Scanning.gitlab-ci.yml#L18).
 - If you hardcoded the `DS_ANALYZER_IMAGE` variable directly, change it to match the latest
   line as found in our [current Dependency Scanning template](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Security/Dependency-Scanning.gitlab-ci.yml).
   The line number will vary depending on which scanning job you edited.

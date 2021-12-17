@@ -548,7 +548,7 @@ kubectl create configmap docker-daemon --namespace gitlab-runner --from-file /tm
 ```
 
 NOTE:
-Make sure to use the namespace that the GitLab Runner Kubernetes executor uses
+Make sure to use the namespace that the Kubernetes executor for GitLab Runner uses
 to create job pods in.
 
 After the ConfigMap is created, you can update the `config.toml`

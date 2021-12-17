@@ -42,7 +42,7 @@ To use the KAS:
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/259669) in GitLab 13.7, the Agent manifest configuration can be added to multiple directories (or subdirectories) of its repository.
 > - Group authorization was [introduced](https://gitlab.com/groups/gitlab-org/-/epics/5784) in GitLab 14.3.
 
-To configure an Agent, you need:
+To create an agent, you need:
 
 1. A GitLab repository to hold the configuration file.
 1. Install the Agent in a cluster.
@@ -58,28 +58,22 @@ In your repository, add the Agent configuration file under:
 
 Make sure that `<agent-name>` conforms to the [Agent's naming format](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/blob/master/doc/identity_and_auth.md#agent-identity-and-name).
 
-Your `config.yaml` file specifies all configurations of the Agent, such as:
-
-- The manifest projects to synchronize.
-- The groups that can access this Agent via the [CI/CD Tunnel](../ci_cd_tunnel.md).
-- The address of the `hubble-relay` for the Network Security policy integrations.
-
 WARNING:
 The agent is only recognized if you use `.yaml` extension for the `config.yaml` file. The extension `.yml` is **not** recognized.
 
-As an example, a minimal Agent configuration that sets up only the manifest
-synchronizations is:
+You **don't have to add any content** to this file when you create it. The fact that the file exists
+tells GitLab that this is an agent configuration file. It doesn't do anything so far, but, later on, you can use this
+file to [configure the agent](../repository.md) by setting up parameters such as:
 
-```yaml
-gitops:
-  manifest_projects:
-  # The `id` is the path to the Git repository holding your manifest files
-  - id: "path/to/your-manifest-project-1"
-    paths:
-    - glob: '/**/*.{yaml,yml,json}'
-```
+- Groups and projects that can access the agent via the [CI/CD Tunnel](../ci_cd_tunnel.md).
+- [Manifest projects to synchronize](../repository.md#synchronize-manifest-projects).
+- The address of the `hubble-relay` for the [Network Security policy integrations](../../../project/clusters/protect/index.md).
 
-All the options for the [Agent configuration repository](../repository.md) are documented separately.
+To see all the settings available, read the [Agent configuration repository documentation](../repository.md).
+
+### Access your cluster from GitLab CI/CD
+
+Use the [CI/CD Tunnel](../ci_cd_tunnel.md#example-for-a-kubectl-command-using-the-cicd-tunnel) to access your cluster from GitLab CI/CD.
 
 ### Create an Agent record in GitLab
 

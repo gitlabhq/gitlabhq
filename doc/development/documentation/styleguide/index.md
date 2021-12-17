@@ -1600,7 +1600,7 @@ users be aware of recent improvements or additions.
 
 The GitLab Technical Writing team determines which versions of
 documentation to display on this site based on the GitLab
-[Statement of Support](https://about.gitlab.com/support/statement-of-support.html#we-support-the-current-major-version-and-the-two-previous-major-versions).
+[Statement of Support](https://about.gitlab.com/support/statement-of-support.html#version-support).
 
 ### View older GitLab documentation versions
 
@@ -1651,6 +1651,13 @@ This feature does something.
 > - [Enabled by default](<link-to-issue>) in GitLab 11.4.
 
 This feature does something else.
+```
+
+If you're documenting elements of a feature, start with the feature name or a gerund:
+
+```markdown
+> - Notifications for expiring tokens [introduced](<link-to-issue>) in GitLab 11.3.
+> - Creating an issue from an issue board [introduced](<link-to-issue>) in GitLab 13.1.
 ```
 
 If a feature is moved to another tier:

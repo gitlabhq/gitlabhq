@@ -24,6 +24,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Validate::External do
     second_stage_job_name:
       stage: second_stage
       services:
+        -
         - postgres
       before_script:
         - echo 'first hello'
@@ -139,6 +140,23 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Validate::External do
 
       it 'logs the authorization' do
         expect(Gitlab::AppLogger).to receive(:info).with(message: 'Pipeline authorized', project_id: project.id, user_id: user.id)
+
+        perform!
+      end
+
+      it 'returns expected payload' do
+        expect(::Gitlab::HTTP).to receive(:post) do |_url, params|
+          payload = Gitlab::Json.parse(params[:body])
+
+          builds = payload['builds']
+          expect(builds.count).to eq(2)
+          expect(builds[0]['services']).to be_nil
+          expect(builds[0]['stage']).to eq('first_stage')
+          expect(builds[0]['image']).to eq('hello_world')
+          expect(builds[1]['services']).to eq(['postgres'])
+          expect(builds[1]['stage']).to eq('second_stage')
+          expect(builds[1]['image']).to be_nil
+        end
 
         perform!
       end

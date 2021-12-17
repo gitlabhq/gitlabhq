@@ -32,7 +32,7 @@
         type_plural: type_plural,
         active_tokens: @active_personal_access_tokens,
         revoke_route_helper: ->(token) { revoke_profile_personal_access_token_path(token) }
-- if Feature.enabled?(:hide_access_tokens)
+- if Feature.enabled?(:hide_access_tokens, default_enabled: :yaml)
   #js-tokens-app{ data: { tokens_data: tokens_app_data } }
 - else
   - unless Gitlab::CurrentSettings.disable_feed_token
