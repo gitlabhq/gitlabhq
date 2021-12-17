@@ -37,6 +37,7 @@ exports[`publish_method renders 1`] = `
     text="sha-baz"
     title="Copy commit SHA"
     tooltipplacement="top"
+    variant="default"
   />
 </div>
 `;

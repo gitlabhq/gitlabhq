@@ -99,6 +99,7 @@ exports[`Repository last commit component renders commit widget 1`] = `
           text="123456789"
           title="Copy commit SHA"
           tooltipplacement="top"
+          variant="default"
         />
       </gl-button-group-stub>
     </div>
@@ -209,6 +210,7 @@ exports[`Repository last commit component renders the signature HTML as returned
           text="123456789"
           title="Copy commit SHA"
           tooltipplacement="top"
+          variant="default"
         />
       </gl-button-group-stub>
     </div>

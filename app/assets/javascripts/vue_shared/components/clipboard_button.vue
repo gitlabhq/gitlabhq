@@ -66,6 +66,11 @@ export default {
       required: false,
       default: 'medium',
     },
+    variant: {
+      type: String,
+      required: false,
+      default: 'default',
+    },
   },
   computed: {
     clipboardText() {
@@ -92,6 +97,7 @@ export default {
     :size="size"
     icon="copy-to-clipboard"
     :aria-label="__('Copy this value')"
+    :variant="variant"
     v-on="$listeners"
   >
     <slot></slot>

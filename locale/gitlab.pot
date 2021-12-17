@@ -9664,6 +9664,9 @@ msgstr ""
 msgid "Copy file path"
 msgstr ""
 
+msgid "Copy issue URL to clipboard"
+msgstr ""
+
 msgid "Copy key"
 msgstr ""
 
@@ -21528,7 +21531,7 @@ msgstr ""
 msgid "ManualOrdering|Couldn't save the order of the issues"
 msgstr ""
 
-msgid "Manually link this issue by adding it to the linked issue section of the %{originating_vulnerability}."
+msgid "Manually link this issue by adding it to the linked issue section of the %{linkStart}originating vulnerability%{linkEnd}."
 msgstr ""
 
 msgid "Map a FogBugz account ID to a GitLab user"
@@ -42436,9 +42439,6 @@ msgid "opened %{timeAgo}"
 msgstr ""
 
 msgid "or"
-msgstr ""
-
-msgid "originating vulnerability"
 msgstr ""
 
 msgid "other card matches"
