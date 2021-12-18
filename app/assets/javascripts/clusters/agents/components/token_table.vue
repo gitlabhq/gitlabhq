@@ -62,8 +62,8 @@ export default {
       ];
     },
     learnMoreUrl() {
-      return helpPagePath('user/clusters/agent/index.md', {
-        anchor: 'create-an-agent-record-in-gitlab',
+      return helpPagePath('user/clusters/agent/install/index', {
+        anchor: 'register-an-agent-with-gitlab',
       });
     },
   },

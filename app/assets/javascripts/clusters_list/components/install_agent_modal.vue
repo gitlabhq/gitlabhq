@@ -47,7 +47,7 @@ export default {
   enableKasPath: helpPagePath('administration/clusters/kas'),
   installAgentPath: helpPagePath('user/clusters/agent/install/index'),
   registerAgentPath: helpPagePath('user/clusters/agent/install/index', {
-    anchor: 'create-an-agent-record-in-gitlab',
+    anchor: 'register-an-agent-with-gitlab',
   }),
   components: {
     AvailableAgentsDropdown,

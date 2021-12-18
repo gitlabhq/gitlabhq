@@ -21,9 +21,9 @@ To install the [Agent](../index.md) in your cluster:
 
 1. [Set up the Agent Server](#set-up-the-agent-server) for your GitLab instance.
 1. [Define a configuration repository](#define-a-configuration-repository).
-1. [Create an Agent record in GitLab](#create-an-agent-record-in-gitlab).
-1. [Install the Agent into the cluster](#install-the-agent-into-the-cluster).
-1. [Generate and copy a Secret token used to connect to the Agent](#create-the-kubernetes-secret).
+1. [Register an agent with GitLab](#register-an-agent-with-gitlab).
+1. [Install the agent into the cluster](#install-the-agent-into-the-cluster).
+1. [Generate and copy a Secret token used to connect to the agent](#create-the-kubernetes-secret).
 1. [Create manifest files](#create-manifest-files).
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> Watch a GitLab 14.2 [walking-through video](https://www.youtube.com/watch?v=XuBpKtsgGkE) with this process.
@@ -75,7 +75,7 @@ To see all the settings available, read the [Agent configuration repository docu
 
 Use the [CI/CD Tunnel](../ci_cd_tunnel.md#example-for-a-kubectl-command-using-the-cicd-tunnel) to access your cluster from GitLab CI/CD.
 
-### Create an Agent record in GitLab
+### Register an agent with GitLab
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5786) in GitLab 14.1, you can create a new Agent record directly from the GitLab UI.
 
@@ -88,7 +88,7 @@ In GitLab:
 1. Ensure that [GitLab CI/CD is enabled in your project](../../../../ci/enable_or_disable_ci.md#enable-cicd-in-a-project).
 1. From your project's sidebar, select **Infrastructure > Kubernetes clusters**.
 1. Select **Actions**.
-1. From the **Select an Agent** dropdown, select the Agent you want to connect and select **Register Agent** to access the installation form.
+1. From the **Select an agent** dropdown, select the agent you want to connect and select **Register an agent** to access the installation form.
 1. The form reveals your registration token. Securely store this secret token as you cannot view it again.
 1. Copy the command under **Recommended installation method**.
 
@@ -97,7 +97,7 @@ In your computer:
 1. Open your local terminal and connect to your cluster.
 1. Run the command you copied from the installation form.
 
-### Install the Agent into the cluster
+### Install the agent into the cluster
 
 To install the in-cluster component of the Agent, first you need to define a namespace. To create a new namespace,
 for example, `gitlab-kubernetes-agent`, run:
