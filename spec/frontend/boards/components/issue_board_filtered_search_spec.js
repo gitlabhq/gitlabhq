@@ -1,3 +1,4 @@
+import { orderBy } from 'lodash';
 import { shallowMount } from '@vue/test-utils';
 import BoardFilteredSearch from 'ee_else_ce/boards/components/board_filtered_search.vue';
 import IssueBoardFilteredSpec from '~/boards/components/issue_board_filtered_search.vue';
@@ -62,7 +63,7 @@ describe('IssueBoardFilter', () => {
           isSignedIn,
         );
 
-        expect(findBoardsFilteredSearch().props('tokens')).toEqual(tokens);
+        expect(findBoardsFilteredSearch().props('tokens')).toEqual(orderBy(tokens, ['title']));
       },
     );
   });

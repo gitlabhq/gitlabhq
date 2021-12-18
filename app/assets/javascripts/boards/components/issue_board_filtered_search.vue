@@ -2,6 +2,7 @@
 import { GlFilteredSearchToken } from '@gitlab/ui';
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
 import { mapActions } from 'vuex';
+import { orderBy } from 'lodash';
 import BoardFilteredSearch from 'ee_else_ce/boards/components/board_filtered_search.vue';
 import { BoardType } from '~/boards/constants';
 import axios from '~/lib/utils/axios_utils';
@@ -79,7 +80,7 @@ export default {
         this.boardType,
       );
 
-      return [
+      const tokens = [
         {
           icon: 'user',
           title: assignee,
@@ -189,6 +190,8 @@ export default {
           },
         },
       ];
+
+      return orderBy(tokens, ['title']);
     },
     tokens() {
       return this.tokensCE;
