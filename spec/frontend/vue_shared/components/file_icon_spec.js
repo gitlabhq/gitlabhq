@@ -34,7 +34,7 @@ describe('File Icon component', () => {
 
   it.each`
     fileName        | iconName
-    ${'test.js'}    | ${'javascript'}
+    ${'index.js'}   | ${'javascript'}
     ${'test.png'}   | ${'image'}
     ${'test.PNG'}   | ${'image'}
     ${'.npmrc'}     | ${'npm'}
