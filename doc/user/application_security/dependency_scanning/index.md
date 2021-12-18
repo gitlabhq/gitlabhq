@@ -16,15 +16,14 @@ software dependencies while you're developing and testing your applications. For
 dependency scanning lets you know if your application uses an external (open source)
 library that is known to be vulnerable. You can then take action to protect your application.
 
-Dependency Scanning is often considered part of Software Composition Analysis (SCA).
-SCA can contain various aspects of inspecting the items used in your code. These items
-typically include both application dependencies and system dependencies that are
-almost always imported from external sources, rather than sourced from items you wrote yourself.
+Dependency Scanning is often considered part of Software Composition Analysis (SCA). SCA can contain
+aspects of inspecting the items your code uses. These items typically include application and system
+dependencies that are almost always imported from external sources, rather than sourced from items
+you wrote yourself.
 
-At GitLab, we use two separate scanning capabilities to ensure coverage for all of
-these dependency types: Dependency Scanning and Container Scanning. Both are included
-in GitLab Ultimate. We encourage you to use all of our scanners whenever possible
-to cover as much of your risk area as possible:
+GitLab offers both Dependency Scanning and Container Scanning
+to ensure coverage for all of these dependency types. To cover as much of your risk area as
+possible, we encourage you to use all of our security scanners:
 
 - Dependency Scanning analyzes your project and tells you which software dependencies,
   including upstream dependencies, have been included in your project, and what known

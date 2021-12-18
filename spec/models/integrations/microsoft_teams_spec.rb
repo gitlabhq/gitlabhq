@@ -3,6 +3,17 @@
 require 'spec_helper'
 
 RSpec.describe Integrations::MicrosoftTeams do
+  it_behaves_like "chat integration", "Microsoft Teams" do
+    let(:client) { ::MicrosoftTeams::Notifier }
+    let(:client_arguments) { webhook_url }
+
+    let(:payload) do
+      {
+        summary: be_present
+      }
+    end
+  end
+
   let(:chat_integration) { described_class.new }
   let(:webhook_url) { 'https://example.gitlab.com/' }
 

@@ -7,14 +7,12 @@ class CombinedRegistrationExperiment < ApplicationExperiment # rubocop:disable G
     super(source, 'force_company_trial')
   end
 
-  def redirect_path(trial_params)
-    @trial_params = trial_params
-
+  def redirect_path
     run
   end
 
   def control_behavior
-    new_users_sign_up_group_path(@trial_params)
+    new_users_sign_up_group_path
   end
 
   def candidate_behavior

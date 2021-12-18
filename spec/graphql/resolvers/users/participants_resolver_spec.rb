@@ -13,12 +13,15 @@ RSpec.describe Resolvers::Users::ParticipantsResolver do
     let_it_be(:note) do
       create(
         :note,
+        :system,
         :confidential,
         project: project,
         noteable: issue,
         author: create(:user)
       )
     end
+
+    let_it_be(:note_metadata) { create(:system_note_metadata, note: note) }
 
     subject(:resolved_items) { resolve(described_class, args: {}, ctx: { current_user: current_user }, obj: issue)&.items }
 
@@ -50,17 +53,30 @@ RSpec.describe Resolvers::Users::ParticipantsResolver do
         is_expected.to match_array([issue.author, note.author])
       end
 
-      it 'does not execute N+1 for project relation' do
-        query = -> { resolve(described_class, args: {}, ctx: { current_user: current_user }, obj: issue)&.items }
+      context 'N+1 queries' do
+        let(:query) { -> { resolve(described_class, args: {}, ctx: { current_user: current_user }, obj: issue)&.items } }
 
-        # warm-up
-        query.call
+        before do
+          # warm-up
+          query.call
+        end
 
-        control_count = ActiveRecord::QueryRecorder.new { query.call }
+        it 'does not execute N+1 for project relation' do
+          control_count = ActiveRecord::QueryRecorder.new { query.call }
 
-        create(:note, :confidential, project: project, noteable: issue, author: create(:user))
+          create(:note, :confidential, project: project, noteable: issue, author: create(:user))
 
-        expect { query.call }.not_to exceed_query_limit(control_count)
+          expect { query.call }.not_to exceed_query_limit(control_count)
+        end
+
+        it 'does not execute N+1 for system note metadata relation' do
+          control_count = ActiveRecord::QueryRecorder.new { query.call }
+
+          new_note = create(:note, :system, project: project, noteable: issue, author: create(:user))
+          create(:system_note_metadata, note: new_note)
+
+          expect { query.call }.not_to exceed_query_limit(control_count)
+        end
       end
     end
   end

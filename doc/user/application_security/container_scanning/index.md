@@ -10,14 +10,26 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/3672) in GitLab 10.4.
 
 INFO:
-Want to try out container scanning?
-[Get a free 30-day trial of GitLab Ultimate](https://about.gitlab.com/free-trial/index.html?glm_source=docs.gitlab.com&glm_content=u-container-scanning-docs).
+Try out Container Scanning in GitLab Ultimate.
+[It's free for 30 days](https://about.gitlab.com/free-trial/index.html?glm_source=docs.gitlab.com&glm_content=u-container-scanning-docs).
 
 Your application's Docker image may itself be based on Docker images that contain known
-vulnerabilities. By including an extra job in your pipeline that scans for those vulnerabilities and
-displays them in a merge request, you can use GitLab to audit your Docker-based apps.
+vulnerabilities. By including an extra Container Scanning job in your pipeline that scans for those
+vulnerabilities and displays them in a merge request, you can use GitLab to audit your Docker-based
+apps.
 
-GitLab provides integration with open-source tools for vulnerability static analysis in containers:
+Container Scanning is often considered part of Software Composition Analysis (SCA). SCA can contain
+aspects of inspecting the items your code uses. These items typically include application and system
+dependencies that are almost always imported from external sources, rather than sourced from items
+you wrote yourself.
+
+GitLab offers both Container Scanning and [Dependency Scanning](../dependency_scanning/)
+to ensure coverage for all of these dependency types. To cover as much of your risk area as
+possible, we encourage you to use all of our security scanners.
+
+## Overview
+
+GitLab integrates with open-source tools for vulnerability static analysis in containers:
 
 - [Trivy](https://github.com/aquasecurity/trivy)
 - [Grype](https://github.com/anchore/grype)

@@ -349,6 +349,12 @@ db:rollback:
     - scripts/db_tasks db:migrate VERSION=20181228175414
     - scripts/db_tasks db:migrate SKIP_SCHEMA_VERSION_CHECK=true
 
+db:rollback decomposed:
+  extends:
+    - db:rollback
+    - .decomposed-database
+    - .rails:rules:decomposed-databases
+
 db:migrate:reset:
   extends: .db-job-base
   script:

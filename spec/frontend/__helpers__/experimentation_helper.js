@@ -25,7 +25,7 @@ export function stubExperiments(experiments = {}) {
   window.gon.experiment = window.gon.experiment || {};
   // Preferred
   window.gl = window.gl || {};
-  window.gl.experiments = window.gl.experiemnts || {};
+  window.gl.experiments = window.gl.experiments || {};
 
   Object.entries(experiments).forEach(([name, variant]) => {
     const experimentData = { experiment: name, variant };

@@ -15,7 +15,7 @@ Get list of a project's variables.
 GET /projects/:id/variables
 ```
 
-| Attribute | Type           | required | Description                                                                                                                                   |
+| Attribute | Type           | Required | Description                                                                                                                                   |
 | --------- | -------------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
 | `id`      | integer/string | yes      | The ID of a project or [URL-encoded NAMESPACE/PROJECT_NAME of the project](index.md#namespaced-path-encoding) owned by the authenticated user |
 
@@ -52,7 +52,7 @@ Get the details of a project's specific variable.
 GET /projects/:id/variables/:key
 ```
 
-| Attribute | Type           | required | Description                                                                                                                                   |
+| Attribute | Type           | Required | Description                                                                                                                                   |
 | --------- | -------------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
 | `id`      | integer/string | yes      | The ID of a project or [URL-encoded NAMESPACE/PROJECT_NAME of the project](index.md#namespaced-path-encoding) owned by the authenticated user |
 | `key`     | string         | yes      | The `key` of a variable                                                                                                                       |
@@ -81,7 +81,7 @@ Create a new variable.
 POST /projects/:id/variables
 ```
 
-| Attribute           | Type           | required | Description                                                                                                                                   |
+| Attribute           | Type           | Required | Description                                                                                                                                   |
 | ------------------- | -------------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
 | `id`                | integer/string | yes      | The ID of a project or [URL-encoded NAMESPACE/PROJECT_NAME of the project](index.md#namespaced-path-encoding) owned by the authenticated user |
 | `key`               | string         | yes      | The `key` of a variable; must have no more than 255 characters; only `A-Z`, `a-z`, `0-9`, and `_` are allowed                                 |
@@ -115,7 +115,7 @@ Update a project's variable.
 PUT /projects/:id/variables/:key
 ```
 
-| Attribute           | Type           | required | Description                                                                                                                                   |
+| Attribute           | Type           | Required | Description                                                                                                                                   |
 | ------------------- | -------------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
 | `id`                | integer/string | yes      | The ID of a project or [URL-encoded NAMESPACE/PROJECT_NAME of the project](index.md#namespaced-path-encoding) owned by the authenticated user |
 | `key`               | string         | yes      | The `key` of a variable                                                                                                                       |
@@ -150,7 +150,7 @@ Remove a project's variable.
 DELETE /projects/:id/variables/:key
 ```
 
-| Attribute | Type           | required | Description                                                                                                                                   |
+| Attribute | Type           | Required | Description                                                                                                                                   |
 | --------- | -------------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
 | `id`      | integer/string | yes      | The ID of a project or [URL-encoded NAMESPACE/PROJECT_NAME of the project](index.md#namespaced-path-encoding) owned by the authenticated user |
 | `key`     | string         | yes      | The `key` of a variable                                                                                                                       |

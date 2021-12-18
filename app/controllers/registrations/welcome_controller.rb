@@ -76,10 +76,6 @@ module Registrations
     end
 
     # overridden in EE
-    def trial_params
-    end
-
-    # overridden in EE
     def update_success_path
     end
   end

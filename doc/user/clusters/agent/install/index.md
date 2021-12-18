@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Install the GitLab Agent **(FREE)**
 
-> [Moved](https://gitlab.com/groups/gitlab-org/-/epics/6290) to GitLab Free in 14.5.
+> [Moved](https://gitlab.com/groups/gitlab-org/-/epics/6290) from GitLab Premium to GitLab Free in 14.5.
 
 To get started with the Agent, install it in your cluster.
 
@@ -30,7 +30,7 @@ To install the [Agent](../index.md) in your cluster:
 
 ### Set up the Agent Server
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3834) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.10, the Agent Server (KAS) became available on GitLab.com under `wss://kas.gitlab.com`.
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3834) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.10, the GitLab Agent Server (KAS) became available on GitLab.com under `wss://kas.gitlab.com`.
 
 To use the KAS:
 
