@@ -2,7 +2,7 @@
 
 Encoding.default_external = 'UTF-8'
 
-require_relative '../lib/gitlab'
+require_relative '../lib/gitlab_edition'
 require_relative '../lib/gitlab/utils'
 require_relative '../config/initializers/0_inject_enterprise_edition_module'
 

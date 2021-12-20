@@ -34,9 +34,8 @@ module QA
         reporter.print_report
         reporter.report_in_issue_and_slack if report_in_issue_and_slack == "true"
       rescue StandardError => e
-        puts "Report creation failed! Error: '#{e}'".colorize(:red)
         reporter.notify_failure(e)
-        exit(1)
+        raise(e)
       end
 
       # Print top stable specs
@@ -96,13 +95,17 @@ module QA
       #
       # @return [String]
       def report_issue_body
+        execution_interval = "(#{Date.today - range} - #{Date.today})"
+
         issue = []
         issue << "[[_TOC_]]"
-        issue << "# Candidates for promotion to reliable\n\n```\n#{stable_summary_table}\n```"
+        issue << "# Candidates for promotion to reliable #{execution_interval}"
+        issue << "```\n#{stable_summary_table}\n```"
         issue << results_markdown(stable_results_tables)
         return issue.join("\n\n") if unstable_reliable_test_runs.empty?
 
-        issue << "# Reliable specs with failures\n\n```\n#{unstable_summary_table}\n```"
+        issue << "# Reliable specs with failures #{execution_interval}"
+        issue << "```\n#{unstable_summary_table}\n```"
         issue << results_markdown(unstable_reliable_results_tables)
         issue.join("\n\n")
       end
@@ -255,9 +258,14 @@ module QA
         all_runs = query_api.query(query: query(reliable)).values
         all_runs.each_with_object(Hash.new { |hsh, key| hsh[key] = {} }) do |table, result|
           records = table.records
-          name = records.last.values["name"]
-          file = records.last.values["file_path"].split("/").last
-          stage = records.last.values["stage"] || "unknown"
+          # skip specs that executed less time than defined by range
+          # offset 1 day due to how schedulers are configured and first run can be 1 day later
+          next if (Date.today - Date.parse(records.first.values["_time"])).to_i < (range - 1)
+
+          last_record = records.last.values
+          name = last_record["name"]
+          file = last_record["file_path"].split("/").last
+          stage = last_record["stage"] || "unknown"
 
           runs = records.count
           failed = records.count { |r| r.values["status"] == "failed" }

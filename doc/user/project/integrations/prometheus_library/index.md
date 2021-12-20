@@ -6,8 +6,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Prometheus Metrics library **(FREE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/8935) in GitLab 9.0.
-
 GitLab offers automatic detection of select [Prometheus exporters](https://prometheus.io/docs/instrumenting/exporters/).
 
 ## Exporters

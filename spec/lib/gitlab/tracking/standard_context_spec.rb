@@ -58,6 +58,10 @@ RSpec.describe Gitlab::Tracking::StandardContext do
       expect(snowplow_context.to_json.dig(:data, :source)).to eq(described_class::GITLAB_RAILS_SOURCE)
     end
 
+    it 'contains context_generated_at timestamp', :freeze_time do
+      expect(snowplow_context.to_json.dig(:data, :context_generated_at)).to eq(Time.current)
+    end
+
     context 'plan' do
       context 'when namespace is not available' do
         it 'is nil' do

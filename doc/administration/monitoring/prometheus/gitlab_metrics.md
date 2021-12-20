@@ -22,10 +22,8 @@ GitLab monitors its own internal service metrics, and makes them available at th
 `/-/metrics` endpoint. Unlike other [Prometheus](https://prometheus.io) exporters, to access
 the metrics, the client IP address must be [explicitly allowed](../ip_whitelist.md).
 
-For [Omnibus GitLab](https://docs.gitlab.com/omnibus/) and Chart installations,
-these metrics are enabled and collected as of
-[GitLab 9.4](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/1702).
-For source installations, these metrics must be enabled
+These metrics are enabled and collected for [Omnibus GitLab](https://docs.gitlab.com/omnibus/)
+and Chart installations. For source installations, these metrics must be enabled
 manually and collected by a Prometheus server.
 
 For enabling and viewing metrics from Sidekiq nodes, see [Sidekiq metrics](#sidekiq-metrics).
@@ -107,7 +105,7 @@ The following metrics are available:
 | `pipelines_created_total`                                        | Counter     | 9.4     | Counter of pipelines created                                                                                          |                                                           |
 | `rack_uncaught_errors_total`                                     | Counter     | 9.4     | Rack connections handling uncaught errors count                                                                       |                                                           |
 | `user_session_logins_total`                                      | Counter     | 9.4     | Counter of how many users have logged in since GitLab was started or restarted                                        |                                                           |
-| `upload_file_does_not_exist`                                     | Counter     | 10.7    | Number of times an upload record could not find its file. Made available in all tiers in GitLab 11.5.                 |                                                           |
+| `upload_file_does_not_exist`                                     | Counter     | 10.7    | Number of times an upload record could not find its file. |                                                           |
 | `failed_login_captcha_total`                                     | Gauge       | 11.0    | Counter of failed CAPTCHA attempts during login                                                                       |                                                           |
 | `successful_login_captcha_total`                                 | Gauge       | 11.0    | Counter of successful CAPTCHA attempts during login                                                                   |                                                           |
 | `auto_devops_pipelines_completed_total`                          | Counter     | 12.7    | Counter of completed Auto DevOps pipelines, labeled by status                                                         |                                                           |

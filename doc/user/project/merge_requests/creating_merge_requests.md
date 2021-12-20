@@ -78,7 +78,7 @@ You can create a merge request by running Git commands on your local machine.
 
    ```plaintext
    ...
-   remote: To create a merge request for docs-new-merge-request, visit:
+   remote: To create a merge request for my-new-branch, visit:
    remote:   https://gitlab.example.com/my-group/my-project/merge_requests/new?merge_request%5Bsource_branch%5D=my-new-branch
    ```
 

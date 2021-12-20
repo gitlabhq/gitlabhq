@@ -13,9 +13,16 @@ describe QA::Tools::ReliableReport do
   let(:slack_channel) { "#quality-reports" }
   let(:range) { 14 }
   let(:issue_url) { "https://gitlab.com/issue/1" }
+  let(:time) { "2021-12-07T04:05:25.000000000+00:00" }
 
   let(:runs) do
-    values = { "name" => "stable spec", "status" => "passed", "file_path" => "some/spec.rb", "stage" => "manage" }
+    values = {
+      "name" => "stable spec",
+      "status" => "passed",
+      "file_path" => "some/spec.rb",
+      "stage" => "manage",
+      "_time" => time
+    }
     {
       0 => instance_double(
         "InfluxDB2::FluxTable",
@@ -29,7 +36,13 @@ describe QA::Tools::ReliableReport do
   end
 
   let(:reliable_runs) do
-    values = { "name" => "unstable spec", "status" => "failed", "file_path" => "some/spec.rb", "stage" => "create" }
+    values = {
+      "name" => "unstable spec",
+      "status" => "failed",
+      "file_path" => "some/spec.rb",
+      "stage" => "create",
+      "_time" => time
+    }
     {
       0 => instance_double(
         "InfluxDB2::FluxTable",
@@ -136,11 +149,11 @@ describe QA::Tools::ReliableReport do
       <<~TXT.strip
         [[_TOC_]]
 
-        # Candidates for promotion to reliable
+        # Candidates for promotion to reliable (#{Date.today - range} - #{Date.today})
 
         #{markdown_section([['manage', 1]], [[name_column('stable spec'), 3, 0, '0%']], 'manage', 'stable')}
 
-        # Reliable specs with failures
+        # Reliable specs with failures (#{Date.today - range} - #{Date.today})
 
         #{markdown_section([['create', 1]], [[name_column('unstable spec'), 3, 2, '66.67%']], 'create', 'unstable')}
       TXT
@@ -180,7 +193,7 @@ describe QA::Tools::ReliableReport do
     end
 
     it "notifies failure", :aggregate_failures do
-      expect { expect { run }.to raise_error(SystemExit) }.to output.to_stdout
+      expect { expect { run }.to raise_error("Connection error!") }.to output.to_stdout
 
       expect(slack_notifier).to have_received(:post).with(
         icon_emoji: ":sadpanda:",

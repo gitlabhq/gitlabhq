@@ -6,8 +6,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Prometheus integration **(FREE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/8935) in GitLab 9.0.
-
 GitLab offers powerful integration with [Prometheus](https://prometheus.io) for
 monitoring key metrics of your apps, directly in GitLab.
 Metrics for each environment are retrieved from Prometheus, and then displayed
@@ -41,10 +39,9 @@ See [Prometheus cluster integration](../../clusters/integrations.md#prometheus-c
 
 Integration with Prometheus requires the following:
 
-1. GitLab 9.0 or higher
-1. Prometheus must be configured to collect one of the [supported metrics](prometheus_library/index.md)
-1. Each metric must be have a label to indicate the environment
-1. GitLab must have network connectivity to the Prometheus server
+- Prometheus must be configured to collect one of the [supported metrics](prometheus_library/index.md)
+- Each metric must be have a label to indicate the environment
+- GitLab must have network connectivity to the Prometheus server
 
 #### Getting started
 
@@ -112,9 +109,6 @@ can use only one:
   matching [environment scope](../../../ci/environments/index.md#scope-environments-with-specs) is used.
 
 ## Determining the performance impact of a merge
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/10408) in GitLab 9.2.
-> - GitLab 9.3 added the [numeric comparison](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/27439) of the 30 minute averages.
 
 Developers can view the performance impact of their changes in the merge
 request workflow. This feature requires [Kubernetes](prometheus_library/kubernetes.md) metrics.

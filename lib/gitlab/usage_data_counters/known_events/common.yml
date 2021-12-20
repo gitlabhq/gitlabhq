@@ -373,3 +373,9 @@
   redis_slot: network_policies
   category: network_policies
   aggregation: weekly
+# Geo group
+- name: g_geo_proxied_requests
+  category: geo
+  redis_slot: geo
+  aggregation: daily
+  feature_flag: track_geo_proxy_events

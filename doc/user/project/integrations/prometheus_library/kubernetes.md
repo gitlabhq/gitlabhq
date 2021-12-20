@@ -6,8 +6,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Monitoring Kubernetes **(FREE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/8935) in GitLab 9.0.
-
 GitLab has support for automatically detecting and monitoring Kubernetes metrics.
 
 ## Requirements
@@ -43,8 +41,6 @@ In order to isolate and only display relevant CPU and Memory metrics for a given
 Instead, the [Deployment](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/) or [DaemonSet](https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/) name should begin with [CI_ENVIRONMENT_SLUG](../../../../ci/variables/index.md#predefined-cicd-variables). It can be followed by a `-` and additional content if desired. For example, a deployment name of `review-homepage-5620p5` would match the `review/homepage` environment.
 
 ## Displaying Canary metrics **(PREMIUM)**
-
-> Introduced in [GitLab 10.2](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/15201).
 
 GitLab also gathers Kubernetes metrics for [canary deployments](../../canary_deployments.md), allowing easy comparison between the current deployed version and the canary.
 

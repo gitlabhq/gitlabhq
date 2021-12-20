@@ -18,10 +18,17 @@ type Proxy struct {
 	Version                string
 	reverseProxy           *httputil.ReverseProxy
 	AllowResponseBuffering bool
+	customHeaders          map[string]string
 }
 
-func NewProxy(myURL *url.URL, version string, roundTripper http.RoundTripper) *Proxy {
-	p := Proxy{Version: version, AllowResponseBuffering: true}
+func WithCustomHeaders(customHeaders map[string]string) func(*Proxy) {
+	return func(proxy *Proxy) {
+		proxy.customHeaders = customHeaders
+	}
+}
+
+func NewProxy(myURL *url.URL, version string, roundTripper http.RoundTripper, options ...func(*Proxy)) *Proxy {
+	p := Proxy{Version: version, AllowResponseBuffering: true, customHeaders: make(map[string]string)}
 
 	if myURL == nil {
 		myURL = defaultTarget
@@ -31,6 +38,11 @@ func NewProxy(myURL *url.URL, version string, roundTripper http.RoundTripper) *P
 	u.Path = ""
 	p.reverseProxy = httputil.NewSingleHostReverseProxy(&u)
 	p.reverseProxy.Transport = roundTripper
+
+	for _, option := range options {
+		option(&p)
+	}
+
 	return &p
 }
 
@@ -42,6 +54,10 @@ func (p *Proxy) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	// Set Workhorse version
 	req.Header.Set("Gitlab-Workhorse", p.Version)
 	req.Header.Set("Gitlab-Workhorse-Proxy-Start", fmt.Sprintf("%d", time.Now().UnixNano()))
+
+	for k, v := range p.customHeaders {
+		req.Header.Set(k, v)
+	}
 
 	if p.AllowResponseBuffering {
 		helper.AllowResponseBuffering(w)

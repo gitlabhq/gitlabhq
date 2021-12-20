@@ -6,8 +6,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Monitoring NGINX Ingress Controller with VTS metrics **(FREE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/13438) in GitLab 9.5.
-
 NOTE:
 [NGINX Ingress version 0.16](nginx_ingress.md) and above have built-in Prometheus metrics, which are different than the VTS based metrics.
 

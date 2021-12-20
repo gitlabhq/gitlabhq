@@ -22,12 +22,12 @@ import (
 
 const testVersion = "123"
 
-func newProxy(url string, rt http.RoundTripper) *proxy.Proxy {
+func newProxy(url string, rt http.RoundTripper, opts ...func(*proxy.Proxy)) *proxy.Proxy {
 	parsedURL := helper.URLMustParse(url)
 	if rt == nil {
 		rt = roundtripper.NewTestBackendRoundTripper(parsedURL)
 	}
-	return proxy.NewProxy(parsedURL, testVersion, rt)
+	return proxy.NewProxy(parsedURL, testVersion, rt, opts...)
 }
 
 func TestProxyRequest(t *testing.T) {
@@ -62,6 +62,24 @@ func TestProxyRequest(t *testing.T) {
 	testhelper.RequireResponseBody(t, w, "RESPONSE")
 
 	require.Equal(t, "test", w.Header().Get("Custom-Response-Header"), "custom response header")
+}
+
+func TestProxyWithCustomHeaders(t *testing.T) {
+	ts := testhelper.TestServerWithHandler(regexp.MustCompile(`/url/path\z`), func(w http.ResponseWriter, r *http.Request) {
+		require.Equal(t, "value", r.Header.Get("Custom-Header"), "custom proxy header")
+		require.Equal(t, testVersion, r.Header.Get("Gitlab-Workhorse"), "version header")
+
+		_, err := w.Write([]byte(`ok`))
+		require.NoError(t, err, "write ok response")
+	})
+
+	httpRequest, err := http.NewRequest("POST", ts.URL+"/url/path", nil)
+	require.NoError(t, err)
+
+	w := httptest.NewRecorder()
+	testProxy := newProxy(ts.URL, nil, proxy.WithCustomHeaders(map[string]string{"Custom-Header": "value"}))
+	testProxy.ServeHTTP(w, httpRequest)
+	testhelper.RequireResponseBody(t, w, "ok")
 }
 
 func TestProxyError(t *testing.T) {
