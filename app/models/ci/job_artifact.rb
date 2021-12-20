@@ -271,10 +271,6 @@ module Ci
       self.where(project: project).sum(:size)
     end
 
-    def self.distinct_job_ids
-      distinct.pluck(:job_id)
-    end
-
     ##
     # FastDestroyAll concerns
     # rubocop: disable CodeReuse/ServiceClass

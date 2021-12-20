@@ -4,7 +4,7 @@ group: none
 info: "See the Technical Writers assigned to Development Guidelines: https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments-to-development-guidelines"
 ---
 
-# Deprecated feature removal schedule
+# Deprecated features
 
 DISCLAIMER:
 This page contains information related to upcoming products, features, and functionality.

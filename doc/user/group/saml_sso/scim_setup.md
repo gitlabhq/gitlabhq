@@ -184,8 +184,7 @@ For role information, please see the [Group SAML page](index.md#user-access-and-
 ### Blocking access
 
 To rescind access to the top-level group, all sub-groups, and projects, remove or deactivate the user
-on the identity provider. SCIM providers generally update GitLab with the changes on demand, which
-is minutes at most. The user's membership is revoked and they immediately lose access.
+on the identity provider. After the identity provider performs a sync, based on its configured schedule, the user's membership is revoked and they lose access.
 
 NOTE:
 Deprovisioning does not delete the GitLab user account.

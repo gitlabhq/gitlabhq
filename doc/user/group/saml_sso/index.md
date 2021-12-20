@@ -137,8 +137,6 @@ When SSO is enforced, users are not immediately revoked. If the user:
 - Has an active session, they can continue accessing the group for up to 24 hours until the identity
   provider session times out.
 
-When SCIM updates, the user's access is immediately revoked.
-
 ## Providers
 
 The SAML standard means that you can use a wide range of identity providers with GitLab. Your identity provider might have relevant documentation. It can be generic SAML documentation or specifically targeted for GitLab.
@@ -304,7 +302,14 @@ If a user is already a member of the group, linking the SAML identity does not c
 
 ### Blocking access
 
-Please refer to [Blocking access via SCIM](scim_setup.md#blocking-access).
+To rescind a user's access to the group when only SAML SSO is configured, either:
+
+- Remove (in order) the user from:
+  1. The user data store on the identity provider or the list of users on the specific app.
+  1. The GitLab.com group.
+- Use Group Sync at the top-level of your group to [automatically remove the user](#automatic-member-removal).
+
+To rescind a user's access to the group when also using SCIM, refer to [Blocking access](scim_setup.md#blocking-access).
 
 ### Unlinking accounts
 

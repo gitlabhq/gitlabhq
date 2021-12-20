@@ -660,6 +660,33 @@ module ProjectsHelper
     project.unlink_forks_upon_visibility_decrease_enabled? && project.visibility_level > Gitlab::VisibilityLevel::PRIVATE && project.forks_count > 0
   end
 
+  def confirm_reduce_visibility_message(project)
+    strong_start = "<strong>".html_safe
+    strong_end = "</strong>".html_safe
+    message = _("You're about to reduce the visibility of the project %{strong_start}%{project_name}%{strong_end}.")
+
+    if project.group
+      message = _("You're about to reduce the visibility of the project %{strong_start}%{project_name}%{strong_end} in %{strong_start}%{group_name}%{strong_end}.")
+    end
+
+    html_escape(message) % { strong_start: strong_start, strong_end: strong_end, project_name: project.name, group_name: project.group ? project.group.name : nil }
+  end
+
+  def visibility_confirm_modal_data(project, remove_form_id = nil)
+    {
+      remove_form_id: remove_form_id,
+      qa_selector: 'visibility_features_permissions_save_button',
+      button_text: _('Save changes'),
+      button_testid: 'reduce-project-visibility-button',
+      button_variant: 'confirm',
+      confirm_button_text: _('Reduce project visibility'),
+      confirm_danger_message: confirm_reduce_visibility_message(project),
+      phrase: project.full_path,
+      additional_information: _('Note: current forks will keep their visibility level.'),
+      html_confirmation_message: true
+    }
+  end
+
   def build_project_breadcrumb_link(project)
     project_name = simple_sanitize(project.name)
 

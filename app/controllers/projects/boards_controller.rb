@@ -8,7 +8,7 @@ class Projects::BoardsController < Projects::ApplicationController
   before_action :assign_endpoint_vars
   before_action do
     push_frontend_feature_flag(:swimlanes_buffered_rendering, project, default_enabled: :yaml)
-    push_frontend_feature_flag(:issue_boards_filtered_search, project, default_enabled: :yaml)
+    push_frontend_feature_flag(:issue_boards_filtered_search, project&.group, default_enabled: :yaml)
     push_frontend_feature_flag(:board_multi_select, project, default_enabled: :yaml)
     push_frontend_feature_flag(:iteration_cadences, project&.group, default_enabled: :yaml)
     experiment(:prominent_create_board_btn, subject: current_user) do |e|

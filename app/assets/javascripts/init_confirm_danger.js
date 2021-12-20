@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import { pickBy } from 'lodash';
 import { parseBoolean } from './lib/utils/common_utils';
 import ConfirmDanger from './vue_shared/components/confirm_danger/confirm_danger.vue';
 
@@ -12,21 +13,32 @@ export default () => {
     buttonText,
     buttonClass = '',
     buttonTestid = null,
+    buttonVariant = null,
     confirmDangerMessage,
+    confirmButtonText = null,
     disabled = false,
+    additionalInformation,
+    htmlConfirmationMessage,
   } = el.dataset;
 
   return new Vue({
     el,
-    provide: {
-      confirmDangerMessage,
-    },
+    provide: pickBy(
+      {
+        htmlConfirmationMessage,
+        confirmDangerMessage,
+        additionalInformation,
+        confirmButtonText,
+      },
+      (v) => Boolean(v),
+    ),
     render: (createElement) =>
       createElement(ConfirmDanger, {
         props: {
           phrase,
           buttonText,
           buttonClass,
+          buttonVariant,
           buttonTestid,
           disabled: parseBoolean(disabled),
         },

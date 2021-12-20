@@ -36,6 +36,11 @@ export default {
       required: false,
       default: 'confirm-danger-button',
     },
+    buttonVariant: {
+      type: String,
+      required: false,
+      default: 'danger',
+    },
   },
   modalId: CONFIRM_DANGER_MODAL_ID,
 };
@@ -45,7 +50,7 @@ export default {
     <gl-button
       v-gl-modal="$options.modalId"
       :class="buttonClass"
-      variant="danger"
+      :variant="buttonVariant"
       :disabled="disabled"
       :data-testid="buttonTestid"
       >{{ buttonText }}</gl-button
