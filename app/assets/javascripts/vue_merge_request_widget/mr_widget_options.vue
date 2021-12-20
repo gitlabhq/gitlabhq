@@ -1,6 +1,7 @@
 <script>
 import { GlSafeHtmlDirective } from '@gitlab/ui';
 import { isEmpty } from 'lodash';
+import { registerExtension } from '~/vue_merge_request_widget/components/extensions';
 import MrWidgetApprovals from 'ee_else_ce/vue_merge_request_widget/components/approvals/approvals.vue';
 import MRWidgetService from 'ee_else_ce/vue_merge_request_widget/services/mr_widget_service';
 import MRWidgetStore from 'ee_else_ce/vue_merge_request_widget/stores/mr_widget_store';
@@ -43,6 +44,7 @@ import { STATE_MACHINE, stateToComponentMap } from './constants';
 import eventHub from './event_hub';
 import mergeRequestQueryVariablesMixin from './mixins/merge_request_query_variables';
 import getStateQuery from './queries/get_state.query.graphql';
+import terraformExtension from './extensions/terraform';
 
 export default {
   // False positive i18n lint: https://gitlab.com/gitlab-org/frontend/eslint-plugin-i18n/issues/25
@@ -184,6 +186,9 @@ export default {
     shouldRenderSecurityReport() {
       return Boolean(this.mr.pipeline.id);
     },
+    shouldRenderTerraformPlans() {
+      return Boolean(this.mr?.terraformReportsPath);
+    },
     mergeError() {
       let { mergeError } = this.mr;
 
@@ -228,6 +233,11 @@ export default {
       if (newVal !== oldVal && this.shouldRenderMergedPipeline) {
         // init polling
         this.initPostMergeDeploymentsPolling();
+      }
+    },
+    shouldRenderTerraformPlans(newVal) {
+      if (newVal) {
+        this.registerTerraformPlans();
       }
     },
   },
@@ -463,6 +473,11 @@ export default {
     dismissSuggestPipelines() {
       this.mr.isDismissedSuggestPipeline = true;
     },
+    registerTerraformPlans() {
+      if (this.shouldRenderTerraformPlans && this.shouldShowExtension) {
+        registerExtension(terraformExtension);
+      }
+    },
   },
 };
 </script>
@@ -542,7 +557,10 @@ export default {
         :pipeline-path="mr.pipeline.path"
       />
 
-      <terraform-plan v-if="mr.terraformReportsPath" :endpoint="mr.terraformReportsPath" />
+      <terraform-plan
+        v-if="mr.terraformReportsPath && !shouldShowExtension"
+        :endpoint="mr.terraformReportsPath"
+      />
 
       <grouped-accessibility-reports-app
         v-if="shouldShowAccessibilityReport"

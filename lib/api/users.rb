@@ -142,11 +142,15 @@ module API
       get ":id", feature_category: :users do
         forbidden!('Not authorized!') unless current_user
 
+        if Feature.enabled?(:rate_limit_user_by_id_endpoint, type: :development)
+          check_rate_limit! :users_get_by_id, scope: current_user unless current_user.admin?
+        end
+
         user = User.find_by(id: params[:id])
 
         not_found!('User') unless user && can?(current_user, :read_user, user)
 
-        opts = { with: current_user&.admin? ? Entities::UserDetailsWithAdmin : Entities::User, current_user: current_user }
+        opts = { with: current_user.admin? ? Entities::UserDetailsWithAdmin : Entities::User, current_user: current_user }
         user, opts = with_custom_attributes(user, opts)
 
         present user, opts

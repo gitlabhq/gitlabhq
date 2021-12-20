@@ -50,7 +50,7 @@ module API
       end
 
       def find_all_members_for_group(group)
-        GroupMembersFinder.new(group).execute
+        GroupMembersFinder.new(group, current_user).execute(include_relations: [:inherited, :direct, :shared_from_groups])
       end
 
       def present_members(members)

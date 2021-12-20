@@ -315,76 +315,11 @@ RSpec.describe RuboCop::CodeReuseHelpers do
     end
   end
 
-  describe '#ee?' do
-    before do
-      stub_env('FOSS_ONLY', nil)
-      allow(File).to receive(:exist?).with(ee_file_path) { true }
-    end
+  %w[ee? jh?].each do |method_name|
+    it "delegates #{method_name} to GitlabEdition" do
+      expect(GitlabEdition).to receive(method_name)
 
-    it 'returns true when ee/app/models/license.rb exists' do
-      expect(cop.ee?).to eq(true)
-    end
-  end
-
-  describe '#jh?' do
-    context 'when jh directory exists and EE_ONLY is not set' do
-      before do
-        stub_env('EE_ONLY', nil)
-
-        allow(Dir).to receive(:exist?).with(File.expand_path('../../jh', __dir__)) { true }
-      end
-
-      context 'when ee/app/models/license.rb exists' do
-        before do
-          allow(File).to receive(:exist?).with(ee_file_path) { true }
-        end
-
-        context 'when FOSS_ONLY is not set' do
-          before do
-            stub_env('FOSS_ONLY', nil)
-          end
-
-          it 'returns true' do
-            expect(cop.jh?).to eq(true)
-          end
-        end
-
-        context 'when FOSS_ONLY is set to 1' do
-          before do
-            stub_env('FOSS_ONLY', '1')
-          end
-
-          it 'returns false' do
-            expect(cop.jh?).to eq(false)
-          end
-        end
-      end
-
-      context 'when ee/app/models/license.rb not exist' do
-        before do
-          allow(File).to receive(:exist?).with(ee_file_path) { false }
-        end
-
-        context 'when FOSS_ONLY is not set' do
-          before do
-            stub_env('FOSS_ONLY', nil)
-          end
-
-          it 'returns true' do
-            expect(cop.jh?).to eq(false)
-          end
-        end
-
-        context 'when FOSS_ONLY is set to 1' do
-          before do
-            stub_env('FOSS_ONLY', '1')
-          end
-
-          it 'returns false' do
-            expect(cop.jh?).to eq(false)
-          end
-        end
-      end
+      cop.public_send(method_name)
     end
   end
 end

@@ -30,14 +30,6 @@
 module Gitlab
   module Experimentation
     EXPERIMENTS = {
-      remove_known_trial_form_fields_welcoming: {
-        tracking_category: 'Growth::Conversion::Experiment::RemoveKnownTrialFormFieldsWelcoming',
-        rollout_strategy: :user
-      },
-      remove_known_trial_form_fields_noneditable: {
-        tracking_category: 'Growth::Conversion::Experiment::RemoveKnownTrialFormFieldsNoneditable',
-        rollout_strategy: :user
-      }
     }.freeze
 
     class << self

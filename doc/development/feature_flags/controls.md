@@ -303,6 +303,19 @@ and reduces confidence in our testing suite covering all possible combinations.
 Additionally, a feature flag overwritten in some of the environments can result
 in undefined and untested system behavior.
 
+`development` type feature flags should have a short life-cycle because their purpose
+is for rolling out a persistent change. `development` feature flags that are older
+than 2 milestones are reported to engineering managers. The
+[report tool](https://gitlab.com/gitlab-org/gitlab-feature-flag-alert) runs on a
+monthly basis. For example, see [the report for December 2021](https://gitlab.com/gitlab-org/quality/triage-reports/-/issues/5480).
+
+If a `development` feature flag is still present in the codebase after 6 months we should
+take one of the following actions:
+
+- Enable the feature flag by default and remove it.
+- Convert it to an instance, group, or project setting.
+- Revert the changes if it's still disabled and not needed anymore.
+
 To remove a feature flag, open **one merge request** to make the changes. In the MR:
 
 1. Add the ~"feature flag" label so release managers are aware the changes are hidden behind a feature flag.

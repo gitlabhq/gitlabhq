@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Gitlab::Metrics::Samplers::ActionCableSampler do
   let(:action_cable) { instance_double(ActionCable::Server::Base) }
 
-  subject { described_class.new(action_cable: action_cable) }
+  subject { described_class.new(action_cable: action_cable, logger: double) }
 
   it_behaves_like 'metrics sampler', 'ACTION_CABLE_SAMPLER'
 

@@ -303,11 +303,7 @@ module Integrations
     private
 
     def branch_name(commit)
-      if Feature.enabled?(:jira_use_first_ref_by_oid, project, default_enabled: :yaml)
-        commit.first_ref_by_oid(project.repository)
-      else
-        commit.ref_names(project.repository).first
-      end
+      commit.first_ref_by_oid(project.repository)
     end
 
     def server_info

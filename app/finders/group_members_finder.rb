@@ -1,14 +1,15 @@
 # frozen_string_literal: true
 
 class GroupMembersFinder < UnionFinder
-  RELATIONS = %i(direct inherited descendants).freeze
+  RELATIONS = %i(direct inherited descendants shared_from_groups).freeze
   DEFAULT_RELATIONS = %i(direct inherited).freeze
   INVALID_RELATION_TYPE_ERROR_MSG = "is not a valid relation type. Valid relation types are #{RELATIONS.join(', ')}."
 
   RELATIONS_DESCRIPTIONS = {
     direct: 'Members in the group itself',
     inherited: "Members in the group's ancestor groups",
-    descendants: "Members in the group's subgroups"
+    descendants: "Members in the group's subgroups",
+    shared_from_groups: "Invited group's members"
   }.freeze
 
   include CreatedAtFilter
@@ -28,11 +29,7 @@ class GroupMembersFinder < UnionFinder
   end
 
   def execute(include_relations: DEFAULT_RELATIONS)
-    return filter_members(group_members_list) if include_relations == [:direct]
-
     groups = groups_by_relations(include_relations)
-    return GroupMember.none unless groups
-
     members = all_group_members(groups).distinct_on_user_with_max_access_level
 
     filter_members(members)
@@ -45,22 +42,14 @@ class GroupMembersFinder < UnionFinder
   def groups_by_relations(include_relations)
     check_relation_arguments!(include_relations)
 
-    case include_relations.sort
-    when [:inherited]
-      group.ancestors
-    when [:descendants]
-      group.descendants
-    when [:direct, :inherited]
-      group.self_and_ancestors
-    when [:descendants, :direct]
-      group.self_and_descendants
-    when [:descendants, :inherited]
-      find_union([group.ancestors, group.descendants], Group)
-    when [:descendants, :direct, :inherited]
-      group.self_and_hierarchy
-    else
-      nil
-    end
+    related_groups = []
+
+    related_groups << Group.by_id(group.id) if include_relations&.include?(:direct)
+    related_groups << group.ancestors if include_relations&.include?(:inherited)
+    related_groups << group.descendants if include_relations&.include?(:descendants)
+    related_groups << group.shared_with_groups.public_or_visible_to_user(user) if include_relations&.include?(:shared_from_groups)
+
+    find_union(related_groups, Group)
   end
 
   def filter_members(members)

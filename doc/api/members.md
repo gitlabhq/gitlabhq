@@ -88,14 +88,19 @@ Example response:
 ]
 ```
 
-## List all members of a group or project including inherited members
+## List all members of a group or project including inherited and invited members 
 
-Gets a list of group or project members viewable by the authenticated user, including inherited members and permissions through ancestor groups.
+Gets a list of group or project members viewable by the authenticated user, including inherited members, invited users, and permissions through ancestor groups.
 
 If a user is a member of this group or project and also of one or more ancestor groups,
 only its membership with the highest `access_level` is returned.
 ([Improved](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/56677) in GitLab 13.11.)
 This represents the effective permission of the user.
+
+Members from an invited group are returned if either:
+
+- The invited group is public.
+- The requester is also a member of the invited group.
 
 This function takes pagination parameters `page` and `per_page` to restrict the list of users.
 
@@ -202,11 +207,11 @@ Example response:
 }
 ```
 
-## Get a member of a group or project, including inherited members
+## Get a member of a group or project, including inherited and invited members
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/17744) in GitLab 12.4.
 
-Gets a member of a group or project, including members inherited through ancestor groups. See the corresponding [endpoint to list all inherited members](#list-all-members-of-a-group-or-project-including-inherited-members) for details.
+Gets a member of a group or project, including members inherited or invited through ancestor groups. See the corresponding [endpoint to list all inherited members](#list-all-members-of-a-group-or-project-including-inherited-and-invited-members) for details.
 
 ```plaintext
 GET /groups/:id/members/all/:user_id

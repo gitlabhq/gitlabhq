@@ -5,7 +5,7 @@
     %span.ref-name= protected_branch.name
 
     - if @project.root_ref?(protected_branch.name)
-      %span.badge.gl-badge.badge-pill.badge-info.d-inline default
+      = gl_badge_tag s_('ProtectedBranch|default'), variant: :info
 
     %div
       - if protected_branch.wildcard?
@@ -20,4 +20,4 @@
 
   - if can_admin_project
     %td
-      = link_to 'Unprotect', [@project, protected_branch, { update_section: 'js-protected-branches-settings' }], disabled: local_assigns[:disabled], data: { confirm: 'Branch will be writable for developers. Are you sure?' }, method: :delete, class: "btn gl-button btn-warning"
+      = link_to s_('ProtectedBranch|Unprotect'), [@project, protected_branch, { update_section: 'js-protected-branches-settings' }], disabled: local_assigns[:disabled], data: { confirm: s_('ProtectedBranch|Branch will be writable for developers. Are you sure?') }, method: :delete, class: "btn gl-button btn-warning"

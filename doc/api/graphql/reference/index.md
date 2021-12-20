@@ -16555,6 +16555,7 @@ Group member relation.
 | <a id="groupmemberrelationdescendants"></a>`DESCENDANTS` | Members in the group's subgroups. |
 | <a id="groupmemberrelationdirect"></a>`DIRECT` | Members in the group itself. |
 | <a id="groupmemberrelationinherited"></a>`INHERITED` | Members in the group's ancestor groups. |
+| <a id="groupmemberrelationshared_from_groups"></a>`SHARED_FROM_GROUPS` | Invited group's members. |
 
 ### `GroupPermission`
 

@@ -40,14 +40,20 @@ class MetricsServer # rubocop:disable Gitlab/NamespacedClass
   def start
     ::Prometheus::Client.configure do |config|
       config.multiprocess_files_dir = @metrics_dir
+      config.pid_provider = proc { "#{@target}_exporter" }
     end
 
     FileUtils.mkdir_p(@metrics_dir, mode: 0700)
     ::Prometheus::CleanupMultiprocDirService.new.execute if @wipe_metrics_dir
 
-    settings = Settings.new(Settings.monitoring[name])
+    # We need to `warmup: true` since otherwise the sampler and exporter threads enter
+    # a race where not all Prometheus db files will be visible to the exporter, resulting
+    # in missing metrics.
+    # Warming up ensures that these files exist prior to the exporter starting up.
+    Gitlab::Metrics::Samplers::RubySampler.initialize_instance(warmup: true).start
 
     exporter_class = "Gitlab::Metrics::Exporter::#{@target.camelize}Exporter".constantize
+    settings = Settings.new(Settings.monitoring[name])
     server = exporter_class.instance(settings, synchronous: true)
 
     server.start

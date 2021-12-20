@@ -9,7 +9,10 @@ module Gitlab
         attr_reader :interval
 
         # interval - The sampling interval in seconds.
-        def initialize(interval = nil)
+        # warmup   - When true, takes a single sample eagerly before entering the sampling loop.
+        #            This can be useful to ensure that all metrics files exist after `start` returns,
+        #            since prometheus-client-mmap creates them lazily upon first access.
+        def initialize(interval: nil, logger: Logger.new($stdout), warmup: false, **options)
           interval ||= ENV[interval_env_key]&.to_i
           interval ||= self.class::DEFAULT_SAMPLING_INTERVAL_SECONDS
           interval_half = interval.to_f / 2
@@ -17,13 +20,16 @@ module Gitlab
           @interval = interval
           @interval_steps = (-interval_half..interval_half).step(0.1).to_a
 
-          super()
+          @logger = logger
+          @warmup = warmup
+
+          super(**options)
         end
 
         def safe_sample
           sample
         rescue StandardError => e
-          ::Gitlab::AppLogger.warn("#{self.class}: #{e}, stopping")
+          @logger.warn("#{self.class}: #{e}, stopping")
           stop
         end
 
@@ -62,6 +68,8 @@ module Gitlab
 
         def start_working
           @running = true
+
+          safe_sample if @warmup
 
           true
         end

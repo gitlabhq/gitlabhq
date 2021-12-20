@@ -8,9 +8,15 @@ require_relative '../support/helpers/next_instance_of'
 RSpec.describe MetricsServer do # rubocop:disable RSpec/FilePath
   include NextInstanceOf
 
+  let(:metrics_dir) { Dir.mktmpdir }
+
   before do
     # We do not want this to have knock-on effects on the test process.
     allow(Gitlab::ProcessManagement).to receive(:modify_signals)
+  end
+
+  after do
+    FileUtils.rm_rf(metrics_dir, secure: true)
   end
 
   describe '.spawn' do
@@ -19,7 +25,7 @@ RSpec.describe MetricsServer do # rubocop:disable RSpec/FilePath
         expect(Process).to receive(:fork).and_return(99)
         expect(Process).to receive(:detach).with(99)
 
-        described_class.spawn('sidekiq', metrics_dir: 'path/to/metrics')
+        described_class.spawn('sidekiq', metrics_dir: metrics_dir)
       end
     end
 
@@ -35,13 +41,13 @@ RSpec.describe MetricsServer do # rubocop:disable RSpec/FilePath
           expect(server).to receive(:start)
         end
 
-        described_class.spawn('sidekiq', metrics_dir: 'path/to/metrics')
+        described_class.spawn('sidekiq', metrics_dir: metrics_dir)
       end
 
       it 'resets signal handlers from parent process' do
         expect(Gitlab::ProcessManagement).to receive(:modify_signals).with(%i[A B], 'DEFAULT')
 
-        described_class.spawn('sidekiq', metrics_dir: 'path/to/metrics', trapped_signals: %i[A B])
+        described_class.spawn('sidekiq', metrics_dir: metrics_dir, trapped_signals: %i[A B])
       end
     end
   end
@@ -50,9 +56,9 @@ RSpec.describe MetricsServer do # rubocop:disable RSpec/FilePath
     let(:exporter_class) { Class.new(Gitlab::Metrics::Exporter::BaseExporter) }
     let(:exporter_double) { double('fake_exporter', start: true) }
     let(:prometheus_config) { ::Prometheus::Client.configuration }
-    let(:metrics_dir) { Dir.mktmpdir }
     let(:settings) { { "fake_exporter" => { "enabled" => true } } }
     let!(:old_metrics_dir) { prometheus_config.multiprocess_files_dir }
+    let(:ruby_sampler_double) { double(Gitlab::Metrics::Samplers::RubySampler) }
 
     subject(:metrics_server) { described_class.new('fake', metrics_dir, true)}
 
@@ -60,11 +66,13 @@ RSpec.describe MetricsServer do # rubocop:disable RSpec/FilePath
       stub_const('Gitlab::Metrics::Exporter::FakeExporter', exporter_class)
       expect(exporter_class).to receive(:instance).with(settings['fake_exporter'], synchronous: true).and_return(exporter_double)
       expect(Settings).to receive(:monitoring).and_return(settings)
+
+      allow(Gitlab::Metrics::Samplers::RubySampler).to receive(:initialize_instance).and_return(ruby_sampler_double)
+      allow(ruby_sampler_double).to receive(:start)
     end
 
     after do
       Gitlab::Metrics.reset_registry!
-      FileUtils.rm_rf(metrics_dir, secure: true)
       prometheus_config.multiprocess_files_dir = old_metrics_dir
     end
 
@@ -72,6 +80,7 @@ RSpec.describe MetricsServer do # rubocop:disable RSpec/FilePath
       metrics_server.start
 
       expect(prometheus_config.multiprocess_files_dir).to eq metrics_dir
+      expect(::Prometheus::Client.configuration.pid_provider.call).to eq 'fake_exporter'
     end
 
     it 'ensures that metrics directory exists in correct mode (0700)' do
@@ -104,6 +113,12 @@ RSpec.describe MetricsServer do # rubocop:disable RSpec/FilePath
       expect(exporter_double).to receive(:start)
 
       metrics_server.start
+    end
+
+    it 'starts a RubySampler instance' do
+      expect(ruby_sampler_double).to receive(:start)
+
+      subject.start
     end
   end
 end

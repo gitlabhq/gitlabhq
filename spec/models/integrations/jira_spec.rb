@@ -937,18 +937,6 @@ RSpec.describe Integrations::Jira do
         end
       end
 
-      context 'with jira_use_first_ref_by_oid feature flag disabled' do
-        before do
-          stub_feature_flags(jira_use_first_ref_by_oid: false)
-        end
-
-        it 'creates a comment and remote link on Jira' do
-          expect(subject).to eq(success_message)
-          expect(WebMock).to have_requested(:post, comment_url).with(body: comment_body).once
-          expect(WebMock).to have_requested(:post, remote_link_url).once
-        end
-      end
-
       it 'tracks usage' do
         expect(Gitlab::UsageDataCounters::HLLRedisCounter)
           .to receive(:track_event)

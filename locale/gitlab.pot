@@ -15473,6 +15473,9 @@ msgstr ""
 msgid "Full"
 msgstr ""
 
+msgid "Full log"
+msgstr ""
+
 msgid "Full name"
 msgstr ""
 
@@ -28537,6 +28540,9 @@ msgstr ""
 msgid "ProtectedBranch|Branch"
 msgstr ""
 
+msgid "ProtectedBranch|Branch will be writable for developers. Are you sure?"
+msgstr ""
+
 msgid "ProtectedBranch|Branch:"
 msgstr ""
 
@@ -28580,6 +28586,9 @@ msgid "ProtectedBranch|Toggle allowed to force push"
 msgstr ""
 
 msgid "ProtectedBranch|Toggle code owner approval"
+msgstr ""
+
+msgid "ProtectedBranch|Unprotect"
 msgstr ""
 
 msgid "ProtectedBranch|What are protected branches?"
@@ -34658,7 +34667,23 @@ msgid_plural "Terraform|%{number} Terraform reports were generated in your pipel
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "Terraform|%{strong_start}%{number}%{strong_end} Terraform report failed to generate"
+msgid_plural "Terraform|%{strong_start}%{number}%{strong_end} Terraform reports failed to generate"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Terraform|%{strong_start}%{number}%{strong_end} Terraform report was generated in your pipelines"
+msgid_plural "Terraform|%{strong_start}%{number}%{strong_end} Terraform reports were generated in your pipelines"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "Terraform|%{user} updated %{timeAgo}"
+msgstr ""
+
+msgid "Terraform|A Terraform report failed to generate."
+msgstr ""
+
+msgid "Terraform|A Terraform report was generated in your pipelines."
 msgstr ""
 
 msgid "Terraform|A report failed to generate."
@@ -34691,6 +34716,9 @@ msgstr ""
 msgid "Terraform|Download JSON"
 msgstr ""
 
+msgid "Terraform|Failed to load Terraform reports"
+msgstr ""
+
 msgid "Terraform|Generating the report caused an error."
 msgstr ""
 
@@ -34701,6 +34729,9 @@ msgid "Terraform|How to use GitLab-managed Terraform State?"
 msgstr ""
 
 msgid "Terraform|Job status"
+msgstr ""
+
+msgid "Terraform|Loading Terraform reports..."
 msgstr ""
 
 msgid "Terraform|Lock"
@@ -34739,10 +34770,19 @@ msgstr ""
 msgid "Terraform|Terraform init command"
 msgstr ""
 
+msgid "Terraform|Terraform reports"
+msgstr ""
+
 msgid "Terraform|The job %{name} failed to generate a report."
 msgstr ""
 
 msgid "Terraform|The job %{name} generated a report."
+msgstr ""
+
+msgid "Terraform|The job %{strong_start}%{name}%{strong_end} failed to generate a report."
+msgstr ""
+
+msgid "Terraform|The job %{strong_start}%{name}%{strong_end} generated a report."
 msgstr ""
 
 msgid "Terraform|To get access to this terraform state from your local computer, run the following command at the command line. The first line requires a personal access token with API read and write access. %{linkStart}How do I create a personal access token?%{linkEnd}."
@@ -37243,9 +37283,6 @@ msgstr ""
 msgid "Trial|GitLab Ultimate trial (optional)"
 msgstr ""
 
-msgid "Trial|Hi%{salutation}, your GitLab Ultimate trial lasts for 30 days, but you can keep your free GitLab account forever. We just need some additional information about %{company} to activate your trial."
-msgstr ""
-
 msgid "Trial|How many employees will use Gitlab?"
 msgstr ""
 
@@ -37274,9 +37311,6 @@ msgid "Trial|We will activate your trial on your group after you complete this s
 msgstr ""
 
 msgid "Trial|Your GitLab Ultimate trial lasts for 30 days, but you can keep your free GitLab account forever. We just need some additional information to activate your trial."
-msgstr ""
-
-msgid "Trial|your company"
 msgstr ""
 
 msgid "Trigger"
