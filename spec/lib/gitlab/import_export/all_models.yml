@@ -58,6 +58,7 @@ issues:
 - test_reports
 - requirement
 - incident_management_issuable_escalation_status
+- incident_management_timeline_events
 - pending_escalations
 - customer_relations_contacts
 - issue_customer_relations_contacts

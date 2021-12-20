@@ -104,11 +104,9 @@ module Gitlab
             end
           end
 
-          # rubocop:disable Database/MultipleDatabases
           def connection
-            use_model_load_balancing? ? super : ActiveRecord::Base.connection
+            use_model_load_balancing? ? super : ApplicationRecord.connection
           end
-          # rubocop:enable Database/MultipleDatabases
         end
       end
     end

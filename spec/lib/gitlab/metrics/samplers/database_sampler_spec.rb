@@ -62,7 +62,7 @@ RSpec.describe Gitlab::Metrics::Samplers::DatabaseSampler do
       end
 
       context 'when replica hosts are configured' do
-        let(:main_load_balancer) { ActiveRecord::Base.load_balancer } # rubocop:disable Database/MultipleDatabases
+        let(:main_load_balancer) { ApplicationRecord.load_balancer }
         let(:main_replica_host) { main_load_balancer.host }
 
         let(:ci_load_balancer) { double(:load_balancer, host_list: ci_host_list, configuration: configuration) }
@@ -117,7 +117,7 @@ RSpec.describe Gitlab::Metrics::Samplers::DatabaseSampler do
       end
 
       context 'when the base model has replica connections' do
-        let(:main_load_balancer) { ActiveRecord::Base.load_balancer } # rubocop:disable Database/MultipleDatabases
+        let(:main_load_balancer) { ApplicationRecord.load_balancer }
         let(:main_replica_host) { main_load_balancer.host }
 
         let(:ci_load_balancer) { double(:load_balancer, host_list: ci_host_list, configuration: configuration) }

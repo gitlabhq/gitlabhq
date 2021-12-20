@@ -42,7 +42,7 @@ RSpec.describe 'Database::MultipleDatabases' do
       context 'when reconnect is true' do
         it 'does not raise exception' do
           with_reestablished_active_record_base(reconnect: true) do
-            expect { ActiveRecord::Base.connection.execute("SELECT 1") }.not_to raise_error # rubocop:disable Database/MultipleDatabases
+            expect { ApplicationRecord.connection.execute("SELECT 1") }.not_to raise_error
           end
         end
       end
@@ -50,7 +50,7 @@ RSpec.describe 'Database::MultipleDatabases' do
       context 'when reconnect is false' do
         it 'does raise exception' do
           with_reestablished_active_record_base(reconnect: false) do
-            expect { ActiveRecord::Base.connection.execute("SELECT 1") }.to raise_error(ActiveRecord::ConnectionNotEstablished) # rubocop:disable Database/MultipleDatabases
+            expect { ApplicationRecord.connection.execute("SELECT 1") }.to raise_error(ActiveRecord::ConnectionNotEstablished)
           end
         end
       end

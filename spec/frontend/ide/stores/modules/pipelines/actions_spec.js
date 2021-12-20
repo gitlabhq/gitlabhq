@@ -188,6 +188,24 @@ describe('IDE pipelines actions', () => {
           .catch(done.fail);
       });
     });
+
+    it('sets latest pipeline to `null` and stops polling on empty project', (done) => {
+      mockedState = {
+        ...mockedState,
+        rootGetters: {
+          lastCommit: null,
+        },
+      };
+
+      testAction(
+        fetchLatestPipeline,
+        {},
+        mockedState,
+        [{ type: types.RECEIVE_LASTEST_PIPELINE_SUCCESS, payload: null }],
+        [{ type: 'stopPipelinePolling' }],
+        done,
+      );
+    });
   });
 
   describe('requestJobs', () => {

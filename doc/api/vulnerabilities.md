@@ -19,7 +19,7 @@ This API is in the process of being deprecated and considered unstable.
 The response payload may be subject to change or breakage
 across GitLab releases. Please use the
 [GraphQL API](graphql/reference/index.md#queryvulnerabilities)
-instead.
+instead. See the [GraphQL examples](#replace-rest-with-graphql) to get started.
 
 Every API call to vulnerabilities must be [authenticated](index.md#authentication).
 
@@ -270,5 +270,187 @@ Example response:
   "updated_at": "2019-10-13T15:09:40.382Z",
   "last_edited_at": null,
   "closed_at": null
+}
+```
+
+## Replace REST with GraphQL
+
+To prepare for the [upcoming deprecation](https://gitlab.com/groups/gitlab-org/-/epics/5118) of
+this REST API endpoint, use the examples below to learn how to perform the equivalent operations
+using the GraphQL API.
+
+### GraphQL - Single vulnerability
+
+Use [`Query.vulnerability`](graphql/reference/#queryvulnerability).
+
+```graphql
+{
+  vulnerability(id: "gid://gitlab/Vulnerability/20345379") {
+    title
+    description
+    state
+    severity
+    reportType
+    project {
+      id
+      name
+      fullPath
+    }
+    detectedAt
+    confirmedAt
+    resolvedAt
+    resolvedBy {
+      id
+      username
+    }
+  }
+}
+```
+
+Example response:
+
+```json
+{
+  "data": {
+    "vulnerability": {
+      "title": "Improper Input Validation in railties",
+      "description": "A remote code execution vulnerability in development mode Rails beta3 can allow an attacker to guess the automatically generated development mode secret token. This secret token can be used in combination with other Rails internals to escalate to a remote code execution exploit.",
+      "state": "RESOLVED",
+      "severity": "CRITICAL",
+      "reportType": "DEPENDENCY_SCANNING",
+      "project": {
+        "id": "gid://gitlab/Project/6102100",
+        "name": "security-reports",
+        "fullPath": "gitlab-examples/security/security-reports"
+      },
+      "detectedAt": "2021-10-14T03:13:41Z",
+      "confirmedAt": "2021-12-14T01:45:56Z",
+      "resolvedAt": "2021-12-14T01:45:59Z",
+      "resolvedBy": {
+        "id": "gid://gitlab/User/480804",
+        "username": "thiagocsf"
+      }
+    }
+  }
+}
+```
+
+### GraphQL - Confirm vulnerability
+
+Use [`Mutation.vulnerabilityConfirm`](graphql/reference/#mutationvulnerabilityconfirm).
+
+```graphql
+mutation {
+  vulnerabilityConfirm(input: { id: "gid://gitlab/Vulnerability/23577695"}) {
+    vulnerability {
+      state
+    }
+    errors
+  }
+}
+```
+
+Example response:
+
+```json
+{
+  "data": {
+    "vulnerabilityConfirm": {
+      "vulnerability": {
+        "state": "CONFIRMED"
+      },
+      "errors": []
+    }
+  }
+}
+```
+
+### GraphQL - Resolve vulnerability
+
+Use [`Mutation.vulnerabilityResolve`](graphql/reference/#mutationvulnerabilityresolve).
+
+```graphql
+mutation {
+  vulnerabilityResolve(input: { id: "gid://gitlab/Vulnerability/23577695"}) {
+    vulnerability {
+      state
+    }
+    errors
+  }
+}
+```
+
+Example response:
+
+```json
+{
+  "data": {
+    "vulnerabilityConfirm": {
+      "vulnerability": {
+        "state": "RESOLVED"
+      },
+      "errors": []
+    }
+  }
+}
+```
+
+### GraphQL - Dismiss vulnerability
+
+Use [`Mutation.vulnerabilityDismiss`](graphql/reference/#mutationvulnerabilitydismiss).
+
+```graphql
+mutation {
+  vulnerabilityDismiss(input: { id: "gid://gitlab/Vulnerability/23577695"}) {
+    vulnerability {
+      state
+    }
+    errors
+  }
+}
+```
+
+Example response:
+
+```json
+{
+  "data": {
+    "vulnerabilityConfirm": {
+      "vulnerability": {
+        "state": "DISMISSED"
+      },
+      "errors": []
+    }
+  }
+}
+```
+
+### GraphQL - Revert vulnerability to detected state
+
+Use [`Mutation.vulnerabilityRevertToDetected`](graphql/reference/#mutationvulnerabilityreverttodetected).
+
+```graphql
+mutation {
+  vulnerabilityRevertToDetected(input: { id: "gid://gitlab/Vulnerability/20345379"}) {
+    vulnerability {
+      state
+    }
+    errors
+  }
+}
+```
+
+Example response:
+
+```json
+{
+  "data": {
+    "vulnerabilityConfirm": {
+      "vulnerability": {
+        "state": "DETECTED"
+      },
+      "errors": []
+    }
+  }
 }
 ```

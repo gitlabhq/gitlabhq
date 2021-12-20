@@ -124,6 +124,12 @@ RSpec.shared_examples 'namespace traversal scopes' do
       it { expect(subject[0, 2]).to contain_exactly(group_1, group_2) }
       it { expect(subject[2, 2]).to contain_exactly(nested_group_1, nested_group_2) }
     end
+
+    context 'with offset and limit' do
+      subject { described_class.where(id: [deep_nested_group_1, deep_nested_group_2]).offset(1).limit(1).self_and_ancestors }
+
+      it { is_expected.to contain_exactly(group_2, nested_group_2, deep_nested_group_2) }
+    end
   end
 
   describe '.self_and_ancestors' do
@@ -167,6 +173,19 @@ RSpec.shared_examples 'namespace traversal scopes' do
       end
 
       it { is_expected.to contain_exactly(group_1.id, group_2.id) }
+    end
+
+    context 'with offset and limit' do
+      subject do
+        described_class
+          .where(id: [deep_nested_group_1, deep_nested_group_2])
+          .limit(1)
+          .offset(1)
+          .self_and_ancestor_ids
+          .pluck(:id)
+      end
+
+      it { is_expected.to contain_exactly(group_2.id, nested_group_2.id, deep_nested_group_2.id) }
     end
   end
 

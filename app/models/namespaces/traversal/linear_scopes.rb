@@ -25,15 +25,20 @@ module Namespaces
         def self_and_ancestors(include_self: true, hierarchy_order: nil)
           return super unless use_traversal_ids_for_ancestor_scopes?
 
+          ancestors_cte, base_cte = ancestor_ctes
+          namespaces = Arel::Table.new(:namespaces)
+
           records = unscoped
-            .where(id: select('unnest(traversal_ids)'))
+            .with(base_cte.to_arel, ancestors_cte.to_arel)
+            .distinct
+            .from([ancestors_cte.table, namespaces])
+            .where(namespaces[:id].eq(ancestors_cte.table[:ancestor_id]))
             .order_by_depth(hierarchy_order)
-            .normal_select
 
           if include_self
             records
           else
-            records.where.not(id: all.as_ids)
+            records.where(ancestors_cte.table[:base_id].not_eq(ancestors_cte.table[:ancestor_id]))
           end
         end
 
@@ -149,6 +154,20 @@ module Namespaces
           else
             records.where('namespaces.id <> base.id')
           end
+        end
+
+        def ancestor_ctes
+          base_scope = all.select('namespaces.id', 'namespaces.traversal_ids')
+          base_cte = Gitlab::SQL::CTE.new(:base_ancestors_cte, base_scope)
+
+          # We have to alias id with 'AS' to avoid ambiguous column references by calling methods.
+          ancestors_scope = unscoped
+            .unscope(where: [:type])
+            .select('id as base_id', 'unnest(traversal_ids) as ancestor_id')
+            .from(base_cte.table)
+          ancestors_cte = Gitlab::SQL::CTE.new(:ancestors_cte, ancestors_scope)
+
+          [ancestors_cte, base_cte]
         end
       end
     end

@@ -147,22 +147,20 @@ RSpec.describe ApplicationRecord do
       end
     end
 
-    # rubocop:disable Database/MultipleDatabases
     it 'increments a counter when a transaction is created in ActiveRecord' do
       expect(described_class.connection.transaction_open?).to be false
 
       expect(::Gitlab::Database::Metrics)
         .to receive(:subtransactions_increment)
-        .with('ActiveRecord::Base')
+        .with('ApplicationRecord')
         .once
 
-      ActiveRecord::Base.transaction do
-        ActiveRecord::Base.transaction(requires_new: true) do
-          expect(ActiveRecord::Base.connection.transaction_open?).to be true
+      ApplicationRecord.transaction do
+        ApplicationRecord.transaction(requires_new: true) do
+          expect(ApplicationRecord.connection.transaction_open?).to be true
         end
       end
     end
-    # rubocop:enable Database/MultipleDatabases
   end
 
   describe '.with_fast_read_statement_timeout' do

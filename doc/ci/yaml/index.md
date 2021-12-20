@@ -3066,8 +3066,10 @@ job:
 
 - If a rule matches and has no `when` defined, the rule uses the `when`
   defined for the job, which defaults to `on_success` if not defined.
-- You can define `when` once per rule, or once at the job-level, which applies to
-  all rules. You can't mix `when` at the job-level with `when` in rules.
+- In GitLab 14.5 and earlier, you can define `when` once per rule, or once at the job-level,
+  which applies to all rules. You can't mix `when` at the job-level with `when` in rules.
+- In GitLab 14.6 and later, you can [mix `when` at the job-level with `when` in rules](https://gitlab.com/gitlab-org/gitlab/-/issues/219437).
+  `when` configuration in `rules` takes precedence over `when` at the job-level.
 - Unlike variables in [`script`](../variables/index.md#use-cicd-variables-in-job-scripts)
   sections, variables in rules expressions are always formatted as `$VARIABLE`.
   - You can use `rules:if` with `include` to [conditionally include other configuration files](includes.md#use-rules-with-include).

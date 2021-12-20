@@ -11,14 +11,6 @@ module API
         JOB_TOKEN_HEADER = 'HTTP_JOB_TOKEN'
         JOB_TOKEN_PARAM = :token
 
-        def runner_registration_token_valid?
-          ActiveSupport::SecurityUtils.secure_compare(params[:token], Gitlab::CurrentSettings.runners_registration_token)
-        end
-
-        def runner_registrar_valid?(type)
-          Feature.disabled?(:runner_registration_control) || Gitlab::CurrentSettings.valid_runner_registrars.include?(type)
-        end
-
         def authenticate_runner!
           forbidden! unless current_runner
 

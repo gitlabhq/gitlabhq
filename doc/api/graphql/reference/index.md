@@ -7439,6 +7439,29 @@ The edge type for [`ScanExecutionPolicy`](#scanexecutionpolicy).
 | <a id="scanexecutionpolicyedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="scanexecutionpolicyedgenode"></a>`node` | [`ScanExecutionPolicy`](#scanexecutionpolicy) | The item at the end of the edge. |
 
+#### `ScanResultPolicyConnection`
+
+The connection type for [`ScanResultPolicy`](#scanresultpolicy).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="scanresultpolicyconnectionedges"></a>`edges` | [`[ScanResultPolicyEdge]`](#scanresultpolicyedge) | A list of edges. |
+| <a id="scanresultpolicyconnectionnodes"></a>`nodes` | [`[ScanResultPolicy]`](#scanresultpolicy) | A list of nodes. |
+| <a id="scanresultpolicyconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `ScanResultPolicyEdge`
+
+The edge type for [`ScanResultPolicy`](#scanresultpolicy).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="scanresultpolicyedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="scanresultpolicyedgenode"></a>`node` | [`ScanResultPolicy`](#scanresultpolicy) | The item at the end of the edge. |
+
 #### `ScannedResourceConnection`
 
 The connection type for [`ScannedResource`](#scannedresource).
@@ -7740,6 +7763,29 @@ The edge type for [`TestSuiteSummary`](#testsuitesummary).
 | ---- | ---- | ----------- |
 | <a id="testsuitesummaryedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="testsuitesummaryedgenode"></a>`node` | [`TestSuiteSummary`](#testsuitesummary) | The item at the end of the edge. |
+
+#### `TimelineEventTypeConnection`
+
+The connection type for [`TimelineEventType`](#timelineeventtype).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="timelineeventtypeconnectionedges"></a>`edges` | [`[TimelineEventTypeEdge]`](#timelineeventtypeedge) | A list of edges. |
+| <a id="timelineeventtypeconnectionnodes"></a>`nodes` | [`[TimelineEventType]`](#timelineeventtype) | A list of nodes. |
+| <a id="timelineeventtypeconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `TimelineEventTypeEdge`
+
+The edge type for [`TimelineEventType`](#timelineeventtype).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="timelineeventtypeedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="timelineeventtypeedgenode"></a>`node` | [`TimelineEventType`](#timelineeventtype) | The item at the end of the edge. |
 
 #### `TimelogConnection`
 
@@ -12989,6 +13035,7 @@ Represents vulnerability finding of a security report on the pipeline.
 | <a id="projectrequestaccessenabled"></a>`requestAccessEnabled` | [`Boolean`](#boolean) | Indicates if users can request member access to the project. |
 | <a id="projectrequirementstatescount"></a>`requirementStatesCount` | [`RequirementStatesCount`](#requirementstatescount) | Number of requirements for the project by their state. |
 | <a id="projectsastciconfiguration"></a>`sastCiConfiguration` | [`SastCiConfiguration`](#sastciconfiguration) | SAST CI configuration for the project. |
+| <a id="projectscanresultpolicies"></a>`scanResultPolicies` | [`ScanResultPolicyConnection`](#scanresultpolicyconnection) | Scan Result Policies of the project. (see [Connections](#connections)) |
 | <a id="projectsecuritydashboardpath"></a>`securityDashboardPath` | [`String`](#string) | Path to project's security dashboard. |
 | <a id="projectsecurityscanners"></a>`securityScanners` | [`SecurityScanners`](#securityscanners) | Information about security analyzers used in the project. |
 | <a id="projectsentryerrors"></a>`sentryErrors` | [`SentryErrorCollection`](#sentryerrorcollection) | Paginated collection of Sentry errors on the project. |
@@ -13294,6 +13341,35 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="projectincidentmanagementoncallschedulesiids"></a>`iids` | [`[ID!]`](#id) | IIDs of on-call schedules. |
+
+##### `Project.incidentManagementTimelineEvent`
+
+Incident Management Timeline event associated with the incident.
+
+Returns [`TimelineEventType`](#timelineeventtype).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectincidentmanagementtimelineeventid"></a>`id` | [`IncidentManagementTimelineEventID!`](#incidentmanagementtimelineeventid) | ID of the timeline event. |
+| <a id="projectincidentmanagementtimelineeventincidentid"></a>`incidentId` | [`IssueID!`](#issueid) | ID of the incident. |
+
+##### `Project.incidentManagementTimelineEvents`
+
+Incident Management Timeline events associated with the incident.
+
+Returns [`TimelineEventTypeConnection`](#timelineeventtypeconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectincidentmanagementtimelineeventsincidentid"></a>`incidentId` | [`IssueID!`](#issueid) | ID of the incident. |
 
 ##### `Project.issue`
 
@@ -14429,6 +14505,20 @@ Represents the scan execution policy.
 | <a id="scanexecutionpolicyupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of when the policy YAML was last updated. |
 | <a id="scanexecutionpolicyyaml"></a>`yaml` | [`String!`](#string) | YAML definition of the policy. |
 
+### `ScanResultPolicy`
+
+Represents the scan result policy.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="scanresultpolicydescription"></a>`description` | [`String!`](#string) | Description of the policy. |
+| <a id="scanresultpolicyenabled"></a>`enabled` | [`Boolean!`](#boolean) | Indicates whether this policy is enabled. |
+| <a id="scanresultpolicyname"></a>`name` | [`String!`](#string) | Name of the policy. |
+| <a id="scanresultpolicyupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of when the policy YAML was last updated. |
+| <a id="scanresultpolicyyaml"></a>`yaml` | [`String!`](#string) | YAML definition of the policy. |
+
 ### `ScannedResource`
 
 Represents a resource scanned by a security scan.
@@ -14998,6 +15088,27 @@ Represents a historically accurate report about the timebox.
 | ---- | ---- | ----------- |
 | <a id="timeboxreportburnuptimeseries"></a>`burnupTimeSeries` | [`[BurnupChartDailyTotals!]`](#burnupchartdailytotals) | Daily scope and completed totals for burnup charts. |
 | <a id="timeboxreportstats"></a>`stats` | [`TimeReportStats`](#timereportstats) | Represents the time report stats for the timebox. |
+
+### `TimelineEventType`
+
+Describes an incident management timeline event.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="timelineeventtypeaction"></a>`action` | [`String!`](#string) | Indicates the timeline event icon. |
+| <a id="timelineeventtypeauthor"></a>`author` | [`UserCore`](#usercore) | User that created the timeline event. |
+| <a id="timelineeventtypecreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp when the event created. |
+| <a id="timelineeventtypeeditable"></a>`editable` | [`Boolean!`](#boolean) | Indicates the timeline event is editable. |
+| <a id="timelineeventtypeid"></a>`id` | [`IncidentManagementTimelineEventID!`](#incidentmanagementtimelineeventid) | ID of the timeline event. |
+| <a id="timelineeventtypeincident"></a>`incident` | [`Issue!`](#issue) | Incident of the timeline event. |
+| <a id="timelineeventtypenote"></a>`note` | [`String`](#string) | Text note of the timeline event. |
+| <a id="timelineeventtypenotehtml"></a>`noteHtml` | [`String`](#string) | HTML note of the timeline event. |
+| <a id="timelineeventtypeoccurredat"></a>`occurredAt` | [`Time!`](#time) | Timestamp when the event occurred. |
+| <a id="timelineeventtypepromotedfromnote"></a>`promotedFromNote` | [`Note`](#note) | Note from which the timeline event was created. |
+| <a id="timelineeventtypeupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp when the event updated. |
+| <a id="timelineeventtypeupdatedbyuser"></a>`updatedByUser` | [`UserCore`](#usercore) | User that updated the timeline event. |
 
 ### `Timelog`
 
@@ -17691,6 +17802,12 @@ A `IncidentManagementOncallRotationID` is a global ID. It is encoded as a string
 
 An example `IncidentManagementOncallRotationID` is: `"gid://gitlab/IncidentManagement::OncallRotation/1"`.
 
+### `IncidentManagementTimelineEventID`
+
+A `IncidentManagementTimelineEventID` is a global ID. It is encoded as a string.
+
+An example `IncidentManagementTimelineEventID` is: `"gid://gitlab/IncidentManagement::TimelineEvent/1"`.
+
 ### `Int`
 
 Represents non-fractional signed whole numeric values. Int can represent values between -(2^31) and 2^31 - 1.
@@ -18179,6 +18296,23 @@ Implementations:
 | ---- | ---- | ----------- |
 | <a id="noteableinterfacediscussions"></a>`discussions` | [`DiscussionConnection!`](#discussionconnection) | All discussions on this noteable. (see [Connections](#connections)) |
 | <a id="noteableinterfacenotes"></a>`notes` | [`NoteConnection!`](#noteconnection) | All notes on this noteable. (see [Connections](#connections)) |
+
+#### `OrchestrationPolicy`
+
+Implementations:
+
+- [`ScanExecutionPolicy`](#scanexecutionpolicy)
+- [`ScanResultPolicy`](#scanresultpolicy)
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="orchestrationpolicydescription"></a>`description` | [`String!`](#string) | Description of the policy. |
+| <a id="orchestrationpolicyenabled"></a>`enabled` | [`Boolean!`](#boolean) | Indicates whether this policy is enabled. |
+| <a id="orchestrationpolicyname"></a>`name` | [`String!`](#string) | Name of the policy. |
+| <a id="orchestrationpolicyupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of when the policy YAML was last updated. |
+| <a id="orchestrationpolicyyaml"></a>`yaml` | [`String!`](#string) | YAML definition of the policy. |
 
 #### `PackageFileMetadata`
 

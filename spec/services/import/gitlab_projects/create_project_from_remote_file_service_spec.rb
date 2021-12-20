@@ -18,23 +18,28 @@ RSpec.describe ::Import::GitlabProjects::CreateProjectFromRemoteFileService do
 
   subject { described_class.new(user, params) }
 
-  it 'creates a project and returns a successful response' do
-    stub_headers_for(remote_url, {
-      'content-type' => 'application/gzip',
-      'content-length' => '10'
-    })
+  shared_examples 'successfully import' do |content_type|
+    it 'creates a project and returns a successful response' do
+      stub_headers_for(remote_url, {
+        'content-type' => content_type,
+        'content-length' => '10'
+      })
 
-    response = nil
-    expect { response = subject.execute }
-      .to change(Project, :count).by(1)
+      response = nil
+      expect { response = subject.execute }
+        .to change(Project, :count).by(1)
 
-    expect(response).to be_success
-    expect(response.http_status).to eq(:ok)
-    expect(response.payload).to be_instance_of(Project)
-    expect(response.payload.name).to eq('name')
-    expect(response.payload.path).to eq('path')
-    expect(response.payload.namespace).to eq(user.namespace)
+      expect(response).to be_success
+      expect(response.http_status).to eq(:ok)
+      expect(response.payload).to be_instance_of(Project)
+      expect(response.payload.name).to eq('name')
+      expect(response.payload.path).to eq('path')
+      expect(response.payload.namespace).to eq(user.namespace)
+    end
   end
+
+  it_behaves_like 'successfully import', 'application/gzip'
+  it_behaves_like 'successfully import', 'application/x-tar'
 
   context 'when the file url is invalid' do
     it 'returns an erred response with the reason of the failure' do
@@ -79,7 +84,7 @@ RSpec.describe ::Import::GitlabProjects::CreateProjectFromRemoteFileService do
       expect(response).not_to be_success
       expect(response.http_status).to eq(:bad_request)
       expect(response.message)
-        .to eq("Remote file content type 'application/js' not allowed. (Allowed content types: application/gzip)")
+        .to eq("Remote file content type 'application/js' not allowed. (Allowed content types: application/gzip, application/x-tar)")
     end
   end
 
@@ -128,6 +133,20 @@ RSpec.describe ::Import::GitlabProjects::CreateProjectFromRemoteFileService do
       expect(response.message)
         .to eq('Remote file larger than limit. (limit 10 GB)')
     end
+  end
+
+  it 'does not validate content-type or content-length when the file is stored in AWS-S3' do
+    stub_headers_for(remote_url, {
+      'Server' => 'AmazonS3',
+      'x-amz-request-id' => 'Something'
+    })
+
+    response = nil
+    expect { response = subject.execute }
+      .to change(Project, :count)
+
+    expect(response).to be_success
+    expect(response.http_status).to eq(:ok)
   end
 
   context 'when required parameters are not provided' do

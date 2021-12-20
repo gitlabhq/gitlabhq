@@ -57,7 +57,7 @@ class InternalId < ApplicationRecord
       self.internal_id_transactions_total.increment(
         operation: operation,
         usage: usage.to_s,
-        in_transaction: ActiveRecord::Base.connection.transaction_open?.to_s # rubocop: disable Database/MultipleDatabases
+        in_transaction: InternalId.connection.transaction_open?.to_s
       )
     end
 
