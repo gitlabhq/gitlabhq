@@ -7,7 +7,7 @@ query WorkItem($id: ID!) {
     widgets {
       nodes {
         ...WidgetBase
-        ... on TitleWidget {
+        ... on LocalTitleWidget {
           contentText
         }
       }

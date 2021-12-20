@@ -18,7 +18,7 @@ module QA
               element :more_assignees_link
             end
 
-            base.view 'app/assets/javascripts/sidebar/components/labels/sidebar_labels.vue' do
+            base.view 'app/assets/javascripts/vue_shared/components/sidebar/labels_select_widget/labels_select_root.vue' do
               element :labels_block
             end
 
@@ -122,15 +122,6 @@ module QA
 
           def toggle_more_assignees_link
             click_element(:more_assignees_link)
-          end
-
-          # When the labels_widget feature flag is enabled, wait until the labels widget appears
-          def wait_for_labels_widget_feature_flag
-            Support::Retrier.retry_until(max_duration: 60, reload_page: page, retry_on_exception: true, sleep_interval: 5) do
-              within_element(:labels_block) do
-                find_element(:edit_link)
-              end
-            end
           end
 
           private

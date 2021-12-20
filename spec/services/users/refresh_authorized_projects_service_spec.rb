@@ -67,11 +67,17 @@ RSpec.describe Users::RefreshAuthorizedProjectsService do
 
     it 'updates the authorized projects of the user' do
       project2 = create(:project)
-      to_remove = user.project_authorizations
+      project_authorization = user.project_authorizations
         .create!(project: project2, access_level: Gitlab::Access::MAINTAINER)
 
+      to_be_removed = [project_authorization.project_id]
+
+      to_be_added = [
+        { user_id: user.id, project_id: project.id, access_level: Gitlab::Access::MAINTAINER }
+      ]
+
       expect(service).to receive(:update_authorizations)
-        .with([to_remove.project_id], [[user.id, project.id, Gitlab::Access::MAINTAINER]])
+        .with(to_be_removed, to_be_added)
 
       service.execute_without_lease
     end
@@ -81,9 +87,14 @@ RSpec.describe Users::RefreshAuthorizedProjectsService do
         user.project_authorizations.create!(project: project, access_level: access_level)
       end
 
+      to_be_removed = [project.id]
+
+      to_be_added = [
+        { user_id: user.id, project_id: project.id, access_level: Gitlab::Access::MAINTAINER }
+      ]
       expect(service).to(
         receive(:update_authorizations)
-          .with([project.id], [[user.id, project.id, Gitlab::Access::MAINTAINER]])
+          .with(to_be_removed, to_be_added)
           .and_call_original)
 
       service.execute_without_lease
@@ -99,11 +110,17 @@ RSpec.describe Users::RefreshAuthorizedProjectsService do
     it 'sets the access level of a project to the highest available level' do
       user.project_authorizations.delete_all
 
-      to_remove = user.project_authorizations
+      project_authorization = user.project_authorizations
         .create!(project: project, access_level: Gitlab::Access::DEVELOPER)
 
+      to_be_removed = [project_authorization.project_id]
+
+      to_be_added = [
+        { user_id: user.id, project_id: project.id, access_level: Gitlab::Access::MAINTAINER }
+      ]
+
       expect(service).to receive(:update_authorizations)
-        .with([to_remove.project_id], [[user.id, project.id, Gitlab::Access::MAINTAINER]])
+        .with(to_be_removed, to_be_added)
 
       service.execute_without_lease
     end
@@ -134,7 +151,11 @@ RSpec.describe Users::RefreshAuthorizedProjectsService do
     it 'inserts authorizations that should be added' do
       user.project_authorizations.delete_all
 
-      service.update_authorizations([], [[user.id, project.id, Gitlab::Access::MAINTAINER]])
+      to_be_added = [
+        { user_id: user.id, project_id: project.id, access_level: Gitlab::Access::MAINTAINER }
+      ]
+
+      service.update_authorizations([], to_be_added)
 
       authorizations = user.project_authorizations
 
@@ -160,7 +181,11 @@ RSpec.describe Users::RefreshAuthorizedProjectsService do
                 'authorized_projects_refresh.rows_added_slice': [[user.id, project.id, Gitlab::Access::MAINTAINER]])
       )
 
-      service.update_authorizations([], [[user.id, project.id, Gitlab::Access::MAINTAINER]])
+      to_be_added = [
+        { user_id: user.id, project_id: project.id, access_level: Gitlab::Access::MAINTAINER }
+      ]
+
+      service.update_authorizations([], to_be_added)
     end
   end
 end

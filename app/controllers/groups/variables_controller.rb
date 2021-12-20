@@ -8,6 +8,8 @@ module Groups
 
     feature_category :pipeline_authoring
 
+    urgency :low, [:show]
+
     def show
       respond_to do |format|
         format.json do

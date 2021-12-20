@@ -140,12 +140,9 @@ module Gitlab
       end
 
       def inject_context_for_exception(event, ex)
-        case ex
-        when ActiveRecord::StatementInvalid
-          event.extra[:sql] = PgQuery.normalize(ex.sql.to_s)
-        else
-          inject_context_for_exception(event, ex.cause) if ex.cause.present?
-        end
+        sql = Gitlab::ExceptionLogFormatter.find_sql(ex)
+
+        event.extra[:sql] = sql if sql
       end
     end
   end

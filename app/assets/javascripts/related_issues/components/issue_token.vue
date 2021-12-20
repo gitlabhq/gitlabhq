@@ -1,7 +1,7 @@
 <script>
 import { GlIcon, GlTooltipDirective } from '@gitlab/ui';
 import { __, sprintf } from '~/locale';
-import relatedIssuableMixin from '~/vue_shared/mixins/related_issuable_mixin';
+import relatedIssuableMixin from '~/issuable/mixins/related_issuable_mixin';
 
 export default {
   name: 'IssueToken',

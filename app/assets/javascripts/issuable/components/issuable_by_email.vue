@@ -54,8 +54,7 @@ export default {
   data() {
     return {
       email: this.initialEmail,
-      // eslint-disable-next-line @gitlab/require-i18n-strings
-      issuableName: this.issuableType === 'issue' ? 'issue' : 'merge request',
+      issuableName: this.issuableType === 'issue' ? __('issue') : __('merge request'),
     };
   },
   computed: {

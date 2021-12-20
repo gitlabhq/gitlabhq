@@ -43,13 +43,8 @@ module Gitlab
       HISTOGRAM_FALLBACK = { '-1' => -1 }.freeze
       DISTRIBUTED_HLL_FALLBACK = -2
       MAX_BUCKET_SIZE = 100
-      INSTRUMENTATION_CLASS_FALLBACK = -100
 
       def add_metric(metric, time_frame: 'none', options: {})
-        # Results of this method should be overwritten by instrumentation class values
-        # -100 indicates the metric was not properly merged.
-        return INSTRUMENTATION_CLASS_FALLBACK if Feature.enabled?(:usage_data_instrumentation)
-
         metric_class = "Gitlab::Usage::Metrics::Instrumentations::#{metric}".constantize
 
         metric_class.new(time_frame: time_frame, options: options).value
@@ -61,7 +56,8 @@ module Gitlab
         else
           relation.count
         end
-      rescue ActiveRecord::StatementInvalid
+      rescue ActiveRecord::StatementInvalid => error
+        Gitlab::ErrorTracking.track_and_raise_for_dev_exception(error)
         FALLBACK
       end
 
@@ -71,7 +67,8 @@ module Gitlab
         else
           relation.distinct_count_by(column)
         end
-      rescue ActiveRecord::StatementInvalid
+      rescue ActiveRecord::StatementInvalid => error
+        Gitlab::ErrorTracking.track_and_raise_for_dev_exception(error)
         FALLBACK
       end
 
@@ -83,7 +80,8 @@ module Gitlab
         yield buckets if block_given?
 
         buckets.estimated_distinct_count
-      rescue ActiveRecord::StatementInvalid
+      rescue ActiveRecord::StatementInvalid => error
+        Gitlab::ErrorTracking.track_and_raise_for_dev_exception(error)
         FALLBACK
       # catch all rescue should be removed as a part of feature flag rollout issue
       # https://gitlab.com/gitlab-org/gitlab/-/issues/285485
@@ -94,7 +92,8 @@ module Gitlab
 
       def sum(relation, column, batch_size: nil, start: nil, finish: nil)
         Gitlab::Database::BatchCount.batch_sum(relation, column, batch_size: batch_size, start: start, finish: finish)
-      rescue ActiveRecord::StatementInvalid
+      rescue ActiveRecord::StatementInvalid => error
+        Gitlab::ErrorTracking.track_and_raise_for_dev_exception(error)
         FALLBACK
       end
 
@@ -160,7 +159,8 @@ module Gitlab
           query: query.to_sql,
           message: e.message
         )
-
+        # Raises error for dev env
+        Gitlab::ErrorTracking.track_and_raise_for_dev_exception(e)
         HISTOGRAM_FALLBACK
       end
       # rubocop: enable CodeReuse/ActiveRecord

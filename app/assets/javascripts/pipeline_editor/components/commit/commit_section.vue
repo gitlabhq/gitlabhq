@@ -8,10 +8,10 @@ import {
   COMMIT_SUCCESS,
 } from '../../constants';
 import commitCIFile from '../../graphql/mutations/commit_ci_file.mutation.graphql';
-import updateCurrentBranchMutation from '../../graphql/mutations/update_current_branch.mutation.graphql';
-import updateLastCommitBranchMutation from '../../graphql/mutations/update_last_commit_branch.mutation.graphql';
-import updatePipelineEtag from '../../graphql/mutations/update_pipeline_etag.mutation.graphql';
-import getCurrentBranch from '../../graphql/queries/client/current_branch.graphql';
+import updateCurrentBranchMutation from '../../graphql/mutations/client/update_current_branch.mutation.graphql';
+import updateLastCommitBranchMutation from '../../graphql/mutations/client/update_last_commit_branch.mutation.graphql';
+import updatePipelineEtag from '../../graphql/mutations/client/update_pipeline_etag.mutation.graphql';
+import getCurrentBranch from '../../graphql/queries/client/current_branch.query.graphql';
 
 import CommitForm from './commit_form.vue';
 
@@ -60,6 +60,9 @@ export default {
   apollo: {
     currentBranch: {
       query: getCurrentBranch,
+      update(data) {
+        return data.workBranches.current.name;
+      },
     },
   },
   computed: {
@@ -87,7 +90,7 @@ export default {
       try {
         const {
           data: {
-            commitCreate: { errors },
+            commitCreate: { errors, commitPipelinePath: pipelineEtag },
           },
         } = await this.$apollo.mutate({
           mutation: commitCIFile,
@@ -101,13 +104,11 @@ export default {
             content: this.ciFileContent,
             lastCommitId: this.commitSha,
           },
-          update(_, { data }) {
-            const pipelineEtag = data?.commitCreate?.commit?.commitPipelinePath;
-            if (pipelineEtag) {
-              this.$apollo.mutate({ mutation: updatePipelineEtag, variables: pipelineEtag });
-            }
-          },
         });
+
+        if (pipelineEtag) {
+          this.updatePipelineEtag(pipelineEtag);
+        }
 
         if (errors?.length) {
           this.$emit('showError', { type: COMMIT_FAILURE, reasons: errors });
@@ -127,9 +128,6 @@ export default {
         this.isSaving = false;
       }
     },
-    onCommitCancel() {
-      this.$emit('resetContent');
-    },
     updateCurrentBranch(currentBranch) {
       this.$apollo.mutate({
         mutation: updateCurrentBranchMutation,
@@ -142,6 +140,9 @@ export default {
         variables: { lastCommitBranch },
       });
     },
+    updatePipelineEtag(pipelineEtag) {
+      this.$apollo.mutate({ mutation: updatePipelineEtag, variables: { pipelineEtag } });
+    },
   },
 };
 </script>
@@ -153,7 +154,6 @@ export default {
     :is-saving="isSaving"
     :scroll-to-commit-form="scrollToCommitForm"
     v-on="$listeners"
-    @cancel="onCommitCancel"
     @submit="onCommitSubmit"
   />
 </template>

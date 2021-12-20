@@ -30,7 +30,7 @@ module QA
         user.remove_via_api!
       end
 
-      it 'imports Github repo via api', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1878' do
+      it 'imports Github repo via api', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347670' do
         imported_project # import the project
 
         expect { imported_project.reload!.import_status }.to eventually_eq('finished').within(max_duration: 90)

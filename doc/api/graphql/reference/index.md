@@ -370,6 +370,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="queryrunnersactive"></a>`active` | [`Boolean`](#boolean) | Filter runners by active (true) or paused (false) status. |
 | <a id="queryrunnerssearch"></a>`search` | [`String`](#string) | Filter by full token or partial text in description field. |
 | <a id="queryrunnerssort"></a>`sort` | [`CiRunnerSort`](#cirunnersort) | Sort order of results. |
 | <a id="queryrunnersstatus"></a>`status` | [`CiRunnerStatus`](#cirunnerstatus) | Filter runners by status. |
@@ -396,6 +397,16 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="querysnippetsprojectid"></a>`projectId` | [`ProjectID`](#projectid) | ID of a project. |
 | <a id="querysnippetstype"></a>`type` | [`TypeEnum`](#typeenum) | Type of snippet. |
 | <a id="querysnippetsvisibility"></a>`visibility` | [`VisibilityScopesEnum`](#visibilityscopesenum) | Visibility of the snippet. |
+
+### `Query.subscriptionFutureEntries`
+
+Fields related to entries in future subscriptions.
+
+Returns [`SubscriptionFutureEntryConnection`](#subscriptionfutureentryconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, `last: Int`.
 
 ### `Query.timelogs`
 
@@ -500,6 +511,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="queryvulnerabilitiesclusteragentid"></a>`clusterAgentId` | [`[ClustersAgentID!]`](#clustersagentid) | Filter vulnerabilities by `cluster_agent_id`. Vulnerabilities with a `reportType` of `cluster_image_scanning` are only included with this filter. |
 | <a id="queryvulnerabilitiesclusterid"></a>`clusterId` | [`[ClustersClusterID!]`](#clustersclusterid) | Filter vulnerabilities by `cluster_id`. Vulnerabilities with a `reportType` of `cluster_image_scanning` are only included with this filter. |
 | <a id="queryvulnerabilitieshasissues"></a>`hasIssues` | [`Boolean`](#boolean) | Returns only the vulnerabilities which have linked issues. |
 | <a id="queryvulnerabilitieshasresolution"></a>`hasResolution` | [`Boolean`](#boolean) | Returns only the vulnerabilities which have been resolved on default branch. |
@@ -676,9 +688,9 @@ Input type: `ApiFuzzingCiConfigurationCreateInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationapifuzzingciconfigurationcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationapifuzzingciconfigurationcreateconfigurationyaml"></a>`configurationYaml` | [`String`](#string) | A YAML snippet that can be inserted into the project's `.gitlab-ci.yml` to set up API fuzzing scans. |
+| <a id="mutationapifuzzingciconfigurationcreateconfigurationyaml"></a>`configurationYaml` **{warning-solid}** | [`String`](#string) | **Deprecated:** The configuration snippet is now generated client-side. Deprecated in 14.6. |
 | <a id="mutationapifuzzingciconfigurationcreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationapifuzzingciconfigurationcreategitlabciyamleditpath"></a>`gitlabCiYamlEditPath` | [`String`](#string) | Location at which the project's `.gitlab-ci.yml` file can be edited in the browser. |
+| <a id="mutationapifuzzingciconfigurationcreategitlabciyamleditpath"></a>`gitlabCiYamlEditPath` **{warning-solid}** | [`String`](#string) | **Deprecated:** The configuration snippet is now generated client-side. Deprecated in 14.6. |
 
 ### `Mutation.awardEmojiAdd`
 
@@ -2846,7 +2858,7 @@ Input type: `IssueSetCrmContactsInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationissuesetcrmcontactsclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationissuesetcrmcontactscrmcontactids"></a>`crmContactIds` | [`[CustomerRelationsContactID!]!`](#customerrelationscontactid) | Customer relations contact IDs to set. Replaces existing contacts by default. |
+| <a id="mutationissuesetcrmcontactscontactids"></a>`contactIds` | [`[CustomerRelationsContactID!]!`](#customerrelationscontactid) | Customer relations contact IDs to set. Replaces existing contacts by default. |
 | <a id="mutationissuesetcrmcontactsiid"></a>`iid` | [`String!`](#string) | IID of the issue to mutate. |
 | <a id="mutationissuesetcrmcontactsoperationmode"></a>`operationMode` | [`MutationOperationMode`](#mutationoperationmode) | Changes the operation mode. Defaults to REPLACE. |
 | <a id="mutationissuesetcrmcontactsprojectpath"></a>`projectPath` | [`ID!`](#id) | Project the issue to mutate is in. |
@@ -3757,7 +3769,7 @@ Input type: `ProjectSetComplianceFrameworkInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationprojectsetcomplianceframeworkclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationprojectsetcomplianceframeworkcomplianceframeworkid"></a>`complianceFrameworkId` | [`ComplianceManagementFrameworkID`](#compliancemanagementframeworkid) | ID of the compliance framework to assign to the project. |
+| <a id="mutationprojectsetcomplianceframeworkcomplianceframeworkid"></a>`complianceFrameworkId` | [`ComplianceManagementFrameworkID`](#compliancemanagementframeworkid) | ID of the compliance framework to assign to the project. Set to `null` to unset. |
 | <a id="mutationprojectsetcomplianceframeworkprojectid"></a>`projectId` | [`ProjectID!`](#projectid) | ID of the project to change the compliance framework of. |
 
 #### Fields
@@ -5457,6 +5469,30 @@ The edge type for [`CiStage`](#cistage).
 | <a id="cistageedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="cistageedgenode"></a>`node` | [`CiStage`](#cistage) | The item at the end of the edge. |
 
+#### `ClusterAgentActivityEventConnection`
+
+The connection type for [`ClusterAgentActivityEvent`](#clusteragentactivityevent).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="clusteragentactivityeventconnectioncount"></a>`count` | [`Int!`](#int) | Total count of collection. |
+| <a id="clusteragentactivityeventconnectionedges"></a>`edges` | [`[ClusterAgentActivityEventEdge]`](#clusteragentactivityeventedge) | A list of edges. |
+| <a id="clusteragentactivityeventconnectionnodes"></a>`nodes` | [`[ClusterAgentActivityEvent]`](#clusteragentactivityevent) | A list of nodes. |
+| <a id="clusteragentactivityeventconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `ClusterAgentActivityEventEdge`
+
+The edge type for [`ClusterAgentActivityEvent`](#clusteragentactivityevent).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="clusteragentactivityeventedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="clusteragentactivityeventedgenode"></a>`node` | [`ClusterAgentActivityEvent`](#clusteragentactivityevent) | The item at the end of the edge. |
+
 #### `ClusterAgentConnection`
 
 The connection type for [`ClusterAgent`](#clusteragent).
@@ -5767,6 +5803,7 @@ The connection type for [`DastProfile`](#dastprofile).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="dastprofileconnectioncount"></a>`count` | [`Int!`](#int) | Total count of collection. |
 | <a id="dastprofileconnectionedges"></a>`edges` | [`[DastProfileEdge]`](#dastprofileedge) | A list of edges. |
 | <a id="dastprofileconnectionnodes"></a>`nodes` | [`[DastProfile]`](#dastprofile) | A list of nodes. |
 | <a id="dastprofileconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
@@ -6475,6 +6512,29 @@ The edge type for [`JiraProject`](#jiraproject).
 | ---- | ---- | ----------- |
 | <a id="jiraprojectedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="jiraprojectedgenode"></a>`node` | [`JiraProject`](#jiraproject) | The item at the end of the edge. |
+
+#### `JobNeedUnionConnection`
+
+The connection type for [`JobNeedUnion`](#jobneedunion).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="jobneedunionconnectionedges"></a>`edges` | [`[JobNeedUnionEdge]`](#jobneedunionedge) | A list of edges. |
+| <a id="jobneedunionconnectionnodes"></a>`nodes` | [`[JobNeedUnion]`](#jobneedunion) | A list of nodes. |
+| <a id="jobneedunionconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `JobNeedUnionEdge`
+
+The edge type for [`JobNeedUnion`](#jobneedunion).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="jobneedunionedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="jobneedunionedgenode"></a>`node` | [`JobNeedUnion`](#jobneedunion) | The item at the end of the edge. |
 
 #### `LabelConnection`
 
@@ -7540,6 +7600,29 @@ The edge type for [`Submodule`](#submodule).
 | <a id="submoduleedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="submoduleedgenode"></a>`node` | [`Submodule`](#submodule) | The item at the end of the edge. |
 
+#### `SubscriptionFutureEntryConnection`
+
+The connection type for [`SubscriptionFutureEntry`](#subscriptionfutureentry).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="subscriptionfutureentryconnectionedges"></a>`edges` | [`[SubscriptionFutureEntryEdge]`](#subscriptionfutureentryedge) | A list of edges. |
+| <a id="subscriptionfutureentryconnectionnodes"></a>`nodes` | [`[SubscriptionFutureEntry]`](#subscriptionfutureentry) | A list of nodes. |
+| <a id="subscriptionfutureentryconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `SubscriptionFutureEntryEdge`
+
+The edge type for [`SubscriptionFutureEntry`](#subscriptionfutureentry).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="subscriptionfutureentryedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="subscriptionfutureentryedgenode"></a>`node` | [`SubscriptionFutureEntry`](#subscriptionfutureentry) | The item at the end of the edge. |
+
 #### `TerraformStateConnection`
 
 The connection type for [`TerraformState`](#terraformstate).
@@ -8339,6 +8422,7 @@ Represents an epic on an issue board.
 | <a id="boardepicdownvotes"></a>`downvotes` | [`Int!`](#int) | Number of downvotes the epic has received. |
 | <a id="boardepicduedate"></a>`dueDate` | [`Time`](#time) | Due date of the epic. |
 | <a id="boardepicduedatefixed"></a>`dueDateFixed` | [`Time`](#time) | Fixed due date of the epic. |
+| <a id="boardepicduedatefrominheritedsource"></a>`dueDateFromInheritedSource` | [`Time`](#time) | Inherited due date of the epic from child epics or milestones. |
 | <a id="boardepicduedatefrommilestones"></a>`dueDateFromMilestones` | [`Time`](#time) | Inherited due date of the epic from milestones. |
 | <a id="boardepicduedateisfixed"></a>`dueDateIsFixed` | [`Boolean`](#boolean) | Indicates if the due date has been manually set. |
 | <a id="boardepicevents"></a>`events` | [`EventConnection`](#eventconnection) | List of events associated with the object. (see [Connections](#connections)) |
@@ -8358,6 +8442,7 @@ Represents an epic on an issue board.
 | <a id="boardepicrelativeposition"></a>`relativePosition` | [`Int`](#int) | Relative position of the epic in the epic tree. |
 | <a id="boardepicstartdate"></a>`startDate` | [`Time`](#time) | Start date of the epic. |
 | <a id="boardepicstartdatefixed"></a>`startDateFixed` | [`Time`](#time) | Fixed start date of the epic. |
+| <a id="boardepicstartdatefrominheritedsource"></a>`startDateFromInheritedSource` | [`Time`](#time) | Inherited start date of the epic from child epics or milestones. |
 | <a id="boardepicstartdatefrommilestones"></a>`startDateFromMilestones` | [`Time`](#time) | Inherited start date of the epic from milestones. |
 | <a id="boardepicstartdateisfixed"></a>`startDateIsFixed` | [`Boolean`](#boolean) | Indicates if the start date has been manually set. |
 | <a id="boardepicstate"></a>`state` | [`EpicState!`](#epicstate) | State of the epic. |
@@ -8557,7 +8642,7 @@ Represents the total number of issues and their weights for a particular day.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="cibuildneedid"></a>`id` | [`ID!`](#id) | ID of the job we need to complete. |
+| <a id="cibuildneedid"></a>`id` | [`ID!`](#id) | ID of the BuildNeed. |
 | <a id="cibuildneedname"></a>`name` | [`String`](#string) | Name of the job we need to complete. |
 
 ### `CiConfig`
@@ -8661,6 +8746,7 @@ Represents the total number of issues and their weights for a particular day.
 | <a id="cijobneeds"></a>`needs` | [`CiBuildNeedConnection`](#cibuildneedconnection) | References to builds that must complete before the jobs run. (see [Connections](#connections)) |
 | <a id="cijobpipeline"></a>`pipeline` | [`Pipeline`](#pipeline) | Pipeline the job belongs to. |
 | <a id="cijobplayable"></a>`playable` | [`Boolean!`](#boolean) | Indicates the job can be played. |
+| <a id="cijobpreviousstagejobsorneeds"></a>`previousStageJobsOrNeeds` | [`JobNeedUnionConnection`](#jobneedunionconnection) | Jobs that must complete before the job runs. Returns `BuildNeed`, which is the needed jobs if the job uses the `needs` keyword, or the previous stage jobs otherwise. (see [Connections](#connections)) |
 | <a id="cijobqueuedat"></a>`queuedAt` | [`Time`](#time) | When the job was enqueued and marked as pending. |
 | <a id="cijobqueuedduration"></a>`queuedDuration` | [`Duration`](#duration) | How long the job was enqueued before starting. |
 | <a id="cijobrefname"></a>`refName` | [`String`](#string) | Ref name of the job. |
@@ -8723,7 +8809,7 @@ Represents the total number of issues and their weights for a particular day.
 | ---- | ---- | ----------- |
 | <a id="cirunneraccesslevel"></a>`accessLevel` | [`CiRunnerAccessLevel!`](#cirunneraccesslevel) | Access level of the runner. |
 | <a id="cirunneractive"></a>`active` | [`Boolean!`](#boolean) | Indicates the runner is allowed to receive jobs. |
-| <a id="cirunneradminurl"></a>`adminUrl` | [`String`](#string) | Admin URL of the runner. Only available for adminstrators. |
+| <a id="cirunneradminurl"></a>`adminUrl` | [`String`](#string) | Admin URL of the runner. Only available for administrators. |
 | <a id="cirunnercontactedat"></a>`contactedAt` | [`Time`](#time) | Last contact from the runner. |
 | <a id="cirunnerdescription"></a>`description` | [`String`](#string) | Description of the runner. |
 | <a id="cirunnerid"></a>`id` | [`CiRunnerID!`](#cirunnerid) | ID of the runner. |
@@ -8738,10 +8824,23 @@ Represents the total number of issues and their weights for a particular day.
 | <a id="cirunnerrununtagged"></a>`runUntagged` | [`Boolean!`](#boolean) | Indicates the runner is able to run untagged jobs. |
 | <a id="cirunnerrunnertype"></a>`runnerType` | [`CiRunnerType!`](#cirunnertype) | Type of the runner. |
 | <a id="cirunnershortsha"></a>`shortSha` | [`String`](#string) | First eight characters of the runner's token used to authenticate new job requests. Used as the runner's unique ID. |
-| <a id="cirunnerstatus"></a>`status` | [`CiRunnerStatus!`](#cirunnerstatus) | Status of the runner. |
 | <a id="cirunnertaglist"></a>`tagList` | [`[String!]`](#string) | Tags associated with the runner. |
 | <a id="cirunneruserpermissions"></a>`userPermissions` | [`RunnerPermissions!`](#runnerpermissions) | Permissions for the current user on the resource. |
 | <a id="cirunnerversion"></a>`version` | [`String`](#string) | Version of the runner. |
+
+#### Fields with arguments
+
+##### `CiRunner.status`
+
+Status of the runner.
+
+Returns [`CiRunnerStatus!`](#cirunnerstatus).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="cirunnerstatuslegacymode"></a>`legacyMode` **{warning-solid}** | [`String`](#string) | **Deprecated** in 14.6. Will be removed in 15.0. From that release onward, the field will behave as if legacyMode is null. |
 
 ### `CiStage`
 
@@ -8773,6 +8872,7 @@ GitLab CI/CD configuration template.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="clusteragentactivityevents"></a>`activityEvents` | [`ClusterAgentActivityEventConnection`](#clusteragentactivityeventconnection) | Recent activity for the cluster agent. (see [Connections](#connections)) |
 | <a id="clusteragentconnections"></a>`connections` | [`ConnectedAgentConnection`](#connectedagentconnection) | Active connections for the cluster agent. (see [Connections](#connections)) |
 | <a id="clusteragentcreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp the cluster agent was created. |
 | <a id="clusteragentcreatedbyuser"></a>`createdByUser` | [`UserCore`](#usercore) | User object, containing information about the person who created the agent. |
@@ -8782,6 +8882,18 @@ GitLab CI/CD configuration template.
 | <a id="clusteragenttokens"></a>`tokens` | [`ClusterAgentTokenConnection`](#clusteragenttokenconnection) | Tokens associated with the cluster agent. (see [Connections](#connections)) |
 | <a id="clusteragentupdatedat"></a>`updatedAt` | [`Time`](#time) | Timestamp the cluster agent was updated. |
 | <a id="clusteragentwebpath"></a>`webPath` | [`String`](#string) | Web path of the cluster agent. |
+
+### `ClusterAgentActivityEvent`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="clusteragentactivityeventagenttoken"></a>`agentToken` | [`ClusterAgentToken`](#clusteragenttoken) | Agent token associated with the event. |
+| <a id="clusteragentactivityeventkind"></a>`kind` | [`String`](#string) | Type of event. |
+| <a id="clusteragentactivityeventlevel"></a>`level` | [`String`](#string) | Severity of the event. |
+| <a id="clusteragentactivityeventrecordedat"></a>`recordedAt` | [`Time`](#time) | Timestamp the event was recorded. |
+| <a id="clusteragentactivityeventuser"></a>`user` | [`UserCore`](#usercore) | User associated with the event. |
 
 ### `ClusterAgentToken`
 
@@ -9008,9 +9120,27 @@ Details of a container repository.
 | <a id="containerrepositorydetailspath"></a>`path` | [`String!`](#string) | Path of the container repository. |
 | <a id="containerrepositorydetailsproject"></a>`project` | [`Project!`](#project) | Project of the container registry. |
 | <a id="containerrepositorydetailsstatus"></a>`status` | [`ContainerRepositoryStatus`](#containerrepositorystatus) | Status of the container repository. |
-| <a id="containerrepositorydetailstags"></a>`tags` | [`ContainerRepositoryTagConnection`](#containerrepositorytagconnection) | Tags of the container repository. (see [Connections](#connections)) |
 | <a id="containerrepositorydetailstagscount"></a>`tagsCount` | [`Int!`](#int) | Number of tags associated with this image. |
 | <a id="containerrepositorydetailsupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp when the container repository was updated. |
+
+#### Fields with arguments
+
+##### `ContainerRepositoryDetails.tags`
+
+Tags of the container repository.
+
+Returns [`ContainerRepositoryTagConnection`](#containerrepositorytagconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="containerrepositorydetailstagsname"></a>`name` | [`String`](#string) | Search by tag name. |
+| <a id="containerrepositorydetailstagssort"></a>`sort` | [`ContainerRepositoryTagSort`](#containerrepositorytagsort) | Sort tags by these criteria. |
 
 ### `ContainerRepositoryTag`
 
@@ -9765,6 +9895,7 @@ Represents an epic.
 | <a id="epicdownvotes"></a>`downvotes` | [`Int!`](#int) | Number of downvotes the epic has received. |
 | <a id="epicduedate"></a>`dueDate` | [`Time`](#time) | Due date of the epic. |
 | <a id="epicduedatefixed"></a>`dueDateFixed` | [`Time`](#time) | Fixed due date of the epic. |
+| <a id="epicduedatefrominheritedsource"></a>`dueDateFromInheritedSource` | [`Time`](#time) | Inherited due date of the epic from child epics or milestones. |
 | <a id="epicduedatefrommilestones"></a>`dueDateFromMilestones` | [`Time`](#time) | Inherited due date of the epic from milestones. |
 | <a id="epicduedateisfixed"></a>`dueDateIsFixed` | [`Boolean`](#boolean) | Indicates if the due date has been manually set. |
 | <a id="epicevents"></a>`events` | [`EventConnection`](#eventconnection) | List of events associated with the object. (see [Connections](#connections)) |
@@ -9784,6 +9915,7 @@ Represents an epic.
 | <a id="epicrelativeposition"></a>`relativePosition` | [`Int`](#int) | Relative position of the epic in the epic tree. |
 | <a id="epicstartdate"></a>`startDate` | [`Time`](#time) | Start date of the epic. |
 | <a id="epicstartdatefixed"></a>`startDateFixed` | [`Time`](#time) | Fixed start date of the epic. |
+| <a id="epicstartdatefrominheritedsource"></a>`startDateFromInheritedSource` | [`Time`](#time) | Inherited start date of the epic from child epics or milestones. |
 | <a id="epicstartdatefrommilestones"></a>`startDateFromMilestones` | [`Time`](#time) | Inherited start date of the epic from milestones. |
 | <a id="epicstartdateisfixed"></a>`startDateIsFixed` | [`Boolean`](#boolean) | Indicates if the start date has been manually set. |
 | <a id="epicstate"></a>`state` | [`EpicState!`](#epicstate) | State of the epic. |
@@ -10843,6 +10975,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="grouprunnersactive"></a>`active` | [`Boolean`](#boolean) | Filter runners by active (true) or paused (false) status. |
 | <a id="grouprunnersmembership"></a>`membership` | [`RunnerMembershipFilter`](#runnermembershipfilter) | Control which runners to include in the results. |
 | <a id="grouprunnerssearch"></a>`search` | [`String`](#string) | Filter by full token or partial text in description field. |
 | <a id="grouprunnerssort"></a>`sort` | [`CiRunnerSort`](#cirunnersort) | Sort order of results. |
@@ -10886,6 +11019,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="groupvulnerabilitiesclusteragentid"></a>`clusterAgentId` | [`[ClustersAgentID!]`](#clustersagentid) | Filter vulnerabilities by `cluster_agent_id`. Vulnerabilities with a `reportType` of `cluster_image_scanning` are only included with this filter. |
 | <a id="groupvulnerabilitiesclusterid"></a>`clusterId` | [`[ClustersClusterID!]`](#clustersclusterid) | Filter vulnerabilities by `cluster_id`. Vulnerabilities with a `reportType` of `cluster_image_scanning` are only included with this filter. |
 | <a id="groupvulnerabilitieshasissues"></a>`hasIssues` | [`Boolean`](#boolean) | Returns only the vulnerabilities which have linked issues. |
 | <a id="groupvulnerabilitieshasresolution"></a>`hasResolution` | [`Boolean`](#boolean) | Returns only the vulnerabilities which have been resolved on default branch. |
@@ -12388,7 +12522,7 @@ Represents a package in the Package Registry. Note that this type is in beta and
 | <a id="packagemetadata"></a>`metadata` | [`PackageMetadata`](#packagemetadata) | Package metadata. |
 | <a id="packagename"></a>`name` | [`String!`](#string) | Name of the package. |
 | <a id="packagepackagetype"></a>`packageType` | [`PackageTypeEnum!`](#packagetypeenum) | Package type. |
-| <a id="packagepipelines"></a>`pipelines` | [`PipelineConnection`](#pipelineconnection) | Pipelines that built the package. (see [Connections](#connections)) |
+| <a id="packagepipelines"></a>`pipelines` **{warning-solid}** | [`PipelineConnection`](#pipelineconnection) | **Deprecated** in 14.6. Due to scalability concerns, this field is going to be removed. |
 | <a id="packageproject"></a>`project` | [`Project!`](#project) | Project where the package is stored. |
 | <a id="packagestatus"></a>`status` | [`PackageStatus!`](#packagestatus) | Package status. |
 | <a id="packagetags"></a>`tags` | [`PackageTagConnection`](#packagetagconnection) | Package tags. (see [Connections](#connections)) |
@@ -12450,7 +12584,7 @@ Represents a package details in the Package Registry. Note that this type is in 
 | <a id="packagedetailstypename"></a>`name` | [`String!`](#string) | Name of the package. |
 | <a id="packagedetailstypepackagefiles"></a>`packageFiles` | [`PackageFileConnection`](#packagefileconnection) | Package files. (see [Connections](#connections)) |
 | <a id="packagedetailstypepackagetype"></a>`packageType` | [`PackageTypeEnum!`](#packagetypeenum) | Package type. |
-| <a id="packagedetailstypepipelines"></a>`pipelines` | [`PipelineConnection`](#pipelineconnection) | Pipelines that built the package. (see [Connections](#connections)) |
+| <a id="packagedetailstypepipelines"></a>`pipelines` **{warning-solid}** | [`PipelineConnection`](#pipelineconnection) | **Deprecated** in 14.6. Due to scalability concerns, this field is going to be removed. |
 | <a id="packagedetailstypeproject"></a>`project` | [`Project!`](#project) | Project where the package is stored. |
 | <a id="packagedetailstypestatus"></a>`status` | [`PackageStatus!`](#packagestatus) | Package status. |
 | <a id="packagedetailstypetags"></a>`tags` | [`PackageTagConnection`](#packagetagconnection) | Package tags. (see [Connections](#connections)) |
@@ -12862,6 +12996,7 @@ Represents vulnerability finding of a security report on the pipeline.
 | <a id="projectservicedeskenabled"></a>`serviceDeskEnabled` | [`Boolean`](#boolean) | Indicates if the project has service desk enabled. |
 | <a id="projectsharedrunnersenabled"></a>`sharedRunnersEnabled` | [`Boolean`](#boolean) | Indicates if shared runners are enabled for the project. |
 | <a id="projectsnippetsenabled"></a>`snippetsEnabled` | [`Boolean`](#boolean) | Indicates if Snippets are enabled for the current user. |
+| <a id="projectsquashcommittemplate"></a>`squashCommitTemplate` | [`String`](#string) | Template used to create squash commit message in merge requests. |
 | <a id="projectsquashreadonly"></a>`squashReadOnly` | [`Boolean!`](#boolean) | Indicates if `squashReadOnly` is enabled. |
 | <a id="projectsshurltorepo"></a>`sshUrlToRepo` | [`String`](#string) | URL to connect to the project via SSH. |
 | <a id="projectstarcount"></a>`starCount` | [`Int!`](#int) | Number of times the project has been starred. |
@@ -13602,7 +13737,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="projectscanexecutionpoliciesactionscantypes"></a>`actionScanTypes` | [`[SecurityReportTypeEnum!]`](#securityreporttypeenum) | Filters policies by the action scan type. Only these scan types are supported: `dast`, `secret_detection`, `cluster_image_scanning`, `container_scanning`. |
+| <a id="projectscanexecutionpoliciesactionscantypes"></a>`actionScanTypes` | [`[SecurityReportTypeEnum!]`](#securityreporttypeenum) | Filters policies by the action scan type. Only these scan types are supported: `dast`, `secret_detection`, `cluster_image_scanning`, `container_scanning`, `sast`. |
 
 ##### `Project.sentryDetailedError`
 
@@ -13698,6 +13833,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="projectvulnerabilitiesclusteragentid"></a>`clusterAgentId` | [`[ClustersAgentID!]`](#clustersagentid) | Filter vulnerabilities by `cluster_agent_id`. Vulnerabilities with a `reportType` of `cluster_image_scanning` are only included with this filter. |
 | <a id="projectvulnerabilitiesclusterid"></a>`clusterId` | [`[ClustersClusterID!]`](#clustersclusterid) | Filter vulnerabilities by `cluster_id`. Vulnerabilities with a `reportType` of `cluster_image_scanning` are only included with this filter. |
 | <a id="projectvulnerabilitieshasissues"></a>`hasIssues` | [`Boolean`](#boolean) | Returns only the vulnerabilities which have linked issues. |
 | <a id="projectvulnerabilitieshasresolution"></a>`hasResolution` | [`Boolean`](#boolean) | Returns only the vulnerabilities which have been resolved on default branch. |
@@ -14066,7 +14202,9 @@ Returns [`Tree`](#tree).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="repositoryblobcancurrentuserpushtobranch"></a>`canCurrentUserPushToBranch` | [`Boolean`](#boolean) | Whether the current user can push to the branch. |
 | <a id="repositoryblobcanmodifyblob"></a>`canModifyBlob` | [`Boolean`](#boolean) | Whether the current user can modify the blob. |
+| <a id="repositoryblobcodeowners"></a>`codeOwners` | [`[UserCore!]`](#usercore) | List of code owners for the blob. |
 | <a id="repositoryblobeditblobpath"></a>`editBlobPath` | [`String`](#string) | Web path to edit the blob in the old-style editor. |
 | <a id="repositoryblobexternalstorageurl"></a>`externalStorageUrl` | [`String`](#string) | Web path to download the raw blob via external storage, if enabled. |
 | <a id="repositoryblobfiletype"></a>`fileType` | [`String`](#string) | Expected format of the blob based on the extension. |
@@ -14660,6 +14798,23 @@ Represents the Geo sync and verification state of a snippet repository.
 | <a id="submoduletype"></a>`type` | [`EntryType!`](#entrytype) | Type of tree entry. |
 | <a id="submoduleweburl"></a>`webUrl` | [`String`](#string) | Web URL for the sub-module. |
 
+### `SubscriptionFutureEntry`
+
+Represents an entry from the future subscriptions.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="subscriptionfutureentrycompany"></a>`company` | [`String`](#string) | Company of the licensee. |
+| <a id="subscriptionfutureentryemail"></a>`email` | [`String`](#string) | Email of the licensee. |
+| <a id="subscriptionfutureentryexpiresat"></a>`expiresAt` | [`Date`](#date) | Date when the license expires. |
+| <a id="subscriptionfutureentryname"></a>`name` | [`String`](#string) | Name of the licensee. |
+| <a id="subscriptionfutureentryplan"></a>`plan` | [`String!`](#string) | Name of the subscription plan. |
+| <a id="subscriptionfutureentrystartsat"></a>`startsAt` | [`Date`](#date) | Date when the license started. |
+| <a id="subscriptionfutureentrytype"></a>`type` | [`String!`](#string) | Type of license the subscription will yield. |
+| <a id="subscriptionfutureentryusersinlicensecount"></a>`usersInLicenseCount` | [`Int`](#int) | Number of paid user seats. |
+
 ### `TaskCompletionStatus`
 
 Completion status of tasks.
@@ -15235,6 +15390,7 @@ Represents a vulnerability.
 | <a id="vulnerabilityconfirmedat"></a>`confirmedAt` | [`Time`](#time) | Timestamp of when the vulnerability state was changed to confirmed. |
 | <a id="vulnerabilityconfirmedby"></a>`confirmedBy` | [`UserCore`](#usercore) | User that confirmed the vulnerability. |
 | <a id="vulnerabilitydescription"></a>`description` | [`String`](#string) | Description of the vulnerability. |
+| <a id="vulnerabilitydescriptionhtml"></a>`descriptionHtml` | [`String`](#string) | The GitLab Flavored Markdown rendering of `description`. |
 | <a id="vulnerabilitydetails"></a>`details` | [`[VulnerabilityDetail!]!`](#vulnerabilitydetail) | Details of the vulnerability. |
 | <a id="vulnerabilitydetectedat"></a>`detectedAt` | [`Time!`](#time) | Timestamp of when the vulnerability was first detected. |
 | <a id="vulnerabilitydiscussions"></a>`discussions` | [`DiscussionConnection!`](#discussionconnection) | All discussions on this noteable. (see [Connections](#connections)) |
@@ -15505,6 +15661,19 @@ Represents a link related to a vulnerability.
 | <a id="vulnerabilitylinkname"></a>`name` | [`String`](#string) | Name of the link. |
 | <a id="vulnerabilitylinkurl"></a>`url` | [`String!`](#string) | URL of the link. |
 
+### `VulnerabilityLocationClusterImageScanning`
+
+Represents the location of a vulnerability found by a cluster image scan.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="vulnerabilitylocationclusterimagescanningdependency"></a>`dependency` | [`VulnerableDependency`](#vulnerabledependency) | Dependency containing the vulnerability. |
+| <a id="vulnerabilitylocationclusterimagescanningimage"></a>`image` | [`String`](#string) | Name of the vulnerable container image. |
+| <a id="vulnerabilitylocationclusterimagescanningkubernetesresource"></a>`kubernetesResource` | [`VulnerableKubernetesResource`](#vulnerablekubernetesresource) | Kubernetes resource which uses the vulnerable container image. |
+| <a id="vulnerabilitylocationclusterimagescanningoperatingsystem"></a>`operatingSystem` | [`String`](#string) | Operating system that runs on the vulnerable container image. |
+
 ### `VulnerabilityLocationContainerScanning`
 
 Represents the location of a vulnerability found by a container security scan.
@@ -15654,6 +15823,21 @@ Represents a vulnerable dependency. Used in vulnerability location data.
 | ---- | ---- | ----------- |
 | <a id="vulnerabledependencypackage"></a>`package` | [`VulnerablePackage`](#vulnerablepackage) | Package associated with the vulnerable dependency. |
 | <a id="vulnerabledependencyversion"></a>`version` | [`String`](#string) | Version of the vulnerable dependency. |
+
+### `VulnerableKubernetesResource`
+
+Represents a vulnerable Kubernetes resource. Used in vulnerability location data.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="vulnerablekubernetesresourceagent"></a>`agent` | [`ClusterAgent`](#clusteragent) | Kubernetes Agent which performed the scan. |
+| <a id="vulnerablekubernetesresourceclusterid"></a>`clusterId` | [`ClustersClusterID`](#clustersclusterid) | ID of the Cluster integration which was used to perform the scan. |
+| <a id="vulnerablekubernetesresourcecontainername"></a>`containerName` | [`String!`](#string) | Name of the container that had its image scanned. |
+| <a id="vulnerablekubernetesresourcekind"></a>`kind` | [`String!`](#string) | Kind of the Kubernetes resource. |
+| <a id="vulnerablekubernetesresourcename"></a>`name` | [`String!`](#string) | Name of the Kubernetes resource. |
+| <a id="vulnerablekubernetesresourcenamespace"></a>`namespace` | [`String!`](#string) | Kubernetes namespace which the resource resides in. |
 
 ### `VulnerablePackage`
 
@@ -15894,11 +16078,13 @@ Values for sorting runners.
 
 | Value | Description |
 | ----- | ----------- |
-| <a id="cirunnerstatusactive"></a>`ACTIVE` | A runner that is not paused. |
-| <a id="cirunnerstatusnot_connected"></a>`NOT_CONNECTED` | A runner that has never contacted this instance. |
-| <a id="cirunnerstatusoffline"></a>`OFFLINE` | A runner that has not contacted this instance within the last 2 hours. |
-| <a id="cirunnerstatusonline"></a>`ONLINE` | A runner that contacted this instance within the last 2 hours. |
-| <a id="cirunnerstatuspaused"></a>`PAUSED` | A runner that is paused. |
+| <a id="cirunnerstatusactive"></a>`ACTIVE` **{warning-solid}** | **Deprecated** in 14.6. Use CiRunnerType.active instead. |
+| <a id="cirunnerstatusnever_contacted"></a>`NEVER_CONTACTED` | Runner that has never contacted this instance. Set legacyMode to null to utilize this value. Will replace NOT_CONNECTED starting in 15.0. |
+| <a id="cirunnerstatusnot_connected"></a>`NOT_CONNECTED` **{warning-solid}** | **Deprecated** in 14.6. Use NEVER_CONTACTED instead. NEVER_CONTACTED will have a slightly different scope starting in 15.0, with STALE being returned instead after 3 months of no contact. |
+| <a id="cirunnerstatusoffline"></a>`OFFLINE` **{warning-solid}** | **Deprecated** in 14.6. This field will have a slightly different scope starting in 15.0, with STALE being returned after a certain period offline. |
+| <a id="cirunnerstatusonline"></a>`ONLINE` | Runner that contacted this instance within the last 2 hours. |
+| <a id="cirunnerstatuspaused"></a>`PAUSED` **{warning-solid}** | **Deprecated** in 14.6. Use CiRunnerType.active instead. |
+| <a id="cirunnerstatusstale"></a>`STALE` | Runner that has not contacted this instance within the last 3 months. Only available if legacyMode is null. Will be a possible return value starting in 15.0. |
 
 ### `CiRunnerType`
 
@@ -16013,6 +16199,15 @@ Status of a container repository.
 | ----- | ----------- |
 | <a id="containerrepositorystatusdelete_failed"></a>`DELETE_FAILED` | Delete Failed status. |
 | <a id="containerrepositorystatusdelete_scheduled"></a>`DELETE_SCHEDULED` | Delete Scheduled status. |
+
+### `ContainerRepositoryTagSort`
+
+Values for sorting tags.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="containerrepositorytagsortname_asc"></a>`NAME_ASC` | Ordered by name in ascending order. |
+| <a id="containerrepositorytagsortname_desc"></a>`NAME_DESC` | Ordered by name in descending order. |
 
 ### `DastProfileCadenceUnit`
 
@@ -17021,7 +17216,6 @@ Name of the feature that the callout is for.
 | <a id="usercalloutfeaturenameenumcanary_deployment"></a>`CANARY_DEPLOYMENT` | Callout feature name for canary_deployment. |
 | <a id="usercalloutfeaturenameenumcloud_licensing_subscription_activation_banner"></a>`CLOUD_LICENSING_SUBSCRIPTION_ACTIVATION_BANNER` | Callout feature name for cloud_licensing_subscription_activation_banner. |
 | <a id="usercalloutfeaturenameenumcluster_security_warning"></a>`CLUSTER_SECURITY_WARNING` | Callout feature name for cluster_security_warning. |
-| <a id="usercalloutfeaturenameenumcustomize_homepage"></a>`CUSTOMIZE_HOMEPAGE` | Callout feature name for customize_homepage. |
 | <a id="usercalloutfeaturenameenumeoa_bronze_plan_banner"></a>`EOA_BRONZE_PLAN_BANNER` | Callout feature name for eoa_bronze_plan_banner. |
 | <a id="usercalloutfeaturenameenumfeature_flags_new_version"></a>`FEATURE_FLAGS_NEW_VERSION` | Callout feature name for feature_flags_new_version. |
 | <a id="usercalloutfeaturenameenumgcp_signup_offer"></a>`GCP_SIGNUP_OFFER` | Callout feature name for gcp_signup_offer. |
@@ -17048,6 +17242,7 @@ Name of the feature that the callout is for.
 | <a id="usercalloutfeaturenameenumtwo_factor_auth_recovery_settings_check"></a>`TWO_FACTOR_AUTH_RECOVERY_SETTINGS_CHECK` | Callout feature name for two_factor_auth_recovery_settings_check. |
 | <a id="usercalloutfeaturenameenumultimate_trial"></a>`ULTIMATE_TRIAL` | Callout feature name for ultimate_trial. |
 | <a id="usercalloutfeaturenameenumunfinished_tag_cleanup_callout"></a>`UNFINISHED_TAG_CLEANUP_CALLOUT` | Callout feature name for unfinished_tag_cleanup_callout. |
+| <a id="usercalloutfeaturenameenumverification_reminder"></a>`VERIFICATION_REMINDER` | Callout feature name for verification_reminder. |
 | <a id="usercalloutfeaturenameenumweb_ide_alert_dismissed"></a>`WEB_IDE_ALERT_DISMISSED` | Callout feature name for web_ide_alert_dismissed. |
 | <a id="usercalloutfeaturenameenumweb_ide_ci_environments_guidance"></a>`WEB_IDE_CI_ENVIRONMENTS_GUIDANCE` | Callout feature name for web_ide_ci_environments_guidance. |
 
@@ -17777,6 +17972,13 @@ One of:
 - [`Issue`](#issue)
 - [`MergeRequest`](#mergerequest)
 
+#### `JobNeedUnion`
+
+One of:
+
+- [`CiBuildNeed`](#cibuildneed)
+- [`CiJob`](#cijob)
+
 #### `NoteableType`
 
 Represents an object that supports notes.
@@ -17825,6 +18027,7 @@ Represents a vulnerability location. The fields with data will depend on the vul
 
 One of:
 
+- [`VulnerabilityLocationClusterImageScanning`](#vulnerabilitylocationclusterimagescanning)
 - [`VulnerabilityLocationContainerScanning`](#vulnerabilitylocationcontainerscanning)
 - [`VulnerabilityLocationCoverageFuzzing`](#vulnerabilitylocationcoveragefuzzing)
 - [`VulnerabilityLocationDast`](#vulnerabilitylocationdast)
@@ -18288,9 +18491,11 @@ Field that are available while modifying the custom mapping attributes for an HT
 | <a id="boardissueinputassigneeusername"></a>`assigneeUsername` | [`[String]`](#string) | Filter by assignee username. |
 | <a id="boardissueinputassigneewildcardid"></a>`assigneeWildcardId` | [`AssigneeWildcardId`](#assigneewildcardid) | Filter by assignee wildcard. Incompatible with assigneeUsername. |
 | <a id="boardissueinputauthorusername"></a>`authorUsername` | [`String`](#string) | Filter by author username. |
+| <a id="boardissueinputconfidential"></a>`confidential` | [`Boolean`](#boolean) | Filter by confidentiality. |
 | <a id="boardissueinputepicid"></a>`epicId` | [`EpicID`](#epicid) | Filter by epic ID. Incompatible with epicWildcardId. |
 | <a id="boardissueinputepicwildcardid"></a>`epicWildcardId` | [`EpicWildcardId`](#epicwildcardid) | Filter by epic ID wildcard. Incompatible with epicId. |
 | <a id="boardissueinputiids"></a>`iids` | [`[String!]`](#string) | List of IIDs of issues. For example `["1", "2"]`. |
+| <a id="boardissueinputiterationcadenceid"></a>`iterationCadenceId` | [`[IterationsCadenceID!]`](#iterationscadenceid) | Filter by a list of iteration cadence IDs. |
 | <a id="boardissueinputiterationid"></a>`iterationId` | [`[IterationID!]`](#iterationid) | Filter by a list of iteration IDs. Incompatible with iterationWildcardId. |
 | <a id="boardissueinputiterationtitle"></a>`iterationTitle` | [`String`](#string) | Filter by iteration title. |
 | <a id="boardissueinputiterationwildcardid"></a>`iterationWildcardId` | [`IterationWildcardId`](#iterationwildcardid) | Filter by iteration ID wildcard. |
@@ -18413,6 +18618,7 @@ Input type for DastSiteProfile authentication.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="epicfiltersauthorusername"></a>`authorUsername` | [`String`](#string) | Filter by author username. |
+| <a id="epicfiltersconfidential"></a>`confidential` | [`Boolean`](#boolean) | Filter by confidentiality. |
 | <a id="epicfilterslabelname"></a>`labelName` | [`[String]`](#string) | Filter by label name. |
 | <a id="epicfiltersmyreactionemoji"></a>`myReactionEmoji` | [`String`](#string) | Filter by reaction emoji applied by the current user. Wildcard values "NONE" and "ANY" are supported. |
 | <a id="epicfiltersnot"></a>`not` | [`NegatedEpicBoardIssueInput`](#negatedepicboardissueinput) | Negated epic arguments. |

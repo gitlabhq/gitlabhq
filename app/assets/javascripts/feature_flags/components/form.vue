@@ -142,7 +142,14 @@ export default {
       return !this.$options.rolloutPercentageRegex.test(percentage);
     }),
     onFormStrategyChange(strategy, index) {
+      const currentUserListId = this.filteredStrategies[index]?.userList?.id;
+      const newUserListId = strategy?.userList?.id;
+
       Object.assign(this.filteredStrategies[index], strategy);
+
+      if (currentUserListId !== newUserListId) {
+        this.formStrategies = [...this.formStrategies];
+      }
     },
   },
 };

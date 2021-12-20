@@ -112,6 +112,7 @@ describe('DiffsStoreMutations', () => {
       mutations[types.SET_COVERAGE_DATA](state, coverage);
 
       expect(state.coverageFiles).toEqual(coverage);
+      expect(state.coverageLoaded).toEqual(true);
     });
   });
 

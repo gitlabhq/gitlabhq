@@ -166,10 +166,10 @@ To add or update variables in the project settings:
    - **Key**: Must be one line, with no spaces, using only letters, numbers, or `_`.
    - **Value**: No limitations.
    - **Type**: [`File` or `Variable`](#cicd-variable-types).
-   - **Environment scope**: (Optional) `All`, or specific [environments](../environments/index.md).
-   - **Protect variable** (Optional): If selected, the variable is only available
+   - **Environment scope**: Optional. `All`, or specific [environments](../environments/index.md).
+   - **Protect variable** Optional. If selected, the variable is only available
      in pipelines that run on protected branches or tags.
-   - **Mask variable** (Optional): If selected, the variable's **Value** is masked
+   - **Mask variable** Optional. If selected, the variable's **Value** is masked
      in job logs. The variable fails to save if the value does not meet the
      [masking requirements](#mask-a-cicd-variable).
 
@@ -208,10 +208,10 @@ To add a group variable:
    - **Key**: Must be one line, with no spaces, using only letters, numbers, or `_`.
    - **Value**: No limitations.
    - **Type**: [`File` or `Variable`](#cicd-variable-types).
-   - **Environment scope** (Optional): `All`, or specific [environments](#limit-the-environment-scope-of-a-cicd-variable). **(PREMIUM)**
-   - **Protect variable** (Optional): If selected, the variable is only available
+   - **Environment scope** Optional. `All`, or specific [environments](#limit-the-environment-scope-of-a-cicd-variable). **(PREMIUM)**
+   - **Protect variable** Optional. If selected, the variable is only available
      in pipelines that run on protected branches or tags.
-   - **Mask variable** (Optional): If selected, the variable's **Value** is masked
+   - **Mask variable** Optional. If selected, the variable's **Value** is masked
      in job logs. The variable fails to save if the value does not meet the
      [masking requirements](#mask-a-cicd-variable).
 
@@ -248,9 +248,9 @@ To add an instance variable:
      10,000 characters is allowed. This is also bounded by the limits of the selected
      runner operating system. In GitLab 13.0 to 13.2, 700 characters is allowed.
    - **Type**: [`File` or `Variable`](#cicd-variable-types).
-   - **Protect variable** (Optional): If selected, the variable is only available
+   - **Protect variable** Optional. If selected, the variable is only available
      in pipelines that run on protected branches or tags.
-   - **Mask variable** (Optional): If selected, the variable's **Value** is not shown
+   - **Mask variable** Optional. If selected, the variable's **Value** is not shown
      in job logs. The variable is not saved if the value does not meet the [masking requirements](#mask-a-cicd-variable).
 
 ### CI/CD variable types
@@ -292,6 +292,11 @@ Use the variables in a job script like this:
 ```shell
 kubectl config set-cluster e2e --server="$KUBE_URL" --certificate-authority="$KUBE_CA_PEM"
 ```
+
+WARNING:
+Be careful when assigning the value of a file variable to another variable. The other
+variable takes the content of the file as its value, **not** the path to the file.
+See [issue 29407](https://gitlab.com/gitlab-org/gitlab/-/issues/29407) for more details.
 
 An alternative to `File` type variables is to:
 
@@ -554,7 +559,7 @@ These variables cannot be used as CI/CD variables to configure a pipeline, but
 they can be used in job scripts.
 
 1. In the job script, save the variable as a `.env` file.
-1. Save the `.env` file as an [`artifacts:reports:dotenv`](../yaml/index.md#artifactsreportsdotenv)
+1. Save the `.env` file as an [`artifacts:reports:dotenv`](../yaml/artifacts_reports.md#artifactsreportsdotenv)
 artifact.
 1. Set a job in a later stage to receive the artifact by using the [`dependencies`](../yaml/index.md#dependencies)
    or the [`needs`](../yaml/index.md#needs) keywords.
@@ -607,7 +612,7 @@ which variables take precedence.
 
 The order of precedence for variables is (from highest to lowest):
 
-1. [Trigger variables](../triggers/index.md#making-use-of-trigger-variables),
+1. [Trigger variables](../triggers/index.md#pass-cicd-variables-in-the-api-call),
    [scheduled pipeline variables](../pipelines/schedules.md#using-variables),
    and [manual pipeline run variables](#override-a-variable-when-running-a-pipeline-manually).
 1. Project [variables](#custom-cicd-variables).
@@ -641,7 +646,7 @@ You can override the value of a variable when you:
 1. Create a pipeline by using [the API](../../api/pipelines.md#create-a-new-pipeline).
 1. Run a job manually in the UI.
 1. Use [push options](../../user/project/push_options.md#push-options-for-gitlab-cicd).
-1. Trigger a pipeline by using [the API](../triggers/index.md#making-use-of-trigger-variables).
+1. Trigger a pipeline by using [the API](../triggers/index.md#pass-cicd-variables-in-the-api-call).
 1. Pass variables to a downstream pipeline [by using the `variable` keyword](../pipelines/multi_project_pipelines.md#pass-cicd-variables-to-a-downstream-pipeline-by-using-the-variables-keyword)
    or [by using variable inheritance](../pipelines/multi_project_pipelines.md#pass-cicd-variables-to-a-downstream-pipeline-by-using-variable-inheritance).
 

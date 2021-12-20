@@ -863,7 +863,7 @@ RSpec.describe Integrations::Jira do
     subject { jira_integration.create_cross_reference_note(jira_issue, resource, user) }
 
     shared_examples 'handles cross-references' do
-      let(:resource_name) { jira_integration.send(:noteable_name, resource) }
+      let(:resource_name) { jira_integration.send(:mentionable_name, resource) }
       let(:resource_url) { jira_integration.send(:build_entity_url, resource_name, resource.to_param) }
       let(:issue_url) { "#{url}/rest/api/2/issue/JIRA-123" }
       let(:comment_url) { "#{issue_url}/comment" }

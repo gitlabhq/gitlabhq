@@ -36,6 +36,12 @@ On every [pipeline](https://gitlab.com/gitlab-org/gitlab/pipelines/125315730) in
 browser performance testing using a
 [Sitespeed.io Container](../../user/project/merge_requests/browser_performance_testing.md).
 
+## Sample Data for Review Apps
+
+Upon deployment of a review app, project data is created from the [`sample-gitlab-project`](https://gitlab.com/gitlab-org/sample-data-templates/sample-gitlab-project) template project. This aims to provide projects with prepopulated resources to facilitate manual and exploratory testing.
+
+The sample projects will be created in the `root` user namespace and can be accessed from the personal projects list for that user.
+
 ## How to
 
 ### Redeploy Review App from a clean slate
@@ -81,26 +87,22 @@ the GitLab handbook information for the [shared 1Password account](https://about
 ### Run a Rails console
 
 1. Make sure you [have access to the cluster](#get-access-to-the-gcp-review-apps-cluster) and the `container.pods.exec` permission first.
-1. [Filter Workloads by your Review App slug](https://console.cloud.google.com/kubernetes/workload?project=gitlab-review-apps),
-   e.g. `review-qa-raise-e-12chm0`.
-1. Find and open the `task-runner` Deployment, e.g. `review-qa-raise-e-12chm0-task-runner`.
-1. Click on the Pod in the "Managed pods" section, e.g. `review-qa-raise-e-12chm0-task-runner-d5455cc8-2lsvz`.
-1. Click on the `KUBECTL` dropdown, then `Exec` -> `task-runner`.
-1. Replace `-c task-runner -- ls` with `-it -- gitlab-rails console` from the
+1. [Filter Workloads by your Review App slug](https://console.cloud.google.com/kubernetes/workload?project=gitlab-review-apps). For example, `review-qa-raise-e-12chm0`.
+1. Find and open the `toolbox` Deployment. For example, `review-qa-raise-e-12chm0-toolbox`.
+1. Click on the Pod in the "Managed pods" section. For example, `review-qa-raise-e-12chm0-toolbox-d5455cc8-2lsvz`.
+1. Click on the `KUBECTL` dropdown, then `Exec` -> `toolbox`.
+1. Replace `-c toolbox -- ls` with `-it -- gitlab-rails console` from the
    default command or
-   - Run `kubectl exec --namespace review-qa-raise-e-12chm0 review-qa-raise-e-12chm0-task-runner-d5455cc8-2lsvz -it -- gitlab-rails console` and
-     - Replace `review-qa-raise-e-12chm0-task-runner-d5455cc8-2lsvz`
+   - Run `kubectl exec --namespace review-qa-raise-e-12chm0 review-qa-raise-e-12chm0-toolbox-d5455cc8-2lsvz -it -- gitlab-rails console` and
+     - Replace `review-qa-raise-e-12chm0-toolbox-d5455cc8-2lsvz`
        with your Pod's name.
 
 ### Dig into a Pod's logs
 
 1. Make sure you [have access to the cluster](#get-access-to-the-gcp-review-apps-cluster) and the `container.pods.getLogs` permission first.
-1. [Filter Workloads by your Review App slug](https://console.cloud.google.com/kubernetes/workload?project=gitlab-review-apps),
-   e.g. `review-qa-raise-e-12chm0`.
-1. Find and open the `migrations` Deployment, e.g.
-   `review-qa-raise-e-12chm0-migrations.1`.
-1. Click on the Pod in the "Managed pods" section, e.g.
-   `review-qa-raise-e-12chm0-migrations.1-nqwtx`.
+1. [Filter Workloads by your Review App slug](https://console.cloud.google.com/kubernetes/workload?project=gitlab-review-apps). For example, `review-qa-raise-e-12chm0`.
+1. Find and open the `migrations` Deployment. For example, `review-qa-raise-e-12chm0-migrations.1`.
+1. Click on the Pod in the "Managed pods" section. For example, `review-qa-raise-e-12chm0-migrations.1-nqwtx`.
 1. Click on the `Container logs` link.
 
 Alternatively, you could use the [Logs Explorer](https://console.cloud.google.com/logs/query;query=?project=gitlab-review-apps) which provides more utility to search logs. An example query for a pod name is as follows:
@@ -161,7 +163,7 @@ subgraph "CNG-mirror pipeline"
    - The `review-build-cng` job automatically starts only if your MR includes
      [CI or frontend changes](../pipelines.md#changes-patterns). In other cases, the job is manual.
    - The [`CNG-mirror`](https://gitlab.com/gitlab-org/build/CNG-mirror/pipelines/44364657) pipeline creates the Docker images of
-     each component (e.g. `gitlab-rails-ee`, `gitlab-shell`, `gitaly` etc.)
+     each component (for example, `gitlab-rails-ee`, `gitlab-shell`, `gitaly` etc.)
      based on the commit from the [GitLab pipeline](https://gitlab.com/gitlab-org/gitlab/pipelines/125315730) and stores
      them in its [registry](https://gitlab.com/gitlab-org/build/CNG-mirror/container_registry).
    - We use the [`CNG-mirror`](https://gitlab.com/gitlab-org/build/CNG-mirror) project so that the `CNG`, (Cloud
@@ -192,7 +194,7 @@ subgraph "CNG-mirror pipeline"
 - If the `review-deploy` job keeps failing (and a manual retry didn't help),
   please post a message in the `#g_qe_engineering_productivity` channel and/or create a `~"Engineering Productivity"` `~"ep::review apps"` `~"type::bug"`
   issue with a link to your merge request. Note that the deployment failure can
-  reveal an actual problem introduced in your merge request (i.e. this isn't
+  reveal an actual problem introduced in your merge request (that is, this isn't
   necessarily a transient failure)!
 - If the `review-qa-smoke` job keeps failing (note that we already retry it twice),
   please check the job's logs: you could discover an actual problem introduced in
@@ -231,7 +233,7 @@ that were not removed along with the Kubernetes resources.
 The cluster is configured via Terraform in the [`engineering-productivity-infrastructure`](https://gitlab.com/gitlab-org/quality/engineering-productivity-infrastructure) project.
 
 Node pool image type must be `Container-Optimized OS (cos)`, not `Container-Optimized OS with Containerd (cos_containerd)`,
-due to this [known issue on GitLab Runner Kubernetes executor](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/4755)
+due to this [known issue on the Kubernetes executor for GitLab Runner](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/4755)
 
 ### Helm
 
@@ -251,7 +253,7 @@ aids in identifying load spikes on the cluster, and if nodes are problematic or 
 ### Database related errors in `review-deploy` or `review-qa-smoke`
 
 Occasionally the state of a Review App's database could diverge from the database schema. This could be caused by
-changes to migration files or schema, such as a migration being renamed or deleted. This typically manifest in migration errors such as:
+changes to migration files or schema, such as a migration being renamed or deleted. This typically manifests in migration errors such as:
 
 - migration job failing with a column that already exists
 - migration job failing with a column that does not exist
@@ -283,7 +285,7 @@ If the Docker image does not exist:
 - Verify the `image.repository` and `image.tag` options in the `helm upgrade --install` command match the repository names used by CNG-mirror pipeline.
 - Look further in the corresponding downstream CNG-mirror pipeline in `review-build-cng` job.
 
-### Node count is always increasing (i.e. never stabilizing or decreasing)
+### Node count is always increasing (never stabilizing or decreasing)
 
 **Potential cause:**
 
@@ -370,10 +372,10 @@ effectively preventing all the Review Apps from getting a DNS record assigned,
 making them unreachable via domain name.
 
 This in turn prevented other components of the Review App to properly start
-(e.g. `gitlab-runner`).
+(for example, `gitlab-runner`).
 
-After some digging, we found that new mounts were failing, when being performed
-with transient scopes (e.g. pods) of `systemd-mount`:
+After some digging, we found that new mounts fail when performed
+with transient scopes (for example, pods) of `systemd-mount`:
 
 ```plaintext
 MountVolume.SetUp failed for volume "dns-gitlab-review-app-external-dns-token-sj5jm" : mount failed: exit status 1
@@ -399,8 +401,8 @@ For the record, the debugging steps to find out this issue were:
    instances** then click the "SSH" button for the node where the `dns-gitlab-review-app-external-dns` pod runs)
 1. In the node: `systemctl --version` => `systemd 232`
 1. Gather some more information:
-   - `mount | grep kube | wc -l` => e.g. 290
-   - `systemctl list-units --all | grep -i var-lib-kube | wc -l` => e.g. 142
+   - `mount | grep kube | wc -l` (returns a count, for example, 290)
+   - `systemctl list-units --all | grep -i var-lib-kube | wc -l` (returns a count, for example, 142)
 1. Check how many pods are in a bad state:
    - Get all pods running a given node: `kubectl get pods --field-selector=spec.nodeName=NODE_NAME`
    - Get all the `Running` pods on a given node: `kubectl get pods --field-selector=spec.nodeName=NODE_NAME | grep Running`

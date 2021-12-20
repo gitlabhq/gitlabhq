@@ -124,7 +124,7 @@ export default {
   <div
     ref="linkedPipeline"
     v-gl-tooltip
-    class="gl-pipeline-job-width"
+    class="gl-downstream-pipeline-job-width"
     :title="tooltipText"
     data-qa-selector="child_pipeline"
     @mouseover="onDownstreamHovered"
@@ -134,7 +134,7 @@ export default {
       class="gl-relative gl-bg-white gl-p-3 gl-border-solid gl-border-gray-100 gl-border-1"
       :class="{ 'gl-pl-9': isUpstream }"
     >
-      <div class="gl-display-flex">
+      <div class="gl-display-flex gl-pr-7 gl-pipeline-job-width">
         <ci-status
           v-if="!pipelineIsLoading"
           :status="pipelineStatus"
@@ -142,7 +142,9 @@ export default {
           css-classes="gl-top-0 gl-pr-2"
         />
         <div v-else class="gl-pr-2"><gl-loading-icon size="sm" inline /></div>
-        <div class="gl-display-flex gl-flex-direction-column gl-w-13">
+        <div
+          class="gl-display-flex gl-flex-direction-column gl-pipeline-job-width gl-text-truncate"
+        >
           <span class="gl-text-truncate" data-testid="downstream-title">
             {{ downstreamTitle }}
           </span>

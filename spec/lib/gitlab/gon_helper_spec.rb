@@ -15,7 +15,7 @@ RSpec.describe Gitlab::GonHelper do
     end
 
     it 'pushes a feature flag to the frontend' do
-      gon = instance_double('gon')
+      gon = class_double('Gon')
       thing = stub_feature_flag_gate('thing')
 
       stub_feature_flags(my_feature_flag: thing)

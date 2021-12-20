@@ -5,7 +5,7 @@
     %li.built-in-tab
       %a.nav-link.active{ href: "#built-in", data: { toggle: 'tab'} }
         = _('Built-in')
-        %span.badge.badge-pill= Gitlab::ProjectTemplate.all.count + Gitlab::SampleDataTemplate.all.count
+        = gl_tab_counter_badge Gitlab::ProjectTemplate.all.count + Gitlab::SampleDataTemplate.all.count
 
 .tab-content
   .project-templates-buttons.import-buttons.tab-pane.active#built-in

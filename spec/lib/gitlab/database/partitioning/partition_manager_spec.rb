@@ -16,7 +16,7 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager do
     subject(:sync_partitions) { described_class.new(model).sync_partitions }
 
     let(:model) { double(partitioning_strategy: partitioning_strategy, table_name: table, connection: connection) }
-    let(:partitioning_strategy) { double(missing_partitions: partitions, extra_partitions: []) }
+    let(:partitioning_strategy) { double(missing_partitions: partitions, extra_partitions: [], after_adding_partitions: nil) }
     let(:connection) { ActiveRecord::Base.connection }
     let(:table) { "some_table" }
 
@@ -83,7 +83,7 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager do
 
     let(:manager) { described_class.new(model) }
     let(:model) { double(partitioning_strategy: partitioning_strategy, table_name: table, connection: connection) }
-    let(:partitioning_strategy) { double(extra_partitions: extra_partitions, missing_partitions: []) }
+    let(:partitioning_strategy) { double(extra_partitions: extra_partitions, missing_partitions: [], after_adding_partitions: nil) }
     let(:connection) { ActiveRecord::Base.connection }
     let(:table) { "foo" }
 
@@ -101,28 +101,10 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager do
       ]
     end
 
-    context 'with the partition_pruning feature flag enabled' do
-      before do
-        stub_feature_flags(partition_pruning: true)
-      end
+    it 'detaches each extra partition' do
+      extra_partitions.each { |p| expect(manager).to receive(:detach_one_partition).with(p) }
 
-      it 'detaches each extra partition' do
-        extra_partitions.each { |p| expect(manager).to receive(:detach_one_partition).with(p) }
-
-        sync_partitions
-      end
-    end
-
-    context 'with the partition_pruning feature flag disabled' do
-      before do
-        stub_feature_flags(partition_pruning: false)
-      end
-
-      it 'returns immediately' do
-        expect(manager).not_to receive(:detach)
-
-        sync_partitions
-      end
+      sync_partitions
     end
   end
 

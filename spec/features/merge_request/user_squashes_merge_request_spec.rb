@@ -22,7 +22,7 @@ RSpec.describe 'User squashes a merge request', :js do
                                                   committer_name: user.name)
 
       merge_commit = an_object_having_attributes(sha: a_string_matching(/\h{40}/),
-                                                 message: a_string_starting_with("Merge branch 'csv' into 'master'"),
+                                                 message: a_string_starting_with("Merge branch '#{source_branch}' into 'master'"),
                                                  author_name: user.name,
                                                  committer_name: user.name)
 
@@ -57,34 +57,34 @@ RSpec.describe 'User squashes a merge request', :js do
   end
 
   context 'when the MR has only one commit' do
-    let(:source_branch) { 'master' }
-    let(:target_branch) { 'branch-merged' }
-    let(:protected_source_branch) { true }
+    let(:source_branch) { 'feature' }
+    let(:target_branch) { 'master' }
     let(:source_sha) { project.commit(source_branch).sha }
     let(:target_sha) { project.commit(target_branch).sha }
 
     before do
-      merge_request = create(:merge_request, source_project: project, target_project: project, source_branch: source_branch, target_branch: target_branch, squash: true)
-
-      visit project_merge_request_path(project, merge_request)
+      visit project_new_merge_request_path(project, merge_request: { target_branch: target_branch, source_branch: source_branch })
+      check 'merge_request[squash]'
+      click_on 'Create merge request'
+      wait_for_requests
     end
 
-    it 'accepts the merge request without issuing a squash request', :sidekiq_inline do
-      expect_next_instance_of(Gitlab::GitalyClient::OperationService) do |instance|
-        expect(instance).not_to receive(:user_squash)
+    context 'when squash message differs from existing commit message' do
+      before do
+        accept_mr
       end
 
-      expect(project.repository.ancestor?(source_branch, target_branch)).to be_falsey
-      expect(page).not_to have_field('squash')
+      include_examples 'squash'
+    end
 
-      accept_mr
+    context 'when squash message is the same as existing commit message' do
+      before do
+        click_button("Modify commit messages")
+        fill_in('Squash commit message', with: project.commit(source_branch).safe_message)
+        accept_mr
+      end
 
-      expect(page).to have_content('Merged')
-
-      latest_target_commits = project.repository.commits_between(source_sha, target_sha).map(&:raw)
-
-      expect(latest_target_commits.count).to eq(1)
-      expect(project.repository.ancestor?(source_branch, target_branch)).to be_truthy
+      include_examples 'no squash'
     end
   end
 

@@ -1,5 +1,6 @@
 import { GlLabel } from '@gitlab/ui';
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
+import Vue from 'vue';
 import Vuex from 'vuex';
 
 import DropdownValue from '~/vue_shared/components/sidebar/labels_select_vue/dropdown_value.vue';
@@ -8,8 +9,7 @@ import labelsSelectModule from '~/vue_shared/components/sidebar/labels_select_vu
 
 import { mockConfig, mockLabels, mockRegularLabel, mockScopedLabel } from './mock_data';
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 describe('DropdownValue', () => {
   let wrapper;
@@ -23,7 +23,6 @@ describe('DropdownValue', () => {
     store.dispatch('setInitialState', { ...mockConfig, ...initialState });
 
     wrapper = shallowMount(DropdownValue, {
-      localVue,
       store,
       slots,
     });

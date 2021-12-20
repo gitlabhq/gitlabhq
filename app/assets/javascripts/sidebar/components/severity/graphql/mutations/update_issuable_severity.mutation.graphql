@@ -3,6 +3,7 @@ mutation updateIssuableSeverity($projectPath: ID!, $severity: IssuableSeverity!,
     errors
     issue {
       iid
+      id
       severity
     }
   }

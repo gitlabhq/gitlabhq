@@ -1,6 +1,7 @@
 import { GlAlert } from '@gitlab/ui';
 import { GlLineChart } from '@gitlab/ui/dist/charts';
-import { createLocalVue, shallowMount } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
+import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import UsageTrendsCountChart from '~/analytics/usage_trends/components/usage_trends_count_chart.vue';
@@ -9,8 +10,7 @@ import ChartSkeletonLoader from '~/vue_shared/components/resizable_chart/skeleto
 import { mockQueryResponse, mockApolloResponse } from '../apollo_mock_data';
 import { mockCountsData1 } from '../mock_data';
 
-const localVue = createLocalVue();
-localVue.use(VueApollo);
+Vue.use(VueApollo);
 
 const loadChartErrorMessage = 'My load error message';
 const noDataMessage = 'My no data message';
@@ -39,7 +39,6 @@ describe('UsageTrendsCountChart', () => {
 
   const createComponent = ({ responseHandler }) => {
     return shallowMount(UsageTrendsCountChart, {
-      localVue,
       apolloProvider: createMockApollo([[statsQuery, responseHandler]]),
       propsData: { ...mockChartConfig },
     });

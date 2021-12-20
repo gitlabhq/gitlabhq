@@ -39,6 +39,10 @@ module Gitlab
           Thread.current[:overriding_connection] = connection
         end
       end
+
+      def connection_db_config
+        self.class.connection_db_config
+      end
     end
   end
 end

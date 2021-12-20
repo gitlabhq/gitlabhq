@@ -113,7 +113,7 @@ export default {
           href: this.snippet.project
             ? joinPaths(this.snippet.project.webUrl, '-/snippets/new')
             : joinPaths('/', gon.relative_url_root, '/-/snippets/new'),
-          variant: 'success',
+          variant: 'confirm',
           category: 'secondary',
         },
         {

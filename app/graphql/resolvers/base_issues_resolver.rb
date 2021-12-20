@@ -4,13 +4,13 @@ module Resolvers
   class BaseIssuesResolver < BaseResolver
     prepend IssueResolverArguments
 
-    argument :state, Types::IssuableStateEnum,
-              required: false,
-              description: 'Current state of this issue.'
     argument :sort, Types::IssueSortEnum,
               description: 'Sort issues by this criteria.',
               required: false,
               default_value: :created_desc
+    argument :state, Types::IssuableStateEnum,
+              required: false,
+              description: 'Current state of this issue.'
 
     type Types::IssueType.connection_type, null: true
 

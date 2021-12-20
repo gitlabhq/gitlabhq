@@ -115,12 +115,7 @@ configuration. Otherwise, the Okta SCIM app may not work properly.
 
 1. Sign in to Okta.
 1. Ensure you are in the Admin section by selecting the **Admin** button located in the top right. The admin button is not visible from the admin page.
-
-   NOTE:
-   If you're using the Developer Console, select **Developer Console** in the top
-   bar and then select **Classic UI**. Otherwise, you may not see the buttons described in the following steps:
-
-1. In the **Application** tab, select **Add Application**.
+1. In the **Application** tab, select **Browse App Catalog**.
 1. Search for **GitLab**, find and select on the 'GitLab' application.
 1. On the GitLab application overview page, select **Add**.
 1. Under **Application Visibility** select both checkboxes. Currently the GitLab application does not support SAML authentication so the icon should not be shown to users.
@@ -170,14 +165,11 @@ During provisioning:
 - Duplicate usernames are also handled, by adding suffix `1` upon user creation. For example,
   due to already existing `test_user` username, `test_user1` is used.
 
-As long as [Group SAML](index.md) has been configured, existing GitLab.com users can link to their accounts in one of the following ways:
+If [Group SAML](index.md) has been configured and you have an existing GitLab.com account, you can link your SCIM and SAML identities:
 
-- By updating their *primary* email address in their GitLab.com user account to match their identity provider's user profile email address.
-- By following these steps:
-
-  1. Sign in to GitLab.com if needed.
-  1. In the identity provider's dashboard select the GitLab app or visit the **GitLab single sign-on URL**.
-  1. Select the **Authorize**.
+1. Update the [primary email](../../profile/index.md#change-your-primary-email) address in your GitLab.com user account to match the
+   user profile email address in your identity provider.
+1. [Link your SAML identity](index.md#linking-saml-to-your-existing-gitlabcom-account).
 
 We recommend users do this prior to turning on sync, because while synchronization is active, there may be provisioning errors for existing users.
 
@@ -303,3 +295,12 @@ As a workaround, try an alternate mapping:
 1. Follow the Azure mapping instructions from above.
 1. Delete the `name.formatted` target attribute entry.
 1. Change the `displayName` source attribute to have `name.formatted` target attribute.
+
+#### Failed to match an entry in the source and target systems Group 'Group-Name'
+
+Group provisioning in Azure can fail with the `Failed to match an entry in the source and target systems Group 'Group-Name'` error message,
+and the error response can include a HTML result of the GitLab URL `https://gitlab.com/users/sign_in`.
+
+This error is harmless and occurs because Group provisioning was turned on but GitLab SCIM integration does not support it nor require it. To
+remove the error, follow the instructions in the Azure configuration guide to disable the option
+[`Synchronize Azure Active Directory Groups to AppName`](#azure-configuration-steps).

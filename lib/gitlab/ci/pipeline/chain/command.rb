@@ -11,7 +11,7 @@ module Gitlab
           :trigger_request, :schedule, :merge_request, :external_pull_request,
           :ignore_skip_ci, :save_incompleted,
           :seeds_block, :variables_attributes, :push_options,
-          :chat_data, :allow_mirror_update, :bridge, :content, :dry_run,
+          :chat_data, :allow_mirror_update, :bridge, :content, :dry_run, :logger,
           # These attributes are set by Chains during processing:
           :config_content, :yaml_processor_result, :workflow_rules_result, :pipeline_seed
         ) do
@@ -88,7 +88,14 @@ module Gitlab
             @metrics ||= ::Gitlab::Ci::Pipeline::Metrics
           end
 
+          def logger
+            self[:logger] ||= ::Gitlab::Ci::Pipeline::Logger.new(project: project)
+          end
+
           def observe_step_duration(step_class, duration)
+            step = step_class.name.underscore.parameterize(separator: '_')
+            logger.observe("pipeline_step_#{step}_duration_s", duration)
+
             if Feature.enabled?(:ci_pipeline_creation_step_duration_tracking, type: :ops, default_enabled: :yaml)
               metrics.pipeline_creation_step_duration_histogram
                 .observe({ step: step_class.name }, duration.seconds)
@@ -96,11 +103,15 @@ module Gitlab
           end
 
           def observe_creation_duration(duration)
+            logger.observe(:pipeline_creation_duration_s, duration)
+
             metrics.pipeline_creation_duration_histogram
               .observe({}, duration.seconds)
           end
 
           def observe_pipeline_size(pipeline)
+            logger.observe(:pipeline_size_count, pipeline.total_size)
+
             metrics.pipeline_size_histogram
               .observe({ source: pipeline.source.to_s }, pipeline.total_size)
           end

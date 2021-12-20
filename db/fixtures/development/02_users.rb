@@ -41,11 +41,12 @@ class Gitlab::Seeder::Users
     relation = User.where(admin: false)
     Gitlab::Seeder.with_mass_insert(relation.count, Namespace) do
       ActiveRecord::Base.connection.execute <<~SQL
-        INSERT INTO namespaces (name, path, owner_id)
+        INSERT INTO namespaces (name, path, owner_id, type)
         SELECT
           username,
           username,
-          id
+          id,
+          'User'
         FROM users WHERE NOT admin
       SQL
     end

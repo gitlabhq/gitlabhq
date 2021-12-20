@@ -40,8 +40,9 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
         "scopes": [
             "api"
         ],
-        "active": true,
         "user_id": 24,
+        "last_used_at": "2021-10-06T17:58:37.550Z",
+        "active": true,
         "expires_at": null
     }
 ]
@@ -61,8 +62,9 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
         "scopes": [
             "api"
         ],
-        "active": true,
         "user_id": 3,
+        "last_used_at": "2021-10-06T17:58:37.550Z",
+        "active": true,
         "expires_at": null
     }
 ]

@@ -115,6 +115,14 @@ module SystemNoteService
     ::SystemNotes::IssuablesService.new(noteable: noteable, project: project, author: author).change_status(status, source)
   end
 
+  def request_attention(noteable, project, author, user)
+    ::SystemNotes::IssuablesService.new(noteable: noteable, project: project, author: author).request_attention(user)
+  end
+
+  def remove_attention_request(noteable, project, author, user)
+    ::SystemNotes::IssuablesService.new(noteable: noteable, project: project, author: author).remove_attention_request(user)
+  end
+
   # Called when 'merge when pipeline succeeds' is executed
   def merge_when_pipeline_succeeds(noteable, project, author, sha)
     ::SystemNotes::MergeRequestsService.new(noteable: noteable, project: project, author: author).merge_when_pipeline_succeeds(sha)
@@ -213,12 +221,12 @@ module SystemNoteService
     ::SystemNotes::MergeRequestsService.new(noteable: issue, project: project, author: author).new_merge_request(merge_request)
   end
 
-  def cross_reference(noteable, mentioner, author)
-    ::SystemNotes::IssuablesService.new(noteable: noteable, author: author).cross_reference(mentioner)
+  def cross_reference(mentioned, mentioned_in, author)
+    ::SystemNotes::IssuablesService.new(noteable: mentioned, author: author).cross_reference(mentioned_in)
   end
 
-  def cross_reference_exists?(noteable, mentioner)
-    ::SystemNotes::IssuablesService.new(noteable: noteable).cross_reference_exists?(mentioner)
+  def cross_reference_exists?(mentioned, mentioned_in)
+    ::SystemNotes::IssuablesService.new(noteable: mentioned).cross_reference_exists?(mentioned_in)
   end
 
   def change_task_status(noteable, project, author, new_task)
@@ -249,8 +257,8 @@ module SystemNoteService
     ::SystemNotes::IssuablesService.new(noteable: issuable, project: issuable.project, author: author).discussion_lock
   end
 
-  def cross_reference_disallowed?(noteable, mentioner)
-    ::SystemNotes::IssuablesService.new(noteable: noteable).cross_reference_disallowed?(mentioner)
+  def cross_reference_disallowed?(mentioned, mentioned_in)
+    ::SystemNotes::IssuablesService.new(noteable: mentioned).cross_reference_disallowed?(mentioned_in)
   end
 
   def zoom_link_added(issue, project, author)

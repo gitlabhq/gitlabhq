@@ -32,6 +32,7 @@ install GitLab:
 | [Docker](https://docs.gitlab.com/omnibus/docker/)              | The GitLab packages, Dockerized. | Use this method if you're familiar with Docker. |
 | [Source](installation.md)                                      | Install GitLab and all of its components from scratch. | Use this method if none of the previous methods are available for your platform. Useful for unsupported systems like \*BSD.|
 | [GitLab Environment Toolkit (GET)](https://gitlab.com/gitlab-org/quality/gitlab-environment-toolkit#documentation) | The GitLab Environment toolkit provides a set of automation tools to deploy a [reference architecture](../administration/reference_architectures/index.md) on most major cloud providers. | Customers are very welcome to trial and evaluate GET today, however be aware of [key limitations](https://gitlab.com/gitlab-org/quality/gitlab-environment-toolkit#missing-features-to-be-aware-of) of the current iteration. For production environments further manual setup will be required based on your specific requirements. |
+| [GitLab Operator](https://docs.gitlab.com/charts/installation/operator.html)   | The GitLab Operator provides an installation and management method for GitLab following the [Kubernetes Operator pattern](https://kubernetes.io/docs/concepts/extend-kubernetes/operator/). | Use the GitLab Operator to run GitLab in an [OpenShift](openshift_and_gitlab/index.md) environment. |
 
 ## Install GitLab on cloud providers
 

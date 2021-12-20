@@ -3,7 +3,7 @@
 module QA
   RSpec.describe 'Create' do
     describe 'Push mirror a repository over HTTP' do
-      it 'configures and syncs a (push) mirrored repository', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1587' do
+      it 'configures and syncs a (push) mirrored repository', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347741' do
         Runtime::Browser.visit(:gitlab, Page::Main::Login)
         Page::Main::Login.perform(&:sign_in_using_credentials)
 
@@ -29,7 +29,7 @@ module QA
             mirror_settings.authentication_method = 'Password'
             mirror_settings.password = Runtime::User.password
             mirror_settings.mirror_repository
-            mirror_settings.update target_project_uri
+            mirror_settings.update target_project_uri # rubocop:disable Rails/SaveBang
           end
         end
 

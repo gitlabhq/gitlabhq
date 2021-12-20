@@ -18,9 +18,10 @@ export default () => {
     el,
     apolloProvider,
     provide: {
+      groupPath: el.dataset.groupPath,
+      groupDependencyProxyPath: el.dataset.groupDependencyProxyPath,
       defaultExpanded: parseBoolean(el.dataset.defaultExpanded),
       dependencyProxyAvailable: parseBoolean(el.dataset.dependencyProxyAvailable),
-      groupPath: el.dataset.groupPath,
     },
     render(createElement) {
       return createElement(SettingsApp);

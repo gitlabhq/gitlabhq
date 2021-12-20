@@ -52,13 +52,6 @@ describe('commits service', () => {
     expect(axios.get.mock.calls.length).toEqual(1);
   });
 
-  it('calls axios get twice if an offset is larger than 25', async () => {
-    await requestCommits(100);
-
-    expect(axios.get.mock.calls[0][1]).toEqual({ params: { format: 'json', offset: 75 } });
-    expect(axios.get.mock.calls[1][1]).toEqual({ params: { format: 'json', offset: 100 } });
-  });
-
   it('updates the list of requested offsets', async () => {
     await requestCommits(200);
 

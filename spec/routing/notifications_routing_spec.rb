@@ -12,7 +12,8 @@ RSpec.describe "notifications routing" do
   end
 
   it 'routes to group #update' do
-    expect(put("/-/profile/notifications/groups/gitlab-org")).to route_to("profiles/groups#update", id: 'gitlab-org')
-    expect(put("/-/profile/notifications/groups/gitlab.org")).to route_to("profiles/groups#update", id: 'gitlab.org')
+    expect(put("/-/profile/groups/gitlab-org/notifications")).to route_to("profiles/groups#update", id: 'gitlab-org')
+    expect(put("/-/profile/groups/gitlab.org/notifications/")).to route_to("profiles/groups#update", id: 'gitlab.org')
+    expect(put("/-/profile/groups/gitlab.org/gitlab/notifications")).to route_to("profiles/groups#update", id: 'gitlab.org/gitlab')
   end
 end

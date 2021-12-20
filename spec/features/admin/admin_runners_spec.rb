@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe "Admin Runners" do
   include StubENV
+  include Spec::Support::Helpers::ModalHelpers
 
   before do
     stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'false')
@@ -25,7 +26,7 @@ RSpec.describe "Admin Runners" do
         visit admin_runners_path
 
         expect(page).to have_text "Register an instance runner"
-        expect(page).to have_text "Runners currently online: 1"
+        expect(page).to have_text "Online Runners 1"
       end
 
       it 'with an instance runner shows an instance badge' do
@@ -55,6 +56,55 @@ RSpec.describe "Admin Runners" do
 
         within "[data-testid='runner-row-#{runner.id}']" do
           expect(page).to have_selector '.badge', text: 'specific'
+        end
+      end
+
+      it 'shows a job count' do
+        runner = create(:ci_runner, :project, projects: [project])
+
+        create(:ci_build, runner: runner)
+        create(:ci_build, runner: runner)
+
+        visit admin_runners_path
+
+        within "[data-testid='runner-row-#{runner.id}'] [data-label='Jobs']" do
+          expect(page).to have_content '2'
+        end
+      end
+
+      describe 'delete runner' do
+        let!(:runner) { create(:ci_runner, description: 'runner-foo') }
+
+        before do
+          visit admin_runners_path
+
+          within "[data-testid='runner-row-#{runner.id}']" do
+            click_on 'Delete runner'
+          end
+        end
+
+        it 'shows a confirmation modal' do
+          expect(page).to have_text "Delete runner ##{runner.id} (#{runner.short_sha})?"
+          expect(page).to have_text "Are you sure you want to continue?"
+        end
+
+        it 'deletes a runner' do
+          within '.modal' do
+            click_on 'Delete runner'
+          end
+
+          expect(page.find('.gl-toast')).to have_text(/Runner .+ deleted/)
+          expect(page).not_to have_content 'runner-foo'
+        end
+
+        it 'cancels runner deletion' do
+          within '.modal' do
+            click_on 'Cancel'
+          end
+
+          wait_for_requests
+
+          expect(page).to have_content 'runner-foo'
         end
       end
 
@@ -323,7 +373,7 @@ RSpec.describe "Admin Runners" do
 
       it 'has all necessary texts including no runner message' do
         expect(page).to have_text "Register an instance runner"
-        expect(page).to have_text "Runners currently online: 0"
+        expect(page).to have_text "Online Runners 0"
         expect(page).to have_text 'No runners found'
       end
     end
@@ -353,7 +403,7 @@ RSpec.describe "Admin Runners" do
         end
 
         it 'dismisses runner installation modal' do
-          page.within('[role="dialog"]') do
+          within_modal do
             click_button('Close', match: :first)
           end
 

@@ -1474,6 +1474,7 @@ export const mockJobsInTable = [
 export const mockJobsQueryResponse = {
   data: {
     project: {
+      id: '1',
       jobs: {
         pageInfo: {
           endCursor: 'eyJpZCI6IjIzMTcifQ',
@@ -1488,15 +1489,18 @@ export const mockJobsQueryResponse = {
               nodes: [
                 {
                   downloadPath: '/root/ci-project/-/jobs/2336/artifacts/download?file_type=trace',
+                  fileType: 'TRACE',
                   __typename: 'CiJobArtifact',
                 },
                 {
                   downloadPath:
                     '/root/ci-project/-/jobs/2336/artifacts/download?file_type=metadata',
+                  fileType: 'METADATA',
                   __typename: 'CiJobArtifact',
                 },
                 {
                   downloadPath: '/root/ci-project/-/jobs/2336/artifacts/download?file_type=archive',
+                  fileType: 'ARCHIVE',
                   __typename: 'CiJobArtifact',
                 },
               ],
@@ -1509,6 +1513,7 @@ export const mockJobsQueryResponse = {
             triggered: null,
             createdByTag: false,
             detailedStatus: {
+              id: 'status-1',
               detailsPath: '/root/ci-project/-/jobs/2336',
               group: 'success',
               icon: 'status_success',
@@ -1516,6 +1521,7 @@ export const mockJobsQueryResponse = {
               text: 'passed',
               tooltip: 'passed',
               action: {
+                id: 'action-1',
                 buttonTitle: 'Retry this job',
                 icon: 'retry',
                 method: 'post',
@@ -1535,6 +1541,7 @@ export const mockJobsQueryResponse = {
               id: 'gid://gitlab/Ci::Pipeline/473',
               path: '/root/ci-project/-/pipelines/473',
               user: {
+                id: 'user-1',
                 webPath: '/root',
                 avatarUrl:
                   'https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon',
@@ -1543,6 +1550,7 @@ export const mockJobsQueryResponse = {
               __typename: 'Pipeline',
             },
             stage: {
+              id: 'stage-1',
               name: 'deploy',
               __typename: 'CiStage',
             },
@@ -1558,6 +1566,7 @@ export const mockJobsQueryResponse = {
             userPermissions: {
               readBuild: true,
               readJobArtifacts: true,
+              updateBuild: true,
               __typename: 'JobPermissions',
             },
             __typename: 'CiJob',
@@ -1573,13 +1582,23 @@ export const mockJobsQueryResponse = {
 export const mockJobsQueryEmptyResponse = {
   data: {
     project: {
+      id: '1',
       jobs: [],
     },
   },
 };
 
 export const retryableJob = {
-  artifacts: { nodes: [], __typename: 'CiJobArtifactConnection' },
+  artifacts: {
+    nodes: [
+      {
+        downloadPath: '/root/ci-project/-/jobs/847/artifacts/download?file_type=trace',
+        fileType: 'TRACE',
+        __typename: 'CiJobArtifact',
+      },
+    ],
+    __typename: 'CiJobArtifactConnection',
+  },
   allowFailure: false,
   status: 'SUCCESS',
   scheduledAt: null,
@@ -1630,15 +1649,31 @@ export const retryableJob = {
   cancelable: false,
   active: false,
   stuck: false,
-  userPermissions: { readBuild: true, __typename: 'JobPermissions' },
+  userPermissions: { readBuild: true, updateBuild: true, __typename: 'JobPermissions' },
   __typename: 'CiJob',
+};
+
+export const cannotRetryJob = {
+  ...retryableJob,
+  userPermissions: { readBuild: true, updateBuild: false, __typename: 'JobPermissions' },
 };
 
 export const playableJob = {
   artifacts: {
     nodes: [
       {
-        downloadPath: '/root/test-job-artifacts/-/jobs/1982/artifacts/download?file_type=trace',
+        downloadPath: '/root/ci-project/-/jobs/621/artifacts/download?file_type=archive',
+        fileType: 'ARCHIVE',
+        __typename: 'CiJobArtifact',
+      },
+      {
+        downloadPath: '/root/ci-project/-/jobs/621/artifacts/download?file_type=metadata',
+        fileType: 'METADATA',
+        __typename: 'CiJobArtifact',
+      },
+      {
+        downloadPath: '/root/ci-project/-/jobs/621/artifacts/download?file_type=trace',
+        fileType: 'TRACE',
         __typename: 'CiJobArtifact',
       },
     ],
@@ -1694,8 +1729,23 @@ export const playableJob = {
   cancelable: false,
   active: false,
   stuck: false,
-  userPermissions: { readBuild: true, readJobArtifacts: true, __typename: 'JobPermissions' },
+  userPermissions: {
+    readBuild: true,
+    readJobArtifacts: true,
+    updateBuild: true,
+    __typename: 'JobPermissions',
+  },
   __typename: 'CiJob',
+};
+
+export const cannotPlayJob = {
+  ...playableJob,
+  userPermissions: {
+    readBuild: true,
+    readJobArtifacts: true,
+    updateBuild: false,
+    __typename: 'JobPermissions',
+  },
 };
 
 export const scheduledJob = {
@@ -1750,6 +1800,16 @@ export const scheduledJob = {
   cancelable: false,
   active: false,
   stuck: false,
-  userPermissions: { readBuild: true, __typename: 'JobPermissions' },
+  userPermissions: { readBuild: true, updateBuild: true, __typename: 'JobPermissions' },
   __typename: 'CiJob',
+};
+
+export const cannotPlayScheduledJob = {
+  ...scheduledJob,
+  userPermissions: {
+    readBuild: true,
+    readJobArtifacts: true,
+    updateBuild: false,
+    __typename: 'JobPermissions',
+  },
 };

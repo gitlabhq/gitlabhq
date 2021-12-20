@@ -12,7 +12,7 @@ module Types
       field :name, GraphQL::Types::String, null: true,
         description: 'Name of the test suite.'
 
-      field :total_time, GraphQL::FLOAT_TYPE, null: true,
+      field :total_time, GraphQL::Types::Float, null: true,
         description: 'Total duration of the tests in the test suite.'
 
       field :total_count, GraphQL::Types::Int, null: true,

@@ -10,6 +10,12 @@
 #   alt_usage_data { Gitlab::VERSION }
 #   redis_usage_data(Gitlab::UsageDataCounters::WikiPageCounter)
 #   redis_usage_data { ::Gitlab::UsageCounters::PodLogs.usage_totals[:total] }
+
+# NOTE:
+# Implementing metrics direct in `usage_data.rb` is deprecated,
+# please add new instrumentation class and use add_metric method.
+# For more information, see https://docs.gitlab.com/ee/development/service_ping/metrics_instrumentation.html
+
 module Gitlab
   class UsageData
     DEPRECATED_VALUE = -1000
@@ -45,10 +51,7 @@ module Gitlab
         clear_memoized
 
         with_finished_at(:recording_ce_finished_at) do
-          usage_data = usage_data_metrics
-          usage_data = usage_data.with_indifferent_access.deep_merge(instrumentation_metrics.with_indifferent_access) if Feature.enabled?(:usage_data_instrumentation)
-
-          usage_data
+          usage_data_metrics
         end
       end
 
@@ -225,7 +228,9 @@ module Gitlab
             operating_system: alt_usage_data(fallback: nil) { operating_system },
             gitaly_apdex: alt_usage_data { gitaly_apdex },
             collected_data_categories: add_metric('CollectedDataCategoriesMetric', time_frame: 'none'),
-            service_ping_features_enabled: add_metric('ServicePingFeaturesMetric', time_frame: 'none')
+            service_ping_features_enabled: add_metric('ServicePingFeaturesMetric', time_frame: 'none'),
+            snowplow_enabled: add_metric('SnowplowEnabledMetric', time_frame: 'none'),
+            snowplow_configured_to_gitlab_collector: add_metric('SnowplowConfiguredToGitlabCollectorMetric', time_frame: 'none')
           }
         }
       end
@@ -401,7 +406,8 @@ module Gitlab
         results[:projects_jira_cloud_active] = jira_integration_data_hash[:projects_jira_cloud_active]
 
         results
-      rescue ActiveRecord::StatementInvalid
+      rescue ActiveRecord::StatementInvalid => error
+        Gitlab::ErrorTracking.track_and_raise_for_dev_exception(error)
         { projects_jira_server_active: FALLBACK, projects_jira_cloud_active: FALLBACK }
       end
       # rubocop: enable CodeReuse/ActiveRecord
@@ -663,8 +669,6 @@ module Gitlab
       end
 
       def redis_hll_counters
-        return {} unless Feature.enabled?(:redis_hll_tracking, type: :ops, default_enabled: :yaml)
-
         { redis_hll_counters: ::Gitlab::UsageDataCounters::HLLRedisCounter.unique_events_data }
       end
 
@@ -726,7 +730,7 @@ module Gitlab
           # rubocop: disable CodeReuse/ActiveRecord
           # rubocop: disable UsageData/LargeTable
           start = ::Event.where(time_period).select(:id).order(created_at: :asc).first&.id
-          finish = ::Event.where(time_period).select(:id).order(created_at: :asc).first&.id
+          finish = ::Event.where(time_period).select(:id).order(created_at: :desc).first&.id
           estimate_batch_distinct_count(::Event.where(time_period), :author_id, start: start, finish: finish)
           # rubocop: enable UsageData/LargeTable
           # rubocop: enable CodeReuse/ActiveRecord
@@ -751,10 +755,6 @@ module Gitlab
           .merge(search_unique_visits_data)
           .merge(redis_hll_counters)
           .deep_merge(aggregated_metrics_data)
-      end
-
-      def instrumentation_metrics
-        Gitlab::UsageDataMetrics.uncached_data # rubocop:disable UsageData/LargeTable
       end
 
       def metric_time_period(time_period)

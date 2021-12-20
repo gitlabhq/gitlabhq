@@ -1,6 +1,5 @@
 import { GlButton, GlLink, GlIcon } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import ExperimentTracking from '~/experimentation/experiment_tracking';
 import InviteMembersTrigger from '~/invite_members/components/invite_members_trigger.vue';
 import eventHub from '~/invite_members/event_hub';
 import { TRIGGER_ELEMENT_BUTTON, TRIGGER_ELEMENT_SIDE_NAV } from '~/invite_members/constants';
@@ -79,19 +78,6 @@ describe.each(triggerItems)('with triggerElement as %s', (triggerItem) => {
   });
 
   describe('tracking', () => {
-    it('tracks on mounting', () => {
-      createComponent({ trackExperiment: '_track_experiment_' });
-
-      expect(ExperimentTracking).toHaveBeenCalledWith('_track_experiment_');
-      expect(ExperimentTracking.prototype.event).toHaveBeenCalledWith('comment_invite_shown');
-    });
-
-    it('does not track on mounting', () => {
-      createComponent();
-
-      expect(ExperimentTracking).not.toHaveBeenCalledWith('_track_experiment_');
-    });
-
     it('does not add tracking attributes', () => {
       createComponent();
 

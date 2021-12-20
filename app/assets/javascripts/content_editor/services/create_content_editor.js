@@ -19,6 +19,9 @@ import Dropcursor from '../extensions/dropcursor';
 import Emoji from '../extensions/emoji';
 import Figure from '../extensions/figure';
 import FigureCaption from '../extensions/figure_caption';
+import FootnoteDefinition from '../extensions/footnote_definition';
+import FootnoteReference from '../extensions/footnote_reference';
+import FootnotesSection from '../extensions/footnotes_section';
 import Frontmatter from '../extensions/frontmatter';
 import Gapcursor from '../extensions/gapcursor';
 import HardBreak from '../extensions/hard_break';
@@ -94,6 +97,9 @@ export const createContentEditor = ({
     Emoji,
     Figure,
     FigureCaption,
+    FootnoteDefinition,
+    FootnoteReference,
+    FootnotesSection,
     Frontmatter,
     Gapcursor,
     HardBreak,

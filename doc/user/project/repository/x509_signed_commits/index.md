@@ -290,7 +290,7 @@ To investigate why a commit shows as `Unverified`:
 1. The verification status is stored in the database. To display the database record:
 
    ```ruby
-   pp X509CommitSignature.by_commit_sha(commit.sha);nil
+   pp CommitSignatures::X509CommitSignature.by_commit_sha(commit.sha);nil
    ```
 
    If all the previous checks returned the correct values:

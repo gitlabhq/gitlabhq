@@ -3,4 +3,8 @@
 
 .row
   .col-12
-    #js-vue-packages-list{ data: packages_list_data('projects', @project) }
+    #js-vue-packages-list{ data: { resource_id: @project.id,
+      full_path: @project.full_path,
+      endpoint: project_packages_path(@project),
+      page_type: 'projects',
+      empty_list_illustration: image_path('illustrations/no-packages.svg'), } }

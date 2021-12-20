@@ -49,17 +49,19 @@ module QA
         registry_repository&.remove_via_api!
       end
 
-      it 'pushes project image to the container registry and deletes tag', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1833' do
+      it 'pushes project image to the container registry and deletes tag', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347687' do
         Flow::Login.sign_in
         project.visit!
 
-        Resource::Repository::Commit.fabricate_via_api! do |commit|
-          commit.project = project
-          commit.commit_message = 'Add .gitlab-ci.yml'
-          commit.add_files([{
-                              file_path: '.gitlab-ci.yml',
-                              content: gitlab_ci_yaml
-                            }])
+        Support::Retrier.retry_on_exception(max_attempts: 3, sleep_interval: 2) do
+          Resource::Repository::Commit.fabricate_via_api! do |commit|
+            commit.project = project
+            commit.commit_message = 'Add .gitlab-ci.yml'
+            commit.add_files([{
+                                file_path: '.gitlab-ci.yml',
+                                content: gitlab_ci_yaml
+                              }])
+          end
         end
 
         Flow::Pipeline.visit_latest_pipeline

@@ -1,0 +1,9 @@
+query getEnvironmentApp($page: Int, $scope: String) {
+  environmentApp(page: $page, scope: $scope) @client {
+    availableCount
+    stoppedCount
+    environments
+    reviewApp
+    stoppedCount
+  }
+}

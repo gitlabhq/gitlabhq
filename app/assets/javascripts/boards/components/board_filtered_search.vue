@@ -1,7 +1,7 @@
 <script>
 import { pickBy, isEmpty } from 'lodash';
 import { mapActions } from 'vuex';
-import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import { getIdFromGraphQLId, isGid } from '~/graphql_shared/utils';
 import { updateHistory, setUrlParams } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
 import { FILTERED_SEARCH_TERM } from '~/vue_shared/components/filtered_search_bar/constants';
@@ -39,30 +39,33 @@ export default {
         assigneeUsername,
         search,
         milestoneTitle,
+        iterationId,
         types,
         weight,
         epicId,
         myReactionEmoji,
+        releaseTag,
+        confidential,
       } = this.filterParams;
       const filteredSearchValue = [];
 
       if (authorUsername) {
         filteredSearchValue.push({
-          type: 'author_username',
+          type: 'author',
           value: { data: authorUsername, operator: '=' },
         });
       }
 
       if (assigneeUsername) {
         filteredSearchValue.push({
-          type: 'assignee_username',
+          type: 'assignee',
           value: { data: assigneeUsername, operator: '=' },
         });
       }
 
       if (types) {
         filteredSearchValue.push({
-          type: 'types',
+          type: 'type',
           value: { data: types, operator: '=' },
         });
       }
@@ -70,7 +73,7 @@ export default {
       if (labelName?.length) {
         filteredSearchValue.push(
           ...labelName.map((label) => ({
-            type: 'label_name',
+            type: 'label',
             value: { data: label, operator: '=' },
           })),
         );
@@ -78,8 +81,15 @@ export default {
 
       if (milestoneTitle) {
         filteredSearchValue.push({
-          type: 'milestone_title',
+          type: 'milestone',
           value: { data: milestoneTitle, operator: '=' },
+        });
+      }
+
+      if (iterationId) {
+        filteredSearchValue.push({
+          type: 'iteration',
+          value: { data: iterationId, operator: '=' },
         });
       }
 
@@ -92,29 +102,50 @@ export default {
 
       if (myReactionEmoji) {
         filteredSearchValue.push({
-          type: 'my_reaction_emoji',
+          type: 'my-reaction',
           value: { data: myReactionEmoji, operator: '=' },
+        });
+      }
+
+      if (releaseTag) {
+        filteredSearchValue.push({
+          type: 'release',
+          value: { data: releaseTag, operator: '=' },
+        });
+      }
+
+      if (confidential !== undefined) {
+        filteredSearchValue.push({
+          type: 'confidential',
+          value: { data: confidential },
         });
       }
 
       if (epicId) {
         filteredSearchValue.push({
-          type: 'epic_id',
+          type: 'epic',
           value: { data: epicId, operator: '=' },
         });
       }
 
       if (this.filterParams['not[authorUsername]']) {
         filteredSearchValue.push({
-          type: 'author_username',
+          type: 'author',
           value: { data: this.filterParams['not[authorUsername]'], operator: '!=' },
         });
       }
 
       if (this.filterParams['not[milestoneTitle]']) {
         filteredSearchValue.push({
-          type: 'milestone_title',
+          type: 'milestone',
           value: { data: this.filterParams['not[milestoneTitle]'], operator: '!=' },
+        });
+      }
+
+      if (this.filterParams['not[iteration_id]']) {
+        filteredSearchValue.push({
+          type: 'iteration_id',
+          value: { data: this.filterParams['not[iteration_id]'], operator: '!=' },
         });
       }
 
@@ -127,7 +158,7 @@ export default {
 
       if (this.filterParams['not[assigneeUsername]']) {
         filteredSearchValue.push({
-          type: 'assignee_username',
+          type: 'assignee',
           value: { data: this.filterParams['not[assigneeUsername]'], operator: '!=' },
         });
       }
@@ -135,7 +166,7 @@ export default {
       if (this.filterParams['not[labelName]']) {
         filteredSearchValue.push(
           ...this.filterParams['not[labelName]'].map((label) => ({
-            type: 'label_name',
+            type: 'label',
             value: { data: label, operator: '!=' },
           })),
         );
@@ -143,22 +174,29 @@ export default {
 
       if (this.filterParams['not[types]']) {
         filteredSearchValue.push({
-          type: 'types',
+          type: 'type',
           value: { data: this.filterParams['not[types]'], operator: '!=' },
         });
       }
 
       if (this.filterParams['not[epicId]']) {
         filteredSearchValue.push({
-          type: 'epic_id',
+          type: 'epic',
           value: { data: this.filterParams['not[epicId]'], operator: '!=' },
         });
       }
 
       if (this.filterParams['not[myReactionEmoji]']) {
         filteredSearchValue.push({
-          type: 'my_reaction_emoji',
+          type: 'my-reaction',
           value: { data: this.filterParams['not[myReactionEmoji]'], operator: '!=' },
+        });
+      }
+
+      if (this.filterParams['not[releaseTag]']) {
+        filteredSearchValue.push({
+          type: 'release',
+          value: { data: this.filterParams['not[releaseTag]'], operator: '!=' },
         });
       }
 
@@ -179,8 +217,10 @@ export default {
         weight,
         epicId,
         myReactionEmoji,
+        iterationId,
+        releaseTag,
+        confidential,
       } = this.filterParams;
-
       let notParams = {};
 
       if (Object.prototype.hasOwnProperty.call(this.filterParams, 'not')) {
@@ -194,6 +234,8 @@ export default {
             'not[weight]': this.filterParams.not.weight,
             'not[epic_id]': this.filterParams.not.epicId,
             'not[my_reaction_emoji]': this.filterParams.not.myReactionEmoji,
+            'not[iteration_id]': this.filterParams.not.iterationId,
+            'not[release_tag]': this.filterParams.not.releaseTag,
           },
           undefined,
         );
@@ -205,11 +247,14 @@ export default {
         'label_name[]': labelName,
         assignee_username: assigneeUsername,
         milestone_title: milestoneTitle,
+        iteration_id: iterationId,
         search,
         types,
         weight,
-        epic_id: getIdFromGraphQLId(epicId),
+        epic_id: isGid(epicId) ? getIdFromGraphQLId(epicId) : epicId,
         my_reaction_emoji: myReactionEmoji,
+        release_tag: releaseTag,
+        confidential,
       };
     },
   },
@@ -246,29 +291,38 @@ export default {
 
       filters.forEach((filter) => {
         switch (filter.type) {
-          case 'author_username':
+          case 'author':
             filterParams.authorUsername = filter.value.data;
             break;
-          case 'assignee_username':
+          case 'assignee':
             filterParams.assigneeUsername = filter.value.data;
             break;
-          case 'types':
+          case 'type':
             filterParams.types = filter.value.data;
             break;
-          case 'label_name':
+          case 'label':
             labels.push(filter.value.data);
             break;
-          case 'milestone_title':
+          case 'milestone':
             filterParams.milestoneTitle = filter.value.data;
+            break;
+          case 'iteration':
+            filterParams.iterationId = filter.value.data;
             break;
           case 'weight':
             filterParams.weight = filter.value.data;
             break;
-          case 'epic_id':
+          case 'epic':
             filterParams.epicId = filter.value.data;
             break;
-          case 'my_reaction_emoji':
+          case 'my-reaction':
             filterParams.myReactionEmoji = filter.value.data;
+            break;
+          case 'release':
+            filterParams.releaseTag = filter.value.data;
+            break;
+          case 'confidential':
+            filterParams.confidential = filter.value.data;
             break;
           case 'filtered-search-term':
             if (filter.value.data) plainText.push(filter.value.data);
@@ -285,6 +339,7 @@ export default {
       if (plainText.length) {
         filterParams.search = plainText.join(' ');
       }
+
       return filterParams;
     },
   },

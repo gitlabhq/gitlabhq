@@ -1,6 +1,5 @@
 # frozen_string_literal: true
-require "fast_spec_helper"
-require "support/graphql/fake_query_type"
+require "spec_helper"
 
 RSpec.describe Gitlab::Graphql::Tracers::LoggerTracer do
   let(:dummy_schema) do
@@ -48,5 +47,16 @@ RSpec.describe Gitlab::Graphql::Tracers::LoggerTracer do
     })
 
     dummy_schema.execute(query_string, variables: variables)
+  end
+
+  it 'logs exceptions for breaking queries' do
+    query_string = "query fooOperation { breakingField }"
+
+    expect(::Gitlab::GraphqlLogger).to receive(:info).with(a_hash_including({
+      'exception.message' => 'This field is supposed to break',
+      'exception.class' => 'RuntimeError'
+    }))
+
+    expect { dummy_schema.execute(query_string) }.to raise_error(/This field is supposed to break/)
   end
 end

@@ -1260,6 +1260,12 @@ production: &base
     #  address: localhost
     #  port: 8082
 
+    sidekiq_health_checks:
+    #  enabled: true
+    #  log_enabled: false
+    #  address: localhost
+    #  port: 8082
+
     # Web exporter is a dedicated Rack server running alongside Puma to expose Prometheus metrics
     # It runs alongside the `/metrics` endpoints to ease the publish of metrics
     web_exporter:

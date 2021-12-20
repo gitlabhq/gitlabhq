@@ -3,6 +3,7 @@
 module TimeZoneHelper
   TIME_ZONE_FORMAT_ATTRS = {
     short: %i[identifier name offset],
+    abbr: %i[identifier abbr],
     full: %i[identifier name abbr offset formatted_offset]
   }.freeze
   private_constant :TIME_ZONE_FORMAT_ATTRS
@@ -32,7 +33,7 @@ module TimeZoneHelper
     end
   end
 
-  def local_time_instance(timezone)
+  def local_timezone_instance(timezone)
     return Time.zone if timezone.blank?
 
     ActiveSupport::TimeZone.new(timezone) || Time.zone
@@ -41,7 +42,7 @@ module TimeZoneHelper
   def local_time(timezone)
     return if timezone.blank?
 
-    time_zone_instance = local_time_instance(timezone)
+    time_zone_instance = local_timezone_instance(timezone)
     time_zone_instance.now.strftime("%-l:%M %p")
   end
 end

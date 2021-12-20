@@ -2,8 +2,9 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Database::Migrations::Observers::TransactionDuration do
-  subject(:transaction_duration_observer) { described_class.new(observation, directory_path) }
+  subject(:transaction_duration_observer) { described_class.new(observation, directory_path, connection) }
 
+  let(:connection) { ActiveRecord::Migration.connection }
   let(:observation) { Gitlab::Database::Migrations::Observation.new(migration_version, migration_name) }
   let(:directory_path) { Dir.mktmpdir }
   let(:log_file) { "#{directory_path}/#{migration_version}_#{migration_name}-transaction-duration.json" }
@@ -78,17 +79,17 @@ RSpec.describe Gitlab::Database::Migrations::Observers::TransactionDuration do
   end
 
   def run_real_transactions
-    ActiveRecord::Base.transaction do
+    ApplicationRecord.transaction do
     end
   end
 
   def run_sub_transactions
-    ActiveRecord::Base.transaction(requires_new: true) do
+    ApplicationRecord.transaction(requires_new: true) do
     end
   end
 
   def run_transaction
-    ActiveRecord::Base.connection_pool.with_connection do |connection|
+    ApplicationRecord.connection_pool.with_connection do |connection|
       Gitlab::Database::SharedModel.using_connection(connection) do
         Gitlab::Database::SharedModel.transaction do
           Gitlab::Database::SharedModel.transaction(requires_new: true) do

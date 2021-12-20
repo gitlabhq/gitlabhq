@@ -4,7 +4,7 @@ group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# GitLab CI/CD job token
+# GitLab CI/CD job token **(FREE)**
 
 When a pipeline job is about to run, GitLab generates a unique token and injects it as the
 [`CI_JOB_TOKEN` predefined variable](../variables/predefined_variables.md).
@@ -61,11 +61,7 @@ tries to steal tokens from other jobs.
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/328553) in GitLab 14.1. [Deployed behind the `:ci_scoped_job_token` feature flag](../../user/feature_flags.md), disabled by default.
 > - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/332272) in GitLab 14.4.
-
-FLAG:
-On self-managed GitLab, by default this feature is available. To hide the feature,
-ask an administrator to [disable the `ci_scoped_job_token` flag](../../administration/feature_flags.md).
-On GitLab.com, this feature is available.
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/332272) in GitLab 14.6.
 
 You can limit the access scope of a project's CI/CD job token to increase the
 job token's security. A job token might give extra permissions that aren't necessary
@@ -95,7 +91,7 @@ The job token scope is only for controlling access to private projects.
 1. On the left sidebar, select **Settings > CI/CD**.
 1. Expand **Token Access**.
 1. Toggle **Limit CI_JOB_TOKEN access** to enabled.
-1. (Optional) Add existing projects to the token's access scope. The user adding a
+1. Optional. Add existing projects to the token's access scope. The user adding a
    project must have the [maintainer role](../../user/permissions.md) in both projects.
 
 There is [a proposal](https://gitlab.com/groups/gitlab-org/-/epics/3559) to improve
@@ -121,7 +117,7 @@ trigger_pipeline:
 ```
 
 If you use the `CI_PIPELINE_SOURCE` [predefined CI/CD variable](../variables/predefined_variables.md)
-in a pipeline triggered this way, [the value is `pipeline` (not `triggered`)](../triggers/index.md#authentication-tokens).
+in a pipeline triggered this way, [the value is `pipeline` (not `triggered`)](../triggers/index.md#configure-cicd-jobs-to-run-in-triggered-pipelines).
 
 ## Download an artifact from a different pipeline **(PREMIUM)**
 

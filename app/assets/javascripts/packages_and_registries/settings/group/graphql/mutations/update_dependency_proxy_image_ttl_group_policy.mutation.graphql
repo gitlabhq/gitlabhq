@@ -1,0 +1,11 @@
+mutation updateDependencyProxyImageTtlGroupPolicy(
+  $input: UpdateDependencyProxyImageTtlGroupPolicyInput!
+) {
+  updateDependencyProxyImageTtlGroupPolicy(input: $input) {
+    dependencyProxyImageTtlPolicy {
+      enabled
+      ttl
+    }
+    errors
+  }
+}

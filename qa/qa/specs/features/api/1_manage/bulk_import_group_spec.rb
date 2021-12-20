@@ -4,7 +4,7 @@ module QA
   # run only base UI validation on staging because test requires top level group creation which is problematic
   # on staging environment
   RSpec.describe 'Manage', :requires_admin, except: { subdomain: :staging } do
-    describe 'Bulk group import' do
+    describe 'Gitlab migration' do
       let(:import_wait_duration) { { max_duration: 300, sleep_interval: 2 } }
       let(:admin_api_client) { Runtime::API::Client.as_admin }
       let(:user) do
@@ -26,6 +26,7 @@ module QA
         Resource::Sandbox.fabricate_via_api! do |group|
           group.api_client = api_client
           group.path = "source-group-for-import-#{SecureRandom.hex(4)}"
+          group.avatar = File.new('qa/fixtures/designs/tanuki.jpg', 'r')
         end
       end
 
@@ -37,11 +38,19 @@ module QA
         end
       end
 
+      let(:import_failures) do
+        imported_group.import_details.sum([]) { |details| details[:failures] }
+      end
+
       before do
         sandbox.add_member(user, Resource::Members::AccessLevel::MAINTAINER)
       end
 
-      after do
+      after do |example|
+        # Checking for failures in the test currently makes test very flaky due to catching unrelated failures
+        # Just log in case of failure until cause of network errors is found
+        # See: https://gitlab.com/gitlab-org/gitlab/-/issues/346500
+        Runtime::Logger.warn(import_failures) if example.exception && !import_failures.empty?
         user.remove_via_api!
       end
 
@@ -73,11 +82,13 @@ module QA
             label.group = subgroup
             label.title = "subgroup-#{SecureRandom.hex(4)}"
           end
+
+          imported_group # trigger import
         end
 
         it(
           'successfully imports groups and labels',
-          testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1873'
+          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347674'
         ) do
           expect { imported_group.import_status }.to eventually_eq('finished').within(import_wait_duration)
 
@@ -108,11 +119,13 @@ module QA
             badge.link_url = "http://example.com/badge"
             badge.image_url = "http://shields.io/badge"
           end
+
+          imported_group # trigger import
         end
 
         it(
           'successfully imports group milestones and badges',
-          testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/2245'
+          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347628'
         ) do
           expect { imported_group.import_status }.to eventually_eq('finished').within(import_wait_duration)
 
@@ -139,6 +152,8 @@ module QA
         before do
           member.set_public_email
           source_group.add_member(member, Resource::Members::AccessLevel::DEVELOPER)
+
+          imported_group # trigger import
         end
 
         after do
@@ -147,14 +162,16 @@ module QA
 
         it(
           'adds members for imported group',
-          testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/2310'
+          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347609'
         ) do
           expect { imported_group.import_status }.to eventually_eq('finished').within(import_wait_duration)
 
           imported_member = imported_group.reload!.members.find { |usr| usr.username == member.username }
 
-          expect(imported_member).not_to be_nil
-          expect(imported_member.access_level).to eq(Resource::Members::AccessLevel::DEVELOPER)
+          aggregate_failures do
+            expect(imported_member).not_to be_nil
+            expect(imported_member.access_level).to eq(Resource::Members::AccessLevel::DEVELOPER)
+          end
         end
       end
     end

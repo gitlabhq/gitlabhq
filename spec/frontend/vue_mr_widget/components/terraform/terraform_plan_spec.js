@@ -32,9 +32,7 @@ describe('TerraformPlan', () => {
     });
 
     it('diplays the header text with a name', () => {
-      expect(wrapper.text()).toContain(
-        `The report ${validPlanWithName.job_name} was generated in your pipelines.`,
-      );
+      expect(wrapper.text()).toContain(`The job ${validPlanWithName.job_name} generated a report.`);
     });
 
     it('diplays the reported changes', () => {
@@ -70,7 +68,7 @@ describe('TerraformPlan', () => {
 
     it('diplays the header text with a name', () => {
       expect(wrapper.text()).toContain(
-        `The report ${invalidPlanWithName.job_name} failed to generate.`,
+        `The job ${invalidPlanWithName.job_name} failed to generate a report.`,
       );
     });
 

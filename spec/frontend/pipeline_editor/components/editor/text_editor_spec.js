@@ -1,7 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
 
 import { EDITOR_READY_EVENT } from '~/editor/constants';
-import { SourceEditorExtension } from '~/editor/extensions/source_editor_extension_base';
 import TextEditor from '~/pipeline_editor/components/editor/text_editor.vue';
 import {
   mockCiConfigPath,
@@ -58,10 +57,6 @@ describe('Pipeline Editor | Text editor component', () => {
   };
 
   const findEditor = () => wrapper.findComponent(MockSourceEditor);
-
-  beforeEach(() => {
-    SourceEditorExtension.deferRerender = jest.fn();
-  });
 
   afterEach(() => {
     wrapper.destroy();

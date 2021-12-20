@@ -256,28 +256,11 @@ RSpec.describe Gitlab::Database::LoadBalancing::Sticking, :redis do
 
       expect(sticking.last_write_location_for(:user, 4)).to be_nil
     end
-
-    it 'removes the old key' do
-      Gitlab::Redis::SharedState.with do |redis|
-        redis.set(sticking.send(:old_redis_key_for, :user, 4), 'foo', ex: 30)
-      end
-
-      sticking.unstick(:user, 4)
-      expect(sticking.last_write_location_for(:user, 4)).to be_nil
-    end
   end
 
   describe '#last_write_location_for' do
     it 'returns the last WAL write location for a user' do
       sticking.set_write_location_for(:user, 4, 'foo')
-
-      expect(sticking.last_write_location_for(:user, 4)).to eq('foo')
-    end
-
-    it 'falls back to reading the old key' do
-      Gitlab::Redis::SharedState.with do |redis|
-        redis.set(sticking.send(:old_redis_key_for, :user, 4), 'foo', ex: 30)
-      end
 
       expect(sticking.last_write_location_for(:user, 4)).to eq('foo')
     end

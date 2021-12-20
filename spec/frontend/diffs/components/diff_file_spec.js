@@ -3,7 +3,7 @@ import MockAdapter from 'axios-mock-adapter';
 import { nextTick } from 'vue';
 import Vuex from 'vuex';
 
-import DiffContentComponent from '~/diffs/components/diff_content.vue';
+import DiffContentComponent from 'jh_else_ce/diffs/components/diff_content.vue';
 import DiffFileComponent from '~/diffs/components/diff_file.vue';
 import DiffFileHeaderComponent from '~/diffs/components/diff_file_header.vue';
 

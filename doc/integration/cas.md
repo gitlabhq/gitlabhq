@@ -37,14 +37,14 @@ configure CAS for back-channel logout.
    ```ruby
    gitlab_rails['omniauth_providers'] = [
      {
-         "name"=> "cas3",
-         "label"=> "cas",
-         "args"=> {
-             "url"=> 'CAS_SERVER',
-             "login_url"=> '/CAS_PATH/login',
-             "service_validate_url"=> '/CAS_PATH/p3/serviceValidate',
-             "logout_url"=> '/CAS_PATH/logout'
-         }
+       name: "cas3",
+       label: "Provider name", # optional label for login button, defaults to "Cas3"
+       args: {
+           url: "CAS_SERVER",
+           login_url: "/CAS_PATH/login",
+           service_validate_url: "/CAS_PATH/p3/serviceValidate",
+           logout_url: "/CAS_PATH/logout"
+       }
      }
    ]
    ```
@@ -53,7 +53,7 @@ configure CAS for back-channel logout.
 
    ```yaml
    - { name: 'cas3',
-       label: 'cas',
+       label: 'Provider name', # optional label for login button, defaults to "Cas3"
        args: {
          url: 'CAS_SERVER',
          login_url: '/CAS_PATH/login',

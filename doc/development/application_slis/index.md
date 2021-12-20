@@ -180,7 +180,7 @@ alerts about the SLI in specified Slack channels. For more information, read the
 [alert routing documentation](https://gitlab.com/gitlab-com/runbooks/-/blob/master/docs/uncategorized/alert-routing.md).
 In [this project](https://gitlab.com/groups/gitlab-com/gl-infra/-/epics/614)
 we are extending this so alerts for SLIs with a `feature_category`
-label in the souce metrics can also be routed.
+label in the source metrics can also be routed.
 
 For any question, please don't hesitate to create an issue in
 [the Scalability issue tracker](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues)

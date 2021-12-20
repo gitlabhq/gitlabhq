@@ -39,7 +39,7 @@ module Banzai
 
             code[:class] = INLINE_CLASSES
             code[STYLE_ATTRIBUTE] = 'inline'
-            closing.content = closing.content[1..-1]
+            closing.content = closing.content[1..]
             opening.content = opening.content[0..-2]
           end
         end

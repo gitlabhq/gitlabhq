@@ -191,4 +191,15 @@ RSpec.describe Banzai::Filter::ExternalLinkFilter do
       end
     end
   end
+
+  context 'for links that have `rel=license`' do
+    let(:doc) { filter %q(<a rel="license" href="http://example.com">rel-license</a>) }
+
+    it_behaves_like 'an external link with rel attribute'
+
+    it 'maintains rel license' do
+      expect(doc.at_css('a')).to have_attribute('rel')
+      expect(doc.at_css('a')['rel']).to include 'license'
+    end
+  end
 end

@@ -24,15 +24,5 @@ RSpec.describe Gitlab::Ci::Variables::Builder do
         expect(names).to include(*keys)
       end
     end
-
-    context 'feature flag disabled' do
-      before do
-        stub_feature_flags(ci_predefined_vars_in_builder: false)
-      end
-
-      it 'returns no variables' do
-        expect(subject.map { |env| env[:key] }).to be_empty
-      end
-    end
   end
 end

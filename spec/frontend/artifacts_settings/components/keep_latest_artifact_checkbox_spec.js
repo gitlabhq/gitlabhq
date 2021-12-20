@@ -13,6 +13,7 @@ localVue.use(VueApollo);
 const keepLatestArtifactProjectMock = {
   data: {
     project: {
+      id: '1',
       ciCdSettings: { keepLatestArtifact: true },
     },
   },

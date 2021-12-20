@@ -1,8 +1,8 @@
 <script>
 import { GlIcon, GlLink, GlLoadingIcon } from '@gitlab/ui';
 import { __, s__, sprintf } from '~/locale';
-import getAppStatus from '~/pipeline_editor/graphql/queries/client/app_status.graphql';
-import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate.vue';
+import getAppStatus from '~/pipeline_editor/graphql/queries/client/app_status.query.graphql';
+import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate/tooltip_on_truncate.vue';
 import {
   EDITOR_APP_STATUS_EMPTY,
   EDITOR_APP_STATUS_LOADING,
@@ -43,6 +43,9 @@ export default {
   apollo: {
     appStatus: {
       query: getAppStatus,
+      update(data) {
+        return data.app.status;
+      },
     },
   },
   computed: {

@@ -11,7 +11,6 @@ import httpStatusCodes from '~/lib/utils/http_status';
 import {
   capitalizeFirstCharacter,
   convertToCamelCase,
-  splitCamelCase,
   slugifyWithUnderscore,
 } from '~/lib/utils/text_utility';
 import { sprintf } from '~/locale';
@@ -77,7 +76,15 @@ export default {
     ]),
     ...mapState(['isToggleStateButtonLoading']),
     noteableDisplayName() {
-      return splitCamelCase(this.noteableType).toLowerCase();
+      const displayNameMap = {
+        [constants.ISSUE_NOTEABLE_TYPE]: this.$options.i18n.issue,
+        [constants.EPIC_NOTEABLE_TYPE]: this.$options.i18n.epic,
+        [constants.MERGE_REQUEST_NOTEABLE_TYPE]: this.$options.i18n.mergeRequest,
+      };
+
+      const noteableTypeKey =
+        constants.NOTEABLE_TYPE_MAPPING[this.noteableType] || constants.ISSUE_NOTEABLE_TYPE;
+      return displayNameMap[noteableTypeKey];
     },
     isLoggedIn() {
       return this.getUserData.id;
@@ -103,15 +110,13 @@ export default {
       const openOrClose = this.isOpen ? 'close' : 'reopen';
 
       if (this.note.length) {
-        return sprintf(this.$options.i18n.actionButtonWithNote, {
+        return sprintf(this.$options.i18n.actionButton.withNote[openOrClose], {
           actionText: this.commentButtonTitle,
-          openOrClose,
           noteable: this.noteableDisplayName,
         });
       }
 
-      return sprintf(this.$options.i18n.actionButton, {
-        openOrClose: capitalizeFirstCharacter(openOrClose),
+      return sprintf(this.$options.i18n.actionButton.withoutNote[openOrClose], {
         noteable: this.noteableDisplayName,
       });
     },
@@ -151,13 +156,8 @@ export default {
     draftEndpoint() {
       return this.getNotesData.draftsPath;
     },
-    issuableTypeTitle() {
-      return this.noteableType === constants.MERGE_REQUEST_NOTEABLE_TYPE
-        ? this.$options.i18n.mergeRequest
-        : this.$options.i18n.issue;
-    },
     isIssue() {
-      return this.noteableDisplayName === constants.ISSUE_NOTEABLE_TYPE;
+      return constants.NOTEABLE_TYPE_MAPPING[this.noteableType] === constants.ISSUE_NOTEABLE_TYPE;
     },
     trackingLabel() {
       return slugifyWithUnderscore(`${this.commentButtonTitle} button`);
@@ -329,7 +329,7 @@ export default {
 <template>
   <div>
     <note-signed-out-widget v-if="!isLoggedIn" />
-    <discussion-locked-widget v-else-if="!canCreateNote" :issuable-type="issuableTypeTitle" />
+    <discussion-locked-widget v-else-if="!canCreateNote" :issuable-type="noteableDisplayName" />
     <ul v-else-if="canCreateNote" class="notes notes-form timeline">
       <timeline-entry-item class="note-form">
         <gl-alert

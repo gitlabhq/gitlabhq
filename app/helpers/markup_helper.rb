@@ -181,7 +181,7 @@ module MarkupHelper
       wiki: wiki,
       repository: wiki.repository,
       page_slug: wiki_page.slug,
-      issuable_state_filter_enabled: true
+      issuable_reference_expansion_enabled: true
     ).merge(render_wiki_content_context_container(wiki))
   end
 

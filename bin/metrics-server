@@ -1,0 +1,12 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require_relative '../metrics_server/metrics_server'
+
+target = ENV['METRICS_SERVER_TARGET']
+raise "METRICS_SERVER_TARGET cannot be blank" if target.blank?
+
+metrics_dir = ENV["prometheus_multiproc_dir"] || File.absolute_path("tmp/prometheus_multiproc_dir/#{target}")
+wipe_metrics_dir = Gitlab::Utils.to_boolean(ENV['WIPE_METRICS_DIR']) || false
+
+Process.wait(MetricsServer.spawn(target, metrics_dir: metrics_dir, wipe_metrics_dir: wipe_metrics_dir))

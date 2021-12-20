@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-class BuildDetailsEntity < JobEntity
-  expose :coverage, :erased_at, :duration
+class BuildDetailsEntity < Ci::JobEntity
+  expose :coverage, :erased_at, :finished_at, :duration
   expose :tag_list, as: :tags
   expose :has_trace?, as: :has_trace
   expose :stage
@@ -108,6 +108,8 @@ class BuildDetailsEntity < JobEntity
   end
 
   private
+
+  alias_method :build, :object
 
   def build_failed_issue_options
     { title: "Job Failed ##{build.id}",

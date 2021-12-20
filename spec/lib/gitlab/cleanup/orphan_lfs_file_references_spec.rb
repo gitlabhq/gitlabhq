@@ -97,6 +97,6 @@ RSpec.describe Gitlab::Cleanup::OrphanLfsFileReferences do
   def stub_lfs_pointers(repo, *oids)
     expect(repo.gitaly_blob_client)
       .to receive(:get_all_lfs_pointers)
-      .and_return(oids.map { |oid| OpenStruct.new(lfs_oid: oid) })
+      .and_return(oids.map { |oid| double('pointers', lfs_oid: oid) })
   end
 end

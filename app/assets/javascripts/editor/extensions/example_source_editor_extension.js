@@ -7,6 +7,16 @@
 
 export class MyFancyExtension {
   /**
+   * A required getter returning the extension's name
+   * We have to provide it for every extension instead of relying on the built-in
+   * `name` prop because the prop does not survive the webpack's minification
+   * and the name mangling.
+   * @returns {string}
+   */
+  static get extensionName() {
+    return 'MyFancyExtension';
+  }
+  /**
    * THE LIFE-CYCLE CALLBACKS
    */
 
@@ -16,11 +26,11 @@ export class MyFancyExtension {
    * actions, keystrokes, update options, etc.
    * Is called only once before the extension gets registered
    *
-   * @param { Object } [setupOptions]  The setupOptions object
    * @param { Object } [instance] The Source Editor instance
+   * @param { Object } [setupOptions]  The setupOptions object
    */
   // eslint-disable-next-line class-methods-use-this,no-unused-vars
-  onSetup(setupOptions, instance) {}
+  onSetup(instance, setupOptions) {}
 
   /**
    * The first thing called after the extension is

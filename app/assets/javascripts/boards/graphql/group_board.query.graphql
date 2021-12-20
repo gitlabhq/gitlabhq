@@ -2,6 +2,7 @@
 
 query GroupBoard($fullPath: ID!, $boardId: ID!) {
   workspace: group(fullPath: $fullPath) {
+    id
     board(id: $boardId) {
       ...BoardScopeFragment
     }

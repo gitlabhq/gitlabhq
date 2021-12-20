@@ -17,6 +17,10 @@ module Types
       argument :assignee_wildcard_id, ::Types::Boards::AssigneeWildcardIdEnum,
                required: false,
                description: 'Filter by assignee wildcard. Incompatible with assigneeUsername.'
+
+      argument :confidential, GraphQL::Types::Boolean,
+               required: false,
+               description: 'Filter by confidentiality.'
     end
   end
 end

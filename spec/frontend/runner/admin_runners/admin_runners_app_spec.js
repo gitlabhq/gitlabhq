@@ -147,7 +147,7 @@ describe('AdminRunnersApp', () => {
       }),
       expect.objectContaining({
         type: PARAM_KEY_TAG,
-        recentTokenValuesStorageKey: `${ADMIN_FILTERED_SEARCH_NAMESPACE}-recent-tags`,
+        recentSuggestionsStorageKey: `${ADMIN_FILTERED_SEARCH_NAMESPACE}-recent-tags`,
       }),
     ]);
   });
@@ -155,9 +155,7 @@ describe('AdminRunnersApp', () => {
   it('shows the active runner count', () => {
     createComponent({ mountFn: mount });
 
-    expect(findRunnerFilteredSearchBar().text()).toMatch(
-      `Runners currently online: ${mockActiveRunnersCount}`,
-    );
+    expect(wrapper.text()).toMatch(new RegExp(`Online Runners ${mockActiveRunnersCount}`));
   });
 
   describe('when a filter is preselected', () => {

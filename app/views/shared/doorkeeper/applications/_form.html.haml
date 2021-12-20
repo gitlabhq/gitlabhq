@@ -16,13 +16,14 @@
     = f.check_box :confidential, class: 'form-check-input'
     = f.label :confidential, class: 'label-bold form-check-label'
     %span.form-text.text-muted
-      = _('The application will be used where the client secret can be kept confidential. Native mobile apps and Single Page Apps are considered non-confidential.')
+      = _('Enable only for confidential applications exclusively used by a trusted backend server that can securely store the client secret. Do not enable for native-mobile, single-page, or other JavaScript applications because they cannot keep the client secret confidential.')
 
   .form-group.form-check
     = f.check_box :expire_access_tokens, class: 'form-check-input'
     = f.label :expire_access_tokens, class: 'label-bold form-check-label'
     %span.form-text.text-muted
-      = _('Access tokens expire after 2 hours. A refresh token may be used at any time to generate a new access token. Non-expiring access tokens are deprecated. Clear this setting to enable backward compatibility.')
+      = _('Enable access tokens to expire after 2 hours. If disabled, tokens do not expire.')
+      = link_to _('Learn more.'), help_page_path('integration/oauth_provider.md', anchor: 'expiring-access-tokens'), target: '_blank', rel: 'noopener noreferrer'
 
   .form-group
     = f.label :scopes, class: 'label-bold'

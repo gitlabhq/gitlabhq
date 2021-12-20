@@ -38,6 +38,24 @@ RSpec.describe Gitlab::Database::LoadBalancing do
     end
   end
 
+  describe '.primary_only?' do
+    it 'returns true if all load balancers have no replicas' do
+      described_class.each_load_balancer do |lb|
+        allow(lb).to receive(:primary_only?).and_return(true)
+      end
+
+      expect(described_class.primary_only?).to eq(true)
+    end
+
+    it 'returns false if at least one has replicas' do
+      described_class.each_load_balancer.with_index do |lb, index|
+        allow(lb).to receive(:primary_only?).and_return(index != 0)
+      end
+
+      expect(described_class.primary_only?).to eq(false)
+    end
+  end
+
   describe '.release_hosts' do
     it 'releases the host of every load balancer' do
       described_class.each_load_balancer do |lb|

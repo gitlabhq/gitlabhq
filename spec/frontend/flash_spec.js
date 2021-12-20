@@ -1,38 +1,14 @@
+import * as Sentry from '@sentry/browser';
 import createFlash, {
-  createFlashEl,
-  createAction,
   hideFlash,
-  removeFlashClickListener,
+  addDismissFlashClickListener,
+  FLASH_TYPES,
   FLASH_CLOSED_EVENT,
 } from '~/flash';
 
+jest.mock('@sentry/browser');
+
 describe('Flash', () => {
-  describe('createFlashEl', () => {
-    let el;
-
-    beforeEach(() => {
-      el = document.createElement('div');
-    });
-
-    afterEach(() => {
-      el.innerHTML = '';
-    });
-
-    it('creates flash element with type', () => {
-      el.innerHTML = createFlashEl('testing', 'alert');
-
-      expect(el.querySelector('.flash-alert')).not.toBeNull();
-    });
-
-    it('escapes text', () => {
-      el.innerHTML = createFlashEl('<script>alert("a");</script>', 'alert');
-
-      expect(el.querySelector('.flash-text').textContent.trim()).toBe(
-        '<script>alert("a");</script>',
-      );
-    });
-  });
-
   describe('hideFlash', () => {
     let el;
 
@@ -92,59 +68,12 @@ describe('Flash', () => {
     });
   });
 
-  describe('createAction', () => {
-    let el;
-
-    beforeEach(() => {
-      el = document.createElement('div');
-    });
-
-    it('creates link with href', () => {
-      el.innerHTML = createAction({
-        href: 'testing',
-        title: 'test',
-      });
-
-      expect(el.querySelector('.flash-action').href).toContain('testing');
-    });
-
-    it('uses hash as href when no href is present', () => {
-      el.innerHTML = createAction({
-        title: 'test',
-      });
-
-      expect(el.querySelector('.flash-action').href).toContain('#');
-    });
-
-    it('adds role when no href is present', () => {
-      el.innerHTML = createAction({
-        title: 'test',
-      });
-
-      expect(el.querySelector('.flash-action').getAttribute('role')).toBe('button');
-    });
-
-    it('escapes the title text', () => {
-      el.innerHTML = createAction({
-        title: '<script>alert("a")</script>',
-      });
-
-      expect(el.querySelector('.flash-action').textContent.trim()).toBe(
-        '<script>alert("a")</script>',
-      );
-    });
-  });
-
   describe('createFlash', () => {
     const message = 'test';
-    const type = 'alert';
-    const parent = document;
     const fadeTransition = false;
     const addBodyClass = true;
     const defaultParams = {
       message,
-      type,
-      parent,
       actionConfig: null,
       fadeTransition,
       addBodyClass,
@@ -171,12 +100,26 @@ describe('Flash', () => {
         document.querySelector('.js-content-wrapper').remove();
       });
 
-      it('adds flash element into container', () => {
+      it('adds flash alert element into the document by default', () => {
         createFlash({ ...defaultParams });
 
-        expect(document.querySelector('.flash-alert')).not.toBeNull();
-
+        expect(document.querySelector('.flash-container .flash-alert')).not.toBeNull();
         expect(document.body.className).toContain('flash-shown');
+      });
+
+      it('adds flash of a warning type', () => {
+        createFlash({ ...defaultParams, type: FLASH_TYPES.WARNING });
+
+        expect(document.querySelector('.flash-container .flash-warning')).not.toBeNull();
+        expect(document.body.className).toContain('flash-shown');
+      });
+
+      it('escapes text', () => {
+        createFlash({ ...defaultParams, message: '<script>alert("a");</script>' });
+
+        expect(document.querySelector('.flash-text').textContent.trim()).toBe(
+          '<script>alert("a");</script>',
+        );
       });
 
       it('adds flash into specified parent', () => {
@@ -210,7 +153,26 @@ describe('Flash', () => {
         expect(document.body.className).not.toContain('flash-shown');
       });
 
+      it('does not capture error using Sentry', () => {
+        createFlash({ ...defaultParams, captureError: false, error: new Error('Error!') });
+
+        expect(Sentry.captureException).not.toHaveBeenCalled();
+      });
+
+      it('captures error using Sentry', () => {
+        createFlash({ ...defaultParams, captureError: true, error: new Error('Error!') });
+
+        expect(Sentry.captureException).toHaveBeenCalledWith(expect.any(Error));
+        expect(Sentry.captureException).toHaveBeenCalledWith(
+          expect.objectContaining({
+            message: 'Error!',
+          }),
+        );
+      });
+
       describe('with actionConfig', () => {
+        const findFlashAction = () => document.querySelector('.flash-container .flash-action');
+
         it('adds action link', () => {
           createFlash({
             ...defaultParams,
@@ -219,20 +181,69 @@ describe('Flash', () => {
             },
           });
 
-          expect(document.querySelector('.flash-action')).not.toBeNull();
+          expect(findFlashAction()).not.toBeNull();
+        });
+
+        it('creates link with href', () => {
+          createFlash({
+            ...defaultParams,
+            actionConfig: {
+              href: 'testing',
+              title: 'test',
+            },
+          });
+
+          expect(findFlashAction().href).toBe(`${window.location}testing`);
+          expect(findFlashAction().textContent.trim()).toBe('test');
+        });
+
+        it('uses hash as href when no href is present', () => {
+          createFlash({
+            ...defaultParams,
+            actionConfig: {
+              title: 'test',
+            },
+          });
+
+          expect(findFlashAction().href).toBe(`${window.location}#`);
+        });
+
+        it('adds role when no href is present', () => {
+          createFlash({
+            ...defaultParams,
+            actionConfig: {
+              title: 'test',
+            },
+          });
+
+          expect(findFlashAction().getAttribute('role')).toBe('button');
+        });
+
+        it('escapes the title text', () => {
+          createFlash({
+            ...defaultParams,
+            actionConfig: {
+              title: '<script>alert("a")</script>',
+            },
+          });
+
+          expect(findFlashAction().textContent.trim()).toBe('<script>alert("a")</script>');
         });
 
         it('calls actionConfig clickHandler on click', () => {
-          const actionConfig = {
-            title: 'test',
-            clickHandler: jest.fn(),
-          };
+          const clickHandler = jest.fn();
 
-          createFlash({ ...defaultParams, actionConfig });
+          createFlash({
+            ...defaultParams,
+            actionConfig: {
+              title: 'test',
+              clickHandler,
+            },
+          });
 
-          document.querySelector('.flash-action').click();
+          findFlashAction().click();
 
-          expect(actionConfig.clickHandler).toHaveBeenCalled();
+          expect(clickHandler).toHaveBeenCalled();
         });
       });
 
@@ -252,7 +263,7 @@ describe('Flash', () => {
     });
   });
 
-  describe('removeFlashClickListener', () => {
+  describe('addDismissFlashClickListener', () => {
     let el;
 
     describe('with close icon', () => {
@@ -268,7 +279,7 @@ describe('Flash', () => {
       });
 
       it('removes global flash on click', (done) => {
-        removeFlashClickListener(el, false);
+        addDismissFlashClickListener(el, false);
 
         el.querySelector('.js-close-icon').click();
 
@@ -292,7 +303,7 @@ describe('Flash', () => {
       });
 
       it('does not throw', () => {
-        expect(() => removeFlashClickListener(el, false)).not.toThrow();
+        expect(() => addDismissFlashClickListener(el, false)).not.toThrow();
       });
     });
   });

@@ -8,7 +8,7 @@
     %code.ref-name= @project.default_branch_or_main
   - example_sha = capture do
     %code.ref-name 4eedf23
-  = html_escape(_("Choose a branch/tag (e.g. %{branch}) or enter a commit (e.g. %{sha}) to see what's changed or to create a merge request.")) % { branch: example_branch.html_safe, sha: example_sha.html_safe }
+  = html_escape(_("To see what's changed or create a merge request, choose a branch or tag (like %{branch}), or enter a commit (like %{sha}).")) % { branch: example_branch.html_safe, sha: example_sha.html_safe }
   %br
   = html_escape(_("Changes are shown as if the %{b_open}source%{b_close} revision was being merged into the %{b_open}target%{b_close} revision.")) % { b_open: '<b>'.html_safe, b_close: '</b>'.html_safe }
 

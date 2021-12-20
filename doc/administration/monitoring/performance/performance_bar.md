@@ -26,11 +26,10 @@ From left to right, the performance bar displays:
   details for each query:
   - **In a transaction**: shows up below the query if it was executed in
     the context of a transaction
-  - **Role**: shows up when [database load
-    balancing](../../database_load_balancing.md) is enabled. It shows
-    which server role was used for the query. "Primary" means that the query
-    was sent to the read/write primary server. "Replica" means it was sent
-    to a read-only replica.
+  - **Role**: shows up when [Database Load Balancing](../../postgresql/database_load_balancing.md)
+    is enabled. It shows which server role was used for the query.
+    "Primary" means that the query was sent to the read/write primary server.
+    "Replica" means it was sent to a read-only replica.
   - **Config name**: shows up only when the
     `GITLAB_MULTIPLE_DATABASE_METRICS` environment variable is set. This is
     used to distinguish between different databases configured for different

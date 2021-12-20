@@ -73,6 +73,8 @@ RSpec.describe Ci::RetryBuildService do
              scheduled_at: 10.seconds.since)
     end
 
+    let_it_be(:internal_job_variable) { create(:ci_job_variable, job: build) }
+
     before_all do
       # Make sure that build has both `stage_id` and `stage` because FactoryBot
       # can reset one of the fields when assigning another. We plan to deprecate
@@ -86,7 +88,7 @@ RSpec.describe Ci::RetryBuildService do
                file_type: file_type, job: build, expire_at: build.artifacts_expire_at)
       end
 
-      create(:ci_job_variable, job: build)
+      create(:ci_job_variable, :dotenv_source, job: build)
       create(:ci_build_need, build: build)
       create(:terraform_state_version, build: build)
     end
@@ -125,6 +127,11 @@ RSpec.describe Ci::RetryBuildService do
         expect(new_build.needs_attributes).to match(build.needs_attributes)
         expect(new_build.needs).not_to match(build.needs)
       end
+
+      it 'clones only internal job variables' do
+        expect(new_build.job_variables.count).to eq(1)
+        expect(new_build.job_variables).to contain_exactly(having_attributes(key: internal_job_variable.key, value: internal_job_variable.value))
+      end
     end
 
     describe 'reject accessors' do
@@ -147,7 +154,7 @@ RSpec.describe Ci::RetryBuildService do
         Ci::Build.attribute_names.map(&:to_sym) +
         Ci::Build.attribute_aliases.keys.map(&:to_sym) +
         Ci::Build.reflect_on_all_associations.map(&:name) +
-        [:tag_list, :needs_attributes] -
+        [:tag_list, :needs_attributes, :job_variables_attributes] -
         # ee-specific accessors should be tested in ee/spec/services/ci/retry_build_service_spec.rb instead
         described_class.extra_accessors -
         [:dast_site_profiles_build, :dast_scanner_profiles_build] # join tables
@@ -310,7 +317,7 @@ RSpec.describe Ci::RetryBuildService do
         expect(build).to be_processed
       end
 
-      context 'when build with deployment is retried' do
+      shared_examples_for 'when build with deployment is retried' do
         let!(:build) do
           create(:ci_build, :with_deployment, :deploy_to_production,
                  pipeline: pipeline, stage_id: stage.id, project: project)
@@ -329,7 +336,7 @@ RSpec.describe Ci::RetryBuildService do
         end
       end
 
-      context 'when build with dynamic environment is retried' do
+      shared_examples_for 'when build with dynamic environment is retried' do
         let_it_be(:other_developer) { create(:user).tap { |u| project.add_developer(other_developer) } }
 
         let(:environment_name) { 'review/$CI_COMMIT_REF_SLUG-$GITLAB_USER_ID' }
@@ -354,6 +361,18 @@ RSpec.describe Ci::RetryBuildService do
         it 'does not create a new environment' do
           expect { new_build }.not_to change { Environment.count }
         end
+      end
+
+      it_behaves_like 'when build with deployment is retried'
+      it_behaves_like 'when build with dynamic environment is retried'
+
+      context 'when create_deployment_in_separate_transaction feature flag is disabled' do
+        before do
+          stub_feature_flags(create_deployment_in_separate_transaction: false)
+        end
+
+        it_behaves_like 'when build with deployment is retried'
+        it_behaves_like 'when build with dynamic environment is retried'
       end
 
       context 'when build has needs' do

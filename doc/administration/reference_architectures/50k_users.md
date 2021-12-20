@@ -12,6 +12,7 @@ full list of reference architectures, see
 
 > - **Supported users (approximate):** 50,000
 > - **High Availability:** Yes ([Praefect](#configure-praefect-postgresql) needs a third-party PostgreSQL solution for HA)
+> - **Estimated Costs:** [GCP](https://cloud.google.com/products/calculator/#id=8006396b-88ee-40cd-a1c8-77cdefa4d3c8)
 > - **Cloud Native Hybrid Alternative:** [Yes](#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative)
 > - **Performance tested weekly with the [GitLab Performance Tool (GPT)](https://gitlab.com/gitlab-org/quality/performance)**:
 >   - **Test requests per second (RPS) rates:** API: 1000 RPS, Web: 100 RPS, Git (Pull): 100 RPS, Git (Push): 20 RPS
@@ -37,7 +38,7 @@ full list of reference architectures, see
 
 <!-- Disable ordered list rule https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md#md029---ordered-list-item-prefix -->
 <!-- markdownlint-disable MD029 -->
-1. Can be optionally run on reputable third-party external PaaS PostgreSQL solutions. Google Cloud SQL and Amazon RDS are known to work, however Azure Database for PostgreSQL is [not recommended](https://gitlab.com/gitlab-org/quality/reference-architectures/-/issues/61) due to performance issues. Consul is primarily used for PostgreSQL high availability so can be ignored when using a PostgreSQL PaaS setup. However it is also used optionally by Prometheus for Omnibus auto host discovery.
+1. Can be optionally run on reputable third-party external PaaS PostgreSQL solutions. [Google Cloud SQL](https://cloud.google.com/sql/docs/postgres/high-availability#normal) and [Amazon RDS](https://aws.amazon.com/rds/) are known to work, however Azure Database for PostgreSQL is **not recommended** due to [performance issues](https://gitlab.com/gitlab-org/quality/reference-architectures/-/issues/61). Consul is primarily used for PostgreSQL high availability so can be ignored when using a PostgreSQL PaaS setup. However it is also used optionally by Prometheus for Omnibus auto host discovery.
 2. Can be optionally run on reputable third-party external PaaS Redis solutions. Google Memorystore and AWS Elasticache are known to work.
 3. Can be optionally run on reputable third-party load balancing services (LB PaaS). AWS ELB is known to work.
 4. Should be run on reputable third-party object storage (storage PaaS) for cloud implementations. Google Cloud Storage and AWS S3 are known to work.
@@ -49,6 +50,8 @@ For all PaaS solutions that involve configuring instances, it is strongly recomm
 
 ```plantuml
 @startuml 50k
+skinparam linetype ortho
+
 card "**External Load Balancer**" as elb #6a9be7
 card "**Internal Load Balancer**" as ilb #9370DB
 
@@ -73,8 +76,8 @@ card "Gitaly Cluster" as gitaly_cluster {
 
 card "Database" as database {
   collections "**PGBouncer** x3" as pgbouncer #4EA7FF
-  card "**PostgreSQL** (Primary)" as postgres_primary #4EA7FF
-  collections "**PostgreSQL** (Secondary) x2" as postgres_secondary #4EA7FF
+  card "**PostgreSQL** //Primary//" as postgres_primary #4EA7FF
+  collections "**PostgreSQL** //Secondary// x2" as postgres_secondary #4EA7FF
 
   pgbouncer -[#4EA7FF]-> postgres_primary
   postgres_primary .[#4EA7FF]> postgres_secondary
@@ -83,31 +86,38 @@ card "Database" as database {
 card "redis" as redis {
   collections "**Redis Persistent** x3" as redis_persistent #FF6347
   collections "**Redis Cache** x3" as redis_cache #FF6347
+  
+  redis_cache -[hidden]-> redis_persistent
 }
 
 cloud "**Object Storage**" as object_storage #white
 
 elb -[#6a9be7]-> gitlab
-elb -[#6a9be7]--> monitor
+elb -[#6a9be7,norank]--> monitor
 
-gitlab -[#32CD32]--> ilb
-gitlab -[#32CD32]-> object_storage
-gitlab -[#32CD32]---> redis
+gitlab -[#32CD32,norank]--> ilb
+gitlab -[#32CD32]r-> object_storage
+gitlab -[#32CD32]----> redis
+gitlab .[#32CD32]----> database
 gitlab -[hidden]-> monitor
 gitlab -[hidden]-> consul
 
-sidekiq -[#ff8dd1]--> ilb
-sidekiq -[#ff8dd1]-> object_storage
-sidekiq -[#ff8dd1]---> redis
+sidekiq -[#ff8dd1,norank]--> ilb
+sidekiq -[#ff8dd1]r-> object_storage
+sidekiq -[#ff8dd1]----> redis
+sidekiq .[#ff8dd1]----> database
 sidekiq -[hidden]-> monitor
 sidekiq -[hidden]-> consul
 
-ilb -[#9370DB]-> gitaly_cluster
-ilb -[#9370DB]-> database
+ilb -[#9370DB]--> gitaly_cluster
+ilb -[#9370DB]--> database
+ilb -[hidden]--> redis
+ilb -[hidden]u-> consul
+ilb -[hidden]u-> monitor
 
 consul .[#e76a9b]u-> gitlab
 consul .[#e76a9b]u-> sidekiq
-consul .[#e76a9b]> monitor
+consul .[#e76a9b]r-> monitor
 consul .[#e76a9b]-> database
 consul .[#e76a9b]-> gitaly_cluster
 consul .[#e76a9b,norank]--> redis
@@ -124,21 +134,34 @@ monitor .[#7FFFD4,norank]u--> elb
 @enduml
 ```
 
-The Google Cloud Platform (GCP) architectures were built and tested using the
+## Requirements
+
+Before starting, you should take note of the following requirements / guidance for this reference architecture.
+
+### Supported CPUs
+
+This reference architecture was built and tested on Google Cloud Platform (GCP) using the
 [Intel Xeon E5 v3 (Haswell)](https://cloud.google.com/compute/docs/cpu-platforms)
 CPU platform. On different hardware you may find that adjustments, either lower
 or higher, are required for your CPU or node counts. For more information, see
 our [Sysbench](https://github.com/akopytov/sysbench)-based
 [CPU benchmarks](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Reference-Architectures/GCP-CPU-Benchmarks).
 
-Due to better performance and availability, for data objects (such as LFS,
-uploads, or artifacts), using an [object storage service](#configure-the-object-storage)
-is recommended.
+### Supported infrastructure
 
-It's also worth noting that at this time [Praefect requires its own database server](../gitaly/praefect.md#postgresql) and
+As a general guidance, GitLab should run on most infrastructure such as reputable Cloud Providers (AWS, GCP, Azure) and their services, or self managed (ESXi) that meet both the specs detailed above, as well as any requirements in this section. However, this does not constitute a guarantee for every potential permutation.
+
+Be aware of the following specific call outs:
+
+- [Azure Database for PostgreSQL](https://docs.microsoft.com/en-us/azure/postgresql/#:~:text=Azure%20Database%20for%20PostgreSQL%20is,high%20availability%2C%20and%20dynamic%20scalability.) is [not recommended](https://gitlab.com/gitlab-org/quality/reference-architectures/-/issues/61) due to known performance issues or missing features.
+- [Azure Blob Storage](https://docs.microsoft.com/en-us/azure/storage/blobs/) is recommended to be configured with [Premium accounts](https://docs.microsoft.com/en-us/azure/storage/blobs/storage-blob-block-blob-premium) to ensure consistent performance.
+
+### Praefect PostgreSQL
+
+It's worth noting that at this time [Praefect requires its own database server](../gitaly/praefect.md#postgresql) and
 that to achieve full High Availability a third-party PostgreSQL database solution will be required.
 We hope to offer a built in solutions for these restrictions in the future but in the meantime a non HA PostgreSQL server
-can be set up via Omnibus GitLab, which the above specs reflect. Refer to the following issues for more information: [`omnibus-gitlab#5919`](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5919) & [`gitaly#3398`](https://gitlab.com/gitlab-org/gitaly/-/issues/3398)
+can be set up via Omnibus GitLab, which the above specs reflect. Refer to the following issues for more information: [`omnibus-gitlab#5919`](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5919) & [`gitaly#3398`](https://gitlab.com/gitlab-org/gitaly/-/issues/3398).
 
 ## Setup components
 
@@ -480,14 +503,15 @@ run: node-exporter: (pid 30093) 76833s; run: log: (pid 29663) 76855s
 
 ## Configure PostgreSQL
 
-In this section, you'll be guided through configuring an external PostgreSQL database
-to be used with GitLab.
+In this section, you'll be guided through configuring a highly available PostgreSQL
+cluster to be used with GitLab.
 
 ### Provide your own PostgreSQL instance
 
 If you're hosting GitLab on a cloud provider, you can optionally use a
-managed service for PostgreSQL. For example, AWS offers a managed Relational
-Database Service (RDS) that runs PostgreSQL.
+managed service for PostgreSQL.
+
+A reputable provider or solution should be used for this. [Google Cloud SQL](https://cloud.google.com/sql/docs/postgres/high-availability#normal) and [Amazon RDS](https://aws.amazon.com/rds/) are known to work, however Azure Database for PostgreSQL is **not recommended** due to [performance issues](https://gitlab.com/gitlab-org/quality/reference-architectures/-/issues/61).
 
 If you use a cloud-managed service, or provide your own PostgreSQL:
 
@@ -497,11 +521,24 @@ If you use a cloud-managed service, or provide your own PostgreSQL:
    needs privileges to create the `gitlabhq_production` database.
 1. Configure the GitLab application servers with the appropriate details.
    This step is covered in [Configuring the GitLab Rails application](#configure-gitlab-rails).
+1. For improved performance, configuring [Database Load Balancing](../postgresql/database_load_balancing.md)
+   with multiple read replicas is recommended.
 
 See [Configure GitLab using an external PostgreSQL service](../postgresql/external.md) for
 further configuration steps.
 
 ### Standalone PostgreSQL using Omnibus GitLab
+
+The recommended Omnibus GitLab configuration for a PostgreSQL cluster with
+replication and failover requires:
+
+- A minimum of three PostgreSQL nodes.
+- A minimum of three Consul server nodes.
+- A minimum of three PgBouncer nodes that track and handle primary database reads and writes.
+  - An [internal load balancer](#configure-the-internal-load-balancer) (TCP) to balance requests between the PgBouncer nodes.
+- [Database Load Balancing](../postgresql/database_load_balancing.md) enabled.
+
+  A local PgBouncer service to be configured on each PostgreSQL node. Note that this is separate from the main PgBouncer cluster that tracks the primary.
 
 The following IPs will be used as an example:
 
@@ -557,8 +594,8 @@ in the second step, do not supply the `EXTERNAL_URL` value.
 1. On every database node, edit `/etc/gitlab/gitlab.rb` replacing values noted in the `# START user configuration` section:
 
    ```ruby
-   # Disable all components except Patroni and Consul
-   roles(['patroni_role'])
+   # Disable all components except Patroni, PgBouncer and Consul
+   roles(['patroni_role', 'pgbouncer_role'])
 
    # PostgreSQL configuration
    postgresql['listen_address'] = '0.0.0.0'
@@ -603,6 +640,15 @@ in the second step, do not supply the `EXTERNAL_URL` value.
 
    # Replace 10.6.0.0/24 with Network Address
    postgresql['trust_auth_cidr_addresses'] = %w(10.6.0.0/24 127.0.0.1/32)
+
+   # Local PgBouncer service for Database Load Balancing
+   pgbouncer['databases'] = {
+      gitlabhq_production: {
+         host: "127.0.0.1",
+         user: "pgbouncer",
+         password: '<pgbouncer_password_hash>'
+      }
+   }
 
    # Set the network addresses that the exporters will listen on for monitoring
    node_exporter['listen_address'] = '0.0.0.0:9100'
@@ -664,9 +710,11 @@ If the 'State' column for any node doesn't say "running", check the
   </a>
 </div>
 
-## Configure PgBouncer
+### Configure PgBouncer
 
-Now that the PostgreSQL servers are all set up, let's configure PgBouncer.
+Now that the PostgreSQL servers are all set up, let's configure PgBouncer
+for tracking and handling reads/writes to the primary database.
+
 The following IPs will be used as an example:
 
 - `10.6.0.31`: PgBouncer 1
@@ -891,7 +939,7 @@ a node and change its status from primary to replica (and vice versa).
    package of your choice. Be sure to both follow _only_ installation steps 1 and 2
    on the page, and to select the correct Omnibus GitLab package, with the same version
    and type (Community or Enterprise editions) as your current install.
-1. Edit `/etc/gitlab/gitlab.rb` and add the same contents as the priimary node in the previous section by replacing `redis_master_node` with `redis_replica_node`:
+1. Edit `/etc/gitlab/gitlab.rb` and add the same contents as the primary node in the previous section by replacing `redis_master_node` with `redis_replica_node`:
 
    ```ruby
    # Specify server role as 'redis_replica_role' with Sentinel and enable Consul agent
@@ -1228,6 +1276,15 @@ There are many third-party solutions for PostgreSQL HA. The solution selected mu
 
 - A static IP for all connections that doesn't change on failover.
 - [`LISTEN`](https://www.postgresql.org/docs/12/sql-listen.html) SQL functionality must be supported.
+
+NOTE:
+With a third-party setup, it's possible to colocate Praefect's database on the same server as
+the main [GitLab](#provide-your-own-postgresql-instance) database as a convenience unless
+you are using Geo, where separate database instances are required for handling replication correctly.
+In this setup, the specs of the main database setup shouldn't need to be changed as the impact should be
+minimal.
+
+A reputable provider or solution should be used for this. [Google Cloud SQL](https://cloud.google.com/sql/docs/postgres/high-availability#normal) and [Amazon RDS](https://aws.amazon.com/rds/) are known to work, however Azure Database for PostgreSQL is **not recommended** due to [performance issues](https://gitlab.com/gitlab-org/quality/reference-architectures/-/issues/61).
 
 Examples of the above could include [Google's Cloud SQL](https://cloud.google.com/sql/docs/postgres/high-availability#normal) or [Amazon RDS](https://aws.amazon.com/rds/).
 
@@ -1684,8 +1741,8 @@ To configure the Sidekiq nodes, on each one:
    gitlab_rails['db_host'] = '10.6.0.20' # internal load balancer IP
    gitlab_rails['db_port'] = 6432
    gitlab_rails['db_password'] = '<postgresql_user_password>'
-   gitlab_rails['db_adapter'] = 'postgresql'
-   gitlab_rails['db_encoding'] = 'unicode'
+   gitlab_rails['db_load_balancing'] = { 'hosts' => ['10.6.0.21', '10.6.0.22', '10.6.0.23'] } # PostgreSQL IPs
+
    ## Prevent database migrations from running on upgrade automatically
    gitlab_rails['auto_migrate'] = false
 
@@ -1819,6 +1876,8 @@ On each node perform the following:
    gitlab_rails['db_host'] = '10.6.0.20' # internal load balancer IP
    gitlab_rails['db_port'] = 6432
    gitlab_rails['db_password'] = '<postgresql_user_password>'
+   gitlab_rails['db_load_balancing'] = { 'hosts' => ['10.6.0.21', '10.6.0.22', '10.6.0.23'] } # PostgreSQL IPs
+
    # Prevent database migrations from running on upgrade automatically
    gitlab_rails['auto_migrate'] = false
 
@@ -2140,8 +2199,7 @@ cluster alongside your instance, read how to
 ## Configure NFS
 
 [Object storage](#configure-the-object-storage), along with [Gitaly](#configure-gitaly)
-are recommended over NFS wherever possible for improved performance. If you intend
-to use GitLab Pages, this currently [requires NFS](troubleshooting.md#gitlab-pages-requires-nfs).
+are recommended over NFS wherever possible for improved performance.
 
 See how to [configure NFS](../nfs.md).
 
@@ -2214,7 +2272,7 @@ services where applicable):
 
 <!-- Disable ordered list rule https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md#md029---ordered-list-item-prefix -->
 <!-- markdownlint-disable MD029 -->
-1. Can be optionally run on reputable third-party external PaaS PostgreSQL solutions. Google Cloud SQL and Amazon RDS are known to work, however Azure Database for PostgreSQL is [not recommended](https://gitlab.com/gitlab-org/quality/reference-architectures/-/issues/61) due to performance issues. Consul is primarily used for PostgreSQL high availability so can be ignored when using a PostgreSQL PaaS setup. However it is also used optionally by Prometheus for Omnibus auto host discovery.
+1. Can be optionally run on reputable third-party external PaaS PostgreSQL solutions. [Google Cloud SQL](https://cloud.google.com/sql/docs/postgres/high-availability#normal) and [Amazon RDS](https://aws.amazon.com/rds/) are known to work, however Azure Database for PostgreSQL is **not recommended** due to [performance issues](https://gitlab.com/gitlab-org/quality/reference-architectures/-/issues/61). Consul is primarily used for PostgreSQL high availability so can be ignored when using a PostgreSQL PaaS setup. However it is also used optionally by Prometheus for Omnibus auto host discovery.
 2. Can be optionally run on reputable third-party external PaaS Redis solutions. Google Memorystore and AWS Elasticache are known to work.
 3. Can be optionally run on reputable third-party load balancing services (LB PaaS). AWS ELB is known to work.
 4. Should be run on reputable third-party object storage (storage PaaS) for cloud implementations. Google Cloud Storage and AWS S3 are known to work.
@@ -2226,16 +2284,16 @@ For all PaaS solutions that involve configuring instances, it is strongly recomm
 
 ```plantuml
 @startuml 50k
+skinparam linetype ortho
 
 card "Kubernetes via Helm Charts" as kubernetes {
   card "**External Load Balancer**" as elb #6a9be7
 
   together {
-    collections "**Webservice** x16" as gitlab #32CD32
+    collections "**Webservice** x4" as gitlab #32CD32
     collections "**Sidekiq** x4" as sidekiq #ff8dd1
   }
 
-  card "**Prometheus + Grafana**" as monitor #7FFFD4
   card "**Supporting Services**" as support
 }
 
@@ -2263,37 +2321,33 @@ card "Database" as database {
 card "redis" as redis {
   collections "**Redis Persistent** x3" as redis_persistent #FF6347
   collections "**Redis Cache** x3" as redis_cache #FF6347
+  
+  redis_cache -[hidden]-> redis_persistent
 }
 
 cloud "**Object Storage**" as object_storage #white
 
 elb -[#6a9be7]-> gitlab
-elb -[#6a9be7]-> monitor
+elb -[hidden]-> sidekiq
 elb -[hidden]-> support
 
 gitlab -[#32CD32]--> ilb
-gitlab -[#32CD32]-> object_storage
-gitlab -[#32CD32]---> redis
-gitlab -[hidden]--> consul
+gitlab -[#32CD32]r--> object_storage
+gitlab -[#32CD32,norank]----> redis
+gitlab -[#32CD32]----> database
 
 sidekiq -[#ff8dd1]--> ilb
-sidekiq -[#ff8dd1]-> object_storage
-sidekiq -[#ff8dd1]---> redis
-sidekiq -[hidden]--> consul
+sidekiq -[#ff8dd1]r--> object_storage
+sidekiq -[#ff8dd1,norank]----> redis
+sidekiq .[#ff8dd1]----> database
 
-ilb -[#9370DB]-> gitaly_cluster
-ilb -[#9370DB]-> database
+ilb -[#9370DB]--> gitaly_cluster
+ilb -[#9370DB]--> database
+ilb -[hidden,norank]--> redis
 
-consul .[#e76a9b]-> database
-consul .[#e76a9b]-> gitaly_cluster
-consul .[#e76a9b,norank]--> redis
-
-monitor .[#7FFFD4]> consul
-monitor .[#7FFFD4]-> database
-monitor .[#7FFFD4]-> gitaly_cluster
-monitor .[#7FFFD4,norank]--> redis
-monitor .[#7FFFD4]> ilb
-monitor .[#7FFFD4,norank]u--> elb
+consul .[#e76a9b]--> database
+consul .[#e76a9b,norank]--> gitaly_cluster
+consul .[#e76a9b]--> redis
 
 @enduml
 ```

@@ -1,7 +1,11 @@
+import Vue from 'vue';
+import VueApollo from 'vue-apollo';
 import { GlDropdownItem } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import RollbackComponent from '~/environments/components/environment_rollback.vue';
 import eventHub from '~/environments/event_hub';
+import setEnvironmentToRollback from '~/environments/graphql/mutations/set_environment_to_rollback.mutation.graphql';
+import createMockApollo from 'helpers/mock_apollo_helper';
 
 describe('Rollback Component', () => {
   const retryUrl = 'https://gitlab.com/retry';
@@ -48,6 +52,31 @@ describe('Rollback Component', () => {
       retryUrl,
       isLastDeployment: true,
       name: 'test',
+    });
+  });
+
+  it('should trigger a graphql mutation when graphql is enabled', () => {
+    Vue.use(VueApollo);
+
+    const apolloProvider = createMockApollo();
+    jest.spyOn(apolloProvider.defaultClient, 'mutate');
+    const environment = {
+      name: 'test',
+    };
+    const wrapper = shallowMount(RollbackComponent, {
+      propsData: {
+        retryUrl,
+        graphql: true,
+        environment,
+      },
+      apolloProvider,
+    });
+    const button = wrapper.find(GlDropdownItem);
+    button.vm.$emit('click');
+
+    expect(apolloProvider.defaultClient.mutate).toHaveBeenCalledWith({
+      mutation: setEnvironmentToRollback,
+      variables: { environment },
     });
   });
 });

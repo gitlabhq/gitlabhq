@@ -11,7 +11,7 @@ RSpec.describe Projects::Prometheus::Alerts::UpdateService do
     create(:prometheus_alert, project: project, environment: environment)
   end
 
-  let(:service) { described_class.new(project, user, params) }
+  let(:service) { described_class.new(project: project, current_user: user, params: params) }
 
   let(:params) do
     {

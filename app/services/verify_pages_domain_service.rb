@@ -85,7 +85,8 @@ class VerifyPagesDomainService < BaseService
   end
 
   def check(domain_name, resolver)
-    records = parse(txt_records(domain_name, resolver))
+    # Append '.' to domain_name, indicating absolute FQDN
+    records = parse(txt_records(domain_name + '.', resolver))
 
     records.any? do |record|
       record == domain.keyed_verification_code || record == domain.verification_code

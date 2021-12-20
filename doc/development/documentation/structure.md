@@ -88,7 +88,7 @@ Create an issue when you want to track bugs or future work.
 
 Prerequisites:
 
-- You must have at least the Developer role for a project.
+- You must have at least the Developer role for the project.
 
 To create an issue:
 

@@ -7,10 +7,43 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Dependency Scanning **(ULTIMATE)**
 
+INFO:
+Try out Dependency Scanning in GitLab Ultimate.
+[It's free for 30 days](https://about.gitlab.com/free-trial/index.html?glm_source=docs.gitlab.com&glm_content=u-dependency-scanning-docs).
+
 The Dependency Scanning feature can automatically find security vulnerabilities in your
-dependencies while you're developing and testing your applications. For example, dependency scanning
-lets you know if your application uses an external (open source) library that is known to be
-vulnerable. You can then take action to protect your application.
+software dependencies while you're developing and testing your applications. For example,
+dependency scanning lets you know if your application uses an external (open source)
+library that is known to be vulnerable. You can then take action to protect your application.
+
+Dependency Scanning is often considered part of Software Composition Analysis (SCA). SCA can contain
+aspects of inspecting the items your code uses. These items typically include application and system
+dependencies that are almost always imported from external sources, rather than sourced from items
+you wrote yourself.
+
+GitLab offers both Dependency Scanning and Container Scanning
+to ensure coverage for all of these dependency types. To cover as much of your risk area as
+possible, we encourage you to use all of our security scanners:
+
+- Dependency Scanning analyzes your project and tells you which software dependencies,
+  including upstream dependencies, have been included in your project, and what known
+  risks the dependencies contain. Dependency Scanning modifies its behavior based
+  on the language and package manager of the project. It typically looks for a lock file
+  then performs a build to fetch upstream dependency information. In the case of
+  containers, Dependency Scanning uses the compatible manifest and reports only these
+  declared software dependencies (and those installed as a sub-dependency).
+  Dependency Scanning can not detect software dependencies that are pre-bundled
+  into the container's base image. To identify pre-bundled dependencies, enable
+  [Container Scanning](../container_scanning/) language scanning using the
+  [`CS_DISABLE_LANGUAGE_VULNERABILITY_SCAN` variable](../container_scanning/#report-language-specific-findings).
+- [Container Scanning](../container_scanning/) analyzes your containers and tells
+  you about known risks in the operating system's (OS) packages. You can configure it
+  to also report on software and language dependencies, if you enable it and use
+  the [`CS_DISABLE_LANGUAGE_VULNERABILITY_SCAN` variable](../container_scanning/#report-language-specific-findings).
+  Turning this variable on can result in some duplicate findings, as we do not yet
+  de-duplicate results between Container Scanning and Dependency Scanning. For more details,
+  efforts to de-duplicate these findings can be tracked in
+  [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/348655).
 
 ## Overview
 
@@ -142,7 +175,7 @@ table.supported-languages ul {
     <tr>
       <td>Go</td>
       <td>N/A</td>
-      <td><a href="https://golang.org/">Go</a></td>
+      <td><a href="https://go.dev/">Go</a></td>
       <td><code>go.sum</code></td>
       <td><a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium">Gemnasium</a></td>
       <td>Y</td>
@@ -279,10 +312,10 @@ table.supported-languages ul {
 
 GitLab analyzers obtain dependency information using one of the following two methods:
 
-1. [Parsing lockfiles directly.](#obtaining-dependendency-information-by-parsing-lockfiles)
-1. [Running a package manager or build tool to generate a dependency information file which is then parsed.](#obtaining-dependendency-information-by-running-a-package-manager-to-generate-a-parsable-file)
+1. [Parsing lockfiles directly.](#obtaining-dependency-information-by-parsing-lockfiles)
+1. [Running a package manager or build tool to generate a dependency information file which is then parsed.](#obtaining-dependency-information-by-running-a-package-manager-to-generate-a-parsable-file)
 
-#### Obtaining dependendency information by parsing lockfiles
+#### Obtaining dependency information by parsing lockfiles
 
 The following package managers use lockfiles that GitLab analyzers are capable of parsing directly:
 
@@ -296,7 +329,7 @@ The following package managers use lockfiles that GitLab analyzers are capable o
 | npm             | v1, v2                         | [6.x](https://gitlab.com/gitlab-org/security-products/tests/js-npm/-/blob/master/package-lock.json#L4), [7.x](https://gitlab.com/gitlab-org/security-products/tests/js-npm/-/blob/lockfile-v2-FREEZE/package-lock.json#L4)         |
 | yarn            | v1                             | [1.x](https://gitlab.com/gitlab-org/security-products/tests/js-yarn/-/blob/master/yarn.lock)                                                                                                                                       |
 
-#### Obtaining dependendency information by running a package manager to generate a parsable file
+#### Obtaining dependency information by running a package manager to generate a parsable file
 
 To support the following package managers, the GitLab analyzers proceed in two steps:
 
@@ -309,7 +342,7 @@ To support the following package managers, the GitLab analyzers proceed in two s
 | sbt             | [1.3.8](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium-maven/-/blob/v2.23.0/config/.tool-versions#L4)                                                               | [1.0.4](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium-maven/-/blob/master/.gitlab-ci.yml#L263), [1.1.4](https://gitlab.com/gitlab-org/security-products/tests/scala-sbt-multiproject/-/blob/main/project/build.properties#L1), [1.1.6](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium-maven/-/blob/master/.gitlab-ci.yml#L272), [1.2.8](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium-maven/-/blob/master/.gitlab-ci.yml#L281), [1.3.12](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium-maven/-/blob/master/.gitlab-ci.yml#L290), [1.4.6](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium-maven/-/blob/master/.gitlab-ci.yml#L299) |
 | Maven           | [3.6.3](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium-maven/-/blob/v2.23.0/config/.tool-versions#L3)                                                               | [3.6.3](https://gitlab.com/gitlab-org/security-products/tests/java-maven/-/blob/master/pom.xml#L3)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
 | Gradle          | [6.7.1](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium-maven/-/blob/v2.23.0/config/.tool-versions#L5)                                                               | [5.6.4](https://gitlab.com/gitlab-org/security-products/tests/java-gradle/-/blob/master/gradle/wrapper/gradle-wrapper.properties#L3), [6.5](https://gitlab.com/gitlab-org/security-products/tests/java-gradle/-/blob/java-14/gradle/wrapper/gradle-wrapper.properties#L3), [6.7-rc-1](https://gitlab.com/gitlab-org/security-products/tests/java-gradle/-/blob/java-15/gradle/wrapper/gradle-wrapper.properties#L3), [6.9](https://gitlab.com/gitlab-org/security-products/tests/java-gradle/-/blob/java-14-gradle-6-9/gradle/wrapper/gradle-wrapper.properties#L3), [7.0-rc-2](https://gitlab.com/gitlab-org/security-products/tests/java-gradle/-/blob/java-16/gradle/wrapper/gradle-wrapper.properties#L3)                                                                                                                                                                                |
-| setuptools      | [50.3.2](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/v2.29.9/Dockerfile#L27)                                                                              |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+| setuptools      | [50.3.2](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/v2.29.9/Dockerfile#L27)                                                                              | [57.5.0](https://gitlab.com/gitlab-org/security-products/tests/python-setuptools/-/blob/main/setup.py)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
 | pip             | [20.2.4](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/v2.29.9/Dockerfile#L26)                                                                              | [20.x](https://gitlab.com/gitlab-org/security-products/tests/python-pip/-/blob/master/requirements.txt)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
 | Pipenv          | [2018.11.26](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium-python/-/blob/v2.18.4/requirements.txt#L13)                                                             | [2018.11.26](https://gitlab.com/gitlab-org/security-products/tests/python-pipenv/-/blob/pipfile-lock-FREEZE/Pipfile.lock#L6)<sup><b><a href="#exported-dependency-information-notes-2">2</a></b></sup>, [2018.11.26](https://gitlab.com/gitlab-org/security-products/tests/python-pipenv/-/blob/master/Pipfile)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
 
@@ -370,7 +403,7 @@ We only execute one build in the directory where a build file has been detected,
 Please note, we support the following types of Java project structures:
 
 - [multi-project sbt builds](https://www.scala-sbt.org/1.x/docs/Multi-Project.html)
-- [multi-project gradle builds](https://docs.gradle.org/current/userguide/intro_multi_project_builds.html)
+- [multi-project Gradle builds](https://docs.gradle.org/current/userguide/intro_multi_project_builds.html)
 - [multi-module maven projects](https://maven.apache.org/pom.html#Aggregation)
 
 #### JavaScript
@@ -425,7 +458,7 @@ include:
 The included template creates dependency scanning jobs in your CI/CD
 pipeline and scans your project's source code for possible vulnerabilities.
 The results are saved as a
-[dependency scanning report artifact](../../../ci/yaml/index.md#artifactsreportsdependency_scanning)
+[dependency scanning report artifact](../../../ci/yaml/artifacts_reports.md#artifactsreportsdependency_scanning)
 that you can later download and analyze. Due to implementation limitations, we
 always take the latest dependency scanning artifact available.
 
@@ -440,7 +473,7 @@ from the Security Configuration page.
 
 1. In the project where you want to enable Dependency Scanning, navigate to
    **Security & Compliance > Configuration**.
-1. In the **Dependency Scanning** row, select **Configure via Merge Request**.
+1. In the **Dependency Scanning** row, select **Configure with a merge request**.
 
 This automatically creates a merge request with the changes necessary to enable Dependency Scanning
 that you can review and merge to complete the configuration.
@@ -506,7 +539,7 @@ The following variables allow configuration of global dependency scanning settin
 | `ADDITIONAL_CA_CERT_BUNDLE` | Bundle of CA certs to trust. The bundle of certificates provided here is also used by other tools during the scanning process, such as `git`, `yarn`, or `npm`. See [Using a custom SSL CA certificate authority](#using-a-custom-ssl-ca-certificate-authority) for more details. |
 | `DS_EXCLUDED_ANALYZERS`      | Specify the analyzers (by name) to exclude from Dependency Scanning. For more information, see [Dependency Scanning Analyzers](analyzers.md). |
 | `DS_DEFAULT_ANALYZERS`      | ([**DEPRECATED - use `DS_EXCLUDED_ANALYZERS` instead**](https://gitlab.com/gitlab-org/gitlab/-/issues/287691)) Override the names of the official default images. For more information, see [Dependency Scanning Analyzers](analyzers.md). |
-| `DS_EXCLUDED_PATHS`         | Exclude vulnerabilities from output based on the paths. A comma-separated list of patterns. Patterns can be globs, or file or folder paths (for example, `doc,spec`). Parent directories also match patterns. Default: `"spec, test, tests, tmp"`. |
+| `DS_EXCLUDED_PATHS`         | Exclude files and directories from the scan based on the paths. A comma-separated list of patterns. Patterns can be globs, or file or folder paths (for example, `doc,spec`). Parent directories also match patterns. Default: `"spec, test, tests, tmp"`. |
 | `SECURE_ANALYZERS_PREFIX`   | Override the name of the Docker registry providing the official default images (proxy). Read more about [customizing analyzers](analyzers.md). |
 | `SECURE_LOG_LEVEL`          | Set the minimum logging level. Messages of this logging level or higher are output. From highest to lowest severity, the logging levels are: `fatal`, `error`, `warn`, `info`, `debug`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/10880) in GitLab 13.1. Default: `info`. |
 
@@ -596,7 +629,7 @@ The dependency scanning tool emits a JSON report file. For more information, see
 
 Here's an example dependency scanning report:
 
-```json-doc
+```json
 {
   "version": "2.0",
   "vulnerabilities": [
@@ -709,7 +742,7 @@ Please check the [Release Process documentation](https://gitlab.com/gitlab-org/s
 
 ## Contributing to the vulnerability database
 
-You can search the [gemnasium-db](https://gitlab.com/gitlab-org/security-products/gemnasium-db) project
+You can search the [`gemnasium-db`](https://gitlab.com/gitlab-org/security-products/gemnasium-db) project
 to find a vulnerability in the Gemnasium database.
 You can also [submit new vulnerabilities](https://gitlab.com/gitlab-org/security-products/gemnasium-db/blob/master/CONTRIBUTING.md).
 
@@ -781,7 +814,7 @@ Support for custom certificate authorities was introduced in the following versi
 Add the following configuration to your `.gitlab-ci.yml` file. You must change the value of
 `SECURE_ANALYZERS_PREFIX` to refer to your local Docker container registry. You must also change the
 value of `GEMNASIUM_DB_REMOTE_URL` to the location of your offline Git copy of the
-[gemnasium-db advisory database](https://gitlab.com/gitlab-org/security-products/gemnasium-db/):
+[`gemnasium-db` advisory database](https://gitlab.com/gitlab-org/security-products/gemnasium-db/):
 
 ```yaml
 include:
@@ -1033,3 +1066,19 @@ scan occurs. Because the cache is downloaded before the analyzer run occurs, the
 file in the `CI_BUILDS_DIR` directory triggers the dependency scanning job.
 
 We recommend committing the lock files, which prevents this warning.
+
+### I no longer get the latest Docker image after setting `DS_MAJOR_VERSION` or `DS_ANALYZER_IMAGE`
+
+If you have manually set `DS_MAJOR_VERSION` or `DS_ANALYZER_IMAGE` for specific reasons,
+and now must update your configuration to again get the latest patched versions of our
+analyzers, edit your `gitlab-ci.yml` file and either:
+
+- Set your `DS_MAJOR_VERSION` to match the latest version as seen in
+  [our current Dependency Scanning template](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Security/Dependency-Scanning.gitlab-ci.yml#L18).
+- If you hardcoded the `DS_ANALYZER_IMAGE` variable directly, change it to match the latest
+  line as found in our [current Dependency Scanning template](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Security/Dependency-Scanning.gitlab-ci.yml).
+  The line number will vary depending on which scanning job you edited.
+
+  For example, currently the `gemnasium-maven-dependency_scanning` job pulls the latest
+  `gemnasium-maven` Docker image because `DS_ANALYZER_IMAGE` is set to
+  `"$SECURE_ANALYZERS_PREFIX/gemnasium-maven:$DS_MAJOR_VERSION"`.

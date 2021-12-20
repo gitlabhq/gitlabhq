@@ -2,10 +2,13 @@
 import { GlModal, GlSafeHtmlDirective as SafeHtml } from '@gitlab/ui';
 import { uniqueId } from 'lodash';
 import csrf from '~/lib/utils/csrf';
+import eventHub, { EVENT_OPEN_CONFIRM_MODAL } from './confirm_modal_eventhub';
+import DomElementListener from './dom_element_listener.vue';
 
 export default {
   components: {
     GlModal,
+    DomElementListener,
   },
   directives: {
     SafeHtml,
@@ -30,18 +33,35 @@ export default {
     };
   },
   mounted() {
-    document.querySelectorAll(this.selector).forEach((button) => {
-      button.addEventListener('click', (e) => {
-        e.preventDefault();
-
-        this.path = button.dataset.path;
-        this.method = button.dataset.method;
-        this.modalAttributes = JSON.parse(button.dataset.modalAttributes);
-        this.openModal();
-      });
-    });
+    eventHub.$on(EVENT_OPEN_CONFIRM_MODAL, this.onOpenEvent);
+  },
+  destroyed() {
+    eventHub.$off(EVENT_OPEN_CONFIRM_MODAL, this.onOpenEvent);
   },
   methods: {
+    onButtonPress(e) {
+      const element = e.currentTarget;
+
+      if (!element.dataset.path) {
+        return;
+      }
+
+      const modalAttributes = element.dataset.modalAttributes
+        ? JSON.parse(element.dataset.modalAttributes)
+        : {};
+
+      this.onOpenEvent({
+        path: element.dataset.path,
+        method: element.dataset.method,
+        modalAttributes,
+      });
+    },
+    onOpenEvent({ path, method, modalAttributes }) {
+      this.path = path;
+      this.method = method;
+      this.modalAttributes = modalAttributes;
+      this.openModal();
+    },
     openModal() {
       this.$refs.modal.show();
     },
@@ -61,21 +81,23 @@ export default {
 </script>
 
 <template>
-  <gl-modal
-    ref="modal"
-    :modal-id="modalId"
-    v-bind="modalAttributes"
-    @primary="submitModal"
-    @cancel="closeModal"
-  >
-    <form ref="form" :action="path" method="post">
-      <!-- Rails workaround for <form method="delete" />
+  <dom-element-listener :selector="selector" @click.prevent="onButtonPress">
+    <gl-modal
+      ref="modal"
+      :modal-id="modalId"
+      v-bind="modalAttributes"
+      @primary="submitModal"
+      @cancel="closeModal"
+    >
+      <form ref="form" :action="path" method="post">
+        <!-- Rails workaround for <form method="delete" />
       https://github.com/rails/rails/blob/master/actionview/app/assets/javascripts/rails-ujs/features/method.coffee
       -->
-      <input type="hidden" name="_method" :value="method" />
-      <input type="hidden" name="authenticity_token" :value="$options.csrf.token" />
-      <div v-if="modalAttributes.messageHtml" v-safe-html="modalAttributes.messageHtml"></div>
-      <div v-else>{{ modalAttributes.message }}</div>
-    </form>
-  </gl-modal>
+        <input type="hidden" name="_method" :value="method" />
+        <input type="hidden" name="authenticity_token" :value="$options.csrf.token" />
+        <div v-if="modalAttributes.messageHtml" v-safe-html="modalAttributes.messageHtml"></div>
+        <div v-else>{{ modalAttributes.message }}</div>
+      </form>
+    </gl-modal>
+  </dom-element-listener>
 </template>

@@ -6,6 +6,63 @@ RSpec.describe Gitlab::Database::Reindexing do
   include ExclusiveLeaseHelpers
   include Database::DatabaseHelpers
 
+  describe '.invoke' do
+    let(:databases) { Gitlab::Database.database_base_models }
+    let(:databases_count) { databases.count }
+
+    it 'cleans up any leftover indexes' do
+      expect(described_class).to receive(:cleanup_leftovers!).exactly(databases_count).times
+
+      described_class.invoke
+    end
+
+    context 'when there is an error raised' do
+      it 'logs and re-raise' do
+        expect(described_class).to receive(:automatic_reindexing).and_raise('Unexpected!')
+        expect(Gitlab::AppLogger).to receive(:error)
+
+        expect { described_class.invoke }.to raise_error('Unexpected!')
+      end
+    end
+
+    context 'when async index creation is enabled' do
+      it 'executes async index creation prior to any reindexing actions' do
+        stub_feature_flags(database_async_index_creation: true)
+
+        expect(Gitlab::Database::AsyncIndexes).to receive(:create_pending_indexes!).ordered.exactly(databases_count).times
+        expect(described_class).to receive(:automatic_reindexing).ordered.exactly(databases_count).times
+
+        described_class.invoke
+      end
+    end
+
+    context 'when async index creation is disabled' do
+      it 'does not execute async index creation' do
+        stub_feature_flags(database_async_index_creation: false)
+
+        expect(Gitlab::Database::AsyncIndexes).not_to receive(:create_pending_indexes!)
+
+        described_class.invoke
+      end
+    end
+
+    context 'calls automatic reindexing' do
+      it 'uses all candidate indexes' do
+        expect(described_class).to receive(:automatic_reindexing).exactly(databases_count).times
+
+        described_class.invoke
+      end
+
+      context 'when explicit database is given' do
+        it 'skips other databases' do
+          expect(described_class).to receive(:automatic_reindexing).once
+
+          described_class.invoke(Gitlab::Database::PRIMARY_DATABASE_NAME)
+        end
+      end
+    end
+  end
+
   describe '.automatic_reindexing' do
     subject { described_class.automatic_reindexing(maximum_records: limit) }
 
@@ -133,10 +190,19 @@ RSpec.describe Gitlab::Database::Reindexing do
   end
 
   describe '.cleanup_leftovers!' do
-    subject { described_class.cleanup_leftovers! }
+    subject(:cleanup_leftovers) { described_class.cleanup_leftovers! }
+
+    let(:model) { Gitlab::Database.database_base_models[Gitlab::Database::PRIMARY_DATABASE_NAME] }
+    let(:connection) { model.connection }
+
+    around do |example|
+      Gitlab::Database::SharedModel.using_connection(connection) do
+        example.run
+      end
+    end
 
     before do
-      ApplicationRecord.connection.execute(<<~SQL)
+      connection.execute(<<~SQL)
         CREATE INDEX foobar_ccnew ON users (id);
         CREATE INDEX foobar_ccnew1 ON users (id);
       SQL
@@ -150,11 +216,11 @@ RSpec.describe Gitlab::Database::Reindexing do
       expect_query("DROP INDEX CONCURRENTLY IF EXISTS \"public\".\"foobar_ccnew1\"")
       expect_query("RESET idle_in_transaction_session_timeout; RESET lock_timeout")
 
-      subject
+      cleanup_leftovers
     end
 
     def expect_query(sql)
-      expect(ApplicationRecord.connection).to receive(:execute).ordered.with(sql).and_wrap_original do |method, sql|
+      expect(connection).to receive(:execute).ordered.with(sql).and_wrap_original do |method, sql|
         method.call(sql.sub(/CONCURRENTLY/, ''))
       end
     end

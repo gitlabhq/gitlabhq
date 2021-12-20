@@ -23,7 +23,7 @@ class Note < ApplicationRecord
   include FromUnion
   include Sortable
 
-  cache_markdown_field :note, pipeline: :note, issuable_state_filter_enabled: true
+  cache_markdown_field :note, pipeline: :note, issuable_reference_expansion_enabled: true
 
   redact_field :note
 
@@ -601,6 +601,15 @@ class Note < ApplicationRecord
     noteable.user_mention_identifier.merge({
       note_id: id
     })
+  end
+
+  def show_outdated_changes?
+    return false unless for_merge_request?
+    return false unless Feature.enabled?(:display_outdated_line_diff, noteable.source_project, default_enabled: :yaml)
+    return false unless system?
+    return false unless change_position&.line_range
+
+    change_position.line_range["end"] || change_position.line_range["start"]
   end
 
   private

@@ -100,7 +100,7 @@ request is as follows:
    There isn't a way to know anything about our customers' data on their
    [self-managed instances](../../subscriptions/self_managed/index.md), so keep
    that in mind for any data implications with your merge request.
-   
+
 1. Merge requests **must** adhere to the [merge request performance guidelines](../merge_request_performance_guidelines.md).
 1. For tests that use Capybara, read
    [how to write reliable, asynchronous integration tests](https://thoughtbot.com/blog/write-reliable-asynchronous-integration-tests-with-capybara).

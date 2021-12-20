@@ -39,6 +39,11 @@ export default {
       required: false,
       default: null,
     },
+    isOverviewTab: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   computed: {
     ...mapGetters(['getUserData']),
@@ -46,9 +51,10 @@ export default {
       return renderMarkdown(this.note.body);
     },
     avatarSize() {
-      if (this.line) {
-        return 16;
+      if (this.line && !this.isOverviewTab) {
+        return 24;
       }
+
       return 40;
     },
   },

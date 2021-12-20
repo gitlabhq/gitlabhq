@@ -29,7 +29,7 @@ between pipeline completion and the visualization loading on the page.
 
 For the coverage analysis to work, you have to provide a properly formatted
 [Cobertura XML](https://cobertura.github.io/cobertura/) report to
-[`artifacts:reports:cobertura`](../../../ci/yaml/index.md#artifactsreportscobertura).
+[`artifacts:reports:cobertura`](../../../ci/yaml/artifacts_reports.md#artifactsreportscobertura).
 This format was originally developed for Java, but most coverage analysis frameworks
 for other languages have plugins to add support for it, like:
 
@@ -52,9 +52,14 @@ from any job in any stage in the pipeline. The coverage displays for each line:
 Hovering over the coverage bar provides further information, such as the number
 of times the line was checked by tests.
 
-NOTE:
+### Limits
+
 A limit of 100 `<source>` nodes for Cobertura format XML files applies. If your Cobertura report exceeds
 100 nodes, there can be mismatches or no matches in the merge request diff view.
+
+A single Cobertura XML file can be no more than 10MiB. For large projects, split the Cobertura XML into
+smaller files. See [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/328772) for more details.
+When submitting many files, it can take a few minutes for coverage to show on a merge request.
 
 ### Artifact expiration
 

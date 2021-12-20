@@ -16,7 +16,8 @@ RSpec.describe API::Entities::ProjectImportFailedRelation do
         exception_class: import_failure.exception_class,
         exception_message: nil,
         relation_name: import_failure.relation_key,
-        source: import_failure.source
+        source: import_failure.source,
+        line_number: import_failure.relation_index
       )
     end
   end

@@ -44,6 +44,14 @@ module Sidebars
         list[index] = new_element
       end
 
+      def remove_element(list, element_to_remove)
+        index = index_of(list, element_to_remove)
+
+        return unless index
+
+        list.slice!(index)
+      end
+
       private
 
       # Classes including this method will have to define

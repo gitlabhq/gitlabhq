@@ -165,7 +165,8 @@ big JSON blob) to column `bar` (containing a string). The process for this would
 roughly be as follows:
 
 1. Release A:
-   1. Create a migration class that perform the migration for a row with a given ID.
+   1. Create a migration class that performs the migration for a row with a given ID.
+      You can use [background jobs tracking](#background-jobs-tracking) to simplify cleaning up.
    1. Deploy the code for this release, this should include some code that will
       schedule jobs for newly created data (for example, using an `after_create` hook).
    1. Schedule jobs for all existing rows in a post-deployment migration. It's
@@ -174,8 +175,10 @@ roughly be as follows:
 1. Release B:
    1. Deploy code so that the application starts using the new column and stops
       scheduling jobs for newly created data.
-   1. In a post-deployment migration use `finalize_background_migration` from
-      `BackgroundMigrationHelpers` to ensure no jobs remain. This helper will:
+   1. In a post-deployment migration, finalize all jobs that have not succeeded by now.
+      If you used [background jobs tracking](#background-jobs-tracking) in release A,
+      you can use `finalize_background_migration` from `BackgroundMigrationHelpers` to ensure no jobs remain.
+      This helper will:
          1. Use `Gitlab::BackgroundMigration.steal` to process any remaining
             jobs in Sidekiq.
          1. Reschedule the migration to be run directly (that is, not through Sidekiq)
@@ -510,12 +513,12 @@ See [`db/post_migrate/20210604070207_retry_backfill_traversal_ids.rb`](https://g
 
 ### Viewing failure error logs
 
-After running a background migration, if any jobs have failed, you can view the logs in [Kibana](https://log.gprd.gitlab.net/goto/3afc1393447c401d7602c1874793e2f6).
+After running a background migration, if any jobs have failed, you can view the logs in [Kibana](https://log.gprd.gitlab.net/goto/5f06a57f768c6025e1c65aefb4075694).
 View the production Sidekiq log and filter for:
 
 - `json.class: BackgroundMigrationWorker`
 - `json.job_status: fail`
-- `json.args: <MyBackgroundMigrationClassName>`
+- `json.meta.caller_id: <MyBackgroundMigrationClassName>`
 
 Looking at the `json.error_class`, `json.error_message` and `json.error_backtrace` values may be helpful in understanding why the jobs failed.
 

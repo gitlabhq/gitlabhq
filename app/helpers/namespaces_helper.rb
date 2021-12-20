@@ -88,6 +88,13 @@ module NamespacesHelper
     group.namespace_settings.public_send(method_name, **args) # rubocop:disable GitlabSecurity/PublicSend
   end
 
+  def namespaces_as_json(selected = :current_user)
+    {
+      group: formatted_namespaces(current_user.manageable_groups_with_routes),
+      user: formatted_namespaces([current_user.namespace])
+    }.to_json
+  end
+
   private
 
   # Many importers create a temporary Group, so use the real
@@ -118,6 +125,17 @@ module NamespacesHelper
     end
 
     [group_label.camelize, elements]
+  end
+
+  def formatted_namespaces(namespaces)
+    namespaces.sort_by(&:human_name).map! do |n|
+      {
+        id: n.id,
+        display_path: n.full_path,
+        human_name: n.human_name,
+        name: n.name
+      }
+    end
   end
 end
 

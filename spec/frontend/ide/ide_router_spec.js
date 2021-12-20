@@ -6,6 +6,7 @@ describe('IDE router', () => {
   const PROJECT_NAMESPACE = 'my-group/sub-group';
   const PROJECT_NAME = 'my-project';
   const TEST_PATH = `/project/${PROJECT_NAMESPACE}/${PROJECT_NAME}/merge_requests/2`;
+  const DEFAULT_BRANCH = 'default-main';
 
   let store;
   let router;
@@ -13,34 +14,46 @@ describe('IDE router', () => {
   beforeEach(() => {
     window.history.replaceState({}, '', '/');
     store = createStore();
-    router = createRouter(store);
+    router = createRouter(store, DEFAULT_BRANCH);
     jest.spyOn(store, 'dispatch').mockReturnValue(new Promise(() => {}));
   });
 
-  [
-    `/project/${PROJECT_NAMESPACE}/${PROJECT_NAME}/tree/main/-/src/blob/`,
-    `/project/${PROJECT_NAMESPACE}/${PROJECT_NAME}/tree/main/-/src/blob`,
-    `/project/${PROJECT_NAMESPACE}/${PROJECT_NAME}/tree/blob/-/src/blob`,
-    `/project/${PROJECT_NAMESPACE}/${PROJECT_NAME}/tree/main/-/src/tree/`,
-    `/project/${PROJECT_NAMESPACE}/${PROJECT_NAME}/tree/weird:branch/name-123/-/src/tree/`,
-    `/project/${PROJECT_NAMESPACE}/${PROJECT_NAME}/blob/main/-/src/blob`,
-    `/project/${PROJECT_NAMESPACE}/${PROJECT_NAME}/blob/main/-/src/edit`,
-    `/project/${PROJECT_NAMESPACE}/${PROJECT_NAME}/blob/main/-/src/merge_requests/2`,
-    `/project/${PROJECT_NAMESPACE}/${PROJECT_NAME}/blob/blob/-/src/blob`,
-    `/project/${PROJECT_NAMESPACE}/${PROJECT_NAME}/edit/blob/-/src/blob`,
-    `/project/${PROJECT_NAMESPACE}/${PROJECT_NAME}/merge_requests/2`,
-    `/project/${PROJECT_NAMESPACE}/${PROJECT_NAME}/tree/blob`,
-    `/project/${PROJECT_NAMESPACE}/${PROJECT_NAME}/edit`,
-    `/project/${PROJECT_NAMESPACE}/${PROJECT_NAME}`,
-  ].forEach((route) => {
-    it(`finds project path when route is "${route}"`, () => {
-      router.push(route);
+  it.each`
+    route                                                                                     | expectedBranchId           | expectedBasePath
+    ${`/project/${PROJECT_NAMESPACE}/${PROJECT_NAME}/tree/main/-/src/blob/`}                  | ${'main'}                  | ${'src/blob/'}
+    ${`/project/${PROJECT_NAMESPACE}/${PROJECT_NAME}/tree/main/-/src/blob`}                   | ${'main'}                  | ${'src/blob'}
+    ${`/project/${PROJECT_NAMESPACE}/${PROJECT_NAME}/tree/blob/-/src/blob`}                   | ${'blob'}                  | ${'src/blob'}
+    ${`/project/${PROJECT_NAMESPACE}/${PROJECT_NAME}/tree/main/-/src/tree/`}                  | ${'main'}                  | ${'src/tree/'}
+    ${`/project/${PROJECT_NAMESPACE}/${PROJECT_NAME}/tree/weird:branch/name-123/-/src/tree/`} | ${'weird:branch/name-123'} | ${'src/tree/'}
+    ${`/project/${PROJECT_NAMESPACE}/${PROJECT_NAME}/blob/main/-/src/blob`}                   | ${'main'}                  | ${'src/blob'}
+    ${`/project/${PROJECT_NAMESPACE}/${PROJECT_NAME}/blob/main/-/src/edit`}                   | ${'main'}                  | ${'src/edit'}
+    ${`/project/${PROJECT_NAMESPACE}/${PROJECT_NAME}/blob/main/-/src/merge_requests/2`}       | ${'main'}                  | ${'src/merge_requests/2'}
+    ${`/project/${PROJECT_NAMESPACE}/${PROJECT_NAME}/blob/blob/-/src/blob`}                   | ${'blob'}                  | ${'src/blob'}
+    ${`/project/${PROJECT_NAMESPACE}/${PROJECT_NAME}/edit/blob/-/src/blob`}                   | ${'blob'}                  | ${'src/blob'}
+    ${`/project/${PROJECT_NAMESPACE}/${PROJECT_NAME}/tree/blob`}                              | ${'blob'}                  | ${''}
+    ${`/project/${PROJECT_NAMESPACE}/${PROJECT_NAME}/edit`}                                   | ${DEFAULT_BRANCH}          | ${''}
+    ${`/project/${PROJECT_NAMESPACE}/${PROJECT_NAME}`}                                        | ${DEFAULT_BRANCH}          | ${''}
+  `('correctly opens Web IDE for $route', ({ route, expectedBranchId, expectedBasePath } = {}) => {
+    router.push(route);
 
-      expect(store.dispatch).toHaveBeenCalledWith('getProjectData', {
-        namespace: PROJECT_NAMESPACE,
-        projectId: PROJECT_NAME,
-      });
+    expect(store.dispatch).toHaveBeenCalledWith('openBranch', {
+      projectId: `${PROJECT_NAMESPACE}/${PROJECT_NAME}`,
+      branchId: expectedBranchId,
+      basePath: expectedBasePath,
     });
+  });
+
+  it('correctly opens an MR', () => {
+    const expectedId = '2';
+
+    router.push(`/project/${PROJECT_NAMESPACE}/${PROJECT_NAME}/merge_requests/${expectedId}`);
+
+    expect(store.dispatch).toHaveBeenCalledWith('openMergeRequest', {
+      projectId: `${PROJECT_NAMESPACE}/${PROJECT_NAME}`,
+      mergeRequestId: expectedId,
+      targetProjectId: undefined,
+    });
+    expect(store.dispatch).not.toHaveBeenCalledWith('openBranch');
   });
 
   it('keeps router in sync when store changes', async () => {

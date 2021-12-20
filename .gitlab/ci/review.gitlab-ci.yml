@@ -2,23 +2,26 @@ review-cleanup:
   extends:
     - .default-retry
     - .review:rules:review-cleanup
-  image: registry.gitlab.com/gitlab-org/gitlab-build-images:gitlab-helm3-kubectl1.14
+  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:gitlab-helm3-kubectl1.14
   stage: prepare
   environment:
-    name: review/auto-cleanup
+    name: review/${CI_COMMIT_REF_SLUG}${FREQUENCY}
     action: stop
   before_script:
     - source scripts/utils.sh
+    - source scripts/review_apps/review-apps.sh
     - source scripts/review_apps/gcp_cleanup.sh
     - install_gitlab_gem
     - setup_gcp_dependencies
   script:
+    - delete_release
+    - delete_namespace
     - ruby -rrubygems scripts/review_apps/automated_cleanup.rb
     - gcp_cleanup
 
 start-review-app-pipeline:
   extends:
-    - .review:rules:review-app-pipeline
+    - .review:rules:start-review-app-pipeline
   stage: review
   needs:
     - job: build-assets-image

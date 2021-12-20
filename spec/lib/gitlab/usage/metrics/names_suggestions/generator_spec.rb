@@ -25,30 +25,10 @@ RSpec.describe Gitlab::Usage::Metrics::NamesSuggestions::Generator do
     end
 
     context 'for count with default column metrics' do
-      context 'with usage_data_instrumentation feature flag' do
-        context 'when enabled' do
-          before do
-            stub_feature_flags(usage_data_instrumentation: true)
-          end
-
-          it_behaves_like 'name suggestion' do
-            # corresponding metric is collected with ::Gitlab::UsageDataMetrics.suggested_names
-            let(:key_path) { 'counts.boards' }
-            let(:name_suggestion) { /count_boards/ }
-          end
-        end
-
-        context 'when disabled' do
-          before do
-            stub_feature_flags(usage_data_instrumentation: false)
-          end
-
-          it_behaves_like 'name suggestion' do
-            # corresponding metric is collected with count(Board)
-            let(:key_path) { 'counts.boards' }
-            let(:name_suggestion) { /count_boards/ }
-          end
-        end
+      it_behaves_like 'name suggestion' do
+        # corresponding metric is collected with count(Board)
+        let(:key_path) { 'counts.boards' }
+        let(:name_suggestion) { /count_boards/ }
       end
     end
 

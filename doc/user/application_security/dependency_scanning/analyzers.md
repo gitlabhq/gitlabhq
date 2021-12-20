@@ -32,6 +32,9 @@ to launch dedicated containers for each analysis.
 Dependency Scanning is pre-configured with a set of **default images** that are
 maintained by GitLab, but users can also integrate their own **custom images**.
 
+WARNING:
+The `bundler-audit` analyzer is deprecated and will be removed in GitLab 15.0 since it duplicates the functionality of the `gemnasium` analyzer. For more information, read the [deprecation announcement](../../../update/deprecations.md#deprecation-of-bundler-audit-dependency-scanning-tool).
+
 ## Official default analyzers
 
 Any custom change to the official analyzers can be achieved by using a
@@ -118,12 +121,12 @@ The following table lists the data available for each official analyzer.
 | File                                  | ✓                  | ⚠                  | ✓                  |
 | Start line                            | 𐄂                  | 𐄂                  | 𐄂                  |
 | End line                              | 𐄂                  | 𐄂                  | 𐄂                  |
-| External ID (e.g., CVE)               | ✓                  | ✓                  | ⚠                  |
+| External ID (for example, CVE)        | ✓                  | ✓                  | ⚠                  |
 | URLs                                  | ✓                  | ✓                  | ✓                  |
 | Internal doc/explanation              | ✓                  | 𐄂                  | 𐄂                  |
 | Solution                              | ✓                  | ✓                  | 𐄂                  |
 | Confidence                            | 𐄂                  | 𐄂                  | 𐄂                  |
-| Affected item (e.g. class or package) | ✓                  | ✓                  | ✓                  |
+| Affected item (for example, class or package) | ✓                  | ✓                  | ✓                  |
 | Source code extract                   | 𐄂                  | 𐄂                  | 𐄂                  |
 | Internal ID                           | ✓                  | 𐄂                  | 𐄂                  |
 | Date                                  | ✓                  | 𐄂                  | 𐄂                  |
@@ -134,4 +137,4 @@ The following table lists the data available for each official analyzer.
 - 𐄂 => we don't have that data, or it would need to develop specific or inefficient/unreliable logic to obtain it.
 
 The values provided by these tools are heterogeneous, so they are sometimes
-normalized into common values (e.g., `severity`, `confidence`, etc).
+normalized into common values (for example, `severity`, `confidence`, etc).

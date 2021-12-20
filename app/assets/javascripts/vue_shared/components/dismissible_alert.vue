@@ -24,6 +24,7 @@ export default {
   methods: {
     dismiss() {
       this.isDismissed = true;
+      this.$emit('alertDismissed');
     },
   },
 };

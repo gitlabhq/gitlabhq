@@ -4,18 +4,11 @@ module QA
   module Resource
     class GroupDeployToken < Base
       attr_accessor :name, :expires_at
+      attr_writer :scopes
 
-      attribute :username do
-        Page::Group::Settings::Repository.perform do |repository_page|
-          repository_page.expand_deploy_tokens(&:token_username)
-        end
-      end
-
-      attribute :password do
-        Page::Group::Settings::Repository.perform do |repository_page|
-          repository_page.expand_deploy_tokens(&:token_password)
-        end
-      end
+      attribute :id
+      attribute :token
+      attribute :username
 
       attribute :group do
         Group.fabricate! do |resource|
@@ -24,11 +17,33 @@ module QA
         end
       end
 
-      attribute :project do
-        Project.fabricate! do |resource|
-          resource.name = 'project-to-deploy'
-          resource.description = 'project for adding deploy token test'
-        end
+      def fabricate_via_api!
+        super
+      end
+
+      def api_get_path
+        "/groups/#{group.id}/deploy_tokens"
+      end
+
+      def api_post_path
+        api_get_path
+      end
+
+      def api_post_body
+        {
+          name: @name,
+          scopes: @scopes
+        }
+      end
+
+      def api_delete_path
+        "/groups/#{group.id}/deploy_tokens/#{id}"
+      end
+
+      def resource_web_url(resource)
+        super
+      rescue ResourceURLMissingError
+        # this particular resource does not expose a web_url property
       end
 
       def fabricate!

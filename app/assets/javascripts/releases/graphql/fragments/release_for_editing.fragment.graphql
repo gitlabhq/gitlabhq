@@ -18,6 +18,7 @@ fragment ReleaseForEditing on Release {
   }
   milestones {
     nodes {
+      id
       title
     }
   }

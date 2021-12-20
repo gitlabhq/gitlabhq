@@ -36,15 +36,11 @@ To authenticate to the Helm repository, you need either:
 
 ## Publish a package
 
-WARNING:
-The `helm-push` command is broken in Helm 3.7. For more information, see the [open issue](https://github.com/chartmuseum/helm-push/issues/109)
-in the Chart Museum project.
-
 NOTE:
 You can publish Helm charts with duplicate names or versions. If duplicates exist, GitLab always
 returns the chart with the latest version.
 
-Once built, a chart can be uploaded to the desired channel with `curl` or `helm-push`:
+Once built, a chart can be uploaded to the desired channel with `curl` or `helm cm-push`:
 
 - With `curl`:
 
@@ -61,11 +57,11 @@ Once built, a chart can be uploaded to the desired channel with `curl` or `helm-
     [URL-encoded](../../../api/index.md#namespaced-path-encoding) path of the project (like `group%2Fproject`).
   - `<channel>`: the name of the channel (like `stable`).
 
-- With the [`helm-push`](https://github.com/chartmuseum/helm-push/#readme) plugin:
+- With the [`helm cm-push`](https://github.com/chartmuseum/helm-push/#readme) plugin:
 
   ```shell
   helm repo add --username <username> --password <access_token> project-1 https://gitlab.example.com/api/v4/projects/<project_id>/packages/helm/<channel>
-  helm push mychart-0.1.0.tgz project-1
+  helm cm-push mychart-0.1.0.tgz project-1
   ```
 
   - `<username>`: the GitLab username or the deploy token username.
@@ -135,12 +131,6 @@ To fix the error, use the correct version syntax and upload the chart again.
 
 ### `helm push` results in an error
 
-The `helm push` plugin is not yet supported in Helm 3.7. If you try to push a chart using
-`helm push`, it produces the following error:
-
-```plaintext
-Error: this feature has been marked as experimental and is not enabled by default. Please set HELM_EXPERIMENTAL_OCI=1 in your environment to use this feature
-```
-
-To continue to use the plugin, you can push an image using [curl](#use-cicd-to-publish-a-helm-package)
-or downgrade your version of Helm.
+Helm 3.7 introduced a breaking change for the `helm-push` plugin. You can update the
+[Chart Museum plugin](https://github.com/chartmuseum/helm-push/#readme)
+to use `helm cm-push`.

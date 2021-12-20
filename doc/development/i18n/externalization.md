@@ -133,11 +133,9 @@ You can mark that content for translation with:
 
 The `~/locale` module exports the following key functions for externalization:
 
-- `__()` (double underscore parenthesis)
-- `s__()` (namespaced double underscore parenthesis)
-- `__()` Mark content for translation (note the double underscore).
-- `s__()` Mark namespaced content for translation
-- `n__()` Mark pluralized content for translation
+- `__()` Mark content for translation (double underscore parenthesis).
+- `s__()` Mark namespaced content for translation (s double underscore parenthesis).
+- `n__()` Mark pluralized content for translation (n double underscore parenthesis).
 
 ```javascript
 import { __, s__, n__ } from '~/locale';
@@ -822,11 +820,11 @@ bin/rake gettext:regenerate
 ```
 
 This command updates the `locale/gitlab.pot` file with the newly externalized strings and removes
-any unused strings. Once the changes are on the default branch, [CrowdIn](https://translate.gitlab.com)
+any unused strings. Once the changes are on the default branch, [Crowdin](https://translate.gitlab.com)
 picks them up and presents them for translation.
 
 You don't need to check in any changes to the `locale/[language]/gitlab.po` files. They are updated
-automatically when [translations from CrowdIn are merged](merging_translations.md).
+automatically when [translations from Crowdin are merged](merging_translations.md).
 
 If there are merge conflicts in the `gitlab.pot` file, you can delete the file and regenerate it
 using the same command.

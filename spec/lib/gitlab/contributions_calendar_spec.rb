@@ -50,7 +50,8 @@ RSpec.describe Gitlab::ContributionsCalendar do
     Event.create!(
       project: project,
       action: action,
-      target: @targets[project],
+      target_type: @targets[project].class.name,
+      target_id: @targets[project].id,
       author: contributor,
       created_at: DateTime.new(day.year, day.month, day.day, hour)
     )
@@ -66,14 +67,34 @@ RSpec.describe Gitlab::ContributionsCalendar do
     end
 
     context "when the user has opted-in for private contributions" do
+      before do
+        contributor.update_column(:include_private_contributions, true)
+      end
+
       it "shows private and public events to all users" do
-        user.update_column(:include_private_contributions, true)
         create_event(private_project, today)
         create_event(public_project, today)
 
+        expect(calendar.activity_dates[today]).to eq(2)
+        expect(calendar(user).activity_dates[today]).to eq(2)
+        expect(calendar(contributor).activity_dates[today]).to eq(2)
+      end
+
+      # tests for bug https://gitlab.com/gitlab-org/gitlab/-/merge_requests/74826
+      it "still counts correct with feature access levels set to private" do
+        create_event(private_project, today)
+
+        private_project.project_feature.update_attribute(:issues_access_level, ProjectFeature::PRIVATE)
+        private_project.project_feature.update_attribute(:repository_access_level, ProjectFeature::PRIVATE)
+        private_project.project_feature.update_attribute(:merge_requests_access_level, ProjectFeature::PRIVATE)
+
         expect(calendar.activity_dates[today]).to eq(1)
         expect(calendar(user).activity_dates[today]).to eq(1)
-        expect(calendar(contributor).activity_dates[today]).to eq(2)
+        expect(calendar(contributor).activity_dates[today]).to eq(1)
+      end
+
+      it "does not fail if there are no contributed projects" do
+        expect(calendar.activity_dates[today]).to eq(nil)
       end
     end
 
@@ -125,6 +146,7 @@ RSpec.describe Gitlab::ContributionsCalendar do
         create_event(public_project, today, 10)
         create_event(public_project, today, 16)
         create_event(public_project, today, 23)
+        create_event(public_project, tomorrow, 1)
       end
 
       it "renders correct event counts within the UTC timezone" do
@@ -137,14 +159,14 @@ RSpec.describe Gitlab::ContributionsCalendar do
       it "renders correct event counts within the Sydney timezone" do
         Time.use_zone('UTC') do
           contributor.timezone = 'Sydney'
-          expect(calendar.activity_dates).to eq(today => 3, tomorrow => 2)
+          expect(calendar.activity_dates).to eq(today => 3, tomorrow => 3)
         end
       end
 
       it "renders correct event counts within the US Central timezone" do
         Time.use_zone('UTC') do
           contributor.timezone = 'Central Time (US & Canada)'
-          expect(calendar.activity_dates).to eq(yesterday => 2, today => 3)
+          expect(calendar.activity_dates).to eq(yesterday => 2, today => 4)
         end
       end
     end
@@ -167,6 +189,12 @@ RSpec.describe Gitlab::ContributionsCalendar do
 
       expect(calendar.events_by_date(today)).to contain_exactly(e1, e3)
       expect(calendar(contributor).events_by_date(today)).to contain_exactly(e1, e2, e3)
+    end
+
+    it "includes diff notes on merge request" do
+      e1 = create_event(public_project, today, 0, :commented, :diff_note_on_merge_request)
+
+      expect(calendar.events_by_date(today)).to contain_exactly(e1)
     end
 
     context 'when the user cannot read cross project' do

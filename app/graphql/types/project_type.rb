@@ -194,7 +194,7 @@ module Types
     field :jobs,
           type: Types::Ci::JobType.connection_type,
           null: true,
-          authorize: :read_commit_status,
+          authorize: :read_build,
           description: 'Jobs of a project. This field can only be resolved for one project in any single request.',
           resolver: Resolvers::ProjectJobsResolver
 
@@ -385,6 +385,11 @@ module Types
           GraphQL::Types::String,
           null: true,
           description: 'Template used to create merge commit message in merge requests.'
+
+    field :squash_commit_template,
+          GraphQL::Types::String,
+          null: true,
+          description: 'Template used to create squash commit message in merge requests.'
 
     def label(title:)
       BatchLoader::GraphQL.for(title).batch(key: project) do |titles, loader, args|

@@ -13,8 +13,10 @@ module Gitlab
             raise ArgumentError, 'missing workflow rules result' unless @command.workflow_rules_result
 
             # Allocate next IID. This operation must be outside of transactions of pipeline creations.
-            pipeline.ensure_project_iid!
-            pipeline.ensure_ci_ref!
+            logger.instrument(:pipeline_allocate_seed_attributes) do
+              pipeline.ensure_project_iid!
+              pipeline.ensure_ci_ref!
+            end
 
             # Protect the pipeline. This is assigned in Populate instead of
             # Build to prevent erroring out on ambiguous refs.
@@ -23,8 +25,12 @@ module Gitlab
             ##
             # Gather all runtime build/stage errors
             #
-            if pipeline_seed.errors
-              return error(pipeline_seed.errors.join("\n"), config_error: true)
+            seed_errors = logger.instrument(:pipeline_seed_evaluation) do
+              pipeline_seed.errors
+            end
+
+            if seed_errors
+              return error(seed_errors.join("\n"), config_error: true)
             end
 
             @command.pipeline_seed = pipeline_seed
@@ -38,8 +44,11 @@ module Gitlab
 
           def pipeline_seed
             strong_memoize(:pipeline_seed) do
-              stages_attributes = @command.yaml_processor_result.stages_attributes
-              Gitlab::Ci::Pipeline::Seed::Pipeline.new(context, stages_attributes)
+              logger.instrument(:pipeline_seed_initialization) do
+                stages_attributes = @command.yaml_processor_result.stages_attributes
+
+                Gitlab::Ci::Pipeline::Seed::Pipeline.new(context, stages_attributes)
+              end
             end
           end
 
@@ -48,9 +57,11 @@ module Gitlab
           end
 
           def root_variables
-            ::Gitlab::Ci::Variables::Helpers.merge_variables(
-              @command.yaml_processor_result.root_variables, @command.workflow_rules_result.variables
-            )
+            logger.instrument(:pipeline_seed_merge_variables) do
+              ::Gitlab::Ci::Variables::Helpers.merge_variables(
+                @command.yaml_processor_result.root_variables, @command.workflow_rules_result.variables
+              )
+            end
           end
         end
       end

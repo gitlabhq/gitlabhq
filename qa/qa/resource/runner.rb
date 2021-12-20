@@ -19,7 +19,7 @@ module QA
       end
 
       def image
-        @image || 'gitlab/gitlab-runner:alpine'
+        @image || 'registry.gitlab.com/gitlab-org/gitlab-runner:alpine'
       end
 
       def executor

@@ -13,5 +13,6 @@ export default {
     'diffEditor.insertedTextBackground': '#a0f5b420',
     'diffEditor.removedTextBackground': '#f9d7dc20',
     'editorIndentGuide.activeBackground': '#cccccc',
+    'editorSuggestWidget.focusHighlightForeground': '#96D8FD',
   },
 };

@@ -57,18 +57,20 @@ module QA
       before do
         Flow::Login.sign_in
 
-        Resource::Repository::Commit.fabricate_via_api! do |commit|
-          commit.project = project
-          commit.commit_message = 'Add .gitlab-ci.yml'
-          commit.add_files([{
-                                file_path: '.gitlab-ci.yml',
-                                content: gitlab_ci_yaml
-                            },
-                            {
-                                file_path: 'file.txt',
-                                content: file_txt
-                            }]
-                          )
+        Support::Retrier.retry_on_exception(max_attempts: 3, sleep_interval: 2) do
+          Resource::Repository::Commit.fabricate_via_api! do |commit|
+            commit.project = project
+            commit.commit_message = 'Add .gitlab-ci.yml'
+            commit.add_files([{
+                                  file_path: '.gitlab-ci.yml',
+                                  content: gitlab_ci_yaml
+                              },
+                              {
+                                  file_path: 'file.txt',
+                                  content: file_txt
+                              }]
+                            )
+          end
         end
 
         project.visit!
@@ -98,7 +100,7 @@ module QA
         package.remove_via_api!
       end
 
-      it 'uploads a generic package, downloads and deletes it', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1628' do
+      it 'uploads a generic package, downloads and deletes it', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348017' do
         Page::Project::Menu.perform(&:click_packages_link)
 
         Page::Project::Packages::Index.perform do |index|

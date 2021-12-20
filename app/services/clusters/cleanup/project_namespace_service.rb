@@ -26,8 +26,10 @@ module Clusters
 
           begin
             kubeclient_delete_namespace(kubernetes_namespace)
-          rescue Kubeclient::HttpError
-            next
+          rescue Kubeclient::HttpError => e
+            # unauthorized, forbidden: GitLab's access has been revoked
+            # certificate verify failed: Cluster is probably gone forever
+            raise unless e.message =~ /unauthorized|forbidden|certificate verify failed/i
           end
 
           kubernetes_namespace.destroy!

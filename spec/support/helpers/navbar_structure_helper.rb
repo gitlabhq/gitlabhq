@@ -19,6 +19,17 @@ module NavbarStructureHelper
     hash[:nav_sub_items].insert(index + 1, new_sub_nav_item_name)
   end
 
+  def insert_before_sub_nav_item(after_sub_nav_item_name, within:, new_sub_nav_item_name:)
+    expect(structure).to include(a_hash_including(nav_item: within))
+    hash = structure.find { |h| h[:nav_item] == within if h }
+
+    expect(hash).to have_key(:nav_sub_items)
+    expect(hash[:nav_sub_items]).to include(after_sub_nav_item_name)
+
+    index = hash[:nav_sub_items].find_index(after_sub_nav_item_name)
+    hash[:nav_sub_items].insert(index, new_sub_nav_item_name)
+  end
+
   def insert_package_nav(within)
     insert_after_nav_item(
       within,

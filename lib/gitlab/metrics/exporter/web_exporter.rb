@@ -27,7 +27,7 @@ module Gitlab
 
         # This exporter is always run on master process
         def initialize
-          super
+          super(Settings.monitoring.web_exporter)
 
           # DEPRECATED:
           # these `readiness_checks` are deprecated
@@ -37,10 +37,6 @@ module Gitlab
             WebExporter::ExporterCheck.new(self),
             Gitlab::HealthChecks::PumaCheck
           ]
-        end
-
-        def settings
-          Gitlab.config.monitoring.web_exporter
         end
 
         def log_filename

@@ -1,7 +1,7 @@
 - return unless issuable.supports_issue_type? && can?(current_user, :create_issue, @project)
 
 .form-group.row.gl-mb-0
-  = form.label :type, 'Type', class: 'col-form-label col-sm-2'
+  = form.label :type, _('Type'), class: 'col-form-label col-sm-2'
   .col-sm-10
     .gl-display-flex.gl-align-items-center
       .issuable-form-select-holder.selectbox.form-group.gl-mb-0

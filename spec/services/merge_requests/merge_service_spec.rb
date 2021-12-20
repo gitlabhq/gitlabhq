@@ -151,7 +151,7 @@ RSpec.describe MergeRequests::MergeService do
 
       it 'closes GitLab issue tracker issues' do
         issue  = create :issue, project: project
-        commit = instance_double('commit', safe_message: "Fixes #{issue.to_reference}", date: Time.current, authored_date: Time.current)
+        commit = double('commit', safe_message: "Fixes #{issue.to_reference}", date: Time.current, authored_date: Time.current)
         allow(merge_request).to receive(:commits).and_return([commit])
         merge_request.cache_merge_request_closes_issues!
 

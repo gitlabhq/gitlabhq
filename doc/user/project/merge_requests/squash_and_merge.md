@@ -29,11 +29,9 @@ The squashed commit in this example is followed by a merge commit, because the m
 **Project Settings > General > Merge requests > Merge method > Fast-forward merge**.
 
 The squashed commit's default commit message is taken from the merge request title.
+You can [edit the default message for squash commits](commit_templates.md).
 
-NOTE:
-This only takes effect if there are at least 2 commits. As there is nothing to squash, the commit message does not change if there is only 1 commit.
-
-It can be customized before merging a merge request.
+It can also be customized before merging a merge request.
 
 ![A squash commit message editor](img/squash_mr_message.png)
 
@@ -125,6 +123,10 @@ The Squash and Merge checkbox is displayed when you create a merge request and w
 NOTE:
 If your project is set to **Do not allow** Squash and Merge, the users still have the option to
 squash commits locally through the command line and force-push to their remote branch before merging.
+
+## Related topics
+
+- [Commit message templates](commit_templates.md).
 
 <!-- ## Troubleshooting
 

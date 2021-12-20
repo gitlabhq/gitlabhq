@@ -6,6 +6,14 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Workspace
 
+DISCLAIMER:
+This page contains information related to upcoming products, features, and functionality.
+It is important to note that the information presented is for informational purposes only.
+Please do not rely on this information for purchasing or planning purposes.
+As with all projects, the items mentioned on this page are subject to change or delay.
+The development, release, and timing of any products, features, or functionality remain at the
+sole discretion of GitLab Inc.
+
 Workspace will be above the [top-level namespaces](../group/index.md#namespaces) for you to manage
 everything you do as a GitLab administrator, including:
 

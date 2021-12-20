@@ -8,6 +8,7 @@ export const SET_LINKS = 'SET_LINKS';
 // Project Mutation Types
 export const SET_PROJECT = 'SET_PROJECT';
 export const SET_CURRENT_PROJECT = 'SET_CURRENT_PROJECT';
+export const UPDATE_PROJECT = 'UPDATE_PROJECT';
 export const TOGGLE_EMPTY_STATE = 'TOGGLE_EMPTY_STATE';
 
 // Merge request mutation types

@@ -27,12 +27,12 @@ module Gitlab
             end
           end
 
-          def median_duration_in_seconds
-            Arel::Nodes::Extract.new(percentile_cont, :epoch)
-          end
-
           def in_progress?
             params[:end_event_filter] == :in_progress
+          end
+
+          def duration_in_seconds(duration_expression = duration)
+            Arel::Nodes::Extract.new(duration_expression, :epoch)
           end
         end
       end

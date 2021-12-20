@@ -28,8 +28,14 @@ RSpec.describe Gitlab::UsageMetricDefinition::RedisHllGenerator, :silence_stdout
     weekly_metric_definition_path = Dir.glob(File.join(temp_dir, 'metrics/counts_7d/*i_test_event_weekly.yml')).first
     monthly_metric_definition_path = Dir.glob(File.join(temp_dir, 'metrics/counts_28d/*i_test_event_monthly.yml')).first
 
-    expect(YAML.safe_load(File.read(weekly_metric_definition_path))).to include("key_path" => "redis_hll_counters.test_category.i_test_event_weekly")
-    expect(YAML.safe_load(File.read(monthly_metric_definition_path))).to include("key_path" => "redis_hll_counters.test_category.i_test_event_monthly")
+    weekly_metric_definition = YAML.safe_load(File.read(weekly_metric_definition_path))
+    monthly_metric_definition = YAML.safe_load(File.read(monthly_metric_definition_path))
+
+    expect(weekly_metric_definition).to include("key_path" => "redis_hll_counters.test_category.i_test_event_weekly")
+    expect(monthly_metric_definition).to include("key_path" => "redis_hll_counters.test_category.i_test_event_monthly")
+
+    expect(weekly_metric_definition["instrumentation_class"]).to eq('RedisHLLMetric')
+    expect(monthly_metric_definition["instrumentation_class"]).to eq('RedisHLLMetric')
   end
 
   context 'with ee option' do
@@ -49,9 +55,11 @@ RSpec.describe Gitlab::UsageMetricDefinition::RedisHllGenerator, :silence_stdout
 
       expect(weekly_metric_definition).to include("key_path" => "redis_hll_counters.test_category.i_test_event_weekly")
       expect(weekly_metric_definition["distribution"]).to include('ee')
+      expect(weekly_metric_definition["instrumentation_class"]).to eq('RedisHLLMetric')
 
       expect(monthly_metric_definition).to include("key_path" => "redis_hll_counters.test_category.i_test_event_monthly")
       expect(monthly_metric_definition["distribution"]).to include('ee')
+      expect(monthly_metric_definition["instrumentation_class"]).to eq('RedisHLLMetric')
     end
   end
 end

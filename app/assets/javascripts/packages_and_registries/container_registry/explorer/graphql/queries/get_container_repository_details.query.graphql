@@ -11,6 +11,7 @@ query getContainerRepositoryDetails($id: ID!) {
     expirationPolicyStartedAt
     expirationPolicyCleanupStatus
     project {
+      id
       visibility
       path
       containerExpirationPolicy {

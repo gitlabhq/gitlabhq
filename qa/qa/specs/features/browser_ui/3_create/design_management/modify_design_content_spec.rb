@@ -13,7 +13,7 @@ module QA
         Flow::Login.sign_in
       end
 
-      it 'user adds a design and modifies it', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1813' do
+      it 'user adds a design and modifies it', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347712' do
         design.issue.visit!
 
         Page::Project::Issue::Show.perform do |issue|

@@ -81,7 +81,7 @@ module TreeHelper
   end
 
   def commit_in_fork_help
-    _("A new branch will be created in your fork and a new merge request will be started.")
+    _("GitLab will create a branch in your fork and start a merge request.")
   end
 
   def commit_in_single_accessible_branch

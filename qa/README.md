@@ -73,6 +73,16 @@ bundle exec bin/qa Test::Instance::All http://localhost:3000
 Note: If you want to run tests requiring SSH against GDK, you
 will need to [modify your GDK setup](https://gitlab.com/gitlab-org/gitlab-qa/blob/master/docs/run_qa_against_gdk.md).
 
+Note: When you log into your GDK instance of GitLab for the first time, the root password requires a change.
+GitLab QA expects the default initial password to be used in tests; see all default values listed in
+[Supported GitLab environment variables](https://gitlab.com/gitlab-org/gitlab-qa/-/blob/master/docs/what_tests_can_be_run.md#supported-gitlab-environment-variables).
+If you have changed your root password, you must set the `GITLAB_INITIAL_ROOT_PASSWORD` environment
+variable.
+
+```
+export GITLAB_INITIAL_ROOT_PASSWORD="<GDK root password>"
+```
+
 #### Running EE tests
 
 When running EE tests you'll need to have a license available. GitLab engineers can [request a license](https://about.gitlab.com/handbook/developer-onboarding/#working-on-gitlab-ee).

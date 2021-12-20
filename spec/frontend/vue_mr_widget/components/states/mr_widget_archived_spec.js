@@ -25,7 +25,7 @@ describe('MRWidgetArchived', () => {
 
   it('renders information', () => {
     expect(vm.$el.querySelector('.bold').textContent.trim()).toEqual(
-      'This project is archived, write access has been disabled',
+      'Merge unavailable: merge requests are read-only on archived projects.',
     );
   });
 });

@@ -17,7 +17,7 @@ module QA
         merge_request.fork.remove_via_api!
       end
 
-      it 'can merge feature branch fork to mainline', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1305' do
+      it 'can merge feature branch fork to mainline', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347818' do
         merge_request.visit!
 
         Page::MergeRequest::Show.perform do |merge_request|

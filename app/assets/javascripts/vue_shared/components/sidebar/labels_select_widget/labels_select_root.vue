@@ -2,14 +2,13 @@
 import { debounce } from 'lodash';
 import { MutationOperationMode, getIdFromGraphQLId } from '~/graphql_shared/utils';
 import createFlash from '~/flash';
-import { IssuableType } from '~/issue_show/constants';
+import { IssuableType } from '~/issues/constants';
 import { __ } from '~/locale';
 import SidebarEditableItem from '~/sidebar/components/sidebar_editable_item.vue';
 import { issuableLabelsQueries } from '~/sidebar/constants';
 import { DEBOUNCE_DROPDOWN_DELAY, DropdownVariant } from './constants';
 import DropdownContents from './dropdown_contents.vue';
 import DropdownValue from './dropdown_value.vue';
-import DropdownValueCollapsed from './dropdown_value_collapsed.vue';
 import {
   isDropdownVariantSidebar,
   isDropdownVariantStandalone,
@@ -20,7 +19,6 @@ export default {
   components: {
     DropdownValue,
     DropdownContents,
-    DropdownValueCollapsed,
     SidebarEditableItem,
   },
   inject: {
@@ -225,15 +223,13 @@ export default {
           variables: { input: inputVariables },
         })
         .then(({ data }) => {
-          const { mutationName } = issuableLabelsQueries[this.issuableType];
-
-          if (data[mutationName]?.errors?.length) {
+          if (data.updateIssuableLabels?.errors?.length) {
             throw new Error();
           }
 
           this.$emit('updateSelectedLabels', {
-            id: data[mutationName]?.[this.issuableType]?.id,
-            labels: data[mutationName]?.[this.issuableType]?.labels?.nodes,
+            id: data.updateIssuableLabels?.issuable?.id,
+            labels: data.updateIssuableLabels?.issuable?.labels?.nodes,
           });
         })
         .catch((error) =>
@@ -288,18 +284,14 @@ export default {
 
 <template>
   <div
-    class="labels-select-wrapper position-relative"
+    class="labels-select-wrapper gl-relative"
     :class="{
       'is-standalone': isDropdownVariantStandalone(variant),
       'is-embedded': isDropdownVariantEmbedded(variant),
     }"
+    data-qa-selector="labels_block"
   >
     <template v-if="isDropdownVariantSidebar(variant)">
-      <dropdown-value-collapsed
-        ref="dropdownButtonCollapsed"
-        :labels="issuableLabels"
-        @onValueClick="handleCollapsedValueClick"
-      />
       <sidebar-editable-item
         ref="editable"
         :title="__('Labels')"
@@ -315,6 +307,7 @@ export default {
             :labels-filter-base-path="labelsFilterBasePath"
             :labels-filter-param="labelsFilterParam"
             @onLabelRemove="handleLabelRemove"
+            @onCollapsedValueClick="handleCollapsedValueClick"
           >
             <slot></slot>
           </dropdown-value>

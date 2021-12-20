@@ -188,7 +188,7 @@ and [possessive quantifiers](https://www.regular-expressions.info/possessive.htm
 
 #### Go
 
-Go's [`regexp`](https://golang.org/pkg/regexp/) package uses `re2` and isn't vulnerable to backtracking issues.
+Go's [`regexp`](https://pkg.go.dev/regexp) package uses `re2` and isn't vulnerable to backtracking issues.
 
 ## Further Links
 
@@ -544,7 +544,7 @@ This outputs `1` followed by the content of `/etc/passwd`.
 
 ### TLS minimum recommended version
 
-As we have [moved away from supporting TLS 1.0 and 1.1](https://about.gitlab.com/blog/2018/10/15/gitlab-to-deprecate-older-tls/), we should only use TLS 1.2 and above.
+As we have [moved away from supporting TLS 1.0 and 1.1](https://about.gitlab.com/blog/2018/10/15/gitlab-to-deprecate-older-tls/), you must use TLS 1.2 and above.
 
 #### Ciphers
 

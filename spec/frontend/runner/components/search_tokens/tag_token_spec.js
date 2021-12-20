@@ -41,7 +41,7 @@ const mockTagTokenConfig = {
   title: 'Tags',
   type: 'tag',
   token: TagToken,
-  recentTokenValuesStorageKey: mockStorageKey,
+  recentSuggestionsStorageKey: mockStorageKey,
   operators: OPERATOR_IS_ONLY,
 };
 

@@ -1,0 +1,13 @@
+- name: "apiFuzzingCiConfigurationCreate GraphQL mutation"
+  announcement_milestone: "14.6"
+  announcement_date: "2021-12-22"
+  removal_milestone: "15.0"
+  body: |
+    The API Fuzzing configuration snippet is now being generated client-side and does not require an
+    API request anymore. We are therefore deprecating the `apiFuzzingCiConfigurationCreate` mutation
+    which isn't being used in GitLab anymore.
+  stage: Secure
+  tiers: Ultimate
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/333233
+  documentation_url: https://docs.gitlab.com/ee/user/application_security/api_fuzzing/#web-api-fuzzing-configuration-form
+  removal_date: "2022-05-22"

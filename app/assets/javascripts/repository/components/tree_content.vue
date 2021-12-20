@@ -3,7 +3,12 @@ import paginatedTreeQuery from 'shared_queries/repository/paginated_tree.query.g
 import createFlash from '~/flash';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { __ } from '../../locale';
-import { TREE_PAGE_SIZE, TREE_INITIAL_FETCH_COUNT, TREE_PAGE_LIMIT } from '../constants';
+import {
+  TREE_PAGE_SIZE,
+  TREE_INITIAL_FETCH_COUNT,
+  TREE_PAGE_LIMIT,
+  COMMIT_BATCH_SIZE,
+} from '../constants';
 import getRefMixin from '../mixins/get_ref';
 import projectPathQuery from '../queries/project_path.query.graphql';
 import { readmeFile } from '../utils/readme';
@@ -151,11 +156,19 @@ export default {
         .concat(data.trees.pageInfo, data.submodules.pageInfo, data.blobs.pageInfo)
         .find(({ hasNextPage }) => hasNextPage);
     },
-    loadCommitData({ rowNumber = 0, hasCommit } = {}) {
-      if (!this.glFeatures.lazyLoadCommits || hasCommit || isRequested(rowNumber)) {
+    handleRowAppear(rowNumber) {
+      if (!this.glFeatures.lazyLoadCommits || isRequested(rowNumber)) {
         return;
       }
 
+      // Since a user could scroll either up or down, we want to support lazy loading in both directions
+      this.loadCommitData(rowNumber);
+
+      if (rowNumber - COMMIT_BATCH_SIZE >= 0) {
+        this.loadCommitData(rowNumber - COMMIT_BATCH_SIZE);
+      }
+    },
+    loadCommitData(rowNumber) {
       loadCommits(this.projectPath, this.path, this.ref, rowNumber)
         .then(this.setCommitData)
         .catch(() => {});
@@ -182,7 +195,7 @@ export default {
       :has-more="hasShowMore"
       :commits="commits"
       @showMore="handleShowMore"
-      @row-appear="loadCommitData"
+      @row-appear="handleRowAppear"
     />
     <file-preview v-if="readme" :blob="readme" />
   </div>

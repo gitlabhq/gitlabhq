@@ -20,7 +20,7 @@ module Sidekiq
       module NoEnqueueingFromTransactions
         %i(perform_async perform_at perform_in).each do |name|
           define_method(name) do |*args|
-            if !Sidekiq::Worker.skip_transaction_check && ApplicationRecord.inside_transaction?
+            if !Sidekiq::Worker.skip_transaction_check && inside_transaction?
               begin
                 raise Sidekiq::Worker::EnqueueFromTransactionError, <<~MSG
                 `#{self}.#{name}` cannot be called inside a transaction as this can lead to
@@ -37,6 +37,12 @@ module Sidekiq
 
             super(*args)
           end
+        end
+
+        private
+
+        def inside_transaction?
+          ::ApplicationRecord.inside_transaction? || ::Ci::ApplicationRecord.inside_transaction?
         end
       end
 

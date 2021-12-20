@@ -23,7 +23,7 @@ module Ci
       end
 
       def builds_matching_tag_ids(relation, ids)
-        if ::Feature.enabled?(:ci_queueing_denormalize_tags_information, runner, default_enabled: :yaml)
+        if use_denormalized_data_strategy?
           relation.for_tags(runner.tags_ids)
         else
           relation.merge(CommitStatus.matches_tag_ids(ids, table: 'ci_pending_builds', column: 'build_id'))
@@ -31,7 +31,7 @@ module Ci
       end
 
       def builds_with_any_tags(relation)
-        if ::Feature.enabled?(:ci_queueing_denormalize_tags_information, runner, default_enabled: :yaml)
+        if use_denormalized_data_strategy?
           relation.where('cardinality(tag_ids) > 0')
         else
           relation.merge(CommitStatus.with_any_tags(table: 'ci_pending_builds', column: 'build_id'))
@@ -50,22 +50,14 @@ module Ci
         relation.pluck(:build_id)
       end
 
-      def use_denormalized_shared_runners_data?
-        ::Feature.enabled?(:ci_queueing_denormalize_shared_runners_information, runner, type: :development, default_enabled: :yaml)
-      end
-
-      def use_denormalized_minutes_data?
-        ::Feature.enabled?(:ci_queueing_denormalize_ci_minutes_information, runner, type: :development, default_enabled: :yaml)
-      end
-
-      def use_denormalized_namespace_traversal_ids?
-        ::Feature.enabled?(:ci_queueing_denormalize_namespace_traversal_ids, runner, type: :development, default_enabled: :yaml)
+      def use_denormalized_data_strategy?
+        ::Feature.enabled?(:ci_queuing_use_denormalized_data_strategy, default_enabled: :yaml)
       end
 
       private
 
       def builds_available_for_shared_runners
-        if use_denormalized_shared_runners_data?
+        if use_denormalized_data_strategy?
           new_builds.with_instance_runners
         else
           new_builds

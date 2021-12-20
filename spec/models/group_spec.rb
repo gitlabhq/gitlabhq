@@ -94,34 +94,6 @@ RSpec.describe Group do
           expect(group).to be_valid
         end
       end
-
-      context 'when the feature flag `validate_namespace_parent_type` is disabled' do
-        before do
-          stub_feature_flags(validate_namespace_parent_type: false)
-        end
-
-        context 'when the group has no parent' do
-          it 'allows a group to have no parent associated with it' do
-            group = build(:group)
-
-            expect(group).to be_valid
-          end
-        end
-
-        context 'when the group has a parent' do
-          it 'allows a group to have a namespace as its parent' do
-            group = build(:group, parent: build(:namespace))
-
-            expect(group).to be_valid
-          end
-
-          it 'allows a group to have another group as its parent' do
-            group = build(:group, parent: build(:group))
-
-            expect(group).to be_valid
-          end
-        end
-      end
     end
 
     describe 'path validation' do
@@ -533,6 +505,10 @@ RSpec.describe Group do
       describe '#ancestors' do
         it { expect(group.ancestors.to_sql).not_to include 'traversal_ids <@' }
       end
+
+      describe '#ancestors_upto' do
+        it { expect(group.ancestors_upto.to_sql).not_to include "WITH ORDINALITY" }
+      end
     end
 
     context 'linear' do
@@ -564,6 +540,10 @@ RSpec.describe Group do
 
           it { expect(group.ancestors.to_sql).not_to include 'traversal_ids <@' }
         end
+      end
+
+      describe '#ancestors_upto' do
+        it { expect(group.ancestors_upto.to_sql).to include "WITH ORDINALITY" }
       end
 
       context 'when project namespace exists in the group' do
@@ -734,7 +714,6 @@ RSpec.describe Group do
       let!(:project) { create(:project, group: group) }
 
       before do
-        stub_experiments(invite_members_for_task: true)
         group.add_users([create(:user)], :developer, tasks_to_be_done: %w(ci code), tasks_project_id: project.id)
       end
 
@@ -2317,14 +2296,6 @@ RSpec.describe Group do
     end
 
     it_behaves_like 'returns the expected groups for a group and its descendants'
-
-    context 'when :linear_group_including_descendants_by feature flag is disabled' do
-      before do
-        stub_feature_flags(linear_group_including_descendants_by: false)
-      end
-
-      it_behaves_like 'returns the expected groups for a group and its descendants'
-    end
   end
 
   describe '.preset_root_ancestor_for' do

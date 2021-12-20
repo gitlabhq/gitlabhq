@@ -492,10 +492,13 @@ image::screenshot.png[block image,800,450]
 Press image:reload.svg[reload,16,opts=interactive] to reload the page.
 
 video::movie.mp4[width=640,start=60,end=140,options=autoplay]
+```
 
-video::aHjpOzsQ9YI[youtube]
+GitLab does not support embedding YouTube and Vimeo videos in AsciiDoc content.
+Use a standard AsciiDoc link:
 
-video::300817511[vimeo]
+```plaintext
+https://www.youtube.com/watch?v=BlaZ65-b7y0[Link text for the video]
 ```
 
 ### Breaks

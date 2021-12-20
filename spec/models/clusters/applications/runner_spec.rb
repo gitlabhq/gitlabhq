@@ -69,64 +69,7 @@ RSpec.describe Clusters::Applications::Runner do
       expect(values).to include('privileged: true')
       expect(values).to include('image: ubuntu:16.04')
       expect(values).to include('resources')
-      expect(values).to match(/runnerToken: ['"]?#{Regexp.escape(ci_runner.token)}/)
       expect(values).to match(/gitlabUrl: ['"]?#{Regexp.escape(Gitlab::Routing.url_helpers.root_url)}/)
-    end
-
-    context 'without a runner' do
-      let(:application) { create(:clusters_applications_runner, runner: nil, cluster: cluster) }
-      let(:runner) { application.runner }
-
-      shared_examples 'runner creation' do
-        it 'creates a runner' do
-          expect { subject }.to change { Ci::Runner.count }.by(1)
-        end
-
-        it 'uses the new runner token' do
-          expect(values).to match(/runnerToken: '?#{Regexp.escape(runner.token)}/)
-        end
-      end
-
-      context 'project cluster' do
-        let(:project) { create(:project) }
-        let(:cluster) { create(:cluster, :with_installed_helm, projects: [project]) }
-
-        include_examples 'runner creation'
-
-        it 'creates a project runner' do
-          subject
-
-          runner_projects = Project.where(id: runner.runner_projects.pluck(:project_id))
-          expect(runner).to be_project_type
-          expect(runner_projects).to match_array [project]
-        end
-      end
-
-      context 'group cluster' do
-        let(:group) { create(:group) }
-        let(:cluster) { create(:cluster, :with_installed_helm, cluster_type: :group_type, groups: [group]) }
-
-        include_examples 'runner creation'
-
-        it 'creates a group runner' do
-          subject
-
-          expect(runner).to be_group_type
-          expect(runner.runner_namespaces.pluck(:namespace_id)).to match_array [group.id]
-        end
-      end
-
-      context 'instance cluster' do
-        let(:cluster) { create(:cluster, :with_installed_helm, :instance) }
-
-        include_examples 'runner creation'
-
-        it 'creates an instance runner' do
-          subject
-
-          expect(runner).to be_instance_type
-        end
-      end
     end
 
     context 'with duplicated values on vendor/runner/values.yaml' do

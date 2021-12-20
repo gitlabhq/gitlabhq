@@ -216,11 +216,12 @@ module Ci
     end
 
     def chunks_migration_enabled?
-      ::Gitlab::Ci::Features.accept_trace?(build.project)
+      ::Feature.enabled?(:ci_enable_live_trace, build.project) &&
+        ::Feature.enabled?(:ci_accept_trace, build.project, type: :ops, default_enabled: true)
     end
 
     def log_invalid_chunks?
-      ::Gitlab::Ci::Features.log_invalid_trace_chunks?(build.project)
+      ::Feature.enabled?(:ci_trace_log_invalid_chunks, build.project, type: :ops, default_enabled: false)
     end
   end
 end

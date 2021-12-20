@@ -66,7 +66,7 @@ module Gitlab
           end
 
           def invite_members?
-            invite_members_for_task_experiment_enabled?
+            user.can?(:admin_group_member, group)
           end
 
           private

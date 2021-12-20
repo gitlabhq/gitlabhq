@@ -1,8 +1,9 @@
 import { GlButton, GlEmptyState, GlLink } from '@gitlab/ui';
-import { createLocalVue, mount, shallowMount } from '@vue/test-utils';
+import * as Sentry from '@sentry/browser';
+import { mount, shallowMount } from '@vue/test-utils';
 import AxiosMockAdapter from 'axios-mock-adapter';
 import { cloneDeep } from 'lodash';
-import { nextTick } from 'vue';
+import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import getIssuesQuery from 'ee_else_ce/issues_list/queries/get_issues.query.graphql';
 import getIssuesCountsQuery from 'ee_else_ce/issues_list/queries/get_issues_counts.query.graphql';
@@ -17,29 +18,28 @@ import {
   locationSearch,
   urlParams,
 } from 'jest/issues_list/mock_data';
-import createFlash from '~/flash';
+import createFlash, { FLASH_TYPES } from '~/flash';
 import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
 import CsvImportExportButtons from '~/issuable/components/csv_import_export_buttons.vue';
 import IssuableByEmail from '~/issuable/components/issuable_by_email.vue';
-import IssuableList from '~/issuable_list/components/issuable_list_root.vue';
-import { IssuableListTabs, IssuableStates } from '~/issuable_list/constants';
+import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_root.vue';
+import { IssuableListTabs, IssuableStates } from '~/vue_shared/issuable/list/constants';
 import IssuesListApp from '~/issues_list/components/issues_list_app.vue';
 import NewIssueDropdown from '~/issues_list/components/new_issue_dropdown.vue';
 import {
   CREATED_DESC,
   DUE_DATE_OVERDUE,
   PARAM_DUE_DATE,
+  RELATIVE_POSITION,
+  RELATIVE_POSITION_ASC,
   TOKEN_TYPE_ASSIGNEE,
   TOKEN_TYPE_AUTHOR,
   TOKEN_TYPE_CONFIDENTIAL,
-  TOKEN_TYPE_EPIC,
-  TOKEN_TYPE_ITERATION,
   TOKEN_TYPE_LABEL,
   TOKEN_TYPE_MILESTONE,
   TOKEN_TYPE_MY_REACTION,
   TOKEN_TYPE_RELEASE,
   TOKEN_TYPE_TYPE,
-  TOKEN_TYPE_WEIGHT,
   urlSortParams,
 } from '~/issues_list/constants';
 import eventHub from '~/issues_list/eventhub';
@@ -48,17 +48,17 @@ import axios from '~/lib/utils/axios_utils';
 import { scrollUp } from '~/lib/utils/scroll_utils';
 import { joinPaths } from '~/lib/utils/url_utility';
 
+jest.mock('@sentry/browser');
 jest.mock('~/flash');
 jest.mock('~/lib/utils/scroll_utils', () => ({
   scrollUp: jest.fn().mockName('scrollUpMock'),
 }));
 
-describe('IssuesListApp component', () => {
+describe('CE IssuesListApp component', () => {
   let axiosMock;
   let wrapper;
 
-  const localVue = createLocalVue();
-  localVue.use(VueApollo);
+  Vue.use(VueApollo);
 
   const defaultProvide = {
     calendarPath: 'calendar/path',
@@ -69,6 +69,7 @@ describe('IssuesListApp component', () => {
     hasAnyIssues: true,
     hasAnyProjects: true,
     hasBlockedIssuesFeature: true,
+    hasIssuableHealthStatusFeature: true,
     hasIssueWeightsFeature: true,
     hasIterationsFeature: true,
     isProject: true,
@@ -111,7 +112,6 @@ describe('IssuesListApp component', () => {
     const apolloProvider = createMockApollo(requestHandlers);
 
     return mountFn(IssuesListApp, {
-      localVue,
       apolloProvider,
       provide: {
         ...defaultProvide,
@@ -314,6 +314,29 @@ describe('IssuesListApp component', () => {
           },
         });
       });
+
+      describe('when issue repositioning is disabled and the sort is manual', () => {
+        beforeEach(() => {
+          setWindowLocation(`?sort=${RELATIVE_POSITION}`);
+          wrapper = mountComponent({ provide: { isIssueRepositioningDisabled: true } });
+        });
+
+        it('changes the sort to the default of created descending', () => {
+          expect(findIssuableList().props()).toMatchObject({
+            initialSortBy: CREATED_DESC,
+            urlParams: {
+              sort: urlSortParams[CREATED_DESC],
+            },
+          });
+        });
+
+        it('shows an alert to tell the user that manual reordering is disabled', () => {
+          expect(createFlash).toHaveBeenCalledWith({
+            message: IssuesListApp.i18n.issueRepositioningMessage,
+            type: FLASH_TYPES.NOTICE,
+          });
+        });
+      });
     });
 
     describe('state', () => {
@@ -335,6 +358,27 @@ describe('IssuesListApp component', () => {
         wrapper = mountComponent();
 
         expect(findIssuableList().props('initialFilterValue')).toEqual(filteredTokens);
+      });
+
+      describe('when anonymous searching is performed', () => {
+        beforeEach(() => {
+          setWindowLocation(locationSearch);
+
+          wrapper = mountComponent({
+            provide: { isAnonymousSearchDisabled: true, isSignedIn: false },
+          });
+        });
+
+        it('is not set from url params', () => {
+          expect(findIssuableList().props('initialFilterValue')).toEqual([]);
+        });
+
+        it('shows an alert to tell the user they must be signed in to search', () => {
+          expect(createFlash).toHaveBeenCalledWith({
+            message: IssuesListApp.i18n.anonymousSearchingMessage,
+            type: FLASH_TYPES.NOTICE,
+          });
+        });
       });
     });
   });
@@ -484,11 +528,7 @@ describe('IssuesListApp component', () => {
 
     describe('when user is signed out', () => {
       beforeEach(() => {
-        wrapper = mountComponent({
-          provide: {
-            isSignedIn: false,
-          },
-        });
+        wrapper = mountComponent({ provide: { isSignedIn: false } });
       });
 
       it('does not render My-Reaction or Confidential tokens', () => {
@@ -497,54 +537,6 @@ describe('IssuesListApp component', () => {
           { type: TOKEN_TYPE_ASSIGNEE, preloadedAuthors: [mockCurrentUser] },
           { type: TOKEN_TYPE_MY_REACTION },
           { type: TOKEN_TYPE_CONFIDENTIAL },
-        ]);
-      });
-    });
-
-    describe('when iterations are not available', () => {
-      beforeEach(() => {
-        wrapper = mountComponent({
-          provide: {
-            projectIterationsPath: '',
-          },
-        });
-      });
-
-      it('does not render Iteration token', () => {
-        expect(findIssuableList().props('searchTokens')).not.toMatchObject([
-          { type: TOKEN_TYPE_ITERATION },
-        ]);
-      });
-    });
-
-    describe('when epics are not available', () => {
-      beforeEach(() => {
-        wrapper = mountComponent({
-          provide: {
-            groupPath: '',
-          },
-        });
-      });
-
-      it('does not render Epic token', () => {
-        expect(findIssuableList().props('searchTokens')).not.toMatchObject([
-          { type: TOKEN_TYPE_EPIC },
-        ]);
-      });
-    });
-
-    describe('when weights are not available', () => {
-      beforeEach(() => {
-        wrapper = mountComponent({
-          provide: {
-            groupPath: '',
-          },
-        });
-      });
-
-      it('does not render Weight token', () => {
-        expect(findIssuableList().props('searchTokens')).not.toMatchObject([
-          { type: TOKEN_TYPE_WEIGHT },
         ]);
       });
     });
@@ -561,33 +553,27 @@ describe('IssuesListApp component', () => {
           current_user_avatar_url: mockCurrentUser.avatar_url,
         };
 
-        wrapper = mountComponent({
-          provide: {
-            isSignedIn: true,
-            projectIterationsPath: 'project/iterations/path',
-            groupPath: 'group/path',
-            hasIssueWeightsFeature: true,
-          },
-        });
+        wrapper = mountComponent({ provide: { isSignedIn: true } });
       });
 
-      it('renders all tokens', () => {
+      afterEach(() => {
+        window.gon = originalGon;
+      });
+
+      it('renders all tokens alphabetically', () => {
         const preloadedAuthors = [
           { ...mockCurrentUser, id: convertToGraphQLId('User', mockCurrentUser.id) },
         ];
 
         expect(findIssuableList().props('searchTokens')).toMatchObject([
-          { type: TOKEN_TYPE_AUTHOR, preloadedAuthors },
           { type: TOKEN_TYPE_ASSIGNEE, preloadedAuthors },
-          { type: TOKEN_TYPE_MILESTONE },
-          { type: TOKEN_TYPE_LABEL },
-          { type: TOKEN_TYPE_TYPE },
-          { type: TOKEN_TYPE_RELEASE },
-          { type: TOKEN_TYPE_MY_REACTION },
+          { type: TOKEN_TYPE_AUTHOR, preloadedAuthors },
           { type: TOKEN_TYPE_CONFIDENTIAL },
-          { type: TOKEN_TYPE_ITERATION },
-          { type: TOKEN_TYPE_EPIC },
-          { type: TOKEN_TYPE_WEIGHT },
+          { type: TOKEN_TYPE_LABEL },
+          { type: TOKEN_TYPE_MILESTONE },
+          { type: TOKEN_TYPE_MY_REACTION },
+          { type: TOKEN_TYPE_RELEASE },
+          { type: TOKEN_TYPE_TYPE },
         ]);
       });
     });
@@ -607,12 +593,17 @@ describe('IssuesListApp component', () => {
       });
 
       it('shows an error message', () => {
-        expect(createFlash).toHaveBeenCalledWith({
-          captureError: true,
-          error: new Error('Network error: ERROR'),
-          message,
-        });
+        expect(findIssuableList().props('error')).toBe(message);
+        expect(Sentry.captureException).toHaveBeenCalledWith(new Error('Network error: ERROR'));
       });
+    });
+
+    it('clears error message when "dismiss-alert" event is emitted from IssuableList', () => {
+      wrapper = mountComponent({ issuesQueryResponse: jest.fn().mockRejectedValue(new Error()) });
+
+      findIssuableList().vm.$emit('dismiss-alert');
+
+      expect(findIssuableList().props('error')).toBeNull();
     });
   });
 
@@ -676,6 +667,7 @@ describe('IssuesListApp component', () => {
       const response = (isProject = true) => ({
         data: {
           [isProject ? 'project' : 'group']: {
+            id: '1',
             issues: {
               ...defaultQueryResponse.data.project.issues,
               nodes: [issueOne, issueTwo, issueThree, issueFour],
@@ -737,11 +729,10 @@ describe('IssuesListApp component', () => {
 
           await waitForPromises();
 
-          expect(createFlash).toHaveBeenCalledWith({
-            message: IssuesListApp.i18n.reorderError,
-            captureError: true,
-            error: new Error('Request failed with status code 500'),
-          });
+          expect(findIssuableList().props('error')).toBe(IssuesListApp.i18n.reorderError);
+          expect(Sentry.captureException).toHaveBeenCalledWith(
+            new Error('Request failed with status code 500'),
+          );
         });
       });
     });
@@ -762,6 +753,30 @@ describe('IssuesListApp component', () => {
           });
         },
       );
+
+      describe('when issue repositioning is disabled', () => {
+        const initialSort = CREATED_DESC;
+
+        beforeEach(() => {
+          setWindowLocation(`?sort=${initialSort}`);
+          wrapper = mountComponent({ provide: { isIssueRepositioningDisabled: true } });
+
+          findIssuableList().vm.$emit('sort', RELATIVE_POSITION_ASC);
+        });
+
+        it('does not update the sort to manual', () => {
+          expect(findIssuableList().props('urlParams')).toMatchObject({
+            sort: urlSortParams[initialSort],
+          });
+        });
+
+        it('shows an alert to tell the user that manual reordering is disabled', () => {
+          expect(createFlash).toHaveBeenCalledWith({
+            message: IssuesListApp.i18n.issueRepositioningMessage,
+            type: FLASH_TYPES.NOTICE,
+          });
+        });
+      });
     });
 
     describe('when "update-legacy-bulk-edit" event is emitted by IssuableList', () => {
@@ -778,14 +793,36 @@ describe('IssuesListApp component', () => {
     });
 
     describe('when "filter" event is emitted by IssuableList', () => {
-      beforeEach(() => {
+      it('updates IssuableList with url params', async () => {
         wrapper = mountComponent();
 
         findIssuableList().vm.$emit('filter', filteredTokens);
+        await nextTick();
+
+        expect(findIssuableList().props('urlParams')).toMatchObject(urlParams);
       });
 
-      it('updates IssuableList with url params', () => {
-        expect(findIssuableList().props('urlParams')).toMatchObject(urlParams);
+      describe('when anonymous searching is performed', () => {
+        beforeEach(() => {
+          wrapper = mountComponent({
+            provide: { isAnonymousSearchDisabled: true, isSignedIn: false },
+          });
+
+          findIssuableList().vm.$emit('filter', filteredTokens);
+        });
+
+        it('does not update IssuableList with url params ', async () => {
+          const defaultParams = { sort: 'created_date', state: 'opened' };
+
+          expect(findIssuableList().props('urlParams')).toEqual(defaultParams);
+        });
+
+        it('shows an alert to tell the user they must be signed in to search', () => {
+          expect(createFlash).toHaveBeenCalledWith({
+            message: IssuesListApp.i18n.anonymousSearchingMessage,
+            type: FLASH_TYPES.NOTICE,
+          });
+        });
       });
     });
   });

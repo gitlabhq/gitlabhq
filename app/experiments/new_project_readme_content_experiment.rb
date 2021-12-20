@@ -6,7 +6,7 @@ class NewProjectReadmeContentExperiment < ApplicationExperiment # rubocop:disabl
 
   def run_with(project, variant: nil)
     @project = project
-    record!
+    publish_to_database
     run(variant)
   end
 

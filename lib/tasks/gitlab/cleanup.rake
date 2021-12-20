@@ -100,13 +100,15 @@ namespace :gitlab do
     namespace :sessions do
       desc "GitLab | Cleanup | Sessions | Clean ActiveSession lookup keys"
       task active_sessions_lookup_keys: :gitlab_environment do
-        session_key_pattern = "#{Gitlab::Redis::SharedState::USER_SESSIONS_LOOKUP_NAMESPACE}:*"
+        use_redis_session_store = Gitlab::Utils.to_boolean(ENV['GITLAB_USE_REDIS_SESSIONS_STORE'], default: true)
+        redis_store_class = use_redis_session_store ? Gitlab::Redis::Sessions : Gitlab::Redis::SharedState
+        session_key_pattern = "#{Gitlab::Redis::Sessions::USER_SESSIONS_LOOKUP_NAMESPACE}:*"
         last_save_check = Time.at(0)
         wait_time = 10.seconds
         cursor = 0
         total_users_scanned = 0
 
-        Gitlab::Redis::SharedState.with do |redis|
+        redis_store_class.with do |redis|
           begin
             cursor, keys = redis.scan(cursor, match: session_key_pattern)
             total_users_scanned += keys.count
@@ -119,27 +121,16 @@ namespace :gitlab do
               last_save_check = Time.now
             end
 
+            user = Struct.new(:id)
+
             keys.each do |key|
               user_id = key.split(':').last
 
-              lookup_key_count = redis.scard(key)
+              removed = []
+              active = ActiveSession.cleaned_up_lookup_entries(redis, user.new(user_id), removed)
 
-              session_ids = ActiveSession.session_ids_for_user(user_id)
-              entries = ActiveSession.raw_active_session_entries(redis, session_ids, user_id)
-              session_ids_and_entries = session_ids.zip(entries)
-
-              inactive_session_ids = session_ids_and_entries.map do |session_id, session|
-                session_id if session.nil?
-              end.compact
-
-              redis.pipelined do |conn|
-                inactive_session_ids.each do |session_id|
-                  conn.srem(key, session_id)
-                end
-              end
-
-              if inactive_session_ids
-                puts "deleted #{inactive_session_ids.count} out of #{lookup_key_count} lookup keys for User ##{user_id}"
+              if removed.any?
+                puts "deleted #{removed.count} out of #{active.count + removed.count} lookup keys for User ##{user_id}"
               end
             end
           end while cursor.to_i != 0

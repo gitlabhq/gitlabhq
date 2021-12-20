@@ -42,6 +42,28 @@ gitlab-rake "gitlab:uploads:migrate:all"
 sudo RAILS_ENV=production -u git -H bundle exec rake gitlab:uploads:migrate:all
 ```
 
+You can optionally track progress and verify that all packages migrated successfully using the
+[PostgreSQL console](https://docs.gitlab.com/omnibus/settings/database.html#connecting-to-the-bundled-postgresql-database):
+
+- `sudo gitlab-rails dbconsole` for Omnibus GitLab instances.
+- `sudo -u git -H psql -d gitlabhq_production` for source-installed instances.
+
+Verify `objectstg` below (where `store=2`) has count of all artifacts:
+
+```shell
+gitlabhq_production=# SELECT count(*) AS total, sum(case when store = '1' then 1 else 0 end) AS filesystem, sum(case when store = '2' then 1 else 0 end) AS objectstg FROM uploads;
+
+total | filesystem | objectstg
+------+------------+-----------
+   2409 |          0 |      2409
+```
+
+Verify that there are no files on disk in the `uploads` folder:
+
+```shell
+sudo find /var/opt/gitlab/gitlab-rails/uploads -type f | grep -v tmp | wc -l
+```
+
 ### Individual Rake tasks
 
 If you already ran the [all-in-one Rake task](#all-in-one-rake-task), there is no need to run these

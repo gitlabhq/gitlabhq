@@ -37,7 +37,7 @@ module Serverless
         'a1',
         serverless_domain_cluster.uuid[2..-3],
         'f2',
-        serverless_domain_cluster.uuid[-2..-1]
+        serverless_domain_cluster.uuid[-2..]
       ].join
     end
   end

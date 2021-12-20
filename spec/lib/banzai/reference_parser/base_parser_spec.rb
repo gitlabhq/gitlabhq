@@ -29,10 +29,10 @@ RSpec.describe Banzai::ReferenceParser::BaseParser do
 
   describe '#project_for_node' do
     it 'returns the Project for a node' do
-      document = instance_double('document', fragment?: false)
-      project = instance_double('project')
-      object = instance_double('object', project: project)
-      node = instance_double('node', document: document)
+      document = double('document', fragment?: false)
+      project = instance_double('Project')
+      object = double('object', project: project)
+      node = double('node', document: document)
 
       context.associate_document(document, object)
 

@@ -1,6 +1,8 @@
 fragment JobArtifacts on Pipeline {
+  id
   jobs(securityReportTypes: $reportTypes) {
     nodes {
+      id
       name
       artifacts {
         nodes {

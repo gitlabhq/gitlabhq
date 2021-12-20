@@ -36,6 +36,7 @@ module Gitlab
         if Rails.env.development?
           allow_webpack_dev_server(directives)
           allow_letter_opener(directives)
+          allow_snowplow_micro(directives) if Gitlab::Tracking.snowplow_micro_enabled?
           allow_customersdot(directives) if ENV['CUSTOMER_PORTAL_URL'].present?
         end
 
@@ -138,13 +139,15 @@ module Gitlab
         append_to_directive(directives, 'frame_src', Gitlab::Utils.append_path(Gitlab.config.gitlab.url, '/rails/letter_opener/'))
       end
 
+      def self.allow_snowplow_micro(directives)
+        url = URI.join(Gitlab::Tracking::Destinations::SnowplowMicro.new.uri, '/').to_s
+        append_to_directive(directives, 'connect_src', url)
+      end
+
       # Using 'self' in the CSP introduces several CSP bypass opportunities
       # for this reason we list the URLs where GitLab frames itself instead
       def self.allow_framed_gitlab_paths(directives)
-        # We need the version without trailing / for the sidekiq page itself
-        # and we also need the version with trailing / for "deeper" pages
-        # like /admin/sidekiq/busy
-        ['/admin/sidekiq', '/admin/sidekiq/', '/-/speedscope/index.html'].map do |path|
+        ['/admin/', '/assets/', '/-/speedscope/index.html'].map do |path|
           append_to_directive(directives, 'frame_src', Gitlab::Utils.append_path(Gitlab.config.gitlab.url, path))
         end
       end

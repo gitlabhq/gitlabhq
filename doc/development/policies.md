@@ -79,7 +79,7 @@ cop](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/49771).
 
 ## Scores, Order, Performance
 
-To see how the rules get evaluated into a judgment, it is useful in a console to use `policy.debug(:some_ability)`. This prints the rules in the order they are evaluated.
+To see how the rules get evaluated into a judgment, open a Rails console and run: `policy.debug(:some_ability)`. This prints the rules in the order they are evaluated.
 
 For example, let's say you wanted to debug `IssuePolicy`. You might run
 the debugger in this way:
@@ -222,7 +222,7 @@ delegation would end up with only children whose parents enjoy green vegetables
 eating it. But a parent may well give their child broccoli, even if they dislike
 it themselves, because it is good for their child.
 
-The solution it to override the `:eat_broccoli` ability in the child policy:
+The solution is to override the `:eat_broccoli` ability in the child policy:
 
 ```ruby
 class ChildPolicy < BasePolicy

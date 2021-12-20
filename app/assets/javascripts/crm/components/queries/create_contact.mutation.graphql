@@ -1,0 +1,10 @@
+#import "./crm_contact_fields.fragment.graphql"
+
+mutation createContact($input: CustomerRelationsContactCreateInput!) {
+  customerRelationsContactCreate(input: $input) {
+    contact {
+      ...ContactFragment
+    }
+    errors
+  }
+}

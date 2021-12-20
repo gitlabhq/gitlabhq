@@ -56,4 +56,43 @@ RSpec.describe 'Database::MultipleDatabases' do
       end
     end
   end
+
+  describe '.with_added_ci_connection' do
+    context 'when only a single database is setup' do
+      before do
+        skip_if_multiple_databases_are_setup
+      end
+
+      it 'connects Ci::ApplicationRecord to the main database for the duration of the block', :aggregate_failures do
+        main_database = current_database(ActiveRecord::Base)
+        original_database = current_database(Ci::ApplicationRecord)
+
+        with_added_ci_connection do
+          expect(current_database(Ci::ApplicationRecord)).to eq(main_database)
+        end
+
+        expect(current_database(Ci::ApplicationRecord)).to eq(original_database)
+      end
+    end
+
+    context 'when multiple databases are setup' do
+      before do
+        skip_if_multiple_databases_not_setup
+      end
+
+      it 'does not mock the original Ci::ApplicationRecord connection', :aggregate_failures do
+        original_database = current_database(Ci::ApplicationRecord)
+
+        with_added_ci_connection do
+          expect(current_database(Ci::ApplicationRecord)).to eq(original_database)
+        end
+
+        expect(current_database(Ci::ApplicationRecord)).to eq(original_database)
+      end
+    end
+
+    def current_database(connection_class)
+      connection_class.retrieve_connection.execute('select current_database()').first
+    end
+  end
 end

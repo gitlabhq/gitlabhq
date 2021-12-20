@@ -192,20 +192,6 @@ RSpec.describe ApplicationHelper do
     end
   end
 
-  describe '#contact_sales_url' do
-    subject { helper.contact_sales_url }
-
-    it 'returns the url' do
-      is_expected.to eq("https://#{helper.promo_host}/sales")
-    end
-
-    it 'changes if promo_url changes' do
-      allow(helper).to receive(:promo_url).and_return('https://somewhere.else')
-
-      is_expected.to eq('https://somewhere.else/sales')
-    end
-  end
-
   describe '#support_url' do
     context 'when alternate support url is specified' do
       let(:alternate_url) { 'http://company.example.com/getting-help' }

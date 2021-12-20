@@ -342,6 +342,7 @@ end
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/69372) in GitLab 14.3.
 > - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/338350) in GitLab 14.4.
+> - [Enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/338350) in GitLab 14.6.
 
 The deduplication always take into account the latest binary replication pointer, not the first one.
 This happens because we drop the same job scheduled for the second time and the Write-Ahead Log (WAL) is lost.
@@ -353,15 +354,11 @@ This way we are always comparing the latest binary replication pointer,
 making sure that we read from the replica that is fully caught up.
 
 FLAG:
-On self-managed GitLab, by default this feature is not available.
-To make it available,
-ask an administrator to [enable the preserve_latest_wal_locations_for_idempotent_jobs flag](../administration/feature_flags.md).
-FLAG:
-On self-managed GitLab, by default this feature is not available.
-To make it available,
-ask an administrator to [enable the `preserve_latest_wal_locations_for_idempotent_jobs` flag](../administration/feature_flags.md).
+On self-managed GitLab, by default this feature is available. To hide the feature, ask an administrator to
+[disable the feature flag](../administration/feature_flags.md) named `preserve_latest_wal_locations_for_idempotent_jobs`.
+
 This feature flag is related to GitLab development and is not intended to be used by GitLab administrators, though.
-On GitLab.com, this feature is available but can be configured by GitLab.com administrators only.
+On GitLab.com, this feature is available.
 
 ## Limited capacity worker
 
@@ -574,7 +571,7 @@ of reading a stale record is non-zero due to replicas potentially lagging behind
 
 When the number of jobs that rely on the database increases, ensuring immediate data consistency
 can put unsustainable load on the primary database server. We therefore added the ability to use
-[database load balancing for Sidekiq workers](../administration/database_load_balancing.md#load-balancing-for-sidekiq).
+[Database Load Balancing for Sidekiq workers](../administration/postgresql/database_load_balancing.md).
 By configuring a worker's `data_consistency` field, we can then allow the scheduler to target read replicas
 under several strategies outlined below.
 

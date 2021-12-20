@@ -6,8 +6,8 @@ module Gitlab
       attr_accessor :old_line, :new_line, :offset
 
       def initialize(old_line, new_line, offset: 0)
-        @old_line = old_line[offset..-1]
-        @new_line = new_line[offset..-1]
+        @old_line = old_line[offset..]
+        @new_line = new_line[offset..]
         @offset = offset
       end
 

@@ -3,7 +3,7 @@ import {
   npmPackage,
   mockPipelineInfo,
   mavenPackage as packageWithoutBuildInfo,
-} from 'jest/packages/mock_data';
+} from '../../mock_data';
 
 describe('Getters PackageDetails Store', () => {
   let state;

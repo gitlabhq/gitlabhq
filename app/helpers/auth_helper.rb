@@ -86,6 +86,17 @@ module AuthHelper
     auth_providers.select { |provider| form_based_provider?(provider) }
   end
 
+  def saml_providers
+    auth_providers.select { |provider| auth_strategy_class(provider) == 'OmniAuth::Strategies::SAML' }
+  end
+
+  def auth_strategy_class(provider)
+    config = Gitlab::Auth::OAuth::Provider.config_for(provider)
+    return if config.nil? || config['args'].blank?
+
+    config.args['strategy_class']
+  end
+
   def any_form_based_providers_enabled?
     form_based_providers.any? { |provider| form_enabled_for_sign_in?(provider) }
   end
@@ -164,10 +175,25 @@ module AuthHelper
   end
 
   def google_tag_manager_enabled?
-    Gitlab.com? &&
-      extra_config.has_key?('google_tag_manager_id') &&
-      extra_config.google_tag_manager_id.present? &&
-      !current_user
+    return false unless Gitlab.dev_env_or_com?
+
+    has_config_key = if Feature.enabled?(:gtm_nonce, type: :ops)
+                       extra_config.has_key?('google_tag_manager_nonce_id') &&
+                          extra_config.google_tag_manager_nonce_id.present?
+                     else
+                       extra_config.has_key?('google_tag_manager_id') &&
+                          extra_config.google_tag_manager_id.present?
+                     end
+
+    has_config_key && !current_user
+  end
+
+  def google_tag_manager_id
+    return unless google_tag_manager_enabled?
+
+    return extra_config.google_tag_manager_nonce_id if Feature.enabled?(:gtm_nonce, type: :ops)
+
+    extra_config.google_tag_manager_id
   end
 
   def auth_app_owner_text(owner)

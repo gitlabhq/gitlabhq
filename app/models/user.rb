@@ -27,6 +27,7 @@ class User < ApplicationRecord
   include HasUserType
   include Gitlab::Auth::Otp::Fortinet
   include RestrictedSignup
+  include StripAttribute
 
   DEFAULT_NOTIFICATION_LEVEL = :participating
 
@@ -112,10 +113,8 @@ class User < ApplicationRecord
   #
 
   # Namespace for personal projects
-  # TODO: change to `:namespace, -> { where(type: Namespaces::UserNamespace.sti_name}, class_name: 'Namespaces::UserNamespace'...`
-  #       when working on issue https://gitlab.com/gitlab-org/gitlab/-/issues/341070
   has_one :namespace,
-          -> { where(type: [nil, Namespaces::UserNamespace.sti_name]) },
+          -> { where(type: Namespaces::UserNamespace.sti_name) },
           dependent: :destroy, # rubocop:disable Cop/ActiveRecordDependent
           foreign_key: :owner_id,
           inverse_of: :owner,
@@ -189,8 +188,8 @@ class User < ApplicationRecord
   has_one  :abuse_report,             dependent: :destroy, foreign_key: :user_id # rubocop:disable Cop/ActiveRecordDependent
   has_many :reported_abuse_reports,   dependent: :destroy, foreign_key: :reporter_id, class_name: "AbuseReport" # rubocop:disable Cop/ActiveRecordDependent
   has_many :spam_logs,                dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
-  has_many :builds,                   dependent: :nullify, class_name: 'Ci::Build' # rubocop:disable Cop/ActiveRecordDependent
-  has_many :pipelines,                dependent: :nullify, class_name: 'Ci::Pipeline' # rubocop:disable Cop/ActiveRecordDependent
+  has_many :builds,                   class_name: 'Ci::Build'
+  has_many :pipelines,                class_name: 'Ci::Pipeline'
   has_many :todos
   has_many :notification_settings
   has_many :award_emoji,              dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
@@ -206,7 +205,7 @@ class User < ApplicationRecord
   has_many :bulk_imports
 
   has_many :custom_attributes, class_name: 'UserCustomAttribute'
-  has_many :callouts, class_name: 'UserCallout'
+  has_many :callouts, class_name: 'Users::Callout'
   has_many :group_callouts, class_name: 'Users::GroupCallout'
   has_many :term_agreements
   belongs_to :accepted_term, class_name: 'ApplicationSetting::Term'
@@ -391,8 +390,10 @@ class User < ApplicationRecord
     # this state transition object in order to do a rollback.
     # For this reason the tradeoff is to disable this cop.
     after_transition any => :blocked do |user|
-      Ci::DropPipelineService.new.execute_async_for_all(user.pipelines, :user_blocked, user)
-      Ci::DisableUserPipelineSchedulesService.new.execute(user)
+      user.run_after_commit do
+        Ci::DropPipelineService.new.execute_async_for_all(user.pipelines, :user_blocked, user)
+        Ci::DisableUserPipelineSchedulesService.new.execute(user)
+      end
     end
 
     after_transition any => :deactivated do |user|
@@ -465,6 +466,8 @@ class User < ApplicationRecord
   scope :with_no_activity, -> { with_state(:active).human_or_service_user.where(last_activity_on: nil) }
   scope :by_provider_and_extern_uid, ->(provider, extern_uid) { joins(:identities).merge(Identity.with_extern_uid(provider, extern_uid)) }
   scope :get_ids_by_username, -> (username) { where(username: username).pluck(:id) }
+
+  strip_attributes! :name
 
   def preferred_language
     read_attribute('preferred_language') ||
@@ -844,10 +847,6 @@ class User < ApplicationRecord
   # Instance methods
   #
 
-  def default_dashboard?
-    dashboard == self.class.column_defaults['dashboard']
-  end
-
   def full_path
     username
   end
@@ -915,6 +914,8 @@ class User < ApplicationRecord
   end
 
   def two_factor_u2f_enabled?
+    return false if Feature.enabled?(:webauthn, default_enabled: :yaml)
+
     if u2f_registrations.loaded?
       u2f_registrations.any?
     else
@@ -927,7 +928,7 @@ class User < ApplicationRecord
   end
 
   def two_factor_webauthn_enabled?
-    return false unless Feature.enabled?(:webauthn)
+    return false unless Feature.enabled?(:webauthn, default_enabled: :yaml)
 
     (webauthn_registrations.loaded? && webauthn_registrations.any?) || (!webauthn_registrations.loaded? && webauthn_registrations.exists?)
   end
@@ -989,11 +990,7 @@ class User < ApplicationRecord
 
   # Returns the groups a user is a member of, either directly or through a parent group
   def membership_groups
-    if Feature.enabled?(:linear_user_membership_groups, self, default_enabled: :yaml)
-      groups.self_and_descendants
-    else
-      Gitlab::ObjectHierarchy.new(groups).base_and_descendants
-    end
+    groups.self_and_descendants
   end
 
   # Returns a relation of groups the user has access to, including their parent
@@ -1615,7 +1612,7 @@ class User < ApplicationRecord
         .select('ci_runners.*')
 
       group_runners = Ci::RunnerNamespace
-        .where(namespace_id: Gitlab::ObjectHierarchy.new(owned_groups).base_and_descendants.select(:id))
+        .where(namespace_id: owned_groups.self_and_descendant_ids)
         .joins(:runner)
         .select('ci_runners.*')
 
@@ -1796,7 +1793,7 @@ class User < ApplicationRecord
   # we do this on read since migrating all existing users is not a feasible
   # solution.
   def feed_token
-    Gitlab::CurrentSettings.disable_feed_token ? nil : ensure_feed_token!
+    ensure_feed_token! unless Gitlab::CurrentSettings.disable_feed_token
   end
 
   # Each existing user needs to have a `static_object_token`.
@@ -1804,6 +1801,14 @@ class User < ApplicationRecord
   # solution.
   def static_object_token
     ensure_static_object_token!
+  end
+
+  def enabled_static_object_token
+    static_object_token if Gitlab::CurrentSettings.static_objects_external_storage_enabled?
+  end
+
+  def enabled_incoming_email_token
+    incoming_email_token if Gitlab::IncomingEmail.supports_issue_creation?
   end
 
   def sync_attribute?(attribute)
@@ -1949,7 +1954,7 @@ class User < ApplicationRecord
   end
 
   def find_or_initialize_callout(feature_name)
-    callouts.find_or_initialize_by(feature_name: ::UserCallout.feature_names[feature_name])
+    callouts.find_or_initialize_by(feature_name: ::Users::Callout.feature_names[feature_name])
   end
 
   def find_or_initialize_group_callout(feature_name, group_id)
@@ -2160,12 +2165,7 @@ class User < ApplicationRecord
       project_creation_levels << nil
     end
 
-    if Feature.enabled?(:linear_user_groups_with_developer_maintainer_project_access, self, default_enabled: :yaml)
-      developer_groups.self_and_descendants.where(project_creation_level: project_creation_levels)
-    else
-      developer_groups_hierarchy = ::Gitlab::ObjectHierarchy.new(developer_groups).base_and_descendants
-      ::Group.where(id: developer_groups_hierarchy.select(:id), project_creation_level: project_creation_levels)
-    end
+    developer_groups.self_and_descendants.where(project_creation_level: project_creation_levels)
   end
 
   def no_recent_activity?

@@ -1,5 +1,23 @@
 [[ "$TRACE" ]] && set -x
 
+function namespace_exists() {
+  local namespace="${1}"
+  local namespace_exists
+
+  echoinfo "Checking if ${namespace} exists..." true
+
+  kubectl describe namespace "${namespace}" >/dev/null 2>&1
+  namespace_exists=$?
+
+  if [ $namespace_exists -eq 0 ]; then
+    echoinfo "Namespace ${namespace} found."
+  else
+    echoerr "Namespace ${namespace} NOT found."
+  fi
+
+  return $namespace_exists
+}
+
 function deploy_exists() {
   local namespace="${1}"
   local release="${2}"
@@ -73,17 +91,20 @@ function delete_failed_release() {
     # Cleanup and previous installs, as FAILED and PENDING_UPGRADE will cause errors with `upgrade`
     if previous_deploy_failed "${namespace}" "${release}" ; then
       echoinfo "Review App deployment in bad state, cleaning up namespace ${release}"
-      delete_k8s_release_namespace
+      delete_namespace
     else
       echoinfo "Review App deployment in good state"
     fi
   fi
 }
 
-function delete_k8s_release_namespace() {
+function delete_namespace() {
   local namespace="${CI_ENVIRONMENT_SLUG}"
 
-  kubectl delete namespace "${namespace}" --wait
+  if namespace_exists "${namespace}"; then
+    echoinfo "Deleting namespace ${namespace}..." true
+    kubectl delete namespace "${namespace}" --wait
+  fi
 }
 
 function get_pod() {
@@ -120,9 +141,9 @@ function get_pod() {
 function run_task() {
   local namespace="${CI_ENVIRONMENT_SLUG}"
   local ruby_cmd="${1}"
-  local task_runner_pod=$(get_pod "task-runner")
+  local toolbox_pod=$(get_pod "toolbox")
 
-  kubectl exec --namespace "${namespace}" "${task_runner_pod}" -- gitlab-rails runner "${ruby_cmd}"
+  kubectl exec --namespace "${namespace}" "${toolbox_pod}" -- gitlab-rails runner "${ruby_cmd}"
 }
 
 function disable_sign_ups() {
@@ -147,6 +168,13 @@ function disable_sign_ups() {
   fi
 }
 
+function create_sample_projects() {
+  local create_sample_projects_rb="root_user = User.find_by_username('root'); 1.times { |i| params = { namespace_id: root_user.namespace.id, name: 'sample-project' + i.to_s, path: 'sample-project' + i.to_s, template_name: 'sample' }; ::Projects::CreateFromTemplateService.new(root_user, params).execute }"
+
+  # Queue jobs to create sample projects for root user namespace from sample data project template
+  retry "run_task \"${create_sample_projects_rb}\""
+}
+
 function check_kube_domain() {
   echoinfo "Checking that Kube domain exists..." true
 
@@ -163,9 +191,10 @@ function check_kube_domain() {
 function ensure_namespace() {
   local namespace="${1}"
 
-  echoinfo "Ensuring the ${namespace} namespace exists..." true
-
-  kubectl describe namespace "${namespace}" || kubectl create namespace "${namespace}"
+  if ! namespace_exists "${namespace}"; then
+    echoinfo "Creating namespace ${namespace}..." true
+    kubectl create namespace "${namespace}"
+  fi
 }
 
 function label_namespace() {
@@ -256,6 +285,12 @@ function deploy() {
   gitaly_image_tag=$(parse_gitaly_image_tag)
   gitlab_shell_image_repository="${IMAGE_REPOSITORY}/gitlab-shell"
   gitlab_workhorse_image_repository="${IMAGE_REPOSITORY}/gitlab-workhorse-ee"
+  sentry_enabled="false"
+
+  if [ -n ${REVIEW_APPS_SENTRY_DSN} ]; then
+    echo "REVIEW_APPS_SENTRY_DSN detected, enabling Sentry"
+    sentry_enabled="true"
+  fi
 
   ensure_namespace "${namespace}"
   label_namespace "${namespace}" "tls=review-apps-tls" # label namespace for kubed to sync tls
@@ -276,6 +311,9 @@ HELM_CMD=$(cat << EOF
     --set releaseOverride="${release}" \
     --set global.hosts.hostSuffix="${HOST_SUFFIX}" \
     --set global.hosts.domain="${REVIEW_APPS_DOMAIN}" \
+    --set global.appConfig.sentry.enabled="${sentry_enabled}" \
+    --set global.appConfig.sentry.dsn="${REVIEW_APPS_SENTRY_DSN}" \
+    --set global.appConfig.sentry.environment="review" \
     --set gitlab.migrations.image.repository="${gitlab_toolbox_image_repository}" \
     --set gitlab.migrations.image.tag="${CI_COMMIT_REF_SLUG}" \
     --set gitlab.gitaly.image.repository="${gitlab_gitaly_image_repository}" \
@@ -290,8 +328,8 @@ HELM_CMD=$(cat << EOF
     --set gitlab.webservice.image.tag="${CI_COMMIT_REF_SLUG}" \
     --set gitlab.webservice.workhorse.image="${gitlab_workhorse_image_repository}" \
     --set gitlab.webservice.workhorse.tag="${CI_COMMIT_REF_SLUG}" \
-    --set gitlab.task-runner.image.repository="${gitlab_toolbox_image_repository}" \
-    --set gitlab.task-runner.image.tag="${CI_COMMIT_REF_SLUG}"
+    --set gitlab.toolbox.image.repository="${gitlab_toolbox_image_repository}" \
+    --set gitlab.toolbox.image.tag="${CI_COMMIT_REF_SLUG}"
 EOF
 )
 

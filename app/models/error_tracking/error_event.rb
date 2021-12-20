@@ -3,6 +3,9 @@
 class ErrorTracking::ErrorEvent < ApplicationRecord
   belongs_to :error, counter_cache: :events_count
 
+  # Scrub null bytes
+  attribute :payload, Gitlab::Database::Type::JsonPgSafe.new
+
   validates :payload, json_schema: { filename: 'error_tracking_event_payload' }
 
   validates :error, presence: true

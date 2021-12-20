@@ -15,6 +15,7 @@ The [DAST browser-based crawler](../browser_based.md) provides a number of vulne
 | [16.2](16.2.md) | Server header exposes version information | Low | Passive |
 | [16.3](16.3.md) | X-Powered-By header exposes version information | Low | Passive |
 | [16.4](16.4.md) | X-Backend-Server header exposes server information | Info | Passive |
-| [16.5](16.5.md) | AspNet Header(s) exposes version information | Low | Passive |
+| [16.5](16.5.md) | AspNet header exposes version information | Low | Passive |
+| [16.6](16.6.md) | AspNetMvc header exposes version information | Low | Passive |
 | [614.1](614.1.md) | Sensitive cookie without `Secure` attribute | Low | Passive |
 | [693.1](693.1.md) | Missing X-Content-Type-Options: nosniff | Low | Passive |

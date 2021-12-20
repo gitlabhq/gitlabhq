@@ -287,12 +287,13 @@ Example response:
 Returns metadata for a specific package version:
 
 ```plaintext
-GET <route-prefix>/metadata/:package_name/index
+GET <route-prefix>/metadata/:package_name/:package_version
 ```
 
-| Attribute      | Type   | Required | Description |
-| -------------- | ------ | -------- | ----------- |
-| `package_name` | string | yes      | The name of the package. |
+| Attribute         | Type   | Required | Description |
+| ----------------- | ------ | -------- | ----------- |
+| `package_name`    | string | yes      | The name of the package.    |
+| `package_version` | string | yes      | The version of the package. |
 
 ```shell
 curl --user <username>:<personal_access_token> "https://gitlab.example.com/api/v4/projects/1/packages/nuget/metadata/MyNuGetPkg/1.3.0.17"

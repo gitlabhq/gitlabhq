@@ -8,7 +8,8 @@ export default {
     },
     subTitle: {
       type: String,
-      required: true,
+      required: false,
+      default: '',
     },
   },
 };
@@ -16,10 +17,10 @@ export default {
 
 <template>
   <div>
-    <h5 class="gl-border-b-solid gl-border-b-1 gl-border-gray-200">
+    <h5 class="gl-border-b-solid gl-border-b-1 gl-border-gray-200 gl-pb-3">
       {{ title }}
     </h5>
-    <p>{{ subTitle }}</p>
+    <p v-if="subTitle">{{ subTitle }}</p>
     <slot></slot>
   </div>
 </template>

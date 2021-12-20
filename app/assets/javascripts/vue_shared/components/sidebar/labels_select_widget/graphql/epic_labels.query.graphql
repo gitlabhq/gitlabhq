@@ -2,6 +2,7 @@
 
 query epicLabels($fullPath: ID!, $iid: ID) {
   workspace: group(fullPath: $fullPath) {
+    id
     issuable: epic(iid: $iid) {
       id
       labels {

@@ -34,58 +34,60 @@ module QA
       before do
         Flow::Login.sign_in
 
-        Resource::Repository::Commit.fabricate_via_api! do |commit|
-          commit.project = project
-          commit.commit_message = 'Add .gitlab-ci.yml'
-          commit.add_files([{
-                                file_path: '.gitlab-ci.yml',
-                                content:
-                                    <<~YAML
-                                      image: python:latest
-                                      stages:
-                                        - run
-                                        - install
+        Support::Retrier.retry_on_exception(max_attempts: 3, sleep_interval: 2) do
+          Resource::Repository::Commit.fabricate_via_api! do |commit|
+            commit.project = project
+            commit.commit_message = 'Add .gitlab-ci.yml'
+            commit.add_files([{
+                                  file_path: '.gitlab-ci.yml',
+                                  content:
+                                      <<~YAML
+                                        image: python:latest
+                                        stages:
+                                          - run
+                                          - install
 
-                                      run:
-                                        stage: run
-                                        script:
-                                          - pip install twine
-                                          - python setup.py sdist bdist_wheel
-                                          - "TWINE_PASSWORD=${CI_JOB_TOKEN} TWINE_USERNAME=gitlab-ci-token python -m twine upload --repository-url #{gitlab_address_with_port}/api/v4/projects/${CI_PROJECT_ID}/packages/pypi dist/*"
-                                        tags:
+                                        run:
+                                          stage: run
+                                          script:
+                                            - pip install twine
+                                            - python setup.py sdist bdist_wheel
+                                            - "TWINE_PASSWORD=${CI_JOB_TOKEN} TWINE_USERNAME=gitlab-ci-token python -m twine upload --repository-url #{gitlab_address_with_port}/api/v4/projects/${CI_PROJECT_ID}/packages/pypi dist/*"
+                                          tags:
+                                            - "runner-for-#{project.name}"
+                                        install:
+                                          stage: install
+                                          script:
+                                          - "pip install #{package.name} --no-deps --index-url #{uri.scheme}://#{personal_access_token}:#{personal_access_token}@#{gitlab_host_with_port}/api/v4/projects/${CI_PROJECT_ID}/packages/pypi/simple --trusted-host #{gitlab_host_with_port}"
+                                          tags:
                                           - "runner-for-#{project.name}"
-                                      install:
-                                        stage: install
-                                        script:
-                                        - "pip install #{package.name} --no-deps --index-url #{uri.scheme}://#{personal_access_token}:#{personal_access_token}@#{gitlab_host_with_port}/api/v4/projects/${CI_PROJECT_ID}/packages/pypi/simple --trusted-host #{gitlab_host_with_port}"
-                                        tags:
-                                        - "runner-for-#{project.name}"
-                                  
-                                    YAML
-                            },
-                            {
-                                file_path: 'setup.py',
-                                content:
-                                    <<~EOF
-                                      import setuptools
+                                    
+                                      YAML
+                              },
+                              {
+                                  file_path: 'setup.py',
+                                  content:
+                                      <<~EOF
+                                        import setuptools
 
-                                      setuptools.setup(
-                                          name="#{package.name}",
-                                          version="0.0.1",
-                                          author="Example Author",
-                                          author_email="author@example.com",
-                                          description="A small example package",
-                                          packages=setuptools.find_packages(),
-                                          classifiers=[
-                                              "Programming Language :: Python :: 3",
-                                              "License :: OSI Approved :: MIT License",
-                                              "Operating System :: OS Independent",
-                                          ],
-                                          python_requires='>=3.6',
-                                      )
-                                    EOF
+                                        setuptools.setup(
+                                            name="#{package.name}",
+                                            version="0.0.1",
+                                            author="Example Author",
+                                            author_email="author@example.com",
+                                            description="A small example package",
+                                            packages=setuptools.find_packages(),
+                                            classifiers=[
+                                                "Programming Language :: Python :: 3",
+                                                "License :: OSI Approved :: MIT License",
+                                                "Operating System :: OS Independent",
+                                            ],
+                                            python_requires='>=3.6',
+                                        )
+                                      EOF
 
-                            }])
+                              }])
+          end
         end
 
         project.visit!
@@ -117,7 +119,7 @@ module QA
       end
 
       context 'when at the project level' do
-        it 'publishes and installs a pypi package and deletes it', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1635' do
+        it 'publishes and installs a pypi package and deletes it', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348015' do
           Page::Project::Menu.perform(&:click_packages_link)
 
           Page::Project::Packages::Index.perform do |index|
@@ -137,7 +139,7 @@ module QA
       end
 
       context 'Geo', :orchestrated, :geo do
-        it 'replicates a published pypi package to the Geo secondary site', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1219', quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/325556', type: :investigating } do
+        it 'replicates a published pypi package to the Geo secondary site', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348090', quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/325556', type: :investigating } do
           QA::Runtime::Logger.debug('Visiting the secondary Geo site')
 
           QA::Flow::Login.while_signed_in(address: :geo_secondary) do

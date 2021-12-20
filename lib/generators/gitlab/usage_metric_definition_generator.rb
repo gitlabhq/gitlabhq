@@ -35,6 +35,7 @@ module Gitlab
     class_option :ee, type: :boolean, optional: true, default: false, desc: 'Indicates if metric is for ee'
     class_option :dir,
       type: :string, desc: "Indicates the metric location. It must be one of: #{VALID_INPUT_DIRS.join(', ')}"
+    class_option :class_name, type: :string, optional: true, desc: 'Instrumentation class name, e.g.: CountIssues'
 
     argument :key_paths, type: :array, desc: 'Unique JSON key paths for the metrics'
 
@@ -64,6 +65,10 @@ module Gitlab
 
     def milestone
       Gitlab::VERSION.match('(\d+\.\d+)').captures.first
+    end
+
+    def class_name
+      options[:class_name]
     end
 
     private

@@ -184,7 +184,7 @@ class GroupSeeder
       group = Group.find(group_id)
 
       @resource_count.times do |i|
-        _, project_path = PROJECT_URL.split('/')[-2..-1]
+        _, project_path = PROJECT_URL.split('/')[-2..]
 
         project_path.gsub!('.git', '')
 

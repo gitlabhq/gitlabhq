@@ -95,5 +95,55 @@ RSpec.describe Gitlab::Lograge::CustomOptions do
         expect(subject[correlation_id_key]).to eq('123456')
       end
     end
+
+    context  'when feature flags are present', :request_store do
+      before do
+        allow(Feature).to receive(:log_feature_flag_states?).and_return(false)
+
+        definitions = {}
+        [:enabled_feature, :disabled_feature].each do |flag_name|
+          definitions[flag_name] = Feature::Definition.new("development/enabled_feature.yml",
+                                                           name: flag_name,
+                                                           type: 'development',
+                                                           log_state_changes: true,
+                                                           default_enabled: false)
+
+          allow(Feature).to receive(:log_feature_flag_states?).with(flag_name).and_call_original
+        end
+
+        allow(Feature::Definition).to receive(:definitions).and_return(definitions)
+
+        Feature.enable(:enabled_feature)
+        Feature.disable(:disabled_feature)
+      end
+
+      context 'and :feature_flag_log_states is enabled' do
+        before do
+          Feature.enable(:feature_flag_state_logs)
+        end
+
+        it 'adds feature flag events' do
+          Feature.enabled?(:enabled_feature)
+          Feature.enabled?(:disabled_feature)
+
+          expect(subject).to have_key(:feature_flag_states)
+          expect(subject[:feature_flag_states]).to match_array(%w[enabled_feature:1 disabled_feature:0])
+        end
+      end
+
+      context 'and :feature_flag_log_states is disabled' do
+        before do
+          Feature.disable(:feature_flag_state_logs)
+        end
+
+        it 'does not track or add feature flag events' do
+          Feature.enabled?(:enabled_feature)
+          Feature.enabled?(:disabled_feature)
+
+          expect(subject).not_to have_key(:feature_flag_states)
+          expect(Feature).not_to receive(:log_feature_flag_state)
+        end
+      end
+    end
   end
 end

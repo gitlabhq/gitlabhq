@@ -58,7 +58,6 @@ describe('Release show component', () => {
 
   const expectFlashWithMessage = (message) => {
     it(`shows a flash message that reads "${message}"`, () => {
-      expect(createFlash).toHaveBeenCalledTimes(1);
       expect(createFlash).toHaveBeenCalledWith({
         message,
         captureError: true,

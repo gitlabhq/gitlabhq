@@ -1,19 +1,15 @@
-- count_badge_classes = 'badge badge-muted badge-pill gl-badge gl-tab-counter-badge sm gl-display-none gl-sm-display-inline-flex'
+- count_badge_classes = 'gl-display-none gl-sm-display-inline-flex'
 
 = gl_tabs_nav( {class: 'gl-border-b-0 gl-flex-grow-1', data: { testid: 'jobs-tabs' } } ) do
   = gl_tab_link_to build_path_proc.call(nil), { item_active: scope.nil? } do
     = _('All')
-    %span{ class: count_badge_classes }
-      = limited_counter_with_delimiter(all_builds)
+    = gl_tab_counter_badge(limited_counter_with_delimiter(all_builds), { class: count_badge_classes })
   = gl_tab_link_to build_path_proc.call('pending'), { item_active: scope == 'pending' } do
     = _('Pending')
-    %span{ class: count_badge_classes }
-      = limited_counter_with_delimiter(all_builds.pending)
+    = gl_tab_counter_badge(limited_counter_with_delimiter(all_builds.pending), { class: count_badge_classes })
   = gl_tab_link_to build_path_proc.call('running'), { item_active: scope == 'running' } do
     = _('Running')
-    %span{ class: count_badge_classes }
-      = limited_counter_with_delimiter(all_builds.running)
+    = gl_tab_counter_badge(limited_counter_with_delimiter(all_builds.running), { class: count_badge_classes })
   = gl_tab_link_to build_path_proc.call('finished'), { item_active: scope == 'finished' } do
     = _('Finished')
-    %span{ class: count_badge_classes }
-      = limited_counter_with_delimiter(all_builds.finished)
+    = gl_tab_counter_badge(limited_counter_with_delimiter(all_builds.finished), { class: count_badge_classes })

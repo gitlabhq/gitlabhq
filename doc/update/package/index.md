@@ -159,7 +159,7 @@ install GitLab for the first time or update it.
 To download and install GitLab:
 
 1. Visit the [official repository](#upgrade-using-the-official-repositories) of your package.
-1. Filter the list by searching for the version you want to install (for example 14.1.6).
+1. Filter the list by searching for the version you want to install (for example 14.1.8).
    Multiple packages may exist for a single version, one for each supported distribution
    and architecture. Next to the filename is a label indicating the distribution,
    as the filenames may be the same.
@@ -188,7 +188,7 @@ For the GitLab Community Edition, replace `gitlab-ee` with
 
 ### GitLab 13.7 and later unavailable on Amazon Linux 2
 
-Amazon Linux 2 is not an [officially supported operating system](../../administration/package_information/deprecated_os.md#supported-operating-systems).
+Amazon Linux 2 is not an [officially supported operating system](../../administration/package_information/supported_os.md).
 However, in past the [official package installation script](https://packages.gitlab.com/gitlab/gitlab-ee/install)
 installed the `el/6` package repository if run on Amazon Linux. From GitLab 13.7, we no longer
 provide `el/6` packages so administrators must run the [installation script](https://packages.gitlab.com/gitlab/gitlab-ee/install)

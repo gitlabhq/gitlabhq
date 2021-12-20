@@ -15,6 +15,7 @@ import {
   MOCK_SEARCH,
   MOCK_AUTOCOMPLETE_OPTIONS,
   MOCK_GROUPED_AUTOCOMPLETE_OPTIONS,
+  MOCK_SORTED_AUTOCOMPLETE_OPTIONS,
 } from '../mock_data';
 
 describe('Header Search Store Getters', () => {
@@ -36,18 +37,20 @@ describe('Header Search Store Getters', () => {
   });
 
   describe.each`
-    group         | project         | expectedPath
-    ${null}       | ${null}         | ${`${MOCK_SEARCH_PATH}?search=${MOCK_SEARCH}&nav_source=navbar&project_id=undefined&group_id=undefined&scope=issues`}
-    ${MOCK_GROUP} | ${null}         | ${`${MOCK_SEARCH_PATH}?search=${MOCK_SEARCH}&nav_source=navbar&project_id=undefined&group_id=${MOCK_GROUP.id}&scope=issues`}
-    ${MOCK_GROUP} | ${MOCK_PROJECT} | ${`${MOCK_SEARCH_PATH}?search=${MOCK_SEARCH}&nav_source=navbar&project_id=${MOCK_PROJECT.id}&group_id=${MOCK_GROUP.id}&scope=issues`}
-  `('searchQuery', ({ group, project, expectedPath }) => {
-    describe(`when group is ${group?.name} and project is ${project?.name}`, () => {
+    group         | project         | scope       | expectedPath
+    ${null}       | ${null}         | ${null}     | ${`${MOCK_SEARCH_PATH}?search=${MOCK_SEARCH}&nav_source=navbar`}
+    ${MOCK_GROUP} | ${null}         | ${null}     | ${`${MOCK_SEARCH_PATH}?search=${MOCK_SEARCH}&nav_source=navbar&group_id=${MOCK_GROUP.id}`}
+    ${null}       | ${MOCK_PROJECT} | ${null}     | ${`${MOCK_SEARCH_PATH}?search=${MOCK_SEARCH}&nav_source=navbar&project_id=${MOCK_PROJECT.id}`}
+    ${MOCK_GROUP} | ${MOCK_PROJECT} | ${null}     | ${`${MOCK_SEARCH_PATH}?search=${MOCK_SEARCH}&nav_source=navbar&project_id=${MOCK_PROJECT.id}&group_id=${MOCK_GROUP.id}`}
+    ${MOCK_GROUP} | ${MOCK_PROJECT} | ${'issues'} | ${`${MOCK_SEARCH_PATH}?search=${MOCK_SEARCH}&nav_source=navbar&project_id=${MOCK_PROJECT.id}&group_id=${MOCK_GROUP.id}&scope=issues`}
+  `('searchQuery', ({ group, project, scope, expectedPath }) => {
+    describe(`when group is ${group?.name}, project is ${project?.name}, and scope is ${scope}`, () => {
       beforeEach(() => {
         createState({
           searchContext: {
             group,
             project,
-            scope: 'issues',
+            scope,
           },
         });
         state.search = MOCK_SEARCH;
@@ -61,8 +64,9 @@ describe('Header Search Store Getters', () => {
 
   describe.each`
     project         | ref                | expectedPath
-    ${null}         | ${null}            | ${`${MOCK_AUTOCOMPLETE_PATH}?term=${MOCK_SEARCH}&project_id=undefined&project_ref=null`}
-    ${MOCK_PROJECT} | ${null}            | ${`${MOCK_AUTOCOMPLETE_PATH}?term=${MOCK_SEARCH}&project_id=${MOCK_PROJECT.id}&project_ref=null`}
+    ${null}         | ${null}            | ${`${MOCK_AUTOCOMPLETE_PATH}?term=${MOCK_SEARCH}`}
+    ${MOCK_PROJECT} | ${null}            | ${`${MOCK_AUTOCOMPLETE_PATH}?term=${MOCK_SEARCH}&project_id=${MOCK_PROJECT.id}`}
+    ${null}         | ${MOCK_PROJECT.id} | ${`${MOCK_AUTOCOMPLETE_PATH}?term=${MOCK_SEARCH}&project_ref=${MOCK_PROJECT.id}`}
     ${MOCK_PROJECT} | ${MOCK_PROJECT.id} | ${`${MOCK_AUTOCOMPLETE_PATH}?term=${MOCK_SEARCH}&project_id=${MOCK_PROJECT.id}&project_ref=${MOCK_PROJECT.id}`}
   `('autocompleteQuery', ({ project, ref, expectedPath }) => {
     describe(`when project is ${project?.name} and project ref is ${ref}`, () => {
@@ -131,18 +135,20 @@ describe('Header Search Store Getters', () => {
   });
 
   describe.each`
-    group         | project         | expectedPath
-    ${null}       | ${null}         | ${null}
-    ${MOCK_GROUP} | ${null}         | ${null}
-    ${MOCK_GROUP} | ${MOCK_PROJECT} | ${`${MOCK_SEARCH_PATH}?search=${MOCK_SEARCH}&nav_source=navbar&project_id=${MOCK_PROJECT.id}&group_id=${MOCK_GROUP.id}&scope=issues`}
-  `('projectUrl', ({ group, project, expectedPath }) => {
-    describe(`when group is ${group?.name} and project is ${project?.name}`, () => {
+    group         | project         | scope       | expectedPath
+    ${null}       | ${null}         | ${null}     | ${`${MOCK_SEARCH_PATH}?search=${MOCK_SEARCH}&nav_source=navbar`}
+    ${MOCK_GROUP} | ${null}         | ${null}     | ${`${MOCK_SEARCH_PATH}?search=${MOCK_SEARCH}&nav_source=navbar&group_id=${MOCK_GROUP.id}`}
+    ${null}       | ${MOCK_PROJECT} | ${null}     | ${`${MOCK_SEARCH_PATH}?search=${MOCK_SEARCH}&nav_source=navbar&project_id=${MOCK_PROJECT.id}`}
+    ${MOCK_GROUP} | ${MOCK_PROJECT} | ${null}     | ${`${MOCK_SEARCH_PATH}?search=${MOCK_SEARCH}&nav_source=navbar&project_id=${MOCK_PROJECT.id}&group_id=${MOCK_GROUP.id}`}
+    ${MOCK_GROUP} | ${MOCK_PROJECT} | ${'issues'} | ${`${MOCK_SEARCH_PATH}?search=${MOCK_SEARCH}&nav_source=navbar&project_id=${MOCK_PROJECT.id}&group_id=${MOCK_GROUP.id}&scope=issues`}
+  `('projectUrl', ({ group, project, scope, expectedPath }) => {
+    describe(`when group is ${group?.name}, project is ${project?.name}, and scope is ${scope}`, () => {
       beforeEach(() => {
         createState({
           searchContext: {
             group,
             project,
-            scope: 'issues',
+            scope,
           },
         });
         state.search = MOCK_SEARCH;
@@ -155,18 +161,20 @@ describe('Header Search Store Getters', () => {
   });
 
   describe.each`
-    group         | project         | expectedPath
-    ${null}       | ${null}         | ${null}
-    ${MOCK_GROUP} | ${null}         | ${`${MOCK_SEARCH_PATH}?search=${MOCK_SEARCH}&nav_source=navbar&group_id=${MOCK_GROUP.id}&scope=issues`}
-    ${MOCK_GROUP} | ${MOCK_PROJECT} | ${`${MOCK_SEARCH_PATH}?search=${MOCK_SEARCH}&nav_source=navbar&group_id=${MOCK_GROUP.id}&scope=issues`}
-  `('groupUrl', ({ group, project, expectedPath }) => {
-    describe(`when group is ${group?.name} and project is ${project?.name}`, () => {
+    group         | project         | scope       | expectedPath
+    ${null}       | ${null}         | ${null}     | ${`${MOCK_SEARCH_PATH}?search=${MOCK_SEARCH}&nav_source=navbar`}
+    ${MOCK_GROUP} | ${null}         | ${null}     | ${`${MOCK_SEARCH_PATH}?search=${MOCK_SEARCH}&nav_source=navbar&group_id=${MOCK_GROUP.id}`}
+    ${null}       | ${MOCK_PROJECT} | ${null}     | ${`${MOCK_SEARCH_PATH}?search=${MOCK_SEARCH}&nav_source=navbar`}
+    ${MOCK_GROUP} | ${MOCK_PROJECT} | ${null}     | ${`${MOCK_SEARCH_PATH}?search=${MOCK_SEARCH}&nav_source=navbar&group_id=${MOCK_GROUP.id}`}
+    ${MOCK_GROUP} | ${MOCK_PROJECT} | ${'issues'} | ${`${MOCK_SEARCH_PATH}?search=${MOCK_SEARCH}&nav_source=navbar&group_id=${MOCK_GROUP.id}&scope=issues`}
+  `('groupUrl', ({ group, project, scope, expectedPath }) => {
+    describe(`when group is ${group?.name}, project is ${project?.name}, and scope is ${scope}`, () => {
       beforeEach(() => {
         createState({
           searchContext: {
             group,
             project,
-            scope: 'issues',
+            scope,
           },
         });
         state.search = MOCK_SEARCH;
@@ -178,20 +186,29 @@ describe('Header Search Store Getters', () => {
     });
   });
 
-  describe('allUrl', () => {
-    const expectedPath = `${MOCK_SEARCH_PATH}?search=${MOCK_SEARCH}&nav_source=navbar&scope=issues`;
-
-    beforeEach(() => {
-      createState({
-        searchContext: {
-          scope: 'issues',
-        },
+  describe.each`
+    group         | project         | scope       | expectedPath
+    ${null}       | ${null}         | ${null}     | ${`${MOCK_SEARCH_PATH}?search=${MOCK_SEARCH}&nav_source=navbar`}
+    ${MOCK_GROUP} | ${null}         | ${null}     | ${`${MOCK_SEARCH_PATH}?search=${MOCK_SEARCH}&nav_source=navbar`}
+    ${null}       | ${MOCK_PROJECT} | ${null}     | ${`${MOCK_SEARCH_PATH}?search=${MOCK_SEARCH}&nav_source=navbar`}
+    ${MOCK_GROUP} | ${MOCK_PROJECT} | ${null}     | ${`${MOCK_SEARCH_PATH}?search=${MOCK_SEARCH}&nav_source=navbar`}
+    ${MOCK_GROUP} | ${MOCK_PROJECT} | ${'issues'} | ${`${MOCK_SEARCH_PATH}?search=${MOCK_SEARCH}&nav_source=navbar&scope=issues`}
+  `('allUrl', ({ group, project, scope, expectedPath }) => {
+    describe(`when group is ${group?.name}, project is ${project?.name}, and scope is ${scope}`, () => {
+      beforeEach(() => {
+        createState({
+          searchContext: {
+            group,
+            project,
+            scope,
+          },
+        });
+        state.search = MOCK_SEARCH;
       });
-      state.search = MOCK_SEARCH;
-    });
 
-    it(`should return ${expectedPath}`, () => {
-      expect(getters.allUrl(state)).toBe(expectedPath);
+      it(`should return ${expectedPath}`, () => {
+        expect(getters.allUrl(state)).toBe(expectedPath);
+      });
     });
   });
 
@@ -248,4 +265,44 @@ describe('Header Search Store Getters', () => {
       );
     });
   });
+
+  describe.each`
+    search         | defaultSearchOptions           | scopedSearchOptions           | autocompleteGroupedSearchOptions     | expectedArray
+    ${null}        | ${MOCK_DEFAULT_SEARCH_OPTIONS} | ${MOCK_SCOPED_SEARCH_OPTIONS} | ${MOCK_GROUPED_AUTOCOMPLETE_OPTIONS} | ${MOCK_DEFAULT_SEARCH_OPTIONS}
+    ${MOCK_SEARCH} | ${MOCK_DEFAULT_SEARCH_OPTIONS} | ${MOCK_SCOPED_SEARCH_OPTIONS} | ${[]}                                | ${MOCK_SCOPED_SEARCH_OPTIONS}
+    ${MOCK_SEARCH} | ${MOCK_DEFAULT_SEARCH_OPTIONS} | ${[]}                         | ${MOCK_GROUPED_AUTOCOMPLETE_OPTIONS} | ${MOCK_SORTED_AUTOCOMPLETE_OPTIONS}
+    ${MOCK_SEARCH} | ${MOCK_DEFAULT_SEARCH_OPTIONS} | ${MOCK_SCOPED_SEARCH_OPTIONS} | ${MOCK_GROUPED_AUTOCOMPLETE_OPTIONS} | ${MOCK_SCOPED_SEARCH_OPTIONS.concat(MOCK_SORTED_AUTOCOMPLETE_OPTIONS)}
+  `(
+    'searchOptions',
+    ({
+      search,
+      defaultSearchOptions,
+      scopedSearchOptions,
+      autocompleteGroupedSearchOptions,
+      expectedArray,
+    }) => {
+      describe(`when search is ${search} and the defaultSearchOptions${
+        defaultSearchOptions.length ? '' : ' do not'
+      } exist, scopedSearchOptions${
+        scopedSearchOptions.length ? '' : ' do not'
+      } exist, and autocompleteGroupedSearchOptions${
+        autocompleteGroupedSearchOptions.length ? '' : ' do not'
+      } exist`, () => {
+        const mockGetters = {
+          defaultSearchOptions,
+          scopedSearchOptions,
+          autocompleteGroupedSearchOptions,
+        };
+
+        beforeEach(() => {
+          createState();
+          state.search = search;
+        });
+
+        it(`should return the correct combined array`, () => {
+          expect(getters.searchOptions(state, mockGetters)).toStrictEqual(expectedArray);
+        });
+      });
+    },
+  );
 });

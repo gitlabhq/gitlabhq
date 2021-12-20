@@ -20,9 +20,8 @@ project called **Monitoring** is created:
 The project is created specifically for visualizing and configuring the monitoring of your GitLab
 instance.
 
-When the project and group are created, all administrators are added as maintainers. As an
-administrator, you can add new members to the group to give them the
-[Maintainer role](../../../user/permissions.md) for the project.
+When the project and group are created, all administrators are given the [Maintainer role](../../../user/permissions.md).
+As an administrator, you can add new members to the group to give them the Maintainer role for the project.
 
 This project can be used to:
 

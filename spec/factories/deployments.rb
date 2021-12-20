@@ -55,6 +55,10 @@ FactoryBot.define do
       status { :created }
     end
 
+    trait :blocked do
+      status { :blocked }
+    end
+
     # This trait hooks the state maechine's events
     trait :succeed do
       after(:create) do |deployment, evaluator|

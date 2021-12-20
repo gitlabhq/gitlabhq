@@ -44,7 +44,7 @@ class Projects::BlobController < Projects::ApplicationController
 
   before_action do
     push_frontend_feature_flag(:refactor_blob_viewer, @project, default_enabled: :yaml)
-    push_frontend_feature_flag(:refactor_text_viewer, @project, default_enabled: :yaml)
+    push_frontend_feature_flag(:highlight_js, @project, default_enabled: :yaml)
     push_frontend_feature_flag(:consolidated_edit_button, @project, default_enabled: :yaml)
     push_licensed_feature(:file_locks) if @project.licensed_feature_available?(:file_locks)
   end
@@ -99,7 +99,7 @@ class Projects::BlobController < Projects::ApplicationController
     @content = params[:content]
     @blob.load_all_data!
     diffy = Diffy::Diff.new(@blob.data, @content, diff: '-U 3', include_diff_info: true)
-    diff_lines = diffy.diff.scan(/.*\n/)[2..-1]
+    diff_lines = diffy.diff.scan(/.*\n/)[2..]
     diff_lines = Gitlab::Diff::Parser.new.parse(diff_lines).to_a
     @diff_lines = Gitlab::Diff::Highlight.new(diff_lines, repository: @repository).highlight
 
@@ -298,3 +298,5 @@ class Projects::BlobController < Projects::ApplicationController
     experiment(:code_quality_walkthrough, namespace: @project.root_ancestor).track(:commit_created)
   end
 end
+
+Projects::BlobController.prepend_mod

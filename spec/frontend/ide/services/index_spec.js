@@ -6,7 +6,7 @@ import dismissUserCallout from '~/graphql_shared/mutations/dismiss_user_callout.
 import services from '~/ide/services';
 import { query, mutate } from '~/ide/services/gql';
 import { escapeFileUrl } from '~/lib/utils/url_utility';
-import ciConfig from '~/pipeline_editor/graphql/queries/ci_config.graphql';
+import ciConfig from '~/pipeline_editor/graphql/queries/ci_config.query.graphql';
 import { projectData } from '../mock_data';
 
 jest.mock('~/api');
@@ -216,29 +216,6 @@ describe('IDE services', () => {
     );
   });
 
-  describe('getProjectData', () => {
-    it('combines gql and API requests', () => {
-      const gqlProjectData = {
-        userPermissions: {
-          bogus: true,
-        },
-      };
-      Api.project.mockReturnValue(Promise.resolve({ data: { ...projectData } }));
-      query.mockReturnValue(Promise.resolve({ data: { project: gqlProjectData } }));
-
-      return services.getProjectData(TEST_NAMESPACE, TEST_PROJECT).then((response) => {
-        expect(response).toEqual({ data: { ...projectData, ...gqlProjectData } });
-        expect(Api.project).toHaveBeenCalledWith(TEST_PROJECT_ID);
-        expect(query).toHaveBeenCalledWith({
-          query: getIdeProject,
-          variables: {
-            projectPath: TEST_PROJECT_ID,
-          },
-        });
-      });
-    });
-  });
-
   describe('getFiles', () => {
     let mock;
     let relativeUrlRoot;
@@ -327,6 +304,40 @@ describe('IDE services', () => {
           mutation: dismissUserCallout,
           variables: { input: { featureName: 'test' } },
         });
+      });
+    });
+  });
+
+  describe('getProjectPermissionsData', () => {
+    const TEST_PROJECT_PATH = 'foo/bar';
+
+    it('queries for the project permissions', () => {
+      const result = { data: { project: projectData } };
+      query.mockResolvedValue(result);
+
+      return services.getProjectPermissionsData(TEST_PROJECT_PATH).then((data) => {
+        expect(data).toEqual(result.data.project);
+        expect(query).toHaveBeenCalledWith(
+          expect.objectContaining({
+            query: getIdeProject,
+            variables: { projectPath: TEST_PROJECT_PATH },
+          }),
+        );
+      });
+    });
+
+    it('converts the returned GraphQL id to the regular ID number', () => {
+      const projectId = 2;
+      const gqlProjectData = {
+        id: `gid://gitlab/Project/${projectId}`,
+        userPermissions: {
+          bogus: true,
+        },
+      };
+
+      query.mockResolvedValue({ data: { project: gqlProjectData } });
+      return services.getProjectPermissionsData(TEST_PROJECT_PATH).then((data) => {
+        expect(data.id).toBe(projectId);
       });
     });
   });

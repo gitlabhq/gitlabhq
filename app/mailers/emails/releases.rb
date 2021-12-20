@@ -9,11 +9,10 @@ module Emails
         namespace_id: @project.namespace,
         project_id: @project
       )
-
-      user = User.find(user_id)
+      @recipient = User.find(user_id)
 
       mail(
-        to: user.notification_email_for(@project.group),
+        to: @recipient.notification_email_for(@project.group),
         subject: subject(release_email_subject)
       )
     end

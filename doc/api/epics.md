@@ -49,6 +49,8 @@ NOTE:
 
 ## List epics for a group
 
+> `parent_iid` and `_links[parent]` in response were [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/347527) in GitLab 14.6.
+
 Gets all epics of the requested group and its subgroups.
 
 ```plaintext
@@ -62,7 +64,7 @@ GET /groups/:id/epics?state=opened
 | ------------------- | ---------------- | ---------- | --------------------------------------------------------------------------------------------------------------------------- |
 | `id`                | integer/string   | yes        | The ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) owned by the authenticated user               |
 | `author_id`         | integer          | no         | Return epics created by the given user `id`                                                                                 |
-| `labels`            | string           | no         | Return epics matching a comma separated list of labels names. Label names from the epic group or a parent group can be used |
+| `labels`            | string           | no         | Return epics matching a comma-separated list of labels names. Label names from the epic group or a parent group can be used |
 | `with_labels_details` | boolean        | no         | If `true`, response returns more details for each label in labels field: `:name`, `:color`, `:description`, `:description_html`, `:text_color`. Default is `false`. Available in [GitLab 12.7](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/21413) and later |
 | `order_by`          | string           | no         | Return epics ordered by `created_at`, `updated_at`, or `title` fields. Default is `created_at`                              |
 | `sort`              | string           | no         | Return epics sorted in `asc` or `desc` order. Default is `desc`                                                             |
@@ -75,6 +77,7 @@ GET /groups/:id/epics?state=opened
 | `include_ancestor_groups` | boolean    | no         | Include epics from the requested group's ancestors. Default is `false`                                                      |
 | `include_descendant_groups` | boolean  | no         | Include epics from the requested group's descendants. Default is `true`                                                     |
 | `my_reaction_emoji` | string           | no         | Return epics reacted by the authenticated user by the given emoji. `None` returns epics not given a reaction. `Any` returns epics given at least one reaction. Available in [GitLab 13.0](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/31479) and later |
+| `not` | Hash | no | Return epics that do not match the parameters supplied. Accepts: `author_id` and `labels`. Available in [GitLab 14.6](https://gitlab.com/gitlab-org/gitlab/-/issues/347525) and later |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/1/epics"
@@ -89,6 +92,7 @@ Example response:
   "iid": 4,
   "group_id": 7,
   "parent_id": 23,
+  "parent_iid": 3,
   "title": "Accusamus iste et ullam ratione voluptatem omnis debitis dolor est.",
   "description": "Molestias dolorem eos vitae expedita impedit necessitatibus quo voluptatum.",
   "state": "opened",
@@ -128,7 +132,8 @@ Example response:
   "_links":{
       "self": "http://gitlab.example.com/api/v4/groups/7/epics/4",
       "epic_issues": "http://gitlab.example.com/api/v4/groups/7/epics/4/issues",
-      "group":"http://gitlab.example.com/api/v4/groups/7"
+      "group":"http://gitlab.example.com/api/v4/groups/7",
+      "parent":"http://gitlab.example.com/api/v4/groups/7/epics/3"
   }
   },
   {
@@ -136,6 +141,7 @@ Example response:
   "iid": 35,
   "group_id": 17,
   "parent_id": 19,
+  "parent_iid": 1,
   "title": "Accusamus iste et ullam ratione voluptatem omnis debitis dolor est.",
   "description": "Molestias dolorem eos vitae expedita impedit necessitatibus quo voluptatum.",
   "state": "opened",
@@ -174,13 +180,16 @@ Example response:
   "_links":{
       "self": "http://gitlab.example.com/api/v4/groups/17/epics/35",
       "epic_issues": "http://gitlab.example.com/api/v4/groups/17/epics/35/issues",
-      "group":"http://gitlab.example.com/api/v4/groups/17"
+      "group":"http://gitlab.example.com/api/v4/groups/17",
+      "parent":"http://gitlab.example.com/api/v4/groups/17/epics/1"
   }
   }
 ]
 ```
 
 ## Single epic
+
+> `parent_iid` and `_links[parent]` in response were [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/347527) in GitLab 14.6.
 
 Gets a single epic
 
@@ -204,6 +213,8 @@ Example response:
   "id": 30,
   "iid": 5,
   "group_id": 7,
+  "parent_id": null,
+  "parent_iid": null,
   "title": "Ea cupiditate dolores ut vero consequatur quasi veniam voluptatem et non.",
   "description": "Molestias dolorem eos vitae expedita impedit necessitatibus quo voluptatum.",
   "state": "opened",
@@ -243,12 +254,15 @@ Example response:
   "_links":{
       "self": "http://gitlab.example.com/api/v4/groups/7/epics/5",
       "epic_issues": "http://gitlab.example.com/api/v4/groups/7/epics/5/issues",
-      "group":"http://gitlab.example.com/api/v4/groups/7"
+      "group":"http://gitlab.example.com/api/v4/groups/7",
+      "parent": null
   }
 }
 ```
 
 ## New epic
+
+> `parent_iid` and `_links[parent]` in response were [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/347527) in GitLab 14.6.
 
 Creates a new epic.
 
@@ -265,7 +279,7 @@ POST /groups/:id/epics
 | ------------------- | ---------------- | ---------- | ---------------------------------------------------------------------------------------|
 | `id`                | integer/string   | yes        | The ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) owned by the authenticated user                |
 | `title`             | string           | yes        | The title of the epic |
-| `labels`            | string           | no         | The comma separated list of labels |
+| `labels`            | string           | no         | The comma-separated list of labels |
 | `description`       | string           | no         | The description of the epic. Limited to 1,048,576 characters.  |
 | `confidential`      | boolean          | no         | Whether the epic should be confidential |
 | `created_at`        | string           | no         | When the epic was created. Date time string, ISO 8601 formatted, for example `2016-03-11T03:45:40Z` . Requires administrator or project/group owner privileges ([available](https://gitlab.com/gitlab-org/gitlab/-/issues/255309) in GitLab 13.5 and later) |
@@ -276,7 +290,7 @@ POST /groups/:id/epics
 | `parent_id`         | integer/string   | no         | The ID of a parent epic (in GitLab 11.11 and later) |
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/1/epics?title=Epic&description=Epic%20description"
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/1/epics?title=Epic&description=Epic%20description&parent_id=29"
 ```
 
 Example response:
@@ -286,6 +300,8 @@ Example response:
   "id": 33,
   "iid": 6,
   "group_id": 7,
+  "parent_id": 29,
+  "parent_iid": 4,
   "title": "Epic",
   "description": "Epic description",
   "state": "opened",
@@ -325,12 +341,15 @@ Example response:
   "_links":{
     "self": "http://gitlab.example.com/api/v4/groups/7/epics/6",
     "epic_issues": "http://gitlab.example.com/api/v4/groups/7/epics/6/issues",
-    "group":"http://gitlab.example.com/api/v4/groups/7"
+    "group":"http://gitlab.example.com/api/v4/groups/7",
+    "parent": "http://gitlab.example.com/api/v4/groups/7/epics/4"
   }
 }
 ```
 
 ## Update epic
+
+> `parent_iid` and `_links[parent]` in response were [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/347527) in GitLab 14.6.
 
 Updates an epic.
 
@@ -371,6 +390,8 @@ Example response:
   "id": 33,
   "iid": 6,
   "group_id": 7,
+  "parent_id": null,
+  "parent_iid": null,
   "title": "New Title",
   "description": "Epic description",
   "state": "opened",

@@ -37,7 +37,7 @@ creation date. Issues created most recently are first.
 ## Sorting by due date
 
 When you sort by **Due date**, the issue list changes to sort ascending by the issue
-[due date](issue_data_and_actions.md#due-date). Issues with the earliest due date are first,
+[due date](due_dates.md). Issues with the earliest due date are first,
 and issues without a due date are last.
 
 ## Sorting by label priority

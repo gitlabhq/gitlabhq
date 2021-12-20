@@ -104,14 +104,28 @@ export const FilterFields = {
     'assigneeUsername',
     'assigneeWildcardId',
     'authorUsername',
+    'confidential',
     'labelName',
     'milestoneTitle',
+    'milestoneWildcardId',
     'myReactionEmoji',
     'releaseTag',
     'search',
     'types',
     'weight',
   ],
+};
+
+/* eslint-disable @gitlab/require-i18n-strings */
+export const AssigneeFilterType = {
+  any: 'Any',
+};
+
+export const MilestoneFilterType = {
+  any: 'Any',
+  none: 'None',
+  started: 'Started',
+  upcoming: 'Upcoming',
 };
 
 export const DraggableItemTypes = {

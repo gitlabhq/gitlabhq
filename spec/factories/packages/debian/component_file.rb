@@ -27,8 +27,8 @@ FactoryBot.define do
       file_type { :packages }
     end
 
-    trait(:source) do
-      file_type { :source }
+    trait(:sources) do
+      file_type { :sources }
       architecture { nil }
     end
 

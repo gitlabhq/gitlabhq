@@ -59,9 +59,9 @@ Before proceeding with the Pages configuration, make sure that:
 1. You have installed the `zip` and `unzip` packages in the same server that
    GitLab is installed since they are needed to compress and decompress the
    Pages artifacts.
-1. (Optional) You have a **wildcard certificate** for the Pages domain if you
+1. Optional. You have a **wildcard certificate** for the Pages domain if you
    decide to serve Pages (`*.example.io`) under HTTPS.
-1. (Optional but recommended) You have configured and enabled the [shared runners](../../ci/runners/index.md)
+1. Optional but recommended. You have configured and enabled the [shared runners](../../ci/runners/index.md)
    so that your users don't have to bring their own.
 
 ### DNS configuration

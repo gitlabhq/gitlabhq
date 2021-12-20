@@ -18,7 +18,7 @@ module QA
         project.remove_via_api!
       end
 
-      it 'can link to a specific line of code in Web IDE', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1844' do
+      it 'can link to a specific line of code in Web IDE', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347676' do
         project.visit!
 
         # Open Web IDE by using a keyboard shortcut

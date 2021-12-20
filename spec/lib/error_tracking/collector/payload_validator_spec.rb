@@ -3,16 +3,18 @@
 require 'spec_helper'
 
 RSpec.describe ErrorTracking::Collector::PayloadValidator do
+  let(:validator) { described_class.new }
+
   describe '#valid?' do
     RSpec.shared_examples 'valid payload' do
-      it 'returns true' do
-        expect(described_class.new.valid?(payload)).to be_truthy
+      specify do
+        expect(validator).to be_valid(payload)
       end
     end
 
     RSpec.shared_examples 'invalid payload' do
-      it 'returns false' do
-        expect(described_class.new.valid?(payload)).to be_falsey
+      specify do
+        expect(validator).not_to be_valid(payload)
       end
     end
 
@@ -24,6 +26,12 @@ RSpec.describe ErrorTracking::Collector::PayloadValidator do
 
     context 'python payload' do
       let(:payload) { Gitlab::Json.parse(fixture_file('error_tracking/python_event.json')) }
+
+      it_behaves_like 'valid payload'
+    end
+
+    context 'python payload in repl' do
+      let(:payload) { Gitlab::Json.parse(fixture_file('error_tracking/python_event_repl.json')) }
 
       it_behaves_like 'valid payload'
     end

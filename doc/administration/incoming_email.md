@@ -10,7 +10,7 @@ GitLab has several features based on receiving incoming email messages:
 
 - [Reply by Email](reply_by_email.md): allow GitLab users to comment on issues
   and merge requests by replying to notification email.
-- [New issue by email](../user/project/issues/managing_issues.md#new-issue-via-email):
+- [New issue by email](../user/project/issues/managing_issues.md#by-sending-an-email):
   allow GitLab users to create a new issue by sending an email to a
   user-specific email address.
 - [New merge request by email](../user/project/merge_requests/creating_merge_requests.md#by-sending-an-email):
@@ -65,6 +65,24 @@ can reserve your catch-all mailbox for other purposes.
 This solution is relatively simple to set up: you just need to create an email
 address dedicated to receive your users' replies to GitLab notifications. However,
 this method only supports replies, and not the other features of [incoming email](#incoming-email).
+
+## Accepted headers
+
+Email is processed correctly when a configured email address is present in one of the following headers:
+
+- `To`
+- `Delivered-To`
+- `Envelope-To` or `X-Envelope-To`
+
+In GitLab 14.6 and later, [Service Desk](../user/project/service_desk.md)
+also checks these additional headers.
+
+Usually, the "To" field contains the email address of the primary receiver.
+However, it might not include the configured GitLab email address if:
+
+- The address is in the "CC" field.
+- The address was included when using "Reply all".
+- The email was forwarded.
 
 ## Set it up
 

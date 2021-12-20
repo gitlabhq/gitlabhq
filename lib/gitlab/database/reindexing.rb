@@ -15,6 +15,26 @@ module Gitlab
       # on e.g. vacuum.
       REMOVE_INDEX_RETRY_CONFIG = [[1.minute, 9.minutes]] * 30
 
+      def self.enabled?
+        Feature.enabled?(:database_reindexing, type: :ops, default_enabled: :yaml)
+      end
+
+      def self.invoke(database = nil)
+        Gitlab::Database::EachDatabase.each_database_connection do |connection, connection_name|
+          next if database && database.to_s != connection_name.to_s
+
+          Gitlab::Database::SharedModel.logger = Logger.new($stdout) if Gitlab::Utils.to_boolean(ENV['LOG_QUERIES_TO_CONSOLE'], default: false)
+
+          # Hack: Before we do actual reindexing work, create async indexes
+          Gitlab::Database::AsyncIndexes.create_pending_indexes! if Feature.enabled?(:database_async_index_creation, type: :ops)
+
+          automatic_reindexing
+        end
+      rescue StandardError => e
+        Gitlab::AppLogger.error(e)
+        raise
+      end
+
       # Performs automatic reindexing for a limited number of indexes per call
       #  1. Consume from the explicit reindexing queue
       #  2. Apply bloat heuristic to find most bloated indexes and reindex those

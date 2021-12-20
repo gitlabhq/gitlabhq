@@ -1,9 +1,8 @@
 <script>
 import {
+  GlAlert,
   GlButton,
   GlEmptyState,
-  GlDropdown,
-  GlDropdownItem,
   GlIcon,
   GlLink,
   GlLoadingIcon,
@@ -14,8 +13,8 @@ import {
 } from '@gitlab/ui';
 import { debounce } from 'lodash';
 import createFlash from '~/flash';
-import { s__, __, n__ } from '~/locale';
-import PaginationLinks from '~/vue_shared/components/pagination_links.vue';
+import { s__, __, n__, sprintf } from '~/locale';
+import PaginationBar from '~/vue_shared/components/pagination_bar/pagination_bar.vue';
 import { getGroupPathAvailability } from '~/rest_api';
 import axios from '~/lib/utils/axios_utils';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
@@ -42,10 +41,9 @@ const DEFAULT_TD_CLASSES = 'gl-vertical-align-top!';
 
 export default {
   components: {
+    GlAlert,
     GlButton,
     GlEmptyState,
-    GlDropdown,
-    GlDropdownItem,
     GlIcon,
     GlLink,
     GlLoadingIcon,
@@ -57,7 +55,7 @@ export default {
     ImportTargetCell,
     ImportStatusCell,
     ImportActionsCell,
-    PaginationLinks,
+    PaginationBar,
   },
 
   props: {
@@ -83,6 +81,7 @@ export default {
       selectedGroupsIds: [],
       pendingGroupsIds: [],
       importTargets: {},
+      unavailableFeaturesAlertVisible: true,
     };
   },
 
@@ -170,7 +169,7 @@ export default {
     },
 
     availableGroupsForImport() {
-      return this.groupsTableData.filter((g) => g.flags.isAvailableForImport && g.flags.isInvalid);
+      return this.groupsTableData.filter((g) => g.flags.isAvailableForImport && !g.flags.isInvalid);
     },
 
     humanizedTotal() {
@@ -203,6 +202,23 @@ export default {
       const end = start + this.groups.length - 1;
 
       return { start, end, total };
+    },
+
+    unavailableFeatures() {
+      if (!this.hasGroups) {
+        return [];
+      }
+
+      return Object.entries(this.bulkImportSourceGroups.versionValidation.features)
+        .filter(([, { available }]) => available === false)
+        .map(([k, v]) => ({ title: i18n.features[k] || k, version: v.minVersion }));
+    },
+
+    unavailableFeaturesAlertTitle() {
+      return sprintf(s__('BulkImport| %{host} is running outdated GitLab version (v%{version})'), {
+        host: this.sourceUrl,
+        version: this.bulkImportSourceGroups.versionValidation.features.sourceInstanceVersion,
+      });
     },
   },
 
@@ -314,9 +330,8 @@ export default {
           variables: { importRequests },
         });
       } catch (error) {
-        const message = error?.networkError?.response?.data?.error ?? i18n.ERROR_IMPORT;
         createFlash({
-          message,
+          message: i18n.ERROR_IMPORT,
           captureError: true,
           error,
         });
@@ -476,6 +491,38 @@ export default {
       <img :src="$options.gitlabLogo" class="gl-w-6 gl-h-6 gl-mb-2 gl-display-inline gl-mr-2" />
       {{ s__('BulkImport|Import groups from GitLab') }}
     </h1>
+    <gl-alert
+      v-if="unavailableFeatures.length > 0 && unavailableFeaturesAlertVisible"
+      variant="warning"
+      :title="unavailableFeaturesAlertTitle"
+      @dismiss="unavailableFeaturesAlertVisible = false"
+    >
+      <gl-sprintf
+        :message="
+          s__(
+            'BulkImport|Following data will not be migrated: %{bullets} Contact system administrator of %{host} to upgrade GitLab if you need this data in your migration',
+          )
+        "
+      >
+        <template #host>
+          <gl-link :href="sourceUrl" target="_blank">
+            {{ sourceUrl }}<gl-icon name="external-link" class="vertical-align-middle" />
+          </gl-link>
+        </template>
+        <template #bullets>
+          <ul>
+            <li v-for="feature in unavailableFeatures" :key="feature.title">
+              <gl-sprintf :message="s__('BulkImport|%{feature} (require v%{version})')">
+                <template #feature>{{ feature.title }}</template>
+                <template #version>
+                  <strong>{{ feature.version }}</strong>
+                </template>
+              </gl-sprintf>
+            </li>
+          </ul>
+        </template>
+      </gl-sprintf>
+    </gl-alert>
     <div
       class="gl-py-5 gl-border-solid gl-border-gray-200 gl-border-0 gl-border-b-1 gl-display-flex"
     >
@@ -495,7 +542,7 @@ export default {
           </template>
           <template #link>
             <gl-link :href="sourceUrl" target="_blank">
-              {{ sourceUrl }} <gl-icon name="external-link" class="vertical-align-middle" />
+              {{ sourceUrl }}<gl-icon name="external-link" class="vertical-align-middle" />
             </gl-link>
           </template>
         </gl-sprintf>
@@ -521,13 +568,15 @@ export default {
       />
       <template v-else>
         <div
-          class="gl-bg-gray-10 gl-border-solid gl-border-gray-200 gl-border-0 gl-border-b-1 gl-p-4 gl-display-flex gl-align-items-center"
+          class="gl-bg-gray-10 gl-border-solid gl-border-gray-200 gl-border-0 gl-border-b-1 gl-px-4 gl-display-flex gl-align-items-center import-table-bar"
         >
-          <gl-sprintf :message="__('%{count} selected')">
-            <template #count>
-              {{ selectedGroupsIds.length }}
-            </template>
-          </gl-sprintf>
+          <span data-test-id="selection-count">
+            <gl-sprintf :message="__('%{count} selected')">
+              <template #count>
+                {{ selectedGroupsIds.length }}
+              </template>
+            </gl-sprintf>
+          </span>
           <gl-button
             category="primary"
             variant="confirm"
@@ -539,7 +588,7 @@ export default {
         </div>
         <gl-table
           ref="table"
-          class="gl-w-full"
+          class="gl-w-full import-table"
           data-qa-selector="import_table"
           :tbody-tr-class="rowClasses"
           :tbody-tr-attr="qaRowAttributes"
@@ -599,49 +648,13 @@ export default {
             />
           </template>
         </gl-table>
-        <div v-if="hasGroups" class="gl-display-flex gl-mt-3 gl-align-items-center">
-          <pagination-links
-            :change="setPage"
-            :page-info="bulkImportSourceGroups.pageInfo"
-            class="gl-m-0"
-          />
-          <gl-dropdown category="tertiary" :aria-label="__('Page size')" class="gl-ml-auto">
-            <template #button-content>
-              <span class="font-weight-bold">
-                <gl-sprintf :message="__('%{count} items per page')">
-                  <template #count>
-                    {{ perPage }}
-                  </template>
-                </gl-sprintf>
-              </span>
-              <gl-icon class="gl-button-icon dropdown-chevron" name="chevron-down" />
-            </template>
-            <gl-dropdown-item
-              v-for="size in $options.PAGE_SIZES"
-              :key="size"
-              @click="setPageSize(size)"
-            >
-              <gl-sprintf :message="__('%{count} items per page')">
-                <template #count>
-                  {{ size }}
-                </template>
-              </gl-sprintf>
-            </gl-dropdown-item>
-          </gl-dropdown>
-          <div class="gl-ml-2">
-            <gl-sprintf :message="s__('BulkImport|Showing %{start}-%{end} of %{total}')">
-              <template #start>
-                {{ paginationInfo.start }}
-              </template>
-              <template #end>
-                {{ paginationInfo.end }}
-              </template>
-              <template #total>
-                {{ humanizedTotal }}
-              </template>
-            </gl-sprintf>
-          </div>
-        </div>
+        <pagination-bar
+          v-if="hasGroups"
+          :page-info="bulkImportSourceGroups.pageInfo"
+          class="gl-mt-3"
+          @set-page="setPage"
+          @set-page-size="setPageSize"
+        />
       </template>
     </template>
   </div>

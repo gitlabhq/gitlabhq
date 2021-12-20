@@ -1,6 +1,5 @@
 <script>
 import { mapGetters, mapActions } from 'vuex';
-import { GlIntersectionObserver } from '@gitlab/ui';
 import { __ } from '~/locale';
 import PlaceholderNote from '~/vue_shared/components/notes/placeholder_note.vue';
 import PlaceholderSystemNote from '~/vue_shared/components/notes/placeholder_system_note.vue';
@@ -17,9 +16,7 @@ export default {
     ToggleRepliesWidget,
     NoteEditedText,
     DiscussionNotesRepliesWrapper,
-    GlIntersectionObserver,
   },
-  inject: ['discussionObserverHandler'],
   props: {
     discussion: {
       type: Object,
@@ -57,11 +54,7 @@ export default {
     },
   },
   computed: {
-    ...mapGetters([
-      'userCanReply',
-      'previousUnresolvedDiscussionId',
-      'firstUnresolvedDiscussionId',
-    ]),
+    ...mapGetters(['userCanReply']),
     hasReplies() {
       return Boolean(this.replies.length);
     },
@@ -84,20 +77,9 @@ export default {
         url: this.discussion.discussion_path,
       };
     },
-    isFirstUnresolved() {
-      return this.firstUnresolvedDiscussionId === this.discussion.id;
-    },
-  },
-  observerOptions: {
-    threshold: 0,
-    rootMargin: '0px 0px -50% 0px',
   },
   methods: {
-    ...mapActions([
-      'toggleDiscussion',
-      'setSelectedCommentPositionHover',
-      'setCurrentDiscussionId',
-    ]),
+    ...mapActions(['toggleDiscussion', 'setSelectedCommentPositionHover']),
     componentName(note) {
       if (note.isPlaceholderNote) {
         if (note.placeholderType === SYSTEM_NOTE) {
@@ -128,18 +110,6 @@ export default {
         this.setSelectedCommentPositionHover();
       }
     },
-    observerTriggered(entry) {
-      this.discussionObserverHandler({
-        entry,
-        isFirstUnresolved: this.isFirstUnresolved,
-        currentDiscussion: { ...this.discussion },
-        isDiffsPage: !this.isOverviewTab,
-        functions: {
-          setCurrentDiscussionId: this.setCurrentDiscussionId,
-          getPreviousUnresolvedDiscussionId: this.previousUnresolvedDiscussionId,
-        },
-      });
-    },
   },
 };
 </script>
@@ -152,35 +122,33 @@ export default {
       @mouseleave="handleMouseLeave(discussion)"
     >
       <template v-if="shouldGroupReplies">
-        <gl-intersection-observer :options="$options.observerOptions" @update="observerTriggered">
-          <component
-            :is="componentName(firstNote)"
-            :note="componentData(firstNote)"
-            :line="line || diffLine"
-            :discussion-file="discussion.diff_file"
-            :commit="commit"
-            :help-page-path="helpPagePath"
-            :show-reply-button="userCanReply"
-            :discussion-root="true"
-            :discussion-resolve-path="discussion.resolve_path"
-            :is-overview-tab="isOverviewTab"
-            @handleDeleteNote="$emit('deleteNote')"
-            @startReplying="$emit('startReplying')"
-          >
-            <template #discussion-resolved-text>
-              <note-edited-text
-                v-if="discussion.resolved"
-                :edited-at="discussion.resolved_at"
-                :edited-by="discussion.resolved_by"
-                :action-text="resolvedText"
-                class-name="discussion-headline-light js-discussion-headline discussion-resolved-text"
-              />
-            </template>
-            <template #avatar-badge>
-              <slot name="avatar-badge"></slot>
-            </template>
-          </component>
-        </gl-intersection-observer>
+        <component
+          :is="componentName(firstNote)"
+          :note="componentData(firstNote)"
+          :line="line || diffLine"
+          :discussion-file="discussion.diff_file"
+          :commit="commit"
+          :help-page-path="helpPagePath"
+          :show-reply-button="userCanReply"
+          :discussion-root="true"
+          :discussion-resolve-path="discussion.resolve_path"
+          :is-overview-tab="isOverviewTab"
+          @handleDeleteNote="$emit('deleteNote')"
+          @startReplying="$emit('startReplying')"
+        >
+          <template #discussion-resolved-text>
+            <note-edited-text
+              v-if="discussion.resolved"
+              :edited-at="discussion.resolved_at"
+              :edited-by="discussion.resolved_by"
+              :action-text="resolvedText"
+              class-name="discussion-headline-light js-discussion-headline discussion-resolved-text"
+            />
+          </template>
+          <template #avatar-badge>
+            <slot name="avatar-badge"></slot>
+          </template>
+        </component>
         <discussion-notes-replies-wrapper :is-diff-discussion="discussion.diff_discussion">
           <toggle-replies-widget
             v-if="hasReplies"

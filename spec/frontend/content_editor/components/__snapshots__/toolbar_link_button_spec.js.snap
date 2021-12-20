@@ -19,7 +19,7 @@ exports[`content_editor/components/toolbar_link_button renders dropdown componen
             <div placeholder=\\"Link URL\\">
               <div role=\\"group\\" class=\\"input-group\\">
                 <!---->
-                <!----> <input type=\\"text\\" placeholder=\\"Link URL\\" class=\\"gl-form-input form-control\\">
+                <!----> <input type=\\"text\\" placeholder=\\"Link URL\\" class=\\"form-control gl-form-input\\">
                 <div class=\\"input-group-append\\"><button type=\\"button\\" class=\\"btn btn-confirm btn-md gl-button\\">
                     <!---->
                     <!----> <span class=\\"gl-button-text\\">Apply</span></button></div>

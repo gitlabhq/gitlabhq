@@ -82,6 +82,7 @@ export default {
     ref="deleteModal"
     modal-id="delete-tag-modal"
     ok-variant="danger"
+    size="sm"
     :action-primary="{
       text: __('Delete'),
       attributes: [{ variant: 'danger' }, { disabled: disablePrimaryButton }],

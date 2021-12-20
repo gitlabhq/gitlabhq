@@ -43,6 +43,10 @@ describe('vue_shared/components/dismissible_alert', () => {
       it('hides the alert', () => {
         expect(findAlert().exists()).toBe(false);
       });
+
+      it('emmits alertDismissed', () => {
+        expect(wrapper.emitted('alertDismissed')).toBeTruthy();
+      });
     });
   });
 

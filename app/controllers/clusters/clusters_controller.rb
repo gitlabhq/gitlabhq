@@ -280,7 +280,10 @@ class Clusters::ClustersController < Clusters::BaseController
   end
 
   def generate_gcp_authorize_url
-    state = generate_session_key_redirect(clusterable.new_path(provider: :gcp).to_s)
+    new_path = clusterable.new_path(provider: :gcp).to_s
+    error_path = @project ? project_clusters_path(@project) : new_path
+
+    state = generate_session_key_redirect(new_path, error_path)
 
     @authorize_url = GoogleApi::CloudPlatform::Client.new(
       nil, callback_google_api_auth_url,
@@ -339,9 +342,10 @@ class Clusters::ClustersController < Clusters::BaseController
       session[GoogleApi::CloudPlatform::Client.session_key_for_expires_at]
   end
 
-  def generate_session_key_redirect(uri)
+  def generate_session_key_redirect(uri, error_uri)
     GoogleApi::CloudPlatform::Client.new_session_key_for_redirect_uri do |key|
       session[key] = uri
+      session[:error_uri] = error_uri
     end
   end
 

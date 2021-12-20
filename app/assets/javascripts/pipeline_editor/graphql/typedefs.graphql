@@ -1,7 +1,23 @@
-type BlobContent {
-  rawData: String!
+type PipelineEditorApp {
+  status: String!
+}
+
+type BranchList {
+  current: WorkBranch!
+  lastCommit: WorkBranch!
+}
+
+type EtagValues {
+  pipeline: String!
+}
+
+type WorkBranch {
+  name: String!
+  commit: String
 }
 
 extend type Query {
-  blobContent: BlobContent
+  app: PipelineEditorApp
+  etags: EtagValues
+  workBranches: BranchList
 }

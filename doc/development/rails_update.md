@@ -71,7 +71,7 @@ To efficiently and quickly find which Rails change caused the spec failure you c
     gem 'rails', ENV['RAILS_VERSION'], path: ENV['RAILS_FOLDER']
     ```
 
-1. Set the `RAILS_FOLDER` env variable with the folder you cloned Rails into:
+1. Set the `RAILS_FOLDER` environment variable with the folder you cloned Rails into:
 
     ```shell
     export RAILS_FOLDER="<GDK_FOLDER>/rails"

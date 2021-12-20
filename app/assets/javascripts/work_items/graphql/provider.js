@@ -4,6 +4,7 @@ import { IntrospectionFragmentMatcher } from 'apollo-cache-inmemory';
 import createDefaultClient from '~/lib/graphql';
 import workItemQuery from './work_item.query.graphql';
 import introspectionQueryResultData from './fragmentTypes.json';
+import { resolvers } from './resolvers';
 import typeDefs from './typedefs.graphql';
 
 const fragmentMatcher = new IntrospectionFragmentMatcher({
@@ -13,15 +14,12 @@ const fragmentMatcher = new IntrospectionFragmentMatcher({
 export function createApolloProvider() {
   Vue.use(VueApollo);
 
-  const defaultClient = createDefaultClient(
-    {},
-    {
-      cacheConfig: {
-        fragmentMatcher,
-      },
-      typeDefs,
+  const defaultClient = createDefaultClient(resolvers, {
+    cacheConfig: {
+      fragmentMatcher,
     },
-  );
+    typeDefs,
+  });
 
   defaultClient.cache.writeQuery({
     query: workItemQuery,
@@ -30,14 +28,14 @@ export function createApolloProvider() {
     },
     data: {
       workItem: {
-        __typename: 'WorkItem',
+        __typename: 'LocalWorkItem',
         id: '1',
         type: 'FEATURE',
         widgets: {
-          __typename: 'WorkItemWidgetConnection',
+          __typename: 'LocalWorkItemWidgetConnection',
           nodes: [
             {
-              __typename: 'TitleWidget',
+              __typename: 'LocalTitleWidget',
               type: 'TITLE',
               enabled: true,
               // eslint-disable-next-line @gitlab/require-i18n-strings

@@ -28,8 +28,7 @@
       %td= s_('Runners|Tags')
       %td
         - runner.tag_list.sort.each do |tag|
-          %span.badge.badge-primary
-            = tag
+          = gl_badge_tag tag, variant: :info
     %tr
       %td= s_('Runners|Name')
       %td= runner.name

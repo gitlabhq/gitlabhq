@@ -9,8 +9,7 @@
               = s_('AdminProjects|Delete')
 
           .stats
-            %span.badge.badge-pill
-              = storage_counter(project.statistics&.storage_size)
+            = gl_badge_tag storage_counter(project.statistics&.storage_size)
             = render_if_exists 'admin/projects/archived', project: project
           .title
             = link_to(admin_project_path(project)) do

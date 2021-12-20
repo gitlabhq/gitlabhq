@@ -53,7 +53,7 @@ module TestEnv
     'wip'                                => 'b9238ee',
     'csv'                                => '3dd0896',
     'v1.1.0'                             => 'b83d6e3',
-    'add-ipython-files'                  => '2b5ef814',
+    'add-ipython-files'                  => '532c837',
     'add-pdf-file'                       => 'e774ebd',
     'squash-large-files'                 => '54cec52',
     'add-pdf-text-binary'                => '79faa7b',
@@ -593,6 +593,8 @@ module TestEnv
   def component_matches_git_sha?(component_folder, expected_version)
     # Not a git SHA, so return early
     return false unless expected_version =~ ::Gitlab::Git::COMMIT_ID
+
+    return false unless Dir.exist?(component_folder)
 
     sha, exit_status = Gitlab::Popen.popen(%W(#{Gitlab.config.git.bin_path} rev-parse HEAD), component_folder)
     return false if exit_status != 0

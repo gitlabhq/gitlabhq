@@ -47,11 +47,16 @@ RSpec.describe Gitlab::Database::MigrationHelpers::LooseForeignKeyHelpers do
       record_to_be_deleted.delete
 
       expect(LooseForeignKeys::DeletedRecord.count).to eq(1)
-      deleted_record = LooseForeignKeys::DeletedRecord.all.first
+
+      arel_table = LooseForeignKeys::DeletedRecord.arel_table
+      deleted_record = LooseForeignKeys::DeletedRecord
+        .select(arel_table[Arel.star], arel_table[:partition].as('partition_number')) # aliasing the ignored partition column to partition_number
+        .all
+        .first
 
       expect(deleted_record.primary_key_value).to eq(record_to_be_deleted.id)
       expect(deleted_record.fully_qualified_table_name).to eq('public._test_loose_fk_test_table')
-      expect(deleted_record.partition).to eq(1)
+      expect(deleted_record.partition_number).to eq(1)
     end
 
     it 'stores multiple record deletions' do

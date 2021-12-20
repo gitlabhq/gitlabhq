@@ -12,6 +12,10 @@ parameters to unexpected values in an effort to cause unexpected behavior and er
 backend. This helps you discover bugs and potential security issues that other QA processes may
 miss.
 
+INFO:
+Try fuzz testing in GitLab Ultimate.
+[It's free for 30 days](https://about.gitlab.com/free-trial/index.html?glm_source=docs.gitlab.com&glm_content=u-api-fuzzing-docs).
+
 We recommend that you use fuzz testing in addition to [GitLab Secure](../index.md)'s
 other security scanners and your own test processes. If you're using [GitLab CI/CD](../../../ci/index.md),
 you can run fuzz tests as part your CI/CD workflow.
@@ -1181,7 +1185,7 @@ A bug exists in versions of the API Fuzzing analyzer prior to v1.6.196 that can 
 
 The version information can be found in the job details for the `apifuzzer_fuzz` job.
 
-If the issue is occuring with versions v1.6.196 or greater, please contact Support and provide the following information:
+If the issue is occurring with versions v1.6.196 or greater, please contact Support and provide the following information:
 
 1. Reference this troubleshooting section and ask for the issue to be escalated to the Dynamic Analysis Team.
 1. The full console output of the job.
@@ -1288,6 +1292,25 @@ The API Fuzzing template supports launching a docker container containing an API
 
 TODO
 -->
+
+## Get support or request an improvement
+
+To get support for your particular problem please use the [getting help channels](https://about.gitlab.com/get-help/).
+
+The [GitLab issue tracker on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues) is the right place for bugs and feature proposals about API Security and API Fuzzing.
+Please use `~"Category:API Security"` [label](../../../development/contributing/issue_workflow.md#labels) when opening a new issue regarding API fuzzing to ensure it is quickly reviewed by the right people. Please refer to our [review response SLO](../../../development/code_review.md#review-response-slo) to understand when you should receive a response.
+
+[Search the issue tracker](https://gitlab.com/gitlab-org/gitlab/-/issues) for similar entries before submitting your own, there's a good chance somebody else had the same issue or feature proposal. Show your support with an award emoji and or join the discussion.
+
+When experiencing a behavior not working as expected, consider providing contextual information:
+
+- GitLab version if using a self-managed instance.
+- `.gitlab-ci.yml` job definition.
+- Full job console output.
+- Scanner log file available as a job artifact named `gl-api-security-scanner.log`.
+
+WARNING:
+**Sanitize data attached to a support issue**. Please remove sensitive information, including: credentials, passwords, tokens, keys, and secrets.
 
 ## Glossary
 

@@ -239,6 +239,7 @@ RSpec.configure do |config|
   # is not yet opened at the time that is triggered
   config.prepend_before do
     ApplicationRecord.set_open_transactions_baseline
+    ::Ci::ApplicationRecord.set_open_transactions_baseline
   end
 
   config.append_before do
@@ -247,6 +248,7 @@ RSpec.configure do |config|
 
   config.append_after do
     ApplicationRecord.reset_open_transactions_baseline
+    ::Ci::ApplicationRecord.reset_open_transactions_baseline
   end
 
   config.before do |example|
@@ -320,10 +322,6 @@ RSpec.configure do |config|
       # Can be removed once all existing functionality has been replicated
       # For more information check https://gitlab.com/gitlab-org/gitlab/-/issues/339348
       stub_feature_flags(new_header_search: false)
-
-      # Disable the override flag in order to enable the feature by default.
-      # See https://docs.gitlab.com/ee/development/feature_flags/#selectively-disable-by-actor
-      stub_feature_flags(surface_environment_creation_failure_override: false)
 
       allow(Gitlab::GitalyClient).to receive(:can_use_disk?).and_return(enable_rugged)
     else
@@ -454,6 +452,13 @@ RSpec.configure do |config|
     $stdout = StringIO.new
   end
 
+  # Makes diffs show entire non-truncated values.
+  config.before(:each, unlimited_max_formatted_output_length: true) do |_example|
+    config.expect_with :rspec do |c|
+      c.max_formatted_output_length = nil
+    end
+  end
+
   config.after(:each, :silence_stdout) do
     $stdout = STDOUT
   end
@@ -475,6 +480,10 @@ Rugged::Settings['search_path_global'] = Rails.root.join('tmp/tests').to_s
 
 # Initialize FactoryDefault to use create_default helper
 TestProf::FactoryDefault.init
+
+# Exclude the Geo proxy API request from getting on_next_request Warden handlers,
+# necessary to prevent race conditions with feature tests not getting authenticated.
+::Warden.asset_paths << %r{^/api/v4/geo/proxy$}
 
 module TouchRackUploadedFile
   def initialize_from_file_path(path)

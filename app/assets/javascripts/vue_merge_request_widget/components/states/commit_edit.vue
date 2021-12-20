@@ -41,7 +41,6 @@ export default {
         rows="7"
         @input="$emit('input', $event.target.value)"
       ></textarea>
-      <slot name="text-muted"></slot>
     </div>
   </li>
 </template>

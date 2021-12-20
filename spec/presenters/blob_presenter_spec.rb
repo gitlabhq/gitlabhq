@@ -31,6 +31,28 @@ RSpec.describe BlobPresenter do
     it { expect(presenter.replace_path).to eq("/#{project.full_path}/-/create/#{blob.commit_id}/#{blob.path}") }
   end
 
+  describe '#can_current_user_push_to_branch' do
+    let(:branch_exists) { true }
+
+    before do
+      allow(project.repository).to receive(:branch_exists?).with(blob.commit_id).and_return(branch_exists)
+    end
+
+    it { expect(presenter.can_current_user_push_to_branch?).to eq(true) }
+
+    context 'current_user is nil' do
+      let(:user) { nil }
+
+      it { expect(presenter.can_current_user_push_to_branch?).to eq(false) }
+    end
+
+    context 'branch does not exist' do
+      let(:branch_exists) { false }
+
+      it { expect(presenter.can_current_user_push_to_branch?).to eq(false) }
+    end
+  end
+
   describe '#pipeline_editor_path' do
     context 'when blob is .gitlab-ci.yml' do
       before do
@@ -43,6 +65,10 @@ RSpec.describe BlobPresenter do
 
       it { expect(presenter.pipeline_editor_path).to eq("/#{project.full_path}/-/ci/editor?branch_name=#{blob.commit_id}") }
     end
+  end
+
+  describe '#code_owners' do
+    it { expect(presenter.code_owners).to match_array([]) }
   end
 
   describe '#ide_edit_path' do
@@ -133,27 +159,25 @@ RSpec.describe BlobPresenter do
         presenter.highlight
       end
     end
-  end
 
-  describe '#highlight_transformed' do
     context 'when blob is ipynb' do
       let(:blob) { repository.blob_at('f6b7a707', 'files/ipython/markdown-table.ipynb') }
       let(:git_blob) { blob.__getobj__ }
 
       before do
-        allow(git_blob).to receive(:transformed_for_diff).and_return(true)
+        allow(Gitlab::Diff::CustomDiff).to receive(:transformed_for_diff?).and_return(true)
       end
 
       it 'uses md as the transformed language' do
         expect(Gitlab::Highlight).to receive(:highlight).with('files/ipython/markdown-table.ipynb', anything, plain: nil, language: 'md')
 
-        presenter.highlight_transformed
+        presenter.highlight
       end
 
       it 'transforms the blob' do
         expect(Gitlab::Highlight).to receive(:highlight).with('files/ipython/markdown-table.ipynb', include("%%"), plain: nil, language: 'md')
 
-        presenter.highlight_transformed
+        presenter.highlight
       end
     end
 
@@ -171,7 +195,7 @@ RSpec.describe BlobPresenter do
       it 'does not transform the file' do
         expect(Gitlab::Highlight).to receive(:highlight).with('files/ruby/regex.rb', git_blob.data, plain: nil, language: 'ruby')
 
-        presenter.highlight_transformed
+        presenter.highlight
       end
     end
   end

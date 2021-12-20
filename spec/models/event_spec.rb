@@ -706,7 +706,7 @@ RSpec.describe Event do
 
     describe '.for_wiki_meta' do
       it 'finds events for a given wiki page metadata object' do
-        event = events.select(&:wiki_page?).first
+        event = events.find(&:wiki_page?)
 
         expect(described_class.for_wiki_meta(event.target)).to contain_exactly(event)
       end

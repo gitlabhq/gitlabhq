@@ -15,14 +15,18 @@ describe('MR Popover', () => {
       },
       mocks: {
         $apollo: {
-          loading: false,
+          queries: {
+            mergeRequest: {
+              loading: false,
+            },
+          },
         },
       },
     });
   });
 
   it('shows skeleton-loader while apollo is loading', () => {
-    wrapper.vm.$apollo.loading = true;
+    wrapper.vm.$apollo.queries.mergeRequest.loading = true;
 
     return wrapper.vm.$nextTick().then(() => {
       expect(wrapper.element).toMatchSnapshot();
@@ -33,6 +37,7 @@ describe('MR Popover', () => {
     it('matches the snapshot', () => {
       wrapper.setData({
         mergeRequest: {
+          title: 'Updated Title',
           state: 'opened',
           createdAt: new Date(),
           headPipeline: {
@@ -62,6 +67,12 @@ describe('MR Popover', () => {
 
       return wrapper.vm.$nextTick().then(() => {
         expect(wrapper.find(CiIcon).exists()).toBe(false);
+      });
+    });
+
+    it('falls back to cached MR title when request fails', () => {
+      return wrapper.vm.$nextTick().then(() => {
+        expect(wrapper.text()).toContain('MR Title');
       });
     });
   });

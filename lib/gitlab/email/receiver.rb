@@ -73,7 +73,7 @@ module Gitlab
 
       def key_from_to_header
         mail.to.find do |address|
-          key = Gitlab::IncomingEmail.key_from_address(address)
+          key = email_class.key_from_address(address)
           break key if key
         end
       end
@@ -100,7 +100,7 @@ module Gitlab
 
       def find_key_from_references
         ensure_references_array(mail.references).find do |mail_id|
-          key = Gitlab::IncomingEmail.key_from_fallback_message_id(mail_id)
+          key = email_class.key_from_fallback_message_id(mail_id)
           break key if key
         end
       end
@@ -119,21 +119,21 @@ module Gitlab
 
       def find_key_from_delivered_to_header
         delivered_to.find do |header|
-          key = Gitlab::IncomingEmail.key_from_address(header.value)
+          key = email_class.key_from_address(header.value)
           break key if key
         end
       end
 
       def find_key_from_envelope_to_header
         envelope_to.find do |header|
-          key = Gitlab::IncomingEmail.key_from_address(header.value)
+          key = email_class.key_from_address(header.value)
           break key if key
         end
       end
 
       def find_key_from_x_envelope_to_header
         x_envelope_to.find do |header|
-          key = Gitlab::IncomingEmail.key_from_address(header.value)
+          key = email_class.key_from_address(header.value)
           break key if key
         end
       end
@@ -157,6 +157,10 @@ module Gitlab
         autoreply = mail.header['X-Autoreply']&.value
 
         autoreply && autoreply == 'yes'
+      end
+
+      def email_class
+        Gitlab::IncomingEmail
       end
     end
   end

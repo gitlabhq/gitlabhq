@@ -252,7 +252,7 @@ RSpec.describe MergeRequestWidgetEntity do
     subject { described_class.new(resource, request: request).as_json }
 
     it 'provides a valid path value for user callout path' do
-      expect(subject[:user_callouts_path]).to eq '/-/user_callouts'
+      expect(subject[:user_callouts_path]).to eq '/-/users/callouts'
     end
 
     it 'provides a valid value for suggest pipeline feature id' do
@@ -362,7 +362,7 @@ RSpec.describe MergeRequestWidgetEntity do
 
         context 'when suggest pipeline has been dismissed' do
           before do
-            create(:user_callout, user: user, feature_name: described_class::SUGGEST_PIPELINE)
+            create(:callout, user: user, feature_name: described_class::SUGGEST_PIPELINE)
           end
 
           it 'is true' do

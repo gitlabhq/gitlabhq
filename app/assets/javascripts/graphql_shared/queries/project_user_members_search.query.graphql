@@ -3,6 +3,7 @@ query searchProjectMembers($fullPath: ID!, $search: String) {
     id
     projectMembers(search: $search) {
       nodes {
+        id
         user {
           id
           name

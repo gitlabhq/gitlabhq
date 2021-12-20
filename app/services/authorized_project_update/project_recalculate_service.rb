@@ -64,16 +64,8 @@ module AuthorizedProjectUpdate
     end
 
     def refresh_authorizations
-      ProjectAuthorization.transaction do
-        if user_ids_to_remove.any?
-          ProjectAuthorization.where(project_id: project.id, user_id: user_ids_to_remove) # rubocop: disable CodeReuse/ActiveRecord
-                              .delete_all
-        end
-
-        if authorizations_to_create.any?
-          ProjectAuthorization.insert_all(authorizations_to_create)
-        end
-      end
+      project.remove_project_authorizations(user_ids_to_remove) if user_ids_to_remove.any?
+      ProjectAuthorization.insert_all_in_batches(authorizations_to_create) if authorizations_to_create.any?
     end
 
     def apply_scopes(project_authorizations)

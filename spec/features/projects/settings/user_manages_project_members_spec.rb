@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe 'Projects > Settings > User manages project members' do
   include Spec::Support::Helpers::Features::MembersHelpers
   include Select2Helper
+  include Spec::Support::Helpers::ModalHelpers
 
   let(:group) { create(:group, name: 'OpenSource') }
   let(:project) { create(:project) }
@@ -26,7 +27,7 @@ RSpec.describe 'Projects > Settings > User manages project members' do
       click_button 'Remove member'
     end
 
-    page.within('[role="dialog"]') do
+    within_modal do
       expect(page).to have_unchecked_field 'Also unassign this user from related issues and merge requests'
       click_button('Remove member')
     end

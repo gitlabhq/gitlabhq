@@ -8,16 +8,16 @@ module Resolvers
 
       type ::Types::DesignManagement::DesignType.connection_type, null: true
 
-      argument :ids, [DesignID],
-               required: false,
-               description: 'Filters designs by their ID.'
-      argument :filenames, [GraphQL::Types::String],
-               required: false,
-               description: 'Filters designs by their filename.'
       argument :at_version, VersionID,
                required: false,
                description: 'Filters designs to only those that existed at the version. ' \
                             'If argument is omitted or nil then all designs will reflect the latest version'
+      argument :filenames, [GraphQL::Types::String],
+               required: false,
+               description: 'Filters designs by their filename.'
+      argument :ids, [DesignID],
+               required: false,
+               description: 'Filters designs by their ID.'
 
       def self.single
         ::Resolvers::DesignManagement::DesignResolver

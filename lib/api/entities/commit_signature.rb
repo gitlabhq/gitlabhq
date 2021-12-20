@@ -6,9 +6,9 @@ module API
       expose :signature_type
 
       expose :signature, merge: true do |commit, options|
-        if commit.signature.is_a?(GpgSignature) || commit.raw_commit_from_rugged?
+        if commit.signature.is_a?(::CommitSignatures::GpgSignature) || commit.raw_commit_from_rugged?
           ::API::Entities::GpgCommitSignature.represent commit_signature(commit), options
-        elsif commit.signature.is_a?(X509CommitSignature)
+        elsif commit.signature.is_a?(::CommitSignatures::X509CommitSignature)
           ::API::Entities::X509Signature.represent commit.signature, options
         end
       end

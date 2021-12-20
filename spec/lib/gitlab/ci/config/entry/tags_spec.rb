@@ -36,25 +36,9 @@ RSpec.describe Gitlab::Ci::Config::Entry::Tags do
         context 'when tags limit is reached' do
           let(:config) { Array.new(50) {|i| "tag-#{i}" } }
 
-          context 'when ci_build_tags_limit is enabled' do
-            before do
-              stub_feature_flags(ci_build_tags_limit: true)
-            end
-
-            it 'reports error' do
-              expect(entry.errors)
-                .to include "tags config must be less than the limit of #{described_class::TAGS_LIMIT} tags"
-            end
-          end
-
-          context 'when ci_build_tags_limit is disabled' do
-            before do
-              stub_feature_flags(ci_build_tags_limit: false)
-            end
-
-            it 'does not report an error' do
-              expect(entry.errors).to be_empty
-            end
+          it 'reports error' do
+            expect(entry.errors)
+              .to include "tags config must be less than the limit of #{described_class::TAGS_LIMIT} tags"
           end
         end
       end

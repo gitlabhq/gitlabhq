@@ -51,7 +51,9 @@ RSpec.describe Participable do
     end
 
     it 'supports attributes returning another Participable' do
-      other_model = Class.new { include Participable }
+      other_model = Class.new do
+        include Participable
+      end
 
       other_model.participant(:bar)
       model.participant(:foo)
@@ -111,6 +113,76 @@ RSpec.describe Participable do
 
         participants = instance.participants(user1)
         expect(participants).to contain_exactly(user1)
+      end
+    end
+  end
+
+  describe '#visible_participants' do
+    before do
+      allow(Ability).to receive(:allowed?).and_call_original
+      allow(Ability).to receive(:allowed?).with(anything, :read_class, anything) { readable }
+    end
+
+    let(:readable) { true }
+
+    it 'returns the list of participants' do
+      model.participant(:foo)
+      model.participant(:bar)
+
+      user1 = build(:user)
+      user2 = build(:user)
+      user3 = build(:user)
+      project = build(:project, :public)
+      instance = model.new
+
+      allow(instance).to receive_message_chain(:model_name, :element) { 'class' }
+      expect(instance).to receive(:foo).and_return(user2)
+      expect(instance).to receive(:bar).and_return(user3)
+      expect(instance).to receive(:project).thrice.and_return(project)
+
+      participants = instance.visible_participants(user1)
+
+      expect(participants).to include(user2)
+      expect(participants).to include(user3)
+    end
+
+    context 'when Participable is not readable by the user' do
+      let(:readable) { false }
+
+      it 'does not return unavailable participants' do
+        model.participant(:bar)
+
+        instance = model.new
+        user1 = build(:user)
+        user2 = build(:user)
+        project = build(:project, :public)
+
+        allow(instance).to receive_message_chain(:model_name, :element) { 'class' }
+        allow(instance).to receive(:bar).and_return(user2)
+        expect(instance).to receive(:project).thrice.and_return(project)
+
+        expect(instance.visible_participants(user1)).to be_empty
+      end
+
+      context 'when feature flag is disabled' do
+        before do
+          stub_feature_flags(verify_participants_access: false)
+        end
+
+        it 'returns unavailable participants' do
+          model.participant(:bar)
+
+          instance = model.new
+          user1 = build(:user)
+          user2 = build(:user)
+          project = build(:project, :public)
+
+          allow(instance).to receive_message_chain(:model_name, :element) { 'class' }
+          allow(instance).to receive(:bar).and_return(user2)
+          expect(instance).to receive(:project).thrice.and_return(project)
+
+          expect(instance.visible_participants(user1)).to match_array([user2])
+        end
       end
     end
   end

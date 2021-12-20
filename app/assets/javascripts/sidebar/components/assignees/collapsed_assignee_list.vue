@@ -110,7 +110,7 @@ export default {
 <template>
   <div
     v-gl-tooltip="tooltipOptions"
-    :class="{ 'multiple-users': hasMoreThanOneAssignee }"
+    :class="{ 'multiple-users gl-relative': hasMoreThanOneAssignee }"
     :title="tooltipTitle"
     class="sidebar-collapsed-icon sidebar-collapsed-user"
   >

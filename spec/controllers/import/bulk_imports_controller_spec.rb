@@ -215,9 +215,13 @@ RSpec.describe Import::BulkImportsController do
         let(:pat) { "fake-pat" }
         let(:bulk_import_params) do
           [{ "source_type" => "group_entity",
-            "source_full_path" => "full_path",
-            "destination_name" => "destination_name",
-            "destination_namespace" => "root" }]
+             "source_full_path" => "full_path",
+             "destination_name" => "destination_name",
+             "destination_namespace" => "root" },
+           { "source_type" => "group_entity2",
+             "source_full_path" => "full_path2",
+             "destination_name" => "destination_name2",
+             "destination_namespace" => "root" }]
         end
 
         before do
@@ -225,29 +229,23 @@ RSpec.describe Import::BulkImportsController do
           session[:bulk_import_gitlab_url] = instance_url
         end
 
-        it 'executes BulkImpors::CreatetService' do
+        it 'executes BulkImpors::CreateService' do
+          error_response = ServiceResponse.error(message: 'Record invalid', http_status: :unprocessable_entity)
+
           expect_next_instance_of(
-            ::BulkImports::CreateService, user, bulk_import_params, { url: instance_url, access_token: pat }) do |service|
+            ::BulkImports::CreateService, user, bulk_import_params[0], { url: instance_url, access_token: pat }) do |service|
             allow(service).to receive(:execute).and_return(ServiceResponse.success(payload: bulk_import))
           end
-
-          post :create, params: { bulk_import: bulk_import_params }
-
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(response.body).to eq({ id: bulk_import.id }.to_json)
-        end
-
-        it 'returns error when validation fails' do
-          error_response = ServiceResponse.error(message: 'Record invalid', http_status: :unprocessable_entity)
           expect_next_instance_of(
-            ::BulkImports::CreateService, user, bulk_import_params, { url: instance_url, access_token: pat }) do |service|
+            ::BulkImports::CreateService, user, bulk_import_params[1], { url: instance_url, access_token: pat }) do |service|
             allow(service).to receive(:execute).and_return(error_response)
           end
 
           post :create, params: { bulk_import: bulk_import_params }
 
-          expect(response).to have_gitlab_http_status(:unprocessable_entity)
-          expect(response.body).to eq({ error: 'Record invalid' }.to_json)
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response).to eq([{ "success" => true, "id" => bulk_import.id, "message" => nil },
+                                       { "success" => false, "id" => nil, "message" => "Record invalid" }])
         end
       end
     end

@@ -107,6 +107,7 @@ You can now add a new source to NuGet with:
 - [NuGet CLI](#add-a-source-with-the-nuget-cli)
 - [Visual Studio](#add-a-source-with-visual-studio)
 - [.NET CLI](#add-a-source-with-the-net-cli)
+- [Configuration file](#add-a-source-with-a-configuration-file)
 
 ### Add a source with the NuGet CLI
 
@@ -215,6 +216,51 @@ If you get a warning, ensure that the **Location**, **Username**, and
 A project-level endpoint is required to publish NuGet packages to the Package Registry.
 A project-level endpoint is also required to install NuGet packages from a project.
 
+To use the [project-level](#use-the-gitlab-endpoint-for-nuget-packages)
+NuGet endpoint, add the Package Registry as a source with `nuget`:
+
+```shell
+dotnet nuget add source "https://gitlab.example.com/api/v4/projects/<your_project_id>/packages/nuget/index.json" --name <source_name> --username <gitlab_username or deploy_token_username> --password <gitlab_personal_access_token or deploy_token>
+```
+
+- `<source_name>` is the desired source name.
+- `--store-password-in-clear-text` might be necessary depending on your operating system.
+
+For example:
+
+```shell
+dotnet nuget add source "https://gitlab.example.com/api/v4/projects/10/packages/nuget/index.json" --name gitlab --username carol --password 12345678asdf
+```
+
+#### Group-level endpoint
+
+To install a NuGet package from a group, use a group-level endpoint.
+
+To use the [group-level](#use-the-gitlab-endpoint-for-nuget-packages)
+NuGet endpoint, add the Package Registry as a source with `nuget`:
+
+```shell
+dotnet nuget add source "https://gitlab.example.com/api/v4/groups/<your_group_id>/-/packages/nuget/index.json" --name <source_name> --username <gitlab_username or deploy_token_username> --password <gitlab_personal_access_token or deploy_token>
+```
+
+- `<source_name>` is the desired source name.
+- `--store-password-in-clear-text` might be necessary depending on your operating system.
+
+For example:
+
+```shell
+dotnet nuget add source "https://gitlab.example.com/api/v4/groups/23/-/packages/nuget/index.json" --name gitlab --username carol --password 12345678asdf
+```
+
+### Add a source with a configuration file
+
+#### Project-level endpoint
+
+A project-level endpoint is required to:
+
+- Publish NuGet packages to the Package Registry.
+- Install NuGet packages from a project.
+
 To use the [project-level](#use-the-gitlab-endpoint-for-nuget-packages) Package Registry as a source for .NET:
 
 1. In the root of your project, create a file named `nuget.config`.
@@ -229,11 +275,18 @@ To use the [project-level](#use-the-gitlab-endpoint-for-nuget-packages) Package 
     </packageSources>
     <packageSourceCredentials>
         <gitlab>
-            <add key="Username" value="<gitlab_username or deploy_token_username>" />
-            <add key="ClearTextPassword" value="<gitlab_personal_access_token or deploy_token>" />
+            <add key="Username" value="%GITLAB_PACKAGE_REGISTRY_USERNAME%" />
+            <add key="ClearTextPassword" value="%GITLAB_PACKAGE_REGISTRY_PASSWORD%" />
         </gitlab>
     </packageSourceCredentials>
    </configuration>
+   ```
+
+1. Configure the necessary environment variables:
+
+   ```shell
+   export GITLAB_PACKAGE_REGISTRY_USERNAME=<gitlab_username or deploy_token_username>
+   export GITLAB_PACKAGE_REGISTRY_PASSWORD=<gitlab_personal_access_token or deploy_token>
    ```
 
 #### Group-level endpoint
@@ -254,11 +307,18 @@ To use the [group-level](#use-the-gitlab-endpoint-for-nuget-packages) Package Re
     </packageSources>
     <packageSourceCredentials>
         <gitlab>
-            <add key="Username" value="<gitlab_username or deploy_token_username>" />
-            <add key="ClearTextPassword" value="<gitlab_personal_access_token or deploy_token>" />
+            <add key="Username" value="%GITLAB_PACKAGE_REGISTRY_USERNAME%" />
+            <add key="ClearTextPassword" value="%GITLAB_PACKAGE_REGISTRY_PASSWORD%" />
         </gitlab>
     </packageSourceCredentials>
    </configuration>
+   ```
+
+1. Configure the necessary environment variables:
+
+   ```shell
+   export GITLAB_PACKAGE_REGISTRY_USERNAME=<gitlab_username or deploy_token_username>
+   export GITLAB_PACKAGE_REGISTRY_PASSWORD=<gitlab_personal_access_token or deploy_token>
    ```
 
 ## Publish a NuGet package

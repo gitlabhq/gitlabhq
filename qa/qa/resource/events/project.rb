@@ -25,6 +25,10 @@ module QA
           wait_for_event do
             events(action: 'pushed').any? { |event| event.dig(:push_data, :commit_title) == commit_message }
           end
+        rescue EventNotFoundError
+          QA::Runtime::Logger.debug("Push events: #{events(action: 'pushed')}")
+
+          raise
         end
 
         def wait_for_push_new_branch(branch_name = self.default_branch)

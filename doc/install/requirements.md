@@ -35,7 +35,7 @@ For the installation options, see [the main installation page](index.md).
 Installation of GitLab on these operating systems is possible, but not supported.
 Please see the [installation from source guide](installation.md) and the [installation guides](https://about.gitlab.com/install/) for more information.
 
-Please see [OS versions that are no longer supported](../administration/package_information/deprecated_os.md) for Omnibus installs page
+Please see [OS versions that are no longer supported](../administration/package_information/supported_os.md#os-versions-that-are-no-longer-supported) for Omnibus installs page
 for a list of supported and unsupported OS versions as well as the last support GitLab version for that OS.
 
 ### Microsoft Windows
@@ -57,7 +57,7 @@ Redis version 6.0 or higher is recommended, as this is what ships with
 
 ### Storage
 
-The necessary hard drive space largely depends on the size of the repositories you want to store in GitLab but as a *rule of thumb* you should have at least as much free space as all your repositories combined take up.
+The necessary hard drive space largely depends on the size of the repositories you want to store in GitLab but as a *guideline* you should have at least as much free space as all your repositories combined take up.
 
 The Omnibus GitLab package requires about 2.5 GB of storage space for installation.
 
@@ -302,7 +302,8 @@ The GitLab Runner server requirements depend on:
 
 Since the nature of the jobs varies for each use case, you need to experiment by adjusting the job concurrency to get the optimum setting.
 
-For reference, the GitLab.com Runner Cloud [auto-scaling runner for Linux](../ci/runners/build_cloud/linux_build_cloud.md) is configured so that a **single job** runs in a **single instance** with:
+For reference, the [SaaS runners on Linux](../ci/runners/build_cloud/linux_build_cloud.md)
+are configured so that a **single job** runs in a **single instance** with:
 
 - 1 vCPU.
 - 3.75 GB of RAM.

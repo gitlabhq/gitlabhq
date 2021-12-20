@@ -42,6 +42,11 @@ export default {
       required: false,
       default: false,
     },
+    coverageLoaded: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     inline: {
       type: Boolean,
       required: false,
@@ -83,14 +88,15 @@ export default {
       if (!props.inline || !props.line.left) return {};
       return props.fileLineCoverage(props.filePath, props.line.left.new_line);
     },
-    (props) => [props.inline, props.filePath, props.line.left?.new_line].join(':'),
+    (props) =>
+      [props.inline, props.filePath, props.line.left?.new_line, props.coverageLoaded].join(':'),
   ),
   coverageStateRight: memoize(
     (props) => {
       if (!props.line.right) return {};
       return props.fileLineCoverage(props.filePath, props.line.right.new_line);
     },
-    (props) => [props.line.right?.new_line, props.filePath].join(':'),
+    (props) => [props.line.right?.new_line, props.filePath, props.coverageLoaded].join(':'),
   ),
   showCodequalityLeft: memoize(
     (props) => {

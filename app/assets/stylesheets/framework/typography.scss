@@ -625,6 +625,7 @@ body {
 
 /** CODE **/
 pre {
+  @include gl-relative;
   font-family: $monospace-font;
   display: block;
   padding: $gl-padding-8 $input-horizontal-padding;
@@ -636,6 +637,11 @@ pre {
   background-color: $gray-light;
   border: 1px solid $gray-100;
   border-radius: $border-radius-small;
+
+  // Select only code elements that will have the copy code button
+  .markdown-code-block & {
+    padding: $input-horizontal-padding;
+  }
 }
 
 code {

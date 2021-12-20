@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Kubernetes clusters **(FREE)**
 
-To connect clusters to GitLab, use the [GitLab Kubernetes Agent](../../clusters/agent/index.md).
+To connect clusters to GitLab, use the [GitLab Agent](../../clusters/agent/index.md).
 
 ## Certificate-based Kubernetes integration (DEPRECATED)
 
@@ -24,7 +24,7 @@ It had the following issues:
 - Users were constantly reporting issues with features based on this model.
 
 For this reason, we started to build features based on a new model, the
-[GitLab Kubernetes Agent](../../clusters/agent/index.md).
+[GitLab Agent](../../clusters/agent/index.md).
 Maintaining both methods in parallel caused a lot of confusion
 and significantly increased the complexity to use, develop, maintain, and
 document them. For this reason, we decided to deprecate them to focus on the
@@ -38,7 +38,7 @@ Follow this [epic](https://gitlab.com/groups/gitlab-org/configure/-/epics/8)
 for updates.
 
 You can find technical information about why we moved away from cluster certificates into
-the Kubernetes Agent model on the [Agent's blueprint documentation](../../../architecture/blueprints/gitlab_to_kubernetes_communication/index.md).
+the GitLab Agent model on the [Agent's blueprint documentation](../../../architecture/blueprints/gitlab_to_kubernetes_communication/index.md).
 
 ## Deprecated features
 
@@ -52,13 +52,12 @@ the Kubernetes Agent model on the [Agent's blueprint documentation](../../../arc
 - [Cluster integrations](../../clusters/integrations.md)
 - [Cluster cost management](../../clusters/cost_management.md)
 - [Cluster environments](../../clusters/environments.md)
-- [Canary Deployments](../../project/canary_deployments.md)
+- [Advanced traffic control with Canary Ingress](../../project/canary_deployments.md#advanced-traffic-control-with-canary-ingress-deprecated)
 - [Serverless](../../project/clusters/serverless/index.md)
 - [Deploy Boards](../../project/deploy_boards.md)
 - [Pod logs](../../project/clusters/kubernetes_pod_logs.md)
 - [Clusters health](manage/clusters_health.md)
 - [Crossplane integration](../../clusters/crossplane.md)
-- [Auto Deploy](../../../topics/autodevops/stages.md#auto-deploy)
 - [Web terminals](../../../administration/integration/terminal.md)
 
 ### Cluster levels

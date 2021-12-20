@@ -613,6 +613,28 @@ RSpec.describe Notify do
         it 'has References header including the notes and issue of the discussion' do
           expect(subject.header['References'].message_ids).to include("issue_#{note.noteable.id}@#{host}")
         end
+
+        context 'with private references accessible to the recipient' do
+          let_it_be(:private_project) { create(:project, :private) }
+          let_it_be(:private_issue) { create(:issue, :closed, project: private_project) }
+
+          before_all do
+            private_project.add_guest(recipient)
+
+            note.update!(note: "#{private_issue.to_reference(full: true)}")
+          end
+
+          let(:html_part) { subject.body.parts.last.to_s }
+
+          it 'does not redact the reference' do
+            expect(html_part).to include("data-reference-type=\"issue\"")
+            expect(html_part).to include("title=\"#{private_issue.title}\"")
+          end
+
+          it 'renders expanded issue references' do
+            expect(html_part).to include("#{private_issue.to_reference(full: true)} (closed)")
+          end
+        end
       end
     end
 
@@ -807,7 +829,7 @@ RSpec.describe Notify do
       end
 
       it_behaves_like 'an email sent from GitLab'
-      it_behaves_like 'it should not have Gmail Actions links'
+      it_behaves_like 'it should show Gmail Actions Join now link'
       it_behaves_like "a user cannot unsubscribe through footer link"
       it_behaves_like 'appearance header and footer enabled'
       it_behaves_like 'appearance header and footer not enabled'
@@ -842,48 +864,6 @@ RSpec.describe Notify do
                                                     invite_type: Emails::Members::INITIAL_INVITE))
           is_expected.to have_content('Project details')
           is_expected.to have_content("What's it about?")
-        end
-      end
-
-      context 'with invite_email_preview_text enabled', :experiment do
-        before do
-          stub_experiments(invite_email_preview_text: :control)
-        end
-
-        it 'has the correct invite_url with params' do
-          is_expected.to have_link('Join now',
-                                   href: invite_url(project_member.invite_token,
-                                                    invite_type: Emails::Members::INITIAL_INVITE,
-                                                    experiment_name: 'invite_email_preview_text'))
-        end
-
-        it 'tracks the sent invite' do
-          expect(experiment(:invite_email_preview_text)).to track(:assignment)
-                                                      .with_context(actor: project_member)
-                                                      .on_next_instance
-
-          invite_email.deliver_now
-        end
-      end
-
-      context 'with invite_email_from enabled', :experiment do
-        before do
-          stub_experiments(invite_email_from: :control)
-        end
-
-        it 'has the correct invite_url with params' do
-          is_expected.to have_link('Join now',
-                                   href: invite_url(project_member.invite_token,
-                                                    invite_type: Emails::Members::INITIAL_INVITE,
-                                                    experiment_name: 'invite_email_from'))
-        end
-
-        it 'tracks the sent invite' do
-          expect(experiment(:invite_email_from)).to track(:assignment)
-                                                      .with_context(actor: project_member)
-                                                      .on_next_instance
-
-          invite_email.deliver_now
         end
       end
 
@@ -1460,7 +1440,7 @@ RSpec.describe Notify do
       subject { described_class.member_invited_email('Group', group_member.id, group_member.invite_token) }
 
       it_behaves_like 'an email sent from GitLab'
-      it_behaves_like 'it should not have Gmail Actions links'
+      it_behaves_like 'it should show Gmail Actions Join now link'
       it_behaves_like "a user cannot unsubscribe through footer link"
       it_behaves_like 'appearance header and footer enabled'
       it_behaves_like 'appearance header and footer not enabled'

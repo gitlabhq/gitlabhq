@@ -4,3 +4,8 @@ export const ISSUABLE_TYPE = {
   issues: 'issues',
   mergeRequests: 'merge-requests',
 };
+
+export const ISSUABLE_INDEX = {
+  ISSUE: 'issue_',
+  MERGE_REQUEST: 'merge_request_',
+};

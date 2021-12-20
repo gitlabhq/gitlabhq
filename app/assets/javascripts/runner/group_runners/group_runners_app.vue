@@ -9,6 +9,7 @@ import RegistrationDropdown from '../components/registration/registration_dropdo
 import RunnerFilteredSearchBar from '../components/runner_filtered_search_bar.vue';
 import RunnerList from '../components/runner_list.vue';
 import RunnerName from '../components/runner_name.vue';
+import RunnerOnlineStat from '../components/stat/runner_online_stat.vue';
 import RunnerPagination from '../components/runner_pagination.vue';
 import RunnerTypeTabs from '../components/runner_type_tabs.vue';
 
@@ -35,6 +36,7 @@ export default {
     RunnerFilteredSearchBar,
     RunnerList,
     RunnerName,
+    RunnerOnlineStat,
     RunnerPagination,
     RunnerTypeTabs,
   },
@@ -145,6 +147,8 @@ export default {
 
 <template>
   <div>
+    <runner-online-stat class="gl-py-6 gl-px-5" :value="groupRunnersCount" />
+
     <div class="gl-display-flex gl-align-items-center">
       <runner-type-tabs
         v-model="search"
@@ -164,11 +168,7 @@ export default {
       v-model="search"
       :tokens="searchTokens"
       :namespace="filteredSearchNamespace"
-    >
-      <template #runner-count>
-        {{ runnerCountMessage }}
-      </template>
-    </runner-filtered-search-bar>
+    />
 
     <div v-if="noRunnersFound" class="gl-text-center gl-p-5">
       {{ __('No runners found') }}

@@ -21,6 +21,10 @@ You can create a merge request from the list of merge requests.
 1. Select a source and target branch and then **Compare branches and continue**.
 1. Fill out the fields and select **Create merge request**.
 
+NOTE:
+Merge requests are designed around a one-to-one (1:1) branch relationship. Only one open merge request may
+be associated with a given target branch at a time.
+
 ## From an issue
 
 You can [create a merge request from an issue](../repository/web_editor.md#create-a-new-branch-from-an-issue).
@@ -154,6 +158,8 @@ You can specify the target branch by using the
 branch already exists, the patches are applied on top of it.
 
 ## Set the default target project
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/58093) in GitLab 13.11.
 
 Merge requests have a source and a target project that are the same, unless
 forking is involved. Creating a fork of the project can cause either of these

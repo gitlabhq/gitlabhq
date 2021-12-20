@@ -15,6 +15,7 @@ module Ci
 
     def execute
       search!
+      filter_by_active!
       filter_by_status!
       filter_by_runner_type!
       filter_by_tag_list!
@@ -58,6 +59,10 @@ module Ci
                  else
                    raise ArgumentError, 'Invalid membership filter'
                  end
+    end
+
+    def filter_by_active!
+      @runners = @runners.active(@params[:active]) if @params.include?(:active)
     end
 
     def filter_by_status!

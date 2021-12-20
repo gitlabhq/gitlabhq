@@ -45,6 +45,7 @@ RSpec.describe Resolvers::Ci::RunnersResolver do
       let(:finder) { instance_double(::Ci::RunnersFinder) }
       let(:args) do
         {
+          active: true,
           status: 'active',
           type: :instance_type,
           tag_list: ['active_runner'],
@@ -55,6 +56,7 @@ RSpec.describe Resolvers::Ci::RunnersResolver do
 
       let(:expected_params) do
         {
+          active: true,
           status_status: 'active',
           type_type: :instance_type,
           tag_name: ['active_runner'],

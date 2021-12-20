@@ -33,7 +33,7 @@ RSpec.describe Banzai::Filter::MarkdownFilter do
         it 'adds language to lang attribute when specified' do
           result = filter("```html\nsome code\n```", no_sourcepos: true)
 
-          if Feature.enabled?(:use_cmark_renderer)
+          if Feature.enabled?(:use_cmark_renderer, default_enabled: :yaml)
             expect(result).to start_with('<pre lang="html"><code>')
           else
             expect(result).to start_with('<pre><code lang="html">')
@@ -49,7 +49,7 @@ RSpec.describe Banzai::Filter::MarkdownFilter do
         it 'works with utf8 chars in language' do
           result = filter("```日\nsome code\n```", no_sourcepos: true)
 
-          if Feature.enabled?(:use_cmark_renderer)
+          if Feature.enabled?(:use_cmark_renderer, default_enabled: :yaml)
             expect(result).to start_with('<pre lang="日"><code>')
           else
             expect(result).to start_with('<pre><code lang="日">')
@@ -59,7 +59,7 @@ RSpec.describe Banzai::Filter::MarkdownFilter do
         it 'works with additional language parameters' do
           result = filter("```ruby:red gem foo\nsome code\n```", no_sourcepos: true)
 
-          if Feature.enabled?(:use_cmark_renderer)
+          if Feature.enabled?(:use_cmark_renderer, default_enabled: :yaml)
             expect(result).to start_with('<pre lang="ruby:red" data-meta="gem foo"><code>')
           else
             expect(result).to start_with('<pre><code lang="ruby:red gem foo">')
@@ -102,7 +102,7 @@ RSpec.describe Banzai::Filter::MarkdownFilter do
 
         expect(result).to include('<td>foot <sup')
 
-        if Feature.enabled?(:use_cmark_renderer)
+        if Feature.enabled?(:use_cmark_renderer, default_enabled: :yaml)
           expect(result).to include('<section class="footnotes" data-footnotes>')
         else
           expect(result).to include('<section class="footnotes">')

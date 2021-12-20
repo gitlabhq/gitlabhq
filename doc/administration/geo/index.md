@@ -2,17 +2,19 @@
 stage: Enablement
 group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
-type: howto
 ---
 
 # Geo **(PREMIUM SELF)**
 
-Geo is the solution for widely distributed development teams and for providing a warm-standby as part of a disaster recovery strategy.
+Geo is the solution for widely distributed development teams and for providing
+a warm-standby as part of a disaster recovery strategy.
 
 ## Overview
 
 WARNING:
-Geo undergoes significant changes from release to release. Upgrades **are** supported and [documented](#updating-geo), but you should ensure that you're using the right version of the documentation for your installation.
+Geo undergoes significant changes from release to release. Upgrades are
+supported and [documented](#updating-geo), but you should ensure that you're
+using the right version of the documentation for your installation.
 
 Fetching large repositories can take a long time for teams located far from a single GitLab instance.
 
@@ -69,8 +71,9 @@ Keep in mind that:
 - **Secondary** sites talk to the **primary** site to:
   - Get user data for logins (API).
   - Replicate repositories, LFS Objects, and Attachments (HTTPS + JWT).
-- In GitLab Premium 10.0 and later, the **primary** site no longer talks to **secondary** sites to notify for changes (API).
-- Pushing directly to a **secondary** site (for both HTTP and SSH, including Git LFS) was [introduced](https://about.gitlab.com/releases/2018/09/22/gitlab-11-3-released/) in [GitLab Premium](https://about.gitlab.com/pricing/#self-managed) 11.3.
+- The **primary** site doesn't talk to **secondary** sites to notify for changes (API).
+- You can push directly to a **secondary** site (for both HTTP and SSH,
+  including Git LFS).
 - There are [limitations](#limitations) when using Geo.
 
 ### Architecture
@@ -111,21 +114,18 @@ In **secondary** sites, there is an additional daemon: [Geo Log Cursor](#geo-log
 
 The following are required to run Geo:
 
-- An operating system that supports OpenSSH 6.9+ (needed for
+- An operating system that supports OpenSSH 6.9 or later (needed for
   [fast lookup of authorized SSH keys in the database](../operations/fast_ssh_key_lookup.md))
   The following operating systems are known to ship with a current version of OpenSSH:
-  - [CentOS](https://www.centos.org) 7.4+
-  - [Ubuntu](https://ubuntu.com) 16.04+
-- PostgreSQL 12+ with [Streaming Replication](https://wiki.postgresql.org/wiki/Streaming_Replication)
-- Git 2.9+
-- Git-lfs 2.4.2+ on the user side when using LFS
+  - [CentOS](https://www.centos.org) 7.4 or later
+  - [Ubuntu](https://ubuntu.com) 16.04 or later
+- PostgreSQL 12 or later with [Streaming Replication](https://wiki.postgresql.org/wiki/Streaming_Replication)
+- Git 2.9 or later
+- Git-lfs 2.4.2 or later on the user side when using LFS
 - All sites must run the same GitLab version.
 
 Additionally, check the GitLab [minimum requirements](../../install/requirements.md),
-and we recommend you use:
-
-- At least GitLab Enterprise Edition 10.0 for basic Geo features.
-- The latest version for a better experience.
+and we recommend you use the latest version of GitLab for a better experience.
 
 ### Firewall rules
 
@@ -311,7 +311,8 @@ For answers to common questions, see the [Geo FAQ](replication/faq.md).
 
 ## Log files
 
-In GitLab 9.5 and later, Geo stores structured log messages in a `geo.log` file. For Omnibus installations, this file is at `/var/log/gitlab/gitlab-rails/geo.log`.
+Geo stores structured log messages in a `geo.log` file. For Omnibus GitLab
+installations, this file is at `/var/log/gitlab/gitlab-rails/geo.log`.
 
 This file contains information about when Geo attempts to sync repositories and files. Each line in the file contains a separate JSON entry that can be ingested into. For example, Elasticsearch or Splunk.
 

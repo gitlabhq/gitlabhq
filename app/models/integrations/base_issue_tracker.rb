@@ -128,7 +128,7 @@ module Integrations
       false
     end
 
-    def create_cross_reference_note(mentioned, noteable, author)
+    def create_cross_reference_note(external_issue, mentioned_in, author)
       # implement inside child
     end
 

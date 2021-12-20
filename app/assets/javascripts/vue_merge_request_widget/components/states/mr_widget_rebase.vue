@@ -121,9 +121,6 @@ export default {
 
             if (res.merge_error && res.merge_error.length) {
               this.rebasingError = res.merge_error;
-              createFlash({
-                message: __('Something went wrong. Please try again.'),
-              });
             }
 
             eventHub.$emit('MRWidgetRebaseSuccess');

@@ -3,7 +3,7 @@
 class Projects::PipelineSchedulesController < Projects::ApplicationController
   before_action :schedule, except: [:index, :new, :create]
 
-  before_action :play_rate_limit, only: [:play]
+  before_action :check_play_rate_limit!, only: [:play]
   before_action :authorize_play_pipeline_schedule!, only: [:play]
   before_action :authorize_read_pipeline_schedule!
   before_action :authorize_create_pipeline_schedule!, only: [:new, :create]
@@ -81,17 +81,13 @@ class Projects::PipelineSchedulesController < Projects::ApplicationController
 
   private
 
-  def play_rate_limit
+  def check_play_rate_limit!
     return unless current_user
 
-    if rate_limiter.throttled?(:play_pipeline_schedule, scope: [current_user, schedule])
+    check_rate_limit!(:play_pipeline_schedule, scope: [current_user, schedule]) do
       flash[:alert] = _('You cannot play this scheduled pipeline at the moment. Please wait a minute.')
       redirect_to pipeline_schedules_path(@project)
     end
-  end
-
-  def rate_limiter
-    ::Gitlab::ApplicationRateLimiter
   end
 
   def schedule

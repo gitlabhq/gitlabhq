@@ -176,3 +176,14 @@ deactivate B
 
 In addition to recording to the database, we also write these events to
 [a log file](../../administration/logs.md#audit_jsonlog).
+
+## Event streaming
+
+All events where the entity is a `Group` or `Project` are recorded in the audit log, and also streamed to one or more
+[event streaming destinations](../../administration/audit_event_streaming.md). When the entity is a:
+
+- `Group`, events are streamed to the group's root ancestor's event streaming destinations.
+- `Project`, events are streamed to the project's root ancestor's event streaming destinations.
+
+This feature is under heavy development. Follow the [parent epic](https://gitlab.com/groups/gitlab-org/-/epics/5925) for updates on feature
+development.

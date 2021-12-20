@@ -91,6 +91,7 @@ const Api = {
   projectNotificationSettingsPath: '/api/:version/projects/:id/notification_settings',
   groupNotificationSettingsPath: '/api/:version/groups/:id/notification_settings',
   notificationSettingsPath: '/api/:version/notification_settings',
+  deployKeysPath: '/api/:version/deploy_keys',
 
   group(groupId, callback = () => {}) {
     const url = Api.buildUrl(Api.groupPath).replace(':id', groupId);
@@ -948,6 +949,12 @@ const Api = {
       .replace(':list_iid', listIid);
 
     return axios.delete(url);
+  },
+
+  deployKeys(params = {}) {
+    const url = Api.buildUrl(this.deployKeysPath);
+
+    return axios.get(url, { params: { per_page: DEFAULT_PER_PAGE, ...params } });
   },
 
   async updateNotificationSettings(projectId, groupId, data = {}) {

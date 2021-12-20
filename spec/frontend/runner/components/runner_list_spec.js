@@ -46,10 +46,17 @@ describe('RunnerList', () => {
       'Runner ID',
       'Version',
       'IP Address',
+      'Jobs',
       'Tags',
       'Last contact',
       '', // actions has no label
     ]);
+  });
+
+  it('Sets runner id as a row key', () => {
+    createComponent({}, shallowMount);
+
+    expect(findTable().attributes('primary-key')).toBe('id');
   });
 
   it('Displays a list of runners', () => {
@@ -73,6 +80,7 @@ describe('RunnerList', () => {
     // Other fields
     expect(findCell({ fieldKey: 'version' }).text()).toBe(version);
     expect(findCell({ fieldKey: 'ipAddress' }).text()).toBe(ipAddress);
+    expect(findCell({ fieldKey: 'jobCount' }).text()).toBe('0');
     expect(findCell({ fieldKey: 'tagList' }).text()).toBe('');
     expect(findCell({ fieldKey: 'contactedAt' }).text()).toEqual(expect.any(String));
 
@@ -81,6 +89,42 @@ describe('RunnerList', () => {
 
     expect(actions.findByTestId('edit-runner').exists()).toBe(true);
     expect(actions.findByTestId('toggle-active-runner').exists()).toBe(true);
+  });
+
+  describe('Table data formatting', () => {
+    let mockRunnersCopy;
+
+    beforeEach(() => {
+      mockRunnersCopy = [
+        {
+          ...mockRunners[0],
+        },
+      ];
+    });
+
+    it('Formats job counts', () => {
+      mockRunnersCopy[0].jobCount = 1;
+
+      createComponent({ props: { runners: mockRunnersCopy } }, mount);
+
+      expect(findCell({ fieldKey: 'jobCount' }).text()).toBe('1');
+    });
+
+    it('Formats large job counts', () => {
+      mockRunnersCopy[0].jobCount = 1000;
+
+      createComponent({ props: { runners: mockRunnersCopy } }, mount);
+
+      expect(findCell({ fieldKey: 'jobCount' }).text()).toBe('1,000');
+    });
+
+    it('Formats large job counts with a plus symbol', () => {
+      mockRunnersCopy[0].jobCount = 1001;
+
+      createComponent({ props: { runners: mockRunnersCopy } }, mount);
+
+      expect(findCell({ fieldKey: 'jobCount' }).text()).toBe('1,000+');
+    });
   });
 
   it('Shows runner identifier', () => {

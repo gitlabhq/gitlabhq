@@ -6,6 +6,9 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Managed Licenses API **(ULTIMATE)**
 
+WARNING:
+"approval" and "blacklisted" approval statuses are deprecated and scheduled to be changed to "allowed" and "denied" in GitLab 15.0.
+
 ## List managed licenses
 
 Get all managed licenses for a given project.
@@ -78,10 +81,10 @@ POST /projects/:id/managed_licenses
 | ------------- | ------- | -------- | ---------------------------- |
 | `id`      | integer/string    | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user |
 | `name`        | string  | yes      | The name of the managed license        |
-| `approval_status`       | string  | yes      | The approval status. "approved" or "blacklisted" |
+| `approval_status`       | string  | yes      | The approval status of the license. "allowed" or "denied". "blacklisted" and "approved" are deprecated. |
 
 ```shell
-curl --data "name=MIT&approval_status=blacklisted" --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/managed_licenses"
+curl --data "name=MIT&approval_status=denied" --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/managed_licenses"
 ```
 
 Example response:
@@ -125,10 +128,10 @@ PATCH /projects/:id/managed_licenses/:managed_license_id
 | --------------- | ------- | --------------------------------- | -------------------------------  |
 | `id`      | integer/string    | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user |
 | `managed_license_id`      | integer/string    | yes      | The ID or URL-encoded name of the license belonging to the project |
-| `approval_status`       | string  | yes      | The approval status. "approved" or "blacklisted" |
+| `approval_status`       | string  | yes      | The approval status of the license. "allowed" or "denied". "blacklisted" and "approved" are deprecated. |
 
 ```shell
-curl --request PATCH --data "approval_status=blacklisted" \
+curl --request PATCH --data "approval_status=denied" \
      --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/managed_licenses/6"
 ```
 

@@ -10,7 +10,7 @@ module RspecFlaky
   # This class is responsible for loading/saving JSON reports, and pruning
   # outdated examples.
   class Report < SimpleDelegator
-    OUTDATED_DAYS_THRESHOLD = 30
+    OUTDATED_DAYS_THRESHOLD = 7
 
     attr_reader :flaky_examples
 
@@ -45,12 +45,13 @@ module RspecFlaky
 
     def prune_outdated(days: OUTDATED_DAYS_THRESHOLD)
       outdated_date_threshold = Time.now - (3600 * 24 * days)
-      updated_hash = flaky_examples.dup
-        .delete_if do |uid, hash|
-          hash[:last_flaky_at] && Time.parse(hash[:last_flaky_at]).to_i < outdated_date_threshold.to_i
+      recent_flaky_examples = flaky_examples.dup
+        .delete_if do |_uid, flaky_example|
+          last_flaky_at = flaky_example.to_h[:last_flaky_at]
+          last_flaky_at && last_flaky_at.to_i < outdated_date_threshold.to_i
         end
 
-      self.class.new(RspecFlaky::FlakyExamplesCollection.new(updated_hash))
+      self.class.new(RspecFlaky::FlakyExamplesCollection.new(recent_flaky_examples))
     end
   end
 end

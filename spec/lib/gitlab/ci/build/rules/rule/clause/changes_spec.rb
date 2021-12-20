@@ -33,12 +33,12 @@ RSpec.describe Gitlab::Ci::Build::Rules::Rule::Clause::Changes do
       end
 
       context 'when context has the specified variables' do
-        let(:variables) do
-          [{ key: "HELM_DIR", value: "helm", public: true }]
+        let(:variables_hash) do
+          { 'HELM_DIR' => 'helm' }
         end
 
         before do
-          allow(context).to receive(:variables).and_return(variables)
+          allow(context).to receive(:variables_hash).and_return(variables_hash)
         end
 
         it { is_expected.to be_truthy }
@@ -49,7 +49,7 @@ RSpec.describe Gitlab::Ci::Build::Rules::Rule::Clause::Changes do
         let(:modified_paths) { ['path/with/$in/it/file.txt'] }
 
         before do
-          allow(context).to receive(:variables).and_return([])
+          allow(context).to receive(:variables_hash).and_return({})
         end
 
         it { is_expected.to be_truthy }

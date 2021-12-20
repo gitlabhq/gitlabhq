@@ -160,6 +160,8 @@ module Gitlab
         wrapped_gitaly_errors do
           gitaly_repository_client.remove
         end
+      rescue NoRepository
+        nil
       end
 
       def replicate(source_repository)

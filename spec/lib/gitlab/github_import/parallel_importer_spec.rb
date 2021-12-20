@@ -27,8 +27,13 @@ RSpec.describe Gitlab::GithubImport::ParallelImporter do
 
     before do
       create(:import_state, :started, project: project)
+      worker = double(:worker)
 
       expect(Gitlab::GithubImport::Stage::ImportRepositoryWorker)
+        .to receive(:with_status)
+        .and_return(worker)
+
+      expect(worker)
         .to receive(:perform_async)
         .with(project.id)
         .and_return('123')

@@ -146,6 +146,30 @@ RSpec.describe SystemNoteService do
     end
   end
 
+  describe '.request_attention' do
+    let(:user) { double }
+
+    it 'calls IssuableService' do
+      expect_next_instance_of(::SystemNotes::IssuablesService) do |service|
+        expect(service).to receive(:request_attention).with(user)
+      end
+
+      described_class.request_attention(noteable, project, author, user)
+    end
+  end
+
+  describe '.remove_attention_request' do
+    let(:user) { double }
+
+    it 'calls IssuableService' do
+      expect_next_instance_of(::SystemNotes::IssuablesService) do |service|
+        expect(service).to receive(:remove_attention_request).with(user)
+      end
+
+      described_class.remove_attention_request(noteable, project, author, user)
+    end
+  end
+
   describe '.merge_when_pipeline_succeeds' do
     it 'calls MergeRequestsService' do
       sha = double
@@ -287,38 +311,38 @@ RSpec.describe SystemNoteService do
   end
 
   describe '.cross_reference' do
-    let(:mentioner) { double }
+    let(:mentioned_in) { double }
 
     it 'calls IssuableService' do
       expect_next_instance_of(::SystemNotes::IssuablesService) do |service|
-        expect(service).to receive(:cross_reference).with(mentioner)
+        expect(service).to receive(:cross_reference).with(mentioned_in)
       end
 
-      described_class.cross_reference(double, mentioner, double)
+      described_class.cross_reference(double, mentioned_in, double)
     end
   end
 
   describe '.cross_reference_disallowed?' do
-    let(:mentioner) { double }
+    let(:mentioned_in) { double }
 
     it 'calls IssuableService' do
       expect_next_instance_of(::SystemNotes::IssuablesService) do |service|
-        expect(service).to receive(:cross_reference_disallowed?).with(mentioner)
+        expect(service).to receive(:cross_reference_disallowed?).with(mentioned_in)
       end
 
-      described_class.cross_reference_disallowed?(double, mentioner)
+      described_class.cross_reference_disallowed?(double, mentioned_in)
     end
   end
 
   describe '.cross_reference_exists?' do
-    let(:mentioner) { double }
+    let(:mentioned_in) { double }
 
     it 'calls IssuableService' do
       expect_next_instance_of(::SystemNotes::IssuablesService) do |service|
-        expect(service).to receive(:cross_reference_exists?).with(mentioner)
+        expect(service).to receive(:cross_reference_exists?).with(mentioned_in)
       end
 
-      described_class.cross_reference_exists?(double, mentioner)
+      described_class.cross_reference_exists?(double, mentioned_in)
     end
   end
 

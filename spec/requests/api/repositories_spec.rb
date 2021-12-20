@@ -731,6 +731,71 @@ RSpec.describe API::Repositories do
     end
   end
 
+  describe 'GET /projects/:id/repository/changelog' do
+    it 'generates the changelog for a version' do
+      spy = instance_spy(Repositories::ChangelogService)
+      release_notes = 'Release notes'
+
+      allow(Repositories::ChangelogService)
+        .to receive(:new)
+        .with(
+          project,
+          user,
+          version: '1.0.0',
+          from: 'foo',
+          to: 'bar',
+          date: DateTime.new(2020, 1, 1),
+          trailer: 'Foo'
+        )
+        .and_return(spy)
+
+      expect(spy).to receive(:execute).with(commit_to_changelog: false).and_return(release_notes)
+
+      get(
+        api("/projects/#{project.id}/repository/changelog", user),
+        params: {
+          version: '1.0.0',
+          from: 'foo',
+          to: 'bar',
+          date: '2020-01-01',
+          trailer: 'Foo'
+        }
+      )
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response['notes']).to eq(release_notes)
+    end
+
+    it 'supports leaving out the from and to attribute' do
+      spy = instance_spy(Repositories::ChangelogService)
+
+      allow(Repositories::ChangelogService)
+        .to receive(:new)
+        .with(
+          project,
+          user,
+          version: '1.0.0',
+          date: DateTime.new(2020, 1, 1),
+          trailer: 'Foo'
+        )
+        .and_return(spy)
+
+      expect(spy).to receive(:execute).with(commit_to_changelog: false)
+
+      get(
+        api("/projects/#{project.id}/repository/changelog", user),
+        params: {
+          version: '1.0.0',
+          date: '2020-01-01',
+          trailer: 'Foo'
+        }
+      )
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response['notes']).to be_present
+    end
+  end
+
   describe 'POST /projects/:id/repository/changelog' do
     it 'generates the changelog for a version' do
       spy = instance_spy(Repositories::ChangelogService)
@@ -751,7 +816,7 @@ RSpec.describe API::Repositories do
         )
         .and_return(spy)
 
-      allow(spy).to receive(:execute)
+      allow(spy).to receive(:execute).with(commit_to_changelog: true)
 
       post(
         api("/projects/#{project.id}/repository/changelog", user),
@@ -787,7 +852,7 @@ RSpec.describe API::Repositories do
         )
         .and_return(spy)
 
-      expect(spy).to receive(:execute)
+      expect(spy).to receive(:execute).with(commit_to_changelog: true)
 
       post(
         api("/projects/#{project.id}/repository/changelog", user),

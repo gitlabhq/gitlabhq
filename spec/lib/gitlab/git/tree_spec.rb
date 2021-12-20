@@ -43,7 +43,7 @@ RSpec.describe Gitlab::Git::Tree, :seed_helper do
     end
 
     describe '#dir?' do
-      let(:dir) { entries.select(&:dir?).first }
+      let(:dir) { entries.find(&:dir?) }
 
       it { expect(dir).to be_kind_of Gitlab::Git::Tree }
       it { expect(dir.id).to eq('3c122d2b7830eca25235131070602575cf8b41a1') }
@@ -134,7 +134,7 @@ RSpec.describe Gitlab::Git::Tree, :seed_helper do
     end
 
     describe '#file?' do
-      let(:file) { entries.select(&:file?).first }
+      let(:file) { entries.find(&:file?) }
 
       it { expect(file).to be_kind_of Gitlab::Git::Tree }
       it { expect(file.id).to eq('dfaa3f97ca337e20154a98ac9d0be76ddd1fcc82') }
@@ -143,21 +143,21 @@ RSpec.describe Gitlab::Git::Tree, :seed_helper do
     end
 
     describe '#readme?' do
-      let(:file) { entries.select(&:readme?).first }
+      let(:file) { entries.find(&:readme?) }
 
       it { expect(file).to be_kind_of Gitlab::Git::Tree }
       it { expect(file.name).to eq('README.md') }
     end
 
     describe '#contributing?' do
-      let(:file) { entries.select(&:contributing?).first }
+      let(:file) { entries.find(&:contributing?) }
 
       it { expect(file).to be_kind_of Gitlab::Git::Tree }
       it { expect(file.name).to eq('CONTRIBUTING.md') }
     end
 
     describe '#submodule?' do
-      let(:submodule) { entries.select(&:submodule?).first }
+      let(:submodule) { entries.find(&:submodule?) }
 
       it { expect(submodule).to be_kind_of Gitlab::Git::Tree }
       it { expect(submodule.id).to eq('79bceae69cb5750d6567b223597999bfa91cb3b9') }

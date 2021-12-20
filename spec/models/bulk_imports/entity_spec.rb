@@ -252,4 +252,60 @@ RSpec.describe BulkImports::Entity, type: :model do
         .to eq("/groups/#{entity.encoded_source_full_path}/export_relations/download?relation=test")
     end
   end
+
+  describe '#entity_type' do
+    it 'returns entity type' do
+      group_entity = build(:bulk_import_entity)
+      project_entity = build(:bulk_import_entity, :project_entity)
+
+      expect(group_entity.entity_type).to eq('group')
+      expect(project_entity.entity_type).to eq('project')
+    end
+  end
+
+  describe '#project?' do
+    it 'returns true if project entity' do
+      group_entity = build(:bulk_import_entity)
+      project_entity = build(:bulk_import_entity, :project_entity)
+
+      expect(group_entity.project?).to eq(false)
+      expect(project_entity.project?).to eq(true)
+    end
+  end
+
+  describe '#group?' do
+    it 'returns true if group entity' do
+      group_entity = build(:bulk_import_entity)
+      project_entity = build(:bulk_import_entity, :project_entity)
+
+      expect(group_entity.group?).to eq(true)
+      expect(project_entity.group?).to eq(false)
+    end
+  end
+
+  describe '#base_resource_url_path' do
+    it 'returns base entity url path' do
+      entity = build(:bulk_import_entity)
+
+      expect(entity.base_resource_url_path).to eq("/groups/#{entity.encoded_source_full_path}")
+    end
+  end
+
+  describe '#wiki_url_path' do
+    it 'returns entity wiki url path' do
+      entity = build(:bulk_import_entity)
+
+      expect(entity.wikis_url_path).to eq("/groups/#{entity.encoded_source_full_path}/wikis")
+    end
+  end
+
+  describe '#update_service' do
+    it 'returns correct update service class' do
+      group_entity = build(:bulk_import_entity)
+      project_entity = build(:bulk_import_entity, :project_entity)
+
+      expect(group_entity.update_service).to eq(::Groups::UpdateService)
+      expect(project_entity.update_service).to eq(::Projects::UpdateService)
+    end
+  end
 end

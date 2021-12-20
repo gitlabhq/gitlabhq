@@ -29,10 +29,8 @@ module Gitlab
         run_logical_validations!
 
         Result.new(ci_config: @ci_config, warnings: @ci_config&.warnings)
-
       rescue Gitlab::Ci::Config::ConfigError => e
         Result.new(ci_config: @ci_config, errors: [e.message], warnings: @ci_config&.warnings)
-
       rescue ValidationError => e
         Result.new(ci_config: @ci_config, errors: [e.message], warnings: @ci_config&.warnings)
       end

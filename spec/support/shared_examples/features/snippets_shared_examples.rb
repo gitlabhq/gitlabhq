@@ -20,7 +20,7 @@ RSpec.shared_examples 'paginated snippets' do |remote: false|
 end
 
 RSpec.shared_examples 'tabs with counts' do
-  let(:tabs) { page.all('.snippet-scope-menu li') }
+  let(:tabs) { page.all('.js-snippets-nav-tabs li') }
 
   it 'shows a tab for All snippets and count' do
     tab = tabs[0]

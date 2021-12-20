@@ -33,6 +33,14 @@ Refer to the [OAuth guide](oauth_provider.md) for basic information on how to se
 applications in GitLab. To enable OIDC for an application, all you have to do
 is select the `openid` scope in the application settings.
 
+## Settings discovery
+
+If your client allows importing OIDC settings from a discovery URL, you can use the following URL to automatically find the correct settings:
+
+```plaintext
+https://gitlab.example.com/.well-known/openid-configuration
+```
+
 ## Shared information
 
 The following user information is shared with clients:
@@ -51,5 +59,8 @@ The following user information is shared with clients:
 | `picture`        | `string`  | URL for the user's GitLab avatar
 | `groups`         | `array`   | Paths for the groups the user is a member of, either directly or through an ancestor group.
 | `groups_direct`  | `array`   | Paths for the groups the user is a direct member of.
+| `https://gitlab.org/claims/groups/owner`      | `array`   | Names of the groups the user is a direct member of with Owner role
+| `https://gitlab.org/claims/groups/maintainer` | `array`   | Names of the groups the user is a direct member of with Maintainer role
+| `https://gitlab.org/claims/groups/developer`  | `array`   | Names of the groups the user is a direct member of with Developer role
 
 The claims `sub`, `sub_legacy`, `email`, `email_verified` and `groups_direct` are included in the ID token. All other claims are available from the `/oauth/userinfo` endpoint used by OIDC clients.

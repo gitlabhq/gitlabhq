@@ -30,6 +30,14 @@ RSpec.describe 'container repository details' do
 
   subject { post_graphql(query, current_user: user, variables: variables) }
 
+  shared_examples 'returning an invalid value error' do
+    it 'returns an error' do
+      subject
+
+      expect(graphql_errors.first.dig('message')).to match(/invalid value/)
+    end
+  end
+
   it_behaves_like 'a working graphql query' do
     before do
       subject
@@ -135,6 +143,80 @@ RSpec.describe 'container repository details' do
       subject
 
       expect(tags_response.size).to eq(limit)
+    end
+  end
+
+  context 'sorting the tags' do
+    let(:sort) { 'NAME_DESC' }
+    let(:tags_response) { container_repository_details_response.dig('tags', 'edges') }
+    let(:variables) do
+      { id: container_repository_global_id, n: sort }
+    end
+
+    let(:query) do
+      <<~GQL
+        query($id: ID!, $n: ContainerRepositoryTagSort) {
+          containerRepository(id: $id) {
+            tags(sort: $n) {
+              edges {
+                node {
+                  #{all_graphql_fields_for('ContainerRepositoryTag')}
+                }
+              }
+            }
+          }
+        }
+      GQL
+    end
+
+    it 'sorts the tags', :aggregate_failures do
+      subject
+
+      expect(tags_response.first.dig('node', 'name')).to eq('tag5')
+      expect(tags_response.last.dig('node', 'name')).to eq('latest')
+    end
+
+    context 'invalid sort' do
+      let(:sort) { 'FOO_ASC' }
+
+      it_behaves_like 'returning an invalid value error'
+    end
+  end
+
+  context 'filtering by name' do
+    let(:name) { 'l' }
+    let(:tags_response) { container_repository_details_response.dig('tags', 'edges') }
+    let(:variables) do
+      { id: container_repository_global_id, n: name }
+    end
+
+    let(:query) do
+      <<~GQL
+        query($id: ID!, $n: String) {
+          containerRepository(id: $id) {
+            tags(name: $n) {
+              edges {
+                node {
+                  #{all_graphql_fields_for('ContainerRepositoryTag')}
+                }
+              }
+            }
+          }
+        }
+      GQL
+    end
+
+    it 'sorts the tags', :aggregate_failures do
+      subject
+
+      expect(tags_response.size).to eq(1)
+      expect(tags_response.first.dig('node', 'name')).to eq('latest')
+    end
+
+    context 'invalid filter' do
+      let(:name) { 1 }
+
+      it_behaves_like 'returning an invalid value error'
     end
   end
 

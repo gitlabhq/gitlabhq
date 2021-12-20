@@ -64,7 +64,7 @@ export default {
     <gl-button
       :loading="loading"
       :variant="user.attention_requested ? 'warning' : 'default'"
-      :icon="user.attention_requested ? 'star' : 'star-o'"
+      :icon="user.attention_requested ? 'attention-solid' : 'attention'"
       :aria-label="tooltipTitle"
       size="small"
       category="tertiary"

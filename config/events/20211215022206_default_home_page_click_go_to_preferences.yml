@@ -1,0 +1,21 @@
+description: "Go to preferences from home page"
+category: default
+action: click_go_to_preferences
+label_description: "`home_page`"
+property_description: ""
+value_description: ""
+extra_properties:
+identifiers:
+product_section: ""
+product_stage: ""
+product_group: ""
+product_category:
+milestone:
+introduced_by_url:
+distributions:
+- ce
+- ee
+tiers:
+- free
+- premium
+- ultimate

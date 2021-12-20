@@ -18,10 +18,10 @@ import {
   BRANCH_SEARCH_DEBOUNCE,
   DEFAULT_FAILURE,
 } from '~/pipeline_editor/constants';
-import updateCurrentBranchMutation from '~/pipeline_editor/graphql/mutations/update_current_branch.mutation.graphql';
-import getAvailableBranchesQuery from '~/pipeline_editor/graphql/queries/available_branches.graphql';
-import getCurrentBranchQuery from '~/pipeline_editor/graphql/queries/client/current_branch.graphql';
-import getLastCommitBranchQuery from '~/pipeline_editor/graphql/queries/client/last_commit_branch.query.graphql';
+import updateCurrentBranchMutation from '~/pipeline_editor/graphql/mutations/client/update_current_branch.mutation.graphql';
+import getAvailableBranchesQuery from '~/pipeline_editor/graphql/queries/available_branches.query.graphql';
+import getCurrentBranch from '~/pipeline_editor/graphql/queries/client/current_branch.query.graphql';
+import getLastCommitBranch from '~/pipeline_editor/graphql/queries/client/last_commit_branch.query.graphql';
 
 export default {
   i18n: {
@@ -61,8 +61,8 @@ export default {
   },
   data() {
     return {
-      branchSelected: null,
       availableBranches: [],
+      branchSelected: null,
       filteredBranches: [],
       isSearchingBranches: false,
       pageLimit: this.paginationLimit,
@@ -93,15 +93,25 @@ export default {
       },
     },
     currentBranch: {
-      query: getCurrentBranchQuery,
+      query: getCurrentBranch,
+      update(data) {
+        return data.workBranches.current.name;
+      },
     },
     lastCommitBranch: {
-      query: getLastCommitBranchQuery,
-      result({ data: { lastCommitBranch } }) {
-        if (lastCommitBranch === '' || this.availableBranches.includes(lastCommitBranch)) {
-          return;
+      query: getLastCommitBranch,
+      update(data) {
+        return data.workBranches.lastCommit.name;
+      },
+      result({ data }) {
+        if (data) {
+          const { name: lastCommitBranch } = data.workBranches.lastCommit;
+          if (lastCommitBranch === '' || this.availableBranches.includes(lastCommitBranch)) {
+            return;
+          }
+
+          this.availableBranches.unshift(lastCommitBranch);
         }
-        this.availableBranches.unshift(lastCommitBranch);
       },
     },
   },
@@ -109,11 +119,11 @@ export default {
     branches() {
       return this.searchTerm.length > 0 ? this.filteredBranches : this.availableBranches;
     },
-    isBranchesLoading() {
-      return this.$apollo.queries.availableBranches.loading || this.isSearchingBranches;
-    },
     enableBranchSwitcher() {
       return this.branches.length > 0 || this.searchTerm.length > 0;
+    },
+    isBranchesLoading() {
+      return this.$apollo.queries.availableBranches.loading || this.isSearchingBranches;
     },
   },
   watch: {
@@ -247,6 +257,7 @@ export default {
     <gl-infinite-scroll
       :fetched-items="branches.length"
       :max-list-height="250"
+      data-qa-selector="branch_menu_container"
       @bottomReached="fetchNextBranches"
     >
       <template #items>
@@ -255,7 +266,7 @@ export default {
           :key="branch"
           :is-checked="currentBranch === branch"
           :is-check-item="true"
-          data-qa-selector="menu_branch_button"
+          data-qa-selector="branch_menu_item_button"
           @click="selectBranch(branch)"
         >
           {{ branch }}

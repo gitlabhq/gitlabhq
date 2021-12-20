@@ -3,6 +3,8 @@
 module Sidebars
   module Concerns
     module ContainerWithHtmlOptions
+      include LinkWithHtmlOptions
+
       # The attributes returned from this method
       # will be applied to helper methods like
       # `link_to` or the div containing the container.

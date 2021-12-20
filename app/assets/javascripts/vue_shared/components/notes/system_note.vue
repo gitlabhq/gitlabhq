@@ -141,6 +141,7 @@ export default {
               variant="link"
               :icon="descriptionVersionToggleIcon"
               data-testid="compare-btn"
+              class="gl-vertical-align-text-bottom"
               @click="toggleDescriptionVersion"
               >{{ __('Compare with previous version') }}</gl-button
             >
@@ -149,6 +150,7 @@ export default {
               :icon="showLines ? 'chevron-up' : 'chevron-down'"
               variant="link"
               data-testid="outdated-lines-change-btn"
+              class="gl-vertical-align-text-bottom"
               @click="toggleDiff"
             >
               {{ __('Compare changes') }}

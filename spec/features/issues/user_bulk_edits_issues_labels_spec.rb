@@ -12,6 +12,9 @@ RSpec.describe 'Issues > Labels bulk assignment' do
   let!(:issue1)   { create(:issue, project: project, title: "Issue 1", labels: [frontend]) }
   let!(:issue2)   { create(:issue, project: project, title: "Issue 2") }
 
+  let(:issue_1_selector) { "#issue_#{issue1.id}" }
+  let(:issue_2_selector) { "#issue_#{issue2.id}" }
+
   context 'as an allowed user', :js do
     before do
       project.add_maintainer(user)
@@ -44,10 +47,10 @@ RSpec.describe 'Issues > Labels bulk assignment' do
           end
 
           it do
-            expect(find("#issue_#{issue1.id}")).to have_content 'bug'
-            expect(find("#issue_#{issue1.id}")).to have_content 'frontend'
-            expect(find("#issue_#{issue2.id}")).to have_content 'bug'
-            expect(find("#issue_#{issue2.id}")).not_to have_content 'frontend'
+            expect(find(issue_1_selector)).to have_content 'bug'
+            expect(find(issue_1_selector)).to have_content 'frontend'
+            expect(find(issue_2_selector)).to have_content 'bug'
+            expect(find(issue_2_selector)).not_to have_content 'frontend'
           end
         end
 
@@ -60,10 +63,10 @@ RSpec.describe 'Issues > Labels bulk assignment' do
           end
 
           it do
-            expect(find("#issue_#{issue1.id}")).to have_content 'bug'
-            expect(find("#issue_#{issue1.id}")).to have_content 'frontend'
-            expect(find("#issue_#{issue2.id}")).to have_content 'bug'
-            expect(find("#issue_#{issue2.id}")).not_to have_content 'frontend'
+            expect(find(issue_1_selector)).to have_content 'bug'
+            expect(find(issue_1_selector)).to have_content 'frontend'
+            expect(find(issue_2_selector)).to have_content 'bug'
+            expect(find(issue_2_selector)).not_to have_content 'frontend'
           end
         end
 
@@ -75,10 +78,10 @@ RSpec.describe 'Issues > Labels bulk assignment' do
           end
 
           it do
-            expect(find("#issue_#{issue1.id}")).to have_content 'bug'
-            expect(find("#issue_#{issue1.id}")).to have_content 'frontend'
-            expect(find("#issue_#{issue2.id}")).not_to have_content 'bug'
-            expect(find("#issue_#{issue2.id}")).not_to have_content 'frontend'
+            expect(find(issue_1_selector)).to have_content 'bug'
+            expect(find(issue_1_selector)).to have_content 'frontend'
+            expect(find(issue_2_selector)).not_to have_content 'bug'
+            expect(find(issue_2_selector)).not_to have_content 'frontend'
           end
         end
 
@@ -90,10 +93,10 @@ RSpec.describe 'Issues > Labels bulk assignment' do
           end
 
           it do
-            expect(find("#issue_#{issue1.id}")).to have_content 'bug'
-            expect(find("#issue_#{issue1.id}")).to have_content 'frontend'
-            expect(find("#issue_#{issue2.id}")).not_to have_content 'bug'
-            expect(find("#issue_#{issue2.id}")).not_to have_content 'frontend'
+            expect(find(issue_1_selector)).to have_content 'bug'
+            expect(find(issue_1_selector)).to have_content 'frontend'
+            expect(find(issue_2_selector)).not_to have_content 'bug'
+            expect(find(issue_2_selector)).not_to have_content 'frontend'
           end
         end
       end
@@ -107,10 +110,10 @@ RSpec.describe 'Issues > Labels bulk assignment' do
           end
 
           it do
-            expect(find("#issue_#{issue1.id}")).to have_content 'bug'
-            expect(find("#issue_#{issue1.id}")).to have_content 'feature'
-            expect(find("#issue_#{issue2.id}")).to have_content 'bug'
-            expect(find("#issue_#{issue2.id}")).to have_content 'feature'
+            expect(find(issue_1_selector)).to have_content 'bug'
+            expect(find(issue_1_selector)).to have_content 'feature'
+            expect(find(issue_2_selector)).to have_content 'bug'
+            expect(find(issue_2_selector)).to have_content 'feature'
           end
         end
 
@@ -122,10 +125,10 @@ RSpec.describe 'Issues > Labels bulk assignment' do
           end
 
           it do
-            expect(find("#issue_#{issue1.id}")).to have_content 'bug'
-            expect(find("#issue_#{issue1.id}")).to have_content 'feature'
-            expect(find("#issue_#{issue2.id}")).not_to have_content 'bug'
-            expect(find("#issue_#{issue2.id}")).not_to have_content 'feature'
+            expect(find(issue_1_selector)).to have_content 'bug'
+            expect(find(issue_1_selector)).to have_content 'feature'
+            expect(find(issue_2_selector)).not_to have_content 'bug'
+            expect(find(issue_2_selector)).not_to have_content 'feature'
           end
         end
       end
@@ -144,8 +147,8 @@ RSpec.describe 'Issues > Labels bulk assignment' do
       end
 
       it do
-        expect(find("#issue_#{issue1.id}")).to have_content 'bug'
-        expect(find("#issue_#{issue2.id}")).to have_content 'bug'
+        expect(find(issue_1_selector)).to have_content 'bug'
+        expect(find(issue_2_selector)).to have_content 'bug'
       end
     end
 
@@ -164,10 +167,10 @@ RSpec.describe 'Issues > Labels bulk assignment' do
         end
 
         it do
-          expect(find("#issue_#{issue1.id}")).not_to have_content 'bug'
-          expect(find("#issue_#{issue1.id}")).not_to have_content 'feature'
-          expect(find("#issue_#{issue2.id}")).not_to have_content 'bug'
-          expect(find("#issue_#{issue2.id}")).not_to have_content 'feature'
+          expect(find(issue_1_selector)).not_to have_content 'bug'
+          expect(find(issue_1_selector)).not_to have_content 'feature'
+          expect(find(issue_2_selector)).not_to have_content 'bug'
+          expect(find(issue_2_selector)).not_to have_content 'feature'
         end
       end
 
@@ -183,8 +186,8 @@ RSpec.describe 'Issues > Labels bulk assignment' do
         end
 
         it do
-          expect(find("#issue_#{issue1.id}")).not_to have_content 'bug'
-          expect(find("#issue_#{issue2.id}")).to have_content 'feature'
+          expect(find(issue_1_selector)).not_to have_content 'bug'
+          expect(find(issue_2_selector)).to have_content 'feature'
         end
       end
 
@@ -203,10 +206,10 @@ RSpec.describe 'Issues > Labels bulk assignment' do
         end
 
         it do
-          expect(find("#issue_#{issue1.id}")).not_to have_content 'bug'
-          expect(find("#issue_#{issue1.id}")).to have_content 'feature'
-          expect(find("#issue_#{issue2.id}")).not_to have_content 'bug'
-          expect(find("#issue_#{issue2.id}")).to have_content 'feature'
+          expect(find(issue_1_selector)).not_to have_content 'bug'
+          expect(find(issue_1_selector)).to have_content 'feature'
+          expect(find(issue_2_selector)).not_to have_content 'bug'
+          expect(find(issue_2_selector)).to have_content 'feature'
         end
       end
     end
@@ -222,18 +225,18 @@ RSpec.describe 'Issues > Labels bulk assignment' do
         end
 
         it 'keeps labels' do
-          expect(find("#issue_#{issue1.id}")).to have_content 'bug'
-          expect(find("#issue_#{issue2.id}")).to have_content 'feature'
+          expect(find(issue_1_selector)).to have_content 'bug'
+          expect(find(issue_2_selector)).to have_content 'feature'
 
           check 'Select all'
 
           open_milestone_dropdown(['First Release'])
           update_issues
 
-          expect(find("#issue_#{issue1.id}")).to have_content 'bug'
-          expect(find("#issue_#{issue1.id}")).to have_content 'First Release'
-          expect(find("#issue_#{issue2.id}")).to have_content 'feature'
-          expect(find("#issue_#{issue2.id}")).to have_content 'First Release'
+          expect(find(issue_1_selector)).to have_content 'bug'
+          expect(find(issue_1_selector)).to have_content 'First Release'
+          expect(find(issue_2_selector)).to have_content 'feature'
+          expect(find(issue_2_selector)).to have_content 'First Release'
         end
       end
 
@@ -244,18 +247,18 @@ RSpec.describe 'Issues > Labels bulk assignment' do
         end
 
         it 'keeps existing label and new label is present' do
-          expect(find("#issue_#{issue1.id}")).to have_content 'bug'
+          expect(find(issue_1_selector)).to have_content 'bug'
 
           check 'Select all'
           open_milestone_dropdown ['First Release']
           open_labels_dropdown ['feature']
           update_issues
 
-          expect(find("#issue_#{issue1.id}")).to have_content 'bug'
-          expect(find("#issue_#{issue1.id}")).to have_content 'feature'
-          expect(find("#issue_#{issue1.id}")).to have_content 'First Release'
-          expect(find("#issue_#{issue2.id}")).to have_content 'feature'
-          expect(find("#issue_#{issue2.id}")).to have_content 'First Release'
+          expect(find(issue_1_selector)).to have_content 'bug'
+          expect(find(issue_1_selector)).to have_content 'feature'
+          expect(find(issue_1_selector)).to have_content 'First Release'
+          expect(find(issue_2_selector)).to have_content 'feature'
+          expect(find(issue_2_selector)).to have_content 'First Release'
         end
       end
 
@@ -269,9 +272,9 @@ RSpec.describe 'Issues > Labels bulk assignment' do
         end
 
         it 'keeps existing label and new label is present' do
-          expect(find("#issue_#{issue1.id}")).to have_content 'bug'
-          expect(find("#issue_#{issue1.id}")).to have_content 'bug'
-          expect(find("#issue_#{issue2.id}")).to have_content 'feature'
+          expect(find(issue_1_selector)).to have_content 'bug'
+          expect(find(issue_1_selector)).to have_content 'bug'
+          expect(find(issue_2_selector)).to have_content 'feature'
 
           check 'Select all'
 
@@ -279,11 +282,11 @@ RSpec.describe 'Issues > Labels bulk assignment' do
           unmark_labels_in_dropdown ['feature']
           update_issues
 
-          expect(find("#issue_#{issue1.id}")).to have_content 'bug'
-          expect(find("#issue_#{issue1.id}")).not_to have_content 'feature'
-          expect(find("#issue_#{issue1.id}")).to have_content 'First Release'
-          expect(find("#issue_#{issue2.id}")).not_to have_content 'feature'
-          expect(find("#issue_#{issue2.id}")).to have_content 'First Release'
+          expect(find(issue_1_selector)).to have_content 'bug'
+          expect(find(issue_1_selector)).not_to have_content 'feature'
+          expect(find(issue_1_selector)).to have_content 'First Release'
+          expect(find(issue_2_selector)).not_to have_content 'feature'
+          expect(find(issue_2_selector)).to have_content 'First Release'
         end
       end
 
@@ -300,19 +303,19 @@ RSpec.describe 'Issues > Labels bulk assignment' do
         end
 
         it 'keeps labels' do
-          expect(find("#issue_#{issue1.id}")).to have_content 'bug'
-          expect(find("#issue_#{issue1.id}")).to have_content 'First Release'
-          expect(find("#issue_#{issue2.id}")).to have_content 'feature'
-          expect(find("#issue_#{issue2.id}")).to have_content 'First Release'
+          expect(find(issue_1_selector)).to have_content 'bug'
+          expect(find(issue_1_selector)).to have_content 'First Release'
+          expect(find(issue_2_selector)).to have_content 'feature'
+          expect(find(issue_2_selector)).to have_content 'First Release'
 
           check 'Select all'
           open_milestone_dropdown(['No milestone'])
           update_issues
 
-          expect(find("#issue_#{issue1.id}")).to have_content 'bug'
-          expect(find("#issue_#{issue1.id}")).not_to have_content 'First Release'
-          expect(find("#issue_#{issue2.id}")).to have_content 'feature'
-          expect(find("#issue_#{issue2.id}")).not_to have_content 'First Release'
+          expect(find(issue_1_selector)).to have_content 'bug'
+          expect(find(issue_1_selector)).not_to have_content 'First Release'
+          expect(find(issue_2_selector)).to have_content 'feature'
+          expect(find(issue_2_selector)).not_to have_content 'First Release'
         end
       end
     end
@@ -324,7 +327,7 @@ RSpec.describe 'Issues > Labels bulk assignment' do
       end
 
       it do
-        expect(find("#issue_#{issue1.id}")).to have_content 'bug'
+        expect(find(issue_1_selector)).to have_content 'bug'
 
         check_issue issue1
         open_labels_dropdown ['feature']
@@ -333,8 +336,8 @@ RSpec.describe 'Issues > Labels bulk assignment' do
         update_issues
         sleep 1 # needed
 
-        expect(find("#issue_#{issue1.id}")).to have_content 'bug'
-        expect(find("#issue_#{issue1.id}")).to have_content 'feature'
+        expect(find(issue_1_selector)).to have_content 'bug'
+        expect(find(issue_1_selector)).to have_content 'feature'
       end
     end
 
@@ -350,7 +353,7 @@ RSpec.describe 'Issues > Labels bulk assignment' do
 
         update_issues
 
-        expect(find("#issue_#{issue1.id}")).to have_content 'feature'
+        expect(find(issue_1_selector)).to have_content 'feature'
       end
     end
 
@@ -381,12 +384,12 @@ RSpec.describe 'Issues > Labels bulk assignment' do
 
         update_issues
 
-        first_issue = find("#issue_#{issue1.id}")
+        first_issue = find(issue_1_selector)
         expect(first_issue).not_to have_content 'bug'
         expect(first_issue).to have_content 'feature'
         expect(first_issue).to have_content 'wontfix'
 
-        second_issue = find("#issue_#{issue2.id}")
+        second_issue = find(issue_2_selector)
         expect(second_issue).not_to have_content 'bug'
         expect(second_issue).not_to have_content 'feature'
         expect(second_issue).to have_content 'wontfix'

@@ -1,11 +1,11 @@
 <script>
 import {
   GlAlert,
+  GlEmptyState,
   GlFormGroup,
   GlFormInputGroup,
   GlSkeletonLoader,
   GlSprintf,
-  GlEmptyState,
 } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
@@ -36,14 +36,14 @@ export default {
     proxyNotAvailableText: s__(
       'DependencyProxy|Dependency Proxy feature is limited to public groups for now.',
     ),
-    proxyDisabledText: s__(
-      'DependencyProxy|Dependency Proxy disabled. To enable it, contact the group owner.',
-    ),
     proxyImagePrefix: s__('DependencyProxy|Dependency Proxy image prefix'),
     copyImagePrefixText: s__('DependencyProxy|Copy prefix'),
     blobCountAndSize: s__('DependencyProxy|Contains %{count} blobs of images (%{size})'),
     pageTitle: s__('DependencyProxy|Dependency Proxy'),
     noManifestTitle: s__('DependencyProxy|There are no images in the cache'),
+  },
+  links: {
+    DEPENDENCY_PROXY_DOCS_PATH,
   },
   data() {
     return {
@@ -70,9 +70,7 @@ export default {
         },
       ];
     },
-    dependencyProxyEnabled() {
-      return this.group?.dependencyProxySetting?.enabled;
-    },
+
     queryVariables() {
       return { fullPath: this.groupPath, first: GRAPHQL_PAGE_SIZE };
     },
@@ -122,7 +120,7 @@ export default {
 
     <gl-skeleton-loader v-else-if="$apollo.queries.group.loading" />
 
-    <div v-else-if="dependencyProxyEnabled" data-testid="main-area">
+    <div v-else data-testid="main-area">
       <gl-form-group :label="$options.i18n.proxyImagePrefix">
         <gl-form-input-group
           readonly
@@ -161,8 +159,5 @@ export default {
         :title="$options.i18n.noManifestTitle"
       />
     </div>
-    <gl-alert v-else :dismissible="false" data-testid="proxy-disabled">
-      {{ $options.i18n.proxyDisabledText }}
-    </gl-alert>
   </div>
 </template>

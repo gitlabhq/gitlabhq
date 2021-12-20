@@ -8,7 +8,7 @@
             = f.check_box :auto_devops_enabled, class: 'form-check-input', checked: group.auto_devops_enabled?
             = f.label :auto_devops_enabled, class: 'form-check-label' do
               %strong= s_('GroupSettings|Default to Auto DevOps pipeline for all projects within this group')
-              %span.badge.badge-info#auto-devops-badge= badge_for_auto_devops_scope(group)
+              = gl_badge_tag badge_for_auto_devops_scope(group), variant: :info
             .form-text.text-muted
               = s_('GroupSettings|The Auto DevOps pipeline runs if no alternative CI configuration file is found.')
               = link_to _('Learn more.'), help_page_path('topics/autodevops/index.md'), target: '_blank'

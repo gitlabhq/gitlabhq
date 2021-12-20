@@ -625,7 +625,7 @@ RSpec.describe 'Pipelines', :js do
         create_build('test', 1, 'audit', :created)
         create_build('deploy', 2, 'production', :created)
 
-        create(:generic_commit_status, pipeline: pipeline, stage: 'external', name: 'jenkins', stage_idx: 3)
+        create(:generic_commit_status, pipeline: pipeline, stage: 'external', name: 'jenkins', stage_idx: 3, ref: 'master')
 
         visit project_pipeline_path(project, pipeline)
         wait_for_requests

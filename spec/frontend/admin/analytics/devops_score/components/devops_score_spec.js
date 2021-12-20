@@ -1,4 +1,4 @@
-import { GlTable, GlBadge, GlEmptyState } from '@gitlab/ui';
+import { GlTableLite, GlBadge, GlEmptyState } from '@gitlab/ui';
 import { GlSingleStat } from '@gitlab/ui/dist/charts';
 import { mount } from '@vue/test-utils';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
@@ -20,7 +20,7 @@ describe('DevopsScore', () => {
     );
   };
 
-  const findTable = () => wrapper.findComponent(GlTable);
+  const findTable = () => wrapper.findComponent(GlTableLite);
   const findEmptyState = () => wrapper.findComponent(GlEmptyState);
   const findCol = (testId) => findTable().find(`[data-testid="${testId}"]`);
   const findUsageCol = () => findCol('usageCol');
@@ -44,7 +44,7 @@ describe('DevopsScore', () => {
       });
 
       it('displays the correct message', () => {
-        expect(findEmptyState().text()).toBe(
+        expect(findEmptyState().text().replace(/\s+/g, ' ')).toBe(
           'Data is still calculating... It may be several days before you see feature usage data. See example DevOps Score page in our documentation.',
         );
       });
@@ -124,11 +124,11 @@ describe('DevopsScore', () => {
 
         describe('table columns', () => {
           describe('Your usage', () => {
-            it('displays the corrrect value', () => {
+            it('displays the correct value', () => {
               expect(findUsageCol().text()).toContain('3.2');
             });
 
-            it('displays the corrrect badge', () => {
+            it('displays the correct badge', () => {
               const badge = findUsageCol().find(GlBadge);
 
               expect(badge.exists()).toBe(true);

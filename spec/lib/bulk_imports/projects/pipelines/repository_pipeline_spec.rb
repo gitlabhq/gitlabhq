@@ -47,6 +47,17 @@ RSpec.describe BulkImports::Projects::Pipelines::RepositoryPipeline do
       end
     end
 
+    context 'project has no repository' do
+      let(:project_data) { { 'httpUrlToRepo' => '' } }
+
+      it 'skips repository import' do
+        expect(context.portable).not_to receive(:ensure_repository)
+        expect(context.portable.repository).not_to receive(:fetch_as_mirror)
+
+        pipeline.run
+      end
+    end
+
     context 'blocked local networks' do
       let(:project_data) { { 'httpUrlToRepo' => 'http://localhost/foo.git' } }
 

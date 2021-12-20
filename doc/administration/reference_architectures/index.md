@@ -166,7 +166,7 @@ that can also be promoted in case of disaster.
 
 ## Deviating from the suggested reference architectures
 
-As a general rule of thumb, the further away you move from the Reference Architectures,
+As a general guideline, the further away you move from the Reference Architectures,
 the harder it will be get support for it. With any deviation, you're introducing
 a layer of complexity that will add challenges to finding out where potential
 issues might lie.
@@ -191,3 +191,36 @@ The reference architectures for user counts [3,000](3k_users.md) and up support 
 In the specific case you have the requirement to achieve HA but have a lower user count, select modifications to the [3,000 user](3k_users.md) architecture are supported.
 
 For more details, [refer to this section in the architecture's documentation](3k_users.md#supported-modifications-for-lower-user-counts-ha).
+
+## Testing process and results
+
+The [Quality Engineering - Enablement team](https://about.gitlab.com/handbook/engineering/quality/quality-engineering/) does regular smoke and performance tests for the reference architectures to ensure they remain compliant.
+
+In this section, we detail some of the process as well as the results.
+
+Note the following about the testing process:
+
+- Testing occurs against all main reference architectures and cloud providers in an automated and ad-hoc fashion.
+  This is achieved through two tools built by the team:
+  - The [GitLab Environment Toolkit](https://gitlab.com/gitlab-org/quality/gitlab-environment-toolkit) for building the environments.
+  - The [GitLab Performance Tool](https://gitlab.com/gitlab-org/quality/performance) for performance testing.
+- Network latency on the test environments between components on all Cloud Providers were measured at <5ms. Note that this is shared as an observation and not as an implicit recommendation.
+- We aim to have a "test smart" approach where architectures tested have a good range that can also apply to others. Testing focuses on 10k Omnibus on GCP as the testing has shown this is a good bellwether for the other architectures and cloud providers as well as Cloud Native Hybrids.
+- Testing is done publicly and all results are shared.
+
+Τhe following table details the testing done against the reference architectures along with the frequency and results.
+
+| Reference Architecture | Tests Run<sup>1</sup>                                                                                                |
+|------------------------|----------------------------------------------------------------------------------------------------------------------|
+| 1k                     | [Omnibus - Daily (GCP)](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest/1k)<sup>2</sup>  |
+| 2k                     | [Omnibus - Daily (GCP)](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest/2k)<sup>2</sup>  |
+| 3k                     | [Omnibus - Weekly (GCP)](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest/3k)<sup>2</sup> |
+| 5k                     | [Omnibus - Weekly (GCP)](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest/5k)<sup>2</sup> |
+| 10k                    | [Omnibus - Daily (GCP)](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest/10k)<sup>2</sup><br/>[Omnibus - Ad-Hoc (GCP, AWS, Azure)](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Past-Results/10k)<br/><br/>[Cloud Native Hybrid - Ad-Hoc (GCP, AWS)](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Past-Results/10k-Cloud-Native-Hybrid) |
+| 25k                    | [Omnibus - Weekly (GCP)](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest/25k)<sup>2</sup><br/>[Omnibus - Ad-Hoc (Azure)](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Past-Results/25k) |
+| 50k                    | [Omnibus - Weekly (GCP)](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest/50k)<sup>2</sup><br/>[Omnibus - Ad-Hoc (AWS)](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Past-Results/50k) |
+
+Note that:
+
+1. The list above is non exhaustive. Additional testing is continuously evaluated and iterated on, and the table is updated regularly.
+1. The Omnibus reference architectures are VM-based only and testing has shown that they perform similarly on equivalently specced hardware regardless of Cloud Provider or if run on premises.

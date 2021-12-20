@@ -27,3 +27,5 @@ class Projects::BlameController < Projects::ApplicationController
     @blame = Gitlab::View::Presenter::Factory.new(@blame, project: @project, path: @path).fabricate!
   end
 end
+
+Projects::BlameController.prepend_mod

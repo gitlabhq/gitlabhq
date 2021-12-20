@@ -43,7 +43,7 @@ module Issuable
 
   included do
     cache_markdown_field :title, pipeline: :single_line
-    cache_markdown_field :description, issuable_state_filter_enabled: true
+    cache_markdown_field :description, issuable_reference_expansion_enabled: true
 
     redact_field :description
 
@@ -60,6 +60,16 @@ module Issuable
       def award_emojis_loaded?
         # We check first if we're loaded to not load unnecessarily.
         loaded? && to_a.all? { |note| note.association(:award_emoji).loaded? }
+      end
+
+      def projects_loaded?
+        # We check first if we're loaded to not load unnecessarily.
+        loaded? && to_a.all? { |note| note.association(:project).loaded? }
+      end
+
+      def system_note_metadata_loaded?
+        # We check first if we're loaded to not load unnecessarily.
+        loaded? && to_a.all? { |note| note.association(:system_note_metadata).loaded? }
       end
     end
 
@@ -180,6 +190,10 @@ module Issuable
     end
 
     def supports_severity?
+      incident?
+    end
+
+    def supports_escalation?
       incident?
     end
 
@@ -524,6 +538,8 @@ module Issuable
     includes = []
     includes << :author unless notes.authors_loaded?
     includes << :award_emoji unless notes.award_emojis_loaded?
+    includes << :project unless notes.projects_loaded?
+    includes << :system_note_metadata unless notes.system_note_metadata_loaded?
 
     if includes.any?
       notes.includes(includes)

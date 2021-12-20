@@ -264,23 +264,37 @@ RSpec.describe Gitlab::Regex do
     it { is_expected.not_to match('1.2.3') }
   end
 
-  describe '.conan_recipe_component_regex' do
-    subject { described_class.conan_recipe_component_regex }
+  context 'conan recipe components' do
+    shared_examples 'accepting valid recipe components values' do
+      let(:fifty_one_characters) { 'f_a' * 17}
 
-    let(:fifty_one_characters) { 'f_a' * 17}
+      it { is_expected.to match('foobar') }
+      it { is_expected.to match('foo_bar') }
+      it { is_expected.to match('foo+bar') }
+      it { is_expected.to match('_foo+bar-baz+1.0') }
+      it { is_expected.to match('1.0.0') }
+      it { is_expected.not_to match('-foo_bar') }
+      it { is_expected.not_to match('+foo_bar') }
+      it { is_expected.not_to match('.foo_bar') }
+      it { is_expected.not_to match('foo@bar') }
+      it { is_expected.not_to match('foo/bar') }
+      it { is_expected.not_to match('!!()()') }
+      it { is_expected.not_to match(fifty_one_characters) }
+    end
 
-    it { is_expected.to match('foobar') }
-    it { is_expected.to match('foo_bar') }
-    it { is_expected.to match('foo+bar') }
-    it { is_expected.to match('_foo+bar-baz+1.0') }
-    it { is_expected.to match('1.0.0') }
-    it { is_expected.not_to match('-foo_bar') }
-    it { is_expected.not_to match('+foo_bar') }
-    it { is_expected.not_to match('.foo_bar') }
-    it { is_expected.not_to match('foo@bar') }
-    it { is_expected.not_to match('foo/bar') }
-    it { is_expected.not_to match('!!()()') }
-    it { is_expected.not_to match(fifty_one_characters) }
+    describe '.conan_recipe_component_regex' do
+      subject { described_class.conan_recipe_component_regex }
+
+      it_behaves_like 'accepting valid recipe components values'
+      it { is_expected.not_to match('_') }
+    end
+
+    describe '.conan_recipe_user_channel_regex' do
+      subject { described_class.conan_recipe_user_channel_regex }
+
+      it_behaves_like 'accepting valid recipe components values'
+      it { is_expected.to match('_') }
+    end
   end
 
   describe '.package_name_regex' do

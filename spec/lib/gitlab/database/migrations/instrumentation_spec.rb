@@ -3,6 +3,7 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::Database::Migrations::Instrumentation do
   let(:result_dir) { Dir.mktmpdir }
+  let(:connection) { ActiveRecord::Migration.connection }
 
   after do
     FileUtils.rm_rf(result_dir)
@@ -14,11 +15,11 @@ RSpec.describe Gitlab::Database::Migrations::Instrumentation do
     let(:migration_version) { '12345' }
 
     it 'executes the given block' do
-      expect { |b| subject.observe(version: migration_version, name: migration_name, &b) }.to yield_control
+      expect { |b| subject.observe(version: migration_version, name: migration_name, connection: connection, &b) }.to yield_control
     end
 
     context 'behavior with observers' do
-      subject { described_class.new(observer_classes: [Gitlab::Database::Migrations::Observers::MigrationObserver], result_dir: result_dir).observe(version: migration_version, name: migration_name) {} }
+      subject { described_class.new(observer_classes: [Gitlab::Database::Migrations::Observers::MigrationObserver], result_dir: result_dir).observe(version: migration_version, name: migration_name, connection: connection) {} }
 
       let(:observer) { instance_double('Gitlab::Database::Migrations::Observers::MigrationObserver', before: nil, after: nil, record: nil) }
 
@@ -29,7 +30,7 @@ RSpec.describe Gitlab::Database::Migrations::Instrumentation do
       it 'instantiates observer with observation' do
         expect(Gitlab::Database::Migrations::Observers::MigrationObserver)
           .to receive(:new)
-          .with(instance_of(Gitlab::Database::Migrations::Observation), anything) { |observation| expect(observation.version).to eq(migration_version) }
+          .with(instance_of(Gitlab::Database::Migrations::Observation), anything, connection) { |observation| expect(observation.version).to eq(migration_version) }
           .and_return(observer)
 
         subject
@@ -63,7 +64,7 @@ RSpec.describe Gitlab::Database::Migrations::Instrumentation do
     end
 
     context 'on successful execution' do
-      subject { described_class.new(result_dir: result_dir).observe(version: migration_version, name: migration_name) {} }
+      subject { described_class.new(result_dir: result_dir).observe(version: migration_version, name: migration_name, connection: connection) {} }
 
       it 'records walltime' do
         expect(subject.walltime).not_to be_nil
@@ -83,7 +84,7 @@ RSpec.describe Gitlab::Database::Migrations::Instrumentation do
     end
 
     context 'upon failure' do
-      subject { described_class.new(result_dir: result_dir).observe(version: migration_version, name: migration_name) { raise 'something went wrong' } }
+      subject { described_class.new(result_dir: result_dir).observe(version: migration_version, name: migration_name, connection: connection) { raise 'something went wrong' } }
 
       it 'raises the exception' do
         expect { subject }.to raise_error(/something went wrong/)
@@ -93,7 +94,7 @@ RSpec.describe Gitlab::Database::Migrations::Instrumentation do
         subject { instance.observations.first }
 
         before do
-          instance.observe(version: migration_version, name: migration_name) { raise 'something went wrong' }
+          instance.observe(version: migration_version, name: migration_name, connection: connection) { raise 'something went wrong' }
         rescue StandardError
           # ignore
         end
@@ -125,8 +126,8 @@ RSpec.describe Gitlab::Database::Migrations::Instrumentation do
       let(:migration2) { double('migration2', call: nil) }
 
       it 'records observations for all migrations' do
-        subject.observe(version: migration_version, name: migration_name) {}
-        subject.observe(version: migration_version, name: migration_name) { raise 'something went wrong' } rescue nil
+        subject.observe(version: migration_version, name: migration_name, connection: connection) {}
+        subject.observe(version: migration_version, name: migration_name, connection: connection) { raise 'something went wrong' } rescue nil
 
         expect(subject.observations.size).to eq(2)
       end

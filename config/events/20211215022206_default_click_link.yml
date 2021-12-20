@@ -1,0 +1,21 @@
+description: "Go to evironments documentation"
+category: default
+action: click_link
+label_description: ""
+property_description: ""
+value_description: ""
+extra_properties:
+identifiers:
+product_section: ops
+product_stage: release
+product_group: group::release
+product_category:
+milestone: "13.12"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/57160
+distributions:
+- ce
+- ee
+tiers:
+- free
+- premium
+- ultimate

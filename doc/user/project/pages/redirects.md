@@ -92,7 +92,7 @@ you can explicitly set your own. The following HTTP codes are supported:
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab-pages/-/merge_requests/458) in GitLab 14.3.
 > - Enabled on GitLab.com.
-> - Enabled by default in self-managed GitLab behind the [`FF_ENABLE_REDIRECTS` feature flag](#feature-flag-for-redirects).
+> - Enabled on self-managed in [GitLab 14.6](https://gitlab.com/gitlab-org/gitlab-pages/-/issues/618).
 
 To create a redirect, add a rule that includes a `from` path, a `to` path,
 and an [HTTP status code](#http-status-codes):
@@ -261,36 +261,7 @@ However, there are some minor differences:
   literal `:placeholder`).
   - GitLab redirects to `/new/`.
 
-## Features behind feature flags
-
-Some Pages features are behind feature flags.
-
-### Feature flag for redirects
-
-FLAG:
-Redirects in GitLab Pages is under development, and is deployed behind a feature flag
-that is **enabled by default**.
-
-To disable redirects, for [Omnibus installations](../../../administration/pages/index.md), define the
-`FF_ENABLE_REDIRECTS` environment variable in the
-[global settings](../../../administration/pages/index.md#global-settings).
-Add the following line to `/etc/gitlab/gitlab.rb` and
-[reconfigure the instance](../../../administration/restart_gitlab.md#omnibus-gitlab-reconfigure).
-
-```ruby
-gitlab_pages['env']['FF_ENABLE_REDIRECTS'] = 'false'
-```
-
-For [source installations](../../../administration/pages/source.md), define the
-`FF_ENABLE_REDIRECTS` environment variable, then
-[restart GitLab](../../../administration/restart_gitlab.md#installations-from-source):
-
-```shell
-export FF_ENABLE_REDIRECTS="false"
-/path/to/pages/bin/gitlab-pages -config gitlab-pages.conf
-```
-
-### Feature flag for rewrites
+## Feature flag for rewrites
 
 FLAG:
 Rewrites in GitLab Pages is under development, and is deployed behind a feature flag

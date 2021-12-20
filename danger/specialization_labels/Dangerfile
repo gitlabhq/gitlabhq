@@ -14,7 +14,7 @@ SPECIALIZATIONS = {
   feature_flag: 'feature flag'
 }.freeze
 
-labels_to_add = project_helper.changes_by_category.each_with_object([]) do |(category, _changes), memo|
+labels_to_add = helper.changes_by_category.each_with_object([]) do |(category, _changes), memo|
   label = SPECIALIZATIONS[category]
   next unless label
   next if gitlab.mr_labels.include?(label)

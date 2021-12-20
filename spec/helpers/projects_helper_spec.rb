@@ -991,4 +991,31 @@ RSpec.describe ProjectsHelper do
       expect(subject).to eq(project.path_with_namespace)
     end
   end
+
+  describe '#fork_button_disabled_tooltip' do
+    using RSpec::Parameterized::TableSyntax
+
+    subject { helper.fork_button_disabled_tooltip(project) }
+
+    where(:has_user, :can_fork_project, :can_create_fork, :expected) do
+      false | false | false | nil
+      true | true | true | nil
+      true | false | true | 'You don\'t have permission to fork this project'
+      true | true | false | 'You have reached your project limit'
+    end
+
+    with_them do
+      before do
+        current_user = user if has_user
+
+        allow(helper).to receive(:current_user).and_return(current_user)
+        allow(user).to receive(:can?).with(:fork_project, project).and_return(can_fork_project)
+        allow(user).to receive(:can?).with(:create_fork).and_return(can_create_fork)
+      end
+
+      it 'returns tooltip text when user lacks privilege' do
+        expect(subject).to eq(expected)
+      end
+    end
+  end
 end

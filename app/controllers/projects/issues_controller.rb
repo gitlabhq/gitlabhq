@@ -10,7 +10,7 @@ class Projects::IssuesController < Projects::ApplicationController
   include RecordUserLastActivity
 
   ISSUES_EXCEPT_ACTIONS = %i[index calendar new create bulk_update import_csv export_csv service_desk].freeze
-  SET_ISSUEABLES_INDEX_ONLY_ACTIONS = %i[index calendar service_desk].freeze
+  SET_ISSUABLES_INDEX_ONLY_ACTIONS = %i[index calendar service_desk].freeze
 
   prepend_before_action(only: [:index]) { authenticate_sessionless_user!(:rss) }
   prepend_before_action(only: [:calendar]) { authenticate_sessionless_user!(:ics) }
@@ -22,7 +22,7 @@ class Projects::IssuesController < Projects::ApplicationController
   before_action :issue, unless: ->(c) { ISSUES_EXCEPT_ACTIONS.include?(c.action_name.to_sym) }
   after_action :log_issue_show, unless: ->(c) { ISSUES_EXCEPT_ACTIONS.include?(c.action_name.to_sym) }
 
-  before_action :set_issuables_index, if: ->(c) { SET_ISSUEABLES_INDEX_ONLY_ACTIONS.include?(c.action_name.to_sym) }
+  before_action :set_issuables_index, if: ->(c) { SET_ISSUABLES_INDEX_ONLY_ACTIONS.include?(c.action_name.to_sym) }
 
   # Allow write(create) issue
   before_action :authorize_create_issue!, only: [:new, :create]
@@ -37,7 +37,9 @@ class Projects::IssuesController < Projects::ApplicationController
   before_action :authorize_download_code!, only: [:related_branches]
 
   # Limit the amount of issues created per minute
-  before_action :create_rate_limit, only: [:create], if: -> { Feature.disabled?('rate_limited_service_issues_create', project, default_enabled: :yaml) }
+  before_action -> { check_rate_limit!(:issues_create, scope: [@project, @current_user])},
+                only: [:create],
+                if: -> { Feature.disabled?('rate_limited_service_issues_create', project, default_enabled: :yaml) }
 
   before_action do
     push_frontend_feature_flag(:tribute_autocomplete, @project)
@@ -49,19 +51,9 @@ class Projects::IssuesController < Projects::ApplicationController
 
   before_action only: :show do
     push_frontend_feature_flag(:real_time_issue_sidebar, @project, default_enabled: :yaml)
-    push_frontend_feature_flag(:confidential_notes, @project, default_enabled: :yaml)
+    push_frontend_feature_flag(:confidential_notes, project&.group, default_enabled: :yaml)
     push_frontend_feature_flag(:issue_assignees_widget, @project, default_enabled: :yaml)
-    push_frontend_feature_flag(:labels_widget, @project, default_enabled: :yaml)
     push_frontend_feature_flag(:paginated_issue_discussions, @project, default_enabled: :yaml)
-
-    experiment(:invite_members_in_comment, namespace: @project.root_ancestor) do |experiment_instance|
-      experiment_instance.exclude! unless helpers.can_admin_project_member?(@project)
-
-      experiment_instance.use {}
-      experiment_instance.try(:invite_member_link) {}
-
-      experiment_instance.track(:view, property: @project.root_ancestor.id.to_s)
-    end
   end
 
   around_action :allow_gitaly_ref_name_caching, only: [:discussions]
@@ -371,20 +363,6 @@ class Projects::IssuesController < Projects::ApplicationController
 
   def branch_link(branch)
     project_compare_path(project, from: project.default_branch, to: branch[:name])
-  end
-
-  def create_rate_limit
-    key = :issues_create
-
-    if rate_limiter.throttled?(key, scope: [@project, @current_user])
-      rate_limiter.log_request(request, "#{key}_request_limit".to_sym, current_user)
-
-      render plain: _('This endpoint has been requested too many times. Try again later.'), status: :too_many_requests
-    end
-  end
-
-  def rate_limiter
-    ::Gitlab::ApplicationRateLimiter
   end
 
   def service_desk?

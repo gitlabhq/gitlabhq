@@ -6,33 +6,13 @@ RSpec.describe 'layouts/header/_new_dropdown' do
   let_it_be(:user) { create(:user) }
 
   shared_examples_for 'invite member quick link' do
-    context 'when an experiment is active' do
-      before do
-        allow(Gitlab::Experimentation).to receive(:active?).and_return(true)
-        allow(view).to receive(:experiment_tracking_category_and_group)
-        allow(view).to receive(:tracking_label)
-      end
-
-      context 'with ability to invite members' do
-        it { is_expected.to have_link('Invite members', href: href) }
-
-        it 'records the experiment' do
-          subject
-
-          expect(view).to have_received(:experiment_tracking_category_and_group)
-                            .with(:invite_members_new_dropdown)
-          expect(view).to have_received(:tracking_label)
-        end
-      end
-
-      context 'without ability to invite members' do
-        let(:invite_member) { false }
-
-        it { is_expected.not_to have_link('Invite members') }
-      end
+    context 'with ability to invite members' do
+      it { is_expected.to have_link('Invite members', href: href) }
     end
 
-    context 'when experiment is not active' do
+    context 'without ability to invite members' do
+      let(:invite_member) { false }
+
       it { is_expected.not_to have_link('Invite members') }
     end
   end
@@ -72,7 +52,6 @@ RSpec.describe 'layouts/header/_new_dropdown' do
         allow(view).to receive(:can?).with(user, :create_projects, group).and_return(true)
         allow(view).to receive(:can?).with(user, :admin_group_member, group).and_return(invite_member)
         allow(view).to receive(:can_admin_project_member?).and_return(invite_member)
-        allow(view).to receive(:experiment_enabled?)
       end
 
       subject do

@@ -24,7 +24,7 @@ RSpec.describe ::Types::RangeInputType do
 
   it 'follows expected subtyping relationships for instances' do
     context = GraphQL::Query::Context.new(
-      query: OpenStruct.new(schema: nil),
+      query: double('query', schema: nil),
       values: {},
       object: nil
     )

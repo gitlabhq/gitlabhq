@@ -1,65 +1,71 @@
 import { shallowMount } from '@vue/test-utils';
-import { GlTab, GlTabs } from '@gitlab/ui';
+import { mapValues } from 'lodash';
 import App from '~/google_cloud/components/app.vue';
+import Home from '~/google_cloud/components/home.vue';
 import IncubationBanner from '~/google_cloud/components/incubation_banner.vue';
-import ServiceAccounts from '~/google_cloud/components/service_accounts.vue';
+import ServiceAccountsForm from '~/google_cloud/components/service_accounts_form.vue';
+import GcpError from '~/google_cloud/components/errors/gcp_error.vue';
+import NoGcpProjects from '~/google_cloud/components/errors/no_gcp_projects.vue';
+
+const BASE_FEEDBACK_URL =
+  'https://gitlab.com/gitlab-org/incubation-engineering/five-minute-production/meta/-/issues/new';
+const SCREEN_COMPONENTS = {
+  Home,
+  ServiceAccountsForm,
+  GcpError,
+  NoGcpProjects,
+};
+const SERVICE_ACCOUNTS_FORM_PROPS = {
+  gcpProjects: [1, 2, 3],
+  environments: [4, 5, 6],
+  cancelPath: '',
+};
+const HOME_PROPS = {
+  serviceAccounts: [{}, {}],
+  createServiceAccountUrl: '#url-create-service-account',
+  emptyIllustrationUrl: '#url-empty-illustration',
+};
 
 describe('google_cloud App component', () => {
   let wrapper;
 
   const findIncubationBanner = () => wrapper.findComponent(IncubationBanner);
-  const findTabs = () => wrapper.findComponent(GlTabs);
-  const findTabItems = () => findTabs().findAllComponents(GlTab);
-  const findConfigurationTab = () => findTabItems().at(0);
-  const findDeploymentTab = () => findTabItems().at(1);
-  const findServicesTab = () => findTabItems().at(2);
-  const findServiceAccounts = () => findConfigurationTab().findComponent(ServiceAccounts);
-
-  beforeEach(() => {
-    const propsData = {
-      serviceAccounts: [{}, {}],
-      createServiceAccountUrl: '#url-create-service-account',
-      emptyIllustrationUrl: '#url-empty-illustration',
-    };
-    wrapper = shallowMount(App, { propsData });
-  });
 
   afterEach(() => {
     wrapper.destroy();
   });
 
-  it('should contain incubation banner', () => {
-    expect(findIncubationBanner().exists()).toBe(true);
-  });
+  describe.each`
+    screen                     | extraProps                            | componentName
+    ${'gcp_error'}             | ${{ error: 'mock_gcp_client_error' }} | ${'GcpError'}
+    ${'no_gcp_projects'}       | ${{}}                                 | ${'NoGcpProjects'}
+    ${'service_accounts_form'} | ${SERVICE_ACCOUNTS_FORM_PROPS}        | ${'ServiceAccountsForm'}
+    ${'home'}                  | ${HOME_PROPS}                         | ${'Home'}
+  `('for screen=$screen', ({ screen, extraProps, componentName }) => {
+    const component = SCREEN_COMPONENTS[componentName];
 
-  describe('google_cloud App tabs', () => {
-    it('should contain tabs', () => {
-      expect(findTabs().exists()).toBe(true);
+    beforeEach(() => {
+      wrapper = shallowMount(App, { propsData: { screen, ...extraProps } });
     });
 
-    it('should contain three tab items', () => {
-      expect(findTabItems().length).toBe(3);
-    });
+    it(`renders only ${componentName}`, () => {
+      const existences = mapValues(SCREEN_COMPONENTS, (x) => wrapper.findComponent(x).exists());
 
-    describe('configuration tab', () => {
-      it('should exist', () => {
-        expect(findConfigurationTab().exists()).toBe(true);
-      });
-
-      it('should contain service accounts component', () => {
-        expect(findServiceAccounts().exists()).toBe(true);
-      });
-    });
-
-    describe('deployments tab', () => {
-      it('should exist', () => {
-        expect(findDeploymentTab().exists()).toBe(true);
+      expect(existences).toEqual({
+        ...mapValues(SCREEN_COMPONENTS, () => false),
+        [componentName]: true,
       });
     });
 
-    describe('services tab', () => {
-      it('should exist', () => {
-        expect(findServicesTab().exists()).toBe(true);
+    it(`renders the ${componentName} with props`, () => {
+      expect(wrapper.findComponent(component).props()).toEqual(extraProps);
+    });
+
+    it('renders incubation banner', () => {
+      expect(findIncubationBanner().props()).toEqual({
+        shareFeedbackUrl: `${BASE_FEEDBACK_URL}?issuable_template=general_feedback`,
+        reportBugUrl: `${BASE_FEEDBACK_URL}?issuable_template=report_bug`,
+        featureRequestUrl: `${BASE_FEEDBACK_URL}?issuable_template=feature_request`,
       });
     });
   });

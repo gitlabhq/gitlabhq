@@ -28,6 +28,7 @@ module Enums
           trace_size_exceeded: 19,
           builds_disabled: 20,
           environment_creation_failure: 21,
+          deployment_rejected: 22,
           insufficient_bridge_permissions: 1_001,
           downstream_bridge_project_not_found: 1_002,
           invalid_bridge_trigger: 1_003,

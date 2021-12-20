@@ -13,7 +13,7 @@ RSpec.describe Mutations::UserCallouts::Create do
       let(:feature_name) { 'not_supported' }
 
       it 'does not create a user callout' do
-        expect { resolve }.not_to change(UserCallout, :count).from(0)
+        expect { resolve }.not_to change(Users::Callout, :count).from(0)
       end
 
       it 'returns error about feature name not being supported' do
@@ -22,10 +22,10 @@ RSpec.describe Mutations::UserCallouts::Create do
     end
 
     context 'when feature name is supported' do
-      let(:feature_name) { UserCallout.feature_names.each_key.first.to_s }
+      let(:feature_name) { Users::Callout.feature_names.each_key.first.to_s }
 
       it 'creates a user callout' do
-        expect { resolve }.to change(UserCallout, :count).from(0).to(1)
+        expect { resolve }.to change(Users::Callout, :count).from(0).to(1)
       end
 
       it 'sets dismissed_at for the user callout' do

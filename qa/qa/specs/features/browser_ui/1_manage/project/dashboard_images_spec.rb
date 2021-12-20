@@ -39,13 +39,13 @@ module QA
         end
       end
 
-      context 'when logged in as a new user', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1549' do
+      context 'when logged in as a new user', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347885' do
         it_behaves_like 'loads all images' do
           let(:new_user) { @new_user }
         end
       end
 
-      context 'when logged in as a new admin', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1550' do
+      context 'when logged in as a new admin', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347884' do
         it_behaves_like 'loads all images' do
           let(:new_user) { @new_admin }
         end

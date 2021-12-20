@@ -73,7 +73,7 @@ export default {
       });
     },
     onReset() {
-      this.$emit('cancel');
+      this.$emit('resetContent');
     },
     scrollIntoView() {
       this.$el.scrollIntoView({ behavior: 'smooth' });
@@ -86,7 +86,7 @@ export default {
     startMergeRequest: __('Start a %{new_merge_request} with these changes'),
     newMergeRequest: __('new merge request'),
     commitChanges: __('Commit changes'),
-    cancel: __('Cancel'),
+    resetContent: __('Reset'),
   },
 };
 </script>
@@ -148,7 +148,7 @@ export default {
           {{ $options.i18n.commitChanges }}
         </gl-button>
         <gl-button type="reset" category="secondary" class="gl-mr-3">
-          {{ $options.i18n.cancel }}
+          {{ $options.i18n.resetContent }}
         </gl-button>
       </div>
     </gl-form>

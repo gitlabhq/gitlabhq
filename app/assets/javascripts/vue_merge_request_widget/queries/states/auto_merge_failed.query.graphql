@@ -1,6 +1,8 @@
 query autoMergeFailedQuery($projectPath: ID!, $iid: String!) {
   project(fullPath: $projectPath) {
+    id
     mergeRequest(iid: $iid) {
+      id
       mergeError
     }
   }

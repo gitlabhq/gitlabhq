@@ -31,9 +31,13 @@ module Database
       # See https://gitlab.com/gitlab-org/gitlab/-/issues/339396
       return if sql.include?("DISABLE TRIGGER") || sql.include?("ENABLE TRIGGER")
 
-      # PgQuery might fail in some cases due to limited nesting:
-      # https://github.com/pganalyze/pg_query/issues/209
-      tables = PgQuery.parse(sql).tables
+      tables = begin
+        PgQuery.parse(sql).tables
+      rescue PgQuery::ParseError
+        # PgQuery might fail in some cases due to limited nesting:
+        # https://github.com/pganalyze/pg_query/issues/209
+        return
+      end
 
       schemas = ::Gitlab::Database::GitlabSchema.table_schemas(tables)
 

@@ -7,7 +7,7 @@ import { parseIntPagination, normalizeHeaders } from '~/lib/utils/common_utils';
 import { joinPaths } from '~/lib/utils/url_utility';
 import { getBulkImportsHistory } from '~/rest_api';
 import ImportStatus from '~/import_entities/components/import_status.vue';
-import PaginationBar from '~/import_entities/components/pagination_bar.vue';
+import PaginationBar from '~/vue_shared/components/pagination_bar/pagination_bar.vue';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
 
 import { DEFAULT_ERROR } from '../utils/error_messages';
@@ -166,7 +166,6 @@ export default {
       </gl-table>
       <pagination-bar
         :page-info="pageInfo"
-        :items-count="historyItems.length"
         class="gl-m-0 gl-mt-3"
         @set-page="paginationConfig.page = $event"
         @set-page-size="paginationConfig.perPage = $event"

@@ -11,11 +11,11 @@ module QA
           include Page::Component::Issuable::Sidebar
           prepend Mobile::Page::Project::Issue::Show if Runtime::Env.mobile_layout?
 
-          view 'app/assets/javascripts/vue_shared/components/issue/related_issuable_item.vue' do
+          view 'app/assets/javascripts/issuable/components/related_issuable_item.vue' do
             element :remove_related_issue_button
           end
 
-          view 'app/assets/javascripts/issue_show/components/header_actions.vue' do
+          view 'app/assets/javascripts/issues/show/components/header_actions.vue' do
             element :close_issue_button
             element :reopen_issue_button
           end

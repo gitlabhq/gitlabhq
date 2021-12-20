@@ -290,7 +290,7 @@ The example code is available:
 - As a [clonable repository](https://gitlab.com/gitlab-org/serverless/examples/serverless-framework-js).
 - In a version with [tests and secret variables](https://gitlab.com/gitlab-org/project-templates/serverless-framework/).
 
-You can also use a [template](../../working_with_projects.md#project-templates)
+You can also use a [template](../../working_with_projects.md#create-a-project)
 (based on the version with tests and secret variables) from within the GitLab UI (see
 the `Serverless Framework/JS` template).
 

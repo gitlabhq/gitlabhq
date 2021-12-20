@@ -226,6 +226,16 @@ $gl-line-height-42: px-to-rem(42px);
   max-height: none !important;
 }
 
+// Will be moved to @gitlab/ui in https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1655
+.gl-max-w-62 {
+  max-width: $grid-size * 62;
+}
+
+// Will be moved to @gitlab/ui in https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1655
+.gl-max-w-26 {
+  max-width: $grid-size * 26;
+}
+
 .gl-max-w-50p {
   max-width: 50%;
 }
@@ -291,9 +301,9 @@ $gl-line-height-42: px-to-rem(42px);
   @include gl-focus($gl-border-size-1, $gray-900, true);
 }
 
-// Will be moved to @gitlab/ui by https://gitlab.com/gitlab-org/gitlab-ui/-/merge_requests/2476
-.gl-md-max-w-50p {
-  @include gl-media-breakpoint-up(md) {
-    max-width: 50%;
+// Will be moved to @gitlab/ui by https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1637
+.gl-lg-w-25p {
+  @include gl-media-breakpoint-up(lg) {
+    width: 25%;
   }
 }

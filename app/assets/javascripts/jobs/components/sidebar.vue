@@ -2,7 +2,7 @@
 import { GlButton, GlIcon } from '@gitlab/ui';
 import { isEmpty } from 'lodash';
 import { mapActions, mapGetters, mapState } from 'vuex';
-import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate.vue';
+import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate/tooltip_on_truncate.vue';
 import { JOB_SIDEBAR } from '../constants';
 import ArtifactsBlock from './artifacts_block.vue';
 import CommitBlock from './commit_block.vue';

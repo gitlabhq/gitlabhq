@@ -484,7 +484,7 @@ RSpec.describe Boards::IssuesController do
     context 'with guest user' do
       context 'in open list' do
         it 'returns a successful 200 response' do
-          open_list = board.lists.create(list_type: :backlog)
+          open_list = board.lists.create!(list_type: :backlog)
           create_issue user: guest, board: board, list: open_list, title: 'New issue'
 
           expect(response).to have_gitlab_http_status(:ok)

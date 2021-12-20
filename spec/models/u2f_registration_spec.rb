@@ -20,9 +20,9 @@ RSpec.describe U2fRegistration do
     describe '#create_webauthn_registration' do
       shared_examples_for 'creates webauthn registration' do
         it 'creates webauthn registration' do
-          u2f_registration.save!
+          created_record = u2f_registration
 
-          webauthn_registration = WebauthnRegistration.where(u2f_registration_id: u2f_registration.id)
+          webauthn_registration = WebauthnRegistration.where(u2f_registration_id: created_record.id)
           expect(webauthn_registration).to exist
         end
       end
@@ -43,13 +43,16 @@ RSpec.describe U2fRegistration do
 
       it 'logs error' do
         allow(Gitlab::Auth::U2fWebauthnConverter).to receive(:new).and_raise('boom!')
-        expect(Gitlab::AppJsonLogger).to(
-          receive(:error).with(a_hash_including(event: 'u2f_migration',
-                                                error: 'RuntimeError',
-                                                message: 'U2F to WebAuthn conversion failed'))
-        )
 
-        u2f_registration.save!
+        allow_next_instance_of(U2fRegistration) do |u2f_registration|
+          allow(u2f_registration).to receive(:id).and_return(123)
+        end
+
+        expect(Gitlab::ErrorTracking).to(
+          receive(:track_exception).with(kind_of(StandardError),
+                                             u2f_registration_id: 123))
+
+        u2f_registration
       end
     end
   end

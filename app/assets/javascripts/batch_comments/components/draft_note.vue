@@ -76,7 +76,7 @@ export default {
     },
   },
   safeHtmlConfig: {
-    ADD_TAGS: ['use', 'gl-emoji'],
+    ADD_TAGS: ['use', 'gl-emoji', 'copy-code'],
   },
 };
 </script>

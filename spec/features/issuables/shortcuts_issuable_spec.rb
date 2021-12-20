@@ -44,4 +44,90 @@ RSpec.describe 'Blob shortcuts', :js do
       include_examples 'quotes the selected text'
     end
   end
+
+  shared_examples "opens assignee dropdown for editing" do
+    it "opens assignee dropdown for editing" do
+      find('body').native.send_key('a')
+
+      expect(find('.block.assignee')).to have_selector('.js-sidebar-assignee-data')
+    end
+  end
+
+  describe 'pressing "a"' do
+    describe 'On an Issue' do
+      before do
+        stub_feature_flags(issue_assignees_widget: false)
+        visit project_issue_path(project, issue)
+        wait_for_requests
+      end
+
+      include_examples 'opens assignee dropdown for editing'
+    end
+
+    describe 'On a Merge Request' do
+      before do
+        stub_feature_flags(issue_assignees_widget: false)
+        visit project_merge_request_path(project, merge_request)
+        wait_for_requests
+      end
+
+      include_examples 'opens assignee dropdown for editing'
+    end
+  end
+
+  shared_examples "opens milestones dropdown for editing" do
+    it "opens milestones dropdown for editing" do
+      find('body').native.send_key('m')
+
+      expect(find('[data-testid="milestone-edit"]')).to have_selector('.gl-new-dropdown-inner')
+    end
+  end
+
+  describe 'pressing "m"' do
+    describe 'On an Issue' do
+      before do
+        visit project_issue_path(project, issue)
+        wait_for_requests
+      end
+
+      include_examples 'opens milestones dropdown for editing'
+    end
+
+    describe 'On a Merge Request' do
+      before do
+        visit project_merge_request_path(project, merge_request)
+        wait_for_requests
+      end
+
+      include_examples 'opens milestones dropdown for editing'
+    end
+  end
+
+  shared_examples "opens labels dropdown for editing" do
+    it "opens labels dropdown for editing" do
+      find('body').native.send_key('l')
+
+      expect(find('.js-labels-block')).to have_selector('[data-testid="labels-select-dropdown-contents"]')
+    end
+  end
+
+  describe 'pressing "l"' do
+    describe 'On an Issue' do
+      before do
+        visit project_issue_path(project, issue)
+        wait_for_requests
+      end
+
+      include_examples 'opens labels dropdown for editing'
+    end
+
+    describe 'On a Merge Request' do
+      before do
+        visit project_merge_request_path(project, merge_request)
+        wait_for_requests
+      end
+
+      include_examples 'opens labels dropdown for editing'
+    end
+  end
 end

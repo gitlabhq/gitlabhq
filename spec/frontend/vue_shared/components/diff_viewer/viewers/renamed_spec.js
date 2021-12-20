@@ -1,4 +1,5 @@
-import { createLocalVue, shallowMount, mount } from '@vue/test-utils';
+import { shallowMount, mount } from '@vue/test-utils';
+import Vue from 'vue';
 import Vuex from 'vuex';
 import {
   TRANSITION_LOAD_START,
@@ -11,15 +12,13 @@ import {
 } from '~/diffs/constants';
 import Renamed from '~/vue_shared/components/diff_viewer/viewers/renamed.vue';
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 function createRenamedComponent({ props = {}, store = new Vuex.Store({}), deep = false }) {
   const mnt = deep ? mount : shallowMount;
 
   return mnt(Renamed, {
     propsData: { ...props },
-    localVue,
     store,
   });
 }

@@ -43,6 +43,7 @@ module FeatureFlags
 
     def sync_to_jira(feature_flag)
       return unless feature_flag.present?
+      return unless project.jira_subscription_exists?
 
       seq_id = ::Atlassian::JiraConnect::Client.generate_update_sequence_id
       feature_flag.run_after_commit do

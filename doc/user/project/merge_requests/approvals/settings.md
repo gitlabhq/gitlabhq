@@ -157,7 +157,7 @@ You can also enforce merge request approval settings:
 If the settings are inherited by a group or project, they cannot be changed in the group or project
 that inherited them.
 
-## Related links
+## Related topics
 
 - [Instance-level merge request approval settings](../../../admin_area/merge_requests_approvals.md)
 - [Compliance report](../../../compliance/compliance_report/index.md)

@@ -18,8 +18,8 @@ Each release of GitLab Mattermost is compiled and manually tested on an AMD 64 c
 
 ## Getting started
 
-GitLab Mattermost expects to run on its own virtual host. In your DNS settings you will need
-two entries pointing to the same machine, e.g., `gitlab.example.com` and
+GitLab Mattermost expects to run on its own virtual host. In your DNS settings, you need
+two entries pointing to the same machine. For example, `gitlab.example.com` and
 `mattermost.example.com`.
 
 GitLab Mattermost is disabled by default. To enable it:
@@ -41,7 +41,7 @@ GitLab Mattermost is disabled by default. To enable it:
 The Omnibus GitLab package attempts to automatically authorize GitLab Mattermost with GitLab if the applications are running on the same server.
 
 Automatic authorization requires access to the GitLab database. If the GitLab database is not available
-you will need to manually authorize GitLab Mattermost for access to GitLab using the process described in the [Authorize GitLab Mattermost section](#authorize-gitlab-mattermost).
+you need to manually authorize GitLab Mattermost for access to GitLab using the process described in the [Authorize GitLab Mattermost section](#authorize-gitlab-mattermost).
 
 ## Configuring Mattermost
 
@@ -51,7 +51,7 @@ Mattermost settings and where they can be set is available [in the Mattermost do
 While using the System Console is recommended, you can also configure Mattermost using one of the following options:
 
 1. Edit the Mattermost configuration directly through `/var/opt/gitlab/mattermost/config.json`.
-1. Specify environment variables used to run Mattermost by changing the `mattermost['env']` setting in `gitlab.rb`. Any settings configured in this way will be disabled from the System Console and cannot be changed without restarting Mattermost.
+1. Specify environment variables used to run Mattermost by changing the `mattermost['env']` setting in `gitlab.rb`. Any settings configured in this way are disabled from the System Console and cannot be changed without restarting Mattermost.
 
 ## Running GitLab Mattermost with HTTPS
 
@@ -71,7 +71,7 @@ mattermost_nginx['redirect_http_to_https'] = true
 ```
 
 If you haven't named your certificate and key `mattermost.gitlab.example.crt`
-and `mattermost.gitlab.example.key` then you'll need to also add the full paths
+and `mattermost.gitlab.example.key` then you need to also add the full paths
 as shown below.
 
 ```ruby
@@ -85,7 +85,7 @@ Once the configuration is set, run `sudo gitlab-ctl reconfigure` to apply the ch
 
 ## Running GitLab Mattermost on its own server
 
-If you want to run GitLab and GitLab Mattermost on two separate servers the GitLab services will still be set up on your GitLab Mattermost server, but they will not accept user requests or
+If you want to run GitLab and GitLab Mattermost on two separate servers the GitLab services are still set up on your GitLab Mattermost server, but they do not accept user requests or
 consume system resources. You can use the following settings and configuration details on the GitLab Mattermost server to effectively disable the GitLab service bundled into the Omnibus package.
 
 ```ruby
@@ -124,7 +124,7 @@ http://mattermost.example.com/login/gitlab/complete
 
 Note that you do not need to select any options under **Scopes**. Choose **Save application**.
 
-Once the application is created you will be provided with an `Application ID` and `Secret`. One other piece of information needed is the URL of GitLab instance.
+Once the application is created you are provided with an `Application ID` and `Secret`. One other piece of information needed is the URL of GitLab instance.
 Return to the server running GitLab Mattermost and edit the `/etc/gitlab/gitlab.rb` configuration file as follows using the values you received above:
 
 ```ruby
@@ -190,7 +190,7 @@ sudo -i -u gitlab-psql -- /opt/gitlab/embedded/bin/pg_dump -h /var/opt/gitlab/po
 
 #### Back up the `data` directory and `config.json`
 
-Mattermost has a `data` directory and `config.json` file that will need to be backed up as well:
+Mattermost has a `data` directory and `config.json` file that need to be backed up as well:
 
 ```shell
 sudo tar -zcvf mattermost_data_$(date --rfc-3339=date).gz -C /var/opt/gitlab/mattermost data config.json
@@ -339,6 +339,11 @@ Below is a list of Mattermost versions for GitLab 11.10 and later:
 | 14.2 | 5.37 |
 | 14.3 | 5.38 |
 | 14.4 | 5.39 |
+| 14.5 | 5.39 |
+| 14.6 | 6.1  |
+
+- GitLab 14.5 remained on Mattermost 5.39
+- GitLab 14.6 updates to Mattermost 6.1 instead of 6.0
 
 NOTE:
 When upgrading the Mattermost version, it is essential to check the
@@ -346,8 +351,8 @@ When upgrading the Mattermost version, it is essential to check the
 for Mattermost to address any changes or migrations that need to be performed.
 
 Starting with GitLab 11.0, GitLab Mattermost can be upgraded through the regular Omnibus GitLab update process. When upgrading previous versions of
-GitLab that process can only be used if Mattermost configuration settings have not been changed outside of GitLab (i.e., no changes to Mattermost's `config.json`
-file have been made, either directly or via the Mattermost **System Console** which saves back changes to `config.json`.)
+GitLab, the update process can only be used if Mattermost configuration settings have not been changed outside of GitLab. That is, no changes to Mattermost's `config.json`
+file have been made - either directly or via the Mattermost **System Console**, which saves changes to `config.json`.
 
 If you are upgrading to at least GitLab 11.0 or have only configured Mattermost using `gitlab.rb`, you can upgrade GitLab using Omnibus and then run `gitlab-ctl reconfigure` to upgrade GitLab Mattermost to the latest version.
 
@@ -363,6 +368,21 @@ If this is not the case, there are two options:
    from Omnibus GitLab.
 
 For a complete list of upgrade notices and special considerations for older versions, see the [Mattermost documentation](https://docs.mattermost.com/administration/important-upgrade-notes.html).
+
+## Upgrading GitLab Mattermost to 14.6
+
+GitLab 14.6 includes Mattermost 6.1, and also includes the migrations for Mattermost 6.0. For information about upgrading and for ways to reduce the downtime of those migrations, read the [Important Upgrade Notes](https://docs.mattermost.com/administration/important-upgrade-notes.html) for both versions.
+
+NOTE:
+The Mattermost upgrade notes refer to different impacts when used with a PostgreSQL versus a MySQL database. The GitLab Mattermost included with the GitLab Linux packages uses a PostgreSQL database.
+
+If you need to connect in the database to perform any manual migrations, run the following:
+
+```console
+sudo gitlab-psql -d mattermost_production
+```
+
+You can then run the necessary queries that are described in the [Important Upgrade Notes](https://docs.mattermost.com/administration/important-upgrade-notes.html).
 
 ## Upgrading GitLab Mattermost from versions prior to 11.0
 
@@ -476,7 +496,27 @@ The following image is a sequence diagram for how GitLab works as an OAuth2
 provider for Mattermost. You can use this to troubleshoot errors
 in getting the integration to work:
 
-![sequence diagram](img/gitlab-mattermost.png)
+```mermaid
+sequenceDiagram
+    User->>Mattermost: GET https://mm.domain.com
+    Note over Mattermost, GitLab: Obtain access code
+    Mattermost->>GitLab: GET https://gitlab.domain.com/oauth/authorize
+    Note over User, GitLab: GitLab user signs in (if necessary)
+    Note over GitLab: GitLab verifies client_id matches an OAuth application
+    GitLab->>User: GitLab asks user to authorize Mattermost OAuth app
+    User->>GitLab: User selects 'Allow'
+    Note over GitLab: GitLab verifies redirect_uri matches list of valid URLs
+    GitLab->>User: 302 redirect: https://mm.domain.com/signup/gitlab/complete
+    User->>Mattermost: GET https://mm.domain.com/signup/gitlab/complete
+    Note over Mattermost, GitLab: Exchange access code for access token
+    Mattermost->>GitLab: POST http://gitlab.domain.com/oauth/token
+    GitLab->>GitLab: Doorkeeper::TokensController#35;create
+    GitLab->>Mattermost: Access token
+    Note over Mattermost, GitLab: Mattermost looks up GitLab user
+    Mattermost->>GitLab: GET https://gitlab.domain.com/api/v4/user
+    GitLab->>Mattermost: User details
+    Mattermost->>User: Mattermost/GitLab user ready
+```
 
 ## Troubleshooting the Mattermost CLI
 

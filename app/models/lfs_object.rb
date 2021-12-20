@@ -13,6 +13,7 @@ class LfsObject < ApplicationRecord
   scope :with_files_stored_locally, -> { where(file_store: LfsObjectUploader::Store::LOCAL) }
   scope :with_files_stored_remotely, -> { where(file_store: LfsObjectUploader::Store::REMOTE) }
   scope :for_oids, -> (oids) { where(oid: oids) }
+  scope :for_oid_and_size, -> (oid, size) { find_by(oid: oid, size: size) }
 
   validates :oid, presence: true, uniqueness: true
 

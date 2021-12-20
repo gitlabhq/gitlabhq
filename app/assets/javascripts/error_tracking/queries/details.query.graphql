@@ -1,5 +1,6 @@
 query errorDetails($fullPath: ID!, $errorId: ID!) {
   project(fullPath: $fullPath) {
+    id
     sentryErrors {
       detailedError(id: $errorId) {
         id

@@ -277,3 +277,36 @@ describe('DiffRow', () => {
     });
   });
 });
+
+describe('coverage state memoization', () => {
+  it('updates when coverage is loaded', () => {
+    const lineWithoutCoverage = {};
+    const lineWithCoverage = {
+      text: 'Test coverage: 5 hits',
+      class: 'coverage',
+    };
+
+    const unchangedProps = {
+      inline: true,
+      filePath: 'file/path',
+      line: { left: { new_line: 3 } },
+    };
+
+    const noCoverageProps = {
+      fileLineCoverage: () => lineWithoutCoverage,
+      coverageLoaded: false,
+      ...unchangedProps,
+    };
+    const coverageProps = {
+      fileLineCoverage: () => lineWithCoverage,
+      coverageLoaded: true,
+      ...unchangedProps,
+    };
+
+    // this caches no coverage for the line
+    expect(DiffRow.coverageStateLeft(noCoverageProps)).toStrictEqual(lineWithoutCoverage);
+
+    // this retrieves coverage for the line because it has been recached
+    expect(DiffRow.coverageStateLeft(coverageProps)).toStrictEqual(lineWithCoverage);
+  });
+});

@@ -57,9 +57,9 @@ module Sidebars
             data: { trigger: 'manual',
               container: 'body',
               placement: 'right',
-              highlight: UserCalloutsHelper::GKE_CLUSTER_INTEGRATION,
-              highlight_priority: UserCallout.feature_names[:GKE_CLUSTER_INTEGRATION],
-              dismiss_endpoint: user_callouts_path,
+              highlight: Users::CalloutsHelper::GKE_CLUSTER_INTEGRATION,
+              highlight_priority: Users::Callout.feature_names[:GKE_CLUSTER_INTEGRATION],
+              dismiss_endpoint: callouts_path,
               auto_devops_help_path: help_page_path('topics/autodevops/index.md') } }
         end
 
@@ -90,7 +90,7 @@ module Sidebars
         end
 
         def google_cloud_menu_item
-          feature_is_enabled = Feature.enabled?(:incubation_5mp_google_cloud)
+          feature_is_enabled = Feature.enabled?(:incubation_5mp_google_cloud, context.project)
           user_has_permissions = can?(context.current_user, :admin_project_google_cloud, context.project)
 
           unless feature_is_enabled && user_has_permissions
@@ -100,7 +100,7 @@ module Sidebars
           ::Sidebars::MenuItem.new(
             title: _('Google Cloud'),
             link: project_google_cloud_index_path(context.project),
-            active_routes: { controller: :google_cloud },
+            active_routes: { controller: [:google_cloud, :service_accounts] },
             item_id: :google_cloud
           )
         end

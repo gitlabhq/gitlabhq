@@ -120,6 +120,15 @@ module ProjectsHelper
       { project_full_name: project.full_name }
   end
 
+  def remove_fork_project_confirm_json(project, remove_form_id)
+    {
+      remove_form_id: remove_form_id,
+      button_text: _('Remove fork relationship'),
+      confirm_danger_message: remove_fork_project_warning_message(project),
+      phrase: @project.path
+    }
+  end
+
   def visible_fork_source(project)
     project.fork_source if project.fork_source && can?(current_user, :read_project, project.fork_source)
   end
@@ -403,6 +412,16 @@ module ProjectsHelper
   # Relevant issue: https://gitlab.com/gitlab-org/gitlab/-/issues/343591
   def delete_confirm_phrase(project)
     project.path_with_namespace
+  end
+
+  def fork_button_disabled_tooltip(project)
+    return unless current_user
+
+    if !current_user.can?(:fork_project, project)
+      s_("ProjectOverview|You don't have permission to fork this project")
+    elsif !current_user.can?(:create_fork)
+      s_('ProjectOverview|You have reached your project limit')
+    end
   end
 
   private

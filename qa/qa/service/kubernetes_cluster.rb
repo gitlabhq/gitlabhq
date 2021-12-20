@@ -77,7 +77,7 @@ module QA
         install_ingress
 
         # need to wait since the ingress-nginx service has an initial delay set of 10 seconds
-        sleep 10
+        sleep 12
         ingress_ip = `kubectl get svc --all-namespaces --no-headers=true -l  app.kubernetes.io/name=ingress-nginx -o custom-columns=:'status.loadBalancer.ingress[0].ip' | grep -v 'none'`
         QA::Runtime::Logger.debug "Has ingress address set to: #{ingress_ip}"
         ingress_ip

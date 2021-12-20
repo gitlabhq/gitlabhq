@@ -76,7 +76,7 @@ RSpec.describe Gitlab::Database::Migrations::Runner do
       it 'runs the unapplied migrations in version order', :aggregate_failures do
         up.run
 
-        expect(migration_runs.map(&:dir)).to eq([:up, :up])
+        expect(migration_runs.map(&:dir)).to match_array([:up, :up])
         expect(migration_runs.map(&:version_to_migrate)).to eq(pending_migrations.map(&:version))
       end
     end
@@ -101,7 +101,7 @@ RSpec.describe Gitlab::Database::Migrations::Runner do
       it 'runs the applied migrations for the current branch in reverse order', :aggregate_failures do
         down.run
 
-        expect(migration_runs.map(&:dir)).to eq([:down, :down])
+        expect(migration_runs.map(&:dir)).to match_array([:down, :down])
         expect(migration_runs.map(&:version_to_migrate)).to eq(applied_migrations_this_branch.reverse.map(&:version))
       end
     end

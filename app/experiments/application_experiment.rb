@@ -13,7 +13,6 @@ class ApplicationExperiment < Gitlab::Experiment # rubocop:disable Gitlab/Namesp
     super
 
     publish_to_client
-    publish_to_database if @record
   end
 
   def publish_to_client
@@ -25,6 +24,8 @@ class ApplicationExperiment < Gitlab::Experiment # rubocop:disable Gitlab/Namesp
   end
 
   def publish_to_database
+    ActiveSupport::Deprecation.warn('publish_to_database is deprecated and should not be used for reporting anymore')
+
     return unless should_track?
 
     # if the context contains a namespace, group, project, user, or actor
@@ -32,16 +33,16 @@ class ApplicationExperiment < Gitlab::Experiment # rubocop:disable Gitlab/Namesp
     subject = value[:namespace] || value[:group] || value[:project] || value[:user] || value[:actor]
     return unless ExperimentSubject.valid_subject?(subject)
 
-    variant = :experimental if @variant_name != :control
-    Experiment.add_subject(name, variant: variant || :control, subject: subject)
-  end
-
-  def record!
-    @record = true
+    variant_name = :experimental if variant&.name != 'control'
+    Experiment.add_subject(name, variant: variant_name || :control, subject: subject)
   end
 
   def control_behavior
     # define a default nil control behavior so we can omit it when not needed
+  end
+
+  def track(action, **event_args)
+    super(action, **tracking_context.merge(event_args))
   end
 
   # TODO: remove
@@ -57,7 +58,24 @@ class ApplicationExperiment < Gitlab::Experiment # rubocop:disable Gitlab/Namesp
     Digest::MD5.hexdigest(ingredients.join('|'))
   end
 
+  def nest_experiment(other)
+    instance_exec(:nested, { label: other.name }, &Configuration.tracking_behavior)
+  end
+
   private
+
+  def tracking_context
+    {
+      namespace: context.try(:namespace) || context.try(:group),
+      project: context.try(:project),
+      user: user_or_actor
+    }.compact || {}
+  end
+
+  def user_or_actor
+    actor = context.try(:actor)
+    actor.respond_to?(:id) ? actor : context.try(:user)
+  end
 
   def feature_flag_name
     name.tr('/', '_')

@@ -2,10 +2,10 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Database::Migrations::Observers::QueryLog do
-  subject { described_class.new(observation, directory_path) }
+  subject { described_class.new(observation, directory_path, connection) }
 
   let(:observation) { Gitlab::Database::Migrations::Observation.new(migration_version, migration_name) }
-  let(:connection) { ActiveRecord::Base.connection }
+  let(:connection) { ActiveRecord::Migration.connection }
   let(:query) { 'select 1' }
   let(:directory_path) { Dir.mktmpdir }
   let(:migration_version) { 20210422152437 }

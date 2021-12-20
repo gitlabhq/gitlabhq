@@ -46,6 +46,47 @@ RSpec.describe Ci::CreatePipelineService do
     end
     # rubocop:enable Metrics/ParameterLists
 
+    context 'performance' do
+      it_behaves_like 'pipelines are created without N+1 SQL queries' do
+        let(:config1) do
+          <<~YAML
+          job1:
+            stage: build
+            script: exit 0
+
+          job2:
+            stage: test
+            script: exit 0
+          YAML
+        end
+
+        let(:config2) do
+          <<~YAML
+          job1:
+            stage: build
+            script: exit 0
+
+          job2:
+            stage: test
+            script: exit 0
+
+          job3:
+            stage: deploy
+            script: exit 0
+          YAML
+        end
+
+        let(:accepted_n_plus_ones) do
+          1 + # SELECT "ci_instance_variables"
+          1 + # INSERT INTO "ci_stages"
+          1 + # SELECT "ci_builds".* FROM "ci_builds"
+          1 + # INSERT INTO "ci_builds"
+          1 + # INSERT INTO "ci_builds_metadata"
+          1   # SELECT "taggings".* FROM "taggings"
+        end
+      end
+    end
+
     context 'valid params' do
       let(:pipeline) { execute_service.payload }
 
@@ -1950,6 +1991,75 @@ RSpec.describe Ci::CreatePipelineService do
       let(:regular_job) { find_job('regular-job') }
       let(:rules_job)   { find_job('rules-job') }
       let(:delayed_job) { find_job('delayed-job') }
+
+      context 'with when:manual' do
+        let(:config) do
+          <<-EOY
+          job-with-rules:
+            script: 'echo hey'
+            rules:
+              - if: $CI_COMMIT_REF_NAME =~ /master/
+
+          job-when-with-rules:
+            script: 'echo hey'
+            when: manual
+            rules:
+              - if: $CI_COMMIT_REF_NAME =~ /master/
+
+          job-when-with-rules-when:
+            script: 'echo hey'
+            when: manual
+            rules:
+              - if: $CI_COMMIT_REF_NAME =~ /master/
+                when: on_success
+
+          job-with-rules-when:
+            script: 'echo hey'
+            rules:
+              - if: $CI_COMMIT_REF_NAME =~ /master/
+                when: manual
+
+          job-without-rules:
+            script: 'echo this is a job with NO rules'
+          EOY
+        end
+
+        let(:job_with_rules) { find_job('job-with-rules') }
+        let(:job_when_with_rules) { find_job('job-when-with-rules') }
+        let(:job_when_with_rules_when) { find_job('job-when-with-rules-when') }
+        let(:job_with_rules_when) { find_job('job-with-rules-when') }
+        let(:job_without_rules) { find_job('job-without-rules') }
+
+        context 'when matching the rules' do
+          let(:ref_name) { 'refs/heads/master' }
+
+          it 'adds the job-with-rules with a when:manual' do
+            expect(job_with_rules).to be_persisted
+            expect(job_when_with_rules).to be_persisted
+            expect(job_when_with_rules_when).to be_persisted
+            expect(job_with_rules_when).to be_persisted
+            expect(job_without_rules).to be_persisted
+
+            expect(job_with_rules.when).to eq('on_success')
+            expect(job_when_with_rules.when).to eq('manual')
+            expect(job_when_with_rules_when.when).to eq('on_success')
+            expect(job_with_rules_when.when).to eq('manual')
+            expect(job_without_rules.when).to eq('on_success')
+          end
+        end
+
+        context 'when there is no match to the rule' do
+          let(:ref_name) { 'refs/heads/wip' }
+
+          it 'does not add job_with_rules' do
+            expect(job_with_rules).to be_nil
+            expect(job_when_with_rules).to be_nil
+            expect(job_when_with_rules_when).to be_nil
+            expect(job_with_rules_when).to be_nil
+            expect(job_without_rules).to be_persisted
+          end
+        end
+      end
 
       shared_examples 'rules jobs are excluded' do
         it 'only persists the job without rules' do

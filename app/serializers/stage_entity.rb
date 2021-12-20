@@ -15,13 +15,13 @@ class StageEntity < Grape::Entity
 
   expose :latest_statuses,
     if: -> (_, opts) { opts[:details] },
-    with: JobEntity do |stage|
+    with: Ci::JobEntity do |stage|
     latest_statuses
   end
 
   expose :retried,
          if: -> (_, opts) { opts[:retried] },
-         with: JobEntity do |stage|
+         with: Ci::JobEntity do |stage|
     retried_statuses
   end
 

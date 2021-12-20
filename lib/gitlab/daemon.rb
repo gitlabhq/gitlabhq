@@ -2,16 +2,16 @@
 
 module Gitlab
   class Daemon
-    def self.initialize_instance(*args)
+    def self.initialize_instance(...)
       raise "#{name} singleton instance already initialized" if @instance
 
-      @instance = new(*args)
+      @instance = new(...)
       Kernel.at_exit(&@instance.method(:stop))
       @instance
     end
 
-    def self.instance(*args)
-      @instance ||= initialize_instance(*args)
+    def self.instance(...)
+      @instance ||= initialize_instance(...)
     end
 
     attr_reader :thread
@@ -20,7 +20,8 @@ module Gitlab
       !thread.nil?
     end
 
-    def initialize
+    def initialize(**options)
+      @synchronous = options[:synchronous]
       @mutex = Mutex.new
     end
 
@@ -43,6 +44,10 @@ module Gitlab
             Thread.current.name = thread_name
             run_thread
           end
+
+          @thread.join if @synchronous
+
+          @thread
         end
       end
     end

@@ -87,36 +87,10 @@ module Ci
           end
 
           context 'for specific runner' do
-            context 'with tables decoupling disabled' do
-              before do
-                stub_feature_flags(
-                  ci_pending_builds_project_runners_decoupling: false,
-                  ci_queueing_builds_enabled_checks: false)
-              end
-
-              around do |example|
-                allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/332952') do
-                  example.run
-                end
-              end
-
-              it 'does not pick a build' do
-                expect(execute(specific_runner)).to be_nil
-              end
-            end
-
-            context 'with tables decoupling enabled' do
-              before do
-                stub_feature_flags(
-                  ci_pending_builds_project_runners_decoupling: true,
-                  ci_queueing_builds_enabled_checks: true)
-              end
-
-              it 'does not pick a build' do
-                expect(execute(specific_runner)).to be_nil
-                expect(pending_job.reload).to be_failed
-                expect(pending_job.queuing_entry).to be_nil
-              end
+            it 'does not pick a build' do
+              expect(execute(specific_runner)).to be_nil
+              expect(pending_job.reload).to be_failed
+              expect(pending_job.queuing_entry).to be_nil
             end
           end
         end
@@ -272,34 +246,10 @@ module Ci
           context 'and uses project runner' do
             let(:build) { execute(specific_runner) }
 
-            context 'with tables decoupling disabled' do
-              before do
-                stub_feature_flags(
-                  ci_pending_builds_project_runners_decoupling: false,
-                  ci_queueing_builds_enabled_checks: false)
-              end
-
-              around do |example|
-                allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/332952') do
-                  example.run
-                end
-              end
-
-              it { expect(build).to be_nil }
-            end
-
-            context 'with tables decoupling enabled' do
-              before do
-                stub_feature_flags(
-                  ci_pending_builds_project_runners_decoupling: true,
-                  ci_queueing_builds_enabled_checks: true)
-              end
-
-              it 'does not pick a build' do
-                expect(build).to be_nil
-                expect(pending_job.reload).to be_failed
-                expect(pending_job.queuing_entry).to be_nil
-              end
+            it 'does not pick a build' do
+              expect(build).to be_nil
+              expect(pending_job.reload).to be_failed
+              expect(pending_job.queuing_entry).to be_nil
             end
           end
         end
@@ -790,17 +740,17 @@ module Ci
           stub_feature_flags(ci_pending_builds_queue_source: true)
         end
 
-        context 'with ci_queueing_denormalize_shared_runners_information enabled' do
+        context 'with ci_queuing_use_denormalized_data_strategy enabled' do
           before do
-            stub_feature_flags(ci_queueing_denormalize_shared_runners_information: true)
+            stub_feature_flags(ci_queuing_use_denormalized_data_strategy: true)
           end
 
           include_examples 'handles runner assignment'
         end
 
-        context 'with ci_queueing_denormalize_shared_runners_information disabled' do
+        context 'with ci_queuing_use_denormalized_data_strategy disabled' do
           before do
-            stub_feature_flags(ci_queueing_denormalize_shared_runners_information: false)
+            stub_feature_flags(ci_queuing_use_denormalized_data_strategy: false)
           end
 
           around do |example|
@@ -812,37 +762,9 @@ module Ci
           include_examples 'handles runner assignment'
         end
 
-        context 'with ci_queueing_denormalize_tags_information enabled' do
+        context 'with ci_queuing_use_denormalized_data_strategy enabled' do
           before do
-            stub_feature_flags(ci_queueing_denormalize_tags_information: true)
-          end
-
-          include_examples 'handles runner assignment'
-        end
-
-        context 'with ci_queueing_denormalize_tags_information disabled' do
-          before do
-            stub_feature_flags(ci_queueing_denormalize_tags_information: false)
-          end
-
-          around do |example|
-            allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/332952') do
-              example.run
-            end
-          end
-
-          include_examples 'handles runner assignment'
-        end
-
-        context 'with ci_queueing_denormalize_namespace_traversal_ids disabled' do
-          before do
-            stub_feature_flags(ci_queueing_denormalize_namespace_traversal_ids: false)
-          end
-
-          around do |example|
-            allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/332952') do
-              example.run
-            end
+            stub_feature_flags(ci_queuing_use_denormalized_data_strategy: true)
           end
 
           include_examples 'handles runner assignment'

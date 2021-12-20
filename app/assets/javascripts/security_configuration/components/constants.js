@@ -22,6 +22,7 @@ import configureSecretDetectionMutation from '../graphql/configure_secret_detect
 
 /**
  * Translations & helpPagePaths for Security Configuration Page
+ * Make sure to add new scanner translations to the SCANNER_NAMES_MAP below.
  */
 
 export const SAST_NAME = __('Static Application Security Testing (SAST)');
@@ -138,6 +139,18 @@ export const LICENSE_COMPLIANCE_HELP_PATH = helpPagePath(
   'user/compliance/license_compliance/index',
 );
 
+export const SCANNER_NAMES_MAP = {
+  SAST: SAST_SHORT_NAME,
+  SAST_IAC: SAST_IAC_NAME,
+  DAST: DAST_SHORT_NAME,
+  API_FUZZING: API_FUZZING_NAME,
+  CONTAINER_SCANNING: CONTAINER_SCANNING_NAME,
+  CLUSTER_IMAGE_SCANNING: CLUSTER_IMAGE_SCANNING_NAME,
+  COVERAGE_FUZZING: COVERAGE_FUZZING_NAME,
+  SECRET_DETECTION: SECRET_DETECTION_NAME,
+  DEPENDENCY_SCANNING: DEPENDENCY_SCANNING_NAME,
+};
+
 export const securityFeatures = [
   {
     name: SAST_NAME,
@@ -156,27 +169,23 @@ export const securityFeatures = [
     // https://gitlab.com/gitlab-org/gitlab/-/issues/331621
     canEnableByMergeRequest: true,
   },
-  ...(gon?.features?.configureIacScanningViaMr
-    ? [
-        {
-          name: SAST_IAC_NAME,
-          shortName: SAST_IAC_SHORT_NAME,
-          description: SAST_IAC_DESCRIPTION,
-          helpPath: SAST_IAC_HELP_PATH,
-          configurationHelpPath: SAST_IAC_CONFIG_HELP_PATH,
-          type: REPORT_TYPE_SAST_IAC,
+  {
+    name: SAST_IAC_NAME,
+    shortName: SAST_IAC_SHORT_NAME,
+    description: SAST_IAC_DESCRIPTION,
+    helpPath: SAST_IAC_HELP_PATH,
+    configurationHelpPath: SAST_IAC_CONFIG_HELP_PATH,
+    type: REPORT_TYPE_SAST_IAC,
 
-          // This field is currently hardcoded because SAST IaC is always available.
-          // It will eventually come from the Backend, the progress is tracked in
-          // https://gitlab.com/gitlab-org/gitlab/-/issues/331622
-          available: true,
+    // This field is currently hardcoded because SAST IaC is always available.
+    // It will eventually come from the Backend, the progress is tracked in
+    // https://gitlab.com/gitlab-org/gitlab/-/issues/331622
+    available: true,
 
-          // This field will eventually come from the backend, the progress is
-          // tracked in https://gitlab.com/gitlab-org/gitlab/-/issues/331621
-          canEnableByMergeRequest: true,
-        },
-      ]
-    : []),
+    // This field will eventually come from the backend, the progress is
+    // tracked in https://gitlab.com/gitlab-org/gitlab/-/issues/331621
+    canEnableByMergeRequest: true,
+  },
   {
     name: DAST_NAME,
     shortName: DAST_SHORT_NAME,
@@ -278,21 +287,17 @@ export const featureToMutationMap = {
       },
     }),
   },
-  ...(gon?.features?.configureIacScanningViaMr
-    ? {
-        [REPORT_TYPE_SAST_IAC]: {
-          mutationId: 'configureSastIac',
-          getMutationPayload: (projectPath) => ({
-            mutation: configureSastIacMutation,
-            variables: {
-              input: {
-                projectPath,
-              },
-            },
-          }),
+  [REPORT_TYPE_SAST_IAC]: {
+    mutationId: 'configureSastIac',
+    getMutationPayload: (projectPath) => ({
+      mutation: configureSastIacMutation,
+      variables: {
+        input: {
+          projectPath,
         },
-      }
-    : {}),
+      },
+    }),
+  },
   [REPORT_TYPE_SECRET_DETECTION]: {
     mutationId: 'configureSecretDetection',
     getMutationPayload: (projectPath) => ({

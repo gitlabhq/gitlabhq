@@ -247,6 +247,7 @@ RSpec.describe ApplicationSetting do
         end
 
         it { is_expected.to allow_value('grpc://example.org/spam_check').for(:spam_check_endpoint_url) }
+        it { is_expected.to allow_value('tls://example.org/spam_check').for(:spam_check_endpoint_url) }
         it { is_expected.not_to allow_value('https://example.org/spam_check').for(:spam_check_endpoint_url) }
         it { is_expected.not_to allow_value('nonsense').for(:spam_check_endpoint_url) }
         it { is_expected.not_to allow_value(nil).for(:spam_check_endpoint_url) }
@@ -259,6 +260,7 @@ RSpec.describe ApplicationSetting do
         end
 
         it { is_expected.to allow_value('grpc://example.org/spam_check').for(:spam_check_endpoint_url) }
+        it { is_expected.to allow_value('tls://example.org/spam_check').for(:spam_check_endpoint_url) }
         it { is_expected.not_to allow_value('https://example.org/spam_check').for(:spam_check_endpoint_url) }
         it { is_expected.not_to allow_value('nonsense').for(:spam_check_endpoint_url) }
         it { is_expected.to allow_value(nil).for(:spam_check_endpoint_url) }
@@ -1237,6 +1239,32 @@ RSpec.describe ApplicationSetting do
       expect(subject.kroki_formats_blockdiag).to eq(true)
       expect(subject.kroki_formats_bpmn).to eq(false)
       expect(subject.kroki_formats_excalidraw).to eq(true)
+    end
+  end
+
+  describe '#static_objects_external_storage_auth_token=' do
+    subject { setting.static_objects_external_storage_auth_token = token }
+
+    let(:token) { 'Test' }
+
+    it 'stores an encrypted version of the token' do
+      subject
+
+      expect(setting[:static_objects_external_storage_auth_token]).to be_nil
+      expect(setting[:static_objects_external_storage_auth_token_encrypted]).to be_present
+      expect(setting.static_objects_external_storage_auth_token).to eq('Test')
+    end
+
+    context 'when token is empty' do
+      let(:token) { '' }
+
+      it 'removes an encrypted version of the token' do
+        subject
+
+        expect(setting[:static_objects_external_storage_auth_token]).to be_nil
+        expect(setting[:static_objects_external_storage_auth_token_encrypted]).to be_nil
+        expect(setting.static_objects_external_storage_auth_token).to be_nil
+      end
     end
   end
 end

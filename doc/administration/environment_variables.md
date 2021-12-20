@@ -31,6 +31,7 @@ You can use the following environment variables to override certain values:
 | `GITLAB_EMAIL_REPLY_TO`                    | string  | The email address used in the **Reply-To** field in emails sent by GitLab.                              |
 | `GITLAB_EMAIL_SUBJECT_SUFFIX`              | string  | The email subject suffix used in emails sent by GitLab.                                                 |
 | `GITLAB_HOST`                              | string  | The full URL of the GitLab server (including `http://` or `https://`).                                  |
+| `GITLAB_MARKUP_TIMEOUT`                    | string  | Timeout, in seconds, for `rest2html` and `pod2html` commands executed by the [`gitlab-markup` gem](https://gitlab.com/gitlab-org/gitlab-markup/). Default is `10`. |
 | `GITLAB_ROOT_PASSWORD`                     | string  | Sets the password for the `root` user on installation.                                                  |
 | `GITLAB_SHARED_RUNNERS_REGISTRATION_TOKEN` | string  | Sets the initial registration token used for runners.                                                   |
 | `RAILS_ENV`                                | string  | The Rails environment; can be one of `production`, `development`, `staging`, or `test`.                 |

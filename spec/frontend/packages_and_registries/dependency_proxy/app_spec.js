@@ -54,7 +54,6 @@ describe('DependencyProxyApp', () => {
   }
 
   const findProxyNotAvailableAlert = () => wrapper.findByTestId('proxy-not-available');
-  const findProxyDisabledAlert = () => wrapper.findByTestId('proxy-disabled');
   const findClipBoardButton = () => wrapper.findComponent(ClipboardButton);
   const findFormGroup = () => wrapper.findComponent(GlFormGroup);
   const findFormInputGroup = () => wrapper.findComponent(GlFormInputGroup);
@@ -217,28 +216,6 @@ describe('DependencyProxyApp', () => {
               });
             });
           });
-        });
-      });
-
-      describe('when the dependency proxy is disabled', () => {
-        beforeEach(() => {
-          resolver = jest
-            .fn()
-            .mockResolvedValue(proxyDetailsQuery({ extendSettings: { enabled: false } }));
-          createComponent();
-          return waitForPromises();
-        });
-
-        it('does not show the main area', () => {
-          expect(findMainArea().exists()).toBe(false);
-        });
-
-        it('does not show the loader', () => {
-          expect(findSkeletonLoader().exists()).toBe(false);
-        });
-
-        it('shows a proxy disabled alert', () => {
-          expect(findProxyDisabledAlert().text()).toBe(DependencyProxyApp.i18n.proxyDisabledText);
         });
       });
     });

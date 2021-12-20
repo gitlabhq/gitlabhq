@@ -4,6 +4,7 @@ fragment ClusterAgentFragment on ClusterAgent {
   webPath
   tokens {
     nodes {
+      id
       lastUsedAt
     }
   }

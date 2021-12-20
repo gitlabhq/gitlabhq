@@ -163,6 +163,9 @@ const alias = {
   // the following resolves files which are different between CE and JH
   jh_else_ce: path.join(ROOT_PATH, 'app/assets/javascripts'),
 
+  // the following resolves files which are different between CE/EE/JH
+  any_else_ce: path.join(ROOT_PATH, 'app/assets/javascripts'),
+
   // override loader path for icons.svg so we do not duplicate this asset
   '@gitlab/svgs/dist/icons.svg': path.join(
     ROOT_PATH,
@@ -179,6 +182,8 @@ if (IS_EE) {
     ee_images: path.join(ROOT_PATH, 'ee/app/assets/images'),
     ee_jest: path.join(ROOT_PATH, 'ee/spec/frontend'),
     ee_else_ce: path.join(ROOT_PATH, 'ee/app/assets/javascripts'),
+    jh_else_ee: path.join(ROOT_PATH, 'ee/app/assets/javascripts'),
+    any_else_ce: path.join(ROOT_PATH, 'ee/app/assets/javascripts'),
   });
 }
 
@@ -190,7 +195,10 @@ if (IS_JH) {
     jh_icons: path.join(ROOT_PATH, 'jh/app/views/shared/icons'),
     jh_images: path.join(ROOT_PATH, 'jh/app/assets/images'),
     jh_jest: path.join(ROOT_PATH, 'jh/spec/frontend'),
+    // jh path alias https://gitlab.com/gitlab-org/gitlab/-/merge_requests/74305#note_732793956
     jh_else_ce: path.join(ROOT_PATH, 'jh/app/assets/javascripts'),
+    jh_else_ee: path.join(ROOT_PATH, 'jh/app/assets/javascripts'),
+    any_else_ce: path.join(ROOT_PATH, 'jh/app/assets/javascripts'),
   });
 }
 

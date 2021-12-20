@@ -64,47 +64,63 @@ export const STATUSES = {
   creating: { title: __('Creating') },
 };
 
-export const I18N_INSTALL_AGENT_MODAL = {
-  registerAgentButton: s__('ClusterAgents|Register Agent'),
-  close: __('Close'),
-  cancel: __('Cancel'),
+export const I18N_AGENT_MODAL = {
+  agent_registration: {
+    registerAgentButton: s__('ClusterAgents|Register'),
+    close: __('Close'),
+    cancel: __('Cancel'),
 
-  modalTitle: s__('ClusterAgents|Install new Agent'),
+    modalTitle: s__('ClusterAgents|Connect a cluster through the Agent'),
+    selectAgentTitle: s__('ClusterAgents|Select an agent to register with GitLab'),
+    selectAgentBody: s__(
+      'ClusterAgents|Register an agent to generate a token that will be used to install the agent on your cluster in the next step.',
+    ),
+    learnMoreLink: s__('ClusterAgents|How to register an agent?'),
 
-  selectAgentTitle: s__('ClusterAgents|Select which Agent you want to install'),
-  selectAgentBody: s__(
-    `ClusterAgents|Select the Agent you want to register with GitLab and install on your cluster. To learn more about the Kubernetes Agent registration process %{linkStart}go to the documentation%{linkEnd}.`,
-  ),
+    copyToken: s__('ClusterAgents|Copy token'),
+    tokenTitle: s__('ClusterAgents|Registration token'),
+    tokenBody: s__(
+      `ClusterAgents|The registration token will be used to connect the agent on your cluster to GitLab. %{linkStart}What are registration tokens?%{linkEnd}`,
+    ),
 
-  copyToken: s__('ClusterAgents|Copy token'),
-  tokenTitle: s__('ClusterAgents|Registration token'),
-  tokenBody: s__(
-    `ClusterAgents|The registration token will be used to connect the Agent on your cluster to GitLab. To learn more about the registration tokens and how they are used %{linkStart}go to the documentation%{linkEnd}.`,
-  ),
+    tokenSingleUseWarningTitle: s__(
+      'ClusterAgents|You cannot see this token again after you close this window.',
+    ),
+    tokenSingleUseWarningBody: s__(
+      `ClusterAgents|The recommended installation method includes the token. If you want to follow the advanced installation method provided in the docs, make sure you save the token value before you close this window.`,
+    ),
 
-  tokenSingleUseWarningTitle: s__(
-    'ClusterAgents|The token value will not be shown again after you close this window.',
-  ),
-  tokenSingleUseWarningBody: s__(
-    `ClusterAgents|The recommended installation method provided below includes the token. If you want to follow the alternative installation method provided in the docs make sure you save the token value before you close the window.`,
-  ),
+    basicInstallTitle: s__('ClusterAgents|Recommended installation method'),
+    basicInstallBody: __(
+      `Open a CLI and connect to the cluster you want to install the agent in. Use this installation method to minimize any manual steps. The token is already included in the command.`,
+    ),
 
-  basicInstallTitle: s__('ClusterAgents|Recommended installation method'),
-  basicInstallBody: __(
-    `Open a CLI and connect to the cluster you want to install the Agent in. Use this installation method to minimize any manual steps. The token is already included in the command.`,
-  ),
+    advancedInstallTitle: s__('ClusterAgents|Advanced installation methods'),
+    advancedInstallBody: s__(
+      'ClusterAgents|For the advanced installation method %{linkStart}see the documentation%{linkEnd}.',
+    ),
 
-  advancedInstallTitle: s__('ClusterAgents|Alternative installation methods'),
-  advancedInstallBody: s__(
-    'ClusterAgents|For alternative installation methods %{linkStart}go to the documentation%{linkEnd}.',
-  ),
-
-  registrationErrorTitle: __('Failed to register Agent'),
-  unknownError: s__('ClusterAgents|An unknown error occurred. Please try again.'),
+    registrationErrorTitle: s__('ClusterAgents|Failed to register an agent'),
+    unknownError: s__('ClusterAgents|An unknown error occurred. Please try again.'),
+  },
+  empty_state: {
+    modalTitle: s__('ClusterAgents|Connect your cluster through the Agent'),
+    modalBody: s__(
+      "ClusterAgents|To install a new agent, first add the agent's configuration file to this repository. %{linkStart}What's the agent's configuration file?%{linkEnd}",
+    ),
+    enableKasText: s__(
+      "ClusterAgents|Your instance doesn't have the %{linkStart}GitLab Agent Server (KAS)%{linkEnd} set up. Ask a GitLab Administrator to install it.",
+    ),
+    altText: s__('ClusterAgents|GitLab Agent for Kubernetes'),
+    secondaryButton: s__('ClusterAgents|Go to the repository files'),
+    done: __('Cancel'),
+  },
 };
 
+export const KAS_DISABLED_ERROR = 'Gitlab::Kas::Client::ConfigurationError';
+
 export const I18N_AVAILABLE_AGENTS_DROPDOWN = {
-  selectAgent: s__('ClusterAgents|Select an Agent'),
+  selectAgent: s__('ClusterAgents|Select an agent'),
   registeringAgent: s__('ClusterAgents|Registering Agent'),
 };
 
@@ -125,7 +141,7 @@ export const AGENT_STATUSES = {
       title: s__('ClusterAgents|Agent might not be connected to GitLab'),
       body: sprintf(
         s__(
-          'ClusterAgents|The Agent has not been connected in a long time. There might be a connectivity issue. Last contact was %{timeAgo}.',
+          'ClusterAgents|The agent has not been connected in a long time. There might be a connectivity issue. Last contact was %{timeAgo}.',
         ),
       ),
     },
@@ -143,55 +159,48 @@ export const AGENT_STATUSES = {
 
 export const I18N_AGENTS_EMPTY_STATE = {
   introText: s__(
-    'ClusterAgents|Use GitLab Agents to more securely integrate with your clusters to deploy your applications, run your pipelines, use review apps and much more.',
+    'ClusterIntegration|Use the %{linkStart}GitLab Agent%{linkEnd} to safely connect your Kubernetes clusters to GitLab. You can deploy your applications, run your pipelines, use Review Apps, and much more.',
   ),
-  multipleClustersText: s__(
-    'ClusterAgents|If you are setting up multiple clusters and are using Auto DevOps, %{linkStart}read about using multiple Kubernetes clusters first.%{linkEnd}',
-  ),
-  learnMoreText: s__('ClusterAgents|Learn more about the GitLab Kubernetes Agent.'),
-  warningText: s__(
-    'ClusterAgents|To install an Agent you should create an agent directory in the Repository first. We recommend that you add the Agent configuration to the directory before you start the installation process.',
-  ),
-  readMoreText: s__('ClusterAgents|Read more about getting started'),
-  repositoryButtonText: s__('ClusterAgents|Go to the repository'),
-  primaryButtonText: s__('ClusterAgents|Connect with a GitLab Agent'),
+  buttonText: s__('ClusterAgents|Connect with the GitLab Agent'),
 };
 
 export const I18N_CLUSTERS_EMPTY_STATE = {
-  description: s__(
-    'ClusterIntegration|Use certificates to integrate with your clusters to deploy your applications, run your pipelines, use review apps and much more in an easy way.',
+  introText: s__(
+    'ClusterIntegration|Connect your cluster to GitLab through %{linkStart}cluster certificates%{linkEnd}.',
   ),
-  multipleClustersText: s__(
-    'ClusterIntegration|If you are setting up multiple clusters and are using Auto DevOps, %{linkStart}read about using multiple Kubernetes clusters first.%{linkEnd}',
-  ),
-  learnMoreLinkText: s__('ClusterIntegration|Learn more about the GitLab managed clusters'),
   buttonText: s__('ClusterIntegration|Connect with a certificate'),
+  alertText: s__(
+    'ClusterIntegration|The certificate-based method to connect clusters to GitLab was %{linkStart}deprecated%{linkEnd} in GitLab 14.5.',
+  ),
 };
 
 export const AGENT_CARD_INFO = {
   tabName: 'agent',
-  title: sprintf(s__('ClusterAgents|%{number} of %{total} Agent based integrations')),
-  emptyTitle: s__('ClusterAgents|No Agent based integrations'),
+  title: sprintf(s__('ClusterAgents|%{number} of %{total} agents')),
+  emptyTitle: s__('ClusterAgents|No agents'),
   tooltip: {
     label: s__('ClusterAgents|Recommended'),
-    title: s__('ClusterAgents|GitLab Agents'),
+    title: s__('ClusterAgents|GitLab Agent'),
     text: sprintf(
       s__(
-        'ClusterAgents|GitLab Agents provide an increased level of security when integrating with clusters. %{linkStart}Learn more about the GitLab Kubernetes Agent.%{linkEnd}',
+        'ClusterAgents|The GitLab Agent provides an increased level of security when connecting Kubernetes clusters to GitLab. %{linkStart}Learn more about the GitLab Agent.%{linkEnd}',
       ),
     ),
     link: helpPagePath('user/clusters/agent/index'),
   },
-  actionText: s__('ClusterAgents|Install new Agent'),
-  footerText: sprintf(s__('ClusterAgents|View all %{number} Agent based integrations')),
+  actionText: s__('ClusterAgents|Install a new agent'),
+  footerText: sprintf(s__('ClusterAgents|View all %{number} agents')),
 };
 
 export const CERTIFICATE_BASED_CARD_INFO = {
   tabName: 'certificate_based',
-  title: sprintf(s__('ClusterAgents|%{number} of %{total} Certificate based integrations')),
-  emptyTitle: s__('ClusterAgents|No Certificate based integrations'),
+  title: sprintf(
+    s__('ClusterAgents|%{number} of %{total} clusters connected through cluster certificates'),
+  ),
+  emptyTitle: s__('ClusterAgents|No clusters connected through cluster certificates'),
   actionText: s__('ClusterAgents|Connect existing cluster'),
-  footerText: sprintf(s__('ClusterAgents|View all %{number} Certificate based integrations')),
+  footerText: sprintf(s__('ClusterAgents|View all %{number} clusters')),
+  badgeText: s__('ClusterAgents|Deprecated'),
 };
 
 export const MAX_CLUSTERS_LIST = 6;
@@ -208,7 +217,7 @@ export const CLUSTERS_TABS = [
     queryParamValue: 'agent',
   },
   {
-    title: s__('ClusterAgents|Certificate based'),
+    title: s__('ClusterAgents|Certificate'),
     component: 'clusters',
     queryParamValue: 'certificate_based',
   },
@@ -216,10 +225,20 @@ export const CLUSTERS_TABS = [
 
 export const CLUSTERS_ACTIONS = {
   actionsButton: s__('ClusterAgents|Actions'),
-  createNewCluster: s__('ClusterAgents|Create new cluster'),
-  connectWithAgent: s__('ClusterAgents|Connect with Agent'),
-  connectExistingCluster: s__('ClusterAgents|Connect with certificate'),
+  createNewCluster: s__('ClusterAgents|Create a new cluster'),
+  connectWithAgent: s__('ClusterAgents|Connect with the Agent'),
+  connectExistingCluster: s__('ClusterAgents|Connect with a certificate'),
 };
 
 export const AGENT = 'agent';
 export const CERTIFICATE_BASED = 'certificate_based';
+
+export const EVENT_LABEL_MODAL = 'agent_registration_modal';
+export const EVENT_LABEL_TABS = 'kubernetes_section_tabs';
+export const EVENT_ACTIONS_OPEN = 'open_modal';
+export const EVENT_ACTIONS_SELECT = 'select_agent';
+export const EVENT_ACTIONS_CLICK = 'click_button';
+export const EVENT_ACTIONS_CHANGE = 'change_tab';
+
+export const MODAL_TYPE_EMPTY = 'empty_state';
+export const MODAL_TYPE_REGISTER = 'agent_registration';

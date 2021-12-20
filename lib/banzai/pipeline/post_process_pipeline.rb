@@ -19,7 +19,7 @@ module Banzai
           # prevent unnecessary Gitaly calls from being made.
           Filter::UploadLinkFilter,
           Filter::RepositoryLinkFilter,
-          Filter::IssuableStateFilter,
+          Filter::IssuableReferenceExpansionFilter,
           Filter::SuggestionFilter
         ]
       end

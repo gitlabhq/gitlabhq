@@ -177,11 +177,11 @@ RSpec.describe 'User adds pages domain', :js do
         expect(domain.key).to be_nil
       end
 
-      it 'shows the DNS CNAME record' do
+      it 'shows the DNS ALIAS record' do
         visit project_pages_path(project)
 
         within('#content-body') { click_link 'Edit' }
-        expect(page).to have_field :domain_dns, with: "#{domain.domain} CNAME #{domain.project.pages_subdomain}.#{Settings.pages.host}."
+        expect(page).to have_field :domain_dns, with: "#{domain.domain} ALIAS #{domain.project.pages_subdomain}.#{Settings.pages.host}."
       end
     end
   end

@@ -8,6 +8,7 @@ FactoryBot.define do
     note { generate(:title) }
     author { project&.creator || association(:user) }
     on_issue
+    updated_by { author }
 
     factory :note_on_commit,             traits: [:on_commit]
     factory :note_on_issue,              traits: [:on_issue], aliases: [:votable_note]

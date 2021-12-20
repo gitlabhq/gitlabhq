@@ -20,11 +20,11 @@ RSpec.shared_examples "redis_shared_examples" do
 
   before do
     allow(described_class).to receive(:config_file_name).and_return(Rails.root.join(config_file_name).to_s)
-    clear_raw_config
+    redis_clear_raw_config!(described_class)
   end
 
   after do
-    clear_raw_config
+    redis_clear_raw_config!(described_class)
   end
 
   describe '.config_file_name' do
@@ -93,18 +93,23 @@ RSpec.shared_examples "redis_shared_examples" do
     subject { described_class.new(rails_env).store }
 
     shared_examples 'redis store' do
+      let(:redis_store) { ::Redis::Store }
+      let(:redis_store_to_s) { "Redis Client connected to #{host} against DB #{redis_database}" }
+
       it 'instantiates Redis::Store' do
-        is_expected.to be_a(::Redis::Store)
-        expect(subject.to_s).to eq("Redis Client connected to #{host} against DB #{redis_database}")
+        is_expected.to be_a(redis_store)
+
+        expect(subject.to_s).to eq(redis_store_to_s)
       end
 
       context 'with the namespace' do
         let(:namespace) { 'namespace_name' }
+        let(:redis_store_to_s) { "Redis Client connected to #{host} against DB #{redis_database} with namespace #{namespace}" }
 
         subject { described_class.new(rails_env).store(namespace: namespace) }
 
         it "uses specified namespace" do
-          expect(subject.to_s).to eq("Redis Client connected to #{host} against DB #{redis_database} with namespace #{namespace}")
+          expect(subject.to_s).to eq(redis_store_to_s)
         end
       end
     end
@@ -392,12 +397,6 @@ RSpec.shared_examples "redis_shared_examples" do
 
       expect(subject.send(:raw_config_hash)).to include(url: a_string_matching(%r{\Aredis://localhost:638[012]\Z}))
     end
-  end
-
-  def clear_raw_config
-    described_class.remove_instance_variable(:@_raw_config)
-  rescue NameError
-    # raised if @_raw_config was not set; ignore
   end
 
   def clear_pool

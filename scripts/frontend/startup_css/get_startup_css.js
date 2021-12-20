@@ -29,7 +29,9 @@ const mergePurgeCSSOptions = (...options) =>
 const getStartupCSS = async ({ htmlPaths, cssPaths, purgeOptions }) => {
   const content = htmlPaths.map((htmlPath) => {
     if (!fs.existsSync(htmlPath)) {
-      die(`Could not find fixture "${htmlPath}". Have you run the fixtures?`);
+      die(
+        `Could not find fixture "${htmlPath}". Have you run the fixtures? (bundle exec rspec spec/frontend/fixtures/startup_css.rb)`,
+      );
     }
 
     const rawHtml = fs.readFileSync(htmlPath);

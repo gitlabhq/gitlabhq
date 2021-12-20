@@ -59,10 +59,11 @@ RSpec.describe 'Project fork' do
     context 'forking is disabled' do
       let(:forking_access_level) { ProjectFeature::DISABLED }
 
-      it 'does not render fork button' do
+      it 'render a disabled fork button' do
         visit project_path(project)
 
-        expect(page).not_to have_css('a', text: 'Fork')
+        expect(page).to have_css('a.disabled', text: 'Fork')
+        expect(page).to have_css('a.count', text: '0')
       end
 
       it 'does not render new project fork page' do
@@ -80,10 +81,11 @@ RSpec.describe 'Project fork' do
       end
 
       context 'user is not a team member' do
-        it 'does not render fork button' do
+        it 'render a disabled fork button' do
           visit project_path(project)
 
-          expect(page).not_to have_css('a', text: 'Fork')
+          expect(page).to have_css('a.disabled', text: 'Fork')
+          expect(page).to have_css('a.count', text: '0')
         end
 
         it 'does not render new project fork page' do
@@ -102,6 +104,7 @@ RSpec.describe 'Project fork' do
           visit project_path(project)
 
           expect(page).to have_css('a', text: 'Fork')
+          expect(page).to have_css('a.count', text: '0')
           expect(page).not_to have_css('a.disabled', text: 'Fork')
         end
 

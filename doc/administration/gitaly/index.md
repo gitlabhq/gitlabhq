@@ -189,8 +189,7 @@ The availability objectives for Gitaly clusters assuming a single node failure a
   Writes are replicated asynchronously. Any writes that have not been replicated
   to the newly promoted primary are lost.
 
-  [Strong consistency](#strong-consistency) can be used to avoid loss in some
-  circumstances.
+  [Strong consistency](#strong-consistency) prevents loss in some circumstances.
 
 - **Recovery Time Objective (RTO):** Less than 10 seconds.
   Outages are detected by a health check run by each Praefect node every
@@ -284,8 +283,7 @@ Gitaly Cluster provides the following features:
 - [Replication factor](#replication-factor) of repositories for increased redundancy.
 - [Automatic failover](praefect.md#automatic-failover-and-primary-election-strategies) from the
   primary Gitaly node to secondary Gitaly nodes.
-- Reporting of possible [data loss](praefect.md#check-for-data-loss) if replication queue is
-  non-empty.
+- Reporting of possible [data loss](recovery.md#check-for-data-loss) if replication queue isn't empty.
 
 Follow the [Gitaly Cluster epic](https://gitlab.com/groups/gitlab-org/-/epics/1489) for improvements
 including [horizontally distributing reads](https://gitlab.com/groups/gitlab-org/-/epics/2013).
@@ -323,18 +321,26 @@ You can [monitor distribution of reads](#monitor-gitaly-cluster) using Prometheu
 > - In GitLab 13.3, disabled unless primary-wins voting strategy is disabled.
 > - From GitLab 13.4, enabled by default.
 > - From GitLab 13.5, you must use Git v2.28.0 or higher on Gitaly nodes to enable strong consistency.
-> - From GitLab 13.6, primary-wins voting strategy and `gitaly_reference_transactions_primary_wins` feature flag were removed from the source code.
+> - From GitLab 13.6, primary-wins voting strategy and the `gitaly_reference_transactions_primary_wins` feature flag was removed.
+> - From GitLab 14.0, [Gitaly Cluster only supports strong consistency](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/3575), and the `gitaly_reference_transactions` feature flag was removed.
 
-By default, Gitaly Cluster guarantees eventual consistency by replicating all writes to secondary
-Gitaly nodes after the write to the primary Gitaly node has happened.
+Gitaly Cluster provides strong consistency by writing changes synchronously to all healthy, up-to-date replicas. If a
+replica is outdated or unhealthy at the time of the transaction, the write is asynchronously replicated to it.
 
-Praefect can instead provide strong consistency by creating a transaction and writing changes to all
-Gitaly nodes at once.
+If strong consistency is unavailable, Gitaly Cluster guarantees eventual consistency. In this case. Gitaly Cluster
+replicates all writes to secondary Gitaly nodes after the write to the primary Gitaly node has occurred.
 
-If enabled, transactions are only available for a subset of RPCs. For more information, see the
-[strong consistency epic](https://gitlab.com/groups/gitlab-org/-/epics/1189).
+Strong consistency:
 
-For configuration information, see [Configure strong consistency](praefect.md#configure-strong-consistency).
+- Is the primary replication method in GitLab 14.0 and later. A subset of operations still use replication jobs
+  (eventual consistency) instead of strong consistency. Refer to the
+  [strong consistency epic](https://gitlab.com/groups/gitlab-org/-/epics/1189) for more information.
+- Must be configured in GitLab versions 13.1 to 13.12. For configuration information, refer to either:
+  - Documentation on your GitLab instance at `/help`.
+  - The [13.12 documentation](https://docs.gitlab.com/13.12/ee/administration/gitaly/praefect.html#strong-consistency).
+- Is unavailable in GitLab 13.0 and earlier.
+
+For more information on monitoring strong consistency, see the Gitaly Cluster [Prometheus metrics documentation](#monitor-gitaly-cluster).
 
 #### Replication factor
 
@@ -367,6 +373,10 @@ Please see [current guidance on Gitaly Cluster](#guidance-regarding-gitaly-clust
 WARNING:
 Some [known database inconsistency issues](#known-issues) exist in Gitaly Cluster. We recommend you
 remain on your current service for now.
+
+NOTE:
+GitLab requires a `default` repository storage to be configured.
+[Read more about this limitation](configure_gitaly.md#gitlab-requires-a-default-repository-storage).
 
 ### Migrate off Gitaly Cluster
 
@@ -512,6 +522,10 @@ To monitor [strong consistency](#strong-consistency), you can use the following 
   the transaction to be committed.
 
 You can also monitor the [Praefect logs](../logs.md#praefect-logs).
+
+## Recover from failure
+
+Gitaly Cluster can [recover from certain types of failure](recovery.md).
 
 ## Do not bypass Gitaly
 

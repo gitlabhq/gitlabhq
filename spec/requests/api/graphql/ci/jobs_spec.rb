@@ -14,8 +14,8 @@ RSpec.describe 'Query.project.pipeline' do
   describe '.stages.groups.jobs' do
     let(:pipeline) do
       pipeline = create(:ci_pipeline, project: project, user: user)
-      stage = create(:ci_stage_entity, project: project, pipeline: pipeline, name: 'first')
-      create(:ci_build, stage_id: stage.id, pipeline: pipeline, name: 'my test job')
+      stage = create(:ci_stage_entity, project: project, pipeline: pipeline, name: 'first', position: 1)
+      create(:ci_build, stage_id: stage.id, pipeline: pipeline, name: 'my test job', scheduling_type: :stage)
 
       pipeline
     end
@@ -44,12 +44,22 @@ RSpec.describe 'Query.project.pipeline' do
             name
             jobs {
               nodes {
-                detailedStatus {
-                  id
-                }
                 name
                 needs {
                   nodes { #{all_graphql_fields_for('CiBuildNeed')} }
+                }
+                previousStageJobsOrNeeds {
+                  nodes {
+                      ... on CiBuildNeed {
+                        #{all_graphql_fields_for('CiBuildNeed')}
+                      }
+                      ... on CiJob {
+                        #{all_graphql_fields_for('CiJob')}
+                      }
+                    }
+                }
+                detailedStatus {
+                  id
                 }
                 pipeline {
                   id
@@ -62,58 +72,61 @@ RSpec.describe 'Query.project.pipeline' do
       FIELDS
     end
 
-    context 'when there are build needs' do
-      before do
-        pipeline.statuses.each do |build|
-          create_list(:ci_build_need, 2, build: build)
-        end
-      end
-
-      it 'reports the build needs' do
-        post_graphql(query, current_user: user)
-
-        expect(jobs_graphql_data).to contain_exactly a_hash_including(
-          'needs' => a_hash_including(
-            'nodes' => contain_exactly(
-              a_hash_including('name' => String),
-              a_hash_including('name' => String)
-            )
-          )
-        )
-      end
-    end
-
     it 'returns the jobs of a pipeline stage' do
       post_graphql(query, current_user: user)
 
       expect(jobs_graphql_data).to contain_exactly(a_hash_including('name' => 'my test job'))
     end
 
-    describe 'performance' do
+    context 'when there is more than one stage and job needs' do
       before do
         build_stage = create(:ci_stage_entity, position: 2, name: 'build', project: project, pipeline: pipeline)
         test_stage = create(:ci_stage_entity, position: 3, name: 'test', project: project, pipeline: pipeline)
-        create(:commit_status, pipeline: pipeline, stage_id: build_stage.id, name: 'docker 1 2')
-        create(:commit_status, pipeline: pipeline, stage_id: build_stage.id, name: 'docker 2 2')
-        create(:commit_status, pipeline: pipeline, stage_id: test_stage.id, name: 'rspec 1 2')
-        create(:commit_status, pipeline: pipeline, stage_id: test_stage.id, name: 'rspec 2 2')
+
+        create(:ci_build, pipeline: pipeline, name: 'docker 1 2', scheduling_type: :stage, stage: build_stage, stage_idx: build_stage.position)
+        create(:ci_build, pipeline: pipeline, name: 'docker 2 2', stage: build_stage, stage_idx: build_stage.position, scheduling_type: :dag)
+        create(:ci_build, pipeline: pipeline, name: 'rspec 1 2', scheduling_type: :stage, stage: test_stage, stage_idx: test_stage.position)
+        test_job = create(:ci_build, pipeline: pipeline, name: 'rspec 2 2', scheduling_type: :dag, stage: test_stage, stage_idx: test_stage.position)
+
+        create(:ci_build_need, build: test_job, name: 'my test job')
       end
 
-      it 'can find the first stage' do
-        post_graphql(query, current_user: user, variables: first_n.with(1))
-
-        expect(jobs_graphql_data).to contain_exactly(a_hash_including('name' => 'my test job'))
-      end
-
-      it 'reports the build needs and previous stages with no duplicates', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/346433' do
+      it 'reports the build needs and execution requirements', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/347290' do
         post_graphql(query, current_user: user)
 
         expect(jobs_graphql_data).to contain_exactly(
-          a_hash_including('name' => 'my test job'),
-          a_hash_including('name' => 'docker 1 2'),
-          a_hash_including('name' => 'docker 2 2'),
-          a_hash_including('name' => 'rspec 1 2'),
-          a_hash_including('name' => 'rspec 2 2')
+          a_hash_including(
+            'name' => 'my test job',
+            'needs' => { 'nodes' => [] },
+            'previousStageJobsOrNeeds' => { 'nodes' => [] }
+          ),
+          a_hash_including(
+            'name' => 'docker 1 2',
+            'needs' => { 'nodes' => [] },
+            'previousStageJobsOrNeeds' => { 'nodes' => [
+              a_hash_including( 'name' => 'my test job' )
+            ] }
+          ),
+          a_hash_including(
+            'name' => 'docker 2 2',
+            'needs' => { 'nodes' => [] },
+            'previousStageJobsOrNeeds' => { 'nodes' => [] }
+          ),
+          a_hash_including(
+            'name' => 'rspec 1 2',
+            'needs' => { 'nodes' => [] },
+            'previousStageJobsOrNeeds' => { 'nodes' => [
+              a_hash_including('name' => 'docker 1 2'),
+              a_hash_including('name' => 'docker 2 2')
+            ] }
+          ),
+          a_hash_including(
+            'name' => 'rspec 2 2',
+            'needs' => { 'nodes' => [a_hash_including('name' => 'my test job')] },
+            'previousStageJobsOrNeeds' => { 'nodes' => [
+              a_hash_including('name' => 'my test job' )
+            ] }
+          )
         )
       end
 

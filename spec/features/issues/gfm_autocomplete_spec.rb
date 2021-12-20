@@ -180,7 +180,7 @@ RSpec.describe 'GFM autocomplete', :js do
 
       describe 'assignees' do
         it 'does not wrap with quotes for assignee values' do
-          fill_in 'Comment', with: "@#{user.username[0]}"
+          fill_in 'Comment', with: "@#{user.username}"
 
           find_highlighted_autocomplete_item.click
 

@@ -28,6 +28,9 @@ RSpec.describe 'admin/application_settings/_package_registry' do
       expect(rendered).to have_field('Maximum Conan package file size in bytes', type: 'number')
       expect(page.find_field('Maximum Conan package file size in bytes').value).to eq(default_plan_limits.conan_max_file_size.to_s)
 
+      expect(rendered).to have_field('Maximum Helm chart file size in bytes', type: 'number')
+      expect(page.find_field('Maximum Helm chart file size in bytes').value).to eq(default_plan_limits.helm_max_file_size.to_s)
+
       expect(rendered).to have_field('Maximum Maven package file size in bytes', type: 'number')
       expect(page.find_field('Maximum Maven package file size in bytes').value).to eq(default_plan_limits.maven_max_file_size.to_s)
 

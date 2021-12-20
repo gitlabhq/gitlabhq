@@ -70,7 +70,7 @@ module Gitlab
 
           next if total_duration <= MINIMUM_DURATION
 
-          stats[1..-1].each_with_index do |data, index|
+          stats[1..].each_with_index do |data, index|
             next unless source_lines[index]
 
             duration = microsec_to_millisec(data[0])

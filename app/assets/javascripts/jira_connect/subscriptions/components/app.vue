@@ -7,6 +7,7 @@ import { SET_ALERT } from '../store/mutation_types';
 import SubscriptionsList from './subscriptions_list.vue';
 import AddNamespaceButton from './add_namespace_button.vue';
 import SignInButton from './sign_in_button.vue';
+import UserLink from './user_link.vue';
 
 export default {
   name: 'JiraConnectApp',
@@ -18,6 +19,7 @@ export default {
     SubscriptionsList,
     AddNamespaceButton,
     SignInButton,
+    UserLink,
   },
   inject: {
     usersPath: {
@@ -73,6 +75,8 @@ export default {
         {{ alert.message }}
       </template>
     </gl-alert>
+
+    <user-link :user-signed-in="userSignedIn" :has-subscriptions="hasSubscriptions" />
 
     <h2 class="gl-text-center gl-mb-7">{{ s__('JiraService|GitLab for Jira Configuration') }}</h2>
     <div class="jira-connect-app-body gl-mx-auto gl-px-5 gl-mb-7">

@@ -1,8 +1,11 @@
 - return unless can?(current_user, :change_namespace, @project)
+- form_id = "transfer-project-form"
+- hidden_input_id = "new_namespace_id"
+- initial_data = { namespaces: namespaces_as_json, button_text: s_('ProjectSettings|Transfer project'), confirm_danger_message: transfer_project_message(@project), phrase: @project.name, target_form_id: form_id, target_hidden_input_id: hidden_input_id }
 
 .sub-section
   %h4.danger-title= _('Transfer project')
-  = form_for @project, url: transfer_project_path(@project), method: :put, remote: true, html: { class: 'js-project-transfer-form' } do |f|
+  = form_for @project, url: transfer_project_path(@project), method: :put, html: { class: 'js-project-transfer-form', id: form_id } do |f|
     .form-group
       - link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_page_path('user/project/settings/index', anchor: 'transferring-an-existing-project-into-another-namespace') }
       %p= _("Transfer your project into another namespace. %{link_start}Learn more.%{link_end}").html_safe % { link_start: link_start, link_end: '</a>'.html_safe }
@@ -11,7 +14,6 @@
         %li= _('You can only transfer the project to namespaces you manage.')
         %li= _('You will need to update your local repositories to point to the new location.')
         %li= _('Project visibility level will be changed to match namespace rules when transferring to a group.')
+      = hidden_field_tag(hidden_input_id)
       = label_tag :new_namespace_id, _('Select a new namespace'), class: 'gl-font-weight-bold'
-      .form-group
-        = select_tag :new_namespace_id, namespaces_options(nil), include_blank: true, class: 'select2'
-    = f.submit 'Transfer project', class: "gl-button btn btn-danger js-legacy-confirm-danger qa-transfer-button", data: { "confirm-danger-message" => transfer_project_message(@project) }
+      .js-transfer-project-form{ data: initial_data }

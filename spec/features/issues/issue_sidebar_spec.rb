@@ -11,7 +11,6 @@ RSpec.describe 'Issue Sidebar' do
   let_it_be(:label) { create(:label, project: project, title: 'bug') }
   let_it_be(:issue) { create(:labeled_issue, project: project, labels: [label]) }
   let_it_be(:mock_date) { Date.today.at_beginning_of_month + 2.days }
-  let_it_be(:issue_with_due_date) { create(:issue, project: project, due_date: mock_date) }
   let_it_be(:xss_label) { create(:label, project: project, title: '&lt;script&gt;alert("xss");&lt;&#x2F;script&gt;') }
 
   before do
@@ -201,30 +200,6 @@ RSpec.describe 'Issue Sidebar' do
       end
     end
 
-    context 'due date widget', :js do
-      let(:due_date_value) { find('[data-testid="due-date"] [data-testid="sidebar-date-value"]') }
-
-      context 'when no due date exists' do
-        before do
-          visit_issue(project, issue)
-        end
-
-        it "displays 'None'" do
-          expect(due_date_value.text).to have_content 'None'
-        end
-      end
-
-      context 'when due date exists' do
-        before do
-          visit_issue(project, issue_with_due_date)
-        end
-
-        it "displays the due date" do
-          expect(due_date_value.text).to have_content mock_date.strftime('%b %-d, %Y')
-        end
-      end
-    end
-
     context 'as an allowed user' do
       before do
         project.add_developer(user)
@@ -259,37 +234,11 @@ RSpec.describe 'Issue Sidebar' do
       end
 
       context 'editing issue milestone', :js do
-        let_it_be(:milestone_expired) { create(:milestone, project: project, title: 'Foo - expired', due_date: 5.days.ago) }
-        let_it_be(:milestone_no_duedate) { create(:milestone, project: project, title: 'Foo - No due date') }
-        let_it_be(:milestone1) { create(:milestone, project: project, title: 'Milestone-1', due_date: 20.days.from_now) }
-        let_it_be(:milestone2) { create(:milestone, project: project, title: 'Milestone-2', due_date: 15.days.from_now) }
-        let_it_be(:milestone3) { create(:milestone, project: project, title: 'Milestone-3', due_date: 10.days.from_now) }
+        it_behaves_like 'milestone sidebar widget'
+      end
 
-        before do
-          page.within('.block.milestone') do
-            click_button 'Edit'
-          end
-
-          wait_for_all_requests
-        end
-
-        it 'shows milestones list in the dropdown' do
-          page.within('.block.milestone') do
-            # 5 milestones + "No milestone" = 6 items
-            expect(page.find('.gl-new-dropdown-contents')).to have_selector('li.gl-new-dropdown-item', count: 6)
-          end
-        end
-
-        it 'shows expired milestone at the bottom of the list and milestone due earliest at the top of the list', :aggregate_failures do
-          page.within('.block.milestone .gl-new-dropdown-contents') do
-            expect(page.find('li:last-child')).to have_content milestone_expired.title
-
-            expect(page.all('li.gl-new-dropdown-item')[1]).to have_content milestone3.title
-            expect(page.all('li.gl-new-dropdown-item')[2]).to have_content milestone2.title
-            expect(page.all('li.gl-new-dropdown-item')[3]).to have_content milestone1.title
-            expect(page.all('li.gl-new-dropdown-item')[4]).to have_content milestone_no_duedate.title
-          end
-        end
+      context 'editing issue due date', :js do
+        it_behaves_like 'date sidebar widget'
       end
 
       context 'editing issue labels', :js do

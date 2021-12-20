@@ -37,6 +37,7 @@ export const graphQLImageListMock = {
   data: {
     project: {
       __typename: 'Project',
+      id: '1',
       containerRepositoriesCount: 2,
       containerRepositories: {
         __typename: 'ContainerRepositoryConnection',
@@ -51,6 +52,7 @@ export const graphQLEmptyImageListMock = {
   data: {
     project: {
       __typename: 'Project',
+      id: '1',
       containerRepositoriesCount: 2,
       containerRepositories: {
         __typename: 'ContainerRepositoryConnection',
@@ -65,6 +67,7 @@ export const graphQLEmptyGroupImageListMock = {
   data: {
     group: {
       __typename: 'Group',
+      id: '1',
       containerRepositoriesCount: 2,
       containerRepositories: {
         __typename: 'ContainerRepositoryConnection',
@@ -120,6 +123,7 @@ export const containerRepositoryMock = {
   project: {
     visibility: 'public',
     path: 'gitlab-test',
+    id: '1',
     containerExpirationPolicy: {
       enabled: false,
       nextRunAt: '2020-11-27T08:59:27Z',
@@ -167,6 +171,7 @@ export const imageTagsMock = (nodes = tagsMock) => ({
   data: {
     containerRepository: {
       id: containerRepositoryMock.id,
+      tagsCount: nodes.length,
       tags: {
         nodes,
         pageInfo: { ...tagsPageInfo },
@@ -191,7 +196,7 @@ export const graphQLImageDetailsMock = (override) => ({
   data: {
     containerRepository: {
       ...containerRepositoryMock,
-
+      tagsCount: tagsMock.length,
       tags: {
         nodes: tagsMock,
         pageInfo: { ...tagsPageInfo },
@@ -242,6 +247,7 @@ export const dockerCommands = {
 export const graphQLProjectImageRepositoriesDetailsMock = {
   data: {
     project: {
+      id: '1',
       containerRepositories: {
         nodes: [
           {

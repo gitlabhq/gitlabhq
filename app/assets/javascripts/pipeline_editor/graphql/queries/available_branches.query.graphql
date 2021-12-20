@@ -1,0 +1,13 @@
+query getAvailableBranches(
+  $limit: Int!
+  $offset: Int!
+  $projectFullPath: ID!
+  $searchPattern: String!
+) {
+  project(fullPath: $projectFullPath) {
+    id
+    repository {
+      branchNames(limit: $limit, offset: $offset, searchPattern: $searchPattern)
+    }
+  }
+}

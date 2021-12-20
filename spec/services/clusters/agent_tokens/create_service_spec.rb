@@ -47,11 +47,30 @@ RSpec.describe Clusters::AgentTokens::CreateService do
         expect(token.name).to eq(params[:name])
       end
 
+      it 'creates an activity event' do
+        expect { subject }.to change { ::Clusters::Agents::ActivityEvent.count }.by(1)
+
+        token = subject.payload[:token].reload
+        event = cluster_agent.activity_events.last
+
+        expect(event).to have_attributes(
+          kind: 'token_created',
+          level: 'info',
+          recorded_at: token.created_at,
+          user: token.created_by_user,
+          agent_token: token
+        )
+      end
+
       context 'when params are invalid' do
         let(:params) { { agent_id: 'bad_id' } }
 
         it 'does not create a new token' do
           expect { subject }.not_to change(::Clusters::AgentToken, :count)
+        end
+
+        it 'does not create an activity event' do
+          expect { subject }.not_to change { ::Clusters::Agents::ActivityEvent.count }
         end
 
         it 'returns validation errors', :aggregate_failures do

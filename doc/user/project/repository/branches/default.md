@@ -41,7 +41,7 @@ To update the default branch name for an individual [project](../../index.md):
 1. Sign in to GitLab with at least the [Maintainer](../../../permissions.md) role.
 1. In the left navigation menu, go to **Settings > Repository**.
 1. Expand **Default branch**, and select a new default branch.
-1. (Optional) Select the **Auto-close referenced issues on default branch** checkbox to close
+1. Optional. Select the **Auto-close referenced issues on default branch** checkbox to close
    issues when a merge request
    [uses a closing pattern](../../issues/managing_issues.md#closing-issues-automatically).
 1. Select **Save changes**.
@@ -134,7 +134,7 @@ renames a Git repository's (`example`) default branch.
    [change the default branch for this project](#change-the-default-branch-name-for-a-project).
    Select `main` as your new default branch.
 1. Protect your new `main` branch as described in the [protected branches documentation](../../protected_branches.md).
-1. (Optional) If you want to delete the old default branch:
+1. Optional. If you want to delete the old default branch:
    1. Verify that nothing is pointing to it.
    1. Delete the branch on the remote:
 

@@ -18,7 +18,7 @@ Before using CodeSandbox with your local GitLab instance, you must:
    Follow the GDK [NGINX configuration instructions](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/nginx.md) to enable HTTPS for GDK.
 1. Clone the [`codesandbox-client` project](https://github.com/codesandbox/codesandbox-client)
    locally. If you plan on contributing upstream, you might want to fork and clone first.
-1. (Optional) Use correct `python` and `nodejs` versions. Otherwise, `yarn` may fail to
+1. Optional. Use correct `python` and `nodejs` versions. Otherwise, `yarn` may fail to
    install or build some packages. If you're using `asdf` you can run the following commands:
 
    ```shell

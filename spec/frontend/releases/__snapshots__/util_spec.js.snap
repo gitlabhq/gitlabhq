@@ -44,6 +44,7 @@ Object {
       "author": Object {
         "__typename": "UserCore",
         "avatarUrl": "https://www.gravatar.com/avatar/16f8e2050ce10180ca571c2eb19cfce2?s=80&d=identicon",
+        "id": Any<String>,
         "username": "administrator",
         "webUrl": "http://localhost/administrator",
       },
@@ -139,6 +140,7 @@ Object {
       "author": Object {
         "__typename": "UserCore",
         "avatarUrl": "https://www.gravatar.com/avatar/16f8e2050ce10180ca571c2eb19cfce2?s=80&d=identicon",
+        "id": Any<String>,
         "username": "administrator",
         "webUrl": "http://localhost/administrator",
       },
@@ -153,6 +155,7 @@ Object {
           "__typename": "ReleaseEvidence",
           "collectedAt": "2018-12-03T00:00:00Z",
           "filepath": "http://localhost/releases-namespace/releases-project/-/releases/v1.1/evidences/1.json",
+          "id": "gid://gitlab/Releases::Evidence/1",
           "sha": "760d6cdfb0879c3ffedec13af470e0f71cf52c6cde4d",
         },
       ],
@@ -247,6 +250,7 @@ Object {
     "evidences": Array [],
     "milestones": Array [
       Object {
+        "id": "gid://gitlab/Milestone/123",
         "issueStats": Object {},
         "stats": undefined,
         "title": "12.3",
@@ -254,6 +258,7 @@ Object {
         "webUrl": undefined,
       },
       Object {
+        "id": "gid://gitlab/Milestone/124",
         "issueStats": Object {},
         "stats": undefined,
         "title": "12.4",
@@ -347,6 +352,7 @@ Object {
     "author": Object {
       "__typename": "UserCore",
       "avatarUrl": "https://www.gravatar.com/avatar/16f8e2050ce10180ca571c2eb19cfce2?s=80&d=identicon",
+      "id": Any<String>,
       "username": "administrator",
       "webUrl": "http://localhost/administrator",
     },
@@ -361,6 +367,7 @@ Object {
         "__typename": "ReleaseEvidence",
         "collectedAt": "2018-12-03T00:00:00Z",
         "filepath": "http://localhost/releases-namespace/releases-project/-/releases/v1.1/evidences/1.json",
+        "id": "gid://gitlab/Releases::Evidence/1",
         "sha": "760d6cdfb0879c3ffedec13af470e0f71cf52c6cde4d",
       },
     ],

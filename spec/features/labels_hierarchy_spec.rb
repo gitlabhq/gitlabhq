@@ -17,7 +17,6 @@ RSpec.describe 'Labels Hierarchy', :js do
   let!(:project_label_1) { create(:label, project: project_1, title: 'Label_4') }
 
   before do
-    stub_feature_flags(labels_widget: false)
     grandparent.add_owner(user)
 
     sign_in(user)
@@ -28,13 +27,12 @@ RSpec.describe 'Labels Hierarchy', :js do
       [grandparent_group_label, parent_group_label, project_label_1].each do |label|
         page.within('.block.labels') do
           click_on 'Edit'
+
+          wait_for_requests
+
+          click_on label.title
+          click_on 'Close'
         end
-
-        wait_for_requests
-
-        find('a.label-item', text: label.title).click
-        wait_for_requests
-        click_on 'Close'
 
         wait_for_requests
 
@@ -66,7 +64,7 @@ RSpec.describe 'Labels Hierarchy', :js do
           end
         else
           expect_issues_list_count(1)
-          expect(page).to have_selector('span.issue-title-text', text: labeled_issue.title)
+          expect(page).to have_selector('.issue-title', text: labeled_issue.title)
         end
       end
     end
@@ -76,7 +74,7 @@ RSpec.describe 'Labels Hierarchy', :js do
 
       wait_for_requests
 
-      expect(page).not_to have_selector('.btn-link', text: child_group_label.title)
+      expect(page).not_to have_link child_group_label.title
     end
   end
 
@@ -109,9 +107,9 @@ RSpec.describe 'Labels Hierarchy', :js do
           end
         else
           expect_issues_list_count(3)
-          expect(page).to have_selector('span.issue-title-text', text: labeled_issue.title)
-          expect(page).to have_selector('span.issue-title-text', text: labeled_issue_2.title)
-          expect(page).to have_selector('span.issue-title-text', text: labeled_issue_3.title)
+          expect(page).to have_selector('.issue-title', text: labeled_issue.title)
+          expect(page).to have_selector('.issue-title', text: labeled_issue_2.title)
+          expect(page).to have_selector('.issue-title', text: labeled_issue_3.title)
         end
       end
     end
@@ -131,7 +129,7 @@ RSpec.describe 'Labels Hierarchy', :js do
         end
       else
         expect_issues_list_count(1)
-        expect(page).to have_selector('span.issue-title-text', text: labeled_issue_3.title)
+        expect(page).to have_selector('.issue-title', text: labeled_issue_3.title)
       end
     end
 
@@ -233,7 +231,7 @@ RSpec.describe 'Labels Hierarchy', :js do
 
         wait_for_requests
 
-        expect(page).not_to have_selector('.btn-link', text: child_group_label.title)
+        expect(page).not_to have_link child_group_label.title
       end
     end
 

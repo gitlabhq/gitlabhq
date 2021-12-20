@@ -1,16 +1,16 @@
 <script>
 import { GlButton, GlLink, GlSprintf, GlTooltipDirective, GlTruncate } from '@gitlab/ui';
-import { s__ } from '~/locale';
+import { s__, __ } from '~/locale';
 import ListItem from '~/vue_shared/components/registry/list_item.vue';
 import {
   PACKAGE_ERROR_STATUS,
   PACKAGE_DEFAULT_STATUS,
 } from '~/packages_and_registries/package_registry/constants';
-import { getPackageTypeLabel } from '~/packages/shared/utils';
-import PackagePath from '~/packages/shared/components/package_path.vue';
-import PackageTags from '~/packages/shared/components/package_tags.vue';
+import { getPackageTypeLabel } from '~/packages_and_registries/package_registry/utils';
+import PackagePath from '~/packages_and_registries/shared/components/package_path.vue';
+import PackageTags from '~/packages_and_registries/shared/components/package_tags.vue';
 import PublishMethod from '~/packages_and_registries/package_registry/components/list/publish_method.vue';
-import PackageIconAndName from '~/packages/shared/components/package_icon_and_name.vue';
+import PackageIconAndName from '~/packages_and_registries/shared/components/package_icon_and_name.vue';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import TimeagoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 
@@ -40,7 +40,7 @@ export default {
   },
   computed: {
     packageType() {
-      return getPackageTypeLabel(this.packageEntity.packageType.toLowerCase());
+      return getPackageTypeLabel(this.packageEntity.packageType);
     },
     packageLink() {
       const { project, id } = this.packageEntity;
@@ -64,6 +64,7 @@ export default {
   },
   i18n: {
     erroredPackageText: s__('PackageRegistry|Invalid Package: failed metadata extraction'),
+    createdAt: __('Created %{timestamp}'),
   },
 };
 </script>
@@ -127,8 +128,8 @@ export default {
     </template>
 
     <template #right-secondary>
-      <span>
-        <gl-sprintf :message="__('Created %{timestamp}')">
+      <span data-testid="created-date">
+        <gl-sprintf :message="$options.i18n.createdAt">
           <template #timestamp>
             <timeago-tooltip :time="packageEntity.createdAt" />
           </template>

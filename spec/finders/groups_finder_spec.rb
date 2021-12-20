@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe GroupsFinder do
   include AdminModeHelper
 
-  describe '#execute' do
+  shared_examples '#execute' do
     let(:user) { create(:user) }
 
     describe 'root level groups' do
@@ -20,6 +20,7 @@ RSpec.describe GroupsFinder do
                                                 user_private_group)
         :regular | { all_available: false } | %i(user_public_group user_internal_group user_private_group)
         :regular | {} | %i(public_group internal_group user_public_group user_internal_group user_private_group)
+        :regular | { min_access_level: Gitlab::Access::DEVELOPER } | %i(user_public_group user_internal_group user_private_group)
 
         :external | { all_available: true } | %i(public_group user_public_group user_internal_group user_private_group)
         :external | { all_available: false } | %i(user_public_group user_internal_group user_private_group)
@@ -259,6 +260,18 @@ RSpec.describe GroupsFinder do
           expect(described_class.new(user, params).execute).to contain_exactly(parent_group, sub_group)
         end
       end
+    end
+  end
+
+  describe '#execute' do
+    include_examples '#execute'
+
+    context 'when use_traversal_ids_groups_finder feature flags is disabled' do
+      before do
+        stub_feature_flags(use_traversal_ids_groups_finder: false)
+      end
+
+      include_examples '#execute'
     end
   end
 end

@@ -100,7 +100,8 @@ export default {
         <gl-button
           v-if="isEditable"
           class="gl-text-black-normal!"
-          variant="link"
+          category="tertiary"
+          size="small"
           @click="toggleFormDropdown"
           @keydown.esc="hideDropdown"
         >

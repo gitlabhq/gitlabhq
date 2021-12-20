@@ -69,6 +69,8 @@ module API
 
       topic = ::Projects::Topic.find(params[:id])
 
+      topic.remove_avatar! if params.key?(:avatar) && params[:avatar].nil?
+
       if topic.update(declared_params(include_missing: false))
         present topic, with: Entities::Projects::Topic
       else

@@ -58,42 +58,38 @@ Geo secondary sites have a [Geo tracking database](https://gitlab.com/gitlab-org
   ```ruby
   # frozen_string_literal: true
 
-  class CreateCoolWidgetRegistry < ActiveRecord::Migration[6.0]
-    include Gitlab::Database::MigrationHelpers
-
+  class CreateCoolWidgetRegistry < Gitlab::Database::Migration[1.0]
     disable_ddl_transaction!
 
     def up
-      unless table_exists?(:cool_widget_registry)
-        ActiveRecord::Base.transaction do
-          create_table :cool_widget_registry, id: :bigserial, force: :cascade do |t|
-            t.bigint :cool_widget_id, null: false
-            t.datetime_with_timezone :created_at, null: false
-            t.datetime_with_timezone :last_synced_at
-            t.datetime_with_timezone :retry_at
-            t.datetime_with_timezone :verified_at
-            t.datetime_with_timezone :verification_started_at
-            t.datetime_with_timezone :verification_retry_at
-            t.integer :state, default: 0, null: false, limit: 2
-            t.integer :verification_state, default: 0, null: false, limit: 2
-            t.integer :retry_count, default: 0, limit: 2, null: false
-            t.integer :verification_retry_count, default: 0, limit: 2, null: false
-            t.boolean :checksum_mismatch, default: false, null: false
-            t.binary :verification_checksum
-            t.binary :verification_checksum_mismatched
-            t.string :verification_failure, limit: 255 # rubocop:disable Migration/PreventStrings see https://gitlab.com/gitlab-org/gitlab/-/issues/323806
-            t.string :last_sync_failure, limit: 255 # rubocop:disable Migration/PreventStrings see https://gitlab.com/gitlab-org/gitlab/-/issues/323806
+      ActiveRecord::Base.transaction do
+        create_table :cool_widget_registry, id: :bigserial, force: :cascade do |t|
+          t.bigint :cool_widget_id, null: false
+          t.datetime_with_timezone :created_at, null: false
+          t.datetime_with_timezone :last_synced_at
+          t.datetime_with_timezone :retry_at
+          t.datetime_with_timezone :verified_at
+          t.datetime_with_timezone :verification_started_at
+          t.datetime_with_timezone :verification_retry_at
+          t.integer :state, default: 0, null: false, limit: 2
+          t.integer :verification_state, default: 0, null: false, limit: 2
+          t.integer :retry_count, default: 0, limit: 2, null: false
+          t.integer :verification_retry_count, default: 0, limit: 2, null: false
+          t.boolean :checksum_mismatch, default: false, null: false
+          t.binary :verification_checksum
+          t.binary :verification_checksum_mismatched
+          t.text :verification_failure, limit: 255
+          t.text :last_sync_failure, limit: 255
 
-            t.index :cool_widget_id, name: :index_cool_widget_registry_on_cool_widget_id, unique: true
-            t.index :retry_at
-            t.index :state
-            # To optimize performance of CoolWidgetRegistry.verification_failed_batch
-            t.index :verification_retry_at, name:  :cool_widget_registry_failed_verification, order: "NULLS FIRST",  where: "((state = 2) AND (verification_state = 3))"
-            # To optimize performance of CoolWidgetRegistry.needs_verification_count
-            t.index :verification_state, name:  :cool_widget_registry_needs_verification, where: "((state = 2)  AND (verification_state = ANY (ARRAY[0, 3])))"
-            # To optimize performance of CoolWidgetRegistry.verification_pending_batch
-            t.index :verified_at, name: :cool_widget_registry_pending_verification, order: "NULLS FIRST", where: "((state = 2) AND (verification_state = 0))"
-          end
+          t.index :cool_widget_id, name: :index_cool_widget_registry_on_cool_widget_id, unique: true
+          t.index :retry_at
+          t.index :state
+          # To optimize performance of CoolWidgetRegistry.verification_failed_batch
+          t.index :verification_retry_at, name:  :cool_widget_registry_failed_verification, order: "NULLS FIRST",  where: "((state = 2) AND (verification_state = 3))"
+          # To optimize performance of CoolWidgetRegistry.needs_verification_count
+          t.index :verification_state, name:  :cool_widget_registry_needs_verification, where: "((state = 2)  AND (verification_state = ANY (ARRAY[0, 3])))"
+          # To optimize performance of CoolWidgetRegistry.verification_pending_batch
+          t.index :verified_at, name: :cool_widget_registry_pending_verification, order: "NULLS FIRST", where: "((state = 2) AND (verification_state = 0))"
         end
       end
     end
@@ -130,9 +126,7 @@ The Geo primary site needs to checksum every replicable so secondaries can verif
   ```ruby
   # frozen_string_literal: true
 
-  class CreateCoolWidgetStates < ActiveRecord::Migration[6.0]
-    include Gitlab::Database::MigrationHelpers
-
+  class CreateCoolWidgetStates < Gitlab::Database::Migration[1.0]
     VERIFICATION_STATE_INDEX_NAME = "index_cool_widget_states_on_verification_state"
     PENDING_VERIFICATION_INDEX_NAME = "index_cool_widget_states_pending_verification"
     FAILED_VERIFICATION_INDEX_NAME = "index_cool_widget_states_failed_verification"
@@ -141,27 +135,23 @@ The Geo primary site needs to checksum every replicable so secondaries can verif
     disable_ddl_transaction!
 
     def up
-      unless table_exists?(:cool_widget_states)
-        with_lock_retries do
-          create_table :cool_widget_states, id: false do |t|
-            t.references :cool_widget, primary_key: true, null: false, foreign_key: { on_delete: :cascade }
-            t.integer :verification_state, default: 0, limit: 2, null: false
-            t.column :verification_started_at, :datetime_with_timezone
-            t.datetime_with_timezone :verification_retry_at
-            t.datetime_with_timezone :verified_at
-            t.integer :verification_retry_count, limit: 2
-            t.binary :verification_checksum, using: 'verification_checksum::bytea'
-            t.text :verification_failure
+      with_lock_retries do
+        create_table :cool_widget_states, id: false do |t|
+          t.references :cool_widget, primary_key: true, null: false, foreign_key: { on_delete: :cascade }
+          t.integer :verification_state, default: 0, limit: 2, null: false
+          t.column :verification_started_at, :datetime_with_timezone
+          t.datetime_with_timezone :verification_retry_at
+          t.datetime_with_timezone :verified_at
+          t.integer :verification_retry_count, limit: 2
+          t.binary :verification_checksum, using: 'verification_checksum::bytea'
+          t.text :verification_failure, limit: 255
 
-            t.index :verification_state, name: VERIFICATION_STATE_INDEX_NAME
-            t.index :verified_at, where: "(verification_state = 0)", order: { verified_at: 'ASC NULLS FIRST' }, name: PENDING_VERIFICATION_INDEX_NAME
-            t.index :verification_retry_at, where: "(verification_state = 3)", order: { verification_retry_at: 'ASC NULLS FIRST' }, name: FAILED_VERIFICATION_INDEX_NAME
-            t.index :verification_state, where: "(verification_state = 0 OR verification_state = 3)", name: NEEDS_VERIFICATION_INDEX_NAME
-          end
+          t.index :verification_state, name: VERIFICATION_STATE_INDEX_NAME
+          t.index :verified_at, where: "(verification_state = 0)", order: { verified_at: 'ASC NULLS FIRST' }, name: PENDING_VERIFICATION_INDEX_NAME
+          t.index :verification_retry_at, where: "(verification_state = 3)", order: { verification_retry_at: 'ASC NULLS FIRST' }, name: FAILED_VERIFICATION_INDEX_NAME
+          t.index :verification_state, where: "(verification_state = 0 OR verification_state = 3)", name: NEEDS_VERIFICATION_INDEX_NAME
         end
       end
-
-      add_text_limit :cool_widget_states, :verification_failure, 255
     end
 
     def down
@@ -201,7 +191,7 @@ That's all of the required database changes.
 
   ```ruby
   # frozen_string_literal: true
-  
+
   class CoolWidget < ApplicationRecord
     ...
     include ::Gitlab::Geo::ReplicableModel
@@ -212,6 +202,8 @@ That's all of the required database changes.
     mount_uploader :file, CoolWidgetUploader
 
     has_one :cool_widget_state, autosave: false, inverse_of: :cool_widget, class_name: 'Geo::CoolWidgetState'
+
+    after_save :save_verification_details
 
     delegate :verification_retry_at, :verification_retry_at=,
              :verified_at, :verified_at=,
@@ -226,6 +218,8 @@ That's all of the required database changes.
     scope :with_verification_state, ->(state) { joins(:cool_widget_state).where(cool_widget_states: { verification_state: verification_state_value(state) }) }
     scope :checksummed, -> { joins(:cool_widget_state).where.not(cool_widget_states: { verification_checksum: nil } ) }
     scope :not_checksummed, -> { joins(:cool_widget_state).where(cool_widget_states: { verification_checksum: nil } ) }
+
+    scope :available_verifiables, -> { joins(:cool_widget_state) }
 
     # Override the `all` default if not all records can be replicated. For an
     # example of an existing Model that needs to do this, see
@@ -326,10 +320,11 @@ That's all of the required database changes.
   end
   ```
 
-- [ ] Generate the feature flag definition file by running the feature flag command and following the command prompts:
+- [ ] Generate the feature flag definition fileы by running the feature flag commands and following the command prompts:
 
   ```shell
   bin/feature-flag --ee geo_cool_widget_replication --type development --group 'group::geo'
+  bin/feature-flag --ee geo_cool_widget_verification --type development --group 'group::geo'
   ```
 
 - [ ] Add this replicator class to the method `replicator_classes` in
@@ -460,6 +455,9 @@ That's all of the required database changes.
       self.primary_key = :cool_widget_id
 
       belongs_to :cool_widget, inverse_of: :cool_widget_state
+
+      validates :verification_failure, length: { maximum: 255 }
+      validates :verification_state, :cool_widget, presence: true
     end
   end
   ```

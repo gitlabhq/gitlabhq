@@ -197,17 +197,13 @@ RSpec.describe 'Sort Issuable List' do
         click_button('Created date')
         click_on('Last updated')
 
-        wait_for_requests
-
-        expect(first_issue).to include(last_updated_issuable.title)
-        expect(last_issue).to include(first_updated_issuable.title)
+        expect(page).to have_css('.issue:first-child', text: last_updated_issuable.title)
+        expect(page).to have_css('.issue:last-child', text: first_updated_issuable.title)
 
         click_on 'Sort direction'
 
-        wait_for_requests
-
-        expect(first_issue).to include(first_updated_issuable.title)
-        expect(last_issue).to include(last_updated_issuable.title)
+        expect(page).to have_css('.issue:first-child', text: first_updated_issuable.title)
+        expect(page).to have_css('.issue:last-child', text: last_updated_issuable.title)
       end
     end
   end

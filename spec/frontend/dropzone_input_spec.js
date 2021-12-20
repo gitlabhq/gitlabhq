@@ -32,6 +32,8 @@ describe('dropzone_input', () => {
   });
 
   describe('handlePaste', () => {
+    let form;
+
     const triggerPasteEvent = (clipboardData = {}) => {
       const event = $.Event('paste');
       const origEvent = new Event('paste');
@@ -45,9 +47,13 @@ describe('dropzone_input', () => {
     beforeEach(() => {
       loadFixtures('issues/new-issue.html');
 
-      const form = $('#new_issue');
+      form = $('#new_issue');
       form.data('uploads-path', TEST_UPLOAD_PATH);
       dropzoneInput(form);
+    });
+
+    afterEach(() => {
+      form = null;
     });
 
     it('pastes Markdown tables', () => {
@@ -84,6 +90,27 @@ describe('dropzone_input', () => {
       axiosMock.onPost().reply(httpStatusCodes.OK, { link: { markdown: 'foo' } });
       await waitForPromises();
       expect(axiosMock.history.post[0].data.get('file').name).toHaveLength(246);
+    });
+
+    it('disables generated image file when clipboardData have both image and text', () => {
+      const TEST_PLAIN_TEXT = 'This wording is a plain text.';
+      triggerPasteEvent({
+        types: ['text/plain', 'Files'],
+        getData: () => TEST_PLAIN_TEXT,
+        items: [
+          {
+            kind: 'text',
+            type: 'text/plain',
+          },
+          {
+            kind: 'file',
+            type: 'image/png',
+            getAsFile: () => new Blob(),
+          },
+        ],
+      });
+
+      expect(form.find('.js-gfm-input')[0].value).toBe('');
     });
 
     it('display original file name in comment box', async () => {

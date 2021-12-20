@@ -18,9 +18,9 @@ configured to generate a Pages site.
 To fork a sample project and create a Pages website:
 
 1. View the sample projects by navigating to the [GitLab Pages examples](https://gitlab.com/pages) group.
-1. Click the name of the project you want to [fork](../../../../user/project/working_with_projects.md#fork-a-project).
-1. In the top right, click the **Fork** button, and then choose a namespace to fork to.
-1. Go to your project's **CI/CD > Pipelines** and click **Run pipeline**.
+1. Select the name of the project you want to [fork](../../repository/forking_workflow.md#creating-a-fork).
+1. In the top right, select **Fork** and then choose a namespace to fork to.
+1. For your project, on the left sidebar, select **CI/CD > Pipelines** and then **Run pipeline**.
    GitLab CI/CD builds and deploys your site.
 
 The site can take approximately 30 minutes to deploy.
@@ -31,13 +31,13 @@ that immediately publishes your changes to the Pages site.
 
 You can take some **optional** further steps:
 
-- _Remove the fork relationship._ If you want to contribute to the project you forked from,
+- Remove the fork relationship. If you want to contribute to the project you forked from,
   you can keep this relationship. Otherwise, go to your project's **Settings > General**,
   expand **Advanced settings**, and scroll down to **Remove fork relationship**:
 
   ![Remove fork relationship](../img/remove_fork_relationship_v13_1.png)
 
-- _Change the URL to match your namespace._ If your Pages site is hosted on GitLab.com,
+- Change the URL to match your namespace. If your Pages site is hosted on GitLab.com,
   you can rename it to `<namespace>.gitlab.io`, where `<namespace>` is your GitLab namespace
   (the one you chose when you forked the project).
 

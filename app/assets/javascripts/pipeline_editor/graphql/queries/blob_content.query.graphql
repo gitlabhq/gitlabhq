@@ -1,0 +1,13 @@
+query getBlobContent($projectPath: ID!, $path: String!, $ref: String) {
+  project(fullPath: $projectPath) {
+    id
+    repository {
+      blobs(paths: [$path], ref: $ref) {
+        nodes {
+          id
+          rawBlob
+        }
+      }
+    }
+  }
+}

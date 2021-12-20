@@ -17,7 +17,7 @@ import createFlash from '~/flash';
 import { __, sprintf, n__ } from '~/locale';
 import Tracking from '~/tracking';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
-import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate.vue';
+import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate/tooltip_on_truncate.vue';
 import TrackEventDirective from '~/vue_shared/directives/track_event';
 import query from '../queries/details.query.graphql';
 import {

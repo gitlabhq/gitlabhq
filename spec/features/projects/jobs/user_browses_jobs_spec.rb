@@ -181,7 +181,7 @@ RSpec.describe 'User browses jobs' do
                          name: 'rspec tests',
                          stage: 'test')
 
-          create(:ci_job_artifact, :codequality, job: build)
+          create(:ci_job_artifact, :archive, job: build)
         end
 
         before do

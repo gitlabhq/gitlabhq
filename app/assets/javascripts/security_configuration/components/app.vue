@@ -1,12 +1,14 @@
 <script>
 import { GlTab, GlTabs, GlSprintf, GlLink, GlAlert } from '@gitlab/ui';
 import { __, s__ } from '~/locale';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import UserCalloutDismisser from '~/vue_shared/components/user_callout_dismisser.vue';
 import AutoDevOpsAlert from './auto_dev_ops_alert.vue';
 import AutoDevOpsEnabledAlert from './auto_dev_ops_enabled_alert.vue';
 import { AUTO_DEVOPS_ENABLED_ALERT_DISMISSED_STORAGE_KEY } from './constants';
 import FeatureCard from './feature_card.vue';
+import TrainingProviderList from './training_provider_list.vue';
 import SectionLayout from './section_layout.vue';
 import UpgradeBanner from './upgrade_banner.vue';
 
@@ -23,6 +25,8 @@ export const i18n = {
      any subsequent feature branch you create will include the scan.`,
   ),
   securityConfiguration: __('Security Configuration'),
+  vulnerabilityManagement: s__('SecurityConfiguration|Vulnerability Management'),
+  securityTraining: s__('SecurityConfiguration|Security training'),
 };
 
 export default {
@@ -40,7 +44,9 @@ export default {
     SectionLayout,
     UpgradeBanner,
     UserCalloutDismisser,
+    TrainingProviderList,
   },
+  mixins: [glFeatureFlagsMixin()],
   inject: ['projectPath'],
   props: {
     augmentedSecurityFeatures: {
@@ -228,6 +234,17 @@ export default {
               class="gl-mb-6"
               @error="onError"
             />
+          </template>
+        </section-layout>
+      </gl-tab>
+      <gl-tab
+        v-if="glFeatures.secureVulnerabilityTraining"
+        data-testid="vulnerability-management-tab"
+        :title="$options.i18n.vulnerabilityManagement"
+      >
+        <section-layout :heading="$options.i18n.securityTraining">
+          <template #features>
+            <training-provider-list />
           </template>
         </section-layout>
       </gl-tab>

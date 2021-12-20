@@ -192,6 +192,13 @@ export const commit = async ({ newBranch = false, newMR = false, newBranchName =
   switchLeftSidebarTab('Commit');
   screen.getByTestId('begin-commit-button').click();
 
+  await waitForMonacoEditor();
+
+  const mrCheck = await screen.findByLabelText('Start a new merge request');
+  if (Boolean(mrCheck.checked) !== newMR) {
+    mrCheck.click();
+  }
+
   if (!newBranch) {
     const option = await screen.findByLabelText(/Commit to .+ branch/);
     option.click();
@@ -201,12 +208,9 @@ export const commit = async ({ newBranch = false, newMR = false, newBranchName =
 
     const branchNameInput = await screen.findByTestId('ide-new-branch-name');
     fireEvent.input(branchNameInput, { target: { value: newBranchName } });
-
-    const mrCheck = await screen.findByLabelText('Start a new merge request');
-    if (Boolean(mrCheck.checked) !== newMR) {
-      mrCheck.click();
-    }
   }
 
   screen.getByText('Commit').click();
+
+  await waitForMonacoEditor();
 };

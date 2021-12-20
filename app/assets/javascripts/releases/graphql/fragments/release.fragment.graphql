@@ -35,6 +35,7 @@ fragment Release on Release {
     __typename
     nodes {
       __typename
+      id
       filepath
       collectedAt
       sha
@@ -52,12 +53,14 @@ fragment Release on Release {
   }
   commit {
     __typename
+    id
     sha
     webUrl
     title
   }
   author {
     __typename
+    id
     webUrl
     avatarUrl
     username

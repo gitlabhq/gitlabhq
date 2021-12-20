@@ -6,6 +6,7 @@ fragment AlertListItem on AlertManagementAlert {
   startedAt
   eventCount
   issue {
+    id
     iid
     state
     title

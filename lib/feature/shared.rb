@@ -58,6 +58,7 @@ class Feature
       introduced_by_url
       rollout_issue_url
       milestone
+      log_state_changes
       type
       group
       default_enabled

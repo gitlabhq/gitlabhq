@@ -68,6 +68,7 @@ In addition, there are a few circumstances where we would always run the full RS
 
 - when the `pipeline:run-all-rspec` label is set on the merge request
 - when the merge request is created by an automation (e.g. Gitaly update or MR targeting a stable branch)
+- when the merge request is created in a security mirror
 - when any CI config file is changed (i.e. `.gitlab-ci.yml` or `.gitlab/ci/**/*`)
 
 ### Jest minimal jobs
@@ -83,6 +84,7 @@ In addition, there are a few circumstances where we would always run the full Je
 
 - when the `pipeline:run-all-jest` label is set on the merge request
 - when the merge request is created by an automation (e.g. Gitaly update or MR targeting a stable branch)
+- when the merge request is created in a security mirror
 - when any CI config file is changed (i.e. `.gitlab-ci.yml` or `.gitlab/ci/**/*`)
 - when any frontend "core" file is changed (i.e. `package.json`, `yarn.lock`, `babel.config.js`, `jest.config.*.js`, `config/helpers/**/*.js`)
 - when any vendored JavaScript file is changed (i.e. `vendor/assets/javascripts/**/*`)
@@ -219,6 +221,20 @@ The `* as-if-jh` jobs are run in addition to the regular EE-context jobs. The `j
 
 The intent is to ensure that a change doesn't introduce a failure after the `gitlab-org/gitlab` project is synced to
 the `gitlab-jh/gitlab` project.
+
+## `undercover` RSpec test
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/74859) in GitLab 14.6.
+
+The `rspec:undercoverage` job runs [`undercover`](https://rubygems.org/gems/undercover)
+to detect, and fail if any changes introduced in the merge request has zero coverage.
+
+The `rsepc:undercoverage` job obtains coverage data from the `rspec:coverage`
+job.
+
+In the event of an emergency, or false positive from this job, add the
+`pipeline:skip-undercoverage` label to the merge request to allow this job to
+fail.
 
 ## PostgreSQL versions testing
 
@@ -820,7 +836,7 @@ We no longer use this optimization for `gitlab-org/gitlab` because the [pack-obj
 allows Gitaly to serve the full CI/CD fetch traffic now. See [Git fetch caching](#git-fetch-caching).
 
 The pre-clone step works by using the `CI_PRE_CLONE_SCRIPT` variable
-[defined by GitLab.com shared runners](../ci/runners/runner_cloud/linux_runner_cloud.md#pre-clone-script).
+[defined by GitLab.com shared runners](../ci/runners/saas/linux_saas_runner.md#pre-clone-script).
 
 ---
 

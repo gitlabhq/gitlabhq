@@ -1,5 +1,8 @@
 <script>
-import { GlDeprecatedSkeletonLoading as GlSkeletonLoading } from '@gitlab/ui';
+import {
+  GlDeprecatedSkeletonLoading as GlSkeletonLoading,
+  GlSafeHtmlDirective as SafeHtml,
+} from '@gitlab/ui';
 import { mapState, mapActions } from 'vuex';
 import DiffFileHeader from '~/diffs/components/diff_file_header.vue';
 import ImageDiffOverlay from '~/diffs/components/image_diff_overlay.vue';
@@ -16,6 +19,9 @@ export default {
     GlSkeletonLoading,
     DiffViewer,
     ImageDiffOverlay,
+  },
+  directives: {
+    SafeHtml,
   },
   props: {
     discussion: {
@@ -92,11 +98,7 @@ export default {
           >
             <td :class="line.type" class="diff-line-num old_line">{{ line.old_line }}</td>
             <td :class="line.type" class="diff-line-num new_line">{{ line.new_line }}</td>
-            <td
-              :class="line.type"
-              class="line_content"
-              v-html="trimChar(line.rich_text) /* eslint-disable-line vue/no-v-html */"
-            ></td>
+            <td v-safe-html="trimChar(line.rich_text)" :class="line.type" class="line_content"></td>
           </tr>
         </template>
         <tr v-if="!hasTruncatedDiffLines" class="line_holder line-holder-placeholder">

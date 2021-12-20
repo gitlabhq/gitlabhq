@@ -98,6 +98,7 @@ export default class BranchGraph {
     let len = 0;
     let cuday = 0;
     let cumonth = '';
+    let cuyear = '';
     const { r } = this;
     r.rect(0, 0, 40, this.barHeight).attr({
       fill: '#222',
@@ -108,24 +109,21 @@ export default class BranchGraph {
     const ref = this.days;
     for (mm = 0, len = ref.length; mm < len; mm += 1) {
       const day = ref[mm];
-      if (cuday !== day[0] || cumonth !== day[1]) {
+      if (cuday !== day[0] || cumonth !== day[1] || cuyear !== day[2]) {
         // Dates
         r.text(55, this.offsetY + this.unitTime * mm, day[0]).attr({
           font: '12px Monaco, monospace',
           fill: '#BBB',
         });
-        [cuday] = day;
       }
-      if (cumonth !== day[1]) {
+      if (cumonth !== day[1] || cuyear !== day[2]) {
         // Months
         r.text(20, this.offsetY + this.unitTime * mm, day[1]).attr({
           font: '12px Monaco, monospace',
           fill: '#EEE',
         });
-
-        // eslint-disable-next-line prefer-destructuring
-        cumonth = day[1];
       }
+      [cuday, cumonth, cuyear] = day;
     }
     this.renderPartialGraph();
     return this.bindEvents();

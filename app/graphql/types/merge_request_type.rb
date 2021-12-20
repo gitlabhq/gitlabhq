@@ -21,10 +21,8 @@ module Types
           description: 'Internal ID of the merge request.'
     field :title, GraphQL::Types::String, null: false,
           description: 'Title of the merge request.'
-    markdown_field :title_html, null: true
     field :description, GraphQL::Types::String, null: true,
           description: 'Description of the merge request (Markdown rendered as HTML for caching).'
-    markdown_field :description_html, null: true
     field :state, MergeRequestStateEnum, null: false,
           description: 'State of the merge request.'
     field :created_at, Types::TimeType, null: false,
@@ -96,7 +94,7 @@ module Types
           description: 'Rebase commit SHA of the merge request.'
     field :rebase_in_progress, GraphQL::Types::Boolean, method: :rebase_in_progress?, null: false, calls_gitaly: true,
           description: 'Indicates if there is a rebase currently in progress for the merge request.'
-    field :default_merge_commit_message, GraphQL::Types::String, null: true,
+    field :default_merge_commit_message, GraphQL::Types::String, null: true, calls_gitaly: true,
           description: 'Default merge commit message of the merge request.'
     field :default_merge_commit_message_with_description, GraphQL::Types::String, null: true,
           description: 'Default merge commit message of the merge request with description. Will have the same value as `defaultMergeCommitMessage` when project has `mergeCommitTemplate` set.',
@@ -148,7 +146,8 @@ module Types
     field :author, Types::UserType, null: true,
           description: 'User who created this merge request.'
     field :participants, Types::UserType.connection_type, null: true, complexity: 15,
-          description: 'Participants in the merge request. This includes the author, assignees, reviewers, and users mentioned in notes.'
+          description: 'Participants in the merge request. This includes the author, assignees, reviewers, and users mentioned in notes.',
+          resolver: Resolvers::Users::ParticipantsResolver
     field :subscribed, GraphQL::Types::Boolean, method: :subscribed?, null: false, complexity: 5,
           description: 'Indicates if the currently logged in user is subscribed to this merge request.'
     field :labels, Types::LabelType.connection_type, null: true, complexity: 5,
@@ -200,6 +199,9 @@ module Types
           description: 'User who merged this merge request.'
     field :timelogs, Types::TimelogType.connection_type, null: false,
           description: 'Timelogs on the merge request.'
+
+    markdown_field :title_html, null: true
+    markdown_field :description_html, null: true
 
     def approved_by
       object.approved_by_users

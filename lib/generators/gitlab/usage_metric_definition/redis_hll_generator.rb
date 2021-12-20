@@ -12,11 +12,11 @@ module Gitlab
       class_option :ee, type: :boolean, optional: true, default: false, desc: 'Indicates if metric is for ee'
 
       def create_metrics
-        weekly_params = ["#{key_path}_weekly", '--dir', '7d']
+        weekly_params = ["#{key_path}_weekly", '--dir', '7d', '--class_name', 'RedisHLLMetric']
         weekly_params << '--ee' if ee?
         Gitlab::UsageMetricDefinitionGenerator.start(weekly_params)
 
-        monthly_params = ["#{key_path}_monthly", '--dir', '28d']
+        monthly_params = ["#{key_path}_monthly", '--dir', '28d', '--class_name', 'RedisHLLMetric']
         monthly_params << '--ee' if ee?
         Gitlab::UsageMetricDefinitionGenerator.start(monthly_params)
       end

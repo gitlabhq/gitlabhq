@@ -6,7 +6,7 @@ import component from '~/packages_and_registries/infrastructure_registry/details
 import FileIcon from '~/vue_shared/components/file_icon.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 
-import { npmFiles, mavenFiles } from 'jest/packages/mock_data';
+import { npmFiles, mavenFiles } from '../../mock_data';
 
 describe('Package Files', () => {
   let wrapper;

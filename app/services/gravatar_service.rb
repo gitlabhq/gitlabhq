@@ -8,7 +8,7 @@ class GravatarService
     return unless identifier
 
     hash = Digest::MD5.hexdigest(identifier.strip.downcase)
-    size = 40 unless size && size > 0
+    size = Groups::GroupMembersHelper::AVATAR_SIZE unless size && size > 0
 
     sprintf gravatar_url,
       hash: hash,

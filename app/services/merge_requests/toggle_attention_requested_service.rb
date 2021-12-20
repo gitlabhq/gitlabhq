@@ -19,7 +19,14 @@ module MergeRequests
         update_state(assignee)
 
         if reviewer&.attention_requested? || assignee&.attention_requested?
+          create_attention_request_note
           notity_user
+
+          if current_user.id != user.id
+            remove_attention_requested(merge_request, current_user)
+          end
+        else
+          create_remove_attention_request_note
         end
 
         success
@@ -31,7 +38,16 @@ module MergeRequests
     private
 
     def notity_user
+      notification_service.async.attention_requested_of_merge_request(merge_request, current_user, user)
       todo_service.create_attention_requested_todo(merge_request, current_user, user)
+    end
+
+    def create_attention_request_note
+      SystemNoteService.request_attention(merge_request, merge_request.project, current_user, user)
+    end
+
+    def create_remove_attention_request_note
+      SystemNoteService.remove_attention_request(merge_request, merge_request.project, current_user, user)
     end
 
     def assignee

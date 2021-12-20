@@ -2,12 +2,6 @@ import { __, s__ } from '~/locale';
 
 export const SEARCH_DELAY = 200;
 
-export const INVITE_MEMBERS_IN_COMMENT = 'invite_members_in_comment';
-export const MEMBER_AREAS_OF_FOCUS = {
-  name: 'member_areas_of_focus',
-  view: 'view',
-  submit: 'submit',
-};
 export const INVITE_MEMBERS_FOR_TASK = {
   minimum_access_level: 30,
   name: 'invite_members_for_task',
@@ -77,9 +71,6 @@ export const READ_MORE_TEXT = s__(
 export const INVITE_BUTTON_TEXT = s__('InviteMembersModal|Invite');
 export const CANCEL_BUTTON_TEXT = s__('InviteMembersModal|Cancel');
 export const HEADER_CLOSE_LABEL = s__('InviteMembersModal|Close invite team members');
-export const AREAS_OF_FOCUS_LABEL = s__(
-  'InviteMembersModal|What would you like new member(s) to focus on? (optional)',
-);
 
 export const MODAL_LABELS = {
   members: {
@@ -142,5 +133,6 @@ export const MODAL_LABELS = {
   inviteButtonText: INVITE_BUTTON_TEXT,
   cancelButtonText: CANCEL_BUTTON_TEXT,
   headerCloseLabel: HEADER_CLOSE_LABEL,
-  areasOfFocusLabel: AREAS_OF_FOCUS_LABEL,
 };
+
+export const LEARN_GITLAB = 'learn_gitlab';

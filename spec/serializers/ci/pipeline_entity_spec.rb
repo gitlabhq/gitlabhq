@@ -260,5 +260,17 @@ RSpec.describe Ci::PipelineEntity do
         end
       end
     end
+
+    context 'when pipeline has coverage' do
+      let_it_be(:pipeline) { create(:ci_pipeline, project: project, user: user) }
+
+      before do
+        allow(pipeline).to receive(:coverage).and_return(35.0)
+      end
+
+      it 'exposes the coverage' do
+        expect(subject[:coverage]).to eq('35.00')
+      end
+    end
   end
 end

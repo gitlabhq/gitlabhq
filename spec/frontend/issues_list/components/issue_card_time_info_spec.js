@@ -3,7 +3,7 @@ import { shallowMount } from '@vue/test-utils';
 import { useFakeDate } from 'helpers/fake_date';
 import IssueCardTimeInfo from '~/issues_list/components/issue_card_time_info.vue';
 
-describe('IssuesListApp component', () => {
+describe('CE IssueCardTimeInfo component', () => {
   useFakeDate(2020, 11, 11);
 
   let wrapper;

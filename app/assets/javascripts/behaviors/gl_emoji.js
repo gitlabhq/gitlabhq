@@ -33,7 +33,7 @@ class GlEmoji extends HTMLElement {
           this.dataset.unicodeVersion = unicodeVersion;
 
           emojiUnicode = emojiInfo.e;
-          this.innerHTML = emojiInfo.e;
+          this.textContent = emojiInfo.e;
 
           this.title = emojiInfo.d;
         }

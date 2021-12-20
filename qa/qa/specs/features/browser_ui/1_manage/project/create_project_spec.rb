@@ -22,7 +22,7 @@ module QA
         project
       end
 
-      context 'in group', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1620' do
+      context 'in group', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347876' do
         let(:project_name) { "project-in-group-#{SecureRandom.hex(8)}" }
         let(:project) do
           Resource::Project.fabricate_via_browser_ui! do |project|
@@ -34,7 +34,7 @@ module QA
         it_behaves_like 'successful project creation'
       end
 
-      context 'in personal namespace', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1914' do
+      context 'in personal namespace', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347643' do
         let(:project_name) { "project-in-personal-namespace-#{SecureRandom.hex(8)}" }
         let(:project) do
           Resource::Project.fabricate_via_browser_ui! do |project|

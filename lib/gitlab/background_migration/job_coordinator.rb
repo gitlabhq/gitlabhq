@@ -8,24 +8,33 @@ module Gitlab
     # convention of how the queues and worker classes are setup for each database.
     #
     # Also provides a database connection to the correct tracking database.
-    class JobCoordinator
-      VALID_DATABASES = %i[main].freeze
-      WORKER_CLASS_NAME = 'BackgroundMigrationWorker'
-
-      def self.for_database(database)
-        database = database.to_sym
-
-        unless VALID_DATABASES.include?(database)
-          raise ArgumentError, "database must be one of [#{VALID_DATABASES.join(', ')}], got '#{database}'"
+    class JobCoordinator # rubocop:disable Metrics/ClassLength
+      class << self
+        def worker_classes
+          @worker_classes ||= [
+            BackgroundMigrationWorker
+          ].freeze
         end
 
-        namespace = database.to_s.capitalize unless database == :main
-        namespaced_worker_class = [namespace, WORKER_CLASS_NAME].compact.join('::')
+        def worker_for_tracking_database
+          @worker_for_tracking_database ||= worker_classes
+            .index_by(&:tracking_database)
+            .with_indifferent_access
+            .freeze
+        end
 
-        new(database, "::#{namespaced_worker_class}".constantize)
+        def for_tracking_database(tracking_database)
+          worker_class = worker_for_tracking_database[tracking_database]
+
+          if worker_class.nil?
+            raise ArgumentError, "tracking_database must be one of [#{worker_for_tracking_database.keys.join(', ')}]"
+          end
+
+          new(worker_class)
+        end
       end
 
-      attr_reader :database, :worker_class
+      attr_reader :worker_class
 
       def queue
         @queue ||= worker_class.sidekiq_options['queue']
@@ -118,15 +127,14 @@ module Gitlab
 
       private
 
-      def initialize(database, worker_class)
-        @database = database
+      def initialize(worker_class)
         @worker_class = worker_class
       end
 
       def connection
         @connection ||= Gitlab::Database
           .database_base_models
-          .fetch(database, Gitlab::Database::PRIMARY_DATABASE_NAME)
+          .fetch(worker_class.tracking_database, Gitlab::Database::PRIMARY_DATABASE_NAME)
           .connection
       end
     end

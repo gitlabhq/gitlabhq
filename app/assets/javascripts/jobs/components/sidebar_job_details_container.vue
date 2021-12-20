@@ -20,6 +20,9 @@ export default {
     duration() {
       return timeIntervalInWords(this.job.duration);
     },
+    durationTitle() {
+      return this.job.finished_at ? __('Duration') : __('Elapsed time');
+    },
     erasedAt() {
       return this.timeFormatted(this.job.erased_at);
     },
@@ -76,7 +79,7 @@ export default {
 
 <template>
   <div v-if="shouldRenderBlock">
-    <detail-row v-if="job.duration" :value="duration" title="Duration" />
+    <detail-row v-if="job.duration" :value="duration" :title="durationTitle" />
     <detail-row
       v-if="job.finished_at"
       :value="finishedAt"

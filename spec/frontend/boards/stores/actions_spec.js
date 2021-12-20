@@ -20,7 +20,7 @@ import {
   formatIssue,
   getMoveData,
   updateListPosition,
-} from '~/boards/boards_util';
+} from 'ee_else_ce/boards/boards_util';
 import { gqlClient } from '~/boards/graphql';
 import destroyBoardListMutation from '~/boards/graphql/board_list_destroy.mutation.graphql';
 import issueCreateMutation from '~/boards/graphql/issue_create.mutation.graphql';
@@ -1241,6 +1241,7 @@ describe('updateIssueOrder', () => {
         moveBeforeId: undefined,
         moveAfterId: undefined,
       },
+      update: expect.anything(),
     };
     jest.spyOn(gqlClient, 'mutate').mockResolvedValue({
       data: {
@@ -1447,6 +1448,7 @@ describe('addListNewIssue', () => {
       variables: {
         input: formatIssueInput(mockIssue, stateWithBoardConfig.boardConfig),
       },
+      update: expect.anything(),
     });
   });
 
@@ -1478,6 +1480,7 @@ describe('addListNewIssue', () => {
       variables: {
         input: formatIssueInput(issue, stateWithBoardConfig.boardConfig),
       },
+      update: expect.anything(),
     });
     expect(payload.labelIds).toEqual(['gid://gitlab/GroupLabel/4', 'gid://gitlab/GroupLabel/5']);
     expect(payload.assigneeIds).toEqual(['gid://gitlab/User/1', 'gid://gitlab/User/2']);
@@ -1570,7 +1573,7 @@ describe('addListNewIssue', () => {
 
 describe('setActiveIssueLabels', () => {
   const state = { boardItems: { [mockIssue.id]: mockIssue } };
-  const getters = { activeBoardItem: mockIssue };
+  const getters = { activeBoardItem: { ...mockIssue, labels } };
   const testLabelIds = labels.map((label) => label.id);
   const input = {
     labelIds: testLabelIds,
@@ -1579,11 +1582,7 @@ describe('setActiveIssueLabels', () => {
     labels,
   };
 
-  it('should assign labels on success', (done) => {
-    jest
-      .spyOn(gqlClient, 'mutate')
-      .mockResolvedValue({ data: { updateIssue: { issue: { labels: { nodes: labels } } } } });
-
+  it('should assign labels', () => {
     const payload = {
       itemId: getters.activeBoardItem.id,
       prop: 'labels',
@@ -1601,74 +1600,28 @@ describe('setActiveIssueLabels', () => {
         },
       ],
       [],
-      done,
     );
   });
 
-  it('throws error if fails', async () => {
-    jest
-      .spyOn(gqlClient, 'mutate')
-      .mockResolvedValue({ data: { updateIssue: { errors: ['failed mutation'] } } });
+  it('should remove label', () => {
+    const payload = {
+      itemId: getters.activeBoardItem.id,
+      prop: 'labels',
+      value: [labels[1]],
+    };
 
-    await expect(actions.setActiveIssueLabels({ getters }, input)).rejects.toThrow(Error);
-  });
-
-  describe('labels_widget FF on', () => {
-    beforeEach(() => {
-      window.gon = {
-        features: { labelsWidget: true },
-      };
-
-      getters.activeBoardItem = { ...mockIssue, labels };
-    });
-
-    afterEach(() => {
-      window.gon = {
-        features: {},
-      };
-    });
-
-    it('should assign labels', () => {
-      const payload = {
-        itemId: getters.activeBoardItem.id,
-        prop: 'labels',
-        value: labels,
-      };
-
-      testAction(
-        actions.setActiveIssueLabels,
-        input,
-        { ...state, ...getters },
-        [
-          {
-            type: types.UPDATE_BOARD_ITEM_BY_ID,
-            payload,
-          },
-        ],
-        [],
-      );
-    });
-
-    it('should remove label', () => {
-      const payload = {
-        itemId: getters.activeBoardItem.id,
-        prop: 'labels',
-        value: [labels[1]],
-      };
-
-      testAction(
-        actions.setActiveIssueLabels,
-        { ...input, removeLabelIds: [getIdFromGraphQLId(labels[0].id)] },
-        { ...state, ...getters },
-        [
-          {
-            type: types.UPDATE_BOARD_ITEM_BY_ID,
-            payload,
-          },
-        ],
-        [],
-      );
-    });
+    testAction(
+      actions.setActiveIssueLabels,
+      { ...input, removeLabelIds: [getIdFromGraphQLId(labels[0].id)] },
+      { ...state, ...getters },
+      [
+        {
+          type: types.UPDATE_BOARD_ITEM_BY_ID,
+          payload,
+        },
+      ],
+      [],
+    );
   });
 });
 

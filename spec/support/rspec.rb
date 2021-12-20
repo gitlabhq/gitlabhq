@@ -15,7 +15,10 @@ require 'rubocop'
 require 'rubocop/rspec/support'
 
 RSpec.configure do |config|
-  config.mock_with :rspec
+  config.mock_with :rspec do |mocks|
+    mocks.verify_doubled_constant_names = true
+  end
+
   config.raise_errors_for_deprecations!
 
   config.include StubConfiguration

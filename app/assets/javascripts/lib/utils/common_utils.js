@@ -735,3 +735,14 @@ export const isFeatureFlagEnabled = (flag) => window.gon.features?.[flag];
 export const convertArrayToCamelCase = (array) => array.map((i) => convertToCamelCase(i));
 
 export const isLoggedIn = () => Boolean(window.gon?.current_user_id);
+
+/**
+ * This method takes in array of objects with snake_case
+ * property names and returns a new array of objects with
+ * camelCase property names
+ *
+ * @param {Array[Object]} array - Array to be converted
+ * @returns {Array[Object]} Converted array
+ */
+export const convertArrayOfObjectsToCamelCase = (array) =>
+  array.map((o) => convertObjectPropsToCamelCase(o));

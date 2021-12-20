@@ -9,17 +9,22 @@ module Gitlab
 
           TimeoutError = Class.new(StandardError)
 
-          attr_reader :project, :sha, :user, :parent_pipeline, :variables
-          attr_reader :expandset, :execution_deadline
+          include ::Gitlab::Utils::StrongMemoize
 
-          def initialize(project: nil, sha: nil, user: nil, parent_pipeline: nil, variables: [])
+          attr_reader :project, :sha, :user, :parent_pipeline, :variables
+          attr_reader :expandset, :execution_deadline, :logger
+
+          delegate :instrument, to: :logger
+
+          def initialize(project: nil, sha: nil, user: nil, parent_pipeline: nil, variables: nil, logger: nil)
             @project = project
             @sha = sha
             @user = user
             @parent_pipeline = parent_pipeline
-            @variables = variables
+            @variables = variables || Ci::Variables::Collection.new
             @expandset = Set.new
             @execution_deadline = 0
+            @logger = logger || Gitlab::Ci::Pipeline::Logger.new(project: project)
 
             yield self if block_given?
           end
@@ -36,10 +41,17 @@ module Gitlab
             end
           end
 
+          def variables_hash
+            strong_memoize(:variables_hash) do
+              variables.to_hash
+            end
+          end
+
           def mutate(attrs = {})
             self.class.new(**attrs) do |ctx|
               ctx.expandset = expandset
               ctx.execution_deadline = execution_deadline
+              ctx.logger = logger
             end
           end
 
@@ -60,7 +72,7 @@ module Gitlab
 
           protected
 
-          attr_writer :expandset, :execution_deadline
+          attr_writer :expandset, :execution_deadline, :logger
 
           private
 

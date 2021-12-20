@@ -36,5 +36,4 @@
   - if runner.tags.present?
     .gl-my-2
       - runner.tags.map(&:name).sort.each do |tag|
-        %span.badge.gl-badge.sm.badge-pill.badge-primary
-          = tag
+        = gl_badge_tag tag, variant: :info, size: :sm

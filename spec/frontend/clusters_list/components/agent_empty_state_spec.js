@@ -1,34 +1,29 @@
-import { GlAlert, GlEmptyState, GlSprintf } from '@gitlab/ui';
+import { GlEmptyState, GlSprintf, GlLink, GlButton } from '@gitlab/ui';
 import AgentEmptyState from '~/clusters_list/components/agent_empty_state.vue';
+import { INSTALL_AGENT_MODAL_ID } from '~/clusters_list/constants';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import { helpPagePath } from '~/helpers/help_page_helper';
 
 const emptyStateImage = '/path/to/image';
-const projectPath = 'path/to/project';
-const multipleClustersDocsUrl = helpPagePath('user/project/clusters/multiple_kubernetes_clusters');
-const installDocsUrl = helpPagePath('administration/clusters/kas');
+const installDocsUrl = helpPagePath('user/clusters/agent/index');
 
 describe('AgentEmptyStateComponent', () => {
   let wrapper;
-
-  const propsData = {
-    hasConfigurations: false,
-  };
   const provideData = {
     emptyStateImage,
-    projectPath,
   };
 
-  const findConfigurationsAlert = () => wrapper.findComponent(GlAlert);
-  const findMultipleClustersDocsLink = () => wrapper.findByTestId('multiple-clusters-docs-link');
-  const findInstallDocsLink = () => wrapper.findByTestId('install-docs-link');
-  const findIntegrationButton = () => wrapper.findByTestId('integration-primary-button');
+  const findInstallDocsLink = () => wrapper.findComponent(GlLink);
+  const findIntegrationButton = () => wrapper.findComponent(GlButton);
   const findEmptyState = () => wrapper.findComponent(GlEmptyState);
 
   beforeEach(() => {
     wrapper = shallowMountExtended(AgentEmptyState, {
-      propsData,
       provide: provideData,
+      directives: {
+        GlModalDirective: createMockDirective(),
+      },
       stubs: { GlEmptyState, GlSprintf },
     });
   });
@@ -39,33 +34,21 @@ describe('AgentEmptyStateComponent', () => {
     }
   });
 
-  it('renders correct href attributes for the links', () => {
-    expect(findMultipleClustersDocsLink().attributes('href')).toBe(multipleClustersDocsUrl);
+  it('renders the empty state', () => {
+    expect(findEmptyState().exists()).toBe(true);
+  });
+
+  it('renders button for the agent registration', () => {
+    expect(findIntegrationButton().exists()).toBe(true);
+  });
+
+  it('renders correct href attributes for the docs link', () => {
     expect(findInstallDocsLink().attributes('href')).toBe(installDocsUrl);
   });
 
-  describe('when there are no agent configurations in repository', () => {
-    it('should render notification message box', () => {
-      expect(findConfigurationsAlert().exists()).toBe(true);
-    });
+  it('renders correct modal id for the agent registration modal', () => {
+    const binding = getBinding(findIntegrationButton().element, 'gl-modal-directive');
 
-    it('should disable integration button', () => {
-      expect(findIntegrationButton().attributes('disabled')).toBe('true');
-    });
-  });
-
-  describe('when there is a list of agent configurations', () => {
-    beforeEach(() => {
-      propsData.hasConfigurations = true;
-      wrapper = shallowMountExtended(AgentEmptyState, {
-        propsData,
-        provide: provideData,
-      });
-    });
-    it('should render content without notification message box', () => {
-      expect(findEmptyState().exists()).toBe(true);
-      expect(findConfigurationsAlert().exists()).toBe(false);
-      expect(findIntegrationButton().attributes('disabled')).toBeUndefined();
-    });
+    expect(binding.value).toBe(INSTALL_AGENT_MODAL_ID);
   });
 });

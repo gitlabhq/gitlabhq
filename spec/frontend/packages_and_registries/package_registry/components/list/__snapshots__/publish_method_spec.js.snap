@@ -37,6 +37,7 @@ exports[`publish_method renders 1`] = `
     text="b83d6e391c22777fca1ed3012fce84f633d7fed0"
     title="Copy commit SHA"
     tooltipplacement="top"
+    variant="default"
   />
 </div>
 `;

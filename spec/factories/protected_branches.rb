@@ -2,13 +2,27 @@
 
 FactoryBot.define do
   factory :protected_branch do
-    name
+    sequence(:name) { |n| "protected_branch_#{n}" }
     project
 
     transient do
       default_push_level { true }
       default_merge_level { true }
       default_access_level { true }
+    end
+
+    trait :create_branch_on_repository do
+      association :project, factory: [:project, :repository]
+
+      transient do
+        repository_branch_name { name }
+      end
+
+      after(:create) do |protected_branch, evaluator|
+        project = protected_branch.project
+
+        project.repository.create_branch(evaluator.repository_branch_name, project.default_branch_or_main)
+      end
     end
 
     trait :developers_can_push do

@@ -4,7 +4,7 @@
 Please link to the respective test case in the testcases project
 -->
 
-### Check-list
+### Checklist
 
 - [ ] Confirm the test has a [`testcase:` tag linking to an existing test case](https://docs.gitlab.com/ee/development/testing_guide/end_to_end/best_practices.html#link-a-test-to-its-test-case-issue) in the test case project.
 - [ ] Note if the test is intended to run in specific scenarios. If a scenario is new, add a link to the MR that adds the new scenario.
@@ -15,7 +15,7 @@ Please link to the respective test case in the testcases project
 - [ ] Verify the tags to ensure it runs on the desired test environments.
 - [ ] If this MR has a dependency on another MR, such as a GitLab QA MR, specify the order in which the MRs should be merged.
 - [ ] (If applicable) Create a follow-up issue to document [the special setup](https://docs.gitlab.com/ee/development/testing_guide/end_to_end/running_tests_that_require_special_setup.html) necessary to run the test: ISSUE_LINK
-- [ ] If the test requires an admin's personal access token, ensure that the test passes on your local with and without the `GITLAB_QA_ADMIN_ACCESS_TOKEN` provided.
+- [ ] If the test requires an admin's personal access token, ensure that the test passes on your local environment with and without the `GITLAB_QA_ADMIN_ACCESS_TOKEN` provided.
 
 <!-- Base labels. -->
 /label ~"Quality" ~"QA" ~test

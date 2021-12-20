@@ -182,7 +182,7 @@ module MergeRequestsHelper
       project_path: project_path(merge_request.project),
       changes_empty_state_illustration: image_path('illustrations/merge_request_changes_empty.svg'),
       is_fluid_layout: fluid_layout.to_s,
-      dismiss_endpoint: user_callouts_path,
+      dismiss_endpoint: callouts_path,
       show_suggest_popover: show_suggest_popover?.to_s,
       show_whitespace_default: @show_whitespace_default.to_s,
       file_by_file_default: @file_by_file_default.to_s,

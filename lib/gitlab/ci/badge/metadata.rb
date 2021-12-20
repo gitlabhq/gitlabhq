@@ -8,14 +8,13 @@ module Gitlab::Ci
     class Metadata
       include Gitlab::Routing
       include ActionView::Helpers::AssetTagHelper
-      include ActionView::Helpers::UrlHelper
 
       def initialize(badge)
         @badge = badge
       end
 
       def to_html
-        link_to(image_tag(image_url, alt: title), link_url)
+        ApplicationController.helpers.link_to(image_tag(image_url, alt: title), link_url)
       end
 
       def to_markdown

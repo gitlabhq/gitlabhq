@@ -50,8 +50,8 @@ that stable documentation and deploys it to the registry. For example:
 - [13.12 merge request pipeline](https://gitlab.com/gitlab-org/gitlab-docs/-/pipelines/395365202).
 - [12.10 merge request pipeline](https://gitlab.com/gitlab-org/gitlab-docs/-/pipelines/395365405).
 
-In particular, the [`image:docs-single` job](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/4c18963fe0a414ad62f55b9e18f922588b2dd155/.gitlab-ci.yml#L655) in each pipeline
-takes what is built, and pushes it to the [container registry](https://gitlab.com/gitlab-org/gitlab-docs/container_registry/631635).
+In particular, the [`image:docs-single` job](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/4c18963fe0a414ad62f55b9e18f922588b2dd155/.gitlab-ci.yml#L655) in each pipeline runs automatically.
+It takes what is built, and pushes it to the [container registry](https://gitlab.com/gitlab-org/gitlab-docs/container_registry/631635).
 
 ```mermaid
 graph TD
@@ -91,6 +91,7 @@ The [`image:docs-latest` job](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/4
 
 - Pulls the latest documentation from the default branches of the relevant upstream projects.
 - Pulls the Docker images previously built by the `image:docs-single` jobs.
+- Must be run manually on a scheduled pipeline.
 
 For example, [a pipeline](https://gitlab.com/gitlab-org/gitlab-docs/-/pipelines/399233948) containing the
 [`image:docs-latest` job](https://gitlab.com/gitlab-org/gitlab-docs/-/jobs/1733948330):
@@ -122,7 +123,8 @@ graph TD
 for it must be deployed to become available.
 
 The [`pages`](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/4c18963fe0a414ad62f55b9e18f922588b2dd155/.gitlab-ci.yml#L491)
-job runs the necessary commands to combine:
+job runs automatically when a pipeline runs on the default branch (`main`).
+It runs the necessary commands to combine:
 
 - A very up-to-date build of the `gitlab-docs` site code.
 - The latest docs from the default branches of the upstream projects.

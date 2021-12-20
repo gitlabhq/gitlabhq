@@ -33,8 +33,6 @@ module Types
             method: :note,
             description: 'Content of the note.'
 
-      markdown_field :body_html, null: true, method: :note
-
       field :created_at, Types::TimeType, null: false,
             description: 'Timestamp of the note creation.'
       field :updated_at, Types::TimeType, null: false,
@@ -49,6 +47,8 @@ module Types
       field :url, GraphQL::Types::String,
             null: true,
             description: 'URL to view this Note in the Web UI.'
+
+      markdown_field :body_html, null: true, method: :note
 
       def url
         ::Gitlab::UrlBuilder.build(object)

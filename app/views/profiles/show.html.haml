@@ -116,7 +116,7 @@
       %h5= _('Private profile')
       .checkbox-icon-inline-wrapper
         - private_profile_label = capture do
-          = s_("Profiles|Don't display activity-related personal information on your profiles")
+          = s_("Profiles|Don't display activity-related personal information on your profile")
         = f.check_box :private_profile, label: private_profile_label, inline: true, wrapper_class: 'mr-0'
         = link_to sprite_icon('question-o'), help_page_path('user/profile/index.md', anchor: 'make-your-user-profile-page-private')
       %h5= s_("Profiles|Private contributions")

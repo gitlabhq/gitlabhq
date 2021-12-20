@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+
+## Usage: scripts/rspec_bisect_flaky <files...>
+#
+# The files should be listed in order, with the last file being the file where
+# the flaky spec lives.
+
+if [ $# -eq 0 ]; then
+  echo "Usage: scripts/rspec_bisect_flaky <files...>"
+  exit
+fi
+
+files=( $@ )
+len=${#files[@]}
+target=${files[$len-1]}
+
+# Trap interrupts and exit instead of continuing the loop
+trap "echo Exited!; exit 2;" SIGINT SIGTERM
+
+# Show which set of specs are running
+set -x
+
+# Do the speedy case first, run each spec with our failing spec
+for file in "${files[@]}"; do
+  bin/rspec $file $target
+done
+
+# Do a full bisect given we did not find candidates with speedy cases 
+bin/rspec --bisect=verbose $@

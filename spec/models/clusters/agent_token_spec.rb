@@ -39,7 +39,9 @@ RSpec.describe Clusters::AgentToken do
   end
 
   describe '#track_usage', :clean_gitlab_redis_cache do
-    let(:agent_token) { create(:cluster_agent_token) }
+    let_it_be(:agent) { create(:cluster_agent) }
+
+    let(:agent_token) { create(:cluster_agent_token, agent: agent) }
 
     subject { agent_token.track_usage }
 
@@ -71,6 +73,34 @@ RSpec.describe Clusters::AgentToken do
 
           does_db_update
           expect_redis_update
+        end
+      end
+
+      context 'agent is inactive' do
+        before do
+          allow(agent).to receive(:active?).and_return(false)
+        end
+
+        it 'creates an activity event' do
+          expect { subject }.to change { agent.activity_events.count }
+
+          event = agent.activity_events.last
+          expect(event).to have_attributes(
+            kind: 'agent_connected',
+            level: 'info',
+            recorded_at: agent_token.reload.read_attribute(:last_used_at),
+            agent_token: agent_token
+          )
+        end
+      end
+
+      context 'agent is active' do
+        before do
+          allow(agent).to receive(:active?).and_return(true)
+        end
+
+        it 'does not create an activity event' do
+          expect { subject }.not_to change { agent.activity_events.count }
         end
       end
     end

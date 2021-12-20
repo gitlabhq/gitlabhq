@@ -2,10 +2,10 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Database::Migrations::Observers::QueryDetails do
-  subject { described_class.new(observation, directory_path) }
+  subject { described_class.new(observation, directory_path, connection) }
 
+  let(:connection) { ActiveRecord::Migration.connection }
   let(:observation) { Gitlab::Database::Migrations::Observation.new(migration_version, migration_name) }
-  let(:connection) { ActiveRecord::Base.connection }
   let(:query) { "select date_trunc('day', $1::timestamptz) + $2 * (interval '1 hour')" }
   let(:query_binds) { [Time.current, 3] }
   let(:directory_path) { Dir.mktmpdir }

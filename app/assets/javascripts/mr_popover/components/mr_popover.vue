@@ -65,6 +65,9 @@ export default {
           return humanMRStates.open;
       }
     },
+    title() {
+      return this.mergeRequest?.title || this.mergeRequestTitle;
+    },
     showDetails() {
       return Object.keys(this.mergeRequest).length > 0;
     },
@@ -89,7 +92,7 @@ export default {
 <template>
   <gl-popover :target="target" boundary="viewport" placement="top" show>
     <div class="mr-popover">
-      <div v-if="$apollo.loading">
+      <div v-if="$apollo.queries.mergeRequest.loading">
         <gl-skeleton-loading :lines="1" class="animation-container-small mt-1" />
       </div>
       <div v-else-if="showDetails" class="d-flex align-items-center justify-content-between">
@@ -97,13 +100,13 @@ export default {
           <div :class="`issuable-status-box status-box ${statusBoxClass}`">
             {{ stateHumanName }}
           </div>
-          <span class="text-secondary">Opened <time v-text="formattedTime"></time></span>
+          <span class="gl-text-secondary">Opened <time v-text="formattedTime"></time></span>
         </div>
         <ci-icon v-if="detailedStatus" :status="detailedStatus" />
       </div>
-      <h5 class="my-2">{{ mergeRequestTitle }}</h5>
+      <h5 v-if="!$apollo.queries.mergeRequest.loading" class="my-2">{{ title }}</h5>
       <!-- eslint-disable @gitlab/vue-require-i18n-strings -->
-      <div class="text-secondary">
+      <div class="gl-text-secondary">
         {{ `${projectPath}!${mergeRequestIID}` }}
       </div>
       <!-- eslint-enable @gitlab/vue-require-i18n-strings -->

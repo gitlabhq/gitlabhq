@@ -9,6 +9,7 @@ query getContainerRepositoryTags(
 ) {
   containerRepository(id: $id) {
     id
+    tagsCount
     tags(after: $after, before: $before, first: $first, last: $last) {
       nodes {
         digest

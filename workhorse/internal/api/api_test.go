@@ -49,7 +49,7 @@ func getGeoProxyURLGivenResponse(t *testing.T, givenInternalApiResponse string) 
 }
 
 func testRailsServer(url *regexp.Regexp, code int, body string) *httptest.Server {
-	return testhelper.TestServerWithHandler(url, func(w http.ResponseWriter, r *http.Request) {
+	return testhelper.TestServerWithHandlerWithGeoPolling(url, func(w http.ResponseWriter, r *http.Request) {
 		// return a 204 No Content response if we don't receive the JWT header
 		if r.Header.Get(secret.RequestHeader) == "" {
 			w.WriteHeader(204)

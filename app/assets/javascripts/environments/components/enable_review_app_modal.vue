@@ -12,10 +12,19 @@ export default {
     ModalCopyButton,
   },
   inject: ['defaultBranchName'],
+  model: {
+    prop: 'visible',
+    event: 'change',
+  },
   props: {
     modalId: {
       type: String,
       required: true,
+    },
+    visible: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
   },
   instructionText: {
@@ -57,12 +66,15 @@ export default {
 </script>
 <template>
   <gl-modal
+    :visible="visible"
     :modal-id="modalId"
     :title="$options.modalInfo.title"
+    static
     size="lg"
     ok-only
     ok-variant="light"
     :ok-title="$options.modalInfo.closeText"
+    @change="$emit('change', $event)"
   >
     <p>
       <gl-sprintf :message="$options.instructionText.step1">

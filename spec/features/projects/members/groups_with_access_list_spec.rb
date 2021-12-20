@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'Projects > Members > Groups with access list', :js do
   include Spec::Support::Helpers::Features::MembersHelpers
+  include Spec::Support::Helpers::ModalHelpers
 
   let_it_be(:user) { create(:user) }
   let_it_be(:group) { create(:group, :public) }
@@ -70,7 +71,7 @@ RSpec.describe 'Projects > Members > Groups with access list', :js do
       click_button 'Remove group'
     end
 
-    page.within('[role="dialog"]') do
+    within_modal do
       click_button('Remove group')
     end
 

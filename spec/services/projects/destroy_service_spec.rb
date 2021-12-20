@@ -55,48 +55,16 @@ RSpec.describe Projects::DestroyService, :aggregate_failures do
           .and change { Ci::Pipeline.count }.by(-1)
       end
 
-      context 'with abort_deleted_project_pipelines disabled' do
-        stub_feature_flags(abort_deleted_project_pipelines: false)
+      it 'avoids N+1 queries' do
+        recorder = ActiveRecord::QueryRecorder.new { destroy_project(project, user, {}) }
 
-        it 'avoids N+1 queries' do
-          recorder = ActiveRecord::QueryRecorder.new { destroy_project(project, user, {}) }
+        project = create(:project, :repository, namespace: user.namespace)
+        pipeline = create(:ci_pipeline, project: project)
+        builds = create_list(:ci_build, 3, :artifacts, pipeline: pipeline)
+        create(:ci_pipeline_artifact, pipeline: pipeline)
+        create_list(:ci_build_trace_chunk, 3, build: builds[0])
 
-          project = create(:project, :repository, namespace: user.namespace)
-          pipeline = create(:ci_pipeline, project: project)
-          builds = create_list(:ci_build, 3, :artifacts, pipeline: pipeline)
-          create(:ci_pipeline_artifact, pipeline: pipeline)
-          create_list(:ci_build_trace_chunk, 3, build: builds[0])
-
-          expect { destroy_project(project, project.owner, {}) }.not_to exceed_query_limit(recorder)
-        end
-      end
-
-      context 'with ci_optimize_project_records_destruction disabled' do
-        stub_feature_flags(ci_optimize_project_records_destruction: false)
-
-        it 'avoids N+1 queries' do
-          recorder = ActiveRecord::QueryRecorder.new { destroy_project(project, user, {}) }
-
-          project = create(:project, :repository, namespace: user.namespace)
-          pipeline = create(:ci_pipeline, project: project)
-          builds = create_list(:ci_build, 3, :artifacts, pipeline: pipeline)
-          create_list(:ci_build_trace_chunk, 3, build: builds[0])
-
-          expect { destroy_project(project, project.owner, {}) }.not_to exceed_query_limit(recorder)
-        end
-      end
-
-      context 'with ci_optimize_project_records_destruction and abort_deleted_project_pipelines enabled' do
-        it 'avoids N+1 queries' do
-          recorder = ActiveRecord::QueryRecorder.new { destroy_project(project, user, {}) }
-
-          project = create(:project, :repository, namespace: user.namespace)
-          pipeline = create(:ci_pipeline, project: project)
-          builds = create_list(:ci_build, 3, :artifacts, pipeline: pipeline)
-          create_list(:ci_build_trace_chunk, 3, build: builds[0])
-
-          expect { destroy_project(project, project.owner, {}) }.not_to exceed_query_limit(recorder)
-        end
+        expect { destroy_project(project, project.owner, {}) }.not_to exceed_query_limit(recorder)
       end
 
       it_behaves_like 'deleting the project'
@@ -132,64 +100,22 @@ RSpec.describe Projects::DestroyService, :aggregate_failures do
     destroy_project(project, user, {})
   end
 
-  context 'with abort_deleted_project_pipelines feature disabled' do
-    before do
-      stub_feature_flags(abort_deleted_project_pipelines: false)
-    end
-
-    it 'does not bulk-fail project ci pipelines' do
-      expect(::Ci::AbortPipelinesService).not_to receive(:new)
-
-      destroy_project(project, user, {})
-    end
-
-    it 'does not destroy CI records via DestroyPipelineService' do
-      expect(::Ci::DestroyPipelineService).not_to receive(:new)
-
-      destroy_project(project, user, {})
-    end
-  end
-
-  context 'with abort_deleted_project_pipelines feature enabled' do
+  context 'with running pipelines' do
     let!(:pipelines)               { create_list(:ci_pipeline, 3, :running, project: project) }
     let(:destroy_pipeline_service) { double('DestroyPipelineService', execute: nil) }
 
-    context 'with ci_optimize_project_records_destruction disabled' do
-      before do
-        stub_feature_flags(ci_optimize_project_records_destruction: false)
+    it 'bulks-fails with AbortPipelineService and then executes DestroyPipelineService for each pipelines' do
+      allow(::Ci::DestroyPipelineService).to receive(:new).and_return(destroy_pipeline_service)
+
+      expect(::Ci::AbortPipelinesService)
+        .to receive_message_chain(:new, :execute)
+        .with(project.all_pipelines, :project_deleted)
+
+      pipelines.each do |pipeline|
+        expect(destroy_pipeline_service).to receive(:execute).with(pipeline)
       end
 
-      it 'bulk-fails project ci pipelines' do
-        expect(::Ci::AbortPipelinesService)
-          .to receive_message_chain(:new, :execute)
-          .with(project.all_pipelines, :project_deleted)
-
-        destroy_project(project, user, {})
-      end
-
-      it 'does not destroy CI records via DestroyPipelineService' do
-        expect(::Ci::DestroyPipelineService).not_to receive(:new)
-
-        destroy_project(project, user, {})
-      end
-    end
-
-    context 'with ci_optimize_project_records_destruction enabled' do
-      it 'executes DestroyPipelineService for project ci pipelines' do
-        allow(::Ci::DestroyPipelineService).to receive(:new).and_return(destroy_pipeline_service)
-
-        expect(::Ci::AbortPipelinesService)
-          .to receive_message_chain(:new, :execute)
-          .with(project.all_pipelines, :project_deleted)
-
-        pipelines.each do |pipeline|
-          expect(destroy_pipeline_service)
-            .to receive(:execute)
-            .with(pipeline)
-        end
-
-        destroy_project(project, user, {})
-      end
+      destroy_project(project, user, {})
     end
   end
 
@@ -542,6 +468,27 @@ RSpec.describe Projects::DestroyService, :aggregate_failures do
       expect do
         destroy_project(project, user)
       end.to change { User.find_by(id: project_bot.id) }.to(nil)
+    end
+  end
+
+  context 'when project has events' do
+    let!(:event) { create(:event, :created, project: project, target: project, author: user) }
+
+    it 'deletes events from the project' do
+      expect do
+        destroy_project(project, user)
+      end.to change(Event, :count).by(-1)
+    end
+
+    context 'when an error is returned while deleting events' do
+      it 'does not delete project' do
+        allow_next_instance_of(Events::DestroyService) do |instance|
+          allow(instance).to receive(:execute).and_return(ServiceResponse.error(message: 'foo'))
+        end
+
+        expect(destroy_project(project, user)).to be_falsey
+        expect(project.delete_error).to include('Failed to remove events')
+      end
     end
   end
 

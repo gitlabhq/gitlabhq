@@ -14,9 +14,9 @@ import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
 import { initRails } from '~/lib/utils/rails_ujs';
 import * as popovers from '~/popovers';
 import * as tooltips from '~/tooltips';
-import { initHeaderSearchApp } from '~/header_search';
+import { initPrefetchLinks } from '~/lib/utils/navigation_utility';
 import initAlertHandler from './alert_handler';
-import { removeFlashClickListener } from './flash';
+import { addDismissFlashClickListener } from './flash';
 import initTodoToggle from './header';
 import initLayoutNav from './layout_nav';
 import { logHelloDeferred } from './lib/logger/hello_deferred';
@@ -36,6 +36,7 @@ import GlFieldErrors from './gl_field_errors';
 import initUserPopovers from './user_popovers';
 import initBroadcastNotifications from './broadcast_notification';
 import { initTopNav } from './nav';
+import { initCopyCodeButton } from './behaviors/copy_code';
 
 import 'ee_else_ce/main_ee';
 import 'jh_else_ce/main_jh';
@@ -90,6 +91,7 @@ function deferredInitialisation() {
   initTopNav();
   initBreadcrumbs();
   initTodoToggle();
+  initPrefetchLinks('.js-prefetch-document');
   initLogoAnimation();
   initServicePingConsent();
   initUserPopovers();
@@ -97,25 +99,31 @@ function deferredInitialisation() {
   initPersistentUserCallouts();
   initDefaultTrackers();
   initFeatureHighlight();
+  initCopyCodeButton();
 
-  if (gon.features?.newHeaderSearch) {
-    initHeaderSearchApp();
-  } else {
-    const search = document.querySelector('#search');
-    if (search) {
-      search.addEventListener(
-        'focus',
-        () => {
+  const search = document.querySelector('#search');
+  if (search) {
+    search.addEventListener(
+      'focus',
+      () => {
+        if (gon.features?.newHeaderSearch) {
+          import(/* webpackChunkName: 'globalSearch' */ '~/header_search')
+            .then(async ({ initHeaderSearchApp }) => {
+              await initHeaderSearchApp();
+              document.querySelector('#search').focus();
+            })
+            .catch(() => {});
+        } else {
           import(/* webpackChunkName: 'globalSearch' */ './search_autocomplete')
             .then(({ default: initSearchAutocomplete }) => {
               const searchDropdown = initSearchAutocomplete();
               searchDropdown.onSearchInputFocus();
             })
             .catch(() => {});
-        },
-        { once: true },
-      );
-    }
+        }
+      },
+      { once: true },
+    );
   }
 
   addSelectOnFocusBehaviour('.js-select-on-focus');
@@ -259,7 +267,7 @@ if (flashContainer && flashContainer.children.length) {
   flashContainer
     .querySelectorAll('.flash-alert, .flash-notice, .flash-success')
     .forEach((flashEl) => {
-      removeFlashClickListener(flashEl);
+      addDismissFlashClickListener(flashEl);
     });
 }
 

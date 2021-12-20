@@ -1,0 +1,55 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Design note pin component should match the snapshot of note with index 1`] = `
+<button
+  aria-label="Comment '1' position"
+  class="gl-display-flex gl-align-items-center gl-justify-content-center gl-font-sm js-image-badge design-note-pin gl-absolute"
+  style="left: 10px; top: 10px;"
+  type="button"
+>
+  
+    1
+  
+</button>
+`;
+
+exports[`Design note pin component should match the snapshot of note without index 1`] = `
+<button
+  aria-label="Comment form position"
+  class="gl-display-flex gl-align-items-center gl-justify-content-center gl-font-sm btn-transparent comment-indicator gl-absolute"
+  style="left: 10px; top: 10px;"
+  type="button"
+>
+  <gl-icon-stub
+    name="image-comment-dark"
+    size="24"
+  />
+</button>
+`;
+
+exports[`Design note pin component should match the snapshot when pin is resolved 1`] = `
+<button
+  aria-label="Comment form position"
+  class="gl-display-flex gl-align-items-center gl-justify-content-center gl-font-sm btn-transparent comment-indicator resolved gl-absolute"
+  style="left: 10px; top: 10px;"
+  type="button"
+>
+  <gl-icon-stub
+    name="image-comment-dark"
+    size="24"
+  />
+</button>
+`;
+
+exports[`Design note pin component should match the snapshot when position is absent 1`] = `
+<button
+  aria-label="Comment form position"
+  class="gl-display-flex gl-align-items-center gl-justify-content-center gl-font-sm btn-transparent comment-indicator"
+  type="button"
+>
+  <gl-icon-stub
+    name="image-comment-dark"
+    size="24"
+  />
+</button>
+`;

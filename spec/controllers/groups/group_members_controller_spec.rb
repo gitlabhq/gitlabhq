@@ -293,7 +293,6 @@ RSpec.describe Groups::GroupMembersController do
       context 'when `expires_at` is set' do
         it 'returns correct json response' do
           expect(json_response).to eq({
-            "expires_in" => "about 1 month",
             "expires_soon" => false,
             "expires_at_formatted" => expiry_date.to_time.in_time_zone.to_s(:medium)
           })

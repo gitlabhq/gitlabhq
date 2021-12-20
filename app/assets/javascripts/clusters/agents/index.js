@@ -13,11 +13,12 @@ export default () => {
   }
 
   const defaultClient = createDefaultClient();
-  const { agentName, projectPath } = el.dataset;
+  const { agentName, projectPath, activityEmptyStateImage } = el.dataset;
 
   return new Vue({
     el,
     apolloProvider: new VueApollo({ defaultClient }),
+    provide: { agentName, projectPath, activityEmptyStateImage },
     render(createElement) {
       return createElement(AgentShowPage, {
         props: {

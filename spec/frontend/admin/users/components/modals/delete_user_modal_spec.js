@@ -1,4 +1,4 @@
-import { GlButton, GlFormInput } from '@gitlab/ui';
+import { GlButton, GlFormInput, GlSprintf } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import DeleteUserModal from '~/admin/users/components/modals/delete_user_modal.vue';
 import UserDeletionObstaclesList from '~/vue_shared/components/user_deletion_obstacles/user_deletion_obstacles_list.vue';
@@ -35,7 +35,7 @@ describe('User Operation confirmation modal', () => {
   const badUsername = 'bad_username';
   const userDeletionObstacles = '["schedule1", "policy1"]';
 
-  const createComponent = (props = {}) => {
+  const createComponent = (props = {}, stubs = {}) => {
     wrapper = shallowMount(DeleteUserModal, {
       propsData: {
         username,
@@ -51,6 +51,7 @@ describe('User Operation confirmation modal', () => {
       },
       stubs: {
         GlModal: ModalStub,
+        ...stubs,
       },
     });
   };
@@ -147,6 +148,30 @@ describe('User Operation confirmation modal', () => {
         expect(findAuthenticityToken()).toBe(TEST_CSRF);
         expect(formSubmitSpy).toHaveBeenCalled();
       });
+    });
+  });
+
+  describe("when user's name has leading and trailing whitespace", () => {
+    beforeEach(() => {
+      createComponent(
+        {
+          username: ' John Smith ',
+        },
+        { GlSprintf },
+      );
+    });
+
+    it("displays user's name without whitespace", () => {
+      expect(wrapper.element).toMatchSnapshot();
+    });
+
+    it("shows enabled buttons when user's name is entered without whitespace", async () => {
+      setUsername('John Smith');
+
+      await wrapper.vm.$nextTick();
+
+      expect(findPrimaryButton().attributes('disabled')).toBeUndefined();
+      expect(findSecondaryButton().attributes('disabled')).toBeUndefined();
     });
   });
 

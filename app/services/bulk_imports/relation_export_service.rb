@@ -59,7 +59,7 @@ module BulkImports
     end
 
     def export_service
-      @export_service ||= if config.tree_relation?(relation)
+      @export_service ||= if config.tree_relation?(relation) || config.self_relation?(relation)
                             TreeExportService.new(portable, config.export_path, relation)
                           elsif config.file_relation?(relation)
                             FileExportService.new(portable, config.export_path, relation)

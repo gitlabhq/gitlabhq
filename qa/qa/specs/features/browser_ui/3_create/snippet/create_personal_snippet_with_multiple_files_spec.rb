@@ -26,7 +26,7 @@ module QA
         snippet.remove_via_api!
       end
 
-      it 'creates a personal snippet with multiple files', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1654' do
+      it 'creates a personal snippet with multiple files', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347723' do
         snippet.visit!
 
         Page::Dashboard::Snippet::Show.perform do |snippet|

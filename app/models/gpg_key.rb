@@ -92,13 +92,13 @@ class GpgKey < ApplicationRecord
   end
 
   def revoke
-    GpgSignature
+    CommitSignatures::GpgSignature
       .with_key_and_subkeys(self)
-      .where.not(verification_status: GpgSignature.verification_statuses[:unknown_key])
+      .where.not(verification_status: CommitSignatures::GpgSignature.verification_statuses[:unknown_key])
       .update_all(
         gpg_key_id: nil,
         gpg_key_subkey_id: nil,
-        verification_status: GpgSignature.verification_statuses[:unknown_key],
+        verification_status: CommitSignatures::GpgSignature.verification_statuses[:unknown_key],
         updated_at: Time.zone.now
       )
 

@@ -305,7 +305,7 @@ RSpec.shared_examples Integrations::SlackMattermostNotifier do |service_name|
 
     context 'on a protected branch' do
       before do
-        create(:protected_branch, project: project, name: 'a-protected-branch')
+        create(:protected_branch, :create_branch_on_repository, project: project, name: 'a-protected-branch')
       end
 
       let(:data) do
@@ -347,7 +347,7 @@ RSpec.shared_examples Integrations::SlackMattermostNotifier do |service_name|
 
     context 'on a protected branch with protected branches defined using wildcards' do
       before do
-        create(:protected_branch, project: project, name: '*-stable')
+        create(:protected_branch, :create_branch_on_repository, repository_branch_name: '1-stable', project: project, name: '*-stable')
       end
 
       let(:data) do
@@ -560,7 +560,7 @@ RSpec.shared_examples Integrations::SlackMattermostNotifier do |service_name|
 
       context 'on a protected branch' do
         before do
-          create(:protected_branch, project: project, name: 'a-protected-branch')
+          create(:protected_branch, :create_branch_on_repository, project: project, name: 'a-protected-branch')
         end
 
         let(:pipeline) do
@@ -590,7 +590,7 @@ RSpec.shared_examples Integrations::SlackMattermostNotifier do |service_name|
 
       context 'on a protected branch with protected branches defined usin wildcards' do
         before do
-          create(:protected_branch, project: project, name: '*-stable')
+          create(:protected_branch, :create_branch_on_repository, repository_branch_name: '1-stable', project: project, name: '*-stable')
         end
 
         let(:pipeline) do

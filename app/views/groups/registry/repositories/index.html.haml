@@ -18,6 +18,6 @@
     "gid_prefix": container_repository_gid_prefix,
     connection_error: (!!@connection_error).to_s,
     invalid_path_error: (!!@invalid_path_error).to_s,
-    user_callouts_path: user_callouts_path,
-    user_callout_id: UserCalloutsHelper::UNFINISHED_TAG_CLEANUP_CALLOUT,
+    user_callouts_path: callouts_path,
+    user_callout_id: Users::CalloutsHelper::UNFINISHED_TAG_CLEANUP_CALLOUT,
     show_unfinished_tag_cleanup_callout: show_unfinished_tag_cleanup_callout?.to_s } }

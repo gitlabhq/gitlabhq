@@ -5,13 +5,15 @@ import (
 	"io/ioutil"
 	"mime"
 	"net/http"
-	"net/http/httptest"
 	"os"
 	"path"
+	"regexp"
 	"testing"
 
 	"github.com/stretchr/testify/require"
 	"gitlab.com/gitlab-org/labkit/log"
+
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/testhelper"
 )
 
 func TestDeniedLfsDownload(t *testing.T) {
@@ -35,7 +37,7 @@ func allowedXSendfileDownload(t *testing.T, contentFilename string, filePath str
 	prepareDownloadDir(t)
 
 	// Prepare test server and backend
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	ts := testhelper.TestServerWithHandler(regexp.MustCompile(`.`), http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		log.WithFields(log.Fields{"method": r.Method, "url": r.URL}).Info("UPSTREAM")
 
 		require.Equal(t, "X-Sendfile", r.Header.Get("X-Sendfile-Type"))
@@ -69,7 +71,7 @@ func deniedXSendfileDownload(t *testing.T, contentFilename string, filePath stri
 	prepareDownloadDir(t)
 
 	// Prepare test server and backend
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	ts := testhelper.TestServerWithHandler(regexp.MustCompile(`.`), http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		log.WithFields(log.Fields{"method": r.Method, "url": r.URL}).Info("UPSTREAM")
 
 		require.Equal(t, "X-Sendfile", r.Header.Get("X-Sendfile-Type"))

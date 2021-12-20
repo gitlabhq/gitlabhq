@@ -34,14 +34,14 @@ Metrics and visualizations of **merged** merge requests are available on a proje
 
 ### Time to merge
 
-The **Time to merge** histogram shows the number of merge requests and the number 
+The **Time to merge** histogram shows the number of merge requests and the number
 of days it took to merge after creation. Select a column to filter subsequent charts.
 
 ![Metrics for number of days merge requests per number of days](img/productivity_analytics_time_to_merge_v14_4.png)
 
 ### Trendline
 
-The **Trendline** scatterplot shows all merge requests on a certain date, 
+The **Trendline** scatterplot shows all merge requests on a certain date,
 and the days it took to complete the action and a 30 day rolling median. Select the dropdown to view:
 
 - Time from first commit to first comment.
@@ -55,15 +55,15 @@ and the days it took to complete the action and a 30 day rolling median. Select 
 
 ### Commits and merge request size
 
-Under the **Trendline** scatterplot, the left-side histogram shows 
-the time taken (in hours) between commits and comments until the merge 
+Under the **Trendline** scatterplot, the left-side histogram shows
+the time taken (in hours) between commits and comments until the merge
 request is merged. Select the dropdown to view:
 
 - Time from first commit to first comment.
 - Time from first comment until last commit.
 - Time from last commit to merge.
 
-The right-side histogram shows the size or complexity of a merge request. 
+The right-side histogram shows the size or complexity of a merge request.
 Select the dropdown to view:
   
 - Number of commits per merge request.
@@ -74,7 +74,7 @@ Select the dropdown to view:
 
 ### Merge request list
 
-The **List** table shows a list of merge requests with their respective time duration metrics. 
+The **List** table shows a list of merge requests with their respective time duration metrics.
 
 Sort metrics by:
 
@@ -83,7 +83,7 @@ Sort metrics by:
 - Time from last commit to merge.
 
 Filter metrics by:
- 
+
 - Number of commits per merge request.
 - Number of lines of code per commit.
 - Number of files touched.

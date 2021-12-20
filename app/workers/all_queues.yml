@@ -1447,6 +1447,24 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: pipeline_background:ci_pending_builds_update_group
+  :worker_name: Ci::PendingBuilds::UpdateGroupWorker
+  :feature_category: :continuous_integration
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+- :name: pipeline_background:ci_pending_builds_update_project
+  :worker_name: Ci::PendingBuilds::UpdateProjectWorker
+  :feature_category: :continuous_integration
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: pipeline_background:ci_pipeline_artifacts_coverage_report
   :worker_name: Ci::PipelineArtifacts::CoverageReportWorker
   :feature_category: :code_testing
@@ -1458,7 +1476,7 @@
   :tags: []
 - :name: pipeline_background:ci_pipeline_artifacts_create_quality_report
   :worker_name: Ci::PipelineArtifacts::CreateQualityReportWorker
-  :feature_category: :code_testing
+  :feature_category: :code_quality
   :has_external_dependencies:
   :urgency: :low
   :resource_boundary: :unknown
@@ -1559,7 +1577,7 @@
   :worker_name: Ci::CreateDownstreamPipelineWorker
   :feature_category: :continuous_integration
   :has_external_dependencies:
-  :urgency: :low
+  :urgency: :high
   :resource_boundary: :cpu
   :weight: 3
   :idempotent:
@@ -1913,7 +1931,7 @@
   :urgency: :low
   :resource_boundary: :unknown
   :weight: 1
-  :idempotent:
+  :idempotent: true
   :tags: []
 - :name: bulk_imports_export_request
   :worker_name: BulkImports::ExportRequestWorker
@@ -2474,6 +2492,15 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: namespaces_process_sync_events
+  :worker_name: Namespaces::ProcessSyncEventsWorker
+  :feature_category: :sharding
+  :has_external_dependencies:
+  :urgency: :high
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: new_issue
   :worker_name: NewIssueWorker
   :feature_category: :team_planning
@@ -2645,6 +2672,15 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: projects_process_sync_events
+  :worker_name: Projects::ProcessSyncEventsWorker
+  :feature_category: :sharding
+  :has_external_dependencies:
+  :urgency: :high
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: projects_schedule_bulk_repository_shard_moves
   :worker_name: Projects::ScheduleBulkRepositoryShardMovesWorker
   :feature_category: :gitaly
@@ -2716,15 +2752,6 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: true
-  :tags: []
-- :name: propagate_service_template
-  :worker_name: PropagateServiceTemplateWorker
-  :feature_category: :integrations
-  :has_external_dependencies:
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent:
   :tags: []
 - :name: reactive_caching
   :worker_name: ReactiveCachingWorker

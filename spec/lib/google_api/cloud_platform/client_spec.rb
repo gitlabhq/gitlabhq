@@ -209,4 +209,47 @@ RSpec.describe GoogleApi::CloudPlatform::Client do
       expect(subject.header).to eq({ 'User-Agent': 'GitLab/10.3 (GPN:GitLab;)' })
     end
   end
+
+  describe '#list_projects' do
+    subject { client.list_projects }
+
+    let(:list_of_projects) { [{}, {}, {}] }
+    let(:next_page_token) { nil }
+    let(:operation) { double('projects': list_of_projects, 'next_page_token': next_page_token) }
+
+    it 'calls Google Api CloudResourceManagerService#list_projects' do
+      expect_any_instance_of(Google::Apis::CloudresourcemanagerV1::CloudResourceManagerService)
+        .to receive(:list_projects)
+              .and_return(operation)
+      is_expected.to eq(list_of_projects)
+    end
+  end
+
+  describe '#create_service_account' do
+    subject { client.create_service_account(spy, spy, spy) }
+
+    let(:operation) { double('Service Account') }
+
+    it 'calls Google Api IamService#create_service_account' do
+      expect_any_instance_of(Google::Apis::IamV1::IamService)
+        .to receive(:create_service_account)
+              .with(any_args)
+              .and_return(operation)
+      is_expected.to eq(operation)
+    end
+  end
+
+  describe '#create_service_account_key' do
+    subject { client.create_service_account_key(spy, spy) }
+
+    let(:operation) { double('Service Account Key') }
+
+    it 'class Google Api IamService#create_service_account_key' do
+      expect_any_instance_of(Google::Apis::IamV1::IamService)
+        .to receive(:create_service_account_key)
+              .with(any_args)
+              .and_return(operation)
+      is_expected.to eq(operation)
+    end
+  end
 end

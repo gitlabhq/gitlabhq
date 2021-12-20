@@ -205,6 +205,8 @@ module Banzai
               data_attributes = data_attributes_for(link_content || match, parent, object,
                                                     link_content: !!link_content,
                                                     link_reference: link_reference)
+              data_attributes[:reference_format] = matches[:format] if matches.names.include?("format")
+
               data = data_attribute(data_attributes)
 
               url =

@@ -29,9 +29,9 @@ If you meet all the requirements above, follow these instructions in order. Ther
 | [Geo](#geo-deployment)                                          | GitLab EE with Geo enabled                        |
 | [Multi-node / HA with Geo](#multi-node--ha-deployment-with-geo) | GitLab CE/EE on multiple nodes                    |
 
-Each type of deployment will require that you hot reload the `puma` and `sidekiq` processes on all nodes running these
+Each type of deployment requires that you hot reload the `puma` and `sidekiq` processes on all nodes running these
 services after you've upgraded. The reason for this is that those processes each load the GitLab Rails application which reads and loads
-the database schema into memory when starting up. Each of these processes will need to be reloaded (or restarted in the case of `sidekiq`)
+the database schema into memory when starting up. Each of these processes needs to be reloaded (or restarted in the case of `sidekiq`)
 to re-read any database changes that have been made by post-deployment migrations.
 
 Most of the time you can safely upgrade from a patch release to the next minor
@@ -56,7 +56,7 @@ increasing the number of Sidekiq workers that can process jobs in the
 `background_migration` queue. To see the size of this queue,
 [Check for background migrations before upgrading](index.md#checking-for-background-migrations-before-upgrading).
 
-As a rule of thumb, any database smaller than 10 GB doesn't take too much time to
+As a guideline, any database smaller than 10 GB doesn't take too much time to
 upgrade; perhaps an hour at most per minor release. Larger databases however may
 require more time, but this is highly dependent on the size of the database and
 the migrations that are being performed.
@@ -111,17 +111,6 @@ Before following these instructions, note the following **important** informatio
 
 1. Update the GitLab package:
 
-   - For GitLab Community Edition:
-
-     ```shell
-     # Debian/Ubuntu
-     sudo apt-get update
-     sudo apt-get install gitlab-ce
-
-     # Centos/RHEL
-     sudo yum install gitlab-ce
-     ```
-
    - For GitLab [Enterprise Edition](https://about.gitlab.com/pricing/):
 
      ```shell
@@ -131,6 +120,17 @@ Before following these instructions, note the following **important** informatio
 
      # Centos/RHEL
      sudo yum install gitlab-ee
+     ```
+
+   - For GitLab Community Edition:
+
+     ```shell
+     # Debian/Ubuntu
+     sudo apt-get update
+     sudo apt-get install gitlab-ce
+
+     # Centos/RHEL
+     sudo yum install gitlab-ce
      ```
 
 1. To get the regular migrations and latest code in place, run
@@ -176,14 +176,14 @@ Upgrades on web (Puma) nodes must be done in a rolling manner, one after
 another, ensuring at least one node is always up to serve traffic. This is
 required to ensure zero-downtime.
 
-Puma will enter a blackout period as part of the upgrade, during which they
-continue to accept connections but will mark their respective health check
+Puma enters a blackout period as part of the upgrade, during which nodes
+continue to accept connections but mark their respective health check
 endpoints to be unhealthy. On seeing this, the load balancer should disconnect
 them gracefully.
 
-Puma will restart only after completing all the currently processing requests.
+Puma restarts only after completing all the currently processing requests.
 This ensures data and service integrity. Once they have restarted, the health
-check end points will be marked healthy.
+check end points are marked healthy.
 
 The nodes must be updated in the following order to update an HA instance using
 load balancer to latest GitLab version.
@@ -201,14 +201,14 @@ load balancer to latest GitLab version.
 
        ```shell
        # Debian/Ubuntu
-       sudo apt-get update && sudo apt-get install gitlab-ce
+       sudo apt-get update && sudo apt-get install gitlab-ee
 
        # Centos/RHEL
-       sudo yum install gitlab-ce
+       sudo yum install gitlab-ee
        ```
 
-       If you are an Enterprise Edition user, replace `gitlab-ce` with
-       `gitlab-ee` in the above command.
+       If you are a Community Edition user, replace `gitlab-ee` with
+       `gitlab-ce` in the above command.
 
     1. Get the regular migrations and latest code in place. Before running this step,
        the deploy node's `/etc/gitlab/gitlab.rb` configuration file must have
@@ -254,7 +254,7 @@ the application.
 
 Before you update the main application you need to update Praefect.
 Out of your Praefect nodes, pick one to be your Praefect deploy node.
-This is where you will install the new Omnibus package first and run
+This is where you install the new Omnibus package first and run
 database migrations.
 
 **Praefect deploy node**
@@ -277,13 +277,13 @@ database migrations.
 
   ```shell
   # Debian/Ubuntu
-  sudo apt-get update && sudo apt-get install gitlab-ce
+  sudo apt-get update && sudo apt-get install gitlab-ee
 
   # Centos/RHEL
-  sudo yum install gitlab-ce
+  sudo yum install gitlab-ee
   ```
 
-  If you are an Enterprise Edition user, replace `gitlab-ce` with `gitlab-ee` in the above command.
+  If you are a Community Edition user, replace `gitlab-ee` with `gitlab-ce` in the above command.
 
 - To apply the Praefect database migrations and restart Praefect, run:
 
@@ -296,10 +296,10 @@ database migrations.
 - Update the GitLab package:
 
   ```shell
-  sudo apt-get update && sudo apt-get install gitlab-ce
+  sudo apt-get update && sudo apt-get install gitlab-ee
   ```
 
-  If you are an Enterprise Edition user, replace `gitlab-ce` with `gitlab-ee` in the above command.
+  If you are a Community Edition user, replace `gitlab-ee` with `gitlab-ce` in the above command.
 
 - Ensure nodes are running the latest code:
 
@@ -330,13 +330,13 @@ node throughout the process.
 
   ```shell
   # Debian/Ubuntu
-  sudo apt-get update && sudo apt-get install gitlab-ce
+  sudo apt-get update && sudo apt-get install gitlab-ee
 
   # Centos/RHEL
-  sudo yum install gitlab-ce
+  sudo yum install gitlab-ee
   ```
 
-  If you are an Enterprise Edition user, replace `gitlab-ce` with `gitlab-ee` in the above command.
+  If you are a Community Edition user, replace `gitlab-ee` with `gitlab-ce` in the above command.
 
 - Ensure nodes are running the latest code
 
@@ -350,17 +350,17 @@ node throughout the process.
 
   ```shell
   # Debian/Ubuntu
-  sudo apt-get update && sudo apt-get install gitlab-ce
+  sudo apt-get update && sudo apt-get install gitlab-ee
 
   # Centos/RHEL
-  sudo yum install gitlab-ce
+  sudo yum install gitlab-ee
   ```
 
-  If you are an Enterprise Edition user, replace `gitlab-ce` with `gitlab-ee` in the above command.
+  If you are a Community Edition user, replace `gitlab-ee` with `gitlab-ce` in the above command.
 
 - If you're using PgBouncer:
 
-  You'll need to bypass PgBouncer and connect directly to the database master
+  You need to bypass PgBouncer and connect directly to the database master
   before running migrations.
 
   Rails uses an advisory lock when attempting to run a migration to prevent
@@ -391,10 +391,10 @@ node throughout the process.
 - Update the GitLab package
 
   ```shell
-  sudo apt-get update && sudo apt-get install gitlab-ce
+  sudo apt-get update && sudo apt-get install gitlab-ee
   ```
 
-  If you are an Enterprise Edition user, replace `gitlab-ce` with `gitlab-ee` in the above command.
+  If you are a Community Edition user, replace `gitlab-ee` with `gitlab-ce` in the above command.
 
 - Ensure nodes are running the latest code
 
@@ -457,7 +457,7 @@ following command to get address of current Redis primary
   ```
 
 - If your application node is running a version older than GitLab 12.7.0, you
-  will have to run the underlying `redis-cli` command (which `get-redis-master`
+  have to run the underlying `redis-cli` command (which `get-redis-master`
   command uses) to fetch information about the primary.
 
   1. Get the address of one of the sentinel nodes specified as
@@ -653,7 +653,7 @@ setting `gitlab_rails['auto_migrate'] = false` in
 
 This section describes the steps required to upgrade a multi-node / HA
 deployment with Geo. Some steps must be performed on a particular node. This
-node will be known as the “deploy node” and is noted through the following
+node is known as the “deploy node” and is noted through the following
 instructions.
 
 Updates must be performed in the following order:
@@ -737,7 +737,7 @@ sudo touch /etc/gitlab/skip-auto-reconfigure
 
 1. If you're using PgBouncer:
 
-   You'll need to bypass PgBouncer and connect directly to the database master
+   You need to bypass PgBouncer and connect directly to the database master
    before running migrations.
 
    Rails uses an advisory lock when attempting to run a migration to prevent

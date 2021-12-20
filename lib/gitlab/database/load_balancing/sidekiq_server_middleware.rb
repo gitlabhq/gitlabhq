@@ -6,6 +6,8 @@ module Gitlab
       class SidekiqServerMiddleware
         JobReplicaNotUpToDate = Class.new(StandardError)
 
+        MINIMUM_DELAY_INTERVAL_SECONDS = 0.8
+
         def call(worker, job, _queue)
           worker_class = worker.class
           strategy = select_load_balancing_strategy(worker_class, job)
@@ -42,11 +44,15 @@ module Gitlab
 
           wal_locations = get_wal_locations(job)
 
-          return :primary_no_wal unless wal_locations
+          return :primary_no_wal if wal_locations.blank?
+
+          # Happy case: we can read from a replica.
+          return replica_strategy(worker_class, job) if databases_in_sync?(wal_locations)
+
+          sleep_if_needed(job)
 
           if databases_in_sync?(wal_locations)
-            # Happy case: we can read from a replica.
-            retried_before?(worker_class, job) ? :replica_retried : :replica
+            replica_strategy(worker_class, job)
           elsif can_retry?(worker_class, job)
             # Optimistic case: The worker allows retries and we have retries left.
             :retry
@@ -56,17 +62,14 @@ module Gitlab
           end
         end
 
-        def get_wal_locations(job)
-          job['dedup_wal_locations'] || job['wal_locations'] || legacy_wal_location(job)
+        def sleep_if_needed(job)
+          remaining_delay = MINIMUM_DELAY_INTERVAL_SECONDS - (Time.current.to_f - job['created_at'].to_f)
+
+          sleep remaining_delay if remaining_delay > 0 && remaining_delay < MINIMUM_DELAY_INTERVAL_SECONDS
         end
 
-        # Already scheduled jobs could still contain legacy database write location.
-        # TODO: remove this in the next iteration
-        # https://gitlab.com/gitlab-org/gitlab/-/issues/338213
-        def legacy_wal_location(job)
-          wal_location = job['database_write_location'] || job['database_replica_location']
-
-          { ::Gitlab::Database::MAIN_DATABASE_NAME.to_sym => wal_location } if wal_location
+        def get_wal_locations(job)
+          job['dedup_wal_locations'] || job['wal_locations']
         end
 
         def load_balancing_available?(worker_class)
@@ -77,6 +80,10 @@ module Gitlab
 
         def can_retry?(worker_class, job)
           worker_class.get_data_consistency == :delayed && not_yet_retried?(job)
+        end
+
+        def replica_strategy(worker_class, job)
+          retried_before?(worker_class, job) ? :replica_retried : :replica
         end
 
         def retried_before?(worker_class, job)

@@ -16,7 +16,7 @@ The configuration for doing so depends on your desired outcome.
 
 ## Make the repositories read-only
 
-The first thing you'll want to accomplish is to ensure that no changes can be
+The first thing you want to accomplish is to ensure that no changes can be
 made to your repositories. There's two ways you can accomplish that:
 
 - Either stop Puma to make the internal API unreachable:
@@ -46,7 +46,7 @@ made to your repositories. There's two ways you can accomplish that:
 ## Shut down the GitLab UI
 
 If you don't mind shutting down the GitLab UI, then the easiest approach is to
-stop `sidekiq` and `puma`, and you'll effectively ensure that no
+stop `sidekiq` and `puma`, and you effectively ensure that no
 changes can be made to GitLab:
 
 ```shell
@@ -63,7 +63,7 @@ sudo gitlab-ctl start puma
 
 ## Make the database read-only
 
-If you want to allow users to use the GitLab UI, then you'll need to ensure that
+If you want to allow users to use the GitLab UI, then you need to ensure that
 the database is read-only:
 
 1. Take a [GitLab backup](../raketasks/backup_restore.md)
@@ -113,7 +113,7 @@ the database is read-only:
    sudo gitlab-ctl restart postgresql
    ```
 
-When you're ready to revert the read-only state, you'll need to remove the added
+When you're ready to revert the read-only state, you need to remove the added
 lines in `/etc/gitlab/gitlab.rb`, and reconfigure GitLab and restart PostgreSQL:
 
 ```shell

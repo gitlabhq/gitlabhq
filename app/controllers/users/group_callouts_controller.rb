@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Users
-  class GroupCalloutsController < UserCalloutsController
+  class GroupCalloutsController < Users::CalloutsController
     private
 
     def callout

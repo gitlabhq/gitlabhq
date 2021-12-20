@@ -1,0 +1,16 @@
+%tr
+  %td{ bgcolor: "#ffffff", height: "auto", style: "max-width: 600px; width: 100%; text-align: center; height: 200px; padding: 25px 15px; mso-line-height-rule: exactly; min-height: 40px; font-family: 'Source Sans Pro', helvetica, arial, sans-serif;", valign: "middle", width: "100%" }
+    = inline_image_link(@message.logo_path, { width: '150', style: 'width: 150px;' })
+    %h1{ style: "font-size: 40px; line-height: 46x; color: #000000; padding: 20px 0 0 0; font-weight: normal;" }
+      = @message.title
+%tr
+  %td{ style: "padding: 10px 20px 30px 20px; font-family: 'Source Sans Pro', helvetica, arial, sans-serif; color:#000000; font-size: 18px; line-height: 24px;" }
+    %p{ style: "margin: 0 0 20px 0;" }
+      = @message.body_line1.html_safe
+    - @message.body_line2&.tap do |line|
+      %p{ style: "margin: 0 0 20px 0;" }
+        = line.html_safe
+%tr
+  %td{ align: "center", style: "padding: 20px; font-family: 'Source Sans Pro', helvetica, arial, sans-serif;" }
+    .cta_link.cta_link_primary= @message.cta_link
+    .cta_link.cta_link_secondary= @message.cta2_link

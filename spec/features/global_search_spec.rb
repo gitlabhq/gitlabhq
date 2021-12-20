@@ -57,6 +57,14 @@ RSpec.describe 'Global search' do
       expect(page).to have_selector('.search-form')
       expect(page).to have_no_selector('#js-header-search')
     end
+
+    it 'focuses search input when shortcut "s" is pressed', :js do
+      expect(page).not_to have_selector('#search:focus')
+
+      find('body').native.send_key('s')
+
+      expect(page).to have_selector('#search:focus')
+    end
   end
 
   describe 'when new_header_search feature is enabled' do
@@ -69,6 +77,14 @@ RSpec.describe 'Global search' do
     it 'renders updated search bar' do
       expect(page).to have_no_selector('.search-form')
       expect(page).to have_selector('#js-header-search')
+    end
+
+    it 'focuses search input when shortcut "s" is pressed', :js do
+      expect(page).not_to have_selector('#search:focus')
+
+      find('body').native.send_key('s')
+
+      expect(page).to have_selector('#search:focus')
     end
   end
 end

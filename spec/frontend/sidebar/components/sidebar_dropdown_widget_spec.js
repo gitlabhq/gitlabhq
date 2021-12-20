@@ -17,7 +17,7 @@ import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import createFlash from '~/flash';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
-import { IssuableType } from '~/issue_show/constants';
+import { IssuableType } from '~/issues/constants';
 import { timeFor } from '~/lib/utils/datetime_utility';
 import SidebarDropdownWidget from '~/sidebar/components/sidebar_dropdown_widget.vue';
 import SidebarEditableItem from '~/sidebar/components/sidebar_editable_item.vue';
@@ -369,16 +369,18 @@ describe('SidebarDropdownWidget', () => {
 
       describe('when a user is searching', () => {
         describe('when search result is not found', () => {
-          it('renders "No milestone found"', async () => {
-            createComponent();
+          describe('when milestone', () => {
+            it('renders "No milestone found"', async () => {
+              createComponent();
 
-            await toggleDropdown();
+              await toggleDropdown();
 
-            findSearchBox().vm.$emit('input', 'non existing milestones');
+              findSearchBox().vm.$emit('input', 'non existing milestones');
 
-            await wrapper.vm.$nextTick();
+              await wrapper.vm.$nextTick();
 
-            expect(findDropdownText().text()).toBe('No milestone found');
+              expect(findDropdownText().text()).toBe('No milestone found');
+            });
           });
         });
       });

@@ -34,10 +34,10 @@ describe('IDE: User opens IDE', () => {
       expect(await screen.findByText('No files')).toBeDefined();
     });
 
-    it('shows a "New file" button', async () => {
-      const button = await screen.findByTitle('New file');
+    it('shows a "New file" button', () => {
+      const buttons = screen.queryAllByTitle('New file');
 
-      expect(button.tagName).toEqual('BUTTON');
+      expect(buttons.map((x) => x.tagName)).toContain('BUTTON');
     });
   });
 

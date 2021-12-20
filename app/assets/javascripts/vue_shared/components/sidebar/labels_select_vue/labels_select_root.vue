@@ -179,6 +179,8 @@ export default {
 
     document.addEventListener('mousedown', this.handleDocumentMousedown);
     document.addEventListener('click', this.handleDocumentClick);
+
+    this.updateLabelsSetState();
   },
   beforeDestroy() {
     document.removeEventListener('mousedown', this.handleDocumentMousedown);

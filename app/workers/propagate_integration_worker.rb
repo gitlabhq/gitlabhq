@@ -12,6 +12,6 @@ class PropagateIntegrationWorker
   idempotent!
 
   def perform(integration_id)
-    Admin::PropagateIntegrationService.propagate(Integration.find(integration_id))
+    ::Integrations::PropagateService.propagate(Integration.find(integration_id))
   end
 end

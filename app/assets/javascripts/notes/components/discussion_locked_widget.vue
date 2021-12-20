@@ -1,7 +1,6 @@
 <script>
 import { GlLink, GlIcon } from '@gitlab/ui';
 import { __, sprintf } from '~/locale';
-import Issuable from '~/vue_shared/mixins/issuable';
 import issuableStateMixin from '../mixins/issuable_state';
 
 export default {
@@ -9,8 +8,17 @@ export default {
     GlIcon,
     GlLink,
   },
-  mixins: [Issuable, issuableStateMixin],
+  mixins: [issuableStateMixin],
+  props: {
+    issuableType: {
+      required: true,
+      type: String,
+    },
+  },
   computed: {
+    issuableDisplayName() {
+      return this.issuableType.replace(/_/g, ' ');
+    },
     projectArchivedWarning() {
       return __('This project is archived and cannot be commented on.');
     },

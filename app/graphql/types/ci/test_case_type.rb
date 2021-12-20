@@ -18,7 +18,7 @@ module Types
       field :classname, GraphQL::Types::String, null: true,
         description: 'Classname of the test case.'
 
-      field :execution_time, GraphQL::FLOAT_TYPE, null: true,
+      field :execution_time, GraphQL::Types::Float, null: true,
         description: 'Test case execution time in seconds.'
 
       field :file, GraphQL::Types::String, null: true,

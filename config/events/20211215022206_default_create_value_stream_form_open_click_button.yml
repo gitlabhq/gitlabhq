@@ -1,0 +1,21 @@
+description: "Create stream value"
+category: default
+action: click_button
+label_description: "`create_value_stream_form_open`"
+property_description: ""
+value_description: ""
+extra_properties:
+identifiers:
+product_section: dev
+product_stage: manage
+product_group: group::optimize
+product_category:
+milestone: "14.0"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/62865
+distributions:
+- ce
+- ee
+tiers:
+- free
+- premium
+- ultimate

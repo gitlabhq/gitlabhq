@@ -121,9 +121,7 @@ module API
 
               not_found!('Packages') if packages.empty?
 
-              include_metadata = Feature.enabled?(:packages_npm_abbreviated_metadata, project, default_enabled: :yaml)
-
-              present ::Packages::Npm::PackagePresenter.new(package_name, packages, include_metadata: include_metadata),
+              present ::Packages::Npm::PackagePresenter.new(package_name, packages),
                 with: ::API::Entities::NpmPackage
             end
           end

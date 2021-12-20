@@ -10,6 +10,9 @@ RSpec.describe 'User uploads new design', :js do
   let(:issue) { create(:issue, project: project) }
 
   before do
+    # Cause of raising query limiting threshold https://gitlab.com/gitlab-org/gitlab/-/issues/347334
+    stub_const("Gitlab::QueryLimiting::Transaction::THRESHOLD", 102)
+
     sign_in(user)
     enable_design_management(feature_enabled)
     visit project_issue_path(project, issue)
@@ -27,10 +30,10 @@ RSpec.describe 'User uploads new design', :js do
         expect(page).to have_content('dk.png')
       end
 
-      upload_design(gif_fixture, count: 2)
+      upload_design([gif_fixture, logo_svg_fixture, big_image_fixture], count: 4)
 
-      expect(page).to have_selector('.js-design-list-item', count: 2)
-      expect(page.all('.js-design-list-item').map(&:text)).to eq(['dk.png', 'banana_sample.gif'])
+      expect(page).to have_selector('.js-design-list-item', count: 4)
+      expect(page.all('.js-design-list-item').map(&:text)).to eq(['dk.png', 'banana_sample.gif', 'logo_sample.svg', 'big-image.png'])
     end
   end
 
@@ -50,8 +53,16 @@ RSpec.describe 'User uploads new design', :js do
     Rails.root.join('spec', 'fixtures', 'banana_sample.gif')
   end
 
-  def upload_design(fixture, count:)
-    attach_file(:upload_file, fixture, match: :first, make_visible: true)
+  def logo_svg_fixture
+    Rails.root.join('spec', 'fixtures', 'logo_sample.svg')
+  end
+
+  def big_image_fixture
+    Rails.root.join('spec', 'fixtures', 'big-image.png')
+  end
+
+  def upload_design(fixtures, count:)
+    attach_file(:upload_file, fixtures, multiple: true, match: :first, make_visible: true)
 
     wait_for('designs uploaded') do
       issue.reload.designs.count == count

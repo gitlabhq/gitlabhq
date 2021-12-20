@@ -6,7 +6,7 @@ exports[`packages_list_row renders 1`] = `
   data-qa-selector="package_row"
 >
   <div
-    class="gl-display-flex gl-align-items-center gl-py-3 gl-px-5"
+    class="gl-display-flex gl-align-items-center gl-py-3"
   >
     <!---->
      
@@ -77,7 +77,9 @@ exports[`packages_list_row renders 1`] = `
         <div
           class="gl-display-flex gl-align-items-center gl-min-h-6"
         >
-          <span>
+          <span
+            data-testid="created-date"
+          >
             Created 
             <timeago-tooltip-stub
               cssclass=""
@@ -90,7 +92,7 @@ exports[`packages_list_row renders 1`] = `
     </div>
      
     <div
-      class="gl-w-9 gl-display-none gl-sm-display-flex gl-justify-content-end gl-pr-1"
+      class="gl-w-9 gl-display-flex gl-justify-content-end gl-pr-1"
     >
       <gl-button-stub
         aria-label="Remove package"

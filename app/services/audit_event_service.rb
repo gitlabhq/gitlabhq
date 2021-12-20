@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class AuditEventService
+  include AuditEventSaveType
+
   # Instantiates a new service
   #
   # @param [User] author the user who authors the change
@@ -10,13 +12,16 @@ class AuditEventService
   #   - Group: events are visible at Group and Instance level
   #   - User: events are visible at Instance level
   # @param [Hash] details extra data of audit event
+  # @param [Symbol] save_type the type to save the event
+  #   Can be selected from the following, :database, :stream, :database_and_stream .
   #
   # @return [AuditEventService]
-  def initialize(author, entity, details = {})
+  def initialize(author, entity, details = {}, save_type = :database_and_stream)
     @author = build_author(author)
     @entity = entity
     @details = details
     @ip_address = resolve_ip_address(@author)
+    @save_type = save_type
   end
 
   # Builds the @details attribute for authentication
@@ -133,8 +138,8 @@ class AuditEventService
   end
 
   def save_or_track(event)
-    event.save!
-    stream_event_to_external_destinations(event)
+    event.save! if should_save_database?(@save_type)
+    stream_event_to_external_destinations(event) if should_save_stream?(@save_type)
   rescue StandardError => e
     Gitlab::ErrorTracking.track_exception(e, audit_event_type: event.class.to_s)
   end

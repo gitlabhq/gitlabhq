@@ -14,7 +14,7 @@ module API
         requires :id, type: String, desc: 'The suggestion ID'
         optional :commit_message, type: String, desc: "A custom commit message to use instead of the default generated message or the project's default message"
       end
-      put ':id/apply' do
+      put ':id/apply', urgency: :low do
         suggestion = Suggestion.find_by_id(params[:id])
 
         if suggestion
@@ -31,7 +31,7 @@ module API
         requires :ids, type: Array[Integer], coerce_with: ::API::Validations::Types::CommaSeparatedToIntegerArray.coerce, desc: "An array of suggestion ID's"
         optional :commit_message, type: String, desc: "A custom commit message to use instead of the default generated message or the project's default message"
       end
-      put 'batch_apply' do
+      put 'batch_apply', urgency: :low do
         ids = params[:ids]
 
         suggestions = Suggestion.id_in(ids)

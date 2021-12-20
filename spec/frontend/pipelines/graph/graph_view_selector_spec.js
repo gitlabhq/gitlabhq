@@ -1,4 +1,4 @@
-import { GlAlert, GlLoadingIcon, GlSegmentedControl } from '@gitlab/ui';
+import { GlAlert, GlButton, GlButtonGroup, GlLoadingIcon } from '@gitlab/ui';
 import { mount, shallowMount } from '@vue/test-utils';
 import { LAYER_VIEW, STAGE_VIEW } from '~/pipelines/components/graph/constants';
 import GraphViewSelector from '~/pipelines/components/graph/graph_view_selector.vue';
@@ -7,9 +7,9 @@ describe('the graph view selector component', () => {
   let wrapper;
 
   const findDependenciesToggle = () => wrapper.find('[data-testid="show-links-toggle"]');
-  const findViewTypeSelector = () => wrapper.findComponent(GlSegmentedControl);
-  const findStageViewLabel = () => findViewTypeSelector().findAll('label').at(0);
-  const findLayersViewLabel = () => findViewTypeSelector().findAll('label').at(1);
+  const findViewTypeSelector = () => wrapper.findComponent(GlButtonGroup);
+  const findStageViewButton = () => findViewTypeSelector().findAllComponents(GlButton).at(0);
+  const findLayerViewButton = () => findViewTypeSelector().findAllComponents(GlButton).at(1);
   const findSwitcherLoader = () => wrapper.find('[data-testid="switcher-loading-state"]');
   const findToggleLoader = () => findDependenciesToggle().find(GlLoadingIcon);
   const findHoverTip = () => wrapper.findComponent(GlAlert);
@@ -51,8 +51,13 @@ describe('the graph view selector component', () => {
       createComponent({ mountFn: mount });
     });
 
-    it('shows the Stage view label as active in the selector', () => {
-      expect(findStageViewLabel().classes()).toContain('active');
+    it('shows the Stage view button as selected', () => {
+      expect(findStageViewButton().classes('selected')).toBe(true);
+    });
+
+    it('shows the Job dependencies view button not selected', () => {
+      expect(findLayerViewButton().exists()).toBe(true);
+      expect(findLayerViewButton().classes('selected')).toBe(false);
     });
 
     it('does not show the Job dependencies (links) toggle', () => {
@@ -70,8 +75,13 @@ describe('the graph view selector component', () => {
       });
     });
 
-    it('shows the Job dependencies view label as active in the selector', () => {
-      expect(findLayersViewLabel().classes()).toContain('active');
+    it('shows the Job dependencies view as selected', () => {
+      expect(findLayerViewButton().classes('selected')).toBe(true);
+    });
+
+    it('shows the Stage button as not selected', () => {
+      expect(findStageViewButton().exists()).toBe(true);
+      expect(findStageViewButton().classes('selected')).toBe(false);
     });
 
     it('shows the Job dependencies (links) toggle', () => {
@@ -94,7 +104,7 @@ describe('the graph view selector component', () => {
       expect(wrapper.emitted().updateViewType).toBeUndefined();
       expect(findSwitcherLoader().exists()).toBe(false);
 
-      await findStageViewLabel().trigger('click');
+      await findStageViewButton().trigger('click');
       /*
         Loading happens before the event is emitted or timers are run.
         Then we run the timer because the event is emitted in setInterval
@@ -122,6 +132,14 @@ describe('the graph view selector component', () => {
 
       expect(wrapper.emitted().updateShowLinksState).toHaveLength(1);
       expect(wrapper.emitted().updateShowLinksState).toEqual([[true]]);
+    });
+
+    it('does not emit an event if the click occurs on the currently selected view button', async () => {
+      expect(wrapper.emitted().updateShowLinksState).toBeUndefined();
+
+      await findLayerViewButton().trigger('click');
+
+      expect(wrapper.emitted().updateShowLinksState).toBeUndefined();
     });
   });
 

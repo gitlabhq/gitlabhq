@@ -87,7 +87,7 @@ Users with the [Developer role](../../permissions.md) can create new wiki pages:
    [special characters](#special-characters-in-page-titles) for subdirectories and formatting,
    and have [length restrictions](#length-restrictions-for-file-and-directory-names).
 1. Add content to your wiki page.
-1. (Optional) Attach a file, and GitLab stores it according to your installed version of GitLab:
+1. Optional. Attach a file, and GitLab stores it according to your installed version of GitLab:
    - *Files added in [GitLab 11.3 and later](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/33475):*
      Files are stored in the wiki's Git repository.
    - *Files added GitLab 11.2 and earlier:* Files are stored in GitLab itself. To add
@@ -236,7 +236,7 @@ GitLab tracks wiki creation, deletion, and update events. These events are displ
 - [User profile](../../profile/index.md#access-your-user-profile).
 - Activity pages, depending on the type of wiki:
   - [Group activity](../../group/index.md#view-group-activity).
-  - [Project activity](../working_with_projects.md#project-activity).
+  - [Project activity](../working_with_projects.md#view-project-activity).
 
 Commits to wikis are not counted in [repository analytics](../../analytics/repository_analytics.md).
 
@@ -290,7 +290,7 @@ To add a link to an external wiki from a project's left sidebar:
 1. On the left sidebar, select **Settings > Integrations**.
 1. Select **External wiki**.
 1. Add the URL to your external wiki.
-1. (Optional) Select **Test settings** to verify the connection.
+1. Optional. To verify the connection, select **Test settings**.
 1. Select **Save changes**.
 
 You can now see the **External wiki** option from your project's
@@ -339,27 +339,24 @@ experience in the Wiki. To opt in for the new editor:
 
 1. Create a new wiki page, or edit an existing one.
 1. Ensure the wiki page uses the Markdown format. Other formats are not yet supported.
-1. Below the **Format** select box, select **Use the new editor**:
+1. Above the content field, select **Edit rich text**:
 
-   ![Use new editor button image](img/use_new_editor_button_v14.0.png)
+   ![Use new editor button image](img/use_new_editor_button_v14.6.png)
 
 ### Use the Content Editor
 
 1. [Create](#create-a-new-wiki-page) a new wiki page, or [edit](#edit-a-wiki-page) an existing one.
 1. Select **Markdown** as your format.
-1. Below the **Format** select box, select **Use new editor**.
+1. Above **Content**, select **Edit rich text**.
 1. Customize your page's content using the various formatting options available in the content editor.
 1. Select **Create page** for a new page, or **Save changes** for an existing page:
 
-   ![Content Editor in Wikis image](img/content_editor_v14.0.png)
+   ![Content Editor in Wikis image](img/content_editor_v14.6.png)
 
 ### Switch back to the old editor
 
 1. *If you're editing the page in the content editor,* scroll to **Content**.
-1. Select **Switch me back to the classic editor**.
-1. Select **Switch to classic editor** in the confirmation popup to confirm.
-
-When you switch back to the old editor, any unsaved changes are lost.
+1. Select **Edit source**.
 
 ### GitLab Flavored Markdown support
 

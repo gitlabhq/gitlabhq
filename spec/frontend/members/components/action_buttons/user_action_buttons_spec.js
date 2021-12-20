@@ -13,6 +13,7 @@ describe('UserActionButtons', () => {
       propsData: {
         member,
         isCurrentUser: false,
+        isInvitedUser: false,
         ...propsData,
       },
     });
@@ -45,7 +46,9 @@ describe('UserActionButtons', () => {
         title: 'Remove member',
         isAccessRequest: false,
         isInvite: false,
-        icon: 'remove',
+        icon: '',
+        buttonCategory: 'secondary',
+        buttonText: 'Remove user',
         userDeletionObstacles: {
           name: member.user.name,
           obstacles: parseUserDeletionObstacles(member.user),
@@ -128,5 +131,31 @@ describe('UserActionButtons', () => {
     it('sets member type correctly', () => {
       expect(findRemoveMemberButton().props().memberType).toBe('ProjectMember');
     });
+  });
+
+  describe('isInvitedUser', () => {
+    it.each`
+      isInvitedUser | icon        | buttonText       | buttonCategory
+      ${true}       | ${'remove'} | ${null}          | ${'primary'}
+      ${false}      | ${''}       | ${'Remove user'} | ${'secondary'}
+    `(
+      'passes the correct props to remove-member-button when isInvitedUser is $isInvitedUser',
+      ({ isInvitedUser, icon, buttonText, buttonCategory }) => {
+        createComponent({
+          isInvitedUser,
+          permissions: {
+            canRemove: true,
+          },
+        });
+
+        expect(findRemoveMemberButton().props()).toEqual(
+          expect.objectContaining({
+            icon,
+            buttonText,
+            buttonCategory,
+          }),
+        );
+      },
+    );
   });
 });

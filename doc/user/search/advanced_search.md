@@ -14,6 +14,10 @@ This is the user documentation. To configure the Advanced Search,
 visit the [administrator documentation](../../integration/elasticsearch.md).
 Advanced Search is enabled in GitLab.com.
 
+INFO:
+Get advanced search and more with a
+[free 30-day trial of GitLab Ultimate](https://about.gitlab.com/free-trial/index.html?glm_source=docs.gitlab.com&glm_content=p-advanced-search-docs).
+
 GitLab Advanced Search expands on the Basic Search with an additional set of
 features for faster, more advanced searches across the entire GitLab instance
 when searching in:
@@ -48,13 +52,13 @@ The Advanced Search can be useful in various scenarios:
 
 ## Use the Advanced Search syntax
 
-Elasticsearch has only data for the default branch. That means that if you go
+Elasticsearch has data for the default branch only. That means that if you go
 to the repository tree and switch the branch from the default to something else,
-then the "Code" tab in the search result page will be served by the basic
+then the **Code** tab in the search result page is served by the basic
 search even if Elasticsearch is enabled.
 
 The Advanced Search syntax supports fuzzy or exact search queries with prefixes,
-boolean operators, and much more. Use the search as before and GitLab will show
+boolean operators, and much more. Use the search as before and GitLab shows
 you matching code from each project you have access to.
 
 ![Advanced Search](img/advanced_search_v13.10.png)
@@ -62,8 +66,8 @@ you matching code from each project you have access to.
 Full details can be found in the [Elasticsearch documentation](https://www.elastic.co/guide/en/elasticsearch/reference/5.3/query-dsl-simple-query-string-query.html#_simple_query_string_syntax), but
 here's a quick guide:
 
-- Searches look for all the words in a query, in any order - e.g.: searching
-  issues for [`display bug`](https://gitlab.com/search?snippets=&scope=issues&repository_ref=&search=display+bug&group_id=9970&project_id=278964) and [`bug display`](https://gitlab.com/search?snippets=&scope=issues&repository_ref=&search=bug+Display&group_id=9970&project_id=278964) will return the same results.
+- Searches look for all the words in a query, in any order - for example: searching
+  issues for [`display bug`](https://gitlab.com/search?snippets=&scope=issues&repository_ref=&search=display+bug&group_id=9970&project_id=278964) and [`bug display`](https://gitlab.com/search?snippets=&scope=issues&repository_ref=&search=bug+Display&group_id=9970&project_id=278964) return the same results.
 - To find the exact phrase (stemming still applies), use double quotes: [`"display bug"`](https://gitlab.com/search?snippets=&scope=issues&repository_ref=&search=%22display+bug%22&group_id=9970&project_id=278964)
 - To find bugs not mentioning display, use `-`: [`bug -display`](https://gitlab.com/search?snippets=&scope=issues&repository_ref=&search=bug+-display&group_id=9970&project_id=278964)
 - To find a bug in display or banner, use `|`: [`bug display | banner`](https://gitlab.com/search?snippets=&scope=issues&repository_ref=&search=bug+display+%7C+banner&group_id=9970&project_id=278964)
@@ -81,7 +85,7 @@ Advanced Search also supports the use of filters. The available filters are:
 - `blob`: Filters by Git `object ID`. Exact match only.
 
 To use them, add them to your keyword in the format `<filter_name>:<value>` without
-any spaces between the colon (`:`) and the value. When no keyword is provided, an asterisk (`*`) will be used as the keyword.
+any spaces between the colon (`:`) and the value. When no keyword is provided, an asterisk (`*`) is used as the keyword.
 
 Examples:
 

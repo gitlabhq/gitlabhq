@@ -52,7 +52,16 @@ class GroupsFinder < UnionFinder
     return [Group.all] if current_user&.can_read_all_resources? && all_available?
 
     groups = []
-    groups << Gitlab::ObjectHierarchy.new(groups_for_ancestors, groups_for_descendants).all_objects if current_user
+
+    if current_user
+      if Feature.enabled?(:use_traversal_ids_groups_finder, default_enabled: :yaml)
+        groups << current_user.authorized_groups.self_and_ancestors
+        groups << current_user.groups.self_and_descendants
+      else
+        groups << Gitlab::ObjectHierarchy.new(groups_for_ancestors, groups_for_descendants).all_objects
+      end
+    end
+
     groups << Group.unscoped.public_to_user(current_user) if include_public_groups?
     groups << Group.none if groups.empty?
     groups
@@ -72,9 +81,13 @@ class GroupsFinder < UnionFinder
       .groups
       .where('members.access_level >= ?', params[:min_access_level])
 
-    Gitlab::ObjectHierarchy
-      .new(groups)
-      .base_and_descendants
+    if Feature.enabled?(:use_traversal_ids_groups_finder, default_enabled: :yaml)
+      groups.self_and_descendants
+    else
+      Gitlab::ObjectHierarchy
+        .new(groups)
+        .base_and_descendants
+    end
   end
   # rubocop: enable CodeReuse/ActiveRecord
 

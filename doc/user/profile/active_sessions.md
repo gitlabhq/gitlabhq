@@ -5,14 +5,14 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: howto
 ---
 
-# Active sessions
+# Active sessions **(FREE)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/17867) in GitLab 10.8.
 
 GitLab lists all devices that have logged into your account. You can
 review the sessions, and revoke any you don't recognize.
 
-## Listing all active sessions
+## List all active sessions
 
 To list all active sessions:
 
@@ -29,7 +29,7 @@ To list all active sessions:
 GitLab allows users to have up to 100 active sessions at once. If the number of active sessions
 exceeds 100, the oldest ones are deleted.
 
-## Revoking a session
+## Revoke a session
 
 To revoke an active session:
 
@@ -40,7 +40,7 @@ To revoke an active session:
 
 NOTE:
 When any session is revoked all **Remember me** tokens for all
-devices are revoked. See ['Why do I keep getting signed out?'](index.md#why-do-i-keep-getting-signed-out)
+devices are revoked. See [Why do I keep getting signed out?](index.md#why-do-i-keep-getting-signed-out)
 for more information about the **Remember me** feature.
 
 <!-- ## Troubleshooting

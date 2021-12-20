@@ -1,10 +1,7 @@
 <script>
 import { GlFormGroup, GlFormCheckbox, GlFormInput, GlSprintf, GlLink } from '@gitlab/ui';
 import { mapGetters } from 'vuex';
-import {
-  VALIDATE_INTEGRATION_FORM_EVENT,
-  GET_JIRA_ISSUE_TYPES_EVENT,
-} from '~/integrations/constants';
+import { VALIDATE_INTEGRATION_FORM_EVENT } from '~/integrations/constants';
 import { s__, __ } from '~/locale';
 import eventHub from '../event_hub';
 import JiraUpgradeCta from './jira_upgrade_cta.vue';
@@ -91,9 +88,6 @@ export default {
     validateForm() {
       this.validated = true;
     },
-    getJiraIssueTypes() {
-      eventHub.$emit(GET_JIRA_ISSUE_TYPES_EVENT);
-    },
   },
   i18n: {
     sectionTitle: s__('JiraService|View Jira issues in GitLab'),
@@ -123,7 +117,11 @@ export default {
         </p>
         <template v-if="showJiraIssuesIntegration">
           <input name="service[issues_enabled]" type="hidden" :value="enableJiraIssues || false" />
-          <gl-form-checkbox v-model="enableJiraIssues" :disabled="isInheriting">
+          <gl-form-checkbox
+            v-model="enableJiraIssues"
+            :disabled="isInheriting"
+            data-qa-selector="service_jira_issues_enabled_checkbox"
+          >
             {{ $options.i18n.enableCheckboxLabel }}
             <template #help>
               {{ $options.i18n.enableCheckboxHelp }}
@@ -136,7 +134,7 @@ export default {
               :initial-issue-type-id="initialVulnerabilitiesIssuetype"
               :show-full-feature="showJiraVulnerabilitiesIntegration"
               data-testid="jira-for-vulnerabilities"
-              @request-get-issue-types="getJiraIssueTypes"
+              @request-jira-issue-types="$emit('request-jira-issue-types')"
             />
             <jira-upgrade-cta
               v-if="!showJiraVulnerabilitiesIntegration"
@@ -168,6 +166,7 @@ export default {
           id="service_project_key"
           v-model="projectKey"
           name="service[project_key]"
+          data-qa-selector="service_jira_project_key_field"
           :placeholder="$options.i18n.projectKeyPlaceholder"
           :required="enableJiraIssues"
           :state="validProjectKey"

@@ -5,16 +5,25 @@ export const packageSettings = () => ({
   genericDuplicateExceptionRegex: '',
 });
 
-export const dependencyProxySettings = () => ({
+export const dependencyProxySettings = (extend) => ({
   enabled: true,
+  ...extend,
+});
+
+export const dependencyProxyImageTtlPolicy = (extend) => ({
+  ttl: 90,
+  enabled: true,
+  ...extend,
 });
 
 export const groupPackageSettingsMock = {
   data: {
     group: {
+      id: '1',
       fullPath: 'foo_group_path',
       packageSettings: packageSettings(),
       dependencyProxySetting: dependencyProxySettings(),
+      dependencyProxyImageTtlPolicy: dependencyProxyImageTtlPolicy(),
     },
   },
 };
@@ -38,6 +47,16 @@ export const dependencyProxySettingMutationMock = (override) => ({
   data: {
     updateDependencyProxySettings: {
       dependencyProxySetting: dependencyProxySettings(),
+      errors: [],
+      ...override,
+    },
+  },
+});
+
+export const dependencyProxyUpdateTllPolicyMutationMock = (override) => ({
+  data: {
+    updateDependencyProxyImageTtlGroupPolicy: {
+      dependencyProxyImageTtlPolicy: dependencyProxyImageTtlPolicy(),
       errors: [],
       ...override,
     },
@@ -68,7 +87,8 @@ export const groupPackageSettingsMutationErrorMock = {
     },
   ],
 };
-export const dependencyProxySettingMutationErrorMock = {
+
+export const mutationErrorMock = {
   errors: [
     {
       message: 'Some error',

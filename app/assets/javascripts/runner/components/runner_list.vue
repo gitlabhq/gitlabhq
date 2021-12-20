@@ -1,27 +1,26 @@
 <script>
 import { GlTable, GlTooltipDirective, GlSkeletonLoader } from '@gitlab/ui';
+import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate/tooltip_on_truncate.vue';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
-import { __, s__ } from '~/locale';
+import { formatNumber, __, s__ } from '~/locale';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
+import { RUNNER_JOB_COUNT_LIMIT } from '../constants';
 import RunnerActionsCell from './cells/runner_actions_cell.vue';
 import RunnerSummaryCell from './cells/runner_summary_cell.vue';
 import RunnerStatusCell from './cells/runner_status_cell.vue';
 import RunnerTags from './runner_tags.vue';
 
-const tableField = ({ key, label = '', width = 10 }) => {
+const tableField = ({ key, label = '', thClasses = [] }) => {
   return {
     key,
     label,
     thClass: [
-      `gl-w-${width}p`,
       'gl-bg-transparent!',
       'gl-border-b-solid!',
       'gl-border-b-gray-100!',
-      'gl-py-5!',
-      'gl-px-0!',
       'gl-border-b-1!',
+      ...thClasses,
     ],
-    tdClass: ['gl-py-5!', 'gl-px-1!'],
     tdAttr: {
       'data-testid': `td-${key}`,
     },
@@ -32,6 +31,7 @@ export default {
   components: {
     GlTable,
     GlSkeletonLoader,
+    TooltipOnTruncate,
     TimeAgo,
     RunnerActionsCell,
     RunnerSummaryCell,
@@ -53,6 +53,12 @@ export default {
     },
   },
   methods: {
+    formatJobCount(jobCount) {
+      if (jobCount > RUNNER_JOB_COUNT_LIMIT) {
+        return `${formatNumber(RUNNER_JOB_COUNT_LIMIT)}+`;
+      }
+      return formatNumber(jobCount);
+    },
     runnerTrAttr(runner) {
       if (runner) {
         return {
@@ -64,10 +70,11 @@ export default {
   },
   fields: [
     tableField({ key: 'status', label: s__('Runners|Status') }),
-    tableField({ key: 'summary', label: s__('Runners|Runner ID'), width: 30 }),
+    tableField({ key: 'summary', label: s__('Runners|Runner ID'), thClasses: ['gl-lg-w-25p'] }),
     tableField({ key: 'version', label: __('Version') }),
     tableField({ key: 'ipAddress', label: __('IP Address') }),
-    tableField({ key: 'tagList', label: __('Tags'), width: 20 }),
+    tableField({ key: 'jobCount', label: __('Jobs') }),
+    tableField({ key: 'tagList', label: __('Tags'), thClasses: ['gl-lg-w-25p'] }),
     tableField({ key: 'contactedAt', label: __('Last contact') }),
     tableField({ key: 'actions', label: '' }),
   ],
@@ -82,6 +89,7 @@ export default {
       :tbody-tr-attr="runnerTrAttr"
       data-testid="runner-list"
       stacked="md"
+      primary-key="id"
       fixed
     >
       <template v-if="!runners.length" #table-busy>
@@ -101,11 +109,19 @@ export default {
       </template>
 
       <template #cell(version)="{ item: { version } }">
-        {{ version }}
+        <tooltip-on-truncate class="gl-display-block gl-text-truncate" :title="version">
+          {{ version }}
+        </tooltip-on-truncate>
       </template>
 
       <template #cell(ipAddress)="{ item: { ipAddress } }">
-        {{ ipAddress }}
+        <tooltip-on-truncate class="gl-display-block gl-text-truncate" :title="ipAddress">
+          {{ ipAddress }}
+        </tooltip-on-truncate>
+      </template>
+
+      <template #cell(jobCount)="{ item: { jobCount } }">
+        {{ formatJobCount(jobCount) }}
       </template>
 
       <template #cell(tagList)="{ item: { tagList } }">

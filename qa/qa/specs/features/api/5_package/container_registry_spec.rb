@@ -72,15 +72,17 @@ module QA
         registry&.remove_via_api!
       end
 
-      it 'pushes, pulls image to the registry and deletes image blob, manifest and tag', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1819' do
-        Resource::Repository::Commit.fabricate_via_api! do |commit|
-          commit.api_client = api_client
-          commit.commit_message = 'Add .gitlab-ci.yml'
-          commit.project = project
-          commit.add_files([{
-                                file_path: '.gitlab-ci.yml',
-                                content: gitlab_ci_yaml
-                            }])
+      it 'pushes, pulls image to the registry and deletes image blob, manifest and tag', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348001' do
+        Support::Retrier.retry_on_exception(max_attempts: 3, sleep_interval: 2) do
+          Resource::Repository::Commit.fabricate_via_api! do |commit|
+            commit.api_client = api_client
+            commit.commit_message = 'Add .gitlab-ci.yml'
+            commit.project = project
+            commit.add_files([{
+                                  file_path: '.gitlab-ci.yml',
+                                  content: gitlab_ci_yaml
+                              }])
+          end
         end
 
         Support::Waiter.wait_until(max_duration: 10) { pipeline_is_triggered? }

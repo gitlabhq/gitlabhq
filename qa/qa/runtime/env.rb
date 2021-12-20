@@ -93,10 +93,6 @@ module QA
         ENV['CI'] || ENV['CI_SERVER']
       end
 
-      def cluster_api_url
-        ENV['CLUSTER_API_URL']
-      end
-
       def qa_cookies
         ENV['QA_COOKIES'] && ENV['QA_COOKIES'].split(';')
       end
@@ -285,6 +281,8 @@ module QA
       end
 
       def knapsack?
+        return false unless ENV['CI_NODE_TOTAL'].to_i > 1
+
         !!(ENV['KNAPSACK_GENERATE_REPORT'] || ENV['KNAPSACK_REPORT_PATH'] || ENV['KNAPSACK_TEST_FILE_PATTERN'])
       end
 

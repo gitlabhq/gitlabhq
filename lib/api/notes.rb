@@ -7,6 +7,11 @@ module API
 
     before { authenticate! }
 
+    urgency :low, [
+      '/projects/:id/merge_requests/:noteable_id/notes',
+      '/projects/:id/merge_requests/:noteable_id/notes/:note_id'
+    ]
+
     Helpers::NotesHelpers.feature_category_per_noteable_type.each do |noteable_type, feature_category|
       parent_type = noteable_type.parent_class.to_s.underscore
       noteables_str = noteable_type.to_s.underscore.pluralize
@@ -74,7 +79,7 @@ module API
         post ":id/#{noteables_str}/:noteable_id/notes", feature_category: feature_category do
           allowlist =
             Gitlab::CurrentSettings.current_application_settings.notes_create_limit_allowlist
-          check_rate_limit! :notes_create, [current_user], allowlist
+          check_rate_limit! :notes_create, scope: current_user, users_allowlist: allowlist
           noteable = find_noteable(noteable_type, params[:noteable_id])
 
           opts = {

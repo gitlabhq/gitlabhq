@@ -51,9 +51,7 @@ class Namespace < ApplicationRecord
 
   # This should _not_ be `inverse_of: :namespace`, because that would also set
   # `user.namespace` when this user creates a group with themselves as `owner`.
-  # TODO: can this be moved into the UserNamespace class?
-  #       evaluate in issue https://gitlab.com/gitlab-org/gitlab/-/issues/341070
-  belongs_to :owner, class_name: "User"
+  belongs_to :owner, class_name: 'User'
 
   belongs_to :parent, class_name: "Namespace"
   has_many :children, -> { where(type: Group.sti_name) }, class_name: "Namespace", foreign_key: :parent_id
@@ -65,6 +63,9 @@ class Namespace < ApplicationRecord
 
   has_one :admin_note, inverse_of: :namespace
   accepts_nested_attributes_for :admin_note, update_only: true
+
+  has_one :ci_namespace_mirror, class_name: 'Ci::NamespaceMirror'
+  has_many :sync_events, class_name: 'Namespaces::SyncEvent'
 
   validates :owner, presence: true, if: ->(n) { n.owner_required? }
   validates :name,
@@ -96,7 +97,7 @@ class Namespace < ApplicationRecord
 
   validates :max_artifacts_size, numericality: { only_integer: true, greater_than: 0, allow_nil: true }
 
-  validate :validate_parent_type, if: -> { Feature.enabled?(:validate_namespace_parent_type, default_enabled: :yaml) }
+  validate :validate_parent_type
 
   # ProjectNamespaces excluded as they are not meant to appear in the group hierarchy at the moment.
   validate :nesting_level_allowed, unless: -> { project_namespace? }
@@ -105,6 +106,8 @@ class Namespace < ApplicationRecord
 
   delegate :name, to: :owner, allow_nil: true, prefix: true
   delegate :avatar_url, to: :owner, allow_nil: true
+
+  after_save :schedule_sync_event_worker, if: -> { saved_change_to_id? || saved_change_to_parent_id? }
 
   after_commit :refresh_access_of_projects_invited_groups, on: :update, if: -> { previous_changes.key?('share_with_group_lock') }
 
@@ -122,12 +125,8 @@ class Namespace < ApplicationRecord
       saved_change_to_name? || saved_change_to_path? || saved_change_to_parent_id?
   }
 
-  # TODO: change to `type: Namespaces::UserNamespace.sti_name` when
-  #       working on issue https://gitlab.com/gitlab-org/gitlab/-/issues/341070
-  scope :user_namespaces, -> { where(type: [nil, Namespaces::UserNamespace.sti_name]) }
-  # TODO: this can be simplified with `type != 'Project'`  when working on issue
-  #       https://gitlab.com/gitlab-org/gitlab/-/issues/341070
-  scope :without_project_namespaces, -> { where(Namespace.arel_table[:type].is_distinct_from(Namespaces::ProjectNamespace.sti_name)) }
+  scope :user_namespaces, -> { where(type: Namespaces::UserNamespace.sti_name) }
+  scope :without_project_namespaces, -> { where(Namespace.arel_table[:type].not_eq(Namespaces::ProjectNamespace.sti_name)) }
   scope :sort_by_type, -> { order(Gitlab::Database.nulls_first_order(:type)) }
   scope :include_route, -> { includes(:route) }
   scope :by_parent, -> (parent) { where(parent_id: parent) }
@@ -614,6 +613,13 @@ class Namespace < ApplicationRecord
 
   def enforce_minimum_path_length?
     path_changed? && !project_namespace?
+  end
+
+  # SyncEvents are created by PG triggers (with the function `insert_namespaces_sync_event`)
+  def schedule_sync_event_worker
+    run_after_commit do
+      Namespaces::SyncEvent.enqueue_worker
+    end
   end
 end
 

@@ -37,17 +37,16 @@
   .settings-content
     = render partial: 'network_rate_limits', locals: { anchor: 'js-packages-limits-settings', setting_fragment: 'packages_api' }
 
-- if Feature.enabled?(:files_api_throttling, default_enabled: :yaml)
-  %section.settings.as-files-limits.no-animate#js-files-limits-settings{ class: ('expanded' if expanded_by_default?) }
-    .settings-header
-      %h4
-        = _('Files API Rate Limits')
-      %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
-        = expanded_by_default? ? _('Collapse') : _('Expand')
-      %p
-        = _('Configure specific limits for Files API requests that supersede the general user and IP rate limits.')
-    .settings-content
-      = render partial: 'network_rate_limits', locals: { anchor: 'js-files-limits-settings', setting_fragment: 'files_api' }
+%section.settings.as-files-limits.no-animate#js-files-limits-settings{ class: ('expanded' if expanded_by_default?) }
+  .settings-header
+    %h4
+      = _('Files API Rate Limits')
+    %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
+      = expanded_by_default? ? _('Collapse') : _('Expand')
+    %p
+      = _('Configure specific limits for Files API requests that supersede the general user and IP rate limits.')
+  .settings-content
+    = render partial: 'network_rate_limits', locals: { anchor: 'js-files-limits-settings', setting_fragment: 'files_api' }
 
 %section.settings.as-deprecated-limits.no-animate#js-deprecated-limits-settings{ class: ('expanded' if expanded_by_default?) }
   .settings-header

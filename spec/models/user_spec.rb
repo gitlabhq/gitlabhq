@@ -110,8 +110,8 @@ RSpec.describe User do
     it { is_expected.to have_many(:spam_logs).dependent(:destroy) }
     it { is_expected.to have_many(:todos) }
     it { is_expected.to have_many(:award_emoji).dependent(:destroy) }
-    it { is_expected.to have_many(:builds).dependent(:nullify) }
-    it { is_expected.to have_many(:pipelines).dependent(:nullify) }
+    it { is_expected.to have_many(:builds) }
+    it { is_expected.to have_many(:pipelines) }
     it { is_expected.to have_many(:chat_names).dependent(:destroy) }
     it { is_expected.to have_many(:uploads) }
     it { is_expected.to have_many(:reported_abuse_reports).dependent(:destroy).class_name('AbuseReport') }
@@ -124,7 +124,7 @@ RSpec.describe User do
     it { is_expected.to have_many(:created_custom_emoji).inverse_of(:creator) }
     it { is_expected.to have_many(:in_product_marketing_emails) }
     it { is_expected.to have_many(:timelogs) }
-    it { is_expected.to have_many(:callouts).class_name('UserCallout') }
+    it { is_expected.to have_many(:callouts).class_name('Users::Callout') }
     it { is_expected.to have_many(:group_callouts).class_name('Users::GroupCallout') }
 
     describe '#user_detail' do
@@ -1080,6 +1080,16 @@ RSpec.describe User do
     end
   end
 
+  context 'strip attributes' do
+    context 'name' do
+      let(:user) { User.new(name: ' John Smith ') }
+
+      it 'strips whitespaces on validation' do
+        expect { user.valid? }.to change { user.name }.to('John Smith')
+      end
+    end
+  end
+
   describe 'Respond to' do
     it { is_expected.to respond_to(:admin?) }
     it { is_expected.to respond_to(:name) }
@@ -1540,7 +1550,11 @@ RSpec.describe User do
         allow(user).to receive(:update_highest_role)
       end
 
-      expect(SecureRandom).to receive(:hex).and_return('3b8ca303')
+      allow_next_instance_of(Namespaces::UserNamespace) do |namespace|
+        allow(namespace).to receive(:schedule_sync_event_worker)
+      end
+
+      expect(SecureRandom).to receive(:hex).with(no_args).and_return('3b8ca303')
 
       user = create(:user)
 
@@ -1609,6 +1623,46 @@ RSpec.describe User do
 
       expect(static_object_token).not_to be_blank
       expect(user.reload.static_object_token).to eq static_object_token
+    end
+  end
+
+  describe 'enabled_static_object_token' do
+    let_it_be(:static_object_token) { 'ilqx6jm1u945macft4eff0nw' }
+
+    it 'returns incoming email token when supported' do
+      allow(Gitlab::CurrentSettings).to receive(:static_objects_external_storage_enabled?).and_return(true)
+
+      user = create(:user, static_object_token: static_object_token)
+
+      expect(user.enabled_static_object_token).to eq(static_object_token)
+    end
+
+    it 'returns `nil` when not supported' do
+      allow(Gitlab::CurrentSettings).to receive(:static_objects_external_storage_enabled?).and_return(false)
+
+      user = create(:user, static_object_token: static_object_token)
+
+      expect(user.enabled_static_object_token).to be_nil
+    end
+  end
+
+  describe 'enabled_incoming_email_token' do
+    let_it_be(:incoming_email_token) { 'ilqx6jm1u945macft4eff0nw' }
+
+    it 'returns incoming email token when supported' do
+      allow(Gitlab::IncomingEmail).to receive(:supports_issue_creation?).and_return(true)
+
+      user = create(:user, incoming_email_token: incoming_email_token)
+
+      expect(user.enabled_incoming_email_token).to eq(incoming_email_token)
+    end
+
+    it 'returns `nil` when not supported' do
+      allow(Gitlab::IncomingEmail).to receive(:supports_issue_creation?).and_return(false)
+
+      user = create(:user, incoming_email_token: incoming_email_token)
+
+      expect(user.enabled_incoming_email_token).to be_nil
     end
   end
 
@@ -1722,6 +1776,52 @@ RSpec.describe User do
         end
 
         it { expect(user.two_factor_otp_enabled?).to eq(false) }
+      end
+    end
+  end
+
+  context 'two_factor_u2f_enabled?' do
+    let_it_be(:user) { create(:user, :two_factor) }
+
+    context 'when webauthn feature flag is enabled' do
+      context 'user has no U2F registration' do
+        it { expect(user.two_factor_u2f_enabled?).to eq(false) }
+      end
+
+      context 'user has existing U2F registration' do
+        it 'returns false' do
+          device = U2F::FakeU2F.new(FFaker::BaconIpsum.characters(5))
+          create(:u2f_registration, name: 'my u2f device',
+                 user: user,
+                 certificate: Base64.strict_encode64(device.cert_raw),
+                 key_handle: U2F.urlsafe_encode64(device.key_handle_raw),
+                 public_key: Base64.strict_encode64(device.origin_public_key_raw))
+
+          expect(user.two_factor_u2f_enabled?).to eq(false)
+        end
+      end
+    end
+
+    context 'when webauthn feature flag is disabled' do
+      before do
+        stub_feature_flags(webauthn: false)
+      end
+
+      context 'user has no U2F registration' do
+        it { expect(user.two_factor_u2f_enabled?).to eq(false) }
+      end
+
+      context 'user has existing U2F registration' do
+        it 'returns true' do
+          device = U2F::FakeU2F.new(FFaker::BaconIpsum.characters(5))
+          create(:u2f_registration, name: 'my u2f device',
+                 user: user,
+                 certificate: Base64.strict_encode64(device.cert_raw),
+                 key_handle: U2F.urlsafe_encode64(device.key_handle_raw),
+                 public_key: Base64.strict_encode64(device.origin_public_key_raw))
+
+          expect(user.two_factor_u2f_enabled?).to eq(true)
+        end
       end
     end
   end
@@ -1856,15 +1956,31 @@ RSpec.describe User do
     end
 
     context 'when user has running CI pipelines' do
-      let(:service) { double }
       let(:pipelines) { build_list(:ci_pipeline, 3, :running) }
 
-      it 'aborts all running pipelines and related jobs' do
-        expect(user).to receive(:pipelines).and_return(pipelines)
-        expect(Ci::DropPipelineService).to receive(:new).and_return(service)
-        expect(service).to receive(:execute_async_for_all).with(pipelines, :user_blocked, user)
+      it 'drops all running pipelines and related jobs' do
+        drop_service = double
+        disable_service = double
 
-        user.block
+        expect(user).to receive(:pipelines).and_return(pipelines)
+        expect(Ci::DropPipelineService).to receive(:new).and_return(drop_service)
+        expect(drop_service).to receive(:execute_async_for_all).with(pipelines, :user_blocked, user)
+
+        expect(Ci::DisableUserPipelineSchedulesService).to receive(:new).and_return(disable_service)
+        expect(disable_service).to receive(:execute).with(user)
+
+        user.block!
+      end
+
+      it 'does not drop running pipelines if the transaction rolls back' do
+        expect(Ci::DropPipelineService).not_to receive(:new)
+        expect(Ci::DisableUserPipelineSchedulesService).not_to receive(:new)
+
+        User.transaction do
+          user.block
+
+          raise ActiveRecord::Rollback
+        end
       end
     end
 
@@ -2540,26 +2656,18 @@ RSpec.describe User do
   end
 
   describe '.find_by_full_path' do
-    using RSpec::Parameterized::TableSyntax
+    let!(:user) { create(:user, namespace: create(:user_namespace)) }
 
-    # TODO: this `where/when` can be removed in issue https://gitlab.com/gitlab-org/gitlab/-/issues/341070
-    #       At that point we only need to check `user_namespace`
-    where(namespace_type: [:namespace, :user_namespace])
+    context 'with a route matching the given path' do
+      let!(:route) { user.namespace.route }
 
-    with_them do
-      let!(:user) { create(:user, namespace: create(namespace_type)) }
+      it 'returns the user' do
+        expect(described_class.find_by_full_path(route.path)).to eq(user)
+      end
 
-      context 'with a route matching the given path' do
-        let!(:route) { user.namespace.route }
-
-        it 'returns the user' do
-          expect(described_class.find_by_full_path(route.path)).to eq(user)
-        end
-
-        it 'is case-insensitive' do
-          expect(described_class.find_by_full_path(route.path.upcase)).to eq(user)
-          expect(described_class.find_by_full_path(route.path.downcase)).to eq(user)
-        end
+      it 'is case-insensitive' do
+        expect(described_class.find_by_full_path(route.path.upcase)).to eq(user)
+        expect(described_class.find_by_full_path(route.path.downcase)).to eq(user)
       end
 
       context 'with a redirect route matching the given path' do
@@ -3463,19 +3571,7 @@ RSpec.describe User do
 
     subject { user.membership_groups }
 
-    shared_examples 'returns groups where the user is a member' do
-      specify { is_expected.to contain_exactly(parent_group, child_group) }
-    end
-
-    it_behaves_like 'returns groups where the user is a member'
-
-    context 'when feature flag :linear_user_membership_groups is disabled' do
-      before do
-        stub_feature_flags(linear_user_membership_groups: false)
-      end
-
-      it_behaves_like 'returns groups where the user is a member'
-    end
+    specify { is_expected.to contain_exactly(parent_group, child_group) }
   end
 
   describe '#authorizations_for_projects' do
@@ -5543,7 +5639,7 @@ RSpec.describe User do
 
   describe '#dismissed_callout?' do
     let_it_be(:user, refind: true) { create(:user) }
-    let_it_be(:feature_name) { UserCallout.feature_names.each_key.first }
+    let_it_be(:feature_name) { Users::Callout.feature_names.each_key.first }
 
     context 'when no callout dismissal record exists' do
       it 'returns false when no ignore_dismissal_earlier_than provided' do
@@ -5553,7 +5649,7 @@ RSpec.describe User do
 
     context 'when dismissed callout exists' do
       before_all do
-        create(:user_callout, user: user, feature_name: feature_name, dismissed_at: 4.months.ago)
+        create(:callout, user: user, feature_name: feature_name, dismissed_at: 4.months.ago)
       end
 
       it 'returns true when no ignore_dismissal_earlier_than provided' do
@@ -5572,12 +5668,12 @@ RSpec.describe User do
 
   describe '#find_or_initialize_callout' do
     let_it_be(:user, refind: true) { create(:user) }
-    let_it_be(:feature_name) { UserCallout.feature_names.each_key.first }
+    let_it_be(:feature_name) { Users::Callout.feature_names.each_key.first }
 
     subject(:find_or_initialize_callout) { user.find_or_initialize_callout(feature_name) }
 
     context 'when callout exists' do
-      let!(:callout) { create(:user_callout, user: user, feature_name: feature_name) }
+      let!(:callout) { create(:callout, user: user, feature_name: feature_name) }
 
       it 'returns existing callout' do
         expect(find_or_initialize_callout).to eq(callout)
@@ -5587,7 +5683,7 @@ RSpec.describe User do
     context 'when callout does not exist' do
       context 'when feature name is valid' do
         it 'initializes a new callout' do
-          expect(find_or_initialize_callout).to be_a_new(UserCallout)
+          expect(find_or_initialize_callout).to be_a_new(Users::Callout)
         end
 
         it 'is valid' do
@@ -5599,7 +5695,7 @@ RSpec.describe User do
         let(:feature_name) { 'notvalid' }
 
         it 'initializes a new callout' do
-          expect(find_or_initialize_callout).to be_a_new(UserCallout)
+          expect(find_or_initialize_callout).to be_a_new(Users::Callout)
         end
 
         it 'is not valid' do
@@ -6092,20 +6188,6 @@ RSpec.describe User do
     end
   end
 
-  describe '#default_dashboard?' do
-    it 'is the default dashboard' do
-      user = build(:user)
-
-      expect(user.default_dashboard?).to be true
-    end
-
-    it 'is not the default dashboard' do
-      user = build(:user, dashboard: 'stars')
-
-      expect(user.default_dashboard?).to be false
-    end
-  end
-
   describe '.dormant' do
     it 'returns dormant users' do
       freeze_time do
@@ -6218,19 +6300,7 @@ RSpec.describe User do
 
     subject { user.send(:groups_with_developer_maintainer_project_access) }
 
-    shared_examples 'groups_with_developer_maintainer_project_access examples' do
-      specify { is_expected.to contain_exactly(developer_group2) }
-    end
-
-    it_behaves_like 'groups_with_developer_maintainer_project_access examples'
-
-    context 'when feature flag :linear_user_groups_with_developer_maintainer_project_access is disabled' do
-      before do
-        stub_feature_flags(linear_user_groups_with_developer_maintainer_project_access: false)
-      end
-
-      it_behaves_like 'groups_with_developer_maintainer_project_access examples'
-    end
+    specify { is_expected.to contain_exactly(developer_group2) }
   end
 
   describe '.get_ids_by_username' do
@@ -6268,5 +6338,9 @@ RSpec.describe User do
 
       expect(user.user_readme).to be(nil)
     end
+  end
+
+  it_behaves_like 'it has loose foreign keys' do
+    let(:factory_name) { :user }
   end
 end

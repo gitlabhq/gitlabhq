@@ -21,6 +21,8 @@ module Gitlab
       FAILED_TO_READ_ERROR_MESSAGE = 'Failed to read from the redis primary_store.'
       FAILED_TO_WRITE_ERROR_MESSAGE = 'Failed to write to the redis primary_store.'
 
+      SKIP_LOG_METHOD_MISSING_FOR_COMMANDS = %i(info).freeze
+
       READ_COMMANDS = %i(
         get
         mget
@@ -39,41 +41,42 @@ module Gitlab
         flushdb
       ).freeze
 
-      def initialize(primary_store, secondary_store, instance_name = nil)
+      def initialize(primary_store, secondary_store, instance_name)
         @primary_store = primary_store
         @secondary_store = secondary_store
         @instance_name = instance_name
 
         validate_stores!
       end
-
+      # rubocop:disable GitlabSecurity/PublicSend
       READ_COMMANDS.each do |name|
         define_method(name) do |*args, &block|
-          if multi_store_enabled?
+          if use_primary_and_secondary_stores?
             read_command(name, *args, &block)
           else
-            secondary_store.send(name, *args, &block) # rubocop:disable GitlabSecurity/PublicSend
+            default_store.send(name, *args, &block)
           end
         end
       end
 
       WRITE_COMMANDS.each do |name|
         define_method(name) do |*args, &block|
-          if multi_store_enabled?
+          if use_primary_and_secondary_stores?
             write_command(name, *args, &block)
           else
-            secondary_store.send(name, *args, &block) # rubocop:disable GitlabSecurity/PublicSend
+            default_store.send(name, *args, &block)
           end
         end
       end
 
       def method_missing(...)
-        return @instance.send(...) if @instance # rubocop:disable GitlabSecurity/PublicSend
+        return @instance.send(...) if @instance
 
         log_method_missing(...)
 
-        secondary_store.send(...) # rubocop:disable GitlabSecurity/PublicSend
+        default_store.send(...)
       end
+      # rubocop:enable GitlabSecurity/PublicSend
 
       def respond_to_missing?(command_name, include_private = false)
         true
@@ -83,23 +86,37 @@ module Gitlab
       # https://github.com/redis-store/redis-rack/blob/a833086ba494083b6a384a1a4e58b36573a9165d/lib/redis/rack/connection.rb#L15
       # Done similarly in https://github.com/lsegal/yard/blob/main/lib/yard/templates/template.rb#L122
       def is_a?(klass)
-        return true if klass == secondary_store.class
+        return true if klass == default_store.class
 
         super(klass)
       end
       alias_method :kind_of?, :is_a?
 
       def to_s
-        if multi_store_enabled?
-          primary_store.to_s
-        else
-          secondary_store.to_s
-        end
+        use_primary_and_secondary_stores? ? primary_store.to_s : default_store.to_s
+      end
+
+      def use_primary_and_secondary_stores?
+        feature_flags_available? &&
+          Feature.enabled?("use_primary_and_secondary_stores_for_#{instance_name.underscore}", default_enabled: :yaml) &&
+          !same_redis_store?
+      end
+
+      def use_primary_store_as_default?
+        feature_flags_available? &&
+          Feature.enabled?("use_primary_store_as_default_for_#{instance_name.underscore}", default_enabled: :yaml) &&
+          !same_redis_store?
       end
 
       private
 
+      def default_store
+        use_primary_store_as_default? ? primary_store : secondary_store
+      end
+
       def log_method_missing(command_name, *_args)
+        return if SKIP_LOG_METHOD_MISSING_FOR_COMMANDS.include?(command_name)
+
         log_error(MethodMissingError.new, command_name)
         increment_method_missing_count(command_name)
       end
@@ -155,10 +172,6 @@ module Gitlab
         send_command(secondary_store, command_name, *args, &block)
       end
 
-      def multi_store_enabled?
-        Feature.enabled?(:use_multi_store, default_enabled: :yaml) && !same_redis_store?
-      end
-
       def same_redis_store?
         strong_memoize(:same_redis_store) do
           # <Redis client v4.4.0 for redis:///path_to/redis/redis.socket/5>"
@@ -194,12 +207,13 @@ module Gitlab
 
       def increment_method_missing_count(command_name)
         @method_missing_counter ||= Gitlab::Metrics.counter(:gitlab_redis_multi_store_method_missing_total, 'Client side Redis MultiStore method missing')
-        @method_missing_counter.increment(command: command_name, innamece_name: instance_name)
+        @method_missing_counter.increment(command: command_name, instance_name: instance_name)
       end
 
       def validate_stores!
         raise ArgumentError, 'primary_store is required' unless primary_store
         raise ArgumentError, 'secondary_store is required' unless secondary_store
+        raise ArgumentError, 'instance_name is required' unless instance_name
         raise ArgumentError, 'invalid primary_store' unless primary_store.is_a?(::Redis)
         raise ArgumentError, 'invalid secondary_store' unless secondary_store.is_a?(::Redis)
       end

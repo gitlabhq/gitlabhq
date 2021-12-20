@@ -8,17 +8,20 @@ import {
   GlSprintf,
   GlTooltipDirective,
 } from '@gitlab/ui';
+import * as Sentry from '@sentry/browser';
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
+import { orderBy } from 'lodash';
 import getIssuesQuery from 'ee_else_ce/issues_list/queries/get_issues.query.graphql';
 import getIssuesCountsQuery from 'ee_else_ce/issues_list/queries/get_issues_counts.query.graphql';
-import createFlash from '~/flash';
+import IssueCardTimeInfo from 'ee_else_ce/issues_list/components/issue_card_time_info.vue';
+import createFlash, { FLASH_TYPES } from '~/flash';
 import { TYPE_USER } from '~/graphql_shared/constants';
 import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { ITEM_TYPE } from '~/groups/constants';
 import CsvImportExportButtons from '~/issuable/components/csv_import_export_buttons.vue';
 import IssuableByEmail from '~/issuable/components/issuable_by_email.vue';
-import IssuableList from '~/issuable_list/components/issuable_list_root.vue';
-import { IssuableListTabs, IssuableStates } from '~/issuable_list/constants';
+import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_root.vue';
+import { IssuableListTabs, IssuableStates } from '~/vue_shared/issuable/list/constants';
 import {
   CREATED_DESC,
   i18n,
@@ -31,14 +34,11 @@ import {
   TOKEN_TYPE_ASSIGNEE,
   TOKEN_TYPE_AUTHOR,
   TOKEN_TYPE_CONFIDENTIAL,
-  TOKEN_TYPE_EPIC,
-  TOKEN_TYPE_ITERATION,
   TOKEN_TYPE_LABEL,
   TOKEN_TYPE_MILESTONE,
   TOKEN_TYPE_MY_REACTION,
   TOKEN_TYPE_RELEASE,
   TOKEN_TYPE_TYPE,
-  TOKEN_TYPE_WEIGHT,
   UPDATED_DESC,
   urlSortParams,
 } from '~/issues_list/constants';
@@ -61,39 +61,29 @@ import {
   TOKEN_TITLE_ASSIGNEE,
   TOKEN_TITLE_AUTHOR,
   TOKEN_TITLE_CONFIDENTIAL,
-  TOKEN_TITLE_EPIC,
-  TOKEN_TITLE_ITERATION,
   TOKEN_TITLE_LABEL,
   TOKEN_TITLE_MILESTONE,
   TOKEN_TITLE_MY_REACTION,
   TOKEN_TITLE_RELEASE,
   TOKEN_TITLE_TYPE,
-  TOKEN_TITLE_WEIGHT,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import eventHub from '../eventhub';
 import reorderIssuesMutation from '../queries/reorder_issues.mutation.graphql';
-import searchIterationsQuery from '../queries/search_iterations.query.graphql';
 import searchLabelsQuery from '../queries/search_labels.query.graphql';
 import searchMilestonesQuery from '../queries/search_milestones.query.graphql';
 import searchUsersQuery from '../queries/search_users.query.graphql';
-import IssueCardTimeInfo from './issue_card_time_info.vue';
 import NewIssueDropdown from './new_issue_dropdown.vue';
 
 const AuthorToken = () =>
   import('~/vue_shared/components/filtered_search_bar/tokens/author_token.vue');
 const EmojiToken = () =>
   import('~/vue_shared/components/filtered_search_bar/tokens/emoji_token.vue');
-const EpicToken = () => import('~/vue_shared/components/filtered_search_bar/tokens/epic_token.vue');
-const IterationToken = () =>
-  import('~/vue_shared/components/filtered_search_bar/tokens/iteration_token.vue');
 const LabelToken = () =>
   import('~/vue_shared/components/filtered_search_bar/tokens/label_token.vue');
 const MilestoneToken = () =>
   import('~/vue_shared/components/filtered_search_bar/tokens/milestone_token.vue');
 const ReleaseToken = () =>
   import('~/vue_shared/components/filtered_search_bar/tokens/release_token.vue');
-const WeightToken = () =>
-  import('~/vue_shared/components/filtered_search_bar/tokens/weight_token.vue');
 
 export default {
   i18n,
@@ -109,7 +99,6 @@ export default {
     IssuableList,
     IssueCardTimeInfo,
     NewIssueDropdown,
-    BlockingIssuesCount: () => import('ee_component/issues/components/blocking_issues_count.vue'),
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -133,9 +122,6 @@ export default {
     fullPath: {
       default: '',
     },
-    groupPath: {
-      default: '',
-    },
     hasAnyIssues: {
       default: false,
     },
@@ -148,14 +134,17 @@ export default {
     hasIssueWeightsFeature: {
       default: false,
     },
-    hasIterationsFeature: {
-      default: false,
-    },
     hasMultipleIssueAssigneesFeature: {
       default: false,
     },
     initialEmail: {
       default: '',
+    },
+    isAnonymousSearchDisabled: {
+      default: false,
+    },
+    isIssueRepositioningDisabled: {
+      default: false,
     },
     isProject: {
       default: false,
@@ -182,21 +171,43 @@ export default {
       default: '',
     },
   },
+  props: {
+    eeSearchTokens: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
+  },
   data() {
     const state = getParameterByName(PARAM_STATE);
-    const sortKey = getSortKey(getParameterByName(PARAM_SORT));
     const defaultSortKey = state === IssuableStates.Closed ? UPDATED_DESC : CREATED_DESC;
+    let sortKey = getSortKey(getParameterByName(PARAM_SORT)) || defaultSortKey;
+
+    if (this.isIssueRepositioningDisabled && sortKey === RELATIVE_POSITION_ASC) {
+      this.showIssueRepositioningMessage();
+      sortKey = defaultSortKey;
+    }
+
+    const isSearchDisabled =
+      this.isAnonymousSearchDisabled &&
+      !this.isSignedIn &&
+      window.location.search.includes('search=');
+
+    if (isSearchDisabled) {
+      this.showAnonymousSearchingMessage();
+    }
 
     return {
       dueDateFilter: getDueDateValue(getParameterByName(PARAM_DUE_DATE)),
       exportCsvPathWithQuery: this.getExportCsvPathWithQuery(),
-      filterTokens: getFilterTokens(window.location.search),
+      filterTokens: isSearchDisabled ? [] : getFilterTokens(window.location.search),
       issues: [],
       issuesCounts: {},
+      issuesError: null,
       pageInfo: {},
       pageParams: getInitialPageParams(sortKey),
       showBulkEditSidebar: false,
-      sortKey: sortKey || defaultSortKey,
+      sortKey,
       state: state || IssuableStates.Opened,
     };
   },
@@ -214,7 +225,8 @@ export default {
         this.exportCsvPathWithQuery = this.getExportCsvPathWithQuery();
       },
       error(error) {
-        createFlash({ message: this.$options.i18n.errorFetchingIssues, captureError: true, error });
+        this.issuesError = this.$options.i18n.errorFetchingIssues;
+        Sentry.captureException(error);
       },
       skip() {
         return !this.hasAnyIssues;
@@ -230,7 +242,8 @@ export default {
         return data[this.namespace] ?? {};
       },
       error(error) {
-        createFlash({ message: this.$options.i18n.errorFetchingCounts, captureError: true, error });
+        this.issuesError = this.$options.i18n.errorFetchingCounts;
+        Sentry.captureException(error);
       },
       skip() {
         return !this.hasAnyIssues;
@@ -306,6 +319,7 @@ export default {
           unique: true,
           defaultAuthors: [],
           fetchAuthors: this.fetchUsers,
+          recentSuggestionsStorageKey: `${this.fullPath}-issues-recent-tokens-author`,
           preloadedAuthors,
         },
         {
@@ -317,6 +331,7 @@ export default {
           unique: !this.hasMultipleIssueAssigneesFeature,
           defaultAuthors: DEFAULT_NONE_ANY,
           fetchAuthors: this.fetchUsers,
+          recentSuggestionsStorageKey: `${this.fullPath}-issues-recent-tokens-assignee`,
           preloadedAuthors,
         },
         {
@@ -325,6 +340,7 @@ export default {
           icon: 'clock',
           token: MilestoneToken,
           fetchMilestones: this.fetchMilestones,
+          recentSuggestionsStorageKey: `${this.fullPath}-issues-recent-tokens-milestone`,
         },
         {
           type: TOKEN_TYPE_LABEL,
@@ -333,6 +349,7 @@ export default {
           token: LabelToken,
           defaultLabels: DEFAULT_NONE_ANY,
           fetchLabels: this.fetchLabels,
+          recentSuggestionsStorageKey: `${this.fullPath}-issues-recent-tokens-label`,
         },
         {
           type: TOKEN_TYPE_TYPE,
@@ -354,6 +371,7 @@ export default {
           icon: 'rocket',
           token: ReleaseToken,
           fetchReleases: this.fetchReleases,
+          recentSuggestionsStorageKey: `${this.fullPath}-issues-recent-tokens-release`,
         });
       }
 
@@ -365,6 +383,7 @@ export default {
           token: EmojiToken,
           unique: true,
           fetchEmojis: this.fetchEmojis,
+          recentSuggestionsStorageKey: `${this.fullPath}-issues-recent-tokens-my_reaction`,
         });
 
         tokens.push({
@@ -381,42 +400,13 @@ export default {
         });
       }
 
-      if (this.hasIterationsFeature) {
-        tokens.push({
-          type: TOKEN_TYPE_ITERATION,
-          title: TOKEN_TITLE_ITERATION,
-          icon: 'iteration',
-          token: IterationToken,
-          fetchIterations: this.fetchIterations,
-        });
+      if (this.eeSearchTokens.length) {
+        tokens.push(...this.eeSearchTokens);
       }
 
-      if (this.groupPath) {
-        tokens.push({
-          type: TOKEN_TYPE_EPIC,
-          title: TOKEN_TITLE_EPIC,
-          icon: 'epic',
-          token: EpicToken,
-          unique: true,
-          symbol: '&',
-          idProperty: 'id',
-          useIdValue: true,
-          recentSuggestionsStorageKey: `${this.fullPath}-issues-recent-tokens-epic_id`,
-          fullPath: this.groupPath,
-        });
-      }
+      tokens.sort((a, b) => a.title.localeCompare(b.title));
 
-      if (this.hasIssueWeightsFeature) {
-        tokens.push({
-          type: TOKEN_TYPE_WEIGHT,
-          title: TOKEN_TITLE_WEIGHT,
-          icon: 'weight',
-          token: WeightToken,
-          unique: true,
-        });
-      }
-
-      return tokens;
+      return orderBy(tokens, ['title']);
     },
     showPaginationControls() {
       return this.issues.length > 0 && (this.pageInfo.hasNextPage || this.pageInfo.hasPreviousPage);
@@ -481,7 +471,12 @@ export default {
           query: searchLabelsQuery,
           variables: { fullPath: this.fullPath, search, isProject: this.isProject },
         })
-        .then(({ data }) => data[this.namespace]?.labels.nodes);
+        .then(({ data }) => data[this.namespace]?.labels.nodes)
+        .then((labels) =>
+          // TODO remove once we can search by title-only on the backend
+          // https://gitlab.com/gitlab-org/gitlab/-/issues/346353
+          labels.filter((label) => label.title.toLowerCase().includes(search.toLowerCase())),
+        );
     },
     fetchMilestones(search) {
       return this.$apollo
@@ -490,20 +485,6 @@ export default {
           variables: { fullPath: this.fullPath, search, isProject: this.isProject },
         })
         .then(({ data }) => data[this.namespace]?.milestones.nodes);
-    },
-    fetchIterations(search) {
-      const id = Number(search);
-      const variables =
-        !search || Number.isNaN(id)
-          ? { fullPath: this.fullPath, search, isProject: this.isProject }
-          : { fullPath: this.fullPath, id, isProject: this.isProject };
-
-      return this.$apollo
-        .query({
-          query: searchIterationsQuery,
-          variables,
-        })
-        .then(({ data }) => data[this.namespace]?.iterations.nodes);
     },
     fetchUsers(search) {
       return this.$apollo
@@ -537,7 +518,7 @@ export default {
     async handleBulkUpdateClick() {
       if (!this.hasInitBulkEdit) {
         const initBulkUpdateSidebar = await import(
-          '~/issuable_bulk_update_sidebar/issuable_init_bulk_update_sidebar'
+          '~/issuable/bulk_update_sidebar/issuable_init_bulk_update_sidebar'
         );
         initBulkUpdateSidebar.default.init('issuable_');
 
@@ -556,7 +537,14 @@ export default {
       }
       this.state = state;
     },
+    handleDismissAlert() {
+      this.issuesError = null;
+    },
     handleFilter(filter) {
+      if (this.isAnonymousSearchDisabled && !this.isSignedIn) {
+        this.showAnonymousSearchingMessage();
+        return;
+      }
       this.pageParams = getInitialPageParams(this.sortKey);
       this.filterTokens = filter;
     },
@@ -607,14 +595,32 @@ export default {
           });
         })
         .catch((error) => {
-          createFlash({ message: this.$options.i18n.reorderError, captureError: true, error });
+          this.issuesError = this.$options.i18n.reorderError;
+          Sentry.captureException(error);
         });
     },
     handleSort(sortKey) {
+      if (this.isIssueRepositioningDisabled && sortKey === RELATIVE_POSITION_ASC) {
+        this.showIssueRepositioningMessage();
+        return;
+      }
+
       if (this.sortKey !== sortKey) {
         this.pageParams = getInitialPageParams(sortKey);
       }
       this.sortKey = sortKey;
+    },
+    showAnonymousSearchingMessage() {
+      createFlash({
+        message: this.$options.i18n.anonymousSearchingMessage,
+        type: FLASH_TYPES.NOTICE,
+      });
+    },
+    showIssueRepositioningMessage() {
+      createFlash({
+        message: this.$options.i18n.issueRepositioningMessage,
+        type: FLASH_TYPES.NOTICE,
+      });
     },
     toggleBulkEditSidebar(showBulkEditSidebar) {
       this.showBulkEditSidebar = showBulkEditSidebar;
@@ -634,6 +640,7 @@ export default {
       :sort-options="sortOptions"
       :initial-sort-by="sortKey"
       :issuables="issues"
+      :error="issuesError"
       label-filter-param="label_name"
       :tabs="$options.IssuableListTabs"
       :current-tab="state"
@@ -647,6 +654,7 @@ export default {
       :has-previous-page="pageInfo.hasPreviousPage"
       :url-params="urlParams"
       @click-tab="handleClickTab"
+      @dismiss-alert="handleDismissAlert"
       @filter="handleFilter"
       @next-page="handleNextPage"
       @previous-page="handlePreviousPage"
@@ -727,12 +735,7 @@ export default {
           <gl-icon name="thumb-down" />
           {{ issuable.downvotes }}
         </li>
-        <blocking-issues-count
-          class="blocking-issues gl-display-none gl-sm-display-block"
-          :blocking-issues-count="issuable.blockingCount"
-          :is-list-item="true"
-          data-testid="blocking-issues"
-        />
+        <slot :issuable="issuable"></slot>
       </template>
 
       <template #empty-state>

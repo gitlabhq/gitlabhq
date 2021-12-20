@@ -1,6 +1,9 @@
 import { shallowMount } from '@vue/test-utils';
+import { merge } from 'lodash';
 import { TEST_HOST } from 'helpers/test_constants';
+import eventHub, { EVENT_OPEN_CONFIRM_MODAL } from '~/vue_shared/components/confirm_modal_eventhub';
 import ConfirmModal from '~/vue_shared/components/confirm_modal.vue';
+import DomElementListener from '~/vue_shared/components/dom_element_listener.vue';
 
 jest.mock('~/lib/utils/csrf', () => ({ token: 'test-csrf-token' }));
 
@@ -54,12 +57,50 @@ describe('vue_shared/components/confirm_modal', () => {
     findForm()
       .findAll('input')
       .wrappers.map((x) => ({ name: x.attributes('name'), value: x.attributes('value') }));
+  const findDomElementListener = () => wrapper.find(DomElementListener);
+  const triggerOpenWithEventHub = (modalData) => {
+    eventHub.$emit(EVENT_OPEN_CONFIRM_MODAL, modalData);
+  };
+  const triggerOpenWithDomListener = (modalData) => {
+    const element = document.createElement('button');
+
+    element.dataset.path = modalData.path;
+    element.dataset.method = modalData.method;
+    element.dataset.modalAttributes = JSON.stringify(modalData.modalAttributes);
+
+    findDomElementListener().vm.$emit('click', {
+      preventDefault: jest.fn(),
+      currentTarget: element,
+    });
+  };
+
+  describe('default', () => {
+    beforeEach(() => {
+      createComponent();
+    });
+
+    it('renders empty GlModal', () => {
+      expect(findModal().props()).toEqual({});
+    });
+
+    it('renders form missing values', () => {
+      expect(findForm().attributes('action')).toBe('');
+      expect(findFormData()).toEqual([
+        { name: '_method', value: undefined },
+        { name: 'authenticity_token', value: 'test-csrf-token' },
+      ]);
+    });
+  });
 
   describe('template', () => {
-    describe('when modal data is set', () => {
+    describe.each`
+      desc                               | trigger
+      ${'when opened from eventhub'}     | ${triggerOpenWithEventHub}
+      ${'when opened from dom listener'} | ${triggerOpenWithDomListener}
+    `('$desc', ({ trigger }) => {
       beforeEach(() => {
         createComponent();
-        wrapper.vm.modalAttributes = MOCK_MODAL_DATA.modalAttributes;
+        trigger(MOCK_MODAL_DATA);
       });
 
       it('renders GlModal with data', () => {
@@ -71,6 +112,14 @@ describe('vue_shared/components/confirm_modal', () => {
           }),
         );
       });
+
+      it('renders form', () => {
+        expect(findForm().attributes('action')).toBe(MOCK_MODAL_DATA.path);
+        expect(findFormData()).toEqual([
+          { name: '_method', value: MOCK_MODAL_DATA.method },
+          { name: 'authenticity_token', value: 'test-csrf-token' },
+        ]);
+      });
     });
 
     describe.each`
@@ -79,11 +128,10 @@ describe('vue_shared/components/confirm_modal', () => {
       ${'when message has html'}       | ${{ messageHtml: '<p>Header</p><ul onhover="alert(1)"><li>First</li></ul>' }} | ${'<p>Header</p><ul><li>First</li></ul>'}
     `('$desc', ({ attrs, expectation }) => {
       beforeEach(() => {
+        const modalData = merge({ ...MOCK_MODAL_DATA }, { modalAttributes: attrs });
+
         createComponent();
-        wrapper.vm.modalAttributes = {
-          ...MOCK_MODAL_DATA.modalAttributes,
-          ...attrs,
-        };
+        triggerOpenWithEventHub(modalData);
       });
 
       it('renders message', () => {
@@ -96,8 +144,7 @@ describe('vue_shared/components/confirm_modal', () => {
     describe('submitModal', () => {
       beforeEach(() => {
         createComponent();
-        wrapper.vm.path = MOCK_MODAL_DATA.path;
-        wrapper.vm.method = MOCK_MODAL_DATA.method;
+        triggerOpenWithEventHub(MOCK_MODAL_DATA);
       });
 
       it('does not submit form', () => {

@@ -239,6 +239,8 @@ RSpec.describe Gitlab::SidekiqMiddleware::ServerMetrics do
 
     shared_context 'worker declaring data consistency' do
       let(:worker_class) { LBTestWorker }
+      let(:wal_locations) { { Gitlab::Database::MAIN_DATABASE_NAME.to_sym => 'AB/12345' } }
+      let(:job) { { "retry" => 3, "job_id" => "a180b47c-3fd6-41b8-81e9-34da61c3400e", "wal_locations" => wal_locations } }
 
       before do
         stub_const('LBTestWorker', Class.new(TestWorker))

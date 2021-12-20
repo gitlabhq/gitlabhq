@@ -65,13 +65,25 @@ RSpec.describe Tooling::Danger::ProductIntelligence do
         it { is_expected.to be_empty }
       end
     end
+  end
+
+  describe '#skip_review' do
+    subject { product_intelligence.skip_review? }
 
     context 'with growth experiment label' do
       before do
         allow(fake_helper).to receive(:mr_has_labels?).with('growth experiment').and_return(true)
       end
 
-      it { is_expected.to be_empty }
+      it { is_expected.to be true }
+    end
+
+    context 'without growth experiment label' do
+      before do
+        allow(fake_helper).to receive(:mr_has_labels?).with('growth experiment').and_return(false)
+      end
+
+      it { is_expected.to be false }
     end
   end
 end

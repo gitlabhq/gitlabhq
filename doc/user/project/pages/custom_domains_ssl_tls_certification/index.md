@@ -25,7 +25,8 @@ and steps below.
   (`*.gitlab.io`, for GitLab.com).
 - A custom domain name `example.com` or subdomain `subdomain.example.com`.
 - Access to your domain's server control panel to set up DNS records:
-  - A DNS A or CNAME record pointing your domain to GitLab Pages server.
+  - A DNS record (`A`, `ALIAS`, or `CNAME`) pointing your domain to the GitLab Pages server. If
+    there are multiple DNS records on that name, you must use an `ALIAS` record.
   - A DNS `TXT` record to verify your domain's ownership.
 - Set either `external_http` or `external_https` in `/etc/gitlab/gitlab.rb` to the IP and port of
   your [Pages Daemon](../../../../administration/pages/index.md#overview).
@@ -109,15 +110,15 @@ as it most likely doesn't work if you set an [`MX` record](dns_concepts.md#mx-re
 
 Subdomains (`subdomain.example.com`) require:
 
-- A DNS [CNAME record](dns_concepts.md#cname-record) pointing your subdomain to the Pages server.
+- A DNS [`ALIAS` or `CNAME` record](dns_concepts.md#cname-record) pointing your subdomain to the Pages server.
 - A DNS [TXT record](dns_concepts.md#txt-record) to verify your domain's ownership.
 
-| From                                                    | DNS Record | To                    |
-| ------------------------------------------------------- | ---------- | --------------------- |
-| `subdomain.example.com`                                 | CNAME      | `namespace.gitlab.io` |
-| `_gitlab-pages-verification-code.subdomain.example.com` | `TXT`        | `gitlab-pages-verification-code=00112233445566778899aabbccddeeff` |
+| From                                                    | DNS Record      | To                    |
+|:--------------------------------------------------------|:----------------|:----------------------|
+| `subdomain.example.com`                                 | `ALIAS`/`CNAME` | `namespace.gitlab.io` |
+| `_gitlab-pages-verification-code.subdomain.example.com` | `TXT`           | `gitlab-pages-verification-code=00112233445566778899aabbccddeeff` |
 
-Note that, whether it's a user or a project website, the `CNAME`
+Note that, whether it's a user or a project website, the DNS record
 should point to your Pages domain (`namespace.gitlab.io`),
 without any `/project-name`.
 
@@ -130,8 +131,8 @@ domain to the same website, for instance, `example.com` and `www.example.com`.
 
 They require:
 
-- A DNS A record for the domain.
-- A DNS CNAME record for the subdomain.
+- A DNS `A` record for the domain.
+- A DNS `ALIAS`/`CNAME` record for the subdomain.
 - A DNS `TXT` record for each.
 
 | From                                              | DNS Record | To                     |
@@ -147,7 +148,7 @@ If you're using Cloudflare, check
 
 > **Notes**:
 >
-> - **Do not** use a CNAME record if you want to point your
+> - **Do not** use a `CNAME` record if you want to point your
   `domain.com` to your GitLab Pages site. Use an `A` record instead.
 > - **Do not** add any special chars after the default Pages
   domain. For example, don't point `subdomain.domain.com` to
@@ -231,7 +232,7 @@ If you use Cloudflare, you can redirect `www` to `domain.com`
 without adding both `www.domain.com` and `domain.com` to GitLab.
 
 To do so, you can use Cloudflare's page rules associated to a
-CNAME record to redirect `www.domain.com` to `domain.com`. You
+`CNAME` record to redirect `www.domain.com` to `domain.com`. You
 can use the following setup:
 
 1. In Cloudflare, create a DNS `A` record pointing `domain.com` to `35.185.44.232`.

@@ -15,7 +15,7 @@ import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
 import { objectToQuery } from '~/lib/utils/url_utility';
 import { s__, __ } from '~/locale';
-import { packageTypeToTrackCategory } from '~/packages/shared/utils';
+import { packageTypeToTrackCategory } from '~/packages_and_registries/package_registry/utils';
 import AdditionalMetadata from '~/packages_and_registries/package_registry/components/details/additional_metadata.vue';
 import DependencyRow from '~/packages_and_registries/package_registry/components/details/dependency_row.vue';
 import InstallationCommands from '~/packages_and_registries/package_registry/components/details/installation_commands.vue';
@@ -304,6 +304,7 @@ export default {
       <template #default="{ deletePackage }">
         <gl-modal
           ref="deleteModal"
+          size="sm"
           modal-id="delete-modal"
           data-testid="delete-modal"
           :action-primary="$options.modal.packageDeletePrimaryAction"
@@ -327,6 +328,7 @@ export default {
 
     <gl-modal
       ref="deleteFileModal"
+      size="sm"
       modal-id="delete-file-modal"
       :action-primary="$options.modal.fileDeletePrimaryAction"
       :action-cancel="$options.modal.cancelAction"

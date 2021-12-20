@@ -403,6 +403,51 @@ RSpec.describe Snippet do
     end
   end
 
+  describe '.find_by_project_title_trunc_created_at' do
+    let_it_be(:snippet) { create(:snippet) }
+    let_it_be(:created_at_without_ms) { snippet.created_at.change(usec: 0) }
+
+    it 'returns a record if arguments match' do
+      result = described_class.find_by_project_title_trunc_created_at(
+        snippet.project,
+        snippet.title,
+        created_at_without_ms
+      )
+
+      expect(result).to eq(snippet)
+    end
+
+    it 'returns nil if project does not match' do
+      result = described_class.find_by_project_title_trunc_created_at(
+        'unmatched project',
+        snippet.title,
+        created_at_without_ms # to_s truncates ms of the argument
+      )
+
+      expect(result).to be(nil)
+    end
+
+    it 'returns nil if title does not match' do
+      result = described_class.find_by_project_title_trunc_created_at(
+        snippet.project,
+        'unmatched title',
+        created_at_without_ms # to_s truncates ms of the argument
+      )
+
+      expect(result).to be(nil)
+    end
+
+    it 'returns nil if created_at does not match' do
+      result = described_class.find_by_project_title_trunc_created_at(
+        snippet.project,
+        snippet.title,
+        snippet.created_at # fails match by milliseconds
+      )
+
+      expect(result).to be(nil)
+    end
+  end
+
   describe '#participants' do
     let_it_be(:project) { create(:project, :public) }
     let_it_be(:snippet) { create(:snippet, content: 'foo', project: project) }

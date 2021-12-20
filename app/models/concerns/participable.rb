@@ -60,6 +60,15 @@ module Participable
     filtered_participants_hash[user]
   end
 
+  # Returns only participants visible for the user
+  #
+  # Returns an Array of User instances.
+  def visible_participants(user)
+    return participants(user) unless Feature.enabled?(:verify_participants_access, project, default_enabled: :yaml)
+
+    filter_by_ability(raw_participants(user, verify_access: true))
+  end
+
   # Checks if the user is a participant in a discussion.
   #
   # This method processes attributes of objects in breadth-first order.
@@ -84,8 +93,7 @@ module Participable
     end
   end
 
-  def raw_participants(current_user = nil)
-    current_user ||= author
+  def raw_participants(current_user = nil, verify_access: false)
     ext = Gitlab::ReferenceExtractor.new(project, current_user)
     participants = Set.new
     process = [self]
@@ -97,6 +105,8 @@ module Participable
       when User
         participants << source
       when Participable
+        next unless !verify_access || source_visible_to_user?(source, current_user)
+
         source.class.participant_attrs.each do |attr|
           if attr.respond_to?(:call)
             source.instance_exec(current_user, ext, &attr)
@@ -114,6 +124,10 @@ module Participable
     end
 
     participants.merge(ext.users)
+  end
+
+  def source_visible_to_user?(source, user)
+    Ability.allowed?(user, "read_#{source.model_name.element}".to_sym, source)
   end
 
   def filter_by_ability(participants)

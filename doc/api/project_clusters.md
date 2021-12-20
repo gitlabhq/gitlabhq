@@ -384,7 +384,6 @@ Example response:
     }
   }
 }
-
 ```
 
 ## Delete project cluster

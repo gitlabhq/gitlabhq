@@ -1,0 +1,8 @@
+---
+name: feature_flag_state_logs
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/73729
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/345888
+milestone: '14.6'
+type: ops
+group: group::incubation
+default_enabled: false

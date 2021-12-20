@@ -10,7 +10,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 WARNING:
 This feature was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
-Use [Infrastrucure as Code](../../infrastructure/clusters/connect/new_gke_cluster.md)
+Use [Infrastructure as Code](../../infrastructure/clusters/connect/new_gke_cluster.md)
 to create a cluster hosted on Google Kubernetes Engine (GKE).
 
 Through GitLab, you can create new and connect existing clusters
@@ -19,7 +19,7 @@ hosted on Google Kubernetes Engine (GKE).
 ## Connect an existing GKE cluster
 
 If you already have a GKE cluster and want to connect it to GitLab,
-use the [GitLab Kubernetes Agent](../../clusters/agent/index.md).
+use the [GitLab Agent](../../clusters/agent/index.md).
 
 ## Create a new GKE cluster from GitLab
 

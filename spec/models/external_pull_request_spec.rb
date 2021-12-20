@@ -232,4 +232,8 @@ RSpec.describe ExternalPullRequest do
                                     'with space/README.md']
     end
   end
+
+  it_behaves_like 'it has loose foreign keys' do
+    let(:factory_name) { :external_pull_request }
+  end
 end

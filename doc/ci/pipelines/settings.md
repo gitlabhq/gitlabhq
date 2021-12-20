@@ -134,7 +134,7 @@ For example:
 - `my/path/.my-custom-file.yml@mygroup/another-project`
 - `my/path/.my-custom-file.yml@mygroup/another-project:refname`
 
-If the configuration file is in a separate project, you can more set more granular permissions. For example:
+If the configuration file is in a separate project, you can set more granular permissions. For example:
 
 - Create a public project to host the configuration file.
 - Give write permissions on the project only to users who are allowed to edit the file.
@@ -267,7 +267,7 @@ when merging a merge request would cause the project's test coverage to decline.
 
 Follow these steps to enable the `Coverage-Check` MR approval rule:
 
-1. Set up a [`coverage:`](../yaml/index.md#coverage) regular expression for all jobs you want to include in the overall coverage value.
+1. Set up a [`coverage`](../yaml/index.md#coverage) regular expression for all jobs you want to include in the overall coverage value.
 1. Go to your project and select **Settings > General**.
 1. Expand **Merge request approvals**.
 1. Select **Enable** next to the `Coverage-Check` approval rule.

@@ -82,7 +82,7 @@ module API
                  desc: 'Return issues sorted in `asc` or `desc` order.'
         optional :due_date, type: String, values: %w[0 overdue week month next_month_and_previous_two_weeks] << '',
                  desc: 'Return issues that have no due date (`0`), or whose due date is this week, this month, between two weeks ago and next month, or which are overdue. Accepts: `overdue`, `week`, `month`, `next_month_and_previous_two_weeks`, `0`'
-        optional :issue_type, type: String, values: WorkItem::Type.base_types.keys, desc: "The type of the issue. Accepts: #{WorkItem::Type.base_types.keys.join(', ')}"
+        optional :issue_type, type: String, values: WorkItem::Type.allowed_types_for_issues, desc: "The type of the issue. Accepts: #{WorkItem::Type.allowed_types_for_issues.join(', ')}"
 
         use :issues_stats_params
         use :pagination
@@ -99,7 +99,7 @@ module API
         optional :due_date, type: String, desc: 'Date string in the format YEAR-MONTH-DAY'
         optional :confidential, type: Boolean, desc: 'Boolean parameter if the issue should be confidential'
         optional :discussion_locked, type: Boolean, desc: " Boolean parameter indicating if the issue's discussion is locked"
-        optional :issue_type, type: String, values: WorkItem::Type.base_types.keys, desc: "The type of the issue. Accepts: #{WorkItem::Type.base_types.keys.join(', ')}"
+        optional :issue_type, type: String, values: WorkItem::Type.allowed_types_for_issues, desc: "The type of the issue. Accepts: #{WorkItem::Type.allowed_types_for_issues.join(', ')}"
 
         use :optional_issue_params_ee
       end
@@ -262,7 +262,7 @@ module API
       post ':id/issues' do
         Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/21140')
 
-        check_rate_limit! :issues_create, [current_user] if Feature.disabled?("rate_limited_service_issues_create", user_project, default_enabled: :yaml)
+        check_rate_limit!(:issues_create, scope: current_user) if Feature.disabled?("rate_limited_service_issues_create", user_project, default_enabled: :yaml)
 
         authorize! :create_issue, user_project
 
@@ -472,7 +472,7 @@ module API
       end
       get ':id/issues/:issue_iid/participants' do
         issue = find_project_issue(params[:issue_iid])
-        participants = ::Kaminari.paginate_array(issue.participants)
+        participants = ::Kaminari.paginate_array(issue.visible_participants(current_user))
 
         present paginate(participants), with: Entities::UserBasic, current_user: current_user, project: user_project
       end

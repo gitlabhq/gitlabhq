@@ -21,7 +21,7 @@ RSpec.describe Namespace::TraversalHierarchy, type: :model do
     end
 
     context 'with group outside of hierarchy' do
-      let(:group) { create(:namespace) }
+      let(:group) { create(:group) }
 
       it { expect(hierarchy.root).not_to eq root }
     end

@@ -13,10 +13,6 @@ RSpec.describe Gitlab::GitalyClient::CommitService do
   let(:client) { described_class.new(repository) }
 
   describe '#diff_from_parent' do
-    before do
-      stub_feature_flags(increased_diff_limits: false)
-    end
-
     context 'when a commit has a parent' do
       it 'sends an RPC request with the parent ID as left commit' do
         request = Gitaly::CommitDiffRequest.new(
@@ -104,45 +100,6 @@ RSpec.describe Gitlab::GitalyClient::CommitService do
         expect_any_instance_of(Gitaly::DiffService::Stub).to receive(:commit_delta).with(request, kind_of(Hash)).and_return([])
 
         client.commit_deltas(initial_commit)
-      end
-    end
-  end
-
-  describe '#between' do
-    let(:from) { 'master' }
-    let(:to) { Gitlab::Git::EMPTY_TREE_ID }
-
-    context 'with between_commits_via_list_commits enabled' do
-      before do
-        stub_feature_flags(between_commits_via_list_commits: true)
-      end
-
-      it 'sends an RPC request' do
-        request = Gitaly::ListCommitsRequest.new(
-          repository: repository_message, revisions: ["^" + from, to], reverse: true
-        )
-
-        expect_any_instance_of(Gitaly::CommitService::Stub).to receive(:list_commits)
-          .with(request, kind_of(Hash)).and_return([])
-
-        described_class.new(repository).between(from, to)
-      end
-    end
-
-    context 'with between_commits_via_list_commits disabled' do
-      before do
-        stub_feature_flags(between_commits_via_list_commits: false)
-      end
-
-      it 'sends an RPC request' do
-        request = Gitaly::CommitsBetweenRequest.new(
-          repository: repository_message, from: from, to: to
-        )
-
-        expect_any_instance_of(Gitaly::CommitService::Stub).to receive(:commits_between)
-          .with(request, kind_of(Hash)).and_return([])
-
-        described_class.new(repository).between(from, to)
       end
     end
   end

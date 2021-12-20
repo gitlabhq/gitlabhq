@@ -26,12 +26,12 @@ module Mutations
       argument :commit_message, ::GraphQL::Types::String,
                required: false,
                description: 'Custom merge commit message.'
-      argument :squash_commit_message, ::GraphQL::Types::String,
-               required: false,
-               description: 'Custom squash commit message (if squash is true).'
       argument :sha, ::GraphQL::Types::String,
                required: true,
                description: 'HEAD SHA at the time when this merge was requested.'
+      argument :squash_commit_message, ::GraphQL::Types::String,
+               required: false,
+               description: 'Custom squash commit message (if squash is true).'
 
       argument :should_remove_source_branch, ::GraphQL::Types::Boolean,
                required: false,

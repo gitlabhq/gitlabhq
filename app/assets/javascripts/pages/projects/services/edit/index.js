@@ -1,9 +1,8 @@
-import IntegrationSettingsForm from '~/integrations/integration_settings_form';
+import initIntegrationSettingsForm from '~/integrations/edit';
 import PrometheusAlerts from '~/prometheus_alerts';
 import CustomMetrics from '~/prometheus_metrics/custom_metrics';
 
-const integrationSettingsForm = new IntegrationSettingsForm('.js-integration-settings-form');
-integrationSettingsForm.init();
+initIntegrationSettingsForm('.js-integration-settings-form');
 
 const prometheusSettingsSelector = '.js-prometheus-metrics-monitoring';
 const prometheusSettingsWrapper = document.querySelector(prometheusSettingsSelector);

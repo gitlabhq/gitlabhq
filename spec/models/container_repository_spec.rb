@@ -223,9 +223,9 @@ RSpec.describe ContainerRepository do
     end
   end
 
-  describe '.create_from_path!' do
+  describe '.find_or_create_from_path' do
     let(:repository) do
-      described_class.create_from_path!(ContainerRegistry::Path.new(path))
+      described_class.find_or_create_from_path(ContainerRegistry::Path.new(path))
     end
 
     let(:repository_path) { ContainerRegistry::Path.new(path) }
@@ -290,6 +290,35 @@ RSpec.describe ContainerRepository do
 
         expect(repository.id).to eq(container_repository.id)
       end
+    end
+
+    context 'when many of the same repository are created at the same time' do
+      let(:path) { ContainerRegistry::Path.new(project.full_path + '/some/image') }
+
+      it 'does not throw validation errors and only creates one repository' do
+        expect { repository_creation_race(path) }.to change { ContainerRepository.count }.by(1)
+      end
+
+      it 'retrieves a persisted repository for all concurrent calls' do
+        repositories = repository_creation_race(path).map(&:value)
+
+        expect(repositories).to all(be_persisted)
+      end
+    end
+
+    def repository_creation_race(path)
+      # create a race condition - structure from https://blog.arkency.com/2015/09/testing-race-conditions/
+      wait_for_it = true
+
+      threads = Array.new(10) do |i|
+        Thread.new do
+          true while wait_for_it
+
+          ::ContainerRepository.find_or_create_from_path(path)
+        end
+      end
+      wait_for_it = false
+      threads.each(&:join)
     end
   end
 

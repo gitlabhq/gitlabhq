@@ -32,22 +32,15 @@ RSpec.describe ::Packages::Npm::PackagePresenter do
       }
     end
 
-    let(:presenter) { described_class.new(package_name, packages, include_metadata: include_metadata) }
+    let(:presenter) { described_class.new(package_name, packages) }
 
     subject { presenter.versions }
 
-    where(:has_dependencies, :has_metadatum, :include_metadata) do
-      true  | true  | true
-      false | true  | true
-      true  | false | true
-      false | false | true
-
-      # TODO : to remove along with packages_npm_abbreviated_metadata
-      # See https://gitlab.com/gitlab-org/gitlab/-/issues/344827
-      true  | true  | false
-      false | true  | false
-      true  | false | false
-      false | false | false
+    where(:has_dependencies, :has_metadatum) do
+      true  | true
+      false | true
+      true  | false
+      false | false
     end
 
     with_them do
@@ -80,7 +73,7 @@ RSpec.describe ::Packages::Npm::PackagePresenter do
 
       context 'metadatum' do
         ::Packages::Npm::PackagePresenter::PACKAGE_JSON_ALLOWED_FIELDS.each do |metadata_field|
-          if params[:has_metadatum] && params[:include_metadata]
+          if params[:has_metadatum]
             it { expect(subject.dig(package1.version, metadata_field)).not_to be nil }
           else
             it { expect(subject.dig(package1.version, metadata_field)).to be nil }

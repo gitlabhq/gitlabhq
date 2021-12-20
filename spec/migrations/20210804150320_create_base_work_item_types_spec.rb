@@ -4,18 +4,28 @@ require 'spec_helper'
 require_migration!
 
 RSpec.describe CreateBaseWorkItemTypes, :migration do
-  let!(:work_item_types) { table(:work_item_types) }
+  include MigrationHelpers::WorkItemTypesHelper
+
+  let_it_be(:work_item_types) { table(:work_item_types) }
+
+  let(:base_types) do
+    {
+      issue:       0,
+      incident:    1,
+      test_case:   2,
+      requirement: 3
+    }
+  end
 
   after(:all) do
     # Make sure base types are recreated after running the migration
     # because migration specs are not run in a transaction
-    WorkItem::Type.delete_all
-    Gitlab::DatabaseImporters::WorkItems::BaseTypeImporter.import
+    reset_work_item_types
   end
 
   it 'creates default data' do
     # Need to delete all as base types are seeded before entire test suite
-    WorkItem::Type.delete_all
+    work_item_types.delete_all
 
     reversible_migration do |migration|
       migration.before -> {
@@ -24,8 +34,8 @@ RSpec.describe CreateBaseWorkItemTypes, :migration do
       }
 
       migration.after -> {
-        expect(work_item_types.count).to eq 4
-        expect(work_item_types.all.pluck(:base_type)).to match_array WorkItem::Type.base_types.values
+        expect(work_item_types.count).to eq(4)
+        expect(work_item_types.all.pluck(:base_type)).to match_array(base_types.values)
       }
     end
   end

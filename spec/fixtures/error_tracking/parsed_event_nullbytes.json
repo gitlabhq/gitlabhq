@@ -1,0 +1,175 @@
+{
+   "breadcrumbs" : {
+      "values" : [
+         {
+            "category" : "start_processing.action_controller",
+            "data" : {
+               "action" : "error2",
+               "controller" : "PostsController",
+               "format" : "html",
+               "method" : "GET",
+               "params" : {
+                  "action" : "error2",
+                  "controller" : "posts"
+               },
+               "path" : "/posts/error2",
+               "start_timestamp" : 1625749156.5553
+            },
+            "level" : null,
+            "message" : "",
+            "timestamp" : 1625749156,
+            "type" : null
+         },
+         {
+            "category" : "process_action.action_controller",
+            "data" : {
+               "action" : "error2",
+               "controller" : "PostsController",
+               "db_runtime" : 0,
+               "format" : "html",
+               "method" : "GET",
+               "params" : {
+                  "action" : "error2",
+                  "controller" : "posts"
+               },
+               "path" : "/posts/error2",
+               "start_timestamp" : 1625749156.55539,
+               "view_runtime" : null
+            },
+            "level" : null,
+            "message" : "",
+            "timestamp" : 1625749156,
+            "type" : null
+         }
+      ]
+   },
+   "contexts" : {
+      "os" : {
+         "build" : "20.5.0",
+         "kernel_version" : "Darwin Kernel Version 20.5.0: Sat May  8 05:10:33 PDT 2021; root:xnu-7195.121.3~9/RELEASE_X86_64",
+         "name" : "Darwin",
+         "version" : "Darwin Kernel Version 20.5.0: Sat May  8 05:10:33 PDT 2021; root:xnu-7195.121.3~9/RELEASE_X86_64"
+      },
+      "runtime" : {
+         "name" : "ruby",
+         "version" : "ruby 2.5.1p57 (2018-03-29 revision 63029) [x86_64-darwin19]"
+      },
+      "trace" : {
+         "description" : null,
+         "op" : "rails.request",
+         "parent_span_id" : null,
+         "span_id" : "4a3ed8701e7f4ea4",
+         "status" : null,
+         "trace_id" : "d82b93fbc39e4d13b85762afa2e3ff36"
+      }
+   },
+   "environment" : "development",
+   "event_id" : "7c9ae6e58f03442b9203bbdcf6ae904c",
+   "exception" : {
+      "values" : [
+         {
+            "module" : "ActionView",
+            "stacktrace" : {
+               "frames" : [
+                  {
+                     "abs_path" : "/Users/developer/.asdf/installs/ruby/2.5.1/lib/ruby/gems/2.5.0/gems/puma-3.12.6/lib/puma/thread_pool.rb",
+                     "context_line" : "            block.call(work, *extra)\n",
+                     "filename" : "puma/thread_pool.rb",
+                     "function" : "block in spawn_thread",
+                     "in_app" : false,
+                     "lineno" : 135,
+                     "post_context" : [
+                        "          rescue Exception => e\u0000\n",
+                        "            STDERR.puts \"Error\u0000reached top of thread-pool: #{e.message} (#{e.class})\"\n",
+                        "          end\n"
+                     ],
+                     "pre_context" : [
+                        "          end\n",
+                        "\n",
+                        "          begin\n"
+                     ],
+                     "project_root" : "/Users/developer/rails-project"
+                  },
+                  {
+                     "abs_path" : "/Users/developer/.asdf/installs/ruby/2.5.1/lib/ruby/gems/2.5.0/gems/puma-3.12.6/lib/puma/server.rb",
+                     "context_line" : "            process_client client, buffer\n",
+                     "filename" : "puma/server.rb",
+                     "function" : "block in run",
+                     "in_app" : false,
+                     "lineno" : 334,
+                     "post_context" : [
+                        "          else\n",
+                        "            client.set_timeout @first_data_timeout\n",
+                        "            @reactor.add client\n"
+                     ],
+                     "pre_context" : [
+                        "          client.close\n",
+                        "        else\n",
+                        "          if process_now\n"
+                     ],
+                     "project_root" : "/Users/developer/rails-project"
+                  },
+                  {
+                     "abs_path" : "/Users/developer/.asdf/installs/ruby/2.5.1/lib/ruby/gems/2.5.0/gems/actionview-5.2.6/lib/action_view/path_set.rb",
+                     "context_line" : "      find_all(*args).first || raise(MissingTemplate.new(self, *args))\n",
+                     "filename" : "action_view/path_set.rb",
+                     "function" : "find",
+                     "in_app" : false,
+                     "lineno" : 48,
+                     "post_context" : [
+                        "    end\n",
+                        "\n",
+                        "    def find_file(path, prefixes = [], *args)\n"
+                     ],
+                     "pre_context" : [
+                        "    end\n",
+                        "\n",
+                        "    def find(*args)\n"
+                     ],
+                     "project_root" : "/Users/developer/rails-project"
+                  }
+               ]
+            },
+            "thread_id" : 70254489510160,
+            "type" : "ActionView::MissingTemplate",
+            "value" : "Missing template posts/error2, application/error2 with {:locale=>[:en], :formats=>[:html], :variants=>[], :handlers=>[:raw, :erb, :html, :builder, :ruby, :coffee, :jbuilder]}. Searched in:\n  * \"/Users/developer/rails-project/app/views\"\n"
+         }
+      ]
+   },
+   "extra" : {},
+   "fingerprint" : [],
+   "level" : "error",
+   "message" : "",
+   "modules" : {
+      "concurrent-ruby" : "1.1.9",
+      "i18n" : "1.8.10",
+      "minitest" : "5.14.4",
+      "rake" : "13.0.3",
+      "thread_safe" : "0.3.6",
+      "tzinfo" : "1.2.9",
+      "uglifier" : "4.2.0",
+      "web-console" : "3.7.0"
+   },
+   "platform" : "ruby",
+   "release" : "db853d7",
+   "request" : {
+      "env" : {
+         "SERVER_NAME" : "localhost",
+         "SERVER_PORT" : "4444"
+      },
+      "headers" : {},
+      "method" : "GET",
+      "url" : "http://localhost/posts/error2"
+   },
+   "sdk" : {
+      "name" : "sentry.ruby.rails",
+      "version" : "4.5.1"
+   },
+   "server_name" : "MacBook.local",
+   "tags" : {
+      "request_id" : "4253dcd9-5e48-474a-89b4-0e945ab825af"
+   },
+   "timestamp" : "2021-07-08T12:59:16Z",
+   "transaction" : "PostsController#error2",
+   "user" : {}
+}

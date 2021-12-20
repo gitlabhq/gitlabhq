@@ -12,11 +12,7 @@ class U2fRegistration < ApplicationRecord
     converter = Gitlab::Auth::U2fWebauthnConverter.new(self)
     WebauthnRegistration.create!(converter.convert)
   rescue StandardError => ex
-    Gitlab::AppJsonLogger.error(
-      event: 'u2f_migration',
-      error: ex.class.name,
-      backtrace: ::Gitlab::BacktraceCleaner.clean_backtrace(ex.backtrace),
-      message: "U2F to WebAuthn conversion failed")
+    Gitlab::ErrorTracking.track_exception(ex, u2f_registration_id: self.id)
   end
 
   def update_webauthn_registration

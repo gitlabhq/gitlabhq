@@ -244,13 +244,13 @@ sudo make install
 GitLab has several daemons written in Go. To install
 GitLab we need a Go compiler. The instructions below assume you use 64-bit
 Linux. You can find downloads for other platforms at the [Go download
-page](https://golang.org/dl).
+page](https://go.dev/dl).
 
 ```shell
 # Remove former Go installation folder
 sudo rm -rf /usr/local/go
 
-curl --remote-name --progress-bar "https://golang.org/dl/go1.16.10.linux-amd64.tar.gz"
+curl --remote-name --progress-bar "https://go.dev/dl/go1.16.10.linux-amd64.tar.gz"
 echo '414cd18ce1d193769b9e97d2401ad718755ab47816e13b2a1cde203d263b55cf  go1.16.10.linux-amd64.tar.gz' | shasum -a256 -c - && \
   sudo tar -C /usr/local -xzf go1.16.10.linux-amd64.tar.gz
 sudo ln -sf /usr/local/go/bin/{go,gofmt} /usr/local/bin/
@@ -1034,7 +1034,7 @@ To use GitLab with HTTPS:
    1. Set the `port` option in section 1 to `443`.
    1. Set the `https` option in section 1 to `true`.
 1. In the `config.yml` of GitLab Shell:
-   1. Set `gitlab_url` option to the HTTPS endpoint of GitLab (e.g. `https://git.example.com`).
+   1. Set `gitlab_url` option to the HTTPS endpoint of GitLab (for example, `https://git.example.com`).
    1. Set the certificates using either the `ca_file` or `ca_path` option.
 1. Use the `gitlab-ssl` NGINX example configuration instead of the `gitlab` configuration.
    1. Update `YOUR_SERVER_FQDN`.
@@ -1119,7 +1119,7 @@ host localhost          # Give your setup a name (here: override localhost)
     hostname 127.0.0.1; # Your server name or IP
 ```
 
-You also need to change the corresponding options (e.g. `ssh_user`, `ssh_host`, `admin_uri`) in the `config\gitlab.yml` file.
+You also need to change the corresponding options (for example, `ssh_user`, `ssh_host`, `admin_uri`) in the `config\gitlab.yml` file.
 
 ### Additional Markup Styles
 

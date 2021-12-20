@@ -7,7 +7,7 @@ module Gitlab
         class Base
           attr_reader :pipeline, :command, :config
 
-          delegate :project, :current_user, :parent_pipeline, to: :command
+          delegate :project, :current_user, :parent_pipeline, :logger, to: :command
 
           def initialize(pipeline, command)
             @pipeline = pipeline

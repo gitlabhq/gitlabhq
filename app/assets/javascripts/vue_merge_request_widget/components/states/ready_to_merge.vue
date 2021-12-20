@@ -181,9 +181,16 @@ export default {
       return this.mr.canRemoveSourceBranch;
     },
     commitTemplateHelpPage() {
-      return helpPagePath('user/project/merge_requests/commit_templates.md', {
-        anchor: 'merge-commit-message-template',
-      });
+      return helpPagePath('user/project/merge_requests/commit_templates.md');
+    },
+    commitTemplateHintText() {
+      if (this.shouldShowSquashEdit && this.shouldShowMergeEdit) {
+        return this.$options.i18n.mergeAndSquashCommitTemplatesHintText;
+      }
+      if (this.shouldShowSquashEdit) {
+        return this.$options.i18n.squashCommitTemplateHintText;
+      }
+      return this.$options.i18n.mergeCommitTemplateHintText;
     },
     commits() {
       if (this.glFeatures.mergeRequestWidgetGraphql) {
@@ -287,7 +294,7 @@ export default {
         return false;
       }
 
-      return enableSquashBeforeMerge && this.commitsCount > 1;
+      return enableSquashBeforeMerge;
     },
     shouldShowMergeControls() {
       if (this.glFeatures.restructuredMrWidget) {
@@ -509,6 +516,12 @@ export default {
     mergeCommitTemplateHintText: s__(
       'mrWidget|To change this default message, edit the template for merge commit messages. %{linkStart}Learn more.%{linkEnd}',
     ),
+    squashCommitTemplateHintText: s__(
+      'mrWidget|To change this default message, edit the template for squash commit messages. %{linkStart}Learn more.%{linkEnd}',
+    ),
+    mergeAndSquashCommitTemplatesHintText: s__(
+      'mrWidget|To change these default messages, edit the templates for both the merge and squash commit messages. %{linkStart}Learn more.%{linkEnd}',
+    ),
   },
 };
 </script>
@@ -590,13 +603,7 @@ export default {
               :class="{ 'gl-w-full gl-order-n1 gl-mb-5': glFeatures.restructuredMrWidget }"
               class="gl-display-flex gl-align-items-center gl-flex-wrap"
             >
-              <merge-train-helper-icon
-                v-if="shouldRenderMergeTrainHelperIcon"
-                :merge-train-when-pipeline-succeeds-docs-path="
-                  mr.mergeTrainWhenPipelineSucceedsDocsPath
-                "
-                class="gl-mx-3"
-              />
+              <merge-train-helper-icon v-if="shouldRenderMergeTrainHelperIcon" class="gl-mx-3" />
 
               <gl-form-checkbox
                 v-if="canRemoveSourceBranch"
@@ -680,23 +687,22 @@ export default {
                     :label="__('Merge commit message')"
                     input-id="merge-message-edit"
                     class="gl-m-0! gl-p-0!"
-                  >
-                    <template #text-muted>
-                      <p class="form-text text-muted">
-                        <gl-sprintf :message="$options.i18n.mergeCommitTemplateHintText">
-                          <template #link="{ content }">
-                            <gl-link
-                              :href="commitTemplateHelpPage"
-                              class="inline-link"
-                              target="_blank"
-                            >
-                              {{ content }}
-                            </gl-link>
-                          </template>
-                        </gl-sprintf>
-                      </p>
-                    </template>
-                  </commit-edit>
+                  />
+                  <li class="gl-m-0! gl-p-0!">
+                    <p class="form-text text-muted">
+                      <gl-sprintf :message="commitTemplateHintText">
+                        <template #link="{ content }">
+                          <gl-link
+                            :href="commitTemplateHelpPage"
+                            class="inline-link"
+                            target="_blank"
+                          >
+                            {{ content }}
+                          </gl-link>
+                        </template>
+                      </gl-sprintf>
+                    </p>
+                  </li>
                 </ul>
               </div>
               <div
@@ -798,19 +804,18 @@ export default {
               v-model="commitMessage"
               :label="__('Merge commit message')"
               input-id="merge-message-edit"
-            >
-              <template #text-muted>
-                <p class="form-text text-muted">
-                  <gl-sprintf :message="$options.i18n.mergeCommitTemplateHintText">
-                    <template #link="{ content }">
-                      <gl-link :href="commitTemplateHelpPage" class="inline-link" target="_blank">
-                        {{ content }}
-                      </gl-link>
-                    </template>
-                  </gl-sprintf>
-                </p>
-              </template>
-            </commit-edit>
+            />
+            <li>
+              <p class="form-text text-muted">
+                <gl-sprintf :message="commitTemplateHintText">
+                  <template #link="{ content }">
+                    <gl-link :href="commitTemplateHelpPage" class="inline-link" target="_blank">
+                      {{ content }}
+                    </gl-link>
+                  </template>
+                </gl-sprintf>
+              </p>
+            </li>
           </ul>
         </commits-header>
       </template>

@@ -28,7 +28,7 @@ RSpec.shared_examples 'setting CSP' do |rule_name|
 
     context 'when feature is enabled' do
       it "appends to #{rule_name}" do
-        is_expected.to eql("#{rule_name} #{default_csp_values} #{whitelisted_url}")
+        is_expected.to eql("#{rule_name} #{default_csp_values} #{allowlisted_url}")
       end
     end
 
@@ -46,7 +46,7 @@ RSpec.shared_examples 'setting CSP' do |rule_name|
 
     context 'when feature is enabled' do
       it "uses default-src values in #{rule_name}" do
-        is_expected.to eql("default-src #{default_csp_values}; #{rule_name} #{default_csp_values} #{whitelisted_url}")
+        is_expected.to eql("default-src #{default_csp_values}; #{rule_name} #{default_csp_values} #{allowlisted_url}")
       end
     end
 
@@ -64,7 +64,7 @@ RSpec.shared_examples 'setting CSP' do |rule_name|
 
     context 'when feature is enabled' do
       it "uses default-src values in #{rule_name}" do
-        is_expected.to eql("font-src #{default_csp_values}; #{rule_name} #{whitelisted_url}")
+        is_expected.to eql("font-src #{default_csp_values}; #{rule_name} #{allowlisted_url}")
       end
     end
 

@@ -145,12 +145,19 @@ describe('Sidebar date Widget', () => {
     ${false}   | ${SidebarInheritDate}   | ${'SidebarInheritDate'}   | ${false}
   `(
     'when canInherit is $canInherit, $componentName display is $expected',
-    ({ canInherit, component, expected }) => {
+    async ({ canInherit, component, expected }) => {
       createComponent({ canInherit });
+      await waitForPromises();
 
       expect(wrapper.find(component).exists()).toBe(expected);
     },
   );
+
+  it('does not render SidebarInheritDate when canInherit is true and date is loading', async () => {
+    createComponent({ canInherit: true });
+
+    expect(wrapper.find(SidebarInheritDate).exists()).toBe(false);
+  });
 
   it('displays a flash message when query is rejected', async () => {
     createComponent({

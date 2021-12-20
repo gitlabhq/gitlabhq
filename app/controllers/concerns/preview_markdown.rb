@@ -21,7 +21,7 @@ module PreviewMarkdown
 
   def projects_filter_params
     {
-      issuable_state_filter_enabled: true,
+      issuable_reference_expansion_enabled: true,
       suggestions_filter_enabled: params[:preview_suggestions].present?
     }
   end

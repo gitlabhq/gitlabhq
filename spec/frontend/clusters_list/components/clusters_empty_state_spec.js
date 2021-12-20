@@ -6,35 +6,33 @@ import ClusterStore from '~/clusters_list/store';
 const clustersEmptyStateImage = 'path/to/svg';
 const newClusterPath = '/path/to/connect/cluster';
 const emptyStateHelpText = 'empty state text';
-const canAddCluster = true;
 
 describe('ClustersEmptyStateComponent', () => {
   let wrapper;
 
-  const propsData = {
-    isChildComponent: false,
-  };
-
-  const provideData = {
+  const defaultProvideData = {
     clustersEmptyStateImage,
-    emptyStateHelpText: null,
     newClusterPath,
-  };
-
-  const entryData = {
-    canAddCluster,
   };
 
   const findButton = () => wrapper.findComponent(GlButton);
   const findEmptyStateText = () => wrapper.findByTestId('clusters-empty-state-text');
 
-  beforeEach(() => {
+  const createWrapper = ({
+    provideData = { emptyStateHelpText: null },
+    isChildComponent = false,
+    canAddCluster = true,
+  } = {}) => {
     wrapper = shallowMountExtended(ClustersEmptyState, {
-      store: ClusterStore(entryData),
-      propsData,
-      provide: provideData,
+      store: ClusterStore({ canAddCluster }),
+      propsData: { isChildComponent },
+      provide: { ...defaultProvideData, ...provideData },
       stubs: { GlEmptyState },
     });
+  };
+
+  beforeEach(() => {
+    createWrapper();
   });
 
   afterEach(() => {
@@ -55,16 +53,7 @@ describe('ClustersEmptyStateComponent', () => {
 
   describe('when the component is loaded as a child component', () => {
     beforeEach(() => {
-      propsData.isChildComponent = true;
-      wrapper = shallowMountExtended(ClustersEmptyState, {
-        store: ClusterStore(entryData),
-        propsData,
-        provide: provideData,
-      });
-    });
-
-    afterEach(() => {
-      propsData.isChildComponent = false;
+      createWrapper({ isChildComponent: true });
     });
 
     it('should not render the action button', () => {
@@ -74,12 +63,7 @@ describe('ClustersEmptyStateComponent', () => {
 
   describe('when the help text is provided', () => {
     beforeEach(() => {
-      provideData.emptyStateHelpText = emptyStateHelpText;
-      wrapper = shallowMountExtended(ClustersEmptyState, {
-        store: ClusterStore(entryData),
-        propsData,
-        provide: provideData,
-      });
+      createWrapper({ provideData: { emptyStateHelpText } });
     });
 
     it('should show the empty state text', () => {
@@ -88,14 +72,8 @@ describe('ClustersEmptyStateComponent', () => {
   });
 
   describe('when the user cannot add clusters', () => {
-    entryData.canAddCluster = false;
     beforeEach(() => {
-      wrapper = shallowMountExtended(ClustersEmptyState, {
-        store: ClusterStore(entryData),
-        propsData,
-        provide: provideData,
-        stubs: { GlEmptyState },
-      });
+      createWrapper({ canAddCluster: false });
     });
     it('should disable the button', () => {
       expect(findButton().props('disabled')).toBe(true);

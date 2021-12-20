@@ -329,16 +329,6 @@ table.u2f-registrations {
   }
 }
 
-.email-badge {
-  display: inline;
-  margin-right: $gl-padding / 2;
-
-  .email-badge-email {
-    display: inline;
-    margin-right: $gl-padding / 4;
-  }
-}
-
 .edit-user {
   svg {
     fill: $gl-text-color-secondary;

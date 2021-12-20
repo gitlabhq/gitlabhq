@@ -1,11 +1,21 @@
 <script>
 import { GlTabs, GlTab } from '@gitlab/ui';
-import { CLUSTERS_TABS, MAX_CLUSTERS_LIST, MAX_LIST_COUNT, AGENT } from '../constants';
+import Tracking from '~/tracking';
+import {
+  CLUSTERS_TABS,
+  MAX_CLUSTERS_LIST,
+  MAX_LIST_COUNT,
+  AGENT,
+  EVENT_LABEL_TABS,
+  EVENT_ACTIONS_CHANGE,
+} from '../constants';
 import Agents from './agents.vue';
 import InstallAgentModal from './install_agent_modal.vue';
 import ClustersActions from './clusters_actions.vue';
 import Clusters from './clusters.vue';
 import ClustersViewAll from './clusters_view_all.vue';
+
+const trackingMixin = Tracking.mixin({ label: EVENT_LABEL_TABS });
 
 export default {
   components: {
@@ -18,6 +28,7 @@ export default {
     InstallAgentModal,
   },
   CLUSTERS_TABS,
+  mixins: [trackingMixin],
   props: {
     defaultBranchName: {
       default: '.noBranch',
@@ -34,8 +45,11 @@ export default {
   methods: {
     onTabChange(tabName) {
       this.selectedTabIndex = CLUSTERS_TABS.findIndex((tab) => tab.queryParamValue === tabName);
-
       this.maxAgents = tabName === AGENT ? MAX_LIST_COUNT : MAX_CLUSTERS_LIST;
+    },
+    trackTabChange(tab) {
+      const tabName = CLUSTERS_TABS[tab].queryParamValue;
+      this.track(EVENT_ACTIONS_CHANGE, { property: tabName });
     },
   },
 };
@@ -47,6 +61,7 @@ export default {
       sync-active-tab-with-query-params
       nav-class="gl-flex-grow-1 gl-align-items-center"
       lazy
+      @input="trackTabChange"
     >
       <gl-tab
         v-for="(tab, idx) in $options.CLUSTERS_TABS"

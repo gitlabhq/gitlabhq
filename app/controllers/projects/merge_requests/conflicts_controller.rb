@@ -5,6 +5,12 @@ class Projects::MergeRequests::ConflictsController < Projects::MergeRequests::Ap
 
   before_action :authorize_can_resolve_conflicts!
 
+  urgency :low, [
+    :show,
+    :conflict_for_path,
+    :resolve_conflicts
+  ]
+
   def show
     respond_to do |format|
       format.html do

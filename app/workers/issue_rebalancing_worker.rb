@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
+# DEPRECATED. Will be removed in 14.7 https://gitlab.com/gitlab-org/gitlab/-/merge_requests/72803
+# Please use Issues::RebalancingWorker instead
+#
 # todo: remove this worker and it's queue definition from all_queues after Issue::RebalancingWorker is released.
 # We want to keep it for one release in case some jobs are already scheduled in the old queue so we need the worker
 # to be available to finish those. All new jobs will be queued into the new queue.

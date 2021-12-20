@@ -27,7 +27,7 @@
 - elsif @group_runners.empty?
   = _('This group does not have any group runners yet.')
 
-  - if can?(current_user, :admin_pipeline, @project.group)
+  - if can?(current_user, :admin_group_runners, @project.group)
     - group_link = link_to _("group's CI/CD settings."), group_settings_ci_cd_path(@project.group)
     = _('Group maintainers can register group runners in the %{link}').html_safe % { link: group_link }
   - else

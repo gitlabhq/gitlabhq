@@ -89,7 +89,7 @@ export default {
 <template>
   <div
     v-gl-tooltip="tooltipOptions"
-    :class="{ 'multiple-users': hasMoreThanOneReviewer }"
+    :class="{ 'multiple-users gl-relative': hasMoreThanOneReviewer }"
     :title="tooltipTitle"
     class="sidebar-collapsed-icon sidebar-collapsed-user"
   >

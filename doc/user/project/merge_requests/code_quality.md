@@ -87,7 +87,7 @@ include:
 
 The above example creates a `code_quality` job in your CI/CD pipeline which
 scans your source code for code quality issues. The report is saved as a
-[Code Quality report artifact](../../../ci/yaml/index.md#artifactsreportscodequality)
+[Code Quality report artifact](../../../ci/yaml/artifacts_reports.md#artifactsreportscodequality)
 that you can later download and analyze.
 
 It's also possible to override the URL to the Code Quality image by
@@ -343,7 +343,7 @@ It's possible to have a custom tool provide Code Quality reports in GitLab. To
 do this:
 
 1. Define a job in your `.gitlab-ci.yml` file that generates the
-   [Code Quality report artifact](../../../ci/yaml/index.md#artifactsreportscodequality).
+   [Code Quality report artifact](../../../ci/yaml/artifacts_reports.md#artifactsreportscodequality).
 1. Configure your tool to generate the Code Quality report artifact as a JSON
    file that implements a subset of the [Code Climate
    spec](https://github.com/codeclimate/platform/blob/master/spec/analyzers/SPEC.md#data-types).

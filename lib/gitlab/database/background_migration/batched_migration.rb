@@ -18,6 +18,8 @@ module Gitlab
           scope: [:job_class_name, :table_name, :column_name]
         }
 
+        validate :validate_batched_jobs_status, if: -> { status_changed? && finished? }
+
         scope :queue_order, -> { order(id: :asc) }
         scope :queued, -> { where(status: [:active, :paused]) }
         scope :for_configuration, ->(job_class_name, table_name, column_name, job_arguments) do
@@ -92,11 +94,11 @@ module Gitlab
         end
 
         def job_class_name=(class_name)
-          write_attribute(:job_class_name, class_name.demodulize)
+          write_attribute(:job_class_name, class_name.delete_prefix("::"))
         end
 
         def batch_class_name=(class_name)
-          write_attribute(:batch_class_name, class_name.demodulize)
+          write_attribute(:batch_class_name, class_name.delete_prefix("::"))
         end
 
         def migrated_tuple_count
@@ -132,6 +134,12 @@ module Gitlab
 
         def optimize!
           BatchOptimizer.new(self).optimize!
+        end
+
+        private
+
+        def validate_batched_jobs_status
+          errors.add(:batched_jobs, 'jobs need to be succeeded') if batched_jobs.except_succeeded.exists?
         end
       end
     end

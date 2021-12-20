@@ -46,32 +46,34 @@ module QA
 
       with_them do
         it "pulls an image using the dependency proxy" do
-          Resource::Repository::Commit.fabricate_via_api! do |commit|
-            commit.project = project
-            commit.commit_message = 'Add .gitlab-ci.yml'
-            commit.add_files([{
-                                file_path: '.gitlab-ci.yml',
-                                content:
-                                    <<~YAML
-                                      dependency-proxy-pull-test:
-                                        image: "#{docker_client_version}"
-                                        services:
-                                        - name: "#{docker_client_version}-dind"
-                                          command: ["--insecure-registry=gitlab.test:80"]     
-                                        before_script:
-                                          - apk add curl jq grep
-                                          - echo $CI_DEPENDENCY_PROXY_SERVER
-                                          - docker login -u "$CI_DEPENDENCY_PROXY_USER" -p "$CI_DEPENDENCY_PROXY_PASSWORD" gitlab.test:80
-                                        script:
-                                          - docker pull #{dependency_proxy_url}/#{image_sha}
-                                          - TOKEN=$(curl "https://auth.docker.io/token?service=registry.docker.io&scope=repository:ratelimitpreview/test:pull" | jq --raw-output .token)
-                                          - 'curl --head --header "Authorization: Bearer $TOKEN" "https://registry-1.docker.io/v2/ratelimitpreview/test/manifests/latest" 2>&1'
-                                          - docker pull #{dependency_proxy_url}/#{image_sha}
-                                          - 'curl --head --header "Authorization: Bearer $TOKEN" "https://registry-1.docker.io/v2/ratelimitpreview/test/manifests/latest" 2>&1'
-                                        tags:
-                                        - "runner-for-#{project.name}"
-                                    YAML
-                            }])
+          Support::Retrier.retry_on_exception(max_attempts: 3, sleep_interval: 2) do
+            Resource::Repository::Commit.fabricate_via_api! do |commit|
+              commit.project = project
+              commit.commit_message = 'Add .gitlab-ci.yml'
+              commit.add_files([{
+                                  file_path: '.gitlab-ci.yml',
+                                  content:
+                                      <<~YAML
+                                        dependency-proxy-pull-test:
+                                          image: "#{docker_client_version}"
+                                          services:
+                                          - name: "#{docker_client_version}-dind"
+                                            command: ["--insecure-registry=gitlab.test:80"]     
+                                          before_script:
+                                            - apk add curl jq grep
+                                            - echo $CI_DEPENDENCY_PROXY_SERVER
+                                            - docker login -u "$CI_DEPENDENCY_PROXY_USER" -p "$CI_DEPENDENCY_PROXY_PASSWORD" gitlab.test:80
+                                          script:
+                                            - docker pull #{dependency_proxy_url}/#{image_sha}
+                                            - TOKEN=$(curl "https://auth.docker.io/token?service=registry.docker.io&scope=repository:ratelimitpreview/test:pull" | jq --raw-output .token)
+                                            - 'curl --head --header "Authorization: Bearer $TOKEN" "https://registry-1.docker.io/v2/ratelimitpreview/test/manifests/latest" 2>&1'
+                                            - docker pull #{dependency_proxy_url}/#{image_sha}
+                                            - 'curl --head --header "Authorization: Bearer $TOKEN" "https://registry-1.docker.io/v2/ratelimitpreview/test/manifests/latest" 2>&1'
+                                          tags:
+                                          - "runner-for-#{project.name}"
+                                      YAML
+                              }])
+            end
           end
 
           project.visit!

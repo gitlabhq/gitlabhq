@@ -41,7 +41,7 @@ RSpec.describe Gitlab::GitalyClient::DiffStitcher do
       msg_2.raw_patch_data = diff_2.patch[0..100]
       msg_2.end_of_patch = false
 
-      msg_3 = OpenStruct.new(raw_patch_data: diff_2.patch[101..-1], end_of_patch: true)
+      msg_3 = OpenStruct.new(raw_patch_data: diff_2.patch[101..], end_of_patch: true)
 
       msg_4 = OpenStruct.new(diff_3.to_h.except(:patch))
       msg_4.raw_patch_data = diff_3.patch

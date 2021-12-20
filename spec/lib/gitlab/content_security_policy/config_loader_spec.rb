@@ -85,7 +85,7 @@ RSpec.describe Gitlab::ContentSecurityPolicy::ConfigLoader do
         expect(directives['style_src']).to eq("'self' 'unsafe-inline' https://cdn.example.com")
         expect(directives['font_src']).to eq("'self' https://cdn.example.com")
         expect(directives['worker_src']).to eq('http://localhost/assets/ blob: data: https://cdn.example.com')
-        expect(directives['frame_src']).to eq(::Gitlab::ContentSecurityPolicy::Directives.frame_src + " https://cdn.example.com http://localhost/admin/sidekiq http://localhost/admin/sidekiq/ http://localhost/-/speedscope/index.html")
+        expect(directives['frame_src']).to eq(::Gitlab::ContentSecurityPolicy::Directives.frame_src + " https://cdn.example.com http://localhost/admin/ http://localhost/assets/ http://localhost/-/speedscope/index.html")
       end
     end
 
@@ -113,7 +113,7 @@ RSpec.describe Gitlab::ContentSecurityPolicy::ConfigLoader do
         end
 
         it 'does not add CUSTOMER_PORTAL_URL to CSP' do
-          expect(directives['frame_src']).to eq(::Gitlab::ContentSecurityPolicy::Directives.frame_src + " http://localhost/admin/sidekiq http://localhost/admin/sidekiq/ http://localhost/-/speedscope/index.html")
+          expect(directives['frame_src']).to eq(::Gitlab::ContentSecurityPolicy::Directives.frame_src + " http://localhost/admin/ http://localhost/assets/ http://localhost/-/speedscope/index.html")
         end
       end
 
@@ -123,12 +123,12 @@ RSpec.describe Gitlab::ContentSecurityPolicy::ConfigLoader do
         end
 
         it 'adds CUSTOMER_PORTAL_URL to CSP' do
-          expect(directives['frame_src']).to eq(::Gitlab::ContentSecurityPolicy::Directives.frame_src + " http://localhost/rails/letter_opener/ https://customers.example.com http://localhost/admin/sidekiq http://localhost/admin/sidekiq/ http://localhost/-/speedscope/index.html")
+          expect(directives['frame_src']).to eq(::Gitlab::ContentSecurityPolicy::Directives.frame_src + " http://localhost/rails/letter_opener/ https://customers.example.com http://localhost/admin/ http://localhost/assets/ http://localhost/-/speedscope/index.html")
         end
       end
     end
 
-    context 'letter_opener applicaiton URL' do
+    context 'letter_opener application URL' do
       let(:gitlab_url) { 'http://gitlab.example.com' }
       let(:letter_opener_url) { "#{gitlab_url}/rails/letter_opener/" }
 
@@ -153,6 +153,46 @@ RSpec.describe Gitlab::ContentSecurityPolicy::ConfigLoader do
 
         it 'adds letter_opener to CSP' do
           expect(directives['frame_src']).to include(letter_opener_url)
+        end
+      end
+    end
+
+    context 'Snowplow Micro event collector' do
+      let(:snowplow_micro_hostname) { 'localhost:9090' }
+      let(:snowplow_micro_url) { "http://#{snowplow_micro_hostname}/" }
+
+      before do
+        stub_env('SNOWPLOW_MICRO_ENABLE', 1)
+        allow(Gitlab::Tracking).to receive(:collector_hostname).and_return(snowplow_micro_hostname)
+      end
+
+      context 'when in production' do
+        before do
+          stub_rails_env('production')
+        end
+
+        it 'does not add Snowplow Micro URL to connect-src' do
+          expect(directives['connect_src']).not_to include(snowplow_micro_url)
+        end
+      end
+
+      context 'when in development' do
+        before do
+          stub_rails_env('development')
+        end
+
+        it 'adds Snowplow Micro URL with trailing slash to connect-src' do
+          expect(directives['connect_src']).to match(Regexp.new(snowplow_micro_url))
+        end
+
+        context 'when not enabled using ENV[SNOWPLOW_MICRO_ENABLE]' do
+          before do
+            stub_env('SNOWPLOW_MICRO_ENABLE', nil)
+          end
+
+          it 'does not add Snowplow Micro URL to connect-src' do
+            expect(directives['connect_src']).not_to include(snowplow_micro_url)
+          end
         end
       end
     end

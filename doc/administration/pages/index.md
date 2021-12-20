@@ -56,11 +56,11 @@ Before proceeding with the Pages configuration, you must:
    | `gitlab.example.com` | `pages.example.com` | **{check-circle}** Yes |
 
 1. Configure a **wildcard DNS record**.
-1. (Optional) Have a **wildcard certificate** for that domain if you decide to
+1. Optional. Have a **wildcard certificate** for that domain if you decide to
    serve Pages under HTTPS.
-1. (Optional but recommended) Enable [Shared runners](../../ci/runners/index.md)
+1. Optional but recommended. Enable [Shared runners](../../ci/runners/index.md)
    so that your users don't have to bring their own.
-1. (Only for custom domains) Have a **secondary IP**.
+1. For custom domains, have a **secondary IP**.
 
 NOTE:
 If your GitLab instance and the Pages daemon are deployed in a private network or behind a firewall, your GitLab Pages websites are only accessible to devices/users that have access to the private network.
@@ -144,7 +144,8 @@ The Pages daemon doesn't listen to the outside world.
 1. Set the external URL for GitLab Pages in `/etc/gitlab/gitlab.rb`:
 
    ```ruby
-   pages_external_url 'http://example.io'
+   external_url "http://gitlab.example.com" # external_url here is only for reference
+   pages_external_url "http://pages.example.com" # not a subdomain of external_url
    ```
 
 1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
@@ -169,7 +170,8 @@ outside world.
 1. In `/etc/gitlab/gitlab.rb` specify the following configuration:
 
    ```ruby
-   pages_external_url 'https://example.io'
+   external_url "https://gitlab.example.com" # external_url here is only for reference
+   pages_external_url "https://pages.example.com" # not a subdomain of external_url
 
    pages_nginx['redirect_http_to_https'] = true
    ```
@@ -256,7 +258,6 @@ control over how the Pages daemon runs and serves content in your environment.
 | `pages_path`                            | The directory on disk where pages are stored, defaults to `GITLAB-RAILS/shared/pages`. |
 | **`pages_nginx[]`**                     |  |
 | `enable`                                | Include a virtual host `server{}` block for Pages inside NGINX. Needed for NGINX to proxy traffic back to the Pages daemon. Set to `false` if the Pages daemon should directly receive all requests, for example, when using [custom domains](index.md#custom-domains). |
-| `FF_ENABLE_REDIRECTS`                   | Feature flag to enable/disable redirects (enabled by default). Read the [redirects documentation](../../user/project/pages/redirects.md#feature-flag-for-redirects) for more information. |
 | `FF_ENABLE_PLACEHOLDERS`                | Feature flag to enable/disable rewrites (disabled by default). Read the [redirects documentation](../../user/project/pages/redirects.md#feature-flag-for-rewrites) for more information.  |
 | `use_legacy_storage`                    | Temporarily-introduced parameter allowing to use legacy domain configuration source and storage. [Removed in 14.3](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/6166). |
 | `rate_limit_source_ip`                  | Rate limit per source IP in number of requests per second. Set to `0` to disable this feature. |
@@ -288,7 +289,8 @@ world. Custom domains are supported, but no TLS.
 1. In `/etc/gitlab/gitlab.rb` specify the following configuration:
 
    ```ruby
-   pages_external_url "http://example.io"
+   external_url "http://gitlab.example.com" # external_url here is only for reference
+   pages_external_url "http://pages.example.com" # not a subdomain of external_url
    nginx['listen_addresses'] = ['192.0.2.1'] # The primary IP of the GitLab instance
    pages_nginx['enable'] = false
    gitlab_pages['external_http'] = ['192.0.2.2:80', '[2001:db8::2]:80'] # The secondary IPs for the GitLab Pages daemon
@@ -318,7 +320,8 @@ world. Custom domains and TLS are supported.
 1. In `/etc/gitlab/gitlab.rb` specify the following configuration:
 
    ```ruby
-   pages_external_url "https://example.io"
+   external_url "https://gitlab.example.com" # external_url here is only for reference
+   pages_external_url "https://pages.example.com" # not a subdomain of external_url
    nginx['listen_addresses'] = ['192.0.2.1'] # The primary IP of the GitLab instance
    pages_nginx['enable'] = false
    gitlab_pages['external_http'] = ['192.0.2.2:80', '[2001:db8::2]:80'] # The secondary IPs for the GitLab Pages daemon
@@ -795,7 +798,7 @@ Incorrect configuration of these values may result in intermittent
 or persistent errors, or the Pages Daemon serving old content.
 
 NOTE:
-Expiry, interval and timeout flags use [Golang's duration formatting](https://golang.org/pkg/time/#ParseDuration).
+Expiry, interval and timeout flags use [Golang's duration formatting](https://pkg.go.dev/time#ParseDuration).
 A duration string is a possibly signed sequence of decimal numbers,
 each with optional fraction and a unit suffix, such as `300ms`, `1.5h` or `2h45m`.
 Valid time units are `ns`, `us` (or `µs`), `ms`, `s`, `m`, `h`.
@@ -1055,11 +1058,11 @@ Source-IP rate limits are enforced using the following:
    gitlab_pages['rate_limit_source_ip_burst'] = 600
    ```
 
-1. To reject requests that exceed the specified limits, enable the `FF_ENABLE_RATE_LIMITER` feature flag in
+1. To reject requests that exceed the specified limits, enable the `FF_ENFORCE_IP_RATE_LIMITS` feature flag in
    `/etc/gitlab/gitlab.rb`:
 
    ```ruby
-   gitlab_pages['env'] = {'FF_ENABLE_RATE_LIMITER' => 'true'}
+   gitlab_pages['env'] = {'FF_ENFORCE_IP_RATE_LIMITS' => 'true'}
    ```
 
 1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
@@ -1281,8 +1284,8 @@ in all of your GitLab Pages instances.
 
 ### 500 error with `securecookie: failed to generate random iv` and `Failed to save the session`
 
-This problem most likely results from an [out-dated operating system](../package_information/deprecated_os.md).
-The [Pages daemon uses the `securecookie` library](https://gitlab.com/search?group_id=9970&project_id=734943&repository_ref=master&scope=blobs&search=securecookie&snippets=false) to get random strings via [`crypto/rand` in Go](https://golang.org/pkg/crypto/rand/#pkg-variables).
+This problem most likely results from an [out-dated operating system](../package_information/supported_os.md#os-versions-that-are-no-longer-supported).
+The [Pages daemon uses the `securecookie` library](https://gitlab.com/search?group_id=9970&project_id=734943&repository_ref=master&scope=blobs&search=securecookie&snippets=false) to get random strings via [`crypto/rand` in Go](https://pkg.go.dev/crypto/rand#pkg-variables).
 This requires the `getrandom` system call or `/dev/urandom` to be available on the host OS.
 Upgrading to an [officially supported operating system](https://about.gitlab.com/install/) is recommended.
 

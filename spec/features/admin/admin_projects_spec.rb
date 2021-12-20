@@ -6,6 +6,7 @@ RSpec.describe "Admin::Projects" do
   include Spec::Support::Helpers::Features::MembersHelpers
   include Spec::Support::Helpers::Features::InviteMembersModalHelper
   include Select2Helper
+  include Spec::Support::Helpers::ModalHelpers
 
   let(:user) { create :user }
   let(:project) { create(:project) }
@@ -39,7 +40,7 @@ RSpec.describe "Admin::Projects" do
 
       expect(page).to have_content(project.name)
       expect(page).to have_content(archived_project.name)
-      expect(page).to have_xpath("//span[@class='badge badge-warning']", text: 'archived')
+      expect(page).to have_xpath("//span[@class='gl-badge badge badge-pill badge-warning md']", text: 'archived')
     end
 
     it 'renders only archived projects', :js do
@@ -145,7 +146,7 @@ RSpec.describe "Admin::Projects" do
         click_button 'Leave'
       end
 
-      page.within('[role="dialog"]') do
+      within_modal do
         click_button('Leave')
       end
 

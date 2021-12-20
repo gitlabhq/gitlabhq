@@ -59,7 +59,9 @@ RSpec.describe AuthorizedProjectUpdate::FindRecordsDueForRefreshService do
             .create!(project: project2, access_level: Gitlab::Access::MAINTAINER)
 
           to_be_removed = [project2.id]
-          to_be_added = [[user.id, project.id, Gitlab::Access::MAINTAINER]]
+          to_be_added = [
+            { user_id: user.id, project_id: project.id, access_level: Gitlab::Access::MAINTAINER }
+          ]
 
           expect(service.execute).to eq([to_be_removed, to_be_added])
         end
@@ -70,7 +72,9 @@ RSpec.describe AuthorizedProjectUpdate::FindRecordsDueForRefreshService do
           end
 
           to_be_removed = [project.id]
-          to_be_added = [[user.id, project.id, Gitlab::Access::MAINTAINER]]
+          to_be_added = [
+            { user_id: user.id, project_id: project.id, access_level: Gitlab::Access::MAINTAINER }
+          ]
 
           expect(service.execute).to eq([to_be_removed, to_be_added])
         end
@@ -80,7 +84,9 @@ RSpec.describe AuthorizedProjectUpdate::FindRecordsDueForRefreshService do
             .create!(project: project, access_level: Gitlab::Access::DEVELOPER)
 
           to_be_removed = [project.id]
-          to_be_added = [[user.id, project.id, Gitlab::Access::MAINTAINER]]
+          to_be_added = [
+            { user_id: user.id, project_id: project.id, access_level: Gitlab::Access::MAINTAINER }
+          ]
 
           expect(service.execute).to eq([to_be_removed, to_be_added])
         end

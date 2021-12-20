@@ -322,6 +322,25 @@ RSpec.describe ServicePing::SubmitService do
         expect { subject.execute }.to raise_error(described_class::SubmissionError)
       end
     end
+
+    context 'when skip_db_write passed to service' do
+      let(:subject) { ServicePing::SubmitService.new(skip_db_write: true) }
+
+      before do
+        stub_response(body: with_dev_ops_score_params)
+      end
+
+      it 'does not save RawUsageData' do
+        expect { subject.execute }
+          .not_to change { RawUsageData.count }
+      end
+
+      it 'does not call DevOpsReport service' do
+        expect(ServicePing::DevopsReportService).not_to receive(:new)
+
+        subject.execute
+      end
+    end
   end
 
   describe '#url' do

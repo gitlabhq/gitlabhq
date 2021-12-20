@@ -9,7 +9,7 @@ module Gitlab
           raise(UnsupportedScopeOrder) unless success
 
           @cursor = cursor
-          @order = Gitlab::Pagination::Keyset::Order.extract_keyset_order_object(scope)
+          @order = Gitlab::Pagination::Keyset::Order.extract_keyset_order_object(@scope)
           @use_union_optimization = in_operator_optimization_options ? false : use_union_optimization
           @in_operator_optimization_options = in_operator_optimization_options
         end

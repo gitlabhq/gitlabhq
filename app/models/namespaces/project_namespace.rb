@@ -7,5 +7,9 @@ module Namespaces
     def self.sti_name
       'Project'
     end
+
+    def self.polymorphic_name
+      'Namespaces::ProjectNamespace'
+    end
   end
 end

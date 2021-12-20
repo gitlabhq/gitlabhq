@@ -12,7 +12,6 @@ module Ci
     include Gitlab::Utils::StrongMemoize
     include TaggableQueries
     include Presentable
-    include LooseForeignKey
 
     add_authentication_token_field :token, encrypted: :optional
 
@@ -27,6 +26,21 @@ module Ci
       project_type: 3
     }
 
+    enum executor_type: {
+      unknown: 0,
+      custom: 1,
+      shell: 2,
+      docker: 3,
+      docker_windows: 4,
+      docker_ssh: 5,
+      ssh: 6,
+      parallels: 7,
+      virtualbox: 8,
+      docker_machine: 9,
+      docker_ssh_machine: 10,
+      kubernetes: 11
+    }, _suffix: true
+
     # This `ONLINE_CONTACT_TIMEOUT` needs to be larger than
     #   `RUNNER_QUEUE_EXPIRY_TIME+UPDATE_CONTACT_COLUMN_EVERY`
     #
@@ -40,9 +54,12 @@ module Ci
     # The `UPDATE_CONTACT_COLUMN_EVERY` defines how often the Runner DB entry can be updated
     UPDATE_CONTACT_COLUMN_EVERY = (40.minutes..55.minutes).freeze
 
+    # The `STALE_TIMEOUT` constant defines the how far past the last contact or creation date a runner will be considered stale
+    STALE_TIMEOUT = 3.months
+
     AVAILABLE_TYPES_LEGACY = %w[specific shared].freeze
     AVAILABLE_TYPES = runner_types.keys.freeze
-    AVAILABLE_STATUSES = %w[active paused online offline not_connected].freeze
+    AVAILABLE_STATUSES = %w[active paused online offline not_connected never_contacted stale].freeze # TODO: Remove in %15.0: active, paused, not_connected. Relevant issues: https://gitlab.com/gitlab-org/gitlab/-/issues/347303, https://gitlab.com/gitlab-org/gitlab/-/issues/347305, https://gitlab.com/gitlab-org/gitlab/-/issues/344648
     AVAILABLE_SCOPES = (AVAILABLE_TYPES_LEGACY + AVAILABLE_TYPES + AVAILABLE_STATUSES).freeze
 
     FORM_EDITABLE = %i[description tag_list active run_untagged locked access_level maximum_timeout_human_readable].freeze
@@ -58,12 +75,14 @@ module Ci
 
     before_save :ensure_token
 
-    scope :active, -> { where(active: true) }
-    scope :paused, -> { where(active: false) }
+    scope :active, -> (value = true) { where(active: value) }
+    scope :paused, -> { active(false) }
     scope :online, -> { where('contacted_at > ?', online_contact_time_deadline) }
-    scope :recent, -> { where('ci_runners.created_at > :date OR ci_runners.contacted_at > :date', date: 3.months.ago) }
+    scope :recent, -> { where('ci_runners.created_at >= :date OR ci_runners.contacted_at >= :date', date: stale_deadline) }
+    scope :stale, -> { where('ci_runners.created_at < :date AND (ci_runners.contacted_at IS NULL OR ci_runners.contacted_at < :date)', date: stale_deadline) }
     scope :offline, -> { where(arel_table[:contacted_at].lteq(online_contact_time_deadline)) }
-    scope :not_connected, -> { where(contacted_at: nil) }
+    scope :not_connected, -> { where(contacted_at: nil) } # TODO: Remove in 15.0
+    scope :never_contacted, -> { where(contacted_at: nil) }
     scope :ordered, -> { order(id: :desc) }
 
     scope :with_recent_runner_queue, -> { where('contacted_at > ?', recent_queue_deadline) }
@@ -78,10 +97,7 @@ module Ci
 
     scope :belonging_to_group, -> (group_id, include_ancestors: false) {
       groups = ::Group.where(id: group_id)
-
-      if include_ancestors
-        groups = Gitlab::ObjectHierarchy.new(groups).base_and_ancestors
-      end
+      groups = groups.self_and_ancestors if include_ancestors
 
       joins(:runner_namespaces)
         .where(ci_runner_namespaces: { namespace_id: groups })
@@ -102,10 +118,9 @@ module Ci
 
     scope :belonging_to_parent_group_of_project, -> (project_id) {
       project_groups = ::Group.joins(:projects).where(projects: { id: project_id })
-      hierarchy_groups = Gitlab::ObjectHierarchy.new(project_groups).base_and_ancestors
 
       joins(:groups)
-        .where(namespaces: { id: hierarchy_groups })
+        .where(namespaces: { id: project_groups.self_and_ancestors.as_ids })
         .allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/336433')
     }
 
@@ -152,7 +167,7 @@ module Ci
 
     after_destroy :cleanup_runner_queue
 
-    cached_attr_reader :version, :revision, :platform, :architecture, :ip_address, :contacted_at
+    cached_attr_reader :version, :revision, :platform, :architecture, :ip_address, :contacted_at, :executor_type
 
     chronic_duration_attr :maximum_timeout_human_readable, :maximum_timeout,
         error_message: 'Maximum job timeout has a value which could not be accepted'
@@ -168,8 +183,6 @@ module Ci
 
     validates :config, json_schema: { filename: 'ci_runner_config' }
 
-    loose_foreign_key :clusters_applications_runners, :runner_id, on_delete: :async_nullify
-
     # Searches for runners matching the given query.
     #
     # This method uses ILIKE on PostgreSQL for the description field and performs a full match on tokens.
@@ -183,6 +196,10 @@ module Ci
 
     def self.online_contact_time_deadline
       ONLINE_CONTACT_TIMEOUT.ago
+    end
+
+    def self.stale_deadline
+      STALE_TIMEOUT.ago
     end
 
     def self.recent_queue_deadline
@@ -273,8 +290,17 @@ module Ci
       contacted_at && contacted_at > self.class.online_contact_time_deadline
     end
 
-    def status
-      return :not_connected unless contacted_at
+    def stale?
+      return false unless created_at
+
+      [created_at, contacted_at].compact.max < self.class.stale_deadline
+    end
+
+    def status(legacy_mode = nil)
+      return deprecated_rest_status if legacy_mode == '14.5'
+
+      return :stale if stale?
+      return :never_contacted unless contacted_at
 
       online? ? :online : :offline
     end
@@ -387,8 +413,9 @@ module Ci
       # database after heartbeat write happens.
       #
       ::Gitlab::Database::LoadBalancing::Session.without_sticky_writes do
-        values = values&.slice(:version, :revision, :platform, :architecture, :ip_address, :config) || {}
+        values = values&.slice(:version, :revision, :platform, :architecture, :ip_address, :config, :executor) || {}
         values[:contacted_at] = Time.current
+        values[:executor_type] = EXECUTOR_NAME_TO_TYPES.fetch(values.delete(:executor), :unknown)
 
         cache_attributes(values)
 
@@ -412,6 +439,20 @@ module Ci
     end
 
     private
+
+    EXECUTOR_NAME_TO_TYPES = {
+      'custom' => :custom,
+      'shell' => :shell,
+      'docker' => :docker,
+      'docker-windows' => :docker_windows,
+      'docker-ssh' => :docker_ssh,
+      'ssh' => :ssh,
+      'parallels' => :parallels,
+      'virtualbox' => :virtualbox,
+      'docker+machine' => :docker_machine,
+      'docker-ssh+machine' => :docker_ssh_machine,
+      'kubernetes' => :kubernetes
+    }.freeze
 
     def cleanup_runner_queue
       Gitlab::Redis::SharedState.with do |redis|

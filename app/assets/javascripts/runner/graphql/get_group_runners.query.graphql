@@ -13,6 +13,7 @@ query getGroupRunners(
   $sort: CiRunnerSort
 ) {
   group(fullPath: $groupFullPath) {
+    id
     runners(
       membership: DESCENDANTS
       before: $before

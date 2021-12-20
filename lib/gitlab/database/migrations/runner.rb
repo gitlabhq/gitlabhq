@@ -69,7 +69,7 @@ module Gitlab
           instrumentation = Instrumentation.new(result_dir: result_dir)
 
           sorted_migrations.each do |migration|
-            instrumentation.observe(version: migration.version, name: migration.name) do
+            instrumentation.observe(version: migration.version, name: migration.name, connection: ActiveRecord::Migration.connection) do
               ActiveRecord::Migrator.new(direction, migration_context.migrations, migration_context.schema_migration, migration.version).run
             end
           end

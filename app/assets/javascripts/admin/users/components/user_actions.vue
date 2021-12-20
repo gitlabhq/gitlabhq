@@ -112,7 +112,7 @@ export default {
         right
         :text="$options.i18n.userAdministration"
         :text-sr-only="!showButtonLabels"
-        icon="settings"
+        icon="ellipsis_h"
         data-qa-selector="user_actions_dropdown_toggle"
         :data-qa-username="user.username"
       >

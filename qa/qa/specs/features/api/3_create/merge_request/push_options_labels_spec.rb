@@ -11,12 +11,7 @@ module QA
       let(:title) { "MR push options test #{SecureRandom.hex(8)}" }
       let(:commit_message) { 'Add README.md' }
 
-      let(:project) do
-        Resource::Project.fabricate_via_api! do |project|
-          project.name = 'merge-request-push-options'
-          project.initialize_with_readme = true
-        end
-      end
+      let(:project) { Resource::ReusableProject.fabricate_via_api! }
 
       def create_new_mr_via_push
         Resource::Repository::ProjectPush.fabricate! do |push|
@@ -31,7 +26,7 @@ module QA
         end
       end
 
-      it 'sets labels', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1244' do
+      it 'sets labels', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347839' do
         create_new_mr_via_push
 
         merge_request = project.merge_request_with_title(title)
@@ -45,7 +40,7 @@ module QA
           create_new_mr_via_push
         end
 
-        it 'removes them on subsequent push', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1243' do
+        it 'removes them on subsequent push', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347840' do
           Resource::Repository::ProjectPush.fabricate! do |push|
             push.project = project
             push.file_content = "Unlabel test #{SecureRandom.hex(8)}"

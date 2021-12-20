@@ -12,6 +12,7 @@ query getAgents(
   $beforeTree: String
 ) {
   project(fullPath: $projectPath) {
+    id
     clusterAgents(first: $first, last: $last, before: $beforeAgent, after: $afterAgent) {
       nodes {
         ...ClusterAgentFragment
@@ -28,6 +29,7 @@ query getAgents(
       tree(path: ".gitlab/agents", ref: $defaultBranchName) {
         trees(first: $first, last: $last, after: $afterTree, before: $beforeTree) {
           nodes {
+            id
             name
             path
             webPath

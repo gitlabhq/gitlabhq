@@ -18,7 +18,7 @@ General notes:
   to create your plan, share details of your architecture, including:
   - How is GitLab installed?
   - What is the operating system of the node?
-    (check [OS versions that are no longer supported](../administration/package_information/deprecated_os.md) to confirm that later updates are available).
+    (check [OS versions that are no longer supported](../administration/package_information/supported_os.md#os-versions-that-are-no-longer-supported) to confirm that later updates are available).
   - Is it a single-node or a multi-node setup? If multi-node, share any architectural details about each node with us.
   - Are you using [GitLab Geo](../administration/geo/index.md)? If so, share any architectural details about each secondary node.
   - What else might be unique or interesting in your setup that might be important for us to understand?
@@ -71,7 +71,7 @@ comprised of a way to back up the instance and a way to restore it.
 
 ### Back up GitLab
 
-Create a backup of GitLab and all its data (database, repos, uploads, builds,
+Create a backup of GitLab and all its data (database, repositories, uploads, builds,
 artifacts, LFS objects, registry, pages). This is vital for making it possible
 to roll back GitLab to a working state if there's a problem with the upgrade:
 
@@ -112,7 +112,7 @@ to your instance and then upgrade it for any relevant features you're using.
   - [Determine what upgrade path](index.md#upgrade-paths) to follow.
   - Account for any [version-specific update instructions](index.md#version-specific-upgrading-instructions).
   - Account for any [version-specific changes](package/index.md#version-specific-changes).
-  - Check the [OS compatibility with the target GitLab version](../administration/package_information/deprecated_os.md).
+  - Check the [OS compatibility with the target GitLab version](../administration/package_information/supported_os.md).
 - Due to background migrations, plan to pause any further upgrades after upgrading
   to a new major version.
   [All migrations must finish running](index.md#checking-for-background-migrations-before-upgrading)
@@ -145,7 +145,7 @@ version prior to upgrading the application server.
 
 If you're using Geo:
 
-- Review [Geo upgrade documentation](../administration/geo/replication/updating_the_geo_nodes.md).
+- Review [Geo upgrade documentation](../administration/geo/replication/updating_the_geo_sites.md).
 - Read about the [Geo version-specific update instructions](../administration/geo/replication/version_specific_updates.md).
 - Review Geo-specific steps when [updating the database](https://docs.gitlab.com/omnibus/settings/database.html#upgrading-a-geo-instance).
 - Create an upgrade and rollback plan for _each_ Geo node (primary and each secondary).

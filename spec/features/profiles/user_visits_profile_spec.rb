@@ -29,6 +29,24 @@ RSpec.describe 'User visits their profile' do
     expect(find('.file-content')).to have_content('testme')
   end
 
+  it 'hides empty user readme' do
+    project = create(:project, :repository, :public, path: user.username, namespace: user.namespace)
+
+    Files::UpdateService.new(
+      project,
+      user,
+      start_branch: 'master',
+      branch_name: 'master',
+      commit_message: 'Update feature',
+      file_path: 'README.md',
+      file_content: ''
+    ).execute
+
+    visit(user_path(user))
+
+    expect(page).not_to have_selector('.file-content')
+  end
+
   context 'when user has groups' do
     let(:group) do
       create :group do |group|

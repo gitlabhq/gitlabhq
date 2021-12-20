@@ -377,11 +377,11 @@ RSpec.describe API::Commits do
       end
 
       context 'when using warden' do
-        it 'increments usage counters', :clean_gitlab_redis_shared_state do
+        it 'increments usage counters', :clean_gitlab_redis_sessions do
           session_id = Rack::Session::SessionId.new('6919a6f1bb119dd7396fadc38fd18d0d')
           session_hash = { 'warden.user.user.key' => [[user.id], user.encrypted_password[0, 29]] }
 
-          Gitlab::Redis::SharedState.with do |redis|
+          Gitlab::Redis::Sessions.with do |redis|
             redis.set("session:gitlab:#{session_id.private_id}", Marshal.dump(session_hash))
           end
 

@@ -380,7 +380,7 @@ RSpec.describe API::Todos do
     end
   end
 
-  describe 'POST :id/issuable_type/:issueable_id/todo' do
+  describe 'POST :id/issuable_type/:issuable_id/todo' do
     context 'for an issue' do
       let_it_be(:issuable) do
         create(:issue, :confidential, project: project_1)

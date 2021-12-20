@@ -70,7 +70,7 @@ Open a merge request
 - You are satisfied the problem is resolved in your private fork.
 - You are ready to make the confidential commits public.
 
-## Related links
+## Related topics
 
 - [Confidential issues](../issues/confidential_issues.md)
 - [Make an epic confidential](../../group/epics/manage_epics.md#make-an-epic-confidential)

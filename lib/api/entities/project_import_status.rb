@@ -4,6 +4,7 @@ module API
   module Entities
     class ProjectImportStatus < ProjectIdentity
       expose :import_status
+      expose :import_type
       expose :correlation_id do |project, _options|
         project.import_state&.correlation_id
       end
@@ -14,6 +15,12 @@ module API
 
       expose :import_error do |project, _options|
         project.import_state&.last_error
+      end
+
+      expose :stats do |project, _options|
+        if project.github_import?
+          ::Gitlab::GithubImport::ObjectCounter.summary(project)
+        end
       end
     end
   end

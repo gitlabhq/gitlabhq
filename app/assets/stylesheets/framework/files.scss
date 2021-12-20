@@ -151,7 +151,17 @@
         margin: 0;
       }
 
+      //
+      // IMPORTANT PERFORMANCE OPTIMIZATION
+      //
+      // When viewinng a blame with many commits a lot of content is rendered on the page.
+      // content-visibility rule below ensure that we only render what is visible to the user,
+      // thus reducing TBT in the browser.
+      // Grid is used instead of table layout because content-visibility performs better with it.
       tr {
+        content-visibility: auto;
+        display: grid;
+        grid-template-columns: 400px max-content auto;
         border-bottom: 1px solid $gray-darker;
 
         &:last-child {
@@ -201,6 +211,10 @@
         &.lines {
           padding: 0;
         }
+
+        .code {
+          height: 100%;
+        }
       }
 
       @for $i from 0 through 5 {
@@ -221,25 +235,6 @@
         &:hover {
           color: $gray-900;
         }
-      }
-
-      //
-      // IMPORTANT PERFORMANCE OPTIMIZATION
-      //
-      // When viewinng a blame with many commits a lot of content is rendered on the page.
-      // content-visibility rules below ensure that we only render what is visible to the user, thus reducing TBT in the browser.
-      .commit {
-        content-visibility: auto;
-        contain-intrinsic-size: 1px 3em;
-      }
-
-      code .line {
-        content-visibility: auto;
-        contain-intrinsic-size: 1px 1.1875rem;
-      }
-
-      .line-numbers {
-        content-visibility: auto;
       }
     }
 

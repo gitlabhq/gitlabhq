@@ -20,6 +20,7 @@ This is a partial list of the [RSpec metadata](https://relishapp.com/rspec/rspec
 | `:github`         | The test requires a GitHub personal access token. |
 | `:group_saml`     | The test requires a GitLab instance that has SAML SSO enabled at the group level. Interacts with an external SAML identity provider. Paired with the `:orchestrated` tag. |
 | `:instance_saml`  | The test requires a GitLab instance that has SAML SSO enabled at the instance level. Interacts with an external SAML identity provider. Paired with the `:orchestrated` tag. |
+| `:service_ping_disabled`  | The test interacts with the GitLab configuration service ping at the instance level to turn admin setting service ping checkbox on or off. This tag will have the test run only in the `service_ping_disabled` job and must be paired with the `:orchestrated` and `:requires_admin` tags. |
 | `:jira`           | The test requires a Jira Server. [GitLab-QA](https://gitlab.com/gitlab-org/gitlab-qa) provisions the Jira Server in a Docker container when the `Test::Integration::Jira` test scenario is run.
 | `:kubernetes`     | The test includes a GitLab instance that is configured to be run behind an SSH tunnel, allowing a TLS-accessible GitLab. This test also includes provisioning of at least one Kubernetes cluster to test against. _This tag is often be paired with `:orchestrated`._ |
 | `:ldap_no_server` | The test requires a GitLab instance to be configured to use LDAP. To be used with the `:orchestrated` tag. It does not spin up an LDAP server at orchestration time. Instead, it creates the LDAP server at runtime. |
@@ -43,6 +44,6 @@ This is a partial list of the [RSpec metadata](https://relishapp.com/rspec/rspec
 | `:skip_signup_disabled` | The test uses UI to sign up a new user and is skipped in any environment that does not allow new user registration via the UI. |
 | `:smoke`          | The test belongs to the test suite which verifies basic functionality of a GitLab instance.|
 | `:smtp`           | The test requires a GitLab instance to be configured to use an SMTP server. Tests SMTP notification email delivery from GitLab by using MailHog. |
-| `:testcase`       | The link to the test case issue in the [Quality Test Cases project](https://gitlab.com/gitlab-org/quality/testcases/). |
+| `:testcase`       | The link to the test case issue in the [GitLab Project Test Cases](https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases). |
 | `:transient`      | The test tests transient bugs. It is excluded by default. |
 | `:issue`, `:issue_${num}` | Optional links to issues which might be related to the spec. Helps keeping track of related issues and can also be used by tools that create test reports. Currently added automatically to `Allure` test report. Multiple tags can be used by adding optional number postfix like `issue_1`, `issue_2` etc. |

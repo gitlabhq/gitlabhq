@@ -20,8 +20,7 @@ password secret.
 NOTE:
 When you enable 2FA, don't forget to back up your [recovery codes](#recovery-codes)!
 
-In addition to time-based one time passwords (TOTP), GitLab supports U2F
-(universal 2nd factor) and WebAuthn (experimental) devices as the second factor
+In addition to time-based one time passwords (TOTP), GitLab supports WebAuthn devices as the second factor
 of authentication. After being enabled, in addition to supplying your username
 and password to sign in, you're prompted to activate your U2F / WebAuthn device
 (usually by pressing a button on it) which performs secure authentication on
@@ -80,11 +79,11 @@ in a safe place.
 
 ### One-time password via FortiAuthenticator
 
-> - Introduced in [GitLab 13.5](https://gitlab.com/gitlab-org/gitlab/-/issues/212312)
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/212312) in GitLab 13.5.
 > - It's deployed behind a feature flag, disabled by default.
 > - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-fortiauthenticator-integration).
 
-You can use FortiAuthenticator as an OTP provider in GitLab. Users must exist in
+You can use FortiAuthenticator as a one-time password (OTP) provider in GitLab. Users must exist in
 both FortiAuthenticator and GitLab with the exact same username, and users must
 have FortiToken configured in FortiAuthenticator.
 
@@ -154,7 +153,7 @@ Feature.enable(:forti_authenticator, User.find(<user ID>))
 
 ### One-time password via FortiToken Cloud
 
-> - Introduced in [GitLab 13.7](https://gitlab.com/gitlab-org/gitlab/-/issues/212313).
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/212313) in GitLab 13.7.
 > - It's deployed behind a feature flag, disabled by default.
 > - It's disabled on GitLab.com.
 > - It's not recommended for production use.
@@ -163,7 +162,7 @@ Feature.enable(:forti_authenticator, User.find(<user ID>))
 WARNING:
 This feature might not be available to you. Check the **version history** note above for details.
 
-You can use FortiToken Cloud as an OTP provider in GitLab. Users must exist in
+You can use FortiToken Cloud as a one-time password (OTP) provider in GitLab. Users must exist in
 both FortiToken Cloud and GitLab with the exact same username, and users must
 have FortiToken configured in FortiToken Cloud.
 
@@ -269,11 +268,11 @@ Click on **Register U2F Device** to complete the process.
 
 ### WebAuthn device
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/22506) in GitLab 13.4.
-> - It's [deployed behind a feature flag](../../feature_flags.md), disabled by default.
-> - It's disabled on GitLab.com.
-> - It's not recommended for production use.
-> - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-webauthn). **(FREE SELF)**
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/22506) in GitLab 13.4 [with a flag](../../../administration/feature_flags.md) named `webauthn`. Disabled by default.
+> - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/232671) in GitLab 14.6.
+
+FLAG:
+On self-managed GitLab, by default this feature is available. To disable the feature, ask an administrator to [disable the feature flag](../../../administration/feature_flags.md) named `webauthn`. If you disable the WebAuthn feature flag after WebAuthn devices have been registered, these devices are not usable until you re-enable this feature. On GitLab.com, this feature is available.
 
 The WebAuthn workflow is [supported by](https://caniuse.com/#search=webauthn) the
 following desktop browsers:
@@ -350,7 +349,7 @@ request, and you're automatically signed in.
 ### Sign in by using a WebAuthn device
 
 In supported browsers you should be automatically prompted to activate your WebAuthn device
-(e.g. by touching/pressing its button) after entering your credentials.
+(for example, by touching or pressing its button) after entering your credentials.
 
 A message displays, indicating that your device responded to the authentication
 request and you're automatically signed in.
@@ -465,13 +464,20 @@ If you regenerate 2FA recovery codes, save them. You can't use any previously cr
 
 ### Have 2FA disabled on your account
 
-If you cannot use a saved recovery code or generate new recovery codes then please submit a [support ticket](https://support.gitlab.com/hc/en-us/requests/new) requesting that a GitLab global administrator disables two-factor authentication for your account. Please note that only the actual owner of the account can make this request and that disabling this setting will temporarily leave your account in a less secure state. You should therefore sign in and re-enable two-factor authentication as soon as possible.
+If you can't use a saved recovery code or generate new recovery codes, submit a [support ticket](https://support.gitlab.com/hc/en-us/requests/new) to
+request a GitLab global administrator disable two-factor authentication for your account. Note that:
+
+- Only the owner of the account can make this request.
+- This service is only available for accounts that have a GitLab.com subscription. For more information, see our
+  [blog post](https://about.gitlab.com/blog/2020/08/04/gitlab-support-no-longer-processing-mfa-resets-for-free-users/).
+- Disabling this setting temporarily leaves your account in a less secure state. You should sign in and re-enable two-factor authentication
+  as soon as possible.
 
 ## Note to GitLab administrators
 
 - You need to take special care to that 2FA keeps working after
   [restoring a GitLab backup](../../../raketasks/backup_restore.md).
-- To ensure 2FA authorizes correctly with TOTP server, you may want to ensure
+- To ensure 2FA authorizes correctly with time-based one time passwords (TOTP) server, you may want to ensure
   your GitLab server's time is synchronized via a service like NTP. Otherwise,
   you may have cases where authorization always fails because of time differences.
 - The GitLab U2F implementation does _not_ work when the GitLab instance is accessed from
@@ -487,25 +493,6 @@ If you cannot use a saved recovery code or generate new recovery codes then plea
     the U2F key has only been registered on `first.host.xyz`.
 
 - To enforce 2FA at the system or group levels see [Enforce Two-factor Authentication](../../../security/two_factor_authentication.md).
-
-## Enable or disable WebAuthn **(FREE SELF)**
-
-Support for WebAuthn is under development and not ready for production use. It is
-deployed behind a feature flag that is **disabled by default**.
-[GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md)
-can enable it.
-
-To enable it:
-
-```ruby
-Feature.enable(:webauthn)
-```
-
-To disable it:
-
-```ruby
-Feature.disable(:webauthn)
-```
 
 ## Troubleshooting
 

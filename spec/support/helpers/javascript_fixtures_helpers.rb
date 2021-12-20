@@ -13,6 +13,12 @@ module JavaScriptFixturesHelpers
 
   included do |base|
     base.around do |example|
+      # Don't actually run the example when we're only interested in the `test file -> JSON frontend fixture` mapping
+      if ENV['GENERATE_FRONTEND_FIXTURES_MAPPING'] == 'true'
+        $fixtures_mapping[example.metadata[:file_path].delete_prefix('./')] << File.join(fixture_root_path, example.description) # rubocop:disable Style/GlobalVars
+        next
+      end
+
       # pick an arbitrary date from the past, so tests are not time dependent
       # Also see spec/frontend/__helpers__/fake_date/jest.js
       Timecop.freeze(Time.utc(2015, 7, 3, 10)) { example.run }

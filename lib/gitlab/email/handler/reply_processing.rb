@@ -35,6 +35,10 @@ module Gitlab
           @message_with_reply ||= process_message(trim_reply: false)
         end
 
+        def message_including_reply_or_only_quotes
+          @message_including_reply_or_only_quotes ||= process_message(trim_reply: false, allow_only_quotes: true)
+        end
+
         def message_with_appended_reply
           @message_with_appended_reply ||= process_message(append_reply: true)
         end

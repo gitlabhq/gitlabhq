@@ -1,6 +1,7 @@
 mutation updateEpicTitle($input: UpdateEpicInput!) {
   updateIssuableTitle: updateEpic(input: $input) {
     epic {
+      id
       title
     }
     errors

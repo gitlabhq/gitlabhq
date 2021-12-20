@@ -1,4 +1,5 @@
-import { initExpiresAtField, initProjectsField } from '~/access_tokens';
+import { initExpiresAtField, initProjectsField, initTokensApp } from '~/access_tokens';
 
 initExpiresAtField();
 initProjectsField();
+initTokensApp();

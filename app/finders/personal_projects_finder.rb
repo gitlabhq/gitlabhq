@@ -28,6 +28,7 @@ class PersonalProjectsFinder < UnionFinder
   private
 
   def all_projects(current_user)
+    return [@user.personal_projects] if current_user && current_user.can_read_all_resources?
     return [projects_with_min_access_level(current_user)] if current_user && min_access_level?
 
     projects = []

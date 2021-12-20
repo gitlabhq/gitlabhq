@@ -180,5 +180,13 @@ module RuboCop
     def rails_root
       File.expand_path('..', __dir__)
     end
+
+    def ee?
+      File.exist?(File.expand_path('../ee/app/models/license.rb', __dir__)) && !%w[true 1].include?(ENV['FOSS_ONLY'].to_s)
+    end
+
+    def jh?
+      ee? && Dir.exist?(File.expand_path('../jh', __dir__)) && !%w[true 1].include?(ENV['EE_ONLY'].to_s)
+    end
   end
 end

@@ -1,8 +1,6 @@
 <script>
 import { GlFormGroup, GlFormCheckbox } from '@gitlab/ui';
 import { mapGetters } from 'vuex';
-import { TOGGLE_INTEGRATION_EVENT } from '~/integrations/constants';
-import eventHub from '../event_hub';
 
 export default {
   name: 'ActiveCheckbox',
@@ -20,14 +18,11 @@ export default {
   },
   mounted() {
     this.activated = this.propsSource.initialActivated;
-    // Initialize view
-    this.$nextTick(() => {
-      this.onChange(this.activated);
-    });
+    this.onChange(this.activated);
   },
   methods: {
-    onChange(e) {
-      eventHub.$emit(TOGGLE_INTEGRATION_EVENT, e);
+    onChange(isChecked) {
+      this.$emit('toggle-integration-active', isChecked);
     },
   },
 };

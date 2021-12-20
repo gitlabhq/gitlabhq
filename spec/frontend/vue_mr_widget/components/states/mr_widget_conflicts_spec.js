@@ -12,6 +12,14 @@ describe('MRWidgetConflicts', () => {
   const findResolveButton = () => wrapper.findByTestId('resolve-conflicts-button');
   const findMergeLocalButton = () => wrapper.findByTestId('merge-locally-button');
 
+  const mergeConflictsText = 'Merge blocked: merge conflicts must be resolved.';
+  const fastForwardMergeText =
+    'Merge blocked: fast-forward merge is not possible. To merge this request, first rebase locally.';
+  const userCannotMergeText =
+    'Users who can write to the source or target branches can resolve the conflicts.';
+  const resolveConflictsBtnText = 'Resolve conflicts';
+  const mergeLocallyBtnText = 'Merge locally';
+
   function createComponent(propsData = {}) {
     wrapper = extendedWrapper(
       shallowMount(ConflictsComponent, {
@@ -81,16 +89,16 @@ describe('MRWidgetConflicts', () => {
         });
 
         it('should tell you about conflicts without bothering other people', () => {
-          expect(wrapper.text()).toContain('There are merge conflicts');
-          expect(wrapper.text()).not.toContain('ask someone with write access');
+          expect(wrapper.text()).toContain(mergeConflictsText);
+          expect(wrapper.text()).not.toContain(userCannotMergeText);
         });
 
         it('should not allow you to resolve the conflicts', () => {
-          expect(wrapper.text()).not.toContain('Resolve conflicts');
+          expect(wrapper.text()).not.toContain(resolveConflictsBtnText);
         });
 
         it('should have merge buttons', () => {
-          expect(findMergeLocalButton().text()).toContain('Merge locally');
+          expect(findMergeLocalButton().text()).toContain(mergeLocallyBtnText);
         });
       });
 
@@ -107,17 +115,17 @@ describe('MRWidgetConflicts', () => {
         });
 
         it('should tell you about conflicts', () => {
-          expect(wrapper.text()).toContain('There are merge conflicts');
-          expect(wrapper.text()).toContain('ask someone with write access');
+          expect(wrapper.text()).toContain(mergeConflictsText);
+          expect(wrapper.text()).toContain(userCannotMergeText);
         });
 
         it('should allow you to resolve the conflicts', () => {
-          expect(findResolveButton().text()).toContain('Resolve conflicts');
+          expect(findResolveButton().text()).toContain(resolveConflictsBtnText);
           expect(findResolveButton().attributes('href')).toEqual(path);
         });
 
         it('should not have merge buttons', () => {
-          expect(wrapper.text()).not.toContain('Merge locally');
+          expect(wrapper.text()).not.toContain(mergeLocallyBtnText);
         });
       });
 
@@ -134,17 +142,17 @@ describe('MRWidgetConflicts', () => {
         });
 
         it('should tell you about conflicts without bothering other people', () => {
-          expect(wrapper.text()).toContain('There are merge conflicts');
-          expect(wrapper.text()).not.toContain('ask someone with write access');
+          expect(wrapper.text()).toContain(mergeConflictsText);
+          expect(wrapper.text()).not.toContain(userCannotMergeText);
         });
 
         it('should allow you to resolve the conflicts', () => {
-          expect(findResolveButton().text()).toContain('Resolve conflicts');
+          expect(findResolveButton().text()).toContain(resolveConflictsBtnText);
           expect(findResolveButton().attributes('href')).toEqual(path);
         });
 
         it('should have merge buttons', () => {
-          expect(findMergeLocalButton().text()).toContain('Merge locally');
+          expect(findMergeLocalButton().text()).toContain(mergeLocallyBtnText);
         });
       });
 
@@ -158,9 +166,7 @@ describe('MRWidgetConflicts', () => {
             },
           });
 
-          expect(wrapper.text().trim().replace(/\s\s+/g, ' ')).toContain(
-            'ask someone with write access',
-          );
+          expect(wrapper.text().trim().replace(/\s\s+/g, ' ')).toContain(userCannotMergeText);
         });
 
         it('should not have action buttons', async () => {
@@ -198,9 +204,7 @@ describe('MRWidgetConflicts', () => {
             },
           });
 
-          expect(removeBreakLine(wrapper.text()).trim()).toContain(
-            'Merge blocked: fast-forward merge is not possible. To merge this request, first rebase locally.',
-          );
+          expect(removeBreakLine(wrapper.text()).trim()).toContain(fastForwardMergeText);
         });
       });
 
@@ -236,7 +240,7 @@ describe('MRWidgetConflicts', () => {
         });
 
         it('should allow you to resolve the conflicts', () => {
-          expect(findResolveButton().text()).toContain('Resolve conflicts');
+          expect(findResolveButton().text()).toContain(resolveConflictsBtnText);
           expect(findResolveButton().attributes('href')).toEqual(TEST_HOST);
         });
       });

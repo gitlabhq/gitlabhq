@@ -11,6 +11,7 @@ RSpec.describe API::Entities::PlanLimit do
     expect(subject).to include(
       :conan_max_file_size,
       :generic_packages_max_file_size,
+      :helm_max_file_size,
       :maven_max_file_size,
       :npm_max_file_size,
       :nuget_max_file_size,

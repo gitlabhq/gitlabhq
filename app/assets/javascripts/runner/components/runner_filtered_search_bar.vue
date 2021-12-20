@@ -76,24 +76,18 @@ export default {
 };
 </script>
 <template>
-  <div
+  <filtered-search
     class="gl-bg-gray-10 gl-p-5 gl-border-solid gl-border-gray-100 gl-border-0 gl-border-t-1 gl-border-b-1"
-  >
-    <filtered-search
-      v-bind="$attrs"
-      :namespace="namespace"
-      recent-searches-storage-key="runners-search"
-      :sort-options="$options.sortOptions"
-      :initial-filter-value="initialFilterValue"
-      :tokens="tokens"
-      :initial-sort-by="initialSortBy"
-      :search-input-placeholder="__('Search or filter results...')"
-      data-testid="runners-filtered-search"
-      @onFilter="onFilter"
-      @onSort="onSort"
-    />
-    <div class="gl-text-right" data-testid="runner-count">
-      <slot name="runner-count"></slot>
-    </div>
-  </div>
+    v-bind="$attrs"
+    :namespace="namespace"
+    recent-searches-storage-key="runners-search"
+    :sort-options="$options.sortOptions"
+    :initial-filter-value="initialFilterValue"
+    :tokens="tokens"
+    :initial-sort-by="initialSortBy"
+    :search-input-placeholder="__('Search or filter results...')"
+    data-testid="runners-filtered-search"
+    @onFilter="onFilter"
+    @onSort="onSort"
+  />
 </template>

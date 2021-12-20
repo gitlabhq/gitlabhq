@@ -92,4 +92,9 @@ RSpec.describe Terraform::StateVersion do
       end
     end
   end
+
+  it_behaves_like 'cleanup by a loose foreign key' do
+    let!(:model) { create(:terraform_state_version) }
+    let!(:parent) { model.build }
+  end
 end

@@ -68,7 +68,8 @@ module QA
           path: path,
           name: path,
           visibility: 'public',
-          require_two_factor_authentication: @require_two_factor_authentication
+          require_two_factor_authentication: @require_two_factor_authentication,
+          avatar: avatar
         }
       end
 

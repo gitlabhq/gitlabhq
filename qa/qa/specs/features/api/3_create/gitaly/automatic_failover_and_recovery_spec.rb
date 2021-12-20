@@ -22,13 +22,11 @@ module QA
         end
       end
 
-      after(:context, quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/238187', type: :stale }) do
-        # Leave the cluster in a suitable state for subsequent tests,
-        # if there was a problem during the tests here
+      after do
         praefect_manager.start_all_nodes
       end
 
-      it 'automatically fails over', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1267' do
+      it 'automatically fails over', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347830' do
         # Create a new project with a commit and wait for it to replicate
 
         # make sure that our project is published to the 'primary' node
@@ -44,10 +42,7 @@ module QA
           push.file_content = "This should exist on all nodes"
         end
 
-        praefect_manager.start_secondary_node
-        praefect_manager.start_tertiary_node
-        praefect_manager.wait_for_health_check_all_nodes
-
+        praefect_manager.start_all_nodes
         praefect_manager.wait_for_replication(project.id)
 
         # Stop the primary node to trigger failover, and then wait
@@ -76,7 +71,7 @@ module QA
       end
 
       context 'when recovering from dataloss after failover' do
-        it 'automatically reconciles', quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/238187', type: :stale }, testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1266' do
+        it 'automatically reconciles', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347831' do
           # Start the old primary node again
           praefect_manager.start_primary_node
           praefect_manager.wait_for_primary_node_health_check

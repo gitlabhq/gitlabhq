@@ -21,7 +21,7 @@ class ApplicationSetting < ApplicationRecord
 
   add_authentication_token_field :runners_registration_token, encrypted: -> { Feature.enabled?(:application_settings_tokens_optional_encryption) ? :optional : :required }
   add_authentication_token_field :health_check_access_token
-  add_authentication_token_field :static_objects_external_storage_auth_token
+  add_authentication_token_field :static_objects_external_storage_auth_token, encrypted: :optional
 
   belongs_to :self_monitoring_project, class_name: "Project", foreign_key: 'instance_administration_project_id'
   belongs_to :push_rule
@@ -143,10 +143,6 @@ class ApplicationSetting < ApplicationRecord
   validates :spam_check_api_key,
             length: { maximum: 2000, message: _('is too long (maximum is %{count} characters)') },
             allow_blank: true
-
-  validates :spam_check_api_key,
-            presence: true,
-            if: :spam_check_endpoint_enabled
 
   validates :unique_ips_limit_per_user,
             numericality: { greater_than_or_equal_to: 1 },
@@ -410,7 +406,7 @@ class ApplicationSetting < ApplicationRecord
             if: :external_authorization_service_enabled
 
   validates :spam_check_endpoint_url,
-            addressable_url: { schemes: %w(grpc) }, allow_blank: true
+            addressable_url: { schemes: %w(tls grpc) }, allow_blank: true
 
   validates :spam_check_endpoint_url,
             presence: true,

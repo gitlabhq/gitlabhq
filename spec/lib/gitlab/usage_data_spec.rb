@@ -80,12 +80,6 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
         end
       end
     end
-
-    it 'allows indifferent access' do
-      allow(::Gitlab::UsageDataCounters::HLLRedisCounter).to receive(:unique_events).and_return(1)
-      expect(subject[:search_unique_visits][:search_unique_visits_for_any_target_monthly]).to eq(1)
-      expect(subject[:search_unique_visits]['search_unique_visits_for_any_target_monthly']).to eq(1)
-    end
   end
 
   describe 'usage_activity_by_stage_package' do
@@ -205,7 +199,6 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
       for_defined_days_back do
         user = create(:user)
         user2 = create(:user)
-        create(:event, author: user)
         create(:group_member, user: user)
         create(:authentication_event, user: user, provider: :ldapmain, result: :success)
         create(:authentication_event, user: user2, provider: :ldapsecondary, result: :success)
@@ -214,17 +207,24 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
         create(:authentication_event, user: user, provider: :group_saml, result: :failed)
       end
 
+      for_defined_days_back(days: [31, 29, 3]) do
+        create(:event)
+      end
+
+      stub_const('Gitlab::Database::PostgresHll::BatchDistinctCounter::DEFAULT_BATCH_SIZE', 1)
+      stub_const('Gitlab::Database::PostgresHll::BatchDistinctCounter::MIN_REQUIRED_BATCH_SIZE', 0)
+
       expect(described_class.usage_activity_by_stage_manage({})).to include(
         events: -1,
         groups: 2,
-        users_created: 6,
+        users_created: 10,
         omniauth_providers: ['google_oauth2'],
         user_auth_by_provider: { 'group_saml' => 2, 'ldap' => 4, 'standard' => 0, 'two-factor' => 0, 'two-factor-via-u2f-device' => 0, "two-factor-via-webauthn-device" => 0 }
       )
       expect(described_class.usage_activity_by_stage_manage(described_class.monthly_time_range_db_params)).to include(
-        events: be_within(error_rate).percent_of(1),
+        events: be_within(error_rate).percent_of(2),
         groups: 1,
-        users_created: 3,
+        users_created: 6,
         omniauth_providers: ['google_oauth2'],
         user_auth_by_provider: { 'group_saml' => 1, 'ldap' => 2, 'standard' => 0, 'two-factor' => 0, 'two-factor-via-u2f-device' => 0, "two-factor-via-webauthn-device" => 0 }
       )
@@ -457,42 +457,16 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
       )
     end
 
-    context 'with usage_data_instrumentation feature flag' do
-      context 'when enabled' do
-        it 'merges the data from instrumentation classes' do
-          stub_feature_flags(usage_data_instrumentation: true)
-
-          for_defined_days_back do
-            user = create(:user)
-            project = create(:project, creator: user)
-            create(:issue, project: project, author: user)
-            create(:issue, project: project, author: User.support_bot)
-          end
-
-          expect(described_class.usage_activity_by_stage_plan({})).to include(issues: Gitlab::Utils::UsageData::INSTRUMENTATION_CLASS_FALLBACK)
-          expect(described_class.usage_activity_by_stage_plan(described_class.monthly_time_range_db_params)).to include(issues: Gitlab::Utils::UsageData::INSTRUMENTATION_CLASS_FALLBACK)
-
-          uncached_data = described_class.uncached_data
-          expect(uncached_data[:usage_activity_by_stage][:plan]).to include(issues: 3)
-          expect(uncached_data[:usage_activity_by_stage_monthly][:plan]).to include(issues: 2)
-        end
+    it 'does not merge the data from instrumentation classes' do
+      for_defined_days_back do
+        user = create(:user)
+        project = create(:project, creator: user)
+        create(:issue, project: project, author: user)
+        create(:issue, project: project, author: User.support_bot)
       end
 
-      context 'when disabled' do
-        it 'does not merge the data from instrumentation classes' do
-          stub_feature_flags(usage_data_instrumentation: false)
-
-          for_defined_days_back do
-            user = create(:user)
-            project = create(:project, creator: user)
-            create(:issue, project: project, author: user)
-            create(:issue, project: project, author: User.support_bot)
-          end
-
-          expect(described_class.usage_activity_by_stage_plan({})).to include(issues: 3)
-          expect(described_class.usage_activity_by_stage_plan(described_class.monthly_time_range_db_params)).to include(issues: 2)
-        end
-      end
+      expect(described_class.usage_activity_by_stage_plan({})).to include(issues: 3)
+      expect(described_class.usage_activity_by_stage_plan(described_class.monthly_time_range_db_params)).to include(issues: 2)
     end
   end
 
@@ -510,52 +484,16 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
         deployments: 2,
         failed_deployments: 2,
         releases: 2,
-        successful_deployments: 2
+        successful_deployments: 2,
+        releases_with_milestones: 2
       )
       expect(described_class.usage_activity_by_stage_release(described_class.monthly_time_range_db_params)).to include(
         deployments: 1,
         failed_deployments: 1,
         releases: 1,
-        successful_deployments: 1
+        successful_deployments: 1,
+        releases_with_milestones: 1
       )
-    end
-
-    context 'with usage_data_instrumentation feature flag' do
-      before do
-        for_defined_days_back do
-          user = create(:user)
-          create(:deployment, :failed, user: user)
-          release = create(:release, author: user)
-          create(:milestone, project: release.project, releases: [release])
-          create(:deployment, :success, user: user)
-        end
-      end
-
-      context 'when enabled' do
-        before do
-          stub_feature_flags(usage_data_instrumentation: true)
-        end
-
-        it 'merges data from instrumentation classes' do
-          expect(described_class.usage_activity_by_stage_release({})).to include(releases_with_milestones: Gitlab::Utils::UsageData::INSTRUMENTATION_CLASS_FALLBACK)
-          expect(described_class.usage_activity_by_stage_release(described_class.monthly_time_range_db_params)).to include(releases_with_milestones: Gitlab::Utils::UsageData::INSTRUMENTATION_CLASS_FALLBACK)
-
-          uncached_data = described_class.uncached_data
-          expect(uncached_data[:usage_activity_by_stage][:release]).to include(releases_with_milestones: 2)
-          expect(uncached_data[:usage_activity_by_stage_monthly][:release]).to include(releases_with_milestones: 1)
-        end
-      end
-
-      context 'when disabled' do
-        before do
-          stub_feature_flags(usage_data_instrumentation: false)
-        end
-
-        it 'does not merge data from instrumentation classes' do
-          expect(described_class.usage_activity_by_stage_release({})).to include(releases_with_milestones: 2)
-          expect(described_class.usage_activity_by_stage_release(described_class.monthly_time_range_db_params)).to include(releases_with_milestones: 1)
-        end
-      end
     end
   end
 
@@ -605,16 +543,15 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
     subject { described_class.data }
 
     it 'gathers usage data' do
-      expect(subject.keys).to include(*UsageDataHelpers::USAGE_DATA_KEYS.map(&:to_s))
+      expect(subject.keys).to include(*UsageDataHelpers::USAGE_DATA_KEYS)
     end
 
     it 'gathers usage counts', :aggregate_failures do
       count_data = subject[:counts]
       expect(count_data[:boards]).to eq(1)
       expect(count_data[:projects]).to eq(4)
-      count_keys = UsageDataHelpers::COUNTS_KEYS.map(&:to_s)
-      expect(count_data.keys).to include(*count_keys)
-      expect(count_keys - count_data.keys).to be_empty
+      expect(count_data.keys).to include(*UsageDataHelpers::COUNTS_KEYS)
+      expect(UsageDataHelpers::COUNTS_KEYS - count_data.keys).to be_empty
       expect(count_data.values).to all(be_a_kind_of(Integer))
     end
 
@@ -699,7 +636,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
          external_diffs: { enabled: false },
          lfs: { enabled: true, object_store: { enabled: false, direct_upload: true, background_upload: false, provider: "AWS" } },
          uploads: { enabled: nil, object_store: { enabled: false, direct_upload: true, background_upload: false, provider: "AWS" } },
-         packages: { enabled: true, object_store: { enabled: false, direct_upload: false, background_upload: true, provider: "AWS" } } }.with_indifferent_access
+         packages: { enabled: true, object_store: { enabled: false, direct_upload: false, background_upload: true, provider: "AWS" } } }
       )
     end
 
@@ -747,22 +684,49 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
       end
     end
 
-    it 'works when queries time out' do
-      allow_any_instance_of(ActiveRecord::Relation)
-        .to receive(:count).and_raise(ActiveRecord::StatementInvalid.new(''))
+    context 'when queries time out' do
+      let(:metric_method) { :count }
 
-      expect { subject }.not_to raise_error
+      before do
+        allow_any_instance_of(ActiveRecord::Relation).to receive(metric_method).and_raise(ActiveRecord::StatementInvalid)
+        allow(Gitlab::ErrorTracking).to receive(:should_raise_for_dev?).and_return(should_raise_for_dev)
+      end
+
+      context 'with should_raise_for_dev? true' do
+        let(:should_raise_for_dev) { true }
+
+        it 'raises an error' do
+          expect { subject }.to raise_error(ActiveRecord::StatementInvalid)
+        end
+
+        context 'when metric calls find_in_batches' do
+          let(:metric_method) { :find_in_batches }
+
+          it 'raises an error for jira_usage' do
+            expect { described_class.jira_usage }.to raise_error(ActiveRecord::StatementInvalid)
+          end
+        end
+      end
+
+      context 'with should_raise_for_dev? false' do
+        let(:should_raise_for_dev) { false }
+
+        it 'does not raise an error' do
+          expect { subject }.not_to raise_error
+        end
+
+        context 'when metric calls find_in_batches' do
+          let(:metric_method) { :find_in_batches }
+
+          it 'does not raise an error for jira_usage' do
+            expect { described_class.jira_usage }.not_to raise_error
+          end
+        end
+      end
     end
 
     it 'includes a recording_ce_finished_at timestamp' do
       expect(subject[:recording_ce_finished_at]).to be_a(Time)
-    end
-
-    it 'jira usage works when queries time out' do
-      allow_any_instance_of(ActiveRecord::Relation)
-        .to receive(:find_in_batches).and_raise(ActiveRecord::StatementInvalid.new(''))
-
-      expect { described_class.jira_usage }.not_to raise_error
     end
   end
 
@@ -873,36 +837,11 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
     subject { described_class.license_usage_data }
 
     it 'gathers license data' do
+      expect(subject[:uuid]).to eq(Gitlab::CurrentSettings.uuid)
       expect(subject[:version]).to eq(Gitlab::VERSION)
       expect(subject[:installation_type]).to eq('gitlab-development-kit')
+      expect(subject[:active_user_count]).to eq(User.active.size)
       expect(subject[:recorded_at]).to be_a(Time)
-    end
-
-    context 'with usage_data_instrumentation feature flag' do
-      context 'when enabled' do
-        it 'merges uuid and hostname data from instrumentation classes' do
-          stub_feature_flags(usage_data_instrumentation: true)
-
-          expect(subject[:uuid]).to eq(Gitlab::Utils::UsageData::INSTRUMENTATION_CLASS_FALLBACK)
-          expect(subject[:hostname]).to eq(Gitlab::Utils::UsageData::INSTRUMENTATION_CLASS_FALLBACK)
-          expect(subject[:active_user_count]).to eq(Gitlab::Utils::UsageData::INSTRUMENTATION_CLASS_FALLBACK)
-
-          uncached_data = described_class.data
-          expect(uncached_data[:uuid]).to eq(Gitlab::CurrentSettings.uuid)
-          expect(uncached_data[:hostname]).to eq(Gitlab.config.gitlab.host)
-          expect(uncached_data[:active_user_count]).to eq(User.active.size)
-        end
-      end
-
-      context 'when disabled' do
-        it 'does not merge uuid and hostname data from instrumentation classes' do
-          stub_feature_flags(usage_data_instrumentation: false)
-
-          expect(subject[:uuid]).to eq(Gitlab::CurrentSettings.uuid)
-          expect(subject[:hostname]).to eq(Gitlab.config.gitlab.host)
-          expect(subject[:active_user_count]).to eq(User.active.size)
-        end
-      end
     end
   end
 
@@ -1139,6 +1078,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
 
     describe ".system_usage_data_settings" do
       let(:prometheus_client) { double(Gitlab::PrometheusClient) }
+      let(:snowplow_gitlab_host?) { Gitlab::CurrentSettings.snowplow_collector_hostname == 'snowplow.trx.gitlab.net' }
 
       before do
         allow(described_class).to receive(:operating_system).and_return('ubuntu-20.04')
@@ -1166,50 +1106,33 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
         expect(subject[:settings][:gitaly_apdex]).to be_within(0.001).of(0.95)
       end
 
-      context 'with usage_data_instrumentation feature flag' do
-        context 'when enabled' do
-          before do
-            stub_feature_flags(usage_data_instrumentation: true)
-          end
+      it 'reports collected data categories' do
+        expected_value = %w[standard subscription operational optional]
 
-          it 'reports collected data categories' do
-            expected_value = %w[standard subscription operational optional]
-
-            allow_next_instance_of(ServicePing::PermitDataCategoriesService) do |instance|
-              expect(instance).to receive(:execute).and_return(expected_value)
-            end
-
-            expect(described_class.data[:settings][:collected_data_categories]).to eq(expected_value)
-          end
-
-          it 'gathers service_ping_features_enabled' do
-            expect(described_class.data[:settings][:service_ping_features_enabled]).to eq(Gitlab::CurrentSettings.usage_ping_features_enabled)
-          end
+        allow_next_instance_of(ServicePing::PermitDataCategoriesService) do |instance|
+          expect(instance).to receive(:execute).and_return(expected_value)
         end
 
-        context 'when disabled' do
-          before do
-            stub_feature_flags(usage_data_instrumentation: false)
-          end
+        expect(subject[:settings][:collected_data_categories]).to eq(expected_value)
+      end
 
-          it 'reports collected data categories' do
-            expected_value = %w[standard subscription operational optional]
-
-            allow_next_instance_of(ServicePing::PermitDataCategoriesService) do |instance|
-              expect(instance).to receive(:execute).and_return(expected_value)
-            end
-
-            expect(subject[:settings][:collected_data_categories]).to eq(expected_value)
-          end
-
-          it 'gathers service_ping_features_enabled' do
-            expect(subject[:settings][:service_ping_features_enabled]).to eq(Gitlab::CurrentSettings.usage_ping_features_enabled)
-          end
-        end
+      it 'gathers service_ping_features_enabled' do
+        expect(subject[:settings][:service_ping_features_enabled]).to eq(Gitlab::CurrentSettings.usage_ping_features_enabled)
       end
 
       it 'gathers user_cap_feature_enabled' do
         expect(subject[:settings][:user_cap_feature_enabled]).to eq(Gitlab::CurrentSettings.new_user_signups_cap)
+      end
+
+      context 'snowplow stats' do
+        before do
+          stub_feature_flags(usage_data_instrumentation: false)
+        end
+
+        it 'gathers snowplow stats' do
+          expect(subject[:settings][:snowplow_enabled]).to eq(Gitlab::CurrentSettings.snowplow_enabled?)
+          expect(subject[:settings][:snowplow_configured_to_gitlab_collector]).to eq(snowplow_gitlab_host?)
+        end
       end
     end
   end
@@ -1332,6 +1255,9 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
           'i_analytics_cohorts' => 123,
           'i_analytics_dev_ops_score' => 123,
           'i_analytics_instance_statistics' => 123,
+          'p_analytics_ci_cd_deployment_frequency' => 123,
+          'p_analytics_ci_cd_lead_time' => 123,
+          'p_analytics_ci_cd_pipelines' => 123,
           'p_analytics_merge_request' => 123,
           'i_analytics_dev_ops_adoption' => 123,
           'users_viewing_analytics_group_devops_adoption' => 123,
@@ -1402,33 +1328,21 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
 
     let(:categories) { ::Gitlab::UsageDataCounters::HLLRedisCounter.categories }
 
-    context 'with redis_hll_tracking feature enabled' do
-      it 'has all known_events' do
-        stub_feature_flags(redis_hll_tracking: true)
+    it 'has all known_events' do
+      expect(subject).to have_key(:redis_hll_counters)
 
-        expect(subject).to have_key(:redis_hll_counters)
+      expect(subject[:redis_hll_counters].keys).to match_array(categories)
 
-        expect(subject[:redis_hll_counters].keys).to match_array(categories)
+      categories.each do |category|
+        keys = ::Gitlab::UsageDataCounters::HLLRedisCounter.events_for_category(category)
 
-        categories.each do |category|
-          keys = ::Gitlab::UsageDataCounters::HLLRedisCounter.events_for_category(category)
+        metrics = keys.map { |key| "#{key}_weekly" } + keys.map { |key| "#{key}_monthly" }
 
-          metrics = keys.map { |key| "#{key}_weekly" } + keys.map { |key| "#{key}_monthly" }
-
-          if ::Gitlab::UsageDataCounters::HLLRedisCounter::CATEGORIES_FOR_TOTALS.include?(category)
-            metrics.append("#{category}_total_unique_counts_weekly", "#{category}_total_unique_counts_monthly")
-          end
-
-          expect(subject[:redis_hll_counters][category].keys).to match_array(metrics)
+        if ::Gitlab::UsageDataCounters::HLLRedisCounter::CATEGORIES_FOR_TOTALS.include?(category)
+          metrics.append("#{category}_total_unique_counts_weekly", "#{category}_total_unique_counts_monthly")
         end
-      end
-    end
 
-    context 'with redis_hll_tracking disabled' do
-      it 'does not have redis_hll_tracking key' do
-        stub_feature_flags(redis_hll_tracking: false)
-
-        expect(subject).not_to have_key(:redis_hll_counters)
+        expect(subject[:redis_hll_counters][category].keys).to match_array(metrics)
       end
     end
   end
@@ -1468,46 +1382,58 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
 
     context 'when queries time out' do
       before do
-        allow_any_instance_of(ActiveRecord::Relation)
-          .to receive(:count).and_raise(ActiveRecord::StatementInvalid.new(''))
+        allow_any_instance_of(ActiveRecord::Relation).to receive(:count).and_raise(ActiveRecord::StatementInvalid)
+        allow(Gitlab::ErrorTracking).to receive(:should_raise_for_dev?).and_return(should_raise_for_dev)
       end
 
-      it 'returns -1 for email campaign data' do
-        expected_data = {
-          "in_product_marketing_email_create_0_sent" => -1,
-          "in_product_marketing_email_create_0_cta_clicked" => -1,
-          "in_product_marketing_email_create_1_sent" => -1,
-          "in_product_marketing_email_create_1_cta_clicked" => -1,
-          "in_product_marketing_email_create_2_sent" => -1,
-          "in_product_marketing_email_create_2_cta_clicked" => -1,
-          "in_product_marketing_email_team_short_0_sent" => -1,
-          "in_product_marketing_email_team_short_0_cta_clicked" => -1,
-          "in_product_marketing_email_trial_short_0_sent" => -1,
-          "in_product_marketing_email_trial_short_0_cta_clicked" => -1,
-          "in_product_marketing_email_admin_verify_0_sent" => -1,
-          "in_product_marketing_email_admin_verify_0_cta_clicked" => -1,
-          "in_product_marketing_email_verify_0_sent" => -1,
-          "in_product_marketing_email_verify_0_cta_clicked" => -1,
-          "in_product_marketing_email_verify_1_sent" => -1,
-          "in_product_marketing_email_verify_1_cta_clicked" => -1,
-          "in_product_marketing_email_verify_2_sent" => -1,
-          "in_product_marketing_email_verify_2_cta_clicked" => -1,
-          "in_product_marketing_email_trial_0_sent" => -1,
-          "in_product_marketing_email_trial_0_cta_clicked" => -1,
-          "in_product_marketing_email_trial_1_sent" => -1,
-          "in_product_marketing_email_trial_1_cta_clicked" => -1,
-          "in_product_marketing_email_trial_2_sent" => -1,
-          "in_product_marketing_email_trial_2_cta_clicked" => -1,
-          "in_product_marketing_email_team_0_sent" => -1,
-          "in_product_marketing_email_team_0_cta_clicked" => -1,
-          "in_product_marketing_email_team_1_sent" => -1,
-          "in_product_marketing_email_team_1_cta_clicked" => -1,
-          "in_product_marketing_email_team_2_sent" => -1,
-          "in_product_marketing_email_team_2_cta_clicked" => -1,
-          "in_product_marketing_email_experience_0_sent" => -1
-        }
+      context 'with should_raise_for_dev? true' do
+        let(:should_raise_for_dev) { true }
 
-        expect(subject).to eq(expected_data)
+        it 'raises an error' do
+          expect { subject }.to raise_error(ActiveRecord::StatementInvalid)
+        end
+      end
+
+      context 'with should_raise_for_dev? false' do
+        let(:should_raise_for_dev) { false }
+
+        it 'returns -1 for email campaign data' do
+          expected_data = {
+            "in_product_marketing_email_create_0_sent" => -1,
+            "in_product_marketing_email_create_0_cta_clicked" => -1,
+            "in_product_marketing_email_create_1_sent" => -1,
+            "in_product_marketing_email_create_1_cta_clicked" => -1,
+            "in_product_marketing_email_create_2_sent" => -1,
+            "in_product_marketing_email_create_2_cta_clicked" => -1,
+            "in_product_marketing_email_team_short_0_sent" => -1,
+            "in_product_marketing_email_team_short_0_cta_clicked" => -1,
+            "in_product_marketing_email_trial_short_0_sent" => -1,
+            "in_product_marketing_email_trial_short_0_cta_clicked" => -1,
+            "in_product_marketing_email_admin_verify_0_sent" => -1,
+            "in_product_marketing_email_admin_verify_0_cta_clicked" => -1,
+            "in_product_marketing_email_verify_0_sent" => -1,
+            "in_product_marketing_email_verify_0_cta_clicked" => -1,
+            "in_product_marketing_email_verify_1_sent" => -1,
+            "in_product_marketing_email_verify_1_cta_clicked" => -1,
+            "in_product_marketing_email_verify_2_sent" => -1,
+            "in_product_marketing_email_verify_2_cta_clicked" => -1,
+            "in_product_marketing_email_trial_0_sent" => -1,
+            "in_product_marketing_email_trial_0_cta_clicked" => -1,
+            "in_product_marketing_email_trial_1_sent" => -1,
+            "in_product_marketing_email_trial_1_cta_clicked" => -1,
+            "in_product_marketing_email_trial_2_sent" => -1,
+            "in_product_marketing_email_trial_2_cta_clicked" => -1,
+            "in_product_marketing_email_team_0_sent" => -1,
+            "in_product_marketing_email_team_0_cta_clicked" => -1,
+            "in_product_marketing_email_team_1_sent" => -1,
+            "in_product_marketing_email_team_1_cta_clicked" => -1,
+            "in_product_marketing_email_team_2_sent" => -1,
+            "in_product_marketing_email_team_2_cta_clicked" => -1,
+            "in_product_marketing_email_experience_0_sent" => -1
+          }
+
+          expect(subject).to eq(expected_data)
+        end
       end
     end
 

@@ -33,6 +33,7 @@ module Quality
         initializers
         javascripts
         lib
+        metrics_server
         models
         policies
         presenters
@@ -44,6 +45,7 @@ module Quality
         serializers
         services
         sidekiq
+        sidekiq_cluster
         spam
         support_specs
         tasks

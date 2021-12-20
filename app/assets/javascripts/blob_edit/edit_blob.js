@@ -1,4 +1,5 @@
 import $ from 'jquery';
+import { SourceEditorExtension } from '~/editor/extensions/source_editor_extension_base';
 import { FileTemplateExtension } from '~/editor/extensions/source_editor_file_template_ext';
 import SourceEditor from '~/editor/source_editor';
 import { getBlobLanguage } from '~/editor/utils';
@@ -26,23 +27,29 @@ export default class EditBlob {
     this.editor.focus();
   }
 
-  fetchMarkdownExtension() {
-    import('~/editor/extensions/source_editor_markdown_ext')
-      .then(({ EditorMarkdownExtension: MarkdownExtension } = {}) => {
-        this.editor.use(
-          new MarkdownExtension({
-            instance: this.editor,
-            previewMarkdownPath: this.options.previewMarkdownPath,
-          }),
-        );
-        this.hasMarkdownExtension = true;
-        addEditorMarkdownListeners(this.editor);
-      })
-      .catch((e) =>
-        createFlash({
-          message: `${BLOB_EDITOR_ERROR}: ${e}`,
-        }),
-      );
+  async fetchMarkdownExtension() {
+    try {
+      const [
+        { EditorMarkdownExtension: MarkdownExtension },
+        { EditorMarkdownPreviewExtension: MarkdownLivePreview },
+      ] = await Promise.all([
+        import('~/editor/extensions/source_editor_markdown_ext'),
+        import('~/editor/extensions/source_editor_markdown_livepreview_ext'),
+      ]);
+      this.editor.use([
+        { definition: MarkdownExtension },
+        {
+          definition: MarkdownLivePreview,
+          setupOptions: { previewMarkdownPath: this.options.previewMarkdownPath },
+        },
+      ]);
+    } catch (e) {
+      createFlash({
+        message: `${BLOB_EDITOR_ERROR}: ${e}`,
+      });
+    }
+    this.hasMarkdownExtension = true;
+    addEditorMarkdownListeners(this.editor);
   }
 
   configureMonacoEditor() {
@@ -60,7 +67,7 @@ export default class EditBlob {
       blobPath: fileNameEl.value,
       blobContent: editorEl.innerText,
     });
-    this.editor.use(new FileTemplateExtension({ instance: this.editor }));
+    this.editor.use([{ definition: SourceEditorExtension }, { definition: FileTemplateExtension }]);
 
     fileNameEl.addEventListener('change', () => {
       this.editor.updateModelLanguage(fileNameEl.value);

@@ -63,6 +63,7 @@ module Ci
     has_many :statuses, class_name: 'CommitStatus', foreign_key: :commit_id, inverse_of: :pipeline
     has_many :latest_statuses_ordered_by_stage, -> { latest.order(:stage_idx, :stage) }, class_name: 'CommitStatus', foreign_key: :commit_id, inverse_of: :pipeline
     has_many :latest_statuses, -> { latest }, class_name: 'CommitStatus', foreign_key: :commit_id, inverse_of: :pipeline
+    has_many :statuses_order_id_desc, -> { order_id_desc }, class_name: 'CommitStatus', foreign_key: :commit_id
     has_many :processables, class_name: 'Ci::Processable', foreign_key: :commit_id, inverse_of: :pipeline
     has_many :bridges, class_name: 'Ci::Bridge', foreign_key: :commit_id, inverse_of: :pipeline
     has_many :builds, foreign_key: :commit_id, inverse_of: :pipeline
@@ -82,8 +83,6 @@ module Ci
     # Merge requests for which the current pipeline is running against
     # the merge request's latest commit.
     has_many :merge_requests_as_head_pipeline, foreign_key: "head_pipeline_id", class_name: 'MergeRequest'
-    has_many :package_build_infos, class_name: 'Packages::BuildInfo', dependent: :nullify, inverse_of: :pipeline # rubocop:disable Cop/ActiveRecordDependent
-    has_many :package_file_build_infos, class_name: 'Packages::PackageFileBuildInfo', dependent: :nullify, inverse_of: :pipeline # rubocop:disable Cop/ActiveRecordDependent
     has_many :pending_builds, -> { pending }, foreign_key: :commit_id, class_name: 'Ci::Build', inverse_of: :pipeline
     has_many :failed_builds, -> { latest.failed }, foreign_key: :commit_id, class_name: 'Ci::Build', inverse_of: :pipeline
     has_many :retryable_builds, -> { latest.failed_or_canceled.includes(:project) }, foreign_key: :commit_id, class_name: 'Ci::Build', inverse_of: :pipeline
@@ -236,7 +235,18 @@ module Ci
 
         pipeline.run_after_commit do
           PipelineHooksWorker.perform_async(pipeline.id)
-          ExpirePipelineCacheWorker.perform_async(pipeline.id)
+
+          if pipeline.project.jira_subscription_exists?
+            # Passing the seq-id ensures this is idempotent
+            seq_id = ::Atlassian::JiraConnect::Client.generate_update_sequence_id
+            ::JiraConnect::SyncBuildsWorker.perform_async(pipeline.id, seq_id)
+          end
+
+          if Feature.enabled?(:expire_job_and_pipeline_cache_synchronously, pipeline.project, default_enabled: :yaml)
+            Ci::ExpirePipelineCacheService.new.execute(pipeline) # rubocop: disable CodeReuse/ServiceClass
+          else
+            ExpirePipelineCacheWorker.perform_async(pipeline.id)
+          end
         end
       end
 
@@ -268,14 +278,6 @@ module Ci
 
         pipeline.run_after_commit do
           ::Ci::PipelineBridgeStatusWorker.perform_async(pipeline.id)
-        end
-      end
-
-      after_transition any => any do |pipeline|
-        pipeline.run_after_commit do
-          # Passing the seq-id ensures this is idempotent
-          seq_id = ::Atlassian::JiraConnect::Client.generate_update_sequence_id
-          ::JiraConnect::SyncBuildsWorker.perform_async(pipeline.id, seq_id)
         end
       end
 
@@ -643,7 +645,7 @@ module Ci
     def coverage
       coverage_array = latest_statuses.map(&:coverage).compact
       if coverage_array.size >= 1
-        '%.2f' % (coverage_array.reduce(:+) / coverage_array.size)
+        coverage_array.reduce(:+) / coverage_array.size
       end
     end
 
@@ -947,22 +949,16 @@ module Ci
     end
 
     def environments_in_self_and_descendants
-      if ::Feature.enabled?(:avoid_cross_joins_environments_in_self_and_descendants, default_enabled: :yaml)
-        # We limit to 100 unique environments for application safety.
-        # See: https://gitlab.com/gitlab-org/gitlab/-/issues/340781#note_699114700
-        expanded_environment_names =
-          builds_in_self_and_descendants.joins(:metadata)
-                                        .where.not('ci_builds_metadata.expanded_environment_name' => nil)
-                                        .distinct('ci_builds_metadata.expanded_environment_name')
-                                        .limit(100)
-                                        .pluck(:expanded_environment_name)
+      # We limit to 100 unique environments for application safety.
+      # See: https://gitlab.com/gitlab-org/gitlab/-/issues/340781#note_699114700
+      expanded_environment_names =
+        builds_in_self_and_descendants.joins(:metadata)
+                                      .where.not('ci_builds_metadata.expanded_environment_name' => nil)
+                                      .distinct('ci_builds_metadata.expanded_environment_name')
+                                      .limit(100)
+                                      .pluck(:expanded_environment_name)
 
-        Environment.where(project: project, name: expanded_environment_names)
-      else
-        environment_ids = self_and_descendants.joins(:deployments).select(:'deployments.environment_id')
-
-        Environment.where(id: environment_ids)
-      end
+      Environment.where(project: project, name: expanded_environment_names).with_deployment(sha)
     end
 
     # With multi-project and parent-child pipelines
@@ -1276,15 +1272,15 @@ module Ci
       self.builds.latest.build_matchers(project)
     end
 
-    def predefined_vars_in_builder_enabled?
-      strong_memoize(:predefined_vars_in_builder_enabled) do
-        Feature.enabled?(:ci_predefined_vars_in_builder, project, default_enabled: :yaml)
-      end
-    end
-
     def authorized_cluster_agents
       strong_memoize(:authorized_cluster_agents) do
         ::Clusters::AgentAuthorizationsFinder.new(project).execute.map(&:agent)
+      end
+    end
+
+    def create_deployment_in_separate_transaction?
+      strong_memoize(:create_deployment_in_separate_transaction) do
+        ::Feature.enabled?(:create_deployment_in_separate_transaction, project, default_enabled: :yaml)
       end
     end
 

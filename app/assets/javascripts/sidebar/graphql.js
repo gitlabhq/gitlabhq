@@ -1,7 +1,7 @@
 import { IntrospectionFragmentMatcher } from 'apollo-cache-inmemory';
 import produce from 'immer';
 import VueApollo from 'vue-apollo';
-import getIssueStateQuery from '~/issue_show/queries/get_issue_state.query.graphql';
+import getIssueStateQuery from '~/issues/show/queries/get_issue_state.query.graphql';
 import createDefaultClient from '~/lib/graphql';
 import introspectionQueryResultData from './fragmentTypes.json';
 

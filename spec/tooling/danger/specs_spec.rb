@@ -3,7 +3,7 @@
 require 'rspec-parameterized'
 require 'gitlab-dangerfiles'
 require 'danger'
-require 'danger/plugins/helper'
+require 'danger/plugins/internal/helper'
 require 'gitlab/dangerfiles/spec_helper'
 
 require_relative '../../../tooling/danger/specs'

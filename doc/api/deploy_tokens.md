@@ -165,8 +165,8 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" \
 
 ## Group deploy tokens
 
-Group maintainers and owners can list group deploy
-tokens. Only group owners can create and delete group deploy tokens.
+Users with at least the [Maintainer role](../user/permissions.md) for the group can list group deploy
+tokens. Only group Owners can create and delete group deploy tokens.
 
 ### List group deploy tokens
 

@@ -16,16 +16,16 @@ module Resolvers
 
         authorize :read_design
 
-        argument :id, DesignAtVersionID,
-                 required: false,
-                 as: :design_at_version_id,
-                 description: 'ID of the DesignAtVersion.'
         argument :design_id, DesignID,
                  required: false,
                  description: 'ID of a specific design.'
         argument :filename, GraphQL::Types::String,
                  required: false,
                  description: 'Filename of a specific design.'
+        argument :id, DesignAtVersionID,
+                 required: false,
+                 as: :design_at_version_id,
+                 description: 'ID of the DesignAtVersion.'
 
         def self.single
           self

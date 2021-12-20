@@ -17,8 +17,9 @@ export default {
       type: Object,
     },
     isLoading: {
-      required: true,
+      required: false,
       type: Boolean,
+      default: false,
     },
     dateType: {
       type: String,
@@ -31,6 +32,7 @@ export default {
         return this.issuable?.[dateFields[this.dateType].isDateFixed] || false;
       },
       set(fixed) {
+        if (fixed === this.issuable[dateFields[this.dateType].isDateFixed]) return;
         this.$emit('set-date', fixed);
       },
     },

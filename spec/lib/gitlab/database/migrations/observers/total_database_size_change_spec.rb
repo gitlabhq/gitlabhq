@@ -2,10 +2,10 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Database::Migrations::Observers::TotalDatabaseSizeChange do
-  subject { described_class.new(observation, double('unused path')) }
+  subject { described_class.new(observation, double('unused path'), connection) }
 
   let(:observation) { Gitlab::Database::Migrations::Observation.new }
-  let(:connection) { ActiveRecord::Base.connection }
+  let(:connection) { ActiveRecord::Migration.connection }
   let(:query) { 'select pg_database_size(current_database())' }
 
   it 'records the size change' do

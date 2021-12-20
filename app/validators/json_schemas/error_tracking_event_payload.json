@@ -57,7 +57,7 @@
                           "type": "array"
                         },
                         "context_line": {
-                          "type": "string"
+                          "type": ["string", "null"]
                         },
                         "post_context": {
                           "type": "array"

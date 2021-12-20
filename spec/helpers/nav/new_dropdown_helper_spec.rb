@@ -13,8 +13,6 @@ RSpec.describe Nav::NewDropdownHelper do
     let(:with_can_create_project) { false }
     let(:with_can_create_group) { false }
     let(:with_can_create_snippet) { false }
-    let(:with_invite_members_experiment) { false }
-    let(:with_invite_members_experiment_enabled) { false }
 
     let(:subject) { helper.new_dropdown_view_model(project: current_project, group: current_group) }
 
@@ -28,11 +26,6 @@ RSpec.describe Nav::NewDropdownHelper do
     end
 
     before do
-      allow(::Gitlab::Experimentation).to receive(:active?).with(:invite_members_new_dropdown) { with_invite_members_experiment }
-      allow(helper).to receive(:experiment_enabled?).with(:invite_members_new_dropdown) { with_invite_members_experiment_enabled }
-      allow(helper).to receive(:tracking_label) { 'test_tracking_label' }
-      allow(helper).to receive(:experiment_tracking_category_and_group) { |x| x }
-
       allow(helper).to receive(:current_user) { current_user }
       allow(helper).to receive(:can?) { false }
 
@@ -42,37 +35,22 @@ RSpec.describe Nav::NewDropdownHelper do
     end
 
     shared_examples 'invite member link shared example' do
-      it 'shows invite member link' do
+      it 'shows invite member link with emoji' do
         expect(subject[:menu_sections]).to eq(
           expected_menu_section(
             title: expected_title,
             menu_item: ::Gitlab::Nav::TopNavMenuItem.build(
               id: 'invite',
               title: 'Invite members',
+              emoji: 'shaking_hands',
               href: expected_href,
               data: {
-                track_action: 'click_link',
-                track_label: 'test_tracking_label',
-                track_property: :invite_members_new_dropdown
+                track_action: 'click_link_invite_members',
+                track_label: 'plus_menu_dropdown'
               }
             )
           )
         )
-      end
-
-      context 'with experiment enabled' do
-        let(:with_invite_members_experiment_enabled) { true }
-
-        it 'shows emoji with invite member link' do
-          expect(subject[:menu_sections]).to match(
-            expected_menu_section(
-              title: expected_title,
-              menu_item: a_hash_including(
-                emoji: 'shaking_hands'
-              )
-            )
-          )
-        end
       end
     end
 

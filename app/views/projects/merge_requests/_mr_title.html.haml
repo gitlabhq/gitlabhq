@@ -4,7 +4,7 @@
 - are_close_and_open_buttons_hidden = merge_request_button_hidden?(@merge_request, true) && merge_request_button_hidden?(@merge_request, false)
 - cache_key = [@project, @merge_request, can_update_merge_request, can_reopen_merge_request, are_close_and_open_buttons_hidden]
 
-= cache_if(Feature.enabled?(:cached_mr_title, @project, default_enabled: :yaml), cache_key, expires_in: 1.day) do
+= cache(cache_key, expires_in: 1.day) do
   - if @merge_request.closed_or_merged_without_fork?
     .gl-alert.gl-alert-danger.gl-mb-5
       .gl-alert-container

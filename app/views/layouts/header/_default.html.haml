@@ -15,7 +15,7 @@
               %span.logo-text.d-none.d-lg-block.gl-ml-3
                 = logo_text
           - if Gitlab.com_and_canary?
-            = link_to 'https://next.gitlab.com', class: 'canary-badge bg-transparent', data: { qa_selector: 'canary_badge_link' }, target: :_blank, rel: :_noopener do
+            = link_to Gitlab::Saas.canary_toggle_com_url, class: 'canary-badge bg-transparent', data: { qa_selector: 'canary_badge_link' }, target: :_blank, rel: 'noopener noreferrer' do
               %span.gl-badge.gl-bg-green-500.gl-text-white.gl-rounded-pill.gl-font-weight-bold.gl-py-1
                 = _('Next')
 
@@ -36,7 +36,9 @@
                   'issues-path' => issues_dashboard_path,
                   'mr-path' => merge_requests_dashboard_path,
                   'autocomplete-path' => search_autocomplete_path } }
-                    %input{ type: "text", placeholder: _('Search or jump to...'), class: 'form-control gl-form-input' }
+                    .gl-search-box-by-type
+                      = sprite_icon('search', css_class: 'gl-search-box-by-type-search-icon gl-icon')
+                      %input{ type: "text", placeholder: _('Search or jump to...'), class: 'form-control gl-form-input gl-search-box-by-type-input', id: 'search', autocomplete: 'off' }
                 - else
                   = render 'layouts/search'
             %li.nav-item{ class: 'd-none d-sm-inline-block d-lg-none' }
@@ -44,7 +46,7 @@
                 = sprite_icon(search_menu_item.fetch(:icon))
           - if header_link?(:issues)
             = nav_link(path: 'dashboard#issues', html_options: { class: "user-counter" }) do
-              = link_to assigned_issues_dashboard_path, title: _('Issues'), class: 'dashboard-shortcuts-issues', aria: { label: _('Issues') },
+              = link_to assigned_issues_dashboard_path, title: _('Issues'), class: 'dashboard-shortcuts-issues js-prefetch-document', aria: { label: _('Issues') },
                 data: { qa_selector: 'issues_shortcut_button', toggle: 'tooltip', placement: 'bottom',
                 track_label: 'main_navigation',
                 track_action: 'click_issues_link',
@@ -73,18 +75,18 @@
                   %li.dropdown-header
                     = _('Merge requests')
                   %li
-                    = link_to assigned_mrs_dashboard_path, class: 'gl-display-flex! gl-align-items-center' do
+                    = link_to assigned_mrs_dashboard_path, class: 'gl-display-flex! gl-align-items-center js-prefetch-document' do
                       = _('Assigned to you')
                       %span.badge.gl-badge.badge-pill.badge-muted.merge-request-badge.gl-ml-auto.js-assigned-mr-count{ class: "" }
                         = user_merge_requests_counts[:assigned]
                   %li
-                    = link_to reviewer_mrs_dashboard_path, class: 'gl-display-flex! gl-align-items-center' do
+                    = link_to reviewer_mrs_dashboard_path, class: 'gl-display-flex! gl-align-items-center js-prefetch-document' do
                       = _('Review requests for you')
                       %span.badge.gl-badge.badge-pill.badge-muted.merge-request-badge.gl-ml-auto.js-reviewer-mr-count{ class: "" }
                         = user_merge_requests_counts[:review_requested]
           - if header_link?(:todos)
             = nav_link(controller: 'dashboard/todos', html_options: { class: "user-counter" }) do
-              = link_to dashboard_todos_path, title: _('To-Do List'), aria: { label: _('To-Do List') }, class: 'shortcuts-todos',
+              = link_to dashboard_todos_path, title: _('To-Do List'), aria: { label: _('To-Do List') }, class: 'shortcuts-todos js-prefetch-document',
                 data: { qa_selector: 'todos_shortcut_button', toggle: 'tooltip', placement: 'bottom',
                 track_label: 'main_navigation',
                 track_action: 'click_to_do_link',
@@ -94,7 +96,7 @@
                 %span.badge.badge-pill.todos-count.js-todos-count{ class: ('hidden' if todos_pending_count == 0) }
                   = todos_count_format(todos_pending_count)
           %li.nav-item.header-help.dropdown.d-none.d-md-block{ **tracking_attrs('main_navigation', 'click_question_mark_link', 'navigation') }
-            = link_to help_path, class: 'header-help-dropdown-toggle', data: { toggle: "dropdown" } do
+            = link_to help_path, class: 'header-help-dropdown-toggle gl-relative', data: { toggle: "dropdown" } do
               %span.gl-sr-only
                 = s_('Nav|Help')
               = sprite_icon('question-o')

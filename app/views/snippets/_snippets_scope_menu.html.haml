@@ -1,31 +1,18 @@
 - subject = local_assigns.fetch(:subject, current_user)
 - include_private = local_assigns.fetch(:include_private, false)
+- params[:scope] ||= []
 
-.nav-links.snippet-scope-menu.mobile-separator.nav.nav-tabs
-  %li{ class: active_when(params[:scope].nil?) }
-    = link_to subject_snippets_path(subject) do
-      = _("All")
-      %span.badge.badge-muted.badge-pill.gl-badge.sm
-        - if include_private
-          = counts[:total]
-        - else
-          = counts[:are_public_or_internal]
-
+= gl_tabs_nav({ class: 'js-snippets-nav-tabs gl-border-b-0 gl-overflow-x-auto gl-flex-grow-1 gl-flex-nowrap' }) do
+  = gl_tab_link_to subject_snippets_path(subject), { item_active: params[:scope].empty? } do
+    = _('All')
+    = gl_tab_counter_badge(include_private ? counts[:total] : counts[:are_public_or_internal])
   - if include_private
-    %li{ class: active_when(params[:scope] == "are_private") }
-      = link_to subject_snippets_path(subject, scope: 'are_private') do
-        = _("Private")
-        %span.badge.badge-muted.badge-pill.gl-badge.sm
-          = counts[:are_private]
-
-  %li{ class: active_when(params[:scope] == "are_internal") }
-    = link_to subject_snippets_path(subject, scope: 'are_internal') do
-      = _("Internal")
-      %span.badge.badge-muted.badge-pill.gl-badge.sm
-        = counts[:are_internal]
-
-  %li{ class: active_when(params[:scope] == "are_public") }
-    = link_to subject_snippets_path(subject, scope: 'are_public') do
-      = _("Public")
-      %span.badge.badge-muted.badge-pill.gl-badge.sm
-        = counts[:are_public]
+    = gl_tab_link_to subject_snippets_path(subject, scope: 'are_private') do
+      = _('Private')
+      = gl_tab_counter_badge(counts[:are_private])
+  = gl_tab_link_to subject_snippets_path(subject, scope: 'are_internal') do
+    = _('Internal')
+    = gl_tab_counter_badge(counts[:are_internal])
+  = gl_tab_link_to subject_snippets_path(subject, scope: 'are_public') do
+    = _('Public')
+    = gl_tab_counter_badge(counts[:are_public])

@@ -1,3 +1,0 @@
-query getPipelineEtag {
-  pipelineEtag @client
-}

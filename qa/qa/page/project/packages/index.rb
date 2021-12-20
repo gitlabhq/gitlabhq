@@ -5,7 +5,7 @@ module QA
     module Project
       module Packages
         class Index < QA::Page::Base
-          view 'app/assets/javascripts/packages/shared/components/package_list_row.vue' do
+          view 'app/assets/javascripts/packages_and_registries/package_registry/components/list/package_list_row.vue' do
             element :package_row
             element :package_link
           end
@@ -15,7 +15,7 @@ module QA
           end
 
           def has_package?(name)
-            has_element?(:package_link, text: name)
+            has_element?(:package_link, text: name, wait: 20)
           end
 
           def has_no_package?(name)

@@ -21,3 +21,4 @@ feedback, and suggestions.
 - [GraphQL BatchLoader](batchloader.md): development documentation on the BatchLoader.
 - [GraphQL pagination](pagination.md): development documentation on pagination.
 - [GraphQL Pro](graphql_pro.md): information on our GraphQL Pro subscription.
+- [GraphQL monitoring](monitoring.md): tips on how to use our monitoring tools to inspect GraphQL queries.

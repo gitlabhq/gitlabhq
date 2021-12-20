@@ -50,7 +50,8 @@ RSpec.shared_examples Repositories::GitHttpController do
 
     context 'with authorized user' do
       before do
-        request.headers.merge! auth_env(user.username, user.password, nil)
+        password = user.try(:password) || user.try(:token)
+        request.headers.merge! auth_env(user.username, password, nil)
       end
 
       it 'returns 200' do
@@ -71,9 +72,10 @@ RSpec.shared_examples Repositories::GitHttpController do
         it 'adds user info to the logs' do
           get :info_refs, params: params
 
-          expect(log_data).to include('username' => user.username,
-                                      'user_id' => user.id,
-                                      'meta.user' => user.username)
+          user_log_data = { 'username' => user.username, 'user_id' => user.id }
+          user_log_data['meta.user'] = user.username if user.is_a?(User)
+
+          expect(log_data).to include(user_log_data)
         end
       end
     end

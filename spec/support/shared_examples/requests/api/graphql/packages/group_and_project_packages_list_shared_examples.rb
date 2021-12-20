@@ -55,7 +55,7 @@ RSpec.shared_examples 'group and project packages query' do
     end
 
     it 'deals with metadata' do
-      expect(target_shas).to contain_exactly(composer_metadatum.target_sha)
+      expect(target_shas.compact).to contain_exactly(composer_metadatum.target_sha)
     end
 
     it 'returns the count of the packages' do

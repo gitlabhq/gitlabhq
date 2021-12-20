@@ -61,6 +61,7 @@ issues:
 - pending_escalations
 - customer_relations_contacts
 - issue_customer_relations_contacts
+- email
 work_item_type:
 - issues
 events:
@@ -197,6 +198,7 @@ merge_requests:
 - system_note_metadata
 - note_authors
 - cleanup_schedule
+- compliance_violations
 external_pull_requests:
 - project
 merge_request_diff:
@@ -223,6 +225,7 @@ ci_pipelines:
 - ci_ref
 - stages
 - statuses
+- statuses_order_id_desc
 - latest_statuses_ordered_by_stage
 - builds
 - bridges
@@ -596,6 +599,8 @@ project:
 - security_scans
 - ci_feature_usages
 - bulk_import_exports
+- ci_project_mirror
+- sync_events
 award_emoji:
 - awardable
 - user

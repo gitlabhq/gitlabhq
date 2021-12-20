@@ -46,7 +46,7 @@ module RuboCop
       end
 
       def arguments(node)
-        node.children[2..-1]
+        node.children[2..]
       end
     end
   end

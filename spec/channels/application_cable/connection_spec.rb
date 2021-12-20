@@ -2,12 +2,12 @@
 
 require 'spec_helper'
 
-RSpec.describe ApplicationCable::Connection, :clean_gitlab_redis_shared_state do
+RSpec.describe ApplicationCable::Connection, :clean_gitlab_redis_sessions do
   let(:session_id) { Rack::Session::SessionId.new('6919a6f1bb119dd7396fadc38fd18d0d') }
 
   context 'when session cookie is set' do
     before do
-      Gitlab::Redis::SharedState.with do |redis|
+      Gitlab::Redis::Sessions.with do |redis|
         redis.set("session:gitlab:#{session_id.private_id}", Marshal.dump(session_hash))
       end
 

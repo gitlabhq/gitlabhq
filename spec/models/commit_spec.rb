@@ -676,68 +676,18 @@ eos
   describe '.diff_max_files' do
     subject(:diff_max_files) { described_class.diff_max_files }
 
-    let(:increased_diff_limits) { false }
-    let(:configurable_diff_limits) { false }
-
-    before do
-      stub_feature_flags(increased_diff_limits: increased_diff_limits, configurable_diff_limits: configurable_diff_limits)
-    end
-
-    context 'when increased_diff_limits is enabled' do
-      let(:increased_diff_limits) { true }
-
-      it 'returns 3000' do
-        expect(diff_max_files).to eq(3000)
-      end
-    end
-
-    context 'when configurable_diff_limits is enabled' do
-      let(:configurable_diff_limits) { true }
-
-      it 'returns the current settings' do
-        Gitlab::CurrentSettings.update!(diff_max_files: 1234)
-        expect(diff_max_files).to eq(1234)
-      end
-    end
-
-    context 'when neither feature flag is enabled' do
-      it 'returns 1000' do
-        expect(diff_max_files).to eq(1000)
-      end
+    it 'returns the current settings' do
+      Gitlab::CurrentSettings.update!(diff_max_files: 1234)
+      expect(diff_max_files).to eq(1234)
     end
   end
 
   describe '.diff_max_lines' do
     subject(:diff_max_lines) { described_class.diff_max_lines }
 
-    let(:increased_diff_limits) { false }
-    let(:configurable_diff_limits) { false }
-
-    before do
-      stub_feature_flags(increased_diff_limits: increased_diff_limits, configurable_diff_limits: configurable_diff_limits)
-    end
-
-    context 'when increased_diff_limits is enabled' do
-      let(:increased_diff_limits) { true }
-
-      it 'returns 100000' do
-        expect(diff_max_lines).to eq(100000)
-      end
-    end
-
-    context 'when configurable_diff_limits is enabled' do
-      let(:configurable_diff_limits) { true }
-
-      it 'returns the current settings' do
-        Gitlab::CurrentSettings.update!(diff_max_lines: 65321)
-        expect(diff_max_lines).to eq(65321)
-      end
-    end
-
-    context 'when neither feature flag is enabled' do
-      it 'returns 50000' do
-        expect(diff_max_lines).to eq(50000)
-      end
+    it 'returns the current settings' do
+      Gitlab::CurrentSettings.update!(diff_max_lines: 65321)
+      expect(diff_max_lines).to eq(65321)
     end
   end
 

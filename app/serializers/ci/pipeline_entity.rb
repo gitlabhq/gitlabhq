@@ -4,7 +4,7 @@ class Ci::PipelineEntity < Grape::Entity
   include RequestAwareEntity
   include Gitlab::Utils::StrongMemoize
 
-  delegate :name, :failure_reason, to: :presented_pipeline
+  delegate :name, :failure_reason, :coverage, to: :presented_pipeline
 
   expose :id
   expose :iid
@@ -82,7 +82,7 @@ class Ci::PipelineEntity < Grape::Entity
     project_pipeline_path(pipeline.project, pipeline)
   end
 
-  expose :failed_builds, if: -> (*) { can_retry? }, using: JobEntity do |pipeline|
+  expose :failed_builds, if: -> (*) { can_retry? }, using: Ci::JobEntity do |pipeline|
     pipeline.failed_builds.each do |build|
       build.project = pipeline.project
     end

@@ -10,7 +10,7 @@ describe('SidebarInheritDate', () => {
   const findFixedRadio = () => wrapper.findAll(GlFormRadio).at(0);
   const findInheritRadio = () => wrapper.findAll(GlFormRadio).at(1);
 
-  const createComponent = () => {
+  const createComponent = ({ dueDateIsFixed = false } = {}) => {
     wrapper = shallowMount(SidebarInheritDate, {
       provide: {
         canUpdate: true,
@@ -18,11 +18,10 @@ describe('SidebarInheritDate', () => {
       propsData: {
         issuable: {
           dueDate: '2021-04-15',
-          dueDateIsFixed: true,
+          dueDateIsFixed,
           dueDateFixed: '2021-04-15',
           dueDateFromMilestones: '2021-05-15',
         },
-        isLoading: false,
         dateType: 'dueDate',
       },
     });
@@ -43,6 +42,13 @@ describe('SidebarInheritDate', () => {
     expect(findInheritFormattedDate().props('formattedDate')).toBe('May 15, 2021');
     expect(findFixedRadio().text()).toBe('Fixed:');
     expect(findInheritRadio().text()).toBe('Inherited:');
+  });
+
+  it('does not emit set-date if fixed value does not change', () => {
+    createComponent({ dueDateIsFixed: true });
+    findFixedRadio().vm.$emit('input', true);
+
+    expect(wrapper.emitted('set-date')).toBeUndefined();
   });
 
   it('emits set-date event on click on radio button', () => {

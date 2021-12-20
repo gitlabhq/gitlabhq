@@ -792,7 +792,7 @@ RSpec.describe Groups::TransferService, :sidekiq_inline do
         end
       end
 
-      context 'when group has pending builds' do
+      context 'when group has pending builds', :sidekiq_inline do
         let_it_be(:project) { create(:project, :public, namespace: group.reload) }
         let_it_be(:other_project) { create(:project) }
         let_it_be(:pending_build) { create(:ci_pending_build, project: project) }

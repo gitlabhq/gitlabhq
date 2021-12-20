@@ -54,3 +54,26 @@ import issueExtension from '~/vue_merge_request_widget/extensions/issues';
 // Register the imported extension
 registerExtension(issueExtension);
 ```
+
+## Fetching errors
+
+If `fetchCollapsedData()` or `fetchFullData()` methods throw an error:
+
+- The loading state of the extension is updated to `LOADING_STATES.collapsedError` and `LOADING_STATES.expandedError`
+  respectively.
+- The extensions header displays an error icon and updates the text to be either:
+  - The text defined in `$options.i18n.error`.
+  - "Failed to load" if `$options.i18n.error` is not defined.
+- The error is sent to Sentry to log that it occurred.
+
+To customise the error text, you need to add it to the `i18n` object in your extension:
+
+```javascript
+export default {
+  //...
+  i18n: {
+    //...
+    error: __('Your error text'),
+  },
+};
+```

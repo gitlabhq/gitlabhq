@@ -1,6 +1,7 @@
 mutation updateMergeRequestLocked($input: MergeRequestSetLockedInput!) {
   mergeRequestSetLocked(input: $input) {
     mergeRequest {
+      id
       discussionLocked
     }
     errors

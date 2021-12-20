@@ -58,10 +58,10 @@ module Banzai
 
         sourcepos_attr = sourcepos ? "data-sourcepos=\"#{sourcepos}\"" : ''
 
-        highlighted = %(<pre #{sourcepos_attr} class="#{css_classes}"
+        highlighted = %(<div class="gl-relative markdown-code-block js-markdown-code"><pre #{sourcepos_attr} class="#{css_classes}"
                              lang="#{language}"
                              #{lang_params}
-                             v-pre="true"><code>#{code}</code></pre>)
+                             v-pre="true"><code>#{code}</code></pre><copy-code></copy-code></div>)
 
         # Extracted to a method to measure it
         replace_parent_pre_element(node, highlighted)
@@ -70,7 +70,7 @@ module Banzai
       private
 
       def parse_lang_params(node)
-        node = node.parent if Feature.enabled?(:use_cmark_renderer)
+        node = node.parent if Feature.enabled?(:use_cmark_renderer, default_enabled: :yaml)
 
         # Commonmarker's FULL_INFO_STRING render option works with the space delimiter.
         # But the current behavior of GitLab's markdown renderer is different - it grabs everything as the single
@@ -92,7 +92,7 @@ module Banzai
 
         language, language_params = language.split(LANG_PARAMS_DELIMITER, 2)
 
-        if Feature.enabled?(:use_cmark_renderer)
+        if Feature.enabled?(:use_cmark_renderer, default_enabled: :yaml)
           language_params = [node.attr('data-meta'), language_params].compact.join(' ')
         end
 

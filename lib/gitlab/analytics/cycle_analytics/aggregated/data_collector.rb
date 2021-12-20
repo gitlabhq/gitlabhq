@@ -52,3 +52,5 @@ module Gitlab
     end
   end
 end
+
+Gitlab::Analytics::CycleAnalytics::Aggregated::DataCollector.prepend_mod_with('Gitlab::Analytics::CycleAnalytics::Aggregated::DataCollector')

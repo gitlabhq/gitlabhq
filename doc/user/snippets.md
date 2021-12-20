@@ -52,7 +52,7 @@ You can create snippets in multiple ways, depending on whether you want to creat
    Filenames with appropriate extensions display [syntax highlighting](#filenames).
    Failure to add a filename can cause a known
    [copy-pasting bug](https://gitlab.com/gitlab-org/gitlab/-/issues/22870). If you don't provide a filename, GitLab [creates a name for you](#filenames).
-1. (Optional) Add [multiple files](#add-or-remove-multiple-files) to your snippet.
+1. Optional. Add [multiple files](#add-or-remove-multiple-files) to your snippet.
 1. Select a visibility level, and select **Create snippet**.
 
 After you create a snippet, you can still [add more files to it](#add-or-remove-multiple-files).

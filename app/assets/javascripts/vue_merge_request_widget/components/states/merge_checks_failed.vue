@@ -9,7 +9,7 @@ export default {
     pipelineFailed: s__(
       'mrWidget|The pipeline for this merge request did not complete. Push a new commit to fix the failure.',
     ),
-    approvalNeeded: s__('mrWidget|You can only merge once this merge request is approved.'),
+    approvalNeeded: s__('mrWidget|Merge blocked: this merge request must be approved.'),
     unresolvedDiscussions: s__('mrWidget|Merge blocked: all threads must be resolved.'),
   },
   components: {

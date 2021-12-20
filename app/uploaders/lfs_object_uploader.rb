@@ -9,7 +9,7 @@ class LfsObjectUploader < GitlabUploader
   alias_method :upload, :model
 
   def filename
-    model.oid[4..-1]
+    model.oid[4..]
   end
 
   def store_dir

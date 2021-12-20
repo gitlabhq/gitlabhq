@@ -1,5 +1,6 @@
 <script>
 import { GlTabs, GlTab } from '@gitlab/ui';
+import API from '~/api';
 import { mergeUrlParams, updateHistory, getParameterValues } from '~/lib/utils/url_utility';
 import PipelineCharts from './pipeline_charts.vue';
 
@@ -13,6 +14,9 @@ export default {
     LeadTimeCharts: () => import('ee_component/dora/components/lead_time_charts.vue'),
     ProjectQualitySummary: () => import('ee_component/project_quality_summary/app.vue'),
   },
+  piplelinesTabEvent: 'p_analytics_ci_cd_pipelines',
+  deploymentFrequencyTabEvent: 'p_analytics_ci_cd_deployment_frequency',
+  leadTimeTabEvent: 'p_analytics_ci_cd_lead_time',
   inject: {
     shouldRenderDoraCharts: {
       type: Boolean,
@@ -60,20 +64,35 @@ export default {
         updateHistory({ url: path, title: window.title });
       }
     },
+    trackTabClick(tab) {
+      API.trackRedisHllUserEvent(tab);
+    },
   },
 };
 </script>
 <template>
   <div>
     <gl-tabs v-if="charts.length > 1" :value="selectedTab" @input="onTabChange">
-      <gl-tab :title="__('Pipelines')">
+      <gl-tab
+        :title="__('Pipelines')"
+        data-testid="pipelines-tab"
+        @click="trackTabClick($options.piplelinesTabEvent)"
+      >
         <pipeline-charts />
       </gl-tab>
       <template v-if="shouldRenderDoraCharts">
-        <gl-tab :title="__('Deployment frequency')">
+        <gl-tab
+          :title="__('Deployment frequency')"
+          data-testid="deployment-frequency-tab"
+          @click="trackTabClick($options.deploymentFrequencyTabEvent)"
+        >
           <deployment-frequency-charts />
         </gl-tab>
-        <gl-tab :title="__('Lead time')">
+        <gl-tab
+          :title="__('Lead time')"
+          data-testid="lead-time-tab"
+          @click="trackTabClick($options.leadTimeTabEvent)"
+        >
           <lead-time-charts />
         </gl-tab>
       </template>

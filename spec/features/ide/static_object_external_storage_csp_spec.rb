@@ -12,7 +12,7 @@ RSpec.describe 'Static Object External Storage Content Security Policy' do
   end
 
   it_behaves_like 'setting CSP', 'connect-src' do
-    let_it_be(:whitelisted_url) { 'https://static-objects.test' }
+    let_it_be(:allowlisted_url) { 'https://static-objects.test' }
     let_it_be(:extended_controller_class) { IdeController }
 
     subject do
@@ -22,7 +22,7 @@ RSpec.describe 'Static Object External Storage Content Security Policy' do
     end
 
     before do
-      allow_any_instance_of(ApplicationSetting).to receive(:static_objects_external_storage_url).and_return(whitelisted_url)
+      allow_any_instance_of(ApplicationSetting).to receive(:static_objects_external_storage_url).and_return(allowlisted_url)
       allow_any_instance_of(ApplicationSetting).to receive(:static_objects_external_storage_auth_token).and_return('letmein')
 
       sign_in(user)

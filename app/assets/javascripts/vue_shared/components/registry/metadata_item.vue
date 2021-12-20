@@ -1,6 +1,6 @@
 <script>
 import { GlIcon, GlLink, GlTooltipDirective } from '@gitlab/ui';
-import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate.vue';
+import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate/tooltip_on_truncate.vue';
 
 export default {
   name: 'MetadataItem',

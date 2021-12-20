@@ -107,15 +107,16 @@ You can combine the filter options. For example, to list only public projects wi
 1. Click the **Public** tab.
 1. Enter `score` in the **Filter by name...** input box.
 
-#### Deleted projects **(PREMIUM SELF)**
+#### Projects pending deletion **(PREMIUM SELF)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/37014) in GitLab 13.3.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/37014) in GitLab 13.3.
+> - [Tab renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/347468) from **Deleted projects** in GitLab 14.7.
 
-When delayed project deletion is [enabled for a group](../group/index.md#enable-delayed-project-removal),
+When delayed project deletion is [enabled for a group](../group/index.md#enable-delayed-project-deletion),
 projects within that group are not deleted immediately, but only after a delay. To access a list of all projects that are pending deletion:
 
 1. On the top bar, select **Menu > Projects > Explore projects**.
-1. Select the **Deleted projects** tab.
+1. Select the **Pending deletion** tab (in GitLab 14.7 and later) or the **Deleted projects** tab (GitLab 14.6 and earlier).
 
 Listed for each project is:
 
@@ -199,6 +200,7 @@ The following data is included in the export:
 - Type
 - Path
 - Access level ([Project](../permissions.md#project-members-permissions) and [Group](../permissions.md#group-members-permissions))
+- Date of last activity ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/345388) in GitLab 14.6). For a list of activities that populate this column, see the [Users API documentation](../../api/users.md#get-user-activities-admin-only).
 
 ![user permission export button](img/export_permissions_v13_11.png)
 
@@ -257,7 +259,7 @@ To [Create a new group](../group/index.md#create-a-group) click **New group**.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/340920) in GitLab 14.4.
 
-You can administer all [topics](../project/working_with_projects.md#explore-topics) in the 
+You can administer all [topics](../project/working_with_projects.md#explore-topics) in the
 GitLab instance from the Admin Area's Topics page.
 
 To access the Topics page:

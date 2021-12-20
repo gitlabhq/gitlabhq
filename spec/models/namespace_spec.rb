@@ -107,34 +107,6 @@ RSpec.describe Namespace do
           end
         end
       end
-
-      context 'when the feature flag `validate_namespace_parent_type` is disabled' do
-        before do
-          stub_feature_flags(validate_namespace_parent_type: false)
-        end
-
-        context 'when the namespace has no parent' do
-          it 'allows a namespace to have no parent associated with it' do
-            namespace = build(:namespace)
-
-            expect(namespace).to be_valid
-          end
-        end
-
-        context 'when the namespace has a parent' do
-          it 'allows a namespace to have a group as its parent' do
-            namespace = build(:namespace, parent: build(:group))
-
-            expect(namespace).to be_valid
-          end
-
-          it 'allows a namespace to have another namespace as its parent' do
-            namespace = build(:namespace, parent: build(:namespace))
-
-            expect(namespace).to be_valid
-          end
-        end
-      end
     end
 
     describe '#nesting_level_allowed' do
@@ -287,13 +259,12 @@ RSpec.describe Namespace do
       end
     end
 
-    context 'creating a Namespace with nil type' do
+    context 'unable to create a Namespace with nil type' do
+      let(:namespace) { nil }
       let(:namespace_type) { nil }
 
-      it 'is the correct type of namespace' do
-        expect(Namespace.find(namespace.id)).to be_a(Namespace)
-        expect(namespace.kind).to eq('user')
-        expect(namespace.user_namespace?).to be_truthy
+      it 'raises ActiveRecord::NotNullViolation' do
+        expect { create(:namespace, type: namespace_type, parent: parent) }.to raise_error(ActiveRecord::NotNullViolation)
       end
     end
 
@@ -697,20 +668,6 @@ RSpec.describe Namespace do
 
     it 'only contains root namespaces' do
       is_expected.to contain_exactly(group.id, namespace.id)
-    end
-  end
-
-  describe '#ancestors_upto' do
-    let(:parent) { create(:group) }
-    let(:child) { create(:group, parent: parent) }
-    let(:child2) { create(:group, parent: child) }
-
-    it 'returns all ancestors when no namespace is given' do
-      expect(child2.ancestors_upto).to contain_exactly(child, parent)
-    end
-
-    it 'includes ancestors upto but excluding the given ancestor' do
-      expect(child2.ancestors_upto(parent)).to contain_exactly(child)
     end
   end
 
@@ -1260,6 +1217,38 @@ RSpec.describe Namespace do
     context 'when use_traversal_ids_for_ancestors? feature flag is false' do
       before do
         stub_feature_flags(use_traversal_ids_for_ancestors: false)
+      end
+
+      it { is_expected.to eq false }
+    end
+
+    context 'when use_traversal_ids? feature flag is false' do
+      before do
+        stub_feature_flags(use_traversal_ids: false)
+      end
+
+      it { is_expected.to eq false }
+    end
+  end
+
+  describe '#use_traversal_ids_for_ancestors_upto?' do
+    let_it_be(:namespace, reload: true) { create(:namespace) }
+
+    subject { namespace.use_traversal_ids_for_ancestors_upto? }
+
+    context 'when use_traversal_ids_for_ancestors_upto feature flag is true' do
+      before do
+        stub_feature_flags(use_traversal_ids_for_ancestors_upto: true)
+      end
+
+      it { is_expected.to eq true }
+
+      it_behaves_like 'disabled feature flag when traversal_ids is blank'
+    end
+
+    context 'when use_traversal_ids_for_ancestors_upto feature flag is false' do
+      before do
+        stub_feature_flags(use_traversal_ids_for_ancestors_upto: false)
       end
 
       it { is_expected.to eq false }
@@ -2064,6 +2053,81 @@ RSpec.describe Namespace do
       end
 
       it { is_expected.to be(true) }
+    end
+  end
+
+  it_behaves_like 'it has loose foreign keys' do
+    let(:factory_name) { :group }
+  end
+
+  context 'Namespaces::SyncEvent' do
+    let!(:namespace) { create(:group) }
+
+    let_it_be(:new_namespace1) { create(:group) }
+    let_it_be(:new_namespace2) { create(:group) }
+
+    context 'when creating the namespace' do
+      it 'creates a namespaces_sync_event record' do
+        expect(namespace.sync_events.count).to eq(1)
+      end
+
+      it 'enqueues ProcessSyncEventsWorker' do
+        expect(Namespaces::ProcessSyncEventsWorker).to receive(:perform_async)
+
+        create(:namespace)
+      end
+    end
+
+    context 'when updating namespace parent_id' do
+      it 'creates a namespaces_sync_event record' do
+        expect do
+          namespace.update!(parent_id: new_namespace1.id)
+        end.to change(Namespaces::SyncEvent, :count).by(1)
+
+        expect(namespace.sync_events.count).to eq(2)
+      end
+
+      it 'enqueues ProcessSyncEventsWorker' do
+        expect(Namespaces::ProcessSyncEventsWorker).to receive(:perform_async)
+
+        namespace.update!(parent_id: new_namespace1.id)
+      end
+    end
+
+    context 'when updating namespace other attribute' do
+      it 'creates a namespaces_sync_event record' do
+        expect do
+          namespace.update!(name: 'hello')
+        end.not_to change(Namespaces::SyncEvent, :count)
+      end
+    end
+
+    context 'in the same transaction' do
+      context 'when updating different parent_id' do
+        it 'creates two namespaces_sync_event records' do
+          expect do
+            Namespace.transaction do
+              namespace.update!(parent_id: new_namespace1.id)
+              namespace.update!(parent_id: new_namespace2.id)
+            end
+          end.to change(Namespaces::SyncEvent, :count).by(2)
+
+          expect(namespace.sync_events.count).to eq(3)
+        end
+      end
+
+      context 'when updating the same parent_id' do
+        it 'creates one namespaces_sync_event record' do
+          expect do
+            Namespace.transaction do
+              namespace.update!(parent_id: new_namespace1.id)
+              namespace.update!(parent_id: new_namespace1.id)
+            end
+          end.to change(Namespaces::SyncEvent, :count).by(1)
+
+          expect(namespace.sync_events.count).to eq(2)
+        end
+      end
     end
   end
 end

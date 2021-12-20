@@ -1,4 +1,4 @@
-import { GlButton, GlAvatarLink } from '@gitlab/ui';
+import { GlButton, GlAvatarLink, GlTooltip } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import CiIconBadge from '~/vue_shared/components/ci_badge_link.vue';
@@ -32,6 +32,7 @@ describe('Header CI Component', () => {
   const findTimeAgo = () => wrapper.findComponent(TimeagoTooltip);
   const findUserLink = () => wrapper.findComponent(GlAvatarLink);
   const findSidebarToggleBtn = () => wrapper.findComponent(GlButton);
+  const findStatusTooltip = () => wrapper.findComponent(GlTooltip);
   const findActionButtons = () => wrapper.findByTestId('ci-header-action-buttons');
   const findHeaderItemText = () => wrapper.findByTestId('ci-header-item-text');
 
@@ -88,6 +89,21 @@ describe('Header CI Component', () => {
         'data-user-id': defaultProps.user.id.toString(),
         'data-username': defaultProps.user.username,
         'data-name': defaultProps.user.name,
+      });
+    });
+
+    describe('when the user has a status', () => {
+      const STATUS_MESSAGE = 'Working on exciting features...';
+
+      beforeEach(() => {
+        createComponent({
+          itemName: 'Pipeline',
+          user: { ...defaultProps.user, status: { message: STATUS_MESSAGE } },
+        });
+      });
+
+      it('renders a tooltip', () => {
+        expect(findStatusTooltip().text()).toBe(STATUS_MESSAGE);
       });
     });
 

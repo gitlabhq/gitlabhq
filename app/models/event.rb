@@ -130,10 +130,11 @@ class Event < ApplicationRecord
 
     # Update Gitlab::ContributionsCalendar#activity_dates if this changes
     def contributions
-      where("action = ? OR (target_type IN (?) AND action IN (?)) OR (target_type = ? AND action = ?)",
-            actions[:pushed],
-            %w(MergeRequest Issue), [actions[:created], actions[:closed], actions[:merged]],
-            "Note", actions[:commented])
+      where(
+        'action IN (?) OR (target_type IN (?) AND action IN (?))',
+        [actions[:pushed], actions[:commented]],
+        %w(MergeRequest Issue), [actions[:created], actions[:closed], actions[:merged]]
+      )
     end
 
     def limit_recent(limit = 20, offset = nil)

@@ -51,6 +51,14 @@ module QA
             end
           end
 
+          def go_to_jira_issues
+            hover_issues do
+              within_submenu do
+                click_element(:sidebar_menu_item_link, menu_item: 'Jira issues')
+              end
+            end
+          end
+
           private
 
           def hover_issues

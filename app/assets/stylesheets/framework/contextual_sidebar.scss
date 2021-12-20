@@ -81,7 +81,6 @@
       @include gl-px-0;
       @include gl-pb-2;
       @include gl-pt-0;
-      min-width: 150px;
       background-color: $gray-10;
       box-shadow: 0 $gl-spacing-scale-2 $gl-spacing-scale-5 $t-gray-a-24, 0 0 $gl-spacing-scale-1 $t-gray-a-24;
       border-style: none;
@@ -309,6 +308,10 @@
   }
 
   a.has-sub-items + .sidebar-sub-level-items {
+    @include media-breakpoint-up(sm) {
+      min-width: 150px;
+    }
+
     .fly-out-top-item {
       @include fly-out-top-item($has-sub-items: true);
     }
@@ -371,6 +374,18 @@
         @include gl-font-weight-normal;
         color: $blue-700;
       }
+    }
+  }
+
+  li > a.gl-link {
+    // undo gl-link text items for things in the sidebar - including sub menus
+    // defined in https://gitlab.com/gitlab-org/gitlab-ui/-/blob/5431e0ca5149d4e02e3d5d617d194ac9609bb82d/src/components/base/link/link.scss
+    @include gl-text-body;
+
+    &:active,
+    &:focus,
+    &:focus:active {
+      @include gl-text-decoration-none;
     }
   }
 }

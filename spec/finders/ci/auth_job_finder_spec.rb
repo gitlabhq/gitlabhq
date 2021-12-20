@@ -70,17 +70,6 @@ RSpec.describe Ci::AuthJobFinder do
         expect(subject.user).to be_from_ci_job_token
         expect(subject.user.ci_job_token_scope.source_project).to eq(job.project)
       end
-
-      context 'when feature flag ci_scoped_job_token is disabled' do
-        before do
-          stub_feature_flags(ci_scoped_job_token: false)
-        end
-
-        it 'does not set ci_job_token_scope on the job user' do
-          expect(subject).to eq(job)
-          expect(subject.user).not_to be_from_ci_job_token
-        end
-      end
     end
   end
 end

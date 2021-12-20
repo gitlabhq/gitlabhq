@@ -80,15 +80,22 @@ RSpec.shared_examples 'AtomicInternalId' do |validate_presence: true|
       it 'calls InternalId.generate_next and sets internal id attribute' do
         iid = rand(1..1000)
 
-        expect(InternalId).to receive(:generate_next).with(instance, scope_attrs, usage, any_args).and_return(iid)
+        # Need to do this before evaluating instance otherwise it gets set
+        # already in factory
+        allow(InternalId).to receive(:generate_next).and_return(iid)
+
         subject
         expect(read_internal_id).to eq(iid)
+
+        expect(InternalId).to have_received(:generate_next).with(instance, scope_attrs, usage, any_args)
       end
 
       it 'does not overwrite an existing internal id' do
         write_internal_id(4711)
 
-        expect { subject }.not_to change { read_internal_id }
+        allow_cross_database_modification_within_transaction(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/347091') do
+          expect { subject }.not_to change { read_internal_id }
+        end
       end
 
       context 'when the instance has an internal ID set' do
@@ -101,6 +108,7 @@ RSpec.shared_examples 'AtomicInternalId' do |validate_presence: true|
             .to receive(:track_greatest)
             .with(instance, scope_attrs, usage, internal_id, any_args)
             .and_return(internal_id)
+
           subject
         end
       end
@@ -110,7 +118,11 @@ RSpec.shared_examples 'AtomicInternalId' do |validate_presence: true|
       context 'when the internal id has been changed' do
         context 'when the internal id is automatically set' do
           it 'clears it on the instance' do
-            expect_iid_to_be_set_and_rollback
+            write_internal_id(nil)
+
+            allow_cross_database_modification_within_transaction(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/347091') do
+              expect_iid_to_be_set_and_rollback
+            end
 
             expect(read_internal_id).to be_nil
           end
@@ -120,7 +132,9 @@ RSpec.shared_examples 'AtomicInternalId' do |validate_presence: true|
           it 'does not clear it on the instance' do
             write_internal_id(100)
 
-            expect_iid_to_be_set_and_rollback
+            allow_cross_database_modification_within_transaction(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/347091') do
+              expect_iid_to_be_set_and_rollback
+            end
 
             expect(read_internal_id).not_to be_nil
           end

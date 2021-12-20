@@ -1,7 +1,7 @@
 mutation mergeRequestSetLabels($input: MergeRequestSetLabelsInput!) {
-  mergeRequestSetLabels(input: $input) {
+  updateIssuableLabels: mergeRequestSetLabels(input: $input) {
     errors
-    mergeRequest {
+    issuable: mergeRequest {
       id
       labels {
         nodes {

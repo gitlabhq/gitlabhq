@@ -29,7 +29,7 @@ RSpec.describe Gitlab::Tracking::Destinations::Snowplow do
 
       expect(SnowplowTracker::Tracker)
         .to receive(:new)
-        .with(emitter, an_instance_of(SnowplowTracker::Subject), Gitlab::Tracking::SNOWPLOW_NAMESPACE, '_abc123_')
+        .with(emitter, an_instance_of(SnowplowTracker::Subject), described_class::SNOWPLOW_NAMESPACE, '_abc123_')
         .and_return(tracker)
     end
 

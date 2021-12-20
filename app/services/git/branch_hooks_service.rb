@@ -157,11 +157,11 @@ module Git
     end
 
     def unsigned_x509_shas(commits)
-      X509CommitSignature.unsigned_commit_shas(commits.map(&:sha))
+      CommitSignatures::X509CommitSignature.unsigned_commit_shas(commits.map(&:sha))
     end
 
     def unsigned_gpg_shas(commits)
-      GpgSignature.unsigned_commit_shas(commits.map(&:sha))
+      CommitSignatures::GpgSignature.unsigned_commit_shas(commits.map(&:sha))
     end
 
     def enqueue_update_signatures

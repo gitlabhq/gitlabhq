@@ -3,10 +3,12 @@
 
 - if @project.tracing_external_url.present?
   %h3.page-title= _('Tracing')
-  .gl-alert.gl-alert-info.alert.flex-alert
-    = sprite_icon('information-o', css_class: 'gl-icon gl-alert-icon gl-alert-icon-no-title')
-    .alert-message
-      = _("Your password isn't required to view this page. If a password or any other personal details are requested, please contact your administrator to report abuse.")
+  .gl-alert.gl-alert-info.gl-mb-5
+    .gl-alert-container
+      = sprite_icon('information-o', css_class: 'gl-icon gl-alert-icon gl-alert-icon-no-title')
+      .gl-alert-content
+        .gl-alert-body
+          = _("Your password isn't required to view this page. If a password or any other personal details are requested, please contact your administrator to report abuse.")
   - jaeger_link = link_to('Jaeger tracing', 'https://www.jaegertracing.io/', target: "_blank", rel: "noreferrer")
   %p.light= _("GitLab uses %{jaeger_link} to monitor distributed systems.").html_safe % { jaeger_link: jaeger_link }
 

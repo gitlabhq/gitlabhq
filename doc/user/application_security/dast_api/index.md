@@ -1138,7 +1138,7 @@ A bug exists in versions of the DAST API analyzer prior to v1.6.196 that can cau
 
 The version information can be found in the job details for the `dast_api` job.
 
-If the issue is occuring with versions v1.6.196 or greater, please contact Support and provide the following information:
+If the issue is occurring with versions v1.6.196 or greater, please contact Support and provide the following information:
 
 1. Reference this troubleshooting section and ask for the issue to be escalated to the Dynamic Analysis Team.
 1. The full console output of the job.
@@ -1208,6 +1208,25 @@ deploy-test-target:
     paths:
       - environment_url.txt
 ```
+
+## Get support or request an improvement
+
+To get support for your particular problem please use the [getting help channels](https://about.gitlab.com/get-help/).
+
+The [GitLab issue tracker on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues) is the right place for bugs and feature proposals about API Security and DAST API.
+Please use `~"Category:API Security"` [label](../../../development/contributing/issue_workflow.md#labels) when opening a new issue regarding DAST API to ensure it is quickly reviewed by the right people. Please refer to our [review response SLO](../../../development/code_review.md#review-response-slo) to understand when you should receive a response.
+
+[Search the issue tracker](https://gitlab.com/gitlab-org/gitlab/-/issues) for similar entries before submitting your own, there's a good chance somebody else had the same issue or feature proposal. Show your support with an award emoji and or join the discussion.
+
+When experiencing a behavior not working as expected, consider providing contextual information:
+
+- GitLab version if using a self-managed instance.
+- `.gitlab-ci.yml` job definition.
+- Full job console output.
+- Scanner log file available as a job artifact named `gl-api-security-scanner.log`.
+
+WARNING:
+**Sanitize data attached to a support issue**. Please remove sensitive information, including: credentials, passwords, tokens, keys, and secrets.
 
 ## Glossary
 

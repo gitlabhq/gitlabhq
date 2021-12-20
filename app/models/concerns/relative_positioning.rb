@@ -168,6 +168,24 @@ module RelativePositioning
     self.relative_position = MIN_POSITION
   end
 
+  def next_object_by_relative_position(ignoring: nil, order: :asc)
+    relation = relative_positioning_scoped_items(ignoring: ignoring).reorder(relative_position: order)
+
+    relation = if order == :asc
+                 relation.where(self.class.arel_table[:relative_position].gt(relative_position))
+               else
+                 relation.where(self.class.arel_table[:relative_position].lt(relative_position))
+               end
+
+    relation.first
+  end
+
+  def relative_positioning_scoped_items(ignoring: nil)
+    relation = self.class.relative_positioning_query_base(self)
+    relation = exclude_self(relation, excluded: ignoring) if ignoring.present?
+    relation
+  end
+
   # This method is used during rebalancing - override it to customise the update
   # logic:
   def update_relative_siblings(relation, range, delta)

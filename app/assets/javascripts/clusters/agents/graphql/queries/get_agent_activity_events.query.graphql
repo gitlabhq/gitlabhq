@@ -1,0 +1,25 @@
+query getAgentActivityEvents($projectPath: ID!, $agentName: String!) {
+  project(fullPath: $projectPath) {
+    id
+    clusterAgent(name: $agentName) {
+      id
+      activityEvents {
+        nodes {
+          kind
+          level
+          recordedAt
+          agentToken {
+            id
+            name
+          }
+          user {
+            id
+            name
+            username
+            webUrl
+          }
+        }
+      }
+    }
+  }
+}

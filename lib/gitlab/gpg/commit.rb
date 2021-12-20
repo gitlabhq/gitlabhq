@@ -25,7 +25,7 @@ module Gitlab
 
       def lazy_signature
         BatchLoader.for(@commit.sha).batch do |shas, loader|
-          GpgSignature.by_commit_sha(shas).each do |signature|
+          CommitSignatures::GpgSignature.by_commit_sha(shas).each do |signature|
             loader.call(signature.commit_sha, signature)
           end
         end
@@ -62,9 +62,9 @@ module Gitlab
       def create_cached_signature!
         using_keychain do |gpg_key|
           attributes = attributes(gpg_key)
-          break GpgSignature.new(attributes) if Gitlab::Database.read_only?
+          break CommitSignatures::GpgSignature.new(attributes) if Gitlab::Database.read_only?
 
-          GpgSignature.safe_create!(attributes)
+          CommitSignatures::GpgSignature.safe_create!(attributes)
         end
       end
 

@@ -10,7 +10,9 @@ module API
         expose :created_at, :updated_at, :started_at, :finished_at, :committed_at
         expose :duration
         expose :queued_duration
-        expose :coverage
+        expose :coverage do |pipeline|
+          pipeline.present.coverage
+        end
         expose :detailed_status, using: DetailedStatusEntity do |pipeline, options|
           pipeline.detailed_status(options[:current_user])
         end

@@ -469,6 +469,33 @@ export const folder = {
   stopped_count: 0,
 };
 
+export const resolvedEnvironment = {
+  id: 41,
+  globalId: 'gid://gitlab/Environment/41',
+  name: 'review/hello',
+  state: 'available',
+  externalUrl: 'https://example.org',
+  environmentType: 'review',
+  nameWithoutType: 'hello',
+  lastDeployment: null,
+  hasStopAction: false,
+  rolloutStatus: null,
+  environmentPath: '/h5bp/html5-boilerplate/-/environments/41',
+  stopPath: '/h5bp/html5-boilerplate/-/environments/41/stop',
+  cancelAutoStopPath: '/h5bp/html5-boilerplate/-/environments/41/cancel_auto_stop',
+  deletePath: '/api/v4/projects/8/environments/41',
+  folderPath: '/h5bp/html5-boilerplate/-/environments/folders/review',
+  createdAt: '2021-10-04T19:27:00.527Z',
+  updatedAt: '2021-10-04T19:27:00.527Z',
+  canStop: true,
+  logsPath: '/h5bp/html5-boilerplate/-/logs?environment_name=review%2Fhello',
+  logsApiPath: '/h5bp/html5-boilerplate/-/logs/k8s.json?environment_name=review%2Fhello',
+  enableAdvancedLogsQuerying: false,
+  canDelete: false,
+  hasOpenedAlert: false,
+  __typename: 'LocalEnvironment',
+};
+
 export const resolvedFolder = {
   availableCount: 2,
   environments: [

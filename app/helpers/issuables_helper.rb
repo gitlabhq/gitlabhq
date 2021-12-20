@@ -80,7 +80,7 @@ module IssuablesHelper
   def users_dropdown_label(selected_users)
     case selected_users.length
     when 0
-      "Unassigned"
+      _('Unassigned')
     when 1
       selected_users[0].name
     else
@@ -133,7 +133,7 @@ module IssuablesHelper
   end
   # rubocop: enable CodeReuse/ActiveRecord
 
-  def milestone_dropdown_label(milestone_title, default_label = "Milestone")
+  def milestone_dropdown_label(milestone_title, default_label = _('Milestone'))
     title =
       case milestone_title
       when Milestone::Upcoming.name then Milestone::Upcoming.title
@@ -188,7 +188,12 @@ module IssuablesHelper
   end
 
   def issuables_state_counter_text(issuable_type, state, display_count)
-    titles = { opened: "Open" }
+    titles = {
+      opened: _("Open"),
+      closed: _("Closed"),
+      merged: _("Merged"),
+      all: _("All")
+    }
     state_title = titles[state] || state.to_s.humanize
     html = content_tag(:span, state_title)
 

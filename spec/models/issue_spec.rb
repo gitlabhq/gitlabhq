@@ -32,6 +32,7 @@ RSpec.describe Issue do
     it { is_expected.to have_and_belong_to_many(:self_managed_prometheus_alert_events) }
     it { is_expected.to have_many(:prometheus_alerts) }
     it { is_expected.to have_many(:issue_email_participants) }
+    it { is_expected.to have_one(:email) }
     it { is_expected.to have_many(:timelogs).autosave(true) }
     it { is_expected.to have_one(:incident_management_issuable_escalation_status) }
     it { is_expected.to have_many(:issue_customer_relations_contacts) }
@@ -986,6 +987,7 @@ RSpec.describe Issue do
           issue = build(:issue, project: project)
           user = build(:user)
 
+          allow(::Gitlab::ExternalAuthorization).to receive(:access_allowed?).with(user, 'a-label', project.full_path).and_call_original
           expect(::Gitlab::ExternalAuthorization).to receive(:access_allowed?).with(user, 'a-label') { false }
           expect(issue.visible_to_user?(user)).to be_falsy
         end
@@ -1019,6 +1021,7 @@ RSpec.describe Issue do
               issue = build(:issue, project: project)
               user = build(:admin)
 
+              allow(::Gitlab::ExternalAuthorization).to receive(:access_allowed?).with(user, 'a-label', project.full_path).and_call_original
               expect(::Gitlab::ExternalAuthorization).to receive(:access_allowed?).with(user, 'a-label') { false }
               expect(issue.visible_to_user?(user)).to be_falsy
             end
@@ -1314,10 +1317,28 @@ RSpec.describe Issue do
     let_it_be(:issue1) { create(:issue, project: project, relative_position: nil) }
     let_it_be(:issue2) { create(:issue, project: project, relative_position: nil) }
 
-    it_behaves_like "a class that supports relative positioning" do
-      let_it_be(:project) { reusable_project }
-      let(:factory) { :issue }
-      let(:default_params) { { project: project } }
+    context 'when optimized_issue_neighbor_queries is enabled' do
+      before do
+        stub_feature_flags(optimized_issue_neighbor_queries: true)
+      end
+
+      it_behaves_like "a class that supports relative positioning" do
+        let_it_be(:project) { reusable_project }
+        let(:factory) { :issue }
+        let(:default_params) { { project: project } }
+      end
+    end
+
+    context 'when optimized_issue_neighbor_queries is disabled' do
+      before do
+        stub_feature_flags(optimized_issue_neighbor_queries: false)
+      end
+
+      it_behaves_like "a class that supports relative positioning" do
+        let_it_be(:project) { reusable_project }
+        let(:factory) { :issue }
+        let(:default_params) { { project: project } }
+      end
     end
 
     it 'is not blocked for repositioning by default' do
@@ -1461,7 +1482,7 @@ RSpec.describe Issue do
       it 'schedules rebalancing if there is no space left' do
         lhs = build_stubbed(:issue, relative_position: 99, project: project)
         to_move = build(:issue, project: project)
-        expect(IssueRebalancingWorker).to receive(:perform_async).with(nil, project_id, namespace_id)
+        expect(Issues::RebalancingWorker).to receive(:perform_async).with(nil, project_id, namespace_id)
 
         expect { to_move.move_between(lhs, issue) }.to raise_error(RelativePositioning::NoSpaceLeft)
       end

@@ -80,5 +80,19 @@ RSpec.describe Gitlab::EtagCaching::Store, :clean_gitlab_redis_shared_state do
         expect(store.get(key)).to eq(etag)
       end
     end
+
+    context 'with multiple keys' do
+      let(:keys) { ['/my-group/my-project/builds/234.json', '/api/graphql:pipelines/id/5'] }
+
+      it 'stores and returns multiple values' do
+        etags = store.touch(*keys)
+
+        expect(etags.size).to eq(keys.size)
+
+        keys.each_with_index do |key, i|
+          expect(store.get(key)).to eq(etags[i])
+        end
+      end
+    end
   end
 end

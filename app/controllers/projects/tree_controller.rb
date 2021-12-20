@@ -60,3 +60,5 @@ class Projects::TreeController < Projects::ApplicationController
     }
   end
 end
+
+Projects::TreeController.prepend_mod

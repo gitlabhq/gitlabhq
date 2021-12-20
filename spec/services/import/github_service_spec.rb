@@ -8,7 +8,7 @@ RSpec.describe Import::GithubService do
   let_it_be(:access_params) { { github_access_token: 'github-complex-token' } }
   let_it_be(:params) { { repo_id: 123, new_name: 'new_repo', target_namespace: 'root' } }
 
-  let(:subject) { described_class.new(client, user, params) }
+  subject(:github_importer) { described_class.new(client, user, params) }
 
   before do
     allow(subject).to receive(:authorized?).and_return(true)
@@ -110,6 +110,29 @@ RSpec.describe Import::GithubService do
         end
       end
     end
+
+    context 'when a blocked/local URL is used as github_hostname' do
+      let(:message) { 'Error while attempting to import from GitHub' }
+      let(:error) { "Invalid URL: #{url}" }
+
+      before do
+        stub_application_setting(allow_local_requests_from_web_hooks_and_services: false)
+      end
+
+      where(url: %w[https://localhost https://10.0.0.1])
+
+      with_them do
+        it 'returns and logs an error' do
+          allow(github_importer).to receive(:url).and_return(url)
+
+          expect(Gitlab::Import::Logger).to receive(:error).with({
+                                                                   message: message,
+                                                                   error: error
+                                                                 }).and_call_original
+          expect(github_importer.execute(access_params, :github)).to include(blocked_url_error(url))
+        end
+      end
+    end
   end
 
   context 'when remove_legacy_github_client feature flag is enabled' do
@@ -133,6 +156,14 @@ RSpec.describe Import::GithubService do
       status: :error,
       http_status: :unprocessable_entity,
       message: '"repository" size (101 Bytes) is larger than the limit of 100 Bytes.'
+    }
+  end
+
+  def blocked_url_error(url)
+    {
+      status: :error,
+      http_status: :bad_request,
+      message: "Invalid URL: #{url}"
     }
   end
 end

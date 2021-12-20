@@ -1,8 +1,0 @@
-query getEnvironmentApp {
-  environmentApp @client {
-    availableCount
-    environments
-    reviewApp
-    stoppedCount
-  }
-}

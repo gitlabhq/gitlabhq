@@ -130,24 +130,24 @@ describe('GroupRunnersApp', () => {
   });
 
   describe('shows the active runner count', () => {
+    const expectedOnlineCount = (count) => new RegExp(`Online Runners ${count}`);
+
     it('with a regular value', () => {
       createComponent({ mountFn: mount });
 
-      expect(findRunnerFilteredSearchBar().text()).toMatch(
-        `Runners in this group: ${mockGroupRunnersLimitedCount}`,
-      );
+      expect(wrapper.text()).toMatch(expectedOnlineCount(mockGroupRunnersLimitedCount));
     });
 
     it('at the limit', () => {
       createComponent({ props: { groupRunnersLimitedCount: 1000 }, mountFn: mount });
 
-      expect(findRunnerFilteredSearchBar().text()).toMatch(`Runners in this group: 1,000`);
+      expect(wrapper.text()).toMatch(expectedOnlineCount('1,000'));
     });
 
     it('over the limit', () => {
       createComponent({ props: { groupRunnersLimitedCount: 1001 }, mountFn: mount });
 
-      expect(findRunnerFilteredSearchBar().text()).toMatch(`Runners in this group: 1,000+`);
+      expect(wrapper.text()).toMatch(expectedOnlineCount('1,000\\+'));
     });
   });
 

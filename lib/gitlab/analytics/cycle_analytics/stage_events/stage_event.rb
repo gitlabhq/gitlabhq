@@ -19,7 +19,7 @@ module Gitlab
             raise NotImplementedError
           end
 
-          def markdown_description
+          def html_description(options = {})
             self.class.name
           end
 

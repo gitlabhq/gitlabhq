@@ -172,6 +172,13 @@ export default {
     showDropdown() {
       this.$refs.dropdown.show();
     },
+    clearSearch() {
+      if (!this.allowMultiselect || this.isStandalone) {
+        return;
+      }
+      this.searchKey = '';
+      this.setFocus();
+    },
   },
 };
 </script>
@@ -188,12 +195,12 @@ export default {
   >
     <template #header>
       <dropdown-header
-        v-if="!isStandalone"
         ref="header"
-        v-model="searchKey"
+        :search-key="searchKey"
         :labels-create-title="labelsCreateTitle"
         :labels-list-title="labelsListTitle"
         :show-dropdown-contents-create-view="showDropdownContentsCreateView"
+        :is-standalone="isStandalone"
         @toggleDropdownContentsCreateView="toggleDropdownContent"
         @closeDropdown="$emit('closeDropdown')"
         @input="debouncedSearchKeyUpdate"
@@ -210,6 +217,7 @@ export default {
         :attr-workspace-path="attrWorkspacePath"
         :label-create-type="labelCreateType"
         @hideCreateView="toggleDropdownContent"
+        @input="clearSearch"
       />
     </template>
     <template #footer>

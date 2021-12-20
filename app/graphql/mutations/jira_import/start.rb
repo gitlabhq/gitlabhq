@@ -14,15 +14,15 @@ module Mutations
             null: true,
             description: 'Jira import data after mutation.'
 
-      argument :project_path, GraphQL::Types::ID,
-               required: true,
-               description: 'Project to import the Jira project into.'
       argument :jira_project_key, GraphQL::Types::String,
                required: true,
                description: 'Project key of the importer Jira project.'
       argument :jira_project_name, GraphQL::Types::String,
                required: false,
                description: 'Project name of the importer Jira project.'
+      argument :project_path, GraphQL::Types::ID,
+               required: true,
+               description: 'Project to import the Jira project into.'
       argument :users_mapping,
                [Types::JiraUsersMappingInputType],
                required: false,

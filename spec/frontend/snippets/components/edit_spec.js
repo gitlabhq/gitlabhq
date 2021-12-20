@@ -53,6 +53,7 @@ const createMutationResponse = (key, obj = {}) => ({
         errors: [],
         snippet: {
           __typename: 'Snippet',
+          id: 1,
           webUrl: TEST_WEB_URL,
         },
       },

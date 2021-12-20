@@ -3,8 +3,8 @@ import { GlButton, GlIcon, GlLink, GlLoadingIcon, GlSprintf, GlTooltipDirective 
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { truncateSha } from '~/lib/utils/text_utility';
 import { s__ } from '~/locale';
-import getPipelineQuery from '~/pipeline_editor/graphql/queries/client/pipeline.graphql';
-import getPipelineEtag from '~/pipeline_editor/graphql/queries/client/pipeline_etag.graphql';
+import getPipelineQuery from '~/pipeline_editor/graphql/queries/pipeline.query.graphql';
+import getPipelineEtag from '~/pipeline_editor/graphql/queries/client/pipeline_etag.query.graphql';
 import {
   getQueryHeaders,
   toggleQueryPollingByVisibility,
@@ -21,9 +21,6 @@ export const i18n = {
   ),
   viewBtn: s__('Pipeline|View pipeline'),
   viewCommit: s__('Pipeline|View commit'),
-  pipelineNotTriggeredMsg: s__(
-    'Pipeline|No pipeline was triggered for the latest changes due to the current CI/CD configuration.',
-  ),
 };
 
 export default {
@@ -51,6 +48,9 @@ export default {
   apollo: {
     pipelineEtag: {
       query: getPipelineEtag,
+      update(data) {
+        return data.etags.pipeline;
+      },
     },
     pipeline: {
       context() {
@@ -79,22 +79,16 @@ export default {
       result(res) {
         if (res.data?.project?.pipeline) {
           this.hasError = false;
-        } else {
-          this.hasError = true;
-          this.pipelineNotTriggered = true;
         }
       },
       error() {
         this.hasError = true;
-        this.networkError = true;
       },
       pollInterval: POLL_INTERVAL,
     },
   },
   data() {
     return {
-      networkError: false,
-      pipelineNotTriggered: false,
       hasError: false,
     };
   },
@@ -148,16 +142,8 @@ export default {
       </div>
     </template>
     <template v-else-if="hasError">
-      <div v-if="networkError">
-        <gl-icon class="gl-mr-auto" name="warning-solid" />
-        <span data-testid="pipeline-error-msg">{{ $options.i18n.fetchError }}</span>
-      </div>
-      <div v-else>
-        <gl-icon class="gl-mr-auto" name="information-o" />
-        <span data-testid="pipeline-not-triggered-error-msg">
-          {{ $options.i18n.pipelineNotTriggeredMsg }}
-        </span>
-      </div>
+      <gl-icon class="gl-mr-auto" name="warning-solid" />
+      <span data-testid="pipeline-error-msg">{{ $options.i18n.fetchError }}</span>
     </template>
     <template v-else>
       <div class="gl-text-truncate gl-md-max-w-50p gl-mr-1">

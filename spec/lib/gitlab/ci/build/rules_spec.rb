@@ -3,13 +3,13 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::Build::Rules do
-  let(:pipeline) { create(:ci_pipeline) }
-  let(:ci_build) { build(:ci_build, pipeline: pipeline) }
+  let_it_be(:pipeline) { create(:ci_pipeline) }
+  let_it_be(:ci_build) { build(:ci_build, pipeline: pipeline) }
 
   let(:seed) do
     double('build seed',
       to_resource: ci_build,
-      variables: ci_build.scoped_variables
+      variables_hash: ci_build.scoped_variables.to_hash
     )
   end
 

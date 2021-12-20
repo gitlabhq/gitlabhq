@@ -22,7 +22,14 @@ export class LocalStorageCache {
 
   loadCacheFromStorage() {
     try {
-      return JSON.parse(this.storage.getItem(KEY)) ?? {};
+      const storage = JSON.parse(this.storage.getItem(KEY)) ?? {};
+      Object.values(storage).forEach((entry) => {
+        if (entry.progress && !('message' in entry.progress)) {
+          // eslint-disable-next-line no-param-reassign
+          entry.progress.message = '';
+        }
+      });
+      return storage;
     } catch {
       return {};
     }

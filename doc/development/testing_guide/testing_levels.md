@@ -223,14 +223,14 @@ graph RL
 Formal definition: <https://en.wikipedia.org/wiki/Integration_testing>
 
 These kind of tests ensure that individual parts of the application work well
-together, without the overhead of the actual app environment (i.e. the browser).
+together, without the overhead of the actual app environment (such as the browser).
 These tests should assert at the request/response level: status code, headers,
 body.
-They're useful to test permissions, redirections, what view is rendered etc.
+They're useful, for example, to test permissions, redirections, API endpoints, what view is rendered, and so forth.
 
 | Code path | Tests path | Testing engine | Notes |
 | --------- | ---------- | -------------- | ----- |
-| `app/controllers/` | `spec/requests/`, `spec/controllers` | RSpec | Request specs are preferred over legacy controller specs. |
+| `app/controllers/` | `spec/requests/`, `spec/controllers` | RSpec | Request specs are preferred over legacy controller specs. Request specs are encouraged for API endpoints. |
 | `app/mailers/` | `spec/mailers/` | RSpec | |
 | `lib/api/` | `spec/requests/api/` | RSpec | |
 | `app/assets/javascripts/` | `spec/frontend/` | Jest | [More details below](#frontend-integration-tests) |
@@ -502,9 +502,7 @@ These tests run against the UI and ensure that basic functionality is working.
 
 ### GitLab QA orchestrator
 
-[GitLab QA orchestrator](https://gitlab.com/gitlab-org/gitlab-qa) is a tool that allows to test that all these pieces
-integrate well together by building a Docker image for a given version of GitLab
-Rails and running end-to-end tests (i.e. using Capybara) against it.
+[GitLab QA orchestrator](https://gitlab.com/gitlab-org/gitlab-qa) is a tool that allows you to test that all these pieces integrate well together by building a Docker image for a given version of GitLab Rails and running end-to-end tests (using Capybara) against it.
 
 Learn more in the [GitLab QA orchestrator README](https://gitlab.com/gitlab-org/gitlab-qa/tree/master/README.md).
 

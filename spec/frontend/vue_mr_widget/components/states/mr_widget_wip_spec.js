@@ -81,7 +81,9 @@ describe('Wip', () => {
 
     it('should have correct elements', () => {
       expect(el.classList.contains('mr-widget-body')).toBeTruthy();
-      expect(el.innerText).toContain('This merge request is still a draft.');
+      expect(el.innerText).toContain(
+        "Merge blocked: merge request must be marked as ready. It's still marked as draft.",
+      );
       expect(el.querySelector('button').getAttribute('disabled')).toBeTruthy();
       expect(el.querySelector('button').innerText).toContain('Merge');
       expect(el.querySelector('.js-remove-draft').innerText.replace(/\s\s+/g, ' ')).toContain(

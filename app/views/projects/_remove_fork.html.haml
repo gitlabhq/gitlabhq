@@ -1,11 +1,12 @@
 - return unless @project.forked? && can?(current_user, :remove_fork_project, @project)
+- remove_form_id = "js-remove-project-fork-form"
 
 .sub-section
   %h4.danger-title= _('Remove fork relationship')
   %p= remove_fork_project_description_message(@project)
 
-  = form_for @project, url: remove_fork_project_path(@project), method: :delete, remote: true, html: { class: 'transfer-project' } do |f|
+  = form_for @project, url: remove_fork_project_path(@project), method: :delete, html: { id: remove_form_id } do |f|
     %p
       %strong= _('Once removed, the fork relationship cannot be restored. This project will no longer be able to receive or send merge requests to the source project or other forks.')
       = link_to _('Learn more.'), help_page_path('user/project/settings/index', anchor: 'removing-a-fork-relationship'), target: '_blank', rel: 'noopener noreferrer'
-    = button_to _('Remove fork relationship'), '#', class: "gl-button btn btn-danger js-legacy-confirm-danger", data: { "confirm-danger-message" => remove_fork_project_warning_message(@project) }
+    .js-confirm-danger{ data: remove_fork_project_confirm_json(@project, remove_form_id) }

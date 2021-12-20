@@ -53,6 +53,7 @@ and supports multiple secrets engines.
 
 To configure your Vault server:
 
+1. Ensure your Vault server is running on version 1.2.0 or higher.
 1. Enable the authentication method by running these commands. They provide your Vault
    server the [JSON Web Key Set](https://tools.ietf.org/html/rfc7517) (JWKS) endpoint for your GitLab instance, so Vault
    can fetch the public signing key and verify the JSON Web Token (JWT) when authenticating:
@@ -85,10 +86,10 @@ To configure your Vault server:
    to provide details about your Vault server:
    - `VAULT_SERVER_URL` - The URL of your Vault server, such as `https://vault.example.com:8200`.
      Required.
-   - `VAULT_AUTH_ROLE` - (Optional) The role to use when attempting to authenticate.
+   - `VAULT_AUTH_ROLE` - Optional. The role to use when attempting to authenticate.
      If no role is specified, Vault uses the [default role](https://www.vaultproject.io/api/auth/jwt#default_role)
      specified when the authentication method was configured.
-   - `VAULT_AUTH_PATH` - (Optional) The path where the authentication method is mounted, default is `jwt`.
+   - `VAULT_AUTH_PATH` - Optional. The path where the authentication method is mounted, default is `jwt`.
 
    NOTE:
    Support for providing these values in the user interface [is tracked in this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/218677).

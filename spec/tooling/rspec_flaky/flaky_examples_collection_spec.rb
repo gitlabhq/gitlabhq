@@ -1,8 +1,10 @@
 # frozen_string_literal: true
 
+require_relative '../../support/time_travel'
+
 require_relative '../../../tooling/rspec_flaky/flaky_examples_collection'
 
-RSpec.describe RspecFlaky::FlakyExamplesCollection, :aggregate_failures do
+RSpec.describe RspecFlaky::FlakyExamplesCollection, :aggregate_failures, :freeze_time do
   let(:collection_hash) do
     {
       a: { example_id: 'spec/foo/bar_spec.rb:2' },
@@ -14,15 +16,19 @@ RSpec.describe RspecFlaky::FlakyExamplesCollection, :aggregate_failures do
     {
       a: {
         example_id: 'spec/foo/bar_spec.rb:2',
-        first_flaky_at: nil,
-        last_flaky_at: nil,
-        last_flaky_job: nil
+        first_flaky_at: Time.now,
+        last_flaky_at: Time.now,
+        last_flaky_job: nil,
+        flaky_reports: 0,
+        last_attempts_count: nil
       },
       b: {
         example_id: 'spec/foo/baz_spec.rb:3',
-        first_flaky_at: nil,
-        last_flaky_at: nil,
-        last_flaky_job: nil
+        first_flaky_at: Time.now,
+        last_flaky_at: Time.now,
+        last_flaky_job: nil,
+        flaky_reports: 0,
+        last_attempts_count: nil
       }
     }
   end
@@ -59,9 +65,11 @@ RSpec.describe RspecFlaky::FlakyExamplesCollection, :aggregate_failures do
       expect((collection2 - collection1).to_h).to eq(
         c: {
           example_id: 'spec/bar/baz_spec.rb:4',
-          first_flaky_at: nil,
-          last_flaky_at: nil,
-          last_flaky_job: nil
+          first_flaky_at: Time.now,
+          last_flaky_at: Time.now,
+          last_flaky_job: nil,
+          flaky_reports: 0,
+          last_attempts_count: nil
         })
     end
 

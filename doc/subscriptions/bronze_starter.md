@@ -28,7 +28,7 @@ the tiers are no longer mentioned in GitLab documentation:
   - [Creating group memberships via CN](../user/group/index.md#create-group-links-via-cn)
   - [Group push rules](../user/group/index.md#group-push-rules)
   - [Managing group memberships via LDAP](../user/group/index.md#manage-group-memberships-via-ldap)
-  - [Member locking](../user/group/index.md#prevent-members-from-being-added-to-a-group)
+  - [Member locking](../user/group/index.md#prevent-members-from-being-added-to-projects-in-a-group)
   - [Overriding user permissions](../user/group/index.md#override-user-permissions)
   - [User contribution analytics](../user/group/contribution_analytics/index.md)
   - [Kerberos integration](../integration/kerberos.md)
@@ -39,7 +39,7 @@ the tiers are no longer mentioned in GitLab documentation:
 - Issues:
   - [Multiple assignees for issues](../user/project/issues/multiple_assignees_for_issues.md)
   - [Issue weights](../user/project/issues/issue_weight.md)
-  - [Issue histories](../user/project/issues/issue_data_and_actions.md#issue-history) contain changes to issue description
+  - Issue histories contain [changes to issue description](../user/discussions/index.md#view-description-change-history)
   - [Adding an issue to an iteration](../user/project/issues/managing_issues.md#add-an-issue-to-an-iteration)
 - [Iterations](../user/group/iterations/index.md)
 - [Kerberos integration](../integration/kerberos.md)

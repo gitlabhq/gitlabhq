@@ -1,14 +1,17 @@
 <script>
 import { GlButton, GlModalDirective, GlSafeHtmlDirective as SafeHtml } from '@gitlab/ui';
+import * as Sentry from '@sentry/browser';
 import { mapState, mapActions, mapGetters } from 'vuex';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import {
-  TEST_INTEGRATION_EVENT,
-  SAVE_INTEGRATION_EVENT,
+  VALIDATE_INTEGRATION_FORM_EVENT,
+  I18N_FETCH_TEST_SETTINGS_DEFAULT_ERROR_MESSAGE,
+  I18N_DEFAULT_ERROR_MESSAGE,
+  I18N_SUCCESSFUL_CONNECTION_MESSAGE,
   integrationLevels,
 } from '~/integrations/constants';
 import eventHub from '../event_hub';
-
+import { testIntegrationSettings } from '../api';
 import ActiveCheckbox from './active_checkbox.vue';
 import ConfirmationModal from './confirmation_modal.vue';
 import DynamicField from './dynamic_field.vue';
@@ -37,22 +40,26 @@ export default {
   },
   mixins: [glFeatureFlagsMixin()],
   props: {
+    formSelector: {
+      type: String,
+      required: true,
+    },
     helpHtml: {
       type: String,
       required: false,
       default: '',
     },
   },
+  data() {
+    return {
+      integrationActive: false,
+      isTesting: false,
+      isSaving: false,
+    };
+  },
   computed: {
-    ...mapGetters(['currentKey', 'propsSource', 'isDisabled']),
-    ...mapState([
-      'defaultState',
-      'customState',
-      'override',
-      'isSaving',
-      'isTesting',
-      'isResetting',
-    ]),
+    ...mapGetters(['currentKey', 'propsSource']),
+    ...mapState(['defaultState', 'customState', 'override', 'isResetting']),
     isEditable() {
       return this.propsSource.editable;
     },
@@ -65,28 +72,80 @@ export default {
         this.customState.integrationLevel === integrationLevels.GROUP
       );
     },
-    showReset() {
+    showResetButton() {
       return this.isInstanceOrGroupLevel && this.propsSource.resetPath;
     },
+    showTestButton() {
+      return this.propsSource.canTest;
+    },
+    disableButtons() {
+      return Boolean(this.isSaving || this.isResetting || this.isTesting);
+    },
+  },
+  mounted() {
+    // this form element is defined in Haml
+    this.form = document.querySelector(this.formSelector);
   },
   methods: {
-    ...mapActions([
-      'setOverride',
-      'setIsSaving',
-      'setIsTesting',
-      'setIsResetting',
-      'fetchResetIntegration',
-    ]),
+    ...mapActions(['setOverride', 'fetchResetIntegration', 'requestJiraIssueTypes']),
     onSaveClick() {
-      this.setIsSaving(true);
-      eventHub.$emit(SAVE_INTEGRATION_EVENT);
+      this.isSaving = true;
+
+      if (this.integrationActive && !this.form.checkValidity()) {
+        this.isSaving = false;
+        eventHub.$emit(VALIDATE_INTEGRATION_FORM_EVENT);
+        return;
+      }
+
+      this.form.submit();
     },
     onTestClick() {
-      this.setIsTesting(true);
-      eventHub.$emit(TEST_INTEGRATION_EVENT);
+      this.isTesting = true;
+
+      if (!this.form.checkValidity()) {
+        eventHub.$emit(VALIDATE_INTEGRATION_FORM_EVENT);
+        return;
+      }
+
+      testIntegrationSettings(this.propsSource.testPath, this.getFormData())
+        .then(({ data: { error, message = I18N_FETCH_TEST_SETTINGS_DEFAULT_ERROR_MESSAGE } }) => {
+          if (error) {
+            eventHub.$emit(VALIDATE_INTEGRATION_FORM_EVENT);
+            this.$toast.show(message);
+            return;
+          }
+
+          this.$toast.show(I18N_SUCCESSFUL_CONNECTION_MESSAGE);
+        })
+        .catch((error) => {
+          this.$toast.show(I18N_DEFAULT_ERROR_MESSAGE);
+          Sentry.captureException(error);
+        })
+        .finally(() => {
+          this.isTesting = false;
+        });
     },
     onResetClick() {
       this.fetchResetIntegration();
+    },
+    onRequestJiraIssueTypes() {
+      this.requestJiraIssueTypes(this.getFormData());
+    },
+    getFormData() {
+      return new FormData(this.form);
+    },
+    onToggleIntegrationState(integrationActive) {
+      this.integrationActive = integrationActive;
+      if (!this.form) {
+        return;
+      }
+
+      // If integration will be active, enable form validation.
+      if (integrationActive) {
+        this.form.removeAttribute('novalidate');
+      } else {
+        this.form.setAttribute('novalidate', true);
+      }
     },
   },
   helpHtmlConfig: {
@@ -114,7 +173,11 @@ export default {
         <!-- helpHtml is trusted input -->
         <div v-if="helpHtml" v-safe-html:[$options.helpHtmlConfig]="helpHtml"></div>
 
-        <active-checkbox v-if="propsSource.showActive" :key="`${currentKey}-active-checkbox`" />
+        <active-checkbox
+          v-if="propsSource.showActive"
+          :key="`${currentKey}-active-checkbox`"
+          @toggle-integration-active="onToggleIntegrationState"
+        />
         <jira-trigger-fields
           v-if="isJira"
           :key="`${currentKey}-jira-trigger-fields`"
@@ -135,6 +198,7 @@ export default {
           v-if="isJira && !isInstanceOrGroupLevel"
           :key="`${currentKey}-jira-issues-fields`"
           v-bind="propsSource.jiraIssuesProps"
+          @request-jira-issue-types="onRequestJiraIssueTypes"
         />
         <div v-if="isEditable" class="footer-block row-content-block">
           <template v-if="isInstanceOrGroupLevel">
@@ -143,7 +207,7 @@ export default {
               category="primary"
               variant="confirm"
               :loading="isSaving"
-              :disabled="isDisabled"
+              :disabled="disableButtons"
               data-qa-selector="save_changes_button"
             >
               {{ __('Save changes') }}
@@ -156,7 +220,8 @@ export default {
             variant="confirm"
             type="submit"
             :loading="isSaving"
-            :disabled="isDisabled"
+            :disabled="disableButtons"
+            data-testid="save-button"
             data-qa-selector="save_changes_button"
             @click.prevent="onSaveClick"
           >
@@ -164,24 +229,24 @@ export default {
           </gl-button>
 
           <gl-button
-            v-if="propsSource.canTest"
+            v-if="showTestButton"
             category="secondary"
             variant="confirm"
             :loading="isTesting"
-            :disabled="isDisabled"
-            :href="propsSource.testPath"
+            :disabled="disableButtons"
+            data-testid="test-button"
             @click.prevent="onTestClick"
           >
             {{ __('Test settings') }}
           </gl-button>
 
-          <template v-if="showReset">
+          <template v-if="showResetButton">
             <gl-button
               v-gl-modal.confirmResetIntegration
               category="secondary"
               variant="confirm"
               :loading="isResetting"
-              :disabled="isDisabled"
+              :disabled="disableButtons"
               data-testid="reset-button"
             >
               {{ __('Reset') }}

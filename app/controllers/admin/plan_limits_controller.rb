@@ -31,6 +31,7 @@ class Admin::PlanLimitsController < Admin::ApplicationController
     params.require(:plan_limits).permit(%i[
       plan_id
       conan_max_file_size
+      helm_max_file_size
       maven_max_file_size
       npm_max_file_size
       nuget_max_file_size

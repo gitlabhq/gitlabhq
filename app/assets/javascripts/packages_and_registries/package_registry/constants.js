@@ -1,4 +1,15 @@
 import { s__, __ } from '~/locale';
+import { helpPagePath } from '~/helpers/help_page_helper';
+
+export {
+  DELETE_PACKAGE_TRACKING_ACTION,
+  REQUEST_DELETE_PACKAGE_TRACKING_ACTION,
+  CANCEL_DELETE_PACKAGE_TRACKING_ACTION,
+  PULL_PACKAGE_TRACKING_ACTION,
+  DELETE_PACKAGE_FILE_TRACKING_ACTION,
+  REQUEST_DELETE_PACKAGE_FILE_TRACKING_ACTION,
+  CANCEL_DELETE_PACKAGE_FILE_TRACKING_ACTION,
+} from '~/packages_and_registries/shared/constants';
 
 export const PACKAGE_TYPE_CONAN = 'CONAN';
 export const PACKAGE_TYPE_MAVEN = 'MAVEN';
@@ -10,14 +21,6 @@ export const PACKAGE_TYPE_RUBYGEMS = 'RUBYGEMS';
 export const PACKAGE_TYPE_GENERIC = 'GENERIC';
 export const PACKAGE_TYPE_DEBIAN = 'DEBIAN';
 export const PACKAGE_TYPE_HELM = 'HELM';
-
-export const DELETE_PACKAGE_TRACKING_ACTION = 'delete_package';
-export const REQUEST_DELETE_PACKAGE_TRACKING_ACTION = 'request_delete_package';
-export const CANCEL_DELETE_PACKAGE_TRACKING_ACTION = 'cancel_delete_package';
-export const PULL_PACKAGE_TRACKING_ACTION = 'pull_package';
-export const DELETE_PACKAGE_FILE_TRACKING_ACTION = 'delete_package_file';
-export const REQUEST_DELETE_PACKAGE_FILE_TRACKING_ACTION = 'request_delete_package_file';
-export const CANCEL_DELETE_PACKAGE_FILE_TRACKING_ACTION = 'cancel_delete_package_file';
 
 export const TRACKING_LABEL_CODE_INSTRUCTION = 'code_instruction';
 export const TRACKING_LABEL_CONAN_INSTALLATION = 'conan_installation';
@@ -134,3 +137,8 @@ export const PACKAGE_TYPES = [
   s__('PackageRegistry|Debian'),
   s__('PackageRegistry|Helm'),
 ];
+
+// links
+
+export const EMPTY_LIST_HELP_URL = helpPagePath('user/packages/package_registry/index');
+export const PACKAGE_HELP_URL = helpPagePath('user/packages/index');

@@ -206,7 +206,7 @@ module Gitlab
         end
 
         desc _('Add Zoom meeting')
-        explanation _('Adds a Zoom meeting')
+        explanation _('Adds a Zoom meeting.')
         params '<Zoom URL>'
         types Issue
         condition do
@@ -223,7 +223,7 @@ module Gitlab
         end
 
         desc _('Remove Zoom meeting')
-        explanation _('Remove Zoom meeting')
+        explanation _('Remove Zoom meeting.')
         execution_message _('Zoom meeting removed')
         types Issue
         condition do
@@ -236,7 +236,7 @@ module Gitlab
         end
 
         desc _('Add email participant(s)')
-        explanation _('Adds email participant(s)')
+        explanation _('Adds email participant(s).')
         params 'email1@example.com email2@example.com (up to 6 emails)'
         types Issue
         condition do
@@ -283,6 +283,34 @@ module Gitlab
             else
               _('Failed to promote issue to incident')
             end
+        end
+
+        desc _('Add customer relation contacts')
+        explanation _('Add customer relation contact(s).')
+        params 'contact@example.com person@example.org'
+        types Issue
+        condition do
+          current_user.can?(:set_issue_crm_contacts, quick_action_target)
+        end
+        execution_message do
+          _('One or more contacts were successfully added.')
+        end
+        command :add_contacts do |contact_emails|
+          @updates[:add_contacts] = contact_emails.split(' ')
+        end
+
+        desc _('Remove customer relation contacts')
+        explanation _('Remove customer relation contact(s).')
+        params 'contact@example.com person@example.org'
+        types Issue
+        condition do
+          current_user.can?(:set_issue_crm_contacts, quick_action_target)
+        end
+        execution_message do
+          _('One or more contacts were successfully removed.')
+        end
+        command :remove_contacts do |contact_emails|
+          @updates[:remove_contacts] = contact_emails.split(' ')
         end
 
         private

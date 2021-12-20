@@ -1,3 +1,4 @@
-import milestones from '~/pages/milestones/shared';
+import { initDeleteMilestoneModal, initPromoteMilestoneModal } from '~/milestones';
 
-milestones();
+initDeleteMilestoneModal();
+initPromoteMilestoneModal();

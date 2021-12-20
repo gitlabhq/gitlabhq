@@ -36,7 +36,7 @@ module Gitlab
 
           def serialized_records
             strong_memoize(:serialized_records) do
-              records = ordered_and_limited_query.select(stage_event_model.arel_table[Arel.star], duration.as('total_time'))
+              records = ordered_and_limited_query.select(stage_event_model.arel_table[Arel.star], duration_in_seconds.as('total_time'))
 
               yield records if block_given?
               issuables_and_records = load_issuables(records)

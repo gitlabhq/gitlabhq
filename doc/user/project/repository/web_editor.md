@@ -175,10 +175,10 @@ request, you can create a new branch upfront.
    ![New branch dropdown](img/web_editor_new_branch_dropdown_v14_1.png)
 
 1. Enter a new **Branch name**.
-1. (Optional) Change the **Create from** field to choose which branch, tag, or
+1. Optional. Change the **Create from** field to choose which branch, tag, or
    commit SHA this new branch originates from. This field autocompletes if you
    start typing an existing branch or tag.
-1. Click **Create branch** to return to the file browser on this new branch.
+1. To return to the file browser on this new branch, select **Create branch**.
 
    ![New branch page](img/web_editor_new_branch_page_v14_1.png)
 
@@ -201,10 +201,10 @@ SHA:
 
 1. Give the tag a name such as `v1.0.0`.
 1. Choose the branch or SHA from which you want to create this new tag.
-1. (Optional) Add a message and release notes. The release notes section supports
+1. Optional. Add a message and release notes. The release notes section supports
    Markdown format.
-1. (Optional) Upload an attachment.
-1. Click **Create tag**, and GitLab redirects you to the tag list page.
+1. Optional. Upload an attachment.
+1. Select **Create tag**. GitLab redirects you to the tag list page.
 
    ![New tag page](img/web_editor_new_tag_page.png)
 

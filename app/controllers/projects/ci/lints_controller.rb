@@ -6,6 +6,7 @@ class Projects::Ci::LintsController < Projects::ApplicationController
   feature_category :pipeline_authoring
 
   respond_to :json, only: [:create]
+  urgency :low, [:create]
 
   def show
   end

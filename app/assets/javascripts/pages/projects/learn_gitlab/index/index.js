@@ -12,17 +12,18 @@ function initLearnGitlab() {
 
   const actions = convertObjectPropsToCamelCase(JSON.parse(el.dataset.actions));
   const sections = convertObjectPropsToCamelCase(JSON.parse(el.dataset.sections));
+  const project = convertObjectPropsToCamelCase(JSON.parse(el.dataset.project));
   const { inviteMembersOpen } = el.dataset;
 
   return new Vue({
     el,
     render(createElement) {
       return createElement(LearnGitlab, {
-        props: { actions, sections, inviteMembersOpen },
+        props: { actions, sections, project, inviteMembersOpen },
       });
     },
   });
 }
 
-initInviteMembersModal();
 initLearnGitlab();
+initInviteMembersModal();

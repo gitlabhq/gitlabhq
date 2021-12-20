@@ -14,6 +14,10 @@ project's dependencies for their licenses. You can then decide whether to allow 
 each license. For example, if your application uses an external (open source) library whose license
 is incompatible with yours, then you can deny the use of that license.
 
+INFO:
+Try License Compliance scanning to search project dependencies in GitLab Ultimate.
+[It's free for 30 days](https://about.gitlab.com/free-trial/index.html?glm_source=docs.gitlab.com&glm_content=u-compliance-docs).
+
 You can take advantage of License Compliance by either:
 
 - [Including the job](#configuration)
@@ -22,8 +26,9 @@ You can take advantage of License Compliance by either:
   [Auto License Compliance](../../../topics/autodevops/stages.md#auto-license-compliance),
   provided by [Auto DevOps](../../../topics/autodevops/index.md).
 
-The [License Finder](https://github.com/pivotal/LicenseFinder) scan tool runs as part of the CI/CD
-pipeline, and detects the licenses in use. GitLab checks the License Compliance report, compares the
+To detect the licenses in use, License Compliance uses the [License Finder](https://github.com/pivotal/LicenseFinder) scan tool that runs as part of the CI/CD pipeline.
+For the job to activate, License Finder needs to find a compatible package definition in the project directory. For details, see the [Activation on License Finder documentation](https://github.com/pivotal/LicenseFinder#activation).
+GitLab checks the License Compliance report, compares the
 licenses between the source and target branches, and shows the information right on the merge
 request. Denied licenses are indicated by a `x` red icon next to them as well as new licenses that
 need a decision from you. In addition, you can [manually allow or deny](#policies) licenses in your
@@ -47,6 +52,7 @@ When GitLab detects a **Denied** license, you can view it in the [license list](
 ![License List](img/license_list_v13_0.png)
 
 You can view and modify existing policies from the [policies](#policies) tab.
+
 ![Edit Policy](img/policies_maintainer_edit_v14_3.png)
 
 ## License expressions
@@ -126,7 +132,7 @@ the `license_management` job, so you must migrate to the `license_scanning` job 
 `License-Scanning.gitlab-ci.yml` template.
 
 The results are saved as a
-[License Compliance report artifact](../../../ci/yaml/index.md#artifactsreportslicense_scanning)
+[License Compliance report artifact](../../../ci/yaml/artifacts_reports.md#artifactsreportslicense_scanning)
 that you can later download and analyze. Due to implementation limitations, we
 always take the latest License Compliance artifact available. Behind the scenes, the
 [GitLab License Compliance Docker image](https://gitlab.com/gitlab-org/security-products/analyzers/license-finder)
@@ -172,7 +178,7 @@ For that, a `SETUP_CMD` CI/CD variable can be passed to the container,
 with the required commands to run before the license detection.
 
 If present, this variable overrides the setup step necessary to install all the packages
-of your application (e.g.: for a project with a `Gemfile`, the setup step could be
+of your application (for example: for a project with a `Gemfile`, the setup step could be
 `bundle install`).
 
 For example:
@@ -190,8 +196,8 @@ directory of your project.
 
 ### Working with Monorepos
 
-Depending on your language, you may need to specify the path to the individual 
-projects of a monorepo using the `LICENSE_FINDER_CLI_OPTS` variable. Passing in 
+Depending on your language, you may need to specify the path to the individual
+projects of a monorepo using the `LICENSE_FINDER_CLI_OPTS` variable. Passing in
 the project paths can significantly speed up builds over using the `--recursive`
 license_finder option.
 
@@ -540,24 +546,24 @@ configured to use this as the default `CA_CERT_PATH`.
 ### Configuring Go projects
 
 To configure [Go modules](https://github.com/golang/go/wiki/Modules)
-based projects, specify [CI/CD variables](https://golang.org/pkg/cmd/go/#hdr-Environment_variables)
+based projects, specify [CI/CD variables](https://pkg.go.dev/cmd/go#hdr-Environment_variables)
 in the `license_scanning` job's [variables](#available-cicd-variables) section in `.gitlab-ci.yml`.
 
-If a project has [vendored](https://golang.org/pkg/cmd/go/#hdr-Vendor_Directories) its modules,
+If a project has [vendored](https://pkg.go.dev/cmd/go#hdr-Vendor_Directories) its modules,
 then the combination of the `vendor` directory and `mod.sum` file are used to detect the software
 licenses associated with the Go module dependencies.
 
 #### Using private Go registries
 
-You can use the [`GOPRIVATE`](https://golang.org/pkg/cmd/go/#hdr-Environment_variables)
-and [`GOPROXY`](https://golang.org/pkg/cmd/go/#hdr-Environment_variables)
+You can use the [`GOPRIVATE`](https://pkg.go.dev/cmd/go#hdr-Environment_variables)
+and [`GOPROXY`](https://pkg.go.dev/cmd/go#hdr-Environment_variables)
 environment variables to control where modules are sourced from. Alternatively, you can use
-[`go mod vendor`](https://golang.org/ref/mod#tmp_28) to vendor a project's modules.
+[`go mod vendor`](https://go.dev/ref/mod#tmp_28) to vendor a project's modules.
 
 #### Custom root certificates for Go
 
-You can specify the [`-insecure`](https://golang.org/pkg/cmd/go/internal/get/) flag by exporting the
-[`GOFLAGS`](https://golang.org/cmd/go/#hdr-Environment_variables)
+You can specify the [`-insecure`](https://pkg.go.dev/cmd/go/internal/get) flag by exporting the
+[`GOFLAGS`](https://pkg.go.dev/cmd/go#hdr-Environment_variables)
 environment variable. For example:
 
 ```yaml

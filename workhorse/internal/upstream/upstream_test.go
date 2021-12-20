@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"testing"
 	"time"
 
@@ -26,6 +27,14 @@ type testCase struct {
 	desc             string
 	path             string
 	expectedResponse string
+}
+
+func TestMain(m *testing.M) {
+	// Secret should be configured before any Geo API poll happens to prevent
+	// race conditions where the first API call happens without a secret path
+	testhelper.ConfigureSecret()
+
+	os.Exit(m.Run())
 }
 
 func TestRouting(t *testing.T) {
@@ -288,11 +297,6 @@ func startWorkhorseServer(railsServerURL string, enableGeoProxyFeature bool) (*h
 	}
 	cfg := newUpstreamConfig(railsServerURL)
 	upstreamHandler := newUpstream(*cfg, logrus.StandardLogger(), myConfigureRoutes)
-
-	// Secret should be configured before the first Geo API poll happens on server start
-	// to prevent race conditions where the first API call happens without a secret path
-	testhelper.ConfigureSecret()
-
 	ws := httptest.NewServer(upstreamHandler)
 
 	waitForNextApiPoll := func() {}

@@ -52,7 +52,7 @@ deploy:
 ```
 
 With this configuration, the safety on the deployments is assured while you
-can still run `build` jobs concurrently for maximizing the pipeline efficency.
+can still run `build` jobs concurrently for maximizing the pipeline efficiency.
 
 ## Requirements
 

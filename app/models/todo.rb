@@ -3,6 +3,7 @@
 class Todo < ApplicationRecord
   include Sortable
   include FromUnion
+  include EachBatch
 
   # Time to wait for todos being removed when not visible for user anymore.
   # Prevents TODOs being removed by mistake, for example, removing access from a user

@@ -4,7 +4,7 @@ require 'parallel'
 
 module QA
   RSpec.describe 'Create' do
-    context 'Gitaly Cluster replication queue', :orchestrated, :gitaly_cluster, :skip_live_env do
+    context 'Gitaly Cluster replication queue', :orchestrated, :gitaly_cluster, :skip_live_env, quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/346453', type: :flaky } do
       let(:praefect_manager) { Service::PraefectManager.new }
       let(:project) do
         Resource::Project.fabricate! do |project|
@@ -13,13 +13,18 @@ module QA
         end
       end
 
-      after do
+      before do
+        praefect_manager.start_all_nodes
         praefect_manager.start_praefect
-        praefect_manager.wait_for_reliable_connection
+      end
+
+      after do
+        praefect_manager.start_all_nodes
+        praefect_manager.start_praefect
         praefect_manager.clear_replication_queue
       end
 
-      it 'allows replication of different repository after interruption', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1268' do
+      it 'allows replication of different repository after interruption', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347829' do
         # We want to fill the replication queue with 10 `in_progress` jobs,
         # while a lock has been acquired, which is when the problem occurred
         # as reported in https://gitlab.com/gitlab-org/gitaly/-/issues/2801
@@ -51,7 +56,6 @@ module QA
         praefect_manager.create_stalled_replication_queue
 
         praefect_manager.start_praefect
-        praefect_manager.wait_for_reliable_connection
 
         # Create a new project, push to it, and check that replication occurs
         project_push = Resource::Repository::ProjectPush.fabricate! do |push|

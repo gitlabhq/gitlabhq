@@ -58,6 +58,7 @@ namespace :gettext do
   task lint: :environment do
     require 'simple_po_parser'
     require 'gitlab/utils'
+    require 'parallel'
 
     FastGettext.silence_errors
     files = Dir.glob(Rails.root.join('locale/*/gitlab.po'))
@@ -70,7 +71,9 @@ namespace :gettext do
 
     linters.unshift(Gitlab::I18n::PoLinter.new(po_path: pot_file_path))
 
-    failed_linters = linters.select { |linter| linter.errors.any? }
+    failed_linters = Parallel
+      .map(linters, progress: 'Linting po files') { |linter| linter if linter.errors.any? }
+      .compact
 
     if failed_linters.empty?
       puts 'All PO files are valid.'
@@ -127,14 +130,6 @@ namespace :gettext do
     Dir.glob(
       "{#{folders}}/**/*.{#{exts}}"
     )
-  end
-
-  # Disallow HTML from translatable strings
-  # See: https://docs.gitlab.com/ee/development/i18n/externalization.html#html
-  def html_todolist
-    return @html_todolist if defined?(@html_todolist)
-
-    @html_todolist = YAML.safe_load(File.read(Rails.root.join('lib/gitlab/i18n/html_todo.yml')))
   end
 
   def report_errors_for_file(file, errors_for_file)

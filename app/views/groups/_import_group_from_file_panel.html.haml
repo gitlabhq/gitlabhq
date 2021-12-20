@@ -6,9 +6,17 @@
   .gl-border-l-solid.gl-border-r-solid.gl-border-gray-100.gl-border-1.gl-p-5
     %h4
       = _('Import group from file')
-    %p
-      = s_('GroupsNew|Provide credentials for another instance of GitLab to import your groups directly.')
-    .form-group.gl-display-flex.gl-flex-direction-column
+    .gl-alert.gl-alert-warning{ role: 'alert' }
+      = sprite_icon('warning', css_class: 'gl-icon s16 gl-alert-icon gl-alert-icon-no-title')
+      .gl-alert-body
+        - docs_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_page_path('user/group/import/index.md') }
+        - link_end = '</a>'.html_safe
+        = s_('GroupsNew|This feature is deprecated and replaced by %{docs_link_start}Group Migration%{docs_link_end}.').html_safe % { docs_link_start: docs_link_start, docs_link_end: link_end }
+        - if Feature.enabled?(:bulk_import, default_enabled: :yaml)
+          - enable_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_page_path('user/group/import/index.md', anchor: 'enable-or-disable-gitlab-group-migration') }
+          = s_('GroupsNew|Ask your administrator to %{enable_link_start}enable%{enable_link_end} Group Migration.').html_safe % { enable_link_start: enable_link_start, enable_link_end: link_end }
+
+    .form-group.gl-display-flex.gl-flex-direction-column.gl-mt-5
       = f.label :name, _('New group name'), for: 'import_group_name'
       = f.text_field :name, placeholder: s_('GroupsNew|My Awesome Group'), class: 'js-autofill-group-name gl-form-input col-xs-12 col-sm-8',
         required: true,

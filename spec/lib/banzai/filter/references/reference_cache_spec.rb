@@ -35,18 +35,6 @@ RSpec.describe Banzai::Filter::References::ReferenceCache do
 
         subject
       end
-
-      context 'when feature flag is disabled' do
-        before do
-          stub_feature_flags(reference_cache_memoization: false)
-        end
-
-        it 'ignores memoized rendered HTML' do
-          expect(doc).to receive(:to_html).and_call_original
-
-          subject
-        end
-      end
     end
 
     context 'when result is not available' do

@@ -17,8 +17,10 @@ GET /projects/:id/merge_requests/:merge_request_iid/context_commits
 
 Parameters:
 
-- `id` (required) - The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user
-- `merge_request_iid` (required) - The internal ID of the merge request
+| Attribute           | Type    | Required | Description                                                                                                     |
+|---------------------|---------|----------|-----------------------------------------------------------------------------------------------------------------|
+| `id`                | integer | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user  |
+| `merge_request_iid` | integer | yes      | The internal ID of the merge request                                                                            |
 
 ```json
 [
@@ -49,8 +51,10 @@ POST /projects/:id/merge_requests/:merge_request_iid/context_commits
 
 Parameters:
 
-- `id` (required) - The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user
-- `merge_request_iid` (required) - The internal ID of the merge request
+| Attribute           | Type    | Required | Description                                                                                                     |
+|---------------------|---------|----------|-----------------------------------------------------------------------------------------------------------------|
+| `id`                | integer | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user  |
+| `merge_request_iid` | integer | yes      | The internal ID of the merge request                                                                            |
 
 ```plaintext
 POST /projects/:id/merge_requests/
@@ -88,9 +92,8 @@ DELETE /projects/:id/merge_requests/:merge_request_iid/context_commits
 
 Parameters:
 
-- `id` (required) - The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user
-- `merge_request_iid` (required) - The internal ID of the merge request
-
-| Attribute                  | Type    | Required | Description                                                                     |
-| ---------                  | ----    | -------- | -----------                                                                     |
-| `commits`             | string array | yes | The context commits' SHA  |
+| Attribute           | Type         | Required | Description                                                                                                     |
+|---------------------|--------------|----------|-----------------------------------------------------------------------------------------------------------------|
+| `id`                | integer      | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user  |
+| `merge_request_iid` | integer      | yes      | The internal ID of the merge request                                                                            |
+| `commits`           | string array | yes      | The context commits' SHA                                                                                        |

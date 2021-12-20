@@ -48,7 +48,171 @@ is used.
 If you run two types of pipelines (like branch and scheduled) for the same ref,
 the pipeline that finishes later creates the job artifact.
 
-For more examples, view the [keyword reference for the `.gitlab-ci.yml` file](../yaml/index.md#artifacts).
+To disable artifact passing, define the job with empty [dependencies](../yaml/index.md#dependencies):
+
+```yaml
+job:
+  stage: build
+  script: make build
+  dependencies: []
+```
+
+You may want to create artifacts only for tagged releases to avoid filling the
+build server storage with temporary build artifacts. For example, use [`rules`](../yaml/index.md#rules)
+to create artifacts only for tags:
+
+```yaml
+default-job:
+  script:
+    - mvn test -U
+  rules:
+    - if: $CI_COMMIT_BRANCH
+
+release-job:
+  script:
+    - mvn package -U
+  artifacts:
+    paths:
+      - target/*.war
+  rules:
+    - if: $CI_COMMIT_TAG
+```
+
+You can use wildcards for directories too. For example, if you want to get all the
+files inside the directories that end with `xyz`:
+
+```yaml
+job:
+  artifacts:
+    paths:
+      - path/*xyz/*
+```
+
+### Use CI/CD variables to define the artifacts name
+
+You can use [CI/CD variables](../variables/index.md) to dynamically define the
+artifacts file's name.
+
+For example, to create an archive with a name of the current job:
+
+```yaml
+job:
+  artifacts:
+    name: "$CI_JOB_NAME"
+    paths:
+      - binaries/
+```
+
+To create an archive with a name of the current branch or tag including only
+the binaries directory:
+
+```yaml
+job:
+  artifacts:
+    name: "$CI_COMMIT_REF_NAME"
+    paths:
+      - binaries/
+```
+
+If your branch-name contains forward slashes
+(for example `feature/my-feature`) it's advised to use `$CI_COMMIT_REF_SLUG`
+instead of `$CI_COMMIT_REF_NAME` for proper naming of the artifact.
+
+To create an archive with a name of the current job and the current branch or
+tag including only the binaries directory:
+
+```yaml
+job:
+  artifacts:
+    name: "$CI_JOB_NAME-$CI_COMMIT_REF_NAME"
+    paths:
+      - binaries/
+```
+
+To create an archive with a name of the current [stage](../yaml/index.md#stages) and branch name:
+
+```yaml
+job:
+  artifacts:
+    name: "$CI_JOB_STAGE-$CI_COMMIT_REF_NAME"
+    paths:
+      - binaries/
+```
+
+If you use **Windows Batch** to run your shell scripts you must replace
+`$` with `%`:
+
+```yaml
+job:
+  artifacts:
+    name: "%CI_JOB_STAGE%-%CI_COMMIT_REF_NAME%"
+    paths:
+      - binaries/
+```
+
+If you use **Windows PowerShell** to run your shell scripts you must replace
+`$` with `$env:`:
+
+```yaml
+job:
+  artifacts:
+    name: "$env:CI_JOB_STAGE-$env:CI_COMMIT_REF_NAME"
+    paths:
+      - binaries/
+```
+
+### Exclude files from job artifacts
+
+Use [`artifacts:exclude`](../yaml/index.md#artifactsexclude) to prevent files from
+being added to an artifacts archive.
+
+For example, to store all files in `binaries/`, but not `*.o` files located in
+subdirectories of `binaries/`.
+
+```yaml
+artifacts:
+  paths:
+    - binaries/
+  exclude:
+    - binaries/**/*.o
+```
+
+Unlike [`artifacts:paths`](../yaml/index.md#artifactspaths), `exclude` paths are not recursive.
+To exclude all of the contents of a directory, match them explicitly rather
+than matching the directory itself.
+
+For example, to store all files in `binaries/` but nothing located in the `temp/` subdirectory:
+
+```yaml
+artifacts:
+  paths:
+    - binaries/
+  exclude:
+    - binaries/temp/**/*
+```
+
+### Add untracked files to artifacts
+
+Use [`artifacts:untracked`](../yaml/index.md#artifactsuntracked) to add all Git untracked
+files as artifacts (along with the paths defined in [`artifacts:paths`](../yaml/index.md#artifactspaths)).
+
+Save all Git untracked files and files in `binaries`:
+
+```yaml
+artifacts:
+  untracked: true
+  paths:
+    - binaries/
+```
+
+Save all untracked files but [exclude](../yaml/index.md#artifactsexclude) `*.txt`:
+
+```yaml
+artifacts:
+  untracked: true
+  exclude:
+    - "*.txt"
+```
 
 ## Download job artifacts
 
@@ -102,6 +266,35 @@ To delete a job:
 1. Go to a job's detail page.
 1. On the top right of the job's log, select **Erase job log** (**{remove}**).
 1. On the confirmation dialog, select **OK**.
+
+## Expose job artifacts in the merge request UI
+
+Use the [`artifacts:expose_as`](../yaml/index.md#artifactsexpose_as) keyword to expose
+[job artifacts](../pipelines/job_artifacts.md) in the [merge request](../../user/project/merge_requests/index.md) UI.
+
+For example, to match a single file:
+
+```yaml
+test:
+  script: ["echo 'test' > file.txt"]
+  artifacts:
+    expose_as: 'artifact 1'
+    paths: ['file.txt']
+```
+
+With this configuration, GitLab adds a link **artifact 1** to the relevant merge request
+that points to `file.txt`. To access the link, select **View exposed artifact**
+below the pipeline graph in the merge request overview.
+
+An example that matches an entire directory:
+
+```yaml
+test:
+  script: ["mkdir test && echo 'test' > test/file.txt"]
+  artifacts:
+    expose_as: 'artifact 1'
+    paths: ['test/']
+```
 
 ## Retrieve job artifacts for other projects
 
@@ -182,6 +375,14 @@ job artifacts are deleted.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/229936) in GitLab 13.4.
 > - [Made optional with a CI/CD setting](https://gitlab.com/gitlab-org/gitlab/-/issues/241026) in GitLab 13.8.
 
+By default artifacts are always kept for the most recent successful pipeline for
+each ref. This means that the latest artifacts do not immediately expire according
+to the `expire_in` specification.
+
+If a new pipeline for the same ref completes successfully, the previous pipeline's
+artifacts are deleted according to the `expire_in` configuration. The artifacts
+of the new pipeline are kept automatically.  
+
 Keeping the latest artifacts can use a large amount of storage space in projects
 with a lot of jobs or large artifacts. If the latest artifacts are not needed in
 a project, you can disable this behavior to save space:
@@ -193,9 +394,6 @@ a project, you can disable this behavior to save space:
 
 You can disable this behavior for all projects on a self-managed instance in the
 [instance's CI/CD settings](../../user/admin_area/settings/continuous_integration.md#keep-the-latest-artifacts-for-all-jobs-in-the-latest-successful-pipelines).
-
-When you disable the feature, the latest artifacts do not immediately expire.
-A new pipeline must run before the latest artifacts can expire and be deleted.
 
 ## Troubleshooting job artifacts
 

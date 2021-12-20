@@ -275,24 +275,24 @@ GET /groups/:id/projects
 
 Parameters:
 
-| Attribute                     | Type           | Required | Description |
-| ----------------------------- | -------------- | -------- | ----------- |
-| `id`                          | integer/string | yes      | The ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) owned by the authenticated user |
-| `archived`                    | boolean        | no       | Limit by archived status |
-| `visibility`                  | string         | no       | Limit by visibility `public`, `internal`, or `private` |
-| `order_by`                    | string         | no       | Return projects ordered by `id`, `name`, `path`, `created_at`, `updated_at`, `similarity` (1), or `last_activity_at` fields. Default is `created_at` |
-| `sort`                        | string         | no       | Return projects sorted in `asc` or `desc` order. Default is `desc` |
-| `search`                      | string         | no       | Return list of authorized projects matching the search criteria |
-| `simple`                      | boolean        | no       | Return only the ID, URL, name, and path of each project |
-| `owned`                       | boolean        | no       | Limit by projects owned by the current user |
-| `starred`                     | boolean        | no       | Limit by projects starred by the current user |
-| `with_issues_enabled`         | boolean        | no       | Limit by projects with issues feature enabled. Default is `false` |
-| `with_merge_requests_enabled` | boolean        | no       | Limit by projects with merge requests feature enabled. Default is `false` |
-| `with_shared`                 | boolean        | no       | Include projects shared to this group. Default is `true` |
-| `include_subgroups`           | boolean        | no       | Include projects in subgroups of this group. Default is `false`   |
-| `min_access_level`            | integer        | no       | Limit to projects where current user has at least this [access level](members.md#valid-access-levels) |
-| `with_custom_attributes`      | boolean        | no       | Include [custom attributes](custom_attributes.md) in response (administrators only) |
-| `with_security_reports`       | boolean        | no       | **(ULTIMATE)** Return only projects that have security reports artifacts present in any of their builds. This means "projects with security reports enabled". Default is `false` |
+| Attribute                              | Type           | Required | Description |
+| -------------------------------------- | -------------- | -------- | ----------- |
+| `id`                                   | integer/string | yes      | The ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) owned by the authenticated user |
+| `archived`                             | boolean        | no       | Limit by archived status |
+| `visibility`                           | string         | no       | Limit by visibility `public`, `internal`, or `private` |
+| `order_by`                             | string         | no       | Return projects ordered by `id`, `name`, `path`, `created_at`, `updated_at`, `similarity` (1), or `last_activity_at` fields. Default is `created_at` |
+| `sort`                                 | string         | no       | Return projects sorted in `asc` or `desc` order. Default is `desc` |
+| `search`                               | string         | no       | Return list of authorized projects matching the search criteria |
+| `simple`                               | boolean        | no       | Return only the ID, URL, name, and path of each project |
+| `owned`                                | boolean        | no       | Limit by projects owned by the current user |
+| `starred`                              | boolean        | no       | Limit by projects starred by the current user |
+| `with_issues_enabled`                  | boolean        | no       | Limit by projects with issues feature enabled. Default is `false` |
+| `with_merge_requests_enabled`          | boolean        | no       | Limit by projects with merge requests feature enabled. Default is `false` |
+| `with_shared`                          | boolean        | no       | Include projects shared to this group. Default is `true` |
+| `include_subgroups`                    | boolean        | no       | Include projects in subgroups of this group. Default is `false`   |
+| `min_access_level`                     | integer        | no       | Limit to projects where current user has at least this [access level](members.md#valid-access-levels) |
+| `with_custom_attributes`               | boolean        | no       | Include [custom attributes](custom_attributes.md) in response (administrators only) |
+| `with_security_reports` **(ULTIMATE)** | boolean        | no       | Return only projects that have security reports artifacts present in any of their builds. This means "projects with security reports enabled". Default is `false` |
 
 1. Order by similarity: Orders the results by a similarity score calculated from the provided `search`
 URL parameter. When using `order_by=similarity`, the `sort` parameter is ignored. When the `search`
@@ -783,38 +783,38 @@ POST /groups
 
 Parameters:
 
-| Attribute                            | Type    | Required | Description |
-| ------------------------------------ | ------- | -------- | ----------- |
-| `name`                               | string  | yes      | The name of the group. |
-| `path`                               | string  | yes      | The path of the group. |
-| `description`                        | string  | no       | The group's description. |
-| `membership_lock`                    | boolean | no       | **(PREMIUM)** Prevent adding new members to project membership within this group. |
-| `visibility`                         | string  | no       | The group's visibility. Can be `private`, `internal`, or `public`. |
-| `share_with_group_lock`              | boolean | no       | Prevent sharing a project with another group within this group. |
-| `require_two_factor_authentication`  | boolean | no       | Require all users in this group to setup Two-factor authentication. |
-| `two_factor_grace_period`            | integer | no       | Time before Two-factor authentication is enforced (in hours). |
-| `project_creation_level`             | string  | no       | Determine if developers can create projects in the group. Can be `noone` (No one), `maintainer` (Maintainers), or `developer` (Developers + Maintainers). |
-| `auto_devops_enabled`                | boolean | no       | Default to Auto DevOps pipeline for all projects within this group. |
-| `subgroup_creation_level`            | string  | no       | Allowed to [create subgroups](../user/group/subgroups/index.md#creating-a-subgroup). Can be `owner` (Owners), or `maintainer` (Maintainers). |
-| `emails_disabled`                    | boolean | no       | Disable email notifications |
-| `avatar`                             | mixed   | no       | Image file for avatar of the group. [Introduced in GitLab 12.9](https://gitlab.com/gitlab-org/gitlab/-/issues/36681) |
-| `mentions_disabled`                  | boolean | no       | Disable the capability of a group from getting mentioned |
-| `lfs_enabled`                        | boolean | no       | Enable/disable Large File Storage (LFS) for the projects in this group. |
-| `request_access_enabled`             | boolean | no       | Allow users to request member access. |
-| `parent_id`                          | integer | no       | The parent group ID for creating nested group. |
-| `default_branch_protection`          | integer | no       | See [Options for `default_branch_protection`](#options-for-default_branch_protection). Default to the global level default branch protection setting.      |
-| `shared_runners_minutes_limit`       | integer | no       | **(PREMIUM SELF)** Pipeline minutes quota for this group (included in plan). Can be `nil` (default; inherit system default), `0` (unlimited) or `> 0` |
-| `extra_shared_runners_minutes_limit` | integer | no       | **(PREMIUM SELF)** Extra pipeline minutes quota for this group (purchased in addition to the minutes included in the plan). |
+| Attribute                                               | Type    | Required | Description |
+| ------------------------------------------------------- | ------- | -------- | ----------- |
+| `name`                                                  | string  | yes      | The name of the group. |
+| `path`                                                  | string  | yes      | The path of the group. |
+| `description`                                           | string  | no       | The group's description. |
+| `membership_lock` **(PREMIUM)**                         | boolean | no       | Prevent adding new members to projects within this group. |
+| `visibility`                                            | string  | no       | The group's visibility. Can be `private`, `internal`, or `public`. |
+| `share_with_group_lock`                                 | boolean | no       | Prevent sharing a project with another group within this group. |
+| `require_two_factor_authentication`                     | boolean | no       | Require all users in this group to setup Two-factor authentication. |
+| `two_factor_grace_period`                               | integer | no       | Time before Two-factor authentication is enforced (in hours). |
+| `project_creation_level`                                | string  | no       | Determine if developers can create projects in the group. Can be `noone` (No one), `maintainer` (users with the Maintainer role), or `developer` (users with the Developer or Maintainer role). |
+| `auto_devops_enabled`                                   | boolean | no       | Default to Auto DevOps pipeline for all projects within this group. |
+| `subgroup_creation_level`                               | string  | no       | Allowed to [create subgroups](../user/group/subgroups/index.md#creating-a-subgroup). Can be `owner` (Owners), or `maintainer` (users with the Maintainer role). |
+| `emails_disabled`                                       | boolean | no       | Disable email notifications |
+| `avatar`                                                | mixed   | no       | Image file for avatar of the group. [Introduced in GitLab 12.9](https://gitlab.com/gitlab-org/gitlab/-/issues/36681) |
+| `mentions_disabled`                                     | boolean | no       | Disable the capability of a group from getting mentioned |
+| `lfs_enabled`                                           | boolean | no       | Enable/disable Large File Storage (LFS) for the projects in this group. |
+| `request_access_enabled`                                | boolean | no       | Allow users to request member access. |
+| `parent_id`                                             | integer | no       | The parent group ID for creating nested group. |
+| `default_branch_protection`                             | integer | no       | See [Options for `default_branch_protection`](#options-for-default_branch_protection). Default to the global level default branch protection setting.      |
+| `shared_runners_minutes_limit` **(PREMIUM SELF)**       | integer | no       | Pipeline minutes quota for this group (included in plan). Can be `nil` (default; inherit system default), `0` (unlimited) or `> 0` |
+| `extra_shared_runners_minutes_limit` **(PREMIUM SELF)** | integer | no       | Extra pipeline minutes quota for this group (purchased in addition to the minutes included in the plan). |
 
 ### Options for `default_branch_protection`
 
-The `default_branch_protection` attribute determines whether developers and maintainers can push to the applicable [default branch](../user/project/repository/branches/default.md), as described in the following table:
+The `default_branch_protection` attribute determines whether users with the Developer or [Maintainer role](../user/permissions.md) can push to the applicable [default branch](../user/project/repository/branches/default.md), as described in the following table:
 
 | Value | Description |
 |-------|-------------------------------------------------------------------------------------------------------------|
-| `0`   | No protection. Developers and maintainers can:  <br>- Push new commits<br>- Force push changes<br>- Delete the branch |
-| `1`   | Partial protection. Developers and maintainers can:  <br>- Push new commits |
-| `2`   | Full protection. Only maintainers can:  <br>- Push new commits |
+| `0`   | No protection. Users with the Developer or Maintainer role can:  <br>- Push new commits<br>- Force push changes<br>- Delete the branch |
+| `1`   | Partial protection. Users with the Developer or Maintainer role can:  <br>- Push new commits |
+| `2`   | Full protection. Only users with the Maintainer role can:  <br>- Push new commits |
 
 ## New Subgroup
 
@@ -850,6 +850,32 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
      "https://gitlab.example.com/api/v4/groups/4/projects/56"
 ```
 
+## Transfer a group to a new parent group / Turn a subgroup to a top-level group
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/23831) in GitLab 14.6.
+
+Transfer a group to a new parent group or turn a subgroup to a top-level group. Available to administrators and users:
+
+- With the Owner role for the group to transfer.
+- With permission to [create a subgroup](../user/group/subgroups/index.md#creating-a-subgroup) in the new parent group if transferring a group.
+- With [permission to create a top-level group](../administration/user_settings.md#prevent-users-from-creating-top-level-groups) if turning a subgroup into a top-level group.
+
+```plaintext
+POST  /groups/:id/transfer
+```
+
+Parameters:
+
+| Attribute    | Type           | Required | Description |
+| ------------ | -------------- | -------- | ----------- |
+| `id`         | integer | yes  | ID of the group to transfer. |
+| `group_id`   | integer | no   | ID of the new parent group. When not specified, the group to transfer is instead turned into a top-level group. |
+
+```shell
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
+     "https://gitlab.example.com/api/v4/groups/4/transfer?group_id=7"
+```
+
 ## Update group
 
 Updates the project group. Only available to group owners and administrators.
@@ -858,32 +884,32 @@ Updates the project group. Only available to group owners and administrators.
 PUT /groups/:id
 ```
 
-| Attribute                                  | Type    | Required | Description |
-| ------------------------------------------ | ------- | -------- | ----------- |
-| `id`                                       | integer | yes      | The ID of the group. |
-| `name`                                     | string  | no       | The name of the group. |
-| `path`                                     | string  | no       | The path of the group. |
-| `description`                              | string  | no       | The description of the group. |
-| `membership_lock`                          | boolean | no       | **(PREMIUM)** Prevent adding new members to project membership within this group. |
-| `share_with_group_lock`                    | boolean | no       | Prevent sharing a project with another group within this group. |
-| `visibility`                               | string  | no       | The visibility level of the group. Can be `private`, `internal`, or `public`. |
-| `require_two_factor_authentication`        | boolean | no       | Require all users in this group to setup Two-factor authentication. |
-| `two_factor_grace_period`                  | integer | no       | Time before Two-factor authentication is enforced (in hours). |
-| `project_creation_level`                   | string  | no       | Determine if developers can create projects in the group. Can be `noone` (No one), `maintainer` (Maintainers), or `developer` (Developers + Maintainers). |
-| `auto_devops_enabled`                      | boolean | no       | Default to Auto DevOps pipeline for all projects within this group. |
-| `subgroup_creation_level`                  | string  | no       | Allowed to [create subgroups](../user/group/subgroups/index.md#creating-a-subgroup). Can be `owner` (Owners), or `maintainer` (Maintainers). |
-| `emails_disabled`                          | boolean | no       | Disable email notifications |
-| `avatar`                                   | mixed   | no       | Image file for avatar of the group. [Introduced in GitLab 12.9](https://gitlab.com/gitlab-org/gitlab/-/issues/36681) |
-| `mentions_disabled`                        | boolean | no       | Disable the capability of a group from getting mentioned |
-| `lfs_enabled` (optional)                   | boolean | no       | Enable/disable Large File Storage (LFS) for the projects in this group. |
-| `request_access_enabled`                   | boolean | no       | Allow users to request member access. |
-| `default_branch_protection`                | integer | no       | See [Options for `default_branch_protection`](#options-for-default_branch_protection). |
-| `file_template_project_id`                 | integer | no       | **(PREMIUM)** The ID of a project to load custom file templates from. |
-| `shared_runners_minutes_limit`             | integer | no       | **(PREMIUM SELF)** Pipeline minutes quota for this group (included in plan). Can be `nil` (default; inherit system default), `0` (unlimited) or `> 0` |
-| `extra_shared_runners_minutes_limit`       | integer | no       | **(PREMIUM SELF)** Extra pipeline minutes quota for this group (purchased in addition to the minutes included in the plan). |
-| `prevent_forking_outside_group`            | boolean | no       | **(PREMIUM)** When enabled, users can **not** fork projects from this group to external namespaces
-| `shared_runners_setting`                   | string  | no       | See [Options for `shared_runners_setting`](#options-for-shared_runners_setting). Enable or disable shared runners for a group's subgroups and projects. |
-| `prevent_sharing_groups_outside_hierarchy` | boolean | no       | See [Prevent group sharing outside the group hierarchy](../user/group/index.md#prevent-group-sharing-outside-the-group-hierarchy). This attribute is only available on top-level groups. [Introduced in GitLab 14.1](https://gitlab.com/gitlab-org/gitlab/-/issues/333721) |
+| Attribute                                               | Type    | Required | Description |
+| ------------------------------------------------------- | ------- | -------- | ----------- |
+| `id`                                                    | integer | yes      | The ID of the group. |
+| `name`                                                  | string  | no       | The name of the group. |
+| `path`                                                  | string  | no       | The path of the group. |
+| `description`                                           | string  | no       | The description of the group. |
+| `membership_lock` **(PREMIUM)**                         | boolean | no       | Prevent adding new members to projects within this group. |
+| `share_with_group_lock`                                 | boolean | no       | Prevent sharing a project with another group within this group. |
+| `visibility`                                            | string  | no       | The visibility level of the group. Can be `private`, `internal`, or `public`. |
+| `require_two_factor_authentication`                     | boolean | no       | Require all users in this group to setup Two-factor authentication. |
+| `two_factor_grace_period`                               | integer | no       | Time before Two-factor authentication is enforced (in hours). |
+| `project_creation_level`                                | string  | no       | Determine if developers can create projects in the group. Can be `noone` (No one), `maintainer` (users with the Maintainer role), or `developer` (users with the Developer or Maintainer role). |
+| `auto_devops_enabled`                                   | boolean | no       | Default to Auto DevOps pipeline for all projects within this group. |
+| `subgroup_creation_level`                               | string  | no       | Allowed to [create subgroups](../user/group/subgroups/index.md#creating-a-subgroup). Can be `owner` (Owners), or `maintainer` (users with the Maintainer role). |
+| `emails_disabled`                                       | boolean | no       | Disable email notifications |
+| `avatar`                                                | mixed   | no       | Image file for avatar of the group. [Introduced in GitLab 12.9](https://gitlab.com/gitlab-org/gitlab/-/issues/36681) |
+| `mentions_disabled`                                     | boolean | no       | Disable the capability of a group from getting mentioned |
+| `lfs_enabled` (optional)                                | boolean | no       | Enable/disable Large File Storage (LFS) for the projects in this group. |
+| `request_access_enabled`                                | boolean | no       | Allow users to request member access. |
+| `default_branch_protection`                             | integer | no       | See [Options for `default_branch_protection`](#options-for-default_branch_protection). |
+| `file_template_project_id` **(PREMIUM)**                | integer | no       | The ID of a project to load custom file templates from. |
+| `shared_runners_minutes_limit` **(PREMIUM SELF)**       | integer | no       | Pipeline minutes quota for this group (included in plan). Can be `nil` (default; inherit system default), `0` (unlimited) or `> 0` |
+| `extra_shared_runners_minutes_limit` **(PREMIUM SELF)** | integer | no       | Extra pipeline minutes quota for this group (purchased in addition to the minutes included in the plan). |
+| `prevent_forking_outside_group` **(PREMIUM)**           | boolean | no       | When enabled, users can **not** fork projects from this group to external namespaces
+| `shared_runners_setting`                                | string  | no       | See [Options for `shared_runners_setting`](#options-for-shared_runners_setting). Enable or disable shared runners for a group's subgroups and projects. |
+| `prevent_sharing_groups_outside_hierarchy`              | boolean | no       | See [Prevent group sharing outside the group hierarchy](../user/group/index.md#prevent-group-sharing-outside-the-group-hierarchy). This attribute is only available on top-level groups. [Introduced in GitLab 14.1](https://gitlab.com/gitlab-org/gitlab/-/issues/333721) |
 
 NOTE:
 The `projects` and `shared_projects` attributes in the response are deprecated and [scheduled for removal in API v5](https://gitlab.com/gitlab-org/gitlab/-/issues/213797).

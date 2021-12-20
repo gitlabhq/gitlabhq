@@ -11,7 +11,7 @@ RSpec.describe RuboCop::Cop::Graphql::AuthorizeTypes do
     expect_offense(<<~TYPE)
       module Types
         class AType < BaseObject
-        ^^^^^^^^^^^^^^^^^^^^^^^^ Add an `authorize :ability` call to the type: https://docs.gitlab.com/ee/development/api_graphql_styleguide.html#type-authorization
+        ^^^^^^^^^^^^^^^^^^^^^^^^ Add an `authorize :ability` call to the type: https://docs.gitlab.com/ee/development/graphql_guide/authorization.html#type-authorization
           field :a_thing
           field :another_thing
         end

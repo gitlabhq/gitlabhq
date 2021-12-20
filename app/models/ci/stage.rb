@@ -22,6 +22,7 @@ module Ci
     scope :ordered, -> { order(position: :asc) }
     scope :in_pipelines, ->(pipelines) { where(pipeline: pipelines) }
     scope :by_name, ->(names) { where(name: names) }
+    scope :by_position, ->(positions) { where(position: positions) }
 
     with_options unless: :importing? do
       validates :project, presence: true

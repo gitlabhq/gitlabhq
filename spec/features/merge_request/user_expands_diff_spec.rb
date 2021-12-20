@@ -7,7 +7,6 @@ RSpec.describe 'User expands diff', :js do
   let(:merge_request) { create(:merge_request, source_branch: 'expand-collapse-files', source_project: project, target_project: project) }
 
   before do
-    stub_feature_flags(increased_diff_limits: false)
     allow(Gitlab::CurrentSettings).to receive(:diff_max_patch_bytes).and_return(100.kilobytes)
 
     visit(diffs_project_merge_request_path(project, merge_request))

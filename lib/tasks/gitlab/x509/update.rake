@@ -12,14 +12,14 @@ namespace :gitlab do
     def update_certificates
       logger = Logger.new($stdout)
 
-      unless X509CommitSignature.exists?
+      unless CommitSignatures::X509CommitSignature.exists?
         logger.info("Unable to find any x509 commit signatures. Exiting.")
         return
       end
 
       logger.info("Start to update x509 commit signatures")
 
-      X509CommitSignature.find_each do |sig|
+      CommitSignatures::X509CommitSignature.find_each do |sig|
         sig.x509_commit&.update_signature!(sig)
       end
 

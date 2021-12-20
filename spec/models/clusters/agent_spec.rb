@@ -75,4 +75,37 @@ RSpec.describe Clusters::Agent do
       expect(agent.has_access_to?(create(:project))).to be_falsey
     end
   end
+
+  describe '#active?' do
+    let_it_be(:agent) { create(:cluster_agent) }
+
+    let!(:token) { create(:cluster_agent_token, agent: agent, last_used_at: last_used_at) }
+
+    subject { agent.active? }
+
+    context 'agent has never connected' do
+      let(:last_used_at) { nil }
+
+      it { is_expected.to be_falsey }
+    end
+
+    context 'agent has connected, but not recently' do
+      let(:last_used_at) { 2.hours.ago }
+
+      it { is_expected.to be_falsey }
+    end
+
+    context 'agent has connected recently' do
+      let(:last_used_at) { 2.minutes.ago }
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'agent has multiple tokens' do
+      let!(:inactive_token) { create(:cluster_agent_token, agent: agent, last_used_at: 2.hours.ago) }
+      let(:last_used_at) { 2.minutes.ago }
+
+      it { is_expected.to be_truthy }
+    end
+  end
 end

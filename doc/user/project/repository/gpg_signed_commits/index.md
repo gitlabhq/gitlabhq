@@ -40,7 +40,7 @@ For a commit to be verified by GitLab:
   account.
 - One of the emails in the GPG key must match a **verified** email address
   used by the committer in GitLab. This address will be part of the public key.
-  If you want to keep this address private, use the automatically generated 
+  If you want to keep this address private, use the automatically generated
   [private commit email address](../../../profile/index.md#use-an-automatically-generated-private-commit-email)
   GitLab provides in your profile.
 - The committer's email address must match the verified email address from the
@@ -54,16 +54,17 @@ started:
 1. [Install GPG](https://www.gnupg.org/download/index.html) for your operating system.
    If your operating system has `gpg2` installed, replace `gpg` with `gpg2` in
    the following commands.
-1. Generate the private/public key pair with the following command, which will
-   spawn a series of questions:
+1. Generate the private/public key pair with the command appropriate for your version
+   of `gpg`. This command spawns a series of questions:
 
    ```shell
+   # Use this command for the default version of gpg, including
+   # Gpg4win on Windows, and most macOS versions:
+   gpg --gen-key
+
+   # Use this command for versions of GPG later than 2.1.17:
    gpg --full-gen-key
    ```
-
-   NOTE:
-   In some cases like Gpg4win on Windows and other macOS versions, the command
-   here may be `gpg --gen-key`.
 
 1. The first question is which algorithm can be used. Select the kind you want
    or press <kbd>Enter</kbd> to choose the default (RSA and RSA):
@@ -200,7 +201,7 @@ key to use.
 
    Replace `30F2B65B9246B6CA` with your GPG key ID.
 
-1. (Optional) If Git is using `gpg` and you get errors like `secret key not available`
+1. Optional. If Git is using `gpg` and you get errors like `secret key not available`
    or `gpg: signing failed: secret key not available`, run the following command to
    change to `gpg2`:
 

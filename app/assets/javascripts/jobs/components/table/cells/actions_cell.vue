@@ -12,6 +12,7 @@ import {
   JOB_SCHEDULED,
   PLAY_JOB_CONFIRMATION_MESSAGE,
   RUN_JOB_NOW_HEADER_TITLE,
+  FILE_TYPE_ARCHIVE,
 } from '../constants';
 import eventHub from '../event_hub';
 import cancelJobMutation from '../graphql/mutations/job_cancel.mutation.graphql';
@@ -58,11 +59,20 @@ export default {
     },
   },
   computed: {
+    hasArtifacts() {
+      return this.job.artifacts.nodes.find((artifact) => artifact.fileType === FILE_TYPE_ARCHIVE);
+    },
     artifactDownloadPath() {
-      return this.job.artifacts?.nodes[0]?.downloadPath;
+      return this.hasArtifacts.downloadPath;
     },
     canReadJob() {
       return this.job.userPermissions?.readBuild;
+    },
+    canUpdateJob() {
+      return this.job.userPermissions?.updateBuild;
+    },
+    canReadArtifacts() {
+      return this.job.userPermissions?.readJobArtifacts;
     },
     isActive() {
       return this.job.active;
@@ -86,7 +96,7 @@ export default {
       return this.job.detailedStatus?.action?.method;
     },
     shouldDisplayArtifacts() {
-      return this.job.userPermissions?.readJobArtifacts && this.job.artifacts?.nodes.length > 0;
+      return this.canReadArtifacts && this.hasArtifacts;
     },
   },
   methods: {
@@ -139,7 +149,7 @@ export default {
 
 <template>
   <gl-button-group>
-    <template v-if="canReadJob">
+    <template v-if="canReadJob && canUpdateJob">
       <gl-button
         v-if="isActive"
         data-testid="cancel-button"

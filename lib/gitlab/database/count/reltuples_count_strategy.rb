@@ -32,12 +32,12 @@ module Gitlab
         # Models using single-type inheritance (STI) don't work with
         # reltuple count estimates. We just have to ignore them and
         # use another strategy to compute them.
-        def non_sti_models
+        def non_sti_models(models)
           models.reject { |model| sti_model?(model) }
         end
 
-        def non_sti_table_names
-          non_sti_models.map(&:table_name)
+        def non_sti_table_names(models)
+          non_sti_models(models).map(&:table_name)
         end
 
         def sti_model?(model)
@@ -45,21 +45,34 @@ module Gitlab
             model.base_class != model
         end
 
-        def table_names
-          models.map(&:table_name)
+        def table_to_model_mapping
+          @table_to_model_mapping ||= models.each_with_object({}) { |model, h| h[model.table_name] = model }
+        end
+
+        def table_to_model(table_name)
+          table_to_model_mapping[table_name]
         end
 
         def size_estimates(check_statistics: true)
-          table_to_model = models.each_with_object({}) { |model, h| h[model.table_name] = model }
+          results = {}
 
-          # Querying tuple stats only works on the primary. Due to load balancing, the
-          # easiest way to do this is to start a transaction.
-          ActiveRecord::Base.transaction do # rubocop: disable Database/MultipleDatabases
-            get_statistics(non_sti_table_names, check_statistics: check_statistics).each_with_object({}) do |row, data|
-              model = table_to_model[row.table_name]
-              data[model] = row.estimate
+          models.group_by { |model| model.connection_db_config.name }.map do |db_name, models_for_db|
+            base_model = Gitlab::Database.database_base_models[db_name]
+            tables = non_sti_table_names(models_for_db)
+
+            # Querying tuple stats only works on the primary. Due to load balancing, the
+            # easiest way to do this is to start a transaction.
+            base_model.transaction do
+              Gitlab::Database::SharedModel.using_connection(base_model.connection) do
+                get_statistics(tables, check_statistics: check_statistics).each do |row|
+                  model = table_to_model(row.table_name)
+                  results[model] = row.estimate
+                end
+              end
             end
           end
+
+          results
         end
 
         # Generates the PostgreSQL query to return the tuples for tables

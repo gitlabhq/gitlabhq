@@ -58,8 +58,7 @@ it was originally composed for, if it is helpful to any of our audiences, we can
 include it.
 
 - If you use an image that has a separate source file (for example, a vector or
-  diagram format), link the image to the source file so that it may be reused or
-  updated by anyone.
+  diagram format), link the image to the source file so that anyone can update or reuse it.
 - Do not copy and paste content from other sources unless it is a limited
   quotation with the source cited. Typically it is better to either rephrase
   relevant information in your own words or link out to the other source.
@@ -113,8 +112,9 @@ The more we reflexively add information to the documentation, the more
 the documentation helps others efficiently accomplish tasks and solve problems.
 
 If you have questions when considering, authoring, or editing documentation, ask
-the Technical Writing team. They're available on Slack in `#docs` or in GitLab by mentioning the
-writer for the applicable [DevOps stage](https://about.gitlab.com/handbook/product/categories/#devops-stages).
+the Technical Writing team. They're available on Slack in `#docs` or in GitLab by
+mentioning [the writer for](https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments)
+the applicable [DevOps stage or group](https://about.gitlab.com/handbook/product/categories/#devops-stages).
 Otherwise, forge ahead with your best effort. It does not need to be perfect;
 the team is happy to review and improve upon your content. Review the
 [Documentation guidelines](index.md) before you begin your first documentation MR.
@@ -787,10 +787,13 @@ This is overridden by the [documentation-specific punctuation rules](#punctuatio
 - When possible, avoid including words that might change in the future. Changing
   a heading changes its anchor URL, which affects other linked pages.
 - When introducing a new document, be careful for the headings to be
-  grammatically and syntactically correct. Mention an [assigned technical writer (TW)](https://about.gitlab.com/handbook/product/categories/)
-  for review.
+  grammatically and syntactically correct. Mention an [assigned technical writer (TW)](https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments)
+  for review, based upon the [product category](https://about.gitlab.com/handbook/product/categories/).
   This is to ensure that no document with wrong heading is going live without an
   audit, thus preventing dead links and redirection issues when corrected.
+- Use the context provided by parent section headings. That is, don't repeat the parent heading's text in each
+  subsection's heading.
+- Use articles and prepositions in headings where it would make sense in regular text.
 - Leave exactly one blank line before and after a heading.
 - Do not use links in headings.
 - Add the corresponding [product badge](#product-tier-badges) according to the tier the
@@ -1053,7 +1056,9 @@ Guidance for each individual UI element is in [the word list](word_list.md).
 
 ### How to write navigation task steps
 
-To be consistent, use this format when you write navigation steps in a task topic.
+To be consistent, use these templates when you write navigation steps in a task topic.
+
+To open project settings:
 
 ```markdown
 1. On the top bar, select **Menu > Projects** and find your project.
@@ -1061,7 +1066,7 @@ To be consistent, use this format when you write navigation steps in a task topi
 1. Expand **General pipelines**.
 ```
 
-Another example:
+To open group settings:
 
 ```markdown
 1. On the top bar, select **Menu > Groups** and find your group.
@@ -1069,7 +1074,7 @@ Another example:
 1. Expand **General pipelines**.
 ```
 
-An Admin Area example:
+To open the Admin Area:
 
 ```markdown
 1. On the top bar, select **Menu > Admin**.
@@ -1079,6 +1084,15 @@ To select your avatar:
 
 ```markdown
 1. On the top bar, in the top right corner, select your avatar.
+```
+
+To save the selection in some dropdown lists:
+
+```markdown
+1. Go to your issue.
+1. On the right sidebar, in the **Iteration** section, select **Edit**.
+1. From the dropdown list, select the iteration to associate this issue with.
+1. Select any area outside the dropdown list.
 ```
 
 ### Optional steps
@@ -1149,6 +1163,17 @@ When you take screenshots:
 review app in the merge request. Make sure the image isn't blurry or overwhelming.
 - **Be consistent.** Coordinate screenshots with the other screenshots already on
   a documentation page for a consistent reading experience.
+
+### Add callouts
+
+If you need to emphasize an area in a screenshot, use an arrow.
+
+- For color, use `#EE2604`. If you use the Preview application on macOS, this is the default red.
+- For the line width, use 3 pt. If you use the Preview application on macOS, this is the third line in the list.
+- Use the arrow style shown in the following image.
+- If you have multiple arrows, make them parallel when possible.
+
+![callout example](img/callouts.png)
 
 ### Save the image
 
@@ -1575,7 +1600,7 @@ users be aware of recent improvements or additions.
 
 The GitLab Technical Writing team determines which versions of
 documentation to display on this site based on the GitLab
-[Statement of Support](https://about.gitlab.com/support/statement-of-support.html#we-support-the-current-major-version-and-the-two-previous-major-versions).
+[Statement of Support](https://about.gitlab.com/support/statement-of-support.html#version-support).
 
 ### View older GitLab documentation versions
 
@@ -1626,6 +1651,13 @@ This feature does something.
 > - [Enabled by default](<link-to-issue>) in GitLab 11.4.
 
 This feature does something else.
+```
+
+If you're documenting elements of a feature, start with the feature name or a gerund:
+
+```markdown
+> - Notifications for expiring tokens [introduced](<link-to-issue>) in GitLab 11.3.
+> - Creating an issue from an issue board [introduced](<link-to-issue>) in GitLab 13.1.
 ```
 
 If a feature is moved to another tier:
@@ -1781,7 +1813,9 @@ after the heading text. For example:
 # Heading title **(FREE)**
 ```
 
-Do not add tier badges inline with other text. The single source of truth for a feature should be the heading where the functionality is described.
+Do not add tier badges inline with other text, except for [API attributes](../restful_api_styleguide.md).
+The single source of truth for a feature should be the heading where the
+functionality is described.
 
 #### Available product tier badges
 

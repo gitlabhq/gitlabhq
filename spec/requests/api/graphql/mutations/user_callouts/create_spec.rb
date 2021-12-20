@@ -7,7 +7,7 @@ RSpec.describe 'Create a user callout' do
 
   let_it_be(:current_user) { create(:user) }
 
-  let(:feature_name) { ::UserCallout.feature_names.each_key.first }
+  let(:feature_name) { ::Users::Callout.feature_names.each_key.first }
 
   let(:input) do
     {

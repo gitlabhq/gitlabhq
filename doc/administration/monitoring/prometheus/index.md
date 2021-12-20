@@ -259,9 +259,10 @@ To use an external Prometheus server:
            - 1.1.1.1:9229
      - job_name: gitlab-rails
        metrics_path: "/-/metrics"
+       scheme: https
        static_configs:
          - targets:
-           - 1.1.1.1:8080
+           - 1.1.1.1
      - job_name: gitlab-sidekiq
        static_configs:
          - targets:
@@ -286,6 +287,11 @@ To use an external Prometheus server:
          - targets:
            - 1.1.1.1:9236
    ```
+
+   WARNING:
+   The `gitlab-rails` job in the snippet assumes that GitLab is reachable through HTTPS. If your
+   deployment doesn't use HTTPS, the job configuration is adapted to use the `http` scheme and port
+   80.
 
 1. Reload the Prometheus server.
 

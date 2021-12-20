@@ -16,6 +16,10 @@ GitLab can check your application for security vulnerabilities including:
 Statistics and details on vulnerabilities are included in the merge request. Providing
 actionable information _before_ changes are merged enables you to be proactive.
 
+INFO:
+Want to try out security scanning?
+[Try GitLab Ultimate free for 30 days](https://about.gitlab.com/free-trial/index.html?glm_source=docs.gitlab.com&glm_content=u-application-security-docs).
+
 GitLab also provides high-level statistics of vulnerabilities across projects and groups:
 
 - The [Security Dashboard](security_dashboard/index.md) provides a
@@ -42,7 +46,7 @@ GitLab uses the following tools to scan and report known vulnerabilities found i
 | [Secret Detection](secret_detection/index.md)                  | Analyze Git history for leaked secrets.                             |
 | [Security Dashboard](security_dashboard/index.md)              | View vulnerabilities in all your projects and groups.               |
 | [Static Application Security Testing (SAST)](sast/index.md)    | Analyze source code for known vulnerabilities.                      |
-| [Infrastructure as Code (IaC) Scanning](iac_scanning/index.md) | Analyze your IaC coniguration files for known vulnerabilities.      |
+| [Infrastructure as Code (IaC) Scanning](iac_scanning/index.md) | Analyze your IaC configuration files for known vulnerabilities.      |
 | [Coverage fuzzing](coverage_fuzzing/index.md)                  | Find unknown bugs and vulnerabilities with coverage-guided fuzzing. |
 | [Cluster Image Scanning](cluster_image_scanning/index.md)      | Scan Kubernetes clusters for known vulnerabilities.                 |
 

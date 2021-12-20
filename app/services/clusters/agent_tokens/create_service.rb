@@ -11,6 +11,8 @@ module Clusters
         token = ::Clusters::AgentToken.new(filtered_params.merge(created_by_user: current_user))
 
         if token.save
+          log_activity_event!(token)
+
           ServiceResponse.success(payload: { secret: token.token, token: token })
         else
           ServiceResponse.error(message: token.errors.full_messages)
@@ -25,6 +27,16 @@ module Clusters
 
       def filtered_params
         params.slice(*ALLOWED_PARAMS)
+      end
+
+      def log_activity_event!(token)
+        token.agent.activity_events.create!(
+          kind: :token_created,
+          level: :info,
+          recorded_at: token.created_at,
+          user: current_user,
+          agent_token: token
+        )
       end
     end
   end

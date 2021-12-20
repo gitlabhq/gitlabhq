@@ -18,10 +18,6 @@ RSpec.describe 'Profile > Personal Access Tokens', :js do
     find("#created-personal-access-token").value
   end
 
-  def feed_token
-    find("#feed_token").value
-  end
-
   def feed_token_description
     "Your feed token authenticates you when your RSS reader loads a personalized RSS feed or when your calendar application loads a personalized calendar. It is visible in those feed URLs."
   end
@@ -136,12 +132,24 @@ RSpec.describe 'Profile > Personal Access Tokens', :js do
 
   describe "feed token" do
     context "when enabled" do
-      it "displays feed token" do
+      it "displays feed token with `hide_access_tokens` feature flag enabled" do
         allow(Gitlab::CurrentSettings).to receive(:disable_feed_token).and_return(false)
         visit profile_personal_access_tokens_path
 
-        expect(feed_token).to eq(user.feed_token)
+        within('[data-testid="feed-token-container"]') do
+          click_button('Click to reveal')
 
+          expect(page).to have_field('Feed token', with: user.feed_token)
+          expect(page).to have_content(feed_token_description)
+        end
+      end
+
+      it "displays feed token with `hide_access_tokens` feature flag disabled" do
+        stub_feature_flags(hide_access_tokens: false)
+        allow(Gitlab::CurrentSettings).to receive(:disable_feed_token).and_return(false)
+        visit profile_personal_access_tokens_path
+
+        expect(page).to have_field('Feed token', with: user.feed_token)
         expect(page).to have_content(feed_token_description)
       end
     end
@@ -151,8 +159,8 @@ RSpec.describe 'Profile > Personal Access Tokens', :js do
         allow(Gitlab::CurrentSettings).to receive(:disable_feed_token).and_return(true)
         visit profile_personal_access_tokens_path
 
-        expect(page).to have_no_content(feed_token_description)
-        expect(page).to have_no_css("#feed_token")
+        expect(page).not_to have_content(feed_token_description)
+        expect(page).not_to have_field('Feed token')
       end
     end
   end

@@ -130,6 +130,22 @@ RSpec.describe BulkImports::NdjsonPipeline do
 
       subject.transform(context, data)
     end
+
+    context 'when data is nil' do
+      before do
+        expect(Gitlab::ImportExport::Group::RelationFactory).not_to receive(:create)
+      end
+
+      it 'returns' do
+        expect(subject.transform(nil, nil)).to be_nil
+      end
+
+      context 'when relation hash is nil' do
+        it 'returns' do
+          expect(subject.transform(nil, [nil, 0])).to be_nil
+        end
+      end
+    end
   end
 
   describe '#load' do
@@ -138,16 +154,6 @@ RSpec.describe BulkImports::NdjsonPipeline do
         object = double(persisted?: false)
 
         expect(object).to receive(:save!)
-
-        subject.load(nil, object)
-      end
-    end
-
-    context 'when object is persisted' do
-      it 'does not save the object' do
-        object = double(persisted?: true)
-
-        expect(object).not_to receive(:save!)
 
         subject.load(nil, object)
       end

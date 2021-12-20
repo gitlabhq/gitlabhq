@@ -2,7 +2,7 @@ import { GlIcon, GlSprintf } from '@gitlab/ui';
 import { GlBreakpointInstance } from '@gitlab/ui/dist/utils';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import PackageTags from '~/packages/shared/components/package_tags.vue';
+import PackageTags from '~/packages_and_registries/shared/components/package_tags.vue';
 import PackageTitle from '~/packages_and_registries/package_registry/components/details/package_title.vue';
 import {
   PACKAGE_TYPE_CONAN,

@@ -93,7 +93,7 @@ module StubGitlabCalls
 
   def stub_commonmark_sourcepos_disabled
     render_options =
-      if Feature.enabled?(:use_cmark_renderer)
+      if Feature.enabled?(:use_cmark_renderer, default_enabled: :yaml)
         Banzai::Filter::MarkdownEngines::CommonMark::RENDER_OPTIONS_C
       else
         Banzai::Filter::MarkdownEngines::CommonMark::RENDER_OPTIONS_RUBY

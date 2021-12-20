@@ -146,7 +146,7 @@ When upgrading Ruby, consider updating the following repositories:
 - [Gitaly](https://gitlab.com/gitlab-org/gitaly) ([example](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/3771))
 - [GitLab Labkit](https://gitlab.com/gitlab-org/labkit-ruby) ([example](https://gitlab.com/gitlab-org/labkit-ruby/-/merge_requests/79))
 - [GitLab Exporter](https://gitlab.com/gitlab-org/gitlab-exporter) ([example](https://gitlab.com/gitlab-org/gitlab-exporter/-/merge_requests/150))
-- [GitLab Experiment](https://gitlab.com/gitlab-org/gitlab-experiment) ([example](https://gitlab.com/gitlab-org/gitlab-experiment/-/merge_requests/128))
+- [GitLab Experiment](https://gitlab.com/gitlab-org/ruby/gems/gitlab-experiment) ([example](https://gitlab.com/gitlab-org/ruby/gems/gitlab-experiment/-/merge_requests/128))
 - [Gollum Lib](https://gitlab.com/gitlab-org/gollum-lib) ([example](https://gitlab.com/gitlab-org/gollum-lib/-/merge_requests/21))
 - [GitLab Helm Chart](https://gitlab.com/gitlab-org/charts/gitlab) ([example](https://gitlab.com/gitlab-org/charts/gitlab/-/merge_requests/2162))
 - [GitLab Sidekiq fetcher](https://gitlab.com/gitlab-org/sidekiq-reliable-fetch) ([example](https://gitlab.com/gitlab-org/sidekiq-reliable-fetch/-/merge_requests/33))
@@ -190,7 +190,7 @@ via `gdk update`.
 This pause is a good time to assess the risk of this upgrade for GitLab SaaS.
 For Ruby upgrades that are high risk, such as major version upgrades, it is recommended to
 coordinate the changes with the infrastructure team through a [change management request](https://about.gitlab.com/handbook/engineering/infrastructure/change-management/).
-Create this issue early to give everyone enough time to schedule and prepare changes.  
+Create this issue early to give everyone enough time to schedule and prepare changes.
 
 ### Make it the default Ruby
 
@@ -205,7 +205,7 @@ in that repository. This change is only necessary when the minor or major versio
 ([example](https://gitlab.com/gitlab-org/gitlab-compose-kit/-/merge_requests/176).)
 
 As mentioned above, if the impact of the Ruby upgrade on SaaS availability is uncertain, it is
-prudent to skip this step until you have verified that it runs smootly in production via a staged
+prudent to skip this step until you have verified that it runs smoothly in production via a staged
 rollout. In this case, go to the next step first, and then, after the verification period has passed, promote
 the new Ruby to be the new default.
 

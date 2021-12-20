@@ -4,11 +4,14 @@ query securityReportDownloadPaths(
   $reportTypes: [SecurityReportTypeEnum!]
 ) {
   project(fullPath: $projectPath) {
+    id
     mergeRequest(iid: $iid) {
+      id
       headPipeline {
         id
         jobs(securityReportTypes: $reportTypes) {
           nodes {
+            id
             name
             artifacts {
               nodes {

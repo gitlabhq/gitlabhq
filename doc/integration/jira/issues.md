@@ -101,10 +101,10 @@ Consider this example:
 You can browse, search, and view issues from a selected Jira project directly in GitLab,
 if your GitLab administrator [has configured it](configure.md).
 
-To do this, in GitLab, go to your project and select **Jira > Issues list**. The issue list
+To do this, in GitLab, go to your project and select **Issues > Jira issues**. The issue list
 sorts by **Created date** by default, with the newest issues listed at the top:
 
-![Jira issues integration enabled](img/open_jira_issues_list_v13.2.png)
+![Jira issues integration enabled](img/open_jira_issues_list_v14_6.png)
 
 - To display the most recently updated issues first, select **Last updated**.
 - You can [search and filter](#search-and-filter-the-issues-list) the issues list.
@@ -140,7 +140,7 @@ Enhancements to use these filters through the user interface
 
 ## Automatic issue transitions
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/...) in GitLab 13.10.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/55773) in GitLab 13.11.
 
 When you configure automatic issue transitions, you can transition a referenced
 Jira issue to the next available status with a category of **Done**. To configure

@@ -30,6 +30,30 @@ RSpec.describe TimeZoneHelper, :aggregate_failures do
       end
     end
 
+    context 'with abbr format' do
+      subject(:timezone_data) { helper.timezone_data(format: :abbr) }
+
+      it 'matches schema' do
+        expect(timezone_data).not_to be_empty
+
+        timezone_data.each_with_index do |timezone_hash, i|
+          expect(timezone_hash.keys).to contain_exactly(
+            :identifier,
+            :abbr
+          ), "Failed at index #{i}"
+        end
+      end
+
+      it 'formats for display' do
+        tz = ActiveSupport::TimeZone.all[0]
+
+        expect(timezone_data[0]).to eq(
+          identifier: tz.tzinfo.identifier,
+          abbr: tz.tzinfo.strftime('%Z')
+        )
+      end
+    end
+
     context 'with full format' do
       subject(:timezone_data) { helper.timezone_data(format: :full) }
 
@@ -64,7 +88,7 @@ RSpec.describe TimeZoneHelper, :aggregate_failures do
       subject(:timezone_data) { helper.timezone_data(format: :unknown) }
 
       it 'raises an exception' do
-        expect { timezone_data }.to raise_error ArgumentError, 'Invalid format :unknown. Valid formats are :short, :full.'
+        expect { timezone_data }.to raise_error ArgumentError, 'Invalid format :unknown. Valid formats are :short, :abbr, :full.'
       end
     end
   end
@@ -101,7 +125,7 @@ RSpec.describe TimeZoneHelper, :aggregate_failures do
     end
   end
 
-  describe '#local_time_instance' do
+  describe '#local_timezone_instance' do
     let_it_be(:timezone) { 'UTC' }
 
     before do
@@ -110,25 +134,25 @@ RSpec.describe TimeZoneHelper, :aggregate_failures do
 
     context 'when timezone is `nil`' do
       it 'returns the system timezone instance' do
-        expect(helper.local_time_instance(nil).name).to eq(timezone)
+        expect(helper.local_timezone_instance(nil).name).to eq(timezone)
       end
     end
 
     context 'when timezone is blank' do
       it 'returns the system timezone instance' do
-        expect(helper.local_time_instance('').name).to eq(timezone)
+        expect(helper.local_timezone_instance('').name).to eq(timezone)
       end
     end
 
     context 'when a valid timezone is passed' do
       it 'returns the local time instance' do
-        expect(helper.local_time_instance('America/Los_Angeles').name).to eq('America/Los_Angeles')
+        expect(helper.local_timezone_instance('America/Los_Angeles').name).to eq('America/Los_Angeles')
       end
     end
 
     context 'when an invalid timezone is passed' do
       it 'returns the system timezone instance' do
-        expect(helper.local_time_instance('Foo/Bar').name).to eq(timezone)
+        expect(helper.local_timezone_instance('Foo/Bar').name).to eq(timezone)
       end
     end
   end

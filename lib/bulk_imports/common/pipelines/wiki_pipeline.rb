@@ -7,7 +7,9 @@ module BulkImports
         include Pipeline
 
         def extract(*)
-          BulkImports::Pipeline::ExtractedData.new(data: { url: url_from_parent_path(context.entity.source_full_path) })
+          url = url_from_parent_path(context.entity.source_full_path) if source_wiki_exists?
+
+          BulkImports::Pipeline::ExtractedData.new(data: { url: url })
         end
 
         def transform(_, data)
@@ -15,14 +17,15 @@ module BulkImports
         end
 
         def load(context, data)
-          return unless context.portable.wiki
+          return unless data&.dig(:url)
 
+          wiki = context.portable.wiki
           url = data[:url].sub("://", "://oauth2:#{context.configuration.access_token}@")
 
           Gitlab::UrlBlocker.validate!(url, allow_local_network: allow_local_requests?, allow_localhost: allow_local_requests?)
 
-          context.portable.wiki.ensure_repository
-          context.portable.wiki.repository.fetch_as_mirror(url)
+          wiki.ensure_repository
+          wiki.repository.fetch_as_mirror(url)
         end
 
         private
@@ -35,6 +38,16 @@ module BulkImports
 
         def allow_local_requests?
           Gitlab::CurrentSettings.allow_local_requests_from_web_hooks_and_services?
+        end
+
+        def source_wiki_exists?
+          wikis = client.get(context.entity.wikis_url_path).parsed_response
+
+          wikis.any?
+        end
+
+        def client
+          BulkImports::Clients::HTTP.new(url: context.configuration.url, token: context.configuration.access_token)
         end
       end
     end

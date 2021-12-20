@@ -18,6 +18,8 @@ class DashboardController < Dashboard::ApplicationController
   feature_category :team_planning, [:issues, :issues_calendar]
   feature_category :code_review, [:merge_requests]
 
+  urgency :low, [:merge_requests]
+
   def activity
     respond_to do |format|
       format.html

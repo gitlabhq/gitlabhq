@@ -3,32 +3,22 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::BackgroundMigration::JobCoordinator do
-  let(:database) { :main }
   let(:worker_class) { BackgroundMigrationWorker }
-  let(:coordinator) { described_class.new(database, worker_class) }
+  let(:tracking_database) { worker_class.tracking_database }
+  let(:coordinator) { described_class.new(worker_class) }
 
-  describe '.for_database' do
+  describe '.for_tracking_database' do
     it 'returns an executor with the correct worker class and database' do
-      coordinator = described_class.for_database(database)
+      coordinator = described_class.for_tracking_database(tracking_database)
 
-      expect(coordinator.database).to eq(database)
       expect(coordinator.worker_class).to eq(worker_class)
-    end
-
-    context 'when passed in as a string' do
-      it 'retruns an executor with the correct worker class and database' do
-        coordinator = described_class.for_database(database.to_s)
-
-        expect(coordinator.database).to eq(database)
-        expect(coordinator.worker_class).to eq(worker_class)
-      end
     end
 
     context 'when an invalid value is given' do
       it 'raises an error' do
         expect do
-          described_class.for_database('notvalid')
-        end.to raise_error(ArgumentError, "database must be one of [main], got 'notvalid'")
+          described_class.for_tracking_database('notvalid')
+        end.to raise_error(ArgumentError, /tracking_database must be one of/)
       end
     end
   end

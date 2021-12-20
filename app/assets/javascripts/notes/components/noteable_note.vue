@@ -331,16 +331,19 @@ export default {
             this.isEditing = true;
             this.setSelectedCommentPositionHover();
             this.$nextTick(() => {
-              const msg = __('Something went wrong while editing your comment. Please try again.');
-              createFlash({
-                message: msg,
-                parent: this.$el,
-              });
+              this.handleUpdateError(response); // The 'response' parameter is being used in JH, don't remove it
               this.recoverNoteContent(noteText);
               callback();
             });
           }
         });
+    },
+    handleUpdateError() {
+      const msg = __('Something went wrong while editing your comment. Please try again.');
+      createFlash({
+        message: msg,
+        parent: this.$el,
+      });
     },
     formCancelHandler({ shouldConfirm, isDirty }) {
       if (shouldConfirm && isDirty) {
@@ -388,7 +391,7 @@ export default {
     <div
       v-if="showMultiLineComment"
       data-testid="multiline-comment"
-      class="gl-mb-3 gl-text-gray-500 gl-border-gray-200 gl-border-b-solid gl-border-b-1 gl-pb-3"
+      class="gl-mb-5 gl-text-gray-500 gl-border-gray-100 gl-border-b-solid gl-border-b-1 gl-pb-4"
     >
       <gl-sprintf :message="__('Comment on lines %{startLine} to %{endLine}')">
         <template #startLine>

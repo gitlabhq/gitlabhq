@@ -37,9 +37,6 @@ module Gitlab
       remove_known_trial_form_fields_noneditable: {
         tracking_category: 'Growth::Conversion::Experiment::RemoveKnownTrialFormFieldsNoneditable',
         rollout_strategy: :user
-      },
-      invite_members_new_dropdown: {
-        tracking_category: 'Growth::Expansion::Experiment::InviteMembersNewDropdown'
       }
     }.freeze
 

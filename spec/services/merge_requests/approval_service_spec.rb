@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe MergeRequests::ApprovalService do
   describe '#execute' do
     let(:user)          { create(:user) }
-    let(:merge_request) { create(:merge_request) }
+    let(:merge_request) { create(:merge_request, reviewers: [user]) }
     let(:project)       { merge_request.project }
     let!(:todo)         { create(:todo, user: user, project: project, target: merge_request) }
 
@@ -55,6 +55,14 @@ RSpec.describe MergeRequests::ApprovalService do
           expect(instance).to receive(:approve_mr)
             .with(merge_request, user)
         end
+
+        service.execute(merge_request)
+      end
+
+      it 'removes attention requested state' do
+        expect(MergeRequests::RemoveAttentionRequestedService).to receive(:new)
+          .with(project: project, current_user: user, merge_request: merge_request, user: user)
+          .and_call_original
 
         service.execute(merge_request)
       end

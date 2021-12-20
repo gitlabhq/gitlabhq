@@ -53,15 +53,13 @@ class CommitStatus < Ci::ApplicationRecord
   scope :before_stage, -> (index) { where('stage_idx < ?', index) }
   scope :for_stage, -> (index) { where(stage_idx: index) }
   scope :after_stage, -> (index) { where('stage_idx > ?', index) }
+  scope :for_project, -> (project_id) { where(project_id: project_id) }
   scope :for_ref, -> (ref) { where(ref: ref) }
   scope :by_name, -> (name) { where(name: name) }
   scope :in_pipelines, ->(pipelines) { where(pipeline: pipelines) }
   scope :with_pipeline, -> { joins(:pipeline) }
   scope :updated_at_before, ->(date) { where('ci_builds.updated_at < ?', date) }
   scope :created_at_before, ->(date) { where('ci_builds.created_at < ?', date) }
-  scope :updated_before, ->(lookback:, timeout:) {
-    where('(ci_builds.created_at BETWEEN ? AND ?) AND (ci_builds.updated_at BETWEEN ? AND ?)', lookback, timeout, lookback, timeout)
-  }
   scope :scheduled_at_before, ->(date) {
     where('ci_builds.scheduled_at IS NOT NULL AND ci_builds.scheduled_at < ?', date)
   }
@@ -71,7 +69,8 @@ class CommitStatus < Ci::ApplicationRecord
     # Pluck is used to split this query. Splitting the query is required for database decomposition for `ci_*` tables.
     # https://docs.gitlab.com/ee/development/database/transaction_guidelines.html#database-decomposition-and-sharding
     project_ids = Project.where_full_path_in(Array(paths)).pluck(:id)
-    where(project: project_ids)
+
+    for_project(project_ids)
   end
 
   scope :with_preloads, -> do
@@ -147,7 +146,7 @@ class CommitStatus < Ci::ApplicationRecord
     end
 
     event :drop do
-      transition [:created, :waiting_for_resource, :preparing, :pending, :running, :scheduled] => :failed
+      transition [:created, :waiting_for_resource, :preparing, :pending, :running, :manual, :scheduled] => :failed
     end
 
     event :success do
@@ -191,7 +190,12 @@ class CommitStatus < Ci::ApplicationRecord
 
       commit_status.run_after_commit do
         PipelineProcessWorker.perform_async(pipeline_id) unless transition_options[:skip_pipeline_processing]
-        ExpireJobCacheWorker.perform_async(id)
+
+        if Feature.enabled?(:expire_job_and_pipeline_cache_synchronously, project, default_enabled: :yaml)
+          expire_etag_cache!
+        else
+          ExpireJobCacheWorker.perform_async(id)
+        end
       end
     end
 
@@ -215,6 +219,10 @@ class CommitStatus < Ci::ApplicationRecord
 
   def self.locking_enabled?
     false
+  end
+
+  def self.bulk_insert_tags!(statuses, tag_list_by_build)
+    Gitlab::Ci::Tags::BulkInsert.new(statuses, tag_list_by_build).insert!
   end
 
   def locking_enabled?
@@ -298,6 +306,12 @@ class CommitStatus < Ci::ApplicationRecord
       .where(name: name)
       .where.not(id: id)
       .update_all(retried: true, processed: true)
+  end
+
+  def expire_etag_cache!
+    job_path = Gitlab::Routing.url_helpers.project_build_path(project, id, format: :json)
+
+    Gitlab::EtagCaching::Store.new.touch(job_path)
   end
 
   private

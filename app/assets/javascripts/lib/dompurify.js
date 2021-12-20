@@ -3,7 +3,7 @@ import { getNormalizedURL, getBaseURL, relativePathToAbsolute } from '~/lib/util
 
 const defaultConfig = {
   // Safely allow SVG <use> tags
-  ADD_TAGS: ['use', 'gl-emoji'],
+  ADD_TAGS: ['use', 'gl-emoji', 'copy-code'],
   // Prevent possible XSS attacks with data-* attributes used by @rails/ujs
   // See https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1421
   FORBID_ATTR: ['data-remote', 'data-url', 'data-type', 'data-method'],

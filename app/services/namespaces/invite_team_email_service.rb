@@ -29,13 +29,12 @@ module Namespaces
       return if email_for_track_sent_to_user?
 
       experiment(:invite_team_email, group: group) do |e|
+        e.publish_to_database
         e.candidate do
           send_email(user, group)
           sent_email_records.add(user, track, series)
           sent_email_records.save!
         end
-
-        e.record!
       end
     end
 

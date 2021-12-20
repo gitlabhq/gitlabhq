@@ -2,7 +2,7 @@
 
 FactoryBot.define do
   sequence(:username) { |n| "user#{n}" }
-  sequence(:name) { |n| "John Doe#{n}" }
+  sequence(:name) { |n| "Sidney Jones#{n}" }
   sequence(:email) { |n| "user#{n}@example.org" }
   sequence(:email_alias) { |n| "user.alias#{n}@example.org" }
   sequence(:title) { |n| "My title #{n}" }
@@ -21,4 +21,5 @@ FactoryBot.define do
   sequence(:jira_branch) { |n| "feature/PROJ-#{n}" }
   sequence(:job_name) { |n| "job #{n}" }
   sequence(:work_item_type_name) { |n| "bug#{n}" }
+  sequence(:short_text) { |n| "someText#{n}" }
 end

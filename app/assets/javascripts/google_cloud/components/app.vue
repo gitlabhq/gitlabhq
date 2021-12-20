@@ -1,22 +1,42 @@
 <script>
-import { GlTab, GlTabs } from '@gitlab/ui';
+import { __ } from '~/locale';
+
+import Home from './home.vue';
 import IncubationBanner from './incubation_banner.vue';
-import ServiceAccounts from './service_accounts.vue';
+import ServiceAccountsForm from './service_accounts_form.vue';
+import NoGcpProjects from './errors/no_gcp_projects.vue';
+import GcpError from './errors/gcp_error.vue';
+
+const SCREEN_GCP_ERROR = 'gcp_error';
+const SCREEN_HOME = 'home';
+const SCREEN_NO_GCP_PROJECTS = 'no_gcp_projects';
+const SCREEN_SERVICE_ACCOUNTS_FORM = 'service_accounts_form';
 
 export default {
-  components: { GlTab, GlTabs, IncubationBanner, ServiceAccounts },
+  components: {
+    IncubationBanner,
+  },
+  inheritAttrs: false,
   props: {
-    serviceAccounts: {
-      type: Array,
+    screen: {
       required: true,
-    },
-    createServiceAccountUrl: {
       type: String,
-      required: true,
     },
-    emptyIllustrationUrl: {
-      type: String,
-      required: true,
+  },
+  computed: {
+    mainComponent() {
+      switch (this.screen) {
+        case SCREEN_HOME:
+          return Home;
+        case SCREEN_GCP_ERROR:
+          return GcpError;
+        case SCREEN_NO_GCP_PROJECTS:
+          return NoGcpProjects;
+        case SCREEN_SERVICE_ACCOUNTS_FORM:
+          return ServiceAccountsForm;
+        default:
+          throw new Error(__('Unknown screen'));
+      }
     },
   },
   methods: {
@@ -34,17 +54,6 @@ export default {
       :report-bug-url="feedbackUrl('report_bug')"
       :feature-request-url="feedbackUrl('feature_request')"
     />
-    <gl-tabs>
-      <gl-tab :title="__('Configuration')">
-        <service-accounts
-          class="gl-mx-3"
-          :list="serviceAccounts"
-          :create-url="createServiceAccountUrl"
-          :empty-illustration-url="emptyIllustrationUrl"
-        />
-      </gl-tab>
-      <gl-tab :title="__('Deployments')" disabled />
-      <gl-tab :title="__('Services')" disabled />
-    </gl-tabs>
+    <component :is="mainComponent" v-bind="$attrs" />
   </div>
 </template>

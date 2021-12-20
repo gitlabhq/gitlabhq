@@ -3,6 +3,7 @@ import Mousetrap from 'mousetrap';
 import { clickCopyToClipboardButton } from '~/behaviors/copy_to_clipboard';
 import { getSelectedFragment } from '~/lib/utils/common_utils';
 import { isElementVisible } from '~/lib/utils/dom_utils';
+import { DEBOUNCE_DROPDOWN_DELAY } from '~/vue_shared/components/sidebar/labels_select_widget/constants';
 import Sidebar from '../../right_sidebar';
 import { CopyAsGFM } from '../markdown/copy_as_gfm';
 import {
@@ -114,6 +115,14 @@ export default class ShortcutsIssuable extends Shortcuts {
 
   static openSidebarDropdown(name) {
     Sidebar.instance.openDropdown(name);
+    // Wait for the sidebar to trigger('click') open
+    // so it doesn't cause our dropdown to close preemptively
+    setTimeout(() => {
+      const editBtn =
+        document.querySelector(`.block.${name} .shortcut-sidebar-dropdown-toggle`) ||
+        document.querySelector(`.block.${name} .edit-link`);
+      editBtn.click();
+    }, DEBOUNCE_DROPDOWN_DELAY);
     return false;
   }
 

@@ -10,7 +10,12 @@ import DependencyProxySettings from '~/packages_and_registries/settings/group/co
 import component from '~/packages_and_registries/settings/group/components/group_settings_app.vue';
 
 import getGroupPackagesSettingsQuery from '~/packages_and_registries/settings/group/graphql/queries/get_group_packages_settings.query.graphql';
-import { groupPackageSettingsMock, packageSettings, dependencyProxySettings } from '../mock_data';
+import {
+  groupPackageSettingsMock,
+  packageSettings,
+  dependencyProxySettings,
+  dependencyProxyImageTtlPolicy,
+} from '../mock_data';
 
 jest.mock('~/flash');
 
@@ -66,11 +71,17 @@ describe('Group Settings App', () => {
     await nextTick();
   };
 
+  const packageSettingsProps = { packageSettings: packageSettings() };
+  const dependencyProxyProps = {
+    dependencyProxySettings: dependencyProxySettings(),
+    dependencyProxyImageTtlPolicy: dependencyProxyImageTtlPolicy(),
+  };
+
   describe.each`
-    finder                         | entityProp                   | entityValue                  | successMessage                   | errorMessage
-    ${findPackageSettings}         | ${'packageSettings'}         | ${packageSettings()}         | ${'Settings saved successfully'} | ${'An error occurred while saving the settings'}
-    ${findDependencyProxySettings} | ${'dependencyProxySettings'} | ${dependencyProxySettings()} | ${'Setting saved successfully'}  | ${'An error occurred while saving the setting'}
-  `('settings blocks', ({ finder, entityProp, entityValue, successMessage, errorMessage }) => {
+    finder                         | entitySpecificProps     | successMessage                   | errorMessage
+    ${findPackageSettings}         | ${packageSettingsProps} | ${'Settings saved successfully'} | ${'An error occurred while saving the settings'}
+    ${findDependencyProxySettings} | ${dependencyProxyProps} | ${'Setting saved successfully'}  | ${'An error occurred while saving the setting'}
+  `('settings blocks', ({ finder, entitySpecificProps, successMessage, errorMessage }) => {
     beforeEach(() => {
       mountComponent();
       return waitForApolloQueryAndRender();
@@ -83,7 +94,7 @@ describe('Group Settings App', () => {
     it('binds the correctProps', () => {
       expect(finder().props()).toMatchObject({
         isLoading: false,
-        [entityProp]: entityValue,
+        ...entitySpecificProps,
       });
     });
 

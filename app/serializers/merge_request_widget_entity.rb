@@ -73,7 +73,7 @@ class MergeRequestWidgetEntity < Grape::Entity
   end
 
   expose :user_callouts_path do |_merge_request|
-    user_callouts_path
+    callouts_path
   end
 
   expose :suggest_pipeline_feature_id do |_merge_request|

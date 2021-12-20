@@ -1,5 +1,6 @@
 query getAllIssues($projectPath: ID!) {
   project(fullPath: $projectPath) {
+    id
     issues {
       nodes {
         id

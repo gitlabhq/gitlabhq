@@ -4,6 +4,8 @@ import * as lowlight from 'lowlight';
 const extractLanguage = (element) => element.getAttribute('lang');
 
 export default CodeBlockLowlight.extend({
+  isolating: true,
+
   addAttributes() {
     return {
       language: {
@@ -17,7 +19,7 @@ export default CodeBlockLowlight.extend({
     };
   },
   renderHTML({ HTMLAttributes }) {
-    return ['pre', HTMLAttributes, ['code', {}, 0]];
+    return ['div', ['pre', HTMLAttributes, ['code', {}, 0]]];
   },
 }).configure({
   lowlight,

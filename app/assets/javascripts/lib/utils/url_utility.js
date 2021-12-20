@@ -1,6 +1,6 @@
 export const DASH_SCOPE = '-';
 
-const PATH_SEPARATOR = '/';
+export const PATH_SEPARATOR = '/';
 const PATH_SEPARATOR_LEADING_REGEX = new RegExp(`^${PATH_SEPARATOR}+`);
 const PATH_SEPARATOR_ENDING_REGEX = new RegExp(`${PATH_SEPARATOR}+$`);
 const SHA_REGEX = /[\da-f]{40}/gi;

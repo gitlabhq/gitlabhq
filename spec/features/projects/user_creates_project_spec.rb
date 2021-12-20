@@ -56,6 +56,31 @@ RSpec.describe 'User creates a project', :js do
     expect(page).to have_content('README.md Initial commit')
   end
 
+  it 'allows creating a new project when the new_project_sast_enabled is assigned the unchecked candidate' do
+    stub_experiments(new_project_sast_enabled: 'unchecked_candidate')
+
+    visit(new_project_path)
+
+    click_link 'Create blank project'
+    fill_in(:project_name, with: 'With initial commits')
+
+    expect(page).to have_checked_field 'Initialize repository with a README'
+    expect(page).to have_unchecked_field 'Enable Static Application Security Testing (SAST)'
+
+    check 'Enable Static Application Security Testing (SAST)'
+
+    page.within('#content-body') do
+      click_button('Create project')
+    end
+
+    project = Project.last
+
+    expect(current_path).to eq(project_path(project))
+    expect(page).to have_content('With initial commits')
+    expect(page).to have_content('Configure SAST in `.gitlab-ci.yml`, creating this file if it does not already exist')
+    expect(page).to have_content('README.md Initial commit')
+  end
+
   context 'in a subgroup they do not own' do
     let(:parent) { create(:group) }
     let!(:subgroup) { create(:group, parent: parent) }

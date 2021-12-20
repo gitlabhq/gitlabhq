@@ -21,7 +21,8 @@ RSpec.describe 'Project > Tags', :js do
 
     context 'page with tags list' do
       it 'shows tag name' do
-        expect(page).to have_content 'v1.1.0 Version 1.1.0'
+        expect(page).to have_content 'v1.1.0'
+        expect(page).to have_content 'Version 1.1.0'
       end
 
       it 'shows tag edit button' do

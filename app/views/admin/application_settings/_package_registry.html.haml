@@ -33,6 +33,9 @@
                     = f.label :conan_max_file_size, _('Maximum Conan package file size in bytes'), class: 'label-bold'
                     = f.number_field :conan_max_file_size, class: 'form-control gl-form-input'
                   .form-group
+                    = f.label :helm_max_file_size, _('Maximum Helm chart file size in bytes'), class: 'label-bold'
+                    = f.number_field :helm_max_file_size, class: 'form-control gl-form-input'
+                  .form-group
                     = f.label :maven_max_file_size, _('Maximum Maven package file size in bytes'), class: 'label-bold'
                     = f.number_field :maven_max_file_size, class: 'form-control gl-form-input'
                   .form-group

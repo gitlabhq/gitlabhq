@@ -163,7 +163,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Bridge do
         })
       end
 
-      it { is_expected.not_to be_valid }
+      it { is_expected.to be_valid }
     end
 
     context 'when bridge configuration uses rules with only' do

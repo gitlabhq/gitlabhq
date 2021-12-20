@@ -35,7 +35,7 @@
           %span.light= _('Email:')
           %strong
             = render partial: 'shared/email_with_badge', locals: { email: mail_to(@user.email), verified: @user.confirmed? }
-        - @user.emails.each do |email|
+        - @user.emails.reject(&:user_primary_email?).each do |email|
           %li
             %span.light= _('Secondary email:')
             %strong

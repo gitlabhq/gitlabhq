@@ -1,4 +1,4 @@
-﻿# To contribute improvements to CI/CD templates, please follow the Development guide at:
+# To contribute improvements to CI/CD templates, please follow the Development guide at:
 # https://docs.gitlab.com/ee/development/cicd/templates.html
 # This specific template is located at:
 # https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/dotNET-Core.yml
@@ -14,10 +14,10 @@
 # The 'latest' tag targets the latest available version of .NET Core SDK image.
 # If preferred, you can explicitly specify version of .NET Core (e.g. using '2.2-sdk' tag).
 #
-# See other available tags for .NET Core: https://hub.docker.com/r/microsoft/dotnet
+# See other available tags for .NET Core: https://hub.docker.com/_/microsoft-dotnet
 # Learn more about Docker tags: https://docs.docker.com/glossary/?term=tag
 # and the Docker itself: https://opensource.com/resources/what-docker
-image: microsoft/dotnet:latest
+image: mcr.microsoft.com/dotnet/sdk:latest
 
 # ### Define variables
 #

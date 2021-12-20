@@ -24,10 +24,10 @@ import {
 } from '../constants';
 
 const PRIMARY_OPTIONS_TEXT = __('Upload file');
-const MODAL_TITLE = __('Upload New File');
+const MODAL_TITLE = __('Upload new file');
 const REMOVE_FILE_TEXT = __('Remove file');
 const NEW_BRANCH_IN_FORK = __(
-  'A new branch will be created in your fork and a new merge request will be started.',
+  'GitLab will create a branch in your fork and start a merge request.',
 );
 const ERROR_MESSAGE = __('Error uploading file. Please try again.');
 

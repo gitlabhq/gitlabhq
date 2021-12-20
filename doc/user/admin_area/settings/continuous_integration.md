@@ -232,11 +232,10 @@ To enable or disable the banner:
 
 ## Required pipeline configuration **(PREMIUM SELF)**
 
-WARNING:
-This feature is being re-evaluated in favor of a different
-[compliance solution](https://gitlab.com/groups/gitlab-org/-/epics/3156).
-We recommend that users who haven't yet implemented this feature wait for
-the new solution.
+NOTE:
+An alternative [compliance solution](../../project/settings/index.md#compliance-pipeline-configuration)
+is available. We recommend this alternative solution because it provides greater flexibility,
+allowing required pipelines to be assigned to specific compliance framework labels.
 
 You can set a [CI/CD template](../../../ci/examples/index.md#cicd-templates)
 as a required pipeline configuration for all projects on a GitLab instance. You can

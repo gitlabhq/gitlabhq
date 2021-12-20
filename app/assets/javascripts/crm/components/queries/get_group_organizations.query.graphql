@@ -1,14 +1,12 @@
+#import "./crm_organization_fields.fragment.graphql"
+
 query organizations($groupFullPath: ID!) {
   group(fullPath: $groupFullPath) {
     __typename
     id
     organizations {
       nodes {
-        __typename
-        id
-        name
-        defaultRate
-        description
+        ...OrganizationFragment
       }
     }
   }

@@ -349,6 +349,9 @@ export default {
             v-if="showCreate"
             v-gl-modal-directive="'board-config-modal'"
             data-qa-selector="create_new_board_button"
+            data-track-action="click_button"
+            data-track-label="create_new_board"
+            data-track-property="dropdown"
             @click.prevent="showPage('new')"
           >
             {{ s__('IssueBoards|Create new board') }}

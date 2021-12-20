@@ -82,17 +82,23 @@ See the guide to [plan your GitLab upgrade](plan_your_upgrade.md).
 ## Checking for background migrations before upgrading
 
 Certain releases may require different migrations to be
-finished before you update to the newer version. Additionally check
-[batched migrations](#batched-background-migrations) from GitLab 14.0.
+finished before you update to the newer version.
+
+[Batched migrations](#batched-background-migrations) are a migration type available in GitLab 14.0 and later.
+Background migrations and batched migrations not the same, so you should check that both are
+complete before updating.
 
 Decrease the time required to complete these migrations by increasing the number of
 [Sidekiq workers](../administration/operations/extra_sidekiq_processes.md)
 that can process jobs in the `background_migration` queue.
 
+### Background migrations
+
 **For Omnibus installations:**
 
 ```shell
 sudo gitlab-rails runner -e production 'puts Gitlab::BackgroundMigration.remaining'
+sudo gitlab-rails runner -e production 'puts Gitlab::BackgroundMigration.pending'
 ```
 
 **For installations from source:**
@@ -100,6 +106,7 @@ sudo gitlab-rails runner -e production 'puts Gitlab::BackgroundMigration.remaini
 ```shell
 cd /home/git/gitlab
 sudo -u git -H bundle exec rails runner -e production 'puts Gitlab::BackgroundMigration.remaining'
+sudo -u git -H bundle exec rails runner -e production 'puts Gitlab::BackgroundMigration.pending'
 ```
 
 ### Batched background migrations
@@ -212,30 +219,9 @@ sudo -u git -H bundle exec rake gitlab:elastic:list_pending_migrations
 
 See [how to retry a halted migration](../integration/elasticsearch.md#retry-a-halted-migration).
 
-## Upgrade paths
+## Upgrading without downtime
 
-Upgrading across multiple GitLab versions in one go is *only possible by accepting downtime*.
-The following examples assume downtime is acceptable while upgrading.
-If you don't want any downtime, read how to [upgrade with zero downtime](zero_downtime.md).
-
-Find where your version sits in the upgrade path below, and upgrade GitLab
-accordingly, while also consulting the
-[version-specific upgrade instructions](#version-specific-upgrading-instructions):
-
-`8.11.Z` -> `8.12.0` -> `8.17.7` -> `9.5.10` -> `10.8.7` -> [`11.11.8`](#1200) -> `12.0.12` -> [`12.1.17`](#1210) -> `12.10.14` -> `13.0.14` -> [`13.1.11`](#1310) -> [`13.8.8`](#1388) -> [`13.12.15`](https://about.gitlab.com/releases/categories/releases/) -> [latest `14.0.Z`](#1400) -> [latest `14.1.Z`](#1410) -> [latest `14.Y.Z`](https://about.gitlab.com/releases/categories/releases/)
-
-The following table, while not exhaustive, shows some examples of the supported
-upgrade paths.
-
-| Target version | Your version | Supported upgrade path                                                                               | Note                                                                                                                              |
-| -------------- | ------------ | ---------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
-| `14.1.6`       | `13.9.2`     | `13.9.2` -> `13.12.12` -> `14.0.11` -> `14.1.6`                                                        | Two intermediate versions are required: `13.12` and `14.0`, then `14.1`.                                                          |
-| `13.12.10`     | `12.9.2`     | `12.9.2` -> `12.10.14` -> `13.0.14`  -> `13.1.11` -> `13.8.8` -> `13.12.10`                          | Four intermediate versions are required: `12.10`, `13.0`, `13.1` and `13.8.8`, then `13.12.10`.                               |
-| `13.2.10`      | `11.5.0`     | `11.5.0` -> `11.11.8` -> `12.0.12` -> `12.1.17` -> `12.10.14` -> `13.0.14` -> `13.1.11` -> `13.2.10` | Six intermediate versions are required: `11.11`, `12.0`, `12.1`, `12.10`, `13.0` and `13.1`, then `13.2.10`.                      |
-| `12.10.14`     | `11.3.4`     | `11.3.4` -> `11.11.8` -> `12.0.12` -> `12.1.17` -> `12.10.14`                                        | Three intermediate versions are required: `11.11`, `12.0` and `12.1`, then `12.10.14`.                                            |
-| `12.9.5`       | `10.4.5`     | `10.4.5` -> `10.8.7` -> `11.11.8` -> `12.0.12` -> `12.1.17` -> `12.9.5`                              | Four intermediate versions are required: `10.8`, `11.11`, `12.0` and `12.1`, then `12.9.5`.                                       |
-| `12.2.5`       | `9.2.6`      | `9.2.6` -> `9.5.10` -> `10.8.7` -> `11.11.8` -> `12.0.12` -> `12.1.17` -> `12.2.5`                   | Five intermediate versions are required: `9.5`, `10.8`, `11.11`, `12.0`, `12.1`, then `12.2.5`.                                   |
-| `11.3.4`       | `8.13.4`     | `8.13.4` -> `8.17.7` -> `9.5.10` -> `10.8.7` -> `11.3.4`                                             | `8.17.7` is the last version in version 8, `9.5.10` is the last version in version 9, `10.8.7` is the last version in version 10. |
+Read how to [upgrade without downtime](zero_downtime.md).
 
 ## Upgrading to a new major version
 
@@ -247,8 +233,9 @@ cannot guarantee that upgrading between major versions is seamless.
 It is required to follow the following upgrade steps to ensure a successful *major* version upgrade:
 
 1. Upgrade to the latest minor version of the preceding major version.
-1. Upgrade to the first minor version (`X.0.Z`) of the target major version.
-1. Proceed with upgrading to a newer release.
+1. Upgrade to the next major version (`X.0.Z`).
+1. Upgrade to its first minor version (`X.1.Z`).
+1. Proceed with upgrading to a newer releases of that major version.
 
 Identify a [supported upgrade path](#upgrade-paths).
 
@@ -264,11 +251,34 @@ before proceeding with the major version upgrade.
 
 If your GitLab instance has any runners associated with it, it is very
 important to upgrade GitLab Runner to match the GitLab minor version that was
-upgraded to. This is to ensure [compatibility with GitLab versions](https://docs.gitlab.com/runner/#compatibility-with-gitlab-versions).
+upgraded to. This is to ensure [compatibility with GitLab versions](https://docs.gitlab.com/runner/#gitlab-runner-versions).
 
-## Upgrading without downtime
+## Upgrade paths
 
-Read how to [upgrade without downtime](zero_downtime.md).
+Upgrading across multiple GitLab versions in one go is *only possible by accepting downtime*.
+The following examples assume downtime is acceptable while upgrading.
+If you don't want any downtime, read how to [upgrade with zero downtime](zero_downtime.md).
+
+Find where your version sits in the upgrade path below, and upgrade GitLab
+accordingly, while also consulting the
+[version-specific upgrade instructions](#version-specific-upgrading-instructions):
+
+`8.11.Z` -> `8.12.0` -> `8.17.7` -> `9.5.10` -> `10.8.7` -> [`11.11.8`](#1200) -> `12.0.12` -> [`12.1.17`](#1210) -> `12.10.14` -> `13.0.14` -> [`13.1.11`](#1310) -> [`13.8.8`](#1388) -> [latest `13.12.Z`](https://about.gitlab.com/releases/categories/releases/) -> [latest `14.0.Z`](#1400) -> [latest `14.1.Z`](#1410) -> [latest `14.Y.Z`](https://about.gitlab.com/releases/categories/releases/)
+
+The following table, while not exhaustive, shows some examples of the supported
+upgrade paths.
+Additional steps between the mentioned versions are possible. We list the minimally necessary steps only.
+
+| Target version | Your version | Supported upgrade path                                                                               | Note                                                                                                                              |
+| -------------- | ------------ | ---------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| `14.2.6`       | `13.10.2`    | `13.10.2` -> `13.12.12` -> `14.0.11` -> `14.1.8` -> `14.2.6`                                         | Three intermediate versions are required: `13.12`, `14.0`, and `14.1`, then `14.2.6`.                                             |
+| `14.1.8`       | `13.9.2`     | `13.9.2` -> `13.12.12` -> `14.0.11` -> `14.1.8`                                                      | Two intermediate versions are required: `13.12` and `14.0`, then `14.1.8`.                                                        |
+| `13.12.10`     | `12.9.2`     | `12.9.2` -> `12.10.14` -> `13.0.14`  -> `13.1.11` -> `13.8.8` -> `13.12.10`                          | Four intermediate versions are required: `12.10`, `13.0`, `13.1` and `13.8.8`, then `13.12.10`.                                   |
+| `13.2.10`      | `11.5.0`     | `11.5.0` -> `11.11.8` -> `12.0.12` -> `12.1.17` -> `12.10.14` -> `13.0.14` -> `13.1.11` -> `13.2.10` | Six intermediate versions are required: `11.11`, `12.0`, `12.1`, `12.10`, `13.0` and `13.1`, then `13.2.10`.                      |
+| `12.10.14`     | `11.3.4`     | `11.3.4` -> `11.11.8` -> `12.0.12` -> `12.1.17` -> `12.10.14`                                        | Three intermediate versions are required: `11.11`, `12.0` and `12.1`, then `12.10.14`.                                            |
+| `12.9.5`       | `10.4.5`     | `10.4.5` -> `10.8.7` -> `11.11.8` -> `12.0.12` -> `12.1.17` -> `12.9.5`                              | Four intermediate versions are required: `10.8`, `11.11`, `12.0` and `12.1`, then `12.9.5`.                                       |
+| `12.2.5`       | `9.2.6`      | `9.2.6` -> `9.5.10` -> `10.8.7` -> `11.11.8` -> `12.0.12` -> `12.1.17` -> `12.2.5`                   | Five intermediate versions are required: `9.5`, `10.8`, `11.11`, `12.0`, and `12.1`, then `12.2.5`.                               |
+| `11.3.4`       | `8.13.4`     | `8.13.4` -> `8.17.7` -> `9.5.10` -> `10.8.7` -> `11.3.4`                                             | `8.17.7` is the last version in version 8, `9.5.10` is the last version in version 9, `10.8.7` is the last version in version 10. |
 
 ## Upgrading between editions
 
@@ -357,8 +367,14 @@ or [init scripts](upgrading_from_source.md#configure-sysv-init-script) by [follo
 
 ### 14.4.0
 
-Git 2.33.x and later is required. We recommend you use the
-[Git version provided by Gitaly](../install/installation.md#git).
+- Git 2.33.x and later is required. We recommend you use the
+  [Git version provided by Gitaly](../install/installation.md#git).
+- See [Maintenance mode issue in GitLab 13.9 to 14.4](#maintenance-mode-issue-in-gitlab-139-to-144).
+- After enabling database load balancing by default in 14.4.0, we found an issue where
+  [cron jobs would not work if the connection to PostgreSQL was severed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/73716),
+  as Sidekiq would continue using a bad connection. Geo and other features that rely on
+  cron jobs running regularly do not work until Sidekiq is restarted. We recommend
+  upgrading to GitLab 14.4.3 and later if this issue affects you.
 
 ### 14.3.0
 
@@ -384,6 +400,8 @@ for how to proceed.
   # For source installations
   sudo -u git -H bundle exec rake db:migrate RAILS_ENV=production
   ```
+
+- See [Maintenance mode issue in GitLab 13.9 to 14.4](#maintenance-mode-issue-in-gitlab-139-to-144).
 
 ### 14.2.0
 
@@ -411,14 +429,19 @@ for how to proceed.
   sudo -u git -H bundle exec rake db:migrate RAILS_ENV=production
   ```
 
+- See [Maintenance mode issue in GitLab 13.9 to 14.4](#maintenance-mode-issue-in-gitlab-139-to-144).
+
 ### 14.1.0
 
 - [Instances running 14.0.0 - 14.0.4 should not upgrade directly to GitLab 14.2 or later](#upgrading-to-later-14y-releases)
   but can upgrade to 14.1.Z.
-- It is not required for instances already running 14.0.5 (or higher) to stop at 14.1.Z.
+
+  It is not required for instances already running 14.0.5 (or higher) to stop at 14.1.Z.
   14.1 is included on the upgrade path for the broadest compatibility
   with self-managed installations, and ensure 14.0.0-14.0.4 installations do not
   encounter issues with [batched background migrations](#batched-background-migrations).
+
+- See [Maintenance mode issue in GitLab 13.9 to 14.4](#maintenance-mode-issue-in-gitlab-139-to-144).
 
 ### 14.0.0
 
@@ -449,6 +472,8 @@ for how to proceed.
   You should instead follow a [supported upgrade path](#upgrade-paths).
 - The support of PostgreSQL 11 [has been dropped](../install/requirements.md#database). Make sure to [update your database](https://docs.gitlab.com/omnibus/settings/database.html#upgrade-packaged-postgresql-server) to version 12 before updating to GitLab 14.0.
 
+- See [Maintenance mode issue in GitLab 13.9 to 14.4](#maintenance-mode-issue-in-gitlab-139-to-144).
+
 #### Upgrading to later 14.Y releases
 
 - Instances running 14.0.0 - 14.0.4 should not upgrade directly to GitLab 14.2 or later,
@@ -459,48 +484,60 @@ for how to proceed.
   1. [Batched background migrations need to finish](#batched-background-migrations)
      before you update to a later version [and may take longer than usual](#1400).
 
+### 13.12.0
+
+See [Maintenance mode issue in GitLab 13.9 to 14.4](#maintenance-mode-issue-in-gitlab-139-to-144).
+
 ### 13.11.0
 
-Git 2.31.x and later is required. We recommend you use the
-[Git version provided by Gitaly](../install/installation.md#git).
+- Git 2.31.x and later is required. We recommend you use the
+  [Git version provided by Gitaly](../install/installation.md#git).
+
+- See [Maintenance mode issue in GitLab 13.9 to 14.4](#maintenance-mode-issue-in-gitlab-139-to-144).
+
+### 13.10.0
+
+See [Maintenance mode issue in GitLab 13.9 to 14.4](#maintenance-mode-issue-in-gitlab-139-to-144).
 
 ### 13.9.0
 
-We've detected an issue [with a column rename](https://gitlab.com/gitlab-org/gitlab/-/issues/324160)
-that prevents upgrades to GitLab 13.9.0, 13.9.1, 13.9.2, and 13.9.3 when following the zero-downtime steps. It is necessary
-to perform the following additional steps for the zero-downtime upgrade:
+- We've detected an issue [with a column rename](https://gitlab.com/gitlab-org/gitlab/-/issues/324160)
+  that prevents upgrades to GitLab 13.9.0, 13.9.1, 13.9.2, and 13.9.3 when following the zero-downtime steps. It is necessary
+  to perform the following additional steps for the zero-downtime upgrade:
 
-1. Before running the final `sudo gitlab-rake db:migrate` command on the deploy node,
-   execute the following queries using the PostgreSQL console (or `sudo gitlab-psql`)
-   to drop the problematic triggers:
+  1. Before running the final `sudo gitlab-rake db:migrate` command on the deploy node,
+     execute the following queries using the PostgreSQL console (or `sudo gitlab-psql`)
+     to drop the problematic triggers:
 
-   ```sql
-   drop trigger trigger_e40a6f1858e6 on application_settings;
-   drop trigger trigger_0d588df444c8 on application_settings;
-   drop trigger trigger_1572cbc9a15f on application_settings;
-   drop trigger trigger_22a39c5c25f3 on application_settings;
-   ```
+     ```sql
+     drop trigger trigger_e40a6f1858e6 on application_settings;
+     drop trigger trigger_0d588df444c8 on application_settings;
+     drop trigger trigger_1572cbc9a15f on application_settings;
+     drop trigger trigger_22a39c5c25f3 on application_settings;
+     ```
 
-1. Run the final migrations:
+  1. Run the final migrations:
 
-   ```shell
-   sudo gitlab-rake db:migrate
-   ```
+     ```shell
+     sudo gitlab-rake db:migrate
+     ```
 
-If you have already run the final `sudo gitlab-rake db:migrate` command on the deploy node and have
-encountered the [column rename issue](https://gitlab.com/gitlab-org/gitlab/-/issues/324160), you
-see the following error:
+  If you have already run the final `sudo gitlab-rake db:migrate` command on the deploy node and have
+  encountered the [column rename issue](https://gitlab.com/gitlab-org/gitlab/-/issues/324160), you
+  see the following error:
 
-```shell
--- remove_column(:application_settings, :asset_proxy_whitelist)
-rake aborted!
-StandardError: An error has occurred, all later migrations canceled:
-PG::DependentObjectsStillExist: ERROR: cannot drop column asset_proxy_whitelist of table application_settings because other objects depend on it
-DETAIL: trigger trigger_0d588df444c8 on table application_settings depends on column asset_proxy_whitelist of table application_settings
-```
+  ```shell
+  -- remove_column(:application_settings, :asset_proxy_whitelist)
+  rake aborted!
+  StandardError: An error has occurred, all later migrations canceled:
+  PG::DependentObjectsStillExist: ERROR: cannot drop column asset_proxy_whitelist of table application_settings because other objects depend on it
+  DETAIL: trigger trigger_0d588df444c8 on table application_settings depends on column asset_proxy_whitelist of table application_settings
+  ```
 
-To work around this bug, follow the previous steps to complete the update.
-More details are available [in this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/324160).
+  To work around this bug, follow the previous steps to complete the update.
+  More details are available [in this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/324160).
+
+- See [Maintenance mode issue in GitLab 13.9 to 14.4](#maintenance-mode-issue-in-gitlab-139-to-144).
 
 ### 13.8.8
 
@@ -609,6 +646,14 @@ After upgraded to 11.11.8 you can safely upgrade to 12.0.Z.
 
 See our [documentation on upgrade paths](../policy/maintenance.md#upgrade-recommendations)
 for more information.
+
+### Maintenance mode issue in GitLab 13.9 to 14.4
+
+When [Maintenance mode](../administration/maintenance_mode/index.md) is enabled, users cannot sign in with SSO, SAML, or LDAP.
+
+Users who were signed in before Maintenance mode was enabled will continue to be signed in. If the admin who enabled Maintenance mode loses their session, then they will not be able to disable Maintenance mode via the UI. In that case, you can [disable Maintenance mode via the API or Rails console](../administration/maintenance_mode/#disable-maintenance-mode).
+
+[This bug](https://gitlab.com/gitlab-org/gitlab/-/issues/329261) was fixed in GitLab 14.5.0, and is expected to be backported to GitLab 14.3 and 14.4.
 
 ## Miscellaneous
 

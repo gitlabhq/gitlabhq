@@ -68,7 +68,6 @@ export default {
     :config="config"
     :suggestions-loading="loading"
     :suggestions="tags"
-    :recent-suggestions-storage-key="config.recentTokenValuesStorageKey"
     @fetch-suggestions="fetchTags"
     v-on="$listeners"
   >

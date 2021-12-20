@@ -19,7 +19,7 @@ RSpec.describe AbuseReportsController do
     context 'when the user has already been deleted' do
       it 'redirects the reporter to root_path' do
         user_id = user.id
-        user.destroy
+        user.destroy!
 
         get :new, params: { user_id: user_id }
 

@@ -129,11 +129,17 @@
 }
 
 .gl-pipeline-job-width {
-  width: 186px;
+  width: 100%;
+  max-width: 400px;
 }
 
 .gl-pipeline-job-width\! {
-  width: 186px !important;
+  width: 100% !important;
+  max-width: 400px !important;
+}
+
+.gl-downstream-pipeline-job-width {
+  width: 240px;
 }
 
 .gl-linked-pipeline-padding {
@@ -199,7 +205,6 @@
 
 .big-pipeline-graph-dropdown-menu {
   @include pipeline-graph-dropdown-menu();
-  width: 195px;
   min-width: 195px;
   left: 100%;
   top: -10px;

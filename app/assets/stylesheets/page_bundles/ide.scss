@@ -904,6 +904,7 @@ $ide-commit-header-height: 48px;
   .sidebar-context-title {
     white-space: nowrap;
     display: block;
+    color: var(--ide-text-color, $gl-text-color);
 
     &.text-secondary {
       font-weight: normal;
@@ -963,6 +964,10 @@ $ide-commit-header-height: 48px;
     h4 {
       margin: 0;
     }
+  }
+
+  .gl-tab-content {
+    color: var(--ide-text-color, $gl-text-color);
   }
 }
 

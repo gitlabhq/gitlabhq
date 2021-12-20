@@ -29,7 +29,7 @@ module Resolvers
             job_types: security_report_types
           ).execute
         else
-          pipeline.statuses
+          pipeline.statuses_order_id_desc
         end
       end
     end

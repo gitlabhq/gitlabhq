@@ -165,6 +165,6 @@ export default {
 <template>
   <div>
     <div class="flash-container js-suggestions-flash"></div>
-    <div v-show="isRendered" ref="container" v-safe-html="noteHtml" class="md"></div>
+    <div v-show="isRendered" ref="container" v-safe-html="noteHtml" class="md suggestions"></div>
   </div>
 </template>

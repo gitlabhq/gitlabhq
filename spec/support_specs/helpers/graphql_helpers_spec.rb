@@ -43,6 +43,21 @@ RSpec.describe GraphqlHelpers do
 
       expect(graphql_dig_at(data, :foo, :nodes, :bar, :nodes, :id)).to eq([1, 2, 3, 4])
     end
+
+    it 'does not omit nils at the leaves' do
+      data = {
+        'foo' => {
+          'nodes' => [
+            { 'bar' => { 'nodes' => [{ 'id' => nil }, { 'id' => 2 }] } },
+            { 'bar' => { 'nodes' => [{ 'id' => 3 }, { 'id' => nil }] } },
+            { 'bar' => nil }
+          ]
+        },
+        'irrelevant' => 'the field is a red-herring'
+      }
+
+      expect(graphql_dig_at(data, :foo, :nodes, :bar, :nodes, :id)).to eq([nil, 2, 3, nil])
+    end
   end
 
   describe 'var' do

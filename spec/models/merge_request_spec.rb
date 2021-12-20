@@ -178,6 +178,13 @@ RSpec.describe MergeRequest, factory_default: :keep do
     it 'returns the merge request title' do
       expect(subject.default_squash_commit_message).to eq(subject.title)
     end
+
+    it 'uses template from target project' do
+      subject.target_project.squash_commit_template = 'Squashed branch %{source_branch} into %{target_branch}'
+
+      expect(subject.default_squash_commit_message)
+        .to eq('Squashed branch master into feature')
+    end
   end
 
   describe 'modules' do
@@ -1132,7 +1139,7 @@ RSpec.describe MergeRequest, factory_default: :keep do
       end
 
       it 'returns the correct overflow count' do
-        allow(Commit).to receive(:max_diff_options).and_return(max_files: 2)
+        allow(Commit).to receive(:diff_max_files).and_return(2)
         set_compare(merge_request)
 
         expect(merge_request.diff_size).to eq('2+')
@@ -1641,6 +1648,9 @@ RSpec.describe MergeRequest, factory_default: :keep do
 
     it 'uses template from target project' do
       request = build(:merge_request, title: 'Fix everything')
+      request.compare_commits = [
+        double(safe_message: 'Commit message', gitaly_commit?: true, merge_commit?: false, description?: false)
+      ]
       subject.target_project.merge_commit_template = '%{title}'
 
       expect(request.default_merge_commit_message)
@@ -3953,7 +3963,7 @@ RSpec.describe MergeRequest, factory_default: :keep do
         create_build(source_pipeline, 60.2, 'test:1')
         create_build(target_pipeline, 50, 'test:2')
 
-        expect(merge_request.pipeline_coverage_delta).to eq('10.20')
+        expect(merge_request.pipeline_coverage_delta).to be_within(0.001).of(10.2)
       end
     end
 
@@ -5031,5 +5041,9 @@ RSpec.describe MergeRequest, factory_default: :keep do
     it 'returns merge requests from forks only' do
       expect(described_class.from_fork).to eq([fork_mr])
     end
+  end
+
+  it_behaves_like 'it has loose foreign keys' do
+    let(:factory_name) { :merge_request }
   end
 end

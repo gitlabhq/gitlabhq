@@ -42,6 +42,10 @@ export const EDITOR_EXTENSION_STORE_IS_MISSING_ERROR = s__(
 // EXTENSIONS' CONSTANTS
 //
 
+// Source Editor Base Extension
+export const EXTENSION_BASE_LINE_LINK_ANCHOR_CLASS = 'link-anchor';
+export const EXTENSION_BASE_LINE_NUMBERS_CLASS = 'line-numbers';
+
 // For CI config schemas the filename must match
 // '*.gitlab-ci.yml' regardless of project configuration.
 // https://gitlab.com/gitlab-org/gitlab/-/issues/293641

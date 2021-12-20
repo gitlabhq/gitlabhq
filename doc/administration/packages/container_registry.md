@@ -436,7 +436,7 @@ To configure the `s3` storage driver in Omnibus:
    ```
 
    If using with an [AWS S3 VPC endpoint](https://docs.aws.amazon.com/vpc/latest/privatelink/vpc-endpoints-s3.html),
-   then set `regionendpoint` to your VPC endpoint address and set `path_style` to false:
+   then set `regionendpoint` to your VPC endpoint address and set `pathstyle` to false:
 
    ```ruby
    registry['storage'] = {
@@ -446,7 +446,7 @@ To configure the `s3` storage driver in Omnibus:
        'bucket' => 'your-s3-bucket',
        'region' => 'your-s3-region',
        'regionendpoint' => 'your-s3-vpc-endpoint',
-       'path_style' => false
+       'pathstyle' => false
      }
    }
    ```
@@ -454,7 +454,7 @@ To configure the `s3` storage driver in Omnibus:
    - `regionendpoint` is only required when configuring an S3 compatible service such as MinIO, or
      when using an AWS S3 VPC Endpoint.
    - `your-s3-bucket` should be the name of a bucket that exists, and can't include subdirectories.
-   - `path_style` should be set to true to use `host/bucket_name/object` style paths instead of
+   - `pathstyle` should be set to true to use `host/bucket_name/object` style paths instead of
      `bucket_name.host/object`. [Set to false for AWS S3](https://aws.amazon.com/blogs/aws/amazon-s3-path-deprecation-plan-the-rest-of-the-story/).
 
 1. Save the file and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
@@ -483,6 +483,12 @@ storage:
 `your-s3-bucket` should be the name of a bucket that exists, and can't include subdirectories.
 
 #### Migrate to object storage without downtime
+
+WARNING:
+Using [AWS DataSync](https://aws.amazon.com/datasync/)
+to copy the registry data to or between S3 buckets creates invalid metadata objects in the bucket.
+For additional details, see [Tags with an empty name](#tags-with-an-empty-name).
+To move data to and between S3 buckets, the AWS CLI `sync` operation is recommended.
 
 To migrate storage without stopping the Container Registry, set the Container Registry
 to read-only mode. On large instances, this may require the Container Registry
@@ -860,7 +866,7 @@ To remove image tags by running the cleanup policy, run the following commands i
 # Numeric ID of the project whose container registry should be cleaned up
 P = <project_id>
 
-# Numeric ID of a developer, maintainer or owner in that project
+# Numeric ID of a user with Developer, Maintainer, or Owner role for the project
 U = <user_id>
 
 # Get required details / objects
@@ -873,7 +879,7 @@ project.container_repositories.find_each do |repo|
   puts repo.attributes
 
   # Start the tag cleanup
-  puts Projects::ContainerRepository::CleanupTagsService.new(project, user, policy.attributes.except("created_at", "updated_at")).execute(repo)
+  puts Projects::ContainerRepository::CleanupTagsService.new(repo, user, policy.attributes.except("created_at", "updated_at")).execute()
 end
 ```
 
@@ -888,7 +894,7 @@ GitLab offers a set of APIs to manipulate the Container Registry and aid the pro
 of removing unused tags. Currently, this is exposed using the API, but in the future,
 these controls should migrate to the GitLab interface.
 
-Project maintainers can
+Users who have the [Maintainer role](../../user/permissions.md) for the project can
 [delete Container Registry tags in bulk](../../api/container_registry.md#delete-registry-repository-tags-in-bulk)
 periodically based on their own criteria, however, this alone does not recycle data,
 it only unlinks tags from manifests and image blobs. To recycle the Container
@@ -1072,6 +1078,19 @@ PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 
 You may want to add the `-m` flag to [remove untagged manifests and unreferenced layers](#removing-untagged-manifests-and-unreferenced-layers).
 
+### Stop garbage collection
+
+If you anticipate stopping garbage collection, you should manually run garbage collection as
+described in [Performing garbage collection without downtime](#performing-garbage-collection-without-downtime).
+You can then stop garbage collection by pressing <kbd>Control</kbd>+<kbd>C</kbd>.
+
+Otherwise, interrupting `gitlab-ctl` could leave your registry service in a down state. In this
+case, you must find the [garbage collection process](https://gitlab.com/gitlab-org/omnibus-gitlab/-/blob/master/files/gitlab-ctl-commands/registry_garbage_collect.rb#L26-35)
+itself on the system so that the `gitlab-ctl` command can bring the registry service back up again.
+
+Also, there's no way to save progress or results during the mark phase of the process. Only once
+blobs start being deleted is anything permanent done.
+
 ## Configuring GitLab and Registry to run on separate nodes (Omnibus GitLab)
 
 By default, package assumes that both services are running on the same node.
@@ -1080,28 +1099,28 @@ is necessary for Registry and GitLab.
 
 ### Configuring Registry
 
-Below you will find configuration options you should set in `/etc/gitlab/gitlab.rb`,
+Below you can find configuration options you should set in `/etc/gitlab/gitlab.rb`,
 for Registry to run separately from GitLab:
 
 - `registry['registry_http_addr']`, default [set programmatically](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/10-3-stable/files/gitlab-cookbooks/gitlab/libraries/registry.rb#L50). Needs to be reachable by web server (or LB).
 - `registry['token_realm']`, default [set programmatically](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/10-3-stable/files/gitlab-cookbooks/gitlab/libraries/registry.rb#L53). Specifies the endpoint to use to perform authentication, usually the GitLab URL.
   This endpoint needs to be reachable by user.
 - `registry['http_secret']`, [random string](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/10-3-stable/files/gitlab-cookbooks/gitlab/libraries/registry.rb#L32). A random piece of data used to sign state that may be stored with the client to protect against tampering.
-- `registry['internal_key']`, default [automatically generated](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/10-3-stable/files/gitlab-cookbooks/gitlab/recipes/gitlab-rails.rb#L113-119). Contents of the key that GitLab uses to sign the tokens. They key gets created on the Registry server, but it won't be used there.
-- `gitlab_rails['registry_key_path']`, default [set programmatically](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/10-3-stable/files/gitlab-cookbooks/gitlab/recipes/gitlab-rails.rb#L35). This is the path where `internal_key` contents will be written to disk.
+- `registry['internal_key']`, default [automatically generated](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/10-3-stable/files/gitlab-cookbooks/gitlab/recipes/gitlab-rails.rb#L113-119). Contents of the key that GitLab uses to sign the tokens. They key gets created on the Registry server, but it is not used there.
+- `gitlab_rails['registry_key_path']`, default [set programmatically](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/10-3-stable/files/gitlab-cookbooks/gitlab/recipes/gitlab-rails.rb#L35). This is the path where `internal_key` contents are written to disk.
 - `registry['internal_certificate']`, default [automatically generated](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/10-3-stable/files/gitlab-cookbooks/registry/recipes/enable.rb#L60-66). Contents of the certificate that GitLab uses to sign the tokens.
 - `registry['rootcertbundle']`, default [set programmatically](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/10-3-stable/files/gitlab-cookbooks/registry/recipes/enable.rb#L60). Path to certificate. This is the path where `internal_certificate`
-  contents will be written to disk.
+  contents are written to disk.
 - `registry['health_storagedriver_enabled']`, default [set programmatically](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/10-7-stable/files/gitlab-cookbooks/gitlab/libraries/registry.rb#L88). Configure whether health checks on the configured storage driver are enabled.
 - `gitlab_rails['registry_issuer']`, [default value](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/10-3-stable/files/gitlab-cookbooks/gitlab/attributes/default.rb#L153). This setting needs to be set the same between Registry and GitLab.
 
 ### Configuring GitLab
 
-Below you will find configuration options you should set in `/etc/gitlab/gitlab.rb`,
+Below you can find configuration options you should set in `/etc/gitlab/gitlab.rb`,
 for GitLab to run separately from Registry:
 
-- `gitlab_rails['registry_enabled']`, must be set to `true`. This setting will
-  signal to GitLab that it should allow Registry API requests.
+- `gitlab_rails['registry_enabled']`, must be set to `true`. This setting
+  signals to GitLab that it should allow Registry API requests.
 - `gitlab_rails['registry_api_url']`, default [set programmatically](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/10-3-stable/files/gitlab-cookbooks/gitlab/libraries/registry.rb#L52). This is the Registry URL used internally that users do not need to interact with, `registry['registry_http_addr']` with scheme.
 - `gitlab_rails['registry_host']`, eg. `registry.gitlab.example`. Registry endpoint without the scheme, the address that gets shown to the end user.
 - `gitlab_rails['registry_port']`. Registry endpoint port, visible to the end user.
@@ -1257,7 +1276,7 @@ Check which files are in use:
        enabled: true
        host: gitlab.company.com
        port: 4567
-       api_url: http://127.0.0.1:5000 # internal address to the registry, will be used by GitLab to directly communicate with API
+       api_url: http://127.0.0.1:5000 # internal address to the registry, is used by GitLab to directly communicate with API
        path: /var/opt/gitlab/gitlab-rails/shared/registry
   -->  key: /var/opt/gitlab/gitlab-rails/etc/gitlab-registry.key
        issuer: omnibus-gitlab-issuer
@@ -1500,6 +1519,28 @@ Follow the [steps that Docker recommends to upgrade v1 images](https://docs.dock
 The most straightforward option is to pull those images and push them once again to the registry,
 using a Docker client version above v1.12. Docker converts images automatically before pushing them
 to the registry. Once done, all your v1 images should now be available as v2 images.
+
+### Tags with an empty name
+
+If using [AWS DataSync](https://aws.amazon.com/datasync/)
+to copy the registry data to or between S3 buckets, an empty metadata object is created in the root
+path of each container repository in the destination bucket. This causes the registry to interpret
+such files as a tag that appears with no name in the GitLab UI and API. For more information, see
+[this issue](https://gitlab.com/gitlab-org/container-registry/-/issues/341).
+
+To fix this you can do one of two things:
+
+- Use the AWS CLI [`rm`](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/s3/rm.html)
+  command to remove the empty objects from the root of **each** affected repository. Pay special
+  attention to the trailing `/` and make sure **not** to use the `--recursive` option:
+
+  ```shell
+  aws s3 rm s3://<bucket>/docker/registry/v2/repositories/<path to repository>/
+  ```
+
+- Use the AWS CLI [`sync`](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/s3/sync.html)
+  command to copy the registry data to a new bucket and configure the registry to use it. This
+  leaves the empty objects behind.
 
 ### Advanced Troubleshooting
 

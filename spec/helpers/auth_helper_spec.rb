@@ -283,34 +283,83 @@ RSpec.describe AuthHelper do
 
     before do
       allow(Gitlab).to receive(:com?).and_return(is_gitlab_com)
-      stub_config(extra: { google_tag_manager_id: 'key' })
       allow(helper).to receive(:current_user).and_return(user)
     end
 
-    subject(:google_tag_manager_enabled?) { helper.google_tag_manager_enabled? }
-
-    context 'on gitlab.com and a key set without a current user' do
-      it { is_expected.to be_truthy }
-    end
+    subject(:google_tag_manager_enabled) { helper.google_tag_manager_enabled? }
 
     context 'when not on gitlab.com' do
       let(:is_gitlab_com) { false }
 
-      it { is_expected.to be_falsey }
+      it { is_expected.to eq(false) }
     end
 
-    context 'when current user is set' do
-      let(:user) { instance_double('User') }
+    context 'regular and nonce versions' do
+      using RSpec::Parameterized::TableSyntax
 
-      it { is_expected.to be_falsey }
+      where(:gtm_nonce_enabled, :gtm_key) do
+        false | 'google_tag_manager_id'
+        true  | 'google_tag_manager_nonce_id'
+      end
+
+      with_them do
+        before do
+          stub_feature_flags(gtm_nonce: gtm_nonce_enabled)
+          stub_config(extra: { gtm_key => 'key' })
+        end
+
+        context 'on gitlab.com and a key set without a current user' do
+          it { is_expected.to be_truthy }
+        end
+
+        context 'when current user is set' do
+          let(:user) { instance_double('User') }
+
+          it { is_expected.to eq(false) }
+        end
+
+        context 'when no key is set' do
+          before do
+            stub_config(extra: {})
+          end
+
+          it { is_expected.to eq(false) }
+        end
+      end
+    end
+  end
+
+  describe '#google_tag_manager_id' do
+    subject(:google_tag_manager_id) { helper.google_tag_manager_id }
+
+    before do
+      stub_config(extra: { 'google_tag_manager_nonce_id': 'nonce', 'google_tag_manager_id': 'gtm' })
     end
 
-    context 'when no key is set' do
+    context 'when google tag manager is disabled' do
       before do
-        stub_config(extra: {})
+        allow(helper).to receive(:google_tag_manager_enabled?).and_return(false)
       end
 
       it { is_expected.to be_falsey }
+    end
+
+    context 'when google tag manager is enabled' do
+      before do
+        allow(helper).to receive(:google_tag_manager_enabled?).and_return(true)
+      end
+
+      context 'when nonce feature flag is enabled' do
+        it { is_expected.to eq('nonce') }
+      end
+
+      context 'when nonce feature flag is disabled' do
+        before do
+          stub_feature_flags(gtm_nonce: false)
+        end
+
+        it { is_expected.to eq('gtm') }
+      end
     end
   end
 
@@ -343,6 +392,172 @@ RSpec.describe AuthHelper do
     context 'when the user is missing' do
       it 'returns nil' do
         expect(helper.auth_app_owner_text(nil)).to be(nil)
+      end
+    end
+  end
+
+  describe '#auth_strategy_class' do
+    subject(:auth_strategy_class) { helper.auth_strategy_class(name) }
+
+    context 'when configuration specifies no provider' do
+      let(:name) { 'does_not_exist' }
+
+      before do
+        allow(Gitlab.config.omniauth).to receive(:providers).and_return([])
+      end
+
+      it 'returns false' do
+        expect(auth_strategy_class).to be_falsey
+      end
+    end
+
+    context 'when configuration specifies a provider with args but without strategy_class' do
+      let(:name) { 'google_oauth2' }
+      let(:provider) do
+        Struct.new(:name, :args).new(
+          name,
+          'app_id' => 'YOUR_APP_ID'
+        )
+      end
+
+      before do
+        allow(Gitlab.config.omniauth).to receive(:providers).and_return([provider])
+      end
+
+      it 'returns false' do
+        expect(auth_strategy_class).to be_falsey
+      end
+    end
+
+    context 'when configuration specifies a provider with args and strategy_class' do
+      let(:name) { 'provider1' }
+      let(:strategy) { 'OmniAuth::Strategies::LDAP' }
+      let(:provider) do
+        Struct.new(:name, :args).new(
+          name,
+          'strategy_class' => strategy
+        )
+      end
+
+      before do
+        allow(Gitlab.config.omniauth).to receive(:providers).and_return([provider])
+      end
+
+      it 'returns the class' do
+        expect(auth_strategy_class).to eq(strategy)
+      end
+    end
+
+    context 'when configuration specifies another provider with args and another strategy_class' do
+      let(:name) { 'provider1' }
+      let(:strategy) { 'OmniAuth::Strategies::LDAP' }
+      let(:provider) do
+        Struct.new(:name, :args).new(
+          'another_name',
+          'strategy_class' => strategy
+        )
+      end
+
+      before do
+        allow(Gitlab.config.omniauth).to receive(:providers).and_return([provider])
+      end
+
+      it 'returns false' do
+        expect(auth_strategy_class).to be_falsey
+      end
+    end
+  end
+
+  describe '#saml_providers' do
+    subject(:saml_providers) { helper.saml_providers }
+
+    let(:saml_strategy) { 'OmniAuth::Strategies::SAML' }
+
+    let(:saml_provider_1_name) { 'saml_provider_1' }
+    let(:saml_provider_1) do
+      Struct.new(:name, :args).new(
+        saml_provider_1_name,
+        'strategy_class' => saml_strategy
+      )
+    end
+
+    let(:saml_provider_2_name) { 'saml_provider_2' }
+    let(:saml_provider_2) do
+      Struct.new(:name, :args).new(
+        saml_provider_2_name,
+        'strategy_class' => saml_strategy
+      )
+    end
+
+    let(:ldap_provider_name) { 'ldap_provider' }
+    let(:ldap_strategy) { 'OmniAuth::Strategies::LDAP' }
+    let(:ldap_provider) do
+      Struct.new(:name, :args).new(
+        ldap_provider_name,
+        'strategy_class' => ldap_strategy
+      )
+    end
+
+    let(:google_oauth2_provider_name) { 'google_oauth2' }
+    let(:google_oauth2_provider) do
+      Struct.new(:name, :args).new(
+        google_oauth2_provider_name,
+        'app_id' => 'YOUR_APP_ID'
+      )
+    end
+
+    context 'when configuration specifies no provider' do
+      before do
+        allow(Devise).to receive(:omniauth_providers).and_return([])
+        allow(Gitlab.config.omniauth).to receive(:providers).and_return([])
+      end
+
+      it 'returns an empty list' do
+        expect(saml_providers).to be_empty
+      end
+    end
+
+    context 'when configuration specifies a provider with a SAML strategy_class' do
+      before do
+        allow(Devise).to receive(:omniauth_providers).and_return([saml_provider_1_name])
+        allow(Gitlab.config.omniauth).to receive(:providers).and_return([saml_provider_1])
+      end
+
+      it 'returns the provider' do
+        expect(saml_providers).to match_array([saml_provider_1_name])
+      end
+    end
+
+    context 'when configuration specifies two providers with a SAML strategy_class' do
+      before do
+        allow(Devise).to receive(:omniauth_providers).and_return([saml_provider_1_name, saml_provider_2_name])
+        allow(Gitlab.config.omniauth).to receive(:providers).and_return([saml_provider_1, saml_provider_2])
+      end
+
+      it 'returns the provider' do
+        expect(saml_providers).to match_array([saml_provider_1_name, saml_provider_2_name])
+      end
+    end
+
+    context 'when configuration specifies a provider with a non-SAML strategy_class' do
+      before do
+        allow(Devise).to receive(:omniauth_providers).and_return([ldap_provider_name])
+        allow(Gitlab.config.omniauth).to receive(:providers).and_return([ldap_provider])
+      end
+
+      it 'returns an empty list' do
+        expect(saml_providers).to be_empty
+      end
+    end
+
+    context 'when configuration specifies four providers but only two with SAML strategy_class' do
+      before do
+        allow(Devise).to receive(:omniauth_providers).and_return([saml_provider_1_name, ldap_provider_name, saml_provider_2_name, google_oauth2_provider_name])
+        allow(Gitlab.config.omniauth).to receive(:providers).and_return([saml_provider_1, ldap_provider, saml_provider_2, google_oauth2_provider])
+      end
+
+      it 'returns the provider' do
+        expect(saml_providers).to match_array([saml_provider_1_name, saml_provider_2_name])
       end
     end
   end

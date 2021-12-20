@@ -40,14 +40,24 @@ RSpec.describe 'User searches for code' do
       include_examples 'top right search form'
       include_examples 'search timeouts', 'blobs'
 
-      it 'finds code' do
+      it 'finds code and links to blob' do
         fill_in('dashboard_search', with: 'rspec')
         find('.btn-search').click
 
         expect(page).to have_selector('.results', text: 'Update capybara, rspec-rails, poltergeist to recent versions')
 
-        find("#L3").click
-        expect(current_url).to match(%r{master/.gitignore#L3})
+        find("#blob-L3").click
+        expect(current_url).to match(%r{blob/master/.gitignore#L3})
+      end
+
+      it 'finds code and links to blame' do
+        fill_in('dashboard_search', with: 'rspec')
+        find('.btn-search').click
+
+        expect(page).to have_selector('.results', text: 'Update capybara, rspec-rails, poltergeist to recent versions')
+
+        find("#blame-L3").click
+        expect(current_url).to match(%r{blame/master/.gitignore#L3})
       end
 
       it 'search mutiple words with refs switching' do
@@ -65,7 +75,8 @@ RSpec.describe 'User searches for code' do
         expect(page).to have_selector('.results', text: expected_result)
 
         expect(find_field('dashboard_search').value).to eq(search)
-        expect(find("#L1502")[:href]).to match(%r{v1.0.0/files/markdown/ruby-style-guide.md#L1502})
+        expect(find("#blob-L1502")[:href]).to match(%r{blob/v1.0.0/files/markdown/ruby-style-guide.md#L1502})
+        expect(find("#blame-L1502")[:href]).to match(%r{blame/v1.0.0/files/markdown/ruby-style-guide.md#L1502})
       end
     end
 

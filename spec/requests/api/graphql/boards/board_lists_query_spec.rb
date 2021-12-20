@@ -109,9 +109,15 @@ RSpec.describe 'get board lists' do
       it 'returns the correct list with issue count for matching issue filters' do
         label_list = create(:list, board: board, label: label, position: 10)
         create(:issue, project: project, labels: [label, label2])
+        create(:issue, project: project, labels: [label, label2], confidential: true)
         create(:issue, project: project, labels: [label])
 
-        post_graphql(query(id: global_id_of(label_list), issueFilters: { labelName: label2.title }), current_user: user)
+        post_graphql(
+          query(
+            id: global_id_of(label_list),
+            issueFilters: { labelName: label2.title, confidential: false }
+          ), current_user: user
+        )
 
         aggregate_failures do
           list_node = lists_data[0]['node']

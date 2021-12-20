@@ -7,11 +7,14 @@ type: howto
 
 # Geo proxying for secondary sites **(PREMIUM SELF)**
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5914) in GitLab 14.4 [with a flag](../../feature_flags.md) named `geo_secondary_proxy`. Disabled by default.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5914) in GitLab 14.4 [with a flag](../../feature_flags.md) named `geo_secondary_proxy`. Disabled by default.
+> - [Enabled by default for unified URLs](https://gitlab.com/gitlab-org/gitlab/-/issues/325732) in GitLab 14.6.
+> - [Disabled by default for different URLs](https://gitlab.com/gitlab-org/gitlab/-/issues/325732) in GitLab 14.6 [with a flag](../../feature_flags.md) named `geo_secondary_proxy_separate_urls`.
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. See below to [Set up a unified URL for Geo sites](#set-up-a-unified-url-for-geo-sites).
-The feature is not ready for production use.
+On self-managed GitLab, this feature is only available by default for Geo sites using a unified URL. See below to
+[set up a unified URL for Geo sites](#set-up-a-unified-url-for-geo-sites).
+The feature is not ready for production use with separate URLs.
 
 Use Geo proxying to:
 
@@ -66,7 +69,11 @@ a single URL used by all Geo sites, including the primary.
    is using the secondary proxying and set the `URL` field to the single URL.
    Make sure the primary site is also using this URL.
 
-### Enable secondary proxying
+In Kubernetes, you can use the same domain under `global.hosts.domain` as for the primary site.
+
+## Disable Geo proxying
+
+You can disable the secondary proxying on each Geo site, separately, by following these steps with Omnibus-based packages:
 
 1. SSH into each application node (serving user traffic directly) on your secondary Geo site
    and add the following environment variable:
@@ -77,7 +84,7 @@ a single URL used by all Geo sites, including the primary.
 
    ```ruby
    gitlab_workhorse['env'] = {
-     "GEO_SECONDARY_PROXY" => "1"
+     "GEO_SECONDARY_PROXY" => "0"
    }
    ```
 
@@ -87,17 +94,51 @@ a single URL used by all Geo sites, including the primary.
    gitlab-ctl reconfigure
    ```
 
-1. SSH into one node running Rails on your primary Geo site and enable the Geo secondary proxy feature flag:
+In Kubernetes, you can use `--set gitlab.webservice.extraEnv.GEO_SECONDARY_PROXY="0"`,
+or specify the following in your values file:
 
-   ```shell
-   sudo gitlab-rails runner "Feature.enable(:geo_secondary_proxy)"
-   ```
+```yaml
+gitlab:
+  webservice:
+    extraEnv:
+      GEO_SECONDARY_PROXY: "0"
+```
 
 ## Enable Geo proxying with Separate URLs
 
 The ability to use proxying with separate URLs is still in development. You can follow the
 ["Geo secondary proxying with separate URLs" epic](https://gitlab.com/groups/gitlab-org/-/epics/6865)
 for progress.
+
+To try out this feature, enable the `geo_secondary_proxy_separate_urls` feature flag.
+SSH into one node running Rails on your primary Geo site and run:
+
+```shell
+sudo gitlab-rails runner "Feature.enable(:geo_secondary_proxy_separate_urls)"
+```
+
+In Kubernetes, you can run the same command in the toolbox pod. Refer to the
+[Kubernetes cheat sheet](../../troubleshooting/kubernetes_cheat_sheet.md#gitlab-specific-kubernetes-information)
+for details.
+
+## Limitations
+
+- When secondary proxying is used, the asynchronous Geo replication can cause unexpected issues for accelerated
+  data types that may be replicated to the Geo secondaries with a delay.
+
+  For example, we found a potential issue where
+  [replication lag introduces read-after-write inconsistencies](https://gitlab.com/gitlab-org/gitlab/-/issues/345267).
+  If the replication lag is high enough, this can result in Git reads receiving stale data when hitting a secondary.
+
+- Non-Rails requests are not proxied, so other services may need to use a separate, non-unified URL to ensure requests
+  are always sent to the primary. These services include:
+
+  - GitLab Container Registry - [can be configured to use a separate domain](../../packages/container_registry.md#configure-container-registry-under-its-own-domain).
+  - GitLab Pages - should always use a separate domain, as part of [the prerequisites for running GitLab Pages](../../pages/index.md#prerequisites).
+
+- With a unified URL, Let's Encrypt can't generate certificates unless it can reach both IPs through the same domain.
+  To use TLS certificates with Let's Encrypt, you can manually point the domain to one of the Geo sites, generate
+  the certificate, then copy it to all other sites.
 
 ## Features accelerated by secondary Geo sites
 

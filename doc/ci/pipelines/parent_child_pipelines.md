@@ -31,10 +31,9 @@ set of concurrently running child pipelines, but within the same project:
 - Child pipelines still execute each of their jobs according to a stage sequence, but
   would be free to continue forward through their stages without waiting for unrelated
   jobs in the parent pipeline to finish.
-- The configuration is split up into smaller child pipeline configurations, which are
+- The configuration is split up into smaller child pipeline configurations. Each child pipeline contains only relevant steps which are
   easier to understand. This reduces the cognitive load to understand the overall configuration.
 - Imports are done at the child pipeline level, reducing the likelihood of collisions.
-- Each pipeline has only relevant steps, making it easier to understand what's going on.
 
 Child pipelines work well with other GitLab CI/CD features:
 
@@ -43,7 +42,7 @@ Child pipelines work well with other GitLab CI/CD features:
 - Since the parent pipeline in `.gitlab-ci.yml` and the child pipeline run as normal
   pipelines, they can have their own behaviors and sequencing in relation to triggers.
 
-See the [`trigger:`](../yaml/index.md#trigger) keyword documentation for full details on how to
+See the [`trigger`](../yaml/index.md#trigger) keyword documentation for full details on how to
 include the child pipeline configuration.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
@@ -85,7 +84,7 @@ microservice_a:
         file: '/path/to/child-pipeline.yml'
 ```
 
-The maximum number of entries that are accepted for `trigger:include:` is three.
+The maximum number of entries that are accepted for `trigger:include` is three.
 
 Similar to [multi-project pipelines](multi_project_pipelines.md#mirror-status-of-a-triggered-pipeline-in-the-trigger-job),
 we can set the parent pipeline to depend on the status of the child pipeline upon completion:

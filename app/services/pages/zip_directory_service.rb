@@ -25,7 +25,9 @@ module Pages
       FileUtils.rm_f(output_file)
 
       entries_count = 0
-      ::Zip::File.open(output_file, ::Zip::File::CREATE) do |zipfile|
+      # Since we're writing not reading here, we can safely silence the cop.
+      # It currently cannot discern between opening for reading or writing.
+      ::Zip::File.open(output_file, ::Zip::File::CREATE) do |zipfile| # rubocop:disable Performance/Rubyzip
         write_entry(zipfile, PUBLIC_DIR)
         entries_count = zipfile.entries.count
       end

@@ -15,7 +15,7 @@ import ForkSuggestion from '~/repository/components/fork_suggestion.vue';
 import { loadViewer, viewerProps } from '~/repository/components/blob_viewers';
 import DownloadViewer from '~/repository/components/blob_viewers/download_viewer.vue';
 import EmptyViewer from '~/repository/components/blob_viewers/empty_viewer.vue';
-import TextViewer from '~/repository/components/blob_viewers/text_viewer.vue';
+import SourceViewer from '~/vue_shared/components/source_viewer.vue';
 import blobInfoQuery from '~/repository/queries/blob_info.query.graphql';
 import { redirectTo } from '~/lib/utils/url_utility';
 import { isLoggedIn } from '~/lib/utils/common_utils';
@@ -98,7 +98,7 @@ describe('Blob content viewer component', () => {
   const findForkSuggestion = () => wrapper.findComponent(ForkSuggestion);
 
   beforeEach(() => {
-    gon.features = { refactorTextViewer: true };
+    gon.features = { highlightJs: true };
     isLoggedIn.mockReturnValue(true);
   });
 
@@ -215,7 +215,7 @@ describe('Blob content viewer component', () => {
       viewer        | loadViewerReturnValue | viewerPropsReturnValue
       ${'empty'}    | ${EmptyViewer}        | ${{}}
       ${'download'} | ${DownloadViewer}     | ${{ filePath: '/some/file/path', fileName: 'test.js', fileSize: 100 }}
-      ${'text'}     | ${TextViewer}         | ${{ content: 'test', fileName: 'test.js', readOnly: true }}
+      ${'text'}     | ${SourceViewer}       | ${{ content: 'test', autoDetect: true }}
     `(
       'renders viewer component for $viewer files',
       async ({ viewer, loadViewerReturnValue, viewerPropsReturnValue }) => {
@@ -318,8 +318,14 @@ describe('Blob content viewer component', () => {
         repository: { empty },
       } = projectMock;
 
+      afterEach(() => {
+        delete gon.current_user_id;
+        delete gon.current_username;
+      });
+
       it('renders component', async () => {
         window.gon.current_user_id = 1;
+        window.gon.current_username = 'root';
 
         await createComponent({ pushCode, downloadCode, empty }, mount);
 
@@ -330,28 +336,34 @@ describe('Blob content viewer component', () => {
           deletePath: webPath,
           canPushCode: pushCode,
           canLock: true,
-          isLocked: false,
+          isLocked: true,
           emptyRepo: empty,
         });
       });
 
       it.each`
-        canPushCode | canDownloadCode | canLock
-        ${true}     | ${true}         | ${true}
-        ${false}    | ${true}         | ${false}
-        ${true}     | ${false}        | ${false}
-      `('passes the correct lock states', async ({ canPushCode, canDownloadCode, canLock }) => {
-        await createComponent(
-          {
-            pushCode: canPushCode,
-            downloadCode: canDownloadCode,
-            empty,
-          },
-          mount,
-        );
+        canPushCode | canDownloadCode | username   | canLock
+        ${true}     | ${true}         | ${'root'}  | ${true}
+        ${false}    | ${true}         | ${'root'}  | ${false}
+        ${true}     | ${false}        | ${'root'}  | ${false}
+        ${true}     | ${true}         | ${'peter'} | ${false}
+      `(
+        'passes the correct lock states',
+        async ({ canPushCode, canDownloadCode, username, canLock }) => {
+          gon.current_username = username;
 
-        expect(findBlobButtonGroup().props('canLock')).toBe(canLock);
-      });
+          await createComponent(
+            {
+              pushCode: canPushCode,
+              downloadCode: canDownloadCode,
+              empty,
+            },
+            mount,
+          );
+
+          expect(findBlobButtonGroup().props('canLock')).toBe(canLock);
+        },
+      );
 
       it('does not render if not logged in', async () => {
         isLoggedIn.mockReturnValueOnce(false);

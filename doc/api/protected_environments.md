@@ -117,13 +117,13 @@ Example response:
 
 ```json
 {
-   "name":"production",
-   "deploy_access_levels":[
+   "name": "production",
+   "deploy_access_levels": [
       {
-         "access_level":40,
-         "access_level_description":"protected-access-group",
-         "user_id":null,
-         "group_id":9899826
+         "access_level": 40,
+         "access_level_description": "protected-access-group",
+         "user_id": null,
+         "group_id": 9899826
       }
    ]
 }

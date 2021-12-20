@@ -20,7 +20,7 @@ module QA
         Flow::Login.sign_in
       end
 
-      it 'is received by a user for project invitation', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1448' do
+      it 'is received by a user for project invitation', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347961' do
         project.visit!
 
         Page::Project::Menu.perform(&:click_members)

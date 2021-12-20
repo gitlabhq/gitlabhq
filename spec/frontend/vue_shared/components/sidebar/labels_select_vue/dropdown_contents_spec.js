@@ -1,4 +1,5 @@
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
+import Vue from 'vue';
 import Vuex from 'vuex';
 
 import { DropdownVariant } from '~/vue_shared/components/sidebar/labels_select_vue/constants';
@@ -7,8 +8,7 @@ import labelsSelectModule from '~/vue_shared/components/sidebar/labels_select_vu
 
 import { mockConfig } from './mock_data';
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 const createComponent = (initialState = mockConfig, propsData = {}) => {
   const store = new Vuex.Store(labelsSelectModule());
@@ -17,7 +17,6 @@ const createComponent = (initialState = mockConfig, propsData = {}) => {
 
   return shallowMount(DropdownContents, {
     propsData,
-    localVue,
     store,
   });
 };

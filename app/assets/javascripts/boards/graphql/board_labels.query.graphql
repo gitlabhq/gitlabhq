@@ -7,6 +7,7 @@ query BoardLabels(
   $isProject: Boolean = false
 ) {
   group(fullPath: $fullPath) @include(if: $isGroup) {
+    id
     labels(searchTerm: $searchTerm, onlyGroupLabels: true, includeAncestorGroups: true) {
       nodes {
         ...Label
@@ -14,6 +15,7 @@ query BoardLabels(
     }
   }
   project(fullPath: $fullPath) @include(if: $isProject) {
+    id
     labels(searchTerm: $searchTerm, includeAncestorGroups: true) {
       nodes {
         ...Label

@@ -4,7 +4,7 @@ group: Configure
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Migrate from GitLab Managed Apps to Cluster Management Projects
+# Migrate from GitLab Managed Apps to Cluster Management Projects **(FREE)**
 
 The [GitLab Managed Apps](applications.md) were deprecated in GitLab 14.0
 in favor of [Cluster Management Projects](management_project.md).

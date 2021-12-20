@@ -1,6 +1,7 @@
 import { GlLoadingIcon } from '@gitlab/ui';
-import { createLocalVue, shallowMount } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
 import AxiosMockAdapter from 'axios-mock-adapter';
+import Vue from 'vue';
 import Vuex from 'vuex';
 import StatisticsPanelApp from '~/admin/statistics_panel/components/app.vue';
 import statisticsLabels from '~/admin/statistics_panel/constants';
@@ -9,8 +10,7 @@ import axios from '~/lib/utils/axios_utils';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import mockStatistics from '../mock_data';
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 describe('Admin statistics app', () => {
   let wrapper;
@@ -19,7 +19,6 @@ describe('Admin statistics app', () => {
 
   const createComponent = () => {
     wrapper = shallowMount(StatisticsPanelApp, {
-      localVue,
       store,
     });
   };

@@ -9,7 +9,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 Cron syntax is used to schedule when jobs should run.
 
 You may need to use a cron syntax string to
-[trigger nightly pipelines](../../ci/triggers/index.md#using-cron-to-trigger-nightly-pipelines),
 create a [pipeline schedule](../../api/pipeline_schedules.md#create-a-new-pipeline-schedule),
 or to prevent unintentional releases by setting a
 [deploy freeze](../../user/project/releases/index.md#prevent-unintentional-releases-by-setting-a-deploy-freeze).
@@ -65,5 +64,7 @@ More examples of how to write a cron schedule can be found at
 ## How GitLab parses cron syntax strings
 
 GitLab uses [`fugit`](https://github.com/floraison/fugit) to parse cron syntax
-strings on the server and [cron-validate](https://github.com/Airfooox/cron-validate)
-to validate cron syntax in the browser.
+strings on the server and [cron-validator](https://github.com/TheCloudConnectors/cron-validator)
+to validate cron syntax in the browser. GitLab uses
+[`cRonstrue`](https://github.com/bradymholt/cRonstrue) to convert cron to human-readable strings
+in the browser.

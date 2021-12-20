@@ -22,6 +22,8 @@ module MergeRequests
       merge_request_activity_counter.track_assignees_changed_action(user: current_user)
 
       execute_assignees_hooks(merge_request, old_assignees) if options[:execute_hooks]
+
+      remove_attention_requested(merge_request, current_user)
     end
 
     private

@@ -44,7 +44,7 @@ module Gitlab
 
           next unless match
 
-          input = match.split(':')[1..-1].join
+          input = match.split(':')[1..].join
           next if input.empty?
 
           filter[:negated] = match.start_with?("-")

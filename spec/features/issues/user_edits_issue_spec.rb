@@ -15,7 +15,6 @@ RSpec.describe "Issues > User edits issue", :js do
 
   context 'with authorized user' do
     before do
-      stub_feature_flags(labels_widget: false)
       project.add_developer(user)
       project_with_milestones.add_developer(user)
       sign_in(user)
@@ -146,12 +145,12 @@ RSpec.describe "Issues > User edits issue", :js do
           fill_in 'Comment', with: '/label ~syzygy'
 
           click_button 'Comment'
-          expect(page).to have_text('added syzygy label just now')
+          expect(page).to have_text('added syzygy label just now', wait: 300)
 
           page.within '.block.labels' do
             # Remove `verisimilitude` label
             within '.gl-label' do
-              click_button
+              click_button 'Remove label'
             end
 
             expect(page).to have_text('syzygy')
@@ -418,7 +417,7 @@ RSpec.describe "Issues > User edits issue", :js do
         it 'adds due date to issue' do
           date = Date.today.at_beginning_of_month + 2.days
 
-          page.within '[data-testid="due-date"]' do
+          page.within '[data-testid="sidebar-due-date"]' do
             click_button 'Edit'
             page.within '.pika-single' do
               click_button date.day
@@ -433,7 +432,7 @@ RSpec.describe "Issues > User edits issue", :js do
         it 'removes due date from issue' do
           date = Date.today.at_beginning_of_month + 2.days
 
-          page.within '[data-testid="due-date"]' do
+          page.within '[data-testid="sidebar-due-date"]' do
             click_button 'Edit'
 
             page.within '.pika-single' do

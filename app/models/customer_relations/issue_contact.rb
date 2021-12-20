@@ -8,6 +8,14 @@ class CustomerRelations::IssueContact < ApplicationRecord
 
   validate :contact_belongs_to_issue_group
 
+  def self.find_contact_ids_by_emails(issue_id, emails)
+    raise ArgumentError, "Cannot lookup more than #{MAX_PLUCK} emails" if emails.length > MAX_PLUCK
+
+    joins(:contact)
+      .where(issue_id: issue_id, customer_relations_contacts: { email: emails })
+      .pluck(:contact_id)
+  end
+
   private
 
   def contact_belongs_to_issue_group

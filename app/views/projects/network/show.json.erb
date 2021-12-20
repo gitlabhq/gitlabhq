@@ -2,7 +2,7 @@
 
 <%= raw(
   {
-    days: @graph.days.compact.map { |d| [d.day, d.strftime("%b")] },
+    days: @graph.days.compact.map { |d| [d.day, d.strftime("%b"), d.year] },
     commits: @graph.commits.map do |c|
       {
         parents: parents_zip_spaces(c.parents(@graph.map), c.parent_spaces),

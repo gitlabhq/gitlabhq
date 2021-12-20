@@ -10,7 +10,7 @@ When you're collaborating online, you get fewer opportunities for high-fives
 and thumbs-ups. Emoji can be awarded to [issues](project/issues/index.md), [merge requests](project/merge_requests/index.md),
 [snippets](snippets.md), and anywhere you can have a thread.
 
-![Award emoji](img/award_emoji_select.png)
+![Award emoji](img/award_emoji_select_v14_6.png)
 
 Award emoji make it much easier to give and receive feedback without a long
 comment thread.
@@ -34,11 +34,9 @@ downvotes.
 Award emoji can also be applied to individual comments when you want to
 celebrate an accomplishment or agree with an opinion.
 
-To:
+To add an award emoji:
 
-- Add an award emoji, click the smile in the top right of the comment and pick an emoji from the dropdown.
-- Remove an award emoji, click the emoji again.
+1. In the top right of the comment, select the smile (**{slight-smile}**).
+1. Select an emoji from the dropdown list.
 
-![Picking an emoji for a comment](img/award_emoji_comment_picker.png)
-
-![An award emoji has been applied to a comment](img/award_emoji_comment_awarded.png)
+To remove an award emoji, select the emoji again.

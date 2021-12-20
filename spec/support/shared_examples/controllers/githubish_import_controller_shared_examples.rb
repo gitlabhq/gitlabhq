@@ -58,11 +58,12 @@ RSpec.shared_examples 'a GitHub-ish import controller: GET new' do
 end
 
 RSpec.shared_examples 'a GitHub-ish import controller: GET status' do
+  let(:repo_fake) { Struct.new(:id, :login, :full_name, :name, :owner, keyword_init: true) }
   let(:new_import_url) { public_send("new_import_#{provider}_url") }
   let(:user) { create(:user) }
-  let(:repo) { OpenStruct.new(login: 'vim', full_name: 'asd/vim', name: 'vim', owner: { login: 'owner' }) }
-  let(:org) { OpenStruct.new(login: 'company') }
-  let(:org_repo) { OpenStruct.new(login: 'company', full_name: 'company/repo', name: 'repo', owner: { login: 'owner' }) }
+  let(:repo) { repo_fake.new(login: 'vim', full_name: 'asd/vim', name: 'vim', owner: { login: 'owner' }) }
+  let(:org) { double('org', login: 'company') }
+  let(:org_repo) { repo_fake.new(login: 'company', full_name: 'company/repo', name: 'repo', owner: { login: 'owner' }) }
 
   before do
     assign_session_token(provider)
@@ -72,7 +73,7 @@ RSpec.shared_examples 'a GitHub-ish import controller: GET status' do
     project = create(:project, import_type: provider, namespace: user.namespace, import_status: :finished, import_source: 'example/repo')
     group = create(:group)
     group.add_owner(user)
-    stub_client(repos: [repo, org_repo], orgs: [org], org_repos: [org_repo], each_page: [OpenStruct.new(objects: [repo, org_repo])].to_enum)
+    stub_client(repos: [repo, org_repo], orgs: [org], org_repos: [org_repo], each_page: [double('client', objects: [repo, org_repo])].to_enum)
 
     get :status, format: :json
 
@@ -125,7 +126,7 @@ RSpec.shared_examples 'a GitHub-ish import controller: GET status' do
   end
 
   context 'when filtering' do
-    let(:repo_2) { OpenStruct.new(login: 'emacs', full_name: 'asd/emacs', name: 'emacs', owner: { login: 'owner' }) }
+    let(:repo_2) { repo_fake.new(login: 'emacs', full_name: 'asd/emacs', name: 'emacs', owner: { login: 'owner' }) }
     let(:project) { create(:project, import_type: provider, namespace: user.namespace, import_status: :finished, import_source: 'example/repo') }
     let(:group) { create(:group) }
     let(:repos) { [repo, repo_2, org_repo] }
@@ -133,7 +134,7 @@ RSpec.shared_examples 'a GitHub-ish import controller: GET status' do
     before do
       group.add_owner(user)
       client = stub_client(repos: repos, orgs: [org], org_repos: [org_repo])
-      allow(client).to receive(:each_page).and_return([OpenStruct.new(objects: repos)].to_enum)
+      allow(client).to receive(:each_page).and_return([double('client', objects: repos)].to_enum)
       # GitHub controller has filtering done using GitHub Search API
       stub_feature_flags(remove_legacy_github_client: false)
     end
@@ -172,7 +173,7 @@ RSpec.shared_examples 'a GitHub-ish import controller: GET status' do
         repos = [build(:project, name: 2, path: 'test')]
 
         client = stub_client(repos: repos)
-        allow(client).to receive(:each_page).and_return([OpenStruct.new(objects: repos)].to_enum)
+        allow(client).to receive(:each_page).and_return([double('client', objects: repos)].to_enum)
       end
 
       it 'does not raise an error' do
@@ -189,13 +190,14 @@ end
 RSpec.shared_examples 'a GitHub-ish import controller: POST create' do
   let(:user) { create(:user) }
   let(:provider_username) { user.username }
-  let(:provider_user) { OpenStruct.new(login: provider_username) }
+  let(:provider_user) { double('user', login: provider_username) }
   let(:project) { create(:project, import_type: provider, import_status: :finished, import_source: "#{provider_username}/vim") }
   let(:provider_repo) do
-    OpenStruct.new(
+    double(
+      'provider',
       name: 'vim',
       full_name: "#{provider_username}/vim",
-      owner: OpenStruct.new(login: provider_username)
+      owner: double('owner', login: provider_username)
     )
   end
 
@@ -265,10 +267,9 @@ RSpec.shared_examples 'a GitHub-ish import controller: POST create' do
   end
 
   context "when the repository owner is not the provider user" do
-    let(:other_username) { "someone_else" }
+    let(:provider_username) { "someone_else" }
 
     before do
-      provider_repo.owner = OpenStruct.new(login: other_username)
       assign_session_token(provider)
     end
 
@@ -277,8 +278,7 @@ RSpec.shared_examples 'a GitHub-ish import controller: POST create' do
 
       context "when the namespace is owned by the GitLab user" do
         before do
-          user.username = other_username
-          user.save!
+          user.update!(username: provider_username)
         end
 
         it "takes the existing namespace" do
@@ -292,7 +292,7 @@ RSpec.shared_examples 'a GitHub-ish import controller: POST create' do
 
       context "when the namespace is not owned by the GitLab user" do
         it "creates a project using user's namespace" do
-          create(:user, username: other_username)
+          create(:user, username: provider_username)
 
           expect(Gitlab::LegacyGithubImport::ProjectCreator)
             .to receive(:new).with(provider_repo, provider_repo.name, user.namespace, user, type: provider, **access_params)

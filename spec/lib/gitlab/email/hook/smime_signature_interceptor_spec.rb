@@ -50,6 +50,7 @@ RSpec.describe Gitlab::Email::Hook::SmimeSignatureInterceptor do
     expect(mail.header['To'].value).to eq('test@example.com')
     expect(mail.header['From'].value).to eq('info@example.com')
     expect(mail.header['Content-Type'].value).to match('multipart/signed').and match('protocol="application/x-pkcs7-signature"')
+    expect(mail.header.include?('Content-Disposition')).to eq(false)
 
     # verify signature and obtain pkcs7 encoded content
     p7enc = Gitlab::Email::Smime::Signer.verify_signature(

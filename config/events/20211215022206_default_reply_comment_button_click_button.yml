@@ -1,0 +1,21 @@
+description: "Click reply comment button"
+category: default
+action: click_button
+label_description: "`reply_comment_button`"
+property_description: ""
+value_description: ""
+extra_properties:
+identifiers:
+product_section: dev
+product_stage: plan
+product_group: group::product_planning
+product_category:
+milestone: "13.9"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/53753
+distributions:
+- ce
+- ee
+tiers:
+- free
+- premium
+- ultimate

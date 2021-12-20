@@ -4,20 +4,20 @@
 - selected = local_assigns.fetch(:selected, nil)
 
 - selected_text = selected.try(:title) || params[:milestone_title]
-- dropdown_title = local_assigns.fetch(:dropdown_title, "Filter by milestone")
+- dropdown_title = local_assigns.fetch(:dropdown_title, _('Filter by milestone'))
 - if selected.present? || params[:milestone_title].present?
   = hidden_field_tag(name, name == :milestone_title ? selected_text : selected.id)
 = dropdown_tag(milestone_dropdown_label(selected_text), options: { title: dropdown_title, toggle_class: "qa-issuable-milestone-dropdown js-milestone-select js-filter-submit #{extra_class}", filter: true, dropdown_class: "qa-issuable-dropdown-menu-milestone dropdown-menu-selectable dropdown-menu-milestone",
-  placeholder: "Search milestones", footer_content: project.present?, data: { show_no: true, show_menu_above: show_menu_above, show_any: show_any, show_upcoming: show_upcoming, show_started: show_started, field_name: name, selected: selected_text, project_id: project.try(:id), default_label: "Milestone" } }) do
+  placeholder: _('Search milestones'), footer_content: project.present?, data: { show_no: true, show_menu_above: show_menu_above, show_any: show_any, show_upcoming: show_upcoming, show_started: show_started, field_name: name, selected: selected_text, project_id: project.try(:id), default_label: _('Milestone') } }) do
   - if project
     %ul.dropdown-footer-list
       - if can? current_user, :admin_milestone, project
         %li
-          = link_to new_project_milestone_path(project), title: "New Milestone" do
-            Create new
+          = link_to new_project_milestone_path(project), title: _('New Milestone') do
+            = _('Create new')
       %li
         = link_to project_milestones_path(project) do
           - if can? current_user, :admin_milestone, project
-            Manage milestones
+            = _('Manage milestones')
           - else
-            View milestones
+            = _('View milestones')

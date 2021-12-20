@@ -190,7 +190,7 @@ FactoryBot.define do
       end
 
       after :create do |project, evaluator|
-        raise "Failed to create repository!" unless project.create_repository
+        raise "Failed to create repository!" unless project.repository.exists? || project.create_repository
 
         evaluator.files.each do |filename, content|
           project.repository.create_file(

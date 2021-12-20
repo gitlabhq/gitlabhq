@@ -57,15 +57,7 @@ module Ci
         relation.pluck(:id)
       end
 
-      def use_denormalized_shared_runners_data?
-        false
-      end
-
-      def use_denormalized_minutes_data?
-        false
-      end
-
-      def use_denormalized_namespace_traversal_ids?
+      def use_denormalized_data_strategy?
         false
       end
 

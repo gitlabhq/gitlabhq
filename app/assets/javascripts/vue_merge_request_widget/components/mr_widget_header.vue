@@ -13,7 +13,7 @@ import {
 import { constructWebIDEPath } from '~/lib/utils/url_utility';
 import { s__ } from '~/locale';
 import clipboardButton from '~/vue_shared/components/clipboard_button.vue';
-import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate.vue';
+import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate/tooltip_on_truncate.vue';
 import WebIdeLink from '~/vue_shared/components/web_ide_link.vue';
 import MrWidgetHowToMergeModal from './mr_widget_how_to_merge_modal.vue';
 import MrWidgetIcon from './mr_widget_icon.vue';

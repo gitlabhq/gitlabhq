@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Login', :clean_gitlab_redis_shared_state do
+RSpec.describe 'Login', :clean_gitlab_redis_sessions do
   include TermsHelper
   include UserLoginHelper
   include SessionHelpers
@@ -84,7 +84,7 @@ RSpec.describe 'Login', :clean_gitlab_redis_shared_state do
       expect(page).to have_content('Your account has been blocked.')
     end
 
-    it 'does not update Devise trackable attributes', :clean_gitlab_redis_shared_state do
+    it 'does not update Devise trackable attributes' do
       expect(authentication_metrics)
         .to increment(:user_blocked_counter)
         .and increment(:user_unauthenticated_counter)
@@ -161,7 +161,7 @@ RSpec.describe 'Login', :clean_gitlab_redis_shared_state do
       expect(page).to have_content('Invalid login or password.')
     end
 
-    it 'does not update Devise trackable attributes', :clean_gitlab_redis_shared_state do
+    it 'does not update Devise trackable attributes' do
       expect(authentication_metrics)
         .to increment(:user_unauthenticated_counter)
         .and increment(:user_password_invalid_counter)

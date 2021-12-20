@@ -58,6 +58,8 @@ module MergeRequests
       new_reviewers = merge_request.reviewers - old_reviewers
       merge_request_activity_counter.track_users_review_requested(users: new_reviewers)
       merge_request_activity_counter.track_reviewers_changed_action(user: current_user)
+
+      remove_attention_requested(merge_request, current_user)
     end
 
     def cleanup_environments(merge_request)
@@ -237,6 +239,18 @@ module MergeRequests
       return unless milestone
 
       Milestones::MergeRequestsCountService.new(milestone).delete_cache
+    end
+
+    def remove_all_attention_requests(merge_request)
+      return unless merge_request.attention_requested_enabled?
+
+      ::MergeRequests::BulkRemoveAttentionRequestedService.new(project: merge_request.project, current_user: current_user, merge_request: merge_request).execute
+    end
+
+    def remove_attention_requested(merge_request, user)
+      return unless merge_request.attention_requested_enabled?
+
+      ::MergeRequests::RemoveAttentionRequestedService.new(project: merge_request.project, current_user: current_user, merge_request: merge_request, user: user).execute
     end
   end
 end

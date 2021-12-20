@@ -1,9 +1,9 @@
-import { mount, createLocalVue } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
+import Vue from 'vue';
 import locale from '~/locale';
 import Translate from '~/vue_shared/translate';
 
-const localVue = createLocalVue();
-localVue.use(Translate);
+Vue.use(Translate);
 
 describe('Vue translate filter', () => {
   const createTranslationMock = (key, ...translations) => {
@@ -26,16 +26,13 @@ describe('Vue translate filter', () => {
     const translation = 'singular_translated';
     createTranslationMock(key, translation);
 
-    const wrapper = mount(
-      {
-        template: `
+    const wrapper = mount({
+      template: `
           <span>
             {{ __('${key}') }}
           </span>
         `,
-      },
-      { localVue },
-    );
+    });
 
     expect(wrapper.text()).toBe(translation);
   });
@@ -45,16 +42,13 @@ describe('Vue translate filter', () => {
     const translationPlural = 'plural_multiple translation';
     createTranslationMock(key, 'plural_singular translation', translationPlural);
 
-    const wrapper = mount(
-      {
-        template: `
+    const wrapper = mount({
+      template: `
           <span>
             {{ n__('${key}', 'plurals', 2) }}
           </span>
         `,
-      },
-      { localVue },
-    );
+    });
 
     expect(wrapper.text()).toBe(translationPlural);
   });
@@ -67,31 +61,25 @@ describe('Vue translate filter', () => {
     });
 
     it('and n === 1', () => {
-      const wrapper = mount(
-        {
-          template: `
+      const wrapper = mount({
+        template: `
             <span>
               {{ n__('${key}', '%d days', 1) }}
             </span>
           `,
-        },
-        { localVue },
-      );
+      });
 
       expect(wrapper.text()).toBe('1 singular translated');
     });
 
     it('and n > 1', () => {
-      const wrapper = mount(
-        {
-          template: `
+      const wrapper = mount({
+        template: `
             <span>
               {{ n__('${key}', '%d days', 2) }}
             </span>
           `,
-        },
-        { localVue },
-      );
+      });
 
       expect(wrapper.text()).toBe('2 plural translated');
     });
@@ -107,31 +95,25 @@ describe('Vue translate filter', () => {
     });
 
     it('and using two parameters', () => {
-      const wrapper = mount(
-        {
-          template: `
+      const wrapper = mount({
+        template: `
             <span>
               {{ s__('Context', 'Foobar') }}
             </span>
           `,
-        },
-        { localVue },
-      );
+      });
 
       expect(wrapper.text()).toBe(expectation);
     });
 
     it('and using the pipe syntax', () => {
-      const wrapper = mount(
-        {
-          template: `
+      const wrapper = mount({
+        template: `
             <span>
               {{ s__('${key}') }}
             </span>
           `,
-        },
-        { localVue },
-      );
+      });
 
       expect(wrapper.text()).toBe(expectation);
     });
@@ -141,9 +123,8 @@ describe('Vue translate filter', () => {
     const translation = 'multiline string translated';
     createTranslationMock('multiline string', translation);
 
-    const wrapper = mount(
-      {
-        template: `
+    const wrapper = mount({
+      template: `
           <span>
             {{ __(\`
             multiline
@@ -151,9 +132,7 @@ describe('Vue translate filter', () => {
             \`) }}
           </span>
         `,
-      },
-      { localVue },
-    );
+    });
 
     expect(wrapper.text()).toBe(translation);
   });
@@ -163,9 +142,8 @@ describe('Vue translate filter', () => {
 
     createTranslationMock('multiline string', 'multiline string singular', translation);
 
-    const wrapper = mount(
-      {
-        template: `
+    const wrapper = mount({
+      template: `
           <span>
             {{ n__(
             \`
@@ -180,9 +158,7 @@ describe('Vue translate filter', () => {
             ) }}
           </span>
         `,
-      },
-      { localVue },
-    );
+    });
 
     expect(wrapper.text()).toBe(translation);
   });
@@ -192,9 +168,8 @@ describe('Vue translate filter', () => {
 
     createTranslationMock('Context| multiline string', translation);
 
-    const wrapper = mount(
-      {
-        template: `
+    const wrapper = mount({
+      template: `
           <span>
             {{ s__(
             \`
@@ -205,9 +180,7 @@ describe('Vue translate filter', () => {
             ) }}
           </span>
         `,
-      },
-      { localVue },
-    );
+    });
 
     expect(wrapper.text()).toBe(translation);
   });

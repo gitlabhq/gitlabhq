@@ -1,18 +1,16 @@
-import { GlButton, GlKeysetPagination } from '@gitlab/ui';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
+import { stripTypenames } from 'helpers/graphql_helpers';
 import EmptyTagsState from '~/packages_and_registries/container_registry/explorer/components/details_page/empty_state.vue';
 import component from '~/packages_and_registries/container_registry/explorer/components/details_page/tags_list.vue';
 import TagsListRow from '~/packages_and_registries/container_registry/explorer/components/details_page/tags_list_row.vue';
 import TagsLoader from '~/packages_and_registries/container_registry/explorer/components/details_page/tags_loader.vue';
-import {
-  TAGS_LIST_TITLE,
-  REMOVE_TAGS_BUTTON_TITLE,
-} from '~/packages_and_registries/container_registry/explorer/constants/index';
+import RegistryList from '~/packages_and_registries/shared/components/registry_list.vue';
 import getContainerRepositoryTagsQuery from '~/packages_and_registries/container_registry/explorer/graphql/queries/get_container_repository_tags.query.graphql';
+import { GRAPHQL_PAGE_SIZE } from '~/packages_and_registries/container_registry/explorer/constants/index';
 import { tagsMock, imageTagsMock, tagsPageInfo } from '../../mock_data';
 
 const localVue = createLocalVue();
@@ -20,25 +18,20 @@ const localVue = createLocalVue();
 describe('Tags List', () => {
   let wrapper;
   let apolloProvider;
+  let resolver;
   const tags = [...tagsMock];
-  const readOnlyTags = tags.map((t) => ({ ...t, canDelete: false }));
 
-  const findTagsListRow = () => wrapper.findAll(TagsListRow);
-  const findDeleteButton = () => wrapper.find(GlButton);
-  const findListTitle = () => wrapper.find('[data-testid="list-title"]');
-  const findPagination = () => wrapper.find(GlKeysetPagination);
-  const findEmptyState = () => wrapper.find(EmptyTagsState);
-  const findTagsLoader = () => wrapper.find(TagsLoader);
+  const findTagsListRow = () => wrapper.findAllComponents(TagsListRow);
+  const findRegistryList = () => wrapper.findComponent(RegistryList);
+  const findEmptyState = () => wrapper.findComponent(EmptyTagsState);
+  const findTagsLoader = () => wrapper.findComponent(TagsLoader);
 
   const waitForApolloRequestRender = async () => {
     await waitForPromises();
     await nextTick();
   };
 
-  const mountComponent = ({
-    propsData = { isMobile: false, id: 1 },
-    resolver = jest.fn().mockResolvedValue(imageTagsMock()),
-  } = {}) => {
+  const mountComponent = ({ propsData = { isMobile: false, id: 1 } } = {}) => {
     localVue.use(VueApollo);
 
     const requestHandlers = [[getContainerRepositoryTagsQuery, resolver]];
@@ -48,6 +41,7 @@ describe('Tags List', () => {
       localVue,
       apolloProvider,
       propsData,
+      stubs: { RegistryList },
       provide() {
         return {
           config: {},
@@ -56,99 +50,58 @@ describe('Tags List', () => {
     });
   };
 
+  beforeEach(() => {
+    resolver = jest.fn().mockResolvedValue(imageTagsMock());
+  });
+
   afterEach(() => {
     wrapper.destroy();
-    wrapper = null;
   });
 
-  describe('List title', () => {
-    it('exists', async () => {
+  describe('registry list', () => {
+    beforeEach(() => {
       mountComponent();
 
-      await waitForApolloRequestRender();
-
-      expect(findListTitle().exists()).toBe(true);
+      return waitForApolloRequestRender();
     });
 
-    it('has the correct text', async () => {
-      mountComponent();
-
-      await waitForApolloRequestRender();
-
-      expect(findListTitle().text()).toBe(TAGS_LIST_TITLE);
-    });
-  });
-
-  describe('delete button', () => {
-    it.each`
-      inputTags       | isMobile | isVisible
-      ${tags}         | ${false} | ${true}
-      ${tags}         | ${true}  | ${false}
-      ${readOnlyTags} | ${false} | ${false}
-      ${readOnlyTags} | ${true}  | ${false}
-    `(
-      'is $isVisible that delete button exists when tags is $inputTags and isMobile is $isMobile',
-      async ({ inputTags, isMobile, isVisible }) => {
-        mountComponent({
-          propsData: { tags: inputTags, isMobile, id: 1 },
-          resolver: jest.fn().mockResolvedValue(imageTagsMock(inputTags)),
-        });
-
-        await waitForApolloRequestRender();
-
-        expect(findDeleteButton().exists()).toBe(isVisible);
-      },
-    );
-
-    it('has the correct text', async () => {
-      mountComponent();
-
-      await waitForApolloRequestRender();
-
-      expect(findDeleteButton().text()).toBe(REMOVE_TAGS_BUTTON_TITLE);
-    });
-
-    it('has the correct props', async () => {
-      mountComponent();
-      await waitForApolloRequestRender();
-
-      expect(findDeleteButton().attributes()).toMatchObject({
-        category: 'secondary',
-        variant: 'danger',
+    it('binds the correct props', () => {
+      expect(findRegistryList().props()).toMatchObject({
+        title: '2 tags',
+        pagination: stripTypenames(tagsPageInfo),
+        items: stripTypenames(tags),
+        idProperty: 'name',
       });
     });
 
-    it.each`
-      disabled | doSelect | buttonDisabled
-      ${true}  | ${false} | ${'true'}
-      ${true}  | ${true}  | ${'true'}
-      ${false} | ${false} | ${'true'}
-      ${false} | ${true}  | ${undefined}
-    `(
-      'is $buttonDisabled that the button is disabled when the component disabled state is $disabled and is $doSelect that the user selected a tag',
-      async ({ disabled, buttonDisabled, doSelect }) => {
-        mountComponent({ propsData: { tags, disabled, isMobile: false, id: 1 } });
+    describe('events', () => {
+      it('prev-page fetch the previous page', () => {
+        findRegistryList().vm.$emit('prev-page');
 
-        await waitForApolloRequestRender();
+        expect(resolver).toHaveBeenCalledWith({
+          first: null,
+          before: tagsPageInfo.startCursor,
+          last: GRAPHQL_PAGE_SIZE,
+          id: '1',
+        });
+      });
 
-        if (doSelect) {
-          findTagsListRow().at(0).vm.$emit('select');
-          await nextTick();
-        }
+      it('next-page fetch the previous page', () => {
+        findRegistryList().vm.$emit('next-page');
 
-        expect(findDeleteButton().attributes('disabled')).toBe(buttonDisabled);
-      },
-    );
+        expect(resolver).toHaveBeenCalledWith({
+          after: tagsPageInfo.endCursor,
+          first: GRAPHQL_PAGE_SIZE,
+          id: '1',
+        });
+      });
 
-    it('click event emits a deleted event with selected items', async () => {
-      mountComponent();
+      it('emits a delete event when list emits delete', () => {
+        const eventPayload = 'foo';
+        findRegistryList().vm.$emit('delete', eventPayload);
 
-      await waitForApolloRequestRender();
-
-      findTagsListRow().at(0).vm.$emit('select');
-      findDeleteButton().vm.$emit('click');
-
-      expect(wrapper.emitted('delete')[0][0][0].name).toBe(tags[0].name);
+        expect(wrapper.emitted('delete')).toEqual([[eventPayload]]);
+      });
     });
   });
 
@@ -199,10 +152,12 @@ describe('Tags List', () => {
   });
 
   describe('when the list of tags is empty', () => {
-    const resolver = jest.fn().mockResolvedValue(imageTagsMock([]));
+    beforeEach(() => {
+      resolver = jest.fn().mockResolvedValue(imageTagsMock([]));
+    });
 
     it('has the empty state', async () => {
-      mountComponent({ resolver });
+      mountComponent();
 
       await waitForApolloRequestRender();
 
@@ -210,7 +165,7 @@ describe('Tags List', () => {
     });
 
     it('does not show the loader', async () => {
-      mountComponent({ resolver });
+      mountComponent();
 
       await waitForApolloRequestRender();
 
@@ -218,76 +173,13 @@ describe('Tags List', () => {
     });
 
     it('does not show the list', async () => {
-      mountComponent({ resolver });
+      mountComponent();
 
       await waitForApolloRequestRender();
 
-      expect(findTagsListRow().exists()).toBe(false);
-      expect(findListTitle().exists()).toBe(false);
+      expect(findRegistryList().exists()).toBe(false);
     });
   });
-
-  describe('pagination', () => {
-    it('exists', async () => {
-      mountComponent();
-
-      await waitForApolloRequestRender();
-
-      expect(findPagination().exists()).toBe(true);
-    });
-
-    it('is hidden when loading', () => {
-      mountComponent();
-
-      expect(findPagination().exists()).toBe(false);
-    });
-
-    it('is hidden when there are no more pages', async () => {
-      mountComponent({ resolver: jest.fn().mockResolvedValue(imageTagsMock([])) });
-
-      await waitForApolloRequestRender();
-
-      expect(findPagination().exists()).toBe(false);
-    });
-
-    it('is wired to the correct pagination props', async () => {
-      mountComponent();
-
-      await waitForApolloRequestRender();
-
-      expect(findPagination().props()).toMatchObject({
-        hasNextPage: tagsPageInfo.hasNextPage,
-        hasPreviousPage: tagsPageInfo.hasPreviousPage,
-      });
-    });
-
-    it('fetch next page when user clicks next', async () => {
-      const resolver = jest.fn().mockResolvedValue(imageTagsMock());
-      mountComponent({ resolver });
-
-      await waitForApolloRequestRender();
-
-      findPagination().vm.$emit('next');
-
-      expect(resolver).toHaveBeenCalledWith(
-        expect.objectContaining({ after: tagsPageInfo.endCursor }),
-      );
-    });
-
-    it('fetch previous page when user clicks prev', async () => {
-      const resolver = jest.fn().mockResolvedValue(imageTagsMock());
-      mountComponent({ resolver });
-
-      await waitForApolloRequestRender();
-
-      findPagination().vm.$emit('prev');
-
-      expect(resolver).toHaveBeenCalledWith(
-        expect.objectContaining({ first: null, before: tagsPageInfo.startCursor }),
-      );
-    });
-  });
-
   describe('loading state', () => {
     it.each`
       isImageLoading | queryExecuting | loadingVisible
@@ -306,8 +198,6 @@ describe('Tags List', () => {
 
         expect(findTagsLoader().exists()).toBe(loadingVisible);
         expect(findTagsListRow().exists()).toBe(!loadingVisible);
-        expect(findListTitle().exists()).toBe(!loadingVisible);
-        expect(findPagination().exists()).toBe(!loadingVisible);
       },
     );
   });

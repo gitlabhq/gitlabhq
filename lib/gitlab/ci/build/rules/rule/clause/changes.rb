@@ -23,7 +23,7 @@ module Gitlab
           return @globs unless context
 
           @globs.map do |glob|
-            ExpandVariables.expand_existing(glob, context.variables)
+            ExpandVariables.expand_existing(glob, -> { context.variables_hash })
           end
         end
       end

@@ -71,7 +71,7 @@ RSpec.describe Packages::Nuget::PackageFinder do
       end
 
       context 'with prefix wildcard' do
-        let(:package_name) { "%#{package1.name[3..-1]}" }
+        let(:package_name) { "%#{package1.name[3..]}" }
 
         it { is_expected.to match_array([package1, package2]) }
       end

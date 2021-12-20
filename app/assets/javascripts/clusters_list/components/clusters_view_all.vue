@@ -34,10 +34,12 @@ export default {
   directives: {
     GlModalDirective,
   },
-  AGENT_CARD_INFO,
-  CERTIFICATE_BASED_CARD_INFO,
   MAX_CLUSTERS_LIST,
   INSTALL_AGENT_MODAL_ID,
+  i18n: {
+    agent: AGENT_CARD_INFO,
+    certificate: CERTIFICATE_BASED_CARD_INFO,
+  },
   inject: ['addClusterPath'],
   props: {
     defaultBranchName: {
@@ -122,21 +124,21 @@ export default {
             </gl-sprintf>
           </h3>
 
-          <gl-badge id="clusters-recommended-badge" size="md" variant="info">{{
-            $options.AGENT_CARD_INFO.tooltip.label
+          <gl-badge id="clusters-recommended-badge" variant="info">{{
+            $options.i18n.agent.tooltip.label
           }}</gl-badge>
 
           <gl-popover
             target="clusters-recommended-badge"
             container="viewport"
             placement="bottom"
-            :title="$options.AGENT_CARD_INFO.tooltip.title"
+            :title="$options.i18n.agent.tooltip.title"
           >
             <p class="gl-mb-0">
-              <gl-sprintf :message="$options.AGENT_CARD_INFO.tooltip.text">
+              <gl-sprintf :message="$options.i18n.agent.tooltip.text">
                 <template #link="{ content }">
                   <gl-link
-                    :href="$options.AGENT_CARD_INFO.tooltip.link"
+                    :href="$options.i18n.agent.tooltip.link"
                     target="_blank"
                     class="gl-font-sm"
                   >
@@ -159,9 +161,9 @@ export default {
           <gl-link
             v-if="totalAgents"
             data-testid="agents-tab-footer-link"
-            :href="`?tab=${$options.AGENT_CARD_INFO.tabName}`"
-            @click="changeTab($event, $options.AGENT_CARD_INFO.tabName)"
-            ><gl-sprintf :message="$options.AGENT_CARD_INFO.footerText"
+            :href="`?tab=${$options.i18n.agent.tabName}`"
+            @click="changeTab($event, $options.i18n.agent.tabName)"
+            ><gl-sprintf :message="$options.i18n.agent.footerText"
               ><template #number>{{ cardFooterNumber(totalAgents) }}</template></gl-sprintf
             ></gl-link
           ><gl-button
@@ -169,7 +171,7 @@ export default {
             class="gl-ml-4"
             category="secondary"
             variant="confirm"
-            >{{ $options.AGENT_CARD_INFO.actionText }}</gl-button
+            >{{ $options.i18n.agent.actionText }}</gl-button
           >
         </template>
       </gl-card>
@@ -190,6 +192,7 @@ export default {
               <template #total>{{ clustersCardTitle.total }}</template>
             </gl-sprintf>
           </h3>
+          <gl-badge variant="warning">{{ $options.i18n.certificate.badgeText }}</gl-badge>
         </template>
 
         <clusters :limit="$options.MAX_CLUSTERS_LIST" :is-child-component="true" />
@@ -198,9 +201,9 @@ export default {
           <gl-link
             v-if="totalClusters"
             data-testid="clusters-tab-footer-link"
-            :href="`?tab=${$options.CERTIFICATE_BASED_CARD_INFO.tabName}`"
-            @click="changeTab($event, $options.CERTIFICATE_BASED_CARD_INFO.tabName)"
-            ><gl-sprintf :message="$options.CERTIFICATE_BASED_CARD_INFO.footerText"
+            :href="`?tab=${$options.i18n.certificate.tabName}`"
+            @click="changeTab($event, $options.i18n.certificate.tabName)"
+            ><gl-sprintf :message="$options.i18n.certificate.footerText"
               ><template #number>{{ cardFooterNumber(totalClusters) }}</template></gl-sprintf
             ></gl-link
           ><gl-button
@@ -209,7 +212,7 @@ export default {
             variant="confirm"
             class="gl-ml-4"
             :href="addClusterPath"
-            >{{ $options.CERTIFICATE_BASED_CARD_INFO.actionText }}</gl-button
+            >{{ $options.i18n.certificate.actionText }}</gl-button
           >
         </template>
       </gl-card>

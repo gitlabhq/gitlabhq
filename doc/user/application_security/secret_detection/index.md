@@ -34,33 +34,8 @@ GitLab displays identified secrets visibly in a few places:
 ## Supported secrets
 
 Secret Detection detects a variety of common secrets by default. You can also customize the secret detection patterns using [custom rulesets](#custom-rulesets).
-
-The [default ruleset provided by TruffleHog and Gitleaks](https://gitlab.com/gitlab-org/security-products/analyzers/secrets/-/blob/master/gitleaks.toml) includes the following key types:
-
-- Cloud services:
-  - Amazon Web Services (AWS)
-  - Google Cloud Platform (GCP)
-  - Heroku API
-- Encryption keys:
-  - PKCS8
-  - RSA
-  - SSH
-  - PGP
-  - DSA
-  - EC
-- Social media platforms:
-  - Facebook API
-  - Twitter API
-- Cloud SaaS vendors:
-  - GitHub API
-  - Shopify API
-  - Slack Token
-  - Slack Webhook
-  - Stripe API
-  - Twilio API
-  - Generic API key strings starting with `api-`
-- Password in URL
-- U.S. Social Security Number
+The [default ruleset](https://gitlab.com/gitlab-org/security-products/analyzers/secrets/-/blob/master/gitleaks.toml) includes **90+ secret detection patterns**.
+You can contribute "well-identifiable" secrets by follow the steps detailed in the [community contributions guidelines](https://gitlab.com/gitlab-org/gitlab/-/issues/345453).
 
 WARNING:
 Gitleaks does not support scanning binary files.
@@ -134,7 +109,7 @@ The included template creates Secret Detection jobs in your CI/CD pipeline and s
 your project's source code for secrets.
 
 The results are saved as a
-[Secret Detection report artifact](../../../ci/yaml/index.md#artifactsreportssecret_detection)
+[Secret Detection report artifact](../../../ci/yaml/artifacts_reports.md#artifactsreportssecret_detection)
 that you can later download and analyze. Due to implementation limitations, we
 always take the latest Secret Detection artifact available.
 
@@ -148,10 +123,10 @@ from the Security Configuration page.
 
 1. In the project where you want to enable Secret Detection, go to
    **Security & Compliance > Configuration**.
-1. In the **Secret Detection** row, select **Configure via Merge Request**.
+1. In the **Secret Detection** row, select **Configure with a merge request**.
 
 This automatically creates a merge request with the changes necessary to enable Secret Detection
-that you can review and merge to complete the configuration. 
+that you can review and merge to complete the configuration.
 
 NOTE:
 The configuration tool works best with no existing `.gitlab-ci.yml` file, or with a minimal
@@ -210,10 +185,12 @@ Secret Detection can be customized by defining available CI/CD variables:
 
 ### Custom rulesets **(ULTIMATE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/211387) in GitLab 13.5.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/211387) in GitLab 13.5.
+> - [Added](https://gitlab.com/gitlab-org/gitlab/-/issues/339614) support for
+>   passthrough chains. Expanded to include additional passthrough types of `file`, `git`, and `url` in GitLab 14.6.
 
 You can customize the default secret detection rules provided with GitLab.
-Customization allows replace the default secret detection rules with rules that you define.
+Customization allows replacing the default secret detection rules with rules that you define.
 
 To create a custom ruleset:
 
@@ -250,6 +227,9 @@ To create a custom ruleset:
          target = "gitleaks.toml"
          value = "config/gitleaks.toml"
      ```
+
+Passthroughs can also be chained to build more complex configurations.
+For more details, see [SAST Customize ruleset section](../sast/index.md#customize-rulesets).
 
 ### Logging level
 

@@ -17,7 +17,7 @@
             %span.light.vertical-align-middle= group_member.human_access
             - unless group_member.owner?
               = link_to group_group_member_path(group, group_member), data: { confirm: remove_member_message(group_member), testid: 'remove-user' }, method: :delete, remote: true, class: "btn btn-sm btn-danger gl-button btn-icon gl-ml-3", title: _('Remove user from group') do
-                = sprite_icon('close', size: 16, css_class: 'gl-icon')
+                = sprite_icon('remove', size: 16, css_class: 'gl-icon')
 
 .row
   .col-md-6
@@ -47,6 +47,6 @@
 
                   - if member.respond_to? :project
                     = link_to project_project_member_path(project, member), data: { confirm: remove_member_message(member) }, remote: true, method: :delete, class: "btn btn-sm btn-danger gl-button btn-icon gl-ml-3", title: _('Remove user from project') do
-                      = sprite_icon('close', size: 16, css_class: 'gl-icon')
+                      = sprite_icon('remove', size: 16, css_class: 'gl-icon')
 
 = render partial: 'admin/users/modals'

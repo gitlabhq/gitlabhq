@@ -160,10 +160,10 @@ query. This in turn makes it much harder for this code to overload a database.
 
 ## Use read replicas when possible
 
-In a DB cluster we have many read replicas and one primary. A classic use of scaling the DB is to have read-only actions be performed by the replicas. We use [load balancing](../administration/database_load_balancing.md) to distribute this load. This allows for the replicas to grow as the pressure on the DB grows.
+In a DB cluster we have many read replicas and one primary. A classic use of scaling the DB is to have read-only actions be performed by the replicas. We use [load balancing](../administration/postgresql/database_load_balancing.md) to distribute this load. This allows for the replicas to grow as the pressure on the DB grows.
 
 By default, queries use read-only replicas, but due to
-[primary sticking](../administration/database_load_balancing.md#primary-sticking), GitLab uses the
+[primary sticking](../administration/postgresql/database_load_balancing.md#primary-sticking), GitLab uses the
 primary for some time and reverts to secondaries after they have either caught up or after 30 seconds.
 Doing this can lead to a considerable amount of unnecessary load on the primary.
 To prevent switching to the primary [merge request 56849](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/56849) introduced the
@@ -187,7 +187,7 @@ Internally, our database load balancer classifies the queries based on their mai
 - Sidekiq background jobs
 
 After the above queries are executed, GitLab
-[sticks to the primary](../administration/database_load_balancing.md#primary-sticking).
+[sticks to the primary](../administration/postgresql/database_load_balancing.md#primary-sticking).
 To make the inside queries prefer using the replicas,
 [merge request 59086](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/59086) introduced
 `fallback_to_replicas_for_ambiguous_queries`. This MR is also an example of how we redirected a
@@ -205,7 +205,7 @@ Keeping the old behavior requires marking CTEs with the keyword `MATERIALIZED`.
 When building CTE statements, use the `Gitlab::SQL::CTE` class [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/56976) in GitLab 13.11.
 By default, this `Gitlab::SQL::CTE` class forces materialization through adding the `MATERIALIZED` keyword for PostgreSQL 12 and higher.
 `Gitlab::SQL::CTE` automatically omits materialization when PostgreSQL 11 is running
-(this behavior is implemented using a custom arel node `Gitlab::Database::AsWithMaterialized` under the surface).
+(this behavior is implemented using a custom Arel node `Gitlab::Database::AsWithMaterialized` under the surface).
 
 WARNING:
 We plan to drop the support for PostgreSQL 11. Upgrading to GitLab 14.0 requires PostgreSQL 12 or higher.

@@ -1,4 +1,5 @@
 %p.form-text.text-muted
-  Add
-  = link_to 'description templates', help_page_path('user/project/description_templates')
-  to help your contributors communicate effectively!
+  - template_link_url = help_page_path('user/project/description_templates')
+  - template_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: template_link_url }
+  = s_('Promotions|Add %{link_start} description templates %{link_end} to help your contributors to communicate effectively!').html_safe % { link_start: template_link_start, link_end: '</a>'.html_safe }
+

@@ -4,6 +4,7 @@ import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import TableRow from '~/repository/components/table/row.vue';
 import FileIcon from '~/vue_shared/components/file_icon.vue';
 import { FILE_SYMLINK_MODE } from '~/vue_shared/constants';
+import { ROW_APPEAR_DELAY } from '~/repository/constants';
 
 const COMMIT_MOCK = { lockLabel: 'Locked by Root', committedDate: '2019-01-01' };
 
@@ -17,12 +18,12 @@ function factory(propsData = {}) {
 
   vm = shallowMount(TableRow, {
     propsData: {
+      commitInfo: COMMIT_MOCK,
       ...propsData,
       name: propsData.path,
       projectPath: 'gitlab-org/gitlab-ce',
       url: `https://test.com`,
       totalEntries: 10,
-      commitInfo: COMMIT_MOCK,
       rowNumber: 123,
     },
     directives: {
@@ -251,6 +252,8 @@ describe('Repository table row component', () => {
   });
 
   describe('row visibility', () => {
+    beforeAll(() => jest.useFakeTimers());
+
     beforeEach(() => {
       factory({
         id: '1',
@@ -258,18 +261,20 @@ describe('Repository table row component', () => {
         path: 'test',
         type: 'tree',
         currentPath: '/',
+        commitInfo: null,
       });
     });
-    it('emits a `row-appear` event', () => {
+
+    afterAll(() => jest.useRealTimers());
+
+    it('emits a `row-appear` event', async () => {
       findIntersectionObserver().vm.$emit('appear');
-      expect(vm.emitted('row-appear')).toEqual([
-        [
-          {
-            hasCommit: true,
-            rowNumber: 123,
-          },
-        ],
-      ]);
+
+      jest.runAllTimers();
+
+      expect(setTimeout).toHaveBeenCalledTimes(1);
+      expect(setTimeout).toHaveBeenLastCalledWith(expect.any(Function), ROW_APPEAR_DELAY);
+      expect(vm.emitted('row-appear')).toEqual([[123]]);
     });
   });
 });

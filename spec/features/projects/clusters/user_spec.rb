@@ -25,7 +25,7 @@ RSpec.describe 'User Cluster', :js do
     before do
       visit project_clusters_path(project)
 
-      click_link 'Certificate based'
+      click_link 'Certificate'
       click_link 'Connect with a certificate'
       click_link 'Connect existing cluster'
     end
@@ -113,7 +113,7 @@ RSpec.describe 'User Cluster', :js do
         click_button 'Remove integration and resources'
         fill_in 'confirm_cluster_name_input', with: cluster.name
         click_button 'Remove integration'
-        click_link 'Certificate based'
+        click_link 'Certificate'
       end
 
       it 'user sees creation form with the successful message' do

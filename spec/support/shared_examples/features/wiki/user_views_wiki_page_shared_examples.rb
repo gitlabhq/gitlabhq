@@ -161,7 +161,7 @@ RSpec.shared_examples 'User views a wiki page' do
         commit = wiki.commit
         visit wiki_page_path(wiki, wiki_page, version_id: commit, action: :diff)
 
-        expect(page).to have_content('by John Doe')
+        expect(page).to have_content('by Sidney Jones')
         expect(page).to have_content('updated home')
         expect(page).to have_content('Showing 1 changed file with 1 addition and 3 deletions')
         expect(page).to have_content('some link')
@@ -174,7 +174,7 @@ RSpec.shared_examples 'User views a wiki page' do
         commit = wiki.commit('HEAD^')
         visit wiki_page_path(wiki, wiki_page, version_id: commit, action: :diff)
 
-        expect(page).to have_content('by John Doe')
+        expect(page).to have_content('by Sidney Jones')
         expect(page).to have_content('updated home')
         expect(page).to have_content('Showing 1 changed file with 1 addition and 3 deletions')
         expect(page).to have_content('some link')
@@ -188,7 +188,7 @@ RSpec.shared_examples 'User views a wiki page' do
         commit = wiki.commit('HEAD^')
         visit wiki_page_path(wiki, wiki_page, version_id: commit, action: :diff)
 
-        expect(page).to have_content('by John Doe')
+        expect(page).to have_content('by Sidney Jones')
         expect(page).to have_content('created page: home')
         expect(page).to have_content('Showing 1 changed file with 4 additions and 0 deletions')
         expect(page).to have_content('Look at this')

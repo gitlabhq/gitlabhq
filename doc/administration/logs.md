@@ -245,8 +245,6 @@ The request was processed by `Projects::TreeController`.
 
 ## `api_json.log`
 
-> Introduced in GitLab 10.0.
-
 Depending on your installation method, this file is located at:
 
 - Omnibus GitLab: `/var/log/gitlab/gitlab-rails/api_json.log`
@@ -296,7 +294,7 @@ Depending on your installation method, this file is located at:
 - Installations from source: `/home/git/gitlab/log/application.log`
 
 It helps you discover events happening in your instance such as user creation
-and project removal. For example:
+and project deletion. For example:
 
 ```plaintext
 October 06, 2014 11:56: User "Administrator" (admin@example.com) was created
@@ -366,8 +364,6 @@ like this example:
 ```
 
 ## `kubernetes.log`
-
-> Introduced in GitLab 11.6.
 
 Depending on your installation method, this file is located at:
 
@@ -696,8 +692,6 @@ on a project.
 
 ## `importer.log`
 
-> Introduced in GitLab 11.3.
-
 Depending on your installation method, this file is located at:
 
 - Omnibus GitLab: `/var/log/gitlab/gitlab-rails/importer.log`
@@ -830,7 +824,7 @@ are generated in a location based on your installation method:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/15442) in GitLab 12.3.
 
-Contains details of GitLab [Database Load Balancing](database_load_balancing.md).
+Contains details of GitLab [Database Load Balancing](postgresql/database_load_balancing.md).
 Depending on your installation method, this file is located at:
 
 - Omnibus GitLab: `/var/log/gitlab/gitlab-rails/database_load_balancing.log`
@@ -915,8 +909,6 @@ For example:
 
 ## `geo.log` **(PREMIUM SELF)**
 
-> Introduced in 9.5.
-
 Geo stores structured log messages in a `geo.log` file. For Omnibus GitLab
 installations, this file is at `/var/log/gitlab/gitlab-rails/geo.log`.
 
@@ -933,8 +925,6 @@ For example:
 This message shows that Geo detected that a repository update was needed for project `1`.
 
 ## `update_mirror_service_json.log`
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/commit/7f637e2af7006dc2b1b2649d9affc0b86cfb33c4) in GitLab 11.12.
 
 Depending on your installation method, this file is located at:
 
@@ -1057,9 +1047,9 @@ For Omnibus GitLab installations, GitLab Monitor logs are in `/var/log/gitlab/gi
 
 For Omnibus GitLab installations, GitLab Exporter logs are in `/var/log/gitlab/gitlab-exporter/`.
 
-## GitLab Kubernetes Agent Server
+## GitLab Agent Server
 
-For Omnibus GitLab installations, GitLab Kubernetes Agent Server logs are
+For Omnibus GitLab installations, GitLab Agent Server logs are
 in `/var/log/gitlab/gitlab-kas/`.
 
 ## Praefect Logs

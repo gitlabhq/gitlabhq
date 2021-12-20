@@ -119,8 +119,9 @@ RSpec.describe 'Group issues page' do
       end
 
       it 'shows projects only with issues feature enabled', :js do
-        find('.empty-state .js-lazy-loaded')
-        find('.empty-state .new-project-item-link').click
+        within '.empty-state' do
+          click_button 'Toggle project select'
+        end
 
         page.within('.select2-results') do
           expect(page).to have_content(project.full_name)
@@ -158,9 +159,7 @@ RSpec.describe 'Group issues page' do
     it 'each issue item has a user-can-drag css applied' do
       visit issues_group_path(group, sort: 'relative_position')
 
-      page.within('.manual-ordering') do
-        expect(page).to have_selector('.issue.user-can-drag', count: 3)
-      end
+      expect(page).to have_selector('.issue.user-can-drag', count: 3)
     end
 
     it 'issues should be draggable and persist order' do
@@ -224,7 +223,8 @@ RSpec.describe 'Group issues page' do
     end
 
     it 'shows the pagination' do
-      expect(page).to have_selector('.gl-pagination')
+      expect(page).to have_link 'Prev'
+      expect(page).to have_link 'Next'
     end
 
     it 'first pagination item is active' do

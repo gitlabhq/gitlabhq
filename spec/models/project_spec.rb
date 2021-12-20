@@ -261,7 +261,49 @@ RSpec.describe Project, factory_default: :keep do
     end
 
     context 'updating a project' do
-      context 'with project namespaces' do
+      shared_examples 'project update' do
+        let_it_be(:project_namespace) { create(:project_namespace) }
+        let_it_be(:project) { project_namespace.project }
+
+        context 'when project namespace is not set' do
+          before do
+            project.update_column(:project_namespace_id, nil)
+            project.reload
+          end
+
+          it 'updates the project successfully' do
+            # pre-check that project does not have a project namespace
+            expect(project.project_namespace).to be_nil
+
+            project.update!(path: 'hopefully-valid-path2')
+
+            expect(project).to be_persisted
+            expect(project).to be_valid
+            expect(project.path).to eq('hopefully-valid-path2')
+            expect(project.project_namespace).to be_nil
+          end
+        end
+
+        context 'when project has an associated project namespace' do
+          # when FF is disabled creating a project does not create a project_namespace, so we create one
+          it 'project is INVALID when trying to remove project namespace' do
+            project.reload
+            # check that project actually has an associated project namespace
+            expect(project.project_namespace_id).to eq(project_namespace.id)
+
+            expect do
+              project.update!(project_namespace_id: nil, path: 'hopefully-valid-path1')
+            end.to raise_error(ActiveRecord::RecordInvalid)
+            expect(project).to be_invalid
+            expect(project.errors.full_messages).to include("Project namespace can't be blank")
+            expect(project.reload.project_namespace).to be_in_sync_with_project(project)
+          end
+        end
+      end
+
+      context 'with create_project_namespace_on_project_create FF enabled' do
+        it_behaves_like 'project update'
+
         it 'keeps project namespace in sync with project' do
           project = create(:project)
           project.update!(path: 'hopefully-valid-path1')
@@ -270,19 +312,21 @@ RSpec.describe Project, factory_default: :keep do
           expect(project.project_namespace).to be_persisted
           expect(project.project_namespace).to be_in_sync_with_project(project)
         end
+      end
 
-        context 'with FF disabled' do
-          before do
-            stub_feature_flags(create_project_namespace_on_project_create: false)
-          end
+      context 'with create_project_namespace_on_project_create FF disabled' do
+        before do
+          stub_feature_flags(create_project_namespace_on_project_create: false)
+        end
 
-          it 'does not create a project namespace when project is updated' do
-            project = create(:project)
-            project.update!(path: 'hopefully-valid-path1')
+        it_behaves_like 'project update'
 
-            expect(project).to be_persisted
-            expect(project.project_namespace).to be_nil
-          end
+        it 'does not create a project namespace when project is updated' do
+          project = create(:project)
+          project.update!(path: 'hopefully-valid-path1')
+
+          expect(project).to be_persisted
+          expect(project.project_namespace).to be_nil
         end
       end
     end
@@ -804,6 +848,23 @@ RSpec.describe Project, factory_default: :keep do
       it_behaves_like 'a ci_cd_settings predicate method' do
         let(:delegated_method) { :group_runners_enabled? }
       end
+    end
+  end
+
+  describe '#remove_project_authorizations' do
+    let_it_be(:project) { create(:project) }
+    let_it_be(:user_1) { create(:user) }
+    let_it_be(:user_2) { create(:user) }
+    let_it_be(:user_3) { create(:user) }
+
+    it 'removes the project authorizations of the specified users in the current project' do
+      create(:project_authorization, user: user_1, project: project)
+      create(:project_authorization, user: user_2, project: project)
+      create(:project_authorization, user: user_3, project: project)
+
+      project.remove_project_authorizations([user_1.id, user_2.id])
+
+      expect(project.project_authorizations.pluck(:user_id)).not_to include(user_1.id, user_2.id)
     end
   end
 
@@ -3518,6 +3579,29 @@ RSpec.describe Project, factory_default: :keep do
     describe '#forks' do
       it 'includes direct forks of the project' do
         expect(project.forks).to contain_exactly(forked_project)
+      end
+    end
+
+    describe '#lfs_object_oids_from_fork_source' do
+      let_it_be(:lfs_object) { create(:lfs_object) }
+      let_it_be(:another_lfs_object) { create(:lfs_object) }
+
+      let(:oids) { [lfs_object.oid, another_lfs_object.oid] }
+
+      context 'when fork has one of two LFS objects' do
+        before do
+          create(:lfs_objects_project, lfs_object: lfs_object, project: project)
+          create(:lfs_objects_project, lfs_object: another_lfs_object, project: forked_project)
+        end
+
+        it 'returns OIDs of owned LFS objects', :aggregate_failures do
+          expect(forked_project.lfs_objects_oids_from_fork_source(oids: oids)).to eq([lfs_object.oid])
+          expect(forked_project.lfs_objects_oids(oids: oids)).to eq([another_lfs_object.oid])
+        end
+
+        it 'returns empty when project is not a fork' do
+          expect(project.lfs_objects_oids_from_fork_source(oids: oids)).to eq([])
+        end
       end
     end
   end
@@ -7391,6 +7475,83 @@ RSpec.describe Project, factory_default: :keep do
       subject { project.all_available_runners }
     end
   end
+
+  it_behaves_like 'it has loose foreign keys' do
+    let(:factory_name) { :project }
+  end
+
+  context 'Projects::SyncEvent' do
+    let!(:project) { create(:project) }
+
+    let_it_be(:new_namespace1) { create(:namespace) }
+    let_it_be(:new_namespace2) { create(:namespace) }
+
+    context 'when creating the project' do
+      it 'creates a projects_sync_event record' do
+        expect(project.sync_events.count).to eq(1)
+      end
+
+      it 'enqueues ProcessProjectSyncEventsWorker' do
+        expect(Projects::ProcessSyncEventsWorker).to receive(:perform_async)
+
+        create(:project)
+      end
+    end
+
+    context 'when updating project namespace_id' do
+      it 'creates a projects_sync_event record' do
+        expect do
+          project.update!(namespace_id: new_namespace1.id)
+        end.to change(Projects::SyncEvent, :count).by(1)
+
+        expect(project.sync_events.count).to eq(2)
+      end
+
+      it 'enqueues ProcessProjectSyncEventsWorker' do
+        expect(Projects::ProcessSyncEventsWorker).to receive(:perform_async)
+
+        project.update!(namespace_id: new_namespace1.id)
+      end
+    end
+
+    context 'when updating project other attribute' do
+      it 'creates a projects_sync_event record' do
+        expect do
+          project.update!(name: 'hello')
+        end.not_to change(Projects::SyncEvent, :count)
+      end
+    end
+
+    context 'in the same transaction' do
+      context 'when updating different namespace_id' do
+        it 'creates two projects_sync_event records' do
+          expect do
+            Project.transaction do
+              project.update!(namespace_id: new_namespace1.id)
+              project.update!(namespace_id: new_namespace2.id)
+            end
+          end.to change(Projects::SyncEvent, :count).by(2)
+
+          expect(project.sync_events.count).to eq(3)
+        end
+      end
+
+      context 'when updating the same namespace_id' do
+        it 'creates one projects_sync_event record' do
+          expect do
+            Project.transaction do
+              project.update!(namespace_id: new_namespace1.id)
+              project.update!(namespace_id: new_namespace1.id)
+            end
+          end.to change(Projects::SyncEvent, :count).by(1)
+
+          expect(project.sync_events.count).to eq(2)
+        end
+      end
+    end
+  end
+
+  private
 
   def finish_job(export_job)
     export_job.start

@@ -1,4 +1,12 @@
 {
+  "config/initializers/*.rb": {
+    "alternate": "spec/initializers/{}_spec.rb",
+    "type": "source"
+  },
+  "spec/initializers/*_spec.rb": {
+    "alternate": "config/initializers/{}.rb",
+    "type": "test"
+  },
   "app/*.rb": {
     "alternate": "spec/{}_spec.rb",
     "type": "source"

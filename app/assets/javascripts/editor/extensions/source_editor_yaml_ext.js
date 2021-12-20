@@ -1,50 +1,46 @@
+/**
+ * A Yaml Editor Extension options for Source Editor
+ * @typedef {Object} YamlEditorExtensionOptions
+ * @property { boolean } enableComments Convert model nodes with the comment
+ * pattern to comments?
+ * @property { string } highlightPath Add a line highlight to the
+ * node specified by this e.g. `"foo.bar[0]"`
+ * @property { * } model Any JS Object that will be stringified and used as the
+ * editor's value. Equivalent to using `setDataModel()`
+ * @property options SourceEditorExtension Options
+ */
+
 import { toPath } from 'lodash';
 import { parseDocument, Document, visit, isScalar, isCollection, isMap } from 'yaml';
 import { findPair } from 'yaml/util';
-import { SourceEditorExtension } from '~/editor/extensions/source_editor_extension_base';
 
-export class YamlEditorExtension extends SourceEditorExtension {
+export class YamlEditorExtension {
+  static get extensionName() {
+    return 'YamlEditor';
+  }
+
   /**
    * Extends the source editor with capabilities for yaml files.
    *
-   * @param { Instance } instance Source Editor Instance
-   * @param { boolean } enableComments Convert model nodes with the comment
-   * pattern to comments?
-   * @param { string } highlightPath Add a line highlight to the
-   * node specified by this e.g. `"foo.bar[0]"`
-   * @param { * } model Any JS Object that will be stringified and used as the
-   * editor's value. Equivalent to using `setDataModel()`
-   * @param options SourceEditorExtension Options
+   * @param {module:source_editor_instance~EditorInstance} instance - The Source Editor instance
+   * @param {YamlEditorExtensionOptions} setupOptions
    */
-  constructor({
-    instance,
-    enableComments = false,
-    highlightPath = null,
-    model = null,
-    ...options
-  } = {}) {
-    super({
-      instance,
-      options: {
-        ...options,
-        enableComments,
-        highlightPath,
-      },
-    });
+  onSetup(instance, setupOptions = {}) {
+    const { enableComments = false, highlightPath = null, model = null } = setupOptions;
+    this.enableComments = enableComments;
+    this.highlightPath = highlightPath;
+    this.model = model;
 
     if (model) {
-      YamlEditorExtension.initFromModel(instance, model);
+      this.initFromModel(instance, model);
     }
 
     instance.onDidChangeModelContent(() => instance.onUpdate());
   }
 
-  /**
-   * @private
-   */
-  static initFromModel(instance, model) {
+  initFromModel(instance, model) {
     const doc = new Document(model);
-    if (instance.options.enableComments) {
+    if (this.enableComments) {
       YamlEditorExtension.transformComments(doc);
     }
     instance.setValue(doc.toString());
@@ -160,110 +156,13 @@ export class YamlEditorExtension extends SourceEditorExtension {
     return doc;
   }
 
-  /**
-   * Get the editor's value parsed as a `Document` as defined by the `yaml`
-   * package
-   * @returns {Document}
-   */
-  getDoc() {
-    return parseDocument(this.getValue());
+  static getDoc(instance) {
+    return parseDocument(instance.getValue());
   }
 
-  /**
-   * Accepts a `Document` as defined by the `yaml` package and
-   * sets the Editor's value to a stringified version of it.
-   * @param { Document } doc
-   */
-  setDoc(doc) {
-    if (this.options.enableComments) {
-      YamlEditorExtension.transformComments(doc);
-    }
-
-    if (!this.getValue()) {
-      this.setValue(doc.toString());
-    } else {
-      this.updateValue(doc.toString());
-    }
-  }
-
-  /**
-   * Returns the parsed value of the Editor's content as JS.
-   * @returns {*}
-   */
-  getDataModel() {
-    return this.getDoc().toJS();
-  }
-
-  /**
-   * Accepts any JS Object and sets the Editor's value to a stringified version
-   * of that value.
-   *
-   * @param value
-   */
-  setDataModel(value) {
-    this.setDoc(new Document(value));
-  }
-
-  /**
-   * Method to be executed when the Editor's <TextModel> was updated
-   */
-  onUpdate() {
-    if (this.options.highlightPath) {
-      this.highlight(this.options.highlightPath);
-    }
-  }
-
-  /**
-   * Set the editors content to the input without recreating the content model.
-   *
-   * @param blob
-   */
-  updateValue(blob) {
-    // Using applyEdits() instead of setValue() ensures that tokens such as
-    // highlighted lines aren't deleted/recreated which causes a flicker.
-    const model = this.getModel();
-    model.applyEdits([
-      {
-        // A nice improvement would be to replace getFullModelRange() with
-        // a range of the actual diff, avoiding re-formatting the document,
-        // but that's something for a later iteration.
-        range: model.getFullModelRange(),
-        text: blob,
-      },
-    ]);
-  }
-
-  /**
-   * Add a line highlight style to the node specified by the path.
-   *
-   * @param {string|null|false} path A path to a node of the Editor's value,
-   * e.g. `"foo.bar[0]"`. If the value is falsy, this will remove all
-   * highlights.
-   */
-  highlight(path) {
-    if (this.options.highlightPath === path) return;
-    if (!path) {
-      SourceEditorExtension.removeHighlights(this);
-    } else {
-      const res = this.locate(path);
-      SourceEditorExtension.highlightLines(this, res);
-    }
-    this.options.highlightPath = path || null;
-  }
-
-  /**
-   * Return the line numbers of a certain node identified by `path` within
-   * the yaml.
-   *
-   * @param {string} path A path to a node, eg. `foo.bar[0]`
-   * @returns {number[]} Array following the schema `[firstLine, lastLine]`
-   * (both inclusive)
-   *
-   * @throws {Error} Will throw if the path is not found inside the document
-   */
-  locate(path) {
+  static locate(instance, path) {
     if (!path) throw Error(`No path provided.`);
-    const blob = this.getValue();
+    const blob = instance.getValue();
     const doc = parseDocument(blob);
     const pathArray = toPath(path);
 
@@ -289,5 +188,121 @@ export class YamlEditorExtension extends SourceEditorExtension {
     const startLine = (startSlice.match(/\n/g) || []).length + 1;
     const endLine = (endSlice.match(/\n/g) || []).length;
     return [startLine, endLine];
+  }
+
+  setDoc(instance, doc) {
+    if (this.enableComments) {
+      YamlEditorExtension.transformComments(doc);
+    }
+
+    if (!instance.getValue()) {
+      instance.setValue(doc.toString());
+    } else {
+      instance.updateValue(doc.toString());
+    }
+  }
+
+  highlight(instance, path) {
+    // IMPORTANT
+    // removeHighlight and highlightLines both come from
+    // SourceEditorExtension. So it has to be installed prior to this extension
+    if (this.highlightPath === path) return;
+    if (!path) {
+      instance.removeHighlights();
+    } else {
+      const res = YamlEditorExtension.locate(instance, path);
+      instance.highlightLines(res);
+    }
+    this.highlightPath = path || null;
+  }
+
+  provides() {
+    return {
+      /**
+       * Get the editor's value parsed as a `Document` as defined by the `yaml`
+       * package
+       * @param {module:source_editor_instance~EditorInstance} instance - The Source Editor instance
+       * @returns {Document}
+       */
+      getDoc: (instance) => YamlEditorExtension.getDoc(instance),
+
+      /**
+       * Accepts a `Document` as defined by the `yaml` package and
+       * sets the Editor's value to a stringified version of it.
+       * @param {module:source_editor_instance~EditorInstance} instance - The Source Editor instance
+       * @param { Document } doc
+       */
+      setDoc: (instance, doc) => this.setDoc(instance, doc),
+
+      /**
+       * Returns the parsed value of the Editor's content as JS.
+       * @returns {*}
+       */
+      getDataModel: (instance) => YamlEditorExtension.getDoc(instance).toJS(),
+
+      /**
+       * Accepts any JS Object and sets the Editor's value to a stringified version
+       * of that value.
+       *
+       * @param {module:source_editor_instance~EditorInstance} instance - The Source Editor instance
+       * @param value
+       */
+      setDataModel: (instance, value) => this.setDoc(instance, new Document(value)),
+
+      /**
+       * Method to be executed when the Editor's <TextModel> was updated
+       */
+      onUpdate: (instance) => {
+        if (this.highlightPath) {
+          this.highlight(instance, this.highlightPath);
+        }
+      },
+
+      /**
+       * Set the editors content to the input without recreating the content model.
+       *
+       * @param {module:source_editor_instance~EditorInstance} instance - The Source Editor instance
+       * @param blob
+       */
+      updateValue: (instance, blob) => {
+        // Using applyEdits() instead of setValue() ensures that tokens such as
+        // highlighted lines aren't deleted/recreated which causes a flicker.
+        const model = instance.getModel();
+        model.applyEdits([
+          {
+            // A nice improvement would be to replace getFullModelRange() with
+            // a range of the actual diff, avoiding re-formatting the document,
+            // but that's something for a later iteration.
+            range: model.getFullModelRange(),
+            text: blob,
+          },
+        ]);
+      },
+
+      /**
+       * Add a line highlight style to the node specified by the path.
+       *
+       * @param {module:source_editor_instance~EditorInstance} instance - The Source Editor instance
+       * @param {string|null|false} path A path to a node of the Editor's value,
+       * e.g. `"foo.bar[0]"`. If the value is falsy, this will remove all
+       * highlights.
+       */
+      highlight: (instance, path) => this.highlight(instance, path),
+
+      /**
+       * Return the line numbers of a certain node identified by `path` within
+       * the yaml.
+       *
+       * @param {module:source_editor_instance~EditorInstance} instance - The Source Editor instance
+       * @param {string} path A path to a node, eg. `foo.bar[0]`
+       * @returns {number[]} Array following the schema `[firstLine, lastLine]`
+       * (both inclusive)
+       *
+       * @throws {Error} Will throw if the path is not found inside the document
+       */
+      locate: (instance, path) => YamlEditorExtension.locate(instance, path),
+
+      initFromModel: (instance, model) => this.initFromModel(instance, model),
+    };
   }
 }

@@ -330,6 +330,20 @@ RSpec.describe WebHook do
       expect { hook.backoff! }.to change(hook, :backoff_count).by(1)
     end
 
+    context 'when the hook is permanently disabled' do
+      before do
+        allow(hook).to receive(:permanently_disabled?).and_return(true)
+      end
+
+      it 'does not set disabled_until' do
+        expect { hook.backoff! }.not_to change(hook, :disabled_until)
+      end
+
+      it 'does not increment the backoff count' do
+        expect { hook.backoff! }.not_to change(hook, :backoff_count)
+      end
+    end
+
     context 'when we have backed off MAX_FAILURES times' do
       before do
         stub_const("#{described_class}::MAX_FAILURES", 5)
@@ -389,6 +403,79 @@ RSpec.describe WebHook do
     include_examples 'is tolerant of invalid records' do
       def run_expectation
         expect { hook.disable! }.to change(hook, :executable?).from(true).to(false)
+      end
+    end
+  end
+
+  describe '#temporarily_disabled?' do
+    it 'is false when not temporarily disabled' do
+      expect(hook).not_to be_temporarily_disabled
+    end
+
+    context 'when hook has been told to back off' do
+      before do
+        hook.backoff!
+      end
+
+      it 'is true' do
+        expect(hook).to be_temporarily_disabled
+      end
+
+      it 'is false when `web_hooks_disable_failed` flag is disabled' do
+        stub_feature_flags(web_hooks_disable_failed: false)
+
+        expect(hook).not_to be_temporarily_disabled
+      end
+    end
+  end
+
+  describe '#permanently_disabled?' do
+    it 'is false when not disabled' do
+      expect(hook).not_to be_permanently_disabled
+    end
+
+    context 'when hook has been disabled' do
+      before do
+        hook.disable!
+      end
+
+      it 'is true' do
+        expect(hook).to be_permanently_disabled
+      end
+
+      it 'is false when `web_hooks_disable_failed` flag is disabled' do
+        stub_feature_flags(web_hooks_disable_failed: false)
+
+        expect(hook).not_to be_permanently_disabled
+      end
+    end
+  end
+
+  describe '#rate_limited?' do
+    context 'when there are rate limits' do
+      before do
+        allow(hook).to receive(:rate_limit).and_return(3)
+      end
+
+      it 'is false when hook has not been rate limited' do
+        expect(Gitlab::ApplicationRateLimiter).to receive(:peek).and_return(false)
+        expect(hook).not_to be_rate_limited
+      end
+
+      it 'is true when hook has been rate limited' do
+        expect(Gitlab::ApplicationRateLimiter).to receive(:peek).and_return(true)
+        expect(hook).to be_rate_limited
+      end
+    end
+
+    context 'when there are no rate limits' do
+      before do
+        allow(hook).to receive(:rate_limit).and_return(nil)
+      end
+
+      it 'does not call Gitlab::ApplicationRateLimiter, and is false' do
+        expect(Gitlab::ApplicationRateLimiter).not_to receive(:peek)
+        expect(hook).not_to be_rate_limited
       end
     end
   end

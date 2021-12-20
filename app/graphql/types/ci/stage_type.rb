@@ -4,7 +4,7 @@ module Types
   module Ci
     class StageType < BaseObject
       graphql_name 'CiStage'
-      authorize :read_commit_status
+      authorize :read_build
 
       field :id, GraphQL::Types::ID, null: false,
             description: 'ID of the stage.'
@@ -31,7 +31,10 @@ module Types
 
         BatchLoader::GraphQL.for(key).batch(default_value: []) do |keys, loader|
           by_pipeline = keys.group_by(&:pipeline)
-          include_needs = keys.any? { |k| k.requires?(%i[nodes jobs nodes needs]) }
+          include_needs = keys.any? do |k|
+            k.requires?(%i[nodes jobs nodes needs]) ||
+            k.requires?(%i[nodes jobs nodes previousStageJobsAndNeeds])
+          end
 
           by_pipeline.each do |pl, key_group|
             project = pl.project

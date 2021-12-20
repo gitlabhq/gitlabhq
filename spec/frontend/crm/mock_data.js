@@ -40,7 +40,6 @@ export const getGroupContactsQueryResponse = {
             organization: null,
           },
         ],
-        __typename: 'CustomerRelationsContactConnection',
       },
     },
   },
@@ -76,6 +75,87 @@ export const getGroupOrganizationsQueryResponse = {
           },
         ],
       },
+    },
+  },
+};
+
+export const createContactMutationResponse = {
+  data: {
+    customerRelationsContactCreate: {
+      __typeName: 'CustomerRelationsContactCreatePayload',
+      contact: {
+        __typename: 'CustomerRelationsContact',
+        id: 'gid://gitlab/CustomerRelations::Contact/1',
+        firstName: 'A',
+        lastName: 'B',
+        email: 'C',
+        phone: null,
+        description: null,
+        organization: null,
+      },
+      errors: [],
+    },
+  },
+};
+
+export const createContactMutationErrorResponse = {
+  data: {
+    customerRelationsContactCreate: {
+      contact: null,
+      errors: ['Phone is invalid.'],
+    },
+  },
+};
+
+export const updateContactMutationResponse = {
+  data: {
+    customerRelationsContactUpdate: {
+      __typeName: 'CustomerRelationsContactCreatePayload',
+      contact: {
+        __typename: 'CustomerRelationsContact',
+        id: 'gid://gitlab/CustomerRelations::Contact/1',
+        firstName: 'First',
+        lastName: 'Last',
+        email: 'email@example.com',
+        phone: null,
+        description: null,
+        organization: null,
+      },
+      errors: [],
+    },
+  },
+};
+
+export const updateContactMutationErrorResponse = {
+  data: {
+    customerRelationsContactUpdate: {
+      contact: null,
+      errors: ['Email is invalid.'],
+    },
+  },
+};
+
+export const createOrganizationMutationResponse = {
+  data: {
+    customerRelationsOrganizationCreate: {
+      __typeName: 'CustomerRelationsOrganizationCreatePayload',
+      organization: {
+        __typename: 'CustomerRelationsOrganization',
+        id: 'gid://gitlab/CustomerRelations::Organization/2',
+        name: 'A',
+        defaultRate: null,
+        description: null,
+      },
+      errors: [],
+    },
+  },
+};
+
+export const createOrganizationMutationErrorResponse = {
+  data: {
+    customerRelationsOrganizationCreate: {
+      organization: null,
+      errors: ['Name cannot be blank.'],
     },
   },
 };

@@ -40,13 +40,9 @@ class Import::BulkImportsController < ApplicationController
   end
 
   def create
-    response = ::BulkImports::CreateService.new(current_user, create_params, credentials).execute
+    responses = create_params.map { |entry| ::BulkImports::CreateService.new(current_user, entry, credentials).execute }
 
-    if response.success?
-      render json: response.payload.to_json(only: [:id])
-    else
-      render json: { error: response.message }, status: response.http_status
-    end
+    render json: responses.map { |response| { success: response.success?, id: response.payload[:id], message: response.message } }
   end
 
   def realtime_changes

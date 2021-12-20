@@ -8,6 +8,7 @@ query getPackageDetails($id: ID!) {
     updatedAt
     status
     project {
+      id
       path
     }
     tags(first: 10) {
@@ -25,9 +26,11 @@ query getPackageDetails($id: ID!) {
         commitPath
         path
         user {
+          id
           name
         }
         project {
+          id
           name
           webUrl
         }
@@ -86,15 +89,18 @@ query getPackageDetails($id: ID!) {
         }
       }
       ... on PypiMetadata {
+        id
         requiredPython
       }
       ... on ConanMetadata {
+        id
         packageChannel
         packageUsername
         recipe
         recipePath
       }
       ... on MavenMetadata {
+        id
         appName
         appGroup
         appVersion
@@ -102,6 +108,7 @@ query getPackageDetails($id: ID!) {
       }
 
       ... on NugetMetadata {
+        id
         iconUrl
         licenseUrl
         projectUrl

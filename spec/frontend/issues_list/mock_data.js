@@ -6,6 +6,7 @@ import {
 export const getIssuesQueryResponse = {
   data: {
     project: {
+      id: '1',
       issues: {
         pageInfo: {
           hasNextPage: true,
@@ -22,6 +23,7 @@ export const getIssuesQueryResponse = {
             createdAt: '2021-05-22T04:08:01Z',
             downvotes: 2,
             dueDate: '2021-05-29',
+            hidden: false,
             humanTimeEstimate: null,
             mergeRequestsCount: false,
             moved: false,
@@ -74,6 +76,7 @@ export const getIssuesQueryResponse = {
 export const getIssuesCountsQueryResponse = {
   data: {
     project: {
+      id: '1',
       openedIssues: {
         count: 1,
       },
@@ -287,6 +290,7 @@ export const project3 = {
 export const searchProjectsQueryResponse = {
   data: {
     group: {
+      id: '1',
       projects: {
         nodes: [project1, project2, project3],
       },
@@ -297,6 +301,7 @@ export const searchProjectsQueryResponse = {
 export const emptySearchProjectsQueryResponse = {
   data: {
     group: {
+      id: '1',
       projects: {
         nodes: [],
       },

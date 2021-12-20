@@ -2,7 +2,7 @@
 import { GlLoadingIcon } from '@gitlab/ui';
 import Sortable from 'sortablejs';
 import sortableConfig from '~/sortable/sortable_config';
-import RelatedIssuableItem from '~/vue_shared/components/issue/related_issuable_item.vue';
+import RelatedIssuableItem from '~/issuable/components/related_issuable_item.vue';
 
 export default {
   name: 'RelatedIssuesList',

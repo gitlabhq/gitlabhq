@@ -483,6 +483,43 @@ expect(page).to have_css '[data-testid="weight"]', text: 2
 expect(page).to have_css '.atwho-view ul', visible: true
 ```
 
+##### Interacting with modals
+
+Use the `within_modal` helper to interact with [GitLab UI modals](https://gitlab-org.gitlab.io/gitlab-ui/?path=/story/base-modal--default).
+
+```ruby
+include Spec::Support::Helpers::ModalHelpers
+
+within_modal do
+  expect(page).to have_link _('UI testing docs')
+
+  fill_in _('Search projects'), with: 'gitlab'
+
+  click_button 'Continue'
+end
+```
+
+Furthermore, you can use `accept_gl_confirm` for confirmation modals that only need to be accepted.
+This is helpful when migrating [`window.confirm()`](https://developer.mozilla.org/en-US/docs/Web/API/Window/confirm) to [`confirmAction`](https://gitlab.com/gitlab-org/gitlab/-/blob/ee280ed2b763d1278ad38c6e7e8a0aff092f617a/app/assets/javascripts/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal.js#L3).
+
+```ruby
+include Spec::Support::Helpers::ModalHelpers
+
+accept_gl_confirm do
+  click_button 'Delete user'
+end
+```
+
+You can also pass the expected confirmation message and button text to `accept_gl_confirm`.
+
+```ruby
+include Spec::Support::Helpers::ModalHelpers
+
+accept_gl_confirm('Are you sure you want to delete this user?', button_text: 'Delete') do
+  click_button 'Delete user'
+end
+```
+
 ##### Other useful methods
 
 After you retrieve an element using a [finder method](#finders), you can invoke a number of
@@ -702,6 +739,42 @@ it 'is overdue' do
 end
 ```
 
+#### RSpec helpers
+
+You can use the `:freeze_time` and `:time_travel_to` RSpec metadata tag helpers to help reduce the amount of
+boilerplate code needed to wrap entire specs with the [`ActiveSupport::Testing::TimeHelpers`](https://api.rubyonrails.org/v6.0.3.1/classes/ActiveSupport/Testing/TimeHelpers.html)
+methods.
+
+```ruby
+describe 'specs which require time to be frozen', :freeze_time do
+  it 'freezes time' do
+    right_now = Time.now
+
+    expect(Time.now).to eq(right_now)
+  end
+end
+
+describe 'specs which require time to be frozen to a specific date and/or time', time_travel_to: '2020-02-02 10:30:45 -0700' do
+  it 'freezes time to the specified date and time' do
+    expect(Time.now).to eq(Time.new(2020, 2, 2, 17, 30, 45, '+00:00'))
+  end
+end
+```
+
+[Under the hood](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/support/time_travel.rb), these helpers use the `around(:each)` hook and the block syntax of the
+[`ActiveSupport::Testing::TimeHelpers`](https://api.rubyonrails.org/v6.0.3.1/classes/ActiveSupport/Testing/TimeHelpers.html)
+methods:
+
+```ruby
+around(:each) do |example|
+  freeze_time { example.run }
+end
+
+around(:each) do |example|
+  travel_to(date_or_time) { example.run }
+end
+```
+
 ### Feature flags in tests
 
 This section was moved to [developing with feature flags](../feature_flags/index.md).
@@ -891,7 +964,7 @@ creates and deletes indices between examples to ensure a clean index, so that th
 for polluting the tests with nonessential data.
 Most tests for Elasticsearch logic relate to:
 
-- Creating data in Postgres and waiting for it to be indexed in Elasticsearch.
+- Creating data in PostgreSQL and waiting for it to be indexed in Elasticsearch.
 - Searching for that data.
 - Ensuring that the test gives the expected result.
 
@@ -907,7 +980,7 @@ You do NOT need to add `:clean_gitlab_redis_shared_state` manually.
 
 Specs using Elasticsearch require that you:
 
-- Create data in Postgres and then index it into Elasticsearch.
+- Create data in PostgreSQL and then index it into Elasticsearch.
 - Enable Application Settings for Elasticsearch (which is disabled by default).
 
 To do so, use:
@@ -921,7 +994,7 @@ end
 Additionally, you can use the `ensure_elasticsearch_index!` method to overcome the asynchronous nature of Elasticsearch.
 It uses the [Elasticsearch Refresh API](https://www.elastic.co/guide/en/elasticsearch/reference/current/indices-refresh.html#refresh-api-desc)
 to make sure all operations performed on an index since the last refresh are available for search. This method is typically
-called after loading data into Postgres to ensure the data is indexed and searchable.
+called after loading data into PostgreSQL to ensure the data is indexed and searchable.
 
 #### Test Snowplow events
 

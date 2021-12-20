@@ -205,6 +205,58 @@ RSpec.shared_examples 'namespace traversal' do
     end
   end
 
+  shared_examples '#ancestors_upto' do
+    let(:parent) { create(:group) }
+    let(:child) { create(:group, parent: parent) }
+    let(:child2) { create(:group, parent: child) }
+
+    it 'returns all ancestors when no namespace is given' do
+      expect(child2.ancestors_upto).to contain_exactly(child, parent)
+    end
+
+    it 'includes ancestors upto but excluding the given ancestor' do
+      expect(child2.ancestors_upto(parent)).to contain_exactly(child)
+    end
+
+    context 'with asc hierarchy_order' do
+      it 'returns the correct ancestor ids' do
+        expect(child2.ancestors_upto(hierarchy_order: :asc)).to eq([child, parent])
+      end
+    end
+
+    context 'with desc hierarchy_order' do
+      it 'returns the correct ancestor ids' do
+        expect(child2.ancestors_upto(hierarchy_order: :desc)).to eq([parent, child])
+      end
+    end
+
+    describe '#recursive_self_and_ancestor_ids' do
+      it 'is equivalent to ancestors_upto' do
+        recursive_result = child2.recursive_ancestors_upto(parent)
+        linear_result = child2.ancestors_upto(parent)
+        expect(linear_result).to match_array recursive_result
+      end
+
+      it 'makes a recursive query' do
+        expect { child2.recursive_ancestors_upto.try(:load) }.to make_queries_matching(/WITH RECURSIVE/)
+      end
+    end
+  end
+
+  describe '#ancestors_upto' do
+    context 'with use_traversal_ids_for_ancestors_upto enabled' do
+      include_examples '#ancestors_upto'
+    end
+
+    context 'with use_traversal_ids_for_ancestors_upto disabled' do
+      before do
+        stub_feature_flags(use_traversal_ids_for_ancestors_upto: false)
+      end
+
+      include_examples '#ancestors_upto'
+    end
+  end
+
   describe '#descendants' do
     let!(:another_group) { create(:group) }
     let!(:another_group_nested) { create(:group, parent: another_group) }

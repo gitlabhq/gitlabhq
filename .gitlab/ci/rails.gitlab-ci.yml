@@ -18,9 +18,13 @@
   variables:
     RSPEC_TESTS_MAPPING_ENABLED: "true"
 
-.decomposed-database-rspec:
+.decomposed-database:
   variables:
     DECOMPOSED_DB: "true"
+
+.decomposed-database-rspec:
+  extends: .decomposed-database
+  variables:
     GITLAB_LOAD_BALANCING_REUSE_PRIMARY_ci: "main"
     GITLAB_USE_MODEL_LOAD_BALANCING: "true"
 
@@ -31,6 +35,7 @@
     RUBY_GC_MALLOC_LIMIT: 67108864
     RUBY_GC_MALLOC_LIMIT_MAX: 134217728
     RECORD_DEPRECATIONS: "true"
+    GEO_SECONDARY_PROXY: 0
   needs: ["setup-test-env", "retrieve-tests-metadata", "compile-test-assets", "detect-tests"]
   script:
     - !reference [.base-script, script]
@@ -151,16 +156,16 @@
   parallel: 3
 
 .rspec-unit-parallel:
-  parallel: 20
+  parallel: 22
 
 .rspec-ee-unit-parallel:
-  parallel: 12
+  parallel: 14
 
 .rspec-ee-unit-geo-parallel:
   parallel: 2
 
 .rspec-integration-parallel:
-  parallel: 8
+  parallel: 10
 
 .rspec-ee-integration-parallel:
   parallel: 4
@@ -341,8 +346,14 @@ rspec fast_spec_helper minimal:
 db:rollback:
   extends: .db-job-base
   script:
-    - bundle exec rake db:migrate VERSION=20181228175414
-    - bundle exec rake db:migrate SKIP_SCHEMA_VERSION_CHECK=true
+    - scripts/db_tasks db:migrate VERSION=20181228175414
+    - scripts/db_tasks db:migrate SKIP_SCHEMA_VERSION_CHECK=true
+
+db:rollback decomposed:
+  extends:
+    - db:rollback
+    - .decomposed-database
+    - .rails:rules:decomposed-databases
 
 db:migrate:reset:
   extends: .db-job-base
@@ -367,18 +378,33 @@ db:migrate-from-previous-major-version:
     - git checkout -f $CI_COMMIT_SHA
     - SETUP_DB=false USE_BUNDLE_INSTALL=true bash scripts/prepare_build.sh
   script:
-    - run_timed_command "bundle exec rake db:migrate"
+    - run_timed_command "scripts/db_tasks db:migrate"
 
-db:check-schema:
+db:migrate-from-previous-major-version-decomposed:
   extends:
     - db:migrate-from-previous-major-version
+    - .decomposed-database
+    - .rails:rules:decomposed-databases
+
+.db:check-schema-base:
+  extends:
     - .rails:rules:ee-mr-and-default-branch-only
   variables:
     TAG_TO_CHECKOUT: "v14.4.0"
   script:
-    - run_timed_command "bundle exec rake db:migrate"
+    - run_timed_command "scripts/db_tasks db:migrate"
     - scripts/schema_changed.sh
     - scripts/validate_migration_timestamps
+
+db:check-schema:
+  extends:
+    - db:migrate-from-previous-major-version
+    - .db:check-schema-base
+
+db:check-schema-decomposed:
+  extends:
+    - db:migrate-from-previous-major-version-decomposed
+    - .db:check-schema-base
 
 db:check-migrations:
   extends:
@@ -388,6 +414,12 @@ db:check-migrations:
     - git fetch origin $CI_MERGE_REQUEST_TARGET_BRANCH_NAME:$CI_MERGE_REQUEST_TARGET_BRANCH_NAME --depth 20
     - scripts/validate_migration_schema
   allow_failure: true
+
+db:check-migrations-decomposed:
+  extends:
+    - db:check-migrations
+    - .decomposed-database
+    - .rails:rules:decomposed-databases
 
 db:gitlabcom-database-testing:
   extends: .rails:rules:db:gitlabcom-database-testing
@@ -487,6 +519,11 @@ rspec:coverage:
     - rspec unit pg12 minimal
     - rspec integration pg12 minimal
     - rspec system pg12 minimal
+    # FOSS/EE decomposed jobs
+    - rspec migration pg12 decomposed
+    - rspec unit pg12 decomposed
+    - rspec integration pg12 decomposed
+    - rspec system pg12 decomposed
     # EE jobs
     - rspec-ee migration pg12
     - rspec-ee unit pg12
@@ -497,6 +534,11 @@ rspec:coverage:
     - rspec-ee unit pg12 minimal
     - rspec-ee integration pg12 minimal
     - rspec-ee system pg12 minimal
+    # EE decomposed jobs
+    - rspec-ee migration pg12 decomposed
+    - rspec-ee unit pg12 decomposed
+    - rspec-ee integration pg12 decomposed
+    - rspec-ee system pg12 decomposed
     # Geo jobs
     - rspec-ee unit pg12 geo
     - rspec-ee integration pg12 geo
@@ -508,6 +550,19 @@ rspec:coverage:
     # Memory jobs
     - memory-static
     - memory-on-boot
+    # As-if-FOSS jobs
+    - rspec migration pg12-as-if-foss
+    - rspec migration pg12-as-if-foss minimal
+    - rspec migration pg12-as-if-foss decomposed
+    - rspec unit pg12-as-if-foss
+    - rspec unit pg12-as-if-foss minimal
+    - rspec unit pg12-as-if-foss decomposed
+    - rspec integration pg12-as-if-foss
+    - rspec integration pg12-as-if-foss minimal
+    - rspec integration pg12-as-if-foss decomposed
+    - rspec system pg12-as-if-foss
+    - rspec system pg12-as-if-foss minimal
+    - rspec system pg12-as-if-foss decomposed
   script:
     - run_timed_command "bundle exec scripts/merge-simplecov"
     - run_timed_command "bundle exec scripts/gather-test-memory-data"
@@ -518,9 +573,28 @@ rspec:coverage:
     paths:
       - coverage/index.html
       - coverage/assets/
+      - coverage/lcov/
       - tmp/memory_test/
     reports:
       cobertura: coverage/coverage.xml
+
+rspec:undercoverage:
+  extends:
+    - .coverage-base
+    - .rails:rules:rspec-undercoverage
+  stage: post-test
+  needs: ["rspec:coverage"]
+  script:
+    - if [ -n "$CI_MERGE_REQUEST_SOURCE_BRANCH_SHA" ]; then
+        echo "Checking out \$CI_MERGE_REQUEST_SOURCE_BRANCH_SHA ($CI_MERGE_REQUEST_SOURCE_BRANCH_SHA) instead of \$CI_COMMIT_SHA (merge result commit $CI_COMMIT_SHA) so we can use $CI_MERGE_REQUEST_DIFF_BASE_SHA for undercoverage in this merged result pipeline";
+        git checkout -f ${CI_MERGE_REQUEST_SOURCE_BRANCH_SHA};
+        bundle_install_script;
+      else
+        echo "Using \$CI_COMMIT_SHA ($CI_COMMIT_SHA) for this non-merge result pipeline.";
+      fi;
+    - if [ -f scripts/undercoverage ]; then
+        run_timed_command "scripts/undercoverage";
+      fi;
 
 rspec:feature-flags:
   extends:
@@ -880,8 +954,8 @@ db:rollback geo:
     - db:rollback
     - .rails:rules:ee-only-migration
   script:
-    - bundle exec rake geo:db:migrate VERSION=20170627195211
-    - bundle exec rake geo:db:migrate
+    - bundle exec rake db:migrate:geo VERSION=20170627195211
+    - bundle exec rake db:migrate:geo
 # EE: default refs (MRs, default branch, schedules) jobs #
 ##################################################
 

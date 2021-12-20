@@ -1,7 +1,7 @@
 <script>
 import { GlLink, GlTooltipDirective } from '@gitlab/ui';
 import { __ } from '~/locale';
-import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate.vue';
+import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate/tooltip_on_truncate.vue';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
 import {
   MANUAL_DEPLOY,

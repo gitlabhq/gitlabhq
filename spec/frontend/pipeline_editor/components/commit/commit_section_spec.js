@@ -1,5 +1,7 @@
+import VueApollo from 'vue-apollo';
 import { GlFormTextarea, GlFormInput, GlLoadingIcon } from '@gitlab/ui';
-import { mount } from '@vue/test-utils';
+import { createLocalVue, mount } from '@vue/test-utils';
+import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { objectToQuery, redirectTo } from '~/lib/utils/url_utility';
 import CommitForm from '~/pipeline_editor/components/commit/commit_form.vue';
@@ -10,17 +12,21 @@ import {
   COMMIT_SUCCESS,
 } from '~/pipeline_editor/constants';
 import commitCreate from '~/pipeline_editor/graphql/mutations/commit_ci_file.mutation.graphql';
+import updatePipelineEtag from '~/pipeline_editor/graphql/mutations/client/update_pipeline_etag.mutation.graphql';
 
 import {
   mockCiConfigPath,
   mockCiYml,
+  mockCommitCreateResponse,
+  mockCommitCreateResponseNewEtag,
   mockCommitSha,
-  mockCommitNextSha,
   mockCommitMessage,
   mockDefaultBranch,
   mockProjectFullPath,
   mockNewMergeRequestPath,
 } from '../../mock_data';
+
+const localVue = createLocalVue();
 
 jest.mock('~/lib/utils/url_utility', () => ({
   redirectTo: jest.fn(),
@@ -47,7 +53,8 @@ const mockProvide = {
 
 describe('Pipeline Editor | Commit section', () => {
   let wrapper;
-  let mockMutate;
+  let mockApollo;
+  const mockMutateCommitData = jest.fn();
 
   const defaultProps = {
     ciFileContent: mockCiYml,
@@ -55,18 +62,7 @@ describe('Pipeline Editor | Commit section', () => {
     isNewCiConfigFile: false,
   };
 
-  const createComponent = ({ props = {}, options = {}, provide = {} } = {}) => {
-    mockMutate = jest.fn().mockResolvedValue({
-      data: {
-        commitCreate: {
-          errors: [],
-          commit: {
-            sha: mockCommitNextSha,
-          },
-        },
-      },
-    });
-
+  const createComponent = ({ apolloConfig = {}, props = {}, options = {}, provide = {} } = {}) => {
     wrapper = mount(CommitSection, {
       propsData: { ...defaultProps, ...props },
       provide: { ...mockProvide, ...provide },
@@ -75,14 +71,23 @@ describe('Pipeline Editor | Commit section', () => {
           currentBranch: mockDefaultBranch,
         };
       },
-      mocks: {
-        $apollo: {
-          mutate: mockMutate,
-        },
-      },
       attachTo: document.body,
+      ...apolloConfig,
       ...options,
     });
+  };
+
+  const createComponentWithApollo = (options) => {
+    const handlers = [[commitCreate, mockMutateCommitData]];
+    localVue.use(VueApollo);
+    mockApollo = createMockApollo(handlers);
+
+    const apolloConfig = {
+      localVue,
+      apolloProvider: mockApollo,
+    };
+
+    createComponent({ ...options, apolloConfig });
   };
 
   const findCommitForm = () => wrapper.findComponent(CommitForm);
@@ -103,72 +108,54 @@ describe('Pipeline Editor | Commit section', () => {
     await waitForPromises();
   };
 
-  const cancelCommitForm = async () => {
-    const findCancelBtn = () => wrapper.find('[type="reset"]');
-    await findCancelBtn().trigger('click');
-  };
-
   afterEach(() => {
-    mockMutate.mockReset();
     wrapper.destroy();
   });
 
   describe('when the user commits a new file', () => {
     beforeEach(async () => {
-      createComponent({ props: { isNewCiConfigFile: true } });
+      mockMutateCommitData.mockResolvedValue(mockCommitCreateResponse);
+      createComponentWithApollo({ props: { isNewCiConfigFile: true } });
       await submitCommit();
     });
 
     it('calls the mutation with the CREATE action', () => {
-      // the extra calls are for updating client queries (currentBranch and lastCommitBranch)
-      expect(mockMutate).toHaveBeenCalledTimes(3);
-      expect(mockMutate).toHaveBeenCalledWith({
-        mutation: commitCreate,
-        update: expect.any(Function),
-        variables: {
-          ...mockVariables,
-          action: COMMIT_ACTION_CREATE,
-          branch: mockDefaultBranch,
-        },
+      expect(mockMutateCommitData).toHaveBeenCalledTimes(1);
+      expect(mockMutateCommitData).toHaveBeenCalledWith({
+        ...mockVariables,
+        action: COMMIT_ACTION_CREATE,
+        branch: mockDefaultBranch,
       });
     });
   });
 
   describe('when the user commits an update to an existing file', () => {
     beforeEach(async () => {
-      createComponent();
+      createComponentWithApollo();
       await submitCommit();
     });
 
     it('calls the mutation with the UPDATE action', () => {
-      expect(mockMutate).toHaveBeenCalledTimes(3);
-      expect(mockMutate).toHaveBeenCalledWith({
-        mutation: commitCreate,
-        update: expect.any(Function),
-        variables: {
-          ...mockVariables,
-          action: COMMIT_ACTION_UPDATE,
-          branch: mockDefaultBranch,
-        },
+      expect(mockMutateCommitData).toHaveBeenCalledTimes(1);
+      expect(mockMutateCommitData).toHaveBeenCalledWith({
+        ...mockVariables,
+        action: COMMIT_ACTION_UPDATE,
+        branch: mockDefaultBranch,
       });
     });
   });
 
   describe('when the user commits changes to the current branch', () => {
     beforeEach(async () => {
-      createComponent();
+      createComponentWithApollo();
       await submitCommit();
     });
 
     it('calls the mutation with the current branch', () => {
-      expect(mockMutate).toHaveBeenCalledTimes(3);
-      expect(mockMutate).toHaveBeenCalledWith({
-        mutation: commitCreate,
-        update: expect.any(Function),
-        variables: {
-          ...mockVariables,
-          branch: mockDefaultBranch,
-        },
+      expect(mockMutateCommitData).toHaveBeenCalledTimes(1);
+      expect(mockMutateCommitData).toHaveBeenCalledWith({
+        ...mockVariables,
+        branch: mockDefaultBranch,
       });
     });
 
@@ -188,14 +175,10 @@ describe('Pipeline Editor | Commit section', () => {
     it('a second commit submits the latest sha, keeping the form updated', async () => {
       await submitCommit();
 
-      expect(mockMutate).toHaveBeenCalledTimes(6);
-      expect(mockMutate).toHaveBeenCalledWith({
-        mutation: commitCreate,
-        update: expect.any(Function),
-        variables: {
-          ...mockVariables,
-          branch: mockDefaultBranch,
-        },
+      expect(mockMutateCommitData).toHaveBeenCalledTimes(2);
+      expect(mockMutateCommitData).toHaveBeenCalledWith({
+        ...mockVariables,
+        branch: mockDefaultBranch,
       });
     });
   });
@@ -204,20 +187,16 @@ describe('Pipeline Editor | Commit section', () => {
     const newBranch = 'new-branch';
 
     beforeEach(async () => {
-      createComponent();
+      createComponentWithApollo();
       await submitCommit({
         branch: newBranch,
       });
     });
 
     it('calls the mutation with the new branch', () => {
-      expect(mockMutate).toHaveBeenCalledWith({
-        mutation: commitCreate,
-        update: expect.any(Function),
-        variables: {
-          ...mockVariables,
-          branch: newBranch,
-        },
+      expect(mockMutateCommitData).toHaveBeenCalledWith({
+        ...mockVariables,
+        branch: newBranch,
       });
     });
 
@@ -230,7 +209,7 @@ describe('Pipeline Editor | Commit section', () => {
     const newBranch = 'new-branch';
 
     beforeEach(async () => {
-      createComponent();
+      createComponentWithApollo();
       await submitCommit({
         branch: newBranch,
         openMergeRequest: true,
@@ -249,11 +228,11 @@ describe('Pipeline Editor | Commit section', () => {
 
   describe('when the commit is ocurring', () => {
     beforeEach(() => {
-      createComponent();
+      createComponentWithApollo();
     });
 
     it('shows a saving state', async () => {
-      mockMutate.mockImplementationOnce(() => {
+      mockMutateCommitData.mockImplementationOnce(() => {
         expect(findCommitBtnLoadingIcon().exists()).toBe(true);
         return Promise.resolve();
       });
@@ -266,15 +245,23 @@ describe('Pipeline Editor | Commit section', () => {
     });
   });
 
-  describe('when the commit form is cancelled', () => {
+  describe('when the commit returns a different etag path', () => {
     beforeEach(async () => {
-      createComponent();
+      createComponentWithApollo();
+      jest.spyOn(wrapper.vm.$apollo, 'mutate');
+      mockMutateCommitData.mockResolvedValue(mockCommitCreateResponseNewEtag);
+      await submitCommit();
     });
 
-    it('emits an event so that it cab be reseted', async () => {
-      await cancelCommitForm();
-
-      expect(wrapper.emitted('resetContent')).toHaveLength(1);
+    it('calls the client mutation to update the etag', () => {
+      // 1:Commit submission, 2:etag update, 3:currentBranch update, 4:lastCommit update
+      expect(wrapper.vm.$apollo.mutate).toHaveBeenCalledTimes(4);
+      expect(wrapper.vm.$apollo.mutate).toHaveBeenNthCalledWith(2, {
+        mutation: updatePipelineEtag,
+        variables: {
+          pipelineEtag: mockCommitCreateResponseNewEtag.data.commitCreate.commitPipelinePath,
+        },
+      });
     });
   });
 

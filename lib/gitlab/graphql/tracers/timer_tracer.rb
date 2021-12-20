@@ -17,13 +17,9 @@ module Gitlab
         def trace(key, data)
           start_time = Gitlab::Metrics::System.monotonic_time
 
-          result = yield
-
-          duration_s = Gitlab::Metrics::System.monotonic_time - start_time
-
-          data[:duration_s] = duration_s
-
-          result
+          yield
+        ensure
+          data[:duration_s] = Gitlab::Metrics::System.monotonic_time - start_time
         end
       end
     end

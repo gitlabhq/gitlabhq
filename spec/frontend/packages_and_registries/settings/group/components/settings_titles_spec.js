@@ -4,14 +4,18 @@ import SettingsTitles from '~/packages_and_registries/settings/group/components/
 describe('settings_titles', () => {
   let wrapper;
 
-  const mountComponent = () => {
+  const defaultProps = {
+    title: 'foo',
+    subTitle: 'bar',
+  };
+
+  const mountComponent = (propsData = defaultProps) => {
     wrapper = shallowMount(SettingsTitles, {
-      propsData: {
-        title: 'foo',
-        subTitle: 'bar',
-      },
+      propsData,
     });
   };
+
+  const findSubTitle = () => wrapper.find('p');
 
   afterEach(() => {
     wrapper.destroy();
@@ -21,5 +25,11 @@ describe('settings_titles', () => {
     mountComponent();
 
     expect(wrapper.element).toMatchSnapshot();
+  });
+
+  it('does not render the subtitle paragraph when no subtitle is passed', () => {
+    mountComponent({ title: defaultProps.title });
+
+    expect(findSubTitle().exists()).toBe(false);
   });
 });

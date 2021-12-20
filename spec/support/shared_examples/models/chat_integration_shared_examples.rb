@@ -71,7 +71,7 @@ RSpec.shared_examples "chat integration" do |integration_name|
       it "does not call #{integration_name} API" do
         result = subject.execute(sample_data)
 
-        expect(result).to be(false)
+        expect(result).to be_falsy
         expect(WebMock).not_to have_requested(:post, webhook_url)
       end
     end
@@ -113,7 +113,7 @@ RSpec.shared_examples "chat integration" do |integration_name|
 
       context "with protected branch" do
         before do
-          create(:protected_branch, project: project, name: "a-protected-branch")
+          create(:protected_branch, :create_branch_on_repository, project: project, name: "a-protected-branch")
         end
 
         let(:sample_data) do
@@ -309,7 +309,7 @@ RSpec.shared_examples "chat integration" do |integration_name|
 
       context "with protected branch" do
         before do
-          create(:protected_branch, project: project, name: "a-protected-branch")
+          create(:protected_branch, :create_branch_on_repository, project: project, name: "a-protected-branch")
         end
 
         let(:sample_data) do
@@ -354,6 +354,12 @@ RSpec.shared_examples "chat integration" do |integration_name|
           it_behaves_like "triggered #{integration_name} integration", branches_to_be_notified: "all"
         end
       end
+    end
+
+    context 'deployment events' do
+      let(:sample_data) { Gitlab::DataBuilder::Deployment.build(create(:deployment), Time.now) }
+
+      it_behaves_like "untriggered #{integration_name} integration"
     end
   end
 end

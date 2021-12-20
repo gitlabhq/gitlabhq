@@ -25,7 +25,7 @@ RSpec.describe Resolvers::BoardListIssuesResolver do
       let(:wildcard_started) { 'STARTED' }
       let(:filters) { { milestone_title: ["started"], milestone_wildcard_id: wildcard_started } }
 
-      it 'raises a mutually exclusive filter error when milstone wildcard and title are provided' do
+      it 'raises a mutually exclusive filter error when milestone wildcard and title are provided' do
         expect do
           resolve_board_list_issues(args: { filters: filters })
         end.to raise_error(Gitlab::Graphql::Errors::ArgumentError)
@@ -79,6 +79,16 @@ RSpec.describe Resolvers::BoardListIssuesResolver do
         result = resolve_board_list_issues(args: { filters: { assignee_wildcard_id: 'ANY' } })
 
         expect(result).to match_array([])
+      end
+
+      context 'when filtering by confidential' do
+        let(:confidential_issue) { create(:issue, project: project, labels: [label], relative_position: nil, confidential: true) }
+
+        it 'returns matching issue' do
+          result = resolve_board_list_issues(args: { filters: { confidential: true } })
+
+          expect(result).to contain_exactly(confidential_issue)
+        end
       end
     end
   end

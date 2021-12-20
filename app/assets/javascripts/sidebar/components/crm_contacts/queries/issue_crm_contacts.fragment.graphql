@@ -1,0 +1,17 @@
+fragment CrmContacts on Issue {
+  id
+  customerRelationsContacts {
+    nodes {
+      id
+      firstName
+      lastName
+      email
+      phone
+      description
+      organization {
+        id
+        name
+      }
+    }
+  }
+}

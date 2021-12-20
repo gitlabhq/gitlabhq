@@ -7,20 +7,6 @@
     }
   }
 
-  .agents-empty-state {
-    .text-content {
-      @include gl-max-w-full;
-      @include media-breakpoint-up(lg) {
-        max-width: 70%;
-      }
-    }
-
-    .gl-alert-actions {
-      @include gl-mt-0;
-      @include gl-flex-wrap;
-    }
-  }
-
   .gl-card-body {
     @include media-breakpoint-up(sm) {
       @include gl-pt-2;
@@ -38,5 +24,17 @@
         @include gl-w-full;
       }
     }
+  }
+}
+
+.agent-activity-list {
+  .system-note .timeline-entry-inner {
+    .timeline-icon {
+      @include gl-mt-1;
+    }
+  }
+
+  &.issuable-discussion .main-notes-list::before {
+    @include gl-top-3;
   }
 }

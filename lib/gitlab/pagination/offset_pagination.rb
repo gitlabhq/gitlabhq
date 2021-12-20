@@ -29,20 +29,12 @@ module Gitlab
         return pagination_data unless Feature.enabled?(:api_kaminari_count_with_limit, type: :ops)
 
         limited_total_count = pagination_data.total_count_with_limit
-        if limited_total_count > max_limit
+        if limited_total_count > Kaminari::ActiveRecordRelationMethods::MAX_COUNT_LIMIT
           # The call to `total_count_with_limit` memoizes `@arel` because of a call to `references_eager_loaded_tables?`
           # We need to call `reset` because `without_count` relies on `@arel` being unmemoized
           pagination_data.reset.without_count
         else
           pagination_data
-        end
-      end
-
-      def max_limit
-        if Feature.enabled?(:lower_relation_max_count_limit, type: :ops)
-          Kaminari::ActiveRecordRelationMethods::MAX_COUNT_NEW_LOWER_LIMIT
-        else
-          Kaminari::ActiveRecordRelationMethods::MAX_COUNT_LIMIT
         end
       end
 

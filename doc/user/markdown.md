@@ -11,7 +11,7 @@ GitLab automatically renders Markdown content. For example, when you add a comme
 you type the text in the Markdown language. When you save the issue, the text is rendered
 with a set of styles. These styles are described on this page.
 
-For example, in Markdown, an ordered list looks like this:
+For example, in Markdown, an unordered list looks like this:
 
 ```markdown
 - Cat
@@ -249,7 +249,7 @@ the content. This data can be used by static site generators like [Jekyll](https
 When you view a Markdown file rendered by GitLab, front matter is displayed as-is,
 in a box at the top of the document. The HTML content displays after the front matter. To view an example,
 you can toggle between the source and rendered version of a
-[GitLab documentation file](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/README.md).
+[GitLab documentation file](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/index.md).
 
 In GitLab, front matter is used only in Markdown files and wiki pages, not the other
 places where Markdown formatting is supported. It must be at the very top of the document
@@ -516,30 +516,30 @@ version to reference other projects from the same namespace.
 
 GitLab Flavored Markdown recognizes the following:
 
-| references                      | input                      | cross-project reference                 | shortcut inside same namespace |
-| :------------------------------ | :------------------------- | :-------------------------------------- | :----------------------------- |
-| specific user                   | `@user_name`               |                                         |                                |
-| specific group                  | `@group_name`              |                                         |                                |
-| entire team                     | `@all`                     |                                         |                                |
-| project                         | `namespace/project>`       |                                         |                                |
-| issue                           | ``#123``                   | `namespace/project#123`                 | `project#123`                  |
-| merge request                   | `!123`                     | `namespace/project!123`                 | `project!123`                  |
-| snippet                         | `$123`                     | `namespace/project$123`                 | `project$123`                  |
-| epic **(ULTIMATE)**             | `&123`                     | `group1/subgroup&123`                   |                                |
-| vulnerability **(ULTIMATE)** (1)| `[vulnerability:123]`      | `[vulnerability:namespace/project/123]` | `[vulnerability:project/123]`  |
-| feature flag                    | `[feature_flag:123]`       | `[feature_flag:namespace/project/123]`  | `[feature_flag:project/123]`   |
-| label by ID                     | `~123`                     | `namespace/project~123`                 | `project~123`                  |
-| one-word label by name          | `~bug`                     | `namespace/project~bug`                 | `project~bug`                  |
-| multi-word label by name        | `~"feature request"`       | `namespace/project~"feature request"`   | `project~"feature request"`    |
-| scoped label by name            | `~"priority::high"`        | `namespace/project~"priority::high"`    | `project~"priority::high"`     |
-| project milestone by ID         | `%123`                     | `namespace/project%123`                 | `project%123`                  |
-| one-word milestone by name      | `%v1.23`                   | `namespace/project%v1.23`               | `project%v1.23`                |
-| multi-word milestone by name    | `%"release candidate"`     | `namespace/project%"release candidate"` | `project%"release candidate"`  |
-| specific commit                 | `9ba12248`                 | `namespace/project@9ba12248`            | `project@9ba12248`             |
-| commit range comparison         | `9ba12248...b19a04f5`      | `namespace/project@9ba12248...b19a04f5` | `project@9ba12248...b19a04f5`  |
-| repository file references      | `[README](doc/README.md)`  |                                         |                                |
-| repository file line references | `[README](doc/README.md#L13)` |                                      |                                |
-| [alert](../operations/incident_management/alerts.md) | `^alert#123` | `namespace/project^alert#123`    | `project^alert#123`            |
+| references                                           | input                         | cross-project reference                    | shortcut inside same namespace   |
+| :--------------------------------------------------- | :---------------------------- | :----------------------------------------- | :------------------------------- |
+| specific user                                        | `@user_name`                  |                                            |                                  |
+| specific group                                       | `@group_name`                 |                                            |                                  |
+| entire team                                          | `@all`                        |                                            |                                  |
+| project                                              | `namespace/project>`          |                                            |                                  |
+| issue                                                | ``#123``                      | `namespace/project#123`                    | `project#123`                    |
+| merge request                                        | `!123`                        | `namespace/project!123`                    | `project!123`                    |
+| snippet                                              | `$123`                        | `namespace/project$123`                    | `project$123`                    |
+| [epic](group/epics/index.md)                         | `&123`                        | `group1/subgroup&123`                      |                                  |
+| vulnerability **(ULTIMATE)** <sup>1</sup>            | `[vulnerability:123]`         | `[vulnerability:namespace/project/123]`    | `[vulnerability:project/123]`    |
+| feature flag                                         | `[feature_flag:123]`          | `[feature_flag:namespace/project/123]`     | `[feature_flag:project/123]`     |
+| label by ID                                          | `~123`                        | `namespace/project~123`                    | `project~123`                    |
+| one-word label by name                               | `~bug`                        | `namespace/project~bug`                    | `project~bug`                    |
+| multi-word label by name                             | `~"feature request"`          | `namespace/project~"feature request"`      | `project~"feature request"`      |
+| scoped label by name                                 | `~"priority::high"`           | `namespace/project~"priority::high"`       | `project~"priority::high"`       |
+| project milestone by ID                              | `%123`                        | `namespace/project%123`                    | `project%123`                    |
+| one-word milestone by name                           | `%v1.23`                      | `namespace/project%v1.23`                  | `project%v1.23`                  |
+| multi-word milestone by name                         | `%"release candidate"`        | `namespace/project%"release candidate"`    | `project%"release candidate"`    |
+| specific commit                                      | `9ba12248`                    | `namespace/project@9ba12248`               | `project@9ba12248`               |
+| commit range comparison                              | `9ba12248...b19a04f5`         | `namespace/project@9ba12248...b19a04f5`    | `project@9ba12248...b19a04f5`    |
+| repository file references                           | `[README](doc/README.md)`     |                                            |                                  |
+| repository file line references                      | `[README](doc/README.md#L13)` |                                            |                                  |
+| [alert](../operations/incident_management/alerts.md) | `^alert#123`                  | `namespace/project^alert#123`              | `project^alert#123`              |
 
 1. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/222483) in GitLab 13.7.
 
@@ -553,6 +553,16 @@ In addition to this, links to some objects are also recognized and formatted. So
 - Comments on issues: `"https://gitlab.com/gitlab-org/gitlab/-/issues/1234#note_101075757"`, which are rendered as `#1234 (comment 101075757)`
 - The issues designs tab: `"https://gitlab.com/gitlab-org/gitlab/-/issues/1234/designs"`, which are rendered as `#1234 (designs)`.
 - Links to individual designs: `"https://gitlab.com/gitlab-org/gitlab/-/issues/1234/designs/layout.png"`, which are rendered as `#1234[layout.png]`.
+
+### Show the issue, merge request, or epic title in the reference
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15694) in GitLab 14.6.
+
+To include the title in the rendered link of an issue, merge request, or epic, add a plus (`+`)
+at the end of the reference. For example, a reference like `#123+` is rendered as
+`The issue title (#123)`.
+
+URL references like `https://gitlab.com/gitlab-org/gitlab/-/issues/1234+` are also expanded.
 
 ### Embedding metrics in GitLab Flavored Markdown
 
@@ -988,6 +998,8 @@ Here's a sample audio clip:
 
 ### Inline HTML
 
+> Allowing `rel="license"` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/20857) in GitLab 14.6.
+
 To see the second example of Markdown rendered in HTML,
 [view it in GitLab](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/user/markdown.md#inline-html).
 
@@ -996,6 +1008,7 @@ You can also use raw HTML in your Markdown, and it usually works pretty well.
 See the documentation for HTML::Pipeline's [SanitizationFilter](https://github.com/jch/html-pipeline/blob/v2.12.3/lib/html/pipeline/sanitization_filter.rb#L42)
 class for the list of allowed HTML tags and attributes. In addition to the default
 `SanitizationFilter` allowlist, GitLab allows `span`, `abbr`, `details` and `summary` elements.
+`rel="license"` is allowed on links to support the [Rel-License microformat](https://microformats.org/wiki/rel-license) and license attribution.
 
 ```html
 <dl>

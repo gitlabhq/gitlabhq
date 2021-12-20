@@ -62,6 +62,7 @@ class InstanceConfiguration
   def plan_file_size_limits(plan)
     {
       conan: plan.actual_limits[:conan_max_file_size],
+      helm: plan.actual_limits[:helm_max_file_size],
       maven: plan.actual_limits[:maven_max_file_size],
       npm: plan.actual_limits[:npm_max_file_size],
       nuget: plan.actual_limits[:nuget_max_file_size],

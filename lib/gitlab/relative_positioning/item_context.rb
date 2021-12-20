@@ -66,31 +66,17 @@ module Gitlab
       end
 
       def lhs_neighbour
-        scoped_items
-          .where('relative_position < ?', relative_position)
-          .reorder(relative_position: :desc)
-          .first
-          .then { |x| neighbour(x) }
+        neighbour(object.next_object_by_relative_position(ignoring: ignoring, order: :desc))
       end
 
       def rhs_neighbour
-        scoped_items
-          .where('relative_position > ?', relative_position)
-          .reorder(relative_position: :asc)
-          .first
-          .then { |x| neighbour(x) }
+        neighbour(object.next_object_by_relative_position(ignoring: ignoring, order: :asc))
       end
 
       def neighbour(item)
         return unless item.present?
 
         self.class.new(item, range, ignoring: ignoring)
-      end
-
-      def scoped_items
-        r = model_class.relative_positioning_query_base(object)
-        r = object.exclude_self(r, excluded: ignoring) if ignoring.present?
-        r
       end
 
       def calculate_relative_position(calculation)
@@ -184,6 +170,10 @@ module Gitlab
         return if gap.nil? || gap.first == default_end
 
         Gap.new(gap.first, gap.second || default_end)
+      end
+
+      def scoped_items
+        object.relative_positioning_scoped_items(ignoring: ignoring)
       end
 
       def relative_position

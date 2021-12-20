@@ -40,4 +40,10 @@ RSpec.describe Gitlab::Config::Entry::Undefined do
       expect(entry.specified?).to eq false
     end
   end
+
+  describe '#type' do
+    it 'returns nil' do
+      expect(entry.type).to eq nil
+    end
+  end
 end

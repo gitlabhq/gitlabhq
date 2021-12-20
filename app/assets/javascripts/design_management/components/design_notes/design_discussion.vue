@@ -1,11 +1,12 @@
 <script>
-import { GlTooltipDirective, GlIcon, GlLoadingIcon, GlLink, GlBadge } from '@gitlab/ui';
+import { GlTooltipDirective, GlIcon, GlLoadingIcon, GlLink } from '@gitlab/ui';
 import { ApolloMutation } from 'vue-apollo';
 import createFlash from '~/flash';
 import { s__ } from '~/locale';
 import ReplyPlaceholder from '~/notes/components/discussion_reply_placeholder.vue';
 import { updateGlobalTodoCount } from '~/vue_shared/components/sidebar/todo_toggle/utils';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
+import DesignNotePin from '~/vue_shared/components/design_management/design_note_pin.vue';
 import { ACTIVE_DISCUSSION_SOURCE_TYPES } from '../../constants';
 import createNoteMutation from '../../graphql/mutations/create_note.mutation.graphql';
 import toggleResolveDiscussionMutation from '../../graphql/mutations/toggle_resolve_discussion.mutation.graphql';
@@ -30,7 +31,7 @@ export default {
     GlLink,
     ToggleRepliesWidget,
     TimeAgoTooltip,
-    GlBadge,
+    DesignNotePin,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -213,12 +214,7 @@ export default {
 
 <template>
   <div class="design-discussion-wrapper">
-    <gl-badge
-      class="gl-display-flex gl-align-items-center gl-justify-content-center gl-cursor-pointer"
-      :class="{ resolved: discussion.resolved }"
-    >
-      {{ discussion.index }}
-    </gl-badge>
+    <design-note-pin :is-resolved="discussion.resolved" :label="discussion.index" />
     <ul
       class="design-discussion bordered-box gl-relative gl-p-0 gl-list-style-none"
       data-qa-selector="design_discussion_content"

@@ -1,4 +1,5 @@
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
+import Vue from 'vue';
 import Vuex from 'vuex';
 
 import { isInViewport } from '~/lib/utils/common_utils';
@@ -18,8 +19,7 @@ jest.mock('~/lib/utils/common_utils', () => ({
   isInViewport: jest.fn().mockReturnValue(true),
 }));
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 describe('LabelsSelectRoot', () => {
   let wrapper;
@@ -27,7 +27,6 @@ describe('LabelsSelectRoot', () => {
 
   const createComponent = (config = mockConfig, slots = {}) => {
     wrapper = shallowMount(LabelsSelectRoot, {
-      localVue,
       slots,
       store,
       propsData: config,

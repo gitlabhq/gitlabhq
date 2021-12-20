@@ -34,7 +34,8 @@ module Gitlab
             no_matching_runner: 'no matching runner available',
             trace_size_exceeded: 'log size limit exceeded',
             builds_disabled: 'project builds are disabled',
-            environment_creation_failure: 'environment creation failure'
+            environment_creation_failure: 'environment creation failure',
+            deployment_rejected: 'deployment rejected'
           }.freeze
 
           private_constant :REASONS

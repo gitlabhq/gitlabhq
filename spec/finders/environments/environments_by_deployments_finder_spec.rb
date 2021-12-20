@@ -11,7 +11,7 @@ RSpec.describe Environments::EnvironmentsByDeploymentsFinder do
     project.add_maintainer(user)
   end
 
-  shared_examples 'execute' do
+  describe '#execute' do
     context 'tagged deployment' do
       let(:environment_two) { create(:environment, project: project) }
       # Environments need to include commits, so rewind two commits to fit
@@ -122,18 +122,6 @@ RSpec.describe Environments::EnvironmentsByDeploymentsFinder do
             .to contain_exactly(environment, second_environment)
         end
       end
-    end
-  end
-
-  describe "#execute" do
-    include_examples 'execute'
-
-    context 'when environments_by_deployments_finder_exists_optimization is disabled' do
-      before do
-        stub_feature_flags(environments_by_deployments_finder_exists_optimization: false)
-      end
-
-      include_examples 'execute'
     end
   end
 end

@@ -48,20 +48,9 @@ To make sure you can easily run the most recent stable release, we are working
 hard to keep the update process simple and reliable.
 
 If you are unable to follow our monthly release cycle, there are a couple of
-cases you need to consider.
-
-It is considered safe to jump between patch versions and minor versions within
-one major version. For example, it is safe to:
-
-- Upgrade the *minor* version. For example:
-
-  - `13.7.5` -> `13.10.5`
-  - `12.3.4` -> `12.10.11`
-
-- Upgrade the *patch* version. For example:
-
-  - `13.0.4` -> `13.0.12`
-  - `12.10.1` -> `12.10.8`
+cases you need to consider. Follow the
+[upgrade paths guide](../update/index.md#upgrade-paths) to safely upgrade
+between versions.
 
 NOTE:
 Version specific changes in Omnibus GitLab Linux packages can be found in [the Omnibus GitLab documentation](../update/package/index.md#version-specific-changes).

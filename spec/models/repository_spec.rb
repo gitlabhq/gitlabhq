@@ -1679,6 +1679,16 @@ RSpec.describe Repository do
       expect(blobs.first.name).to eq('foobar')
       expect(blobs.size).to eq(1)
     end
+
+    context 'when Gitaly returns NoRepository' do
+      before do
+        allow(repository.raw_repository).to receive(:batch_blobs).and_raise(Gitlab::Git::Repository::NoRepository)
+      end
+
+      it 'returns empty array' do
+        expect(repository.blobs_at([%w[master foobar]])).to match_array([])
+      end
+    end
   end
 
   describe '#root_ref' do

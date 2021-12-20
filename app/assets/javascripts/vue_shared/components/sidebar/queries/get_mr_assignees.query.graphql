@@ -3,6 +3,7 @@
 
 query getMrAssignees($fullPath: ID!, $iid: String!) {
   workspace: project(fullPath: $fullPath) {
+    id
     issuable: mergeRequest(iid: $iid) {
       id
       assignees {

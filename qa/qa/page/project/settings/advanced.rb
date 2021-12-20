@@ -5,7 +5,6 @@ module QA
     module Project
       module Settings
         class Advanced < Page::Base
-          include Component::Select2
           include Component::ConfirmModal
 
           view 'app/views/projects/edit.html.haml' do
@@ -13,8 +12,10 @@ module QA
             element :change_path_button
           end
 
-          view 'app/views/projects/_transfer.html.haml' do
-            element :transfer_button
+          view "app/assets/javascripts/vue_shared/components/namespace_select/namespace_select.vue" do
+            element :namespaces_list
+            element :namespaces_list_groups
+            element :namespaces_list_item
           end
 
           view 'app/views/projects/settings/_archive.html.haml' do
@@ -42,16 +43,22 @@ module QA
             click_element :change_path_button
           end
 
+          def select_namespace(item)
+            click_element :namespaces_list
+
+            within_element(:namespaces_list) do
+              find_element(:namespaces_list_item, text: item).click
+            end
+          end
+
           def transfer_project!(project_name, namespace)
             QA::Runtime::Logger.info "Transferring project: #{project_name} to namespace: #{namespace}"
 
             click_element_coordinates(:archive_project_content)
 
-            expand_select_list
-
             # Workaround for a failure to search when there are no spaces around the /
             # https://gitlab.com/gitlab-org/gitlab/-/issues/218965
-            search_and_select(namespace.gsub(%r{([^\s])/([^\s])}, '\1 / \2'))
+            select_namespace(namespace.gsub(%r{([^\s])/([^\s])}, '\1 / \2'))
 
             click_element(:transfer_button)
             fill_confirmation_text(project_name)

@@ -10,7 +10,7 @@ Vue.use(Vuex);
 describe('HeaderSearchDefaultItems', () => {
   let wrapper;
 
-  const createComponent = (initialState) => {
+  const createComponent = (initialState, props) => {
     const store = new Vuex.Store({
       state: {
         searchContext: MOCK_SEARCH_CONTEXT,
@@ -23,6 +23,9 @@ describe('HeaderSearchDefaultItems', () => {
 
     wrapper = shallowMount(HeaderSearchDefaultItems, {
       store,
+      propsData: {
+        ...props,
+      },
     });
   };
 
@@ -32,6 +35,7 @@ describe('HeaderSearchDefaultItems', () => {
 
   const findDropdownHeader = () => wrapper.findComponent(GlDropdownSectionHeader);
   const findDropdownItems = () => wrapper.findAllComponents(GlDropdownItem);
+  const findFirstDropdownItem = () => findDropdownItems().at(0);
   const findDropdownItemTitles = () => findDropdownItems().wrappers.map((w) => w.text());
   const findDropdownItemLinks = () => findDropdownItems().wrappers.map((w) => w.attributes('href'));
 
@@ -74,6 +78,27 @@ describe('HeaderSearchDefaultItems', () => {
 
         it(`should render as ${dropdownTitle}`, () => {
           expect(findDropdownHeader().text()).toBe(dropdownTitle);
+        });
+      });
+    });
+
+    describe.each`
+      currentFocusedOption              | isFocused | ariaSelected
+      ${null}                           | ${false}  | ${undefined}
+      ${{ html_id: 'not-a-match' }}     | ${false}  | ${undefined}
+      ${MOCK_DEFAULT_SEARCH_OPTIONS[0]} | ${true}   | ${'true'}
+    `('isOptionFocused', ({ currentFocusedOption, isFocused, ariaSelected }) => {
+      describe(`when currentFocusedOption.html_id is ${currentFocusedOption?.html_id}`, () => {
+        beforeEach(() => {
+          createComponent({}, { currentFocusedOption });
+        });
+
+        it(`should${isFocused ? '' : ' not'} have gl-bg-gray-50 applied`, () => {
+          expect(findFirstDropdownItem().classes('gl-bg-gray-50')).toBe(isFocused);
+        });
+
+        it(`sets "aria-selected to ${ariaSelected}`, () => {
+          expect(findFirstDropdownItem().attributes('aria-selected')).toBe(ariaSelected);
         });
       });
     });

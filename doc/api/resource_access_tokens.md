@@ -58,7 +58,7 @@ POST projects/:id/access_tokens
 |-----------|---------|----------|---------------------|
 | `id` | integer or string | yes | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) |
 | `name` | String | yes | The name of the project access token  |
-| `scopes` | `Array[String]` | yes | [List of scopes](../user/project/settings/project_access_tokens.md#limiting-scopes-of-a-project-access-token) |
+| `scopes` | `Array[String]` | yes | [List of scopes](../user/project/settings/project_access_tokens.md#scopes-for-a-project-access-token) |
 | `access_level` | Integer | no | A valid access level. Default value is 40 (Maintainer). Other allowed values are 10 (Guest), 20 (Reporter), and 30 (Developer). |
 | `expires_at` | Date | no | The token expires at midnight UTC on that date |
 

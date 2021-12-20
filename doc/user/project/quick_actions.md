@@ -35,7 +35,7 @@ If you manually enter a parameter, it must be enclosed in double quotation marks
 
 - ASCII letters
 - Numbers (0-9)
-- Underscore (`_`), hyphen (`-`), question mark (`?`), dot (`.`), or ampersand (`&`)
+- Underscore (`_`), hyphen (`-`), question mark (`?`), dot (`.`), ampersand (`&`) or at (`@`)
 
 Parameters are case-sensitive. Autocomplete handles this, and the insertion
 of quotation marks, automatically.
@@ -45,14 +45,15 @@ of quotation marks, automatically.
 The following quick actions are applicable to descriptions, discussions, and
 threads. Some quick actions might not be available to all subscription tiers.
 
+<!-- Keep this table sorted alphabetically -->
+
 | Command                               | Issue                  | Merge request          | Epic                   | Action |
 |:--------------------------------------|:-----------------------|:-----------------------|:-----------------------|:-------|
+| `/add_contacts email1 email2`         | **{check-circle}** Yes | **{dotted-circle}** No | **{dotted-circle}** No | Add one or more [CRM contacts](../crm/index.md) ([introduced in GitLab 14.6](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/73413)). |
 | `/approve`                            | **{dotted-circle}** No | **{check-circle}** Yes | **{dotted-circle}** No | Approve the merge request. |
-| `/assign @user`                       | **{check-circle}** Yes | **{check-circle}** Yes | **{dotted-circle}** No | Assign one user. |
-| `/assign @user1 @user2`               | **{check-circle}** Yes | **{check-circle}** Yes | **{dotted-circle}** No | Assign multiple users. |
+| `/assign @user1 @user2`               | **{check-circle}** Yes | **{check-circle}** Yes | **{dotted-circle}** No | Assign one or more users. |
 | `/assign me`                          | **{check-circle}** Yes | **{check-circle}** Yes | **{dotted-circle}** No | Assign yourself. |
-| `/assign_reviewer @user` or `/reviewer @user` or `/request_review @user`            | **{dotted-circle}** No | **{check-circle}** Yes | **{dotted-circle}** No | Assign one user as a reviewer. |
-| `/assign_reviewer @user1 @user2` or `/reviewer @user1 @user2` or `/request_review @user1 @user2`      | **{dotted-circle}** No | **{check-circle}** Yes | **{dotted-circle}** No | Assign multiple users as reviewers. |
+| `/assign_reviewer @user1 @user2` or `/reviewer @user1 @user2` or `/request_review @user1 @user2`      | **{dotted-circle}** No | **{check-circle}** Yes | **{dotted-circle}** No | Assign one or more users as reviewers. |
 | `/assign_reviewer me` or `/reviewer me` or `/request_review me`                 | **{dotted-circle}** No | **{check-circle}** Yes | **{dotted-circle}** No | Assign yourself as a reviewer. |
 | `/award :emoji:`                      | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes | Toggle emoji award. |
 | `/child_epic <epic>`                  | **{dotted-circle}** No | **{dotted-circle}** No | **{check-circle}** Yes | Add child epic to `<epic>`. The `<epic>` value should be in the format of `&epic`, `group&epic`, or a URL to an epic ([introduced in GitLab 12.0](https://gitlab.com/gitlab-org/gitlab/-/issues/7330)). |
@@ -81,11 +82,12 @@ threads. Some quick actions might not be available to all subscription tiers.
 | `/promote_to_incident`                | **{check-circle}** Yes | **{dotted-circle}** No | **{dotted-circle}** No | Promote issue to incident ([introduced in GitLab 14.5](https://gitlab.com/gitlab-org/gitlab/-/issues/296787)). |
 | `/publish`                            | **{check-circle}** Yes | **{dotted-circle}** No | **{dotted-circle}** No | Publish issue to an associated [Status Page](../../operations/incident_management/status_page.md) ([Introduced in GitLab 13.0](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/30906)) |
 | `/reassign @user1 @user2`             | **{check-circle}** Yes | **{check-circle}** Yes | **{dotted-circle}** No | Replace current assignees with those specified. |
-| `/rebase`                             | **{dotted-circle}** No | **{check-circle}** Yes | **{dotted-circle}** No | Rebase source branch. This schedules a background task that attempts to rebase the changes in the source branch on the latest commit of the target branch. If `/rebase` is used, `/merge` is ignored to avoid a race condition where the source branch is merged or deleted before it is rebased. If there are merge conflicts, GitLab displays a message that a rebase cannot be scheduled. Rebase failures are displayed with the merge request status. |
 | `/reassign_reviewer @user1 @user2`    | **{dotted-circle}** No | **{check-circle}** Yes | **{dotted-circle}** No | Replace current reviewers with those specified. |
+| `/rebase`                             | **{dotted-circle}** No | **{check-circle}** Yes | **{dotted-circle}** No | Rebase source branch. This schedules a background task that attempts to rebase the changes in the source branch on the latest commit of the target branch. If `/rebase` is used, `/merge` is ignored to avoid a race condition where the source branch is merged or deleted before it is rebased. If there are merge conflicts, GitLab displays a message that a rebase cannot be scheduled. Rebase failures are displayed with the merge request status. |
 | `/relabel ~label1 ~label2`            | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes | Replace current labels with those specified. |
 | `/relate #issue1 #issue2`             | **{check-circle}** Yes | **{dotted-circle}** No | **{dotted-circle}** No | Mark issues as related. |
 | `/remove_child_epic <epic>`           | **{dotted-circle}** No | **{dotted-circle}** No | **{check-circle}** Yes | Remove child epic from `<epic>`. The `<epic>` value should be in the format of `&epic`, `group&epic`, or a URL to an epic ([introduced in GitLab 12.0](https://gitlab.com/gitlab-org/gitlab/-/issues/7330)). |
+| `/remove_contacts email1 email2`      | **{check-circle}** Yes | **{dotted-circle}** No | **{dotted-circle}** No | Remove one or more [CRM contacts](../crm/index.md) ([introduced in GitLab 14.6](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/73413)). |
 | `/remove_due_date`                    | **{check-circle}** Yes | **{dotted-circle}** No | **{dotted-circle}** No | Remove due date. |
 | `/remove_epic`                        | **{check-circle}** Yes | **{dotted-circle}** No | **{dotted-circle}** No | Remove from epic. |
 | `/remove_estimate`                    | **{check-circle}** Yes | **{check-circle}** Yes | **{dotted-circle}** No | Remove time estimate. |

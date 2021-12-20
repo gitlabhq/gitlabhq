@@ -145,9 +145,14 @@ class ContainerRepository < ApplicationRecord
              name: path.repository_name)
   end
 
-  def self.create_from_path!(path)
-    safe_find_or_create_by!(project: path.repository_project,
-                                 name: path.repository_name)
+  def self.find_or_create_from_path(path)
+    repository = safe_find_or_create_by(
+      project: path.repository_project,
+      name: path.repository_name
+    )
+    return repository if repository.persisted?
+
+    find_by_path!(path)
   end
 
   def self.build_root_repository(project)

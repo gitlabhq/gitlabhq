@@ -29,7 +29,7 @@ module API
         def get_runner_details_from_request
           return get_runner_ip unless params['info'].present?
 
-          attributes_for_keys(%w(name version revision platform architecture), params['info'])
+          attributes_for_keys(%w(name version revision platform architecture executor), params['info'])
             .merge(get_runner_config_from_request)
             .merge(get_runner_ip)
         end
@@ -52,7 +52,7 @@ module API
 
         # HTTP status codes to terminate the job on GitLab Runner:
         # - 403
-        def authenticate_job!(require_running: true)
+        def authenticate_job!(require_running: true, heartbeat_runner: false)
           job = current_job
 
           # 404 is not returned here because we want to terminate the job if it's
@@ -70,7 +70,17 @@ module API
             job_forbidden!(job, 'Job is not running') unless job.running?
           end
 
-          job.runner&.heartbeat(get_runner_ip)
+          # Only some requests (like updating the job or patching the trace) should trigger
+          # runner heartbeat. Operations like artifacts uploading are executed in context of
+          # the running job and in the job environment, which in many cases will cause the IP
+          # to be updated to not the expected value. And operations like artifacts downloads can
+          # be done even after the job is finished and from totally different runners - while
+          # they would then update the connection status of not the runner that they should.
+          # Runner requests done in context of job authentication should explicitly define when
+          # the heartbeat should be triggered.
+          if heartbeat_runner
+            job.runner&.heartbeat(get_runner_ip)
+          end
 
           job
         end

@@ -11,6 +11,10 @@ export const i18n = {
   ),
   ERROR_IMPORT: s__('BulkImport|Importing the group failed.'),
   ERROR_IMPORT_COMPLETED: s__('BulkImport|Import is finished. Pick another name for re-import'),
+
+  features: {
+    projectMigration: __('projects'),
+  },
 };
 
 export const NEW_NAME_FIELD = 'newName';

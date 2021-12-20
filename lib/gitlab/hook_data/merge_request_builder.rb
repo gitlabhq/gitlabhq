@@ -7,6 +7,7 @@ module Gitlab
         %i[
           assignee_id
           author_id
+          blocking_discussions_resolved
           created_at
           description
           head_pipeline_id
@@ -57,7 +58,8 @@ module Gitlab
           human_time_estimate: merge_request.human_time_estimate,
           assignee_ids: merge_request.assignee_ids,
           assignee_id: merge_request.assignee_ids.first, # This key is deprecated
-          state: merge_request.state # This key is deprecated
+          state: merge_request.state, # This key is deprecated
+          blocking_discussions_resolved: merge_request.mergeable_discussions_state?
         }
 
         merge_request.attributes.with_indifferent_access.slice(*self.class.safe_hook_attributes)

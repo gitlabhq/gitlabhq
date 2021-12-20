@@ -94,10 +94,7 @@ _Consider adding links to check for Sentry errors, Production logs for 5xx, 302s
 
 ### Global rollout on production
 
-For visibility, all `/chatops` commands that target production should be:
-
-- Executed in the `#production` slack channel.
-- Cross-posted (with the command results) to the responsible team's slack channel (`#g_TEAM_NAME`).
+For visibility, all `/chatops` commands that target production should be executed in the `#production` slack channel and cross-posted (with the command results) to the responsible team's slack channel (`#g_TEAM_NAME`).
 
 - [ ] [Incrementally roll out](https://docs.gitlab.com/ee/development/feature_flags/controls.html#process) the feature.
   - If the feature flag in code has [an actor](https://docs.gitlab.com/ee/development/feature_flags/#feature-actors), perform **actor-based** rollout.

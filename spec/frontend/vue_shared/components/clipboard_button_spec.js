@@ -89,6 +89,16 @@ describe('clipboard button', () => {
     expect(onClick).toHaveBeenCalled();
   });
 
+  it('passes the category and variant props to the GlButton', () => {
+    const category = 'tertiary';
+    const variant = 'confirm';
+
+    createWrapper({ title: '', text: '', category, variant });
+
+    expect(findButton().props('category')).toBe(category);
+    expect(findButton().props('variant')).toBe(variant);
+  });
+
   describe('integration', () => {
     it('actually copies to clipboard', () => {
       initCopyToClipboard();

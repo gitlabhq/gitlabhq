@@ -281,6 +281,9 @@ The service account must have permission to access the bucket. Learn more
 in Google's
 [Cloud Storage authentication documentation](https://cloud.google.com/storage/docs/authentication).
 
+NOTE:
+Bucket encryption with the [Cloud Key Management Service (KMS)](https://cloud.google.com/kms/docs) is not supported and will result in [ETag mismatch errors](#etag-mismatch).
+
 ##### Google example (consolidated form)
 
 For Omnibus installations, this is an example of the `connection` setting:
@@ -354,7 +357,7 @@ gitlab_rails['object_store']['connection'] = {
   'provider' => 'AzureRM',
   'azure_storage_account_name' => '<AZURE STORAGE ACCOUNT NAME>',
   'azure_storage_access_key' => '<AZURE STORAGE ACCESS KEY>',
-  'azure_storage_domain' => '<AZURE STORAGE DOMAIN>',
+  'azure_storage_domain' => '<AZURE STORAGE DOMAIN>'
 }
 ```
 
@@ -681,6 +684,8 @@ mismatch` error during an upload.
 With the consolidated object configuration and instance profile, Workhorse has
 S3 credentials so that it can compute the `Content-MD5` header. This
 eliminates the need to compare ETag headers returned from the S3 server.
+
+Encrypting buckets with GCS' [Cloud Key Management Service (KMS)](https://cloud.google.com/kms/docs) is not supported and will result in ETag mismatch errors.
 
 ### Using Amazon instance profiles
 

@@ -12,7 +12,10 @@ The description of the deprecation should state what actions the user should tak
 
 ### Breaking Change
 
-<!-- Is this a breaking change or not? If so, please add instructions for how users can update their workflow. -->
+<!-- Does this MR contain a breaking change? If yes:
+- Add the ~"breaking change" label to this issue.
+- Add instructions for how users can update their workflow. -->
+
 ### Affected Topology
 
 <!--
@@ -52,3 +55,20 @@ Which tier is this feature available in?
 <!--
 Add links to any relevant documentation or code that will provide additional details or clarity regarding the planned change. Also, include a link to the removal issue if relevant.
 -->
+
+<!-- Label reminders - you should have one of each of the following labels.
+Use the following resources to find the appropriate labels:
+- https://gitlab.com/gitlab-org/gitlab/-/labels
+- https://about.gitlab.com/handbook/product/categories/features/
+-->
+
+<!-- Populate the Section, Group, and Category -->
+/label ~devops:: ~group: ~Category:
+
+<!-- Choose the Pricing Tier(s) -->
+/label  ~"GitLab Free" ~"GitLab Premium" ~"GitLab Ultimate"
+
+<!-- Identifies that this Issue is related to deprecating a feature -->
+/label ~"type::deprecation"
+
+<!-- Add the ~"breaking change" label to this issue if necessary -->

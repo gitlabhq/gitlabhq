@@ -50,6 +50,18 @@ export const MERGE_ACTIVE_STATUS_PHRASES = [
     message: s__('mrWidget|Merging! This is going to be great…'),
     emoji: 'heart_eyes',
   },
+  {
+    message: s__('mrWidget|Merging! Lift-off in 5… 4… 3…'),
+    emoji: 'rocket',
+  },
+  {
+    message: s__('mrWidget|Merging! The changes are leaving the station…'),
+    emoji: 'bullettrain_front',
+  },
+  {
+    message: s__('mrWidget|Merging! Take a deep breath and relax…'),
+    emoji: 'sunglasses',
+  },
 ];
 
 const STATE_MACHINE = {
@@ -145,5 +157,8 @@ export const EXTENSION_ICON_CLASS = {
   severityInfo: 'gl-text-blue-400',
   severityUnknown: 'gl-text-gray-400',
 };
+
+export const EXTENSION_SUMMARY_FAILED_CLASS = 'gl-text-red-500';
+export const EXTENSION_SUMMARY_NEUTRAL_CLASS = 'gl-text-gray-700';
 
 export { STATE_MACHINE };

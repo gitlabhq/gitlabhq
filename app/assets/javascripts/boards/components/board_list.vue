@@ -6,6 +6,7 @@ import { sortableStart, sortableEnd } from '~/boards/mixins/sortable_default_opt
 import { sprintf, __ } from '~/locale';
 import defaultSortableConfig from '~/sortable/sortable_config';
 import Tracking from '~/tracking';
+import listQuery from 'ee_else_ce/boards/graphql/board_lists_deferred.query.graphql';
 import { toggleFormEventPrefix, DraggableItemTypes } from '../constants';
 import eventHub from '../eventhub';
 import BoardCard from './board_card.vue';
@@ -50,11 +51,22 @@ export default {
       showEpicForm: false,
     };
   },
+  apollo: {
+    boardList: {
+      query: listQuery,
+      variables() {
+        return {
+          id: this.list.id,
+          filters: this.filterParams,
+        };
+      },
+    },
+  },
   computed: {
-    ...mapState(['pageInfoByListId', 'listsFlags']),
+    ...mapState(['pageInfoByListId', 'listsFlags', 'filterParams']),
     ...mapGetters(['isEpicBoard']),
     listItemsCount() {
-      return this.isEpicBoard ? this.list.epicsCount : this.list.issuesCount;
+      return this.isEpicBoard ? this.list.epicsCount : this.boardList?.issuesCount;
     },
     paginatedIssueText() {
       return sprintf(__('Showing %{pageSize} of %{total} %{issuableType}'), {

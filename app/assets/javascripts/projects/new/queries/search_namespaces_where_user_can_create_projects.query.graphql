@@ -1,5 +1,6 @@
 query searchNamespacesWhereUserCanCreateProjects($search: String) {
   currentUser {
+    id
     groups(permissionScope: CREATE_PROJECTS, search: $search) {
       nodes {
         id

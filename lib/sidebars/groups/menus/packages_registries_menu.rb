@@ -26,9 +26,7 @@ module Sidebars
         private
 
         def packages_registry_menu_item
-          unless context.group.packages_feature_enabled?
-            return ::Sidebars::NilMenuItem.new(item_id: :packages_registry)
-          end
+          return nil_menu_item(:packages_registry) unless context.group.packages_feature_enabled?
 
           ::Sidebars::MenuItem.new(
             title: _('Package Registry'),
@@ -40,7 +38,7 @@ module Sidebars
 
         def container_registry_menu_item
           if !::Gitlab.config.registry.enabled || !can?(context.current_user, :read_container_image, context.group)
-            return ::Sidebars::NilMenuItem.new(item_id: :container_registry)
+            return nil_menu_item(:container_registry)
           end
 
           ::Sidebars::MenuItem.new(
@@ -52,9 +50,11 @@ module Sidebars
         end
 
         def dependency_proxy_menu_item
-          unless can?(context.current_user, :read_dependency_proxy, context.group)
-            return ::Sidebars::NilMenuItem.new(item_id: :dependency_proxy)
-          end
+          setting_does_not_exist_or_is_enabled = !context.group.dependency_proxy_setting ||
+                                                  context.group.dependency_proxy_setting.enabled
+
+          return nil_menu_item(:dependency_proxy) unless can?(context.current_user, :read_dependency_proxy, context.group)
+          return nil_menu_item(:dependency_proxy) unless setting_does_not_exist_or_is_enabled
 
           ::Sidebars::MenuItem.new(
             title: _('Dependency Proxy'),
@@ -62,6 +62,10 @@ module Sidebars
             active_routes: { controller: 'groups/dependency_proxies' },
             item_id: :dependency_proxy
           )
+        end
+
+        def nil_menu_item(item_id)
+          ::Sidebars::NilMenuItem.new(item_id: item_id)
         end
       end
     end

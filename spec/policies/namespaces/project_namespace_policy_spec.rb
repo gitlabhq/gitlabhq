@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe NamespacePolicy do
+RSpec.describe Namespaces::ProjectNamespacePolicy do
   let_it_be(:parent) { create(:namespace) }
   let_it_be(:project) { create(:project, namespace: parent) }
   let_it_be(:namespace) { project.project_namespace }
@@ -37,7 +37,7 @@ RSpec.describe NamespacePolicy do
     let_it_be(:current_user) { create(:admin) }
 
     context 'when admin mode is enabled', :enable_admin_mode do
-      it { is_expected.to be_allowed(*permissions) }
+      it { is_expected.to be_disallowed(*permissions) }
     end
 
     context 'when admin mode is disabled' do

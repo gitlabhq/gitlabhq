@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Database::AsyncIndexes::IndexCreator do
+  include ExclusiveLeaseHelpers
+
   describe '#perform' do
     subject { described_class.new(async_index) }
 
@@ -10,7 +12,18 @@ RSpec.describe Gitlab::Database::AsyncIndexes::IndexCreator do
 
     let(:index_model) { Gitlab::Database::AsyncIndexes::PostgresAsyncIndex }
 
-    let(:connection) { ApplicationRecord.connection }
+    let(:model) { Gitlab::Database.database_base_models[Gitlab::Database::PRIMARY_DATABASE_NAME] }
+    let(:connection) { model.connection }
+
+    let!(:lease) { stub_exclusive_lease(lease_key, :uuid, timeout: lease_timeout) }
+    let(:lease_key) { "gitlab/database/async_indexes/index_creator/#{Gitlab::Database::PRIMARY_DATABASE_NAME}" }
+    let(:lease_timeout) { described_class::TIMEOUT_PER_ACTION }
+
+    around do |example|
+      Gitlab::Database::SharedModel.using_connection(connection) do
+        example.run
+      end
+    end
 
     context 'when the index already exists' do
       before do
@@ -40,7 +53,7 @@ RSpec.describe Gitlab::Database::AsyncIndexes::IndexCreator do
     end
 
     it 'skips logic if not able to acquire exclusive lease' do
-      expect(subject).to receive(:try_obtain_lease).and_return(false)
+      expect(lease).to receive(:try_obtain).ordered.and_return(false)
       expect(connection).not_to receive(:execute).with(/CREATE INDEX/)
       expect(async_index).not_to receive(:destroy)
 

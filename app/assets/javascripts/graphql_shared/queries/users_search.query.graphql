@@ -3,8 +3,10 @@
 
 query projectUsersSearch($search: String!, $fullPath: ID!) {
   workspace: project(fullPath: $fullPath) {
+    id
     users: projectMembers(search: $search, relations: [DIRECT, INHERITED, INVITED_GROUPS]) {
       nodes {
+        id
         user {
           ...User
           ...UserAvailability

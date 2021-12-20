@@ -20,11 +20,11 @@ To see DevOps Reports:
 > [Renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/20976) from Conversational Development Index in GitLab 12.6.
 
 NOTE:
-To see the DevOps score, you must activate your GitLab instance's [Service Ping](../settings/usage_statistics.md#service-ping). This is because DevOps Score is a comparative tool, so your score data must be centrally processed by GitLab Inc. first.
+To see the DevOps score, you must activate your GitLab instance's [Service Ping](../settings/usage_statistics.md#service-ping). DevOps Score is a comparative tool, so your score data must be centrally processed by GitLab Inc. first.
 
 You can use the DevOps score to compare your DevOps status to other organizations.
 
-The DevOps Score tab displays the usage of major GitLab features on your instance over
+The DevOps Score tab displays usage of major GitLab features on your instance over
 the last 30 days, averaged over the number of billable users in that time period.
 You can also see the Leader usage score, calculated from top-performing instances based on
 [Service Ping data](../settings/usage_statistics.md#service-ping) that GitLab has collected.
@@ -47,29 +47,27 @@ feature is available.
 > - Multi-select [added](https://gitlab.com/gitlab-org/gitlab/-/issues/333586) in GitLab 14.2.
 > - Overview table [added](https://gitlab.com/gitlab-org/gitlab/-/issues/335638) in GitLab 14.3.
 
-DevOps Adoption shows you which groups in your organization are using the most essential features of GitLab:
+DevOps Adoption shows feature adoption for development, security, and operations.
 
-- Dev
-  - Approvals
-  - Code owners
-  - Issues
-  - Merge requests
-- Sec
-  - DAST
-  - Dependency Scanning
-  - Fuzz Testing
-  - SAST
-- Ops
-  - Deployments
-  - Pipelines
-  - Runners
+| Category | Feature |
+| ---      | ---      |
+| Development   | Approvals<br>Code owners<br>Issues<br>Merge requests   |
+| Security   | DAST<br>Dependency Scanning<br>Fuzz Testing<br>SAST  |
+| Operations   | Deployments<br>Pipelines<br>Runners   |
 
-To add or remove your groups, in the top right-hand section the page, select **Add or remove groups**.
+You can use Group DevOps Adoption to:
 
-DevOps Adoption allows you to:
+- Identify specific subgroups that are lagging in their adoption of GitLab features, so you can guide them on
+their DevOps journey.
+- Find subgroups that have adopted certain features, and provide guidance to other subgroups on 
+how to use those features.
+- Verify if you are getting the return on investment that you expected from GitLab.
 
-- Verify whether you are getting the return on investment that you expected from GitLab.
-- Identify specific groups that are lagging in their adoption of GitLab, so you can help them along in their DevOps journey.
-- Find the groups that have adopted certain features, and can provide guidance to other groups on how to use those features.
+## Add or remove a group
+
+To add or remove a subgroup from the DevOps Adoption report:
+
+1. Select **Add or remove groups**.
+1. Select the subgroup you want to add or remove and select **Save changes**.
 
 ![DevOps Adoption](img/admin_devops_adoption_v14_2.png)

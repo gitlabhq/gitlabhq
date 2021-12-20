@@ -159,8 +159,8 @@ module Tooling
 
       def required_reasons
         [].tap do |reasons|
-          reasons << :db_changes if project_helper.changes.added.has_category?(:migration)
-          reasons << :feature_flag_removed if project_helper.changes.deleted.has_category?(:feature_flag)
+          reasons << :db_changes if helper.changes.added.has_category?(:migration)
+          reasons << :feature_flag_removed if helper.changes.deleted.has_category?(:feature_flag)
         end
       end
 
@@ -221,7 +221,7 @@ module Tooling
       end
 
       def categories_need_changelog?
-        (project_helper.changes.categories - NO_CHANGELOG_CATEGORIES).any?
+        (helper.changes.categories - NO_CHANGELOG_CATEGORIES).any?
       end
 
       def mr_without_no_changelog_label?

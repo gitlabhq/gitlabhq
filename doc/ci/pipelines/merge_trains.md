@@ -11,6 +11,10 @@ last_update: 2019-07-03
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9186) in GitLab 12.0.
 > - [Squash and merge](../../user/project/merge_requests/squash_and_merge.md) support [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13001) in GitLab 12.6.
 
+INFO:
+Get merge trains and more in GitLab Ultimate.
+[Try a free 30-day trial now](https://about.gitlab.com/free-trial/index.html?glm_source=docs.gitlab.com&glm_content=p-ci-cd-external-docs).
+
 For more information about why you might want to use merge trains, read [How merge trains keep your master green](https://about.gitlab.com/blog/2020/01/30/all-aboard-merge-trains/).
 
 When [pipelines for merged results](pipelines_for_merged_results.md) are
@@ -35,7 +39,8 @@ If the pipeline for the merge request at the front of the train completes succes
 the changes are merged into the target branch, and the other pipelines continue to
 run.
 
-To add a merge request to a merge train, you need [permissions](../../user/permissions.md) to push to the target branch.
+To add a merge request to a merge train, you need [permissions](../../user/permissions.md) to merge or push to the
+target branch.
 
 Each merge train can run a maximum of **twenty** pipelines in parallel.
 If more than twenty merge requests are added to the merge train, the merge requests

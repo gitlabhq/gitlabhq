@@ -62,7 +62,7 @@ RSpec.describe 'layouts/_head' do
     expect(rendered).to match('<link rel="stylesheet" media="print" href="/stylesheets/highlight/themes/solarised-light.css" />')
   end
 
-  context 'when an asset_host is set and snowplow url is set' do
+  context 'when an asset_host is set and snowplow url is set', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/346542' do
     let(:asset_host) { 'http://test.host' }
     let(:snowplow_collector_hostname) { 'www.snow.plow' }
 

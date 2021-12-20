@@ -107,7 +107,11 @@ module Gitlab
           hosts.any? || service_discovery_enabled?
         end
 
+        # This is disabled for Rake tasks to ensure e.g. database migrations
+        # always produce consistent results.
         def service_discovery_enabled?
+          return false if Gitlab::Runtime.rake?
+
           service_discovery[:record].present?
         end
 

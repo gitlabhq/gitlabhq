@@ -8,7 +8,7 @@ module Transactions
     # transaction. Handles special cases when running inside a test environment,
     # where tests may be wrapped in transactions
     def inside_transaction?
-      base = Rails.env.test? ? @open_transactions_baseline.to_i : 0
+      base = Rails.env.test? ? open_transactions_baseline.to_i : 0
 
       connection.open_transactions > base
     end
@@ -23,6 +23,16 @@ module Transactions
 
     def reset_open_transactions_baseline
       @open_transactions_baseline = 0
+    end
+
+    def open_transactions_baseline
+      return unless Rails.env.test?
+
+      if @open_transactions_baseline.nil?
+        return self == ApplicationRecord ? nil : superclass.open_transactions_baseline
+      end
+
+      @open_transactions_baseline
     end
   end
 end

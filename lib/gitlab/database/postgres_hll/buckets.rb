@@ -65,8 +65,7 @@ module Gitlab
           ).to_i
 
           if num_zero_buckets > 0 && num_uniques < 2.5 * TOTAL_BUCKETS
-            ((0.7213 / (1 + 1.079 / TOTAL_BUCKETS)) * (TOTAL_BUCKETS *
-              Math.log2(TOTAL_BUCKETS.to_f / num_zero_buckets)))
+            TOTAL_BUCKETS * Math.log(TOTAL_BUCKETS.to_f / num_zero_buckets)
           else
             num_uniques
           end

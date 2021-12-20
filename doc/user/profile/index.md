@@ -100,17 +100,20 @@ When visiting the public page of a user, you can only see the projects which you
 If the [public level is restricted](../admin_area/settings/visibility_and_access_controls.md#restrict-visibility-levels),
 user profiles are only visible to signed-in users.
 
-## User profile README
+## Add details to your profile with a README
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/232157) in GitLab 14.5.
 
-You can add a README section to your profile that can include more information and [formatting](../markdown.md) than
-your profile's bio.
+If you want to add more information to your profile page, you can create a README file. When you populate the README file with information, it's included on your profile page.
 
 To add a README to your profile:
 
-1. Create a new public project with the same name as your GitLab username.
+1. Create a new public project with the same project path as your GitLab username.
 1. Create a README file inside this project. The file can be any valid [README or index file](../project/repository/index.md#readme-and-index-files).
+1. Populate the README file with [Markdown](../markdown.md).
+
+To use an existing project, [update the path](../project/settings/index.md#renaming-a-repository) of the project to match
+your username.
 
 ## Add external accounts to your user profile page
 
@@ -255,6 +258,29 @@ To change your commit email:
 1. In the top-right corner, select your avatar.
 1. Select **Edit profile**.
 1. In the **Commit email** dropdown list, select an email address.
+1. Select **Update profile settings**.
+
+## Change your primary email
+
+Your primary email:
+
+- Is the default email address for your login, commit email, and notification email.
+- Must be already [linked to your user profile](#add-emails-to-your-user-profile).
+
+To change your primary email:
+
+1. In the top-right corner, select your avatar.
+1. Select **Edit profile**.
+1. In the **Email** field, enter your new email address.
+1. Select **Update profile settings**.
+
+## Set your public email
+
+You can select one of your [configured email addresses](#add-emails-to-your-user-profile) to be displayed on your public profile:
+
+1. In the top-right corner, select your avatar.
+1. Select **Edit profile**.
+1. In the **Public email** field, select one of the available email addresses.
 1. Select **Update profile settings**.
 
 ### Use an automatically-generated private commit email

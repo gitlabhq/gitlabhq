@@ -30,6 +30,10 @@ module Gitlab
         end
       end
 
+      def self.primary_only?
+        each_load_balancer.all?(&:primary_only?)
+      end
+
       def self.release_hosts
         each_load_balancer(&:release_host)
       end

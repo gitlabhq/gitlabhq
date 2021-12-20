@@ -128,7 +128,7 @@ RSpec.describe Projects::Serverless::FunctionsController do
 
             expect(json_response["functions"]).to all(
               include(
-                'url' => "https://#{function_name}-#{serverless_domain_cluster.uuid[0..1]}a1#{serverless_domain_cluster.uuid[2..-3]}f2#{serverless_domain_cluster.uuid[-2..-1]}#{"%x" % environment.id}-#{environment.slug}.#{serverless_domain_cluster.domain}"
+                'url' => "https://#{function_name}-#{serverless_domain_cluster.uuid[0..1]}a1#{serverless_domain_cluster.uuid[2..-3]}f2#{serverless_domain_cluster.uuid[-2..]}#{"%x" % environment.id}-#{environment.slug}.#{serverless_domain_cluster.domain}"
               )
             )
           end
@@ -166,7 +166,7 @@ RSpec.describe Projects::Serverless::FunctionsController do
             expect(response).to have_gitlab_http_status(:ok)
 
             expect(json_response).to include(
-              'url' => "https://#{function_name}-#{serverless_domain_cluster.uuid[0..1]}a1#{serverless_domain_cluster.uuid[2..-3]}f2#{serverless_domain_cluster.uuid[-2..-1]}#{"%x" % environment.id}-#{environment.slug}.#{serverless_domain_cluster.domain}"
+              'url' => "https://#{function_name}-#{serverless_domain_cluster.uuid[0..1]}a1#{serverless_domain_cluster.uuid[2..-3]}f2#{serverless_domain_cluster.uuid[-2..]}#{"%x" % environment.id}-#{environment.slug}.#{serverless_domain_cluster.domain}"
             )
           end
 

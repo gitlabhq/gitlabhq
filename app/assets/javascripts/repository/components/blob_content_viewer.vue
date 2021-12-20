@@ -106,6 +106,7 @@ export default {
                 ideForkAndEditPath: '',
                 storedExternally: false,
                 canModifyBlob: false,
+                canCurrentUserPushToBranch: false,
                 rawPath: '',
                 externalStorageUrl: '',
                 replacePath: '',
@@ -156,11 +157,18 @@ export default {
     },
     canLock() {
       const { pushCode, downloadCode } = this.project.userPermissions;
+      const currentUsername = window.gon?.current_username;
+
+      if (this.pathLockedByUser && this.pathLockedByUser.username !== currentUsername) {
+        return false;
+      }
 
       return pushCode && downloadCode;
     },
-    isLocked() {
-      return this.project.pathLocks.nodes.some((node) => node.path === this.path);
+    pathLockedByUser() {
+      const pathLock = this.project.pathLocks.nodes.find((node) => node.path === this.path);
+
+      return pathLock ? pathLock.user : null;
     },
     showForkSuggestion() {
       const { createMergeRequestIn, forkProject } = this.project.userPermissions;
@@ -266,9 +274,10 @@ export default {
             :replace-path="blobInfo.replacePath"
             :delete-path="blobInfo.webPath"
             :can-push-code="project.userPermissions.pushCode"
+            :can-push-to-branch="blobInfo.canCurrentUserPushToBranch"
             :empty-repo="project.repository.empty"
             :project-path="projectPath"
-            :is-locked="isLocked"
+            :is-locked="Boolean(pathLockedByUser)"
             :can-lock="canLock"
           />
         </template>

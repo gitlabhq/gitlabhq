@@ -14,6 +14,7 @@ export const mockPipelineHeader = {
   },
   createdAt: threeWeeksAgo.toISOString(),
   user: {
+    id: 'user-1',
     name: 'Foo',
     username: 'foobar',
     email: 'foo@bar.com',
@@ -27,6 +28,7 @@ export const mockFailedPipelineHeader = {
   retryable: true,
   cancelable: false,
   detailedStatus: {
+    id: 'status-1',
     group: 'failed',
     icon: 'status_failed',
     label: 'failed',
@@ -43,6 +45,7 @@ export const mockFailedPipelineNoPermissions = {
   },
   createdAt: threeWeeksAgo.toISOString(),
   user: {
+    id: 'user-1',
     name: 'Foo',
     username: 'foobar',
     email: 'foo@bar.com',
@@ -52,6 +55,7 @@ export const mockFailedPipelineNoPermissions = {
   retryable: true,
   cancelable: false,
   detailedStatus: {
+    id: 'status-1',
     group: 'running',
     icon: 'status_running',
     label: 'running',
@@ -66,6 +70,7 @@ export const mockRunningPipelineHeader = {
   retryable: false,
   cancelable: true,
   detailedStatus: {
+    id: 'status-1',
     group: 'running',
     icon: 'status_running',
     label: 'running',
@@ -82,6 +87,7 @@ export const mockRunningPipelineNoPermissions = {
   },
   createdAt: threeWeeksAgo.toISOString(),
   user: {
+    id: 'user-1',
     name: 'Foo',
     username: 'foobar',
     email: 'foo@bar.com',
@@ -91,6 +97,7 @@ export const mockRunningPipelineNoPermissions = {
   retryable: false,
   cancelable: true,
   detailedStatus: {
+    id: 'status-1',
     group: 'running',
     icon: 'status_running',
     label: 'running',
@@ -105,6 +112,7 @@ export const mockCancelledPipelineHeader = {
   retryable: true,
   cancelable: false,
   detailedStatus: {
+    id: 'status-1',
     group: 'cancelled',
     icon: 'status_cancelled',
     label: 'cancelled',
@@ -119,6 +127,7 @@ export const mockSuccessfulPipelineHeader = {
   retryable: false,
   cancelable: false,
   detailedStatus: {
+    id: 'status-1',
     group: 'success',
     icon: 'status_success',
     label: 'success',
@@ -130,13 +139,16 @@ export const mockSuccessfulPipelineHeader = {
 export const mockRunningPipelineHeaderData = {
   data: {
     project: {
+      id: '1',
       pipeline: {
         ...mockRunningPipelineHeader,
         iid: '28',
         user: {
+          id: 'user-1',
           name: 'Foo',
           username: 'foobar',
           webPath: '/foo',
+          webUrl: '/foo',
           email: 'foo@bar.com',
           avatarUrl: 'link',
           status: null,
@@ -493,3 +505,132 @@ export const mockSearch = [
 export const mockBranchesAfterMap = ['branch-1', 'branch-10', 'branch-11'];
 
 export const mockTagsAfterMap = ['tag-3', 'tag-2', 'tag-1', 'main-tag'];
+
+export const mockPipelineJobsQueryResponse = {
+  data: {
+    project: {
+      id: 'gid://gitlab/Project/20',
+      __typename: 'Project',
+      pipeline: {
+        id: 'gid://gitlab/Ci::Pipeline/224',
+        __typename: 'Pipeline',
+        jobs: {
+          __typename: 'CiJobConnection',
+          pageInfo: {
+            endCursor: 'eyJpZCI6Ijg0NyJ9',
+            hasNextPage: true,
+            hasPreviousPage: false,
+            startCursor: 'eyJpZCI6IjYyMCJ9',
+            __typename: 'PageInfo',
+          },
+          nodes: [
+            {
+              artifacts: {
+                nodes: [
+                  {
+                    downloadPath: '/root/ci-project/-/jobs/620/artifacts/download?file_type=trace',
+                    fileType: 'TRACE',
+                    __typename: 'CiJobArtifact',
+                  },
+                ],
+                __typename: 'CiJobArtifactConnection',
+              },
+              allowFailure: false,
+              status: 'SUCCESS',
+              scheduledAt: null,
+              manualJob: false,
+              triggered: null,
+              createdByTag: false,
+              detailedStatus: {
+                id: 'success-620-620',
+                detailsPath: '/root/ci-project/-/jobs/620',
+                group: 'success',
+                icon: 'status_success',
+                label: 'passed',
+                text: 'passed',
+                tooltip: 'passed (retried)',
+                action: null,
+                __typename: 'DetailedStatus',
+              },
+              id: 'gid://gitlab/Ci::Build/620',
+              refName: 'main',
+              refPath: '/root/ci-project/-/commits/main',
+              tags: [],
+              shortSha: '5acce24b',
+              commitPath: '/root/ci-project/-/commit/5acce24b3737d4f0d649ad0a26ae1903a2b35f5e',
+              stage: { id: 'gid://gitlab/Ci::Stage/148', name: 'test', __typename: 'CiStage' },
+              name: 'coverage_job',
+              duration: 4,
+              finishedAt: '2021-12-06T14:13:49Z',
+              coverage: 82.71,
+              retryable: false,
+              playable: false,
+              cancelable: false,
+              active: false,
+              stuck: false,
+              userPermissions: {
+                readBuild: true,
+                readJobArtifacts: true,
+                updateBuild: true,
+                __typename: 'JobPermissions',
+              },
+              __typename: 'CiJob',
+            },
+            {
+              artifacts: {
+                nodes: [
+                  {
+                    downloadPath: '/root/ci-project/-/jobs/619/artifacts/download?file_type=trace',
+                    fileType: 'TRACE',
+                    __typename: 'CiJobArtifact',
+                  },
+                ],
+                __typename: 'CiJobArtifactConnection',
+              },
+              allowFailure: false,
+              status: 'SUCCESS',
+              scheduledAt: null,
+              manualJob: false,
+              triggered: null,
+              createdByTag: false,
+              detailedStatus: {
+                id: 'success-619-619',
+                detailsPath: '/root/ci-project/-/jobs/619',
+                group: 'success',
+                icon: 'status_success',
+                label: 'passed',
+                text: 'passed',
+                tooltip: 'passed (retried)',
+                action: null,
+                __typename: 'DetailedStatus',
+              },
+              id: 'gid://gitlab/Ci::Build/619',
+              refName: 'main',
+              refPath: '/root/ci-project/-/commits/main',
+              tags: [],
+              shortSha: '5acce24b',
+              commitPath: '/root/ci-project/-/commit/5acce24b3737d4f0d649ad0a26ae1903a2b35f5e',
+              stage: { id: 'gid://gitlab/Ci::Stage/148', name: 'test', __typename: 'CiStage' },
+              name: 'test_job_two',
+              duration: 4,
+              finishedAt: '2021-12-06T14:13:44Z',
+              coverage: null,
+              retryable: false,
+              playable: false,
+              cancelable: false,
+              active: false,
+              stuck: false,
+              userPermissions: {
+                readBuild: true,
+                readJobArtifacts: true,
+                updateBuild: true,
+                __typename: 'JobPermissions',
+              },
+              __typename: 'CiJob',
+            },
+          ],
+        },
+      },
+    },
+  },
+};

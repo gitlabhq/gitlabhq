@@ -1,20 +1,16 @@
-import { createContentEditor } from '~/content_editor';
-import { loadMarkdownApiExamples, loadMarkdownApiResult } from './markdown_processing_examples';
+import path from 'path';
+import { describeMarkdownProcessing } from 'jest/content_editor/markdown_processing_spec_helper';
 
 jest.mock('~/emoji');
 
-describe('markdown processing', () => {
-  // Ensure we generate same markdown that was provided to Markdown API.
-  it.each(loadMarkdownApiExamples())(
-    'correctly handles %s (context: %s)',
-    async (name, context, markdown) => {
-      const testName = context ? `${context}_${name}` : name;
-      const contentEditor = createContentEditor({
-        renderMarkdown: () => loadMarkdownApiResult(testName),
-      });
-      await contentEditor.setSerializedContent(markdown);
+const markdownYamlPath = path.join(
+  __dirname,
+  '..',
+  '..',
+  'fixtures',
+  'markdown',
+  'markdown_golden_master_examples.yml',
+);
 
-      expect(contentEditor.getSerializedContent()).toBe(markdown);
-    },
-  );
-});
+// See spec/fixtures/markdown/markdown_golden_master_examples.yml for documentation on how this spec works.
+describeMarkdownProcessing('CE markdown processing in ContentEditor', markdownYamlPath);

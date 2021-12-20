@@ -16,11 +16,13 @@ export const packagePipelines = (extend) => [
     ref: 'master',
     sha: 'b83d6e391c22777fca1ed3012fce84f633d7fed0',
     project: {
+      id: '1',
       name: 'project14',
       webUrl: 'http://gdk.test:3000/namespace14/project14',
       __typename: 'Project',
     },
     user: {
+      id: 'user-1',
       name: 'Administrator',
     },
     ...extend,
@@ -89,6 +91,7 @@ export const dependencyLinks = () => [
 ];
 
 export const packageProject = () => ({
+  id: '1',
   fullPath: 'gitlab-org/gitlab-test',
   webUrl: 'http://gdk.test:3000/gitlab-org/gitlab-test',
   __typename: 'Project',
@@ -127,6 +130,7 @@ export const packageData = (extend) => ({
 });
 
 export const conanMetadata = () => ({
+  id: 'conan-1',
   packageChannel: 'stable',
   packageUsername: 'gitlab-org+gitlab-test',
   recipe: 'package-8/1.0.0@gitlab-org+gitlab-test/stable',
@@ -179,6 +183,7 @@ export const packageDetailsQuery = (extendPackage) => ({
         ...nugetMetadata(),
       },
       project: {
+        id: '1',
         path: 'projectPath',
       },
       tags: {
@@ -270,6 +275,7 @@ export const packageDestroyFileMutationError = () => ({
 export const packagesListQuery = ({ type = 'group', extend = {}, extendPagination = {} } = {}) => ({
   data: {
     [type]: {
+      id: '1',
       packages: {
         count: 2,
         nodes: [

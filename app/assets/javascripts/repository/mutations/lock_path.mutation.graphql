@@ -4,6 +4,7 @@ mutation toggleLock($projectPath: ID!, $filePath: String!, $lock: Boolean!) {
       id
       pathLocks {
         nodes {
+          id
           path
         }
       }

@@ -102,6 +102,8 @@ class Project < ApplicationRecord
 
   after_save :update_project_statistics, if: :saved_change_to_namespace_id?
 
+  after_save :schedule_sync_event_worker, if: -> { saved_change_to_id? || saved_change_to_namespace_id? }
+
   after_save :create_import_state, if: ->(project) { project.import? && project.import_state.nil? }
 
   after_save :save_topics
@@ -394,6 +396,9 @@ class Project < ApplicationRecord
 
   has_many :timelogs
 
+  has_one :ci_project_mirror, class_name: 'Ci::ProjectMirror'
+  has_many :sync_events, class_name: 'Projects::SyncEvent'
+
   accepts_nested_attributes_for :variables, allow_destroy: true
   accepts_nested_attributes_for :project_feature, update_only: true
   accepts_nested_attributes_for :project_setting, update_only: true
@@ -449,10 +454,11 @@ class Project < ApplicationRecord
   delegate :restrict_user_defined_variables, :restrict_user_defined_variables=, to: :ci_cd_settings, allow_nil: true
   delegate :actual_limits, :actual_plan_name, to: :namespace, allow_nil: true
   delegate :allow_merge_on_skipped_pipeline, :allow_merge_on_skipped_pipeline?,
-    :allow_merge_on_skipped_pipeline=, :has_confluence?,
+    :allow_merge_on_skipped_pipeline=, :has_confluence?, :has_shimo?,
     to: :project_setting
   delegate :active?, to: :prometheus_integration, allow_nil: true, prefix: true
   delegate :merge_commit_template, :merge_commit_template=, to: :project_setting, allow_nil: true
+  delegate :squash_commit_template, :squash_commit_template=, to: :project_setting, allow_nil: true
 
   delegate :log_jira_dvcs_integration_usage, :jira_dvcs_server_last_sync_at, :jira_dvcs_cloud_last_sync_at, to: :feature_usage
 
@@ -477,7 +483,8 @@ class Project < ApplicationRecord
   validates :project_feature, presence: true
 
   validates :namespace, presence: true
-  validates :project_namespace, presence: true, if: -> { self.namespace && self.root_namespace.project_namespace_creation_enabled? }
+  validates :project_namespace, presence: true, on: :create, if: -> { self.namespace && self.root_namespace.project_namespace_creation_enabled? }
+  validates :project_namespace, presence: true, on: :update, if: -> { self.project_namespace_id_changed?(to: nil) }
   validates :name, uniqueness: { scope: :namespace_id }
   validates :import_url, public_url: { schemes: ->(project) { project.persisted? ? VALID_MIRROR_PROTOCOLS : VALID_IMPORT_PROTOCOLS },
                                        ports: ->(project) { project.persisted? ? VALID_MIRROR_PORTS : VALID_IMPORT_PORTS },
@@ -575,18 +582,12 @@ class Project < ApplicationRecord
       .where('rs.path LIKE ?', "#{sanitize_sql_like(path)}/%")
   end
 
-  # "enabled" here means "not disabled". It includes private features!
   scope :with_feature_enabled, ->(feature) {
-    access_level_attribute = ProjectFeature.arel_table[ProjectFeature.access_level_attribute(feature)]
-    enabled_feature = access_level_attribute.gt(ProjectFeature::DISABLED).or(access_level_attribute.eq(nil))
-
-    with_project_feature.where(enabled_feature)
+    with_project_feature.merge(ProjectFeature.with_feature_enabled(feature))
   }
 
-  # Picks a feature where the level is exactly that given.
   scope :with_feature_access_level, ->(feature, level) {
-    access_level_attribute = ProjectFeature.access_level_attribute(feature)
-    with_project_feature.where(project_features: { access_level_attribute => level })
+    with_project_feature.merge(ProjectFeature.with_feature_access_level(feature, level))
   }
 
   # Picks projects which use the given programming language
@@ -687,37 +688,8 @@ class Project < ApplicationRecord
     end
   end
 
-  # project features may be "disabled", "internal", "enabled" or "public". If "internal",
-  # they are only available to team members. This scope returns projects where
-  # the feature is either public, enabled, or internal with permission for the user.
-  # Note: this scope doesn't enforce that the user has access to the projects, it just checks
-  # that the user has access to the feature. It's important to use this scope with others
-  # that checks project authorizations first (e.g. `filter_by_feature_visibility`).
-  #
-  # This method uses an optimised version of `with_feature_access_level` for
-  # logged in users to more efficiently get private projects with the given
-  # feature.
   def self.with_feature_available_for_user(feature, user)
-    visible = [ProjectFeature::ENABLED, ProjectFeature::PUBLIC]
-
-    if user&.can_read_all_resources?
-      with_feature_enabled(feature)
-    elsif user
-      min_access_level = ProjectFeature.required_minimum_access_level(feature)
-      column = ProjectFeature.quoted_access_level_column(feature)
-
-      with_project_feature
-      .where("#{column} IS NULL OR #{column} IN (:public_visible) OR (#{column} = :private_visible AND EXISTS (:authorizations))",
-            {
-              public_visible: visible,
-              private_visible: ProjectFeature::PRIVATE,
-              authorizations: user.authorizations_for_projects(min_access_level: min_access_level)
-            })
-    else
-      # This has to be added to include features whose value is nil in the db
-      visible << nil
-      with_feature_access_level(feature, visible)
-    end
+    with_project_feature.merge(ProjectFeature.with_feature_available_for_user(feature, user))
   end
 
   def self.projects_user_can(projects, user, action)
@@ -1469,7 +1441,9 @@ class Project < ApplicationRecord
   end
 
   def disabled_integrations
-    [:shimo]
+    disabled_integrations = []
+    disabled_integrations << 'shimo' unless Feature.enabled?(:shimo_integration, self)
+    disabled_integrations
   end
 
   def find_or_initialize_integration(name)
@@ -1598,6 +1572,12 @@ class Project < ApplicationRecord
 
   def lfs_objects_oids(oids: [])
     oids(lfs_objects, oids: oids)
+  end
+
+  def lfs_objects_oids_from_fork_source(oids: [])
+    return [] unless forked?
+
+    oids(fork_source.lfs_objects, oids: oids)
   end
 
   def personal?
@@ -2747,6 +2727,12 @@ class Project < ApplicationRecord
     end
   end
 
+  def remove_project_authorizations(user_ids, per_batch = 1000)
+    user_ids.each_slice(per_batch) do |user_ids_batch|
+      project_authorizations.where(user_id: user_ids_batch).delete_all
+    end
+  end
+
   private
 
   # overridden in EE
@@ -2956,6 +2942,13 @@ class Project < ApplicationRecord
     project_namespace.parent = namespace
     project_namespace.shared_runners_enabled = shared_runners_enabled
     project_namespace.visibility_level = visibility_level
+  end
+
+  # SyncEvents are created by PG triggers (with the function `insert_projects_sync_event`)
+  def schedule_sync_event_worker
+    run_after_commit do
+      Projects::SyncEvent.enqueue_worker
+    end
   end
 end
 

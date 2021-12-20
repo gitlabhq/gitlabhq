@@ -259,30 +259,48 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching do
 
     context 'while using OAuth tokens as passwords' do
       let(:user) { create(:user) }
-      let(:token_w_api_scope) { Doorkeeper::AccessToken.create!(application_id: application.id, resource_owner_id: user.id, scopes: 'api') }
       let(:application) { Doorkeeper::Application.create!(name: 'MyApp', redirect_uri: 'https://app.com', owner: user) }
 
       shared_examples 'an oauth failure' do
         it 'fails' do
-          expect(gl_auth.find_for_git_client("oauth2", token_w_api_scope.token, project: nil, ip: 'ip'))
+          access_token = Doorkeeper::AccessToken.create!(application_id: application.id, resource_owner_id: user.id, scopes: 'api')
+
+          expect(gl_auth.find_for_git_client("oauth2", access_token.token, project: nil, ip: 'ip'))
             .to have_attributes(auth_failure)
         end
       end
 
-      it 'succeeds for OAuth tokens with the `api` scope' do
-        expect(gl_auth.find_for_git_client("oauth2", token_w_api_scope.token, project: nil, ip: 'ip')).to have_attributes(actor: user, project: nil, type: :oauth, authentication_abilities: described_class.full_authentication_abilities)
-      end
+      context 'with specified scopes' do
+        using RSpec::Parameterized::TableSyntax
 
-      it 'fails for OAuth tokens with other scopes' do
-        token = Doorkeeper::AccessToken.create!(application_id: application.id, resource_owner_id: user.id, scopes: 'read_user')
+        where(:scopes, :abilities) do
+          'api' | described_class.full_authentication_abilities
+          'read_api' | described_class.read_only_authentication_abilities
+          'read_repository' | [:download_code]
+          'write_repository' | [:download_code, :push_code]
+          'read_user' | []
+          'sudo' | []
+          'openid' | []
+          'profile' | []
+          'email' | []
+        end
 
-        expect(gl_auth.find_for_git_client("oauth2", token.token, project: nil, ip: 'ip')).to have_attributes(auth_failure)
+        with_them do
+          it 'authenticates with correct abilities' do
+            access_token = Doorkeeper::AccessToken.create!(application_id: application.id, resource_owner_id: user.id, scopes: scopes)
+
+            expect(gl_auth.find_for_git_client("oauth2", access_token.token, project: nil, ip: 'ip'))
+              .to have_attributes(actor: user, project: nil, type: :oauth, authentication_abilities: abilities)
+          end
+        end
       end
 
       it 'does not try password auth before oauth' do
+        access_token = Doorkeeper::AccessToken.create!(application_id: application.id, resource_owner_id: user.id, scopes: 'api')
+
         expect(gl_auth).not_to receive(:find_with_user_password)
 
-        gl_auth.find_for_git_client("oauth2", token_w_api_scope.token, project: nil, ip: 'ip')
+        gl_auth.find_for_git_client("oauth2", access_token.token, project: nil, ip: 'ip')
       end
 
       context 'blocked user' do

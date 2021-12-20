@@ -289,17 +289,6 @@ Performance/DeleteSuffix:
     - 'ee/app/models/geo/upload_registry.rb'
     - 'ee/app/workers/geo/file_download_dispatch_worker/attachment_job_finder.rb'
 
-# Offense count: 13
-# Cop supports --auto-correct.
-Performance/Detect:
-  Exclude:
-    - 'ee/spec/controllers/projects/dependencies_controller_spec.rb'
-    - 'ee/spec/requests/api/dependencies_spec.rb'
-    - 'qa/qa/runtime/feature.rb'
-    - 'spec/lib/gitlab/git/tree_spec.rb'
-    - 'spec/lib/gitlab/import_export/project/tree_restorer_spec.rb'
-    - 'spec/models/event_spec.rb'
-
 # Offense count: 121
 Performance/MethodObjectAsBlock:
   Enabled: false
@@ -543,7 +532,7 @@ Rails/LexicallyScopedActionFilter:
 Rails/LinkToBlank:
   Exclude:
     - 'app/helpers/projects_helper.rb'
-    - 'ee/app/helpers/ee/user_callouts_helper.rb'
+    - 'ee/app/helpers/ee/users/callouts_helper.rb'
 
 # Offense count: 1
 # Cop supports --auto-correct.
@@ -825,11 +814,6 @@ Style/RescueModifier:
 # Offense count: 123
 # Cop supports --auto-correct.
 Style/SingleArgumentDig:
-  Enabled: false
-
-# Offense count: 45
-# Cop supports --auto-correct.
-Style/SlicingWithRange:
   Enabled: false
 
 # Offense count: 63

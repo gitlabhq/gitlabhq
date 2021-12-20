@@ -1,23 +1,23 @@
 #import "~/graphql_shared/fragments/user.fragment.graphql"
 
 fragment StateVersion on TerraformStateVersion {
+  id
   downloadPath
   serial
   updatedAt
-
   createdByUser {
     ...User
   }
-
   job {
+    id
     detailedStatus {
+      id
       detailsPath
       group
       icon
       label
       text
     }
-
     pipeline {
       id
       path

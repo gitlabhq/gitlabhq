@@ -9,6 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15886) in GitLab 13.2.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/221259) from GitLab Premium to GitLab Free in 13.3.
 > - Support for Composer 2.0 [added](https://gitlab.com/gitlab-org/gitlab/-/issues/259840) in GitLab 13.10.
+> - Deploy token support [added](https://gitlab.com/gitlab-org/gitlab/-/issues/240897) in GitLab 14.6.
 
 WARNING:
 The Composer package registry for GitLab is under development and isn't ready for production use due to
@@ -88,13 +89,12 @@ Prerequisites:
 - A valid `composer.json` file.
 - The Packages feature is enabled in a GitLab repository.
 - The project ID, which is on the project's home page.
-- A [personal access token](../../../user/profile/personal_access_tokens.md) with the scope set to `api`.
+- One of the following token types:
+  - A [personal access token](../../../user/profile/personal_access_tokens.md) with the scope set to `api`.
+  - A [deploy token](../../project/deploy_tokens/index.md)
+    with the scope set to `write_package_registry`.
 
-  NOTE:
-  [Deploy tokens](../../project/deploy_tokens/index.md) are
-  [not yet supported](https://gitlab.com/gitlab-org/gitlab/-/issues/240897) for use with Composer.
-
-To publish the package:
+To publish the package with a personal access token:
 
 - Send a `POST` request to the [Packages API](../../../api/packages.md).
 
@@ -105,6 +105,21 @@ To publish the package:
   ```
 
   - `<personal-access-token>` is your personal access token.
+  - `<project_id>` is your project ID.
+  - `<tag>` is the Git tag name of the version you want to publish.
+     To publish a branch, use `branch=<branch>` instead of `tag=<tag>`.
+
+To publish the package with a deploy token:
+
+- Send a `POST` request to the [Packages API](../../../api/packages.md).
+
+  For example, you can use `curl`:
+
+  ```shell
+  curl --data tag=<tag> --header "Deploy-Token: <deploy-token>" "https://gitlab.example.com/api/v4/projects/<project_id>/packages/composer"
+  ```
+
+  - `<deploy-token>` is your deploy token
   - `<project_id>` is your project ID.
   - `<tag>` is the Git tag name of the version you want to publish.
      To publish a branch, use `branch=<branch>` instead of `tag=<tag>`.
@@ -159,11 +174,11 @@ Prerequisites:
 
 - A package in the Package Registry.
 - The group ID, which is on the group's home page.
-- A [personal access token](../../../user/profile/personal_access_tokens.md) with the scope set to, at minimum, `read_api`.
-
-  NOTE:
-  [Deploy tokens](../../project/deploy_tokens/index.md) are
-  [not yet supported](https://gitlab.com/gitlab-org/gitlab/-/issues/240897) for use with Composer.
+- One of the following token types:
+  - A [personal access token](../../../user/profile/personal_access_tokens.md)
+    with the scope set to, at minimum, `api`.
+  - A [deploy token](../../project/deploy_tokens/index.md)
+    with the scope set to `read_package_registry`, `write_package_registry`, or both.
 
 To install a package:
 
@@ -213,6 +228,8 @@ To install a package:
 
 1. Create an `auth.json` file with your GitLab credentials:
 
+   Using a personal access token:
+
    ```shell
    composer config gitlab-token.<DOMAIN-NAME> <personal_access_token>
    ```
@@ -229,6 +246,26 @@ To install a package:
    }
    ```
 
+   Using a deploy token:
+
+   ```shell
+   composer config gitlab-token.<DOMAIN-NAME> <deploy_token_username> <deploy_token>
+   ```
+
+   Result in the `auth.json` file:
+
+   ```json
+   {
+     ...
+     "gitlab-token": {
+       "<DOMAIN-NAME>": {
+         "username": "<deploy_token_username>",
+         "token": "<deploy_token>",
+       ...
+     }
+   }
+   ```
+
    You can unset this with the command:
 
    ```shell
@@ -236,7 +273,8 @@ To install a package:
    ```
 
    - `<DOMAIN-NAME>` is the GitLab instance URL `gitlab.com` or `gitlab.example.com`.
-   - `<personal_access_token>` with the scope set to `read_api`.
+   - `<personal_access_token>` with the scope set to `api`, or `<deploy_token>` with the scope set
+     to `read_package_registry` and/or `write_package_registry`.
 
 1. If you are on a GitLab self-managed instance, add `gitlab-domains` to `composer.json`.
 
@@ -298,9 +336,18 @@ To install a package:
 
 WARNING:
 Never commit the `auth.json` file to your repository. To install packages from a CI/CD job,
-consider using the [`composer config`](https://getcomposer.org/doc/articles/handling-private-packages.md#satis) tool with your personal access token
+consider using the [`composer config`](https://getcomposer.org/doc/articles/handling-private-packages.md#satis) tool with your access token
 stored in a [GitLab CI/CD variable](../../../ci/variables/index.md) or in
 [HashiCorp Vault](../../../ci/secrets/index.md).
+
+### Working with Deploy Tokens
+
+Although Composer packages are accessed at the group level, a group or project deploy token can be
+used to access them:
+
+- A group deploy token has access to all packages published to projects in that group or its
+  subgroups.
+- A project deploy token only has access to packages published to that particular project.
 
 ## Supported CLI commands
 

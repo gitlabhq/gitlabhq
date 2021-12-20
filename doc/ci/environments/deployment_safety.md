@@ -119,17 +119,17 @@ The other pipelines don't get the protected variable. You can also
 We recommend that you use protected variables on protected environments to make sure that the
 secrets aren't exposed unintentionally. You can also define production secrets on the
 [runner side](../runners/configure_runners.md#prevent-runners-from-revealing-sensitive-information).
-This prevents other maintainers from reading the secrets and makes sure that the runner only runs on
-protected branches.
+This prevents other users with the [Maintainer role](../../user/permissions.md) from reading the secrets and makes sure
+that the runner only runs on protected branches.
 
 For more information, see [pipeline security](../pipelines/index.md#pipeline-security-on-protected-branches).
 
 ## Separate project for deployments
 
-All project maintainers have access to production secrets. If you need to limit the number of users
+All users with the Maintainer role for the project have access to production secrets. If you need to limit the number of users
 that can deploy to a production environment, you can create a separate project and configure a new
 permission model that isolates the CD permissions from the original project and prevents the
-original project's maintainers from accessing the production secret and CD configuration. You can
+original users with the Maintainer role for the project from accessing the production secret and CD configuration. You can
 connect the CD project to your development projects by using [multi-project pipelines](../pipelines/multi_project_pipelines.md).
 
 ## Protect `gitlab-ci.yml` from change

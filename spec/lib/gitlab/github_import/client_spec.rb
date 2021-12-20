@@ -221,6 +221,50 @@ RSpec.describe Gitlab::GithubImport::Client do
 
       expect(client.with_rate_limit { 10 }).to eq(10)
     end
+
+    context 'when Faraday error received from octokit', :aggregate_failures do
+      let(:error_class) { described_class::CLIENT_CONNECTION_ERROR }
+      let(:info_params) { { 'error.class': error_class } }
+      let(:block_to_rate_limit) { -> { client.pull_request('foo/bar', 999) } }
+
+      context 'when rate_limiting_enabled is true' do
+        it 'retries on error and succeeds' do
+          allow_retry
+
+          expect(client).to receive(:requests_remaining?).twice.and_return(true)
+          expect(Gitlab::Import::Logger).to receive(:info).with(hash_including(info_params)).once
+
+          expect(client.with_rate_limit(&block_to_rate_limit)).to be(true)
+        end
+
+        it 'retries and does not succeed' do
+          allow(client).to receive(:requests_remaining?).and_return(true)
+          allow(client.octokit).to receive(:pull_request).and_raise(error_class, 'execution expired')
+
+          expect { client.with_rate_limit(&block_to_rate_limit) }.to raise_error(error_class, 'execution expired')
+        end
+      end
+
+      context 'when rate_limiting_enabled is false' do
+        before do
+          allow(client).to receive(:rate_limiting_enabled?).and_return(false)
+        end
+
+        it 'retries on error and succeeds' do
+          allow_retry
+
+          expect(Gitlab::Import::Logger).to receive(:info).with(hash_including(info_params)).once
+
+          expect(client.with_rate_limit(&block_to_rate_limit)).to be(true)
+        end
+
+        it 'retries and does not succeed' do
+          allow(client.octokit).to receive(:pull_request).and_raise(error_class, 'execution expired')
+
+          expect { client.with_rate_limit(&block_to_rate_limit) }.to raise_error(error_class, 'execution expired')
+        end
+      end
+    end
   end
 
   describe '#requests_remaining?' do
@@ -505,6 +549,25 @@ RSpec.describe Gitlab::GithubImport::Client do
 
         client.search_repos_by_name('test')
       end
+
+      context 'when Faraday error received from octokit', :aggregate_failures do
+        let(:error_class) { described_class::CLIENT_CONNECTION_ERROR }
+        let(:info_params) { { 'error.class': error_class } }
+
+        it 'retries on error and succeeds' do
+          allow_retry(:search_repositories)
+
+          expect(Gitlab::Import::Logger).to receive(:info).with(hash_including(info_params)).once
+
+          expect(client.search_repos_by_name('test')).to be(true)
+        end
+
+        it 'retries and does not succeed' do
+          allow(client.octokit).to receive(:search_repositories).and_raise(error_class, 'execution expired')
+
+          expect { client.search_repos_by_name('test') }.to raise_error(error_class, 'execution expired')
+        end
+      end
     end
 
     describe '#search_query' do
@@ -529,6 +592,14 @@ RSpec.describe Gitlab::GithubImport::Client do
           expect(result).to eq('test in:test is:public,private user:user org:org1 org:org2')
         end
       end
+    end
+  end
+
+  def allow_retry(method = :pull_request)
+    call_count = 0
+    allow(client.octokit).to receive(method) do
+      call_count += 1
+      call_count > 1 ? true : raise(described_class::CLIENT_CONNECTION_ERROR, 'execution expired')
     end
   end
 end

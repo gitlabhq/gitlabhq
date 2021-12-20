@@ -29,7 +29,7 @@ module Banzai
           @references_per_parent[parent_type] ||= begin
             refs = Hash.new { |hash, key| hash[key] = Set.new }
 
-            prepare_doc_for_scan(filter.doc).to_enum(:scan, regex).each do
+            prepare_doc_for_scan.to_enum(:scan, regex).each do
               parent_path = if parent_type == :project
                               full_project_path($~[:namespace], $~[:project])
                             else
@@ -184,14 +184,12 @@ module Banzai
           Gitlab::SafeRequestStore["banzai_#{parent_type}_refs".to_sym] ||= {}
         end
 
-        def prepare_doc_for_scan(doc)
-          html = if Feature.enabled?(:reference_cache_memoization, project, default_enabled: :yaml)
-                   result[:rendered_html] ||= doc.to_html
-                 else
-                   doc.to_html
-                 end
+        def prepare_doc_for_scan
+          filter.requires_unescaping? ? unescape_html_entities(html_content) : html_content
+        end
 
-          filter.requires_unescaping? ? unescape_html_entities(html) : html
+        def html_content
+          result[:rendered_html] ||= filter.doc.to_html
         end
 
         def unescape_html_entities(text)

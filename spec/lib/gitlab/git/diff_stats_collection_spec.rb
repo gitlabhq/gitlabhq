@@ -36,7 +36,7 @@ RSpec.describe Gitlab::Git::DiffStatsCollection do
     end
 
     it 'returns capped number when it is bigger than max_files' do
-      allow(::Commit).to receive(:max_diff_options).and_return(max_files: 1)
+      allow(::Commit).to receive(:diff_max_files).and_return(1)
 
       expect(collection.real_size).to eq('1+')
     end

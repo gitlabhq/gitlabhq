@@ -169,7 +169,7 @@ RSpec.describe Projects::TransferService do
       end
     end
 
-    context 'when project has pending builds' do
+    context 'when project has pending builds', :sidekiq_inline do
       let!(:other_project) { create(:project) }
       let!(:pending_build) { create(:ci_pending_build, project: project.reload) }
       let!(:unrelated_pending_build) { create(:ci_pending_build, project: other_project) }
@@ -251,7 +251,7 @@ RSpec.describe Projects::TransferService do
       )
     end
 
-    context 'when project has pending builds' do
+    context 'when project has pending builds', :sidekiq_inline do
       let!(:other_project) { create(:project) }
       let!(:pending_build) { create(:ci_pending_build, project: project.reload) }
       let!(:unrelated_pending_build) { create(:ci_pending_build, project: other_project) }

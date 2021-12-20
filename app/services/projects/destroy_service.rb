@@ -28,9 +28,7 @@ module Projects
       # Git data (e.g. a list of branch names).
       flush_caches(project)
 
-      if Feature.enabled?(:abort_deleted_project_pipelines, default_enabled: :yaml)
-        ::Ci::AbortPipelinesService.new.execute(project.all_pipelines, :project_deleted)
-      end
+      ::Ci::AbortPipelinesService.new.execute(project.all_pipelines, :project_deleted)
 
       Projects::UnlinkForkService.new(project, current_user).execute
 
@@ -71,6 +69,18 @@ module Projects
 
     def remove_snippets
       response = ::Snippets::BulkDestroyService.new(current_user, project.snippets).execute
+
+      response.success?
+    end
+
+    def destroy_events!
+      unless remove_events
+        raise_error(s_('DeleteProject|Failed to remove events. Please try again or contact administrator.'))
+      end
+    end
+
+    def remove_events
+      response = ::Events::DestroyService.new(project).execute
 
       response.success?
     end
@@ -117,14 +127,10 @@ module Projects
       log_destroy_event
       trash_relation_repositories!
       trash_project_repositories!
+      destroy_events!
       destroy_web_hooks!
       destroy_project_bots!
-
-      if ::Feature.enabled?(:ci_optimize_project_records_destruction, project, default_enabled: :yaml) &&
-        Feature.enabled?(:abort_deleted_project_pipelines, default_enabled: :yaml)
-
-        destroy_ci_records!
-      end
+      destroy_ci_records!
 
       # Rails attempts to load all related records into memory before
       # destroying: https://github.com/rails/rails/issues/22510
@@ -150,7 +156,7 @@ module Projects
         ::Ci::DestroyPipelineService.new(project, current_user).execute(pipeline)
       end
 
-      deleted_count = project.commit_statuses.delete_all
+      deleted_count = ::CommitStatus.for_project(project).delete_all
 
       Gitlab::AppLogger.info(
         class: 'Projects::DestroyService',

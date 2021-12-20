@@ -2,6 +2,7 @@ mutation CreateSnippet($input: CreateSnippetInput!) {
   createSnippet(input: $input) {
     errors
     snippet {
+      id
       webUrl
     }
   }

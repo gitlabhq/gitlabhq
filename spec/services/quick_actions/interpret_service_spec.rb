@@ -3,7 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe QuickActions::InterpretService do
-  let_it_be(:public_project) { create(:project, :public) }
+  let_it_be(:group) { create(:group) }
+  let_it_be(:public_project) { create(:project, :public, group: group) }
   let_it_be(:repository_project) { create(:project, :repository) }
   let_it_be(:project) { public_project }
   let_it_be(:developer) { create(:user) }
@@ -2231,6 +2232,51 @@ RSpec.describe QuickActions::InterpretService do
         it_behaves_like 'unapprove command unavailable' do
           let(:issuable) { issue }
         end
+      end
+    end
+
+    context 'crm_contact commands' do
+      let_it_be(:new_contact) { create(:contact, group: group) }
+      let_it_be(:existing_contact) { create(:contact, group: group) }
+
+      let(:add_command) { service.execute("/add_contacts #{new_contact.email}", issue) }
+      let(:remove_command) { service.execute("/remove_contacts #{existing_contact.email}", issue) }
+
+      before do
+        issue.project.group.add_developer(developer)
+        create(:issue_customer_relations_contact, issue: issue, contact: existing_contact)
+      end
+
+      context 'with feature flag disabled' do
+        before do
+          stub_feature_flags(customer_relations: false)
+        end
+
+        it 'add_contacts command does not add the contact' do
+          _, updates, _ = add_command
+
+          expect(updates).to be_empty
+        end
+
+        it 'remove_contacts command does not remove the contact' do
+          _, updates, _ = remove_command
+
+          expect(updates).to be_empty
+        end
+      end
+
+      it 'add_contacts command adds the contact' do
+        _, updates, message = add_command
+
+        expect(updates).to eq(add_contacts: [new_contact.email])
+        expect(message).to eq('One or more contacts were successfully added.')
+      end
+
+      it 'remove_contacts command removes the contact' do
+        _, updates, message = remove_command
+
+        expect(updates).to eq(remove_contacts: [existing_contact.email])
+        expect(message).to eq('One or more contacts were successfully removed.')
       end
     end
   end

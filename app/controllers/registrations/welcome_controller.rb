@@ -72,13 +72,7 @@ module Registrations
     end
 
     def show_tasks_to_be_done?
-      return unless experiment(:invite_members_for_task).enabled?
-
       MemberTask.for_members(current_user.members).exists?
-    end
-
-    # overridden in EE
-    def trial_params
     end
 
     # overridden in EE

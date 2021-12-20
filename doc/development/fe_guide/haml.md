@@ -59,7 +59,11 @@ When using the GitLab UI form builder, the following components are available fo
 NOTE:
 Currently only the listed components are available but more components are planned.
 
+<!-- vale gitlab.Spelling = NO -->
+
 #### gitlab_ui_checkbox_component
+
+<!-- vale gitlab.Spelling = YES -->
 
 [GitLab UI Docs](https://gitlab-org.gitlab.io/gitlab-ui/?path=/story/base-form-form-checkbox--default)
 
@@ -73,7 +77,11 @@ Currently only the listed components are available but more components are plann
 | `unchecked_value` | Value when checkbox is unchecked. | `String` | `false` (`'0'`) |
 | `label_options` | Options that are passed to [Rails `label` method](https://api.rubyonrails.org/classes/ActionView/Helpers/FormBuilder.html#method-i-label). | `Hash` | `false` (`{}`) |
 
+<!-- vale gitlab.Spelling = NO -->
+
 #### gitlab_ui_radio_component
+
+<!-- vale gitlab.Spelling = YES -->
 
 [GitLab UI Docs](https://gitlab-org.gitlab.io/gitlab-ui/?path=/story/base-form-form-radio--default)
 

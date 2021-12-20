@@ -278,11 +278,13 @@ RSpec.describe IssuesHelper do
     it 'returns expected result' do
       expected = {
         can_create_issue: 'true',
+        can_destroy_issue: 'true',
         can_reopen_issue: 'true',
         can_report_spam: 'false',
         can_update_issue: 'true',
         iid: issue.iid,
         is_issue_author: 'false',
+        issue_path: issue_path(issue),
         issue_type: 'issue',
         new_issue_path: new_project_issue_path(project, { issue: { description: "Related to \##{issue.iid}.\n\n" } }),
         project_path: project.full_path,
@@ -302,6 +304,7 @@ RSpec.describe IssuesHelper do
       allow(helper).to receive(:can?).and_return(true)
       allow(helper).to receive(:image_path).and_return('#')
       allow(helper).to receive(:import_csv_namespace_project_issues_path).and_return('#')
+      allow(helper).to receive(:issue_repositioning_disabled?).and_return(true)
       allow(helper).to receive(:url_for).and_return('#')
 
       expected = {
@@ -318,6 +321,8 @@ RSpec.describe IssuesHelper do
         has_any_issues: project_issues(project).exists?.to_s,
         import_csv_issues_path: '#',
         initial_email: project.new_issuable_address(current_user, 'issue'),
+        is_anonymous_search_disabled: 'true',
+        is_issue_repositioning_disabled: 'true',
         is_project: 'true',
         is_signed_in: current_user.present?.to_s,
         jira_integration_path: help_page_url('integration/jira/issues', anchor: 'view-jira-issues'),
@@ -338,6 +343,10 @@ RSpec.describe IssuesHelper do
   end
 
   describe '#project_issues_list_data' do
+    before do
+      stub_feature_flags(disable_anonymous_search: true)
+    end
+
     context 'when user is signed in' do
       it_behaves_like 'issues list data' do
         let(:current_user) { double.as_null_object }

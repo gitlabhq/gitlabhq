@@ -8,7 +8,8 @@ product_stage: release
 product_group: group::release
 product_category: continuous_delivery
 value_type: number
-status: active
+status: removed
+milestone_removed: '14.6'
 time_frame: 28d
 data_source: redis_hll
 instrumentation_class: RedisHLLMetric

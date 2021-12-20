@@ -1,4 +1,4 @@
-import { GlTable, GlLink } from '@gitlab/ui';
+import { GlTableLite, GlLink } from '@gitlab/ui';
 import { shallowMount, mount } from '@vue/test-utils';
 import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
 import CiLintResults from '~/pipeline_editor/components/lint/ci_lint_results.vue';
@@ -24,7 +24,7 @@ describe('CI Lint Results', () => {
     });
   };
 
-  const findTable = () => wrapper.find(GlTable);
+  const findTable = () => wrapper.find(GlTableLite);
   const findByTestId = (selector) => () => wrapper.find(`[data-testid="ci-lint-${selector}"]`);
   const findAllByTestId = (selector) => () =>
     wrapper.findAll(`[data-testid="ci-lint-${selector}"]`);

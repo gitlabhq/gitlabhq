@@ -57,3 +57,5 @@ class SnippetBlobPresenter < BlobPresenter
     gitlab_raw_snippet_blob_url(snippet, blob.path, only_path: only_path)
   end
 end
+
+SnippetBlobPresenter.prepend_mod

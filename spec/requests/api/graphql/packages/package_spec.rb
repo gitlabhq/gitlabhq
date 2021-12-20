@@ -4,7 +4,7 @@ require 'spec_helper'
 RSpec.describe 'package details' do
   include GraphqlHelpers
 
-  let_it_be(:project) { create(:project) }
+  let_it_be_with_reload(:project) { create(:project) }
   let_it_be(:composer_package) { create(:composer_package, project: project) }
   let_it_be(:composer_json) { { name: 'name', type: 'type', license: 'license', version: 1 } }
   let_it_be(:composer_metadatum) do
@@ -68,7 +68,7 @@ RSpec.describe 'package details' do
         subject
 
         expect(graphql_data_at(:package, :versions, :nodes, :version)).to be_present
-        expect(graphql_data_at(:package, :versions, :nodes, :versions, :nodes)).to be_empty
+        expect(graphql_data_at(:package, :versions, :nodes, :versions, :nodes)).to eq [nil, nil]
       end
     end
   end
@@ -94,6 +94,89 @@ RSpec.describe 'package details' do
 
       expect_graphql_errors_to_include [/Package details can be requested only for one package at a time/]
       expect(graphql_data_at(:b)).to be(nil)
+    end
+  end
+
+  context 'with unauthorized user' do
+    let_it_be(:user) { create(:user) }
+
+    before do
+      project.update!(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
+    end
+
+    it 'returns no packages' do
+      subject
+
+      expect(graphql_data_at(:package)).to be_nil
+    end
+  end
+
+  context 'pipelines field', :aggregate_failures do
+    let(:pipelines) { create_list(:ci_pipeline, 6, project: project) }
+    let(:pipeline_gids) { pipelines.sort_by(&:id).map(&:to_gid).map(&:to_s).reverse }
+
+    before do
+      composer_package.pipelines = pipelines
+      composer_package.save!
+    end
+
+    def run_query(args)
+      pipelines_nodes = <<~QUERY
+      nodes {
+        id
+      }
+      pageInfo {
+        startCursor
+        endCursor
+      }
+      QUERY
+
+      query = graphql_query_for(:package, { id: package_global_id }, query_graphql_field("pipelines", args, pipelines_nodes))
+      post_graphql(query, current_user: user)
+    end
+
+    it 'loads the second page with pagination first correctly' do
+      run_query(first: 2)
+      pipeline_ids = graphql_data.dig('package', 'pipelines', 'nodes').pluck('id')
+
+      expect(pipeline_ids).to eq(pipeline_gids[0..1])
+
+      cursor = graphql_data.dig('package', 'pipelines', 'pageInfo', 'endCursor')
+
+      run_query(first: 2, after: cursor)
+
+      pipeline_ids = graphql_data.dig('package', 'pipelines', 'nodes').pluck('id')
+
+      expect(pipeline_ids).to eq(pipeline_gids[2..3])
+    end
+
+    it 'loads the second page with pagination last correctly' do
+      run_query(last: 2)
+      pipeline_ids = graphql_data.dig('package', 'pipelines', 'nodes').pluck('id')
+
+      expect(pipeline_ids).to eq(pipeline_gids[4..5])
+
+      cursor = graphql_data.dig('package', 'pipelines', 'pageInfo', 'startCursor')
+
+      run_query(last: 2, before: cursor)
+
+      pipeline_ids = graphql_data.dig('package', 'pipelines', 'nodes').pluck('id')
+
+      expect(pipeline_ids).to eq(pipeline_gids[2..3])
+    end
+
+    context 'with unauthorized user' do
+      let_it_be(:user) { create(:user) }
+
+      before do
+        project.update!(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
+      end
+
+      it 'returns no packages' do
+        run_query(first: 2)
+
+        expect(graphql_data_at(:package)).to be_nil
+      end
     end
   end
 end

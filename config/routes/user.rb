@@ -61,6 +61,7 @@ scope '-/users', module: :users do
     post :decline, on: :member
   end
 
+  resources :callouts, only: [:create]
   resources :group_callouts, only: [:create]
 end
 

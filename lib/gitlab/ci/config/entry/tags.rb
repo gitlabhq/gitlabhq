@@ -16,8 +16,6 @@ module Gitlab
             validates :config, array_of_strings: true
 
             validate do
-              next unless ::Feature.enabled?(:ci_build_tags_limit, default_enabled: :yaml)
-
               if config.is_a?(Array) && config.size >= TAGS_LIMIT
                 errors.add(:config, _("must be less than the limit of %{tag_limit} tags") % { tag_limit: TAGS_LIMIT })
               end

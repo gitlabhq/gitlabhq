@@ -26,7 +26,7 @@ module RspecFlaky
 
       return unless current_example.attempts > 1
 
-      flaky_example = suite_flaky_examples.fetch(current_example.uid) { RspecFlaky::FlakyExample.new(current_example) }
+      flaky_example = suite_flaky_examples.fetch(current_example.uid) { RspecFlaky::FlakyExample.new(current_example.to_h) }
       flaky_example.update_flakiness!(last_attempts_count: current_example.attempts)
 
       flaky_examples[current_example.uid] = flaky_example
@@ -36,7 +36,6 @@ module RspecFlaky
       RspecFlaky::Report.new(flaky_examples).write(RspecFlaky::Config.flaky_examples_report_path)
       # write_report_file(flaky_examples, RspecFlaky::Config.flaky_examples_report_path)
 
-      new_flaky_examples = flaky_examples - suite_flaky_examples
       if new_flaky_examples.any?
         rails_logger_warn("\nNew flaky examples detected:\n")
         rails_logger_warn(JSON.pretty_generate(new_flaky_examples.to_h)) # rubocop:disable Gitlab/Json
@@ -47,6 +46,10 @@ module RspecFlaky
     end
 
     private
+
+    def new_flaky_examples
+      @new_flaky_examples ||= flaky_examples - suite_flaky_examples
+    end
 
     def init_suite_flaky_examples(suite_flaky_examples_json = nil)
       if suite_flaky_examples_json

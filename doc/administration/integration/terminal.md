@@ -17,7 +17,7 @@ GitLab uses these credentials to provide access to
 [web terminals](../../ci/environments/index.md#web-terminals-deprecated) for environments.
 
 NOTE:
-Only project maintainers and owners can access web terminals.
+Only users with at least the [Maintainer role](../../user/permissions.md) for the project access web terminals.
 
 ## How it works
 

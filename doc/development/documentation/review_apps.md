@@ -26,7 +26,7 @@ to render and preview the documentation locally.
 If a merge request has documentation changes, use the `review-docs-deploy` manual job
 to deploy the documentation review app for your merge request.
 
-![Manual trigger a documentation review app](img/manual_build_docs_v14_3.png)
+![Manual trigger a documentation review app](img/manual_build_docs_v14_6.png)
 
 The `review-docs-deploy*` job triggers a cross project pipeline and builds the
 docs site with your changes. When the pipeline finishes, the review app URL

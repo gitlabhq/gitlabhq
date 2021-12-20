@@ -8,7 +8,7 @@ import {
   GlDropdownSectionHeader,
   GlSearchBoxByType,
 } from '@gitlab/ui';
-import { joinPaths } from '~/lib/utils/url_utility';
+import { joinPaths, PATH_SEPARATOR } from '~/lib/utils/url_utility';
 import { MINIMUM_SEARCH_LENGTH } from '~/graphql_shared/constants';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import Tracking from '~/tracking';
@@ -36,7 +36,9 @@ export default {
         };
       },
       skip() {
-        return this.search.length > 0 && this.search.length < MINIMUM_SEARCH_LENGTH;
+        const hasNotEnoughSearchCharacters =
+          this.search.length > 0 && this.search.length < MINIMUM_SEARCH_LENGTH;
+        return this.shouldSkipQuery || hasNotEnoughSearchCharacters;
       },
       debounce: DEBOUNCE_DELAY,
     },
@@ -52,7 +54,7 @@ export default {
   data() {
     return {
       currentUser: {},
-      groupToFilterBy: undefined,
+      groupPathToFilterBy: undefined,
       search: '',
       selectedNamespace: this.namespaceId
         ? {
@@ -63,6 +65,7 @@ export default {
             id: this.userNamespaceId,
             fullPath: this.userNamespaceFullPath,
           },
+      shouldSkipQuery: true,
     };
   },
   computed: {
@@ -73,10 +76,8 @@ export default {
       return this.currentUser.namespace || {};
     },
     filteredGroups() {
-      return this.groupToFilterBy
-        ? this.userGroups.filter((group) =>
-            group.fullPath.startsWith(this.groupToFilterBy.fullPath),
-          )
+      return this.groupPathToFilterBy
+        ? this.userGroups.filter((group) => group.fullPath.startsWith(this.groupPathToFilterBy))
         : this.userGroups;
     },
     hasGroupMatches() {
@@ -85,7 +86,7 @@ export default {
     hasNamespaceMatches() {
       return (
         this.userNamespace.fullPath?.toLowerCase().includes(this.search.toLowerCase()) &&
-        !this.groupToFilterBy
+        !this.groupPathToFilterBy
       );
     },
     hasNoMatches() {
@@ -99,7 +100,10 @@ export default {
     eventHub.$off('select-template', this.handleSelectTemplate);
   },
   methods: {
-    focusInput() {
+    handleDropdownShown() {
+      if (this.shouldSkipQuery) {
+        this.shouldSkipQuery = false;
+      }
       this.$refs.search.focusInput();
     },
     handleDropdownItemClick(namespace) {
@@ -111,13 +115,9 @@ export default {
       });
       this.setNamespace(namespace);
     },
-    handleSelectTemplate(groupId) {
-      this.groupToFilterBy = this.userGroups.find(
-        (group) => getIdFromGraphQLId(group.id) === groupId,
-      );
-      if (this.groupToFilterBy) {
-        this.setNamespace(this.groupToFilterBy);
-      }
+    handleSelectTemplate(id, fullPath) {
+      this.groupPathToFilterBy = fullPath.split(PATH_SEPARATOR).shift();
+      this.setNamespace({ id, fullPath });
     },
     setNamespace({ id, fullPath }) {
       this.selectedNamespace = {
@@ -137,7 +137,7 @@ export default {
       toggle-class="gl-rounded-top-right-base! gl-rounded-bottom-right-base! gl-w-20"
       data-qa-selector="select_namespace_dropdown"
       @show="track('activate_form_input', { label: trackLabel, property: 'project_path' })"
-      @shown="focusInput"
+      @shown="handleDropdownShown"
     >
       <gl-search-box-by-type
         ref="search"

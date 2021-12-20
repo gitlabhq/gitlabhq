@@ -321,7 +321,7 @@ To share a group after enabling this feature:
 1. Go to your group's page.
 1. On the left sidebar, go to **Group information > Members**, and then select **Invite a group**.
 1. Select a group, and select a **Max role**.
-1. (Optional) Select an **Access expiration date**.
+1. Optional. Select an **Access expiration date**.
 1. Select **Invite**.
 
 ## Manage group memberships via LDAP **(PREMIUM SELF)**
@@ -508,7 +508,7 @@ To prevent a project from being shared with other groups:
 This setting applies to all subgroups unless overridden by a group owner. Groups already
 added to a project lose access when the setting is enabled.
 
-## Prevent members from being added to a group **(PREMIUM)**
+## Prevent members from being added to projects in a group **(PREMIUM)**
 
 As a group owner, you can prevent any new project membership for all
 projects in a group, allowing tighter control over project membership.
@@ -516,7 +516,11 @@ projects in a group, allowing tighter control over project membership.
 For example, if you want to lock the group for an [Audit Event](../../administration/audit_events.md),
 you can guarantee that project membership cannot be modified during the audit.
 
-To prevent members from being added to a group:
+You can still invite groups or to add members to groups, implicitly giving members access to projects in the **locked** group.
+
+The setting does not cascade. Projects in subgroups observe the subgroup configuration, ignoring the parent group.
+
+To prevent members from being added to projects in a group:
 
 1. Go to the group's **Settings > General** page.
 1. Expand the **Permissions, LFS, 2FA** section.
@@ -557,12 +561,15 @@ You should consider these security implications before configuring IP address re
 - **Administrators and group owners**: Users with these permission levels can always
   access the group settings, regardless of IP restriction, but they cannot access projects
   belonging to the group when accessing from a disallowed IP address.
-- **GitLab API and runner activities**: Only the [Groups](../../api/groups.md)
-  and [Projects](../../api/projects.md) APIs are protected by IP address restrictions.
+- **GitLab API and runner activities**: Only the [group](../../api/groups.md) (including all
+  [group resources](../../api/api_resources.md#group-resources)) APIs and [project](../../api/api_resources.md#project-resources)
+  (including all [project resources](../../api/api_resources.md#project-resources)) APIs are protected by IP address restrictions.
   When you register a runner, it is not bound by the IP restrictions. When the runner
   requests a new job or an update to a job's state, it is also not bound by
   the IP restrictions. But when the running CI/CD job sends Git requests from a
   restricted IP address, the IP restriction prevents code from being cloned.
+- **User dashboard activity**: Users may still see some events from the IP restricted groups and projects
+  on their dashboard. Activity may include push, merge, issue, or comment events.
 
 To restrict group access by IP address:
 
@@ -660,18 +667,15 @@ To disable group mentions:
 1. Select **Disable group mentions**.
 1. Select **Save changes**.
 
-## Enable delayed project removal **(PREMIUM)**
+## Enable delayed project deletion **(PREMIUM)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/220382) in GitLab 13.2.
 > - [Inheritance and enforcement added](https://gitlab.com/gitlab-org/gitlab/-/issues/321724) in GitLab 13.11.
 > - [Instance setting to enable by default added](https://gitlab.com/gitlab-org/gitlab/-/issues/255449) in GitLab 14.2.
 
-Projects can be configured to be deleted either:
-
-- Immediately.
-- After a delayed interval. During this interval period, the projects are in a read-only state
-  and can be restored. The default interval period is seven days but
-  [is configurable](../admin_area/settings/visibility_and_access_controls.md#default-deletion-delay).
+[Delayed project deletion](../project/settings/index.md#delayed-project-deletion) can be enabled for groups. When enabled, projects in
+the group are deleted after a period of delay. During this period, projects are in a read-only state and can be restored. The default
+period is seven days but [is configurable at the instance level](../admin_area/settings/visibility_and_access_controls.md#default-deletion-delay).
 
 On self-managed GitLab, projects are deleted immediately by default.
 In GitLab 14.2 and later, an administrator can
@@ -685,12 +689,12 @@ To enable delayed deletion of projects in a group:
 
 1. Go to the group's **Settings > General** page.
 1. Expand the **Permissions, LFS, 2FA** section.
-1. Check **Enable delayed project removal**.
+1. Check **Enable delayed project deletion**.
 1. Optional. To prevent subgroups from changing this setting, select **Enforce for all subgroups**.
 1. Select **Save changes**.
 
 NOTE:
-In GitLab 13.11 and above the group setting for delayed project removal is inherited by subgroups. As discussed in [Cascading settings](../../development/cascading_settings.md) inheritance can be overridden, unless enforced by an ancestor.
+In GitLab 13.11 and above the group setting for delayed project deletion is inherited by subgroups. As discussed in [Cascading settings](../../development/cascading_settings.md) inheritance can be overridden, unless enforced by an ancestor.
 
 ## Prevent project forking outside group **(PREMIUM)**
 
@@ -799,13 +803,5 @@ the following checks when creating or updating namespaces or groups:
 - Namespaces must not have parents.
 - Group parents must be groups and not namespaces.
 
-You can disable the validation if GitLab shows the following errors:
-
-- `A user namespace cannot have a parent`.
-- `A group cannot have a user namespace as its parent`.
-
-To disable the validation,
-[disable the `validate_namespace_parent_type` flag](../../administration/feature_flags.md).
-
-In the unlikely event that you had to disable this feature flag to prevent errors,
+In the unlikely event that you see these errors in your GitLab installation,
 [contact Support](https://about.gitlab.com/support/) so that we can improve this validation.

@@ -24,14 +24,15 @@ RSpec.describe 'Commits' do
     end
 
     context 'commit status is Generic Commit Status' do
-      let!(:status) { create(:generic_commit_status, pipeline: pipeline) }
+      let!(:status) { create(:generic_commit_status, pipeline: pipeline, ref: pipeline.ref) }
 
       before do
         project.add_reporter(user)
       end
 
-      describe 'Commit builds' do
+      describe 'Commit builds with jobs_tab_feature flag off' do
         before do
+          stub_feature_flags(jobs_tab_vue: false)
           visit pipeline_path(pipeline)
         end
 
@@ -89,8 +90,9 @@ RSpec.describe 'Commits' do
           end
         end
 
-        context 'Download artifacts' do
+        context 'Download artifacts with jobs_tab_vue feature flag off' do
           before do
+            stub_feature_flags(jobs_tab_vue: false)
             create(:ci_job_artifact, :archive, file: artifacts_file, job: build)
           end
 
@@ -118,8 +120,9 @@ RSpec.describe 'Commits' do
         end
       end
 
-      context "when logged as reporter" do
+      context "when logged as reporter and with jobs_tab_vue feature flag off" do
         before do
+          stub_feature_flags(jobs_tab_vue: false)
           project.add_reporter(user)
           create(:ci_job_artifact, :archive, file: artifacts_file, job: build)
           visit pipeline_path(pipeline)

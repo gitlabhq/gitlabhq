@@ -12,7 +12,8 @@ info: "See the Technical Writers assigned to Development Guidelines: https://abo
 To be able to turn on/off features behind feature flags in any of the
 GitLab Inc. provided environments such as staging and production, you need to
 have access to the [ChatOps](../chatops_on_gitlabcom.md) bot. The ChatOps bot
-is currently running on the ops instance, which is different from <https://gitlab.com> or <https://dev.gitlab.org>.
+is currently running on the ops instance, which is different from
+[GitLab.com](https://gitlab.com) or [`dev.gitlab.org`](https://dev.gitlab.org).
 
 Follow the ChatOps document to [request access](../chatops_on_gitlabcom.md#requesting-access).
 
@@ -35,12 +36,12 @@ This allows you to separate rolling out a feature from a deploy, making it
 easier to measure the impact of both separately.
 
 The GitLab feature library (using
-[Flipper](https://github.com/jnunemaker/flipper), and covered in the [Feature
-Flags process](https://about.gitlab.com/handbook/product-development-flow/feature-flag-lifecycle/) guide) supports rolling out changes to a percentage of
+[Flipper](https://github.com/jnunemaker/flipper), and covered in the
+[Feature Flags process](https://about.gitlab.com/handbook/product-development-flow/feature-flag-lifecycle/) guide) supports rolling out changes to a percentage of
 time to users. This in turn can be controlled using [GitLab ChatOps](../../ci/chatops/index.md).
 
-For an up to date list of feature flag commands please see [the source
-code](https://gitlab.com/gitlab-com/chatops/blob/master/lib/chatops/commands/feature.rb).
+For an up to date list of feature flag commands please see
+[the source code](https://gitlab.com/gitlab-com/chatops/blob/master/lib/chatops/commands/feature.rb).
 Note that all the examples in that file must be preceded by
 `/chatops run`.
 
@@ -50,15 +51,16 @@ change feature flags or you do not [have access](#access).
 
 ### Enabling a feature for pre-production testing
 
-As a first step in a feature rollout, you should enable the feature on <https://about.staging.gitlab.com>
-and <https://dev.gitlab.org>.
+As a first step in a feature rollout, you should enable the feature on
+[`about.staging.gitlab.com`](https://about.staging.gitlab.com)
+and [`dev.gitlab.org`](https://dev.gitlab.org).
 
 These two environments have different scopes.
 `dev.gitlab.org` is a production CE environment that has internal GitLab Inc.
 traffic and is used for some development and other related work.
 `staging.gitlab.com` has a smaller subset of GitLab.com database and repositories
 and does not have regular traffic. Staging is an EE instance and can give you
-a (very) rough estimate of how your feature will look/behave on GitLab.com.
+a (very) rough estimate of how your feature will look and behave on GitLab.com.
 Both of these instances are connected to Sentry so make sure you check the projects
 there for any exceptions while testing your feature after enabling the feature flag.
 
@@ -97,7 +99,7 @@ Guidelines:
 #### Process
 
 When enabling a feature flag rollout, the system will automatically block the
-chatops command from succeeding if there are active `"severity::1"` or `~"severity::2"`
+ChatOps command from succeeding if there are active `"severity::1"` or `~"severity::2"`
 incidents or in-progress change issues, for example:
 
 ```shell
@@ -227,7 +229,7 @@ Note, that if an actor based feature gate is present, switching the
 `default_enabled` attribute of the YAML definition from `false` to `true`
 will not have any effect. The feature gate must be deleted first.
 
-For example, a feature flag is set via chatops:
+For example, a feature flag is set via ChatOps:
 
 ```shell
 /chatops run feature set --project=gitlab-org/gitlab some_feature true
@@ -265,7 +267,7 @@ To disable a feature flag that has been enabled for a specific project you can r
 
 You cannot selectively disable feature flags for a specific project/group/user without applying a [specific method of implementing](index.md#selectively-disable-by-actor) the feature flags.
 
-If a feature flag is disabled via chatops, that will take precedence over the `default_enabled` value in the YML. In other words, you could have a feature enabled for on-premise installations but not for GitLab.com.
+If a feature flag is disabled via ChatOps, that will take precedence over the `default_enabled` value in the YML. In other words, you could have a feature enabled for on-premise installations but not for GitLab.com.
 
 ### Feature flag change logging
 

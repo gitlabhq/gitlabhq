@@ -12,6 +12,9 @@ module BulkImports
 
     worker_has_external_dependencies!
 
+    idempotent!
+    deduplicate :until_executed, including_scheduled: true
+
     def perform(entity_id, current_stage = nil)
       return if stage_running?(entity_id, current_stage)
 
@@ -48,7 +51,7 @@ module BulkImports
     end
 
     def next_pipeline_trackers_for(entity_id)
-      BulkImports::Tracker.next_pipeline_trackers_for(entity_id)
+      BulkImports::Tracker.next_pipeline_trackers_for(entity_id).update(status_event: 'enqueue')
     end
 
     def logger

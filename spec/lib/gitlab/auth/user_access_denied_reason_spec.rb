@@ -26,6 +26,7 @@ RSpec.describe Gitlab::Auth::UserAccessDeniedReason do
 
       it { is_expected.to match /must accept the Terms of Service/ }
       it { is_expected.to include(user.username) }
+      it { is_expected.to include(Gitlab.config.gitlab.url) }
     end
 
     context 'when the user is internal' do

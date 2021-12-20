@@ -90,7 +90,7 @@ export default {
 };
 </script>
 <template>
-  <article class="file-holder snippet-file-content">
+  <figure class="file-holder snippet-file-content" :aria-label="__('Code snippet')">
     <blob-header
       :blob="blob"
       :active-viewer-type="viewer.type"
@@ -105,5 +105,5 @@ export default {
       @[$options.BLOB_RENDER_EVENT_LOAD]="forceQuery"
       @[$options.BLOB_RENDER_EVENT_SHOW_SOURCE]="switchViewer"
     />
-  </article>
+  </figure>
 </template>

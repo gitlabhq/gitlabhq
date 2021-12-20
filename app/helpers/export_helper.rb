@@ -18,7 +18,7 @@ module ExportHelper
     [
       _('Milestones'),
       _('Labels'),
-      _('Boards and Board Lists'),
+      _('Boards and board lists'),
       _('Badges'),
       _('Subgroups')
     ]

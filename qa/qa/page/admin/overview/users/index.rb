@@ -15,10 +15,6 @@ module QA
               element :user_row_content
             end
 
-            view 'app/views/admin/users/_user_detail.html.haml' do
-              element :username_link
-            end
-
             def search_user(username)
               find_element(:user_search_field).set(username).send_keys(:return)
             end

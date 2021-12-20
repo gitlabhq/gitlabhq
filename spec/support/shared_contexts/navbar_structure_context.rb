@@ -5,7 +5,7 @@ RSpec.shared_context 'project navbar structure' do
     {
       nav_item: _('Security & Compliance'),
       nav_sub_items: [
-        (_('Audit Events') if Gitlab.ee?),
+        (_('Audit events') if Gitlab.ee?),
         _('Configuration')
       ]
     }
@@ -94,11 +94,11 @@ RSpec.shared_context 'project navbar structure' do
       {
         nav_item: _('Analytics'),
         nav_sub_items: [
+          _('Value stream'),
           _('CI/CD'),
           (_('Code review') if Gitlab.ee?),
           (_('Merge request') if Gitlab.ee?),
-          _('Repository'),
-          _('Value stream')
+          _('Repository')
         ]
       },
       {
@@ -165,7 +165,7 @@ RSpec.shared_context 'group navbar structure' do
     {
       nav_item: _('Security & Compliance'),
       nav_sub_items: [
-        _('Audit Events')
+        _('Audit events')
       ]
     }
   end
@@ -190,7 +190,8 @@ RSpec.shared_context 'group navbar structure' do
     [
       _('List'),
       _('Board'),
-      _('Milestones')
+      _('Milestones'),
+      (_('Iterations') if Gitlab.ee?)
     ]
   end
 

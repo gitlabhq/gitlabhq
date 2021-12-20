@@ -11,7 +11,7 @@ import axios from '~/lib/utils/axios_utils';
 import { scrollToElement, historyPushState } from '~/lib/utils/common_utils';
 import { setUrlParams, queryToObject, getParameterByName } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
-import initManualOrdering from '~/manual_ordering';
+import initManualOrdering from '~/issues/manual_ordering';
 import FilteredSearchBar from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
 import {
   sortOrderMap,
@@ -21,12 +21,12 @@ import {
   PAGE_SIZE_MANUAL,
   LOADING_LIST_ITEMS_LENGTH,
 } from '../constants';
-import issueableEventHub from '../eventhub';
+import issuableEventHub from '../eventhub';
 import { emptyStateHelper } from '../service_desk_helper';
 import Issuable from './issuable.vue';
 
 /**
- * @deprecated Use app/assets/javascripts/issuable_list/components/issuable_list_root.vue instead
+ * @deprecated Use app/assets/javascripts/vue_shared/issuable/list/components/issuable_list_root.vue instead
  */
 export default {
   LOADING_LIST_ITEMS_LENGTH,
@@ -192,7 +192,7 @@ export default {
       // We need to call nextTick here to wait for all of the boxes to be checked and rendered
       // before we query the dom in issuable_bulk_update_actions.js.
       this.$nextTick(() => {
-        issueableEventHub.$emit('issuables:updateBulkEdit');
+        issuableEventHub.$emit('issuables:updateBulkEdit');
       });
     },
     issuables() {
@@ -203,7 +203,7 @@ export default {
   },
   mounted() {
     if (this.canBulkEdit) {
-      this.unsubscribeToggleBulkEdit = issueableEventHub.$on('issuables:toggleBulkEdit', (val) => {
+      this.unsubscribeToggleBulkEdit = issuableEventHub.$on('issuables:toggleBulkEdit', (val) => {
         this.isBulkEditing = val;
       });
     }
@@ -211,7 +211,7 @@ export default {
   },
   beforeDestroy() {
     // eslint-disable-next-line @gitlab/no-global-event-off
-    issueableEventHub.$off('issuables:toggleBulkEdit');
+    issuableEventHub.$off('issuables:toggleBulkEdit');
   },
   methods: {
     isSelected(issuableId) {

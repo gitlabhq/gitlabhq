@@ -13,6 +13,10 @@ RSpec.describe Gitlab::Tracking do
     described_class.instance_variable_set("@snowplow", nil)
   end
 
+  after do
+    described_class.instance_variable_set("@snowplow", nil)
+  end
+
   describe '.options' do
     shared_examples 'delegates to destination' do |klass|
       before do
@@ -63,7 +67,7 @@ RSpec.describe Gitlab::Tracking do
           appId: '_abc123_',
           protocol: 'http',
           port: 9090,
-          force_secure_tracker: false,
+          forceSecureTracker: false,
           formTracking: true,
           linkClickTracking: true
         }

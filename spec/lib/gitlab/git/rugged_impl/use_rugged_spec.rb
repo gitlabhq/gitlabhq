@@ -110,7 +110,7 @@ RSpec.describe Gitlab::Git::RuggedImpl::UseRugged, :seed_helper do
   describe '#running_puma_with_multiple_threads?' do
     context 'when using Puma' do
       before do
-        stub_const('::Puma', class_double('Puma'))
+        stub_const('::Puma', double('puma constant'))
         allow(Gitlab::Runtime).to receive(:puma?).and_return(true)
       end
 

@@ -58,16 +58,14 @@ module Gitlab
         return unless parsed
 
         analyzers.each do |analyzer|
-          next if analyzer.suppressed?
+          next if analyzer.suppressed? && !analyzer.requires_tracking?(parsed)
 
           analyzer.analyze(parsed)
-        rescue StandardError => e
+        rescue StandardError, QueryAnalyzers::Base::QueryAnalyzerError => e
           # We catch all standard errors to prevent validation errors to introduce fatal errors in production
           Gitlab::ErrorTracking.track_and_raise_for_dev_exception(e)
         end
       end
-
-      private
 
       # Enable query analyzers
       def begin!
@@ -77,7 +75,7 @@ module Gitlab
 
             true
           end
-        rescue StandardError => e
+        rescue StandardError, QueryAnalyzers::Base::QueryAnalyzerError => e
           Gitlab::ErrorTracking.track_and_raise_for_dev_exception(e)
 
           false
@@ -90,12 +88,14 @@ module Gitlab
       def end!
         enabled_analyzers.select do |analyzer|
           analyzer.end!
-        rescue StandardError => e
+        rescue StandardError, QueryAnalyzers::Base::QueryAnalyzerError => e
           Gitlab::ErrorTracking.track_and_raise_for_dev_exception(e)
         end
 
         Thread.current[:query_analyzer_enabled_analyzers] = nil
       end
+
+      private
 
       def enabled_analyzers
         Thread.current[:query_analyzer_enabled_analyzers]

@@ -136,7 +136,7 @@ class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
       pipeline: :gfm,
       author: author,
       project: project,
-      issuable_state_filter_enabled: true
+      issuable_reference_expansion_enabled: true
     )
   end
 
@@ -146,7 +146,7 @@ class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
       pipeline: :gfm,
       author: author,
       project: project,
-      issuable_state_filter_enabled: true
+      issuable_reference_expansion_enabled: true
     )
   end
 
@@ -252,6 +252,13 @@ class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
     strong_memoize(:mentioned_issues) do
       issues_mentioned_but_not_closing(current_user)
     end
+  end
+
+  delegator_override :pipeline_coverage_delta
+  def pipeline_coverage_delta
+    return unless merge_request.pipeline_coverage_delta.present?
+
+    '%.2f' % merge_request.pipeline_coverage_delta
   end
 
   private

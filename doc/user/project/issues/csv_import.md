@@ -10,7 +10,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 Issues can be imported to a project by uploading a CSV file with the columns
 `title` and `description`. Other columns are **not** imported. If you want to
-retain columns such as labels and milestones, consider the [Move Issue feature](managing_issues.md#moving-issues).
+retain columns such as labels and milestones, consider the [Move Issue feature](managing_issues.md#move-an-issue).
 
 The user uploading the CSV file is set as the author of the imported issues.
 
@@ -48,7 +48,7 @@ When importing issues from a CSV file, it must be formatted in a certain way:
 - **double-quote character:** The double-quote (`"`) character is used to quote fields,
   enabling the use of the column separator within a field (see the third line in the
   sample CSV data below). To insert a double-quote (`"`) within a quoted
-  field, use two double-quote characters in succession, i.e. `""`.
+  field, use two double-quote characters in succession (`""`).
 - **data rows:** After the header row, succeeding rows must follow the same column
   order. The issue title is required while the description is optional.
 

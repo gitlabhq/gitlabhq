@@ -10,15 +10,15 @@ RSpec.describe Issues::RescheduleStuckIssueRebalancesWorker, :clean_gitlab_redis
 
   describe '#perform' do
     it 'does not schedule a rebalance' do
-      expect(IssueRebalancingWorker).not_to receive(:perform_async)
+      expect(Issues::RebalancingWorker).not_to receive(:perform_async)
 
       worker.perform
     end
 
     it 'schedules a rebalance in case there are any rebalances started' do
       expect(::Gitlab::Issues::Rebalancing::State).to receive(:fetch_rebalancing_groups_and_projects).and_return([[group.id], [project.id]])
-      expect(IssueRebalancingWorker).to receive(:bulk_perform_async).with([[nil, nil, group.id]]).once
-      expect(IssueRebalancingWorker).to receive(:bulk_perform_async).with([[nil, project.id, nil]]).once
+      expect(Issues::RebalancingWorker).to receive(:bulk_perform_async).with([[nil, nil, group.id]]).once
+      expect(Issues::RebalancingWorker).to receive(:bulk_perform_async).with([[nil, project.id, nil]]).once
 
       worker.perform
     end

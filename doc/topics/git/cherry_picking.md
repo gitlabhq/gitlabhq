@@ -74,7 +74,7 @@ into a different branch (`stable`):
    git cherry-pick <SHA>
    ```
 
-## Related links
+## Related topics
 
 - Cherry-pick commits with [the Commits API](../../api/commits.md#cherry-pick-a-commit)
 - Git documentation [for cherry-picks](https://git-scm.com/docs/git-cherry-pick)

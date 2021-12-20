@@ -15,4 +15,53 @@ RSpec.describe AccessTokensHelper do
       it { expect(helper.scope_description(prefix)).to eq(description_location) }
     end
   end
+
+  describe '#tokens_app_data' do
+    let_it_be(:feed_token) { 'DUKu345VD73Py7zz3z89' }
+    let_it_be(:incoming_email_token) { 'az4a2l5f8ssa0zvdfbhidbzlx' }
+    let_it_be(:static_object_token) { 'QHXwGHYioHTgxQnAcyZ-' }
+    let_it_be(:feed_token_reset_path) { '/-/profile/reset_feed_token' }
+    let_it_be(:incoming_email_token_reset_path) { '/-/profile/reset_incoming_email_token' }
+    let_it_be(:static_object_token_reset_path) { '/-/profile/reset_static_object_token' }
+    let_it_be(:user) do
+      build(
+        :user,
+        feed_token: feed_token,
+        incoming_email_token: incoming_email_token,
+        static_object_token: static_object_token
+      )
+    end
+
+    it 'returns expected json' do
+      allow(Gitlab::CurrentSettings).to receive_messages(
+        disable_feed_token: false,
+        static_objects_external_storage_enabled?: true
+      )
+      allow(Gitlab::IncomingEmail).to receive(:supports_issue_creation?).and_return(true)
+      allow(helper).to receive_messages(
+        current_user: user,
+        reset_feed_token_profile_path: feed_token_reset_path,
+        reset_incoming_email_token_profile_path: incoming_email_token_reset_path,
+        reset_static_object_token_profile_path: static_object_token_reset_path
+      )
+
+      expect(helper.tokens_app_data).to eq({
+        feed_token: {
+          enabled: true,
+          token: feed_token,
+          reset_path: feed_token_reset_path
+        },
+        incoming_email_token: {
+          enabled: true,
+          token: incoming_email_token,
+          reset_path: incoming_email_token_reset_path
+        },
+        static_object_token: {
+          enabled: true,
+          token: static_object_token,
+          reset_path: static_object_token_reset_path
+        }
+      }.to_json)
+    end
+  end
 end

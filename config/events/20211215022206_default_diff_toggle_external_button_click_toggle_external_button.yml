@@ -1,0 +1,21 @@
+description: "Click toggle external button on diff"
+category: default
+action: click_toggle_external_button
+label_description: "`diff_toggle_external_button`"
+property_description: "`diff_toggle_external`"
+value_description: ""
+extra_properties:
+identifiers:
+product_section: ""
+product_stage: ""
+product_group: ""
+product_category:
+milestone:
+introduced_by_url:
+distributions:
+- ce
+- ee
+tiers:
+- free
+- premium
+- ultimate

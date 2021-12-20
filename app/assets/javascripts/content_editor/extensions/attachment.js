@@ -5,9 +5,11 @@ import { handleFileEvent } from '../services/upload_helpers';
 export default Extension.create({
   name: 'attachment',
 
-  defaultOptions: {
-    uploadsPath: null,
-    renderMarkdown: null,
+  addOptions() {
+    return {
+      uploadsPath: null,
+      renderMarkdown: null,
+    };
   },
 
   addCommands() {

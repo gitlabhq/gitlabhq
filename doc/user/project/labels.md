@@ -16,7 +16,7 @@ Labels are a key part of [issue boards](issue_board.md). With labels you can:
 - Categorize epics, issues, and merge requests using colors and descriptive titles like
 `bug`, `feature request`, or `docs`.
 - Dynamically filter and manage epics, issues, and merge requests.
-- [Search lists of issues, merge requests, and epics](../search/index.md#issues-and-merge-requests),
+- [Search lists of issues, merge requests, and epics](../search/index.md#search-issues-and-merge-requests),
   as well as [issue boards](../search/index.md#issue-boards).
 
 ## Project labels and group labels
@@ -42,8 +42,8 @@ To assign or unassign a label:
    You can search repeatedly to add more labels.
    The selected labels are marked with a checkmark.
 1. Click the labels you want to assign or unassign.
-1. To apply your changes to labels, click **X** next to **Assign labels** or anywhere outside the
-   label section.
+1. To apply your changes to labels, select **X** next to **Assign labels** or select any area
+   outside the label section.
 
 Alternatively, to unassign a label, click the **X** on the label you want to unassign.
 
@@ -72,9 +72,9 @@ To create a new project label:
 1. Select the **New label** button.
 1. In the **Title** field, enter a short, descriptive name for the label. You
    can also use this field to create [scoped, mutually exclusive labels](#scoped-labels).
-1. (Optional) In the **Description** field, you can enter additional
+1. Optional. In the **Description** field, you can enter additional
    information about how and when to use this label.
-1. (Optional) Select a background color for the label by selecting one of the
+1. Optional. Select a background color for the label by selecting one of the
    available colors, or by entering a hex color value in the **Background color**
    field.
 1. Select **Create label**.
@@ -86,7 +86,7 @@ label section of the right sidebar of an issue or a merge request:
 1. Click **Create project label**.
    - Fill in the name field. Note that you can't specify a description if creating a label
      this way. You can add a description later by editing the label (see below).
-   - (Optional) Select a color by clicking on the available colors, or input a hex
+   - Optional. Select a color by clicking on the available colors, or input a hex
      color value for a specific color.
 1. Click **Create**.
 
@@ -189,7 +189,7 @@ For example, filtering by the `platform::*` label returns issues that have `plat
 `platform::Android`, or `platform::Linux` labels.
 
 NOTE:
-This is not available on the [issues or merge requests dashboard pages](../search/index.md#issues-and-merge-requests).
+This is not available on the [issues or merge requests dashboard pages](../search/index.md#search-issues-and-merge-requests).
 
 ### Workflows with scoped labels
 

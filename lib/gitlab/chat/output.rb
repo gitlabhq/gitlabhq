@@ -48,10 +48,10 @@ module Gitlab
         # follows it will produce a nil. For example:
         #
         #     "\n".split("\n")        # => []
-        #     "\n".split("\n")[1..-1] # => nil
+        #     "\n".split("\n")[1..] # => nil
         #
         # To work around this we only "join" if we're given an Array.
-        if (converted = output.split("\n")[1..-1])
+        if (converted = output.split("\n")[1..])
           converted.join("\n")
         else
           ''

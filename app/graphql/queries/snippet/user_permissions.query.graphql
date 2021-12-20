@@ -1,6 +1,7 @@
 query CanCreatePersonalSnippet {
   currentUser {
     __typename
+    id
     userPermissions {
       __typename
       createSnippet

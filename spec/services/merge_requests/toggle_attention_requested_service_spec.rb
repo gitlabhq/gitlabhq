@@ -13,9 +13,14 @@ RSpec.describe MergeRequests::ToggleAttentionRequestedService do
   let(:service) { described_class.new(project: project, current_user: current_user, merge_request: merge_request, user: user) }
   let(:result) { service.execute }
   let(:todo_service) { spy('todo service') }
+  let(:notification_service) { spy('notification service') }
 
   before do
+    allow(NotificationService).to receive(:new) { notification_service }
     allow(service).to receive(:todo_service).and_return(todo_service)
+    allow(service).to receive(:notification_service).and_return(notification_service)
+    allow(SystemNoteService).to receive(:request_attention)
+    allow(SystemNoteService).to receive(:remove_attention_request)
 
     project.add_developer(current_user)
     project.add_developer(user)
@@ -59,6 +64,20 @@ RSpec.describe MergeRequests::ToggleAttentionRequestedService do
 
         service.execute
       end
+
+      it 'sends email to reviewer' do
+        expect(notification_service).to receive_message_chain(:async, :attention_requested_of_merge_request).with(merge_request, current_user, user)
+
+        service.execute
+      end
+
+      it 'removes attention requested state' do
+        expect(MergeRequests::RemoveAttentionRequestedService).to receive(:new)
+          .with(project: project, current_user: current_user, merge_request: merge_request, user: current_user)
+          .and_call_original
+
+        service.execute
+      end
     end
 
     context 'assignee exists' do
@@ -81,6 +100,20 @@ RSpec.describe MergeRequests::ToggleAttentionRequestedService do
 
       it 'creates a new todo for the reviewer' do
         expect(todo_service).to receive(:create_attention_requested_todo).with(merge_request, current_user, assignee_user)
+
+        service.execute
+      end
+
+      it 'creates a request attention system note' do
+        expect(SystemNoteService).to receive(:request_attention).with(merge_request, merge_request.project, current_user, assignee_user)
+
+        service.execute
+      end
+
+      it 'removes attention requested state' do
+        expect(MergeRequests::RemoveAttentionRequestedService).to receive(:new)
+          .with(project: project, current_user: current_user, merge_request: merge_request, user: current_user)
+          .and_call_original
 
         service.execute
       end
@@ -120,6 +153,12 @@ RSpec.describe MergeRequests::ToggleAttentionRequestedService do
 
       it 'does not create a new todo for the reviewer' do
         expect(todo_service).not_to receive(:create_attention_requested_todo).with(merge_request, current_user, assignee_user)
+
+        service.execute
+      end
+
+      it 'creates a remove attention request system note' do
+        expect(SystemNoteService).to receive(:remove_attention_request).with(merge_request, merge_request.project, current_user, user)
 
         service.execute
       end

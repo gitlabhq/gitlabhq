@@ -321,7 +321,7 @@ RSpec.describe MarkupHelper do
     let(:context) do
       {
         pipeline: :wiki, project: project, wiki: wiki,
-        page_slug: 'nested/page', issuable_state_filter_enabled: true,
+        page_slug: 'nested/page', issuable_reference_expansion_enabled: true,
         repository: wiki_repository
       }
     end
@@ -584,9 +584,9 @@ FooBar
 
       it 'preserves code color scheme' do
         object = create_object("```ruby\ndef test\n  'hello world'\nend\n```")
-        expected = "<pre class=\"code highlight js-syntax-highlight language-ruby\">" \
+        expected = "\n<pre class=\"code highlight js-syntax-highlight language-ruby\">" \
           "<code><span class=\"line\"><span class=\"k\">def</span> <span class=\"nf\">test</span>...</span>\n" \
-          "</code></pre>"
+          "</code></pre>\n"
 
         expect(first_line_in_markdown(object, attribute, 150, project: project)).to eq(expected)
       end

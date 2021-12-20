@@ -65,7 +65,7 @@ func newUpstream(cfg config.Config, accessLogger *logrus.Logger, routesCallback 
 		Config:       cfg,
 		accessLogger: accessLogger,
 		// Kind of a feature flag. See https://gitlab.com/groups/gitlab-org/-/epics/5914#note_564974130
-		enableGeoProxyFeature: os.Getenv("GEO_SECONDARY_PROXY") == "1",
+		enableGeoProxyFeature: os.Getenv("GEO_SECONDARY_PROXY") != "0",
 		geoProxyBackend:       &url.URL{},
 	}
 	if up.geoProxyPollSleep == nil {
@@ -239,5 +239,5 @@ func (u *upstream) updateGeoProxyFields(geoProxyURL *url.URL) {
 	geoProxyRoundTripper := roundtripper.NewBackendRoundTripper(u.geoProxyBackend, "", u.ProxyHeadersTimeout, u.DevelopmentMode)
 	geoProxyUpstream := proxypkg.NewProxy(u.geoProxyBackend, u.Version, geoProxyRoundTripper)
 	u.geoProxyCableRoute = u.wsRoute(`^/-/cable\z`, geoProxyUpstream)
-	u.geoProxyRoute = u.route("", "", geoProxyUpstream)
+	u.geoProxyRoute = u.route("", "", geoProxyUpstream, withGeoProxy())
 }

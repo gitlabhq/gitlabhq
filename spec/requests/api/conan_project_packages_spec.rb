@@ -1,10 +1,11 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe API::ConanProjectPackages, quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/326194' do
+RSpec.describe API::ConanProjectPackages do
   include_context 'conan api setup'
 
   let(:project_id) { project.id }
+  let(:snowplow_standard_context_params) { { user: user, project: project, namespace: project.namespace } }
 
   describe 'GET /api/v4/projects/:id/packages/conan/v1/ping' do
     let(:url) { "/projects/#{project.id}/packages/conan/v1/ping" }
@@ -92,7 +93,7 @@ RSpec.describe API::ConanProjectPackages, quarantine: 'https://gitlab.com/gitlab
     end
   end
 
-  context 'file download endpoints' do
+  context 'file download endpoints', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/326194' do
     include_context 'conan file download endpoints'
 
     describe 'GET /api/v4/projects/:id/packages/conan/v1/files/:package_name/package_version/:package_username/:package_channel/

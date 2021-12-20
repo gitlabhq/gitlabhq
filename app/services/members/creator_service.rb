@@ -65,7 +65,6 @@ module Members
     end
 
     def create_member_task
-      return unless experiment(:invite_members_for_task).enabled?
       return unless member.persisted?
       return if member_task_attributes.value?(nil)
 

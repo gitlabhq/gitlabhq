@@ -1,10 +1,19 @@
 <script>
+import { GlLink } from '@gitlab/ui';
 import { SUPPORTED_FORMATS, getFormatter } from '~/lib/utils/unit_format';
 import { s__, n__ } from '~/locale';
 
 const defaultPrecision = 2;
 
 export default {
+  components: {
+    GlLink,
+  },
+  inject: {
+    failedPipelinesLink: {
+      default: '',
+    },
+  },
   props: {
     counts: {
       type: Object,
@@ -27,6 +36,7 @@ export default {
         {
           title: s__('PipelineCharts|Failed:'),
           value: n__('1 pipeline', '%d pipelines', this.counts.failed),
+          link: this.failedPipelinesLink,
         },
         {
           title: s__('PipelineCharts|Success ratio:'),
@@ -39,10 +49,13 @@ export default {
 </script>
 <template>
   <ul>
-    <template v-for="({ title, value }, index) in statistics">
+    <template v-for="({ title, value, link }, index) in statistics">
       <li :key="index">
         <span>{{ title }}</span>
-        <strong>{{ value }}</strong>
+        <gl-link v-if="link" :href="link">
+          {{ value }}
+        </gl-link>
+        <strong v-else>{{ value }}</strong>
       </li>
     </template>
   </ul>

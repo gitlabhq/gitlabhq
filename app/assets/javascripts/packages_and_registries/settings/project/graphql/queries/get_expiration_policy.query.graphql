@@ -2,6 +2,7 @@
 
 query getProjectExpirationPolicy($projectPath: ID!) {
   project(fullPath: $projectPath) {
+    id
     containerExpirationPolicy {
       ...ContainerExpirationPolicyFields
     }

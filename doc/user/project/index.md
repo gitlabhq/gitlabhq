@@ -146,7 +146,7 @@ There are numerous [APIs](../../api/index.md) to use with your projects:
 - [Markdown](../../api/markdown.md)
 - [Merge Requests](../../api/merge_requests.md)
 - [Milestones](../../api/milestones.md)
-- [Services](../../api/services.md)
+- [Services](../../api/integrations.md)
 - [Snippets](../../api/project_snippets.md)
 - [Templates](../../api/project_templates.md)
 - [Traffic](../../api/project_statistics.md)

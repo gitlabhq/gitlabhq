@@ -6,6 +6,7 @@ query groupUsersSearch($search: String!, $fullPath: ID!) {
     id
     users: groupMembers(search: $search, relations: [DIRECT, DESCENDANTS, INHERITED]) {
       nodes {
+        id
         user {
           ...User
           ...UserAvailability

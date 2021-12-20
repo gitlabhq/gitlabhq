@@ -36,8 +36,14 @@ RSpec.describe GitlabSchema.types['UsageTrendsMeasurement'] do
     end
 
     context 'when the user is not admin' do
-      it 'returns no data' do
-        expect(subject.dig('data', 'usageTrendsMeasurements')).to be_nil
+      it 'returns an error' do
+        expected_err = "The resource that you are attempting to access does not exist or you don't have permission to perform this action"
+
+        expect(subject["errors"].first["message"]).to eq(expected_err)
+      end
+
+      it 'does not return usageTrendsMeasurements data' do
+        expect(subject["data"]["usageTrendsMeasurements"]).to be_nil
       end
     end
 
@@ -48,7 +54,7 @@ RSpec.describe GitlabSchema.types['UsageTrendsMeasurement'] do
         stub_application_setting(admin_mode: false)
       end
 
-      it 'returns data' do
+      it 'returns usageTrendsMeasurements data' do
         expect(subject.dig('data', 'usageTrendsMeasurements', 'nodes')).not_to be_empty
       end
     end

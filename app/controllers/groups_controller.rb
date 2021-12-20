@@ -37,7 +37,7 @@ class GroupsController < Groups::ApplicationController
     push_frontend_feature_flag(:iteration_cadences, @group, default_enabled: :yaml)
   end
 
-  before_action :export_rate_limit, only: [:export, :download_export]
+  before_action :check_export_rate_limit!, only: [:export, :download_export]
 
   helper_method :captcha_required?
 
@@ -58,6 +58,9 @@ class GroupsController < Groups::ApplicationController
   feature_category :code_review, [:merge_requests, :unfoldered_environment_names]
   feature_category :projects, [:projects]
   feature_category :importers, [:export, :download_export]
+
+  urgency :high, [:unfoldered_environment_names]
+  urgency :low, [:merge_requests]
 
   def index
     redirect_to(current_user ? dashboard_groups_path : explore_groups_path)
@@ -92,7 +95,6 @@ class GroupsController < Groups::ApplicationController
         if @group.import_state&.in_progress?
           redirect_to group_import_path(@group)
         else
-          publish_invite_members_for_task_experiment
           render_show_html
         end
       end
@@ -312,16 +314,12 @@ class GroupsController < Groups::ApplicationController
     url_for(safe_params)
   end
 
-  def export_rate_limit
+  def check_export_rate_limit!
     prefixed_action = "group_#{params[:action]}".to_sym
 
     scope = params[:action] == :download_export ? @group : nil
 
-    if Gitlab::ApplicationRateLimiter.throttled?(prefixed_action, scope: [current_user, scope].compact)
-      Gitlab::ApplicationRateLimiter.log_request(request, "#{prefixed_action}_request_limit".to_sym, current_user)
-
-      render plain: _('This endpoint has been requested too many times. Try again later.'), status: :too_many_requests
-    end
+    check_rate_limit!(prefixed_action, scope: [current_user, scope].compact)
   end
 
   def ensure_export_enabled
@@ -379,13 +377,6 @@ class GroupsController < Groups::ApplicationController
 
   def captcha_required?
     captcha_enabled? && !params[:parent_id]
-  end
-
-  def publish_invite_members_for_task_experiment
-    return unless params[:open_modal] == 'invite_members_for_task'
-    return unless current_user&.can?(:admin_group_member, @group)
-
-    experiment(:invite_members_for_task, namespace: @group).publish_to_client
   end
 end
 

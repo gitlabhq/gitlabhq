@@ -42,7 +42,7 @@ module Banzai
       private
 
       def lang_tag
-        if Feature.enabled?(:use_cmark_renderer)
+        if Feature.enabled?(:use_cmark_renderer, default_enabled: :yaml)
           Gitlab::Utils::Nokogiri.css_to_xpath('pre')
         else
           Gitlab::Utils::Nokogiri.css_to_xpath('code')

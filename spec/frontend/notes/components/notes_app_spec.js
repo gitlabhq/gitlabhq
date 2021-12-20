@@ -9,7 +9,6 @@ import DraftNote from '~/batch_comments/components/draft_note.vue';
 import batchComments from '~/batch_comments/stores/modules/batch_comments';
 import axios from '~/lib/utils/axios_utils';
 import * as urlUtility from '~/lib/utils/url_utility';
-import { discussionIntersectionObserverHandlerFactory } from '~/diffs/utils/discussions';
 import CommentForm from '~/notes/components/comment_form.vue';
 import NotesApp from '~/notes/components/notes_app.vue';
 import * as constants from '~/notes/constants';
@@ -79,9 +78,6 @@ describe('note_app', () => {
           </div>`,
         },
         {
-          provide: {
-            discussionObserverHandler: discussionIntersectionObserverHandlerFactory(),
-          },
           propsData,
           store,
         },
@@ -378,6 +374,9 @@ describe('note_app', () => {
     beforeEach(() => {
       store = createStore();
       store.state.discussionSortOrder = constants.DESC;
+      store.state.isLoading = true;
+      store.state.discussions = [mockData.discussionMock];
+
       wrapper = shallowMount(NotesApp, {
         propsData,
         store,
@@ -390,11 +389,18 @@ describe('note_app', () => {
     it('finds CommentForm before notes list', () => {
       expect(getComponentOrder()).toStrictEqual([TYPE_COMMENT_FORM, TYPE_NOTES_LIST]);
     });
+
+    it('shows skeleton notes before the loaded discussions', () => {
+      expect(wrapper.find('#notes-list').html()).toMatchSnapshot();
+    });
   });
 
   describe('when sort direction is asc', () => {
     beforeEach(() => {
       store = createStore();
+      store.state.isLoading = true;
+      store.state.discussions = [mockData.discussionMock];
+
       wrapper = shallowMount(NotesApp, {
         propsData,
         store,
@@ -406,6 +412,10 @@ describe('note_app', () => {
 
     it('finds CommentForm after notes list', () => {
       expect(getComponentOrder()).toStrictEqual([TYPE_NOTES_LIST, TYPE_COMMENT_FORM]);
+    });
+
+    it('shows skeleton notes after the loaded discussions', () => {
+      expect(wrapper.find('#notes-list').html()).toMatchSnapshot();
     });
   });
 

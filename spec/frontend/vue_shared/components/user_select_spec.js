@@ -1,7 +1,7 @@
 import { GlSearchBoxByType, GlDropdown } from '@gitlab/ui';
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
 import { cloneDeep } from 'lodash';
-import { nextTick } from 'vue';
+import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -33,8 +33,7 @@ const waitForSearch = async () => {
   await waitForPromises();
 };
 
-const localVue = createLocalVue();
-localVue.use(VueApollo);
+Vue.use(VueApollo);
 
 describe('User select dropdown', () => {
   let wrapper;
@@ -62,7 +61,6 @@ describe('User select dropdown', () => {
       [getIssueParticipantsQuery, participantsQueryHandler],
     ]);
     wrapper = shallowMount(UserSelect, {
-      localVue,
       apolloProvider: fakeApollo,
       propsData: {
         headerText: 'test',

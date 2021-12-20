@@ -1,0 +1,21 @@
+description: "Dismiss GitLab CI suggestion popover"
+category: default
+action: click_button
+label_description: "[ `suggest_commit_first_project_gitlab_ci_yml` ]"
+property_description: "`[admin | maintainer | developer | owner]`"
+value_description: "`10`"
+extra_properties:
+identifiers:
+product_section: growth
+product_stage: growth
+product_group: group::expansion
+product_category:
+milestone: "12.10"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/26105
+distributions:
+- ce
+- ee
+tiers:
+- free
+- premium
+- ultimate

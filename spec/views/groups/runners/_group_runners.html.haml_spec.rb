@@ -11,12 +11,11 @@ RSpec.describe 'groups/runners/group_runners.html.haml' do
       @group = group
       allow(view).to receive(:current_user).and_return(user)
       allow(view).to receive(:reset_registration_token_group_settings_ci_cd_path).and_return('banana_url')
-      allow(view).to receive(:can?).with(user, :admin_pipeline, group).and_return(true)
     end
 
     context 'when group runner registration is allowed' do
       before do
-        stub_application_setting(valid_runner_registrars: ['group'])
+        allow(view).to receive(:can?).with(user, :register_group_runners, group).and_return(true)
       end
 
       it 'enables the Remove group button for a group' do
@@ -29,7 +28,7 @@ RSpec.describe 'groups/runners/group_runners.html.haml' do
 
     context 'when group runner registration is not allowed' do
       before do
-        stub_application_setting(valid_runner_registrars: ['project'])
+        allow(view).to receive(:can?).with(user, :register_group_runners, group).and_return(false)
       end
 
       it 'does not enable the  the Remove group button for a group' do

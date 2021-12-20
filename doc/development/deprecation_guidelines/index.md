@@ -23,7 +23,9 @@ deprecated.
 
 A feature can be deprecated at any time, provided there is a viable alternative.
 
-Deprecations should be announced via [release posts](https://about.gitlab.com/handbook/marketing/blog/release-posts/#deprecations).
+Deprecations should be announced on the [Deprecated feature removal schedule](../../update/deprecations.md).
+
+For steps to create a deprecation entry, see [Deprecations](https://about.gitlab.com/handbook/marketing/blog/release-posts/#deprecations).
 
 ## When can a feature be removed/changed?
 

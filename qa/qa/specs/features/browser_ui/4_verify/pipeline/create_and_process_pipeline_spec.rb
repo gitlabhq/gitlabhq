@@ -23,7 +23,7 @@ module QA
         [runner, project].each(&:remove_via_api!)
       end
 
-      it 'users creates a pipeline which gets processed', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1601' do
+      it 'users creates a pipeline which gets processed', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348024' do
         Flow::Login.sign_in
 
         Resource::Repository::Commit.fabricate_via_api! do |commit|

@@ -7,7 +7,7 @@ module Types
       graphql_name 'TestReportTotal'
       description 'Total test report statistics.'
 
-      field :time, GraphQL::FLOAT_TYPE, null: true,
+      field :time, GraphQL::Types::Float, null: true,
         description: 'Total duration of the tests.'
 
       field :count, GraphQL::Types::Int, null: true,

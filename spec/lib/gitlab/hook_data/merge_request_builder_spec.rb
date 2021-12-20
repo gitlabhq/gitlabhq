@@ -15,6 +15,7 @@ RSpec.describe Gitlab::HookData::MergeRequestBuilder do
         assignee_id
         assignee_ids
         author_id
+        blocking_discussions_resolved
         created_at
         description
         head_pipeline_id

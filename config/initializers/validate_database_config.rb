@@ -16,11 +16,11 @@ if configurations = ActiveRecord::Base.configurations.configurations
       "The `main:` database needs to be defined as a first configuration item instead of `#{configurations.first.name}`."
   end
 
-  rejected_config_names = configurations.map(&:name).to_set - Gitlab::Database::DATABASE_NAMES
+  rejected_config_names = configurations.map(&:name).to_set - Gitlab::Database.all_database_names
   if rejected_config_names.any?
     raise "ERROR: This installation of GitLab uses unsupported database names " \
       "in 'config/database.yml': #{rejected_config_names.to_a.join(", ")}. The only supported ones are " \
-      "#{Gitlab::Database::DATABASE_NAMES.join(", ")}."
+      "#{Gitlab::Database.all_database_names.join(", ")}."
   end
 
   replicas_config_names = configurations.select(&:replica?).map(&:name)

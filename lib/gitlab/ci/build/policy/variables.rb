@@ -10,7 +10,7 @@ module Gitlab
           end
 
           def satisfied_by?(pipeline, context)
-            variables = context.variables
+            variables = context.variables_hash
 
             statements = @expressions.map do |statement|
               ::Gitlab::Ci::Pipeline::Expression::Statement

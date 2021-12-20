@@ -82,18 +82,20 @@ module QA
           setting.click_save_changes_button
         end
 
-        Resource::Repository::Commit.fabricate_via_api! do |commit|
-          commit.project = imported_project
-          commit.branch = 'online-gc-test-builder-poc'
-          commit.commit_message = 'Update .gitlab-ci.yml'
-          commit.update_files([{
-                              file_path: '.gitlab-ci.yml',
-                              content: gitlab_ci_yaml
-                            }])
+        Support::Retrier.retry_on_exception(max_attempts: 3, sleep_interval: 2) do
+          Resource::Repository::Commit.fabricate_via_api! do |commit|
+            commit.project = imported_project
+            commit.branch = 'online-gc-test-builder-poc'
+            commit.commit_message = 'Update .gitlab-ci.yml'
+            commit.update_files([{
+                                file_path: '.gitlab-ci.yml',
+                                content: gitlab_ci_yaml
+                              }])
+          end
         end
       end
 
-      it 'runs the online garbage collector tool', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1889' do
+      it 'runs the online garbage collector tool', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347663' do
         imported_project.visit!
 
         Flow::Pipeline.visit_latest_pipeline

@@ -1,4 +1,5 @@
 export const simpleViewerMock = {
+  id: '1',
   name: 'some_file.js',
   size: 123,
   rawSize: 123,
@@ -11,6 +12,7 @@ export const simpleViewerMock = {
   forkAndEditPath: 'some_file.js/fork/edit',
   ideForkAndEditPath: 'some_file.js/fork/ide',
   canModifyBlob: true,
+  canCurrentUserPushToBranch: true,
   storedExternally: false,
   rawPath: 'some_file.js',
   replacePath: 'some_file.js/replace',
@@ -45,7 +47,13 @@ export const projectMock = {
   id: '1234',
   userPermissions: userPermissionsMock,
   pathLocks: {
-    nodes: [],
+    nodes: [
+      {
+        id: 'test',
+        path: simpleViewerMock.path,
+        user: { id: '123', username: 'root' },
+      },
+    ],
   },
   repository: {
     empty: false,

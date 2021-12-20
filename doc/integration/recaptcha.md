@@ -12,20 +12,21 @@ to confirm that a real user, not a bot, is attempting to create an account.
 
 ## Configuration
 
-To use reCAPTCHA, first you must create a site and private key.
+To use reCAPTCHA, first create a site and private key.
 
 1. Go to the [Google reCAPTCHA page](https://www.google.com/recaptcha/admin).
-1. Fill out the form necessary to obtain reCAPTCHA v2 keys.
-1. Log in to your GitLab server, with administrator credentials.
-1. Go to Reporting Applications Settings in the Admin Area (`admin/application_settings/reporting`).
-1. Expand the **Spam and Anti-bot Protection** section.
-1. Fill all reCAPTCHA fields with keys from previous steps.
+1. To get reCAPTCHA v2 keys, fill in the form and select **Submit**.
+1. Sign in to your GitLab server as an administrator.
+1. On the top bar, select **Menu > Admin**.
+1. On the left sidebar, select **Settings > Reporting** (`admin/application_settings/reporting`).
+1. Expand **Spam and Anti-bot Protection**.
+1. In the reCAPTCHA fields, enter the keys you obtained in the previous steps.
 1. Select the **Enable reCAPTCHA** checkbox.
 1. To enable reCAPTCHA for logins via password, select the **Enable reCAPTCHA for login** checkbox.
-1. Save the configuration.
-1. Change the first line of the `#execute` method in `app/services/spam/spam_verdict_service.rb`
-   to `return CONDITIONAL_ALLOW` so that the spam check short-circuits and triggers the response to
-   return `recaptcha_html`.
+1. Select **Save changes**.
+1. To short-circuit the spam check and trigger the response to return `recaptcha_html`:
+   1. Open `app/services/spam/spam_verdict_service.rb`.
+   1. Change the first line of the `#execute` method to `return CONDITIONAL_ALLOW`.
 
 NOTE:
 Make sure you are viewing an issuable in a project that is public. If you're working with an issue, the issue is public.

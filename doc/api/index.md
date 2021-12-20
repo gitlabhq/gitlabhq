@@ -8,16 +8,16 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 Use the GitLab APIs to automate GitLab.
 
-You can also use a partial [OpenAPI definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/api/openapi/openapi.yaml),
-to test the API directly from the GitLab user interface.
-Contributions are welcome.
-
 ## REST API
 
 A REST API is available in GitLab.
 Usage instructions are below.
 For a list of the available resources and their endpoints, see
 [REST API resources](api_resources.md).
+
+You can also use a partial [OpenAPI definition](openapi/openapi_interactive.md),
+to test the API directly from the GitLab user interface.
+Contributions are welcome.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For an introduction and basic steps, see
@@ -42,11 +42,6 @@ be a compatibility layer on top of GraphQL.
 There were some patenting and licensing concerns with GraphQL. However, these
 have been resolved to our satisfaction. The reference implementations
 were re-licensed under MIT, and the OWF license used for the GraphQL specification.
-
-When GraphQL is fully implemented, GitLab:
-
-- Can delete controller-specific endpoints.
-- Will no longer maintain two different APIs.
 
 ## Compatibility guidelines
 
@@ -214,7 +209,7 @@ Impersonation tokens are a type of [personal access token](../user/profile/perso
 They can be created only by an administrator, and are used to authenticate with the
 API as a specific user.
 
-Use impersonation tokens an alternative to:
+Use impersonation tokens as an alternative to:
 
 - The user's password or one of their personal access tokens.
 - The [Sudo](#sudo) feature. The user's or administrator's password or token
@@ -283,7 +278,7 @@ message with a status code of `403`:
 ```
 
 If an access token without the `sudo` scope is provided, an error message is
-be returned with a status code of `403`:
+returned with a status code of `403`:
 
 ```json
 {

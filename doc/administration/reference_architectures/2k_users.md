@@ -13,6 +13,7 @@ For a full list of reference architectures, see
 > - **Supported users (approximate):** 2,000
 > - **High Availability:** No. For a highly-available environment, you can
 >   follow a modified [3K reference architecture](3k_users.md#supported-modifications-for-lower-user-counts-ha).
+> - **Estimated Costs:** [GCP](https://cloud.google.com/products/calculator#id=84d11491-d72a-493c-a16e-650931faa658)
 > - **Cloud Native Hybrid:** [Yes](#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative)
 > - **Performance tested daily with the [GitLab Performance Tool (GPT)](https://gitlab.com/gitlab-org/quality/performance)**:
 >   - **Test requests per second (RPS) rates:** API: 40 RPS, Web: 4 RPS, Git (Pull): 4 RPS, Git (Push): 1 RPS
@@ -27,10 +28,10 @@ For a full list of reference architectures, see
 | GitLab Rails                             | 2      | 8 vCPU, 7.2 GB memory   | `n1-highcpu-8`  | `c5.2xlarge` | `F8s v2` |
 | Monitoring node                          | 1      | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`  | `c5.large`   | `F2s v2` |
 | Object storage<sup>4</sup>               | n/a    | n/a                     | n/a             | n/a          | n/a      |
-| NFS server (optional, not recommended)   | 1      | 4 vCPU, 3.6 GB memory   | `n1-highcpu-4`  | `c5.xlarge`  | `F4s v2` |
+| NFS server (non-Gitaly)   | 1      | 4 vCPU, 3.6 GB memory   | `n1-highcpu-4`  | `c5.xlarge`  | `F4s v2` |
 
 <!-- markdownlint-disable MD029 -->
-1. Can be optionally run on reputable third-party external PaaS PostgreSQL solutions. Google Cloud SQL and Amazon RDS are known to work, however Azure Database for PostgreSQL is [not recommended](https://gitlab.com/gitlab-org/quality/reference-architectures/-/issues/61) due to performance issues. Consul is primarily used for PostgreSQL high availability so can be ignored when using a PostgreSQL PaaS setup. However it is also used optionally by Prometheus for Omnibus auto host discovery.
+1. Can be optionally run on reputable third-party external PaaS PostgreSQL solutions. [Google Cloud SQL](https://cloud.google.com/sql/docs/postgres/high-availability#normal) and [Amazon RDS](https://aws.amazon.com/rds/) are known to work, however Azure Database for PostgreSQL is **not recommended** due to [performance issues](https://gitlab.com/gitlab-org/quality/reference-architectures/-/issues/61). Consul is primarily used for PostgreSQL high availability so can be ignored when using a PostgreSQL PaaS setup. However it is also used optionally by Prometheus for Omnibus auto host discovery.
 2. Can be optionally run as reputable third-party external PaaS Redis solutions. Google Memorystore and AWS Elasticache are known to work.
 3. Can be optionally run as reputable third-party load balancing services (LB PaaS). AWS ELB is known to work.
 4. Should be run on reputable third-party object storage (storage PaaS) for cloud implementations. Google Cloud Storage and AWS S3 are known to work.
@@ -41,6 +42,8 @@ For all PaaS solutions that involve configuring instances, it is strongly recomm
 
 ```plantuml
 @startuml 2k
+skinparam linetype ortho
+
 card "**External Load Balancer**" as elb #6a9be7
 
 collections "**GitLab Rails** x3" as gitlab #32CD32
@@ -67,17 +70,27 @@ monitor .[#7FFFD4,norank]u--> elb
 @enduml
 ```
 
-The Google Cloud Platform (GCP) architectures were built and tested using the
+## Requirements
+
+Before starting, you should take note of the following requirements / guidance for this reference architecture.
+
+### Supported CPUs
+
+This reference architecture was built and tested on Google Cloud Platform (GCP) using the
 [Intel Xeon E5 v3 (Haswell)](https://cloud.google.com/compute/docs/cpu-platforms)
 CPU platform. On different hardware you may find that adjustments, either lower
 or higher, are required for your CPU or node counts. For more information, see
 our [Sysbench](https://github.com/akopytov/sysbench)-based
 [CPU benchmarks](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Reference-Architectures/GCP-CPU-Benchmarks).
 
-Due to better performance and availability, for data objects (such as LFS,
-uploads, or artifacts), using an [object storage service](#configure-the-object-storage)
-is recommended instead of using NFS. Using an object storage service also
-doesn't require you to provision and maintain a node.
+### Supported infrastructure
+
+As a general guidance, GitLab should run on most infrastructure such as reputable Cloud Providers (AWS, GCP, Azure) and their services, or self managed (ESXi) that meet both the specs detailed above, as well as any requirements in this section. However, this does not constitute a guarantee for every potential permutation.
+
+Be aware of the following specific call outs:
+
+- [Azure Database for PostgreSQL](https://docs.microsoft.com/en-us/azure/postgresql/#:~:text=Azure%20Database%20for%20PostgreSQL%20is,high%20availability%2C%20and%20dynamic%20scalability.) is [not recommended](https://gitlab.com/gitlab-org/quality/reference-architectures/-/issues/61) due to known performance issues or missing features.
+- [Azure Blob Storage](https://docs.microsoft.com/en-us/azure/storage/blobs/) is recommended to be configured with [Premium accounts](https://docs.microsoft.com/en-us/azure/storage/blobs/storage-blob-block-blob-premium) to ensure consistent performance.
 
 ## Setup components
 
@@ -100,8 +113,7 @@ To set up GitLab and its components to accommodate up to 2,000 users:
    more advanced code search across your entire GitLab instance.
 1. [Configure NFS](#configure-nfs-optional) (optional, and not recommended)
    to have shared disk storage service as an alternative to Gitaly or object
-   storage. You can skip this step if you're not using GitLab Pages (which
-   requires NFS).
+   storage.
 
 ## Configure the external load balancer
 
@@ -232,8 +244,9 @@ to be used with GitLab.
 ### Provide your own PostgreSQL instance
 
 If you're hosting GitLab on a cloud provider, you can optionally use a
-managed service for PostgreSQL. For example, AWS offers a managed relational
-database service (RDS) that runs PostgreSQL.
+managed service for PostgreSQL.
+
+A reputable provider or solution should be used for this. [Google Cloud SQL](https://cloud.google.com/sql/docs/postgres/high-availability#normal) and [Amazon RDS](https://aws.amazon.com/rds/) are known to work, however Azure Database for PostgreSQL is **not recommended** due to [performance issues](https://gitlab.com/gitlab-org/quality/reference-architectures/-/issues/61).
 
 If you use a cloud-managed service, or provide your own PostgreSQL:
 
@@ -958,8 +971,7 @@ cluster alongside your instance, read how to
 
 For improved performance, [object storage](#configure-the-object-storage),
 along with [Gitaly](#configure-gitaly), are recommended over using NFS whenever
-possible. However, if you intend to use GitLab Pages,
-[you must use NFS](troubleshooting.md#gitlab-pages-requires-nfs).
+possible.
 
 See how to [configure NFS](../nfs.md).
 
@@ -1028,7 +1040,7 @@ services where applicable):
 
 <!-- Disable ordered list rule https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md#md029---ordered-list-item-prefix -->
 <!-- markdownlint-disable MD029 -->
-1. Can be optionally run on reputable third-party external PaaS PostgreSQL solutions. Google Cloud SQL and Amazon RDS are known to work, however Azure Database for PostgreSQL is [not recommended](https://gitlab.com/gitlab-org/quality/reference-architectures/-/issues/61) due to performance issues. Consul is primarily used for PostgreSQL high availability so can be ignored when using a PostgreSQL PaaS setup. However it is also used optionally by Prometheus for Omnibus auto host discovery.
+1. Can be optionally run on reputable third-party external PaaS PostgreSQL solutions. [Google Cloud SQL](https://cloud.google.com/sql/docs/postgres/high-availability#normal) and [Amazon RDS](https://aws.amazon.com/rds/) are known to work, however Azure Database for PostgreSQL is **not recommended** due to [performance issues](https://gitlab.com/gitlab-org/quality/reference-architectures/-/issues/61). Consul is primarily used for PostgreSQL high availability so can be ignored when using a PostgreSQL PaaS setup. However it is also used optionally by Prometheus for Omnibus auto host discovery.
 2. Can be optionally run on reputable third-party external PaaS Redis solutions. Google Memorystore and AWS Elasticache are known to work.
 3. Should be run on reputable third-party object storage (storage PaaS) for cloud implementations. Google Cloud Storage and AWS S3 are known to work.
 <!-- markdownlint-enable MD029 -->
@@ -1038,6 +1050,7 @@ For all PaaS solutions that involve configuring instances, it is strongly recomm
 
 ```plantuml
 @startuml 2k
+skinparam linetype ortho
 
 card "Kubernetes via Helm Charts" as kubernetes {
   card "**External Load Balancer**" as elb #6a9be7
@@ -1045,10 +1058,8 @@ card "Kubernetes via Helm Charts" as kubernetes {
   together {
     collections "**Webservice** x3" as gitlab #32CD32
     collections "**Sidekiq** x2" as sidekiq #ff8dd1
+    card "**Supporting Services**" as support
   }
-
-  card "**Prometheus + Grafana**" as monitor #7FFFD4
-  card "**Supporting Services**" as support
 }
 
 card "**Gitaly**" as gitaly #FF8C00
@@ -1057,7 +1068,6 @@ card "**Redis**" as redis #FF6347
 cloud "**Object Storage**" as object_storage #white
 
 elb -[#6a9be7]-> gitlab
-elb -[#6a9be7]--> monitor
 
 gitlab -[#32CD32]--> gitaly
 gitlab -[#32CD32]--> postgres
@@ -1066,14 +1076,8 @@ gitlab -[#32CD32]--> redis
 
 sidekiq -[#ff8dd1]--> gitaly
 sidekiq -[#ff8dd1]-> object_storage
-sidekiq -[#ff8dd1]---> postgres
-sidekiq -[#ff8dd1]---> redis
-
-monitor .[#7FFFD4]u-> gitlab
-monitor .[#7FFFD4]-> gitaly
-monitor .[#7FFFD4]-> postgres
-monitor .[#7FFFD4,norank]--> redis
-monitor .[#7FFFD4,norank]u--> elb
+sidekiq -[#ff8dd1]--> postgres
+sidekiq -[#ff8dd1]--> redis
 
 @enduml
 ```

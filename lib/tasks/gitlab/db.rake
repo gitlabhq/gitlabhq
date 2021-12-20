@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+databases = ActiveRecord::Tasks::DatabaseTasks.setup_initial_database_yaml
+
 namespace :gitlab do
   namespace :db do
     desc 'GitLab | DB | Manually insert schema migration version'
@@ -49,7 +51,7 @@ namespace :gitlab do
 
       # Drop all extra schema objects GitLab owns
       Gitlab::Database::EXTRA_SCHEMAS.each do |schema|
-        connection.execute("DROP SCHEMA IF EXISTS #{connection.quote_table_name(schema)}")
+        connection.execute("DROP SCHEMA IF EXISTS #{connection.quote_table_name(schema)} CASCADE")
       end
     end
 
@@ -83,7 +85,7 @@ namespace :gitlab do
     desc 'GitLab | DB | Sets up EE specific database functionality'
 
     if Gitlab.ee?
-      task setup_ee: %w[geo:db:drop geo:db:create geo:db:schema:load geo:db:migrate]
+      task setup_ee: %w[db:drop:geo db:create:geo db:schema:load:geo db:migrate:geo]
     else
       task :setup_ee
     end
@@ -114,6 +116,19 @@ namespace :gitlab do
     # Inform Rake that custom tasks should be run every time rake db:schema:dump is run
     Rake::Task['db:schema:dump'].enhance do
       Rake::Task['gitlab:db:clean_structure_sql'].invoke
+    end
+
+    ActiveRecord::Tasks::DatabaseTasks.for_each(databases) do |name|
+      # Inform Rake that custom tasks should be run every time rake db:structure:dump is run
+      #
+      # Rails 6.1 deprecates db:structure:dump in favor of db:schema:dump
+      Rake::Task["db:structure:dump:#{name}"].enhance do
+        Rake::Task['gitlab:db:clean_structure_sql'].invoke
+      end
+
+      Rake::Task["db:schema:dump:#{name}"].enhance do
+        Rake::Task['gitlab:db:clean_structure_sql'].invoke
+      end
     end
 
     desc 'Create missing dynamic database partitions'
@@ -160,24 +175,30 @@ namespace :gitlab do
       Rake::Task['gitlab:db:create_dynamic_partitions'].invoke
     end
 
-    desc 'execute reindexing without downtime to eliminate bloat'
+    desc "Reindex database without downtime to eliminate bloat"
     task reindex: :environment do
-      unless Feature.enabled?(:database_reindexing, type: :ops, default_enabled: :yaml)
+      unless Gitlab::Database::Reindexing.enabled?
         puts "This feature (database_reindexing) is currently disabled.".color(:yellow)
         exit
       end
 
-      Gitlab::Database::EachDatabase.each_database_connection do |connection, connection_name|
-        Gitlab::Database::SharedModel.logger = Logger.new($stdout) if Gitlab::Utils.to_boolean(ENV['LOG_QUERIES_TO_CONSOLE'], default: false)
+      Gitlab::Database::Reindexing.invoke
+    end
 
-        # Hack: Before we do actual reindexing work, create async indexes
-        Gitlab::Database::AsyncIndexes.create_pending_indexes! if Feature.enabled?(:database_async_index_creation, type: :ops)
+    namespace :reindex do
+      databases = ActiveRecord::Tasks::DatabaseTasks.setup_initial_database_yaml
 
-        Gitlab::Database::Reindexing.automatic_reindexing
+      ActiveRecord::Tasks::DatabaseTasks.for_each(databases) do |database_name|
+        desc "Reindex #{database_name} database without downtime to eliminate bloat"
+        task database_name => :environment do
+          unless Gitlab::Database::Reindexing.enabled?
+            puts "This feature (database_reindexing) is currently disabled.".color(:yellow)
+            exit
+          end
+
+          Gitlab::Database::Reindexing.invoke(database_name)
+        end
       end
-    rescue StandardError => e
-      Gitlab::AppLogger.error(e)
-      raise
     end
 
     desc 'Enqueue an index for reindexing'
@@ -243,7 +264,9 @@ namespace :gitlab do
     # Only for development environments,
     # we execute pending data migrations inline for convenience.
     Rake::Task['db:migrate'].enhance do
-      Rake::Task['gitlab:db:execute_batched_migrations'].invoke if Rails.env.development?
+      if Rails.env.development? && Gitlab::Database::BackgroundMigration::BatchedMigration.table_exists?
+        Rake::Task['gitlab:db:execute_batched_migrations'].invoke
+      end
     end
   end
 end

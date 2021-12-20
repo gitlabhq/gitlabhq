@@ -2,6 +2,7 @@
 
 query getJiraImportDetails($fullPath: ID!) {
   project(fullPath: $fullPath) {
+    id
     jiraImportStatus
     jiraImports {
       nodes {

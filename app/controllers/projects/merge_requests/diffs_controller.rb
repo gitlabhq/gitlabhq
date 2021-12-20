@@ -14,6 +14,13 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
 
   after_action :track_viewed_diffs_events, only: [:diffs_batch]
 
+  urgency :low, [
+    :show,
+    :diff_for_path,
+    :diffs_batch,
+    :diffs_metadata
+  ]
+
   def show
     render_diffs
   end
@@ -36,6 +43,7 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
     options = {
       environment: environment,
       merge_request: @merge_request,
+      commit: commit,
       diff_view: diff_view,
       merge_ref_head_diff: render_merge_ref_head_diff?,
       pagination_data: diffs.pagination_data,

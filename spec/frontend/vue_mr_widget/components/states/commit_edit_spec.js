@@ -3,7 +3,6 @@ import CommitEdit from '~/vue_merge_request_widget/components/states/commit_edit
 
 const testCommitMessage = 'Test commit message';
 const testLabel = 'Test label';
-const testTextMuted = 'Test text muted';
 const testInputId = 'test-input-id';
 
 describe('Commits edit component', () => {
@@ -64,7 +63,6 @@ describe('Commits edit component', () => {
     beforeEach(() => {
       createComponent({
         header: `<div class="test-header">${testCommitMessage}</div>`,
-        'text-muted': `<p class="test-text-muted">${testTextMuted}</p>`,
       });
     });
 
@@ -73,13 +71,6 @@ describe('Commits edit component', () => {
 
       expect(headerSlotElement.exists()).toBe(true);
       expect(headerSlotElement.text()).toBe(testCommitMessage);
-    });
-
-    it('renders text-muted slot correctly', () => {
-      const textMutedElement = wrapper.find('.test-text-muted');
-
-      expect(textMutedElement.exists()).toBe(true);
-      expect(textMutedElement.text()).toBe(testTextMuted);
     });
   });
 });

@@ -57,7 +57,7 @@ RSpec.describe SystemNotes::CommitService do
         end
 
         context 'with multiple existing commits' do
-          let(:old_commits) { noteable.commits[3..-1] }
+          let(:old_commits) { noteable.commits[3..] }
 
           context 'with oldrev' do
             let(:oldrev) { noteable.commits[2].id }

@@ -217,10 +217,6 @@ module QA
         "#{api_get_path}/wikis"
       end
 
-      def api_push_rules_path
-        "#{api_get_path}/push_rule"
-      end
-
       def api_post_body
         post_body = {
           name: name,
@@ -242,8 +238,7 @@ module QA
       end
 
       def change_repository_storage(new_storage)
-        put_body = { repository_storage: new_storage }
-        response = put(request_url(api_put_path), put_body)
+        response = put(request_url(api_put_path), repository_storage: new_storage)
 
         unless response.code == HTTP_STATUS_OK
           raise(
@@ -322,9 +317,17 @@ module QA
         auto_paginated_response(request_url(api_repository_branches_path, per_page: '100'), attempts: attempts)
       end
 
+      def create_repository_branch(branch_name, ref = default_branch)
+        api_post_to(api_repository_branches_path, branch: branch_name, ref: ref)
+      end
+
       def repository_tags
         response = get(request_url(api_repository_tags_path))
         parse_body(response)
+      end
+
+      def create_repository_tag(tag_name, ref = default_branch)
+        api_post_to(api_repository_tags_path, tag_name: tag_name, ref: ref)
       end
 
       def repository_tree
@@ -365,13 +368,8 @@ module QA
         parse_body(response)
       end
 
-      def push_rules
-        response = get(request_url(api_push_rules_path))
-        parse_body(response)
-      end
-
-      def add_push_rules(rules)
-        api_post_to(api_push_rules_path, rules)
+      def create_wiki_page(title:, content:)
+        api_post_to(api_wikis_path, title: title, content: content)
       end
 
       # Object comparison
@@ -434,3 +432,5 @@ module QA
     end
   end
 end
+
+QA::Resource::Project.prepend_mod_with('Resource::Project', namespace: QA)

@@ -1,0 +1,21 @@
+description: "Click button to jump to next unresolved thread"
+category: default
+action: click_button
+label_description: "`mr_next_unresolved_thread`"
+property_description: "`click_next_unresolved_thread_top`"
+value_description: ""
+extra_properties:
+identifiers:
+product_section: ""
+product_stage: ""
+product_group: ""
+product_category:
+milestone:
+introduced_by_url:
+distributions:
+- ce
+- ee
+tiers:
+- free
+- premium
+- ultimate

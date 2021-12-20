@@ -34,11 +34,18 @@ Vue.use(PerformancePlugin, {
  * @param {extendStoreCallback} options.extendStore -
  *   Function that receives the default store and returns an extended one.
  */
-export function initIde(el, options = {}) {
+export const initIde = (el, options = {}) => {
   if (!el) return null;
 
   const { rootComponent = ide, extendStore = identity } = options;
+
   const store = createStore();
+  const project = JSON.parse(el.dataset.project);
+  store.dispatch('setProject', { project });
+
+  // fire and forget fetching non-critical project info
+  store.dispatch('fetchProjectPermissions');
+
   const router = createRouter(store, el.dataset.defaultBranch || DEFAULT_BRANCH);
 
   return new Vue({
@@ -77,7 +84,7 @@ export function initIde(el, options = {}) {
       return createElement(rootComponent);
     },
   });
-}
+};
 
 /**
  * Start the IDE.

@@ -28,6 +28,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
   it { is_expected.to have_many(:trigger_requests) }
   it { is_expected.to have_many(:variables) }
   it { is_expected.to have_many(:builds) }
+  it { is_expected.to have_many(:statuses_order_id_desc) }
   it { is_expected.to have_many(:bridges) }
   it { is_expected.to have_many(:job_artifacts).through(:builds) }
   it { is_expected.to have_many(:auto_canceled_pipelines) }
@@ -35,8 +36,6 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
   it { is_expected.to have_many(:sourced_pipelines) }
   it { is_expected.to have_many(:triggered_pipelines) }
   it { is_expected.to have_many(:pipeline_artifacts) }
-  it { is_expected.to have_many(:package_build_infos).dependent(:nullify).inverse_of(:pipeline) }
-  it { is_expected.to have_many(:package_file_build_infos).dependent(:nullify).inverse_of(:pipeline) }
 
   it { is_expected.to have_one(:chat_data) }
   it { is_expected.to have_one(:source_pipeline) }
@@ -757,23 +756,23 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
     context 'with multiple pipelines' do
       before_all do
         create(:ci_build, name: "rspec", coverage: 30, pipeline: pipeline)
-        create(:ci_build, name: "rubocop", coverage: 40, pipeline: pipeline)
+        create(:ci_build, name: "rubocop", coverage: 35, pipeline: pipeline)
       end
 
       it "calculates average when there are two builds with coverage" do
-        expect(pipeline.coverage).to eq("35.00")
+        expect(pipeline.coverage).to be_within(0.001).of(32.5)
       end
 
       it "calculates average when there are two builds with coverage and one with nil" do
         create(:ci_build, pipeline: pipeline)
 
-        expect(pipeline.coverage).to eq("35.00")
+        expect(pipeline.coverage).to be_within(0.001).of(32.5)
       end
 
       it "calculates average when there are two builds with coverage and one is retried" do
         create(:ci_build, name: "rubocop", coverage: 30, pipeline: pipeline, retried: true)
 
-        expect(pipeline.coverage).to eq("35.00")
+        expect(pipeline.coverage).to be_within(0.001).of(32.5)
       end
     end
 
@@ -1358,12 +1357,26 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
     describe 'synching status to Jira' do
       let(:worker) { ::JiraConnect::SyncBuildsWorker }
 
-      %i[prepare! run! skip! drop! succeed! cancel! block! delay!].each do |event|
-        context "when we call pipeline.#{event}" do
-          it 'triggers a Jira synch worker' do
-            expect(worker).to receive(:perform_async).with(pipeline.id, Integer)
+      context 'when Jira Connect subscription does not exist' do
+        it 'does not trigger a Jira synch worker' do
+          expect(worker).not_to receive(:perform_async)
 
-            pipeline.send(event)
+          pipeline.prepare!
+        end
+      end
+
+      context 'when Jira Connect subscription exists' do
+        before_all do
+          create(:jira_connect_subscription, namespace: project.namespace)
+        end
+
+        %i[prepare! run! skip! drop! succeed! cancel! block! delay!].each do |event|
+          context "when we call pipeline.#{event}" do
+            it 'triggers a Jira synch worker' do
+              expect(worker).to receive(:perform_async).with(pipeline.id, Integer)
+
+              pipeline.send(event)
+            end
           end
         end
       end
@@ -1503,10 +1516,30 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
     end
 
     describe 'pipeline caching' do
-      it 'performs ExpirePipelinesCacheWorker' do
-        expect(ExpirePipelineCacheWorker).to receive(:perform_async).with(pipeline.id)
+      context 'when expire_job_and_pipeline_cache_synchronously is enabled' do
+        before do
+          stub_feature_flags(expire_job_and_pipeline_cache_synchronously: true)
+        end
 
-        pipeline.cancel
+        it 'executes Ci::ExpirePipelineCacheService' do
+          expect_next_instance_of(Ci::ExpirePipelineCacheService) do |service|
+            expect(service).to receive(:execute).with(pipeline)
+          end
+
+          pipeline.cancel
+        end
+      end
+
+      context 'when expire_job_and_pipeline_cache_synchronously is disabled' do
+        before do
+          stub_feature_flags(expire_job_and_pipeline_cache_synchronously: false)
+        end
+
+        it 'performs ExpirePipelinesCacheWorker' do
+          expect(ExpirePipelineCacheWorker).to receive(:perform_async).with(pipeline.id)
+
+          pipeline.cancel
+        end
       end
     end
 
@@ -3173,10 +3206,34 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
 
     context 'when pipeline is not child nor parent' do
       let_it_be(:pipeline) { create(:ci_pipeline, :created) }
-      let_it_be(:build) { create(:ci_build, :with_deployment, :deploy_to_production, pipeline: pipeline) }
+      let_it_be(:build, refind: true) { create(:ci_build, :with_deployment, :deploy_to_production, pipeline: pipeline) }
 
       it 'returns just the pipeline environment' do
         expect(subject).to contain_exactly(build.deployment.environment)
+      end
+
+      context 'when deployment SHA is not matched' do
+        before do
+          build.deployment.update!(sha: 'old-sha')
+        end
+
+        it 'does not return environments' do
+          expect(subject).to be_empty
+        end
+      end
+    end
+
+    context 'when an associated environment does not have deployments' do
+      let_it_be(:pipeline) { create(:ci_pipeline, :created) }
+      let_it_be(:build) { create(:ci_build, :stop_review_app, pipeline: pipeline) }
+      let_it_be(:environment) { create(:environment, project: pipeline.project) }
+
+      before_all do
+        build.metadata.update!(expanded_environment_name: environment.name)
+      end
+
+      it 'does not return environments' do
+        expect(subject).to be_empty
       end
     end
 
@@ -4610,5 +4667,14 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
       expect(pipeline.authorized_cluster_agents).to contain_exactly(agent)
       expect(pipeline.authorized_cluster_agents).to contain_exactly(agent) # cached
     end
+  end
+
+  it_behaves_like 'it has loose foreign keys' do
+    let(:factory_name) { :ci_pipeline }
+  end
+
+  it_behaves_like 'cleanup by a loose foreign key' do
+    let!(:model) { create(:ci_pipeline, user: create(:user)) }
+    let!(:parent) { model.user }
   end
 end

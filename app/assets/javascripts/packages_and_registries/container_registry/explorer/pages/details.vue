@@ -25,9 +25,11 @@ import {
   UNFINISHED_STATUS,
   MISSING_OR_DELETED_IMAGE_BREADCRUMB,
   ROOT_IMAGE_TEXT,
+  GRAPHQL_PAGE_SIZE,
 } from '../constants/index';
 import deleteContainerRepositoryTagsMutation from '../graphql/mutations/delete_container_repository_tags.mutation.graphql';
 import getContainerRepositoryDetailsQuery from '../graphql/queries/get_container_repository_details.query.graphql';
+import getContainerRepositoryTagsQuery from '../graphql/queries/get_container_repository_tags.query.graphql';
 
 export default {
   name: 'RegistryDetailsPage',
@@ -133,8 +135,8 @@ export default {
           awaitRefetchQueries: true,
           refetchQueries: [
             {
-              query: getContainerRepositoryDetailsQuery,
-              variables: this.queryVariables,
+              query: getContainerRepositoryTagsQuery,
+              variables: { ...this.queryVariables, first: GRAPHQL_PAGE_SIZE },
             },
           ],
         });

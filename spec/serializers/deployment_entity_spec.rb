@@ -42,6 +42,10 @@ RSpec.describe DeploymentEntity do
     expect(subject).to include(:deployed_at)
   end
 
+  it 'exposes last? as is_last' do
+    expect(subject).to include(:is_last)
+  end
+
   context 'when deployable is nil' do
     let(:entity) { described_class.new(deployment, request: request, deployment_details: false) }
     let(:deployment) { create(:deployment, deployable: nil, project: project) }

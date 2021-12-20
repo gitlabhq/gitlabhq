@@ -3,59 +3,74 @@
 require 'spec_helper'
 
 RSpec.describe Ci::JobArtifacts::DestroyBatchService do
-  let(:artifacts) { Ci::JobArtifact.all }
+  let(:artifacts) { Ci::JobArtifact.where(id: [artifact_with_file.id, artifact_without_file.id]) }
   let(:service) { described_class.new(artifacts, pick_up_at: Time.current) }
+
+  let_it_be(:artifact_with_file, refind: true) do
+    create(:ci_job_artifact, :zip)
+  end
+
+  let_it_be(:artifact_without_file, refind: true) do
+    create(:ci_job_artifact)
+  end
+
+  let_it_be(:undeleted_artifact, refind: true) do
+    create(:ci_job_artifact)
+  end
 
   describe '.execute' do
     subject(:execute) { service.execute }
 
-    let_it_be(:artifact, refind: true) do
-      create(:ci_job_artifact)
+    it 'creates a deleted object for artifact with attached file' do
+      expect { subject }.to change { Ci::DeletedObject.count }.by(1)
     end
 
-    context 'when the artifact has a file attached to it' do
-      before do
-        artifact.file = fixture_file_upload(Rails.root.join('spec/fixtures/ci_build_artifacts.zip'), 'application/zip')
-        artifact.save!
+    it 'does not remove the attached file' do
+      expect { execute }.not_to change { artifact_with_file.file.exists? }
+    end
+
+    it 'deletes the artifact records' do
+      expect { subject }.to change { Ci::JobArtifact.count }.by(-2)
+    end
+
+    it 'reports metrics for destroyed artifacts' do
+      expect_next_instance_of(Gitlab::Ci::Artifacts::Metrics) do |metrics|
+        expect(metrics).to receive(:increment_destroyed_artifacts_count).with(2).and_call_original
+        expect(metrics).to receive(:increment_destroyed_artifacts_bytes).with(107464).and_call_original
       end
 
-      it 'creates a deleted object' do
-        expect { subject }.to change { Ci::DeletedObject.count }.by(1)
-      end
+      execute
+    end
 
-      it 'does not remove the files' do
-        expect { execute }.not_to change { artifact.file.exists? }
-      end
-
-      it 'reports metrics for destroyed artifacts' do
-        expect_next_instance_of(Gitlab::Ci::Artifacts::Metrics) do |metrics|
-          expect(metrics).to receive(:increment_destroyed_artifacts_count).with(1).and_call_original
-          expect(metrics).to receive(:increment_destroyed_artifacts_bytes).with(107464).and_call_original
-        end
+    context 'ProjectStatistics' do
+      it 'resets project statistics' do
+        expect(ProjectStatistics).to receive(:increment_statistic).once
+          .with(artifact_with_file.project, :build_artifacts_size, -artifact_with_file.file.size)
+          .and_call_original
+        expect(ProjectStatistics).to receive(:increment_statistic).once
+          .with(artifact_without_file.project, :build_artifacts_size, 0)
+          .and_call_original
 
         execute
       end
 
-      context 'ProjectStatistics' do
-        it 'resets project statistics' do
-          expect(ProjectStatistics).to receive(:increment_statistic).once
-            .with(artifact.project, :build_artifacts_size, -artifact.file.size)
-            .and_call_original
+      context 'with update_stats: false' do
+        it 'does not update project statistics' do
+          expect(ProjectStatistics).not_to receive(:increment_statistic)
 
-          execute
+          service.execute(update_stats: false)
         end
 
-        context 'with update_stats: false' do
-          it 'does not update project statistics' do
-            expect(ProjectStatistics).not_to receive(:increment_statistic)
+        it 'returns size statistics' do
+          expected_updates = {
+            statistics_updates: {
+              artifact_with_file.project => -artifact_with_file.file.size,
+              artifact_without_file.project => 0
+            }
+          }
 
-            service.execute(update_stats: false)
-          end
-
-          it 'returns size statistics' do
-            expect(service.execute(update_stats: false)).to match(
-              a_hash_including(statistics_updates: { artifact.project => -artifact.file.size }))
-          end
+          expect(service.execute(update_stats: false)).to match(
+            a_hash_including(expected_updates))
         end
       end
     end
@@ -71,7 +86,7 @@ RSpec.describe Ci::JobArtifacts::DestroyBatchService do
 
         it 'raises an exception and stop destroying' do
           expect { execute }.to raise_error(ActiveRecord::RecordNotDestroyed)
-                            .and not_change { Ci::JobArtifact.count }.from(1)
+                            .and not_change { Ci::JobArtifact.count }
         end
       end
     end

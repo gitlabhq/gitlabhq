@@ -3,7 +3,10 @@
 module Routing
   module PseudonymizationHelper
     class MaskHelper
-      QUERY_PARAMS_TO_NOT_MASK = %w[].freeze
+      QUERY_PARAMS_TO_NOT_MASK = %w[
+        scope
+        state
+      ].freeze
 
       def initialize(request_object, group, project)
         @request = request_object
@@ -69,12 +72,10 @@ module Routing
       end
     end
 
-    def masked_page_url
+    def masked_page_url(group:, project:)
       return unless Feature.enabled?(:mask_page_urls, type: :ops)
 
-      current_group = group if defined?(group)
-      current_project = project if defined?(project)
-      mask_helper = MaskHelper.new(request, current_group, current_project)
+      mask_helper = MaskHelper.new(request, group, project)
       mask_helper.mask_params
 
     # We rescue all exception for time being till we test this helper extensively.

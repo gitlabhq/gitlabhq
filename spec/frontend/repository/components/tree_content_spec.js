@@ -2,7 +2,7 @@ import { shallowMount } from '@vue/test-utils';
 import paginatedTreeQuery from 'shared_queries/repository/paginated_tree.query.graphql';
 import FilePreview from '~/repository/components/preview/index.vue';
 import FileTable from '~/repository/components/table/index.vue';
-import TreeContent from '~/repository/components/tree_content.vue';
+import TreeContent from 'jh_else_ce/repository/components/tree_content.vue';
 import { loadCommits, isRequested, resetRequestedCommits } from '~/repository/commits_service';
 
 jest.mock('~/repository/commits_service', () => ({
@@ -190,14 +190,28 @@ describe('Repository table component', () => {
     });
   });
 
-  it('loads commit data when row-appear event is emitted', () => {
+  describe('commit data', () => {
     const path = 'some/path';
-    const rowNumber = 1;
 
-    factory(path);
-    findFileTable().vm.$emit('row-appear', { hasCommit: false, rowNumber });
+    it('loads commit data for both top and bottom batches when row-appear event is emitted', () => {
+      const rowNumber = 50;
 
-    expect(isRequested).toHaveBeenCalledWith(rowNumber);
-    expect(loadCommits).toHaveBeenCalledWith('', path, '', rowNumber);
+      factory(path);
+      findFileTable().vm.$emit('row-appear', rowNumber);
+
+      expect(isRequested).toHaveBeenCalledWith(rowNumber);
+
+      expect(loadCommits.mock.calls).toEqual([
+        ['', path, '', rowNumber],
+        ['', path, '', rowNumber - 25],
+      ]);
+    });
+
+    it('loads commit data once if rowNumber is zero', () => {
+      factory(path);
+      findFileTable().vm.$emit('row-appear', 0);
+
+      expect(loadCommits.mock.calls).toEqual([['', path, '', 0]]);
+    });
   });
 });

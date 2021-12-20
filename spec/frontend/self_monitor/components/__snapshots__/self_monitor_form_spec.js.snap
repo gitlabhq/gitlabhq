@@ -52,6 +52,7 @@ exports[`self monitor component When the self monitor project has not been creat
        
       <gl-form-group-stub
         labeldescription=""
+        optionaltext="(optional)"
       >
         <gl-toggle-stub
           label="Self monitoring"

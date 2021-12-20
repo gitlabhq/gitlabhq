@@ -43,9 +43,8 @@
         = s_('AdminUsers|External')
       %p.light.gl-pl-2
         = s_('AdminUsers|External users cannot see internal or private projects unless access is explicitly granted. Also, external users cannot create projects, groups, or personal snippets.')
-      %row.hidden#warning_external_automatically_set.hidden
-        .badge.badge-warning.text-white
-          = s_('AdminUsers|Automatically marked as default internal user')
+      %row.hidden#warning_external_automatically_set
+        = gl_badge_tag s_('AdminUsers|Automatically marked as default internal user'), variant: :warning
 
   .form-group.row
     - @user.credit_card_validation || @user.build_credit_card_validation

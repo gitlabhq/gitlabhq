@@ -38,6 +38,7 @@ RSpec.describe API::Ci::Helpers::Runner do
       let(:revision) { '10.0' }
       let(:platform) { 'test' }
       let(:architecture) { 'arm' }
+      let(:executor) { 'shell' }
       let(:config) { { 'gpus' => 'all' } }
       let(:runner_params) do
         {
@@ -48,6 +49,7 @@ RSpec.describe API::Ci::Helpers::Runner do
             'revision' => revision,
             'platform' => platform,
             'architecture' => architecture,
+            'executor' => executor,
             'config' => config,
             'ignored' => 1
           }
@@ -57,12 +59,13 @@ RSpec.describe API::Ci::Helpers::Runner do
       subject(:details) { runner_helper.get_runner_details_from_request }
 
       it 'extracts the runner details', :aggregate_failures do
-        expect(details.keys).to match_array(%w(name version revision platform architecture config ip_address))
+        expect(details.keys).to match_array(%w(name version revision platform architecture executor config ip_address))
         expect(details['name']).to eq(name)
         expect(details['version']).to eq(version)
         expect(details['revision']).to eq(revision)
         expect(details['platform']).to eq(platform)
         expect(details['architecture']).to eq(architecture)
+        expect(details['executor']).to eq(executor)
         expect(details['config']).to eq(config)
         expect(details['ip_address']).to eq(ip_address)
       end

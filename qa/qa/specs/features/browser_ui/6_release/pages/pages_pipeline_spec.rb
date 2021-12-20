@@ -31,7 +31,7 @@ module QA
         pipeline.visit!
       end
 
-      it 'runs a Pages-specific pipeline', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1879' do
+      it 'runs a Pages-specific pipeline', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347669' do
         Page::Project::Pipeline::Show.perform do |show|
           expect(show).to have_job(:pages)
           show.click_job(:pages)

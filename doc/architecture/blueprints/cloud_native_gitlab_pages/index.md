@@ -28,7 +28,7 @@ might be useful to understand why it is important, and what is the roadmap.
 ## How GitLab Pages Works
 
 GitLab Pages is a daemon designed to serve static content, written in
-[Go](https://golang.org/).
+[Go](https://go.dev/).
 
 Initially, GitLab Pages has been designed to store static content on a local
 shared block storage (NFS) in a hierarchical group > project directory

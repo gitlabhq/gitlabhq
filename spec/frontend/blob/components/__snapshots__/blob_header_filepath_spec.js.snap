@@ -34,6 +34,7 @@ exports[`Blob Header Filepath rendering matches the snapshot 1`] = `
     text="foo/bar/dummy.md"
     title="Copy file path"
     tooltipplacement="top"
+    variant="default"
   />
 </div>
 `;

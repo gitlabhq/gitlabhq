@@ -11,7 +11,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > [Renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/38318) to CI/CD Analytics in GitLab 12.8.
 
 GitLab tracks the history of your pipeline successes and failures, as well as how long each pipeline
-ran. To view this information, go to **Analytics > CI/CD Analytics**.
+ran. To view this information for a project, go to **Analytics > CI/CD Analytics**.
 
 View successful pipelines:
 

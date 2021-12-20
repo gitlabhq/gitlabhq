@@ -30,7 +30,7 @@ module QA
           runner.remove_via_api!
         end
 
-        it 'can be browsed', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1808' do
+        it 'can be browsed', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348003' do
           Resource::Repository::Commit.fabricate_via_api! do |commit|
             commit.project = project
             commit.commit_message = 'Add .gitlab-ci.yml'

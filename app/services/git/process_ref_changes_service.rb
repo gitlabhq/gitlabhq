@@ -9,6 +9,8 @@ module Git
 
       process_changes_by_action(:branch, changes.branch_changes)
       process_changes_by_action(:tag, changes.tag_changes)
+
+      perform_housekeeping
     end
 
     private
@@ -82,6 +84,13 @@ module Git
       return [] if ref_type == :tag
 
       MergeRequests::PushedBranchesService.new(project: project, current_user: current_user, params: { changes: changes }).execute
+    end
+
+    def perform_housekeeping
+      housekeeping = Repositories::HousekeepingService.new(project)
+      housekeeping.increment!
+      housekeeping.execute if housekeeping.needed?
+    rescue Repositories::HousekeepingService::LeaseTaken
     end
   end
 end

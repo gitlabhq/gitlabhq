@@ -17,10 +17,10 @@ module SessionHelpers
   end
 
   def get_session_keys
-    Gitlab::Redis::SharedState.with { |redis| redis.scan_each(match: 'session:gitlab:*').to_a }
+    Gitlab::Redis::Sessions.with { |redis| redis.scan_each(match: 'session:gitlab:*').to_a }
   end
 
   def get_ttl(key)
-    Gitlab::Redis::SharedState.with { |redis| redis.ttl(key) }
+    Gitlab::Redis::Sessions.with { |redis| redis.ttl(key) }
   end
 end

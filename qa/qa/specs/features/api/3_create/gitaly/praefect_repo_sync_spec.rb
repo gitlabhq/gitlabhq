@@ -2,25 +2,27 @@
 
 module QA
   RSpec.describe 'Create' do
-    context 'Praefect repository commands', :orchestrated, :gitaly_cluster do
+    context 'Praefect repository commands', :orchestrated, :gitaly_cluster, quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/347415', type: :investigating } do
       let(:praefect_manager) { Service::PraefectManager.new }
 
       let(:repo1) { { "relative_path" => "@hashed/repo1.git", "storage" => "gitaly1", "virtual_storage" => "default" } }
       let(:repo2) { { "relative_path" => "@hashed/path/to/repo2.git", "storage" => "gitaly3", "virtual_storage" => "default" } }
 
       before do
+        praefect_manager.start_all_nodes
         praefect_manager.add_repo_to_disk(praefect_manager.primary_node, repo1["relative_path"])
         praefect_manager.add_repo_to_disk(praefect_manager.tertiary_node, repo2["relative_path"])
       end
 
       after do
+        praefect_manager.start_all_nodes
         praefect_manager.remove_repo_from_disk(repo1["relative_path"])
         praefect_manager.remove_repo_from_disk(repo2["relative_path"])
         praefect_manager.remove_repository_from_praefect_database(repo1["relative_path"])
         praefect_manager.remove_repository_from_praefect_database(repo2["relative_path"])
       end
 
-      it 'allows admin to manage difference between praefect database and disk state', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/2344' do
+      it 'allows admin to manage difference between praefect database and disk state', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347606' do
         # Some repos are on disk that praefect is not aware of
         untracked_repositories = praefect_manager.list_untracked_repositories
         expect(untracked_repositories).to include(repo1)

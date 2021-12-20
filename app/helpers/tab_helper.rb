@@ -14,8 +14,7 @@ module TabHelper
     gl_tabs_classes = %w[nav gl-tabs-nav]
 
     html_options = html_options.merge(
-      class: [*html_options[:class], gl_tabs_classes].join(' '),
-      role: 'tablist'
+      class: [*html_options[:class], gl_tabs_classes].join(' ')
     )
 
     content = capture(&block) if block_given?
@@ -54,13 +53,26 @@ module TabHelper
     extra_tab_classes = html_options.delete(:tab_class)
     tab_class = %w[nav-item].push(*extra_tab_classes)
 
-    content_tag(:li, class: tab_class, role: 'presentation') do
+    content_tag(:li, class: tab_class) do
       if block_given?
         link_to(options, html_options, &block)
       else
         link_to(name, options, html_options)
       end
     end
+  end
+
+  # Creates a <gl-badge> for use inside tabs.
+  #
+  # html_options - The html_options hash (default: {})
+  def gl_tab_counter_badge(count, html_options = {})
+    gl_badge_tag(
+      count,
+      { size: :sm },
+      html_options.merge(
+        class: ['gl-tab-counter-badge', *html_options[:class]]
+      )
+    )
   end
 
   # Navigation link helper
@@ -150,7 +162,7 @@ module TabHelper
     action = options.delete(:action)
 
     route_matches_paths?(options.delete(:path)) ||
-      route_matches_pages?(options.delete(:page)) ||
+      route_matches_page_without_exclusion?(options.delete(:page), options.delete(:exclude_page)) ||
       route_matches_controllers_and_or_actions?(controller, action)
   end
 
@@ -173,6 +185,13 @@ module TabHelper
     Array(paths).compact.any? do |single_path|
       current_path?(single_path)
     end
+  end
+
+  def route_matches_page_without_exclusion?(pages, exclude_page)
+    return false unless route_matches_pages?(pages)
+    return true unless exclude_page.present?
+
+    !route_matches_pages?(exclude_page)
   end
 
   def route_matches_pages?(pages)
@@ -210,13 +229,4 @@ module TabHelper
 
     current_page?(options)
   end
-end
-
-def gl_tab_counter_badge(count, html_options = {})
-  badge_classes = %w[badge badge-muted badge-pill gl-badge sm gl-tab-counter-badge]
-  content_tag(:span,
-    count,
-    class: [*html_options[:class], badge_classes].join(' '),
-    data: html_options[:data]
-  )
 end

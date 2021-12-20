@@ -53,6 +53,10 @@ export default {
       type: Boolean,
       required: true,
     },
+    canPushToBranch: {
+      type: Boolean,
+      required: true,
+    },
     emptyRepo: {
       type: Boolean,
       required: true,
@@ -83,6 +87,9 @@ export default {
     deleteModalTitle() {
       return sprintf(__('Delete %{name}'), { name: this.name });
     },
+    lockBtnQASelector() {
+      return this.canLock ? 'lock_button' : 'disabled_lock_button';
+    },
   },
 };
 </script>
@@ -98,6 +105,7 @@ export default {
         :is-locked="isLocked"
         :can-lock="canLock"
         data-testid="lock"
+        :data-qa-selector="lockBtnQASelector"
       />
       <gl-button v-gl-modal="replaceModalId" data-testid="replace">
         {{ $options.i18n.replace }}
@@ -125,6 +133,7 @@ export default {
       :target-branch="targetBranch || ref"
       :original-branch="originalBranch || ref"
       :can-push-code="canPushCode"
+      :can-push-to-branch="canPushToBranch"
       :empty-repo="emptyRepo"
     />
   </div>

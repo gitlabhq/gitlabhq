@@ -63,6 +63,8 @@ RSpec.describe Groups::UpdateSharedRunnersService do
           let_it_be(:pending_build_2) { create(:ci_pending_build, project: project, instance_runners_enabled: false) }
 
           it 'updates pending builds for the group' do
+            expect(::Ci::UpdatePendingBuildService).to receive(:new).and_call_original
+
             subject
 
             expect(pending_build_1.reload.instance_runners_enabled).to be_truthy
@@ -73,6 +75,8 @@ RSpec.describe Groups::UpdateSharedRunnersService do
             let(:params) { { shared_runners_setting: 'invalid_enabled' } }
 
             it 'does not update pending builds for the group' do
+              expect(::Ci::UpdatePendingBuildService).not_to receive(:new).and_call_original
+
               subject
 
               expect(pending_build_1.reload.instance_runners_enabled).to be_falsey
@@ -99,6 +103,8 @@ RSpec.describe Groups::UpdateSharedRunnersService do
           let_it_be(:pending_build_2) { create(:ci_pending_build, project: project, instance_runners_enabled: true) }
 
           it 'updates pending builds for the group' do
+            expect(::Ci::UpdatePendingBuildService).to receive(:new).and_call_original
+
             subject
 
             expect(pending_build_1.reload.instance_runners_enabled).to be_falsey

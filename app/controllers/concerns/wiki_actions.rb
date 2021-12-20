@@ -21,6 +21,10 @@ module WikiActions
     before_action :load_sidebar, except: [:pages]
     before_action :set_content_class
 
+    before_action do
+      push_frontend_feature_flag(:wiki_switch_between_content_editor_raw_markdown, @group, default_enabled: :yaml)
+    end
+
     before_action only: [:show, :edit, :update] do
       @valid_encoding = valid_encoding?
     end
@@ -79,7 +83,8 @@ module WikiActions
 
       render 'shared/wikis/show'
     elsif file_blob
-      send_blob(wiki.repository, file_blob)
+      # This is needed by [GitLab JH](https://gitlab.com/gitlab-jh/gitlab/-/issues/247)
+      send_wiki_file_blob(wiki, file_blob)
     elsif show_create_form?
       # Assign a title to the WikiPage unless `id` is a randomly generated slug from #new
       title = params[:id] unless params[:random_title].present?
@@ -301,4 +306,10 @@ module WikiActions
       view: diff_view
     }
   end
+
+  def send_wiki_file_blob(wiki, file_blob)
+    send_blob(wiki.repository, file_blob)
+  end
 end
+
+WikiActions.prepend_mod

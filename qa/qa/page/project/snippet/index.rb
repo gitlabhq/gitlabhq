@@ -6,6 +6,7 @@ module QA
       module Snippet
         class Index < Page::Base
           include Page::Component::Snippet
+          include Page::Component::BlobContent
 
           view 'app/views/shared/snippets/_snippet.html.haml' do
             element :snippet_link

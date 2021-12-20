@@ -26,6 +26,12 @@ module Analytics
         :project_id
       end
 
+      def self.distinct_stages_within_hierarchy(group)
+        with_preloaded_labels
+          .where(project_id: group.all_projects.select(:id))
+          .select("DISTINCT ON(stage_event_hash_id) #{quoted_table_name}.*")
+      end
+
       private
 
       # Project should belong to a group when the stage has Label based events since only GroupLabels are allowed.

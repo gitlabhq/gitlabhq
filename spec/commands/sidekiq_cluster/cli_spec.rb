@@ -12,8 +12,23 @@ RSpec.describe Gitlab::SidekiqCluster::CLI do # rubocop:disable RSpec/FilePath
     { env: 'test', directory: Dir.pwd, max_concurrency: 50, min_concurrency: 0, dryrun: false, timeout: timeout }
   end
 
+  let(:sidekiq_exporter_enabled) { false }
+  let(:sidekiq_exporter_port) { '3807' }
+  let(:sidekiq_health_checks_port) { '3807' }
+
   before do
     stub_env('RAILS_ENV', 'test')
+    stub_config(
+      monitoring: {
+        sidekiq_exporter: {
+          enabled: sidekiq_exporter_enabled,
+          port: sidekiq_exporter_port
+        },
+        sidekiq_health_checks: {
+          port: sidekiq_health_checks_port
+        }
+      }
+    )
   end
 
   describe '#run' do
@@ -241,12 +256,184 @@ RSpec.describe Gitlab::SidekiqCluster::CLI do # rubocop:disable RSpec/FilePath
         end
       end
     end
+
+    context 'metrics server' do
+      let(:trapped_signals) { described_class::TERMINATE_SIGNALS + described_class::FORWARD_SIGNALS }
+      let(:metrics_dir) { Dir.mktmpdir }
+
+      before do
+        stub_env('prometheus_multiproc_dir', metrics_dir)
+      end
+
+      after do
+        FileUtils.rm_rf(metrics_dir, secure: true)
+      end
+
+      context 'starting the server' do
+        context 'without --dryrun' do
+          context 'when there are no sidekiq_health_checks settings set' do
+            before do
+              stub_config(
+                monitoring: {
+                  sidekiq_exporter: {
+                    enabled: true,
+                    port: sidekiq_exporter_port
+                  }
+                }
+              )
+
+              allow(Gitlab::SidekiqCluster).to receive(:start)
+              allow(cli).to receive(:write_pid)
+              allow(cli).to receive(:trap_signals)
+              allow(cli).to receive(:start_loop)
+            end
+
+            it 'does not start a sidekiq metrics server' do
+              expect(MetricsServer).not_to receive(:spawn)
+
+              cli.run(%w(foo))
+            end
+
+            it 'rescues Settingslogic::MissingSetting' do
+              expect { cli.run(%w(foo)) }.not_to raise_error(Settingslogic::MissingSetting)
+            end
+          end
+
+          context 'when the sidekiq_exporter.port setting is not set' do
+            before do
+              stub_config(
+                monitoring: {
+                  sidekiq_exporter: {
+                    enabled: true
+                  },
+                  sidekiq_health_checks: {
+                    port: sidekiq_health_checks_port
+                  }
+                }
+              )
+
+              allow(Gitlab::SidekiqCluster).to receive(:start)
+              allow(cli).to receive(:write_pid)
+              allow(cli).to receive(:trap_signals)
+              allow(cli).to receive(:start_loop)
+            end
+
+            it 'does not start a sidekiq metrics server' do
+              expect(MetricsServer).not_to receive(:spawn)
+
+              cli.run(%w(foo))
+            end
+
+            it 'rescues Settingslogic::MissingSetting' do
+              expect { cli.run(%w(foo)) }.not_to raise_error(Settingslogic::MissingSetting)
+            end
+          end
+
+          context 'when sidekiq_exporter.enabled setting is not set' do
+            before do
+              stub_config(
+                monitoring: {
+                  sidekiq_exporter: {},
+                  sidekiq_health_checks: {
+                    port: sidekiq_health_checks_port
+                  }
+                }
+              )
+
+              allow(Gitlab::SidekiqCluster).to receive(:start)
+              allow(cli).to receive(:write_pid)
+              allow(cli).to receive(:trap_signals)
+              allow(cli).to receive(:start_loop)
+            end
+
+            it 'does not start a sidekiq metrics server' do
+              expect(MetricsServer).not_to receive(:spawn)
+
+              cli.run(%w(foo))
+            end
+          end
+
+          context 'with valid settings' do
+            using RSpec::Parameterized::TableSyntax
+
+            where(:sidekiq_exporter_enabled, :sidekiq_exporter_port, :sidekiq_health_checks_port, :start_metrics_server) do
+              true  | '3807' | '3907' | true
+              true  | '3807' | '3807' | false
+              false | '3807' | '3907' | false
+              false | '3807' | '3907' | false
+            end
+
+            with_them do
+              before do
+                allow(Gitlab::SidekiqCluster).to receive(:start)
+                allow(cli).to receive(:write_pid)
+                allow(cli).to receive(:trap_signals)
+                allow(cli).to receive(:start_loop)
+              end
+
+              specify do
+                if start_metrics_server
+                  expect(MetricsServer).to receive(:spawn).with('sidekiq', metrics_dir: metrics_dir, wipe_metrics_dir: true, trapped_signals: trapped_signals)
+                else
+                  expect(MetricsServer).not_to receive(:spawn)
+                end
+
+                cli.run(%w(foo))
+              end
+            end
+          end
+        end
+
+        context 'with --dryrun set' do
+          let(:sidekiq_exporter_enabled) { true }
+
+          it 'does not start the server' do
+            expect(MetricsServer).not_to receive(:spawn)
+
+            cli.run(%w(foo --dryrun))
+          end
+        end
+      end
+
+      context 'supervising the server' do
+        let(:sidekiq_exporter_enabled) { true }
+        let(:sidekiq_health_checks_port) { '3907' }
+
+        before do
+          allow(cli).to receive(:sleep).with(a_kind_of(Numeric))
+          allow(MetricsServer).to receive(:spawn).and_return(99)
+          cli.start_metrics_server
+        end
+
+        it 'stops the metrics server when one of the processes has been terminated' do
+          allow(Gitlab::ProcessManagement).to receive(:process_died?).and_return(false)
+          allow(Gitlab::ProcessManagement).to receive(:all_alive?).with(an_instance_of(Array)).and_return(false)
+          allow(Gitlab::ProcessManagement).to receive(:signal_processes).with(an_instance_of(Array), :TERM)
+
+          expect(Process).to receive(:kill).with(:TERM, 99)
+
+          cli.start_loop
+        end
+
+        it 'starts the metrics server when it is down' do
+          allow(Gitlab::ProcessManagement).to receive(:process_died?).and_return(true)
+          allow(Gitlab::ProcessManagement).to receive(:all_alive?).with(an_instance_of(Array)).and_return(false)
+          allow(cli).to receive(:stop_metrics_server)
+
+          expect(MetricsServer).to receive(:spawn).with(
+            'sidekiq', metrics_dir: metrics_dir, wipe_metrics_dir: false, trapped_signals: trapped_signals
+          )
+
+          cli.start_loop
+        end
+      end
+    end
   end
 
   describe '#write_pid' do
     context 'when a PID is specified' do
       it 'writes the PID to a file' do
-        expect(Gitlab::SidekiqCluster).to receive(:write_pid).with('/dev/null')
+        expect(Gitlab::ProcessManagement).to receive(:write_pid).with('/dev/null')
 
         cli.option_parser.parse!(%w(-P /dev/null))
         cli.write_pid
@@ -255,7 +442,7 @@ RSpec.describe Gitlab::SidekiqCluster::CLI do # rubocop:disable RSpec/FilePath
 
     context 'when no PID is specified' do
       it 'does not write a PID' do
-        expect(Gitlab::SidekiqCluster).not_to receive(:write_pid)
+        expect(Gitlab::ProcessManagement).not_to receive(:write_pid)
 
         cli.write_pid
       end
@@ -264,13 +451,13 @@ RSpec.describe Gitlab::SidekiqCluster::CLI do # rubocop:disable RSpec/FilePath
 
   describe '#wait_for_termination' do
     it 'waits for termination of all sub-processes and succeeds after 3 checks' do
-      expect(Gitlab::SidekiqCluster).to receive(:any_alive?)
+      expect(Gitlab::ProcessManagement).to receive(:any_alive?)
         .with(an_instance_of(Array)).and_return(true, true, true, false)
 
-      expect(Gitlab::SidekiqCluster).to receive(:pids_alive)
+      expect(Gitlab::ProcessManagement).to receive(:pids_alive)
         .with([]).and_return([])
 
-      expect(Gitlab::SidekiqCluster).to receive(:signal_processes)
+      expect(Gitlab::ProcessManagement).to receive(:signal_processes)
         .with([], "-KILL")
 
       stub_const("Gitlab::SidekiqCluster::CHECK_TERMINATE_INTERVAL_SECONDS", 0.1)
@@ -292,13 +479,13 @@ RSpec.describe Gitlab::SidekiqCluster::CLI do # rubocop:disable RSpec/FilePath
                                             .with([['foo']], default_options)
                                             .and_return(worker_pids)
 
-        expect(Gitlab::SidekiqCluster).to receive(:any_alive?)
+        expect(Gitlab::ProcessManagement).to receive(:any_alive?)
           .with(worker_pids).and_return(true).at_least(10).times
 
-        expect(Gitlab::SidekiqCluster).to receive(:pids_alive)
+        expect(Gitlab::ProcessManagement).to receive(:pids_alive)
           .with(worker_pids).and_return([102])
 
-        expect(Gitlab::SidekiqCluster).to receive(:signal_processes)
+        expect(Gitlab::ProcessManagement).to receive(:signal_processes)
           .with([102], "-KILL")
 
         cli.run(%w(foo))
@@ -312,9 +499,9 @@ RSpec.describe Gitlab::SidekiqCluster::CLI do # rubocop:disable RSpec/FilePath
   end
 
   describe '#trap_signals' do
-    it 'traps the termination and forwarding signals' do
-      expect(Gitlab::SidekiqCluster).to receive(:trap_terminate)
-      expect(Gitlab::SidekiqCluster).to receive(:trap_forward)
+    it 'traps termination and sidekiq specific signals' do
+      expect(Gitlab::ProcessManagement).to receive(:trap_signals).with(%i[INT TERM])
+      expect(Gitlab::ProcessManagement).to receive(:trap_signals).with(%i[TTIN USR1 USR2 HUP])
 
       cli.trap_signals
     end
@@ -324,10 +511,10 @@ RSpec.describe Gitlab::SidekiqCluster::CLI do # rubocop:disable RSpec/FilePath
     it 'runs until one of the processes has been terminated' do
       allow(cli).to receive(:sleep).with(a_kind_of(Numeric))
 
-      expect(Gitlab::SidekiqCluster).to receive(:all_alive?)
+      expect(Gitlab::ProcessManagement).to receive(:all_alive?)
         .with(an_instance_of(Array)).and_return(false)
 
-      expect(Gitlab::SidekiqCluster).to receive(:signal_processes)
+      expect(Gitlab::ProcessManagement).to receive(:signal_processes)
         .with(an_instance_of(Array), :TERM)
 
       cli.start_loop

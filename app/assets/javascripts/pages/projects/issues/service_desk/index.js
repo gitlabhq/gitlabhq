@@ -1,14 +1,7 @@
 import { mountIssuablesListApp } from '~/issues_list';
-import FilteredSearchServiceDesk from './filtered_search';
+import { initFilteredSearchServiceDesk } from '~/issues/init_filtered_search_service_desk';
 
-const supportBotData = JSON.parse(
-  document.querySelector('.js-service-desk-issues').dataset.supportBot,
-);
-
-if (document.querySelector('.filtered-search')) {
-  const filteredSearchManager = new FilteredSearchServiceDesk(supportBotData);
-  filteredSearchManager.setup();
-}
+initFilteredSearchServiceDesk();
 
 if (gon.features?.vueIssuablesList) {
   mountIssuablesListApp();

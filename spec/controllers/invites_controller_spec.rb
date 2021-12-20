@@ -97,52 +97,6 @@ RSpec.describe InvitesController do
         )
       end
 
-      context 'when it is part of the invite_email_preview_text experiment' do
-        let(:extra_params) { { invite_type: 'initial_email', experiment_name: 'invite_email_preview_text' } }
-
-        it 'tracks the initial join click from email' do
-          experiment = double(track: true)
-          allow(controller).to receive(:experiment).with(:invite_email_preview_text, actor: member).and_return(experiment)
-
-          request
-
-          expect(experiment).to have_received(:track).with(:join_clicked)
-        end
-
-        context 'when member does not exist' do
-          let(:raw_invite_token) { '_bogus_token_' }
-
-          it 'does not track the experiment' do
-            expect(controller).not_to receive(:experiment).with(:invite_email_preview_text, actor: member)
-
-            request
-          end
-        end
-      end
-
-      context 'when it is part of the invite_email_from experiment' do
-        let(:extra_params) { { invite_type: 'initial_email', experiment_name: 'invite_email_from' } }
-
-        it 'tracks the initial join click from email' do
-          experiment = double(track: true)
-          allow(controller).to receive(:experiment).with(:invite_email_from, actor: member).and_return(experiment)
-
-          request
-
-          expect(experiment).to have_received(:track).with(:join_clicked)
-        end
-
-        context 'when member does not exist' do
-          let(:raw_invite_token) { '_bogus_token_' }
-
-          it 'does not track the experiment' do
-            expect(controller).not_to receive(:experiment).with(:invite_email_from, actor: member)
-
-            request
-          end
-        end
-      end
-
       context 'when member does not exist' do
         let(:raw_invite_token) { '_bogus_token_' }
 
@@ -167,15 +121,6 @@ RSpec.describe InvitesController do
           action: 'join_clicked',
           label: 'invite_email'
         )
-      end
-
-      context 'when it is not part of our invite email experiment' do
-        it 'does not track via experiment', :aggregate_failures do
-          expect(controller).not_to receive(:experiment).with(:invite_email_preview_text, actor: member)
-          expect(controller).not_to receive(:experiment).with(:invite_email_from, actor: member)
-
-          request
-        end
       end
     end
 

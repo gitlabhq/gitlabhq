@@ -105,7 +105,7 @@ export default {
           <gl-button
             v-gl-modal="$options.ADD_USER_MODAL_ID"
             data-testid="add-users"
-            variant="success"
+            variant="confirm"
           >
             {{ $options.translations.addUserButtonLabel }}
           </gl-button>

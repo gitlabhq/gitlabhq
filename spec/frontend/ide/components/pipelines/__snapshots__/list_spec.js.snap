@@ -6,10 +6,10 @@ exports[`IDE pipelines list when loaded renders empty state when no latestPipeli
 >
   <!---->
    
-  <empty-state-stub
-    cansetci="true"
-    class="gl-p-5"
-    emptystatesvgpath="http://test.host"
-  />
+  <div
+    class="gl-h-full gl-display-flex gl-flex-direction-column gl-justify-content-center"
+  >
+    <empty-state-stub />
+  </div>
 </div>
 `;

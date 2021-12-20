@@ -174,3 +174,30 @@ body {
     min-height: 0;
   }
 }
+
+.gl-drawer-responsive {
+  // Both width & min-width
+  // are defined as per Pajamas
+  // See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/44902#note_429056182
+  width: 28%;
+  min-width: 400px;
+  padding-left: $gl-padding;
+  padding-right: $gl-padding;
+  box-shadow: none;
+  background-color: $gray-10;
+  border-left: 1px solid $gray-100;
+
+  @include media-breakpoint-down(sm) {
+    min-width: unset;
+    width: 100%;
+  }
+
+  // These overrides should not happen here,
+  // we should ideally have support for custom
+  // header and body classes in `GlDrawer`.
+  .gl-drawer-header,
+  .gl-drawer-body > * {
+    padding-left: 0;
+    padding-right: 0;
+  }
+}

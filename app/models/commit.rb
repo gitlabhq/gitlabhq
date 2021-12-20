@@ -84,43 +84,27 @@ class Commit
       sha[0..MIN_SHA_LENGTH]
     end
 
-    def diff_safe_lines(project: nil)
-      diff_safe_max_lines(project: project)
+    def diff_max_files
+      Gitlab::CurrentSettings.diff_max_files
     end
 
-    def diff_max_files(project: nil)
-      if Feature.enabled?(:increased_diff_limits, project)
-        3000
-      elsif Feature.enabled?(:configurable_diff_limits, project)
-        Gitlab::CurrentSettings.diff_max_files
-      else
-        1000
-      end
+    def diff_max_lines
+      Gitlab::CurrentSettings.diff_max_lines
     end
 
-    def diff_max_lines(project: nil)
-      if Feature.enabled?(:increased_diff_limits, project)
-        100000
-      elsif Feature.enabled?(:configurable_diff_limits, project)
-        Gitlab::CurrentSettings.diff_max_lines
-      else
-        50000
-      end
-    end
-
-    def max_diff_options(project: nil)
+    def max_diff_options
       {
-        max_files: diff_max_files(project: project),
-        max_lines: diff_max_lines(project: project)
+        max_files: diff_max_files,
+        max_lines: diff_max_lines
       }
     end
 
-    def diff_safe_max_files(project: nil)
-      diff_max_files(project: project) / DIFF_SAFE_LIMIT_FACTOR
+    def diff_safe_max_files
+      diff_max_files / DIFF_SAFE_LIMIT_FACTOR
     end
 
-    def diff_safe_max_lines(project: nil)
-      diff_max_lines(project: project) / DIFF_SAFE_LIMIT_FACTOR
+    def diff_safe_max_lines
+      diff_max_lines / DIFF_SAFE_LIMIT_FACTOR
     end
 
     def from_hash(hash, container)

@@ -1,0 +1,10 @@
+- breadcrumb_title s_('Shimo|Shimo Workspace')
+- page_title s_('Shimo|Shimo Workspace')
+- add_page_specific_style 'page_bundles/wiki'
+= render layout: 'shared/empty_states/wikis_layout', locals: { image_path: 'illustrations/wiki_login_empty.svg' } do
+  %h4
+    = s_('Shimo|Shimo Workspace integration is enabled')
+  %p
+    = s_("Shimo|You've enabled the Shimo Workspace integration. You can view your wiki directly in Shimo.")
+  = link_to @project.shimo_integration.external_wiki_url, target: '_blank', rel: 'noopener noreferrer', class: 'gl-button btn btn-confirm', title: s_('Shimo|Go to Shimo Workspace') do
+    = s_('Shimo|Go to Shimo Workspace')

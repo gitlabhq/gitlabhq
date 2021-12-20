@@ -152,6 +152,38 @@ RSpec.describe Gitlab::ApplicationContext do
         end
       end
     end
+
+    context 'when using a runner project' do
+      let_it_be_with_reload(:runner) { create(:ci_runner, :project) }
+
+      it 'sets project path from runner project' do
+        context = described_class.new(runner: runner)
+
+        expect(result(context)).to include(project: runner.runner_projects.first.project.full_path)
+      end
+
+      context 'when the runner serves multiple projects' do
+        before do
+          create(:ci_runner_project, runner: runner, project: create(:project))
+        end
+
+        it 'does not set project path' do
+          context = described_class.new(runner: runner)
+
+          expect(result(context)).to include(project: nil)
+        end
+      end
+    end
+
+    context 'when using an instance runner' do
+      let_it_be(:runner) { create(:ci_runner, :instance) }
+
+      it 'does not sets project path' do
+        context = described_class.new(runner: runner)
+
+        expect(result(context)).to include(project: nil)
+      end
+    end
   end
 
   describe '#use' do

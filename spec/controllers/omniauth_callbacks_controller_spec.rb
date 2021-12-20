@@ -479,6 +479,19 @@ RSpec.describe OmniauthCallbacksController, type: :controller do
         post :saml, params: { SAMLResponse: mock_saml_response }
       end
     end
+
+    context 'with a blocked user trying to log in when there are hooks set up' do
+      let(:user) { create(:omniauth_user, extern_uid: 'my-uid', provider: 'saml') }
+
+      subject(:post_action) { post :saml, params: { SAMLResponse: mock_saml_response } }
+
+      before do
+        create(:system_hook)
+        user.block!
+      end
+
+      it { expect { post_action }.not_to raise_error }
+    end
   end
 
   describe 'enable admin mode' do

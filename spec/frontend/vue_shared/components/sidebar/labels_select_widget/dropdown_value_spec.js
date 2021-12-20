@@ -95,5 +95,10 @@ describe('DropdownValue', () => {
       findRegularLabel().vm.$emit('close');
       expect(wrapper.emitted('onLabelRemove')).toEqual([[mockRegularLabel.id]]);
     });
+
+    it('emits `onCollapsedValueClick` when clicking on collapsed value', () => {
+      wrapper.find('.sidebar-collapsed-icon').trigger('click');
+      expect(wrapper.emitted('onCollapsedValueClick')).toEqual([[]]);
+    });
   });
 });

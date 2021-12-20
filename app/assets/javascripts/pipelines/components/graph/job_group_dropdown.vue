@@ -67,7 +67,7 @@ export default {
       :class="cssClassJobName"
       class="dropdown-menu-toggle gl-pipeline-job-width! gl-pr-4!"
     >
-      <div class="gl-display-flex gl-align-items-center gl-justify-content-space-between">
+      <div class="gl-display-flex gl-align-items-stretch gl-justify-content-space-between">
         <job-item
           :type="$options.jobItemTypes.jobDropdown"
           :group-tooltip="tooltipText"

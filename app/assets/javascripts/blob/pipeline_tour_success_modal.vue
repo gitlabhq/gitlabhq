@@ -71,7 +71,7 @@ export default {
   i18n: {
     modalTitle: __("That's it, well done!"),
     pipelinesButton: s__('MR widget|See your pipeline in action'),
-    mergeRequestButton: s__('MR widget|Back to the Merge request'),
+    mergeRequestButton: s__('MR widget|Back to the merge request'),
     bodyMessage: s__(
       `MR widget|The pipeline will test your code on every commit. A %{codeQualityLinkStart}code quality report%{codeQualityLinkEnd} will appear in your merge requests to warn you about potential code degradations.`,
     ),

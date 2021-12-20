@@ -181,6 +181,6 @@ You should:
 - Check the [GitLab status page](https://status.gitlab.com/) if the problem persists,
   to see if there is a wider outage.
 
-## Related links
+## Related topics
 
 - [External status checks API](../../../api/status_checks.md)

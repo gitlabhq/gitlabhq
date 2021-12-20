@@ -2,6 +2,7 @@
 
 module Ci
   class JobArtifact < Ci::ApplicationRecord
+    include IgnorableColumns
     include AfterCommitQueue
     include ObjectStorage::BackgroundMove
     include UpdateProjectStatistics
@@ -120,6 +121,9 @@ module Ci
     belongs_to :project
     belongs_to :job, class_name: "Ci::Build", foreign_key: :job_id
 
+    # We will start using this column once we complete https://gitlab.com/gitlab-org/gitlab/-/issues/285597
+    ignore_column :original_filename, remove_with: '14.7', remove_after: '2022-11-22'
+
     mount_file_store_uploader JobArtifactUploader
 
     skip_callback :save, :after, :store_file!, if: :store_after_commit?
@@ -133,6 +137,7 @@ module Ci
 
     scope :not_expired, -> { where('expire_at IS NULL OR expire_at > ?', Time.current) }
     scope :for_sha, ->(sha, project_id) { joins(job: :pipeline).where(ci_pipelines: { sha: sha, project_id: project_id }) }
+    scope :for_job_ids, ->(job_ids) { where(job_id: job_ids) }
     scope :for_job_name, ->(name) { joins(:job).where(ci_builds: { name: name }) }
 
     scope :with_job, -> { joins(:job).includes(:job) }
@@ -264,6 +269,10 @@ module Ci
 
     def self.artifacts_size_for(project)
       self.where(project: project).sum(:size)
+    end
+
+    def self.distinct_job_ids
+      distinct.pluck(:job_id)
     end
 
     ##

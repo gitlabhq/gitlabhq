@@ -43,10 +43,10 @@ RSpec.describe Gitlab::GitalyClient::ConflictFilesStitcher do
 
       messages = [
         double(files: [double(header: header_1), double(header: nil, content: content_1[0..5])]),
-        double(files: [double(header: nil, content: content_1[6..-1])]),
+        double(files: [double(header: nil, content: content_1[6..])]),
         double(files: [double(header: header_2)]),
         double(files: [double(header: nil, content: content_2[0..5]), double(header: nil, content: content_2[6..10])]),
-        double(files: [double(header: nil, content: content_2[11..-1])])
+        double(files: [double(header: nil, content: content_2[11..])])
       ]
 
       conflict_files = described_class.new(messages, target_repository.gitaly_repository).to_a

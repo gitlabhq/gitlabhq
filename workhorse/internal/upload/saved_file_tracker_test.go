@@ -37,3 +37,14 @@ func TestSavedFileTracking(t *testing.T) {
 
 	require.Contains(t, rewrittenFields, "test")
 }
+
+func TestDuplicatedFileProcessing(t *testing.T) {
+	tracker := SavedFileTracker{}
+	file := &filestore.FileHandler{}
+
+	require.NoError(t, tracker.ProcessFile(context.Background(), "file", file, nil))
+
+	err := tracker.ProcessFile(context.Background(), "file", file, nil)
+	require.Error(t, err)
+	require.Equal(t, "the file field has already been processed", err.Error())
+}

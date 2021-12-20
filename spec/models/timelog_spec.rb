@@ -21,7 +21,7 @@ RSpec.describe Timelog do
 
   it { expect(subject.project_id).not_to be_nil }
 
-  describe 'Issuable validation' do
+  describe 'validation' do
     it 'is invalid if issue_id and merge_request_id are missing' do
       subject.attributes = { issue: nil, merge_request: nil }
 
@@ -137,6 +137,16 @@ RSpec.describe Timelog do
 
     def just_after(time)
       time + 1.day
+    end
+  end
+
+  describe 'hooks' do
+    describe '.set_project' do
+      it 'populates project with issuable project' do
+        timelog = create(:issue_timelog, issue: issue)
+
+        expect(timelog.project_id).to be(timelog.issue.project_id)
+      end
     end
   end
 end

@@ -332,7 +332,7 @@ Only issues from projects that are in groups can be promoted. When you attempt t
 issue, a warning is displayed. Promoting a confidential issue to an epic makes all information
 related to the issue public as epics are public to group members.
 
-When the quick action is executed:
+When an issue is promoted to an epic:
 
 - An epic is created in the same group as the project of the issue.
 - Subscribers of the issue are notified that the epic was created.

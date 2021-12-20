@@ -66,10 +66,16 @@ RSpec.describe GitlabSchema.types['Issue'] do
     end
 
     context 'when user does not have the permission' do
-      it 'returns no data' do
+      before do
         allow(Ability).to receive(:allowed?).with(user, :read_project, project).and_return(false)
+      end
 
-        expect(subject.dig(:data, :project)).to eq(nil)
+      it 'does not return an error' do
+        expect(subject['errors']).to be_nil
+      end
+
+      it 'returns no data' do
+        expect(subject['data']['project']).to be_nil
       end
     end
 

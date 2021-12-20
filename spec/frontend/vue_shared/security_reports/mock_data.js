@@ -341,12 +341,15 @@ export const securityReportMergeRequestDownloadPathsQueryNoArtifactsResponse = {
 
 export const securityReportMergeRequestDownloadPathsQueryResponse = {
   project: {
+    id: '1',
     mergeRequest: {
+      id: 'mr-1',
       headPipeline: {
         id: 'gid://gitlab/Ci::Pipeline/176',
         jobs: {
           nodes: [
             {
+              id: 'job-1',
               name: 'secret_detection',
               artifacts: {
                 nodes: [
@@ -368,6 +371,7 @@ export const securityReportMergeRequestDownloadPathsQueryResponse = {
               __typename: 'CiJob',
             },
             {
+              id: 'job-2',
               name: 'bandit-sast',
               artifacts: {
                 nodes: [
@@ -389,6 +393,7 @@ export const securityReportMergeRequestDownloadPathsQueryResponse = {
               __typename: 'CiJob',
             },
             {
+              id: 'job-3',
               name: 'eslint-sast',
               artifacts: {
                 nodes: [
@@ -410,6 +415,7 @@ export const securityReportMergeRequestDownloadPathsQueryResponse = {
               __typename: 'CiJob',
             },
             {
+              id: 'job-4',
               name: 'all_artifacts',
               artifacts: {
                 nodes: [
@@ -449,11 +455,13 @@ export const securityReportMergeRequestDownloadPathsQueryResponse = {
 
 export const securityReportPipelineDownloadPathsQueryResponse = {
   project: {
+    id: 'project-1',
     pipeline: {
       id: 'gid://gitlab/Ci::Pipeline/176',
       jobs: {
         nodes: [
           {
+            id: 'job-1',
             name: 'secret_detection',
             artifacts: {
               nodes: [
@@ -475,6 +483,7 @@ export const securityReportPipelineDownloadPathsQueryResponse = {
             __typename: 'CiJob',
           },
           {
+            id: 'job-2',
             name: 'bandit-sast',
             artifacts: {
               nodes: [
@@ -496,6 +505,7 @@ export const securityReportPipelineDownloadPathsQueryResponse = {
             __typename: 'CiJob',
           },
           {
+            id: 'job-3',
             name: 'eslint-sast',
             artifacts: {
               nodes: [
@@ -517,6 +527,7 @@ export const securityReportPipelineDownloadPathsQueryResponse = {
             __typename: 'CiJob',
           },
           {
+            id: 'job-4',
             name: 'all_artifacts',
             artifacts: {
               nodes: [

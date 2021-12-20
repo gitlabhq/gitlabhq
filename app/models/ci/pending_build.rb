@@ -30,6 +30,10 @@ module Ci
         self.upsert(entry.attributes.compact, returning: %w[build_id], unique_by: :build_id)
       end
 
+      def maintain_denormalized_data?
+        ::Feature.enabled?(:ci_pending_builds_maintain_denormalized_data, default_enabled: :yaml)
+      end
+
       private
 
       def args_from_build(build)
@@ -42,15 +46,9 @@ module Ci
           namespace: project.namespace
         }
 
-        if Feature.enabled?(:ci_pending_builds_maintain_tags_data, type: :development, default_enabled: :yaml)
+        if maintain_denormalized_data?
           args.store(:tag_ids, build.tags_ids)
-        end
-
-        if Feature.enabled?(:ci_pending_builds_maintain_shared_runners_data, type: :development, default_enabled: :yaml)
           args.store(:instance_runners_enabled, shared_runners_enabled?(project))
-        end
-
-        if Feature.enabled?(:ci_pending_builds_maintain_namespace_traversal_ids, type: :development, default_enabled: :yaml)
           args.store(:namespace_traversal_ids, project.namespace.traversal_ids) if group_runners_enabled?(project)
         end
 

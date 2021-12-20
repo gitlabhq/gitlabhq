@@ -391,7 +391,7 @@ RSpec.shared_examples 'rejects nuget access with invalid target id' do
   context 'with a target id with invalid integers' do
     using RSpec::Parameterized::TableSyntax
 
-    let(:target) { OpenStruct.new(id: id) }
+    let(:target) { double(id: id) }
 
     where(:id, :status) do
       '/../'       | :bad_request
@@ -411,7 +411,7 @@ end
 
 RSpec.shared_examples 'rejects nuget access with unknown target id' do
   context 'with an unknown target' do
-    let(:target) { OpenStruct.new(id: 1234567890) }
+    let(:target) { double(id: 1234567890) }
 
     context 'as anonymous' do
       it_behaves_like 'rejects nuget packages access', :anonymous, :unauthorized

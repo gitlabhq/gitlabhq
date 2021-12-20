@@ -17,6 +17,10 @@ In 14.4, Requirements was moved under **Issues**.
 With requirements, you can set criteria to check your products against. They can be based on users,
 stakeholders, system, software, or anything else you find important to capture.
 
+INFO:
+Meet your compliance needs with requirements in GitLab.
+[Try Ultimate free for 30 days](https://about.gitlab.com/free-trial/index.html?glm_source=docs.gitlab.com&glm_content=u-project-requirements-docs).
+
 A requirement is an artifact in GitLab which describes the specific behavior of your product.
 Requirements are long-lived and don't disappear unless manually cleared.
 
@@ -134,7 +138,7 @@ You can also sort the requirements list by:
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2859) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.1.
 > - [Added](https://gitlab.com/gitlab-org/gitlab/-/issues/215514) ability to specify individual requirements and their statuses in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.2.
 
-GitLab supports [requirements test reports](../../../ci/yaml/index.md#artifactsreportsrequirements) now.
+GitLab supports [requirements test reports](../../../ci/yaml/artifacts_reports.md#artifactsreportsrequirements) now.
 You can add a job to your CI pipeline that, when triggered, marks all existing
 requirements as Satisfied (you may manually satisfy a requirement in the edit form [edit a requirement](#edit-a-requirement)).
 

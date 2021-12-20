@@ -11,10 +11,6 @@ module BulkImports
             pipeline: BulkImports::Groups::Pipelines::GroupPipeline,
             stage: 0
           },
-          avatar: {
-            pipeline: BulkImports::Groups::Pipelines::GroupAvatarPipeline,
-            stage: 1
-          },
           subgroups: {
             pipeline: BulkImports::Groups::Pipelines::SubgroupEntitiesPipeline,
             stage: 1
@@ -32,11 +28,15 @@ module BulkImports
             stage: 1
           },
           badges: {
-            pipeline: BulkImports::Groups::Pipelines::BadgesPipeline,
+            pipeline: BulkImports::Common::Pipelines::BadgesPipeline,
             stage: 1
           },
           boards: {
             pipeline: BulkImports::Common::Pipelines::BoardsPipeline,
+            stage: 2
+          },
+          uploads: {
+            pipeline: BulkImports::Common::Pipelines::UploadsPipeline,
             stage: 2
           },
           finisher: {

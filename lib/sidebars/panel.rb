@@ -37,6 +37,10 @@ module Sidebars
       replace_element(@menus, menu_to_replace, new_menu)
     end
 
+    def remove_menu(menu_to_remove)
+      remove_element(@menus, menu_to_remove)
+    end
+
     def set_scope_menu(scope_menu)
       @scope_menu = scope_menu
     end

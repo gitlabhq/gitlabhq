@@ -5,7 +5,7 @@ import createDefaultClient from '~/lib/graphql';
 
 Vue.use(VueApollo);
 
-export default async function initJiraConnectBranches() {
+export default function initJiraConnectBranches() {
   const el = document.querySelector('.js-jira-connect-create-branch');
   if (!el) {
     return null;

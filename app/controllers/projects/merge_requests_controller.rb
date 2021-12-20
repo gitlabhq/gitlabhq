@@ -42,21 +42,11 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     push_frontend_feature_flag(:restructured_mr_widget, project, default_enabled: :yaml)
     push_frontend_feature_flag(:mr_changes_fluid_layout, project, default_enabled: :yaml)
     push_frontend_feature_flag(:mr_attention_requests, project, default_enabled: :yaml)
-    push_frontend_feature_flag(:labels_widget, project, default_enabled: :yaml)
 
     # Usage data feature flags
     push_frontend_feature_flag(:users_expanding_widgets_usage_data, @project, default_enabled: :yaml)
     push_frontend_feature_flag(:diff_settings_usage_data, default_enabled: :yaml)
     push_frontend_feature_flag(:diff_searching_usage_data, @project, default_enabled: :yaml)
-
-    experiment(:invite_members_in_comment, namespace: @project.root_ancestor) do |experiment_instance|
-      experiment_instance.exclude! unless helpers.can_admin_project_member?(@project)
-
-      experiment_instance.use {}
-      experiment_instance.try(:invite_member_link) {}
-
-      experiment_instance.track(:view, property: @project.root_ancestor.id.to_s)
-    end
   end
 
   before_action do
@@ -74,14 +64,27 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
                      :show, :toggle_award_emoji, :toggle_subscription, :update
                    ]
 
-  feature_category :code_testing, [
-                     :test_reports, :coverage_reports, :codequality_reports,
-                     :codequality_mr_diff_reports
-                   ]
-
+  feature_category :code_testing, [:test_reports, :coverage_reports]
+  feature_category :code_quality, [:codequality_reports, :codequality_mr_diff_reports]
   feature_category :accessibility_testing, [:accessibility_reports]
   feature_category :infrastructure_as_code, [:terraform_reports]
   feature_category :continuous_integration, [:pipeline_status, :pipelines, :exposed_artifacts]
+
+  urgency :high, [:export_csv]
+  urgency :low, [
+    :index,
+    :show,
+    :commits,
+    :bulk_update,
+    :edit,
+    :update,
+    :cancel_auto_merge,
+    :merge,
+    :ci_environments_status,
+    :destroy,
+    :rebase,
+    :discussions
+  ]
 
   def index
     @merge_requests = @issuables
@@ -286,7 +289,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
         if merge_request.errors.present?
           render json: @merge_request.errors, status: :bad_request
         else
-          render json: serializer.represent(@merge_request, serializer: 'basic')
+          render json: serializer.represent(@merge_request, serializer: params[:serializer] || 'basic')
         end
       end
     end

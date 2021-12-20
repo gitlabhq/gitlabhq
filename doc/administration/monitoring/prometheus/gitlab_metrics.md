@@ -187,16 +187,25 @@ configuration option in `gitlab.yml`. These metrics are served from the
 | `geo_repositories`                             | Gauge   | 10.2  | Total number of repositories available on primary | `url` |
 | `geo_repositories_synced`                      | Gauge   | 10.2  | Number of repositories synced on secondary | `url` |
 | `geo_repositories_failed`                      | Gauge   | 10.2  | Number of repositories failed to sync on secondary | `url` |
-| `geo_lfs_objects`                              | Gauge   | 10.2  | Total number of LFS objects available on primary | `url` |
-| `geo_lfs_objects_synced`                       | Gauge   | 10.2  | Number of LFS objects synced on secondary | `url` |
-| `geo_lfs_objects_failed`                       | Gauge   | 10.2  | Number of LFS objects failed to sync on secondary | `url` |
+| `geo_lfs_objects`                              | Gauge   | 10.2 | Number of LFS objects on primary | `url` |
+| `geo_lfs_objects_checksummed`                  | Gauge   | 14.6  | Number of LFS objects checksummed successfully on primary | `url` |
+| `geo_lfs_objects_checksum_failed`              | Gauge   | 14.6  | Number of LFS objects failed to calculate the checksum on primary | `url` |
+| `geo_lfs_objects_checksum_total`               | Gauge   | 14.6  | Number of LFS objects tried to checksum on primary | `url` |
+| `geo_lfs_objects_synced`                       | Gauge   | 10.2  | Number of syncable LFS objects synced on secondary | `url` |
+| `geo_lfs_objects_failed`                       | Gauge   | 10.2  | Number of syncable LFS objects failed to sync on secondary | `url` |
+| `geo_lfs_objects_registry`                     | Gauge   | 14.6  | Number of LFS objects in the registry | `url` |
+| `geo_lfs_objects_verified`                     | Gauge   | 14.6  | Number of LFS objects verified on secondary | `url` |
+| `geo_lfs_objects_verification_failed`          | Gauge   | 14.6 | Number of LFS objects' verifications failed on secondary | `url` |
+| `geo_lfs_objects_verification_total`           | Gauge   | 14.6  | Number of LFS objects' verifications tried on secondary | `url` |LFS objects failed to sync on secondary | `url` |
+| `geo_attachments`                              | Gauge   | 10.2  | Total number of file attachments available on primary | `url` |
+| `geo_attachments_synced`                       | Gauge   | 10.2  | Number of attachments synced on secondary | `url` |
+| `geo_attachments_failed`                       | Gauge   | 10.2  | Number of attachments failed to sync on secondary | `url` |
 | `geo_last_event_id`                            | Gauge   | 10.2  | Database ID of the latest event log entry on the primary | `url` |
 | `geo_last_event_timestamp`                     | Gauge   | 10.2  | UNIX timestamp of the latest event log entry on the primary | `url` |
 | `geo_cursor_last_event_id`                     | Gauge   | 10.2  | Last database ID of the event log processed by the secondary | `url` |
 | `geo_cursor_last_event_timestamp`              | Gauge   | 10.2  | Last UNIX timestamp of the event log processed by the secondary | `url` |
 | `geo_status_failed_total`                      | Counter | 10.2  | Number of times retrieving the status from the Geo Node failed | `url` |
 | `geo_last_successful_status_check_timestamp`   | Gauge   | 10.2  | Last timestamp when the status was successfully updated | `url` |
-| `geo_lfs_objects_synced_missing_on_primary`    | Gauge   | 10.7  | Number of LFS objects marked as synced due to the file missing on the primary | `url` |
 | `geo_job_artifacts_synced_missing_on_primary`  | Gauge   | 10.7  | Number of job artifacts marked as synced due to the file missing on the primary | `url` |
 | `geo_repositories_checksummed`                 | Gauge   | 10.7  | Number of repositories checksummed on primary | `url` |
 | `geo_repositories_checksum_failed`             | Gauge   | 10.7  | Number of repositories failed to calculate the checksum on primary | `url` |
@@ -253,15 +262,15 @@ configuration option in `gitlab.yml`. These metrics are served from the
 | `geo_group_wiki_repositories_failed`           | Gauge   | 13.10 | Number of syncable group wikis failed on secondary | `url` |
 | `geo_group_wiki_repositories_registry`         | Gauge   | 13.10 | Number of syncable group wikis in the registry | `url` |
 | `geo_pages_deployments`                        | Gauge   | 14.3  | Number of pages deployments on primary | `url` |
-| `geo_pages_deployments_checksum_total`         | Gauge   | 14.3  | Number of pages deployments tried to checksum on primary | `url` |
-| `geo_pages_deployments_checksummed`            | Gauge   | 14.3  | Number of pages deployments successfully checksummed on primary | `url` |
-| `geo_pages_deployments_checksum_failed`        | Gauge   | 14.3  | Number of pages deployments failed to calculate the checksum on primary | `url` |
+| `geo_pages_deployments_checksum_total`         | Gauge   | 14.6  | Number of pages deployments tried to checksum on primary | `url` |
+| `geo_pages_deployments_checksummed`            | Gauge   | 14.6  | Number of pages deployments successfully checksummed on primary | `url` |
+| `geo_pages_deployments_checksum_failed`        | Gauge   | 14.6  | Number of pages deployments failed to calculate the checksum on primary | `url` |
 | `geo_pages_deployments_synced`                 | Gauge   | 14.3  | Number of syncable pages deployments synced on secondary | `url` |
 | `geo_pages_deployments_failed`                 | Gauge   | 14.3  | Number of syncable pages deployments failed to sync on secondary | `url` |
 | `geo_pages_deployments_registry`               | Gauge   | 14.3  | Number of pages deployments in the registry | `url` |
-| `geo_pages_deployments_verification_total`     | Gauge   | 14.3  | Number of pages deployments verifications tried on secondary | `url` |
-| `geo_pages_deployments_verified`               | Gauge   | 14.3  | Number of pages deployments verified on secondary | `url` |
-| `geo_pages_deployments_verification_failed`    | Gauge   | 14.3  | Number of pages deployments verifications failed on secondary | `url` |
+| `geo_pages_deployments_verification_total`     | Gauge   | 14.6  | Number of pages deployments verifications tried on secondary | `url` |
+| `geo_pages_deployments_verified`               | Gauge   | 14.6  | Number of pages deployments verified on secondary | `url` |
+| `geo_pages_deployments_verification_failed`    | Gauge   | 14.6  | Number of pages deployments verifications failed on secondary | `url` |
 | `limited_capacity_worker_running_jobs`         | Gauge   | 13.5  | Number of running jobs | `worker` |
 | `limited_capacity_worker_max_running_jobs`     | Gauge   | 13.5  | Maximum number of running jobs | `worker` |
 | `limited_capacity_worker_remaining_work_count` | Gauge   | 13.5  | Number of jobs waiting to be enqueued | `worker` |
@@ -272,6 +281,12 @@ configuration option in `gitlab.yml`. These metrics are served from the
 | `geo_uploads_synced`               | Gauge   | 14.1  | Number of uploads synced on secondary | `url` |
 | `geo_uploads_failed`               | Gauge   | 14.1  | Number of syncable uploads failed to sync on secondary | `url` |
 | `geo_uploads_registry`             | Gauge   | 14.1  | Number of uploads in the registry | `url` |
+| `geo_uploads_checksum_total`       | Gauge   | 14.6 | Number of uploads tried to checksum on primary | `url` |
+| `geo_uploads_checksummed`          | Gauge   | 14.6  | Number of uploads successfully checksummed on primary | `url` |
+| `geo_uploads_checksum_failed`      | Gauge   | 14.6  | Number of uploads failed to calculate the checksum on primary | `url` |
+| `geo_uploads_verification_total`   | Gauge   | 14.6 | Number of uploads verifications tried on secondary | `url` |
+| `geo_uploads_verified`             | Gauge   | 14.6 | Number of uploads verified on secondary | `url` |
+| `geo_uploads_verification_failed`  | Gauge   | 14.6 | Number of uploads verifications failed on secondary | `url` |
 | `gitlab_sli:rails_request_apdex:total` | Counter | 14.4 | The number of request-apdex measurements, [more information the development documentation](../../../development/application_slis/rails_request_apdex.md) | `endpoint_id`, `feature_category`, `request_urgency` |
 | `gitlab_sli:rails_request_apdex:success_total` | Counter | 14.4 | The number of succesful requests that met the target duration for their urgency. Devide by `gitlab_sli:rails_requests_apdex:total` to get a success ratio | `endpoint_id`, `feature_category`, `request_urgency` |
 

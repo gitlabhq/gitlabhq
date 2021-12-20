@@ -29,15 +29,15 @@ Prerequisites:
 - You need to [authenticate with the API](../../../api/index.md#authentication). If authenticating with a deploy token, it must be configured with the `write_package_registry` scope.
 
 ```plaintext
-PUT /projects/:id/packages/terraform/modules/:module_name/:module_system/:module_version/file
+PUT /projects/:id/packages/terraform/modules/:module-name/:module-system/:module-version/file
 ```
 
 | Attribute          | Type            | Required | Description                                                                                                                      |
 | -------------------| --------------- | ---------| -------------------------------------------------------------------------------------------------------------------------------- |
 | `id`               | integer/string  | yes      | The ID or [URL-encoded path of the project](../../../api/index.md#namespaced-path-encoding).                                    |
-| `module_name`      | string          | yes      | The package name. It can contain only lowercase letters (`a-z`), uppercase letter (`A-Z`), numbers (`0-9`), or hyphens (`-`) and cannot exceed 64 characters.
-| `module_system`    | string          | yes      | The package system. It can contain only lowercase letters (`a-z`) and numbers (`0-9`), and cannot exceed 64 characters.
-| `module_version`   | string          | yes      | The package version. It must be valid according to the [Semantic Versioning Specification](https://semver.org/).
+| `module-name`      | string          | yes      | The package name. It can contain only lowercase letters (`a-z`), uppercase letter (`A-Z`), numbers (`0-9`), or hyphens (`-`) and cannot exceed 64 characters.
+| `module-system`    | string          | yes      | The package system. It can contain only lowercase letters (`a-z`) and numbers (`0-9`), and cannot exceed 64 characters.
+| `module-version`   | string          | yes      | The package version. It must be valid according to the [Semantic Versioning Specification](https://semver.org/).
 
 Provide the file content in the request body.
 
@@ -97,7 +97,7 @@ You can then reference your Terraform Module from a downstream Terraform project
 
 ```plaintext
 module "<module>" {
-  source = "gitlab.com/<namespace>/<module_name>/<module_system>"
+  source = "gitlab.com/<namespace>/<module-name>/<module-system>"
 }
 ```
 

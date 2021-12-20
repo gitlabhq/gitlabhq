@@ -7,10 +7,12 @@ export default Node.create({
   selectable: false,
   atom: true,
 
-  defaultOptions: {
-    HTMLAttributes: {
-      class: 'gl-display-inline-flex gl-px-1 gl-bg-blue-100 gl-rounded-base gl-font-sm',
-    },
+  addOptions() {
+    return {
+      HTMLAttributes: {
+        class: 'gl-display-inline-flex gl-px-1 gl-bg-blue-100 gl-rounded-base gl-font-sm',
+      },
+    };
   },
 
   parseHTML() {

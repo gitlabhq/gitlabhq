@@ -12,4 +12,7 @@ class NewProjectSastEnabledExperiment < ApplicationExperiment # rubocop:disable 
 
   def free_indicator_behavior
   end
+
+  def unchecked_candidate_behavior
+  end
 end

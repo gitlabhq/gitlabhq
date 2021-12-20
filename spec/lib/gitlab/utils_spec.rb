@@ -249,10 +249,16 @@ RSpec.describe Gitlab::Utils do
   end
 
   describe '.which' do
-    it 'finds the full path to an executable binary' do
-      expect(File).to receive(:executable?).with('/bin/sh').and_return(true)
+    before do
+      stub_env('PATH', '/sbin:/usr/bin:/home/joe/bin')
+    end
 
-      expect(which('sh', 'PATH' => '/bin')).to eq('/bin/sh')
+    it 'finds the full path to an executable binary in order of appearance' do
+      expect(File).to receive(:executable?).with('/sbin/tool').ordered.and_return(false)
+      expect(File).to receive(:executable?).with('/usr/bin/tool').ordered.and_return(true)
+      expect(File).not_to receive(:executable?).with('/home/joe/bin/tool')
+
+      expect(which('tool')).to eq('/usr/bin/tool')
     end
   end
 

@@ -1,0 +1,12 @@
+#!/bin/bash
+
+root_path="$(cd "$(dirname "$0")/.." || exit ; pwd -P)"
+task=$1
+
+shift
+
+if [[ -d "${root_path}/ee/" || "${DECOMPOSED_DB}" == "true" ]]; then
+	task="${task}:main"
+fi
+
+eval "bundle exec rake ${task} ${*}"

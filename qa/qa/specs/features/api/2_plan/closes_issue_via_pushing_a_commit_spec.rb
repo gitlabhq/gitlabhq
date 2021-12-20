@@ -22,7 +22,7 @@ module QA
         push_commit('Initial commit')
       end
 
-      it 'closes via pushing a commit', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1579' do
+      it 'closes via pushing a commit', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347947' do
         push_commit("Closes ##{issue_id}", false)
 
         Support::Retrier.retry_until(max_duration: 10, sleep_interval: 1) do

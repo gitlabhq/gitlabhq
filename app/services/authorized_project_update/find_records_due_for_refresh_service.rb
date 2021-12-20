@@ -47,7 +47,11 @@ module AuthorizedProjectUpdate
             missing_auth_found_callback.call(project_id, level)
           end
 
-          array << [user.id, project_id, level]
+          array << {
+            user_id: user.id,
+            project_id: project_id,
+            access_level: level
+          }
         end
       end
 

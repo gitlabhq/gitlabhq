@@ -7,6 +7,10 @@ class ApplicationRecord < ActiveRecord::Base
 
   self.abstract_class = true
 
+  # We should avoid using pluck https://docs.gitlab.com/ee/development/sql.html#plucking-ids
+  # but, if we are going to use it, let's try and limit the number of records
+  MAX_PLUCK = 1_000
+
   alias_method :reset, :reload
 
   def self.without_order

@@ -177,7 +177,7 @@ NOTE:
 You can also
 [scope](../../ci/environments/index.md#scope-environments-with-specs) the
 `AUTO_DEVOPS_POSTGRES_CHANNEL`, `AUTO_DEVOPS_POSTGRES_DELETE_V1` and
-`POSTGRES_VERSION` variables to specific environments, e.g. `staging`.
+`POSTGRES_VERSION` variables to specific environments, for example, `staging`.
 
 1. Set `AUTO_DEVOPS_POSTGRES_CHANNEL` to `2`. This opts into using the
    newer 8.2.1-based PostgreSQL, and removes the older 0.7.1-based

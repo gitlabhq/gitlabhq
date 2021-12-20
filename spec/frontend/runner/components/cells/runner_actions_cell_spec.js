@@ -3,13 +3,17 @@ import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
+import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import createFlash from '~/flash';
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+
+import { captureException } from '~/runner/sentry_utils';
 import RunnerActionCell from '~/runner/components/cells/runner_actions_cell.vue';
+import RunnerDeleteModal from '~/runner/components/runner_delete_modal.vue';
 import getGroupRunnersQuery from '~/runner/graphql/get_group_runners.query.graphql';
 import getRunnersQuery from '~/runner/graphql/get_runners.query.graphql';
 import runnerDeleteMutation from '~/runner/graphql/runner_delete.mutation.graphql';
 import runnerActionsUpdateMutation from '~/runner/graphql/runner_actions_update.mutation.graphql';
-import { captureException } from '~/runner/sentry_utils';
 import { runnersData } from '../../mock_data';
 
 const mockRunner = runnersData.data.runners.nodes[0];
@@ -25,12 +29,16 @@ jest.mock('~/runner/sentry_utils');
 
 describe('RunnerTypeCell', () => {
   let wrapper;
+
+  const mockToastShow = jest.fn();
   const runnerDeleteMutationHandler = jest.fn();
   const runnerActionsUpdateMutationHandler = jest.fn();
 
   const findEditBtn = () => wrapper.findByTestId('edit-runner');
   const findToggleActiveBtn = () => wrapper.findByTestId('toggle-active-runner');
+  const findRunnerDeleteModal = () => wrapper.findComponent(RunnerDeleteModal);
   const findDeleteBtn = () => wrapper.findByTestId('delete-runner');
+  const getTooltip = (w) => getBinding(w.element, 'gl-tooltip')?.value;
 
   const createComponent = ({ active = true } = {}, options) => {
     wrapper = extendedWrapper(
@@ -38,6 +46,7 @@ describe('RunnerTypeCell', () => {
         propsData: {
           runner: {
             id: mockRunner.id,
+            shortSha: mockRunner.shortSha,
             adminUrl: mockRunner.adminUrl,
             active,
           },
@@ -47,6 +56,15 @@ describe('RunnerTypeCell', () => {
           [runnerDeleteMutation, runnerDeleteMutationHandler],
           [runnerActionsUpdateMutation, runnerActionsUpdateMutationHandler],
         ]),
+        directives: {
+          GlTooltip: createMockDirective(),
+          GlModal: createMockDirective(),
+        },
+        mocks: {
+          $toast: {
+            show: mockToastShow,
+          },
+        },
         ...options,
       }),
     );
@@ -72,197 +90,85 @@ describe('RunnerTypeCell', () => {
   });
 
   afterEach(() => {
+    mockToastShow.mockReset();
     runnerDeleteMutationHandler.mockReset();
     runnerActionsUpdateMutationHandler.mockReset();
 
     wrapper.destroy();
   });
 
-  it('Displays the runner edit link with the correct href', () => {
-    createComponent();
+  describe('Edit Action', () => {
+    it('Displays the runner edit link with the correct href', () => {
+      createComponent();
 
-    expect(findEditBtn().attributes('href')).toBe(mockRunner.adminUrl);
+      expect(findEditBtn().attributes('href')).toBe(mockRunner.adminUrl);
+    });
   });
 
-  describe.each`
-    state       | label       | icon       | isActive | newActiveValue
-    ${'active'} | ${'Pause'}  | ${'pause'} | ${true}  | ${false}
-    ${'paused'} | ${'Resume'} | ${'play'}  | ${false} | ${true}
-  `('When the runner is $state', ({ label, icon, isActive, newActiveValue }) => {
-    beforeEach(() => {
-      createComponent({ active: isActive });
-    });
-
-    it(`Displays a ${icon} button`, () => {
-      expect(findToggleActiveBtn().props('loading')).toBe(false);
-      expect(findToggleActiveBtn().props('icon')).toBe(icon);
-      expect(findToggleActiveBtn().attributes('title')).toBe(label);
-      expect(findToggleActiveBtn().attributes('aria-label')).toBe(label);
-    });
-
-    it(`After clicking the ${icon} button, the button has a loading state`, async () => {
-      await findToggleActiveBtn().vm.$emit('click');
-
-      expect(findToggleActiveBtn().props('loading')).toBe(true);
-    });
-
-    it(`After the ${icon} button is clicked, stale tooltip is removed`, async () => {
-      await findToggleActiveBtn().vm.$emit('click');
-
-      expect(findToggleActiveBtn().attributes('title')).toBe('');
-      expect(findToggleActiveBtn().attributes('aria-label')).toBe('');
-    });
-
-    describe(`When clicking on the ${icon} button`, () => {
-      it(`The apollo mutation to set active to ${newActiveValue} is called`, async () => {
-        expect(runnerActionsUpdateMutationHandler).toHaveBeenCalledTimes(0);
-
-        await findToggleActiveBtn().vm.$emit('click');
-
-        expect(runnerActionsUpdateMutationHandler).toHaveBeenCalledTimes(1);
-        expect(runnerActionsUpdateMutationHandler).toHaveBeenCalledWith({
-          input: {
-            id: mockRunner.id,
-            active: newActiveValue,
-          },
-        });
+  describe('Toggle active action', () => {
+    describe.each`
+      state       | label       | icon       | isActive | newActiveValue
+      ${'active'} | ${'Pause'}  | ${'pause'} | ${true}  | ${false}
+      ${'paused'} | ${'Resume'} | ${'play'}  | ${false} | ${true}
+    `('When the runner is $state', ({ label, icon, isActive, newActiveValue }) => {
+      beforeEach(() => {
+        createComponent({ active: isActive });
       });
 
-      it('The button does not have a loading state after the mutation occurs', async () => {
+      it(`Displays a ${icon} button`, () => {
+        expect(findToggleActiveBtn().props('loading')).toBe(false);
+        expect(findToggleActiveBtn().props('icon')).toBe(icon);
+        expect(getTooltip(findToggleActiveBtn())).toBe(label);
+        expect(findToggleActiveBtn().attributes('aria-label')).toBe(label);
+      });
+
+      it(`After clicking the ${icon} button, the button has a loading state`, async () => {
         await findToggleActiveBtn().vm.$emit('click');
 
         expect(findToggleActiveBtn().props('loading')).toBe(true);
-
-        await waitForPromises();
-
-        expect(findToggleActiveBtn().props('loading')).toBe(false);
       });
-    });
 
-    describe('When update fails', () => {
-      describe('On a network error', () => {
-        const mockErrorMsg = 'Update error!';
+      it(`After the ${icon} button is clicked, stale tooltip is removed`, async () => {
+        await findToggleActiveBtn().vm.$emit('click');
 
-        beforeEach(async () => {
-          runnerActionsUpdateMutationHandler.mockRejectedValueOnce(new Error(mockErrorMsg));
+        expect(getTooltip(findToggleActiveBtn())).toBe('');
+        expect(findToggleActiveBtn().attributes('aria-label')).toBe('');
+      });
+
+      describe(`When clicking on the ${icon} button`, () => {
+        it(`The apollo mutation to set active to ${newActiveValue} is called`, async () => {
+          expect(runnerActionsUpdateMutationHandler).toHaveBeenCalledTimes(0);
 
           await findToggleActiveBtn().vm.$emit('click');
-        });
 
-        it('error is reported to sentry', () => {
-          expect(captureException).toHaveBeenCalledWith({
-            error: new Error(`Network error: ${mockErrorMsg}`),
-            component: 'RunnerActionsCell',
-          });
-        });
-
-        it('error is shown to the user', () => {
-          expect(createFlash).toHaveBeenCalledTimes(1);
-        });
-      });
-
-      describe('On a validation error', () => {
-        const mockErrorMsg = 'Runner not found!';
-        const mockErrorMsg2 = 'User not allowed!';
-
-        beforeEach(async () => {
-          runnerActionsUpdateMutationHandler.mockResolvedValue({
-            data: {
-              runnerUpdate: {
-                runner: mockRunner,
-                errors: [mockErrorMsg, mockErrorMsg2],
-              },
-            },
-          });
-
-          await findToggleActiveBtn().vm.$emit('click');
-        });
-
-        it('error is reported to sentry', () => {
-          expect(captureException).toHaveBeenCalledWith({
-            error: new Error(`${mockErrorMsg} ${mockErrorMsg2}`),
-            component: 'RunnerActionsCell',
-          });
-        });
-
-        it('error is shown to the user', () => {
-          expect(createFlash).toHaveBeenCalledTimes(1);
-        });
-      });
-    });
-  });
-
-  describe('When the user clicks a runner', () => {
-    beforeEach(() => {
-      jest.spyOn(window, 'confirm');
-
-      createComponent();
-    });
-
-    afterEach(() => {
-      window.confirm.mockRestore();
-    });
-
-    describe('When the user confirms deletion', () => {
-      beforeEach(async () => {
-        window.confirm.mockReturnValue(true);
-        await findDeleteBtn().vm.$emit('click');
-      });
-
-      it('The user sees a confirmation alert', () => {
-        expect(window.confirm).toHaveBeenCalledTimes(1);
-        expect(window.confirm).toHaveBeenCalledWith(expect.any(String));
-      });
-
-      it('The delete mutation is called correctly', () => {
-        expect(runnerDeleteMutationHandler).toHaveBeenCalledTimes(1);
-        expect(runnerDeleteMutationHandler).toHaveBeenCalledWith({
-          input: { id: mockRunner.id },
-        });
-      });
-
-      it('When delete mutation is called, current runners are refetched', async () => {
-        jest.spyOn(wrapper.vm.$apollo, 'mutate');
-
-        await findDeleteBtn().vm.$emit('click');
-
-        expect(wrapper.vm.$apollo.mutate).toHaveBeenCalledWith({
-          mutation: runnerDeleteMutation,
-          variables: {
+          expect(runnerActionsUpdateMutationHandler).toHaveBeenCalledTimes(1);
+          expect(runnerActionsUpdateMutationHandler).toHaveBeenCalledWith({
             input: {
               id: mockRunner.id,
+              active: newActiveValue,
             },
-          },
-          awaitRefetchQueries: true,
-          refetchQueries: [getRunnersQueryName, getGroupRunnersQueryName],
+          });
+        });
+
+        it('The button does not have a loading state after the mutation occurs', async () => {
+          await findToggleActiveBtn().vm.$emit('click');
+
+          expect(findToggleActiveBtn().props('loading')).toBe(true);
+
+          await waitForPromises();
+
+          expect(findToggleActiveBtn().props('loading')).toBe(false);
         });
       });
 
-      it('The delete button does not have a loading state', () => {
-        expect(findDeleteBtn().props('loading')).toBe(false);
-        expect(findDeleteBtn().attributes('title')).toBe('Remove');
-      });
-
-      it('After the delete button is clicked, loading state is shown', async () => {
-        await findDeleteBtn().vm.$emit('click');
-
-        expect(findDeleteBtn().props('loading')).toBe(true);
-      });
-
-      it('After the delete button is clicked, stale tooltip is removed', async () => {
-        await findDeleteBtn().vm.$emit('click');
-
-        expect(findDeleteBtn().attributes('title')).toBe('');
-      });
-
-      describe('When delete fails', () => {
+      describe('When update fails', () => {
         describe('On a network error', () => {
-          const mockErrorMsg = 'Delete error!';
+          const mockErrorMsg = 'Update error!';
 
           beforeEach(async () => {
-            runnerDeleteMutationHandler.mockRejectedValueOnce(new Error(mockErrorMsg));
+            runnerActionsUpdateMutationHandler.mockRejectedValueOnce(new Error(mockErrorMsg));
 
-            await findDeleteBtn().vm.$emit('click');
+            await findToggleActiveBtn().vm.$emit('click');
           });
 
           it('error is reported to sentry', () => {
@@ -282,15 +188,16 @@ describe('RunnerTypeCell', () => {
           const mockErrorMsg2 = 'User not allowed!';
 
           beforeEach(async () => {
-            runnerDeleteMutationHandler.mockResolvedValue({
+            runnerActionsUpdateMutationHandler.mockResolvedValue({
               data: {
-                runnerDelete: {
+                runnerUpdate: {
+                  runner: mockRunner,
                   errors: [mockErrorMsg, mockErrorMsg2],
                 },
               },
             });
 
-            await findDeleteBtn().vm.$emit('click');
+            await findToggleActiveBtn().vm.$emit('click');
           });
 
           it('error is reported to sentry', () => {
@@ -306,24 +213,129 @@ describe('RunnerTypeCell', () => {
         });
       });
     });
+  });
 
-    describe('When the user does not confirm deletion', () => {
-      beforeEach(async () => {
-        window.confirm.mockReturnValue(false);
-        await findDeleteBtn().vm.$emit('click');
+  describe('Delete action', () => {
+    beforeEach(() => {
+      createComponent(
+        {},
+        {
+          stubs: { RunnerDeleteModal },
+        },
+      );
+    });
+
+    it('Delete button opens delete modal', () => {
+      const modalId = getBinding(findDeleteBtn().element, 'gl-modal').value;
+
+      expect(findRunnerDeleteModal().attributes('modal-id')).toBeDefined();
+      expect(findRunnerDeleteModal().attributes('modal-id')).toBe(modalId);
+    });
+
+    it('Delete modal shows the runner name', () => {
+      expect(findRunnerDeleteModal().props('runnerName')).toBe(
+        `#${getIdFromGraphQLId(mockRunner.id)} (${mockRunner.shortSha})`,
+      );
+    });
+    it('The delete button does not have a loading icon', () => {
+      expect(findDeleteBtn().props('loading')).toBe(false);
+      expect(getTooltip(findDeleteBtn())).toBe('Delete runner');
+    });
+
+    it('When delete mutation is called, current runners are refetched', () => {
+      jest.spyOn(wrapper.vm.$apollo, 'mutate');
+
+      findRunnerDeleteModal().vm.$emit('primary');
+
+      expect(wrapper.vm.$apollo.mutate).toHaveBeenCalledWith({
+        mutation: runnerDeleteMutation,
+        variables: {
+          input: {
+            id: mockRunner.id,
+          },
+        },
+        awaitRefetchQueries: true,
+        refetchQueries: [getRunnersQueryName, getGroupRunnersQueryName],
+      });
+    });
+
+    describe('When delete is clicked', () => {
+      beforeEach(() => {
+        findRunnerDeleteModal().vm.$emit('primary');
       });
 
-      it('The user sees a confirmation alert', () => {
-        expect(window.confirm).toHaveBeenCalledTimes(1);
+      it('The delete mutation is called correctly', () => {
+        expect(runnerDeleteMutationHandler).toHaveBeenCalledTimes(1);
+        expect(runnerDeleteMutationHandler).toHaveBeenCalledWith({
+          input: { id: mockRunner.id },
+        });
       });
 
-      it('The delete mutation is not called', () => {
-        expect(runnerDeleteMutationHandler).toHaveBeenCalledTimes(0);
+      it('The delete button has a loading icon', () => {
+        expect(findDeleteBtn().props('loading')).toBe(true);
+        expect(getTooltip(findDeleteBtn())).toBe('');
       });
 
-      it('The delete button does not have a loading state', () => {
-        expect(findDeleteBtn().props('loading')).toBe(false);
-        expect(findDeleteBtn().attributes('title')).toBe('Remove');
+      it('The toast notification is shown', () => {
+        expect(mockToastShow).toHaveBeenCalledTimes(1);
+        expect(mockToastShow).toHaveBeenCalledWith(
+          expect.stringContaining(`#${getIdFromGraphQLId(mockRunner.id)} (${mockRunner.shortSha})`),
+        );
+      });
+    });
+
+    describe('When delete fails', () => {
+      describe('On a network error', () => {
+        const mockErrorMsg = 'Delete error!';
+
+        beforeEach(() => {
+          runnerDeleteMutationHandler.mockRejectedValueOnce(new Error(mockErrorMsg));
+
+          findRunnerDeleteModal().vm.$emit('primary');
+        });
+
+        it('error is reported to sentry', () => {
+          expect(captureException).toHaveBeenCalledWith({
+            error: new Error(`Network error: ${mockErrorMsg}`),
+            component: 'RunnerActionsCell',
+          });
+        });
+
+        it('error is shown to the user', () => {
+          expect(createFlash).toHaveBeenCalledTimes(1);
+        });
+
+        it('toast notification is not shown', () => {
+          expect(mockToastShow).not.toHaveBeenCalled();
+        });
+      });
+
+      describe('On a validation error', () => {
+        const mockErrorMsg = 'Runner not found!';
+        const mockErrorMsg2 = 'User not allowed!';
+
+        beforeEach(() => {
+          runnerDeleteMutationHandler.mockResolvedValue({
+            data: {
+              runnerDelete: {
+                errors: [mockErrorMsg, mockErrorMsg2],
+              },
+            },
+          });
+
+          findRunnerDeleteModal().vm.$emit('primary');
+        });
+
+        it('error is reported to sentry', () => {
+          expect(captureException).toHaveBeenCalledWith({
+            error: new Error(`${mockErrorMsg} ${mockErrorMsg2}`),
+            component: 'RunnerActionsCell',
+          });
+        });
+
+        it('error is shown to the user', () => {
+          expect(createFlash).toHaveBeenCalledTimes(1);
+        });
       });
     });
   });

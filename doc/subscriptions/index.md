@@ -7,6 +7,11 @@ type: index, reference
 
 # GitLab subscription **(PREMIUM)**
 
+INFO:
+Get advanced search and more with
+[a trial of GitLab Ultimate](https://about.gitlab.com/free-trial/index.html?glm_source=docs.gitlab.com&glm_content=u-subscription-docs).
+Free for 30 days.
+
 GitLab offers tiers of features. Your subscription determines which tier you
 have access to. Subscriptions are valid for 12 months.
 
@@ -149,7 +154,9 @@ To change the namespace linked to a subscription:
    [linked](#change-the-linked-account) GitLab SaaS account.
 1. Navigate to the **Manage Purchases** page.
 1. Select **Change linked namespace**.
-1. Select the desired group from the **This subscription is for** dropdown.
+1. Select the desired group from the **This subscription is for** dropdown. For a group to appear
+   here, you must have the Owner [role](../user/permissions.md)
+   for that group.
 1. Select **Proceed to checkout**.
 
 Subscription charges are calculated based on the total number of users in a group, including its subgroups and nested projects. If the total number of users exceeds the number of seats in your subscription, your account is charged for the additional users.

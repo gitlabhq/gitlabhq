@@ -15,19 +15,8 @@ class BlobPresenter < Gitlab::View::Presenter::Delegated
 
     Gitlab::Highlight.highlight(
       blob.path,
-      limited_blob_data(to: to),
-      language: language,
-      plain: plain
-    )
-  end
-
-  def highlight_transformed(plain: nil)
-    load_all_blob_data
-
-    Gitlab::Highlight.highlight(
-      blob.path,
-      transformed_blob_data,
-      language: transformed_blob_language,
+      blob_data(to),
+      language: blob_language,
       plain: plain
     )
   end
@@ -36,6 +25,14 @@ class BlobPresenter < Gitlab::View::Presenter::Delegated
     return if blob.binary?
 
     highlight(plain: false)
+  end
+
+  def blob_data(to)
+    @_blob_data ||= Gitlab::Diff::CustomDiff.transformed_blob_data(blob) || limited_blob_data(to: to)
+  end
+
+  def blob_language
+    @_blob_language ||= Gitlab::Diff::CustomDiff.transformed_blob_language(blob) || language
   end
 
   def raw_plain_data
@@ -66,6 +63,11 @@ class BlobPresenter < Gitlab::View::Presenter::Delegated
     project_ci_pipeline_editor_path(project, branch_name: blob.commit_id) if can_collaborate_with_project?(project) && blob.path == project.ci_config_path_or_default
   end
 
+  # Will be overridden in EE
+  def code_owners
+    []
+  end
+
   def fork_and_edit_path
     fork_path_for_current_user(project, edit_blob_path)
   end
@@ -76,6 +78,12 @@ class BlobPresenter < Gitlab::View::Presenter::Delegated
 
   def can_modify_blob?
     super(blob, project, blob.commit_id)
+  end
+
+  def can_current_user_push_to_branch?
+    return false unless current_user && project.repository.branch_exists?(blob.commit_id)
+
+    user_access(project).can_push_to_branch?(blob.commit_id)
   end
 
   def ide_edit_path
@@ -123,21 +131,6 @@ class BlobPresenter < Gitlab::View::Presenter::Delegated
   def language
     blob.language_from_gitattributes
   end
-
-  def transformed_blob_language
-    @transformed_blob_language ||= blob.path.ends_with?('.ipynb') ? 'md' : language
-  end
-
-  def transformed_blob_data
-    @transformed_blob ||= if blob.path.ends_with?('.ipynb') && blob.transformed_for_diff
-                            IpynbDiff.transform(blob.data,
-                                                raise_errors: true,
-                                                options: { include_metadata: false, cell_decorator: :percent })
-                          end
-
-    @transformed_blob ||= blob.data
-  rescue IpynbDiff::InvalidNotebookError => e
-    Gitlab::ErrorTracking.log_exception(e)
-    blob.data
-  end
 end
+
+BlobPresenter.prepend_mod_with('BlobPresenter')

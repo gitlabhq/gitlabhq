@@ -8,6 +8,7 @@
 import { GlModalDirective, GlDropdownItem } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import eventHub from '../event_hub';
+import setEnvironmentToRollback from '../graphql/mutations/set_environment_to_rollback.mutation.graphql';
 
 export default {
   components: {
@@ -32,11 +33,12 @@ export default {
       type: String,
       required: true,
     },
-  },
-  data() {
-    return {
-      isLoading: false,
-    };
+
+    graphql: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
 
   computed: {
@@ -49,16 +51,18 @@ export default {
 
   methods: {
     onClick() {
-      eventHub.$emit('requestRollbackEnvironment', {
-        ...this.environment,
-        retryUrl: this.retryUrl,
-        isLastDeployment: this.isLastDeployment,
-      });
-      eventHub.$on('rollbackEnvironment', (environment) => {
-        if (environment.id === this.environment.id) {
-          this.isLoading = true;
-        }
-      });
+      if (this.graphql) {
+        this.$apollo.mutate({
+          mutation: setEnvironmentToRollback,
+          variables: { environment: this.environment },
+        });
+      } else {
+        eventHub.$emit('requestRollbackEnvironment', {
+          ...this.environment,
+          retryUrl: this.retryUrl,
+          isLastDeployment: this.isLastDeployment,
+        });
+      }
     },
   },
 };

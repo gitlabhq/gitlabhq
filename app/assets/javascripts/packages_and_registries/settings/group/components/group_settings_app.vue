@@ -37,6 +37,9 @@ export default {
     dependencyProxySettings() {
       return this.group?.dependencyProxySetting || {};
     },
+    dependencyProxyImageTtlPolicy() {
+      return this.group?.dependencyProxyImageTtlPolicy || {};
+    },
     isLoading() {
       return this.$apollo.queries.group.loading;
     },
@@ -82,6 +85,7 @@ export default {
     <dependency-proxy-settings
       v-if="dependencyProxyAvailable"
       :dependency-proxy-settings="dependencyProxySettings"
+      :dependency-proxy-image-ttl-policy="dependencyProxyImageTtlPolicy"
       :is-loading="isLoading"
       @success="handleSuccess"
       @error="handleError"

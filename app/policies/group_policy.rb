@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class GroupPolicy < BasePolicy
+class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
   include FindGroupProjects
 
   desc "Group is public"
@@ -76,6 +76,11 @@ class GroupPolicy < BasePolicy
   condition(:has_project_with_service_desk_enabled) { @subject.has_project_with_service_desk_enabled? }
 
   condition(:crm_enabled, score: 0, scope: :subject) { Feature.enabled?(:customer_relations, @subject) }
+
+  with_scope :subject
+  condition(:group_runner_registration_allowed, score: 0, scope: :subject) do
+    Feature.disabled?(:runner_registration_control) || Gitlab::CurrentSettings.valid_runner_registrars.include?('group')
+  end
 
   rule { can?(:read_group) & design_management_enabled }.policy do
     enable :read_design_activity
@@ -157,6 +162,7 @@ class GroupPolicy < BasePolicy
     enable :destroy_package
     enable :create_projects
     enable :admin_pipeline
+    enable :admin_group_runners
     enable :admin_build
     enable :read_cluster
     enable :add_cluster
@@ -197,6 +203,10 @@ class GroupPolicy < BasePolicy
 
   rule { can?(:read_cross_project) & can?(:read_group) }.policy do
     enable :read_nested_project_resources
+  end
+
+  rule { can?(:admin_group_runners) }.policy do
+    enable :register_group_runners
   end
 
   rule { owner }.enable :create_subgroup
@@ -259,6 +269,10 @@ class GroupPolicy < BasePolicy
     prevent :read_crm_organization
     prevent :admin_crm_contact
     prevent :admin_crm_organization
+  end
+
+  rule { ~group_runner_registration_allowed }.policy do
+    prevent :register_group_runners
   end
 
   def access_level(for_any_session: false)

@@ -8,11 +8,12 @@ import {
   GlTab,
   GlTabs,
 } from '@gitlab/ui';
-import { s__ } from '~/locale';
+import { s__, __ } from '~/locale';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import { MAX_LIST_COUNT } from '../constants';
 import getClusterAgentQuery from '../graphql/queries/get_cluster_agent.query.graphql';
 import TokenTable from './token_table.vue';
+import ActivityEvents from './activity_events_list.vue';
 
 export default {
   i18n: {
@@ -20,6 +21,7 @@ export default {
     loadingError: s__('ClusterAgents|An error occurred while loading your agent'),
     tokens: s__('ClusterAgents|Access tokens'),
     unknownUser: s__('ClusterAgents|Unknown user'),
+    activity: __('Activity'),
   },
   apollo: {
     clusterAgent: {
@@ -47,6 +49,7 @@ export default {
     GlTabs,
     TimeAgoTooltip,
     TokenTable,
+    ActivityEvents,
   },
   props: {
     agentName: {
@@ -127,9 +130,14 @@ export default {
         </gl-sprintf>
       </p>
 
-      <gl-tabs>
+      <gl-tabs sync-active-tab-with-query-params lazy>
+        <gl-tab :title="$options.i18n.activity" query-param-value="activity">
+          <activity-events :agent-name="agentName" :project-path="projectPath" />
+        </gl-tab>
+
         <slot name="ee-security-tab"></slot>
-        <gl-tab>
+
+        <gl-tab query-param-value="tokens">
           <template #title>
             <span data-testid="cluster-agent-token-count">
               {{ $options.i18n.tokens }}
@@ -143,7 +151,7 @@ export default {
           <gl-loading-icon v-if="isLoading" size="md" class="gl-m-3" />
 
           <div v-else>
-            <TokenTable :tokens="tokens" />
+            <token-table :tokens="tokens" />
 
             <div v-if="showPagination" class="gl-display-flex gl-justify-content-center gl-mt-5">
               <gl-keyset-pagination v-bind="tokenPageInfo" @prev="prevPage" @next="nextPage" />

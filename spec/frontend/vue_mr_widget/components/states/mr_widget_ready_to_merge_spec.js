@@ -1,5 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
+import { GlSprintf } from '@gitlab/ui';
 import simplePoll from '~/lib/utils/simple_poll';
 import CommitEdit from '~/vue_merge_request_widget/components/states/commit_edit.vue';
 import CommitMessageDropdown from '~/vue_merge_request_widget/components/states/commit_message_dropdown.vue';
@@ -487,6 +488,7 @@ describe('ReadyToMerge', () => {
     const findCommitEditElements = () => wrapper.findAll(CommitEdit);
     const findCommitDropdownElement = () => wrapper.find(CommitMessageDropdown);
     const findFirstCommitEditLabel = () => findCommitEditElements().at(0).props('label');
+    const findTipLink = () => wrapper.find(GlSprintf);
 
     describe('squash checkbox', () => {
       it('should be rendered when squash before merge is enabled and there is more than 1 commit', () => {
@@ -503,10 +505,10 @@ describe('ReadyToMerge', () => {
         expect(findCheckboxElement().exists()).toBeFalsy();
       });
 
-      it('should not be rendered when there is only 1 commit', () => {
+      it('should be rendered when there is only 1 commit', () => {
         createComponent({ mr: { commitsCount: 1, enableSquashBeforeMerge: true } });
 
-        expect(findCheckboxElement().exists()).toBeFalsy();
+        expect(findCheckboxElement().exists()).toBe(true);
       });
 
       describe('squash options', () => {
@@ -750,6 +752,12 @@ describe('ReadyToMerge', () => {
 
         expect(findCommitDropdownElement().exists()).toBeTruthy();
       });
+    });
+
+    it('renders a tip including a link to docs on templates', () => {
+      createComponent();
+
+      expect(findTipLink().exists()).toBe(true);
     });
   });
 

@@ -77,7 +77,10 @@ module QA
           end
 
           def click_job(job_name)
-            click_element(:job_link, Project::Job::Show, text: job_name)
+            # Retry due to transient bug https://gitlab.com/gitlab-org/gitlab/-/issues/347126
+            QA::Support::Retrier.retry_on_exception do
+              click_element(:job_link, Project::Job::Show, text: job_name)
+            end
           end
 
           def child_pipelines

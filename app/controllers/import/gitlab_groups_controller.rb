@@ -4,7 +4,7 @@ class Import::GitlabGroupsController < ApplicationController
   include WorkhorseAuthorization
 
   before_action :ensure_group_import_enabled
-  before_action :import_rate_limit, only: %i[create]
+  before_action :check_import_rate_limit!, only: %i[create]
 
   feature_category :importers
 
@@ -55,12 +55,9 @@ class Import::GitlabGroupsController < ApplicationController
     render_404 unless Feature.enabled?(:group_import_export, @group, default_enabled: true)
   end
 
-  def import_rate_limit
-    if Gitlab::ApplicationRateLimiter.throttled?(:group_import, scope: current_user)
-      Gitlab::ApplicationRateLimiter.log_request(request, :group_import_request_limit, current_user)
-
-      flash[:alert] = _('This endpoint has been requested too many times. Try again later.')
-      redirect_to new_group_path
+  def check_import_rate_limit!
+    check_rate_limit!(:group_import, scope: current_user) do
+      redirect_to new_group_path, alert: _('This endpoint has been requested too many times. Try again later.')
     end
   end
 

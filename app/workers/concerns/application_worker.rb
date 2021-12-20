@@ -93,9 +93,11 @@ module ApplicationWorker
     end
 
     def perform_async(*args)
+      return super if Gitlab::Database::LoadBalancing.primary_only?
+
       # Worker execution for workers with data_consistency set to :delayed or :sticky
       # will be delayed to give replication enough time to complete
-      if utilizes_load_balancing_capabilities?
+      if utilizes_load_balancing_capabilities? && Feature.disabled?(:skip_scheduling_workers_for_replicas, default_enabled: :yaml)
         perform_in(delay_interval, *args)
       else
         super

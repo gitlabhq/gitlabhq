@@ -15,15 +15,18 @@ module Gitlab
             protocol: uri.scheme,
             port: uri.port,
             force_secure_tracker: false
-          )
+          ).transform_keys! { |key| key.to_s.camelize(:lower).to_sym }
+        end
+
+        override :enabled?
+        def enabled?
+          true
         end
 
         override :hostname
         def hostname
           "#{uri.host}:#{uri.port}"
         end
-
-        private
 
         def uri
           strong_memoize(:snowplow_uri) do
@@ -32,6 +35,8 @@ module Gitlab
             uri
           end
         end
+
+        private
 
         override :cookie_domain
         def cookie_domain

@@ -48,4 +48,10 @@ RSpec.describe MergeRequest::Metrics do
       end
     end
   end
+
+  it_behaves_like 'cleanup by a loose foreign key' do
+    let!(:merge_request) { create(:merge_request) }
+    let!(:parent) { create(:ci_pipeline, project: merge_request.target_project) }
+    let!(:model) { merge_request.metrics.tap { |metrics| metrics.update!(pipeline: parent) } }
+  end
 end

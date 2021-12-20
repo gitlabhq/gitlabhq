@@ -1,8 +1,8 @@
 <script>
-import { GlLoadingIcon } from '@gitlab/ui';
+import { GlLoadingIcon, GlModal } from '@gitlab/ui';
 import { fetchPolicies } from '~/lib/graphql';
 import { queryToObject } from '~/lib/utils/url_utility';
-import { s__ } from '~/locale';
+import { __, s__ } from '~/locale';
 
 import { unwrapStagesWithNeeds } from '~/pipelines/components/unwrapping_utils';
 
@@ -17,11 +17,11 @@ import {
   LOAD_FAILURE_UNKNOWN,
   STARTER_TEMPLATE_NAME,
 } from './constants';
-import updateAppStatus from './graphql/mutations/update_app_status.mutation.graphql';
-import getBlobContent from './graphql/queries/blob_content.graphql';
-import getCiConfigData from './graphql/queries/ci_config.graphql';
-import getAppStatus from './graphql/queries/client/app_status.graphql';
-import getCurrentBranch from './graphql/queries/client/current_branch.graphql';
+import updateAppStatus from './graphql/mutations/client/update_app_status.mutation.graphql';
+import getBlobContent from './graphql/queries/blob_content.query.graphql';
+import getCiConfigData from './graphql/queries/ci_config.query.graphql';
+import getAppStatus from './graphql/queries/client/app_status.query.graphql';
+import getCurrentBranch from './graphql/queries/client/current_branch.query.graphql';
 import getTemplate from './graphql/queries/get_starter_template.query.graphql';
 import getLatestCommitShaQuery from './graphql/queries/latest_commit_sha.query.graphql';
 import PipelineEditorHome from './pipeline_editor_home.vue';
@@ -30,6 +30,7 @@ export default {
   components: {
     ConfirmUnsavedChangesDialog,
     GlLoadingIcon,
+    GlModal,
     PipelineEditorEmptyState,
     PipelineEditorHome,
     PipelineEditorMessages,
@@ -54,6 +55,7 @@ export default {
       lastCommittedContent: '',
       shouldSkipStartScreen: false,
       showFailure: false,
+      showResetComfirmationModal: false,
       showStartScreen: false,
       showSuccess: false,
       starterTemplate: '',
@@ -158,6 +160,9 @@ export default {
     },
     appStatus: {
       query: getAppStatus,
+      update(data) {
+        return data.app.status;
+      },
     },
     commitSha: {
       query: getLatestCommitShaQuery,
@@ -182,6 +187,9 @@ export default {
     },
     currentBranch: {
       query: getCurrentBranch,
+      update(data) {
+        return data.workBranches.current.name;
+      },
     },
     starterTemplate: {
       query: getTemplate,
@@ -220,9 +228,18 @@ export default {
     },
   },
   i18n: {
-    tabEdit: s__('Pipelines|Edit'),
-    tabGraph: s__('Pipelines|Visualize'),
-    tabLint: s__('Pipelines|Lint'),
+    resetModal: {
+      actionPrimary: {
+        text: __('Reset file'),
+      },
+      actionCancel: {
+        text: __('Cancel'),
+      },
+      body: s__(
+        'Pipeline Editor|Are you sure you want to reset the file to its last committed version?',
+      ),
+      title: __('Discard changes'),
+    },
   },
   watch: {
     isEmpty(flag) {
@@ -242,15 +259,24 @@ export default {
     hideSuccess() {
       this.showSuccess = false;
     },
+    confirmReset() {
+      if (this.hasUnsavedChanges) {
+        this.showResetComfirmationModal = true;
+      }
+    },
     async refetchContent() {
       this.$apollo.queries.initialCiFileContent.skip = false;
       await this.$apollo.queries.initialCiFileContent.refetch();
     },
     reportFailure(type, reasons = []) {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-      this.showFailure = true;
-      this.failureType = type;
-      this.failureReasons = reasons;
+      const isCurrentFailure = this.failureType === type && this.failureReasons[0] === reasons[0];
+
+      if (!isCurrentFailure) {
+        this.showFailure = true;
+        this.failureType = type;
+        this.failureReasons = reasons;
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
     },
     reportSuccess(type) {
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -258,6 +284,7 @@ export default {
       this.successType = type;
     },
     resetContent() {
+      this.showResetComfirmationModal = false;
       this.currentCiFileContent = this.lastCommittedContent;
     },
     setAppStatus(appStatus) {
@@ -331,12 +358,22 @@ export default {
         :has-unsaved-changes="hasUnsavedChanges"
         :is-new-ci-config-file="isNewCiConfigFile"
         @commit="updateOnCommit"
-        @resetContent="resetContent"
+        @resetContent="confirmReset"
         @showError="showErrorAlert"
         @refetchContent="refetchContent"
         @updateCiConfig="updateCiConfig"
         @updateCommitSha="updateCommitSha"
       />
+      <gl-modal
+        v-model="showResetComfirmationModal"
+        modal-id="reset-content"
+        :title="$options.i18n.resetModal.title"
+        :action-cancel="$options.i18n.resetModal.actionCancel"
+        :action-primary="$options.i18n.resetModal.actionPrimary"
+        @primary="resetContent"
+      >
+        {{ $options.i18n.resetModal.body }}
+      </gl-modal>
       <confirm-unsaved-changes-dialog :has-unsaved-changes="hasUnsavedChanges" />
     </div>
   </div>

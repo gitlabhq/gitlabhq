@@ -1,7 +1,12 @@
 - page_title "#{@merge_request.title} (#{@merge_request.to_reference}", _("Merge requests")
-- badge_css_classes = "badge gl-text-white"
-- badge_info_css_classes = "#{badge_css_classes} badge-info"
-- badge_inverse_css_classes = "#{badge_css_classes} badge-inverse"
+
+- badge_start = '<span class="badge badge-pill gl-badge sm badge-info">'.html_safe
+- badge_end = '</span>'.html_safe
+
+- err_fork_project_removed = s_("MergeRequest|Can't show this merge request because the fork project was deleted.")
+- err_source_branch = s_("MergeRequest|Can't show this merge request because the source branch %{badge_start}%{source_branch}%{badge_end} is missing from project %{badge_start}%{project_path}%{badge_end}. Close this merge request or update the source branch.")
+- err_target_branch = s_("MergeRequest|Can't show this merge request because the target branch %{badge_start}%{target_branch}%{badge_end} is missing from project %{badge_start}%{project_path}%{badge_end}. Close this merge request or update the target branch.")
+- err_internal = s_("MergeRequest|Can't show this merge request because of an internal error. Contact your administrator.")
 
 .merge-request
   = render "projects/merge_requests/mr_title"
@@ -11,20 +16,12 @@
     .gl-alert-container
       = sprite_icon('error', size: 16, css_class: 'gl-icon gl-alert-icon gl-alert-icon-no-title')
       .gl-alert-content{ role: 'alert' }
-        %p
-          We cannot render this merge request properly because
+        .gl-alert-body
           - if @merge_request.for_fork? && !@merge_request.source_project
-            fork project was removed
+            = err_fork_project_removed
           - elsif !@merge_request.source_branch_exists?
-            %span{ class: badge_inverse_css_classes }= @merge_request.source_branch
-            does not exist in
-            %span{ class: badge_info_css_classes }= @merge_request.source_project_path
+            = err_source_branch.html_safe % { badge_start: badge_start, badge_end: badge_end, source_branch: @merge_request.source_branch, project_path: @merge_request.source_project_path }
           - elsif !@merge_request.target_branch_exists?
-            %span{ class: badge_inverse_css_classes }= @merge_request.target_branch
-            does not exist in
-            %span{ class: badge_info_css_classes }= @merge_request.target_project_path
+            = err_target_branch.html_safe % { badge_start: badge_start, badge_end: badge_end, target_branch: @merge_request.target_branch, project_path: @merge_request.source_project_path }
           - else
-            of internal error
-
-        %strong
-          Please close merge request or change branches with existing one
+            = err_internal

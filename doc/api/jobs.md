@@ -71,6 +71,7 @@ Example of response
     "runner": null,
     "stage": "test",
     "status": "failed",
+    "failure_reason": "script_failure",
     "tag": false,
     "web_url": "https://example.com/foo/bar/-/jobs/7",
     "user": {
@@ -126,6 +127,7 @@ Example of response
     "runner": null,
     "stage": "test",
     "status": "failed",
+    "failure_reason": "stuck_or_timeout_failure",
     "tag": false,
     "web_url": "https://example.com/foo/bar/-/jobs/6",
     "user": {
@@ -207,6 +209,7 @@ Example of response
     "runner": null,
     "stage": "test",
     "status": "failed",
+    "failure_reason": "stuck_or_timeout_failure",
     "tag": false,
     "web_url": "https://example.com/foo/bar/-/jobs/6",
     "user": {
@@ -271,6 +274,7 @@ Example of response
     "runner": null,
     "stage": "test",
     "status": "failed",
+    "failure_reason": "script_failure",
     "tag": false,
     "web_url": "https://example.com/foo/bar/-/jobs/7",
     "user": {
@@ -443,6 +447,7 @@ Example of response
   "runner": null,
   "stage": "test",
   "status": "failed",
+  "failure_reason": "script_failure",
   "tag": false,
   "web_url": "https://example.com/foo/bar/-/jobs/8",
   "user": {
@@ -465,12 +470,12 @@ Example of response
 }
 ```
 
-## Get Kubernetes Agents by `CI_JOB_TOKEN` **(PREMIUM)**
+## Get GitLab Agent by `CI_JOB_TOKEN` **(PREMIUM)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/324269) in GitLab 13.11.
 
-Retrieve the job that generated the `CI_JOB_TOKEN`, along with a list of allowed GitLab
-Kubernetes Agents.
+Retrieve the job that generated the `CI_JOB_TOKEN`, along with a list of allowed
+[agents](../user/clusters/agent/index.md).
 
 ```plaintext
 GET /job/allowed_agents
@@ -800,6 +805,10 @@ Example of response
   "user": null
 }
 ```
+
+NOTE:
+You can't delete archived jobs with the API, but you can
+[delete job artifacts and logs from jobs completed before a specific date](../administration/job_artifacts.md#delete-job-artifacts-and-logs-from-jobs-completed-before-a-specific-date)
 
 ## Play a job
 

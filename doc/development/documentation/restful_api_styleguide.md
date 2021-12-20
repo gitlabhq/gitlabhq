@@ -1,9 +1,6 @@
 ---
-type: reference, dev
-stage: none
-group: Development
-info: "See the Technical Writers assigned to Development Guidelines: https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments-to-development-guidelines"
-description: "Writing styles, markup, formatting, and other standards for the GitLab RESTful APIs."
+info: For assistance with this Style Guide page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments-to-other-projects-and-subjects.
+description: 'Writing styles, markup, formatting, and other standards for the GitLab RESTful APIs.'
 ---
 
 # RESTful API
@@ -30,6 +27,10 @@ In the Markdown doc for a resource (AKA endpoint):
 - Every method must have a detailed [description of the parameters](#method-description).
 - Every method must have a cURL example.
 - Every method must have a response body (in JSON format).
+- If an attribute is available only to higher level tiers than the other
+  parameters, add the appropriate inline [tier badge](styleguide/index.md#product-tier-badges).
+  Put the badge in the **Attribute** column, like the
+  `**(<tier>)**` code in the following template.
 
 ## API topic template
 
@@ -49,12 +50,12 @@ METHOD /endpoint
 
 Supported attributes:
 
-| Attribute   | Type     | Required               | Description           |
-| :---------- | :------- | :--------------------- | :-------------------- |
-| `attribute` | datatype | **{check-circle}** Yes | Detailed description. |
-| `attribute` | datatype | **{dotted-circle}** No | Detailed description. |
-| `attribute` | datatype | **{dotted-circle}** No | Detailed description. |
-| `attribute` | datatype | **{dotted-circle}** No | Detailed description. |
+| Attribute                | Type     | Required               | Description           |
+|:-------------------------|:---------|:-----------------------|:----------------------|
+| `attribute`              | datatype | **{check-circle}** Yes | Detailed description. |
+| `attribute` **(<tier>)** | datatype | **{dotted-circle}** No | Detailed description. |
+| `attribute`              | datatype | **{dotted-circle}** No | Detailed description. |
+| `attribute`              | datatype | **{dotted-circle}** No | Detailed description. |
 
 Example request:
 
@@ -83,20 +84,20 @@ always be in code blocks using backticks (`` ` ``).
 Sort the attributes in the table: first, required, then alphabetically.
 
 ```markdown
-| Attribute      | Type          | Required               | Description                                          |
-| :------------- | :------------ | :--------------------- | :--------------------------------------------------- |
-| `user`         | string        | **{check-circle}** Yes | The GitLab username.                                 |
-| `assignee_ids` | integer array | **{dotted-circle}** No | The IDs of the users to assign the issue to.         |
-| `confidential` | boolean       | **{dotted-circle}** No | Set an issue to be confidential. Default is `false`. |
+| Attribute                    | Type          | Required               | Description                                          |
+|:-----------------------------|:--------------|:-----------------------|:-----------------------------------------------------|
+| `user`                       | string        | **{check-circle}** Yes | The GitLab username.                                 |
+| `assignee_ids` **(PREMIUM)** | integer array | **{dotted-circle}** No | The IDs of the users to assign the issue to.         |
+| `confidential`               | boolean       | **{dotted-circle}** No | Set an issue to be confidential. Default is `false`. |
 ```
 
 Rendered example:
 
-| Attribute      | Type          | Required               | Description                                          |
-| :------------- | :------------ | :--------------------- | :--------------------------------------------------- |
-| `user`         | string        | **{check-circle}** Yes | The GitLab username.                                 |
-| `assignee_ids` | integer array | **{dotted-circle}** No | The IDs of the users to assign the issue to.         |
-| `confidential` | boolean       | **{dotted-circle}** No | Set an issue to be confidential. Default is `false`. |
+| Attribute                    | Type          | Required               | Description                                          |
+|:-----------------------------|:--------------|:-----------------------|:-----------------------------------------------------|
+| `user`                       | string        | **{check-circle}** Yes | The GitLab username.                                 |
+| `assignee_ids` **(PREMIUM)** | integer array | **{dotted-circle}** No | The IDs of the users to assign the issue to.         |
+| `confidential`               | boolean       | **{dotted-circle}** No | Set an issue to be confidential. Default is `false`. |
 
 ## cURL commands
 
@@ -109,7 +110,7 @@ Rendered example:
   username and password.
 
 | Methods                                         | Description                                            |
-| :---------------------------------------------- | :----------------------------------------------------- |
+|:------------------------------------------------|:-------------------------------------------------------|
 | `--header "PRIVATE-TOKEN: <your_access_token>"` | Use this method as is, whenever authentication needed. |
 | `--request POST`                                | Use this method when creating new objects              |
 | `--request PUT`                                 | Use this method when updating existing objects         |

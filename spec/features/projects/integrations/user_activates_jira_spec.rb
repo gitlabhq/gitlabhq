@@ -26,8 +26,7 @@ RSpec.describe 'User activates Jira', :js do
       unless Gitlab.ee?
         it 'adds Jira link to sidebar menu' do
           page.within('.nav-sidebar') do
-            expect(page).not_to have_link('Jira Issues')
-            expect(page).not_to have_link('Issue List', visible: false)
+            expect(page).not_to have_link('Jira issues', visible: false)
             expect(page).not_to have_link('Open Jira', href: url, visible: false)
             expect(page).to have_link('Jira', href: url)
           end

@@ -12,6 +12,7 @@ fragment AlertDetailItem on AlertManagementAlert {
   endedAt
   hosts
   environment {
+    id
     name
     path
   }

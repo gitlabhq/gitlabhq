@@ -133,7 +133,7 @@ The initial iteration will provide a framework to house features under `Namespac
 
 1. **Conceptual model**: What are the current and future state conceptual models of these features ([see object modeling for designers](https://hpadkisson.medium.com/object-modeling-for-designers-an-introduction-7871bdcf8baf))? These should be documented in Pajamas (example: [Merge Requests](https://design.gitlab.com/objects/merge-request)).
 1. **Merge conflicts**: What inconsistencies are there across project, group, and admin levels? How might these be addressed? For an example of how we rationalized this for labels, please see [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/338820).
-1. **Inheritence & information flow**: How is information inherited across our container hierarchy currently? How might this be impacted if complying with the new [inheritence behavior](https://gitlab.com/gitlab-org/gitlab/-/issues/343316) framework?
+1. **Inheritance & information flow**: How is information inherited across our container hierarchy currently? How might this be impacted if complying with the new [inheritance behavior](https://gitlab.com/gitlab-org/gitlab/-/issues/343316) framework?
 1. **Settings**: Where can settings for this feature be found currently? How will these be impacted by `Namespaces`?
 1. **Access**: Who can access this feature and is that impacted by the new container structure? Are there any role or privacy considerations?
 1. **Tier**: Is there any tier functionality that is differentiated by projects and groups?

@@ -72,6 +72,7 @@ Rails.application.routes.draw do
       resources :groups_projects, only: [:new, :create] do
         post :import, on: :collection
       end
+      draw :verification
     end
   end
 
@@ -145,7 +146,7 @@ Rails.application.routes.draw do
     get 'acme-challenge/' => 'acme_challenges#show'
 
     # UserCallouts
-    resources :user_callouts, only: [:create]
+    resources :user_callouts, controller: 'users/callouts', only: [:create] # remove after 14.6 2021-12-22 to handle mixed deployments
 
     scope :ide, as: :ide, format: false do
       get '/', to: 'ide#index'

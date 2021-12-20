@@ -79,15 +79,18 @@ RSpec.describe Import::FogbugzController do
   end
 
   describe 'GET status' do
+    let(:repo) do
+      instance_double(Gitlab::FogbugzImport::Repository,
+                      id: 'demo', name: 'vim', safe_name: 'vim', path: 'vim')
+    end
+
     before do
-      @repo = OpenStruct.new(id: 'demo', name: 'vim')
       stub_client(valid?: true)
     end
 
     it_behaves_like 'import controller status' do
-      let(:repo) { @repo }
-      let(:repo_id) { @repo.id }
-      let(:import_source) { @repo.name }
+      let(:repo_id) { repo.id }
+      let(:import_source) { repo.name }
       let(:provider_name) { 'fogbugz' }
       let(:client_repos_field) { :repos }
     end

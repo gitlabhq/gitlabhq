@@ -22,7 +22,7 @@ module QA
           project.remove_via_api!
         end
 
-        it 'runs auto devops', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1422' do
+        it 'runs auto devops', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348061' do
           Flow::Login.sign_in
 
           Resource::KubernetesCluster::ProjectCluster.fabricate! do |k8s_cluster|

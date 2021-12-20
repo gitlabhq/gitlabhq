@@ -49,7 +49,7 @@ RSpec.describe 'Dashboard Issues' do
 
   describe 'new issue dropdown' do
     it 'shows projects only with issues feature enabled', :js do
-      find('.new-project-item-select-button').click
+      click_button 'Toggle project select'
 
       page.within('.select2-results') do
         expect(page).to have_content(project.full_name)
@@ -58,7 +58,7 @@ RSpec.describe 'Dashboard Issues' do
     end
 
     it 'shows the new issue page', :js do
-      find('.new-project-item-select-button').click
+      click_button 'Toggle project select'
 
       wait_for_requests
 

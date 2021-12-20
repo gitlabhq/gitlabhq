@@ -506,12 +506,12 @@ class MergeRequest < ApplicationRecord
   def self.reference_pattern
     @reference_pattern ||= %r{
       (#{Project.reference_pattern})?
-      #{Regexp.escape(reference_prefix)}(?<merge_request>\d+)
+      #{Regexp.escape(reference_prefix)}#{Gitlab::Regex.merge_request}
     }x
   end
 
   def self.link_reference_pattern
-    @link_reference_pattern ||= super("merge_requests", /(?<merge_request>\d+)/)
+    @link_reference_pattern ||= super("merge_requests", Gitlab::Regex.merge_request)
   end
 
   def self.reference_valid?(reference)
@@ -768,7 +768,7 @@ class MergeRequest < ApplicationRecord
   def diff_size
     # Calling `merge_request_diff.diffs.real_size` will also perform
     # highlighting, which we don't need here.
-    merge_request_diff&.real_size || diff_stats&.real_size(project: project) || diffs.real_size
+    merge_request_diff&.real_size || diff_stats&.real_size || diffs.real_size
   end
 
   def modified_paths(past_merge_request_diff: nil, fallback_on_overflow: false)
@@ -1317,7 +1317,7 @@ class MergeRequest < ApplicationRecord
 
   def default_merge_commit_message(include_description: false)
     if self.target_project.merge_commit_template.present? && !include_description
-      return ::Gitlab::MergeRequests::MergeCommitMessage.new(merge_request: self).message
+      return ::Gitlab::MergeRequests::CommitMessageGenerator.new(merge_request: self).merge_message
     end
 
     closes_issues_references = visible_closing_issues_for.map do |issue|
@@ -1340,6 +1340,10 @@ class MergeRequest < ApplicationRecord
   end
 
   def default_squash_commit_message
+    if self.target_project.squash_commit_template.present?
+      return ::Gitlab::MergeRequests::CommitMessageGenerator.new(merge_request: self).squash_message
+    end
+
     title
   end
 
@@ -1798,7 +1802,7 @@ class MergeRequest < ApplicationRecord
 
   def pipeline_coverage_delta
     if base_pipeline&.coverage && head_pipeline&.coverage
-      '%.2f' % (head_pipeline.coverage.to_f - base_pipeline.coverage.to_f)
+      head_pipeline.coverage - base_pipeline.coverage
     end
   end
 
@@ -1880,30 +1884,7 @@ class MergeRequest < ApplicationRecord
 
   override :ensure_metrics
   def ensure_metrics
-    if Feature.enabled?(:use_upsert_query_for_mr_metrics, default_enabled: :yaml)
-      MergeRequest::Metrics.record!(self)
-    else
-      # Backward compatibility: some merge request metrics records will not have target_project_id filled in.
-      # In that case the first `safe_find_or_create_by` will return false.
-      # The second finder call will be eliminated in https://gitlab.com/gitlab-org/gitlab/-/issues/233507
-      metrics_record = MergeRequest::Metrics.safe_find_or_create_by(merge_request_id: id, target_project_id: target_project_id) || MergeRequest::Metrics.safe_find_or_create_by(merge_request_id: id)
-
-      metrics_record.tap do |metrics_record|
-        # Make sure we refresh the loaded association object with the newly created/loaded item.
-        # This is needed in order to have the exact functionality than before.
-        #
-        # Example:
-        #
-        # merge_request.metrics.destroy
-        # merge_request.ensure_metrics
-        # merge_request.metrics # should return the metrics record and not nil
-        # merge_request.metrics.merge_request # should return the same MR record
-
-        metrics_record.target_project_id = target_project_id
-        metrics_record.association(:merge_request).target = self
-        association(:metrics).target = metrics_record
-      end
-    end
+    MergeRequest::Metrics.record!(self)
   end
 
   def allows_reviewers?

@@ -388,6 +388,34 @@ h1 {
 .gl-form-input.form-control::placeholder {
   color: #868686;
 }
+.gl-icon {
+  fill: currentColor;
+}
+.gl-icon.s12 {
+  width: 12px;
+  height: 12px;
+}
+.gl-icon.s16 {
+  width: 16px;
+  height: 16px;
+}
+.gl-icon.s32 {
+  width: 32px;
+  height: 32px;
+}
+.gl-link {
+  font-size: 0.875rem;
+  color: #1f75cb;
+}
+.gl-link:active {
+  color: #0b5cad;
+}
+.gl-link:active {
+  text-decoration: underline;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.4),
+    0 0 0 4px rgba(31, 117, 203, 0.48);
+  outline: none;
+}
 .gl-button {
   display: inline-flex;
 }
@@ -419,6 +447,29 @@ h1 {
     0 0 0 4px rgba(31, 117, 203, 0.48);
   outline: none;
   background-color: #dbdbdb;
+}
+.gl-button.gl-button.btn-default:active .gl-icon,
+.gl-button.gl-button.btn-default.active .gl-icon {
+  color: #303030;
+}
+.gl-button.gl-button.btn-default .gl-icon {
+  color: #666;
+}
+.gl-search-box-by-type-search-icon {
+  margin: 0.5rem;
+  color: #666;
+  width: 1rem;
+  position: absolute;
+}
+.gl-search-box-by-type {
+  display: flex;
+  position: relative;
+}
+.gl-search-box-by-type-input,
+.gl-search-box-by-type-input.gl-form-input {
+  height: 2rem;
+  padding-right: 2rem;
+  padding-left: 1.75rem;
 }
 body,
 .form-control,
@@ -893,9 +944,9 @@ input {
   background-color: #d99530;
   height: 12px;
   width: 12px;
-  margin-top: -15px;
   pointer-events: none;
   visibility: hidden;
+  top: 3px;
 }
 .top-nav-toggle .dropdown-icon {
   margin-right: 0.5rem;
@@ -1120,6 +1171,11 @@ input {
   border-right: 0.25rem solid #000;
   border-right-color: var(--black, #000);
 }
+@media (min-width: 576px) {
+  .nav-sidebar a.has-sub-items + .sidebar-sub-level-items {
+    min-width: 150px;
+  }
+}
 .nav-sidebar a.has-sub-items + .sidebar-sub-level-items .fly-out-top-item {
   display: none;
 }
@@ -1309,6 +1365,12 @@ input {
 .sidebar-top-level-items > li.active .badge.badge-pill {
   font-weight: 400;
   color: #0b5cad;
+}
+.sidebar-top-level-items li > a.gl-link {
+  color: #303030;
+}
+.sidebar-top-level-items li > a.gl-link:active {
+  text-decoration: none;
 }
 .sidebar-sub-level-items {
   padding-top: 0;
@@ -1625,6 +1687,9 @@ svg.s16 {
   .gl-sm-display-block {
     display: block;
   }
+}
+.gl-relative {
+  position: relative;
 }
 .gl-absolute {
   position: absolute;

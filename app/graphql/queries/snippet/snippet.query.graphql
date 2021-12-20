@@ -49,6 +49,7 @@ query GetSnippetQuery($ids: [SnippetID!]) {
       }
       project {
         __typename
+        id
         fullPath
         webUrl
       }

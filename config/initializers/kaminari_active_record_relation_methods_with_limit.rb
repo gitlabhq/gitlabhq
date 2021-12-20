@@ -4,7 +4,6 @@ module Kaminari
   # Active Record specific page scope methods implementations
   module ActiveRecordRelationMethodsWithLimit
     MAX_COUNT_LIMIT = 10_000
-    MAX_COUNT_NEW_LOWER_LIMIT = 1_000
 
     # This is a modified version of
     # https://github.com/kaminari/kaminari/blob/c5186f5d9b7f23299d115408e62047447fd3189d/kaminari-activerecord/lib/kaminari/activerecord/active_record_relation_methods.rb#L17-L41
@@ -22,8 +21,7 @@ module Kaminari
         return @total_count = (current_page - 1) * limit_value + @records.length if @records.any? && (@records.length < limit_value)
       end
 
-      max_limit = Feature.enabled?(:lower_relation_max_count_limit, type: :ops) ? MAX_COUNT_NEW_LOWER_LIMIT : MAX_COUNT_LIMIT
-      limit = options.fetch(:limit, max_limit).to_i
+      limit = options.fetch(:limit, MAX_COUNT_LIMIT).to_i
       # #count overrides the #select which could include generated columns referenced in #order, so skip #order here, where it's irrelevant to the result anyway
       c = except(:offset, :limit, :order)
       # Remove includes only if they are irrelevant

@@ -12,6 +12,7 @@ FactoryBot.define do
 
     trait :with_package_file_sizes do
       conan_max_file_size { 100 }
+      helm_max_file_size { 100 }
       maven_max_file_size { 100 }
       npm_max_file_size { 100 }
       nuget_max_file_size { 100 }

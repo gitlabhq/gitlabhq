@@ -294,7 +294,7 @@ Geo requires an EE license. To visit the Geo sites in your browser, you need a r
    export EE_LICENSE=$(cat <path/to/your/gitlab_license>)
    ```
 
-1. (Optional) Pull the GitLab image
+1. Optional. Pull the GitLab image
 
    This step is optional because pulling the Docker image is part of the [`Test::Integration::Geo` orchestrated scenario](https://gitlab.com/gitlab-org/gitlab-qa/-/blob/d8c5c40607c2be0eda58bbca1b9f534b00889a0b/lib/gitlab/qa/scenario/test/integration/geo.rb). However, it's easier to monitor the download progress if you pull the image first, and the scenario skips this step after checking that the image is up to date.
 
@@ -496,12 +496,12 @@ Tests that are tagged with `:mobile` can be run against specified mobile devices
 
 Running directly against an environment like staging is not recommended because Sauce Labs test logs expose credentials. Therefore, it is best practice and the default to use a tunnel.
 
-Tunnel installation instructions are here [https://docs.saucelabs.com/secure-connections/sauce-connect/installation]. To start the tunnel, after following the installation above, copy the run command in Sauce Labs > Tunnels (must be logged in to Sauce Labs with the credentials found in 1Password) and run in terminal.
+For tunnel installation instructions, read [Sauce Connect Proxy Installation](https://docs.saucelabs.com/secure-connections/sauce-connect/installation). To start the tunnel, after following the installation above, copy the run command in Sauce Labs > Tunnels (must be logged in to Sauce Labs with the credentials found in 1Password) and run in terminal.
 
 NOTE:
 It is highly recommended to use `GITLAB_QA_ACCESS_TOKEN` to speed up tests and reduce flakiness.
 
-`QA_REMOTE_MOBILE_DEVICE_NAME` can be any device name listed in [https://saucelabs.com/platform/supported-browsers-devices] under Emulators/simulators and the latest versions of Android or iOS. `QA_BROWSER` must be set to `safari` for iOS devices and `chrome` for Android devices.
+`QA_REMOTE_MOBILE_DEVICE_NAME` can be any device name listed in [Supported browsers and devices](https://saucelabs.com/platform/supported-browsers-devices) under Emulators/simulators and the latest versions of Android or iOS. `QA_BROWSER` must be set to `safari` for iOS devices and `chrome` for Android devices.
 
 1. To test against a local instance with a tunnel running, in `gitlab/qa` run:
 

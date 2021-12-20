@@ -138,6 +138,10 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout do
         stub_file_read(structure_file, content: input)
         allow(File).to receive(:open).with(structure_file.to_s, any_args).and_yield(output)
       end
+
+      if Gitlab.ee?
+        allow(File).to receive(:open).with(Rails.root.join(Gitlab::Database::GEO_DATABASE_DIR, 'structure.sql').to_s, any_args).and_yield(output)
+      end
     end
 
     after do
@@ -191,7 +195,7 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout do
 
     it 'drops extra schemas' do
       Gitlab::Database::EXTRA_SCHEMAS.each do |schema|
-        expect(connection).to receive(:execute).with("DROP SCHEMA IF EXISTS \"#{schema}\"")
+        expect(connection).to receive(:execute).with("DROP SCHEMA IF EXISTS \"#{schema}\" CASCADE")
       end
 
       subject
@@ -199,43 +203,38 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout do
   end
 
   describe 'reindex' do
-    let(:reindex) { double('reindex') }
-    let(:indexes) { double('indexes') }
-    let(:databases) { Gitlab::Database.database_base_models }
-    let(:databases_count) { databases.count }
-
-    it 'cleans up any leftover indexes' do
-      expect(Gitlab::Database::Reindexing).to receive(:cleanup_leftovers!).exactly(databases_count).times
+    it 'delegates to Gitlab::Database::Reindexing' do
+      expect(Gitlab::Database::Reindexing).to receive(:invoke)
 
       run_rake_task('gitlab:db:reindex')
     end
 
-    context 'when async index creation is enabled' do
-      it 'executes async index creation prior to any reindexing actions' do
-        stub_feature_flags(database_async_index_creation: true)
-
-        expect(Gitlab::Database::AsyncIndexes).to receive(:create_pending_indexes!).ordered.exactly(databases_count).times
-        expect(Gitlab::Database::Reindexing).to receive(:automatic_reindexing).ordered.exactly(databases_count).times
+    context 'when reindexing is not enabled' do
+      it 'is a no-op' do
+        expect(Gitlab::Database::Reindexing).to receive(:enabled?).and_return(false)
+        expect(Gitlab::Database::Reindexing).not_to receive(:invoke)
 
         run_rake_task('gitlab:db:reindex')
       end
     end
+  end
 
-    context 'when async index creation is disabled' do
-      it 'does not execute async index creation' do
-        stub_feature_flags(database_async_index_creation: false)
+  databases = ActiveRecord::Tasks::DatabaseTasks.setup_initial_database_yaml
+  ActiveRecord::Tasks::DatabaseTasks.for_each(databases) do |database_name|
+    describe "reindex:#{database_name}" do
+      it 'delegates to Gitlab::Database::Reindexing' do
+        expect(Gitlab::Database::Reindexing).to receive(:invoke).with(database_name)
 
-        expect(Gitlab::Database::AsyncIndexes).not_to receive(:create_pending_indexes!)
-
-        run_rake_task('gitlab:db:reindex')
+        run_rake_task("gitlab:db:reindex:#{database_name}")
       end
-    end
 
-    context 'calls automatic reindexing' do
-      it 'uses all candidate indexes' do
-        expect(Gitlab::Database::Reindexing).to receive(:automatic_reindexing).exactly(databases_count).times
+      context 'when reindexing is not enabled' do
+        it 'is a no-op' do
+          expect(Gitlab::Database::Reindexing).to receive(:enabled?).and_return(false)
+          expect(Gitlab::Database::Reindexing).not_to receive(:invoke).with(database_name)
 
-        run_rake_task('gitlab:db:reindex')
+          run_rake_task("gitlab:db:reindex:#{database_name}")
+        end
       end
     end
   end
@@ -325,6 +324,32 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout do
       end
 
       subject
+    end
+  end
+
+  context 'with multiple databases', :reestablished_active_record_base do
+    before do
+      allow(ActiveRecord::Tasks::DatabaseTasks).to receive(:setup_initial_database_yaml).and_return([:main, :geo])
+    end
+
+    describe 'db:structure:dump' do
+      it 'invokes gitlab:db:clean_structure_sql' do
+        skip unless Gitlab.ee?
+
+        expect(Rake::Task['gitlab:db:clean_structure_sql']).to receive(:invoke).twice.and_return(true)
+
+        expect { run_rake_task('db:structure:dump:main') }.not_to raise_error
+      end
+    end
+
+    describe 'db:schema:dump' do
+      it 'invokes gitlab:db:clean_structure_sql' do
+        skip unless Gitlab.ee?
+
+        expect(Rake::Task['gitlab:db:clean_structure_sql']).to receive(:invoke).once.and_return(true)
+
+        expect { run_rake_task('db:schema:dump:main') }.not_to raise_error
+      end
     end
   end
 

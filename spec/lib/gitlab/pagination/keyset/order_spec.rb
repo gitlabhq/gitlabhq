@@ -127,7 +127,7 @@ RSpec.describe Gitlab::Pagination::Keyset::Order do
         end
 
         it do
-          expect(subject).to eq(expected.reverse[1..-1]) # removing one item because we used it to calculate cursor data for the "last" page in subject
+          expect(subject).to eq(expected.reverse[1..]) # removing one item because we used it to calculate cursor data for the "last" page in subject
         end
       end
     end

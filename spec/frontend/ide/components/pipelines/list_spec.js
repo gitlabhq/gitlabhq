@@ -2,10 +2,10 @@ import { GlLoadingIcon, GlTab } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
 import Vuex from 'vuex';
-import { TEST_HOST } from 'helpers/test_constants';
 import { pipelines } from 'jest/ide/mock_data';
 import JobsList from '~/ide/components/jobs/list.vue';
 import List from '~/ide/components/pipelines/list.vue';
+import EmptyState from '~/ide/components/pipelines/empty_state.vue';
 import IDEServices from '~/ide/services';
 import CiIcon from '~/vue_shared/components/ci_icon.vue';
 
@@ -18,9 +18,6 @@ jest.mock('~/ide/services', () => ({
 describe('IDE pipelines list', () => {
   let wrapper;
 
-  const defaultState = {
-    pipelinesEmptyStateSvgPath: TEST_HOST,
-  };
   const defaultPipelinesState = {
     stages: [],
     failedStages: [],
@@ -38,7 +35,6 @@ describe('IDE pipelines list', () => {
         currentProject: () => ({ web_url: 'some/url ', path_with_namespace: fakeProjectPath }),
       },
       state: {
-        ...defaultState,
         ...rootState,
       },
       modules: {
@@ -131,6 +127,8 @@ describe('IDE pipelines list', () => {
 
     it('renders empty state when no latestPipeline', () => {
       createComponent({}, { ...defaultPipelinesLoadedState, latestPipeline: null });
+
+      expect(wrapper.find(EmptyState).exists()).toBe(true);
       expect(wrapper.element).toMatchSnapshot();
     });
 

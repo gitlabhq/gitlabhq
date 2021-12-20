@@ -40,6 +40,13 @@ module Gitlab
           end
         end
 
+        def serialize_root(exportable_path = @exportable_path)
+          attributes = exportable.as_json(
+            relations_schema.merge(include: nil, preloads: nil))
+
+          json_writer.write_attributes(exportable_path, attributes)
+        end
+
         def serialize_relation(definition)
           raise ArgumentError, 'definition needs to be Hash' unless definition.is_a?(Hash)
           raise ArgumentError, 'definition needs to have exactly one Hash element' unless definition.one?
@@ -59,12 +66,6 @@ module Gitlab
         private
 
         attr_reader :json_writer, :relations_schema, :exportable
-
-        def serialize_root
-          attributes = exportable.as_json(
-            relations_schema.merge(include: nil, preloads: nil))
-          json_writer.write_attributes(@exportable_path, attributes)
-        end
 
         def serialize_many_relations(key, records, options)
           enumerator = Enumerator.new do |items|

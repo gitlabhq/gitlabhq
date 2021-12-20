@@ -4,9 +4,10 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::Database::LoadBalancing::ServiceDiscovery do
   let(:load_balancer) do
-    Gitlab::Database::LoadBalancing::LoadBalancer.new(
-      Gitlab::Database::LoadBalancing::Configuration.new(ActiveRecord::Base)
-    )
+    configuration = Gitlab::Database::LoadBalancing::Configuration.new(ActiveRecord::Base)
+    configuration.service_discovery[:record] = 'localhost'
+
+    Gitlab::Database::LoadBalancing::LoadBalancer.new(configuration)
   end
 
   let(:service) do
@@ -86,6 +87,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::ServiceDiscovery do
         service.perform_service_discovery
       end
     end
+
     context 'with failures' do
       before do
         allow(Gitlab::ErrorTracking).to receive(:track_exception)

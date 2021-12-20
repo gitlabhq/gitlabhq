@@ -46,10 +46,28 @@ RSpec.describe CommitStatus do
   describe 'status state machine' do
     let!(:commit_status) { create(:commit_status, :running, project: project) }
 
-    it 'invalidates the cache after a transition' do
-      expect(ExpireJobCacheWorker).to receive(:perform_async).with(commit_status.id)
+    context 'when expire_job_and_pipeline_cache_synchronously is enabled' do
+      before do
+        stub_feature_flags(expire_job_and_pipeline_cache_synchronously: true)
+      end
 
-      commit_status.success!
+      it 'invalidates the cache after a transition' do
+        expect(commit_status).to receive(:expire_etag_cache!)
+
+        commit_status.success!
+      end
+    end
+
+    context 'when expire_job_and_pipeline_cache_synchronously is disabled' do
+      before do
+        stub_feature_flags(expire_job_and_pipeline_cache_synchronously: false)
+      end
+
+      it 'invalidates the cache after a transition' do
+        expect(ExpireJobCacheWorker).to receive(:perform_async).with(commit_status.id)
+
+        commit_status.success!
+      end
     end
 
     describe 'transitioning to running' do
@@ -94,32 +112,6 @@ RSpec.describe CommitStatus do
       create(:commit_status, created_at: 1.day.since, project: project)
 
       expect(described_class.created_at_before(Time.current)).to eq([status])
-    end
-  end
-
-  describe '.updated_before' do
-    let!(:lookback) { 5.days.ago }
-    let!(:timeout) { 1.day.ago }
-    let!(:before_lookback) { lookback - 1.hour }
-    let!(:after_lookback) { lookback + 1.hour }
-    let!(:before_timeout) { timeout - 1.hour }
-    let!(:after_timeout) { timeout + 1.hour }
-
-    subject { described_class.updated_before(lookback: lookback, timeout: timeout) }
-
-    def create_build_with_set_timestamps(created_at:, updated_at:)
-      travel_to(created_at) { create(:ci_build, created_at: Time.current) }.tap do |build|
-        travel_to(updated_at) { build.update!(status: :failed) }
-      end
-    end
-
-    it 'finds builds updated and created in the window between lookback and timeout' do
-      build_in_lookback_timeout_window = create_build_with_set_timestamps(created_at: after_lookback, updated_at: before_timeout)
-      build_outside_lookback_window = create_build_with_set_timestamps(created_at: before_lookback, updated_at: before_timeout)
-      build_outside_timeout_window = create_build_with_set_timestamps(created_at: after_lookback, updated_at: after_timeout)
-
-      expect(subject).to contain_exactly(build_in_lookback_timeout_window)
-      expect(subject).not_to include(build_outside_lookback_window, build_outside_timeout_window)
     end
   end
 
@@ -773,6 +765,14 @@ RSpec.describe CommitStatus do
 
       it_behaves_like 'incrementing failure reason counter'
     end
+
+    context 'when status is manual' do
+      let(:commit_status) { create(:commit_status, :manual) }
+
+      it 'is able to be dropped' do
+        expect { commit_status.drop! }.to change { commit_status.status }.from('manual').to('failed')
+      end
+    end
   end
 
   describe 'ensure stage assignment' do
@@ -956,6 +956,34 @@ RSpec.describe CommitStatus do
       expect(build_old.reload).to have_attributes(retried: true, processed: true)
       expect(test.reload).to have_attributes(retried: false, processed: false)
       expect(build_from_other_pipeline.reload).to have_attributes(retried: false, processed: false)
+    end
+  end
+
+  describe '.bulk_insert_tags!' do
+    let(:statuses) { double('statuses') }
+    let(:tag_list_by_build) { double('tag list') }
+    let(:inserter) { double('inserter') }
+
+    it 'delegates to bulk insert class' do
+      expect(Gitlab::Ci::Tags::BulkInsert)
+        .to receive(:new)
+        .with(statuses, tag_list_by_build)
+        .and_return(inserter)
+
+      expect(inserter).to receive(:insert!)
+
+      described_class.bulk_insert_tags!(statuses, tag_list_by_build)
+    end
+  end
+
+  describe '#expire_etag_cache!' do
+    it 'expires the etag cache' do
+      expect_next_instance_of(Gitlab::EtagCaching::Store) do |etag_store|
+        job_path = Gitlab::Routing.url_helpers.project_build_path(project, commit_status.id, format: :json)
+        expect(etag_store).to receive(:touch).with(job_path)
+      end
+
+      commit_status.expire_etag_cache!
     end
   end
 end

@@ -403,7 +403,7 @@ RSpec.describe SessionsController do
 
           context 'when the user is on their last attempt' do
             before do
-              user.update(failed_attempts: User.maximum_attempts.pred)
+              user.update!(failed_attempts: User.maximum_attempts.pred)
             end
 
             context 'when OTP is valid' do

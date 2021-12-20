@@ -1,11 +1,12 @@
 import { GlTabs, GlTab } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
 import { merge } from 'lodash';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import { TEST_HOST } from 'helpers/test_constants';
 import { mergeUrlParams, updateHistory, getParameterValues } from '~/lib/utils/url_utility';
 import Component from '~/projects/pipelines/charts/components/app.vue';
 import PipelineCharts from '~/projects/pipelines/charts/components/pipeline_charts.vue';
+import API from '~/api';
 
 jest.mock('~/lib/utils/url_utility');
 
@@ -17,7 +18,7 @@ describe('ProjectsPipelinesChartsApp', () => {
   let wrapper;
 
   function createComponent(mountOptions = {}) {
-    wrapper = shallowMount(
+    wrapper = shallowMountExtended(
       Component,
       merge(
         {},
@@ -117,6 +118,23 @@ describe('ProjectsPipelinesChartsApp', () => {
       await wrapper.vm.$nextTick();
 
       expect(updateHistory).not.toHaveBeenCalled();
+    });
+
+    describe('event tracking', () => {
+      it.each`
+        testId                        | event
+        ${'pipelines-tab'}            | ${'p_analytics_ci_cd_pipelines'}
+        ${'deployment-frequency-tab'} | ${'p_analytics_ci_cd_deployment_frequency'}
+        ${'lead-time-tab'}            | ${'p_analytics_ci_cd_lead_time'}
+      `('tracks the $event event when clicked', ({ testId, event }) => {
+        jest.spyOn(API, 'trackRedisHllUserEvent');
+
+        expect(API.trackRedisHllUserEvent).not.toHaveBeenCalled();
+
+        wrapper.findByTestId(testId).vm.$emit('click');
+
+        expect(API.trackRedisHllUserEvent).toHaveBeenCalledWith(event);
+      });
     });
   });
 

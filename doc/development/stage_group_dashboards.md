@@ -60,8 +60,8 @@ component can have 2 indicators:
 
    We're working on making this target configurable per endpoint in [this
    project](https://gitlab.com/groups/gitlab-com/gl-infra/-/epics/525). Learn
-   how to [customize the request
-   apdex](application_slis/rails_request_apdex.md), this new apdex
+   how to
+   [customize the request Apdex](application_slis/rails_request_apdex.md), this new Apdex
    measurement is not yet part of the error budget.
 
    For Sidekiq job execution, the threshold depends on the [job

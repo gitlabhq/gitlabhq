@@ -15,10 +15,46 @@ To scale GitLab, the we are
 database for CI/CD tables was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/64289)
 in GitLab 14.1. This feature is still under development, and is not ready for production use.
 
+### Development setup
+
 By default, GitLab is configured to use only one main database. To
 opt-in to use a main database, and CI database, modify the
 `config/database.yml` file to have a `main` and a `ci` database
-configurations. For example, given a `config/database.yml` like below:
+configurations.
+
+You can set this up using [GDK](#gdk-configuration) or by
+[manually configuring `config/database.yml`](#manually-set-up-the-cicd-database).
+
+#### GDK configuration
+
+If you are using GDK, you can follow the following steps:
+
+1. On the GDK root directory, run:
+
+   ```shell
+   gdk config set gitlab.rails.multiple_databases true
+   ```
+
+1. Open your `gdk.yml`, and confirm that it has the following lines:
+
+   ```yaml
+   gitlab:
+     rails:
+       multiple_databases: true
+   ```
+
+1. Reconfigure GDK:
+
+   ```shell
+   gdk reconfigure
+   ```
+
+1. [Create the new CI/CD database](#create-the-new-database).
+
+#### Manually set up the CI/CD database
+
+You can manually edit `config/database.yml` to split the databases.
+To do so, consider a `config/database.yml` file like the example below:
 
 ```yaml
 development:
@@ -44,7 +80,7 @@ test: &test
       statement_timeout: 120s
 ```
 
-Edit the `config/database.yml` to look like this:
+Edit it to split the databases into `main` and `ci`:
 
 ```yaml
 development:
@@ -87,6 +123,25 @@ test: &test
     variables:
       statement_timeout: 120s
 ```
+
+Next, [create the new CI/CD database](#create-the-new-database).
+
+#### Create the new database
+
+After configuring GitLab for the two databases, create the new CI/CD database:
+
+1. Create the new `ci:` database, load the DB schema into the `ci:` database,
+   and run any pending migrations:
+
+    ```shell
+    bundle exec rails db:create db:schema:load:ci db:migrate
+    ```
+
+1. Restart GDK:
+
+    ```shell
+    gdk restart
+    ```
 
 <!--
 NOTE: The `validate_cross_joins!` method in `spec/support/database/prevent_cross_joins.rb` references
@@ -557,11 +612,31 @@ Don't hesitate to reach out to the
 [sharding group](https://about.gitlab.com/handbook/engineering/development/enablement/sharding/)
 for advice.
 
+##### Avoid `dependent: :nullify` and `dependent: :destroy` across databases
+
+There may be cases where we want to use `dependent: :nullify` or `dependent: :destroy`
+across databases. This is technically possible, but it's problematic because
+these hooks run in the context of an outer transaction from the call to
+`#destroy`, which creates a cross-database transaction and we are trying to
+avoid that. Cross-database transactions caused this way could lead to confusing
+outcomes when we switch to decomposed, because now you have some queries
+happening outside the transaction and they may be partially applied while the
+outer transaction fails, which could lead to surprising bugs.
+
+If you need to do some cleanup after a `destroy` you will need to choose
+from some of the options above. If all you need to do is cleanup the child
+records themselves from PostgreSQL then you could consider using ["loose foreign
+keys"](loose_foreign_keys.md).
+
 ## `config/database.yml`
 
-GitLab will support running multiple databases in the future, for example to [separate tables for the continuous integration features](https://gitlab.com/groups/gitlab-org/-/epics/6167) from the main database. In order to prepare for this change, we [validate the structure of the configuration](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/67877) in `database.yml` to ensure that only known databases are used.
+GitLab is adding support to run multiple databases, for example to
+[separate tables for the continuous integration features](https://gitlab.com/groups/gitlab-org/-/epics/6167)
+from the main database. In order to prepare for this change, we
+[validate the structure of the configuration](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/67877)
+in `database.yml` to ensure that only known databases are used.
 
-Previously, the `config/database.yml` would look like this:
+Previously, the `config/database.yml` looked like this:
 
 ```yaml
 production:
@@ -571,15 +646,16 @@ production:
   ...
 ```
 
-With the support for many databases the support for this
-syntax is deprecated and will be removed in [15.0](https://gitlab.com/gitlab-org/gitlab/-/issues/338182).
+With the support for many databases this
+syntax is [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/338182)
+and will be removed in [15.0](https://gitlab.com/gitlab-org/gitlab/-/issues/338182).
 
 The new `config/database.yml` needs to include a database name
 to define a database configuration. Only `main:` and `ci:` database
-names are supported today. The `main:` needs to always be a first
+names are supported. The `main:` database must always be a first
 entry in a hash. This change applies to decomposed and non-decomposed
-change. If an invalidate or deprecated syntax is used the error
-or warning will be printed during application start.
+change. If an invalid or deprecated syntax is used the error
+or warning is printed during application start.
 
 ```yaml
 # Non-decomposed database
@@ -603,3 +679,15 @@ production:
     database: gitlabhq_production_ci
     ...
 ```
+
+## Foreign keys that cross databases
+
+There are many places where we use foreign keys that reference across the two
+databases. This is not possible to do with two separate PostgreSQL
+databases, so we need to replicate the behavior we get from PostgreSQL in a
+performant way. We can't, and shouldn't, try to replicate the data guarantees
+given by PostgreSQL which prevent creating invalid references, but we still need a
+way to replace cascading deletes so we don't end up with orphaned data
+or records that point to nowhere, which might lead to bugs. As such we created
+["loose foreign keys"](loose_foreign_keys.md) which is an asynchronous
+process of cleaning up orphaned records.

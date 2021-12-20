@@ -1,0 +1,21 @@
+description: "Click environment URL button"
+category: default
+action: click_button
+label_description: "`environment_url`"
+property_description: ""
+value_description: ""
+extra_properties:
+identifiers:
+product_section: ops
+product_stage: release
+product_group: group::release
+product_category:
+milestone: "14.2"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/66968
+distributions:
+- ce
+- ee
+tiers:
+- free
+- premium
+- ultimate

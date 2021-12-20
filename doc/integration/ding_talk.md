@@ -60,9 +60,10 @@ Sign in to DingTalk Open Platform and create an application on it. DingTalk gene
    ```ruby
      gitlab_rails['omniauth_providers'] = [
        {
-         "name" => "ding_talk",
-         "app_id" => "YOUR_APP_ID",
-         "app_secret" => "YOUR_APP_SECRET"
+         name: "dingtalk",
+         # label: "Provider name", # optional label for login button, defaults to "Ding Talk"
+         app_id: "YOUR_APP_ID",
+         app_secret: "YOUR_APP_SECRET"
        }
      ]
    ```
@@ -70,7 +71,8 @@ Sign in to DingTalk Open Platform and create an application on it. DingTalk gene
    For installations from source:
 
    ```yaml
-   - { name: 'ding_talk',
+   - { name: 'dingtalk',
+       # label: 'Provider name', # optional label for login button, defaults to "Ding Talk"
        app_id: 'YOUR_APP_ID',
        app_secret: 'YOUR_APP_SECRET' }
    ```

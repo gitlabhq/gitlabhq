@@ -3,7 +3,7 @@
 require 'rspec-parameterized'
 require 'gitlab-dangerfiles'
 require 'danger'
-require 'danger/plugins/helper'
+require 'danger/plugins/internal/helper'
 require 'gitlab/dangerfiles/spec_helper'
 
 require_relative '../../../danger/plugins/project_helper'
@@ -20,22 +20,7 @@ RSpec.describe Tooling::Danger::ProjectHelper do
 
   before do
     allow(project_helper).to receive(:helper).and_return(fake_helper)
-  end
-
-  describe '#changes' do
-    it 'returns an array of Change objects' do
-      expect(project_helper.changes).to all(be_an(Gitlab::Dangerfiles::Change))
-    end
-
-    it 'groups changes by change type' do
-      changes = project_helper.changes
-
-      expect(changes.added.files).to eq(added_files)
-      expect(changes.modified.files).to eq(modified_files)
-      expect(changes.deleted.files).to eq(deleted_files)
-      expect(changes.renamed_before.files).to eq([renamed_before_file])
-      expect(changes.renamed_after.files).to eq([renamed_after_file])
-    end
+    allow(fake_helper).to receive(:config).and_return(double(files_to_category: described_class::CATEGORIES))
   end
 
   describe '#categories_for_file' do
@@ -86,7 +71,7 @@ RSpec.describe Tooling::Danger::ProjectHelper do
       'rubocop/foo'                | [:backend]
       '.rubocop.yml'               | [:backend]
       '.rubocop_todo.yml'          | [:backend]
-      '.rubocop_manual_todo.yml'   | [:backend]
+      '.rubocop_todo/cop/name.yml' | [:backend]
       'spec/foo'                   | [:backend]
       'spec/foo/bar'               | [:backend]
 
@@ -192,6 +177,7 @@ RSpec.describe Tooling::Danger::ProjectHelper do
       'spec/frontend/tracking_spec.js' | [:frontend, :product_intelligence]
       'lib/gitlab/usage_database/foo.rb' | [:backend]
       'config/metrics/counts_7d/test_metric.yml' | [:product_intelligence]
+      'config/events/snowplow_event.yml' | [:product_intelligence]
       'config/metrics/schema.json' | [:product_intelligence]
       'doc/api/usage_data.md' | [:product_intelligence]
       'spec/lib/gitlab/usage_data_spec.rb' | [:product_intelligence]
@@ -246,7 +232,7 @@ RSpec.describe Tooling::Danger::ProjectHelper do
     end
 
     with_them do
-      subject { project_helper.categories_for_file(path) }
+      subject { project_helper.helper.categories_for_file(path) }
 
       it { is_expected.to eq(expected_categories) }
     end
@@ -274,7 +260,7 @@ RSpec.describe Tooling::Danger::ProjectHelper do
           changed_files.each do |file|
             allow(fake_git).to receive(:diff_for_file).with(file) { double(:diff, patch: patch) }
 
-            expect(project_helper.categories_for_file(file)).to eq(expected_categories)
+            expect(project_helper.helper.categories_for_file(file)).to eq(expected_categories)
           end
         end
       end
@@ -283,7 +269,7 @@ RSpec.describe Tooling::Danger::ProjectHelper do
 
   describe '.local_warning_message' do
     it 'returns an informational message with rules that can run' do
-      expect(described_class.local_warning_message).to eq('==> Only the following Danger rules can be run locally: changelog, database, documentation, duplicate_yarn_dependencies, eslint, gitaly, pajamas, pipeline, prettier, product_intelligence, utility_css, vue_shared_documentation')
+      expect(described_class.local_warning_message).to eq('==> Only the following Danger rules can be run locally: changelog, ci_config, database, documentation, duplicate_yarn_dependencies, eslint, gitaly, pajamas, pipeline, prettier, product_intelligence, utility_css, vue_shared_documentation')
     end
   end
 
@@ -320,90 +306,10 @@ RSpec.describe Tooling::Danger::ProjectHelper do
 
     it 'returns all changed files starting with ee/' do
       changes = double
-      expect(project_helper).to receive(:changes).and_return(changes)
+      expect(fake_helper).to receive(:changes).and_return(changes)
       expect(changes).to receive(:files).and_return(%w[fr/ee/beer.rb ee/wine.rb ee/lib/ido.rb ee.k])
 
       is_expected.to match_array(%w[ee/wine.rb ee/lib/ido.rb])
-    end
-  end
-
-  describe '#project_name' do
-    subject { project_helper.project_name }
-
-    it 'returns gitlab if ee? returns true' do
-      expect(project_helper).to receive(:ee?) { true }
-
-      is_expected.to eq('gitlab')
-    end
-
-    it 'returns gitlab-ce if ee? returns false' do
-      expect(project_helper).to receive(:ee?) { false }
-
-      is_expected.to eq('gitlab-foss')
-    end
-  end
-
-  describe '#ee?' do
-    subject { project_helper.__send__(:ee?) }
-
-    let(:ee_dir) { File.expand_path('../../../ee', __dir__) }
-
-    context 'when ENV["CI_PROJECT_NAME"] is set' do
-      before do
-        stub_env('CI_PROJECT_NAME', ci_project_name)
-      end
-
-      context 'when ENV["CI_PROJECT_NAME"] is gitlab' do
-        let(:ci_project_name) { 'gitlab' }
-
-        it 'returns true' do
-          is_expected.to eq(true)
-        end
-      end
-
-      context 'when ENV["CI_PROJECT_NAME"] is gitlab-ee' do
-        let(:ci_project_name) { 'gitlab-ee' }
-
-        it 'returns true' do
-          is_expected.to eq(true)
-        end
-      end
-
-      context 'when ENV["CI_PROJECT_NAME"] is gitlab-foss' do
-        let(:ci_project_name) { 'gitlab-foss' }
-
-        it 'resolves to Dir.exist?' do
-          expected = Dir.exist?(ee_dir)
-
-          expect(Dir).to receive(:exist?).with(ee_dir).and_call_original
-
-          is_expected.to eq(expected)
-        end
-      end
-    end
-
-    context 'when ENV["CI_PROJECT_NAME"] is absent' do
-      before do
-        stub_env('CI_PROJECT_NAME', nil)
-
-        expect(Dir).to receive(:exist?).with(ee_dir).and_return(has_ee_dir)
-      end
-
-      context 'when ee/ directory exists' do
-        let(:has_ee_dir) { true }
-
-        it 'returns true' do
-          is_expected.to eq(true)
-        end
-      end
-
-      context 'when ee/ directory does not exist' do
-        let(:has_ee_dir) { false }
-
-        it 'returns false' do
-          is_expected.to eq(false)
-        end
-      end
     end
   end
 

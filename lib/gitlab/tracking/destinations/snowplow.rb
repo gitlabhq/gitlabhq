@@ -8,6 +8,8 @@ module Gitlab
       class Snowplow < Base
         extend ::Gitlab::Utils::Override
 
+        SNOWPLOW_NAMESPACE = 'gl'
+
         override :event
         def event(category, action, label: nil, property: nil, value: nil, context: nil)
           return unless enabled?
@@ -19,7 +21,7 @@ module Gitlab
         def options(group)
           additional_features = Feature.enabled?(:additional_snowplow_tracking, group, type: :ops)
           {
-            namespace: Gitlab::Tracking::SNOWPLOW_NAMESPACE,
+            namespace: SNOWPLOW_NAMESPACE,
             hostname: hostname,
             cookie_domain: cookie_domain,
             app_id: app_id,
@@ -28,15 +30,15 @@ module Gitlab
           }.transform_keys! { |key| key.to_s.camelize(:lower).to_sym }
         end
 
+        def enabled?
+          Gitlab::CurrentSettings.snowplow_enabled?
+        end
+
         def hostname
           Gitlab::CurrentSettings.snowplow_collector_hostname
         end
 
         private
-
-        def enabled?
-          Gitlab::Tracking.enabled?
-        end
 
         def app_id
           Gitlab::CurrentSettings.snowplow_app_id
@@ -54,7 +56,7 @@ module Gitlab
           @tracker ||= SnowplowTracker::Tracker.new(
             emitter,
             SnowplowTracker::Subject.new,
-            Gitlab::Tracking::SNOWPLOW_NAMESPACE,
+            SNOWPLOW_NAMESPACE,
             app_id
           )
         end

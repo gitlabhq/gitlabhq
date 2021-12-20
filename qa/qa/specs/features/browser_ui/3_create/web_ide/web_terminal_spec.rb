@@ -56,7 +56,7 @@ module QA
         @runner.remove_via_api! if @runner
       end
 
-      it 'user starts the web terminal', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1593' do
+      it 'user starts the web terminal', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347737' do
         Page::Project::Show.perform(&:open_web_ide!)
 
         # Start the web terminal and check that there were no errors
@@ -65,6 +65,7 @@ module QA
         #  a) The terminal JS package has loaded, and
         #  b) It's not stuck in a "Loading/Starting" state, and
         #  c) There's no alert stating there was a problem
+        #  d) There are no JS console errors
         #
         # The terminal itself is a third-party package so we assume it is
         # adequately tested elsewhere.
@@ -77,6 +78,17 @@ module QA
           expect(edit).to have_no_alert
           expect(edit).to have_finished_loading
           expect(edit).to have_terminal_screen
+        end
+
+        # It takes a few seconds for console errors to appear
+        sleep 3
+
+        errors = page.driver.browser.logs.get(:browser)
+                     .select { |e| e.level == "SEVERE" }
+                     .to_a
+
+        if errors.present?
+          raise("Console error(s):\n#{errors.join("\n\n")}")
         end
       end
     end

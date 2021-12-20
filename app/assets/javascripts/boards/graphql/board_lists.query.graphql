@@ -8,9 +8,13 @@ query BoardLists(
   $isProject: Boolean = false
 ) {
   group(fullPath: $fullPath) @include(if: $isGroup) {
+    id
     board(id: $boardId) {
+      id
       hideBacklogList
       lists(issueFilters: $filters) {
+        # We have ID in a deeply nested fragment
+        # eslint-disable-next-line @graphql-eslint/require-id-when-available
         nodes {
           ...BoardListFragment
         }
@@ -18,9 +22,13 @@ query BoardLists(
     }
   }
   project(fullPath: $fullPath) @include(if: $isProject) {
+    id
     board(id: $boardId) {
+      id
       hideBacklogList
       lists(issueFilters: $filters) {
+        # We have ID in a deeply nested fragment
+        # eslint-disable-next-line @graphql-eslint/require-id-when-available
         nodes {
           ...BoardListFragment
         }

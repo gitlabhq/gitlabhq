@@ -1,8 +1,8 @@
 import { GlLink, GlSprintf, GlTruncate } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
-import PackageTags from '~/packages/shared/components/package_tags.vue';
-import PublishMethod from '~/packages/shared/components/publish_method.vue';
+import PackageTags from '~/packages_and_registries/shared/components/package_tags.vue';
+import PublishMethod from '~/packages_and_registries/shared/components/publish_method.vue';
 import VersionRow from '~/packages_and_registries/package_registry/components/details/version_row.vue';
 import ListItem from '~/vue_shared/components/registry/list_item.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';

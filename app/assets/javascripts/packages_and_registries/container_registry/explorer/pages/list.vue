@@ -388,6 +388,7 @@ export default {
         <template #default="{ doDelete }">
           <gl-modal
             ref="deleteModal"
+            size="sm"
             modal-id="delete-image-modal"
             :action-primary="{ text: __('Remove'), attributes: { variant: 'danger' } }"
             @primary="doDelete"

@@ -1183,8 +1183,14 @@ describe('Actions Notes Store', () => {
       dispatch.mockReturnValue(new Promise(() => {}));
     });
 
+    it('clears existing discussions', () => {
+      actions.filterDiscussion({ commit, dispatch }, { path, filter, persistFilter: false });
+
+      expect(commit.mock.calls).toEqual([[mutationTypes.CLEAR_DISCUSSIONS]]);
+    });
+
     it('fetches discussions with filter and persistFilter false', () => {
-      actions.filterDiscussion({ dispatch }, { path, filter, persistFilter: false });
+      actions.filterDiscussion({ commit, dispatch }, { path, filter, persistFilter: false });
 
       expect(dispatch.mock.calls).toEqual([
         ['setLoadingState', true],
@@ -1193,7 +1199,7 @@ describe('Actions Notes Store', () => {
     });
 
     it('fetches discussions with filter and persistFilter true', () => {
-      actions.filterDiscussion({ dispatch }, { path, filter, persistFilter: true });
+      actions.filterDiscussion({ commit, dispatch }, { path, filter, persistFilter: true });
 
       expect(dispatch.mock.calls).toEqual([
         ['setLoadingState', true],

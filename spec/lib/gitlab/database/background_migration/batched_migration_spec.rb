@@ -23,6 +23,28 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigration, type: :m
     subject { build(:batched_background_migration) }
 
     it { is_expected.to validate_uniqueness_of(:job_arguments).scoped_to(:job_class_name, :table_name, :column_name) }
+
+    context 'when there are failed jobs' do
+      let(:batched_migration) { create(:batched_background_migration, status: :active, total_tuple_count: 100) }
+      let!(:batched_job) { create(:batched_background_migration_job, batched_migration: batched_migration, status: :failed) }
+
+      it 'raises an exception' do
+        expect { batched_migration.finished! }.to raise_error(ActiveRecord::RecordInvalid)
+
+        expect(batched_migration.reload.status).to eql 'active'
+      end
+    end
+
+    context 'when the jobs are completed' do
+      let(:batched_migration) { create(:batched_background_migration, status: :active, total_tuple_count: 100) }
+      let!(:batched_job) { create(:batched_background_migration_job, batched_migration: batched_migration, status: :succeeded) }
+
+      it 'finishes the migration' do
+        batched_migration.finished!
+
+        expect(batched_migration.status).to eql 'finished'
+      end
+    end
   end
 
   describe '.queue_order' do
@@ -214,14 +236,20 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigration, type: :m
     end
   end
 
-  shared_examples_for 'an attr_writer that demodulizes assigned class names' do |attribute_name|
+  shared_examples_for 'an attr_writer that assigns class names' do |attribute_name|
     let(:batched_migration) { build(:batched_background_migration) }
 
     context 'when a module name exists' do
-      it 'removes the module name' do
+      it 'keeps the class with module name' do
+        batched_migration.public_send(:"#{attribute_name}=", 'Foo::Bar')
+
+        expect(batched_migration[attribute_name]).to eq('Foo::Bar')
+      end
+
+      it 'removes leading namespace resolution operator' do
         batched_migration.public_send(:"#{attribute_name}=", '::Foo::Bar')
 
-        expect(batched_migration[attribute_name]).to eq('Bar')
+        expect(batched_migration[attribute_name]).to eq('Foo::Bar')
       end
     end
 
@@ -271,11 +299,11 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigration, type: :m
   end
 
   describe '#job_class_name=' do
-    it_behaves_like 'an attr_writer that demodulizes assigned class names', :job_class_name
+    it_behaves_like 'an attr_writer that assigns class names', :job_class_name
   end
 
   describe '#batch_class_name=' do
-    it_behaves_like 'an attr_writer that demodulizes assigned class names', :batch_class_name
+    it_behaves_like 'an attr_writer that assigns class names', :batch_class_name
   end
 
   describe '#migrated_tuple_count' do

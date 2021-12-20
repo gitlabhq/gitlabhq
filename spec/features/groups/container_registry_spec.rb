@@ -82,7 +82,7 @@ RSpec.describe 'Container Registry', :js do
       end
 
       it 'shows the image tags' do
-        expect(page).to have_content 'Image tags'
+        expect(page).to have_content '1 tag'
         first_tag = first('[data-testid="name"]')
         expect(first_tag).to have_content 'latest'
       end

@@ -35,7 +35,7 @@ RSpec.describe IssuePlacementWorker do
       it 'schedules rebalancing if needed' do
         issue_a.update!(relative_position: RelativePositioning::MAX_POSITION)
 
-        expect(IssueRebalancingWorker).to receive(:perform_async).with(nil, nil, project.group.id)
+        expect(Issues::RebalancingWorker).to receive(:perform_async).with(nil, nil, project.group.id)
 
         run_worker
       end
@@ -52,7 +52,7 @@ RSpec.describe IssuePlacementWorker do
                              .with(have_attributes(count: described_class::QUERY_LIMIT))
                              .and_call_original
 
-          expect(described_class).to receive(:perform_async).with(nil, project.id)
+          expect(Issues::PlacementWorker).to receive(:perform_async).with(nil, project.id)
 
           run_worker
 
@@ -101,7 +101,7 @@ RSpec.describe IssuePlacementWorker do
       it 'anticipates the failure to place the issues, and schedules rebalancing' do
         allow(Issue).to receive(:move_nulls_to_end) { raise RelativePositioning::NoSpaceLeft }
 
-        expect(IssueRebalancingWorker).to receive(:perform_async).with(nil, nil, project.group.id)
+        expect(Issues::RebalancingWorker).to receive(:perform_async).with(nil, nil, project.group.id)
         expect(Gitlab::ErrorTracking)
           .to receive(:log_exception)
           .with(RelativePositioning::NoSpaceLeft, worker_arguments)

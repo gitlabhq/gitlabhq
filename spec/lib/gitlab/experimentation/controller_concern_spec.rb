@@ -97,7 +97,7 @@ RSpec.describe Gitlab::Experimentation::ControllerConcern, type: :controller do
 
   describe '#push_frontend_experiment' do
     it 'pushes an experiment to the frontend' do
-      gon = instance_double('gon')
+      gon = class_double('Gon')
       stub_experiment_for_subject(my_experiment: true)
       allow(controller).to receive(:gon).and_return(gon)
 

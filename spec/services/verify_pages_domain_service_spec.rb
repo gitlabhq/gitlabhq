@@ -372,7 +372,8 @@ RSpec.describe VerifyPagesDomainService do
     allow(resolver).to receive(:getresources) { [] }
     stubbed_lookups.each do |domain, records|
       records = Array(records).map { |txt| Resolv::DNS::Resource::IN::TXT.new(txt) }
-      allow(resolver).to receive(:getresources).with(domain, Resolv::DNS::Resource::IN::TXT) { records }
+      # Append '.' to domain_name, indicating absolute FQDN
+      allow(resolver).to receive(:getresources).with(domain + '.', Resolv::DNS::Resource::IN::TXT) { records }
     end
 
     resolver

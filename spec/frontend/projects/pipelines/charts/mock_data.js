@@ -48,6 +48,7 @@ export const transformedAreaChartData = [
 export const mockPipelineCount = {
   data: {
     project: {
+      id: '1',
       totalPipelines: { count: 34, __typename: 'PipelineConnection' },
       successfulPipelines: { count: 23, __typename: 'PipelineConnection' },
       failedPipelines: { count: 1, __typename: 'PipelineConnection' },
@@ -70,6 +71,7 @@ export const chartOptions = {
 export const mockPipelineStatistics = {
   data: {
     project: {
+      id: '1',
       pipelineAnalytics: {
         weekPipelinesTotals: [0, 0, 0, 0, 0, 0, 0, 0],
         weekPipelinesLabels: [

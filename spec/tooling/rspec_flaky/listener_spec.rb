@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require 'active_support/testing/time_helpers'
 require_relative '../../support/helpers/stub_env'
+require_relative '../../support/time_travel'
 
 require_relative '../../../tooling/rspec_flaky/listener'
 
@@ -53,8 +53,7 @@ RSpec.describe RspecFlaky::Listener, :aggregate_failures do
 
   before do
     # Stub these env variables otherwise specs don't behave the same on the CI
-    stub_env('CI_PROJECT_URL', nil)
-    stub_env('CI_JOB_ID', nil)
+    stub_env('CI_JOB_URL', nil)
     stub_env('SUITE_FLAKY_RSPEC_REPORT_PATH', nil)
   end
 
@@ -217,7 +216,7 @@ RSpec.describe RspecFlaky::Listener, :aggregate_failures do
         expect(RspecFlaky::Report).to receive(:new).with(listener.flaky_examples).and_return(report1)
         expect(report1).to receive(:write).with(RspecFlaky::Config.flaky_examples_report_path)
 
-        expect(RspecFlaky::Report).to receive(:new).with(listener.flaky_examples - listener.suite_flaky_examples).and_return(report2)
+        expect(RspecFlaky::Report).to receive(:new).with(listener.__send__(:new_flaky_examples)).and_return(report2)
         expect(report2).to receive(:write).with(RspecFlaky::Config.new_flaky_examples_report_path)
 
         listener.dump_summary(nil)

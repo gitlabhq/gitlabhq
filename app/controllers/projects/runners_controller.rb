@@ -4,8 +4,6 @@ class Projects::RunnersController < Projects::ApplicationController
   before_action :authorize_admin_build!
   before_action :runner, only: [:edit, :update, :destroy, :pause, :resume, :show]
 
-  layout 'project_settings'
-
   feature_category :runner
 
   def index

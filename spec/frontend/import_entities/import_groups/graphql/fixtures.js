@@ -1,7 +1,7 @@
 import { STATUSES } from '~/import_entities/constants';
 import { clientTypenames } from '~/import_entities/import_groups/graphql/client_factory';
 
-export const generateFakeEntry = ({ id, status, ...rest }) => ({
+export const generateFakeEntry = ({ id, status, message, ...rest }) => ({
   __typename: clientTypenames.BulkImportSourceGroup,
   webUrl: `https://fake.host/${id}`,
   fullPath: `fake_group_${id}`,
@@ -18,6 +18,7 @@ export const generateFakeEntry = ({ id, status, ...rest }) => ({
       : {
           id,
           status,
+          message: message || '',
         },
   ...rest,
 });
@@ -49,6 +50,12 @@ export const statusEndpointFixture = {
       web_url: 'https://gitlab.com/groups/gitlab-examples',
     },
   ],
+  version_validation: {
+    features: {
+      project_migration: { available: false, min_version: '14.8.0' },
+      source_instance_version: '14.6.0',
+    },
+  },
 };
 
 export const availableNamespacesFixture = Object.freeze([

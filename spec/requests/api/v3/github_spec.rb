@@ -567,18 +567,6 @@ RSpec.describe API::V3::Github do
           expect(response_diff_files(response)).to be_blank
         end
 
-        it 'does not handle the error when feature flag is disabled', :aggregate_failures do
-          stub_feature_flags(api_v3_commits_skip_diff_files: false)
-
-          allow(Gitlab::GitalyClient).to receive(:call)
-            .with(*commit_diff_args)
-            .and_raise(GRPC::DeadlineExceeded)
-
-          call_api
-
-          expect(response).to have_gitlab_http_status(:error)
-        end
-
         it 'only calls Gitaly once for all attempts within a period of time', :aggregate_failures do
           expect(Gitlab::GitalyClient).to receive(:call)
             .with(*commit_diff_args)

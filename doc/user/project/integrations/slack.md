@@ -31,7 +31,7 @@ to control GitLab from Slack. Slash commands are configured separately.
    [Triggers for Slack notifications](#triggers-for-slack-notifications).
    By default, messages are sent to the channel you configured during
    [Slack configuration](#configure-slack).
-1. (Optional) To send messages to a different channel, multiple channels, or as
+1. Optional. To send messages to a different channel, multiple channels, or as
    a direct message:
    - *To send messages to channels,* enter the Slack channel names, separated by
      commas.
@@ -42,7 +42,7 @@ to control GitLab from Slack. Slash commands are configured separately.
 
 1. In **Webhook**, enter the webhook URL you copied in the
    [Slack configuration](#configure-slack) step.
-1. (Optional) In **Username**, enter the username of the Slack bot that sends
+1. Optional. In **Username**, enter the username of the Slack bot that sends
    the notifications.
 1. Select the **Notify only broken pipelines** checkbox to notify only on failures.
 1. In the **Branches for which notifications are to be sent** dropdown, select which types of branches

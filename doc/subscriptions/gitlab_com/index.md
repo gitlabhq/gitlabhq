@@ -317,39 +317,65 @@ main quota. You can find pricing for additional CI/CD minutes on the
 - Are only used after the shared quota included in your subscription runs out.
 - Roll over month to month.
 
-To purchase additional minutes for your group on GitLab SaaS:
-
-1. From your group, go to **Settings > Usage Quotas**.
-1. Select **Buy additional minutes** and GitLab directs you to the Customers Portal.
-1. Locate the subscription card that's linked to your group on GitLab SaaS, click **Buy more CI minutes**, and complete the details about the transaction.
-1. Once we have processed your payment, the extra CI minutes are synced to your group namespace.
-1. To confirm the available CI minutes, go to your group, then **Settings > Usage Quotas**.
-
-   The **Additional minutes** displayed now includes the purchased additional CI minutes, plus any minutes rolled over from last month.
-
 To purchase additional minutes for your personal namespace:
 
 1. In the top-right corner, select your avatar.
 1. Select **Edit profile**.
 1. On the left sidebar, select **Usage Quotas**.
 1. Select **Buy additional minutes** and GitLab redirects you to the Customers Portal.
-1. Locate the subscription card that's linked to your personal namespace on GitLab SaaS, click **Buy more CI minutes**, and complete the details about the transaction. Once we have processed your payment, the extra CI minutes are synced to your personal namespace.
-1. To confirm the available CI minutes for your personal projects, go to the **Usage Quotas** settings again.
+1. Locate the subscription card that's linked to your personal namespace on GitLab SaaS, click **Buy more CI minutes**, and complete the details about the transaction.
 
-   The **Additional minutes** displayed now includes the purchased additional CI minutes, plus any minutes rolled over from last month.
+After we process your payment, the extra CI minutes are synced to your group
+namespace.
+
+To confirm the available CI minutes for your personal projects, go to the **Usage Quotas** settings again.
+
+The **Additional minutes** displayed now includes the purchased additional CI
+minutes, plus any minutes rolled over from last month.
 
 Be aware that:
 
-- If you have purchased extra CI minutes before the purchase of a paid plan,
-  we calculate a pro-rated charge for your paid plan. That means you may
-  be charged for less than one year because your subscription was previously
-  created with the extra CI minutes.
-- After the extra CI minutes have been assigned to a Group, they can't be transferred
-  to a different Group by themselves, but they will transfer along with a subscription when
-  changing the linked namespace for the subscription.
-- If you have used more minutes than your default quota, these minutes will
-  be deducted from your Additional Minutes quota immediately after your purchase of additional
-  minutes.
+- Extra CI minutes assigned to one group cannot be transferred to a different
+  group.
+- If you have used more minutes than your default quota, those minutes are
+  deducted from your Additional Minutes quota immediately after your purchase of
+  additional minutes.
+
+### Purchase additional CI minutes on GitLab SaaS
+
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/6574) in GitLab 14.5.
+
+If you're using GitLab SaaS, you can purchase additional CI minutes so your
+pipelines aren't blocked after you have used all your CI minutes from your
+main quota. You can find pricing for additional CI/CD minutes on the
+[GitLab Pricing page](https://about.gitlab.com/pricing/). Additional minutes:
+
+- Are only used after the shared quota included in your subscription runs out.
+- Roll over month to month.
+
+To purchase additional minutes for your group on GitLab SaaS:
+
+1. On the top bar, select **Menu > Groups** and find your group.
+1. On the left sidebar, select **Settings > Usage Quotas**.
+1. Select **Buy additional minutes**.
+1. Complete the details about the transaction.
+
+After we process your payment, the extra CI minutes are synced to your group
+namespace.
+
+To confirm the available CI minutes, go to your group, and then select
+**Settings > Usage Quotas**.
+
+The **Additional minutes** displayed now includes the purchased additional CI
+minutes, plus any minutes rolled over from last month.
+
+Be aware that:
+
+- Extra CI minutes assigned to one group cannot be transferred to a different
+  group.
+- If you have used more minutes than your default quota, those minutes are
+  deducted from your Additional Minutes quota immediately after your purchase of
+  additional minutes.
 
 ## Storage subscription
 
@@ -363,7 +389,9 @@ locked. Projects can only be unlocked by purchasing more storage subscription un
 
 ### Purchase more storage
 
-To purchase more storage for either a personal or group namespace:
+You can purchase storage for your personal or group namespace.
+
+#### For your personal namespace
 
 1. Sign in to GitLab SaaS.
 1. From either your personal homepage or the group's page, go to **Settings > Usage Quotas**.
@@ -379,6 +407,32 @@ To purchase more storage for either a personal or group namespace:
 1. Select **Buy subscription**.
 1. Sign out of the Customers Portal.
 1. Switch back to the GitLab SaaS tab and refresh the page.
+
+The **Purchased storage available** total is incremented by the amount purchased. All locked
+projects are unlocked and their excess usage is deducted from the additional storage.
+
+#### For your group namespace
+
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5789) in GitLab 14.6.
+
+If you're using GitLab SaaS, you can purchase additional storage so your
+pipelines aren't blocked after you have used all your storage from your
+main quota. You can find pricing for additional storage on the
+[GitLab Pricing page](https://about.gitlab.com/pricing/).
+
+To purchase additional storage for your group on GitLab SaaS:
+
+1. On the top bar, select **Menu > Groups** and find your group.
+1. On the left sidebar, select **Settings > Usage Quotas**.
+1. Select **Storage** tab.
+1. Select **Purchase more storage**.
+1. Complete the details.
+
+After your payment is processed, the extra storage is available for your group
+namespace.
+
+To confirm the available storage, go to your group, and then select
+**Settings > Usage Quotas** and select the **Storage** tab.
 
 The **Purchased storage available** total is incremented by the amount purchased. All locked
 projects are unlocked and their excess usage is deducted from the additional storage.

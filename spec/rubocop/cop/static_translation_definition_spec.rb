@@ -112,12 +112,26 @@ RSpec.describe RuboCop::Cop::StaticTranslationDefinition do
             }
           end
         CODE
-        <<~CODE
+        <<~CODE,
           class MyClass
             def hello
               {
                 a: _('hi')
               }
+            end
+          end
+        CODE
+        <<~CODE,
+          SomeClass = Struct.new do
+            def text
+              _('Some translated text')
+            end
+          end
+        CODE
+        <<~CODE
+          Struct.new('SomeClass') do
+            def text
+              _('Some translated text')
             end
           end
         CODE

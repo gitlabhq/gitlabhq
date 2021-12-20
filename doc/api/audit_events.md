@@ -277,7 +277,7 @@ Example response:
     "entity_id": 7,
     "entity_type": "Project",
     "details": {
-        "change": "prevent merge request approval from reviewers",
+        "change": "prevent merge request approval from committers",
         "from": "",
         "to": "true",
         "author_name": "Administrator",
@@ -312,7 +312,7 @@ Example response:
 
 ### Retrieve a specific project audit event
 
-Only available to project maintainers or owners.
+Only available to users with at least the [Maintainer role](../user/permissions.md) for the project.
 
 ```plaintext
 GET /projects/:id/audit_events/:audit_event_id
@@ -336,7 +336,7 @@ Example response:
   "entity_id": 7,
   "entity_type": "Project",
   "details": {
-      "change": "prevent merge request approval from reviewers",
+      "change": "prevent merge request approval from committers",
       "from": "",
       "to": "true",
       "author_name": "Administrator",

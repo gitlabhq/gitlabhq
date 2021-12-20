@@ -1033,6 +1033,86 @@ RSpec.describe GroupPolicy do
     end
   end
 
+  describe 'register_group_runners' do
+    shared_examples 'expected outcome based on runner registration control' do
+      context 'with runner_registration_control FF disabled' do
+        before do
+          stub_feature_flags(runner_registration_control: false)
+        end
+
+        it { is_expected.to be_allowed(:register_group_runners) }
+      end
+
+      context 'with runner_registration_control FF enabled' do
+        before do
+          stub_feature_flags(runner_registration_control: true)
+        end
+
+        context 'with group runner registration disabled' do
+          before do
+            stub_application_setting(valid_runner_registrars: ['project'])
+          end
+
+          it { is_expected.to be_disallowed(:register_group_runners) }
+        end
+      end
+    end
+
+    context 'admin' do
+      let(:current_user) { admin }
+
+      context 'when admin mode is enabled', :enable_admin_mode do
+        it { is_expected.to be_allowed(:register_group_runners) }
+
+        it_behaves_like 'expected outcome based on runner registration control'
+      end
+
+      context 'when admin mode is disabled' do
+        it { is_expected.to be_disallowed(:register_group_runners) }
+      end
+    end
+
+    context 'with owner' do
+      let(:current_user) { owner }
+
+      it { is_expected.to be_allowed(:register_group_runners) }
+
+      it_behaves_like 'expected outcome based on runner registration control'
+    end
+
+    context 'with maintainer' do
+      let(:current_user) { maintainer }
+
+      it { is_expected.to be_allowed(:register_group_runners) }
+
+      it_behaves_like 'expected outcome based on runner registration control'
+    end
+
+    context 'with reporter' do
+      let(:current_user) { reporter }
+
+      it { is_expected.to be_disallowed(:register_group_runners) }
+    end
+
+    context 'with guest' do
+      let(:current_user) { guest }
+
+      it { is_expected.to be_disallowed(:register_group_runners) }
+    end
+
+    context 'with non member' do
+      let(:current_user) { create(:user) }
+
+      it { is_expected.to be_disallowed(:register_group_runners) }
+    end
+
+    context 'with anonymous' do
+      let(:current_user) { nil }
+
+      it { is_expected.to be_disallowed(:register_group_runners) }
+    end
+  end
+
   context 'with customer_relations feature flag disabled' do
     let(:current_user) { owner }
 

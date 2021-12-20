@@ -58,7 +58,7 @@ RSpec.describe Clusters::Integrations::PrometheusHealthCheckService, '#execute' 
       let(:prometheus_enabled) { true }
 
       before do
-        client = instance_double('PrometheusClient', healthy?: client_healthy)
+        client = instance_double('Gitlab::PrometheusClient', healthy?: client_healthy)
         expect(prometheus).to receive(:prometheus_client).and_return(client)
       end
 

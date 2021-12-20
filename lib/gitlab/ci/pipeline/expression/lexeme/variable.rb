@@ -9,7 +9,11 @@ module Gitlab
             PATTERN = /\$(?<name>\w+)/.freeze
 
             def evaluate(variables = {})
-              variables.with_indifferent_access.fetch(@value, nil)
+              unless variables.is_a?(ActiveSupport::HashWithIndifferentAccess)
+                variables = variables.with_indifferent_access
+              end
+
+              variables.fetch(@value, nil)
             end
 
             def inspect

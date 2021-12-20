@@ -5,6 +5,7 @@ module BulkImports
     include Gitlab::ImportExport::CommandLineUtil
 
     BATCH_SIZE = 100
+    AVATAR_PATH = 'avatar'
 
     def initialize(portable, export_path)
       @portable = portable
@@ -34,7 +35,7 @@ module BulkImports
 
     def export_subdir_path(upload)
       subdir = if upload.path == avatar_path
-                 'avatar'
+                 AVATAR_PATH
                else
                  upload.try(:secret).to_s
                end

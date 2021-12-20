@@ -5,7 +5,8 @@ require 'spec_helper'
 RSpec.describe Issues::CreateService do
   include AfterNextHelpers
 
-  let_it_be_with_reload(:project) { create(:project) }
+  let_it_be(:group) { create(:group) }
+  let_it_be_with_reload(:project) { create(:project, group: group) }
   let_it_be(:user) { create(:user) }
 
   let(:spam_params) { double }
@@ -107,6 +108,13 @@ RSpec.describe Issues::CreateService do
               .to change { Label.where(incident_label_attributes).count }.by(1)
           end
 
+          it 'calls IncidentManagement::Incidents::CreateEscalationStatusService' do
+            expect_next(::IncidentManagement::IssuableEscalationStatuses::CreateService, a_kind_of(Issue))
+              .to receive(:execute)
+
+            issue
+          end
+
           context 'when invalid' do
             before do
               opts.merge!(title: '')
@@ -154,7 +162,7 @@ RSpec.describe Issues::CreateService do
       end
 
       it 'moves the issue to the end, in an asynchronous worker' do
-        expect(IssuePlacementWorker).to receive(:perform_async).with(be_nil, Integer)
+        expect(Issues::PlacementWorker).to receive(:perform_async).with(be_nil, Integer)
 
         described_class.new(project: project, current_user: user, params: opts, spam_params: spam_params).execute
       end
@@ -430,25 +438,29 @@ RSpec.describe Issues::CreateService do
     end
 
     context 'Quick actions' do
-      context 'with assignee and milestone in params and command' do
+      context 'with assignee, milestone, and contact in params and command' do
+        let_it_be(:contact) { create(:contact, group: group) }
+
         let(:opts) do
           {
             assignee_ids: [create(:user).id],
             milestone_id: 1,
             title: 'Title',
-            description: %(/assign @#{assignee.username}\n/milestone %"#{milestone.name}")
+            description: %(/assign @#{assignee.username}\n/milestone %"#{milestone.name}"),
+            add_contacts: [contact.email]
           }
         end
 
         before_all do
-          project.add_maintainer(user)
+          group.add_maintainer(user)
           project.add_maintainer(assignee)
         end
 
-        it 'assigns and sets milestone to issuable from command' do
+        it 'assigns, sets milestone, and sets contact to issuable from command' do
           expect(issue).to be_persisted
           expect(issue.assignees).to eq([assignee])
           expect(issue.milestone).to eq(milestone)
+          expect(issue.issue_customer_relations_contacts.last.contact).to eq(contact)
         end
       end
     end

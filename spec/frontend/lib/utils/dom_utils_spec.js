@@ -6,6 +6,7 @@ import {
   isElementVisible,
   isElementHidden,
   getParents,
+  setAttributes,
 } from '~/lib/utils/dom_utils';
 
 const TEST_MARGIN = 5;
@@ -206,6 +207,17 @@ describe('DOM Utils', () => {
         el.querySelector('p'),
         el,
       ]);
+    });
+  });
+
+  describe('setAttributes', () => {
+    it('sets multiple attribues on element', () => {
+      const div = document.createElement('div');
+
+      setAttributes(div, { class: 'test', title: 'another test' });
+
+      expect(div.getAttribute('class')).toBe('test');
+      expect(div.getAttribute('title')).toBe('another test');
     });
   });
 });

@@ -5,14 +5,13 @@ class SearchController < ApplicationController
   include SearchHelper
   include RedisTracking
 
-  RESCUE_FROM_TIMEOUT_ACTIONS = [:count, :show].freeze
+  RESCUE_FROM_TIMEOUT_ACTIONS = [:count, :show, :autocomplete].freeze
 
   track_redis_hll_event :show, name: 'i_search_total'
 
   around_action :allow_gitaly_ref_name_caching
 
   before_action :block_anonymous_global_searches, :check_scope_global_search_enabled, except: :opensearch
-  before_action :strip_surrounding_whitespace_from_search, except: :opensearch
   skip_before_action :authenticate_user!
   requires_cross_project_access if: -> do
     search_term_present = params[:search].present? || params[:term].present?
@@ -74,11 +73,7 @@ class SearchController < ApplicationController
   def autocomplete
     term = params[:term]
 
-    if params[:project_id].present?
-      @project = Project.find_by(id: params[:project_id])
-      @project = nil unless can?(current_user, :read_project, @project)
-    end
-
+    @project = search_service.project
     @ref = params[:project_ref] if params[:project_ref].present?
 
     render json: search_autocomplete_opts(term).to_json
@@ -97,12 +92,12 @@ class SearchController < ApplicationController
 
   def search_term_valid?
     unless search_service.valid_query_length?
-      flash[:alert] = t('errors.messages.search_chars_too_long', count: SearchService::SEARCH_CHAR_LIMIT)
+      flash[:alert] = t('errors.messages.search_chars_too_long', count: Gitlab::Search::Params::SEARCH_CHAR_LIMIT)
       return false
     end
 
     unless search_service.valid_terms_count?
-      flash[:alert] = t('errors.messages.search_terms_too_long', count: SearchService::SEARCH_TERM_LIMIT)
+      flash[:alert] = t('errors.messages.search_terms_too_long', count: Gitlab::Search::Params::SEARCH_TERM_LIMIT)
       return false
     end
 
@@ -147,10 +142,15 @@ class SearchController < ApplicationController
     payload[:metadata]['meta.search.filters.confidential'] = params[:confidential]
     payload[:metadata]['meta.search.filters.state'] = params[:state]
     payload[:metadata]['meta.search.force_search_results'] = params[:force_search_results]
+
+    if search_service.abuse_detected?
+      payload[:metadata]['abuse.confidence'] = Gitlab::Abuse.confidence(:certain)
+      payload[:metadata]['abuse.messages'] = search_service.abuse_messages
+    end
   end
 
   def block_anonymous_global_searches
-    return if params[:project_id].present? || params[:group_id].present?
+    return unless search_service.global_search?
     return if current_user
     return unless ::Feature.enabled?(:block_anonymous_global_searches, type: :ops)
 
@@ -160,7 +160,7 @@ class SearchController < ApplicationController
   end
 
   def check_scope_global_search_enabled
-    return if params[:project_id].present? || params[:group_id].present?
+    return unless search_service.global_search?
 
     search_allowed = case params[:scope]
                      when 'blobs'
@@ -189,19 +189,14 @@ class SearchController < ApplicationController
 
     @timeout = true
 
-    if count_action_name?
+    case action_name.to_sym
+    when :count
       render json: {}, status: :request_timeout
+    when :autocomplete
+      render json: [], status: :request_timeout
     else
       render status: :request_timeout
     end
-  end
-
-  def count_action_name?
-    action_name.to_sym == :count
-  end
-
-  def strip_surrounding_whitespace_from_search
-    %i(term search).each { |param| params[param]&.strip! }
   end
 end
 

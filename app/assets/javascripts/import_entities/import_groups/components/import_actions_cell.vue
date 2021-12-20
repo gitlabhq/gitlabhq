@@ -44,7 +44,7 @@ export default {
       :size="16"
       name="information-o"
       :title="
-        s__('BulkImports|Re-import creates a new group. It does not sync with the existing group.')
+        s__('BulkImport|Re-import creates a new group. It does not sync with the existing group.')
       "
       class="gl-ml-3"
     />

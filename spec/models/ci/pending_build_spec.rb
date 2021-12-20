@@ -118,7 +118,7 @@ RSpec.describe Ci::PendingBuild do
         project.shared_runners_enabled = true
       end
 
-      context 'when ci_pending_builds_maintain_shared_runners_data is enabled' do
+      context 'when ci_pending_builds_maintain_denormalized_data is enabled' do
         it 'sets instance_runners_enabled to true' do
           described_class.upsert_from_build!(build)
 
@@ -150,9 +150,9 @@ RSpec.describe Ci::PendingBuild do
         end
       end
 
-      context 'when ci_pending_builds_maintain_shared_runners_data is disabled' do
+      context 'when ci_pending_builds_maintain_denormalized_data is disabled' do
         before do
-          stub_feature_flags(ci_pending_builds_maintain_shared_runners_data: false)
+          stub_feature_flags(ci_pending_builds_maintain_denormalized_data: false)
         end
 
         it 'sets instance_runners_enabled to false' do
@@ -168,7 +168,7 @@ RSpec.describe Ci::PendingBuild do
 
       subject(:ci_pending_build) { described_class.last }
 
-      context 'when ci_pending_builds_maintain_tags_data is enabled' do
+      context 'when ci_pending_builds_maintain_denormalized_data is enabled' do
         it 'sets tag_ids' do
           described_class.upsert_from_build!(build)
 
@@ -176,9 +176,9 @@ RSpec.describe Ci::PendingBuild do
         end
       end
 
-      context 'when ci_pending_builds_maintain_tags_data is disabled' do
+      context 'when ci_pending_builds_maintain_denormalized_data is disabled' do
         before do
-          stub_feature_flags(ci_pending_builds_maintain_tags_data: false)
+          stub_feature_flags(ci_pending_builds_maintain_denormalized_data: false)
         end
 
         it 'does not set tag_ids' do

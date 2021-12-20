@@ -25,7 +25,7 @@ class Member < ApplicationRecord
   belongs_to :source, polymorphic: true # rubocop:disable Cop/PolymorphicAssociations
   has_one :member_task
 
-  delegate :name, :username, :email, to: :user, prefix: true
+  delegate :name, :username, :email, :last_activity_on, to: :user, prefix: true
   delegate :tasks_to_be_done, to: :member_task, allow_nil: true
 
   validates :expires_at, allow_blank: true, future_date: true
@@ -52,6 +52,7 @@ class Member < ApplicationRecord
       message: _('project bots cannot be added to other groups / projects')
     },
     if: :project_bot?
+  validate :access_level_inclusion
 
   scope :with_invited_user_state, -> do
     joins('LEFT JOIN users as invited_user ON invited_user.email = members.invite_email')
@@ -382,6 +383,12 @@ class Member < ApplicationRecord
 
   private
 
+  def access_level_inclusion
+    return if access_level.in?(Gitlab::Access.all_values)
+
+    errors.add(:access_level, "is not included in the list")
+  end
+
   def send_invite
     # override in subclass
   end
@@ -417,11 +424,9 @@ class Member < ApplicationRecord
   def after_accept_invite
     post_create_hook
 
-    if experiment(:invite_members_for_task).enabled?
-      run_after_commit_or_now do
-        if member_task
-          TasksToBeDone::CreateWorker.perform_async(member_task.id, created_by_id, [user_id.to_i])
-        end
+    run_after_commit_or_now do
+      if member_task
+        TasksToBeDone::CreateWorker.perform_async(member_task.id, created_by_id, [user_id.to_i])
       end
     end
   end

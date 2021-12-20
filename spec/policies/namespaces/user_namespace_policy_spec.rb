@@ -3,10 +3,10 @@
 require 'spec_helper'
 
 RSpec.describe Namespaces::UserNamespacePolicy do
-  let(:user) { create(:user) }
-  let(:owner) { create(:user) }
-  let(:admin) { create(:admin) }
-  let(:namespace) { create(:namespace, owner: owner) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:owner) { create(:user) }
+  let_it_be(:admin) { create(:admin) }
+  let_it_be(:namespace) { create(:user_namespace, owner: owner) }
 
   let(:owner_permissions) { [:owner_access, :create_projects, :admin_namespace, :read_namespace, :read_statistics, :transfer_projects, :create_package_settings, :read_package_settings] }
 
@@ -72,6 +72,28 @@ RSpec.describe Namespaces::UserNamespacePolicy do
       let(:current_user) { build_stubbed(:user) }
 
       it { is_expected.to be_disallowed(:create_jira_connect_subscription) }
+    end
+  end
+
+  describe 'create projects' do
+    using RSpec::Parameterized::TableSyntax
+
+    let(:current_user) { owner }
+
+    context 'when user can create projects' do
+      before do
+        allow(current_user).to receive(:can_create_project?).and_return(true)
+      end
+
+      it { is_expected.to be_allowed(:create_projects) }
+    end
+
+    context 'when user cannot create projects' do
+      before do
+        allow(current_user).to receive(:can_create_project?).and_return(false)
+      end
+
+      it { is_expected.to be_disallowed(:create_projects) }
     end
   end
 end

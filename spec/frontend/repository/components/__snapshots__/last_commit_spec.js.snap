@@ -2,7 +2,7 @@
 
 exports[`Repository last commit component renders commit widget 1`] = `
 <div
-  class="info-well d-none d-sm-flex project-last-commit commit p-3"
+  class="well-segment commit gl-p-5 gl-w-full"
 >
   <user-avatar-link-stub
     class="avatar-cell"
@@ -99,6 +99,7 @@ exports[`Repository last commit component renders commit widget 1`] = `
           text="123456789"
           title="Copy commit SHA"
           tooltipplacement="top"
+          variant="default"
         />
       </gl-button-group-stub>
     </div>
@@ -108,7 +109,7 @@ exports[`Repository last commit component renders commit widget 1`] = `
 
 exports[`Repository last commit component renders the signature HTML as returned by the backend 1`] = `
 <div
-  class="info-well d-none d-sm-flex project-last-commit commit p-3"
+  class="well-segment commit gl-p-5 gl-w-full"
 >
   <user-avatar-link-stub
     class="avatar-cell"
@@ -209,6 +210,7 @@ exports[`Repository last commit component renders the signature HTML as returned
           text="123456789"
           title="Copy commit SHA"
           tooltipplacement="top"
+          variant="default"
         />
       </gl-button-group-stub>
     </div>

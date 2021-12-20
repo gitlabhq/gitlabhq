@@ -63,7 +63,7 @@ To edit a merge request approval rule:
 
 1. Go to your project and select **Settings > General**.
 1. Expand **Merge request (MR) approvals**, and then select **Edit**.
-1. (Optional) Change the **Rule name**.
+1. Optional. Change the **Rule name**.
 1. Set the number of required approvals in **Approvals required**. The minimum value is `0`.
 1. Add or remove eligible approvers, as needed:
    - *To add users or groups as approvers,* search for users or groups that are

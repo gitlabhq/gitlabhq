@@ -1,0 +1,21 @@
+description: "Click item in What's new component"
+category: default
+action: click_whats_new_item
+label_description: "`[feature_title]`"
+property_description: "`[feature_url]`"
+value_description: ""
+extra_properties:
+identifiers:
+product_section: growth
+product_stage: growth
+product_group: group::adoption
+product_category:
+milestone: "13.12"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/60804
+distributions:
+- ce
+- ee
+tiers:
+- free
+- premium
+- ultimate

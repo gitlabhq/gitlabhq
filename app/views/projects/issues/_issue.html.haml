@@ -13,7 +13,7 @@
             %span.has-tooltip{ title: _('Confidential') }
               = confidential_icon(issue)
           = hidden_issue_icon(issue)
-          = link_to issue.title, issue_path(issue)
+          = link_to issue.title, issue_path(issue), class: 'js-prefetch-document'
         = render_if_exists 'projects/issues/subepic_flag', issue: issue
         - if issue.tasks?
           %span.task-status.d-none.d-sm-inline-block
@@ -25,10 +25,10 @@
           #{issuable_reference(issue)}
         %span.issuable-authored.d-none.d-sm-inline-block
           &middot;
-          created #{time_ago_with_tooltip(issue.created_at, placement: 'bottom')} by
           - if issue.service_desk_reply_to
-            #{issue.service_desk_reply_to} via
-          #{link_to_member(@project, issue.author, avatar: false)}
+            #{_('created %{timeAgoString} by %{email} via %{user}').html_safe % { timeAgoString: time_ago_with_tooltip(issue.created_at, placement: 'bottom'), email: issue.service_desk_reply_to, user: link_to_member(@project, issue.author, avatar: false) }}
+          - else
+            #{s_('IssueList|created %{timeAgoString} by %{user}').html_safe % { timeAgoString: time_ago_with_tooltip(issue.created_at, placement: 'bottom'), user: link_to_member(@project, issue.author, avatar: false) }}
           = render_if_exists 'shared/issuable/gitlab_team_member_badge', author: issue.author
         - if issue.milestone
           %span.issuable-milestone.d-none.d-sm-inline-block

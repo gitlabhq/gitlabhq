@@ -2,9 +2,12 @@ import MockAdapter from 'axios-mock-adapter';
 import { useMockLocationHelper } from 'helpers/mock_window_location_helper';
 import testAction from 'helpers/vuex_action_helper';
 import api from '~/api';
+import createFlash from '~/flash';
 import service from '~/ide/services';
 import { createStore } from '~/ide/stores';
 import {
+  setProject,
+  fetchProjectPermissions,
   refreshLastCommitData,
   showBranchNotFoundError,
   createNewBranchFromDefault,
@@ -13,7 +16,11 @@ import {
   loadFile,
   loadBranch,
 } from '~/ide/stores/actions';
+import { logError } from '~/lib/logger';
 import axios from '~/lib/utils/axios_utils';
+
+jest.mock('~/flash');
+jest.mock('~/lib/logger');
 
 const TEST_PROJECT_ID = 'abc/def';
 
@@ -32,6 +39,92 @@ describe('IDE store project actions', () => {
 
   afterEach(() => {
     mock.restore();
+  });
+
+  describe('setProject', () => {
+    const project = { id: 'foo', path_with_namespace: TEST_PROJECT_ID };
+    const baseMutations = [
+      {
+        type: 'SET_PROJECT',
+        payload: {
+          projectPath: TEST_PROJECT_ID,
+          project,
+        },
+      },
+      {
+        type: 'SET_CURRENT_PROJECT',
+        payload: TEST_PROJECT_ID,
+      },
+    ];
+
+    it.each`
+      desc                                                         | payload        | expectedMutations
+      ${'does not commit any action if project is not passed'}     | ${undefined}   | ${[]}
+      ${'commits correct actions in the correct order by default'} | ${{ project }} | ${[...baseMutations]}
+    `('$desc', async ({ payload, expectedMutations } = {}) => {
+      await testAction({
+        action: setProject,
+        payload,
+        state: store.state,
+        expectedMutations,
+        expectedActions: [],
+      });
+    });
+  });
+
+  describe('fetchProjectPermissions', () => {
+    const permissionsData = {
+      userPermissions: {
+        bogus: true,
+      },
+    };
+    const permissionsMutations = [
+      {
+        type: 'UPDATE_PROJECT',
+        payload: {
+          projectPath: TEST_PROJECT_ID,
+          props: {
+            ...permissionsData,
+          },
+        },
+      },
+    ];
+
+    let spy;
+
+    beforeEach(() => {
+      spy = jest.spyOn(service, 'getProjectPermissionsData');
+    });
+
+    afterEach(() => {
+      createFlash.mockRestore();
+    });
+
+    it.each`
+      desc                                                      | projectPath        | responseSuccess | expectedMutations
+      ${'does not fetch permissions if project does not exist'} | ${undefined}       | ${true}         | ${[]}
+      ${'fetches permission when project is specified'}         | ${TEST_PROJECT_ID} | ${true}         | ${[...permissionsMutations]}
+      ${'flashes an error if the request fails'}                | ${TEST_PROJECT_ID} | ${false}        | ${[]}
+    `('$desc', async ({ projectPath, expectedMutations, responseSuccess } = {}) => {
+      store.state.currentProjectId = projectPath;
+      if (responseSuccess) {
+        spy.mockResolvedValue(permissionsData);
+      } else {
+        spy.mockRejectedValue();
+      }
+
+      await testAction({
+        action: fetchProjectPermissions,
+        state: store.state,
+        expectedMutations,
+        expectedActions: [],
+      });
+
+      if (!responseSuccess) {
+        expect(logError).toHaveBeenCalled();
+        expect(createFlash).toHaveBeenCalled();
+      }
+    });
   });
 
   describe('refreshLastCommitData', () => {

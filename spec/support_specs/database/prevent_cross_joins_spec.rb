@@ -39,6 +39,15 @@ RSpec.describe Database::PreventCrossJoins do
           expect { main_and_ci_query_allowlist_nested }.not_to raise_error
         end
       end
+
+      context 'when there is a parser error' do
+        it 'does not raise parse PGQuery::ParseError' do
+          # Since this is in an invalid query it still raises from ActiveRecord
+          # but this tests that we rescue the PGQuery::ParseError which would
+          # have otherwise raised first
+          expect { ApplicationRecord.connection.execute('SELECT SELECT FROM SELECT') }.to raise_error(ActiveRecord::StatementInvalid)
+        end
+      end
     end
   end
 

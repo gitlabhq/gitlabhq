@@ -32,14 +32,14 @@ GitLab IaC scanning supports a variety of IaC configuration files. Our IaC secur
 
 | Configuration File Type                  | Scan tool                        | Introduced in GitLab Version  |
 |------------------------------------------|----------------------------------|-------------------------------|
-| Ansible                                  | [kics](https://kics.io/)         | 14.5                          |
-| AWS CloudFormation                       | [kics](https://kics.io/)         | 14.5                          |
-| Kubernetes                               | [kics](https://kics.io/)         | 14.5                          |
-| Terraform                                | [kics](https://kics.io/)         | 14.5                          |
+| Ansible                                  | [KICS](https://kics.io/)         | 14.5                          |
+| AWS CloudFormation                       | [KICS](https://kics.io/)         | 14.5                          |
+| Kubernetes                               | [KICS](https://kics.io/)         | 14.5                          |
+| Terraform                                | [KICS](https://kics.io/)         | 14.5                          |
 
 ### Making IaC analyzers available to all GitLab tiers
 
-All open source (OSS) analyzers are availibile with the GitLab Free tier. Future propietary analyzers may be restricted to higher tiers. 
+All open source (OSS) analyzers are available with the GitLab Free tier. Future proprietary analyzers may be restricted to higher tiers.
 
 #### Summary of features per tier
 
@@ -74,7 +74,7 @@ The included template creates IaC scanning jobs in your CI/CD pipeline and scans
 your project's configuration files for possible vulnerabilities.
 
 The results are saved as a
-[SAST report artifact](../../../ci/yaml/index.md#artifactsreportssast)
+[SAST report artifact](../../../ci/yaml/artifacts_reports.md#artifactsreportssast)
 that you can download and analyze.
 
 ### Enable IaC Scanning via an automatic merge request
@@ -84,7 +84,7 @@ from the Security Configuration page:
 
 1. On the top bar, select **Menu > Projects** and find your project.
 1. On the left sidebar, select **Security & Compliance > Configuration**.
-1. In the **Infrastructure as Code (IaC) Scanning** row, select **Configure via Merge Request**.
+1. In the **Infrastructure as Code (IaC) Scanning** row, select **Configure with a merge request**.
 
 This automatically creates a merge request with the changes necessary to enable IaC Scanning
 that you can review and merge to complete the configuration.

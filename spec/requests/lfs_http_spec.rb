@@ -518,13 +518,51 @@ RSpec.describe 'Git LFS API and storage' do
                 end
 
                 context 'in source of fork project' do
+                  let(:other_project) { create(:project, :empty_repo) }
                   let(:project) { fork_project(other_project) }
 
                   before do
                     lfs_object.update!(projects: [other_project])
                   end
 
-                  it_behaves_like 'batch upload with existing LFS object'
+                  context 'when user has access to both the parent and fork' do
+                    before do
+                      project.add_developer(user)
+                      other_project.add_developer(user)
+                    end
+
+                    it 'links existing LFS objects to other project' do
+                      expect(Gitlab::AppJsonLogger).to receive(:info).with(
+                        message: "LFS object auto-linked to forked project",
+                        lfs_object_oid: lfs_object.oid,
+                        lfs_object_size: lfs_object.size,
+                        source_project_id: other_project.id,
+                        source_project_path: other_project.full_path,
+                        target_project_id: project.id,
+                        target_project_path: project.full_path).and_call_original
+                      expect(json_response['objects']).to be_kind_of(Array)
+                      expect(json_response['objects'].first).to include(sample_object)
+                      expect(json_response['objects'].first).not_to have_key('actions')
+
+                      expect(lfs_object.reload.projects.pluck(:id)).to match_array([other_project.id, project.id])
+                    end
+
+                    context 'when feature flag is disabled' do
+                      before do
+                        stub_feature_flags(lfs_auto_link_fork_source: false)
+                      end
+
+                      it_behaves_like 'batch upload with existing LFS object'
+                    end
+                  end
+
+                  context 'when user does not have access to parent' do
+                    before do
+                      project.add_developer(user)
+                    end
+
+                    it_behaves_like 'batch upload with existing LFS object'
+                  end
                 end
               end
 

@@ -1,6 +1,7 @@
 mutation updateIssueLocked($input: IssueSetLockedInput!) {
   issueSetLocked(input: $input) {
     issue {
+      id
       discussionLocked
     }
     errors

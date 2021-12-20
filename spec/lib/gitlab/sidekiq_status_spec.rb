@@ -12,6 +12,31 @@ RSpec.describe Gitlab::SidekiqStatus, :clean_gitlab_redis_queues, :clean_gitlab_
       Sidekiq.redis do |redis|
         expect(redis.exists(key)).to eq(true)
         expect(redis.ttl(key) > 0).to eq(true)
+        expect(redis.get(key)).to eq(described_class::DEFAULT_VALUE.to_s)
+      end
+    end
+
+    it 'allows overriding the expiration time' do
+      described_class.set('123', described_class::DEFAULT_EXPIRATION * 2)
+
+      key = described_class.key_for('123')
+
+      Sidekiq.redis do |redis|
+        expect(redis.exists(key)).to eq(true)
+        expect(redis.ttl(key) > described_class::DEFAULT_EXPIRATION).to eq(true)
+        expect(redis.get(key)).to eq(described_class::DEFAULT_VALUE.to_s)
+      end
+    end
+
+    it 'allows overriding the default value' do
+      described_class.set('123', value: 2)
+
+      key = described_class.key_for('123')
+
+      Sidekiq.redis do |redis|
+        expect(redis.exists(key)).to eq(true)
+        expect(redis.ttl(key) > 0).to eq(true)
+        expect(redis.get(key)).to eq('2')
       end
     end
   end
@@ -88,7 +113,7 @@ RSpec.describe Gitlab::SidekiqStatus, :clean_gitlab_redis_queues, :clean_gitlab_
     end
   end
 
-  describe 'completed' do
+  describe '.completed_jids' do
     it 'returns the completed job' do
       expect(described_class.completed_jids(%w(123))).to eq(['123'])
     end
@@ -98,6 +123,48 @@ RSpec.describe Gitlab::SidekiqStatus, :clean_gitlab_redis_queues, :clean_gitlab_
       described_class.set('456')
 
       expect(described_class.completed_jids(%w(123 456 789))).to eq(['789'])
+    end
+  end
+
+  describe '.job_status' do
+    it 'returns an array of boolean values' do
+      described_class.set('123')
+      described_class.set('456')
+      described_class.unset('123')
+
+      expect(described_class.job_status(%w(123 456 789))).to eq([false, true, false])
+    end
+
+    it 'handles an empty array' do
+      expect(described_class.job_status([])).to eq([])
+    end
+
+    context 'when log_implicit_sidekiq_status_calls is enabled' do
+      it 'logs keys that contained the default value' do
+        described_class.set('123', value: 2)
+        described_class.set('456')
+        described_class.set('012')
+
+        expect(Sidekiq.logger).to receive(:info).with(message: described_class::DEFAULT_VALUE_MESSAGE,
+                                                      keys: [described_class.key_for('456'), described_class.key_for('012')])
+
+        expect(described_class.job_status(%w(123 456 789 012))).to eq([true, true, false, true])
+      end
+    end
+
+    context 'when log_implicit_sidekiq_status_calls is disabled' do
+      before do
+        stub_feature_flags(log_implicit_sidekiq_status_calls: false)
+      end
+
+      it 'does not perform any logging' do
+        described_class.set('123', value: 2)
+        described_class.set('456')
+
+        expect(Sidekiq.logger).not_to receive(:info)
+
+        expect(described_class.job_status(%w(123 456 789))).to eq([true, true, false])
+      end
     end
   end
 end

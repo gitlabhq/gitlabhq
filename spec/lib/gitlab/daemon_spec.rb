@@ -46,6 +46,30 @@ RSpec.describe Gitlab::Daemon do
 
           expect(subject).to have_received(:run_thread)
         end
+
+        context '@synchronous' do
+          context 'when @synchronous is set to true' do
+            subject { described_class.instance(synchronous: true) }
+
+            it 'calls join on the thread' do
+              # Thread has to be run in a block, expect_next_instance_of does not support this.
+              expect_any_instance_of(Thread).to receive(:join) # rubocop:disable RSpec/AnyInstanceOf
+
+              subject.start
+            end
+          end
+
+          context 'when @synchronous is not set to a truthy value' do
+            subject { described_class.instance }
+
+            it 'does not call join on the thread' do
+              # Thread has to be run in a block, expect_next_instance_of does not support this.
+              expect_any_instance_of(Thread).not_to receive(:join) # rubocop:disable RSpec/AnyInstanceOf
+
+              subject.start
+            end
+          end
+        end
       end
 
       describe '#stop' do

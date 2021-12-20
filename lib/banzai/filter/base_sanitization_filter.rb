@@ -59,7 +59,11 @@ module Banzai
         def remove_rel
           lambda do |env|
             if env[:node_name] == 'a'
-              env[:node].remove_attribute('rel')
+              # we allow rel="license" to support the Rel-license microformat
+              # http://microformats.org/wiki/rel-license
+              unless env[:node].attribute('rel')&.value == 'license'
+                env[:node].remove_attribute('rel')
+              end
             end
           end
         end

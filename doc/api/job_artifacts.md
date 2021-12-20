@@ -252,6 +252,7 @@ Example response:
   "finished_at": "2016-01-11T10:15:10.506Z",
   "duration": 97.0,
   "status": "failed",
+  "failure_reason": "script_failure",
   "tag": false,
   "web_url": "https://example.com/foo/bar/-/jobs/42",
   "user": null

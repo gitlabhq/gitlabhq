@@ -113,13 +113,21 @@ module Gitlab
                 name: build[:name],
                 stage: build[:stage],
                 image: build.dig(:options, :image, :name),
-                services: build.dig(:options, :services)&.map { |service| service[:name] },
+                services: service_names(build),
                 script: [
                   build.dig(:options, :before_script),
                   build.dig(:options, :script),
                   build.dig(:options, :after_script)
                 ].flatten.compact
               }
+            end
+
+            def service_names(build)
+              services = build.dig(:options, :services)
+
+              return unless services
+
+              services.compact.map { |service| service[:name] }
             end
 
             def stages_attributes

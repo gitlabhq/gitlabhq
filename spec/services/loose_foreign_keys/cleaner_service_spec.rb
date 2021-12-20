@@ -13,21 +13,21 @@ RSpec.describe LooseForeignKeys::CleanerService do
 
   let(:loose_fk_definition) do
     ActiveRecord::ConnectionAdapters::ForeignKeyDefinition.new(
-      'projects',
       'issues',
+      'projects',
       {
         column: 'project_id',
-        on_delete: :async_nullify
+        on_delete: :async_nullify,
+        gitlab_schema: :gitlab_main
       }
     )
   end
 
   subject(:cleaner_service) do
     described_class.new(
-      model: Issue,
-      foreign_key_definition: loose_fk_definition,
-      deleted_parent_records: deleted_records
-    )
+      loose_foreign_key_definition: loose_fk_definition,
+      connection: ApplicationRecord.connection,
+      deleted_parent_records: deleted_records)
   end
 
   context 'when invalid foreign key definition is passed' do
@@ -80,11 +80,12 @@ RSpec.describe LooseForeignKeys::CleanerService do
 
       let(:loose_fk_definition) do
         ActiveRecord::ConnectionAdapters::ForeignKeyDefinition.new(
-          'users',
           'project_authorizations',
+          'users',
           {
             column: 'user_id',
-            on_delete: :async_delete
+            on_delete: :async_delete,
+            gitlab_schema: :gitlab_main
           }
         )
       end
@@ -97,8 +98,8 @@ RSpec.describe LooseForeignKeys::CleanerService do
 
       subject(:cleaner_service) do
         described_class.new(
-          model: ProjectAuthorization,
-          foreign_key_definition: loose_fk_definition,
+          loose_foreign_key_definition: loose_fk_definition,
+          connection: ApplicationRecord.connection,
           deleted_parent_records: deleted_records
         )
       end
@@ -130,8 +131,8 @@ RSpec.describe LooseForeignKeys::CleanerService do
     context 'when with_skip_locked parameter is true' do
       subject(:cleaner_service) do
         described_class.new(
-          model: Issue,
-          foreign_key_definition: loose_fk_definition,
+          loose_foreign_key_definition: loose_fk_definition,
+          connection: ApplicationRecord.connection,
           deleted_parent_records: deleted_records,
           with_skip_locked: true
         )

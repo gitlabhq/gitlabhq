@@ -26,7 +26,7 @@ To manage linked issues through our API, visit the [issue links API documentatio
 1. Link one issue to another by selecting the add linked issue button (**{plus}**) in the
    **Linked issues** section of an issue.
 
-1. Select the relationship the between the two issues. Either:
+1. Select the relationship between the two issues. Either:
    - **relates to**
    - **blocks** **(PREMIUM)**
    - **is blocked by** **(PREMIUM)**
