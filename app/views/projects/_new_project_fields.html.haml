@@ -98,7 +98,7 @@
           = check_box_tag 'project[initialize_with_sast]', '1', true, class: 'form-check-input', data: { qa_selector: 'initialize_with_sast_checkbox', track_experiment: e.name, track_label: track_label, track_action: 'activate_form_input', track_property: 'init_with_sast' }
           = label_tag 'project[initialize_with_sast]', class: 'form-check-label' do
             = s_('ProjectsNew|Enable Static Application Security Testing (SAST)')
-            %span.badge.badge-info.badge-pill.gl-badge.sm= _('Free')
+            = gl_badge_tag _('Free'), variant: :info, size: :sm
           .form-text.text-muted
             = s_('ProjectsNew|Analyze your source code for known security vulnerabilities.')
             = link_to _('Learn more.'), help_page_path('user/application_security/sast/index'), target: '_blank', rel: 'noopener noreferrer', data: { track_action: 'followed', track_experiment: e.name }
@@ -108,7 +108,7 @@
           = check_box_tag 'project[initialize_with_sast]', '1', false, class: 'form-check-input', data: { qa_selector: 'initialize_with_sast_checkbox', track_experiment: e.name, track_label: track_label, track_action: 'activate_form_input', track_property: 'init_with_sast' }
           = label_tag 'project[initialize_with_sast]', class: 'form-check-label' do
             = s_('ProjectsNew|Enable Static Application Security Testing (SAST)')
-            %span.badge.badge-info.badge-pill.gl-badge.sm= _('Free')
+            = gl_badge_tag _('Free'), variant: :info, size: :sm
           .form-text.text-muted
             = s_('ProjectsNew|Analyze your source code for known security vulnerabilities.')
             = link_to _('Learn more.'), help_page_path('user/application_security/sast/index'), target: '_blank', rel: 'noopener noreferrer', data: { track_action: 'followed', track_experiment: e.name }

@@ -141,23 +141,25 @@ install, and upgrade your Docker-based GitLab installation:
 1. Create a `docker-compose.yml` file (or [download an example](https://gitlab.com/gitlab-org/omnibus-gitlab/raw/master/docker/docker-compose.yml)):
 
    ```yaml
-   web:
-     image: 'gitlab/gitlab-ee:latest'
-     restart: always
-     hostname: 'gitlab.example.com'
-     environment:
-       GITLAB_OMNIBUS_CONFIG: |
-         external_url 'https://gitlab.example.com'
-         # Add any other gitlab.rb configuration here, each on its own line
-     ports:
-       - '80:80'
-       - '443:443'
-       - '22:22'
-     volumes:
-       - '$GITLAB_HOME/config:/etc/gitlab'
-       - '$GITLAB_HOME/logs:/var/log/gitlab'
-       - '$GITLAB_HOME/data:/var/opt/gitlab'
-     shm_size: '256m'
+   version: '3.6'
+   services:
+     web:
+       image: 'gitlab/gitlab-ee:latest'
+       restart: always
+       hostname: 'gitlab.example.com'
+       environment:
+         GITLAB_OMNIBUS_CONFIG: |
+           external_url 'https://gitlab.example.com'
+           # Add any other gitlab.rb configuration here, each on its own line
+       ports:
+         - '80:80'
+         - '443:443'
+         - '22:22'
+       volumes:
+         - '$GITLAB_HOME/config:/etc/gitlab'
+         - '$GITLAB_HOME/logs:/var/log/gitlab'
+         - '$GITLAB_HOME/data:/var/opt/gitlab'
+       shm_size: '256m'
    ```
 
 1. Make sure you are in the same directory as `docker-compose.yml` and start
@@ -176,22 +178,24 @@ HTTP and SSH port. Notice how the `GITLAB_OMNIBUS_CONFIG` variables match the
 `ports` section:
 
 ```yaml
-web:
-  image: 'gitlab/gitlab-ee:latest'
-  restart: always
-  hostname: 'gitlab.example.com'
-  environment:
-    GITLAB_OMNIBUS_CONFIG: |
-      external_url 'http://gitlab.example.com:8929'
-      gitlab_rails['gitlab_shell_ssh_port'] = 2224
-  ports:
-    - '8929:8929'
-    - '2224:22'
-  volumes:
-    - '$GITLAB_HOME/config:/etc/gitlab'
-    - '$GITLAB_HOME/logs:/var/log/gitlab'
-    - '$GITLAB_HOME/data:/var/opt/gitlab'
-  shm_size: '256m'
+version: '3.6'
+services:
+  web:
+    image: 'gitlab/gitlab-ee:latest'
+    restart: always
+    hostname: 'gitlab.example.com'
+    environment:
+      GITLAB_OMNIBUS_CONFIG: |
+        external_url 'http://gitlab.example.com:8929'
+        gitlab_rails['gitlab_shell_ssh_port'] = 2224
+    ports:
+      - '8929:8929'
+      - '2224:22'
+    volumes:
+      - '$GITLAB_HOME/config:/etc/gitlab'
+      - '$GITLAB_HOME/logs:/var/log/gitlab'
+      - '$GITLAB_HOME/data:/var/opt/gitlab'
+    shm_size: '256m'
 ```
 
 This is the same as using `--publish 8929:8929 --publish 2224:22`.

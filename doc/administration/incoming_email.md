@@ -531,19 +531,20 @@ enabled by default, and must be enabled through PowerShell.
 
 This series of PowerShell commands enables [sub-addressing](#email-sub-addressing)
 at the organization level in Office 365. This allows all mailboxes in the organization
-to receive sub-addressed mail:
+to receive sub-addressed mail.
 
-```powershell
-Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
+To enable sub-addressing:
 
-$UserCredential = Get-Credential
+1. Download and install the `ExchangeOnlineManagement` module from the [PowerShell gallery](https://www.powershellgallery.com/packages/ExchangeOnlineManagement/).
+1. In PowerShell, run the following commands:
 
-$Session = New-PSSession -ConfigurationName Microsoft.Exchange -ConnectionUri https://outlook.office365.com/powershell-liveid/ -Credential $UserCredential -Authentication Basic -AllowRedirection
-
-Import-PSSession $Session -DisableNameChecking
-
-Set-OrganizationConfig -AllowPlusAddressInRecipients $true
-```
+   ```powershell
+   Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
+   Import-Module ExchangeOnlineManagement
+   Connect-ExchangeOnline
+   Set-OrganizationConfig -AllowPlusAddressInRecipients $true
+   Disconnect-ExchangeOnline
+   ```
 
 This example for Omnibus GitLab assumes the mailbox `incoming@office365.example.com`:
 

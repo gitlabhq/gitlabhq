@@ -385,3 +385,9 @@ then override the icon in one of two ways:
              ...
            }
      ```
+
+## Limitations
+
+Most supported OmniAuth providers don't support Git over HTTP password authentication.
+The only exception is [Atlassian Crowd](../administration/auth/crowd.md) (since GitLab [13.7](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/46935)).
+As a workaround, you can authenticate using a [personal access token](../user/profile/personal_access_tokens.md).

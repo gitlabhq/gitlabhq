@@ -49,7 +49,7 @@ Planned removal: 2021-11-22
 
 ## 14.6
 
-### Release CLI be distributed as a generic package
+### Release CLI distributed as a generic package
 
 The [release-cli](https://gitlab.com/gitlab-org/release-cli) will be released as a [generic package](https://gitlab.com/gitlab-org/release-cli/-/packages) starting in GitLab 14.2. We will continue to deploy it as a binary to S3 until GitLab 14.5 and stop distributing it in S3 in GitLab 14.6.
 
