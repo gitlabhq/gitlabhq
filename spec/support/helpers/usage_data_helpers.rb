@@ -183,6 +183,10 @@ module UsageDataHelpers
       )
   end
 
+  def stub_database_flavor_check(flavor = nil)
+    allow(ApplicationRecord.database).to receive(:flavor).and_return(flavor)
+  end
+
   def clear_memoized_values(values)
     values.each { |v| described_class.clear_memoization(v) }
   end

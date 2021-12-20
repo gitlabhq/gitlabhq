@@ -9,6 +9,7 @@ RSpec.describe 'gitlab:usage data take tasks', :silence_stdout do
     Rake.application.rake_require 'tasks/gitlab/usage_data'
     # stub prometheus external http calls https://gitlab.com/gitlab-org/gitlab/-/issues/245277
     stub_prometheus_queries
+    stub_database_flavor_check
   end
 
   describe 'dump_sql_in_yaml' do

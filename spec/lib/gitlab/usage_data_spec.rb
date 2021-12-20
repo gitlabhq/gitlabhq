@@ -9,6 +9,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
     stub_usage_data_connections
     stub_object_store_settings
     clear_memoized_values(described_class::CE_MEMOIZED_VALUES)
+    stub_database_flavor_check('Cloud SQL for PostgreSQL')
   end
 
   describe '.uncached_data' do
@@ -920,6 +921,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
         expect(subject[:database][:adapter]).to eq(ApplicationRecord.database.adapter_name)
         expect(subject[:database][:version]).to eq(ApplicationRecord.database.version)
         expect(subject[:database][:pg_system_id]).to eq(ApplicationRecord.database.system_id)
+        expect(subject[:database][:flavor]).to eq('Cloud SQL for PostgreSQL')
         expect(subject[:mail][:smtp_server]).to eq(ActionMailer::Base.smtp_settings[:address])
         expect(subject[:gitaly][:version]).to be_present
         expect(subject[:gitaly][:servers]).to be >= 1

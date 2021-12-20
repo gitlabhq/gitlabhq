@@ -530,6 +530,7 @@ RSpec.describe 'Admin updates settings' do
 
       it 'loads usage ping payload on click', :js do
         stub_usage_data_connections
+        stub_database_flavor_check
 
         page.within('#js-usage-settings') do
           expected_payload_content = /(?=.*"uuid")(?=.*"hostname")/m

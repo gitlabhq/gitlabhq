@@ -311,7 +311,8 @@ The following is example content of the Service Ping payload.
   "database": {
     "adapter": "postgresql",
     "version": "9.6.15",
-    "pg_system_id": 6842684531675334351
+    "pg_system_id": 6842684531675334351,
+    "flavor": "Cloud SQL for PostgreSQL"
   },
   "analytics_unique_visits": {
     "g_analytics_contribution": 999,
@@ -434,6 +435,10 @@ The following is example content of the Service Ping payload.
 ```
 
 ## Notable changes
+
+In GitLab 14.6, [`flavor`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/75587) was added to try to detect the underlying managed database variant.
+Possible values are "Amazon Aurora PostgreSQL", "PostgreSQL on Amazon RDS", "Cloud SQL for PostgreSQL",
+"Azure Database for PostgreSQL - Flexible Server", or "null".
 
 In GitLab 13.5, `pg_system_id` was added to send the [PostgreSQL system identifier](https://www.2ndquadrant.com/en/blog/support-for-postgresqls-system-identifier-in-barman/).
 

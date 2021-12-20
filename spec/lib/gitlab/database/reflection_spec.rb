@@ -259,6 +259,66 @@ RSpec.describe Gitlab::Database::Reflection do
     end
   end
 
+  describe '#flavor', :delete do
+    let(:result) { [double] }
+    let(:connection) { database.model.connection }
+
+    def stub_statements(statements)
+      statements = Array.wrap(statements)
+      execute = connection.method(:execute)
+
+      allow(connection).to receive(:execute) do |arg|
+        if statements.include?(arg)
+          result
+        else
+          execute.call(arg)
+        end
+      end
+    end
+
+    it 're-raises exceptions not matching expected messages' do
+      expect(database.model.connection)
+        .to receive(:execute)
+        .and_raise(ActiveRecord::StatementInvalid, 'Something else')
+
+      expect { database.flavor }.to raise_error ActiveRecord::StatementInvalid, /Something else/
+    end
+
+    it 'recognizes Amazon Aurora PostgreSQL' do
+      stub_statements(['SHOW rds.extensions', 'SELECT AURORA_VERSION()'])
+
+      expect(database.flavor).to eq('Amazon Aurora PostgreSQL')
+    end
+
+    it 'recognizes PostgreSQL on Amazon RDS' do
+      stub_statements('SHOW rds.extensions')
+
+      expect(database.flavor).to eq('PostgreSQL on Amazon RDS')
+    end
+
+    it 'recognizes CloudSQL for PostgreSQL' do
+      stub_statements('SHOW cloudsql.iam_authentication')
+
+      expect(database.flavor).to eq('Cloud SQL for PostgreSQL')
+    end
+
+    it 'recognizes Azure Database for PostgreSQL - Flexible Server' do
+      stub_statements(["SELECT datname FROM pg_database WHERE datname = 'azure_maintenance'", 'SHOW azure.extensions'])
+
+      expect(database.flavor).to eq('Azure Database for PostgreSQL - Flexible Server')
+    end
+
+    it 'recognizes Azure Database for PostgreSQL - Single Server' do
+      stub_statements("SELECT datname FROM pg_database WHERE datname = 'azure_maintenance'")
+
+      expect(database.flavor).to eq('Azure Database for PostgreSQL - Single Server')
+    end
+
+    it 'returns nil if can not recognize the flavor' do
+      expect(database.flavor).to be_nil
+    end
+  end
+
   describe '#config' do
     it 'returns a HashWithIndifferentAccess' do
       expect(database.config)

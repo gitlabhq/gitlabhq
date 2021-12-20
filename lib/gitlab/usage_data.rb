@@ -304,7 +304,8 @@ module Gitlab
             # rubocop: disable UsageData/LargeTable
             adapter: alt_usage_data { ApplicationRecord.database.adapter_name },
             version: alt_usage_data { ApplicationRecord.database.version },
-            pg_system_id: alt_usage_data { ApplicationRecord.database.system_id }
+            pg_system_id: alt_usage_data { ApplicationRecord.database.system_id },
+            flavor: alt_usage_data { ApplicationRecord.database.flavor }
             # rubocop: enable UsageData/LargeTable
           },
           mail: {

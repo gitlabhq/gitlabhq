@@ -10,6 +10,7 @@ RSpec.describe API::UsageDataQueries do
 
   before do
     stub_usage_data_connections
+    stub_database_flavor_check
   end
 
   describe 'GET /usage_data/usage_data_queries' do

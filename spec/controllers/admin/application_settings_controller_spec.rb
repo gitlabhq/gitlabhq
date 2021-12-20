@@ -62,6 +62,7 @@ RSpec.describe Admin::ApplicationSettingsController, :do_not_mock_admin_mode_set
   describe 'GET #usage_data' do
     before do
       stub_usage_data_connections
+      stub_database_flavor_check
       sign_in(admin)
     end
 
