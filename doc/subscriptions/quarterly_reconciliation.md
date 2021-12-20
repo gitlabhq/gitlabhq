@@ -9,14 +9,44 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 GitLab reviews your seat usage and sends you an invoice for any overages.
 This review can occur:
 
-- **Annually**, also known as the annual true-up process. This process requires you to pay the full annual subscription fee
+- **Annually**. This process is also known as **the annual true-up process**. This process requires you to pay the full annual subscription fee
   for users added anytime during the year.
-- **Quarterly**. With this process, you only pay for the remaining period of your subscription term.
+- **Quarterly**. With this process, you pay only for the remaining period of your subscription term.
 
-## Quarterly reconciliation process
+## Quarterly reconciliation vs. annual true-ups
 
-With the quarterly reconciliation process, if you add users in the third quarter of your subscription term, for example,
-you only pay 25% of what you would have paid previously. This calculation results in substantial savings.
+Quarterly reconciliation can result in substantial savings.
+
+Let's say in January you purchased an annual license for 100 users. This chart shows your usage during the year.
+The number of users went up and down, with 120 as the maximum. The dark purple indicates the most users you had each quarter.
+
+![License overview](img/quarterly_reconciliation.png)
+
+If you are being billed annually:
+
+- During the year, you went over the license by 20 users.
+- If we pretend each extra seat is $100, then you pay $100 x 20 users.
+
+Annual total: **$2000**
+
+If you are being billed quarterly, you pay for the maximum number of seats you used during the quarter,
+and for only the remaining quarters.
+
+Using the same example, if a seat is $100 per year, then it is $25 per quarter.
+
+- In Q1, you had a maximum of 110 users. 10 users over license x $25 per user x 3 quarters = **$750**
+  The license is now paid for 110 users.
+
+- In Q2, 105 users was the maximum. You did not go over 110 users, so no charge.
+
+- In Q3, you had 120 users. 10 users over license x $25 per user x 2 quarters = **$500**
+  The license is now paid for 120 users.
+
+- In Q4, you had 120 users. You did not go over 120 users, so no charge.
+
+Annual total: **$1250**
+
+With quarterly reconciliation, you pay less annually.
 
 If it's not possible for you to participate in quarterly reconciliations, you can opt out of the
 process by using a contract amendment. In that case, you default to the annual review.

@@ -222,7 +222,8 @@ module ApplicationSettingImplementation
         kroki_formats: { blockdiag: false, bpmn: false, excalidraw: false },
         rate_limiting_response_text: nil,
         whats_new_variant: 0,
-        user_deactivation_emails_enabled: true
+        user_deactivation_emails_enabled: true,
+        user_email_lookup_limit: 60
       }
     end
 

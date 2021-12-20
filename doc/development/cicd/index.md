@@ -169,12 +169,12 @@ We have a few inconsistencies in our codebase that should be refactored.
 For example, `CommitStatus` should be `Ci::Job` and `Ci::JobArtifact` should be `Ci::BuildArtifact`.
 See [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/16111) for the full refactoring plan.
 
-## CI Minutes
+## CI/CD Minutes
 
-This diagram shows how the [CI minutes](../../subscriptions/gitlab_com/index.md#ci-pipeline-minutes)
+This diagram shows how the [CI/CD minutes](../../ci/pipelines/cicd_minutes.md)
 feature and its components work.
 
-![CI Minutes architecture](img/ci_minutes.png)
+![CI/CD minutes architecture](img/ci_minutes.png)
 <!-- Editable diagram available at https://app.diagrams.net/?libs=general;flowchart#G1XjLPvJXbzMofrC3eKRyDEk95clV6ypOb -->
 
 Watch a walkthrough of this feature in details in the video below.

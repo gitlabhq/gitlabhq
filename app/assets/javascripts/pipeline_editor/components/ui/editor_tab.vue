@@ -42,6 +42,9 @@ import { __, s__ } from '~/locale';
 export default {
   i18n: {
     invalid: __('Your CI/CD configuration syntax is invalid. View Lint tab for more details.'),
+    unavailable: __(
+      "We're experiencing difficulties and this tab content is currently unavailable.",
+    ),
   },
   components: {
     GlAlert,
@@ -66,14 +69,14 @@ export default {
     isEmpty: {
       type: Boolean,
       required: false,
-      default: null,
+      default: false,
     },
     isInvalid: {
       type: Boolean,
       required: false,
-      default: null,
+      default: false,
     },
-    lazy: {
+    isUnavailable: {
       type: Boolean,
       required: false,
       default: false,
@@ -82,6 +85,11 @@ export default {
       type: Boolean,
       required: false,
       default: true,
+    },
+    lazy: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
   },
   data() {
@@ -109,6 +117,9 @@ export default {
 <template>
   <gl-tab :lazy="isLazy" v-bind="$attrs" v-on="$listeners">
     <gl-alert v-if="isEmpty" variant="tip">{{ emptyMessage }}</gl-alert>
+    <gl-alert v-else-if="isUnavailable" variant="danger" :dismissible="false">
+      {{ $options.i18n.unavailable }}</gl-alert
+    >
     <gl-alert v-else-if="isInvalid" variant="danger">{{ $options.i18n.invalid }}</gl-alert>
     <template v-else>
       <slot v-for="slot in slots" :name="slot"></slot>

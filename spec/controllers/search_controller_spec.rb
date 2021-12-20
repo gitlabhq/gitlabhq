@@ -290,6 +290,14 @@ RSpec.describe SearchController do
           expect(assigns[:search_objects].count).to eq(0)
         end
       end
+
+      it_behaves_like 'rate limited endpoint', rate_limit_key: :user_email_lookup do
+        let(:current_user) { user }
+
+        def request
+          get(:show, params: { search: 'foo@bar.com', scope: 'users' })
+        end
+      end
     end
 
     describe 'GET #count', :aggregate_failures do
@@ -346,6 +354,14 @@ RSpec.describe SearchController do
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response).to eq({ 'count' => '0' })
       end
+
+      it_behaves_like 'rate limited endpoint', rate_limit_key: :user_email_lookup do
+        let(:current_user) { user }
+
+        def request
+          get(:count, params: { search: 'foo@bar.com', scope: 'users' })
+        end
+      end
     end
 
     describe 'GET #autocomplete' do
@@ -357,6 +373,14 @@ RSpec.describe SearchController do
         get :autocomplete, params: { term: ('hal' * 9000), scope: 'projects' }
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response).to match_array([])
+      end
+
+      it_behaves_like 'rate limited endpoint', rate_limit_key: :user_email_lookup do
+        let(:current_user) { user }
+
+        def request
+          get(:autocomplete, params: { term: 'foo@bar.com', scope: 'users' })
+        end
       end
     end
 

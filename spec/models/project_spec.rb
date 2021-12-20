@@ -379,6 +379,7 @@ RSpec.describe Project, factory_default: :keep do
     it { is_expected.to validate_presence_of(:name) }
     it { is_expected.to validate_uniqueness_of(:name).scoped_to(:namespace_id) }
     it { is_expected.to validate_length_of(:name).is_at_most(255) }
+    it { is_expected.not_to allow_value('colon:in:path').for(:path) } # This is to validate that a specially crafted name cannot bypass a pattern match. See !72555
     it { is_expected.to validate_presence_of(:path) }
     it { is_expected.to validate_length_of(:path).is_at_most(255) }
     it { is_expected.to validate_length_of(:description).is_at_most(2000) }

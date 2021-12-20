@@ -189,12 +189,8 @@ module ApplicationWorker
         schedule_at = bulk_schedule_at
       end
 
-      if Feature.enabled?(:sidekiq_push_bulk_in_batches)
-        in_safe_limit_batches(args_list, schedule_at) do |args_batch, schedule_at_for_batch|
-          Sidekiq::Client.push_bulk('class' => self, 'args' => args_batch, 'at' => schedule_at_for_batch)
-        end
-      else
-        Sidekiq::Client.push_bulk('class' => self, 'args' => args_list, 'at' => schedule_at)
+      in_safe_limit_batches(args_list, schedule_at) do |args_batch, schedule_at_for_batch|
+        Sidekiq::Client.push_bulk('class' => self, 'args' => args_batch, 'at' => schedule_at_for_batch)
       end
     end
 
@@ -207,12 +203,8 @@ module ApplicationWorker
     private
 
     def do_push_bulk(args_list)
-      if Feature.enabled?(:sidekiq_push_bulk_in_batches)
-        in_safe_limit_batches(args_list) do |args_batch, _|
-          Sidekiq::Client.push_bulk('class' => self, 'args' => args_batch)
-        end
-      else
-        Sidekiq::Client.push_bulk('class' => self, 'args' => args_list)
+      in_safe_limit_batches(args_list) do |args_batch, _|
+        Sidekiq::Client.push_bulk('class' => self, 'args' => args_batch)
       end
     end
 

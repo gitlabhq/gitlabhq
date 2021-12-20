@@ -133,4 +133,12 @@ RSpec.describe Gitlab::Search::Params do
       end
     end
   end
+
+  describe '#email_lookup?' do
+    it 'is true if at least 1 word in search is an email' do
+      expect(described_class.new({ search: 'email@example.com' })).to be_email_lookup
+      expect(described_class.new({ search: 'foo email@example.com bar' })).to be_email_lookup
+      expect(described_class.new({ search: 'foo bar' })).not_to be_email_lookup
+    end
+  end
 end

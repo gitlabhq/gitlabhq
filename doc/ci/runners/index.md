@@ -17,6 +17,6 @@ No configuration is required. Your jobs can run on:
 - [Windows runners](build_cloud/windows_build_cloud.md) (beta).
 - [macOS runners](build_cloud/macos_build_cloud.md) (beta).
 
-The number of minutes you can use on these runners depends on your
-[quota](../../user/admin_area/settings/continuous_integration.md#shared-runners-pipeline-minutes-quota),
-which depends on your [subscription plan](../../subscriptions/gitlab_com/index.md#ci-pipeline-minutes).
+The number of minutes you can use on these runners depends on the
+[maximum number of CI/CD minutes](../pipelines/cicd_minutes.md)
+in your [subscription plan](https://about.gitlab.com/pricing/).

@@ -85,8 +85,11 @@ class Issue < ApplicationRecord
   has_many :issue_customer_relations_contacts, class_name: 'CustomerRelations::IssueContact', inverse_of: :issue
   has_many :customer_relations_contacts, through: :issue_customer_relations_contacts, source: :contact, class_name: 'CustomerRelations::Contact', inverse_of: :issues
 
+  alias_attribute :escalation_status, :incident_management_issuable_escalation_status
+
   accepts_nested_attributes_for :issuable_severity, update_only: true
   accepts_nested_attributes_for :sentry_issue
+  accepts_nested_attributes_for :incident_management_issuable_escalation_status, update_only: true
 
   validates :project, presence: true
   validates :issue_type, presence: true

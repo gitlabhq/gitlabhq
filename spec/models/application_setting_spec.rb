@@ -126,11 +126,13 @@ RSpec.describe ApplicationSetting do
     it { is_expected.not_to allow_value('default' => 101).for(:repository_storages_weighted).with_message("value for 'default' must be between 0 and 100") }
     it { is_expected.not_to allow_value('default' => 100, shouldntexist: 50).for(:repository_storages_weighted).with_message("can't include: shouldntexist") }
 
-    it { is_expected.to allow_value(400).for(:notes_create_limit) }
-    it { is_expected.not_to allow_value('two').for(:notes_create_limit) }
-    it { is_expected.not_to allow_value(nil).for(:notes_create_limit) }
-    it { is_expected.not_to allow_value(5.5).for(:notes_create_limit) }
-    it { is_expected.not_to allow_value(-2).for(:notes_create_limit) }
+    %i[notes_create_limit user_email_lookup_limit].each do |setting|
+      it { is_expected.to allow_value(400).for(setting) }
+      it { is_expected.not_to allow_value('two').for(setting) }
+      it { is_expected.not_to allow_value(nil).for(setting) }
+      it { is_expected.not_to allow_value(5.5).for(setting) }
+      it { is_expected.not_to allow_value(-2).for(setting) }
+    end
 
     def many_usernames(num = 100)
       Array.new(num) { |i| "username#{i}" }

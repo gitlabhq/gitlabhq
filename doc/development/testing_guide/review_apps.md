@@ -21,13 +21,13 @@ For any of the following scenarios, the `start-review-app-pipeline` job would be
 ## QA runs on Review Apps
 
 On every [pipeline](https://gitlab.com/gitlab-org/gitlab/pipelines/125315730) in the `qa` stage (which comes after the
-`review` stage), the `review-qa-smoke` job is automatically started and it runs
-the QA smoke suite.
+`review` stage), the `review-qa-smoke` and `review-qa-reliable` jobs are automatically started. The `review-qa-smoke` runs
+the QA smoke suite and the `review-qa-reliable` executes E2E tests identified as [reliable](https://about.gitlab.com/handbook/engineering/quality/quality-engineering/reliable-tests).
 
 You can also manually start the `review-qa-all`: it runs the full QA suite.
 
 After the end-to-end test runs have finished, [Allure reports](https://github.com/allure-framework/allure2) are generated and published by
-the `allure-report-qa-smoke` and `allure-report-qa-all` jobs. A comment with links to the reports are added to the merge request.
+the `allure-report-qa-smoke`, `allure-report-qa-reliable`, and `allure-report-qa-all` jobs. A comment with links to the reports are added to the merge request.
 
 ## Performance Metrics
 
@@ -121,7 +121,7 @@ graph TD
   B[review-build-cng];
   C[review-deploy];
   D[CNG-mirror];
-  E[review-qa-smoke];
+  E[review-qa-smoke, review-qa-reliable];
 
   A -->|once the `prepare` stage is done| B
   B -.->|triggers a CNG-mirror pipeline and wait for it to be done| D
@@ -142,7 +142,7 @@ subgraph "3. gitlab `review` stage"
   end
 
 subgraph "4. gitlab `qa` stage"
-  E[review-qa-smoke<br><br>gitlab-qa runs the smoke suite against the Review App.]
+  E[review-qa-smoke, review-qa-reliable<br><br>gitlab-qa runs the smoke and reliable suites against the Review App.]
   end
 
 subgraph "CNG-mirror pipeline"
@@ -196,7 +196,7 @@ subgraph "CNG-mirror pipeline"
   issue with a link to your merge request. Note that the deployment failure can
   reveal an actual problem introduced in your merge request (that is, this isn't
   necessarily a transient failure)!
-- If the `review-qa-smoke` job keeps failing (note that we already retry it twice),
+- If the `review-qa-smoke` or `review-qa-reliable` job keeps failing (note that we already retry them once),
   please check the job's logs: you could discover an actual problem introduced in
   your merge request. You can also download the artifacts to see screenshots of
   the page at the time the failures occurred. If you don't find the cause of the
@@ -250,7 +250,7 @@ Leading indicators may be health check failures leading to restarts or majority 
 The [Review Apps Overview dashboard](https://console.cloud.google.com/monitoring/classic/dashboards/6798952013815386466?project=gitlab-review-apps&timeDomain=1d)
 aids in identifying load spikes on the cluster, and if nodes are problematic or the entire cluster is trending towards unhealthy.
 
-### Database related errors in `review-deploy` or `review-qa-smoke`
+### Database related errors in `review-deploy`, `review-qa-smoke`, or `review-qa-reliable`
 
 Occasionally the state of a Review App's database could diverge from the database schema. This could be caused by
 changes to migration files or schema, such as a migration being renamed or deleted. This typically manifests in migration errors such as:

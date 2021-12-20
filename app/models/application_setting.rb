@@ -500,6 +500,9 @@ class ApplicationSetting < ApplicationRecord
   validates :notes_create_limit,
             numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
+  validates :user_email_lookup_limit,
+            numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+
   validates :notes_create_limit_allowlist,
             length: { maximum: 100, message: N_('is too long (maximum is 100 entries)') },
             allow_nil: false

@@ -5,6 +5,7 @@ import getAppStatus from '~/pipeline_editor/graphql/queries/client/app_status.qu
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate/tooltip_on_truncate.vue';
 import {
   EDITOR_APP_STATUS_EMPTY,
+  EDITOR_APP_STATUS_LINT_UNAVAILABLE,
   EDITOR_APP_STATUS_LOADING,
   EDITOR_APP_STATUS_VALID,
 } from '../../constants';
@@ -17,6 +18,7 @@ export const i18n = {
   loading: s__('Pipelines|Validating GitLab CI configuration…'),
   invalid: s__('Pipelines|This GitLab CI configuration is invalid.'),
   invalidWithReason: s__('Pipelines|This GitLab CI configuration is invalid: %{reason}.'),
+  unavailableValidation: s__('Pipelines|Configuration validation currently not available.'),
   valid: s__('Pipelines|This GitLab CI configuration is valid.'),
 };
 
@@ -29,6 +31,9 @@ export default {
     TooltipOnTruncate,
   },
   inject: {
+    lintUnavailableHelpPagePath: {
+      default: '',
+    },
     ymlHelpPagePath: {
       default: '',
     },
@@ -49,8 +54,14 @@ export default {
     },
   },
   computed: {
+    helpPath() {
+      return this.isLintUnavailable ? this.lintUnavailableHelpPagePath : this.ymlHelpPagePath;
+    },
     isEmpty() {
       return this.appStatus === EDITOR_APP_STATUS_EMPTY;
+    },
+    isLintUnavailable() {
+      return this.appStatus === EDITOR_APP_STATUS_LINT_UNAVAILABLE;
     },
     isLoading() {
       return this.appStatus === EDITOR_APP_STATUS_LOADING;
@@ -62,6 +73,8 @@ export default {
       switch (this.appStatus) {
         case EDITOR_APP_STATUS_EMPTY:
           return 'check';
+        case EDITOR_APP_STATUS_LINT_UNAVAILABLE:
+          return 'time-out';
         case EDITOR_APP_STATUS_VALID:
           return 'check';
         default:
@@ -74,6 +87,8 @@ export default {
       switch (this.appStatus) {
         case EDITOR_APP_STATUS_EMPTY:
           return this.$options.i18n.empty;
+        case EDITOR_APP_STATUS_LINT_UNAVAILABLE:
+          return this.$options.i18n.unavailableValidation;
         case EDITOR_APP_STATUS_VALID:
           return this.$options.i18n.valid;
         default:
@@ -99,7 +114,7 @@ export default {
         <gl-icon :name="icon" /> <span data-testid="validationMsg">{{ message }}</span>
       </tooltip-on-truncate>
       <span v-if="!isEmpty" class="gl-flex-shrink-0 gl-pl-2">
-        <gl-link data-testid="learnMoreLink" :href="ymlHelpPagePath">
+        <gl-link data-testid="learnMoreLink" :href="helpPath">
           {{ $options.i18n.learnMore }}
         </gl-link>
       </span>

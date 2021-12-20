@@ -205,7 +205,8 @@ RSpec.describe InstanceConfiguration do
             group_export_limit: 1018,
             group_download_export_limit: 1019,
             group_import_limit: 1020,
-            raw_blob_request_limit: 1021
+            raw_blob_request_limit: 1021,
+            user_email_lookup_limit: 1022
           )
         end
 
@@ -228,6 +229,7 @@ RSpec.describe InstanceConfiguration do
           expect(rate_limits[:group_export_download]).to eq({ enabled: true, requests_per_period: 1019, period_in_seconds: 60 })
           expect(rate_limits[:group_import]).to eq({ enabled: true, requests_per_period: 1020, period_in_seconds: 60 })
           expect(rate_limits[:raw_blob]).to eq({ enabled: true, requests_per_period: 1021, period_in_seconds: 60 })
+          expect(rate_limits[:user_email_lookup]).to eq({ enabled: true, requests_per_period: 1022, period_in_seconds: 60 })
         end
       end
     end

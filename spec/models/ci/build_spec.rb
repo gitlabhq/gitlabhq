@@ -2653,6 +2653,8 @@ RSpec.describe Ci::Build do
           { key: 'CI_DEPENDENCY_PROXY_USER', value: 'gitlab-ci-token', public: true, masked: false },
           { key: 'CI_DEPENDENCY_PROXY_PASSWORD', value: 'my-token', public: false, masked: true },
           { key: 'CI_JOB_JWT', value: 'ci.job.jwt', public: false, masked: true },
+          { key: 'CI_JOB_JWT_V1', value: 'ci.job.jwt', public: false, masked: true },
+          { key: 'CI_JOB_JWT_V2', value: 'ci.job.jwtv2', public: false, masked: true },
           { key: 'CI_JOB_NAME', value: 'test', public: true, masked: false },
           { key: 'CI_JOB_STAGE', value: 'test', public: true, masked: false },
           { key: 'CI_NODE_TOTAL', value: '1', public: true, masked: false },
@@ -2720,6 +2722,7 @@ RSpec.describe Ci::Build do
 
       before do
         allow(Gitlab::Ci::Jwt).to receive(:for_build).and_return('ci.job.jwt')
+        allow(Gitlab::Ci::JwtV2).to receive(:for_build).and_return('ci.job.jwtv2')
         build.set_token('my-token')
         build.yaml_variables = []
       end
@@ -2771,6 +2774,8 @@ RSpec.describe Ci::Build do
           let(:build_yaml_var) { { key: 'yaml', value: 'value', public: true, masked: false } }
           let(:dependency_proxy_var) { { key: 'dependency_proxy', value: 'value', public: true, masked: false } }
           let(:job_jwt_var) { { key: 'CI_JOB_JWT', value: 'ci.job.jwt', public: false, masked: true } }
+          let(:job_jwt_var_v1) { { key: 'CI_JOB_JWT_V1', value: 'ci.job.jwt', public: false, masked: true } }
+          let(:job_jwt_var_v2) { { key: 'CI_JOB_JWT_V2', value: 'ci.job.jwtv2', public: false, masked: true } }
           let(:job_dependency_var) { { key: 'job_dependency', value: 'value', public: true, masked: false } }
 
           before do

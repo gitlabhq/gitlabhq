@@ -1580,4 +1580,13 @@ RSpec.describe Issue do
       expect(participant.issue.email_participants_emails_downcase).to match([participant.email.downcase])
     end
   end
+
+  describe '#escalation_status' do
+    it 'returns the incident_management_issuable_escalation_status association' do
+      escalation_status = create(:incident_management_issuable_escalation_status)
+      issue = escalation_status.issue
+
+      expect(issue.escalation_status).to eq(escalation_status)
+    end
+  end
 end

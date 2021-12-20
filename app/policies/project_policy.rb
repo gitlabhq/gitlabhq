@@ -399,6 +399,7 @@ class ProjectPolicy < BasePolicy
     enable :destroy_feature_flag
     enable :admin_feature_flag
     enable :admin_feature_flags_user_lists
+    enable :update_escalation_status
   end
 
   rule { can?(:developer_access) & user_confirmed? }.policy do

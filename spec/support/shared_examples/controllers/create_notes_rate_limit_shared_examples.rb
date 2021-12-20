@@ -3,44 +3,19 @@
 # Requires a context containing:
 # - user
 # - params
-# - request_full_path
 
-RSpec.shared_examples 'request exceeding rate limit' do
-  context 'with rate limiter', :freeze_time, :clean_gitlab_redis_rate_limiting do
-    before do
-      stub_application_setting(notes_create_limit: 2)
-      2.times { post :create, params: params }
-    end
+RSpec.shared_examples 'create notes request exceeding rate limit' do
+  include_examples 'rate limited endpoint', rate_limit_key: :notes_create
 
-    it 'prevents from creating more notes' do
-      expect { post :create, params: params }
-        .to change { Note.count }.by(0)
+  it 'allows user in allow-list to create notes, even if the case is different', :freeze_time, :clean_gitlab_redis_rate_limiting do
+    allow(Gitlab::ApplicationRateLimiter).to receive(:threshold).with(:notes_create).and_return(1)
 
-      expect(response).to have_gitlab_http_status(:too_many_requests)
-      expect(response.body).to eq(_('This endpoint has been requested too many times. Try again later.'))
-    end
+    current_user.update_attribute(:username, current_user.username.titleize)
+    stub_application_setting(notes_create_limit_allowlist: [current_user.username.downcase])
 
-    it 'logs the event in auth.log' do
-      attributes = {
-        message: 'Application_Rate_Limiter_Request',
-        env: :notes_create_request_limit,
-        remote_ip: '0.0.0.0',
-        request_method: 'POST',
-        path: request_full_path,
-        user_id: user.id,
-        username: user.username
-      }
+    request
+    request
 
-      expect(Gitlab::AuthLogger).to receive(:error).with(attributes).once
-      post :create, params: params
-    end
-
-    it 'allows user in allow-list to create notes, even if the case is different' do
-      user.update_attribute(:username, user.username.titleize)
-      stub_application_setting(notes_create_limit_allowlist: ["#{user.username.downcase}"])
-
-      post :create, params: params
-      expect(response).to have_gitlab_http_status(:found)
-    end
+    expect(response).to have_gitlab_http_status(:found)
   end
 end

@@ -134,44 +134,9 @@ A new pipeline must run before the latest artifacts can expire and be deleted.
 NOTE:
 All application settings have a [customizable cache expiry interval](../../../administration/application_settings_cache.md) which can delay the settings affect.
 
-## Shared runners pipeline minutes quota **(PREMIUM SELF)**
+## Shared runners CI/CD minutes
 
-> [Moved](https://about.gitlab.com/blog/2021/01/26/new-gitlab-product-subscription-model/) to GitLab Premium in 13.9.
-
-If you have enabled shared runners for your GitLab instance, you can limit their
-usage by setting a maximum number of pipeline minutes that a group can use on
-shared runners per month. Setting this to `0` (default value) grants
-unlimited pipeline minutes. While build limits are stored as minutes, the
-counting is done in seconds. Usage resets on the first day of each month.
-On GitLab.com, the quota is calculated based on your
-[subscription plan](../../../subscriptions/gitlab_com/index.md#ci-pipeline-minutes).
-
-To change the pipelines minutes quota:
-
-1. On the top bar, select **Menu > Admin**.
-1. On the left sidebar, select **Settings > CI/CD**.
-1. Expand **Continuous Integration and Deployment**.
-1. In the **Pipeline minutes quota** box, enter the maximum number of minutes.
-1. Click **Save changes** for the changes to take effect.
-
-While the setting in the Admin Area has a global effect, as an administrator you can
-also change each group's pipeline minutes quota to override the global value.
-
-1. Navigate to the **Admin Area > Overview > Groups** and hit the **Edit**
-   button for the group you wish to change the pipeline minutes quota.
-1. In the **Pipeline Minutes Quota** box, enter the maximum number of minutes.
-1. Click **Save changes** for the changes to take effect.
-
-Once saved, you can see the build quota in the group settings.
-The quota can also be viewed in the project settings if shared runners
-are enabled.
-
-![Project admin information](img/admin_project_quota_view.png)
-
-You can see an overview of the pipeline minutes quota of all projects of
-a group in the **Usage Quotas** page available to the group page settings list.
-
-![Group pipelines quota](img/group_pipelines_quota.png)
+As an administrator you can set either a global or namespace-specific limit on the number of [CI/CD minutes](../../../ci/pipelines/cicd_minutes.md) you can use.
 
 ## Archive jobs
 

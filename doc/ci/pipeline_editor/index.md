@@ -97,3 +97,20 @@ If you enter a new branch name, the **Start a new merge request with these chang
 checkbox appears. Select it to start a new merge request after you commit the changes.
 
 ![The commit form with a new branch](img/pipeline_editor_commit_v13_8.png)
+
+## Troubleshooting
+
+### `Configuration validation currently not available` message
+
+This message is due to a problem with the syntax validation in the pipeline editor.
+If GitLab is unable to communicate with the service that validates the syntax, the
+information in these sections may not display properly:
+
+- The syntax status on the **Edit** tab (valid or invalid).
+- The **Visualize** tab.
+- The **Lint** tab.
+- The **View merged YAML** tab.
+
+You can still work on your CI/CD configuration and commit the changes you made without
+any issues. As soon as the service becomes available again, the syntax validation
+should display immediately.

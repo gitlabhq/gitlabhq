@@ -109,15 +109,5 @@ RSpec.describe Labels::TransferService do
     end
   end
 
-  context 'with use_optimized_group_labels_query FF on' do
-    it_behaves_like 'transfer labels'
-  end
-
-  context 'with use_optimized_group_labels_query FF off' do
-    before do
-      stub_feature_flags(use_optimized_group_labels_query: false)
-    end
-
-    it_behaves_like 'transfer labels'
-  end
+  it_behaves_like 'transfer labels'
 end

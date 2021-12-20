@@ -50,32 +50,17 @@ module Labels
 
     # rubocop: disable CodeReuse/ActiveRecord
     def group_labels_applied_to_issues
-      @labels_applied_to_issues ||= if use_optimized_group_labels_query?
-                                      Label.joins(:issues)
-                                        .joins("INNER JOIN namespaces on namespaces.id = labels.group_id AND namespaces.type = 'Group'" )
-                                        .where(issues: { project_id: project.id }).reorder(nil)
-                                    else
-                                      Label.joins(:issues).where(
-                                        issues: { project_id: project.id },
-                                        labels: { group_id: old_group.self_and_ancestors }
-                                      )
-                                    end
+      @labels_applied_to_issues ||= Label.joins(:issues)
+        .joins("INNER JOIN namespaces on namespaces.id = labels.group_id AND namespaces.type = 'Group'" )
+        .where(issues: { project_id: project.id }).reorder(nil)
     end
     # rubocop: enable CodeReuse/ActiveRecord
 
     # rubocop: disable CodeReuse/ActiveRecord
     def group_labels_applied_to_merge_requests
-      @labels_applied_to_mrs ||= if use_optimized_group_labels_query?
-                                   Label.joins(:merge_requests)
-                                     .joins("INNER JOIN namespaces on namespaces.id = labels.group_id AND namespaces.type = 'Group'" )
-                                     .where(merge_requests: { target_project_id: project.id }).reorder(nil)
-                                 else
-                                   Label.joins(:merge_requests)
-                                     .where(
-                                       merge_requests: { target_project_id: project.id },
-                                       labels: { group_id: old_group.self_and_ancestors }
-                                     )
-                                 end
+      @labels_applied_to_mrs ||= Label.joins(:merge_requests)
+        .joins("INNER JOIN namespaces on namespaces.id = labels.group_id AND namespaces.type = 'Group'" )
+        .where(merge_requests: { target_project_id: project.id }).reorder(nil)
     end
     # rubocop: enable CodeReuse/ActiveRecord
 
@@ -99,9 +84,5 @@ module Labels
         .update_all(label_id: new_label_id)
     end
     # rubocop: enable CodeReuse/ActiveRecord
-
-    def use_optimized_group_labels_query?
-      Feature.enabled?(:use_optimized_group_labels_query, project.root_namespace, default_enabled: :yaml)
-    end
   end
 end

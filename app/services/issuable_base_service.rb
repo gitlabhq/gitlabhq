@@ -63,6 +63,7 @@ class IssuableBaseService < ::BaseProjectService
     filter_milestone
     filter_labels
     filter_severity(issuable)
+    filter_escalation_status(issuable)
   end
 
   def filter_assignees(issuable)
@@ -150,6 +151,18 @@ class IssuableBaseService < ::BaseProjectService
     return if severity == issuable.severity
 
     params[:issuable_severity_attributes] = { severity: severity }
+  end
+
+  def filter_escalation_status(issuable)
+    result = ::IncidentManagement::IssuableEscalationStatuses::PrepareUpdateService.new(
+      issuable,
+      current_user,
+      params.delete(:escalation_status)
+    ).execute
+
+    return unless result.success? && result.payload.present?
+
+    params[:incident_management_issuable_escalation_status_attributes] = result[:escalation_status]
   end
 
   def process_label_ids(attributes, existing_label_ids: nil, extra_label_ids: [])
@@ -471,6 +484,7 @@ class IssuableBaseService < ::BaseProjectService
     associations[:description] = issuable.description
     associations[:reviewers] = issuable.reviewers.to_a if issuable.allows_reviewers?
     associations[:severity] = issuable.severity if issuable.supports_severity?
+    associations[:escalation_status] = issuable.escalation_status&.slice(:status, :policy_id) if issuable.supports_escalation?
 
     associations
   end

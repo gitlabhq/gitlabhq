@@ -117,7 +117,8 @@ class InstanceConfiguration
       group_export: application_setting_limit_per_minute(:group_export_limit),
       group_export_download: application_setting_limit_per_minute(:group_download_export_limit),
       group_import: application_setting_limit_per_minute(:group_import_limit),
-      raw_blob: application_setting_limit_per_minute(:raw_blob_request_limit)
+      raw_blob: application_setting_limit_per_minute(:raw_blob_request_limit),
+      user_email_lookup: application_setting_limit_per_minute(:user_email_lookup_limit)
     }
   end
 

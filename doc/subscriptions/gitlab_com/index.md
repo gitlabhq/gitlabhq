@@ -15,7 +15,7 @@ You don't need to install anything to use GitLab SaaS, you only need to
 - [The number of seats you want](#how-seat-usage-is-determined).
 
 All GitLab SaaS public projects, regardless of the subscription, get access to features in the **Ultimate** tier.
-Qualifying open source projects also get 50,000 CI minutes and free access to the **Ultimate** tier
+Qualifying open source projects also get 50,000 CI/CD minutes and free access to the **Ultimate** tier
 through the [GitLab for Open Source program](https://about.gitlab.com/solutions/open-source/).
 
 ## Obtain a GitLab SaaS subscription
@@ -255,127 +255,18 @@ If you have difficulty during the renewal process, contact the
 To change the contact person who manages your subscription,
 contact the GitLab [Support team](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=360000071293).
 
-## CI pipeline minutes
+## CI/CD minutes
 
-CI pipeline minutes are the execution time for your [pipelines](../../ci/pipelines/index.md)
-on GitLab shared runners. Each [GitLab SaaS tier](https://about.gitlab.com/pricing/)
-includes a monthly quota of CI pipeline minutes for private and public projects in
-the namespace:
+CI/CD minutes are the execution time for your [pipelines](../../ci/pipelines/index.md)
+on GitLab shared runners.
 
-| Plan     | CI pipeline minutes |
-|----------|---------------------|
-| Free     | 400                 |
-| Premium  | 10,000              |
-| Ultimate | 50,000              |
+Refer to [CI/CD minutes](../../ci/pipelines/cicd_minutes.md)
+for more information.
 
-The consumption rate for CI pipeline minutes is based on the visibility of the projects:
+### Purchase additional CI/CD minutes
 
-- Private projects in the namespace consume pipeline minutes at a rate of 1 CI pipeline minute
-  per 1 minute of execution time on GitLab shared runners.
-- Public projects in:
-  - Namespaces [created on or after 2021-07-17](https://gitlab.com/gitlab-org/gitlab/-/issues/332708)
-    consume pipeline minutes at a slower rate, 1 CI pipeline minute per 125 minutes
-    of execution time on GitLab shared runners. The per-minute rate for public projects
-    is 0.008 CI pipeline minutes per 1 minute of execution time on GitLab shared runners.
-  - Namespaces created before 2021-07-17 do not consume CI pipeline minutes.
-
-| Plan     | CI pipeline minutes | Maximum **private** project execution time (all namespaces) | Maximum **public** project execution time (namespaces created 2021-07-17 and later) |
-|----------|---------------------|-------------------------------------------------------------|-------------------------------------------------------------------------------------|
-| Free     | 400                 | 400 minutes                                                 | 50,000 minutes                                                                      |
-| Premium  | 10,000              | 10,000 minutes                                              | 1,250,000 minutes                                                                   |
-| Ultimate | 50,000              | 50,000 minutes                                              | 6,250,000 minutes                                                                   |
-
-Quotas apply to:
-
-- Groups, where the minutes are shared across all members of the group, its
-  subgroups, and nested projects. To view the group's usage, navigate to the group,
-  then **Settings > Usage Quotas**.
-- Your personal account, where the minutes are available for your personal projects.
-  To view and buy personal minutes:
-
-  1. In the top-right corner, select your avatar.
-  1. Select **Edit profile**.
-  1. On the left sidebar, select **[Usage Quotas](https://gitlab.com/-/profile/usage_quotas#pipelines-quota-tab)**.
-
-Only pipeline minutes for GitLab shared runners are restricted. If you have a
-specific runner set up for your projects, there is no limit to your build time on GitLab SaaS.
-
-The available quota is reset on the first of each calendar month at midnight UTC.
-
-When the CI minutes are depleted, an email is sent automatically to notify the owner(s)
-of the namespace. You can [purchase additional CI minutes](#purchase-additional-ci-minutes),
-or upgrade your account to a higher [plan](https://about.gitlab.com/pricing/).
-Your own runners can still be used even if you reach your limits.
-
-### Purchase additional CI minutes
-
-If you're using GitLab SaaS, you can purchase additional CI minutes so your
-pipelines aren't blocked after you have used all your CI minutes from your
-main quota. You can find pricing for additional CI/CD minutes on the
-[GitLab Pricing page](https://about.gitlab.com/pricing/). Additional minutes:
-
-- Are only used after the shared quota included in your subscription runs out.
-- Roll over month to month.
-
-To purchase additional minutes for your personal namespace:
-
-1. In the top-right corner, select your avatar.
-1. Select **Edit profile**.
-1. On the left sidebar, select **Usage Quotas**.
-1. Select **Buy additional minutes** and GitLab redirects you to the Customers Portal.
-1. Locate the subscription card that's linked to your personal namespace on GitLab SaaS, click **Buy more CI minutes**, and complete the details about the transaction.
-
-After we process your payment, the extra CI minutes are synced to your group
-namespace.
-
-To confirm the available CI minutes for your personal projects, go to the **Usage Quotas** settings again.
-
-The **Additional minutes** displayed now includes the purchased additional CI
-minutes, plus any minutes rolled over from last month.
-
-Be aware that:
-
-- Extra CI minutes assigned to one group cannot be transferred to a different
-  group.
-- If you have used more minutes than your default quota, those minutes are
-  deducted from your Additional Minutes quota immediately after your purchase of
-  additional minutes.
-
-### Purchase additional CI minutes on GitLab SaaS
-
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/6574) in GitLab 14.5.
-
-If you're using GitLab SaaS, you can purchase additional CI minutes so your
-pipelines aren't blocked after you have used all your CI minutes from your
-main quota. You can find pricing for additional CI/CD minutes on the
-[GitLab Pricing page](https://about.gitlab.com/pricing/). Additional minutes:
-
-- Are only used after the shared quota included in your subscription runs out.
-- Roll over month to month.
-
-To purchase additional minutes for your group on GitLab SaaS:
-
-1. On the top bar, select **Menu > Groups** and find your group.
-1. On the left sidebar, select **Settings > Usage Quotas**.
-1. Select **Buy additional minutes**.
-1. Complete the details about the transaction.
-
-After we process your payment, the extra CI minutes are synced to your group
-namespace.
-
-To confirm the available CI minutes, go to your group, and then select
-**Settings > Usage Quotas**.
-
-The **Additional minutes** displayed now includes the purchased additional CI
-minutes, plus any minutes rolled over from last month.
-
-Be aware that:
-
-- Extra CI minutes assigned to one group cannot be transferred to a different
-  group.
-- If you have used more minutes than your default quota, those minutes are
-  deducted from your Additional Minutes quota immediately after your purchase of
-  additional minutes.
+You can [purchase additional minutes](../../ci/pipelines/cicd_minutes.md#purchase-additional-cicd-minutes)
+for your personal or group namespace.
 
 ## Storage subscription
 

@@ -10,6 +10,7 @@ export const mockNewMergeRequestPath = '/-/merge_requests/new';
 export const mockCommitSha = 'aabbccdd';
 export const mockCommitNextSha = 'eeffgghh';
 export const mockLintHelpPagePath = '/-/lint-help';
+export const mockLintUnavailableHelpPagePath = '/-/pipeline-editor/troubleshoot';
 export const mockYmlHelpPagePath = '/-/yml-help';
 export const mockCommitMessage = 'My commit message';
 

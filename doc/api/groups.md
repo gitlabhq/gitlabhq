@@ -802,9 +802,9 @@ Parameters:
 | `lfs_enabled`                                           | boolean | no       | Enable/disable Large File Storage (LFS) for the projects in this group. |
 | `request_access_enabled`                                | boolean | no       | Allow users to request member access. |
 | `parent_id`                                             | integer | no       | The parent group ID for creating nested group. |
-| `default_branch_protection`                             | integer | no       | See [Options for `default_branch_protection`](#options-for-default_branch_protection). Default to the global level default branch protection setting.      |
-| `shared_runners_minutes_limit` **(PREMIUM SELF)**       | integer | no       | Pipeline minutes quota for this group (included in plan). Can be `nil` (default; inherit system default), `0` (unlimited) or `> 0` |
-| `extra_shared_runners_minutes_limit` **(PREMIUM SELF)** | integer | no       | Extra pipeline minutes quota for this group (purchased in addition to the minutes included in the plan). |
+| `default_branch_protection`                             | integer | no       | See [Options for `default_branch_protection`](#options-for-default_branch_protection). Default to the global level default branch protection setting. |
+| `shared_runners_minutes_limit` **(PREMIUM)**            | integer | no       | Can be set by administrators only. Maximum number of monthly CI/CD minutes for this group. Can be `nil` (default; inherit system default), `0` (unlimited), or `> 0`. |
+| `extra_shared_runners_minutes_limit` **(PREMIUM)**      | integer | no       | Can be set by administrators only. Additional CI/CD minutes for this group. |
 
 ### Options for `default_branch_protection`
 
@@ -905,8 +905,8 @@ PUT /groups/:id
 | `request_access_enabled`                                | boolean | no       | Allow users to request member access. |
 | `default_branch_protection`                             | integer | no       | See [Options for `default_branch_protection`](#options-for-default_branch_protection). |
 | `file_template_project_id` **(PREMIUM)**                | integer | no       | The ID of a project to load custom file templates from. |
-| `shared_runners_minutes_limit` **(PREMIUM SELF)**       | integer | no       | Pipeline minutes quota for this group (included in plan). Can be `nil` (default; inherit system default), `0` (unlimited) or `> 0` |
-| `extra_shared_runners_minutes_limit` **(PREMIUM SELF)** | integer | no       | Extra pipeline minutes quota for this group (purchased in addition to the minutes included in the plan). |
+| `shared_runners_minutes_limit` **(PREMIUM)**            | integer | no       | Can be set by administrators only. Maximum number of monthly CI/CD minutes for this group. Can be `nil` (default; inherit system default), `0` (unlimited), or `> 0`. |
+| `extra_shared_runners_minutes_limit` **(PREMIUM)**      | integer | no       | Can be set by administrators only. Additional CI/CD minutes for this group. |
 | `prevent_forking_outside_group` **(PREMIUM)**           | boolean | no       | When enabled, users can **not** fork projects from this group to external namespaces
 | `shared_runners_setting`                                | string  | no       | See [Options for `shared_runners_setting`](#options-for-shared_runners_setting). Enable or disable shared runners for a group's subgroups and projects. |
 | `prevent_sharing_groups_outside_hierarchy`              | boolean | no       | See [Prevent group sharing outside the group hierarchy](../user/group/index.md#prevent-group-sharing-outside-the-group-hierarchy). This attribute is only available on top-level groups. [Introduced in GitLab 14.1](https://gitlab.com/gitlab-org/gitlab/-/issues/333721) |

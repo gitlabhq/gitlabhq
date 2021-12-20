@@ -53,6 +53,7 @@ module Issues
       old_mentioned_users = old_associations.fetch(:mentioned_users, [])
       old_assignees = old_associations.fetch(:assignees, [])
       old_severity = old_associations[:severity]
+      old_escalation_status = old_associations[:escalation_status]
 
       if has_changes?(issue, old_labels: old_labels, old_assignees: old_assignees)
         todo_service.resolve_todos_for_target(issue, current_user)
@@ -69,6 +70,7 @@ module Issues
       handle_milestone_change(issue)
       handle_added_mentions(issue, old_mentioned_users)
       handle_severity_change(issue, old_severity)
+      handle_escalation_status_change(issue, old_escalation_status)
       handle_issue_type_change(issue)
     end
 
@@ -206,6 +208,18 @@ module Issues
       return unless old_severity && issue.severity != old_severity
 
       ::IncidentManagement::AddSeveritySystemNoteWorker.perform_async(issue.id, current_user.id)
+    end
+
+    def handle_escalation_status_change(issue, old_escalation_status)
+      return unless old_escalation_status.present?
+      return if issue.escalation_status&.slice(:status, :policy_id) == old_escalation_status
+      return unless issue.alert_management_alert
+
+      ::AlertManagement::Alerts::UpdateService.new(
+        issue.alert_management_alert,
+        current_user,
+        status: issue.escalation_status.status_name
+      ).execute
     end
 
     # rubocop: disable CodeReuse/ActiveRecord

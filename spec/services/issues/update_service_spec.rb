@@ -1157,6 +1157,76 @@ RSpec.describe Issues::UpdateService, :mailer do
       end
     end
 
+    context 'updating escalation status' do
+      let(:opts) { { escalation_status: { status: 'acknowledged' } } }
+
+      shared_examples 'updates the escalation status record' do |expected_status|
+        it 'has correct value' do
+          update_issue(opts)
+
+          expect(issue.escalation_status.status_name).to eq(expected_status)
+        end
+      end
+
+      shared_examples 'does not change the status record' do
+        it 'retains the original value' do
+          expected_status = issue.escalation_status&.status_name
+
+          update_issue(opts)
+
+          expect(issue.escalation_status&.status_name).to eq(expected_status)
+        end
+
+        it 'does not trigger side-effects' do
+          expect(::AlertManagement::Alerts::UpdateService).not_to receive(:new)
+
+          update_issue(opts)
+        end
+      end
+
+      context 'when issue is an incident' do
+        let(:issue) { create(:incident, project: project) }
+
+        context 'with an escalation status record' do
+          before do
+            create(:incident_management_issuable_escalation_status, issue: issue)
+          end
+
+          it_behaves_like 'updates the escalation status record', :acknowledged
+
+          context 'with associated alert' do
+            let!(:alert) { create(:alert_management_alert, issue: issue, project: project) }
+
+            it 'syncs the update back to the alert' do
+              update_issue(opts)
+
+              expect(alert.reload.status_name).to eq(:acknowledged)
+            end
+          end
+
+          context 'with unsupported status value' do
+            let(:opts) { { escalation_status: { status: 'unsupported-status' } } }
+
+            it_behaves_like 'does not change the status record'
+          end
+
+          context 'with status value defined but unchanged' do
+            let(:opts) { { escalation_status: { status: issue.escalation_status.status_name } } }
+
+            it_behaves_like 'does not change the status record'
+          end
+        end
+
+        context 'without an escalation status record' do
+          it_behaves_like 'does not change the status record'
+        end
+      end
+
+      context 'when issue type is not incident' do
+        it_behaves_like 'does not change the status record'
+      end
+    end
+
     context 'duplicate issue' do
       let(:canonical_issue) { create(:issue, project: project) }
 

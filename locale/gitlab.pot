@@ -25717,12 +25717,6 @@ msgstr ""
 msgid "Pipeline durations for the last 30 commits"
 msgstr ""
 
-msgid "Pipeline minutes quota"
-msgstr ""
-
-msgid "Pipeline minutes quota:"
-msgstr ""
-
 msgid "Pipeline ran in fork of project"
 msgstr ""
 
@@ -25952,6 +25946,9 @@ msgid "Pipelines|Child pipeline"
 msgstr ""
 
 msgid "Pipelines|Clear runner caches"
+msgstr ""
+
+msgid "Pipelines|Configuration validation currently not available."
 msgstr ""
 
 msgid "Pipelines|Copy trigger token"
@@ -28886,6 +28883,12 @@ msgid "Quick range"
 msgstr ""
 
 msgid "Quickly and easily edit multiple files in your project."
+msgstr ""
+
+msgid "Quota of CI/CD minutes"
+msgstr ""
+
+msgid "Quota of CI/CD minutes:"
 msgstr ""
 
 msgid "README"
@@ -35276,7 +35279,7 @@ msgstr ""
 msgid "The maximum file size is %{size}."
 msgstr ""
 
-msgid "The maximum number of pipeline minutes that a group can use on shared runners per month. 0 for unlimited."
+msgid "The maximum number of CI/CD minutes on shared runners that a group can use each month. 0 for unlimited."
 msgstr ""
 
 msgid "The maximum number of tags that a single worker accepts for cleanup. If the number of tags goes above this limit, the list of tags to delete is truncated to this number. To remove this limit, set it to 0."
@@ -39458,6 +39461,9 @@ msgstr ""
 msgid "We'll use this to help surface the right features and information to you."
 msgstr ""
 
+msgid "We're experiencing difficulties and this tab content is currently unavailable."
+msgstr ""
+
 msgid "We've found no vulnerabilities"
 msgstr ""
 
@@ -39698,6 +39704,9 @@ msgstr ""
 msgid "Welcome, %{name}!"
 msgstr ""
 
+msgid "What are CI/CD minutes?"
+msgstr ""
+
 msgid "What are group audit events?"
 msgstr ""
 
@@ -39705,9 +39714,6 @@ msgid "What are instance audit events?"
 msgstr ""
 
 msgid "What are project audit events?"
-msgstr ""
-
-msgid "What are shared runner pipeline minutes?"
 msgstr ""
 
 msgid "What are you searching for?"

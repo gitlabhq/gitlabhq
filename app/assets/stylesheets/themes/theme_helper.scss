@@ -163,7 +163,7 @@
       &:focus,
       &:active {
         &::placeholder {
-          color: $search-and-nav-links;
+          color: $gray-400;
         }
       }
     }

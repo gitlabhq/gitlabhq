@@ -1174,7 +1174,10 @@ module Ci
         break variables unless Feature.enabled?(:ci_job_jwt, project, default_enabled: true)
 
         jwt = Gitlab::Ci::Jwt.for_build(self)
+        jwt_v2 = Gitlab::Ci::JwtV2.for_build(self)
         variables.append(key: 'CI_JOB_JWT', value: jwt, public: false, masked: true)
+        variables.append(key: 'CI_JOB_JWT_V1', value: jwt, public: false, masked: true)
+        variables.append(key: 'CI_JOB_JWT_V2', value: jwt_v2, public: false, masked: true)
       rescue OpenSSL::PKey::RSAError, Gitlab::Ci::Jwt::NoSigningKeyError => e
         Gitlab::ErrorTracking.track_exception(e)
       end

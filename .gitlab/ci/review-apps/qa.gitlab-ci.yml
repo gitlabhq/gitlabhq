@@ -155,6 +155,15 @@ allure-report-qa-smoke:
     ALLURE_REPORT_PATH_PREFIX: gitlab-review-smoke
     ALLURE_JOB_NAME: review-qa-smoke
 
+allure-report-qa-reliable:
+  extends:
+    - .allure-report-base
+    - .review:rules:review-qa-reliable-report
+  needs: ["review-qa-reliable"]
+  variables:
+    ALLURE_REPORT_PATH_PREFIX: gitlab-review-reliable
+    ALLURE_JOB_NAME: review-qa-reliable
+
 allure-report-qa-all:
   extends:
     - .allure-report-base

@@ -11,9 +11,15 @@ import {
   EDITOR_APP_STATUS_EMPTY,
   EDITOR_APP_STATUS_INVALID,
   EDITOR_APP_STATUS_LOADING,
+  EDITOR_APP_STATUS_LINT_UNAVAILABLE,
   EDITOR_APP_STATUS_VALID,
 } from '~/pipeline_editor/constants';
-import { mockYmlHelpPagePath, mergeUnwrappedCiConfig, mockCiYml } from '../../mock_data';
+import {
+  mergeUnwrappedCiConfig,
+  mockCiYml,
+  mockLintUnavailableHelpPagePath,
+  mockYmlHelpPagePath,
+} from '../../mock_data';
 
 describe('Validation segment component', () => {
   let wrapper;
@@ -23,6 +29,7 @@ describe('Validation segment component', () => {
       shallowMount(ValidationSegment, {
         provide: {
           ymlHelpPagePath: mockYmlHelpPagePath,
+          lintUnavailableHelpPagePath: mockLintUnavailableHelpPagePath,
         },
         propsData: {
           ciConfig: mergeUnwrappedCiConfig(),
@@ -147,6 +154,30 @@ describe('Validation segment component', () => {
         expect(innerHTML).not.toContain(evilError);
         expect(innerHTML).toContain(escape(evilError));
       });
+    });
+  });
+
+  describe('when the lint service is unavailable', () => {
+    beforeEach(() => {
+      createComponent({
+        appStatus: EDITOR_APP_STATUS_LINT_UNAVAILABLE,
+        props: {
+          ciConfig: {},
+        },
+      });
+    });
+
+    it('show a message that the service is unavailable', () => {
+      expect(findValidationMsg().text()).toBe(i18n.unavailableValidation);
+    });
+
+    it('shows the time-out icon', () => {
+      expect(findIcon().props('name')).toBe('time-out');
+    });
+
+    it('shows the learn more link', () => {
+      expect(findLearnMoreLink().attributes('href')).toBe(mockLintUnavailableHelpPagePath);
+      expect(findLearnMoreLink().text()).toBe(i18n.learnMore);
     });
   });
 });

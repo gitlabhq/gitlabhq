@@ -7,6 +7,8 @@ class SearchService
   DEFAULT_PER_PAGE = Gitlab::SearchResults::DEFAULT_PER_PAGE
   MAX_PER_PAGE = 200
 
+  attr_reader :params
+
   def initialize(current_user, params = {})
     @current_user = current_user
     @params = Gitlab::Search::Params.new(params, detect_abuse: prevent_abusive_searches?)
@@ -159,7 +161,7 @@ class SearchService
       end
   end
 
-  attr_reader :current_user, :params
+  attr_reader :current_user
 end
 
 SearchService.prepend_mod_with('SearchService')
