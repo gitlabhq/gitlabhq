@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Create' do
-    context 'Praefect repository commands', :orchestrated, :gitaly_cluster, quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/347415', type: :investigating } do
+    context 'Praefect repository commands', :orchestrated, :gitaly_cluster do
       let(:praefect_manager) { Service::PraefectManager.new }
 
       let(:repo1) { { "relative_path" => "@hashed/repo1.git", "storage" => "gitaly1", "virtual_storage" => "default" } }
@@ -22,7 +22,7 @@ module QA
         praefect_manager.remove_repository_from_praefect_database(repo2["relative_path"])
       end
 
-      it 'allows admin to manage difference between praefect database and disk state', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347606' do
+      it 'allows admin to manage difference between praefect database and disk state', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347606', quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/347415', type: :investigating } do
         # Some repos are on disk that praefect is not aware of
         untracked_repositories = praefect_manager.list_untracked_repositories
         expect(untracked_repositories).to include(repo1)
@@ -58,6 +58,18 @@ module QA
 
         untracked_repositories = praefect_manager.list_untracked_repositories
         expect(untracked_repositories).not_to include(repo1)
+      end
+
+      it 'allows admin to control the number of replicas of data', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/2434' do
+        praefect_manager.track_repository_in_praefect(repo1['relative_path'], repo1['storage'], repo1['virtual_storage'])
+
+        praefect_manager.set_replication_factor(repo1['relative_path'], repo1['virtual_storage'], 2)
+        replication_storages = praefect_manager.get_replication_storages(repo1['relative_path'], repo1['virtual_storage'])
+        expect(replication_storages).to have_attributes(size: 2)
+
+        praefect_manager.set_replication_factor(repo1['relative_path'], repo1['virtual_storage'], 3)
+        replication_storages = praefect_manager.get_replication_storages(repo1['relative_path'], repo1['virtual_storage'])
+        expect(replication_storages).to eq(%w(gitaly1 gitaly2 gitaly3))
       end
     end
   end

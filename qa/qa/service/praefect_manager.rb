@@ -418,6 +418,30 @@ module QA
         shell "docker exec #{@praefect} bash -c '#{cmd}'"
       end
 
+      # set_replication_factor assigns or unassigns random storage nodes as necessary to reach the desired replication factor for a repository
+      def set_replication_factor(relative_path, virtual_storage, factor)
+        cmd = "/opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml set-replication-factor -repository #{relative_path} -virtual-storage #{virtual_storage} -replication-factor #{factor}"
+        shell "docker exec #{@praefect} bash -c '#{cmd}'"
+      end
+
+      # get_replication_storages retrieves a list of currently assigned storages for a repository
+      def get_replication_storages(relative_path, virtual_storage)
+        storage_repositories = []
+        query = "SELECT storage FROM repository_assignments WHERE relative_path='#{relative_path}' AND virtual_storage='#{virtual_storage}';"
+        shell(sql_to_docker_exec_cmd(query)) { |line| storage_repositories << line.strip }
+        # Returned data from query will be in format
+        #    storage
+        #    --------
+        #    gitaly1
+        #    gitaly3
+        #    gitaly2
+        #   (3 rows)
+        #
+
+        # remove 2 header rows and last 2 rows from query response (including blank line)
+        storage_repositories[2..-3]
+      end
+
       def add_repo_to_disk(node, repo_path)
         cmd = "GIT_DIR=. git init --initial-branch=main /var/opt/gitlab/git-data/repositories/#{repo_path}"
         shell "docker exec --user git #{node} bash -c '#{cmd}'"
