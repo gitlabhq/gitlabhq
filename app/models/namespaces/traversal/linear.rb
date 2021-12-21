@@ -57,6 +57,13 @@ module Namespaces
         traversal_ids.present?
       end
 
+      def use_traversal_ids_for_self_and_hierarchy?
+        return false unless use_traversal_ids?
+        return false unless Feature.enabled?(:use_traversal_ids_for_self_and_hierarchy, root_ancestor, default_enabled: :yaml)
+
+        traversal_ids.present?
+      end
+
       def use_traversal_ids_for_ancestors?
         return false unless use_traversal_ids?
         return false unless Feature.enabled?(:use_traversal_ids_for_ancestors, root_ancestor, default_enabled: :yaml)
@@ -105,6 +112,12 @@ module Namespaces
         return super unless use_traversal_ids?
 
         self_and_descendants.where.not(id: id)
+      end
+
+      def self_and_hierarchy
+        return super unless use_traversal_ids_for_self_and_hierarchy?
+
+        self_and_descendants.or(ancestors)
       end
 
       def ancestors(hierarchy_order: nil)

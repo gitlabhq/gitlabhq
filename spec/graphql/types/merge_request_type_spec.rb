@@ -133,4 +133,28 @@ RSpec.describe GitlabSchema.types['MergeRequest'] do
       end
     end
   end
+
+  describe '#merge_user' do
+    let_it_be(:project) { create(:project, :public) }
+
+    context 'when MR is merged' do
+      let(:merge_request) { create(:merge_request, :with_merged_metrics, target_project: project, source_project: project) }
+
+      it 'is not nil' do
+        value = resolve_field(:merge_user, merge_request)
+
+        expect(value).not_to be_nil
+      end
+    end
+
+    context 'when MR is set to merge when pipeline succeeds' do
+      let(:merge_request) { create(:merge_request, :merge_when_pipeline_succeeds, target_project: project, source_project: project) }
+
+      it 'is not nil' do
+        value = resolve_field(:merge_user, merge_request)
+
+        expect(value).not_to be_nil
+      end
+    end
+  end
 end

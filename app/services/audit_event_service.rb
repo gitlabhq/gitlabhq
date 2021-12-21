@@ -141,7 +141,7 @@ class AuditEventService
     event.save! if should_save_database?(@save_type)
     stream_event_to_external_destinations(event) if should_save_stream?(@save_type)
   rescue StandardError => e
-    Gitlab::ErrorTracking.track_exception(e, audit_event_type: event.class.to_s)
+    Gitlab::ErrorTracking.track_and_raise_for_dev_exception(e, audit_event_type: event.class.to_s)
   end
 end
 

@@ -503,6 +503,10 @@ RSpec.describe Group do
         it { expect(group.descendants.to_sql).not_to include 'traversal_ids @>' }
       end
 
+      describe '#self_and_hierarchy' do
+        it { expect(group.self_and_hierarchy.to_sql).not_to include 'traversal_ids @>' }
+      end
+
       describe '#ancestors' do
         it { expect(group.ancestors.to_sql).not_to include 'traversal_ids <@' }
       end
@@ -525,6 +529,10 @@ RSpec.describe Group do
 
       describe '#descendants' do
         it { expect(group.descendants.to_sql).to include 'traversal_ids @>' }
+      end
+
+      describe '#self_and_hierarchy' do
+        it { expect(group.self_and_hierarchy.to_sql).to include 'traversal_ids @>' }
       end
 
       describe '#ancestors' do

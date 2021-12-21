@@ -1,5 +1,4 @@
 import { PROJECT_BADGE } from '~/badges/constants';
-import initLegacyConfirmDangerModal from '~/confirm_danger_modal';
 import initConfirmDanger from '~/init_confirm_danger';
 import dirtySubmitFactory from '~/dirty_submit/dirty_submit_factory';
 import initFilePickers from '~/file_pickers';
@@ -15,7 +14,6 @@ import initProjectPermissionsSettings from '../shared/permissions';
 import initProjectLoadingSpinner from '../shared/save_project_loader';
 
 initFilePickers();
-initLegacyConfirmDangerModal();
 initConfirmDanger();
 initSettingsPanels();
 initProjectDeleteButton();

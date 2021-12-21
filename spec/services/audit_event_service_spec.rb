@@ -60,17 +60,18 @@ RSpec.describe AuditEventService do
           ip_address: user.current_sign_in_ip,
           result: AuthenticationEvent.results[:success],
           provider: 'standard'
-        )
+        ).and_call_original
 
         audit_service.for_authentication.security_event
       end
 
       it 'tracks exceptions when the event cannot be created' do
-        allow(user).to receive_messages(current_sign_in_ip: 'invalid IP')
+        allow_next_instance_of(AuditEvent) do |event|
+          allow(event).to receive(:valid?).and_return(false)
+        end
 
         expect(Gitlab::ErrorTracking).to(
-          receive(:track_exception)
-            .with(ActiveRecord::RecordInvalid, audit_event_type: 'AuthenticationEvent').and_call_original
+          receive(:track_and_raise_for_dev_exception)
         )
 
         audit_service.for_authentication.security_event
@@ -93,7 +94,7 @@ RSpec.describe AuditEventService do
           end
 
           specify do
-            expect(AuthenticationEvent).to receive(:new).with(hash_including(ip_address: output))
+            expect(AuthenticationEvent).to receive(:new).with(hash_including(ip_address: output)).and_call_original
 
             audit_service.for_authentication.security_event
           end

@@ -196,7 +196,7 @@ module Types
     field :auto_merge_strategy, GraphQL::Types::String, null: true,
           description: 'Selected auto merge strategy.'
     field :merge_user, Types::UserType, null: true,
-          description: 'User who merged this merge request.'
+          description: 'User who merged this merge request or set it to merge when pipeline succeeds.'
     field :timelogs, Types::TimelogType.connection_type, null: false,
           description: 'Timelogs on the merge request.'
 
@@ -275,6 +275,10 @@ module Types
 
     def reviewers
       object.reviewers
+    end
+
+    def merge_user
+      object.metrics&.merged_by || object.merge_user
     end
   end
 end

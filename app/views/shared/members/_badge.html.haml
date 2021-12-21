@@ -1,4 +1,4 @@
-- type ||= 'info'
+- variant ||= :info
 
 %span.px-1.py-1
-  %span{ class: "badge badge-pill gl-badge sm badge-#{type}" }= yield
+  = gl_badge_tag yield, variant: variant, size: :sm

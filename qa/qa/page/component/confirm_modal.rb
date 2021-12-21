@@ -8,12 +8,6 @@ module QA
 
         def self.included(base)
           super
-
-          base.view 'app/views/shared/_confirm_modal.html.haml' do
-            element :confirm_modal
-            element :confirm_input
-            element :confirm_button
-          end
         end
 
         def fill_confirmation_text(text)

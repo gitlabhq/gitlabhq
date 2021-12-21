@@ -1,5 +1,4 @@
 import { GROUP_BADGE } from '~/badges/constants';
-import initConfirmDangerModal from '~/confirm_danger_modal';
 import dirtySubmitFactory from '~/dirty_submit/dirty_submit_factory';
 import initFilePickers from '~/file_pickers';
 import TransferDropdown from '~/groups/transfer_dropdown';
@@ -14,7 +13,6 @@ import initConfirmDanger from '~/init_confirm_danger';
 
 document.addEventListener('DOMContentLoaded', () => {
   initFilePickers();
-  initConfirmDangerModal();
   initConfirmDanger();
   initSettingsPanels();
   dirtySubmitFactory(
