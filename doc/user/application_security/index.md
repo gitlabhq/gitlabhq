@@ -172,7 +172,7 @@ From the merge request security widget, select **Expand** to unfold the widget, 
 
 A pipeline's security tab lists all findings in the current branch. It includes new findings introduced by this branch and existing vulnerabilities that were already present when the branch was created. These results likely do not match the findings displayed in the Merge Request security widget as those do not include the existing vulnerabilities (with the exception of showing any existing vulnerabilities that are no longer detected in the feature branch).
 
-For more details, see [security tab](security_dashboard/index.md#pipeline-security).
+For more details, see [security tab](security_dashboard/index.md#view-vulnerabilities-in-a-pipeline).
 
 ## View security scan information in the Security Dashboard
 
@@ -406,9 +406,9 @@ sast:
 You can interact with the results of the security scanning tools in several locations:
 
 - [Scan information in merge requests](#view-security-scan-information-in-merge-requests)
-- [Project Security Dashboard](security_dashboard/#project-security-dashboard)
-- [Security pipeline tab](security_dashboard/#pipeline-security)
-- [Group Security Dashboard](security_dashboard/#group-security-dashboard)
+- [Project Security Dashboard](security_dashboard/index.md)
+- [Security pipeline tab](security_dashboard/index.md)
+- [Group Security Dashboard](security_dashboard/index.md)
 - [Security Center](security_dashboard/#security-center)
 - [Vulnerability Report](vulnerability_report/index.md)
 - [Vulnerability Pages](vulnerabilities/index.md)
