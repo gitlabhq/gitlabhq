@@ -12,17 +12,6 @@ module Gitlab
         MAX_ATTEMPTS = 3
         STUCK_JOBS_TIMEOUT = 1.hour.freeze
 
-        belongs_to :batched_migration, foreign_key: :batched_background_migration_id
-
-        scope :active, -> { where(status: [:pending, :running]) }
-        scope :stuck, -> { active.where('updated_at <= ?', STUCK_JOBS_TIMEOUT.ago) }
-        scope :retriable, -> {
-          failed_jobs = where(status: :failed).where('attempts < ?', MAX_ATTEMPTS)
-
-          from_union([failed_jobs, self.stuck])
-        }
-        scope :except_succeeded, -> { where(status: self.statuses.except(:succeeded).values) }
-
         enum status: {
           pending: 0,
           running: 1,
@@ -30,7 +19,14 @@ module Gitlab
           succeeded: 3
         }
 
+        belongs_to :batched_migration, foreign_key: :batched_background_migration_id
+
+        scope :active, -> { where(status: [:pending, :running]) }
+        scope :stuck, -> { active.where('updated_at <= ?', STUCK_JOBS_TIMEOUT.ago) }
+        scope :retriable, -> { from_union([failed.where('attempts < ?', MAX_ATTEMPTS), self.stuck]) }
+        scope :except_succeeded, -> { where(status: self.statuses.except(:succeeded).values) }
         scope :successful_in_execution_order, -> { where.not(finished_at: nil).succeeded.order(:finished_at) }
+        scope :with_preloads, -> { preload(:batched_migration) }
 
         delegate :job_class, :table_name, :column_name, :job_arguments,
           to: :batched_migration, prefix: :migration

@@ -360,6 +360,12 @@ db:migrate:reset:
   script:
     - bundle exec rake db:migrate:reset
 
+db:migrate:reset decomposed:
+  extends:
+    - db:migrate:reset
+    - .decomposed-database
+    - .rails:rules:decomposed-databases
+
 db:migrate-from-previous-major-version:
   extends: .db-job-base
   variables:

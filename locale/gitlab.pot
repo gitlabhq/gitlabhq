@@ -19577,9 +19577,6 @@ msgstr ""
 msgid "Is blocked by"
 msgstr ""
 
-msgid "Is this GitLab trial for your company?"
-msgstr ""
-
 msgid "Is using license seat:"
 msgstr ""
 
@@ -26462,6 +26459,9 @@ msgid "Please select a country"
 msgstr ""
 
 msgid "Please select a file"
+msgstr ""
+
+msgid "Please select a group"
 msgstr ""
 
 msgid "Please select a group."
@@ -37289,13 +37289,13 @@ msgstr ""
 msgid "Trial|How many employees will use Gitlab?"
 msgstr ""
 
-msgid "Trial|How many users will be evaluating the trial?"
-msgstr ""
-
 msgid "Trial|Last name"
 msgstr ""
 
 msgid "Trial|Number of employees"
+msgstr ""
+
+msgid "Trial|Number of trial users"
 msgstr ""
 
 msgid "Trial|Please select a country"

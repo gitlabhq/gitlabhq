@@ -113,7 +113,7 @@ module Gitlab
         end
 
         def smoothed_time_efficiency(number_of_jobs: 10, alpha: 0.2)
-          jobs = batched_jobs.successful_in_execution_order.reverse_order.limit(number_of_jobs)
+          jobs = batched_jobs.successful_in_execution_order.reverse_order.limit(number_of_jobs).with_preloads
 
           return if jobs.size < number_of_jobs
 

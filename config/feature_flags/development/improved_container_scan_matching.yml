@@ -1,8 +1,0 @@
----
-name: improved_container_scan_matching
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/73486
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/344534
-milestone: '14.6'
-type: development
-group: group::container security
-default_enabled: true

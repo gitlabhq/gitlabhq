@@ -521,13 +521,7 @@ vulnerabilities: :gitlab_main
 vulnerability_exports: :gitlab_main
 vulnerability_external_issue_links: :gitlab_main
 vulnerability_feedback: :gitlab_main
-vulnerability_finding_evidence_assets: :gitlab_main
-vulnerability_finding_evidence_headers: :gitlab_main
-vulnerability_finding_evidence_requests: :gitlab_main
-vulnerability_finding_evidence_responses: :gitlab_main
 vulnerability_finding_evidences: :gitlab_main
-vulnerability_finding_evidence_sources: :gitlab_main
-vulnerability_finding_evidence_supporting_messages: :gitlab_main
 vulnerability_finding_links: :gitlab_main
 vulnerability_finding_signatures: :gitlab_main
 vulnerability_findings_remediations: :gitlab_main
