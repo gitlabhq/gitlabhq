@@ -23,3 +23,6 @@ export const I18N_FETCH_TEST_SETTINGS_DEFAULT_ERROR_MESSAGE = s__(
 );
 export const I18N_DEFAULT_ERROR_MESSAGE = __('Something went wrong on our end.');
 export const I18N_SUCCESSFUL_CONNECTION_MESSAGE = s__('Integrations|Connection successful.');
+
+export const settingsTabTitle = __('Settings');
+export const overridesTabTitle = s__('Integrations|Projects using custom settings');

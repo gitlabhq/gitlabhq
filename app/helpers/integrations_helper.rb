@@ -101,8 +101,9 @@ module IntegrationsHelper
     form_data
   end
 
-  def integration_overrides_data(integration)
+  def integration_overrides_data(integration, project: nil, group: nil)
     {
+      edit_path: scoped_edit_integration_path(integration, project: project, group: group),
       overrides_path: scoped_overrides_integration_path(integration, format: :json)
     }
   end

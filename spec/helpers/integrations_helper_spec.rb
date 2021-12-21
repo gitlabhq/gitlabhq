@@ -70,6 +70,20 @@ RSpec.describe IntegrationsHelper do
     end
   end
 
+  describe '#integration_overrides_data' do
+    let(:integration) { build_stubbed(:jira_integration) }
+    let(:fields) do
+      [
+        edit_path: edit_admin_application_settings_integration_path(integration),
+        overrides_path: overrides_admin_application_settings_integration_path(integration, format: :json)
+      ]
+    end
+
+    subject { helper.integration_overrides_data(integration) }
+
+    it { is_expected.to include(*fields) }
+  end
+
   describe '#scoped_reset_integration_path' do
     let(:integration) { build_stubbed(:jira_integration) }
     let(:group) { nil }

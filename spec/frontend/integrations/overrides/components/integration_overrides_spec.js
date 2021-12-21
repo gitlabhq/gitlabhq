@@ -5,6 +5,8 @@ import MockAdapter from 'axios-mock-adapter';
 import waitForPromises from 'helpers/wait_for_promises';
 import { DEFAULT_PER_PAGE } from '~/api';
 import IntegrationOverrides from '~/integrations/overrides/components/integration_overrides.vue';
+import IntegrationTabs from '~/integrations/overrides/components/integration_tabs.vue';
+
 import axios from '~/lib/utils/axios_utils';
 import httpStatus from '~/lib/utils/http_status';
 import ProjectAvatar from '~/vue_shared/components/project_avatar.vue';
@@ -49,6 +51,7 @@ describe('IntegrationOverrides', () => {
 
   const findGlTable = () => wrapper.findComponent(GlTable);
   const findPagination = () => wrapper.findComponent(GlPagination);
+  const findIntegrationTabs = () => wrapper.findComponent(IntegrationTabs);
   const findRowsAsModel = () =>
     findGlTable()
       .findAllComponents(GlLink)
@@ -72,6 +75,12 @@ describe('IntegrationOverrides', () => {
       expect(table.exists()).toBe(true);
       expect(table.attributes('busy')).toBe('true');
     });
+
+    it('renders IntegrationTabs with count as `null`', () => {
+      createComponent();
+
+      expect(findIntegrationTabs().props('projectOverridesCount')).toBe(null);
+    });
   });
 
   describe('when initial request is successful', () => {
@@ -82,6 +91,13 @@ describe('IntegrationOverrides', () => {
       const table = findGlTable();
       expect(table.exists()).toBe(true);
       expect(table.attributes('busy')).toBeFalsy();
+    });
+
+    it('renders IntegrationTabs with count', async () => {
+      createComponent();
+      await waitForPromises();
+
+      expect(findIntegrationTabs().props('projectOverridesCount')).toBe(mockOverrides.length);
     });
 
     describe('table template', () => {
