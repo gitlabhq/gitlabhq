@@ -73,13 +73,19 @@ Returns [`CiConfig`](#ciconfig).
 
 ### `Query.ciMinutesUsage`
 
-Monthly CI minutes usage data for the current user.
+CI/CD minutes usage data for a namespace.
 
 Returns [`CiMinutesNamespaceMonthlyUsageConnection`](#ciminutesnamespacemonthlyusageconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
 `before: String`, `after: String`, `first: Int`, `last: Int`.
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="queryciminutesusagenamespaceid"></a>`namespaceId` | [`NamespaceID`](#namespaceid) | Global ID of the Namespace for the monthly CI/CD minutes usage. |
 
 ### `Query.containerRepository`
 

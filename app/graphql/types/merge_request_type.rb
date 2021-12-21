@@ -249,8 +249,16 @@ module Types
       !!object.discussion_locked
     end
 
+    def default_merge_commit_message
+      object.default_merge_commit_message(include_description: false, user: current_user)
+    end
+
     def default_merge_commit_message_with_description
       object.default_merge_commit_message(include_description: true)
+    end
+
+    def default_squash_commit_message
+      object.default_squash_commit_message(user: current_user)
     end
 
     def available_auto_merge_strategies

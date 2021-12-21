@@ -67,6 +67,7 @@ GitLab creates a squash commit message with this template:
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/20263) in GitLab 14.5.
 > - [Added](https://gitlab.com/gitlab-org/gitlab/-/issues/346805) `first_commit` and `first_multiline_commit` variables in GitLab 14.6.
+> - [Added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/75639) `url`, `approved_by`, and `merged_by` variables in GitLab 14.6.
 
 Commit message templates support these variables:
 
@@ -80,8 +81,11 @@ Commit message templates support these variables:
 | `%{reference}`     | Reference to the merge request. | `group-name/project-name!72359` |
 | `%{first_commit}`  | Full message of the first commit in merge request diff. | `Update README.md` |
 | `%{first_multiline_commit}` | Full message of the first commit that's not a merge commit and has more than one line in message body. Merge Request title if all commits aren't multiline. | `Update README.md`<br><br>`Improved project description in readme file.` |
+| `%{url}`           | Full URL to the merge request. | `https://gitlab.com/gitlab-org/gitlab/-/merge_requests/1` |
+| `%{approved_by}`      | Line-separated list of the merge request approvers. This value is not updated until the first page refresh after an approval. | `Approved-by: User A <user@example.com>` <br> `Approved-by: User B <user@gitlab.com>` |
+| `%{merged_by}` | User who merged the merge request. | `Some User <user@example.com>` |
 
-Empty variables that are the only word in a line are removed, along with all newline characters preceding it.
+Empty variables that are the only word in a line are removed, along with all newline characters preceding it.  
 
 ## Related topics
 

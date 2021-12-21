@@ -200,7 +200,7 @@ experiment_subjects: :gitlab_main
 experiment_users: :gitlab_main
 external_approval_rules: :gitlab_main
 external_approval_rules_protected_branches: :gitlab_main
-external_pull_requests: :gitlab_main
+external_pull_requests: :gitlab_ci
 external_status_checks: :gitlab_main
 external_status_checks_protected_branches: :gitlab_main
 feature_gates: :gitlab_main

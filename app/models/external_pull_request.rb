@@ -11,7 +11,7 @@
 # When the mirror is updated and changes are pushed to branches we check
 # if there are open pull requests for the source and target branch.
 # If so, we create pipelines for external pull requests.
-class ExternalPullRequest < ApplicationRecord
+class ExternalPullRequest < Ci::ApplicationRecord
   include Gitlab::Utils::StrongMemoize
   include ShaAttribute
 
@@ -39,6 +39,9 @@ class ExternalPullRequest < ApplicationRecord
 
   scope :by_source_branch, ->(branch) { where(source_branch: branch) }
   scope :by_source_repository, -> (repository) { where(source_repository: repository) }
+
+  # Needed to override Ci::ApplicationRecord as this does not have ci_ table prefix
+  self.table_name = 'external_pull_requests'
 
   def self.create_or_update_from_params(params)
     find_params = params.slice(:project_id, :source_branch, :target_branch)

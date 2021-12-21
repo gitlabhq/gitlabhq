@@ -67,6 +67,9 @@ RSpec.describe 'projects/edit' do
       expect(rendered).to have_content('%{issues}')
       expect(rendered).to have_content('%{description}')
       expect(rendered).to have_content('%{reference}')
+      expect(rendered).to have_content('%{approved_by}')
+      expect(rendered).to have_content('%{url}')
+      expect(rendered).to have_content('%{merged_by}')
     end
 
     it 'displays a placeholder if none is set' do

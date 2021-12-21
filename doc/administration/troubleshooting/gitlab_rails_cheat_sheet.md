@@ -909,6 +909,14 @@ end
 Gitlab::CurrentSettings.current_application_settings.runners_registration_token
 ```
 
+### Seed runners registration token
+
+```ruby
+appSetting = Gitlab::CurrentSettings.current_application_settings
+appSetting.set_runners_registration_token('<new-runners-registration-token>')
+appSetting.save!
+```
+
 ### Run pipeline schedules manually
 
 You can run pipeline schedules manually through the Rails console to reveal any errors that are usually not visible.

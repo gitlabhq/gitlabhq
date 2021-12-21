@@ -8,7 +8,12 @@ require_relative '../support/helpers/next_instance_of'
 RSpec.describe MetricsServer do # rubocop:disable RSpec/FilePath
   include NextInstanceOf
 
+  let(:prometheus_config) { ::Prometheus::Client.configuration }
   let(:metrics_dir) { Dir.mktmpdir }
+
+  # Prometheus::Client is a singleton, i.e. shared global state, so
+  # we need to reset it after testing.
+  let!(:old_multiprocess_files_dir) { prometheus_config.multiprocess_files_dir }
 
   before do
     # We do not want this to have knock-on effects on the test process.
@@ -16,6 +21,9 @@ RSpec.describe MetricsServer do # rubocop:disable RSpec/FilePath
   end
 
   after do
+    Gitlab::Metrics.reset_registry!
+    prometheus_config.multiprocess_files_dir = old_multiprocess_files_dir
+
     FileUtils.rm_rf(metrics_dir, secure: true)
   end
 
@@ -55,9 +63,7 @@ RSpec.describe MetricsServer do # rubocop:disable RSpec/FilePath
   describe '#start' do
     let(:exporter_class) { Class.new(Gitlab::Metrics::Exporter::BaseExporter) }
     let(:exporter_double) { double('fake_exporter', start: true) }
-    let(:prometheus_config) { ::Prometheus::Client.configuration }
     let(:settings) { { "fake_exporter" => { "enabled" => true } } }
-    let!(:old_metrics_dir) { prometheus_config.multiprocess_files_dir }
     let(:ruby_sampler_double) { double(Gitlab::Metrics::Samplers::RubySampler) }
 
     subject(:metrics_server) { described_class.new('fake', metrics_dir, true)}
@@ -69,11 +75,6 @@ RSpec.describe MetricsServer do # rubocop:disable RSpec/FilePath
 
       allow(Gitlab::Metrics::Samplers::RubySampler).to receive(:initialize_instance).and_return(ruby_sampler_double)
       allow(ruby_sampler_double).to receive(:start)
-    end
-
-    after do
-      Gitlab::Metrics.reset_registry!
-      prometheus_config.multiprocess_files_dir = old_metrics_dir
     end
 
     it 'configures ::Prometheus::Client' do

@@ -15,7 +15,9 @@ RSpec.describe Gitlab::MergeRequests::CommitMessageGenerator do
     )
   end
 
-  let(:user) { project.creator }
+  let(:owner) { project.creator }
+  let(:developer) { create(:user, access_level: Gitlab::Access::DEVELOPER) }
+  let(:maintainer) { create(:user, access_level: Gitlab::Access::MAINTAINER) }
   let(:source_branch) { 'feature' }
   let(:merge_request_description) { "Merge Request Description\nNext line" }
   let(:merge_request_title) { 'Bugfix' }
@@ -27,13 +29,13 @@ RSpec.describe Gitlab::MergeRequests::CommitMessageGenerator do
       target_project: project,
       target_branch: 'master',
       source_branch: source_branch,
-      author: user,
+      author: owner,
       description: merge_request_description,
       title: merge_request_title
     )
   end
 
-  subject { described_class.new(merge_request: merge_request) }
+  subject { described_class.new(merge_request: merge_request, current_user: maintainer) }
 
   shared_examples_for 'commit message with template' do |message_template_name|
     it 'returns nil when template is not set in target project' do
@@ -271,6 +273,111 @@ RSpec.describe Gitlab::MergeRequests::CommitMessageGenerator do
           it 'is mr title' do
             expect(result_message).to eq 'Message: Bugfix'
           end
+        end
+      end
+    end
+
+    context 'when project has merge commit template with approvers' do
+      let(message_template_name) do
+        "Merge Request approved by:\n%{approved_by}"
+      end
+
+      context "and mr has no approval" do
+        before do
+          merge_request.approved_by_users = []
+        end
+
+        it "returns empty string" do
+          expect(result_message).to eq <<~MSG.rstrip
+          Merge Request approved by:
+          MSG
+        end
+      end
+
+      context "and mr has one approval" do
+        before do
+          merge_request.approved_by_users = [developer]
+        end
+
+        it "returns user name and email" do
+          expect(result_message).to eq <<~MSG.rstrip
+          Merge Request approved by:
+          Approved-by: #{developer.name} <#{developer.email}>
+          MSG
+        end
+      end
+
+      context "and mr has multiple approvals" do
+        before do
+          merge_request.approved_by_users = [developer, maintainer]
+        end
+
+        it "returns users names and emails" do
+          expect(result_message).to eq <<~MSG.rstrip
+          Merge Request approved by:
+          Approved-by: #{developer.name} <#{developer.email}>
+          Approved-by: #{maintainer.name} <#{maintainer.email}>
+          MSG
+        end
+      end
+    end
+
+    context 'when project has merge commit template with url' do
+      let(message_template_name) do
+        "Merge Request URL is '%{url}'"
+      end
+
+      context "and merge request has url" do
+        it "returns mr url" do
+          expect(result_message).to eq <<~MSG.rstrip
+          Merge Request URL is '#{Gitlab::UrlBuilder.build(merge_request)}'
+          MSG
+        end
+      end
+    end
+
+    context 'when project has merge commit template with merged_by' do
+      let(message_template_name) do
+        "Merge Request merged by '%{merged_by}'"
+      end
+
+      context "and current_user is passed" do
+        it "returns user name and email" do
+          expect(result_message).to eq <<~MSG.rstrip
+          Merge Request merged by '#{maintainer.name} <#{maintainer.email}>'
+          MSG
+        end
+      end
+    end
+
+    context 'user' do
+      subject { described_class.new(merge_request: merge_request, current_user: nil) }
+
+      let(message_template_name) do
+        "Merge Request merged by '%{merged_by}'"
+      end
+
+      context 'comes from metrics' do
+        before do
+          merge_request.metrics.merged_by = developer
+        end
+
+        it "returns user name and email" do
+          expect(result_message).to eq <<~MSG.rstrip
+          Merge Request merged by '#{developer.name} <#{developer.email}>'
+          MSG
+        end
+      end
+
+      context 'comes from merge_user' do
+        before do
+          merge_request.merge_user = maintainer
+        end
+
+        it "returns user name and email" do
+          expect(result_message).to eq <<~MSG.rstrip
+          Merge Request merged by '#{maintainer.name} <#{maintainer.email}>'
+          MSG
         end
       end
     end
