@@ -1,3 +1,18 @@
+fragment CiNeeds on JobNeedUnion {
+  ...CiBuildNeedFields
+  ...CiJobNeedFields
+}
+
+fragment CiBuildNeedFields on CiBuildNeed {
+  id
+  name
+}
+
+fragment CiJobNeedFields on CiJob {
+  id
+  name
+}
+
 fragment LinkedPipelineData on Pipeline {
   __typename
   id
@@ -89,6 +104,12 @@ query getPipelineDetails($projectPath: ID!, $iid: ID!) {
                       __typename
                       id
                       name
+                    }
+                  }
+                  previousStageJobsOrNeeds {
+                    __typename
+                    nodes {
+                      ...CiNeeds
                     }
                   }
                   status: detailedStatus {

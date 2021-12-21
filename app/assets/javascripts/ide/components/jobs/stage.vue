@@ -1,5 +1,5 @@
 <script>
-import { GlLoadingIcon, GlIcon, GlTooltipDirective } from '@gitlab/ui';
+import { GlLoadingIcon, GlIcon, GlTooltipDirective, GlBadge } from '@gitlab/ui';
 import CiIcon from '../../../vue_shared/components/ci_icon.vue';
 import Item from './item.vue';
 
@@ -9,6 +9,7 @@ export default {
   },
   components: {
     GlIcon,
+    GlBadge,
     CiIcon,
     Item,
     GlLoadingIcon,
@@ -74,7 +75,7 @@ export default {
         {{ stage.name }}
       </strong>
       <div v-if="!stage.isLoading || stage.jobs.length" class="gl-mr-3 gl-ml-2">
-        <span class="badge badge-pill"> {{ jobsCount }} </span>
+        <gl-badge>{{ jobsCount }}</gl-badge>
       </div>
       <gl-icon :name="collapseIcon" class="ide-stage-collapse-icon" />
     </div>

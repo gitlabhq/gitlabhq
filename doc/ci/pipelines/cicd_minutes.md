@@ -103,7 +103,7 @@ These additional CI/CD minutes:
 
 - Are used only after the monthly quota included in your subscription runs out.
 - Are carried over to the next month, if any remain at the end of the month.
-- Don't expire unless used up.
+- Don't expire.
 
 If you use more CI/CD minutes than your monthly quota, when you purchase more,
 those CI/CD minutes are deducted from your quota. For example, with a GitLab SaaS
@@ -166,10 +166,13 @@ Job duration * Cost factor
 
 The number is transformed into minutes and added to the overall quota in the job's top-level namespace.
 
-For example: a user `alice` runs a pipeline under `gitlab-org` namespace. The CI/CD minutes consumed by each job
-in the pipeline are added to the overall consumption for `gitlab-org` namespace, not `alice` namespace.
-If a pipeline runs for one of `alice`'s personal project, the CI/CD minutes are added to the overall consumption
-for `alice` namespace.
+For example:
+
+- A user, `alice`, runs a pipeline under the `gitlab-org` namespace.
+- The CI/CD minutes consumed by each job in the pipeline are added to the
+  overall consumption for the `gitlab-org` namespace, not the `alice` namespace.
+- If a pipeline runs for one of the personal projects for `alice`, the CI/CD minutes
+  are added to the overall consumption for the `alice` namespace.
 
 ### Cost factor
 

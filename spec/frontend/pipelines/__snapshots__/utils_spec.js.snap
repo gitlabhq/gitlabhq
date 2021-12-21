@@ -13,6 +13,7 @@ Array [
             "id": "6",
             "name": "build_a_nlfjkdnlvskfnksvjknlfdjvlvnjdkjdf_nvjkenjkrlngjeknjkl",
             "needs": Array [],
+            "previousStageJobsOrNeeds": Array [],
             "scheduledAt": null,
             "status": Object {
               "__typename": "DetailedStatus",
@@ -53,6 +54,7 @@ Array [
             "id": "11",
             "name": "build_b",
             "needs": Array [],
+            "previousStageJobsOrNeeds": Array [],
             "scheduledAt": null,
             "status": Object {
               "__typename": "DetailedStatus",
@@ -93,6 +95,7 @@ Array [
             "id": "16",
             "name": "build_c",
             "needs": Array [],
+            "previousStageJobsOrNeeds": Array [],
             "scheduledAt": null,
             "status": Object {
               "__typename": "DetailedStatus",
@@ -133,6 +136,7 @@ Array [
             "id": "21",
             "name": "build_d 1/3",
             "needs": Array [],
+            "previousStageJobsOrNeeds": Array [],
             "scheduledAt": null,
             "status": Object {
               "__typename": "DetailedStatus",
@@ -157,6 +161,7 @@ Array [
             "id": "24",
             "name": "build_d 2/3",
             "needs": Array [],
+            "previousStageJobsOrNeeds": Array [],
             "scheduledAt": null,
             "status": Object {
               "__typename": "DetailedStatus",
@@ -181,6 +186,7 @@ Array [
             "id": "27",
             "name": "build_d 3/3",
             "needs": Array [],
+            "previousStageJobsOrNeeds": Array [],
             "scheduledAt": null,
             "status": Object {
               "__typename": "DetailedStatus",
@@ -221,6 +227,7 @@ Array [
             "id": "59",
             "name": "test_c",
             "needs": Array [],
+            "previousStageJobsOrNeeds": Array [],
             "scheduledAt": null,
             "status": Object {
               "__typename": "DetailedStatus",
@@ -263,6 +270,11 @@ Array [
             "id": "34",
             "name": "test_a",
             "needs": Array [
+              "build_c",
+              "build_b",
+              "build_a_nlfjkdnlvskfnksvjknlfdjvlvnjdkjdf_nvjkenjkrlngjeknjkl",
+            ],
+            "previousStageJobsOrNeeds": Array [
               "build_c",
               "build_b",
               "build_a_nlfjkdnlvskfnksvjknlfdjvlvnjdkjdf_nvjkenjkrlngjeknjkl",
@@ -313,6 +325,13 @@ Array [
               "build_b",
               "build_a_nlfjkdnlvskfnksvjknlfdjvlvnjdkjdf_nvjkenjkrlngjeknjkl",
             ],
+            "previousStageJobsOrNeeds": Array [
+              "build_d 3/3",
+              "build_d 2/3",
+              "build_d 1/3",
+              "build_b",
+              "build_a_nlfjkdnlvskfnksvjknlfdjvlvnjdkjdf_nvjkenjkrlngjeknjkl",
+            ],
             "scheduledAt": null,
             "status": Object {
               "__typename": "DetailedStatus",
@@ -337,6 +356,13 @@ Array [
             "id": "67",
             "name": "test_b 2/2",
             "needs": Array [
+              "build_d 3/3",
+              "build_d 2/3",
+              "build_d 1/3",
+              "build_b",
+              "build_a_nlfjkdnlvskfnksvjknlfdjvlvnjdkjdf_nvjkenjkrlngjeknjkl",
+            ],
+            "previousStageJobsOrNeeds": Array [
               "build_d 3/3",
               "build_d 2/3",
               "build_d 1/3",
@@ -383,6 +409,9 @@ Array [
             "id": "53",
             "name": "test_d",
             "needs": Array [
+              "build_b",
+            ],
+            "previousStageJobsOrNeeds": Array [
               "build_b",
             ],
             "scheduledAt": null,

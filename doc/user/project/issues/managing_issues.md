@@ -22,7 +22,7 @@ You can create an issue in many ways in GitLab:
 - [From another issue](#from-another-issue)
 - [From an issue board](#from-an-issue-board)
 - [By sending an email](#by-sending-an-email)
-- Using a URL with prefilled fields
+- [Using a URL with prefilled values](#using-a-url-with-prefilled-values)
 - [Using Service Desk](#using-service-desk)
 
 ### From a project

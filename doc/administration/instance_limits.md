@@ -640,7 +640,7 @@ To set this limit to `100` on a self-managed instance, run the following command
 [GitLab Rails console](operations/rails_console.md#starting-a-rails-console-session):
 
 ```ruby
-Plan.default.actual_limits.update!(dotenv_variable_limit: 100)
+Plan.default.actual_limits.update!(dotenv_variables: 100)
 ```
 
 This limit is [enabled on GitLab.com](../user/gitlab_com/index.md#gitlab-cicd).
@@ -658,7 +658,7 @@ To set this limit to 5KB on a self-managed installation, run the following in th
 [GitLab Rails console](operations/rails_console.md#starting-a-rails-console-session):
 
 ```ruby
-Plan.default.actual_limits.update!(dotenv_size_limit: 5.kilobytes)
+Plan.default.actual_limits.update!(dotenv_size: 5.kilobytes)
 ```
 
 ## Instance monitoring and metrics

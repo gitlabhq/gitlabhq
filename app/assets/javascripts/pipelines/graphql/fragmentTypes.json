@@ -1,0 +1,1 @@
+{"__schema":{"types":[{"kind":"UNION","name":"JobNeedUnion","possibleTypes":[{"name":"CiBuildNeed"},{"name":"CiJob"}]}]}}
