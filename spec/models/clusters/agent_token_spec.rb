@@ -9,6 +9,8 @@ RSpec.describe Clusters::AgentToken do
   it { is_expected.to validate_length_of(:name).is_at_most(255) }
   it { is_expected.to validate_presence_of(:name) }
 
+  it_behaves_like 'having unique enum values'
+
   describe 'scopes' do
     describe '.order_last_used_at_desc' do
       let_it_be(:token_1) { create(:cluster_agent_token, last_used_at: 7.days.ago) }
@@ -76,9 +78,9 @@ RSpec.describe Clusters::AgentToken do
         end
       end
 
-      context 'agent is inactive' do
+      context 'agent is not connected' do
         before do
-          allow(agent).to receive(:active?).and_return(false)
+          allow(agent).to receive(:connected?).and_return(false)
         end
 
         it 'creates an activity event' do
@@ -94,9 +96,9 @@ RSpec.describe Clusters::AgentToken do
         end
       end
 
-      context 'agent is active' do
+      context 'agent is connected' do
         before do
-          allow(agent).to receive(:active?).and_return(true)
+          allow(agent).to receive(:connected?).and_return(true)
         end
 
         it 'does not create an activity event' do

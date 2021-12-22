@@ -76,12 +76,12 @@ RSpec.describe Clusters::Agent do
     end
   end
 
-  describe '#active?' do
+  describe '#connected?' do
     let_it_be(:agent) { create(:cluster_agent) }
 
     let!(:token) { create(:cluster_agent_token, agent: agent, last_used_at: last_used_at) }
 
-    subject { agent.active? }
+    subject { agent.connected? }
 
     context 'agent has never connected' do
       let(:last_used_at) { nil }
@@ -99,6 +99,14 @@ RSpec.describe Clusters::Agent do
       let(:last_used_at) { 2.minutes.ago }
 
       it { is_expected.to be_truthy }
+
+      context 'agent token has been revoked' do
+        before do
+          token.revoked!
+        end
+
+        it { is_expected.to be_falsey }
+      end
     end
 
     context 'agent has multiple tokens' do

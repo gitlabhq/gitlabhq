@@ -8960,6 +8960,7 @@ GitLab CI/CD configuration template.
 | <a id="clusteragenttokenid"></a>`id` | [`ClustersAgentTokenID!`](#clustersagenttokenid) | Global ID of the token. |
 | <a id="clusteragenttokenlastusedat"></a>`lastUsedAt` | [`Time`](#time) | Timestamp the token was last used. |
 | <a id="clusteragenttokenname"></a>`name` | [`String`](#string) | Name given to the token. |
+| <a id="clusteragenttokenstatus"></a>`status` | [`String`](#string) | Current status of the token. |
 
 ### `CodeCoverageActivity`
 

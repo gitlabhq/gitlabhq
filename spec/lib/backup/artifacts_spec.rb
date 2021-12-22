@@ -12,7 +12,7 @@ RSpec.describe Backup::Artifacts do
       Dir.mktmpdir do |tmpdir|
         allow(JobArtifactUploader).to receive(:root) { "#{tmpdir}" }
 
-        expect(backup.app_files_dir).to eq("#{tmpdir}")
+        expect(backup.app_files_dir).to eq("#{File.realpath(tmpdir)}")
       end
     end
   end

@@ -12384,6 +12384,7 @@ CREATE TABLE cluster_agent_tokens (
     description text,
     name text,
     last_used_at timestamp with time zone,
+    status smallint DEFAULT 0 NOT NULL,
     CONSTRAINT check_0fb634d04d CHECK ((name IS NOT NULL)),
     CONSTRAINT check_2b79dbb315 CHECK ((char_length(name) <= 255)),
     CONSTRAINT check_4e4ec5070a CHECK ((char_length(description) <= 1024)),
@@ -27981,8 +27982,6 @@ CREATE INDEX tmp_index_namespaces_empty_traversal_ids_with_root_namespaces ON na
 CREATE UNIQUE INDEX tmp_index_on_tmp_project_id_on_namespaces ON namespaces USING btree (tmp_project_id);
 
 CREATE INDEX tmp_index_on_vulnerabilities_non_dismissed ON vulnerabilities USING btree (id) WHERE (state <> 2);
-
-CREATE INDEX tmp_index_uuid_is_null ON security_findings USING btree (id) WHERE (uuid IS NULL);
 
 CREATE UNIQUE INDEX uniq_pkgs_deb_grp_architectures_on_distribution_id_and_name ON packages_debian_group_architectures USING btree (distribution_id, name);
 

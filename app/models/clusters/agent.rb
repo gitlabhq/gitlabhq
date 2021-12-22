@@ -36,8 +36,8 @@ module Clusters
       requested_project == project
     end
 
-    def active?
-      agent_tokens.where("last_used_at > ?", INACTIVE_AFTER.ago).exists?
+    def connected?
+      agent_tokens.active.where("last_used_at > ?", INACTIVE_AFTER.ago).exists?
     end
   end
 end

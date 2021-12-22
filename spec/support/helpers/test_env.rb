@@ -148,6 +148,8 @@ module TestEnv
     FileUtils.mkdir_p(backup_path)
     FileUtils.mkdir_p(pages_path)
     FileUtils.mkdir_p(artifacts_path)
+    FileUtils.mkdir_p(lfs_path)
+    FileUtils.mkdir_p(terraform_state_path)
   end
 
   def setup_gitlab_shell
@@ -412,6 +414,14 @@ module TestEnv
 
   def artifacts_path
     Gitlab.config.artifacts.storage_path
+  end
+
+  def lfs_path
+    Gitlab.config.lfs.storage_path
+  end
+
+  def terraform_state_path
+    Gitlab.config.terraform_state.storage_path
   end
 
   # When no cached assets exist, manually hit the root path to create them

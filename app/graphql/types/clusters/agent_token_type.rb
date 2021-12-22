@@ -44,6 +44,11 @@ module Types
             null: true,
             description: 'Name given to the token.'
 
+      field :status,
+            GraphQL::Types::String,
+            null: true,
+            description: 'Current status of the token.'
+
       def cluster_agent
         Gitlab::Graphql::Loaders::BatchModelLoader.new(::Clusters::Agent, object.agent_id).find
       end

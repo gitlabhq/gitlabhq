@@ -76,20 +76,7 @@ module Gitlab
 
       def self.cleanup_leftovers!
         PostgresIndex.reindexing_leftovers.each do |index|
-          Gitlab::AppLogger.info("Removing index #{index.identifier} which is a leftover, temporary index from previous reindexing activity")
-
-          retries = Gitlab::Database::WithLockRetriesOutsideTransaction.new(
-            connection: index.connection,
-            timing_configuration: REMOVE_INDEX_RETRY_CONFIG,
-            klass: self.class,
-            logger: Gitlab::AppLogger
-          )
-
-          retries.run(raise_on_exhaustion: false) do
-            index.connection.tap do |conn|
-              conn.execute("DROP INDEX CONCURRENTLY IF EXISTS #{conn.quote_table_name(index.schema)}.#{conn.quote_table_name(index.name)}")
-            end
-          end
+          Coordinator.new(index).drop
         end
       end
     end

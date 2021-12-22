@@ -58,6 +58,7 @@ including:
 - CI/CD job output logs
 - CI/CD job artifacts
 - LFS objects
+- Terraform states
 - Container Registry images
 - GitLab Pages content
 - Snippets
@@ -65,7 +66,6 @@ including:
 
 Backups do not include:
 
-- [Terraform state files](../administration/terraform_state.md)
 - [Package registry files](../administration/packages/index.md)
 - [Mattermost data](https://docs.mattermost.com/administration/config-settings.html#file-storage)
 
@@ -276,6 +276,7 @@ You can exclude specific directories from the backup by adding the environment v
 - `builds` (CI job output logs)
 - `artifacts` (CI job artifacts)
 - `lfs` (LFS objects)
+- `terraform_state` (Terraform states)
 - `registry` (Container Registry images)
 - `pages` (Pages content)
 - `repositories` (Git repositories data)

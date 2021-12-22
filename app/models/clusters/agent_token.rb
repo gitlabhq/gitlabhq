@@ -23,13 +23,18 @@ module Clusters
 
     scope :order_last_used_at_desc, -> { order(::Gitlab::Database.nulls_last_order('last_used_at', 'DESC')) }
 
+    enum status: {
+      active: 0,
+      revoked: 1
+    }
+
     def track_usage
       track_values = { last_used_at: Time.current.utc }
 
       cache_attributes(track_values)
 
       if can_update_track_values?
-        log_activity_event!(track_values[:last_used_at]) unless agent.active?
+        log_activity_event!(track_values[:last_used_at]) unless agent.connected?
 
         # Use update_column so updated_at is skipped
         update_columns(track_values)
