@@ -583,7 +583,7 @@ RSpec.describe Feature, stub_feature_flags: false do
     end
 
     context 'when flag is new and not feature_flag_state_logs' do
-      let(:milestone) { "14.6" }
+      let(:milestone) { "14.9" }
 
       it { is_expected.to be_truthy }
     end

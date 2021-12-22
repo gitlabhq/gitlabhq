@@ -60,7 +60,7 @@ module QA
         expect(untracked_repositories).not_to include(repo1)
       end
 
-      it 'allows admin to control the number of replicas of data', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/2434' do
+      it 'allows admin to control the number of replicas of data', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347566' do
         praefect_manager.track_repository_in_praefect(repo1['relative_path'], repo1['storage'], repo1['virtual_storage'])
 
         praefect_manager.set_replication_factor(repo1['relative_path'], repo1['virtual_storage'], 2)

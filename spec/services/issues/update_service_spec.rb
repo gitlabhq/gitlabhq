@@ -204,6 +204,13 @@ RSpec.describe Issues::UpdateService, :mailer do
             expect(note).not_to eq(nil)
           end
 
+          it 'creates an escalation status' do
+            expect { update_issue(issue_type: 'incident') }
+            .to change { issue.reload.incident_management_issuable_escalation_status }
+            .from(nil)
+            .to(a_kind_of(IncidentManagement::IssuableEscalationStatus))
+          end
+
           context 'for an issue with multiple labels' do
             let(:issue) { create(:incident, project: project, labels: [label_1]) }
 

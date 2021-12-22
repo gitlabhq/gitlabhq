@@ -259,6 +259,8 @@ module Issues
 
     def do_handle_issue_type_change(issue)
       SystemNoteService.change_issue_type(issue, current_user)
+
+      ::IncidentManagement::IssuableEscalationStatuses::CreateService.new(issue).execute if issue.supports_escalation?
     end
   end
 end

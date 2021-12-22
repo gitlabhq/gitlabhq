@@ -8,7 +8,7 @@ product_stage: package
 product_group: group::package
 product_category: package registry
 value_type: number
-status: deprecated
+status: removed
 time_frame: 7d
 data_source: redis_hll
 instrumentation_class: RedisHLLMetric

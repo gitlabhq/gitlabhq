@@ -40,7 +40,6 @@ RSpec.shared_examples 'Debian packages upload request' do |status, body = nil|
         expect(response.body).to match(body)
       end
     end
-    it_behaves_like 'a package tracking event', described_class.name, 'push_package'
   else
     it "returns #{status}#{and_body}", :aggregate_failures do
       subject

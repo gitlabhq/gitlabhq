@@ -236,6 +236,18 @@ Project owners can unlink Security Policy projects from development projects. To
 the steps described in [Security Policy project selection](#security-policy-project-selection),
 but select the trash can icon in the modal.
 
+## Scan execution policies
+
+Project owners can use scan execution policies to require that security scans run on a specified
+schedule or with the project pipeline. Required scans are injected into the CI pipeline as new jobs
+with a long, random job name. In the unlikely event of a job name collision, the security policy job
+overwrites any pre-existing job in the pipeline.
+
+This feature has some overlap with [compliance framework pipelines](../../project/settings/#compliance-pipeline-configuration),
+as we have not [unified the user experience for these two features](https://gitlab.com/groups/gitlab-org/-/epics/7312).
+For details on the similarities and differences between these features, see
+[Enforce scan execution](../#enforce-scan-execution).
+
 ### Scan Execution Policy editor
 
 NOTE:

@@ -42,7 +42,10 @@ However, you can't import issues and merge requests this way. To retain all meta
 merge requests, use the [import/export feature](../settings/import_export.md)
 to export projects from self-managed GitLab and import those projects into GitLab.com. All GitLab
 user associations (such as comment author) are changed to the user importing the project. For more
-information, see [the import notes](../settings/import_export.md#important-notes).
+information, see the prerequisites and imporant notes in these sections:
+
+- [Export a project and its data](../settings/import_export.md#export-a-project-and-its-data).
+- [Import the project](../settings/import_export.md#import-a-project-and-its-data).
 
 NOTE:
 When migrating to GitLab.com, you must create users manually unless [SCIM](../../../user/group/saml_sso/scim_setup.md)
@@ -56,7 +59,7 @@ Migrate the assets in this order:
 1. [Projects](../../../api/projects.md)
 1. [Project variables](../../../api/project_level_variables.md)
 
-Keep in mind the limitations of the [import/export feature](../settings/import_export.md#exported-contents).
+Keep in mind the limitations of the [import/export feature](../settings/import_export.md#items-that-are-exported).
 
 You must still migrate your [Container Registry](../../packages/container_registry/)
 over a series of Docker pulls and pushes. Re-run any CI pipelines to retrieve any build artifacts.
