@@ -18,6 +18,10 @@ class Member < ApplicationRecord
   AVATAR_SIZE = 40
   ACCESS_REQUEST_APPROVERS_TO_BE_NOTIFIED_LIMIT = 10
 
+  STATE_CREATED = 0
+  STATE_AWAITING = 1
+  STATE_ACTIVE = 2
+
   attr_accessor :raw_invite_token
 
   belongs_to :created_by, class_name: "User"

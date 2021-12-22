@@ -200,7 +200,7 @@ export default {
             />
           </template>
         </div>
-        <board-sidebar-time-tracker class="swimlanes-sidebar-time-tracker" />
+        <board-sidebar-time-tracker />
         <sidebar-date-widget
           :iid="activeBoardItem.iid"
           :full-path="fullPath"

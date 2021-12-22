@@ -3,6 +3,7 @@
 module AuthHelper
   PROVIDERS_WITH_ICONS = %w(
     atlassian_oauth2
+    auth0
     authentiq
     azure_activedirectory_v2
     azure_oauth2
@@ -12,8 +13,10 @@ module AuthHelper
     github
     gitlab
     google_oauth2
+    jwt
     openid_connect
     salesforce
+    shibboleth
     twitter
   ).freeze
   LDAP_PROVIDER = /\Aldap/.freeze

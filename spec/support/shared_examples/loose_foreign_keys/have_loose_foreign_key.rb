@@ -55,7 +55,8 @@ RSpec.shared_examples 'cleanup by a loose foreign key' do
   end
 
   def find_model
-    model.class.find_by(id: model.id)
+    primary_key = model.class.primary_key.to_sym
+    model.class.find_by(primary_key => model.public_send(primary_key))
   end
 
   it 'deletes the model' do

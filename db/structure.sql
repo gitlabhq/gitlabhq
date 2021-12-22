@@ -29263,9 +29263,6 @@ ALTER TABLE ONLY merge_requests
 ALTER TABLE ONLY ci_builds
     ADD CONSTRAINT fk_6661f4f0e8 FOREIGN KEY (resource_group_id) REFERENCES ci_resource_groups(id) ON DELETE SET NULL;
 
-ALTER TABLE ONLY project_pages_metadata
-    ADD CONSTRAINT fk_69366a119e FOREIGN KEY (artifacts_archive_id) REFERENCES ci_job_artifacts(id) ON DELETE SET NULL;
-
 ALTER TABLE ONLY application_settings
     ADD CONSTRAINT fk_693b8795e4 FOREIGN KEY (push_rule_id) REFERENCES push_rules(id) ON DELETE SET NULL;
 
