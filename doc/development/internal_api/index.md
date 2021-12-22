@@ -703,10 +703,10 @@ Example response:
 
 - CustomersDot
 
-## CI minute provisioning
+## CI/CD minutes provisioning
 
-The CI Minute endpoints are used by [CustomersDot](https://gitlab.com/gitlab-org/customers-gitlab-com) (`customers.gitlab.com`)
-to apply additional packs of CI minutes, for personal namespaces or top-level groups within GitLab.com.
+The CI/CD Minutes endpoints are used by [CustomersDot](https://gitlab.com/gitlab-org/customers-gitlab-com) (`customers.gitlab.com`)
+to apply additional packs of CI/CD minutes, for personal namespaces or top-level groups within GitLab.com.
 
 ### Creating an additional pack
 

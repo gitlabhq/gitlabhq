@@ -2768,7 +2768,7 @@ msgstr ""
 msgid "AdminUsers|Delete user and contributions"
 msgstr ""
 
-msgid "AdminUsers|Export permissions as CSV"
+msgid "AdminUsers|Export permissions as CSV (max 100,000 users)"
 msgstr ""
 
 msgid "AdminUsers|External"

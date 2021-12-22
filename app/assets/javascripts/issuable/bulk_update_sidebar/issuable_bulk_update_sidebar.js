@@ -6,7 +6,6 @@ import { property } from 'lodash';
 import issuableEventHub from '~/issues_list/eventhub';
 import LabelsSelect from '~/labels/labels_select';
 import MilestoneSelect from '~/milestones/milestone_select';
-import initIssueStatusSelect from './init_issue_status_select';
 import IssuableBulkUpdateActions from './issuable_bulk_update_actions';
 import subscriptionSelect from './subscription_select';
 
@@ -57,7 +56,6 @@ export default class IssuableBulkUpdateSidebar {
   initDropdowns() {
     new LabelsSelect();
     new MilestoneSelect();
-    initIssueStatusSelect();
     subscriptionSelect();
 
     if (IS_EE) {

@@ -372,27 +372,12 @@ module QA
         api_post_to(api_wikis_path, title: title, content: content)
       end
 
-      # Object comparison
-      #
-      # @param [QA::Resource::Project] other
-      # @return [Boolean]
-      def ==(other)
-        other.is_a?(Project) && comparable_project == other.comparable_project
-      end
-
-      # Override inspect for a better rspec failure diff output
-      #
-      # @return [String]
-      def inspect
-        JSON.pretty_generate(comparable_project)
-      end
-
       protected
 
       # Return subset of fields for comparing projects
       #
       # @return [Hash]
-      def comparable_project
+      def comparable
         reload! if api_response.nil?
 
         api_resource.slice(

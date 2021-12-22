@@ -123,18 +123,12 @@ module QA
       end
 
       # Object comparison
+      # Override to make sure we are comparing descendands of GroupBase
       #
       # @param [QA::Resource::GroupBase] other
       # @return [Boolean]
       def ==(other)
-        other.is_a?(GroupBase) && comparable_group == other.comparable_group
-      end
-
-      # Override inspect for a better rspec failure diff output
-      #
-      # @return [String]
-      def inspect
-        JSON.pretty_generate(comparable_group)
+        other.is_a?(GroupBase) && comparable == other.comparable
       end
 
       protected
@@ -142,7 +136,7 @@ module QA
       # Return subset of fields for comparing groups
       #
       # @return [Hash]
-      def comparable_group
+      def comparable
         reload! if api_response.nil?
 
         api_resource.slice(

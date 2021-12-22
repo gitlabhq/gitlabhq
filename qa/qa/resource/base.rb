@@ -179,6 +179,30 @@ module QA
         QA::Support::Waiter.wait_until(max_duration: max_duration, sleep_interval: sleep_interval, &block)
       end
 
+      # Object comparison
+      #
+      # @param [QA::Resource::Base] other
+      # @return [Boolean]
+      def ==(other)
+        other.is_a?(self.class) && comparable == other.comparable
+      end
+
+      # Override inspect for a better rspec failure diff output
+      #
+      # @return [String]
+      def inspect
+        JSON.pretty_generate(comparable)
+      end
+
+      protected
+
+      # Custom resource comparison logic using resource attributes from api_resource
+      #
+      # @return [Hash]
+      def comparable
+        raise("comparable method needs to be implemented in order to compare resources via '=='")
+      end
+
       private
 
       def attribute_value(name, block)

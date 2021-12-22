@@ -56,13 +56,14 @@ describe QA::Support::Formatters::TestStatsFormatter do
         retry_attempts: 0,
         job_url: ci_job_url,
         pipeline_url: ci_pipeline_url,
-        pipeline_id: ci_pipeline_id
+        pipeline_id: ci_pipeline_id,
+        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/1234'
       }
     }
   end
 
   def run_spec(&spec)
-    spec ||= -> { it('spec') {} }
+    spec ||= -> { it('spec', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/1234') {} }
 
     describe_successfully('stats export', &spec).tap do |example_group|
       example_group.examples.each { |ex| ex.metadata[:file_path] = file_path }
@@ -131,7 +132,7 @@ describe QA::Support::Formatters::TestStatsFormatter do
 
       it 'exports data to influxdb with correct reliable tag' do
         run_spec do
-          it('spec', :reliable) {}
+          it('spec', :reliable, testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/1234') {}
         end
 
         expect(influx_write_api).to have_received(:write).with(data: [data])
@@ -143,7 +144,7 @@ describe QA::Support::Formatters::TestStatsFormatter do
 
       it 'exports data to influxdb with correct quarantine tag' do
         run_spec do
-          it('spec', :quarantine) {}
+          it('spec', :quarantine, testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/1234') {}
         end
 
         expect(influx_write_api).to have_received(:write).with(data: [data])

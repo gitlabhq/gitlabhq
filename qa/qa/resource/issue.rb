@@ -95,27 +95,12 @@ module QA
         )
       end
 
-      # Object comparison
-      #
-      # @param [QA::Resource::Issue] other
-      # @return [Boolean]
-      def ==(other)
-        other.is_a?(Issue) && comparable_issue == other.comparable_issue
-      end
-
-      # Override inspect for a better rspec failure diff output
-      #
-      # @return [String]
-      def inspect
-        JSON.pretty_generate(comparable_issue)
-      end
-
       protected
 
       # Return subset of fields for comparing issues
       #
       # @return [Hash]
-      def comparable_issue
+      def comparable
         reload! if api_response.nil?
 
         api_resource.slice(

@@ -2064,6 +2064,31 @@ RSpec.describe Ci::Build do
   end
 
   describe 'build auto retry feature' do
+    context 'with deployment job' do
+      let(:build) do
+        create(:ci_build, :deploy_to_production, :with_deployment,
+               user: user, pipeline: pipeline, project: project)
+      end
+
+      before do
+        project.add_developer(user)
+        allow(build).to receive(:auto_retry_allowed?) { true }
+      end
+
+      it 'creates a deployment when a build is dropped' do
+        expect { build.drop!(:script_failure) }.to change { Deployment.count }.by(1)
+
+        retried_deployment = Deployment.last
+        expect(build.deployment.environment).to eq(retried_deployment.environment)
+        expect(build.deployment.ref).to eq(retried_deployment.ref)
+        expect(build.deployment.sha).to eq(retried_deployment.sha)
+        expect(build.deployment.tag).to eq(retried_deployment.tag)
+        expect(build.deployment.user).to eq(retried_deployment.user)
+        expect(build.deployment).to be_failed
+        expect(retried_deployment).to be_created
+      end
+    end
+
     describe '#retries_count' do
       subject { create(:ci_build, name: 'test', pipeline: pipeline) }
 

@@ -774,7 +774,7 @@ To view the merge request approval rules for a group:
 - [Webhooks](../project/integrations/webhooks.md).
 - [Kubernetes cluster integration](clusters/index.md).
 - [Audit Events](../../administration/audit_events.md#group-events).
-- [Pipelines quota](../admin_area/settings/continuous_integration.md): Keep track of the pipeline quota for the group.
+- [CI/CD minutes quota](../../ci/pipelines/cicd_minutes.md): Keep track of the CI/CD minute quota for the group.
 - [Integrations](../admin_area/settings/project_integration_management.md).
 - [Transfer a project into a group](../project/settings/index.md#transferring-an-existing-project-into-another-namespace).
 - [Share a project with a group](../project/members/share_project_with_groups.md): Give all group members access to the project at once.

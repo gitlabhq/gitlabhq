@@ -34,6 +34,7 @@ The following API resources are available in the project context:
 | [Debian distributions](packages/debian_project_distributions.md)        | `/projects/:id/debian_distributions` (also available for groups) |
 | [Dependencies](dependencies.md) **(ULTIMATE)**                          | `/projects/:id/dependencies` |
 | [Deploy keys](deploy_keys.md)                                           | `/projects/:id/deploy_keys` (also available standalone) |
+| [Deploy tokens](deploy_tokens.md)                                       | `/projects/:id/deploy_tokens` (also available for groups and standalone) |
 | [Deployments](deployments.md)                                           | `/projects/:id/deployments` |
 | [Discussions](discussions.md) (threaded comments)                       | `/projects/:id/issues/.../discussions`, `/projects/:id/snippets/.../discussions`, `/projects/:id/merge_requests/.../discussions`, `/projects/:id/commits/.../discussions` (also available for groups) |
 | [Environments](environments.md)                                         | `/projects/:id/environments` |
@@ -101,6 +102,7 @@ The following API resources are available in the group context:
 | [Access requests](access_requests.md)                            | `/groups/:id/access_requests/` (also available for projects) |
 | [Custom attributes](custom_attributes.md)                        | `/groups/:id/custom_attributes` (also available for projects and users) |
 | [Debian distributions](packages/debian_group_distributions.md)   | `/groups/:id/-/packages/debian` (also available for projects) |
+| [Deploy tokens](deploy_tokens.md)                                | `/groups/:id/deploy_tokens` (also available for projects and standalone) |
 | [Discussions](discussions.md) (threaded comments) **(ULTIMATE)** | `/groups/:id/epics/.../discussions` (also available for projects) |
 | [Epic issues](epic_issues.md) **(ULTIMATE)**                     | `/groups/:id/epics/.../issues` |
 | [Epic links](epic_links.md) **(ULTIMATE)**                       | `/groups/:id/epics/.../epics` |
@@ -137,6 +139,7 @@ The following API resources are available outside of project and group contexts 
 | [Code snippets](snippets.md)                                                            | `/snippets` |
 | [Custom attributes](custom_attributes.md)                                               | `/users/:id/custom_attributes` (also available for groups and projects) |
 | [Deploy keys](deploy_keys.md)                                                           | `/deploy_keys` (also available for projects) |
+| [Deploy tokens](deploy_tokens.md)                                                       | `/deploy_tokens` (also available for projects and groups) |
 | [Events](events.md)                                                                     | `/events`, `/users/:id/events` (also available for projects) |
 | [Feature flags](features.md)                                                            | `/features` |
 | [Geo Nodes](geo_nodes.md) **(PREMIUM SELF)**                                            | `/geo_nodes` |

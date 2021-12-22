@@ -56,27 +56,12 @@ module QA
         end
       end
 
-      # Object comparison
-      #
-      # @param [QA::Resource::GroupMilestone] other
-      # @return [Boolean]
-      def ==(other)
-        other.is_a?(GroupMilestone) && comparable_milestone == other.comparable_milestone
-      end
-
-      # Override inspect for a better rspec failure diff output
-      #
-      # @return [String]
-      def inspect
-        JSON.pretty_generate(comparable_milestone)
-      end
-
       protected
 
       # Return subset of fields for comparing milestones
       #
       # @return [Hash]
-      def comparable_milestone
+      def comparable
         reload! unless api_response
 
         api_response.slice(

@@ -11,7 +11,9 @@ import IssuableHeaderWarnings from './components/issuable_header_warnings.vue';
 export function initCsvImportExportButtons() {
   const el = document.querySelector('.js-csv-import-export-buttons');
 
-  if (!el) return null;
+  if (!el) {
+    return null;
+  }
 
   const {
     showExportButton,
@@ -42,23 +44,24 @@ export function initCsvImportExportButtons() {
       maxAttachmentSize,
       showLabel,
     },
-    render(h) {
-      return h(CsvImportExportButtons, {
+    render: (createElement) =>
+      createElement(CsvImportExportButtons, {
         props: {
           exportCsvPath,
           issuableCount: parseInt(issuableCount, 10),
         },
-      });
-    },
+      }),
   });
 }
 
 export function initIssuableByEmail() {
-  Vue.use(GlToast);
-
   const el = document.querySelector('.js-issuable-by-email');
 
-  if (!el) return null;
+  if (!el) {
+    return null;
+  }
+
+  Vue.use(GlToast);
 
   const {
     initialEmail,
@@ -79,9 +82,7 @@ export function initIssuableByEmail() {
       markdownHelpPath,
       resetPath,
     },
-    render(h) {
-      return h(IssuableByEmail);
-    },
+    render: (createElement) => createElement(IssuableByEmail),
   });
 }
 
@@ -89,7 +90,7 @@ export function initIssuableHeaderWarnings(store) {
   const el = document.getElementById('js-issuable-header-warnings');
 
   if (!el) {
-    return false;
+    return null;
   }
 
   const { hidden } = el.dataset;
@@ -98,18 +99,18 @@ export function initIssuableHeaderWarnings(store) {
     el,
     store,
     provide: { hidden: parseBoolean(hidden) },
-    render(createElement) {
-      return createElement(IssuableHeaderWarnings);
-    },
+    render: (createElement) => createElement(IssuableHeaderWarnings),
   });
 }
 
 export function initIssuableSidebar() {
-  const sidebarOptEl = document.querySelector('.js-sidebar-options');
+  const el = document.querySelector('.js-sidebar-options');
 
-  if (!sidebarOptEl) return;
+  if (!el) {
+    return;
+  }
 
-  const sidebarOptions = getSidebarOptions(sidebarOptEl);
+  const sidebarOptions = getSidebarOptions(el);
 
   new IssuableContext(sidebarOptions.currentUser); // eslint-disable-line no-new
   Sidebar.initialize();

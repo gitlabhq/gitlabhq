@@ -181,6 +181,15 @@ module QA
         )
       end
 
+      protected
+
+      # Compare users by username and password
+      #
+      # @return [Array]
+      def comparable
+        [username, password]
+      end
+
       private
 
       def ldap_post_body

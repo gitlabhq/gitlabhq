@@ -368,6 +368,10 @@
   redis_slot: testing
   category: testing
   aggregation: weekly
+- name: users_clicking_license_testing_visiting_external_website
+  redis_slot: testing
+  category: testing
+  aggregation: weekly
 # Container Security - Network Policies
 - name: clusters_using_network_policies_ui
   redis_slot: network_policies

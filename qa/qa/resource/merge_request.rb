@@ -168,27 +168,12 @@ module QA
         )
       end
 
-      # Object comparison
-      #
-      # @param [QA::Resource::MergeRequest] other
-      # @return [Boolean]
-      def ==(other)
-        other.is_a?(MergeRequest) && comparable_mr == other.comparable_mr
-      end
-
-      # Override inspect for a better rspec failure diff output
-      #
-      # @return [String]
-      def inspect
-        JSON.pretty_generate(comparable_mr)
-      end
-
       protected
 
       # Return subset of fields for comparing merge requests
       #
       # @return [Hash]
-      def comparable_mr
+      def comparable
         reload! if api_response.nil?
 
         api_resource.except(

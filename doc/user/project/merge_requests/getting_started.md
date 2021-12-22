@@ -207,7 +207,7 @@ This improvement is [tracked as a follow-up](https://gitlab.com/gitlab-org/gitla
 
 - When working locally in your branch, add multiple commits and only push when
   you're done, so GitLab runs only one pipeline for all the commits pushed
-  at once. By doing so, you save pipeline minutes.
+  at once. By doing so, you save CI/CD minutes.
 - Delete feature branches on merge or after merging them to keep your repository clean.
 - Take one thing at a time and ship the smallest changes possible. By doing so,
   reviews are faster and your changes are less prone to errors.

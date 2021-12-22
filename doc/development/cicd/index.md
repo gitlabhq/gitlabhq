@@ -180,7 +180,7 @@ feature and its components work.
 Watch a walkthrough of this feature in details in the video below.
 
 <div class="video-fallback">
-  See the video: <a href="https://www.youtube.com/watch?v=NmdWRGT8kZg">CI Minutes - architectural overview</a>.
+  See the video: <a href="https://www.youtube.com/watch?v=NmdWRGT8kZg">CI/CD minutes - architectural overview</a>.
 </div>
 <figure class="video-container">
   <iframe src="https://www.youtube.com/embed/NmdWRGT8kZg" frameborder="0" allowfullscreen="true"> </iframe>

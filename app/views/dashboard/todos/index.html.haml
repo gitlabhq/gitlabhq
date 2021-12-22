@@ -13,10 +13,10 @@
     = gl_tabs_nav({ class: 'gl-flex-grow-1 gl-border-0' }) do
       = gl_tab_link_to todos_filter_path(state: 'pending'), item_active: params[:state].blank? || params[:state] == 'pending', class: "js-todos-pending" do
         = _("To Do")
-        = gl_tab_counter_badge number_with_delimiter(todos_pending_count)
+        = gl_tab_counter_badge(number_with_delimiter(todos_pending_count), { class: 'js-todos-badge' })
       = gl_tab_link_to todos_filter_path(state: 'done'), item_active: params[:state] == 'done', class: "js-todos-done" do
         = _("Done")
-        = gl_tab_counter_badge number_with_delimiter(todos_done_count)
+        = gl_tab_counter_badge(number_with_delimiter(todos_done_count), { class: 'js-todos-badge' })
 
     .nav-controls
       - if @allowed_todos.any?(&:pending?)

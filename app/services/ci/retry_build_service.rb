@@ -42,14 +42,17 @@ module Ci
       check_access!(build)
 
       new_build = clone_build(build)
+
+      if create_deployment_in_separate_transaction?
+        new_build.run_after_commit do |new_build|
+          ::Deployments::CreateForBuildService.new.execute(new_build)
+        end
+      end
+
       ::Ci::Pipelines::AddJobService.new(build.pipeline).execute!(new_build) do |job|
         BulkInsertableAssociations.with_bulk_insert do
           job.save!
         end
-      end
-
-      if create_deployment_in_separate_transaction?
-        clone_deployment!(new_build, build)
       end
 
       build.reset # refresh the data to get new values of `retried` and `processed`.
@@ -93,20 +96,6 @@ module Ci
     def deployment_attributes_for(new_build, old_build)
       ::Gitlab::Ci::Pipeline::Seed::Build
         .deployment_attributes_for(new_build, old_build.persisted_environment)
-    end
-
-    def clone_deployment!(new_build, old_build)
-      return unless old_build.deployment.present?
-
-      # We should clone the previous deployment attributes instead of initializing
-      # new object with `Seed::Deployment`.
-      # See https://gitlab.com/gitlab-org/gitlab/-/issues/347206
-      deployment = ::Gitlab::Ci::Pipeline::Seed::Deployment
-        .new(new_build, old_build.persisted_environment).to_resource
-
-      return unless deployment
-
-      new_build.create_deployment!(deployment.attributes)
     end
 
     def create_deployment_in_separate_transaction?

@@ -182,6 +182,11 @@ Use **check out** as a verb. For the Git command, use `checkout`.
 
 CI/CD is always uppercase. No need to spell it out on first use.
 
+## CI/CD minutes
+
+Use **CI/CD minutes** instead of **CI minutes**, **pipeline minutes**, **pipeline minutes quota**, or
+**CI pipeline minutes**. This decision was made in [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/342813).
+
 ## click
 
 Do not use **click**. Instead, use **select** with buttons, links, menu items, and lists.

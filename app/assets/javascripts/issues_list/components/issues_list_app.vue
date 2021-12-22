@@ -517,10 +517,9 @@ export default {
     },
     async handleBulkUpdateClick() {
       if (!this.hasInitBulkEdit) {
-        const initBulkUpdateSidebar = await import(
-          '~/issuable/bulk_update_sidebar/issuable_init_bulk_update_sidebar'
-        );
-        initBulkUpdateSidebar.default.init('issuable_');
+        const bulkUpdateSidebar = await import('~/issuable/bulk_update_sidebar');
+        bulkUpdateSidebar.initBulkUpdateSidebar('issuable_');
+        bulkUpdateSidebar.initIssueStatusSelect();
 
         const usersSelect = await import('~/users_select');
         const UsersSelect = usersSelect.default;
