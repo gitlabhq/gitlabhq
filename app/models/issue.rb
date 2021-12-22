@@ -48,7 +48,7 @@ class Issue < ApplicationRecord
   belongs_to :duplicated_to, class_name: 'Issue'
   belongs_to :closed_by, class_name: 'User'
   belongs_to :iteration, foreign_key: 'sprint_id'
-  belongs_to :work_item_type, class_name: 'WorkItem::Type', inverse_of: :work_items
+  belongs_to :work_item_type, class_name: 'WorkItems::Type', inverse_of: :work_items
 
   belongs_to :moved_to, class_name: 'Issue'
   has_one :moved_from, class_name: 'Issue', foreign_key: :moved_to_id
@@ -94,7 +94,7 @@ class Issue < ApplicationRecord
   validates :project, presence: true
   validates :issue_type, presence: true
 
-  enum issue_type: WorkItem::Type.base_types
+  enum issue_type: WorkItems::Type.base_types
 
   alias_method :issuing_parent, :project
 

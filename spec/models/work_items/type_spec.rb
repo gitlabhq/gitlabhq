@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe WorkItem::Type do
+RSpec.describe WorkItems::Type do
   describe 'modules' do
     it { is_expected.to include_module(CacheMarkdownField) }
   end
@@ -12,6 +12,22 @@ RSpec.describe WorkItem::Type do
     it { is_expected.to belong_to(:namespace) }
   end
 
+  describe 'scopes' do
+    describe 'order_by_name_asc' do
+      subject { described_class.order_by_name_asc.pluck(:name) }
+
+      before do
+        # Deletes all so we have control on the entire list of names
+        described_class.delete_all
+        create(:work_item_type, name: 'Ztype')
+        create(:work_item_type, name: 'atype')
+        create(:work_item_type, name: 'gtype')
+      end
+
+      it { is_expected.to match(%w[atype gtype Ztype]) }
+    end
+  end
+
   describe '#destroy' do
     let!(:work_item) { create :issue }
 
@@ -19,10 +35,10 @@ RSpec.describe WorkItem::Type do
       it 'deletes type but not unrelated issues' do
         type = create(:work_item_type)
 
-        expect(WorkItem::Type.count).to eq(6)
+        expect(WorkItems::Type.count).to eq(6)
 
         expect { type.destroy! }.not_to change(Issue, :count)
-        expect(WorkItem::Type.count).to eq(5)
+        expect(WorkItems::Type.count).to eq(5)
       end
     end
 
@@ -42,6 +58,22 @@ RSpec.describe WorkItem::Type do
     end
 
     it { is_expected.not_to allow_value('s' * 256).for(:icon_name) }
+  end
+
+  describe 'default?' do
+    subject { build(:work_item_type, namespace: namespace).default? }
+
+    context 'when namespace is nil' do
+      let(:namespace) { nil }
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'when namespace is present' do
+      let(:namespace) { build(:namespace) }
+
+      it { is_expected.to be_falsey }
+    end
   end
 
   describe '#name' do

@@ -646,6 +646,26 @@ RSpec.describe Gitlab::Redis::MultiStore do
         expect(multi_store.use_primary_and_secondary_stores?).to be false
       end
     end
+
+    context 'with empty DB' do
+      before do
+        allow(Feature::FlipperFeature).to receive(:table_exists?).and_return(false)
+      end
+
+      it 'multi store is disabled' do
+        expect(multi_store.use_primary_and_secondary_stores?).to be false
+      end
+    end
+
+    context 'when FF table guard raises' do
+      before do
+        allow(Feature::FlipperFeature).to receive(:table_exists?).and_raise
+      end
+
+      it 'multi store is disabled' do
+        expect(multi_store.use_primary_and_secondary_stores?).to be false
+      end
+    end
   end
 
   describe '#use_primary_store_as_default?' do
@@ -666,6 +686,26 @@ RSpec.describe Gitlab::Redis::MultiStore do
 
       it 'multi store is disabled' do
         expect(multi_store.use_primary_store_as_default?).to be false
+      end
+    end
+
+    context 'with empty DB' do
+      before do
+        allow(Feature::FlipperFeature).to receive(:table_exists?).and_return(false)
+      end
+
+      it 'multi store is disabled' do
+        expect(multi_store.use_primary_and_secondary_stores?).to be false
+      end
+    end
+
+    context 'when FF table guard raises' do
+      before do
+        allow(Feature::FlipperFeature).to receive(:table_exists?).and_raise
+      end
+
+      it 'multi store is disabled' do
+        expect(multi_store.use_primary_and_secondary_stores?).to be false
       end
     end
   end

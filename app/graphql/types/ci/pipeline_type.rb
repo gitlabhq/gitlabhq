@@ -18,8 +18,14 @@ module Types
       field :iid, GraphQL::Types::String, null: false,
             description: 'Internal ID of the pipeline.'
 
-      field :sha, GraphQL::Types::String, null: false,
-            description: "SHA of the pipeline's commit."
+      field :sha, GraphQL::Types::String, null: true,
+            method: :sha,
+            description: "SHA of the pipeline's commit." do
+        argument :format,
+                 type: Types::ShaFormatEnum,
+                 required: false,
+                 description: 'Format of the SHA.'
+      end
 
       field :before_sha, GraphQL::Types::String, null: true,
             description: 'Base SHA of the source branch.'
@@ -162,6 +168,10 @@ module Types
       field :ref, GraphQL::Types::String, null: true,
             description: 'Reference to the branch from which the pipeline was triggered.'
 
+      field :ref_path, GraphQL::Types::String, null: true,
+            description: 'Reference path to the branch from which the pipeline was triggered.',
+            method: :source_ref_path
+
       def detailed_status
         object.detailed_status(current_user)
       end
@@ -187,6 +197,12 @@ module Types
         else
           pipeline.statuses.by_name(name)
         end.take # rubocop: disable CodeReuse/ActiveRecord
+      end
+
+      def sha(format: Types::ShaFormatEnum.enum[:long])
+        return pipeline.short_sha if format == Types::ShaFormatEnum.enum[:short]
+
+        pipeline.sha
       end
 
       alias_method :pipeline, :object

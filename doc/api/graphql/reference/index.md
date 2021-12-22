@@ -8115,6 +8115,29 @@ The edge type for [`VulnerabilityScanner`](#vulnerabilityscanner).
 | <a id="vulnerabilityscanneredgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="vulnerabilityscanneredgenode"></a>`node` | [`VulnerabilityScanner`](#vulnerabilityscanner) | The item at the end of the edge. |
 
+#### `WorkItemTypeConnection`
+
+The connection type for [`WorkItemType`](#workitemtype).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemtypeconnectionedges"></a>`edges` | [`[WorkItemTypeEdge]`](#workitemtypeedge) | A list of edges. |
+| <a id="workitemtypeconnectionnodes"></a>`nodes` | [`[WorkItemType]`](#workitemtype) | A list of nodes. |
+| <a id="workitemtypeconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `WorkItemTypeEdge`
+
+The edge type for [`WorkItemType`](#workitemtype).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemtypeedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="workitemtypeedgenode"></a>`node` | [`WorkItemType`](#workitemtype) | The item at the end of the edge. |
+
 ## Object types
 
 Object types represent the resources that the GitLab GraphQL API can return.
@@ -10609,6 +10632,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="groupvisibility"></a>`visibility` | [`String`](#string) | Visibility of the namespace. |
 | <a id="groupvulnerabilityscanners"></a>`vulnerabilityScanners` | [`VulnerabilityScannerConnection`](#vulnerabilityscannerconnection) | Vulnerability scanners reported on the project vulnerabilities of the group and its subgroups. (see [Connections](#connections)) |
 | <a id="groupweburl"></a>`webUrl` | [`String!`](#string) | Web URL of the group. |
+| <a id="groupworkitemtypes"></a>`workItemTypes` | [`WorkItemTypeConnection`](#workitemtypeconnection) | Work item types available to the group. Available only when feature flag `work_items` is enabled. This flag is disabled by default, because the feature is experimental and is subject to change without notice. (see [Connections](#connections)) |
 
 #### Fields with arguments
 
@@ -12833,9 +12857,9 @@ Represents a file or directory in the project repository that has been locked.
 | <a id="pipelineproject"></a>`project` | [`Project`](#project) | Project the pipeline belongs to. |
 | <a id="pipelinequeuedduration"></a>`queuedDuration` | [`Duration`](#duration) | How long the pipeline was queued before starting. |
 | <a id="pipelineref"></a>`ref` | [`String`](#string) | Reference to the branch from which the pipeline was triggered. |
+| <a id="pipelinerefpath"></a>`refPath` | [`String`](#string) | Reference path to the branch from which the pipeline was triggered. |
 | <a id="pipelineretryable"></a>`retryable` | [`Boolean!`](#boolean) | Specifies if a pipeline can be retried. |
 | <a id="pipelinesecurityreportsummary"></a>`securityReportSummary` | [`SecurityReportSummary`](#securityreportsummary) | Vulnerability and scanned resource counts for each security scanner of the pipeline. |
-| <a id="pipelinesha"></a>`sha` | [`String!`](#string) | SHA of the pipeline's commit. |
 | <a id="pipelinesourcejob"></a>`sourceJob` | [`CiJob`](#cijob) | Job where pipeline was triggered from. |
 | <a id="pipelinestages"></a>`stages` | [`CiStageConnection`](#cistageconnection) | Stages of the pipeline. (see [Connections](#connections)) |
 | <a id="pipelinestartedat"></a>`startedAt` | [`Time`](#time) | Timestamp when the pipeline was started. |
@@ -12898,6 +12922,18 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="pipelinesecurityreportfindingsscanner"></a>`scanner` | [`[String!]`](#string) | Filter vulnerability findings by Scanner.externalId. |
 | <a id="pipelinesecurityreportfindingsseverity"></a>`severity` | [`[String!]`](#string) | Filter vulnerability findings by severity. |
 | <a id="pipelinesecurityreportfindingsstate"></a>`state` | [`[VulnerabilityState!]`](#vulnerabilitystate) | Filter vulnerability findings by state. |
+
+##### `Pipeline.sha`
+
+SHA of the pipeline's commit.
+
+Returns [`String`](#string).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="pipelineshaformat"></a>`format` | [`ShaFormat`](#shaformat) | Format of the SHA. |
 
 ##### `Pipeline.testSuite`
 
@@ -15979,6 +16015,16 @@ Represents vulnerability letter grades with associated projects.
 | <a id="vulnerableprojectsbygradegrade"></a>`grade` | [`VulnerabilityGrade!`](#vulnerabilitygrade) | Grade based on the highest severity vulnerability present. |
 | <a id="vulnerableprojectsbygradeprojects"></a>`projects` | [`ProjectConnection!`](#projectconnection) | Projects within this grade. (see [Connections](#connections)) |
 
+### `WorkItemType`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemtypeiconname"></a>`iconName` | [`String`](#string) | Icon name of the work item type. |
+| <a id="workitemtypeid"></a>`id` | [`WorkItemsTypeID!`](#workitemstypeid) | Global ID of the work item type. |
+| <a id="workitemtypename"></a>`name` | [`String!`](#string) | Name of the work item type. |
+
 ## Enumeration types
 
 Also called _Enums_, enumeration types are a special kind of scalar that
@@ -17233,6 +17279,15 @@ State of a Sentry error.
 | <a id="servicetypeyoutrack_service"></a>`YOUTRACK_SERVICE` | YoutrackService type. |
 | <a id="servicetypezentao_service"></a>`ZENTAO_SERVICE` | ZentaoService type. |
 
+### `ShaFormat`
+
+How to format SHA strings.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="shaformatlong"></a>`LONG` | Unabbreviated format. |
+| <a id="shaformatshort"></a>`SHORT` | Abbreviated format. Short SHAs are typically eight characters long. |
+
 ### `SharedRunnersSetting`
 
 | Value | Description |
@@ -18061,6 +18116,12 @@ An example `VulnerabilitiesScannerID` is: `"gid://gitlab/Vulnerabilities::Scanne
 A `VulnerabilityID` is a global ID. It is encoded as a string.
 
 An example `VulnerabilityID` is: `"gid://gitlab/Vulnerability/1"`.
+
+### `WorkItemsTypeID`
+
+A `WorkItemsTypeID` is a global ID. It is encoded as a string.
+
+An example `WorkItemsTypeID` is: `"gid://gitlab/WorkItems::Type/1"`.
 
 ## Abstract types
 

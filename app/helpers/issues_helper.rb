@@ -51,7 +51,7 @@ module IssuesHelper
   end
 
   def work_item_type_icon(issue_type)
-    if WorkItem::Type.base_types.include?(issue_type)
+    if WorkItems::Type.base_types.include?(issue_type)
       "issue-type-#{issue_type.to_s.dasherize}"
     else
       'issue-type-issue'

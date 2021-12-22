@@ -97,18 +97,21 @@ module Gitlab
       end
 
       def use_primary_and_secondary_stores?
-        feature_flags_available? &&
-          Feature.enabled?("use_primary_and_secondary_stores_for_#{instance_name.underscore}", default_enabled: :yaml) &&
-          !same_redis_store?
+        feature_table_exists? && Feature.enabled?("use_primary_and_secondary_stores_for_#{instance_name.underscore}", default_enabled: :yaml) && !same_redis_store?
       end
 
       def use_primary_store_as_default?
-        feature_flags_available? &&
-          Feature.enabled?("use_primary_store_as_default_for_#{instance_name.underscore}", default_enabled: :yaml) &&
-          !same_redis_store?
+        feature_table_exists? && Feature.enabled?("use_primary_store_as_default_for_#{instance_name.underscore}", default_enabled: :yaml) && !same_redis_store?
       end
 
       private
+
+      # @return [Boolean]
+      def feature_table_exists?
+        Feature::FlipperFeature.table_exists?
+      rescue StandardError
+        false
+      end
 
       def default_store
         use_primary_store_as_default? ? primary_store : secondary_store

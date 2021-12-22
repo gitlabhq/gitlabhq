@@ -24,12 +24,13 @@ A GitLab CI/CD pipeline configuration includes:
 
 - [Global keywords](#global-keywords) that configure pipeline behavior:
 
-  | Keyword                 | Description |
-  |-------------------------|:------------|
-  | [`default`](#default)   | Custom default values for job keywords. |
-  | [`include`](#include)   | Import configuration from other YAML files. |
-  | [`stages`](#stages)     | The names and order of the pipeline stages. |
-  | [`workflow`](#workflow) | Control what types of pipeline run. |
+  | Keyword                   | Description |
+  |---------------------------|:------------|
+  | [`default`](#default)     | Custom default values for job keywords. |
+  | [`include`](#include)     | Import configuration from other YAML files. |
+  | [`stages`](#stages)       | The names and order of the pipeline stages. |
+  | [`variables`](#variables) | Define CI/CD variables for all job in the pipeline. |
+  | [`workflow`](#workflow)   | Control what types of pipeline run. |
 
 - [Jobs](../jobs/index.md) configured with [job keywords](#job-keywords):
 

@@ -11,7 +11,7 @@ RSpec.configure do |config|
     Rake::Task.define_task :environment
   end
 
-  config.after(:all) do
+  config.after(:all, type: :task) do
     delete_from_all_tables!(except: deletion_except_tables)
   end
 end

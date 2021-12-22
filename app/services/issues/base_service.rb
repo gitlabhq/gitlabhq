@@ -36,8 +36,8 @@ module Issues
     private
 
     def find_work_item_type_id(issue_type)
-      work_item_type = WorkItem::Type.default_by_type(issue_type)
-      work_item_type ||= WorkItem::Type.default_issue_type
+      work_item_type = WorkItems::Type.default_by_type(issue_type)
+      work_item_type ||= WorkItems::Type.default_issue_type
 
       work_item_type.id
     end

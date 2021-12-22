@@ -206,7 +206,8 @@ module Gitlab
         def base_options
           {
             host: options['host'],
-            port: options['port']
+            port: options['port'],
+            hosts: options['hosts']
           }
         end
 

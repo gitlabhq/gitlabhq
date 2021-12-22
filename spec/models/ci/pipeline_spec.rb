@@ -4677,4 +4677,32 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
     let!(:model) { create(:ci_pipeline, user: create(:user)) }
     let!(:parent) { model.user }
   end
+
+  describe 'tags count' do
+    let_it_be_with_refind(:pipeline) do
+      create(:ci_empty_pipeline, project: project)
+    end
+
+    it { expect(pipeline.tags_count).to eq(0) }
+    it { expect(pipeline.distinct_tags_count).to eq(0) }
+
+    context 'with builds' do
+      before do
+        create(:ci_build, pipeline: pipeline, tag_list: %w[a b])
+        create(:ci_build, pipeline: pipeline, tag_list: %w[b c])
+      end
+
+      it { expect(pipeline.tags_count).to eq(4) }
+      it { expect(pipeline.distinct_tags_count).to eq(3) }
+    end
+
+    context 'with the FF disabled' do
+      before do
+        stub_feature_flags(ci_pipeline_logger_tags_count: false)
+      end
+
+      it { expect(pipeline.tags_count).to be_nil }
+      it { expect(pipeline.distinct_tags_count).to be_nil }
+    end
+  end
 end

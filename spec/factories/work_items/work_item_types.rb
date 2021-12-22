@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
 FactoryBot.define do
-  factory :work_item_type, class: 'WorkItem::Type' do
+  factory :work_item_type, class: 'WorkItems::Type' do
     namespace
 
     name      { generate(:work_item_type_name) }
-    base_type { WorkItem::Type.base_types[:issue] }
+    base_type { WorkItems::Type.base_types[:issue] }
     icon_name { 'issue-type-issue' }
 
     initialize_with do
@@ -13,9 +13,9 @@ FactoryBot.define do
 
       # Expect base_types to exist on the DB
       if type_base_attributes.slice(:namespace, :namespace_id).compact.empty?
-        WorkItem::Type.find_or_initialize_by(type_base_attributes).tap { |type| type.assign_attributes(attributes) }
+        WorkItems::Type.find_or_initialize_by(type_base_attributes).tap { |type| type.assign_attributes(attributes) }
       else
-        WorkItem::Type.new(attributes)
+        WorkItems::Type.new(attributes)
       end
     end
 
@@ -24,17 +24,17 @@ FactoryBot.define do
     end
 
     trait :incident do
-      base_type { WorkItem::Type.base_types[:incident] }
+      base_type { WorkItems::Type.base_types[:incident] }
       icon_name { 'issue-type-incident' }
     end
 
     trait :test_case do
-      base_type { WorkItem::Type.base_types[:test_case] }
+      base_type { WorkItems::Type.base_types[:test_case] }
       icon_name { 'issue-type-test-case' }
     end
 
     trait :requirement do
-      base_type { WorkItem::Type.base_types[:requirement] }
+      base_type { WorkItems::Type.base_types[:requirement] }
       icon_name { 'issue-type-requirements' }
     end
   end

@@ -38,12 +38,17 @@ describe('Api', () => {
         mock.onPut(expectedUrl).replyOnce(httpStatus.OK, apiResponse);
 
         return publishPackage(
-          { projectPath, name, version: 0, fileName: name, files: [{}] },
+          {
+            projectPath,
+            name,
+            version: 0,
+            fileName: name,
+            files: [new File(['zip contents'], 'bar.zip')],
+          },
           { status: 'hidden', select: 'package_file' },
         ).then(({ data }) => {
           expect(data).toEqual(apiResponse);
-          expect(axios.put).toHaveBeenCalledWith(expectedUrl, expect.any(FormData), {
-            headers: { 'Content-Type': 'multipart/form-data' },
+          expect(axios.put).toHaveBeenCalledWith(expectedUrl, expect.any(File), {
             params: { select: 'package_file', status: 'hidden' },
           });
         });

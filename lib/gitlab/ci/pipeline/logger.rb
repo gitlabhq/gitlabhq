@@ -50,11 +50,21 @@ module Gitlab
             class: self.class.name.to_s,
             pipeline_creation_caller: caller,
             project_id: project.id,
-            pipeline_id: pipeline.id,
             pipeline_persisted: pipeline.persisted?,
             pipeline_source: pipeline.source,
             pipeline_creation_service_duration_s: age
-          }.stringify_keys.merge(observations_hash)
+          }
+
+          if pipeline.persisted?
+            attributes[:pipeline_builds_tags_count] = pipeline.tags_count
+            attributes[:pipeline_builds_distinct_tags_count] = pipeline.distinct_tags_count
+
+            attributes[:pipeline_id] = pipeline.id
+          end
+
+          attributes.compact!
+          attributes.stringify_keys!
+          attributes.merge!(observations_hash)
 
           destination.info(attributes)
         end

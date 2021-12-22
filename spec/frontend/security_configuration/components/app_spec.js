@@ -1,4 +1,4 @@
-import { GlTab } from '@gitlab/ui';
+import { GlTab, GlTabs } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
@@ -77,6 +77,7 @@ describe('App component', () => {
   const findMainHeading = () => wrapper.find('h1');
   const findTab = () => wrapper.findComponent(GlTab);
   const findTabs = () => wrapper.findAllComponents(GlTab);
+  const findGlTabs = () => wrapper.findComponent(GlTabs);
   const findByTestId = (id) => wrapper.findByTestId(id);
   const findFeatureCards = () => wrapper.findAllComponents(FeatureCard);
   const findTrainingProviderList = () => wrapper.findComponent(TrainingProviderList);
@@ -154,12 +155,20 @@ describe('App component', () => {
         expect(findTab().exists()).toBe(true);
       });
 
+      it('passes the `sync-active-tab-with-query-params` prop', () => {
+        expect(findGlTabs().props('syncActiveTabWithQueryParams')).toBe(true);
+      });
+
       it('renders correct amount of tabs', () => {
         expect(findTabs()).toHaveLength(expectedTabs.length);
       });
 
       it.each(expectedTabs)('renders the %s tab', (tabName) => {
         expect(findByTestId(`${tabName}-tab`).exists()).toBe(true);
+      });
+
+      it.each(expectedTabs)('has the %s query-param-value', (tabName) => {
+        expect(findByTestId(`${tabName}-tab`).props('queryParamValue')).toBe(tabName);
       });
     });
 

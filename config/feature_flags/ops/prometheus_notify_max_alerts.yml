@@ -1,0 +1,8 @@
+---
+name: prometheus_notify_max_alerts
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/77168
+rollout_issue_url: https://gitlab.com/gitlab-com/gl-infra/production/-/issues/6086
+milestone: '14.7'
+type: ops
+group: group::monitor
+default_enabled: false

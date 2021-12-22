@@ -158,8 +158,9 @@ These configuration settings are available:
 | Setting            | Description | Required | Examples |
 |--------------------|-------------|----------|----------|
 | `label`            | A human-friendly name for your LDAP server. It is displayed on your sign-in page. | **{check-circle}** Yes | `'Paris'` or `'Acme, Ltd.'` |
-| `host`             | IP address or domain name of your LDAP server. | **{check-circle}** Yes | `'ldap.mydomain.com'` |
-| `port`             | The port to connect with on your LDAP server. Always an integer, not a string. | **{check-circle}** Yes | `389` or `636` (for SSL) |
+| `host`             | IP address or domain name of your LDAP server. Ignored when `hosts` is defined. | **{check-circle}** Yes | `'ldap.mydomain.com'` |
+| `port`             | The port to connect with on your LDAP server. Always an integer, not a string. Ignored when `hosts` is defined. | **{check-circle}** Yes | `389` or `636` (for SSL) |
+| `hosts`            | An array of host and port pairs to open connections. This setting takes precedence over `host` and `port`. | **{dotted-circle}** No | `[['ldap1.mydomain.com', 636], ['ldap2.mydomain.com', 636]]` |
 | `uid`              | LDAP attribute for username. Should be the attribute, not the value that maps to the `uid`. | **{check-circle}** Yes | `'sAMAccountName'` or `'uid'` or `'userPrincipalName'` |
 | `bind_dn`          | The full DN of the user you bind with. | **{dotted-circle}** No | `'america\momo'` or `'CN=Gitlab,OU=Users,DC=domain,DC=com'` |
 | `password`         | The password of the bind user. | **{dotted-circle}** No | `'your_great_password'` |

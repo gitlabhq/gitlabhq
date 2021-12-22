@@ -9,7 +9,7 @@ RSpec.describe IssuesHelper do
 
   describe '#work_item_type_icon' do
     it 'returns icon of all standard base types' do
-      WorkItem::Type.base_types.each do |type|
+      WorkItems::Type.base_types.each do |type|
         expect(work_item_type_icon(type[0])).to eq "issue-type-#{type[0].to_s.dasherize}"
       end
     end

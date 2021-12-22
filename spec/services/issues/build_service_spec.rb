@@ -172,9 +172,9 @@ RSpec.describe Issues::BuildService do
     end
 
     describe 'setting issue type' do
-      context 'with a corresponding WorkItem::Type' do
-        let_it_be(:type_issue_id) { WorkItem::Type.default_issue_type.id }
-        let_it_be(:type_incident_id) { WorkItem::Type.default_by_type(:incident).id }
+      context 'with a corresponding WorkItems::Type' do
+        let_it_be(:type_issue_id) { WorkItems::Type.default_issue_type.id }
+        let_it_be(:type_incident_id) { WorkItems::Type.default_by_type(:incident).id }
 
         where(:issue_type, :current_user, :work_item_type_id, :resulting_issue_type) do
           nil           | ref(:guest)    | ref(:type_issue_id)       | 'issue'
