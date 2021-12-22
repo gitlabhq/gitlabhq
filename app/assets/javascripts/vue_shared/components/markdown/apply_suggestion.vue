@@ -67,7 +67,7 @@ export default {
       <gl-button
         class="gl-w-auto! gl-mt-3 gl-text-center! gl-hover-text-white! gl-transition-medium! float-right"
         category="primary"
-        variant="success"
+        variant="confirm"
         data-qa-selector="commit_with_custom_message_button"
         @click="onApply"
       >

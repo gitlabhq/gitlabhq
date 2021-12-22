@@ -2,6 +2,10 @@
 - page_title _('Your profile')
 - add_page_specific_style 'page_bundles/signup'
 - gitlab_experience_text = _('To personalize your GitLab experience, we\'d like to know a bit more about you')
+- content_for :page_specific_javascripts do
+  = render "layouts/google_tag_manager_head"
+  = render "layouts/one_trust"
+= render "layouts/google_tag_manager_body"
 
 .row.gl-flex-grow-1
   .d-flex.gl-flex-direction-column.gl-align-items-center.gl-w-full.gl-px-5.gl-pb-5

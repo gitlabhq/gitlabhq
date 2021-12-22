@@ -58,6 +58,19 @@ RSpec.describe Gitlab::MergeRequests::CommitMessageGenerator do
       end
     end
 
+    context 'when project has commit template with only the title' do
+      let(:merge_request) do
+        double(:merge_request, title: 'Fixes', target_project: project, to_reference: '!123', metrics: nil, merge_user: nil)
+      end
+
+      let(message_template_name) { '%{title}' }
+
+      it 'evaluates only necessary variables' do
+        expect(result_message).to eq 'Fixes'
+        expect(merge_request).not_to have_received(:to_reference)
+      end
+    end
+
     context 'when project has commit template with closed issues' do
       let(message_template_name) { <<~MSG.rstrip }
         Merge branch '%{source_branch}' into '%{target_branch}'
@@ -379,6 +392,57 @@ RSpec.describe Gitlab::MergeRequests::CommitMessageGenerator do
           Merge Request merged by '#{maintainer.name} <#{maintainer.email}>'
           MSG
         end
+      end
+    end
+
+    context 'when project has commit template with the same variable used twice' do
+      let(message_template_name) { '%{title} %{title}' }
+
+      it 'uses custom template' do
+        expect(result_message).to eq 'Bugfix Bugfix'
+      end
+    end
+
+    context 'when project has commit template without any variable' do
+      let(message_template_name) { 'static text' }
+
+      it 'uses custom template' do
+        expect(result_message).to eq 'static text'
+      end
+    end
+
+    context 'when project has template with all variables' do
+      let(message_template_name) { <<~MSG.rstrip }
+        source_branch:%{source_branch}
+        target_branch:%{target_branch}
+        title:%{title}
+        issues:%{issues}
+        description:%{description}
+        first_commit:%{first_commit}
+        first_multiline_commit:%{first_multiline_commit}
+        url:%{url}
+        approved_by:%{approved_by}
+        merged_by:%{merged_by}
+      MSG
+
+      it 'uses custom template' do
+        expect(result_message).to eq <<~MSG.rstrip
+          source_branch:feature
+          target_branch:master
+          title:Bugfix
+          issues:
+          description:Merge Request Description
+          Next line
+          first_commit:Feature added
+
+          Signed-off-by: Dmitriy Zaporozhets <dmitriy.zaporozhets@gmail.com>
+          first_multiline_commit:Feature added
+
+          Signed-off-by: Dmitriy Zaporozhets <dmitriy.zaporozhets@gmail.com>
+          url:#{Gitlab::UrlBuilder.build(merge_request)}
+          approved_by:
+          merged_by:#{maintainer.name} <#{maintainer.commit_email_or_default}>
+        MSG
       end
     end
   end

@@ -5,7 +5,7 @@
 if defined?(ActiveRecord::Base) && !Gitlab::Runtime.sidekiq?
   Gitlab::Cluster::LifecycleEvents.on_worker_start do
     ActiveSupport.on_load(:active_record) do
-      ActiveRecord::Base.establish_connection
+      ActiveRecord::Base.establish_connection # rubocop: disable Database/EstablishConnection
 
       Gitlab::AppLogger.debug("ActiveRecord connection established")
     end

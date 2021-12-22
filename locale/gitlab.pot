@@ -10126,9 +10126,6 @@ msgstr ""
 msgid "CreateValueStreamForm|Code stage start"
 msgstr ""
 
-msgid "CreateValueStreamForm|Create Value Stream"
-msgstr ""
-
 msgid "CreateValueStreamForm|Create from default template"
 msgstr ""
 
@@ -10138,13 +10135,16 @@ msgstr ""
 msgid "CreateValueStreamForm|Create new Value Stream"
 msgstr ""
 
+msgid "CreateValueStreamForm|Create value stream"
+msgstr ""
+
 msgid "CreateValueStreamForm|Default stages"
 msgstr ""
 
 msgid "CreateValueStreamForm|Default stages can only be hidden or re-ordered"
 msgstr ""
 
-msgid "CreateValueStreamForm|Edit Value Stream"
+msgid "CreateValueStreamForm|Edit value stream"
 msgstr ""
 
 msgid "CreateValueStreamForm|Editing stage"

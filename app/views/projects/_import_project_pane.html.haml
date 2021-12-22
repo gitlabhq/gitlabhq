@@ -8,22 +8,22 @@
     .import-buttons
       - if gitlab_project_import_enabled?
         .import_gitlab_project.has-tooltip{ data: { container: 'body', qa_selector: 'gitlab_import_button' } }
-          = link_to new_import_gitlab_project_path, class: 'gl-button btn-default btn btn_import_gitlab_project', **tracking_attrs(track_label, 'click_button', 'gitlab_export') do
+          = link_to new_import_gitlab_project_path, class: 'gl-button btn-default btn btn_import_gitlab_project js-import-project-btn', **tracking_attrs(track_label, 'click_button', 'gitlab_export') do
             .gl-button-icon
               = sprite_icon('tanuki')
             = _("GitLab export")
 
       - if github_import_enabled?
         %div
-          = link_to new_import_github_path, class: 'gl-button btn-default btn js-import-github', **tracking_attrs(track_label, 'click_button', 'github') do
+          = link_to new_import_github_path, class: 'gl-button btn-default btn js-import-github js-import-project-btn', data: { platform: 'github', **tracking_attrs_data(track_label, 'click_button', 'github') } do
             .gl-button-icon
               = sprite_icon('github')
             GitHub
 
       - if bitbucket_import_enabled?
         %div
-          = link_to status_import_bitbucket_path, class: "gl-button btn-default btn import_bitbucket #{'how_to_import_link' unless bitbucket_import_configured?}",
-          **tracking_attrs(track_label, 'click_button', 'bitbucket_cloud') do
+          = link_to status_import_bitbucket_path, class: "gl-button btn-default btn import_bitbucket js-import-project-btn #{'how_to_import_link' unless bitbucket_import_configured?}",
+          data: { platform: 'bitbucket_cloud', **tracking_attrs_data(track_label, 'click_button', 'bitbucket_cloud') } do
             .gl-button-icon
               = sprite_icon('bitbucket')
             Bitbucket Cloud
@@ -31,15 +31,14 @@
             = render 'projects/bitbucket_import_modal'
       - if bitbucket_server_import_enabled?
         %div
-          = link_to status_import_bitbucket_server_path, class: "gl-button btn-default btn import_bitbucket", **tracking_attrs(track_label, 'click_button', 'bitbucket_server') do
+          = link_to status_import_bitbucket_server_path, class: "gl-button btn-default btn import_bitbucket js-import-project-btn", data: { platform: 'bitbucket_server', **tracking_attrs_data(track_label, 'click_button', 'bitbucket_server') } do
             .gl-button-icon
               = sprite_icon('bitbucket')
             Bitbucket Server
         %div
       - if gitlab_import_enabled?
         %div
-          = link_to status_import_gitlab_path, class: "gl-button btn-default btn import_gitlab #{'how_to_import_link' unless gitlab_import_configured?}",
-          **tracking_attrs(track_label, 'click_button', 'gitlab_com') do
+          = link_to status_import_gitlab_path, class: "gl-button btn-default btn import_gitlab js-import-project-btn #{'how_to_import_link' unless gitlab_import_configured?}", data: { platform: 'gitlab_com', **tracking_attrs_data(track_label, 'click_button', 'gitlab_com') } do
             .gl-button-icon
               = sprite_icon('tanuki')
             = _("GitLab.com")
@@ -48,35 +47,35 @@
 
       - if fogbugz_import_enabled?
         %div
-          = link_to new_import_fogbugz_path, class: 'gl-button btn-default btn import_fogbugz', **tracking_attrs(track_label, 'click_button', 'fogbugz') do
+          = link_to new_import_fogbugz_path, class: 'gl-button btn-default btn import_fogbugz js-import-project-btn', data: { platform: 'fogbugz', **tracking_attrs_data(track_label, 'click_button', 'fogbugz') } do
             .gl-button-icon
               = sprite_icon('bug')
             FogBugz
 
       - if gitea_import_enabled?
         %div
-          = link_to new_import_gitea_path, class: 'gl-button btn-default btn import_gitea', **tracking_attrs(track_label, 'click_button', 'gitea') do
+          = link_to new_import_gitea_path, class: 'gl-button btn-default btn import_gitea js-import-project-btn', data: { platform: 'gitea', **tracking_attrs_data(track_label, 'click_button', 'gitea') } do
             .gl-button-icon
               = custom_icon('gitea_logo')
             Gitea
 
       - if git_import_enabled?
         %div
-          %button.gl-button.btn-default.btn.btn-svg.js-toggle-button.js-import-git-toggle-button{ type: "button", data: { toggle_open_class: 'active' }, **tracking_attrs(track_label, 'click_button', 'repo_url') }
+          %button.gl-button.btn-default.btn.btn-svg.js-toggle-button.js-import-git-toggle-button.js-import-project-btn{ type: "button", data: { platform: 'repo_url', toggle_open_class: 'active', **tracking_attrs_data(track_label, 'click_button', 'repo_url') } }
             .gl-button-icon
               = sprite_icon('link', css_class: 'gl-icon')
             = _('Repo by URL')
 
       - if manifest_import_enabled?
         %div
-          = link_to new_import_manifest_path, class: 'gl-button btn-default btn import_manifest', **tracking_attrs(track_label, 'click_button', 'manifest_file') do
+          = link_to new_import_manifest_path, class: 'gl-button btn-default btn import_manifest js-import-project-btn', data: { platform: 'manifest_file', **tracking_attrs_data(track_label, 'click_button', 'manifest_file') } do
             .gl-button-icon
               = sprite_icon('doc-text')
             Manifest file
 
       - if phabricator_import_enabled?
         %div
-          = link_to new_import_phabricator_path, class: 'gl-button btn-default btn import_phabricator', data: { track_label: "#{track_label}", track_action: "click_button", track_property: "phabricator" } do
+          = link_to new_import_phabricator_path, class: 'gl-button btn-default btn import_phabricator js-import-project-btn', data: { platform: 'phabricator', track_label: "#{track_label}", track_action: "click_button", track_property: "phabricator" } do
             .gl-button-icon
               = custom_icon('issues')
             = _("Phabricator Tasks")

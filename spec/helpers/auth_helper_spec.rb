@@ -312,12 +312,6 @@ RSpec.describe AuthHelper do
           it { is_expected.to be_truthy }
         end
 
-        context 'when current user is set' do
-          let(:user) { instance_double('User') }
-
-          it { is_expected.to eq(false) }
-        end
-
         context 'when no key is set' do
           before do
             stub_config(extra: {})

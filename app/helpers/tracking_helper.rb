@@ -13,6 +13,10 @@ module TrackingHelper
     }
   end
 
+  def tracking_attrs_data(label, action, property)
+    tracking_attrs(label, action, property).fetch(:data, {})
+  end
+
   private
 
   def tracking_enabled?

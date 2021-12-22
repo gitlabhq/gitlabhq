@@ -7,13 +7,13 @@ RSpec.describe 'Database::MultipleDatabases' do
     context 'when doing establish_connection' do
       context 'on ActiveRecord::Base' do
         it 'raises exception' do
-          expect { ActiveRecord::Base.establish_connection(:main) }.to raise_error /Cannot re-establish/
+          expect { ActiveRecord::Base.establish_connection(:main) }.to raise_error /Cannot re-establish/ # rubocop: disable Database/EstablishConnection
         end
 
         context 'when using with_reestablished_active_record_base' do
           it 'does not raise exception' do
             with_reestablished_active_record_base do
-              expect { ActiveRecord::Base.establish_connection(:main) }.not_to raise_error
+              expect { ActiveRecord::Base.establish_connection(:main) }.not_to raise_error # rubocop: disable Database/EstablishConnection
             end
           end
         end
@@ -25,13 +25,13 @@ RSpec.describe 'Database::MultipleDatabases' do
         end
 
         it 'raises exception' do
-          expect { Ci::ApplicationRecord.establish_connection(:ci) }.to raise_error /Cannot re-establish/
+          expect { Ci::ApplicationRecord.establish_connection(:ci) }.to raise_error /Cannot re-establish/ # rubocop: disable Database/EstablishConnection
         end
 
         context 'when using with_reestablished_active_record_base' do
           it 'does not raise exception' do
             with_reestablished_active_record_base do
-              expect { Ci::ApplicationRecord.establish_connection(:main) }.not_to raise_error
+              expect { Ci::ApplicationRecord.establish_connection(:main) }.not_to raise_error # rubocop: disable Database/EstablishConnection
             end
           end
         end

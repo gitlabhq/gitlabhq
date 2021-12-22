@@ -170,7 +170,7 @@ namespace :gitlab do
       # the `ActiveRecord::Base.connection` might be switched to another one
       # This is due to `if should_reconnect`:
       # https://github.com/rails/rails/blob/a81aeb63a007ede2fe606c50539417dada9030c7/activerecord/lib/active_record/railties/databases.rake#L622
-      ActiveRecord::Base.establish_connection :main
+      ActiveRecord::Base.establish_connection :main # rubocop: disable Database/EstablishConnection
 
       Rake::Task['gitlab:db:create_dynamic_partitions'].invoke
     end

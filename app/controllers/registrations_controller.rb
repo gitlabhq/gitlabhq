@@ -18,6 +18,7 @@ class RegistrationsController < Devise::RegistrationsController
 
   def new
     @resource = build_resource
+    push_frontend_feature_flag(:gitlab_gtm_datalayer, type: :ops)
   end
 
   def create
