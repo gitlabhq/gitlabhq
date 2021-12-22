@@ -179,3 +179,43 @@ Once saved, [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure
 
 NOTE:
 These are Omnibus GitLab settings. If an external database, such as a customer's PostgreSQL installation or Amazon RDS is being used, these values don't get set, and would have to be set externally.
+
+### Temporarily changing the statement timeout
+
+WARNING:
+The following advice does not apply in case
+[PgBouncer](../postgresql/pgbouncer.md) is enabled,
+because the changed timeout might affect more transactions than intended.
+
+In some situations, it may be desirable to set a different statement timeout
+without having to [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure),
+which in this case would restart Puma and Sidekiq.
+
+For example, a backup may fail with the following errors in the output of the
+[backup command](../../raketasks/backup_restore.md#back-up-gitlab)
+because the statement timeout was too short:
+
+```plaintext
+pg_dump: error: Error message from server: server closed the connection unexpectedly
+```
+
+You may also see errors in the [PostgreSQL logs](../logs.md#postgresql-logs):
+
+```plaintext
+canceling statement due to statement timeout
+```
+
+To temporarily change the statement timeout:
+
+1. Open `/var/opt/gitlab/gitlab-rails/etc/database.yml` in an editor
+1. Set the value of `statement_timeout` to `0`, which sets an unlimited statement timeout.
+1. [Confirm in a new Rails console session](../operations/rails_console.md#using-the-rails-runner)
+   that this value is used:
+
+   ```shell
+   sudo gitlab-rails runner "ActiveRecord::Base.connection_config[:variables]"
+   ```
+
+1. Perform the action for which you need a different timeout
+   (for example the backup or the Rails command).
+1. Revert the edit in `/var/opt/gitlab/gitlab-rails/etc/database.yml`.

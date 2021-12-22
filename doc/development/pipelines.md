@@ -222,6 +222,13 @@ The `* as-if-jh` jobs are run in addition to the regular EE-context jobs. The `j
 The intent is to ensure that a change doesn't introduce a failure after the `gitlab-org/gitlab` project is synced to
 the `gitlab-jh/gitlab` project.
 
+### Corresponding JH branch
+
+You can create a corresponding JH branch on the `gitlab-jh/gitlab` project by
+appending `-jh` to the branch name. If a corresponding JH branch is found,
+`* as-if-jh` jobs grab the `jh` folder from the respective branch,
+rather than from the default branch.
+
 ## `undercover` RSpec test
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/74859) in GitLab 14.6.

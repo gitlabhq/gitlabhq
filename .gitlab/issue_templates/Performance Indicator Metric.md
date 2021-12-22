@@ -15,7 +15,9 @@ Summary of the changes
 
 ## Tasks
 
-[ ] [Link to metric definition]()
-[ ] Create issue in GitLab Data Team project using [Product Performance Indicator template](https://gitlab.com/gitlab-data/analytics/-/issues/new?issuable_template=Product%20Performance%20Indicator%20Template)
+- [ ] [Link to metric definition]()
+- [ ] Create issue in GitLab Data Team project using [Product Performance Indicator template](https://gitlab.com/gitlab-data/analytics/-/issues/new?issuable_template=Product%20Performance%20Indicator%20Template)
 
-/label ~"product intelligence" "~Data Warehouse::Impact Check"
+See [Product Intelligence Guide](https://docs.gitlab.com/ee/development/service_ping/performance_indicator_metrics.html) for details
+
+/label ~"product intelligence" ~"Data Warehouse::Impact Check"

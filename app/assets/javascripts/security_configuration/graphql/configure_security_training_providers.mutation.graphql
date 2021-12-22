@@ -1,0 +1,8 @@
+mutation configureSecurityTrainingProviders($input: configureSecurityTrainingProvidersInput!) {
+  configureSecurityTrainingProviders(input: $input) @client {
+    securityTrainingProviders {
+      id
+      isEnabled
+    }
+  }
+}

@@ -14,6 +14,7 @@ export const simpleViewerMock = {
   canModifyBlob: true,
   canCurrentUserPushToBranch: true,
   storedExternally: false,
+  externalStorage: 'lfs',
   rawPath: 'some_file.js',
   replacePath: 'some_file.js/replace',
   pipelineEditorPath: '',

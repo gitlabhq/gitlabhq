@@ -84,6 +84,7 @@
     name: ${QA_IMAGE}
     entrypoint: [""]
   stage: post-qa
+  allow_failure: true
   before_script:
     - cd qa
   script:

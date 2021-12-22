@@ -3,7 +3,7 @@
 module Gitlab
   module Tracking
     class StandardContext
-      GITLAB_STANDARD_SCHEMA_URL = 'iglu:com.gitlab/gitlab_standard/jsonschema/1-0-8'
+      GITLAB_STANDARD_SCHEMA_URL = 'iglu:com.gitlab/gitlab_standard/jsonschema/1-0-7'
       GITLAB_RAILS_SOURCE = 'gitlab-rails'
 
       def initialize(namespace: nil, project: nil, user: nil, **extra)
@@ -46,8 +46,7 @@ module Gitlab
           extra: extra,
           user_id: user&.id,
           namespace_id: namespace&.id,
-          project_id: project_id,
-          context_generated_at: Time.current
+          project_id: project_id
         }
       end
 

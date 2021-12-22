@@ -21,6 +21,7 @@ RSpec.describe Types::Repository::BlobType do
       :file_type,
       :edit_blob_path,
       :stored_externally,
+      :external_storage,
       :raw_path,
       :replace_path,
       :pipeline_editor_path,

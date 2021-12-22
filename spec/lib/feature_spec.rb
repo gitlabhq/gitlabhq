@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Feature, stub_feature_flags: false do
+  include StubVersion
+
   before do
     # reset Flipper AR-engine
     Feature.reset
@@ -583,7 +585,11 @@ RSpec.describe Feature, stub_feature_flags: false do
     end
 
     context 'when flag is new and not feature_flag_state_logs' do
-      let(:milestone) { "14.9" }
+      let(:milestone) { "14.6" }
+
+      before do
+        stub_version('14.5.123', 'deadbeef')
+      end
 
       it { is_expected.to be_truthy }
     end

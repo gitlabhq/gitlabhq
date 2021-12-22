@@ -151,12 +151,15 @@ detect-previous-failed-tests:
 
 add-jh-folder:
   extends: .setup:rules:add-jh-folder
-  image: ${GITLAB_DEPENDENCY_PROXY}alpine:edge
+  image: ${GITLAB_DEPENDENCY_PROXY}ruby:2.7
   stage: prepare
   before_script:
-    - apk add --no-cache --update curl bash
+    - source ./scripts/utils.sh
+    - install_gitlab_gem
   script:
-    - curl --location -o "jh-folder.tar.gz" "https://gitlab.com/gitlab-jh/gitlab/-/archive/main-jh/gitlab-main-jh.tar.gz?path=jh"
+    - JH_BRANCH=$(./scripts/setup/find-jh-branch.rb)
+    - 'echo "JH_BRANCH: ${JH_BRANCH}"'
+    - curl --location -o "jh-folder.tar.gz" "https://gitlab.com/gitlab-jh/gitlab/-/archive/${JH_BRANCH}/gitlab-${JH_BRANCH}.tar.gz?path=jh"
     - tar -xf "jh-folder.tar.gz"
     - mv gitlab-main-jh-jh/jh/ ./
     - cp Gemfile.lock jh/

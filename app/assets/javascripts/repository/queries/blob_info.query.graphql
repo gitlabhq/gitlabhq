@@ -36,6 +36,7 @@ query getBlobInfo($projectPath: ID!, $filePath: String!, $ref: String!) {
           canModifyBlob
           canCurrentUserPushToBranch
           storedExternally
+          externalStorage
           rawPath
           replacePath
           pipelineEditorPath

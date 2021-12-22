@@ -1,6 +1,7 @@
 <script>
 import { GlCard, GlToggle, GlLink, GlSkeletonLoader } from '@gitlab/ui';
 import securityTrainingProvidersQuery from '../graphql/security_training_providers.query.graphql';
+import configureSecurityTrainingProvidersMutation from '../graphql/configure_security_training_providers.mutation.graphql';
 
 export default {
   components: {
@@ -9,6 +10,7 @@ export default {
     GlLink,
     GlSkeletonLoader,
   },
+  inject: ['projectPath'],
   apollo: {
     securityTrainingProviders: {
       query: securityTrainingProvidersQuery,
@@ -16,12 +18,44 @@ export default {
   },
   data() {
     return {
+      toggleLoading: false,
       securityTrainingProviders: [],
     };
   },
   computed: {
     isLoading() {
       return this.$apollo.queries.securityTrainingProviders.loading;
+    },
+  },
+  methods: {
+    toggleProvider(selectedProviderId) {
+      const toggledProviders = this.securityTrainingProviders.map((provider) => ({
+        ...provider,
+        ...(provider.id === selectedProviderId && { isEnabled: !provider.isEnabled }),
+      }));
+
+      this.storeEnabledProviders(toggledProviders);
+    },
+    storeEnabledProviders(toggledProviders) {
+      const enabledProviderIds = toggledProviders
+        .filter(({ isEnabled }) => isEnabled)
+        .map(({ id }) => id);
+
+      this.toggleLoading = true;
+
+      return this.$apollo
+        .mutate({
+          mutation: configureSecurityTrainingProvidersMutation,
+          variables: {
+            input: {
+              enabledProviders: enabledProviderIds,
+              fullPath: this.projectPath,
+            },
+          },
+        })
+        .then(() => {
+          this.toggleLoading = false;
+        });
     },
   },
 };
@@ -46,7 +80,13 @@ export default {
     >
       <gl-card>
         <div class="gl-display-flex">
-          <gl-toggle :value="isEnabled" :label="__('Training mode')" label-position="hidden" />
+          <gl-toggle
+            :value="isEnabled"
+            :label="__('Training mode')"
+            label-position="hidden"
+            :is-loading="toggleLoading"
+            @change="toggleProvider(id)"
+          />
           <div class="gl-ml-5">
             <h3 class="gl-font-lg gl-m-0 gl-mb-2">{{ name }}</h3>
             <p>

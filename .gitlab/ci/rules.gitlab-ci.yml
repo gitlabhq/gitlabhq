@@ -1648,22 +1648,27 @@
   rules:
     - when: on_success
 
-# The rule needs to be duplicated between `on_success` and `on_failure`
-# because the jobs `needs` the previous job to complete.
-# With `when: always`, and the `review-qa-*` jobs are manual, the `allure-report-qa-*` jobs
-# would start running before the qa jobs have started.
-# See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/63844#note_599012559
+# If the needed job isn't allowed to fail, we need to use `when: always` in
+# order to keep the job always running after it.
+#
+# If the needed job is allowed to fail, we need to use both
+# `when: on_success` and `when: on_failure` in order to keep
+# the job always running after it.
+# Not that if the needed job has `when: on_success` we can use `when: always`
+# for the depending job.
+#
+# See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/76756
+
+# Since `review-qa-smoke` isn't allowed to fail, we need to use `when: always` for `review-qa-smoke-report`.
 .review:rules:review-qa-smoke-report:
   rules:
-    - when: on_success
-    - when: on_failure
+    - when: always
 
 .review:rules:review-qa-reliable:
   rules:
     - when: on_success
 
-# Since `review-qa-reliable ` isn't allowed to fail, we need to use `when: always` for `review-qa-reliable-report`.
-# See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/76756#qa-job-that-run-on_success-and-not-allowed-to-fail-eg-report-qa-smoke
+# Since `review-qa-reliable` isn't allowed to fail, we need to use `when: always`for `review-qa-reliable-report`.
 .review:rules:review-qa-reliable-report:
   rules:
     - when: always
@@ -1678,17 +1683,11 @@
     - when: on_success
       allow_failure: true
 
-# The rule needs to be duplicated between `on_success` and `on_failure`
-# because the jobs `needs` the previous job to complete.
-# With `when: always`, and the `review-qa-*` jobs are manual, the `allure-report-qa-*` jobs
-# would start running before the qa jobs have started.
-# See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/63844#note_599012559
+# Since `review-qa-all` is allowed to fail (and potentially manual), we need to use `when: on_success` and `when: on_failure` for `review-qa-all-report`.
 .review:rules:review-qa-all-report:
   rules:
     - when: on_success
-      allow_failure: true
     - when: on_failure
-      allow_failure: true
 
 # Generate knapsack report on successful runs only
 # Reliable suite will pass most of the time so this should yield best distribution
@@ -1696,13 +1695,14 @@
   rules:
     - if: '$KNAPSACK_GENERATE_REPORT == "true"'
       when: on_success
-      allow_failure: true
 
+# Since `review-qa-all` is allowed to fail (and potentially manual), we need to use `when: on_success` and `when: on_failure` for `knapsack-report-qa-all`.
 .review:rules:knapsack-report-qa-all:
   rules:
-    - if: '$KNAPSACK_GENERATE_REPORT == "true"'
-      when: always
-      allow_failure: true
+    - if: '$KNAPSACK_GENERATE_REPORT != "true"'
+      when: never
+    - when: on_success
+    - when: on_failure
 
 .review:rules:review-cleanup:
   rules:

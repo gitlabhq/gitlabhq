@@ -563,7 +563,7 @@ msgstr ""
 msgid "%{description}- Sentry event: %{errorUrl}- First seen: %{firstSeen}- Last seen: %{lastSeen} %{countLabel}: %{count}%{userCountLabel}: %{userCount}"
 msgstr ""
 
-msgid "%{doc_link_start}Advanced search%{doc_link_end} is disabled since %{ref_elem} is not the default branch; %{default_branch_link_start}search on %{default_branch} instead%{default_branch_link_end}."
+msgid "%{doc_link_start}Advanced search%{doc_link_end} is disabled since %{ref_elem} is not the default branch. %{docs_link}"
 msgstr ""
 
 msgid "%{doc_link_start}Advanced search%{doc_link_end} is enabled."
@@ -12832,6 +12832,9 @@ msgstr ""
 msgid "Edit environment"
 msgstr ""
 
+msgid "Edit epics"
+msgstr ""
+
 msgid "Edit files in the editor and commit changes here"
 msgstr ""
 
@@ -13771,6 +13774,9 @@ msgid "Epics|Something went wrong while ordering item."
 msgstr ""
 
 msgid "Epics|Something went wrong while removing issue from epic."
+msgstr ""
+
+msgid "Epics|Something went wrong while updating epics."
 msgstr ""
 
 msgid "Epics|This epic and any containing child epics are confidential and should only be visible to team members with at least Reporter access."
@@ -33560,9 +33566,6 @@ msgid "Start your Free Ultimate Trial"
 msgstr ""
 
 msgid "Start your free trial"
-msgstr ""
-
-msgid "Start your trial"
 msgstr ""
 
 msgid "Started"

@@ -56,6 +56,9 @@ module Types
       field :stored_externally, GraphQL::Types::Boolean, null: true, method: :stored_externally?,
             description: "Whether the blob's content is stored externally (for instance, in LFS)."
 
+      field :external_storage, GraphQL::Types::String, null: true, method: :external_storage,
+            description: "External storage being used, if enabled (for instance, 'LFS')."
+
       field :edit_blob_path, GraphQL::Types::String, null: true,
             description: 'Web path to edit the blob in the old-style editor.'
 

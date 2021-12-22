@@ -4,8 +4,14 @@ import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import TrainingProviderList from '~/security_configuration/components/training_provider_list.vue';
+import configureSecurityTrainingProvidersMutation from '~/security_configuration/graphql/configure_security_training_providers.mutation.graphql';
 import waitForPromises from 'helpers/wait_for_promises';
-import { securityTrainingProviders, mockResolvers } from '../mock_data';
+import {
+  securityTrainingProviders,
+  mockResolvers,
+  testProjectPath,
+  textProviderIds,
+} from '../mock_data';
 
 Vue.use(VueApollo);
 
@@ -18,6 +24,9 @@ describe('TrainingProviderList component', () => {
     mockApollo = createMockApollo([], mockResolvers);
 
     wrapper = shallowMount(TrainingProviderList, {
+      provide: {
+        projectPath: testProjectPath,
+      },
       apolloProvider: mockApollo,
     });
   };
@@ -83,6 +92,38 @@ describe('TrainingProviderList component', () => {
       it('does not show loader when query is populated', () => {
         expect(findLoader().exists()).toBe(false);
       });
+    });
+  });
+
+  describe('success mutation', () => {
+    const firstToggle = () => findToggles().at(0);
+
+    beforeEach(async () => {
+      jest.spyOn(mockApollo.defaultClient, 'mutate');
+
+      await waitForQueryToBeLoaded();
+
+      firstToggle().vm.$emit('change');
+    });
+
+    it('calls mutation when toggle is changed', () => {
+      expect(mockApollo.defaultClient.mutate).toHaveBeenCalledWith(
+        expect.objectContaining({
+          mutation: configureSecurityTrainingProvidersMutation,
+          variables: { input: { enabledProviders: textProviderIds, fullPath: testProjectPath } },
+        }),
+      );
+    });
+
+    it.each`
+      loading  | wait     | desc
+      ${true}  | ${false} | ${'enables loading of GlToggle when mutation is called'}
+      ${false} | ${true}  | ${'disables loading of GlToggle when mutation is complete'}
+    `('$desc', async ({ loading, wait }) => {
+      if (wait) {
+        await waitForPromises();
+      }
+      expect(firstToggle().props('isLoading')).toBe(loading);
     });
   });
 });

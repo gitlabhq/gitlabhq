@@ -105,6 +105,7 @@ export default {
                 forkAndEditPath: '',
                 ideForkAndEditPath: '',
                 storedExternally: false,
+                externalStorage: '',
                 canModifyBlob: false,
                 canCurrentUserPushToBranch: false,
                 rawPath: '',
