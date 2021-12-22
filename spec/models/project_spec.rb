@@ -7552,6 +7552,46 @@ RSpec.describe Project, factory_default: :keep do
     end
   end
 
+  describe '#context_commits_enabled?' do
+    let_it_be(:project) { create(:project) }
+
+    subject(:result) { project.context_commits_enabled? }
+
+    context 'when context_commits feature flag is enabled' do
+      before do
+        stub_feature_flags(context_commits: true)
+      end
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'when context_commits feature flag is disabled' do
+      before do
+        stub_feature_flags(context_commits: false)
+      end
+
+      it { is_expected.to be_falsey }
+    end
+
+    context 'when context_commits feature flag is enabled on this project' do
+      before do
+        stub_feature_flags(context_commits: project)
+      end
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'when context_commits feature flag is enabled on another project' do
+      let(:another_project) { create(:project) }
+
+      before do
+        stub_feature_flags(context_commits: another_project)
+      end
+
+      it { is_expected.to be_falsey }
+    end
+  end
+
   private
 
   def finish_job(export_job)

@@ -13,7 +13,7 @@ use the `#docs-processes` channel.
 In addition to this page, the following resources can help you craft and contribute to documentation:
 
 - [Doc contribution guidelines](../index.md)
-- [A-Z word list](word_list.md)
+- [Recommended word list](word_list.md)
 - [Doc style and consistency testing](../testing.md)
 - [UI text guidelines](https://design.gitlab.com/content/error-messages/)
 - [GitLab Handbook style guidelines](https://about.gitlab.com/handbook/communication/#writing-style-guidelines)

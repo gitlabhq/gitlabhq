@@ -470,6 +470,10 @@ incoming_email:
 
 ##### Dedicated email address
 
+NOTE:
+Supports [Reply by Email](reply_by_email.md) only.
+Cannot support [Service Desk](../user/project/service_desk.md).
+
 Assumes the dedicated email address `incoming@exchange.example.com`.
 
 Example for Omnibus installs:
@@ -655,6 +659,10 @@ incoming_email:
 ```
 
 ##### Dedicated email address
+
+NOTE:
+Supports [Reply by Email](reply_by_email.md) only.
+Cannot support [Service Desk](../user/project/service_desk.md).
 
 This example for Omnibus installs assumes the dedicated email address `incoming@office365.example.com`:
 

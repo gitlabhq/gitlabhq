@@ -53,13 +53,18 @@ module Gitlab
           end
 
           def context
-            Gitlab::Ci::Pipeline::Seed::Context.new(pipeline, root_variables: root_variables)
+            Gitlab::Ci::Pipeline::Seed::Context.new(
+              pipeline,
+              root_variables: root_variables,
+              logger: logger
+            )
           end
 
           def root_variables
             logger.instrument(:pipeline_seed_merge_variables) do
               ::Gitlab::Ci::Variables::Helpers.merge_variables(
-                @command.yaml_processor_result.root_variables, @command.workflow_rules_result.variables
+                @command.yaml_processor_result.root_variables,
+                @command.workflow_rules_result.variables
               )
             end
           end

@@ -36,6 +36,7 @@ RSpec.describe Ci::CreatePipelineService do
         'pipeline_creation_duration_s' => counters,
         'pipeline_size_count' => counters,
         'pipeline_step_gitlab_ci_pipeline_chain_seed_duration_s' => counters,
+        'pipeline_seed_build_inclusion_duration_s' => counters,
         'pipeline_builds_tags_count' => a_kind_of(Numeric),
         'pipeline_builds_distinct_tags_count' => a_kind_of(Numeric)
       }

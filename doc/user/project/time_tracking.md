@@ -76,6 +76,15 @@ For example, if you want to log 1 hour of time spent on the 31 January 2021,
 you would type `/spend 1h 2021-01-31`. If you supply a date in the future, the
 command fails and no time is logged.
 
+To add a timelog entry with a note, create a comment with a description and the quick action.
+It then shows in the timelog "Summary/Notes" column. For example:
+
+```plaintext
+Draft MR and respond to initial comments
+
+/spend 30m
+```
+
 To remove all the time spent at once, use `/remove_time_spent`.
 
 ## View a time tracking report

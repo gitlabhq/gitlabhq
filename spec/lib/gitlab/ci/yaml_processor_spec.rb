@@ -2097,6 +2097,12 @@ module Gitlab
           it_behaves_like 'returns errors', 'test1 job: need deploy is not defined in current or prior stages'
         end
 
+        context 'duplicate needs' do
+          let(:needs) { %w(build1 build1) }
+
+          it_behaves_like 'returns errors', 'test1 has duplicate entries in the needs section.'
+        end
+
         context 'needs and dependencies that are mismatching' do
           let(:needs) { %w(build1) }
           let(:dependencies) { %w(build2) }

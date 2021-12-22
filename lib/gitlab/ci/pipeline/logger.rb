@@ -58,7 +58,6 @@ module Gitlab
           if pipeline.persisted?
             attributes[:pipeline_builds_tags_count] = pipeline.tags_count
             attributes[:pipeline_builds_distinct_tags_count] = pipeline.distinct_tags_count
-
             attributes[:pipeline_id] = pipeline.id
           end
 

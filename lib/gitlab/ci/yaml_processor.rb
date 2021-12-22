@@ -86,8 +86,16 @@ module Gitlab
       def validate_job_needs!(name, job)
         return unless needs = job.dig(:needs, :job)
 
+        validate_duplicate_needs!(name, needs)
+
         needs.each do |need|
           validate_job_dependency!(name, need[:name], 'need')
+        end
+      end
+
+      def validate_duplicate_needs!(name, needs)
+        unless needs.uniq == needs
+          error!("#{name} has duplicate entries in the needs section.")
         end
       end
 

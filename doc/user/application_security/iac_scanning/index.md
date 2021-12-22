@@ -48,7 +48,7 @@ as shown in the following table:
 
 | Capability                                                                             | In Free             | In Ultimate        |
 |:---------------------------------------------------------------------------------------|:--------------------|:-------------------|
-| [Configure IaC Scanners](#configuration)                              v                | **{check-circle}**  | **{check-circle}** |
+| [Configure IaC Scanners](#configuration)                                               | **{check-circle}**  | **{check-circle}** |
 | View [JSON Report](#reports-json-format)                                               | **{check-circle}**  | **{check-circle}** |
 | Presentation of JSON Report in Merge Request                                           | **{dotted-circle}** | **{check-circle}** |
 | [Address vulnerabilities](../../application_security/vulnerabilities/index.md)         | **{dotted-circle}** | **{check-circle}** |

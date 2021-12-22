@@ -1907,19 +1907,19 @@ msgstr ""
 msgid "AccountValidation|If you no longer wish to receive marketing emails from us,"
 msgstr ""
 
-msgid "AccountValidation|In order to use free pipeline minutes on shared runners, you'll need to validate your account with a credit or debit card. If you prefer not to provide one, you can run pipelines by bringing your own runners and disabling shared runners for your project."
+msgid "AccountValidation|In order to use free CI/CD minutes on shared runners, you'll need to validate your account using one of our verification options. If you prefer not to, you can run pipelines by bringing your own runners and disabling shared runners for your project."
 msgstr ""
 
 msgid "AccountValidation|Learn more."
 msgstr ""
 
-msgid "AccountValidation|Looks like you’ll need to validate your account to use free pipeline minutes"
-msgstr ""
-
-msgid "AccountValidation|This is required to discourage and reduce the abuse on GitLab infrastructure. %{strong_start}GitLab will not charge or store your card, it will only be used for validation.%{strong_end} %{learn_more_link}"
+msgid "AccountValidation|Looks like you’ll need to validate your account to use free CI/CD minutes"
 msgstr ""
 
 msgid "AccountValidation|Validate your account"
+msgstr ""
+
+msgid "AccountValidation|Verification is required to discourage and reduce the abuse on GitLab infrastructure. If you verify with a credit or debit card, %{strong_start}GitLab will not charge your card, it will only be used for validation.%{strong_end} %{learn_more_link}"
 msgstr ""
 
 msgid "AccountValidation|unsubscribe"
@@ -5508,13 +5508,10 @@ msgstr ""
 msgid "Billings|Shared runners cannot be enabled until a valid credit card is on file."
 msgstr ""
 
-msgid "Billings|To use free pipeline minutes on shared runners, you’ll need to validate your account with a credit or debit card. If you prefer not to provide one, you can run pipelines by bringing your own runners and disabling shared runners for your project. This is required to discourage and reduce abuse on GitLab infrastructure. %{strongStart}GitLab will not charge your card, it will only be used for validation.%{strongEnd} %{linkStart}Learn more%{linkEnd}."
+msgid "Billings|To use free CI/CD minutes on shared runners, you’ll need to validate your account with a credit card. If you prefer not to provide one, you can run pipelines by bringing your own runners and disabling shared runners for your project. This is required to discourage and reduce abuse on GitLab infrastructure. %{strongStart}GitLab will not charge your card, it will only be used for validation.%{strongEnd} %{linkStart}Learn more%{linkEnd}."
 msgstr ""
 
-msgid "Billings|To use free pipeline minutes on shared runners, you’ll need to validate your account with a credit or debit card. This is required to discourage and reduce abuse on GitLab infrastructure. %{strongStart}GitLab will not charge your card, it will only be used for validation.%{strongEnd}"
-msgstr ""
-
-msgid "Billings|User successfully validated"
+msgid "Billings|To use free CI/CD minutes on shared runners, you’ll need to validate your account with a credit card. This is required to discourage and reduce abuse on GitLab infrastructure. %{strongStart}GitLab will not charge your card, it will only be used for validation.%{strongEnd}"
 msgstr ""
 
 msgid "Billings|User validation required"
@@ -5526,7 +5523,10 @@ msgstr ""
 msgid "Billings|Validate user account"
 msgstr ""
 
-msgid "Billings|Your user account has been successfully validated. You can now use free pipeline minutes."
+msgid "Billings|You'll now be able to take advantage of free CI/CD minutes on shared runners."
+msgstr ""
+
+msgid "Billings|Your account has been validated"
 msgstr ""
 
 msgid "Billing|An email address is only visible for users with public emails."
@@ -38837,16 +38837,16 @@ msgstr ""
 msgid "Verification status"
 msgstr ""
 
-msgid "VerificationReminder|Pipeline failing? To keep GitLab spam and abuse free we ask that you verify your identity with a valid payment method."
+msgid "VerificationReminder|Pipeline failing? To keep GitLab spam and abuse free we ask that you verify your identity."
 msgstr ""
 
-msgid "VerificationReminder|Until then, free pipeline minutes on shared runners are unavailable. %{validateLinkStart}Validate your account%{validateLinkEnd} or %{docsLinkStart}use your own runners%{docsLinkEnd}."
+msgid "VerificationReminder|Until then, shared runners will be unavailable. %{validateLinkStart}Validate your account%{validateLinkEnd} or %{docsLinkStart}use your own runners%{docsLinkEnd}."
 msgstr ""
 
-msgid "VerificationReminder|Your account has been validated."
+msgid "VerificationReminder|Your account has been validated"
 msgstr ""
 
-msgid "VerificationReminder|You’ll now be able to take advantage of free pipeline minutes on shared runners."
+msgid "VerificationReminder|You’ll now be able to take advantage of free CI/CD minutes on shared runners."
 msgstr ""
 
 msgid "Verified"
