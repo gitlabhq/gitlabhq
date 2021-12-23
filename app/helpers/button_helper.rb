@@ -50,7 +50,7 @@ module ButtonHelper
       data: data,
       type: :button,
       title: title,
-      aria: { label: title },
+      aria: { label: title, live: 'polite' },
       itemprop: item_prop
     }
 

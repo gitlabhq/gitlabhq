@@ -3,6 +3,8 @@ import Tracking from '~/tracking';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import CodeInstruction from '~/vue_shared/components/registry/code_instruction.vue';
 
+jest.mock('lodash/uniqueId', () => (prefix) => (prefix ? `${prefix}1` : 1));
+
 describe('Package code instruction', () => {
   let wrapper;
 

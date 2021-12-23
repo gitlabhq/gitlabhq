@@ -1,7 +1,15 @@
 import { GlButton } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
-import initCopyToClipboard from '~/behaviors/copy_to_clipboard';
+import { nextTick } from 'vue';
+
+import initCopyToClipboard, {
+  CLIPBOARD_SUCCESS_EVENT,
+  CLIPBOARD_ERROR_EVENT,
+  I18N_ERROR_MESSAGE,
+} from '~/behaviors/copy_to_clipboard';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
+
+jest.mock('lodash/uniqueId', () => (prefix) => (prefix ? `${prefix}1` : 1));
 
 describe('clipboard button', () => {
   let wrapper;
@@ -14,6 +22,42 @@ describe('clipboard button', () => {
   };
 
   const findButton = () => wrapper.find(GlButton);
+
+  const expectConfirmationTooltip = async ({ event, message }) => {
+    const title = 'Copy this value';
+
+    createWrapper({
+      text: 'copy me',
+      title,
+    });
+
+    wrapper.vm.$root.$emit = jest.fn();
+
+    const button = findButton();
+
+    expect(button.attributes()).toMatchObject({
+      title,
+      'aria-label': title,
+    });
+
+    await button.trigger(event);
+
+    expect(wrapper.vm.$root.$emit).toHaveBeenCalledWith('bv::show::tooltip', 'clipboard-button-1');
+
+    expect(button.attributes()).toMatchObject({
+      title: message,
+      'aria-label': message,
+    });
+
+    jest.runAllTimers();
+    await nextTick();
+
+    expect(button.attributes()).toMatchObject({
+      title,
+      'aria-label': title,
+    });
+    expect(wrapper.vm.$root.$emit).toHaveBeenCalledWith('bv::hide::tooltip', 'clipboard-button-1');
+  };
 
   afterEach(() => {
     wrapper.destroy();
@@ -97,6 +141,32 @@ describe('clipboard button', () => {
 
     expect(findButton().props('category')).toBe(category);
     expect(findButton().props('variant')).toBe(variant);
+  });
+
+  describe('confirmation tooltip', () => {
+    it('adds `id` and `data-clipboard-handle-tooltip` attributes to button', () => {
+      createWrapper({
+        text: 'copy me',
+        title: 'Copy this value',
+      });
+
+      expect(findButton().attributes()).toMatchObject({
+        id: 'clipboard-button-1',
+        'data-clipboard-handle-tooltip': 'false',
+        'aria-live': 'polite',
+      });
+    });
+
+    it('shows success tooltip after successful copy', () => {
+      expectConfirmationTooltip({
+        event: CLIPBOARD_SUCCESS_EVENT,
+        message: ClipboardButton.i18n.copied,
+      });
+    });
+
+    it('shows error tooltip after failed copy', () => {
+      expectConfirmationTooltip({ event: CLIPBOARD_ERROR_EVENT, message: I18N_ERROR_MESSAGE });
+    });
   });
 
   describe('integration', () => {

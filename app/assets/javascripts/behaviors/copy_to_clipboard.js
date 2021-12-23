@@ -1,7 +1,13 @@
-import Clipboard from 'clipboard';
+import ClipboardJS from 'clipboard';
 import $ from 'jquery';
-import { sprintf, __ } from '~/locale';
-import { fixTitle, add, show, once } from '~/tooltips';
+
+import { parseBoolean } from '~/lib/utils/common_utils';
+import { __ } from '~/locale';
+import { fixTitle, add, show, hide, once } from '~/tooltips';
+
+const CLIPBOARD_SUCCESS_EVENT = 'clipboard-success';
+const CLIPBOARD_ERROR_EVENT = 'clipboard-error';
+const I18N_ERROR_MESSAGE = __('Copy failed. Please manually copy the value.');
 
 function showTooltip(target, title) {
   const { title: originalTitle } = target.dataset;
@@ -9,20 +15,31 @@ function showTooltip(target, title) {
   once('hidden', (tooltip) => {
     if (tooltip.target === target) {
       target.setAttribute('title', originalTitle);
+      target.setAttribute('aria-label', originalTitle);
       fixTitle(target);
     }
   });
 
   target.setAttribute('title', title);
+  target.setAttribute('aria-label', title);
   fixTitle(target);
   show(target);
-  setTimeout(() => target.blur(), 1000);
+  setTimeout(() => {
+    hide(target);
+  }, 1000);
 }
 
 function genericSuccess(e) {
-  // Clear the selection and blur the trigger so it loses its border
+  // Clear the selection
   e.clearSelection();
-  showTooltip(e.trigger, __('Copied'));
+  e.trigger.focus();
+  e.trigger.dispatchEvent(new Event(CLIPBOARD_SUCCESS_EVENT));
+
+  const { clipboardHandleTooltip = true } = e.trigger.dataset;
+  if (parseBoolean(clipboardHandleTooltip)) {
+    // Update tooltip
+    showTooltip(e.trigger, __('Copied'));
+  }
 }
 
 /**
@@ -30,17 +47,16 @@ function genericSuccess(e) {
  * See http://clipboardjs.com/#browser-support
  */
 function genericError(e) {
-  let key;
-  if (/Mac/i.test(navigator.userAgent)) {
-    key = '&#8984;'; // Command
-  } else {
-    key = 'Ctrl';
+  e.trigger.dispatchEvent(new Event(CLIPBOARD_ERROR_EVENT));
+
+  const { clipboardHandleTooltip = true } = e.trigger.dataset;
+  if (parseBoolean(clipboardHandleTooltip)) {
+    showTooltip(e.trigger, I18N_ERROR_MESSAGE);
   }
-  showTooltip(e.trigger, sprintf(__(`Press %{key}-C to copy`), { key }));
 }
 
 export default function initCopyToClipboard() {
-  const clipboard = new Clipboard('[data-clipboard-target], [data-clipboard-text]');
+  const clipboard = new ClipboardJS('[data-clipboard-target], [data-clipboard-text]');
   clipboard.on('success', genericSuccess);
   clipboard.on('error', genericError);
 
@@ -74,6 +90,8 @@ export default function initCopyToClipboard() {
     clipboardData.setData('text/plain', json.text);
     clipboardData.setData('text/x-gfm', json.gfm);
   });
+
+  return clipboard;
 }
 
 /**
@@ -89,3 +107,5 @@ export function clickCopyToClipboardButton(btnElement) {
 
   btnElement.click();
 }
+
+export { CLIPBOARD_SUCCESS_EVENT, CLIPBOARD_ERROR_EVENT, I18N_ERROR_MESSAGE };

@@ -13,9 +13,23 @@
  * />
  */
 import { GlButton, GlTooltipDirective } from '@gitlab/ui';
+import { uniqueId } from 'lodash';
+
+import { __ } from '~/locale';
+import {
+  CLIPBOARD_SUCCESS_EVENT,
+  CLIPBOARD_ERROR_EVENT,
+  I18N_ERROR_MESSAGE,
+} from '~/behaviors/copy_to_clipboard';
 
 export default {
   name: 'ClipboardButton',
+  i18n: {
+    copied: __('Copied'),
+    error: I18N_ERROR_MESSAGE,
+  },
+  CLIPBOARD_SUCCESS_EVENT,
+  CLIPBOARD_ERROR_EVENT,
   directives: {
     GlTooltip: GlTooltipDirective,
   },
@@ -72,6 +86,13 @@ export default {
       default: 'default',
     },
   },
+  data() {
+    return {
+      localTitle: this.title,
+      titleTimeout: null,
+      id: null,
+    };
+  },
   computed: {
     clipboardText() {
       if (this.gfm !== null) {
@@ -79,25 +100,50 @@ export default {
       }
       return this.text;
     },
+    tooltipDirectiveOptions() {
+      return {
+        placement: this.tooltipPlacement,
+        container: this.tooltipContainer,
+        boundary: this.tooltipBoundary,
+      };
+    },
+  },
+  created() {
+    this.id = uniqueId('clipboard-button-');
+  },
+  methods: {
+    updateTooltip(title) {
+      this.localTitle = title;
+      this.$root.$emit('bv::show::tooltip', this.id);
+
+      clearTimeout(this.titleTimeout);
+
+      this.titleTimeout = setTimeout(() => {
+        this.localTitle = this.title;
+        this.$root.$emit('bv::hide::tooltip', this.id);
+      }, 1000);
+    },
   },
 };
 </script>
 
 <template>
   <gl-button
-    v-gl-tooltip.hover.blur.viewport="{
-      placement: tooltipPlacement,
-      container: tooltipContainer,
-      boundary: tooltipBoundary,
-    }"
+    :id="id"
+    ref="copyButton"
+    v-gl-tooltip.hover.focus.click.viewport="tooltipDirectiveOptions"
     :class="cssClass"
-    :title="title"
+    :title="localTitle"
     :data-clipboard-text="clipboardText"
+    data-clipboard-handle-tooltip="false"
     :category="category"
     :size="size"
     icon="copy-to-clipboard"
-    :aria-label="__('Copy this value')"
     :variant="variant"
+    :aria-label="localTitle"
+    aria-live="polite"
+    @[$options.CLIPBOARD_SUCCESS_EVENT]="updateTooltip($options.i18n.copied)"
+    @[$options.CLIPBOARD_ERROR_EVENT]="updateTooltip($options.i18n.error)"
     v-on="$listeners"
   >
     <slot></slot>

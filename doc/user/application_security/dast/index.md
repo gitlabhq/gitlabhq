@@ -969,6 +969,8 @@ To view running completed and scheduled on-demand DAST scans for a project, go t
   failed, or was canceled.
 - To view scheduled scans, select **Scheduled**. It shows on-demand scans that have a schedule
   set up. Those are _not_ included in the **All** tab.
+- To view saved on-demand scan profiles, select **Scan library**.
+  Those are _not_ included in the **All** tab.
 
 #### Cancel an on-demand scan
 
