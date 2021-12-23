@@ -73,6 +73,10 @@ class FindJhBranch
     ENV['CI_DEFAULT_BRANCH']
   end
 
+  def merge_request_project_id
+    ENV['CI_MERGE_REQUEST_PROJECT_ID']
+  end
+
   def merge_request_id
     ENV['CI_MERGE_REQUEST_IID']
   end
@@ -81,12 +85,8 @@ class FindJhBranch
     "#{ref_name}-jh"
   end
 
-  def project_id
-    API::DEFAULT_OPTIONS[:project]
-  end
-
   def merge_request
-    @merge_request ||= gitlab.merge_request(project_id, merge_request_id)
+    @merge_request ||= gitlab.merge_request(merge_request_project_id, merge_request_id)
   end
 
   def gitlab

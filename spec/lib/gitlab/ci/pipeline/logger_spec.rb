@@ -41,6 +41,90 @@ RSpec.describe ::Gitlab::Ci::Pipeline::Logger do
     end
   end
 
+  describe '#instrument_with_sql', :request_store do
+    subject(:instrument_with_sql) do
+      logger.instrument_with_sql(:expensive_operation, &operation)
+    end
+
+    def loggable_data(count:, db_count: nil)
+      keys = %w[
+        expensive_operation_duration_s
+        expensive_operation_db_count
+        expensive_operation_db_primary_count
+        expensive_operation_db_primary_duration_s
+        expensive_operation_db_main_count
+        expensive_operation_db_main_duration_s
+      ]
+
+      data = keys.each.with_object({}) do |key, accumulator|
+        accumulator[key] = {
+          'count' => count,
+          'avg' => a_kind_of(Numeric),
+          'max' => a_kind_of(Numeric),
+          'min' => a_kind_of(Numeric)
+        }
+      end
+
+      if db_count
+        data['expensive_operation_db_count']['max'] = db_count
+        data['expensive_operation_db_count']['min'] = db_count
+        data['expensive_operation_db_count']['avg'] = db_count
+      end
+
+      data
+    end
+
+    context 'with a single query' do
+      let(:operation) { -> { Project.count } }
+
+      it { is_expected.to eq(operation.call) }
+
+      it 'includes SQL metrics' do
+        instrument_with_sql
+
+        expect(logger.observations_hash)
+          .to match(a_hash_including(loggable_data(count: 1, db_count: 1)))
+      end
+    end
+
+    context 'with multiple queries' do
+      let(:operation) { -> { Ci::Build.count + Ci::Bridge.count } }
+
+      it { is_expected.to eq(operation.call) }
+
+      it 'includes SQL metrics' do
+        instrument_with_sql
+
+        expect(logger.observations_hash)
+          .to match(a_hash_including(loggable_data(count: 1, db_count: 2)))
+      end
+    end
+
+    context 'with multiple observations' do
+      let(:operation) { -> { Ci::Build.count + Ci::Bridge.count } }
+
+      it 'includes SQL metrics' do
+        2.times { logger.instrument_with_sql(:expensive_operation, &operation) }
+
+        expect(logger.observations_hash)
+          .to match(a_hash_including(loggable_data(count: 2, db_count: 2)))
+      end
+    end
+
+    context 'when there are not SQL operations' do
+      let(:operation) { -> { 123 } }
+
+      it { is_expected.to eq(operation.call) }
+
+      it 'does not include SQL metrics' do
+        instrument_with_sql
+
+        expect(logger.observations_hash.keys)
+          .to match_array(['expensive_operation_duration_s'])
+      end
+    end
+  end
+
   describe '#observe' do
     it 'records durations of observed operations' do
       loggable_data = {

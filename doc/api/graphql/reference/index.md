@@ -9033,6 +9033,7 @@ Represents a code quality degradation on the pipeline.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="commitauthor"></a>`author` | [`UserCore`](#usercore) | Author of the commit. |
+| <a id="commitauthoremail"></a>`authorEmail` | [`String`](#string) | Commit author's email. |
 | <a id="commitauthorgravatar"></a>`authorGravatar` | [`String`](#string) | Commit authors gravatar. |
 | <a id="commitauthorname"></a>`authorName` | [`String`](#string) | Commit authors name. |
 | <a id="commitauthoreddate"></a>`authoredDate` | [`Time`](#time) | Timestamp of when the commit was authored. |

@@ -39,6 +39,8 @@ module Types
           description: 'Rendered HTML of the commit signature.'
     field :author_name, type: GraphQL::Types::String, null: true,
           description: 'Commit authors name.'
+    field :author_email, type: GraphQL::Types::String, null: true,
+          description: "Commit author's email."
     field :author_gravatar, type: GraphQL::Types::String, null: true,
           description: 'Commit authors gravatar.'
 

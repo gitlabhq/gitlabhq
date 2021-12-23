@@ -37,6 +37,18 @@ module Gitlab
           result
         end
 
+        def instrument_with_sql(operation, &block)
+          return instrument(operation, &block) unless sql_logging_enabled?
+
+          op_start_db_counters = current_db_counter_payload
+
+          result = instrument(operation, &block)
+
+          observe_sql_counters(operation, op_start_db_counters, current_db_counter_payload)
+
+          result
+        end
+
         def observe(operation, value)
           return unless enabled?
 
@@ -105,6 +117,25 @@ module Gitlab
 
         def observations
           @observations ||= Hash.new { |hash, key| hash[key] = [] }
+        end
+
+        def observe_sql_counters(operation, start_db_counters, end_db_counters)
+          end_db_counters.each do |key, value|
+            result = value - start_db_counters.fetch(key, 0)
+            next if result == 0
+
+            observe("#{operation}_#{key}", result)
+          end
+        end
+
+        def current_db_counter_payload
+          ::Gitlab::Metrics::Subscribers::ActiveRecord.db_counter_payload
+        end
+
+        def sql_logging_enabled?
+          strong_memoize(:sql_logging_enabled) do
+            ::Feature.enabled?(:ci_pipeline_logger_sql_count, project, default_enabled: :yaml)
+          end
         end
       end
     end
