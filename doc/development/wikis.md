@@ -1,5 +1,4 @@
 ---
-type: reference, dev
 stage: Create
 group: Editor
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
@@ -90,8 +89,6 @@ Only some data is persisted in the database:
 ## Attachments
 
 The web UI uploads attachments through the REST API, which stores the files as commits in the wiki repository.
-
-Prior to GitLab 11.3 attachments were stored outside of the repository, [see this issue](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/33475).
 
 ## Related topics
 

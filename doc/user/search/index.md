@@ -1,8 +1,7 @@
 ---
 stage: Create
 group: Editor
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments"
-type: index, reference, howto
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Searching in GitLab **(FREE)**
@@ -102,8 +101,7 @@ You can filter the **Issues** list to individual instances by their ID. For exam
 
 ### Filtering merge requests by approvers **(PREMIUM)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/9468) in GitLab 11.9.
-> - Moved to GitLab Premium in 13.9.
+> Moved to GitLab Premium in 13.9.
 
 To filter merge requests by an individual approver, you can type (or select from
 the dropdown) **Approver** and select the user.

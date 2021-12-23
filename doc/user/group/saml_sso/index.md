@@ -110,6 +110,7 @@ The certificate [fingerprint algorithm](../../../integration/saml.md#notes-on-co
 > - [Improved](https://gitlab.com/gitlab-org/gitlab/-/issues/292811) in GitLab 13.8, with an updated timeout experience.
 > - [Improved](https://gitlab.com/gitlab-org/gitlab/-/issues/211962) in GitLab 13.8 with allowing group owners to not go through SSO.
 > - [Improved](https://gitlab.com/gitlab-org/gitlab/-/issues/9152) in GitLab 13.11 with enforcing open SSO session to use Git if this setting is switched on.
+> - [Improved](https://gitlab.com/gitlab-org/gitlab/-/issues/339888) in GitLab 14.7 to not enforce SSO checks for Git activity originating from CI/CD jobs.
 
 With this option enabled, users (except users with the Owner role) must access GitLab using your group GitLab single sign-on URL to access group resources. Users added manually as members can't access group resources.
 
@@ -127,6 +128,7 @@ SSO has the following effects when enabled:
   even if the project is forked.
 - For Git activity over SSH and HTTPS, users must have at least one active session signed-in through SSO before they can push to or
   pull from a GitLab repository.
+- Git activity originating from CI/CD jobs do not have the SSO check enforced.
 - Credentials that are not tied to regular users (for example, access tokens and deploy keys) do not have the SSO check enforced.
 - Users must be signed-in through SSO before they can pull images using the [Dependency Proxy](../../packages/dependency_proxy/index.md).
 <!-- Add bullet for API activity when https://gitlab.com/gitlab-org/gitlab/-/issues/9152 is complete -->

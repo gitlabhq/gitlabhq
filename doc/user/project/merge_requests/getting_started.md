@@ -2,7 +2,6 @@
 stage: Create
 group: Code Review
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
-type: index, reference
 description: "Getting started with merge requests."
 ---
 
@@ -92,8 +91,7 @@ and the merge request is added to their
 
 #### Multiple assignees **(PREMIUM)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/2004) in GitLab 11.11.
-> - Moved to GitLab Premium in 13.9
+> Moved to GitLab Premium in 13.9
 
 Multiple people often review merge requests at the same time.
 GitLab allows you to have multiple assignees for merge requests

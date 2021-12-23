@@ -5,7 +5,6 @@ require 'mime/types'
 
 RSpec.describe API::Commits do
   include ProjectForksHelper
-  include SessionHelpers
 
   let(:user) { create(:user) }
   let(:guest) { create(:user).tap { |u| project.add_guest(u) } }
@@ -379,7 +378,14 @@ RSpec.describe API::Commits do
 
       context 'when using warden' do
         it 'increments usage counters', :clean_gitlab_redis_sessions do
-          stub_session('warden.user.user.key' => [[user.id], user.encrypted_password[0, 29]])
+          session_id = Rack::Session::SessionId.new('6919a6f1bb119dd7396fadc38fd18d0d')
+          session_hash = { 'warden.user.user.key' => [[user.id], user.encrypted_password[0, 29]] }
+
+          Gitlab::Redis::Sessions.with do |redis|
+            redis.set("session:gitlab:#{session_id.private_id}", Marshal.dump(session_hash))
+          end
+
+          cookies[Gitlab::Application.config.session_options[:key]] = session_id.public_id
 
           expect(::Gitlab::UsageDataCounters::WebIdeCounter).to receive(:increment_commits_count)
           expect(::Gitlab::UsageDataCounters::EditorUniqueCounter).to receive(:track_web_ide_edit_action)

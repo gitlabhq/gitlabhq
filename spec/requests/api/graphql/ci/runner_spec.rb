@@ -11,7 +11,7 @@ RSpec.describe 'Query.runner(id)' do
   let_it_be(:active_instance_runner) do
     create(:ci_runner, :instance, description: 'Runner 1', contacted_at: 2.hours.ago,
            active: true, version: 'adfe156', revision: 'a', locked: true, ip_address: '127.0.0.1', maximum_timeout: 600,
-           access_level: 0, tag_list: %w[tag1 tag2], run_untagged: true)
+           access_level: 0, tag_list: %w[tag1 tag2], run_untagged: true, executor_type: :custom)
   end
 
   let_it_be(:inactive_instance_runner) do
@@ -22,7 +22,7 @@ RSpec.describe 'Query.runner(id)' do
   let_it_be(:active_group_runner) do
     create(:ci_runner, :group, groups: [group], description: 'Group runner 1', contacted_at: 2.hours.ago,
            active: true, version: 'adfe156', revision: 'a', locked: true, ip_address: '127.0.0.1', maximum_timeout: 600,
-           access_level: 0, tag_list: %w[tag1 tag2], run_untagged: true)
+           access_level: 0, tag_list: %w[tag1 tag2], run_untagged: true, executor_type: :shell)
   end
 
   def get_runner(id)
@@ -69,6 +69,7 @@ RSpec.describe 'Query.runner(id)' do
         'runUntagged' => runner.run_untagged,
         'ipAddress' => runner.ip_address,
         'runnerType' => runner.instance_type? ? 'INSTANCE_TYPE' : 'PROJECT_TYPE',
+        'executorName' => runner.executor_type&.dasherize,
         'jobCount' => 0,
         'projectCount' => nil,
         'adminUrl' => "http://localhost/admin/runners/#{runner.id}",

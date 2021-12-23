@@ -39,8 +39,6 @@ changes appears as a system note.
 
 ## Find the merge request that introduced a change
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/2383) in GitLab 10.5.
-
 When viewing the commit details page, GitLab links to the merge request (or
 merge requests, if it's in more than one) containing that commit.
 

@@ -44,6 +44,10 @@ RSpec.describe 'Query.project.pipeline' do
             name
             jobs {
               nodes {
+                downstreamPipeline {
+                  id
+                  path
+                }
                 name
                 needs {
                   nodes { #{all_graphql_fields_for('CiBuildNeed')} }
@@ -131,6 +135,8 @@ RSpec.describe 'Query.project.pipeline' do
       end
 
       it 'does not generate N+1 queries', :request_store, :use_sql_query_cache do
+        create(:ci_bridge, name: 'bridge-1', pipeline: pipeline, downstream_pipeline: create(:ci_pipeline))
+
         post_graphql(query, current_user: user)
 
         control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
@@ -139,6 +145,8 @@ RSpec.describe 'Query.project.pipeline' do
 
         create(:ci_build, name: 'test-a', pipeline: pipeline)
         create(:ci_build, name: 'test-b', pipeline: pipeline)
+        create(:ci_bridge, name: 'bridge-2', pipeline: pipeline, downstream_pipeline: create(:ci_pipeline))
+        create(:ci_bridge, name: 'bridge-3', pipeline: pipeline, downstream_pipeline: create(:ci_pipeline))
 
         expect do
           post_graphql(query, current_user: user)

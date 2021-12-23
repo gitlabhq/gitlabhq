@@ -279,8 +279,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
       expect(described_class.usage_activity_by_stage_manage({})).to include(
         {
           bulk_imports: {
-            gitlab_v1: 2,
-            gitlab: Gitlab::UsageData::DEPRECATED_VALUE
+            gitlab_v1: 2
           },
           project_imports: {
             bitbucket: 2,
@@ -303,32 +302,13 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
           group_imports: {
             group_import: 2,
             gitlab_migration: 2
-          },
-          projects_imported: {
-            total: Gitlab::UsageData::DEPRECATED_VALUE,
-            gitlab_project: Gitlab::UsageData::DEPRECATED_VALUE,
-            gitlab: Gitlab::UsageData::DEPRECATED_VALUE,
-            github: Gitlab::UsageData::DEPRECATED_VALUE,
-            bitbucket: Gitlab::UsageData::DEPRECATED_VALUE,
-            bitbucket_server: Gitlab::UsageData::DEPRECATED_VALUE,
-            gitea: Gitlab::UsageData::DEPRECATED_VALUE,
-            git: Gitlab::UsageData::DEPRECATED_VALUE,
-            manifest: Gitlab::UsageData::DEPRECATED_VALUE
-          },
-          issues_imported: {
-            jira: Gitlab::UsageData::DEPRECATED_VALUE,
-            fogbugz: Gitlab::UsageData::DEPRECATED_VALUE,
-            phabricator: Gitlab::UsageData::DEPRECATED_VALUE,
-            csv: Gitlab::UsageData::DEPRECATED_VALUE
-          },
-          groups_imported: Gitlab::UsageData::DEPRECATED_VALUE
+          }
         }
       )
       expect(described_class.usage_activity_by_stage_manage(described_class.monthly_time_range_db_params)).to include(
         {
           bulk_imports: {
-            gitlab_v1: 1,
-            gitlab: Gitlab::UsageData::DEPRECATED_VALUE
+            gitlab_v1: 1
           },
           project_imports: {
             bitbucket: 1,
@@ -351,25 +331,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
           group_imports: {
             group_import: 1,
             gitlab_migration: 1
-          },
-          projects_imported: {
-            total: Gitlab::UsageData::DEPRECATED_VALUE,
-            gitlab_project: Gitlab::UsageData::DEPRECATED_VALUE,
-            gitlab: Gitlab::UsageData::DEPRECATED_VALUE,
-            github: Gitlab::UsageData::DEPRECATED_VALUE,
-            bitbucket: Gitlab::UsageData::DEPRECATED_VALUE,
-            bitbucket_server: Gitlab::UsageData::DEPRECATED_VALUE,
-            gitea: Gitlab::UsageData::DEPRECATED_VALUE,
-            git: Gitlab::UsageData::DEPRECATED_VALUE,
-            manifest: Gitlab::UsageData::DEPRECATED_VALUE
-          },
-          issues_imported: {
-            jira: Gitlab::UsageData::DEPRECATED_VALUE,
-            fogbugz: Gitlab::UsageData::DEPRECATED_VALUE,
-            phabricator: Gitlab::UsageData::DEPRECATED_VALUE,
-            csv: Gitlab::UsageData::DEPRECATED_VALUE
-          },
-          groups_imported: Gitlab::UsageData::DEPRECATED_VALUE
+          }
         }
       )
     end

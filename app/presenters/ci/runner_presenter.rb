@@ -11,5 +11,9 @@ module Ci
 
     delegator_override :locked
     alias_method :locked, :locked?
+
+    def executor_name
+      Ci::Runner::EXECUTOR_TYPE_TO_NAMES[executor_type&.to_sym]
+    end
   end
 end

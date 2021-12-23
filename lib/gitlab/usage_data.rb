@@ -553,33 +553,11 @@ module Gitlab
           user_auth_by_provider: distinct_count_user_auth_by_provider(time_period),
           unique_users_all_imports: unique_users_all_imports(time_period),
           bulk_imports: {
-            gitlab: DEPRECATED_VALUE,
             gitlab_v1: count(::BulkImport.where(**time_period, source_type: :gitlab))
           },
           project_imports: project_imports(time_period),
           issue_imports: issue_imports(time_period),
-          group_imports: group_imports(time_period),
-
-          # Deprecated data to be removed
-          projects_imported: {
-            total: DEPRECATED_VALUE,
-            gitlab_project: DEPRECATED_VALUE,
-            gitlab: DEPRECATED_VALUE,
-            github: DEPRECATED_VALUE,
-            bitbucket: DEPRECATED_VALUE,
-            bitbucket_server: DEPRECATED_VALUE,
-            gitea: DEPRECATED_VALUE,
-            git: DEPRECATED_VALUE,
-            manifest: DEPRECATED_VALUE
-          },
-          issues_imported: {
-            jira: DEPRECATED_VALUE,
-            fogbugz: DEPRECATED_VALUE,
-            phabricator: DEPRECATED_VALUE,
-            csv: DEPRECATED_VALUE
-          },
-          groups_imported: DEPRECATED_VALUE
-          # End of deprecated keys
+          group_imports: group_imports(time_period)
         }
       end
       # rubocop: enable CodeReuse/ActiveRecord

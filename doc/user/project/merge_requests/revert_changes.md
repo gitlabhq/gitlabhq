@@ -2,7 +2,6 @@
 stage: Create
 group: Code Review
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
-type: reference, concepts
 ---
 
 # Revert changes **(FREE)**
@@ -11,11 +10,6 @@ You can use Git's powerful feature to [revert any commit](https://git-scm.com/do
 by clicking the **Revert** button in merge requests and commit details.
 
 ## Revert a merge request
-
-NOTE:
-The **Revert** button is available only for merge requests
-created in GitLab 8.5 and later. However, you can still revert a merge request
-by reverting the merge commit from the list of Commits page.
 
 NOTE:
 The **Revert** button is shown only for projects that use the

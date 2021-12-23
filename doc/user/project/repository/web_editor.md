@@ -2,7 +2,6 @@
 stage: Create
 group: Editor
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
-type: howto
 ---
 
 # GitLab Web Editor **(FREE)**
@@ -117,8 +116,6 @@ the target branch. Click **Create directory** to finish.
 There are multiple ways to create a branch from the GitLab web interface.
 
 ### Create a new branch from an issue
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/2808) in GitLab 8.6.
 
 If your development workflow requires an issue for every merge
 request, you can create a branch directly from the issue to speed the process up.

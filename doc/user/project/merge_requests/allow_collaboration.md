@@ -2,12 +2,9 @@
 stage: Create
 group: Code Review
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
-type: reference, howto
 ---
 
 # Allow collaboration on merge requests across forks **(FREE)**
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/17395) in GitLab 10.6.
 
 When a user opens a merge request from a fork, they are given the option to allow
 upstream members to collaborate with them on the source branch. This allows

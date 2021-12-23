@@ -441,6 +441,7 @@ module Ci
     private
 
     EXECUTOR_NAME_TO_TYPES = {
+      'unknown' => :unknown,
       'custom' => :custom,
       'shell' => :shell,
       'docker' => :docker,
@@ -453,6 +454,8 @@ module Ci
       'docker-ssh+machine' => :docker_ssh_machine,
       'kubernetes' => :kubernetes
     }.freeze
+
+    EXECUTOR_TYPE_TO_NAMES = EXECUTOR_NAME_TO_TYPES.invert.freeze
 
     def cleanup_runner_queue
       Gitlab::Redis::SharedState.with do |redis|
