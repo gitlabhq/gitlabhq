@@ -12,7 +12,6 @@ module QA
         text_field :company_name, id: 'company_name'
         select :number_of_employees, id: 'company_size'
         text_field :telephone_number, id: 'phone_number'
-        text_field :number_of_users, id: 'number_of_users'
 
         select :country, id: 'country_select'
 

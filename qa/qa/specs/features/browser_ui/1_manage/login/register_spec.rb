@@ -64,6 +64,7 @@ module QA
             Page::Profile::Accounts::Show.perform do |show|
               show.delete_account(user.password)
             end
+            Support::Waiter.wait_until { !user.exists? }
           end
 
           it 'allows recreating with same credentials', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347868' do
@@ -83,7 +84,7 @@ module QA
           end
 
           after do
-            @recreated_user.remove_via_api!
+            @recreated_user&.remove_via_api!
           end
 
           def admin_api_client

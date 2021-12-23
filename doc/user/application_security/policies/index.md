@@ -254,14 +254,14 @@ NOTE:
 Only project Owners have the [permissions](../../permissions.md#project-members-permissions)
 to select Security Policy Project.
 
-Once your policy is complete, save it by selecting **Create merge request**
+Once your policy is complete, save it by selecting **Create via merge request**
 at the bottom of the editor. You are redirected to the merge request on the project's
 configured security policy project. If one does not link to your project, a security
 policy project is automatically created. Existing policies can also be
 removed from the editor interface by selecting **Delete policy**
 at the bottom of the editor.
 
-![Scan Execution Policy Editor YAML Mode](img/scan_execution_policy_yaml_mode_v14_3.png)
+![Scan Execution Policy Editor YAML Mode](img/scan_execution_policy_yaml_mode_v14_7.png)
 
 The policy editor currently only supports the YAML mode. The Rule mode is tracked in the [Allow Users to Edit Rule-mode Scan Execution Policies in the Policy UI](https://gitlab.com/groups/gitlab-org/-/epics/5363) epic.
 

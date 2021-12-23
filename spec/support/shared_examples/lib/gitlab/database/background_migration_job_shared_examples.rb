@@ -22,19 +22,19 @@ RSpec.shared_examples 'marks background migration job records' do
   end
 end
 
-RSpec.shared_examples 'finalized background migration' do
+RSpec.shared_examples 'finalized background migration' do |worker_class|
   it 'processed the scheduled sidekiq queue' do
     queued = Sidekiq::ScheduledSet
       .new
       .select do |scheduled|
-        scheduled.klass == 'BackgroundMigrationWorker' &&
+        scheduled.klass == worker_class.name &&
         scheduled.args.first == job_class_name
       end
     expect(queued.size).to eq(0)
   end
 
   it 'processed the async sidekiq queue' do
-    queued = Sidekiq::Queue.new('BackgroundMigrationWorker')
+    queued = Sidekiq::Queue.new(worker_class.name)
       .select { |scheduled| scheduled.klass == job_class_name }
     expect(queued.size).to eq(0)
   end
@@ -42,8 +42,8 @@ RSpec.shared_examples 'finalized background migration' do
   include_examples 'removed tracked jobs', 'pending'
 end
 
-RSpec.shared_examples 'finalized tracked background migration' do
-  include_examples 'finalized background migration'
+RSpec.shared_examples 'finalized tracked background migration' do |worker_class|
+  include_examples 'finalized background migration', worker_class
   include_examples 'removed tracked jobs', 'succeeded'
 end
 

@@ -10084,6 +10084,9 @@ msgstr ""
 msgid "Create user"
 msgstr ""
 
+msgid "Create via merge request"
+msgstr ""
+
 msgid "Create wildcard: %{searchTerm}"
 msgstr ""
 
@@ -37292,16 +37295,10 @@ msgstr ""
 msgid "Trial|GitLab Ultimate trial (optional)"
 msgstr ""
 
-msgid "Trial|How many employees will use Gitlab?"
-msgstr ""
-
 msgid "Trial|Last name"
 msgstr ""
 
 msgid "Trial|Number of employees"
-msgstr ""
-
-msgid "Trial|Number of trial users"
 msgstr ""
 
 msgid "Trial|Please select a country"

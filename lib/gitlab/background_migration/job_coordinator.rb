@@ -36,6 +36,8 @@ module Gitlab
 
       attr_reader :worker_class
 
+      delegate :minimum_interval, :perform_in, to: :worker_class
+
       def queue
         @queue ||= worker_class.sidekiq_options['queue']
       end

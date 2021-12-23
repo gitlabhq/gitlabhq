@@ -1,5 +1,4 @@
 # frozen_string_literal: true
-
 module Gitlab
   module Database
     module Migrations
@@ -45,11 +44,11 @@ module Gitlab
           raise "#{model_class} does not have an ID column of #{primary_column_name} to use for batch ranges" unless model_class.column_names.include?(primary_column_name.to_s)
           raise "#{primary_column_name} is not an integer column" unless model_class.columns_hash[primary_column_name.to_s].type == :integer
 
+          job_coordinator = coordinator_for_tracking_database
+
           # To not overload the worker too much we enforce a minimum interval both
           # when scheduling and performing jobs.
-          if delay_interval < BackgroundMigrationWorker.minimum_interval
-            delay_interval = BackgroundMigrationWorker.minimum_interval
-          end
+          delay_interval = [delay_interval, job_coordinator.minimum_interval].max
 
           final_delay = 0
           batch_counter = 0
@@ -60,14 +59,14 @@ module Gitlab
 
             start_id, end_id = relation.pluck(min, max).first
 
-            # `BackgroundMigrationWorker.bulk_perform_in` schedules all jobs for
+            # `SingleDatabaseWorker.bulk_perform_in` schedules all jobs for
             # the same time, which is not helpful in most cases where we wish to
             # spread the work over time.
             final_delay = initial_delay + delay_interval * index
             full_job_arguments = [start_id, end_id] + other_job_arguments
 
             track_in_database(job_class_name, full_job_arguments) if track_jobs
-            migrate_in(final_delay, job_class_name, full_job_arguments)
+            migrate_in(final_delay, job_class_name, full_job_arguments, coordinator: job_coordinator)
 
             batch_counter += 1
           end
@@ -91,9 +90,11 @@ module Gitlab
         # delay_interval - The duration between each job's scheduled time
         # batch_size - The maximum number of jobs to fetch to memory from the database.
         def requeue_background_migration_jobs_by_range_at_intervals(job_class_name, delay_interval, batch_size: BATCH_SIZE, initial_delay: 0)
+          job_coordinator = coordinator_for_tracking_database
+
           # To not overload the worker too much we enforce a minimum interval both
           # when scheduling and performing jobs.
-          delay_interval = [delay_interval, BackgroundMigrationWorker.minimum_interval].max
+          delay_interval = [delay_interval, job_coordinator.minimum_interval].max
 
           final_delay = 0
           job_counter = 0
@@ -103,7 +104,7 @@ module Gitlab
             job_batch.each do |job|
               final_delay = initial_delay + delay_interval * job_counter
 
-              migrate_in(final_delay, job_class_name, job.arguments)
+              migrate_in(final_delay, job_class_name, job.arguments, coordinator: job_coordinator)
 
               job_counter += 1
             end
@@ -132,17 +133,20 @@ module Gitlab
         # This method does not garauntee that all jobs completed successfully.
         # It can only be used if the previous background migration used the queue_background_migration_jobs_by_range_at_intervals helper.
         def finalize_background_migration(class_name, delete_tracking_jobs: ['succeeded'])
+          job_coordinator = coordinator_for_tracking_database
+
           # Empty the sidekiq queue.
-          Gitlab::BackgroundMigration.steal(class_name)
+          job_coordinator.steal(class_name)
 
           # Process pending tracked jobs.
           jobs = Gitlab::Database::BackgroundMigrationJob.pending.for_migration_class(class_name)
+
           jobs.find_each do |job|
-            BackgroundMigrationWorker.new.perform(job.class_name, job.arguments)
+            job_coordinator.perform(job.class_name, job.arguments)
           end
 
           # Empty the sidekiq queue.
-          Gitlab::BackgroundMigration.steal(class_name)
+          job_coordinator.steal(class_name)
 
           # Delete job tracking rows.
           delete_job_tracking(class_name, status: delete_tracking_jobs) if delete_tracking_jobs
@@ -152,36 +156,14 @@ module Gitlab
           Rails.env.test? || Rails.env.development?
         end
 
-        def migrate_async(*args)
+        def migrate_in(*args, coordinator: coordinator_for_tracking_database)
           with_migration_context do
-            BackgroundMigrationWorker.perform_async(*args)
+            coordinator.perform_in(*args)
           end
-        end
-
-        def migrate_in(*args)
-          with_migration_context do
-            BackgroundMigrationWorker.perform_in(*args)
-          end
-        end
-
-        def bulk_migrate_in(*args)
-          with_migration_context do
-            BackgroundMigrationWorker.bulk_perform_in(*args)
-          end
-        end
-
-        def bulk_migrate_async(*args)
-          with_migration_context do
-            BackgroundMigrationWorker.bulk_perform_async(*args)
-          end
-        end
-
-        def with_migration_context(&block)
-          Gitlab::ApplicationContext.with_context(caller_id: self.class.to_s, &block)
         end
 
         def delete_queued_jobs(class_name)
-          Gitlab::BackgroundMigration.steal(class_name) do |job|
+          coordinator_for_tracking_database.steal(class_name) do |job|
             job.delete
 
             false
@@ -196,8 +178,20 @@ module Gitlab
 
         private
 
+        def with_migration_context(&block)
+          Gitlab::ApplicationContext.with_context(caller_id: self.class.to_s, &block)
+        end
+
         def track_in_database(class_name, arguments)
           Gitlab::Database::BackgroundMigrationJob.create!(class_name: class_name, arguments: arguments)
+        end
+
+        def coordinator_for_tracking_database
+          Gitlab::BackgroundMigration.coordinator_for_database(tracking_database)
+        end
+
+        def tracking_database
+          Gitlab::BackgroundMigration::DEFAULT_TRACKING_DATABASE
         end
       end
     end

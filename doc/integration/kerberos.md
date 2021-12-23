@@ -9,9 +9,8 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 GitLab can integrate with [Kerberos](https://web.mit.edu/kerberos/) as an authentication mechanism.
 
 WARNING:
-GitLab CI/CD does not work with a Kerberos-enabled GitLab instance due to an unresolved
-[bug in Git CLI](https://lore.kernel.org/git/YKNVop80H8xSTCjz@coredump.intra.peff.net/T/#mab47fd7dcb61fee651f7cc8710b8edc6f62983d5)
-that fails to use job token authentication from the GitLab Runners.
+GitLab CI/CD doesn't work with a Kerberos-enabled GitLab instance unless the integration is
+[set to use a dedicated port](#http-git-access-with-kerberos-token-passwordless-authentication).
 
 ## Overview
 
@@ -235,18 +234,22 @@ know the `libcurl` version installed, run `curl-config --version`.
 
 ### HTTP Git access with Kerberos token (passwordless authentication)
 
-#### Support for Git before 2.4
-
-Until Git version 2.4, the `git` command uses only the `negotiate` authentication
+Because of [a bug in current Git versions](https://lore.kernel.org/git/YKNVop80H8xSTCjz@coredump.intra.peff.net/T/#mab47fd7dcb61fee651f7cc8710b8edc6f62983d5),
+the `git` CLI command uses only the `negotiate` authentication
 method if the HTTP server offers it, even if this method fails (such as when
 the client does not have a Kerberos token). It is thus not possible to fall back
-to username/password (also known as `basic`) authentication if Kerberos
+to an embedded username and password (also known as `basic`) authentication if Kerberos
 authentication fails.
 
 For GitLab users to be able to use either `basic` or `negotiate` authentication
-with older Git versions, it is possible to offer Kerberos ticket-based
+with current Git versions, it is possible to offer Kerberos ticket-based
 authentication on a different port (for example, `8443`) while the standard port
 offers only `basic` authentication.
+
+NOTE:
+[Git 2.4 and later](https://github.com/git/git/blob/master/Documentation/RelNotes/2.4.0.txt#L225-L228) supports falling back to `basic` authentication if the
+username and password is passed interactively or through a credentials manager. It fails to fall back when the username and password is passed as part of the URL instead. For example,
+this can happen in GitLab CI/CD jobs that [authenticate with the CI/CD job token](../ci/jobs/ci_job_token.md).
 
 **For source installations with HTTPS**
 

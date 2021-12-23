@@ -1,6 +1,6 @@
 import MockAdapter from 'axios-mock-adapter';
 import waitForPromises from 'helpers/wait_for_promises';
-import { initIssuableApp } from '~/issues/show/issue';
+import { initIssueApp } from '~/issues/show';
 import * as parseData from '~/issues/show/utils/parse_data';
 import axios from '~/lib/utils/axios_utils';
 import createStore from '~/notes/stores';
@@ -17,7 +17,7 @@ const setupHTML = (initialData) => {
 };
 
 describe('Issue show index', () => {
-  describe('initIssuableApp', () => {
+  describe('initIssueApp', () => {
     it('should initialize app with no potential XSS attack', async () => {
       const alertSpy = jest.spyOn(window, 'alert').mockImplementation(() => {});
       const parseDataSpy = jest.spyOn(parseData, 'parseIssuableData');
@@ -29,7 +29,7 @@ describe('Issue show index', () => {
 
       const initialDataEl = document.getElementById('js-issuable-app');
       const issuableData = parseData.parseIssuableData(initialDataEl);
-      initIssuableApp(issuableData, createStore());
+      initIssueApp(issuableData, createStore());
 
       await waitForPromises();
 

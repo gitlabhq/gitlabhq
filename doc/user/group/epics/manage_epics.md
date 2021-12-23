@@ -163,6 +163,7 @@ than 1000. The cached value is rounded to thousands or millions and updated ever
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/37081) from GitLab Ultimate to GitLab Premium in 12.8.
 > - Searching by the user's reaction emoji [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/325630) in GitLab 13.11.
 > - Sorting by epic titles [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/331625) in GitLab 14.1.
+> - Searching by milestone and confidentiality [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/268372) in GitLab 14.2 [with a flag](../../../administration/feature_flags.md) named `vue_epics_list`. Disabled by default.
 
 You can search for an epic from the list of epics using filtered search bar based on following
 parameters:
@@ -170,9 +171,11 @@ parameters:
 - Title or description
 - Author name / username
 - Labels
+- Milestones
+- Confidentiality
 - Reaction emoji
 
-![epics search](img/epics_search_v13_11.png)
+![epics search](img/epics_search_v14_7.png)
 
 To search:
 
@@ -184,8 +187,6 @@ To search:
 
 You can also sort epics list by:
 
-- Created date
-- Last updated
 - Start date
 - Due date
 - Title
@@ -194,7 +195,7 @@ Each option contains a button that can toggle the order between **Ascending** an
 The sort option and order is saved and used wherever you browse epics, including the
 [Roadmap](../roadmap/index.md).
 
-![epics sort](img/epics_sort.png)
+![epics sort](img/epics_sort_14_7.png)
 
 ## Change activity sort order
 

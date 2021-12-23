@@ -1,11 +1,9 @@
+import Vue from 'vue';
 import { GlLoadingIcon } from '@gitlab/ui';
-import { createLocalVue, shallowMount } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
 import Vuex from 'vuex';
 import Stacktrace from '~/error_tracking/components/stacktrace.vue';
-import SentryErrorStackTrace from '~/issues/sentry_error_stack_trace/components/sentry_error_stack_trace.vue';
-
-const localVue = createLocalVue();
-localVue.use(Vuex);
+import SentryErrorStackTrace from '~/issues/show/components/sentry_error_stack_trace.vue';
 
 describe('Sentry Error Stack Trace', () => {
   let actions;
@@ -13,13 +11,14 @@ describe('Sentry Error Stack Trace', () => {
   let store;
   let wrapper;
 
+  Vue.use(Vuex);
+
   function mountComponent({
     stubs = {
       stacktrace: Stacktrace,
     },
   } = {}) {
     wrapper = shallowMount(SentryErrorStackTrace, {
-      localVue,
       stubs,
       store,
       propsData: {

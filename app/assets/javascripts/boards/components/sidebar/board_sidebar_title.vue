@@ -150,7 +150,7 @@ export default {
 
       <div class="gl-display-flex gl-w-full gl-justify-content-space-between gl-mt-5">
         <gl-button
-          variant="success"
+          variant="confirm"
           size="small"
           data-testid="submit-button"
           :disabled="!title"

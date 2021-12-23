@@ -98,6 +98,12 @@ module QA
         super
       end
 
+      def exists?
+        api_get
+      rescue ResourceNotFoundError
+        false
+      end
+
       def api_delete
         super
 
