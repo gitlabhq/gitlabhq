@@ -33,7 +33,7 @@
       %p
         = s_('Preferences|This setting allows you to customize the appearance of the syntax.')
         = succeed '.' do
-          = link_to _('Learn more'), help_page_path('user/profile/preferences', anchor: 'syntax-highlighting-theme'), target: '_blank'
+          = link_to _('Learn more'), help_page_path('user/profile/preferences', anchor: 'syntax-highlighting-theme'), target: '_blank', rel: 'noopener noreferrer'
     .col-lg-8.syntax-theme
       - Gitlab::ColorSchemes.each do |scheme|
         = label_tag do
@@ -51,7 +51,7 @@
       %p
         = s_('Preferences|This setting allows you to customize the behavior of the system layout and default views.')
         = succeed '.' do
-          = link_to _('Learn more'), help_page_path('user/profile/preferences', anchor: 'behavior'), target: '_blank'
+          = link_to _('Learn more'), help_page_path('user/profile/preferences', anchor: 'behavior'), target: '_blank', rel: 'noopener noreferrer'
     .col-lg-8
       .form-group
         = f.label :layout, class: 'label-bold' do
@@ -116,7 +116,7 @@
       %p
         = _('Customize language and region related settings.')
         = succeed '.' do
-          = link_to _('Learn more'), help_page_path('user/profile/preferences', anchor: 'localization'), target: '_blank'
+          = link_to _('Learn more'), help_page_path('user/profile/preferences', anchor: 'localization'), target: '_blank', rel: 'noopener noreferrer'
     .col-lg-8
       .form-group
         = f.label :preferred_language, class: 'label-bold' do
@@ -137,7 +137,7 @@
       %p
         = s_('Preferences|Configure how dates and times display for you.')
         = succeed '.' do
-          = link_to _('Learn more'), help_page_path('user/profile/preferences', anchor: 'time-preferences'), target: '_blank'
+          = link_to _('Learn more'), help_page_path('user/profile/preferences', anchor: 'time-preferences'), target: '_blank', rel: 'noopener noreferrer'
     .col-lg-8
       .form-group.form-check
         = f.check_box :time_display_relative, class: 'form-check-input'

@@ -45,7 +45,7 @@
       = s_('Tokens|Select scopes')
     %p.text-secondary#select_scope_help_text
       = s_('Tokens|Scopes set the permission levels granted to the token.')
-      = link_to "Learn more.", help_path, target: '_blank'
+      = link_to _("Learn more."), help_path, target: '_blank', rel: 'noopener noreferrer'
     = render 'shared/tokens/scopes_form', prefix: prefix, token: token, scopes: scopes
 
   - if prefix == :personal_access_token && Feature.enabled?(:personal_access_tokens_scoped_to_projects, current_user)

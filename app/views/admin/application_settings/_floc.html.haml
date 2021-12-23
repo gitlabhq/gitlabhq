@@ -8,7 +8,7 @@
       = expanded ? _('Collapse') : _('Expand')
     %p
       = s_('FloC|Configure whether you want to participate in FloC.').html_safe
-      = link_to sprite_icon('question-o'), 'https://github.com/WICG/floc', target: '_blank', class: 'has-tooltip', title: _('More information')
+      = link_to sprite_icon('question-o'), 'https://github.com/WICG/floc', target: '_blank', rel: 'noopener noreferrer', class: 'has-tooltip', title: _('More information')
 
   .settings-content
     = form_for @application_setting, url: general_admin_application_settings_path(anchor: 'js-floc-settings'), html: { class: 'fieldset-form', id: 'floc-settings' } do |f|

@@ -26,6 +26,6 @@
               %strong= _("Auto-close referenced issues on default branch")
             .form-text.text-muted
               = _("When merge requests and commits in the default branch close, any issues they reference also close.")
-              = link_to sprite_icon('question-o'), help_page_path('user/project/issues/managing_issues.md', anchor: 'closing-issues-automatically'), target: '_blank'
+              = link_to sprite_icon('question-o'), help_page_path('user/project/issues/managing_issues.md', anchor: 'closing-issues-automatically'), target: '_blank', rel: 'noopener noreferrer'
 
       = f.submit _('Save changes'), class: "gl-button btn btn-confirm", data: { qa_selector: 'save_changes_button' }

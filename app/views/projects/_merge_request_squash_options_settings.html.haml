@@ -5,9 +5,7 @@
     %b= s_('ProjectSettings|Squash commits when merging')
     %p.text-secondary
       = s_('ProjectSettings|Set the default behavior of this option in merge requests. Changes to this are also applied to existing merge requests.')
-      = link_to "What is squashing?",
-        help_page_path('user/project/merge_requests/squash_and_merge.md'),
-        target: '_blank'
+      = link_to "What is squashing?", help_page_path('user/project/merge_requests/squash_and_merge.md'), target: '_blank', rel: 'noopener noreferrer'
 
     .form-check.gl-mb-2
       = settings.radio_button :squash_option, :never, class: "form-check-input"

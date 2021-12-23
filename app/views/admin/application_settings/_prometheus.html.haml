@@ -9,7 +9,7 @@
           = _("Enable health and performance metrics endpoint")
         .form-text.text-muted
           = _('Enable a Prometheus endpoint that exposes health and performance statistics. The Health Check menu item appears in the Monitoring section of the Admin Area. Restart required.')
-          = link_to _('Learn More.'), help_page_path('administration/monitoring/prometheus/gitlab_metrics.md'), target: '_blank'
+          = link_to _('Learn More.'), help_page_path('administration/monitoring/prometheus/gitlab_metrics.md'), target: '_blank', rel: 'noopener noreferrer'
         - unless Gitlab::Metrics.metrics_folder_present?
           .form-text.text-muted
             %strong.cred= _("WARNING:")
