@@ -125,11 +125,11 @@ module QA
           @merge_request ||= (!!env('CI_MERGE_REQUEST_IID') || !!env('TOP_UPSTREAM_MERGE_REQUEST_IID')).to_s
         end
 
-        # Test run type from staging, canary, preprod or production env
+        # Test run type from staging (`gstg`, `gstg-cny`, `gstg-ref`), canary, preprod or production env
         #
         # @return [String, nil]
         def run_type
-          return unless %w[staging canary preprod production].include?(project_name)
+          return unless %w[staging staging-canary staging-ref canary preprod production].include?(project_name)
 
           @run_type ||= begin
             test_subset = if env('NO_ADMIN') == 'true'
