@@ -2398,17 +2398,6 @@ RSpec.describe Repository do
     it 'returns nil when tag does not exists' do
       expect(repository.find_tag('does-not-exist')).to be_nil
     end
-
-    context 'when find_tag_via_gitaly is disabled' do
-      it 'fetches all tags' do
-        stub_feature_flags(find_tag_via_gitaly: false)
-
-        expect(Gitlab::GitalyClient)
-          .to receive(:call).with(anything, :ref_service, :find_all_tags, anything, anything).and_call_original
-
-        expect(repository.find_tag('v1.1.0').name).to eq('v1.1.0')
-      end
-    end
   end
 
   describe '#avatar' do

@@ -1,33 +1,3 @@
 # frozen_string_literal: true
 
-DATA_WAREHOUSE_LABELS = [
-  "Data Warehouse::Impact Check",
-  "Data Warehouse::Impacted",
-  "Data Warehouse::Not Impacted"
-].freeze
-
-FILE_PATH_REGEX = %r{((ee|jh)/)?config/metrics(/.+\.yml)}.freeze
-PERFORMANCE_INDICATOR_REGEX = %r{gmau|smau|paid_gmau|umau}.freeze
-
-CHANGED_SCHEMA_MESSAGE = <<~MSG
-Notification to the Data Team about changes to files with possible impact on Data Warehouse, add label `Data Warehouse::Impact Check`.
-
-/label ~"Data Warehouse::Impact Check"
-
-The following files require a review:
-
-MSG
-
-db_schema_updated = !git.modified_files.grep(%r{\Adb/structure\.sql}).empty?
-
-metrics_definitions_files = git.modified_files.grep(FILE_PATH_REGEX)
-
-data_warehouse_impact_files = metrics_definitions_files.select do |file|
-  helper.changed_lines(file).grep(PERFORMANCE_INDICATOR_REGEX).any?
-end.compact
-
-data_warehouse_impact_files << 'db/structure.sql' if db_schema_updated
-
-no_data_warehouse_labels = (gitlab.mr_labels & DATA_WAREHOUSE_LABELS).empty?
-
-markdown(CHANGED_SCHEMA_MESSAGE + helper.markdown_list(data_warehouse_impact_files)) if data_warehouse_impact_files.any? && no_data_warehouse_labels
+markdown(datateam.build_message) if datateam.impacted?

@@ -162,6 +162,9 @@ def down
 end
 ```
 
+Migrations like this are inherently risky and [additional actions](database_review.md#preparation-when-adding-data-migrations)
+are required when preparing the migration for review.
+
 ## Atomicity
 
 By default, migrations are single transaction. That is, a transaction is opened

@@ -379,52 +379,6 @@ RSpec.describe Projects::UpdateService do
       end
     end
 
-    shared_examples 'updating pages configuration' do
-      it 'schedules the `PagesUpdateConfigurationWorker` when pages are deployed' do
-        project.mark_pages_as_deployed
-
-        expect(PagesUpdateConfigurationWorker).to receive(:perform_async).with(project.id)
-
-        subject
-      end
-
-      it "does not schedule a job when pages aren't deployed" do
-        project.mark_pages_as_not_deployed
-
-        expect(PagesUpdateConfigurationWorker).not_to receive(:perform_async).with(project.id)
-
-        subject
-      end
-    end
-
-    context 'when updating #pages_https_only', :https_pages_enabled do
-      subject(:call_service) do
-        update_project(project, admin, pages_https_only: false)
-      end
-
-      it 'updates the attribute' do
-        expect { call_service }
-          .to change { project.pages_https_only? }
-          .to(false)
-      end
-
-      it_behaves_like 'updating pages configuration'
-    end
-
-    context 'when updating #pages_access_level' do
-      subject(:call_service) do
-        update_project(project, admin, project_feature_attributes: { pages_access_level: ProjectFeature::ENABLED })
-      end
-
-      it 'updates the attribute' do
-        expect { call_service }
-          .to change { project.project_feature.pages_access_level }
-          .to(ProjectFeature::ENABLED)
-      end
-
-      it_behaves_like 'updating pages configuration'
-    end
-
     context 'when updating #emails_disabled' do
       it 'updates the attribute for the project owner' do
         expect { update_project(project, user, emails_disabled: true) }

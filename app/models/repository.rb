@@ -191,7 +191,7 @@ class Repository
   end
 
   def find_tag(name)
-    if @tags.blank? && Feature.enabled?(:find_tag_via_gitaly, project, default_enabled: :yaml)
+    if @tags.blank?
       raw_repository.find_tag(name)
     else
       tags.find { |tag| tag.name == name }

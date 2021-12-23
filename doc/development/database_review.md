@@ -132,6 +132,18 @@ test its execution using `CREATE INDEX CONCURRENTLY` in the `#database-lab` Slac
   - This job runs migrations in a production-like environment (similar to `#database_lab`) and posts to the MR its findings (queries, runtime, size change).
   - Review migration runtimes and any warnings.
 
+#### Preparation when adding data migrations
+
+Data migrations are inherently risky. Additional actions are required to reduce the possibility
+of error that would result in corruption or loss of production data.
+
+Include in the MR description:
+
+- If the migration itself is not reversible, details of how data changes could be reverted in the event of an incident. For example, in the case of a migration that deletes records (an operation that most of the times is not automatically revertable), how _could_ the deleted records be recovered.
+- If the migration deletes data apply the label `~data-deletion` 
+- Concise descriptions of possible user experience impact of an error; for example, "Issues would unexpectedly go missing from Epics".
+- Relevant data from the [query plans](#query-plans) that indicate the query works as expected; such as the approximate number of records that will be modified/deleted.
+
 #### Preparation when adding or modifying queries
 
 ##### Raw SQL

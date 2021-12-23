@@ -10,4 +10,3 @@
   stage: Verify
   tiers: [Core, Premium, Ultimate]
   issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/345347
-

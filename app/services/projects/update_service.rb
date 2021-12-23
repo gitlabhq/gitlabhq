@@ -104,16 +104,11 @@ module Projects
         system_hook_service.execute_hooks_for(project, :update)
       end
 
-      update_pages_config if changing_pages_related_config?
       update_pending_builds if runners_settings_toggled?
     end
 
     def after_rename_service(project)
       AfterRenameService.new(project, path_before: project.path_before_last_save, full_path_before: project.full_path_before_last_save)
-    end
-
-    def changing_pages_related_config?
-      changing_pages_https_only? || changing_pages_access_level?
     end
 
     def update_failed!
@@ -143,25 +138,11 @@ module Projects
       params.dig(:project_feature_attributes, :wiki_access_level).to_i > ProjectFeature::DISABLED
     end
 
-    def changing_pages_access_level?
-      params.dig(:project_feature_attributes, :pages_access_level)
-    end
-
     def ensure_wiki_exists
       return if project.create_wiki
 
       log_error("Could not create wiki for #{project.full_name}")
       Gitlab::Metrics.counter(:wiki_can_not_be_created_total, 'Counts the times we failed to create a wiki').increment
-    end
-
-    def update_pages_config
-      return unless project.pages_deployed?
-
-      PagesUpdateConfigurationWorker.perform_async(project.id)
-    end
-
-    def changing_pages_https_only?
-      project.previous_changes.include?(:pages_https_only)
     end
 
     def changing_repository_storage?

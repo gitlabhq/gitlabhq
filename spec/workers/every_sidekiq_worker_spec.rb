@@ -369,7 +369,7 @@ RSpec.describe 'Every Sidekiq worker' do
         'PagesDomainSslRenewalWorker' => 3,
         'PagesDomainVerificationWorker' => 3,
         'PagesTransferWorker' => 3,
-        'PagesUpdateConfigurationWorker' => 3,
+        'PagesUpdateConfigurationWorker' => 1,
         'PagesWorker' => 3,
         'PersonalAccessTokens::Groups::PolicyWorker' => 3,
         'PersonalAccessTokens::Instance::PolicyWorker' => 3,

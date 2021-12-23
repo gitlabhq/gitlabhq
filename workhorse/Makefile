@@ -65,7 +65,12 @@ install: $(EXE_ALL)
 .PHONY:	test
 test: prepare-tests
 	$(call message,$@)
-	go test -tags "$(BUILD_TAGS)" ./... ;\
+	@if [ -z "$${GITALY_ADDRESS+x}" ] ; then \
+		echo "To run gitaly integration tests set GITALY_ADDRESS=tcp://127.0.0.1:8075" ; \
+	else \
+		$(MAKE) run-gitaly ; \
+	fi
+	@go test -tags "$(BUILD_TAGS)" ./... ;\
 	status="$$?" ;\
 	if [ -f "$(GITALY_PID_FILE)" ] ; then \
 		echo "Clean up Gitaly server for workhorse integration test" ;\
@@ -93,26 +98,23 @@ clean-build:
 	rm -rf $(TARGET_DIR)
 
 .PHONY:	prepare-tests
-prepare-tests:	run-gitaly
 prepare-tests:	testdata/data/group/test.git $(EXE_ALL)
 prepare-tests:	testdata/scratch
 
 .PHONY: run-gitaly
-run-gitaly: gitaly.pid
+run-gitaly: $(GITALY_PID_FILE)
 
 $(GITALY_PID_FILE): gitaly.toml
-	@{ \
-	if [ -z "$${GITALY_ADDRESS+x}" ] ; then \
-		echo "To run gitaly integration tests set GITALY_ADDRESS=tcp://127.0.0.1:8075" ; \
-	else \
-		cd .. ; \
-		GITALY_TESTING_NO_GIT_HOOKS=1 GITALY_PID_FILE=workhorse/$(GITALY_PID_FILE) $(GITALY) workhorse/gitaly.toml ; \
-	fi \
-	} &
+	$(call message, "Starting gitaly")
+	cd ..; GITALY_TESTING_NO_GIT_HOOKS=1 GITALY_PID_FILE=workhorse/$(GITALY_PID_FILE) $(GITALY) workhorse/gitaly.toml &
 
 gitaly.toml: ../tmp/tests/gitaly/config.toml
 	sed -e 's/^socket_path.*$$/listen_addr = "0.0.0.0:8075"/;s/^\[auth\]$$//;s/^token.*$$//;s/^internal_socket_dir.*$$//' \
 		$< > $@
+
+../tmp/tests/gitaly/config.toml:
+	$(call message, "Building a complete test environment")
+	cd .. ; ./scripts/setup-test-env
 
 testdata/data/group/test.git:
 	$(call message,$@)

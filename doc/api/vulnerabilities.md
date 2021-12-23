@@ -19,7 +19,7 @@ This API is in the process of being deprecated and considered unstable.
 The response payload may be subject to change or breakage
 across GitLab releases. Please use the
 [GraphQL API](graphql/reference/index.md#queryvulnerabilities)
-instead. See the [GraphQL examples](#replace-rest-with-graphql) to get started.
+instead. See the [GraphQL examples](#replace-vulnerability-rest-api-with-graphql) to get started.
 
 Every API call to vulnerabilities must be [authenticated](index.md#authentication).
 
@@ -273,11 +273,11 @@ Example response:
 }
 ```
 
-## Replace REST with GraphQL
+## Replace Vulnerability REST API with GraphQL
 
 To prepare for the [upcoming deprecation](https://gitlab.com/groups/gitlab-org/-/epics/5118) of
-this REST API endpoint, use the examples below to learn how to perform the equivalent operations
-using the GraphQL API.
+the Vulnerability REST API endpoint, use the examples below to perform the equivalent operations
+with the GraphQL API.
 
 ### GraphQL - Single vulnerability
 

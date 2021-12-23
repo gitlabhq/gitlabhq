@@ -16,14 +16,7 @@ class PagesWorker # rubocop:disable Scalability/IdempotentWorker
 
   def deploy(build_id)
     build = Ci::Build.find_by_id(build_id)
-    update_contents = Projects::UpdatePagesService.new(build.project, build).execute
-    if update_contents[:status] == :success
-      Projects::UpdatePagesConfigurationService.new(build.project).execute
-    end
-  end
 
-  def remove(namespace_path, project_path)
-    full_path = File.join(Settings.pages.path, namespace_path, project_path)
-    FileUtils.rm_r(full_path, force: true)
+    Projects::UpdatePagesService.new(build.project, build).execute
   end
 end

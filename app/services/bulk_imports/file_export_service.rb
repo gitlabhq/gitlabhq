@@ -26,8 +26,10 @@ module BulkImports
 
     def export_service
       case relation
-      when FileTransfer::ProjectConfig::UPLOADS_RELATION
+      when FileTransfer::BaseConfig::UPLOADS_RELATION
         UploadsExportService.new(portable, export_path)
+      when FileTransfer::ProjectConfig::LFS_OBJECTS_RELATION
+        LfsObjectsExportService.new(portable, export_path)
       else
         raise BulkImports::Error, 'Unsupported relation export type'
       end
