@@ -176,6 +176,19 @@ RSpec.describe LearnGitlabHelper do
                                                    )
                                                  })
       end
+
+      it 'calls experiment with expected context & options' do
+        allow(helper).to receive(:current_user).and_return(user)
+
+        expect(helper).to receive(:experiment).with(
+          :change_continuous_onboarding_link_urls,
+          namespace: namespace,
+          actor: user,
+          sticky_to: namespace
+        )
+
+        learn_gitlab_data
+      end
     end
   end
 end

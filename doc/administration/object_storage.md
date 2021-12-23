@@ -585,6 +585,12 @@ See the following additional guides:
 
 ## Warnings, limitations, and known issues
 
+### Objects are not included in GitLab backups
+
+As noted in [our backup documentation](../raketasks/backup_restore.md),
+objects are not included in GitLab backups. You can enable backups with
+your object storage provider instead.
+
 ### Use separate buckets
 
 Using separate buckets for each data type is the recommended approach for GitLab.

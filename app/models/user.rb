@@ -536,27 +536,15 @@ class User < ApplicationRecord
   end
 
   def self.with_two_factor
-    with_u2f_registrations = <<-SQL
-      EXISTS (
-        SELECT *
-        FROM u2f_registrations AS u2f
-        WHERE u2f.user_id = users.id
-      ) OR users.otp_required_for_login = ?
-      OR
-      EXISTS (
-        SELECT *
-        FROM webauthn_registrations AS webauthn
-        WHERE webauthn.user_id = users.id
-      )
-    SQL
-
-    where(with_u2f_registrations, true)
+    where(otp_required_for_login: true)
+      .or(where_exists(U2fRegistration.where(U2fRegistration.arel_table[:user_id].eq(arel_table[:id]))))
+      .or(where_exists(WebauthnRegistration.where(WebauthnRegistration.arel_table[:user_id].eq(arel_table[:id]))))
   end
 
   def self.without_two_factor
-    joins("LEFT OUTER JOIN u2f_registrations AS u2f ON u2f.user_id = users.id
-           LEFT OUTER JOIN webauthn_registrations AS webauthn ON webauthn.user_id = users.id")
-      .where("u2f.id IS NULL AND webauthn.id IS NULL AND users.otp_required_for_login = ?", false)
+    where
+      .missing(:u2f_registrations, :webauthn_registrations)
+      .where(otp_required_for_login: false)
   end
 
   #

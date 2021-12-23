@@ -1430,13 +1430,13 @@ test osx:
   stage: test
   script: make test:osx
   dependencies:
-    - build:osx
+    - build osx
 
 test linux:
   stage: test
   script: make test:linux
   dependencies:
-    - build:linux
+    - build linux
 
 deploy:
   stage: deploy
