@@ -14713,6 +14713,22 @@ CREATE SEQUENCE grafana_integrations_id_seq
 
 ALTER SEQUENCE grafana_integrations_id_seq OWNED BY grafana_integrations.id;
 
+CREATE TABLE group_crm_settings (
+    group_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    enabled boolean DEFAULT false NOT NULL
+);
+
+CREATE SEQUENCE group_crm_settings_group_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE group_crm_settings_group_id_seq OWNED BY group_crm_settings.group_id;
+
 CREATE TABLE group_custom_attributes (
     id integer NOT NULL,
     created_at timestamp with time zone NOT NULL,
@@ -21635,6 +21651,8 @@ ALTER TABLE ONLY gpg_signatures ALTER COLUMN id SET DEFAULT nextval('gpg_signatu
 
 ALTER TABLE ONLY grafana_integrations ALTER COLUMN id SET DEFAULT nextval('grafana_integrations_id_seq'::regclass);
 
+ALTER TABLE ONLY group_crm_settings ALTER COLUMN group_id SET DEFAULT nextval('group_crm_settings_group_id_seq'::regclass);
+
 ALTER TABLE ONLY group_custom_attributes ALTER COLUMN id SET DEFAULT nextval('group_custom_attributes_id_seq'::regclass);
 
 ALTER TABLE ONLY group_deploy_keys ALTER COLUMN id SET DEFAULT nextval('group_deploy_keys_id_seq'::regclass);
@@ -23270,6 +23288,9 @@ ALTER TABLE ONLY gpg_signatures
 
 ALTER TABLE ONLY grafana_integrations
     ADD CONSTRAINT grafana_integrations_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY group_crm_settings
+    ADD CONSTRAINT group_crm_settings_pkey PRIMARY KEY (group_id);
 
 ALTER TABLE ONLY group_custom_attributes
     ADD CONSTRAINT group_custom_attributes_pkey PRIMARY KEY (id);
@@ -26158,6 +26179,8 @@ CREATE INDEX index_gpg_signatures_on_project_id ON gpg_signatures USING btree (p
 CREATE INDEX index_grafana_integrations_on_enabled ON grafana_integrations USING btree (enabled) WHERE (enabled IS TRUE);
 
 CREATE INDEX index_grafana_integrations_on_project_id ON grafana_integrations USING btree (project_id);
+
+CREATE INDEX index_group_crm_settings_on_group_id ON group_crm_settings USING btree (group_id);
 
 CREATE UNIQUE INDEX index_group_custom_attributes_on_group_id_and_key ON group_custom_attributes USING btree (group_id, key);
 
@@ -30612,6 +30635,9 @@ ALTER TABLE ONLY dast_site_profiles
 
 ALTER TABLE ONLY merge_request_context_commit_diff_files
     ADD CONSTRAINT fk_rails_74a00a1787 FOREIGN KEY (merge_request_context_commit_id) REFERENCES merge_request_context_commits(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY group_crm_settings
+    ADD CONSTRAINT fk_rails_74fdf2f13d FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY clusters_applications_ingress
     ADD CONSTRAINT fk_rails_753a7b41c1 FOREIGN KEY (cluster_id) REFERENCES clusters(id) ON DELETE CASCADE;

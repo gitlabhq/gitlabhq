@@ -39,6 +39,7 @@ RSpec.describe Group do
     it { is_expected.to have_many(:bulk_import_exports).class_name('BulkImports::Export') }
     it { is_expected.to have_many(:contacts).class_name('CustomerRelations::Contact') }
     it { is_expected.to have_many(:organizations).class_name('CustomerRelations::Organization') }
+    it { is_expected.to have_one(:crm_settings) }
 
     describe '#members & #requesters' do
       let(:requester) { create(:user) }
@@ -2782,6 +2783,24 @@ RSpec.describe Group do
         expect(ttl_policy.created_at).not_to be_nil
         expect(ttl_policy.updated_at).not_to be_nil
       end
+    end
+  end
+
+  describe '#crm_enabled?' do
+    it 'returns false where no crm_settings exist' do
+      expect(group.crm_enabled?).to be_falsey
+    end
+
+    it 'returns false where crm_settings.state is disabled' do
+      create(:crm_settings, enabled: false, group: group)
+
+      expect(group.crm_enabled?).to be_falsey
+    end
+
+    it 'returns true where crm_settings.state is enabled' do
+      create(:crm_settings, enabled: true, group: group)
+
+      expect(group.crm_enabled?).to be_truthy
     end
   end
 end

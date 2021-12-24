@@ -231,6 +231,7 @@ gpg_key_subkeys: :gitlab_main
 gpg_signatures: :gitlab_main
 grafana_integrations: :gitlab_main
 group_custom_attributes: :gitlab_main
+group_crm_settings: :gitlab_main
 group_deletion_schedules: :gitlab_main
 group_deploy_keys: :gitlab_main
 group_deploy_keys_groups: :gitlab_main

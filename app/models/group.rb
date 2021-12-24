@@ -92,6 +92,8 @@ class Group < Namespace
 
   delegate :prevent_sharing_groups_outside_hierarchy, :new_user_signups_cap, :setup_for_company, :jobs_to_be_done, to: :namespace_settings
 
+  has_one :crm_settings, class_name: 'Group::CrmSettings', inverse_of: :group
+
   accepts_nested_attributes_for :variables, allow_destroy: true
 
   validate :visibility_level_allowed_by_projects
@@ -762,6 +764,10 @@ class Group < Namespace
 
   def dependency_proxy_image_ttl_policy
     super || build_dependency_proxy_image_ttl_policy
+  end
+
+  def crm_enabled?
+    crm_settings&.enabled?
   end
 
   private
