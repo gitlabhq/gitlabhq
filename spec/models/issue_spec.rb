@@ -238,6 +238,17 @@ RSpec.describe Issue do
     end
   end
 
+  # TODO: Remove when NOT NULL constraint is added to the relationship
+  describe '#work_item_type' do
+    let(:issue) { create(:issue, :incident, project: reusable_project, work_item_type: nil) }
+
+    it 'returns a default type if the legacy issue does not have a work item type associated yet' do
+      expect(issue.work_item_type_id).to be_nil
+      expect(issue.issue_type).to eq('incident')
+      expect(issue.work_item_type).to eq(WorkItems::Type.default_by_type(:incident))
+    end
+  end
+
   describe '#sort' do
     let(:project) { reusable_project }
 

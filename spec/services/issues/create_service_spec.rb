@@ -61,12 +61,25 @@ RSpec.describe Issues::CreateService do
         expect(Issuable::CommonSystemNotesService).to receive_message_chain(:new, :execute)
 
         expect(issue).to be_persisted
+        expect(issue).to be_a(::Issue)
         expect(issue.title).to eq('Awesome issue')
         expect(issue.assignees).to eq([assignee])
         expect(issue.labels).to match_array(labels)
         expect(issue.milestone).to eq(milestone)
         expect(issue.due_date).to eq(Date.tomorrow)
         expect(issue.work_item_type.base_type).to eq('issue')
+      end
+
+      context 'when a build_service is provided' do
+        let(:issue) { described_class.new(project: project, current_user: user, params: opts, spam_params: spam_params, build_service: build_service).execute }
+
+        let(:issue_from_builder) { WorkItem.new(project: project, title: 'Issue from builder') }
+        let(:build_service) { double(:build_service, execute: issue_from_builder) }
+
+        it 'uses the provided service to build the issue' do
+          expect(issue).to be_persisted
+          expect(issue).to be_a(WorkItem)
+        end
       end
 
       context 'when skip_system_notes is true' do

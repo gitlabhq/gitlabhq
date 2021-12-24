@@ -603,6 +603,11 @@ class Issue < ApplicationRecord
     author&.banned?
   end
 
+  # Necessary until all issues are backfilled and we add a NOT NULL constraint on the DB
+  def work_item_type
+    super || WorkItems::Type.default_by_type(issue_type)
+  end
+
   private
 
   def spammable_attribute_changed?

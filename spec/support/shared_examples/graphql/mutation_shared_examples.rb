@@ -8,7 +8,7 @@
 # There must be a method or let called `mutation` defined that executes
 # the mutation.
 RSpec.shared_examples 'a mutation that returns top-level errors' do |errors: []|
-  let(:match_errors) { eq(errors) }
+  let(:match_errors) { match_array(errors) }
 
   it do
     post_graphql_mutation(mutation, current_user: current_user)

@@ -291,10 +291,12 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   def issue_params
-    params.require(:issue).permit(
+    all_params = params.require(:issue).permit(
       *issue_params_attributes,
       sentry_issue_attributes: [:sentry_issue_identifier]
     )
+
+    clean_params(all_params)
   end
 
   def issue_params_attributes
@@ -347,6 +349,13 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   private
+
+  def clean_params(all_params)
+    issue_type = all_params[:issue_type].to_s
+    all_params.delete(:issue_type) unless WorkItems::Type.allowed_types_for_issues.include?(issue_type)
+
+    all_params
+  end
 
   def finder_options
     options = super

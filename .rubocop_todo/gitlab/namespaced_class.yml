@@ -369,6 +369,7 @@ Gitlab/NamespacedClass:
   - app/models/wiki_page.rb
   - app/models/wiki_page/meta.rb
   - app/models/wiki_page/slug.rb
+  - app/models/work_item.rb
   - app/models/x509_certificate.rb
   - app/models/x509_commit_signature.rb
   - app/models/x509_issuer.rb
