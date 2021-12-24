@@ -191,10 +191,6 @@ describe('App component', () => {
       expect(findComplianceViewHistoryLink().exists()).toBe(false);
       expect(findSecurityViewHistoryLink().exists()).toBe(false);
     });
-
-    it('renders TrainingProviderList component', () => {
-      expect(findTrainingProviderList().exists()).toBe(true);
-    });
   });
 
   describe('Manage via MR Error Alert', () => {
@@ -438,6 +434,25 @@ describe('App component', () => {
 
       expect(findComplianceViewHistoryLink().attributes('href')).toBe('test/historyPath');
       expect(findSecurityViewHistoryLink().attributes('href')).toBe('test/historyPath');
+    });
+  });
+
+  describe('Vulnerability management', () => {
+    beforeEach(() => {
+      createComponent({
+        augmentedSecurityFeatures: securityFeaturesMock,
+        augmentedComplianceFeatures: complianceFeaturesMock,
+      });
+    });
+
+    it('renders TrainingProviderList component', () => {
+      expect(findTrainingProviderList().exists()).toBe(true);
+    });
+
+    it('renders security training description', () => {
+      const vulnerabilityManagementTab = wrapper.findByTestId('vulnerability-management-tab');
+
+      expect(vulnerabilityManagementTab.text()).toContain(i18n.securityTrainingDescription);
     });
   });
 

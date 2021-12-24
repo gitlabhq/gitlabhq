@@ -708,11 +708,17 @@ class User < ApplicationRecord
         .take(1) # at most 1 record as there is a unique constraint
 
       where(
-        fuzzy_arel_match(:name, query)
-          .or(fuzzy_arel_match(:username, query))
+        fuzzy_arel_match(:name, query, use_minimum_char_limit: user_search_minimum_char_limit)
+          .or(fuzzy_arel_match(:username, query, use_minimum_char_limit: user_search_minimum_char_limit))
           .or(arel_table[:email].eq(query))
           .or(arel_table[:id].eq(matched_by_email_user_id))
       )
+    end
+
+    # This method is overridden in JiHu.
+    # https://gitlab.com/gitlab-org/gitlab/-/issues/348509
+    def user_search_minimum_char_limit
+      true
     end
 
     def by_login(login)

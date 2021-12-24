@@ -27,6 +27,9 @@ export const i18n = {
   securityConfiguration: __('Security Configuration'),
   vulnerabilityManagement: s__('SecurityConfiguration|Vulnerability Management'),
   securityTraining: s__('SecurityConfiguration|Security training'),
+  securityTrainingDescription: s__(
+    'SecurityConfiguration|Enable security training to help your developers learn how to fix vulnerabilities. Developers can view security training from selected educational providers, relevant to the detected vulnerability.',
+  ),
 };
 
 export default {
@@ -252,6 +255,11 @@ export default {
         query-param-value="vulnerability-management"
       >
         <section-layout :heading="$options.i18n.securityTraining">
+          <template #description>
+            <p>
+              {{ $options.i18n.securityTrainingDescription }}
+            </p>
+          </template>
           <template #features>
             <training-provider-list />
           </template>

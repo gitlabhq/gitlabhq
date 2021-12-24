@@ -66,6 +66,7 @@ export default {
     :variant="variant"
     :category="category"
     split
+    data-qa-selector="action_dropdown"
     @click="handleClick(selectedAction, $event)"
   >
     <template #button-content>
@@ -79,6 +80,7 @@ export default {
         :is-check-item="true"
         :is-checked="action.key === selectedAction.key"
         :secondary-text="action.secondaryText"
+        :data-qa-selector="`${action.key}_menu_item`"
         :data-testid="`action_${action.key}`"
         @click="handleItemClick(action)"
       >

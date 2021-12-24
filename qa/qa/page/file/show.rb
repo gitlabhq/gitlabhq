@@ -23,8 +23,26 @@ module QA
           element :delete_file_button, "button_tag 'Delete file'" # rubocop:disable QA/ElementWithPattern
         end
 
+        view 'app/assets/javascripts/vue_shared/components/web_ide_link.vue' do
+          element :edit_button
+        end
+
+        view 'app/assets/javascripts/vue_shared/components/actions_button.vue' do
+          element :action_dropdown
+          element :edit_menu_item, ':data-qa-selector="`${action.key}_menu_item`"' # rubocop:disable QA/ElementWithPattern
+        end
+
         def click_edit
-          click_on 'Edit'
+          # TODO: remove this condition and else part once ff :consolidated_edit_button is enabled by default
+          if has_element?(:action_dropdown)
+            within_element(:action_dropdown) do
+              click_button(class: 'dropdown-toggle-split')
+              click_element(:edit_menu_item)
+              click_element(:edit_button)
+            end
+          else
+            click_on 'Edit'
+          end
         end
 
         def click_delete

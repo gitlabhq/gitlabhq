@@ -31261,6 +31261,9 @@ msgstr ""
 msgid "SecurityConfiguration|Enable Auto DevOps"
 msgstr ""
 
+msgid "SecurityConfiguration|Enable security training to help your developers learn how to fix vulnerabilities. Developers can view security training from selected educational providers, relevant to the detected vulnerability."
+msgstr ""
+
 msgid "SecurityConfiguration|Enabled"
 msgstr ""
 
