@@ -163,7 +163,7 @@ export default {
       </template>
     </user-callout-dismisser>
 
-    <gl-tabs content-class="gl-pt-0" sync-active-tab-with-query-params>
+    <gl-tabs content-class="gl-pt-0" sync-active-tab-with-query-params lazy>
       <gl-tab
         data-testid="security-testing-tab"
         :title="$options.i18n.securityTesting"

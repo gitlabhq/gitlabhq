@@ -159,6 +159,10 @@ describe('App component', () => {
         expect(findGlTabs().props('syncActiveTabWithQueryParams')).toBe(true);
       });
 
+      it('lazy loads each tab', () => {
+        expect(findGlTabs().attributes('lazy')).not.toBe(undefined);
+      });
+
       it('renders correct amount of tabs', () => {
         expect(findTabs()).toHaveLength(expectedTabs.length);
       });

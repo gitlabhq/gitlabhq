@@ -43,6 +43,18 @@ ci_project_mirrors:
   - table: namespaces
     column: namespace_id
     on_delete: async_delete
+merge_requests:
+  - table: ci_pipelines
+    column: head_pipeline_id
+    on_delete: async_nullify
+vulnerability_statistics:
+  - table: ci_pipelines
+    column: latest_pipeline_id
+    on_delete: async_nullify
+vulnerability_occurrence_pipelines:
+  - table: ci_pipelines
+    column: pipeline_id
+    on_delete: async_delete
 packages_build_infos:
   - table: ci_pipelines
     column: pipeline_id
