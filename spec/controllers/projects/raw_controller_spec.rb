@@ -8,6 +8,7 @@ RSpec.describe Projects::RawController do
   let_it_be(:project) { create(:project, :public, :repository) }
 
   let(:inline) { nil }
+  let(:params) { {} }
 
   describe 'GET #show' do
     def get_show
@@ -15,9 +16,9 @@ RSpec.describe Projects::RawController do
           params: {
             namespace_id: project.namespace,
             project_id: project,
-            id: filepath,
+            id: file_path,
             inline: inline
-          })
+          }.merge(params))
     end
 
     subject { get_show }
@@ -33,7 +34,7 @@ RSpec.describe Projects::RawController do
     end
 
     context 'regular filename' do
-      let(:filepath) { 'master/CONTRIBUTING.md' }
+      let(:file_path) { 'master/CONTRIBUTING.md' }
 
       it 'delivers ASCII file' do
         allow(Gitlab::Workhorse).to receive(:send_git_blob).and_call_original
@@ -60,7 +61,7 @@ RSpec.describe Projects::RawController do
     end
 
     context 'image header' do
-      let(:filepath) { 'master/files/images/6049019_460s.jpg' }
+      let(:file_path) { 'master/files/images/6049019_460s.jpg' }
 
       it 'leaves image content disposition' do
         subject
@@ -77,42 +78,28 @@ RSpec.describe Projects::RawController do
 
     context 'with LFS files' do
       let(:filename) { 'lfs_object.iso' }
-      let(:filepath) { "be93687/files/lfs/#{filename}" }
+      let(:file_path) { "be93687/files/lfs/#{filename}" }
 
       it_behaves_like 'a controller that can serve LFS files'
       it_behaves_like 'project cache control headers'
       include_examples 'single Gitaly request'
     end
 
-    context 'when the endpoint receives requests above the limit', :clean_gitlab_redis_rate_limiting do
+    context 'when the endpoint receives requests above the limit' do
       let(:file_path) { 'master/README.md' }
+      let(:path_without_ref) { 'README.md' }
 
       before do
-        stub_application_setting(raw_blob_request_limit: 5)
+        allow(::Gitlab::ApplicationRateLimiter).to(
+          receive(:throttled?).with(:raw_blob, scope: [project, path_without_ref]).and_return(true)
+        )
       end
 
-      it 'prevents from accessing the raw file', :request_store do
-        execute_raw_requests(requests: 5, project: project, file_path: file_path)
-
-        expect { execute_raw_requests(requests: 1, project: project, file_path: file_path) }
-          .to change { Gitlab::GitalyClient.get_request_count }.by(0)
+      it 'prevents from accessing the raw file' do
+        expect { get_show }.not_to change { Gitlab::GitalyClient.get_request_count }
 
         expect(response.body).to eq(_('You cannot access the raw file. Please wait a minute.'))
         expect(response).to have_gitlab_http_status(:too_many_requests)
-      end
-
-      it 'logs the event on auth.log', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/345889' do
-        attributes = {
-          message: 'Application_Rate_Limiter_Request',
-          env: :raw_blob_request_limit,
-          remote_ip: '0.0.0.0',
-          request_method: 'GET',
-          path: "/#{project.full_path}/-/raw/#{file_path}"
-        }
-
-        expect(Gitlab::AuthLogger).to receive(:error).with(attributes).once
-
-        execute_raw_requests(requests: 6, project: project, file_path: file_path)
       end
 
       context 'when receiving an external storage request' do
@@ -126,62 +113,10 @@ RSpec.describe Projects::RawController do
         end
 
         it 'does not prevent from accessing the raw file' do
+          expect(::Gitlab::ApplicationRateLimiter).not_to receive(:throttled?)
+
           request.headers['X-Gitlab-External-Storage-Token'] = token
-          execute_raw_requests(requests: 6, project: project, file_path: file_path)
-
-          expect(response).to have_gitlab_http_status(:ok)
-        end
-      end
-
-      context 'when the request uses a different version of a commit' do
-        it 'prevents from accessing the raw file' do
-          # 3 times with the normal sha
-          commit_sha = project.repository.commit.sha
-          file_path = "#{commit_sha}/README.md"
-
-          execute_raw_requests(requests: 3, project: project, file_path: file_path)
-
-          # 3 times with the modified version
-          modified_sha = commit_sha.gsub(commit_sha[0..5], commit_sha[0..5].upcase)
-          modified_path = "#{modified_sha}/README.md"
-
-          execute_raw_requests(requests: 3, project: project, file_path: modified_path)
-
-          expect(response.body).to eq(_('You cannot access the raw file. Please wait a minute.'))
-          expect(response).to have_gitlab_http_status(:too_many_requests)
-        end
-      end
-
-      context 'when the throttling has been disabled' do
-        before do
-          stub_application_setting(raw_blob_request_limit: 0)
-        end
-
-        it 'does not prevent from accessing the raw file' do
-          execute_raw_requests(requests: 10, project: project, file_path: file_path)
-
-          expect(response).to have_gitlab_http_status(:ok)
-        end
-      end
-
-      context 'with case-sensitive files' do
-        it 'prevents from accessing the specific file' do
-          create_file_in_repo(project, 'master', 'master', 'readme.md', 'Add readme.md')
-          create_file_in_repo(project, 'master', 'master', 'README.md', 'Add README.md')
-
-          commit_sha = project.repository.commit.sha
-          file_path = "#{commit_sha}/readme.md"
-
-          # Accessing downcase version of readme
-          execute_raw_requests(requests: 6, project: project, file_path: file_path)
-
-          expect(response.body).to eq(_('You cannot access the raw file. Please wait a minute.'))
-          expect(response).to have_gitlab_http_status(:too_many_requests)
-
-          # Accessing upcase version of readme
-          file_path = "#{commit_sha}/README.md"
-
-          execute_raw_requests(requests: 1, project: project, file_path: file_path)
+          get_show
 
           expect(response).to have_gitlab_http_status(:ok)
         end
@@ -199,7 +134,7 @@ RSpec.describe Projects::RawController do
 
       context 'when no token is provided' do
         it 'redirects to sign in page' do
-          execute_raw_requests(requests: 1, project: project, file_path: file_path)
+          get_show
 
           expect(response).to have_gitlab_http_status(:found)
           expect(response.location).to end_with('/users/sign_in')
@@ -208,16 +143,20 @@ RSpec.describe Projects::RawController do
 
       context 'when a token param is present' do
         context 'when token is correct' do
+          let(:params) { { token: user.static_object_token } }
+
           it 'calls the action normally' do
-            execute_raw_requests(requests: 1, project: project, file_path: file_path, token: user.static_object_token)
+            get_show
 
             expect(response).to have_gitlab_http_status(:ok)
           end
         end
 
         context 'when token is incorrect' do
+          let(:params) { { token: 'foobar' } }
+
           it 'redirects to sign in page' do
-            execute_raw_requests(requests: 1, project: project, file_path: file_path, token: 'foobar')
+            get_show
 
             expect(response).to have_gitlab_http_status(:found)
             expect(response.location).to end_with('/users/sign_in')
@@ -229,7 +168,7 @@ RSpec.describe Projects::RawController do
         context 'when token is correct' do
           it 'calls the action normally' do
             request.headers['X-Gitlab-Static-Object-Token'] = user.static_object_token
-            execute_raw_requests(requests: 1, project: project, file_path: file_path)
+            get_show
 
             expect(response).to have_gitlab_http_status(:ok)
           end
@@ -238,7 +177,7 @@ RSpec.describe Projects::RawController do
         context 'when token is incorrect' do
           it 'redirects to sign in page' do
             request.headers['X-Gitlab-Static-Object-Token'] = 'foobar'
-            execute_raw_requests(requests: 1, project: project, file_path: file_path)
+            get_show
 
             expect(response).to have_gitlab_http_status(:found)
             expect(response.location).to end_with('/users/sign_in')
@@ -283,16 +222,6 @@ RSpec.describe Projects::RawController do
           expect(response).to have_gitlab_http_status(:not_modified)
         end
       end
-    end
-  end
-
-  def execute_raw_requests(requests:, project:, file_path:, **params)
-    requests.times do
-      get :show, params: {
-        namespace_id: project.namespace,
-        project_id: project,
-        id: file_path
-      }.merge(params)
     end
   end
 end
