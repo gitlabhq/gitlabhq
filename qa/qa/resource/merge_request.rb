@@ -168,7 +168,13 @@ module QA
         )
       end
 
-      protected
+      # Add mr comment
+      #
+      # @param [String] body
+      # @return [Hash]
+      def add_comment(body)
+        api_post_to(api_comments_path, body: body)
+      end
 
       # Return subset of fields for comparing merge requests
       #
@@ -182,7 +188,9 @@ module QA
           :project_id,
           :source_project_id,
           :target_project_id,
+          :merge_status,
           # these can differ depending on user fetching mr
+          :user,
           :subscribed,
           :first_contribution
         ).merge({ references: api_resource[:references].except(:full) })
