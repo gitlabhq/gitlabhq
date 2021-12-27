@@ -277,6 +277,17 @@ describe('Source Editor Instance', () => {
           expect(extensionStore.set).toHaveBeenCalledWith('SEClassExtension', extension1);
         });
 
+        it('correctly registers methods from the existing extension on an instance', () => {
+          const seInstance2 = new SourceEditorInstance({}, extensionStore);
+          seInstance.use({ definition: SEClassExtension });
+          const val1 = seInstance.classExtMethod();
+
+          seInstance2.use({ definition: SEClassExtension });
+
+          expect(seInstance2.classExtMethod).toBeDefined();
+          expect(seInstance2.classExtMethod()).toBe(val1); // from helpers.js we know classExtMethod()returns a string. Hence `toBe`
+        });
+
         it.each`
           desc                 | currentSetupOptions | newSetupOptions    | expectedCallTimes
           ${'updates'}         | ${undefined}        | ${defSetupOptions} | ${2}
