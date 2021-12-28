@@ -2,7 +2,7 @@
 
 RSpec.describe QA::Scenario::Test::Integration::Github do
   describe '#perform' do
-    let(:env) { spy('Runtime::Env') }
+    let(:env) { spy('Runtime::Env', knapsack?: false) }
 
     before do
       stub_const('QA::Runtime::Env', env)

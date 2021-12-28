@@ -1689,20 +1689,10 @@
     - when: on_success
     - when: on_failure
 
-# Generate knapsack report on successful runs only
-# Reliable suite will pass most of the time so this should yield best distribution
-.review:rules:knapsack-report-qa-reliable:
+.review:rules:knapsack-report:
   rules:
     - if: '$KNAPSACK_GENERATE_REPORT == "true"'
-      when: on_success
-
-# Since `review-qa-all` is allowed to fail (and potentially manual), we need to use `when: on_success` and `when: on_failure` for `knapsack-report-qa-all`.
-.review:rules:knapsack-report-qa-all:
-  rules:
-    - if: '$KNAPSACK_GENERATE_REPORT != "true"'
-      when: never
-    - when: on_success
-    - when: on_failure
+      when: always
 
 .review:rules:review-cleanup:
   rules:

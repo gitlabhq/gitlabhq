@@ -19,13 +19,11 @@ module QA
       def paths_from_knapsack
         allocator = Knapsack::AllocatorBuilder.new(Knapsack::Adapters::RSpecAdapter).allocator
 
-        QA::Runtime::Logger.info ''
+        QA::Runtime::Logger.info '==== Knapsack specs to execute ====='
         QA::Runtime::Logger.info 'Report specs:'
         QA::Runtime::Logger.info allocator.report_node_tests.join(', ')
-        QA::Runtime::Logger.info ''
         QA::Runtime::Logger.info 'Leftover specs:'
         QA::Runtime::Logger.info allocator.leftover_node_tests.join(', ')
-        QA::Runtime::Logger.info ''
 
         ['--', allocator.node_tests]
       end

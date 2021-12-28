@@ -213,7 +213,7 @@ used in commits. To fix this problem, either:
 
 ### Deadline Exceeded
 
-When upgrading to GitLab 11.11.8 or later, a change in how usernames are represented means that you
+When upgrading GitLab, a change in how usernames are represented means that you
 must update your mirroring username and password to ensure that `%40` characters are replaced with `@`.
 
 ### Connection blocked because server only allows public key authentication

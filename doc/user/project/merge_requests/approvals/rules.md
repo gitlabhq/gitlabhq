@@ -1,8 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments"
-type: reference, concepts
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Merge request approval rules **(PREMIUM)**
@@ -146,8 +145,7 @@ approve in these ways:
 
 ### Code owners as eligible approvers **(PREMIUM)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/7933) in GitLab 11.5.
-> - Moved to GitLab Premium in 13.9.
+> Moved to GitLab Premium in 13.9.
 
 If you add [code owners](../../code_owners.md) to your repository, the owners of files
 become eligible approvers in the project. To enable this merge request approval rule:

@@ -10,7 +10,7 @@ require 'active_support/core_ext/object/blank'
 require_relative 'qa_deprecation_toolkit_env'
 QaDeprecationToolkitEnv.configure!
 
-Knapsack::Adapters::RSpecAdapter.bind if ENV['CI'] && QA::Runtime::Env.knapsack? && !ENV['NO_KNAPSACK']
+Knapsack::Adapters::RSpecAdapter.bind if QA::Runtime::Env.knapsack?
 
 QA::Runtime::Browser.configure!
 QA::Runtime::AllureReport.configure!
@@ -65,10 +65,10 @@ RSpec.configure do |config|
   end
 
   config.after(:suite) do |suite|
-    # If any tests failed, leave the resources behind to help troubleshoot
-    next if suite.reporter.failed_examples.present?
+    QA::Tools::KnapsackReport.move_regenerated_report if QA::Runtime::Env.knapsack?
 
-    QA::Resource::ReusableProject.remove_all_via_api!
+    # If any tests failed, leave the resources behind to help troubleshoot
+    QA::Resource::ReusableProject.remove_all_via_api! unless suite.reporter.failed_examples.present?
   end
 
   config.expect_with :rspec do |expectations|
