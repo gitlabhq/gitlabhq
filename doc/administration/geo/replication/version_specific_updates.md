@@ -2,7 +2,6 @@
 stage: Enablement
 group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
-type: howto
 ---
 
 # Version-specific update instructions **(PREMIUM SELF)**
@@ -373,13 +372,6 @@ For the recommended procedure, see the
 [Omnibus GitLab documentation](https://docs.gitlab.com/omnibus/settings/database.html#upgrading-a-geo-instance).
 
 ## Updating to GitLab 12.0
-
-WARNING:
-This version is affected by a [bug that results in new LFS objects not being
-replicated to Geo secondary nodes](https://gitlab.com/gitlab-org/gitlab/-/issues/32696).
-The issue is fixed in GitLab 12.1. Be sure to upgrade to GitLab 12.1 or later.
-
-## Updating to GitLab 11.11
 
 WARNING:
 This version is affected by a [bug that results in new LFS objects not being

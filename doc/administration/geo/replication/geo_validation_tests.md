@@ -2,7 +2,6 @@
 stage: Enablement
 group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
-type: howto
 ---
 
 # Geo validation tests **(PREMIUM SELF)**
@@ -175,7 +174,7 @@ The following are PostgreSQL upgrade validation tests we performed.
 [Test and validate PostgreSQL 10.0 upgrade for Geo](https://gitlab.com/gitlab-org/gitlab/-/issues/12092):
 
 - Description: With the 12.0 release, GitLab required an upgrade to PostgreSQL 10.0. We tested
-  various upgrade scenarios from GitLab 11.11.5 through to GitLab 12.1.8.
+  various upgrade scenarios up to GitLab 12.1.8.
 - Outcome: Multiple issues were found when upgrading and addressed in follow-up issues.
 - Follow up issues:
   - [`gitlab-ctl` reconfigure fails on Redis node in multi-node Geo setup](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/4706).

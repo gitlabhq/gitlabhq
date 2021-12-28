@@ -2,7 +2,6 @@
 stage: Enablement
 group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
-type: howto
 ---
 
 # Troubleshooting Geo **(PREMIUM SELF)**
@@ -288,9 +287,8 @@ errors (indicated by `Database replication working? ... no` in the
 ### Message: `ERROR:  replication slots can only be used if max_replication_slots > 0`?
 
 This means that the `max_replication_slots` PostgreSQL variable needs to
-be set on the **primary** database. In GitLab 9.4, we have made this setting
-default to 1. You may need to increase this value if you have more
-**secondary** nodes.
+be set on the **primary** database. This setting defaults to 1. You may need to
+increase this value if you have more **secondary** nodes.
 
 Be sure to restart PostgreSQL for this to take effect. See the
 [PostgreSQL replication setup](../setup/database.md#postgresql-replication) guide for more details.
@@ -675,6 +673,59 @@ promotion.
 `failed` rows in the `geo_design_registry` table. Use the
 [previous snippet](#design-repository-failures-on-mirrored-projects-and-project-imports) to
 determine the actual replication status of Design repositories.
+
+### Sync failure message: "Verification failed with: Error during verification: File is not checksummable"
+
+Until GitLab 14.6, certain data types which were missing on the Geo primary site were marked as "synced" on Geo secondary sites. This was because from the perspective of Geo secondary sites, the state matched the primary site and nothing more could be done on secondary sites.
+
+Secondaries would regularly try to sync these files again via the "verification" feature:
+
+- Verification fails since the file doesn't exist.
+- The file is marked "sync failed".
+- Sync is retried.
+- The file is marked "sync succeeded".
+- The file is marked "needs verification".
+- Repeat until the file is available again on the primary site.
+
+This can be confusing to troubleshoot, since the registry entries are moved through a logical loop by various background jobs. Also, `last_sync_failure` and `verification_failure` are empty after "sync succeeded" but before verification is retried.
+
+If you see sync failures repeatedly and alternately increase, while successes decrease and vice versa, this is a problem of missing files on the primary site. You can confirm this by searching `geo.log` on secondary sites for `File is not checksummable` affecting the same files over and over.
+
+After confirming this is the problem, the files on the primary site need to be fixed. Some possible causes:
+
+- An NFS share became unmounted.
+- A disk died or became corrupted.
+- Someone unintentionally deleted a file or directory.
+- Bugs in GitLab application:
+  - A file was moved when it shouldn't have been moved.
+  - A file wasn't moved when it should have been moved.
+  - A wrong path was generated in the code.
+- A non-atomic backup was restored.
+- Services or servers or network infrastructure was interrupted/restarted during use.
+
+The appropriate action sometimes depends on the cause. For example, you can remount an NFS share. Often, a root cause may not be apparent or not useful to discover. If you have regular backups, then it may be expedient to look through them and pull files from there.
+
+In some cases, a file may be determined to be of low value, and so it may be worth deleting the record.
+
+Geo itself is an excellent mitigation for files missing on the primary. If a file disappears on the primary but it was already synced to the secondary, then you can grab the secondary's file. In cases like this, the `File is not checksummable` error will not occur on Geo secondary sites, and only the primary will log this error.
+
+This problem is more likely to show up in Geo secondary sites which were set up long after the original GitLab site. In this case, Geo is only surfacing an existing problem.
+
+This behavior affects only the following data types through GitLab 14.6:
+
+| Data type                | From version |
+| ------------------------ | ------------ |
+| Package Registry         | 13.10        |
+| Pipeline Artifacts       | 13.11        |
+| Terraform State Versions | 13.12        |
+| Infrastructure Registry  | 14.0         |
+| External MR diffs        | 14.6         |
+| LFS Objects              | 14.6         |
+| Pages Deployments        | 14.6         |
+| Uploads                  | 14.6         |
+| CI Job Artifacts         | 14.6         |
+
+[Since GitLab 14.7, files which are missing on the primary site are now treated as sync failures](https://gitlab.com/gitlab-org/gitlab/-/issues/348745) in order to make Geo visibly surface data loss risks. The sync/verification loop is therefore short-circuited. `last_sync_failure` is now set to `The file is missing on the Geo primary site`.
 
 ## Fixing errors during a failover or when promoting a secondary to a primary node
 

@@ -208,19 +208,16 @@ Note the following about the testing process:
 - We aim to have a "test smart" approach where architectures tested have a good range that can also apply to others. Testing focuses on 10k Omnibus on GCP as the testing has shown this is a good bellwether for the other architectures and cloud providers as well as Cloud Native Hybrids.
 - Testing is done publicly and all results are shared.
 
-Τhe following table details the testing done against the reference architectures along with the frequency and results.
+Τhe following table details the testing done against the reference architectures along with the frequency and results. Note that this list above is non exhaustive. Additional testing is continuously evaluated and iterated on, and the table is updated accordingly.
 
-| Reference Architecture | Tests Run<sup>1</sup>                                                                                                |
-|------------------------|----------------------------------------------------------------------------------------------------------------------|
-| 1k                     | [Omnibus - Daily (GCP)](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest/1k)<sup>2</sup>  |
-| 2k                     | [Omnibus - Daily (GCP)](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest/2k)<sup>2</sup>  |
-| 3k                     | [Omnibus - Weekly (GCP)](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest/3k)<sup>2</sup> |
-| 5k                     | [Omnibus - Weekly (GCP)](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest/5k)<sup>2</sup> |
-| 10k                    | [Omnibus - Daily (GCP)](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest/10k)<sup>2</sup><br/>[Omnibus - Ad-Hoc (GCP, AWS, Azure)](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Past-Results/10k)<br/><br/>[Cloud Native Hybrid - Ad-Hoc (GCP, AWS)](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Past-Results/10k-Cloud-Native-Hybrid) |
-| 25k                    | [Omnibus - Weekly (GCP)](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest/25k)<sup>2</sup><br/>[Omnibus - Ad-Hoc (Azure)](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Past-Results/25k) |
-| 50k                    | [Omnibus - Weekly (GCP)](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest/50k)<sup>2</sup><br/>[Omnibus - Ad-Hoc (AWS)](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Past-Results/50k) |
+| Reference<br/>Architecture<br/>Size | Bare-Metal | GCP | AWS | Azure |
+|-----------------------------|------------|-----|-----|-------|
+| 1k  | <i>Refer to GCP<sup>1</sup><i/> | [Standard - Weekly](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest/1k)<sup>1</sup> | - | - |
+| 2k  | <i>Refer to GCP<sup>1</sup><i/> | [Standard - Weekly](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest/2k)<sup>1</sup> | - | - |
+| 3k  | <i>Refer to GCP<sup>1</sup><i/> | [Standard - Weekly](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest/3k)<sup>1</sup> | - | - |
+| 5k  | <i>Refer to GCP<sup>1</sup><i/> | [Standard - Weekly](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest/5k)<sup>1</sup> | - | - |
+| 10k | <i>Refer to GCP<sup>1</sup><i/> | [Standard - Daily](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest/10k)<sup>1</sup> <br/> [Standard (inc Cloud Services) - Ad-Hoc](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Past-Results/10k) <br/> [Cloud Native Hybrid - Ad-Hoc](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Past-Results/10k-Cloud-Native-Hybrid) | [Standard (inc Cloud Services) - Ad-Hoc](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Past-Results/10k) <br/> [Cloud Native Hybrid - Ad-Hoc](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Past-Results/10k-Cloud-Native-Hybrid) | [Standard - Ad-Hoc](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Past-Results/10k) |
+| 25k | <i>Refer to GCP<sup>1</sup><i/> | [Standard - Weekly](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest/25k)<sup>1</sup> | - | [Standard - Ad-Hoc](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Past-Results/25k) |
+| 50k | <i>Refer to GCP<sup>1</sup><i/> | [Standard - Weekly](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest/50k)<sup>1</sup> | [Standard (inc Cloud Services) - Ad-Hoc](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Past-Results/50k) | - |
 
-Note that:
-
-1. The list above is non exhaustive. Additional testing is continuously evaluated and iterated on, and the table is updated regularly.
-1. The Omnibus reference architectures are VM-based only and testing has shown that they perform similarly on equivalently specced hardware regardless of Cloud Provider or if run on premises.
+1. The Standard Reference Architectures are designed to be platform agnostic, with everything being run on VMs via [Omnibus GitLab](https://docs.gitlab.com/omnibus/). While testing occurs primarily on GCP, ad-hoc testing has shown that they perform similarly on equivalently specced hardware on other Cloud Providers or if run on premises (bare-metal).

@@ -16,7 +16,7 @@ module QA
       PROJECT_ID = 278964
 
       def initialize(range)
-        @range = range
+        @range = range.to_i
         @influxdb_bucket = "e2e-test-stats"
         @slack_channel = "#quality-reports"
         @influxdb_url = ENV["QA_INFLUXDB_URL"] || raise("Missing QA_INFLUXDB_URL env variable")
@@ -34,7 +34,7 @@ module QA
         reporter.print_report
         reporter.report_in_issue_and_slack if report_in_issue_and_slack == "true"
       rescue StandardError => e
-        reporter.notify_failure(e)
+        reporter&.notify_failure(e)
         raise(e)
       end
 
@@ -100,67 +100,74 @@ module QA
         issue = []
         issue << "[[_TOC_]]"
         issue << "# Candidates for promotion to reliable #{execution_interval}"
-        issue << "```\n#{stable_summary_table}\n```"
-        issue << results_markdown(stable_results_tables)
+        issue << "Total amount: **#{stable_test_runs.sum { |_k, v| v.count }}**"
+        issue << stable_summary_table(markdown: true).to_s
+        issue << results_markdown(:stable)
         return issue.join("\n\n") if unstable_reliable_test_runs.empty?
 
         issue << "# Reliable specs with failures #{execution_interval}"
-        issue << "```\n#{unstable_summary_table}\n```"
-        issue << results_markdown(unstable_reliable_results_tables)
+        issue << "Total amount: **#{unstable_reliable_test_runs.sum { |_k, v| v.count }}**"
+        issue << unstable_summary_table(markdown: true).to_s
+        issue << results_markdown(:unstable)
         issue.join("\n\n")
       end
 
       # Stable spec summary table
       #
+      # @param [Boolean] markdown
       # @return [Terminal::Table]
-      def stable_summary_table
-        @stable_summary_table ||= terminal_table(
+      def stable_summary_table(markdown: false)
+        terminal_table(
           rows: stable_test_runs.map { |stage, specs| [stage, specs.length] },
           title: "Stable spec summary for past #{range} days".ljust(50),
-          headings: %w[STAGE COUNT]
+          headings: %w[STAGE COUNT],
+          markdown: markdown
         )
       end
 
       # Unstable reliable summary table
       #
+      # @param [Boolean] markdown
       # @return [Terminal::Table]
-      def unstable_summary_table
-        @unstable_summary_table ||= terminal_table(
+      def unstable_summary_table(markdown: false)
+        terminal_table(
           rows: unstable_reliable_test_runs.map { |stage, specs| [stage, specs.length] },
           title: "Unstable spec summary for past #{range} days".ljust(50),
-          headings: %w[STAGE COUNT]
+          headings: %w[STAGE COUNT],
+          markdown: markdown
         )
       end
 
       # Result tables for stable specs
       #
+      # @param [Boolean] markdown
       # @return [Hash]
-      def stable_results_tables
-        @stable_results ||= results_tables(:stable)
+      def stable_results_tables(markdown: false)
+        results_tables(:stable, markdown: markdown)
       end
 
       # Result table for unstable specs
       #
+      # @param [Boolean] markdown
       # @return [Hash]
-      def unstable_reliable_results_tables
-        @unstable_results ||= results_tables(:unstable)
+      def unstable_reliable_results_tables(markdown: false)
+        results_tables(:unstable, markdown: markdown)
       end
 
       # Markdown formatted tables
       #
-      # @param [Hash] results
+      # @param [Symbol] type result type - :stable, :unstable
       # @return [String]
-      def results_markdown(results)
-        results.map do |stage, table|
+      def results_markdown(type)
+        runs = type == :stable ? stable_test_runs : unstable_reliable_test_runs
+        results_tables(type, markdown: true).map do |stage, table|
           <<~STAGE.strip
-            ## #{stage}
+            ## #{stage} (#{runs[stage].count})
 
             <details>
             <summary>Executions table</summary>
 
-            ```
             #{table}
-            ```
 
             </details>
           STAGE
@@ -170,15 +177,19 @@ module QA
       # Results table
       #
       # @param [Symbol] type result type - :stable, :unstable
+      # @param [Boolean] markdown
       # @return [Hash<Symbol, Terminal::Table>]
-      def results_tables(type)
+      def results_tables(type, markdown: false)
         (type == :stable ? stable_test_runs : unstable_reliable_test_runs).to_h do |stage, specs|
           headings = ["name", "runs", "failures", "failure rate"]
 
           [stage, terminal_table(
-            rows: specs.map { |k, v| [name_column(k, v[:file]), *table_params(v.values)] },
             title: "Top #{type} specs in '#{stage}' stage for past #{range} days",
-            headings: headings.map(&:upcase)
+            headings: headings.map(&:upcase),
+            markdown: markdown,
+            rows: specs.map do |k, v|
+              [name_column(name: k, file: v[:file], markdown: markdown), *table_params(v.values)]
+            end
           )]
         end
       end
@@ -217,13 +228,17 @@ module QA
 
       # Terminal table for result formatting
       #
+      # @param [Array] rows
+      # @param [Array] headings
+      # @param [String] title
+      # @param [Boolean] markdown
       # @return [Terminal::Table]
-      def terminal_table(rows:, headings:, title: nil)
+      def terminal_table(rows:, headings:, title:, markdown:)
         Terminal::Table.new(
           headings: headings,
-          style: { all_separators: true },
-          title: title,
-          rows: rows
+          title: markdown ? nil : title,
+          rows: rows,
+          style: markdown ? { border: :markdown } : { all_separators: true }
         )
       end
 
@@ -235,17 +250,17 @@ module QA
         [*parameters[1..2], "#{parameters.last}%"]
       end
 
-      # Name column value
+      # Name column content
       #
       # @param [String] name
       # @param [String] file
+      # @param [Boolean] markdown
       # @return [String]
-      def name_column(name, file)
-        spec_name = name.length > 150 ? "#{name} ".scan(/.{1,150} /).map(&:strip).join("\n") : name
-        name_line = "name: '#{spec_name}'"
-        file_line = "file: '#{file}'"
+      def name_column(name:, file:, markdown: false)
+        return "**name**: #{name}<br>**file**: #{file}" if markdown
 
-        "#{name_line}\n#{file_line.ljust(160)}"
+        wrapped_name = name.length > 150 ? "#{name} ".scan(/.{1,150} /).map(&:strip).join("\n") : name
+        "name: '#{wrapped_name}'\nfile: #{file.ljust(160)}"
       end
 
       # Test executions grouped by name
@@ -258,9 +273,10 @@ module QA
         all_runs = query_api.query(query: query(reliable)).values
         all_runs.each_with_object(Hash.new { |hsh, key| hsh[key] = {} }) do |table, result|
           records = table.records
-          # skip specs that executed less time than defined by range
+          # skip specs that executed less time than defined by range or stopped executing before report date
           # offset 1 day due to how schedulers are configured and first run can be 1 day later
           next if (Date.today - Date.parse(records.first.values["_time"])).to_i < (range - 1)
+          next if (Date.today - Date.parse(records.last.values["_time"])).to_i > 1
 
           last_record = records.last.values
           name = last_record["name"]

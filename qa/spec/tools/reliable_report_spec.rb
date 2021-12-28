@@ -29,7 +29,7 @@ describe QA::Tools::ReliableReport do
         records: [
           instance_double("InfluxDB2::FluxRecord", values: values),
           instance_double("InfluxDB2::FluxRecord", values: values),
-          instance_double("InfluxDB2::FluxRecord", values: values)
+          instance_double("InfluxDB2::FluxRecord", values: values.merge({ "_time" => Time.now.to_s }))
         ]
       )
     }
@@ -49,7 +49,7 @@ describe QA::Tools::ReliableReport do
         records: [
           instance_double("InfluxDB2::FluxRecord", values: { **values, "status" => "passed" }),
           instance_double("InfluxDB2::FluxRecord", values: values),
-          instance_double("InfluxDB2::FluxRecord", values: values)
+          instance_double("InfluxDB2::FluxRecord", values: values.merge({ "_time" => Time.now.to_s }))
         ]
       )
     }
@@ -80,41 +80,34 @@ describe QA::Tools::ReliableReport do
 
   def markdown_section(summary, result, stage, type)
     <<~SECTION.strip
-      ```
-      #{summary_table(summary, type)}
-      ```
+      #{summary_table(summary, type, true)}
 
-      ## #{stage}
+      ## #{stage} (1)
 
       <details>
       <summary>Executions table</summary>
 
-      ```
-      #{table(result, ['NAME', 'RUNS', 'FAILURES', 'FAILURE RATE'], "Top #{type} specs in '#{stage}' stage for past #{range} days")}
-      ```
+      #{table(result, ['NAME', 'RUNS', 'FAILURES', 'FAILURE RATE'], "Top #{type} specs in '#{stage}' stage for past #{range} days", true)}
 
       </details>
     SECTION
   end
 
-  def summary_table(summary, type)
-    table(summary, %w[STAGE COUNT], "#{type.capitalize} spec summary for past #{range} days".ljust(50))
+  def summary_table(summary, type, markdown = false)
+    table(summary, %w[STAGE COUNT], "#{type.capitalize} spec summary for past #{range} days".ljust(50), markdown)
   end
 
-  def table(rows, headings, title)
+  def table(rows, headings, title, markdown = false)
     Terminal::Table.new(
       headings: headings,
-      style: { all_separators: true },
-      title: title,
-      rows: rows
+      title: markdown ? nil : title,
+      rows: rows,
+      style: markdown ? { border: :markdown } : { all_separators: true }
     )
   end
 
   def name_column(spec_name)
-    name = "name: '#{spec_name}'"
-    file = "file: 'spec.rb'".ljust(160)
-
-    "#{name}\n#{file}"
+    "**name**: #{spec_name}<br>**file**: spec.rb"
   end
 
   before do
@@ -151,9 +144,13 @@ describe QA::Tools::ReliableReport do
 
         # Candidates for promotion to reliable (#{Date.today - range} - #{Date.today})
 
+        Total amount: **1**
+
         #{markdown_section([['manage', 1]], [[name_column('stable spec'), 3, 0, '0%']], 'manage', 'stable')}
 
         # Reliable specs with failures (#{Date.today - range} - #{Date.today})
+
+        Total amount: **1**
 
         #{markdown_section([['create', 1]], [[name_column('unstable spec'), 3, 2, '66.67%']], 'create', 'unstable')}
       TXT

@@ -2,7 +2,6 @@
 stage: Enablement
 group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
-type: howto
 ---
 
 # Geo sites Admin Area **(PREMIUM SELF)**
@@ -50,8 +49,8 @@ download them all at once; so, GitLab places an upper limit on the concurrency o
 these operations.
 
 How long the backfill takes is dependent on the maximum concurrency, but higher
-values place more strain on the **primary** site. From [GitLab 10.2](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/3107),
-the limits are configurable. If your **primary** site has lots of surplus capacity,
+values place more strain on the **primary** site. The limits are configurable.
+If your **primary** site has lots of surplus capacity,
 you can increase the values to complete backfill in a shorter time. If it's
 under heavy load and backfill reduces its availability for normal requests,
 you can decrease them.
@@ -85,7 +84,7 @@ to the internal URL instead of the external one.
 
 ## Multiple secondary sites behind a load balancer
 
-In GitLab 11.11, **secondary** sites can use identical external URLs if
+**Secondary** sites can use identical external URLs if
 a unique `name` is set for each Geo site. The `gitlab.rb` setting
 `gitlab_rails['geo_node_name']` must:
 
