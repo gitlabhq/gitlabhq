@@ -65,8 +65,7 @@ To use GitLab CI/CD with a Bitbucket Cloud repository:
 1. In Bitbucket, add a script to push the pipeline status to Bitbucket.
 
    NOTE:
-   Changes made in GitLab are overwritten by any changes made
-   upstream in Bitbucket.
+   The changes must be made in Bitbucket as any changes in the GitLab repository are overwritten by Bitbucket when GitLab next mirrors the repository.
 
    Create a file `build_status` and insert the script below and run
    `chmod +x build_status` in your terminal to make the script executable.

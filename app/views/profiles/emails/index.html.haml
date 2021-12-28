@@ -37,23 +37,23 @@
       %li
         = render partial: 'shared/email_with_badge', locals: { email: @primary_email, verified: current_user.confirmed? }
         %span.float-right
-          %span.badge.badge-muted.badge-pill.gl-badge.badge-success= s_('Profiles|Primary email')
+          = gl_badge_tag s_('Profiles|Primary email'), variant: :success
           - if @primary_email === current_user.commit_email_or_default
-            %span.badge.badge-muted.badge-pill.gl-badge.badge-info= s_('Profiles|Commit email')
+            = gl_badge_tag s_('Profiles|Commit email'), variant: :info
           - if @primary_email === current_user.public_email
-            %span.badge.badge-muted.badge-pill.gl-badge.badge-info= s_('Profiles|Public email')
+            = gl_badge_tag s_('Profiles|Public email'), variant: :info
           - if @primary_email === current_user.notification_email_or_default
-            %span.badge.badge-muted.badge-pill.gl-badge.badge-info= s_('Profiles|Default notification email')
+            = gl_badge_tag s_('Profiles|Default notification email'), variant: :info
       - @emails.reject(&:user_primary_email?).each do |email|
         %li{ data: { qa_selector: 'email_row_content' } }
           = render partial: 'shared/email_with_badge', locals: { email: email.email, verified: email.confirmed? }
           %span.float-right
             - if email.email === current_user.commit_email_or_default
-              %span.badge.badge-muted.badge-pill.gl-badge.badge-info= s_('Profiles|Commit email')
+              = gl_badge_tag s_('Profiles|Commit email'), variant: :info
             - if email.email === current_user.public_email
-              %span.badge.badge-muted.badge-pill.gl-badge.badge-info= s_('Profiles|Public email')
+              = gl_badge_tag s_('Profiles|Public email'), variant: :info
             - if email.email === current_user.notification_email_or_default
-              %span.badge.badge-muted.badge-pill.gl-badge.badge-info= s_('Profiles|Notification email')
+              = gl_badge_tag s_('Profiles|Notification email'), variant: :info
             - unless email.confirmed?
               - confirm_title = "#{email.confirmation_sent_at ? _('Resend confirmation email') : _('Send confirmation email')}"
               = link_to confirm_title, resend_confirmation_instructions_profile_email_path(email), method: :put, class: 'gl-button btn btn-sm btn-warning gl-ml-3'
