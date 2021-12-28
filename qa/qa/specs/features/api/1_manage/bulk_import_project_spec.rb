@@ -4,7 +4,11 @@ module QA
   # run only base UI validation on staging because test requires top level group creation which is problematic
   # on staging environment
   RSpec.describe 'Manage', :requires_admin, except: { subdomain: :staging } do
-    describe 'Gitlab migration' do
+    describe 'Gitlab migration', quarantine: {
+      only: { job: "praefect-parallel" },
+      type: :investigating,
+      issue: "https://gitlab.com/gitlab-org/gitlab/-/issues/348999"
+    } do
       let(:source_project_with_readme) { false }
       let(:import_wait_duration) { { max_duration: 300, sleep_interval: 2 } }
       let(:admin_api_client) { Runtime::API::Client.as_admin }
