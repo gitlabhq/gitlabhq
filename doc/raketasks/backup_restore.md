@@ -58,7 +58,7 @@ including:
 - CI/CD job output logs
 - CI/CD job artifacts
 - LFS objects
-- Terraform states
+- Terraform states ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/331806) in GitLab 14.7)
 - Container Registry images
 - GitLab Pages content
 - Snippets
