@@ -142,6 +142,7 @@ export default {
           class="js-no-auto-disable"
           category="primary"
           variant="confirm"
+          data-qa-selector="commit_changes_button"
           :disabled="submitDisabled"
           :loading="isSaving"
         >

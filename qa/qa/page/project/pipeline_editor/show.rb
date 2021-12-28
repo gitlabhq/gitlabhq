@@ -24,6 +24,14 @@ module QA
             element :source_editor_container, require: true
           end
 
+          view 'app/assets/javascripts/pipeline_editor/components/header/pipeline_status.vue' do
+            element :pipeline_id_content
+          end
+
+          view 'app/assets/javascripts/pipeline_editor/components/commit/commit_form.vue' do
+            element :commit_changes_button
+          end
+
           def initialize
             super
 
@@ -48,6 +56,28 @@ module QA
 
           def editing_content
             find_element(:source_editor_container).text
+          end
+
+          def write_to_editor(text)
+            find_element(:source_editor_container).fill_in(with: text)
+          end
+
+          def submit_changes
+            click_element(:commit_changes_button)
+
+            wait_for_requests
+          end
+
+          def set_target_branch(name)
+            find_element(:target_branch_field).fill_in(with: name)
+          end
+
+          def current_branch
+            find_element(:branch_selector_button).text
+          end
+
+          def pipeline_id
+            find_element(:pipeline_id_content).text.delete!('#').to_i
           end
 
           private
