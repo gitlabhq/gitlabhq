@@ -2909,7 +2909,7 @@
   :tags: []
 - :name: update_external_pull_requests
   :worker_name: UpdateExternalPullRequestsWorker
-  :feature_category: :source_code_management
+  :feature_category: :continuous_integration
   :has_external_dependencies:
   :urgency: :low
   :resource_boundary: :unknown

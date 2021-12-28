@@ -100,7 +100,7 @@ A blocked user can be unblocked from the Admin Area. To do this:
 
 1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Overview > Users**.
-1. Select on the **Blocked** tab.
+1. Select the **Blocked** tab.
 1. Optional. Select a user.
 1. Select the **{settings}** **User administration** dropdown.
 1. Select **Unblock**.
@@ -110,6 +110,16 @@ The user's state is set to active and they consume a
 
 NOTE:
 Users can also be unblocked using the [GitLab API](../../api/users.md#unblock-user).
+
+The unblock option may be unavailable for LDAP users. To enable the unblock option,
+the LDAP identity first needs to be deleted:
+
+1. On the top bar, select **Menu > Admin**.
+1. On the left sidebar, select **Overview > Users**.
+1. Select the **Blocked** tab.
+1. Select a user.
+1. Select the **Identities** tab.
+1. Find the LDAP provider and select **Delete**.
 
 ## Activate and deactivate users
 
