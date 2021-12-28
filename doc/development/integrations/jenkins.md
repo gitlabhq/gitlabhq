@@ -54,8 +54,8 @@ To set up the Jenkins project you intend to run your build on, read
 
 You can configure your integration between Jenkins and GitLab:
 
-- With the [recommended approach for Jenkins integration](../../integration/jenkins.md#recommended-jenkins-integration).
-- [Using a webhook](../../integration/jenkins.md#webhook-integration).
+- With the [recommended approach for Jenkins integration](../../integration/jenkins.md#configure-a-jenkins-integration-recommended).
+- [Using a webhook](../../integration/jenkins.md#configure-a-webhook).
 
 ## Test your setup
 

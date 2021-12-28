@@ -59,14 +59,46 @@ RSpec.describe UserRecentEventsFinder do
         expect(events.size).to eq(6)
       end
 
+      context 'selected events' do
+        let!(:push_event)                  { create(:push_event, project: public_project, author: project_owner) }
+        let!(:push_event_second_user)      { create(:push_event, project: public_project_second_user, author: second_user) }
+
+        it 'only includes selected events (PUSH) from all users', :aggregate_failures do
+          event_filter = EventFilter.new(EventFilter::PUSH)
+          events = described_class.new(current_user, [project_owner, second_user], event_filter, params).execute
+
+          expect(events).to contain_exactly(push_event, push_event_second_user)
+        end
+      end
+
       it 'does not include events from users with private profile', :aggregate_failures do
         allow(Ability).to receive(:allowed?).and_call_original
         allow(Ability).to receive(:allowed?).with(current_user, :read_user_profile, second_user).and_return(false)
 
         events = described_class.new(current_user, [project_owner, second_user], nil, params).execute
 
-        expect(events).to include(private_event, internal_event, public_event)
-        expect(events.size).to eq(3)
+        expect(events).to eq([private_event, internal_event, public_event])
+      end
+
+      context 'with pagination params' do
+        using RSpec::Parameterized::TableSyntax
+
+        where(:limit, :offset, :ordered_expected_events) do
+          nil | nil   | lazy { [private_event, internal_event, public_event, private_event_second_user, internal_event_second_user, public_event_second_user] }
+          2   | nil   | lazy { [private_event, internal_event] }
+          nil | 4     | lazy { [internal_event_second_user, public_event_second_user] }
+          2   | 2     | lazy { [public_event, private_event_second_user] }
+        end
+
+        with_them do
+          let(:params) { { limit: limit, offset: offset }.compact }
+
+          it 'returns paginated events sorted by id' do
+            events = described_class.new(current_user, [project_owner, second_user], nil, params).execute
+
+            expect(events).to eq(ordered_expected_events)
+          end
+        end
       end
     end
 

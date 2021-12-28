@@ -4,100 +4,80 @@ group: Integrations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Jenkins CI service **(FREE)**
+# Jenkins integration **(FREE)**
 
 > [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/246756) to GitLab Free in 13.7.
 
-From GitLab, you can trigger a Jenkins build when you push code to a repository, or when a merge
-request is created. In return, the Jenkins pipeline status is shown on merge requests widgets and
-on the GitLab project's home page.
+You can trigger a build in Jenkins when you push code to your repository or
+create a merge request in GitLab. The Jenkins pipeline status displays on merge
+requests widgets and on the GitLab project's home page.
 
-To better understand the GitLab Jenkins integration, watch the following video:
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+For an overview of the Jenkins integration for GitLab, see
+[GitLab workflow with Jira issues and Jenkins pipelines](https://youtu.be/Jn-_fyra7xQ).
 
-- [GitLab workflow with Jira issues and Jenkins pipelines](https://youtu.be/Jn-_fyra7xQ)
+Use the Jenkins integration when:
 
-Use the Jenkins integration with GitLab when:
-
-- You plan to migrate your CI from Jenkins to [GitLab CI/CD](../ci/index.md) in the future, but
-need an interim solution.
-- You're invested in [Jenkins Plugins](https://plugins.jenkins.io/) and choose to keep using Jenkins
-to build your apps.
-
-For a real use case, read the blog post [Continuous integration: From Jenkins to GitLab using Docker](https://about.gitlab.com/blog/2017/07/27/docker-my-precious/).
-
-Moving from a traditional CI plug-in to a single application for the entire software development
-life cycle can decrease hours spent on maintaining toolchains by 10% or more. For more details, see
-the ['GitLab vs. Jenkins' comparison page](https://about.gitlab.com/devops-tools/jenkins-vs-gitlab/).
+- You plan to migrate your CI from Jenkins to [GitLab CI/CD](../ci/index.md)
+  in the future, but need an interim solution.
+- You're invested in [Jenkins plugins](https://plugins.jenkins.io/) and choose
+  to keep using Jenkins to build your apps.
 
 NOTE:
-This documentation focuses only on how to **configure** a Jenkins *integration* with
+This documentation focuses only on how to configure a Jenkins *integration* with
 GitLab. Learn how to set up Jenkins [on your local machine](../development/integrations/jenkins.md)
-in our developer documentation, and how to **migrate** from Jenkins to GitLab CI/CD in our
+in the developer documentation, and how to migrate from Jenkins to GitLab CI/CD in the
 [Migrating from Jenkins](../ci/migration/jenkins.md) documentation.
 
-## Configure GitLab integration with Jenkins
+The Jenkins integration requires configuration in both GitLab and Jenkins.
 
-The GitLab Jenkins integration requires installation and configuration in both GitLab and Jenkins.
-In GitLab, you need to grant Jenkins access to the relevant projects. In Jenkins, you need to
-install and configure several plugins.
+## Grant Jenkins access to the GitLab project
 
-### GitLab requirements
-
-- [Grant Jenkins permission to GitLab project](#grant-jenkins-access-to-gitlab-project)
-- [Configure GitLab API access](#configure-gitlab-api-access)
-- [Configure the GitLab project](#configure-the-gitlab-project)
-
-### Jenkins requirements
-
-- [Configure the Jenkins server](#configure-the-jenkins-server)
-- [Configure the Jenkins project](#configure-the-jenkins-project)
-
-## Grant Jenkins access to GitLab project
-
-Grant a GitLab user access to the select GitLab projects.
+Grant a GitLab user access to the relevant GitLab projects.
 
 1. Create a new GitLab user, or choose an existing GitLab user.
 
    This account is used by Jenkins to access the GitLab projects. We recommend creating a GitLab
    user for only this purpose. If you use a person's account, and their account is deactivated or
-   deleted, the GitLab-Jenkins integration stops working.
+   deleted, the Jenkins integration stops working.
 
 1. Grant the user permission to the GitLab projects.
 
-   If you're integrating Jenkins with many GitLab projects, consider granting the user the global
-   Administrator role. Otherwise, add the user to each project, and grant the Developer role.
+   If you're integrating Jenkins with many GitLab projects, consider granting the
+   user the administrator access level. Otherwise, add the user to each project
+   and grant the Developer role.
 
-## Configure GitLab API access
+## Grant Jenkins access to the GitLab API
 
-Create a personal access token to authorize Jenkins' access to GitLab.
+Create a personal access token to authorize Jenkins to access GitLab.
 
 1. Sign in to GitLab as the user to be used with Jenkins.
-1. In the top-right corner, select your avatar.
+1. On the top bar, in the top right corner, select your avatar.
 1. Select **Edit profile**.
 1. On the left sidebar, select **Access Tokens**.
-1. Create a personal access token with the **API** scope checkbox checked. For more details, see
-   [Personal access tokens](../user/profile/personal_access_tokens.md).
-1. Record the personal access token's value, because it's required in [Configure the Jenkins server](#configure-the-jenkins-server) section.
+1. Create a [personal access token](../user/profile/personal_access_tokens.md) with
+   the **API** scope checkbox selected.
+1. Copy the personal access token. You need it to [configure the Jenkins server](#configure-the-jenkins-server).
 
 ## Configure the Jenkins server
 
 Install and configure the Jenkins plugin. The plugin must be installed and configured to
 authorize the connection to GitLab.
 
-1. On the Jenkins server, go to **Manage Jenkins > Manage Plugins**.
+1. On the Jenkins server, select **Manage Jenkins > Manage Plugins**.
 1. Install the [Jenkins GitLab Plugin](https://wiki.jenkins.io/display/JENKINS/GitLab+Plugin).
-1. Go to **Manage Jenkins > Configure System**.
-1. In the **GitLab** section, check the **Enable authentication for '/project' end-point** checkbox.
-1. Click **Add**, then choose **Jenkins Credential Provider**.
-1. Choose **GitLab API token** as the token type.
-1. Enter the GitLab personal access token's value in the **API Token** field and click **Add**.
+1. Select **Manage Jenkins > Configure System**.
+1. In the **GitLab** section, select the **Enable authentication for '/project' end-point** checkbox.
+1. Select **Add**, then choose **Jenkins Credential Provider**.
+1. Select **GitLab API token** as the token type.
+1. Enter the GitLab personal access token's value in the **API Token** field and select **Add**.
 1. Enter the GitLab server's URL in the **GitLab host URL** field.
-1. Click **Test Connection**, ensuring the connection is successful before proceeding.
+1. To test the connection, select **Test Connection**.
 
-For more information, see GitLab Plugin documentation about
+   ![Jenkins plugin configuration](img/jenkins_gitlab_plugin_config.png)
+
+For more information, see
 [Jenkins-to-GitLab authentication](https://github.com/jenkinsci/gitlab-plugin#jenkins-to-gitlab-authentication).
-
-![Jenkins GitLab plugin configuration](img/jenkins_gitlab_plugin_config.png)
 
 ## Configure the Jenkins project
 
@@ -105,15 +85,15 @@ Set up the Jenkins project you intend to run your build on.
 
 1. On your Jenkins instance, go to **New Item**.
 1. Enter the project's name.
-1. Choose between **Freestyle** or **Pipeline** and click **OK**.
-    We recommend a Freestyle project, because the Jenkins plugin updates the build status on
-    GitLab. In a Pipeline project, you must configure a script to update the status on GitLab.
-1. Choose your GitLab connection from the dropdown.
-1. Check the **Build when a change is pushed to GitLab** checkbox.
-1. Check the following checkboxes:
+1. Select **Freestyle** or **Pipeline** and select **OK**.
+   We recommend a Freestyle project, because the Jenkins plugin updates the build status on
+   GitLab. In a Pipeline project, you must configure a script to update the status on GitLab.
+1. Choose your GitLab connection from the dropdown list.
+1. Select the **Build when a change is pushed to GitLab** checkbox.
+1. Select the following checkboxes:
    - **Accepted Merge Request Events**
    - **Closed Merge Request Events**
-1. Specify how build status is reported to GitLab:
+1. Specify how the build status is reported to GitLab:
    - If you created a **Freestyle** project, in the **Post-build Actions** section, choose
    **Publish build status to GitLab**.
    - If you created a **Pipeline** project, you must use a Jenkins Pipeline script to update the status on
@@ -143,39 +123,49 @@ Set up the Jenkins project you intend to run your build on.
 
 Configure the GitLab integration with Jenkins in one of the following ways.
 
-### Recommended Jenkins integration
+### Configure a Jenkins integration (recommended)
 
 GitLab recommends this approach for Jenkins integrations because it is easier to configure
-than the [webhook integration](#webhook-integration).
+than the [webhook integration](#configure-a-webhook).
 
-1. Create a new GitLab project or choose an existing one.
-1. Go to **Settings > Integrations**, then select **Jenkins CI**.
-1. Turn on the **Active** toggle.
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > Integrations**.
+1. Select **Jenkins**.
+1. Select the **Active** checkbox.
 1. Select the events you want GitLab to trigger a Jenkins build for:
    - Push
    - Merge request
    - Tag push
-1. Enter the **Jenkins URL**.
+1. Enter the **Jenkins server URL**.
 1. Enter the **Project name**.
 
    The project name should be URL-friendly, where spaces are replaced with underscores. To ensure
    the project name is valid, copy it from your browser's address bar while viewing the Jenkins
    project.
-1. Enter the **Username** and **Password** if your Jenkins server requires
-   authentication.
-1. Click **Test settings and save changes**. GitLab tests the connection to Jenkins.
+1. If your Jenkins server requires
+   authentication, enter the **Username** and **Password**.
+1. To test the connection to Jenkins, select **Test settings**.
+1. Select **Save changes**.
 
-### Webhook integration
+### Configure a webhook
 
 If you are unable to provide GitLab with your Jenkins server login, you can use this option
 to integrate GitLab and Jenkins.
 
-1. In the configuration of your Jenkins job, in the GitLab configuration section, click **Advanced**.
-1. Click the **Generate** button under the **Secret Token** field.
-1. Copy the resulting token, and save the job configuration.
+1. In the configuration of your Jenkins job, in the GitLab configuration section, select **Advanced**.
+1. Under the **Secret Token** field, select **Generate**.
+1. Copy the token, and save the job configuration.
 1. In GitLab, create a webhook for your project, enter the trigger URL
    (such as `https://JENKINS_URL/project/YOUR_JOB`) and paste the token in the **Secret Token** field.
-1. After you add the webhook, click the **Test** button, and it should succeed.
+1. To test the webhook, select **Test**.
+
+## Related topics
+
+- For a real use case, read the blog post
+  [Continuous integration: From Jenkins to GitLab using Docker](https://about.gitlab.com/blog/2017/07/27/docker-my-precious/).
+- See the ['GitLab vs. Jenkins' comparison page](https://about.gitlab.com/devops-tools/jenkins-vs-gitlab/)
+  for information on how moving to a single application for the entire software development
+  lifecycle can decrease hours spent on maintaining toolchains by 10% or more.
 
 ## Troubleshooting
 

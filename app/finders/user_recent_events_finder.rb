@@ -47,6 +47,20 @@ class UserRecentEventsFinder
   end
 
   # rubocop: disable CodeReuse/ActiveRecord
+  def execute_optimized_multi(users)
+    Gitlab::Pagination::Keyset::InOperatorOptimization::QueryBuilder.new(
+      scope: Event.reorder(:id),
+      array_scope: User.select(:id).where(id: users),
+      array_mapping_scope: -> (author_id_expression) { Event.where(Event.arel_table[:author_id].eq(author_id_expression)) },
+      finder_query: -> (id_expression) { Event.where(Event.arel_table[:id].eq(id_expression)) }
+    )
+    .execute
+    .limit(limit)
+    .offset(params[:offset] || 0)
+  end
+  # rubocop: enable CodeReuse/ActiveRecord
+
+  # rubocop: disable CodeReuse/ActiveRecord
   def execute_multi
     users = []
     @target_user.each do |user|
@@ -55,7 +69,11 @@ class UserRecentEventsFinder
 
     return Event.none if users.empty?
 
-    event_filter.apply_filter(Event.where(author: users).limit_recent(limit, params[:offset] || 0))
+    if event_filter.filter == EventFilter::ALL
+      execute_optimized_multi(users)
+    else
+      event_filter.apply_filter(Event.where(author: users).limit_recent(limit, params[:offset] || 0))
+    end
   end
   # rubocop: enable CodeReuse/ActiveRecord
 

@@ -2386,6 +2386,7 @@ POST /projects/:id/hooks
 | `token`                      | string         | **{dotted-circle}** No | Secret token to validate received payloads; this isn't returned in the response. |
 | `url`                        | string         | **{check-circle}** Yes | The hook URL. |
 | `wiki_page_events`           | boolean        | **{dotted-circle}** No | Trigger hook on wiki events. |
+| `releases_events`            | boolean        | **{dotted-circle}** No | Trigger hook on release events. |
 
 ### Edit project hook
 

@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: howto, reference
 ---
 
-# Deploy keys
+# Deploy keys **(FREE)**
 
 Deploy keys allow read-only or read-write access to your
 repositories by importing an SSH public key into your GitLab instance.
