@@ -114,13 +114,9 @@ See the documentation on [File Locking](../../../user/project/file_lock.md).
 
 ## LFS objects in project archives
 
-> - Support for including Git LFS blobs inside [project source downloads](../../../user/project/repository/index.md) was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15079) in GitLab 13.5.
-> - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/268409) in GitLab 13.6.
-> - Enabled on GitLab.com.
-> - Recommended for production use.
-
-WARNING:
-This feature might not be available to you. Check the **version history** note above for details.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15079) support for including Git LFS blobs inside [project source downloads](../../../user/project/repository/index.md) in GitLab 13.5 [with a flag](../../../administration/feature_flags.md) named `include_lfs_blobs_in_archive`. Disabled by default.
+> - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/46572) in GitLab 13.6.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/62539) in GitLab 14.0. Feature flag `include_lfs_blobs_in_archive` removed.
 
 Prior to GitLab 13.5, [project source
 downloads](../../../user/project/repository/index.md) would include Git
