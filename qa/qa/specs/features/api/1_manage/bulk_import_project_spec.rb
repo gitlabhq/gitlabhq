@@ -198,6 +198,8 @@ module QA
       end
 
       context 'with merge request' do
+        let(:source_project_with_readme) { true }
+
         let(:other_user) do
           Resource::User.fabricate_via_api! do |usr|
             usr.api_client = admin_api_client

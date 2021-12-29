@@ -6,11 +6,13 @@ module QA
       attr_accessor :approval_rules,
                     :source_branch,
                     :target_new_branch,
+                    :update_existing_file,
                     :assignee,
                     :milestone,
                     :labels,
                     :file_name,
                     :file_content
+
       attr_writer :no_preparation,
                   :wait_for_merge,
                   :template
@@ -25,6 +27,8 @@ module QA
       attribute :project do
         Project.fabricate_via_api! do |resource|
           resource.name = 'project-with-merge-request'
+          resource.initialize_with_readme = true
+          resource.api_client = api_client
         end
       end
 
@@ -33,22 +37,27 @@ module QA
       end
 
       attribute :target do
-        Repository::ProjectPush.fabricate! do |resource|
+        Repository::Commit.fabricate_via_api! do |resource|
           resource.project = project
-          resource.branch_name = target_branch
-          resource.new_branch = target_new_branch
-          resource.remote_branch = target_branch
+          resource.api_client = api_client
+          resource.commit_message = 'This is a test commit'
+          resource.add_files([{ 'file_path': "file-#{SecureRandom.hex(8)}.txt", 'content': 'MR init' }])
+          resource.branch = target_branch
+
+          resource.start_branch = project.default_branch if target_branch != project.default_branch
         end
       end
 
       attribute :source do
-        Repository::ProjectPush.fabricate! do |resource|
+        Repository::Commit.fabricate_via_api! do |resource|
           resource.project = project
-          resource.branch_name = target_branch
-          resource.remote_branch = source_branch
-          resource.new_branch = false
-          resource.file_name = file_name
-          resource.file_content = file_content
+          resource.api_client = api_client
+          resource.commit_message = 'This is a test commit'
+          resource.branch = source_branch
+          resource.start_branch = target_branch
+
+          files = [{ 'file_path': file_name, 'content': file_content }]
+          update_existing_file ? resource.update_files(files) : resource.add_files(files)
         end
       end
 
@@ -63,6 +72,7 @@ module QA
         @file_name = "added_file-#{SecureRandom.hex(8)}.txt"
         @file_content = "File Added"
         @target_new_branch = true
+        @update_existing_file = false
         @no_preparation = false
         @wait_for_merge = true
       end
@@ -204,8 +214,24 @@ module QA
         super(api_resource)
       end
 
+      # Create source and target and commits if necessary
+      #
+      # @return [void]
       def populate_target_and_source_if_required
-        populate(:target, :source) unless @no_preparation
+        return if @no_preparation
+
+        populate(:target) if create_target?
+        populate(:source)
+      end
+
+      # Check if target needs to be created
+      #
+      # Return false if project was already initialized and mr target is default branch
+      # Return false if target_new_branch is explicitly set to false
+      #
+      # @return [Boolean]
+      def create_target?
+        !(project.initialize_with_readme && target_branch == project.default_branch) && target_new_branch
       end
     end
   end

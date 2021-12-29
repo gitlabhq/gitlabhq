@@ -19,7 +19,7 @@ module QA
         group = QA::Resource::Group.fabricate_via_api! do |group|
           group.path = "group_for_follow_user_activity_#{SecureRandom.hex(8)}"
         end
-        group.add_member(user)
+        group.add_member(user, Resource::Members::AccessLevel::MAINTAINER)
         group
       end
 
