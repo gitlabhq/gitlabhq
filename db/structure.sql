@@ -16778,7 +16778,14 @@ CREATE TABLE onboarding_progresses (
     issue_auto_closed_at timestamp with time zone,
     repository_imported_at timestamp with time zone,
     repository_mirrored_at timestamp with time zone,
-    issue_created_at timestamp with time zone
+    issue_created_at timestamp with time zone,
+    secure_dependency_scanning_run_at timestamp with time zone,
+    secure_container_scanning_run_at timestamp with time zone,
+    secure_dast_run_at timestamp with time zone,
+    secure_secret_detection_run_at timestamp with time zone,
+    secure_coverage_fuzzing_run_at timestamp with time zone,
+    secure_cluster_image_scanning_run_at timestamp with time zone,
+    secure_api_fuzzing_run_at timestamp with time zone
 );
 
 CREATE SEQUENCE onboarding_progresses_id_seq

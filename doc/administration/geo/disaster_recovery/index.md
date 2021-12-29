@@ -671,7 +671,7 @@ Data that was created on the primary while the secondary was paused is lost.
 
 If you are running GitLab 14.5 and later:
 
-1. SSH to every Sidekiq, PostgresSQL, and Gitaly node in the **secondary** site and run one of the following commands:
+1. For each node outside of the **secondary** Kubernetes cluster using Omnibus such as PostgreSQL or Gitaly, SSH into the node and run one of the following commands:
 
    - To promote the secondary node to primary:
 
@@ -685,19 +685,17 @@ If you are running GitLab 14.5 and later:
      sudo gitlab-ctl geo promote --force
      ```
 
-1. SSH into each Rails node on your **secondary** site and run one of the following commands:
+1. Find the `toolbox` pod:
 
-   - To promote the secondary node to primary:
+   ```shell
+   kubectl --namespace gitlab get pods -lapp=toolbox
+   ```
 
-     ```shell
-     sudo gitlab-ctl geo promote
-     ```
+1. Promote the secondary:
 
-   - To promote the secondary node to primary **without any further confirmation**:
-
-     ```shell
-     sudo gitlab-ctl geo promote --force
-     ```
+   ```shell
+   kubectl --namespace gitlab exec -ti gitlab-geo-toolbox-XXX -- gitlab-rake geo:set_secondary_as_primary
+   ```
 
 If you are running GitLab 14.4 and earlier:
 
@@ -707,8 +705,6 @@ If you are running GitLab 14.4 and earlier:
    ```shell
    sudo gitlab-ctl promote-db
    ```
-
-   In GitLab 12.8 and earlier, see [Message: `sudo: gitlab-pg-ctl: command not found`](../replication/troubleshooting.md#message-sudo-gitlab-pg-ctl-command-not-found).
 
 1. Edit `/etc/gitlab/gitlab.rb` on the database node in the **secondary** site to
    reflect its new status as **primary** by removing any lines that enabled the

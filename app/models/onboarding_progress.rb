@@ -20,7 +20,14 @@ class OnboardingProgress < ApplicationRecord
     :issue_created,
     :issue_auto_closed,
     :repository_imported,
-    :repository_mirrored
+    :repository_mirrored,
+    :secure_dependency_scanning_run,
+    :secure_container_scanning_run,
+    :secure_dast_run,
+    :secure_secret_detection_run,
+    :secure_coverage_fuzzing_run,
+    :secure_api_fuzzing_run,
+    :secure_cluster_image_scanning_run
   ].freeze
 
   scope :incomplete_actions, -> (actions) do
@@ -52,12 +59,19 @@ class OnboardingProgress < ApplicationRecord
       where(namespace: namespace).any?
     end
 
-    def register(namespace, action)
-      return unless root_namespace?(namespace) && ACTIONS.include?(action)
+    def register(namespace, actions)
+      actions = Array(actions)
+      return unless root_namespace?(namespace) && actions.difference(ACTIONS).empty?
 
-      action_column = column_name(action)
-      onboarding_progress = find_by(namespace: namespace, action_column => nil)
-      onboarding_progress&.update!(action_column => Time.current)
+      onboarding_progress = find_by(namespace: namespace)
+      return unless onboarding_progress
+
+      now = Time.current
+      nil_actions = actions.select { |action| onboarding_progress[column_name(action)].nil? }
+      return if nil_actions.empty?
+
+      updates = nil_actions.inject({}) { |sum, action| sum.merge!({ column_name(action) => now }) }
+      onboarding_progress.update!(updates)
     end
 
     def completed?(namespace, action)

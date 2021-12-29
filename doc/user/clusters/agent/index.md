@@ -136,7 +136,22 @@ with the following differences:
 
 ## Remove an agent
 
-1. Get the `<cluster-agent-id>` and the `<cluster-agent-token-id>` from a query in the interactive GraphQL explorer.
+You can remove an agent using the [GitLab UI](#remove-an-agent-through-the-gitlab-ui) or through the [GraphQL API](#remove-an-agent-with-the-gitlab-graphql-api).
+
+### Remove an agent through the GitLab UI
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/323055) in GitLab 14.7.
+
+To remove an agent from the UI:
+
+1. Go to your agent's configuration repository.
+1. From your project's sidebar, select **Infrastructure > Kubernetes clusters**.
+1. Select your agent from the table, and then in the **Options** column, click the vertical ellipsis 
+(**{ellipsis_v}**) button and select **Delete agent**. 
+
+### Remove an agent with the GitLab GraphQL API
+
+1. Get the `<cluster-agent-token-id>` from a query in the interactive GraphQL explorer.
 For GitLab.com, go to <https://gitlab.com/-/graphql-explorer> to open GraphQL Explorer.
 For self-managed GitLab instances, go to `https://gitlab.example.com/-/graphql-explorer`, replacing `gitlab.example.com` with your own instance's URL.
 
@@ -157,7 +172,7 @@ For self-managed GitLab instances, go to `https://gitlab.example.com/-/graphql-e
    }
    ```
 
-1. Remove an Agent record with GraphQL by deleting the `clusterAgent` and the `clusterAgentToken`.
+1. Remove an agent record with GraphQL by deleting the `clusterAgentToken`.
 
    ```graphql
    mutation deleteAgent {

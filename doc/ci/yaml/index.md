@@ -3837,13 +3837,13 @@ The following keywords are deprecated.
 ### Globally-defined `types`
 
 WARNING:
-`types` is deprecated, and could be removed in a future release.
+`types` is deprecated, and is [scheduled to be removed in GitLab 15.0](https://gitlab.com/gitlab-org/gitlab/-/issues/346823).
 Use [`stages`](#stages) instead.
 
 ### Job-defined `type`
 
 WARNING:
-`type` is deprecated, and could be removed in one of the future releases.
+`type` is deprecated, and is [scheduled to be removed in GitLab 15.0](https://gitlab.com/gitlab-org/gitlab/-/issues/346823).
 Use [`stage`](#stage) instead.
 
 ### Globally-defined `image`, `services`, `cache`, `before_script`, `after_script`

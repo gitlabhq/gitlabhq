@@ -7329,6 +7329,9 @@ msgstr ""
 msgid "Clear due date"
 msgstr ""
 
+msgid "Clear health status"
+msgstr ""
+
 msgid "Clear recent searches"
 msgstr ""
 
@@ -7347,7 +7350,13 @@ msgstr ""
 msgid "Clear weight"
 msgstr ""
 
+msgid "Cleared health status."
+msgstr ""
+
 msgid "Cleared weight."
+msgstr ""
+
+msgid "Clears health status."
 msgstr ""
 
 msgid "Clears weight."
@@ -7503,6 +7512,9 @@ msgstr ""
 msgid "Cluster type must be specificed for Stages::ClusterEndpointInserter"
 msgstr ""
 
+msgid "ClusterAgents|%{name} successfully deleted"
+msgstr ""
+
 msgid "ClusterAgents|%{number} of %{total} agents"
 msgstr ""
 
@@ -7560,6 +7572,9 @@ msgstr ""
 msgid "ClusterAgents|An unknown error occurred. Please try again."
 msgstr ""
 
+msgid "ClusterAgents|Are you sure you want to delete this agent? You cannot undo this."
+msgstr ""
+
 msgid "ClusterAgents|Certificate"
 msgstr ""
 
@@ -7603,6 +7618,12 @@ msgid "ClusterAgents|Created by %{name} %{time}"
 msgstr ""
 
 msgid "ClusterAgents|Date created"
+msgstr ""
+
+msgid "ClusterAgents|Delete"
+msgstr ""
+
+msgid "ClusterAgents|Delete agent"
 msgstr ""
 
 msgid "ClusterAgents|Deprecated"
@@ -7716,6 +7737,9 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "ClusterAgents|This agent has no tokens"
+msgstr ""
+
+msgid "ClusterAgents|To delete the agent, type %{name} to confirm:"
 msgstr ""
 
 msgid "ClusterAgents|To install a new agent, first add the agent's configuration file to this repository. %{linkStart}What's the agent's configuration file?%{linkEnd}"
@@ -23038,6 +23062,9 @@ msgstr ""
 msgid "More information."
 msgstr ""
 
+msgid "More options"
+msgstr ""
+
 msgid "More than %{number_commits_distance} commits different with %{default_branch}"
 msgstr ""
 
@@ -32296,6 +32323,12 @@ msgstr ""
 msgid "Set due date"
 msgstr ""
 
+msgid "Set health status"
+msgstr ""
+
+msgid "Set health status to %{health_status}."
+msgstr ""
+
 msgid "Set iteration"
 msgstr ""
 
@@ -32450,6 +32483,9 @@ msgid "SetStatusModal|Your status resets on %{date}."
 msgstr ""
 
 msgid "Sets %{epic_ref} as parent epic."
+msgstr ""
+
+msgid "Sets health status to %{health_status}."
 msgstr ""
 
 msgid "Sets target branch to %{branch_name}."

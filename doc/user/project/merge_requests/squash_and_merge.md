@@ -2,12 +2,9 @@
 stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
-type: reference, concepts
 ---
 
 # Squash and merge **(FREE)**
-
-> - [Moved](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/18956) from GitLab Premium to GitLab Free in 11.0.
 
 With squash and merge you can combine all your merge request's commits into one
 and retain a clean history.
@@ -75,7 +72,7 @@ can be either selected or unselected:
 
 ![Squash commits checkbox on accept merge request form](img/squash_mr_widget.png)
 
-Note that Squash and Merge might not be available depending on the project's configuration
+Squash and Merge might not be available depending on the project's configuration
 for [Squash Commit Options](#squash-commits-options).
 
 ## Commit metadata for squashed commits
@@ -88,9 +85,9 @@ The squashed commit has the following metadata:
 
 ## Squash and fast-forward merge
 
-When a project has the [fast-forward merge setting enabled](fast_forward_merge.md#enabling-fast-forward-merges), the merge
-request must be able to be fast-forwarded without squashing in order to squash
-it. This is because squashing is only available when accepting a merge request,
+When a project has the [fast-forward merge setting enabled](fast_forward_merge.md#enabling-fast-forward-merges),
+the merge request must be able to be fast-forwarded without squashing to squash
+it. This is because squashing is available only when accepting a merge request,
 so a merge request may need to be rebased before squashing, even though
 squashing can itself be considered equivalent to rebasing.
 

@@ -131,29 +131,86 @@ RSpec.describe OnboardingProgress do
   end
 
   describe '.register' do
-    subject(:register_action) { described_class.register(namespace, action) }
+    context 'for a single action' do
+      subject(:register_action) { described_class.register(namespace, action) }
 
-    context 'when the namespace was onboarded' do
-      before do
-        described_class.onboard(namespace)
+      context 'when the namespace was onboarded' do
+        before do
+          described_class.onboard(namespace)
+        end
+
+        it 'registers the action for the namespace' do
+          expect { register_action }.to change { described_class.completed?(namespace, action) }.from(false).to(true)
+        end
+
+        it 'does not override timestamp', :aggregate_failures do
+          expect(described_class.find_by_namespace_id(namespace.id).subscription_created_at).to be_nil
+          register_action
+          expect(described_class.find_by_namespace_id(namespace.id).subscription_created_at).not_to be_nil
+          expect { described_class.register(namespace, action) }.not_to change { described_class.find_by_namespace_id(namespace.id).subscription_created_at }
+        end
+
+        context 'when the action does not exist' do
+          let(:action) { :foo }
+
+          it 'does not register the action for the namespace' do
+            expect { register_action }.not_to change { described_class.completed?(namespace, action) }.from(nil)
+          end
+        end
       end
 
-      it 'registers the action for the namespace' do
-        expect { register_action }.to change { described_class.completed?(namespace, action) }.from(false).to(true)
-      end
-
-      context 'when the action does not exist' do
-        let(:action) { :foo }
-
+      context 'when the namespace was not onboarded' do
         it 'does not register the action for the namespace' do
-          expect { register_action }.not_to change { described_class.completed?(namespace, action) }.from(nil)
+          expect { register_action }.not_to change { described_class.completed?(namespace, action) }.from(false)
         end
       end
     end
 
-    context 'when the namespace was not onboarded' do
-      it 'does not register the action for the namespace' do
-        expect { register_action }.not_to change { described_class.completed?(namespace, action) }.from(false)
+    context 'for multiple actions' do
+      let(:action1) { :security_scan_enabled }
+      let(:action2) { :secure_dependency_scanning_run }
+      let(:actions) { [action1, action2] }
+
+      subject(:register_action) { described_class.register(namespace, actions) }
+
+      context 'when the namespace was onboarded' do
+        before do
+          described_class.onboard(namespace)
+        end
+
+        it 'registers the actions for the namespace' do
+          expect { register_action }.to change {
+            [described_class.completed?(namespace, action1), described_class.completed?(namespace, action2)]
+          }.from([false, false]).to([true, true])
+        end
+
+        it 'does not override timestamp', :aggregate_failures do
+          described_class.register(namespace, [action1])
+          expect(described_class.find_by_namespace_id(namespace.id).security_scan_enabled_at).not_to be_nil
+          expect(described_class.find_by_namespace_id(namespace.id).secure_dependency_scanning_run_at).to be_nil
+
+          expect { described_class.register(namespace, [action1, action2]) }.not_to change {
+            described_class.find_by_namespace_id(namespace.id).security_scan_enabled_at
+          }
+          expect(described_class.find_by_namespace_id(namespace.id).secure_dependency_scanning_run_at).not_to be_nil
+        end
+
+        context 'when one of the actions does not exist' do
+          let(:action2) { :foo }
+
+          it 'does not register any action for the namespace' do
+            expect { register_action }.not_to change {
+              [described_class.completed?(namespace, action1), described_class.completed?(namespace, action2)]
+            }.from([false, nil])
+          end
+        end
+      end
+
+      context 'when the namespace was not onboarded' do
+        it 'does not register the action for the namespace' do
+          expect { register_action }.not_to change { described_class.completed?(namespace, action1) }.from(false)
+          expect { described_class.register(namespace, action) }.not_to change { described_class.completed?(namespace, action2) }.from(false)
+        end
       end
     end
   end

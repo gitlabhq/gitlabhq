@@ -84,7 +84,7 @@ Badges directly associated with a project can be configured on the
 
 ## Placeholders
 
-The URL a badge points to, as well as the image URL, can contain placeholders
+Both the URL a badge points to and the image URL can contain placeholders
 which are evaluated when displaying the badge. The following placeholders
 are available:
 

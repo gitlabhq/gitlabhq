@@ -1,15 +1,14 @@
 ---
 stage: Create
 group: Source Code
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments"
-type: howto, reference
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Edit files through the command line **(FREE)**
 
 When [working with Git from the command line](start-using-git.md), you need to
 use more than just the Git commands. There are several basic commands that you should
-learn, in order to make full use of the command line.
+learn to make full use of the command line.
 
 ## Start working on your project
 
