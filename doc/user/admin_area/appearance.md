@@ -2,7 +2,6 @@
 stage: none
 group: unassigned
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
-type: howto
 disqus_identifier: 'https://docs.gitlab.com/ee/customization/branded_login_page.html'
 ---
 
@@ -28,8 +27,6 @@ GitLab pipeline emails also display the custom logo.
 
 ## Favicon
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/14497) in GitLab 11.0.
-
 By default, the favicon (used by the browser as the tab icon, as well as the CI status icon)
 uses the GitLab logo, but this can be customized with any icon desired. It must be a
 32x32 `.png` or `.ico` image.
@@ -38,8 +35,6 @@ After you select and upload an icon, click **Update appearance settings** at the
 of the page to activate it in the GitLab instance.
 
 ## System header and footer messages
-
-> - [Moved](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/55057) from GitLab Premium to GitLab Free in 11.9.
 
 You can add a small header message, a small footer message, or both, to the interface
 of your GitLab instance. These messages appear on all projects and pages of the

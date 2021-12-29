@@ -695,6 +695,9 @@ database encryption. Proceed with caution.
    pages_external_url "http://<pages_server_URL>"
 
    gitlab_pages['gitlab_server'] = 'http://<gitlab_server_IP_or_URL>'
+
+   ## If access control was enabled on step 3
+   gitlab_pages['access_control'] = true
    ```
 
 1. If you have custom UID/GID settings on the **GitLab server**, add them to the **Pages server** `/etc/gitlab/gitlab.rb` as well,
