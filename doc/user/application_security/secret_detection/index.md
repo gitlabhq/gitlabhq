@@ -1,5 +1,4 @@
 ---
-type: reference, howto
 stage: Secure
 group: Static Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
@@ -7,15 +6,14 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Secret Detection **(FREE)**
 
-> - [Introduced](https://about.gitlab.com/releases/2019/03/22/gitlab-11-9-released/#detect-secrets-and-credentials-in-the-repository) in GitLab 11.9.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/222788) from GitLab Ultimate to GitLab Free in 13.3.
+> [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/222788) from GitLab Ultimate to GitLab Free in 13.3.
 
 A recurring problem when developing applications is that developers may unintentionally commit
 secrets and credentials to their remote repositories. If other people have access to the source,
 or if the project is public, the sensitive information is then exposed and can be leveraged by
 malicious users to gain access to resources like deployment environments.
 
-GitLab 11.9 includes a new check called Secret Detection. It scans the content of the repository
+GitLab includes a check called Secret Detection. It scans the content of the repository
 to find API keys and other information that should not be there.
 
 GitLab displays identified secrets visibly in a few places:

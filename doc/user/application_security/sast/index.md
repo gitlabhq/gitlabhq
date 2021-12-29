@@ -2,13 +2,11 @@
 stage: Secure
 group: Static Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
-type: reference, howto
 ---
 
 # Static Application Security Testing (SAST) **(FREE)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/3775) in GitLab 10.3.
-> - All open source (OSS) analyzers were moved from GitLab Ultimate to GitLab Free in GitLab 13.3.
+> All open source (OSS) analyzers were moved from GitLab Ultimate to GitLab Free in GitLab 13.3.
 
 NOTE:
 The whitepaper ["A Seismic Shift in Application Security"](https://about.gitlab.com/resources/whitepaper-seismic-shift-application-security/)
@@ -168,10 +166,9 @@ To configure SAST for a project you can:
 
 ### Configure SAST manually
 
-For GitLab 11.9 and later, to enable SAST you must [include](../../../ci/yaml/index.md#includetemplate)
+To enable SAST you must [include](../../../ci/yaml/index.md#includetemplate)
 the [`SAST.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/SAST.gitlab-ci.yml)
-provided as a part of your GitLab installation. For GitLab versions earlier than 11.9, you
-can copy and use the job as defined that template.
+provided as a part of your GitLab installation.
 
 Add the following to your `.gitlab-ci.yml` file:
 
@@ -269,7 +266,7 @@ versions are pulled, there are certain cases where it can be beneficial to pin
 an analyzer to a specific release. To do so, override the `SAST_ANALYZER_IMAGE_TAG` CI/CD variable
 in the job template directly.
 
-In the example below, we pin to a specific patch version of the `spotbugs` analyzer and minor version of the `semgrep` analyzer:
+In the example below, we pin to a minor version of the `semgrep` analyzer and a specific patch version of the `brakeman` analyzer:
 
 ```yaml
 include:
@@ -277,11 +274,11 @@ include:
 
 semgrep-sast:
   variables:
-    SAST_ANALYZER_IMAGE_TAG: "2.12"
+    SAST_ANALYZER_IMAGE_TAG: "2.16"
 
-spotbugs-sast:
+brakeman-sast:
   variables:
-    SAST_ANALYZER_IMAGE_TAG: "2.28.1"
+    SAST_ANALYZER_IMAGE_TAG: "2.21.1"
 ```
 
 ### Customize rulesets **(ULTIMATE)**
