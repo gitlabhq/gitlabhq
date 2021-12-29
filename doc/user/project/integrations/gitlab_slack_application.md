@@ -6,9 +6,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # GitLab Slack application **(FREE SAAS)**
 
-> - Introduced in GitLab 9.4.
-> - Distributed to Slack App Directory in GitLab 10.2.
-
 NOTE:
 The GitLab Slack application is only configurable for GitLab.com. It will **not**
 work for on-premises installations where you can configure the

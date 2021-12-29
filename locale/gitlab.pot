@@ -24519,6 +24519,12 @@ msgstr ""
 msgid "OnDemandScans|%{learnMoreLinkStart}Learn more about on-demand scans%{learnMoreLinkEnd}."
 msgstr ""
 
+msgid "OnDemandScans|Are you sure you want to delete this scan?"
+msgstr ""
+
+msgid "OnDemandScans|Could not delete saved scan. Please refresh the page, or try again later."
+msgstr ""
+
 msgid "OnDemandScans|Could not fetch on-demand scans. Please refresh the page, or try again later."
 msgstr ""
 
@@ -24537,10 +24543,16 @@ msgstr ""
 msgid "OnDemandScans|Create new site profile"
 msgstr ""
 
+msgid "OnDemandScans|Delete profile"
+msgstr ""
+
 msgid "OnDemandScans|Description (optional)"
 msgstr ""
 
 msgid "OnDemandScans|Edit on-demand DAST scan"
+msgstr ""
+
+msgid "OnDemandScans|Edit profile"
 msgstr ""
 
 msgid "OnDemandScans|For example: Tests the login page for SQL injections"
@@ -24583,6 +24595,9 @@ msgid "OnDemandScans|On-demand scans run outside the DevOps cycle and find vulne
 msgstr ""
 
 msgid "OnDemandScans|Repeats"
+msgstr ""
+
+msgid "OnDemandScans|Run scan"
 msgstr ""
 
 msgid "OnDemandScans|Save and run scan"

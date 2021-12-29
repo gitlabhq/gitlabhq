@@ -135,8 +135,6 @@ in your GitLab projects.
 
 ## Filter push events by branch
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/20338) in GitLab 11.3.
-
 Push events can be filtered by branch using a branch name or wildcard pattern
 to limit which push events are sent to your webhook endpoint. By default,
 all push events are sent to your webhook endpoint. You can configure branch filtering
@@ -158,8 +156,6 @@ GitLab webhooks, keep in mind the following:
 - GitLab ignores the HTTP status code returned by your endpoint.
 
 ## How image URLs are displayed in the webhook body
-
-> Introduced in GitLab 11.2.
 
 Relative image references are rewritten to use an absolute URL
 in the body of a webhook.

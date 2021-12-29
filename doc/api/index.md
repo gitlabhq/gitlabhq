@@ -64,8 +64,7 @@ For the changes between v3 and v4, see the [v3 to v4 documentation](v3_to_v4.md)
 
 ### Current status
 
-Only API version v4 is available. Version v3 was removed in
-[GitLab 11.0](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/36819).
+Only API version v4 is available.
 
 ## How to use the API
 
@@ -223,8 +222,6 @@ can be passed in either the `private_token` parameter or the `PRIVATE-TOKEN`
 header.
 
 #### Disable impersonation
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/40385) in GitLab 11.6.
 
 By default, impersonation is enabled. To disable impersonation:
 
