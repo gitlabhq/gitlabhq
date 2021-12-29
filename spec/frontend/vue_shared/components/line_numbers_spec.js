@@ -13,7 +13,6 @@ describe('Line Numbers component', () => {
   const findGlIcon = () => wrapper.findComponent(GlIcon);
   const findLineNumbers = () => wrapper.findAllComponents(GlLink);
   const findFirstLineNumber = () => findLineNumbers().at(0);
-  const findSecondLineNumber = () => findLineNumbers().at(1);
 
   beforeEach(() => createComponent());
 
@@ -24,7 +23,7 @@ describe('Line Numbers component', () => {
       expect(findLineNumbers().length).toBe(lines);
       expect(findFirstLineNumber().attributes()).toMatchObject({
         id: 'L1',
-        href: '#L1',
+        href: '#LC1',
       });
     });
 
@@ -37,35 +36,13 @@ describe('Line Numbers component', () => {
   });
 
   describe('clicking a line number', () => {
-    let firstLineNumber;
-    let firstLineNumberElement;
-
     beforeEach(() => {
-      firstLineNumber = findFirstLineNumber();
-      firstLineNumberElement = firstLineNumber.element;
-
-      jest.spyOn(firstLineNumberElement, 'scrollIntoView');
-      jest.spyOn(firstLineNumberElement.classList, 'add');
-      jest.spyOn(firstLineNumberElement.classList, 'remove');
-
-      firstLineNumber.vm.$emit('click');
+      jest.spyOn(wrapper.vm, '$emit');
+      findFirstLineNumber().vm.$emit('click');
     });
 
-    it('adds the highlight (hll) class', () => {
-      expect(firstLineNumberElement.classList.add).toHaveBeenCalledWith('hll');
-    });
-
-    it('removes the highlight (hll) class from a previously highlighted line', () => {
-      findSecondLineNumber().vm.$emit('click');
-
-      expect(firstLineNumberElement.classList.remove).toHaveBeenCalledWith('hll');
-    });
-
-    it('scrolls the line into view', () => {
-      expect(firstLineNumberElement.scrollIntoView).toHaveBeenCalledWith({
-        behavior: 'smooth',
-        block: 'center',
-      });
+    it('emits a select-line event', () => {
+      expect(wrapper.vm.$emit).toHaveBeenCalledWith('select-line', '#LC1');
     });
   });
 });

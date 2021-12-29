@@ -89,6 +89,8 @@ describe('Repository table component', () => {
   `('renders table caption for $ref in $path', ({ path, ref }) => {
     factory({ path });
 
+    // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+    // eslint-disable-next-line no-restricted-syntax
     vm.setData({ ref });
 
     return vm.vm.$nextTick(() => {

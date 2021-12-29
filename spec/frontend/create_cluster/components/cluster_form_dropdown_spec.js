@@ -206,6 +206,8 @@ describe('ClusterFormDropdown', () => {
     const searchQuery = secondItem.name;
 
     wrapper.setProps({ items });
+    // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+    // eslint-disable-next-line no-restricted-syntax
     wrapper.setData({ searchQuery });
 
     return wrapper.vm.$nextTick().then(() => {

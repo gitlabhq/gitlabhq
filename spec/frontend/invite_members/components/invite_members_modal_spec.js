@@ -474,6 +474,8 @@ describe('InviteMembersModal', () => {
         beforeEach(() => {
           createInviteMembersToGroupWrapper();
 
+          // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+          // eslint-disable-next-line no-restricted-syntax
           wrapper.setData({ newUsersToInvite: [user1] });
         });
 
@@ -644,6 +646,8 @@ describe('InviteMembersModal', () => {
         beforeEach(() => {
           createInviteMembersToGroupWrapper();
 
+          // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+          // eslint-disable-next-line no-restricted-syntax
           wrapper.setData({ newUsersToInvite: [user3] });
         });
 
@@ -712,6 +716,8 @@ describe('InviteMembersModal', () => {
         it('displays the invalid syntax error if one of the emails is invalid', async () => {
           createInviteMembersToGroupWrapper();
 
+          // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+          // eslint-disable-next-line no-restricted-syntax
           wrapper.setData({ newUsersToInvite: [user3, user4] });
           mockInvitationsApi(httpStatus.CREATED, invitationsApiResponse.ERROR_EMAIL_INVALID);
 
@@ -787,6 +793,8 @@ describe('InviteMembersModal', () => {
         beforeEach(() => {
           createInviteMembersToGroupWrapper();
 
+          // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+          // eslint-disable-next-line no-restricted-syntax
           wrapper.setData({ newUsersToInvite: [user1, user3] });
 
           mockInvitationsApi(httpStatus.BAD_REQUEST, invitationsApiResponse.EMAIL_INVALID);
@@ -815,6 +823,8 @@ describe('InviteMembersModal', () => {
         beforeEach(() => {
           createComponent({ groupToBeSharedWith: sharedGroup });
 
+          // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+          // eslint-disable-next-line no-restricted-syntax
           wrapper.setData({ inviteeType: 'group' });
           wrapper.vm.$toast = { show: jest.fn() };
           jest.spyOn(Api, 'groupShareWithGroup').mockResolvedValue({ data: groupPostData });
@@ -837,6 +847,8 @@ describe('InviteMembersModal', () => {
         beforeEach(() => {
           createInviteGroupToGroupWrapper();
 
+          // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+          // eslint-disable-next-line no-restricted-syntax
           wrapper.setData({ groupToBeSharedWith: sharedGroup });
           wrapper.vm.$toast = { show: jest.fn() };
 

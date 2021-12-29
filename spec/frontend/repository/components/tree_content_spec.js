@@ -46,6 +46,8 @@ describe('Repository table component', () => {
   it('renders file preview', async () => {
     factory('/');
 
+    // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+    // eslint-disable-next-line no-restricted-syntax
     vm.setData({ entries: { blobs: [{ name: 'README.md' }] } });
 
     await vm.vm.$nextTick();
@@ -134,6 +136,8 @@ describe('Repository table component', () => {
     it('is not rendered if less than 1000 files', async () => {
       factory('/');
 
+      // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+      // eslint-disable-next-line no-restricted-syntax
       vm.setData({ fetchCounter: 5, clickedShowMore: false });
 
       await vm.vm.$nextTick();
@@ -153,6 +157,8 @@ describe('Repository table component', () => {
       factory('/');
 
       const blobs = new Array(totalBlobs).fill('fakeBlob');
+      // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+      // eslint-disable-next-line no-restricted-syntax
       vm.setData({ entries: { blobs }, pagesLoaded });
 
       await vm.vm.$nextTick();
@@ -173,6 +179,8 @@ describe('Repository table component', () => {
       ${200}       | ${100}
     `('exponentially increases page size, to a maximum of 100', ({ fetchCounter, pageSize }) => {
       factory('/');
+      // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+      // eslint-disable-next-line no-restricted-syntax
       vm.setData({ fetchCounter });
 
       vm.vm.fetchFiles();

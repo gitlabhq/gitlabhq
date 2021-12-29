@@ -132,6 +132,8 @@ describe('~/static_site_editor/components/edit_area.vue', () => {
 
   describe('when the mode changes', () => {
     const setInitialMode = (mode) => {
+      // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+      // eslint-disable-next-line no-restricted-syntax
       wrapper.setData({ editorMode: mode });
     };
 
@@ -207,6 +209,8 @@ describe('~/static_site_editor/components/edit_area.vue', () => {
     });
 
     it('syncs matter changes to content in markdown mode', async () => {
+      // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+      // eslint-disable-next-line no-restricted-syntax
       wrapper.setData({ editorMode: EDITOR_TYPES.markdown });
 
       const newSettings = { title: 'test' };

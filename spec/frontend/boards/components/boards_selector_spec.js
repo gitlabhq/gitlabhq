@@ -96,6 +96,8 @@ describe('BoardsSelector', () => {
     });
 
     wrapper.vm.$apollo.addSmartQuery = jest.fn((_, options) => {
+      // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+      // eslint-disable-next-line no-restricted-syntax
       wrapper.setData({
         [options.loadingKey]: true,
       });
@@ -161,6 +163,8 @@ describe('BoardsSelector', () => {
         // Emits gl-dropdown show event to simulate the dropdown is opened at initialization time
         findDropdown().vm.$emit('show');
 
+        // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+        // eslint-disable-next-line no-restricted-syntax
         await wrapper.setData({
           loadingBoards: false,
           loadingRecentBoards: false,
@@ -176,6 +180,8 @@ describe('BoardsSelector', () => {
 
       describe('filtering', () => {
         beforeEach(async () => {
+          // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+          // eslint-disable-next-line no-restricted-syntax
           wrapper.setData({
             boards,
           });
@@ -208,6 +214,8 @@ describe('BoardsSelector', () => {
 
       describe('recent boards section', () => {
         it('shows only when boards are greater than 10', async () => {
+          // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+          // eslint-disable-next-line no-restricted-syntax
           wrapper.setData({
             boards,
           });
@@ -217,6 +225,8 @@ describe('BoardsSelector', () => {
         });
 
         it('does not show when boards are less than 10', async () => {
+          // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+          // eslint-disable-next-line no-restricted-syntax
           wrapper.setData({
             boards: boards.slice(0, 5),
           });
@@ -226,6 +236,8 @@ describe('BoardsSelector', () => {
         });
 
         it('does not show when recentBoards api returns empty array', async () => {
+          // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+          // eslint-disable-next-line no-restricted-syntax
           wrapper.setData({
             recentBoards: [],
           });

@@ -48,12 +48,16 @@ describe('UncollapsedReviewerList component', () => {
     });
 
     it('renders re-request loading icon', async () => {
+      // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+      // eslint-disable-next-line no-restricted-syntax
       await wrapper.setData({ loadingStates: { 1: 'loading' } });
 
       expect(wrapper.find('[data-testid="re-request-button"]').props('loading')).toBe(true);
     });
 
     it('renders re-request success icon', async () => {
+      // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+      // eslint-disable-next-line no-restricted-syntax
       await wrapper.setData({ loadingStates: { 1: 'success' } });
 
       expect(wrapper.find('[data-testid="re-request-success"]').exists()).toBe(true);
@@ -98,6 +102,8 @@ describe('UncollapsedReviewerList component', () => {
     });
 
     it('renders re-request loading icon', async () => {
+      // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+      // eslint-disable-next-line no-restricted-syntax
       await wrapper.setData({ loadingStates: { 2: 'loading' } });
 
       expect(wrapper.findAll('[data-testid="re-request-button"]').length).toBe(2);
@@ -107,6 +113,8 @@ describe('UncollapsedReviewerList component', () => {
     });
 
     it('renders re-request success icon', async () => {
+      // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+      // eslint-disable-next-line no-restricted-syntax
       await wrapper.setData({ loadingStates: { 2: 'success' } });
 
       expect(wrapper.findAll('[data-testid="re-request-button"]').length).toBe(1);

@@ -44,6 +44,8 @@ describe('Blob Header Editing', () => {
       const inputComponent = wrapper.find(GlFormInput);
       const newValue = 'bar.txt';
 
+      // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+      // eslint-disable-next-line no-restricted-syntax
       wrapper.setData({
         name: newValue,
       });

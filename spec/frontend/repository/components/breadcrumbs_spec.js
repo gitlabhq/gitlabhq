@@ -75,6 +75,8 @@ describe('Repository breadcrumbs component', () => {
   it('does not render add to tree dropdown when permissions are false', async () => {
     factory('/', { canCollaborate: false });
 
+    // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+    // eslint-disable-next-line no-restricted-syntax
     wrapper.setData({ userPermissions: { forkProject: false, createMergeRequestIn: false } });
 
     await wrapper.vm.$nextTick();
@@ -100,6 +102,8 @@ describe('Repository breadcrumbs component', () => {
   it('renders add to tree dropdown when permissions are true', async () => {
     factory('/', { canCollaborate: true });
 
+    // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+    // eslint-disable-next-line no-restricted-syntax
     wrapper.setData({ userPermissions: { forkProject: true, createMergeRequestIn: true } });
 
     await wrapper.vm.$nextTick();
@@ -117,6 +121,8 @@ describe('Repository breadcrumbs component', () => {
     });
 
     it('renders the modal once loaded', async () => {
+      // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+      // eslint-disable-next-line no-restricted-syntax
       wrapper.setData({ $apollo: { queries: { userPermissions: { loading: false } } } });
 
       await wrapper.vm.$nextTick();
@@ -139,6 +145,8 @@ describe('Repository breadcrumbs component', () => {
       });
 
       it('renders the modal once loaded', async () => {
+        // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+        // eslint-disable-next-line no-restricted-syntax
         wrapper.setData({ $apollo: { queries: { userPermissions: { loading: false } } } });
 
         await wrapper.vm.$nextTick();

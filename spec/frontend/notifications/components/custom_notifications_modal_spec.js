@@ -88,6 +88,8 @@ describe('CustomNotificationsModal', () => {
       beforeEach(async () => {
         wrapper = createComponent();
 
+        // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+        // eslint-disable-next-line no-restricted-syntax
         wrapper.setData({
           events: [
             { id: 'new_release', enabled: true, name: 'New release', loading: false },
@@ -211,6 +213,8 @@ describe('CustomNotificationsModal', () => {
 
           wrapper = createComponent({ injectedProperties });
 
+          // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+          // eslint-disable-next-line no-restricted-syntax
           wrapper.setData({
             events: [
               { id: 'new_release', enabled: true, name: 'New release', loading: false },
@@ -239,6 +243,8 @@ describe('CustomNotificationsModal', () => {
         mockAxios.onPut('/api/v4/notification_settings').reply(httpStatus.NOT_FOUND, {});
         wrapper = createComponent();
 
+        // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+        // eslint-disable-next-line no-restricted-syntax
         wrapper.setData({
           events: [
             { id: 'new_release', enabled: true, name: 'New release', loading: false },

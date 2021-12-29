@@ -63,6 +63,8 @@ describe('ValueStreamMetrics', () => {
     it('renders hidden GlSingleStat components for each metric', async () => {
       await waitForPromises();
 
+      // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+      // eslint-disable-next-line no-restricted-syntax
       wrapper.setData({ isLoading: true });
 
       await wrapper.vm.$nextTick();

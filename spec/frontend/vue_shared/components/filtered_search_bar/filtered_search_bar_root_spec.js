@@ -122,6 +122,8 @@ describe('FilteredSearchBarRoot', () => {
 
     describe('sortDirectionIcon', () => {
       it('returns string "sort-lowest" when `selectedSortDirection` is "ascending"', () => {
+        // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+        // eslint-disable-next-line no-restricted-syntax
         wrapper.setData({
           selectedSortDirection: SortDirection.ascending,
         });
@@ -130,6 +132,8 @@ describe('FilteredSearchBarRoot', () => {
       });
 
       it('returns string "sort-highest" when `selectedSortDirection` is "descending"', () => {
+        // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+        // eslint-disable-next-line no-restricted-syntax
         wrapper.setData({
           selectedSortDirection: SortDirection.descending,
         });
@@ -140,6 +144,8 @@ describe('FilteredSearchBarRoot', () => {
 
     describe('sortDirectionTooltip', () => {
       it('returns string "Sort direction: Ascending" when `selectedSortDirection` is "ascending"', () => {
+        // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+        // eslint-disable-next-line no-restricted-syntax
         wrapper.setData({
           selectedSortDirection: SortDirection.ascending,
         });
@@ -148,6 +154,8 @@ describe('FilteredSearchBarRoot', () => {
       });
 
       it('returns string "Sort direction: Descending" when `selectedSortDirection` is "descending"', () => {
+        // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+        // eslint-disable-next-line no-restricted-syntax
         wrapper.setData({
           selectedSortDirection: SortDirection.descending,
         });
@@ -158,6 +166,8 @@ describe('FilteredSearchBarRoot', () => {
 
     describe('filteredRecentSearches', () => {
       it('returns array of recent searches filtering out any string type (unsupported) items', async () => {
+        // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+        // eslint-disable-next-line no-restricted-syntax
         wrapper.setData({
           recentSearches: [{ foo: 'bar' }, 'foo'],
         });
@@ -169,6 +179,8 @@ describe('FilteredSearchBarRoot', () => {
       });
 
       it('returns array of recent searches sanitizing any duplicate token values', async () => {
+        // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+        // eslint-disable-next-line no-restricted-syntax
         wrapper.setData({
           recentSearches: [
             [tokenValueAuthor, tokenValueLabel, tokenValueMilestone, tokenValueLabel],
@@ -198,6 +210,8 @@ describe('FilteredSearchBarRoot', () => {
     describe('filterValue', () => {
       it('emits component event `onFilter` with empty array and false when filter was never selected', () => {
         wrapper = createComponent({ initialFilterValue: [tokenValueEmpty] });
+        // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+        // eslint-disable-next-line no-restricted-syntax
         wrapper.setData({
           initialRender: false,
           filterValue: [tokenValueEmpty],
@@ -210,6 +224,8 @@ describe('FilteredSearchBarRoot', () => {
 
       it('emits component event `onFilter` with empty array and true when initially selected filter value was cleared', () => {
         wrapper = createComponent({ initialFilterValue: [tokenValueLabel] });
+        // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+        // eslint-disable-next-line no-restricted-syntax
         wrapper.setData({
           initialRender: false,
           filterValue: [tokenValueEmpty],
@@ -264,6 +280,8 @@ describe('FilteredSearchBarRoot', () => {
 
     describe('handleSortDirectionClick', () => {
       beforeEach(() => {
+        // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+        // eslint-disable-next-line no-restricted-syntax
         wrapper.setData({
           selectedSortOption: mockSortOptions[0],
         });
@@ -312,6 +330,8 @@ describe('FilteredSearchBarRoot', () => {
       const mockFilters = [tokenValueAuthor, 'foo'];
 
       beforeEach(async () => {
+        // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+        // eslint-disable-next-line no-restricted-syntax
         wrapper.setData({
           filterValue: mockFilters,
         });
@@ -376,6 +396,8 @@ describe('FilteredSearchBarRoot', () => {
 
   describe('template', () => {
     beforeEach(() => {
+      // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+      // eslint-disable-next-line no-restricted-syntax
       wrapper.setData({
         selectedSortOption: mockSortOptions[0],
         selectedSortDirection: SortDirection.descending,

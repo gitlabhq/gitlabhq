@@ -95,10 +95,7 @@ module QA
       #
       # @return [Fog::Storage::GoogleJSON]
       def client
-        @client ||= Fog::Storage::Google.new(
-          google_project: PROJECT,
-          google_json_key_location: gcs_credentials
-        )
+        @client ||= Fog::Storage::Google.new(google_project: PROJECT, **gcs_credentials)
       end
 
       # Base path of knapsack report
@@ -132,13 +129,16 @@ module QA
         @report_name ||= ENV["CI_JOB_NAME"].split(" ").first.tr(":", "-")
       end
 
-      # Path to GCS credentials json
+      # GCS credentials json
       #
-      # @return [String]
+      # @return [Hash]
       def gcs_credentials
-        @gcs_credentials ||= ENV["QA_KNAPSACK_REPORT_GCS_CREDENTIALS"] || raise(
+        json_key = ENV["QA_KNAPSACK_REPORT_GCS_CREDENTIALS"] || raise(
           "QA_KNAPSACK_REPORT_GCS_CREDENTIALS env variable is required!"
         )
+        return { google_json_key_location: json_key } if File.exist?(json_key)
+
+        { google_json_key_string: json_key }
       end
     end
   end

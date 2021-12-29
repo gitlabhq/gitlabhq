@@ -9,6 +9,7 @@ import App from './components/app.vue';
 import Breadcrumbs from './components/breadcrumbs.vue';
 import DirectoryDownloadLinks from './components/directory_download_links.vue';
 import LastCommit from './components/last_commit.vue';
+import BlobControls from './components/blob_controls.vue';
 import apolloProvider from './graphql';
 import commitsQuery from './queries/commits.query.graphql';
 import projectPathQuery from './queries/project_path.query.graphql';
@@ -71,7 +72,25 @@ export default function setupVueRepositoryList() {
       },
     });
 
+  const initBlobControlsApp = () =>
+    new Vue({
+      el: document.getElementById('js-blob-controls'),
+      router,
+      apolloProvider,
+      render(h) {
+        return h(BlobControls, {
+          props: {
+            projectPath,
+          },
+        });
+      },
+    });
+
   initLastCommitApp();
+
+  if (gon.features.refactorBlobViewer) {
+    initBlobControlsApp();
+  }
 
   router.afterEach(({ params: { path } }) => {
     setTitle(path, ref, fullName);

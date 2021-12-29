@@ -74,6 +74,19 @@ module Types
       field :pipeline_editor_path, GraphQL::Types::String, null: true,
             description: 'Web path to edit .gitlab-ci.yml file.'
 
+      field :find_file_path, GraphQL::Types::String, null: true,
+            description: 'Web path to find file.'
+
+      field :blame_path, GraphQL::Types::String, null: true,
+            description: 'Web path to blob blame page.'
+
+      field :history_path, GraphQL::Types::String, null: true,
+            description: 'Web path to blob history page.'
+
+      field :permalink_path, GraphQL::Types::String, null: true,
+            description: 'Web path to blob permalink.',
+            calls_gitaly: true
+
       field :code_owners, [Types::UserType], null: true,
             description: 'List of code owners for the blob.',
             calls_gitaly: true

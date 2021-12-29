@@ -317,6 +317,8 @@ describe('Design management design index page', () => {
     describe('when no design exists for given version', () => {
       it('redirects to /designs', () => {
         createComponent({ loading: true });
+        // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+        // eslint-disable-next-line no-restricted-syntax
         wrapper.setData({
           allVersions: mockAllVersions,
         });

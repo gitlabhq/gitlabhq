@@ -242,6 +242,8 @@ describe('Snippet header component', () => {
     // TODO: we should avoid `wrapper.setData` since they
     // are component internals. Let's use the apollo mock helpers
     // in a follow-up.
+    // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+    // eslint-disable-next-line no-restricted-syntax
     wrapper.setData({ canCreateSnippet: true });
     await wrapper.vm.$nextTick();
 

@@ -28,6 +28,8 @@ async function factory(render, propsData = { searchValue: '' }) {
   await nextTick();
 
   if (render) {
+    // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+    // eslint-disable-next-line no-restricted-syntax
     wrapper.setData({ render: true });
 
     // Wait for component to render

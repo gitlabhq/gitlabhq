@@ -65,6 +65,8 @@ describe('Author Select', () => {
 
   describe('user is searching via "filter by commit message"', () => {
     it('disables dropdown container', () => {
+      // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+      // eslint-disable-next-line no-restricted-syntax
       wrapper.setData({ hasSearchParam: true });
 
       return wrapper.vm.$nextTick().then(() => {
@@ -73,6 +75,8 @@ describe('Author Select', () => {
     });
 
     it('has correct tooltip message', () => {
+      // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+      // eslint-disable-next-line no-restricted-syntax
       wrapper.setData({ hasSearchParam: true });
 
       return wrapper.vm.$nextTick().then(() => {
@@ -83,6 +87,8 @@ describe('Author Select', () => {
     });
 
     it('disables dropdown', () => {
+      // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+      // eslint-disable-next-line no-restricted-syntax
       wrapper.setData({ hasSearchParam: false });
 
       return wrapper.vm.$nextTick().then(() => {
@@ -103,6 +109,8 @@ describe('Author Select', () => {
     });
 
     it('displays the current selected author', () => {
+      // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+      // eslint-disable-next-line no-restricted-syntax
       wrapper.setData({ currentAuthor });
 
       return wrapper.vm.$nextTick().then(() => {
@@ -156,6 +164,8 @@ describe('Author Select', () => {
         isChecked: true,
       };
 
+      // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+      // eslint-disable-next-line no-restricted-syntax
       wrapper.setData({ currentAuthor });
 
       return wrapper.vm.$nextTick().then(() => {

@@ -39,6 +39,8 @@ describe('Design management design presentation component', () => {
       stubs,
     });
 
+    // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+    // eslint-disable-next-line no-restricted-syntax
     wrapper.setData(data);
     wrapper.element.scrollTo = jest.fn();
   }

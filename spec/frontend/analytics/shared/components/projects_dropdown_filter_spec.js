@@ -126,6 +126,8 @@ describe('ProjectsDropdownFilter component', () => {
     });
 
     it('applies the correct queryParams when making an api call', async () => {
+      // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+      // eslint-disable-next-line no-restricted-syntax
       wrapper.setData({ searchTerm: 'gitlab' });
 
       expect(spyQuery).toHaveBeenCalledTimes(1);
@@ -204,6 +206,8 @@ describe('ProjectsDropdownFilter component', () => {
       await createWithMockDropdown({ multiSelect: true });
 
       selectDropdownItemAtIndex(0);
+      // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+      // eslint-disable-next-line no-restricted-syntax
       wrapper.setData({ searchTerm: 'this is a very long search string' });
     });
 

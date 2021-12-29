@@ -48,6 +48,8 @@ describe('Add Image Modal', () => {
         const file = { name: 'some_file.png' };
 
         wrapper.vm.$refs.uploadImageTab = { validateFile: jest.fn() };
+        // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+        // eslint-disable-next-line no-restricted-syntax
         wrapper.setData({ file, description, tabIndex: IMAGE_TABS.UPLOAD_TAB });
 
         findModal().vm.$emit('ok', { preventDefault });
@@ -60,6 +62,8 @@ describe('Add Image Modal', () => {
       it('emits an addImage event when a valid URL is specified', () => {
         const preventDefault = jest.fn();
         const mockImage = { imageUrl: '/some/valid/url.png', description: 'some description' };
+        // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+        // eslint-disable-next-line no-restricted-syntax
         wrapper.setData({ ...mockImage, tabIndex: IMAGE_TABS.URL_TAB });
 
         findModal().vm.$emit('ok', { preventDefault });

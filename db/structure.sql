@@ -20893,7 +20893,9 @@ CREATE TABLE vulnerability_reads (
     resolved_on_default_branch boolean DEFAULT false NOT NULL,
     uuid uuid NOT NULL,
     location_image text,
-    CONSTRAINT check_380451bdbe CHECK ((char_length(location_image) <= 2048))
+    cluster_agent_id text,
+    CONSTRAINT check_380451bdbe CHECK ((char_length(location_image) <= 2048)),
+    CONSTRAINT check_a105eb825a CHECK ((char_length(cluster_agent_id) <= 10))
 );
 
 CREATE SEQUENCE vulnerability_reads_id_seq
@@ -27877,6 +27879,8 @@ CREATE UNIQUE INDEX index_vulnerability_occurrences_on_unique_keys ON vulnerabil
 CREATE UNIQUE INDEX index_vulnerability_occurrences_on_uuid ON vulnerability_occurrences USING btree (uuid);
 
 CREATE INDEX index_vulnerability_occurrences_on_vulnerability_id ON vulnerability_occurrences USING btree (vulnerability_id);
+
+CREATE INDEX index_vulnerability_reads_on_cluster_agent_id ON vulnerability_reads USING btree (cluster_agent_id) WHERE (report_type = 7);
 
 CREATE INDEX index_vulnerability_reads_on_location_image ON vulnerability_reads USING btree (location_image) WHERE (report_type = ANY (ARRAY[2, 7]));
 

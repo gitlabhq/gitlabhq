@@ -67,6 +67,8 @@ describe('ServiceCredentialsForm', () => {
   });
 
   it('enables submit button when role ARN is not provided', () => {
+    // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+    // eslint-disable-next-line no-restricted-syntax
     vm.setData({ roleArn: '123' });
 
     return vm.vm.$nextTick().then(() => {
@@ -75,6 +77,8 @@ describe('ServiceCredentialsForm', () => {
   });
 
   it('dispatches createRole action when submit button is clicked', () => {
+    // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+    // eslint-disable-next-line no-restricted-syntax
     vm.setData({ roleArn: '123' }); // set role ARN to enable button
 
     findSubmitButton().vm.$emit('click', new Event('click'));
@@ -84,6 +88,8 @@ describe('ServiceCredentialsForm', () => {
 
   describe('when is creating role', () => {
     beforeEach(() => {
+      // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+      // eslint-disable-next-line no-restricted-syntax
       vm.setData({ roleArn: '123' }); // set role ARN to enable button
 
       state.isCreatingRole = true;

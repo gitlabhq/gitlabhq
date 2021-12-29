@@ -64,3 +64,20 @@ export const projectMock = {
 export const propsMock = { path: 'some_file.js', projectPath: 'some/path' };
 
 export const refMock = 'default-ref';
+
+export const blobControlsDataMock = {
+  id: '1234',
+  repository: {
+    blobs: {
+      nodes: [
+        {
+          id: '5678',
+          findFilePath: 'find/file.js',
+          blamePath: 'blame/file.js',
+          historyPath: 'history/file.js',
+          permalinkPath: 'permalink/file.js',
+        },
+      ],
+    },
+  },
+};

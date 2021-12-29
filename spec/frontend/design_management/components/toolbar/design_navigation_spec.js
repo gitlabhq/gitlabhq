@@ -42,6 +42,8 @@ describe('Design management pagination component', () => {
   });
 
   it('renders navigation buttons', () => {
+    // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+    // eslint-disable-next-line no-restricted-syntax
     wrapper.setData({
       designCollection: { designs: [{ id: '1' }, { id: '2' }] },
     });
@@ -53,6 +55,8 @@ describe('Design management pagination component', () => {
 
   describe('keyboard buttons navigation', () => {
     beforeEach(() => {
+      // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+      // eslint-disable-next-line no-restricted-syntax
       wrapper.setData({
         designCollection: { designs: [{ filename: '1' }, { filename: '2' }, { filename: '3' }] },
       });

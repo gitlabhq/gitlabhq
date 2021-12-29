@@ -63,6 +63,22 @@ class BlobPresenter < Gitlab::View::Presenter::Delegated
     project_ci_pipeline_editor_path(project, branch_name: blob.commit_id) if can_collaborate_with_project?(project) && blob.path == project.ci_config_path_or_default
   end
 
+  def find_file_path
+    url_helpers.project_find_file_path(project, ref_qualified_path)
+  end
+
+  def blame_path
+    url_helpers.project_blame_path(project, ref_qualified_path)
+  end
+
+  def history_path
+    url_helpers.project_commits_path(project, ref_qualified_path)
+  end
+
+  def permalink_path
+    url_helpers.project_blob_path(project, File.join(project.repository.commit.sha, blob.path))
+  end
+
   # Will be overridden in EE
   def code_owners
     []

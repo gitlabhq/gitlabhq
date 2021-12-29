@@ -192,6 +192,8 @@ describe('ReadyToMerge', () => {
       it('should return "Merge in progress"', async () => {
         createComponent();
 
+        // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+        // eslint-disable-next-line no-restricted-syntax
         wrapper.setData({ isMergingImmediately: true });
 
         await Vue.nextTick();
@@ -260,6 +262,8 @@ describe('ReadyToMerge', () => {
       it('should return true when the vm instance is making request', async () => {
         createComponent({ mr: { isMergeAllowed: true } });
 
+        // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+        // eslint-disable-next-line no-restricted-syntax
         wrapper.setData({ isMakingRequest: true });
 
         await Vue.nextTick();
@@ -287,6 +291,8 @@ describe('ReadyToMerge', () => {
         jest
           .spyOn(wrapper.vm.service, 'merge')
           .mockReturnValue(returnPromise('merge_when_pipeline_succeeds'));
+        // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+        // eslint-disable-next-line no-restricted-syntax
         wrapper.setData({ removeSourceBranch: false });
 
         wrapper.vm.handleMergeButtonClick(true);
@@ -691,6 +697,8 @@ describe('ReadyToMerge', () => {
           true,
         );
 
+        // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+        // eslint-disable-next-line no-restricted-syntax
         wrapper.setData({
           loading: false,
           state: {

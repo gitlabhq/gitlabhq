@@ -88,6 +88,8 @@ describe('Merge request widget rebase component', () => {
             mergeRequestWidgetGraphql,
           );
 
+          // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+          // eslint-disable-next-line no-restricted-syntax
           wrapper.setData({ rebasingError: 'Something went wrong!' });
 
           await nextTick();

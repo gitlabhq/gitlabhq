@@ -79,6 +79,8 @@ describe('UpdateUsername component', () => {
 
     beforeEach(async () => {
       createComponent();
+      // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+      // eslint-disable-next-line no-restricted-syntax
       wrapper.setData({ newUsername });
 
       await wrapper.vm.$nextTick();

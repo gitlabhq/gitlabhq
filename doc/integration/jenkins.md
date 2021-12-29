@@ -55,8 +55,8 @@ Create a personal access token to authorize Jenkins to access GitLab.
 1. On the top bar, in the top right corner, select your avatar.
 1. Select **Edit profile**.
 1. On the left sidebar, select **Access Tokens**.
-1. Create a [personal access token](../user/profile/personal_access_tokens.md) with
-   the **API** scope checkbox selected.
+1. Create a [personal access token](../user/profile/personal_access_tokens.md) and
+   select the **API** scope.
 1. Copy the personal access token. You need it to [configure the Jenkins server](#configure-the-jenkins-server).
 
 ## Configure the Jenkins server
@@ -67,11 +67,11 @@ authorize the connection to GitLab.
 1. On the Jenkins server, select **Manage Jenkins > Manage Plugins**.
 1. Install the [Jenkins GitLab Plugin](https://wiki.jenkins.io/display/JENKINS/GitLab+Plugin).
 1. Select **Manage Jenkins > Configure System**.
-1. In the **GitLab** section, select the **Enable authentication for '/project' end-point** checkbox.
+1. In the **GitLab** section, select **Enable authentication for '/project' end-point**.
 1. Select **Add**, then choose **Jenkins Credential Provider**.
 1. Select **GitLab API token** as the token type.
-1. Enter the GitLab personal access token's value in the **API Token** field and select **Add**.
-1. Enter the GitLab server's URL in the **GitLab host URL** field.
+1. Enter the GitLab personal access token's value in **API Token** and select **Add**.
+1. Enter the GitLab server's URL in **GitLab host URL**.
 1. To test the connection, select **Test Connection**.
 
    ![Jenkins plugin configuration](img/jenkins_gitlab_plugin_config.png)
@@ -89,7 +89,7 @@ Set up the Jenkins project you intend to run your build on.
    We recommend a Freestyle project, because the Jenkins plugin updates the build status on
    GitLab. In a Pipeline project, you must configure a script to update the status on GitLab.
 1. Choose your GitLab connection from the dropdown list.
-1. Select the **Build when a change is pushed to GitLab** checkbox.
+1. Select **Build when a change is pushed to GitLab**.
 1. Select the following checkboxes:
    - **Accepted Merge Request Events**
    - **Closed Merge Request Events**
@@ -153,10 +153,10 @@ If you are unable to provide GitLab with your Jenkins server login, you can use 
 to integrate GitLab and Jenkins.
 
 1. In the configuration of your Jenkins job, in the GitLab configuration section, select **Advanced**.
-1. Under the **Secret Token** field, select **Generate**.
+1. Under **Secret Token**, select **Generate**.
 1. Copy the token, and save the job configuration.
 1. In GitLab, create a webhook for your project, enter the trigger URL
-   (such as `https://JENKINS_URL/project/YOUR_JOB`) and paste the token in the **Secret Token** field.
+   (such as `https://JENKINS_URL/project/YOUR_JOB`) and paste the token in **Secret Token**.
 1. To test the webhook, select **Test**.
 
 ## Related topics
@@ -178,24 +178,31 @@ If you get this error message while configuring GitLab, the following are possib
 - The Jenkins instance is at a local address and is not included in the
   [GitLab installation's allowlist](../security/webhooks.md#allowlist-for-local-requests).
 - The credentials for the Jenkins instance do not have sufficient access or are invalid.
-- The **Enable authentication for ‘/project’ end-point checkbox** is not selected in your [Jenkin's plugin configuration](#configure-the-jenkins-server).
+- The **Enable authentication for ‘/project’ end-point** checkbox is not selected in your [Jenkin's plugin configuration](#configure-the-jenkins-server).
 
 ### Error in merge requests - "Could not connect to the CI server"
 
-This integration relies on Jenkins reporting the build status back to GitLab via
-the [Commit Status API](../api/commits.md#commit-status).
+You might get the `Could not connect to the CI server` error if GitLab did not
+receive a build status update from Jenkins via the [Commit Status API](../api/commits.md#commit-status).
 
-The error 'Could not connect to the CI server' usually means that GitLab did not
-receive a build status update via the API. Either Jenkins was not properly
-configured or there was an error reporting the status via the API.
+This issue occurs when Jenkins is not properly
+configured or there is an error reporting the status via the API.
 
-1. [Configure the Jenkins server](#configure-the-jenkins-server) for GitLab API access
+To fix this issue, ensure you:
+
+1. [Configure the Jenkins server](#configure-the-jenkins-server) for GitLab API access.
 1. [Configure the Jenkins project](#configure-the-jenkins-project), including the
    'Publish build status to GitLab' post-build action.
 
-### Merge Request event does not trigger a Jenkins Pipeline
+### Merge request event does not trigger a Jenkins pipeline
 
-Check [service hook logs](../user/project/integrations/overview.md#troubleshooting-integrations) for request failures or check the `/var/log/gitlab/gitlab-rails/production.log` file for messages like:
+This issue can occur when the request exceeds the
+[webhook timeout](../user/project/integrations/webhooks.md#webhook-fails-or-multiple-webhook-requests-are-triggered),
+which is set to 10 seconds by default.
+
+Check the [service hook logs](../user/project/integrations/overview.md#troubleshooting-integrations)
+for request failures or check the `/var/log/gitlab/gitlab-rails/production.log`
+file for messages like:
 
 ```plaintext
 WebHook Error => Net::ReadTimeout
@@ -207,30 +214,38 @@ or
 WebHook Error => execution expired
 ```
 
-If those are present, the request is exceeding the
-[webhook timeout](../user/project/integrations/webhooks.md#webhook-fails-or-multiple-webhook-requests-are-triggered),
-which is set to 10 seconds by default.
-
-To fix this the `gitlab_rails['webhook_timeout']` value must be increased
-in the `gitlab.rb` configuration file, followed by the [`gitlab-ctl reconfigure` command](../administration/restart_gitlab.md).
-
-If you don't find the errors above, but do find *duplicate* entries like below (in `/var/log/gitlab/gitlab-rail`),
-[webhook requests may be timing out](../user/project/integrations/webhooks.md#webhook-fails-or-multiple-webhook-requests-are-triggered):
+Or check for duplicate messages in `/var/log/gitlab/gitlab-rail`, like:
 
 ```plaintext
 2019-10-25_04:22:41.25630 2019-10-25T04:22:41.256Z 1584 TID-ovowh4tek WebHookWorker JID-941fb7f40b69dff3d833c99b INFO: start
 2019-10-25_04:22:41.25630 2019-10-25T04:22:41.256Z 1584 TID-ovowh4tek WebHookWorker JID-941fb7f40b69dff3d833c99b INFO: start
 ```
 
+To fix this issue:
+
+1. Increase the `gitlab_rails['webhook_timeout']` value in the `gitlab.rb`
+   configuration file.
+1. [Restart](../administration/restart_gitlab.md) GitLab:
+
+   ```shell
+   gitlab-ctl reconfigure
+   ```
+
 ### Enable job logs in Jenkins
 
-When troubleshooting an integration issue, it is useful to enable job logs in Jenkins to see more details about what is happening under the hood.
+To troubleshoot an integration issue, you can enable job logs in Jenkins to get
+more details about your builds.
+
 To enable job logs in Jenkins:
 
 1. Go to **Dashboard > Manage Jenkins > System Log**.
 1. Select **Add new log recorder**.
 1. Enter a name for the log recorder.
-1. On the next screen, select **Add** and enter `org.jenkinsci.plugins.workflow.job` in the text field.
+1. On the next screen, select **Add** and enter `org.jenkinsci.plugins.workflow.job`.
 1. Make sure that the Log Level is **All** and select **Save**.
 
-Now, after you run a build, you can go to the loggers page (**Dashboard > Manage Jenkins > System Log**), select your logger, and check the logs.
+To view your logs:
+
+1. Run a build.
+1. Go to **Dashboard > Manage Jenkins > System Log**.
+1. Select your logger and check the logs.

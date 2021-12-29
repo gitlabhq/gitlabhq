@@ -9,7 +9,7 @@ jest.mock('highlight.js/lib/core');
 describe('Source Viewer component', () => {
   let wrapper;
   const content = `// Some source code`;
-  const highlightedContent = `<span data-testid='test-highlighted'>${content}</span>`;
+  const highlightedContent = `<span data-testid='test-highlighted' id='LC1'>${content}</span><span id='LC2'></span>`;
   const language = 'javascript';
 
   hljs.highlight.mockImplementation(() => ({ value: highlightedContent }));
@@ -22,6 +22,7 @@ describe('Source Viewer component', () => {
 
   const findLineNumbers = () => wrapper.findComponent(LineNumbers);
   const findHighlightedContent = () => wrapper.findByTestId('test-highlighted');
+  const findFirstLine = () => wrapper.find('#LC1');
 
   beforeEach(() => createComponent());
 
@@ -54,6 +55,39 @@ describe('Source Viewer component', () => {
 
     it('renders the highlighted content', () => {
       expect(findHighlightedContent().exists()).toBe(true);
+    });
+  });
+
+  describe('selecting a line', () => {
+    let firstLine;
+    let firstLineElement;
+
+    beforeEach(() => {
+      firstLine = findFirstLine();
+      firstLineElement = firstLine.element;
+
+      jest.spyOn(firstLineElement, 'scrollIntoView');
+      jest.spyOn(firstLineElement.classList, 'add');
+      jest.spyOn(firstLineElement.classList, 'remove');
+
+      findLineNumbers().vm.$emit('select-line', '#LC1');
+    });
+
+    it('adds the highlight (hll) class', () => {
+      expect(firstLineElement.classList.add).toHaveBeenCalledWith('hll');
+    });
+
+    it('removes the highlight (hll) class from a previously highlighted line', () => {
+      findLineNumbers().vm.$emit('select-line', '#LC2');
+
+      expect(firstLineElement.classList.remove).toHaveBeenCalledWith('hll');
+    });
+
+    it('scrolls the line into view', () => {
+      expect(firstLineElement.scrollIntoView).toHaveBeenCalledWith({
+        behavior: 'smooth',
+        block: 'center',
+      });
     });
   });
 });

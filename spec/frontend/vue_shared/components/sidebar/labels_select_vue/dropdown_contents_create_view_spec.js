@@ -43,6 +43,8 @@ describe('DropdownContentsCreateView', () => {
       });
 
       it('returns `true` when `labelCreateInProgress` is true', () => {
+        // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+        // eslint-disable-next-line no-restricted-syntax
         wrapper.setData({
           labelTitle: 'Foo',
           selectedColor: '#ff0000',
@@ -55,6 +57,8 @@ describe('DropdownContentsCreateView', () => {
       });
 
       it('returns `false` when label title and color is defined and create request is not already in progress', () => {
+        // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+        // eslint-disable-next-line no-restricted-syntax
         wrapper.setData({
           labelTitle: 'Foo',
           selectedColor: '#ff0000',
@@ -99,6 +103,8 @@ describe('DropdownContentsCreateView', () => {
     describe('handleCreateClick', () => {
       it('calls action `createLabel` with object containing `labelTitle` & `selectedColor`', () => {
         jest.spyOn(wrapper.vm, 'createLabel').mockImplementation();
+        // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+        // eslint-disable-next-line no-restricted-syntax
         wrapper.setData({
           labelTitle: 'Foo',
           selectedColor: '#ff0000',
@@ -164,6 +170,8 @@ describe('DropdownContentsCreateView', () => {
     });
 
     it('renders color input element', () => {
+      // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+      // eslint-disable-next-line no-restricted-syntax
       wrapper.setData({
         selectedColor: '#ff0000',
       });

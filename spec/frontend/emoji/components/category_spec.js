@@ -26,6 +26,8 @@ describe('Emoji category component', () => {
   });
 
   it('renders group', async () => {
+    // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+    // eslint-disable-next-line no-restricted-syntax
     await wrapper.setData({ renderGroup: true });
 
     expect(wrapper.find(EmojiGroup).attributes('rendergroup')).toBe('true');

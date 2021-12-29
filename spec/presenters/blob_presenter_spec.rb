@@ -67,6 +67,22 @@ RSpec.describe BlobPresenter do
     end
   end
 
+  describe '#find_file_path' do
+    it { expect(presenter.find_file_path).to eq("/#{project.full_path}/-/find_file/HEAD/files/ruby/regex.rb") }
+  end
+
+  describe '#blame_path' do
+    it { expect(presenter.blame_path).to eq("/#{project.full_path}/-/blame/HEAD/files/ruby/regex.rb") }
+  end
+
+  describe '#history_path' do
+    it { expect(presenter.history_path).to eq("/#{project.full_path}/-/commits/HEAD/files/ruby/regex.rb") }
+  end
+
+  describe '#permalink_path' do
+    it { expect(presenter.permalink_path).to eq("/#{project.full_path}/-/blob/#{project.repository.commit.sha}/files/ruby/regex.rb") }
+  end
+
   describe '#code_owners' do
     it { expect(presenter.code_owners).to match_array([]) }
   end

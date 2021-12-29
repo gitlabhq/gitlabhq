@@ -121,6 +121,8 @@ describe('MilestoneToken', () => {
     beforeEach(async () => {
       wrapper = createComponent({ value: { data: `"${mockRegularMilestone.title}"` } });
 
+      // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+      // eslint-disable-next-line no-restricted-syntax
       wrapper.setData({
         milestones: mockMilestones,
       });

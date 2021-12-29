@@ -34,6 +34,8 @@ describe('Repository file preview component', () => {
       name: 'README.md',
     });
 
+    // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+    // eslint-disable-next-line no-restricted-syntax
     vm.setData({ readme: { html: '<div class="blob">test</div>' } });
 
     return vm.vm.$nextTick(() => {
@@ -47,6 +49,8 @@ describe('Repository file preview component', () => {
       name: 'README.md',
     });
 
+    // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+    // eslint-disable-next-line no-restricted-syntax
     vm.setData({ readme: { html: '<div class="blob">test</div>' } });
 
     return vm.vm
@@ -63,6 +67,8 @@ describe('Repository file preview component', () => {
       name: 'README.md',
     });
 
+    // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+    // eslint-disable-next-line no-restricted-syntax
     vm.setData({ loading: 1 });
 
     return vm.vm.$nextTick(() => {

@@ -792,6 +792,8 @@ describe('Dashboard', () => {
       });
       createShallowWrapper({ hasMetrics: true });
 
+      // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+      // eslint-disable-next-line no-restricted-syntax
       wrapper.setData({ hoveredPanel: panelRef });
 
       return wrapper.vm.$nextTick();

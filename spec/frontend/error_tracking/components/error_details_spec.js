@@ -173,6 +173,8 @@ describe('ErrorDetails', () => {
     beforeEach(() => {
       mocks.$apollo.queries.error.loading = false;
       mountComponent();
+      // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+      // eslint-disable-next-line no-restricted-syntax
       wrapper.setData({
         error: {
           id: 'gid://gitlab/Gitlab::ErrorTracking::DetailedError/129381',
@@ -203,6 +205,8 @@ describe('ErrorDetails', () => {
       const culprit = '<script>console.log("surprise!")</script>';
       beforeEach(() => {
         store.state.details.loadingStacktrace = false;
+        // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+        // eslint-disable-next-line no-restricted-syntax
         wrapper.setData({
           error: {
             culprit,
@@ -222,6 +226,8 @@ describe('ErrorDetails', () => {
 
     describe('Badges', () => {
       it('should show language and error level badges', () => {
+        // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+        // eslint-disable-next-line no-restricted-syntax
         wrapper.setData({
           error: {
             tags: { level: 'error', logger: 'ruby' },
@@ -233,6 +239,8 @@ describe('ErrorDetails', () => {
       });
 
       it('should NOT show the badge if the tag is not present', () => {
+        // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+        // eslint-disable-next-line no-restricted-syntax
         wrapper.setData({
           error: {
             tags: { level: 'error' },
@@ -246,6 +254,8 @@ describe('ErrorDetails', () => {
       it.each(Object.keys(severityLevel))(
         'should set correct severity level variant for %s badge',
         (level) => {
+          // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+          // eslint-disable-next-line no-restricted-syntax
           wrapper.setData({
             error: {
               tags: { level: severityLevel[level] },
@@ -260,6 +270,8 @@ describe('ErrorDetails', () => {
       );
 
       it('should fallback for ERROR severityLevelVariant when severityLevel is unknown', () => {
+        // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+        // eslint-disable-next-line no-restricted-syntax
         wrapper.setData({
           error: {
             tags: { level: 'someNewErrorLevel' },
@@ -408,6 +420,8 @@ describe('ErrorDetails', () => {
 
         it('should show alert with closed issueId', () => {
           const closedIssueId = 123;
+          // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+          // eslint-disable-next-line no-restricted-syntax
           wrapper.setData({
             isAlertVisible: true,
             closedIssueId,
@@ -429,6 +443,8 @@ describe('ErrorDetails', () => {
 
       describe('is present', () => {
         beforeEach(() => {
+          // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+          // eslint-disable-next-line no-restricted-syntax
           wrapper.setData({
             error: {
               gitlabIssuePath,
@@ -451,6 +467,8 @@ describe('ErrorDetails', () => {
 
       describe('is not present', () => {
         beforeEach(() => {
+          // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+          // eslint-disable-next-line no-restricted-syntax
           wrapper.setData({
             error: {
               gitlabIssuePath: null,
@@ -480,6 +498,8 @@ describe('ErrorDetails', () => {
 
       it('should display a link', () => {
         mocks.$apollo.queries.error.loading = false;
+        // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+        // eslint-disable-next-line no-restricted-syntax
         wrapper.setData({
           error: {
             gitlabCommit,
@@ -493,6 +513,8 @@ describe('ErrorDetails', () => {
 
       it('should not display a link', () => {
         mocks.$apollo.queries.error.loading = false;
+        // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+        // eslint-disable-next-line no-restricted-syntax
         wrapper.setData({
           error: {
             gitlabCommit: null,
@@ -519,6 +541,8 @@ describe('ErrorDetails', () => {
 
       it('should display links to Sentry', async () => {
         mocks.$apollo.queries.error.loading = false;
+        // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+        // eslint-disable-next-line no-restricted-syntax
         await wrapper.setData({
           error: {
             firstReleaseVersion,
@@ -535,6 +559,8 @@ describe('ErrorDetails', () => {
 
       it('should display links to GitLab when integrated', async () => {
         mocks.$apollo.queries.error.loading = false;
+        // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+        // eslint-disable-next-line no-restricted-syntax
         await wrapper.setData({
           error: {
             firstReleaseVersion,
@@ -557,6 +583,8 @@ describe('ErrorDetails', () => {
       jest.spyOn(Tracking, 'event');
       mocks.$apollo.queries.error.loading = false;
       mountComponent();
+      // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+      // eslint-disable-next-line no-restricted-syntax
       wrapper.setData({
         error: { externalUrl },
       });
