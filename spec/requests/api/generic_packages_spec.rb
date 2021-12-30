@@ -574,6 +574,27 @@ RSpec.describe API::GenericPackages do
       end
     end
 
+    context 'with package status' do
+      where(:package_status, :expected_status) do
+        :default      | :success
+        :hidden       | :success
+        :error        | :not_found
+      end
+
+      with_them do
+        before do
+          project.add_developer(user)
+          package.update!(status: package_status)
+        end
+
+        it "responds with #{params[:expected_status]}" do
+          download_file(personal_access_token_header)
+
+          expect(response).to have_gitlab_http_status(expected_status)
+        end
+      end
+    end
+
     context 'event tracking' do
       let(:snowplow_gitlab_standard_context) { { project: project, namespace: project.namespace, user: user } }
 

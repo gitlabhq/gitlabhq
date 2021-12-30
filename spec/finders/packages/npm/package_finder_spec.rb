@@ -52,7 +52,7 @@ RSpec.describe ::Packages::Npm::PackageFinder do
 
       context 'with an uninstallable package' do
         before do
-          package.update_column(:status, 1)
+          package.update_column(:status, :error)
         end
 
         it { is_expected.to be_empty }

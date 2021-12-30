@@ -36,7 +36,7 @@ RSpec.describe Packages::Nuget::PackageFinder do
 
       context 'with an uninstallable package' do
         before do
-          package1.update_column(:status, 1)
+          package1.update_column(:status, :error)
         end
 
         it { is_expected.to contain_exactly(package2) }

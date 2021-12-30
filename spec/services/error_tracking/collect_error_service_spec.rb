@@ -92,6 +92,25 @@ RSpec.describe ErrorTracking::CollectErrorService do
         expect(event.environment).to eq 'Accumulate'
         expect(event.payload).to eq parsed_event
       end
+
+      context 'with two exceptions' do
+        let(:parsed_event) { Gitlab::Json.parse(fixture_file('error_tracking/go_two_exception_event.json')) }
+
+        it 'reports using second exception', :aggregate_failures do
+          subject.execute
+
+          event = ErrorTracking::ErrorEvent.last
+          error = event.error
+
+          expect(error.name).to eq '*url.Error'
+          expect(error.description).to eq(%(Get \"foobar\": unsupported protocol scheme \"\"))
+          expect(error.platform).to eq 'go'
+          expect(error.actor).to eq('main(main)')
+
+          expect(event.description).to eq(%(Get \"foobar\": unsupported protocol scheme \"\"))
+          expect(event.payload).to eq parsed_event
+        end
+      end
     end
   end
 end

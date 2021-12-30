@@ -1952,6 +1952,9 @@ msgstr ""
 msgid "Active Sessions"
 msgstr ""
 
+msgid "Active chat names (%{count})"
+msgstr ""
+
 msgid "Activity"
 msgstr ""
 

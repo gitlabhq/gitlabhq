@@ -39,7 +39,7 @@ RSpec.describe ::Packages::Maven::PackageFinder do
         let(:param_path) { package.maven_metadatum.path }
 
         before do
-          package.update_column(:status, 1)
+          package.update_column(:status, :error)
         end
 
         it { expect { subject }.to raise_error(ActiveRecord::RecordNotFound) }

@@ -59,7 +59,7 @@ RSpec.describe Packages::Go::PackageFinder do
       let(:version_name) { version.name }
 
       before do
-        package.update_column(:status, 1)
+        package.update_column(:status, :error)
       end
 
       it { is_expected.to eq(nil) }

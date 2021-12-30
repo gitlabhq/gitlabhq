@@ -7,7 +7,7 @@ class Packages::Package < ApplicationRecord
   include Gitlab::Utils::StrongMemoize
 
   DISPLAYABLE_STATUSES = [:default, :error].freeze
-  INSTALLABLE_STATUSES = [:default].freeze
+  INSTALLABLE_STATUSES = [:default, :hidden].freeze
 
   enum package_type: {
     maven: 1,
