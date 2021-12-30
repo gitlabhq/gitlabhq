@@ -1051,9 +1051,11 @@ module Ci
     end
 
     def drop_with_exit_code!(failure_reason, exit_code)
-      transaction do
-        conditionally_allow_failure!(exit_code)
-        drop!(failure_reason)
+      ::Gitlab::Database::QueryAnalyzers::PreventCrossDatabaseModification.allow_cross_database_modification_within_transaction(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/348495') do
+        transaction do
+          conditionally_allow_failure!(exit_code)
+          drop!(failure_reason)
+        end
       end
     end
 

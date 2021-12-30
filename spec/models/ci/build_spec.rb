@@ -5223,6 +5223,26 @@ RSpec.describe Ci::Build do
         it_behaves_like 'drops the build without changing allow_failure'
       end
     end
+
+    context 'when build is configured to be retried' do
+      let(:options) { { retry: 3 } }
+
+      context 'when there is an MR attached to the pipeline and a failed job todo for that MR' do
+        let!(:merge_request) { create(:merge_request, source_project: project, author: user, head_pipeline: pipeline) }
+        let!(:todo) { create(:todo, :build_failed, user: user, project: project, author: user, target: merge_request) }
+
+        before do
+          build.update!(user: user)
+          project.add_developer(user)
+        end
+
+        it 'resolves the todo for the old failed build' do
+          expect do
+            drop_with_exit_code
+          end.to change { todo.reload.state }.from('pending').to('done')
+        end
+      end
+    end
   end
 
   describe '#exit_codes_defined?' do

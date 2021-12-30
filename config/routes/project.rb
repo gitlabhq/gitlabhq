@@ -212,7 +212,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           end
         end
 
-        resources :services, constraints: { id: %r{[^/]+} }, only: [:edit, :update] do
+        resources :integrations, controller: :services, constraints: { id: %r{[^/]+} }, only: [:edit, :update] do
           member do
             put :test
           end

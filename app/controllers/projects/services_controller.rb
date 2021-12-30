@@ -66,7 +66,7 @@ class Projects::ServicesController < Projects::ApplicationController
   private
 
   def redirect_path
-    safe_redirect_path(params[:redirect_to]).presence || edit_project_service_path(project, integration)
+    safe_redirect_path(params[:redirect_to]).presence || edit_project_integration_path(project, integration)
   end
 
   def service_test_response
@@ -119,7 +119,7 @@ class Projects::ServicesController < Projects::ApplicationController
   end
 
   def redirect_deprecated_prometheus_integration
-    redirect_to edit_project_service_path(project, integration) if integration.is_a?(::Integrations::Prometheus) && Feature.enabled?(:settings_operations_prometheus_service, project)
+    redirect_to edit_project_integration_path(project, integration) if integration.is_a?(::Integrations::Prometheus) && Feature.enabled?(:settings_operations_prometheus_service, project)
   end
 
   def set_deprecation_notice_for_prometheus_integration

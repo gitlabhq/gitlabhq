@@ -42,7 +42,7 @@ However, you can't import issues and merge requests this way. To retain all meta
 merge requests, use the [import/export feature](../settings/import_export.md)
 to export projects from self-managed GitLab and import those projects into GitLab.com. All GitLab
 user associations (such as comment author) are changed to the user importing the project. For more
-information, see the prerequisites and imporant notes in these sections:
+information, see the prerequisites and important notes in these sections:
 
 - [Export a project and its data](../settings/import_export.md#export-a-project-and-its-data).
 - [Import the project](../settings/import_export.md#import-a-project-and-its-data).

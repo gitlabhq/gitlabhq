@@ -40,7 +40,7 @@ See [Prometheus cluster integration](../../clusters/integrations.md#prometheus-c
 Integration with Prometheus requires the following:
 
 - Prometheus must be configured to collect one of the [supported metrics](prometheus_library/index.md)
-- Each metric must be have a label to indicate the environment
+- Each metric must have a label to indicate the environment
 - GitLab must have network connectivity to the Prometheus server
 
 #### Getting started

@@ -2603,7 +2603,7 @@ Example response:
 
 ## Approvals
 
-For approvals, please see [Merge Request Approvals](merge_request_approvals.md)
+For approvals, see [Merge Request Approvals](merge_request_approvals.md)
 
 ## List merge request state events
 
