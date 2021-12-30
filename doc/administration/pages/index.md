@@ -192,6 +192,33 @@ to use the HTTPS protocol.
 WARNING:
 Multiple wildcards for one instance is not supported. Only one wildcard per instance can be assigned.
 
+### Wildcard domains with TLS-terminating Load Balancer
+
+**Requirements:**
+
+- [Wildcard DNS setup](#dns-configuration)
+- [TLS-terminating load balancer](../../install/aws/manual_install_aws.md#load-balancer)
+
+---
+
+URL scheme: `https://<namespace>.example.io/<project_slug>`
+
+This setup is primarily intended to be used when [installing a GitLab POC on Amazon Web Services](../../install/aws/manual_install_aws.md). This includes a TLS-terminating [classic load balancer](../../install/aws/manual_install_aws.md#load-balancer) that listens for HTTPS connections, manages TLS certificates, and forwards HTTP traffic to the instance.
+
+1. In `/etc/gitlab/gitlab.rb` specify the following configuration:
+
+   ```ruby
+   external_url "https://gitlab.example.com" # external_url here is only for reference
+   pages_external_url "https://pages.example.com" # not a subdomain of external_url
+
+   pages_nginx['enable'] = true
+   pages_nginx['listen_port'] = 80
+   pages_nginx['listen_https'] = false
+   pages_nginx['redirect_http_to_https'] = true
+   ```
+
+1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
+
 ### Global settings
 
 Below is a table of all configuration settings known to Pages in Omnibus GitLab,
