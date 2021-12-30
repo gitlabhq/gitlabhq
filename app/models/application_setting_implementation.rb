@@ -14,7 +14,7 @@ module ApplicationSettingImplementation
   # Setting a key restriction to `-1` means that all keys of this type are
   # forbidden.
   FORBIDDEN_KEY_VALUE = KeyRestrictionValidator::FORBIDDEN
-  SUPPORTED_KEY_TYPES = %i[rsa dsa ecdsa ed25519].freeze
+  SUPPORTED_KEY_TYPES = Gitlab::SSHPublicKey.supported_types
   VALID_RUNNER_REGISTRAR_TYPES = %w(project group).freeze
 
   DEFAULT_PROTECTED_PATHS = [

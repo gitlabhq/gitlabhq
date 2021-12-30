@@ -19,6 +19,10 @@ module Gitlab
       TECHNOLOGIES.find { |tech| key.is_a?(tech.key_class) }
     end
 
+    def self.supported_types
+      TECHNOLOGIES.map(&:name)
+    end
+
     def self.supported_sizes(name)
       technology(name)&.supported_sizes
     end

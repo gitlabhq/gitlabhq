@@ -21,6 +21,14 @@ RSpec.describe Gitlab::SSHPublicKey, lib: true do
     end
   end
 
+  describe '.supported_types' do
+    it 'returns array with the names of supported technologies' do
+      expect(described_class.supported_types).to eq(
+        [:rsa, :dsa, :ecdsa, :ed25519]
+      )
+    end
+  end
+
   describe '.supported_sizes(name)' do
     where(:name, :sizes) do
       [

@@ -491,7 +491,7 @@ RSpec.describe ApplicationSetting do
 
     context 'key restrictions' do
       it 'supports all key types' do
-        expect(described_class::SUPPORTED_KEY_TYPES).to contain_exactly(:rsa, :dsa, :ecdsa, :ed25519)
+        expect(described_class::SUPPORTED_KEY_TYPES).to eq(Gitlab::SSHPublicKey.supported_types)
       end
 
       it 'does not allow all key types to be disabled' do
