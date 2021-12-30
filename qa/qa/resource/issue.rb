@@ -3,7 +3,7 @@
 module QA
   module Resource
     class Issue < Base
-      attr_writer :description, :milestone, :template, :weight
+      attr_writer :milestone, :template, :weight
 
       attribute :project do
         Project.fabricate! do |resource|
@@ -93,6 +93,15 @@ module QA
           Runtime::API::Request.new(api_client, api_comments_path, per_page: '100').url,
           attempts: attempts
         )
+      end
+
+      # Create a new comment
+      #
+      # @param [String] body
+      # @param [Boolean] confidential
+      # @return [Hash]
+      def add_comment(body:, confidential: false)
+        api_post_to(api_comments_path, body: body, confidential: confidential)
       end
 
       protected

@@ -159,7 +159,7 @@ RSpec.describe Gitlab::Lfs::Client do
       it 'raises an error' do
         stub_upload(object: object, headers: upload_action['header']).to_return(status: 400)
 
-        expect { lfs_client.upload!(object, upload_action, authenticated: true) }.to raise_error(/Failed/)
+        expect { lfs_client.upload!(object, upload_action, authenticated: true) }.to raise_error(/Failed to upload object: HTTP status 400/)
       end
     end
 
@@ -167,7 +167,7 @@ RSpec.describe Gitlab::Lfs::Client do
       it 'raises an error' do
         stub_upload(object: object, headers: upload_action['header']).to_return(status: 500)
 
-        expect { lfs_client.upload!(object, upload_action, authenticated: true) }.to raise_error(/Failed/)
+        expect { lfs_client.upload!(object, upload_action, authenticated: true) }.to raise_error(/Failed to upload object: HTTP status 500/)
       end
     end
 
@@ -226,7 +226,7 @@ RSpec.describe Gitlab::Lfs::Client do
       it 'raises an error' do
         stub_verify(object: object, headers: verify_action['header']).to_return(status: 400)
 
-        expect { lfs_client.verify!(object, verify_action, authenticated: true) }.to raise_error(/Failed/)
+        expect { lfs_client.verify!(object, verify_action, authenticated: true) }.to raise_error(/Failed to verify object: HTTP status 400/)
       end
     end
 
@@ -234,7 +234,7 @@ RSpec.describe Gitlab::Lfs::Client do
       it 'raises an error' do
         stub_verify(object: object, headers: verify_action['header']).to_return(status: 500)
 
-        expect { lfs_client.verify!(object, verify_action, authenticated: true) }.to raise_error(/Failed/)
+        expect { lfs_client.verify!(object, verify_action, authenticated: true) }.to raise_error(/Failed to verify object: HTTP status 500/)
       end
     end
 

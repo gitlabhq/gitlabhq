@@ -5,9 +5,9 @@ module QA
   # on staging environment
   RSpec.describe 'Manage', :requires_admin, except: { subdomain: :staging } do
     describe 'Gitlab migration', quarantine: {
-      only: { job: "praefect-parallel" },
+      only: { job: 'praefect-parallel' },
       type: :investigating,
-      issue: "https://gitlab.com/gitlab-org/gitlab/-/issues/348999"
+      issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/348999'
     } do
       let(:source_project_with_readme) { false }
       let(:import_wait_duration) { { max_duration: 300, sleep_interval: 2 } }
@@ -93,7 +93,7 @@ module QA
       end
 
       context 'with project issues' do
-        let(:source_issue) do
+        let!(:source_issue) do
           Resource::Issue.fabricate_via_api! do |issue|
             issue.api_client = api_client
             issue.project = source_project
@@ -101,9 +101,9 @@ module QA
           end
         end
 
-        let(:imported_issues) do
-          imported_projects.first.issues
-        end
+        let!(:source_comment) { source_issue.add_comment(body: 'This is a test comment!') }
+
+        let(:imported_issues) { imported_projects.first.issues }
 
         let(:imported_issue) do
           issue = imported_issues.first
@@ -114,9 +114,7 @@ module QA
           end
         end
 
-        before do
-          source_issue # fabricate source group, project, issue
-        end
+        let(:imported_comments) { imported_issue.comments }
 
         it(
           'successfully imports issue',
@@ -124,8 +122,13 @@ module QA
         ) do
           expect_import_finished
 
-          expect(imported_issues.count).to eq(1)
-          expect(imported_issue).to eq(source_issue)
+          aggregate_failures do
+            expect(imported_issues.count).to eq(1)
+            expect(imported_issue).to eq(source_issue.reload!)
+
+            expect(imported_comments.count).to eq(1)
+            expect(imported_comments.first[:body]).to include(source_comment[:body])
+          end
         end
       end
 
@@ -198,22 +201,25 @@ module QA
       end
 
       context 'with merge request' do
-        let(:source_project_with_readme) { true }
+        let!(:source_project_with_readme) { true }
 
-        let(:other_user) do
-          Resource::User.fabricate_via_api! do |usr|
-            usr.api_client = admin_api_client
-          end
+        let!(:other_user) do
+          Resource::User
+            .fabricate_via_api! { |usr| usr.api_client = admin_api_client }
+            .tap do |usr|
+              usr.set_public_email
+              source_project.add_member(usr, Resource::Members::AccessLevel::MAINTAINER)
+            end
         end
 
-        let(:source_mr) do
+        let!(:source_mr) do
           Resource::MergeRequest.fabricate_via_api! do |mr|
             mr.project = source_project
             mr.api_client = Runtime::API::Client.new(user: other_user)
           end
         end
 
-        let(:source_comment) { source_mr.add_comment("This is a test comment!") }
+        let!(:source_comment) { source_mr.add_comment('This is a test comment!') }
 
         let(:imported_mrs) { imported_project.merge_requests }
         let(:imported_mr_comments) { imported_mr.comments }
@@ -226,21 +232,13 @@ module QA
           end
         end
 
-        before do
-          other_user.set_public_email
-          source_project.add_member(other_user, Resource::Members::AccessLevel::MAINTAINER)
-
-          source_comment # fabricate mr and comment
-          source_mr.reload! # update notes count attribute on object
-        end
-
         after do
           other_user.remove_via_api!
         end
 
         it(
           'successfully imports merge request',
-          tesecase: "https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348478"
+          tesecase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348478'
         ) do
           expect_import_finished
 
@@ -248,7 +246,7 @@ module QA
             expect(imported_mrs.count).to eq(1)
             # TODO: remove custom comparison after member migration is implemented
             # https://gitlab.com/gitlab-org/gitlab/-/issues/341886
-            expect(imported_mr.comparable.except(:author)).to eq(source_mr.comparable.except(:author))
+            expect(imported_mr.comparable.except(:author)).to eq(source_mr.reload!.comparable.except(:author))
 
             expect(imported_mr_comments.count).to eq(1)
             expect(imported_mr_comments.first[:body]).to include(source_comment[:body])

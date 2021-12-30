@@ -36,7 +36,7 @@ module Gitlab
           headers: build_request_headers
         )
 
-        raise BatchSubmitError unless rsp.success?
+        raise BatchSubmitError.new(http_response: rsp) unless rsp.success?
 
         # HTTParty provides rsp.parsed_response, but it only kicks in for the
         # application/json content type in the response, which we can't rely on
@@ -65,7 +65,7 @@ module Gitlab
 
         rsp = Gitlab::HTTP.put(upload_action['href'], params)
 
-        raise ObjectUploadError unless rsp.success?
+        raise ObjectUploadError.new(http_response: rsp) unless rsp.success?
       ensure
         file&.close
       end
@@ -81,7 +81,7 @@ module Gitlab
 
         rsp = Gitlab::HTTP.post(verify_action['href'], params)
 
-        raise ObjectVerifyError unless rsp.success?
+        raise ObjectVerifyError.new(http_response: rsp) unless rsp.success?
       end
 
       private
@@ -105,9 +105,21 @@ module Gitlab
         { username: credentials[:user], password: credentials[:password] }
       end
 
-      class BatchSubmitError < StandardError
+      class HttpError < StandardError
+        def initialize(http_response:)
+          super
+
+          @http_response = http_response
+        end
+
+        def http_error
+          "HTTP status #{@http_response.code}"
+        end
+      end
+
+      class BatchSubmitError < HttpError
         def message
-          "Failed to submit batch"
+          "Failed to submit batch: #{http_error}"
         end
       end
 
@@ -122,15 +134,15 @@ module Gitlab
         end
       end
 
-      class ObjectUploadError < StandardError
+      class ObjectUploadError < HttpError
         def message
-          "Failed to upload object"
+          "Failed to upload object: #{http_error}"
         end
       end
 
-      class ObjectVerifyError < StandardError
+      class ObjectVerifyError < HttpError
         def message
-          "Failed to verify object"
+          "Failed to verify object: #{http_error}"
         end
       end
     end
