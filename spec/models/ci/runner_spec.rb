@@ -1358,7 +1358,7 @@ RSpec.describe Ci::Runner do
     it { is_expected.to eq(contacted_at_stored) }
   end
 
-  describe '.belonging_to_group' do
+  describe '.legacy_belonging_to_group' do
     shared_examples 'returns group runners' do
       it 'returns the specific group runner' do
         group = create(:group)
@@ -1366,7 +1366,7 @@ RSpec.describe Ci::Runner do
         unrelated_group = create(:group)
         create(:ci_runner, :group, groups: [unrelated_group])
 
-        expect(described_class.belonging_to_group(group.id)).to contain_exactly(runner)
+        expect(described_class.legacy_belonging_to_group(group.id)).to contain_exactly(runner)
       end
 
       context 'runner belonging to parent group' do
@@ -1376,13 +1376,13 @@ RSpec.describe Ci::Runner do
 
         context 'when include_parent option is passed' do
           it 'returns the group runner from the parent group' do
-            expect(described_class.belonging_to_group(group.id, include_ancestors: true)).to contain_exactly(parent_runner)
+            expect(described_class.legacy_belonging_to_group(group.id, include_ancestors: true)).to contain_exactly(parent_runner)
           end
         end
 
         context 'when include_parent option is not passed' do
           it 'does not return the group runner from the parent group' do
-            expect(described_class.belonging_to_group(group.id)).to be_empty
+            expect(described_class.legacy_belonging_to_group(group.id)).to be_empty
           end
         end
       end
@@ -1396,6 +1396,40 @@ RSpec.describe Ci::Runner do
       end
 
       it_behaves_like 'returns group runners'
+    end
+  end
+
+  describe '.belonging_to_group' do
+    it 'returns the specific group runner' do
+      group = create(:group)
+      runner = create(:ci_runner, :group, groups: [group])
+      unrelated_group = create(:group)
+      create(:ci_runner, :group, groups: [unrelated_group])
+
+      expect(described_class.belonging_to_group(group.id)).to contain_exactly(runner)
+    end
+  end
+
+  describe '.belonging_to_group_or_project_descendants' do
+    it 'returns the specific group runners' do
+      group1 = create(:group)
+      group2 = create(:group, parent: group1)
+      group3 = create(:group)
+
+      project1 = create(:project, namespace: group1)
+      project2 = create(:project, namespace: group2)
+      project3 = create(:project, namespace: group3)
+
+      runner1 = create(:ci_runner, :group, groups: [group1])
+      runner2 = create(:ci_runner, :group, groups: [group2])
+      _runner3 = create(:ci_runner, :group, groups: [group3])
+      runner4 = create(:ci_runner, :project, projects: [project1])
+      runner5 = create(:ci_runner, :project, projects: [project2])
+      _runner6 = create(:ci_runner, :project, projects: [project3])
+
+      expect(described_class.belonging_to_group_or_project_descendants(group1.id)).to contain_exactly(
+        runner1, runner2, runner4, runner5
+      )
     end
   end
 end

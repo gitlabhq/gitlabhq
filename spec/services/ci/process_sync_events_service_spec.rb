@@ -28,10 +28,10 @@ RSpec.describe Ci::ProcessSyncEventsService do
       it 'consumes events' do
         expect { execute }.to change(Projects::SyncEvent, :count).from(2).to(0)
 
-        expect(project1.ci_project_mirror).to have_attributes(
+        expect(project1.reload.ci_project_mirror).to have_attributes(
           namespace_id: parent_group_1.id
         )
-        expect(project2.ci_project_mirror).to have_attributes(
+        expect(project2.reload.ci_project_mirror).to have_attributes(
           namespace_id: parent_group_2.id
         )
       end
@@ -88,10 +88,10 @@ RSpec.describe Ci::ProcessSyncEventsService do
         it 'consumes events' do
           expect { execute }.to change(Namespaces::SyncEvent, :count).from(2).to(0)
 
-          expect(group.ci_namespace_mirror).to have_attributes(
+          expect(group.reload.ci_namespace_mirror).to have_attributes(
             traversal_ids: [parent_group_1.id, parent_group_2.id, group.id]
           )
-          expect(parent_group_2.ci_namespace_mirror).to have_attributes(
+          expect(parent_group_2.reload.ci_namespace_mirror).to have_attributes(
             traversal_ids: [parent_group_1.id, parent_group_2.id]
           )
         end

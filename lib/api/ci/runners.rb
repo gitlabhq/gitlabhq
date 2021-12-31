@@ -229,7 +229,7 @@ module API
           use :pagination
         end
         get ':id/runners' do
-          runners = ::Ci::Runner.belonging_to_group(user_group.id, include_ancestors: true)
+          runners = ::Ci::Runner.legacy_belonging_to_group(user_group.id, include_ancestors: true)
           runners = apply_filter(runners, params)
 
           present paginate(runners), with: Entities::Ci::Runner

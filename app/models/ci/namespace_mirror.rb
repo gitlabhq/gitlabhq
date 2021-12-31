@@ -10,6 +10,8 @@ module Ci
       where('traversal_ids @> ARRAY[?]::int[]', id)
     end
 
+    scope :by_namespace_id, -> (namespace_id) { where(namespace_id: namespace_id) }
+
     class << self
       def sync!(event)
         namespace = event.namespace

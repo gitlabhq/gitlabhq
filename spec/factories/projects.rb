@@ -101,6 +101,9 @@ FactoryBot.define do
         import_state.last_error = evaluator.import_last_error
         import_state.save!
       end
+
+      # simulating ::Projects::ProcessSyncEventsWorker because most tests don't run Sidekiq inline
+      project.create_ci_project_mirror!(namespace_id: project.namespace_id) unless project.ci_project_mirror
     end
 
     trait :public do
