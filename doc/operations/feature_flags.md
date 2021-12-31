@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Feature Flags **(FREE)**
 
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/212318) from GitLab Premium to GitLab Free in 13.5.
+> [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/212318) from GitLab Premium to GitLab Free in 13.5.
 
 With Feature Flags, you can deploy your application's new features to production in smaller batches.
 You can toggle a feature on and off to subsets of users, helping you achieve Continuous Delivery.
