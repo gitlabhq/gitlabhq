@@ -270,7 +270,7 @@ Some features depend on others:
 
 - If you disable the **Issues** option, GitLab also removes the following
   features:
-  - **issue boards**
+  - **Issue Boards**
   - [**Service Desk**](#service-desk)
 
   NOTE:

@@ -27076,6 +27076,9 @@ msgstr ""
 msgid "Profiles|Invalid username"
 msgstr ""
 
+msgid "Profiles|Job title"
+msgstr ""
+
 msgid "Profiles|Key"
 msgstr ""
 
@@ -27131,6 +27134,12 @@ msgid "Profiles|Private contributions"
 msgstr ""
 
 msgid "Profiles|Profile was successfully updated"
+msgstr ""
+
+msgid "Profiles|Pronouns"
+msgstr ""
+
+msgid "Profiles|Pronunciation"
 msgstr ""
 
 msgid "Profiles|Public avatar"
@@ -27215,6 +27224,9 @@ msgid "Profiles|Username successfully changed"
 msgstr ""
 
 msgid "Profiles|Using emojis in names seems fun, but please try to set a status message instead"
+msgstr ""
+
+msgid "Profiles|Website url"
 msgstr ""
 
 msgid "Profiles|What's your status?"
