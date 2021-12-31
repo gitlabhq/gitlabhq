@@ -8,35 +8,31 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/222788) from GitLab Ultimate to GitLab Free in 13.3.
 
-A recurring problem when developing applications is that developers may unintentionally commit
-secrets and credentials to their remote repositories. If other people have access to the source,
-or if the project is public, the sensitive information is then exposed and can be leveraged by
-malicious users to gain access to resources like deployment environments.
+A recurring problem when developing applications is that people may accidentally commit secrets to
+their remote Git repositories. Secrets include keys, passwords, API tokens, and other sensitive
+information. Anyone with access to the repository could use the secrets for malicious purposes.
+Secrets exposed in this way must be treated as compromised, and be replaced, which can be costly.
+It's important to prevent secrets from being committed to a Git repository.
 
-GitLab includes a check called Secret Detection. It scans the content of the repository
-to find API keys and other information that should not be there.
+Secret Detection uses the [Gitleaks](https://github.com/zricethezav/gitleaks) tool to scan the
+repository for secrets. All identified secrets are reported in the:
 
-GitLab displays identified secrets visibly in a few places:
-
-- [Security Dashboard](../security_dashboard/)
+- Merge request widget
 - Pipelines' **Security** tab
-- Report in the merge request widget
+- [Security Dashboard](../security_dashboard/)
 
 ![Secret Detection in merge request widget](img/secret_detection_v13_2.png)
 
-## Use cases
-
-- Detecting unintentional commit of secrets like keys, passwords, and API tokens.
-- Performing a single or recurring scan of the full history of your repository for secrets.
-
-## Supported secrets
-
-Secret Detection detects a variety of common secrets by default. You can also customize the secret detection patterns using [custom rulesets](#custom-rulesets).
-The [default ruleset](https://gitlab.com/gitlab-org/security-products/analyzers/secrets/-/blob/master/gitleaks.toml) includes **90+ secret detection patterns**.
-You can contribute "well-identifiable" secrets by follow the steps detailed in the [community contributions guidelines](https://gitlab.com/gitlab-org/gitlab/-/issues/345453).
-
 WARNING:
-Gitleaks does not support scanning binary files.
+Secret Detection does not support scanning binary files.
+
+## Detected secrets
+
+Secret Detection uses a [default ruleset](https://gitlab.com/gitlab-org/security-products/analyzers/secrets/-/blob/master/gitleaks.toml)
+containing more than 90 secret detection patterns. You can also customize the secret detection
+patterns using [custom rulesets](#custom-rulesets). If you want to contribute rulesets for
+"well-identifiable" secrets, follow the steps detailed in the
+[community contributions guidelines](https://gitlab.com/gitlab-org/gitlab/-/issues/345453).
 
 ## Requirements
 

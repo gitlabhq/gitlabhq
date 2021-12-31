@@ -619,7 +619,7 @@ GET /users/:user_id/projects
 
 ## List projects starred by a user
 
-Get a list of visible projects owned by the given user. When accessed without
+Get a list of visible projects starred by the given user. When accessed without
 authentication, only public projects are returned.
 
 ```plaintext

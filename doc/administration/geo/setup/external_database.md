@@ -2,7 +2,6 @@
 stage: Enablement
 group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
-type: howto
 ---
 
 # Geo with external PostgreSQL instances **(PREMIUM SELF)**
@@ -184,7 +183,7 @@ To configure the connection to the external read-replica database and enable Log
 database to keep track of replication status and automatically recover from
 potential replication issues. Omnibus automatically configures a tracking database
 when `roles ['geo_secondary_role']` is set.
-If you want to run this database external to Omnibus, please follow the instructions below.
+If you want to run this database external to Omnibus GitLab, use the following instructions.
 
 If you are using a cloud-managed service for the tracking database, you may need
 to grant additional roles to your tracking database user (by default, this is

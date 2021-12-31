@@ -76,6 +76,22 @@ RSpec.describe MergeRequests::SquashService do
           service.execute
         end
       end
+
+      context 'when squash message matches commit message but without trailing new line' do
+        let(:service) { described_class.new(project: project, current_user: user, params: { merge_request: merge_request, squash_commit_message: merge_request.first_commit.safe_message.strip }) }
+
+        it 'returns that commit SHA' do
+          result = service.execute
+
+          expect(result).to match(status: :success, squash_sha: merge_request.diff_head_sha)
+        end
+
+        it 'does not perform any git actions' do
+          expect(repository).not_to receive(:squash)
+
+          service.execute
+        end
+      end
     end
 
     context 'the squashed commit' do

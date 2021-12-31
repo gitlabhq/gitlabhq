@@ -199,20 +199,21 @@ keys must be manually replicated to the **secondary** site.
    gitlab-ctl reconfigure
    ```
 
-1. On the top bar, select **Menu > Admin**.
-1. On the left sidebar, select **Geo > Sites**.
-1. Select **New site**.
+1. Navigate to the Primary Node GitLab Instance:
+   1. On the top bar, select **Menu > Admin**.
+   1. On the left sidebar, select **Geo > Sites**.
+   1. Select **Add site**.
    ![Add secondary site](img/adding_a_secondary_v13_3.png)
-1. Fill in **Name** with the `gitlab_rails['geo_node_name']` in
+   1. Fill in **Name** with the `gitlab_rails['geo_node_name']` in
    `/etc/gitlab/gitlab.rb`. These values must always match *exactly*, character
    for character.
-1. Fill in **URL** with the `external_url` in `/etc/gitlab/gitlab.rb`. These
+   1. Fill in **URL** with the `external_url` in `/etc/gitlab/gitlab.rb`. These
    values must always match, but it doesn't matter if one ends with a `/` and
    the other doesn't.
-1. Optionally, choose which groups or storage shards should be replicated by the
+   1. (Optional) Choose which groups or storage shards should be replicated by the
    **secondary** site. Leave blank to replicate all. Read more in
    [selective synchronization](#selective-synchronization).
-1. Select **Add site** to add the **secondary** site.
+   1. Select **Save changes** to add the **secondary** site.
 1. SSH into **each Rails, and Sidekiq node on your secondary** site and restart the services:
 
    ```shell

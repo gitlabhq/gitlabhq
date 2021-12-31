@@ -31,7 +31,6 @@ RSpec.describe 'factories' do
       [:pages_domain, :with_trusted_chain],
       [:pages_domain, :with_trusted_expired_chain],
       [:pages_domain, :explicit_ecdsa],
-      [:pages_domain, :letsencrypt_expired_x3_root],
       [:project_member, :blocked],
       [:remote_mirror, :ssh],
       [:user_preference, :only_comments],

@@ -25,7 +25,8 @@ For a video introduction to Geo, see [Introduction to GitLab Geo - GitLab Featur
 
 To make sure you're using the right version of the documentation, navigate to [the Geo page on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/administration/geo/index.md) and choose the appropriate release from the **Switch branch/tag** dropdown. For example, [`v13.7.6-ee`](https://gitlab.com/gitlab-org/gitlab/-/blob/v13.7.6-ee/doc/administration/geo/index.md).
 
-Geo uses a set of defined terms that is described in the [Geo Glossary](glossary.md), please familiarize yourself with those terms.
+Geo uses a set of defined terms that are described in the [Geo Glossary](glossary.md).
+Be sure to familiarize yourself with those terms.
 
 ## Use cases
 
