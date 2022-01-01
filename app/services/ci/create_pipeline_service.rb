@@ -95,7 +95,14 @@ module Ci
         .build!
 
       if pipeline.persisted?
-        schedule_head_pipeline_update
+        if Feature.enabled?(:ci_publish_pipeline_events, pipeline.project, default_enabled: :yaml)
+          Gitlab::EventStore.publish(
+            Ci::PipelineCreatedEvent.new(data: { pipeline_id: pipeline.id })
+          )
+        else
+          schedule_head_pipeline_update
+        end
+
         create_namespace_onboarding_action
       else
         # If pipeline is not persisted, try to recover IID

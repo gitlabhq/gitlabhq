@@ -164,6 +164,7 @@ the [reviewer values](https://about.gitlab.com/handbook/engineering/workflow/rev
 ### General
 
 - [Directory structure](directory_structure.md)
+- [GitLab EventStore](event_store.md) to publish/subscribe to domain events
 - [GitLab utilities](utilities.md)
 - [Newlines style guide](newlines_styleguide.md)
 - [Logging](logging.md)

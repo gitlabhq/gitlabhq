@@ -146,138 +146,44 @@ RSpec.describe Ci::CreatePipelineService do
       end
 
       context 'when merge requests already exist for this source branch' do
-        let(:merge_request_1) do
+        let!(:merge_request_1) do
           create(:merge_request, source_branch: 'feature', target_branch: "master", source_project: project)
         end
 
-        let(:merge_request_2) do
+        let!(:merge_request_2) do
           create(:merge_request, source_branch: 'feature', target_branch: "v1.1.0", source_project: project)
-        end
-
-        context 'when related merge request is already merged' do
-          let!(:merged_merge_request) do
-            create(:merge_request, source_branch: 'master', target_branch: "branch_2", source_project: project, state: 'merged')
-          end
-
-          it 'does not schedule update head pipeline job' do
-            expect(UpdateHeadPipelineForMergeRequestWorker).not_to receive(:perform_async).with(merged_merge_request.id)
-
-            execute_service
-          end
         end
 
         context 'when the head pipeline sha equals merge request sha' do
           it 'updates head pipeline of each merge request', :sidekiq_might_not_need_inline do
-            merge_request_1
-            merge_request_2
-
             head_pipeline = execute_service(ref: 'feature', after: nil).payload
 
             expect(merge_request_1.reload.head_pipeline).to eq(head_pipeline)
             expect(merge_request_2.reload.head_pipeline).to eq(head_pipeline)
           end
-        end
 
-        context 'when the head pipeline sha does not equal merge request sha' do
-          it 'does not update the head piepeline of MRs' do
-            merge_request_1
-            merge_request_2
+          # TODO: remove after ci_publish_pipeline_events FF is removed
+          # https://gitlab.com/gitlab-org/gitlab/-/issues/336752
+          it 'does not schedule sync update for the head pipeline of the merge request' do
+            expect(UpdateHeadPipelineForMergeRequestWorker)
+              .not_to receive(:perform_async)
 
-            allow_any_instance_of(Ci::Pipeline).to receive(:latest?).and_return(true)
-
-            expect { execute_service(after: 'ae73cb07c9eeaf35924a10f713b364d32b2dd34f') }.not_to raise_error
-
-            last_pipeline = Ci::Pipeline.last
-
-            expect(merge_request_1.reload.head_pipeline).not_to eq(last_pipeline)
-            expect(merge_request_2.reload.head_pipeline).not_to eq(last_pipeline)
+            execute_service(ref: 'feature', after: nil)
           end
         end
 
-        context 'when there is no pipeline for source branch' do
-          it "does not update merge request head pipeline" do
-            merge_request = create(:merge_request, source_branch: 'feature',
-                                                   target_branch: "branch_1",
-                                                   source_project: project)
-
-            head_pipeline = execute_service.payload
-
-            expect(merge_request.reload.head_pipeline).not_to eq(head_pipeline)
-          end
-        end
-
-        context 'when merge request target project is different from source project' do
-          let!(:project) { fork_project(target_project, nil, repository: true) }
-          let!(:target_project) { create(:project, :repository) }
-          let!(:user) { create(:user) }
-
+        context 'when feature flag ci_publish_pipeline_events is disabled' do
           before do
-            project.add_developer(user)
+            stub_feature_flags(ci_publish_pipeline_events: false)
           end
 
-          it 'updates head pipeline for merge request', :sidekiq_might_not_need_inline do
-            merge_request = create(:merge_request, source_branch: 'feature',
-                                                   target_branch: "master",
-                                                   source_project: project,
-                                                   target_project: target_project)
+          it 'schedules update for the head pipeline of the merge request' do
+            expect(UpdateHeadPipelineForMergeRequestWorker)
+              .to receive(:perform_async).with(merge_request_1.id)
+            expect(UpdateHeadPipelineForMergeRequestWorker)
+              .to receive(:perform_async).with(merge_request_2.id)
 
-            head_pipeline = execute_service(ref: 'feature', after: nil).payload
-
-            expect(merge_request.reload.head_pipeline).to eq(head_pipeline)
-          end
-        end
-
-        context 'when the pipeline is not the latest for the branch' do
-          it 'does not update merge request head pipeline' do
-            merge_request = create(:merge_request, source_branch: 'master',
-                                                   target_branch: "branch_1",
-                                                   source_project: project)
-
-            allow_any_instance_of(MergeRequest)
-              .to receive(:find_actual_head_pipeline) { }
-
-            execute_service
-
-            expect(merge_request.reload.head_pipeline).to be_nil
-          end
-        end
-
-        context 'when pipeline has errors' do
-          before do
-            stub_ci_pipeline_yaml_file('some invalid syntax')
-          end
-
-          it 'updates merge request head pipeline reference', :sidekiq_might_not_need_inline do
-            merge_request = create(:merge_request, source_branch: 'master',
-                                                   target_branch: 'feature',
-                                                   source_project: project)
-
-            head_pipeline = execute_service.payload
-
-            expect(head_pipeline).to be_persisted
-            expect(head_pipeline.yaml_errors).to be_present
-            expect(head_pipeline.messages).to be_present
-            expect(merge_request.reload.head_pipeline).to eq head_pipeline
-          end
-        end
-
-        context 'when pipeline has been skipped' do
-          before do
-            allow_any_instance_of(Ci::Pipeline)
-              .to receive(:git_commit_message)
-              .and_return('some commit [ci skip]')
-          end
-
-          it 'updates merge request head pipeline', :sidekiq_might_not_need_inline do
-            merge_request = create(:merge_request, source_branch: 'master',
-                                                   target_branch: 'feature',
-                                                   source_project: project)
-
-            head_pipeline = execute_service.payload
-
-            expect(head_pipeline).to be_skipped
-            expect(head_pipeline).to be_persisted
-            expect(merge_request.reload.head_pipeline).to eq head_pipeline
+            execute_service(ref: 'feature', after: nil)
           end
         end
       end
@@ -1655,7 +1561,7 @@ RSpec.describe Ci::CreatePipelineService do
               expect(pipeline.target_sha).to be_nil
             end
 
-            it 'schedules update for the head pipeline of the merge request' do
+            it 'schedules update for the head pipeline of the merge request', :sidekiq_inline do
               expect(UpdateHeadPipelineForMergeRequestWorker)
                 .to receive(:perform_async).with(merge_request.id)
 

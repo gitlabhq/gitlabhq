@@ -2420,6 +2420,15 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: merge_requests_update_head_pipeline
+  :worker_name: MergeRequests::UpdateHeadPipelineWorker
+  :feature_category: :code_review
+  :has_external_dependencies:
+  :urgency: :high
+  :resource_boundary: :cpu
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: metrics_dashboard_prune_old_annotations
   :worker_name: Metrics::Dashboard::PruneOldAnnotationsWorker
   :feature_category: :metrics
