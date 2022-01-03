@@ -58,6 +58,13 @@
   }
 }
 
+.gl-first-child-ml-sm-0 > a:first-child,
+.gl-first-child-ml-sm-0 > button:first-child {
+  @include media-breakpoint-up(sm) {
+    @include gl-ml-0;
+  }
+}
+
 .mh-50vh { max-height: 50vh; }
 
 .min-width-0 {

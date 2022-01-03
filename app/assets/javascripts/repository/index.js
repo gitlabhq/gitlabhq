@@ -163,7 +163,7 @@ export default function setupVueRepositoryList() {
             }`,
             // Ideally passing this class to `props` should work
             // But it doesn't work here. :(
-            class: 'btn btn-default btn-md gl-button ml-sm-0',
+            class: 'btn btn-default btn-md gl-button',
           },
         },
         [__('History')],

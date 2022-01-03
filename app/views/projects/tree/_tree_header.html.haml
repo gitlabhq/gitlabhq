@@ -6,7 +6,7 @@
 
 #js-blob-controls
 .tree-controls
-  .d-block.d-sm-flex.flex-wrap.align-items-start.gl-children-ml-sm-3<
+  .d-block.d-sm-flex.flex-wrap.align-items-start.gl-children-ml-sm-3.gl-first-child-ml-sm-0<
     = render_if_exists 'projects/tree/lock_link'
     #js-tree-history-link{ data: { history_link: project_commits_path(@project, @ref) } }
 
