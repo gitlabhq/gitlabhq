@@ -18,7 +18,7 @@ main SSL docs available here:
 ## Using an internal CA certificate with GitLab
 
 After configuring a GitLab instance with an internal CA certificate, you might
-not be able to access it by using various CLI tools. You may see experience the
+not be able to access it by using various CLI tools. You may experience the
 following issues:
 
 - `curl` fails:
