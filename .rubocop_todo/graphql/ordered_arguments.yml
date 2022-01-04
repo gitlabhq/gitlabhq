@@ -4,9 +4,6 @@ GraphQL/OrderedArguments:
   - app/graphql/resolvers/base_issues_resolver.rb
   - app/graphql/resolvers/design_management/designs_resolver.rb
   - app/graphql/resolvers/design_management/version/design_at_version_resolver.rb
-  - app/graphql/resolvers/design_management/version/designs_at_version_resolver.rb
-  - app/graphql/resolvers/design_management/version_in_collection_resolver.rb
-  - app/graphql/resolvers/group_milestones_resolver.rb
   - app/graphql/resolvers/merge_requests_resolver.rb
   - app/graphql/resolvers/paginated_tree_resolver.rb
   - app/graphql/resolvers/tree_resolver.rb

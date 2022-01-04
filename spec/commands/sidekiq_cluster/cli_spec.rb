@@ -5,7 +5,7 @@ require 'rspec-parameterized'
 
 require_relative '../../../sidekiq_cluster/cli'
 
-RSpec.describe Gitlab::SidekiqCluster::CLI do # rubocop:disable RSpec/FilePath
+RSpec.describe Gitlab::SidekiqCluster::CLI, stubbing_settings_source: true do # rubocop:disable RSpec/FilePath
   let(:cli) { described_class.new('/dev/null') }
   let(:timeout) { Gitlab::SidekiqCluster::DEFAULT_SOFT_TIMEOUT_SECONDS }
   let(:default_options) do
@@ -16,19 +16,39 @@ RSpec.describe Gitlab::SidekiqCluster::CLI do # rubocop:disable RSpec/FilePath
   let(:sidekiq_exporter_port) { '3807' }
   let(:sidekiq_health_checks_port) { '3807' }
 
-  before do
-    stub_env('RAILS_ENV', 'test')
-    stub_config(
-      monitoring: {
-        sidekiq_exporter: {
-          enabled: sidekiq_exporter_enabled,
-          port: sidekiq_exporter_port
-        },
-        sidekiq_health_checks: {
-          port: sidekiq_health_checks_port
+  let(:config_file) { Tempfile.new('gitlab.yml') }
+  let(:config) do
+    {
+      'test' => {
+        'monitoring' => {
+          'sidekiq_exporter' => {
+            'address' => 'localhost',
+            'enabled' => sidekiq_exporter_enabled,
+            'port' => sidekiq_exporter_port
+          },
+          'sidekiq_health_checks' => {
+            'address' => 'localhost',
+            'enabled' => sidekiq_exporter_enabled,
+            'port' => sidekiq_health_checks_port
+          }
         }
       }
-    )
+    }
+  end
+
+  before do
+    stub_env('RAILS_ENV', 'test')
+
+    config_file.write(YAML.dump(config))
+    config_file.close
+
+    allow(::Settings).to receive(:source).and_return(config_file.path)
+
+    ::Settings.reload!
+  end
+
+  after do
+    config_file.unlink
   end
 
   describe '#run' do
@@ -272,16 +292,9 @@ RSpec.describe Gitlab::SidekiqCluster::CLI do # rubocop:disable RSpec/FilePath
       context 'starting the server' do
         context 'without --dryrun' do
           context 'when there are no sidekiq_health_checks settings set' do
-            before do
-              stub_config(
-                monitoring: {
-                  sidekiq_exporter: {
-                    enabled: true,
-                    port: sidekiq_exporter_port
-                  }
-                }
-              )
+            let(:sidekiq_exporter_enabled) { true }
 
+            before do
               allow(Gitlab::SidekiqCluster).to receive(:start)
               allow(cli).to receive(:write_pid)
               allow(cli).to receive(:trap_signals)
@@ -292,26 +305,13 @@ RSpec.describe Gitlab::SidekiqCluster::CLI do # rubocop:disable RSpec/FilePath
               expect(MetricsServer).not_to receive(:spawn)
 
               cli.run(%w(foo))
-            end
-
-            it 'rescues Settingslogic::MissingSetting' do
-              expect { cli.run(%w(foo)) }.not_to raise_error(Settingslogic::MissingSetting)
             end
           end
 
           context 'when the sidekiq_exporter.port setting is not set' do
-            before do
-              stub_config(
-                monitoring: {
-                  sidekiq_exporter: {
-                    enabled: true
-                  },
-                  sidekiq_health_checks: {
-                    port: sidekiq_health_checks_port
-                  }
-                }
-              )
+            let(:sidekiq_exporter_enabled) { true }
 
+            before do
               allow(Gitlab::SidekiqCluster).to receive(:start)
               allow(cli).to receive(:write_pid)
               allow(cli).to receive(:trap_signals)
@@ -322,24 +322,26 @@ RSpec.describe Gitlab::SidekiqCluster::CLI do # rubocop:disable RSpec/FilePath
               expect(MetricsServer).not_to receive(:spawn)
 
               cli.run(%w(foo))
-            end
-
-            it 'rescues Settingslogic::MissingSetting' do
-              expect { cli.run(%w(foo)) }.not_to raise_error(Settingslogic::MissingSetting)
             end
           end
 
           context 'when sidekiq_exporter.enabled setting is not set' do
-            before do
-              stub_config(
-                monitoring: {
-                  sidekiq_exporter: {},
-                  sidekiq_health_checks: {
-                    port: sidekiq_health_checks_port
+            let(:config) do
+              {
+                'test' => {
+                  'monitoring' => {
+                    'sidekiq_exporter' => {},
+                    'sidekiq_health_checks' => {
+                      'address' => 'localhost',
+                      'enabled' => sidekiq_exporter_enabled,
+                      'port' => sidekiq_health_checks_port
+                    }
                   }
                 }
-              )
+              }
+            end
 
+            before do
               allow(Gitlab::SidekiqCluster).to receive(:start)
               allow(cli).to receive(:write_pid)
               allow(cli).to receive(:trap_signals)
@@ -350,6 +352,36 @@ RSpec.describe Gitlab::SidekiqCluster::CLI do # rubocop:disable RSpec/FilePath
               expect(MetricsServer).not_to receive(:spawn)
 
               cli.run(%w(foo))
+            end
+          end
+
+          context 'with a blank sidekiq_exporter setting' do
+            let(:config) do
+              {
+                'test' => {
+                  'monitoring' => {
+                    'sidekiq_exporter' => nil,
+                    'sidekiq_health_checks' => nil
+                  }
+                }
+              }
+            end
+
+            before do
+              allow(Gitlab::SidekiqCluster).to receive(:start)
+              allow(cli).to receive(:write_pid)
+              allow(cli).to receive(:trap_signals)
+              allow(cli).to receive(:start_loop)
+            end
+
+            it 'does not start a sidekiq metrics server' do
+              expect(MetricsServer).not_to receive(:spawn)
+
+              cli.run(%w(foo))
+            end
+
+            it 'does not throw an error' do
+              expect { cli.run(%w(foo)) }.not_to raise_error
             end
           end
 

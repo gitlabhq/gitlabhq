@@ -335,6 +335,10 @@ FactoryBot.define do
       running
 
       runner factory: :ci_runner
+
+      after(:create) do |build|
+        build.create_runtime_metadata!
+      end
     end
 
     trait :artifacts do

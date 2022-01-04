@@ -1021,7 +1021,15 @@ module Ci
       transaction do
         update_columns(status: :failed, failure_reason: :data_integrity_failure)
         all_queuing_entries.delete_all
+        all_runtime_metadata.delete_all
       end
+
+      Gitlab::AppLogger.info(
+        message: 'Build doomed',
+        class: self.class.name,
+        build_id: id,
+        pipeline_id: pipeline_id,
+        project_id: project_id)
     end
 
     def degradation_threshold
@@ -1065,6 +1073,10 @@ module Ci
 
     def create_queuing_entry!
       ::Ci::PendingBuild.upsert_from_build!(self)
+    end
+
+    def create_runtime_metadata!
+      ::Ci::RunningBuild.upsert_shared_runner_build!(self)
     end
 
     ##

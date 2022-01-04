@@ -13,13 +13,13 @@ module Resolvers
 
         DesignID = ::Types::GlobalIDType[::DesignManagement::Design]
 
-        argument :ids, [DesignID],
-                 required: false,
-                 description: 'Filters designs by their ID.'
         argument :filenames,
                  [GraphQL::Types::String],
                  required: false,
                  description: 'Filters designs by their filename.'
+        argument :ids, [DesignID],
+                 required: false,
+                 description: 'Filters designs by their ID.'
 
         def self.single
           ::Resolvers::DesignManagement::Version::DesignAtVersionResolver

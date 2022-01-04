@@ -512,6 +512,7 @@ instance and project.
 | Change project configuration           |                 |             | ✓        | ✓             |
 | Add specific runners                   |                 |             | ✓        | ✓             |
 | Add shared runners                    |                 |             |          | ✓             |
+| Clear runner caches manually          |                 |             | ✓        | ✓             |
 | See events in the system              |                 |             |          | ✓             |
 | Admin Area                            |                 |             |          | ✓             |
 

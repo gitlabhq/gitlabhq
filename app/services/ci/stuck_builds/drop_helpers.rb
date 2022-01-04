@@ -34,7 +34,7 @@ module Ci
       # rubocop: enable CodeReuse/ActiveRecord
 
       def drop_build(type, build, reason)
-        Gitlab::AppLogger.info "#{self.class}: Dropping #{type} build #{build.id} for runner #{build.runner_id} (status: #{build.status}, failure_reason: #{reason})"
+        log_dropping_message(type, build, reason)
         Gitlab::OptimisticLocking.retry_lock(build, 3, name: 'stuck_ci_jobs_worker_drop_build') do |b|
           b.drop(reason)
         end
@@ -52,6 +52,16 @@ module Ci
             pipeline_id: build.pipeline_id,
             project_id: build.project_id
         )
+      end
+
+      def log_dropping_message(type, build, reason)
+        Gitlab::AppLogger.info(class: self.class.name,
+          message: "Dropping #{type} build",
+          build_stuck_type: type,
+          build_id: build.id,
+          runner_id: build.runner_id,
+          build_status: build.status,
+          build_failure_reason: reason)
       end
     end
   end

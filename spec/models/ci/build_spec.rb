@@ -5427,7 +5427,8 @@ RSpec.describe Ci::Build do
   describe '#doom!' do
     subject { build.doom! }
 
-    let_it_be(:build) { create(:ci_build, :queued) }
+    let(:traits) { [] }
+    let(:build) { create(:ci_build, *traits, pipeline: pipeline) }
 
     it 'updates status and failure_reason', :aggregate_failures do
       subject
@@ -5436,10 +5437,33 @@ RSpec.describe Ci::Build do
       expect(build.failure_reason).to eq("data_integrity_failure")
     end
 
-    it 'drops associated pending build' do
-      subject
+    it 'logs a message' do
+      expect(Gitlab::AppLogger)
+        .to receive(:info)
+        .with(a_hash_including(message: 'Build doomed', class: build.class.name, build_id: build.id))
+        .and_call_original
 
-      expect(build.reload.queuing_entry).not_to be_present
+      subject
+    end
+
+    context 'with queued builds' do
+      let(:traits) { [:queued] }
+
+      it 'drops associated pending build' do
+        subject
+
+        expect(build.reload.queuing_entry).not_to be_present
+      end
+    end
+
+    context 'with running builds' do
+      let(:traits) { [:picked] }
+
+      it 'drops associated runtime metadata' do
+        subject
+
+        expect(build.reload.runtime_metadata).not_to be_present
+      end
     end
   end
 
