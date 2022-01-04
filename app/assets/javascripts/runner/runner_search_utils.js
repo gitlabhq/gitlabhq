@@ -16,6 +16,7 @@ import {
   PARAM_KEY_BEFORE,
   DEFAULT_SORT,
   RUNNER_PAGE_SIZE,
+  STATUS_NEVER_CONTACTED,
 } from './constants';
 
 /**
@@ -77,6 +78,33 @@ const getPaginationFromParams = (params) => {
   return {
     page: 1,
   };
+};
+
+// Outdated URL parameters
+const STATUS_NOT_CONNECTED = 'NOT_CONNECTED';
+
+/**
+ * Returns an updated URL for old (or deprecated) admin runner URLs.
+ *
+ * Use for redirecting users to currently used URLs.
+ *
+ * @param {String?} URL
+ * @returns Updated URL if outdated, `null` otherwise
+ */
+export const updateOutdatedUrl = (url = window.location.href) => {
+  const urlObj = new URL(url);
+  const query = urlObj.search;
+
+  const params = queryToObject(query, { gatherArrays: true });
+
+  const runnerType = params[PARAM_KEY_STATUS]?.[0] || null;
+  if (runnerType === STATUS_NOT_CONNECTED) {
+    const updatedParams = {
+      [PARAM_KEY_STATUS]: [STATUS_NEVER_CONTACTED],
+    };
+    return setUrlParams(updatedParams, url, false, true, true);
+  }
+  return null;
 };
 
 /**

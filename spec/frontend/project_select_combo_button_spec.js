@@ -28,7 +28,7 @@ describe('Project Select Combo Button', () => {
 
     loadFixtures(fixturePath);
 
-    testContext.newItemBtn = document.querySelector('.new-project-item-link');
+    testContext.newItemBtn = document.querySelector('.js-new-project-item-link');
     testContext.projectSelectInput = document.querySelector('.project-item-select');
   });
 
@@ -120,7 +120,6 @@ describe('Project Select Combo Button', () => {
       const returnedVariants = testContext.method();
 
       expect(returnedVariants.localStorageItemType).toBe('new-merge-request');
-      expect(returnedVariants.defaultTextPrefix).toBe('New merge request');
       expect(returnedVariants.presetTextSuffix).toBe('merge request');
     });
 
@@ -131,7 +130,6 @@ describe('Project Select Combo Button', () => {
       const returnedVariants = testContext.method();
 
       expect(returnedVariants.localStorageItemType).toBe('new-issue');
-      expect(returnedVariants.defaultTextPrefix).toBe('New issue');
       expect(returnedVariants.presetTextSuffix).toBe('issue');
     });
   });

@@ -192,17 +192,21 @@ RSpec.describe "Admin Runners" do
           expect(page).not_to have_content 'runner-a-2'
         end
 
-        it 'shows correct runner when type is selected and search term is entered' do
-          create(:ci_runner, :instance, description: 'runner-connected', contacted_at: Time.now)
-          create(:ci_runner, :instance, description: 'runner-not-connected', contacted_at: nil)
+        it 'shows correct runner when status filter is entered' do
+          never_connected = create(:ci_runner, :instance, description: 'runner-never-contacted', contacted_at: nil)
+          create(:ci_runner, :instance, description: 'runner-contacted', contacted_at: Time.now)
 
           visit admin_runners_path
 
-          # use the string "Not" to avoid using space and trigger an early selection
-          input_filtered_search_filter_is_only('Status', 'Not')
+          # use the string "Never" to avoid using space and trigger an early selection
+          input_filtered_search_filter_is_only('Status', 'Never')
 
-          expect(page).not_to have_content 'runner-connected'
-          expect(page).to have_content 'runner-not-connected'
+          expect(page).to have_content 'runner-never-contacted'
+          expect(page).not_to have_content 'runner-contacted'
+
+          within "[data-testid='runner-row-#{never_connected.id}']" do
+            expect(page).to have_selector '.badge', text: 'never contacted'
+          end
         end
       end
 
@@ -375,6 +379,14 @@ RSpec.describe "Admin Runners" do
         expect(page).to have_text "Register an instance runner"
         expect(page).to have_text "Online Runners 0"
         expect(page).to have_text 'No runners found'
+      end
+    end
+
+    context "when visiting outdated URLs" do
+      it 'updates NOT_CONNECTED runner status to NEVER_CONNECTED' do
+        visit admin_runners_path('status[]': 'NOT_CONNECTED')
+
+        expect(page).to have_current_path(admin_runners_path('status[]': 'NEVER_CONTACTED') )
       end
     end
 

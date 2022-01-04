@@ -29,7 +29,7 @@ before_script:
   - ruby -v  # Print out ruby version for debugging
   # Uncomment next line if your rails app needs a JS runtime:
   # - apt-get update -q && apt-get install nodejs -yqq
-  - bundle config set path 'vendor' # Install dependencies into ./vendor/ruby
+  - bundle config set path 'vendor'  # Install dependencies into ./vendor/ruby
   - bundle install -j $(nproc)
 
 # Optional - Delete if not using `rubocop`

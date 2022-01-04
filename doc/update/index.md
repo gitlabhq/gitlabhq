@@ -85,7 +85,7 @@ Certain releases may require different migrations to be
 finished before you update to the newer version.
 
 [Batched migrations](#batched-background-migrations) are a migration type available in GitLab 14.0 and later.
-Background migrations and batched migrations not the same, so you should check that both are
+Background migrations and batched migrations are not the same, so you should check that both are
 complete before updating.
 
 Decrease the time required to complete these migrations by increasing the number of

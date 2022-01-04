@@ -244,6 +244,16 @@ In milestone 15.0, we will remove the `pipelines` attribute from the API respons
 Announced: 2021-11-22
 Planned removal: 2022-05-22
 
+### Pseudonymizer
+
+The Pseudonymizer feature is generally unused,
+can cause production issues with large databases,
+and can interfere with object storage development.
+It is now considered deprecated, and will be removed in GitLab 15.0.
+
+Announced: 2021-01-22
+Planned removal: 2021-06-22
+
 ### REST API Runner will not contain `paused`
 
 The GitLab Runner REST and GraphQL API endpoints will not return `paused` or `active` as a status in GitLab 15.0.

@@ -131,6 +131,10 @@ On failure, the endpoint returns a `503` HTTP status code.
 
 This check is being exempt from Rack Attack.
 
+## Sidekiq
+
+Learn how to configure the [Sidekiq health checks](../../../administration/sidekiq_health_check.md).
+
 <!-- ## Troubleshooting
 
 Include any troubleshooting steps that you can foresee. If you know beforehand what issues

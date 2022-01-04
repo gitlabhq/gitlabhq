@@ -43,6 +43,8 @@ During registration, by enabling proper scopes, you can limit the range of
 resources which the `application` can access. Upon creation, you obtain the
 `application` credentials: _Application ID_ and _Client Secret_ - **keep them secure**.
 
+For a list of scopes in GitLab, see [the provider documentation](../integration/oauth_provider.md#authorized-applications).
+
 ### Prevent CSRF attacks
 
 To [protect redirect-based flows](https://tools.ietf.org/id/draft-ietf-oauth-security-topics-13.html#rec_redirect),
@@ -97,7 +99,7 @@ Before starting the flow, generate the `STATE`, the `CODE_VERIFIER` and the `COD
 
    This page asks the user to approve the request from the app to access their
    account based on the scopes specified in `REQUESTED_SCOPES`. The user is then
-   redirected back to the specified `REDIRECT_URI`. The [scope parameter](https://github.com/doorkeeper-gem/doorkeeper/wiki/Using-Scopes#requesting-particular-scopes)
+   redirected back to the specified `REDIRECT_URI`. The [scope parameter](../integration/oauth_provider.md#authorized-applications)
    is a space-separated list of scopes associated with the user.
    For example,`scope=read_user+profile` requests the `read_user` and `profile` scopes.
    The redirect includes the authorization `code`, for example:
@@ -177,7 +179,7 @@ be used as a CSRF token.
 
    This page asks the user to approve the request from the app to access their
    account based on the scopes specified in `REQUESTED_SCOPES`. The user is then
-   redirected back to the specified `REDIRECT_URI`. The [scope parameter](https://github.com/doorkeeper-gem/doorkeeper/wiki/Using-Scopes#requesting-particular-scopes)
+   redirected back to the specified `REDIRECT_URI`. The [scope parameter](../integration/oauth_provider.md#authorized-applications)
    is a space-separated list of scopes associated with the user.
    For example,`scope=read_user+profile` requests the `read_user` and `profile` scopes.
    The redirect includes the authorization `code`, for example:
@@ -265,7 +267,7 @@ https://gitlab.example.com/oauth/authorize?client_id=APP_ID&redirect_uri=REDIREC
 
 This prompts the user to approve the applications access to their account
 based on the scopes specified in `REQUESTED_SCOPES` and then redirect back to
-the `REDIRECT_URI` you provided. The [scope parameter](https://github.com/doorkeeper-gem/doorkeeper/wiki/Using-Scopes#requesting-particular-scopes)
+the `REDIRECT_URI` you provided. The [scope parameter](../integration/oauth_provider.md#authorized-applications)
    is a space-separated list of scopes you want to have access to (for example, `scope=read_user+profile`
 would request `read_user` and `profile` scopes). The redirect
 includes a fragment with `access_token` as well as token details in GET

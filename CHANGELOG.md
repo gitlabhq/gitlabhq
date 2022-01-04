@@ -2,6 +2,13 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 14.6.1 (2022-01-04)
+
+### Fixed (2 changes)
+
+- [Ignore new line differences when deciding whether to squash MR](gitlab-org/gitlab@9d25380756bbc11ad5d18ea268b0ed0b60bf92fb) ([merge request](gitlab-org/gitlab!77499))
+- [Fix re-use of extensions between instances](gitlab-org/gitlab@0ad3357123bbb72493b965b0ab769dab81890397) ([merge request](gitlab-org/gitlab!77499))
+
 ## 14.6.0 (2021-12-21)
 
 ### Added (76 changes)

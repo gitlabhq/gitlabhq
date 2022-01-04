@@ -12,7 +12,7 @@ RSpec.describe Ci::RunnersHelper do
   describe '#runner_status_icon', :clean_gitlab_redis_cache do
     it "returns - not contacted yet" do
       runner = create(:ci_runner)
-      expect(helper.runner_status_icon(runner)).to include("not connected yet")
+      expect(helper.runner_status_icon(runner)).to include("not contacted yet")
     end
 
     it "returns offline text" do

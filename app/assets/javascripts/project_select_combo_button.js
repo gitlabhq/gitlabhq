@@ -1,11 +1,12 @@
 import $ from 'jquery';
+import { sprintf, __ } from '~/locale';
 import AccessorUtilities from './lib/utils/accessor';
 import { loadCSSFile } from './lib/utils/css_utils';
 
 export default class ProjectSelectComboButton {
   constructor(select) {
     this.projectSelectInput = $(select);
-    this.newItemBtn = $('.new-project-item-link');
+    this.newItemBtn = $('.js-new-project-item-link');
     this.resourceType = this.newItemBtn.data('type');
     this.resourceLabel = this.newItemBtn.data('label');
     this.formattedText = this.deriveTextVariants();
@@ -80,9 +81,18 @@ export default class ProjectSelectComboButton {
   setNewItemBtnAttributes(project) {
     if (project) {
       this.newItemBtn.attr('href', project.url);
-      this.newItemBtn.text(`${this.formattedText.defaultTextPrefix} in ${project.name}`);
+      this.newItemBtn.text(
+        sprintf(__('New %{type} in %{project}'), {
+          type: this.resourceLabel,
+          project: project.name,
+        }),
+      );
     } else {
-      this.newItemBtn.text(`Select project to create ${this.formattedText.presetTextSuffix}`);
+      this.newItemBtn.text(
+        sprintf(__('Select project to create %{type}'), {
+          type: this.formattedText.presetTextSuffix,
+        }),
+      );
     }
   }
 
@@ -99,15 +109,12 @@ export default class ProjectSelectComboButton {
   }
 
   deriveTextVariants() {
-    const defaultTextPrefix = this.resourceLabel;
-
     // the trailing slice call depluralizes each of these strings (e.g. new-issues -> new-issue)
     const localStorageItemType = `new-${this.resourceType.split('_').join('-').slice(0, -1)}`;
     const presetTextSuffix = this.resourceType.split('_').join(' ').slice(0, -1);
 
     return {
       localStorageItemType, // new-issue / new-merge-request
-      defaultTextPrefix, // New issue / New merge request
       presetTextSuffix, // issue / merge request
     };
   }

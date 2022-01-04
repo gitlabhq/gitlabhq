@@ -28,7 +28,15 @@ export default {
 
 <template>
   <div>
-    <runner-status-badge :runner="runner" size="sm" />
-    <runner-paused-badge v-if="paused" size="sm" />
+    <runner-status-badge
+      :runner="runner"
+      size="sm"
+      class="gl-display-inline-block gl-max-w-full gl-text-truncate"
+    />
+    <runner-paused-badge
+      v-if="paused"
+      size="sm"
+      class="gl-display-inline-block gl-max-w-full gl-text-truncate"
+    />
   </div>
 </template>

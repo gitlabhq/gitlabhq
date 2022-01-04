@@ -23484,6 +23484,9 @@ msgstr ""
 msgid "New %{issueType}"
 msgstr ""
 
+msgid "New %{type} in %{project}"
+msgstr ""
+
 msgid "New Application"
 msgstr ""
 
@@ -30537,10 +30540,13 @@ msgstr ""
 msgid "Runners|Name"
 msgstr ""
 
+msgid "Runners|Never contacted"
+msgstr ""
+
 msgid "Runners|New registration token generated!"
 msgstr ""
 
-msgid "Runners|New runner, has not connected yet"
+msgid "Runners|New runner, has not contacted yet"
 msgstr ""
 
 msgid "Runners|No contact from this runner in over 3 months"
@@ -30550,9 +30556,6 @@ msgid "Runners|No recent contact from this runner; last contact was %{timeAgo}"
 msgstr ""
 
 msgid "Runners|Not available to run jobs"
-msgstr ""
-
-msgid "Runners|Not connected"
 msgstr ""
 
 msgid "Runners|Offline"
@@ -30669,7 +30672,7 @@ msgstr ""
 msgid "Runners|The runner will be permanently deleted and no longer available for projects or groups in the instance. Are you sure you want to continue?"
 msgstr ""
 
-msgid "Runners|This runner has never connected to this instance"
+msgid "Runners|This runner has never contacted this instance"
 msgstr ""
 
 msgid "Runners|This runner is associated with one or more projects."
@@ -30738,7 +30741,7 @@ msgstr ""
 msgid "Runners|locked"
 msgstr ""
 
-msgid "Runners|not connected"
+msgid "Runners|never contacted"
 msgstr ""
 
 msgid "Runners|offline"
@@ -31985,6 +31988,9 @@ msgid "Select project and zone to choose machine type"
 msgstr ""
 
 msgid "Select project to choose zone"
+msgstr ""
+
+msgid "Select project to create %{type}"
 msgstr ""
 
 msgid "Select project to create issue"

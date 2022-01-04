@@ -21,8 +21,6 @@ you want using steps 1 and 2 from the GitLab downloads page.
 1. Generate the Sidekiq configuration:
 
    ```ruby
-   sidekiq['listen_address'] = "10.10.1.48"
-
    ## Optional: Enable extra Sidekiq processes
    sidekiq_cluster['enable'] = true
    sidekiq['queue_groups'] = [
@@ -128,6 +126,34 @@ you want using steps 1 and 2 from the GitLab downloads page.
    external_url 'https://gitlab.example.com'
    ```
 
+1. (Optional) If you want to collect Sidekiq metrics, enable the Sidekiq metrics server.
+   To make metrics available from `localhost:8082/metrics`, set the following values:
+
+   ```ruby
+   sidekiq['metrics_enabled'] = true
+   sidekiq['listen_address'] = "localhost"
+   sidekiq['listen_port'] = "8082"
+   
+   # Optionally log all the metrics server logs to log/sidekiq_exporter.log
+   sidekiq['exporter_log_enabled'] = true
+   ```
+
+1. (Optional) If you use health check probes to observe Sidekiq,
+   set a separate port for health checks.
+   Configuring health checks is only necessary if there is something that actually probes them.
+   For more information about health checks, see the [Sidekiq health check page](sidekiq_health_check.md).
+   Enable health checks for Sidekiq:
+
+    ```ruby
+    sidekiq['health_checks_enabled'] = true
+    sidekiq['health_checks_listen_address'] = "localhost"
+    sidekiq['health_checks_listen_port'] = "8092"
+   ```
+
+   NOTE:
+   If health check settings are not set, they will default to the metrics exporter settings.
+   This default is deprecated and is set to be removed in [GitLab 15.0](https://gitlab.com/gitlab-org/gitlab/-/issues/347509). 
+
 1. Run `gitlab-ctl reconfigure`.
 
 You will need to restart the Sidekiq nodes after an update has occurred and database
@@ -196,7 +222,13 @@ gitlab_rails['auto_migrate'] = false
 #######################################
 ###      Sidekiq configuration      ###
 #######################################
-sidekiq['listen_address'] = "10.10.1.48"
+sidekiq['metrics_enabled'] = true
+sidekiq['exporter_log_enabled'] = false
+sidekiq['listen_port'] = "8082"
+
+sidekiq['health_checks_enabled'] = true
+sidekiq['health_checks_listen_address'] = "localhost"
+sidekiq['health_checks_listen_port'] = "8092"
 
 #######################################
 ###     Monitoring configuration    ###
@@ -230,3 +262,4 @@ Related Sidekiq configuration:
 1. [Extra Sidekiq processes](operations/extra_sidekiq_processes.md)
 1. [Extra Sidekiq routing](operations/extra_sidekiq_routing.md)
 1. [Using the GitLab-Sidekiq chart](https://docs.gitlab.com/charts/charts/gitlab/sidekiq/)
+1. [Sidekiq health checks](sidekiq_health_check.md)

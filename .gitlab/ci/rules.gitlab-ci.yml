@@ -256,7 +256,7 @@
   - "lib/gitlab/markdown_cache/active_record/**/*"
   - "config/prometheus/common_metrics.yml"  # Used by Gitlab::DatabaseImporters::CommonMetrics::Importer
   - "{,ee/,jh/}app/models/project_statistics.rb"  # Used to calculate sizes in migration specs
-  - "GITALY_SERVER_VERSION" # Has interactions with background migrations:https://gitlab.com/gitlab-org/gitlab/-/issues/336538
+  - "GITALY_SERVER_VERSION"  # Has interactions with background migrations:https://gitlab.com/gitlab-org/gitlab/-/issues/336538
   # CI changes
   - ".gitlab-ci.yml"
   - ".gitlab/ci/**/*"
@@ -1679,7 +1679,7 @@
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *code-patterns
       when: manual
-      allow_failure: true # manual jobs needs to be allowed to fail, otherwise they block the pipeline
+      allow_failure: true  # manual jobs needs to be allowed to fail, otherwise they block the pipeline
     - when: on_success
       allow_failure: true
 

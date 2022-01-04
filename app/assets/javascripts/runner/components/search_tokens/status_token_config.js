@@ -6,7 +6,7 @@ import {
   STATUS_PAUSED,
   STATUS_ONLINE,
   STATUS_OFFLINE,
-  STATUS_NOT_CONNECTED,
+  STATUS_NEVER_CONTACTED,
   STATUS_STALE,
   PARAM_KEY_STATUS,
 } from '../../constants';
@@ -16,7 +16,7 @@ const options = [
   { value: STATUS_PAUSED, title: s__('Runners|Paused') },
   { value: STATUS_ONLINE, title: s__('Runners|Online') },
   { value: STATUS_OFFLINE, title: s__('Runners|Offline') },
-  { value: STATUS_NOT_CONNECTED, title: s__('Runners|Not connected') },
+  { value: STATUS_NEVER_CONTACTED, title: s__('Runners|Never contacted') },
   { value: STATUS_STALE, title: s__('Runners|Stale') },
 ];
 

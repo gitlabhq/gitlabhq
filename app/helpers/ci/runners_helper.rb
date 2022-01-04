@@ -24,7 +24,7 @@ module Ci
           span_class = 'gl-text-gray-600'
         end
       when :not_connected, :never_contacted
-        title = s_("Runners|New runner, has not connected yet")
+        title = s_("Runners|New runner, has not contacted yet")
         icon = 'warning-solid'
       when :offline
         title = s_("Runners|Runner is offline, last contact was %{runner_contact} ago") % { runner_contact: time_ago_in_words(runner.contacted_at) }

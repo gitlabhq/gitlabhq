@@ -4,11 +4,10 @@ import { __, s__, sprintf } from '~/locale';
 import { getTimeago } from '~/lib/utils/datetime_utility';
 import {
   I18N_ONLINE_RUNNER_TIMEAGO_DESCRIPTION,
-  I18N_NOT_CONNECTED_RUNNER_DESCRIPTION,
+  I18N_NEVER_CONTACTED_RUNNER_DESCRIPTION,
   I18N_OFFLINE_RUNNER_TIMEAGO_DESCRIPTION,
   I18N_STALE_RUNNER_DESCRIPTION,
   STATUS_ONLINE,
-  STATUS_NOT_CONNECTED,
   STATUS_NEVER_CONTACTED,
   STATUS_OFFLINE,
   STATUS_STALE,
@@ -45,12 +44,11 @@ export default {
               timeAgo: this.contactedAtTimeAgo,
             }),
           };
-        case STATUS_NOT_CONNECTED:
         case STATUS_NEVER_CONTACTED:
           return {
             variant: 'muted',
-            label: s__('Runners|not connected'),
-            tooltip: I18N_NOT_CONNECTED_RUNNER_DESCRIPTION,
+            label: s__('Runners|never contacted'),
+            tooltip: I18N_NEVER_CONTACTED_RUNNER_DESCRIPTION,
           };
         case STATUS_OFFLINE:
           return {

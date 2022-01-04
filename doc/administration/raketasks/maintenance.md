@@ -106,6 +106,8 @@ The `gitlab:check` Rake task runs the following Rake tasks:
 - `gitlab:gitlab_shell:check`
 - `gitlab:gitaly:check`
 - `gitlab:sidekiq:check`
+- `gitlab:incoming_email:check`
+- `gitlab:ldap:check`
 - `gitlab:app:check`
 
 It checks that each component was set up according to the installation guide and suggest fixes
