@@ -34,7 +34,7 @@
     @media (min-width: map-get($grid-breakpoints, md)) {
       // The `+11` is to ensure the file header border shows when scrolled -
       // the bottom of the compare-versions header and the top of the file header
-      $mr-file-header-top: $mr-version-controls-height + $header-height + $mr-tabs-height + 11;
+      $mr-file-header-top: calc(#{$mr-version-controls-height} + #{$header-height} + #{$mr-tabs-height} + 11);
 
       position: -webkit-sticky;
       position: sticky;
@@ -42,11 +42,11 @@
       z-index: 120;
 
       .with-system-header & {
-        top: $mr-file-header-top + $system-header-height;
+        top: calc(#{$mr-file-header-top} + #{$system-header-height});
       }
 
       .with-system-header.with-performance-bar & {
-        top: $mr-file-header-top + $system-header-height + $performance-bar-height;
+        top: calc(#{$mr-file-header-top} + #{$system-header-height} + #{$performance-bar-height});
       }
 
       &::before {
@@ -61,22 +61,22 @@
       }
 
       .with-performance-bar & {
-        top: $mr-file-header-top + $performance-bar-height;
+        top: calc(#{$mr-file-header-top} + #{$performance-bar-height});
       }
 
       &.is-commit {
-        top: $header-height + $commit-stat-summary-height;
+        top: calc(#{$header-height} + #{$commit-stat-summary-height});
 
         .with-performance-bar & {
-          top: $header-height + $commit-stat-summary-height + $performance-bar-height;
+          top: calc(#{$header-height} + #{$commit-stat-summary-height} + #{$performance-bar-height});
         }
       }
 
       &.is-compare {
-        top: $header-height + $compare-branches-sticky-header-height;
+        top: calc(#{$header-height} + #{$compare-branches-sticky-header-height});
 
         .with-performance-bar & {
-          top: $performance-bar-height + $header-height + $compare-branches-sticky-header-height;
+          top: calc(#{$performance-bar-height} + #{$header-height} + #{$compare-branches-sticky-header-height});
         }
       }
     }
@@ -99,17 +99,17 @@
 
     .with-performance-bar &.conflict .file-title,
     .with-performance-bar &.conflict .file-title-flex-parent {
-      top: $header-height + $performance-bar-height;
+      top: calc(#{$header-height} + #{$performance-bar-height});
     }
 
     .with-system-header &.conflict .file-title,
     .with-system-header &.conflict .file-title-flex-parent {
-      top: $header-height + $system-header-height;
+      top: calc(#{$header-height} + #{$system-header-height});
     }
 
     .with-system-header.with-performance-bar &.conflict .file-title,
     .with-system-header.with-performance-bar &.conflict .file-title-flex-parent {
-      top: $header-height + $performance-bar-height + $system-header-height;
+      top: calc(#{$header-height} + #{$performance-bar-height} + #{$system-header-height});
     }
   }
 
@@ -825,7 +825,7 @@ table.code {
       top: $header-height;
 
       .with-performance-bar & {
-        top: $header-height + $performance-bar-height;
+        top: calc(#{$header-height} + #{$performance-bar-height});
       }
     }
   }
@@ -839,12 +839,12 @@ table.code {
 
   @include media-breakpoint-up(sm) {
     @include gl-sticky;
-    top: $header-height + $mr-tabs-height;
+    top: calc(#{$header-height} + #{$mr-tabs-height});
     @include gl-bg-white;
     z-index: 200;
 
     .with-performance-bar & {
-      top: $header-height + $mr-tabs-height + $performance-bar-height;
+      top: calc(#{$header-height} + #{$mr-tabs-height} + #{$performance-bar-height});
     }
 
     &.is-stuck {

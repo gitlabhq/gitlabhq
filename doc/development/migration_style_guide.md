@@ -772,6 +772,32 @@ to run on a large table, as long as it is only updating a small subset of the
 rows in the table, but do not ignore that without validating on the GitLab.com
 staging environment - or asking someone else to do so for you - beforehand.
 
+## Removing a foreign key constraint
+
+When removing a foreign key constraint, we need to acquire a lock on both tables
+that are related to the foreign key. For tables with heavy write patterns, it's a good
+idea to use `with_lock_retries`, otherwise you might fail to acquire a lock in time.
+You might also run into deadlocks when acquiring a lock, because ordinarily
+the application writes in `parent,child` order. However, removing a foreign
+key acquires the lock in `child,parent` order. To resolve this, you can
+explicitly acquire the lock in `parent,child`, for example:
+
+```ruby
+disable_ddl_transaction!
+
+def up
+  with_lock_retries do
+    execute('lock table ci_pipelines, ci_builds in access exclusive mode')
+
+    remove_foreign_key :ci_builds, to_table: :ci_pipelines, column: :pipeline_id, on_delete: :cascade, name: 'the_fk_name'
+  end
+end
+
+def down
+  add_concurrent_foreign_key :ci_builds, :ci_pipelines, column: :pipeline_id, on_delete: :cascade, name: 'the_fk_name'
+end
+```
+
 ## Dropping a database table
 
 Dropping a database table is uncommon, and the `drop_table` method

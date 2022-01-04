@@ -514,7 +514,7 @@
 }
 
 .with-performance-bar .right-sidebar {
-  top: $header-height + $performance-bar-height;
+  top: calc(#{$header-height} + #{$performance-bar-height});
 }
 
 .sidebar-move-issue-confirmation-button {

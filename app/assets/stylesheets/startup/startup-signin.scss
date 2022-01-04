@@ -419,7 +419,7 @@ body.navless {
   }
 }
 .navless-container {
-  margin-top: 40px;
+  margin-top: var(--header-height, 40px);
   padding-top: 32px;
 }
 .btn {
@@ -506,7 +506,7 @@ label.label-bold {
 }
 .navbar-empty {
   justify-content: center;
-  height: 40px;
+  height: var(--header-height, 40px);
   background: #fff;
   border-bottom: 1px solid #dbdbdb;
 }

@@ -140,7 +140,7 @@ body {
 }
 
 .with-performance-bar .layout-page {
-  margin-top: $header-height + $performance-bar-height;
+  margin-top: calc(#{$header-height} + #{$performance-bar-height});
 }
 
 .fullscreen-layout {

@@ -150,8 +150,8 @@ server, these two locations on the file system have to be shared using NFS.
 
 To eliminate both file system requirements:
 
-- [Enable the incremental logging feature](#enable-or-disable-incremental-logging), which uses Redis instead of disk space for temporary caching of job logs.
-- Configure [object storage](job_artifacts.md#object-storage-settings) for storing archived job logs.
+1. Configure [object storage](job_artifacts.md#object-storage-settings) for storing archived job logs.
+1. [Enable the incremental logging feature](#enable-or-disable-incremental-logging), which uses Redis instead of disk space for temporary caching of job logs.
 
 ### Technical details
 

@@ -685,7 +685,7 @@ input {
   padding: 0 16px;
   z-index: 1000;
   margin-bottom: 0;
-  min-height: 40px;
+  min-height: var(--header-height, 40px);
   border: 0;
   position: fixed;
   top: 0;
@@ -710,7 +710,7 @@ input {
   display: flex;
   justify-content: space-between;
   position: relative;
-  min-height: 40px;
+  min-height: var(--header-height, 40px);
   padding-left: 0;
 }
 .navbar-gitlab .header-content .title-container {
@@ -1011,7 +1011,7 @@ input {
   left: 0;
   z-index: 600;
   width: 220px;
-  top: 40px;
+  top: var(--header-height, 40px);
   background-color: #f0f0f0;
   transform: translate3d(0, 0, 0);
 }

@@ -43,6 +43,7 @@ The following repository is self-contained in regard to enabling this pattern: [
 
 - Using GitLab and AWS together.
 - Running GitLab infrastructure on AWS.
+- Retrieving temporary credentials for access to AWS services.
 
 ## AWS known issues list
 

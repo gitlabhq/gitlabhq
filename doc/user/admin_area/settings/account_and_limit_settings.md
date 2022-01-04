@@ -36,16 +36,18 @@ can create in their personal namespace:
 
 ## Max attachment size
 
-You can change the maximum file size for attachments in comments and replies in GitLab:
+The maximum file size for attachments in GitLab comments and replies is 10 MB.
+To change the maximum attachment size:
 
 1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Settings > General**, then expand **Account and limit**.
 1. Increase or decrease by changing the value in **Maximum attachment size (MB)**.
 
-NOTE:
 If you choose a size larger than the configured value for the web server,
-you may receive errors. See the [troubleshooting section](#troubleshooting) for more
+you may receive errors. Read the [troubleshooting section](#troubleshooting) for more
 details.
+
+For GitLab.com repository size limits, read [accounts and limit settings](../../gitlab_com/index.md#account-and-limit-settings).
 
 ## Max push size
 
@@ -64,16 +66,19 @@ Use [Git LFS](../../../topics/git/lfs/index.md) to add large files to a reposito
 
 ## Max import size
 
-You can change the maximum file size for imports in GitLab:
+> [Modified](https://gitlab.com/gitlab-org/gitlab/-/issues/251106) from 50 MB to unlimited in GitLab 13.8.
+
+To modify the maximum file size for imports in GitLab:
 
 1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Settings > General**, then expand **Account and limit**.
 1. Increase or decrease by changing the value in **Maximum import size (MB)**.
 
-NOTE:
 If you choose a size larger than the configured value for the web server,
 you may receive errors. See the [troubleshooting section](#troubleshooting) for more
 details.
+
+For GitLab.com repository size limits, read [accounts and limit settings](../../gitlab_com/index.md#account-and-limit-settings).
 
 ## Personal access token prefix
 
@@ -118,6 +123,9 @@ For instance, consider the following workflow:
 1. Before you exceed available storage, you set up a limit of 10 GB
    per repository.
 
+NOTE:
+For GitLab.com repository size limits, read [accounts and limit settings](../../gitlab_com/index.md#account-and-limit-settings).
+
 ### How it works
 
 Only a GitLab administrator can set those limits. Setting the limit to `0` means
@@ -149,9 +157,6 @@ The repository size limit includes repository files and LFS, but does not includ
 wiki, packages, or snippets. The repository size limit applies to both private and public projects.
 
 For details on manually purging files, see [reducing the repository size using Git](../../project/repository/reducing_the_repo_size_using_git.md).
-
-NOTE:
-For GitLab.com repository size limits, see [accounts and limit settings](../../gitlab_com/index.md#account-and-limit-settings).
 
 ## Troubleshooting
 

@@ -36,7 +36,7 @@
   // If they don't match, the file tree and the diff files stick
   // to the top at different heights, which is a bad-looking defect
   $diff-file-header-top: 11px;
-  $top-pos: $header-height + $mr-tabs-height + $mr-version-controls-height + $diff-file-header-top;
+  $top-pos: calc(#{$header-height} + #{$mr-tabs-height} + #{$mr-version-controls-height} + #{$diff-file-header-top});
 
   position: -webkit-sticky;
   position: sticky;

@@ -276,7 +276,7 @@
   top: $header-height;
 
   .with-performance-bar & {
-    top: $header-height + $performance-bar-height;
+    top: calc(#{$header-height} + #{$performance-bar-height});
   }
 }
 

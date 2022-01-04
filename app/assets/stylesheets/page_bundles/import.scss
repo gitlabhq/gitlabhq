@@ -41,7 +41,7 @@ $import-bar-height: $gl-spacing-scale-11;
   z-index: 3;
 
   html.with-performance-bar & {
-    top: $header-height + $performance-bar-height;
+    top: calc(#{$header-height} + #{$performance-bar-height});
   }
 }
 

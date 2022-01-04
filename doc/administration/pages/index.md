@@ -747,7 +747,7 @@ database encryption. Proceed with caution.
    mv /var/opt/gitlab/gitlab-rails/shared/pages/gitlab-secrets.json /etc/gitlab/gitlab-secrets.json
    ```
 
-1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
+1. [Reconfigure the **Pages server**](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
 
 1. On the **GitLab server**, make the following changes to `/etc/gitlab/gitlab.rb`:
 
@@ -757,7 +757,7 @@ database encryption. Proceed with caution.
    pages_nginx['enable'] = false
    ```
 
-1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
+1. [Reconfigure the **GitLab server**](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
 
 It's possible to run GitLab Pages on multiple servers if you wish to distribute
 the load. You can do this through standard load balancing practices such as

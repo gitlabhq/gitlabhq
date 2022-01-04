@@ -934,15 +934,23 @@ This error refers to a problem with the database replica on a **secondary** node
 which Geo expects to have access to. It usually means, either:
 
 - An unsupported replication method was used (for example, logical replication).
-- The instructions to setup a [Geo database replication](../setup/database.md) were not followed correctly.
+- The instructions to set up a [Geo database replication](../setup/database.md) were not followed correctly.
 - Your database connection details are incorrect, that is you have specified the wrong
   user in your `/etc/gitlab/gitlab.rb` file.
 
-A common source of confusion with **secondary** nodes is that it requires two separate
-PostgreSQL instances:
+Geo **secondary** sites require two separate PostgreSQL instances:
 
 - A read-only replica of the **primary** node.
 - A regular, writable instance that holds replication metadata. That is, the Geo tracking database.
+
+This error indicates that the replica database in the **secondary** site is misconfigured and replication has stopped.
+
+To restore the database and resume replication, you can do one of the following:
+
+- [Reset the Geo secondary site replication](#resetting-geo-secondary-node-replication).
+- [Set up a new secondary Geo Omnibus instance](../setup/index.md#using-omnibus-gitlab).
+
+If you set up a new secondary from scratch, you must also [remove the old site from the Geo cluster](remove_geo_site.md#removing-secondary-geo-sites).
 
 ### Geo node does not appear to be replicating the database from the primary node
 

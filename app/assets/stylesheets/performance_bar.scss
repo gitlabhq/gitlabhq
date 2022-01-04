@@ -129,5 +129,5 @@
 }
 
 html.with-performance-bar .nav-sidebar {
-  top: $header-height + $performance-bar-height;
+  top: calc(#{$header-height} + #{$performance-bar-height});
 }

@@ -162,17 +162,18 @@ varies by format:
 
 ## Account and limit settings
 
-GitLab.com has the following [account limits](../admin_area/settings/account_and_limit_settings.md)
-enabled. If a setting is not listed, it is set to the default value.
+GitLab.com has the following account limits enabled. If a setting is not listed,
+the default value [is the same as for self-managed instances](../admin_area/settings/account_and_limit_settings.md):
+
+| Setting                       | GitLab.com default |
+|-------------------------------|--------------------|
+| [Repository size including LFS](../admin_area/settings/account_and_limit_settings.md#repository-size-limit) | 10 GB |
+| Maximum import size           | 5 GB               |
+| Maximum attachment size       | 10 MB              |
 
 If you are near or over the repository size limit, you can either
-[reduce your repository size with Git](../project/repository/reducing_the_repo_size_using_git.md) or [purchase additional storage](https://about.gitlab.com/pricing/licensing-faq/#can-i-buy-more-storage).
-
-| Setting                       | GitLab.com  | Default |
-|-------------------------------|-------------|---------|
-| [Repository size including LFS](../admin_area/settings/account_and_limit_settings.md#repository-size-limit) | 10 GB       | Unlimited     |
-| Maximum import size           | 5 GB        | Unlimited ([Modified](https://gitlab.com/gitlab-org/gitlab/-/issues/251106) from 50MB to unlimited in GitLab 13.8.) |
-| Maximum attachment size       | 10 MB       | 10 MB   |
+[reduce your repository size with Git](../project/repository/reducing_the_repo_size_using_git.md)
+or [purchase additional storage](https://about.gitlab.com/pricing/licensing-faq/#can-i-buy-more-storage).
 
 NOTE:
 `git push` and GitLab project imports are limited to 5 GB per request through
