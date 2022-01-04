@@ -15,9 +15,8 @@ RSpec.describe Gitlab::MergeRequests::CommitMessageGenerator do
     )
   end
 
-  let(:owner) { project.creator }
-  let(:developer) { create(:user, access_level: Gitlab::Access::DEVELOPER) }
-  let(:maintainer) { create(:user, access_level: Gitlab::Access::MAINTAINER) }
+  let(:current_user) { create(:user, name: 'John Doe', email: 'john.doe@example.com') }
+  let(:author) { project.creator }
   let(:source_branch) { 'feature' }
   let(:merge_request_description) { "Merge Request Description\nNext line" }
   let(:merge_request_title) { 'Bugfix' }
@@ -29,13 +28,13 @@ RSpec.describe Gitlab::MergeRequests::CommitMessageGenerator do
       target_project: project,
       target_branch: 'master',
       source_branch: source_branch,
-      author: owner,
+      author: author,
       description: merge_request_description,
       title: merge_request_title
     )
   end
 
-  subject { described_class.new(merge_request: merge_request, current_user: maintainer) }
+  subject { described_class.new(merge_request: merge_request, current_user: current_user) }
 
   shared_examples_for 'commit message with template' do |message_template_name|
     it 'returns nil when template is not set in target project' do
@@ -291,6 +290,8 @@ RSpec.describe Gitlab::MergeRequests::CommitMessageGenerator do
     end
 
     context 'when project has merge commit template with approvers' do
+      let(:user1) { create(:user) }
+      let(:user2) { create(:user) }
       let(message_template_name) do
         "Merge Request approved by:\n%{approved_by}"
       end
@@ -309,27 +310,27 @@ RSpec.describe Gitlab::MergeRequests::CommitMessageGenerator do
 
       context "and mr has one approval" do
         before do
-          merge_request.approved_by_users = [developer]
+          merge_request.approved_by_users = [user1]
         end
 
         it "returns user name and email" do
           expect(result_message).to eq <<~MSG.rstrip
           Merge Request approved by:
-          Approved-by: #{developer.name} <#{developer.email}>
+          Approved-by: #{user1.name} <#{user1.email}>
           MSG
         end
       end
 
       context "and mr has multiple approvals" do
         before do
-          merge_request.approved_by_users = [developer, maintainer]
+          merge_request.approved_by_users = [user1, user2]
         end
 
         it "returns users names and emails" do
           expect(result_message).to eq <<~MSG.rstrip
           Merge Request approved by:
-          Approved-by: #{developer.name} <#{developer.email}>
-          Approved-by: #{maintainer.name} <#{maintainer.email}>
+          Approved-by: #{user1.name} <#{user1.email}>
+          Approved-by: #{user2.name} <#{user2.email}>
           MSG
         end
       end
@@ -357,7 +358,7 @@ RSpec.describe Gitlab::MergeRequests::CommitMessageGenerator do
       context "and current_user is passed" do
         it "returns user name and email" do
           expect(result_message).to eq <<~MSG.rstrip
-          Merge Request merged by '#{maintainer.name} <#{maintainer.email}>'
+          Merge Request merged by '#{current_user.name} <#{current_user.email}>'
           MSG
         end
       end
@@ -366,30 +367,32 @@ RSpec.describe Gitlab::MergeRequests::CommitMessageGenerator do
     context 'user' do
       subject { described_class.new(merge_request: merge_request, current_user: nil) }
 
+      let(:user1) { create(:user) }
+      let(:user2) { create(:user) }
       let(message_template_name) do
         "Merge Request merged by '%{merged_by}'"
       end
 
       context 'comes from metrics' do
         before do
-          merge_request.metrics.merged_by = developer
+          merge_request.metrics.merged_by = user1
         end
 
         it "returns user name and email" do
           expect(result_message).to eq <<~MSG.rstrip
-          Merge Request merged by '#{developer.name} <#{developer.email}>'
+          Merge Request merged by '#{user1.name} <#{user1.email}>'
           MSG
         end
       end
 
       context 'comes from merge_user' do
         before do
-          merge_request.merge_user = maintainer
+          merge_request.merge_user = user2
         end
 
         it "returns user name and email" do
           expect(result_message).to eq <<~MSG.rstrip
-          Merge Request merged by '#{maintainer.name} <#{maintainer.email}>'
+          Merge Request merged by '#{user2.name} <#{user2.email}>'
           MSG
         end
       end
@@ -423,6 +426,7 @@ RSpec.describe Gitlab::MergeRequests::CommitMessageGenerator do
         url:%{url}
         approved_by:%{approved_by}
         merged_by:%{merged_by}
+        co_authored_by:%{co_authored_by}
       MSG
 
       it 'uses custom template' do
@@ -441,8 +445,58 @@ RSpec.describe Gitlab::MergeRequests::CommitMessageGenerator do
           Signed-off-by: Dmitriy Zaporozhets <dmitriy.zaporozhets@gmail.com>
           url:#{Gitlab::UrlBuilder.build(merge_request)}
           approved_by:
-          merged_by:#{maintainer.name} <#{maintainer.commit_email_or_default}>
+          merged_by:#{current_user.name} <#{current_user.commit_email_or_default}>
+          co_authored_by:Co-authored-by: Dmitriy Zaporozhets <dmitriy.zaporozhets@gmail.com>
         MSG
+      end
+    end
+
+    context 'when project has merge commit template with co_authored_by' do
+      let(:source_branch) { 'signed-commits' }
+      let(message_template_name) { <<~MSG.rstrip }
+        %{title}
+
+        %{co_authored_by}
+      MSG
+
+      it 'uses custom template' do
+        expect(result_message).to eq <<~MSG.rstrip
+          Bugfix
+
+          Co-authored-by: Nannie Bernhard <nannie.bernhard@example.com>
+          Co-authored-by: Winnie Hellmann <winnie@gitlab.com>
+        MSG
+      end
+
+      context 'when author and merging user is one of the commit authors' do
+        let(:author) { create(:user, email: 'nannie.bernhard@example.com') }
+
+        before do
+          merge_request.merge_user = author
+        end
+
+        it 'skips his mail in coauthors' do
+          expect(result_message).to eq <<~MSG.rstrip
+            Bugfix
+
+            Co-authored-by: Winnie Hellmann <winnie@gitlab.com>
+          MSG
+        end
+      end
+
+      context 'when author and merging user is the only author of commits' do
+        let(:author) { create(:user, email: 'dmitriy.zaporozhets@gmail.com') }
+        let(:source_branch) { 'feature' }
+
+        before do
+          merge_request.merge_user = author
+        end
+
+        it 'skips coauthors and empty lines before it' do
+          expect(result_message).to eq <<~MSG.rstrip
+            Bugfix
+          MSG
+        end
       end
     end
   end
@@ -451,11 +505,63 @@ RSpec.describe Gitlab::MergeRequests::CommitMessageGenerator do
     let(:result_message) { subject.merge_message }
 
     it_behaves_like 'commit message with template', :merge_commit_template
+
+    context 'when project has merge commit template with co_authored_by' do
+      let(:source_branch) { 'signed-commits' }
+      let(:merge_commit_template) { <<~MSG.rstrip }
+        %{title}
+
+        %{co_authored_by}
+      MSG
+
+      context 'when author and merging user are one of the commit authors' do
+        let(:author) { create(:user, email: 'nannie.bernhard@example.com') }
+        let(:merge_user) { create(:user, email: 'winnie@gitlab.com') }
+
+        before do
+          merge_request.merge_user = merge_user
+        end
+
+        it 'skips merging user, but does not skip merge request author' do
+          expect(result_message).to eq <<~MSG.rstrip
+            Bugfix
+
+            Co-authored-by: Nannie Bernhard <nannie.bernhard@example.com>
+          MSG
+        end
+      end
+    end
   end
 
   describe '#squash_message' do
     let(:result_message) { subject.squash_message }
 
     it_behaves_like 'commit message with template', :squash_commit_template
+
+    context 'when project has merge commit template with co_authored_by' do
+      let(:source_branch) { 'signed-commits' }
+      let(:squash_commit_template) { <<~MSG.rstrip }
+        %{title}
+
+        %{co_authored_by}
+      MSG
+
+      context 'when author and merging user are one of the commit authors' do
+        let(:author) { create(:user, email: 'nannie.bernhard@example.com') }
+        let(:merge_user) { create(:user, email: 'winnie@gitlab.com') }
+
+        before do
+          merge_request.merge_user = merge_user
+        end
+
+        it 'skips merge request author, but does not skip merging user' do
+          expect(result_message).to eq <<~MSG.rstrip
+            Bugfix
+
+            Co-authored-by: Winnie Hellmann <winnie@gitlab.com>
+          MSG
+        end
+      end
+    end
   end
 end

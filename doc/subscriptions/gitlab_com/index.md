@@ -219,6 +219,8 @@ of the date of expiry with a banner in the GitLab user interface.
 To renew your subscription:
 
 1. Log in to the [Customers Portal](https://customers.gitlab.com/customers/sign_in) and beneath your existing subscription, select **Renew**.
+The **Renew** button remains disabled (grayed-out) until 15 days before a subscription expires.
+You can hover your mouse on the **Renew** button to see the date when it will become active.
 1. Review your renewal details and complete the payment process.
 1. Select **Confirm purchase**.
 
