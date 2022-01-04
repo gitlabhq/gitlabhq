@@ -15,12 +15,14 @@ GitLab, and support Terraform best practices.
 
 ## Quick Start
 
+> SAST test was [introduced](https://gitlab.com/groups/gitlab-org/-/epics/6655) in GitLab 14.6.
+
 Use the following `.gitlab-ci.yml` to set up a basic Terraform project integration
 for GitLab versions 14.0 and later:
 
 ```yaml
 include:
-  - template: Terraform.gitlab-ci.yml
+  - template: Terraform.latest.gitlab-ci.yml
 
 variables:
   # If not using GitLab's HTTP backend, remove this line and specify TF_HTTP_* variables
@@ -30,15 +32,23 @@ variables:
   # TF_ROOT: terraform/production
 ```
 
-This template includes some opinionated decisions, which you can override:
+This template includes the following parameters that you can override:
 
-- Including the latest [GitLab Terraform Image](https://gitlab.com/gitlab-org/terraform-images).
-- Using the [GitLab managed Terraform State](#gitlab-managed-terraform-state) as
+- Uses the latest [GitLab Terraform image](https://gitlab.com/gitlab-org/terraform-images).
+- Uses the [GitLab-managed Terraform State](#gitlab-managed-terraform-state) as
   the Terraform state storage backend.
-- Creating [four pipeline stages](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Terraform.gitlab-ci.yml):
-  `init`, `validate`, `build`, and `deploy`. These stages
-  [run the Terraform commands](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Terraform/Base.gitlab-ci.yml)
-  `init`, `validate`, `plan`, `plan-json`, and `apply`. The `apply` command only runs on the default branch.
+- Creates [four pipeline stages](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Terraform.latest.gitlab-ci.yml):
+  `test`, `validate`, `build`, and `deploy`. These stages
+  [run the Terraform commands](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Terraform/Base.latest.gitlab-ci.yml)
+  `test`, `validate`, `plan`, `plan-json`, and `apply`. The `apply` command only runs on the default branch.
+- Runs the [Terraform SAST scanner](../../application_security/iac_scanning/index.md#configure-iac-scanning-manually), 
+  that you can disable by creating a `SAST_DISABLED` environment variable and setting it to `1`.
+
+The latest template described above might contain breaking changes between major GitLab releases. For users requiring more stable setups, we 
+recommend using the stable templates:
+
+- [A ready to use version](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Terraform.gitlab-ci.yml)
+- [A base template for customized setups](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Terraform/Base.gitlab-ci.yml)
 
 This video from January 2021 walks you through all the GitLab Terraform integration features:
 

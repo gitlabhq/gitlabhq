@@ -1,3 +1,4 @@
-- label_status = hook_log.success? ? 'badge-success' : 'badge-danger'
-%span{ class: "badge badge-pill gl-badge sm #{label_status}" }
-  = hook_log.internal_error? ? _('Error') : hook_log.response_status
+- badge_variant = hook_log.success? ? :success : :danger
+- badge_text = hook_log.internal_error? ? _('Error') : hook_log.response_status
+
+= gl_badge_tag badge_text, { variant: badge_variant, size: :sm }
