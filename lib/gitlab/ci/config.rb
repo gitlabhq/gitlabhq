@@ -36,7 +36,7 @@ module Gitlab
         end
 
         @root = self.logger.instrument(:config_compose) do
-          Entry::Root.new(@config).tap(&:compose!)
+          Entry::Root.new(@config, project: project, user: user).tap(&:compose!)
         end
       rescue *rescue_errors => e
         raise Config::ConfigError, e.message

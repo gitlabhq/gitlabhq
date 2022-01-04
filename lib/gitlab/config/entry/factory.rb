@@ -32,6 +32,10 @@ module Gitlab
           self
         end
 
+        def deprecation
+          @attributes[:deprecation]
+        end
+
         def description
           @attributes[:description]
         end
@@ -84,6 +88,7 @@ module Gitlab
             node.parent = @attributes[:parent]
             node.default = @attributes[:default]
             node.description = @attributes[:description]
+            node.deprecation = @attributes[:deprecation]
           end
         end
       end

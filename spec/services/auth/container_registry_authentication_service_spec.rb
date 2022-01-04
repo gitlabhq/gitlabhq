@@ -92,6 +92,35 @@ RSpec.describe Auth::ContainerRegistryAuthenticationService do
 
       it_behaves_like 'a modified token'
     end
+
+    context 'with a project with a path with trailing underscore' do
+      let(:bad_project) { create(:project) }
+
+      before do
+        bad_project.update!(path: bad_project.path + '_')
+        bad_project.add_developer(current_user)
+      end
+
+      describe '#full_access_token' do
+        let(:token) { described_class.full_access_token(bad_project.full_path) }
+        let(:access) do
+          [{ 'type' => 'repository',
+             'name' => bad_project.full_path,
+             'actions' => ['*'],
+             'migration_eligible' => false }]
+        end
+
+        subject { { token: token } }
+
+        it 'logs an exception and returns a valid access token' do
+          expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception)
+
+          expect(token).to be_present
+          expect(payload).to be_a(Hash)
+          expect(payload).to include('access' => access)
+        end
+      end
+    end
   end
 
   context 'when not in migration mode' do

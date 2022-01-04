@@ -14,7 +14,7 @@ RSpec.describe Projects::Security::ConfigurationPresenter do
   before do
     stub_licensed_features(licensed_scan_types.to_h { |type| [type, true] })
 
-    stub_feature_flags(corpus_management: false)
+    stub_feature_flags(corpus_management_ui: false)
   end
 
   describe '#to_html_data_attribute' do

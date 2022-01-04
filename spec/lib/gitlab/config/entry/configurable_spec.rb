@@ -39,7 +39,8 @@ RSpec.describe Gitlab::Config::Entry::Configurable do
         entry :object, entry_class,
           description: 'test object',
           inherit: true,
-          reserved: true
+          reserved: true,
+          deprecation: { deprecated: '10.0', warning: '10.1', removed: '11.0', documentation: 'docs.gitlab.com' }
       end
     end
 
@@ -52,6 +53,12 @@ RSpec.describe Gitlab::Config::Entry::Configurable do
         factory = entry.nodes[:object]
 
         expect(factory).to be_an_instance_of(Gitlab::Config::Entry::Factory)
+        expect(factory.deprecation).to eq(
+          deprecated: '10.0',
+          warning: '10.1',
+          removed: '11.0',
+          documentation: 'docs.gitlab.com'
+        )
         expect(factory.description).to eq('test object')
         expect(factory.inheritable?).to eq(true)
         expect(factory.reserved?).to eq(true)

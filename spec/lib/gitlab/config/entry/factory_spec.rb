@@ -115,5 +115,16 @@ RSpec.describe Gitlab::Config::Entry::Factory do
           .with('some value', { some: 'hash' })
       end
     end
+
+    context 'when setting deprecation information' do
+      it 'passes deprecation as a parameter' do
+        entry = factory
+           .value('some value')
+           .with(deprecation: { deprecated: '10.0', warning: '10.1', removed: '11.0', documentation: 'docs' })
+           .create!
+
+        expect(entry.deprecation).to eq({ deprecated: '10.0', warning: '10.1', removed: '11.0', documentation: 'docs' })
+      end
+    end
   end
 end

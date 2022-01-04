@@ -76,7 +76,7 @@ module Gitlab
           private
 
           # rubocop: disable CodeReuse/ActiveRecord
-          def entry(key, entry, description: nil, default: nil, inherit: nil, reserved: nil, metadata: {})
+          def entry(key, entry, description: nil, default: nil, inherit: nil, reserved: nil, deprecation: nil, metadata: {})
             entry_name = key.to_sym
             raise ArgumentError, "Entry '#{key}' already defined in '#{name}'" if @nodes.to_h[entry_name]
 
@@ -85,6 +85,7 @@ module Gitlab
               .with(default: default)
               .with(inherit: inherit)
               .with(reserved: reserved)
+              .with(deprecation: deprecation)
               .metadata(metadata)
 
             @nodes ||= {}

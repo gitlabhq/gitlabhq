@@ -7,6 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # Geo Rake Tasks **(PREMIUM SELF)**
 
 The following Rake tasks are for [Geo installations](../geo/index.md).
+See also [troubleshooting Geo](../geo/replication/troubleshooting.md) for additional Geo Rake tasks.
 
 ## Git housekeeping
 

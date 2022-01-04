@@ -145,6 +145,9 @@ module Auth
       # we'll remove them manually from this deny list, and their new repositories will become eligible.
       Feature.disabled?(:container_registry_migration_phase1_deny, project.root_ancestor) &&
         Feature.enabled?(:container_registry_migration_phase1_allow, project)
+    rescue ContainerRegistry::Path::InvalidRegistryPathError => ex
+      Gitlab::ErrorTracking.track_and_raise_for_dev_exception(ex, **Gitlab::ApplicationContext.current)
+      false
     end
 
     ##

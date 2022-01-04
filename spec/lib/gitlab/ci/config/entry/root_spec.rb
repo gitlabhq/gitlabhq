@@ -3,7 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::Config::Entry::Root do
-  let(:root) { described_class.new(hash) }
+  let(:user) {}
+  let(:project) {}
+  let(:root) { described_class.new(hash, user: user, project: project) }
 
   describe '.nodes' do
     it 'returns a hash' do
@@ -51,6 +53,37 @@ RSpec.describe Gitlab::Ci::Config::Entry::Root do
             }
           }
         }
+      end
+
+      context 'when deprecated types keyword is defined' do
+        let(:project) { create(:project, :repository) }
+        let(:user) { create(:user) }
+
+        let(:hash) do
+          { types: %w(test deploy),
+            rspec: { script: 'rspec' } }
+        end
+
+        before do
+          root.compose!
+        end
+
+        it 'returns array of types as stages with a warning' do
+          expect(root.stages_value).to eq %w[test deploy]
+          expect(root.warnings).to eq(["root `types` is deprecated in 9.0 and will be removed in 15.0 - read more: https://docs.gitlab.com/ee/ci/yaml/#deprecated-keywords"])
+        end
+
+        it 'logs usage of types keyword' do
+          expect(Gitlab::AppJsonLogger).to(
+            receive(:info)
+              .with(event: 'ci_used_deprecated_keyword',
+                    entry: root[:stages].key.to_s,
+                    user_id: user.id,
+                    project_id: project.id)
+          )
+
+          root.compose!
+        end
       end
 
       describe '#compose!' do
@@ -106,17 +139,6 @@ RSpec.describe Gitlab::Ci::Config::Entry::Root do
           context 'when stages key defined' do
             it 'returns array of stages' do
               expect(root.stages_value).to eq %w[build pages release]
-            end
-          end
-
-          context 'when deprecated types key defined' do
-            let(:hash) do
-              { types: %w(test deploy),
-                rspec: { script: 'rspec' } }
-            end
-
-            it 'returns array of types as stages' do
-              expect(root.stages_value).to eq %w[test deploy]
             end
           end
         end

@@ -10,7 +10,7 @@ module Gitlab
         InvalidError = Class.new(StandardError)
 
         attr_reader :config, :metadata
-        attr_accessor :key, :parent, :default, :description
+        attr_accessor :key, :parent, :default, :description, :deprecation
 
         def initialize(config, **metadata)
           @config = config
@@ -128,6 +128,25 @@ module Gitlab
         private
 
         attr_reader :entries
+
+        def log_and_warn_deprecated_entry(entry)
+          user = metadata[:user]
+          project = metadata[:project]
+
+          if project && user
+            Gitlab::AppJsonLogger.info(event: 'ci_used_deprecated_keyword',
+                                       entry: entry.key.to_s,
+                                       user_id: user.id,
+                                       project_id: project.id)
+          end
+
+          deprecation = entry.deprecation
+          add_warning(
+            "`#{entry.key}` is deprecated in " \
+            "#{deprecation[:deprecated]} and will be removed in #{deprecation[:removed]} " \
+            "- read more: #{deprecation[:documentation]}"
+          )
+        end
       end
     end
   end

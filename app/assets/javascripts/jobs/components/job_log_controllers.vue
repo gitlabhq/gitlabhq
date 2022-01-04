@@ -107,6 +107,7 @@ export default {
         :data-confirm="__('Are you sure you want to erase this build?')"
         class="gl-ml-3"
         data-testid="job-log-erase-link"
+        data-confirm-btn-variant="danger"
         data-method="post"
         icon="remove"
       />
