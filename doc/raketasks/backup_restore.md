@@ -115,12 +115,8 @@ the host, based on your installed version of GitLab:
 
 If you're using the [GitLab Helm chart](https://gitlab.com/gitlab-org/charts/gitlab)
 on a Kubernetes cluster, you can run the backup task by using `kubectl` to run the `backup-utility`
-script on the GitLab task runner pod. For more details, see
-[backing up a GitLab installation](https://gitlab.com/gitlab-org/charts/gitlab/blob/master/doc/backup-restore/backup.md#backing-up-a-gitlab-installation).
-
-```shell
-kubectl exec -it <gitlab task-runner pod> -- backup-utility
-```
+script on the GitLab toolbox pod. For more details, see the
+[charts backup documentation](https://docs.gitlab.com/charts/backup-restore/backup.html).
 
 Similar to the Kubernetes case, if you have scaled out your GitLab cluster to
 use multiple application servers, you should pick a designated node (that isn't

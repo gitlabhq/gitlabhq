@@ -40,7 +40,7 @@ describe('RunnerTypeCell', () => {
   const findDeleteBtn = () => wrapper.findByTestId('delete-runner');
   const getTooltip = (w) => getBinding(w.element, 'gl-tooltip')?.value;
 
-  const createComponent = ({ active = true } = {}, options) => {
+  const createComponent = (runner = {}, options) => {
     wrapper = extendedWrapper(
       shallowMount(RunnerActionCell, {
         propsData: {
@@ -48,7 +48,9 @@ describe('RunnerTypeCell', () => {
             id: mockRunner.id,
             shortSha: mockRunner.shortSha,
             adminUrl: mockRunner.adminUrl,
-            active,
+            userPermissions: mockRunner.userPermissions,
+            active: mockRunner.active,
+            ...runner,
           },
         },
         localVue,
@@ -102,6 +104,25 @@ describe('RunnerTypeCell', () => {
       createComponent();
 
       expect(findEditBtn().attributes('href')).toBe(mockRunner.adminUrl);
+    });
+
+    it('Does not render the runner edit link when user cannot update', () => {
+      createComponent({
+        userPermissions: {
+          ...mockRunner.userPermissions,
+          updateRunner: false,
+        },
+      });
+
+      expect(findEditBtn().exists()).toBe(false);
+    });
+
+    it('Does not render the runner edit link when adminUrl is not provided', () => {
+      createComponent({
+        adminUrl: null,
+      });
+
+      expect(findEditBtn().exists()).toBe(false);
     });
   });
 
@@ -213,6 +234,17 @@ describe('RunnerTypeCell', () => {
         });
       });
     });
+
+    it('Does not render the runner toggle active button when user cannot update', () => {
+      createComponent({
+        userPermissions: {
+          ...mockRunner.userPermissions,
+          updateRunner: false,
+        },
+      });
+
+      expect(findToggleActiveBtn().exists()).toBe(false);
+    });
   });
 
   describe('Delete action', () => {
@@ -223,6 +255,10 @@ describe('RunnerTypeCell', () => {
           stubs: { RunnerDeleteModal },
         },
       );
+    });
+
+    it('Renders delete button', () => {
+      expect(findDeleteBtn().exists()).toBe(true);
     });
 
     it('Delete button opens delete modal', () => {
@@ -257,6 +293,18 @@ describe('RunnerTypeCell', () => {
         awaitRefetchQueries: true,
         refetchQueries: [getRunnersQueryName, getGroupRunnersQueryName],
       });
+    });
+
+    it('Does not render the runner delete button when user cannot delete', () => {
+      createComponent({
+        userPermissions: {
+          ...mockRunner.userPermissions,
+          deleteRunner: false,
+        },
+      });
+
+      expect(findDeleteBtn().exists()).toBe(false);
+      expect(findRunnerDeleteModal().exists()).toBe(false);
     });
 
     describe('When delete is clicked', () => {

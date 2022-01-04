@@ -209,13 +209,17 @@ also load certain page content directly from common public CDN hostnames.
 
 ## Webhooks
 
-The following limits apply for [Webhooks](../project/integrations/webhooks.md):
+The following limits apply for [webhooks](../project/integrations/webhooks.md):
 
-| Setting              | GitLab.com  | Default |
-|----------------------|-------------|---------|
-| [Webhook rate limit](../../administration/instance_limits.md#webhook-rate-limit) | `120` calls per minute for GitLab Free, unlimited for GitLab Premium and GitLab Ultimate | Unlimited |
-| [Number of webhooks](../../administration/instance_limits.md#number-of-webhooks) | `100` per project, `50` per group | `100` per project, `50` per group |
-| Maximum payload size | 25 MB       | 25 MB   |
+| Setting              | Default for GitLab.com  |
+|----------------------|-------------------------|
+| Webhook rate limit   | `120` calls per minute for GitLab Free, unlimited for GitLab Premium and GitLab Ultimate |
+| Number of webhooks   | `100` per project, `50` per group |
+| Maximum payload size | 25 MB                   |
+
+For self-managed instance limits, see
+[Webhook rate limit](../../administration/instance_limits.md#webhook-rate-limit)
+and [Number of webhooks](../../administration/instance_limits.md#number-of-webhooks).
 
 ## Runner SaaS
 

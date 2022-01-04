@@ -69,6 +69,12 @@ export default {
     runnerDeleteModalId() {
       return `delete-runner-modal-${this.runnerId}`;
     },
+    canUpdate() {
+      return this.runner.userPermissions?.updateRunner;
+    },
+    canDelete() {
+      return this.runner.userPermissions?.deleteRunner;
+    },
   },
   methods: {
     async onToggleActive() {
@@ -156,7 +162,7 @@ export default {
       See https://gitlab.com/gitlab-org/gitlab/-/issues/334802
     -->
     <gl-button
-      v-if="runner.adminUrl"
+      v-if="canUpdate && runner.adminUrl"
       v-gl-tooltip.hover.viewport="$options.I18N_EDIT"
       :href="runner.adminUrl"
       :aria-label="$options.I18N_EDIT"
@@ -164,6 +170,7 @@ export default {
       data-testid="edit-runner"
     />
     <gl-button
+      v-if="canUpdate"
       v-gl-tooltip.hover.viewport="toggleActiveTitle"
       :aria-label="toggleActiveTitle"
       :icon="toggleActiveIcon"
@@ -172,6 +179,7 @@ export default {
       @click="onToggleActive"
     />
     <gl-button
+      v-if="canDelete"
       v-gl-tooltip.hover.viewport="deleteTitle"
       v-gl-modal="runnerDeleteModalId"
       :aria-label="deleteTitle"
@@ -182,6 +190,7 @@ export default {
     />
 
     <runner-delete-modal
+      v-if="canDelete"
       :ref="runnerDeleteModalId"
       :modal-id="runnerDeleteModalId"
       :runner-name="runnerName"

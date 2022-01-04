@@ -13,7 +13,7 @@ your applications.
 
 Metrics help you understand the health and performance of your infrastructure,
 applications, and systems by providing insights into your application's reliability,
-stability, and performance. GitLab provides a dashboard out-of-the-box, which you
+stability, and performance. GitLab provides a default dashboard that you
 can extend with custom metrics, and augment with additional custom dashboards. You
 can track the metrics that matter most to your team, generate automated alerts when
 performance degrades, and manage those alerts - all within GitLab.

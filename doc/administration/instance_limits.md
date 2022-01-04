@@ -151,7 +151,7 @@ Plan.default.actual_limits.update!(web_hook_calls: 10)
 
 Set the limit to `0` to disable it.
 
-- **Default rate limit**: Disabled.
+- **Default rate limit**: Disabled (unlimited).
 
 ## Gitaly concurrency limit
 
@@ -230,10 +230,8 @@ There is a limit when embedding metrics in GitLab Flavored Markdown (GFM) for pe
 
 ## Number of webhooks
 
-On GitLab.com, the [maximum number of webhooks and their size](../user/gitlab_com/index.md#webhooks) per project, and per group, is limited.
-
-To set this limit for a self-managed installation, where the default is `100` project webhooks and `50` group webhooks, run the following in the
-[GitLab Rails console](operations/rails_console.md#starting-a-rails-console-session):
+To set the maximum number of group or project webhooks for a self-managed installation,
+run the following in the [GitLab Rails console](operations/rails_console.md#starting-a-rails-console-session):
 
 ```ruby
 # If limits don't exist for the default plan, you can create one with:
@@ -247,6 +245,11 @@ Plan.default.actual_limits.update!(group_hooks: 100)
 ```
 
 Set the limit to `0` to disable it.
+
+- **Default maximum number of webhooks**: `100` per project, `50` per group
+- **Maximum payload size**: 25 MB
+
+For GitLab.com, see the [webhook limits for GitLab.com](../user/gitlab_com/index.md#webhooks).
 
 ## Pull Mirroring Interval
 
