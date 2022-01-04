@@ -258,18 +258,6 @@ ZDXgrA==
       certificate_source { :gitlab_provided }
     end
 
-    # This contains:
-    # webdioxide.com
-    # Let's Encrypt R3
-    # ISRG Root X1 (issued by DST Root CA X3)
-    #
-    # DST Root CA X3 expired on 2021-09-30, but ISRG Root X1 should be trusted on most systems.
-    trait :letsencrypt_expired_x3_root do
-      certificate do
-        File.read(Rails.root.join('spec/fixtures/ssl', 'letsencrypt_expired_x3.pem'))
-      end
-    end
-
     trait :explicit_ecdsa do
       certificate do
         '-----BEGIN CERTIFICATE-----
