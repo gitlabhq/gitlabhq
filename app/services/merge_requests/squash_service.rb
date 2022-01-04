@@ -5,7 +5,7 @@ module MergeRequests
     def execute
       # If performing a squash would result in no change, then
       # immediately return a success message without performing a squash
-      if merge_request.commits_count == 1 && message == merge_request.first_commit.safe_message
+      if merge_request.commits_count == 1 && message&.strip == merge_request.first_commit.safe_message&.strip
         return success(squash_sha: merge_request.diff_head_sha)
       end
 

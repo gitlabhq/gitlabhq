@@ -50,6 +50,10 @@ const utils = {
     }
     return extensionsStore.get(extensionName);
   },
+
+  hasFullApiRegistered: (targetMethods, newMethods) => {
+    return newMethods.find((fn) => !targetMethods.includes(fn)) === undefined;
+  },
 };
 
 /** Class representing a Source Editor Instance */
@@ -132,7 +136,9 @@ export default class EditorInstance {
     const existingExt = utils.getStoredExtension(extensionsStore, definition.extensionName);
     if (existingExt) {
       if (isEqual(extension.setupOptions, existingExt.setupOptions)) {
-        return existingExt;
+        if (utils.hasFullApiRegistered(this.extensionsAPI, Object.keys(existingExt.api))) {
+          return existingExt;
+        }
       }
       this.unuseExtension(extensionsStore, existingExt);
     }
