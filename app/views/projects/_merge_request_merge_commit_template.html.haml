@@ -3,15 +3,12 @@
 .form-group
   %b= s_('ProjectSettings|Merge commit message template')
   %p.text-secondary
-    - configure_the_merge_commit_message_help_link_url = help_page_path('user/project/merge_requests/commit_templates.md')
-    - configure_the_merge_commit_message_help_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: configure_the_merge_commit_message_help_link_url }
-    = s_('ProjectSettings|The commit message used when merging, if the merge method creates a merge commit. %{link_start}Learn more about syntax and variables.%{link_end}').html_safe % { link_start: configure_the_merge_commit_message_help_link_start, link_end: '</a>'.html_safe }
+    = s_('ProjectSettings|The commit message used when merging, if the merge method creates a merge commit.')
   .mb-2
     - default_merge_commit_template = "Merge branch '%{source_branch}' into '%{target_branch}'\n\n%{title}\n\n%{issues}\n\nSee merge request %{reference}"
     = form.text_area :merge_commit_template, class: 'form-control gl-form-input', rows: 8, maxlength: 500, placeholder: default_merge_commit_template
     %p.form-text.text-muted
       = s_('ProjectSettings|Maximum 500 characters.')
-      = s_('ProjectSettings|Supported variables:')
-      - Gitlab::MergeRequests::CommitMessageGenerator::PLACEHOLDERS.keys.each do |placeholder|
-        %code
-          = "%{#{placeholder}}".html_safe
+      - configure_the_merge_commit_message_help_link_url = help_page_path('user/project/merge_requests/commit_templates.md')
+      - configure_the_merge_commit_message_help_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: configure_the_merge_commit_message_help_link_url }
+      = s_('ProjectSettings|%{link_start}What variables can I use?%{link_end}').html_safe % { link_start: configure_the_merge_commit_message_help_link_start, link_end: '</a>'.html_safe }

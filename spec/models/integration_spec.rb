@@ -683,7 +683,7 @@ RSpec.describe Integration do
 
     it "returns initial value when the property has been assigned multiple values" do
       service.bamboo_url = "http://example.com"
-      service.bamboo_url = "http://example2.com"
+      service.bamboo_url = "http://example.org"
       expect(service.bamboo_url_was).to eq('http://gitlab.com')
     end
 

@@ -116,6 +116,13 @@ export const ROOT_IMAGE_TOOLTIP = s__(
   'ContainerRegistry|Image repository with no name located at the project URL.',
 );
 
+export const NO_TAGS_MATCHING_FILTERS_TITLE = s__(
+  'ContainerRegistry|The filter returned no results',
+);
+export const NO_TAGS_MATCHING_FILTERS_DESCRIPTION = s__(
+  'ContainerRegistry|Please try different search criteria',
+);
+
 // Parameters
 
 export const DEFAULT_PAGE = 1;

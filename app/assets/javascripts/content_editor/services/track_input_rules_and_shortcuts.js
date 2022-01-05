@@ -35,31 +35,33 @@ const trackInputRule = (contentType, inputRule) => {
 };
 
 const trackInputRulesAndShortcuts = (tiptapExtension) => {
-  return tiptapExtension.extend({
-    addKeyboardShortcuts() {
-      const shortcuts = this.parent?.() || {};
-      const { name } = this;
-      /**
-       * We don’t want to track keyboard shortcuts
-       * that are not deliberately executed to create
-       * new types of content
-       */
-      const dotNotTrackKeys = [ENTER_KEY, BACKSPACE_KEY];
-      const decorated = mapValues(shortcuts, (commandFn, shortcut) =>
-        dotNotTrackKeys.includes(shortcut)
-          ? commandFn
-          : trackKeyboardShortcut(name, commandFn, shortcut),
-      );
+  return tiptapExtension
+    .extend({
+      addKeyboardShortcuts() {
+        const shortcuts = this.parent?.() || {};
+        const { name } = this;
+        /**
+         * We don’t want to track keyboard shortcuts
+         * that are not deliberately executed to create
+         * new types of content
+         */
+        const dotNotTrackKeys = [ENTER_KEY, BACKSPACE_KEY];
+        const decorated = mapValues(shortcuts, (commandFn, shortcut) =>
+          dotNotTrackKeys.includes(shortcut)
+            ? commandFn
+            : trackKeyboardShortcut(name, commandFn, shortcut),
+        );
 
-      return decorated;
-    },
-    addInputRules() {
-      const inputRules = this.parent?.() || [];
-      const { name } = this;
+        return decorated;
+      },
+      addInputRules() {
+        const inputRules = this.parent?.() || [];
+        const { name } = this;
 
-      return inputRules.map((inputRule) => trackInputRule(name, inputRule));
-    },
-  });
+        return inputRules.map((inputRule) => trackInputRule(name, inputRule));
+      },
+    })
+    .configure(tiptapExtension.options);
 };
 
 export default trackInputRulesAndShortcuts;

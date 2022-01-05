@@ -22,7 +22,7 @@
         .row
           .form-group.col-sm-12
             = f.label :role, _('Role'), class: 'label-bold'
-            = f.select :role, ::User.roles.keys.map { |role| [role.titleize, role] }, {}, class: 'form-control js-user-role-dropdown', autofocus: true
+            = f.select :role, ::User.roles.keys.map { |role| [role.titleize, role] }, { include_blank: _('Select a role') }, class: 'form-control js-user-role-dropdown', autofocus: true, required: true
         - if Feature.enabled?(:user_other_role_details)
           .row
             .form-group.col-sm-12.js-other-role-group.hidden

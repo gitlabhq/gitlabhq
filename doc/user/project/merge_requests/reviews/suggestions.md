@@ -89,7 +89,7 @@ These commit messages can be customized to follow any guidelines you might have.
 To do so, expand the **Merge requests** tab within your project's **General**
 settings and change the **Merge suggestions** text:
 
-![Custom commit message for applied suggestions](img/suggestions_custom_commit_messages_v13_1.jpg)
+![Custom commit message for applied suggestions](img/suggestions_custom_commit_messages_v14_7.png)
 
 You can also use following variables besides static text:
 

@@ -1,4 +1,5 @@
 import { s__, __ } from '~/locale';
+import { NAME_SORT_FIELD } from './common';
 
 //  Translations strings
 
@@ -49,5 +50,5 @@ export const GRAPHQL_PAGE_SIZE = 10;
 export const SORT_FIELDS = [
   { orderBy: 'UPDATED', label: __('Updated') },
   { orderBy: 'CREATED', label: __('Created') },
-  { orderBy: 'NAME', label: __('Name') },
+  NAME_SORT_FIELD,
 ];

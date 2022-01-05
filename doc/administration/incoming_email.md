@@ -170,6 +170,15 @@ Reply by email should now be working.
    cd /home/git/gitlab
    ```
 
+1. Install the `gitlab-mail_room` gem manually:
+
+   ```shell
+   gem install gitlab-mail_room
+   ```
+
+   NOTE: This step is necessary to avoid thread deadlocks and to support the latest MailRoom features. See
+   [this explanation](../development/emails.md#mailroom-gem-updates) for more details.
+
 1. Find the `incoming_email` section in `config/gitlab.yml`, enable the feature
   and fill in the details for your specific IMAP server and email account (see [examples](#configuration-examples) below).
 

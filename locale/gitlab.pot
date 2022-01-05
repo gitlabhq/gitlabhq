@@ -9383,6 +9383,9 @@ msgstr ""
 msgid "ContainerRegistry|Note: Any policy update will result in a change to the scheduled run date and time"
 msgstr ""
 
+msgid "ContainerRegistry|Please try different search criteria"
+msgstr ""
+
 msgid "ContainerRegistry|Published %{timeInfo}"
 msgstr ""
 
@@ -9470,6 +9473,9 @@ msgid "ContainerRegistry|Tags with names that match this regex pattern are remov
 msgstr ""
 
 msgid "ContainerRegistry|The cleanup policy timed out before it could delete all tags. An administrator can %{adminLinkStart}manually run cleanup now%{adminLinkEnd} or you can wait for the cleanup policy to automatically run again. %{docLinkStart}More information%{docLinkEnd}"
+msgstr ""
+
+msgid "ContainerRegistry|The filter returned no results"
 msgstr ""
 
 msgid "ContainerRegistry|The image repository could not be found."
@@ -22341,10 +22347,10 @@ msgstr ""
 msgid "MergeRequest|Can't show this merge request because the fork project was deleted."
 msgstr ""
 
-msgid "MergeRequest|Can't show this merge request because the source branch %{badge_start}%{source_branch}%{badge_end} is missing from project %{badge_start}%{project_path}%{badge_end}. Close this merge request or update the source branch."
+msgid "MergeRequest|Can't show this merge request because the source branch %{branch_badge} is missing from project %{path_badge}. Close this merge request or update the source branch."
 msgstr ""
 
-msgid "MergeRequest|Can't show this merge request because the target branch %{badge_start}%{target_branch}%{badge_end} is missing from project %{badge_start}%{project_path}%{badge_end}. Close this merge request or update the target branch."
+msgid "MergeRequest|Can't show this merge request because the target branch %{branch_badge} is missing from project %{path_badge}. Close this merge request or update the target branch."
 msgstr ""
 
 msgid "MergeRequest|Compare %{target} and %{source}"
@@ -27694,6 +27700,9 @@ msgstr ""
 msgid "ProjectSettings|%{link_start}What are description templates?%{link_end}"
 msgstr ""
 
+msgid "ProjectSettings|%{link_start}What variables can I use?%{link_end}"
+msgstr ""
+
 msgid "ProjectSettings|Additional settings that influence how and when merges are done."
 msgstr ""
 
@@ -27946,19 +27955,16 @@ msgstr ""
 msgid "ProjectSettings|Submit changes to be merged upstream."
 msgstr ""
 
-msgid "ProjectSettings|Supported variables:"
-msgstr ""
-
 msgid "ProjectSettings|Target project"
 msgstr ""
 
-msgid "ProjectSettings|The commit message used when applying merge request suggestions. %{link_start}Learn more about suggestions.%{link_end}"
+msgid "ProjectSettings|The commit message used when applying merge request suggestions."
 msgstr ""
 
-msgid "ProjectSettings|The commit message used when merging, if the merge method creates a merge commit. %{link_start}Learn more about syntax and variables.%{link_end}"
+msgid "ProjectSettings|The commit message used when merging, if the merge method creates a merge commit."
 msgstr ""
 
-msgid "ProjectSettings|The commit message used when squashing commits. %{link_start}Learn more about syntax and variables.%{link_end}"
+msgid "ProjectSettings|The commit message used when squashing commits."
 msgstr ""
 
 msgid "ProjectSettings|The default target project for merge requests created in this fork project."

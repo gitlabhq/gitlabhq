@@ -13,7 +13,7 @@ const normalParagraphNode = buildMockParagraphNode(
   'This is just normal paragraph. It has multiple sentences.',
 );
 const identifierParagraphNode = buildMockParagraphNode(
-  `[another-identifier]: https://example.com "This example has a title" [identifier]: http://example1.com [this link]: http://example2.com`,
+  `[another-identifier]: https://example.com "This example has a title" [identifier]: http://example1.com [this link]: http://example.org`,
 );
 
 describe('rich_content_editor/renderers_render_identifier_paragraph', () => {

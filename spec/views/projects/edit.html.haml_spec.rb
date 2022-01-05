@@ -29,19 +29,6 @@ RSpec.describe 'projects/edit' do
   end
 
   context 'merge suggestions settings' do
-    it 'displays all possible variables' do
-      render
-
-      expect(rendered).to have_content('%{branch_name}')
-      expect(rendered).to have_content('%{files_count}')
-      expect(rendered).to have_content('%{file_paths}')
-      expect(rendered).to have_content('%{project_name}')
-      expect(rendered).to have_content('%{project_path}')
-      expect(rendered).to have_content('%{user_full_name}')
-      expect(rendered).to have_content('%{username}')
-      expect(rendered).to have_content('%{suggestions_count}')
-    end
-
     it 'displays a placeholder if none is set' do
       render
 
@@ -58,20 +45,6 @@ RSpec.describe 'projects/edit' do
   end
 
   context 'merge commit template' do
-    it 'displays all possible variables' do
-      render
-
-      expect(rendered).to have_content('%{source_branch}')
-      expect(rendered).to have_content('%{target_branch}')
-      expect(rendered).to have_content('%{title}')
-      expect(rendered).to have_content('%{issues}')
-      expect(rendered).to have_content('%{description}')
-      expect(rendered).to have_content('%{reference}')
-      expect(rendered).to have_content('%{approved_by}')
-      expect(rendered).to have_content('%{url}')
-      expect(rendered).to have_content('%{merged_by}')
-    end
-
     it 'displays a placeholder if none is set' do
       render
 

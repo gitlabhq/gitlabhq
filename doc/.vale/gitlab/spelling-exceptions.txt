@@ -9,6 +9,7 @@ allowlist
 allowlisted
 allowlisting
 allowlists
+AlmaLinux
 anonymization
 anonymized
 Ansible

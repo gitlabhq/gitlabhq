@@ -68,7 +68,10 @@ module QA
           fill_element :access_level_dropdown, with: group_access
 
           click_button 'Select a group'
-          fill_element :group_select_dropdown_search_field, group_name
+
+          # Helps stabilize race condition with concurrent group API calls while searching
+          # TODO: Replace with `fill_element :group_select_dropdown_search_field, group_name` when this bug is resolved: https://gitlab.com/gitlab-org/gitlab/-/issues/349379
+          send_keys_to_element(:group_select_dropdown_search_field, group_name)
 
           Support::WaitForRequests.wait_for_requests
 

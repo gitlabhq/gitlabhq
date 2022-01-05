@@ -1,28 +1,38 @@
 <script>
+import { GlEmptyState } from '@gitlab/ui';
 import createFlash from '~/flash';
 import { n__ } from '~/locale';
 import { joinPaths } from '~/lib/utils/url_utility';
 import RegistryList from '~/packages_and_registries/shared/components/registry_list.vue';
+
+import PersistedSearch from '~/packages_and_registries/shared/components/persisted_search.vue';
+import { FILTERED_SEARCH_TERM } from '~/packages_and_registries/shared/constants';
 import {
   REMOVE_TAGS_BUTTON_TITLE,
   TAGS_LIST_TITLE,
   GRAPHQL_PAGE_SIZE,
   FETCH_IMAGES_LIST_ERROR_MESSAGE,
+  NAME_SORT_FIELD,
+  NO_TAGS_TITLE,
+  NO_TAGS_MESSAGE,
+  NO_TAGS_MATCHING_FILTERS_TITLE,
+  NO_TAGS_MATCHING_FILTERS_DESCRIPTION,
 } from '../../constants/index';
 import getContainerRepositoryTagsQuery from '../../graphql/queries/get_container_repository_tags.query.graphql';
-import EmptyState from './empty_state.vue';
 import TagsListRow from './tags_list_row.vue';
 import TagsLoader from './tags_loader.vue';
 
 export default {
   name: 'TagsList',
   components: {
+    GlEmptyState,
     TagsListRow,
-    EmptyState,
     TagsLoader,
     RegistryList,
+    PersistedSearch,
   },
   inject: ['config'],
+
   props: {
     id: {
       type: [Number, String],
@@ -44,6 +54,7 @@ export default {
       required: false,
     },
   },
+  searchConfig: { NAME_SORT_FIELD },
   i18n: {
     REMOVE_TAGS_BUTTON_TITLE,
     TAGS_LIST_TITLE,
@@ -51,6 +62,9 @@ export default {
   apollo: {
     containerRepository: {
       query: getContainerRepositoryTagsQuery,
+      skip() {
+        return !this.sort;
+      },
       variables() {
         return this.queryVariables;
       },
@@ -62,6 +76,8 @@ export default {
   data() {
     return {
       containerRepository: {},
+      filters: {},
+      sort: null,
     };
   },
   computed: {
@@ -78,6 +94,8 @@ export default {
       return {
         id: joinPaths(this.config.gidPrefix, `${this.id}`),
         first: GRAPHQL_PAGE_SIZE,
+        name: this.filters?.name,
+        sort: this.sort,
       };
     },
     showMultiDeleteButton() {
@@ -87,7 +105,16 @@ export default {
       return this.tags.length === 0;
     },
     isLoading() {
-      return this.isImageLoading || this.$apollo.queries.containerRepository.loading;
+      return this.isImageLoading || this.$apollo.queries.containerRepository.loading || !this.sort;
+    },
+    hasFilters() {
+      return this.filters?.name;
+    },
+    emptyStateTitle() {
+      return this.hasFilters ? NO_TAGS_MATCHING_FILTERS_TITLE : NO_TAGS_TITLE;
+    },
+    emptyStateDescription() {
+      return this.hasFilters ? NO_TAGS_MATCHING_FILTERS_DESCRIPTION : NO_TAGS_MESSAGE;
     },
   },
   methods: {
@@ -114,15 +141,47 @@ export default {
         },
       });
     },
+    handleSearchUpdate({ sort, filters }) {
+      this.sort = sort;
+
+      const parsed = {
+        name: '',
+      };
+
+      // This takes in account the fact that we will be adding more filters types
+      // this is why is an object and not an array or a simple string
+      this.filters = filters.reduce((acc, filter) => {
+        if (filter.type === FILTERED_SEARCH_TERM) {
+          return {
+            ...acc,
+            name: `${acc.name} ${filter.value.data}`.trim(),
+          };
+        }
+        return acc;
+      }, parsed);
+    },
   },
 };
 </script>
 
 <template>
   <div>
+    <persisted-search
+      class="gl-mb-5"
+      :sortable-fields="[$options.searchConfig.NAME_SORT_FIELD]"
+      :default-order="$options.searchConfig.NAME_SORT_FIELD.orderBy"
+      default-sort="asc"
+      @update="handleSearchUpdate"
+    />
     <tags-loader v-if="isLoading" />
     <template v-else>
-      <empty-state v-if="hasNoTags" :no-containers-image="config.noContainersImage" />
+      <gl-empty-state
+        v-if="hasNoTags"
+        :title="emptyStateTitle"
+        :svg-path="config.noContainersImage"
+        :description="emptyStateDescription"
+        class="gl-mx-auto gl-my-0"
+      />
       <template v-else>
         <registry-list
           :title="listTitle"

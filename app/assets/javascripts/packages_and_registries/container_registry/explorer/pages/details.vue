@@ -1,5 +1,5 @@
 <script>
-import { GlResizeObserverDirective } from '@gitlab/ui';
+import { GlResizeObserverDirective, GlEmptyState } from '@gitlab/ui';
 import { GlBreakpointInstance } from '@gitlab/ui/dist/utils';
 import createFlash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
@@ -9,7 +9,6 @@ import DeleteImage from '../components/delete_image.vue';
 import DeleteAlert from '../components/details_page/delete_alert.vue';
 import DeleteModal from '../components/details_page/delete_modal.vue';
 import DetailsHeader from '../components/details_page/details_header.vue';
-import EmptyState from '../components/details_page/empty_state.vue';
 import PartialCleanupAlert from '../components/details_page/partial_cleanup_alert.vue';
 import StatusAlert from '../components/details_page/status_alert.vue';
 import TagsList from '../components/details_page/tags_list.vue';
@@ -26,6 +25,8 @@ import {
   MISSING_OR_DELETED_IMAGE_BREADCRUMB,
   ROOT_IMAGE_TEXT,
   GRAPHQL_PAGE_SIZE,
+  MISSING_OR_DELETED_IMAGE_TITLE,
+  MISSING_OR_DELETED_IMAGE_MESSAGE,
 } from '../constants/index';
 import deleteContainerRepositoryTagsMutation from '../graphql/mutations/delete_container_repository_tags.mutation.graphql';
 import getContainerRepositoryDetailsQuery from '../graphql/queries/get_container_repository_details.query.graphql';
@@ -34,13 +35,13 @@ import getContainerRepositoryTagsQuery from '../graphql/queries/get_container_re
 export default {
   name: 'RegistryDetailsPage',
   components: {
+    GlEmptyState,
     DeleteAlert,
     PartialCleanupAlert,
     DetailsHeader,
     DeleteModal,
     TagsList,
     TagsLoader,
-    EmptyState,
     StatusAlert,
     DeleteImage,
   },
@@ -49,6 +50,10 @@ export default {
   },
   mixins: [Tracking.mixin()],
   inject: ['breadCrumbState', 'config'],
+  i18n: {
+    MISSING_OR_DELETED_IMAGE_TITLE,
+    MISSING_OR_DELETED_IMAGE_MESSAGE,
+  },
   apollo: {
     containerRepository: {
       query: getContainerRepositoryDetailsQuery,
@@ -230,6 +235,12 @@ export default {
         @cancel="track('cancel_delete')"
       />
     </template>
-    <empty-state v-else is-empty-image :no-containers-image="config.noContainersImage" />
+    <gl-empty-state
+      v-else
+      :title="$options.i18n.MISSING_OR_DELETED_IMAGE_TITLE"
+      :description="$options.i18n.MISSING_OR_DELETED_IMAGE_MESSAGE"
+      :svg-path="config.noContainersImage"
+      class="gl-mx-auto gl-my-0"
+    />
   </div>
 </template>
