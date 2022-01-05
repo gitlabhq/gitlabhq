@@ -6,7 +6,10 @@
 .dropdown-page-two.dropdown-new-label
   = dropdown_title(create_label_title(subject), options: { back: true, close: show_close })
   = dropdown_content do
-    .dropdown-labels-error.js-label-error
+    .js-label-error.gl-alert.gl-alert-danger.gl-mb-3
+      .gl-alert-container
+        = sprite_icon('error', size: 16, css_class: 'gl-icon gl-alert-icon gl-alert-icon-no-title')
+      .gl-alert-content
     %input#new_label_name.default-dropdown-input{ type: "text", placeholder: _('Name new label') }
     .suggest-colors.suggest-colors-dropdown
       = render_suggested_colors

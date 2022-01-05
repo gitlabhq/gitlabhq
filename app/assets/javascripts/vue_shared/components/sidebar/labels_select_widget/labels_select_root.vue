@@ -289,6 +289,7 @@ export default {
       'is-standalone': isDropdownVariantStandalone(variant),
       'is-embedded': isDropdownVariantEmbedded(variant),
     }"
+    data-testid="sidebar-labels"
     data-qa-selector="labels_block"
   >
     <template v-if="isDropdownVariantSidebar(variant)">

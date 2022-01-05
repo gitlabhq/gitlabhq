@@ -19,6 +19,7 @@ class Email < ApplicationRecord
   # This module adds async behaviour to Devise emails
   # and should be added after Devise modules are initialized.
   include AsyncDeviseEmail
+  include ForcedEmailConfirmation
 
   self.reconfirmable = false # currently email can't be changed, no need to reconfirm
 

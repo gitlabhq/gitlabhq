@@ -81,28 +81,11 @@ RSpec.describe 'Group Dependency Proxy for containers', :js do
       let!(:dependency_proxy_blob) { create(:dependency_proxy_blob, group: group) }
 
       it_behaves_like 'responds with the file'
-
-      context 'dependency_proxy_workhorse feature flag disabled' do
-        before do
-          stub_feature_flags({ dependency_proxy_workhorse: false })
-        end
-
-        it_behaves_like 'responds with the file'
-      end
     end
   end
 
   context 'when the blob must be downloaded' do
     it_behaves_like 'responds with the file'
     it_behaves_like 'caches the file'
-
-    context 'dependency_proxy_workhorse feature flag disabled' do
-      before do
-        stub_feature_flags({ dependency_proxy_workhorse: false })
-      end
-
-      it_behaves_like 'responds with the file'
-      it_behaves_like 'caches the file'
-    end
   end
 end

@@ -1,0 +1,8 @@
+---
+name: remote_mirror_fail_on_lfs
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/77339
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/349262
+milestone: '14.7'
+type: development
+group: group::source code
+default_enabled: false

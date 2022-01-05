@@ -533,16 +533,10 @@ RSpec.describe 'Rack Attack global throttles', :use_clean_rails_memory_store_cac
 
     context 'getting a blob' do
       let_it_be(:blob) { create(:dependency_proxy_blob) }
+      let_it_be(:other_blob) { create(:dependency_proxy_blob) }
 
-      let(:path) { "/v2/#{group.path}/dependency_proxy/containers/alpine/blobs/sha256:a0d0a0d46f8b52473982a3c466318f479767577551a53ffc9074c9fa7035982e" }
-      let(:other_path) { "/v2/#{other_group.path}/dependency_proxy/containers/alpine/blobs/sha256:a0d0a0d46f8b52473982a3c466318f479767577551a53ffc9074c9fa7035982e" }
-      let(:blob_response) { { status: :success, blob: blob, from_cache: false } }
-
-      before do
-        allow_next_instance_of(DependencyProxy::FindOrCreateBlobService) do |instance|
-          allow(instance).to receive(:execute).and_return(blob_response)
-        end
-      end
+      let(:path) { "/v2/#{blob.group.path}/dependency_proxy/containers/alpine/blobs/sha256:a0d0a0d46f8b52473982a3c466318f479767577551a53ffc9074c9fa7035982e" }
+      let(:other_path) { "/v2/#{other_blob.group.path}/dependency_proxy/containers/alpine/blobs/sha256:a0d0a0d46f8b52473982a3c466318f479767577551a53ffc9074c9fa7035982e" }
 
       it_behaves_like 'rate-limited token-authenticated requests'
     end

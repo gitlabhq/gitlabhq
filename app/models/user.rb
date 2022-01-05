@@ -81,6 +81,7 @@ class User < ApplicationRecord
   # This module adds async behaviour to Devise emails
   # and should be added after Devise modules are initialized.
   include AsyncDeviseEmail
+  include ForcedEmailConfirmation
 
   MINIMUM_INACTIVE_DAYS = 90
 
@@ -1974,18 +1975,22 @@ class User < ApplicationRecord
     ci_job_token_scope.present?
   end
 
-  # override from Devise::Confirmable
+  # override from Devise::Models::Confirmable
   #
   # Add the primary email to user.emails (or confirm it if it was already
   # present) when the primary email is confirmed.
-  def confirm(*args)
-    saved = super(*args)
+  def confirm(args = {})
+    saved = super(args)
     return false unless saved
 
     email_to_confirm = self.emails.find_by(email: self.email)
 
     if email_to_confirm.present?
-      email_to_confirm.confirm(*args)
+      if skip_confirmation_period_expiry_check
+        email_to_confirm.force_confirm(args)
+      else
+        email_to_confirm.confirm(args)
+      end
     else
       add_primary_email_to_emails!
     end

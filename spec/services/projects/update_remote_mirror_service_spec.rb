@@ -131,32 +131,82 @@ RSpec.describe Projects::UpdateRemoteMirrorService do
         expect_next_instance_of(Lfs::PushService) do |service|
           expect(service).to receive(:execute)
         end
+        expect(Gitlab::AppJsonLogger).not_to receive(:info)
 
         execute!
+
+        expect(remote_mirror.update_status).to eq('finished')
+        expect(remote_mirror.last_error).to be_nil
       end
 
-      it 'does nothing to an SSH repository' do
-        remote_mirror.update!(url: 'ssh://example.com')
+      context 'when LFS objects fail to push' do
+        before do
+          expect_next_instance_of(Lfs::PushService) do |service|
+            expect(service).to receive(:execute).and_return({ status: :error, message: 'unauthorized' })
+          end
+        end
 
-        expect_any_instance_of(Lfs::PushService).not_to receive(:execute)
+        context 'when remote_mirror_fail_on_lfs feature flag enabled' do
+          it 'fails update' do
+            expect(Gitlab::AppJsonLogger).to receive(:info).with(
+              hash_including(message: "Error synching remote mirror")).and_call_original
 
-        execute!
+            execute!
+
+            expect(remote_mirror.update_status).to eq('failed')
+            expect(remote_mirror.last_error).to eq("Error synchronizing LFS files:\n\nunauthorized\n\n")
+          end
+        end
+
+        context 'when remote_mirror_fail_on_lfs feature flag is disabled' do
+          before do
+            stub_feature_flags(remote_mirror_fail_on_lfs: false)
+          end
+
+          it 'does not fail update' do
+            expect(Gitlab::AppJsonLogger).to receive(:info).with(
+              hash_including(message: "Error synching remote mirror")).and_call_original
+
+            execute!
+
+            expect(remote_mirror.update_status).to eq('finished')
+            expect(remote_mirror.last_error).to be_nil
+          end
+        end
       end
 
-      it 'does nothing if LFS is disabled' do
-        expect(project).to receive(:lfs_enabled?) { false }
+      context 'with SSH repository' do
+        let(:ssh_mirror) { create(:remote_mirror, project: project, enabled: true) }
 
-        expect_any_instance_of(Lfs::PushService).not_to receive(:execute)
+        before do
+          allow(ssh_mirror)
+            .to receive(:update_repository)
+            .and_return(double(divergent_refs: []))
+        end
 
-        execute!
-      end
+        it 'does nothing to an SSH repository' do
+          ssh_mirror.update!(url: 'ssh://example.com')
 
-      it 'does nothing if non-password auth is specified' do
-        remote_mirror.update!(auth_method: 'ssh_public_key')
+          expect_any_instance_of(Lfs::PushService).not_to receive(:execute)
 
-        expect_any_instance_of(Lfs::PushService).not_to receive(:execute)
+          service.execute(ssh_mirror, retries)
+        end
 
-        execute!
+        it 'does nothing if LFS is disabled' do
+          expect(project).to receive(:lfs_enabled?) { false }
+
+          expect_any_instance_of(Lfs::PushService).not_to receive(:execute)
+
+          service.execute(ssh_mirror, retries)
+        end
+
+        it 'does nothing if non-password auth is specified' do
+          ssh_mirror.update!(auth_method: 'ssh_public_key')
+
+          expect_any_instance_of(Lfs::PushService).not_to receive(:execute)
+
+          service.execute(ssh_mirror, retries)
+        end
       end
     end
   end

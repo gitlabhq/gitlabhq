@@ -1,4 +1,4 @@
-import { GlLoadingIcon, GlLink } from '@gitlab/ui';
+import { GlAlert, GlLoadingIcon, GlLink } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
@@ -9,6 +9,7 @@ import { workspaceLabelsQueries } from '~/sidebar/constants';
 import DropdownContentsCreateView from '~/vue_shared/components/sidebar/labels_select_widget/dropdown_contents_create_view.vue';
 import createLabelMutation from '~/vue_shared/components/sidebar/labels_select_widget/graphql/create_label.mutation.graphql';
 import {
+  mockRegularLabel,
   mockSuggestedColors,
   createLabelSuccessfulResponse,
   workspaceLabelsQueryResponse,
@@ -25,8 +26,18 @@ const userRecoverableError = {
   errors: ['Houston, we have a problem'],
 };
 
+const titleTakenError = {
+  data: {
+    labelCreate: {
+      label: mockRegularLabel,
+      errors: ['Title has already been taken'],
+    },
+  },
+};
+
 const createLabelSuccessHandler = jest.fn().mockResolvedValue(createLabelSuccessfulResponse);
 const createLabelUserRecoverableErrorHandler = jest.fn().mockResolvedValue(userRecoverableError);
+const createLabelDuplicateErrorHandler = jest.fn().mockResolvedValue(titleTakenError);
 const createLabelErrorHandler = jest.fn().mockRejectedValue('Houston, we have a problem');
 
 describe('DropdownContentsCreateView', () => {
@@ -207,5 +218,18 @@ describe('DropdownContentsCreateView', () => {
     await waitForPromises();
 
     expect(createFlash).toHaveBeenCalled();
+  });
+
+  it('displays error in alert if label title is already taken', async () => {
+    createComponent({ mutationHandler: createLabelDuplicateErrorHandler });
+    fillLabelAttributes();
+    await nextTick();
+
+    findCreateButton().vm.$emit('click');
+    await waitForPromises();
+
+    expect(wrapper.findComponent(GlAlert).text()).toEqual(
+      titleTakenError.data.labelCreate.errors[0],
+    );
   });
 });

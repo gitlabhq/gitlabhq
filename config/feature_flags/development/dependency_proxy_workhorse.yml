@@ -1,8 +1,0 @@
----
-name: dependency_proxy_workhorse
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68157
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/339639
-milestone: '14.3'
-type: development
-group: group::source code
-default_enabled: true

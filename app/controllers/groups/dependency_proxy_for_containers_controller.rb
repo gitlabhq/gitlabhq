@@ -33,17 +33,15 @@ class Groups::DependencyProxyForContainersController < ::Groups::DependencyProxy
   end
 
   def blob
-    return blob_via_workhorse if Feature.enabled?(:dependency_proxy_workhorse, group, default_enabled: :yaml)
+    blob = @group.dependency_proxy_blobs.find_by_file_name(blob_file_name)
 
-    result = DependencyProxy::FindOrCreateBlobService
-      .new(group, image, token, params[:sha]).execute
-
-    if result[:status] == :success
-      event_name = tracking_event_name(object_type: :blob, from_cache: result[:from_cache])
+    if blob.present?
+      event_name = tracking_event_name(object_type: :blob, from_cache: true)
       track_package_event(event_name, :dependency_proxy, namespace: group, user: auth_user)
-      send_upload(result[:blob].file)
+
+      send_upload(blob.file)
     else
-      head result[:http_status]
+      send_dependency(token_header, DependencyProxy::Registry.blob_url(image, params[:sha]), blob_file_name)
     end
   end
 
@@ -98,19 +96,6 @@ class Groups::DependencyProxyForContainersController < ::Groups::DependencyProxy
   end
 
   private
-
-  def blob_via_workhorse
-    blob = @group.dependency_proxy_blobs.find_by_file_name(blob_file_name)
-
-    if blob.present?
-      event_name = tracking_event_name(object_type: :blob, from_cache: true)
-      track_package_event(event_name, :dependency_proxy, namespace: group, user: auth_user)
-
-      send_upload(blob.file)
-    else
-      send_dependency(token_header, DependencyProxy::Registry.blob_url(image, params[:sha]), blob_file_name)
-    end
-  end
 
   def send_manifest(manifest, from_cache:)
     response.headers[DependencyProxy::Manifest::DIGEST_HEADER] = manifest.digest

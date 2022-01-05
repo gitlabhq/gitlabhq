@@ -158,7 +158,7 @@ class Admin::UsersController < Admin::ApplicationController
   end
 
   def confirm
-    if update_user { |user| user.confirm }
+    if update_user { |user| user.force_confirm }
       redirect_back_or_admin_user(notice: _("Successfully confirmed"))
     else
       redirect_back_or_admin_user(alert: _("Error occurred. User was not confirmed"))

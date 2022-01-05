@@ -209,7 +209,6 @@ export default {
         />
         <sidebar-labels-widget
           class="block labels"
-          data-testid="sidebar-labels"
           :iid="activeBoardItem.iid"
           :full-path="projectPathForActiveIssue"
           :allow-label-remove="allowLabelEdit"

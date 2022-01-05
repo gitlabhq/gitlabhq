@@ -1481,27 +1481,176 @@ RSpec.describe User do
   end
 
   describe '#confirm' do
+    let(:expired_confirmation_sent_at) { Date.today - described_class.confirm_within - 7.days }
+    let(:extant_confirmation_sent_at) { Date.today }
+
     before do
       allow_any_instance_of(ApplicationSetting).to receive(:send_user_confirmation_email).and_return(true)
     end
 
-    let(:user) { create(:user, :unconfirmed, unconfirmed_email: 'test@gitlab.com') }
-
-    it 'returns unconfirmed' do
-      expect(user.confirmed?).to be_falsey
+    let(:user) do
+      create(:user, :unconfirmed, unconfirmed_email: 'test@gitlab.com').tap do |user|
+        user.update!(confirmation_sent_at: confirmation_sent_at)
+      end
     end
 
-    it 'confirms a user' do
-      user.confirm
-      expect(user.confirmed?).to be_truthy
+    shared_examples_for 'unconfirmed user' do
+      it 'returns unconfirmed' do
+        expect(user.confirmed?).to be_falsey
+      end
     end
 
-    it 'adds the confirmed primary email to emails' do
-      expect(user.emails.confirmed.map(&:email)).not_to include(user.email)
+    context 'when the confirmation period has expired' do
+      let(:confirmation_sent_at) {  expired_confirmation_sent_at }
 
-      user.confirm
+      it_behaves_like 'unconfirmed user'
 
-      expect(user.emails.confirmed.map(&:email)).to include(user.email)
+      it 'does not confirm the user' do
+        user.confirm
+
+        expect(user.confirmed?).to be_falsey
+      end
+
+      it 'does not add the confirmed primary email to emails' do
+        user.confirm
+
+        expect(user.emails.confirmed.map(&:email)).not_to include(user.email)
+      end
+    end
+
+    context 'when the confirmation period has not expired' do
+      let(:confirmation_sent_at) {  extant_confirmation_sent_at }
+
+      it_behaves_like 'unconfirmed user'
+
+      it 'confirms a user' do
+        user.confirm
+        expect(user.confirmed?).to be_truthy
+      end
+
+      it 'adds the confirmed primary email to emails' do
+        expect(user.emails.confirmed.map(&:email)).not_to include(user.email)
+
+        user.confirm
+
+        expect(user.emails.confirmed.map(&:email)).to include(user.email)
+      end
+
+      context 'when the primary email is already included in user.emails' do
+        let(:expired_confirmation_sent_at_for_email) { Date.today - Email.confirm_within - 7.days }
+        let(:extant_confirmation_sent_at_for_email) { Date.today }
+
+        let!(:email) do
+          create(:email, email: user.unconfirmed_email, user: user).tap do |email|
+            email.update!(confirmation_sent_at: confirmation_sent_at_for_email)
+          end
+        end
+
+        context 'when the confirmation period of the email record has expired' do
+          let(:confirmation_sent_at_for_email) { expired_confirmation_sent_at_for_email }
+
+          it 'does not confirm the email record' do
+            user.confirm
+
+            expect(email.reload.confirmed?).to be_falsey
+          end
+        end
+
+        context 'when the confirmation period of the email record has not expired' do
+          let(:confirmation_sent_at_for_email) { extant_confirmation_sent_at_for_email }
+
+          it 'confirms the email record' do
+            user.confirm
+
+            expect(email.reload.confirmed?).to be_truthy
+          end
+        end
+      end
+    end
+  end
+
+  describe '#force_confirm' do
+    let(:expired_confirmation_sent_at) { Date.today - described_class.confirm_within - 7.days }
+    let(:extant_confirmation_sent_at) { Date.today }
+
+    let(:user) do
+      create(:user, :unconfirmed, unconfirmed_email: 'test@gitlab.com').tap do |user|
+        user.update!(confirmation_sent_at: confirmation_sent_at)
+      end
+    end
+
+    shared_examples_for 'unconfirmed user' do
+      it 'returns unconfirmed' do
+        expect(user.confirmed?).to be_falsey
+      end
+    end
+
+    shared_examples_for 'confirms the user on force_confirm' do
+      it 'confirms a user' do
+        user.force_confirm
+        expect(user.confirmed?).to be_truthy
+      end
+    end
+
+    shared_examples_for 'adds the confirmed primary email to emails' do
+      it 'adds the confirmed primary email to emails' do
+        expect(user.emails.confirmed.map(&:email)).not_to include(user.email)
+
+        user.force_confirm
+
+        expect(user.emails.confirmed.map(&:email)).to include(user.email)
+      end
+    end
+
+    shared_examples_for 'confirms the email record if the primary email was already present in user.emails' do
+      context 'when the primary email is already included in user.emails' do
+        let(:expired_confirmation_sent_at_for_email) { Date.today - Email.confirm_within - 7.days }
+        let(:extant_confirmation_sent_at_for_email) { Date.today }
+
+        let!(:email) do
+          create(:email, email: user.unconfirmed_email, user: user).tap do |email|
+            email.update!(confirmation_sent_at: confirmation_sent_at_for_email)
+          end
+        end
+
+        shared_examples_for 'confirms the email record' do
+          it 'confirms the email record' do
+            user.force_confirm
+
+            expect(email.reload.confirmed?).to be_truthy
+          end
+        end
+
+        context 'when the confirmation period of the email record has expired' do
+          let(:confirmation_sent_at_for_email) { expired_confirmation_sent_at_for_email }
+
+          it_behaves_like 'confirms the email record'
+        end
+
+        context 'when the confirmation period of the email record has not expired' do
+          let(:confirmation_sent_at_for_email) { extant_confirmation_sent_at_for_email }
+
+          it_behaves_like 'confirms the email record'
+        end
+      end
+    end
+
+    context 'when the confirmation period has expired' do
+      let(:confirmation_sent_at) {  expired_confirmation_sent_at }
+
+      it_behaves_like 'unconfirmed user'
+      it_behaves_like 'confirms the user on force_confirm'
+      it_behaves_like 'adds the confirmed primary email to emails'
+      it_behaves_like 'confirms the email record if the primary email was already present in user.emails'
+    end
+
+    context 'when the confirmation period has not expired' do
+      let(:confirmation_sent_at) {  extant_confirmation_sent_at }
+
+      it_behaves_like 'unconfirmed user'
+      it_behaves_like 'confirms the user on force_confirm'
+      it_behaves_like 'adds the confirmed primary email to emails'
+      it_behaves_like 'confirms the email record if the primary email was already present in user.emails'
     end
   end
 
