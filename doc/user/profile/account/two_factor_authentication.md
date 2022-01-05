@@ -20,8 +20,7 @@ password secret.
 NOTE:
 When you enable 2FA, don't forget to back up your [recovery codes](#recovery-codes)!
 
-In addition to time-based one time passwords (TOTP), GitLab supports WebAuthn devices as the second factor
-of authentication. After being enabled, in addition to supplying your username
+In addition to time-based one-time passwords ([TOTP](https://datatracker.ietf.org/doc/html/rfc6238)), GitLab supports WebAuthn devices as the second factor of authentication. After being enabled, in addition to supplying your username
 and password to sign in, you're prompted to activate your U2F / WebAuthn device
 (usually by pressing a button on it) which performs secure authentication on
 your behalf.
