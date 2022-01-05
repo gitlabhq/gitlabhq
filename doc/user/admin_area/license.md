@@ -2,29 +2,43 @@
 stage: Growth
 group: Conversion
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
-type: howto
 ---
 
-# Activating GitLab EE **(PREMIUM SELF)**
+# Activate GitLab Enterprise Edition (EE) **(PREMIUM SELF)**
 
-To enable features of GitLab Enterprise Edition (EE), you need to activate your instance. Ensure you are running an enterprise edition. To verify, sign in to GitLab and browse to `/help`. The GitLab edition and version are listed at the top of the **Help** page.
+When you install a new GitLab instance without a license, it only has the Free features
+enabled. To enable all features of GitLab Enterprise Edition (EE), activate
+your instance with an activation code or a license file. When [the license expires](#what-happens-when-your-license-expires),
+some functionality is locked.
 
-If you are running GitLab Community Edition (CE), upgrade your installation to GitLab Enterprise Edition (EE). For more details, see [Upgrading between editions](../../update/index.md#upgrading-between-editions). If you have questions or need assistance upgrading from GitLab CE to EE please [contact GitLab Support](https://about.gitlab.com/support/#contact-support).
+## Verify your GitLab edition
 
-As of GitLab Enterprise Edition 9.4.0, a newly-installed instance without an
-uploaded license only has the Free features active. A trial license activates all Ultimate features, but after [the trial expires](#what-happens-when-your-license-expires), some functionality
-is locked.
+To activate your instance, make sure you are running GitLab Enterprise Edition (EE).
 
-## Activate GitLab EE with an Activation Code
+To verify the edition, sign in to GitLab and select
+**Help** (**{question-o}**) > **Help**. The GitLab edition and version are listed
+at the top of the page.
 
-As of GitLab Enterprise Edition 14.1, you need an activation code to activate your instance. You can obtain an activation code by [purchasing a license](https://about.gitlab.com/pricing/) or by signing up for a [free trial](https://about.gitlab.com/free-trial/). This activation code is a 24-character alphanumeric string you receive in a confirmation email. You can also sign in to the [Customers Portal](https://customers.gitlab.com/customers/sign_in) to copy the activation code to your clipboard.
+If you are running GitLab Community Edition (CE), upgrade your installation to GitLab
+EE. For more details, see [Upgrading between editions](../../update/index.md#upgrading-between-editions).
+If you have questions or need assistance upgrading from GitLab CE to EE,
+[contact GitLab Support](https://about.gitlab.com/support/#contact-support).
 
-To begin the activation process with your activation code:
+## Activate GitLab EE with an activation code
+
+In GitLab Enterprise Edition 14.1 and later, you need an activation code to activate
+your instance. To get an activation code, [purchase a license](https://about.gitlab.com/pricing/)
+or sign up for a [free trial](https://about.gitlab.com/free-trial/). The activation
+code is a 24-character alphanumeric string you receive in a confirmation email.
+You can also sign in to the [Customers Portal](https://customers.gitlab.com/customers/sign_in)
+to copy the activation code to your clipboard.
+
+To activate your instance with an activation code:
 
 1. Sign in to your GitLab self-managed instance.
-1. From the top menu, select the Admin Area **{admin}**.
-1. From the left sidebar, select **Subscription**.
-1. Paste the activation code onto the input field.
+1. On the top bar, select **Menu > Admin**.
+1. On the left sidebar, select **Subscription**.
+1. Enter the activation code in **Activation code**.
 1. Read and accept the terms of service.
 1. Select **Activate**.
 
@@ -91,47 +105,47 @@ is active until the end of the license period. When that period ends, the
 instance will [fall back](#what-happens-when-your-license-expires) to Free-only
 functionality.
 
-You can review the license details at any time by going to **Admin Area > Subscription**.
-
-## Notification before the license expires
-
-One month before the license expires, a message informing about the expiration
-date is displayed to GitLab administrators. Make sure that you update your
-license, otherwise you miss all the paid features if your license expires.
-
 ## What happens when your license expires
 
-When your license expires, GitLab locks down features, like Git pushes
-and issue creation. Then, your instance becomes read-only and
-an expiration message is displayed to all administrators.
+One month before the license expires, a message with the upcoming expiration
+date displays to GitLab administrators.
 
-For GitLab self-managed instances, you have a 14-day grace period
+When your license expires, GitLab locks features, like Git pushes
+and issue creation. Your instance becomes read-only and
+an expiration message displays to all administrators. You have a 14-day grace period
 before this occurs.
 
-- To resume functionality, upload a new license.
-- To fall back to Free features, delete all expired licenses.
+To resume functionality, [upload a new license](#uploading-your-license).
 
-### Remove a license file
+To go back to Free features, [delete all expired licenses](#remove-a-license-file).
+
+## Remove a license file
 
 To remove a license file from a self-managed instance:
 
-1. From the top menu, select the Admin Area **{admin}**.
-1. From the left sidebar, select **Subscription**.
+1. On the top bar, select **Menu > Admin**.
+1. On the left sidebar, select **Subscription**.
 1. Select **Remove license**.
 
-These steps may need to be repeated to completely remove all licenses, including those applied in the past.
+Repeat these steps to remove all licenses, including those applied in the past.
 
-## License history
+## View license details and history
 
-You can upload and view more than one license, but only the latest license in the current date
-range is used as the active license.
+To view your license details:
+
+1. On the top bar, select **Menu > Admin**.
+1. On the left sidebar, select **Subscription**.
+
+You can upload and view more than one license, but only the latest license in
+the current date range is the active license.
 
 When you upload a future-dated license, it doesn't take effect until its applicable date.
-You can view all of your active subscriptions in the **Subscription history** table.
+You can view all active subscriptions in the **Subscription history** table.
 
 NOTE:
-In GitLab 13.6 and earlier, a notification banner about an expiring license may continue to be displayed even after a new license has been uploaded.
-This happens when the newly uploaded license's start date is in the future and the expiring one is still active.
+In GitLab 13.6 and earlier, a banner about an expiring license may continue to display
+when you upload a new license. This happens when the start date of the new license
+is in the future and the expiring one is still active.
 The banner disappears after the new license becomes active.
 
 ## Troubleshooting

@@ -1,8 +1,12 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Manage', :requires_admin do
-    describe 'Bulk group import' do
+  describe 'Manage', :requires_admin do
+    describe 'Gitlab migration', quarantine: {
+      only: { subdomain: :staging },
+      issue: "https://gitlab.com/gitlab-org/gitlab/-/issues/349556",
+      type: :bug
+    } do
       let!(:staging?) { Runtime::Scenario.gitlab_address.include?('staging.gitlab.com') }
       let!(:admin_api_client) { Runtime::API::Client.as_admin }
       let!(:user) do

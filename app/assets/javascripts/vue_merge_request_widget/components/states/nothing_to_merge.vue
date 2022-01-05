@@ -62,8 +62,8 @@ export default {
           <gl-button
             v-if="mr.newBlobPath"
             :href="mr.newBlobPath"
-            category="secondary"
-            variant="success"
+            category="primary"
+            variant="confirm"
             data-testid="createFileButton"
             @click="onClickNewFile"
           >

@@ -987,7 +987,7 @@ This is needed for example in a known edge-case with
 
 ### Remove licenses
 
-To clean up the [License History table](../../user/admin_area/license.md#license-history):
+To clean up the [License History table](../../user/admin_area/license.md#view-license-details-and-history):
 
 ```ruby
 TYPE = :trial?
