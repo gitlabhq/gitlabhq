@@ -7,21 +7,23 @@ module Gitlab
     # Struct class representing a single Scheme
     Scheme = Struct.new(:id, :name, :css_class)
 
-    SCHEMES = [
-      Scheme.new(1, 'White',           'white'),
-      Scheme.new(2, 'Dark',            'dark'),
-      Scheme.new(3, 'Solarized Light', 'solarized-light'),
-      Scheme.new(4, 'Solarized Dark',  'solarized-dark'),
-      Scheme.new(5, 'Monokai',         'monokai'),
-      Scheme.new(6, 'None',            'none')
-    ].freeze
+    def self.available_schemes
+      [
+        Scheme.new(1, s_('SynthaxHighlightingTheme|Light'),           'white'),
+        Scheme.new(2, s_('SynthaxHighlightingTheme|Dark'),            'dark'),
+        Scheme.new(3, s_('SynthaxHighlightingTheme|Solarized Light'), 'solarized-light'),
+        Scheme.new(4, s_('SynthaxHighlightingTheme|Solarized Dark'),  'solarized-dark'),
+        Scheme.new(5, s_('SynthaxHighlightingTheme|Monokai'),         'monokai'),
+        Scheme.new(6, s_('SynthaxHighlightingTheme|None'),            'none')
+      ]
+    end
 
     # Convenience method to get a space-separated String of all the color scheme
     # classes that might be applied to a code block.
     #
     # Returns a String
     def self.body_classes
-      SCHEMES.collect(&:css_class).uniq.join(' ')
+      available_schemes.collect(&:css_class).uniq.join(' ')
     end
 
     # Get a Scheme by its ID
@@ -32,12 +34,12 @@ module Gitlab
     #
     # Returns a Scheme
     def self.by_id(id)
-      SCHEMES.detect { |s| s.id == id } || default
+      available_schemes.detect { |s| s.id == id } || default
     end
 
     # Returns the number of defined Schemes
     def self.count
-      SCHEMES.size
+      available_schemes.size
     end
 
     # Get the default Scheme
@@ -51,7 +53,7 @@ module Gitlab
     #
     # Yields the Scheme object
     def self.each(&block)
-      SCHEMES.each(&block)
+      available_schemes.each(&block)
     end
 
     # Get the Scheme for the specified user, or the default
@@ -68,7 +70,7 @@ module Gitlab
     end
 
     def self.valid_ids
-      SCHEMES.map(&:id)
+      available_schemes.map(&:id)
     end
   end
 end

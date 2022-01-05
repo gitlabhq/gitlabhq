@@ -28,7 +28,7 @@ RSpec.describe Gitlab::Themes, lib: true do
 
     it 'prevents an infinite loop when configuration default is invalid' do
       default = described_class::APPLICATION_DEFAULT
-      themes  = described_class::THEMES
+      themes  = described_class.available_themes
 
       config = double(default_theme: 0).as_null_object
       allow(Gitlab).to receive(:config).and_return(config)

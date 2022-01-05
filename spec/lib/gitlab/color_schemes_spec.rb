@@ -15,7 +15,7 @@ RSpec.describe Gitlab::ColorSchemes do
 
   describe '.by_id' do
     it 'returns a scheme by its ID' do
-      expect(described_class.by_id(1).name).to eq 'White'
+      expect(described_class.by_id(1).name).to eq 'Light'
       expect(described_class.by_id(4).name).to eq 'Solarized Dark'
     end
   end

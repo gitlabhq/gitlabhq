@@ -57,6 +57,7 @@ RSpec.describe 'Query.runner(id)' do
       expect(runner_data).to match a_hash_including(
         'id' => "gid://gitlab/Ci::Runner/#{runner.id}",
         'description' => runner.description,
+        'createdAt' => runner.created_at&.iso8601,
         'contactedAt' => runner.contacted_at&.iso8601,
         'version' => runner.version,
         'shortSha' => runner.short_sha,

@@ -18,8 +18,10 @@ module Types
             description: 'ID of the runner.'
       field :description, GraphQL::Types::String, null: true,
             description: 'Description of the runner.'
+      field :created_at, Types::TimeType, null: true,
+            description: 'Timestamp of creation of this runner.'
       field :contacted_at, Types::TimeType, null: true,
-            description: 'Last contact from the runner.',
+            description: 'Timestamp of last contact from this runner.',
             method: :contacted_at
       field :maximum_timeout, GraphQL::Types::Int, null: true,
             description: 'Maximum timeout (in seconds) for jobs processed by the runner.'

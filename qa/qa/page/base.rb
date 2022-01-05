@@ -386,6 +386,10 @@ module QA
         end
       end
 
+      def current_host
+        URI(page.current_url).host
+      end
+
       def self.path
         raise NotImplementedError
       end

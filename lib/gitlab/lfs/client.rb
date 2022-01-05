@@ -53,17 +53,11 @@ module Gitlab
 
         params = {
           body_stream: file,
-          headers: {
-            'Content-Length' => object.size.to_s,
-            'Content-Type' => 'application/octet-stream',
-            'User-Agent' => GIT_LFS_USER_AGENT
-          }.merge(upload_action['header'] || {})
+          headers: upload_headers(object, upload_action)
         }
 
-        authenticated = true if params[:headers].key?('Authorization')
-        params[:basic_auth] = basic_auth unless authenticated
-
-        rsp = Gitlab::HTTP.put(upload_action['href'], params)
+        url = set_basic_auth_and_extract_lfs_url!(params, upload_action['href'])
+        rsp = Gitlab::HTTP.put(url, params)
 
         raise ObjectUploadError.new(http_response: rsp) unless rsp.success?
       ensure
@@ -76,18 +70,49 @@ module Gitlab
           headers: build_request_headers(verify_action['header'])
         }
 
-        authenticated = true if params[:headers].key?('Authorization')
-        params[:basic_auth] = basic_auth unless authenticated
-
-        rsp = Gitlab::HTTP.post(verify_action['href'], params)
+        url = set_basic_auth_and_extract_lfs_url!(params, verify_action['href'])
+        rsp = Gitlab::HTTP.post(url, params)
 
         raise ObjectVerifyError.new(http_response: rsp) unless rsp.success?
       end
 
       private
 
+      def set_basic_auth_and_extract_lfs_url!(params, raw_url)
+        authenticated = true if params[:headers].key?('Authorization')
+        params[:basic_auth] = basic_auth unless authenticated
+        strip_userinfo = authenticated || params[:basic_auth].present?
+        lfs_url(raw_url, strip_userinfo)
+      end
+
       def build_request_headers(extra_headers = nil)
         DEFAULT_HEADERS.merge(extra_headers || {})
+      end
+
+      def upload_headers(object, upload_action)
+        # This uses the httprb library to handle case-insensitive HTTP headers
+        headers = ::HTTP::Headers.new
+        headers.merge!(upload_action['header'])
+        transfer_encodings = Array(headers['Transfer-Encoding']&.split(',')).map(&:strip)
+
+        headers['Content-Length'] = object.size.to_s unless transfer_encodings.include?('chunked')
+        headers['Content-Type'] = 'application/octet-stream'
+        headers['User-Agent'] = GIT_LFS_USER_AGENT
+
+        headers.to_h
+      end
+
+      def lfs_url(raw_url, strip_userinfo)
+        # HTTParty will give precedence to the username/password
+        # specified in the URL. This causes problems with Azure DevOps,
+        # which includes a username in the URL. Stripping the userinfo
+        # from the URL allows the provided HTTP Basic Authentication
+        # credentials to be used.
+        if strip_userinfo
+          Gitlab::UrlSanitizer.new(raw_url).sanitized_url
+        else
+          raw_url
+        end
       end
 
       attr_reader :credentials

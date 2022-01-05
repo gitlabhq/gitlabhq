@@ -114,6 +114,52 @@ RSpec.describe Gitlab::Lfs::Client do
       end
     end
 
+    context 'server returns 200 OK with a chunked transfer request' do
+      before do
+        upload_action['header']['Transfer-Encoding'] = 'gzip, chunked'
+      end
+
+      it "makes an HTTP PUT with expected parameters" do
+        stub_upload(object: object, headers: upload_action['header'], chunked_transfer: true).to_return(status: 200)
+
+        lfs_client.upload!(object, upload_action, authenticated: true)
+      end
+    end
+
+    context 'server returns 200 OK with a username and password in the URL' do
+      let(:base_url) { "https://someuser:testpass@example.com" }
+
+      it "makes an HTTP PUT with expected parameters" do
+        stub_upload(
+          object: object,
+          headers: basic_auth_headers.merge(upload_action['header']),
+          url: "https://example.com/some/file"
+        ).to_return(status: 200)
+
+        lfs_client.upload!(object, upload_action, authenticated: true)
+      end
+    end
+
+    context 'no credentials in client' do
+      subject(:lfs_client) { described_class.new(base_url, credentials: {}) }
+
+      context 'server returns 200 OK with credentials in URL' do
+        let(:creds) { 'someuser:testpass' }
+        let(:base_url) { "https://#{creds}@example.com" }
+        let(:auth_headers) { { 'Authorization' => "Basic #{Base64.strict_encode64(creds)}" } }
+
+        it "makes an HTTP PUT with expected parameters" do
+          stub_upload(
+            object: object,
+            headers: auth_headers.merge(upload_action['header']),
+            url: "https://example.com/some/file"
+          ).to_return(status: 200)
+
+          lfs_client.upload!(object, upload_action, authenticated: true)
+        end
+      end
+    end
+
     context 'server returns 200 OK to an unauthenticated request' do
       it "makes an HTTP PUT with expected parameters" do
         stub = stub_upload(
@@ -171,16 +217,21 @@ RSpec.describe Gitlab::Lfs::Client do
       end
     end
 
-    def stub_upload(object:, headers:)
+    def stub_upload(object:, headers:, url: upload_action['href'], chunked_transfer: false)
       headers = {
         'Content-Type' => 'application/octet-stream',
-        'Content-Length' => object.size.to_s,
         'User-Agent' => git_lfs_user_agent
       }.merge(headers)
 
-      stub_request(:put, upload_action['href']).with(
+      if chunked_transfer
+        headers['Transfer-Encoding'] = 'gzip, chunked'
+      else
+        headers['Content-Length'] = object.size.to_s
+      end
+
+      stub_request(:put, url).with(
         body: object.file.read,
-        headers: headers.merge('Content-Length' => object.size.to_s)
+        headers: headers
       )
     end
   end
@@ -196,11 +247,25 @@ RSpec.describe Gitlab::Lfs::Client do
       end
     end
 
+    context 'server returns 200 OK with a username and password in the URL' do
+      let(:base_url) { "https://someuser:testpass@example.com" }
+
+      it "makes an HTTP PUT with expected parameters" do
+        stub_verify(
+          object: object,
+          headers: basic_auth_headers.merge(verify_action['header']),
+          url: "https://example.com/some/file/verify"
+        ).to_return(status: 200)
+
+        lfs_client.verify!(object, verify_action, authenticated: true)
+      end
+    end
+
     context 'server returns 200 OK to an unauthenticated request' do
       it "makes an HTTP POST with expected parameters" do
         stub = stub_verify(
           object: object,
-          headers: basic_auth_headers.merge(upload_action['header'])
+          headers: basic_auth_headers.merge(verify_action['header'])
         ).to_return(status: 200)
 
         lfs_client.verify!(object, verify_action, authenticated: false)
@@ -238,14 +303,14 @@ RSpec.describe Gitlab::Lfs::Client do
       end
     end
 
-    def stub_verify(object:, headers:)
+    def stub_verify(object:, headers:, url: verify_action['href'])
       headers = {
         'Accept' => git_lfs_content_type,
         'Content-Type' => git_lfs_content_type,
         'User-Agent' => git_lfs_user_agent
       }.merge(headers)
 
-      stub_request(:post, verify_action['href']).with(
+      stub_request(:post, url).with(
         body: object.to_json(only: [:oid, :size]),
         headers: headers
       )

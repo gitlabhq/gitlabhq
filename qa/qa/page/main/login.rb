@@ -156,6 +156,11 @@ module QA
           sign_in_using_credentials(user: user)
         end
 
+        def redirect_to_login_page(address)
+          desired_host = URI(Runtime::Scenario.send("#{address}_address")).host
+          Runtime::Browser.visit(address, Page::Main::Login) if desired_host != current_host
+        end
+
         private
 
         def sign_in_using_gitlab_credentials(user:, skip_page_validation: false)

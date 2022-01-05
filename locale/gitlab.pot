@@ -20827,6 +20827,12 @@ msgstr ""
 msgid "Launch a ready-to-code development environment for your project."
 msgstr ""
 
+msgid "Layout|Fixed"
+msgstr ""
+
+msgid "Layout|Fluid"
+msgstr ""
+
 msgid "Lead Time"
 msgstr ""
 
@@ -23272,6 +23278,39 @@ msgid "Navigate to the project to close the milestone."
 msgstr ""
 
 msgid "Navigation bar"
+msgstr ""
+
+msgid "NavigationTheme|Blue"
+msgstr ""
+
+msgid "NavigationTheme|Dark"
+msgstr ""
+
+msgid "NavigationTheme|Dark Mode (alpha)"
+msgstr ""
+
+msgid "NavigationTheme|Green"
+msgstr ""
+
+msgid "NavigationTheme|Indigo"
+msgstr ""
+
+msgid "NavigationTheme|Light"
+msgstr ""
+
+msgid "NavigationTheme|Light Blue"
+msgstr ""
+
+msgid "NavigationTheme|Light Green"
+msgstr ""
+
+msgid "NavigationTheme|Light Indigo"
+msgstr ""
+
+msgid "NavigationTheme|Light Red"
+msgstr ""
+
+msgid "NavigationTheme|Red"
 msgstr ""
 
 msgid "Nav|Help"
@@ -28115,6 +28154,15 @@ msgid "ProjectTemplates|Tencent Serverless Framework/NextjsSSR"
 msgstr ""
 
 msgid "ProjectTemplates|iOS (Swift)"
+msgstr ""
+
+msgid "ProjectView|Activity"
+msgstr ""
+
+msgid "ProjectView|Files and Readme (default)"
+msgstr ""
+
+msgid "ProjectView|Readme"
 msgstr ""
 
 msgid "Projects"
@@ -34493,6 +34541,24 @@ msgid "Syntax is correct."
 msgstr ""
 
 msgid "Syntax is incorrect."
+msgstr ""
+
+msgid "SynthaxHighlightingTheme|Dark"
+msgstr ""
+
+msgid "SynthaxHighlightingTheme|Light"
+msgstr ""
+
+msgid "SynthaxHighlightingTheme|Monokai"
+msgstr ""
+
+msgid "SynthaxHighlightingTheme|None"
+msgstr ""
+
+msgid "SynthaxHighlightingTheme|Solarized Dark"
+msgstr ""
+
+msgid "SynthaxHighlightingTheme|Solarized Light"
 msgstr ""
 
 msgid "System"
