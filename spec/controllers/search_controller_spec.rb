@@ -396,9 +396,10 @@ RSpec.describe SearchController do
           expect(payload[:metadata]['meta.search.force_search_results']).to eq('true')
           expect(payload[:metadata]['meta.search.filters.confidential']).to eq('true')
           expect(payload[:metadata]['meta.search.filters.state']).to eq('true')
+          expect(payload[:metadata]['meta.search.project_ids']).to eq(%w(456 789))
         end
 
-        get :show, params: { scope: 'issues', search: 'hello world', group_id: '123', project_id: '456', confidential: true, state: true, force_search_results: true }
+        get :show, params: { scope: 'issues', search: 'hello world', group_id: '123', project_id: '456', project_ids: %w(456 789), confidential: true, state: true, force_search_results: true }
       end
 
       it 'appends the default scope in meta.search.scope' do

@@ -917,8 +917,10 @@ You may also find the [SAML Tracer](https://addons.mozilla.org/en-US/firefox/add
 ### Invalid audience
 
 This error means that the IdP doesn't recognize GitLab as a valid sender and
-receiver of SAML requests. Make sure to add the GitLab callback URL to the approved
-audiences of the IdP server.
+receiver of SAML requests. Make sure to:
+
+- Add the GitLab callback URL to the approved audiences of the IdP server.
+- Avoid trailing whitespace in the `issuer` string.
 
 ### Missing claims, or `Email can't be blank` errors
 

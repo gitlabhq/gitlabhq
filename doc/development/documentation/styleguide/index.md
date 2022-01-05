@@ -1626,7 +1626,7 @@ the section. The version information must:
 - Be surrounded by blank lines.
 - Start with `>`. If there are multiple bullets, each line must start with `> -`.
 - The string must include these words in this order (capitalization doesn't matter):
-  - `introduced`, `deprecated`, `changed`, `moved`, `recommended` (as in the
+  - `introduced`, `enabled`, `deprecated`, `changed`, `moved`, `recommended` (as in the
   [feature flag documentation](../feature_flags.md)), `removed`, or `renamed`
   - `in` or `to`
   - `GitLab`

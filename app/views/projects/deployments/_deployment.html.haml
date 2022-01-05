@@ -27,8 +27,7 @@
             = link_to deployment_path(deployment), class: 'build-link' do
               #{deployment.deployable.name} (##{deployment.deployable.id})
     - else
-      .badge.badge-info.gl-cursor-help{ title: s_('Deployment|This deployment was created using the API') }
-        = s_('Deployment|API')
+      = gl_badge_tag s_('Deployment|API'), { variant: :info }, { class: 'gl-cursor-help', data: { toggle: 'tooltip' }, title: s_('Deployment|This deployment was created using the API') }
 
   .table-section.section-10{ role: 'gridcell' }
     .table-mobile-header{ role: 'rowheader' }= _("Created")

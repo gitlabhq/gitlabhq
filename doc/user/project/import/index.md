@@ -28,7 +28,7 @@ See these documents to migrate to GitLab:
 You can also import any Git repository through HTTP from the **New Project** page. Note that if the
 repository is too large, the import can timeout.
 
-You can also [connect your external repository to get CI/CD benefits](../../../ci/ci_cd_for_external_repos/index.md). **(PREMIUM)**
+You can also [connect your external repository to get CI/CD benefits](../../../ci/ci_cd_for_external_repos/index.md).
 
 ## LFS authentication
 
@@ -90,7 +90,7 @@ to migrate users.
 
 ## Project aliases **(PREMIUM SELF)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/3264) in GitLab Premium 12.1.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/3264) in GitLab 12.1.
 
 GitLab repositories are usually accessed with a namespace and a project name. When migrating
 frequently accessed repositories to GitLab, however, you can use project aliases to access those

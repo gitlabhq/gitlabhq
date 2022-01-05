@@ -184,9 +184,10 @@ NOTE:
 On GitLab.com a custom mailbox is already configured with `contact-project+%{key}@incoming.gitlab.com` as the email address, you can still configure the
 [custom suffix](#configuring-a-custom-email-address-suffix) in project settings.
 
-Using the `service_desk_email` configuration, you can customize the mailbox
-used by Service Desk. This allows you to have a separate email address for
-Service Desk by also configuring a [custom suffix](#configuring-a-custom-email-address-suffix)
+Service Desk uses the [incoming email](../../administration/incoming_email.md)
+configuration by default. However, by using the `service_desk_email` configuration,
+you can customize the mailbox used by Service Desk. This allows you to have
+a separate email address for Service Desk by also configuring a [custom suffix](#configuring-a-custom-email-address-suffix)
 in project settings.
 
 The `address` must include the `+%{key}` placeholder within the 'user'
@@ -194,10 +195,10 @@ portion of the address, before the `@`. This is used to identify the project
 where the issue should be created.
 
 NOTE:
-The `service_desk_email` and `incoming_email` configurations should
-always use separate mailboxes. This is important, because emails picked from
-`service_desk_email` mailbox are processed by a different worker and it would
-not recognize `incoming_email` emails.
+When configuring a custom mailbox, the `service_desk_email` and `incoming_email`
+configurations must always use separate mailboxes. This is important, because
+emails picked from `service_desk_email` mailbox are processed by a different
+worker and it would not recognize `incoming_email` emails.
 
 To configure a custom mailbox for Service Desk with IMAP, add the following snippets to your configuration file in full:
 

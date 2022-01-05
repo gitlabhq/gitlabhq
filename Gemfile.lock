@@ -9,7 +9,7 @@ GEM
   remote: https://rubygems.org/
   specs:
     RedCloth (4.3.2)
-    acme-client (2.0.6)
+    acme-client (2.0.9)
       faraday (>= 0.17, < 2.0.0)
     actioncable (6.1.4.1)
       actionpack (= 6.1.4.1)
@@ -1388,7 +1388,7 @@ PLATFORMS
 
 DEPENDENCIES
   RedCloth (~> 4.3.2)
-  acme-client (~> 2.0, >= 2.0.6)
+  acme-client (~> 2.0, >= 2.0.9)
   activerecord-explain-analyze (~> 0.1)
   acts-as-taggable-on (~> 8.1)
   addressable (~> 2.8)

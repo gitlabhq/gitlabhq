@@ -689,7 +689,7 @@ Secondaries would regularly try to sync these files again via the "verification"
 
 This can be confusing to troubleshoot, since the registry entries are moved through a logical loop by various background jobs. Also, `last_sync_failure` and `verification_failure` are empty after "sync succeeded" but before verification is retried.
 
-If you see sync failures repeatedly and alternately increase, while successes decrease and vice versa, this is a problem of missing files on the primary site. You can confirm this by searching `geo.log` on secondary sites for `File is not checksummable` affecting the same files over and over.
+If you see sync failures repeatedly and alternately increase, while successes decrease and vice versa, this is likely to be caused by missing files on the primary site. You can confirm this by searching `geo.log` on secondary sites for `File is not checksummable` affecting the same files over and over.
 
 After confirming this is the problem, the files on the primary site need to be fixed. Some possible causes:
 
