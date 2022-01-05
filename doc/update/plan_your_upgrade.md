@@ -35,7 +35,7 @@ to ensure the major components of GitLab are working:
    sudo gitlab-rake gitlab:check
    ```
 
-1. Confirm that encrypted database values [can be decrypted](../administration/raketasks/doctor.md#verify-database-values-can-be-decrypted-using-the-current-secrets):
+1. Confirm that encrypted database values [can be decrypted](../administration/raketasks/check.md#verify-database-values-can-be-decrypted-using-the-current-secrets):
 
    ```shell
    sudo gitlab-rake gitlab:doctor:secrets

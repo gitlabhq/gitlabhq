@@ -51,7 +51,7 @@ namespace :gitlab do
         post.puts "remove_date: '#{date}'"
         post.puts '---'
         post.puts
-        post.puts "This file was moved to [another location](#{new_path})."
+        post.puts "This document was moved to [another location](#{new_path})."
         post.puts
         post.puts "<!-- This redirect file can be deleted after <#{date}>. -->"
         post.puts "<!-- Before deletion, see: https://docs.gitlab.com/ee/development/documentation/#move-or-rename-a-page -->"

@@ -33,18 +33,33 @@ module Gitlab
       # changes. This set may also contain commits which are not referenced by
       # any of the new revisions.
       def commits
+        allow_quarantine = true
+
         newrevs = @changes.map do |change|
+          oldrev = change[:oldrev]
           newrev = change[:newrev]
-          newrev unless newrev.blank? || Gitlab::Git.blank_ref?(newrev)
+
+          next if blank_rev?(newrev)
+
+          # In case any of the old revisions is blank, then we cannot reliably
+          # detect which commits are new for a given change when enumerating
+          # objects via the object quarantine directory given that the client
+          # may have pushed too many commits, and we don't know when to
+          # terminate the walk. We thus fall back to using `git rev-list --not
+          # --all`, which is a lot less efficient but at least can only ever
+          # returns commits which really are new.
+          allow_quarantine = false if allow_quarantine && blank_rev?(oldrev)
+
+          newrev
         end.compact
 
         return [] if newrevs.empty?
 
-        @commits ||= project.repository.new_commits(newrevs, allow_quarantine: true)
+        @commits ||= project.repository.new_commits(newrevs, allow_quarantine: allow_quarantine)
       end
 
       # All commits which have been newly introduced via the given revision.
-      def commits_for(newrev)
+      def commits_for(oldrev, newrev)
         commits_by_id = commits.index_by(&:id)
 
         result = []
@@ -65,9 +80,11 @@ module Gitlab
 
           # Only add the parent ID to the pending set if we actually know its
           # commit to guards us against readding an ID which we have already
-          # queued up before.
+          # queued up before. Furthermore, we stop walking as soon as we hit
+          # `oldrev` such that we do not include any commits in our checks
+          # which have been "over-pushed" by the client.
           commit.parent_ids.each do |parent_id|
-            pending.add(parent_id) if commits_by_id.has_key?(parent_id)
+            pending.add(parent_id) if commits_by_id.has_key?(parent_id) && parent_id != oldrev
           end
 
           result << commit
@@ -80,10 +97,10 @@ module Gitlab
         @single_changes_accesses ||=
           changes.map do |change|
             commits =
-              if change[:newrev].blank? || Gitlab::Git.blank_ref?(change[:newrev])
+              if blank_rev?(change[:newrev])
                 []
               else
-                Gitlab::Lazy.new { commits_for(change[:newrev]) }
+                Gitlab::Lazy.new { commits_for(change[:oldrev], change[:newrev]) }
               end
 
             Checks::SingleChangeAccess.new(
@@ -108,6 +125,10 @@ module Gitlab
 
       def bulk_access_checks!
         Gitlab::Checks::LfsCheck.new(self).validate!
+      end
+
+      def blank_rev?(rev)
+        rev.blank? || Gitlab::Git.blank_ref?(rev)
       end
     end
   end

@@ -30,6 +30,7 @@ The [`StandardContext`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/g
 Frontend events include a [web-specific schema](https://docs.snowplowanalytics.com/docs/understanding-your-pipeline/canonical-event/#Web-specific_fields) provided by Snowplow.
 All URLs are pseudonymized. The entity identifier [replaces](https://docs.snowplowanalytics.com/docs/collecting-data/collecting-from-own-applications/javascript-trackers/javascript-tracker/javascript-tracker-v2/tracker-setup/other-parameters-2/#Setting_a_custom_page_URL_and_referrer_URL) personally identifiable
 information (PII). PII includes usernames, group, and project names.
+Page titles are hardcoded as `GitLab` for the same reason.
 
 | Field Name               | Required            | Type      | Description                                                                                                                      |
 |--------------------------|---------------------|-----------|----------------------------------------------------------------------------------------------------------------------------------|
@@ -105,7 +106,7 @@ information (PII). PII includes usernames, group, and project names.
 | `os_name`                  | **{dotted-circle}** | string    | Name of operating system                                                                                                         |
 | `os_timezone`              | **{dotted-circle}** | string    | Client operating system time zone                                                                                                 |
 | `page_referrer`            | **{dotted-circle}** | string    | Referrer URL                                                                                                                     |
-| `page_title`               | **{dotted-circle}** | string    | Page title                                                                                                                       |
+| `page_title`               | **{dotted-circle}** | string    | To not expose personal identifying information, the page title is hardcoded as `GitLab`                                          |
 | `page_url`                 | **{dotted-circle}** | string    | Page URL                                                                                                                         |
 | `page_urlfragment`         | **{dotted-circle}** | string    | Fragment aka anchor                                                                                                              |
 | `page_urlhost`             | **{dotted-circle}** | string    | Host aka domain                                                                                                                  |

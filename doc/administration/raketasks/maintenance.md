@@ -120,6 +120,8 @@ You may also have a look at our troubleshooting guides for:
 - [GitLab](../index.md#troubleshooting)
 - [Omnibus GitLab](https://docs.gitlab.com/omnibus/index.html#troubleshooting)
 
+Additionally you should also [verify database values can be decrypted using the current secrets](check.md#verify-database-values-can-be-decrypted-using-the-current-secrets).
+
 To run `gitlab:check`, run:
 
 **Omnibus Installation**

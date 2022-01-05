@@ -990,7 +990,7 @@ sudo gitlab-ctl restart
 sudo gitlab-rake gitlab:check SANITIZE=true
 ```
 
-In GitLab 13.1 and later, check [database values can be decrypted](../administration/raketasks/doctor.md)
+In GitLab 13.1 and later, check [database values can be decrypted](../administration/raketasks/check.md#verify-database-values-can-be-decrypted-using-the-current-secrets)
 especially if `/etc/gitlab/gitlab-secrets.json` was restored, or if a different server is
 the target for the restore.
 
@@ -1359,8 +1359,8 @@ Use the information in the following sections at your own risk.
 
 #### Verify that all values can be decrypted
 
-You can determine if your database contains values that can't be decrypted by using the
-[Secrets Doctor Rake task](../administration/raketasks/doctor.md).
+You can determine if your database contains values that can't be decrypted by using a
+[Rake task](../administration/raketasks/check.md#verify-database-values-can-be-decrypted-using-the-current-secrets).
 
 #### Take a backup
 

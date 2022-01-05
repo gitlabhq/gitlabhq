@@ -27873,11 +27873,11 @@ CREATE INDEX index_vulnerability_occurrences_deduplication ON vulnerability_occu
 
 CREATE INDEX index_vulnerability_occurrences_for_issue_links_migration ON vulnerability_occurrences USING btree (project_id, report_type, encode(project_fingerprint, 'hex'::text));
 
-CREATE INDEX index_vulnerability_occurrences_on_location_agent_id ON vulnerability_occurrences USING gin (((location -> 'agent_id'::text))) WHERE (report_type = 7);
-
-CREATE INDEX index_vulnerability_occurrences_on_location_cluster_id ON vulnerability_occurrences USING gin (((location -> 'cluster_id'::text))) WHERE (report_type = 7);
-
 CREATE INDEX index_vulnerability_occurrences_on_location_image ON vulnerability_occurrences USING gin (((location -> 'image'::text))) WHERE (report_type = ANY (ARRAY[2, 7]));
+
+CREATE INDEX index_vulnerability_occurrences_on_location_k8s_agent_id ON vulnerability_occurrences USING gin ((((location -> 'kubernetes_resource'::text) -> 'agent_id'::text))) WHERE (report_type = 7);
+
+CREATE INDEX index_vulnerability_occurrences_on_location_k8s_cluster_id ON vulnerability_occurrences USING gin ((((location -> 'kubernetes_resource'::text) -> 'cluster_id'::text))) WHERE (report_type = 7);
 
 CREATE INDEX index_vulnerability_occurrences_on_migrated_to_new_structure ON vulnerability_occurrences USING btree (migrated_to_new_structure, id);
 

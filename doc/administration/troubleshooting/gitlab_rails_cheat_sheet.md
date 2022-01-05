@@ -526,7 +526,7 @@ master               f05321a5b5728bd8a89b7bf530aa44043c951dce...7d02e575fd790e76
 
 ### Find mirrors with "bad decrypt" errors
 
-This content has been converted to a Rake task, see the [Doctor Rake tasks docs](../raketasks/doctor.md).
+This content has been converted to a Rake task, see [verify database values can be decrypted using the current secrets](../raketasks/check.md#verify-database-values-can-be-decrypted-using-the-current-secrets).
 
 ### Transfer mirror users and tokens to a single service account
 
@@ -1073,7 +1073,7 @@ area on disk. It remains to be seen exactly how or whether the deletion is usefu
 
 ### Bad Decrypt Script (for encrypted variables)
 
-This content has been converted to a Rake task, see the [Doctor Rake tasks docs](../raketasks/doctor.md).
+This content has been converted to a Rake task, see [verify database values can be decrypted using the current secrets](../raketasks/check.md#verify-database-values-can-be-decrypted-using-the-current-secrets).
 
 As an example of repairing, if `ProjectImportData Bad count:` is detected and the decision is made to delete the
 encrypted credentials to allow manual reentry:
@@ -1116,7 +1116,7 @@ gitlab-rails runner /tmp/encrypted-tokens.rb
 
 ### Decrypt Script for encrypted tokens
 
-This content has been converted to a Rake task, see the [Doctor Rake tasks docs](../raketasks/doctor.md).
+This content has been converted to a Rake task, see [verify database values can be decrypted using the current secrets](../raketasks/check.md#verify-database-values-can-be-decrypted-using-the-current-secrets).
 
 ## Geo
 

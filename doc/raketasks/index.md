@@ -26,7 +26,6 @@ The following Rake tasks are available for use with GitLab:
 | [Back up and restore](backup_restore.md)              | Back up, restore, and migrate GitLab instances between servers. |
 | [Clean up](cleanup.md)                                | Clean up unneeded items from GitLab instances. |
 | [Development](../development/rake_tasks.md)           | Tasks for GitLab contributors. |
-| [Doctor tasks](../administration/raketasks/doctor.md) | Checks for data integrity issues. |
 | [Elasticsearch](../integration/elasticsearch.md#gitlab-advanced-search-rake-tasks) | Maintain Elasticsearch in a GitLab instance. |
 | [Enable namespaces](features.md)                      | Enable usernames and namespaces for user projects. |
 | [General maintenance](../administration/raketasks/maintenance.md) | General maintenance and self-check tasks. |
@@ -34,7 +33,7 @@ The following Rake tasks are available for use with GitLab:
 | [GitHub import](../administration/raketasks/github_import.md) | Retrieve and import repositories from GitHub. |
 | [Import repositories](import.md)                      | Import bare repositories into your GitLab instance. |
 | [Import large project exports](../development/import_project.md#importing-via-a-rake-task) | Import large GitLab [project exports](../user/project/settings/import_export.md). |
-| [Integrity checks](../administration/raketasks/check.md) | Check the integrity of repositories, files, and LDAP. |
+| [Integrity checks](../administration/raketasks/check.md) | Check the integrity of repositories, files, LDAP, and more. |
 | [LDAP maintenance](../administration/raketasks/ldap.md) | [LDAP](../administration/auth/ldap/index.md)-related tasks. |
 | [List repositories](list_repos.md)                    | List all GitLab-managed Git repositories on disk. |
 | [Migrate snippets to Git](migrate_snippets.md)        | Migrate GitLab Snippets to Git repositories, and show the migration status. |
