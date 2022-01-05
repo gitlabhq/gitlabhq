@@ -18,6 +18,10 @@ clusters_applications_runners:
   - table: ci_runners
     column: runner_id
     on_delete: async_nullify
+ci_job_token_project_scope_links:
+  - table: users
+    column: added_by_id
+    on_delete: async_nullify
 ci_namespace_mirrors:
   - table: namespaces
     column: namespace_id
@@ -78,6 +82,10 @@ merge_request_metrics:
 project_pages_metadata:
   - table: ci_job_artifacts
     column: artifacts_archive_id
+    on_delete: async_nullify
+ci_pipeline_schedules:
+  - table: users
+    column: owner_id
     on_delete: async_nullify
 ci_group_variables:
   - table: namespaces

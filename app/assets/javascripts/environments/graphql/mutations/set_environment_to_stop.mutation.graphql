@@ -1,0 +1,3 @@
+mutation SetEnvironmentToStop($environment: LocalEnvironmentInput) {
+  setEnvironmentToStop(environment: $environment) @client
+}

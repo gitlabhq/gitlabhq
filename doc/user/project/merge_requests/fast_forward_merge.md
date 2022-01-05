@@ -48,6 +48,13 @@ source branch locally before you can do a fast-forward merge.
 
 ![Fast forward merge rebase locally](img/ff_merge_rebase_locally.png)
 
+## Fast-forward merges prevent squashing commits
+
+If your project has enabled fast-forward merges, to merge cleanly, the code in a
+merge request cannot use [squashing during merge](squash_and_merge.md). Squashing
+is available only when accepting a merge request. Rebasing may be required before
+squashing, even though squashing can itself be considered equivalent to rebasing.
+
 <!-- ## Troubleshooting
 
 Include any troubleshooting steps that you can foresee. If you know beforehand what issues

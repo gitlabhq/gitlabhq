@@ -8,7 +8,8 @@ import setWindowLocation from 'helpers/set_window_location_helper';
 import { sprintf, __, s__ } from '~/locale';
 import EnvironmentsApp from '~/environments/components/new_environments_app.vue';
 import EnvironmentsFolder from '~/environments/components/new_environment_folder.vue';
-import { resolvedEnvironmentsApp, resolvedFolder } from './graphql/mock_data';
+import StopEnvironmentModal from '~/environments/components/stop_environment_modal.vue';
+import { resolvedEnvironmentsApp, resolvedFolder, resolvedEnvironment } from './graphql/mock_data';
 
 Vue.use(VueApollo);
 
@@ -17,6 +18,7 @@ describe('~/environments/components/new_environments_app.vue', () => {
   let environmentAppMock;
   let environmentFolderMock;
   let paginationMock;
+  let environmentToStopMock;
 
   const createApolloProvider = () => {
     const mockResolvers = {
@@ -24,6 +26,7 @@ describe('~/environments/components/new_environments_app.vue', () => {
         environmentApp: environmentAppMock,
         folder: environmentFolderMock,
         pageInfo: paginationMock,
+        environmentToStop: environmentToStopMock,
       },
     };
 
@@ -45,6 +48,7 @@ describe('~/environments/components/new_environments_app.vue', () => {
     provide = {},
     environmentsApp,
     folder,
+    environmentToStop = {},
     pageInfo = {
       total: 20,
       perPage: 5,
@@ -58,6 +62,7 @@ describe('~/environments/components/new_environments_app.vue', () => {
     environmentAppMock.mockReturnValue(environmentsApp);
     environmentFolderMock.mockReturnValue(folder);
     paginationMock.mockReturnValue(pageInfo);
+    environmentToStopMock.mockReturnValue(environmentToStop);
     const apolloProvider = createApolloProvider();
     wrapper = createWrapper({ apolloProvider, provide });
 
@@ -68,6 +73,7 @@ describe('~/environments/components/new_environments_app.vue', () => {
   beforeEach(() => {
     environmentAppMock = jest.fn();
     environmentFolderMock = jest.fn();
+    environmentToStopMock = jest.fn();
     paginationMock = jest.fn();
   });
 
@@ -172,6 +178,20 @@ describe('~/environments/components/new_environments_app.vue', () => {
         expect.anything(),
         expect.anything(),
       );
+    });
+  });
+
+  describe('modals', () => {
+    it('should pass the environment to stop to the stop environment modal', async () => {
+      await createWrapperWithMocked({
+        environmentsApp: resolvedEnvironmentsApp,
+        folder: resolvedFolder,
+        environmentToStop: resolvedEnvironment,
+      });
+
+      const modal = wrapper.findComponent(StopEnvironmentModal);
+
+      expect(modal.props('environment')).toMatchObject(resolvedEnvironment);
     });
   });
 

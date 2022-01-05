@@ -6,124 +6,75 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Squash and merge **(FREE)**
 
-With squash and merge you can combine all your merge request's commits into one
-and retain a clean history.
+As you work on a feature branch, you often create small, self-contained commits. These small commits
+help describe the process of building a feature, but can clutter your Git history after the feature
+is finished. As you finish features, you can combine these commits and ensure a cleaner merge history
+in your Git repository by using the _squash and merge_ strategy.
 
-Squashing lets you tidy up the commit history of a branch when accepting a merge
-request. It applies all of the changes in the merge request as a single commit,
-and then merges that commit using the merge method set for the project.
+- Small commits are joined together, making it simpler to [revert all parts of a change](revert_changes.md).
+- When the single commit merges into the target branch, it retains the full commit history.
+- Your base branch remains clean, and contains meaningful commit messages.
 
-In other words, squashing a merge request turns a long list of commits:
+Each time a branch merges into your base branch, up to two commits are added:
 
-![List of commits from a merge request](img/squash_mr_commits.png)
+- The single commit created by squashing the commits from the branch.
+- A merge commit, unless you have [enabled fast-forward merges](fast_forward_merge.md#enabling-fast-forward-merges)
+  in your project. Fast-forward merges disable both merge commits and squashing.
 
-Into a single commit on merge:
+By default, squashed commits contain the following metadata:
 
-![A squashed commit followed by a merge commit](img/squash_squashed_commit.png)
+- Message: Description of the squash commit, or a customized message
+- Author: User that created the merge request
+- Committer: User who initiated the squash
 
-NOTE:
-The squashed commit in this example is followed by a merge commit, because the merge method for this repository uses a merge commit. You can disable merge commits in
-**Project Settings > General > Merge requests > Merge method > Fast-forward merge**.
+Project owners can [create new default messages](commit_templates.md) for all
+squash commits and merge commits.
 
-The squashed commit's default commit message is taken from the merge request title.
-You can [edit the default message for squash commits](commit_templates.md).
+## Set default squash options for a merge request
 
-It can also be customized before merging a merge request.
+Users with permission to create or edit a merge request can set the default squash options
+for a merge request. To do this:
 
-![A squash commit message editor](img/squash_mr_message.png)
+1. Go to the merge request and select **Edit**.
+1. Select or clear the **Squash commits when merge request is accepted** checkbox.
+1. Select **Save changes**.
 
-Squashing also works with the fast-forward merge strategy, see [squashing and fast-forward merge](#squash-and-fast-forward-merge) for more details.
+## Squash commits in a merge request
 
-## Use cases
+If your project allows you to select squashing options for merge requests, to
+squash the commits as part of the merge process:
 
-When working on a feature branch, you sometimes want to commit your current
-progress, but don't really care about the commit messages. Those 'work in
-progress commits' don't necessarily contain important information and as such
-you'd rather not include them in your target branch.
+1. Go to the merge request, and scroll to the merge request reports section that
+   contains the **Merge** button.
+1. Ensure the **Squash commits** checkbox is selected. This checkbox doesn't display
+   if the project's squashing option is set to either **Do not allow** or **Require**.
+1. Optional. To modify either the squash commit message or the merge commit message
+   (depending on your project configuration), select **Modify commit messages**.
+1. When the merge request is ready to merge, select **Merge**.
 
-With squash and merge, when the merge request is ready to be merged,
-all you have to do is enable squashing before you press merge to join
-the commits in the merge request into a single commit.
+## Configure squash options for a project
 
-This way, the history of your base branch remains clean with
-meaningful commit messages and:
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/17613) in GitLab 13.2 [with a flag](../../../administration/feature_flags.md) named `squash_options`, disabled by default.
+> - [Enabled on GitLab.com and self-managed by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/39382) in GitLab 13.3.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/232536) in GitLab 13.8. Feature flag `squash_options` removed.
 
-- It's simpler to [revert](revert_changes.md) if necessary.
-- The merged branch retains the full commit history.
+To configure the default squashing behavior for all merge requests in your project:
 
-## Enable squash for a merge request
-
-Anyone who can create or edit a merge request can choose for it to be squashed
-on the merge request form. Users can select or clear the checkbox when they
-create the merge request:
-
-![Squash commits checkbox on edit form](img/squash_edit_form.png)
-
-After the merge request is submitted, Squash and Merge can still be enabled or disabled
-by editing the merge request description:
-
-1. Scroll to the top of the merge request page and click **Edit**.
-1. Scroll down to the end of the merge request form and select the checkbox
-**Squash commits when merge request is accepted**.
-
-This setting can then be overridden at the time of accepting the merge request.
-At the end of the merge request widget, next to the **Merge** button, the **Squash commits** checkbox
-can be either selected or unselected:
-
-![Squash commits checkbox on accept merge request form](img/squash_mr_widget.png)
-
-Squash and Merge might not be available depending on the project's configuration
-for [Squash Commit Options](#squash-commits-options).
-
-## Commit metadata for squashed commits
-
-The squashed commit has the following metadata:
-
-- Message: the message of the squash commit, or a customized message.
-- Author: the author of the merge request.
-- Committer: the user who initiated the squash.
-
-## Squash and fast-forward merge
-
-When a project has the [fast-forward merge setting enabled](fast_forward_merge.md#enabling-fast-forward-merges),
-the merge request must be able to be fast-forwarded without squashing to squash
-it. This is because squashing is available only when accepting a merge request,
-so a merge request may need to be rebased before squashing, even though
-squashing can itself be considered equivalent to rebasing.
-
-## Squash commits options
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/17613) in GitLab 13.2.
-> - Deployed behind a feature flag, disabled by default.
-> - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/39382) in GitLab 13.3.
-> - Enabled on GitLab.com.
-> - Can be enabled per project.
-> - Recommended for production use.
-
-With Squash Commits Options you can configure the behavior of Squash and Merge for your project.
-To set it up, navigate to your project's **Settings > General** and expand **Merge requests**.
-You can choose from these options, which affect existing and new merge requests
-submitted to your project:
-
-- **Do not allow**: users cannot use Squash and Merge to squash all the commits immediately before
-  merging. The checkbox to enable or disable it is unchecked and hidden from the users.
-- **Allow**: users can enable Squash and Merge on a merge request basis.
-  The checkbox is unchecked (disabled) by default, but and the user is allowed to enable it.
-- **Encourage**: users can enable Squash and Merge on a merge request basis.
-  The checkbox is checked (enabled) by default to encourage its use, but the user is allowed to
-  disable it.
-- **Require**: Squash and Merge is enabled for all merge requests, so it is always performed.
-  The checkbox to enable or disable it is checked and hidden from the users.
-
-The Squash and Merge checkbox is displayed when you create a merge request and when you edit the description of an existing one, except when Squash Commit Options is set to **Do not allow** or **Require**.
-
-NOTE:
-If your project is set to **Do not allow** Squash and Merge, the users still have the option to
-squash commits locally through the command line and force-push to their remote branch before merging.
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > General**.
+1. Expand **Merge requests**.
+1. In the **Squash commits when merging** section, select your desired behavior:
+   - **Do not allow**: Squashing is never performed, and the option is not displayed.
+   - **Allow**: Squashing is allowed, but deselected by default.
+   - **Encourage**: Squashing is allowed and selected by default, but can be disabled.
+   - **Require**: Squashing is always performed. While merge requests display the option
+     to squash, users cannot change it.
+1. Select **Save changes**.
 
 ## Related topics
 
-- [Commit message templates](commit_templates.md).
+- [Commit message templates](commit_templates.md)
+- [Fast-forward merges](fast_forward_merge.md)
 
 <!-- ## Troubleshooting
 

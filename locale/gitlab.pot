@@ -16382,9 +16382,6 @@ msgstr ""
 msgid "GlobalSearch|Search GitLab"
 msgstr ""
 
-msgid "GlobalSearch|Search or jump to..."
-msgstr ""
-
 msgid "GlobalSearch|Search results are loading"
 msgstr ""
 
@@ -31050,9 +31047,6 @@ msgstr ""
 msgid "Search or filter results…"
 msgstr ""
 
-msgid "Search or jump to..."
-msgstr ""
-
 msgid "Search project"
 msgstr ""
 
@@ -31748,6 +31742,9 @@ msgid "SecurityReports|Set status"
 msgstr ""
 
 msgid "SecurityReports|Severity"
+msgstr ""
+
+msgid "SecurityReports|Software and container dependency survey"
 msgstr ""
 
 msgid "SecurityReports|Sometimes a scanner can't determine a finding's severity. Those findings may still be a potential source of risk though. Please review these manually."

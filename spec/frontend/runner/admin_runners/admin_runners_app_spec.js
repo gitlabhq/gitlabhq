@@ -5,7 +5,7 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { updateHistory } from '~/lib/utils/url_utility';
 
@@ -241,7 +241,7 @@ describe('AdminRunnersApp', () => {
     });
 
     it('error is shown to the user', async () => {
-      expect(createFlash).toHaveBeenCalledTimes(1);
+      expect(createAlert).toHaveBeenCalledTimes(1);
     });
 
     it('error is reported to sentry', async () => {

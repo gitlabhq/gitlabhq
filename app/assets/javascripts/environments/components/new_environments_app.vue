@@ -5,8 +5,10 @@ import { updateHistory, setUrlParams, queryToObject } from '~/lib/utils/url_util
 import environmentAppQuery from '../graphql/queries/environment_app.query.graphql';
 import pollIntervalQuery from '../graphql/queries/poll_interval.query.graphql';
 import pageInfoQuery from '../graphql/queries/page_info.query.graphql';
+import environmentToStopQuery from '../graphql/queries/environment_to_stop.query.graphql';
 import EnvironmentFolder from './new_environment_folder.vue';
 import EnableReviewAppModal from './enable_review_app_modal.vue';
+import StopEnvironmentModal from './stop_environment_modal.vue';
 
 export default {
   components: {
@@ -16,6 +18,7 @@ export default {
     GlPagination,
     GlTab,
     GlTabs,
+    StopEnvironmentModal,
   },
   apollo: {
     environmentApp: {
@@ -35,6 +38,9 @@ export default {
     },
     pageInfo: {
       query: pageInfoQuery,
+    },
+    environmentToStop: {
+      query: environmentToStopQuery,
     },
   },
   inject: ['newEnvironmentPath', 'canCreateEnvironment'],
@@ -57,6 +63,7 @@ export default {
       isReviewAppModalVisible: false,
       page: parseInt(page, 10),
       scope,
+      environmentToStop: {},
     };
   },
   computed: {
@@ -157,6 +164,7 @@ export default {
       :modal-id="$options.modalId"
       data-testid="enable-review-app-modal"
     />
+    <stop-environment-modal :environment="environmentToStop" graphql />
     <gl-tabs
       :action-secondary="addEnvironment"
       :action-primary="openReviewAppModal"

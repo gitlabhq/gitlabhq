@@ -68,6 +68,8 @@ extend type Query {
   environmentToDelete: LocalEnvironment
   pageInfo: LocalPageInfo
   environmentToRollback: LocalEnvironment
+  environmentToStop: LocalEnvironment
+  isEnvironmentStopping(environment: LocalEnvironmentInput): Boolean
   isLastDeployment: Boolean
 }
 
@@ -78,4 +80,5 @@ extend type Mutation {
   cancelAutoStop(environment: LocalEnvironmentInput): LocalErrors
   setEnvironmentToDelete(environment: LocalEnvironmentInput): LocalErrors
   setEnvironmentToRollback(environment: LocalEnvironmentInput): LocalErrors
+  setEnvironmentToStop(environment: LocalEnvironmentInput): LocalErrors
 }

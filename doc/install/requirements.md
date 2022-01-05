@@ -4,10 +4,10 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Installation requirements **(FREE SELF)**
+# GitLab installation minimum requirements **(FREE SELF)**
 
-This page includes useful information on the supported Operating Systems as well
-as the hardware requirements that are needed to install and use GitLab.
+This page includes information about both the supported operating systems and
+the minimum requirements needed to install and use GitLab.
 
 ## Operating Systems
 
