@@ -18,8 +18,9 @@ RSpec.describe 'mail_room.yml' do
 
     result = Gitlab::Popen.popen_with_detail(%W(ruby -rerb -e #{cmd}), absolute_path('config'), vars)
     output = result.stdout
+    errors = result.stderr
     status = result.status
-    raise "Error interpreting #{mailroom_config_path}: #{output}" unless status == 0
+    raise "Error interpreting #{mailroom_config_path}: #{output}\n#{errors}" unless status == 0
 
     YAML.safe_load(output, permitted_classes: [Symbol])
   end

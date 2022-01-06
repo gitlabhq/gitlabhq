@@ -116,7 +116,7 @@ module Gitlab
           jwt_token = params[param_key]
           raise "Empty JWT param: #{param_key}" if jwt_token.blank?
 
-          payload = Gitlab::Workhorse.decode_jwt(jwt_token).first
+          payload = Gitlab::Workhorse.decode_jwt_with_issuer(jwt_token).first
           raise "Invalid JWT payload: not a Hash" unless payload.is_a?(Hash)
 
           upload_params = payload.fetch(JWT_PARAM_FIXED_KEY, {})
@@ -172,7 +172,7 @@ module Gitlab
         encoded_message = env.delete(RACK_ENV_KEY)
         return @app.call(env) if encoded_message.blank?
 
-        message = ::Gitlab::Workhorse.decode_jwt(encoded_message)[0]
+        message = ::Gitlab::Workhorse.decode_jwt_with_issuer(encoded_message)[0]
 
         ::Gitlab::Middleware::Multipart::Handler.new(env, message).with_open_files do
           @app.call(env)

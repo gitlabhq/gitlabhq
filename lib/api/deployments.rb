@@ -165,3 +165,5 @@ module API
     end
   end
 end
+
+API::Deployments.prepend_mod

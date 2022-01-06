@@ -34,7 +34,7 @@
     @media (min-width: map-get($grid-breakpoints, md)) {
       // The `+11` is to ensure the file header border shows when scrolled -
       // the bottom of the compare-versions header and the top of the file header
-      $mr-file-header-top: calc(#{$mr-version-controls-height} + #{$header-height} + #{$mr-tabs-height} + 11);
+      $mr-file-header-top: calc(#{$mr-version-controls-height} + #{$header-height} + #{$mr-tabs-height} + 11px);
 
       position: -webkit-sticky;
       position: sticky;

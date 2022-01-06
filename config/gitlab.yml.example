@@ -228,6 +228,10 @@ production: &base
     #   client_id: "YOUR-CLIENT-ID"
     #   client_secret: "YOUR-CLIENT-SECRET"
 
+    # File that contains the shared secret key for verifying access for mailroom's incoming_email.
+    # Default is '.gitlab_mailroom_secret' relative to Rails.root (i.e. root of the GitLab app).
+    # secret_file: /home/git/gitlab/.gitlab_mailroom_secret
+
   ## Consolidated object store config
   ## This will only take effect if the object_store sections are not defined
   ## within the types (e.g. artifacts, lfs, etc.).
