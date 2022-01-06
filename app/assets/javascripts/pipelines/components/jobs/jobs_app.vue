@@ -112,7 +112,7 @@ export default {
       </gl-skeleton-loader>
     </div>
 
-    <jobs-table v-else :jobs="jobs" :table-fields="$options.fields" />
+    <jobs-table v-else :jobs="jobs" :table-fields="$options.fields" data-testid="jobs-tab-table" />
 
     <gl-intersection-observer v-if="jobsPageInfo.hasNextPage" @appear="fetchMoreJobs">
       <gl-loading-icon v-if="$apollo.loading" size="md" />

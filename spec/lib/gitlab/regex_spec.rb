@@ -433,6 +433,7 @@ RSpec.describe Gitlab::Regex do
   describe '.nuget_version_regex' do
     subject { described_class.nuget_version_regex }
 
+    it { is_expected.to match('1.2') }
     it { is_expected.to match('1.2.3') }
     it { is_expected.to match('1.2.3.4') }
     it { is_expected.to match('1.2.3.4-stable.1') }
@@ -440,7 +441,6 @@ RSpec.describe Gitlab::Regex do
     it { is_expected.to match('1.2.3-alpha.3') }
     it { is_expected.to match('1.0.7+r3456') }
     it { is_expected.not_to match('1') }
-    it { is_expected.not_to match('1.2') }
     it { is_expected.not_to match('1./2.3') }
     it { is_expected.not_to match('../../../../../1.2.3') }
     it { is_expected.not_to match('%2e%2e%2f1.2.3') }

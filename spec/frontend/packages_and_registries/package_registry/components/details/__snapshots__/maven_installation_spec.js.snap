@@ -64,9 +64,15 @@ exports[`MavenInstallation maven renders all the messages 1`] = `
   />
    
   <p>
-    <gl-sprintf-stub
-      message="Copy and paste this inside your %{codeStart}pom.xml%{codeEnd} %{codeStart}dependencies%{codeEnd} block."
-    />
+    Copy and paste this inside your 
+    <code>
+      pom.xml
+    </code>
+     
+    <code>
+      dependencies
+    </code>
+     block.
   </p>
    
   <code-instruction-stub
@@ -97,9 +103,11 @@ exports[`MavenInstallation maven renders all the messages 1`] = `
   </h3>
    
   <p>
-    <gl-sprintf-stub
-      message="If you haven't already done so, you will need to add the below to your %{codeStart}pom.xml%{codeEnd} file."
-    />
+    If you haven't already done so, you will need to add the below to your 
+    <code>
+      pom.xml
+    </code>
+     file.
   </p>
    
   <code-instruction-stub
@@ -127,9 +135,13 @@ exports[`MavenInstallation maven renders all the messages 1`] = `
     trackingaction="copy_maven_setup_xml"
     trackinglabel="code_instruction"
   />
-   
-  <gl-sprintf-stub
-    message="For more information on the Maven registry, %{linkStart}see the documentation%{linkEnd}."
-  />
+   For more information on the Maven registry, 
+  <gl-link-stub
+    href="/help/user/packages/maven_repository/index"
+    target="_blank"
+  >
+    see the documentation
+  </gl-link-stub>
+  .
 </div>
 `;

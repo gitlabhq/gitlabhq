@@ -79,7 +79,11 @@ module Gitlab
 
       def nuget_version_regex
         @nuget_version_regex ||= /
-          \A#{_semver_major_minor_patch_regex}(\.\d*)?#{_semver_prerelease_build_regex}\z
+          \A#{_semver_major_regex}
+          \.#{_semver_minor_regex}
+          (\.#{_semver_patch_regex})?
+          (\.\d*)?
+          #{_semver_prerelease_build_regex}\z
         /x.freeze
       end
 
@@ -167,9 +171,25 @@ module Gitlab
       # regexes rather than being used alone.
       def _semver_major_minor_patch_regex
         @_semver_major_minor_patch_regex ||= /
+          #{_semver_major_regex}\.#{_semver_minor_regex}\.#{_semver_patch_regex}
+        /x.freeze
+      end
+
+      def _semver_major_regex
+        @_semver_major_regex ||= /
           (?<major>0|[1-9]\d*)
-          \.(?<minor>0|[1-9]\d*)
-          \.(?<patch>0|[1-9]\d*)
+        /x.freeze
+      end
+
+      def _semver_minor_regex
+        @_semver_minor_regex ||= /
+          (?<minor>0|[1-9]\d*)
+        /x.freeze
+      end
+
+      def _semver_patch_regex
+        @_semver_patch_regex ||= /
+          (?<patch>0|[1-9]\d*)
         /x.freeze
       end
 

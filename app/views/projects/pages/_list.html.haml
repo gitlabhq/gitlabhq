@@ -15,11 +15,9 @@
             = external_link(domain.url, domain.url)
             - if domain.certificate
               %div
-                %span.badge.badge-gray
-                  = s_('GitLabPages|Certificate: %{subject}') % { subject: domain.pages_domain.subject }
+                = gl_badge_tag(s_('GitLabPages|Certificate: %{subject}') % { subject: domain.pages_domain.subject })
                 - if domain.expired?
-                  %span.badge.badge-danger
-                    = s_('GitLabPages|Expired')
+                  = gl_badge_tag s_('GitLabPages|Expired'), variant: :danger
           %div
             = link_to s_('GitLabPages|Edit'), project_pages_domain_path(@project, domain), class: "btn gl-button btn-sm btn-grouped btn-confirm btn-inverted"
             = link_to s_('GitLabPages|Remove'), project_pages_domain_path(@project, domain), data: { confirm: s_('GitLabPages|Are you sure?')}, method: :delete, class: "btn gl-button btn-danger btn-sm btn-grouped"

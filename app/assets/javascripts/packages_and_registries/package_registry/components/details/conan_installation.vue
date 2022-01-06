@@ -6,6 +6,7 @@ import {
   TRACKING_ACTION_COPY_CONAN_COMMAND,
   TRACKING_ACTION_COPY_CONAN_SETUP_COMMAND,
   TRACKING_LABEL_CODE_INSTRUCTION,
+  CONAN_HELP_PATH,
 } from '~/packages_and_registries/package_registry/constants';
 import CodeInstruction from '~/vue_shared/components/registry/code_instruction.vue';
 
@@ -17,7 +18,7 @@ export default {
     GlLink,
     GlSprintf,
   },
-  inject: ['conanHelpPath', 'conanPath'],
+  inject: ['conanPath'],
   props: {
     packageEntity: {
       type: Object,
@@ -44,7 +45,7 @@ export default {
     TRACKING_ACTION_COPY_CONAN_SETUP_COMMAND,
     TRACKING_LABEL_CODE_INSTRUCTION,
   },
-
+  links: { CONAN_HELP_PATH },
   installOptions: [{ value: 'conan', label: s__('PackageRegistry|Show Conan commands') }],
 };
 </script>
@@ -72,7 +73,7 @@ export default {
     />
     <gl-sprintf :message="$options.i18n.helpText">
       <template #link="{ content }">
-        <gl-link :href="conanHelpPath" target="_blank">{{ content }}</gl-link>
+        <gl-link :href="$options.links.CONAN_HELP_PATH" target="_blank">{{ content }}</gl-link>
       </template>
     </gl-sprintf>
   </div>

@@ -1,4 +1,4 @@
-import { GlFormRadioGroup } from '@gitlab/ui';
+import { GlLink, GlSprintf, GlFormRadioGroup } from '@gitlab/ui';
 import { nextTick } from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 
@@ -15,6 +15,7 @@ import {
   YARN_PACKAGE_MANAGER,
   PROJECT_PACKAGE_ENDPOINT_TYPE,
   INSTANCE_PACKAGE_ENDPOINT_TYPE,
+  NPM_HELP_PATH,
 } from '~/packages_and_registries/package_registry/constants';
 import CodeInstructions from '~/vue_shared/components/registry/code_instruction.vue';
 
@@ -29,11 +30,11 @@ describe('NpmInstallation', () => {
   const findCodeInstructions = () => wrapper.findAllComponents(CodeInstructions);
   const findInstallationTitle = () => wrapper.findComponent(InstallationTitle);
   const findEndPointTypeSector = () => wrapper.findComponent(GlFormRadioGroup);
+  const findSetupDocsLink = () => wrapper.findComponent(GlLink);
 
   function createComponent({ data = {} } = {}) {
     wrapper = shallowMountExtended(NpmInstallation, {
       provide: {
-        npmHelpPath: 'npmHelpPath',
         npmPath: 'npmPath',
         npmProjectPath: 'npmProjectPath',
       },
@@ -43,6 +44,7 @@ describe('NpmInstallation', () => {
       data() {
         return data;
       },
+      stubs: { GlSprintf },
     });
   }
 
@@ -56,6 +58,13 @@ describe('NpmInstallation', () => {
 
   it('renders all the messages', () => {
     expect(wrapper.element).toMatchSnapshot();
+  });
+
+  it('has a setup link', () => {
+    expect(findSetupDocsLink().attributes()).toMatchObject({
+      href: NPM_HELP_PATH,
+      target: '_blank',
+    });
   });
 
   describe('endpoint type selector', () => {

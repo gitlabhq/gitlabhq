@@ -6,6 +6,7 @@ import {
   TRACKING_ACTION_COPY_COMPOSER_REGISTRY_INCLUDE_COMMAND,
   TRACKING_ACTION_COPY_COMPOSER_PACKAGE_INCLUDE_COMMAND,
   TRACKING_LABEL_CODE_INSTRUCTION,
+  COMPOSER_HELP_PATH,
 } from '~/packages_and_registries/package_registry/constants';
 import CodeInstruction from '~/vue_shared/components/registry/code_instruction.vue';
 
@@ -17,7 +18,7 @@ export default {
     GlLink,
     GlSprintf,
   },
-  inject: ['composerHelpPath', 'composerConfigRepositoryName', 'composerPath', 'groupListUrl'],
+  inject: ['composerConfigRepositoryName', 'composerPath', 'groupListUrl'],
   props: {
     packageEntity: {
       type: Object,
@@ -51,6 +52,9 @@ export default {
     TRACKING_ACTION_COPY_COMPOSER_PACKAGE_INCLUDE_COMMAND,
     TRACKING_LABEL_CODE_INSTRUCTION,
   },
+  links: {
+    COMPOSER_HELP_PATH,
+  },
   installOptions: [{ value: 'composer', label: s__('PackageRegistry|Show Composer commands') }],
 };
 </script>
@@ -79,7 +83,7 @@ export default {
     <span data-testid="help-text">
       <gl-sprintf :message="$options.i18n.infoLine">
         <template #link="{ content }">
-          <gl-link :href="composerHelpPath" target="_blank">{{ content }}</gl-link>
+          <gl-link :href="$options.links.COMPOSER_HELP_PATH" target="_blank">{{ content }}</gl-link>
         </template>
       </gl-sprintf>
     </span>

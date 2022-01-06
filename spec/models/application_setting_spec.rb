@@ -1244,7 +1244,7 @@ RSpec.describe ApplicationSetting do
     end
   end
 
-  describe '#static_objects_external_storage_auth_token=' do
+  describe '#static_objects_external_storage_auth_token=', :aggregate_failures do
     subject { setting.static_objects_external_storage_auth_token = token }
 
     let(:token) { 'Test' }
@@ -1263,6 +1263,21 @@ RSpec.describe ApplicationSetting do
       it 'removes an encrypted version of the token' do
         subject
 
+        expect(setting[:static_objects_external_storage_auth_token]).to be_nil
+        expect(setting[:static_objects_external_storage_auth_token_encrypted]).to be_nil
+        expect(setting.static_objects_external_storage_auth_token).to be_nil
+      end
+    end
+
+    context 'with plaintext token only' do
+      let(:token) { '' }
+
+      it 'ignores the plaintext token' do
+        subject
+
+        ApplicationSetting.update_all(static_objects_external_storage_auth_token: 'Test')
+
+        setting.reload
         expect(setting[:static_objects_external_storage_auth_token]).to be_nil
         expect(setting[:static_objects_external_storage_auth_token_encrypted]).to be_nil
         expect(setting.static_objects_external_storage_auth_token).to be_nil

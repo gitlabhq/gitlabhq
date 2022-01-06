@@ -74,7 +74,6 @@ export default {
     'canDelete',
     'svgPath',
     'npmPath',
-    'npmHelpPath',
     'projectListUrl',
     'groupListUrl',
   ],

@@ -413,9 +413,17 @@ RSpec.describe Packages::Package, type: :model do
       it_behaves_like 'validating version to be SemVer compliant for', :terraform_module_package
 
       context 'nuget package' do
-        it_behaves_like 'validating version to be SemVer compliant for', :nuget_package
+        subject { build_stubbed(:nuget_package) }
 
+        it { is_expected.to allow_value('1.2').for(:version) }
+        it { is_expected.to allow_value('1.2.3').for(:version) }
         it { is_expected.to allow_value('1.2.3.4').for(:version) }
+        it { is_expected.to allow_value('1.2.3-beta').for(:version) }
+        it { is_expected.to allow_value('1.2.3-alpha.3').for(:version) }
+        it { is_expected.not_to allow_value('1').for(:version) }
+        it { is_expected.not_to allow_value('1./2.3').for(:version) }
+        it { is_expected.not_to allow_value('../../../../../1.2.3').for(:version) }
+        it { is_expected.not_to allow_value('%2e%2e%2f1.2.3').for(:version) }
       end
     end
 

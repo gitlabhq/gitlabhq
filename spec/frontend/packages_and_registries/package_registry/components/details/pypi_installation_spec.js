@@ -1,3 +1,4 @@
+import { GlLink, GlSprintf } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { packageData } from 'jest/packages_and_registries/package_registry/mock_data';
 import InstallationTitle from '~/packages_and_registries/package_registry/components/details/installation_title.vue';
@@ -6,6 +7,7 @@ import {
   PACKAGE_TYPE_PYPI,
   TRACKING_ACTION_COPY_PIP_INSTALL_COMMAND,
   TRACKING_ACTION_COPY_PYPI_SETUP_COMMAND,
+  PYPI_HELP_PATH,
 } from '~/packages_and_registries/package_registry/constants';
 
 const packageEntity = { ...packageData(), packageType: PACKAGE_TYPE_PYPI };
@@ -23,16 +25,19 @@ password = <your personal access token>`;
   const setupInstruction = () => wrapper.findByTestId('pypi-setup-content');
 
   const findInstallationTitle = () => wrapper.findComponent(InstallationTitle);
+  const findSetupDocsLink = () => wrapper.findComponent(GlLink);
 
   function createComponent() {
     wrapper = shallowMountExtended(PypiInstallation, {
       provide: {
-        pypiHelpPath: 'pypiHelpPath',
         pypiPath: 'pypiPath',
         pypiSetupPath: 'pypiSetupPath',
       },
       propsData: {
         packageEntity,
+      },
+      stubs: {
+        GlSprintf,
       },
     });
   }
@@ -74,6 +79,13 @@ password = <your personal access token>`;
         instruction: pypiSetupStr,
         multiline: true,
         trackingAction: TRACKING_ACTION_COPY_PYPI_SETUP_COMMAND,
+      });
+    });
+
+    it('has a link to the docs', () => {
+      expect(findSetupDocsLink().attributes()).toMatchObject({
+        href: PYPI_HELP_PATH,
+        target: '_blank',
       });
     });
   });

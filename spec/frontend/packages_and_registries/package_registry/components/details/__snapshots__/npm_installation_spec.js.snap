@@ -37,9 +37,13 @@ exports[`NpmInstallation renders all the messages 1`] = `
     trackingaction="copy_npm_setup_command"
     trackinglabel="code_instruction"
   />
-   
-  <gl-sprintf-stub
-    message="You may also need to setup authentication using an auth token. %{linkStart}See the documentation%{linkEnd} to find out more."
-  />
+   You may also need to setup authentication using an auth token. 
+  <gl-link-stub
+    href="/help/user/packages/npm_registry/index"
+    target="_blank"
+  >
+    See the documentation
+  </gl-link-stub>
+   to find out more.
 </div>
 `;

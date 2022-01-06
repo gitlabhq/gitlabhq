@@ -1,8 +1,12 @@
+import { GlLink, GlSprintf } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { packageData } from 'jest/packages_and_registries/package_registry/mock_data';
 import ConanInstallation from '~/packages_and_registries/package_registry/components/details/conan_installation.vue';
 import InstallationTitle from '~/packages_and_registries/package_registry/components/details/installation_title.vue';
-import { PACKAGE_TYPE_CONAN } from '~/packages_and_registries/package_registry/constants';
+import {
+  PACKAGE_TYPE_CONAN,
+  CONAN_HELP_PATH,
+} from '~/packages_and_registries/package_registry/constants';
 import CodeInstructions from '~/vue_shared/components/registry/code_instruction.vue';
 
 const packageEntity = { ...packageData(), packageType: PACKAGE_TYPE_CONAN };
@@ -12,15 +16,18 @@ describe('ConanInstallation', () => {
 
   const findCodeInstructions = () => wrapper.findAllComponents(CodeInstructions);
   const findInstallationTitle = () => wrapper.findComponent(InstallationTitle);
+  const findSetupDocsLink = () => wrapper.findComponent(GlLink);
 
   function createComponent() {
     wrapper = shallowMountExtended(ConanInstallation, {
       provide: {
-        conanHelpPath: 'conanHelpPath',
         conanPath: 'conanPath',
       },
       propsData: {
         packageEntity,
+      },
+      stubs: {
+        GlSprintf,
       },
     });
   }
@@ -60,6 +67,13 @@ describe('ConanInstallation', () => {
       expect(findCodeInstructions().at(1).props('instruction')).toBe(
         'conan remote add gitlab conanPath',
       );
+    });
+
+    it('has a link to the docs', () => {
+      expect(findSetupDocsLink().attributes()).toMatchObject({
+        href: CONAN_HELP_PATH,
+        target: '_blank',
+      });
     });
   });
 });

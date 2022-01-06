@@ -8,7 +8,7 @@ import setWindowLocation from './set_window_location_helper';
 import { setGlobalDateToFakeDate } from './fake_date';
 import { loadHTMLFixture, setHTMLFixture } from './fixtures';
 import { TEST_HOST } from './test_constants';
-import customMatchers from './matchers';
+import * as customMatchers from './matchers';
 
 import './dom_shims';
 import './jquery';

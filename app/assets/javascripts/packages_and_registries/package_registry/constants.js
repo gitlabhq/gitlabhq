@@ -142,3 +142,9 @@ export const PACKAGE_TYPES = [
 
 export const EMPTY_LIST_HELP_URL = helpPagePath('user/packages/package_registry/index');
 export const PACKAGE_HELP_URL = helpPagePath('user/packages/index');
+export const NPM_HELP_PATH = helpPagePath('user/packages/npm_registry/index');
+export const MAVEN_HELP_PATH = helpPagePath('user/packages/maven_repository/index');
+export const CONAN_HELP_PATH = helpPagePath('user/packages/conan_repository/index');
+export const NUGET_HELP_PATH = helpPagePath('user/packages/nuget_repository/index');
+export const PYPI_HELP_PATH = helpPagePath('user/packages/pypi_repository/index');
+export const COMPOSER_HELP_PATH = helpPagePath('user/packages/composer_repository/index');
