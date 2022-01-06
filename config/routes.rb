@@ -145,9 +145,6 @@ Rails.application.routes.draw do
 
     get 'acme-challenge/' => 'acme_challenges#show'
 
-    # UserCallouts
-    resources :user_callouts, controller: 'users/callouts', only: [:create] # remove after 14.6 2021-12-22 to handle mixed deployments
-
     scope :ide, as: :ide, format: false do
       get '/', to: 'ide#index'
       get '/project', to: 'ide#index'

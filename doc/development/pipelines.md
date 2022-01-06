@@ -170,10 +170,9 @@ After that, the next pipeline uses the up-to-date `knapsack/report-master.json` 
 
 ### Flaky tests
 
-Tests that are [known to be flaky](testing_guide/flaky_tests.md#automatic-retries-and-flaky-tests-detection) are:
-
-- skipped if the `$SKIP_FLAKY_TESTS_AUTOMATICALLY` variable is set to `true` (`false` by default)
-- run if `$SKIP_FLAKY_TESTS_AUTOMATICALLY` variable is not set to `true` or if the `~"pipeline:run-flaky-tests"` label is set on the MR
+Tests that are [known to be flaky](testing_guide/flaky_tests.md#automatic-retries-and-flaky-tests-detection) are
+skipped unless the `$SKIP_FLAKY_TESTS_AUTOMATICALLY` variable is set to `false` or if the `~"pipeline:run-flaky-tests"`
+label is set on the MR.
 
 ### Monitoring
 

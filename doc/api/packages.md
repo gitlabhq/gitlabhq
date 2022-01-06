@@ -26,7 +26,7 @@ GET /projects/:id/packages
 | `id`      | integer/string | yes | ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) |
 | `order_by`| string | no | The field to use as order. One of `created_at` (default), `name`, `version`, or `type`. |
 | `sort`    | string | no | The direction of the order, either `asc` (default) for ascending order or `desc` for descending order. |
-| `package_type` | string | no | Filter the returned packages by type. One of `conan`, `maven`, `npm`, `pypi`, `composer`, `nuget`, `helm`, or `golang`. (_Introduced in GitLab 12.9_)
+| `package_type` | string | no | Filter the returned packages by type. One of `conan`, `maven`, `npm`, `pypi`, `composer`, `nuget`, `helm`, `terraform_module`, or `golang`. (_Introduced in GitLab 12.9_)
 | `package_name` | string | no | Filter the project packages with a fuzzy search by name. (_Introduced in GitLab 12.9_)
 | `include_versionless` | boolean | no | When set to true, versionless packages are included in the response. (_Introduced in GitLab 13.8_)
 | `status` | string | no | Filter the returned packages by status. One of `default` (default), `hidden`, or `processing`. (_Introduced in GitLab 13.9_)

@@ -48,6 +48,9 @@ There are two ways of specifying object storage configuration in GitLab:
 For more information on the differences and to transition from one form to another, see
 [Transition to consolidated form](#transition-to-consolidated-form).
 
+If you are currently storing data locally, see
+[Migrate to object storage](#migrate-to-object-storage) for migration details.
+
 ### Consolidated object storage configuration
 
 > [Introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/4368) in GitLab 13.2.
@@ -485,9 +488,9 @@ This is the list of valid `objects` that can be used:
 | `uploads`          | [User uploads](uploads.md)                                                 |
 | `lfs`              | [Git Large File Storage objects](lfs/index.md)                             |
 | `packages`         | [Project packages (for example, PyPI, Maven, or NuGet)](packages/index.md) |
-| `dependency_proxy` | [GitLab Dependency Proxy](packages/dependency_proxy.md)                    |
+| `dependency_proxy` | [Dependency Proxy](packages/dependency_proxy.md)                    |
 | `terraform_state`  | [Terraform state files](terraform_state.md)                                |
-| `pages`            | [GitLab Pages](pages/index.md)                                             |
+| `pages`            | [Pages](pages/index.md)                                             |
 
 Within each object type, three parameters can be defined:
 
@@ -513,6 +516,19 @@ no bucket is needed if CI artifacts are disabled with this setting:
 ```ruby
 gitlab_rails['artifacts_enabled'] = false
 ```
+
+### Migrate to object storage
+
+To migrate existing local data to object storage see the following guides:
+
+- [Job artifacts](job_artifacts.md#migrating-to-object-storage) including archived job logs
+- [LFS objects](lfs/index.md#migrating-to-object-storage)
+- [Uploads](raketasks/uploads/migrate.md#migrate-to-object-storage)
+- [Merge request diffs](merge_request_diffs.md#using-object-storage)
+- [Packages](packages/index.md#migrating-local-packages-to-object-storage) (optional feature)
+- Dependency Proxy - [migration not yet supported](https://gitlab.com/gitlab-org/gitlab/-/issues/343064)
+- [Terraform state files](terraform_state.md#migrate-to-object-storage)
+- [Pages content](pages/index.md#migrate-pages-deployments-to-object-storage)
 
 ### Transition to consolidated form
 
@@ -565,11 +581,11 @@ supported by consolidated configuration form, refer to the following guides:
 | [Merge request diffs](merge_request_diffs.md#using-object-storage) | **{check-circle}** Yes |
 | [Mattermost](https://docs.mattermost.com/administration/config-settings.html#file-storage)| **{dotted-circle}** No |
 | [Packages](packages/index.md#using-object-storage) (optional feature) | **{check-circle}** Yes |
-| [Dependency Proxy](packages/dependency_proxy.md#using-object-storage) (optional feature) **(PREMIUM SELF)** | **{check-circle}** Yes |
+| [Dependency Proxy](packages/dependency_proxy.md#using-object-storage) (optional feature) | **{check-circle}** Yes |
 | [Pseudonymizer](pseudonymizer.md) (optional feature) | **{dotted-circle}** No |
 | [Autoscale runner caching](https://docs.gitlab.com/runner/configuration/autoscale.html#distributed-runners-caching) (optional for improved performance) | **{dotted-circle}** No |
 | [Terraform state files](terraform_state.md#using-object-storage) | **{check-circle}** Yes |
-| [GitLab Pages content](pages/index.md#using-object-storage) | **{check-circle}** Yes |
+| [Pages content](pages/index.md#using-object-storage) | **{check-circle}** Yes |
 
 ### Other alternatives to file system storage
 

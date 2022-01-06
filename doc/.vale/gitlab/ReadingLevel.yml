@@ -3,11 +3,11 @@
 #
 # Checks the Flesch-Kincaid reading level.
 #
-# For a list of all options, see https://errata-ai.gitbook.io/vale/getting-started/styles
-extends: readability
-message: "Grade level (%s) is high. To lower the score, use shorter sentences and words."
+# https://docs.errata.ai/vale/styles#metric
+extends: metric
+message: "The grade level - %s - refers to how hard the content is to understand. Aim for 8th grade or lower by using shorter sentences and words."
 link: https://docs.gitlab.com/ee/development/documentation/testing.html#vale-readability-score
 level: suggestion
-grade: 8
-metrics:
-  - Flesch-Kincaid
+formula: |
+  (0.39 * (words / sentences)) + (11.8 * (syllables / words)) - 15.59
+condition: "> 1"
