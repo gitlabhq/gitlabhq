@@ -64,8 +64,6 @@ module Participable
   #
   # Returns an Array of User instances.
   def visible_participants(user)
-    return participants(user) unless Feature.enabled?(:verify_participants_access, project, default_enabled: :yaml)
-
     filter_by_ability(raw_participants(user, verify_access: true))
   end
 

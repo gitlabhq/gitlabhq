@@ -6,7 +6,7 @@
 - add_page_specific_style 'page_bundles/todos'
 
 .page-title-holder.d-flex.align-items-center
-  %h1.page-title= _('To-Do List')
+  %h1.page-title= _("To-Do List")
 
 - if current_user.todos.any?
   .top-area
@@ -22,10 +22,10 @@
       - if @allowed_todos.any?(&:pending?)
         .gl-mr-3
           = link_to destroy_all_dashboard_todos_path(todos_filter_params), class: 'gl-button btn btn-default btn-loading align-items-center js-todos-mark-all', method: :delete, data: { href: destroy_all_dashboard_todos_path(todos_filter_params) } do
-            Mark all as done
+            = s_("Todos|Mark all as done")
             %span.gl-spinner.ml-1
           = link_to bulk_restore_dashboard_todos_path, class: 'gl-button btn btn-default btn-loading align-items-center js-todos-undo-all hidden', method: :patch , data: { href: bulk_restore_dashboard_todos_path(todos_filter_params) } do
-            Undo mark all as done
+            = s_("Todos|Undo mark all as done")
             %span.gl-spinner.ml-1
 
   .todos-filters
@@ -35,28 +35,23 @@
           .filter-item.gl-m-2
             - if params[:group_id].present?
               = hidden_field_tag(:group_id, params[:group_id])
-            = dropdown_tag(group_dropdown_label(params[:group_id], 'Group'), options: { toggle_class: 'js-group-search js-filter-submit gl-xs-w-full!', title: 'Filter by group', filter: true, filterInput: 'input#group-search', dropdown_class: 'dropdown-menu-selectable dropdown-menu-group js-filter-submit',
-              placeholder: 'Search groups', data: { default_label: 'Group', display: 'static' } })
+            = dropdown_tag(group_dropdown_label(params[:group_id], _("Group")), options: { toggle_class: 'js-group-search js-filter-submit gl-xs-w-full!', title: s_("Todos|Filter by group"), filter: true, filterInput: 'input#group-search', dropdown_class: 'dropdown-menu-selectable dropdown-menu-group js-filter-submit', placeholder: _("Search groups"), data: { default_label: _("Group"), display: 'static' } })
           .filter-item.gl-m-2
             - if params[:project_id].present?
               = hidden_field_tag(:project_id, params[:project_id])
-            = dropdown_tag(project_dropdown_label(params[:project_id], 'Project'), options: { toggle_class: 'js-project-search js-filter-submit gl-xs-w-full!', title: 'Filter by project', filter: true, filterInput: 'input#project-search', dropdown_class: 'dropdown-menu-selectable dropdown-menu-project js-filter-submit',
-              placeholder: 'Search projects', data: { default_label: 'Project', display: 'static' } })
+            = dropdown_tag(project_dropdown_label(params[:project_id], _("Project")), options: { toggle_class: 'js-project-search js-filter-submit gl-xs-w-full!', title: s_("Todos|Filter by project"), filter: true, filterInput: 'input#project-search', dropdown_class: 'dropdown-menu-selectable dropdown-menu-project js-filter-submit', placeholder: _("Search projects"), data: { default_label: _("Project"), display: 'static' } })
           .filter-item.gl-m-2
             - if params[:author_id].present?
               = hidden_field_tag(:author_id, params[:author_id])
-            = dropdown_tag(user_dropdown_label(params[:author_id], 'Author'), options: { toggle_class: 'js-user-search js-filter-submit js-author-search gl-xs-w-full!', title: 'Filter by author', filter: true, filterInput: 'input#author-search', dropdown_class: 'dropdown-menu-user dropdown-menu-selectable dropdown-menu-author js-filter-submit',
-              placeholder: 'Search authors', data: { any_user: 'Any Author', first_user: (current_user.username if current_user), project_id: (@project.id if @project), selected: params[:author_id], field_name: 'author_id', default_label: 'Author', todo_filter: true, todo_state_filter: params[:state] || 'pending' } })
+            = dropdown_tag(user_dropdown_label(params[:author_id], _("Author")), options: { toggle_class: 'js-user-search js-filter-submit js-author-search gl-xs-w-full!', title: s_("Todos|Filter by author"), filter: true, filterInput: 'input#author-search', dropdown_class: 'dropdown-menu-user dropdown-menu-selectable dropdown-menu-author js-filter-submit', placeholder: _("Search authors"), data: { any_user: _("Any Author"), first_user: (current_user.username if current_user), project_id: (@project.id if @project), selected: params[:author_id], field_name: 'author_id', default_label: _("Author"), todo_filter: true, todo_state_filter: params[:state] || 'pending' } })
           .filter-item.gl-m-2
             - if params[:type].present?
               = hidden_field_tag(:type, params[:type])
-            = dropdown_tag(todo_types_dropdown_label(params[:type], 'Type'), options: { toggle_class: 'js-type-search js-filter-submit gl-xs-w-full!', dropdown_class: 'dropdown-menu-selectable dropdown-menu-type js-filter-submit',
-              data: { data: todo_types_options, default_label: 'Type' } })
+            = dropdown_tag(todo_types_dropdown_label(params[:type], _("Type")), options: { toggle_class: 'js-type-search js-filter-submit gl-xs-w-full!', dropdown_class: 'dropdown-menu-selectable dropdown-menu-type js-filter-submit', data: { data: todo_types_options, default_label: _("Type") } })
           .filter-item.actions-filter.gl-m-2
             - if params[:action_id].present?
               = hidden_field_tag(:action_id, params[:action_id])
-            = dropdown_tag(todo_actions_dropdown_label(params[:action_id], 'Action'), options: { toggle_class: 'js-action-search js-filter-submit gl-xs-w-full!', dropdown_class: 'dropdown-menu-selectable dropdown-menu-action js-filter-submit',
-              data: { data: todo_actions_options, default_label: 'Action' } })
+            = dropdown_tag(todo_actions_dropdown_label(params[:action_id], _("Action")), options: { toggle_class: 'js-action-search js-filter-submit gl-xs-w-full!', dropdown_class: 'dropdown-menu-selectable dropdown-menu-action js-filter-submit', data: { data: todo_actions_options, default_label: _("Action") } })
         .filter-item.sort-filter.gl-mt-3.gl-sm-mt-0.gl-mb-0.gl-sm-mb-0
           .dropdown
             %button.dropdown-menu-toggle.dropdown-menu-toggle-sort{ type: 'button', class: 'gl-xs-w-full!', 'data-toggle' => 'dropdown' }
@@ -87,7 +82,7 @@
         = image_tag 'illustrations/todos_all_done.svg'
       .text-content
         %h4.text-center
-          You're all done!
+          = s_("Todos|You're all done!")
   - elsif current_user.todos.any?
     .col.todos-all-done.empty-state
       .svg-content.svg-250
@@ -97,28 +92,18 @@
           %h4.text-center
             = Gitlab.config.gitlab.no_todos_messages.sample
           %p
-            Are you looking for things to do? Take a look at
-            = succeed "," do
-              %strong
-                = link_to "open issues", issues_dashboard_path
-            contribute to
-            %strong
-              = link_to "a merge request\,", merge_requests_dashboard_path
-            or mention someone in a comment to automatically assign them a new to-do item.
+            = (_s("Todos|Are you looking for things to do? Take a look at %{strongStart}%{openIssuesLinkStart}open issues%{openIssuesLinkEnd}%{strongEnd}, contribute to %{strongStart}%{mergeRequestLinkStart}a merge request%{mergeRequestLinkEnd}%{mergeRequestLinkEnd}%{strongEnd}, or mention someone in a comment to automatically assign them a new to-do item.") % { strongStart: '<strong>', strongEnd: '</strong>', openIssuesLinkStart: "<a href=\"#{issues_dashboard_path}\">", openIssuesLinkEnd: '</a>', mergeRequestLinkStart: "<a href=\"#{merge_requests_dashboard_path}\">", mergeRequestLinkEnd: '</a>' }).html_safe
         - else
           %h4.text-center
-            Nothing is on your to-do list. Nice work!
+            = s_("Todos|Nothing is on your to-do list. Nice work!")
   - else
     .col.empty-state
       .svg-content
         = image_tag 'illustrations/todos_empty.svg'
       .text-content
         %h4.text-center
-          Your To-Do List shows what to work on next
+          = s_("Todos|Your To-Do List shows what to work on next")
         %p
-          When an issue or merge request is assigned to you, or when you receive a
-          %strong
-            @mention
-          in a comment, this automatically triggers a new item in your To-Do List.
+          = (s_("Todos|When an issue or merge request is assigned to you, or when you receive a %{strongStart}@mention%{strongEnd} in a comment, this automatically triggers a new item in your To-Do List.") % { strongStart: '<strong>', strongEnd: '</strong>' }).html_safe
         %p
-          It's how you always know what to work on next.
+          = s_("Todos|It's how you always know what to work on next.")

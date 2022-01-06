@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe ScheduleRecalculateUuidOnVulnerabilitiesOccurrences3 do
+RSpec.describe ScheduleRecalculateUuidOnVulnerabilitiesOccurrences4 do
   let(:namespace) { table(:namespaces).create!(name: 'user', path: 'user') }
   let(:users) { table(:users) }
   let(:user) { create_user! }
@@ -13,6 +13,7 @@ RSpec.describe ScheduleRecalculateUuidOnVulnerabilitiesOccurrences3 do
   let(:different_scanner) { scanners.create!(project_id: project.id, external_id: 'test 2', name: 'test scanner 2') }
   let(:vulnerabilities) { table(:vulnerabilities) }
   let(:vulnerabilities_findings) { table(:vulnerability_occurrences) }
+  let(:vulnerability_finding_signatures) { table(:vulnerability_finding_signatures) }
   let(:vulnerability_identifiers) { table(:vulnerability_identifiers) }
   let(:vulnerability_identifier) do
     vulnerability_identifiers.create!(
@@ -32,10 +33,32 @@ RSpec.describe ScheduleRecalculateUuidOnVulnerabilitiesOccurrences3 do
       name: 'Identifier for UUIDv4')
   end
 
+  let!(:uuidv4_finding) do
+    create_finding!(
+      vulnerability_id: vulnerability_for_uuidv4.id,
+      project_id: project.id,
+      scanner_id: different_scanner.id,
+      primary_identifier_id: different_vulnerability_identifier.id,
+      location_fingerprint: Gitlab::Database::ShaAttribute.serialize('fa18f432f1d56675f4098d318739c3cd5b14eb3e'),
+      uuid: 'b3cc2518-5446-4dea-871c-89d5e999c1ac'
+    )
+  end
+
   let(:vulnerability_for_uuidv4) do
     create_vulnerability!(
       project_id: project.id,
       author_id: user.id
+    )
+  end
+
+  let!(:uuidv5_finding) do
+    create_finding!(
+      vulnerability_id: vulnerability_for_uuidv5.id,
+      project_id: project.id,
+      scanner_id: scanner.id,
+      primary_identifier_id: vulnerability_identifier.id,
+      location_fingerprint: Gitlab::Database::ShaAttribute.serialize('838574be0210968bf6b9f569df9c2576242cbf0a'),
+      uuid: '77211ed6-7dff-5f6b-8c9a-da89ad0a9b60'
     )
   end
 
@@ -46,25 +69,22 @@ RSpec.describe ScheduleRecalculateUuidOnVulnerabilitiesOccurrences3 do
     )
   end
 
-  let!(:finding1) do
-    create_finding!(
-      vulnerability_id: vulnerability_for_uuidv4.id,
+  let(:vulnerability_for_finding_with_signature) do
+    create_vulnerability!(
       project_id: project.id,
-      scanner_id: different_scanner.id,
-      primary_identifier_id: different_vulnerability_identifier.id,
-      location_fingerprint: 'fa18f432f1d56675f4098d318739c3cd5b14eb3e',
-      uuid: 'b3cc2518-5446-4dea-871c-89d5e999c1ac'
+      author_id: user.id
     )
   end
 
-  let!(:finding2) do
+  let!(:finding_with_signature) do
     create_finding!(
-      vulnerability_id: vulnerability_for_uuidv5.id,
+      vulnerability_id: vulnerability_for_finding_with_signature.id,
       project_id: project.id,
       scanner_id: scanner.id,
       primary_identifier_id: vulnerability_identifier.id,
-      location_fingerprint: '838574be0210968bf6b9f569df9c2576242cbf0a',
-      uuid: '77211ed6-7dff-5f6b-8c9a-da89ad0a9b60'
+      report_type: 0, # "sast"
+      location_fingerprint: Gitlab::Database::ShaAttribute.serialize('123609eafffffa2207a9ca2425ba4337h34fga1b'),
+      uuid: '252aa474-d689-5d2b-ab42-7bbb5a100c02'
     )
   end
 
@@ -79,9 +99,10 @@ RSpec.describe ScheduleRecalculateUuidOnVulnerabilitiesOccurrences3 do
   it 'schedules background migrations', :aggregate_failures do
     migrate!
 
-    expect(BackgroundMigrationWorker.jobs.size).to eq(2)
-    expect(described_class::MIGRATION).to be_scheduled_delayed_migration(2.minutes, finding1.id, finding1.id)
-    expect(described_class::MIGRATION).to be_scheduled_delayed_migration(4.minutes, finding2.id, finding2.id)
+    expect(BackgroundMigrationWorker.jobs.size).to eq(3)
+    expect(described_class::MIGRATION).to be_scheduled_delayed_migration(2.minutes, uuidv4_finding.id, uuidv4_finding.id)
+    expect(described_class::MIGRATION).to be_scheduled_delayed_migration(4.minutes, uuidv5_finding.id, uuidv5_finding.id)
+    expect(described_class::MIGRATION).to be_scheduled_delayed_migration(6.minutes, finding_with_signature.id, finding_with_signature.id)
   end
 
   private
@@ -98,14 +119,14 @@ RSpec.describe ScheduleRecalculateUuidOnVulnerabilitiesOccurrences3 do
   end
 
   def create_finding!(
-    vulnerability_id:, project_id:, scanner_id:, primary_identifier_id:, location_fingerprint:, uuid:)
+    vulnerability_id:, project_id:, scanner_id:, primary_identifier_id:, location_fingerprint:, uuid:, report_type: 0)
     vulnerabilities_findings.create!(
       vulnerability_id: vulnerability_id,
       project_id: project_id,
       name: 'test',
       severity: 7,
       confidence: 7,
-      report_type: 0,
+      report_type: report_type,
       project_fingerprint: '123qweasdzxc',
       scanner_id: scanner_id,
       primary_identifier_id: primary_identifier_id,

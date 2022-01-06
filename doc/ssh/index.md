@@ -376,7 +376,9 @@ Git user has default SSH configuration? ... no
 Remove the custom configuration as soon as you can. These customizations
 are **explicitly not supported** and may stop working at any time.
 
-## Troubleshooting SSH connections
+## Troubleshooting
+
+### Password prompt with `git clone`
 
 When you run `git clone`, you may be prompted for a password, like `git@gitlab.example.com's password:`.
 This indicates that something is wrong with your SSH setup.
@@ -386,3 +388,13 @@ This indicates that something is wrong with your SSH setup.
 - Try to manually register your private SSH key by using `ssh-agent`.
 - Try to debug the connection by running `ssh -Tv git@example.com`.
   Replace `example.com` with your GitLab URL.
+
+### `Could not resolve hostname` error
+
+You may receive the following error when [verifying that you can connect](#verify-that-you-can-connect):
+
+```shell
+ssh: Could not resolve hostname gitlab.example.com: nodename nor servname provided, or not known
+```
+
+If you receive this error, restart your terminal and try the command again.
