@@ -165,9 +165,9 @@ describe QA::Tools::ReliableReport do
         verify_ssl: false,
         headers: { "PRIVATE-TOKEN" => "gitlab_token" },
         payload: {
-          title: "Reliable spec report",
+          title: "Reliable e2e test report",
           description: issue_body,
-          labels: "Quality,test"
+          labels: "Quality,test,type::maintenance,reliable test report"
         }
       )
       expect(slack_notifier).to have_received(:post).with(

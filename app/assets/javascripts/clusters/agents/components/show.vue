@@ -51,16 +51,7 @@ export default {
     TokenTable,
     ActivityEvents,
   },
-  props: {
-    agentName: {
-      required: true,
-      type: String,
-    },
-    projectPath: {
-      required: true,
-      type: String,
-    },
-  },
+  inject: ['agentName', 'projectPath'],
   data() {
     return {
       cursor: {
@@ -131,11 +122,11 @@ export default {
       </p>
 
       <gl-tabs sync-active-tab-with-query-params lazy>
+        <slot name="ee-security-tab"></slot>
+
         <gl-tab :title="$options.i18n.activity" query-param-value="activity">
           <activity-events :agent-name="agentName" :project-path="projectPath" />
         </gl-tab>
-
-        <slot name="ee-security-tab"></slot>
 
         <gl-tab query-param-value="tokens">
           <template #title>

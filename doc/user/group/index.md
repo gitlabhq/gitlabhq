@@ -535,9 +535,9 @@ API requests to add a new user to a project are not possible.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/287940) in GitLab 14.2.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/336520) in GitLab 14.5.
 
-You can export a list of members in a group as a CSV.
+You can export a list of members in a group or subgroup as a CSV.
 
-1. Go to your project and select **Project information > Members**.
+1. Go to your group or subgroup and select either **Group information > Members** or **Subgroup information > Members**.
 1. Select **Export as CSV**.
 1. Once the CSV file has been generated, it is emailed as an attachment to the user that requested it.
 

@@ -89,9 +89,10 @@ ci_pipelines:
 
 ### Track record changes
 
-To know about deletions in the `projects` table, configure a `DELETE` trigger using a database
-migration (post-migration). The trigger needs to be configured only once. If the model already has
-at least one `loose_foreign_key` definition, then this step can be skipped:
+To know about deletions in the `projects` table, configure a `DELETE` trigger
+using a [post-deployment migration](../post_deployment_migrations.md). The
+trigger needs to be configured only once. If the model already has at least one
+`loose_foreign_key` definition, then this step can be skipped:
 
 ```ruby
 class TrackProjectRecordChanges < Gitlab::Database::Migration[1.0]
@@ -122,15 +123,20 @@ REFERENCES projects(id)
 ON DELETE CASCADE;
 ```
 
-The migration should run after the `DELETE` trigger is installed. If the foreign key is deleted
-earlier, there is a good chance of introducing data inconsistency which needs manual cleanup:
+The migration must run after the `DELETE` trigger is installed and the loose
+foreign key definition is deployed. As such, it must be a [post-deployment
+migration](../post_deployment_migrations.md) dated after the migration for the
+trigger. If the foreign key is deleted earlier, there is a good chance of
+introducing data inconsistency which needs manual cleanup:
 
 ```ruby
 class RemoveProjectsCiPipelineFk < Gitlab::Database::Migration[1.0]
-  enable_lock_retries!
+  disable_ddl_transaction!
 
   def up
-    remove_foreign_key_if_exists(:ci_pipelines, :projects, name: "fk_86635dbd80")
+    with_lock_retries do
+      remove_foreign_key_if_exists(:ci_pipelines, :projects, name: "fk_86635dbd80")
+    end
   end
 
   def down

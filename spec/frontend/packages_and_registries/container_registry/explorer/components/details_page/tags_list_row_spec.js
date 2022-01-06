@@ -75,16 +75,19 @@ describe('tags list row', () => {
     });
 
     it.each`
-      digest   | disabled
-      ${'foo'} | ${true}
-      ${null}  | ${false}
-      ${null}  | ${true}
-      ${'foo'} | ${true}
-    `('is disabled when the digest $digest and disabled is $disabled', ({ digest, disabled }) => {
-      mountComponent({ tag: { ...tag, digest }, disabled });
+      digest   | disabled | isDisabled
+      ${'foo'} | ${true}  | ${'true'}
+      ${null}  | ${true}  | ${'true'}
+      ${null}  | ${false} | ${undefined}
+      ${'foo'} | ${false} | ${undefined}
+    `(
+      'disabled attribute is set to $isDisabled when the digest $digest and disabled is $disabled',
+      ({ digest, disabled, isDisabled }) => {
+        mountComponent({ tag: { ...tag, digest }, disabled });
 
-      expect(findCheckbox().attributes('disabled')).toBe('true');
-    });
+        expect(findCheckbox().attributes('disabled')).toBe(isDisabled);
+      },
+    );
 
     it('is wired to the selected prop', () => {
       mountComponent({ ...defaultProps, selected: true });

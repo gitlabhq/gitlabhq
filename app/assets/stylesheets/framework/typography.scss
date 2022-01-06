@@ -420,12 +420,12 @@
       list-style-type: none;
       position: relative;
       min-height: 22px;
-      padding-left: 28px;
-      margin-left: 0 !important;
+      padding-inline-start: 28px;
+      margin-inline-start: 0 !important;
 
       > input.task-list-item-checkbox {
         position: absolute;
-        left: 8px;
+        inset-inline-start: 8px;
         top: 5px;
       }
     }

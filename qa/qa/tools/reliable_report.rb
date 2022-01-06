@@ -57,7 +57,11 @@ module QA
         puts "Creating report".colorize(:green)
         response = post(
           "#{gitlab_api_url}/projects/#{PROJECT_ID}/issues",
-          { title: "Reliable spec report", description: report_issue_body, labels: "Quality,test" },
+          {
+            title: "Reliable e2e test report",
+            description: report_issue_body,
+            labels: "Quality,test,type::maintenance,reliable test report"
+          },
           headers: { "PRIVATE-TOKEN" => gitlab_access_token }
         )
         web_url = parse_body(response)[:web_url]
