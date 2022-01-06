@@ -253,6 +253,32 @@ RSpec.describe ApplicationSettingsHelper do
     end
   end
 
+  describe '.registration_features_can_be_prompted?' do
+    subject { helper.registration_features_can_be_prompted? }
+
+    before do
+      if Gitlab.ee?
+        allow(License).to receive(:current).and_return(nil)
+      end
+    end
+
+    context 'when service ping is enabled' do
+      before do
+        stub_application_setting(usage_ping_enabled: true)
+      end
+
+      it { is_expected.to be_falsey }
+    end
+
+    context 'when service ping is disabled' do
+      before do
+        stub_application_setting(usage_ping_enabled: false)
+      end
+
+      it { is_expected.to be_truthy }
+    end
+  end
+
   describe '#sidekiq_job_limiter_modes_for_select' do
     subject { helper.sidekiq_job_limiter_modes_for_select }
 

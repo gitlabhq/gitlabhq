@@ -636,6 +636,8 @@ RSpec.describe UsersController do
   describe 'GET #exists' do
     before do
       sign_in(user)
+
+      allow(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).and_return(false)
     end
 
     context 'when user exists' do
@@ -675,6 +677,17 @@ RSpec.describe UsersController do
           expected_json = { exists: false }.to_json
           expect(response.body).to eq(expected_json)
         end
+      end
+    end
+
+    context 'when the rate limit has been reached' do
+      it 'returns status 429 Too Many Requests', :aggregate_failures do
+        ip = '1.2.3.4'
+        expect(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).with(:username_exists, scope: ip).and_return(true)
+
+        get user_exists_url(user.username), env: { 'REMOTE_ADDR': ip }
+
+        expect(response).to have_gitlab_http_status(:too_many_requests)
       end
     end
   end

@@ -53,7 +53,7 @@ To view vulnerabilities in a pipeline:
 
 1. On the top bar, select **Menu > Projects** and find your project.
 1. On the left sidebar, select **CI/CD > Pipelines**.
-1. Select the **Status** of a branch.
+1. From the list, select the pipeline you want to check for vulnerabilities.
 1. Select the **Security** tab.
 
 A pipeline consists of multiple jobs, such as SAST and DAST scans. If a job fails to finish,

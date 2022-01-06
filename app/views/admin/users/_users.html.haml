@@ -1,3 +1,11 @@
+- if registration_features_can_be_prompted?
+  = render 'shared/global_alert',
+    variant: :tip,
+    alert_class: 'gl-my-5',
+    dismissible: false do
+    .gl-alert-body
+      = render 'shared/registration_features_discovery_message', feature_title: s_('RegistrationFeatures|send emails to users')
+
 .top-area.scrolling-tabs-container.inner-page-scroll-tabs
   .fade-left
     = sprite_icon('chevron-lg-left', size: 12)

@@ -1,9 +1,9 @@
-- license = local_assigns.fetch(:license)
+- feature_title = local_assigns.fetch(:feature_title, s_('RegistrationFeatures|use this feature'))
 - registration_features_docs_path = help_page_path('development/service_ping/index.md', anchor: 'registration-features-program')
 - service_ping_settings_path = metrics_and_profiling_admin_application_settings_path(anchor: 'js-usage-settings')
 
 %div
-  %span= s_('RegistrationFeatures|Want to use this feature for free?')
-  - if license.present?
+  %span= sprintf(s_('RegistrationFeatures|Want to %{feature_title} for free?'), { feature_title: feature_title })
+  - if Gitlab.ee?
     = link_to s_('RegistrationFeatures|Enable Service Ping and register for this feature.'), service_ping_settings_path
-  = sprintf(s_('RegistrationFeatures|Read more about the %{linkStart}Registration Features Program%{linkEnd}.') , { linkStart: "<a href=\"#{registration_features_docs_path}\" target=\"_blank\">", linkEnd: "</a>", }).html_safe
+  = sprintf(s_('RegistrationFeatures|Read more about the %{linkStart}%{label}%{linkEnd}.') , { linkStart: "<a href=\"#{registration_features_docs_path}\" target=\"_blank\">", label: s_('RegistrationFeatures|Registration Features Program'), linkEnd: "</a>" }).html_safe

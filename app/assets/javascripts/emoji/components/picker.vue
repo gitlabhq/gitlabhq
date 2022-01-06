@@ -125,7 +125,7 @@ export default {
           :aria-label="category.name"
           @click="scrollToCategory(category.name)"
         >
-          <gl-icon :name="category.icon" :size="12" />
+          <gl-icon :name="category.icon" />
         </button>
       </div>
       <emoji-list :search-value="searchValue">

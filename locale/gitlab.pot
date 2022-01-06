@@ -29253,10 +29253,19 @@ msgstr ""
 msgid "RegistrationFeatures|Enable Service Ping and register for this feature."
 msgstr ""
 
-msgid "RegistrationFeatures|Read more about the %{linkStart}Registration Features Program%{linkEnd}."
+msgid "RegistrationFeatures|Read more about the %{linkStart}%{label}%{linkEnd}."
 msgstr ""
 
-msgid "RegistrationFeatures|Want to use this feature for free?"
+msgid "RegistrationFeatures|Registration Features Program"
+msgstr ""
+
+msgid "RegistrationFeatures|Want to %{feature_title} for free?"
+msgstr ""
+
+msgid "RegistrationFeatures|send emails to users"
+msgstr ""
+
+msgid "RegistrationFeatures|use this feature"
 msgstr ""
 
 msgid "RegistrationVerification|Are you sure you want to skip this step?"

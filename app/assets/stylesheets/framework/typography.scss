@@ -365,10 +365,17 @@
     padding: 0;
     margin: 0 0 16px;
 
+    // Lists embedded in other lists can be "loose" or "tight"
+    // Remove bottom margin for all lists (default for tight lists)
     ul,
     ol {
       margin-bottom: 0;
     }
+
+    // Loose lists need bottom margin added back
+    p ~ ol,
+    p ~ ul {
+      margin-bottom: 16px;    }
   }
 
   ul:dir(rtl),

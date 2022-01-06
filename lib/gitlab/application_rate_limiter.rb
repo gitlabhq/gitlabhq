@@ -50,6 +50,7 @@ module Gitlab
           profile_add_new_email:        { threshold: 5, interval: 1.minute },
           web_hook_calls:               { interval: 1.minute },
           users_get_by_id:              { threshold: 10, interval: 1.minute },
+          username_exists:              { threshold: 20, interval: 1.minute },
           profile_resend_email_confirmation:  { threshold: 5, interval: 1.minute },
           profile_update_username:            { threshold: 10, interval: 1.minute },
           update_environment_canary_ingress:  { threshold: 1, interval: 1.minute },

@@ -487,6 +487,10 @@ module ApplicationSettingsHelper
   def pending_user_count
     User.blocked_pending_approval.count
   end
+
+  def registration_features_can_be_prompted?
+    !Gitlab::CurrentSettings.usage_ping_enabled?
+  end
 end
 
 ApplicationSettingsHelper.prepend_mod_with('ApplicationSettingsHelper')
