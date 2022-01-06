@@ -746,3 +746,12 @@ export const isLoggedIn = () => Boolean(window.gon?.current_user_id);
  */
 export const convertArrayOfObjectsToCamelCase = (array) =>
   array.map((o) => convertObjectPropsToCamelCase(o));
+
+export const getFirstPropertyValue = (data) => {
+  if (!data) return null;
+
+  const [key] = Object.keys(data);
+  if (!key) return null;
+
+  return data[key];
+};

@@ -134,7 +134,7 @@ RSpec.describe Backup::Files do
 
       expect do
         subject.dump
-      end.to raise_error(/Backup operation failed:/)
+      end.to raise_error(/Failed to create compressed file/)
     end
 
     describe 'with STRATEGY=copy' do
@@ -170,7 +170,7 @@ RSpec.describe Backup::Files do
         expect do
           subject.dump
         end.to output(/rsync failed/).to_stdout
-           .and raise_error(/Backup failed/)
+           .and raise_error(/Failed to create compressed file/)
       end
     end
   end

@@ -19,7 +19,11 @@ class Packages::PackageFileFinder
   private
 
   def package_files
-    files = package.package_files
+    files = if Feature.enabled?(:packages_installable_package_files)
+              package.installable_package_files
+            else
+              package.package_files
+            end
 
     by_file_name(files)
   end

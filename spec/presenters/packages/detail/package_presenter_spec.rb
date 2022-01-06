@@ -6,12 +6,12 @@ RSpec.describe ::Packages::Detail::PackagePresenter do
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, creator: user) }
   let_it_be(:package) { create(:npm_package, :with_build, project: project) }
-  let(:presenter) { described_class.new(package) }
-
   let_it_be(:user_info) { { name: user.name, avatar_url: user.avatar_url } }
 
+  let(:presenter) { described_class.new(package) }
+
   let!(:expected_package_files) do
-    package.package_files.map do |file|
+    package.installable_package_files.map do |file|
       {
         created_at: file.created_at,
         download_path: file.download_path,
@@ -152,6 +152,22 @@ RSpec.describe ::Packages::Detail::PackagePresenter do
 
       it 'returns the correct dependency link' do
         expect(presenter.detail_view).to eq expected_package_details
+      end
+    end
+
+    context 'with package files pending destruction' do
+      let_it_be(:package_file_pending_destruction) { create(:package_file, :pending_destruction, package: package) }
+
+      subject { presenter.detail_view[:package_files].map { |e| e[:id] } }
+
+      it { is_expected.not_to include(package_file_pending_destruction.id) }
+
+      context 'with packages_installable_package_files disabled' do
+        before do
+          stub_feature_flags(packages_installable_package_files: false)
+        end
+
+        it { is_expected.to include(package_file_pending_destruction.id) }
       end
     end
   end

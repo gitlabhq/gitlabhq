@@ -265,4 +265,22 @@ RSpec.describe ::Packages::Maven::Metadata::SyncService do
       end
     end
   end
+
+  # TODO When cleaning up packages_installable_package_files, consider adding a
+  # dummy package file pending for destruction on L10/11 and remove this context
+  context 'with package files pending destruction' do
+    let_it_be(:package_file_pending_destruction) { create(:package_file, :pending_destruction, package: versionless_package_for_versions, file_name: Packages::Maven::Metadata.filename) }
+
+    subject { service.send(:metadata_package_file_for, versionless_package_for_versions) }
+
+    it { is_expected.not_to eq(package_file_pending_destruction) }
+
+    context 'with packages_installable_package_files disabled' do
+      before do
+        stub_feature_flags(packages_installable_package_files: false)
+      end
+
+      it { is_expected.to eq(package_file_pending_destruction) }
+    end
+  end
 end

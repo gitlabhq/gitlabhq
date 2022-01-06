@@ -5,6 +5,7 @@ class Packages::Package < ApplicationRecord
   include Gitlab::SQL::Pattern
   include UsageStatistics
   include Gitlab::Utils::StrongMemoize
+  include Packages::Installable
 
   DISPLAYABLE_STATUSES = [:default, :error].freeze
   INSTALLABLE_STATUSES = [:default, :hidden].freeze
@@ -31,6 +32,9 @@ class Packages::Package < ApplicationRecord
 
   # package_files must be destroyed by ruby code in order to properly remove carrierwave uploads and update project statistics
   has_many :package_files, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+  # TODO: put the installable default scope on the :package_files association once the dependent: :destroy is removed
+  # See https://gitlab.com/gitlab-org/gitlab/-/issues/349191
+  has_many :installable_package_files, -> { installable }, class_name: 'Packages::PackageFile', inverse_of: :package
   has_many :dependency_links, inverse_of: :package, class_name: 'Packages::DependencyLink'
   has_many :tags, inverse_of: :package, class_name: 'Packages::Tag'
   has_one :conan_metadatum, inverse_of: :package, class_name: 'Packages::Conan::Metadatum'
@@ -100,9 +104,7 @@ class Packages::Package < ApplicationRecord
   scope :without_version_like, -> (version) { where.not(arel_table[:version].matches(version)) }
   scope :with_package_type, ->(package_type) { where(package_type: package_type) }
   scope :without_package_type, ->(package_type) { where.not(package_type: package_type) }
-  scope :with_status, ->(status) { where(status: status) }
   scope :displayable, -> { with_status(DISPLAYABLE_STATUSES) }
-  scope :installable, -> { with_status(INSTALLABLE_STATUSES) }
   scope :including_project_route, -> { includes(project: { namespace: :route }) }
   scope :including_tags, -> { includes(:tags) }
   scope :including_dependency_links, -> { includes(dependency_links: :dependency) }
@@ -131,7 +133,7 @@ class Packages::Package < ApplicationRecord
   scope :without_nuget_temporary_name, -> { where.not(name: Packages::Nuget::TEMPORARY_PACKAGE_NAME) }
 
   scope :has_version, -> { where.not(version: nil) }
-  scope :preload_files, -> { preload(:package_files) }
+  scope :preload_files, -> { Feature.enabled?(:packages_installable_package_files) ? preload(:installable_package_files) : preload(:package_files) }
   scope :preload_pipelines, -> { preload(pipelines: :user) }
   scope :last_of_each_version, -> { where(id: all.select('MAX(id) AS id').group(:version)) }
   scope :limit_recent, ->(limit) { order_created_desc.limit(limit) }

@@ -80,7 +80,13 @@ module Packages
       def package_files
         return unless @package
 
-        @package_files ||= @package.package_files.preload_conan_file_metadata
+        strong_memoize(:package_files) do
+          if Feature.enabled?(:packages_installable_package_files)
+            @package.installable_package_files.preload_conan_file_metadata
+          else
+            @package.package_files.preload_conan_file_metadata
+          end
+        end
       end
 
       def matching_reference?(package_file)

@@ -154,6 +154,7 @@ RSpec.describe API::Terraform::Modules::V1::Packages do
   end
 
   describe 'GET /api/v4/packages/terraform/modules/v1/:module_namespace/:module_name/:module_system/:module_version/file' do
+    let(:url) { api("/packages/terraform/modules/v1/#{group.path}/#{package.name}/#{package.version}/file?token=#{token}") }
     let(:tokens) do
       {
         personal_access_token: ::Gitlab::JWTToken.new.tap { |jwt| jwt['token'] = personal_access_token.id }.encoded,
@@ -202,7 +203,6 @@ RSpec.describe API::Terraform::Modules::V1::Packages do
 
       with_them do
         let(:token) { valid_token ? tokens[token_type] : 'invalid-token123' }
-        let(:url) { api("/packages/terraform/modules/v1/#{group.path}/#{package.name}/#{package.version}/file?token=#{token}") }
         let(:snowplow_gitlab_standard_context) { { project: project, user: user, namespace: project.namespace } }
 
         before do
@@ -210,6 +210,41 @@ RSpec.describe API::Terraform::Modules::V1::Packages do
         end
 
         it_behaves_like params[:shared_examples_name], params[:user_role], params[:expected_status], params[:member]
+      end
+    end
+
+    context 'with package file pending destruction' do
+      let_it_be(:package) { create(:package, package_type: :terraform_module, project: project, name: "module-555/pending-destruction", version: '1.0.0') }
+      let_it_be(:package_file_pending_destruction) { create(:package_file, :pending_destruction, :xml, package: package) }
+      let_it_be(:package_file) { create(:package_file, :terraform_module, package: package) }
+
+      let(:token) { tokens[:personal_access_token] }
+      let(:headers) { { 'Authorization' => "Bearer #{token}" } }
+
+      before do
+        project.add_maintainer(user)
+      end
+
+      it 'does not return them' do
+        subject
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response.body).not_to eq(package_file_pending_destruction.file.file.read)
+        expect(response.body).to eq(package_file.file.file.read)
+      end
+
+      context 'with packages_installable_package_files disabled' do
+        before do
+          stub_feature_flags(packages_installable_package_files: false)
+        end
+
+        it 'returns them' do
+          subject
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response.body).to eq(package_file_pending_destruction.file.file.read)
+          expect(response.body).not_to eq(package_file.file.file.read)
+        end
       end
     end
   end

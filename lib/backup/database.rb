@@ -61,7 +61,7 @@ module Backup
       report_success(success)
       progress.flush
 
-      raise Backup::Error, 'Backup failed' unless success
+      raise DatabaseBackupError.new(config, db_file_name) unless success
     end
 
     def restore

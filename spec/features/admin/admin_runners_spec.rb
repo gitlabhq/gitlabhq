@@ -449,19 +449,21 @@ RSpec.describe "Admin Runners" do
     end
   end
 
-  describe "Runner show page" do
+  describe "Runner edit page" do
     let(:runner) { create(:ci_runner) }
 
     before do
       @project1 = create(:project)
       @project2 = create(:project)
-      visit admin_runner_path(runner)
+      visit edit_admin_runner_path(runner)
+
+      wait_for_requests
     end
 
     describe 'runner page breadcrumbs' do
-      it 'contains the current runner token' do
+      it 'contains the current runner id and token' do
         page.within '[data-testid="breadcrumb-links"]' do
-          expect(page.find('h2')).to have_content(runner.short_sha)
+          expect(page.find('h2')).to have_content("##{runner.id} (#{runner.short_sha})")
         end
       end
     end
@@ -510,7 +512,7 @@ RSpec.describe "Admin Runners" do
         let(:runner) { create(:ci_runner, :project, projects: [@project1]) }
 
         before do
-          visit admin_runner_path(runner)
+          visit edit_admin_runner_path(runner)
         end
 
         it_behaves_like 'assignable runner'
@@ -520,7 +522,7 @@ RSpec.describe "Admin Runners" do
         let(:runner) { create(:ci_runner, :project, projects: [@project1], locked: true) }
 
         before do
-          visit admin_runner_path(runner)
+          visit edit_admin_runner_path(runner)
         end
 
         it_behaves_like 'assignable runner'
@@ -531,7 +533,7 @@ RSpec.describe "Admin Runners" do
 
         before do
           @project1.destroy!
-          visit admin_runner_path(runner)
+          visit edit_admin_runner_path(runner)
         end
 
         it_behaves_like 'assignable runner'
@@ -542,7 +544,7 @@ RSpec.describe "Admin Runners" do
       let(:runner) { create(:ci_runner, :project, projects: [@project1]) }
 
       before do
-        visit admin_runner_path(runner)
+        visit edit_admin_runner_path(runner)
       end
 
       it 'removed specific runner from project' do

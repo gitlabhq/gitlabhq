@@ -28,10 +28,15 @@ module API
         package = ::Packages::PackageFinder
           .new(user_project, params[:package_id]).execute
 
-        files = package.package_files
-                       .preload_pipelines
+        package_files = if Feature.enabled?(:packages_installable_package_files)
+                          package.installable_package_files
+                        else
+                          package.package_files
+                        end
 
-        present paginate(files), with: ::API::Entities::PackageFile
+        package_files = package_files.preload_pipelines
+
+        present paginate(package_files), with: ::API::Entities::PackageFile
       end
 
       desc 'Remove a package file' do
@@ -50,7 +55,13 @@ module API
 
         not_found! unless package
 
-        package_file = package.package_files.find_by_id(params[:package_file_id])
+        package_files = if Feature.enabled?(:packages_installable_package_files)
+                          package.installable_package_files
+                        else
+                          package.package_files
+                        end
+
+        package_file = package_files.find_by_id(params[:package_file_id])
 
         not_found! unless package_file
 

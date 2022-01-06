@@ -9,7 +9,11 @@ module Projects
 
       def show
         @package = project.packages.find(params[:id])
-        @package_files = @package.package_files.recent
+        @package_files = if Feature.enabled?(:packages_installable_package_files)
+                           @package.installable_package_files.recent
+                         else
+                           @package.package_files.recent
+                         end
       end
     end
   end

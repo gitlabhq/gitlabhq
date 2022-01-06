@@ -2,11 +2,16 @@
 class Packages::PackageFile < ApplicationRecord
   include UpdateProjectStatistics
   include FileStoreMounter
+  include Packages::Installable
+
+  INSTALLABLE_STATUSES = [:default].freeze
 
   delegate :project, :project_id, to: :package
   delegate :conan_file_type, to: :conan_file_metadatum
   delegate :file_type, :dsc?, :component, :architecture, :fields, to: :debian_file_metadatum, prefix: :debian
   delegate :channel, :metadata, to: :helm_file_metadatum, prefix: :helm
+
+  enum status: { default: 0, pending_destruction: 1 }
 
   belongs_to :package
 
@@ -48,9 +53,12 @@ class Packages::PackageFile < ApplicationRecord
   end
 
   scope :for_helm_with_channel, ->(project, channel) do
-    joins(:package).merge(project.packages.helm.installable)
-                   .joins(:helm_file_metadatum)
-                   .where(packages_helm_file_metadata: { channel: channel })
+    result = joins(:package)
+               .merge(project.packages.helm.installable)
+               .joins(:helm_file_metadatum)
+               .where(packages_helm_file_metadata: { channel: channel })
+    result = result.installable if Feature.enabled?(:packages_installable_package_files)
+    result
   end
 
   scope :with_conan_file_type, ->(file_type) do
@@ -94,14 +102,19 @@ class Packages::PackageFile < ApplicationRecord
   skip_callback :commit, :after, :remove_previously_stored_file, if: :execute_move_in_object_storage?
   after_commit :move_in_object_storage, if: :execute_move_in_object_storage?
 
-  # Returns the most recent package files for *each* of the given packages.
+  # Returns the most recent installable package file for *each* of the given packages.
   # The order is not guaranteed.
   def self.most_recent_for(packages, extra_join: nil, extra_where: nil)
     cte_name = :packages_cte
     cte = Gitlab::SQL::CTE.new(cte_name, packages.select(:id))
 
-    package_files = ::Packages::PackageFile.limit_recent(1)
-                      .where(arel_table[:package_id].eq(Arel.sql("#{cte_name}.id")))
+    package_files = if Feature.enabled?(:packages_installable_package_files)
+                      ::Packages::PackageFile.installable.limit_recent(1)
+                        .where(arel_table[:package_id].eq(Arel.sql("#{cte_name}.id")))
+                    else
+                      ::Packages::PackageFile.limit_recent(1)
+                        .where(arel_table[:package_id].eq(Arel.sql("#{cte_name}.id")))
+                    end
 
     package_files = package_files.joins(extra_join) if extra_join
     package_files = package_files.where(extra_where) if extra_where

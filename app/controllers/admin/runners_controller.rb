@@ -11,13 +11,21 @@ class Admin::RunnersController < Admin::ApplicationController
   end
 
   def show
+    # We will show runner details in a read-only view in
+    # future iterations. For now, this route will have a
+    # redirect until this new view is developed. See more:
+    # https://gitlab.com/gitlab-org/gitlab/-/issues/347856
+    redirect_to edit_admin_runner_path(runner)
+  end
+
+  def edit
     assign_builds_and_projects
   end
 
   def update
     if Ci::UpdateRunnerService.new(@runner).update(runner_params)
       respond_to do |format|
-        format.html { redirect_to admin_runner_path(@runner) }
+        format.html { redirect_to edit_admin_runner_path(@runner) }
       end
     else
       assign_builds_and_projects

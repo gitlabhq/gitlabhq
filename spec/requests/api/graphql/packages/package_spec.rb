@@ -73,6 +73,31 @@ RSpec.describe 'package details' do
     end
   end
 
+  context 'with package files pending destruction' do
+    let_it_be(:package_file) { create(:package_file, package: composer_package) }
+    let_it_be(:package_file_pending_destruction) { create(:package_file, :pending_destruction, package: composer_package) }
+
+    let(:package_file_ids) { graphql_data_at(:package, :package_files, :nodes).map { |node| node["id"] } }
+
+    it 'does not return them' do
+      subject
+
+      expect(package_file_ids).to contain_exactly(package_file.to_global_id.to_s)
+    end
+
+    context 'with packages_installable_package_files disabled' do
+      before do
+        stub_feature_flags(packages_installable_package_files: false)
+      end
+
+      it 'returns them' do
+        subject
+
+        expect(package_file_ids).to contain_exactly(package_file_pending_destruction.to_global_id.to_s, package_file.to_global_id.to_s)
+      end
+    end
+  end
+
   context 'with a batched query' do
     let_it_be(:conan_package) { create(:conan_package, project: project) }
 

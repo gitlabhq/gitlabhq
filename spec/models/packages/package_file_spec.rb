@@ -10,6 +10,8 @@ RSpec.describe Packages::PackageFile, type: :model do
   let_it_be(:package_file3) { create(:package_file, :xml, file_name: 'formatted.zip') }
   let_it_be(:debian_package) { create(:debian_package, project: project) }
 
+  it_behaves_like 'having unique enum values'
+
   describe 'relationships' do
     it { is_expected.to belong_to(:package) }
     it { is_expected.to have_one(:conan_file_metadatum) }
@@ -138,6 +140,24 @@ RSpec.describe Packages::PackageFile, type: :model do
     it 'returns the matching file only for Helm packages' do
       expect(described_class.for_helm_with_channel(project, channel)).to contain_exactly(helm_file2)
     end
+
+    context 'with package files pending destruction' do
+      let_it_be(:package_file_pending_destruction) { create(:helm_package_file, :pending_destruction, package: helm_package2, channel: channel) }
+
+      it 'does not return them' do
+        expect(described_class.for_helm_with_channel(project, channel)).to contain_exactly(helm_file2)
+      end
+
+      context 'with packages_installable_package_files disabled' do
+        before do
+          stub_feature_flags(packages_installable_package_files: false)
+        end
+
+        it 'returns them' do
+          expect(described_class.for_helm_with_channel(project, channel)).to contain_exactly(helm_file2, package_file_pending_destruction)
+        end
+      end
+    end
   end
 
   describe '.most_recent!' do
@@ -154,15 +174,17 @@ RSpec.describe Packages::PackageFile, type: :model do
 
     let_it_be(:package_file3_2) { create(:package_file, :npm, package: package3) }
     let_it_be(:package_file3_3) { create(:package_file, :npm, package: package3) }
+    let_it_be(:package_file3_4) { create(:package_file, :npm, :pending_destruction, package: package3) }
 
     let_it_be(:package_file4_2) { create(:package_file, :npm, package: package2) }
     let_it_be(:package_file4_3) { create(:package_file, :npm, package: package2) }
     let_it_be(:package_file4_4) { create(:package_file, :npm, package: package2) }
+    let_it_be(:package_file4_4) { create(:package_file, :npm, :pending_destruction, package: package2) }
 
-    let(:most_recent_package_file1) { package1.package_files.recent.first }
-    let(:most_recent_package_file2) { package2.package_files.recent.first }
-    let(:most_recent_package_file3) { package3.package_files.recent.first }
-    let(:most_recent_package_file4) { package4.package_files.recent.first }
+    let(:most_recent_package_file1) { package1.installable_package_files.recent.first }
+    let(:most_recent_package_file2) { package2.installable_package_files.recent.first }
+    let(:most_recent_package_file3) { package3.installable_package_files.recent.first }
+    let(:most_recent_package_file4) { package4.installable_package_files.recent.first }
 
     subject { described_class.most_recent_for(packages) }
 
@@ -201,6 +223,24 @@ RSpec.describe Packages::PackageFile, type: :model do
 
       it 'returns the most recent package for the selected channel' do
         expect(subject).to contain_exactly(helm_package_file2)
+      end
+
+      context 'with package files pending destruction' do
+        let_it_be(:package_file_pending_destruction) { create(:helm_package_file, :pending_destruction, package: helm_package, channel: 'alpha') }
+
+        it 'does not return them' do
+          expect(subject).to contain_exactly(helm_package_file2)
+        end
+
+        context 'with packages_installable_package_files disabled' do
+          before do
+            stub_feature_flags(packages_installable_package_files: false)
+          end
+
+          it 'returns them' do
+            expect(subject).to contain_exactly(package_file_pending_destruction)
+          end
+        end
       end
     end
   end
@@ -312,6 +352,27 @@ RSpec.describe Packages::PackageFile, type: :model do
           subject
         end
       end
+    end
+  end
+
+  context 'status scopes' do
+    let_it_be(:package) { create(:package) }
+    let_it_be(:default_package_file) { create(:package_file, package: package) }
+    let_it_be(:pending_destruction_package_file) { create(:package_file, :pending_destruction, package: package) }
+
+    describe '.installable' do
+      subject { package.installable_package_files }
+
+      it 'does not include non-displayable packages', :aggregate_failures do
+        is_expected.to include(default_package_file)
+        is_expected.not_to include(pending_destruction_package_file)
+      end
+    end
+
+    describe '.with_status' do
+      subject { described_class.with_status(:pending_destruction) }
+
+      it { is_expected.to contain_exactly(pending_destruction_package_file) }
     end
   end
 end

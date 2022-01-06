@@ -135,8 +135,12 @@ namespace :gitlab do
         if ENV["SKIP"] && ENV["SKIP"].include?("db")
           puts_time "[SKIPPED]".color(:cyan)
         else
-          Backup::Database.new(progress).dump
-          puts_time "done".color(:green)
+          begin
+            Backup::Database.new(progress).dump
+            puts_time "done".color(:green)
+          rescue Backup::DatabaseBackupError => e
+            progress.puts "#{e.message}"
+          end
         end
       end
 
@@ -168,8 +172,12 @@ namespace :gitlab do
         if ENV["SKIP"] && ENV["SKIP"].include?("builds")
           puts_time "[SKIPPED]".color(:cyan)
         else
-          Backup::Builds.new(progress).dump
-          puts_time "done".color(:green)
+          begin
+            Backup::Builds.new(progress).dump
+            puts_time "done".color(:green)
+          rescue Backup::FileBackupError => e
+            progress.puts "#{e.message}"
+          end
         end
       end
 
@@ -187,8 +195,12 @@ namespace :gitlab do
         if ENV["SKIP"] && ENV["SKIP"].include?("uploads")
           puts_time "[SKIPPED]".color(:cyan)
         else
-          Backup::Uploads.new(progress).dump
-          puts_time "done".color(:green)
+          begin
+            Backup::Uploads.new(progress).dump
+            puts_time "done".color(:green)
+          rescue Backup::FileBackupError => e
+            progress.puts "#{e.message}"
+          end
         end
       end
 
@@ -206,8 +218,12 @@ namespace :gitlab do
         if ENV["SKIP"] && ENV["SKIP"].include?("artifacts")
           puts_time "[SKIPPED]".color(:cyan)
         else
-          Backup::Artifacts.new(progress).dump
-          puts_time "done".color(:green)
+          begin
+            Backup::Artifacts.new(progress).dump
+            puts_time "done".color(:green)
+          rescue Backup::FileBackupError => e
+            progress.puts "#{e.message}"
+          end
         end
       end
 
@@ -225,8 +241,12 @@ namespace :gitlab do
         if ENV["SKIP"] && ENV["SKIP"].include?("pages")
           puts_time "[SKIPPED]".color(:cyan)
         else
-          Backup::Pages.new(progress).dump
-          puts_time "done".color(:green)
+          begin
+            Backup::Pages.new(progress).dump
+            puts_time "done".color(:green)
+          rescue Backup::FileBackupError => e
+            progress.puts "#{e.message}"
+          end
         end
       end
 
@@ -244,8 +264,12 @@ namespace :gitlab do
         if ENV["SKIP"] && ENV["SKIP"].include?("lfs")
           puts_time "[SKIPPED]".color(:cyan)
         else
-          Backup::Lfs.new(progress).dump
-          puts_time "done".color(:green)
+          begin
+            Backup::Lfs.new(progress).dump
+            puts_time "done".color(:green)
+          rescue Backup::FileBackupError => e
+            progress.puts "#{e.message}"
+          end
         end
       end
 
@@ -283,8 +307,12 @@ namespace :gitlab do
           if ENV["SKIP"] && ENV["SKIP"].include?("registry")
             puts_time "[SKIPPED]".color(:cyan)
           else
-            Backup::Registry.new(progress).dump
-            puts_time "done".color(:green)
+            begin
+              Backup::Registry.new(progress).dump
+              puts_time "done".color(:green)
+            rescue Backup::FileBackupError => e
+              progress.puts "#{e.message}"
+            end
           end
         else
           puts_time "[DISABLED]".color(:cyan)

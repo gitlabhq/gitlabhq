@@ -37,7 +37,7 @@ module Backup
 
         unless status == 0
           puts output
-          raise Backup::Error, 'Backup failed'
+          raise_custom_error
         end
 
         tar_cmd = [tar, exclude_dirs(:tar), %W[-C #{@backup_files_dir} -cf - .]].flatten
@@ -49,7 +49,7 @@ module Backup
       end
 
       unless pipeline_succeeded?(tar_status: status_list[0], gzip_status: status_list[1], output: output)
-        raise Backup::Error, "Backup operation failed: #{output}"
+        raise_custom_error
       end
     end
 
@@ -142,6 +142,10 @@ module Backup
           '--exclude=./' + s
         end
       end
+    end
+
+    def raise_custom_error
+      raise FileBackupError.new(app_files_dir, backup_tarball)
     end
   end
 end

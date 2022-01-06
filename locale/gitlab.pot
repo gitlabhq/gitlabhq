@@ -1160,6 +1160,9 @@ msgstr ""
 msgid "(max size 15 MB)"
 msgstr ""
 
+msgid "(optional)"
+msgstr ""
+
 msgid "(removed)"
 msgstr ""
 
@@ -37159,6 +37162,9 @@ msgid "To-do item successfully marked as done."
 msgstr ""
 
 msgid "Today"
+msgstr ""
+
+msgid "Todos|Are you looking for things to do? Take a look at %{strongStart}%{openIssuesLinkStart}open issues%{openIssuesLinkEnd}%{strongEnd}, contribute to %{strongStart}%{mergeRequestLinkStart}a merge request%{mergeRequestLinkEnd}%{mergeRequestLinkEnd}%{strongEnd}, or mention someone in a comment to automatically assign them a new to-do item."
 msgstr ""
 
 msgid "Todos|Filter by author"

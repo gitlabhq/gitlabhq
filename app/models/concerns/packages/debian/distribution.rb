@@ -96,6 +96,15 @@ module Packages
           architectures.pluck(:name).sort
         end
 
+        def package_files
+          if Feature.enabled?(:packages_installable_package_files)
+            ::Packages::PackageFile.installable
+                                   .for_package_ids(packages.select(:id))
+          else
+            ::Packages::PackageFile.for_package_ids(packages.select(:id))
+          end
+        end
+
         private
 
         def unique_codename_and_suite

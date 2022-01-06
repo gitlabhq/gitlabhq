@@ -15,7 +15,7 @@ module Packages
           id: @package.id,
           created_at: @package.created_at,
           name: name,
-          package_files: @package.package_files.map { |pf| build_package_file_view(pf) },
+          package_files: package_file_views,
           package_type: @package.package_type,
           status: @package.status,
           project_id: @package.project_id,
@@ -37,6 +37,16 @@ module Packages
       end
 
       private
+
+      def package_file_views
+        package_files = if Feature.enabled?(:packages_installable_package_files)
+                          @package.installable_package_files
+                        else
+                          @package.package_files
+                        end
+
+        package_files.map { |pf| build_package_file_view(pf) }
+      end
 
       def build_package_file_view(package_file)
         file_view = {

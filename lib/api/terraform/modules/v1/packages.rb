@@ -71,7 +71,11 @@ module API
 
             def package_file
               strong_memoize(:package_file) do
-                package.package_files.first
+                if Feature.enabled?(:packages_installable_package_files)
+                  package.installable_package_files.first
+                else
+                  package.package_files.first
+                end
               end
             end
           end

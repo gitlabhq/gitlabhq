@@ -22,6 +22,18 @@ ci_job_token_project_scope_links:
   - table: users
     column: added_by_id
     on_delete: async_nullify
+ci_daily_build_group_report_results:
+  - table: namespaces
+    column: group_id
+    on_delete: async_delete
+ci_pending_builds:
+  - table: namespaces
+    column: namespace_id
+    on_delete: async_delete
+ci_runner_namespaces:
+  - table: namespaces
+    column: namespace_id
+    on_delete: async_delete
 ci_namespace_mirrors:
   - table: namespaces
     column: namespace_id

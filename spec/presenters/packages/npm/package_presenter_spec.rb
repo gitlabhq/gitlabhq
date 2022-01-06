@@ -95,6 +95,26 @@ RSpec.describe ::Packages::Npm::PackagePresenter do
         end
       end
     end
+
+    context 'with package files pending destruction' do
+      let_it_be(:package_file_pending_destruction) { create(:package_file, :pending_destruction, package: package2, file_sha1: 'pending_destruction_sha1') }
+
+      let(:shasums) { subject.values.map { |v| v.dig(:dist, :shasum) } }
+
+      it 'does not return them' do
+        expect(shasums).not_to include(package_file_pending_destruction.file_sha1)
+      end
+
+      context 'with packages_installable_package_files disabled' do
+        before do
+          stub_feature_flags(packages_installable_package_files: false)
+        end
+
+        it 'returns them' do
+          expect(shasums).to include(package_file_pending_destruction.file_sha1)
+        end
+      end
+    end
   end
 
   describe '#dist_tags' do

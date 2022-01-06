@@ -27,12 +27,19 @@ module Packages
       end
 
       def archive_url_for(package)
+        package_files = if Feature.enabled?(:packages_installable_package_files)
+                          package.installable_package_files
+                        else
+                          package.package_files
+                        end
+
+        package_filename = package_files.with_format(NUGET_PACKAGE_FORMAT).last&.file_name
         path = api_v4_projects_packages_nuget_download_package_name_package_version_package_filename_path(
           {
             id: package.project_id,
             package_name: package.name,
             package_version: package.version,
-            package_filename: package.package_files.with_format(NUGET_PACKAGE_FORMAT).last&.file_name
+            package_filename: package_filename
           },
           true
         )

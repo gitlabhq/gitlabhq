@@ -82,7 +82,6 @@ export const getGroupOrganizationsQueryResponse = {
 export const createContactMutationResponse = {
   data: {
     customerRelationsContactCreate: {
-      __typeName: 'CustomerRelationsContactCreatePayload',
       contact: {
         __typename: 'CustomerRelationsContact',
         id: 'gid://gitlab/CustomerRelations::Contact/1',
@@ -102,7 +101,7 @@ export const createContactMutationErrorResponse = {
   data: {
     customerRelationsContactCreate: {
       contact: null,
-      errors: ['Phone is invalid.'],
+      errors: ['create contact is invalid.'],
     },
   },
 };
@@ -130,7 +129,7 @@ export const updateContactMutationErrorResponse = {
   data: {
     customerRelationsContactUpdate: {
       contact: null,
-      errors: ['Email is invalid.'],
+      errors: ['update contact is invalid.'],
     },
   },
 };
@@ -138,7 +137,6 @@ export const updateContactMutationErrorResponse = {
 export const createOrganizationMutationResponse = {
   data: {
     customerRelationsOrganizationCreate: {
-      __typeName: 'CustomerRelationsOrganizationCreatePayload',
       organization: {
         __typename: 'CustomerRelationsOrganization',
         id: 'gid://gitlab/CustomerRelations::Organization/2',
@@ -155,7 +153,7 @@ export const createOrganizationMutationErrorResponse = {
   data: {
     customerRelationsOrganizationCreate: {
       organization: null,
-      errors: ['Name cannot be blank.'],
+      errors: ['create organization is invalid.'],
     },
   },
 };

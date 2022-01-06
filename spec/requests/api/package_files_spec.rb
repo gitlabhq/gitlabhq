@@ -76,6 +76,30 @@ RSpec.describe API::PackageFiles do
           end
         end
       end
+
+      context 'with package files pending destruction' do
+        let!(:package_file_pending_destruction) { create(:package_file, :pending_destruction, package: package) }
+
+        let(:package_file_ids) { json_response.map { |e| e['id'] } }
+
+        it 'does not return them' do
+          get api(url, user)
+
+          expect(package_file_ids).not_to include(package_file_pending_destruction.id)
+        end
+
+        context 'with packages_installable_package_files disabled' do
+          before do
+            stub_feature_flags(packages_installable_package_files: false)
+          end
+
+          it 'returns them' do
+            get api(url, user)
+
+            expect(package_file_ids).to include(package_file_pending_destruction.id)
+          end
+        end
+      end
     end
   end
 
@@ -147,6 +171,32 @@ RSpec.describe API::PackageFiles do
           expect { api_request }.not_to change { package.package_files.count }
 
           expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+
+      context 'with package file pending destruction' do
+        let!(:package_file_id) { create(:package_file, :pending_destruction, package: package).id }
+
+        before do
+          project.add_maintainer(user)
+        end
+
+        it 'can not be accessed', :aggregate_failures do
+          expect { api_request }.not_to change { package.package_files.count }
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+
+        context 'with packages_installable_package_files disabled' do
+          before do
+            stub_feature_flags(packages_installable_package_files: false)
+          end
+
+          it 'can be accessed', :aggregate_failures do
+            expect { api_request }.to change { package.package_files.count }.by(-1)
+
+            expect(response).to have_gitlab_http_status(:no_content)
+          end
         end
       end
     end

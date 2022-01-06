@@ -16,19 +16,6 @@ module Backup
     end
   end
 
-  class RepositoryBackupError < Backup::Error
-    attr_reader :container, :backup_repos_path
-
-    def initialize(container, backup_repos_path)
-      @container = container
-      @backup_repos_path = backup_repos_path
-    end
-
-    def message
-      "Failed to create compressed file '#{backup_repos_path}' when trying to backup the following paths: '#{container.disk_path}'"
-    end
-  end
-
   class DatabaseBackupError < Backup::Error
     attr_reader :config, :db_file_name
 

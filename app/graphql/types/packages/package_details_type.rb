@@ -24,6 +24,14 @@ module Types
       def versions
         object.versions
       end
+
+      def package_files
+        if Feature.enabled?(:packages_installable_package_files)
+          object.installable_package_files
+        else
+          object.package_files
+        end
+      end
     end
   end
 end

@@ -221,6 +221,7 @@ RSpec.shared_examples 'handling nuget search requests' do |anonymous_requests_ex
   let_it_be(:packages_c) { create_list(:nuget_package, 5, name: 'Dummy.PackageC', project: project) }
   let_it_be(:package_d) { create(:nuget_package, name: 'Dummy.PackageD', version: '5.0.5-alpha', project: project) }
   let_it_be(:package_e) { create(:nuget_package, name: 'Foo.BarE', project: project) }
+
   let(:search_term) { 'uMmy' }
   let(:take) { 26 }
   let(:skip) { 0 }
