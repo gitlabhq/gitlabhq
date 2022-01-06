@@ -5,7 +5,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 import createFlash from '~/flash';
 
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
-import RunnerTypeBadge from '~/runner/components/runner_type_badge.vue';
+import RunnerHeader from '~/runner/components/runner_header.vue';
 import getRunnerQuery from '~/runner/graphql/get_runner.query.graphql';
 import RunnerDetailsApp from '~/runner/runner_details/runner_details_app.vue';
 import { captureException } from '~/runner/sentry_utils';
@@ -25,7 +25,7 @@ describe('RunnerDetailsApp', () => {
   let wrapper;
   let mockRunnerQuery;
 
-  const findRunnerTypeBadge = () => wrapper.findComponent(RunnerTypeBadge);
+  const findRunnerHeader = () => wrapper.findComponent(RunnerHeader);
 
   const createComponentWithApollo = ({ props = {}, mountFn = shallowMount } = {}) => {
     wrapper = mountFn(RunnerDetailsApp, {
@@ -40,7 +40,7 @@ describe('RunnerDetailsApp', () => {
     return waitForPromises();
   };
 
-  beforeEach(async () => {
+  beforeEach(() => {
     mockRunnerQuery = jest.fn().mockResolvedValue(runnerData);
   });
 
@@ -56,15 +56,16 @@ describe('RunnerDetailsApp', () => {
   });
 
   it('displays the runner id', async () => {
-    await createComponentWithApollo();
-
-    expect(wrapper.text()).toContain(`Runner #${mockRunnerId}`);
-  });
-
-  it('displays the runner type', async () => {
     await createComponentWithApollo({ mountFn: mount });
 
-    expect(findRunnerTypeBadge().text()).toBe('shared');
+    expect(findRunnerHeader().text()).toContain(`Runner #${mockRunnerId} created`);
+  });
+
+  it('displays the runner type and status', async () => {
+    await createComponentWithApollo({ mountFn: mount });
+
+    expect(findRunnerHeader().text()).toContain(`never contacted`);
+    expect(findRunnerHeader().text()).toContain(`shared`);
   });
 
   describe('When there is an error', () => {
@@ -73,14 +74,14 @@ describe('RunnerDetailsApp', () => {
       await createComponentWithApollo();
     });
 
-    it('error is reported to sentry', async () => {
+    it('error is reported to sentry', () => {
       expect(captureException).toHaveBeenCalledWith({
         error: new Error('Network error: Error!'),
         component: 'RunnerDetailsApp',
       });
     });
 
-    it('error is shown to the user', async () => {
+    it('error is shown to the user', () => {
       expect(createFlash).toHaveBeenCalled();
     });
   });

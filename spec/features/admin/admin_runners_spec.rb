@@ -468,9 +468,9 @@ RSpec.describe "Admin Runners" do
       end
     end
 
-    describe 'runner page title', :js do
-      it 'contains the runner id' do
-        expect(find('.page-title')).to have_content("Runner ##{runner.id}")
+    describe 'runner header', :js do
+      it 'contains the runner status, type and id' do
+        expect(page).to have_content("never contacted shared Runner ##{runner.id} created")
       end
     end
 

@@ -876,6 +876,9 @@ msgstr ""
 msgid "%{rotation} has been recalculated with the remaining participants. Please review the new setup for %{rotation}. It is recommended that you reach out to the current on-call responder to ensure continuity of on-call coverage."
 msgstr ""
 
+msgid "%{runner} created %{timeago}"
+msgstr ""
+
 msgid "%{scope} results for term '%{term}'"
 msgstr ""
 
@@ -30739,9 +30742,6 @@ msgid "Runners|The runner will be permanently deleted and no longer available fo
 msgstr ""
 
 msgid "Runners|This runner has never contacted this instance"
-msgstr ""
-
-msgid "Runners|This runner is associated with one or more projects."
 msgstr ""
 
 msgid "Runners|This runner is associated with specific projects."

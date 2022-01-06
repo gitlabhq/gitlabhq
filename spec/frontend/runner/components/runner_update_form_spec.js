@@ -127,7 +127,7 @@ describe('RunnerUpdateForm', () => {
     await submitFormAndWait();
 
     // Some fields are not submitted
-    const { ipAddress, runnerType, ...submitted } = mockRunner;
+    const { ipAddress, runnerType, createdAt, status, ...submitted } = mockRunner;
 
     expectToHaveSubmittedRunnerContaining(submitted);
   });
