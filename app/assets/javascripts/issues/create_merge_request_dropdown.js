@@ -3,13 +3,13 @@ import {
   init as initConfidentialMergeRequest,
   isConfidentialIssue,
   canCreateConfidentialMergeRequest,
-} from './confidential_merge_request';
-import confidentialMergeRequestState from './confidential_merge_request/state';
-import DropLab from './filtered_search/droplab/drop_lab_deprecated';
-import ISetter from './filtered_search/droplab/plugins/input_setter';
-import createFlash from './flash';
-import axios from './lib/utils/axios_utils';
-import { __, sprintf } from './locale';
+} from '~/confidential_merge_request';
+import confidentialMergeRequestState from '~/confidential_merge_request/state';
+import DropLab from '~/filtered_search/droplab/drop_lab_deprecated';
+import ISetter from '~/filtered_search/droplab/plugins/input_setter';
+import createFlash from '~/flash';
+import axios from '~/lib/utils/axios_utils';
+import { __, sprintf } from '~/locale';
 
 // Todo: Remove this when fixing issue in input_setter plugin
 const InputSetter = { ...ISetter };

@@ -14,7 +14,7 @@ msgstr ""
 "X-Crowdin-Language: ba\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
 "X-Crowdin-File-ID: 6\n"
-"PO-Revision-Date: 2021-12-17 18:12\n"
+"PO-Revision-Date: 2022-01-06 17:24\n"
 
 msgid " %{start} to %{end}"
 msgstr ""
@@ -486,7 +486,7 @@ msgstr ""
 msgid "%{description}- Sentry event: %{errorUrl}- First seen: %{firstSeen}- Last seen: %{lastSeen} %{countLabel}: %{count}%{userCountLabel}: %{userCount}"
 msgstr ""
 
-msgid "%{doc_link_start}Advanced search%{doc_link_end} is disabled since %{ref_elem} is not the default branch; %{default_branch_link_start}search on %{default_branch} instead%{default_branch_link_end}."
+msgid "%{doc_link_start}Advanced search%{doc_link_end} is disabled since %{ref_elem} is not the default branch. %{docs_link}"
 msgstr ""
 
 msgid "%{doc_link_start}Advanced search%{doc_link_end} is enabled."
@@ -1069,6 +1069,9 @@ msgid "(leave blank if you don't want to change it)"
 msgstr ""
 
 msgid "(max size 15 MB)"
+msgstr ""
+
+msgid "(optional)"
 msgstr ""
 
 msgid "(removed)"
@@ -1791,19 +1794,19 @@ msgstr ""
 msgid "AccountValidation|If you no longer wish to receive marketing emails from us,"
 msgstr ""
 
-msgid "AccountValidation|In order to use free pipeline minutes on shared runners, you'll need to validate your account with a credit or debit card. If you prefer not to provide one, you can run pipelines by bringing your own runners and disabling shared runners for your project."
+msgid "AccountValidation|In order to use free CI/CD minutes on shared runners, you'll need to validate your account using one of our verification options. If you prefer not to, you can run pipelines by bringing your own runners and disabling shared runners for your project."
 msgstr ""
 
 msgid "AccountValidation|Learn more."
 msgstr ""
 
-msgid "AccountValidation|Looks like you’ll need to validate your account to use free pipeline minutes"
-msgstr ""
-
-msgid "AccountValidation|This is required to discourage and reduce the abuse on GitLab infrastructure. %{strong_start}GitLab will not charge or store your card, it will only be used for validation.%{strong_end} %{learn_more_link}"
+msgid "AccountValidation|Looks like you’ll need to validate your account to use free CI/CD minutes"
 msgstr ""
 
 msgid "AccountValidation|Validate your account"
+msgstr ""
+
+msgid "AccountValidation|Verification is required to discourage and reduce the abuse on GitLab infrastructure. If you verify with a credit or debit card, %{strong_start}GitLab will not charge your card, it will only be used for validation.%{strong_end} %{learn_more_link}"
 msgstr ""
 
 msgid "AccountValidation|unsubscribe"
@@ -1834,6 +1837,9 @@ msgid "Active %{type} (%{token_length})"
 msgstr ""
 
 msgid "Active Sessions"
+msgstr ""
+
+msgid "Active chat names (%{count})"
 msgstr ""
 
 msgid "Activity"
@@ -2652,7 +2658,7 @@ msgstr ""
 msgid "AdminUsers|Delete user and contributions"
 msgstr ""
 
-msgid "AdminUsers|Export permissions as CSV"
+msgid "AdminUsers|Export permissions as CSV (max 100,000 users)"
 msgstr ""
 
 msgid "AdminUsers|External"
@@ -3757,6 +3763,9 @@ msgid "An error occurred while loading the Test Reports tab."
 msgstr ""
 
 msgid "An error occurred while loading the access tokens form, please try again."
+msgstr ""
+
+msgid "An error occurred while loading the blob controls."
 msgstr ""
 
 msgid "An error occurred while loading the data. Please try again."
@@ -5381,13 +5390,10 @@ msgstr ""
 msgid "Billings|Shared runners cannot be enabled until a valid credit card is on file."
 msgstr ""
 
-msgid "Billings|To use free pipeline minutes on shared runners, you’ll need to validate your account with a credit or debit card. If you prefer not to provide one, you can run pipelines by bringing your own runners and disabling shared runners for your project. This is required to discourage and reduce abuse on GitLab infrastructure. %{strongStart}GitLab will not charge your card, it will only be used for validation.%{strongEnd} %{linkStart}Learn more%{linkEnd}."
+msgid "Billings|To use free CI/CD minutes on shared runners, you’ll need to validate your account with a credit card. If you prefer not to provide one, you can run pipelines by bringing your own runners and disabling shared runners for your project. This is required to discourage and reduce abuse on GitLab infrastructure. %{strongStart}GitLab will not charge your card, it will only be used for validation.%{strongEnd} %{linkStart}Learn more%{linkEnd}."
 msgstr ""
 
-msgid "Billings|To use free pipeline minutes on shared runners, you’ll need to validate your account with a credit or debit card. This is required to discourage and reduce abuse on GitLab infrastructure. %{strongStart}GitLab will not charge your card, it will only be used for validation.%{strongEnd}"
-msgstr ""
-
-msgid "Billings|User successfully validated"
+msgid "Billings|To use free CI/CD minutes on shared runners, you’ll need to validate your account with a credit card. This is required to discourage and reduce abuse on GitLab infrastructure. %{strongStart}GitLab will not charge your card, it will only be used for validation.%{strongEnd}"
 msgstr ""
 
 msgid "Billings|User validation required"
@@ -5399,7 +5405,10 @@ msgstr ""
 msgid "Billings|Validate user account"
 msgstr ""
 
-msgid "Billings|Your user account has been successfully validated. You can now use free pipeline minutes."
+msgid "Billings|You'll now be able to take advantage of free CI/CD minutes on shared runners."
+msgstr ""
+
+msgid "Billings|Your account has been validated"
 msgstr ""
 
 msgid "Billing|An email address is only visible for users with public emails."
@@ -7193,6 +7202,9 @@ msgstr ""
 msgid "Clear due date"
 msgstr ""
 
+msgid "Clear health status"
+msgstr ""
+
 msgid "Clear recent searches"
 msgstr ""
 
@@ -7211,7 +7223,13 @@ msgstr ""
 msgid "Clear weight"
 msgstr ""
 
+msgid "Cleared health status."
+msgstr ""
+
 msgid "Cleared weight."
+msgstr ""
+
+msgid "Clears health status."
 msgstr ""
 
 msgid "Clears weight."
@@ -7367,6 +7385,9 @@ msgstr ""
 msgid "Cluster type must be specificed for Stages::ClusterEndpointInserter"
 msgstr ""
 
+msgid "ClusterAgents|%{name} successfully deleted"
+msgstr ""
+
 msgid "ClusterAgents|%{number} of %{total} agents"
 msgstr ""
 
@@ -7424,6 +7445,9 @@ msgstr ""
 msgid "ClusterAgents|An unknown error occurred. Please try again."
 msgstr ""
 
+msgid "ClusterAgents|Are you sure you want to delete this agent? You cannot undo this."
+msgstr ""
+
 msgid "ClusterAgents|Certificate"
 msgstr ""
 
@@ -7467,6 +7491,12 @@ msgid "ClusterAgents|Created by %{name} %{time}"
 msgstr ""
 
 msgid "ClusterAgents|Date created"
+msgstr ""
+
+msgid "ClusterAgents|Delete"
+msgstr ""
+
+msgid "ClusterAgents|Delete agent"
 msgstr ""
 
 msgid "ClusterAgents|Deprecated"
@@ -7579,6 +7609,9 @@ msgid_plural "ClusterAgents|There's no activity from the past %d days"
 msgstr[0] ""
 
 msgid "ClusterAgents|This agent has no tokens"
+msgstr ""
+
+msgid "ClusterAgents|To delete the agent, type %{name} to confirm:"
 msgstr ""
 
 msgid "ClusterAgents|To install a new agent, first add the agent's configuration file to this repository. %{linkStart}What's the agent's configuration file?%{linkEnd}"
@@ -9216,6 +9249,9 @@ msgstr ""
 msgid "ContainerRegistry|Note: Any policy update will result in a change to the scheduled run date and time"
 msgstr ""
 
+msgid "ContainerRegistry|Please try different search criteria"
+msgstr ""
+
 msgid "ContainerRegistry|Published %{timeInfo}"
 msgstr ""
 
@@ -9302,6 +9338,9 @@ msgid "ContainerRegistry|Tags with names that match this regex pattern are remov
 msgstr ""
 
 msgid "ContainerRegistry|The cleanup policy timed out before it could delete all tags. An administrator can %{adminLinkStart}manually run cleanup now%{adminLinkEnd} or you can wait for the cleanup policy to automatically run again. %{docLinkStart}More information%{docLinkEnd}"
+msgstr ""
+
+msgid "ContainerRegistry|The filter returned no results"
 msgstr ""
 
 msgid "ContainerRegistry|The image repository could not be found."
@@ -9535,6 +9574,9 @@ msgstr ""
 msgid "Copy evidence SHA"
 msgstr ""
 
+msgid "Copy failed. Please manually copy the value."
+msgstr ""
+
 msgid "Copy file contents"
 msgstr ""
 
@@ -9572,9 +9614,6 @@ msgid "Copy the code below to implement tracking in your application:"
 msgstr ""
 
 msgid "Copy this registration token."
-msgstr ""
-
-msgid "Copy this value"
 msgstr ""
 
 msgid "Copy to clipboard"
@@ -9946,6 +9985,9 @@ msgstr ""
 msgid "Create user"
 msgstr ""
 
+msgid "Create via merge request"
+msgstr ""
+
 msgid "Create wildcard: %{searchTerm}"
 msgstr ""
 
@@ -9988,9 +10030,6 @@ msgstr ""
 msgid "CreateValueStreamForm|Code stage start"
 msgstr ""
 
-msgid "CreateValueStreamForm|Create Value Stream"
-msgstr ""
-
 msgid "CreateValueStreamForm|Create from default template"
 msgstr ""
 
@@ -10000,13 +10039,16 @@ msgstr ""
 msgid "CreateValueStreamForm|Create new Value Stream"
 msgstr ""
 
+msgid "CreateValueStreamForm|Create value stream"
+msgstr ""
+
 msgid "CreateValueStreamForm|Default stages"
 msgstr ""
 
 msgid "CreateValueStreamForm|Default stages can only be hidden or re-ordered"
 msgstr ""
 
-msgid "CreateValueStreamForm|Edit Value Stream"
+msgid "CreateValueStreamForm|Edit value stream"
 msgstr ""
 
 msgid "CreateValueStreamForm|Editing stage"
@@ -12679,6 +12721,9 @@ msgstr ""
 msgid "Edit environment"
 msgstr ""
 
+msgid "Edit epics"
+msgstr ""
+
 msgid "Edit files in the editor and commit changes here"
 msgstr ""
 
@@ -13617,6 +13662,9 @@ msgid "Epics|Something went wrong while ordering item."
 msgstr ""
 
 msgid "Epics|Something went wrong while removing issue from epic."
+msgstr ""
+
+msgid "Epics|Something went wrong while updating epics."
 msgstr ""
 
 msgid "Epics|This epic and any containing child epics are confidential and should only be visible to team members with at least Reporter access."
@@ -15315,6 +15363,9 @@ msgstr ""
 msgid "Full"
 msgstr ""
 
+msgid "Full log"
+msgstr ""
+
 msgid "Full name"
 msgstr ""
 
@@ -16174,9 +16225,6 @@ msgid "GlobalSearch|Results updated. %{count} results available. Use the up and 
 msgstr ""
 
 msgid "GlobalSearch|Search GitLab"
-msgstr ""
-
-msgid "GlobalSearch|Search or jump to..."
 msgstr ""
 
 msgid "GlobalSearch|Search results are loading"
@@ -19410,9 +19458,6 @@ msgstr ""
 msgid "Is blocked by"
 msgstr ""
 
-msgid "Is this GitLab trial for your company?"
-msgstr ""
-
 msgid "Is using license seat:"
 msgstr ""
 
@@ -20618,6 +20663,12 @@ msgid "Latest pipeline for the most recent commit on this branch"
 msgstr ""
 
 msgid "Launch a ready-to-code development environment for your project."
+msgstr ""
+
+msgid "Layout|Fixed"
+msgstr ""
+
+msgid "Layout|Fluid"
 msgstr ""
 
 msgid "Lead Time"
@@ -22130,10 +22181,10 @@ msgstr ""
 msgid "MergeRequest|Can't show this merge request because the fork project was deleted."
 msgstr ""
 
-msgid "MergeRequest|Can't show this merge request because the source branch %{badge_start}%{source_branch}%{badge_end} is missing from project %{badge_start}%{project_path}%{badge_end}. Close this merge request or update the source branch."
+msgid "MergeRequest|Can't show this merge request because the source branch %{branch_badge} is missing from project %{path_badge}. Close this merge request or update the source branch."
 msgstr ""
 
-msgid "MergeRequest|Can't show this merge request because the target branch %{badge_start}%{target_branch}%{badge_end} is missing from project %{badge_start}%{project_path}%{badge_end}. Close this merge request or update the target branch."
+msgid "MergeRequest|Can't show this merge request because the target branch %{branch_badge} is missing from project %{path_badge}. Close this merge request or update the target branch."
 msgstr ""
 
 msgid "MergeRequest|Compare %{target} and %{source}"
@@ -22852,6 +22903,9 @@ msgstr ""
 msgid "More information."
 msgstr ""
 
+msgid "More options"
+msgstr ""
+
 msgid "More than %{number_commits_distance} commits different with %{default_branch}"
 msgstr ""
 
@@ -23052,6 +23106,39 @@ msgid "Navigate to the project to close the milestone."
 msgstr ""
 
 msgid "Navigation bar"
+msgstr ""
+
+msgid "NavigationTheme|Blue"
+msgstr ""
+
+msgid "NavigationTheme|Dark"
+msgstr ""
+
+msgid "NavigationTheme|Dark Mode (alpha)"
+msgstr ""
+
+msgid "NavigationTheme|Green"
+msgstr ""
+
+msgid "NavigationTheme|Indigo"
+msgstr ""
+
+msgid "NavigationTheme|Light"
+msgstr ""
+
+msgid "NavigationTheme|Light Blue"
+msgstr ""
+
+msgid "NavigationTheme|Light Green"
+msgstr ""
+
+msgid "NavigationTheme|Light Indigo"
+msgstr ""
+
+msgid "NavigationTheme|Light Red"
+msgstr ""
+
+msgid "NavigationTheme|Red"
 msgstr ""
 
 msgid "Nav|Help"
@@ -23265,6 +23352,9 @@ msgid "New"
 msgstr ""
 
 msgid "New %{issueType}"
+msgstr ""
+
+msgid "New %{type} in %{project}"
 msgstr ""
 
 msgid "New Application"
@@ -23911,6 +24001,9 @@ msgstr ""
 msgid "Note: Consider asking your GitLab administrator to configure %{github_integration_link}, which will allow login via GitHub and allow importing repositories without generating a Personal Access Token."
 msgstr ""
 
+msgid "Note: current forks will keep their visibility level."
+msgstr ""
+
 msgid "NoteForm|Note"
 msgstr ""
 
@@ -24326,6 +24419,12 @@ msgstr ""
 msgid "OnDemandScans|%{learnMoreLinkStart}Learn more about on-demand scans%{learnMoreLinkEnd}."
 msgstr ""
 
+msgid "OnDemandScans|Are you sure you want to delete this scan?"
+msgstr ""
+
+msgid "OnDemandScans|Could not delete saved scan. Please refresh the page, or try again later."
+msgstr ""
+
 msgid "OnDemandScans|Could not fetch on-demand scans. Please refresh the page, or try again later."
 msgstr ""
 
@@ -24344,10 +24443,16 @@ msgstr ""
 msgid "OnDemandScans|Create new site profile"
 msgstr ""
 
+msgid "OnDemandScans|Delete profile"
+msgstr ""
+
 msgid "OnDemandScans|Description (optional)"
 msgstr ""
 
 msgid "OnDemandScans|Edit on-demand DAST scan"
+msgstr ""
+
+msgid "OnDemandScans|Edit profile"
 msgstr ""
 
 msgid "OnDemandScans|For example: Tests the login page for SQL injections"
@@ -24392,10 +24497,16 @@ msgstr ""
 msgid "OnDemandScans|Repeats"
 msgstr ""
 
+msgid "OnDemandScans|Run scan"
+msgstr ""
+
 msgid "OnDemandScans|Save and run scan"
 msgstr ""
 
 msgid "OnDemandScans|Save scan"
+msgstr ""
+
+msgid "OnDemandScans|Scan library"
 msgstr ""
 
 msgid "OnDemandScans|Scan name"
@@ -24432,6 +24543,9 @@ msgid "OnDemandScans|There are no finished scans."
 msgstr ""
 
 msgid "OnDemandScans|There are no running scans."
+msgstr ""
+
+msgid "OnDemandScans|There are no saved scans."
 msgstr ""
 
 msgid "OnDemandScans|There are no scheduled scans."
@@ -24610,6 +24724,9 @@ msgid "Operation not allowed"
 msgstr ""
 
 msgid "Operation timed out. Check pod logs for %{pod_name} for more details."
+msgstr ""
+
+msgid "Operations"
 msgstr ""
 
 msgid "Operations Dashboard"
@@ -25447,6 +25564,9 @@ msgstr ""
 msgid "Period in seconds"
 msgstr ""
 
+msgid "Permalink"
+msgstr ""
+
 msgid "Permanently delete project"
 msgstr ""
 
@@ -25526,12 +25646,6 @@ msgid "Pipeline URL"
 msgstr ""
 
 msgid "Pipeline durations for the last 30 commits"
-msgstr ""
-
-msgid "Pipeline minutes quota"
-msgstr ""
-
-msgid "Pipeline minutes quota:"
 msgstr ""
 
 msgid "Pipeline ran in fork of project"
@@ -25763,6 +25877,9 @@ msgid "Pipelines|Child pipeline"
 msgstr ""
 
 msgid "Pipelines|Clear runner caches"
+msgstr ""
+
+msgid "Pipelines|Configuration validation currently not available."
 msgstr ""
 
 msgid "Pipelines|Copy trigger token"
@@ -26278,6 +26395,9 @@ msgstr ""
 msgid "Please select a file"
 msgstr ""
 
+msgid "Please select a group"
+msgstr ""
+
 msgid "Please select a group."
 msgstr ""
 
@@ -26471,9 +26591,6 @@ msgid "Preferences|Time preferences"
 msgstr ""
 
 msgid "Preferences|Use relative times"
-msgstr ""
-
-msgid "Press %{key}-C to copy"
 msgstr ""
 
 msgid "Prev"
@@ -26827,6 +26944,9 @@ msgstr ""
 msgid "Profiles|Invalid username"
 msgstr ""
 
+msgid "Profiles|Job title"
+msgstr ""
+
 msgid "Profiles|Key"
 msgstr ""
 
@@ -26882,6 +27002,12 @@ msgid "Profiles|Private contributions"
 msgstr ""
 
 msgid "Profiles|Profile was successfully updated"
+msgstr ""
+
+msgid "Profiles|Pronouns"
+msgstr ""
+
+msgid "Profiles|Pronunciation"
 msgstr ""
 
 msgid "Profiles|Public avatar"
@@ -26966,6 +27092,9 @@ msgid "Profiles|Username successfully changed"
 msgstr ""
 
 msgid "Profiles|Using emojis in names seems fun, but please try to set a status message instead"
+msgstr ""
+
+msgid "Profiles|Website url"
 msgstr ""
 
 msgid "Profiles|What's your status?"
@@ -27430,6 +27559,9 @@ msgstr ""
 msgid "ProjectSettings|%{link_start}What are description templates?%{link_end}"
 msgstr ""
 
+msgid "ProjectSettings|%{link_start}What variables can I use?%{link_end}"
+msgstr ""
+
 msgid "ProjectSettings|Additional settings that influence how and when merges are done."
 msgstr ""
 
@@ -27682,19 +27814,16 @@ msgstr ""
 msgid "ProjectSettings|Submit changes to be merged upstream."
 msgstr ""
 
-msgid "ProjectSettings|Supported variables:"
-msgstr ""
-
 msgid "ProjectSettings|Target project"
 msgstr ""
 
-msgid "ProjectSettings|The commit message used when applying merge request suggestions. %{link_start}Learn more about suggestions.%{link_end}"
+msgid "ProjectSettings|The commit message used when applying merge request suggestions."
 msgstr ""
 
-msgid "ProjectSettings|The commit message used when merging, if the merge method creates a merge commit. %{link_start}Learn more about syntax and variables.%{link_end}"
+msgid "ProjectSettings|The commit message used when merging, if the merge method creates a merge commit."
 msgstr ""
 
-msgid "ProjectSettings|The commit message used when squashing commits. %{link_start}Learn more about syntax and variables.%{link_end}"
+msgid "ProjectSettings|The commit message used when squashing commits."
 msgstr ""
 
 msgid "ProjectSettings|The default target project for merge requests created in this fork project."
@@ -27848,6 +27977,15 @@ msgid "ProjectTemplates|Tencent Serverless Framework/NextjsSSR"
 msgstr ""
 
 msgid "ProjectTemplates|iOS (Swift)"
+msgstr ""
+
+msgid "ProjectView|Activity"
+msgstr ""
+
+msgid "ProjectView|Files and Readme (default)"
+msgstr ""
+
+msgid "ProjectView|Readme"
 msgstr ""
 
 msgid "Projects"
@@ -28351,6 +28489,9 @@ msgstr ""
 msgid "ProtectedBranch|Branch"
 msgstr ""
 
+msgid "ProtectedBranch|Branch will be writable for developers. Are you sure?"
+msgstr ""
+
 msgid "ProtectedBranch|Branch:"
 msgstr ""
 
@@ -28394,6 +28535,9 @@ msgid "ProtectedBranch|Toggle allowed to force push"
 msgstr ""
 
 msgid "ProtectedBranch|Toggle code owner approval"
+msgstr ""
+
+msgid "ProtectedBranch|Unprotect"
 msgstr ""
 
 msgid "ProtectedBranch|What are protected branches?"
@@ -28693,6 +28837,12 @@ msgstr ""
 msgid "Quickly and easily edit multiple files in your project."
 msgstr ""
 
+msgid "Quota of CI/CD minutes"
+msgstr ""
+
+msgid "Quota of CI/CD minutes:"
+msgstr ""
+
 msgid "README"
 msgstr ""
 
@@ -28922,10 +29072,19 @@ msgstr ""
 msgid "RegistrationFeatures|Enable Service Ping and register for this feature."
 msgstr ""
 
-msgid "RegistrationFeatures|Read more about the %{linkStart}Registration Features Program%{linkEnd}."
+msgid "RegistrationFeatures|Read more about the %{linkStart}%{label}%{linkEnd}."
 msgstr ""
 
-msgid "RegistrationFeatures|Want to use this feature for free?"
+msgid "RegistrationFeatures|Registration Features Program"
+msgstr ""
+
+msgid "RegistrationFeatures|Want to %{feature_title} for free?"
+msgstr ""
+
+msgid "RegistrationFeatures|send emails to users"
+msgstr ""
+
+msgid "RegistrationFeatures|use this feature"
 msgstr ""
 
 msgid "RegistrationVerification|Are you sure you want to skip this step?"
@@ -30254,10 +30413,13 @@ msgstr ""
 msgid "Runners|Name"
 msgstr ""
 
+msgid "Runners|Never contacted"
+msgstr ""
+
 msgid "Runners|New registration token generated!"
 msgstr ""
 
-msgid "Runners|New runner, has not connected yet"
+msgid "Runners|New runner, has not contacted yet"
 msgstr ""
 
 msgid "Runners|No contact from this runner in over 3 months"
@@ -30267,9 +30429,6 @@ msgid "Runners|No recent contact from this runner; last contact was %{timeAgo}"
 msgstr ""
 
 msgid "Runners|Not available to run jobs"
-msgstr ""
-
-msgid "Runners|Not connected"
 msgstr ""
 
 msgid "Runners|Offline"
@@ -30386,7 +30545,7 @@ msgstr ""
 msgid "Runners|The runner will be permanently deleted and no longer available for projects or groups in the instance. Are you sure you want to continue?"
 msgstr ""
 
-msgid "Runners|This runner has never connected to this instance"
+msgid "Runners|This runner has never contacted this instance"
 msgstr ""
 
 msgid "Runners|This runner is associated with one or more projects."
@@ -30455,7 +30614,7 @@ msgstr ""
 msgid "Runners|locked"
 msgstr ""
 
-msgid "Runners|not connected"
+msgid "Runners|never contacted"
 msgstr ""
 
 msgid "Runners|offline"
@@ -30737,6 +30896,9 @@ msgstr ""
 msgid "Search forks"
 msgstr ""
 
+msgid "Search groups"
+msgstr ""
+
 msgid "Search iterations"
 msgstr ""
 
@@ -30756,9 +30918,6 @@ msgid "Search or filter results..."
 msgstr ""
 
 msgid "Search or filter results…"
-msgstr ""
-
-msgid "Search or jump to..."
 msgstr ""
 
 msgid "Search project"
@@ -31028,6 +31187,9 @@ msgid "SecurityConfiguration|Enable %{feature}"
 msgstr ""
 
 msgid "SecurityConfiguration|Enable Auto DevOps"
+msgstr ""
+
+msgid "SecurityConfiguration|Enable security training to help your developers learn how to fix vulnerabilities. Developers can view security training from selected educational providers, relevant to the detected vulnerability."
 msgstr ""
 
 msgid "SecurityConfiguration|Enabled"
@@ -31444,6 +31606,9 @@ msgstr ""
 msgid "SecurityReports|Severity"
 msgstr ""
 
+msgid "SecurityReports|Software and container dependency survey"
+msgstr ""
+
 msgid "SecurityReports|Sometimes a scanner can't determine a finding's severity. Those findings may still be a potential source of risk though. Please review these manually."
 msgstr ""
 
@@ -31688,6 +31853,9 @@ msgid "Select project and zone to choose machine type"
 msgstr ""
 
 msgid "Select project to choose zone"
+msgstr ""
+
+msgid "Select project to create %{type}"
 msgstr ""
 
 msgid "Select project to create issue"
@@ -32041,6 +32209,12 @@ msgstr ""
 msgid "Set due date"
 msgstr ""
 
+msgid "Set health status"
+msgstr ""
+
+msgid "Set health status to %{health_status}."
+msgstr ""
+
 msgid "Set iteration"
 msgstr ""
 
@@ -32195,6 +32369,9 @@ msgid "SetStatusModal|Your status resets on %{date}."
 msgstr ""
 
 msgid "Sets %{epic_ref} as parent epic."
+msgstr ""
+
+msgid "Sets health status to %{health_status}."
 msgstr ""
 
 msgid "Sets target branch to %{branch_name}."
@@ -33340,9 +33517,6 @@ msgstr ""
 msgid "Start your free trial"
 msgstr ""
 
-msgid "Start your trial"
-msgstr ""
-
 msgid "Started"
 msgstr ""
 
@@ -34180,6 +34354,24 @@ msgstr ""
 msgid "Syntax is incorrect."
 msgstr ""
 
+msgid "SynthaxHighlightingTheme|Dark"
+msgstr ""
+
+msgid "SynthaxHighlightingTheme|Light"
+msgstr ""
+
+msgid "SynthaxHighlightingTheme|Monokai"
+msgstr ""
+
+msgid "SynthaxHighlightingTheme|None"
+msgstr ""
+
+msgid "SynthaxHighlightingTheme|Solarized Dark"
+msgstr ""
+
+msgid "SynthaxHighlightingTheme|Solarized Light"
+msgstr ""
+
 msgid "System"
 msgstr ""
 
@@ -34446,7 +34638,21 @@ msgid "Terraform|%{number} Terraform report was generated in your pipelines"
 msgid_plural "Terraform|%{number} Terraform reports were generated in your pipelines"
 msgstr[0] ""
 
+msgid "Terraform|%{strong_start}%{number}%{strong_end} Terraform report failed to generate"
+msgid_plural "Terraform|%{strong_start}%{number}%{strong_end} Terraform reports failed to generate"
+msgstr[0] ""
+
+msgid "Terraform|%{strong_start}%{number}%{strong_end} Terraform report was generated in your pipelines"
+msgid_plural "Terraform|%{strong_start}%{number}%{strong_end} Terraform reports were generated in your pipelines"
+msgstr[0] ""
+
 msgid "Terraform|%{user} updated %{timeAgo}"
+msgstr ""
+
+msgid "Terraform|A Terraform report failed to generate."
+msgstr ""
+
+msgid "Terraform|A Terraform report was generated in your pipelines."
 msgstr ""
 
 msgid "Terraform|A report failed to generate."
@@ -34479,6 +34685,9 @@ msgstr ""
 msgid "Terraform|Download JSON"
 msgstr ""
 
+msgid "Terraform|Failed to load Terraform reports"
+msgstr ""
+
 msgid "Terraform|Generating the report caused an error."
 msgstr ""
 
@@ -34489,6 +34698,9 @@ msgid "Terraform|How to use GitLab-managed Terraform State?"
 msgstr ""
 
 msgid "Terraform|Job status"
+msgstr ""
+
+msgid "Terraform|Loading Terraform reports..."
 msgstr ""
 
 msgid "Terraform|Lock"
@@ -34527,10 +34739,19 @@ msgstr ""
 msgid "Terraform|Terraform init command"
 msgstr ""
 
+msgid "Terraform|Terraform reports"
+msgstr ""
+
 msgid "Terraform|The job %{name} failed to generate a report."
 msgstr ""
 
 msgid "Terraform|The job %{name} generated a report."
+msgstr ""
+
+msgid "Terraform|The job %{strong_start}%{name}%{strong_end} failed to generate a report."
+msgstr ""
+
+msgid "Terraform|The job %{strong_start}%{name}%{strong_end} generated a report."
 msgstr ""
 
 msgid "Terraform|To get access to this terraform state from your local computer, run the following command at the command line. The first line requires a personal access token with API read and write access. %{linkStart}How do I create a personal access token?%{linkEnd}."
@@ -35020,7 +35241,7 @@ msgstr ""
 msgid "The maximum file size is %{size}."
 msgstr ""
 
-msgid "The maximum number of pipeline minutes that a group can use on shared runners per month. 0 for unlimited."
+msgid "The maximum number of CI/CD minutes on shared runners that a group can use each month. 0 for unlimited."
 msgstr ""
 
 msgid "The maximum number of tags that a single worker accepts for cleanup. If the number of tags goes above this limit, the list of tags to delete is truncated to this number. To remove this limit, set it to 0."
@@ -36726,6 +36947,39 @@ msgstr ""
 msgid "Today"
 msgstr ""
 
+msgid "Todos|Are you looking for things to do? Take a look at %{strongStart}%{openIssuesLinkStart}open issues%{openIssuesLinkEnd}%{strongEnd}, contribute to %{strongStart}%{mergeRequestLinkStart}a merge request%{mergeRequestLinkEnd}%{mergeRequestLinkEnd}%{strongEnd}, or mention someone in a comment to automatically assign them a new to-do item."
+msgstr ""
+
+msgid "Todos|Filter by author"
+msgstr ""
+
+msgid "Todos|Filter by group"
+msgstr ""
+
+msgid "Todos|Filter by project"
+msgstr ""
+
+msgid "Todos|It's how you always know what to work on next."
+msgstr ""
+
+msgid "Todos|Mark all as done"
+msgstr ""
+
+msgid "Todos|Nothing is on your to-do list. Nice work!"
+msgstr ""
+
+msgid "Todos|Undo mark all as done"
+msgstr ""
+
+msgid "Todos|When an issue or merge request is assigned to you, or when you receive a %{strongStart}@mention%{strongEnd} in a comment, this automatically triggers a new item in your To-Do List."
+msgstr ""
+
+msgid "Todos|You're all done!"
+msgstr ""
+
+msgid "Todos|Your To-Do List shows what to work on next"
+msgstr ""
+
 msgid "Toggle GitLab Next"
 msgstr ""
 
@@ -37024,15 +37278,6 @@ msgstr ""
 msgid "Trial|GitLab Ultimate trial (optional)"
 msgstr ""
 
-msgid "Trial|Hi%{salutation}, your GitLab Ultimate trial lasts for 30 days, but you can keep your free GitLab account forever. We just need some additional information about %{company} to activate your trial."
-msgstr ""
-
-msgid "Trial|How many employees will use Gitlab?"
-msgstr ""
-
-msgid "Trial|How many users will be evaluating the trial?"
-msgstr ""
-
 msgid "Trial|Last name"
 msgstr ""
 
@@ -37055,9 +37300,6 @@ msgid "Trial|We will activate your trial on your group after you complete this s
 msgstr ""
 
 msgid "Trial|Your GitLab Ultimate trial lasts for 30 days, but you can keep your free GitLab account forever. We just need some additional information to activate your trial."
-msgstr ""
-
-msgid "Trial|your company"
 msgstr ""
 
 msgid "Trigger"
@@ -38578,16 +38820,16 @@ msgstr ""
 msgid "Verification status"
 msgstr ""
 
-msgid "VerificationReminder|Pipeline failing? To keep GitLab spam and abuse free we ask that you verify your identity with a valid payment method."
+msgid "VerificationReminder|Pipeline failing? To keep GitLab spam and abuse free we ask that you verify your identity."
 msgstr ""
 
-msgid "VerificationReminder|Until then, free pipeline minutes on shared runners are unavailable. %{validateLinkStart}Validate your account%{validateLinkEnd} or %{docsLinkStart}use your own runners%{docsLinkEnd}."
+msgid "VerificationReminder|Until then, shared runners will be unavailable. %{validateLinkStart}Validate your account%{validateLinkEnd} or %{docsLinkStart}use your own runners%{docsLinkEnd}."
 msgstr ""
 
-msgid "VerificationReminder|Your account has been validated."
+msgid "VerificationReminder|Your account has been validated"
 msgstr ""
 
-msgid "VerificationReminder|You’ll now be able to take advantage of free pipeline minutes on shared runners."
+msgid "VerificationReminder|You’ll now be able to take advantage of free CI/CD minutes on shared runners."
 msgstr ""
 
 msgid "Verified"
@@ -38864,6 +39106,9 @@ msgid "VulnerabilityManagement|%{statusStart}Dismissed%{statusEnd} %{timeago} by
 msgstr ""
 
 msgid "VulnerabilityManagement|%{statusStart}Resolved%{statusEnd} %{timeago} by %{user}"
+msgstr ""
+
+msgid "VulnerabilityManagement|(optional) Include the solution to the vulnerability if available."
 msgstr ""
 
 msgid "VulnerabilityManagement|A removed or remediated vulnerability"
@@ -39202,6 +39447,9 @@ msgstr ""
 msgid "We'll use this to help surface the right features and information to you."
 msgstr ""
 
+msgid "We're experiencing difficulties and this tab content is currently unavailable."
+msgstr ""
+
 msgid "We've found no vulnerabilities"
 msgstr ""
 
@@ -39442,6 +39690,9 @@ msgstr ""
 msgid "Welcome, %{name}!"
 msgstr ""
 
+msgid "What are CI/CD minutes?"
+msgstr ""
+
 msgid "What are group audit events?"
 msgstr ""
 
@@ -39449,9 +39700,6 @@ msgid "What are instance audit events?"
 msgstr ""
 
 msgid "What are project audit events?"
-msgstr ""
-
-msgid "What are shared runner pipeline minutes?"
 msgstr ""
 
 msgid "What are you searching for?"

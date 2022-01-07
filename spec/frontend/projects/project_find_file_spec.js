@@ -3,7 +3,7 @@ import $ from 'jquery';
 import { TEST_HOST } from 'helpers/test_constants';
 import { sanitize } from '~/lib/dompurify';
 import axios from '~/lib/utils/axios_utils';
-import ProjectFindFile from '~/project_find_file';
+import ProjectFindFile from '~/projects/project_find_file';
 
 jest.mock('~/lib/dompurify', () => ({
   addHook: jest.fn(),

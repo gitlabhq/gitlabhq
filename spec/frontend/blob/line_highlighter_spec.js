@@ -1,8 +1,8 @@
 /* eslint-disable no-return-assign, no-new, no-underscore-dangle */
 
 import $ from 'jquery';
+import LineHighlighter from '~/blob/line_highlighter';
 import * as utils from '~/lib/utils/common_utils';
-import LineHighlighter from '~/line_highlighter';
 
 describe('LineHighlighter', () => {
   const testContext = {};

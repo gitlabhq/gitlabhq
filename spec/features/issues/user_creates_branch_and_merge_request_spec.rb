@@ -217,7 +217,7 @@ RSpec.describe 'User creates branch and merge request on issue page', :js do
 
       # Javascript debounces AJAX calls.
       # So we have to wait until AJAX requests are started.
-      # Details are in app/assets/javascripts/create_merge_request_dropdown.js
+      # Details are in app/assets/javascripts/issues/create_merge_request_dropdown.js
       # this.refDebounce = _.debounce(...)
       sleep 0.5
 

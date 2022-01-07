@@ -1,6 +1,6 @@
-import GroupsList from '~/groups_list';
-import Landing from '~/landing';
-import initGroupsList from '../../../groups';
+import initGroupsList from '~/groups';
+import GroupsList from '~/groups/groups_list';
+import Landing from '~/groups/landing';
 
 function exploreGroups() {
   new GroupsList(); // eslint-disable-line no-new

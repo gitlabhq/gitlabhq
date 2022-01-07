@@ -1,4 +1,4 @@
-import { visitUrl } from './lib/utils/url_utility';
+import { visitUrl } from '~/lib/utils/url_utility';
 
 export default function projectImport() {
   setTimeout(() => {

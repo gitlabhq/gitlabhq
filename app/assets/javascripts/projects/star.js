@@ -1,8 +1,8 @@
 import $ from 'jquery';
-import createFlash from './flash';
-import axios from './lib/utils/axios_utils';
-import { spriteIcon } from './lib/utils/common_utils';
-import { __, s__ } from './locale';
+import createFlash from '~/flash';
+import axios from '~/lib/utils/axios_utils';
+import { spriteIcon } from '~/lib/utils/common_utils';
+import { __, s__ } from '~/locale';
 
 export default class Star {
   constructor(container = '.project-home-panel') {

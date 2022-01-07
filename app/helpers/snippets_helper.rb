@@ -26,11 +26,8 @@ module SnippetsHelper
     return unless attrs = snippet_badge_attributes(snippet)
 
     icon_name, text = attrs
-    tag.span(class: %w[badge badge-gray]) do
-      concat(sprite_icon(icon_name, size: 14, css_class: 'gl-vertical-align-middle'))
-      concat(' ')
-      concat(text)
-    end
+
+    gl_badge_tag(text, icon: icon_name)
   end
 
   def snippet_badge_attributes(snippet)

@@ -1,4 +1,4 @@
-import FilterableList from './filterable_list';
+import FilterableList from '~/filterable_list';
 
 /**
  * Makes search request for groups when user types a value in the search input.

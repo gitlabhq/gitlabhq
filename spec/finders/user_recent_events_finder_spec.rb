@@ -77,23 +77,23 @@ RSpec.describe UserRecentEventsFinder do
 
         events = described_class.new(current_user, [project_owner, second_user], nil, params).execute
 
-        expect(events).to eq([private_event, internal_event, public_event])
+        expect(events).to contain_exactly(private_event, internal_event, public_event)
       end
 
       context 'with pagination params' do
         using RSpec::Parameterized::TableSyntax
 
         where(:limit, :offset, :ordered_expected_events) do
-          nil | nil   | lazy { [private_event, internal_event, public_event, private_event_second_user, internal_event_second_user, public_event_second_user] }
-          2   | nil   | lazy { [private_event, internal_event] }
-          nil | 4     | lazy { [internal_event_second_user, public_event_second_user] }
-          2   | 2     | lazy { [public_event, private_event_second_user] }
+          nil | nil   | lazy { [public_event_second_user, internal_event_second_user, private_event_second_user, public_event, internal_event, private_event] }
+          2   | nil   | lazy { [public_event_second_user, internal_event_second_user] }
+          nil | 4     | lazy { [internal_event, private_event] }
+          2   | 2     | lazy { [private_event_second_user, public_event] }
         end
 
         with_them do
           let(:params) { { limit: limit, offset: offset }.compact }
 
-          it 'returns paginated events sorted by id' do
+          it 'returns paginated events sorted by id (DESC)' do
             events = described_class.new(current_user, [project_owner, second_user], nil, params).execute
 
             expect(events).to eq(ordered_expected_events)

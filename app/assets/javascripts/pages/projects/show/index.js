@@ -1,16 +1,16 @@
 import initTree from 'ee_else_ce/repository';
 import Activities from '~/activities';
 import ShortcutsNavigation from '~/behaviors/shortcuts/shortcuts_navigation';
-import { BlobViewer } from '~/blob/viewer/index';
+import { BlobViewer } from '~/blob/viewer';
 import { initUploadForm } from '~/blob_edit/blob_bundle';
 import initInviteMembersModal from '~/invite_members/init_invite_members_modal';
 import initInviteMembersTrigger from '~/invite_members/init_invite_members_trigger';
 import leaveByUrl from '~/namespaces/leave_by_url';
 import initVueNotificationsDropdown from '~/notifications';
+import Star from '~/projects/star';
 import { initUploadFileTrigger } from '~/projects/upload_file';
 import initReadMore from '~/read_more';
 import UserCallout from '~/user_callout';
-import Star from '../../../star';
 
 initReadMore();
 new Star(); // eslint-disable-line no-new

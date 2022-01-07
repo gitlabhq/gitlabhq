@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe SnippetsHelper do
   include Gitlab::Routing
   include IconsHelper
+  include BadgesHelper
 
   let_it_be(:public_personal_snippet) { create(:personal_snippet, :public, :repository) }
   let_it_be(:public_project_snippet) { create(:project_snippet, :public, :repository) }
@@ -72,7 +73,7 @@ RSpec.describe SnippetsHelper do
       let(:visibility) { :private }
 
       it 'returns the snippet badge' do
-        expect(subject).to eq "<span class=\"badge badge-gray\">#{sprite_icon('lock', size: 14, css_class: 'gl-vertical-align-middle')} private</span>"
+        expect(subject).to eq gl_badge_tag('private', icon: 'lock')
       end
     end
 

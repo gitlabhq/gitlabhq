@@ -1,5 +1,5 @@
 import Cookies from 'js-cookie';
-import Landing from '~/landing';
+import Landing from '~/groups/landing';
 
 describe('Landing', () => {
   const test = {};
