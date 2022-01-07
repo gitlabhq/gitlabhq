@@ -466,7 +466,7 @@ class User < ApplicationRecord
   scope :dormant, -> { with_state(:active).human_or_service_user.where('last_activity_on <= ?', MINIMUM_INACTIVE_DAYS.day.ago.to_date) }
   scope :with_no_activity, -> { with_state(:active).human_or_service_user.where(last_activity_on: nil) }
   scope :by_provider_and_extern_uid, ->(provider, extern_uid) { joins(:identities).merge(Identity.with_extern_uid(provider, extern_uid)) }
-  scope :get_ids_by_username, -> (username) { where(username: username).pluck(:id) }
+  scope :by_ids_or_usernames, -> (ids, usernames) { where(username: usernames).or(where(id: ids)) }
 
   strip_attributes! :name
 
@@ -835,6 +835,10 @@ class User < ApplicationRecord
 
     def single_user
       User.non_internal.first if single_user?
+    end
+
+    def get_ids_by_ids_or_usernames(ids, usernames)
+      by_ids_or_usernames(ids, usernames).pluck(:id)
     end
   end
 

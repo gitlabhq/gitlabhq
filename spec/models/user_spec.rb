@@ -6458,13 +6458,43 @@ RSpec.describe User do
     specify { is_expected.to contain_exactly(developer_group2) }
   end
 
-  describe '.get_ids_by_username' do
+  describe '.get_ids_by_ids_or_usernames' do
     let(:user_name) { 'user_name' }
     let!(:user) { create(:user, username: user_name) }
     let(:user_id) { user.id }
 
     it 'returns the id of each record matching username' do
-      expect(described_class.get_ids_by_username([user_name])).to match_array([user_id])
+      expect(described_class.get_ids_by_ids_or_usernames(nil, [user_name])).to match_array([user_id])
+    end
+
+    it 'returns the id of each record matching user id' do
+      expect(described_class.get_ids_by_ids_or_usernames([user_id], nil)).to match_array([user_id])
+    end
+
+    it 'return the id for all records matching either user id or user name' do
+      new_user_id = create(:user).id
+
+      expect(described_class.get_ids_by_ids_or_usernames([new_user_id], [user_name])).to match_array([user_id, new_user_id])
+    end
+  end
+
+  describe '.by_ids_or_usernames' do
+    let(:user_name) { 'user_name' }
+    let!(:user) { create(:user, username: user_name) }
+    let(:user_id) { user.id }
+
+    it 'returns matching records based on username' do
+      expect(described_class.by_ids_or_usernames(nil, [user_name])).to match_array([user])
+    end
+
+    it 'returns matching records based on id' do
+      expect(described_class.by_ids_or_usernames([user_id], nil)).to match_array([user])
+    end
+
+    it 'returns matching records based on both username and id' do
+      new_user = create(:user)
+
+      expect(described_class.by_ids_or_usernames([new_user.id], [user_name])).to match_array([user, new_user])
     end
   end
 

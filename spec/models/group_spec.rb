@@ -680,6 +680,26 @@ RSpec.describe Group do
         expect(result).to match_array([internal_group])
       end
     end
+
+    describe 'by_ids_or_paths' do
+      let(:group_path) { 'group_path' }
+      let!(:group) { create(:group, path: group_path) }
+      let(:group_id) { group.id }
+
+      it 'returns matching records based on paths' do
+        expect(described_class.by_ids_or_paths(nil, [group_path])).to match_array([group])
+      end
+
+      it 'returns matching records based on ids' do
+        expect(described_class.by_ids_or_paths([group_id], nil)).to match_array([group])
+      end
+
+      it 'returns matching records based on both paths and ids' do
+        new_group = create(:group)
+
+        expect(described_class.by_ids_or_paths([new_group.id], [group_path])).to match_array([group, new_group])
+      end
+    end
   end
 
   describe '#to_reference' do
@@ -2801,6 +2821,25 @@ RSpec.describe Group do
       create(:crm_settings, enabled: true, group: group)
 
       expect(group.crm_enabled?).to be_truthy
+    end
+  end
+  describe '.get_ids_by_ids_or_paths' do
+    let(:group_path) { 'group_path' }
+    let!(:group) { create(:group, path: group_path) }
+    let(:group_id) { group.id }
+
+    it 'returns ids matching records based on paths' do
+      expect(described_class.get_ids_by_ids_or_paths(nil, [group_path])).to match_array([group_id])
+    end
+
+    it 'returns ids matching records based on ids' do
+      expect(described_class.get_ids_by_ids_or_paths([group_id], nil)).to match_array([group_id])
+    end
+
+    it 'returns ids matching records based on both paths and ids' do
+      new_group_id = create(:group).id
+
+      expect(described_class.get_ids_by_ids_or_paths([new_group_id], [group_path])).to match_array([group_id, new_group_id])
     end
   end
 end

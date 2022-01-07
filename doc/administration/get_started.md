@@ -1,5 +1,7 @@
 ---
 info: For assistance with this TAM Onboarding page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments-to-other-projects-and-subjects.
+stage: none
+group: unassigned
 ---
 
 # Get started administering GitLab **(FREE)**

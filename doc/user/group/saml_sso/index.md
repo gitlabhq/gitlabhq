@@ -72,10 +72,10 @@ To create users with the correct information for improved [user access and manag
 the user's details must be passed to GitLab as attributes in the SAML assertion. At a minimum, the user's email address
 must be specified as an attribute named `email` or `mail`.
 
-GitLab.com supports the following attributes:
+You can configure the following attributes with GitLab.com Group SAML:
 
 - `username` or `nickname`. We recommend you configure only one of these.
-- The [attributes also available](../../../integration/saml.md#assertions) to self-managed GitLab instances.
+- The [attributes available](../../../integration/saml.md#assertions) to self-managed GitLab instances.
 
 ### Metadata configuration
 
@@ -167,10 +167,11 @@ objectID mapping and the [SCIM documentation should be followed](scim_setup.md#a
 | Identity provider single sign-on URL | Login URL                                  |
 | Certificate fingerprint              | Thumbprint                                 |
 
-We recommend:
+The recommended attributes and claims settings are:
 
 - **Unique User Identifier (Name identifier)** set to `user.objectID`.
 - **nameid-format** set to persistent.
+- Additional claims set to [supported attributes](#user-attributes).
 
 If using [Group Sync](#group-sync), customize the name of the group claim to match the required attribute.
 

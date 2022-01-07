@@ -48,41 +48,16 @@ RSpec.describe Gitlab::ImportExport::Group::RelationTreeRestorer do
 
   subject { relation_tree_restorer.restore }
 
-  shared_examples 'logging of relations creation' do
-    context 'when log_import_export_relation_creation feature flag is enabled' do
-      before do
-        stub_feature_flags(log_import_export_relation_creation: group)
-      end
-
-      it 'logs top-level relation creation' do
-        expect(shared.logger)
-          .to receive(:info)
-          .with(hash_including(message: '[Project/Group Import] Created new object relation'))
-          .at_least(:once)
-
-        subject
-      end
-    end
-
-    context 'when log_import_export_relation_creation feature flag is disabled' do
-      before do
-        stub_feature_flags(log_import_export_relation_creation: false)
-      end
-
-      it 'does not log top-level relation creation' do
-        expect(shared.logger)
-          .to receive(:info)
-          .with(hash_including(message: '[Project/Group Import] Created new object relation'))
-          .never
-
-        subject
-      end
-    end
-  end
-
   it 'restores group tree' do
     expect(subject).to eq(true)
   end
 
-  include_examples 'logging of relations creation'
+  it 'logs top-level relation creation' do
+    expect(shared.logger)
+      .to receive(:info)
+      .with(hash_including(message: '[Project/Group Import] Created new object relation'))
+      .at_least(:once)
+
+    subject
+  end
 end

@@ -5,8 +5,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 disqus_identifier: 'https://docs.gitlab.com/ee/articles/laravel_with_gitlab_and_envoy/index.html'
 author: Mehran Rasulian
 author_gitlab: mehranrasulian
-type: tutorial
-date: 2017-08-31
 ---
 
 <!-- vale off -->

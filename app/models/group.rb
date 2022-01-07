@@ -123,6 +123,8 @@ class Group < Namespace
 
   scope :by_id, ->(groups) { where(id: groups) }
 
+  scope :by_ids_or_paths, -> (ids, paths) { by_id(ids).or(where(path: paths)) }
+
   scope :for_authorized_group_members, -> (user_ids) do
     joins(:group_members)
       .where(members: { user_id: user_ids })
@@ -212,6 +214,10 @@ class Group < Namespace
         .pluck(:id)
 
       Set.new(group_ids)
+    end
+
+    def get_ids_by_ids_or_paths(ids, paths)
+      by_ids_or_paths(ids, paths).pluck(:id)
     end
 
     private

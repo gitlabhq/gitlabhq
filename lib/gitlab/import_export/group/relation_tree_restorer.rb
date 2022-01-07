@@ -264,14 +264,12 @@ module Gitlab
           @relation_reader.sort_ci_pipelines_by_id
         end
 
-        # Enable logging of each top-level relation creation when Importing
-        # into a Group if feature flag is enabled
+        # Enable logging of each top-level relation creation when Importing into a Group
         def log_relation_creation(importable, relation_key, relation_object)
           root_ancestor_group = importable.try(:root_ancestor)
 
           return unless root_ancestor_group
           return unless root_ancestor_group.instance_of?(::Group)
-          return unless Feature.enabled?(:log_import_export_relation_creation, root_ancestor_group)
 
           @shared.logger.info(
             importable_type: importable.class.to_s,
