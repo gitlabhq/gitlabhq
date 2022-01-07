@@ -104,20 +104,18 @@ To trigger a pipeline from another project's webhook, use a webhook URL like the
 for push and tag events:
 
 ```plaintext
-https://gitlab.example.com/api/v4/projects/9/ref/main/trigger/pipeline?token=TOKEN
+https://gitlab.example.com/api/v4/projects/<project_id>/ref/<ref_name>/trigger/pipeline?token=<token>
 ```
 
 Replace:
 
 - The URL with `https://gitlab.com` or the URL of your instance.
-- `<token>` with your trigger token.
-- `<ref_name>` with a branch or tag name, like `main`.
 - `<project_id>` with your project ID, like `123456`. The project ID is displayed
   at the top of the project's landing page.
-
-The `ref` in the URL takes precedence over the `ref` in the webhook payload. The
-payload `ref` is the branch that fired the trigger in the source repository.
-You must URL-encode `ref` if it contains slashes.
+- `<ref_name>` with a branch or tag name, like `main`. This value takes precedence over the `ref_name` in the webhook payload.
+  The payload's `ref` is the branch that fired the trigger in the source repository.
+  You must URL-encode the `ref_name` if it contains slashes.
+- `<token>` with your trigger token.
 
 #### Use a webhook payload
 

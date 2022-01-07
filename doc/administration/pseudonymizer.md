@@ -4,7 +4,12 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Pseudonymizer **(ULTIMATE)**
+# Pseudonymizer (DEPRECATED) **(ULTIMATE)**
+
+> [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/219952) in GitLab 14.7.
+
+WARNING:
+This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/219952) in GitLab 14.7.
 
 Your GitLab database contains sensitive information. To protect sensitive information
 when you run analytics on your database, you can use the Pseudonymizer service, which:

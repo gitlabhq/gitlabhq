@@ -82,7 +82,7 @@ RSpec.describe Gitlab::Usage::Metrics::Instrumentations::DatabaseMetric do
         end.new(time_frame: 'all')
       end
 
-      it 'calculates a correct result' do
+      it 'calculates a correct result', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/349762' do
         expect(subject.value).to be_within(Gitlab::Database::PostgresHll::BatchDistinctCounter::ERROR_RATE).percent_of(3)
       end
 

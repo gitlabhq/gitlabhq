@@ -19,7 +19,7 @@ RSpec.describe 'projects/commits/_commit.html.haml' do
       allow(commit).to receive(:different_committer?).and_return(true)
       allow(commit).to receive(:committer).and_return(committer)
 
-      render partial: template, locals: {
+      render partial: template, formats: :html, locals: {
         project: project,
         ref: ref,
         commit: commit

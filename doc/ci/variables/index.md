@@ -554,18 +554,45 @@ export GITLAB_USER_ID="42"
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/22638) in GitLab 13.0.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/217834) in GitLab 13.1.
 
-You can pass environment variables from one job to another job in a later stage.
+You can pass environment variables from one job to another job in a later stage
+through variable inheritance.
 These variables cannot be used as CI/CD variables to configure a pipeline, but
 they can be used in job scripts.
 
 1. In the job script, save the variable as a `.env` file.
+   - The format of the file must be one variable definition per line.
+   - Each defined line must be of the form `VARIABLE_NAME=ANY VALUE HERE`.
+   - Values can be wrapped in quotes, but cannot contain newline characters.
 1. Save the `.env` file as an [`artifacts:reports:dotenv`](../yaml/artifacts_reports.md#artifactsreportsdotenv)
 artifact.
-1. Set a job in a later stage to receive the artifact by using the [`dependencies`](../yaml/index.md#dependencies)
-   or the [`needs`](../yaml/index.md#needs) keywords.
-1. The later job can then [use the variable in scripts](#use-cicd-variables-in-job-scripts).
+1. Jobs in later stages can then [use the variable in scripts](#use-cicd-variables-in-job-scripts).
 
-For example, with the [`dependencies`](../yaml/index.md#dependencies) keyword:
+Inherited variables [take precedence](#cicd-variable-precedence) over
+certain types of new variable definitions such as job defined variables.
+
+```yaml
+build:
+  stage: build
+  script:
+    - echo "BUILD_VARIABLE=value_from_build_job" >> build.env
+  artifacts:
+    reports:
+      dotenv: build.env
+
+deploy:
+  stage: deploy
+  variables:
+    BUILD_VARIABLE: value_from_deploy_job
+  script:
+    - echo "$BUILD_VARIABLE"  # Output is: 'value_from_build_job' due to precedence
+```
+
+The [`dependencies`](../yaml/index.md#dependencies) or
+[`needs`](../yaml/index.md#needs) keywords can be used to control
+which jobs receive inherited values.
+
+To have no inherited dotenv environment variables, pass an empty `dependencies` or
+`needs` list, or pass [`needs:artifacts`](../yaml/index.md#needsartifacts) as `false`
 
 ```yaml
 build:
@@ -576,33 +603,45 @@ build:
     reports:
       dotenv: build.env
 
-deploy:
+deploy_one:
   stage: deploy
   script:
     - echo "$BUILD_VERSION"  # Output is: 'hello'
   dependencies:
     - build
-```
 
-For example, with the [`needs:artifacts`](../yaml/index.md#needsartifacts) keyword:
-
-```yaml
-build:
-  stage: build
+deploy_two:
+  stage: deploy
   script:
-    - echo "BUILD_VERSION=hello" >> build.env
-  artifacts:
-    reports:
-      dotenv: build.env
+    - echo "$BUILD_VERSION"  # Output is empty
+  dependencies: []
 
-deploy:
+deploy_three:
   stage: deploy
   script:
     - echo "$BUILD_VERSION"  # Output is: 'hello'
   needs:
-    - job: build
-      artifacts: true
+    - build
+
+deploy_four:
+  stage: deploy
+  script:
+    - echo "$BUILD_VERSION"  # Output is: 'hello'
+  needs:
+    job: build
+    artifacts: true
+
+deploy_five:
+  stage: deploy
+  script:
+    - echo "$BUILD_VERSION"  # Output is empty
+  needs:
+    job: build
+    artifacts: false
 ```
+
+[Multi-project pipelines](../pipelines/multi_project_pipelines.md#pass-cicd-variables-to-a-downstream-pipeline-by-using-variable-inheritance)
+can also inherit variables from their upstream pipelines.
 
 ## CI/CD variable precedence
 
