@@ -70,6 +70,13 @@ exports[`Design management design index page renders design index 1`] = `
      
     <!---->
      
+    <design-note-signed-out-stub
+      class="gl-mb-4"
+      isadddiscussion="true"
+      registerpath=""
+      signinpath=""
+    />
+     
     <design-discussion-stub
       data-testid="unresolved-discussion"
       designid="gid::/gitlab/Design/1"
@@ -77,6 +84,8 @@ exports[`Design management design index page renders design index 1`] = `
       discussionwithopenform=""
       markdownpreviewpath="/project-path/preview_markdown?target_type=Issue"
       noteableid="gid::/gitlab/Design/1"
+      registerpath=""
+      signinpath=""
     />
      
     <gl-button-stub
@@ -126,6 +135,8 @@ exports[`Design management design index page renders design index 1`] = `
         discussionwithopenform=""
         markdownpreviewpath="/project-path/preview_markdown?target_type=Issue"
         noteableid="gid::/gitlab/Design/1"
+        registerpath=""
+        signinpath=""
       />
     </gl-collapse-stub>
      
@@ -231,14 +242,14 @@ exports[`Design management design index page with error GlAlert is rendered in c
       participants="[object Object]"
     />
      
-    <h2
-      class="new-discussion-disclaimer gl-font-base gl-m-0 gl-mb-4"
-      data-testid="new-discussion-disclaimer"
-    >
-      
-    Click the image where you'd like to start a new discussion
-  
-    </h2>
+    <!---->
+     
+    <design-note-signed-out-stub
+      class="gl-mb-4"
+      isadddiscussion="true"
+      registerpath=""
+      signinpath=""
+    />
       
     <!---->
      

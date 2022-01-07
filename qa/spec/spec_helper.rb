@@ -12,7 +12,7 @@ QaDeprecationToolkitEnv.configure!
 
 Knapsack::Adapters::RSpecAdapter.bind if QA::Runtime::Env.knapsack?
 
-QA::Runtime::Browser.configure!
+QA::Runtime::Browser.configure! unless QA::Runtime::Env.dry_run
 QA::Runtime::AllureReport.configure!
 QA::Runtime::Scenario.from_env(QA::Runtime::Env.runtime_scenario_attributes)
 

@@ -21,11 +21,10 @@ you can use webhooks to:
   every time an issue is created for a specific project or group in GitLab.
 - [Automatically assign labels to merge requests](https://about.gitlab.com/blog/2016/08/19/applying-gitlab-labels-automatically/).
 
-You can configure your GitLab project or [group](#group-webhooks) to trigger
-a percent-encoded webhook URL when an event occurs. For example, when new code
-is pushed or a new issue is created.
-The webhook listens for specific [events](#events) and
-GitLab sends a POST request with data to the webhook URL.
+You can configure your GitLab project or [group](#group-webhooks) to trigger a
+[percent-encoded](https://developer.mozilla.org/en-US/docs/Glossary/percent-encoding) webhook URL
+when an event occurs. For example, when new code is pushed or a new issue is created. The webhook
+listens for specific [events](#events) and GitLab sends a POST request with data to the webhook URL.
 
 Usually, you set up your own [webhook receiver](#create-an-example-webhook-receiver)
 to receive information from GitLab and send it to another app, according to your requirements.
@@ -55,7 +54,7 @@ You can configure a webhook for a group or a project.
 
 1. In your project or group, on the left sidebar, select **Settings > Webhooks**.
 1. In **URL**, enter the URL of the webhook endpoint.
-   The URL must be percentage-encoded, if necessary.
+   The URL must be percent-encoded if it contains one or more special characters.
 1. In **Secret token**, enter the [secret token](#validate-payloads-by-using-a-secret-token) to validate payloads.
 1. In the **Trigger** section, select the [events](webhook_events.md) to trigger the webhook.
 1. Optional. Clear the **Enable SSL verification** checkbox to disable [SSL verification](#verify-an-ssl-certificate).

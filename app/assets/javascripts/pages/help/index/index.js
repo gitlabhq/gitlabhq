@@ -1,6 +1,5 @@
-import $ from 'jquery';
 import docs from '~/docs/docs_bundle';
-import VersionCheckImage from '~/version_check_image';
+import initGitlabVersionCheck from '~/gitlab_version_check';
 
 docs();
-VersionCheckImage.bindErrorEvent($('img.js-version-status-badge'));
+initGitlabVersionCheck();

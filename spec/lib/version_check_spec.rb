@@ -3,12 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe VersionCheck do
-  describe '.image_url' do
-    it 'returns the correct URL' do
-      expect(described_class.image_url).to match(%r{\A#{Regexp.escape(described_class.host)}/check\.svg\?gitlab_info=\w+})
-    end
-  end
-
   describe '.url' do
     it 'returns the correct URL' do
       expect(described_class.url).to match(%r{\A#{Regexp.escape(described_class.host)}/check\.json\?gitlab_info=\w+})

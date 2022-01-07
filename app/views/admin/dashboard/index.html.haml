@@ -118,9 +118,9 @@
         .gl-card-body
           %h4
             = s_('AdminArea|Components')
-            - if Gitlab::CurrentSettings.version_check_enabled
+            - if show_version_check?
               .float-right
-                = version_status_badge
+                .js-gitlab-version-check{ data: { "size": "lg" } }
                 = link_to(sprite_icon('question'), "https://gitlab.com/gitlab-org/gitlab/-/blob/master/CHANGELOG.md", class: 'gl-ml-2', target: '_blank', rel: 'noopener noreferrer')
           %p
             = link_to _('GitLab'), general_admin_application_settings_path

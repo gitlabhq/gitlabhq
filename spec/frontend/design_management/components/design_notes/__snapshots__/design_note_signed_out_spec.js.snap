@@ -1,0 +1,41 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DesignNoteSignedOut renders message containing register and sign-in links while user wants to reply to a discussion 1`] = `
+<div
+  class="disabled-comment text-center"
+>
+  Please 
+  <gl-link-stub
+    href="/users/sign_up?redirect_to_referer=yes"
+  >
+    register
+  </gl-link-stub>
+   or 
+  <gl-link-stub
+    href="/users/sign_in?redirect_to_referer=yes"
+  >
+    sign in
+  </gl-link-stub>
+   to reply.
+</div>
+`;
+
+exports[`DesignNoteSignedOut renders message containing register and sign-in links while user wants to start a new discussion 1`] = `
+<div
+  class="disabled-comment text-center"
+>
+  Please 
+  <gl-link-stub
+    href="/users/sign_up?redirect_to_referer=yes"
+  >
+    register
+  </gl-link-stub>
+   or 
+  <gl-link-stub
+    href="/users/sign_in?redirect_to_referer=yes"
+  >
+    sign in
+  </gl-link-stub>
+   to start a new discussion.
+</div>
+`;

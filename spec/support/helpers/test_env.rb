@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'parallel'
+require_relative 'gitaly_setup'
 
 module TestEnv
   extend self
@@ -93,7 +94,6 @@ module TestEnv
   }.freeze
 
   TMP_TEST_PATH = Rails.root.join('tmp', 'tests').freeze
-  REPOS_STORAGE = 'default'
   SECOND_STORAGE_PATH = Rails.root.join('tmp', 'tests', 'second_storage')
   SETUP_METHODS = %i[setup_gitaly setup_gitlab_shell setup_workhorse setup_factory_repo setup_forked_repo].freeze
 
@@ -128,7 +128,7 @@ module TestEnv
 
   # Can be overriden
   def post_init
-    start_gitaly(gitaly_dir)
+    start_gitaly
   end
 
   # Clean /tmp/tests
@@ -142,7 +142,7 @@ module TestEnv
     end
 
     FileUtils.mkdir_p(
-      Gitlab::GitalyClient::StorageSettings.allow_disk_access { TestEnv.repos_path }
+      Gitlab::GitalyClient::StorageSettings.allow_disk_access { GitalySetup.repos_path }
     )
     FileUtils.mkdir_p(SECOND_STORAGE_PATH)
     FileUtils.mkdir_p(backup_path)
@@ -158,109 +158,26 @@ module TestEnv
 
   def setup_gitaly
     component_timed_setup('Gitaly',
-      install_dir: gitaly_dir,
+      install_dir: GitalySetup.gitaly_dir,
       version: Gitlab::GitalyClient.expected_server_version,
-      task: "gitlab:gitaly:test_install",
-      task_args: [gitaly_dir, repos_path, gitaly_url].compact) do
-        Gitlab::SetupHelper::Gitaly.create_configuration(
-          gitaly_dir,
-          { 'default' => repos_path },
-          force: true,
-          options: {
-            prometheus_listen_addr: 'localhost:9236'
-          }
-        )
-        Gitlab::SetupHelper::Gitaly.create_configuration(
-          gitaly_dir,
-          { 'default' => repos_path },
-          force: true,
-          options: {
-            internal_socket_dir: File.join(gitaly_dir, "internal_gitaly2"),
-            gitaly_socket: "gitaly2.socket",
-            config_filename: "gitaly2.config.toml"
-          }
-        )
-        Gitlab::SetupHelper::Praefect.create_configuration(gitaly_dir, { 'praefect' => repos_path }, force: true)
-      end
+      task: "gitlab:gitaly:clone",
+      fresh_install: ENV.key?('FORCE_GITALY_INSTALL'),
+      task_args: [GitalySetup.gitaly_dir, GitalySetup.repos_path, gitaly_url].compact) do
+      GitalySetup.setup_gitaly
+    end
   end
 
-  def gitaly_socket_path
-    Gitlab::GitalyClient.address('default').sub(/\Aunix:/, '')
-  end
-
-  def gitaly_dir
-    socket_path = gitaly_socket_path
-    socket_path = File.expand_path(gitaly_socket_path) if expand_path?
-
-    File.dirname(socket_path)
-  end
-
-  # Linux fails with "bind: invalid argument" if a UNIX socket path exceeds 108 characters:
-  # https://github.com/golang/go/issues/6895. We use absolute paths in CI to ensure
-  # that changes in the current working directory don't affect GRPC reconnections.
-  def expand_path?
-    !!ENV['CI']
-  end
-
-  def start_gitaly(gitaly_dir)
+  def start_gitaly
     if ci?
       # Gitaly has been spawned outside this process already
       return
     end
 
-    spawn_script = Rails.root.join('scripts/gitaly-test-spawn').to_s
-    Bundler.with_original_env do
-      unless system(spawn_script)
-        message = 'gitaly spawn failed'
-        message += " (try `rm -rf #{gitaly_dir}` ?)" unless ci?
-        raise message
-      end
-    end
-
-    gitaly_pid = Integer(File.read(TMP_TEST_PATH.join('gitaly.pid')))
-    gitaly2_pid = Integer(File.read(TMP_TEST_PATH.join('gitaly2.pid')))
-    praefect_pid = Integer(File.read(TMP_TEST_PATH.join('praefect.pid')))
-
-    Kernel.at_exit do
-      pids = [gitaly_pid, gitaly2_pid, praefect_pid]
-      pids.each { |pid| stop(pid) }
-    end
-
-    wait('gitaly')
-    wait('praefect')
-  end
-
-  def stop(pid)
-    Process.kill('KILL', pid)
-  rescue Errno::ESRCH
-    # The process can already be gone if the test run was INTerrupted.
+    GitalySetup.spawn_gitaly
   end
 
   def gitaly_url
     ENV.fetch('GITALY_REPO_URL', nil)
-  end
-
-  def socket_path(service)
-    TMP_TEST_PATH.join('gitaly', "#{service}.socket").to_s
-  end
-
-  def praefect_socket_path
-    "unix:" + socket_path(:praefect)
-  end
-
-  def wait(service)
-    sleep_time = 10
-    sleep_interval = 0.1
-    socket = socket_path(service)
-
-    Integer(sleep_time / sleep_interval).times do
-      Socket.unix(socket)
-      return
-    rescue StandardError
-      sleep sleep_interval
-    end
-
-    raise "could not connect to #{service} at #{socket.inspect} after #{sleep_time} seconds"
   end
 
   # Feature specs are run through Workhorse
@@ -378,8 +295,7 @@ module TestEnv
 
   def rm_storage_dir(storage, dir)
     Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-      repos_path = Gitlab.config.repositories.storages[storage].legacy_disk_path
-      target_repo_refs_path = File.join(repos_path, dir)
+      target_repo_refs_path = File.join(GitalySetup.repos_path(storage), dir)
       FileUtils.remove_dir(target_repo_refs_path)
     end
   rescue Errno::ENOENT
@@ -387,8 +303,7 @@ module TestEnv
 
   def storage_dir_exists?(storage, dir)
     Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-      repos_path = Gitlab.config.repositories.storages[storage].legacy_disk_path
-      File.exist?(File.join(repos_path, dir))
+      File.exist?(File.join(GitalySetup.repos_path(storage), dir))
     end
   end
 
@@ -401,7 +316,7 @@ module TestEnv
   end
 
   def repos_path
-    @repos_path ||= Gitlab.config.repositories.storages[REPOS_STORAGE].legacy_disk_path
+    @repos_path ||= GitalySetup.repos_path
   end
 
   def backup_path
@@ -522,7 +437,7 @@ module TestEnv
     end
   end
 
-  def component_timed_setup(component, install_dir:, version:, task:, task_args: [])
+  def component_timed_setup(component, install_dir:, version:, task:, fresh_install: true, task_args: [])
     start = Time.now
 
     ensure_component_dir_name_is_correct!(component, install_dir)
@@ -532,7 +447,7 @@ module TestEnv
 
     if component_needs_update?(install_dir, version)
       # Cleanup the component entirely to ensure we start fresh
-      FileUtils.rm_rf(install_dir)
+      FileUtils.rm_rf(install_dir) if fresh_install
 
       if ENV['SKIP_RAILS_ENV_IN_RAKE']
         # When we run `scripts/setup-test-env`, we take care of loading the necessary dependencies

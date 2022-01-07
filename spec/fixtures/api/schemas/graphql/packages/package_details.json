@@ -149,6 +149,30 @@
           }
         }
       }
+    },
+    "npmUrl": {
+      "type": "string"
+    },
+    "mavenUrl": {
+      "type": "string"
+    },
+    "conanUrl": {
+      "type": "string"
+    },
+    "nugetUrl": {
+      "type": "string"
+    },
+    "pypiUrl": {
+      "type": "string"
+    },
+    "pypiSetupUrl": {
+      "type": "string"
+    },
+    "composerUrl": {
+      "type": "string"
+    },
+    "composerConfigRepositoryUrl": {
+      "type": "string"
     }
   }
 }

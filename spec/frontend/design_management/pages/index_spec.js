@@ -91,6 +91,8 @@ const designToMove = {
 };
 
 describe('Design management index page', () => {
+  const registerPath = '/users/sign_up?redirect_to_referer=yes';
+  const signInPath = '/users/sign_in?redirect_to_referer=yes';
   let mutate;
   let wrapper;
   let fakeApollo;
@@ -164,6 +166,8 @@ describe('Design management index page', () => {
       provide: {
         projectPath: 'project-path',
         issueIid: '1',
+        registerPath,
+        signInPath,
       },
     });
   }
@@ -186,6 +190,10 @@ describe('Design management index page', () => {
       apolloProvider: fakeApollo,
       router,
       stubs: { VueDraggable },
+      provide: {
+        registerPath,
+        signInPath,
+      },
     });
   }
 

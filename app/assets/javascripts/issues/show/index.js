@@ -6,7 +6,7 @@ import IssueApp from './components/app.vue';
 import HeaderActions from './components/header_actions.vue';
 import IncidentTabs from './components/incidents/incident_tabs.vue';
 import SentryErrorStackTrace from './components/sentry_error_stack_trace.vue';
-import { IncidentType, issueState } from './constants';
+import { INCIDENT_TYPE, issueState } from './constants';
 import apolloProvider from './graphql';
 import getIssueStateQuery from './queries/get_issue_state.query.graphql';
 
@@ -45,7 +45,7 @@ export function initIncidentApp(issueData = {}) {
     el,
     apolloProvider,
     provide: {
-      issueType: IncidentType,
+      issueType: INCIDENT_TYPE,
       canCreateIncident,
       canUpdate,
       fullPath,
@@ -111,7 +111,7 @@ export function initHeaderActions(store, type = '') {
   bootstrapApollo({ ...issueState, issueType: el.dataset.issueType });
 
   const canCreate =
-    type === IncidentType ? el.dataset.canCreateIncident : el.dataset.canCreateIssue;
+    type === INCIDENT_TYPE ? el.dataset.canCreateIncident : el.dataset.canCreateIssue;
 
   return new Vue({
     el,

@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 module PackagesHelper
+  include ::API::Helpers::RelatedResourcesHelpers
+
   def package_sort_path(options = {})
     "#{request.path}?#{options.to_param}"
   end

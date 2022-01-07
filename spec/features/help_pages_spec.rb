@@ -28,21 +28,20 @@ RSpec.describe 'Help Pages' do
     end
   end
 
-  context 'in a production environment with version check enabled' do
+  describe 'with version check enabled' do
+    let_it_be(:user) { create(:user) }
+
     before do
       stub_application_setting(version_check_enabled: true)
+      allow(User).to receive(:single_user).and_return(double(user, requires_usage_stats_consent?: false))
+      allow(user).to receive(:can_read_all_resources?).and_return(true)
 
-      stub_rails_env('production')
-      allow(VersionCheck).to receive(:image_url).and_return('/version-check-url')
-
-      sign_in(create(:user))
+      sign_in(user)
       visit help_path
     end
 
-    it 'has a version check image' do
-      # Check `data-src` due to lazy image loading
-      expect(find('.js-version-status-badge', visible: false)['data-src'])
-        .to end_with('/version-check-url')
+    it 'renders the version check badge' do
+      expect(page).to have_selector('.js-gitlab-version-check')
     end
   end
 

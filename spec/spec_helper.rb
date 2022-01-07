@@ -459,6 +459,11 @@ RSpec.configure do |config|
     end
   end
 
+  # Ensures that any Javascript script that tries to make the external VersionCheck API call skips it and returns a response
+  config.before(:each, :js) do
+    allow_any_instance_of(VersionCheck).to receive(:response).and_return({ "severity" => "success" })
+  end
+
   config.after(:each, :silence_stdout) do
     $stdout = STDOUT
   end

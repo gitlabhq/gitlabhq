@@ -9,6 +9,7 @@ module QA
       attr_accessor :tty, :tags, :options
 
       DEFAULT_TEST_PATH_ARGS = ['--', File.expand_path('./features', __dir__)].freeze
+      DEFAULT_STD_ARGS = [$stderr, $stdout].freeze
 
       def initialize
         @tty = false
@@ -68,8 +69,15 @@ module QA
           ParallelRunner.run(args.flatten)
         elsif Runtime::Scenario.attributes[:loop]
           LoopRunner.run(args.flatten)
+        elsif Runtime::Scenario.attributes[:count_examples_only]
+          args.unshift('--dry-run')
+          out = StringIO.new
+          RSpec::Core::Runner.run(args.flatten, $stderr, out).tap do |status|
+            abort if status.nonzero?
+          end
+          $stdout.puts out.string.match(/(\d+) examples,/)[1]
         else
-          RSpec::Core::Runner.run(args.flatten, $stderr, $stdout).tap do |status|
+          RSpec::Core::Runner.run(args.flatten, *DEFAULT_STD_ARGS).tap do |status|
             abort if status.nonzero?
           end
         end

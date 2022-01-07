@@ -64,9 +64,9 @@
       for this project.
 
   - if issuable.new_record?
-    = form.submit "#{_('Create')} #{issuable.class.model_name.human.downcase}", class: 'gl-button btn btn-confirm gl-mr-2', data: { qa_selector: 'issuable_create_button' }
+    = form.submit "#{_('Create')} #{issuable.class.model_name.human.downcase}", class: 'gl-button btn btn-confirm gl-mr-2', data: { qa_selector: 'issuable_create_button', track_experiment: 'promote_mr_approvals_in_free', track_action: 'click_button', track_label: 'submit_mr', track_value: 0 }
   - else
-    = form.submit _('Save changes'), class: 'gl-button btn btn-confirm gl-mr-2'
+    = form.submit _('Save changes'), class: 'gl-button btn btn-confirm gl-mr-2', data: { track_experiment: 'promote_mr_approvals_in_free', track_action: 'click_button', track_label: 'submit_mr', track_value: 0 }
 
   - if issuable.new_record?
     = link_to _('Cancel'), polymorphic_path([@project, issuable.class]), class: 'btn gl-button btn-default'

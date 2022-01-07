@@ -7,6 +7,7 @@ import ReplyPlaceholder from '~/notes/components/discussion_reply_placeholder.vu
 import { updateGlobalTodoCount } from '~/vue_shared/components/sidebar/todo_toggle/utils';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import DesignNotePin from '~/vue_shared/components/design_management/design_note_pin.vue';
+import { isLoggedIn } from '~/lib/utils/common_utils';
 import { ACTIVE_DISCUSSION_SOURCE_TYPES } from '../../constants';
 import createNoteMutation from '../../graphql/mutations/create_note.mutation.graphql';
 import toggleResolveDiscussionMutation from '../../graphql/mutations/toggle_resolve_discussion.mutation.graphql';
@@ -17,6 +18,7 @@ import { hasErrors } from '../../utils/cache_update';
 import { extractDesign } from '../../utils/design_management_utils';
 import { ADD_DISCUSSION_COMMENT_ERROR } from '../../utils/error_messages';
 import DesignNote from './design_note.vue';
+import DesignNoteSignedOut from './design_note_signed_out.vue';
 import DesignReplyForm from './design_reply_form.vue';
 import ToggleRepliesWidget from './toggle_replies_widget.vue';
 
@@ -24,6 +26,7 @@ export default {
   components: {
     ApolloMutation,
     DesignNote,
+    DesignNoteSignedOut,
     ReplyPlaceholder,
     DesignReplyForm,
     GlIcon,
@@ -54,6 +57,14 @@ export default {
       type: String,
       required: false,
       default: '',
+    },
+    registerPath: {
+      type: String,
+      required: true,
+    },
+    signInPath: {
+      type: String,
+      required: true,
     },
     resolvedDiscussionsExpanded: {
       type: Boolean,
@@ -93,6 +104,7 @@ export default {
       isResolving: false,
       shouldChangeResolvedStatus: false,
       areRepliesCollapsed: this.discussion.resolved,
+      isLoggedIn: isLoggedIn(),
     };
   },
   computed: {
@@ -226,7 +238,7 @@ export default {
         :class="{ 'gl-bg-blue-50': isDiscussionActive }"
         @error="$emit('update-note-error', $event)"
       >
-        <template v-if="discussion.resolvable" #resolve-discussion>
+        <template v-if="isLoggedIn && discussion.resolvable" #resolve-discussion>
           <button
             v-gl-tooltip
             :class="{ 'is-active': discussion.resolved }"
@@ -269,38 +281,47 @@ export default {
         :class="{ 'gl-bg-blue-50': isDiscussionActive }"
         @error="$emit('update-note-error', $event)"
       />
-      <li v-show="isReplyPlaceholderVisible" class="reply-wrapper discussion-reply-holder">
-        <reply-placeholder
-          v-if="!isFormVisible"
-          class="qa-discussion-reply"
-          :placeholder-text="__('Reply…')"
-          @focus="showForm"
-        />
-        <apollo-mutation
-          v-else
-          #default="{ mutate, loading }"
-          :mutation="$options.createNoteMutation"
-          :variables="{
-            input: mutationPayload,
-          }"
-          @done="onDone"
-          @error="onCreateNoteError"
-        >
-          <design-reply-form
-            v-model="discussionComment"
-            :is-saving="loading"
-            :markdown-preview-path="markdownPreviewPath"
-            @submit-form="mutate"
-            @cancel-form="hideForm"
+      <li
+        v-show="isReplyPlaceholderVisible"
+        class="reply-wrapper discussion-reply-holder"
+        :class="{ 'gl-bg-gray-10': !isLoggedIn }"
+      >
+        <template v-if="!isLoggedIn">
+          <design-note-signed-out :register-path="registerPath" :sign-in-path="signInPath" />
+        </template>
+        <template v-else>
+          <reply-placeholder
+            v-if="!isFormVisible"
+            class="qa-discussion-reply"
+            :placeholder-text="__('Reply…')"
+            @focus="showForm"
+          />
+          <apollo-mutation
+            v-else
+            #default="{ mutate, loading }"
+            :mutation="$options.createNoteMutation"
+            :variables="{
+              input: mutationPayload,
+            }"
+            @done="onDone"
+            @error="onCreateNoteError"
           >
-            <template v-if="discussion.resolvable" #resolve-checkbox>
-              <label data-testid="resolve-checkbox">
-                <input v-model="shouldChangeResolvedStatus" type="checkbox" />
-                {{ resolveCheckboxText }}
-              </label>
-            </template>
-          </design-reply-form>
-        </apollo-mutation>
+            <design-reply-form
+              v-model="discussionComment"
+              :is-saving="loading"
+              :markdown-preview-path="markdownPreviewPath"
+              @submit-form="mutate"
+              @cancel-form="hideForm"
+            >
+              <template v-if="discussion.resolvable" #resolve-checkbox>
+                <label data-testid="resolve-checkbox">
+                  <input v-model="shouldChangeResolvedStatus" type="checkbox" />
+                  {{ resolveCheckboxText }}
+                </label>
+              </template>
+            </design-reply-form>
+          </apollo-mutation>
+        </template>
       </li>
     </ul>
   </div>

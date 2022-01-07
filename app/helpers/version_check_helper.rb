@@ -1,12 +1,11 @@
 # frozen_string_literal: true
 
 module VersionCheckHelper
-  def version_status_badge
-    return unless Rails.env.production?
-    return unless Gitlab::CurrentSettings.version_check_enabled
-    return if User.single_user&.requires_usage_stats_consent?
+  def show_version_check?
+    return false unless Gitlab::CurrentSettings.version_check_enabled
+    return false if User.single_user&.requires_usage_stats_consent?
 
-    image_tag VersionCheck.image_url, class: 'js-version-status-badge'
+    current_user&.can_read_all_resources?
   end
 
   def link_to_version

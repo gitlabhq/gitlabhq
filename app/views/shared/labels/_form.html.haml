@@ -5,30 +5,30 @@
     .col-sm-2.col-form-label
       = f.label :title
     .col-sm-10
-      = f.text_field :title, class: "form-control js-label-title qa-label-title", required: true, autofocus: true
+      = f.text_field :title, class: "gl-form-input form-control js-label-title qa-label-title", required: true, autofocus: true
     = render_if_exists 'shared/labels/create_label_help_text'
 
   .form-group.row
     .col-sm-2.col-form-label
       = f.label :description
     .col-sm-10
-      = f.text_field :description, class: "form-control js-quick-submit qa-label-description"
+      = f.text_field :description, class: "gl-form-input form-control js-quick-submit qa-label-description"
   .form-group.row
     .col-sm-2.col-form-label
-      = f.label :color, "Background color"
+      = f.label :color, _("Background color")
     .col-sm-10
       .input-group
         .input-group-prepend
           .input-group-text.label-color-preview &nbsp;
-        = f.text_field :color, class: "form-control qa-label-color"
+        = f.text_field :color, class: "gl-form-input form-control qa-label-color"
       .form-text.text-muted
-        Choose any color.
+        = _('Choose any color.')
         %br
-        Or you can choose one of the suggested colors below
+        = _("Or you can choose one of the suggested colors below")
       = render_suggested_colors
   .form-actions
     - if @label.persisted?
       = f.submit _('Save changes'), class: 'btn gl-button btn-confirm js-save-button'
     - else
-      = f.submit 'Create label', class: 'btn gl-button btn-confirm js-save-button qa-label-create-button'
+      = f.submit _('Create label'), class: 'btn gl-button btn-confirm js-save-button qa-label-create-button'
     = link_to _('Cancel'), back_path, class: 'btn gl-button btn-default btn-cancel'

@@ -16,14 +16,6 @@ class VersionCheck
     { "REFERER": Gitlab.config.gitlab.url }
   end
 
-  # This is temporary and will be removed when the new UI is hooked up
-  # to the version_check.json endpoint.
-  def self.image_url
-    encoded_data = Base64.urlsafe_encode64(data.to_json)
-
-    "#{host}/check.svg?gitlab_info=#{encoded_data}"
-  end
-
   def self.url
     encoded_data = Base64.urlsafe_encode64(data.to_json)
 

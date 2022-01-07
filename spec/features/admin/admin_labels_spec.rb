@@ -59,7 +59,7 @@ RSpec.describe 'admin issues labels' do
     it 'creates new label' do
       fill_in 'Title', with: 'support'
       fill_in 'Background color', with: '#F95610'
-      click_button 'Save'
+      click_button 'Create label'
 
       page.within '.manage-labels-list' do
         expect(page).to have_content('support')
@@ -69,7 +69,7 @@ RSpec.describe 'admin issues labels' do
     it 'does not creates label with invalid color' do
       fill_in 'Title', with: 'support'
       fill_in 'Background color', with: '#12'
-      click_button 'Save'
+      click_button 'Create label'
 
       page.within '.label-form' do
         expect(page).to have_content('Color must be a valid color code')
@@ -79,7 +79,7 @@ RSpec.describe 'admin issues labels' do
     it 'does not creates label if label already exists' do
       fill_in 'Title', with: 'bug'
       fill_in 'Background color', with: '#F95610'
-      click_button 'Save'
+      click_button 'Create label'
 
       page.within '.label-form' do
         expect(page).to have_content 'Title has already been taken'
@@ -93,7 +93,7 @@ RSpec.describe 'admin issues labels' do
 
       fill_in 'Title', with: 'fix'
       fill_in 'Background color', with: '#F15610'
-      click_button 'Save'
+      click_button 'Save changes'
 
       page.within '.manage-labels-list' do
         expect(page).to have_content('fix')

@@ -1,22 +1,20 @@
 import { __ } from '~/locale';
 
-export const IssueStateEvent = {
-  Close: 'CLOSE',
-  Reopen: 'REOPEN',
-};
-
-export const STATUS_PAGE_PUBLISHED = __('Published on status page');
+export const INCIDENT_TYPE = 'incident';
+export const INCIDENT_TYPE_PATH = 'issues/incident';
+export const ISSUE_STATE_EVENT_CLOSE = 'CLOSE';
+export const ISSUE_STATE_EVENT_REOPEN = 'REOPEN';
+export const ISSUE_TYPE_PATH = 'issues';
 export const JOIN_ZOOM_MEETING = __('Join Zoom meeting');
+export const POLLING_DELAY = 2000;
+export const STATUS_PAGE_PUBLISHED = __('Published on status page');
 
-export const IssuableTypes = [
+export const issuableTypes = [
   { value: 'issue', text: __('Issue'), icon: 'issue-type-issue' },
   { value: 'incident', text: __('Incident'), icon: 'issue-type-incident' },
 ];
 
-export const IssueTypePath = 'issues';
-export const IncidentTypePath = 'issues/incident';
-export const IncidentType = 'incident';
-
-export const issueState = { issueType: undefined, isDirty: false };
-
-export const POLLING_DELAY = 2000;
+export const issueState = {
+  issueType: undefined,
+  isDirty: false,
+};

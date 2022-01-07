@@ -10039,6 +10039,9 @@ msgstr ""
 msgid "Create iteration"
 msgstr ""
 
+msgid "Create label"
+msgstr ""
+
 msgid "Create list"
 msgstr ""
 
@@ -24101,7 +24104,7 @@ msgstr ""
 msgid "No webhook events"
 msgstr ""
 
-msgid "No webhooks found, add one in the form above."
+msgid "No webhooks enabled. Select trigger events above."
 msgstr ""
 
 msgid "No worries, you can still use all the %{strong}%{plan_name}%{strong_close} features for now. You have %{remaining_days} day to renew your subscription."
@@ -26465,6 +26468,12 @@ msgid "Play all manual"
 msgstr ""
 
 msgid "Please %{link_to_register} or %{link_to_sign_in} to comment"
+msgstr ""
+
+msgid "Please %{registerLinkStart}register%{registerLinkEnd} or %{signInLinkStart}sign in%{signInLinkEnd} to reply."
+msgstr ""
+
+msgid "Please %{registerLinkStart}register%{registerLinkEnd} or %{signInLinkStart}sign in%{signInLinkEnd} to start a new discussion."
 msgstr ""
 
 msgid "Please %{startTagRegister}register%{endRegisterTag} or %{startTagSignIn}sign in%{endSignInTag} to reply"
@@ -39107,6 +39116,15 @@ msgstr ""
 msgid "Version %{versionNumber} (latest)"
 msgstr ""
 
+msgid "VersionCheck|Up to date"
+msgstr ""
+
+msgid "VersionCheck|Update ASAP"
+msgstr ""
+
+msgid "VersionCheck|Update available"
+msgstr ""
+
 msgid "View Documentation"
 msgstr ""
 
@@ -39779,6 +39797,48 @@ msgstr ""
 msgid "Webhooks Help"
 msgstr ""
 
+msgid "Webhooks|A comment is added to a confidential issue."
+msgstr ""
+
+msgid "Webhooks|A comment is added to an issue."
+msgstr ""
+
+msgid "Webhooks|A confidential issue is created, updated, closed, or reopened."
+msgstr ""
+
+msgid "Webhooks|A deployment starts, finishes, fails, or is canceled."
+msgstr ""
+
+msgid "Webhooks|A feature flag is turned on or off."
+msgstr ""
+
+msgid "Webhooks|A group member is created, updated, or removed."
+msgstr ""
+
+msgid "Webhooks|A job's status changes."
+msgstr ""
+
+msgid "Webhooks|A merge request is created, updated, or merged."
+msgstr ""
+
+msgid "Webhooks|A new tag is pushed to the repository."
+msgstr ""
+
+msgid "Webhooks|A pipeline's status changes."
+msgstr ""
+
+msgid "Webhooks|A release is created or updated."
+msgstr ""
+
+msgid "Webhooks|A subgroup is created or removed."
+msgstr ""
+
+msgid "Webhooks|A wiki page is created or updated."
+msgstr ""
+
+msgid "Webhooks|An issue is created, updated, closed, or reopened."
+msgstr ""
+
 msgid "Webhooks|Comments"
 msgstr ""
 
@@ -39821,6 +39881,9 @@ msgstr ""
 msgid "Webhooks|Push events"
 msgstr ""
 
+msgid "Webhooks|Push to the repository."
+msgstr ""
+
 msgid "Webhooks|Releases events"
 msgstr ""
 
@@ -39851,55 +39914,10 @@ msgstr ""
 msgid "Webhooks|URL"
 msgstr ""
 
-msgid "Webhooks|URL is triggered by a push to the repository"
+msgid "Webhooks|URL must be percent-encoded if it contains one or more special characters."
 msgstr ""
 
-msgid "Webhooks|URL is triggered when a confidential issue is created, updated, closed, or reopened"
-msgstr ""
-
-msgid "Webhooks|URL is triggered when a deployment starts, finishes, fails, or is canceled"
-msgstr ""
-
-msgid "Webhooks|URL is triggered when a feature flag is turned on or off"
-msgstr ""
-
-msgid "Webhooks|URL is triggered when a group member is created, updated, or removed"
-msgstr ""
-
-msgid "Webhooks|URL is triggered when a merge request is created, updated, or merged"
-msgstr ""
-
-msgid "Webhooks|URL is triggered when a new tag is pushed to the repository"
-msgstr ""
-
-msgid "Webhooks|URL is triggered when a release is created or updated"
-msgstr ""
-
-msgid "Webhooks|URL is triggered when a subgroup is created or removed"
-msgstr ""
-
-msgid "Webhooks|URL is triggered when a wiki page is created or updated"
-msgstr ""
-
-msgid "Webhooks|URL is triggered when an issue is created, updated, closed, or reopened"
-msgstr ""
-
-msgid "Webhooks|URL is triggered when someone adds a comment"
-msgstr ""
-
-msgid "Webhooks|URL is triggered when someone adds a comment on a confidential issue"
-msgstr ""
-
-msgid "Webhooks|URL is triggered when the job status changes"
-msgstr ""
-
-msgid "Webhooks|URL is triggered when the pipeline status changes"
-msgstr ""
-
-msgid "Webhooks|URL must be percent-encoded if neccessary."
-msgstr ""
-
-msgid "Webhooks|Use this token to validate received payloads. It is sent with the request in the X-Gitlab-Token HTTP header."
+msgid "Webhooks|Used to validate received payloads. Sent with the request in the %{code_start}X-Gitlab-Token HTTP%{code_end} header."
 msgstr ""
 
 msgid "Webhooks|Webhook failed to connect"
