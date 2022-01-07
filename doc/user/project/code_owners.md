@@ -280,3 +280,26 @@ model/db   @database
 [DOCUMENTATION]
 README.md  @docs
 ```
+
+## Troubleshooting
+
+### Approvals shown as optional
+
+A Code Owner approval rule is optional if these conditions are not met:
+
+- The user or group are not a member of the project or parent group.
+- [Code Owner approval on a protected branch](protected_branches.md#require-code-owner-approval-on-a-protected-branch) has not been set up.
+- The section is [marked as optional](#make-a-code-owners-section-optional).
+
+### Approvals do not show
+
+Code Owner approval rules only update when the merge request is created. 
+If you update the `CODEOWNERS` file, close the merge request and create a new one.
+
+### User not shown as possible approver
+
+A user might not show as an approver on the Code Owner merge request approval rules. 
+
+This result occurs when a rule prevents the specific user from approving the merge request.
+Check the project
+[merge request approval setting](merge_requests/approvals/settings.md#edit-merge-request-approval-settings).

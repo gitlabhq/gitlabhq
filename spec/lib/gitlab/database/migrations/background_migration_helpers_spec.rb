@@ -438,26 +438,6 @@ RSpec.describe Gitlab::Database::Migrations::BackgroundMigrationHelpers do
     it_behaves_like 'helpers that enqueue background migrations', BackgroundMigrationWorker, 'main'
   end
 
-  describe '#perform_background_migration_inline?' do
-    it 'returns true in a test environment' do
-      stub_rails_env('test')
-
-      expect(model.perform_background_migration_inline?).to eq(true)
-    end
-
-    it 'returns true in a development environment' do
-      stub_rails_env('development')
-
-      expect(model.perform_background_migration_inline?).to eq(true)
-    end
-
-    it 'returns false in a production environment' do
-      stub_rails_env('production')
-
-      expect(model.perform_background_migration_inline?).to eq(false)
-    end
-  end
-
   describe '#delete_job_tracking' do
     let!(:job_class_name) { 'TestJob' }
 

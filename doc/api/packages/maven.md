@@ -22,8 +22,6 @@ for details on which headers and token types are supported.
 
 ## Download a package file at the instance-level
 
-> Introduced in GitLab 11.6.
-
 Download a Maven package file:
 
 ```plaintext
@@ -48,8 +46,6 @@ curl --header "Private-Token: <personal_access_token>" "https://gitlab.example.c
 This writes the downloaded file to `mypkg-1.0-SNAPSHOT.jar` in the current directory.
 
 ## Download a package file at the group-level
-
-> Introduced in GitLab 11.7.
 
 Download a Maven package file:
 
@@ -76,8 +72,6 @@ This writes the downloaded file to `mypkg-1.0-SNAPSHOT.jar` in the current direc
 
 ## Download a package file at the project-level
 
-> Introduced in GitLab 11.3.
-
 Download a Maven package file:
 
 ```plaintext
@@ -102,8 +96,6 @@ curl --header "Private-Token: <personal_access_token>" "https://gitlab.example.c
 This writes the downloaded file to `mypkg-1.0-SNAPSHOT.jar` in the current directory.
 
 ## Upload a package file
-
-> Introduced in GitLab 11.3.
 
 Upload a Maven package file:
 

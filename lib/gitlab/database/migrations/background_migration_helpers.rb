@@ -152,10 +152,6 @@ module Gitlab
           delete_job_tracking(class_name, status: delete_tracking_jobs) if delete_tracking_jobs
         end
 
-        def perform_background_migration_inline?
-          Rails.env.test? || Rails.env.development?
-        end
-
         def migrate_in(*args, coordinator: coordinator_for_tracking_database)
           with_migration_context do
             coordinator.perform_in(*args)

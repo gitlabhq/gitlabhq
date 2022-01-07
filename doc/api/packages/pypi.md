@@ -166,8 +166,6 @@ This writes the downloaded file to `simple.html` in the current directory.
 
 ## Upload a package
 
-> Introduced in GitLab 11.3.
-
 Upload a PyPI package:
 
 ```plaintext

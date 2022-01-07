@@ -6,7 +6,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Dependency Proxy **(FREE)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/7934) in GitLab 11.11.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/273655) from GitLab Premium to GitLab Free in 13.6.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/11582) support for private groups in GitLab 13.7.
 > - Anonymous access to images in public groups is no longer available starting in GitLab 13.7.

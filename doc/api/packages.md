@@ -12,8 +12,6 @@ This is the API documentation of [GitLab Packages](../administration/packages/in
 
 ### Within a project
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/9259) in GitLab 11.8.
-
 Get a list of project packages. All package types are included in results. When
 accessed without authentication, only packages of public projects are returned.
 
@@ -176,8 +174,6 @@ can result in malformed data or broken packages.
 
 ## Get a project package
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/9667) in GitLab 11.9.
-
 Get a single project package.
 
 ```plaintext
@@ -258,8 +254,6 @@ The `_links` object contains the following properties:
 
 ## List package files
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/9305) in GitLab 11.8.
-
 Get a list of package files of a single package.
 
 ```plaintext
@@ -330,8 +324,6 @@ Example response:
 By default, the `GET` request returns 20 results, because the API is [paginated](index.md#pagination).
 
 ## Delete a project package
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/9623) in GitLab 11.9.
 
 Deletes a project package.
 

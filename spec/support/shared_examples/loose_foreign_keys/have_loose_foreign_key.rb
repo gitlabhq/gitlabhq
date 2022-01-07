@@ -59,7 +59,7 @@ RSpec.shared_examples 'cleanup by a loose foreign key' do
     model.class.find_by(primary_key => model.public_send(primary_key))
   end
 
-  it 'deletes the model' do
+  it 'cleans up (delete or nullify) the model' do
     parent.delete
 
     expect(find_model).to be_present

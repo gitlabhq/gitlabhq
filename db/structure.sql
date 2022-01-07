@@ -19236,7 +19236,8 @@ CREATE TABLE routes (
     path character varying NOT NULL,
     created_at timestamp without time zone,
     updated_at timestamp without time zone,
-    name character varying
+    name character varying,
+    namespace_id bigint
 );
 
 CREATE SEQUENCE routes_id_seq
@@ -27396,6 +27397,8 @@ CREATE INDEX index_reviews_on_project_id ON reviews USING btree (project_id);
 
 CREATE INDEX index_route_on_name_trigram ON routes USING gin (name gin_trgm_ops);
 
+CREATE UNIQUE INDEX index_routes_on_namespace_id ON routes USING btree (namespace_id);
+
 CREATE UNIQUE INDEX index_routes_on_path ON routes USING btree (path);
 
 CREATE INDEX index_routes_on_path_text_pattern_ops ON routes USING btree (path varchar_pattern_ops);
@@ -29304,6 +29307,9 @@ ALTER TABLE ONLY merge_requests
 
 ALTER TABLE ONLY ci_builds
     ADD CONSTRAINT fk_6661f4f0e8 FOREIGN KEY (resource_group_id) REFERENCES ci_resource_groups(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY routes
+    ADD CONSTRAINT fk_679ff8213d FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY application_settings
     ADD CONSTRAINT fk_693b8795e4 FOREIGN KEY (push_rule_id) REFERENCES push_rules(id) ON DELETE SET NULL;

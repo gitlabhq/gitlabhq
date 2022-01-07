@@ -6,13 +6,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # GitLab Container Registry **(FREE)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/4040) in GitLab 8.8.
-> - Docker Registry manifest `v1` support was added in GitLab 8.9 to support Docker
->   versions earlier than 1.10.
-> - Starting in GitLab 8.12, if you have [two-factor authentication](../../profile/account/two_factor_authentication.md) enabled in your account, you need
->   to pass a [personal access token](../../profile/personal_access_tokens.md) instead of your password to
->   sign in to the Container Registry.
-> - Support for multiple level image names was added in GitLab 9.1.
 > - The group-level Container Registry was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/23315) in GitLab 12.10.
 > - Searching by image repository name was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/31322) in GitLab 13.0.
 

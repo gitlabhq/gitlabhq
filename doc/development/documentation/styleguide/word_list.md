@@ -202,10 +202,18 @@ Use **confirmation dialog** to describe the dialog box that asks you to confirm 
 
 - On the confirmation dialog, select **OK**.
 
+## Container Registry
+
+Use title case for the GitLab Container Registry.
+
 ## currently
 
 Do not use **currently** when talking about the product or its features. The documentation describes the product as it is today.
 ([Vale](../testing.md#vale) rule: [`CurrentStatus.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/CurrentStatus.yml))
+
+## Dependency Proxy
+
+Use title case for the GitLab Dependency Proxy.
 
 ## deploy board
 

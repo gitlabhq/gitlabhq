@@ -1752,116 +1752,6 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
     end
   end
 
-  describe '#change_column_type_using_background_migration' do
-    let!(:issue) { create(:issue, :closed, closed_at: Time.zone.now) }
-
-    let(:issue_model) do
-      Class.new(ActiveRecord::Base) do
-        self.table_name = 'issues'
-        include EachBatch
-      end
-    end
-
-    it 'changes the type of a column using a background migration' do
-      expect(model)
-        .to receive(:add_column)
-        .with('issues', 'closed_at_for_type_change', :datetime_with_timezone)
-
-      expect(model)
-        .to receive(:install_rename_triggers)
-        .with('issues', :closed_at, 'closed_at_for_type_change')
-
-      expect(BackgroundMigrationWorker)
-        .to receive(:perform_in)
-        .ordered
-        .with(
-          10.minutes,
-          'CopyColumn',
-          ['issues', :closed_at, 'closed_at_for_type_change', issue.id, issue.id]
-        )
-
-      expect(BackgroundMigrationWorker)
-        .to receive(:perform_in)
-        .ordered
-        .with(
-          1.hour + 10.minutes,
-          'CleanupConcurrentTypeChange',
-          ['issues', :closed_at, 'closed_at_for_type_change']
-        )
-
-      expect(Gitlab::BackgroundMigration)
-        .to receive(:steal)
-        .ordered
-        .with('CopyColumn')
-
-      expect(Gitlab::BackgroundMigration)
-        .to receive(:steal)
-        .ordered
-        .with('CleanupConcurrentTypeChange')
-
-      model.change_column_type_using_background_migration(
-        issue_model.all,
-        :closed_at,
-        :datetime_with_timezone
-      )
-    end
-  end
-
-  describe '#rename_column_using_background_migration' do
-    let!(:issue) { create(:issue, :closed, closed_at: Time.zone.now) }
-
-    it 'renames a column using a background migration' do
-      expect(model)
-        .to receive(:add_column)
-        .with(
-          'issues',
-          :closed_at_timestamp,
-          :datetime_with_timezone,
-          limit: anything,
-          precision: anything,
-          scale: anything
-        )
-
-      expect(model)
-        .to receive(:install_rename_triggers)
-        .with('issues', :closed_at, :closed_at_timestamp)
-
-      expect(BackgroundMigrationWorker)
-        .to receive(:perform_in)
-        .ordered
-        .with(
-          10.minutes,
-          'CopyColumn',
-          ['issues', :closed_at, :closed_at_timestamp, issue.id, issue.id]
-        )
-
-      expect(BackgroundMigrationWorker)
-        .to receive(:perform_in)
-        .ordered
-        .with(
-          1.hour + 10.minutes,
-          'CleanupConcurrentRename',
-          ['issues', :closed_at, :closed_at_timestamp]
-        )
-
-      expect(Gitlab::BackgroundMigration)
-        .to receive(:steal)
-        .ordered
-        .with('CopyColumn')
-
-      expect(Gitlab::BackgroundMigration)
-        .to receive(:steal)
-        .ordered
-        .with('CleanupConcurrentRename')
-
-      model.rename_column_using_background_migration(
-        'issues',
-        :closed_at,
-        :closed_at_timestamp
-      )
-    end
-  end
-
   describe '#convert_to_bigint_column' do
     it 'returns the name of the temporary column used to convert to bigint' do
       expect(model.convert_to_bigint_column(:id)).to eq('id_convert_to_bigint')
@@ -2065,8 +1955,6 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
         t.integer :other_id
         t.timestamps
       end
-
-      allow(model).to receive(:perform_background_migration_inline?).and_return(false)
     end
 
     context 'when the target table does not exist' do

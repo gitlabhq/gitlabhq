@@ -161,6 +161,17 @@ it_behaves_like 'it has loose foreign keys' do
 end
 ```
 
+**After** [removing a foreign key](#remove-the-foreign-key),
+use the "`cleanup by a loose foreign key`" shared example to test a child record's deletion or nullification
+via the added loose foreign key:
+
+```ruby
+it_behaves_like 'cleanup by a loose foreign key' do
+  let!(:model) { create(:ci_pipeline, user: create(:user)) }
+  let!(:parent) { model.user }
+end
+```
+
 ## Caveats of loose foreign keys
 
 ### Record creation

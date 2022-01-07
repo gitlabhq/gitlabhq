@@ -23,10 +23,6 @@ For public and internal projects, you can change who can see your:
 - Job artifacts
 - [Pipeline security dashboard](../../user/application_security/security_dashboard/index.md#view-vulnerabilities-in-a-pipeline)
 
-However:
-
-- Job output logs and artifacts are [never visible for Guest users and non-project members](https://gitlab.com/gitlab-org/gitlab/-/issues/25649).
-
 To change the visibility of your pipelines and related features:
 
 1. On the top bar, select **Menu > Projects** and find your project.
@@ -41,8 +37,10 @@ To change the visibility of your pipelines and related features:
 
    When it is cleared:
 
-   - For **public** projects, pipelines are visible to everyone. Related features are visible
-     only to project members (Reporter or higher).
+   - For **public** projects, job logs, job artifacts, the pipeline security dashboard,
+     and the **CI/CD** menu items are visible only to project members (Reporter or higher).
+     Other users, including guest users, can only view the status of pipelines and jobs, and only
+     when viewing merge requests or commits.
    - For **internal** projects, pipelines are visible to all logged in users except [external users](../../user/permissions.md#external-users).
      Related features are visible only to project members (Reporter or higher).
    - For **private** projects, pipelines and related features are visible to project members (Reporter or higher) only.

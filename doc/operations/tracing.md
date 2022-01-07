@@ -6,8 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Tracing **(FREE)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/7903) in GitLab 11.5.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/42645) from GitLab Ultimate to GitLab Free in 13.5.
+> [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/42645) from GitLab Ultimate to GitLab Free in 13.5.
 
 Tracing provides insight into the performance and health of a deployed application, tracking each
 function or microservice that handles a given request. Tracing makes it easy to understand the
