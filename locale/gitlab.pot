@@ -21429,6 +21429,39 @@ msgstr ""
 msgid "Locks the discussion."
 msgstr ""
 
+msgid "LoggedOutMarketingHeader|About GitLab"
+msgstr ""
+
+msgid "LoggedOutMarketingHeader|Explore GitLab"
+msgstr ""
+
+msgid "LoggedOutMarketingHeader|Get started"
+msgstr ""
+
+msgid "LoggedOutMarketingHeader|GitLab Learn"
+msgstr ""
+
+msgid "LoggedOutMarketingHeader|GitLab docs"
+msgstr ""
+
+msgid "LoggedOutMarketingHeader|GitLab: the DevOps platform"
+msgstr ""
+
+msgid "LoggedOutMarketingHeader|How GitLab compares"
+msgstr ""
+
+msgid "LoggedOutMarketingHeader|Install GitLab"
+msgstr ""
+
+msgid "LoggedOutMarketingHeader|Pricing"
+msgstr ""
+
+msgid "LoggedOutMarketingHeader|Talk to an expert"
+msgstr ""
+
+msgid "Login"
+msgstr ""
+
 msgid "Login with smartcard"
 msgstr ""
 
@@ -32902,6 +32935,9 @@ msgstr ""
 msgid "Sign up"
 msgstr ""
 
+msgid "Sign up now"
+msgstr ""
+
 msgid "Sign up was successful! Please confirm your email to sign in."
 msgstr ""
 
@@ -40776,7 +40812,7 @@ msgstr ""
 msgid "You have set up 2FA for your account! If you lose access to your 2FA device, you can use your recovery codes to access your account. Alternatively, if you upload an SSH key, you can %{anchorOpen}use that key to generate additional recovery codes%{anchorClose}."
 msgstr ""
 
-msgid "You have successfully purchased %{product}. You'll receive a receipt by email."
+msgid "You have successfully purchased %{product}. You'll receive a receipt by email. Your purchase may take a minute to sync, so refresh the page if you don't see it yet."
 msgstr ""
 
 msgid "You have successfully purchased a %{plan} plan subscription for %{seats}. You’ll receive a receipt via email."

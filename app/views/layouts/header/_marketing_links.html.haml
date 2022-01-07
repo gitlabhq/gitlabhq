@@ -1,0 +1,34 @@
+%ul.nav.navbar-sub-nav.gl-display-none.gl-lg-display-flex.gl-align-items-center
+  %li.dropdown.gl-mr-3
+    %button{ type: "button", data: { toggle: "dropdown" } }
+      = s_('LoggedOutMarketingHeader|About GitLab')
+      = sprite_icon('chevron-down', css_class: 'caret-down')
+    .dropdown-menu
+      %ul
+        %li
+          = link_to 'https://about.gitlab.com/stages-devops-lifecycle/' do
+            = s_('LoggedOutMarketingHeader|GitLab: the DevOps platform')
+        %li
+          = link_to explore_root_path do
+            = s_('LoggedOutMarketingHeader|Explore GitLab')
+        %li
+          = link_to 'https://about.gitlab.com/install/' do
+            = s_('LoggedOutMarketingHeader|Install GitLab')
+        %li
+          = link_to 'https://about.gitlab.com/is-it-any-good/' do
+            = s_('LoggedOutMarketingHeader|How GitLab compares')
+        %li
+          = link_to 'https://about.gitlab.com/get-started/' do
+            = s_('LoggedOutMarketingHeader|Get started')
+        %li
+          = link_to 'https://docs.gitlab.com/' do
+            = s_('LoggedOutMarketingHeader|GitLab docs')
+        %li
+          = link_to 'https://about.gitlab.com/learn/' do
+            = s_('LoggedOutMarketingHeader|GitLab Learn')
+  %li.gl-mr-3
+    = link_to 'https://about.gitlab.com/pricing/' do
+      = s_('LoggedOutMarketingHeader|Pricing')
+  %li.gl-mr-3
+    = link_to 'https://about.gitlab.com/sales/' do
+      = s_('LoggedOutMarketingHeader|Talk to an expert')

@@ -285,6 +285,7 @@ module ApplicationHelper
     class_names << 'environment-logs-page' if current_controller?(:logs)
     class_names << 'with-performance-bar' if performance_bar_enabled?
     class_names << system_message_class
+    class_names << marketing_header_experiment_class
     class_names
   end
 
@@ -419,6 +420,16 @@ module ApplicationHelper
 
   def appearance
     ::Appearance.current
+  end
+
+  def marketing_header_experiment_class
+    return if current_user
+
+    experiment(:logged_out_marketing_header, actor: nil) do |e|
+      e.candidate { 'logged-out-marketing-header-candidate' }
+      e.control {}
+      e.run
+    end
   end
 end
 

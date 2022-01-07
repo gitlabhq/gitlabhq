@@ -201,3 +201,9 @@ body {
     padding-right: 0;
   }
 }
+
+@include media-breakpoint-up(sm) {
+  .logged-out-marketing-header-candidate {
+    --header-height: 72px;
+  }
+}

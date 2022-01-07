@@ -477,4 +477,38 @@ RSpec.describe ApplicationHelper do
       expect(helper).to have_received(:form_for).with(user, expected_options)
     end
   end
+
+  describe '#page_class' do
+    context 'when logged_out_marketing_header experiment is enabled' do
+      let_it_be(:expected_class) { 'logged-out-marketing-header-candidate' }
+
+      let(:current_user) { nil }
+      let(:variant) { :candidate }
+
+      subject do
+        helper.page_class.flatten
+      end
+
+      before do
+        stub_experiments(logged_out_marketing_header: variant)
+        allow(helper).to receive(:current_user) { current_user }
+      end
+
+      context 'when candidate' do
+        it { is_expected.to include(expected_class) }
+      end
+
+      context 'when control' do
+        let(:variant) { :control }
+
+        it { is_expected.not_to include(expected_class) }
+      end
+
+      context 'when a user is logged in' do
+        let(:current_user) { create(:user) }
+
+        it { is_expected.not_to include(expected_class) }
+      end
+    end
+  end
 end
