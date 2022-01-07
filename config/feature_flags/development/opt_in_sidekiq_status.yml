@@ -1,8 +1,8 @@
 ---
-name: log_implicit_sidekiq_status_calls
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/74815
+name: opt_in_sidekiq_status
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/77349
 rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/343964
-milestone: '14.6'
+milestone: '14.7'
 type: development
 group: group::scalability
 default_enabled: false

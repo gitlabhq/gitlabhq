@@ -774,10 +774,8 @@ fetch = +refs/environments/*:refs/remotes/origin/environments/*
 ### Archive Old Deployments
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/73628) in GitLab 14.5.
-> - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/337507) in GitLab 14.6.
-
-FLAG:
-On self-managed GitLab, by default this feature is available. To hide the feature per project or for your entire instance, ask an administrator to [disable the feature flag](../../administration/feature_flags.md) named `deployments_archive`. On GitLab.com, this feature is available.
+> - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/345027) in GitLab 14.6.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/73628) in GitLab 14.0. [Feature flag `deployments_archive`](https://gitlab.com/gitlab-org/gitlab/-/issues/345027) removed.
 
 When a new deployment happens in your project,
 GitLab creates [a special Git-ref to the deployment](#check-out-deployments-locally).

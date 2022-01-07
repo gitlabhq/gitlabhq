@@ -107,10 +107,7 @@ class Deployment < ApplicationRecord
       deployment.run_after_commit do
         Deployments::UpdateEnvironmentWorker.perform_async(id)
         Deployments::LinkMergeRequestWorker.perform_async(id)
-
-        if ::Feature.enabled?(:deployments_archive, deployment.project, default_enabled: :yaml)
-          Deployments::ArchiveInProjectWorker.perform_async(deployment.project_id)
-        end
+        Deployments::ArchiveInProjectWorker.perform_async(deployment.project_id)
       end
     end
 

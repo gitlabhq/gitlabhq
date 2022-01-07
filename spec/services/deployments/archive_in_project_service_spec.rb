@@ -50,17 +50,6 @@ RSpec.describe Deployments::ArchiveInProjectService do
         end
       end
 
-      context 'when deployments_archive feature flag is disabled' do
-        before do
-          stub_feature_flags(deployments_archive: false)
-        end
-
-        it 'does not do anything' do
-          expect(subject[:status]).to eq(:error)
-          expect(subject[:message]).to eq('Feature flag is not enabled')
-        end
-      end
-
       def deployment_refs_exist?
         deployment_refs.map { |path| project.repository.ref_exists?(path) }
       end

@@ -11,6 +11,8 @@ class Projects::Analytics::CycleAnalytics::StagesController < Projects::Applicat
   before_action :authorize_read_cycle_analytics!
   before_action :only_default_value_stream_is_allowed!
 
+  urgency :low
+
   private
 
   override :parent

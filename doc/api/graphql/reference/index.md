@@ -970,6 +970,24 @@ Input type: `ClusterAgentTokenDeleteInput`
 | <a id="mutationclusteragenttokendeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationclusteragenttokendeleteerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
+### `Mutation.clusterAgentTokenRevoke`
+
+Input type: `ClusterAgentTokenRevokeInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationclusteragenttokenrevokeclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationclusteragenttokenrevokeid"></a>`id` | [`ClustersAgentTokenID!`](#clustersagenttokenid) | Global ID of the agent token that will be revoked. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationclusteragenttokenrevokeclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationclusteragenttokenrevokeerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+
 ### `Mutation.commitCreate`
 
 Input type: `CommitCreateInput`

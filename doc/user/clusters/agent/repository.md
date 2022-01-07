@@ -12,9 +12,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - [Moved](https://gitlab.com/groups/gitlab-org/-/epics/6290) from GitLab Premium to GitLab Free in 14.5.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/332227) in GitLab 14.0, the `resource_inclusions` and `resource_exclusions` attributes were removed and `reconcile_timeout`, `dry_run_strategy`, `prune`, `prune_timeout`, `prune_propagation_policy`, and `inventory_policy` attributes were added.
 
-WARNING:
-This feature might not be available to you. Check the **version history** note above for details.
-
 The [GitLab Agent](index.md) supports hosting your configuration for
 multiple agents in a single repository. These agents can be running
 in the same cluster or in multiple clusters, and potentially with more than one agent per cluster.

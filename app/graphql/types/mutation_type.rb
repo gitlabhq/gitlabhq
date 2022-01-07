@@ -36,6 +36,7 @@ module Types
     mount_mutation Mutations::Clusters::Agents::Delete
     mount_mutation Mutations::Clusters::AgentTokens::Create
     mount_mutation Mutations::Clusters::AgentTokens::Delete
+    mount_mutation Mutations::Clusters::AgentTokens::Revoke
     mount_mutation Mutations::Commits::Create, calls_gitaly: true
     mount_mutation Mutations::CustomEmoji::Create, feature_flag: :custom_emoji
     mount_mutation Mutations::CustomEmoji::Destroy, feature_flag: :custom_emoji

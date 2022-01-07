@@ -1,8 +1,0 @@
----
-name: deployments_archive
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/73628
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/345027
-milestone: '14.5'
-type: development
-group: group::release
-default_enabled: true
