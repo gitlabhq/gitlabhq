@@ -14,7 +14,8 @@
   .row
     = render 'create_chat_team', f: f
 
-= render 'personalize', f: f
+- unless Gitlab::CurrentSettings.current_application_settings.hide_third_party_offers?
+  = render 'personalize', f: f
 
 .row.js-invite-members-section
   .col-sm-4

@@ -91,7 +91,8 @@ The **Integrations** settings contain:
   Slack integration allows you to interact with GitLab via slash commands in a chat window.
   This option is only available on GitLab.com, though it may be
   [available for self-managed instances in the future](https://gitlab.com/gitlab-org/gitlab/-/issues/28164).
-- [Third party offers](third_party_offers.md) - Control the display of third-party offers.
+- [Customer experience improvement and third-party offers](third_party_offers.md) -
+  Control the display of customer experience improvement content and third-party offers.
 - [Snowplow](../../../development/snowplow/index.md) - Configure the Snowplow integration.
 - [Google GKE](../../project/clusters/add_gke_clusters.md) - Google GKE integration enables
   you to provision GKE clusters from GitLab.

@@ -6,25 +6,26 @@
       .form-check
         = f.check_box :allow_local_requests_from_web_hooks_and_services, class: 'form-check-input', data: { qa_selector: 'allow_requests_from_services_checkbox' }
         = f.label :allow_local_requests_from_web_hooks_and_services, class: 'form-check-label' do
-          = _('Allow requests to the local network from web hooks and services')
+          = s_('OutboundRequests|Allow requests to the local network from web hooks and services')
       .form-check
         = f.check_box :allow_local_requests_from_system_hooks, class: 'form-check-input'
         = f.label :allow_local_requests_from_system_hooks, class: 'form-check-label' do
-          = _('Allow requests to the local network from system hooks')
+          = s_('OutboundRequests|Allow requests to the local network from system hooks')
 
     .form-group
       = f.label :outbound_local_requests_allowlist_raw, class: 'label-bold' do
-        = _('Local IP addresses and domain names that hooks and services may access.')
-      = f.text_area :outbound_local_requests_allowlist_raw, placeholder: "example.com, 192.168.1.1", class: 'form-control gl-form-input', rows: 8
+        = s_('OutboundRequests|Local IP addresses and domain names that hooks and services may access')
+      = f.text_area :outbound_local_requests_allowlist_raw, placeholder: "example.com, 192.168.1.1, xn--itlab-j1a.com", class: 'form-control gl-form-input', rows: 8
       %span.form-text.text-muted
-        = _('Requests to these domain(s)/address(es) on the local network will be allowed when local requests from hooks and services are not allowed. IP ranges such as 1:0:0:0:0:0:0:0/124 or 127.0.0.0/28 are supported. Domain wildcards are not supported currently. Use comma, semicolon, or newline to separate multiple entries. The allowlist can hold a maximum of 1000 entries. Domains should use IDNA encoding. Ex: example.com, 192.168.1.1, 127.0.0.0/28, xn--itlab-j1a.com.')
+        = s_('OutboundRequests|Requests to these domains and IP addresses are accessible to both system hooks and web hooks even when local requests are not allowed. IP ranges such as 1:0:0:0:0:0:0:0/124 and 127.0.0.0/28 are supported. Domain wildcards are not supported. To separate entries use commas, semicolons, or newlines. The allowlist can hold a maximum of 1000 entries. Domains must be IDNA encoded.')
+        = link_to _('Learn more.'), help_page_path('security/webhooks.md', anchor: 'allowlist-for-local-requests'), target: '_blank', rel: 'noopener noreferrer'
 
     .form-group
       .form-check
         = f.check_box :dns_rebinding_protection_enabled, class: 'form-check-input'
         = f.label :dns_rebinding_protection_enabled, class: 'form-check-label' do
-          = _('Enforce DNS rebinding attack protection')
+          = s_('OutboundRequests|Enforce DNS rebinding attack protection')
         %span.form-text.text-muted
-          = _('Resolves IP addresses once and uses them to submit requests')
+          = s_('OutboundRequests|Resolve IP addresses once and uses them to submit requests.')
 
   = f.submit _('Save changes'), class: "gl-button btn btn-confirm", data: { qa_selector: 'save_changes_button' }

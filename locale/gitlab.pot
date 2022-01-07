@@ -3536,15 +3536,6 @@ msgstr ""
 msgid "Allow public access to pipelines and job details, including output logs and artifacts."
 msgstr ""
 
-msgid "Allow requests to the local network from hooks and services."
-msgstr ""
-
-msgid "Allow requests to the local network from system hooks"
-msgstr ""
-
-msgid "Allow requests to the local network from web hooks and services"
-msgstr ""
-
 msgid "Allow subgroups to set up their own two-factor authentication rules"
 msgstr ""
 
@@ -9640,7 +9631,7 @@ msgstr ""
 msgid "Control how the GitLab Package Registry functions."
 msgstr ""
 
-msgid "Control whether to display third-party offers in GitLab."
+msgid "Control whether to display customer experience improvement content and third-party offers in GitLab."
 msgstr ""
 
 msgid "Control which projects can be accessed by API requests authenticated with this project's CI_JOB_TOKEN CI/CD variable. It is a security risk to disable this feature, because unauthorized projects might attempt to retrieve an active token and access the API."
@@ -10538,6 +10529,9 @@ msgid "Customer Relations Contacts"
 msgstr ""
 
 msgid "Customer Relations Organizations"
+msgstr ""
+
+msgid "Customer experience improvement and third-party offers"
 msgstr ""
 
 msgid "Customer relations"
@@ -12625,7 +12619,7 @@ msgstr ""
 msgid "Display time tracking in issues in total hours only."
 msgstr ""
 
-msgid "Do not display offers from third parties"
+msgid "Do not display content for customer experience improvement and offers from third parties"
 msgstr ""
 
 msgid "Do not force push over diverged refs. After the mirror is created, this setting can only be modified using the API. %{mirroring_docs_link_start}Learn more about this option%{link_closing_tag} and %{mirroring_api_docs_link_start}the API.%{link_closing_tag}"
@@ -13358,9 +13352,6 @@ msgid "Ends on"
 msgstr ""
 
 msgid "Ends: %{endsAt}"
-msgstr ""
-
-msgid "Enforce DNS rebinding attack protection"
 msgstr ""
 
 msgid "Enforce SSH key expiration"
@@ -21387,9 +21378,6 @@ msgstr ""
 msgid "Loading…"
 msgstr ""
 
-msgid "Local IP addresses and domain names that hooks and services may access."
-msgstr ""
-
 msgid "Localization"
 msgstr ""
 
@@ -24989,7 +24977,28 @@ msgstr ""
 msgid "Out-of-compliance with this project's policies and should be removed"
 msgstr ""
 
-msgid "Outbound requests"
+msgid "OutboundRequests|Allow requests to the local network from hooks and services."
+msgstr ""
+
+msgid "OutboundRequests|Allow requests to the local network from system hooks"
+msgstr ""
+
+msgid "OutboundRequests|Allow requests to the local network from web hooks and services"
+msgstr ""
+
+msgid "OutboundRequests|Enforce DNS rebinding attack protection"
+msgstr ""
+
+msgid "OutboundRequests|Local IP addresses and domain names that hooks and services may access"
+msgstr ""
+
+msgid "OutboundRequests|Outbound requests"
+msgstr ""
+
+msgid "OutboundRequests|Requests to these domains and IP addresses are accessible to both system hooks and web hooks even when local requests are not allowed. IP ranges such as 1:0:0:0:0:0:0:0/124 and 127.0.0.0/28 are supported. Domain wildcards are not supported. To separate entries use commas, semicolons, or newlines. The allowlist can hold a maximum of 1000 entries. Domains must be IDNA encoded."
+msgstr ""
+
+msgid "OutboundRequests|Resolve IP addresses once and uses them to submit requests."
 msgstr ""
 
 msgid "OutdatedBrowser|GitLab may not work properly, because you are using an outdated web browser."
@@ -30100,9 +30109,6 @@ msgstr ""
 msgid "Requests per period"
 msgstr ""
 
-msgid "Requests to these domain(s)/address(es) on the local network will be allowed when local requests from hooks and services are not allowed. IP ranges such as 1:0:0:0:0:0:0:0/124 or 127.0.0.0/28 are supported. Domain wildcards are not supported currently. Use comma, semicolon, or newline to separate multiple entries. The allowlist can hold a maximum of 1000 entries. Domains should use IDNA encoding. Ex: example.com, 192.168.1.1, 127.0.0.0/28, xn--itlab-j1a.com."
-msgstr ""
-
 msgid "Require additional authentication for administrative tasks."
 msgstr ""
 
@@ -30246,9 +30252,6 @@ msgid "Resolved by"
 msgstr ""
 
 msgid "Resolved by %{name}"
-msgstr ""
-
-msgid "Resolves IP addresses once and uses them to submit requests"
 msgstr ""
 
 msgid "Response"
@@ -36021,9 +36024,6 @@ msgid "These will be sent to %{email} in an attachment once finished."
 msgstr ""
 
 msgid "Third Party Advisory Link"
-msgstr ""
-
-msgid "Third-party offers"
 msgstr ""
 
 msgid "This %{issuableDisplayName} is locked. Only project members can comment."
