@@ -4,8 +4,7 @@ import VueApollo from 'vue-apollo';
 import getIssuesQuery from 'ee_else_ce/issues_list/queries/get_issues.query.graphql';
 import IssuesListApp from 'ee_else_ce/issues_list/components/issues_list_app.vue';
 import createDefaultClient from '~/lib/graphql';
-import { convertObjectPropsToCamelCase, parseBoolean } from '~/lib/utils/common_utils';
-import IssuablesListApp from './components/issuables_list_app.vue';
+import { parseBoolean } from '~/lib/utils/common_utils';
 import JiraIssuesImportStatusRoot from './components/jira_issues_import_status_app.vue';
 
 export function mountJiraIssuesListApp() {
@@ -42,35 +41,6 @@ export function mountJiraIssuesListApp() {
         },
       });
     },
-  });
-}
-
-export function mountIssuablesListApp() {
-  if (!gon.features?.vueIssuablesList) {
-    return;
-  }
-
-  document.querySelectorAll('.js-issuables-list').forEach((el) => {
-    const { canBulkEdit, emptyStateMeta = {}, scopedLabelsAvailable, ...data } = el.dataset;
-
-    return new Vue({
-      el,
-      provide: {
-        scopedLabelsAvailable: parseBoolean(scopedLabelsAvailable),
-      },
-      render(createElement) {
-        return createElement(IssuablesListApp, {
-          props: {
-            ...data,
-            emptyStateMeta:
-              Object.keys(emptyStateMeta).length !== 0
-                ? convertObjectPropsToCamelCase(JSON.parse(emptyStateMeta))
-                : {},
-            canBulkEdit: Boolean(canBulkEdit),
-          },
-        });
-      },
-    });
   });
 }
 

@@ -1,6 +1,6 @@
 import IssuableFilteredSearchTokenKeys from 'ee_else_ce/filtered_search/issuable_filtered_search_token_keys';
 import { initBulkUpdateSidebar } from '~/issuable/bulk_update_sidebar';
-import { mountIssuablesListApp, mountIssuesListApp } from '~/issues_list';
+import { mountIssuesListApp } from '~/issues_list';
 import initManualOrdering from '~/issues/manual_ordering';
 import { FILTERED_SEARCH } from '~/filtered_search/constants';
 import initFilteredSearch from '~/pages/search/init_filtered_search';
@@ -23,8 +23,4 @@ if (gon.features?.vueIssuesList) {
   });
   projectSelect();
   initManualOrdering();
-
-  if (gon.features?.vueIssuablesList) {
-    mountIssuablesListApp();
-  }
 }

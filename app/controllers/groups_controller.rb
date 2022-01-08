@@ -32,7 +32,6 @@ class GroupsController < Groups::ApplicationController
   before_action :user_actions, only: [:show]
 
   before_action do
-    push_frontend_feature_flag(:vue_issuables_list, @group)
     push_frontend_feature_flag(:vue_issues_list, @group, default_enabled: :yaml)
     push_frontend_feature_flag(:iteration_cadences, @group, default_enabled: :yaml)
   end

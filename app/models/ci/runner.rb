@@ -136,13 +136,18 @@ module Ci
         .allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/336433')
     }
 
-    # deprecated
     scope :belonging_to_parent_group_of_project, -> (project_id) {
+      raise ArgumentError, "only 1 project_id allowed for performance reasons" unless project_id.is_a?(Integer)
+
       project_groups = ::Group.joins(:projects).where(projects: { id: project_id })
 
-      joins(:groups)
-        .where(namespaces: { id: project_groups.self_and_ancestors.as_ids })
-        .allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/336433')
+      if Feature.enabled?(:ci_decompose_belonging_to_parent_group_of_project_query, default_enabled: :yaml)
+        belonging_to_group(project_groups.self_and_ancestors.pluck(:id))
+      else
+        joins(:groups)
+          .where(namespaces: { id: project_groups.self_and_ancestors.as_ids })
+          .allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/336433')
+      end
     }
 
     # deprecated

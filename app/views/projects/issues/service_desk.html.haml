@@ -7,9 +7,7 @@
 
 - support_bot_attrs = { service_desk_enabled: @project.service_desk_enabled?, **UserSerializer.new.represent(User.support_bot) }.to_json
 
-- data_endpoint = "#{expose_path(api_v4_projects_issues_path(id: @project.id))}?author_username=#{User.support_bot.username}"
-
-%div{ class: "js-service-desk-issues service-desk-issues", data: { support_bot: support_bot_attrs, service_desk_meta: service_desk_meta(@project) } }
+.js-service-desk-issues.service-desk-issues{ data: { support_bot: support_bot_attrs } }
   .top-area
     = render 'shared/issuable/nav', type: :issues
     .nav-controls.d-block.d-sm-none
@@ -20,12 +18,5 @@
     - if Gitlab::ServiceDesk.supported?
       = render 'service_desk_info_content'
 
-  -# TODO Remove empty_state_path once vue_issuables_list FF is removed.
-  -# https://gitlab.com/gitlab-org/gitlab/-/issues/235652
-  -# `empty_state_path` is used to render the empty state in the HAML version of issuables list.
   .issues-holder
-    = render 'projects/issues/issues',
-        empty_state_path: 'service_desk_empty_state',
-        data_endpoint: data_endpoint,
-        data_empty_state_meta: service_desk_meta(@project),
-        type: 'service_desk'
+    = render 'projects/issues/issues', empty_state_path: 'service_desk_empty_state'

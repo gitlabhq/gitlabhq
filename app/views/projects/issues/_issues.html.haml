@@ -1,25 +1,10 @@
-- is_project_overview = local_assigns.fetch(:is_project_overview, false)
 = render 'shared/alerts/positioning_disabled' if @sort == 'relative_position'
 
-- if Feature.enabled?(:vue_issuables_list, @project) && !is_project_overview
-  - data_endpoint = local_assigns.fetch(:data_endpoint, expose_path(api_v4_projects_issues_path(id: @project.id)))
-  - default_empty_state_meta = { create_issue_path: new_project_issue_path(@project), svg_path: image_path('illustrations/issues.svg') }
-  - data_empty_state_meta = local_assigns.fetch(:data_empty_state_meta, default_empty_state_meta)
-  - type = local_assigns.fetch(:type, 'issues')
-  - if type == 'issues' && use_startup_call?
-    - add_page_startup_api_call(api_v4_projects_issues_path(id: @project.id, params: startup_call_params))
-  .js-issuables-list{ data: { endpoint: data_endpoint,
-    'empty-state-meta': data_empty_state_meta.to_json,
-    'can-bulk-edit': @can_bulk_update.to_json,
-    'sort-key': @sort,
-    type: type,
-    'scoped-labels-available': scoped_labels_available?(@project).to_json } }
-- else
-  - empty_state_path = local_assigns.fetch(:empty_state_path, 'shared/empty_states/issues')
-  %ul.content-list.issues-list.issuable-list{ class: issue_manual_ordering_class }
-    = render partial: "projects/issues/issue", collection: @issues
-    - if @issues.blank?
-      = render empty_state_path
+%ul.content-list.issues-list.issuable-list{ class: issue_manual_ordering_class }
+  = render partial: "projects/issues/issue", collection: @issues
+  - if @issues.blank?
+    - empty_state_path = local_assigns.fetch(:empty_state_path, 'shared/empty_states/issues')
+    = render empty_state_path
 
-  - if @issues.present?
-    = paginate_collection @issues, total_pages: @total_pages
+- if @issues.present?
+  = paginate_collection @issues, total_pages: @total_pages

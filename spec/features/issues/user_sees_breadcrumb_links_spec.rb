@@ -8,8 +8,6 @@ RSpec.describe 'New issue breadcrumb' do
   let(:user) { project.creator }
 
   before do
-    stub_feature_flags(vue_issuables_list: false)
-
     sign_in(user)
     visit(new_project_issue_path(project))
   end

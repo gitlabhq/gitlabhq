@@ -841,9 +841,6 @@ msgstr ""
 msgid "%{policy_link} (notifying after %{elapsed_time} minutes unless %{status})"
 msgstr ""
 
-msgid "%{primary} (%{secondary})"
-msgstr ""
-
 msgid "%{project_path} is a project that you can use to add a README to your GitLab profile. Create a public project and initialize the repository with a README to get started. %{help_link_start}Learn more.%{help_link_end}"
 msgstr ""
 
@@ -31098,9 +31095,6 @@ msgstr ""
 msgid "Search GitLab"
 msgstr ""
 
-msgid "Search Jira issues"
-msgstr ""
-
 msgid "Search a group"
 msgstr ""
 
@@ -32419,16 +32413,10 @@ msgstr ""
 msgid "ServiceDesk|Issues created from Service Desk emails will appear here. Each comment becomes part of the email conversation."
 msgstr ""
 
-msgid "ServiceDesk|Service Desk is enabled but not yet active"
-msgstr ""
-
 msgid "ServiceDesk|Service Desk is not enabled"
 msgstr ""
 
 msgid "ServiceDesk|Service Desk is not supported"
-msgstr ""
-
-msgid "ServiceDesk|To activate Service Desk on this instance, an instance administrator must first set up incoming email."
 msgstr ""
 
 msgid "ServiceDesk|To enable Service Desk on this instance, an instance administrator must first set up incoming email."
@@ -41923,12 +41911,6 @@ msgid "created %{issuable_created} by %{author}"
 msgstr ""
 
 msgid "created %{timeAgoString} by %{email} via %{user}"
-msgstr ""
-
-msgid "created %{timeAgoString} by %{user}"
-msgstr ""
-
-msgid "created %{timeAgoString} by %{user} in Jira"
 msgstr ""
 
 msgid "created %{timeAgo}"

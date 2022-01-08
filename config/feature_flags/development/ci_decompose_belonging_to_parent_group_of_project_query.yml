@@ -1,0 +1,8 @@
+---
+name: ci_decompose_belonging_to_parent_group_of_project_query
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/76454
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/348560
+milestone: '14.7'
+type: development
+group: group::pipeline execution
+default_enabled: false

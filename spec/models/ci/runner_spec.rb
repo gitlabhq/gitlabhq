@@ -203,27 +203,79 @@ RSpec.describe Ci::Runner do
     end
   end
 
-  describe '.belonging_to_parent_group_of_project' do
-    let(:project) { create(:project, group: group) }
-    let(:group) { create(:group) }
-    let(:runner) { create(:ci_runner, :group, groups: [group]) }
-    let!(:unrelated_group) { create(:group) }
-    let!(:unrelated_project) { create(:project, group: unrelated_group) }
-    let!(:unrelated_runner) { create(:ci_runner, :group, groups: [unrelated_group]) }
+  shared_examples '.belonging_to_parent_group_of_project' do
+    let!(:group1) { create(:group) }
+    let!(:project1) { create(:project, group: group1) }
+    let!(:runner1) { create(:ci_runner, :group, groups: [group1]) }
+
+    let!(:group2) { create(:group) }
+    let!(:project2) { create(:project, group: group2) }
+    let!(:runner2) { create(:ci_runner, :group, groups: [group2]) }
+
+    let(:project_id) { project1.id }
+
+    subject(:result) { described_class.belonging_to_parent_group_of_project(project_id) }
 
     it 'returns the specific group runner' do
-      expect(described_class.belonging_to_parent_group_of_project(project.id)).to contain_exactly(runner)
+      expect(result).to contain_exactly(runner1)
     end
 
-    context 'with a parent group with a runner' do
-      let(:runner) { create(:ci_runner, :group, groups: [parent_group]) }
-      let(:project) { create(:project, group: group) }
-      let(:group) { create(:group, parent: parent_group) }
-      let(:parent_group) { create(:group) }
-
-      it 'returns the group runner from the parent group' do
-        expect(described_class.belonging_to_parent_group_of_project(project.id)).to contain_exactly(runner)
+    context 'with a parent group with a runner', :sidekiq_inline do
+      before do
+        group1.update!(parent: group2)
       end
+
+      it 'returns the group runner from the group and the parent group' do
+        expect(result).to contain_exactly(runner1, runner2)
+      end
+    end
+
+    context 'with multiple project ids' do
+      let(:project_id) { [project1.id, project2.id] }
+
+      it 'raises ArgumentError' do
+        expect { result }.to raise_error(ArgumentError)
+      end
+    end
+  end
+
+  context 'when ci_decompose_belonging_to_parent_group_of_project_query is enabled' do
+    context 'when use_traversal_ids* are enabled' do
+      it_behaves_like '.belonging_to_parent_group_of_project'
+    end
+
+    context 'when use_traversal_ids* are disabled' do
+      before do
+        stub_feature_flags(
+          use_traversal_ids: false,
+          use_traversal_ids_for_ancestors: false,
+          use_traversal_ids_for_ancestor_scopes: false
+        )
+      end
+
+      it_behaves_like '.belonging_to_parent_group_of_project'
+    end
+  end
+
+  context 'when ci_decompose_belonging_to_parent_group_of_project_query is disabled' do
+    before do
+      stub_feature_flags(ci_decompose_belonging_to_parent_group_of_project_query: false)
+    end
+
+    context 'when use_traversal_ids* are enabled' do
+      it_behaves_like '.belonging_to_parent_group_of_project'
+    end
+
+    context 'when use_traversal_ids* are disabled' do
+      before do
+        stub_feature_flags(
+          use_traversal_ids: false,
+          use_traversal_ids_for_ancestors: false,
+          use_traversal_ids_for_ancestor_scopes: false
+        )
+      end
+
+      it_behaves_like '.belonging_to_parent_group_of_project'
     end
   end
 

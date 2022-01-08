@@ -1,8 +1,6 @@
 /* eslint-disable class-methods-use-this, no-new */
 
 import $ from 'jquery';
-import { property } from 'lodash';
-
 import issuableEventHub from '~/issues_list/eventhub';
 import LabelsSelect from '~/labels/labels_select';
 import MilestoneSelect from '~/milestones/milestone_select';
@@ -16,8 +14,6 @@ const SIDEBAR_COLLAPSED_CLASS = 'right-sidebar-collapsed issuable-bulk-update-si
 
 export default class IssuableBulkUpdateSidebar {
   constructor() {
-    this.vueIssuablesListFeature = property(['gon', 'features', 'vueIssuablesList'])(window);
-
     this.initDomElements();
     this.bindEvents();
     this.initDropdowns();
@@ -143,7 +139,7 @@ export default class IssuableBulkUpdateSidebar {
   }
 
   toggleCheckboxDisplay(show) {
-    this.$checkAllContainer.toggleClass(HIDDEN_CLASS, !show || this.vueIssuablesListFeature);
+    this.$checkAllContainer.toggleClass(HIDDEN_CLASS, !show);
     this.$issueChecks.toggleClass(HIDDEN_CLASS, !show);
   }
 
