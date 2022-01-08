@@ -7,10 +7,10 @@ RSpec.describe ResourceAccessTokens::CreateService do
 
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, :private) }
+  let_it_be(:group) { create(:group, :private) }
   let_it_be(:params) { {} }
 
   describe '#execute' do
-    # Created shared_examples as it will easy to include specs for group bots in https://gitlab.com/gitlab-org/gitlab/-/issues/214046
     shared_examples 'token creation fails' do
       let(:resource) { create(:project)}
 
@@ -31,7 +31,7 @@ RSpec.describe ResourceAccessTokens::CreateService do
 
         access_token = response.payload[:access_token]
 
-        expect(access_token.user.reload.user_type).to eq("#{resource_type}_bot")
+        expect(access_token.user.reload.user_type).to eq("project_bot")
         expect(access_token.user.created_by_id).to eq(user.id)
       end
 
@@ -112,10 +112,8 @@ RSpec.describe ResourceAccessTokens::CreateService do
         end
 
         context 'when user is external' do
-          let(:user) { create(:user, :external) }
-
           before do
-            project.add_maintainer(user)
+            user.update!(external: true)
           end
 
           it 'creates resource bot user with external status' do
@@ -162,7 +160,7 @@ RSpec.describe ResourceAccessTokens::CreateService do
                 access_token = response.payload[:access_token]
                 project_bot = access_token.user
 
-                expect(project.members.find_by(user_id: project_bot.id).expires_at).to eq(nil)
+                expect(resource.members.find_by(user_id: project_bot.id).expires_at).to eq(nil)
               end
             end
           end
@@ -183,7 +181,7 @@ RSpec.describe ResourceAccessTokens::CreateService do
                 access_token = response.payload[:access_token]
                 project_bot = access_token.user
 
-                expect(project.members.find_by(user_id: project_bot.id).expires_at).to eq(params[:expires_at])
+                expect(resource.members.find_by(user_id: project_bot.id).expires_at).to eq(params[:expires_at])
               end
             end
           end
@@ -234,24 +232,41 @@ RSpec.describe ResourceAccessTokens::CreateService do
       end
     end
 
+    shared_examples 'when user does not have permission to create a resource bot' do
+      it_behaves_like 'token creation fails'
+
+      it 'returns the permission error message' do
+        response = subject
+
+        expect(response.error?).to be true
+        expect(response.errors).to include("User does not have permission to create #{resource_type} access token")
+      end
+    end
+
     context 'when resource is a project' do
       let_it_be(:resource_type) { 'project' }
       let_it_be(:resource) { project }
 
-      context 'when user does not have permission to create a resource bot' do
-        it_behaves_like 'token creation fails'
-
-        it 'returns the permission error message' do
-          response = subject
-
-          expect(response.error?).to be true
-          expect(response.errors).to include("User does not have permission to create #{resource_type} access token")
-        end
-      end
+      it_behaves_like 'when user does not have permission to create a resource bot'
 
       context 'user with valid permission' do
         before_all do
           resource.add_maintainer(user)
+        end
+
+        it_behaves_like 'allows creation of bot with valid params'
+      end
+    end
+
+    context 'when resource is a project' do
+      let_it_be(:resource_type) { 'group' }
+      let_it_be(:resource) { group }
+
+      it_behaves_like 'when user does not have permission to create a resource bot'
+
+      context 'user with valid permission' do
+        before_all do
+          resource.add_owner(user)
         end
 
         it_behaves_like 'allows creation of bot with valid params'

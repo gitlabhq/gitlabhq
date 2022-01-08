@@ -170,6 +170,13 @@ Helm chart](https://gitlab.com/gitlab-org/charts/gitlab/), itself deployed with 
 
 See [Review Apps](../review_apps.md) for more details about Review Apps.
 
+### Run tests in parallel
+
+To run tests in parallel on CI, the [Knapsack](https://github.com/KnapsackPro/knapsack)
+gem is used. Knapsack reports are generated automatically and stored in the `GCS` bucket
+`knapsack-reports` in the `gitlab-qa-resources` project. The [`KnapsackReport`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/qa/qa/tools/knapsack_report.rb)
+helper handles automated report generation and upload.
+
 ## Test metrics
 
 For additional test health visibility, use a custom setup to export test execution

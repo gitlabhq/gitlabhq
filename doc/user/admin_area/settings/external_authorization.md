@@ -29,38 +29,12 @@ functionality that render cross-project data. That includes:
   Labels, Milestones, Merge requests).
 - Global and Group search are disabled.
 
-This is to prevent performing to many requests at once to the external
+This is to prevent performing too many requests at once to the external
 authorization service.
 
 Whenever access is granted or denied this is logged in a log file called
 `external-policy-access-control.log`. Read more about the logs GitLab keeps in
 the [Omnibus GitLab documentation](https://docs.gitlab.com/omnibus/settings/logs.html).
-
-## Configuration
-
-The external authorization service can be enabled by an administrator:
-
-1. On the top bar, select **Menu > Admin**.
-1. On the left sidebar, select **Settings > General**:
-   ![Enable external authorization service](img/external_authorization_service_settings.png)
-
-The available required properties are:
-
-- **Service URL**: The URL to make authorization requests to. When leaving the
-  URL blank, cross project features remain available while still being able
-  to specify classification labels for projects.
-- **External authorization request timeout**: The timeout after which an
-  authorization request is aborted. When a request times out, access is denied
-  to the user.
-- **Client authentication certificate**: The certificate to use to authenticate
-  with the external authorization service.
-- **Client authentication key**: Private key for the certificate when
-  authentication is required for the external authorization service, this is
-  encrypted when stored.
-- **Client authentication key password**: Passphrase to use for the private key
-  when authenticating with the external service this is encrypted when stored.
-- **Default classification label**: The classification label to use when
-  requesting authorization if no specific label is defined on the project
 
 When using TLS Authentication with a self signed certificate, the CA certificate
 needs to be trusted by the OpenSSL installation. When using GitLab installed
@@ -68,6 +42,16 @@ using Omnibus, learn to install a custom CA in the
 [Omnibus GitLab documentation](https://docs.gitlab.com/omnibus/settings/ssl.html).
 Alternatively, learn where to install custom certificates by using
 `openssl version -d`.
+
+## Configuration
+
+The external authorization service can be enabled by an administrator:
+
+1. On the top bar, select **Menu > Admin**.
+1. On the left sidebar, select **Settings > General**.
+1. Expand **External authorization**.
+1. Complete the fields.
+1. Select **Save changes**.
 
 ## How it works
 

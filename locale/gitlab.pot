@@ -7386,15 +7386,6 @@ msgstr ""
 msgid "Click to reveal"
 msgstr ""
 
-msgid "Client authentication certificate"
-msgstr ""
-
-msgid "Client authentication key"
-msgstr ""
-
-msgid "Client authentication key password"
-msgstr ""
-
 msgid "Client request timeout"
 msgstr ""
 
@@ -9034,7 +9025,7 @@ msgstr ""
 msgid "Configure a %{codeStart}.gitlab-webide.yml%{codeEnd} file in the %{codeStart}.gitlab%{codeEnd} directory to start using the Web Terminal. %{helpStart}Learn more.%{helpEnd}"
 msgstr ""
 
-msgid "Configure advanced permissions, Large File Storage, and two-factor authentication settings."
+msgid "Configure advanced permissions, Large File Storage, two-factor authentication, and customer relations settings."
 msgstr ""
 
 msgid "Configure existing installation"
@@ -11335,9 +11326,6 @@ msgstr ""
 msgid "Default branch protection"
 msgstr ""
 
-msgid "Default classification label"
-msgstr ""
-
 msgid "Default delayed project deletion"
 msgstr ""
 
@@ -13207,9 +13195,6 @@ msgstr ""
 msgid "Enable automatic repository housekeeping"
 msgstr ""
 
-msgid "Enable classification control using an external service"
-msgstr ""
-
 msgid "Enable container expiration and retention policies for projects created earlier than GitLab 12.7."
 msgstr ""
 
@@ -14492,9 +14477,6 @@ msgstr ""
 msgid "Exported requirements"
 msgstr ""
 
-msgid "External Classification Policy Authorization"
-msgstr ""
-
 msgid "External ID"
 msgstr ""
 
@@ -14504,13 +14486,7 @@ msgstr ""
 msgid "External User:"
 msgstr ""
 
-msgid "External authentication"
-msgstr ""
-
 msgid "External authorization denied access to this project"
-msgstr ""
-
-msgid "External authorization request timeout"
 msgstr ""
 
 msgid "External storage URL"
@@ -14526,6 +14502,54 @@ msgid "ExternalAuthorizationService|Classification label"
 msgstr ""
 
 msgid "ExternalAuthorizationService|When no classification label is set the default label `%{default_label}` will be used."
+msgstr ""
+
+msgid "ExternalAuthorization|Access to projects is validated on an external service using their classification label."
+msgstr ""
+
+msgid "ExternalAuthorization|Certificate used to authenticate with the external authorization service. If blank, the server certificate is validated when accessing over HTTPS."
+msgstr ""
+
+msgid "ExternalAuthorization|Classification label to use when requesting authorization if no specific  label is defined on the project."
+msgstr ""
+
+msgid "ExternalAuthorization|Client authorization certificate"
+msgstr ""
+
+msgid "ExternalAuthorization|Client authorization key"
+msgstr ""
+
+msgid "ExternalAuthorization|Client authorization key password (optional)"
+msgstr ""
+
+msgid "ExternalAuthorization|Default classification label"
+msgstr ""
+
+msgid "ExternalAuthorization|Enable classification control using an external service"
+msgstr ""
+
+msgid "ExternalAuthorization|External authorization"
+msgstr ""
+
+msgid "ExternalAuthorization|External authorization request timeout (seconds)"
+msgstr ""
+
+msgid "ExternalAuthorization|External classification policy authorization."
+msgstr ""
+
+msgid "ExternalAuthorization|Passphrase required to decrypt the private key. Encrypted when stored."
+msgstr ""
+
+msgid "ExternalAuthorization|Period GitLab waits for a response from the external service. If there is no response, access is denied. Default: 0.5 seconds."
+msgstr ""
+
+msgid "ExternalAuthorization|Private key of client authentication certificate. Encrypted when stored."
+msgstr ""
+
+msgid "ExternalAuthorization|Service URL"
+msgstr ""
+
+msgid "ExternalAuthorization|URL to which the projects make authorization requests. If the URL is blank, cross-project features are available and can still specify classification labels for projects."
 msgstr ""
 
 msgid "ExternalIssueIntegration|Not all data may be displayed here. To view more details or make changes to this issue, go to %{linkStart}%{trackerName}%{linkEnd}."
@@ -17078,6 +17102,9 @@ msgstr ""
 msgid "GroupSettings|Allow project access token creation"
 msgstr ""
 
+msgid "GroupSettings|Allows creating organizations and contacts and associating them with issues."
+msgstr ""
+
 msgid "GroupSettings|Applied to all subgroups unless overridden by a group owner. Groups already added to the project lose access."
 msgstr ""
 
@@ -17121,6 +17148,9 @@ msgid "GroupSettings|Disable email notifications"
 msgstr ""
 
 msgid "GroupSettings|Disable group mentions"
+msgstr ""
+
+msgid "GroupSettings|Enable customer relations"
 msgstr ""
 
 msgid "GroupSettings|Enable delayed project deletion"
@@ -17821,9 +17851,6 @@ msgid "If disabled, only administrators can configure repository mirroring."
 msgstr ""
 
 msgid "If enabled, GitLab will handle Object Storage replication using Geo. %{linkStart}Learn more%{linkEnd}"
-msgstr ""
-
-msgid "If enabled, access to projects will be validated on an external service using their classification label."
 msgstr ""
 
 msgid "If enabled, only protected branches will be mirrored."
@@ -25810,7 +25837,7 @@ msgstr ""
 msgid "Permissions Help"
 msgstr ""
 
-msgid "Permissions, LFS, 2FA"
+msgid "Permissions and group features"
 msgstr ""
 
 msgid "Personal Access Token"
@@ -32377,9 +32404,6 @@ msgstr ""
 msgid "Service Desk allows people to create issues in your GitLab instance without their own user account. It provides a unique email address for end users to create issues in a project. Replies can be sent either through the GitLab interface or by email. End users only see threads through email."
 msgstr ""
 
-msgid "Service URL"
-msgstr ""
-
 msgid "Service account generated successfully"
 msgstr ""
 
@@ -35268,9 +35292,6 @@ msgstr ""
 msgid "The URLs for connecting to Elasticsearch. For clustering, add the URLs separated by commas."
 msgstr ""
 
-msgid "The X509 Certificate to use when mutual TLS is required to communicate with the external authorization service. If left blank, the server certificate is still validated when accessing over HTTPS."
-msgstr ""
-
 msgid "The application will be used where the client secret can be kept confidential. Native mobile apps and Single Page Apps are considered non-confidential."
 msgstr ""
 
@@ -35546,9 +35567,6 @@ msgstr ""
 msgid "The parent epic is confidential and can only contain confidential epics and issues"
 msgstr ""
 
-msgid "The passphrase required to decrypt the private key. This is optional and the value is encrypted at rest."
-msgstr ""
-
 msgid "The password for the Jenkins server."
 msgstr ""
 
@@ -35562,9 +35580,6 @@ msgid "The pipeline has been deleted"
 msgstr ""
 
 msgid "The pipelines schedule runs pipelines in the future, repeatedly, for specific branches or tags. Those scheduled pipelines will inherit limited project access based on their associated user."
-msgstr ""
-
-msgid "The private key to use when a client certificate is provided. This value is encrypted at rest."
 msgstr ""
 
 msgid "The project can be accessed by any logged in user except external users."
@@ -36783,9 +36798,6 @@ msgid "Time from last commit to merge"
 msgstr ""
 
 msgid "Time in seconds"
-msgstr ""
-
-msgid "Time in seconds GitLab will wait for a response from the external service. When the service does not respond in time, access will be denied."
 msgstr ""
 
 msgid "Time of import: %{importTime}"
@@ -40026,9 +40038,6 @@ msgid "When enabled, existing personal access tokens may be revoked. Leave blank
 msgstr ""
 
 msgid "When inactive, an external authentication provider must be used."
-msgstr ""
-
-msgid "When leaving the URL blank, classification labels can still be specified without disabling cross project features or performing external authorization checks."
 msgstr ""
 
 msgid "When merge requests and commits in the default branch close, any issues they reference also close."

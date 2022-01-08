@@ -11,7 +11,7 @@ RSpec.describe CustomerRelations::Contacts::UpdateService do
 
   describe '#execute' do
     context 'when the user has no permission' do
-      let_it_be(:group) { create(:group) }
+      let_it_be(:group) { create(:group, :crm_enabled) }
 
       let(:params) { { first_name: 'Gary' } }
 
@@ -24,7 +24,7 @@ RSpec.describe CustomerRelations::Contacts::UpdateService do
     end
 
     context 'when user has permission' do
-      let_it_be(:group) { create(:group) }
+      let_it_be(:group) { create(:group, :crm_enabled) }
 
       before_all do
         group.add_developer(user)

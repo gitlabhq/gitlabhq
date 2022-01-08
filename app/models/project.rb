@@ -1667,6 +1667,7 @@ class Project < ApplicationRecord
       project_members.find_by(user_id: user)
     end
   end
+  alias_method :resource_member, :project_member
 
   def membership_locked?
     false

@@ -123,7 +123,7 @@ your group.
 1. Select **Your Groups**.
 1. Find the group and select it.
 1. From the left menu, select **Settings > General**.
-1. Expand the **Permissions, LFS, 2FA** section.
+1. Expand the **Permissions and group features** section.
 1. Clear the **Allow users to request access** checkbox.
 1. Select **Save changes**.
 
@@ -219,7 +219,7 @@ To change this setting for a specific group:
 1. Select **Your Groups**.
 1. Find the group and select it.
 1. From the left menu, select **Settings > General**.
-1. Expand the **Permissions, LFS, 2FA** section.
+1. Expand the **Permissions and group features** section.
 1. Select the desired option in the **Default branch protection** dropdown list.
 1. Select **Save changes**.
 
@@ -250,7 +250,7 @@ To change this setting for a specific group:
 1. Select **Your Groups**.
 1. Find the group and select it.
 1. From the left menu, select **Settings > General**.
-1. Expand the **Permissions, LFS, 2FA** section.
+1. Expand the **Permissions and group features** section.
 1. Select the desired option in the **Allowed to create projects** dropdown list.
 1. Select **Save changes**.
 
@@ -489,7 +489,7 @@ If you select this setting in the **Animals** group:
 To prevent sharing outside of the group's hierarchy:
 
 1. Go to the group's **Settings > General** page.
-1. Expand the **Permissions, LFS, 2FA** section.
+1. Expand the **Permissions and group features** section.
 1. Select **Prevent members from sending invitations to groups outside of `<group_name>` and its subgroups**.
 1. Select **Save changes**.
 
@@ -501,7 +501,7 @@ a project with another group](../project/members/share_project_with_groups.md) t
 To prevent a project from being shared with other groups:
 
 1. Go to the group's **Settings > General** page.
-1. Expand the **Permissions, LFS, 2FA** section.
+1. Expand the **Permissions and group features** section.
 1. Select **Prevent sharing a project within `<group_name>` with other groups**.
 1. Select **Save changes**.
 
@@ -523,7 +523,7 @@ The setting does not cascade. Projects in subgroups observe the subgroup configu
 To prevent members from being added to projects in a group:
 
 1. Go to the group's **Settings > General** page.
-1. Expand the **Permissions, LFS, 2FA** section.
+1. Expand the **Permissions and group features** section.
 1. Under **Member lock**, select **Prevent adding new members to project membership within this group**.
 1. Select **Save changes**.
 
@@ -574,7 +574,7 @@ You should consider these security implications before configuring IP address re
 To restrict group access by IP address:
 
 1. Go to the group's **Settings > General** page.
-1. Expand the **Permissions, LFS, 2FA** section.
+1. Expand the **Permissions and group features** section.
 1. In the **Allow access to the following IP addresses** field, enter IP address ranges in CIDR notation.
 1. Select **Save changes**.
 
@@ -591,7 +591,7 @@ You can prevent users with email addresses in specific domains from being added 
 To restrict group access by domain:
 
 1. Go to the group's **Settings > General** page.
-1. Expand the **Permissions, LFS, 2FA** section.
+1. Expand the **Permissions and group features** section.
 1. In the **Restrict membership by email** field, enter the domain names.
 1. Select **Save changes**.
 
@@ -645,7 +645,7 @@ You can disable all email notifications related to the group, which includes its
 To disable email notifications:
 
 1. Go to the group's **Settings > General** page.
-1. Expand the **Permissions, LFS, 2FA** section.
+1. Expand the **Permissions and group features** section.
 1. Select **Disable email notifications**.
 1. Select **Save changes**.
 
@@ -663,7 +663,7 @@ This is particularly helpful for groups with a large number of users.
 To disable group mentions:
 
 1. Go to the group's **Settings > General** page.
-1. Expand the **Permissions, LFS, 2FA** section.
+1. Expand the **Permissions and group features** section.
 1. Select **Disable group mentions**.
 1. Select **Save changes**.
 
@@ -688,7 +688,7 @@ the default setting.
 To enable delayed deletion of projects in a group:
 
 1. Go to the group's **Settings > General** page.
-1. Expand the **Permissions, LFS, 2FA** section.
+1. Expand the **Permissions and group features** section.
 1. Check **Enable delayed project deletion**.
 1. Optional. To prevent subgroups from changing this setting, select **Enforce for all subgroups**.
 1. Select **Save changes**.
@@ -713,7 +713,7 @@ If even one is set to `true`, then the group does not allow outside forks.
 To prevent projects from being forked outside the group:
 
 1. Go to the top-level group's **Settings > General** page.
-1. Expand the **Permissions, LFS, 2FA** section.
+1. Expand the **Permissions and group features** section.
 1. Check **Prevent project forking outside current group**.
 1. Select **Save changes**.
 

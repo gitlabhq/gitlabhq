@@ -78,7 +78,7 @@ To enable or disable project access token creation for all projects in a top-lev
 
 1. On the top bar, select **Menu > Groups** and find your group.
 1. On the left sidebar, select **Settings > General**.
-1. Expand **Permissions, LFS, 2FA**.
+1. Expand **Permissions and group features**.
 1. Under **Permissions**, turn on or off **Allow project access token creation**.
 
 Even when creation is disabled, you can still use and revoke existing project access tokens.

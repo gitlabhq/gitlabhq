@@ -163,6 +163,70 @@ RSpec.describe Groups::UpdateService do
         expect(updated_group.parent_id).to be_nil
       end
     end
+
+    context 'crm_enabled param' do
+      context 'when no existing crm_settings' do
+        it 'when param not present, leave crm disabled' do
+          params = {}
+
+          described_class.new(public_group, user, params).execute
+          updated_group = public_group.reload
+
+          expect(updated_group.crm_enabled?).to be_falsey
+        end
+
+        it 'when param set true, enables crm' do
+          params = { crm_enabled: true }
+
+          described_class.new(public_group, user, params).execute
+          updated_group = public_group.reload
+
+          expect(updated_group.crm_enabled?).to be_truthy
+        end
+      end
+
+      context 'with existing crm_settings' do
+        it 'when param set true, enables crm' do
+          params = { crm_enabled: true }
+          create(:crm_settings, group: public_group)
+
+          described_class.new(public_group, user, params).execute
+
+          updated_group = public_group.reload
+          expect(updated_group.crm_enabled?).to be_truthy
+        end
+
+        it 'when param set false, disables crm' do
+          params = { crm_enabled: false }
+          create(:crm_settings, group: public_group, enabled: true)
+
+          described_class.new(public_group, user, params).execute
+
+          updated_group = public_group.reload
+          expect(updated_group.crm_enabled?).to be_falsy
+        end
+
+        it 'when param not present, crm remains disabled' do
+          params = {}
+          create(:crm_settings, group: public_group)
+
+          described_class.new(public_group, user, params).execute
+
+          updated_group = public_group.reload
+          expect(updated_group.crm_enabled?).to be_falsy
+        end
+
+        it 'when param not present, crm remains enabled' do
+          params = {}
+          create(:crm_settings, group: public_group, enabled: true)
+
+          described_class.new(public_group, user, params).execute
+
+          updated_group = public_group.reload
+          expect(updated_group.crm_enabled?).to be_truthy
+        end
+      end
+    end
   end
 
   context "unauthorized visibility_level validation" do

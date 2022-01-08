@@ -2086,6 +2086,23 @@ RSpec.describe Group do
     end
   end
 
+  describe '#bots' do
+    subject { group.bots }
+
+    let_it_be(:group) { create(:group) }
+    let_it_be(:project_bot) { create(:user, :project_bot) }
+    let_it_be(:user) { create(:user) }
+
+    before_all do
+      [project_bot, user].each do |member|
+        group.add_maintainer(member)
+      end
+    end
+
+    it { is_expected.to contain_exactly(project_bot) }
+    it { is_expected.not_to include(user) }
+  end
+
   describe '#related_group_ids' do
     let(:nested_group) { create(:group, parent: group) }
     let(:shared_with_group) { create(:group, parent: group) }

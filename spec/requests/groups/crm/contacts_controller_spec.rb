@@ -24,7 +24,7 @@ RSpec.describe Groups::Crm::ContactsController do
 
   shared_examples 'ok response with index template if authorized' do
     context 'private group' do
-      let(:group) { create(:group, :private) }
+      let(:group) { create(:group, :private, :crm_enabled) }
 
       context 'with authorized user' do
         before do
@@ -32,11 +32,17 @@ RSpec.describe Groups::Crm::ContactsController do
           sign_in(user)
         end
 
-        context 'when feature flag is enabled' do
+        context 'when crm_enabled is true' do
           it_behaves_like 'ok response with index template'
         end
 
-        context 'when feature flag is not enabled' do
+        context 'when crm_enabled is false' do
+          let(:group) { create(:group, :private) }
+
+          it_behaves_like 'response with 404 status'
+        end
+
+        context 'when feature flag is disabled' do
           before do
             stub_feature_flags(customer_relations: false)
           end
@@ -64,7 +70,7 @@ RSpec.describe Groups::Crm::ContactsController do
     end
 
     context 'public group' do
-      let(:group) { create(:group, :public) }
+      let(:group) { create(:group, :public, :crm_enabled) }
 
       context 'with anonymous user' do
         it_behaves_like 'ok response with index template'

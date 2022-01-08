@@ -7,7 +7,7 @@ RSpec.describe Issues::UpdateService, :mailer do
   let_it_be(:user2) { create(:user) }
   let_it_be(:user3) { create(:user) }
   let_it_be(:guest) { create(:user) }
-  let_it_be(:group) { create(:group, :public) }
+  let_it_be(:group) { create(:group, :public, :crm_enabled) }
   let_it_be(:project, reload: true) { create(:project, :repository, group: group) }
   let_it_be(:label) { create(:label, project: project) }
   let_it_be(:label2) { create(:label, project: project) }

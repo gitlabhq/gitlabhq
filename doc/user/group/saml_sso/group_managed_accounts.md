@@ -113,7 +113,7 @@ on the lifetime of personal access tokens apply.
 To set a limit on how long personal access tokens are valid for users in a group managed account:
 
 1. Navigate to the **Settings > General** page in your group's sidebar.
-1. Expand the **Permissions, LFS, 2FA** section.
+1. Expand the **Permissions and group features** section.
 1. Fill in the **Maximum allowable lifetime for personal access tokens (days)** field.
 1. Click **Save changes**.
 

@@ -9,7 +9,8 @@ RSpec.describe 'Group navbar' do
   include_context 'group navbar structure'
 
   let_it_be(:user) { create(:user) }
-  let_it_be(:group) { create(:group) }
+
+  let(:group) { create(:group) }
 
   before do
     insert_package_nav(_('Kubernetes'))
@@ -40,7 +41,9 @@ RSpec.describe 'Group navbar' do
     it_behaves_like 'verified navigation bar'
   end
 
-  context 'when customer_relations feature flag is enabled' do
+  context 'when customer_relations feature and flag is enabled' do
+    let(:group) { create(:group, :crm_enabled) }
+
     before do
       stub_feature_flags(customer_relations: true)
 

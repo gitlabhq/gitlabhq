@@ -49,7 +49,7 @@ Gitlab::CurrentSettings.update!('require_two_factor_authentication': false)
 To enforce 2FA only for certain groups:
 
 1. Go to the group's **Settings > General** page.
-1. Expand the **Permissions, LFS, 2FA** section.
+1. Expand the **Permissions and group features** section.
 1. Select the **Require all users in this group to set up two-factor authentication** option.
 
 You can also specify a grace period in the **Time before enforced** option.
@@ -76,7 +76,7 @@ The following are important notes about 2FA:
   groups) the shortest grace period is used.
 - It is possible to disallow subgroups from setting up their own 2FA requirements:
   1. Go to the top-level group's **Settings > General**.
-  1. Expand the **Permissions, LFS, 2FA** section.
+  1. Expand the **Permissions and group features** section.
   1. Uncheck the **Allow subgroups to set up their own two-factor authentication rule** field.
 
   This action causes all subgroups with 2FA requirements to stop requiring that from their members.

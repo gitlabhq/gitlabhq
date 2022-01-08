@@ -8,7 +8,7 @@ module API
 
     feature_category :authentication_and_authorization
 
-    %w[project].each do |source_type|
+    %w[project group].each do |source_type|
       resource source_type.pluralize, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
         desc 'Get list of all access tokens for the specified resource' do
           detail 'This feature was introduced in GitLab 13.9.'
@@ -23,8 +23,8 @@ module API
 
           tokens = PersonalAccessTokensFinder.new({ user: resource.bots, impersonation: false }).execute.preload_users
 
-          resource.project_members.load
-          present paginate(tokens), with: Entities::ResourceAccessToken, project: resource
+          resource.members.load
+          present paginate(tokens), with: Entities::ResourceAccessToken, resource: resource
         end
 
         desc 'Revoke a resource access token' do
@@ -58,7 +58,7 @@ module API
           requires :id, type: String, desc: "The #{source_type} ID"
           requires :name, type: String, desc: "Resource access token name"
           requires :scopes, type: Array[String], desc: "The permissions of the token"
-          optional :access_level, type: Integer, desc: "The access level of the token in the project"
+          optional :access_level, type: Integer, desc: "The access level of the token in the #{source_type}"
           optional :expires_at, type: Date, desc: "The expiration date of the token"
         end
         post ':id/access_tokens' do
@@ -71,7 +71,7 @@ module API
           ).execute
 
           if token_response.success?
-            present token_response.payload[:access_token], with: Entities::ResourceAccessTokenWithToken, project: resource
+            present token_response.payload[:access_token], with: Entities::ResourceAccessTokenWithToken, resource: resource
           else
             bad_request!(token_response.message)
           end

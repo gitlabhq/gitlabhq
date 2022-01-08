@@ -63,7 +63,7 @@ module ResourceAccessTokens
         name: params[:name] || "#{resource.name.to_s.humanize} bot",
         email: generate_email,
         username: generate_username,
-        user_type: "#{resource_type}_bot".to_sym,
+        user_type: :project_bot,
         skip_confirmation: true # Bot users should always have their emails confirmed.
       }
     end

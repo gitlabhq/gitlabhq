@@ -6,7 +6,7 @@ RSpec.describe CustomerRelations::Organizations::CreateService do
   describe '#execute' do
     let_it_be(:user) { create(:user) }
 
-    let(:group) { create(:group) }
+    let(:group) { create(:group, :crm_enabled) }
     let(:params) { attributes_for(:organization, group: group) }
 
     subject(:response) { described_class.new(group: group, current_user: user, params: params).execute }

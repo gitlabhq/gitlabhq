@@ -332,7 +332,7 @@ export default {
       v-if="showCheckbox"
       class="gl-align-self-center"
       :checked="checkboxChecked"
-      @input="$emit('checked-input', $event)"
+      @change="$emit('checked-input', $event)"
     >
       <span class="gl-sr-only">{{ __('Select all') }}</span>
     </gl-form-checkbox>

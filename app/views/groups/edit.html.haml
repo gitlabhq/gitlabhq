@@ -20,11 +20,11 @@
 %section.settings.gs-permissions.no-animate#js-permissions-settings{ class: ('expanded' if expanded), data: { qa_selector: 'permission_lfs_2fa_content' } }
   .settings-header
     %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only{ role: 'button' }
-      = _('Permissions, LFS, 2FA')
+      = _('Permissions and group features')
     %button.btn.gl-button.js-settings-toggle{ type: 'button' }
       = expanded ? _('Collapse') : _('Expand')
     %p
-      = _('Configure advanced permissions, Large File Storage, and two-factor authentication settings.')
+      = _('Configure advanced permissions, Large File Storage, two-factor authentication, and customer relations settings.')
   .settings-content
     = render 'groups/settings/permissions'
 

@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Issues::CreateService do
   include AfterNextHelpers
 
-  let_it_be(:group) { create(:group) }
+  let_it_be(:group) { create(:group, :crm_enabled) }
   let_it_be_with_reload(:project) { create(:project, group: group) }
   let_it_be(:user) { create(:user) }
 

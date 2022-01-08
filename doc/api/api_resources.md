@@ -25,7 +25,7 @@ The following API resources are available in the project context:
 | Resource                                                                | Available endpoints |
 |:------------------------------------------------------------------------|:--------------------|
 | [Access requests](access_requests.md)                                   | `/projects/:id/access_requests` (also available for groups) |
-| [Access tokens](resource_access_tokens.md)                              | `/projects/:id/access_tokens` |
+| [Access tokens](resource_access_tokens.md)                              | `/projects/:id/access_tokens` (also available for groups) |
 | [Award emoji](award_emoji.md)                                           | `/projects/:id/issues/.../award_emoji`, `/projects/:id/merge_requests/.../award_emoji`, `/projects/:id/snippets/.../award_emoji` |
 | [Branches](branches.md)                                                 | `/projects/:id/repository/branches/`, `/projects/:id/repository/merged_branches` |
 | [Commits](commits.md)                                                   | `/projects/:id/repository/commits`, `/projects/:id/statuses` |
@@ -100,6 +100,7 @@ The following API resources are available in the group context:
 | Resource                                                         | Available endpoints |
 |:-----------------------------------------------------------------|:--------------------|
 | [Access requests](access_requests.md)                            | `/groups/:id/access_requests/` (also available for projects) |
+| [Access tokens](group_access_tokens.md)                          | `/groups/:id/access_tokens` (also available for projects) |
 | [Custom attributes](custom_attributes.md)                        | `/groups/:id/custom_attributes` (also available for projects and users) |
 | [Debian distributions](packages/debian_group_distributions.md)   | `/groups/:id/-/packages/debian` (also available for projects) |
 | [Deploy tokens](deploy_tokens.md)                                | `/groups/:id/deploy_tokens` (also available for projects and standalone) |

@@ -101,7 +101,7 @@ You can change this setting:
 - As group owner:
   1. Select the group.
   1. On the left sidebar, select **Settings > General**.
-  1. Expand **Permissions, LFS, 2FA**.
+  1. Expand **Permissions and group features**.
 - As an administrator:
   1. On the top bar, select **Menu > Admin**.
   1. On the left sidebar, select **Overview > Groups**.

@@ -1,11 +1,12 @@
 %section.settings.as-external-auth.no-animate#js-external-auth-settings{ class: ('expanded' if expanded) }
   .settings-header
     %h4
-      = _('External authentication')
+      = s_('ExternalAuthorization|External authorization')
     %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
       = expanded ? 'Collapse' : 'Expand'
     %p
-      = _('External Classification Policy Authorization')
+      = s_('ExternalAuthorization|External classification policy authorization.')
+      = link_to _('Learn more.'), help_page_path('user/admin_area/settings/external_authorization'), target: '_blank', rel: 'noopener noreferrer'
   .settings-content
 
     = form_for @application_setting, url: general_admin_application_settings_path(anchor: 'js-external-auth-settings'), html: { class: 'fieldset-form', id: 'external-auth-settings' } do |f|
@@ -16,35 +17,37 @@
           .form-check
             = f.check_box :external_authorization_service_enabled, class: 'form-check-input'
             = f.label :external_authorization_service_enabled, class: 'form-check-label' do
-              = _('Enable classification control using an external service')
+              = s_('ExternalAuthorization|Enable classification control using an external service')
           %span.form-text.text-muted
             = external_authorization_description
-            = link_to sprite_icon('question-o'), help_page_path('user/admin_area/settings/external_authorization')
         .form-group
-          = f.label :external_authorization_service_url, _('Service URL'), class: 'label-bold'
+          = f.label :external_authorization_service_url, s_('ExternalAuthorization|Service URL'), class: 'label-bold'
           = f.text_field :external_authorization_service_url, class: 'form-control gl-form-input'
           %span.form-text.text-muted
             = external_authorization_url_help_text
         .form-group
-          = f.label :external_authorization_service_timeout, _('External authorization request timeout'), class: 'label-bold'
+          = f.label :external_authorization_service_timeout, s_('ExternalAuthorization|External authorization request timeout (seconds)'), class: 'label-bold'
           = f.number_field :external_authorization_service_timeout, class: 'form-control gl-form-input', min: 0.001, max: 10, step: 0.001
           %span.form-text.text-muted
             = external_authorization_timeout_help_text
-          = f.label :external_auth_client_cert, _('Client authentication certificate'), class: 'label-bold'
+        .form-group
+          = f.label :external_auth_client_cert, s_('ExternalAuthorization|Client authorization certificate'), class: 'label-bold'
           = f.text_area :external_auth_client_cert, class: 'form-control gl-form-input'
           %span.form-text.text-muted
             = external_authorization_client_certificate_help_text
         .form-group
-          = f.label :external_auth_client_key, _('Client authentication key'), class: 'label-bold'
+          = f.label :external_auth_client_key, s_('ExternalAuthorization|Client authorization key'), class: 'label-bold'
           = f.text_area :external_auth_client_key, class: 'form-control gl-form-input'
           %span.form-text.text-muted
             = external_authorization_client_key_help_text
         .form-group
-          = f.label :external_auth_client_key_pass, _('Client authentication key password'), class: 'label-bold'
+          = f.label :external_auth_client_key_pass, s_('ExternalAuthorization|Client authorization key password (optional)'), class: 'label-bold'
           = f.password_field :external_auth_client_key_pass, class: 'form-control gl-form-input'
           %span.form-text.text-muted
             = external_authorization_client_pass_help_text
         .form-group
-          = f.label :external_authorization_service_default_label, _('Default classification label'), class: 'label-bold'
+          = f.label :external_authorization_service_default_label, s_('ExternalAuthorization|Default classification label'), class: 'label-bold'
           = f.text_field :external_authorization_service_default_label, class: 'form-control gl-form-input'
+          %span.form-text.text-muted
+            = external_authorization_client_url_help_text
       = f.submit _('Save changes'), class: "gl-button btn btn-confirm"
