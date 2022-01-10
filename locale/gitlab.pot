@@ -9763,6 +9763,9 @@ msgstr ""
 msgid "CorpusManagement|Corpus name"
 msgstr ""
 
+msgid "CorpusManagement|Currently, there are no uploaded or generated corpuses."
+msgstr ""
+
 msgid "CorpusManagement|Fuzz testing corpus management"
 msgstr ""
 
