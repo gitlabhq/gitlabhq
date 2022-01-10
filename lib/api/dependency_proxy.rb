@@ -6,15 +6,6 @@ module API
 
     feature_category :dependency_proxy
 
-    helpers do
-      def obtain_new_purge_cache_lease
-        Gitlab::ExclusiveLease
-          .new("dependency_proxy:delete_group_blobs:#{user_group.id}",
-               timeout: 1.hour)
-          .try_obtain
-      end
-    end
-
     after_validation do
       authorize! :admin_group, user_group
     end
@@ -28,9 +19,6 @@ module API
       end
       delete ':id/dependency_proxy/cache' do
         not_found! unless user_group.dependency_proxy_feature_available?
-
-        message = 'This request has already been made. It may take some time to purge the cache. You can run this at most once an hour for a given group'
-        render_api_error!(message, 409) unless obtain_new_purge_cache_lease
 
         # rubocop:disable CodeReuse/Worker
         PurgeDependencyProxyCacheWorker.perform_async(current_user.id, user_group.id)
