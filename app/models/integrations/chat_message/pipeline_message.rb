@@ -56,7 +56,7 @@ module Integrations
         [{
           fallback: format(message),
           color: attachment_color,
-          author_name: user_combined_name,
+          author_name: strip_markup(user_combined_name),
           author_icon: user_avatar,
           author_link: author_url,
           title: s_("ChatMessage|Pipeline #%{pipeline_id} %{humanized_status} in %{duration}") %
@@ -80,7 +80,7 @@ module Integrations
               pipeline_link: pipeline_link,
               ref_type: ref_type,
               ref_link: ref_link,
-              user_combined_name: user_combined_name,
+              user_combined_name: strip_markup(user_combined_name),
               humanized_status: humanized_status
             },
           subtitle: s_("ChatMessage|in %{project_link}") % { project_link: project_link },
@@ -154,7 +154,7 @@ module Integrations
             pipeline_link: pipeline_link,
             ref_type: ref_type,
             ref_link: ref_link,
-            user_combined_name: user_combined_name,
+            user_combined_name: strip_markup(user_combined_name),
             humanized_status: humanized_status,
             duration: pretty_duration(duration)
           }
@@ -189,7 +189,7 @@ module Integrations
       end
 
       def ref_link
-        "[#{ref}](#{ref_url})"
+        link(ref, ref_url)
       end
 
       def project_url
@@ -197,7 +197,7 @@ module Integrations
       end
 
       def project_link
-        "[#{project.name}](#{project_url})"
+        link(project.name, project_url)
       end
 
       def pipeline_failed_jobs_url
@@ -213,7 +213,7 @@ module Integrations
       end
 
       def pipeline_link
-        "[##{pipeline_id}](#{pipeline_url})"
+        link("##{pipeline_id}", pipeline_url)
       end
 
       def job_url(job)
@@ -221,7 +221,7 @@ module Integrations
       end
 
       def job_link(job)
-        "[#{job[:name]}](#{job_url(job)})"
+        link(job[:name], job_url(job))
       end
 
       def failed_jobs_links
@@ -242,7 +242,7 @@ module Integrations
 
       def stage_link(stage)
         # All stages link to the pipeline page
-        "[#{stage}](#{pipeline_url})"
+        link(stage, pipeline_url)
       end
 
       def failed_stages_links
@@ -254,7 +254,7 @@ module Integrations
       end
 
       def commit_link
-        "[#{commit.title}](#{commit_url})"
+        link(commit.title, commit_url)
       end
 
       def author_url

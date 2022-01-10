@@ -36,9 +36,9 @@ module Integrations
 
       def activity
         {
-          title: "#{user_combined_name} #{action} #{wiki_page_link}",
+          title: "#{strip_markup(user_combined_name)} #{action} #{wiki_page_link}",
           subtitle: "in #{project_link}",
-          text: title,
+          text: strip_markup(title),
           image: user_avatar
         }
       end
@@ -46,7 +46,7 @@ module Integrations
       private
 
       def message
-        "#{user_combined_name} #{action} #{wiki_page_link} (#{diff_link}) in #{project_link}: *#{title}*"
+        "#{strip_markup(user_combined_name)} #{action} #{wiki_page_link} (#{diff_link}) in #{project_link}: *#{strip_markup(title)}*"
       end
 
       def description_message

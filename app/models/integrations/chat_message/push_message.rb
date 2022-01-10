@@ -39,7 +39,7 @@ module Integrations
 
       def humanized_action(short: false)
         action, ref_link, target_link = compose_action_details
-        text = [user_combined_name, action, ref_type, ref_link]
+        text = [strip_markup(user_combined_name), action, ref_type, ref_link]
         text << target_link unless short
         text.join(' ')
       end
@@ -67,7 +67,7 @@ module Integrations
 
         url = commit[:url]
 
-        "[#{id}](#{url}): #{title} - #{author}"
+        "#{link(id, url)}: #{strip_markup(title)} - #{strip_markup(author)}"
       end
 
       def new_branch?
@@ -91,15 +91,15 @@ module Integrations
       end
 
       def ref_link
-        "[#{ref}](#{ref_url})"
+        link(ref, ref_url)
       end
 
       def project_link
-        "[#{project_name}](#{project_url})"
+        link(project_name, project_url)
       end
 
       def compare_link
-        "[Compare changes](#{compare_url})"
+        link('Compare changes', compare_url)
       end
 
       def compose_action_details

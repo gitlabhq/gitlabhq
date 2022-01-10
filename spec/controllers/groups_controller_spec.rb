@@ -1209,26 +1209,6 @@ RSpec.describe GroupsController, factory_default: :keep do
     end
   end
 
-  context 'token authentication' do
-    it_behaves_like 'authenticates sessionless user', :show, :atom, public: true do
-      before do
-        default_params.merge!(id: group)
-      end
-    end
-
-    it_behaves_like 'authenticates sessionless user', :issues, :atom, public: true do
-      before do
-        default_params.merge!(id: group, author_id: user.id)
-      end
-    end
-
-    it_behaves_like 'authenticates sessionless user', :issues_calendar, :ics, public: true do
-      before do
-        default_params.merge!(id: group)
-      end
-    end
-  end
-
   describe 'external authorization' do
     before do
       group.add_owner(user)
