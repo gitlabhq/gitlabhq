@@ -28,8 +28,14 @@ class Import::GithubController < Import::BaseController
   end
 
   def callback
-    session[access_token_key] = get_token(params[:code])
-    redirect_to status_import_url
+    auth_state = session[auth_state_key]
+    session[auth_state_key] = nil
+    if auth_state.blank? || !ActiveSupport::SecurityUtils.secure_compare(auth_state, params[:state])
+      provider_unauthorized
+    else
+      session[access_token_key] = get_token(params[:code])
+      redirect_to status_import_url
+    end
   end
 
   def personal_access_token
@@ -154,13 +160,16 @@ class Import::GithubController < Import::BaseController
   end
 
   def authorize_url
+    state = SecureRandom.base64(64)
+    session[auth_state_key] = state
     if Feature.enabled?(:remove_legacy_github_client)
       oauth_client.auth_code.authorize_url(
         redirect_uri: callback_import_url,
-        scope: 'repo, user, user:email'
+        scope: 'repo, user, user:email',
+        state: state
       )
     else
-      client.authorize_url(callback_import_url)
+      client.authorize_url(callback_import_url, state)
     end
   end
 
@@ -217,6 +226,10 @@ class Import::GithubController < Import::BaseController
     session[access_token_key] = nil
     redirect_to new_import_url,
       alert: _('Missing OAuth configuration for GitHub.')
+  end
+
+  def auth_state_key
+    :"#{provider_name}_auth_state_key"
   end
 
   def access_token_key
