@@ -1,8 +1,7 @@
 ---
 stage: Manage
 group: Workspace
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments"
-type: reference
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Organize work with projects **(FREE)**
@@ -43,9 +42,9 @@ Projects include the following [features](https://about.gitlab.com/features/):
 - [Issue tracker](issues/index.md): Discuss implementations with your team.
   - [Issue boards](issue_board.md): Organize and prioritize your workflow.
   - [Multiple issue boards](issue_board.md#multiple-issue-boards): Create team-specific workflows (issue boards) for a project.
-- [Merge Requests](merge_requests/index.md): Apply a branching
+- [Merge requests](merge_requests/index.md): Apply a branching
   strategy and get reviewed by your team.
-  - [Merge Request Approvals](merge_requests/approvals/index.md): Ask for approval before
+  - [Merge request approvals](merge_requests/approvals/index.md): Ask for approval before
   implementing a change.
   - [Fix merge conflicts from the UI](merge_requests/conflicts.md): View Git diffs from the GitLab UI.
   - [Review Apps](../../ci/review_apps/index.md): By branch, preview the results
@@ -144,7 +143,7 @@ There are numerous [APIs](../../api/index.md) to use with your projects:
 - [Issue board](../../api/boards.md)
 - [Labels](../../api/labels.md)
 - [Markdown](../../api/markdown.md)
-- [Merge Requests](../../api/merge_requests.md)
+- [Merge requests](../../api/merge_requests.md)
 - [Milestones](../../api/milestones.md)
 - [Services](../../api/integrations.md)
 - [Snippets](../../api/project_snippets.md)

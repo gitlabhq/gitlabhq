@@ -11,6 +11,14 @@ module QA
         end
       end
 
+      let!(:runner) do
+        Resource::Runner.fabricate_via_api! do |runner|
+          runner.project = project
+          runner.name = random_test_string
+          runner.tags = [random_test_string]
+        end
+      end
+
       let!(:commit) do
         Resource::Repository::Commit.fabricate_via_api! do |commit|
           commit.project = project
@@ -21,6 +29,7 @@ module QA
                 file_path: '.gitlab-ci.yml',
                 content: <<~YAML
                   test_job:
+                    tags: ['#{random_test_string}']
                     script:
                       - echo "Simple test!"
                 YAML
@@ -33,11 +42,12 @@ module QA
       before do
         Flow::Login.sign_in
         project.visit!
+        Support::Waiter.wait_until { project.pipelines.first[:status] == 'success' }
         Page::Project::Menu.perform(&:go_to_pipeline_editor)
       end
 
       after do
-        project.remove_via_api!
+        [runner, project].each(&:remove_via_api!)
       end
 
       it 'creates new pipeline and target branch', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/349005' do
@@ -50,7 +60,7 @@ module QA
             expect(show.target_branch_name).to eq(random_test_string)
             expect(show.current_branch).to eq(random_test_string)
             expect(show.editing_content).to have_content(random_test_string)
-            expect(show.pipeline_id).to eq(project.pipelines.first[:id])
+            expect { show.pipeline_id }.to eventually_eq(project.pipelines.pluck(:id).max).within(max_duration: 60, sleep_interval: 3)
           end
         end
 

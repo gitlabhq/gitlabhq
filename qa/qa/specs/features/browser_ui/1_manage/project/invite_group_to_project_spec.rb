@@ -5,10 +5,10 @@ module QA
   RSpec.describe 'Manage', :requires_admin, :transient, issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/349379' do
     describe 'Invite group' do
       shared_examples 'invites group to project' do
-        it 'verifies group is added and members can access project' do
+        it 'verifies group is added and members can access project with correct access level' do
           Page::Project::Menu.perform(&:click_members)
           Page::Project::Members.perform do |project_members|
-            project_members.invite_group(group.path)
+            project_members.invite_group(group.path, 'Developer')
 
             expect(project_members).to have_group(group.path)
           end
@@ -16,7 +16,7 @@ module QA
           Flow::Login.sign_in(as: @user)
 
           Page::Dashboard::Projects.perform do |projects|
-            expect(projects).to have_project_with_access_role(project.name, 'Guest')
+            expect(projects).to have_project_with_access_role(project.name, 'Developer')
           end
 
           project.visit!
@@ -28,13 +28,13 @@ module QA
       end
 
       before(:context) do
+        Runtime::Feature.enable(:invite_members_group_modal)
         @user = Resource::User.fabricate_or_use(Runtime::Env.gitlab_qa_username_1, Runtime::Env.gitlab_qa_password_1)
       end
 
       before do
-        Runtime::Feature.enable(:invite_members_group_modal)
         Flow::Login.sign_in
-        group.add_member(@user, Resource::Members::AccessLevel::GUEST)
+        group.add_member(@user, Resource::Members::AccessLevel::MAINTAINER)
         project.visit!
       end
 
@@ -78,6 +78,9 @@ module QA
       after do
         project&.remove_via_api!
         group&.remove_via_api!
+      end
+
+      after(:context) do
         Runtime::Feature.disable(:invite_members_group_modal)
       end
     end

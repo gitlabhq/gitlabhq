@@ -47,40 +47,43 @@ module QA
             fill_element :members_token_select_input, username
             Support::WaitForRequests.wait_for_requests
             click_button username
-
-            # Guest option is selected by default, skipping these steps if desired option is 'Guest'
-            unless access_level == 'Guest'
-              click_element :access_level_dropdown
-              click_button access_level
-            end
-
-            click_element :invite_button
+            set_access_level(access_level)
           end
 
-          Support::WaitForRequests.wait_for_requests
-
-          page.refresh
+          send_invite
         end
 
-        def invite_group(group_name, group_access = Resource::Members::AccessLevel::GUEST)
+        def invite_group(group_name, access_level = 'Guest')
           open_invite_group_modal
 
-          fill_element :access_level_dropdown, with: group_access
+          within_element(:invite_members_modal_content) do
+            click_button 'Select a group'
 
-          click_button 'Select a group'
+            # Helps stabilize race condition with concurrent group API calls while searching
+            # TODO: Replace with `fill_element :group_select_dropdown_search_field, group_name` when this bug is resolved: https://gitlab.com/gitlab-org/gitlab/-/issues/349379
+            send_keys_to_element(:group_select_dropdown_search_field, group_name)
 
-          # Helps stabilize race condition with concurrent group API calls while searching
-          # TODO: Replace with `fill_element :group_select_dropdown_search_field, group_name` when this bug is resolved: https://gitlab.com/gitlab-org/gitlab/-/issues/349379
-          send_keys_to_element(:group_select_dropdown_search_field, group_name)
+            Support::WaitForRequests.wait_for_requests
+            click_button group_name
+            set_access_level(access_level)
+          end
 
-          Support::WaitForRequests.wait_for_requests
+          send_invite
+        end
 
-          click_button group_name
+        private
 
+        def set_access_level(access_level)
+          # Guest option is selected by default, skipping these steps if desired option is 'Guest'
+          unless access_level == 'Guest'
+            click_element :access_level_dropdown
+            click_button access_level
+          end
+        end
+
+        def send_invite
           click_element :invite_button
-
           Support::WaitForRequests.wait_for_requests
-
           page.refresh
         end
       end

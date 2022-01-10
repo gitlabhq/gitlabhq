@@ -316,7 +316,7 @@ RSpec.describe 'Projects > Show > User sees setup shortcut buttons' do
           visit project_path(project)
 
           page.within('.project-buttons') do
-            expect(page).to have_link('Add Kubernetes cluster', href: new_project_cluster_path(project))
+            expect(page).to have_link('Add Kubernetes cluster', href: project_clusters_path(project))
           end
         end
 

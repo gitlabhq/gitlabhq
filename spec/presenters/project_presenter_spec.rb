@@ -554,7 +554,7 @@ RSpec.describe ProjectPresenter do
           expect(presenter.kubernetes_cluster_anchor_data).to have_attributes(
             is_link: false,
             label: a_string_including('Add Kubernetes cluster'),
-            link: presenter.new_project_cluster_path(project)
+            link: presenter.project_clusters_path(project)
           )
         end
       end
