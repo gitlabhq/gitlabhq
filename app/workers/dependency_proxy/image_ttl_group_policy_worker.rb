@@ -4,45 +4,25 @@ module DependencyProxy
   class ImageTtlGroupPolicyWorker # rubocop:disable Scalability/IdempotentWorker
     include ApplicationWorker
     include CronjobQueue # rubocop:disable Scalability/CronWorkerContext
+    include DependencyProxy::Expireable
 
     data_consistency :always
 
     feature_category :dependency_proxy
-
-    UPDATE_BATCH_SIZE = 100
 
     def perform
       DependencyProxy::ImageTtlGroupPolicy.enabled.each do |policy|
         qualified_blobs = policy.group.dependency_proxy_blobs.active.read_before(policy.ttl)
         qualified_manifests = policy.group.dependency_proxy_manifests.active.read_before(policy.ttl)
 
-        enqueue_blob_cleanup_job if expire_artifacts(qualified_blobs, DependencyProxy::Blob)
-        enqueue_manifest_cleanup_job if expire_artifacts(qualified_manifests, DependencyProxy::Manifest)
+        expire_artifacts(qualified_blobs)
+        expire_artifacts(qualified_manifests)
       end
 
       log_counts
     end
 
     private
-
-    def expire_artifacts(artifacts, model)
-      rows_updated = false
-
-      artifacts.each_batch(of: UPDATE_BATCH_SIZE) do |batch|
-        rows = batch.update_all(status: :expired)
-        rows_updated ||= rows > 0
-      end
-
-      rows_updated
-    end
-
-    def enqueue_blob_cleanup_job
-      DependencyProxy::CleanupBlobWorker.perform_with_capacity
-    end
-
-    def enqueue_manifest_cleanup_job
-      DependencyProxy::CleanupManifestWorker.perform_with_capacity
-    end
 
     def log_counts
       use_replica_if_available do

@@ -17,28 +17,12 @@ RSpec.describe DependencyProxy::ImageTtlGroupPolicyWorker do
       let_it_be_with_reload(:new_blob) { create(:dependency_proxy_blob, group: group) }
       let_it_be_with_reload(:new_manifest) { create(:dependency_proxy_manifest, group: group) }
 
-      it 'calls the limited capacity workers', :aggregate_failures do
-        expect(DependencyProxy::CleanupBlobWorker).to receive(:perform_with_capacity)
-        expect(DependencyProxy::CleanupManifestWorker).to receive(:perform_with_capacity)
-
-        subject
-      end
-
       it 'updates the old images to expired' do
         expect { subject }
           .to change { old_blob.reload.status }.from('default').to('expired')
           .and change { old_manifest.reload.status }.from('default').to('expired')
           .and not_change { new_blob.reload.status }
           .and not_change { new_manifest.reload.status }
-      end
-    end
-
-    context 'when there are no images to expire' do
-      it 'does not do anything', :aggregate_failures do
-        expect(DependencyProxy::CleanupBlobWorker).not_to receive(:perform_with_capacity)
-        expect(DependencyProxy::CleanupManifestWorker).not_to receive(:perform_with_capacity)
-
-        subject
       end
     end
 

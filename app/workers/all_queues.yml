@@ -291,6 +291,15 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: cronjob:dependency_proxy_cleanup_dependency_proxy
+  :worker_name: DependencyProxy::CleanupDependencyProxyWorker
+  :feature_category: :dependency_proxy
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: cronjob:dependency_proxy_image_ttl_group_policy
   :worker_name: DependencyProxy::ImageTtlGroupPolicyWorker
   :feature_category: :dependency_proxy
