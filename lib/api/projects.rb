@@ -613,6 +613,7 @@ module API
 
         source_project = Project.find_by_id(params[:project_id])
         not_found!('Project') unless source_project && can?(current_user, :read_project, source_project)
+        forbidden!('Project') unless source_project && can?(current_user, :admin_project_member, source_project)
 
         result = ::Members::ImportProjectTeamService.new(current_user, params).execute
 
