@@ -6,6 +6,9 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Connect to cloud services
 
+> - `CI_JOB_JWT` variable for reading secrets from Vault [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/207125) in GitLab 12.10.
+> - `CI_JOB_JWT_V2` variable to support additional OIDC providers [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/346737) in GitLab 14.7. 
+
 GitLab CI/CD supports [OpenID Connect (OIDC)](https://openid.net/connect/faq/) that allows your build and deployment job access to cloud credentials and services. Historically, teams stored secrets in projects or applied permissions on the GitLab Runner instance to build and deploy. To support this, a predefined variable named `CI_JOB_JWT_V2` is included in the CI/CD job allowing you to follow a scalable and least-privilege security approach.
 
 ## Requirements
@@ -120,11 +123,11 @@ To configure the trust between GitLab and OIDC, you must create a conditional ro
 | Filter to main branch                | `project_path:mygroup/myproject:ref_type:branch:ref:main`   |
 | Filter to any branch                 | Wildcard supported. `project_path:mygroup/myproject:ref_type:branch:ref:*` |
 | Filter to specific project           | `project_path:mygroup/myproject:ref_type:branch:ref:main` |
-| Filter to all projects under a group | Wildcard supported. `project_path:acme/*:ref_type:branch:ref:main` |
-| Filter to a Git tag                  | Wildcard supported. `project_path:acme/*:ref_type:tag:ref:1.0` |
+| Filter to all projects under a group | Wildcard supported. `project_path:mygroup/*:ref_type:branch:ref:main` |
+| Filter to a Git tag                  | Wildcard supported. `project_path:mygroup/*:ref_type:tag:ref:1.0` |
 
 ## OIDC authorization with your cloud provider
 
 To connect with your cloud provider, see the following tutorials:
 
-- Configure OpenID Connect in AWS
+- [Configure OpenID Connect in AWS](aws/index.md)

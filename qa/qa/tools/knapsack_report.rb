@@ -9,6 +9,7 @@ module QA
 
       PROJECT = "gitlab-qa-resources"
       BUCKET = "knapsack-reports"
+      FALLBACK_REPORT = "knapsack/master_report.json"
 
       def_delegators :new, :configure!, :move_regenerated_report, :download_report, :upload_report
 
@@ -35,9 +36,9 @@ module QA
         file = client.get_object(BUCKET, report_file)
         File.write(report_path, file[:body])
       rescue StandardError => e
-        ENV["KNAPSACK_REPORT_PATH"] = "knapsack/master_report.json"
+        ENV["KNAPSACK_REPORT_PATH"] = FALLBACK_REPORT
         logger.warn("Failed to fetch latest knapsack report: #{e}")
-        logger.warn("Falling back to 'knapsack/master_report.json'")
+        logger.warn("Falling back to '#{FALLBACK_REPORT}'")
       end
 
       # Rename and move new regenerated report to a separate folder used to indicate report name
@@ -46,11 +47,13 @@ module QA
       def move_regenerated_report
         return unless ENV["KNAPSACK_GENERATE_REPORT"] == "true"
 
-        path = "tmp/knapsack/#{report_name}"
-        FileUtils.mkdir_p(path)
+        tmp_path = "tmp/knapsack/#{report_name}"
+        FileUtils.mkdir_p(tmp_path)
 
         # Use path from knapsack config in case of fallback to master_report.json
-        FileUtils.cp(Knapsack.report.report_path, "#{path}/#{ENV['CI_NODE_INDEX']}.json")
+        knapsack_report_path = Knapsack.report.report_path
+        logger.debug("Moving regenerated #{knapsack_report_path} to save as artifact")
+        FileUtils.cp(knapsack_report_path, "#{tmp_path}/#{ENV['CI_NODE_INDEX']}.json")
       end
 
       # Merge and upload knapsack report to gcs bucket
@@ -73,6 +76,8 @@ module QA
           report = jsons
             .map { |json| JSON.parse(File.read(json)) }
             .reduce({}, :merge)
+            .sort_by { |k, v| v } # sort report by execution time
+            .to_h
           next logger.warn("Knapsack generated empty report for '#{name}', skipping upload!") if report.empty?
 
           logger.info("Uploading latest knapsack report '#{file}'")

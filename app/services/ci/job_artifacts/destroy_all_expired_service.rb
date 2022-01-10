@@ -8,8 +8,8 @@ module Ci
 
       BATCH_SIZE = 100
       LOOP_TIMEOUT = 5.minutes
-      SMALL_LOOP_LIMIT = 10
-      LARGE_LOOP_LIMIT = 100
+      SMALL_LOOP_LIMIT = 100
+      LARGE_LOOP_LIMIT = 500
       EXCLUSIVE_LOCK_KEY = 'expired_job_artifacts:destroy:lock'
       LOCK_TIMEOUT = 6.minutes
 

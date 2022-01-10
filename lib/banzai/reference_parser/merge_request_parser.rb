@@ -8,8 +8,6 @@ module Banzai
       self.reference_type = :merge_request
 
       def nodes_visible_to_user(user, nodes)
-        return super if Feature.disabled?(:optimize_merge_request_parser, user, default_enabled: :yaml)
-
         merge_request_nodes = nodes.select { |node| node.has_attribute?(self.class.data_attribute) }
         records = projects_for_nodes(merge_request_nodes)
 

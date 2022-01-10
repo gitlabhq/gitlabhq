@@ -65,10 +65,12 @@ RSpec.configure do |config|
   end
 
   config.after(:suite) do |suite|
-    QA::Tools::KnapsackReport.move_regenerated_report if QA::Runtime::Env.knapsack?
-
     # If any tests failed, leave the resources behind to help troubleshoot
     QA::Resource::ReusableProject.remove_all_via_api! unless suite.reporter.failed_examples.present?
+  end
+
+  config.append_after(:suite) do
+    QA::Tools::KnapsackReport.move_regenerated_report if QA::Runtime::Env.knapsack?
   end
 
   config.expect_with :rspec do |expectations|
