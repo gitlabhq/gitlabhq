@@ -10,4 +10,4 @@
 - if @build.is_a? ::Ci::Build
   #js-job-page{ data: jobs_data }
 - else
-  #js-bridge-page{ data: bridge_data(@build) }
+  #js-bridge-page{ data: bridge_data(@build, @project) }

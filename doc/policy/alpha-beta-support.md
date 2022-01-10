@@ -4,6 +4,8 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
+<!-- any changes made to this page should be reflected in https://about.gitlab.com/support/statement-of-support.html#alpha--beta-features and https://about.gitlab.com/handbook/product/gitlab-the-product/#alpha-beta-ga -->
+
 # Support for Alpha, Beta, and Generally Available Features **(PREMIUM)**
 
 Some GitLab features are released as [Alpha or Beta versions](https://about.gitlab.com/support/statement-of-support.html#alpha--beta-features) which are not fully supported. All other features are considered to be Generally Available (GA).
@@ -30,7 +32,7 @@ Characteristics of beta features:
 - Features and functions are not likely to change.
 - Data loss is not likely.
 
-Your Support Contract provides **best-efforts** support for Beta features, with the expectation that issues will require extra time and assistance from development to troubleshoot.
+Your Support Contract provides **commercially-reasonable effort** support for Beta features, with the expectation that issues will require extra time and assistance from development to troubleshoot.
 
 ## Generally Available (GA)
 

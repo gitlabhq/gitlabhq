@@ -6,6 +6,7 @@ import ShortcutsNavigation from '~/behaviors/shortcuts/shortcuts_navigation';
 import GLForm from '~/gl_form';
 import { initIssuableHeaderWarnings, initIssuableSidebar } from '~/issuable';
 import IssuableTemplateSelectors from '~/issuable/issuable_template_selectors';
+import { IssueType } from '~/issues/constants';
 import Issue from '~/issues/issue';
 import { initTitleSuggestions, initTypePopover } from '~/issues/new';
 import { initRelatedMergeRequests } from '~/issues/related_merge_requests';
@@ -20,7 +21,6 @@ import LabelsSelect from '~/labels/labels_select';
 import MilestoneSelect from '~/milestones/milestone_select';
 import initNotesApp from '~/notes';
 import { store } from '~/notes/stores';
-import { IssuableType } from '~/vue_shared/issuable/show/constants';
 import ZenMode from '~/zen_mode';
 import FilteredSearchServiceDesk from './filtered_search_service_desk';
 
@@ -55,9 +55,9 @@ export function initShow() {
 
   const { issueType, ...issuableData } = parseIssuableData(el);
 
-  if (issueType === IssuableType.Incident) {
+  if (issueType === IssueType.Incident) {
     initIncidentApp(issuableData);
-    initHeaderActions(store, IssuableType.Incident);
+    initHeaderActions(store, IssueType.Incident);
   } else {
     initIssueApp(issuableData, store);
     initHeaderActions(store);

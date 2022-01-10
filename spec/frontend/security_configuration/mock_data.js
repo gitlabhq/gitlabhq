@@ -25,10 +25,15 @@ export const securityTrainingProvidersResponse = {
   },
 };
 
-export const mockResolvers = {
+const defaultMockResolvers = {
   Query: {
     securityTrainingProviders() {
       return securityTrainingProviders;
     },
   },
 };
+
+export const createMockResolvers = ({ resolvers: customMockResolvers = {} } = {}) => ({
+  ...defaultMockResolvers,
+  ...customMockResolvers,
+});

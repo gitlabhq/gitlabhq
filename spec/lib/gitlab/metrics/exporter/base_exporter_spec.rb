@@ -111,6 +111,18 @@ RSpec.describe Gitlab::Metrics::Exporter::BaseExporter do
   describe 'request handling' do
     using RSpec::Parameterized::TableSyntax
 
+    let(:fake_collector) do
+      Class.new do
+        def initialize(app, ...)
+          @app = app
+        end
+
+        def call(env)
+          @app.call(env)
+        end
+      end
+    end
+
     where(:method_class, :path, :http_status) do
       Net::HTTP::Get | '/metrics' | 200
       Net::HTTP::Get | '/liveness' | 200
@@ -123,6 +135,8 @@ RSpec.describe Gitlab::Metrics::Exporter::BaseExporter do
       allow(settings).to receive(:port).and_return(0)
       allow(settings).to receive(:address).and_return('127.0.0.1')
 
+      stub_const('Gitlab::Metrics::Exporter::MetricsMiddleware', fake_collector)
+
       # We want to wrap original method
       # and run handling of requests
       # in separate thread
@@ -134,8 +148,6 @@ RSpec.describe Gitlab::Metrics::Exporter::BaseExporter do
           # is raised as we close listeners
         end
       end
-
-      exporter.start.join
     end
 
     after do
@@ -146,11 +158,24 @@ RSpec.describe Gitlab::Metrics::Exporter::BaseExporter do
       let(:config) { exporter.server.config }
       let(:request) { method_class.new(path) }
 
-      it 'responds with proper http_status' do
+      subject(:response) do
         http = Net::HTTP.new(config[:BindAddress], config[:Port])
-        response = http.request(request)
+        http.request(request)
+      end
+
+      it 'responds with proper http_status' do
+        exporter.start.join
 
         expect(response.code).to eq(http_status.to_s)
+      end
+
+      it 'collects request metrics' do
+        expect_next_instance_of(fake_collector) do |instance|
+          expect(instance).to receive(:call).and_call_original
+        end
+
+        exporter.start.join
+        response
       end
     end
   end

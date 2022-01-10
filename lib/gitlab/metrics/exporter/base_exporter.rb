@@ -39,13 +39,8 @@ module Gitlab
 
           @server = ::WEBrick::HTTPServer.new(
             Port: settings.port, BindAddress: settings.address,
-            Logger: logger, AccessLog: access_log)
-          server.mount_proc '/readiness' do |req, res|
-            render_probe(readiness_probe, req, res)
-          end
-          server.mount_proc '/liveness' do |req, res|
-            render_probe(liveness_probe, req, res)
-          end
+            Logger: logger, AccessLog: access_log
+          )
           server.mount '/', Rack::Handler::WEBrick, rack_app
 
           true
@@ -72,8 +67,14 @@ module Gitlab
         end
 
         def rack_app
+          readiness = readiness_probe
+          liveness = liveness_probe
+          pid = thread_name
+
           Rack::Builder.app do
             use Rack::Deflater
+            use Gitlab::Metrics::Exporter::MetricsMiddleware, pid
+            use Gitlab::Metrics::Exporter::HealthChecksMiddleware, readiness, liveness
             use ::Prometheus::Client::Rack::Exporter if ::Gitlab::Metrics.metrics_folder_present?
             run -> (env) { [404, {}, ['']] }
           end
@@ -85,14 +86,6 @@ module Gitlab
 
         def liveness_probe
           ::Gitlab::HealthChecks::Probes::Collection.new
-        end
-
-        def render_probe(probe, req, res)
-          result = probe.execute
-
-          res.status = result.http_status
-          res.content_type = 'application/json; charset=utf-8'
-          res.body = result.json.to_json
         end
       end
     end

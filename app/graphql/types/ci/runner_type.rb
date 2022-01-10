@@ -56,6 +56,8 @@ module Types
             description: "Number of jobs processed by the runner (limited to #{JOB_COUNT_LIMIT}, plus one to indicate that more items exist)."
       field :admin_url, GraphQL::Types::String, null: true,
             description: 'Admin URL of the runner. Only available for administrators.'
+      field :edit_admin_url, GraphQL::Types::String, null: true,
+            description: 'Admin form URL of the runner. Only available for administrators.'
       field :executor_name, GraphQL::Types::String, null: true,
             description: 'Executor last advertised by the runner.',
             method: :executor_name,
@@ -68,6 +70,10 @@ module Types
 
       def admin_url
         Gitlab::Routing.url_helpers.admin_runner_url(runner) if can_admin_runners?
+      end
+
+      def edit_admin_url
+        Gitlab::Routing.url_helpers.edit_admin_runner_url(runner) if can_admin_runners?
       end
 
       # rubocop: disable CodeReuse/ActiveRecord

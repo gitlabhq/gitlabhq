@@ -462,9 +462,9 @@ RSpec.describe 'Admin::Users' do
       visit projects_admin_user_path(user)
     end
 
-    it 'lists group projects' do
+    it 'lists groups' do
       within(:css, '.gl-mb-3 + .card') do
-        expect(page).to have_content 'Group projects'
+        expect(page).to have_content 'Groups'
         expect(page).to have_link group.name, href: admin_group_path(group)
       end
     end

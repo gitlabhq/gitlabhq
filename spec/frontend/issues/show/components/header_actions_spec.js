@@ -4,10 +4,9 @@ import { shallowMount } from '@vue/test-utils';
 import Vuex from 'vuex';
 import { mockTracking } from 'helpers/tracking_helper';
 import createFlash, { FLASH_TYPES } from '~/flash';
-import { IssuableType } from '~/vue_shared/issuable/show/constants';
+import { IssuableStatus, IssueType } from '~/issues/constants';
 import DeleteIssueModal from '~/issues/show/components/delete_issue_modal.vue';
 import HeaderActions from '~/issues/show/components/header_actions.vue';
-import { IssuableStatus } from '~/issues/constants';
 import { ISSUE_STATE_EVENT_CLOSE, ISSUE_STATE_EVENT_REOPEN } from '~/issues/show/constants';
 import promoteToEpicMutation from '~/issues/show/queries/promote_to_epic.mutation.graphql';
 import * as urlUtility from '~/lib/utils/url_utility';
@@ -36,7 +35,7 @@ describe('HeaderActions component', () => {
     iid: '32',
     isIssueAuthor: true,
     issuePath: 'gitlab-org/gitlab-test/-/issues/1',
-    issueType: IssuableType.Issue,
+    issueType: IssueType.Issue,
     newIssuePath: 'gitlab-org/gitlab-test/-/issues/new',
     projectPath: 'gitlab-org/gitlab-test',
     reportAbusePath:
@@ -112,8 +111,8 @@ describe('HeaderActions component', () => {
 
   describe.each`
     issueType
-    ${IssuableType.Issue}
-    ${IssuableType.Incident}
+    ${IssueType.Issue}
+    ${IssueType.Incident}
   `('when issue type is $issueType', ({ issueType }) => {
     describe('close/reopen button', () => {
       describe.each`

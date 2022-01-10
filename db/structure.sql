@@ -29884,9 +29884,6 @@ ALTER TABLE ONLY system_note_metadata
 ALTER TABLE ONLY vulnerability_remediations
     ADD CONSTRAINT fk_fc61a535a0 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
-ALTER TABLE ONLY ci_daily_build_group_report_results
-    ADD CONSTRAINT fk_fd1858fefd FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
-
 ALTER TABLE ONLY merge_requests
     ADD CONSTRAINT fk_fd82eae0b9 FOREIGN KEY (head_pipeline_id) REFERENCES ci_pipelines(id) ON DELETE SET NULL;
 

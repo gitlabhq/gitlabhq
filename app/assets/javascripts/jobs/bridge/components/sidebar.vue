@@ -1,10 +1,9 @@
 <script>
 import { GlButton, GlDropdown, GlDropdownItem } from '@gitlab/ui';
-import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
 import { __ } from '~/locale';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate/tooltip_on_truncate.vue';
 import { JOB_SIDEBAR } from '../../constants';
-import { SIDEBAR_COLLAPSE_BREAKPOINTS } from './constants';
+import CommitBlock from '../../components/commit_block.vue';
 
 export default {
   styles: {
@@ -18,41 +17,27 @@ export default {
     retryTriggerJob: __('Retry the trigger job'),
     retryDownstreamPipeline: __('Retry the downstream pipeline'),
   },
-  borderTopClass: ['gl-border-t-solid', 'gl-border-t-1', 'gl-border-t-gray-100'],
+  sectionClass: ['gl-border-t-solid', 'gl-border-t-1', 'gl-border-t-gray-100', 'gl-py-5'],
   components: {
+    CommitBlock,
     GlButton,
     GlDropdown,
     GlDropdownItem,
     TooltipOnTruncate,
   },
-  inject: {
-    buildName: {
-      type: String,
-      default: '',
+  props: {
+    bridgeJob: {
+      type: Object,
+      required: true,
     },
-  },
-  data() {
-    return {
-      isSidebarExpanded: true,
-    };
-  },
-  created() {
-    window.addEventListener('resize', this.onResize);
-  },
-  mounted() {
-    this.onResize();
+    commit: {
+      type: Object,
+      required: true,
+    },
   },
   methods: {
-    toggleSidebar() {
-      this.isSidebarExpanded = !this.isSidebarExpanded;
-    },
-    onResize() {
-      const breakpoint = bp.getBreakpointSize();
-      if (SIDEBAR_COLLAPSE_BREAKPOINTS.includes(breakpoint)) {
-        this.isSidebarExpanded = false;
-      } else if (!this.isSidebarExpanded) {
-        this.isSidebarExpanded = true;
-      }
+    onSidebarButtonClick() {
+      this.$emit('toggleSidebar');
     },
   },
 };
@@ -61,14 +46,11 @@ export default {
   <aside
     class="gl-fixed gl-right-0 gl-px-5 gl-bg-gray-10 gl-h-full gl-border-l-solid gl-border-1 gl-border-gray-100 gl-z-index-200 gl-overflow-hidden"
     :style="this.$options.styles"
-    :class="{
-      'gl-display-none': !isSidebarExpanded,
-    }"
   >
     <div class="gl-py-5 gl-display-flex gl-align-items-center">
-      <tooltip-on-truncate :title="buildName" truncate-target="child"
+      <tooltip-on-truncate :title="bridgeJob.name" truncate-target="child"
         ><h4 class="gl-mb-0 gl-mr-2 gl-text-truncate">
-          {{ buildName }}
+          {{ bridgeJob.name }}
         </h4>
       </tooltip-on-truncate>
       <!-- TODO: implement retry actions -->
@@ -90,9 +72,10 @@ export default {
         category="tertiary"
         class="gl-md-display-none gl-ml-2"
         icon="chevron-double-lg-right"
-        @click="toggleSidebar"
+        @click="onSidebarButtonClick"
       />
     </div>
-    <!-- TODO: get job details and show commit block, stage dropdown, jobs list -->
+    <commit-block :commit="commit" :class="$options.sectionClass" />
+    <!-- TODO: show stage dropdown, jobs list -->
   </aside>
 </template>

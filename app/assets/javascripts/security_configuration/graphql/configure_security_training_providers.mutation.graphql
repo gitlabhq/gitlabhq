@@ -1,5 +1,6 @@
 mutation configureSecurityTrainingProviders($input: configureSecurityTrainingProvidersInput!) {
   configureSecurityTrainingProviders(input: $input) @client {
+    errors
     securityTrainingProviders {
       id
       isEnabled

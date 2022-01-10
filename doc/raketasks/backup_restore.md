@@ -1305,9 +1305,11 @@ If you're using backup restore procedures, you may encounter the following
 warning messages:
 
 ```plaintext
-psql:/var/opt/gitlab/backups/db/database.sql:22: ERROR:  must be owner of extension plpgsql
-psql:/var/opt/gitlab/backups/db/database.sql:2931: WARNING:  no privileges could be revoked for "public" (two occurrences)
-psql:/var/opt/gitlab/backups/db/database.sql:2933: WARNING:  no privileges were granted for "public" (two occurrences)
+ERROR: must be owner of extension pg_trgm
+ERROR: must be owner of extension btree_gist
+ERROR: must be owner of extension plpgsql
+WARNING:  no privileges could be revoked for "public" (two occurrences)
+WARNING:  no privileges were granted for "public" (two occurrences)
 ```
 
 Be advised that the backup is successfully restored in spite of these warning

@@ -23,6 +23,8 @@ RSpec.describe 'bin/metrics-server', :aggregate_failures do
   end
 
   context 'with a running server' do
+    let(:metrics_dir) { Dir.mktmpdir }
+
     before do
       # We need to send a request to localhost
       WebMock.allow_net_connect!
@@ -33,7 +35,8 @@ RSpec.describe 'bin/metrics-server', :aggregate_failures do
       env = {
         'GITLAB_CONFIG' => config_file.path,
         'METRICS_SERVER_TARGET' => 'sidekiq',
-        'WIPE_METRICS_DIR' => '1'
+        'WIPE_METRICS_DIR' => '1',
+        'prometheus_multiproc_dir' => metrics_dir
       }
       @pid = Process.spawn(env, 'bin/metrics-server', pgroup: true)
     end
@@ -55,6 +58,7 @@ RSpec.describe 'bin/metrics-server', :aggregate_failures do
       # 'No such process' means the process died before
     ensure
       config_file.unlink
+      FileUtils.rm_rf(metrics_dir, secure: true)
     end
 
     it 'serves /metrics endpoint' do

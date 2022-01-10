@@ -8932,6 +8932,7 @@ Represents the total number of issues and their weights for a particular day.
 | <a id="cirunnercontactedat"></a>`contactedAt` | [`Time`](#time) | Timestamp of last contact from this runner. |
 | <a id="cirunnercreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp of creation of this runner. |
 | <a id="cirunnerdescription"></a>`description` | [`String`](#string) | Description of the runner. |
+| <a id="cirunnereditadminurl"></a>`editAdminUrl` | [`String`](#string) | Admin form URL of the runner. Only available for administrators. |
 | <a id="cirunnerexecutorname"></a>`executorName` | [`String`](#string) | Executor last advertised by the runner. Available only when feature flag `graphql_ci_runner_executor` is enabled. This flag is disabled by default, because the feature is experimental and is subject to change without notice. |
 | <a id="cirunnerid"></a>`id` | [`CiRunnerID!`](#cirunnerid) | ID of the runner. |
 | <a id="cirunneripaddress"></a>`ipAddress` | [`String`](#string) | IP address of the runner. |
@@ -11548,6 +11549,7 @@ Represents an iteration object.
 | <a id="iterationreport"></a>`report` | [`TimeboxReport`](#timeboxreport) | Historically accurate report about the timebox. |
 | <a id="iterationscopedpath"></a>`scopedPath` | [`String`](#string) | Web path of the iteration, scoped to the query parent. Only valid for Project parents. Returns null in other contexts. |
 | <a id="iterationscopedurl"></a>`scopedUrl` | [`String`](#string) | Web URL of the iteration, scoped to the query parent. Only valid for Project parents. Returns null in other contexts. |
+| <a id="iterationsequence"></a>`sequence` | [`Int!`](#int) | Sequence number for the iteration when you sort the containing cadence's iterations by the start and end date. The earliest starting and ending iteration is assigned 1. |
 | <a id="iterationstartdate"></a>`startDate` | [`Time`](#time) | Timestamp of the iteration start date. |
 | <a id="iterationstate"></a>`state` | [`IterationState!`](#iterationstate) | State of the iteration. |
 | <a id="iterationtitle"></a>`title` | [`String!`](#string) | Title of the iteration. |

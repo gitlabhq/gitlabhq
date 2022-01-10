@@ -24,14 +24,14 @@ RSpec.describe Gitlab::Metrics::Exporter::WebExporter do
     exporter.stop
   end
 
-  context 'when running server' do
+  context 'when running server', :prometheus do
     it 'readiness probe returns succesful status' do
       expect(readiness_probe.http_status).to eq(200)
       expect(readiness_probe.json).to include(status: 'ok')
       expect(readiness_probe.json).to include('web_exporter' => [{ 'status': 'ok' }])
     end
 
-    it 'initializes request metrics', :prometheus do
+    it 'initializes request metrics' do
       expect(Gitlab::Metrics::RailsSlis).to receive(:initialize_request_slis_if_needed!).and_call_original
 
       http = Net::HTTP.new(exporter.server.config[:BindAddress], exporter.server.config[:Port])
@@ -42,7 +42,7 @@ RSpec.describe Gitlab::Metrics::Exporter::WebExporter do
   end
 
   describe '#mark_as_not_running!' do
-    it 'readiness probe returns a failure status' do
+    it 'readiness probe returns a failure status', :prometheus do
       exporter.mark_as_not_running!
 
       expect(readiness_probe.http_status).to eq(503)

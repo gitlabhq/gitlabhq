@@ -9853,6 +9853,9 @@ msgstr ""
 msgid "Could not fetch policy because existing policy YAML is invalid"
 msgstr ""
 
+msgid "Could not fetch training providers. Please refresh the page, or try again later."
+msgstr ""
+
 msgid "Could not find design."
 msgstr ""
 
@@ -9887,6 +9890,9 @@ msgid "Could not revoke personal access token %{personal_access_token_name}."
 msgstr ""
 
 msgid "Could not revoke project access token %{project_access_token_name}."
+msgstr ""
+
+msgid "Could not save configuration. Please refresh the page, or try again later."
 msgstr ""
 
 msgid "Could not save group ID"
@@ -16787,9 +16793,6 @@ msgstr ""
 msgid "Group project URLs are prefixed with the group namespace"
 msgstr ""
 
-msgid "Group projects"
-msgstr ""
-
 msgid "Group requires separate account"
 msgstr ""
 
@@ -21421,6 +21424,9 @@ msgid "Lock"
 msgstr ""
 
 msgid "Lock %{issuableDisplayName}"
+msgstr ""
+
+msgid "Lock File?"
 msgstr ""
 
 msgid "Lock memberships to LDAP synchronization"
