@@ -162,27 +162,4 @@ RSpec.describe Projects::CommitsController do
       end
     end
   end
-
-  context 'token authentication' do
-    context 'public project' do
-      it_behaves_like 'authenticates sessionless user', :show, :atom, { public: true, ignore_incrementing: true } do
-        before do
-          public_project = create(:project, :repository, :public)
-
-          default_params.merge!(namespace_id: public_project.namespace, project_id: public_project, id: "master.atom")
-        end
-      end
-    end
-
-    context 'private project' do
-      it_behaves_like 'authenticates sessionless user', :show, :atom, { public: false, ignore_incrementing: true } do
-        before do
-          private_project = create(:project, :repository, :private)
-          private_project.add_maintainer(user)
-
-          default_params.merge!(namespace_id: private_project.namespace, project_id: private_project, id: "master.atom")
-        end
-      end
-    end
-  end
 end

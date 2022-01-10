@@ -19,6 +19,8 @@ RSpec.describe Integrations::ChatMessage::PushMessage do
 
   let(:color) { '#345' }
 
+  it_behaves_like Integrations::ChatMessage
+
   context 'push' do
     before do
       args[:commits] = [

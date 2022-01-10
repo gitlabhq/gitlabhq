@@ -3,83 +3,79 @@
 require 'spec_helper'
 
 RSpec.describe Integrations::ChatMessage::DeploymentMessage do
+  subject { described_class.new(args) }
+
+  let_it_be(:user) { create(:user, name: 'John Smith', username: 'smith') }
+  let_it_be(:namespace) { create(:namespace, name: 'myspace') }
+  let_it_be(:project) { create(:project, :repository, namespace: namespace, name: 'myproject') }
+  let_it_be(:commit) { project.commit('HEAD') }
+  let_it_be(:ci_build) { create(:ci_build, project: project) }
+  let_it_be(:environment) { create(:environment, name: 'myenvironment', project: project) }
+  let_it_be(:deployment) { create(:deployment, status: :success, deployable: ci_build, environment: environment, project: project, user: user, sha: commit.sha) }
+
+  let(:args) do
+    Gitlab::DataBuilder::Deployment.build(deployment, Time.current)
+  end
+
+  it_behaves_like Integrations::ChatMessage
+
   describe '#pretext' do
     it 'returns a message with the data returned by the deployment data builder' do
-      environment = create(:environment, name: "myenvironment")
-      project = create(:project, :repository)
-      commit = project.commit('HEAD')
-      deployment = create(:deployment, status: :success, environment: environment, project: project, sha: commit.sha)
-      data = Gitlab::DataBuilder::Deployment.build(deployment, Time.current)
-
-      message = described_class.new(data)
-
-      expect(message.pretext).to eq("Deploy to myenvironment succeeded")
+      expect(subject.pretext).to eq("Deploy to myenvironment succeeded")
     end
 
     it 'returns a message for a successful deployment' do
-      data = {
+      args.merge!(
         status: 'success',
         environment: 'production'
-      }
+      )
 
-      message = described_class.new(data)
-
-      expect(message.pretext).to eq('Deploy to production succeeded')
+      expect(subject.pretext).to eq('Deploy to production succeeded')
     end
 
     it 'returns a message for a failed deployment' do
-      data = {
+      args.merge!(
         status: 'failed',
         environment: 'production'
-      }
+      )
 
-      message = described_class.new(data)
-
-      expect(message.pretext).to eq('Deploy to production failed')
+      expect(subject.pretext).to eq('Deploy to production failed')
     end
 
     it 'returns a message for a canceled deployment' do
-      data = {
+      args.merge!(
         status: 'canceled',
         environment: 'production'
-      }
+      )
 
-      message = described_class.new(data)
-
-      expect(message.pretext).to eq('Deploy to production canceled')
+      expect(subject.pretext).to eq('Deploy to production canceled')
     end
 
     it 'returns a message for a deployment to another environment' do
-      data = {
+      args.merge!(
         status: 'success',
         environment: 'staging'
-      }
+      )
 
-      message = described_class.new(data)
-
-      expect(message.pretext).to eq('Deploy to staging succeeded')
+      expect(subject.pretext).to eq('Deploy to staging succeeded')
     end
 
     it 'returns a message for a deployment with any other status' do
-      data = {
+      args.merge!(
         status: 'unknown',
         environment: 'staging'
-      }
+      )
 
-      message = described_class.new(data)
-
-      expect(message.pretext).to eq('Deploy to staging unknown')
+      expect(subject.pretext).to eq('Deploy to staging unknown')
     end
 
     it 'returns a message for a running deployment' do
-      data = {
-          status: 'running',
-          environment: 'production'
-      }
+      args.merge!(
+        status: 'running',
+        environment: 'production'
+      )
 
-      message = described_class.new(data)
-
-      expect(message.pretext).to eq('Starting deploy to production')
+      expect(subject.pretext).to eq('Starting deploy to production')
     end
   end
 
@@ -108,21 +104,11 @@ RSpec.describe Integrations::ChatMessage::DeploymentMessage do
     end
 
     it 'returns attachments with the data returned by the deployment data builder' do
-      user = create(:user, name: "John Smith", username: "smith")
-      namespace = create(:namespace, name: "myspace")
-      project = create(:project, :repository, namespace: namespace, name: "myproject")
-      commit = project.commit('HEAD')
-      environment = create(:environment, name: "myenvironment", project: project)
-      ci_build = create(:ci_build, project: project)
-      deployment = create(:deployment, :success, deployable: ci_build, environment: environment, project: project, user: user, sha: commit.sha)
       job_url = Gitlab::Routing.url_helpers.project_job_url(project, ci_build)
       commit_url = Gitlab::UrlBuilder.build(deployment.commit)
       user_url = Gitlab::Routing.url_helpers.user_url(user)
-      data = Gitlab::DataBuilder::Deployment.build(deployment, Time.current)
 
-      message = described_class.new(data)
-
-      expect(message.attachments).to eq([{
+      expect(subject.attachments).to eq([{
         text: "[myspace/myproject](#{project.web_url}) with job [##{ci_build.id}](#{job_url}) by [John Smith (smith)](#{user_url})\n[#{deployment.short_sha}](#{commit_url}): #{commit.title}",
         color: "good"
       }])

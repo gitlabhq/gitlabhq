@@ -178,6 +178,29 @@ RSpec.describe Projects::RepositoriesController do
 
             expect(response).to have_gitlab_http_status(:ok)
           end
+
+          context 'when user with expired password' do
+            let_it_be(:user) { create(:user, password_expires_at: 2.minutes.ago) }
+
+            it 'redirects to sign in page' do
+              get :archive, params: { namespace_id: project.namespace, project_id: project, id: 'master', token: user.static_object_token }, format: 'zip'
+
+              expect(response).to have_gitlab_http_status(:found)
+              expect(response.location).to end_with('/users/sign_in')
+            end
+          end
+
+          context 'when password expiration is not applicable' do
+            context 'when ldap user' do
+              let_it_be(:user) { create(:omniauth_user, provider: 'ldap', password_expires_at: 2.minutes.ago) }
+
+              it 'calls the action normally' do
+                get :archive, params: { namespace_id: project.namespace, project_id: project, id: 'master', token: user.static_object_token }, format: 'zip'
+
+                expect(response).to have_gitlab_http_status(:ok)
+              end
+            end
+          end
         end
 
         context 'when token is incorrect' do
@@ -196,6 +219,31 @@ RSpec.describe Projects::RepositoriesController do
             get :archive, params: { namespace_id: project.namespace, project_id: project, id: 'master' }, format: 'zip'
 
             expect(response).to have_gitlab_http_status(:ok)
+          end
+
+          context 'when user with expired password' do
+            let_it_be(:user) { create(:user, password_expires_at: 2.minutes.ago) }
+
+            it 'redirects to sign in page' do
+              request.headers['X-Gitlab-Static-Object-Token'] = user.static_object_token
+              get :archive, params: { namespace_id: project.namespace, project_id: project, id: 'master' }, format: 'zip'
+
+              expect(response).to have_gitlab_http_status(:found)
+              expect(response.location).to end_with('/users/sign_in')
+            end
+          end
+
+          context 'when password expiration is not applicable' do
+            context 'when ldap user' do
+              let_it_be(:user) { create(:omniauth_user, provider: 'ldap', password_expires_at: 2.minutes.ago) }
+
+              it 'calls the action normally' do
+                request.headers['X-Gitlab-Static-Object-Token'] = user.static_object_token
+                get :archive, params: { namespace_id: project.namespace, project_id: project, id: 'master' }, format: 'zip'
+
+                expect(response).to have_gitlab_http_status(:ok)
+              end
+            end
           end
         end
 

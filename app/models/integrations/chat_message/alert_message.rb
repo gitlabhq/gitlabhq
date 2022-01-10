@@ -23,7 +23,7 @@ module Integrations
 
       def attachments
         [{
-          title: title,
+          title: strip_markup(title),
           title_link: alert_url,
           color: attachment_color,
           fields: attachment_fields
@@ -31,7 +31,7 @@ module Integrations
       end
 
       def message
-        "Alert firing in #{project_name}"
+        "Alert firing in #{strip_markup(project_name)}"
       end
 
       private

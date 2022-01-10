@@ -97,6 +97,18 @@ describe('gl_emoji', () => {
     });
   });
 
+  it('escapes gl-emoji name', async () => {
+    const glEmojiElement = markupToDomElement(
+      "<gl-emoji data-name='&#34;x=&#34y&#34 onload=&#34;alert(document.location.href)&#34;' data-unicode-version='x'>abc</gl-emoji>",
+    );
+
+    await waitForPromises();
+
+    expect(glEmojiElement.outerHTML).toBe(
+      '<gl-emoji data-name="&quot;x=&quot;y&quot; onload=&quot;alert(document.location.href)&quot;" data-unicode-version="x"><img class="emoji" title=":&quot;x=&quot;y&quot; onload=&quot;alert(document.location.href)&quot;:" alt=":&quot;x=&quot;y&quot; onload=&quot;alert(document.location.href)&quot;:" src="/-/emojis/2/grey_question.png" width="20" height="20" align="absmiddle"></gl-emoji>',
+    );
+  });
+
   it('Adds sprite CSS if emojis are not supported', async () => {
     const testPath = '/test-path.css';
     jest.spyOn(EmojiUnicodeSupport, 'default').mockReturnValue(false);
