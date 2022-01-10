@@ -280,6 +280,8 @@ export default {
             :project-path="projectPath"
             :is-locked="Boolean(pathLockedByUser)"
             :can-lock="canLock"
+            :show-fork-suggestion="showForkSuggestion"
+            @fork="setForkTarget('ide')"
           />
         </template>
       </blob-header>

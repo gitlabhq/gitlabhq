@@ -65,9 +65,13 @@ module Gitlab
         end
         names_of_empty_variables = values.filter_map { |name, value| name if value.blank? }
 
-        # Remove placeholders that correspond to empty values and are the only word in a line
-        # along with all whitespace characters preceding them.
-        message = message.gsub(/[\n\r]+#{Regexp.union(names_of_empty_variables)}$/, '') if names_of_empty_variables.present?
+        # Remove lines that contain empty variable placeholder and nothing else.
+        if names_of_empty_variables.present?
+          # If there is blank line or EOF after it, remove blank line before it as well.
+          message = message.gsub(/\n\n#{Regexp.union(names_of_empty_variables)}(\n\n|\Z)/, '\1')
+          # Otherwise, remove only the line it is in.
+          message = message.gsub(/^#{Regexp.union(names_of_empty_variables)}\n/, '')
+        end
         # Substitute all variables with their values.
         message = message.gsub(Regexp.union(values.keys), values) if values.present?
 

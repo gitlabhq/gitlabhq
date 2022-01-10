@@ -292,45 +292,84 @@ RSpec.describe Gitlab::MergeRequests::CommitMessageGenerator do
     context 'when project has merge commit template with approvers' do
       let(:user1) { create(:user) }
       let(:user2) { create(:user) }
-      let(message_template_name) do
-        "Merge Request approved by:\n%{approved_by}"
-      end
+      let(message_template_name) { <<~MSG.rstrip }
+        Merge branch '%{source_branch}' into '%{target_branch}'
 
-      context "and mr has no approval" do
+        %{approved_by}
+      MSG
+
+      context 'and mr has no approval' do
         before do
           merge_request.approved_by_users = []
         end
 
-        it "returns empty string" do
+        it 'removes variable and blank line' do
           expect(result_message).to eq <<~MSG.rstrip
-          Merge Request approved by:
+            Merge branch 'feature' into 'master'
           MSG
+        end
+
+        context 'when there is blank line after approved_by' do
+          let(message_template_name) { <<~MSG.rstrip }
+            Merge branch '%{source_branch}' into '%{target_branch}'
+
+            %{approved_by}
+
+            Type: merge
+          MSG
+
+          it 'removes blank line before it' do
+            expect(result_message).to eq <<~MSG.rstrip
+              Merge branch 'feature' into 'master'
+
+              Type: merge
+            MSG
+          end
+        end
+
+        context 'when there is no blank line after approved_by' do
+          let(message_template_name) { <<~MSG.rstrip }
+            Merge branch '%{source_branch}' into '%{target_branch}'
+
+            %{approved_by}
+            Type: merge
+          MSG
+
+          it 'does not remove blank line before it' do
+            expect(result_message).to eq <<~MSG.rstrip
+              Merge branch 'feature' into 'master'
+
+              Type: merge
+            MSG
+          end
         end
       end
 
-      context "and mr has one approval" do
+      context 'and mr has one approval' do
         before do
           merge_request.approved_by_users = [user1]
         end
 
-        it "returns user name and email" do
+        it 'returns user name and email' do
           expect(result_message).to eq <<~MSG.rstrip
-          Merge Request approved by:
-          Approved-by: #{user1.name} <#{user1.email}>
+            Merge branch 'feature' into 'master'
+
+            Approved-by: #{user1.name} <#{user1.email}>
           MSG
         end
       end
 
-      context "and mr has multiple approvals" do
+      context 'and mr has multiple approvals' do
         before do
           merge_request.approved_by_users = [user1, user2]
         end
 
-        it "returns users names and emails" do
+        it 'returns users names and emails' do
           expect(result_message).to eq <<~MSG.rstrip
-          Merge Request approved by:
-          Approved-by: #{user1.name} <#{user1.email}>
-          Approved-by: #{user2.name} <#{user2.email}>
+            Merge branch 'feature' into 'master'
+
+            Approved-by: #{user1.name} <#{user1.email}>
+            Approved-by: #{user2.name} <#{user2.email}>
           MSG
         end
       end

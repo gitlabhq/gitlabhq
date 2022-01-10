@@ -32,6 +32,7 @@ export default {
       class="gl-mr-3"
       category="secondary"
       variant="confirm"
+      data-method="post"
       :href="forkPath"
       data-testid="fork"
     >

@@ -1,6 +1,6 @@
 import initDeprecatedJQueryDropdown from '~/deprecated_jquery_dropdown';
 
-const defaultTimezone = { name: 'UTC', offset: 0 };
+const defaultTimezone = { identifier: 'Etc/UTC', name: 'UTC', offset: 0 };
 const defaults = {
   $inputEl: null,
   $dropdownEl: null,
@@ -70,7 +70,7 @@ export default class TimezoneDropdown {
 
   setDropdownValue(timezone) {
     this.$dropdownToggle.text(this.displayFormat(timezone));
-    this.$input.val(timezone.name);
+    this.$input.val(timezone.identifier);
   }
 
   handleDropdownChange({ selectedObj, e }) {

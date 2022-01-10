@@ -70,11 +70,11 @@ module Banzai
       private
 
       def parse_lang_params(node)
-        node = node.parent if Feature.enabled?(:use_cmark_renderer, default_enabled: :yaml)
+        node = node.parent
 
         # Commonmarker's FULL_INFO_STRING render option works with the space delimiter.
         # But the current behavior of GitLab's markdown renderer is different - it grabs everything as the single
-        # line, including language and its options. To keep backward compatability, we have to parse the old format and
+        # line, including language and its options. To keep backward compatibility, we have to parse the old format and
         # merge with the new one.
         #
         # Behaviors before separating language and its parameters:
@@ -91,11 +91,7 @@ module Banzai
         return unless language
 
         language, language_params = language.split(LANG_PARAMS_DELIMITER, 2)
-
-        if Feature.enabled?(:use_cmark_renderer, default_enabled: :yaml)
-          language_params = [node.attr('data-meta'), language_params].compact.join(' ')
-        end
-
+        language_params = [node.attr('data-meta'), language_params].compact.join(' ')
         formatted_language_params = format_language_params(language_params)
 
         [language, formatted_language_params]

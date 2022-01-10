@@ -136,6 +136,9 @@ export default {
     },
   },
   methods: {
+    show() {
+      this.$refs[this.modalId].show();
+    },
     setFile(file) {
       this.file = file;
 
@@ -206,6 +209,7 @@ export default {
 <template>
   <gl-form>
     <gl-modal
+      :ref="modalId"
       :modal-id="modalId"
       :title="modalTitle"
       :action-primary="primaryOptions"

@@ -342,27 +342,30 @@ describe('Base editor', () => {
 
   describe('implementation', () => {
     let instance;
-    beforeEach(() => {
-      instance = editor.createInstance({ el: editorEl, blobPath, blobContent });
-    });
 
     it('correctly proxies value from the model', () => {
+      instance = editor.createInstance({ el: editorEl, blobPath, blobContent });
       expect(instance.getValue()).toBe(blobContent);
     });
 
-    it('emits the EDITOR_READY_EVENT event after setting up the instance', () => {
+    it('emits the EDITOR_READY_EVENT event passing the instance after setting it up', () => {
       jest.spyOn(monacoEditor, 'create').mockImplementation(() => {
         return {
           setModel: jest.fn(),
           onDidDispose: jest.fn(),
           layout: jest.fn(),
+          dispose: jest.fn(),
         };
       });
-      const eventSpy = jest.fn();
+      let passedInstance;
+      const eventSpy = jest.fn().mockImplementation((ev) => {
+        passedInstance = ev.detail.instance;
+      });
       editorEl.addEventListener(EDITOR_READY_EVENT, eventSpy);
       expect(eventSpy).not.toHaveBeenCalled();
-      editor.createInstance({ el: editorEl });
+      instance = editor.createInstance({ el: editorEl });
       expect(eventSpy).toHaveBeenCalled();
+      expect(passedInstance).toBe(instance);
     });
   });
 
