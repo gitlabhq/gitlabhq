@@ -1,3 +1,11 @@
+dast_site_profiles_pipelines:
+  - table: ci_pipelines
+    column: ci_pipeline_id
+    on_delete: async_delete
+vulnerability_feedback:
+  - table: ci_pipelines
+    column: pipeline_id
+    on_delete: async_nullify
 ci_pipeline_chat_data:
   - table: chat_names
     column: chat_name_id

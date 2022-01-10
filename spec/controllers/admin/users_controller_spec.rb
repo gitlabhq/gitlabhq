@@ -612,8 +612,8 @@ RSpec.describe Admin::UsersController do
       end
 
       context 'when the new password does not match the password confirmation' do
-        let(:password) { 'some_password' }
-        let(:password_confirmation) { 'not_same_as_password' }
+        let(:password) { Gitlab::Password.test_default }
+        let(:password_confirmation) { "not" + Gitlab::Password.test_default }
 
         it 'shows the edit page again' do
           update_password(user, password, password_confirmation)

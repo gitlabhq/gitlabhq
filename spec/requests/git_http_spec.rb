@@ -319,7 +319,7 @@ RSpec.describe 'Git HTTP requests' do
             context 'when user is using credentials with special characters' do
               context 'with password with special characters' do
                 before do
-                  user.update!(password: 'RKszEwéC5kFnû∆f243fycGu§Gh9ftDj!U')
+                  user.update!(password: Gitlab::Password.test_default)
                 end
 
                 it 'allows clones' do
@@ -1670,7 +1670,7 @@ RSpec.describe 'Git HTTP requests' do
             context 'when user is using credentials with special characters' do
               context 'with password with special characters' do
                 before do
-                  user.update!(password: 'RKszEwéC5kFnû∆f243fycGu§Gh9ftDj!U')
+                  user.update!(password: Gitlab::Password.test_default)
                 end
 
                 it 'allows clones' do

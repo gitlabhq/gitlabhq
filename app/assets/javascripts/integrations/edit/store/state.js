@@ -5,8 +5,6 @@ export default ({ defaultState = null, customState = {} } = {}) => {
     override,
     defaultState,
     customState,
-    isSaving: false,
-    isResetting: false,
     isLoadingJiraIssueTypes: false,
     loadingJiraIssueTypesErrorMessage: '',
     jiraIssueTypes: [],

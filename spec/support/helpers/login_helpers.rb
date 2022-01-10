@@ -95,7 +95,7 @@ module LoginHelpers
     visit new_user_session_path
 
     fill_in "user_login", with: user.email
-    fill_in "user_password", with: "12345678"
+    fill_in "user_password", with: Gitlab::Password.test_default
     check 'user_remember_me' if remember
 
     click_button "Sign in"

@@ -5,7 +5,7 @@ FactoryBot.define do
     email { generate(:email) }
     name { generate(:name) }
     username { generate(:username) }
-    password { "12345678" }
+    password { Gitlab::Password.test_default }
     role { 'software_developer' }
     confirmed_at { Time.now }
     confirmation_token { nil }

@@ -38,6 +38,7 @@ describe('ItemStats', () => {
         ...mockParentGroupItem,
         type: ITEM_TYPE.PROJECT,
         starCount: 4,
+        lastActivityAt: '2017-04-09T18:40:39.101Z',
       };
 
       createComponent({ item });

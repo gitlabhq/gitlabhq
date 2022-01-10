@@ -230,8 +230,8 @@ module Gitlab
             name:                       name.strip.presence || valid_username,
             username:                   valid_username,
             email:                      email,
-            password:                   auth_hash.password,
-            password_confirmation:      auth_hash.password,
+            password:                   Gitlab::Password.test_default(21),
+            password_confirmation:      Gitlab::Password.test_default(21),
             password_automatically_set: true
           }
         end

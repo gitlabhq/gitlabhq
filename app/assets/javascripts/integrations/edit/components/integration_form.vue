@@ -1,5 +1,6 @@
 <script>
 import { GlButton, GlModalDirective, GlSafeHtmlDirective as SafeHtml } from '@gitlab/ui';
+import axios from 'axios';
 import * as Sentry from '@sentry/browser';
 import { mapState, mapActions, mapGetters } from 'vuex';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
@@ -10,6 +11,7 @@ import {
   I18N_SUCCESSFUL_CONNECTION_MESSAGE,
   integrationLevels,
 } from '~/integrations/constants';
+import { refreshCurrentPage } from '~/lib/utils/url_utility';
 import eventHub from '../event_hub';
 import { testIntegrationSettings } from '../api';
 import ActiveCheckbox from './active_checkbox.vue';
@@ -55,11 +57,12 @@ export default {
       integrationActive: false,
       isTesting: false,
       isSaving: false,
+      isResetting: false,
     };
   },
   computed: {
     ...mapGetters(['currentKey', 'propsSource']),
-    ...mapState(['defaultState', 'customState', 'override', 'isResetting']),
+    ...mapState(['defaultState', 'customState', 'override']),
     isEditable() {
       return this.propsSource.editable;
     },
@@ -126,7 +129,20 @@ export default {
         });
     },
     onResetClick() {
-      this.fetchResetIntegration();
+      this.isResetting = true;
+
+      return axios
+        .post(this.propsSource.resetPath)
+        .then(() => {
+          refreshCurrentPage();
+        })
+        .catch((error) => {
+          this.$toast.show(I18N_DEFAULT_ERROR_MESSAGE);
+          Sentry.captureException(error);
+        })
+        .finally(() => {
+          this.isResetting = false;
+        });
     },
     onRequestJiraIssueTypes() {
       this.requestJiraIssueTypes(this.getFormData());
@@ -208,6 +224,7 @@ export default {
               variant="confirm"
               :loading="isSaving"
               :disabled="disableButtons"
+              data-testid="save-button-instance-group"
               data-qa-selector="save_changes_button"
             >
               {{ __('Save changes') }}

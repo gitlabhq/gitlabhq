@@ -29,7 +29,7 @@ RSpec.describe 'Profile account page', :js do
     it 'deletes user', :js, :sidekiq_might_not_need_inline do
       click_button 'Delete account'
 
-      fill_in 'password', with: '12345678'
+      fill_in 'password', with: Gitlab::Password.test_default
 
       page.within '.modal' do
         click_button 'Delete account'

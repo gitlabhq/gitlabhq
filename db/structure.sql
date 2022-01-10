@@ -31438,9 +31438,6 @@ ALTER TABLE ONLY merge_requests_closing_issues
 ALTER TABLE ONLY merge_trains
     ADD CONSTRAINT fk_rails_f90820cb08 FOREIGN KEY (pipeline_id) REFERENCES ci_pipelines(id) ON DELETE SET NULL;
 
-ALTER TABLE ONLY ci_runner_namespaces
-    ADD CONSTRAINT fk_rails_f9d9ed3308 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
-
 ALTER TABLE ONLY banned_users
     ADD CONSTRAINT fk_rails_fa5bb598e5 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 

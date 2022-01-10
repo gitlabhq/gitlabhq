@@ -18,7 +18,7 @@ module Metrics
         dashboard_paths = ::Gitlab::Metrics::Dashboard::RepoDashboardFinder.list_dashboards(project)
 
         dashboard_paths.each do |dashboard_path|
-          ::Gitlab::Metrics::Dashboard::Importer.new(dashboard_path, project).execute!
+          ::Gitlab::Metrics::Dashboard::Importer.new(dashboard_path, project).execute
         end
       end
     end

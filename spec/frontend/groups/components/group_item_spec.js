@@ -100,6 +100,7 @@ describe('GroupItemComponent', () => {
         wrapper.destroy();
 
         group.type = 'project';
+        group.lastActivityAt = '2017-04-09T18:40:39.101Z';
         wrapper = createComponent({ group });
 
         expect(wrapper.vm.isGroup).toBe(false);

@@ -1,14 +1,14 @@
 %main{ :role => "main" }
-  .modal-dialog.modal-doorkeepr-auth
-    .modal-content.gl-shadow-none
-      .modal-header
-        %h3.page-title
+  .doorkeeper-authorize.gl-mx-auto.gl-mt-6
+    .gl-border-gray-200.gl-border-1.gl-border-solid.gl-rounded-base
+      .gl-p-5.gl-border-b-gray-200.gl-border-b-1.gl-border-b-solid
+        %h4.gl-m-0
           - link_to_client = link_to(@pre_auth.client.name, @pre_auth.redirect_uri, target: '_blank', rel: 'noopener noreferrer')
           = _("Authorize %{link_to_client} to use your account?").html_safe % { link_to_client: link_to_client }
 
-      .modal-body
+      .gl-p-5
         - if current_user.admin?
-          .text-warning
+          .gl-text-orange-500
             %p
               = sprite_icon('warning-solid')
               = html_escape(_('You are an admin, which means granting access to %{client_name} will allow them to interact with GitLab as an admin as well. Proceed with caution.')) % { client_name: tag.strong(@pre_auth.client.name) }
@@ -27,25 +27,25 @@
               - @pre_auth.scopes.each do |scope|
                 %li
                   %strong= t scope, scope: [:doorkeeper, :scopes]
-                  .text-secondary= t scope, scope: [:doorkeeper, :scope_desc]
-        .form-actions.text-right
-          = form_tag oauth_authorization_path, method: :delete, class: 'inline' do
-            = hidden_field_tag :client_id, @pre_auth.client.uid
-            = hidden_field_tag :redirect_uri, @pre_auth.redirect_uri
-            = hidden_field_tag :state, @pre_auth.state
-            = hidden_field_tag :response_type, @pre_auth.response_type
-            = hidden_field_tag :scope, @pre_auth.scope
-            = hidden_field_tag :nonce, @pre_auth.nonce
-            = hidden_field_tag :code_challenge, @pre_auth.code_challenge
-            = hidden_field_tag :code_challenge_method, @pre_auth.code_challenge_method
-            = submit_tag _("Deny"), class: "gl-button btn btn-danger"
-          = form_tag oauth_authorization_path, method: :post, class: 'inline' do
-            = hidden_field_tag :client_id, @pre_auth.client.uid
-            = hidden_field_tag :redirect_uri, @pre_auth.redirect_uri
-            = hidden_field_tag :state, @pre_auth.state
-            = hidden_field_tag :response_type, @pre_auth.response_type
-            = hidden_field_tag :scope, @pre_auth.scope
-            = hidden_field_tag :nonce, @pre_auth.nonce
-            = hidden_field_tag :code_challenge, @pre_auth.code_challenge
-            = hidden_field_tag :code_challenge_method, @pre_auth.code_challenge_method
-            = submit_tag _("Authorize"), class: "gl-button btn btn-confirm gl-ml-3", data: { qa_selector: 'authorization_button' }
+                  .gl-text-gray-500= t scope, scope: [:doorkeeper, :scope_desc]
+      .gl-p-5.gl-bg-gray-10.gl-border-t-gray-200.gl-border-t-1.gl-border-t-solid.gl-rounded-bottom-right-base.gl-rounded-bottom-left-base.gl-text-right
+        = form_tag oauth_authorization_path, method: :delete, class: 'inline' do
+          = hidden_field_tag :client_id, @pre_auth.client.uid
+          = hidden_field_tag :redirect_uri, @pre_auth.redirect_uri
+          = hidden_field_tag :state, @pre_auth.state
+          = hidden_field_tag :response_type, @pre_auth.response_type
+          = hidden_field_tag :scope, @pre_auth.scope
+          = hidden_field_tag :nonce, @pre_auth.nonce
+          = hidden_field_tag :code_challenge, @pre_auth.code_challenge
+          = hidden_field_tag :code_challenge_method, @pre_auth.code_challenge_method
+          = submit_tag _("Deny"), class: "btn btn-default gl-button"
+        = form_tag oauth_authorization_path, method: :post, class: 'inline' do
+          = hidden_field_tag :client_id, @pre_auth.client.uid
+          = hidden_field_tag :redirect_uri, @pre_auth.redirect_uri
+          = hidden_field_tag :state, @pre_auth.state
+          = hidden_field_tag :response_type, @pre_auth.response_type
+          = hidden_field_tag :scope, @pre_auth.scope
+          = hidden_field_tag :nonce, @pre_auth.nonce
+          = hidden_field_tag :code_challenge, @pre_auth.code_challenge
+          = hidden_field_tag :code_challenge_method, @pre_auth.code_challenge_method
+          = submit_tag _("Authorize"), class: "btn btn-danger gl-button gl-ml-3", data: { qa_selector: 'authorization_button' }

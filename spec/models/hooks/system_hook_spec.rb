@@ -37,7 +37,7 @@ RSpec.describe SystemHook do
     let(:project)     { create(:project, namespace: user.namespace) }
     let(:group)       { create(:group) }
     let(:params) do
-      { name: 'John Doe', username: 'jduser', email: 'jg@example.com', password: 'mydummypass' }
+      { name: 'John Doe', username: 'jduser', email: 'jg@example.com', password: Gitlab::Password.test_default }
     end
 
     before do

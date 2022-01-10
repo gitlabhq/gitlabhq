@@ -11,7 +11,7 @@ export default {
     primaryProps() {
       return {
         text: __('Reset'),
-        attributes: [{ variant: 'warning' }, { category: 'primary' }],
+        attributes: [{ variant: 'danger' }, { category: 'primary' }],
       };
     },
     cancelProps() {

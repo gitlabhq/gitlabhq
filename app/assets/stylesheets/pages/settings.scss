@@ -293,10 +293,8 @@
   }
 }
 
-.modal-doorkeepr-auth {
-  .modal-body {
-    padding: $gl-padding;
-  }
+.doorkeeper-authorize {
+  max-width: px-to-rem(500px);
 }
 
 .created-deploy-token-container {

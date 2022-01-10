@@ -62,6 +62,10 @@ RSpec.describe GroupChildEntity do
       expect(json[:edit_path]).to eq(edit_project_path(object))
     end
 
+    it 'includes the last activity at' do
+      expect(json[:last_activity_at]).to be_present
+    end
+
     it_behaves_like 'group child json'
   end
 

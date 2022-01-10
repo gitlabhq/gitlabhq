@@ -3,7 +3,7 @@ import MockAdapter from 'axios-mock-adapter';
 import * as Sentry from '@sentry/browser';
 import { setHTMLFixture } from 'helpers/fixtures';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import { mockIntegrationProps } from 'jest/integrations/edit/mock_data';
+import waitForPromises from 'helpers/wait_for_promises';
 import ActiveCheckbox from '~/integrations/edit/components/active_checkbox.vue';
 import ConfirmationModal from '~/integrations/edit/components/confirmation_modal.vue';
 import DynamicField from '~/integrations/edit/components/dynamic_field.vue';
@@ -13,7 +13,6 @@ import JiraTriggerFields from '~/integrations/edit/components/jira_trigger_field
 import OverrideDropdown from '~/integrations/edit/components/override_dropdown.vue';
 import ResetConfirmationModal from '~/integrations/edit/components/reset_confirmation_modal.vue';
 import TriggerFields from '~/integrations/edit/components/trigger_fields.vue';
-import waitForPromises from 'helpers/wait_for_promises';
 import {
   integrationLevels,
   I18N_SUCCESSFUL_CONNECTION_MESSAGE,
@@ -23,9 +22,12 @@ import {
 import { createStore } from '~/integrations/edit/store';
 import eventHub from '~/integrations/edit/event_hub';
 import httpStatus from '~/lib/utils/http_status';
+import { refreshCurrentPage } from '~/lib/utils/url_utility';
+import { mockIntegrationProps } from '../mock_data';
 
 jest.mock('~/integrations/edit/event_hub');
 jest.mock('@sentry/browser');
+jest.mock('~/lib/utils/url_utility');
 
 describe('IntegrationForm', () => {
   const mockToastShow = jest.fn();
@@ -80,7 +82,8 @@ describe('IntegrationForm', () => {
   const findConfirmationModal = () => wrapper.findComponent(ConfirmationModal);
   const findResetConfirmationModal = () => wrapper.findComponent(ResetConfirmationModal);
   const findResetButton = () => wrapper.findByTestId('reset-button');
-  const findSaveButton = () => wrapper.findByTestId('save-button');
+  const findProjectSaveButton = () => wrapper.findByTestId('save-button');
+  const findInstanceOrGroupSaveButton = () => wrapper.findByTestId('save-button-instance-group');
   const findTestButton = () => wrapper.findByTestId('test-button');
   const findJiraTriggerFields = () => wrapper.findComponent(JiraTriggerFields);
   const findJiraIssuesFields = () => wrapper.findComponent(JiraIssuesFields);
@@ -395,11 +398,11 @@ describe('IntegrationForm', () => {
           },
         });
 
-        await findSaveButton().vm.$emit('click', new Event('click'));
+        await findProjectSaveButton().vm.$emit('click', new Event('click'));
       });
 
       it('sets save button `loading` prop to `true`', () => {
-        expect(findSaveButton().props('loading')).toBe(true);
+        expect(findProjectSaveButton().props('loading')).toBe(true);
       });
 
       it('sets test button `disabled` prop to `true`', () => {
@@ -425,7 +428,7 @@ describe('IntegrationForm', () => {
             },
           });
 
-          await findSaveButton().vm.$emit('click', new Event('click'));
+          await findProjectSaveButton().vm.$emit('click', new Event('click'));
         });
 
         it('submit form', () => {
@@ -445,7 +448,7 @@ describe('IntegrationForm', () => {
           },
         });
 
-        await findSaveButton().vm.$emit('click', new Event('click'));
+        await findProjectSaveButton().vm.$emit('click', new Event('click'));
       });
 
       it('does not submit form', () => {
@@ -453,7 +456,7 @@ describe('IntegrationForm', () => {
       });
 
       it('sets save button `loading` prop to `false`', () => {
-        expect(findSaveButton().props('loading')).toBe(false);
+        expect(findProjectSaveButton().props('loading')).toBe(false);
       });
 
       it('sets test button `disabled` prop to `false`', () => {
@@ -507,7 +510,7 @@ describe('IntegrationForm', () => {
         });
 
         it('sets save button `disabled` prop to `true`', () => {
-          expect(findSaveButton().props('disabled')).toBe(true);
+          expect(findProjectSaveButton().props('disabled')).toBe(true);
         });
       });
 
@@ -536,12 +539,91 @@ describe('IntegrationForm', () => {
         });
 
         it('sets save button `disabled` prop to `false`', () => {
-          expect(findSaveButton().props('disabled')).toBe(false);
+          expect(findProjectSaveButton().props('disabled')).toBe(false);
         });
 
         it(`${expectSentry ? 'does' : 'does not'} capture exception in Sentry`, () => {
           expect(Sentry.captureException).toHaveBeenCalledTimes(expectSentry ? 1 : 0);
         });
+      });
+    });
+  });
+
+  describe('when `reset-confirmation-modal` emits `reset` event', () => {
+    const mockResetPath = '/reset';
+
+    describe('buttons', () => {
+      beforeEach(async () => {
+        createComponent({
+          customStateProps: {
+            integrationLevel: integrationLevels.GROUP,
+            canTest: true,
+            resetPath: mockResetPath,
+          },
+        });
+
+        await findResetConfirmationModal().vm.$emit('reset');
+      });
+
+      it('sets reset button `loading` prop to `true`', () => {
+        expect(findResetButton().props('loading')).toBe(true);
+      });
+
+      it('sets other button `disabled` props to `true`', () => {
+        expect(findInstanceOrGroupSaveButton().props('disabled')).toBe(true);
+        expect(findTestButton().props('disabled')).toBe(true);
+      });
+    });
+
+    describe('when "reset settings" request fails', () => {
+      beforeEach(async () => {
+        mockAxios.onPost(mockResetPath).replyOnce(httpStatus.INTERNAL_SERVER_ERROR);
+        createComponent({
+          customStateProps: {
+            integrationLevel: integrationLevels.GROUP,
+            canTest: true,
+            resetPath: mockResetPath,
+          },
+        });
+
+        await findResetConfirmationModal().vm.$emit('reset');
+        await waitForPromises();
+      });
+
+      it('displays a toast', () => {
+        expect(mockToastShow).toHaveBeenCalledWith(I18N_DEFAULT_ERROR_MESSAGE);
+      });
+
+      it('captures exception in Sentry', () => {
+        expect(Sentry.captureException).toHaveBeenCalledTimes(1);
+      });
+
+      it('sets reset button `loading` prop to `false`', () => {
+        expect(findResetButton().props('loading')).toBe(false);
+      });
+
+      it('sets button `disabled` props to `false`', () => {
+        expect(findInstanceOrGroupSaveButton().props('disabled')).toBe(false);
+        expect(findTestButton().props('disabled')).toBe(false);
+      });
+    });
+
+    describe('when "reset settings" succeeds', () => {
+      beforeEach(async () => {
+        mockAxios.onPost(mockResetPath).replyOnce(httpStatus.OK);
+        createComponent({
+          customStateProps: {
+            integrationLevel: integrationLevels.GROUP,
+            resetPath: mockResetPath,
+          },
+        });
+
+        await findResetConfirmationModal().vm.$emit('reset');
+        await waitForPromises();
+      });
+
+      it('calls `refreshCurrentPage`', () => {
+        expect(refreshCurrentPage).toHaveBeenCalledTimes(1);
       });
     });
   });

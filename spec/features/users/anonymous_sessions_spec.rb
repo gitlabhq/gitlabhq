@@ -9,7 +9,7 @@ RSpec.describe 'Session TTLs', :clean_gitlab_redis_shared_state do
     visit new_user_session_path
     # The session key only gets created after a post
     fill_in 'user_login', with: 'non-existant@gitlab.org'
-    fill_in 'user_password', with: '12345678'
+    fill_in 'user_password', with: Gitlab::Password.test_default
     click_button 'Sign in'
 
     expect(page).to have_content('Invalid login or password')

@@ -1,5 +1,3 @@
-import axios from 'axios';
-import { refreshCurrentPage } from '~/lib/utils/url_utility';
 import {
   VALIDATE_INTEGRATION_FORM_EVENT,
   I18N_FETCH_TEST_SETTINGS_DEFAULT_ERROR_MESSAGE,
@@ -10,27 +8,6 @@ import eventHub from '../event_hub';
 import * as types from './mutation_types';
 
 export const setOverride = ({ commit }, override) => commit(types.SET_OVERRIDE, override);
-export const setIsResetting = ({ commit }, isResetting) =>
-  commit(types.SET_IS_RESETTING, isResetting);
-
-export const requestResetIntegration = ({ commit }) => {
-  commit(types.REQUEST_RESET_INTEGRATION);
-};
-export const receiveResetIntegrationSuccess = () => {
-  refreshCurrentPage();
-};
-export const receiveResetIntegrationError = ({ commit }) => {
-  commit(types.RECEIVE_RESET_INTEGRATION_ERROR);
-};
-
-export const fetchResetIntegration = ({ dispatch, getters }) => {
-  dispatch('requestResetIntegration');
-
-  return axios
-    .post(getters.propsSource.resetPath, { params: { format: 'json' } })
-    .then(() => dispatch('receiveResetIntegrationSuccess'))
-    .catch(() => dispatch('receiveResetIntegrationError'));
-};
 
 export const requestJiraIssueTypes = ({ commit, dispatch, getters }, formData) => {
   commit(types.SET_JIRA_ISSUE_TYPES_ERROR_MESSAGE, '');

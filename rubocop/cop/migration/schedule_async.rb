@@ -11,9 +11,8 @@ module RuboCop
         ENFORCED_SINCE = 2020_02_12_00_00_00
 
         MSG = <<~MSG
-          Don't call the background migration worker directly, use the `#migrate_async`,
-          `#migrate_in`, `#bulk_migrate_async` or `#bulk_migrate_in` migration helpers
-          instead.
+          Don't call the background migration worker directly, use the `#migrate_in` or
+          `#queue_background_migration_jobs_by_range_at_intervals` migration helpers instead.
         MSG
 
         def_node_matcher :calls_background_migration_worker?, <<~PATTERN
@@ -25,28 +24,6 @@ module RuboCop
           return if version(node) < ENFORCED_SINCE
 
           add_offense(node, location: :expression) if calls_background_migration_worker?(node)
-        end
-
-        def autocorrect(node)
-          # This gets rid of the receiver `BackgroundMigrationWorker` and
-          # replaces `perform` with `schedule`
-          schedule_method = method_name(node).to_s.sub('perform', 'migrate')
-          arguments = arguments(node).map(&:source).join(', ')
-
-          replacement = "#{schedule_method}(#{arguments})"
-          lambda do |corrector|
-            corrector.replace(node.source_range, replacement)
-          end
-        end
-
-        private
-
-        def method_name(node)
-          node.children.second
-        end
-
-        def arguments(node)
-          node.children[2..]
         end
       end
     end

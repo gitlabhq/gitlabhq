@@ -14,7 +14,7 @@ team to discuss the options. You can contact them in `#g_geo` on Slack
 or mention `@geo-team` in the issue or merge request.
 
 Geo provides an API to make it possible to easily replicate data types
-across Geo nodes. This API is presented as a Ruby Domain-Specific
+across Geo sites. This API is presented as a Ruby Domain-Specific
 Language (DSL) and aims to make it possible to replicate data with
 minimal effort of the engineer who created a data type.
 
@@ -43,7 +43,7 @@ naming conventions:
   For more detail, see [Data types](../../administration/geo/replication/datatypes.md).
 
 - **Geo Replicable**:
-  A Replicable is a resource Geo wants to sync across Geo nodes. There
+  A Replicable is a resource Geo wants to sync across Geo sites. There
   is a limited set of supported data types of replicables. The effort
   required to implement replication of a resource that belongs to one
   of the known data types is minimal.
@@ -57,7 +57,7 @@ naming conventions:
   It's tied to the Geo Replicable data type. All replicators have a
   common interface that can be used to process (that is, produce and
   consume) events. It takes care of the communication between the
-  primary node (where events are produced) and the secondary node
+  primary site (where events are produced) and the secondary site
   (where events are consumed). The engineer who wants to incorporate
   Geo in their feature will use the API of replicators to make this
   happen.

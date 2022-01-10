@@ -3,7 +3,7 @@ import Vue from 'vue';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import PerformancePlugin from '~/performance/vue_performance_plugin';
 import Translate from '~/vue_shared/translate';
-import RegistryBreadcrumb from './components/registry_breadcrumb.vue';
+import RegistryBreadcrumb from '~/packages_and_registries/shared/components/registry_breadcrumb.vue';
 import { apolloProvider } from './graphql/index';
 import RegistryExplorer from './pages/index.vue';
 import createRouter from './router';

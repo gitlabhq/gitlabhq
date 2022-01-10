@@ -1,6 +1,6 @@
 import { mount } from '@vue/test-utils';
 
-import component from '~/packages_and_registries/container_registry/explorer/components/registry_breadcrumb.vue';
+import component from '~/packages_and_registries/shared/components/registry_breadcrumb.vue';
 
 describe('Registry Breadcrumb', () => {
   let wrapper;
