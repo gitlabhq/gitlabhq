@@ -8,11 +8,11 @@ RSpec.describe Projects::IssuesController do
   let_it_be(:project) { issue.project }
   let_it_be(:user) { issue.author }
 
-  before do
-    login_as(user)
-  end
-
   describe 'GET #discussions' do
+    before do
+      login_as(user)
+    end
+
     let_it_be(:discussion) { create(:discussion_note_on_issue, noteable: issue, project: issue.project) }
     let_it_be(:discussion_reply) { create(:discussion_note_on_issue, noteable: issue, project: issue.project, in_reply_to: discussion) }
     let_it_be(:state_event) { create(:resource_state_event, issue: issue) }
@@ -64,6 +64,40 @@ RSpec.describe Projects::IssuesController do
 
           expect(discussions.count).to eq(4)
           expect(notes.count).to eq(5)
+        end
+      end
+    end
+  end
+
+  context 'token authentication' do
+    context 'when public project' do
+      let_it_be(:public_project) { create(:project, :public) }
+
+      it_behaves_like 'authenticates sessionless user for the request spec', 'index atom', public_resource: true do
+        let(:url) { project_issues_url(public_project, format: :atom) }
+      end
+
+      it_behaves_like 'authenticates sessionless user for the request spec', 'calendar ics', public_resource: true do
+        let(:url) { project_issues_url(public_project, format: :ics) }
+      end
+    end
+
+    context 'when private project' do
+      let_it_be(:private_project) { create(:project, :private) }
+
+      it_behaves_like 'authenticates sessionless user for the request spec', 'index atom', public_resource: false, ignore_metrics: true do
+        let(:url) { project_issues_url(private_project, format: :atom) }
+
+        before do
+          private_project.add_maintainer(user)
+        end
+      end
+
+      it_behaves_like 'authenticates sessionless user for the request spec', 'calendar ics', public_resource: false, ignore_metrics: true do
+        let(:url) { project_issues_url(private_project, format: :ics) }
+
+        before do
+          private_project.add_maintainer(user)
         end
       end
     end

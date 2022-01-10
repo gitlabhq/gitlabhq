@@ -28,6 +28,8 @@ RSpec.describe Integrations::ChatMessage::IssueMessage do
     }
   end
 
+  it_behaves_like Integrations::ChatMessage
+
   context 'without markdown' do
     let(:color) { '#C95823' }
 

@@ -253,7 +253,7 @@ RSpec.describe 'GraphQL' do
     end
 
     context 'with token authentication' do
-      let(:token) { create(:personal_access_token) }
+      let(:token) { create(:personal_access_token, user: user) }
 
       it 'authenticates users with a PAT' do
         stub_authentication_activity_metrics(debug: false)
@@ -274,6 +274,32 @@ RSpec.describe 'GraphQL' do
         post_graphql(query, headers: { 'PRIVATE-TOKEN' => token.token })
 
         expect(graphql_errors).to include({ 'message' => /API not accessible/ })
+      end
+
+      context 'when user with expired password' do
+        let_it_be(:user) { create(:user, password_expires_at: 2.minutes.ago) }
+
+        it 'does not authenticate user' do
+          post_graphql(query, headers: { 'PRIVATE-TOKEN' => token.token })
+
+          expect(response).to have_gitlab_http_status(:ok)
+
+          expect(graphql_data['echo']).to eq('nil says: Hello world')
+        end
+      end
+
+      context 'when password expiration is not applicable' do
+        context 'when ldap user' do
+          let_it_be(:user) { create(:omniauth_user, provider: 'ldap', password_expires_at: 2.minutes.ago) }
+
+          it 'authenticates user' do
+            post_graphql(query, headers: { 'PRIVATE-TOKEN' => token.token })
+
+            expect(response).to have_gitlab_http_status(:ok)
+
+            expect(graphql_data['echo']).to eq("\"#{token.user.username}\" says: Hello world")
+          end
+        end
       end
 
       context 'when the personal access token has no api scope' do

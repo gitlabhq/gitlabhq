@@ -72,9 +72,6 @@ RSpec.describe DashboardController do
     end
   end
 
-  it_behaves_like 'authenticates sessionless user', :issues, :atom, author_id: User.first
-  it_behaves_like 'authenticates sessionless user', :issues_calendar, :ics
-
   describe "#check_filters_presence!" do
     let(:user) { create(:user) }
 

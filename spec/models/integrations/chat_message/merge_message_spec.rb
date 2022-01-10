@@ -29,6 +29,8 @@ RSpec.describe Integrations::ChatMessage::MergeMessage do
     }
   end
 
+  it_behaves_like Integrations::ChatMessage
+
   context 'without markdown' do
     let(:color) { '#345' }
 
