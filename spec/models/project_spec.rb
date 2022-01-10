@@ -1359,51 +1359,51 @@ RSpec.describe Project, factory_default: :keep do
       project.reload.has_external_issue_tracker
     end
 
-    it 'is false when external issue tracker service is not active' do
-      create(:service, project: project, category: 'issue_tracker', active: false)
+    it 'is false when external issue tracker integration is not active' do
+      create(:integration, project: project, category: 'issue_tracker', active: false)
 
       is_expected.to eq(false)
     end
 
-    it 'is false when other service is active' do
-      create(:service, project: project, category: 'not_issue_tracker', active: true)
+    it 'is false when other integration is active' do
+      create(:integration, project: project, category: 'not_issue_tracker', active: true)
 
       is_expected.to eq(false)
     end
 
-    context 'when there is an active external issue tracker service' do
-      let!(:service) do
-        create(:service, project: project, type: 'JiraService', category: 'issue_tracker', active: true)
+    context 'when there is an active external issue tracker integration' do
+      let!(:integration) do
+        create(:integration, project: project, type: 'JiraService', category: 'issue_tracker', active: true)
       end
 
       specify { is_expected.to eq(true) }
 
-      it 'becomes false when external issue tracker service is destroyed' do
+      it 'becomes false when external issue tracker integration is destroyed' do
         expect do
-          Integration.find(service.id).delete
+          Integration.find(integration.id).delete
         end.to change { subject }.to(false)
       end
 
-      it 'becomes false when external issue tracker service becomes inactive' do
+      it 'becomes false when external issue tracker integration becomes inactive' do
         expect do
-          service.update_column(:active, false)
+          integration.update_column(:active, false)
         end.to change { subject }.to(false)
       end
 
-      context 'when there are two active external issue tracker services' do
-        let_it_be(:second_service) do
-          create(:service, project: project, type: 'CustomIssueTracker', category: 'issue_tracker', active: true)
+      context 'when there are two active external issue tracker integrations' do
+        let_it_be(:second_integration) do
+          create(:integration, project: project, type: 'CustomIssueTracker', category: 'issue_tracker', active: true)
         end
 
-        it 'does not become false when external issue tracker service is destroyed' do
+        it 'does not become false when external issue tracker integration is destroyed' do
           expect do
-            Integration.find(service.id).delete
+            Integration.find(integration.id).delete
           end.not_to change { subject }
         end
 
-        it 'does not become false when external issue tracker service becomes inactive' do
+        it 'does not become false when external issue tracker integration becomes inactive' do
           expect do
-            service.update_column(:active, false)
+            integration.update_column(:active, false)
           end.not_to change { subject }
         end
       end
@@ -1455,13 +1455,13 @@ RSpec.describe Project, factory_default: :keep do
 
       specify { expect(has_external_wiki).to eq(true) }
 
-      it 'becomes false if the external wiki service is destroyed' do
+      it 'becomes false if the external wiki integration is destroyed' do
         expect do
           Integration.find(integration.id).delete
         end.to change { has_external_wiki }.to(false)
       end
 
-      it 'becomes false if the external wiki service becomes inactive' do
+      it 'becomes false if the external wiki integration becomes inactive' do
         expect do
           integration.update_column(:active, false)
         end.to change { has_external_wiki }.to(false)
@@ -6836,7 +6836,7 @@ RSpec.describe Project, factory_default: :keep do
   describe 'with integrations and chat names' do
     subject { create(:project) }
 
-    let(:integration) { create(:service, project: subject) }
+    let(:integration) { create(:integration, project: subject) }
 
     before do
       create_list(:chat_name, 5, integration: integration)

@@ -96,7 +96,7 @@ RSpec.describe 'Merge request > User sees merge widget', :js do
 
   context 'view merge request with external CI service' do
     before do
-      create(:service, project: project,
+      create(:integration, project: project,
                        active: true,
                        type: 'DroneCiService',
                        category: 'ci')

@@ -4,10 +4,10 @@ require 'spec_helper'
 
 RSpec.describe ChatNames::AuthorizeUserService do
   describe '#execute' do
-    subject { described_class.new(service, params) }
-
+    let(:integration) { create(:integration) }
     let(:result) { subject.execute }
-    let(:service) { create(:service) }
+
+    subject { described_class.new(integration, params) }
 
     context 'when all parameters are valid' do
       let(:params) { { team_id: 'T0001', team_domain: 'myteam', user_id: 'U0001', user_name: 'user' } }

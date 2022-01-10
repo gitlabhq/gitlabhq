@@ -1,12 +1,12 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`EmptyStateComponent should render content 1`] = `
-"<section class=\\"row empty-state text-center\\">
-  <div class=\\"col-12\\">
+"<section class=\\"gl-display-flex gl-flex-wrap empty-state gl-text-center gl-flex-direction-column\\">
+  <div class=\\"gl-max-w-full\\">
     <div class=\\"svg-250 svg-content\\"><img src=\\"/image.svg\\" alt=\\"\\" role=\\"img\\" class=\\"gl-max-w-full\\"></div>
   </div>
-  <div class=\\"col-12\\">
-    <div class=\\"text-content gl-mx-auto gl-my-0 gl-p-5\\">
+  <div class=\\"gl-max-w-full gl-m-auto\\">
+    <div class=\\"gl-mx-auto gl-my-0 gl-p-5\\">
       <h1 class=\\"gl-font-size-h-display gl-line-height-36 h4\\">
         Getting started with serverless
       </h1>

@@ -11,10 +11,10 @@ exports[`PackagesListApp renders 1`] = `
    
   <div>
     <section
-      class="row empty-state text-center"
+      class="gl-display-flex gl-flex-wrap empty-state gl-text-center gl-flex-direction-column"
     >
       <div
-        class="col-12"
+        class="gl-max-w-full"
       >
         <div
           class="svg-250 svg-content"
@@ -29,10 +29,10 @@ exports[`PackagesListApp renders 1`] = `
       </div>
        
       <div
-        class="col-12"
+        class="gl-max-w-full gl-m-auto"
       >
         <div
-          class="text-content gl-mx-auto gl-my-0 gl-p-5"
+          class="gl-mx-auto gl-my-0 gl-p-5"
         >
           <h1
             class="gl-font-size-h-display gl-line-height-36 h4"

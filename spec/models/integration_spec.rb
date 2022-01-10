@@ -33,28 +33,28 @@ RSpec.describe Integration do
     end
 
     with_them do
-      it 'validates the service' do
-        expect(build(:service, project_id: project_id, group_id: group_id, instance: instance).valid?).to eq(valid)
+      it 'validates the integration' do
+        expect(build(:integration, project_id: project_id, group_id: group_id, instance: instance).valid?).to eq(valid)
       end
     end
 
-    context 'with existing services' do
+    context 'with existing integrations' do
       before_all do
-        create(:service, :instance)
-        create(:service, project: project)
-        create(:service, group: group, project: nil)
+        create(:integration, :instance)
+        create(:integration, project: project)
+        create(:integration, group: group, project: nil)
       end
 
-      it 'allows only one instance service per type' do
-        expect(build(:service, :instance)).to be_invalid
+      it 'allows only one instance integration per type' do
+        expect(build(:integration, :instance)).to be_invalid
       end
 
-      it 'allows only one project service per type' do
-        expect(build(:service, project: project)).to be_invalid
+      it 'allows only one project integration per type' do
+        expect(build(:integration, project: project)).to be_invalid
       end
 
-      it 'allows only one group service per type' do
-        expect(build(:service, group: group, project: nil)).to be_invalid
+      it 'allows only one group integration per type' do
+        expect(build(:integration, group: group, project: nil)).to be_invalid
       end
     end
   end
@@ -79,57 +79,57 @@ RSpec.describe Integration do
     end
 
     describe '.by_type' do
-      let!(:service1) { create(:jira_integration) }
-      let!(:service2) { create(:jira_integration) }
-      let!(:service3) { create(:redmine_integration) }
+      let!(:integration1) { create(:jira_integration) }
+      let!(:integration2) { create(:jira_integration) }
+      let!(:integration3) { create(:redmine_integration) }
 
       subject { described_class.by_type(type) }
 
       context 'when type is "JiraService"' do
         let(:type) { 'JiraService' }
 
-        it { is_expected.to match_array([service1, service2]) }
+        it { is_expected.to match_array([integration1, integration2]) }
       end
 
       context 'when type is "RedmineService"' do
         let(:type) { 'RedmineService' }
 
-        it { is_expected.to match_array([service3]) }
+        it { is_expected.to match_array([integration3]) }
       end
     end
 
     describe '.for_group' do
-      let!(:service1) { create(:jira_integration, project_id: nil, group_id: group.id) }
-      let!(:service2) { create(:jira_integration) }
+      let!(:integration1) { create(:jira_integration, project_id: nil, group_id: group.id) }
+      let!(:integration2) { create(:jira_integration) }
 
-      it 'returns the right group service' do
-        expect(described_class.for_group(group)).to match_array([service1])
+      it 'returns the right group integration' do
+        expect(described_class.for_group(group)).to match_array([integration1])
       end
     end
 
     describe '.confidential_note_hooks' do
-      it 'includes services where confidential_note_events is true' do
-        create(:service, active: true, confidential_note_events: true)
+      it 'includes integrations where confidential_note_events is true' do
+        create(:integration, active: true, confidential_note_events: true)
 
         expect(described_class.confidential_note_hooks.count).to eq 1
       end
 
-      it 'excludes services where confidential_note_events is false' do
-        create(:service, active: true, confidential_note_events: false)
+      it 'excludes integrations where confidential_note_events is false' do
+        create(:integration, active: true, confidential_note_events: false)
 
         expect(described_class.confidential_note_hooks.count).to eq 0
       end
     end
 
     describe '.alert_hooks' do
-      it 'includes services where alert_events is true' do
-        create(:service, active: true, alert_events: true)
+      it 'includes integrations where alert_events is true' do
+        create(:integration, active: true, alert_events: true)
 
         expect(described_class.alert_hooks.count).to eq 1
       end
 
-      it 'excludes services where alert_events is false' do
-        create(:service, active: true, alert_events: false)
+      it 'excludes integrations where alert_events is false' do
+        create(:integration, active: true, alert_events: false)
 
         expect(described_class.alert_hooks.count).to eq 0
       end
@@ -137,35 +137,35 @@ RSpec.describe Integration do
   end
 
   describe '#operating?' do
-    it 'is false when the service is not active' do
-      expect(build(:service).operating?).to eq(false)
+    it 'is false when the integration is not active' do
+      expect(build(:integration).operating?).to eq(false)
     end
 
-    it 'is false when the service is not persisted' do
-      expect(build(:service, active: true).operating?).to eq(false)
+    it 'is false when the integration is not persisted' do
+      expect(build(:integration, active: true).operating?).to eq(false)
     end
 
-    it 'is true when the service is active and persisted' do
-      expect(create(:service, active: true).operating?).to eq(true)
+    it 'is true when the integration is active and persisted' do
+      expect(create(:integration, active: true).operating?).to eq(true)
     end
   end
 
   describe '#testable?' do
     context 'when integration is project-level' do
-      subject { build(:service, project: project) }
+      subject { build(:integration, project: project) }
 
       it { is_expected.to be_testable }
     end
 
     context 'when integration is not project-level' do
-      subject { build(:service, project: nil) }
+      subject { build(:integration, project: nil) }
 
       it { is_expected.not_to be_testable }
     end
   end
 
   describe '#test' do
-    let(:integration) { build(:service, project: project) }
+    let(:integration) { build(:integration, project: project) }
     let(:data) { 'test' }
 
     it 'calls #execute' do
@@ -186,32 +186,32 @@ RSpec.describe Integration do
   end
 
   describe '#project_level?' do
-    it 'is true when service has a project' do
-      expect(build(:service, project: project)).to be_project_level
+    it 'is true when integration has a project' do
+      expect(build(:integration, project: project)).to be_project_level
     end
 
-    it 'is false when service has no project' do
-      expect(build(:service, project: nil)).not_to be_project_level
+    it 'is false when integration has no project' do
+      expect(build(:integration, project: nil)).not_to be_project_level
     end
   end
 
   describe '#group_level?' do
-    it 'is true when service has a group' do
-      expect(build(:service, group: group)).to be_group_level
+    it 'is true when integration has a group' do
+      expect(build(:integration, group: group)).to be_group_level
     end
 
-    it 'is false when service has no group' do
-      expect(build(:service, group: nil)).not_to be_group_level
+    it 'is false when integration has no group' do
+      expect(build(:integration, group: nil)).not_to be_group_level
     end
   end
 
   describe '#instance_level?' do
-    it 'is true when service has instance-level integration' do
-      expect(build(:service, :instance)).to be_instance_level
+    it 'is true when integration has instance-level integration' do
+      expect(build(:integration, :instance)).to be_instance_level
     end
 
-    it 'is false when service does not have instance-level integration' do
-      expect(build(:service, instance: false)).not_to be_instance_level
+    it 'is false when integration does not have instance-level integration' do
+      expect(build(:integration, instance: false)).not_to be_instance_level
     end
   end
 
@@ -231,19 +231,19 @@ RSpec.describe Integration do
   end
 
   describe '.find_or_initialize_all_non_project_specific' do
-    shared_examples 'service instances' do
-      it 'returns the available service instances' do
+    shared_examples 'integration instances' do
+      it 'returns the available integration instances' do
         expect(Integration.find_or_initialize_all_non_project_specific(Integration.for_instance).map(&:to_param))
           .to match_array(Integration.available_integration_names(include_project_specific: false))
       end
 
-      it 'does not create service instances' do
+      it 'does not create integration instances' do
         expect { Integration.find_or_initialize_all_non_project_specific(Integration.for_instance) }
           .not_to change(Integration, :count)
       end
     end
 
-    it_behaves_like 'service instances'
+    it_behaves_like 'integration instances'
 
     context 'with all existing instances' do
       before do
@@ -252,15 +252,15 @@ RSpec.describe Integration do
         )
       end
 
-      it_behaves_like 'service instances'
+      it_behaves_like 'integration instances'
 
-      context 'with a previous existing service (MockCiService) and a new service (Asana)' do
+      context 'with a previous existing integration (MockCiService) and a new integration (Asana)' do
         before do
           Integration.insert({ type: 'MockCiService', instance: true })
           Integration.delete_by(type: 'AsanaService', instance: true)
         end
 
-        it_behaves_like 'service instances'
+        it_behaves_like 'integration instances'
       end
     end
 
@@ -269,7 +269,7 @@ RSpec.describe Integration do
         create(:jira_integration, :instance)
       end
 
-      it_behaves_like 'service instances'
+      it_behaves_like 'integration instances'
     end
   end
 
@@ -320,31 +320,31 @@ RSpec.describe Integration do
         }
       end
 
-      shared_examples 'service creation from an integration' do
-        it 'creates a correct service for a project integration' do
-          service = described_class.build_from_integration(integration, project_id: project.id)
+      shared_examples 'integration creation from an integration' do
+        it 'creates a correct integration for a project integration' do
+          new_integration = described_class.build_from_integration(integration, project_id: project.id)
 
-          expect(service).to be_active
-          expect(service.url).to eq(url)
-          expect(service.api_url).to eq(api_url)
-          expect(service.username).to eq(username)
-          expect(service.password).to eq(password)
-          expect(service.instance).to eq(false)
-          expect(service.project).to eq(project)
-          expect(service.group).to eq(nil)
+          expect(new_integration).to be_active
+          expect(new_integration.url).to eq(url)
+          expect(new_integration.api_url).to eq(api_url)
+          expect(new_integration.username).to eq(username)
+          expect(new_integration.password).to eq(password)
+          expect(new_integration.instance).to eq(false)
+          expect(new_integration.project).to eq(project)
+          expect(new_integration.group).to eq(nil)
         end
 
-        it 'creates a correct service for a group integration' do
-          service = described_class.build_from_integration(integration, group_id: group.id)
+        it 'creates a correct integration for a group integration' do
+          new_integration = described_class.build_from_integration(integration, group_id: group.id)
 
-          expect(service).to be_active
-          expect(service.url).to eq(url)
-          expect(service.api_url).to eq(api_url)
-          expect(service.username).to eq(username)
-          expect(service.password).to eq(password)
-          expect(service.instance).to eq(false)
-          expect(service.project).to eq(nil)
-          expect(service.group).to eq(group)
+          expect(new_integration).to be_active
+          expect(new_integration.url).to eq(url)
+          expect(new_integration.api_url).to eq(api_url)
+          expect(new_integration.username).to eq(username)
+          expect(new_integration.password).to eq(password)
+          expect(new_integration.instance).to eq(false)
+          expect(new_integration.project).to eq(nil)
+          expect(new_integration.group).to eq(group)
         end
       end
 
@@ -355,7 +355,7 @@ RSpec.describe Integration do
           create(:jira_integration, :without_properties_callback, properties: properties.merge(additional: 'something'))
         end
 
-        it_behaves_like 'service creation from an integration'
+        it_behaves_like 'integration creation from an integration'
       end
 
       context 'when data are stored in separated fields' do
@@ -363,7 +363,7 @@ RSpec.describe Integration do
           create(:jira_integration, data_params.merge(properties: {}))
         end
 
-        it_behaves_like 'service creation from an integration'
+        it_behaves_like 'integration creation from an integration'
       end
 
       context 'when data are stored in both properties and separated fields' do
@@ -374,7 +374,7 @@ RSpec.describe Integration do
           end
         end
 
-        it_behaves_like 'service creation from an integration'
+        it_behaves_like 'integration creation from an integration'
       end
     end
   end
@@ -565,17 +565,17 @@ RSpec.describe Integration do
   end
 
   describe '.integration_name_to_model' do
-    it 'returns the model for the given service name' do
+    it 'returns the model for the given integration name' do
       expect(described_class.integration_name_to_model('asana')).to eq(Integrations::Asana)
     end
 
-    it 'raises an error if service name is invalid' do
+    it 'raises an error if integration name is invalid' do
       expect { described_class.integration_name_to_model('foo') }.to raise_exception(NameError, /uninitialized constant FooService/)
     end
   end
 
   describe "{property}_changed?" do
-    let(:service) do
+    let(:integration) do
       Integrations::Bamboo.create!(
         project: project,
         properties: {
@@ -587,35 +587,35 @@ RSpec.describe Integration do
     end
 
     it "returns false when the property has not been assigned a new value" do
-      service.username = "key_changed"
-      expect(service.bamboo_url_changed?).to be_falsy
+      integration.username = "key_changed"
+      expect(integration.bamboo_url_changed?).to be_falsy
     end
 
     it "returns true when the property has been assigned a different value" do
-      service.bamboo_url = "http://example.com"
-      expect(service.bamboo_url_changed?).to be_truthy
+      integration.bamboo_url = "http://example.com"
+      expect(integration.bamboo_url_changed?).to be_truthy
     end
 
     it "returns true when the property has been assigned a different value twice" do
-      service.bamboo_url = "http://example.com"
-      service.bamboo_url = "http://example.com"
-      expect(service.bamboo_url_changed?).to be_truthy
+      integration.bamboo_url = "http://example.com"
+      integration.bamboo_url = "http://example.com"
+      expect(integration.bamboo_url_changed?).to be_truthy
     end
 
     it "returns false when the property has been re-assigned the same value" do
-      service.bamboo_url = 'http://gitlab.com'
-      expect(service.bamboo_url_changed?).to be_falsy
+      integration.bamboo_url = 'http://gitlab.com'
+      expect(integration.bamboo_url_changed?).to be_falsy
     end
 
     it "returns false when the property has been assigned a new value then saved" do
-      service.bamboo_url = 'http://example.com'
-      service.save!
-      expect(service.bamboo_url_changed?).to be_falsy
+      integration.bamboo_url = 'http://example.com'
+      integration.save!
+      expect(integration.bamboo_url_changed?).to be_falsy
     end
   end
 
   describe "{property}_touched?" do
-    let(:service) do
+    let(:integration) do
       Integrations::Bamboo.create!(
         project: project,
         properties: {
@@ -627,35 +627,35 @@ RSpec.describe Integration do
     end
 
     it "returns false when the property has not been assigned a new value" do
-      service.username = "key_changed"
-      expect(service.bamboo_url_touched?).to be_falsy
+      integration.username = "key_changed"
+      expect(integration.bamboo_url_touched?).to be_falsy
     end
 
     it "returns true when the property has been assigned a different value" do
-      service.bamboo_url = "http://example.com"
-      expect(service.bamboo_url_touched?).to be_truthy
+      integration.bamboo_url = "http://example.com"
+      expect(integration.bamboo_url_touched?).to be_truthy
     end
 
     it "returns true when the property has been assigned a different value twice" do
-      service.bamboo_url = "http://example.com"
-      service.bamboo_url = "http://example.com"
-      expect(service.bamboo_url_touched?).to be_truthy
+      integration.bamboo_url = "http://example.com"
+      integration.bamboo_url = "http://example.com"
+      expect(integration.bamboo_url_touched?).to be_truthy
     end
 
     it "returns true when the property has been re-assigned the same value" do
-      service.bamboo_url = 'http://gitlab.com'
-      expect(service.bamboo_url_touched?).to be_truthy
+      integration.bamboo_url = 'http://gitlab.com'
+      expect(integration.bamboo_url_touched?).to be_truthy
     end
 
     it "returns false when the property has been assigned a new value then saved" do
-      service.bamboo_url = 'http://example.com'
-      service.save!
-      expect(service.bamboo_url_changed?).to be_falsy
+      integration.bamboo_url = 'http://example.com'
+      integration.save!
+      expect(integration.bamboo_url_changed?).to be_falsy
     end
   end
 
   describe "{property}_was" do
-    let(:service) do
+    let(:integration) do
       Integrations::Bamboo.create!(
         project: project,
         properties: {
@@ -667,35 +667,35 @@ RSpec.describe Integration do
     end
 
     it "returns nil when the property has not been assigned a new value" do
-      service.username = "key_changed"
-      expect(service.bamboo_url_was).to be_nil
+      integration.username = "key_changed"
+      expect(integration.bamboo_url_was).to be_nil
     end
 
     it "returns the previous value when the property has been assigned a different value" do
-      service.bamboo_url = "http://example.com"
-      expect(service.bamboo_url_was).to eq('http://gitlab.com')
+      integration.bamboo_url = "http://example.com"
+      expect(integration.bamboo_url_was).to eq('http://gitlab.com')
     end
 
     it "returns initial value when the property has been re-assigned the same value" do
-      service.bamboo_url = 'http://gitlab.com'
-      expect(service.bamboo_url_was).to eq('http://gitlab.com')
+      integration.bamboo_url = 'http://gitlab.com'
+      expect(integration.bamboo_url_was).to eq('http://gitlab.com')
     end
 
     it "returns initial value when the property has been assigned multiple values" do
-      service.bamboo_url = "http://example.com"
-      service.bamboo_url = "http://example.org"
-      expect(service.bamboo_url_was).to eq('http://gitlab.com')
+      integration.bamboo_url = "http://example.com"
+      integration.bamboo_url = "http://example.org"
+      expect(integration.bamboo_url_was).to eq('http://gitlab.com')
     end
 
     it "returns nil when the property has been assigned a new value then saved" do
-      service.bamboo_url = 'http://example.com'
-      service.save!
-      expect(service.bamboo_url_was).to be_nil
+      integration.bamboo_url = 'http://example.com'
+      integration.save!
+      expect(integration.bamboo_url_was).to be_nil
     end
   end
 
-  describe 'initialize service with no properties' do
-    let(:service) do
+  describe 'initialize integration with no properties' do
+    let(:integration) do
       Integrations::Bugzilla.create!(
         project: project,
         project_url: 'http://gitlab.example.com'
@@ -703,16 +703,16 @@ RSpec.describe Integration do
     end
 
     it 'does not raise error' do
-      expect { service }.not_to raise_error
+      expect { integration }.not_to raise_error
     end
 
     it 'sets data correctly' do
-      expect(service.data_fields.project_url).to eq('http://gitlab.example.com')
+      expect(integration.data_fields.project_url).to eq('http://gitlab.example.com')
     end
   end
 
   describe '#api_field_names' do
-    let(:fake_service) do
+    let(:fake_integration) do
       Class.new(Integration) do
         def fields
           [
@@ -728,8 +728,8 @@ RSpec.describe Integration do
       end
     end
 
-    let(:service) do
-      fake_service.new(properties: [
+    let(:integration) do
+      fake_integration.new(properties: [
         { token: 'token-value' },
         { api_token: 'api_token-value' },
         { key: 'key-value' },
@@ -741,16 +741,16 @@ RSpec.describe Integration do
     end
 
     it 'filters out sensitive fields' do
-      expect(service.api_field_names).to eq(['safe_field'])
+      expect(integration.api_field_names).to eq(['safe_field'])
     end
   end
 
   context 'logging' do
-    let(:service) { build(:service, project: project) }
+    let(:integration) { build(:integration, project: project) }
     let(:test_message) { "test message" }
     let(:arguments) do
       {
-        service_class: service.class.name,
+        service_class: integration.class.name,
         project_path: project.full_path,
         project_id: project.id,
         message: test_message,
@@ -761,20 +761,20 @@ RSpec.describe Integration do
     it 'logs info messages using json logger' do
       expect(Gitlab::JsonLogger).to receive(:info).with(arguments)
 
-      service.log_info(test_message, additional_argument: 'some argument')
+      integration.log_info(test_message, additional_argument: 'some argument')
     end
 
     it 'logs error messages using json logger' do
       expect(Gitlab::JsonLogger).to receive(:error).with(arguments)
 
-      service.log_error(test_message, additional_argument: 'some argument')
+      integration.log_error(test_message, additional_argument: 'some argument')
     end
 
     context 'when project is nil' do
       let(:project) { nil }
       let(:arguments) do
         {
-          service_class: service.class.name,
+          service_class: integration.class.name,
           project_path: nil,
           project_id: nil,
           message: test_message,
@@ -785,7 +785,7 @@ RSpec.describe Integration do
       it 'logs info messages using json logger' do
         expect(Gitlab::JsonLogger).to receive(:info).with(arguments)
 
-        service.log_info(test_message, additional_argument: 'some argument')
+        integration.log_info(test_message, additional_argument: 'some argument')
       end
     end
   end

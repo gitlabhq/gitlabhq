@@ -86,7 +86,7 @@ RSpec.describe AutoDevopsHelper do
 
     context 'when another service is enabled' do
       before do
-        create(:service, project: project, category: :ci, active: true)
+        create(:integration, project: project, category: :ci, active: true)
       end
 
       it { is_expected.to eq(false) }
