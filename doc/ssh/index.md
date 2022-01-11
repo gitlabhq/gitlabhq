@@ -5,10 +5,10 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 type: howto, reference
 ---
 
-# GitLab and SSH keys **(FREE)**
+# Use SSH keys to communicate with GitLab **(FREE)**
 
 Git is a distributed version control system, which means you can work locally,
-then share or "push" your changes to a server. In this case, the server is GitLab.
+then share or *push* your changes to a server. In this case, the server you push to is GitLab.
 
 GitLab uses the SSH protocol to securely communicate with Git.
 When you use SSH keys to authenticate to the GitLab remote server,

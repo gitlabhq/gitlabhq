@@ -70,7 +70,7 @@ extend type Query {
   environmentToRollback: LocalEnvironment
   environmentToStop: LocalEnvironment
   isEnvironmentStopping(environment: LocalEnvironmentInput): Boolean
-  isLastDeployment: Boolean
+  isLastDeployment(environment: LocalEnvironmentInput): Boolean
 }
 
 extend type Mutation {
@@ -81,4 +81,5 @@ extend type Mutation {
   setEnvironmentToDelete(environment: LocalEnvironmentInput): LocalErrors
   setEnvironmentToRollback(environment: LocalEnvironmentInput): LocalErrors
   setEnvironmentToStop(environment: LocalEnvironmentInput): LocalErrors
+  action(environment: LocalEnvironmentInput): LocalErrors
 }

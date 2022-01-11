@@ -14,68 +14,84 @@ GitLab can be used as a dependency proxy for a variety of common package manager
 This is the administration documentation. If you want to learn how to use the
 dependency proxies, see the [user guide](../../user/packages/dependency_proxy/index.md).
 
-## Enabling the Dependency Proxy feature
+The GitLab Dependency Proxy:
 
-NOTE:
-Dependency proxy requires the Puma web server to be enabled.
+- Is turned on by default.
+- Can be turned off by an administrator.
+- Requires the [Puma web server](../operations/puma.md)
+  to be enabled. Puma is enabled by default in GitLab 13.0 and later.
 
-To enable the dependency proxy feature:
+## Turn off the Dependency Proxy
 
-**Omnibus GitLab installations**
+The Dependency Proxy is enabled by default. If you are an administrator, you
+can turn off the Dependency Proxy. To turn off the Dependency Proxy, follow the instructions that
+correspond to your GitLab installation:
+
+- [Omnibus GitLab installations](#omnibus-gitlab-installations)
+- [Helm chart installations](#helm-chart-installations)
+- [Installations from source](#installations-from-source)
+
+### Omnibus GitLab installations
 
 1. Edit `/etc/gitlab/gitlab.rb` and add the following line:
 
    ```ruby
-   gitlab_rails['dependency_proxy_enabled'] = true
+   gitlab_rails['dependency_proxy_enabled'] = false
    ```
 
-1. Save the file and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
-1. Enable the [Puma web server](../operations/puma.md).
+1. Save the file and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure)
+   for the changes to take effect.
 
-**Helm chart installations**
+### Helm chart installations
 
-1. After the installation is complete, update the global `appConfig` to enable the feature:
+After the installation is complete, update the global `appConfig` to turn off the Dependency Proxy:
 
-   ```yaml
-   global:
-     appConfig:
-       dependencyProxy:
-         enabled: true
-         bucket: gitlab-dependency-proxy
-         connection: {}
-          secret:
-          key:
-   ```
+```yaml
+global:
+  appConfig:
+    dependencyProxy:
+      enabled: false
+      bucket: gitlab-dependency-proxy
+      connection: {}
+       secret:
+       key:
+```
 
 For more information, see [Configure Charts using Globals](https://docs.gitlab.com/charts/charts/globals.html#configure-appconfig-settings).
 
-**Installations from source**
+### Installations from source
 
-1. After the installation is complete, configure the `dependency_proxy`
-   section in `config/gitlab.yml`. Set to `true` to enable it:
+1. After the installation is complete, configure the `dependency_proxy` section in
+   `config/gitlab.yml`. Set `enabled` to `false` to turn off the Dependency Proxy:
 
    ```yaml
    dependency_proxy:
-     enabled: true
+     enabled: false
    ```
 
-1. [Restart GitLab](../restart_gitlab.md#installations-from-source "How to restart GitLab") for the changes to take effect.
+1. [Restart GitLab](../restart_gitlab.md#installations-from-source "How to restart GitLab")
+   for the changes to take effect.
 
-Since Puma is already the default web server for installations from source as of GitLab 12.9,
-no further changes are needed.
+### Multi-node GitLab installations
 
-**Multi-node GitLab installations**
+Follow the steps for [Omnibus GitLab installations](#omnibus-gitlab-installations)
+for each Web and Sidekiq node.
 
-Follow the steps for **Omnibus GitLab installation** for each Web and Sidekiq nodes.
+## Turn on the Dependency Proxy
+
+The Dependency Proxy is turned on by default, but can be turned off by an
+administrator. To turn on the Dependency Proxy, follow the instructions in
+[Turn off the Dependency Proxy](#turn-off-the-dependency-proxy),
+but set the `enabled` fields to `true`.
 
 ## Changing the storage path
 
-By default, the dependency proxy files are stored locally, but you can change the default
+By default, the Dependency Proxy files are stored locally, but you can change the default
 local location or even use object storage.
 
 ### Changing the local storage path
 
-The dependency proxy files for Omnibus GitLab installations are stored under
+The Dependency Proxy files for Omnibus GitLab installations are stored under
 `/var/opt/gitlab/gitlab-rails/shared/dependency_proxy/` and for source
 installations under `shared/dependency_proxy/` (relative to the Git home directory).
 To change the local storage path:
@@ -105,7 +121,7 @@ To change the local storage path:
 ### Using object storage
 
 Instead of relying on the local storage, you can use an object storage to
-store the blobs of the dependency proxy.
+store the blobs of the Dependency Proxy.
 
 [Read more about using object storage with GitLab](../object_storage.md).
 
@@ -199,5 +215,3 @@ Feature.disable(:dependency_proxy_for_private_groups)
 # Re-enable the authentication
 Feature.enable(:dependency_proxy_for_private_groups)
 ```
-
-The ability to disable this feature will be [removed in 13.9](https://gitlab.com/gitlab-org/gitlab/-/issues/276777).

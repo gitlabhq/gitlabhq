@@ -4,9 +4,14 @@ group: Monitor
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Tracing **(FREE)**
+# Tracing (DEPRECATED) **(FREE)**
 
-> [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/42645) from GitLab Ultimate to GitLab Free in 13.5.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/42645) from GitLab Ultimate to GitLab Free in 13.5.
+> - [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/346540) in GitLab 14.7.
+
+WARNING:
+This feature is in its end-of-life process. It is [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/346540)
+for use in GitLab 14.7, and is planned for removal in GitLab 15.0.
 
 Tracing provides insight into the performance and health of a deployed application, tracking each
 function or microservice that handles a given request. Tracing makes it easy to understand the

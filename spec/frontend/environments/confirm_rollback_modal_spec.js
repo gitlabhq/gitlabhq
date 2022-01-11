@@ -26,7 +26,7 @@ describe('Confirm Rollback Modal Component', () => {
       commit: {
         shortId: 'abc0123',
       },
-      'last?': true,
+      isLast: true,
     },
     modalId: 'test',
   };
@@ -145,7 +145,7 @@ describe('Confirm Rollback Modal Component', () => {
                 ...environment,
                 lastDeployment: {
                   ...environment.lastDeployment,
-                  'last?': false,
+                  isLast: false,
                 },
               },
               hasMultipleCommits,
@@ -167,7 +167,7 @@ describe('Confirm Rollback Modal Component', () => {
                 ...environment,
                 lastDeployment: {
                   ...environment.lastDeployment,
-                  'last?': false,
+                  isLast: false,
                 },
               },
               hasMultipleCommits,
@@ -191,7 +191,7 @@ describe('Confirm Rollback Modal Component', () => {
                 ...environment,
                 lastDeployment: {
                   ...environment.lastDeployment,
-                  'last?': true,
+                  isLast: true,
                 },
               },
               hasMultipleCommits,

@@ -99,8 +99,7 @@ export default {
       };
     },
     isLastDeployment() {
-      // eslint-disable-next-line @gitlab/require-i18n-strings
-      return this.environment?.isLastDeployment || this.environment?.lastDeployment?.['last?'];
+      return this.environment?.isLastDeployment || this.environment?.lastDeployment?.isLast;
     },
   },
   methods: {

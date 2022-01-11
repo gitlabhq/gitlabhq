@@ -1,9 +1,13 @@
 import { GlDropdown, GlDropdownItem, GlLoadingIcon, GlIcon } from '@gitlab/ui';
 import { shallowMount, mount } from '@vue/test-utils';
+import Vue from 'vue';
+import VueApollo from 'vue-apollo';
 import { TEST_HOST } from 'helpers/test_constants';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import EnvironmentActions from '~/environments/components/environment_actions.vue';
 import eventHub from '~/environments/event_hub';
+import actionMutation from '~/environments/graphql/mutations/action.mutation.graphql';
+import createMockApollo from 'helpers/mock_apollo_helper';
 
 const scheduledJobAction = {
   name: 'scheduled action',
@@ -25,12 +29,13 @@ describe('EnvironmentActions Component', () => {
   const findEnvironmentActionsButton = () =>
     wrapper.find('[data-testid="environment-actions-button"]');
 
-  function createComponent(props, { mountFn = shallowMount } = {}) {
+  function createComponent(props, { mountFn = shallowMount, options = {} } = {}) {
     wrapper = mountFn(EnvironmentActions, {
       propsData: { actions: [], ...props },
       directives: {
         GlTooltip: createMockDirective(),
       },
+      ...options,
     });
   }
 
@@ -148,6 +153,34 @@ describe('EnvironmentActions Component', () => {
     it('displays 00:00:00 for expired jobs in the dropdown', () => {
       createComponentWithScheduledJobs();
       expect(findDropdownItem(expiredJobAction).text()).toContain('00:00:00');
+    });
+  });
+
+  describe('graphql', () => {
+    Vue.use(VueApollo);
+
+    const action = {
+      name: 'bar',
+      play_path: 'https://gitlab.com/play',
+    };
+
+    let mockApollo;
+
+    beforeEach(() => {
+      mockApollo = createMockApollo();
+      createComponent(
+        { actions: [action], graphql: true },
+        { options: { apolloProvider: mockApollo } },
+      );
+    });
+
+    it('should trigger a graphql mutation on click', () => {
+      jest.spyOn(mockApollo.defaultClient, 'mutate');
+      findDropdownItem(action).vm.$emit('click');
+      expect(mockApollo.defaultClient.mutate).toHaveBeenCalledWith({
+        mutation: actionMutation,
+        variables: { action },
+      });
     });
   });
 });

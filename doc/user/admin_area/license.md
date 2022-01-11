@@ -74,36 +74,30 @@ Otherwise, to manually go to the **Subscription** area:
      1. Select the **Terms of Service** checkbox.
      1. Select **Upload License**.
 
-## Add your license at install time
+## Add your license during installation
 
-A license can be automatically imported at install time by placing a file named
-`Gitlab.gitlab-license` in `/etc/gitlab/` for Omnibus GitLab, or `config/` for source installations.
+You can import a license file when you install GitLab.
 
-You can also specify a custom location and filename for the license:
+- **For installations from source**
+  - Place the `Gitlab.gitlab-license` file in the `config/` directory.
+  - To specify a custom location and filename for the license, set the
+    `GITLAB_LICENSE_FILE` environment variable with the path to the file:
 
-- Source installations should set the `GITLAB_LICENSE_FILE` environment
-  variable with the path to a valid GitLab Enterprise Edition license.
+    ```shell
+    export GITLAB_LICENSE_FILE="/path/to/license/file"
+    ```
 
-  ```shell
-  export GITLAB_LICENSE_FILE="/path/to/license/file"
-  ```
+- **For Omnibus package**
+  - Place the `Gitlab.gitlab-license` file in the `/etc/gitlab/` directory.
+  - To specify a custom location and filename for the license, add this entry to `gitlab.rb`:
 
-- Omnibus GitLab installations should add this entry to `gitlab.rb`:
-
-  ```ruby
-  gitlab_rails['initial_license_file'] = "/path/to/license/file"
-  ```
+    ```ruby
+    gitlab_rails['initial_license_file'] = "/path/to/license/file"
+    ```
 
 WARNING:
-These methods only add a license at the time of installation. Use the
-**{admin}** **Admin Area** in the web user interface to renew or upgrade licenses.
-
----
-
-After the license is uploaded, all GitLab Enterprise Edition functionality
-is active until the end of the license period. When that period ends, the
-instance will [fall back](#what-happens-when-your-license-expires) to Free-only
-functionality.
+These methods only add a license at the time of installation. To renew or upgrade
+a license, upload the license in the **Admin Area** in the web user interface.
 
 ## What happens when your license expires
 
@@ -150,39 +144,44 @@ The banner disappears after the new license becomes active.
 
 ## Troubleshooting
 
-### There is no Subscription tab in the Admin Area
+### No Subscription area in the Admin Area
 
-If you originally installed Community Edition rather than Enterprise Edition you must
-[upgrade to Enterprise Edition](../../update/index.md#community-to-enterprise-edition)
-before uploading your license.
+You cannot upload your license because there is no **Subscription** area.
+This issue might occur if:
 
-GitLab.com users can't upload and use a self-managed license. If you
-want to use paid features on GitLab.com, you can
-[purchase a separate subscription](../../subscriptions/gitlab_com/index.md).
+- You're running GitLab Community Edition. Before you upload your license, you
+  must [upgrade to Enterprise Edition](../../update/index.md#community-to-enterprise-edition).
+- You're using GitLab.com. You cannot upload a self-managed license to GitLab.com.
+  To use paid features on GitLab.com, [purchase a separate subscription](../../subscriptions/gitlab_com/index.md).
 
 ### Users exceed license limit upon renewal
 
-If you've added new users to your GitLab instance prior to renewal, you may need to
-purchase additional seats to cover those users. If this is the case, and a license
-without enough users is uploaded, GitLab displays a message prompting you to purchase
-additional users. More information on how to determine the required number of users
-and how to add additional seats can be found in the
-[licensing FAQ](https://about.gitlab.com/pricing/licensing-faq/).
+GitLab displays a message prompting you to purchase
+additional users. This issue occurs if you upload a license that does not have enough
+users to cover the number of users in your instance.
 
-In GitLab 14.2 and later, for instances that use a license file, you can exceed the number of purchased users and still activate your license.
+To fix this issue, purchase additional seats to cover those users.
+For more information, read the [licensing FAQ](https://about.gitlab.com/pricing/licensing-faq/).
 
-- If the users over license are less than or equal to 10% of the users in the subscription,
-  the license is applied and the overage is paid in the next true-up.
-- If the users over license are more than 10% of the users in the subscription,
+In GitLab 14.2 and later, for instances that use a license file, the following
+rules apply:
+
+- If the users over license are less than or equal to 10% of the users in the license
+  file, the license is applied and you pay the overage in the next renewal.
+- If the users over license are more than 10% of the users in the license file,
   you cannot apply the license without purchasing more users.
 
-For example, if you purchased a license for 100 users, you can have 110 users when you activate
-your license. However, if you have 111, you must purchase more users before you can activate.
+For example, if you purchase a license for 100 users, you can have 110 users when you activate
+your license. However, if you have 111 users, you must purchase more users before you can activate
+the license.
 
-### There is a connectivity issue
+### Cannot activate instance due to connectivity error
 
-In GitLab 14.1 and later, to activate your subscription, your GitLab instance must be connected to the internet.
+In GitLab 14.1 and later, to activate your subscription with an activation code,
+your GitLab instance must be connected to the internet.
 
-If you have an offline or airgapped environment, you can [upload a license file](license.md#activate-gitlab-ee-with-a-license-file) instead.
+If you have an offline or airgapped environment,
+[upload a license file](license.md#activate-gitlab-ee-with-a-license-file) instead.
 
-If you have questions or need assistance activating your instance, please [contact GitLab Support](https://about.gitlab.com/support/#contact-support).
+If you have questions or need assistance activating your instance,
+[contact GitLab Support](https://about.gitlab.com/support/#contact-support).

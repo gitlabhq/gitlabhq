@@ -8,6 +8,7 @@ import setWindowLocation from 'helpers/set_window_location_helper';
 import { sprintf, __, s__ } from '~/locale';
 import EnvironmentsApp from '~/environments/components/new_environments_app.vue';
 import EnvironmentsFolder from '~/environments/components/new_environment_folder.vue';
+import EnvironmentsItem from '~/environments/components/new_environment_item.vue';
 import StopEnvironmentModal from '~/environments/components/stop_environment_modal.vue';
 import { resolvedEnvironmentsApp, resolvedFolder, resolvedEnvironment } from './graphql/mock_data';
 
@@ -91,6 +92,18 @@ describe('~/environments/components/new_environments_app.vue', () => {
 
     expect(text).toContainEqual(expect.stringMatching('review'));
     expect(text).not.toContainEqual(expect.stringMatching('production'));
+  });
+
+  it('should show all the environments that are fetched', async () => {
+    await createWrapperWithMocked({
+      environmentsApp: resolvedEnvironmentsApp,
+      folder: resolvedFolder,
+    });
+
+    const text = wrapper.findAllComponents(EnvironmentsItem).wrappers.map((w) => w.text());
+
+    expect(text).not.toContainEqual(expect.stringMatching('review'));
+    expect(text).toContainEqual(expect.stringMatching('production'));
   });
 
   it('should show a button to create a new environment', async () => {

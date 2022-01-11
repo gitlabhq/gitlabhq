@@ -357,6 +357,10 @@ Ensure your SAML identity provider sends an attribute statement named `Groups` o
 </saml:AttributeStatement>
 ```
 
+WARNING:
+Setting up Group Sync can disconnect users from SAML IDP if there is any mismatch in the configuration. Ensure the
+`Groups` attribute is included in the SAML response, and the **SAML Group Name** matches the `AttributeValue` attribute.
+
 Other attribute names such as `http://schemas.microsoft.com/ws/2008/06/identity/claims/groups`
 are not accepted as a source of groups.
 See the [SAML troubleshooting page](../../../administration/troubleshooting/group_saml_scim.md)

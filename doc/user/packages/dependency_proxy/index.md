@@ -19,7 +19,8 @@ upstream image from a registry, acting as a pull-through cache.
 
 ## Prerequisites
 
-- The Dependency Proxy is enabled by default but can be [turned off by an administrator](../../../administration/packages/dependency_proxy.md).
+To use the Dependency Proxy, it must be enabled for the GitLab instance. It's enabled by default,
+but [administrators can turn it off](../../../administration/packages/dependency_proxy.md).
 
 ### Supported images and packages
 
@@ -32,13 +33,17 @@ The following images and packages are supported.
 For a list of planned additions, view the
 [direction page](https://about.gitlab.com/direction/package/#dependency-proxy).
 
-## Enable or disable the Dependency Proxy for a group
+## Enable or turn off the Dependency Proxy for a group
 
-To enable or disable the Dependency Proxy for a group:
+To enable or turn off the Dependency Proxy for a group:
 
 1. Go to your group's **Settings > Packages & Registries**.
 1. Expand the **Dependency Proxy** section.
-1. To enable the proxy, turn on **Enable Proxy**. To disable it, turn the toggle off.
+1. To enable the proxy, turn on **Enable Proxy**. To turn it off, turn the toggle off.
+
+This setting only affects the Dependency Proxy for a group. Only an administrator can
+[turn the Dependency Proxy on or off](../../../administration/packages/dependency_proxy.md)
+for the entire GitLab instance.
 
 ## View the Dependency Proxy
 

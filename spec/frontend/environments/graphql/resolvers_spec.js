@@ -1,4 +1,5 @@
 import MockAdapter from 'axios-mock-adapter';
+import { s__ } from '~/locale';
 import axios from '~/lib/utils/axios_utils';
 import { resolvers } from '~/environments/graphql/resolvers';
 import environmentToRollback from '~/environments/graphql/queries/environment_to_rollback.query.graphql';
@@ -223,6 +224,23 @@ describe('~/frontend/environments/graphql/resolvers', () => {
       expect(localState.client.writeQuery).toHaveBeenCalledWith({
         query: environmentToStopQuery,
         data: { environmentToStop: resolvedEnvironment },
+      });
+    });
+  });
+  describe('action', () => {
+    it('should POST to the given path', async () => {
+      mock.onPost(ENDPOINT).reply(200);
+      const errors = await mockResolvers.Mutation.action(null, { action: { playPath: ENDPOINT } });
+
+      expect(errors).toEqual({ __typename: 'LocalEnvironmentErrors', errors: [] });
+    });
+    it('should return a nice error message on fail', async () => {
+      mock.onPost(ENDPOINT).reply(500);
+      const errors = await mockResolvers.Mutation.action(null, { action: { playPath: ENDPOINT } });
+
+      expect(errors).toEqual({
+        __typename: 'LocalEnvironmentErrors',
+        errors: [s__('Environments|An error occurred while making the request.')],
       });
     });
   });

@@ -66,8 +66,7 @@ export const resolvers = (endpoint) => ({
       }));
     },
     isLastDeployment(_, { environment }) {
-      // eslint-disable-next-line @gitlab/require-i18n-strings
-      return environment?.lastDeployment?.['last?'];
+      return environment?.lastDeployment?.isLast;
     },
   },
   Mutation: {
@@ -114,6 +113,14 @@ export const resolvers = (endpoint) => ({
         query: environmentToStopQuery,
         data: { environmentToStop: environment },
       });
+    },
+    action(_, { action: { playPath } }) {
+      return axios
+        .post(playPath)
+        .then(() => buildErrors())
+        .catch(() =>
+          buildErrors([s__('Environments|An error occurred while making the request.')]),
+        );
     },
     setEnvironmentToDelete(_, { environment }, { client }) {
       client.writeQuery({

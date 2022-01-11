@@ -3,96 +3,83 @@ stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 description: 'This article describes how to install Git on macOS, Ubuntu Linux and Windows.'
-type: howto
 ---
 
 # Installing Git **(FREE)**
 
-To begin contributing to GitLab projects,
-you must install the Git client on your computer.
-
-This article shows you how to install Git on macOS, Ubuntu Linux and Windows.
-
-Information on [installing Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
+To begin contributing to GitLab projects, you must install the appropriate Git client
+on your computer. Information about [installing Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
 is also available at the official Git website.
 
-## Install Git on macOS using the Homebrew package manager
+## Supported operating systems
 
-Although you can use the version of Git shipped with macOS or install the latest
-version of Git on macOS by downloading it from the project website, we recommend
-installing Git with Homebrew to get access to an extensive selection of
-dependency-managed libraries and applications.
+Git is available for the following operating systems:
 
-If you don't need access to any additional development libraries or don't have
-approximately 15 GB of available disk space for Xcode and Homebrew, use one of
-the previously mentioned methods.
+- [macOS](#macos)
+- [Ubuntu Linux](#ubuntu-linux)
+- [Microsoft Windows](#windows)
 
-### Installing Xcode
+### macOS
 
-To build dependencies, Homebrew needs the XCode Command Line Tools. Install
-it by running in your terminal:
+A version of Git is supplied by macOS. You can use this version, or install the latest
+version of Git on macOS by downloading it from the project website. We recommend
+installing Git with [Homebrew](https://brew.sh/index.html). With Homebrew, you can
+access an extensive selection of libraries and applications, with their dependencies
+managed for you.
 
-```shell
-xcode-select --install
-```
+Prerequisites:
 
-Click **Install** to download and install it. Alternatively, you can install
-the entire [XCode](https://developer.apple.com/xcode/) package through the
-macOS App Store.
+- 15 GB of available disk space for Homebrew and Xcode.
+- Extra disk space for any additional development libraries.
 
-### Installing Homebrew
+To install Git on macOS:
 
-With Xcode installed, browse to the [Homebrew website](https://brew.sh/index.html)
-for the official Homebrew installation instructions.
+1. Open a terminal and install the XCode Command Line Tools:
 
-### Installing Git via Homebrew
+   ```shell
+   xcode-select --install
+   ```
 
-With Homebrew installed, you are now ready to install Git.
-Open a terminal and enter the following command:
+   Alternatively, you can install the entire [XCode](https://developer.apple.com/xcode/)
+   package through the macOS App Store.
 
-```shell
-brew install git
-```
+1. Select **Install** to download and install XCode Command Line Tools.
+1. Install Homebrew according to the [official Homebrew installation instructions](https://brew.sh/index.html).
+1. Install Git by running `brew install git` from your terminal.
+1. In a terminal, verify that Git works on your computer:
 
-Congratulations! You should now have Git installed via Homebrew.
+   ```shell
+   git --version
+   ```
 
-To verify that Git works on your system, run:
+### Ubuntu Linux
 
-```shell
-git --version
-```
+On Ubuntu and other Linux operating systems, use the built-in package manager
+to install Git:
 
-Next, read our article on [adding an SSH key to GitLab](../../../ssh/index.md).
+1. Open a terminal and run these commands to install the latest Git
+from the officially
+   maintained package archives:
 
-## Install Git on Ubuntu Linux
+   ```shell
+   sudo apt-add-repository ppa:git-core/ppa
+   sudo apt-get update
+   sudo apt-get install git
+   ```
 
-On Ubuntu and other Linux operating systems
-it is recommended to use the built-in package manager to install Git.
+1. To verify that Git works on your computer, run:
 
-Open a terminal and enter the following commands
-to install the latest Git from the official Git maintained package archives:
+   ```shell
+   git --version
+   ```
 
-```shell
-sudo apt-add-repository ppa:git-core/ppa
-sudo apt-get update
-sudo apt-get install git
-```
+### Windows
 
-Congratulations! You should now have Git installed via the Ubuntu package manager.
+Go to the [Git website](https://git-scm.com/), and then download and install Git for Windows.
 
-To verify that Git works on your system, run:
+## After you install Git
 
-```shell
-git --version
-```
-
-Next, read our article on [adding an SSH key to GitLab](../../../ssh/index.md).
-
-## Installing Git on Windows from the Git website
-
-Open the [Git website](https://git-scm.com/) and download and install Git for Windows.
-
-Next, read our article on [adding an SSH key to GitLab](../../../ssh/index.md).
+After you successfully install Git on your computer, read about [adding an SSH key to GitLab](../../../ssh/index.md).
 
 <!-- ## Troubleshooting
 
