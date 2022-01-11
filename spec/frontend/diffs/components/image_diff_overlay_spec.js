@@ -6,8 +6,8 @@ import { imageDiffDiscussions } from '../mock_data/diff_discussions';
 
 describe('Diffs image diff overlay component', () => {
   const dimensions = {
-    width: 100,
-    height: 200,
+    width: 99.9,
+    height: 199.5,
   };
   let wrapper;
   let dispatch;
@@ -38,7 +38,6 @@ describe('Diffs image diff overlay component', () => {
 
   afterEach(() => {
     wrapper.destroy();
-    wrapper = null;
   });
 
   it('renders comment badges', () => {
@@ -81,17 +80,21 @@ describe('Diffs image diff overlay component', () => {
 
   it('dispatches openDiffFileCommentForm when clicking overlay', () => {
     createComponent({ canComment: true });
-    wrapper.find('.js-add-image-diff-note-button').trigger('click', { offsetX: 0, offsetY: 0 });
+    wrapper.find('.js-add-image-diff-note-button').trigger('click', { offsetX: 1.2, offsetY: 3.8 });
 
     expect(dispatch).toHaveBeenCalledWith('diffs/openDiffFileCommentForm', {
       fileHash: 'ABC',
-      x: 0,
-      y: 0,
+      x: 1,
+      y: 4,
       width: 100,
       height: 200,
-      xPercent: 0,
-      yPercent: 0,
+      xPercent: expect.any(Number),
+      yPercent: expect.any(Number),
     });
+
+    const { xPercent, yPercent } = dispatch.mock.calls[0][1];
+    expect(xPercent).toBeCloseTo(0.6);
+    expect(yPercent).toBeCloseTo(1.9);
   });
 
   describe('toggle discussion', () => {

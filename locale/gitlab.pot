@@ -4793,7 +4793,7 @@ msgstr ""
 msgid "Ask someone with write access to resolve it."
 msgstr ""
 
-msgid "Ask your group maintainer to set up a group runner."
+msgid "Ask your group owner to set up a group runner."
 msgstr ""
 
 msgid "Assertion consumer service URL"
@@ -16754,9 +16754,6 @@ msgstr ""
 msgid "Group jobs by"
 msgstr ""
 
-msgid "Group maintainers can register group runners in the %{link}"
-msgstr ""
-
 msgid "Group members"
 msgstr ""
 
@@ -16779,6 +16776,9 @@ msgid "Group navigation"
 msgstr ""
 
 msgid "Group overview content"
+msgstr ""
+
+msgid "Group owners can register group runners in the %{link}"
 msgstr ""
 
 msgid "Group path is already taken. We've suggested one that is available."
@@ -42050,6 +42050,9 @@ msgid "failed"
 msgstr ""
 
 msgid "failed to dismiss associated finding(id=%{finding_id}): %{message}"
+msgstr ""
+
+msgid "failed to dismiss finding: %{message}"
 msgstr ""
 
 msgid "failed to revert associated finding(id=%{finding_id}) to detected"

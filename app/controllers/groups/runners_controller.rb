@@ -1,9 +1,8 @@
 # frozen_string_literal: true
 
 class Groups::RunnersController < Groups::ApplicationController
-  # TODO Proper policies, such as `read_group_runners, should be implemented per
-  # https://gitlab.com/gitlab-org/gitlab/-/issues/334802
-  before_action :authorize_admin_group!
+  before_action :authorize_read_group_runners!, only: [:index, :show]
+  before_action :authorize_admin_group_runners!, only: [:edit, :update, :destroy, :pause, :resume]
   before_action :runner_list_group_view_vue_ui_enabled, only: [:index]
   before_action :runner, only: [:edit, :update, :destroy, :pause, :resume, :show]
 
@@ -17,7 +16,7 @@ class Groups::RunnersController < Groups::ApplicationController
   end
 
   def runner_list_group_view_vue_ui_enabled
-    return render_404 unless Feature.enabled?(:runner_list_group_view_vue_ui, group, default_enabled: :yaml)
+    render_404 unless Feature.enabled?(:runner_list_group_view_vue_ui, group, default_enabled: :yaml)
   end
 
   def show

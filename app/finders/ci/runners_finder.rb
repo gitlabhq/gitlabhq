@@ -47,7 +47,7 @@ module Ci
     end
 
     def group_runners
-      raise Gitlab::Access::AccessDeniedError unless can?(@current_user, :admin_group, @group)
+      raise Gitlab::Access::AccessDeniedError unless can?(@current_user, :read_group_runners, @group)
 
       @runners = case @params[:membership]
                  when :direct

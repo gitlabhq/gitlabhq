@@ -36,6 +36,7 @@ RSpec.describe GroupPolicy do
     it { expect_disallowed(:read_crm_organization) }
     it { expect_disallowed(:read_crm_contact) }
     it { expect_disallowed(:read_counts) }
+    it { expect_disallowed(:read_group_runners) }
     it { expect_disallowed(*read_group_permissions) }
   end
 
@@ -51,6 +52,7 @@ RSpec.describe GroupPolicy do
     it { expect_disallowed(:read_crm_organization) }
     it { expect_disallowed(:read_crm_contact) }
     it { expect_disallowed(:read_counts) }
+    it { expect_disallowed(:read_group_runners) }
     it { expect_disallowed(*read_group_permissions) }
   end
 
@@ -1126,9 +1128,7 @@ RSpec.describe GroupPolicy do
     context 'with maintainer' do
       let(:current_user) { maintainer }
 
-      it { is_expected.to be_allowed(:register_group_runners) }
-
-      it_behaves_like 'expected outcome based on runner registration control'
+      it { is_expected.to be_disallowed(:register_group_runners) }
     end
 
     context 'with reporter' do

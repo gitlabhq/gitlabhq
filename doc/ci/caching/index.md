@@ -235,6 +235,39 @@ test_async:
     - node ./specs/start.js ./specs/async.spec.js
 ```
 
+#### Compute the cache key from the lock file
+
+You can use [`cache:key:files`](../yaml/index.md#cachekeyfiles) to compute the cache
+key from a lock file like `package-lock.json` or `yarn.lock`, and reuse it in many jobs.
+
+```yaml
+# Cache modules using lock file
+cache:
+  key:
+    files:
+      - package-lock.json
+  paths:
+    - .npm/
+```
+
+If you're using [Yarn](https://yarnpkg.com/), you can use [`yarn-offline-mirror`](https://classic.yarnpkg.com/blog/2016/11/24/offline-mirror/)
+to cache the zipped `node_modules` tarballs. The cache generates more quickly, because
+fewer files have to be compressed:
+
+```yaml
+job:
+  script:
+    - echo 'yarn-offline-mirror ".yarn-cache/"' >> .yarnrc
+    - echo 'yarn-offline-mirror-pruning true' >> .yarnrc
+    - yarn install --frozen-lockfile --no-progress
+  cache:
+    key:
+      files:
+        - yarn.lock
+    paths:
+      - .yarn-cache/
+```
+
 ### Cache PHP dependencies
 
 If your project uses [Composer](https://getcomposer.org/) to install
