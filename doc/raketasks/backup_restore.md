@@ -61,12 +61,12 @@ including:
 - Terraform states ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/331806) in GitLab 14.7)
 - Container Registry images
 - GitLab Pages content
+- Packages ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/332006) in GitLab 14.7)
 - Snippets
 - [Group wikis](../user/project/wiki/group.md)
 
 Backups do not include:
 
-- [Package registry files](../administration/packages/index.md)
 - [Mattermost data](https://docs.mattermost.com/administration/config-settings.html#file-storage)
 
 WARNING:
@@ -276,6 +276,7 @@ You can exclude specific directories from the backup by adding the environment v
 - `registry` (Container Registry images)
 - `pages` (Pages content)
 - `repositories` (Git repositories data)
+- `packages` (Packages)
 
 All wikis are backed up as part of the `repositories` group. Non-existent wikis are skipped during a backup.
 

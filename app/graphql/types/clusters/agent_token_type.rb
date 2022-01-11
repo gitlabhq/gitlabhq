@@ -45,7 +45,7 @@ module Types
             description: 'Name given to the token.'
 
       field :status,
-            GraphQL::Types::String,
+            Types::Clusters::AgentTokenStatusEnum,
             null: true,
             description: 'Current status of the token.'
 

@@ -247,16 +247,6 @@ $gl-line-height-42: px-to-rem(42px);
   max-width: 50%;
 }
 
-// Will be moved to @gitlab/ui by https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1465
-.gl-popover {
-  .popover-header {
-    .gl-button.close {
-      margin-top: -$gl-spacing-scale-3;
-      margin-right: -$gl-spacing-scale-4;
-    }
-  }
-}
-
 // Will be moved to @gitlab/ui by https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1490
 .gl-w-grid-size-28 {
   width: $grid-size * 28;

@@ -161,7 +161,6 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
         another_project = create(:project, :repository, creator: another_user)
         create(:remote_mirror, project: another_project, enabled: false)
         create(:snippet, author: user)
-        create(:suggestion, note: create(:note, project: project))
       end
 
       expect(described_class.usage_activity_by_stage_create({})).to include(
@@ -171,8 +170,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
         projects_with_disable_overriding_approvers_per_merge_request: 2,
         projects_without_disable_overriding_approvers_per_merge_request: 6,
         remote_mirrors: 2,
-        snippets: 2,
-        suggestions: 2
+        snippets: 2
       )
       expect(described_class.usage_activity_by_stage_create(described_class.monthly_time_range_db_params)).to include(
         deploy_keys: 1,
@@ -181,8 +179,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
         projects_with_disable_overriding_approvers_per_merge_request: 1,
         projects_without_disable_overriding_approvers_per_merge_request: 3,
         remote_mirrors: 1,
-        snippets: 1,
-        suggestions: 1
+        snippets: 1
       )
     end
   end

@@ -15,7 +15,7 @@ RSpec.describe Backup::Manager do
   end
 
   describe '#pack' do
-    let(:expected_backup_contents) { %w(repositories db uploads.tar.gz builds.tar.gz artifacts.tar.gz pages.tar.gz lfs.tar.gz terraform_state.tar.gz backup_information.yml) }
+    let(:expected_backup_contents) { %w(repositories db uploads.tar.gz builds.tar.gz artifacts.tar.gz pages.tar.gz lfs.tar.gz terraform_state.tar.gz packages.tar.gz backup_information.yml) }
     let(:tar_file) { '1546300800_2019_01_01_12.3_gitlab_backup.tar' }
     let(:tar_system_options) { { out: [tar_file, 'w', Gitlab.config.backup.archive_permissions] } }
     let(:tar_cmdline) { ['tar', '-cf', '-', *expected_backup_contents, tar_system_options] }
@@ -57,7 +57,7 @@ RSpec.describe Backup::Manager do
     end
 
     context 'when skipped is set in backup_information.yml' do
-      let(:expected_backup_contents) { %w{db uploads.tar.gz builds.tar.gz artifacts.tar.gz pages.tar.gz lfs.tar.gz terraform_state.tar.gz backup_information.yml} }
+      let(:expected_backup_contents) { %w{db uploads.tar.gz builds.tar.gz artifacts.tar.gz pages.tar.gz lfs.tar.gz terraform_state.tar.gz packages.tar.gz backup_information.yml} }
       let(:backup_information) do
         {
           backup_created_at: Time.zone.parse('2019-01-01'),
@@ -74,7 +74,7 @@ RSpec.describe Backup::Manager do
     end
 
     context 'when a directory does not exist' do
-      let(:expected_backup_contents) { %w{db uploads.tar.gz builds.tar.gz artifacts.tar.gz pages.tar.gz lfs.tar.gz terraform_state.tar.gz backup_information.yml} }
+      let(:expected_backup_contents) { %w{db uploads.tar.gz builds.tar.gz artifacts.tar.gz pages.tar.gz lfs.tar.gz terraform_state.tar.gz packages.tar.gz backup_information.yml} }
 
       before do
         expect(Dir).to receive(:exist?).with(File.join(Gitlab.config.backup.path, 'repositories')).and_return(false)

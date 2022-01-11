@@ -108,6 +108,9 @@ Rails.application.routes.draw do
       get '/autocomplete/namespace_routes' => 'autocomplete#namespace_routes'
     end
 
+    # sandbox
+    get '/sandbox/mermaid' => 'sandbox#mermaid'
+
     get '/whats_new' => 'whats_new#index'
 
     # '/-/health' implemented by BasicHealthCheck middleware

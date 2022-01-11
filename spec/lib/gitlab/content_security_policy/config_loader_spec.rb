@@ -85,7 +85,7 @@ RSpec.describe Gitlab::ContentSecurityPolicy::ConfigLoader do
         expect(directives['style_src']).to eq("'self' 'unsafe-inline' https://cdn.example.com")
         expect(directives['font_src']).to eq("'self' https://cdn.example.com")
         expect(directives['worker_src']).to eq('http://localhost/assets/ blob: data: https://cdn.example.com')
-        expect(directives['frame_src']).to eq(::Gitlab::ContentSecurityPolicy::Directives.frame_src + " https://cdn.example.com http://localhost/admin/ http://localhost/assets/ http://localhost/-/speedscope/index.html")
+        expect(directives['frame_src']).to eq(::Gitlab::ContentSecurityPolicy::Directives.frame_src + " https://cdn.example.com http://localhost/admin/ http://localhost/assets/ http://localhost/-/speedscope/index.html http://localhost/-/sandbox/mermaid")
       end
     end
 
@@ -113,7 +113,7 @@ RSpec.describe Gitlab::ContentSecurityPolicy::ConfigLoader do
         end
 
         it 'does not add CUSTOMER_PORTAL_URL to CSP' do
-          expect(directives['frame_src']).to eq(::Gitlab::ContentSecurityPolicy::Directives.frame_src + " http://localhost/admin/ http://localhost/assets/ http://localhost/-/speedscope/index.html")
+          expect(directives['frame_src']).to eq(::Gitlab::ContentSecurityPolicy::Directives.frame_src + " http://localhost/admin/ http://localhost/assets/ http://localhost/-/speedscope/index.html http://localhost/-/sandbox/mermaid")
         end
       end
 
@@ -123,7 +123,7 @@ RSpec.describe Gitlab::ContentSecurityPolicy::ConfigLoader do
         end
 
         it 'adds CUSTOMER_PORTAL_URL to CSP' do
-          expect(directives['frame_src']).to eq(::Gitlab::ContentSecurityPolicy::Directives.frame_src + " http://localhost/rails/letter_opener/ https://customers.example.com http://localhost/admin/ http://localhost/assets/ http://localhost/-/speedscope/index.html")
+          expect(directives['frame_src']).to eq(::Gitlab::ContentSecurityPolicy::Directives.frame_src + " http://localhost/rails/letter_opener/ https://customers.example.com http://localhost/admin/ http://localhost/assets/ http://localhost/-/speedscope/index.html http://localhost/-/sandbox/mermaid")
         end
       end
     end

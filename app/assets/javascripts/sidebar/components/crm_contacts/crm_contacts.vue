@@ -1,5 +1,5 @@
 <script>
-import { GlIcon, GlPopover, GlTooltipDirective } from '@gitlab/ui';
+import { GlIcon, GlLink, GlPopover, GlTooltipDirective } from '@gitlab/ui';
 import { __, n__, sprintf } from '~/locale';
 import createFlash from '~/flash';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
@@ -10,6 +10,7 @@ import issueCrmContactsSubscription from './queries/issue_crm_contacts.subscript
 export default {
   components: {
     GlIcon,
+    GlLink,
     GlPopover,
   },
   directives: {
@@ -85,9 +86,6 @@ export default {
       );
     },
   },
-  i18n: {
-    help: __('Work in progress- click here to find out more'),
-  },
 };
 </script>
 
@@ -97,11 +95,10 @@ export default {
       <gl-icon name="users" />
       <span> {{ contactCount }} </span>
     </div>
-    <div
-      v-gl-tooltip.left.viewport="$options.i18n.help"
-      class="hide-collapsed help-button float-right"
-    >
-      <a href="https://gitlab.com/gitlab-org/gitlab/-/issues/2256"><gl-icon name="question-o" /></a>
+    <div class="hide-collapsed help-button gl-float-right">
+      <gl-link href="https://docs.gitlab.com/ee/user/crm/" target="_blank"
+        ><gl-icon name="question-o"
+      /></gl-link>
     </div>
     <div class="title hide-collapsed gl-mb-2 gl-line-height-20">
       {{ contactsLabel }}

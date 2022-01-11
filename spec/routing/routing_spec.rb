@@ -364,6 +364,12 @@ RSpec.describe AutocompleteController, 'routing' do
   end
 end
 
+RSpec.describe SandboxController, 'routing' do
+  it 'to #mermaid' do
+    expect(get("/-/sandbox/mermaid")).to route_to('sandbox#mermaid')
+  end
+end
+
 RSpec.describe Snippets::BlobsController, "routing" do
   it "to #raw" do
     expect(get('/-/snippets/1/raw/master/lib/version.rb'))

@@ -2,7 +2,7 @@
 
 module Backup
   class Manager
-    ARCHIVES_TO_BACKUP = %w[uploads builds artifacts pages lfs terraform_state registry].freeze
+    ARCHIVES_TO_BACKUP = %w[uploads builds artifacts pages lfs terraform_state registry packages].freeze
     FOLDERS_TO_BACKUP = %w[repositories db].freeze
     FILE_NAME_SUFFIX = '_gitlab_backup.tar'
 

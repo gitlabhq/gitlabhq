@@ -12,9 +12,6 @@ class NamespaceSetting < ApplicationRecord
   validate :allow_mfa_for_group
   validate :allow_resource_access_token_creation_for_group
 
-  before_save :set_prevent_sharing_groups_outside_hierarchy, if: -> { user_cap_enabled? }
-  after_save :disable_project_sharing!, if: -> { user_cap_enabled? }
-
   before_validation :normalize_default_branch_name
 
   enum jobs_to_be_done: { basics: 0, move_repository: 1, code_storage: 2, exploring: 3, ci: 4, other: 5 }, _suffix: true
@@ -58,18 +55,6 @@ class NamespaceSetting < ApplicationRecord
     if namespace&.subgroup? && !resource_access_token_creation_allowed
       errors.add(:resource_access_token_creation_allowed, _('is not allowed since the group is not top-level group.'))
     end
-  end
-
-  def set_prevent_sharing_groups_outside_hierarchy
-    self.prevent_sharing_groups_outside_hierarchy = true
-  end
-
-  def disable_project_sharing!
-    namespace.update_attribute(:share_with_group_lock, true)
-  end
-
-  def user_cap_enabled?
-    new_user_signups_cap.present? && namespace.root?
   end
 end
 

@@ -102,7 +102,7 @@ a license, upload the license in the **Admin Area** in the web user interface.
 
 ## What happens when your license expires
 
-Fifteen days before the license expires, a message with the upcoming expiration
+One month before the license expires, a message with the upcoming expiration
 date displays to GitLab administrators.
 
 When your license expires, GitLab locks features, like Git pushes

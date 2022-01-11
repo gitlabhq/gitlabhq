@@ -40360,9 +40360,6 @@ msgstr ""
 msgid "Work in progress Limit"
 msgstr ""
 
-msgid "Work in progress- click here to find out more"
-msgstr ""
-
 msgid "WorkItem|Work Items"
 msgstr ""
 
@@ -41539,6 +41536,9 @@ msgid "cannot be changed if a personal project has container registry tags."
 msgstr ""
 
 msgid "cannot be changed if shared runners are enabled"
+msgstr ""
+
+msgid "cannot be enabled"
 msgstr ""
 
 msgid "cannot be enabled because parent group does not allow it"

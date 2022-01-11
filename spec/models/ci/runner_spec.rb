@@ -48,7 +48,7 @@ RSpec.describe Ci::Runner do
       let(:runner) { create(:ci_runner, :group, groups: [group]) }
 
       it 'disallows assigning group if already assigned to a group' do
-        runner.runner_namespaces << build(:ci_runner_namespace)
+        runner.runner_namespaces << create(:ci_runner_namespace)
 
         expect(runner).not_to be_valid
         expect(runner.errors.full_messages).to include('Runner needs to be assigned to exactly one group')

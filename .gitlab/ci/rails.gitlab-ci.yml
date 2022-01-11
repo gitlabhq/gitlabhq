@@ -463,7 +463,7 @@ db:backup_and_restore:
   script:
     - . scripts/prepare_build.sh
     - bundle exec rake db:drop db:create db:structure:load db:seed_fu
-    - mkdir -p tmp/tests/public/uploads tmp/tests/{artifacts,pages,lfs-objects,terraform_state,registry}
+    - mkdir -p tmp/tests/public/uploads tmp/tests/{artifacts,pages,lfs-objects,terraform_state,registry,packages}
     - bundle exec rake gitlab:backup:create
     - date
     - bundle exec rake gitlab:backup:restore

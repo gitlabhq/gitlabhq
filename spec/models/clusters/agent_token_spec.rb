@@ -13,14 +13,24 @@ RSpec.describe Clusters::AgentToken do
 
   describe 'scopes' do
     describe '.order_last_used_at_desc' do
-      let_it_be(:token_1) { create(:cluster_agent_token, last_used_at: 7.days.ago) }
-      let_it_be(:token_2) { create(:cluster_agent_token, last_used_at: nil) }
-      let_it_be(:token_3) { create(:cluster_agent_token, last_used_at: 2.days.ago) }
+      let_it_be(:agent) { create(:cluster_agent) }
+      let_it_be(:token_1) { create(:cluster_agent_token, agent: agent, last_used_at: 7.days.ago) }
+      let_it_be(:token_2) { create(:cluster_agent_token, agent: agent, last_used_at: nil) }
+      let_it_be(:token_3) { create(:cluster_agent_token, agent: agent, last_used_at: 2.days.ago) }
 
       it 'sorts by last_used_at descending, with null values at last' do
         expect(described_class.order_last_used_at_desc)
           .to eq([token_3, token_1, token_2])
       end
+    end
+
+    describe '.with_status' do
+      let!(:active_token) { create(:cluster_agent_token) }
+      let!(:revoked_token) { create(:cluster_agent_token, :revoked) }
+
+      subject { described_class.with_status(:active) }
+
+      it { is_expected.to contain_exactly(active_token) }
     end
   end
 
