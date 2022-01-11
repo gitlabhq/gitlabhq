@@ -29,7 +29,7 @@ module Integrations
 
       def activity
         {
-          title: "Merge request #{state_or_action_text} by #{user_combined_name}",
+          title: "Merge request #{state_or_action_text} by #{strip_markup(user_combined_name)}",
           subtitle: "in #{project_link}",
           text: merge_request_link,
           image: user_avatar
@@ -39,7 +39,7 @@ module Integrations
       private
 
       def format_title(title)
-        '*' + title.lines.first.chomp + '*'
+        '*' + strip_markup(title.lines.first.chomp) + '*'
       end
 
       def message
@@ -51,7 +51,7 @@ module Integrations
       end
 
       def merge_request_message
-        "#{user_combined_name} #{state_or_action_text} merge request #{merge_request_link} in #{project_link}"
+        "#{strip_markup(user_combined_name)} #{state_or_action_text} merge request #{merge_request_link} in #{project_link}"
       end
 
       def merge_request_link
@@ -59,7 +59,7 @@ module Integrations
       end
 
       def merge_request_title
-        "#{MergeRequest.reference_prefix}#{merge_request_iid} #{title}"
+        "#{MergeRequest.reference_prefix}#{merge_request_iid} #{strip_markup(title)}"
       end
 
       def merge_request_url

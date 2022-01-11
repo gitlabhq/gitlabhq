@@ -117,28 +117,6 @@ RSpec.describe Projects::TagsController do
     end
   end
 
-  context 'private project with token authentication' do
-    let(:private_project) { create(:project, :repository, :private) }
-
-    it_behaves_like 'authenticates sessionless user', :index, :atom, ignore_incrementing: true do
-      before do
-        default_params.merge!(project_id: private_project, namespace_id: private_project.namespace)
-
-        private_project.add_maintainer(user)
-      end
-    end
-  end
-
-  context 'public project with token authentication' do
-    let(:public_project) { create(:project, :repository, :public) }
-
-    it_behaves_like 'authenticates sessionless user', :index, :atom, public: true do
-      before do
-        default_params.merge!(project_id: public_project, namespace_id: public_project.namespace)
-      end
-    end
-  end
-
   describe 'POST #create' do
     before do
       project.add_developer(user)

@@ -101,4 +101,39 @@ RSpec.describe Gitlab::ImportExport::CommandLineUtil do
       end
     end
   end
+
+  describe '#untar_xf' do
+    let(:archive_dir) { Dir.mktmpdir }
+
+    after do
+      FileUtils.remove_entry(archive_dir)
+    end
+
+    it 'extracts archive without decompression' do
+      filename = 'archive.tar.gz'
+      archive_file = File.join(archive_dir, 'archive.tar')
+
+      FileUtils.copy_file(archive, File.join(archive_dir, filename))
+      subject.gunzip(dir: archive_dir, filename: filename)
+
+      result = subject.untar_xf(archive: archive_file, dir: archive_dir)
+
+      expect(result).to eq(true)
+      expect(File.exist?(archive_file)).to eq(true)
+      expect(File.exist?(File.join(archive_dir, 'project.json'))).to eq(true)
+      expect(Dir.exist?(File.join(archive_dir, 'uploads'))).to eq(true)
+    end
+
+    context 'when something goes wrong' do
+      it 'raises an error' do
+        expect(Gitlab::Popen).to receive(:popen).and_return(['Error', 1])
+
+        klass = Class.new do
+          include Gitlab::ImportExport::CommandLineUtil
+        end.new
+
+        expect { klass.untar_xf(archive: 'test', dir: 'test') }.to raise_error(Gitlab::ImportExport::Error, 'System call failed')
+      end
+    end
+  end
 end

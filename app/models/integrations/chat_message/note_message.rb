@@ -35,9 +35,9 @@ module Integrations
 
       def activity
         {
-          title: "#{user_combined_name} #{link('commented on ' + target, note_url)}",
+          title: "#{strip_markup(user_combined_name)} #{link('commented on ' + target, note_url)}",
           subtitle: "in #{project_link}",
-          text: formatted_title,
+          text: strip_markup(formatted_title),
           image: user_avatar
         }
       end
@@ -45,7 +45,7 @@ module Integrations
       private
 
       def message
-        "#{user_combined_name} #{link('commented on ' + target, note_url)} in #{project_link}: *#{formatted_title}*"
+        "#{strip_markup(user_combined_name)} #{link('commented on ' + target, note_url)} in #{project_link}: *#{strip_markup(formatted_title)}*"
       end
 
       def format_title(title)

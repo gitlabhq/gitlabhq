@@ -18,6 +18,10 @@ module Gitlab
         tar_with_options(archive: archive, dir: dir, options: 'cf')
       end
 
+      def untar_xf(archive:, dir:)
+        untar_with_options(archive: archive, dir: dir, options: 'xf')
+      end
+
       def gzip(dir:, filename:)
         gzip_with_options(dir: dir, filename: filename)
       end

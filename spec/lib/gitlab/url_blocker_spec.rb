@@ -531,24 +531,6 @@ RSpec.describe Gitlab::UrlBlocker, :stub_invalid_dns_only do
           end
         end
       end
-
-      def stub_domain_resolv(domain, ip, port = 80, &block)
-        address = instance_double(Addrinfo,
-          ip_address: ip,
-          ipv4_private?: true,
-          ipv6_linklocal?: false,
-          ipv4_loopback?: false,
-          ipv6_loopback?: false,
-          ipv4?: false,
-          ip_port: port
-        )
-        allow(Addrinfo).to receive(:getaddrinfo).with(domain, port, any_args).and_return([address])
-        allow(address).to receive(:ipv6_v4mapped?).and_return(false)
-
-        yield
-
-        allow(Addrinfo).to receive(:getaddrinfo).and_call_original
-      end
     end
 
     context 'when enforce_user is' do
@@ -610,6 +592,44 @@ RSpec.describe Gitlab::UrlBlocker, :stub_invalid_dns_only do
       stub_env('RSPEC_ALLOW_INVALID_URLS', 'false')
 
       expect(described_class).to be_blocked_url('http://foobar.x')
+    end
+
+    context 'when gitlab is running on a non-default port' do
+      let(:gitlab_port) { 3000 }
+
+      before do
+        stub_config(gitlab: { protocol: 'http', host: 'gitlab.local', port: gitlab_port })
+      end
+
+      it 'returns true for url targeting the wrong port' do
+        stub_domain_resolv('gitlab.local', '127.0.0.1') do
+          expect(described_class).to be_blocked_url("http://gitlab.local/foo")
+        end
+      end
+
+      it 'does not block url on gitlab port' do
+        stub_domain_resolv('gitlab.local', '127.0.0.1') do
+          expect(described_class).not_to be_blocked_url("http://gitlab.local:#{gitlab_port}/foo")
+        end
+      end
+    end
+
+    def stub_domain_resolv(domain, ip, port = 80, &block)
+      address = instance_double(Addrinfo,
+        ip_address: ip,
+        ipv4_private?: true,
+        ipv6_linklocal?: false,
+        ipv4_loopback?: false,
+        ipv6_loopback?: false,
+        ipv4?: false,
+        ip_port: port
+      )
+      allow(Addrinfo).to receive(:getaddrinfo).with(domain, port, any_args).and_return([address])
+      allow(address).to receive(:ipv6_v4mapped?).and_return(false)
+
+      yield
+
+      allow(Addrinfo).to receive(:getaddrinfo).and_call_original
     end
   end
 

@@ -5,16 +5,16 @@ module BulkImports
     module Pipelines
       class UploadsPipeline
         include Pipeline
-        include Gitlab::ImportExport::CommandLineUtil
 
-        FILENAME = 'uploads.tar.gz'
         AVATAR_PATTERN = %r{.*\/#{BulkImports::UploadsExportService::AVATAR_PATH}\/(?<identifier>.*)}.freeze
 
         AvatarLoadingError = Class.new(StandardError)
 
-        def extract(context)
-          download_service(tmp_dir, context).execute
-          untar_zxf(archive: File.join(tmp_dir, FILENAME), dir: tmp_dir)
+        def extract(_context)
+          download_service.execute
+          decompression_service.execute
+          extraction_service.execute
+
           upload_file_paths = Dir.glob(File.join(tmp_dir, '**', '*'))
 
           BulkImports::Pipeline::ExtractedData.new(data: upload_file_paths)
@@ -29,6 +29,7 @@ module BulkImports
 
           return unless dynamic_path
           return if File.directory?(file_path)
+          return if File.lstat(file_path).symlink?
 
           named_captures = dynamic_path.named_captures.symbolize_keys
 
@@ -36,18 +37,38 @@ module BulkImports
         end
 
         def after_run(_)
-          FileUtils.remove_entry(tmp_dir)
+          FileUtils.remove_entry(tmp_dir) if Dir.exist?(tmp_dir)
         end
 
         private
 
-        def download_service(tmp_dir, context)
+        def download_service
           BulkImports::FileDownloadService.new(
             configuration: context.configuration,
-            relative_url: context.entity.relation_download_url_path('uploads'),
+            relative_url: context.entity.relation_download_url_path(relation),
             dir: tmp_dir,
-            filename: FILENAME
+            filename: targz_filename
           )
+        end
+
+        def decompression_service
+          BulkImports::FileDecompressionService.new(dir: tmp_dir, filename: targz_filename)
+        end
+
+        def extraction_service
+          BulkImports::ArchiveExtractionService.new(tmpdir: tmp_dir, filename: tar_filename)
+        end
+
+        def relation
+          BulkImports::FileTransfer::BaseConfig::UPLOADS_RELATION
+        end
+
+        def tar_filename
+          "#{relation}.tar"
+        end
+
+        def targz_filename
+          "#{tar_filename}.gz"
         end
 
         def tmp_dir

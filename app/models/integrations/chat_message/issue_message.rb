@@ -32,7 +32,7 @@ module Integrations
 
       def activity
         {
-          title: "Issue #{state} by #{user_combined_name}",
+          title: "Issue #{state} by #{strip_markup(user_combined_name)}",
           subtitle: "in #{project_link}",
           text: issue_link,
           image: user_avatar
@@ -42,7 +42,7 @@ module Integrations
       private
 
       def message
-        "[#{project_link}] Issue #{issue_link} #{state} by #{user_combined_name}"
+        "[#{project_link}] Issue #{issue_link} #{state} by #{strip_markup(user_combined_name)}"
       end
 
       def opened_issue?
@@ -67,7 +67,7 @@ module Integrations
       end
 
       def issue_title
-        "#{Issue.reference_prefix}#{issue_iid} #{title}"
+        "#{Issue.reference_prefix}#{issue_iid} #{strip_markup(title)}"
       end
     end
   end

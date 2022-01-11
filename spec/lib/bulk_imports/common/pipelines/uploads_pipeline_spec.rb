@@ -70,8 +70,10 @@ RSpec.describe BulkImports::Common::Pipelines::UploadsPipeline do
     describe '#extract' do
       it 'downloads & extracts upload paths' do
         allow(Dir).to receive(:mktmpdir).and_return(tmpdir)
-        expect(pipeline).to receive(:untar_zxf)
-        file_download_service = instance_double("BulkImports::FileDownloadService")
+
+        download_service = instance_double("BulkImports::FileDownloadService")
+        decompression_service = instance_double("BulkImports::FileDecompressionService")
+        extraction_service = instance_double("BulkImports::ArchiveExtractionService")
 
         expect(BulkImports::FileDownloadService)
           .to receive(:new)
@@ -80,9 +82,13 @@ RSpec.describe BulkImports::Common::Pipelines::UploadsPipeline do
             relative_url: "/#{entity.pluralized_name}/test/export_relations/download?relation=uploads",
             dir: tmpdir,
             filename: 'uploads.tar.gz')
-          .and_return(file_download_service)
+          .and_return(download_service)
+        expect(BulkImports::FileDecompressionService).to receive(:new).with(dir: tmpdir, filename: 'uploads.tar.gz').and_return(decompression_service)
+        expect(BulkImports::ArchiveExtractionService).to receive(:new).with(tmpdir: tmpdir, filename: 'uploads.tar').and_return(extraction_service)
 
-        expect(file_download_service).to receive(:execute)
+        expect(download_service).to receive(:execute)
+        expect(decompression_service).to receive(:execute)
+        expect(extraction_service).to receive(:execute)
 
         extracted_data = pipeline.extract(context)
 
@@ -104,6 +110,16 @@ RSpec.describe BulkImports::Common::Pipelines::UploadsPipeline do
       context 'when path is a directory' do
         it 'returns' do
           expect { pipeline.load(context, uploads_dir_path) }.not_to change { portable.uploads.count }
+        end
+      end
+
+      context 'when path is a symlink' do
+        it 'does not upload the file' do
+          symlink = File.join(tmpdir, 'symlink')
+
+          FileUtils.ln_s(File.join(tmpdir, upload_file_path), symlink)
+
+          expect { pipeline.load(context, symlink) }.not_to change { portable.uploads.count }
         end
       end
     end
