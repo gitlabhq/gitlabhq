@@ -11,6 +11,10 @@ module QA
         def has_welcome_title?(text)
           has_element?(:welcome_title_content, text: text)
         end
+
+        def self.path
+          '/'
+        end
       end
     end
   end

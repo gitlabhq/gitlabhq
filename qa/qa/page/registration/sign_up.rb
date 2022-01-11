@@ -16,10 +16,6 @@ module QA
           element :new_user_username_field
         end
 
-        view 'app/views/registrations/welcome/show.html.haml' do
-          element :get_started_button
-        end
-
         def fill_new_user_first_name_field(first_name)
           fill_element :new_user_first_name_field, first_name
         end

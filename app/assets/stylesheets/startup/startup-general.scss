@@ -295,6 +295,10 @@ h1 {
   padding-left: 0.6em;
   border-radius: 10rem;
 }
+.badge-info {
+  color: #fff;
+  background-color: #1f75cb;
+}
 .bg-transparent {
   background-color: transparent !important;
 }
@@ -352,6 +356,24 @@ h1 {
   padding-bottom: 0.25rem;
   padding-left: 0.5rem;
   padding-right: 0.5rem;
+}
+.gl-badge.sm {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+.gl-badge.badge-info {
+  background-color: #cbe2f9;
+  color: #0b5cad;
+}
+a.gl-badge.badge-info.active,
+a.gl-badge.badge-info:active {
+  color: #033464;
+  background-color: #9dc7f1;
+}
+a.gl-badge.badge-info:active {
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.8),
+    0 0 0 1px rgba(255, 255, 255, 0.4), 0 0 0 4px rgba(31, 117, 203, 0.48);
+  outline: none;
 }
 .gl-button .gl-badge {
   top: 0;
@@ -1348,7 +1370,7 @@ input {
   border-radius: 4px;
   box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.08);
 }
-.sidebar-top-level-items > li .badge.badge-pill {
+.sidebar-top-level-items > li .badge.badge-pill:not(.gl-badge) {
   border-radius: 0.5rem;
   padding-top: 0.125rem;
   padding-bottom: 0.125rem;
@@ -1362,7 +1384,7 @@ input {
   .sidebar-sub-level-items:not(.is-fly-out-only) {
   display: block;
 }
-.sidebar-top-level-items > li.active .badge.badge-pill {
+.sidebar-top-level-items > li.active .badge.badge-pill:not(.gl-badge) {
   font-weight: 400;
   color: #0b5cad;
 }

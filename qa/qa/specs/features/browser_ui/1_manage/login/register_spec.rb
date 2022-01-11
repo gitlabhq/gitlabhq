@@ -13,7 +13,7 @@ module QA
     end
   end
 
-  RSpec.describe 'Manage', :skip_signup_disabled, :requires_admin do
+  RSpec.describe 'Manage', :skip_signup_disabled, :requires_admin, quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/349626', type: :stale } do
     describe 'while LDAP is enabled', :orchestrated, :ldap_no_tls, testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347934' do
       before do
         # When LDAP is enabled, a previous test might have created a token for the LDAP 'tanuki' user who is not an admin
@@ -118,11 +118,12 @@ module QA
 
           Flow::Login.sign_in(as: @user, skip_page_validation: true)
 
-          Page::Registration::Welcome.perform(&:click_get_started_button_if_available)
+          Flow::UserOnboarding.onboard_user
 
-          Page::Main::Menu.perform do |menu|
-            expect(menu).to have_personal_area
-          end
+          # In development env and .com the user is asked to create a group and a project which can be skipped for
+          # the purpose of this test
+          Runtime::Browser.visit(:gitlab, Page::Dashboard::Welcome)
+          Page::Main::Menu.perform(&:has_personal_area?)
         end
 
         after do

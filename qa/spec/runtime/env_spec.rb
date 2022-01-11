@@ -83,6 +83,46 @@ RSpec.describe QA::Runtime::Env do
     end
   end
 
+  describe '.running_on_dot_com?' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:url, :result) do
+      'https://www.gitlab.com'     | true
+      'https://staging.gitlab.com' | true
+      'http://www.gitlab.com'      | true
+      'http://localhost:3000'      | false
+      'http://localhost'           | false
+      'http://gdk.test:3000'       | false
+    end
+
+    with_them do
+      before do
+        QA::Runtime::Scenario.define(:gitlab_address, url)
+      end
+
+      it { expect(described_class.running_on_dot_com?).to eq result }
+    end
+  end
+
+  describe '.running_on_dev?' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:url, :result) do
+      'https://www.gitlab.com' | false
+      'http://localhost:3000'  | true
+      'http://localhost'       | false
+      'http://gdk.test:3000'   | true
+    end
+
+    with_them do
+      before do
+        QA::Runtime::Scenario.define(:gitlab_address, url)
+      end
+
+      it { expect(described_class.running_on_dev?).to eq result }
+    end
+  end
+
   describe '.personal_access_token' do
     around do |example|
       described_class.instance_variable_set(:@personal_access_token, nil)

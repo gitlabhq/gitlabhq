@@ -26,6 +26,38 @@ RSpec.describe CustomerRelations::Contact, type: :model do
     it_behaves_like 'an object with RFC3696 compliant email-formatted attributes', :email
   end
 
+  describe '#unique_email_for_group_hierarchy' do
+    let_it_be(:parent) { create(:group) }
+    let_it_be(:group) { create(:group, parent: parent) }
+    let_it_be(:subgroup) { create(:group, parent: group) }
+
+    let_it_be(:existing_contact) { create(:contact, group: group) }
+
+    context 'with unique email for group hierarchy' do
+      subject { build(:contact, group: group) }
+
+      it { is_expected.to be_valid }
+    end
+
+    context 'with duplicate email in group' do
+      subject { build(:contact, email: existing_contact.email, group: group) }
+
+      it { is_expected.to be_invalid }
+    end
+
+    context 'with duplicate email in parent group' do
+      subject { build(:contact, email: existing_contact.email, group: subgroup) }
+
+      it { is_expected.to be_invalid }
+    end
+
+    context 'with duplicate email in subgroup' do
+      subject { build(:contact, email: existing_contact.email, group: parent) }
+
+      it { is_expected.to be_invalid }
+    end
+  end
+
   describe '#before_validation' do
     it 'strips leading and trailing whitespace' do
       contact = described_class.new(first_name: '  First  ', last_name: ' Last  ', phone: '  123456 ')

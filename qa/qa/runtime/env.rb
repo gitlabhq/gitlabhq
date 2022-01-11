@@ -90,6 +90,20 @@ module QA
         enabled?(ENV['ACCEPT_INSECURE_CERTS'])
       end
 
+      def running_on_dot_com?
+        uri = URI.parse(Runtime::Scenario.gitlab_address)
+        uri.host.include?('.com')
+      end
+
+      def running_on_dev?
+        uri = URI.parse(Runtime::Scenario.gitlab_address)
+        uri.port != 80 && uri.port != 443
+      end
+
+      def running_on_dev_or_dot_com?
+        running_on_dev? || running_on_dot_com?
+      end
+
       def running_in_ci?
         ENV['CI'] || ENV['CI_SERVER']
       end
