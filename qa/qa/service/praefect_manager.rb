@@ -414,7 +414,7 @@ module QA
       end
 
       def remove_tracked_praefect_repository(relative_path, virtual_storage)
-        cmd = "gitlab-ctl praefect remove-repository --repository-relative-path #{relative_path} --virtual-storage-name #{virtual_storage}"
+        cmd = "gitlab-ctl praefect remove-repository --repository-relative-path #{relative_path} --virtual-storage-name #{virtual_storage} --apply"
         shell "docker exec #{@praefect} bash -c '#{cmd}'"
       end
 

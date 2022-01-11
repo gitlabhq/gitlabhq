@@ -109,6 +109,11 @@ After the server receives the request it selects a `pending` job based on the [`
 
 Once all jobs are completed for the current stage, the server "unlocks" all the jobs from the next stage by changing their state to `pending`. These can now be picked by the scheduling algorithm when the runner requests new jobs, and continues like this until all stages are completed.
 
+If a job is not picked up by a runner in 24 hours it is automatically removed from
+the processing queue after that time. If a pending job is stuck, when there is no
+runner available that can process it, it is removed from the queue after 1 hour.
+In both cases the job's status is changed to `failed` with an appropriate failure reason.
+
 ### Communication between runner and GitLab server
 
 After the runner is [registered](https://docs.gitlab.com/runner/register/) using the registration token, the server knows what type of jobs it can execute. This depends on:

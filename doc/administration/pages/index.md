@@ -545,6 +545,14 @@ After an archive reaches `zip_cache_expiration`, it's marked as expired and remo
 
 ![ZIP cache configuration](img/zip_cache_configuration.png)
 
+### HTTP Strict Transport Security (HSTS) support
+
+HTTP Strict Transport Security (HSTS) can be enabled through the `gitlab_pages['headers']` configuration option. HSTS informs browsers that the website they are visiting should always provide its content over HTTPS to ensure that attackers cannot force subsequent connections to happen unencrypted. It can also improve loading speed of pages as it prevents browsers from attempting to connect over an unencrypted HTTP channel before being redirected to HTTPS.
+
+```ruby
+gitlab_pages['headers'] = ['Strict-Transport-Security: max-age=63072000']
+```
+
 ## Activate verbose logging for daemon
 
 Follow the steps below to configure verbose logging of GitLab Pages daemon.

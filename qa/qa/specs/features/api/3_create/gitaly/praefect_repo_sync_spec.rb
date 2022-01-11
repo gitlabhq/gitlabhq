@@ -22,7 +22,7 @@ module QA
         praefect_manager.remove_repository_from_praefect_database(repo2["relative_path"])
       end
 
-      it 'allows admin to manage difference between praefect database and disk state', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347606', quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/347415', type: :investigating } do
+      it 'allows admin to manage difference between praefect database and disk state', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347606' do
         # Some repos are on disk that praefect is not aware of
         untracked_repositories = praefect_manager.list_untracked_repositories
         expect(untracked_repositories).to include(repo1)
