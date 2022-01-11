@@ -19,7 +19,7 @@ exports[`MavenInstallation groovy renders all the messages 1`] = `
   <code-instruction-stub
     copytext="Copy add Gradle Groovy DSL repository command"
     instruction="maven {
-  url 'mavenPath'
+  url 'http://gdk.test:3000/api/v4/projects/1/packages/maven'
 }"
     label="Add Gradle Groovy DSL repository command"
     multiline="true"
@@ -47,7 +47,7 @@ exports[`MavenInstallation kotlin renders all the messages 1`] = `
    
   <code-instruction-stub
     copytext="Copy add Gradle Kotlin DSL repository command"
-    instruction="maven(\\"mavenPath\\")"
+    instruction="maven(\\"http://gdk.test:3000/api/v4/projects/1/packages/maven\\")"
     label="Add Gradle Kotlin DSL repository command"
     multiline="true"
     trackingaction="copy_kotlin_add_to_source_command"
@@ -115,19 +115,19 @@ exports[`MavenInstallation maven renders all the messages 1`] = `
     instruction="<repositories>
   <repository>
     <id>gitlab-maven</id>
-    <url>mavenPath</url>
+    <url>http://gdk.test:3000/api/v4/projects/1/packages/maven</url>
   </repository>
 </repositories>
 
 <distributionManagement>
   <repository>
     <id>gitlab-maven</id>
-    <url>mavenPath</url>
+    <url>http://gdk.test:3000/api/v4/projects/1/packages/maven</url>
   </repository>
 
   <snapshotRepository>
     <id>gitlab-maven</id>
-    <url>mavenPath</url>
+    <url>http://gdk.test:3000/api/v4/projects/1/packages/maven</url>
   </snapshotRepository>
 </distributionManagement>"
     label=""

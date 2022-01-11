@@ -20,9 +20,6 @@ describe('ConanInstallation', () => {
 
   function createComponent() {
     wrapper = shallowMountExtended(ConanInstallation, {
-      provide: {
-        conanPath: 'conanPath',
-      },
       propsData: {
         packageEntity,
       },
@@ -65,7 +62,7 @@ describe('ConanInstallation', () => {
   describe('setup commands', () => {
     it('renders the correct command', () => {
       expect(findCodeInstructions().at(1).props('instruction')).toBe(
-        'conan remote add gitlab conanPath',
+        `conan remote add gitlab ${packageEntity.conanUrl}`,
       );
     });
 

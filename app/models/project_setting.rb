@@ -22,6 +22,16 @@ class ProjectSetting < ApplicationRecord
   def squash_readonly?
     %w[always never].include?(squash_option)
   end
+
+  validate :validates_mr_default_target_self
+
+  private
+
+  def validates_mr_default_target_self
+    if mr_default_target_self_changed? && !project.forked?
+      errors.add :mr_default_target_self, _('This setting is allowed for forked projects only')
+    end
+  end
 end
 
 ProjectSetting.prepend_mod

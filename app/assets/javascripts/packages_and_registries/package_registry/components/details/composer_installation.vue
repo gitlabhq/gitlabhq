@@ -18,7 +18,7 @@ export default {
     GlLink,
     GlSprintf,
   },
-  inject: ['composerConfigRepositoryName', 'composerPath', 'groupListUrl'],
+  inject: ['groupListUrl'],
   props: {
     packageEntity: {
       type: Object,
@@ -28,7 +28,7 @@ export default {
   computed: {
     composerRegistryInclude() {
       // eslint-disable-next-line @gitlab/require-i18n-strings
-      return `composer config repositories.${this.composerConfigRepositoryName} '{"type": "composer", "url": "${this.composerPath}"}'`;
+      return `composer config repositories.${this.packageEntity.composerConfigRepositoryUrl} '{"type": "composer", "url": "${this.packageEntity.composerUrl}"}'`;
     },
     composerPackageInclude() {
       // eslint-disable-next-line @gitlab/require-i18n-strings

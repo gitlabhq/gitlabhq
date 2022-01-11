@@ -77,15 +77,16 @@ ui-docs-links lint:
   script:
     - bundle exec haml-lint -i DocumentationLinks
 
-docs-lint deprecations:
+docs-lint deprecations-and-removals:
   variables:
     SETUP_DB: "false"
   extends:
     - .default-retry
     - .rails-cache
     - .default-before_script
-    - .docs:rules:deprecations
+    - .docs:rules:deprecations-and-removals
   stage: lint
   needs: []
   script:
     - bundle exec rake gitlab:docs:check_deprecations
+    - bundle exec rake gitlab:docs:check_removals

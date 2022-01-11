@@ -4,9 +4,14 @@ group: Monitor
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Templating variables for metrics dashboards **(FREE)**
+# Templating variables for metrics dashboards (DEPRECATED) **(FREE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214539) in GitLab 13.0.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214539) in GitLab 13.0.
+> - [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/346541) in GitLab 14.7.
+
+WARNING:
+This feature is in its end-of-life process. It is [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/346541)
+for use in GitLab 14.7, and is planned for removal in GitLab 15.0.
 
 Templating variables can be used to make your metrics dashboard more versatile.
 

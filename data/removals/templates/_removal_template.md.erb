@@ -1,0 +1,50 @@
+---
+stage: none
+group: none
+info: "See the Technical Writers assigned to Development Guidelines: https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments-to-development-guidelines"
+---
+
+# Removals by milestone
+
+DISCLAIMER:
+This page contains information related to upcoming products, features, and functionality.
+It is important to note that the information presented is for informational purposes only.
+Please do not rely on this information for purchasing or planning purposes.
+As with all projects, the items mentioned on this page are subject to change or delay.
+The development, release, and timing of any products, features, or functionality remain at the
+sole discretion of GitLab Inc.
+
+<!-- vale off -->
+
+<!--
+DO NOT EDIT THIS PAGE DIRECTLY
+
+This page is automatically generated from the YAML files in `/data/removals` by the rake task
+located at `lib/tasks/gitlab/docs/compile_removals.rake`.
+
+For removal authors (usually Product Managers and Engineering Managers):
+
+- To add a removal, use the example.yml file in `/data/removals/templates` as a template.
+- For more information about authoring removals, check the the removal item guidance:
+  https://about.gitlab.com/handbook/marketing/blog/release-posts/#creating-a-removal-entry
+
+For removal reviewers (Technical Writers only):
+
+- To update the removal doc, run: `bin/rake gitlab:docs:compile_removals`
+- To verify the removals doc is up to date, run: `bin/rake gitlab:docs:check_removals`
+- For more information about updating the removal doc, see the removal doc update guidance:
+  https://about.gitlab.com/handbook/marketing/blog/release-posts/#update-the-removals-doc
+-->
+<% if milestones.any? -%>
+  <%- milestones.each do |milestone| %>
+## <%= milestone %>
+    <%- entries.select{|entry| entry["removal_milestone"] == milestone}.each do |removal| %>
+### <%= removal["name"]%>
+
+<%= removal["body"] -%>
+    <%- end -%>
+  <%- end -%>
+<%- else -%>
+
+Features scheduled for removal will be listed here, sorted by GitLab milestone.
+<% end -%>

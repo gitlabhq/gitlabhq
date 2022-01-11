@@ -179,7 +179,7 @@ namespace :gitlab do
     task reindex: :environment do
       unless Gitlab::Database::Reindexing.enabled?
         puts "This feature (database_reindexing) is currently disabled.".color(:yellow)
-        exit
+        next
       end
 
       Gitlab::Database::Reindexing.invoke
@@ -193,7 +193,7 @@ namespace :gitlab do
         task database_name => :environment do
           unless Gitlab::Database::Reindexing.enabled?
             puts "This feature (database_reindexing) is currently disabled.".color(:yellow)
-            exit
+            next
           end
 
           Gitlab::Database::Reindexing.invoke(database_name)

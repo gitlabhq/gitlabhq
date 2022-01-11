@@ -1049,8 +1049,10 @@ The `web_url` and `avatar_url` attributes on `namespace` were
 [introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/27427)
 in GitLab 11.11.
 
-If the project is a fork, and you provide a valid token to authenticate, the
-`forked_from_project` field appears in the response.
+If the project is a fork, the `forked_from_project` field appears in the response.
+For this field, if the upstream project is private, a valid token for authentication must be provided.
+The field `mr_default_target_self` appears as well. If this value is `false`, then all merge requests
+will target the upstream project by default.
 
 ```json
 {
@@ -1058,6 +1060,7 @@ If the project is a fork, and you provide a valid token to authenticate, the
 
    ...
 
+   "mr_default_target_self": false,
    "forked_from_project":{
       "id":13083,
       "description":"GitLab Community Edition",
@@ -1448,6 +1451,7 @@ Supported attributes:
 | `issues_template` **(PREMIUM)**                             | string         | **{dotted-circle}** No | Default description for Issues. Description is parsed with GitLab Flavored Markdown. See [Templates for issues and merge requests](#templates-for-issues-and-merge-requests). |
 | `merge_requests_template` **(PREMIUM)**                     | string         | **{dotted-circle}** No | Default description for Merge Requests. Description is parsed with GitLab Flavored Markdown. See [Templates for issues and merge requests](#templates-for-issues-and-merge-requests). |
 | `keep_latest_artifact`                                      | boolean        | **{dotted-circle}** No | Disable or enable the ability to keep the latest artifact for this project. |
+| `mr_default_target_self`                                    | boolean        | **{dotted-circle}** No | For forked projects, target merge requests to this project. If `false`, the target will be the upstream project. |
 
 ## Fork project
 
@@ -1471,6 +1475,7 @@ POST /projects/:id/fork
 | `path`           | string         | **{dotted-circle}** No | The path assigned to the resultant project after forking.                        |
 | `description`    | string         | **{dotted-circle}** No | The description assigned to the resultant project after forking.                 |
 | `visibility`     | string         | **{dotted-circle}** No | The [visibility level](#project-visibility-level) assigned to the resultant project after forking. |
+| `mr_default_target_self` | boolean | **{dotted-circle}** No | For forked projects, target merge requests to this project. If `false`, the target will be the upstream project. |
 
 ## List Forks of a project
 

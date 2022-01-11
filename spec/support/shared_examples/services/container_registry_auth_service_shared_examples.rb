@@ -71,6 +71,7 @@ end
 RSpec.shared_examples 'an accessible' do
   before do
     stub_feature_flags(container_registry_migration_phase1: false)
+    stub_feature_flags(container_registry_cdn_redirect: false)
   end
 
   let(:access) do
@@ -163,6 +164,7 @@ RSpec.shared_examples 'a container registry auth service' do
 
   before do
     stub_feature_flags(container_registry_migration_phase1: false)
+    stub_feature_flags(container_registry_cdn_redirect: false)
   end
 
   describe '#full_access_token' do

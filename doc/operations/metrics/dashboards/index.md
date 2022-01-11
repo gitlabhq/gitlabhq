@@ -4,9 +4,14 @@ group: Monitor
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Custom dashboards **(FREE)**
+# Custom dashboards (DEPRECATED) **(FREE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/59974) in GitLab 12.1.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/59974) in GitLab 12.1.
+> - [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/346541) in GitLab 14.7.
+
+WARNING:
+This feature is in its end-of-life process. It is [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/346541)
+for use in GitLab 14.7, and is planned for removal in GitLab 15.0.
 
 By default, all projects include a [GitLab-defined Prometheus dashboard](default.md), which
 includes a few key metrics, but you can also define your own custom dashboards.

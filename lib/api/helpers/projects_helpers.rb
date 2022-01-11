@@ -71,6 +71,7 @@ module API
         optional :repository_storage, type: String, desc: 'Which storage shard the repository is on. Available only to admins'
         optional :packages_enabled, type: Boolean, desc: 'Enable project packages feature'
         optional :squash_option, type: String, values: %w(never always default_on default_off), desc: 'Squash default for project. One of `never`, `always`, `default_on`, or `default_off`.'
+        optional :mr_default_target_self, Boolean, desc: 'Merge requests of this forked project targets itself by default'
       end
 
       params :optional_project_params_ee do
@@ -169,6 +170,7 @@ module API
           :packages_enabled,
           :service_desk_enabled,
           :keep_latest_artifact,
+          :mr_default_target_self,
 
           # TODO: remove in API v5, replaced by *_access_level
           :issues_enabled,

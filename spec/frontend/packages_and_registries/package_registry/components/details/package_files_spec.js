@@ -28,8 +28,8 @@ describe('Package Files', () => {
 
   const createComponent = ({ packageFiles = [file], canDelete = true } = {}) => {
     wrapper = mountExtended(PackageFiles, {
-      provide: { canDelete },
       propsData: {
+        canDelete,
         packageFiles,
       },
       stubs: {

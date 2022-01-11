@@ -7736,7 +7736,7 @@ msgstr ""
 msgid "ClusterAgents|To delete the agent, type %{name} to confirm:"
 msgstr ""
 
-msgid "ClusterAgents|To install a new agent, first add the agent's configuration file to this repository. %{linkStart}What's the agent's configuration file?%{linkEnd}"
+msgid "ClusterAgents|To install a new agent, first add the agent's configuration file to this repository. %{linkStart}Learn more about installing GitLab Agent.%{linkEnd}"
 msgstr ""
 
 msgid "ClusterAgents|Token created by %{userName}"
@@ -36576,6 +36576,9 @@ msgid "This service allows users to perform common operations on this project by
 msgstr ""
 
 msgid "This setting can be overridden in each project."
+msgstr ""
+
+msgid "This setting is allowed for forked projects only"
 msgstr ""
 
 msgid "This subscription is for"

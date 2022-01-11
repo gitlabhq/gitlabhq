@@ -13,6 +13,7 @@ import * as Sentry from '@sentry/browser';
 import api from '~/api';
 import { sprintf, s__, __ } from '~/locale';
 import SmartVirtualList from '~/vue_shared/components/smart_virtual_list.vue';
+import Poll from '~/lib/utils/poll';
 import { EXTENSION_ICON_CLASS, EXTENSION_ICONS } from '../../constants';
 import StatusIcon from './status_icon.vue';
 import Actions from './actions.vue';
@@ -132,19 +133,50 @@ export default {
 
       this.triggerRedisTracking();
     },
+    initExtensionPolling() {
+      const poll = new Poll({
+        resource: {
+          fetchData: () => this.fetchCollapsedData(this.$props),
+        },
+        method: 'fetchData',
+        successCallback: (data) => {
+          if (Object.keys(data).length > 0) {
+            poll.stop();
+            this.setCollapsedData(data);
+          }
+        },
+        errorCallback: (e) => {
+          poll.stop();
+
+          this.setCollapsedError(e);
+        },
+      });
+
+      poll.makeRequest();
+    },
     loadCollapsedData() {
       this.loadingState = LOADING_STATES.collapsedLoading;
 
-      this.fetchCollapsedData(this.$props)
-        .then((data) => {
-          this.collapsedData = data;
-          this.loadingState = null;
-        })
-        .catch((e) => {
-          this.loadingState = LOADING_STATES.collapsedError;
+      if (this.$options.enablePolling) {
+        this.initExtensionPolling();
+      } else {
+        this.fetchCollapsedData(this.$props)
+          .then((data) => {
+            this.setCollapsedData(data);
+          })
+          .catch((e) => {
+            this.setCollapsedError(e);
+          });
+      }
+    },
+    setCollapsedData(data) {
+      this.collapsedData = data;
+      this.loadingState = null;
+    },
+    setCollapsedError(e) {
+      this.loadingState = LOADING_STATES.collapsedError;
 
-          Sentry.captureException(e);
-        });
+      Sentry.captureException(e);
     },
     loadAllData() {
       if (this.hasFullData) return;

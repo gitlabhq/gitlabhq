@@ -23,7 +23,7 @@ exports[`ConanInstallation renders all the messages 1`] = `
    
   <code-instruction-stub
     copytext="Copy Conan Setup Command"
-    instruction="conan remote add gitlab conanPath"
+    instruction="conan remote add gitlab http://gdk.test:3000/api/v4/projects/1/packages/conan"
     label="Add Conan Remote"
     trackingaction="copy_conan_setup_command"
     trackinglabel="code_instruction"

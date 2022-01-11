@@ -4,7 +4,7 @@ group: none
 info: "See the Technical Writers assigned to Development Guidelines: https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments-to-development-guidelines"
 ---
 
-# Deprecated features
+# Deprecations by milestone
 
 DISCLAIMER:
 This page contains information related to upcoming products, features, and functionality.
@@ -38,13 +38,12 @@ For deprecation reviewers (Technical Writers only):
 <% if milestones.any? -%>
   <%- milestones.each do |milestone| %>
 ## <%= milestone %>
-    <%- deprecations.select{|d| d["removal_milestone"] == milestone}.each do |deprecation| %>
+    <%- entries.select{|d| d["announcement_milestone"] == milestone}.each do |deprecation| %>
 ### <%= deprecation["name"]%>
 
 <%= deprecation["body"] -%>
 
-Announced: <%= deprecation["announcement_date"]%>
-Planned removal: <%= deprecation["removal_date"]%>
+Planned removal milestone: <%= deprecation["removal_milestone"]%> (<%= deprecation["removal_date"]%>)
     <%- end -%>
   <%- end -%>
 <%- else -%>

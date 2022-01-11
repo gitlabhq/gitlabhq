@@ -30,8 +30,6 @@ describe('MavenInstallation', () => {
     metadata: mavenMetadata(),
   };
 
-  const mavenPath = 'mavenPath';
-
   const xmlCodeBlock = `<dependency>
   <groupId>appGroup</groupId>
   <artifactId>appName</artifactId>
@@ -41,27 +39,27 @@ describe('MavenInstallation', () => {
   const mavenSetupXml = `<repositories>
   <repository>
     <id>gitlab-maven</id>
-    <url>${mavenPath}</url>
+    <url>${packageEntity.mavenUrl}</url>
   </repository>
 </repositories>
 
 <distributionManagement>
   <repository>
     <id>gitlab-maven</id>
-    <url>${mavenPath}</url>
+    <url>${packageEntity.mavenUrl}</url>
   </repository>
 
   <snapshotRepository>
     <id>gitlab-maven</id>
-    <url>${mavenPath}</url>
+    <url>${packageEntity.mavenUrl}</url>
   </snapshotRepository>
 </distributionManagement>`;
   const gradleGroovyInstallCommandText = `implementation 'appGroup:appName:appVersion'`;
   const gradleGroovyAddSourceCommandText = `maven {
-  url '${mavenPath}'
+  url '${packageEntity.mavenUrl}'
 }`;
   const gradleKotlinInstallCommandText = `implementation("appGroup:appName:appVersion")`;
-  const gradleKotlinAddSourceCommandText = `maven("${mavenPath}")`;
+  const gradleKotlinAddSourceCommandText = `maven("${packageEntity.mavenUrl}")`;
 
   const findCodeInstructions = () => wrapper.findAllComponents(CodeInstructions);
   const findInstallationTitle = () => wrapper.findComponent(InstallationTitle);
@@ -69,9 +67,6 @@ describe('MavenInstallation', () => {
 
   function createComponent({ data = {} } = {}) {
     wrapper = shallowMountExtended(MavenInstallation, {
-      provide: {
-        mavenPath,
-      },
       propsData: {
         packageEntity,
       },

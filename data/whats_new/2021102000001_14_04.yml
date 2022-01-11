@@ -48,7 +48,7 @@
   release: 14.4
 - title: Integrated error tracking inside GitLab without a Sentry instance
   body: |
-     Prior to GitLab 14.4, you could integrate with Sentry Error Tracking by supplying an endpoint for a Sentry backend (either self-deployed or in their cloud service). With Gitlab 14.4, you now have access to a Sentry-compatible backend built into your GitLab instance. This allows you to quickly instrument your apps so your errors show up directly in GitLab without the need for a separate Sentry instance.
+     Prior to GitLab 14.4, you could integrate with Sentry Error Tracking by supplying an endpoint for a Sentry backend (either self-deployed or in their cloud service). With GitLab 14.4, you now have access to a Sentry-compatible backend built into your GitLab instance. This allows you to quickly instrument your apps so your errors show up directly in GitLab without the need for a separate Sentry instance.
   stage: Manage
   self-managed: true
   gitlab-com: true

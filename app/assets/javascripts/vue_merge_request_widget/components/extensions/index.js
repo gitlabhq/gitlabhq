@@ -13,6 +13,7 @@ export const registerExtension = (extension) => {
     props: extension.props,
     i18n: extension.i18n,
     expandEvent: extension.expandEvent,
+    enablePolling: extension.enablePolling,
     computed: {
       ...Object.keys(extension.computed).reduce(
         (acc, computedKey) => ({

@@ -57,6 +57,7 @@ results. On failure, the analyzer outputs an
 - [GitLab Runner](../../../ci/runners/index.md) available, with the
 [`docker` executor](https://docs.gitlab.com/runner/executors/docker.html).
 - Target application deployed. For more details, read [Deployment options](#deployment-options).
+- GitLab CI/CD pipeline must include the `test` stage, which is available unless overridden with the [`stages`](../../../ci/yaml/index.md#stages) keyword.
 
 ### Deployment options
 

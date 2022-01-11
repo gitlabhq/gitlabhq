@@ -1,0 +1,21 @@
+-# This template is used when rendering diffs in email notifications
+-# Called inside: app/views/notify/repository_push_email.html.haml
+-#                app/views/notify/_note_email.html.haml
+
+%tr.line_holder{ class: line.type }
+  - case line.type
+  - when 'match'
+    = diff_match_line line.old_pos, line.new_pos, text: line.text
+  - when 'old-nonewline', 'new-nonewline'
+    %td.old_line.diff-line-num
+    %td.new_line.diff-line-num
+    %td.line_content.match= line.text
+  - else
+    %td.old_line.diff-line-num{ class: line.type, data: { linenumber: line.old_pos } }
+      = diff_link_number(line.type, "new", line.old_pos)
+
+    %td.new_line.diff-line-num{ class: line.type, data: { linenumber: line.new_pos } }
+      = diff_link_number(line.type, "old", line.new_pos)
+
+    %td.line_content{ class: line.type }<
+      %pre= line.rich_text

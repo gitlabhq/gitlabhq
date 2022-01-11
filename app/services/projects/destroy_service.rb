@@ -41,6 +41,8 @@ module Projects
 
       true
     rescue StandardError => error
+      context = Gitlab::ApplicationContext.current.merge(project_id: project.id)
+      Gitlab::ErrorTracking.track_exception(error, **context)
       attempt_rollback(project, error.message)
       false
     rescue Exception => error # rubocop:disable Lint/RescueException

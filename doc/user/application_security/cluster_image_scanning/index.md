@@ -52,6 +52,7 @@ To enable cluster image scanning in your pipeline, you need the following:
 - The configuration for accessing your Kubernetes cluster stored in the `CIS_KUBECONFIG`
   [configuration variable](#cicd-variables-for-cluster-image-scanning)
   with the type set to `File` (see [Configuring the cluster](#configuring-the-cluster)).
+- GitLab CI/CD pipeline must include the `test` stage, which is available unless overridden with the [`stages`](../../../ci/yaml/index.md#stages) keyword.
 
 ### Configuring the cluster
 

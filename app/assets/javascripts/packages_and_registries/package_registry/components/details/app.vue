@@ -68,15 +68,7 @@ export default {
     GlModal: GlModalDirective,
   },
   mixins: [Tracking.mixin()],
-  inject: [
-    'packageId',
-    'projectName',
-    'canDelete',
-    'svgPath',
-    'npmPath',
-    'projectListUrl',
-    'groupListUrl',
-  ],
+  inject: ['packageId', 'svgPath', 'projectListUrl', 'groupListUrl'],
   trackingActions: {
     DELETE_PACKAGE_TRACKING_ACTION,
     REQUEST_DELETE_PACKAGE_TRACKING_ACTION,
@@ -99,7 +91,7 @@ export default {
         return this.queryVariables;
       },
       update(data) {
-        return data.package;
+        return data.package || {};
       },
       error(error) {
         createFlash({
@@ -111,19 +103,22 @@ export default {
     },
   },
   computed: {
+    projectName() {
+      return this.packageEntity.project?.name;
+    },
     queryVariables() {
       return {
         id: convertToGraphQLId('Packages::Package', this.packageId),
       };
     },
     packageFiles() {
-      return this.packageEntity?.packageFiles?.nodes;
+      return this.packageEntity.packageFiles?.nodes;
     },
     isLoading() {
       return this.$apollo.queries.packageEntity.loading;
     },
     isValidPackage() {
-      return this.isLoading || Boolean(this.packageEntity?.name);
+      return this.isLoading || Boolean(this.packageEntity.name);
     },
     tracking() {
       return {
@@ -140,7 +135,7 @@ export default {
       return this.packageEntity.packageType === PACKAGE_TYPE_NUGET;
     },
     showFiles() {
-      return this.packageEntity?.packageType !== PACKAGE_TYPE_COMPOSER;
+      return this.packageEntity.packageType !== PACKAGE_TYPE_COMPOSER;
     },
   },
   methods: {
@@ -240,7 +235,7 @@ export default {
     <package-title :package-entity="packageEntity">
       <template #delete-button>
         <gl-button
-          v-if="canDelete"
+          v-if="packageEntity.canDestroy"
           v-gl-modal="'delete-modal'"
           variant="danger"
           category="primary"
@@ -264,6 +259,7 @@ export default {
 
         <package-files
           v-if="showFiles"
+          :can-delete="packageEntity.canDestroy"
           :package-files="packageFiles"
           @download-file="track($options.trackingActions.PULL_PACKAGE)"
           @delete-file="handleFileDelete"

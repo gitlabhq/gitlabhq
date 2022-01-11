@@ -486,6 +486,16 @@ RSpec.describe Gitlab::Git::Commit, :seed_helper do
           expect(commits.first.sha).to eq(SeedRepo::Commit::ID)
           expect(commits.second.sha).to eq(SeedRepo::FirstCommit::ID)
         end
+
+        context 'when repo does not exist' do
+          let(:no_repository) { Gitlab::Git::Repository.new('default', '@does-not-exist/project', '', 'bogus/project') }
+
+          it 'returns empty commits' do
+            commits = described_class.batch_by_oid(no_repository, oids)
+
+            expect(commits.count).to eq(0)
+          end
+        end
       end
 
       context 'when oids is empty' do

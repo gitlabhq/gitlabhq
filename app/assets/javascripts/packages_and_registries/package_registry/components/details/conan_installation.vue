@@ -18,7 +18,6 @@ export default {
     GlLink,
     GlSprintf,
   },
-  inject: ['conanPath'],
   props: {
     packageEntity: {
       type: Object,
@@ -32,7 +31,7 @@ export default {
     },
     conanSetupCommand() {
       // eslint-disable-next-line @gitlab/require-i18n-strings
-      return `conan remote add gitlab ${this.conanPath}`;
+      return `conan remote add gitlab ${this.packageEntity.conanUrl}`;
     },
   },
   i18n: {

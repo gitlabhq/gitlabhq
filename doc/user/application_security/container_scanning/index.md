@@ -62,6 +62,7 @@ To enable container scanning in your pipeline, you need the following:
 - If you're using a third-party container registry, you might need to provide authentication
   credentials through the `DOCKER_USER` and `DOCKER_PASSWORD` [configuration variables](#available-cicd-variables).
   For more details on how to use these variables, see [authenticate to a remote registry](#authenticate-to-a-remote-registry).
+- GitLab CI/CD pipeline must include the `test` stage, which is available unless overridden with the [`stages`](../../../ci/yaml/index.md#stages) keyword.
 
 ## Configuration
 

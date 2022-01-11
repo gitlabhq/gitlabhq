@@ -4,7 +4,13 @@ group: Monitor
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Monitoring NGINX Ingress Controller **(FREE)**
+# Monitoring NGINX Ingress Controller (DEPRECATED) **(FREE)**
+
+> [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/346541) in GitLab 14.7.
+
+WARNING:
+This feature is in its end-of-life process. It is [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/346541)
+for use in GitLab 14.7, and is planned for removal in GitLab 15.0.
 
 GitLab has support for automatically detecting and monitoring the Kubernetes NGINX Ingress controller. This is provided by leveraging the built-in Prometheus metrics included with Kubernetes NGINX Ingress controller [version 0.16.0](https://github.com/kubernetes/ingress-nginx/blob/master/Changelog.md#0160) onward.
 

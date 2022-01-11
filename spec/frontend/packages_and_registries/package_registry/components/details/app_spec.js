@@ -49,9 +49,6 @@ describe('PackagesApp', () => {
 
   const provide = {
     packageId: '111',
-    titleComponent: 'PackageTitle',
-    projectName: 'projectName',
-    canDelete: 'canDelete',
     svgPath: 'svgPath',
     npmPath: 'npmPath',
     npmHelpPath: 'npmHelpPath',
@@ -149,7 +146,7 @@ describe('PackagesApp', () => {
     expect(findPackageHistory().exists()).toBe(true);
     expect(findPackageHistory().props()).toMatchObject({
       packageEntity: expect.objectContaining(packageData()),
-      projectName: provide.projectName,
+      projectName: packageDetailsQuery().data.package.project.name,
     });
   });
 
@@ -177,7 +174,7 @@ describe('PackagesApp', () => {
 
   describe('delete package', () => {
     const originalReferrer = document.referrer;
-    const setReferrer = (value = provide.projectName) => {
+    const setReferrer = (value = packageDetailsQuery().data.package.project.name) => {
       Object.defineProperty(document, 'referrer', {
         value,
         configurable: true,
@@ -244,6 +241,7 @@ describe('PackagesApp', () => {
       expect(findPackageFiles().exists()).toBe(true);
 
       expect(findPackageFiles().props('packageFiles')[0]).toMatchObject(expectedFile);
+      expect(findPackageFiles().props('canDelete')).toBe(packageData().canDestroy);
     });
 
     it('does not render the package files table when the package is composer', async () => {

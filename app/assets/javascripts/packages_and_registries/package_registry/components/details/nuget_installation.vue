@@ -18,7 +18,6 @@ export default {
     GlLink,
     GlSprintf,
   },
-  inject: ['nugetPath'],
   props: {
     packageEntity: {
       type: Object,
@@ -30,7 +29,7 @@ export default {
       return `nuget install ${this.packageEntity.name} -Source "GitLab"`;
     },
     nugetSetupCommand() {
-      return `nuget source Add -Name "GitLab" -Source "${this.nugetPath}" -UserName <your_username> -Password <your_token>`;
+      return `nuget source Add -Name "GitLab" -Source "${this.packageEntity.nugetUrl}" -UserName <your_username> -Password <your_token>`;
     },
   },
   tracking: {

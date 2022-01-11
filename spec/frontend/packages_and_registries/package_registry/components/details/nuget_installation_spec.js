@@ -17,8 +17,7 @@ describe('NugetInstallation', () => {
   let wrapper;
 
   const nugetInstallationCommandStr = 'nuget install @gitlab-org/package-15 -Source "GitLab"';
-  const nugetSetupCommandStr =
-    'nuget source Add -Name "GitLab" -Source "nugetPath" -UserName <your_username> -Password <your_token>';
+  const nugetSetupCommandStr = `nuget source Add -Name "GitLab" -Source "${packageEntity.nugetUrl}" -UserName <your_username> -Password <your_token>`;
 
   const findCodeInstructions = () => wrapper.findAllComponents(CodeInstructions);
   const findInstallationTitle = () => wrapper.findComponent(InstallationTitle);
@@ -26,9 +25,6 @@ describe('NugetInstallation', () => {
 
   function createComponent() {
     wrapper = shallowMountExtended(NugetInstallation, {
-      provide: {
-        nugetPath: 'nugetPath',
-      },
       propsData: {
         packageEntity,
       },

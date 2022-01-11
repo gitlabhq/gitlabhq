@@ -26,7 +26,7 @@ export default {
     GlSprintf,
     GlFormRadioGroup,
   },
-  inject: ['npmPath', 'npmProjectPath'],
+  inject: ['npmPath'],
   props: {
     packageEntity: {
       type: Object,
@@ -66,7 +66,7 @@ export default {
     npmSetupCommand(type, endpointType) {
       const scope = this.packageEntity.name.substring(0, this.packageEntity.name.indexOf('/'));
       const npmPathForEndpoint =
-        endpointType === INSTANCE_PACKAGE_ENDPOINT_TYPE ? this.npmPath : this.npmProjectPath;
+        endpointType === INSTANCE_PACKAGE_ENDPOINT_TYPE ? this.npmPath : this.packageEntity.npmUrl;
 
       if (type === NPM_PACKAGE_MANAGER) {
         return `echo ${scope}:registry=${npmPathForEndpoint}/ >> .npmrc`;

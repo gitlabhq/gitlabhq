@@ -1,10 +1,10 @@
 import { __, n__, s__, sprintf } from '~/locale';
 import axios from '~/lib/utils/axios_utils';
-import Poll from '~/lib/utils/poll';
 import { EXTENSION_ICONS } from '../../constants';
 
 export default {
   name: 'WidgetTerraform',
+  enablePolling: true,
   i18n: {
     label: s__('Terraform|Terraform reports'),
     loading: s__('Terraform|Loading Terraform reports...'),
@@ -81,34 +81,17 @@ export default {
     },
     // Custom methods
     fetchPlans() {
-      return new Promise((resolve) => {
-        const poll = new Poll({
-          resource: {
-            fetchPlans: () => axios.get(this.terraformReportsPath),
-          },
-          data: this.terraformReportsPath,
-          method: 'fetchPlans',
-          successCallback: ({ data }) => {
-            if (Object.keys(data).length > 0) {
-              poll.stop();
-
-              const result = Object.keys(data).map((key) => {
-                return data[key];
-              });
-
-              resolve(result);
-            }
-          },
-          errorCallback: () => {
-            const invalidData = { tf_report_error: 'api_error' };
-            poll.stop();
-            const result = [invalidData];
-            resolve(result);
-          },
+      return axios
+        .get(this.terraformReportsPath)
+        .then(({ data }) => {
+          return Object.keys(data).map((key) => {
+            return data[key];
+          });
+        })
+        .catch(() => {
+          const invalidData = { tf_report_error: 'api_error' };
+          return [invalidData];
         });
-
-        poll.makeRequest();
-      });
     },
     createReportRow(report, iconName) {
       const addNum = Number(report.create);

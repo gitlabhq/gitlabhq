@@ -7,9 +7,19 @@ query getPackageDetails($id: ID!) {
     createdAt
     updatedAt
     status
+    canDestroy
+    npmUrl
+    mavenUrl
+    conanUrl
+    nugetUrl
+    pypiUrl
+    pypiSetupUrl
+    composerUrl
+    composerConfigRepositoryUrl
     project {
       id
       path
+      name
     }
     tags(first: 10) {
       nodes {

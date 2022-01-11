@@ -10,7 +10,7 @@ exports[`PypiInstallation renders all the messages 1`] = `
   <code-instruction-stub
     copytext="Copy Pip command"
     data-testid="pip-command"
-    instruction="pip install @gitlab-org/package-15 --extra-index-url pypiPath"
+    instruction="pip install @gitlab-org/package-15 --extra-index-url http://__token__:<your_personal_token>@gdk.test:3000/api/v4/projects/1/packages/pypi/simple"
     label="Pip Command"
     trackingaction="copy_pip_install_command"
     trackinglabel="code_instruction"
@@ -34,7 +34,7 @@ exports[`PypiInstallation renders all the messages 1`] = `
     copytext="Copy .pypirc content"
     data-testid="pypi-setup-content"
     instruction="[gitlab]
-repository = pypiSetupPath
+repository = http://gdk.test:3000/api/v4/projects/1/packages/pypi
 username = __token__
 password = <your personal access token>"
     label=""

@@ -9,6 +9,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 import { securityReportMergeRequestDownloadPathsQueryResponse } from 'jest/vue_shared/security_reports/mock_data';
 import api from '~/api';
 import axios from '~/lib/utils/axios_utils';
+import Poll from '~/lib/utils/poll';
 import { setFaviconOverlay } from '~/lib/utils/favicon';
 import notify from '~/lib/utils/notify';
 import SmartInterval from '~/smart_interval';
@@ -28,6 +29,8 @@ import {
   workingExtension,
   collapsedDataErrorExtension,
   fullDataErrorExtension,
+  pollingExtension,
+  pollingErrorExtension,
 } from './test_extensions';
 
 jest.mock('~/api.js');
@@ -897,13 +900,19 @@ describe('MrWidgetOptions', () => {
   });
 
   describe('mock extension', () => {
+    let pollRequest;
+
     beforeEach(() => {
+      pollRequest = jest.spyOn(Poll.prototype, 'makeRequest');
+
       registerExtension(workingExtension);
 
       createComponent();
     });
 
     afterEach(() => {
+      pollRequest.mockRestore();
+
       registeredExtensions.extensions = [];
     });
 
@@ -956,6 +965,66 @@ describe('MrWidgetOptions', () => {
 
       expect(collapsedSection.find(GlButton).exists()).toBe(true);
       expect(collapsedSection.find(GlButton).text()).toBe('Full report');
+    });
+
+    it('extension polling is not called if enablePolling flag is not passed', () => {
+      // called one time due to parent component polling (mount)
+      expect(pollRequest).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('mock polling extension', () => {
+    let pollRequest;
+    let pollStop;
+
+    beforeEach(() => {
+      pollRequest = jest.spyOn(Poll.prototype, 'makeRequest');
+      pollStop = jest.spyOn(Poll.prototype, 'stop');
+    });
+
+    afterEach(() => {
+      pollRequest.mockRestore();
+      pollStop.mockRestore();
+
+      registeredExtensions.extensions = [];
+    });
+
+    describe('success', () => {
+      beforeEach(() => {
+        registerExtension(pollingExtension);
+
+        createComponent();
+      });
+
+      it('does not make additional requests after poll is successful', () => {
+        // called two times due to parent component polling (mount) and extension polling
+        expect(pollRequest).toHaveBeenCalledTimes(2);
+        expect(pollStop).toHaveBeenCalledTimes(1);
+      });
+    });
+
+    describe('error', () => {
+      let captureException;
+
+      beforeEach(() => {
+        captureException = jest.spyOn(Sentry, 'captureException');
+
+        registerExtension(pollingErrorExtension);
+
+        createComponent();
+      });
+
+      it('does not make additional requests after poll has failed', () => {
+        // called two times due to parent component polling (mount) and extension polling
+        expect(pollRequest).toHaveBeenCalledTimes(2);
+        expect(pollStop).toHaveBeenCalledTimes(1);
+      });
+
+      it('captures sentry error and displays error when poll has failed', () => {
+        expect(captureException).toHaveBeenCalledTimes(1);
+        expect(captureException).toHaveBeenCalledWith(new Error('Fetch error'));
+        expect(wrapper.findComponent(StatusIcon).props('iconName')).toBe('error');
+      });
     });
   });
 

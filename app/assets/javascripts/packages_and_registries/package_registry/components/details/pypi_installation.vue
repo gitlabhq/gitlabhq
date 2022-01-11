@@ -19,7 +19,6 @@ export default {
     GlLink,
     GlSprintf,
   },
-  inject: ['pypiPath', 'pypiSetupPath'],
   props: {
     packageEntity: {
       type: Object,
@@ -29,11 +28,11 @@ export default {
   computed: {
     pypiPipCommand() {
       // eslint-disable-next-line @gitlab/require-i18n-strings
-      return `pip install ${this.packageEntity.name} --extra-index-url ${this.pypiPath}`;
+      return `pip install ${this.packageEntity.name} --extra-index-url ${this.packageEntity.pypiUrl}`;
     },
     pypiSetupCommand() {
       return `[gitlab]
-repository = ${this.pypiSetupPath}
+repository = ${this.packageEntity.pypiSetupUrl}
 username = __token__
 password = <your personal access token>`;
     },

@@ -36,7 +36,6 @@ describe('NpmInstallation', () => {
     wrapper = shallowMountExtended(NpmInstallation, {
       provide: {
         npmPath: 'npmPath',
-        npmProjectPath: 'npmProjectPath',
       },
       propsData: {
         packageEntity,
@@ -130,7 +129,7 @@ describe('NpmInstallation', () => {
       await nextTick();
 
       expect(findCodeInstructions().at(1).props()).toMatchObject({
-        instruction: `echo @gitlab-org:registry=npmProjectPath/ >> .npmrc`,
+        instruction: `echo @gitlab-org:registry=${packageEntity.npmUrl}/ >> .npmrc`,
         multiline: false,
         trackingAction: TRACKING_ACTION_COPY_NPM_SETUP_COMMAND,
       });
@@ -174,7 +173,7 @@ describe('NpmInstallation', () => {
       await nextTick();
 
       expect(findCodeInstructions().at(1).props()).toMatchObject({
-        instruction: `echo \\"@gitlab-org:registry\\" \\"npmProjectPath/\\" >> .yarnrc`,
+        instruction: `echo \\"@gitlab-org:registry\\" \\"${packageEntity.npmUrl}/\\" >> .yarnrc`,
         multiline: false,
         trackingAction: TRACKING_ACTION_COPY_YARN_SETUP_COMMAND,
       });

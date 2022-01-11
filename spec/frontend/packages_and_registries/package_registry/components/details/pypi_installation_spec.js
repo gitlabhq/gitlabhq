@@ -15,9 +15,9 @@ const packageEntity = { ...packageData(), packageType: PACKAGE_TYPE_PYPI };
 describe('PypiInstallation', () => {
   let wrapper;
 
-  const pipCommandStr = 'pip install @gitlab-org/package-15 --extra-index-url pypiPath';
+  const pipCommandStr = `pip install @gitlab-org/package-15 --extra-index-url ${packageEntity.pypiUrl}`;
   const pypiSetupStr = `[gitlab]
-repository = pypiSetupPath
+repository = ${packageEntity.pypiSetupUrl}
 username = __token__
 password = <your personal access token>`;
 
@@ -29,10 +29,6 @@ password = <your personal access token>`;
 
   function createComponent() {
     wrapper = shallowMountExtended(PypiInstallation, {
-      provide: {
-        pypiPath: 'pypiPath',
-        pypiSetupPath: 'pypiSetupPath',
-      },
       propsData: {
         packageEntity,
       },

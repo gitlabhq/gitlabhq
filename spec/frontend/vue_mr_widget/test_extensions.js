@@ -97,3 +97,13 @@ export const fullDataErrorExtension = {
     },
   },
 };
+
+export const pollingExtension = {
+  ...workingExtension,
+  enablePolling: true,
+};
+
+export const pollingErrorExtension = {
+  ...collapsedDataErrorExtension,
+  enablePolling: true,
+};

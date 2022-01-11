@@ -31,6 +31,9 @@ module Gitlab
             oids.map { |oid| rugged_find(repo, oid) }
               .compact
               .map { |commit| decorate(repo, commit) }
+          # Match Gitaly's list_commits_by_oid behavior
+          rescue ::Gitlab::Git::Repository::NoRepository
+            []
           end
 
           override :find_commit

@@ -149,6 +149,7 @@ gem 'aws-sdk-core', '~> 3'
 gem 'aws-sdk-cloudformation', '~> 1'
 gem 'aws-sdk-s3', '~> 1'
 gem 'faraday_middleware-aws-sigv4', '~>0.3.0'
+gem 'typhoeus', '~> 1.4.0' # Used with Elasticsearch to support http keep-alive connections
 
 # Markdown and HTML processing
 gem 'html-pipeline', '~> 2.13.2'

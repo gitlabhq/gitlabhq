@@ -74,7 +74,7 @@
             - blob = diff_file.blob
             - if blob && blob.readable_text?
               %table.code.white
-                = render partial: "projects/diffs/line", collection: diff_file.highlighted_diff_lines, as: :line, locals: { diff_file: diff_file, plain: true, email: true }
+                = render partial: "projects/diffs/email_line", collection: diff_file.highlighted_diff_lines, as: :line, locals: { diff_file: diff_file }
             - else
               No preview for this file type
           %br

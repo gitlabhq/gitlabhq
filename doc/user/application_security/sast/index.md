@@ -61,6 +61,8 @@ WARNING:
 If you use your own runners, make sure the Docker version installed
 is **not** `19.03.0`. See [troubleshooting information](#error-response-from-daemon-error-processing-tar-file-docker-tar-relocation-error) for details.
 
+GitLab CI/CD pipeline must include the `test` stage, which is available unless overridden with the [`stages`](../../../ci/yaml/index.md#stages) keyword.
+
 ## Supported languages and frameworks
 
 GitLab SAST supports a variety of languages, package managers, and frameworks. Our SAST security scanners also feature automatic language detection which works even for mixed-language projects. If any supported language is detected in project source code we automatically run the appropriate SAST analyzers.

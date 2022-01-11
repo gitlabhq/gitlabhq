@@ -78,6 +78,11 @@ RSpec.describe Projects::DestroyService, :aggregate_failures do
       end.not_to raise_error
     end
 
+    it 'reports the error' do
+      expect(Gitlab::ErrorTracking).to receive(:track_exception).and_call_original
+      destroy_project(project, user, {})
+    end
+
     it 'unmarks the project as "pending deletion"' do
       destroy_project(project, user, {})
 

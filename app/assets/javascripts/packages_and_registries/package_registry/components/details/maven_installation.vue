@@ -24,7 +24,6 @@ export default {
     GlLink,
     GlSprintf,
   },
-  inject: ['mavenPath'],
   props: {
     packageEntity: {
       type: Object,
@@ -37,6 +36,9 @@ export default {
     };
   },
   computed: {
+    mavenUrl() {
+      return this.packageEntity.mavenUrl;
+    },
     appGroup() {
       return this.packageEntity.metadata.appGroup;
     },
@@ -62,19 +64,19 @@ export default {
       return `<repositories>
   <repository>
     <id>gitlab-maven</id>
-    <url>${this.mavenPath}</url>
+    <url>${this.mavenUrl}</url>
   </repository>
 </repositories>
 
 <distributionManagement>
   <repository>
     <id>gitlab-maven</id>
-    <url>${this.mavenPath}</url>
+    <url>${this.mavenUrl}</url>
   </repository>
 
   <snapshotRepository>
     <id>gitlab-maven</id>
-    <url>${this.mavenPath}</url>
+    <url>${this.mavenUrl}</url>
   </snapshotRepository>
 </distributionManagement>`;
     },
@@ -87,7 +89,7 @@ export default {
     gradleGroovyAddSourceCommand() {
       // eslint-disable-next-line @gitlab/require-i18n-strings
       return `maven {
-  url '${this.mavenPath}'
+  url '${this.mavenUrl}'
 }`;
     },
 
@@ -96,7 +98,7 @@ export default {
     },
 
     gradleKotlinAddSourceCommand() {
-      return `maven("${this.mavenPath}")`;
+      return `maven("${this.mavenUrl}")`;
     },
     showMaven() {
       return this.instructionType === 'maven';

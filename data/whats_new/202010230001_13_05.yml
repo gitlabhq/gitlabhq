@@ -5,7 +5,7 @@
 
     Despite this popularity, teams have struggled with the limitation that wikis were only available at the project level. Teams working on multiple projects needed to create separate wikis for each repository, leading to a fragmented experience.
 
-    In Gitlab 13.5, we are so excited to bring you group wikis! With [680 upvotes](https://gitlab.com/gitlab-org/gitlab/-/issues/13195) this was the most upvoted feature in the entire GitLab backlog. While highly requested, making a large project-only feature like wikis available at the group level has been a non-trivial operation.
+    In GitLab 13.5, we are so excited to bring you group wikis! With [680 upvotes](https://gitlab.com/gitlab-org/gitlab/-/issues/13195) this was the most upvoted feature in the entire GitLab backlog. While highly requested, making a large project-only feature like wikis available at the group level has been a non-trivial operation.
 
     We know a lot of folks have been looking forward to this feature and shared their input pre-release. We hope all of you will continue to weigh in now that group wikis are available and we’ve opened up a [dedicated issue](https://gitlab.com/gitlab-org/gitlab/-/issues/267593) for your feedback.
   stage: Create
