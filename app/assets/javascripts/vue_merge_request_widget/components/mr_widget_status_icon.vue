@@ -1,5 +1,6 @@
 <script>
 import { GlButton, GlLoadingIcon } from '@gitlab/ui';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import ciIcon from '../../vue_shared/components/ci_icon.vue';
 
 export default {
@@ -8,6 +9,7 @@ export default {
     GlButton,
     GlLoadingIcon,
   },
+  mixins: [glFeatureFlagMixin()],
   props: {
     status: {
       type: String,
@@ -42,7 +44,7 @@ export default {
     </div>
 
     <gl-button
-      v-if="showDisabledButton"
+      v-if="!glFeatures.restructuredMrWidget && showDisabledButton"
       category="primary"
       variant="success"
       data-testid="disabled-merge-button"

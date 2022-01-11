@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Backup::GitalyBackup do
-  let(:parallel) { nil }
-  let(:parallel_storage) { nil }
+  let(:max_parallelism) { nil }
+  let(:storage_parallelism) { nil }
 
   let(:progress) do
     Tempfile.new('progress').tap do |progress|
@@ -23,7 +23,7 @@ RSpec.describe Backup::GitalyBackup do
     progress.close
   end
 
-  subject { described_class.new(progress, parallel: parallel, parallel_storage: parallel_storage) }
+  subject { described_class.new(progress, max_parallelism: max_parallelism, storage_parallelism: storage_parallelism) }
 
   context 'unknown' do
     it 'fails to start unknown' do
@@ -48,7 +48,7 @@ RSpec.describe Backup::GitalyBackup do
         subject.enqueue(project, Gitlab::GlRepository::DESIGN)
         subject.enqueue(personal_snippet, Gitlab::GlRepository::SNIPPET)
         subject.enqueue(project_snippet, Gitlab::GlRepository::SNIPPET)
-        subject.wait
+        subject.finish!
 
         expect(File).to exist(File.join(Gitlab.config.backup.path, 'repositories', project.disk_path + '.bundle'))
         expect(File).to exist(File.join(Gitlab.config.backup.path, 'repositories', project.disk_path + '.wiki.bundle'))
@@ -58,24 +58,24 @@ RSpec.describe Backup::GitalyBackup do
       end
 
       context 'parallel option set' do
-        let(:parallel) { 3 }
+        let(:max_parallelism) { 3 }
 
         it 'passes parallel option through' do
           expect(Open3).to receive(:popen2).with(expected_env, anything, 'create', '-path', anything, '-parallel', '3').and_call_original
 
           subject.start(:create)
-          subject.wait
+          subject.finish!
         end
       end
 
       context 'parallel_storage option set' do
-        let(:parallel_storage) { 3 }
+        let(:storage_parallelism) { 3 }
 
         it 'passes parallel option through' do
           expect(Open3).to receive(:popen2).with(expected_env, anything, 'create', '-path', anything, '-parallel-storage', '3').and_call_original
 
           subject.start(:create)
-          subject.wait
+          subject.finish!
         end
       end
 
@@ -83,7 +83,7 @@ RSpec.describe Backup::GitalyBackup do
         expect(subject).to receive(:bin_path).and_return(Gitlab::Utils.which('false'))
 
         subject.start(:create)
-        expect { subject.wait }.to raise_error(::Backup::Error, 'gitaly-backup exit status 1')
+        expect { subject.finish! }.to raise_error(::Backup::Error, 'gitaly-backup exit status 1')
       end
     end
 
@@ -115,7 +115,7 @@ RSpec.describe Backup::GitalyBackup do
         expect(Open3).to receive(:popen2).with(ssl_env, anything, 'create', '-path', anything).and_call_original
 
         subject.start(:create)
-        subject.wait
+        subject.finish!
       end
     end
   end
@@ -145,7 +145,7 @@ RSpec.describe Backup::GitalyBackup do
       subject.enqueue(project, Gitlab::GlRepository::DESIGN)
       subject.enqueue(personal_snippet, Gitlab::GlRepository::SNIPPET)
       subject.enqueue(project_snippet, Gitlab::GlRepository::SNIPPET)
-      subject.wait
+      subject.finish!
 
       collect_commit_shas = -> (repo) { repo.commits('master', limit: 10).map(&:sha) }
 
@@ -157,24 +157,24 @@ RSpec.describe Backup::GitalyBackup do
     end
 
     context 'parallel option set' do
-      let(:parallel) { 3 }
+      let(:max_parallelism) { 3 }
 
       it 'passes parallel option through' do
         expect(Open3).to receive(:popen2).with(expected_env, anything, 'restore', '-path', anything, '-parallel', '3').and_call_original
 
         subject.start(:restore)
-        subject.wait
+        subject.finish!
       end
     end
 
     context 'parallel_storage option set' do
-      let(:parallel_storage) { 3 }
+      let(:storage_parallelism) { 3 }
 
       it 'passes parallel option through' do
         expect(Open3).to receive(:popen2).with(expected_env, anything, 'restore', '-path', anything, '-parallel-storage', '3').and_call_original
 
         subject.start(:restore)
-        subject.wait
+        subject.finish!
       end
     end
 
@@ -182,7 +182,7 @@ RSpec.describe Backup::GitalyBackup do
       expect(subject).to receive(:bin_path).and_return(Gitlab::Utils.which('false'))
 
       subject.start(:restore)
-      expect { subject.wait }.to raise_error(::Backup::Error, 'gitaly-backup exit status 1')
+      expect { subject.finish! }.to raise_error(::Backup::Error, 'gitaly-backup exit status 1')
     end
   end
 end

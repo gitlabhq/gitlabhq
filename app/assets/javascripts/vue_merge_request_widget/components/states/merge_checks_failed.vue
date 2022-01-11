@@ -1,20 +1,16 @@
 <script>
-import { GlButton } from '@gitlab/ui';
 import { s__ } from '~/locale';
-import notesEventHub from '~/notes/event_hub';
 import StatusIcon from '../mr_widget_status_icon.vue';
 
 export default {
   i18n: {
-    pipelineFailed: s__(
-      'mrWidget|The pipeline for this merge request did not complete. Push a new commit to fix the failure.',
-    ),
     approvalNeeded: s__('mrWidget|Merge blocked: this merge request must be approved.'),
-    unresolvedDiscussions: s__('mrWidget|Merge blocked: all threads must be resolved.'),
+    blockingMergeRequests: s__(
+      'mrWidget|Merge blocked: you can only merge once above items are resolved.',
+    ),
   },
   components: {
     StatusIcon,
-    GlButton,
   },
   props: {
     mr: {
@@ -24,20 +20,13 @@ export default {
   },
   computed: {
     failedText() {
-      if (this.mr.isPipelineFailed) {
-        return this.$options.i18n.pipelineFailed;
-      } else if (this.mr.approvals && !this.mr.isApproved) {
+      if (this.mr.approvals && !this.mr.isApproved) {
         return this.$options.i18n.approvalNeeded;
-      } else if (this.mr.hasMergeableDiscussionsState) {
-        return this.$options.i18n.unresolvedDiscussions;
+      } else if (this.mr.blockingMergeRequests?.total_count > 0) {
+        return this.$options.i18n.blockingMergeRequests;
       }
 
       return null;
-    },
-  },
-  methods: {
-    jumpToFirstUnresolvedDiscussion() {
-      notesEventHub.$emit('jumpToFirstUnresolvedDiscussion');
     },
   },
 };
@@ -48,28 +37,6 @@ export default {
     <status-icon status="warning" />
     <p class="media-body gl-m-0! gl-font-weight-bold gl-text-black-normal!">
       {{ failedText }}
-      <template v-if="failedText == $options.i18n.unresolvedDiscussions">
-        <gl-button
-          class="gl-ml-3"
-          size="small"
-          variant="confirm"
-          data-testid="jumpToUnresolved"
-          @click="jumpToFirstUnresolvedDiscussion"
-        >
-          {{ s__('mrWidget|Jump to first unresolved thread') }}
-        </gl-button>
-        <gl-button
-          v-if="mr.createIssueToResolveDiscussionsPath"
-          :href="mr.createIssueToResolveDiscussionsPath"
-          class="gl-ml-3"
-          size="small"
-          variant="confirm"
-          category="secondary"
-          data-testid="resolveIssue"
-        >
-          {{ s__('mrWidget|Create issue to resolve all threads') }}
-        </gl-button>
-      </template>
     </p>
   </div>
 </template>

@@ -2,6 +2,41 @@
 
 namespace :gitlab do
   namespace :gitaly do
+    desc 'Installs gitaly for running tests within gitlab-development-kit'
+    task :test_install, [:dir, :storage_path, :repo] => :gitlab_environment do |t, args|
+      inside_gdk = Rails.env.test? && File.exist?(Rails.root.join('../GDK_ROOT'))
+
+      if ENV['FORCE_GITALY_INSTALL'] || !inside_gdk
+        Rake::Task["gitlab:gitaly:install"].invoke(*args)
+
+        next
+      end
+
+      gdk_gitaly_dir = ENV.fetch('GDK_GITALY', Rails.root.join('../gitaly'))
+
+      # Our test setup expects a git repo, so clone rather than copy
+      clone_repo(gdk_gitaly_dir, args.dir, clone_opts: %w[--depth 1]) unless Dir.exist?(args.dir)
+
+      # We assume the GDK gitaly already compiled binaries
+      build_dir = File.join(gdk_gitaly_dir, '_build')
+      FileUtils.cp_r(build_dir, args.dir)
+
+      # We assume the GDK gitaly already ran bundle install
+      bundle_dir = File.join(gdk_gitaly_dir, 'ruby', '.bundle')
+      FileUtils.cp_r(bundle_dir, File.join(args.dir, 'ruby'))
+
+      # For completeness we copy this for gitaly's make target
+      ruby_bundle_file = File.join(gdk_gitaly_dir, '.ruby-bundle')
+      FileUtils.cp_r(ruby_bundle_file, args.dir)
+
+      gitaly_binary = File.join(build_dir, 'bin', 'gitaly')
+      warn_gitaly_out_of_date!(gitaly_binary, Gitlab::GitalyClient.expected_server_version)
+    rescue Errno::ENOENT => e
+      puts "Could not copy files, did you run `gdk update`? Error: #{e.message}"
+
+      raise
+    end
+
     desc 'GitLab | Gitaly | Clone and checkout gitaly'
     task :clone, [:dir, :storage_path, :repo] => :gitlab_environment do |t, args|
       warn_user_is_not_gitlab
@@ -24,6 +59,9 @@ Usage: rake "gitlab:gitaly:install[/installation/dir,/storage/path]")
 
       storage_paths = { 'default' => args.storage_path }
       Gitlab::SetupHelper::Gitaly.create_configuration(args.dir, storage_paths)
+
+      # In CI we run scripts/gitaly-test-build
+      next if ENV['CI'].present?
 
       Dir.chdir(args.dir) do
         Bundler.with_original_env do

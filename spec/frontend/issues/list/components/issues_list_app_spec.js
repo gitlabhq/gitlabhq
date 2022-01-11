@@ -5,8 +5,8 @@ import AxiosMockAdapter from 'axios-mock-adapter';
 import { cloneDeep } from 'lodash';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
-import getIssuesQuery from 'ee_else_ce/issues_list/queries/get_issues.query.graphql';
-import getIssuesCountsQuery from 'ee_else_ce/issues_list/queries/get_issues_counts.query.graphql';
+import getIssuesQuery from 'ee_else_ce/issues/list/queries/get_issues.query.graphql';
+import getIssuesCountsQuery from 'ee_else_ce/issues/list/queries/get_issues_counts.query.graphql';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import { TEST_HOST } from 'helpers/test_constants';
@@ -17,15 +17,15 @@ import {
   filteredTokens,
   locationSearch,
   urlParams,
-} from 'jest/issues_list/mock_data';
+} from 'jest/issues/list/mock_data';
 import createFlash, { FLASH_TYPES } from '~/flash';
 import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
 import CsvImportExportButtons from '~/issuable/components/csv_import_export_buttons.vue';
 import IssuableByEmail from '~/issuable/components/issuable_by_email.vue';
 import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_root.vue';
 import { IssuableListTabs, IssuableStates } from '~/vue_shared/issuable/list/constants';
-import IssuesListApp from '~/issues_list/components/issues_list_app.vue';
-import NewIssueDropdown from '~/issues_list/components/new_issue_dropdown.vue';
+import IssuesListApp from '~/issues/list/components/issues_list_app.vue';
+import NewIssueDropdown from '~/issues/list/components/new_issue_dropdown.vue';
 import {
   CREATED_DESC,
   DUE_DATE_OVERDUE,
@@ -41,9 +41,9 @@ import {
   TOKEN_TYPE_RELEASE,
   TOKEN_TYPE_TYPE,
   urlSortParams,
-} from '~/issues_list/constants';
-import eventHub from '~/issues_list/eventhub';
-import { getSortOptions } from '~/issues_list/utils';
+} from '~/issues/list/constants';
+import eventHub from '~/issues/list/eventhub';
+import { getSortOptions } from '~/issues/list/utils';
 import axios from '~/lib/utils/axios_utils';
 import { scrollUp } from '~/lib/utils/scroll_utils';
 import { joinPaths } from '~/lib/utils/url_utility';

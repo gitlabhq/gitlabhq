@@ -7,7 +7,7 @@ import {
   GlSearchBoxByType,
 } from '@gitlab/ui';
 import createFlash from '~/flash';
-import searchProjectsQuery from '~/issues_list/queries/search_projects.query.graphql';
+import searchProjectsQuery from '~/issues/list/queries/search_projects.query.graphql';
 import { DASH_SCOPE, joinPaths } from '~/lib/utils/url_utility';
 import { __, sprintf } from '~/locale';
 import { DEBOUNCE_DELAY } from '~/vue_shared/components/filtered_search_bar/constants';

@@ -2,7 +2,7 @@ import IssuableFilteredSearchTokenKeys from 'ee_else_ce/filtered_search/issuable
 import ShortcutsNavigation from '~/behaviors/shortcuts/shortcuts_navigation';
 import { initCsvImportExportButtons, initIssuableByEmail } from '~/issuable';
 import { initBulkUpdateSidebar, initIssueStatusSelect } from '~/issuable/bulk_update_sidebar';
-import { mountIssuesListApp, mountJiraIssuesListApp } from '~/issues_list';
+import { mountIssuesListApp, mountJiraIssuesListApp } from '~/issues/list';
 import initManualOrdering from '~/issues/manual_ordering';
 import { FILTERED_SEARCH } from '~/filtered_search/constants';
 import { ISSUABLE_INDEX } from '~/issuable/constants';

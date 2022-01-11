@@ -351,7 +351,7 @@ namespace :gitlab do
       if Feature.enabled?(:gitaly_backup, default_enabled: :yaml)
         max_concurrency = ENV['GITLAB_BACKUP_MAX_CONCURRENCY'].presence
         max_storage_concurrency = ENV['GITLAB_BACKUP_MAX_STORAGE_CONCURRENCY'].presence
-        Backup::GitalyBackup.new(progress, parallel: max_concurrency, parallel_storage: max_storage_concurrency)
+        Backup::GitalyBackup.new(progress, max_parallelism: max_concurrency, storage_parallelism: max_storage_concurrency)
       else
         Backup::GitalyRpcBackup.new(progress)
       end

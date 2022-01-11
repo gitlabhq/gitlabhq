@@ -42529,6 +42529,9 @@ msgstr ""
 msgid "mrWidget|Merge blocked: this merge request must be approved."
 msgstr ""
 
+msgid "mrWidget|Merge blocked: you can only merge once above items are resolved."
+msgstr ""
+
 msgid "mrWidget|Merge failed."
 msgstr ""
 
@@ -42635,9 +42638,6 @@ msgid "mrWidget|The changes were not merged into"
 msgstr ""
 
 msgid "mrWidget|The pipeline for this merge request did not complete. Push a new commit to fix the failure, or check the %{linkStart}troubleshooting documentation%{linkEnd} to see other possible actions."
-msgstr ""
-
-msgid "mrWidget|The pipeline for this merge request did not complete. Push a new commit to fix the failure."
 msgstr ""
 
 msgid "mrWidget|The source branch has been deleted"

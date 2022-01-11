@@ -11,9 +11,9 @@ import {
 import * as Sentry from '@sentry/browser';
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
 import { orderBy } from 'lodash';
-import getIssuesQuery from 'ee_else_ce/issues_list/queries/get_issues.query.graphql';
-import getIssuesCountsQuery from 'ee_else_ce/issues_list/queries/get_issues_counts.query.graphql';
-import IssueCardTimeInfo from 'ee_else_ce/issues_list/components/issue_card_time_info.vue';
+import getIssuesQuery from 'ee_else_ce/issues/list/queries/get_issues.query.graphql';
+import getIssuesCountsQuery from 'ee_else_ce/issues/list/queries/get_issues_counts.query.graphql';
+import IssueCardTimeInfo from 'ee_else_ce/issues/list/components/issue_card_time_info.vue';
 import createFlash, { FLASH_TYPES } from '~/flash';
 import { TYPE_USER } from '~/graphql_shared/constants';
 import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
@@ -41,7 +41,7 @@ import {
   TOKEN_TYPE_TYPE,
   UPDATED_DESC,
   urlSortParams,
-} from '~/issues_list/constants';
+} from '~/issues/list/constants';
 import {
   convertToApiParams,
   convertToSearchQuery,
@@ -51,7 +51,7 @@ import {
   getInitialPageParams,
   getSortKey,
   getSortOptions,
-} from '~/issues_list/utils';
+} from '~/issues/list/utils';
 import axios from '~/lib/utils/axios_utils';
 import { scrollUp } from '~/lib/utils/scroll_utils';
 import { getParameterByName, joinPaths } from '~/lib/utils/url_utility';

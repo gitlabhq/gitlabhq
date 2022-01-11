@@ -1,8 +1,8 @@
 import produce from 'immer';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
-import getIssuesQuery from 'ee_else_ce/issues_list/queries/get_issues.query.graphql';
-import IssuesListApp from 'ee_else_ce/issues_list/components/issues_list_app.vue';
+import getIssuesQuery from 'ee_else_ce/issues/list/queries/get_issues.query.graphql';
+import IssuesListApp from 'ee_else_ce/issues/list/components/issues_list_app.vue';
 import createDefaultClient from '~/lib/graphql';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import JiraIssuesImportStatusRoot from './components/jira_issues_import_status_app.vue';

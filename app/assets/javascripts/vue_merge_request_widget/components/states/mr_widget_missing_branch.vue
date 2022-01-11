@@ -74,10 +74,21 @@ export default {
     <status-icon :show-disabled-button="true" status="warning" />
 
     <div class="media-body space-children">
-      <span class="bold js-branch-text">
+      <span
+        :class="{
+          'gl-ml-0! gl-text-body!': glFeatures.restructuredMrWidget,
+        }"
+        class="bold js-branch-text"
+      >
         <span class="capitalize" data-testid="missingBranchName"> {{ missingBranchName }} </span>
         {{ s__('mrWidget|branch does not exist.') }} {{ missingBranchNameMessage }}
-        <gl-icon v-gl-tooltip :title="message" :aria-label="message" name="question-o" />
+        <gl-icon
+          v-gl-tooltip
+          :title="message"
+          :aria-label="message"
+          name="question-o"
+          class="gl-text-blue-600 gl-cursor-pointer"
+        />
       </span>
     </div>
   </div>

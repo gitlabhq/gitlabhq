@@ -167,7 +167,7 @@ RSpec.describe Integrations::Datadog do
 
     context 'with pipeline data' do
       let(:data) { pipeline_data }
-      let(:expected_headers) { { WebHookService::GITLAB_EVENT_HEADER => 'Pipeline Hook' } }
+      let(:expected_headers) { { ::Gitlab::WebHooks::GITLAB_EVENT_HEADER => 'Pipeline Hook' } }
       let(:expected_body) { data.with_retried_builds.to_json }
 
       it { expect(a_request(:post, expected_hook_url).with(headers: expected_headers, body: expected_body)).to have_been_made }
@@ -175,7 +175,7 @@ RSpec.describe Integrations::Datadog do
 
     context 'with job data' do
       let(:data) { build_data }
-      let(:expected_headers) { { WebHookService::GITLAB_EVENT_HEADER => 'Job Hook' } }
+      let(:expected_headers) { { ::Gitlab::WebHooks::GITLAB_EVENT_HEADER => 'Job Hook' } }
       let(:expected_body) { data.to_json }
 
       it { expect(a_request(:post, expected_hook_url).with(headers: expected_headers, body: expected_body)).to have_been_made }

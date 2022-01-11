@@ -26,7 +26,6 @@ class WebHookService
   end
 
   REQUEST_BODY_SIZE_LIMIT = 25.megabytes
-  GITLAB_EVENT_HEADER = 'X-Gitlab-Event'
 
   attr_accessor :hook, :data, :hook_name, :request_options
   attr_reader :uniqueness_token
@@ -49,6 +48,10 @@ class WebHookService
 
   def execute
     return { status: :error, message: 'Hook disabled' } unless hook.executable?
+
+    log_recursion_limit if recursion_blocked?
+
+    Gitlab::WebHooks::RecursionDetection.register!(hook)
 
     start_time = Gitlab::Metrics::System.monotonic_time
 
@@ -95,6 +98,10 @@ class WebHookService
     Gitlab::ApplicationContext.with_context(hook.application_context) do
       break log_rate_limit if rate_limited?
 
+      log_recursion_limit if recursion_blocked?
+
+      data[:_gitlab_recursion_detection_request_uuid] = Gitlab::WebHooks::RecursionDetection::UUID.instance.request_uuid
+
       WebHookWorker.perform_async(hook.id, data, hook_name)
     end
   end
@@ -108,7 +115,7 @@ class WebHookService
   def make_request(url, basic_auth = false)
     Gitlab::HTTP.post(url,
       body: Gitlab::Json::LimitedEncoder.encode(data, limit: REQUEST_BODY_SIZE_LIMIT),
-      headers: build_headers(hook_name),
+      headers: build_headers,
       verify: hook.enable_ssl_verification,
       basic_auth: basic_auth,
       **request_options)
@@ -129,7 +136,7 @@ class WebHookService
       trigger: trigger,
       url: url,
       execution_duration: execution_duration,
-      request_headers: build_headers(hook_name),
+      request_headers: build_headers,
       request_data: request_data,
       response_headers: format_response_headers(response),
       response_body: safe_response_body(response),
@@ -151,15 +158,16 @@ class WebHookService
     end
   end
 
-  def build_headers(hook_name)
+  def build_headers
     @headers ||= begin
-      {
+      headers = {
         'Content-Type' => 'application/json',
         'User-Agent' => "GitLab/#{Gitlab::VERSION}",
-        GITLAB_EVENT_HEADER => self.class.hook_to_event(hook_name)
-      }.tap do |hash|
-        hash['X-Gitlab-Token'] = Gitlab::Utils.remove_line_breaks(hook.token) if hook.token.present?
-      end
+        Gitlab::WebHooks::GITLAB_EVENT_HEADER => self.class.hook_to_event(hook_name)
+      }
+
+      headers['X-Gitlab-Token'] = Gitlab::Utils.remove_line_breaks(hook.token) if hook.token.present?
+      headers.merge!(Gitlab::WebHooks::RecursionDetection.header(hook))
     end
   end
 
@@ -186,6 +194,10 @@ class WebHookService
     )
   end
 
+  def recursion_blocked?
+    Gitlab::WebHooks::RecursionDetection.block?(hook)
+  end
+
   def rate_limit
     @rate_limit ||= hook.rate_limit
   end
@@ -196,6 +208,17 @@ class WebHookService
       hook_id: hook.id,
       hook_type: hook.type,
       hook_name: hook_name,
+      **Gitlab::ApplicationContext.current
+    )
+  end
+
+  def log_recursion_limit
+    Gitlab::AuthLogger.error(
+      message: 'Webhook recursion detected and will be blocked in future',
+      hook_id: hook.id,
+      hook_type: hook.type,
+      hook_name: hook_name,
+      recursion_detection: ::Gitlab::WebHooks::RecursionDetection.to_log(hook),
       **Gitlab::ApplicationContext.current
     )
   end

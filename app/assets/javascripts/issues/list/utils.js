@@ -36,7 +36,7 @@ import {
   urlSortParams,
   WEIGHT_ASC,
   WEIGHT_DESC,
-} from '~/issues_list/constants';
+} from '~/issues/list/constants';
 import { isPositiveInteger } from '~/lib/utils/number_utils';
 import { __ } from '~/locale';
 import {

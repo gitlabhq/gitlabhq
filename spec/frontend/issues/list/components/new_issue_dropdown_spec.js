@@ -2,8 +2,8 @@ import { GlDropdown, GlDropdownItem, GlSearchBoxByType } from '@gitlab/ui';
 import { createLocalVue, mount, shallowMount } from '@vue/test-utils';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
-import NewIssueDropdown from '~/issues_list/components/new_issue_dropdown.vue';
-import searchProjectsQuery from '~/issues_list/queries/search_projects.query.graphql';
+import NewIssueDropdown from '~/issues/list/components/new_issue_dropdown.vue';
+import searchProjectsQuery from '~/issues/list/queries/search_projects.query.graphql';
 import { DASH_SCOPE, joinPaths } from '~/lib/utils/url_utility';
 import {
   emptySearchProjectsQueryResponse,

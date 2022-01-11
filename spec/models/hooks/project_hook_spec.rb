@@ -40,6 +40,15 @@ RSpec.describe ProjectHook do
     end
   end
 
+  describe '#parent' do
+    it 'returns the associated project' do
+      project = build(:project)
+      hook = build(:project_hook, project: project)
+
+      expect(hook.parent).to eq(project)
+    end
+  end
+
   describe '#application_context' do
     let_it_be(:hook) { build(:project_hook) }
 

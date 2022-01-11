@@ -7,14 +7,14 @@ import {
   locationSearchWithSpecialValues,
   urlParams,
   urlParamsWithSpecialValues,
-} from 'jest/issues_list/mock_data';
+} from 'jest/issues/list/mock_data';
 import {
   defaultPageSizeParams,
   DUE_DATE_VALUES,
   largePageSizeParams,
   RELATIVE_POSITION_ASC,
   urlSortParams,
-} from '~/issues_list/constants';
+} from '~/issues/list/constants';
 import {
   convertToApiParams,
   convertToSearchQuery,
@@ -24,7 +24,7 @@ import {
   getInitialPageParams,
   getSortKey,
   getSortOptions,
-} from '~/issues_list/utils';
+} from '~/issues/list/utils';
 
 describe('getInitialPageParams', () => {
   it.each(Object.keys(urlSortParams))(

@@ -5,7 +5,7 @@ module API
     class Triggers < ::API::Base
       include PaginationParams
 
-      HTTP_GITLAB_EVENT_HEADER = "HTTP_#{WebHookService::GITLAB_EVENT_HEADER}".underscore.upcase
+      HTTP_GITLAB_EVENT_HEADER = "HTTP_#{::Gitlab::WebHooks::GITLAB_EVENT_HEADER}".underscore.upcase
 
       feature_category :continuous_integration
 

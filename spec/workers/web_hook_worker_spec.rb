@@ -19,6 +19,15 @@ RSpec.describe WebHookWorker do
       expect { subject.perform(non_existing_record_id, data, hook_name) }.not_to raise_error
     end
 
+    it 'retrieves recursion detection data, reinstates it, and cleans it from payload', :request_store, :aggregate_failures do
+      uuid = SecureRandom.uuid
+      full_data = data.merge({ _gitlab_recursion_detection_request_uuid: uuid })
+
+      expect_next(WebHookService, project_hook, data.with_indifferent_access, hook_name, anything).to receive(:execute)
+      expect { subject.perform(project_hook.id, full_data, hook_name) }
+        .to change { Gitlab::WebHooks::RecursionDetection::UUID.instance.request_uuid }.to(uuid)
+    end
+
     it_behaves_like 'worker with data consistency',
                   described_class,
                   data_consistency: :delayed

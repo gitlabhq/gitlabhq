@@ -152,12 +152,14 @@ export default {
       <div class="rebase-state-find-class-convention media media-body space-children">
         <span
           v-if="rebaseInProgress || isMakingRequest"
+          :class="{ 'gl-ml-0! gl-text-body!': glFeatures.restructuredMrWidget }"
           class="gl-font-weight-bold"
           data-testid="rebase-message"
           >{{ __('Rebase in progress') }}</span
         >
         <span
           v-if="!rebaseInProgress && !canPushToSourceBranch"
+          :class="{ 'gl-text-body!': glFeatures.restructuredMrWidget }"
           class="gl-font-weight-bold gl-ml-0!"
           data-testid="rebase-message"
           >{{ fastForwardMergeText }}</span
@@ -167,6 +169,7 @@ export default {
           class="accept-merge-holder clearfix js-toggle-container accept-action media space-children"
         >
           <gl-button
+            v-if="!glFeatures.restructuredMrWidget"
             :loading="isMakingRequest"
             variant="confirm"
             data-qa-selector="mr_rebase_button"
@@ -176,6 +179,7 @@ export default {
           </gl-button>
           <span
             v-if="!rebasingError"
+            :class="{ 'gl-ml-0! gl-text-body!': glFeatures.restructuredMrWidget }"
             class="gl-font-weight-bold"
             data-testid="rebase-message"
             data-qa-selector="no_fast_forward_message_content"
@@ -186,6 +190,17 @@ export default {
           <span v-else class="gl-font-weight-bold danger" data-testid="rebase-message">{{
             rebasingError
           }}</span>
+          <gl-button
+            v-if="glFeatures.restructuredMrWidget"
+            :loading="isMakingRequest"
+            variant="confirm"
+            size="small"
+            data-qa-selector="mr_rebase_button"
+            class="gl-ml-3!"
+            @click="rebase"
+          >
+            {{ __('Rebase') }}
+          </gl-button>
         </div>
       </div>
     </template>

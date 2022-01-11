@@ -1,7 +1,7 @@
 /* eslint-disable class-methods-use-this, no-new */
 
 import $ from 'jquery';
-import issuableEventHub from '~/issues_list/eventhub';
+import issuableEventHub from '~/issues/list/eventhub';
 import LabelsSelect from '~/labels/labels_select';
 import MilestoneSelect from '~/milestones/milestone_select';
 import IssuableBulkUpdateActions from './issuable_bulk_update_actions';

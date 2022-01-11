@@ -1,5 +1,6 @@
 <script>
 import { GlButton } from '@gitlab/ui';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import notesEventHub from '~/notes/event_hub';
 import statusIcon from '../mr_widget_status_icon.vue';
 
@@ -9,6 +10,7 @@ export default {
     statusIcon,
     GlButton,
   },
+  mixins: [glFeatureFlagMixin()],
   props: {
     mr: {
       type: Object,
@@ -25,16 +27,24 @@ export default {
 
 <template>
   <div class="mr-widget-body media gl-flex-wrap">
-    <status-icon :show-disabled-button="true" status="warning" />
+    <status-icon show-disabled-button status="warning" />
     <div class="media-body">
-      <span class="gl-ml-3 gl-font-weight-bold gl-display-block gl-w-100">{{
-        s__('mrWidget|Merge blocked: all threads must be resolved.')
-      }}</span>
+      <span
+        :class="{
+          'gl-ml-0! gl-text-body!': glFeatures.restructuredMrWidget,
+          'gl-display-block': !glFeatures.restructuredMrWidget,
+        }"
+        class="gl-ml-3 gl-font-weight-bold gl-w-100"
+      >
+        {{ s__('mrWidget|Merge blocked: all threads must be resolved.') }}
+      </span>
       <gl-button
         data-testid="jump-to-first"
         class="gl-ml-3"
         size="small"
-        icon="comment-next"
+        :icon="glFeatures.restructuredMrWidget ? undefined : 'comment-next'"
+        :variant="glFeatures.restructuredMrWidget && 'confirm'"
+        :category="glFeatures.restructuredMrWidget && 'secondary'"
         @click="jumpToFirstUnresolvedDiscussion"
       >
         {{ s__('mrWidget|Jump to first unresolved thread') }}
@@ -44,7 +54,7 @@ export default {
         :href="mr.createIssueToResolveDiscussionsPath"
         class="js-create-issue gl-ml-3"
         size="small"
-        icon="issue-new"
+        :icon="glFeatures.restructuredMrWidget ? undefined : 'issue-new'"
       >
         {{ s__('mrWidget|Create issue to resolve all threads') }}
       </gl-button>

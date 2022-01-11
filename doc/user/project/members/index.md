@@ -211,7 +211,7 @@ Instead of adding users one by one, you can [share a project with an entire grou
 > - Enabled on GitLab.com.
 > - Recommended for production use.
 > - Replaces the existing form with buttons to open a modal window.
-> - To use in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-modal-window). **(FREE SELF)**
+> - To use in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-modal-window).
 
 WARNING:
 This feature might not be available to you. Check the **version history** note above for details.

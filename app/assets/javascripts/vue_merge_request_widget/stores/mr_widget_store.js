@@ -357,15 +357,13 @@ export default class MergeRequestStore {
   setApprovals(data) {
     this.approvals = data;
     this.isApproved = data.approved || false;
+
+    this.setState();
   }
 
+  // eslint-disable-next-line class-methods-use-this
   get hasMergeChecksFailed() {
-    if (!window.gon?.features?.restructuredMrWidget) return false;
-
-    return (
-      this.hasMergeableDiscussionsState ||
-      (this.onlyAllowMergeIfPipelineSucceeds && this.isPipelineFailed)
-    );
+    return false;
   }
 
   // Because the state machine doesn't yet handle every state and transition,

@@ -9,13 +9,8 @@
 require 'securerandom'
 require 'socket'
 require 'logger'
-require 'bundler'
 
 module GitalySetup
-  extend self
-
-  REPOS_STORAGE = 'default'
-
   LOGGER = begin
     default_name = ENV['CI'] ? 'DEBUG' : 'WARN'
     level_name = ENV['GITLAB_TESTING_LOG_LEVEL']&.upcase
@@ -59,12 +54,9 @@ module GitalySetup
     {
       'HOME' => expand_path('tmp/tests'),
       'GEM_PATH' => Gem.path.join(':'),
+      'BUNDLE_APP_CONFIG' => File.join(gemfile_dir, '.bundle'),
       'BUNDLE_INSTALL_FLAGS' => nil,
-      'BUNDLE_IGNORE_CONFIG' => '1',
-      'BUNDLE_PATH' => bundle_path,
       'BUNDLE_GEMFILE' => gemfile,
-      'BUNDLE_JOBS' => '4',
-      'BUNDLE_RETRY' => '3',
       'RUBYOPT' => nil,
 
       # Git hooks can't run during tests as the internal API is not running.
@@ -73,20 +65,17 @@ module GitalySetup
     }
   end
 
-  def bundle_path
-    # Allow the user to override BUNDLE_PATH if they need to
-    return ENV['GITALY_TEST_BUNDLE_PATH'] if ENV['GITALY_TEST_BUNDLE_PATH']
+  # rubocop:disable GitlabSecurity/SystemCommandInjection
+  def set_bundler_config
+    system('bundle config set --local jobs 4', chdir: gemfile_dir)
+    system('bundle config set --local retry 3', chdir: gemfile_dir)
 
     if ENV['CI']
-      expand_path('vendor/gitaly-ruby')
-    else
-      explicit_path = Bundler.configured_bundle_path.explicit_path
-
-      return unless explicit_path
-
-      expand_path(explicit_path)
+      bundle_path = expand_path('vendor/gitaly-ruby')
+      system('bundle', 'config', 'set', '--local', 'path', bundle_path, chdir: gemfile_dir)
     end
   end
+  # rubocop:enable GitlabSecurity/SystemCommandInjection
 
   def config_path(service)
     case service
@@ -97,10 +86,6 @@ module GitalySetup
     when :praefect
       File.join(tmp_tests_gitaly_dir, 'praefect.config.toml')
     end
-  end
-
-  def repos_path(storage = REPOS_STORAGE)
-    Gitlab.config.repositories.storages[REPOS_STORAGE].legacy_disk_path
   end
 
   def service_binary(service)
@@ -210,105 +195,5 @@ module GitalySetup
     LOGGER.warn " FAILED to connect to #{service}\n"
 
     raise "could not connect to #{socket}"
-  end
-
-  def gitaly_socket_path
-    Gitlab::GitalyClient.address(REPOS_STORAGE).delete_prefix('unix:')
-  end
-
-  def gitaly_dir
-    socket_path = gitaly_socket_path
-    socket_path = File.expand_path(gitaly_socket_path) if expand_path_for_socket?
-
-    File.dirname(socket_path)
-  end
-
-  # Linux fails with "bind: invalid argument" if a UNIX socket path exceeds 108 characters:
-  # https://github.com/golang/go/issues/6895. We use absolute paths in CI to ensure
-  # that changes in the current working directory don't affect GRPC reconnections.
-  def expand_path_for_socket?
-    !!ENV['CI']
-  end
-
-  def setup_gitaly
-    unless ENV['CI']
-      # In CI Gitaly is built in the setup-test-env job and saved in the
-      # artifacts. So when tests are started, there's no need to build Gitaly.
-      build_gitaly
-    end
-
-    Gitlab::SetupHelper::Gitaly.create_configuration(
-      gitaly_dir,
-      { 'default' => repos_path },
-      force: true,
-      options: {
-        prometheus_listen_addr: 'localhost:9236'
-      }
-    )
-    Gitlab::SetupHelper::Gitaly.create_configuration(
-      gitaly_dir,
-      { 'default' => repos_path },
-      force: true,
-      options: {
-        internal_socket_dir: File.join(gitaly_dir, "internal_gitaly2"),
-        gitaly_socket: "gitaly2.socket",
-        config_filename: "gitaly2.config.toml"
-      }
-    )
-    Gitlab::SetupHelper::Praefect.create_configuration(gitaly_dir, { 'praefect' => repos_path }, force: true)
-  end
-
-  def socket_path(service)
-    File.join(tmp_tests_gitaly_dir, "#{service}.socket")
-  end
-
-  def praefect_socket_path
-    "unix:" + socket_path(:praefect)
-  end
-
-  def wait(service)
-    sleep_time = 10
-    sleep_interval = 0.1
-    socket = socket_path(service)
-
-    Integer(sleep_time / sleep_interval).times do
-      Socket.unix(socket)
-      return
-    rescue StandardError
-      sleep sleep_interval
-    end
-
-    raise "could not connect to #{service} at #{socket.inspect} after #{sleep_time} seconds"
-  end
-
-  def stop(pid)
-    Process.kill('KILL', pid)
-  rescue Errno::ESRCH
-    # The process can already be gone if the test run was INTerrupted.
-  end
-
-  def spawn_gitaly
-    check_gitaly_config!
-
-    gitaly_pid = start_gitaly
-    gitaly2_pid = start_gitaly2
-    praefect_pid = start_praefect
-
-    Kernel.at_exit do
-      # In CI this function is called by scripts/gitaly-test-spawn, triggered a
-      # before_script. Gitaly needs to remain running until the container is
-      # stopped.
-      next if ENV['CI']
-
-      pids = [gitaly_pid, gitaly2_pid, praefect_pid]
-      pids.each { |pid| stop(pid) }
-    end
-
-    wait('gitaly')
-    wait('praefect')
-  rescue StandardError
-    message = 'gitaly spawn failed'
-    message += " (try `rm -rf #{gitaly_dir}` ?)" unless ENV['CI']
-    raise message
   end
 end

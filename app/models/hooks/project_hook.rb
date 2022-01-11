@@ -41,6 +41,11 @@ class ProjectHook < WebHook
     super.merge(project: project)
   end
 
+  override :parent
+  def parent
+    project
+  end
+
   private
 
   override :web_hooks_disable_failed?

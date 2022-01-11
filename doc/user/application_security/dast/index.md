@@ -638,7 +638,7 @@ These CI/CD variables are specific to DAST. They can be used to customize the be
 | `DAST_XML_REPORT`                                | string        | The filename of the XML report written at the end of a scan. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12652) in GitLab 13.1. |
 | `DAST_WEBSITE` <sup>1</sup>                      | URL           | The URL of the website to scan. The variable `DAST_API_OPENAPI` must be specified if this is omitted. |
 | `DAST_ZAP_CLI_OPTIONS`                           | string        | ZAP server command-line options. For example, `-Xmx3072m` would set the Java maximum memory allocation pool size. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12652) in GitLab 13.1. |
-| `DAST_ZAP_LOG_CONFIGURATION`                     | string        | Set to a semicolon-separated list of additional log4j properties for the ZAP Server. Example: `log4j.logger.org.parosproxy.paros.network.HttpSender=DEBUG;log4j.logger.com.crawljax=DEBUG` |
+| `DAST_ZAP_LOG_CONFIGURATION`                     | string        | Set to a semicolon-separated list of additional log4j properties for the ZAP Server. Example: `logger.httpsender.name=org.parosproxy.paros.network.HttpSender;logger.httpsender.level=debug;logger.sitemap.name=org.parosproxy.paros.model.SiteMap;logger.sitemap.level=debug;` |
 | `SECURE_ANALYZERS_PREFIX`                        | URL           | Set the Docker registry base address from which to download the analyzer. |
 
 1. Available to an on-demand DAST scan.
