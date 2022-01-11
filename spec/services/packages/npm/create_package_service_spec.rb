@@ -11,10 +11,8 @@ RSpec.describe Packages::Npm::CreatePackageService do
     Gitlab::Json.parse(fixture_file('packages/npm/payload.json')
         .gsub('@root/npm-test', package_name)
         .gsub('1.0.1', version)).with_indifferent_access
-      .merge!(override)
   end
 
-  let(:override) { {} }
   let(:package_name) { "@#{namespace.path}/my-app" }
   let(:version_data) { params.dig('versions', '1.0.1') }
 
@@ -127,13 +125,53 @@ RSpec.describe Packages::Npm::CreatePackageService do
       it { expect(subject[:message]).to be 'Package already exists.' }
     end
 
-    context 'file size above maximum limit' do
-      before do
-        params['_attachments']["#{package_name}-#{version}.tgz"]['length'] = project.actual_limits.npm_max_file_size + 1
+    describe 'max file size validation' do
+      let(:max_file_size) { 5.bytes}
+
+      shared_examples_for 'max file size validation failure' do
+        it 'returns a 400 error', :aggregate_failures do
+          expect(subject[:http_status]).to eq 400
+          expect(subject[:message]).to be 'File is too large.'
+        end
       end
 
-      it { expect(subject[:http_status]).to eq 400 }
-      it { expect(subject[:message]).to be 'File is too large.' }
+      before do
+        project.actual_limits.update!(npm_max_file_size: max_file_size)
+      end
+
+      context 'when max file size is exceeded' do
+        # NOTE: The base64 encoded package data in the fixture file is the "hello\n" string, whose byte size is 6.
+        it_behaves_like 'max file size validation failure'
+      end
+
+      context 'when file size is faked by setting the attachment length param to a lower size' do
+        let(:params) { super().deep_merge!( { _attachments: { "#{package_name}-#{version}.tgz" => { data: encoded_package_data, length: 1 } } }) }
+
+        # TODO (technical debt): Extract the package size calculation outside the service and add separate specs for it.
+        # Right now we have several contexts here to test the calculation's different scenarios.
+        context "when encoded package data is not padded" do
+          # 'Hello!' (size = 6 bytes) => 'SGVsbG8h'
+          let(:encoded_package_data) { 'SGVsbG8h' }
+
+          it_behaves_like 'max file size validation failure'
+        end
+
+        context "when encoded package data is padded with '='" do
+          let(:max_file_size) { 4.bytes}
+          # 'Hello' (size = 5 bytes) => 'SGVsbG8='
+          let(:encoded_package_data) { 'SGVsbG8=' }
+
+          it_behaves_like 'max file size validation failure'
+        end
+
+        context "when encoded package data is padded with '=='" do
+          let(:max_file_size) { 3.bytes}
+          # 'Hell' (size = 4 bytes) => 'SGVsbA=='
+          let(:encoded_package_data) { 'SGVsbA==' }
+
+          it_behaves_like 'max file size validation failure'
+        end
+      end
     end
 
     [
@@ -152,7 +190,7 @@ RSpec.describe Packages::Npm::CreatePackageService do
     end
 
     context 'with empty versions' do
-      let(:override) { { versions: {} } }
+      let(:params) { super().merge!({ versions: {} } ) }
 
       it { expect(subject[:http_status]).to eq 400 }
       it { expect(subject[:message]).to eq 'Version is empty.' }

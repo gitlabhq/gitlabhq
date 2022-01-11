@@ -211,7 +211,17 @@ export function emojiFallbackImageSrc(inputName) {
 }
 
 export function emojiImageTag(name, src) {
-  return `<img class="emoji" title=":${name}:" alt=":${name}:" src="${src}" width="20" height="20" align="absmiddle" />`;
+  const img = document.createElement('img');
+
+  img.className = 'emoji';
+  img.setAttribute('title', `:${name}:`);
+  img.setAttribute('alt', `:${name}:`);
+  img.setAttribute('src', src);
+  img.setAttribute('width', '20');
+  img.setAttribute('height', '20');
+  img.setAttribute('align', 'absmiddle');
+
+  return img;
 }
 
 export function glEmojiTag(inputName, options) {

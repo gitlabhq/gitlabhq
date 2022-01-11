@@ -36,7 +36,7 @@ module Resolvers
     def unconditional_includes
       [
         {
-          project: [:project_feature]
+          project: [:project_feature, :group]
         },
         :author
       ]

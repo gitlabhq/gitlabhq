@@ -193,6 +193,8 @@ RSpec.describe Projects::RawController do
       let_it_be(:user) { create(:user, static_object_token: 'very-secure-token') }
       let_it_be(:file_path) { 'master/README.md' }
 
+      let(:token) { user.static_object_token }
+
       before do
         project.add_developer(user)
       end
@@ -207,17 +209,46 @@ RSpec.describe Projects::RawController do
       end
 
       context 'when a token param is present' do
+        subject(:execute_raw_request_with_token_in_params) do
+          execute_raw_requests(requests: 1, project: project, file_path: file_path, token: token)
+        end
+
         context 'when token is correct' do
           it 'calls the action normally' do
-            execute_raw_requests(requests: 1, project: project, file_path: file_path, token: user.static_object_token)
+            execute_raw_request_with_token_in_params
 
             expect(response).to have_gitlab_http_status(:ok)
+          end
+
+          context 'when user with expired password' do
+            let_it_be(:user) { create(:user, password_expires_at: 2.minutes.ago) }
+
+            it 'redirects to sign in page' do
+              execute_raw_request_with_token_in_params
+
+              expect(response).to have_gitlab_http_status(:found)
+              expect(response.location).to end_with('/users/sign_in')
+            end
+          end
+
+          context 'when password expiration is not applicable' do
+            context 'when ldap user' do
+              let_it_be(:user) { create(:omniauth_user, provider: 'ldap', password_expires_at: 2.minutes.ago) }
+
+              it 'calls the action normally' do
+                execute_raw_request_with_token_in_params
+
+                expect(response).to have_gitlab_http_status(:ok)
+              end
+            end
           end
         end
 
         context 'when token is incorrect' do
+          let(:token) { 'foobar' }
+
           it 'redirects to sign in page' do
-            execute_raw_requests(requests: 1, project: project, file_path: file_path, token: 'foobar')
+            execute_raw_request_with_token_in_params
 
             expect(response).to have_gitlab_http_status(:found)
             expect(response.location).to end_with('/users/sign_in')
@@ -226,19 +257,47 @@ RSpec.describe Projects::RawController do
       end
 
       context 'when a token header is present' do
+        subject(:execute_raw_request_with_token_in_headers) do
+          request.headers['X-Gitlab-Static-Object-Token'] = token
+          execute_raw_requests(requests: 1, project: project, file_path: file_path)
+        end
+
         context 'when token is correct' do
           it 'calls the action normally' do
-            request.headers['X-Gitlab-Static-Object-Token'] = user.static_object_token
-            execute_raw_requests(requests: 1, project: project, file_path: file_path)
+            execute_raw_request_with_token_in_headers
 
             expect(response).to have_gitlab_http_status(:ok)
+          end
+
+          context 'when user with expired password' do
+            let_it_be(:user) { create(:user, password_expires_at: 2.minutes.ago) }
+
+            it 'redirects to sign in page' do
+              execute_raw_request_with_token_in_headers
+
+              expect(response).to have_gitlab_http_status(:found)
+              expect(response.location).to end_with('/users/sign_in')
+            end
+          end
+
+          context 'when password expiration is not applicable' do
+            context 'when ldap user' do
+              let_it_be(:user) { create(:omniauth_user, provider: 'ldap', password_expires_at: 2.minutes.ago) }
+
+              it 'calls the action normally' do
+                execute_raw_request_with_token_in_headers
+
+                expect(response).to have_gitlab_http_status(:ok)
+              end
+            end
           end
         end
 
         context 'when token is incorrect' do
+          let(:token) { 'foobar' }
+
           it 'redirects to sign in page' do
-            request.headers['X-Gitlab-Static-Object-Token'] = 'foobar'
-            execute_raw_requests(requests: 1, project: project, file_path: file_path)
+            execute_raw_request_with_token_in_headers
 
             expect(response).to have_gitlab_http_status(:found)
             expect(response.location).to end_with('/users/sign_in')

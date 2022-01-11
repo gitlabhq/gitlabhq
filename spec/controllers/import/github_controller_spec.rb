@@ -6,6 +6,7 @@ RSpec.describe Import::GithubController do
   include ImportSpecHelper
 
   let(:provider) { :github }
+  let(:new_import_url) { public_send("new_import_#{provider}_url") }
 
   include_context 'a GitHub-ish import controller'
 
@@ -50,13 +51,37 @@ RSpec.describe Import::GithubController do
       stub_omniauth_provider('github')
     end
 
-    it "updates access token" do
-      token = "asdasd12345"
+    context "when auth state param is missing from session" do
+      it "reports an error" do
+        get :callback
 
-      get :callback
+        expect(controller).to redirect_to(new_import_url)
+        expect(flash[:alert]).to eq('Access denied to your GitHub account.')
+      end
+    end
 
-      expect(session[:github_access_token]).to eq(token)
-      expect(controller).to redirect_to(status_import_github_url)
+    context "when auth state param is present in session" do
+      let(:valid_auth_state) { "secret-state" }
+
+      before do
+        session[:github_auth_state_key] = valid_auth_state
+      end
+
+      it "updates access token if state param is valid" do
+        token = "asdasd12345"
+
+        get :callback, params: { state: valid_auth_state }
+
+        expect(session[:github_access_token]).to eq(token)
+        expect(controller).to redirect_to(status_import_github_url)
+      end
+
+      it "reports an error if state param is invalid" do
+        get :callback, params: { state: "different-state" }
+
+        expect(controller).to redirect_to(new_import_url)
+        expect(flash[:alert]).to eq('Access denied to your GitHub account.')
+      end
     end
   end
 
@@ -71,8 +96,6 @@ RSpec.describe Import::GithubController do
       end
 
       context 'when OAuth config is missing' do
-        let(:new_import_url) { public_send("new_import_#{provider}_url") }
-
         before do
           allow(controller).to receive(:oauth_config).and_return(nil)
         end
@@ -108,6 +131,16 @@ RSpec.describe Import::GithubController do
 
         get :status
       end
+
+      it 'gets authorization url using legacy client' do
+        allow(controller).to receive(:logged_in_with_provider?).and_return(true)
+        expect(controller).to receive(:go_to_provider_for_permissions).and_call_original
+        expect_next_instance_of(Gitlab::LegacyGithubImport::Client) do |client|
+          expect(client).to receive(:authorize_url).and_call_original
+        end
+
+        get :new
+      end
     end
 
     context 'when feature remove_legacy_github_client is enabled' do
@@ -128,6 +161,16 @@ RSpec.describe Import::GithubController do
         end
 
         get :status
+      end
+
+      it 'gets authorization url using oauth client' do
+        allow(controller).to receive(:logged_in_with_provider?).and_return(true)
+        expect(controller).to receive(:go_to_provider_for_permissions).and_call_original
+        expect_next_instance_of(OAuth2::Client) do |client|
+          expect(client.auth_code).to receive(:authorize_url).and_call_original
+        end
+
+        get :new
       end
 
       context 'pagination' do

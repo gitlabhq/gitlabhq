@@ -33,6 +33,8 @@ RSpec.describe Integrations::ChatMessage::WikiPageMessage do
     }
   end
 
+  it_behaves_like Integrations::ChatMessage
+
   context 'without markdown' do
     describe '#pretext' do
       context 'when :action == "create"' do
