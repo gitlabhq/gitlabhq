@@ -20,7 +20,7 @@ module SessionlessAuthentication
   end
 
   def sessionless_sign_in(user)
-    if user && can?(user, :log_in)
+    if can?(user, :log_in) && !user.password_expired_if_applicable?
       # Notice we are passing store false, so the user is not
       # actually stored in the session and a token is needed
       # for every request. If you want the token to work as a

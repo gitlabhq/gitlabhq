@@ -8,10 +8,6 @@ RSpec.describe Dashboard::ProjectsController, :aggregate_failures do
   let_it_be(:user) { create(:user) }
 
   describe '#index' do
-    context 'user not logged in' do
-      it_behaves_like 'authenticates sessionless user', :index, :atom
-    end
-
     context 'user logged in' do
       let_it_be(:project) { create(:project, name: 'Project 1') }
       let_it_be(:project2) { create(:project, name: 'Project Two') }

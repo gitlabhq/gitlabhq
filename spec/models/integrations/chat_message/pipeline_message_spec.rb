@@ -40,6 +40,8 @@ RSpec.describe Integrations::ChatMessage::PipelineMessage do
 
   let(:has_yaml_errors) { false }
 
+  it_behaves_like Integrations::ChatMessage
+
   before do
     test_commit = double("A test commit", committer: args[:user], title: "A test commit message")
     test_project = double("A test project", commit_by: test_commit, name: args[:project][:name], web_url: args[:project][:web_url])

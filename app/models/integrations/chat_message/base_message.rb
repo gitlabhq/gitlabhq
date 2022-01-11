@@ -5,6 +5,10 @@ module Integrations
     class BaseMessage
       RELATIVE_LINK_REGEX = %r{!\[[^\]]*\]\((/uploads/[^\)]*)\)}.freeze
 
+      # Markup characters which are used for links in HTML, Markdown,
+      # and Slack "mrkdwn" syntax (`<http://example.com|Label>`).
+      UNSAFE_MARKUP_CHARACTERS = '<>[]|'
+
       attr_reader :markdown
       attr_reader :user_full_name
       attr_reader :user_name
@@ -65,12 +69,26 @@ module Integrations
         string.gsub(RELATIVE_LINK_REGEX, "#{project_url}\\1")
       end
 
+      # Remove unsafe markup from user input, which can be used to hijack links in our own markup,
+      # or insert new ones.
+      #
+      # This currently removes Markdown and Slack "mrkdwn" links (keeping the link label),
+      # and all HTML markup (keeping the text nodes).
+      # We can't just escape the markup characters, because each chat app handles this differently.
+      #
+      # See:
+      # - https://api.slack.com/reference/surfaces/formatting#escaping
+      # - https://gitlab.com/gitlab-org/slack-notifier#escaping
+      def strip_markup(string)
+        string&.delete(UNSAFE_MARKUP_CHARACTERS)
+      end
+
       def attachment_color
         '#345'
       end
 
       def link(text, url)
-        "[#{text}](#{url})"
+        "[#{strip_markup(text)}](#{url})"
       end
 
       def pretty_duration(seconds)

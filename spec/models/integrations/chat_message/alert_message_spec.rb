@@ -16,6 +16,8 @@ RSpec.describe Integrations::ChatMessage::AlertMessage do
     }.merge(Gitlab::DataBuilder::Alert.build(alert))
   end
 
+  it_behaves_like Integrations::ChatMessage
+
   describe '#message' do
     it 'returns the correct message' do
       expect(subject.message).to eq("Alert firing in #{args[:project_name]}")
