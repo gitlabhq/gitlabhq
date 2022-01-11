@@ -33,7 +33,11 @@ module Gitlab
 
     def self.build
       Gitlab::SafeRequestStore[self.cache_key] ||=
-        new(self.full_log_path, level: ::Logger::DEBUG)
+        new(self.full_log_path, level: log_level)
+    end
+
+    def self.log_level(fallback: ::Logger::DEBUG)
+      ENV.fetch('GITLAB_LOG_LEVEL', fallback)
     end
 
     def self.full_log_path

@@ -731,6 +731,9 @@ msgstr ""
 msgid "%{link_start}Start the title with %{draft_snippet}%{link_end} to prevent a merge request draft from merging before it's ready."
 msgstr ""
 
+msgid "%{link_start}Upload a license%{link_end} file or enter the license key you have received from GitLab Inc."
+msgstr ""
+
 msgid "%{link_start}What information does GitLab Inc. collect?%{link_end}"
 msgstr ""
 
@@ -6904,6 +6907,9 @@ msgid "Checkout|(x%{numberOfUsers})"
 msgstr ""
 
 msgid "Checkout|(x%{quantity})"
+msgstr ""
+
+msgid "Checkout|An unknown error has occurred. Please try again by refreshing this page."
 msgstr ""
 
 msgid "Checkout|Billing address"
@@ -39578,6 +39584,9 @@ msgstr ""
 msgid "Vulnerability|Information related how the vulnerability was discovered and its impact to the system."
 msgstr ""
 
+msgid "Vulnerability|Learn more about this vulnerability and the best way to resolve it."
+msgstr ""
+
 msgid "Vulnerability|Links"
 msgstr ""
 
@@ -39624,6 +39633,12 @@ msgid "Vulnerability|The unmodified response is the original response that had n
 msgstr ""
 
 msgid "Vulnerability|Tool"
+msgstr ""
+
+msgid "Vulnerability|Training"
+msgstr ""
+
+msgid "Vulnerability|Training not available for this vulnerability."
 msgstr ""
 
 msgid "Vulnerability|Unmodified Response"

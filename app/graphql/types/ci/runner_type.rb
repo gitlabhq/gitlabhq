@@ -4,6 +4,7 @@ module Types
   module Ci
     class RunnerType < BaseObject
       edge_type_class(RunnerWebUrlEdge)
+      connection_type_class(Types::CountableConnectionType)
       graphql_name 'CiRunner'
       authorize :read_runner
       present_using ::Ci::RunnerPresenter

@@ -50,13 +50,14 @@ If you receive a license file from GitLab (for example a new trial), you can upl
 
 The first time you visit your GitLab EE installation signed in as an administrator,
 you should see a note urging you to upload a license with a link that takes you
-to the **Subscription** area.
+to the **Upload license** page.
 
-Otherwise, to manually go to the **Subscription** area:
+Otherwise, to manually go to the **Upload license** page:
 
 1. Sign in to your GitLab self-managed instance.
 1. From the top menu, select the Admin Area **{admin}**.
-1. From the left sidebar, select **Subscription**, and select **Upload a license file**.
+1. On the left sidebar, select **Settings**.
+1. In the **License file** section, select **Upload a license**.
 
    - *If you've received a `.gitlab-license` file:*
      1. Download the license file to your local machine.

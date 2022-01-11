@@ -20,6 +20,54 @@ including adjusting log retention, log forwarding,
 switching logs from JSON to plain text logging, and more.
 - [How to parse and analyze JSON logs](troubleshooting/log_parsing.md).
 
+## Log Levels
+ 
+Each log message has an assigned log level that indicates its importance and verbosity.
+Each logger has an assigned minimum log level.
+A logger emits a log message only if its log level is equal to or above the minimum log level.
+
+The following log levels are supported:
+
+| Level | Name    |
+|-------|---------|
+| 0     | DEBUG   |
+| 1     | INFO    |
+| 2     | WARN    |
+| 3     | ERROR   |
+| 4     | FATAL   |
+| 5     | UNKNOWN |
+
+GitLab loggers emit all log messages because they are set to `DEBUG` by default.
+
+### Override default log level
+
+You can override the minimum log level for GitLab loggers using the `GITLAB_LOG_LEVEL` environment variable.
+Valid values are either a value of `0` to `5`, or the name of the log level.
+
+Example:
+
+```shell
+GITLAB_LOG_LEVEL=info
+```
+
+For some services, other log levels are in place that are not affected by this setting.
+Some of these services have their own environment variables to override the log level. For example:
+
+| Service              | Log Level | Environment variable |
+|----------------------|-----------|----------------------|
+| GitLab API           | `INFO`    |                      |
+| GitLab Cleanup       | `INFO`    | `DEBUG`              |
+| GitLab Doctor        | `INFO`    | `VERBOSE`            |
+| GitLab Export        | `INFO`    | `EXPORT_DEBUG`       |
+| GitLab Geo           | `INFO`    |                      |
+| GitLab Import        | `INFO`    | `IMPORT_DEBUG`       |
+| GitLab QA Runtime    | `ERROR`   | `QA_DEBUG`           |
+| Google APIs          | `INFO`    |                      |
+| Rack Timeout         | `ERROR`   |                      |
+| Sidekiq (server)     | `INFO`    |                      |
+| Snowplow Tracker     | `FATAL`   |                      |
+| gRPC Client (Gitaly) | `WARN`    | `GRPC_LOG_LEVEL`     |
+
 ## Log Rotation
 
 The logs for a given service may be managed and rotated by:

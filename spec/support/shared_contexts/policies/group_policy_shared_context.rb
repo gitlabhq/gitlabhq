@@ -28,6 +28,8 @@ RSpec.shared_context 'GroupPolicy context' do
         read_metrics_dashboard_annotation
         read_prometheus
         read_package_settings
+        read_crm_contact
+        read_crm_organization
       ]
   end
 

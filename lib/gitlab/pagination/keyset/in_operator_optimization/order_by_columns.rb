@@ -9,16 +9,16 @@ module Gitlab
 
           # This class exposes collection methods for the order by columns
           #
-          # Example: by modelling the `issues.created_at ASC, issues.id ASC` ORDER BY
+          # Example: by modeling the `issues.created_at ASC, issues.id ASC` ORDER BY
           # SQL clause, this class will receive two ColumnOrderDefinition objects
           def initialize(columns, arel_table)
             @columns = columns.map do |column|
-              ColumnData.new(column.attribute_name, "order_by_columns_#{column.attribute_name}", arel_table)
+              OrderByColumnData.new(column, "order_by_columns_#{column.attribute_name}", arel_table)
             end
           end
 
           def arel_columns
-            columns.map(&:arel_column)
+            columns.map(&:column_for_projection)
           end
 
           def array_aggregated_columns

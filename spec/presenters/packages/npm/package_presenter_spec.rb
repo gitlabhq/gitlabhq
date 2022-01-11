@@ -108,6 +108,7 @@ RSpec.describe ::Packages::Npm::PackagePresenter do
       context 'with packages_installable_package_files disabled' do
         before do
           stub_feature_flags(packages_installable_package_files: false)
+          package2.package_files.id_not_in(package_file_pending_destruction.id).delete_all
         end
 
         it 'returns them' do

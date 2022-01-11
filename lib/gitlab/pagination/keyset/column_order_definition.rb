@@ -114,6 +114,20 @@ module Gitlab
       #  - When the order is a calculated expression or the column is in another table (JOIN-ed)
       #
       #  If the add_to_projections is true, the query builder will automatically add the column to the SELECT values
+      #
+      #  **sql_type**
+      #
+      # The SQL type of the column or SQL expression. This is an optional field which is only required when using the
+      # column with the InOperatorOptimization class.
+      #
+      # Example: When the order expression is a calculated SQL expression.
+      #
+      #  {
+      #    attribute_name: 'id_times_count',
+      #    order_expression: Arel.sql('(id * count)').asc,
+      #    sql_type: 'integer' # the SQL type here must match with the type of the produced data by the order_expression. Putting 'text' here would be incorrect.
+      #  }
+      #
       class ColumnOrderDefinition
         REVERSED_ORDER_DIRECTIONS = { asc: :desc, desc: :asc }.freeze
         REVERSED_NULL_POSITIONS = { nulls_first: :nulls_last, nulls_last: :nulls_first }.freeze
@@ -122,7 +136,8 @@ module Gitlab
 
         attr_reader :attribute_name, :column_expression, :order_expression, :add_to_projections, :order_direction
 
-        def initialize(attribute_name:, order_expression:, column_expression: nil, reversed_order_expression: nil, nullable: :not_nullable, distinct: true, order_direction: nil, add_to_projections: false)
+        # rubocop: disable Metrics/ParameterLists
+        def initialize(attribute_name:, order_expression:, column_expression: nil, reversed_order_expression: nil, nullable: :not_nullable, distinct: true, order_direction: nil, sql_type: nil, add_to_projections: false)
           @attribute_name = attribute_name
           @order_expression = order_expression
           @column_expression = column_expression || calculate_column_expression(order_expression)
@@ -130,8 +145,10 @@ module Gitlab
           @reversed_order_expression = reversed_order_expression || calculate_reversed_order(order_expression)
           @nullable = parse_nullable(nullable, distinct)
           @order_direction = parse_order_direction(order_expression, order_direction)
+          @sql_type = sql_type
           @add_to_projections = add_to_projections
         end
+        # rubocop: enable Metrics/ParameterLists
 
         def reverse
           self.class.new(
@@ -183,6 +200,12 @@ module Gitlab
           end
 
           sql_string
+        end
+
+        def sql_type
+          raise Gitlab::Pagination::Keyset::SqlTypeMissingError.for_column(self) if @sql_type.nil?
+
+          @sql_type
         end
 
         private

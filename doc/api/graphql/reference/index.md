@@ -5503,6 +5503,7 @@ The connection type for [`CiRunner`](#cirunner).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="cirunnerconnectioncount"></a>`count` | [`Int!`](#int) | Total count of collection. |
 | <a id="cirunnerconnectionedges"></a>`edges` | [`[CiRunnerEdge]`](#cirunneredge) | A list of edges. |
 | <a id="cirunnerconnectionnodes"></a>`nodes` | [`[CiRunner]`](#cirunner) | A list of nodes. |
 | <a id="cirunnerconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |

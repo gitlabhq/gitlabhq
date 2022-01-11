@@ -14,6 +14,15 @@ With customer relations management (CRM) you can create a record of contacts
 You can use contacts and organizations to tie work to customers for billing and reporting purposes.
 To read more about what is planned for the future, see [issue 2256](https://gitlab.com/gitlab-org/gitlab/-/issues/2256).
 
+## Permissions
+
+| Permission | Guest            | Reporter | Developer, Maintainer, and Owner |
+| ---------- | ---------------- | -------- | -------------------------------- |
+| View contacts/organizations | | ✓        | ✓ |
+| View issue contacts |         | ✓        | ✓ |
+| Add/remove issue contacts |   | ✓        | ✓ |
+| Create/edit contacts/organizations | |   | ✓ |
+
 ## Enable customer relations management (CRM)
 
 To enable customer relations management in a group:
@@ -121,10 +130,6 @@ You can also view issue contacts using the
 API.
 
 ### Add or remove issue contacts
-
-Prerequisites:
-
-- You must have at least the [Developer role](../permissions.md#project-members-permissions) for a group.
 
 ### Add contacts to an issue
 

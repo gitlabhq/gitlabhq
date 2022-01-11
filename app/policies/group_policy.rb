@@ -123,8 +123,6 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     enable :read_group_member
     enable :read_custom_emoji
     enable :read_counts
-    enable :read_crm_organization
-    enable :read_crm_contact
   end
 
   rule { ~public_group & ~has_access }.prevent :read_counts
@@ -159,6 +157,8 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     enable :read_prometheus
     enable :read_package
     enable :read_package_settings
+    enable :read_crm_organization
+    enable :read_crm_contact
   end
 
   rule { maintainer }.policy do

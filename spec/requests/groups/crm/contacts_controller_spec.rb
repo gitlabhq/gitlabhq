@@ -73,7 +73,7 @@ RSpec.describe Groups::Crm::ContactsController do
       let(:group) { create(:group, :public, :crm_enabled) }
 
       context 'with anonymous user' do
-        it_behaves_like 'ok response with index template'
+        it_behaves_like 'response with 404 status'
       end
     end
   end

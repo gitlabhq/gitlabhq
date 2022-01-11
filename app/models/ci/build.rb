@@ -427,6 +427,10 @@ module Ci
       action? && !archived? && (manual? || scheduled? || retryable?)
     end
 
+    def waiting_for_deployment_approval?
+      manual? && starts_environment? && deployment&.blocked?
+    end
+
     def schedulable?
       self.when == 'delayed' && options[:start_in].present?
     end

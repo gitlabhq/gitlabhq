@@ -31,4 +31,41 @@ RSpec.describe Gitlab::Pagination::Keyset::InOperatorOptimization::Strategies::O
       ])
     end
   end
+
+  context 'when an SQL expression is given' do
+    context 'when the sql_type attribute is missing' do
+      let(:order) do
+        Gitlab::Pagination::Keyset::Order.build([
+          Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+            attribute_name: 'id_times_ten',
+            order_expression: Arel.sql('id * 10').asc
+          )
+        ])
+      end
+
+      let(:keyset_scope) { Project.order(order) }
+
+      it 'raises error' do
+        expect { strategy.initializer_columns }.to raise_error(Gitlab::Pagination::Keyset::SqlTypeMissingError)
+      end
+    end
+
+    context 'when the sql_type_attribute is present' do
+      let(:order) do
+        Gitlab::Pagination::Keyset::Order.build([
+          Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+            attribute_name: 'id_times_ten',
+            order_expression: Arel.sql('id * 10').asc,
+            sql_type: 'integer'
+          )
+        ])
+      end
+
+      let(:keyset_scope) { Project.order(order) }
+
+      it 'returns the initializer columns' do
+        expect(strategy.initializer_columns).to eq(['NULL::integer AS id_times_ten'])
+      end
+    end
+  end
 end

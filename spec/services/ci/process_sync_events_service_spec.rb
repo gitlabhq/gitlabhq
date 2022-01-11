@@ -71,6 +71,24 @@ RSpec.describe Ci::ProcessSyncEventsService do
           expect { execute }.not_to change(Projects::SyncEvent, :count)
         end
       end
+
+      it 'does not delete non-executed events' do
+        new_project = create(:project)
+        sync_event_class.delete_all
+
+        project1.update!(group: parent_group_2)
+        new_project.update!(group: parent_group_1)
+        project2.update!(group: parent_group_1)
+
+        new_project_sync_event = new_project.sync_events.last
+
+        allow(sync_event_class).to receive(:preload_synced_relation).and_return(
+          sync_event_class.where.not(id: new_project_sync_event)
+        )
+
+        expect { execute }.to change(Projects::SyncEvent, :count).from(3).to(1)
+        expect(new_project_sync_event.reload).to be_persisted
+      end
     end
 
     context 'for Namespaces::SyncEvent' do

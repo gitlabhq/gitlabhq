@@ -12,11 +12,7 @@ module Gitlab
             end
 
             def initializer_columns
-              order_by_columns.map do |column|
-                column_name = column.original_column_name.to_s
-                type = model.columns_hash[column_name].sql_type
-                "NULL::#{type} AS #{column_name}"
-              end
+              order_by_columns.map { |column_data| null_with_type_cast(column_data) }
             end
 
             def columns
@@ -30,6 +26,15 @@ module Gitlab
             private
 
             attr_reader :model, :order_by_columns
+
+            def null_with_type_cast(column_data)
+              column_name = column_data.original_column_name.to_s
+              active_record_column = model.columns_hash[column_name]
+
+              type = active_record_column ? active_record_column.sql_type : column_data.column.sql_type
+
+              "NULL::#{type} AS #{column_name}"
+            end
           end
         end
       end

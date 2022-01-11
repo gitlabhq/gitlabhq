@@ -22,10 +22,10 @@ RSpec.describe Issues::UpdateService, :mailer do
   end
 
   before_all do
-    project.add_maintainer(user)
-    project.add_developer(user2)
-    project.add_developer(user3)
-    project.add_guest(guest)
+    group.add_maintainer(user)
+    group.add_developer(user2)
+    group.add_developer(user3)
+    group.add_guest(guest)
   end
 
   describe 'execute' do
