@@ -2,7 +2,7 @@ import { createLocalVue, mount, shallowMount } from '@vue/test-utils';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import RunnerHeader from '~/runner/components/runner_header.vue';
@@ -82,7 +82,7 @@ describe('RunnerDetailsApp', () => {
     });
 
     it('error is shown to the user', () => {
-      expect(createFlash).toHaveBeenCalled();
+      expect(createAlert).toHaveBeenCalled();
     });
   });
 });

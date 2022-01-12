@@ -27,6 +27,10 @@ RSpec.describe AnalyticsBuildEntity do
       expect(subject).to include(:author)
     end
 
+    it 'contains the project path' do
+      expect(subject).to include(:project_path)
+    end
+
     it 'does not contain sensitive information' do
       expect(subject).not_to include(/token/)
       expect(subject).not_to include(/variables/)

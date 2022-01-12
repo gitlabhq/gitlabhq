@@ -48,7 +48,7 @@ class User < ApplicationRecord
 
   add_authentication_token_field :incoming_email_token, token_generator: -> { SecureRandom.hex.to_i(16).to_s(36) }
   add_authentication_token_field :feed_token
-  add_authentication_token_field :static_object_token
+  add_authentication_token_field :static_object_token, encrypted: :optional
 
   default_value_for :admin, false
   default_value_for(:external) { Gitlab::CurrentSettings.user_default_external }

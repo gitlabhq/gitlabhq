@@ -11,7 +11,7 @@ import {
   modelToUpdateMutationVariables,
   runnerToModel,
 } from 'ee_else_ce/runner/runner_details/runner_update_form_utils';
-import createFlash, { FLASH_TYPES } from '~/flash';
+import { createAlert, VARIANT_SUCCESS } from '~/flash';
 import { __ } from '~/locale';
 import { captureException } from '~/runner/sentry_utils';
 import { ACCESS_LEVEL_NOT_PROTECTED, ACCESS_LEVEL_REF_PROTECTED, PROJECT_TYPE } from '../constants';
@@ -75,14 +75,14 @@ export default {
 
         if (errors?.length) {
           // Validation errors need not be thrown
-          createFlash({ message: errors[0] });
+          createAlert({ message: errors[0] });
           return;
         }
 
         this.onSuccess();
       } catch (error) {
         const { message } = error;
-        createFlash({ message });
+        createAlert({ message });
 
         this.reportToSentry(error);
       } finally {
@@ -90,7 +90,7 @@ export default {
       }
     },
     onSuccess() {
-      createFlash({ message: __('Changes saved.'), type: FLASH_TYPES.SUCCESS });
+      createAlert({ message: __('Changes saved.'), variant: VARIANT_SUCCESS });
       this.model = runnerToModel(this.runner);
     },
     reportToSentry(error) {

@@ -216,62 +216,69 @@ export default {
           v-bind="propsSource.jiraIssuesProps"
           @request-jira-issue-types="onRequestJiraIssueTypes"
         />
-        <div v-if="isEditable" class="footer-block row-content-block">
-          <template v-if="isInstanceOrGroupLevel">
+
+        <div
+          v-if="isEditable"
+          class="footer-block row-content-block gl-display-flex gl-justify-content-space-between"
+        >
+          <div>
+            <template v-if="isInstanceOrGroupLevel">
+              <gl-button
+                v-gl-modal.confirmSaveIntegration
+                category="primary"
+                variant="confirm"
+                :loading="isSaving"
+                :disabled="disableButtons"
+                data-testid="save-button-instance-group"
+                data-qa-selector="save_changes_button"
+              >
+                {{ __('Save changes') }}
+              </gl-button>
+              <confirmation-modal @submit="onSaveClick" />
+            </template>
             <gl-button
-              v-gl-modal.confirmSaveIntegration
+              v-else
               category="primary"
               variant="confirm"
+              type="submit"
               :loading="isSaving"
               :disabled="disableButtons"
-              data-testid="save-button-instance-group"
+              data-testid="save-button"
               data-qa-selector="save_changes_button"
+              @click.prevent="onSaveClick"
             >
               {{ __('Save changes') }}
             </gl-button>
-            <confirmation-modal @submit="onSaveClick" />
-          </template>
-          <gl-button
-            v-else
-            category="primary"
-            variant="confirm"
-            type="submit"
-            :loading="isSaving"
-            :disabled="disableButtons"
-            data-testid="save-button"
-            data-qa-selector="save_changes_button"
-            @click.prevent="onSaveClick"
-          >
-            {{ __('Save changes') }}
-          </gl-button>
 
-          <gl-button
-            v-if="showTestButton"
-            category="secondary"
-            variant="confirm"
-            :loading="isTesting"
-            :disabled="disableButtons"
-            data-testid="test-button"
-            @click.prevent="onTestClick"
-          >
-            {{ __('Test settings') }}
-          </gl-button>
+            <gl-button
+              v-if="showTestButton"
+              category="secondary"
+              variant="confirm"
+              :loading="isTesting"
+              :disabled="disableButtons"
+              data-testid="test-button"
+              @click.prevent="onTestClick"
+            >
+              {{ __('Test settings') }}
+            </gl-button>
+
+            <gl-button :href="propsSource.cancelPath">{{ __('Cancel') }}</gl-button>
+          </div>
 
           <template v-if="showResetButton">
             <gl-button
               v-gl-modal.confirmResetIntegration
-              category="secondary"
-              variant="confirm"
+              category="tertiary"
+              variant="danger"
               :loading="isResetting"
               :disabled="disableButtons"
               data-testid="reset-button"
             >
               {{ __('Reset') }}
             </gl-button>
+
             <reset-confirmation-modal @reset="onResetClick" />
           </template>
-
-          <gl-button :href="propsSource.cancelPath">{{ __('Cancel') }}</gl-button>
         </div>
       </div>
     </div>

@@ -156,10 +156,10 @@ RSpec.describe 'Group issues page' do
       expect(page).to have_selector('.manual-ordering')
     end
 
-    it 'each issue item has a user-can-drag css applied' do
+    it 'each issue item has a gl-cursor-grab css applied' do
       visit issues_group_path(group, sort: 'relative_position')
 
-      expect(page).to have_selector('.issue.user-can-drag', count: 3)
+      expect(page).to have_selector('.issue.gl-cursor-grab', count: 3)
     end
 
     it 'issues should be draggable and persist order' do

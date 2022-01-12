@@ -5,7 +5,7 @@ import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import createFlash, { FLASH_TYPES } from '~/flash';
+import { createAlert, VARIANT_SUCCESS } from '~/flash';
 import RunnerUpdateForm from '~/runner/components/runner_update_form.vue';
 import {
   INSTANCE_TYPE,
@@ -79,9 +79,9 @@ describe('RunnerUpdateForm', () => {
       input: expect.objectContaining(submittedRunner),
     });
 
-    expect(createFlash).toHaveBeenLastCalledWith({
+    expect(createAlert).toHaveBeenLastCalledWith({
       message: expect.stringContaining('saved'),
-      type: FLASH_TYPES.SUCCESS,
+      variant: VARIANT_SUCCESS,
     });
 
     expect(findSubmitDisabledAttr()).toBeUndefined();
@@ -238,7 +238,7 @@ describe('RunnerUpdateForm', () => {
 
       await submitFormAndWait();
 
-      expect(createFlash).toHaveBeenLastCalledWith({
+      expect(createAlert).toHaveBeenLastCalledWith({
         message: `Network error: ${mockErrorMsg}`,
       });
       expect(captureException).toHaveBeenCalledWith({
@@ -262,7 +262,7 @@ describe('RunnerUpdateForm', () => {
 
       await submitFormAndWait();
 
-      expect(createFlash).toHaveBeenLastCalledWith({
+      expect(createAlert).toHaveBeenLastCalledWith({
         message: mockErrorMsg,
       });
       expect(captureException).not.toHaveBeenCalled();

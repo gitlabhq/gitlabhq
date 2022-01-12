@@ -1289,6 +1289,8 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
 
     let(:categories) { ::Gitlab::UsageDataCounters::HLLRedisCounter.categories }
 
+    let(:ignored_metrics) { ["i_package_composer_deploy_token_weekly"] }
+
     it 'has all known_events' do
       expect(subject).to have_key(:redis_hll_counters)
 
@@ -1298,6 +1300,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
         keys = ::Gitlab::UsageDataCounters::HLLRedisCounter.events_for_category(category)
 
         metrics = keys.map { |key| "#{key}_weekly" } + keys.map { |key| "#{key}_monthly" }
+        metrics -= ignored_metrics
 
         if ::Gitlab::UsageDataCounters::HLLRedisCounter::CATEGORIES_FOR_TOTALS.include?(category)
           metrics.append("#{category}_total_unique_counts_weekly", "#{category}_total_unique_counts_monthly")

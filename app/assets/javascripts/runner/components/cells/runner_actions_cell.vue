@@ -1,6 +1,6 @@
 <script>
 import { GlButton, GlButtonGroup, GlModalDirective, GlTooltipDirective } from '@gitlab/ui';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { __, s__, sprintf } from '~/locale';
 import runnerDeleteMutation from '~/runner/graphql/runner_delete.mutation.graphql';
 import runnerActionsUpdateMutation from '~/runner/graphql/runner_actions_update.mutation.graphql';
@@ -139,7 +139,7 @@ export default {
 
     onError(error) {
       const { message } = error;
-      createFlash({ message });
+      createAlert({ message });
 
       this.reportToSentry(error);
     },

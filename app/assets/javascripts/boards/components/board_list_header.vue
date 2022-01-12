@@ -263,7 +263,7 @@ export default {
   >
     <h3
       :class="{
-        'user-can-drag': userCanDrag,
+        'gl-cursor-grab': userCanDrag,
         'gl-py-3 gl-h-full': list.collapsed && !isSwimlanesHeader,
         'gl-border-b-0': list.collapsed || isSwimlanesHeader,
         'gl-py-2': list.collapsed && isSwimlanesHeader,

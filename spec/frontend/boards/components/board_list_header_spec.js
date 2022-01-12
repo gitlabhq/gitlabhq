@@ -180,18 +180,18 @@ describe('Board List Header Component', () => {
     const canDragList = [ListType.label, ListType.milestone, ListType.iteration, ListType.assignee];
 
     it.each(cannotDragList)(
-      'does not have user-can-drag-class so user cannot drag list',
+      'does not have gl-cursor-grab class so user cannot drag list',
       (listType) => {
         createComponent({ listType });
 
-        expect(findTitle().classes()).not.toContain('user-can-drag');
+        expect(findTitle().classes()).not.toContain('gl-cursor-grab');
       },
     );
 
-    it.each(canDragList)('has user-can-drag-class so user can drag list', (listType) => {
+    it.each(canDragList)('has gl-cursor-grab class so user can drag list', (listType) => {
       createComponent({ listType });
 
-      expect(findTitle().classes()).toContain('user-can-drag');
+      expect(findTitle().classes()).toContain('gl-cursor-grab');
     });
   });
 });

@@ -17690,10 +17690,10 @@ The state of the vulnerability.
 
 | Value | Description |
 | ----- | ----------- |
-| <a id="vulnerabilitystateconfirmed"></a>`CONFIRMED` | Confirmed vulnerability. |
-| <a id="vulnerabilitystatedetected"></a>`DETECTED` | Detected vulnerability. |
-| <a id="vulnerabilitystatedismissed"></a>`DISMISSED` | Dismissed vulnerability. |
-| <a id="vulnerabilitystateresolved"></a>`RESOLVED` | Resolved vulnerability. |
+| <a id="vulnerabilitystateconfirmed"></a>`CONFIRMED` | For details, see [vulnerability status values](https://docs.gitlab.com/ee/user/application_security/vulnerabilities/index.html#vulnerability-status-values). |
+| <a id="vulnerabilitystatedetected"></a>`DETECTED` | For details, see [vulnerability status values](https://docs.gitlab.com/ee/user/application_security/vulnerabilities/index.html#vulnerability-status-values). |
+| <a id="vulnerabilitystatedismissed"></a>`DISMISSED` | For details, see [vulnerability status values](https://docs.gitlab.com/ee/user/application_security/vulnerabilities/index.html#vulnerability-status-values). |
+| <a id="vulnerabilitystateresolved"></a>`RESOLVED` | For details, see [vulnerability status values](https://docs.gitlab.com/ee/user/application_security/vulnerabilities/index.html#vulnerability-status-values). |
 
 ### `WeightWildcardId`
 

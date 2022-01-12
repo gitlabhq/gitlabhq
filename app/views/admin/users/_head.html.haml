@@ -3,23 +3,26 @@
     %h3.page-title.gl-m-0
       = @user.name
       - if @user.blocked_pending_approval?
-        %span.cred
+        %span.gl-text-red-500
           = s_('AdminUsers|(Pending approval)')
       - elsif @user.banned?
-        %span.cred
+        %span.gl-text-red-500
           = s_('AdminUsers|(Banned)')
       - elsif @user.blocked?
-        %span.cred
+        %span.gl-text-red-500
           = s_('AdminUsers|(Blocked)')
       - if @user.internal?
-        %span.cred
+        %span.gl-text-red-500
           = s_('AdminUsers|(Internal)')
       - if @user.admin
-        %span.cred
+        %span.gl-text-red-500
           = s_('AdminUsers|(Admin)')
       - if @user.deactivated?
-        %span.cred
+        %span.gl-text-red-500
           = s_('AdminUsers|(Deactivated)')
+      - if @user.access_locked?
+        %span.gl-text-red-500
+          = s_('AdminUsers|(Locked)')
       = render_if_exists 'admin/users/auditor_user_badge'
       = render_if_exists 'admin/users/gma_user_badge'
 

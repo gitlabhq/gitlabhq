@@ -1,7 +1,7 @@
 ---
 data_category: optional
 key_path: counts.ci_pipeline_config_repository
-description: Total Pipelines from templates in repository
+description: Total Pipelines from CI files in repository
 product_section: ops
 product_stage: verify
 product_group: group::pipeline execution

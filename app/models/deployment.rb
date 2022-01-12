@@ -8,6 +8,7 @@ class Deployment < ApplicationRecord
   include Importable
   include Gitlab::Utils::StrongMemoize
   include FastDestroyAll
+  include FromUnion
 
   StatusUpdateError = Class.new(StandardError)
   StatusSyncError = Class.new(StandardError)

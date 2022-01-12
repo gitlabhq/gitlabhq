@@ -37,7 +37,7 @@ A vulnerability's status can be one of the following:
 
 | Status    | Description |
 |:----------|:------------|
-| Detected  | The default state for a newly discovered vulnerability. |
+| Detected  | The default state for a newly discovered vulnerability. Appears as "Needs triage" in the UI. |
 | Confirmed | A user has seen this vulnerability and confirmed it to be accurate. |
 | Dismissed | A user has seen this vulnerability and dismissed it because it is not accurate or otherwise not to be resolved. |
 | Resolved  | The vulnerability has been fixed or is no longer present. |

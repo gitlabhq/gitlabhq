@@ -4,7 +4,7 @@ import { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import RegistrationTokenResetDropdownItem from '~/runner/components/registration/registration_token_reset_dropdown_item.vue';
 import { INSTANCE_TYPE, GROUP_TYPE, PROJECT_TYPE } from '~/runner/constants';
 import runnersRegistrationTokenResetMutation from '~/runner/graphql/runners_registration_token_reset.mutation.graphql';
@@ -146,7 +146,7 @@ describe('RegistrationTokenResetDropdownItem', () => {
       findDropdownItem().trigger('click');
       await waitForPromises();
 
-      expect(createFlash).toHaveBeenLastCalledWith({
+      expect(createAlert).toHaveBeenLastCalledWith({
         message: `Network error: ${mockErrorMsg}`,
       });
       expect(captureException).toHaveBeenCalledWith({
@@ -172,7 +172,7 @@ describe('RegistrationTokenResetDropdownItem', () => {
       findDropdownItem().trigger('click');
       await waitForPromises();
 
-      expect(createFlash).toHaveBeenLastCalledWith({
+      expect(createAlert).toHaveBeenLastCalledWith({
         message: `${mockErrorMsg} ${mockErrorMsg2}`,
       });
       expect(captureException).toHaveBeenCalledWith({

@@ -52,7 +52,17 @@ class EnvironmentSerializer < BaseSerializer
   end
 
   def batch_load(resource)
-    resource = resource.preload(environment_associations)
+    if ::Feature.enabled?(:custom_preloader_for_deployments, default_enabled: :yaml)
+      resource = resource.preload(environment_associations.except(:last_deployment, :upcoming_deployment))
+
+      Preloaders::Environments::DeploymentPreloader.new(resource)
+        .execute_with_union(:last_deployment, deployment_associations)
+
+      Preloaders::Environments::DeploymentPreloader.new(resource)
+        .execute_with_union(:upcoming_deployment, deployment_associations)
+    else
+      resource = resource.preload(environment_associations)
+    end
 
     resource.all.to_a.tap do |environments|
       environments.each do |environment|

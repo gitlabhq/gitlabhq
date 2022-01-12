@@ -42,7 +42,7 @@ module Banzai
           # Allow any protocol in `a` elements
           # and then remove links with unsafe protocols
           allowlist[:protocols].delete('a')
-          allowlist[:transformers].push(self.class.method(:remove_unsafe_links))
+          allowlist[:transformers].push(self.class.method(:sanitize_unsafe_links))
 
           # Remove `rel` attribute from `a` elements
           allowlist[:transformers].push(self.class.remove_rel)

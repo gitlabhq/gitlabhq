@@ -1,6 +1,6 @@
 <script>
 import { GlLink } from '@gitlab/ui';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { fetchPolicies } from '~/lib/graphql';
 import { updateHistory } from '~/lib/utils/url_utility';
 import { formatNumber, sprintf, s__ } from '~/locale';
@@ -84,7 +84,7 @@ export default {
         };
       },
       error(error) {
-        createFlash({ message: I18N_FETCH_ERROR });
+        createAlert({ message: I18N_FETCH_ERROR });
 
         this.reportToSentry(error);
       },

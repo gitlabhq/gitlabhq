@@ -5,9 +5,23 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: howto
 ---
 
-# How to unlock a locked user from the command line **(FREE SELF)**
+# Locked users **(FREE SELF)**
 
-After ten failed login attempts a user gets in a locked state.
+Users are locked after ten failed sign-in attempts. These users remain locked:
+
+- For 10 minutes, after which time they are automatically unlocked.
+- Until an admin unlocks them from the [Admin Area](../user/admin_area/index.md) or the command line in under 10 minutes.
+
+## Unlock a user from the Admin Area
+
+1. On the top bar, select **Menu > Admin**.
+1. On the left sidebar, select **Overview > Users**.
+1. Use the search bar to find the locked user.
+1. From the **User administration** dropdown select **Unlock**.
+
+![Unlock a user from the Admin Area](img/unlock_user_v14_7.png)
+
+## Unlock a user from the command line
 
 To unlock a locked user:
 

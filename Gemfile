@@ -170,7 +170,7 @@ gem 'asciidoctor-kroki', '~> 0.5.0', require: false
 gem 'rouge', '~> 3.27.0'
 gem 'truncato', '~> 0.7.11'
 gem 'bootstrap_form', '~> 4.2.0'
-gem 'nokogiri', '~> 1.11.4'
+gem 'nokogiri', '~> 1.12'
 gem 'escape_utils', '~> 1.1'
 
 # Calendar rendering
@@ -264,7 +264,7 @@ gem 'ruby-fogbugz', '~> 0.2.1'
 gem 'kubeclient', '~> 4.9.2'
 
 # Sanitize user input
-gem 'sanitize', '~> 5.2.1'
+gem 'sanitize', '~> 6.0'
 gem 'babosa', '~> 1.0.4'
 
 # Sanitizes SVG input
@@ -277,7 +277,7 @@ gem 'licensee', '~> 9.14.1'
 gem 'charlock_holmes', '~> 0.7.7'
 
 # Detect mime content type from content
-gem 'ruby-magic', '~> 0.4'
+gem 'ruby-magic', '~> 0.5'
 
 # Faster blank
 gem 'fast_blank'

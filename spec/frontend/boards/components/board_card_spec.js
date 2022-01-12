@@ -167,7 +167,7 @@ describe('Board card', () => {
       mountComponent({ item: { ...mockIssue, isLoading: true } });
 
       expect(wrapper.classes()).toContain('is-disabled');
-      expect(wrapper.classes()).not.toContain('user-can-drag');
+      expect(wrapper.classes()).not.toContain('gl-cursor-grab');
     });
   });
 
@@ -177,7 +177,7 @@ describe('Board card', () => {
       mountComponent();
 
       expect(wrapper.classes()).not.toContain('is-disabled');
-      expect(wrapper.classes()).toContain('user-can-drag');
+      expect(wrapper.classes()).toContain('gl-cursor-grab');
     });
   });
 });

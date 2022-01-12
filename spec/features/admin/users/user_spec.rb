@@ -125,6 +125,26 @@ RSpec.describe 'Admin::Users::User' do
       end
     end
 
+    context 'when a user is locked', time_travel_to: '2020-02-02 10:30:45 -0700' do
+      let_it_be(:locked_user) { create(:user, locked_at: DateTime.parse('2020-02-02 10:30:00 -0700')) }
+
+      before do
+        visit admin_user_path(locked_user)
+      end
+
+      it "displays `(Locked)` next to user's name" do
+        expect(page).to have_content("#{locked_user.name} (Locked)")
+      end
+
+      it 'allows a user to be unlocked from the `User administration dropdown', :js do
+        accept_gl_confirm("Unlock user #{locked_user.name}?", button_text: 'Unlock') do
+          click_action_in_user_dropdown(locked_user.id, 'Unlock')
+        end
+
+        expect(page).not_to have_content("#{locked_user.name} (Locked)")
+      end
+    end
+
     describe 'Impersonation' do
       let_it_be(:another_user) { create(:user) }
 

@@ -1,6 +1,6 @@
 <script>
 import { GlDropdownItem, GlLoadingIcon } from '@gitlab/ui';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { TYPE_GROUP, TYPE_PROJECT } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { __, s__ } from '~/locale';
@@ -91,7 +91,7 @@ export default {
     },
     onError(error) {
       const { message } = error;
-      createFlash({ message });
+      createAlert({ message });
 
       this.reportToSentry(error);
     },

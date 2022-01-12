@@ -9,6 +9,9 @@ class AnalyticsBuildEntity < Grape::Entity
   expose :ref, as: :branch
   expose :short_sha
   expose :author, using: UserEntity
+  expose :project_path do |build|
+    build.project.path
+  end
 
   expose :started_at, as: :date do |build|
     interval_in_words(build[:started_at])

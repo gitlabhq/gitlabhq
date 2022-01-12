@@ -210,6 +210,25 @@ RSpec.describe Projects::RepositoriesController do
             expect(response).to have_gitlab_http_status(:found)
           end
         end
+
+        context 'when token is migrated' do
+          let(:user) { create(:user, static_object_token: '') }
+          let(:token) { 'Test' }
+
+          it 'calls the action normally' do
+            user.update_column(:static_object_token, token)
+
+            get :archive, params: { namespace_id: project.namespace, project_id: project, id: 'master', token: token }, format: 'zip'
+            expect(user.static_object_token).to eq(token)
+            expect(response).to have_gitlab_http_status(:ok)
+
+            user.update_column(:static_object_token_encrypted, Gitlab::CryptoHelper.aes256_gcm_encrypt(token))
+
+            get :archive, params: { namespace_id: project.namespace, project_id: project, id: 'master', token: token }, format: 'zip'
+            expect(user.static_object_token).to eq(token)
+            expect(response).to have_gitlab_http_status(:ok)
+          end
+        end
       end
 
       context 'when a token header is present' do

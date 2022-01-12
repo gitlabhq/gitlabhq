@@ -7,7 +7,7 @@ module Packages
 
       def execute
         return error('Version is empty.', 400) if params[:module_version].blank?
-        return error('Package already exists.', 403) if current_package_exists_elsewhere?
+        return error('Access Denied', 403) if current_package_exists_elsewhere?
         return error('Package version already exists.', 403) if current_package_version_exists?
         return error('File is too large.', 400) if file_size_exceeded?
 

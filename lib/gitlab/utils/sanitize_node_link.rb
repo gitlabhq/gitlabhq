@@ -8,6 +8,12 @@ module Gitlab
       UNSAFE_PROTOCOLS  = %w(data javascript vbscript).freeze
       ATTRS_TO_SANITIZE = %w(href src data-src data-canonical-src).freeze
 
+      # sanitize 6.0 requires only a context argument. Do not add any default
+      # arguments to this method.
+      def sanitize_unsafe_links(env)
+        remove_unsafe_links(env)
+      end
+
       def remove_unsafe_links(env, remove_invalid_links: true)
         node = env[:node]
 

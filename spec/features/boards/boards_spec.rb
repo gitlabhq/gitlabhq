@@ -528,7 +528,7 @@ RSpec.describe 'Project issue boards', :js do
     end
 
     it 'does not allow dragging' do
-      expect(page).not_to have_selector('.user-can-drag')
+      expect(page).not_to have_selector('.gl-cursor-grab')
     end
   end
 

@@ -1,5 +1,5 @@
 <script>
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { TYPE_CI_RUNNER } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import RunnerHeader from '../components/runner_header.vue';
@@ -34,7 +34,7 @@ export default {
         };
       },
       error(error) {
-        createFlash({ message: I18N_FETCH_ERROR });
+        createAlert({ message: I18N_FETCH_ERROR });
 
         this.reportToSentry(error);
       },

@@ -110,7 +110,7 @@ export default {
           v-for="issue in relatedIssues"
           :key="issue.id"
           :class="{
-            'user-can-drag': canReorder,
+            'gl-cursor-grab': canReorder,
             'sortable-row': canReorder,
             'card card-slim': canReorder,
           }"

@@ -37,7 +37,7 @@ RSpec.describe Packages::TerraformModule::CreatePackageService do
       let!(:existing_package) { create(:terraform_module_package, project: project2, name: 'foo/bar', version: '1.0.0') }
 
       it { expect(subject[:http_status]).to eq 403 }
-      it { expect(subject[:message]).to be 'Package already exists.' }
+      it { expect(subject[:message]).to be 'Access Denied' }
     end
 
     context 'version already exists' do

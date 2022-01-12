@@ -7,7 +7,7 @@ module IssuesHelper
     classes = ["issue"]
     classes << "closed" if issue.closed?
     classes << "today" if issue.new?
-    classes << "user-can-drag" if @sort == 'relative_position'
+    classes << "gl-cursor-grab" if @sort == 'relative_position'
     classes.join(' ')
   end
 

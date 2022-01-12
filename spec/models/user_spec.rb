@@ -1773,6 +1773,29 @@ RSpec.describe User do
       expect(static_object_token).not_to be_blank
       expect(user.reload.static_object_token).to eq static_object_token
     end
+
+    it 'generates an encrypted version of the token' do
+      user = create(:user, static_object_token: nil)
+
+      expect(user[:static_object_token]).to be_nil
+      expect(user[:static_object_token_encrypted]).to be_nil
+
+      user.static_object_token
+
+      expect(user[:static_object_token]).to be_nil
+      expect(user[:static_object_token_encrypted]).to be_present
+    end
+
+    it 'prefers an encoded version of the token' do
+      user = create(:user, static_object_token: nil)
+
+      token = user.static_object_token
+
+      user.update_column(:static_object_token, 'Test')
+
+      expect(user.static_object_token).not_to eq('Test')
+      expect(user.static_object_token).to eq(token)
+    end
   end
 
   describe 'enabled_static_object_token' do

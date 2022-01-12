@@ -4,7 +4,7 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 
 import { captureException } from '~/runner/sentry_utils';
@@ -200,7 +200,7 @@ describe('RunnerTypeCell', () => {
           });
 
           it('error is shown to the user', () => {
-            expect(createFlash).toHaveBeenCalledTimes(1);
+            expect(createAlert).toHaveBeenCalledTimes(1);
           });
         });
 
@@ -229,7 +229,7 @@ describe('RunnerTypeCell', () => {
           });
 
           it('error is shown to the user', () => {
-            expect(createFlash).toHaveBeenCalledTimes(1);
+            expect(createAlert).toHaveBeenCalledTimes(1);
           });
         });
       });
@@ -350,7 +350,7 @@ describe('RunnerTypeCell', () => {
         });
 
         it('error is shown to the user', () => {
-          expect(createFlash).toHaveBeenCalledTimes(1);
+          expect(createAlert).toHaveBeenCalledTimes(1);
         });
 
         it('toast notification is not shown', () => {
@@ -382,7 +382,7 @@ describe('RunnerTypeCell', () => {
         });
 
         it('error is shown to the user', () => {
-          expect(createFlash).toHaveBeenCalledTimes(1);
+          expect(createAlert).toHaveBeenCalledTimes(1);
         });
       });
     });

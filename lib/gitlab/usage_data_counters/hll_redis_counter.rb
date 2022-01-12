@@ -104,7 +104,7 @@ module Gitlab
             events_names = events_for_category(category)
 
             event_results = events_names.each_with_object({}) do |event, hash|
-              hash["#{event}_weekly"] = unique_events(**weekly_time_range.merge(event_names: [event]))
+              hash["#{event}_weekly"] = unique_events(**weekly_time_range.merge(event_names: [event])) unless event == "i_package_composer_deploy_token"
               hash["#{event}_monthly"] = unique_events(**monthly_time_range.merge(event_names: [event]))
             end
 
