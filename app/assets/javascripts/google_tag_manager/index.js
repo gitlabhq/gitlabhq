@@ -82,7 +82,7 @@ export const trackSaasTrialGroup = () => {
     return;
   }
 
-  const form = document.getElementById('new_group');
+  const form = document.querySelector('.js-saas-trial-group');
   form.addEventListener('submit', () => {
     pushEvent('saasTrialGroup');
   });

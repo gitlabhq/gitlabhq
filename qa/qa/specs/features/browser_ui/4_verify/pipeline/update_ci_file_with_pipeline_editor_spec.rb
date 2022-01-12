@@ -42,7 +42,7 @@ module QA
       before do
         Flow::Login.sign_in
         project.visit!
-        Support::Waiter.wait_until { project.pipelines.first[:status] == 'success' }
+        Support::Waiter.wait_until { !project.pipelines.empty? && project.pipelines.first[:status] == 'success' }
         Page::Project::Menu.perform(&:go_to_pipeline_editor)
       end
 

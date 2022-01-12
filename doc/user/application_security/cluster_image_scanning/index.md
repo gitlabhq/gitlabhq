@@ -173,10 +173,10 @@ You can [configure](#customize-the-cluster-image-scanning-settings) analyzers by
 | CI/CD Variable                 | Default       | Description |
 | ------------------------------ | ------------- | ----------- |
 | `CIS_KUBECONFIG`               | `""` | File used to configure access to the Kubernetes cluster. See the [Kubernetes documentation](https://kubernetes.io/docs/tasks/access-application-cluster/configure-access-multiple-clusters/) for more details. |
-| `CIS_CONTAINER_NAME` | `""` | Name of the container used in the Kubernetes resource you want to filter vulnerabilities for. For example, `alpine`.  |
-| `CIS_RESOURCE_NAME` | `""` | Name of the Kubernetes resource you want to filter vulnerabilities for. For example, `nginx`.   |
-| `CIS_RESOURCE_NAMESPACE` | `""` | Namespace of the Kubernetes resource you want to filter vulnerabilities for. For example, `production`.   |
-| `CIS_RESOURCE_KIND` | `""` | Kind of the Kubernetes resource you want to filter vulnerabilities for. For example, `deployment`.  |
+| `CIS_CONTAINER_NAMES` | `""` | A comma-separated list of container names used in the Kubernetes resources you want to filter vulnerabilities for. For example, `alpine,postgres`.  |
+| `CIS_RESOURCE_NAMES` | `""` | A comma-separated list of Kubernetes resources you want to filter vulnerabilities for. For example, `nginx,redis`.   |
+| `CIS_RESOURCE_NAMESPACES` | `""` | A comma-separated list of namespaces of the Kubernetes resources you want to filter vulnerabilities for. For example, `production,staging`.   |
+| `CIS_RESOURCE_KINDS` | `""` | A comma-separated list of the kinds of Kubernetes resources to filter vulnerabilities for. For example, `deployment,pod`. |
 | `CIS_CLUSTER_IDENTIFIER` | `""` | ID of the Kubernetes cluster integrated with GitLab. This is used to map vulnerabilities to the cluster so they can be filtered in the Vulnerability Report page. |
 | `CIS_CLUSTER_AGENT_IDENTIFIER` | `""` | ID of the Kubernetes cluster agent integrated with GitLab. This maps vulnerabilities to the agent so they can be filtered in the Vulnerability Report page. |
 

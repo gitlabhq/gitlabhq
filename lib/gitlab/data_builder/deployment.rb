@@ -25,7 +25,8 @@ module Gitlab
           user: deployment.deployed_by.hook_attrs,
           user_url: Gitlab::UrlBuilder.build(deployment.deployed_by),
           commit_url: Gitlab::UrlBuilder.build(deployment.commit),
-          commit_title: deployment.commit.title
+          commit_title: deployment.commit.title,
+          ref: deployment.ref
         }
       end
     end

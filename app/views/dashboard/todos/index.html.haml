@@ -80,28 +80,28 @@
     .js-nothing-here-container.empty-state.hidden
       .svg-content
         = image_tag 'illustrations/todos_all_done.svg'
-      .text-content
-        %h4.text-center
+      .text-content.gl-text-center
+        %h4
           = s_("Todos|You're all done!")
   - elsif current_user.todos.any?
     .col.todos-all-done.empty-state
       .svg-content.svg-250
         = image_tag 'illustrations/todos_all_done.svg'
-      .text-content
+      .text-content.gl-text-center
         - if todos_filter_empty?
-          %h4.text-center
+          %h4
             = Gitlab.config.gitlab.no_todos_messages.sample
           %p
             = (s_("Todos|Are you looking for things to do? Take a look at %{strongStart}%{openIssuesLinkStart}open issues%{openIssuesLinkEnd}%{strongEnd}, contribute to %{strongStart}%{mergeRequestLinkStart}a merge request%{mergeRequestLinkEnd}%{mergeRequestLinkEnd}%{strongEnd}, or mention someone in a comment to automatically assign them a new to-do item.") % { strongStart: '<strong>', strongEnd: '</strong>', openIssuesLinkStart: "<a href=\"#{issues_dashboard_path}\">", openIssuesLinkEnd: '</a>', mergeRequestLinkStart: "<a href=\"#{merge_requests_dashboard_path}\">", mergeRequestLinkEnd: '</a>' }).html_safe
         - else
-          %h4.text-center
+          %h4
             = s_("Todos|Nothing is on your to-do list. Nice work!")
   - else
     .col.empty-state
       .svg-content
         = image_tag 'illustrations/todos_empty.svg'
-      .text-content
-        %h4.text-center
+      .text-content.gl-text-center
+        %h4
           = s_("Todos|Your To-Do List shows what to work on next")
         %p
           = (s_("Todos|When an issue or merge request is assigned to you, or when you receive a %{strongStart}@mention%{strongEnd} in a comment, this automatically triggers a new item in your To-Do List.") % { strongStart: '<strong>', strongEnd: '</strong>' }).html_safe

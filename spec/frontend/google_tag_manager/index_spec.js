@@ -142,7 +142,7 @@ describe('~/google_tag_manager/index', () => {
       links: [{ cls: 'js-skip-trial', expectation: { event: 'saasTrialSkip' } }],
     }),
     createTestCase(trackSaasTrialGroup, {
-      forms: [{ id: 'new_group', expectation: { event: 'saasTrialGroup' } }],
+      forms: [{ cls: 'js-saas-trial-group', expectation: { event: 'saasTrialGroup' } }],
     }),
     createTestCase(trackSaasTrialProject, {
       forms: [{ id: 'new_project', expectation: { event: 'saasTrialProject' } }],
