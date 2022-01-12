@@ -3138,6 +3138,29 @@ RSpec.describe API::Projects do
       expect(json_response['message']).to eq('404 Project Not Found')
     end
 
+    it 'returns 404 if the source project members cannot be viewed by the requester' do
+      private_project = create(:project, :private)
+
+      expect do
+        post api("/projects/#{project.id}/import_project_members/#{private_project.id}", user)
+      end.not_to change { project.members.count }
+
+      expect(response).to have_gitlab_http_status(:not_found)
+      expect(json_response['message']).to eq('404 Project Not Found')
+    end
+
+    it 'returns 403 if the source project members cannot be administered by the requester' do
+      project.add_maintainer(user2)
+      project2.add_developer(user2)
+
+      expect do
+        post api("/projects/#{project.id}/import_project_members/#{project2.id}", user2)
+      end.not_to change { project.members.count }
+
+      expect(response).to have_gitlab_http_status(:forbidden)
+      expect(json_response['message']).to eq('403 Forbidden - Project')
+    end
+
     it 'returns 422 if the import failed for valid projects' do
       allow_next_instance_of(::ProjectTeam) do |project_team|
         allow(project_team).to receive(:import).and_return(false)

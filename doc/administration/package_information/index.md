@@ -76,7 +76,7 @@ characters on each line.
 
 ## Init system detection
 
-Omnibus GitLab attempts to query the underlaying system in order to
+Omnibus GitLab attempts to query the underlying system in order to
 check which init system it uses.
 This manifests itself as a `WARNING` during the `sudo gitlab-ctl reconfigure`
 run.

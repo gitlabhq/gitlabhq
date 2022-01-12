@@ -128,6 +128,8 @@ RSpec.describe Projects::RawController do
       let_it_be(:user) { create(:user, static_object_token: 'very-secure-token') }
       let_it_be(:file_path) { 'master/README.md' }
 
+      let(:token) { user.static_object_token }
+
       before do
         project.add_developer(user)
       end
@@ -143,12 +145,35 @@ RSpec.describe Projects::RawController do
 
       context 'when a token param is present' do
         context 'when token is correct' do
-          let(:params) { { token: user.static_object_token } }
+          let(:params) { { token: token } }
 
           it 'calls the action normally' do
             get_show
 
             expect(response).to have_gitlab_http_status(:ok)
+          end
+
+          context 'when user with expired password' do
+            let_it_be(:user) { create(:user, password_expires_at: 2.minutes.ago) }
+
+            it 'redirects to sign in page' do
+              get_show
+
+              expect(response).to have_gitlab_http_status(:found)
+              expect(response.location).to end_with('/users/sign_in')
+            end
+          end
+
+          context 'when password expiration is not applicable' do
+            context 'when ldap user' do
+              let_it_be(:user) { create(:omniauth_user, provider: 'ldap', password_expires_at: 2.minutes.ago) }
+
+              it 'calls the action normally' do
+                get_show
+
+                expect(response).to have_gitlab_http_status(:ok)
+              end
+            end
           end
         end
 
@@ -165,18 +190,45 @@ RSpec.describe Projects::RawController do
       end
 
       context 'when a token header is present' do
+        before do
+          request.headers['X-Gitlab-Static-Object-Token'] = token
+        end
+
         context 'when token is correct' do
           it 'calls the action normally' do
-            request.headers['X-Gitlab-Static-Object-Token'] = user.static_object_token
             get_show
 
             expect(response).to have_gitlab_http_status(:ok)
           end
+
+          context 'when user with expired password' do
+            let_it_be(:user) { create(:user, password_expires_at: 2.minutes.ago) }
+
+            it 'redirects to sign in page' do
+              get_show
+
+              expect(response).to have_gitlab_http_status(:found)
+              expect(response.location).to end_with('/users/sign_in')
+            end
+          end
+
+          context 'when password expiration is not applicable' do
+            context 'when ldap user' do
+              let_it_be(:user) { create(:omniauth_user, provider: 'ldap', password_expires_at: 2.minutes.ago) }
+
+              it 'calls the action normally' do
+                get_show
+
+                expect(response).to have_gitlab_http_status(:ok)
+              end
+            end
+          end
         end
 
         context 'when token is incorrect' do
+          let(:token) { 'foobar' }
+
           it 'redirects to sign in page' do
-            request.headers['X-Gitlab-Static-Object-Token'] = 'foobar'
             get_show
 
             expect(response).to have_gitlab_http_status(:found)

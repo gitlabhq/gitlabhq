@@ -63,7 +63,7 @@ on your code by using GitLab CI/CD and [sitespeed.io](https://www.sitespeed.io)
 using Docker-in-Docker.
 
 1. First, set up GitLab Runner with a
-   [Docker-in-Docker build](../../../ci/docker/using_docker_build.md#use-the-docker-executor-with-the-docker-image-docker-in-docker).
+   [Docker-in-Docker build](../../../ci/docker/using_docker_build.md#use-docker-in-docker).
 1. Configure the default Browser Performance Testing CI/CD job as follows in your `.gitlab-ci.yml` file:
 
    ```yaml

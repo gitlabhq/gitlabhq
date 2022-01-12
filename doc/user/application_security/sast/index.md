@@ -1056,6 +1056,12 @@ For Maven builds, add the following to your `pom.xml` file:
 </properties>
 ```
 
+### SpotBugs Error: `Project couldn't be built`
+
+If your job is failing at the build step with the message "Project couldn't be built", it's most likely because your job is asking SpotBugs to build with a tool that isn't part of its default tools. For a list of the SpotBugs default tools, see [SpotBugs' asdf dependencies](https://gitlab.com/gitlab-org/security-products/analyzers/spotbugs/-/raw/master/config/.tool-versions).
+
+The solution is to use [pre-compilation](#pre-compilation). Pre-compilation ensures the images required by SpotBugs are available in the job's container.
+
 ### Flawfinder encoding error
 
 This occurs when Flawfinder encounters an invalid UTF-8 character. To fix this, convert all source code in your project to UTF-8 character encoding. This can be done with [`cvt2utf`](https://github.com/x1angli/cvt2utf) or [`iconv`](https://www.gnu.org/software/libiconv/documentation/libiconv-1.13/iconv.1.html) either over the entire project or per job using the [`before_script`](../../../ci/yaml/index.md#before_script) feature.

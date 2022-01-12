@@ -238,7 +238,7 @@ If EKS node autoscaling is employed, it is likely that your average loading will
 
 **Deploy Now**
 
-Deploy Now links leverage the AWS Quick Start automation and only prepopulate the number of instances and instance types for the Quick Start based on the Bill of Meterials below. You must provide appropriate input for all other parameters by following the guidance in the [Quick Start documentation's Deployment steps](https://aws-quickstart.github.io/quickstart-eks-gitlab/#_deployment_steps) section.
+Deploy Now links leverage the AWS Quick Start automation and only prepopulate the number of instances and instance types for the Quick Start based on the Bill of Materials below. You must provide appropriate input for all other parameters by following the guidance in the [Quick Start documentation's Deployment steps](https://aws-quickstart.github.io/quickstart-eks-gitlab/#_deployment_steps) section.
 
 - **[Deploy Now: AWS Quick Start for 2 AZs](https://us-east-2.console.aws.amazon.com/cloudformation/home?region=us-east-2#/stacks/quickcreate?templateUrl=https://aws-quickstart.s3.us-east-1.amazonaws.com/quickstart-eks-gitlab/templates/gitlab-entry-new-vpc.template.yaml&stackName=Gitlab-EKS-5K-Users-2AZs&param_NumberOfAZs=2&param_NodeInstanceType=c5.2xlarge&param_NumberOfNodes=5&param_MaxNumberOfNodes=5&param_DBInstanceClass=db.r6g.2xlarge&param_CacheNodes=2&param_CacheNodeType=cache.m6g.xlarge&param_GitalyInstanceType=m5.2xlarge&param_NumberOfGitalyReplicas=2&param_PraefectInstanceType=c5.large&param_NumberOfPraefectReplicas=2)**
 - **[Deploy Now: AWS Quick Start for 3 AZs](https://us-east-2.console.aws.amazon.com/cloudformation/home?region=us-east-2#/stacks/quickcreate?templateUrl=https://aws-quickstart.s3.us-east-1.amazonaws.com/quickstart-eks-gitlab/templates/gitlab-entry-new-vpc.template.yaml&stackName=Gitlab-EKS-5K-Users-3AZs&param_NumberOfAZs=3&param_NodeInstanceType=c5.2xlarge&param_NumberOfNodes=5&param_MaxNumberOfNodes=5&param_DBInstanceClass=db.r6g.2xlarge&param_CacheNodes=3&param_CacheNodeType=cache.m6g.xlarge&param_GitalyInstanceType=m5.2xlarge&param_NumberOfGitalyReplicas=3&param_PraefectInstanceType=c5.large&param_NumberOfPraefectReplicas=3)**
@@ -292,7 +292,7 @@ If EKS node autoscaling is employed, it is likely that your average loading will
 
 **Deploy Now**
 
-Deploy Now links leverage the AWS Quick Start automation and only prepopulate the number of instances and instance types for the Quick Start based on the Bill of Meterials below. You must provide appropriate input for all other parameters by following the guidance in the [Quick Start documentation's Deployment steps](https://aws-quickstart.github.io/quickstart-eks-gitlab/#_deployment_steps) section.
+Deploy Now links leverage the AWS Quick Start automation and only prepopulate the number of instances and instance types for the Quick Start based on the Bill of Materials below. You must provide appropriate input for all other parameters by following the guidance in the [Quick Start documentation's Deployment steps](https://aws-quickstart.github.io/quickstart-eks-gitlab/#_deployment_steps) section.
 
 - **[Deploy Now: AWS Quick Start for 3 AZs](https://us-east-2.console.aws.amazon.com/cloudformation/home?region=us-east-2#/stacks/quickcreate?templateUrl=https://aws-quickstart.s3.us-east-1.amazonaws.com/quickstart-eks-gitlab/templates/gitlab-entry-new-vpc.template.yaml&stackName=Gitlab-EKS-10K-Users-3AZs&param_NumberOfAZs=3&param_NodeInstanceType=c5.4xlarge&param_NumberOfNodes=9&param_MaxNumberOfNodes=9&param_DBInstanceClass=db.r6g.2xlarge&param_CacheNodes=3&param_CacheNodeType=cache.m6g.2xlarge&param_GitalyInstanceType=m5.4xlarge&param_NumberOfGitalyReplicas=3&param_PraefectInstanceType=c5.large&param_NumberOfPraefectReplicas=3)**
 
@@ -345,7 +345,7 @@ If EKS node autoscaling is employed, it is likely that your average loading will
 
 **Deploy Now**
 
-Deploy Now links leverage the AWS Quick Start automation and only prepopulate the number of instances and instance types for the Quick Start based on the Bill of Meterials below. You must provide appropriate input for all other parameters by following the guidance in the [Quick Start documentation's Deployment steps](https://aws-quickstart.github.io/quickstart-eks-gitlab/#_deployment_steps) section.
+Deploy Now links leverage the AWS Quick Start automation and only prepopulate the number of instances and instance types for the Quick Start based on the Bill of Materials below. You must provide appropriate input for all other parameters by following the guidance in the [Quick Start documentation's Deployment steps](https://aws-quickstart.github.io/quickstart-eks-gitlab/#_deployment_steps) section.
 
 - **[Deploy Now: AWS Quick Start for 3 AZs - 1/4 Scale EKS](https://us-east-2.console.aws.amazon.com/cloudformation/home?region=us-east-2#/stacks/quickcreate?templateUrl=https://aws-quickstart.s3.us-east-1.amazonaws.com/quickstart-eks-gitlab/templates/gitlab-entry-new-vpc.template.yaml&stackName=Gitlab-EKS-50K-Users-3AZs&param_NumberOfAZs=3&param_NodeInstanceType=c5.4xlarge&param_NumberOfNodes=7&param_MaxNumberOfNodes=9&param_DBInstanceClass=db.r6g.8xlarge&param_CacheNodes=3&param_CacheNodeType=cache.m6g.2xlarge&param_GitalyInstanceType=m5.16xlarge&param_NumberOfGitalyReplicas=3&param_PraefectInstanceType=c5.xlarge&param_NumberOfPraefectReplicas=3)**
 

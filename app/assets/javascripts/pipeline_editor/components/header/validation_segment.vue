@@ -111,7 +111,10 @@ export default {
 
     <span v-else class="gl-display-inline-flex gl-white-space-nowrap gl-max-w-full">
       <tooltip-on-truncate :title="message" class="gl-text-truncate">
-        <gl-icon :name="icon" /> <span data-testid="validationMsg">{{ message }}</span>
+        <gl-icon :name="icon" />
+        <span data-qa-selector="validation_message_content" data-testid="validationMsg">
+          {{ message }}
+        </span>
       </tooltip-on-truncate>
       <span v-if="!isEmpty" class="gl-flex-shrink-0 gl-pl-2">
         <gl-link data-testid="learnMoreLink" :href="helpPath">

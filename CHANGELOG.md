@@ -2,6 +2,10 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 14.6.2 (2022-01-10)
+
+No changes.
+
 ## 14.6.1 (2022-01-04)
 
 ### Fixed (2 changes)
@@ -386,6 +390,10 @@ entry.
 - [Fix OpenStruct use](gitlab-org/gitlab@60451303098187cb922d29c9088a3e74892aa0d7) by @mehulsharma ([merge request](gitlab-org/gitlab!74618))
 - [Fix OpenStruct use](gitlab-org/gitlab@f8466f5943a1afeabaf9cf781f7804a8df515a0e) by @mehulsharma ([merge request](gitlab-org/gitlab!74702))
 - [Update Sidekiq to 6.3.1](gitlab-org/gitlab@22e8bc0af656717e56428a7227c467fe08021c66) ([merge request](gitlab-org/gitlab!73973))
+
+## 14.5.3 (2022-01-11)
+
+No changes.
 
 ## 14.5.2 (2021-12-03)
 
@@ -928,6 +936,10 @@ No changes.
 - [Add pipeline artifacts, packages and uploads size to group REST API](gitlab-org/gitlab@fc6fdede8e459e83df4d048868ee96f3e1a49489) by @guillaume.chauvel ([merge request](gitlab-org/gitlab!72075))
 - [Add pipeline artifacts and uploads sizes to project REST API](gitlab-org/gitlab@58d66f28faf42ae98ca11ff1ba0bdd9180e988ad) by @guillaume.chauvel ([merge request](gitlab-org/gitlab!72075))
 - [Remove not used parameter from epics finder](gitlab-org/gitlab@49fce172b57b2f376a114726b1dd1900fe36a238) ([merge request](gitlab-org/gitlab!72285)) **GitLab Enterprise Edition**
+
+## 14.4.5 (2022-01-11)
+
+No changes.
 
 ## 14.4.4 (2021-12-03)
 

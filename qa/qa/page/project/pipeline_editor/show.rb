@@ -32,6 +32,19 @@ module QA
             element :commit_changes_button
           end
 
+          view 'app/assets/javascripts/pipeline_editor/components/header/validation_segment.vue' do
+            element :validation_message_content
+          end
+
+          view 'app/assets/javascripts/pipelines/components/pipeline_graph/pipeline_graph.vue' do
+            element :stage_container
+            element :job_container
+          end
+
+          view 'app/assets/javascripts/pipeline_editor/components/pipeline_editor_tabs.vue' do
+            element :file_editor_container
+          end
+
           def initialize
             super
 
@@ -80,7 +93,47 @@ module QA
             find_element(:pipeline_id_content).text.delete!('#').to_i
           end
 
+          def ci_syntax_validate_message
+            find_element(:validation_message_content).text
+          end
+
+          def go_to_visualize_tab
+            go_to_tab('Visualize')
+          end
+
+          def go_to_lint_tab
+            go_to_tab('Lint')
+          end
+
+          def go_to_view_merged_yaml_tab
+            go_to_tab('View merged YAML')
+          end
+
+          def has_source_editor?
+            has_element?(:source_editor_container)
+          end
+
+          def has_stage?(name)
+            all_elements(:stage_container, minimum: 1).any? { |item| item.text.match(/#{name}/i) }
+          end
+
+          def has_job?(name)
+            all_elements(:job_container, minimum: 1).any? { |item| item.text.match(/#{name}/i) }
+          end
+
+          def tab_alert_message
+            within_element(:file_editor_container) do
+              find('.gl-alert-body').text
+            end
+          end
+
           private
+
+          def go_to_tab(name)
+            within_element(:file_editor_container) do
+              find('.nav-item', text: name).click
+            end
+          end
 
           # If the page thinks user has never opened pipeline editor before
           # It will expand pipeline editor sidebar by default

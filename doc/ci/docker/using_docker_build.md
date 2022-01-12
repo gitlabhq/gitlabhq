@@ -19,7 +19,7 @@ GitLab Runner to support `docker` commands.
 To enable Docker commands for your CI/CD jobs, you can use:
 
 - [The shell executor](#use-the-shell-executor)
-- [The Docker executor with the Docker image (Docker-in-Docker)](#use-the-docker-executor-with-the-docker-image-docker-in-docker)
+- [Docker-in-Docker](#use-docker-in-docker)
 - [Docker socket binding](#use-docker-socket-binding)
 
 If you don't want to execute a runner in privileged mode,
@@ -78,54 +78,29 @@ You can now use `docker` commands (and install `docker-compose` if needed).
 When you add `gitlab-runner` to the `docker` group, you are effectively granting `gitlab-runner` full root permissions.
 Learn more about the [security of the `docker` group](https://blog.zopyx.com/on-docker-security-docker-group-considered-harmful/).
 
-### Use the Docker executor with the Docker image (Docker-in-Docker)
+### Use Docker-in-Docker
 
 "Docker-in-Docker" (`dind`) means:
 
-- Your registered runner uses the [Docker executor](https://docs.gitlab.com/runner/executors/docker.html).
+- Your registered runner uses the [Docker executor](https://docs.gitlab.com/runner/executors/docker.html) or the [Kubernetes executor](https://docs.gitlab.com/runner/executors/kubernetes.html).
 - The executor uses a [container image of Docker](https://hub.docker.com/_/docker/), provided
   by Docker, to run your CI/CD jobs.
 
 The Docker image has all of the `docker` tools installed and can run
 the job script in context of the image in privileged mode.
 
-We recommend you use [Docker-in-Docker with TLS enabled](#docker-in-docker-with-tls-enabled),
+We recommend you use Docker-in-Docker with TLS enabled,
 which is supported by [GitLab.com shared runners](../runners/index.md).
 
 You should always specify a specific version of the image, like `docker:19.03.12`.
 If you use a tag like `docker:stable`, you have no control over which version is used.
 Unpredictable behavior can result, especially when new versions are released.
 
-#### Limitations of Docker-in-Docker
+#### Use the Docker executor with Docker-in-Docker
 
-Docker-in-Docker is the recommended configuration, but is
-not without its own challenges:
+You can use the Docker executor to run jobs in a Docker container.
 
-- **The `docker-compose` command**: This command is not available in this configuration by default.
-  To use `docker-compose` in your job scripts, follow the `docker-compose`
-  [installation instructions](https://docs.docker.com/compose/install/).
-- **Cache**: Each job runs in a new environment. Concurrent jobs work fine,
-  because every build gets its own instance of Docker engine and they don't conflict with each other.
-  However, jobs can be slower because there's no caching of layers.
-- **Storage drivers**: By default, earlier versions of Docker use the `vfs` storage driver,
-  which copies the file system for each job. Docker 17.09 and later use `--storage-driver overlay2`, which is
-  the recommended storage driver. See [Using the OverlayFS driver](#use-the-overlayfs-driver) for details.
-- **Root file system**: Because the `docker:19.03.12-dind` container and the runner container don't share their
-  root file system, you can use the job's working directory as a mount point for
-  child containers. For example, if you have files you want to share with a
-  child container, you might create a subdirectory under `/builds/$CI_PROJECT_PATH`
-  and use it as your mount point. For a more detailed explanation, view [issue
-  #41227](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/41227).
-
-  ```yaml
-  variables:
-    MOUNT_POINT: /builds/$CI_PROJECT_PATH/mnt
-  script:
-    - mkdir -p "$MOUNT_POINT"
-    - docker run -v "$MOUNT_POINT:/mnt" my-docker-image
-  ```
-
-#### Docker-in-Docker with TLS enabled
+##### Docker-in-Docker with TLS enabled in the Docker executor
 
 > Introduced in GitLab Runner 11.11.
 
@@ -219,7 +194,72 @@ To use Docker-in-Docker with TLS enabled:
        - docker run my-docker-image /script/to/run/tests
    ```
 
-#### Docker-in-Docker with TLS enabled in Kubernetes
+##### Docker-in-Docker with TLS disabled in the Docker executor
+
+Sometimes you might have legitimate reasons to disable TLS.
+For example, you have no control over the GitLab Runner configuration
+that you are using.
+
+Assuming that the runner's `config.toml` is similar to:
+
+```toml
+[[runners]]
+  url = "https://gitlab.com/"
+  token = TOKEN
+  executor = "docker"
+  [runners.docker]
+    tls_verify = false
+    image = "docker:19.03.12"
+    privileged = true
+    disable_cache = false
+    volumes = ["/cache"]
+  [runners.cache]
+    [runners.cache.s3]
+    [runners.cache.gcs]
+```
+
+You can now use `docker` in the job script. Note the inclusion of the
+`docker:19.03.12-dind` service:
+
+```yaml
+image: docker:19.03.12
+
+variables:
+  # When using dind service, you must instruct docker to talk with the
+  # daemon started inside of the service. The daemon is available with
+  # a network connection instead of the default /var/run/docker.sock socket.
+  #
+  # The 'docker' hostname is the alias of the service container as described at
+  # https://docs.gitlab.com/ee/ci/docker/using_docker_images.html#accessing-the-services
+  #
+  # If you're using GitLab Runner 12.7 or earlier with the Kubernetes executor and Kubernetes 1.6 or earlier,
+  # the variable must be set to tcp://localhost:2375 because of how the
+  # Kubernetes executor connects services to the job container
+  # DOCKER_HOST: tcp://localhost:2375
+  #
+  DOCKER_HOST: tcp://docker:2375
+  #
+  # This instructs Docker not to start over TLS.
+  DOCKER_TLS_CERTDIR: ""
+
+services:
+  - docker:19.03.12-dind
+
+before_script:
+  - docker info
+
+build:
+  stage: build
+  script:
+    - docker build -t my-docker-image .
+    - docker run my-docker-image /script/to/run/tests
+```
+
+#### Use the Kubernetes executor with Docker-in-Docker
+
+You can use the Kubernetes executor to run jobs in a Docker container.
+
+##### Docker-in-Docker with TLS enabled in Kubernetes
 
 > [Introduced](https://gitlab.com/gitlab-org/charts/gitlab-runner/-/issues/106) in GitLab Runner Helm Chart 0.23.0.
 
@@ -287,66 +327,34 @@ To use Docker-in-Docker with TLS enabled in Kubernetes:
        - docker run my-docker-image /script/to/run/tests
    ```
 
-#### Docker-in-Docker with TLS disabled
+#### Limitations of Docker-in-Docker
 
-Sometimes you might have legitimate reasons to disable TLS.
-For example, you have no control over the GitLab Runner configuration
-that you are using.
+Docker-in-Docker is the recommended configuration, but is
+not without its own challenges:
 
-Assuming that the runner's `config.toml` is similar to:
+- **The `docker-compose` command**: This command is not available in this configuration by default.
+  To use `docker-compose` in your job scripts, follow the `docker-compose`
+  [installation instructions](https://docs.docker.com/compose/install/).
+- **Cache**: Each job runs in a new environment. Concurrent jobs work fine,
+  because every build gets its own instance of Docker engine and they don't conflict with each other.
+  However, jobs can be slower because there's no caching of layers.
+- **Storage drivers**: By default, earlier versions of Docker use the `vfs` storage driver,
+  which copies the file system for each job. Docker 17.09 and later use `--storage-driver overlay2`, which is
+  the recommended storage driver. See [Using the OverlayFS driver](#use-the-overlayfs-driver) for details.
+- **Root file system**: Because the `docker:19.03.12-dind` container and the runner container don't share their
+  root file system, you can use the job's working directory as a mount point for
+  child containers. For example, if you have files you want to share with a
+  child container, you might create a subdirectory under `/builds/$CI_PROJECT_PATH`
+  and use it as your mount point. For a more detailed explanation, view [issue
+  #41227](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/41227).
 
-```toml
-[[runners]]
-  url = "https://gitlab.com/"
-  token = TOKEN
-  executor = "docker"
-  [runners.docker]
-    tls_verify = false
-    image = "docker:19.03.12"
-    privileged = true
-    disable_cache = false
-    volumes = ["/cache"]
-  [runners.cache]
-    [runners.cache.s3]
-    [runners.cache.gcs]
-```
-
-You can now use `docker` in the job script. Note the inclusion of the
-`docker:19.03.12-dind` service:
-
-```yaml
-image: docker:19.03.12
-
-variables:
-  # When using dind service, you must instruct docker to talk with the
-  # daemon started inside of the service. The daemon is available with
-  # a network connection instead of the default /var/run/docker.sock socket.
-  #
-  # The 'docker' hostname is the alias of the service container as described at
-  # https://docs.gitlab.com/ee/ci/services/#accessing-the-services
-  #
-  # If you're using GitLab Runner 12.7 or earlier with the Kubernetes executor and Kubernetes 1.6 or earlier,
-  # the variable must be set to tcp://localhost:2375 because of how the
-  # Kubernetes executor connects services to the job container
-  # DOCKER_HOST: tcp://localhost:2375
-  #
-  DOCKER_HOST: tcp://docker:2375
-  #
-  # This instructs Docker not to start over TLS.
-  DOCKER_TLS_CERTDIR: ""
-
-services:
-  - docker:19.03.12-dind
-
-before_script:
-  - docker info
-
-build:
-  stage: build
+  ```yaml
+  variables:
+    MOUNT_POINT: /builds/$CI_PROJECT_PATH/mnt
   script:
-    - docker build -t my-docker-image .
-    - docker run my-docker-image /script/to/run/tests
-```
+    - mkdir -p "$MOUNT_POINT"
+    - docker run -v "$MOUNT_POINT:/mnt" my-docker-image
+  ```
 
 ### Use Docker socket binding
 
@@ -359,87 +367,50 @@ If you bind the Docker socket and you are
 you can no longer use `docker:19.03.12-dind` as a service. Volume bindings
 are done to the services as well, making these incompatible.
 
-To make Docker available in the context of the image:
+#### Use the Docker executor with Docker socket binding
 
-1. Install [GitLab Runner](https://docs.gitlab.com/runner/install/).
-1. From the command line, register a runner with the `docker` executor and share `/var/run/docker.sock`:
+To make Docker available in the context of the image, you will need to mount
+`/var/run/docker.sock` into the launched containers. To do this with the Docker
+executor, you need to add `"/var/run/docker.sock:/var/run/docker.sock"` to the
+[Volumes in the `[runners.docker]` section](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#volumes-in-the-runnersdocker-section).
 
-   ```shell
-   sudo gitlab-runner register -n \
-     --url https://gitlab.com/ \
-     --registration-token REGISTRATION_TOKEN \
-     --executor docker \
-     --description "My Docker Runner" \
-     --docker-image "docker:19.03.12" \
-     --docker-volumes /var/run/docker.sock:/var/run/docker.sock
-   ```
+Your configuration should look something like this:
 
-   This command registers a new runner to use the
-   `docker:19.03.12` image provided by Docker. The command uses
-   the Docker daemon of the runner itself. Any containers spawned by Docker
-   commands are siblings of the runner rather than children of the runner.
-   This may have complications and limitations that are unsuitable for your workflow.
+```toml
+[[runners]]
+  url = "https://gitlab.com/"
+  token = RUNNER_TOKEN
+  executor = "docker"
+  [runners.docker]
+    tls_verify = false
+    image = "docker:19.03.12"
+    privileged = false
+    disable_cache = false
+    volumes = ["/var/run/docker.sock:/var/run/docker.sock", "/cache"]
+  [runners.cache]
+    Insecure = false
+```
 
-   Your `config.toml` file should now have an entry like this:
+You can also do this while registering your runner by providing the following options:
 
-   ```toml
-   [[runners]]
-     url = "https://gitlab.com/"
-     token = REGISTRATION_TOKEN
-     executor = "docker"
-     [runners.docker]
-       tls_verify = false
-       image = "docker:19.03.12"
-       privileged = false
-       disable_cache = false
-       volumes = ["/var/run/docker.sock:/var/run/docker.sock", "/cache"]
-     [runners.cache]
-       Insecure = false
-   ```
+```shell
+sudo gitlab-runner register -n \
+  --url https://gitlab.com/ \
+  --registration-token REGISTRATION_TOKEN \
+  --executor docker \
+  --description "My Docker Runner" \
+  --docker-image "docker:19.03.12" \
+  --docker-volumes /var/run/docker.sock:/var/run/docker.sock
+```
 
-1. Use `docker` in the job script. You don't need to
-   include the `docker:19.03.12-dind` service, like you do when you're using
-   the Docker-in-Docker executor:
-
-   ```yaml
-   image: docker:19.03.12
-
-   before_script:
-     - docker info
-
-   build:
-     stage: build
-     script:
-       - docker build -t my-docker-image .
-       - docker run my-docker-image /script/to/run/tests
-   ```
-
-This method avoids using Docker in privileged mode. However,
-the implications of this method are:
-
-- By sharing the Docker daemon, you are effectively disabling all
-  the security mechanisms of containers and exposing your host to privilege
-  escalation, which can lead to container breakout. For example, if a project
-  ran `docker rm -f $(docker ps -a -q)` it would remove the GitLab Runner
-  containers.
-- Concurrent jobs may not work; if your tests
-  create containers with specific names, they may conflict with each other.
-- Sharing files and directories from the source repository into containers may not
-  work as expected. Volume mounting is done in the context of the host
-  machine, not the build container. For example:
-
-   ```shell
-   docker run --rm -t -i -v $(pwd)/src:/home/app/src test-image:latest run_app_tests
-   ```
-
-#### Enable registry mirror for `docker:dind` service
+##### Enable registry mirror for `docker:dind` service
 
 When the Docker daemon starts inside of the service container, it uses
 the default configuration. You may want to configure a [registry
 mirror](https://docs.docker.com/registry/recipes/mirror/) for
 performance improvements and to ensure you don't reach Docker Hub rate limits.
 
-##### The service in the `.gitlab-ci.yml` file
+###### The service in the `.gitlab-ci.yml` file
 
 You can append extra CLI flags to the `dind` service to set the registry
 mirror:
@@ -450,7 +421,7 @@ services:
     command: ["--registry-mirror", "https://registry-mirror.example.com"]  # Specify the registry mirror to use
 ```
 
-##### The service in the GitLab Runner configuration file
+###### The service in the GitLab Runner configuration file
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/27173) in GitLab Runner 13.6.
 
@@ -487,7 +458,7 @@ Kubernetes:
       command = ["--registry-mirror", "https://registry-mirror.example.com"]
 ```
 
-##### The Docker executor in the GitLab Runner configuration file
+###### The Docker executor in the GitLab Runner configuration file
 
 If you are a GitLab Runner administrator, you can use
 the mirror for every `dind` service. Update the
@@ -520,7 +491,7 @@ picked up by the `dind` service.
     volumes = ["/opt/docker/daemon.json:/etc/docker/daemon.json:ro"]
 ```
 
-##### The Kubernetes executor in the GitLab Runner configuration file
+###### The Kubernetes executor in the GitLab Runner configuration file
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/3223) in GitLab Runner 13.6.
 
@@ -567,6 +538,45 @@ The configuration is picked up by the `dind` service.
       name = "docker-daemon"
       mount_path = "/etc/docker/daemon.json"
       sub_path = "daemon.json"
+```
+
+##### Limitations of Docker socket binding
+
+When you use Docker socket binding, you avoid running Docker in privileged mode. However,
+the implications of this method are:
+
+- By sharing the Docker daemon, you are effectively disabling all
+  the security mechanisms of containers and exposing your host to privilege
+  escalation, which can lead to container breakout. For example, if a project
+  ran `docker rm -f $(docker ps -a -q)` it would remove the GitLab Runner
+  containers.
+- Concurrent jobs may not work; if your tests
+  create containers with specific names, they may conflict with each other.
+- Any containers spawned by Docker commands are siblings of the runner rather
+  than children of the runner. This may have complications and limitations that
+  are unsuitable for your workflow.
+- Sharing files and directories from the source repository into containers may not
+  work as expected. Volume mounting is done in the context of the host
+  machine, not the build container. For example:
+
+   ```shell
+   docker run --rm -t -i -v $(pwd)/src:/home/app/src test-image:latest run_app_tests
+   ```
+
+You don't need to include the `docker:19.03.12-dind` service, like you do when
+you're using the Docker-in-Docker executor:
+
+```yaml
+image: docker:19.03.12
+
+before_script:
+  - docker info
+
+build:
+  stage: build
+  script:
+    - docker build -t my-docker-image .
+    - docker run my-docker-image /script/to/run/tests
 ```
 
 ## Authenticate with registry in Docker-in-Docker
@@ -831,13 +841,13 @@ After you've built a Docker image, you can push it up to the built-in
 ### `docker: Cannot connect to the Docker daemon at tcp://docker:2375. Is the docker daemon running?`
 
 This is a common error when you are using
-[Docker-in-Docker](#use-the-docker-executor-with-the-docker-image-docker-in-docker)
+[Docker-in-Docker](#use-docker-in-docker)
 v19.03 or later.
 
 This issue occurs because Docker starts on TLS automatically.
 
 - If this is your first time setting it up, read
-  [use the Docker executor with the Docker image](#use-the-docker-executor-with-the-docker-image-docker-in-docker).
+  [use the Docker executor with the Docker image](#use-docker-in-docker).
 - If you are upgrading from v18.09 or earlier, read our
   [upgrade guide](https://about.gitlab.com/blog/2019/07/31/docker-in-docker-with-docker-19-dot-03/).
 

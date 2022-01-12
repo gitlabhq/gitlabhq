@@ -67,7 +67,7 @@ the merge request's diff view displays an indicator next to lines with new Code 
 
 This example shows how to run Code Quality on your code by using GitLab CI/CD and Docker.
 
-- Using shared runners, the job should be configured For the [Docker-in-Docker workflow](../../../ci/docker/using_docker_build.md#use-the-docker-executor-with-the-docker-image-docker-in-docker).
+- Using shared runners, the job should be configured For the [Docker-in-Docker workflow](../../../ci/docker/using_docker_build.md#use-docker-in-docker).
 - Using private runners, there is an [alternative configuration](#set-up-a-private-runner-for-code-quality-without-docker-in-docker) recommended for running Code Quality analysis more efficiently.
 
 In either configuration, the runner must have enough disk space to handle generated Code Quality files. For example on the [GitLab project](https://gitlab.com/gitlab-org/gitlab) the files are approximately 7 GB.
@@ -226,7 +226,7 @@ are configured with `privileged=true`, and they do not expose `docker.sock` into
 the job container. As a result, socket binding cannot be used to make `docker` available
 in the context of the job script.
 
-[Docker-in-Docker](../../../ci/docker/using_docker_build.md#use-the-docker-executor-with-the-docker-image-docker-in-docker)
+[Docker-in-Docker](../../../ci/docker/using_docker_build.md#use-docker-in-docker)
 was chosen as an operational decision by the runner team, instead of exposing `docker.sock`.
 
 ### Disabling the code quality job

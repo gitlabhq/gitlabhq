@@ -805,9 +805,9 @@ RSpec.describe UsersController do
   end
 
   context 'token authentication' do
-    let(:url) { user_url(user.username, format: :atom) }
-
-    it_behaves_like 'authenticates sessionless user for the request spec', public: true
+    it_behaves_like 'authenticates sessionless user for the request spec', 'show atom', public_resource: true do
+      let(:url) { user_url(user, format: :atom) }
+    end
   end
 
   def user_moved_message(redirect_route, user)

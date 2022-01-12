@@ -48,10 +48,11 @@ module Gitlab
         )
       end
 
-      def authorize_url(redirect_uri)
+      def authorize_url(redirect_uri, state = nil)
         client.auth_code.authorize_url({
           redirect_uri: redirect_uri,
-          scope: "repo, user, user:email"
+          scope: "repo, user, user:email",
+          state: state
         })
       end
 

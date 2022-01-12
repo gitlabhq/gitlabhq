@@ -1791,7 +1791,7 @@ On each node perform the following:
    external_url 'https://gitlab.example.com'
 
    # git_data_dirs get configured for the Praefect virtual storage
-   # Address is Interal Load Balancer for Praefect
+   # Address is Internal Load Balancer for Praefect
    # Token is praefect_external_token
    git_data_dirs({
      "default" => {

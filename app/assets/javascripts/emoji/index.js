@@ -1,6 +1,7 @@
 import { escape, minBy } from 'lodash';
 import emojiRegexFactory from 'emoji-regex';
 import emojiAliases from 'emojis/aliases.json';
+import { setAttributes } from '~/lib/utils/dom_utils';
 import AccessorUtilities from '../lib/utils/accessor';
 import axios from '../lib/utils/axios_utils';
 import { CACHE_KEY, CACHE_VERSION_KEY, CATEGORY_ICON_MAP, FREQUENTLY_USED_KEY } from './constants';
@@ -220,7 +221,19 @@ export function emojiFallbackImageSrc(inputName) {
 }
 
 export function emojiImageTag(name, src) {
-  return `<img class="emoji" title=":${name}:" alt=":${name}:" src="${src}" width="20" height="20" align="absmiddle" />`;
+  const img = document.createElement('img');
+
+  img.className = 'emoji';
+  setAttributes(img, {
+    title: `:${name}:`,
+    alt: `:${name}:`,
+    src,
+    width: '20',
+    height: '20',
+    align: 'absmiddle',
+  });
+
+  return img;
 }
 
 export function glEmojiTag(inputName, options) {

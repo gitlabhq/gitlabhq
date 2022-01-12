@@ -19,6 +19,10 @@ RSpec.describe Integrations::ChatMessage::NoteMessage do
         name: 'project_name',
         url: 'http://somewhere.com'
       },
+      commit: {
+        id: '5f163b2b95e6f53cbd428f5f0b103702a52b9a23',
+        message: "Added a commit message\ndetails\n123\n"
+      },
       object_attributes: {
         id: 10,
         note: 'comment on a commit',
@@ -28,16 +32,9 @@ RSpec.describe Integrations::ChatMessage::NoteMessage do
     }
   end
 
-  context 'commit notes' do
-    before do
-      args[:object_attributes][:note] = 'comment on a commit'
-      args[:object_attributes][:noteable_type] = 'Commit'
-      args[:commit] = {
-        id: '5f163b2b95e6f53cbd428f5f0b103702a52b9a23',
-        message: "Added a commit message\ndetails\n123\n"
-      }
-    end
+  it_behaves_like Integrations::ChatMessage
 
+  context 'commit notes' do
     context 'without markdown' do
       it 'returns a message regarding notes on commits' do
         expect(subject.pretext).to eq("Test User (test.user) <http://url.com|commented on " \

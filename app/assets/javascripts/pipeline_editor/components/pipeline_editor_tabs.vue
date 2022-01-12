@@ -146,6 +146,7 @@ export default {
 <template>
   <gl-tabs
     class="file-editor gl-mb-3"
+    data-qa-selector="file_editor_container"
     :query-param-name="$options.query.TAB_QUERY_PARAM"
     sync-active-tab-with-query-params
   >

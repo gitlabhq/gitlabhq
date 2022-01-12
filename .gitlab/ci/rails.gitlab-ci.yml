@@ -598,8 +598,10 @@ rspec:undercoverage:
       else
         echo "Using \$CI_COMMIT_SHA ($CI_COMMIT_SHA) for this non-merge result pipeline.";
       fi;
+    - UNDERCOVERAGE_COMPARE="${CI_MERGE_REQUEST_DIFF_BASE_SHA:-$(git merge-base origin/master HEAD)}"
+    - echo "Undercoverage comparing with ${UNDERCOVERAGE_COMPARE}"
     - if [ -f scripts/undercoverage ]; then
-        run_timed_command "scripts/undercoverage";
+        run_timed_command "scripts/undercoverage ${UNDERCOVERAGE_COMPARE}";
       fi;
 
 rspec:feature-flags:

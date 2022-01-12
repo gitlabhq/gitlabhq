@@ -27,7 +27,7 @@ module Integrations
 
       def attachments
         [{
-          text: "#{project_link} with job #{deployment_link} by #{user_link}\n#{commit_link}: #{commit_title}",
+          text: "#{project_link} with job #{deployment_link} by #{user_link}\n#{commit_link}: #{strip_markup(commit_title)}",
           color: color
         }]
       end
@@ -40,9 +40,9 @@ module Integrations
 
       def message
         if running?
-          "Starting deploy to #{environment}"
+          "Starting deploy to #{strip_markup(environment)}"
         else
-          "Deploy to #{environment} #{humanized_status}"
+          "Deploy to #{strip_markup(environment)} #{humanized_status}"
         end
       end
 
