@@ -191,7 +191,10 @@ module TreeHelper
 
       web_ide_url: web_ide_url,
       edit_url: edit_url(options),
-      gitpod_url: gitpod_url
+
+      gitpod_url: gitpod_url,
+      user_preferences_gitpod_path: profile_preferences_path(anchor: 'user_gitpod_enabled'),
+      user_profile_enable_gitpod_path: profile_path(user: { gitpod_enabled: true })
     }
   end
 

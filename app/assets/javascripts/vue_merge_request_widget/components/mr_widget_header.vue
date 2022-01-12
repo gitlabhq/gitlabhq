@@ -119,6 +119,8 @@ export default {
             :show-gitpod-button="mr.showGitpodButton"
             :gitpod-url="mr.gitpodUrl"
             :gitpod-enabled="mr.gitpodEnabled"
+            :user-preferences-gitpod-path="mr.userPreferencesGitpodPath"
+            :user-profile-enable-gitpod-path="mr.userProfileEnableGitpodPath"
             :gitpod-text="$options.i18n.gitpodText"
             class="gl-display-none gl-md-display-inline-block gl-mr-3"
             data-placement="bottom"

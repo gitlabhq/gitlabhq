@@ -282,6 +282,8 @@ export default {
   gitpod_enabled: true,
   show_gitpod_button: true,
   gitpod_url: 'http://gitpod.localhost',
+  user_preferences_gitpod_path: '/-/profile/preferences#user_gitpod_enabled',
+  user_profile_enable_gitpod_path: '/-/profile?user%5Bgitpod_enabled%5D=true',
 };
 
 export const mockStore = {

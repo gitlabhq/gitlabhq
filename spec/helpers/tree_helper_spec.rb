@@ -84,14 +84,21 @@ RSpec.describe TreeHelper do
   describe '#web_ide_button_data' do
     let(:blob) { project.repository.blob_at('refs/heads/master', @path) }
 
+    let_it_be(:user_preferences_gitpod_path) { '/-/profile/preferences#user_gitpod_enabled' }
+    let_it_be(:user_profile_enable_gitpod_path) { '/-/profile?user%5Bgitpod_enabled%5D=true' }
+
     before do
       @path = ''
       @project = project
       @ref = sha
 
-      allow(helper).to receive(:current_user).and_return(nil)
-      allow(helper).to receive(:can_collaborate_with_project?).and_return(true)
-      allow(helper).to receive(:can?).and_return(true)
+      allow(helper).to receive_messages(
+        current_user: nil,
+        can_collaborate_with_project?: true,
+        can?: true,
+        user_preferences_gitpod_path: user_preferences_gitpod_path,
+        user_profile_enable_gitpod_path: user_profile_enable_gitpod_path
+      )
     end
 
     subject { helper.web_ide_button_data(blob: blob) }
@@ -112,7 +119,10 @@ RSpec.describe TreeHelper do
 
         edit_url: '',
         web_ide_url: "/-/ide/project/#{project.full_path}/edit/#{sha}",
-        gitpod_url: ''
+
+        gitpod_url: '',
+        user_preferences_gitpod_path: user_preferences_gitpod_path,
+        user_profile_enable_gitpod_path: user_profile_enable_gitpod_path
       )
     end
 

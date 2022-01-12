@@ -15,6 +15,8 @@ describe('MergeRequestStore', () => {
       gitpodEnabled: mockData.gitpod_enabled,
       showGitpodButton: mockData.show_gitpod_button,
       gitpodUrl: mockData.gitpod_url,
+      userPreferencesGitpodPath: mockData.user_preferences_gitpod_path,
+      userProfileEnableGitpodPath: mockData.user_profile_enable_gitpod_path,
     });
   });
 

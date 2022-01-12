@@ -153,6 +153,8 @@ describe('MRWidgetHeader', () => {
         gitpodEnabled: true,
         showGitpodButton: true,
         gitpodUrl: 'http://gitpod.localhost',
+        userPreferencesGitpodPath: '/-/profile/preferences#user_gitpod_enabled',
+        userProfileEnableGitpodPath: '/-/profile?user%5Bgitpod_enabled%5D=true',
       };
 
       it('renders checkout branch button with modal trigger', () => {
@@ -208,6 +210,8 @@ describe('MRWidgetHeader', () => {
           gitpodEnabled: true,
           showGitpodButton: true,
           gitpodUrl: 'http://gitpod.localhost',
+          userPreferencesGitpodPath: mrDefaultOptions.userPreferencesGitpodPath,
+          userProfileEnableGitpodPath: mrDefaultOptions.userProfileEnableGitpodPath,
           webIdeUrl,
         });
       });

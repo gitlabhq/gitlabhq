@@ -405,3 +405,27 @@ generated. Check the job log for these messages.
 If you find no helpful messages, retry the failed job after activating
 [CI/CD debug logging](../variables/index.md#debug-logging).
 This logging should provide information to help you investigate further.
+
+### Error message `Missing /usr/bin/gitlab-runner-helper. Uploading artifacts is disabled.`
+
+There is a [known issue](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/3068) where setting a CI/CD variable named `DEBUG` can cause artifact uploads to fail.
+
+To work around this, either use a different variable name or set it inline with `script`:
+
+```yaml
+# This job might fail due to issue gitlab-org/gitlab-runner#3068
+failing_test_job:
+  variables:
+    DEBUG: true
+  script: bin/mycommand
+  artifacts:
+    paths:
+      - bin/results
+
+# This job does not define a CI/CD variable named `DEBUG` and is not affected by the issue
+successful_test_job:
+  script: DEBUG=true bin/mycommand
+  artifacts:
+    paths:
+      - bin/results
+```

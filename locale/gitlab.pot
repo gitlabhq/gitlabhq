@@ -16373,6 +16373,9 @@ msgstr ""
 msgid "Gitpod|The URL to your Gitpod instance configured to read your GitLab projects, such as https://gitpod.example.com."
 msgstr ""
 
+msgid "Gitpod|To use Gitpod you must first enable the feature in the integrations section of your %{linkStart}user preferences%{linkEnd}."
+msgstr ""
+
 msgid "Gitpod|To use the integration, each user must also enable Gitpod on their GitLab account. %{link_start}How do I enable it?%{link_end} "
 msgstr ""
 
@@ -37206,9 +37209,6 @@ msgstr ""
 msgid "To update Snippets with multiple files, you must use the `files` parameter"
 msgstr ""
 
-msgid "To use Gitpod you must first enable the feature in the integrations section of your %{user_prefs}."
-msgstr ""
-
 msgid "To use the additional formats, you must start the required %{container_link_start}companion containers%{container_link_end}."
 msgstr ""
 
@@ -43167,9 +43167,6 @@ msgid "user avatar"
 msgstr ""
 
 msgid "user namespace cannot be the parent of another namespace"
-msgstr ""
-
-msgid "user preferences"
 msgstr ""
 
 msgid "username"

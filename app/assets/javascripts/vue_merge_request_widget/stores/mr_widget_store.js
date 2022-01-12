@@ -222,6 +222,8 @@ export default class MergeRequestStore {
     this.showGitpodButton = data.show_gitpod_button;
     this.gitpodUrl = data.gitpod_url;
     this.gitpodEnabled = data.gitpod_enabled;
+    this.userPreferencesGitpodPath = data.user_preferences_gitpod_path;
+    this.userProfileEnableGitpodPath = data.user_profile_enable_gitpod_path;
   }
 
   setState() {
