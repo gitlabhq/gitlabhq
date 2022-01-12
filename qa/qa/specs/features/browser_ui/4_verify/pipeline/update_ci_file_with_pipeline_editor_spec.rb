@@ -56,6 +56,8 @@ module QA
           show.set_target_branch(random_test_string)
           show.submit_changes
 
+          Support::Waiter.wait_until { project.pipelines.size > 1 }
+
           aggregate_failures do
             expect(show.target_branch_name).to eq(random_test_string)
             expect(show.current_branch).to eq(random_test_string)

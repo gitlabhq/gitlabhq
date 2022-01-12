@@ -30,7 +30,7 @@ class CopyCodeButton extends HTMLElement {
 
 function addCodeButton() {
   [...document.querySelectorAll('pre.code.js-syntax-highlight:not(.content-editor-code-block)')]
-    .filter((el) => el.attr('lang') !== 'mermaid')
+    .filter((el) => el.getAttribute('lang') !== 'mermaid')
     .filter((el) => !el.closest('.js-markdown-code'))
     .forEach((el) => {
       const copyCodeEl = document.createElement('copy-code');
