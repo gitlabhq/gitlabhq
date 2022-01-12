@@ -61,7 +61,7 @@ describe('DynamicField', () => {
           });
 
           it(`renders GlFormCheckbox with correct text content when checkboxLabel is ${checkboxLabel}`, () => {
-            expect(findGlFormCheckbox().text()).toBe(checkboxLabel ?? defaultProps.title);
+            expect(findGlFormCheckbox().text()).toContain(checkboxLabel ?? defaultProps.title);
           });
 
           it('does not render other types of input', () => {
@@ -180,6 +180,17 @@ describe('DynamicField', () => {
         createComponent();
 
         expect(findGlFormGroup().find('small').text()).toBe(defaultProps.help);
+      });
+
+      describe('when type is checkbox', () => {
+        it('renders description with help text', () => {
+          createComponent({
+            type: 'checkbox',
+          });
+
+          expect(findGlFormGroup().find('small').exists()).toBe(false);
+          expect(findGlFormCheckbox().text()).toContain(defaultProps.help);
+        });
       });
 
       it('renders description with help text as HTML', () => {

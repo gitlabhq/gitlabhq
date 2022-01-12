@@ -818,7 +818,7 @@ input {
   .container-fluid
   .navbar-nav
   li
-  .badge.badge-pill:not(.merge-request-badge) {
+  .badge.badge-pill:not(.merge-request-badge):not(.version-check-badge) {
   box-shadow: none;
   font-weight: 600;
 }
@@ -901,8 +901,10 @@ input {
   line-height: 18px;
   margin: 4px 0 4px 2px;
 }
-.title-container .badge.badge-pill:not(.merge-request-badge),
-.navbar-nav .badge.badge-pill:not(.merge-request-badge) {
+.title-container
+  .badge.badge-pill:not(.merge-request-badge):not(.version-check-badge),
+.navbar-nav
+  .badge.badge-pill:not(.merge-request-badge):not(.version-check-badge) {
   position: inherit;
   font-weight: 400;
   margin-left: -6px;
@@ -913,17 +915,22 @@ input {
   border-radius: 7px;
   box-shadow: 0 1px 0 rgba(76, 78, 84, 0.2);
 }
-.title-container .badge.badge-pill:not(.merge-request-badge).green-badge,
-.navbar-nav .badge.badge-pill:not(.merge-request-badge).green-badge {
+.title-container
+  .badge.badge-pill:not(.merge-request-badge):not(.version-check-badge).green-badge,
+.navbar-nav
+  .badge.badge-pill:not(.merge-request-badge):not(.version-check-badge).green-badge {
   background-color: var(--green-400, #2da160);
 }
 .title-container
-  .badge.badge-pill:not(.merge-request-badge).merge-requests-count,
-.navbar-nav .badge.badge-pill:not(.merge-request-badge).merge-requests-count {
+  .badge.badge-pill:not(.merge-request-badge):not(.version-check-badge).merge-requests-count,
+.navbar-nav
+  .badge.badge-pill:not(.merge-request-badge):not(.version-check-badge).merge-requests-count {
   background-color: var(--orange-400, #c17d10);
 }
-.title-container .badge.badge-pill:not(.merge-request-badge).todos-count,
-.navbar-nav .badge.badge-pill:not(.merge-request-badge).todos-count {
+.title-container
+  .badge.badge-pill:not(.merge-request-badge):not(.version-check-badge).todos-count,
+.navbar-nav
+  .badge.badge-pill:not(.merge-request-badge):not(.version-check-badge).todos-count {
   background-color: var(--blue-400, #428fdc);
 }
 .title-container .canary-badge .badge,

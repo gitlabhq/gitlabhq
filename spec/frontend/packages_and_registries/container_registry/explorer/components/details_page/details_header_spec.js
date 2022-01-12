@@ -1,7 +1,6 @@
-import { GlDropdownItem, GlIcon } from '@gitlab/ui';
+import { GlDropdownItem, GlIcon, GlDropdown } from '@gitlab/ui';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 import VueApollo from 'vue-apollo';
-import { GlDropdown } from 'jest/packages_and_registries/container_registry/explorer/stubs';
 import { useFakeDate } from 'helpers/fake_date';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
@@ -51,6 +50,7 @@ describe('Details Header', () => {
   const findCleanup = () => findByTestId('cleanup');
   const findDeleteButton = () => wrapper.findComponent(GlDropdownItem);
   const findInfoIcon = () => wrapper.findComponent(GlIcon);
+  const findMenu = () => wrapper.findComponent(GlDropdown);
 
   const waitForMetadataItems = async () => {
     // Metadata items are printed by a loop in the title-area and it takes two ticks for them to be available
@@ -139,51 +139,53 @@ describe('Details Header', () => {
     });
   });
 
-  describe('delete button', () => {
-    it('exists', () => {
-      mountComponent();
-
-      expect(findDeleteButton().exists()).toBe(true);
-    });
-
-    it('has the correct text', () => {
-      mountComponent();
-
-      expect(findDeleteButton().text()).toBe('Delete image repository');
-    });
-
-    it('has the correct props', () => {
-      mountComponent();
-
-      expect(findDeleteButton().attributes()).toMatchObject(
-        expect.objectContaining({
-          variant: 'danger',
-        }),
-      );
-    });
-
-    it('emits the correct event', () => {
-      mountComponent();
-
-      findDeleteButton().vm.$emit('click');
-
-      expect(wrapper.emitted('delete')).toEqual([[]]);
-    });
-
+  describe('menu', () => {
     it.each`
-      canDelete | disabled | isDisabled
-      ${true}   | ${false} | ${undefined}
-      ${true}   | ${true}  | ${'true'}
-      ${false}  | ${false} | ${'true'}
-      ${false}  | ${true}  | ${'true'}
+      canDelete | disabled | isVisible
+      ${true}   | ${false} | ${true}
+      ${true}   | ${true}  | ${false}
+      ${false}  | ${false} | ${false}
+      ${false}  | ${true}  | ${false}
     `(
-      'when canDelete is $canDelete and disabled is $disabled is $isDisabled that the button is disabled',
-      ({ canDelete, disabled, isDisabled }) => {
+      'when canDelete is $canDelete and disabled is $disabled is $isVisible that the menu is visible',
+      ({ canDelete, disabled, isVisible }) => {
         mountComponent({ propsData: { image: { ...defaultImage, canDelete }, disabled } });
 
-        expect(findDeleteButton().attributes('disabled')).toBe(isDisabled);
+        expect(findMenu().exists()).toBe(isVisible);
       },
     );
+
+    describe('delete button', () => {
+      it('exists', () => {
+        mountComponent();
+
+        expect(findDeleteButton().exists()).toBe(true);
+      });
+
+      it('has the correct text', () => {
+        mountComponent();
+
+        expect(findDeleteButton().text()).toBe('Delete image repository');
+      });
+
+      it('has the correct props', () => {
+        mountComponent();
+
+        expect(findDeleteButton().attributes()).toMatchObject(
+          expect.objectContaining({
+            variant: 'danger',
+          }),
+        );
+      });
+
+      it('emits the correct event', () => {
+        mountComponent();
+
+        findDeleteButton().vm.$emit('click');
+
+        expect(wrapper.emitted('delete')).toEqual([[]]);
+      });
+    });
   });
 
   describe('metadata items', () => {

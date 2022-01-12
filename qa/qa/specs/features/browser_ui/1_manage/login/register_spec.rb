@@ -13,7 +13,7 @@ module QA
     end
   end
 
-  RSpec.describe 'Manage', :skip_signup_disabled, :requires_admin, quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/349626', type: :stale } do
+  RSpec.describe 'Manage', :skip_signup_disabled, :requires_admin do
     describe 'while LDAP is enabled', :orchestrated, :ldap_no_tls, testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347934' do
       before do
         # When LDAP is enabled, a previous test might have created a token for the LDAP 'tanuki' user who is not an admin

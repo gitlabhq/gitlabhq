@@ -7,7 +7,7 @@ module Ci
 
       data_consistency :always
       queue_namespace :pipeline_creation
-      feature_category :pipeline_authoring
+      feature_category :continuous_integration
       urgency :high
       worker_resource_boundary :cpu
 

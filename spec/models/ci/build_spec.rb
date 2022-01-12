@@ -2468,6 +2468,16 @@ RSpec.describe Ci::Build do
 
       it { is_expected.not_to be_playable }
     end
+
+    context 'when build is waiting for deployment approval' do
+      subject { build_stubbed(:ci_build, :manual, environment: 'production') }
+
+      before do
+        create(:deployment, :blocked, deployable: subject)
+      end
+
+      it { is_expected.not_to be_playable }
+    end
   end
 
   describe 'project settings' do
@@ -3789,6 +3799,18 @@ RSpec.describe Ci::Build do
       expect(Ci::BuildPrepareWorker).to receive(:perform_async).with(build.id)
 
       build.enqueue
+    end
+  end
+
+  describe 'when the build is waiting for deployment approval' do
+    let(:build) { create(:ci_build, :manual, environment: 'production') }
+
+    before do
+      create(:deployment, :blocked, deployable: build)
+    end
+
+    it 'does not allow the build to be enqueued' do
+      expect { build.enqueue! }.to raise_error(StateMachines::InvalidTransition)
     end
   end
 

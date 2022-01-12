@@ -70,6 +70,10 @@ class Deployment < ApplicationRecord
       transition created: :blocked
     end
 
+    event :unblock do
+      transition blocked: :created
+    end
+
     event :succeed do
       transition any - [:success] => :success
     end

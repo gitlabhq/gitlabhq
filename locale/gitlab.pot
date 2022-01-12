@@ -13405,6 +13405,9 @@ msgstr ""
 msgid "Enter in your Phabricator Server URL and personal access token below"
 msgstr ""
 
+msgid "Enter license key"
+msgstr ""
+
 msgid "Enter merge request URLs"
 msgstr ""
 
@@ -21098,6 +21101,9 @@ msgid "License compliance"
 msgstr ""
 
 msgid "License file"
+msgstr ""
+
+msgid "License key"
 msgstr ""
 
 msgid "License overview"
@@ -34912,6 +34918,9 @@ msgstr ""
 msgid "Terms of Service and Privacy Policy"
 msgstr ""
 
+msgid "Terms of service"
+msgstr ""
+
 msgid "Terraform"
 msgstr ""
 
@@ -38180,6 +38189,9 @@ msgstr ""
 msgid "Upload"
 msgstr ""
 
+msgid "Upload %{file_name} file"
+msgstr ""
+
 msgid "Upload CSV file"
 msgstr ""
 
@@ -39153,6 +39165,9 @@ msgid "VersionCheck|Update ASAP"
 msgstr ""
 
 msgid "VersionCheck|Update available"
+msgstr ""
+
+msgid "VersionCheck|Your GitLab Version"
 msgstr ""
 
 msgid "View Documentation"

@@ -20,6 +20,10 @@ RSpec.describe RegistrationsController do
   end
 
   describe '#create' do
+    before do
+      allow(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).and_return(false)
+    end
+
     let_it_be(:base_user_params) do
       { first_name: 'first', last_name: 'last', username: 'new_username', email: 'new@user.com', password: 'Any_password' }
     end
@@ -407,6 +411,18 @@ RSpec.describe RegistrationsController do
           expect(controller.current_user).to be_present
           expect(controller.current_user.terms_accepted?).to be(false)
         end
+      end
+    end
+
+    context 'when the rate limit has been reached' do
+      it 'returns status 429 Too Many Requests', :aggregate_failures do
+        ip = '1.2.3.4'
+        expect(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).with(:user_sign_up, scope: ip).and_return(true)
+
+        controller.request.env['REMOTE_ADDR'] = ip
+        post(:create, params: user_params, session: session_params)
+
+        expect(response).to have_gitlab_http_status(:too_many_requests)
       end
     end
 

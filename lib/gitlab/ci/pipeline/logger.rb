@@ -38,8 +38,6 @@ module Gitlab
         end
 
         def instrument_with_sql(operation, &block)
-          return instrument(operation, &block) unless sql_logging_enabled?
-
           op_start_db_counters = current_db_counter_payload
 
           result = instrument(operation, &block)
@@ -130,12 +128,6 @@ module Gitlab
 
         def current_db_counter_payload
           ::Gitlab::Metrics::Subscribers::ActiveRecord.db_counter_payload
-        end
-
-        def sql_logging_enabled?
-          strong_memoize(:sql_logging_enabled) do
-            ::Feature.enabled?(:ci_pipeline_logger_sql_count, project, default_enabled: :yaml)
-          end
         end
       end
     end

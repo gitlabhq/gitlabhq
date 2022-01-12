@@ -101,6 +101,21 @@ function deferredInitialisation() {
   initFeatureHighlight();
   initCopyCodeButton();
 
+  const helpToggle = document.querySelector('.header-help-dropdown-toggle');
+  if (helpToggle) {
+    helpToggle.addEventListener(
+      'click',
+      () => {
+        import(/* webpackChunkName: 'versionCheck' */ './gitlab_version_check')
+          .then(({ default: initGitlabVersionCheck }) => {
+            initGitlabVersionCheck();
+          })
+          .catch(() => {});
+      },
+      { once: true },
+    );
+  }
+
   const search = document.querySelector('#search');
   if (search) {
     search.addEventListener(

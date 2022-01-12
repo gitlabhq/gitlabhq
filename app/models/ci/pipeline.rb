@@ -467,15 +467,11 @@ module Ci
     end
 
     def tags_count
-      if tag_counts_enabled?
-        ActsAsTaggableOn::Tagging.where(taggable: builds).count
-      end
+      ActsAsTaggableOn::Tagging.where(taggable: builds).count
     end
 
     def distinct_tags_count
-      if tag_counts_enabled?
-        ActsAsTaggableOn::Tagging.where(taggable: builds).count('distinct(tag_id)')
-      end
+      ActsAsTaggableOn::Tagging.where(taggable: builds).count('distinct(tag_id)')
     end
 
     def stages_names
@@ -1351,12 +1347,6 @@ module Ci
     def object_hierarchy(options = {})
       ::Gitlab::Ci::PipelineObjectHierarchy
         .new(self.class.unscoped.where(id: id), options: options)
-    end
-
-    def tag_counts_enabled?
-      strong_memoize(:tag_counts_enabled) do
-        ::Feature.enabled?(:ci_pipeline_logger_tags_count, project, default_enabled: :yaml)
-      end
     end
   end
 end

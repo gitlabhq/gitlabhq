@@ -10,6 +10,13 @@ RSpec.shared_context 'GroupPolicy context' do
   let_it_be(:non_group_member) { create(:user) }
   let_it_be(:group, refind: true) { create(:group, :private, :owner_subgroup_creation_only, :crm_enabled) }
 
+  let(:public_permissions) do
+    %i[
+      read_group read_counts
+      read_label read_issue_board_list read_milestone read_issue_board
+   ]
+  end
+
   let(:guest_permissions) do
     %i[
       read_label read_group upload_file read_namespace read_group_activity
@@ -17,8 +24,6 @@ RSpec.shared_context 'GroupPolicy context' do
       read_group_merge_requests
    ]
   end
-
-  let(:read_group_permissions) { %i[read_label read_issue_board_list read_milestone read_issue_board] }
 
   let(:reporter_permissions) do
     %i[

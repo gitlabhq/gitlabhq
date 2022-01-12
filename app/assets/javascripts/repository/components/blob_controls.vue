@@ -63,19 +63,25 @@ export default {
   },
   computed: {
     filePath() {
-      const { path } = this.$route.params;
-      updateElementsVisibility('.tree-controls', !path);
-      return path;
+      return this.$route.params.path;
+    },
+    showBlobControls() {
+      return this.filePath && this.$route.name === 'blobPathDecoded';
     },
     blobInfo() {
       return this.project?.repository?.blobs?.nodes[0] || {};
+    },
+  },
+  watch: {
+    showBlobControls(shouldShow) {
+      updateElementsVisibility('.tree-controls', !shouldShow);
     },
   },
 };
 </script>
 
 <template>
-  <div v-if="filePath">
+  <div v-if="showBlobControls">
     <gl-button data-testid="find" :href="blobInfo.findFilePath" :class="$options.buttonClassList">
       {{ $options.i18n.findFile }}
     </gl-button>

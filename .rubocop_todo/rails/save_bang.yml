@@ -2,15 +2,6 @@
 Rails/SaveBang:
   Exclude:
   - ee/spec/lib/analytics/merge_request_metrics_calculator_spec.rb
-  - ee/spec/lib/gitlab/auth/ldap/access_spec.rb
-  - ee/spec/lib/gitlab/auth/o_auth/user_spec.rb
-  - ee/spec/lib/gitlab/auth/saml/user_spec.rb
-  - ee/spec/lib/gitlab/elastic/search_results_spec.rb
-  - ee/spec/lib/gitlab/email/handler/ee/service_desk_handler_spec.rb
-  - ee/spec/lib/gitlab/geo_spec.rb
-  - ee/spec/lib/gitlab/git_access_spec.rb
-  - ee/spec/lib/gitlab/import_export/group/relation_factory_spec.rb
-  - ee/spec/lib/gitlab/mirror_spec.rb
   - ee/spec/models/application_setting_spec.rb
   - ee/spec/models/approval_merge_request_rule_spec.rb
   - ee/spec/models/approval_project_rule_spec.rb

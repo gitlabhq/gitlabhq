@@ -268,6 +268,10 @@ module Ci
         !build.any_unmet_prerequisites? # If false is returned, it stops the transition
       end
 
+      before_transition on: :enqueue do |build|
+        !build.waiting_for_deployment_approval? # If false is returned, it stops the transition
+      end
+
       after_transition created: :scheduled do |build|
         build.run_after_commit do
           Ci::BuildScheduleWorker.perform_at(build.scheduled_at, build.id)
@@ -424,7 +428,7 @@ module Ci
     end
 
     def playable?
-      action? && !archived? && (manual? || scheduled? || retryable?)
+      action? && !archived? && (manual? || scheduled? || retryable?) && !waiting_for_deployment_approval?
     end
 
     def waiting_for_deployment_approval?

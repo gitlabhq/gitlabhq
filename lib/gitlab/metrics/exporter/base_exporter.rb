@@ -11,28 +11,26 @@ module Gitlab
 
         attr_accessor :readiness_checks
 
-        def initialize(settings, **options)
+        def initialize(settings, log_enabled:, log_file:, **options)
           super(**options)
 
           @settings = settings
+
+          # log_enabled does not exist for all exporters
+          log_sink = log_enabled ? File.join(Rails.root, 'log', log_file) : File::NULL
+          @logger = WEBrick::Log.new(log_sink)
+          @logger.time_format = "[%Y-%m-%dT%H:%M:%S.%L%z]"
         end
 
         def enabled?
           settings.enabled
         end
 
-        def log_filename
-          raise NotImplementedError
-        end
-
         private
 
-        attr_reader :settings
+        attr_reader :settings, :logger
 
         def start_working
-          logger = WEBrick::Log.new(log_filename)
-          logger.time_format = "[%Y-%m-%dT%H:%M:%S.%L%z]"
-
           access_log = [
             [logger, WEBrick::AccessLog::COMBINED_LOG_FORMAT]
           ]
@@ -44,6 +42,9 @@ module Gitlab
           server.mount '/', Rack::Handler::WEBrick, rack_app
 
           true
+        rescue StandardError => e
+          logger.error(e)
+          false
         end
 
         def run_thread

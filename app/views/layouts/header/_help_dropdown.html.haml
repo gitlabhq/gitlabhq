@@ -1,5 +1,6 @@
 %ul
   - if current_user_menu?(:help)
+    = render 'layouts/header/gitlab_version'
     = render 'layouts/header/whats_new_dropdown_item'
     %li
       = link_to _("Help"), help_path

@@ -4695,14 +4695,5 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
       it { expect(pipeline.tags_count).to eq(4) }
       it { expect(pipeline.distinct_tags_count).to eq(3) }
     end
-
-    context 'with the FF disabled' do
-      before do
-        stub_feature_flags(ci_pipeline_logger_tags_count: false)
-      end
-
-      it { expect(pipeline.tags_count).to be_nil }
-      it { expect(pipeline.distinct_tags_count).to be_nil }
-    end
   end
 end

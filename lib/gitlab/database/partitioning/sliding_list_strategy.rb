@@ -44,7 +44,18 @@ module Gitlab
         def extra_partitions
           possibly_extra = current_partitions[0...-1] # Never consider the most recent partition
 
-          possibly_extra.take_while { |p| detach_partition_if.call(p.value) }
+          extra = possibly_extra.take_while { |p| detach_partition_if.call(p.value) }
+
+          default_value = current_default_value
+          if extra.any? { |p| p.value == default_value }
+            Gitlab::AppLogger.error(message: "Inconsistent partition detected: partition with value #{current_default_value} should not be deleted because it's used as the default value.",
+                                   partition_number: current_default_value,
+                                   table_name: model.table_name)
+
+            extra = extra.reject { |p| p.value == default_value }
+          end
+
+          extra
         end
 
         def after_adding_partitions
@@ -63,6 +74,21 @@ module Gitlab
         end
 
         private
+
+        def current_default_value
+          column_name = model.connection.quote(partitioning_key)
+          table_name = model.connection.quote(model.table_name)
+
+          value = model.connection.select_value <<~SQL
+          SELECT columns.column_default AS default_value
+          FROM information_schema.columns columns
+          WHERE columns.column_name = #{column_name} AND columns.table_name = #{table_name}
+          SQL
+
+          raise "No default value found for the #{partitioning_key} column within #{model.name}" if value.nil?
+
+          Integer(value)
+        end
 
         def ensure_partitioning_column_ignored!
           unless model.ignored_columns.include?(partitioning_key.to_s)

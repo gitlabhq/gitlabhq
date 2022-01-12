@@ -4,13 +4,8 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::Metrics::Exporter::BaseExporter do
   let(:settings) { double('settings') }
-  let(:exporter) { described_class.new(settings) }
-  let(:log_filename) { File.join(Rails.root, 'log', 'sidekiq_exporter.log') }
-
-  before do
-    allow_any_instance_of(described_class).to receive(:log_filename).and_return(log_filename)
-    allow_any_instance_of(described_class).to receive(:settings).and_return(settings)
-  end
+  let(:log_enabled) { false }
+  let(:exporter) { described_class.new(settings, log_enabled: log_enabled, log_file: 'test_exporter.log') }
 
   describe 'when exporter is enabled' do
     before do
@@ -60,6 +55,38 @@ RSpec.describe Gitlab::Metrics::Exporter::BaseExporter do
             allow_any_instance_of(::WEBrick::HTTPServer).to receive(:start)
 
             exporter.start.join
+          end
+
+          context 'logging enabled' do
+            let(:log_enabled) { true }
+            let(:logger) { instance_double(WEBrick::Log) }
+
+            before do
+              allow(logger).to receive(:time_format=)
+              allow(logger).to receive(:info)
+            end
+
+            it 'configures a WEBrick logger with the given file' do
+              expect(WEBrick::Log).to receive(:new).with(end_with('test_exporter.log')).and_return(logger)
+
+              exporter
+            end
+
+            it 'logs any errors during startup' do
+              expect(::WEBrick::Log).to receive(:new).and_return(logger)
+              expect(::WEBrick::HTTPServer).to receive(:new).and_raise 'fail'
+              expect(logger).to receive(:error)
+
+              exporter.start
+            end
+          end
+
+          context 'logging disabled' do
+            it 'configures a WEBrick logger with the null device' do
+              expect(WEBrick::Log).to receive(:new).with(File::NULL).and_call_original
+
+              exporter
+            end
           end
         end
 

@@ -10,21 +10,32 @@ RSpec.describe GroupPolicy do
     let(:current_user) { nil }
 
     it do
-      expect_allowed(:read_group)
-      expect_allowed(:read_counts)
-      expect_allowed(*read_group_permissions)
+      expect_allowed(*public_permissions)
       expect_disallowed(:upload_file)
       expect_disallowed(*reporter_permissions)
       expect_disallowed(*developer_permissions)
       expect_disallowed(*maintainer_permissions)
       expect_disallowed(*owner_permissions)
       expect_disallowed(:read_namespace)
-      expect_disallowed(:read_crm_organization)
-      expect_disallowed(:read_crm_contact)
     end
   end
 
-  context 'with no user and public project' do
+  context 'public group with user who is not a member' do
+    let(:group) { create(:group, :public, :crm_enabled) }
+    let(:current_user) { create(:user) }
+
+    it do
+      expect_allowed(*public_permissions)
+      expect_disallowed(:upload_file)
+      expect_disallowed(*reporter_permissions)
+      expect_disallowed(*developer_permissions)
+      expect_disallowed(*maintainer_permissions)
+      expect_disallowed(*owner_permissions)
+      expect_disallowed(:read_namespace)
+    end
+  end
+
+  context 'private group that has been invited to a public project and with no user' do
     let(:project) { create(:project, :public, group: create(:group, :crm_enabled)) }
     let(:current_user) { nil }
 
@@ -32,15 +43,14 @@ RSpec.describe GroupPolicy do
       create(:project_group_link, project: project, group: group)
     end
 
-    it { expect_disallowed(:read_group) }
-    it { expect_disallowed(:read_crm_organization) }
-    it { expect_disallowed(:read_crm_contact) }
-    it { expect_disallowed(:read_counts) }
-    it { expect_disallowed(:read_group_runners) }
-    it { expect_disallowed(*read_group_permissions) }
+    it do
+      expect_disallowed(*public_permissions)
+      expect_disallowed(*reporter_permissions)
+      expect_disallowed(*owner_permissions)
+    end
   end
 
-  context 'with foreign user and public project' do
+  context 'private group that has been invited to a public project and with a foreign user' do
     let(:project) { create(:project, :public, group: create(:group, :crm_enabled)) }
     let(:current_user) { create(:user) }
 
@@ -48,12 +58,11 @@ RSpec.describe GroupPolicy do
       create(:project_group_link, project: project, group: group)
     end
 
-    it { expect_disallowed(:read_group) }
-    it { expect_disallowed(:read_crm_organization) }
-    it { expect_disallowed(:read_crm_contact) }
-    it { expect_disallowed(:read_counts) }
-    it { expect_disallowed(:read_group_runners) }
-    it { expect_disallowed(*read_group_permissions) }
+    it do
+      expect_disallowed(*public_permissions)
+      expect_disallowed(*reporter_permissions)
+      expect_disallowed(*owner_permissions)
+    end
   end
 
   context 'has projects' do
@@ -64,13 +73,13 @@ RSpec.describe GroupPolicy do
       project.add_developer(current_user)
     end
 
-    it { expect_allowed(*read_group_permissions) }
+    it { expect_allowed(*(public_permissions - [:read_counts])) }
 
     context 'in subgroups' do
       let(:subgroup) { create(:group, :private, :crm_enabled, parent: group) }
       let(:project) { create(:project, namespace: subgroup) }
 
-      it { expect_allowed(*read_group_permissions) }
+      it { expect_allowed(*(public_permissions - [:read_counts])) }
     end
   end
 
@@ -83,7 +92,7 @@ RSpec.describe GroupPolicy do
     let(:current_user) { deploy_token }
 
     it do
-      expect_disallowed(*read_group_permissions)
+      expect_disallowed(*public_permissions)
       expect_disallowed(*guest_permissions)
       expect_disallowed(*reporter_permissions)
       expect_disallowed(*developer_permissions)
@@ -96,7 +105,7 @@ RSpec.describe GroupPolicy do
     let(:current_user) { guest }
 
     it do
-      expect_allowed(*read_group_permissions)
+      expect_allowed(*public_permissions)
       expect_allowed(*guest_permissions)
       expect_disallowed(*reporter_permissions)
       expect_disallowed(*developer_permissions)
@@ -113,7 +122,7 @@ RSpec.describe GroupPolicy do
     let(:current_user) { reporter }
 
     it do
-      expect_allowed(*read_group_permissions)
+      expect_allowed(*public_permissions)
       expect_allowed(*guest_permissions)
       expect_allowed(*reporter_permissions)
       expect_disallowed(*developer_permissions)
@@ -130,7 +139,7 @@ RSpec.describe GroupPolicy do
     let(:current_user) { developer }
 
     it do
-      expect_allowed(*read_group_permissions)
+      expect_allowed(*public_permissions)
       expect_allowed(*guest_permissions)
       expect_allowed(*reporter_permissions)
       expect_allowed(*developer_permissions)
@@ -158,7 +167,7 @@ RSpec.describe GroupPolicy do
         updated_owner_permissions =
           owner_permissions - create_subgroup_permission
 
-        expect_allowed(*read_group_permissions)
+        expect_allowed(*public_permissions)
         expect_allowed(*guest_permissions)
         expect_allowed(*reporter_permissions)
         expect_allowed(*developer_permissions)
@@ -169,7 +178,7 @@ RSpec.describe GroupPolicy do
 
     context 'with subgroup_creation_level set to owner' do
       it 'allows every maintainer permission' do
-        expect_allowed(*read_group_permissions)
+        expect_allowed(*public_permissions)
         expect_allowed(*guest_permissions)
         expect_allowed(*reporter_permissions)
         expect_allowed(*developer_permissions)
@@ -187,7 +196,7 @@ RSpec.describe GroupPolicy do
     let(:current_user) { owner }
 
     it do
-      expect_allowed(*read_group_permissions)
+      expect_allowed(*public_permissions)
       expect_allowed(*guest_permissions)
       expect_allowed(*reporter_permissions)
       expect_allowed(*developer_permissions)
@@ -204,7 +213,7 @@ RSpec.describe GroupPolicy do
     let(:current_user) { admin }
 
     specify do
-      expect_disallowed(*read_group_permissions)
+      expect_disallowed(*public_permissions)
       expect_disallowed(*guest_permissions)
       expect_disallowed(*reporter_permissions)
       expect_disallowed(*developer_permissions)
@@ -214,7 +223,7 @@ RSpec.describe GroupPolicy do
 
     context 'with admin mode', :enable_admin_mode do
       specify do
-        expect_allowed(*read_group_permissions)
+        expect_allowed(*public_permissions)
         expect_allowed(*guest_permissions)
         expect_allowed(*reporter_permissions)
         expect_allowed(*developer_permissions)
@@ -256,8 +265,7 @@ RSpec.describe GroupPolicy do
       let(:current_user) { nil }
 
       it do
-        expect_disallowed(:read_counts)
-        expect_disallowed(*read_group_permissions)
+        expect_disallowed(*public_permissions)
         expect_disallowed(*guest_permissions)
         expect_disallowed(*reporter_permissions)
         expect_disallowed(*developer_permissions)
@@ -270,8 +278,7 @@ RSpec.describe GroupPolicy do
       let(:current_user) { guest }
 
       it do
-        expect_allowed(:read_counts)
-        expect_allowed(*read_group_permissions)
+        expect_allowed(*public_permissions)
         expect_allowed(*guest_permissions)
         expect_disallowed(*reporter_permissions)
         expect_disallowed(*developer_permissions)
@@ -284,8 +291,7 @@ RSpec.describe GroupPolicy do
       let(:current_user) { reporter }
 
       it do
-        expect_allowed(:read_counts)
-        expect_allowed(*read_group_permissions)
+        expect_allowed(*public_permissions)
         expect_allowed(*guest_permissions)
         expect_allowed(*reporter_permissions)
         expect_disallowed(*developer_permissions)
@@ -298,8 +304,7 @@ RSpec.describe GroupPolicy do
       let(:current_user) { developer }
 
       it do
-        expect_allowed(:read_counts)
-        expect_allowed(*read_group_permissions)
+        expect_allowed(*public_permissions)
         expect_allowed(*guest_permissions)
         expect_allowed(*reporter_permissions)
         expect_allowed(*developer_permissions)
@@ -312,8 +317,7 @@ RSpec.describe GroupPolicy do
       let(:current_user) { maintainer }
 
       it do
-        expect_allowed(:read_counts)
-        expect_allowed(*read_group_permissions)
+        expect_allowed(*public_permissions)
         expect_allowed(*guest_permissions)
         expect_allowed(*reporter_permissions)
         expect_allowed(*developer_permissions)
@@ -326,8 +330,7 @@ RSpec.describe GroupPolicy do
       let(:current_user) { owner }
 
       it do
-        expect_allowed(:read_counts)
-        expect_allowed(*read_group_permissions)
+        expect_allowed(*public_permissions)
         expect_allowed(*guest_permissions)
         expect_allowed(*reporter_permissions)
         expect_allowed(*developer_permissions)

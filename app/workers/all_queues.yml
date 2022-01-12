@@ -1539,7 +1539,7 @@
   :tags: []
 - :name: pipeline_creation:ci_external_pull_requests_create_pipeline
   :worker_name: Ci::ExternalPullRequests::CreatePipelineWorker
-  :feature_category: :pipeline_authoring
+  :feature_category: :continuous_integration
   :has_external_dependencies:
   :urgency: :high
   :resource_boundary: :cpu

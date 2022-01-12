@@ -13,6 +13,9 @@ class RegistrationsController < Devise::RegistrationsController
   before_action :ensure_destroy_prerequisites_met, only: [:destroy]
   before_action :load_recaptcha, only: :new
   before_action :set_invite_params, only: :new
+  before_action only: [:create] do
+    check_rate_limit!(:user_sign_up, scope: request.ip) if Feature.enabled?(:rate_limit_user_sign_up_endpoint, default_enabled: :yaml)
+  end
 
   feature_category :authentication_and_authorization
 

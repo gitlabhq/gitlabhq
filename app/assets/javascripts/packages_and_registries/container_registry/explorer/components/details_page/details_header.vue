@@ -143,6 +143,7 @@ export default {
     </template>
     <template #right-actions>
       <gl-dropdown
+        v-if="!deleteButtonDisabled"
         icon="ellipsis_v"
         text="More actions"
         :text-sr-only="true"
@@ -150,11 +151,7 @@ export default {
         no-caret
         right
       >
-        <gl-dropdown-item
-          variant="danger"
-          :disabled="deleteButtonDisabled"
-          @click="$emit('delete')"
-        >
+        <gl-dropdown-item variant="danger" @click="$emit('delete')">
           {{ __('Delete image repository') }}
         </gl-dropdown-item>
       </gl-dropdown>

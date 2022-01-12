@@ -27,10 +27,12 @@ module CommitsHelper
   end
 
   def commit_to_html(commit, ref, project)
-    render 'projects/commits/commit.html',
-      commit: commit,
-      ref: ref,
-      project: project
+    render partial: 'projects/commits/commit', formats: :html,
+      locals: {
+        commit: commit,
+        ref: ref,
+        project: project
+      }
   end
 
   # Breadcrumb links for a Project and, if applicable, a tree path

@@ -7,7 +7,10 @@ import BlobControls from '~/repository/components/blob_controls.vue';
 import blobControlsQuery from '~/repository/queries/blob_controls.query.graphql';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createRouter from '~/repository/router';
+import { updateElementsVisibility } from '~/repository/utils/dom';
 import { blobControlsDataMock, refMock } from '../mock_data';
+
+jest.mock('~/repository/utils/dom');
 
 let router;
 let wrapper;
@@ -64,14 +67,22 @@ describe('Blob controls component', () => {
     expect(findPermalinkButton().attributes('href')).toBe('permalink/file.js');
   });
 
-  it('does not render any buttons if no filePath is provided', async () => {
-    router.replace({ name: 'blobPath', params: { path: null } });
+  it.each`
+    name                 | path
+    ${'blobPathDecoded'} | ${null}
+    ${'treePathDecoded'} | ${'myFile.js'}
+  `(
+    'does not render any buttons if router name is $name and router path is $path',
+    async ({ name, path }) => {
+      router.replace({ name, params: { path } });
 
-    await nextTick();
+      await nextTick();
 
-    expect(findFindButton().exists()).toBe(false);
-    expect(findBlameButton().exists()).toBe(false);
-    expect(findHistoryButton().exists()).toBe(false);
-    expect(findPermalinkButton().exists()).toBe(false);
-  });
+      expect(findFindButton().exists()).toBe(false);
+      expect(findBlameButton().exists()).toBe(false);
+      expect(findHistoryButton().exists()).toBe(false);
+      expect(findPermalinkButton().exists()).toBe(false);
+      expect(updateElementsVisibility).toHaveBeenCalledWith('.tree-controls', true);
+    },
+  );
 });
