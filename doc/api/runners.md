@@ -573,17 +573,18 @@ Register a new runner for the instance.
 POST /runners
 ```
 
-| Attribute    | Type    | Required | Description         |
-|--------------|---------|----------|---------------------|
-| `token`      | string  | yes      | [Registration token](#registration-and-authentication-tokens).  |
-| `description`| string  | no       | Runner's description|
-| `info`       | hash    | no       | Runner's metadata. You can include `name`, `version`, `revision`, `platform`, and `architecture`, but only `version` is displayed in the Admin area of the UI. |
-| `active`     | boolean | no       | Whether the runner is active   |
-| `locked`     | boolean | no       | Whether the runner should be locked for current project |
-| `run_untagged` | boolean | no     | Whether the runner should handle untagged jobs |
-| `tag_list`   | string array | no  | List of runner's tags |
-| `access_level`    | string | no   | The access_level of the runner; `not_protected` or `ref_protected` |
-| `maximum_timeout` | integer | no  | Maximum timeout set when this runner handles the job |
+| Attribute         | Type           | Required | Description                                                                                                                                                    |
+|-------------------|----------------|----------|----------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `token`           | string         | yes      | [Registration token](#registration-and-authentication-tokens).                                                                                                 |
+| `description`     | string         | no       | Runner's description                                                                                                                                           |
+| `info`            | hash           | no       | Runner's metadata. You can include `name`, `version`, `revision`, `platform`, and `architecture`, but only `version` is displayed in the Admin area of the UI. |
+| `active`          | boolean        | no       | Whether the runner is active                                                                                                                                   |
+| `locked`          | boolean        | no       | Whether the runner should be locked for current project                                                                                                        |
+| `run_untagged`    | boolean        | no       | Whether the runner should handle untagged jobs                                                                                                                 |
+| `tag_list`        | string array   | no       | List of runner's tags                                                                                                                                          |
+| `access_level`    | string         | no       | The access_level of the runner; `not_protected` or `ref_protected`                                                                                             |
+| `maximum_timeout` | integer        | no       | Maximum timeout set when this runner handles the job                                                                                                           |
+| `maintainer_note` | string         | no       | Free-form maintainer notes for the runner (255 characters)                                                                                                     |
 
 ```shell
 curl --request POST "https://gitlab.example.com/api/v4/runners" \

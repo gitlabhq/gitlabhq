@@ -22,12 +22,24 @@ import {
   I18N_FETCH_ERROR,
 } from '../constants';
 import getRunnersQuery from '../graphql/get_runners.query.graphql';
+import getRunnersCountQuery from '../graphql/get_runners_count.query.graphql';
 import {
   fromUrlQueryToSearch,
   fromSearchToUrl,
   fromSearchToVariables,
 } from '../runner_search_utils';
 import { captureException } from '../sentry_utils';
+
+const runnersCountSmartQuery = {
+  query: getRunnersCountQuery,
+  fetchPolicy: fetchPolicies.CACHE_AND_NETWORK,
+  update(data) {
+    return data?.runners?.count;
+  },
+  error(error) {
+    this.reportToSentry(error);
+  },
+};
 
 export default {
   name: 'AdminRunnersApp',
@@ -48,22 +60,6 @@ export default {
       required: true,
     },
     activeRunnersCount: {
-      type: String,
-      required: true,
-    },
-    allRunnersCount: {
-      type: String,
-      required: true,
-    },
-    instanceRunnersCount: {
-      type: String,
-      required: true,
-    },
-    groupRunnersCount: {
-      type: String,
-      required: true,
-    },
-    projectRunnersCount: {
       type: String,
       required: true,
     },
@@ -100,10 +96,48 @@ export default {
         this.reportToSentry(error);
       },
     },
+    allRunnersCount: {
+      ...runnersCountSmartQuery,
+      variables() {
+        return this.countVariables;
+      },
+    },
+    instanceRunnersCount: {
+      ...runnersCountSmartQuery,
+      variables() {
+        return {
+          ...this.countVariables,
+          type: INSTANCE_TYPE,
+        };
+      },
+    },
+    groupRunnersCount: {
+      ...runnersCountSmartQuery,
+      variables() {
+        return {
+          ...this.countVariables,
+          type: GROUP_TYPE,
+        };
+      },
+    },
+    projectRunnersCount: {
+      ...runnersCountSmartQuery,
+      variables() {
+        return {
+          ...this.countVariables,
+          type: PROJECT_TYPE,
+        };
+      },
+    },
   },
   computed: {
     variables() {
       return fromSearchToVariables(this.search);
+    },
+    countVariables() {
+      // Exclude pagination variables, leave only filters variables
+      const { sort, before, last, after, first, ...countVariables } = this.variables;
+      return countVariables;
     },
     runnersLoading() {
       return this.$apollo.queries.runners.loading;
@@ -125,7 +159,7 @@ export default {
     search: {
       deep: true,
       handler() {
-        // TODO Implement back button reponse using onpopstate
+        // TODO Implement back button response using onpopstate
         updateHistory({
           url: fromSearchToUrl(this.search),
           title: document.title,
@@ -174,7 +208,7 @@ export default {
       >
         <template #title="{ tab }">
           {{ tab.title }}
-          <gl-badge v-if="tabCount(tab)" class="gl-ml-1" size="sm">
+          <gl-badge v-if="typeof tabCount(tab) == 'number'" class="gl-ml-1" size="sm">
             {{ tabCount(tab) }}
           </gl-badge>
         </template>

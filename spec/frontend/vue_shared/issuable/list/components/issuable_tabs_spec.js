@@ -1,5 +1,6 @@
 import { GlTab, GlBadge } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
+import { setLanguage } from 'helpers/locale_helper';
 
 import IssuableTabs from '~/vue_shared/issuable/list/components/issuable_tabs.vue';
 
@@ -27,10 +28,12 @@ describe('IssuableTabs', () => {
   let wrapper;
 
   beforeEach(() => {
+    setLanguage('en');
     wrapper = createComponent();
   });
 
   afterEach(() => {
+    setLanguage(null);
     wrapper.destroy();
   });
 
@@ -71,7 +74,7 @@ describe('IssuableTabs', () => {
 
       // Does not render `All` badge since it has an undefined count
       expect(badges).toHaveLength(2);
-      expect(badges.at(0).text()).toBe(`${mockIssuableListProps.tabCounts.opened}`);
+      expect(badges.at(0).text()).toBe('5,000');
       expect(badges.at(1).text()).toBe(`${mockIssuableListProps.tabCounts.closed}`);
     });
 

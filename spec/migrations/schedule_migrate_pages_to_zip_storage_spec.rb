@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe ScheduleMigratePagesToZipStorage, :sidekiq_might_not_need_inline, schema: 20201231133921 do
+RSpec.describe ScheduleMigratePagesToZipStorage, :sidekiq_might_not_need_inline, schema: 20210301200959 do
   let(:migration_class) { described_class::MIGRATION }
   let(:migration_name)  { migration_class.to_s.demodulize }
 

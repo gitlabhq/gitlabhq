@@ -30,6 +30,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
           post api('/runners'), params: {
             token: 'valid token',
             description: 'server.hostname',
+            maintainer_note: 'Some maintainer notes',
             run_untagged: false,
             tag_list: 'tag1, tag2',
             locked: true,
@@ -45,6 +46,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
           allow_next_instance_of(::Ci::RegisterRunnerService) do |service|
             expected_params = {
               description: 'server.hostname',
+              maintainer_note: 'Some maintainer notes',
               run_untagged: false,
               tag_list: %w(tag1 tag2),
               locked: true,

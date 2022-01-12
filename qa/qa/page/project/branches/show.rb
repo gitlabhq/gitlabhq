@@ -14,7 +14,6 @@ module QA
           end
 
           view 'app/views/projects/branches/_branch.html.haml' do
-            element :remove_btn
             element :branch_name
           end
 

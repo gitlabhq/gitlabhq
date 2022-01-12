@@ -5943,16 +5943,10 @@ msgstr ""
 msgid "Branches|Delete protected branch"
 msgstr ""
 
-msgid "Branches|Delete protected branch '%{branch_name}'?"
-msgstr ""
-
 msgid "Branches|Delete protected branch. Are you ABSOLUTELY SURE?"
 msgstr ""
 
 msgid "Branches|Deleting the %{strongStart}%{branchName}%{strongEnd} branch cannot be undone. Are you sure?"
-msgstr ""
-
-msgid "Branches|Deleting the '%{branch_name}' branch cannot be undone. Are you sure?"
 msgstr ""
 
 msgid "Branches|Deleting the merged branches cannot be undone. Are you sure?"
@@ -5968,9 +5962,6 @@ msgid "Branches|New branch"
 msgstr ""
 
 msgid "Branches|No branches to show"
-msgstr ""
-
-msgid "Branches|Once you confirm and press %{delete_protected_branch}, it cannot be undone or recovered."
 msgstr ""
 
 msgid "Branches|Once you confirm and press %{strongStart}%{buttonText},%{strongEnd} it cannot be undone or recovered."
@@ -6021,15 +6012,6 @@ msgstr ""
 msgid "Branches|This branch hasn’t been merged into %{defaultBranchName}. To avoid data loss, consider merging this branch before deleting it."
 msgstr ""
 
-msgid "Branches|This branch hasn’t been merged into %{default_branch}."
-msgstr ""
-
-msgid "Branches|To avoid data loss, consider merging this branch before deleting it."
-msgstr ""
-
-msgid "Branches|To confirm, type %{branch_name_confirmation}:"
-msgstr ""
-
 msgid "Branches|To discard the local changes and overwrite the branch with the upstream version, delete it here and choose 'Update Now' above."
 msgstr ""
 
@@ -6046,9 +6028,6 @@ msgid "Branches|You're about to permanently delete the branch %{strongStart}%{br
 msgstr ""
 
 msgid "Branches|You're about to permanently delete the protected branch %{strongStart}%{branchName}.%{strongEnd}"
-msgstr ""
-
-msgid "Branches|You’re about to permanently delete the protected branch %{branch_name}."
 msgstr ""
 
 msgid "Branches|diverged from upstream"
@@ -23352,10 +23331,10 @@ msgstr ""
 msgid "NamespaceStorageSize|push to your repository, create pipelines, create issues or add comments. To reduce storage capacity, delete unused repositories, artifacts, wikis, issues, and pipelines."
 msgstr ""
 
-msgid "NamespaceUserCap|Pending users must be reviewed and approved by a group owner. Learn more about %{user_caps_link_start}User Caps%{link_end} and %{users_pending_approval_link_start}Users Pending Approval%{link_end}."
+msgid "NamespaceUserCap|Pending users must be reviewed and approved by a group owner. Learn more about %{user_caps_link_start}user caps%{link_end} and %{users_pending_approval_link_start}users pending approval%{link_end}."
 msgstr ""
 
-msgid "NamespaceUserCap|View pending user approvals"
+msgid "NamespaceUserCap|View pending approvals"
 msgstr ""
 
 msgid "NamespaceUserCap|Your group has reached its billable member limit"
@@ -35367,7 +35346,7 @@ msgstr ""
 msgid "The connection will time out after %{timeout}. For repositories that take longer, use a clone/push combination."
 msgstr ""
 
-msgid "The contact does not belong to the same group as the issue"
+msgid "The contact does not belong to the issue group or an ancestor"
 msgstr ""
 
 msgid "The content editor may change the markdown formatting style of the document, which may not match your original markdown style."
@@ -39554,6 +39533,9 @@ msgstr ""
 msgid "Vulnerability|Actual received response is the one received when this fault was detected"
 msgstr ""
 
+msgid "Vulnerability|Add another identifier"
+msgstr ""
+
 msgid "Vulnerability|Additional Info"
 msgstr ""
 
@@ -39596,6 +39578,9 @@ msgstr ""
 msgid "Vulnerability|Download"
 msgstr ""
 
+msgid "Vulnerability|Enter the associated CVE or CWE entries for this vulnerability."
+msgstr ""
+
 msgid "Vulnerability|Evidence"
 msgstr ""
 
@@ -39612,6 +39597,12 @@ msgid "Vulnerability|GitLab Security Report"
 msgstr ""
 
 msgid "Vulnerability|Identifier"
+msgstr ""
+
+msgid "Vulnerability|Identifier URL"
+msgstr ""
+
+msgid "Vulnerability|Identifier code"
 msgstr ""
 
 msgid "Vulnerability|Identifiers"
@@ -39636,6 +39627,9 @@ msgid "Vulnerability|Namespace"
 msgstr ""
 
 msgid "Vulnerability|Project"
+msgstr ""
+
+msgid "Vulnerability|Remove identifier row"
 msgstr ""
 
 msgid "Vulnerability|Reproduction Assets"

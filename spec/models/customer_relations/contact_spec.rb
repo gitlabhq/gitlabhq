@@ -75,20 +75,27 @@ RSpec.describe CustomerRelations::Contact, type: :model do
     let_it_be(:other_contacts) { create_list(:contact, 2) }
 
     it 'returns ids of contacts from group' do
-      contact_ids = described_class.find_ids_by_emails(group.id, group_contacts.pluck(:email))
+      contact_ids = described_class.find_ids_by_emails(group, group_contacts.pluck(:email))
+
+      expect(contact_ids).to match_array(group_contacts.pluck(:id))
+    end
+
+    it 'returns ids of contacts from parent group' do
+      subgroup = create(:group, parent: group)
+      contact_ids = described_class.find_ids_by_emails(subgroup, group_contacts.pluck(:email))
 
       expect(contact_ids).to match_array(group_contacts.pluck(:id))
     end
 
     it 'does not return ids of contacts from other groups' do
-      contact_ids = described_class.find_ids_by_emails(group.id, other_contacts.pluck(:email))
+      contact_ids = described_class.find_ids_by_emails(group, other_contacts.pluck(:email))
 
       expect(contact_ids).to be_empty
     end
 
     it 'raises ArgumentError when called with too many emails' do
       too_many_emails = described_class::MAX_PLUCK + 1
-      expect { described_class.find_ids_by_emails(group.id, Array(0..too_many_emails)) }.to raise_error(ArgumentError)
+      expect { described_class.find_ids_by_emails(group, Array(0..too_many_emails)) }.to raise_error(ArgumentError)
     end
   end
 end

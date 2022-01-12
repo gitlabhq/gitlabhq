@@ -346,7 +346,7 @@ rspec fast_spec_helper minimal:
 db:rollback:
   extends: .db-job-base
   script:
-    - scripts/db_tasks db:migrate VERSION=20181228175414
+    - scripts/db_tasks db:migrate VERSION=20210301200959
     - scripts/db_tasks db:migrate SKIP_SCHEMA_VERSION_CHECK=true
 
 db:rollback decomposed:

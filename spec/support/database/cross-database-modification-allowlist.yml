@@ -8,4 +8,3 @@
 - "./spec/models/clusters/applications/runner_spec.rb"
 - "./spec/requests/api/commits_spec.rb"
 - "./spec/services/ci/retry_build_service_spec.rb"
-- "./spec/services/projects/overwrite_project_service_spec.rb"

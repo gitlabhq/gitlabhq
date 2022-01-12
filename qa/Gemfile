@@ -29,6 +29,8 @@ gem 'terminal-table', '~> 3.0.0', require: false
 gem 'slack-notifier', '~> 2.4', require: false
 gem 'fog-google', '~> 1.17', require: false
 
+gem 'confiner', '~> 0.2'
+
 gem 'chemlab', '~> 0.9'
 gem 'chemlab-library-www-gitlab-com', '~> 0.1'
 

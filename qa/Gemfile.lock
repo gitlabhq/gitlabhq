@@ -57,6 +57,9 @@ GEM
       adamantium (~> 0.2.0)
       equalizer (~> 0.0.9)
     concurrent-ruby (1.1.9)
+    confiner (0.2.1)
+      gitlab (>= 4.17)
+      zeitwerk (~> 2.5.1)
     declarative (0.0.20)
     deprecation_toolkit (1.5.1)
       activesupport (>= 4.2)
@@ -186,7 +189,7 @@ GEM
     method_source (0.9.0)
     mime-types (3.4.1)
       mime-types-data (~> 3.2015)
-    mime-types-data (3.2021.1115)
+    mime-types-data (3.2022.0105)
     mini_mime (1.1.0)
     mini_portile2 (2.6.1)
     minitest (5.15.0)
@@ -312,7 +315,7 @@ GEM
     webrick (1.7.0)
     xpath (3.2.0)
       nokogiri (~> 1.8)
-    zeitwerk (2.5.2)
+    zeitwerk (2.5.3)
 
 PLATFORMS
   ruby
@@ -325,6 +328,7 @@ DEPENDENCIES
   capybara-screenshot (~> 1.0.23)
   chemlab (~> 0.9)
   chemlab-library-www-gitlab-com (~> 0.1)
+  confiner (~> 0.2)
   deprecation_toolkit (~> 1.5.1)
   faker (~> 2.19, >= 2.19.0)
   fog-google (~> 1.17)

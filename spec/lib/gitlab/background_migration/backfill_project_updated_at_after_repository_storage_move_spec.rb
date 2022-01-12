@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::BackgroundMigration::BackfillProjectUpdatedAtAfterRepositoryStorageMove, :migration, schema: 20210210093901 do
+RSpec.describe Gitlab::BackgroundMigration::BackfillProjectUpdatedAtAfterRepositoryStorageMove, :migration, schema: 20210301200959 do
   let(:projects) { table(:projects) }
   let(:project_repository_storage_moves) { table(:project_repository_storage_moves) }
   let(:namespace) { table(:namespaces).create!(name: 'user', path: 'user') }

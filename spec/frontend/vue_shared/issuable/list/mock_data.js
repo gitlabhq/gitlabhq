@@ -133,7 +133,7 @@ export const mockTabs = [
 ];
 
 export const mockTabCounts = {
-  opened: 5,
+  opened: 5000,
   closed: 0,
   all: undefined,
 };

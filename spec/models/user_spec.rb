@@ -1398,7 +1398,7 @@ RSpec.describe User do
   end
 
   describe '#update_tracked_fields!', :clean_gitlab_redis_shared_state do
-    let(:request) { OpenStruct.new(remote_ip: "127.0.0.1") }
+    let(:request) { double('request', remote_ip: "127.0.0.1") }
     let(:user) { create(:user) }
 
     it 'writes trackable attributes' do

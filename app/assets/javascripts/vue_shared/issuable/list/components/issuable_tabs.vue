@@ -1,5 +1,6 @@
 <script>
 import { GlTabs, GlTab, GlBadge } from '@gitlab/ui';
+import { formatNumber } from '~/locale';
 
 export default {
   components: {
@@ -29,6 +30,9 @@ export default {
     isTabCountNumeric(tab) {
       return Number.isInteger(this.tabCounts[tab.name]);
     },
+    formatNumber(count) {
+      return formatNumber(count);
+    },
   },
 };
 </script>
@@ -55,7 +59,7 @@ export default {
             size="sm"
             class="gl-tab-counter-badge"
           >
-            {{ tabCounts[tab.name] }}
+            {{ formatNumber(tabCounts[tab.name]) }}
           </gl-badge>
         </template>
       </gl-tab>

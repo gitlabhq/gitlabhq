@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::BackgroundMigration::PopulateIssueEmailParticipants, schema: 20181228175414 do
+RSpec.describe Gitlab::BackgroundMigration::PopulateIssueEmailParticipants, schema: 20210301200959 do
   let!(:namespace) { table(:namespaces).create!(name: 'namespace', path: 'namespace') }
   let!(:project) { table(:projects).create!(id: 1, namespace_id: namespace.id) }
   let!(:issue1) { table(:issues).create!(id: 1, project_id: project.id, service_desk_reply_to: "a@gitlab.com") }

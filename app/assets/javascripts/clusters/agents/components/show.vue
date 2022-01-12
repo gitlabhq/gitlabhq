@@ -122,11 +122,11 @@ export default {
       </p>
 
       <gl-tabs sync-active-tab-with-query-params lazy>
-        <slot name="ee-security-tab" :cluster-agent-id="clusterAgent.id"></slot>
-
         <gl-tab :title="$options.i18n.activity" query-param-value="activity">
           <activity-events :agent-name="agentName" :project-path="projectPath" />
         </gl-tab>
+
+        <slot name="ee-security-tab" :cluster-agent-id="clusterAgent.id"></slot>
 
         <gl-tab query-param-value="tokens">
           <template #title>

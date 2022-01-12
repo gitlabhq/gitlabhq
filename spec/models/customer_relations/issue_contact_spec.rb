@@ -5,7 +5,8 @@ require 'spec_helper'
 RSpec.describe CustomerRelations::IssueContact do
   let_it_be(:issue_contact, reload: true) { create(:issue_customer_relations_contact) }
   let_it_be(:group) { create(:group) }
-  let_it_be(:project) { create(:project, group: group) }
+  let_it_be(:subgroup) { create(:group, parent: group) }
+  let_it_be(:project) { create(:project, group: subgroup) }
   let_it_be(:issue) { create(:issue, project: project) }
 
   subject { issue_contact }
@@ -33,16 +34,28 @@ RSpec.describe CustomerRelations::IssueContact do
     end
 
     it 'builds using the same group', :aggregate_failures do
-      expect(for_issue.contact.group).to eq(group)
+      expect(for_issue.contact.group).to eq(subgroup)
       expect(for_contact.issue.project.group).to eq(group)
     end
   end
 
   describe 'validation' do
-    let(:built) { build(:issue_customer_relations_contact, issue: create(:issue), contact: create(:contact)) }
+    it 'fails when the contact group does not belong to the issue group or ancestors' do
+      built = build(:issue_customer_relations_contact, issue: create(:issue), contact: create(:contact))
 
-    it 'fails when the contact group does not match the issue group' do
       expect(built).not_to be_valid
+    end
+
+    it 'succeeds when the contact group is the same as the issue group' do
+      built = build(:issue_customer_relations_contact, issue: create(:issue, project: project), contact: create(:contact, group: subgroup))
+
+      expect(built).to be_valid
+    end
+
+    it 'succeeds when the contact group is an ancestor of the issue group' do
+      built = build(:issue_customer_relations_contact, issue: create(:issue, project: project), contact: create(:contact, group: group))
+
+      expect(built).to be_valid
     end
   end
 

@@ -131,6 +131,9 @@ RSpec.describe "Admin Runners" do
         it 'shows correct runner when description matches' do
           input_filtered_search_keys('runner-foo')
 
+          expect(page).to have_link('All 1')
+          expect(page).to have_link('Instance 1')
+
           expect(page).to have_content("runner-foo")
           expect(page).not_to have_content("runner-bar")
         end
@@ -138,73 +141,76 @@ RSpec.describe "Admin Runners" do
         it 'shows no runner when description does not match' do
           input_filtered_search_keys('runner-baz')
 
+          expect(page).to have_link('All 0')
+          expect(page).to have_link('Instance 0')
+
           expect(page).to have_text 'No runners found'
         end
       end
 
       describe 'filter by status' do
-        it 'shows correct runner when status matches' do
-          create(:ci_runner, :instance, description: 'runner-active', active: true)
-          create(:ci_runner, :instance, description: 'runner-paused', active: false)
+        let!(:never_contacted) { create(:ci_runner, :instance, description: 'runner-never-contacted', contacted_at: nil) }
+
+        before do
+          create(:ci_runner, :instance, description: 'runner-1', contacted_at: Time.now)
+          create(:ci_runner, :instance, description: 'runner-2', contacted_at: Time.now)
+          create(:ci_runner, :instance, description: 'runner-paused', active: false, contacted_at: Time.now)
 
           visit admin_runners_path
+        end
 
-          expect(page).to have_content 'runner-active'
+        it 'shows all runners' do
+          expect(page).to have_content 'runner-1'
+          expect(page).to have_content 'runner-2'
           expect(page).to have_content 'runner-paused'
+          expect(page).to have_content 'runner-never-contacted'
 
+          expect(page).to have_link('All 4')
+        end
+
+        it 'shows correct runner when status matches' do
           input_filtered_search_filter_is_only('Status', 'Active')
 
-          expect(page).to have_content 'runner-active'
+          expect(page).to have_link('All 3')
+
+          expect(page).to have_content 'runner-1'
+          expect(page).to have_content 'runner-2'
+          expect(page).to have_content 'runner-never-contacted'
           expect(page).not_to have_content 'runner-paused'
         end
 
         it 'shows no runner when status does not match' do
-          create(:ci_runner, :instance, description: 'runner-active', active: true)
-          create(:ci_runner, :instance, description: 'runner-paused', active: false)
+          input_filtered_search_filter_is_only('Status', 'Stale')
 
-          visit admin_runners_path
-
-          input_filtered_search_filter_is_only('Status', 'Online')
-
-          expect(page).not_to have_content 'runner-active'
-          expect(page).not_to have_content 'runner-paused'
+          expect(page).to have_link('All 0')
 
           expect(page).to have_text 'No runners found'
         end
 
         it 'shows correct runner when status is selected and search term is entered' do
-          create(:ci_runner, :instance, description: 'runner-a-1', active: true)
-          create(:ci_runner, :instance, description: 'runner-a-2', active: false)
-          create(:ci_runner, :instance, description: 'runner-b-1', active: true)
-
-          visit admin_runners_path
-
           input_filtered_search_filter_is_only('Status', 'Active')
+          input_filtered_search_keys('runner-1')
 
-          expect(page).to have_content 'runner-a-1'
-          expect(page).to have_content 'runner-b-1'
-          expect(page).not_to have_content 'runner-a-2'
+          expect(page).to have_link('All 1')
 
-          input_filtered_search_keys('runner-a')
-
-          expect(page).to have_content 'runner-a-1'
-          expect(page).not_to have_content 'runner-b-1'
-          expect(page).not_to have_content 'runner-a-2'
+          expect(page).to have_content 'runner-1'
+          expect(page).not_to have_content 'runner-2'
+          expect(page).not_to have_content 'runner-never-contacted'
+          expect(page).not_to have_content 'runner-paused'
         end
 
         it 'shows correct runner when status filter is entered' do
-          never_connected = create(:ci_runner, :instance, description: 'runner-never-contacted', contacted_at: nil)
-          create(:ci_runner, :instance, description: 'runner-contacted', contacted_at: Time.now)
-
-          visit admin_runners_path
-
           # use the string "Never" to avoid using space and trigger an early selection
           input_filtered_search_filter_is_only('Status', 'Never')
 
-          expect(page).to have_content 'runner-never-contacted'
-          expect(page).not_to have_content 'runner-contacted'
+          expect(page).to have_link('All 1')
 
-          within "[data-testid='runner-row-#{never_connected.id}']" do
+          expect(page).not_to have_content 'runner-1'
+          expect(page).not_to have_content 'runner-2'
+          expect(page).not_to have_content 'runner-paused'
+          expect(page).to have_content 'runner-never-contacted'
+
+          within "[data-testid='runner-row-#{never_contacted.id}']" do
             expect(page).to have_selector '.badge', text: 'never contacted'
           end
         end
@@ -218,6 +224,10 @@ RSpec.describe "Admin Runners" do
 
         it '"All" tab is selected by default' do
           visit admin_runners_path
+
+          expect(page).to have_link('All 2')
+          expect(page).to have_link('Group 1')
+          expect(page).to have_link('Project 1')
 
           page.within('[data-testid="runner-type-tabs"]') do
             expect(page).to have_link('All', class: 'active')
@@ -379,6 +389,13 @@ RSpec.describe "Admin Runners" do
         expect(page).to have_text "Register an instance runner"
         expect(page).to have_text "Online Runners 0"
         expect(page).to have_text 'No runners found'
+      end
+
+      it 'shows tabs with total counts equal to 0' do
+        expect(page).to have_link('All 0')
+        expect(page).to have_link('Instance 0')
+        expect(page).to have_link('Group 0')
+        expect(page).to have_link('Project 0')
       end
     end
 
@@ -581,6 +598,8 @@ RSpec.describe "Admin Runners" do
       page.find('input').send_keys(search_term)
       click_on 'Search'
     end
+
+    wait_for_requests
   end
 
   def input_filtered_search_filter_is_only(filter, value)
@@ -597,5 +616,7 @@ RSpec.describe "Admin Runners" do
 
       click_on 'Search'
     end
+
+    wait_for_requests
   end
 end

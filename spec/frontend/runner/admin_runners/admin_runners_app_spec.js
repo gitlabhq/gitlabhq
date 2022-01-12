@@ -22,23 +22,22 @@ import {
   CREATED_DESC,
   DEFAULT_SORT,
   INSTANCE_TYPE,
+  GROUP_TYPE,
+  PROJECT_TYPE,
   PARAM_KEY_STATUS,
   PARAM_KEY_TAG,
   STATUS_ACTIVE,
   RUNNER_PAGE_SIZE,
 } from '~/runner/constants';
 import getRunnersQuery from '~/runner/graphql/get_runners.query.graphql';
+import getRunnersCountQuery from '~/runner/graphql/get_runners_count.query.graphql';
 import { captureException } from '~/runner/sentry_utils';
 import FilteredSearch from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
 
-import { runnersData, runnersDataPaginated } from '../mock_data';
+import { runnersData, runnersCountData, runnersDataPaginated } from '../mock_data';
 
 const mockRegistrationToken = 'MOCK_REGISTRATION_TOKEN';
 const mockActiveRunnersCount = '2';
-const mockAllRunnersCount = '6';
-const mockInstanceRunnersCount = '3';
-const mockGroupRunnersCount = '2';
-const mockProjectRunnersCount = '1';
 
 jest.mock('~/flash');
 jest.mock('~/runner/sentry_utils');
@@ -53,6 +52,7 @@ localVue.use(VueApollo);
 describe('AdminRunnersApp', () => {
   let wrapper;
   let mockRunnersQuery;
+  let mockRunnersCountQuery;
 
   const findRegistrationDropdown = () => wrapper.findComponent(RegistrationDropdown);
   const findRunnerTypeTabs = () => wrapper.findComponent(RunnerTypeTabs);
@@ -65,7 +65,10 @@ describe('AdminRunnersApp', () => {
   const findFilteredSearch = () => wrapper.findComponent(FilteredSearch);
 
   const createComponent = ({ props = {}, mountFn = shallowMount } = {}) => {
-    const handlers = [[getRunnersQuery, mockRunnersQuery]];
+    const handlers = [
+      [getRunnersQuery, mockRunnersQuery],
+      [getRunnersCountQuery, mockRunnersCountQuery],
+    ];
 
     wrapper = mountFn(AdminRunnersApp, {
       localVue,
@@ -73,10 +76,6 @@ describe('AdminRunnersApp', () => {
       propsData: {
         registrationToken: mockRegistrationToken,
         activeRunnersCount: mockActiveRunnersCount,
-        allRunnersCount: mockAllRunnersCount,
-        instanceRunnersCount: mockInstanceRunnersCount,
-        groupRunnersCount: mockGroupRunnersCount,
-        projectRunnersCount: mockProjectRunnersCount,
         ...props,
       },
     });
@@ -86,6 +85,19 @@ describe('AdminRunnersApp', () => {
     setWindowLocation('/admin/runners');
 
     mockRunnersQuery = jest.fn().mockResolvedValue(runnersData);
+    mockRunnersCountQuery = jest.fn().mockImplementation(({ type }) => {
+      const mockResponse = {
+        [INSTANCE_TYPE]: 3,
+        [GROUP_TYPE]: 2,
+        [PROJECT_TYPE]: 1,
+      };
+      if (mockResponse[type]) {
+        return Promise.resolve({
+          data: { runners: { count: mockResponse[type] } },
+        });
+      }
+      return Promise.resolve(runnersCountData);
+    });
     createComponent();
     await waitForPromises();
   });
@@ -101,7 +113,7 @@ describe('AdminRunnersApp', () => {
     await waitForPromises();
 
     expect(findRunnerTypeTabs().text()).toMatchInterpolatedText(
-      `All ${mockAllRunnersCount} Instance ${mockInstanceRunnersCount} Group ${mockGroupRunnersCount} Project ${mockProjectRunnersCount}`,
+      `All ${runnersCountData.data.runners.count} Instance 3 Group 2 Project 1`,
     );
   });
 

@@ -50,6 +50,25 @@ RSpec.describe 'Runner (JavaScript fixtures)' do
   end
 
   describe GraphQL::Query, type: :request do
+    get_runners_count_query_name = 'get_runners_count.query.graphql'
+
+    before do
+      sign_in(admin)
+      enable_admin_mode!(admin)
+    end
+
+    let_it_be(:query) do
+      get_graphql_query_as_string("#{query_path}#{get_runners_count_query_name}")
+    end
+
+    it "#{fixtures_path}#{get_runners_count_query_name}.json" do
+      post_graphql(query, current_user: admin, variables: {})
+
+      expect_graphql_errors_to_be_empty
+    end
+  end
+
+  describe GraphQL::Query, type: :request do
     get_runner_query_name = 'get_runner.query.graphql'
 
     before do
