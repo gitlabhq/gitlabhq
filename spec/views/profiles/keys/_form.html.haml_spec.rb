@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'profiles/keys/_form.html.haml' do
+  include SshKeysHelper
+
   let_it_be(:key) { Key.new }
 
   let(:page) { Capybara::Node::Simple.new(rendered) }
@@ -23,8 +25,8 @@ RSpec.describe 'profiles/keys/_form.html.haml' do
     end
 
     it 'has the key field', :aggregate_failures do
-      expect(rendered).to have_field('Key', type: 'textarea', placeholder: 'Typically starts with "ssh-ed25519 …" or "ssh-rsa …"')
-      expect(rendered).to have_text("Paste your public SSH key, which is usually contained in the file '~/.ssh/id_ed25519.pub' or '~/.ssh/id_rsa.pub' and begins with 'ssh-ed25519' or 'ssh-rsa'. Do not paste your private SSH key, as that can compromise your identity.")
+      expect(rendered).to have_field('Key', type: 'textarea')
+      expect(rendered).to have_text(s_('Profiles|Begins with %{ssh_key_algorithms}.') % { ssh_key_algorithms: ssh_key_allowed_algorithms })
     end
 
     it 'has the title field', :aggregate_failures do

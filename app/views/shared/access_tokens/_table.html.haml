@@ -55,7 +55,7 @@
               - else
                 %span.token-never-expires-label= _('Never')
             - if project
-              %td= project.project_member(token.user).human_access
+              %td= project.member(token.user).human_access
             %td= link_to _('Revoke'), revoke_route_helper.call(token), method: :put, class: "gl-button btn btn-danger btn-sm float-right qa-revoke-button #{'btn-danger-secondary' unless token.expires?}", data: { confirm: _('Are you sure you want to revoke this %{type}? This action cannot be undone.') % { type: type } }
 - else
   .settings-message.text-center

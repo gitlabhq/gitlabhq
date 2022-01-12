@@ -3,7 +3,7 @@
 RSpec.shared_examples 'inherited access level as a member of entity' do
   let(:parent_entity) { create(:group) }
   let(:user) { create(:user) }
-  let(:member) { entity.is_a?(Group) ? entity.group_member(user) : entity.project_member(user) }
+  let(:member) { entity.member(user) }
 
   context 'with root parent_entity developer member' do
     before do
@@ -49,7 +49,7 @@ RSpec.shared_examples 'inherited access level as a member of entity' do
 
       entity.add_maintainer(non_member_user)
 
-      non_member = entity.is_a?(Group) ? entity.group_member(non_member_user) : entity.project_member(non_member_user)
+      non_member = entity.member(non_member_user)
 
       expect { non_member.update!(access_level: Gitlab::Access::GUEST) }
         .to change { non_member.reload.access_level }

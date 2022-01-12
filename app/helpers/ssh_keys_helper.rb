@@ -18,4 +18,14 @@ module SshKeysHelper
         container: 'body'
     }
   end
+
+  def ssh_key_allowed_algorithms
+    allowed_algorithms = Gitlab::CurrentSettings.allowed_key_types.flat_map do |ssh_key_type_name|
+      Gitlab::SSHPublicKey.supported_algorithms_for_name(ssh_key_type_name)
+    end
+
+    quoted_allowed_algorithms = allowed_algorithms.map { |name| "'#{name}'" }
+
+    Gitlab::Utils.to_exclusive_sentence(quoted_allowed_algorithms)
+  end
 end

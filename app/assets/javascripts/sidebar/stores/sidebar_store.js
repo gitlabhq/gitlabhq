@@ -98,6 +98,10 @@ export default class SidebarStore {
     }
   }
 
+  overwrite(key, newData) {
+    this[key] = newData;
+  }
+
   findAssignee(findAssignee) {
     return this.assignees.find(({ id }) => id === findAssignee.id);
   }

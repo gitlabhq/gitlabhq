@@ -2824,7 +2824,7 @@ RSpec.describe Ci::Build do
             allow(build).to receive(:dependency_variables) { [job_dependency_var] }
             allow(build).to receive(:dependency_proxy_variables) { [dependency_proxy_var] }
 
-            allow(build.project)
+            allow(build.pipeline.project)
               .to receive(:predefined_variables) { [project_pre_var] }
 
             project.variables.create!(key: 'secret', value: 'value')
@@ -3124,7 +3124,7 @@ RSpec.describe Ci::Build do
 
       context 'when the branch is protected' do
         before do
-          allow(build.project).to receive(:protected_for?).with(ref).and_return(true)
+          allow(build.pipeline.project).to receive(:protected_for?).with(ref).and_return(true)
         end
 
         it { is_expected.to include(protected_variable) }
@@ -3132,7 +3132,7 @@ RSpec.describe Ci::Build do
 
       context 'when the tag is protected' do
         before do
-          allow(build.project).to receive(:protected_for?).with(ref).and_return(true)
+          allow(build.pipeline.project).to receive(:protected_for?).with(ref).and_return(true)
         end
 
         it { is_expected.to include(protected_variable) }
@@ -3171,7 +3171,7 @@ RSpec.describe Ci::Build do
 
       context 'when the branch is protected' do
         before do
-          allow(build.project).to receive(:protected_for?).with(ref).and_return(true)
+          allow(build.pipeline.project).to receive(:protected_for?).with(ref).and_return(true)
         end
 
         it { is_expected.to include(protected_variable) }
@@ -3179,7 +3179,7 @@ RSpec.describe Ci::Build do
 
       context 'when the tag is protected' do
         before do
-          allow(build.project).to receive(:protected_for?).with(ref).and_return(true)
+          allow(build.pipeline.project).to receive(:protected_for?).with(ref).and_return(true)
         end
 
         it { is_expected.to include(protected_variable) }
@@ -3566,6 +3566,20 @@ RSpec.describe Ci::Build do
 
       build.scoped_variables
     end
+
+    context 'when variables builder is used' do
+      it 'returns the same variables' do
+        build.user = create(:user)
+
+        allow(build.pipeline).to receive(:use_variables_builder_definitions?).and_return(false)
+        legacy_variables = build.scoped_variables.to_hash
+
+        allow(build.pipeline).to receive(:use_variables_builder_definitions?).and_return(true)
+        new_variables = build.scoped_variables.to_hash
+
+        expect(new_variables).to eq(legacy_variables)
+      end
+    end
   end
 
   describe '#simple_variables_without_dependencies' do
@@ -3578,7 +3592,8 @@ RSpec.describe Ci::Build do
 
   shared_examples "secret CI variables" do
     context 'when ref is branch' do
-      let(:build) { create(:ci_build, ref: 'master', tag: false, project: project) }
+      let(:pipeline) { create(:ci_pipeline, project: project) }
+      let(:build) { create(:ci_build, ref: 'master', tag: false, pipeline: pipeline, project: project) }
 
       context 'when ref is protected' do
         before do
@@ -3594,7 +3609,8 @@ RSpec.describe Ci::Build do
     end
 
     context 'when ref is tag' do
-      let(:build) { create(:ci_build, ref: 'v1.1.0', tag: true, project: project) }
+      let(:pipeline) { create(:ci_pipeline, project: project) }
+      let(:build) { create(:ci_build, ref: 'v1.1.0', tag: true, pipeline: pipeline, project: project) }
 
       context 'when ref is protected' do
         before do
@@ -3692,10 +3708,37 @@ RSpec.describe Ci::Build do
         .and_return(project_variables)
     end
 
-    it { is_expected.to eq(project_variables) }
-
     context 'environment is nil' do
       let(:environment) { nil }
+
+      it { is_expected.to be_empty }
+    end
+  end
+
+  describe '#user_variables' do
+    subject { build.user_variables.to_hash }
+
+    context 'with user' do
+      let(:expected_variables) do
+        {
+          'GITLAB_USER_EMAIL' => user.email,
+          'GITLAB_USER_ID' => user.id.to_s,
+          'GITLAB_USER_LOGIN' => user.username,
+          'GITLAB_USER_NAME' => user.name
+        }
+      end
+
+      before do
+        build.user = user
+      end
+
+      it { is_expected.to eq(expected_variables) }
+    end
+
+    context 'without user' do
+      before do
+        expect(build).to receive(:user).and_return(nil)
+      end
 
       it { is_expected.to be_empty }
     end

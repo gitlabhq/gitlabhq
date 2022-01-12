@@ -627,14 +627,13 @@ class Group < Namespace
     end
   end
 
-  def group_member(user)
+  def member(user)
     if group_members.loaded?
       group_members.find { |gm| gm.user_id == user.id }
     else
       group_members.find_by(user_id: user)
     end
   end
-  alias_method :resource_member, :group_member
 
   def highest_group_member(user)
     GroupMember.where(source_id: self_and_ancestors_ids, user_id: user.id).order(:access_level).last

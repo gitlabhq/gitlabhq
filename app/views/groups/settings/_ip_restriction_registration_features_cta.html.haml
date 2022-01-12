@@ -1,0 +1,8 @@
+- return unless registration_features_can_be_prompted?
+
+.form-group
+  = f.label :disabled_ip_restriction_ranges, class: 'label-bold' do
+    = _('Allow access to the following IP addresses')
+  = f.text_field :disabled_ip_restriction_ranges, value: '', class: 'form-control', disabled: true
+  %span.form-text.text-muted
+    = render 'shared/registration_features_discovery_message'

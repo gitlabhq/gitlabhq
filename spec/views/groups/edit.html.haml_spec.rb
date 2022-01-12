@@ -115,4 +115,40 @@ RSpec.describe 'groups/edit.html.haml' do
       end
     end
   end
+
+  context 'ip_restriction' do
+    let(:group) { create(:group) }
+    let(:user) { create(:user) }
+
+    before do
+      group.add_owner(user)
+
+      assign(:group, group)
+      allow(view).to receive(:current_user) { user }
+    end
+
+    context 'prompt user about registration features' do
+      before do
+        if Gitlab.ee?
+          allow(License).to receive(:current).and_return(nil)
+        end
+      end
+
+      context 'with service ping disabled' do
+        before do
+          stub_application_setting(usage_ping_enabled: false)
+        end
+
+        it_behaves_like 'renders registration features prompt', :group_disabled_ip_restriction_ranges
+      end
+
+      context 'with service ping enabled' do
+        before do
+          stub_application_setting(usage_ping_enabled: true)
+        end
+
+        it_behaves_like 'does not render registration features prompt', :group_disabled_ip_restriction_ranges
+      end
+    end
+  end
 end

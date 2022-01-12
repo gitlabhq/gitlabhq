@@ -5,8 +5,8 @@
 
     .form-group
       = f.label :key, s_('Profiles|Key'), class: 'label-bold'
-      %p= _("Paste your public SSH key, which is usually contained in the file '~/.ssh/id_ed25519.pub' or '~/.ssh/id_rsa.pub' and begins with 'ssh-ed25519' or 'ssh-rsa'. Do not paste your private SSH key, as that can compromise your identity.")
-      = f.text_area :key, class: "form-control gl-form-input js-add-ssh-key-validation-input qa-key-public-key-field", rows: 8, required: true, placeholder: s_('Profiles|Typically starts with "ssh-ed25519 …" or "ssh-rsa …"')
+      = f.text_area :key, class: "form-control gl-form-input js-add-ssh-key-validation-input qa-key-public-key-field", rows: 8, required: true
+      %p.form-text.text-muted= s_('Profiles|Begins with %{ssh_key_algorithms}.') % { ssh_key_algorithms: ssh_key_allowed_algorithms }
     .form-row
       .col.form-group
         = f.label :title, _('Title'), class: 'label-bold'

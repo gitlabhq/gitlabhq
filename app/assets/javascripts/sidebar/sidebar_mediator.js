@@ -30,7 +30,7 @@ export default class SidebarMediator {
     this.store.addAssignee(this.store.currentUser);
   }
 
-  saveAssignees(field) {
+  async saveAssignees(field) {
     const selected = this.store.assignees.map((u) => u.id);
 
     // If there are no ids, that means we have to unassign (which is id = 0)
@@ -38,10 +38,22 @@ export default class SidebarMediator {
     const assignees = selected.length === 0 ? [0] : selected;
     const data = { assignee_ids: assignees };
 
-    return this.service.update(field, data);
+    try {
+      const res = await this.service.update(field, data);
+
+      this.store.overwrite('assignees', res.data.assignees);
+
+      if (res.data.reviewers) {
+        this.store.overwrite('reviewers', res.data.reviewers);
+      }
+
+      return Promise.resolve(res);
+    } catch (e) {
+      return Promise.reject(e);
+    }
   }
 
-  saveReviewers(field) {
+  async saveReviewers(field) {
     const selected = this.store.reviewers.map((u) => u.id);
 
     // If there are no ids, that means we have to unassign (which is id = 0)
@@ -49,7 +61,16 @@ export default class SidebarMediator {
     const reviewers = selected.length === 0 ? [0] : selected;
     const data = { reviewer_ids: reviewers };
 
-    return this.service.update(field, data);
+    try {
+      const res = await this.service.update(field, data);
+
+      this.store.overwrite('reviewers', res.data.reviewers);
+      this.store.overwrite('assignees', res.data.assignees);
+
+      return Promise.resolve(res);
+    } catch (e) {
+      return Promise.reject();
+    }
   }
 
   requestReview({ userId, callback }) {
@@ -61,6 +82,19 @@ export default class SidebarMediator {
         callback(userId, true);
       })
       .catch(() => callback(userId, false));
+  }
+
+  removeCurrentUserAttentionRequested() {
+    const currentUserId = gon.current_user_id;
+
+    const currentUserReviewer = this.store.findReviewer({ id: currentUserId });
+    const currentUserAssignee = this.store.findAssignee({ id: currentUserId });
+
+    if (currentUserReviewer?.attention_requested || currentUserAssignee?.attention_requested) {
+      // Update current users attention_requested state
+      this.store.updateReviewer(currentUserId, 'attention_requested');
+      this.store.updateAssignee(currentUserId, 'attention_requested');
+    }
   }
 
   async toggleAttentionRequested(type, { user, callback }) {
@@ -82,15 +116,7 @@ export default class SidebarMediator {
         const currentUserId = gon.current_user_id;
 
         if (currentUserId !== user.id) {
-          const currentUserReviewerOrAssignee = isReviewer
-            ? this.store.findReviewer({ id: currentUserId })
-            : this.store.findAssignee({ id: currentUserId });
-
-          if (currentUserReviewerOrAssignee?.attention_requested) {
-            // Update current users attention_requested state
-            this.store.updateReviewer(currentUserId, 'attention_requested');
-            this.store.updateAssignee(currentUserId, 'attention_requested');
-          }
+          this.removeCurrentUserAttentionRequested();
         }
 
         toast(sprintf(__('Requested attention from @%{username}'), { username: user.username }));

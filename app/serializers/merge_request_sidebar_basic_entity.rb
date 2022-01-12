@@ -5,5 +5,9 @@ class MergeRequestSidebarBasicEntity < IssuableSidebarBasicEntity
     expose :can_merge do |merge_request|
       merge_request.can_be_merged_by?(current_user)
     end
+
+    expose :can_update_merge_request do |merge_request|
+      current_user.can?(:update_merge_request, merge_request)
+    end
   end
 end

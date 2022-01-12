@@ -24,7 +24,7 @@ RSpec.describe Doorkeeper.configuration do
     before do
       allow(controller).to receive(:current_user).and_return(current_user)
       allow(controller).to receive(:session).and_return({})
-      allow(controller).to receive(:request).and_return(OpenStruct.new(fullpath: '/return-path'))
+      allow(controller).to receive(:request).and_return(double('request', fullpath: '/return-path'))
       allow(controller).to receive(:redirect_to)
       allow(controller).to receive(:new_user_session_url).and_return('/login')
     end

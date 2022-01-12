@@ -313,7 +313,7 @@ gem 'pg_query', '~> 2.1'
 gem 'premailer-rails', '~> 1.10.3'
 
 # LabKit: Tracing and Correlation
-gem 'gitlab-labkit', '~> 0.21.1'
+gem 'gitlab-labkit', '~> 0.21.3'
 # Thrift is a dependency of gitlab-labkit, we want a version higher than 0.14.0
 # because of https://gitlab.com/gitlab-org/gitlab/-/issues/321900
 gem 'thrift', '>= 0.14.0'
@@ -485,14 +485,14 @@ end
 gem 'spamcheck', '~> 0.1.0'
 
 # Gitaly GRPC protocol definitions
-gem 'gitaly', '~> 14.4.0.pre.rc43'
+gem 'gitaly', '~> 14.6.0.pre.rc1'
 
 # KAS GRPC protocol definitions
 gem 'kas-grpc', '~> 0.0.2'
 
-gem 'grpc', '~> 1.30.2'
+gem 'grpc', '~> 1.42.0'
 
-gem 'google-protobuf', '~> 3.17.1'
+gem 'google-protobuf', '~> 3.19.0'
 
 gem 'toml-rb', '~> 2.0'
 

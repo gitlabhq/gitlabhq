@@ -30,6 +30,14 @@ RSpec.describe Import::GitlabController do
       expect(session[:gitlab_access_token]).to eq(token)
       expect(controller).to redirect_to(status_import_gitlab_url)
     end
+
+    it "importable_repos should return an array" do
+      allow_next_instance_of(Gitlab::GitlabImport::Client) do |instance|
+        allow(instance).to receive(:projects).and_return([{ "id": 1 }].to_enum)
+      end
+
+      expect(controller.send(:importable_repos)).to be_an_instance_of(Array)
+    end
   end
 
   describe "GET status" do

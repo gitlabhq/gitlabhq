@@ -1336,7 +1336,7 @@ class User < ApplicationRecord
 
   def can_leave_project?(project)
     project.namespace != namespace &&
-      project.project_member(self)
+      project.member(self)
   end
 
   def full_website_url

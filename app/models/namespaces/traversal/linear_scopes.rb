@@ -22,7 +22,7 @@ module Namespaces
           unscoped.where(id: root_ids)
         end
 
-        def self_and_ancestors(include_self: true, hierarchy_order: nil)
+        def self_and_ancestors(include_self: true, upto: nil, hierarchy_order: nil)
           return super unless use_traversal_ids_for_ancestor_scopes?
 
           ancestors_cte, base_cte = ancestor_ctes
@@ -35,11 +35,15 @@ module Namespaces
             .where(namespaces[:id].eq(ancestors_cte.table[:ancestor_id]))
             .order_by_depth(hierarchy_order)
 
-          if include_self
-            records
-          else
-            records.where(ancestors_cte.table[:base_id].not_eq(ancestors_cte.table[:ancestor_id]))
+          unless include_self
+            records = records.where(ancestors_cte.table[:base_id].not_eq(ancestors_cte.table[:ancestor_id]))
           end
+
+          if upto
+            records = records.where.not(id: unscoped.where(id: upto).select('unnest(traversal_ids)'))
+          end
+
+          records
         end
 
         def self_and_ancestor_ids(include_self: true)

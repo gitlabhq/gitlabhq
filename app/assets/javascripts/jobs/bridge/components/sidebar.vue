@@ -1,6 +1,7 @@
 <script>
 import { GlButton, GlDropdown, GlDropdownItem } from '@gitlab/ui';
 import { __ } from '~/locale';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate/tooltip_on_truncate.vue';
 import { JOB_SIDEBAR } from '../../constants';
 import CommitBlock from '../../components/commit_block.vue';
@@ -25,6 +26,7 @@ export default {
     GlDropdownItem,
     TooltipOnTruncate,
   },
+  mixins: [glFeatureFlagsMixin()],
   props: {
     bridgeJob: {
       type: Object,
@@ -54,7 +56,10 @@ export default {
         </h4>
       </tooltip-on-truncate>
       <!-- TODO: implement retry actions -->
-      <div class="gl-flex-grow-1 gl-flex-shrink-0 gl-text-right">
+      <div
+        v-if="glFeatures.triggerJobRetryAction"
+        class="gl-flex-grow-1 gl-flex-shrink-0 gl-text-right"
+      >
         <gl-dropdown
           :text="$options.i18n.retryButton"
           category="primary"

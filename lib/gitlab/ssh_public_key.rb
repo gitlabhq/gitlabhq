@@ -2,13 +2,15 @@
 
 module Gitlab
   class SSHPublicKey
-    Technology = Struct.new(:name, :key_class, :supported_sizes)
+    Technology = Struct.new(:name, :key_class, :supported_sizes, :supported_algorithms)
 
+    # See https://man.openbsd.org/sshd#AUTHORIZED_KEYS_FILE_FORMAT for the list of
+    # supported algorithms.
     TECHNOLOGIES = [
-      Technology.new(:rsa, OpenSSL::PKey::RSA, [1024, 2048, 3072, 4096]),
-      Technology.new(:dsa, OpenSSL::PKey::DSA, [1024, 2048, 3072]),
-      Technology.new(:ecdsa, OpenSSL::PKey::EC, [256, 384, 521]),
-      Technology.new(:ed25519, Net::SSH::Authentication::ED25519::PubKey, [256])
+      Technology.new(:rsa, OpenSSL::PKey::RSA, [1024, 2048, 3072, 4096], %w(ssh-rsa)),
+      Technology.new(:dsa, OpenSSL::PKey::DSA, [1024, 2048, 3072], %w(ssh-dss)),
+      Technology.new(:ecdsa, OpenSSL::PKey::EC, [256, 384, 521], %w(ecdsa-sha2-nistp256 ecdsa-sha2-nistp384 ecdsa-sha2-nistp521)),
+      Technology.new(:ed25519, Net::SSH::Authentication::ED25519::PubKey, [256], %w(ssh-ed25519))
     ].freeze
 
     def self.technology(name)
@@ -24,7 +26,15 @@ module Gitlab
     end
 
     def self.supported_sizes(name)
-      technology(name)&.supported_sizes
+      technology(name).supported_sizes
+    end
+
+    def self.supported_algorithms
+      TECHNOLOGIES.flat_map { |tech| tech.supported_algorithms }
+    end
+
+    def self.supported_algorithms_for_name(name)
+      technology(name).supported_algorithms
     end
 
     def self.sanitize(key_content)

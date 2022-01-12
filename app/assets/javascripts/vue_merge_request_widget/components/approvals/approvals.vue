@@ -3,6 +3,7 @@ import { GlButton } from '@gitlab/ui';
 import createFlash from '~/flash';
 import { BV_SHOW_MODAL } from '~/lib/utils/constants';
 import { s__ } from '~/locale';
+import sidebarEventHub from '~/sidebar/event_hub';
 import eventHub from '../../event_hub';
 import approvalsMixin from '../../mixins/approvals';
 import MrWidgetContainer from '../mr_widget_container.vue';
@@ -172,6 +173,7 @@ export default {
           this.mr.setApprovals(data);
           eventHub.$emit('MRWidgetUpdateRequested');
           eventHub.$emit('ApprovalUpdated');
+          sidebarEventHub.$emit('removeCurrentUserAttentionRequested');
           this.$emit('updated');
         })
         .catch(errFn)

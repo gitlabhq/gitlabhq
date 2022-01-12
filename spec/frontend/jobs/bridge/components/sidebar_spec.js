@@ -7,12 +7,16 @@ import { mockCommit, mockJob } from '../mock_data';
 describe('Bridge Sidebar', () => {
   let wrapper;
 
-  const createComponent = (props) => {
+  const createComponent = ({ featureFlag } = {}) => {
     wrapper = shallowMount(BridgeSidebar, {
+      provide: {
+        glFeatures: {
+          triggerJobRetryAction: featureFlag,
+        },
+      },
       propsData: {
         bridgeJob: mockJob,
         commit: mockCommit,
-        ...props,
       },
     });
   };
@@ -35,10 +39,6 @@ describe('Bridge Sidebar', () => {
       expect(findJobTitle().text()).toBe(mockJob.name);
     });
 
-    it('renders retry dropdown', () => {
-      expect(findRetryDropdown().exists()).toBe(true);
-    });
-
     it('renders commit information', () => {
       expect(findCommitBlock().exists()).toBe(true);
     });
@@ -55,6 +55,26 @@ describe('Bridge Sidebar', () => {
       findToggleBtn().vm.$emit('click');
 
       expect(wrapper.emitted('toggleSidebar')).toHaveLength(1);
+    });
+  });
+
+  describe('retry action', () => {
+    describe('when feature flag is ON', () => {
+      beforeEach(() => {
+        createComponent({ featureFlag: true });
+      });
+
+      it('renders retry dropdown', () => {
+        expect(findRetryDropdown().exists()).toBe(true);
+      });
+    });
+
+    describe('when feature flag is OFF', () => {
+      it('does not render retry dropdown', () => {
+        createComponent({ featureFlag: false });
+
+        expect(findRetryDropdown().exists()).toBe(false);
+      });
     });
   });
 });

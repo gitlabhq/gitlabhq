@@ -130,6 +130,12 @@ RSpec.shared_examples 'namespace traversal scopes' do
 
       it { is_expected.to contain_exactly(group_2, nested_group_2, deep_nested_group_2) }
     end
+
+    context 'with upto' do
+      subject { described_class.where(id: deep_nested_group_1).self_and_ancestors(upto: nested_group_1.id) }
+
+      it { is_expected.to contain_exactly(deep_nested_group_1) }
+    end
   end
 
   describe '.self_and_ancestors' do

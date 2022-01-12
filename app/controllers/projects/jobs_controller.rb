@@ -19,6 +19,7 @@ class Projects::JobsController < Projects::ApplicationController
 
   before_action do
     push_frontend_feature_flag(:infinitely_collapsible_sections, @project, default_enabled: :yaml)
+    push_frontend_feature_flag(:trigger_job_retry_action, @project, default_enabled: :yaml)
   end
 
   layout 'project'

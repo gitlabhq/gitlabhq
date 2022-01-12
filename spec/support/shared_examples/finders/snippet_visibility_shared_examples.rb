@@ -233,7 +233,7 @@ RSpec.shared_examples 'snippet visibility' do
         project.update!(visibility_level: Gitlab::VisibilityLevel.level_value(project_visibility.to_s), snippets_access_level: feature_visibility)
 
         if user_type == :external
-          member = project.project_member(external)
+          member = project.member(external)
 
           if project.private?
             project.add_developer(external) unless member

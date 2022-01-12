@@ -39,11 +39,40 @@ RSpec.describe Gitlab::SSHPublicKey, lib: true do
       ]
     end
 
-    subject { described_class.supported_sizes(name) }
-
     with_them do
       it { expect(described_class.supported_sizes(name)).to eq(sizes) }
       it { expect(described_class.supported_sizes(name.to_s)).to eq(sizes) }
+    end
+  end
+
+  describe '.supported_algorithms' do
+    it 'returns all supported algorithms' do
+      expect(described_class.supported_algorithms).to eq(
+        %w(
+        ssh-rsa
+        ssh-dss
+        ecdsa-sha2-nistp256 ecdsa-sha2-nistp384 ecdsa-sha2-nistp521
+        ssh-ed25519
+        )
+      )
+    end
+  end
+
+  describe '.supported_algorithms_for_name' do
+    where(:name, :algorithms) do
+      [
+        [:rsa, %w(ssh-rsa)],
+        [:dsa, %w(ssh-dss)],
+        [:ecdsa, %w(ecdsa-sha2-nistp256 ecdsa-sha2-nistp384 ecdsa-sha2-nistp521)],
+        [:ed25519, %w(ssh-ed25519)]
+      ]
+    end
+
+    with_them do
+      it "returns all supported algorithms for #{params[:name]}" do
+        expect(described_class.supported_algorithms_for_name(name)).to eq(algorithms)
+        expect(described_class.supported_algorithms_for_name(name.to_s)).to eq(algorithms)
+      end
     end
   end
 

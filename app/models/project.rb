@@ -1661,14 +1661,13 @@ class Project < ApplicationRecord
     attrs
   end
 
-  def project_member(user)
+  def member(user)
     if project_members.loaded?
       project_members.find { |member| member.user_id == user.id }
     else
       project_members.find_by(user_id: user)
     end
   end
-  alias_method :resource_member, :project_member
 
   def membership_locked?
     false

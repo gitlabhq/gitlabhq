@@ -8,7 +8,7 @@ module API
           if options[:project_members]
             options[:project_members].find { |member| member.source_id == project.id }
           else
-            project.project_member(options[:current_user])
+            project.member(options[:current_user])
           end
         end
 

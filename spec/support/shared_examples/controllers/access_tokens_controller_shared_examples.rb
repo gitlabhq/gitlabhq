@@ -50,7 +50,7 @@ RSpec.shared_examples 'project access tokens available #create' do
     expect(created_token.name).to eq(access_token_params[:name])
     expect(created_token.scopes).to eq(access_token_params[:scopes])
     expect(created_token.expires_at).to eq(access_token_params[:expires_at])
-    expect(project.project_member(created_token.user).access_level).to eq(access_level)
+    expect(project.member(created_token.user).access_level).to eq(access_level)
   end
 
   it 'creates project bot user' do
