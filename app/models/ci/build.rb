@@ -420,6 +420,10 @@ module Ci
       true
     end
 
+    def save_tags
+      super unless Thread.current['ci_bulk_insert_tags']
+    end
+
     def archived?
       return true if degenerated?
 

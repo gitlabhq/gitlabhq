@@ -9,17 +9,18 @@
         = group_icon(@group, class: 'avatar avatar-tile s64', width: 64, height: 64, itemprop: 'logo')
       .d-flex.flex-column.flex-wrap.align-items-baseline
         .d-inline-flex.align-items-baseline
-          %h1.home-panel-title.gl-mt-3.gl-mb-2.gl-ml-3{ itemprop: 'name' }
+          %h1.home-panel-title.gl-mt-3.gl-mb-2{ itemprop: 'name' }
             = @group.name
             %span.visibility-icon.text-secondary.gl-ml-2.has-tooltip{ data: { container: 'body' }, title: visibility_icon_description(@group) }
               = visibility_level_icon(@group.visibility_level, options: {class: 'icon'})
-        .home-panel-metadata.text-secondary.gl-font-base.gl-font-weight-normal.gl-line-height-normal
+        .home-panel-metadata.text-secondary.gl-font-base.gl-font-weight-normal.gl-line-height-normal{ data: { qa_selector: 'group_id_content' }, itemprop: 'identifier' }
           - if can?(current_user, :read_group, @group)
-            - button_class = "btn gl-button btn-sm btn-tertiary btn-default-tertiary home-panel-metadata"
-            - button_text = s_('GroupPage|Group ID: %{group_id}') % { group_id: @group.id }
-            = clipboard_button(title: s_('GroupPage|Copy group ID'), text: @group.id, hide_button_icon: true, button_text: button_text, class: button_class, qa_selector: 'group_id_content', itemprop: 'identifier')
+            %span.gl-display-inline-block.gl-vertical-align-middle
+              = s_("GroupPage|Group ID: %{group_id}") % { group_id: @group.id }
+              - button_class = "btn gl-button btn-sm btn-tertiary btn-default-tertiary home-panel-metadata"
+              = clipboard_button(title: s_('GroupPage|Copy group ID'), text: @group.id, class: button_class)
           - if current_user
-            %span.gl-ml-3
+            %span.gl-ml-3.gl-mb-3
               = render 'shared/members/access_request_links', source: @group
 
     .home-panel-buttons.col-md-12.col-lg-6

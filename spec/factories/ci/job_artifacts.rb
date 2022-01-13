@@ -10,6 +10,10 @@ FactoryBot.define do
       expire_at { Date.yesterday }
     end
 
+    trait :locked do
+      locked { Ci::JobArtifact.lockeds[:artifacts_locked] }
+    end
+
     trait :remote_store do
       file_store { JobArtifactUploader::Store::REMOTE}
     end

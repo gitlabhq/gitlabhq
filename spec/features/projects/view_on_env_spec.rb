@@ -48,26 +48,6 @@ RSpec.describe 'View on environment', :js do
       let(:environment) { create(:environment, project: project, name: 'review/feature', external_url: 'http://feature.review.example.com') }
       let!(:deployment) { create(:deployment, :success, environment: environment, ref: branch_name, sha: sha) }
 
-      context 'when visiting the diff of a merge request for the branch' do
-        let(:merge_request) { create(:merge_request, :simple, source_project: project, source_branch: branch_name) }
-
-        before do
-          sign_in(user)
-
-          visit diffs_project_merge_request_path(project, merge_request)
-
-          wait_for_requests
-        end
-
-        it 'has a "View on env" button' do
-          within '.diffs' do
-            text = 'View on feature.review.example.com'
-            url = 'http://feature.review.example.com/ruby/feature'
-            expect(page).to have_selector("a[title='#{text}'][href='#{url}']")
-          end
-        end
-      end
-
       context 'when visiting a comparison for the branch' do
         before do
           sign_in(user)

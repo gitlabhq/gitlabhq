@@ -1987,6 +1987,15 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: ci_job_artifacts_expire_project_build_artifacts
+  :worker_name: Ci::JobArtifacts::ExpireProjectBuildArtifactsWorker
+  :feature_category: :build_artifacts
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: create_commit_signature
   :worker_name: CreateCommitSignatureWorker
   :feature_category: :source_code_management

@@ -1,0 +1,8 @@
+---
+name: bulk_expire_project_artifacts
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/75488
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/347405
+milestone: '14.6'
+type: development
+group: group::testing
+default_enabled: false

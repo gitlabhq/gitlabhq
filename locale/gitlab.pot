@@ -34297,9 +34297,6 @@ msgstr ""
 msgid "SubscriptionTable|Trial start date"
 msgstr ""
 
-msgid "SubscriptionTable|Upgrade"
-msgstr ""
-
 msgid "SubscriptionTable|Usage"
 msgstr ""
 

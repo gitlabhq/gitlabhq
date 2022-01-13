@@ -30,10 +30,7 @@ To install the [Agent](../index.md) in your cluster:
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/259669) in GitLab 13.7, the Agent manifest configuration can be added to multiple directories (or subdirectories) of its repository.
 > - Group authorization was [introduced](https://gitlab.com/groups/gitlab-org/-/epics/5784) in GitLab 14.3.
 
-To create an agent, you need:
-
-1. A GitLab repository to hold the configuration file.
-1. Install the Agent in a cluster.
+To create an agent, you need a GitLab repository to hold the configuration file.
 
 After installed, when you update the configuration file, GitLab transmits the
 information to the cluster automatically without downtime.

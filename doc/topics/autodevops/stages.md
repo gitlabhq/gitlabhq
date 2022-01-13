@@ -65,6 +65,30 @@ Auto Test still uses Herokuish, as test suite detection is not
 yet part of the Cloud Native Buildpack specification. For more information, see
 [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/212689).
 
+#### Mount volumes into the build container
+
+> - [Introduced](https://gitlab.com/gitlab-org/cluster-integration/auto-build-image/-/merge_requests/65) in GitLab 14.2.
+> - Multiple volume support (or `auto-build-image` v1.6.0) [introduced](https://gitlab.com/gitlab-org/cluster-integration/auto-build-image/-/merge_requests/80) in GitLab 14.6.
+
+The variable `BUILDPACK_VOLUMES` can be used to pass volume mount definitions to the
+`pack` command. The mounts are passed to `pack build` using `--volume` arguments.
+Each volume definition can include any of the capabilities provided by `build pack`
+such as the host path, the target path, whether the volume is writable, and
+one or more volume options.
+
+Use a pipe `|` character to pass multiple volumes.
+Each item from the list is passed to `build back` using a separate `--volume` argument.
+
+In this example, three volumes are mounted in the container as `/etc/foo`, `/opt/foo`, and `/var/opt/foo`:
+
+```yaml
+buildjob:
+  variables:
+    BUILDPACK_VOLUMES: /mnt/1:/etc/foo:ro|/mnt/2:/opt/foo:ro|/mnt/3:/var/opt/foo:rw
+```
+
+Read more about defining volumes in the [`pack build` documentation](https://buildpacks.io/docs/tools/pack/cli/pack_build/).
+
 ### Auto Build using Herokuish
 
 > [Replaced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/63351) with Cloud Native Buildpacks in GitLab 14.0.

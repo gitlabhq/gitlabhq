@@ -79,12 +79,11 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Create do
       it 'extracts an empty tag list' do
         expect(CommitStatus)
           .to receive(:bulk_insert_tags!)
-          .with(stage.statuses, {})
+          .with([job])
           .and_call_original
 
         step.perform!
 
-        expect(job.instance_variable_defined?(:@tag_list)).to be_falsey
         expect(job).to be_persisted
         expect(job.tag_list).to eq([])
       end
@@ -98,14 +97,13 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Create do
       it 'bulk inserts tags' do
         expect(CommitStatus)
           .to receive(:bulk_insert_tags!)
-          .with(stage.statuses, { job.name => %w[tag1 tag2] })
+          .with([job])
           .and_call_original
 
         step.perform!
 
-        expect(job.instance_variable_defined?(:@tag_list)).to be_falsey
         expect(job).to be_persisted
-        expect(job.tag_list).to match_array(%w[tag1 tag2])
+        expect(job.reload.tag_list).to match_array(%w[tag1 tag2])
       end
     end
 
@@ -120,7 +118,6 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Create do
 
         step.perform!
 
-        expect(job.instance_variable_defined?(:@tag_list)).to be_truthy
         expect(job).to be_persisted
         expect(job.reload.tag_list).to match_array(%w[tag1 tag2])
       end

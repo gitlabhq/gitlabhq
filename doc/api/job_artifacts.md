@@ -259,7 +259,7 @@ Example response:
 }
 ```
 
-## Delete artifacts
+## Delete job artifacts
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/25522) in GitLab 11.9.
 
@@ -284,3 +284,34 @@ NOTE:
 At least Maintainer role is required to delete artifacts.
 
 If the artifacts were deleted successfully, a response with status `204 No Content` is returned.
+
+## Delete project artifacts
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/223793) in GitLab 14.7 [with a flag](../administration/feature_flags.md) named `bulk_expire_project_artifacts`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it
+available, ask an administrator to [enable the `bulk_expire_project_artifacts` flag](../administration/feature_flags.md).
+On GitLab.com, this feature is not available.
+
+[Expire artifacts of a project that can be deleted](https://gitlab.com/gitlab-org/gitlab/-/issues/223793) but that don't have an expiry time.
+
+```plaintext
+DELETE /projects/:id/artifacts
+```
+
+| Attribute | Type           | Required | Description                                                                 |
+|-----------|----------------|----------|-----------------------------------------------------------------------------|
+| `id`      | integer/string | yes      | ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) |
+
+Example request:
+
+```shell
+curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/artifacts"
+```
+
+NOTE:
+At least Maintainer role is required to delete artifacts.
+
+Schedules a worker to update to the current time the expiry of all artifacts that can be deleted.
+A response with status `202 Accepted` is returned.

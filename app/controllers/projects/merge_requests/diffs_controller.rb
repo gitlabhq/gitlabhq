@@ -35,13 +35,11 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
 
     diffs = @compare.diffs_in_batch(params[:page], params[:per_page], diff_options: diff_options_hash)
     unfoldable_positions = @merge_request.note_positions_for_paths(diffs.diff_file_paths, current_user).unfoldable
-    environment = @merge_request.environments_for(current_user, latest: true).last
 
     diffs.unfold_diff_files(unfoldable_positions)
     diffs.write_cache
 
     options = {
-      environment: environment,
       merge_request: @merge_request,
       commit: commit,
       diff_view: diff_view,
@@ -54,7 +52,6 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
       # NOTE: Any variables that would affect the resulting json needs to be added to the cache_context to avoid stale cache issues.
       cache_context = [
         current_user&.cache_key,
-        environment&.cache_key,
         unfoldable_positions.map(&:to_h),
         diff_view,
         params[:w],
@@ -98,7 +95,6 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
   # Deprecated: https://gitlab.com/gitlab-org/gitlab/issues/37735
   def render_diffs
     diffs = @compare.diffs(diff_options)
-    @environment = @merge_request.environments_for(current_user, latest: true).last
 
     diffs.unfold_diff_files(note_positions.unfoldable)
     diffs.write_cache
@@ -175,7 +171,6 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
 
   def additional_attributes
     {
-      environment: @environment,
       merge_request: @merge_request,
       merge_request_diff: @merge_request_diff,
       merge_request_diffs: @merge_request_diffs,

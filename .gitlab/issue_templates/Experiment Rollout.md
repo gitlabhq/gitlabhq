@@ -1,10 +1,10 @@
-<!-- Title suggestion: [Experiment Rollout] experiment-key - description of experiment -->
+<!-- Title suggestion: [Experiment Rollout] feature-flag-name - description of experiment -->
 
 ## Summary
 
 This issue tracks the rollout and status of an experiment through to removal.
 
-1. Experiment key / feature flag name: `<experiment-key>`
+1. Feature flag name: `<feature-flag-name>`
 1. Epic or issue link: `<issue or epic link>`
 
 This is an experiment rollout issue
@@ -55,7 +55,7 @@ Note: you can use the [CXL calculator](https://cxl.com/ab-test-calculator/) to d
 - Runtime in days, or until we expect to reach statistical significance: `30`
 - We will roll this out behind a feature flag and expose this to `<rollout-percentage>`% of actors to start then ramp it up from there.
 
-`/chatops run feature set <experiment-key> <rollout-percentage> --actors`
+`/chatops run feature set <feature-flag-name> <rollout-percentage> --actors`
 
 ### Status
 
@@ -83,14 +83,14 @@ In this rollout issue, ensure the scoped `experiment::` label is kept accurate.
 ## Roll Out Steps
 
 - [ ] [Confirm that end-to-end tests pass with the feature flag enabled](https://docs.gitlab.com/ee/development/testing_guide/end_to_end/feature_flags.html#confirming-that-end-to-end-tests-pass-with-a-feature-flag-enabled). If there are failing tests, contact the relevant [stable counterpart in the Quality department](https://about.gitlab.com/handbook/engineering/quality/#individual-contributors) to collaborate in updating the tests or confirming that the failing tests are not caused by the changes behind the enabled feature flag.
-- [ ] Enable on staging (`/chatops run feature set <experiment-key> true --staging`)
+- [ ] Enable on staging (`/chatops run feature set <feature-flag-name> true --staging`)
 - [ ] Test on staging
 - [ ] Ensure that documentation has been updated
-- [ ] Enable on GitLab.com for individual groups/projects listed above and verify behaviour  (`/chatops run feature set --project=gitlab-org/gitlab feature_name true`)
+- [ ] Enable on GitLab.com for individual groups/projects listed above and verify behaviour  (`/chatops run feature set --project=gitlab-org/gitlab <feature-flag-name> true`)
 - [ ] Coordinate a time to enable the flag with the SRE oncall and release managers
   - In `#production` mention `@sre-oncall` and `@release-managers`. Once an SRE on call and Release Manager on call confirm, you can proceed with the rollout
 - [ ] Announce on the issue an estimated time this will be enabled on GitLab.com
-- [ ] Enable on GitLab.com by running chatops command in `#production` (`/chatops run feature set feature_name true`)
+- [ ] Enable on GitLab.com by running chatops command in `#production` (`/chatops run feature set <feature-flag-name> true`)
 - [ ] Cross post chatops Slack command to `#support_gitlab-com` ([more guidance when this is necessary in the dev docs](https://docs.gitlab.com/ee/development/feature_flags/controls.html#where-to-run-commands)) and in your team channel
 - [ ] Announce on the issue that the flag has been enabled
 - [ ] Remove experiment code and feature flag and add changelog entry - a separate [cleanup issue](https://gitlab.com/gitlab-org/gitlab/-/issues/new?issuable_template=Experiment%20Successful%20Cleanup) might be required
@@ -102,7 +102,7 @@ In this rollout issue, ensure the scoped `experiment::` label is kept accurate.
 - [ ] This feature can be disabled by running the following Chatops command:
 
 ```
-/chatops run feature set <experiment-key> false
+/chatops run feature set <feature-flag-name> false
 ```
 
 ## Experiment Successful Cleanup Concerns

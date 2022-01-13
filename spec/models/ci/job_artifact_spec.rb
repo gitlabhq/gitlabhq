@@ -143,6 +143,17 @@ RSpec.describe Ci::JobArtifact do
     end
   end
 
+  describe '.erasable_file_types' do
+    subject { described_class.erasable_file_types }
+
+    it 'returns a list of erasable file types' do
+      all_types = described_class.file_types.keys
+      erasable_types = all_types - described_class::NON_ERASABLE_FILE_TYPES
+
+      expect(subject).to contain_exactly(*erasable_types)
+    end
+  end
+
   describe '.erasable' do
     subject { described_class.erasable }
 

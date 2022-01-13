@@ -14,8 +14,7 @@ module Environments
     def execute
       deployments =
         if ref
-          deployments_query = params[:with_tags] ? 'ref = :ref OR tag IS TRUE' : 'ref = :ref'
-          Deployment.where(deployments_query, ref: ref.to_s)
+          Deployment.where(ref: ref.to_s)
         elsif commit
           Deployment.where(sha: commit.sha)
         else

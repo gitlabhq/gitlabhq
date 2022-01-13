@@ -17,19 +17,12 @@ describe('Pipeline Editor | Text editor component', () => {
   let editorReadyListener;
   let mockUse;
   let mockRegisterCiSchema;
+  let mockEditorInstance;
+  let editorInstanceDetail;
 
   const MockSourceEditor = {
     template: '<div/>',
     props: ['value', 'fileName'],
-    mounted() {
-      this.$emit(EDITOR_READY_EVENT);
-    },
-    methods: {
-      getEditor: () => ({
-        use: mockUse,
-        registerCiSchema: mockRegisterCiSchema,
-      }),
-    },
   };
 
   const createComponent = (glFeatures = {}, mountFn = shallowMount) => {
@@ -58,6 +51,21 @@ describe('Pipeline Editor | Text editor component', () => {
 
   const findEditor = () => wrapper.findComponent(MockSourceEditor);
 
+  beforeEach(() => {
+    editorReadyListener = jest.fn();
+    mockUse = jest.fn();
+    mockRegisterCiSchema = jest.fn();
+    mockEditorInstance = {
+      use: mockUse,
+      registerCiSchema: mockRegisterCiSchema,
+    };
+    editorInstanceDetail = {
+      detail: {
+        instance: mockEditorInstance,
+      },
+    };
+  });
+
   afterEach(() => {
     wrapper.destroy();
 
@@ -67,10 +75,6 @@ describe('Pipeline Editor | Text editor component', () => {
 
   describe('template', () => {
     beforeEach(() => {
-      editorReadyListener = jest.fn();
-      mockUse = jest.fn();
-      mockRegisterCiSchema = jest.fn();
-
       createComponent();
     });
 
@@ -87,7 +91,7 @@ describe('Pipeline Editor | Text editor component', () => {
     });
 
     it('bubbles up events', () => {
-      findEditor().vm.$emit(EDITOR_READY_EVENT);
+      findEditor().vm.$emit(EDITOR_READY_EVENT, editorInstanceDetail);
 
       expect(editorReadyListener).toHaveBeenCalled();
     });
@@ -97,11 +101,7 @@ describe('Pipeline Editor | Text editor component', () => {
     describe('when `schema_linting` feature flag is on', () => {
       beforeEach(() => {
         createComponent({ schemaLinting: true });
-        // Since the editor will have already mounted, the event will have fired.
-        // To ensure we properly test this, we clear the mock and re-remit the event.
-        mockRegisterCiSchema.mockClear();
-        mockUse.mockClear();
-        findEditor().vm.$emit(EDITOR_READY_EVENT);
+        findEditor().vm.$emit(EDITOR_READY_EVENT, editorInstanceDetail);
       });
 
       it('configures editor with syntax highlight', () => {
@@ -113,7 +113,7 @@ describe('Pipeline Editor | Text editor component', () => {
     describe('when `schema_linting` feature flag is off', () => {
       beforeEach(() => {
         createComponent();
-        findEditor().vm.$emit(EDITOR_READY_EVENT);
+        findEditor().vm.$emit(EDITOR_READY_EVENT, editorInstanceDetail);
       });
 
       it('does not call the register CI schema function', () => {

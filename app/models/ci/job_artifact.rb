@@ -181,9 +181,7 @@ module Ci
     end
 
     scope :erasable, -> do
-      types = self.file_types.reject { |file_type| NON_ERASABLE_FILE_TYPES.include?(file_type) }.values
-
-      where(file_type: types)
+      where(file_type: self.erasable_file_types)
     end
 
     scope :downloadable, -> { where(file_type: DOWNLOADABLE_TYPES) }
@@ -261,6 +259,10 @@ module Ci
       return unless file_types.include?(file_type)
 
       [file_type]
+    end
+
+    def self.erasable_file_types
+      self.file_types.keys - NON_ERASABLE_FILE_TYPES
     end
 
     def self.total_size

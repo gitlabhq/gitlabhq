@@ -48,10 +48,7 @@ If the experiment is successful and becomes part of the product, any items that 
 
 For more information, see [Implementing an A/B/n experiment using GLEX](gitlab_experiment.md).
 
-There are still some longer running experiments using the [`Exerimentation Module`](experimentation.md).
-
-Both approaches use [experiment](../feature_flags/index.md#experiment-type) feature flags.
-`GLEX` is the preferred option for new experiments.
+This uses [experiment](../feature_flags/index.md#experiment-type) feature flags.
 
 ### Add new icons and illustrations for experiments
 

@@ -961,18 +961,17 @@ RSpec.describe CommitStatus do
 
   describe '.bulk_insert_tags!' do
     let(:statuses) { double('statuses') }
-    let(:tag_list_by_build) { double('tag list') }
     let(:inserter) { double('inserter') }
 
     it 'delegates to bulk insert class' do
       expect(Gitlab::Ci::Tags::BulkInsert)
         .to receive(:new)
-        .with(statuses, tag_list_by_build)
+        .with(statuses)
         .and_return(inserter)
 
       expect(inserter).to receive(:insert!)
 
-      described_class.bulk_insert_tags!(statuses, tag_list_by_build)
+      described_class.bulk_insert_tags!(statuses)
     end
   end
 

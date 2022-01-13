@@ -201,6 +201,10 @@ For self-managed GitLab instances, go to `https://gitlab.example.com/-/graphql-e
    kubectl delete -n gitlab-kubernetes-agent -f ./resources.yml
    ```
 
+## Migrating to the GitLab Agent from the legacy certificate-based integration
+
+Find out how to [migrate to the GitLab Agent for Kubernetes](../../infrastructure/clusters/migrate_to_gitlab_agent.md) from the certificate-based integration depending on the features you use.
+
 ## Troubleshooting
 
 If you face any issues while using the Agent, read the

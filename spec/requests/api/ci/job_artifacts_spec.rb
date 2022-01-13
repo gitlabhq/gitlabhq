@@ -81,6 +81,71 @@ RSpec.describe API::Ci::JobArtifacts do
     end
   end
 
+  describe 'DELETE /projects/:id/artifacts' do
+    context 'when feature flag is disabled' do
+      before do
+        stub_feature_flags(bulk_expire_project_artifacts: false)
+      end
+
+      it 'returns 404' do
+        delete api("/projects/#{project.id}/artifacts", api_user)
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
+    context 'when user is anonymous' do
+      let(:api_user) { nil }
+
+      it 'does not execute Ci::JobArtifacts::DeleteProjectArtifactsService' do
+        expect(Ci::JobArtifacts::DeleteProjectArtifactsService)
+          .not_to receive(:new)
+
+        delete api("/projects/#{project.id}/artifacts", api_user)
+      end
+
+      it 'returns status 401 (unauthorized)' do
+        delete api("/projects/#{project.id}/artifacts", api_user)
+
+        expect(response).to have_gitlab_http_status(:unauthorized)
+      end
+    end
+
+    context 'with developer' do
+      it 'does not execute Ci::JobArtifacts::DeleteProjectArtifactsService' do
+        expect(Ci::JobArtifacts::DeleteProjectArtifactsService)
+          .not_to receive(:new)
+
+        delete api("/projects/#{project.id}/artifacts", api_user)
+      end
+
+      it 'returns status 403 (forbidden)' do
+        delete api("/projects/#{project.id}/artifacts", api_user)
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
+    end
+
+    context 'with authorized user' do
+      let(:maintainer) { create(:project_member, :maintainer, project: project).user }
+      let!(:api_user) { maintainer }
+
+      it 'executes Ci::JobArtifacts::DeleteProjectArtifactsService' do
+        expect_next_instance_of(Ci::JobArtifacts::DeleteProjectArtifactsService, project: project) do |service|
+          expect(service).to receive(:execute).and_call_original
+        end
+
+        delete api("/projects/#{project.id}/artifacts", api_user)
+      end
+
+      it 'returns status 202 (accepted)' do
+        delete api("/projects/#{project.id}/artifacts", api_user)
+
+        expect(response).to have_gitlab_http_status(:accepted)
+      end
+    end
+  end
+
   describe 'GET /projects/:id/jobs/:job_id/artifacts/:artifact_path' do
     context 'when job has artifacts' do
       let(:job) { create(:ci_build, :artifacts, pipeline: pipeline) }

@@ -137,6 +137,17 @@ module API
 
           status :no_content
         end
+
+        desc 'Expire the artifacts files from a project'
+        delete ':id/artifacts' do
+          not_found! unless Feature.enabled?(:bulk_expire_project_artifacts, default_enabled: :yaml)
+
+          authorize_destroy_artifacts!
+
+          ::Ci::JobArtifacts::DeleteProjectArtifactsService.new(project: user_project).execute
+
+          accepted!
+        end
       end
     end
   end

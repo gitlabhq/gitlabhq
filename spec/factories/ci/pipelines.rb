@@ -87,6 +87,10 @@ FactoryBot.define do
         locked { Ci::Pipeline.lockeds[:unlocked] }
       end
 
+      trait :artifacts_locked do
+        locked { Ci::Pipeline.lockeds[:artifacts_locked] }
+      end
+
       trait :protected do
         add_attribute(:protected) { true }
       end

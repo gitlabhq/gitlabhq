@@ -276,7 +276,7 @@ module QA
 
         all_runs = query_api.query(query: query(reliable)).values
         all_runs.each_with_object(Hash.new { |hsh, key| hsh[key] = {} }) do |table, result|
-          records = table.records
+          records = table.records.sort_by { |record| record.values["_time"] }
           # skip specs that executed less time than defined by range or stopped executing before report date
           # offset 1 day due to how schedulers are configured and first run can be 1 day later
           next if (Date.today - Date.parse(records.first.values["_time"])).to_i < (range - 1)

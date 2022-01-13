@@ -73,6 +73,8 @@
   - 1
 - - ci_delete_objects
   - 1
+- - ci_job_artifacts_expire_project_build_artifacts
+  - 1
 - - ci_upstream_projects_subscriptions_cleanup
   - 1
 - - container_repository

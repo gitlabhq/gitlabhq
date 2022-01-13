@@ -1395,20 +1395,6 @@ class MergeRequest < ApplicationRecord
     actual_head_pipeline.success?
   end
 
-  def environments_for(current_user, latest: false)
-    return [] unless diff_head_commit
-
-    envs = Environments::EnvironmentsByDeploymentsFinder.new(target_project, current_user,
-      ref: target_branch, commit: diff_head_commit, with_tags: true, find_latest: latest).execute
-
-    if source_project
-      envs.concat Environments::EnvironmentsByDeploymentsFinder.new(source_project, current_user,
-        ref: source_branch, commit: diff_head_commit, find_latest: latest).execute
-    end
-
-    envs.uniq
-  end
-
   ##
   # This method is for looking for active environments which created via pipelines for merge requests.
   # Since deployments run on a merge request ref (e.g. `refs/merge-requests/:iid/head`),

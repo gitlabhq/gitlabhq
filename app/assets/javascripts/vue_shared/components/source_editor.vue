@@ -97,7 +97,7 @@ export default {
     ref="editor"
     data-editor-loading
     data-qa-selector="source_editor_container"
-    @[$options.readyEvent]="$emit($options.readyEvent)"
+    @[$options.readyEvent]="$emit($options.readyEvent, $event)"
   >
     <pre class="editor-loading-content">{{ value }}</pre>
   </div>

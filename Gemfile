@@ -194,7 +194,7 @@ end
 # State machine
 gem 'state_machines-activerecord', '~> 0.8.0'
 
-# Issue tags
+# CI domain tags
 gem 'acts-as-taggable-on', '~> 9.0'
 
 # Background jobs
