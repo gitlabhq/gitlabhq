@@ -27970,6 +27970,12 @@ msgstr ""
 msgid "ProjectSettings|Highlight the usage of hidden unicode characters. These have innocent uses for right-to-left languages, but can also be used in potential exploits."
 msgstr ""
 
+msgid "ProjectSettings|If a %{code_start}default.md%{code_end} file exists in %{code_start}.gitlab/issue_templates%{code_end} in the repository, it overrides this setting."
+msgstr ""
+
+msgid "ProjectSettings|If a %{code_start}default.md%{code_end} file exists in %{code_start}.gitlab/merge_request_templates%{code_end} in the repository, it overrides this setting."
+msgstr ""
+
 msgid "ProjectSettings|If merge trains are enabled, merging is only possible if the branch can be rebased without conflicts."
 msgstr ""
 

@@ -304,3 +304,10 @@ $gl-line-height-42: px-to-rem(42px);
     width: 25%;
   }
 }
+
+// TODO: Move to @gitlab/ui by https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1671
+.gl-md-pr-5 {
+  @include gl-media-breakpoint-up(md) {
+    padding-right: $gl-spacing-scale-5;
+  }
+}

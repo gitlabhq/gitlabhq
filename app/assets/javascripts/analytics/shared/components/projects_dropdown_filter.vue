@@ -31,7 +31,8 @@ export default {
   props: {
     groupId: {
       type: Number,
-      required: true,
+      required: false,
+      default: null,
     },
     groupNamespace: {
       type: String,
@@ -56,6 +57,11 @@ export default {
       type: Array,
       required: false,
       default: () => [],
+    },
+    loadingDefaultProjects: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
   },
   data() {
@@ -110,6 +116,9 @@ export default {
   watch: {
     searchTerm() {
       this.search();
+    },
+    defaultProjects(projects) {
+      this.selectedProjects = [...projects];
     },
   },
   mounted() {
@@ -202,6 +211,7 @@ export default {
     ref="projectsDropdown"
     class="dropdown dropdown-projects"
     toggle-class="gl-shadow-none"
+    :loading="loadingDefaultProjects"
     :show-clear-all="hasSelectedProjects"
     show-highlighted-items-title
     highlighted-items-title-class="gl-p-3"
@@ -209,6 +219,7 @@ export default {
     @hide="onHide"
   >
     <template #button-content>
+      <gl-loading-icon v-if="loadingDefaultProjects" class="gl-mr-2" />
       <div class="gl-display-flex gl-flex-grow-1">
         <gl-avatar
           v-if="isOnlyOneProjectSelected"

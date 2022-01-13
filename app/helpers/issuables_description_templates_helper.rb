@@ -38,7 +38,8 @@ module IssuablesDescriptionTemplatesHelper
     # Only local templates will be listed if licenses for inherited templates are not present
     all_templates = all_templates.values.flatten.map { |tpl| tpl[:name] }.compact.uniq
 
-    all_templates.find { |tmpl_name| tmpl_name == params[:issuable_template] }
+    template = all_templates.find { |tmpl_name| tmpl_name == params[:issuable_template] }
+    template || all_templates.find { |tmpl_name| tmpl_name.casecmp?('default') }
   end
 
   def available_service_desk_templates_for(project)

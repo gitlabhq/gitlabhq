@@ -112,7 +112,7 @@ To create a group access token:
 1. Run the following commands in a [Rails console](../../../administration/operations/rails_console.md):
 
    ```ruby
-   # Set the GitLab administration user to use. If user ID 1 is not available or is not an adinistrator, use 'admin = User.admins.first' instead to select an admininistrator.
+   # Set the GitLab administration user to use. If user ID 1 is not available or is not an administrator, use 'admin = User.admins.first' instead to select an administrator.
    admin = User.find(1)
 
    # Set the group group you want to create a token for. For example, group with ID 109.

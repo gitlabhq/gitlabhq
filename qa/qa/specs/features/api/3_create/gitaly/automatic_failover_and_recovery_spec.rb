@@ -49,7 +49,6 @@ module QA
         # for Gitaly to be ready for writes again
         praefect_manager.stop_primary_node
         praefect_manager.wait_for_primary_node_health_check_failure
-        praefect_manager.wait_for_gitaly_check
 
         Resource::Repository::Commit.fabricate_via_api! do |commit|
           commit.project = project

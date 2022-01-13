@@ -83,13 +83,6 @@ module QA
 
       def start_node(name)
         shell "docker start #{name}"
-        wait_until_shell_command_matches(
-          "docker inspect -f {{.State.Running}} #{name}",
-          /true/,
-          sleep_interval: 3,
-          max_duration: 180,
-          retry_on_exception: true
-        )
       end
 
       def stop_node(name)
@@ -180,7 +173,6 @@ module QA
         start_node(@praefect)
 
         wait_for_health_check_all_nodes
-        wait_for_reliable_connection
       end
 
       def verify_storage_move(source_storage, destination_storage, repo_type: :project)
@@ -192,21 +184,15 @@ module QA
       end
 
       def wait_for_praefect
-        wait_until_shell_command_matches(
-          "docker inspect -f {{.State.Running}} #{@praefect}",
-          /true/,
-          sleep_interval: 3,
-          max_duration: 180,
-          retry_on_exception: true
-        )
+        QA::Runtime::Logger.info("Waiting for health check on praefect")
+        Support::Waiter.wait_until(max_duration: 120, sleep_interval: 1, raise_on_failure: true) do
+          # praefect runs a grpc server on port 2305, which will return an error 'Connection refused' until such time it is ready
+          wait_until_shell_command("docker exec #{@gitaly_cluster} bash -c 'curl #{@praefect}:2305'") do |line|
+            break if line.include?('curl: (1) Received HTTP/0.9 when not allowed')
 
-        QA::Runtime::Logger.info('Wait until Praefect starts and is listening')
-        wait_until_shell_command_matches(
-          "docker exec #{@praefect} bash -c 'cat /var/log/gitlab/praefect/current'",
-          /listening at tcp address/
-        )
-
-        wait_for_gitaly_check
+            QA::Runtime::Logger.debug(line.chomp)
+          end
+        end
       end
 
       def wait_for_sql_ping
@@ -220,72 +206,35 @@ module QA
         ['error when pinging healthcheck', 'failed checking node health'].include?(msg)
       end
 
-      def wait_for_no_praefect_storage_error
-        # If a healthcheck error was the last message to be logged, we'll keep seeing that message even if it's no longer a problem
-        # That is, there's no message shown in the Praefect logs when the healthcheck succeeds
-        # To work around that we perform the gitaly check rake task, wait a few seconds, and then we confirm that no healthcheck errors appear
-
-        QA::Runtime::Logger.info("Checking that Praefect does not report healthcheck errors with its gitaly nodes")
-
-        Support::Waiter.wait_until(max_duration: 120) do
-          wait_for_gitaly_check
-
-          sleep 5
-
-          shell "docker exec #{@praefect} bash -c 'tail -n 1 /var/log/gitlab/praefect/current'" do |line|
-            QA::Runtime::Logger.debug(line.chomp)
-            log = JSON.parse(line)
-
-            break true unless health_check_failure_message?(log['msg'])
-          rescue JSON::ParserError
-            # Ignore lines that can't be parsed as JSON
-          end
-        end
-      end
-
-      def wait_for_storage_nodes
-        wait_for_no_praefect_storage_error
-
-        Support::Waiter.repeat_until(max_attempts: 3, max_duration: 120, sleep_interval: 1) do
-          nodes_confirmed = {
-            @primary_node => false,
-            @secondary_node => false,
-            @tertiary_node => false
-          }
-
-          wait_until_shell_command("docker exec #{@praefect} bash -c '/opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml dial-nodes'") do |line|
-            QA::Runtime::Logger.debug(line.chomp)
-
-            nodes_confirmed.each_key do |node|
-              nodes_confirmed[node] = true if line =~ /SUCCESS: confirmed Gitaly storage "#{node}" in virtual storages \[#{@virtual_storage}\] is served/
-            end
-
-            nodes_confirmed.values.all?
-          end
-        end
-      end
-
       def wait_for_health_check_all_nodes
-        wait_for_health_check(@primary_node)
-        wait_for_health_check(@secondary_node)
-        wait_for_health_check(@tertiary_node)
+        wait_for_gitaly_health_check(@primary_node)
+        wait_for_gitaly_health_check(@secondary_node)
+        wait_for_gitaly_health_check(@tertiary_node)
       end
 
-      def wait_for_health_check(node)
+      def wait_for_gitaly_health_check(node)
         QA::Runtime::Logger.info("Waiting for health check on #{node}")
+        Support::Waiter.wait_until(max_duration: 120, sleep_interval: 1, raise_on_failure: true) do
+          # gitaly runs a grpc server on port 8075, which will return an error 'Connection refused' until such time it is ready
+          wait_until_shell_command("docker exec #{@praefect} bash -c 'curl #{node}:8075'") do |line|
+            break if line.include?('curl: (1) Received HTTP/0.9 when not allowed')
+
+            QA::Runtime::Logger.debug(line.chomp)
+          end
+        end
         wait_until_node_is_marked_as_healthy_storage(node)
       end
 
       def wait_for_primary_node_health_check
-        wait_for_health_check(@primary_node)
+        wait_for_gitaly_health_check(@primary_node)
       end
 
       def wait_for_secondary_node_health_check
-        wait_for_health_check(@secondary_node)
+        wait_for_gitaly_health_check(@secondary_node)
       end
 
       def wait_for_tertiary_node_health_check
-        wait_for_health_check(@tertiary_node)
+        wait_for_gitaly_health_check(@tertiary_node)
       end
 
       def wait_for_health_check_failure(node)
@@ -311,7 +260,6 @@ module QA
           shell sql_to_docker_exec_cmd("SELECT count(*) FROM healthy_storages WHERE storage = '#{node}';") do |line|
             result << line
           end
-          QA::Runtime::Logger.debug("result is ---#{result}")
           result[2].to_i == 0
         end
       end
@@ -322,18 +270,7 @@ module QA
           shell sql_to_docker_exec_cmd("SELECT count(*) FROM healthy_storages WHERE storage = '#{node}';") do |line|
             result << line
           end
-
-          QA::Runtime::Logger.debug("result is ---#{result}")
           result[2].to_i == 1
-        end
-      end
-
-      def wait_for_gitaly_check
-        Support::Waiter.wait_until(max_duration: 120, sleep_interval: 1, raise_on_failure: true) do
-          wait_until_shell_command("docker exec #{@gitlab} bash -c 'gitlab-rake gitlab:git:fsck'") do |line|
-            QA::Runtime::Logger.debug(line.chomp)
-            line.include?('Done')
-          end
         end
       end
 
@@ -352,12 +289,6 @@ module QA
 
       def value_for_node(data, node)
         data.find(-> {{ value: 0 }}) { |item| item[:node] == node }[:value]
-      end
-
-      def wait_for_reliable_connection
-        QA::Runtime::Logger.info('Wait until GitLab and Praefect can communicate reliably')
-        wait_for_sql_ping
-        wait_for_storage_nodes
       end
 
       def wait_for_replication(project_id)
@@ -476,7 +407,7 @@ module QA
       end
 
       def repository_replicated_to_disk?(node, relative_path)
-        Support::Waiter.wait_until(max_duration: 300, sleep_interval: 3, raise_on_failure: false) do
+        Support::Waiter.wait_until(max_duration: 300, sleep_interval: 1, raise_on_failure: false) do
           result = []
           shell sql_to_docker_exec_cmd("SELECT count(*) FROM storage_repositories where relative_path='#{relative_path}';") do |line|
             result << line

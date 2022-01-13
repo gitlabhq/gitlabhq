@@ -259,6 +259,16 @@ RSpec.describe Issues::MoveService do
 
         it_behaves_like 'copy or reset relative position'
       end
+
+      context 'issue with escalation status' do
+        it 'keeps the escalation status' do
+          escalation_status = create(:incident_management_issuable_escalation_status, issue: old_issue)
+
+          move_service.execute(old_issue, new_project)
+
+          expect(escalation_status.reload.issue).to eq(old_issue)
+        end
+      end
     end
 
     describe 'move permissions' do
