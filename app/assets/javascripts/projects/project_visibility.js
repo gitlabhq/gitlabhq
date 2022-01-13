@@ -1,4 +1,6 @@
 import $ from 'jquery';
+import { escape } from 'lodash';
+import { __, sprintf } from '~/locale';
 import eventHub from '~/projects/new/event_hub';
 
 // Values are from lib/gitlab/visibility_level.rb
@@ -25,10 +27,21 @@ function setVisibilityOptions({ name, visibility, showPath, editPath }) {
       if (reason) {
         const optionTitle = option.querySelector('.option-title');
         const optionName = optionTitle ? optionTitle.innerText.toLowerCase() : '';
-        reason.innerHTML = `This project cannot be ${optionName} because the visibility of
-            <a href="${showPath}">${name}</a> is ${visibility}. To make this project
-            ${optionName}, you must first <a href="${editPath}">change the visibility</a>
-            of the parent group.`;
+        reason.innerHTML = sprintf(
+          __(
+            'This project cannot be %{visibilityLevel} because the visibility of %{openShowLink}%{name}%{closeShowLink} is %{visibility}. To make this project %{visibilityLevel}, you must first %{openEditLink}change the visibility%{closeEditLink} of the parent group.',
+          ),
+          {
+            visibilityLevel: optionName,
+            name: escape(name),
+            visibility,
+            openShowLink: `<a href="${showPath}">`,
+            closeShowLink: '</a>',
+            openEditLink: `<a href="${editPath}">`,
+            closeEditLink: '</a>',
+          },
+          false,
+        );
       }
     } else {
       option.classList.remove('disabled');

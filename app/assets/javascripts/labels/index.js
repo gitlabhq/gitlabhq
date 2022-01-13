@@ -26,7 +26,7 @@ export function initLabels() {
   if ($('.prioritized-labels').length) {
     new LabelManager(); // eslint-disable-line no-new
   }
-  $('.label-subscription').each((i, el) => {
+  $('.js-label-subscription').each((i, el) => {
     const $el = $(el);
 
     if ($el.find('.dropdown-group-label').length) {

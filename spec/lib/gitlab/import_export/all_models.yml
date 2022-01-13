@@ -602,6 +602,7 @@ project:
 - bulk_import_exports
 - ci_project_mirror
 - sync_events
+- secure_files
 award_emoji:
 - awardable
 - user

@@ -7,7 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # Connect to cloud services
 
 > - `CI_JOB_JWT` variable for reading secrets from Vault [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/207125) in GitLab 12.10.
-> - `CI_JOB_JWT_V2` variable to support additional OIDC providers [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/346737) in GitLab 14.7. 
+> - `CI_JOB_JWT_V2` variable to support additional OIDC providers [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/346737) in GitLab 14.7.
 
 GitLab CI/CD supports [OpenID Connect (OIDC)](https://openid.net/connect/faq/) that allows your build and deployment job access to cloud credentials and services. Historically, teams stored secrets in projects or applied permissions on the GitLab Runner instance to build and deploy. To support this, a predefined variable named `CI_JOB_JWT_V2` is included in the CI/CD job allowing you to follow a scalable and least-privilege security approach.
 
@@ -19,7 +19,7 @@ GitLab CI/CD supports [OpenID Connect (OIDC)](https://openid.net/connect/faq/) t
 The original implementation of `CI_JOB_JWT` supports [HashiCorp Vault integration](../examples/authenticating-with-hashicorp-vault/). The updated implementation of `CI_JOB_JWT_V2` supports additional cloud providers with OIDC including AWS, GCP, and Vault.
 
 WARNING:
-The `CI_JOB_JWT_V2` variable is under development [(alpha)](https://about.gitlab.com/handbook/product/gitlab-the-product/#alpha) and is not yet suitable for production use. 
+The `CI_JOB_JWT_V2` variable is under development [(alpha)](https://about.gitlab.com/handbook/product/gitlab-the-product/#alpha) and is not yet suitable for production use.
 
 ## Use cases
 
@@ -29,7 +29,7 @@ The `CI_JOB_JWT_V2` variable is under development [(alpha)](https://about.gitlab
 - Allows shared runners to securely access multiple cloud accounts. The access is determined by the JWT token, which is specific to the user running the pipeline.
 - Removes the need to create logic to rotate secrets by retrieving temporary credentials by default.
 
-## How it works 
+## How it works
 
 Each job has a JSON web token (JWT) provided as a CI/CD [predefined variable](../variables/predefined_variables.md) named `CI_JOB_JWT` or `CI_JOB_JWT_V2`. This JWT can be used to authenticate with the OIDC-supported cloud provider such as AWS, GCP, or Vault.
 
@@ -87,7 +87,7 @@ The following fields are included in the JWT:
 }
 ```
 
-### Authorization workflow 
+### Authorization workflow
 
 ```mermaid
 sequenceDiagram
@@ -107,8 +107,8 @@ sequenceDiagram
 
 1. Create an OIDC identity provider in the cloud (for example, AWS, GCP, Vault).
 1. Create a conditional role in the cloud service that filters to a group, project, branch, or tag.
-1. The CI/CD job includes a predefined variable `CI_JOB_JWT_V2` that is a JWT token. You can use this token for authorization with your cloud API. 
-1. The cloud verifies the token, validates the conditional role from the payload, and returns a temporary credential. 
+1. The CI/CD job includes a predefined variable `CI_JOB_JWT_V2` that is a JWT token. You can use this token for authorization with your cloud API.
+1. The cloud verifies the token, validates the conditional role from the payload, and returns a temporary credential.
 
 ## Configure a conditional role with OIDC claims
 
@@ -116,7 +116,7 @@ To configure the trust between GitLab and OIDC, you must create a conditional ro
 
 - Audience or `aud`: The URL of the GitLab instance. This is defined when the identity provider is first configured in your cloud provider.
 - Subject or `sub`: A concatenation of metadata describing the GitLab CI/CD workflow including the group, project, branch, and tag. The `sub` field is in the following format:
-  - `project_path:{group}/{project}:ref_type:{type}:ref:{branch_name}` 
+  - `project_path:{group}/{project}:ref_type:{type}:ref:{branch_name}`
 
 | Filter type                          | Example                                                      |
 | ------------------------------------ | ------------------------------------------------------------ |

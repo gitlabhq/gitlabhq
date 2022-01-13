@@ -247,6 +247,14 @@ Settings.gitlab_ci['builds_path']           = Settings.absolute(Settings.gitlab_
 Settings.gitlab_ci['url']                 ||= Settings.__send__(:build_gitlab_ci_url)
 
 #
+# CI Secure Files
+#
+Settings['ci_secure_files'] ||= Settingslogic.new({})
+Settings.ci_secure_files['enabled']      = true if Settings.ci_secure_files['enabled'].nil?
+Settings.ci_secure_files['storage_path'] = Settings.absolute(Settings.ci_secure_files['storage_path'] || File.join(Settings.shared['path'], "ci_secure_files"))
+Settings.ci_secure_files['object_store'] = ObjectStoreSettings.legacy_parse(Settings.ci_secure_files['object_store'])
+
+#
 # Reply by email
 #
 Settings['incoming_email'] ||= Settingslogic.new({})

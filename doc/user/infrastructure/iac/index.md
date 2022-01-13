@@ -41,10 +41,10 @@ This template includes the following parameters that you can override:
   `test`, `validate`, `build`, and `deploy`. These stages
   [run the Terraform commands](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Terraform/Base.latest.gitlab-ci.yml)
   `test`, `validate`, `plan`, `plan-json`, and `apply`. The `apply` command only runs on the default branch.
-- Runs the [Terraform SAST scanner](../../application_security/iac_scanning/index.md#configure-iac-scanning-manually), 
+- Runs the [Terraform SAST scanner](../../application_security/iac_scanning/index.md#configure-iac-scanning-manually),
   that you can disable by creating a `SAST_DISABLED` environment variable and setting it to `1`.
 
-The latest template described above might contain breaking changes between major GitLab releases. For users requiring more stable setups, we 
+The latest template described above might contain breaking changes between major GitLab releases. For users requiring more stable setups, we
 recommend using the stable templates:
 
 - [A ready to use version](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Terraform.gitlab-ci.yml)

@@ -49,3 +49,10 @@ export const LOADING_ERROR_EVENT = 'loadingError';
 export const PARSE_HTML_PRIORITY_LOWEST = 1;
 export const PARSE_HTML_PRIORITY_DEFAULT = 50;
 export const PARSE_HTML_PRIORITY_HIGHEST = 100;
+
+export const EXTENSION_PRIORITY_LOWER = 75;
+/**
+ * 100 is the default priority in Tiptap
+ * https://tiptap.dev/guide/custom-extensions/#priority
+ */
+export const EXTENSION_PRIORITY_DEFAULT = 100;

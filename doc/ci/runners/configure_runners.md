@@ -2,7 +2,6 @@
 stage: Verify
 group: Runner
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
-type: reference
 ---
 
 # Configuring runners **(FREE)**
@@ -640,7 +639,7 @@ support this feature.
 
 A meter can be enabled to provide the rate of transfer for uploads and downloads.
 
-You can set a maximum time for cache upload and download with the `CACHE_REQUEST_TIMEOUT` setting. 
+You can set a maximum time for cache upload and download with the `CACHE_REQUEST_TIMEOUT` setting.
 This setting can be useful when slow cache uploads substantially increase the duration of your job.
 
 ```yaml

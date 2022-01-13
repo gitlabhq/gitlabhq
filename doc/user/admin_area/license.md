@@ -42,38 +42,30 @@ To activate your instance with an activation code:
 1. Read and accept the terms of service.
 1. Select **Activate**.
 
-## Activate GitLab EE with a License File
+## Activate GitLab EE with a license file
 
-If you receive a license file from GitLab (for example a new trial), you can upload it by signing into your GitLab instance as an administrator or adding it during installation. The license is a base64-encoded ASCII text file with a `.gitlab-license` extension.
+If you receive a license file from GitLab (for example, for a trial), you can
+upload it to your instance or add it during installation. The license file is
+a base64-encoded ASCII text file with a `.gitlab-license` extension.
 
-## Uploading your license
+## Upload your license
 
-The first time you visit your GitLab EE installation signed in as an administrator,
-you should see a note urging you to upload a license with a link that takes you
-to the **Upload license** page.
+The first time you sign in to your GitLab instance, a note with a
+link to the **Upload license** page should be displayed.
 
-Otherwise, to manually go to the **Upload license** page:
+Otherwise, to upload your license:
 
-1. Sign in to your GitLab self-managed instance.
-1. From the top menu, select the Admin Area **{admin}**.
+1. Sign in to GitLab as an administrator.
+1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Settings**.
-1. In the **License file** section, select **Upload a license**.
-
-   - *If you've received a `.gitlab-license` file:*
-     1. Download the license file to your local machine.
-     1. Select **Upload `.gitlab-license` file**.
-     1. Select **Choose file** and select the license file.
-        In this example the license file is named `GitLab.gitlab-license`.
-     1. Select the **Terms of Service** checkbox.
-     1. Select **Upload License**.
-
-     ![Upload license](img/license_upload_v13_12.png)
-
-   - *If you've received your license as plain text:*
-     1. Select **Enter license key**.
-     1. Copy the license and paste it into the **License key** field.
-     1. Select the **Terms of Service** checkbox.
-     1. Select **Upload License**.
+1. In the **License file** area, select **Upload a license**.
+1. Upload a license:
+   - For a file, select **Upload `.gitlab-license` file**, **Choose file**, and
+     select the license file from your local machine.
+   - For plain text, select **Enter license key** and paste the contents in
+     **License key**.
+1. Select the **Terms of Service** checkbox.
+1. Select **Upload License**.
 
 ## Add your license during installation
 
@@ -110,7 +102,7 @@ and issue creation. Your instance becomes read-only and
 an expiration message displays to all administrators. You have a 14-day grace period
 before this occurs.
 
-To resume functionality, [upload a new license](#uploading-your-license).
+To resume functionality, [upload a new license](#upload-your-license).
 
 To go back to Free features, [delete all expired licenses](#remove-a-license-file).
 

@@ -12209,6 +12209,29 @@ CREATE SEQUENCE ci_running_builds_id_seq
 
 ALTER SEQUENCE ci_running_builds_id_seq OWNED BY ci_running_builds.id;
 
+CREATE TABLE ci_secure_files (
+    id bigint NOT NULL,
+    project_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    file_store smallint DEFAULT 1 NOT NULL,
+    permissions smallint DEFAULT 0 NOT NULL,
+    name text NOT NULL,
+    file text NOT NULL,
+    checksum bytea NOT NULL,
+    CONSTRAINT check_320790634d CHECK ((char_length(file) <= 255)),
+    CONSTRAINT check_402c7b4a56 CHECK ((char_length(name) <= 255))
+);
+
+CREATE SEQUENCE ci_secure_files_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE ci_secure_files_id_seq OWNED BY ci_secure_files.id;
+
 CREATE TABLE ci_sources_pipelines (
     id integer NOT NULL,
     project_id integer,
@@ -21440,6 +21463,8 @@ ALTER TABLE ONLY ci_runners ALTER COLUMN id SET DEFAULT nextval('ci_runners_id_s
 
 ALTER TABLE ONLY ci_running_builds ALTER COLUMN id SET DEFAULT nextval('ci_running_builds_id_seq'::regclass);
 
+ALTER TABLE ONLY ci_secure_files ALTER COLUMN id SET DEFAULT nextval('ci_secure_files_id_seq'::regclass);
+
 ALTER TABLE ONLY ci_sources_pipelines ALTER COLUMN id SET DEFAULT nextval('ci_sources_pipelines_id_seq'::regclass);
 
 ALTER TABLE ONLY ci_sources_projects ALTER COLUMN id SET DEFAULT nextval('ci_sources_projects_id_seq'::regclass);
@@ -22929,6 +22954,9 @@ ALTER TABLE ONLY ci_runners
 
 ALTER TABLE ONLY ci_running_builds
     ADD CONSTRAINT ci_running_builds_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY ci_secure_files
+    ADD CONSTRAINT ci_secure_files_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY ci_sources_pipelines
     ADD CONSTRAINT ci_sources_pipelines_pkey PRIMARY KEY (id);
@@ -25627,6 +25655,8 @@ CREATE INDEX index_ci_running_builds_on_project_id ON ci_running_builds USING bt
 
 CREATE INDEX index_ci_running_builds_on_runner_id ON ci_running_builds USING btree (runner_id);
 
+CREATE INDEX index_ci_secure_files_on_project_id ON ci_secure_files USING btree (project_id);
+
 CREATE INDEX index_ci_sources_pipelines_on_pipeline_id ON ci_sources_pipelines USING btree (pipeline_id);
 
 CREATE INDEX index_ci_sources_pipelines_on_project_id ON ci_sources_pipelines USING btree (project_id);
@@ -28034,6 +28064,8 @@ CREATE UNIQUE INDEX term_agreements_unique_index ON term_agreements USING btree 
 CREATE INDEX tmp_idx_deduplicate_vulnerability_occurrences ON vulnerability_occurrences USING btree (project_id, report_type, location_fingerprint, primary_identifier_id, id);
 
 CREATE INDEX tmp_idx_vulnerability_occurrences_on_id_where_report_type_7_99 ON vulnerability_occurrences USING btree (id) WHERE (report_type = ANY (ARRAY[7, 99]));
+
+CREATE INDEX tmp_index_members_on_state ON members USING btree (state) WHERE (state = 2);
 
 CREATE INDEX tmp_index_namespaces_empty_traversal_ids_with_child_namespaces ON namespaces USING btree (id) WHERE ((parent_id IS NOT NULL) AND (traversal_ids = '{}'::integer[]));
 

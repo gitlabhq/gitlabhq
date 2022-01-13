@@ -63,7 +63,7 @@ When deploying a GitLab instance using the official AMI, the root password to th
 Instances running on Community Edition (CE) require a migration to Enterprise Edition (EE) in order to subscribe to the GitLab Premium or Ultimate plan. If you want to pursue a subscription, using the Free-forever plan of Enterprise Edition is the least disruptive method.
 
 NOTE:
-Since any given GitLab upgrade might involve data disk updates or database schema upgrades, simply swapping out the AMI is not sufficent for taking upgrades. 
+Since any given GitLab upgrade might involve data disk updates or database schema upgrades, simply swapping out the AMI is not sufficent for taking upgrades.
 
 1. Log in to the AWS Web Console, so that clicking the links in the following step take you directly to the AMI list.
 1. Pick the edition you want:

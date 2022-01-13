@@ -21,7 +21,7 @@ switching logs from JSON to plain text logging, and more.
 - [How to parse and analyze JSON logs](troubleshooting/log_parsing.md).
 
 ## Log Levels
- 
+
 Each log message has an assigned log level that indicates its importance and verbosity.
 Each logger has an assigned minimum log level.
 A logger emits a log message only if its log level is equal to or above the minimum log level.

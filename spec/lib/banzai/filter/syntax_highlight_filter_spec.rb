@@ -37,6 +37,14 @@ RSpec.describe Banzai::Filter::SyntaxHighlightFilter do
     end
   end
 
+  context "when <pre> contains multiple <code> tags" do
+    it "ignores the block" do
+      result = filter('<pre><code>one</code> and <code>two</code></pre>')
+
+      expect(result.to_html).to eq('<pre><code>one</code> and <code>two</code></pre>')
+    end
+  end
+
   context "when a valid language is specified" do
     it "highlights as that language" do
       result = filter('<pre lang="ruby"><code>def fun end</code></pre>')

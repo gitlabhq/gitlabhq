@@ -2,7 +2,6 @@
 stage: Enablement
 group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
-type: reference
 ---
 
 # Configuring Sidekiq **(FREE SELF)**
@@ -152,7 +151,7 @@ you want using steps 1 and 2 from the GitLab downloads page.
 
    NOTE:
    If health check settings are not set, they will default to the metrics exporter settings.
-   This default is deprecated and is set to be removed in [GitLab 15.0](https://gitlab.com/gitlab-org/gitlab/-/issues/347509). 
+   This default is deprecated and is set to be removed in [GitLab 15.0](https://gitlab.com/gitlab-org/gitlab/-/issues/347509).
 
 1. Run `gitlab-ctl reconfigure`.
 

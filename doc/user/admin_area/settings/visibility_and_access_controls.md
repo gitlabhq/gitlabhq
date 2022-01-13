@@ -190,7 +190,7 @@ To restrict visibility levels for projects, snippets, and selected pages:
 1. In the **Restricted visibility levels** section, select the desired visibility levels to restrict.
    If you restrict the **Public** level:
    - User profiles are only visible to logged in users via the Web interface.
-   - User attributes are only visible to authenticated users via the GraphQL API. 
+   - User attributes are only visible to authenticated users via the GraphQL API.
 1. Select **Save changes**.
 
 For more details on project visibility, see

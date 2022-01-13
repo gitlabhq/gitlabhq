@@ -647,6 +647,10 @@ Use **press** when talking about keyboard keys. For example:
 
 Do not use profanity. Doing so may negatively affect other users and contributors, which is contrary to the GitLab value of [Diversity, Inclusion, and Belonging](https://about.gitlab.com/handbook/values/#diversity-inclusion).
 
+## push rules
+
+Use lowercase for **push rules**.
+
 ## Reporter
 
 When writing about the Reporter role:

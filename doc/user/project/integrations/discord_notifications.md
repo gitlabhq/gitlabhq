@@ -16,7 +16,7 @@ and configure it in GitLab.
 1. Open the Discord channel you want to receive GitLab event notifications.
 1. From the channel menu, select **Edit channel**.
 1. Select **Integrations**.
-1. If there are no existing webhooks, select **Create Webhook**. Otherwise, select **View Webhooks** then **New Webhook**. 
+1. If there are no existing webhooks, select **Create Webhook**. Otherwise, select **View Webhooks** then **New Webhook**.
 1. Enter the name of the bot to post the message.
 1. Optional. Edit the avatar.
 1. Copy the URL from the **WEBHOOK URL** field.

@@ -69,7 +69,7 @@ Slack channel for the stage the feature is relevant to. For example, use the
 `#s_monitor` channel for features developed by the Monitor stage, Health
 group.
 
-To enable a feature for 25% of all users, run the following in Slack:
+To enable a feature for 25% of the time, run the following in Slack:
 
 ```shell
 /chatops run feature set new_navigation_bar 25 --dev

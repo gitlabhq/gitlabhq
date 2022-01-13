@@ -59,7 +59,7 @@ You can use Group DevOps Adoption to:
 
 - Identify specific subgroups that are lagging in their adoption of GitLab features, so you can guide them on
 their DevOps journey.
-- Find subgroups that have adopted certain features, and provide guidance to other subgroups on 
+- Find subgroups that have adopted certain features, and provide guidance to other subgroups on
 how to use those features.
 - Verify if you are getting the return on investment that you expected from GitLab.
 

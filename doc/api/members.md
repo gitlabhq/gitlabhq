@@ -88,7 +88,7 @@ Example response:
 ]
 ```
 
-## List all members of a group or project including inherited and invited members 
+## List all members of a group or project including inherited and invited members
 
 Gets a list of group or project members viewable by the authenticated user, including inherited members, invited users, and permissions through ancestor groups.
 

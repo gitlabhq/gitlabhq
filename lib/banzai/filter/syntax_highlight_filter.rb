@@ -14,7 +14,7 @@ module Banzai
       LANG_PARAMS_DELIMITER = ':'
       LANG_PARAMS_ATTR = 'data-lang-params'
 
-      CSS   = 'pre:not([data-math-style]):not([data-mermaid-style]):not([data-kroki-style]) > code'
+      CSS   = 'pre:not([data-math-style]):not([data-mermaid-style]):not([data-kroki-style]) > code:only-child'
       XPATH = Gitlab::Utils::Nokogiri.css_to_xpath(CSS).freeze
 
       def call
@@ -106,8 +106,8 @@ module Banzai
         (Rouge::Lexer.find(language) || Rouge::Lexers::PlainText).new
       end
 
+      # Replace the parent `pre` element with the entire highlighted block
       def replace_parent_pre_element(node, highlighted)
-        # Replace the parent `pre` element with the entire highlighted block
         node.parent.replace(highlighted)
       end
 

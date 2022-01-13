@@ -285,7 +285,7 @@ This technique can avoid scheduling Sidekiq jobs if the subscriber is interested
 small subset of events.
 
 WARNING:
-When using conditional dispatch it must contain only cheap conditions because they are 
+When using conditional dispatch it must contain only cheap conditions because they are
 executed synchronously every time the given event is published.
 
 For complex conditions it's best to subscribe to all the events and then handle the logic

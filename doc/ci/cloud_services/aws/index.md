@@ -21,8 +21,8 @@ Create GitLab as a IAM OIDC provider in AWS following these [instructions](https
 
 Include the following information:
 
-- **Provider URL**: The address of your GitLab instance, such as `https://gitlab.com` or `http://gitlab.example.com`. 
-- **Audience**: The address of your GitLab instance, such as `https://gitlab.com` or `http://gitlab.example.com`. 
+- **Provider URL**: The address of your GitLab instance, such as `https://gitlab.com` or `http://gitlab.example.com`.
+- **Audience**: The address of your GitLab instance, such as `https://gitlab.com` or `http://gitlab.example.com`.
   - The address must include `https://`.
   - Do not include a trailing slash.
 
@@ -56,7 +56,7 @@ After the role is created, attach a policy defining permissions to an AWS servic
 
 ## Retrieve temporary credentials
 
-After you configure the OIDC and role, the GitLab CI/CD job can retrieve a temporary credential from [AWS Security Token Service (STS)](https://docs.aws.amazon.com/STS/latest/APIReference/welcome.html). 
+After you configure the OIDC and role, the GitLab CI/CD job can retrieve a temporary credential from [AWS Security Token Service (STS)](https://docs.aws.amazon.com/STS/latest/APIReference/welcome.html).
 
 ```yaml
 assume role:
@@ -78,7 +78,7 @@ assume role:
 - `CI_JOB_JWT_V2`: Predefined variable.
 - `ROLE_ARN`: The role ARN defined in this [step](#configure-a-role-and-trust).
 
-## Working example 
+## Working example
 
 See this [reference project](https://gitlab.com/guided-explorations/aws/configure-openid-connect-in-aws) for provisioning OIDC in AWS using Terraform and a sample script to retrieve temporary credentials.
 

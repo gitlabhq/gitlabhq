@@ -331,7 +331,7 @@ You can find the schemas for these scanners here:
 
 In GitLab 14.10 and later, report validation against the schemas is enabled. To enable report validation for versions earlier than 14.10,
 set [`VALIDATE_SCHEMA`](../../user/application_security/#enable-security-report-validation) to
-`"true"`. 
+`"true"`.
 
 Reports that don't pass validation are not ingested by GitLab, and an error message
 displays on the corresponding pipeline.

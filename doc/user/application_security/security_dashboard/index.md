@@ -128,7 +128,7 @@ To view vulnerabilities over time for a group:
 1. Select **Security > Security Dashboard**.
 1. Hover over the chart to get more details about vulnerabilities.
    - You can display the vulnerability trends over a 30, 60, or 90-day time frame (the default is 90 days).
-   - To view aggregated data beyond a 90-day time frame, use the 
+   - To view aggregated data beyond a 90-day time frame, use the
      [VulnerabilitiesCountByDay GraphQL API](../../../api/graphql/reference/index.md#vulnerabilitiescountbyday).
      GitLab retains the data for 365 days.
 

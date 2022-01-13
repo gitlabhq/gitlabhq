@@ -73,5 +73,5 @@ link to the [current template in the default branch](https://gitlab.com/gitlab-o
 NOTE:
 The job definition provided by the template does not support Kubernetes.
 
-You cannot pass configurations into Pa11y via CI configuration. 
+You cannot pass configurations into Pa11y via CI configuration.
 To change the configuration, edit a copy of the template in your CI file.

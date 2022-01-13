@@ -107,6 +107,7 @@ ci_runner_projects: :gitlab_ci
 ci_runners: :gitlab_ci
 ci_running_builds: :gitlab_ci
 ci_sources_pipelines: :gitlab_ci
+ci_secure_files: :gitlab_ci
 ci_sources_projects: :gitlab_ci
 ci_stages: :gitlab_ci
 ci_subscriptions_projects: :gitlab_ci

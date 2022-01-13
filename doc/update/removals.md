@@ -292,7 +292,7 @@ To better support the latest versions of Ruby, the template is changed to use `r
 
 Relevant Issue: [Updates Ruby version 2.5 to 3.0](https://gitlab.com/gitlab-org/gitlab/-/issues/329160)
 
-### Segments removed from DevOps Adoption API 
+### Segments removed from DevOps Adoption API
 
 The first release of the DevOps Adoption report had a concept of **Segments**. Segments were [quickly removed from the report](https://gitlab.com/groups/gitlab-org/-/epics/5251) because they introduced an additional layer of complexity on top of **Groups** and **Projects**. Subsequent iterations of the DevOps Adoption report focus on comparing adoption across groups rather than segments. GitLab 14.0 removes all references to **Segments** [from the GraphQL API](https://gitlab.com/gitlab-org/gitlab/-/issues/324414) and replaces them with **Enabled groups**.
 

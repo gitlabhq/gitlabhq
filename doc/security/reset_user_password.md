@@ -68,12 +68,12 @@ If you know the username, user ID, or email address, you can use the Rails conso
      user = User.find(123)
      ```
 
-   - By email address: 
+   - By email address:
 
      ```ruby
      user = User.find_by(email: 'user@example.com')
      ```
-      
+
 1. Reset the password:
 
    ```ruby
@@ -105,7 +105,7 @@ To reset the root password, follow the steps listed previously.
 
 - If the root account name hasn't changed, use the username `root`.
 - If the root account name has changed and you don't know the new username,
-  you might be able to use a Rails console with user ID `1`. In almost all 
+  you might be able to use a Rails console with user ID `1`. In almost all
   cases, the first user is the default administrator account.
 
 ## Troubleshooting

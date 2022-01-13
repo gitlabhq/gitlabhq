@@ -164,6 +164,17 @@ describe('markdownSerializer', () => {
     expect(serialize(paragraph(italic('italics')))).toBe('_italics_');
   });
 
+  it('correctly serializes code blocks wrapped by italics and bold marks', () => {
+    const text = 'code block';
+
+    expect(serialize(paragraph(italic(code(text))))).toBe(`_\`${text}\`_`);
+    expect(serialize(paragraph(code(italic(text))))).toBe(`_\`${text}\`_`);
+    expect(serialize(paragraph(bold(code(text))))).toBe(`**\`${text}\`**`);
+    expect(serialize(paragraph(code(bold(text))))).toBe(`**\`${text}\`**`);
+    expect(serialize(paragraph(strike(code(text))))).toBe(`~~\`${text}\`~~`);
+    expect(serialize(paragraph(code(strike(text))))).toBe(`~~\`${text}\`~~`);
+  });
+
   it('correctly serializes inline diff', () => {
     expect(
       serialize(

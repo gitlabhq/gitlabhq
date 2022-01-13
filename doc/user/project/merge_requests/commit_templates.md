@@ -88,7 +88,7 @@ Commit message templates support these variables:
 | `%{co_authored_by}` | Names and emails of commit authors in a `Co-authored-by` Git commit trailer format. Limited to authors of 100 most recent commits in merge request. | `Co-authored-by: Zane Doe <zdoe@example.com>` <br> `Co-authored-by: Blake Smith <bsmith@example.com>` |
 
 Any line containing only an empty variable is removed. If the line to be removed is both
-preceded and followed by an empty line, the preceding empty line is also removed. 
+preceded and followed by an empty line, the preceding empty line is also removed.
 
 ## Related topics
 

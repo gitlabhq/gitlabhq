@@ -1425,6 +1425,18 @@ test:
         aws_secret_access_key: AWS_SECRET_ACCESS_KEY
         region: us-east-1
 
+  ci_secure_files:
+    enabled: true
+    storage_path: tmp/tests/ci_secure_files
+    object_store:
+      enabled: false
+      remote_directory: ci_secure_files
+      connection:
+        provider: AWS # Only AWS supported at the moment
+        aws_access_key_id: AWS_ACCESS_KEY_ID
+        aws_secret_access_key: AWS_SECRET_ACCESS_KEY
+        region: us-east-1 
+
   gitlab:
     host: localhost
     port: 80
