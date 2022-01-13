@@ -9,7 +9,7 @@
 
     %div
       - if protected_branch.wildcard?
-        - matching_branches = protected_branch.matching(repository.branches)
+        - matching_branches = protected_branch.matching(repository.branch_names)
         = link_to pluralize(matching_branches.count, "matching branch"), namespace_project_protected_branch_path(@project.namespace, @project, protected_branch)
       - elsif !protected_branch.commit
         %span.text-muted Branch was deleted.

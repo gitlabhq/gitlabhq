@@ -2,7 +2,10 @@
 import { escape } from 'lodash';
 import { __ } from '~/locale';
 
+import { WI_TITLE_TRACK_LABEL } from '../constants';
+
 export default {
+  WI_TITLE_TRACK_LABEL,
   props: {
     initialTitle: {
       type: String,
@@ -56,6 +59,7 @@ export default {
       role="textbox"
       :aria-label="__('Title')"
       :data-placeholder="placeholder"
+      :data-track-label="$options.WI_TITLE_TRACK_LABEL"
       :contenteditable="!disabled"
       class="gl-pseudo-placeholder"
       @blur="handleBlur"

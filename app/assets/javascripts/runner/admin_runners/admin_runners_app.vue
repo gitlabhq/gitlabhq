@@ -3,6 +3,7 @@ import { GlBadge, GlLink } from '@gitlab/ui';
 import { createAlert } from '~/flash';
 import { fetchPolicies } from '~/lib/graphql';
 import { updateHistory } from '~/lib/utils/url_utility';
+import { formatNumber } from '~/locale';
 
 import RegistrationDropdown from '../components/registration/registration_dropdown.vue';
 import RunnerFilteredSearchBar from '../components/runner_filtered_search_bar.vue';
@@ -172,18 +173,27 @@ export default {
   },
   methods: {
     tabCount({ runnerType }) {
+      let count;
       switch (runnerType) {
         case null:
-          return this.allRunnersCount;
+          count = this.allRunnersCount;
+          break;
         case INSTANCE_TYPE:
-          return this.instanceRunnersCount;
+          count = this.instanceRunnersCount;
+          break;
         case GROUP_TYPE:
-          return this.groupRunnersCount;
+          count = this.groupRunnersCount;
+          break;
         case PROJECT_TYPE:
-          return this.projectRunnersCount;
+          count = this.projectRunnersCount;
+          break;
         default:
           return null;
       }
+      if (typeof count === 'number') {
+        return formatNumber(count);
+      }
+      return '';
     },
     reportToSentry(error) {
       captureException({ error, component: this.$options.name });
@@ -208,7 +218,7 @@ export default {
       >
         <template #title="{ tab }">
           {{ tab.title }}
-          <gl-badge v-if="typeof tabCount(tab) == 'number'" class="gl-ml-1" size="sm">
+          <gl-badge v-if="tabCount(tab)" class="gl-ml-1" size="sm">
             {{ tabCount(tab) }}
           </gl-badge>
         </template>

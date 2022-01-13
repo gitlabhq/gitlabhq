@@ -85,19 +85,7 @@ describe('AdminRunnersApp', () => {
     setWindowLocation('/admin/runners');
 
     mockRunnersQuery = jest.fn().mockResolvedValue(runnersData);
-    mockRunnersCountQuery = jest.fn().mockImplementation(({ type }) => {
-      const mockResponse = {
-        [INSTANCE_TYPE]: 3,
-        [GROUP_TYPE]: 2,
-        [PROJECT_TYPE]: 1,
-      };
-      if (mockResponse[type]) {
-        return Promise.resolve({
-          data: { runners: { count: mockResponse[type] } },
-        });
-      }
-      return Promise.resolve(runnersCountData);
-    });
+    mockRunnersCountQuery = jest.fn().mockResolvedValue(runnersCountData);
     createComponent();
     await waitForPromises();
   });
@@ -107,13 +95,59 @@ describe('AdminRunnersApp', () => {
     wrapper.destroy();
   });
 
-  it('shows the runner tabs with a runner count', async () => {
-    createComponent({ mountFn: mount });
+  it('shows the runner tabs with a runner count for each type', async () => {
+    mockRunnersCountQuery.mockImplementation(({ type }) => {
+      let count;
+      switch (type) {
+        case INSTANCE_TYPE:
+          count = 3;
+          break;
+        case GROUP_TYPE:
+          count = 2;
+          break;
+        case PROJECT_TYPE:
+          count = 1;
+          break;
+        default:
+          count = 6;
+          break;
+      }
+      return Promise.resolve({ data: { runners: { count } } });
+    });
 
+    createComponent({ mountFn: mount });
     await waitForPromises();
 
     expect(findRunnerTypeTabs().text()).toMatchInterpolatedText(
-      `All ${runnersCountData.data.runners.count} Instance 3 Group 2 Project 1`,
+      `All 6 Instance 3 Group 2 Project 1`,
+    );
+  });
+
+  it('shows the runner tabs with a formatted runner count', async () => {
+    mockRunnersCountQuery.mockImplementation(({ type }) => {
+      let count;
+      switch (type) {
+        case INSTANCE_TYPE:
+          count = 3000;
+          break;
+        case GROUP_TYPE:
+          count = 2000;
+          break;
+        case PROJECT_TYPE:
+          count = 1000;
+          break;
+        default:
+          count = 6000;
+          break;
+      }
+      return Promise.resolve({ data: { runners: { count } } });
+    });
+
+    createComponent({ mountFn: mount });
+    await waitForPromises();
+
+    expect(findRunnerTypeTabs().text()).toMatchInterpolatedText(
+      `All 6,000 Instance 3,000 Group 2,000 Project 1,000`,
     );
   });
 

@@ -60,10 +60,7 @@ export const trackSaasTrialSubmit = () => {
     return;
   }
 
-  const form = document.getElementById('new_trial');
-  form.addEventListener('submit', () => {
-    pushEvent('saasTrialSubmit');
-  });
+  pushEvent('saasTrialSubmit');
 };
 
 export const trackSaasTrialSkip = () => {

@@ -2,6 +2,10 @@
 
 class ProtectableDropdown
   REF_TYPES = %i[branches tags].freeze
+  REF_NAME_METHODS = {
+    branches: :branch_names,
+    tags: :tag_names
+  }.freeze
 
   def initialize(project, ref_type)
     raise ArgumentError, "invalid ref type `#{ref_type}`" unless ref_type.in?(REF_TYPES)
@@ -23,12 +27,12 @@ class ProtectableDropdown
 
   private
 
-  def refs
-    @project.repository.public_send(@ref_type) # rubocop:disable GitlabSecurity/PublicSend
+  def ref_names
+    @project.repository.public_send(ref_name_method) # rubocop:disable GitlabSecurity/PublicSend
   end
 
-  def ref_names
-    refs.map(&:name)
+  def ref_name_method
+    REF_NAME_METHODS[@ref_type]
   end
 
   def protections

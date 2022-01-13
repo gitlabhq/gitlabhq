@@ -117,7 +117,7 @@ the model code:
 
 ```ruby
 class Packages::PackageFile < ApplicationRecord
-  include ::Gitlab::Geo::ReplicableModel
+  include ::Geo::ReplicableModel
 
   with_replicator Geo::PackageFileReplicator
 end

@@ -135,9 +135,6 @@ describe('~/google_tag_manager/index', () => {
   describe.each([
     createOmniAuthTestCase(trackFreeTrialAccountSubmissions, 'freeThirtyDayTrial'),
     createOmniAuthTestCase(trackNewRegistrations, 'standardSignUp'),
-    createTestCase(trackSaasTrialSubmit, {
-      forms: [{ id: 'new_trial', expectation: { event: 'saasTrialSubmit' } }],
-    }),
     createTestCase(trackSaasTrialSkip, {
       links: [{ cls: 'js-skip-trial', expectation: { event: 'saasTrialSkip' } }],
     }),
@@ -199,6 +196,18 @@ describe('~/google_tag_manager/index', () => {
       triggerEvent('form.foo', 'submit');
 
       expect(spy).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('No listener events', () => {
+    it('when trackSaasTrialSubmit is invoked', () => {
+      expect(spy).not.toHaveBeenCalled();
+
+      trackSaasTrialSubmit();
+
+      expect(spy).toHaveBeenCalledTimes(1);
+      expect(spy).toHaveBeenCalledWith({ event: 'saasTrialSubmit' });
+      expect(logError).not.toHaveBeenCalled();
     });
   });
 

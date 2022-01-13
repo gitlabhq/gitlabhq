@@ -37550,6 +37550,9 @@ msgstr ""
 msgid "Trials|Your trial ends on %{boldStart}%{trialEndDate}%{boldEnd}. We hope you’re enjoying the features of GitLab %{planName}. To keep those features after your trial ends, you’ll need to buy a subscription. (You can also choose GitLab Premium if it meets your needs.)"
 msgstr ""
 
+msgid "Trial|Allowed characters: +, 0-9, -, and spaces."
+msgstr ""
+
 msgid "Trial|Company name"
 msgstr ""
 
@@ -37565,13 +37568,7 @@ msgstr ""
 msgid "Trial|Dismiss"
 msgstr ""
 
-msgid "Trial|First name"
-msgstr ""
-
 msgid "Trial|GitLab Ultimate trial (optional)"
-msgstr ""
-
-msgid "Trial|Last name"
 msgstr ""
 
 msgid "Trial|Number of employees"

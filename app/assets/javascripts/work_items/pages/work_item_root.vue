@@ -1,16 +1,21 @@
 <script>
 import { GlAlert } from '@gitlab/ui';
+import Tracking from '~/tracking';
 import workItemQuery from '../graphql/work_item.query.graphql';
 import updateWorkItemMutation from '../graphql/update_work_item.mutation.graphql';
-import { widgetTypes } from '../constants';
+import { widgetTypes, WI_TITLE_TRACK_LABEL } from '../constants';
 
 import ItemTitle from '../components/item_title.vue';
 
+const trackingMixin = Tracking.mixin();
+
 export default {
+  titleUpdatedEvent: 'updated_title',
   components: {
     ItemTitle,
     GlAlert,
   },
+  mixins: [trackingMixin],
   props: {
     id: {
       type: String,
@@ -34,6 +39,14 @@ export default {
     },
   },
   computed: {
+    tracking() {
+      return {
+        category: 'workItems:show',
+        action: 'updated_title',
+        label: WI_TITLE_TRACK_LABEL,
+        property: '[type_work_item]',
+      };
+    },
     titleWidgetData() {
       return this.workItem?.widgets?.nodes?.find((widget) => widget.type === widgetTypes.title);
     },
@@ -50,6 +63,7 @@ export default {
             },
           },
         });
+        this.track();
       } catch {
         this.error = true;
       }
