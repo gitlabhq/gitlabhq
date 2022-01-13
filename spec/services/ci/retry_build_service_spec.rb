@@ -371,6 +371,14 @@ RSpec.describe Ci::RetryBuildService do
       it_behaves_like 'when build with dynamic environment is retried'
 
       context 'when create_deployment_in_separate_transaction feature flag is disabled' do
+        let(:new_build) do
+          travel_to(1.second.from_now) do
+            ::Gitlab::Database::QueryAnalyzers::PreventCrossDatabaseModification.allow_cross_database_modification_within_transaction(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/345668') do
+              service.clone!(build)
+            end
+          end
+        end
+
         before do
           stub_feature_flags(create_deployment_in_separate_transaction: false)
         end

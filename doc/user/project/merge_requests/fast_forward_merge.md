@@ -38,9 +38,12 @@ Now, when you visit the merge request page, you can accept it
 If a fast-forward merge is not possible but a conflict free rebase is possible,
 a rebase button is offered.
 
+You can also rebase without running a CI/CD pipeline.
+[Introduced in](https://gitlab.com/gitlab-org/gitlab/-/issues/118825) GitLab 14.7.
+
 The rebase action is also available as a [quick action command: `/rebase`](../../../topics/git/git_rebase.md#rebase-from-the-gitlab-ui).
 
-![Fast forward merge request](img/ff_merge_rebase.png)
+![Fast forward merge request](img/ff_merge_rebase_v14_7.png)
 
 If the target branch is ahead of the source branch and a conflict free rebase is
 not possible, you need to rebase the

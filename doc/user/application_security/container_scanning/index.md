@@ -9,10 +9,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/3672) in GitLab 10.4.
 
-INFO:
-Try out Container Scanning in GitLab Ultimate.
-[It's free for 30 days](https://about.gitlab.com/free-trial/index.html?glm_source=docs.gitlab.com&glm_content=u-container-scanning-docs).
-
 Your application's Docker image may itself be based on Docker images that contain known
 vulnerabilities. By including an extra Container Scanning job in your pipeline that scans for those
 vulnerabilities and displays them in a merge request, you can use GitLab to audit your Docker-based

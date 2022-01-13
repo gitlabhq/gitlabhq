@@ -18,10 +18,6 @@ is an active in-cluster component for connecting Kubernetes clusters to GitLab s
 
 The Agent is installed into the cluster through code, providing you with a fast, safe, stable, and scalable solution.
 
-INFO:
-Get Network Security Alerts in GitLab by upgrading to Ultimate.
-[Try a free 30-day trial now](https://about.gitlab.com/free-trial/index.html?glm_source=docs.gitlab.com&glm_content=p-cluster-agent-docs).
-
 With GitOps, you can manage containerized clusters and applications from a Git repository that:
 
 - Is the single source of truth of your system.

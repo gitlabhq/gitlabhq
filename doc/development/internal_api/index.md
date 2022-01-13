@@ -826,6 +826,32 @@ Example response:
 200
 ```
 
+### Deleting an `upcoming_reconciliation`
+
+Use a DELETE command to delete an `upcoming_reconciliation`.
+
+```plaintext
+DELETE /internal/upcoming_reconciliations
+```
+
+| Attribute      | Type    | Required | Description                                                                       |
+|:---------------|:--------|:---------|:----------------------------------------------------------------------------------|
+| `namespace_id` | integer | yes | The ID of the GitLab.com namespace that no longer has an upcoming reconciliation. |
+
+Example request:
+
+```shell
+curl --request DELETE \
+  --url "http://localhost:3000/api/v4/internal/upcoming_reconciliations?namespace_id=22" \
+  --header 'PRIVATE-TOKEN: <admin_access_token>'
+```
+
+Example response:
+
+```plaintext
+204
+```
+
 ### Known consumers
 
 - CustomersDot

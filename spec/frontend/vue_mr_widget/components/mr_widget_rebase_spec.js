@@ -2,10 +2,15 @@ import { shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import WidgetRebase from '~/vue_merge_request_widget/components/states/mr_widget_rebase.vue';
 import eventHub from '~/vue_merge_request_widget/event_hub';
+import ActionsButton from '~/vue_shared/components/actions_button.vue';
+import {
+  REBASE_BUTTON_KEY,
+  REBASE_WITHOUT_CI_BUTTON_KEY,
+} from '~/vue_merge_request_widget/constants';
 
 let wrapper;
 
-function factory(propsData, mergeRequestWidgetGraphql) {
+function createWrapper(propsData, mergeRequestWidgetGraphql) {
   wrapper = shallowMount(WidgetRebase, {
     propsData,
     data() {
@@ -31,8 +36,9 @@ function factory(propsData, mergeRequestWidgetGraphql) {
 }
 
 describe('Merge request widget rebase component', () => {
-  const findRebaseMessageEl = () => wrapper.find('[data-testid="rebase-message"]');
-  const findRebaseMessageElText = () => findRebaseMessageEl().text();
+  const findRebaseMessage = () => wrapper.find('[data-testid="rebase-message"]');
+  const findRebaseMessageText = () => findRebaseMessage().text();
+  const findRebaseButton = () => wrapper.find(ActionsButton);
 
   afterEach(() => {
     wrapper.destroy();
@@ -40,10 +46,10 @@ describe('Merge request widget rebase component', () => {
   });
 
   [true, false].forEach((mergeRequestWidgetGraphql) => {
-    describe(`widget graphql is ${mergeRequestWidgetGraphql ? 'enabled' : 'dislabed'}`, () => {
-      describe('While rebasing', () => {
+    describe(`widget graphql is ${mergeRequestWidgetGraphql ? 'enabled' : 'disabled'}`, () => {
+      describe('while rebasing', () => {
         it('should show progress message', () => {
-          factory(
+          createWrapper(
             {
               mr: { rebaseInProgress: true },
               service: {},
@@ -51,24 +57,32 @@ describe('Merge request widget rebase component', () => {
             mergeRequestWidgetGraphql,
           );
 
-          expect(findRebaseMessageElText()).toContain('Rebase in progress');
+          expect(findRebaseMessageText()).toContain('Rebase in progress');
         });
       });
 
-      describe('With permissions', () => {
-        it('it should render rebase button and warning message', () => {
-          factory(
+      describe('with permissions', () => {
+        const rebaseMock = jest.fn().mockResolvedValue();
+        const pollMock = jest.fn().mockResolvedValue({});
+
+        beforeEach(() => {
+          createWrapper(
             {
               mr: {
                 rebaseInProgress: false,
                 canPushToSourceBranch: true,
               },
-              service: {},
+              service: {
+                rebase: rebaseMock,
+                poll: pollMock,
+              },
             },
             mergeRequestWidgetGraphql,
           );
+        });
 
-          const text = findRebaseMessageElText();
+        it('renders the warning message', () => {
+          const text = findRebaseMessageText();
 
           expect(text).toContain('Merge blocked');
           expect(text.replace(/\s\s+/g, ' ')).toContain(
@@ -76,42 +90,79 @@ describe('Merge request widget rebase component', () => {
           );
         });
 
-        it('it should render error message when it fails', async () => {
-          factory(
-            {
-              mr: {
-                rebaseInProgress: false,
-                canPushToSourceBranch: true,
-              },
-              service: {},
-            },
-            mergeRequestWidgetGraphql,
-          );
-
+        it('renders an error message when rebasing has failed', async () => {
           // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
           // eslint-disable-next-line no-restricted-syntax
           wrapper.setData({ rebasingError: 'Something went wrong!' });
 
           await nextTick();
-          expect(findRebaseMessageElText()).toContain('Something went wrong!');
+          expect(findRebaseMessageText()).toContain('Something went wrong!');
+        });
+
+        describe('"Rebase" button', () => {
+          it('is rendered', () => {
+            expect(findRebaseButton().exists()).toBe(true);
+          });
+
+          it('has rebase and rebase without CI actions', () => {
+            const actionNames = findRebaseButton()
+              .props('actions')
+              .map((action) => action.key);
+
+            expect(actionNames).toStrictEqual([REBASE_BUTTON_KEY, REBASE_WITHOUT_CI_BUTTON_KEY]);
+          });
+
+          it('defaults to rebase action', () => {
+            expect(findRebaseButton().props('selectedKey')).toStrictEqual(REBASE_BUTTON_KEY);
+          });
+
+          it('starts the rebase when clicking', async () => {
+            // ActionButtons use the actions props instead of emitting
+            // a click event, therefore simulating the behavior here:
+            findRebaseButton()
+              .props('actions')
+              .find((x) => x.key === REBASE_BUTTON_KEY)
+              .handle();
+
+            await nextTick();
+
+            expect(rebaseMock).toHaveBeenCalledWith({ skipCi: false });
+          });
+
+          it('starts the CI-skipping rebase when clicking on "Rebase without CI"', async () => {
+            // ActionButtons use the actions props instead of emitting
+            // a click event, therefore simulating the behavior here:
+            findRebaseButton()
+              .props('actions')
+              .find((x) => x.key === REBASE_WITHOUT_CI_BUTTON_KEY)
+              .handle();
+
+            await nextTick();
+
+            expect(rebaseMock).toHaveBeenCalledWith({ skipCi: true });
+          });
         });
       });
 
-      describe('Without permissions', () => {
-        it('should render a message explaining user does not have permissions', () => {
-          factory(
+      describe('without permissions', () => {
+        const exampleTargetBranch = 'fake-branch-to-test-with';
+
+        beforeEach(() => {
+          createWrapper(
             {
               mr: {
                 rebaseInProgress: false,
                 canPushToSourceBranch: false,
-                targetBranch: 'foo',
+                targetBranch: exampleTargetBranch,
               },
               service: {},
             },
             mergeRequestWidgetGraphql,
           );
+        });
 
-          const text = findRebaseMessageElText();
+        it('renders a message explaining user does not have permissions', () => {
+          const text = findRebaseMessageText();
 
           expect(text).toContain(
             'Merge blocked: the source branch must be rebased onto the target branch.',
@@ -119,32 +170,23 @@ describe('Merge request widget rebase component', () => {
           expect(text).toContain('the source branch must be rebased');
         });
 
-        it('should render the correct target branch name', () => {
-          const targetBranch = 'fake-branch-to-test-with';
-          factory(
-            {
-              mr: {
-                rebaseInProgress: false,
-                canPushToSourceBranch: false,
-                targetBranch,
-              },
-              service: {},
-            },
-            mergeRequestWidgetGraphql,
-          );
-
-          const elem = findRebaseMessageEl();
+        it('renders the correct target branch name', () => {
+          const elem = findRebaseMessage();
 
           expect(elem.text()).toContain(
             `Merge blocked: the source branch must be rebased onto the target branch.`,
           );
+        });
+
+        it('does not render the "Rebase" button', () => {
+          expect(findRebaseButton().exists()).toBe(false);
         });
       });
 
       describe('methods', () => {
         it('checkRebaseStatus', async () => {
           jest.spyOn(eventHub, '$emit').mockImplementation(() => {});
-          factory(
+          createWrapper(
             {
               mr: {},
               service: {

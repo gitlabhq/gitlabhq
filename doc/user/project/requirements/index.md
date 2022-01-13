@@ -17,10 +17,6 @@ In 14.4, Requirements was moved under **Issues**.
 With requirements, you can set criteria to check your products against. They can be based on users,
 stakeholders, system, software, or anything else you find important to capture.
 
-INFO:
-Meet your compliance needs with requirements in GitLab.
-[Try Ultimate free for 30 days](https://about.gitlab.com/free-trial/index.html?glm_source=docs.gitlab.com&glm_content=u-project-requirements-docs).
-
 A requirement is an artifact in GitLab which describes the specific behavior of your product.
 Requirements are long-lived and don't disappear unless manually cleared.
 

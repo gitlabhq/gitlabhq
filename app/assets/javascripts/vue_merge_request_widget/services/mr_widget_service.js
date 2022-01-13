@@ -55,8 +55,9 @@ export default class MRWidgetService {
     return axios.get(this.endpoints.mergeActionsContentPath);
   }
 
-  rebase() {
-    return axios.post(this.endpoints.rebasePath);
+  rebase({ skipCi = false } = {}) {
+    const path = `${this.endpoints.rebasePath}?skip_ci=${Boolean(skipCi)}`;
+    return axios.post(path);
   }
 
   fetchApprovals() {

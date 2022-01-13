@@ -41,7 +41,9 @@ module Clusters
       end
 
       def prepare_uninstall
-        runner&.update!(active: false)
+        ::Gitlab::Database::QueryAnalyzers::PreventCrossDatabaseModification.allow_cross_database_modification_within_transaction(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/350180') do
+          runner&.update!(active: false)
+        end
       end
 
       def post_uninstall

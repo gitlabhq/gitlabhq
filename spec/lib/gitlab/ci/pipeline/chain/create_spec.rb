@@ -7,7 +7,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Create do
   let_it_be(:user) { create(:user) }
 
   let(:pipeline) do
-    build(:ci_empty_pipeline, project: project, ref: 'master')
+    build(:ci_empty_pipeline, project: project, ref: 'master', user: user)
   end
 
   let(:command) do
@@ -59,7 +59,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Create do
 
   context 'tags persistence' do
     let(:stage) do
-      build(:ci_stage_entity, pipeline: pipeline)
+      build(:ci_stage_entity, pipeline: pipeline, project: project)
     end
 
     let(:job) do

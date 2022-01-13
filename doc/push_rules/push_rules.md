@@ -14,10 +14,6 @@ GitLab already offers [protected branches](../user/project/protected_branches.md
 cases when you need some specific rules. Some common scenarios: preventing Git tag removal, or
 enforcing a special format for commit messages.
 
-INFO:
-Get access to push rules and more with a
-[free 30-day trial of GitLab Ultimate](https://about.gitlab.com/free-trial/index.html?glm_source=docs.gitlab.com&glm_content=p-push-rules-docs).
-
 Push rules are [pre-receive Git hooks](https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks) you
 can enable in a user-friendly interface. They are defined either:
 

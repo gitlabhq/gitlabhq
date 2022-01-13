@@ -18471,6 +18471,9 @@ msgstr ""
 msgid "InProductMarketing|Start a GitLab Ultimate trial today in less than one minute, no credit card required."
 msgstr ""
 
+msgid "InProductMarketing|Start a Self-Managed trial"
+msgstr ""
+
 msgid "InProductMarketing|Start a free trial of GitLab Ultimate – no credit card required"
 msgstr ""
 
@@ -18571,6 +18574,9 @@ msgid "InProductMarketing|Very difficult"
 msgstr ""
 
 msgid "InProductMarketing|Very easy"
+msgstr ""
+
+msgid "InProductMarketing|Want to host GitLab on your servers?"
 msgstr ""
 
 msgid "InProductMarketing|We know a thing or two about efficiency and we don't want to keep that to ourselves. Sign up for a free trial of GitLab Ultimate and your teams will be on it from day one."
@@ -25840,6 +25846,9 @@ msgstr ""
 msgid "PerformanceBar|wall"
 msgstr ""
 
+msgid "Performs a rebase but skips triggering a new pipeline"
+msgstr ""
+
 msgid "Period in seconds"
 msgstr ""
 
@@ -29219,6 +29228,12 @@ msgid "Rebase source branch"
 msgstr ""
 
 msgid "Rebase source branch on the target branch."
+msgstr ""
+
+msgid "Rebase without CI"
+msgstr ""
+
+msgid "Rebases and triggers a pipeline"
 msgstr ""
 
 msgid "Recaptcha verified?"

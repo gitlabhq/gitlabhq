@@ -9,10 +9,6 @@ type: index, howto
 
 >[Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/4642) in GitLab 10.6.
 
-INFO:
-Get external repo access and more by upgrading to GitLab Ultimate.
-[Try a free 30-day trial now](https://about.gitlab.com/free-trial/index.html?glm_source=docs.gitlab.com&glm_content=p-ci-cd-external-docs).
-
 GitLab CI/CD can be used with [GitHub](github_integration.md), [Bitbucket Cloud](bitbucket_integration.md), or any other
 Git server.
 

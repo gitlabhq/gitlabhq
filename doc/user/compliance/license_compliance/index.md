@@ -14,10 +14,6 @@ project's dependencies for their licenses. You can then decide whether to allow 
 each license. For example, if your application uses an external (open source) library whose license
 is incompatible with yours, then you can deny the use of that license.
 
-INFO:
-Try License Compliance scanning to search project dependencies in GitLab Ultimate.
-[It's free for 30 days](https://about.gitlab.com/free-trial/index.html?glm_source=docs.gitlab.com&glm_content=u-compliance-docs).
-
 You can take advantage of License Compliance by either:
 
 - [Including the job](#configuration)

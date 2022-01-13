@@ -14,10 +14,6 @@ This page describes SAML for groups. For instance-wide SAML on self-managed GitL
 
 SAML on GitLab.com allows users to sign in through their SAML identity provider. If the user is not already a member, the sign-in process automatically adds the user to the appropriate group.
 
-INFO:
-Use your own SAML authentication to log in to [GitLab.com](http://gitlab.com/).
-[Try GitLab Ultimate free for 30 days](https://about.gitlab.com/free-trial/index.html?glm_source=docs.gitlab.com&glm_content=p-saml-sso-docs).
-
 User synchronization of SAML SSO groups is supported through [SCIM](scim_setup.md). SCIM supports adding and removing users from the GitLab group automatically.
 For example, if you remove a user from the SCIM app, SCIM removes that same user from the GitLab group.
 

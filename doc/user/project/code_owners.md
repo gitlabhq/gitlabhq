@@ -8,10 +8,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > Moved to GitLab Premium in 13.9.
 
-INFO:
-Get access to Code Owners and more with a
-[free 30-day trial of GitLab Ultimate](https://about.gitlab.com/free-trial/index.html?glm_source=docs.gitlab.com&glm_content=p-code-owners-docs).
-
 Code Owners define who owns specific files or directories in a repository.
 
 - The users you define as Code Owners are displayed in the UI when you browse directories.

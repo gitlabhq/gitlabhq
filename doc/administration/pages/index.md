@@ -1320,6 +1320,15 @@ This can happen if your `gitlab-secrets.json` file is out of date between GitLab
 Pages. Follow steps 8-10 of [Running GitLab Pages on a separate server](#running-gitlab-pages-on-a-separate-server),
 in all of your GitLab Pages instances.
 
+### Intermittent 502 errors when using an AWS Network Load Balancer and GitLab Pages is running on multiple application servers
+
+Connections will time out when using a Network Load Balancer with client IP preservation enabled and [the request is looped back to the source server](https://docs.aws.amazon.com/elasticloadbalancing/latest/network/load-balancer-troubleshooting.html#loopback-timeout).
+This can happen to GitLab instances with multiple servers
+running both the core GitLab application and GitLab Pages.
+
+AWS [recommends using an IP target type](https://aws.amazon.com/premiumsupport/knowledge-center/target-connection-fails-load-balancer/)
+to resolve this issue.
+
 ### 500 error with `securecookie: failed to generate random iv` and `Failed to save the session`
 
 This problem most likely results from an [out-dated operating system](../package_information/supported_os.md#os-versions-that-are-no-longer-supported).

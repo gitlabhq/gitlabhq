@@ -1,10 +1,1 @@
-- "./ee/spec/replicators/geo/terraform_state_version_replicator_spec.rb"
-- "./spec/features/issues/issue_detail_spec.rb"
-- "./spec/features/projects/pipelines/pipeline_spec.rb"
-- "./spec/features/signed_commits_spec.rb"
-- "./spec/lib/gitlab/ci/pipeline/chain/create_spec.rb"
-- "./spec/models/ci/build_trace_chunk_spec.rb"
-- "./spec/models/ci/job_artifact_spec.rb"
-- "./spec/models/clusters/applications/runner_spec.rb"
-- "./spec/requests/api/commits_spec.rb"
-- "./spec/services/ci/retry_build_service_spec.rb"
+[]

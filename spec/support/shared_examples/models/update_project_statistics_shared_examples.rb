@@ -115,16 +115,14 @@ RSpec.shared_examples 'UpdateProjectStatistics' do |with_counter_attribute|
             expect(ProjectStatistics)
               .not_to receive(:increment_statistic)
 
-            project.update!(pending_delete: true)
-            project.destroy!
+            expect(Projects::DestroyService.new(project, project.owner).execute).to eq(true)
           end
 
           it 'does not schedule a namespace statistics worker' do
             expect(Namespaces::ScheduleAggregationWorker)
               .not_to receive(:perform_async)
 
-            project.update!(pending_delete: true)
-            project.destroy!
+            expect(Projects::DestroyService.new(project, project.owner).execute).to eq(true)
           end
         end
       end

@@ -327,3 +327,9 @@ and can interfere with object storage development.
 It is now considered deprecated, and will be removed in GitLab 15.0.
 
 Planned removal milestone: 15.0 (2021-06-22)
+
+### Tracing in GitLab
+
+Tracing in GitLab is an integration with Jaeger, an open-source end-to-end distributed tracing system. GitLab users can navigate to their Jaeger instance to gain insight into the performance of a deployed application, tracking each function or microservice that handles a given request. Tracing in GitLab is deprecated in GitLab 14.7, and scheduled for removal in 15.0. To track work on a possible replacement, see the issue for [Opstrace integration with GitLab](https://gitlab.com/groups/gitlab-org/-/epics/6976).
+
+Planned removal milestone: 15.0 (2022-05-22)
