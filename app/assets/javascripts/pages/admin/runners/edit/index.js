@@ -1,3 +1,3 @@
-import { initRunnerDetail } from '~/runner/runner_details';
+import { initAdminRunnerEdit } from '~/runner/admin_runner_edit';
 
-initRunnerDetail();
+initAdminRunnerEdit();

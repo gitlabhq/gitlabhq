@@ -10,7 +10,7 @@ RSpec.describe Email do
   end
 
   describe 'validations' do
-    it_behaves_like 'an object with RFC3696 compliant email-formatted attributes', :email do
+    it_behaves_like 'an object with email-formatted attributes', :email do
       subject { build(:email) }
     end
 

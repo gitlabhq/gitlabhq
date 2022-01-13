@@ -59,7 +59,9 @@ export default {
 };
 </script>
 <template>
-  <div class="gl-mt-3 gl-py-2 gl-px-3 bg-gray-light border-top border-bottom">
+  <div
+    class="gl-mt-3 gl-py-2 gl-px-3 gl-bg-gray-10 gl-border-b-1 gl-border-b-solid gl-border-t-1 gl-border-t-solid gl-border-gray-100"
+  >
     <filter-bar
       data-testid="vsa-filter-bar"
       class="filtered-search-box gl-display-flex gl-mb-2 gl-mr-3 gl-border-none"

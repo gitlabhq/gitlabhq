@@ -190,5 +190,10 @@ module Routable
     route || build_route(source: self)
     route.path = build_full_path
     route.name = build_full_name
+    route.namespace = if is_a?(Namespace)
+                        self
+                      elsif is_a?(Project)
+                        self.project_namespace
+                      end
   end
 end

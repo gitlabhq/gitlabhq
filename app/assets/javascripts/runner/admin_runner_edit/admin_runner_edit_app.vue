@@ -9,7 +9,7 @@ import getRunnerQuery from '../graphql/get_runner.query.graphql';
 import { captureException } from '../sentry_utils';
 
 export default {
-  name: 'RunnerDetailsApp',
+  name: 'AdminRunnerEditApp',
   components: {
     RunnerHeader,
     RunnerUpdateForm,

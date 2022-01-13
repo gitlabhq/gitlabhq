@@ -118,6 +118,7 @@ describe('BoardFilteredSearch', () => {
     it('sets the url params to the correct results', async () => {
       const mockFilters = [
         { type: 'author', value: { data: 'root', operator: '=' } },
+        { type: 'assignee', value: { data: 'root', operator: '=' } },
         { type: 'label', value: { data: 'label', operator: '=' } },
         { type: 'label', value: { data: 'label2', operator: '=' } },
         { type: 'milestone', value: { data: 'New Milestone', operator: '=' } },
@@ -133,7 +134,26 @@ describe('BoardFilteredSearch', () => {
         title: '',
         replace: true,
         url:
-          'http://test.host/?author_username=root&label_name[]=label&label_name[]=label2&milestone_title=New+Milestone&iteration_id=3341&types=INCIDENT&weight=2&release_tag=v1.0.0',
+          'http://test.host/?author_username=root&label_name[]=label&label_name[]=label2&assignee_username=root&milestone_title=New+Milestone&iteration_id=3341&types=INCIDENT&weight=2&release_tag=v1.0.0',
+      });
+    });
+
+    describe('when assignee is passed a wildcard value', () => {
+      const url = (arg) => `http://test.host/?assignee_id=${arg}`;
+
+      it.each([
+        ['None', url('None')],
+        ['Any', url('Any')],
+      ])('sets the url param %s', (assigneeParam, expected) => {
+        const mockFilters = [{ type: 'assignee', value: { data: assigneeParam, operator: '=' } }];
+        jest.spyOn(urlUtility, 'updateHistory');
+        findFilteredSearch().vm.$emit('onFilter', mockFilters);
+
+        expect(urlUtility.updateHistory).toHaveBeenCalledWith({
+          title: '',
+          replace: true,
+          url: expected,
+        });
       });
     });
   });

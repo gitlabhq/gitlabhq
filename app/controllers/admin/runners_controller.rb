@@ -15,7 +15,7 @@ class Admin::RunnersController < Admin::ApplicationController
     # future iterations. For now, this route will have a
     # redirect until this new view is developed. See more:
     # https://gitlab.com/gitlab-org/gitlab/-/issues/347856
-    redirect_to edit_admin_runner_path(runner)
+    redirect_to edit_admin_runner_path(runner) unless Feature.enabled?(:runner_read_only_admin_view, default_enabled: :yaml)
   end
 
   def edit

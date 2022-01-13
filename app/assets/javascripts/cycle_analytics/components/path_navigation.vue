@@ -57,7 +57,7 @@ export default {
 };
 </script>
 <template>
-  <gl-skeleton-loading v-if="loading" :lines="2" class="h-auto pt-2 pb-1" />
+  <gl-skeleton-loading v-if="loading" :lines="2" />
   <gl-path v-else :key="selectedStage.id" :items="stages" @selected="onSelectStage">
     <template #default="{ pathItem, pathId }">
       <gl-popover

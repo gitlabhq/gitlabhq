@@ -8,7 +8,6 @@ import CommitBlock from '../../components/commit_block.vue';
 
 export default {
   styles: {
-    top: '75px',
     width: '290px',
   },
   name: 'BridgeSidebar',
@@ -37,9 +36,29 @@ export default {
       required: true,
     },
   },
+  data() {
+    return {
+      topPosition: 0,
+    };
+  },
+  computed: {
+    rootStyle() {
+      return { ...this.$options.styles, top: `${this.topPosition}px` };
+    },
+  },
+  mounted() {
+    this.setTopPosition();
+  },
   methods: {
     onSidebarButtonClick() {
       this.$emit('toggleSidebar');
+    },
+    setTopPosition() {
+      const navbarEl = document.querySelector('.js-navbar');
+
+      if (navbarEl) {
+        this.topPosition = navbarEl.getBoundingClientRect().bottom;
+      }
     },
   },
 };
@@ -47,7 +66,7 @@ export default {
 <template>
   <aside
     class="gl-fixed gl-right-0 gl-px-5 gl-bg-gray-10 gl-h-full gl-border-l-solid gl-border-1 gl-border-gray-100 gl-z-index-200 gl-overflow-hidden"
-    :style="this.$options.styles"
+    :style="rootStyle"
   >
     <div class="gl-py-5 gl-display-flex gl-align-items-center">
       <tooltip-on-truncate :title="bridgeJob.name" truncate-target="child"

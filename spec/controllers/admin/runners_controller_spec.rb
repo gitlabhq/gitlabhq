@@ -31,7 +31,16 @@ RSpec.describe Admin::RunnersController do
       create(:ci_build, runner: runner, project: project)
     end
 
-    it 'redirects to the runner edit page' do
+    it 'shows a runner show page' do
+      get :show, params: { id: runner.id }
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(response).to render_template(:show)
+    end
+
+    it 'when runner_read_only_admin_view is off, redirects to the runner edit page' do
+      stub_feature_flags(runner_read_only_admin_view: false)
+
       get :show, params: { id: runner.id }
 
       expect(response).to have_gitlab_http_status(:redirect)

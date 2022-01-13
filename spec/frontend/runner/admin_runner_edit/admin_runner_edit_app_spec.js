@@ -7,7 +7,7 @@ import { createAlert } from '~/flash';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import RunnerHeader from '~/runner/components/runner_header.vue';
 import getRunnerQuery from '~/runner/graphql/get_runner.query.graphql';
-import RunnerDetailsApp from '~/runner/runner_details/runner_details_app.vue';
+import AdminRunnerEditApp from '~//runner/admin_runner_edit/admin_runner_edit_app.vue';
 import { captureException } from '~/runner/sentry_utils';
 
 import { runnerData } from '../mock_data';
@@ -21,14 +21,14 @@ const mockRunnerId = `${getIdFromGraphQLId(mockRunnerGraphqlId)}`;
 const localVue = createLocalVue();
 localVue.use(VueApollo);
 
-describe('RunnerDetailsApp', () => {
+describe('AdminRunnerEditApp', () => {
   let wrapper;
   let mockRunnerQuery;
 
   const findRunnerHeader = () => wrapper.findComponent(RunnerHeader);
 
   const createComponentWithApollo = ({ props = {}, mountFn = shallowMount } = {}) => {
-    wrapper = mountFn(RunnerDetailsApp, {
+    wrapper = mountFn(AdminRunnerEditApp, {
       localVue,
       apolloProvider: createMockApollo([[getRunnerQuery, mockRunnerQuery]]),
       propsData: {
@@ -77,7 +77,7 @@ describe('RunnerDetailsApp', () => {
     it('error is reported to sentry', () => {
       expect(captureException).toHaveBeenCalledWith({
         error: new Error('Network error: Error!'),
-        component: 'RunnerDetailsApp',
+        component: 'AdminRunnerEditApp',
       });
     });
 

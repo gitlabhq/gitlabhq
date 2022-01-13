@@ -480,7 +480,8 @@ RSpec.describe "Admin Runners" do
     describe 'runner page breadcrumbs' do
       it 'contains the current runner id and token' do
         page.within '[data-testid="breadcrumb-links"]' do
-          expect(page.find('h2')).to have_content("##{runner.id} (#{runner.short_sha})")
+          expect(page).to have_link("##{runner.id} (#{runner.short_sha})")
+          expect(page.find('h2')).to have_content("Edit")
         end
       end
     end

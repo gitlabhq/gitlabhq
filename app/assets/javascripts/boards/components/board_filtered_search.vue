@@ -6,6 +6,7 @@ import { updateHistory, setUrlParams } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
 import { FILTERED_SEARCH_TERM } from '~/vue_shared/components/filtered_search_bar/constants';
 import FilteredSearch from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
+import { AssigneeFilterType } from '~/boards/constants';
 
 export default {
   i18n: {
@@ -37,6 +38,7 @@ export default {
         authorUsername,
         labelName,
         assigneeUsername,
+        assigneeId,
         search,
         milestoneTitle,
         iterationId,
@@ -60,6 +62,13 @@ export default {
         filteredSearchValue.push({
           type: 'assignee',
           value: { data: assigneeUsername, operator: '=' },
+        });
+      }
+
+      if (assigneeId) {
+        filteredSearchValue.push({
+          type: 'assignee',
+          value: { data: assigneeId, operator: '=' },
         });
       }
 
@@ -211,6 +220,7 @@ export default {
         authorUsername,
         labelName,
         assigneeUsername,
+        assigneeId,
         search,
         milestoneTitle,
         types,
@@ -246,6 +256,7 @@ export default {
         author_username: authorUsername,
         'label_name[]': labelName,
         assignee_username: assigneeUsername,
+        assignee_id: assigneeId,
         milestone_title: milestoneTitle,
         iteration_id: iterationId,
         search,
@@ -295,7 +306,11 @@ export default {
             filterParams.authorUsername = filter.value.data;
             break;
           case 'assignee':
-            filterParams.assigneeUsername = filter.value.data;
+            if (Object.values(AssigneeFilterType).includes(filter.value.data)) {
+              filterParams.assigneeId = filter.value.data;
+            } else {
+              filterParams.assigneeUsername = filter.value.data;
+            }
             break;
           case 'type':
             filterParams.types = filter.value.data;

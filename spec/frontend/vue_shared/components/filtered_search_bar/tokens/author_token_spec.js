@@ -10,10 +10,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 import createFlash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 
-import {
-  DEFAULT_LABEL_ANY,
-  DEFAULT_NONE_ANY,
-} from '~/vue_shared/components/filtered_search_bar/constants';
+import { DEFAULT_NONE_ANY } from '~/vue_shared/components/filtered_search_bar/constants';
 import AuthorToken from '~/vue_shared/components/filtered_search_bar/tokens/author_token.vue';
 import BaseToken from '~/vue_shared/components/filtered_search_bar/tokens/base_token.vue';
 
@@ -276,7 +273,7 @@ describe('AuthorToken', () => {
       expect(wrapper.find(GlDropdownDivider).exists()).toBe(false);
     });
 
-    it('renders `DEFAULT_LABEL_ANY` as default suggestions', async () => {
+    it('renders `DEFAULT_NONE_ANY` as default suggestions', async () => {
       wrapper = createComponent({
         active: true,
         config: { ...mockAuthorToken, preloadedAuthors: mockPreloadedAuthors },
@@ -287,8 +284,9 @@ describe('AuthorToken', () => {
 
       const suggestions = wrapper.findAll(GlFilteredSearchSuggestion);
 
-      expect(suggestions).toHaveLength(1 + currentUserLength);
-      expect(suggestions.at(0).text()).toBe(DEFAULT_LABEL_ANY.text);
+      expect(suggestions).toHaveLength(2 + currentUserLength);
+      expect(suggestions.at(0).text()).toBe(DEFAULT_NONE_ANY[0].text);
+      expect(suggestions.at(1).text()).toBe(DEFAULT_NONE_ANY[1].text);
     });
 
     it('emits listeners in the base-token', () => {

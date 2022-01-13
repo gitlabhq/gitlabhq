@@ -44,7 +44,7 @@ RSpec.describe 'Profile > Emails' do
     end
 
     it 'does not add an invalid email' do
-      fill_in('Email', with: 'test.@example.com')
+      fill_in('Email', with: 'test@@example.com')
       click_button('Add email address')
 
       email = user.emails.find_by(email: email)

@@ -7,6 +7,14 @@ import { mockCommit, mockJob } from '../mock_data';
 describe('Bridge Sidebar', () => {
   let wrapper;
 
+  const MockHeaderEl = {
+    getBoundingClientRect() {
+      return {
+        bottom: '40',
+      };
+    },
+  };
+
   const createComponent = ({ featureFlag } = {}) => {
     wrapper = shallowMount(BridgeSidebar, {
       provide: {
@@ -41,6 +49,17 @@ describe('Bridge Sidebar', () => {
 
     it('renders commit information', () => {
       expect(findCommitBlock().exists()).toBe(true);
+    });
+  });
+
+  describe('styles', () => {
+    beforeEach(async () => {
+      jest.spyOn(document, 'querySelector').mockReturnValue(MockHeaderEl);
+      createComponent();
+    });
+
+    it('calculates root styles correctly', () => {
+      expect(wrapper.attributes('style')).toBe('width: 290px; top: 40px;');
     });
   });
 

@@ -1,8 +1,5 @@
 import { ACCESS_LEVEL_NOT_PROTECTED } from '~/runner/constants';
-import {
-  modelToUpdateMutationVariables,
-  runnerToModel,
-} from '~/runner/runner_details/runner_update_form_utils';
+import { modelToUpdateMutationVariables, runnerToModel } from '~/runner/runner_update_form_utils';
 
 const mockId = 'gid://gitlab/Ci::Runner/1';
 const mockDescription = 'Runner Desc.';
@@ -23,7 +20,7 @@ const mockModel = {
   tagList: 'tag-1, tag-2',
 };
 
-describe('~/runner/runner_details/runner_update_form_utils', () => {
+describe('~/runner/runner_update_form_utils', () => {
   describe('runnerToModel', () => {
     it('collects all model data', () => {
       expect(runnerToModel(mockRunner)).toEqual(mockModel);

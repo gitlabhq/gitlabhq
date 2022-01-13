@@ -1,0 +1,8 @@
+- add_page_specific_style 'page_bundles/ci_status'
+
+- title = "##{@runner.id} (#{@runner.short_sha})"
+- breadcrumb_title title
+- page_title title
+- add_to_breadcrumbs _('Runners'), admin_runners_path
+
+-# Empty view in development behind feature flag runner_read_only_admin_view

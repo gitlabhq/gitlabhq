@@ -10,7 +10,7 @@ import {
 import {
   modelToUpdateMutationVariables,
   runnerToModel,
-} from 'ee_else_ce/runner/runner_details/runner_update_form_utils';
+} from 'ee_else_ce/runner/runner_update_form_utils';
 import { createAlert, VARIANT_SUCCESS } from '~/flash';
 import { __ } from '~/locale';
 import { captureException } from '~/runner/sentry_utils';

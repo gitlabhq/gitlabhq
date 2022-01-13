@@ -162,9 +162,9 @@ export default {
       See https://gitlab.com/gitlab-org/gitlab/-/issues/334802
     -->
     <gl-button
-      v-if="canUpdate && runner.adminUrl"
+      v-if="canUpdate && runner.editAdminUrl"
       v-gl-tooltip.hover.viewport="$options.I18N_EDIT"
-      :href="runner.adminUrl"
+      :href="runner.editAdminUrl"
       :aria-label="$options.I18N_EDIT"
       icon="pencil"
       data-testid="edit-runner"

@@ -30,11 +30,15 @@ module API
           end
           post "/*mailbox_type" do
             worker = Gitlab::MailRoom.worker_for(params[:mailbox_type])
+            raw = request.body.read
             begin
-              worker.perform_async(request.body.read)
-            rescue Gitlab::SidekiqMiddleware::SizeLimiter::ExceedLimitError => e
+              worker.perform_async(raw)
+            rescue Gitlab::SidekiqMiddleware::SizeLimiter::ExceedLimitError
+              receiver = Gitlab::Email::Receiver.new(raw)
+              reason = Gitlab::Email::FailureHandler.handle(receiver, Gitlab::Email::EmailTooLarge.new)
+
               status 400
-              break { success: false, message: e.message }
+              break { success: false, message: reason }
             end
 
             status 200

@@ -47,7 +47,7 @@ describe('RunnerTypeCell', () => {
           runner: {
             id: mockRunner.id,
             shortSha: mockRunner.shortSha,
-            adminUrl: mockRunner.adminUrl,
+            editAdminUrl: mockRunner.editAdminUrl,
             userPermissions: mockRunner.userPermissions,
             active: mockRunner.active,
             ...runner,
@@ -103,7 +103,7 @@ describe('RunnerTypeCell', () => {
     it('Displays the runner edit link with the correct href', () => {
       createComponent();
 
-      expect(findEditBtn().attributes('href')).toBe(mockRunner.adminUrl);
+      expect(findEditBtn().attributes('href')).toBe(mockRunner.editAdminUrl);
     });
 
     it('Does not render the runner edit link when user cannot update', () => {
@@ -117,9 +117,9 @@ describe('RunnerTypeCell', () => {
       expect(findEditBtn().exists()).toBe(false);
     });
 
-    it('Does not render the runner edit link when adminUrl is not provided', () => {
+    it('Does not render the runner edit link when editAdminUrl is not provided', () => {
       createComponent({
-        adminUrl: null,
+        editAdminUrl: null,
       });
 
       expect(findEditBtn().exists()).toBe(false);

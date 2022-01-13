@@ -34,7 +34,9 @@ RSpec.describe 'Issue board filters', :js do
     it 'and submit one as filter', :aggregate_failures do
       expect(find('.board:nth-child(1)')).to have_selector('.board-card', count: 2)
 
-      expect_filtered_search_dropdown_results(filter_dropdown, 3)
+      wait_for_requests
+
+      expect_filtered_search_dropdown_results(filter_dropdown, 4)
 
       click_on user.username
       filter_submit.click

@@ -10877,12 +10877,6 @@ msgstr ""
 msgid "DastProfiles|Could not create the site profile. Please try again."
 msgstr ""
 
-msgid "DastProfiles|Could not delete saved scan. Please refresh the page, or try again later."
-msgstr ""
-
-msgid "DastProfiles|Could not delete saved scans:"
-msgstr ""
-
 msgid "DastProfiles|Could not delete scanner profile. Please refresh the page, or try again later."
 msgstr ""
 
@@ -10895,9 +10889,6 @@ msgstr ""
 msgid "DastProfiles|Could not delete site profiles:"
 msgstr ""
 
-msgid "DastProfiles|Could not fetch saved scans. Please refresh the page, or try again later."
-msgstr ""
-
 msgid "DastProfiles|Could not fetch scanner profiles. Please refresh the page, or try again later."
 msgstr ""
 
@@ -10908,9 +10899,6 @@ msgid "DastProfiles|Could not update the scanner profile. Please try again."
 msgstr ""
 
 msgid "DastProfiles|Could not update the site profile. Please try again."
-msgstr ""
-
-msgid "DastProfiles|DAST Scan"
 msgstr ""
 
 msgid "DastProfiles|Debug messages"
@@ -10985,9 +10973,6 @@ msgstr ""
 msgid "DastProfiles|No scanner profiles created yet"
 msgstr ""
 
-msgid "DastProfiles|No scans saved yet"
-msgstr ""
-
 msgid "DastProfiles|No site profiles created yet"
 msgstr ""
 
@@ -11015,9 +11000,6 @@ msgstr ""
 msgid "DastProfiles|Rest API"
 msgstr ""
 
-msgid "DastProfiles|Run scan"
-msgstr ""
-
 msgid "DastProfiles|Run the AJAX spider, in addition to the traditional spider, to crawl the target site."
 msgstr ""
 
@@ -11025,12 +11007,6 @@ msgid "DastProfiles|Save commonly used configurations for target sites and scan 
 msgstr ""
 
 msgid "DastProfiles|Save profile"
-msgstr ""
-
-msgid "DastProfiles|Saved Scans"
-msgstr ""
-
-msgid "DastProfiles|Scan"
 msgstr ""
 
 msgid "DastProfiles|Scan mode"
@@ -11043,9 +11019,6 @@ msgid "DastProfiles|Scanner Profiles"
 msgstr ""
 
 msgid "DastProfiles|Scanner name"
-msgstr ""
-
-msgid "DastProfiles|Schedule"
 msgstr ""
 
 msgid "DastProfiles|Select branch"
@@ -11067,9 +11040,6 @@ msgid "DastProfiles|Site type"
 msgstr ""
 
 msgid "DastProfiles|Spider timeout"
-msgstr ""
-
-msgid "DastProfiles|Target"
 msgstr ""
 
 msgid "DastProfiles|Target URL"
@@ -13064,6 +13034,9 @@ msgid "EmailError|We couldn't figure out what user corresponds to the email. Ple
 msgstr ""
 
 msgid "EmailError|We couldn't find the project. Please check if there's any typo."
+msgstr ""
+
+msgid "EmailError|We couldn't process your email because it is too large. Please create your issue or comment through the web interface."
 msgstr ""
 
 msgid "EmailError|You are not allowed to perform this action. If you believe this is in error, contact a staff member."

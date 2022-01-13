@@ -18,5 +18,6 @@ module Gitlab
     InvalidMergeRequestError = Class.new(InvalidRecordError)
     UnknownIncomingEmail = Class.new(ProcessingError)
     InvalidAttachment = Class.new(ProcessingError)
+    EmailTooLarge = Class.new(ProcessingError)
   end
 end

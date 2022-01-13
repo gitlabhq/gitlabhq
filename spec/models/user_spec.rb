@@ -436,7 +436,7 @@ RSpec.describe User do
       subject { build(:user) }
     end
 
-    it_behaves_like 'an object with RFC3696 compliant email-formatted attributes', :public_email, :notification_email do
+    it_behaves_like 'an object with email-formatted attributes', :public_email, :notification_email do
       subject { create(:user).tap { |user| user.emails << build(:email, email: email_value, confirmed_at: Time.current) } }
     end
 

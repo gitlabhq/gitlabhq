@@ -100,17 +100,26 @@ RSpec.describe API::Internal::MailRoom do
         )
       end
 
-      it 'responds with 400 bad request' do
-        Sidekiq::Testing.fake! do
-          expect do
-            post api("/internal/mail_room/incoming_email"), headers: auth_headers, params: email_content
-          end.not_to change { EmailReceiverWorker.jobs.size }
+      it 'responds with 400 bad request and replies with a failure message' do
+        perform_enqueued_jobs do
+          Sidekiq::Testing.fake! do
+            expect do
+              post api("/internal/mail_room/incoming_email"), headers: auth_headers, params: email_content
+            end.not_to change { EmailReceiverWorker.jobs.size }
+          end
         end
 
         expect(response).to have_gitlab_http_status(:bad_request)
         expect(Gitlab::Json.parse(response.body)).to match a_hash_including(
-          { "success" => false, "message" => "EmailReceiverWorker job exceeds payload size limit" }
+          "success" => false,
+          "message" => "We couldn't process your email because it is too large. Please create your issue or comment through the web interface."
         )
+
+        email = ActionMailer::Base.deliveries.last
+        expect(email).not_to be_nil
+        expect(email.to).to match_array(["jake@adventuretime.ooo"])
+        expect(email.subject).to include("Rejected")
+        expect(email.body.parts.last.to_s).to include("We couldn't process your email")
       end
     end
 

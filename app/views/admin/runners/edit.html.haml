@@ -1,11 +1,16 @@
 - add_page_specific_style 'page_bundles/ci_status'
 
-- title = "##{@runner.id} (#{@runner.short_sha})"
-- breadcrumb_title title
-- page_title title
-- add_to_breadcrumbs _('Runners'), admin_runners_path
+- runner_name = "##{@runner.id} (#{@runner.short_sha})"
+- if Feature.enabled?(:runner_read_only_admin_view)
+  - breadcrumb_title _('Edit')
+  - page_title _('Edit'), runner_name
+  - add_to_breadcrumbs _('Runners'), admin_runners_path
+  - add_to_breadcrumbs runner_name, admin_runner_path(@runner)
+- else
+  - breadcrumb_title runner_name
+  - page_title runner_name
 
-#js-runner-details{ data: {runner_id: @runner.id} }
+#js-admin-runner-edit{ data: {runner_id: @runner.id} }
 
 .row
   .col-md-6
