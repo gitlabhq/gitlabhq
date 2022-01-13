@@ -2,14 +2,12 @@
 
 module Gitlab
   class AnonymousSession
-    include ::Gitlab::Redis::SessionsStoreHelper
-
     def initialize(remote_ip)
       @remote_ip = remote_ip
     end
 
     def count_session_ip
-      redis_store_class.with do |redis|
+      Gitlab::Redis::Sessions.with do |redis|
         redis.pipelined do |pipeline|
           pipeline.incr(session_lookup_name)
           pipeline.expire(session_lookup_name, 24.hours)
@@ -18,13 +16,13 @@ module Gitlab
     end
 
     def session_count
-      redis_store_class.with do |redis|
+      Gitlab::Redis::Sessions.with do |redis|
         redis.get(session_lookup_name).to_i
       end
     end
 
     def cleanup_session_per_ip_count
-      redis_store_class.with do |redis|
+      Gitlab::Redis::Sessions.with do |redis|
         redis.del(session_lookup_name)
       end
     end

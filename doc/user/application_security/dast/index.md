@@ -1131,6 +1131,9 @@ A site profile contains the following:
 
 When an API site type is selected, a [host override](#host-override) is used to ensure the API being scanned is on the same host as the target. This is done to reduce the risk of running an active scan against the wrong API.
 
+When configured, request headers and password fields are encrypted using [`aes-256-gcm`](https://en.wikipedia.org/wiki/Advanced_Encryption_Standard) before being stored in the database.
+This data can only be read and decrypted with a valid secrets file.
+
 #### Site profile validation
 
 > - Site profile validation [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/233020) in GitLab 13.8.

@@ -804,6 +804,10 @@ An approval is optional when a license report:
 - Contains no software license violations.
 - Contains only new licenses that are `allowed` or unknown.
 
+## Warnings
+
+We recommend that you use the most recent version of all containers, and the most recent supported version of all package managers and languages. Using previous versions carries an increased security risk because unsupported versions may no longer benefit from active security reporting and backporting of security fixes.
+
 ## Troubleshooting
 
 ### ASDF_PYTHON_VERSION does not automatically install the version
