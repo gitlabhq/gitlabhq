@@ -597,6 +597,11 @@ FactoryBot.define do
       failure_reason { 13 }
     end
 
+    trait :deployment_rejected do
+      failed
+      failure_reason { 22 }
+    end
+
     trait :with_runner_session do
       after(:build) do |build|
         build.build_runner_session(url: 'https://localhost')

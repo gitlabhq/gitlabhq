@@ -54,6 +54,8 @@ identify if problems exist and then drill down into the specifics of those issue
 - [**Audit events**](audit_events.md) (for instances, groups, and projects): To maintain the integrity of your code,
   audit events give administrators the ability to view any modifications made within the GitLab
   server in an advanced audit events system, so you can control, analyze, and track every change.
+- [**Audit reports**](audit_reports.md) (for instances, groups, and projects): Create and access reports based on the
+  audit events that have occurred. Use pre-built GitLab reports or the API to build your own.
 - [**Auditor users**](auditor_users.md) (for instances): Auditor users are users who are given read-only access to all
   projects, groups, and other resources on the GitLab instance.
 - [**Compliance report**](../user/compliance/compliance_report/index.md) (for groups): Quickly get visibility into the
@@ -73,6 +75,8 @@ These features can also help with compliance requirements:
 - [**Generate reports on permission levels of users**](../user/admin_area/index.md#user-permission-export) (for
   instances): Administrators can generate a report listing all users' access permissions for groups and projects in the
   instance.
+- [**License compliance**](../user/compliance/license_compliance/index.md) (for projects): Search dependencies for their
+  licenses. This lets you determine if the licenses of your project's dependencies are compatible with your project's license.
 - [**Lock project membership to group**](../user/group/index.md#prevent-members-from-being-added-to-projects-in-a-group) (for
   groups): Group owners can prevent new members from being added to projects within a group.
 - [**LDAP group sync**](auth/ldap/ldap_synchronization.md#group-sync) (for instances): Gives administrators the ability

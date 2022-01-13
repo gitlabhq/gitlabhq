@@ -1,35 +1,6 @@
-#import "~/graphql_shared/fragments/milestone.fragment.graphql"
-#import "~/graphql_shared/fragments/user.fragment.graphql"
+#import "~/graphql_shared/fragments/issue.fragment.graphql"
 
-fragment IssueNode on Issue {
+fragment Issue on Issue {
   id
-  iid
-  title
-  referencePath: reference(full: true)
-  dueDate
-  timeEstimate
-  totalTimeSpent
-  humanTimeEstimate
-  humanTotalTimeSpent
-  emailsDisabled
-  confidential
-  hidden
-  webUrl
-  relativePosition
-  milestone {
-    ...MilestoneFragment
-  }
-  assignees {
-    nodes {
-      ...User
-    }
-  }
-  labels {
-    nodes {
-      id
-      title
-      color
-      description
-    }
-  }
+  ...IssueNode
 }

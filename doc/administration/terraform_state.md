@@ -101,6 +101,11 @@ The following settings are:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/247042) in GitLab 13.9.
 
+WARNING:
+It's not possible to migrate Terraform state files from object storage back to local storage,
+so proceed with caution. [An issue exists](https://gitlab.com/gitlab-org/gitlab/-/issues/350187)
+to change this behavior. 
+
 To migrate Terraform state files to object storage, follow the instructions below.
 
 - For Omnibus package installations:

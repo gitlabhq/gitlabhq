@@ -1270,6 +1270,16 @@ registry = Geo::SnippetRepositoryRegistry.find(registry_id)
 registry.replicator.send(:sync_repository)
 ```
 
+## Gitaly
+
+### Find available and used space
+
+A Gitaly storage resource can be polled through Rails to determine the available and used space.
+
+```ruby
+Gitlab::GitalyClient::ServerService.new("default").storage_disk_statistics
+```
+
 ## Generate Service Ping
 
 The [Service Ping Guide](../../development/service_ping/index.md) in our developer documentation 

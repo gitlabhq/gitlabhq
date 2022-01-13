@@ -18654,6 +18654,9 @@ msgstr ""
 msgid "Incident Management Limits"
 msgstr ""
 
+msgid "Incident details"
+msgstr ""
+
 msgid "Incident template (optional)."
 msgstr ""
 

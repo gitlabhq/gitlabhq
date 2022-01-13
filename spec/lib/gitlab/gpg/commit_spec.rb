@@ -233,30 +233,6 @@ RSpec.describe Gitlab::Gpg::Commit do
               verification_status: 'multiple_signatures'
             )
           end
-
-          context 'when feature flag is disabled' do
-            before do
-              stub_feature_flags(multiple_gpg_signatures: false)
-            end
-
-            it 'returns an valid signature' do
-              verified_signature = double('verified-signature', fingerprint: GpgHelpers::User1.fingerprint, valid?: true)
-              allow(GPGME::Crypto).to receive(:new).and_return(crypto)
-              allow(crypto).to receive(:verify).and_yield(verified_signature).and_yield(verified_signature)
-
-              signature = described_class.new(commit).signature
-
-              expect(signature).to have_attributes(
-                commit_sha: commit_sha,
-                project: project,
-                gpg_key: gpg_key,
-                gpg_key_primary_keyid: GpgHelpers::User1.primary_keyid,
-                gpg_key_user_name: GpgHelpers::User1.names.first,
-                gpg_key_user_email: GpgHelpers::User1.emails.first,
-                verification_status: 'verified'
-              )
-            end
-          end
         end
 
         context 'commit signed with a subkey' do

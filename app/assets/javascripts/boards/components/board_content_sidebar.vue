@@ -6,11 +6,12 @@ import SidebarDropdownWidget from 'ee_else_ce/sidebar/components/sidebar_dropdow
 import { __, sprintf } from '~/locale';
 import BoardSidebarTimeTracker from '~/boards/components/sidebar/board_sidebar_time_tracker.vue';
 import BoardSidebarTitle from '~/boards/components/sidebar/board_sidebar_title.vue';
-import { ISSUABLE } from '~/boards/constants';
+import { ISSUABLE, INCIDENT } from '~/boards/constants';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import SidebarAssigneesWidget from '~/sidebar/components/assignees/sidebar_assignees_widget.vue';
 import SidebarConfidentialityWidget from '~/sidebar/components/confidential/sidebar_confidentiality_widget.vue';
 import SidebarDateWidget from '~/sidebar/components/date/sidebar_date_widget.vue';
+import SidebarSeverity from '~/sidebar/components/severity/sidebar_severity.vue';
 import SidebarSubscriptionsWidget from '~/sidebar/components/subscriptions/sidebar_subscriptions_widget.vue';
 import SidebarTodoWidget from '~/sidebar/components/todo_toggle/sidebar_todo_widget.vue';
 import SidebarLabelsWidget from '~/vue_shared/components/sidebar/labels_select_widget/labels_select_root.vue';
@@ -29,6 +30,7 @@ export default {
     SidebarSubscriptionsWidget,
     SidebarDropdownWidget,
     SidebarTodoWidget,
+    SidebarSeverity,
     MountingPortal,
     SidebarWeightWidget: () =>
       import('ee_component/sidebar/components/weight/sidebar_weight_widget.vue'),
@@ -69,8 +71,14 @@ export default {
     isIssuableSidebar() {
       return this.sidebarType === ISSUABLE;
     },
+    isIncidentSidebar() {
+      return this.activeBoardItem.type === INCIDENT;
+    },
     showSidebar() {
       return this.isIssuableSidebar && this.isSidebarOpen;
+    },
+    sidebarTitle() {
+      return this.isIncidentSidebar ? __('Incident details') : __('Issue details');
     },
     fullPath() {
       return this.activeBoardItem?.referencePath?.split('#')[0] || '';
@@ -138,7 +146,7 @@ export default {
       @close="handleClose"
     >
       <template #title>
-        <h2 class="gl-my-0 gl-font-size-h2 gl-line-height-24">{{ __('Issue details') }}</h2>
+        <h2 class="gl-my-0 gl-font-size-h2 gl-line-height-24">{{ sidebarTitle }}</h2>
       </template>
       <template #header>
         <sidebar-todo-widget
@@ -159,7 +167,7 @@ export default {
           @assignees-updated="setAssignees"
         />
         <sidebar-dropdown-widget
-          v-if="epicFeatureAvailable"
+          v-if="epicFeatureAvailable && !isIncidentSidebar"
           :iid="activeBoardItem.iid"
           issuable-attribute="epic"
           :workspace-path="projectPathForActiveIssue"
@@ -178,7 +186,7 @@ export default {
           />
           <template v-if="!glFeatures.iterationCadences">
             <sidebar-dropdown-widget
-              v-if="iterationFeatureAvailable"
+              v-if="iterationFeatureAvailable && !isIncidentSidebar"
               :iid="activeBoardItem.iid"
               issuable-attribute="iteration"
               :workspace-path="projectPathForActiveIssue"
@@ -190,7 +198,7 @@ export default {
           </template>
           <template v-else>
             <iteration-sidebar-dropdown-widget
-              v-if="iterationFeatureAvailable"
+              v-if="iterationFeatureAvailable && !isIncidentSidebar"
               :iid="activeBoardItem.iid"
               :workspace-path="projectPathForActiveIssue"
               :attr-workspace-path="groupPathForActiveIssue"
@@ -226,8 +234,14 @@ export default {
         >
           {{ __('None') }}
         </sidebar-labels-widget>
+        <sidebar-severity
+          v-if="isIncidentSidebar"
+          :iid="activeBoardItem.iid"
+          :project-path="fullPath"
+          :initial-severity="activeBoardItem.severity"
+        />
         <sidebar-weight-widget
-          v-if="weightFeatureAvailable"
+          v-if="weightFeatureAvailable && !isIncidentSidebar"
           :iid="activeBoardItem.iid"
           :full-path="fullPath"
           :issuable-type="issuableType"

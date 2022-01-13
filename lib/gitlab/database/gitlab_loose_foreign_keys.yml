@@ -1,3 +1,4 @@
+---
 dast_site_profiles_pipelines:
   - table: ci_pipelines
     column: ci_pipeline_id
@@ -34,9 +35,17 @@ ci_daily_build_group_report_results:
   - table: namespaces
     column: group_id
     on_delete: async_delete
+ci_freeze_periods:
+  - table: projects
+    column: project_id
+    on_delete: async_delete
 ci_pending_builds:
   - table: namespaces
     column: namespace_id
+    on_delete: async_delete
+ci_resource_groups:
+  - table: projects
+    column: project_id
     on_delete: async_delete
 ci_runner_namespaces:
   - table: namespaces

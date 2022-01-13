@@ -22,7 +22,7 @@ query BoardListsEE(
           issues(first: $first, filters: $filters, after: $after) {
             edges {
               node {
-                ...IssueNode
+                ...Issue
               }
             }
             pageInfo {
@@ -46,7 +46,7 @@ query BoardListsEE(
           issues(first: $first, filters: $filters, after: $after) {
             edges {
               node {
-                ...IssueNode
+                ...Issue
               }
             }
             pageInfo {

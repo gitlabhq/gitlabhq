@@ -14,7 +14,10 @@ module Ci
           AfterRequeueJobService.new(project, current_user).execute(build)
         end
       else
-        Ci::Build.retry(build, current_user)
+        # Retrying in Ci::PlayBuildService is a legacy process that should be removed.
+        # Instead, callers should explicitly execute Ci::RetryBuildService.
+        # See https://gitlab.com/gitlab-org/gitlab/-/issues/347493.
+        build.retryable? ? Ci::Build.retry(build, current_user) : build
       end
     end
 

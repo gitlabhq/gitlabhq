@@ -21,7 +21,7 @@ mutation issueMoveList(
     }
   ) {
     issue {
-      ...IssueNode
+      ...Issue
     }
     errors
   }

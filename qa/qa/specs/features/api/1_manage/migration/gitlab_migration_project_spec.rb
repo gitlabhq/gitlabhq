@@ -3,9 +3,7 @@
 require_relative 'gitlab_project_migration_common'
 
 module QA
-  # run only base UI validation on staging because test requires top level group creation which is problematic
-  # on staging environment
-  RSpec.describe 'Manage', :requires_admin, except: { subdomain: :staging } do
+  RSpec.describe 'Manage', :requires_admin do
     describe 'Gitlab migration', quarantine: {
       only: { job: 'praefect' },
       type: :investigating,

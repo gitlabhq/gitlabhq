@@ -1619,10 +1619,12 @@ There can be
 [risks when disabling released features](../administration/feature_flags.md#risks-when-disabling-released-features).
 Refer to this feature's version history for more details.
 
-`gitaly-backup` is used by the backup Rake task to create and restore repository backups from Gitaly.
+The `gitaly-backup` binary is used by the backup Rake task to create and restore repository backups from Gitaly.
 `gitaly-backup` replaces the previous backup method that directly calls RPCs on Gitaly from GitLab.
 
-The backup Rake task must be able to find this executable. It can be configured in Omnibus GitLab packages:
+The backup Rake task must be able to find this executable. In most cases, you don't need to change 
+the path to the binary as it should work fine with the default path `/opt/gitlab/embedded/bin/gitaly-backup`. 
+If you have a specific reason to change the path, it can be configured in Omnibus GitLab packages:
 
 1. Add the following to `/etc/gitlab/gitlab.rb`:
 

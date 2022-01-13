@@ -2002,6 +2002,16 @@ RSpec.describe Ci::Build do
 
           it { is_expected.not_to be_retryable }
         end
+
+        context 'when build is waiting for deployment approval' do
+          subject { build_stubbed(:ci_build, :manual, environment: 'production') }
+
+          before do
+            create(:deployment, :blocked, deployable: subject)
+          end
+
+          it { is_expected.not_to be_retryable }
+        end
       end
     end
 

@@ -91,6 +91,7 @@ function renderMermaidEl(el, source) {
     sandbox: 'allow-scripts',
     frameBorder: 0,
     scrolling: 'no',
+    width: '100%',
   });
 
   // Add the original source into the DOM
@@ -119,7 +120,6 @@ function renderMermaidEl(el, source) {
         return;
       }
       const { h } = event.data;
-      iframeEl.width = '100%';
       iframeEl.height = `${h + BUFFER_IFRAME_HEIGHT}px`;
     },
     false,

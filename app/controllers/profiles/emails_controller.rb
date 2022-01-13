@@ -52,3 +52,5 @@ class Profiles::EmailsController < Profiles::ApplicationController
     @email = current_user.emails.find(params[:id])
   end
 end
+
+Profiles::EmailsController.prepend_mod

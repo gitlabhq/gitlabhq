@@ -3,6 +3,11 @@
 require 'spec_helper'
 
 RSpec.describe Ci::ResourceGroup do
+  it_behaves_like 'cleanup by a loose foreign key' do
+    let!(:parent) { create(:project) }
+    let!(:model) { create(:ci_resource_group, project: parent) }
+  end
+
   describe 'validation' do
     it 'valids when key includes allowed character' do
       resource_group = build(:ci_resource_group, key: 'test')

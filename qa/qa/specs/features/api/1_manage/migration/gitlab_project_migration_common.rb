@@ -20,8 +20,16 @@ module QA
       end
     end
 
+    let(:destination_group) do
+      Resource::Group.fabricate_via_api! do |group|
+        group.api_client = api_client
+        group.sandbox = sandbox
+        group.path = "destination-group-for-import-#{SecureRandom.hex(4)}"
+      end
+    end
+
     let(:source_group) do
-      Resource::Sandbox.fabricate_via_api! do |group|
+      Resource::Group.fabricate_via_api! do |group|
         group.api_client = api_client
         group.path = "source-group-for-import-#{SecureRandom.hex(4)}"
       end
@@ -38,8 +46,8 @@ module QA
     let(:imported_group) do
       Resource::BulkImportGroup.fabricate_via_api! do |group|
         group.api_client = api_client
-        group.sandbox = sandbox
-        group.source_group_path = source_group.path
+        group.sandbox = destination_group
+        group.source_group = source_group
       end
     end
 

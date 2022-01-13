@@ -94,10 +94,20 @@ module QA
               nil
             end
 
+            fabrication_http_method = if resource.api_fabrication_http_method == :get
+                                        if self.include?(Reusable)
+                                          "Retrieved for reuse"
+                                        else
+                                          "Retrieved"
+                                        end
+                                      else
+                                        "Built"
+                                      end
+
             Support::FabricationTracker.save_fabrication(:"#{method}_fabrication", fabrication_time)
             Runtime::Logger.debug do
               msg = ["==#{'=' * parents.size}>"]
-              msg << "Built a #{name}"
+              msg << "#{fabrication_http_method} a #{name}"
               msg << resource_identifier if resource_identifier
               msg << "as a dependency of #{parents.last}" if parents.any?
               msg << "via #{method}"

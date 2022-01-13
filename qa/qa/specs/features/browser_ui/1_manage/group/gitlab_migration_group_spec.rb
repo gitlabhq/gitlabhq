@@ -36,7 +36,7 @@ module QA
         Resource::BulkImportGroup.init do |group|
           group.api_client = api_client
           group.sandbox = sandbox
-          group.source_group_path = source_group.path
+          group.source_group = source_group
         end
       end
 
