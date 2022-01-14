@@ -5,6 +5,7 @@ module Clusters
     self.table_name = 'cluster_agents'
 
     INACTIVE_AFTER = 1.hour.freeze
+    ACTIVITY_EVENT_LIMIT = 200
 
     belongs_to :created_by_user, class_name: 'User', optional: true
     belongs_to :project, class_name: '::Project' # Otherwise, it will load ::Clusters::Project
@@ -38,6 +39,13 @@ module Clusters
 
     def connected?
       agent_tokens.active.where("last_used_at > ?", INACTIVE_AFTER.ago).exists?
+    end
+
+    def activity_event_deletion_cutoff
+      # Order is defined by the association
+      activity_events
+        .offset(ACTIVITY_EVENT_LIMIT - 1)
+        .pick(:recorded_at)
     end
   end
 end

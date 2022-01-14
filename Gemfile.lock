@@ -336,7 +336,7 @@ GEM
     ethon (0.15.0)
       ffi (>= 1.15.0)
     eventmachine (1.2.7)
-    excon (0.89.0)
+    excon (0.90.0)
     execjs (2.8.1)
     expression_parser (0.9.0)
     extended-markdown-filter (0.6.0)

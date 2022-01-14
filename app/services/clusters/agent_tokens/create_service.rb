@@ -30,13 +30,14 @@ module Clusters
       end
 
       def log_activity_event!(token)
-        token.agent.activity_events.create!(
+        Clusters::Agents::CreateActivityEventService.new(
+          token.agent,
           kind: :token_created,
           level: :info,
           recorded_at: token.created_at,
           user: current_user,
           agent_token: token
-        )
+        ).execute
       end
     end
   end

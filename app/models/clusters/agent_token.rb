@@ -56,12 +56,13 @@ module Clusters
     end
 
     def log_activity_event!(recorded_at)
-      agent.activity_events.create!(
+      Clusters::Agents::CreateActivityEventService.new( # rubocop: disable CodeReuse/ServiceClass
+        agent,
         kind: :agent_connected,
         level: :info,
         recorded_at: recorded_at,
         agent_token: self
-      )
+      ).execute
     end
   end
 end

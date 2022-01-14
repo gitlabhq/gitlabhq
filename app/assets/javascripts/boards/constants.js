@@ -50,6 +50,8 @@ export const toggleFormEventPrefix = {
   issue: 'toggle-issue-form-',
 };
 
+export const active = 'active';
+
 export const inactiveId = 0;
 
 export const ISSUABLE = 'issuable';

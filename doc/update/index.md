@@ -98,7 +98,7 @@ that can process jobs in the `background_migration` queue.
 
 ```shell
 sudo gitlab-rails runner -e production 'puts Gitlab::BackgroundMigration.remaining'
-sudo gitlab-rails runner -e production 'puts Gitlab::BackgroundMigration.pending'
+sudo gitlab-rails runner -e production 'puts Gitlab::Database::BackgroundMigrationJob.pending'
 ```
 
 **For installations from source:**
@@ -106,7 +106,7 @@ sudo gitlab-rails runner -e production 'puts Gitlab::BackgroundMigration.pending
 ```shell
 cd /home/git/gitlab
 sudo -u git -H bundle exec rails runner -e production 'puts Gitlab::BackgroundMigration.remaining'
-sudo -u git -H bundle exec rails runner -e production 'puts Gitlab::BackgroundMigration.pending'
+sudo -u git -H bundle exec rails runner -e production 'puts Gitlab::Database::BackgroundMigrationJob.pending'
 ```
 
 ### Batched background migrations
@@ -193,9 +193,9 @@ To address the above two scenario's, it is advised to do the following prior to 
 1. Wait until all jobs are finished.
 1. Upgrade GitLab.
 
-## Checking for pending Advanced Search migrations
+## Checking for pending Advanced Search migrations **(PREMIUM SELF)**
 
-This section is only applicable if you have enabled the [Elasticsearch integration](../integration/elasticsearch.md).
+This section is only applicable if you have enabled the [Elasticsearch integration](../integration/elasticsearch.md) **(PREMIUM SELF)**.
 
 Major releases require all [Advanced Search migrations](../integration/elasticsearch.md#advanced-search-migrations)
 to be finished from the most recent minor release in your current version
@@ -239,14 +239,12 @@ It is required to follow the following upgrade steps to ensure a successful *maj
 
 Identify a [supported upgrade path](#upgrade-paths).
 
-It's also important to ensure that any background migrations have been fully completed
-before upgrading to a new major version. To see the current size of the `background_migration` queue,
-[Check for background migrations before upgrading](#checking-for-background-migrations-before-upgrading).
+It's also important to ensure that any [background migrations have been fully completed](#checking-for-background-migrations-before-upgrading)
+before upgrading to a new major version.
 
-If you have enabled the [Elasticsearch integration](../integration/elasticsearch.md), then ensure
-all Advanced Search migrations are completed in the last minor version within
-your current version. Be sure to
-[check for pending Advanced Search migrations](#checking-for-pending-advanced-search-migrations)
+If you have enabled the [Elasticsearch integration](../integration/elasticsearch.md) **(PREMIUM SELF)**, then
+[ensure all Advanced Search migrations are completed](#checking-for-pending-advanced-search-migrations) in the last minor version within
+your current version
 before proceeding with the major version upgrade.
 
 If your GitLab instance has any runners associated with it, it is very

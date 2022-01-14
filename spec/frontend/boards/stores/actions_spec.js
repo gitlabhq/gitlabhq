@@ -29,6 +29,8 @@ import * as types from '~/boards/stores/mutation_types';
 import mutations from '~/boards/stores/mutations';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 
+import projectBoardMilestones from '~/boards/graphql/project_board_milestones.query.graphql';
+import groupBoardMilestones from '~/boards/graphql/group_board_milestones.query.graphql';
 import {
   mockLists,
   mockListsById,
@@ -307,6 +309,36 @@ describe('fetchMilestones', () => {
 
     expect(() => actions.fetchMilestones(store)).toThrow(new Error('Unknown board type'));
   });
+
+  it.each([
+    [
+      'project',
+      {
+        query: projectBoardMilestones,
+        variables: { fullPath: 'gitlab-org/gitlab', state: 'active' },
+      },
+    ],
+    [
+      'group',
+      {
+        query: groupBoardMilestones,
+        variables: { fullPath: 'gitlab-org/gitlab', state: 'active' },
+      },
+    ],
+  ])(
+    'when boardType is %s it calls fetchMilestones with the correct query and variables',
+    (boardType, variables) => {
+      jest.spyOn(gqlClient, 'query').mockResolvedValue(queryResponse);
+
+      const store = createStore();
+
+      store.state.boardType = boardType;
+
+      actions.fetchMilestones(store);
+
+      expect(gqlClient.query).toHaveBeenCalledWith(variables);
+    },
+  );
 
   it('sets milestonesLoading to true', async () => {
     jest.spyOn(gqlClient, 'query').mockResolvedValue(queryResponse);
