@@ -5805,6 +5805,48 @@ RSpec.describe User do
     end
   end
 
+  describe '#can_log_in_with_non_expired_password?' do
+    let(:user) { build(:user) }
+
+    subject { user.can_log_in_with_non_expired_password? }
+
+    context 'when user can log in' do
+      it 'returns true' do
+        is_expected.to be_truthy
+      end
+
+      context 'when user with expired password' do
+        before do
+          user.password_expires_at = 2.minutes.ago
+        end
+
+        it 'returns false' do
+          is_expected.to be_falsey
+        end
+
+        context 'when password expiration is not applicable' do
+          context 'when ldap user' do
+            let(:user) { build(:omniauth_user, provider: 'ldap') }
+
+            it 'returns true' do
+              is_expected.to be_truthy
+            end
+          end
+        end
+      end
+    end
+
+    context 'when user cannot log in' do
+      context 'when user is blocked' do
+        let(:user) { build(:user, :blocked) }
+
+        it 'returns false' do
+          is_expected.to be_falsey
+        end
+      end
+    end
+  end
+
   describe '#read_only_attribute?' do
     context 'when synced attributes metadata is present' do
       it 'delegates to synced_attributes_metadata' do

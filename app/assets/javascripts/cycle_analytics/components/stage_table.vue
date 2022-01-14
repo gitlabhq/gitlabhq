@@ -213,7 +213,7 @@ export default {
             <p class="gl-m-0">
               <gl-link
                 data-testid="vsa-stage-event-link"
-                class="gl-text-black-normal pipeline-id"
+                class="gl-text-black-normal"
                 :href="item.url"
                 >{{ itemId(item.id, '#') }}</gl-link
               >

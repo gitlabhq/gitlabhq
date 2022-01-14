@@ -20,6 +20,21 @@ RSpec.describe 'User sees experimental lmarketing header' do
       end
     end
 
+    context 'when experiment candidate (trial focused variant)' do
+      it 'shows marketing header links', :aggregate_failures do
+        stub_experiments(logged_out_marketing_header: :trial_focused)
+
+        visit project_path(project)
+
+        expect(page).to have_text "About GitLab"
+        expect(page).to have_text "Pricing"
+        expect(page).to have_text "Talk to an expert"
+        expect(page).to have_text "Get a free trial"
+        expect(page).to have_text "Sign up"
+        expect(page).to have_text "Login"
+      end
+    end
+
     context 'when experiment control' do
       it 'does not show marketing header links', :aggregate_failures do
         stub_experiments(logged_out_marketing_header: :control)
@@ -31,6 +46,8 @@ RSpec.describe 'User sees experimental lmarketing header' do
         expect(page).not_to have_text "Talk to an expert"
         expect(page).not_to have_text "Sign up now"
         expect(page).not_to have_text "Login"
+        expect(page).not_to have_text "Get a free trial"
+        expect(page).not_to have_text "Sign up"
         expect(page).to have_text "Sign in / Register"
       end
     end

@@ -426,7 +426,9 @@ module ApplicationHelper
     return if current_user
 
     experiment(:logged_out_marketing_header, actor: nil) do |e|
-      e.candidate { 'logged-out-marketing-header-candidate' }
+      html_class = 'logged-out-marketing-header-candidate'
+      e.candidate { html_class }
+      e.try(:trial_focused) { html_class }
       e.control {}
       e.run
     end

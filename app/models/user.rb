@@ -1901,6 +1901,10 @@ class User < ApplicationRecord
     true
   end
 
+  def can_log_in_with_non_expired_password?
+    can?(:log_in) && !password_expired_if_applicable?
+  end
+
   def can_be_deactivated?
     active? && no_recent_activity? && !internal?
   end

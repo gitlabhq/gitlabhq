@@ -42,6 +42,12 @@ RSpec.describe ErrorTracking::Collector::PayloadValidator do
       it_behaves_like 'valid payload'
     end
 
+    context 'go payload' do
+      let(:payload) { Gitlab::Json.parse(fixture_file('error_tracking/go_parsed_event.json')) }
+
+      it_behaves_like 'valid payload'
+    end
+
     context 'empty payload' do
       let(:payload) { '' }
 

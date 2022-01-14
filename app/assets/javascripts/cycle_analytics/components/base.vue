@@ -153,7 +153,7 @@ export default {
 };
 </script>
 <template>
-  <div class="cycle-analytics">
+  <div>
     <h3>{{ $options.i18n.pageTitle }}</h3>
     <div class="gl-display-flex gl-flex-direction-column gl-md-flex-direction-row">
       <path-navigation

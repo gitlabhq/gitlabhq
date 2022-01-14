@@ -64,7 +64,7 @@ The **CI/CD** settings contain:
   This pipeline configuration is run after the project's own configuration.
 - [Package Registry](continuous_integration.md#package-registry-configuration) -
   Settings related to the use and experience of using the GitLab Package Registry. Some
-  [risks are involved](../../packages/container_registry/index.md#use-with-external-container-registries)
+  [risks are involved](../../packages/container_registry/reduce_container_registry_storage.md#use-with-external-container-registries)
   in enabling some of these settings.
 
 ### Geo **(PREMIUM SELF)**

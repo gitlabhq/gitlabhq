@@ -498,6 +498,12 @@ RSpec.describe ApplicationHelper do
         it { is_expected.to include(expected_class) }
       end
 
+      context 'when candidate (:trial_focused variant)' do
+        let(:variant) { :trial_focused }
+
+        it { is_expected.to include(expected_class) }
+      end
+
       context 'when control' do
         let(:variant) { :control }
 

@@ -26,6 +26,8 @@
           - experiment(:logged_out_marketing_header, actor: nil) do |e|
             - e.candidate do
               = render 'layouts/header/marketing_links'
+            - e.try(:trial_focused) do
+              = render 'layouts/header/marketing_links'
             - e.control do
               .gl-display-none.gl-sm-display-block
                 = render "layouts/nav/top_nav"
@@ -117,6 +119,9 @@
               - e.candidate do
                 %li.nav-item.gl-display-none.gl-sm-display-block
                   = render "layouts/nav/top_nav"
+              - e.try(:trial_focused) do
+                %li.nav-item.gl-display-none.gl-sm-display-block
+                  = render "layouts/nav/top_nav"
               - e.control {}
           - if header_link?(:user_dropdown)
             %li.nav-item.header-user.js-nav-user-dropdown.dropdown{ data: { track_label: "profile_dropdown", track_action: "click_dropdown", track_value: "", qa_selector: 'user_menu' }, class: ('mr-0' if has_impersonation_link) }
@@ -135,6 +140,14 @@
               - e.candidate do
                 %li.nav-item.gl-display-none.gl-sm-display-block
                   = link_to _('Sign up now'), new_user_registration_path, class: 'gl-button btn btn-default btn-sign-in'
+                %li.nav-item.gl-display-none.gl-sm-display-block
+                  = link_to _('Login'), new_session_path(:user, redirect_to_referer: 'yes')
+                = render 'layouts/header/sign_in_register_button', class: 'gl-sm-display-none'
+              - e.try(:trial_focused) do
+                %li.nav-item.gl-display-none.gl-sm-display-block
+                  = link_to _('Get a free trial'), 'https://about.gitlab.com/free-trial/', class: 'gl-button btn btn-default btn-sign-in'
+                %li.nav-item.gl-display-none.gl-sm-display-block
+                  = link_to _('Sign up'), new_user_registration_path
                 %li.nav-item.gl-display-none.gl-sm-display-block
                   = link_to _('Login'), new_session_path(:user, redirect_to_referer: 'yes')
                 = render 'layouts/header/sign_in_register_button', class: 'gl-sm-display-none'

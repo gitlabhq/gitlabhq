@@ -394,7 +394,7 @@ The number of tags deleted by this API is limited on GitLab.com
 because of the scale of the Container Registry there.
 If your Container Registry has a large number of tags to delete,
 only some of them will be deleted, and you might need to call this API multiple times.
-To schedule tags for automatic deletion, use a [cleanup policy](../user/packages/container_registry/index.md#cleanup-policy) instead.
+To schedule tags for automatic deletion, use a [cleanup policy](../user/packages/container_registry/reduce_container_registry_storage.md#cleanup-policy) instead.
 
 NOTE:
 In GitLab 12.4 and later, individual tags are deleted.

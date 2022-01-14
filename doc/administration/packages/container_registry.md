@@ -694,7 +694,7 @@ project, you can [disable it from your project's settings](../../user/project/se
 ## Use an external container registry with GitLab as an auth endpoint
 
 If you use an external container registry, some features associated with the
-container registry may be unavailable or have [inherent risks](../../user/packages/container_registry/index.md#use-with-external-container-registries).
+container registry may be unavailable or have [inherent risks](../../user/packages/container_registry/reduce_container_registry_storage.md#use-with-external-container-registries).
 
 For the integration to work, the external registry must be configured to
 use a JSON Web Token to authenticate with GitLab. The
@@ -883,7 +883,7 @@ project.container_repositories.find_each do |repo|
 end
 ```
 
-You can also [run cleanup on a schedule](../../user/packages/container_registry/index.md#cleanup-policy).
+You can also [run cleanup on a schedule](../../user/packages/container_registry/reduce_container_registry_storage.md#cleanup-policy).
 
 ## Container Registry garbage collection
 

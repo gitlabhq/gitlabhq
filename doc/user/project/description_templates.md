@@ -116,8 +116,6 @@ You might also be interested in templates for various
 
 ### Set a default template for merge requests and issues **(PREMIUM)**
 
-> The `default.md` template becoming the default [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/76326) in GitLab 14.7.
-
 In a project, you can choose a default description template for new issues and merge requests.
 As a result, every time a new merge request or issue is created, it's pre-filled with the text you
 entered in the template.
@@ -127,29 +125,17 @@ Prerequisites:
 - On your project's left sidebar, select **Settings > General** and expand **Visibility, project features, permissions**.
   Ensure issues or merge requests are set to either **Everyone with access** or **Only Project Members**.
 
-To set a default description template for merge requests, either:
+To set a default description template for merge requests:
 
-- [Create a merge request template](#create-a-merge-request-template) named `default.md` and save it in `.gitlab/merge_request_templates/`.
-  **If a `default.md` file exists, it's used as the default template even if you select another one in the project settings.**
-- Select the default template in project settings:
+1. Go to your project's **Settings**.
+1. Select **Expand** under the **Merge requests** header.
+1. Fill in the **Default description template for merge requests** text area.
+1. Select **Save changes**.
 
-  1. On the top bar, select **Menu > Projects** and find your project.
-  1. On the left sidebar, select **Settings**.
-  1. Expand **Merge requests**.
-  1. Fill in the **Default description template for merge requests** text area.
-  1. Select **Save changes**.
+To set a default description template for issues:
 
-To set a default description template for issues, either:
-
-- [Create an issue template](#create-an-issue-template) named `default.md` and save it in `.gitlab/issue_templates/`.
-  **If a `default.md` file exists, it's used as the default template even if you select another one in the project settings.**
-- Select the default template in project settings:
-
-  1. On the top bar, select **Menu > Projects** and find your project.
-  1. On the left sidebar, select **Settings**.
-  1. Expand **Default issue template**.
-  1. Fill in the **Default description template for issues** text area.
-  1. Select **Save changes**.
+1. Select **Expand** under **Default issue template**.
+1. Fill in the **Default description template for issues** text area.
 
 Because GitLab merge request and issues support [Markdown](../markdown.md), you can use it to format
 headings, lists, and so on.

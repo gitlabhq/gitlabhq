@@ -170,4 +170,10 @@ RSpec.describe Ci::DailyBuildGroupReportResult do
 
     let!(:parent) { model.group }
   end
+
+  it_behaves_like 'cleanup by a loose foreign key' do
+    let!(:model) { create(:ci_daily_build_group_report_result) }
+
+    let!(:parent) { model.project }
+  end
 end

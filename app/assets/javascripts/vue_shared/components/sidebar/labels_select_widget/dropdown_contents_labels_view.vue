@@ -84,6 +84,14 @@ export default {
     showNoMatchingResultsMessage() {
       return Boolean(this.searchKey) && this.visibleLabels.length === 0;
     },
+    shouldHighlighFirstItem() {
+      return this.searchKey !== '' && this.visibleLabels.length > 0;
+    },
+  },
+  updated() {
+    if (this.shouldHighlighFirstItem) {
+      this.$refs.labelItem[0]?.$el?.firstChild?.focus();
+    }
   },
   methods: {
     isLabelSelected(label) {
@@ -143,11 +151,14 @@ export default {
         />
         <template v-else>
           <gl-dropdown-item
-            v-for="label in visibleLabels"
+            v-for="(label, index) in visibleLabels"
+            ref="labelItem"
             :key="label.id"
             :is-checked="isLabelSelected(label)"
             :is-check-centered="true"
             :is-check-item="true"
+            :active="shouldHighlighFirstItem && index === 0"
+            active-class="is-focused"
             data-testid="labels-list"
             @click.native.capture.stop="handleLabelClick(label)"
           >
