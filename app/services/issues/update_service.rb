@@ -213,13 +213,8 @@ module Issues
     def handle_escalation_status_change(issue, old_escalation_status)
       return unless old_escalation_status.present?
       return if issue.escalation_status&.slice(:status, :policy_id) == old_escalation_status
-      return unless issue.alert_management_alert
 
-      ::AlertManagement::Alerts::UpdateService.new(
-        issue.alert_management_alert,
-        current_user,
-        status: issue.escalation_status.status_name
-      ).execute
+      ::IncidentManagement::IssuableEscalationStatuses::AfterUpdateService.new(issue, current_user).execute
     end
 
     # rubocop: disable CodeReuse/ActiveRecord

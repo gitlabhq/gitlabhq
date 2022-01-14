@@ -55,6 +55,7 @@ module Types
     mount_mutation Mutations::Issues::SetDueDate
     mount_mutation Mutations::Issues::SetSeverity
     mount_mutation Mutations::Issues::SetSubscription
+    mount_mutation Mutations::Issues::SetEscalationStatus
     mount_mutation Mutations::Issues::Update
     mount_mutation Mutations::Issues::Move
     mount_mutation Mutations::Labels::Create

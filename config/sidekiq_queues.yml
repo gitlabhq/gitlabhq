@@ -211,6 +211,8 @@
   - 1
 - - incident_management_pending_escalations_issue_check
   - 1
+- - incident_management_pending_escalations_issue_create
+  - 1
 - - integrations_create_external_cross_reference
   - 1
 - - invalid_gpg_signature_update

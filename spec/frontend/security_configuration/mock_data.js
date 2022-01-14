@@ -5,16 +5,16 @@ export const textProviderIds = [101, 102];
 export const securityTrainingProviders = [
   {
     id: textProviderIds[0],
-    name: 'Kontra',
-    description: 'Interactive developer security education.',
-    url: 'https://application.security/',
+    name: 'Vendor Name 1',
+    description: 'Interactive developer security education',
+    url: 'https://www.example.org/security/training',
     isEnabled: false,
   },
   {
     id: textProviderIds[1],
-    name: 'SecureCodeWarrior',
+    name: 'Vendor Name 2',
     description: 'Security training with guide and learning pathways.',
-    url: 'https://www.securecodewarrior.com/',
+    url: 'https://www.vendornametwo.com/',
     isEnabled: true,
   },
 ];

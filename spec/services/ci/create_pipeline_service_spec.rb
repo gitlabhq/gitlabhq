@@ -161,30 +161,6 @@ RSpec.describe Ci::CreatePipelineService do
             expect(merge_request_1.reload.head_pipeline).to eq(head_pipeline)
             expect(merge_request_2.reload.head_pipeline).to eq(head_pipeline)
           end
-
-          # TODO: remove after ci_publish_pipeline_events FF is removed
-          # https://gitlab.com/gitlab-org/gitlab/-/issues/336752
-          it 'does not schedule sync update for the head pipeline of the merge request' do
-            expect(UpdateHeadPipelineForMergeRequestWorker)
-              .not_to receive(:perform_async)
-
-            execute_service(ref: 'feature', after: nil)
-          end
-        end
-
-        context 'when feature flag ci_publish_pipeline_events is disabled' do
-          before do
-            stub_feature_flags(ci_publish_pipeline_events: false)
-          end
-
-          it 'schedules update for the head pipeline of the merge request' do
-            expect(UpdateHeadPipelineForMergeRequestWorker)
-              .to receive(:perform_async).with(merge_request_1.id)
-            expect(UpdateHeadPipelineForMergeRequestWorker)
-              .to receive(:perform_async).with(merge_request_2.id)
-
-            execute_service(ref: 'feature', after: nil)
-          end
         end
       end
 

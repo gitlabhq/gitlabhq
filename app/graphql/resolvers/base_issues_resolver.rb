@@ -48,7 +48,8 @@ module Resolvers
         labels: [:labels],
         assignees: [:assignees],
         timelogs: [:timelogs],
-        customer_relations_contacts: { customer_relations_contacts: [:group] }
+        customer_relations_contacts: { customer_relations_contacts: [:group] },
+        escalation_status: [:incident_management_issuable_escalation_status]
       }
     end
 

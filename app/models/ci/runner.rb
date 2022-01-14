@@ -141,16 +141,9 @@ module Ci
 
       project_groups = ::Group.joins(:projects).where(projects: { id: project_id })
 
-      if Feature.enabled?(:ci_decompose_belonging_to_parent_group_of_project_query, default_enabled: :yaml)
-        belonging_to_group(project_groups.self_and_ancestors.pluck(:id))
-      else
-        joins(:groups)
-          .where(namespaces: { id: project_groups.self_and_ancestors.as_ids })
-          .allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/336433')
-      end
+      belonging_to_group(project_groups.self_and_ancestors.pluck(:id))
     }
 
-    # deprecated
     scope :owned_or_instance_wide, -> (project_id) do
       from_union(
         [
@@ -159,7 +152,7 @@ module Ci
           instance_type
         ],
         remove_duplicates: false
-      ).allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/336433')
+      )
     end
 
     scope :assignable_for, ->(project) do

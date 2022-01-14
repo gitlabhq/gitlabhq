@@ -95,13 +95,9 @@ module Ci
         .build!
 
       if pipeline.persisted?
-        if Feature.enabled?(:ci_publish_pipeline_events, pipeline.project, default_enabled: :yaml)
-          Gitlab::EventStore.publish(
-            Ci::PipelineCreatedEvent.new(data: { pipeline_id: pipeline.id })
-          )
-        else
-          schedule_head_pipeline_update
-        end
+        Gitlab::EventStore.publish(
+          Ci::PipelineCreatedEvent.new(data: { pipeline_id: pipeline.id })
+        )
 
         create_namespace_onboarding_action
       else
@@ -139,12 +135,6 @@ module Ci
 
     def sha
       commit.try(:id)
-    end
-
-    def schedule_head_pipeline_update
-      pipeline.all_merge_requests.opened.each do |merge_request|
-        UpdateHeadPipelineForMergeRequestWorker.perform_async(merge_request.id)
-      end
     end
 
     def create_namespace_onboarding_action

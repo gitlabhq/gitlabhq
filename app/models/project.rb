@@ -1775,17 +1775,12 @@ class Project < ApplicationRecord
 
   def all_runners
     Ci::Runner.from_union([runners, group_runners, shared_runners])
-      .allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/339937')
   end
 
   def all_available_runners
     Ci::Runner.from_union([runners, group_runners, available_shared_runners])
-      .allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/339937')
   end
 
-  # Once issue 339937 is fixed, please search for all mentioned of
-  # https://gitlab.com/gitlab-org/gitlab/-/issues/339937,
-  # and remove the allow_cross_joins_across_databases.
   def active_runners
     strong_memoize(:active_runners) do
       all_available_runners.active
@@ -1793,9 +1788,7 @@ class Project < ApplicationRecord
   end
 
   def any_online_runners?(&block)
-    ::Gitlab::Database.allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/339937') do
-      online_runners_with_tags.any?(&block)
-    end
+    online_runners_with_tags.any?(&block)
   end
 
   def valid_runners_token?(token)

@@ -1,11 +1,14 @@
+import VueApollo from 'vue-apollo';
 import { GlIcon } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
+import { shallowMount, createLocalVue } from '@vue/test-utils';
 import { escape } from 'lodash';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
+import createMockApollo from 'helpers/mock_apollo_helper';
 import { sprintf } from '~/locale';
 import ValidationSegment, {
   i18n,
 } from '~/pipeline_editor/components/header/validation_segment.vue';
+import getAppStatus from '~/pipeline_editor/graphql/queries/client/app_status.query.graphql';
 import {
   CI_CONFIG_STATUS_INVALID,
   EDITOR_APP_STATUS_EMPTY,
@@ -21,12 +24,29 @@ import {
   mockYmlHelpPagePath,
 } from '../../mock_data';
 
+const localVue = createLocalVue();
+localVue.use(VueApollo);
+
 describe('Validation segment component', () => {
   let wrapper;
 
-  const createComponent = ({ props = {}, appStatus }) => {
+  const mockApollo = createMockApollo();
+
+  const createComponent = ({ props = {}, appStatus = EDITOR_APP_STATUS_INVALID }) => {
+    mockApollo.clients.defaultClient.cache.writeQuery({
+      query: getAppStatus,
+      data: {
+        app: {
+          __typename: 'PipelineEditorApp',
+          status: appStatus,
+        },
+      },
+    });
+
     wrapper = extendedWrapper(
       shallowMount(ValidationSegment, {
+        localVue,
+        apolloProvider: mockApollo,
         provide: {
           ymlHelpPagePath: mockYmlHelpPagePath,
           lintUnavailableHelpPagePath: mockLintUnavailableHelpPagePath,
@@ -35,12 +55,6 @@ describe('Validation segment component', () => {
           ciConfig: mergeUnwrappedCiConfig(),
           ciFileContent: mockCiYml,
           ...props,
-        },
-        // Simulate graphQL client query result
-        data() {
-          return {
-            appStatus,
-          };
         },
       }),
     );
@@ -99,6 +113,7 @@ describe('Validation segment component', () => {
         appStatus: EDITOR_APP_STATUS_INVALID,
       });
     });
+
     it('has warning icon', () => {
       expect(findIcon().props('name')).toBe('warning-solid');
     });

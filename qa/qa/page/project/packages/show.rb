@@ -5,7 +5,7 @@ module QA
     module Project
       module Packages
         class Show < QA::Page::Base
-          view 'app/assets/javascripts/packages_and_registries/package_registry/components/details/app.vue' do
+          view 'app/assets/javascripts/packages_and_registries/package_registry/pages/details.vue' do
             element :delete_button
             element :delete_modal_button
             element :package_information_content

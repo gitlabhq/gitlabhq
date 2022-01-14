@@ -20,8 +20,11 @@ export default {
     isRootRoute() {
       return this.$route.name === this.rootRoute.name;
     },
+    detailsRouteName() {
+      return this.detailsRoute.meta.nameGenerator();
+    },
     isLoaded() {
-      return this.isRootRoute || this.$store?.state.imageDetails?.name;
+      return this.isRootRoute || this.detailsRouteName;
     },
     allCrumbs() {
       const crumbs = [
@@ -32,7 +35,7 @@ export default {
       ];
       if (!this.isRootRoute) {
         crumbs.push({
-          text: this.detailsRoute.meta.nameGenerator(),
+          text: this.detailsRouteName,
           href: this.detailsRoute.meta.path,
         });
       }
@@ -45,7 +48,9 @@ export default {
 <template>
   <gl-breadcrumb :key="isLoaded" :items="allCrumbs">
     <template #separator>
-      <gl-icon name="angle-right" :size="8" />
+      <span class="gl-mx-n5">
+        <gl-icon name="angle-right" :size="8" />
+      </span>
     </template>
   </gl-breadcrumb>
 </template>

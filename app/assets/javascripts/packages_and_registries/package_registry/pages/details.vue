@@ -68,7 +68,7 @@ export default {
     GlModal: GlModalDirective,
   },
   mixins: [Tracking.mixin()],
-  inject: ['packageId', 'svgPath', 'projectListUrl', 'groupListUrl'],
+  inject: ['emptyListIllustration', 'projectListUrl', 'groupListUrl', 'breadCrumbState'],
   trackingActions: {
     DELETE_PACKAGE_TRACKING_ACTION,
     REQUEST_DELETE_PACKAGE_TRACKING_ACTION,
@@ -100,11 +100,19 @@ export default {
           error,
         });
       },
+      result() {
+        this.breadCrumbState.updateName(
+          `${this.packageEntity?.name} v ${this.packageEntity?.version}`,
+        );
+      },
     },
   },
   computed: {
     projectName() {
       return this.packageEntity.project?.name;
+    },
+    packageId() {
+      return this.$route.params.id;
     },
     queryVariables() {
       return {
@@ -229,7 +237,7 @@ export default {
     v-if="!isValidPackage"
     :title="s__('PackageRegistry|Unable to load package')"
     :description="s__('PackageRegistry|There was a problem fetching the details for this package.')"
-    :svg-path="svgPath"
+    :svg-path="emptyListIllustration"
   />
   <div v-else-if="!isLoading" class="packages-app">
     <package-title :package-entity="packageEntity">

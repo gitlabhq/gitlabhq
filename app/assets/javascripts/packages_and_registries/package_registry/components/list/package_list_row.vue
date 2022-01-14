@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlLink, GlSprintf, GlTooltipDirective, GlTruncate } from '@gitlab/ui';
+import { GlButton, GlSprintf, GlTooltipDirective, GlTruncate } from '@gitlab/ui';
 import { s__, __ } from '~/locale';
 import ListItem from '~/vue_shared/components/registry/list_item.vue';
 import {
@@ -18,7 +18,6 @@ export default {
   name: 'PackageListRow',
   components: {
     GlButton,
-    GlLink,
     GlSprintf,
     GlTruncate,
     PackageTags,
@@ -42,9 +41,8 @@ export default {
     packageType() {
       return getPackageTypeLabel(this.packageEntity.packageType);
     },
-    packageLink() {
-      const { project, id } = this.packageEntity;
-      return `${project?.webUrl}/-/packages/${getIdFromGraphQLId(id)}`;
+    packageId() {
+      return getIdFromGraphQLId(this.packageEntity.id);
     },
     pipeline() {
       return this.packageEntity?.pipelines?.nodes[0];
@@ -61,6 +59,9 @@ export default {
     disabledRow() {
       return this.packageEntity.status && this.packageEntity.status !== PACKAGE_DEFAULT_STATUS;
     },
+    routerLinkEvent() {
+      return this.disabledRow ? '' : 'click';
+    },
   },
   i18n: {
     erroredPackageText: s__('PackageRegistry|Invalid Package: failed metadata extraction'),
@@ -73,14 +74,15 @@ export default {
   <list-item data-qa-selector="package_row" :disabled="disabledRow">
     <template #left-primary>
       <div class="gl-display-flex gl-align-items-center gl-mr-3 gl-min-w-0">
-        <gl-link
-          :href="packageLink"
+        <router-link
           class="gl-text-body gl-min-w-0"
+          data-testid="details-link"
           data-qa-selector="package_link"
-          :disabled="disabledRow"
+          :event="routerLinkEvent"
+          :to="{ name: 'details', params: { id: packageId } }"
         >
           <gl-truncate :text="packageEntity.name" />
-        </gl-link>
+        </router-link>
 
         <gl-button
           v-if="showWarningIcon"

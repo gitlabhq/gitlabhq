@@ -20,6 +20,8 @@ describe('google_cloud Home component', () => {
     serviceAccounts: [{}, {}],
     createServiceAccountUrl: '#url-create-service-account',
     emptyIllustrationUrl: '#url-empty-illustration',
+    deploymentsCloudRunUrl: '#url-deployments-cloud-run',
+    deploymentsCloudStorageUrl: '#deploymentsCloudStorageUrl',
   };
 
   beforeEach(() => {
@@ -42,7 +44,7 @@ describe('google_cloud Home component', () => {
     it('should contain three tab items', () => {
       expect(findTabItemsModel()).toEqual([
         { title: 'Configuration', disabled: undefined },
-        { title: 'Deployments', disabled: '' },
+        { title: 'Deployments', disabled: undefined },
         { title: 'Services', disabled: '' },
       ]);
     });

@@ -140,6 +140,9 @@ module Types
     field :customer_relations_contacts, Types::CustomerRelations::ContactType.connection_type, null: true,
           description: 'Customer relations contacts of the issue.'
 
+    field :escalation_status, Types::IncidentManagement::EscalationStatusEnum, null: true,
+          description: 'Escalation status of the issue.'
+
     def author
       Gitlab::Graphql::Loaders::BatchModelLoader.new(User, object.author_id).find
     end
@@ -166,6 +169,12 @@ module Types
 
     def hidden?
       object.hidden? if Feature.enabled?(:ban_user_feature_flag)
+    end
+
+    def escalation_status
+      return unless Feature.enabled?(:incident_escalations, object.project) && object.supports_escalation?
+
+      object.escalation_status&.status_name
     end
   end
 end

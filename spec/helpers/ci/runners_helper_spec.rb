@@ -79,8 +79,7 @@ RSpec.describe Ci::RunnersHelper do
     it 'returns the data in format' do
       expect(helper.admin_runners_data_attributes).to eq({
         runner_install_help_page: 'https://docs.gitlab.com/runner/install/',
-        registration_token: Gitlab::CurrentSettings.runners_registration_token,
-        active_runners_count: '0'
+        registration_token: Gitlab::CurrentSettings.runners_registration_token
       })
     end
   end

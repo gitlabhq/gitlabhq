@@ -78,7 +78,6 @@ module AlertManagement
     scope :for_environment, -> (environment) { where(environment: environment) }
     scope :for_assignee_username, -> (assignee_username) { joins(:assignees).merge(User.by_username(assignee_username)) }
     scope :search, -> (query) { fuzzy_search(query, [:title, :description, :monitoring_tool, :service]) }
-    scope :open, -> { with_status(open_statuses) }
     scope :not_resolved, -> { without_status(:resolved) }
     scope :with_prometheus_alert, -> { includes(:prometheus_alert) }
     scope :with_threat_monitoring_alerts, -> { where(domain: :threat_monitoring ) }
@@ -141,18 +140,6 @@ module AlertManagement
 
     def self.reference_valid?(reference)
       reference.to_i > 0 && reference.to_i <= Gitlab::Database::MAX_INT_VALUE
-    end
-
-    def self.open_statuses
-      [:triggered, :acknowledged]
-    end
-
-    def self.open_status?(status)
-      open_statuses.include?(status)
-    end
-
-    def open?
-      self.class.open_status?(status_name)
     end
 
     def prometheus?

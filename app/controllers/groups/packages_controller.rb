@@ -6,6 +6,11 @@ module Groups
 
     feature_category :package_registry
 
+    # The show action renders index to allow frontend routing to work on page refresh
+    def show
+      render :index
+    end
+
     private
 
     def verify_packages_enabled!

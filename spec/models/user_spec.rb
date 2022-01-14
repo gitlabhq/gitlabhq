@@ -542,6 +542,13 @@ RSpec.describe User do
           expect(user).to be_invalid
           expect(user.errors.messages[:email].first).to eq(expected_error)
         end
+
+        it 'does not allow user to update email to a non-allowlisted domain' do
+          user = create(:user, email: "info@test.example.com")
+
+          expect { user.update!(email: "test@notexample.com") }
+            .to raise_error(StandardError, 'Validation failed: Email is not allowed. Check with your administrator.')
+        end
       end
 
       context 'when a signup domain is allowed and subdomains are not allowed' do
@@ -607,6 +614,13 @@ RSpec.describe User do
           it 'accepts info@example.com when added by another user' do
             user = build(:user, email: 'info@example.com', created_by_id: 1)
             expect(user).to be_valid
+          end
+
+          it 'does not allow user to update email to a denied domain' do
+            user = create(:user, email: 'info@test.com')
+
+            expect { user.update!(email: 'info@example.com') }
+              .to raise_error(StandardError, 'Validation failed: Email is not allowed. Check with your administrator.')
           end
         end
 
@@ -677,6 +691,13 @@ RSpec.describe User do
 
             expect(user).not_to be_valid
             expect(user.errors.messages[:email].first).to eq(expected_error)
+          end
+
+          it 'does not allow user to update email to a restricted domain' do
+            user = create(:user, email: 'info@test.com')
+
+            expect { user.update!(email: 'info@gitlab.com') }
+              .to raise_error(StandardError, 'Validation failed: Email is not allowed. Check with your administrator.')
           end
 
           it 'does accept a valid email address' do

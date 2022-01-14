@@ -2962,6 +2962,27 @@ Input type: `IssueSetEscalationPolicyInput`
 | <a id="mutationissuesetescalationpolicyerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationissuesetescalationpolicyissue"></a>`issue` | [`Issue`](#issue) | Issue after mutation. |
 
+### `Mutation.issueSetEscalationStatus`
+
+Input type: `IssueSetEscalationStatusInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationissuesetescalationstatusclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationissuesetescalationstatusiid"></a>`iid` | [`String!`](#string) | IID of the issue to mutate. |
+| <a id="mutationissuesetescalationstatusprojectpath"></a>`projectPath` | [`ID!`](#id) | Project the issue to mutate is in. |
+| <a id="mutationissuesetescalationstatusstatus"></a>`status` | [`IssueEscalationStatus!`](#issueescalationstatus) | Set the escalation status. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationissuesetescalationstatusclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationissuesetescalationstatuserrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationissuesetescalationstatusissue"></a>`issue` | [`Issue`](#issue) | Issue after mutation. |
+
 ### `Mutation.issueSetIteration`
 
 Input type: `IssueSetIterationInput`
@@ -10317,6 +10338,7 @@ Relationship between an epic and an issue.
 | <a id="epicissueepic"></a>`epic` | [`Epic`](#epic) | Epic to which this issue belongs. |
 | <a id="epicissueepicissueid"></a>`epicIssueId` | [`ID!`](#id) | ID of the epic-issue relation. |
 | <a id="epicissueescalationpolicy"></a>`escalationPolicy` | [`EscalationPolicyType`](#escalationpolicytype) | Escalation policy associated with the issue. Available for issues which support escalation. |
+| <a id="epicissueescalationstatus"></a>`escalationStatus` | [`IssueEscalationStatus`](#issueescalationstatus) | Escalation status of the issue. |
 | <a id="epicissuehealthstatus"></a>`healthStatus` | [`HealthStatus`](#healthstatus) | Current health status. |
 | <a id="epicissuehidden"></a>`hidden` | [`Boolean`](#boolean) | Indicates the issue is hidden because the author has been banned. Will always return `null` if `ban_user_feature_flag` feature flag is disabled. |
 | <a id="epicissuehumantimeestimate"></a>`humanTimeEstimate` | [`String`](#string) | Human-readable time estimate of the issue. |
@@ -11500,6 +11522,7 @@ Returns [`VulnerabilitySeveritiesCount`](#vulnerabilityseveritiescount).
 | <a id="issueemailsdisabled"></a>`emailsDisabled` | [`Boolean!`](#boolean) | Indicates if a project has email notifications disabled: `true` if email notifications are disabled. |
 | <a id="issueepic"></a>`epic` | [`Epic`](#epic) | Epic to which this issue belongs. |
 | <a id="issueescalationpolicy"></a>`escalationPolicy` | [`EscalationPolicyType`](#escalationpolicytype) | Escalation policy associated with the issue. Available for issues which support escalation. |
+| <a id="issueescalationstatus"></a>`escalationStatus` | [`IssueEscalationStatus`](#issueescalationstatus) | Escalation status of the issue. |
 | <a id="issuehealthstatus"></a>`healthStatus` | [`HealthStatus`](#healthstatus) | Current health status. |
 | <a id="issuehidden"></a>`hidden` | [`Boolean`](#boolean) | Indicates the issue is hidden because the author has been banned. Will always return `null` if `ban_user_feature_flag` feature flag is disabled. |
 | <a id="issuehumantimeestimate"></a>`humanTimeEstimate` | [`String`](#string) | Human-readable time estimate of the issue. |
@@ -16820,6 +16843,17 @@ Iteration ID wildcard values for issue creation.
 | Value | Description |
 | ----- | ----------- |
 | <a id="issuecreationiterationwildcardidcurrent"></a>`CURRENT` | Current iteration. |
+
+### `IssueEscalationStatus`
+
+Issue escalation status values.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="issueescalationstatusacknowledged"></a>`ACKNOWLEDGED` | Someone is actively investigating the problem. |
+| <a id="issueescalationstatusignored"></a>`IGNORED` | No action will be taken. |
+| <a id="issueescalationstatusresolved"></a>`RESOLVED` | The problem has been addressed. |
+| <a id="issueescalationstatustriggered"></a>`TRIGGERED` | Investigation has not started. |
 
 ### `IssueSort`
 

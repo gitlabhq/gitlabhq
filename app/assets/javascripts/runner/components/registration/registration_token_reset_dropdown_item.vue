@@ -1,5 +1,5 @@
 <script>
-import { GlDropdownItem, GlLoadingIcon } from '@gitlab/ui';
+import { GlDropdownItem, GlLoadingIcon, GlModal, GlModalDirective } from '@gitlab/ui';
 import { createAlert } from '~/flash';
 import { TYPE_GROUP, TYPE_PROJECT } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
@@ -10,9 +10,17 @@ import { INSTANCE_TYPE, GROUP_TYPE, PROJECT_TYPE } from '../../constants';
 
 export default {
   name: 'RunnerRegistrationTokenReset',
+  i18n: {
+    modalTitle: __('Reset registration token'),
+    modalCopy: __('Are you sure you want to reset the registration token?'),
+  },
   components: {
     GlDropdownItem,
     GlLoadingIcon,
+    GlModal,
+  },
+  directives: {
+    GlModal: GlModalDirective,
   },
   inject: {
     groupId: {
@@ -22,6 +30,7 @@ export default {
       default: null,
     },
   },
+  modalID: 'token-reset-modal',
   props: {
     type: {
       type: String,
@@ -59,14 +68,10 @@ export default {
     },
   },
   methods: {
+    handleModalPrimary() {
+      this.resetToken();
+    },
     async resetToken() {
-      // TODO Replace confirmation with gl-modal
-      // See: https://gitlab.com/gitlab-org/gitlab/-/issues/333810
-      // eslint-disable-next-line no-alert
-      if (!window.confirm(__('Are you sure you want to reset the registration token?'))) {
-        return;
-      }
-
       this.loading = true;
       try {
         const {
@@ -106,8 +111,15 @@ export default {
 };
 </script>
 <template>
-  <gl-dropdown-item @click.capture.native.stop="resetToken">
+  <gl-dropdown-item v-gl-modal="$options.modalID">
     {{ __('Reset registration token') }}
+    <gl-modal
+      :modal-id="$options.modalID"
+      :title="$options.i18n.modalTitle"
+      @primary="handleModalPrimary"
+    >
+      <p>{{ $options.i18n.modalCopy }}</p>
+    </gl-modal>
     <gl-loading-icon v-if="loading" inline />
   </gl-dropdown-item>
 </template>

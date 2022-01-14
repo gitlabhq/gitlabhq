@@ -239,44 +239,20 @@ RSpec.describe Ci::Runner do
     end
   end
 
-  context 'when ci_decompose_belonging_to_parent_group_of_project_query is enabled' do
-    context 'when use_traversal_ids* are enabled' do
-      it_behaves_like '.belonging_to_parent_group_of_project'
-    end
-
-    context 'when use_traversal_ids* are disabled' do
-      before do
-        stub_feature_flags(
-          use_traversal_ids: false,
-          use_traversal_ids_for_ancestors: false,
-          use_traversal_ids_for_ancestor_scopes: false
-        )
-      end
-
-      it_behaves_like '.belonging_to_parent_group_of_project'
-    end
+  context 'when use_traversal_ids* are enabled' do
+    it_behaves_like '.belonging_to_parent_group_of_project'
   end
 
-  context 'when ci_decompose_belonging_to_parent_group_of_project_query is disabled' do
+  context 'when use_traversal_ids* are disabled' do
     before do
-      stub_feature_flags(ci_decompose_belonging_to_parent_group_of_project_query: false)
+      stub_feature_flags(
+        use_traversal_ids: false,
+        use_traversal_ids_for_ancestors: false,
+        use_traversal_ids_for_ancestor_scopes: false
+      )
     end
 
-    context 'when use_traversal_ids* are enabled' do
-      it_behaves_like '.belonging_to_parent_group_of_project'
-    end
-
-    context 'when use_traversal_ids* are disabled' do
-      before do
-        stub_feature_flags(
-          use_traversal_ids: false,
-          use_traversal_ids_for_ancestors: false,
-          use_traversal_ids_for_ancestor_scopes: false
-        )
-      end
-
-      it_behaves_like '.belonging_to_parent_group_of_project'
-    end
+    it_behaves_like '.belonging_to_parent_group_of_project'
   end
 
   describe '.owned_or_instance_wide' do

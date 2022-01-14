@@ -211,12 +211,6 @@ RSpec.describe AlertManagement::Alert do
       end
     end
 
-    describe '.open' do
-      subject { described_class.open }
-
-      it { is_expected.to contain_exactly(acknowledged_alert, triggered_alert) }
-    end
-
     describe '.not_resolved' do
       subject { described_class.not_resolved }
 
@@ -321,33 +315,6 @@ RSpec.describe AlertManagement::Alert do
 
     with_them do
       it { expect(described_class.reference_valid?(ref)).to eq(result) }
-    end
-  end
-
-  describe '.open_status?' do
-    using RSpec::Parameterized::TableSyntax
-
-    where(:status, :is_open_status) do
-      :triggered    | true
-      :acknowledged | true
-      :resolved     | false
-      :ignored      | false
-      nil           | false
-    end
-
-    with_them do
-      it 'returns true when the status is open status' do
-        expect(described_class.open_status?(status)).to eq(is_open_status)
-      end
-    end
-  end
-
-  describe '#open?' do
-    it 'returns true when the status is open status' do
-      expect(triggered_alert.open?).to be true
-      expect(acknowledged_alert.open?).to be true
-      expect(resolved_alert.open?).to be false
-      expect(ignored_alert.open?).to be false
     end
   end
 

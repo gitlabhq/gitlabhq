@@ -1,14 +1,12 @@
 ---
 Database/MultipleDatabases:
   Exclude:
-  - ee/lib/ee/gitlab/database.rb
   - ee/lib/gitlab/geo/database_tasks.rb
   - ee/lib/gitlab/geo/geo_tasks.rb
   - ee/lib/gitlab/geo/health_check.rb
   - ee/lib/gitlab/geo/log_cursor/daemon.rb
   - ee/lib/pseudonymizer/dumper.rb
   - ee/lib/pseudonymizer/pager.rb
-  - ee/lib/system_check/geo/geo_database_configured_check.rb
   - ee/spec/lib/pseudonymizer/dumper_spec.rb
   - ee/spec/services/ee/merge_requests/update_service_spec.rb
   - lib/backup/database.rb
@@ -21,14 +19,12 @@ Database/MultipleDatabases:
   - lib/gitlab/database/migrations/observers/query_log.rb
   - lib/gitlab/database/partitioning_migration_helpers/backfill_partitioned_table.rb
   - lib/gitlab/database.rb
-  - lib/gitlab/database/schema_cache_with_renamed_table.rb
   - lib/gitlab/database/with_lock_retries.rb
   - lib/gitlab/gitlab_import/importer.rb
   - lib/gitlab/health_checks/db_check.rb
   - lib/gitlab/import_export/base/relation_factory.rb
   - lib/gitlab/import_export/group/relation_tree_restorer.rb
   - lib/gitlab/legacy_github_import/importer.rb
-  - lib/gitlab/metrics/samplers/database_sampler.rb
   - lib/gitlab/seeder.rb
   - lib/gitlab/sherlock/query.rb
   - lib/system_check/orphans/repository_check.rb
@@ -39,15 +35,8 @@ Database/MultipleDatabases:
   - spec/lib/gitlab/database_spec.rb
   - spec/lib/gitlab/metrics/subscribers/active_record_spec.rb
   - spec/lib/gitlab/profiler_spec.rb
-  - spec/lib/gitlab/usage_data_metrics_spec.rb
-  - spec/lib/gitlab/usage_data_queries_spec.rb
   - spec/lib/gitlab/usage/metrics/names_suggestions/relation_parsers/constraints_spec.rb
   - spec/lib/gitlab/usage/metrics/names_suggestions/relation_parsers/joins_spec.rb
-  - spec/lib/gitlab/usage/metrics/instrumentations/database_metric_spec.rb
-  - spec/lib/gitlab/utils/usage_data_spec.rb
-  - spec/models/project_feature_usage_spec.rb
-  - spec/models/users_statistics_spec.rb
-  - spec/services/users/activity_service_spec.rb
   - spec/support/caching.rb
   - spec/support/gitlab/usage/metrics_instrumentation_shared_examples.rb
   - spec/support/helpers/database_connection_helpers.rb

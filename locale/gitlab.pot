@@ -7485,6 +7485,12 @@ msgstr ""
 msgid "Closes this %{quick_action_target}."
 msgstr ""
 
+msgid "Cloud Run"
+msgstr ""
+
+msgid "Cloud Storage"
+msgstr ""
+
 msgid "Cluster"
 msgstr ""
 
@@ -9034,6 +9040,9 @@ msgstr ""
 msgid "Configure existing installation"
 msgstr ""
 
+msgid "Configure pipelines to deploy web apps, backend services, APIs and static resources to Google Cloud"
+msgstr ""
+
 msgid "Configure repository mirroring."
 msgstr ""
 
@@ -9059,6 +9068,9 @@ msgid "Configure the default first day of the week and time tracking units."
 msgstr ""
 
 msgid "Configure the way a user creates a new account."
+msgstr ""
+
+msgid "Configure via Merge Request"
 msgstr ""
 
 msgid "Configure which lists are shown for anyone who visits this board"
@@ -11737,6 +11749,9 @@ msgstr[1] ""
 msgid "Deploy Keys"
 msgstr ""
 
+msgid "Deploy container based web apps on Google managed clusters"
+msgstr ""
+
 msgid "Deploy freezes"
 msgstr ""
 
@@ -11750,6 +11765,9 @@ msgid "Deploy keys grant read/write access to all repositories in your instance"
 msgstr ""
 
 msgid "Deploy progress not found. To see pods, ensure your environment matches %{linkStart}deploy board criteria%{linkEnd}."
+msgstr ""
+
+msgid "Deploy static assets and resources to Google managed CDN"
 msgstr ""
 
 msgid "Deploy to..."
@@ -28930,9 +28948,6 @@ msgstr ""
 msgid "Public deploy keys"
 msgstr ""
 
-msgid "Public deploy keys (%{deploy_keys_count})"
-msgstr ""
-
 msgid "Public pipelines"
 msgstr ""
 
@@ -30726,10 +30741,13 @@ msgstr ""
 msgid "Runners|Offline"
 msgstr ""
 
+msgid "Runners|Offline runners"
+msgstr ""
+
 msgid "Runners|Online"
 msgstr ""
 
-msgid "Runners|Online Runners"
+msgid "Runners|Online runners"
 msgstr ""
 
 msgid "Runners|Paused"
@@ -30823,6 +30841,9 @@ msgid "Runners|Something went wrong while fetching the tags suggestions"
 msgstr ""
 
 msgid "Runners|Stale"
+msgstr ""
+
+msgid "Runners|Stale runners"
 msgstr ""
 
 msgid "Runners|Status"
@@ -42266,6 +42287,9 @@ msgid "is not allowed for this project."
 msgstr ""
 
 msgid "is not allowed since the group is not top-level group."
+msgstr ""
+
+msgid "is not allowed."
 msgstr ""
 
 msgid "is not allowed. We do not currently support project-level iterations"

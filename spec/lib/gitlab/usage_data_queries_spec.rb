@@ -3,10 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::UsageDataQueries do
-  before do
-    allow(ActiveRecord::Base.connection).to receive(:transaction_open?).and_return(false)
-  end
-
   describe '#add_metric' do
     let(:metric) { 'CountBoardsMetric' }
 

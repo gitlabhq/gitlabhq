@@ -74,6 +74,7 @@ export const FETCH_PACKAGE_DETAILS_ERROR_MESSAGE = s__(
 );
 
 export const DELETE_PACKAGE_SUCCESS_MESSAGE = s__('PackageRegistry|Package deleted successfully');
+export const PACKAGE_REGISTRY_TITLE = __('Package Registry');
 
 export const PACKAGE_ERROR_STATUS = 'ERROR';
 export const PACKAGE_DEFAULT_STATUS = 'DEFAULT';

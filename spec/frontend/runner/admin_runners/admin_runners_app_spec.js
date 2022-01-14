@@ -13,6 +13,7 @@ import AdminRunnersApp from '~/runner/admin_runners/admin_runners_app.vue';
 import RunnerTypeTabs from '~/runner/components/runner_type_tabs.vue';
 import RunnerFilteredSearchBar from '~/runner/components/runner_filtered_search_bar.vue';
 import RunnerList from '~/runner/components/runner_list.vue';
+import RunnerStats from '~/runner/components/stat/runner_stats.vue';
 import RegistrationDropdown from '~/runner/components/registration/registration_dropdown.vue';
 import RunnerPagination from '~/runner/components/runner_pagination.vue';
 
@@ -37,7 +38,6 @@ import FilteredSearch from '~/vue_shared/components/filtered_search_bar/filtered
 import { runnersData, runnersCountData, runnersDataPaginated } from '../mock_data';
 
 const mockRegistrationToken = 'MOCK_REGISTRATION_TOKEN';
-const mockActiveRunnersCount = '2';
 
 jest.mock('~/flash');
 jest.mock('~/runner/sentry_utils');
@@ -54,6 +54,7 @@ describe('AdminRunnersApp', () => {
   let mockRunnersQuery;
   let mockRunnersCountQuery;
 
+  const findRunnerStats = () => wrapper.findComponent(RunnerStats);
   const findRegistrationDropdown = () => wrapper.findComponent(RegistrationDropdown);
   const findRunnerTypeTabs = () => wrapper.findComponent(RunnerTypeTabs);
   const findRunnerList = () => wrapper.findComponent(RunnerList);
@@ -70,15 +71,16 @@ describe('AdminRunnersApp', () => {
       [getRunnersCountQuery, mockRunnersCountQuery],
     ];
 
-    wrapper = mountFn(AdminRunnersApp, {
-      localVue,
-      apolloProvider: createMockApollo(handlers),
-      propsData: {
-        registrationToken: mockRegistrationToken,
-        activeRunnersCount: mockActiveRunnersCount,
-        ...props,
-      },
-    });
+    wrapper = extendedWrapper(
+      mountFn(AdminRunnersApp, {
+        localVue,
+        apolloProvider: createMockApollo(handlers),
+        propsData: {
+          registrationToken: mockRegistrationToken,
+          ...props,
+        },
+      }),
+    );
   };
 
   beforeEach(async () => {
@@ -93,6 +95,18 @@ describe('AdminRunnersApp', () => {
   afterEach(() => {
     mockRunnersQuery.mockReset();
     wrapper.destroy();
+  });
+
+  it('shows total runner counts', async () => {
+    createComponent({ mountFn: mount });
+
+    await waitForPromises();
+
+    const stats = findRunnerStats().text();
+
+    expect(stats).toMatch('Online runners 4');
+    expect(stats).toMatch('Offline runners 4');
+    expect(stats).toMatch('Stale runners 4');
   });
 
   it('shows the runner tabs with a runner count for each type', async () => {
@@ -196,12 +210,6 @@ describe('AdminRunnersApp', () => {
         recentSuggestionsStorageKey: `${ADMIN_FILTERED_SEARCH_NAMESPACE}-recent-tags`,
       }),
     ]);
-  });
-
-  it('shows the active runner count', () => {
-    createComponent({ mountFn: mount });
-
-    expect(wrapper.text()).toMatch(new RegExp(`Online Runners ${mockActiveRunnersCount}`));
   });
 
   describe('when a filter is preselected', () => {

@@ -24,99 +24,109 @@ RSpec.describe 'Runner (JavaScript fixtures)' do
     remove_repository(project)
   end
 
-  describe GraphQL::Query, type: :request do
-    get_runners_query_name = 'get_runners.query.graphql'
-
+  describe do
     before do
       sign_in(admin)
       enable_admin_mode!(admin)
     end
 
-    let_it_be(:query) do
-      get_graphql_query_as_string("#{query_path}#{get_runners_query_name}")
+    describe GraphQL::Query, type: :request do
+      get_runners_query_name = 'get_runners.query.graphql'
+
+      let_it_be(:query) do
+        get_graphql_query_as_string("#{query_path}#{get_runners_query_name}")
+      end
+
+      it "#{fixtures_path}#{get_runners_query_name}.json" do
+        post_graphql(query, current_user: admin, variables: {})
+
+        expect_graphql_errors_to_be_empty
+      end
+
+      it "#{fixtures_path}#{get_runners_query_name}.paginated.json" do
+        post_graphql(query, current_user: admin, variables: { first: 2 })
+
+        expect_graphql_errors_to_be_empty
+      end
     end
 
-    it "#{fixtures_path}#{get_runners_query_name}.json" do
-      post_graphql(query, current_user: admin, variables: {})
+    describe GraphQL::Query, type: :request do
+      get_runners_count_query_name = 'get_runners_count.query.graphql'
 
-      expect_graphql_errors_to_be_empty
+      let_it_be(:query) do
+        get_graphql_query_as_string("#{query_path}#{get_runners_count_query_name}")
+      end
+
+      it "#{fixtures_path}#{get_runners_count_query_name}.json" do
+        post_graphql(query, current_user: admin, variables: {})
+
+        expect_graphql_errors_to_be_empty
+      end
     end
 
-    it "#{fixtures_path}#{get_runners_query_name}.paginated.json" do
-      post_graphql(query, current_user: admin, variables: { first: 2 })
+    describe GraphQL::Query, type: :request do
+      get_runner_query_name = 'get_runner.query.graphql'
 
-      expect_graphql_errors_to_be_empty
-    end
-  end
+      let_it_be(:query) do
+        get_graphql_query_as_string("#{query_path}#{get_runner_query_name}")
+      end
 
-  describe GraphQL::Query, type: :request do
-    get_runners_count_query_name = 'get_runners_count.query.graphql'
+      it "#{fixtures_path}#{get_runner_query_name}.json" do
+        post_graphql(query, current_user: admin, variables: {
+          id: instance_runner.to_global_id.to_s
+        })
 
-    before do
-      sign_in(admin)
-      enable_admin_mode!(admin)
-    end
-
-    let_it_be(:query) do
-      get_graphql_query_as_string("#{query_path}#{get_runners_count_query_name}")
-    end
-
-    it "#{fixtures_path}#{get_runners_count_query_name}.json" do
-      post_graphql(query, current_user: admin, variables: {})
-
-      expect_graphql_errors_to_be_empty
-    end
-  end
-
-  describe GraphQL::Query, type: :request do
-    get_runner_query_name = 'get_runner.query.graphql'
-
-    before do
-      sign_in(admin)
-      enable_admin_mode!(admin)
-    end
-
-    let_it_be(:query) do
-      get_graphql_query_as_string("#{query_path}#{get_runner_query_name}")
-    end
-
-    it "#{fixtures_path}#{get_runner_query_name}.json" do
-      post_graphql(query, current_user: admin, variables: {
-        id: instance_runner.to_global_id.to_s
-      })
-
-      expect_graphql_errors_to_be_empty
+        expect_graphql_errors_to_be_empty
+      end
     end
   end
 
-  describe GraphQL::Query, type: :request do
-    get_group_runners_query_name = 'get_group_runners.query.graphql'
-
+  describe do
     let_it_be(:group_owner) { create(:user) }
 
     before do
       group.add_owner(group_owner)
     end
 
-    let_it_be(:query) do
-      get_graphql_query_as_string("#{query_path}#{get_group_runners_query_name}")
+    describe GraphQL::Query, type: :request do
+      get_group_runners_query_name = 'get_group_runners.query.graphql'
+
+      let_it_be(:query) do
+        get_graphql_query_as_string("#{query_path}#{get_group_runners_query_name}")
+      end
+
+      it "#{fixtures_path}#{get_group_runners_query_name}.json" do
+        post_graphql(query, current_user: group_owner, variables: {
+          groupFullPath: group.full_path
+        })
+
+        expect_graphql_errors_to_be_empty
+      end
+
+      it "#{fixtures_path}#{get_group_runners_query_name}.paginated.json" do
+        post_graphql(query, current_user: group_owner, variables: {
+          groupFullPath: group.full_path,
+          first: 1
+        })
+
+        expect_graphql_errors_to_be_empty
+      end
     end
 
-    it "#{fixtures_path}#{get_group_runners_query_name}.json" do
-      post_graphql(query, current_user: group_owner, variables: {
-        groupFullPath: group.full_path
-      })
+    describe GraphQL::Query, type: :request do
+      get_group_runners_count_query_name = 'get_group_runners_count.query.graphql'
 
-      expect_graphql_errors_to_be_empty
-    end
+      let_it_be(:query) do
+        get_graphql_query_as_string("#{query_path}#{get_group_runners_count_query_name}")
+      end
 
-    it "#{fixtures_path}#{get_group_runners_query_name}.paginated.json" do
-      post_graphql(query, current_user: group_owner, variables: {
-        groupFullPath: group.full_path,
-        first: 1
-      })
+      it "#{fixtures_path}#{get_group_runners_count_query_name}.json" do
+        post_graphql(query, current_user: group_owner, variables: {
+          groupFullPath: group.full_path
+        })
 
-      expect_graphql_errors_to_be_empty
+        expect_graphql_errors_to_be_empty
+      end
     end
   end
 end

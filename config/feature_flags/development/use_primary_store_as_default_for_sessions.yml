@@ -1,8 +1,0 @@
----
-name: use_primary_store_as_default_for_sessions
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/75258
-rollout_issue_url:
-milestone: '14.6'
-type: development
-group: group::memory
-default_enabled: false

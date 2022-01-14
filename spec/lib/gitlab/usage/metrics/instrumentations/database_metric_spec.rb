@@ -19,7 +19,7 @@ RSpec.describe Gitlab::Usage::Metrics::Instrumentations::DatabaseMetric do
     let_it_be(:issues) { Issue.all }
 
     before do
-      allow(ActiveRecord::Base.connection).to receive(:transaction_open?).and_return(false)
+      allow(Issue.connection).to receive(:transaction_open?).and_return(false)
     end
 
     it 'calculates a correct result' do

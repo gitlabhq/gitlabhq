@@ -9,7 +9,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 import createFlash from '~/flash';
 
 import AdditionalMetadata from '~/packages_and_registries/package_registry/components/details/additional_metadata.vue';
-import PackagesApp from '~/packages_and_registries/package_registry/components/details/app.vue';
+import PackagesApp from '~/packages_and_registries/package_registry/pages/details.vue';
 import DependencyRow from '~/packages_and_registries/package_registry/components/details/dependency_row.vue';
 import InstallationCommands from '~/packages_and_registries/package_registry/components/details/installation_commands.vue';
 import PackageFiles from '~/packages_and_registries/package_registry/components/details/package_files.vue';
@@ -36,7 +36,7 @@ import {
   packageFiles,
   packageDestroyFileMutation,
   packageDestroyFileMutationError,
-} from '../../mock_data';
+} from '../mock_data';
 
 jest.mock('~/flash');
 useMockLocationHelper();
@@ -47,18 +47,22 @@ describe('PackagesApp', () => {
   let wrapper;
   let apolloProvider;
 
+  const breadCrumbState = {
+    updateName: jest.fn(),
+  };
+
   const provide = {
     packageId: '111',
-    svgPath: 'svgPath',
-    npmPath: 'npmPath',
-    npmHelpPath: 'npmHelpPath',
+    emptyListIllustration: 'svgPath',
     projectListUrl: 'projectListUrl',
     groupListUrl: 'groupListUrl',
+    breadCrumbState,
   };
 
   function createComponent({
     resolver = jest.fn().mockResolvedValue(packageDetailsQuery()),
     fileDeleteMutationResolver = jest.fn().mockResolvedValue(packageDestroyFileMutation()),
+    routeId = '1',
   } = {}) {
     localVue.use(VueApollo);
 
@@ -83,6 +87,13 @@ describe('PackagesApp', () => {
         },
         GlTabs,
         GlTab,
+      },
+      mocks: {
+        $route: {
+          params: {
+            id: routeId,
+          },
+        },
       },
     });
   }
@@ -170,6 +181,15 @@ describe('PackagesApp', () => {
     expect(findInstallationCommands().props()).toMatchObject({
       packageEntity: expect.objectContaining(packageData()),
     });
+  });
+
+  it('calls the appropriate function to set the breadcrumbState', async () => {
+    const { name, version } = packageData();
+    createComponent();
+
+    await waitForPromises();
+
+    expect(breadCrumbState.updateName).toHaveBeenCalledWith(`${name} v ${version}`);
   });
 
   describe('delete package', () => {

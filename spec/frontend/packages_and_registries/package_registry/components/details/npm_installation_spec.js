@@ -35,7 +35,7 @@ describe('NpmInstallation', () => {
   function createComponent({ data = {} } = {}) {
     wrapper = shallowMountExtended(NpmInstallation, {
       provide: {
-        npmPath: 'npmPath',
+        npmInstanceUrl: 'npmInstanceUrl',
       },
       propsData: {
         packageEntity,
@@ -117,7 +117,7 @@ describe('NpmInstallation', () => {
 
     it('renders the correct setup command', () => {
       expect(findCodeInstructions().at(1).props()).toMatchObject({
-        instruction: 'echo @gitlab-org:registry=npmPath/ >> .npmrc',
+        instruction: 'echo @gitlab-org:registry=npmInstanceUrl/ >> .npmrc',
         multiline: false,
         trackingAction: TRACKING_ACTION_COPY_NPM_SETUP_COMMAND,
       });
@@ -139,7 +139,7 @@ describe('NpmInstallation', () => {
       await nextTick();
 
       expect(findCodeInstructions().at(1).props()).toMatchObject({
-        instruction: `echo @gitlab-org:registry=npmPath/ >> .npmrc`,
+        instruction: `echo @gitlab-org:registry=npmInstanceUrl/ >> .npmrc`,
         multiline: false,
         trackingAction: TRACKING_ACTION_COPY_NPM_SETUP_COMMAND,
       });
@@ -161,7 +161,7 @@ describe('NpmInstallation', () => {
 
     it('renders the correct registry command', () => {
       expect(findCodeInstructions().at(1).props()).toMatchObject({
-        instruction: 'echo \\"@gitlab-org:registry\\" \\"npmPath/\\" >> .yarnrc',
+        instruction: 'echo \\"@gitlab-org:registry\\" \\"npmInstanceUrl/\\" >> .yarnrc',
         multiline: false,
         trackingAction: TRACKING_ACTION_COPY_YARN_SETUP_COMMAND,
       });
@@ -183,7 +183,7 @@ describe('NpmInstallation', () => {
       await nextTick();
 
       expect(findCodeInstructions().at(1).props()).toMatchObject({
-        instruction: 'echo \\"@gitlab-org:registry\\" \\"npmPath/\\" >> .yarnrc',
+        instruction: 'echo \\"@gitlab-org:registry\\" \\"npmInstanceUrl/\\" >> .yarnrc',
         multiline: false,
         trackingAction: TRACKING_ACTION_COPY_YARN_SETUP_COMMAND,
       });

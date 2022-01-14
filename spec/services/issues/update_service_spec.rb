@@ -1166,9 +1166,15 @@ RSpec.describe Issues::UpdateService, :mailer do
 
     context 'updating escalation status' do
       let(:opts) { { escalation_status: { status: 'acknowledged' } } }
+      let(:escalation_update_class) { ::IncidentManagement::IssuableEscalationStatuses::AfterUpdateService }
 
       shared_examples 'updates the escalation status record' do |expected_status|
+        let(:service_double) { instance_double(escalation_update_class) }
+
         it 'has correct value' do
+          expect(escalation_update_class).to receive(:new).with(issue, user).and_return(service_double)
+          expect(service_double).to receive(:execute)
+
           update_issue(opts)
 
           expect(issue.escalation_status.status_name).to eq(expected_status)
@@ -1185,7 +1191,7 @@ RSpec.describe Issues::UpdateService, :mailer do
         end
 
         it 'does not trigger side-effects' do
-          expect(::AlertManagement::Alerts::UpdateService).not_to receive(:new)
+          expect(escalation_update_class).not_to receive(:new)
 
           update_issue(opts)
         end
@@ -1207,6 +1213,7 @@ RSpec.describe Issues::UpdateService, :mailer do
             it 'syncs the update back to the alert' do
               update_issue(opts)
 
+              expect(issue.escalation_status.status_name).to eq(:acknowledged)
               expect(alert.reload.status_name).to eq(:acknowledged)
             end
           end

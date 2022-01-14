@@ -9,7 +9,7 @@ import RegistrationDropdown from '../components/registration/registration_dropdo
 import RunnerFilteredSearchBar from '../components/runner_filtered_search_bar.vue';
 import RunnerList from '../components/runner_list.vue';
 import RunnerName from '../components/runner_name.vue';
-import RunnerOnlineStat from '../components/stat/runner_online_stat.vue';
+import RunnerStats from '../components/stat/runner_stats.vue';
 import RunnerPagination from '../components/runner_pagination.vue';
 import RunnerTypeTabs from '../components/runner_type_tabs.vue';
 
@@ -19,14 +19,29 @@ import {
   GROUP_FILTERED_SEARCH_NAMESPACE,
   GROUP_TYPE,
   GROUP_RUNNER_COUNT_LIMIT,
+  STATUS_ONLINE,
+  STATUS_OFFLINE,
+  STATUS_STALE,
 } from '../constants';
 import getGroupRunnersQuery from '../graphql/get_group_runners.query.graphql';
+import getGroupRunnersCountQuery from '../graphql/get_group_runners_count.query.graphql';
 import {
   fromUrlQueryToSearch,
   fromSearchToUrl,
   fromSearchToVariables,
 } from '../runner_search_utils';
 import { captureException } from '../sentry_utils';
+
+const runnersCountSmartQuery = {
+  query: getGroupRunnersCountQuery,
+  fetchPolicy: fetchPolicies.CACHE_AND_NETWORK,
+  update(data) {
+    return data?.group?.runners?.count;
+  },
+  error(error) {
+    this.reportToSentry(error);
+  },
+};
 
 export default {
   name: 'GroupRunnersApp',
@@ -36,7 +51,7 @@ export default {
     RunnerFilteredSearchBar,
     RunnerList,
     RunnerName,
-    RunnerOnlineStat,
+    RunnerStats,
     RunnerPagination,
     RunnerTypeTabs,
   },
@@ -87,6 +102,33 @@ export default {
         createAlert({ message: I18N_FETCH_ERROR });
 
         this.reportToSentry(error);
+      },
+    },
+    onlineRunnersTotal: {
+      ...runnersCountSmartQuery,
+      variables() {
+        return {
+          groupFullPath: this.groupFullPath,
+          status: STATUS_ONLINE,
+        };
+      },
+    },
+    offlineRunnersTotal: {
+      ...runnersCountSmartQuery,
+      variables() {
+        return {
+          groupFullPath: this.groupFullPath,
+          status: STATUS_OFFLINE,
+        };
+      },
+    },
+    staleRunnersTotal: {
+      ...runnersCountSmartQuery,
+      variables() {
+        return {
+          groupFullPath: this.groupFullPath,
+          status: STATUS_STALE,
+        };
       },
     },
   },
@@ -147,7 +189,11 @@ export default {
 
 <template>
   <div>
-    <runner-online-stat class="gl-py-6 gl-px-5" :value="groupRunnersCount" />
+    <runner-stats
+      :online-runners-count="onlineRunnersTotal"
+      :offline-runners-count="offlineRunnersTotal"
+      :stale-runners-count="staleRunnersTotal"
+    />
 
     <div class="gl-display-flex gl-align-items-center">
       <runner-type-tabs

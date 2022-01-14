@@ -12,6 +12,7 @@ import { updateHistory } from '~/lib/utils/url_utility';
 
 import RunnerFilteredSearchBar from '~/runner/components/runner_filtered_search_bar.vue';
 import RunnerList from '~/runner/components/runner_list.vue';
+import RunnerStats from '~/runner/components/stat/runner_stats.vue';
 import RegistrationDropdown from '~/runner/components/registration/registration_dropdown.vue';
 import RunnerPagination from '~/runner/components/runner_pagination.vue';
 
@@ -26,10 +27,11 @@ import {
   RUNNER_PAGE_SIZE,
 } from '~/runner/constants';
 import getGroupRunnersQuery from '~/runner/graphql/get_group_runners.query.graphql';
+import getGroupRunnersCountQuery from '~/runner/graphql/get_group_runners_count.query.graphql';
 import GroupRunnersApp from '~/runner/group_runners/group_runners_app.vue';
 import { captureException } from '~/runner/sentry_utils';
 import FilteredSearch from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
-import { groupRunnersData, groupRunnersDataPaginated } from '../mock_data';
+import { groupRunnersData, groupRunnersDataPaginated, groupRunnersCountData } from '../mock_data';
 
 const localVue = createLocalVue();
 localVue.use(VueApollo);
@@ -48,7 +50,9 @@ jest.mock('~/lib/utils/url_utility', () => ({
 describe('GroupRunnersApp', () => {
   let wrapper;
   let mockGroupRunnersQuery;
+  let mockGroupRunnersCountQuery;
 
+  const findRunnerStats = () => wrapper.findComponent(RunnerStats);
   const findRegistrationDropdown = () => wrapper.findComponent(RegistrationDropdown);
   const findRunnerList = () => wrapper.findComponent(RunnerList);
   const findRunnerPagination = () => extendedWrapper(wrapper.findComponent(RunnerPagination));
@@ -59,7 +63,10 @@ describe('GroupRunnersApp', () => {
   const findFilteredSearch = () => wrapper.findComponent(FilteredSearch);
 
   const createComponent = ({ props = {}, mountFn = shallowMount } = {}) => {
-    const handlers = [[getGroupRunnersQuery, mockGroupRunnersQuery]];
+    const handlers = [
+      [getGroupRunnersQuery, mockGroupRunnersQuery],
+      [getGroupRunnersCountQuery, mockGroupRunnersCountQuery],
+    ];
 
     wrapper = mountFn(GroupRunnersApp, {
       localVue,
@@ -77,9 +84,22 @@ describe('GroupRunnersApp', () => {
     setWindowLocation(`/groups/${mockGroupFullPath}/-/runners`);
 
     mockGroupRunnersQuery = jest.fn().mockResolvedValue(groupRunnersData);
+    mockGroupRunnersCountQuery = jest.fn().mockResolvedValue(groupRunnersCountData);
 
     createComponent();
     await waitForPromises();
+  });
+
+  it('shows total runner counts', async () => {
+    createComponent({ mountFn: mount });
+
+    await waitForPromises();
+
+    const stats = findRunnerStats().text();
+
+    expect(stats).toMatch('Online runners 2');
+    expect(stats).toMatch('Offline runners 2');
+    expect(stats).toMatch('Stale runners 2');
   });
 
   it('shows the runner setup instructions', () => {
@@ -127,28 +147,6 @@ describe('GroupRunnersApp', () => {
         options: expect.any(Array),
       }),
     );
-  });
-
-  describe('shows the active runner count', () => {
-    const expectedOnlineCount = (count) => new RegExp(`Online Runners ${count}`);
-
-    it('with a regular value', () => {
-      createComponent({ mountFn: mount });
-
-      expect(wrapper.text()).toMatch(expectedOnlineCount(mockGroupRunnersLimitedCount));
-    });
-
-    it('at the limit', () => {
-      createComponent({ props: { groupRunnersLimitedCount: 1000 }, mountFn: mount });
-
-      expect(wrapper.text()).toMatch(expectedOnlineCount('1,000'));
-    });
-
-    it('over the limit', () => {
-      createComponent({ props: { groupRunnersLimitedCount: 1001 }, mountFn: mount });
-
-      expect(wrapper.text()).toMatch(expectedOnlineCount('1,000\\+'));
-    });
   });
 
   describe('when a filter is preselected', () => {

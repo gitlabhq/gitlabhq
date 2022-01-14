@@ -21,12 +21,16 @@ RSpec.describe "Admin Runners" do
 
     context "when there are runners" do
       it 'has all necessary texts' do
-        create(:ci_runner, :instance, contacted_at: Time.now)
+        create(:ci_runner, :instance, created_at: 1.year.ago, contacted_at: Time.now)
+        create(:ci_runner, :instance, created_at: 1.year.ago, contacted_at: 1.week.ago)
+        create(:ci_runner, :instance, created_at: 1.year.ago, contacted_at: 1.year.ago)
 
         visit admin_runners_path
 
         expect(page).to have_text "Register an instance runner"
-        expect(page).to have_text "Online Runners 1"
+        expect(page).to have_text "Online runners 1"
+        expect(page).to have_text "Offline runners 2"
+        expect(page).to have_text "Stale runners 1"
       end
 
       it 'with an instance runner shows an instance badge' do
@@ -387,7 +391,11 @@ RSpec.describe "Admin Runners" do
 
       it 'has all necessary texts including no runner message' do
         expect(page).to have_text "Register an instance runner"
-        expect(page).to have_text "Online Runners 0"
+
+        expect(page).to have_text "Online runners 0"
+        expect(page).to have_text "Offline runners 0"
+        expect(page).to have_text "Stale runners 0"
+
         expect(page).to have_text 'No runners found'
       end
 
@@ -451,7 +459,9 @@ RSpec.describe "Admin Runners" do
         before do
           click_on 'Reset registration token'
 
-          page.accept_alert
+          within_modal do
+            click_button('OK', match: :first)
+          end
 
           wait_for_requests
         end

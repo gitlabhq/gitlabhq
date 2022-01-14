@@ -8,6 +8,7 @@ import runnerData from 'test_fixtures/graphql/runner/get_runner.query.graphql.js
 
 // Group queries
 import groupRunnersData from 'test_fixtures/graphql/runner/get_group_runners.query.graphql.json';
+import groupRunnersCountData from 'test_fixtures/graphql/runner/get_group_runners_count.query.graphql.json';
 import groupRunnersDataPaginated from 'test_fixtures/graphql/runner/get_group_runners.query.graphql.paginated.json';
 
 export {
@@ -16,5 +17,6 @@ export {
   runnersDataPaginated,
   runnersData,
   groupRunnersData,
+  groupRunnersCountData,
   groupRunnersDataPaginated,
 };

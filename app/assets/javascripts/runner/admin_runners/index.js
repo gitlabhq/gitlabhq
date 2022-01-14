@@ -25,9 +25,7 @@ export const initAdminRunners = (selector = '#js-admin-runners') => {
     return null;
   }
 
-  // TODO `activeRunnersCount` should be implemented using a GraphQL API
-  // https://gitlab.com/gitlab-org/gitlab/-/issues/333806
-  const { runnerInstallHelpPage, registrationToken, activeRunnersCount } = el.dataset;
+  const { runnerInstallHelpPage, registrationToken } = el.dataset;
 
   const apolloProvider = new VueApollo({
     defaultClient: createDefaultClient(),
@@ -43,10 +41,6 @@ export const initAdminRunners = (selector = '#js-admin-runners') => {
       return h(AdminRunnersApp, {
         props: {
           registrationToken,
-
-          // Runner counts are returned as formatted
-          // strings, we do not use `parseInt`.
-          activeRunnersCount,
         },
       });
     },

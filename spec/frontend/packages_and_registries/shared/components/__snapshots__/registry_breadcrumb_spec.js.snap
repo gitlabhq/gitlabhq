@@ -24,16 +24,20 @@ exports[`Registry Breadcrumb when is not rootRoute renders 1`] = `
           class="gl-breadcrumb-separator"
           data-testid="separator"
         >
-          <svg
-            aria-hidden="true"
-            class="gl-icon s8"
-            data-testid="angle-right-icon"
-            role="img"
+          <span
+            class="gl-mx-n5"
           >
-            <use
-              href="#angle-right"
-            />
-          </svg>
+            <svg
+              aria-hidden="true"
+              class="gl-icon s8"
+              data-testid="angle-right-icon"
+              role="img"
+            >
+              <use
+                href="#angle-right"
+              />
+            </svg>
+          </span>
         </span>
       </a>
     </li>

@@ -22,16 +22,20 @@ exports[`packages_list_row renders 1`] = `
           <div
             class="gl-display-flex gl-align-items-center gl-mr-3 gl-min-w-0"
           >
-            <gl-link-stub
+            <router-link-stub
+              ariacurrentvalue="page"
               class="gl-text-body gl-min-w-0"
               data-qa-selector="package_link"
-              href="http://gdk.test:3000/gitlab-org/gitlab-test/-/packages/111"
+              data-testid="details-link"
+              event="click"
+              tag="a"
+              to="[object Object]"
             >
               <gl-truncate-stub
                 position="end"
                 text="@gitlab-org/package-15"
               />
-            </gl-link-stub>
+            </router-link-stub>
              
             <!---->
              

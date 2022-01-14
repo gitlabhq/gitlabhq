@@ -763,9 +763,7 @@ module Ci
 
     def any_runners_available?
       cache_for_available_runners do
-        ::Gitlab::Database.allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/339937') do
-          project.active_runners.exists?
-        end
+        project.active_runners.exists?
       end
     end
 

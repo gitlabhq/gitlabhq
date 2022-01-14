@@ -9,7 +9,7 @@ import RegistrationDropdown from '../components/registration/registration_dropdo
 import RunnerFilteredSearchBar from '../components/runner_filtered_search_bar.vue';
 import RunnerList from '../components/runner_list.vue';
 import RunnerName from '../components/runner_name.vue';
-import RunnerOnlineStat from '../components/stat/runner_online_stat.vue';
+import RunnerStats from '../components/stat/runner_stats.vue';
 import RunnerPagination from '../components/runner_pagination.vue';
 import RunnerTypeTabs from '../components/runner_type_tabs.vue';
 
@@ -20,6 +20,9 @@ import {
   INSTANCE_TYPE,
   GROUP_TYPE,
   PROJECT_TYPE,
+  STATUS_ONLINE,
+  STATUS_OFFLINE,
+  STATUS_STALE,
   I18N_FETCH_ERROR,
 } from '../constants';
 import getRunnersQuery from '../graphql/get_runners.query.graphql';
@@ -51,16 +54,12 @@ export default {
     RunnerFilteredSearchBar,
     RunnerList,
     RunnerName,
-    RunnerOnlineStat,
+    RunnerStats,
     RunnerPagination,
     RunnerTypeTabs,
   },
   props: {
     registrationToken: {
-      type: String,
-      required: true,
-    },
-    activeRunnersCount: {
       type: String,
       required: true,
     },
@@ -127,6 +126,30 @@ export default {
         return {
           ...this.countVariables,
           type: PROJECT_TYPE,
+        };
+      },
+    },
+    onlineRunnersTotal: {
+      ...runnersCountSmartQuery,
+      variables() {
+        return {
+          status: STATUS_ONLINE,
+        };
+      },
+    },
+    offlineRunnersTotal: {
+      ...runnersCountSmartQuery,
+      variables() {
+        return {
+          status: STATUS_OFFLINE,
+        };
+      },
+    },
+    staleRunnersTotal: {
+      ...runnersCountSmartQuery,
+      variables() {
+        return {
+          status: STATUS_STALE,
         };
       },
     },
@@ -205,7 +228,11 @@ export default {
 </script>
 <template>
   <div>
-    <runner-online-stat class="gl-py-6 gl-px-5" :value="activeRunnersCount" />
+    <runner-stats
+      :online-runners-count="onlineRunnersTotal"
+      :offline-runners-count="offlineRunnersTotal"
+      :stale-runners-count="staleRunnersTotal"
+    />
 
     <div
       class="gl-display-flex gl-align-items-center gl-flex-direction-column-reverse gl-md-flex-direction-row gl-mt-3 gl-md-mt-0"

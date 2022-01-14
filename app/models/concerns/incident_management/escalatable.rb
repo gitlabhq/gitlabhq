@@ -27,6 +27,8 @@ module IncidentManagement
       ignored: 'No action will be taken'
     }.freeze
 
+    OPEN_STATUSES = [:triggered, :acknowledged].freeze
+
     included do
       validates :status, presence: true
 
@@ -34,6 +36,7 @@ module IncidentManagement
       # Descending sort order sorts statuses: Triggered > Acknowledged > Resolved > Ignored
       # https://gitlab.com/gitlab-org/gitlab/-/issues/221242#what-is-the-expected-correct-behavior
       scope :order_status, -> (sort_order) { order(status: sort_order == :asc ? :desc : :asc) }
+      scope :open, -> { with_status(OPEN_STATUSES) }
 
       state_machine :status, initial: :triggered do
         state :triggered, value: STATUSES[:triggered]
@@ -89,6 +92,10 @@ module IncidentManagement
           @status_names ||= state_machine_statuses.keys
         end
 
+        def open_status?(status)
+          OPEN_STATUSES.include?(status)
+        end
+
         private
 
         def state_machine_statuses
@@ -98,6 +105,10 @@ module IncidentManagement
 
       def status_event_for(status)
         self.class.state_machines[:status].events.transitions_for(self, to: status.to_s.to_sym).first&.event
+      end
+
+      def open?
+        self.class.open_status?(status_name)
       end
     end
   end

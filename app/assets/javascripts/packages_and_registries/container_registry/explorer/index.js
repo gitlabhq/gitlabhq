@@ -4,6 +4,7 @@ import { parseBoolean } from '~/lib/utils/common_utils';
 import PerformancePlugin from '~/performance/vue_performance_plugin';
 import Translate from '~/vue_shared/translate';
 import RegistryBreadcrumb from '~/packages_and_registries/shared/components/registry_breadcrumb.vue';
+import { renderBreadcrumb } from '~/packages_and_registries/shared/utils';
 import { apolloProvider } from './graphql/index';
 import RegistryExplorer from './pages/index.vue';
 import createRouter from './router';
@@ -84,38 +85,8 @@ export default () => {
       },
     });
 
-  const attachBreadcrumb = () => {
-    const breadCrumbEls = document.querySelectorAll('nav .js-breadcrumbs-list li');
-    const breadCrumbEl = breadCrumbEls[breadCrumbEls.length - 1];
-    const crumbs = [breadCrumbEl.querySelector('h2')];
-    const nestedBreadcrumbEl = document.createElement('div');
-    breadCrumbEl.replaceChild(nestedBreadcrumbEl, breadCrumbEl.querySelector('h2'));
-    return new Vue({
-      el: nestedBreadcrumbEl,
-      router,
-      apolloProvider,
-      components: {
-        RegistryBreadcrumb,
-      },
-      render(createElement) {
-        // FIXME(@tnir): this is a workaround until the MR gets merged:
-        // https://gitlab.com/gitlab-org/gitlab/-/merge_requests/48115
-        const parentEl = breadCrumbEl.parentElement.parentElement;
-        if (parentEl) {
-          parentEl.classList.remove('breadcrumbs-container');
-          parentEl.classList.add('gl-display-flex');
-          parentEl.classList.add('w-100');
-        }
-        // End of FIXME(@tnir)
-        return createElement('registry-breadcrumb', {
-          class: breadCrumbEl.className,
-          props: {
-            crumbs,
-          },
-        });
-      },
-    });
+  return {
+    attachBreadcrumb: renderBreadcrumb(router, apolloProvider, RegistryBreadcrumb),
+    attachMainComponent,
   };
-
-  return { attachBreadcrumb, attachMainComponent };
 };
