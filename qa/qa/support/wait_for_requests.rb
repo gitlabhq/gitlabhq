@@ -7,7 +7,12 @@ module QA
 
       DEFAULT_MAX_WAIT_TIME = 60
 
-      def wait_for_requests(skip_finished_loading_check: false)
+      def wait_for_requests(skip_finished_loading_check: false, skip_resp_code_check: false)
+        # We have tests that use 404 pages, allow them to skip this check
+        unless skip_resp_code_check
+          QA::Support::PageErrorChecker.check_page_for_error_code(Capybara.page)
+        end
+
         Waiter.wait_until(log: false) do
           finished_all_ajax_requests? && (!skip_finished_loading_check ? finished_loading?(wait: 1) : true)
         end

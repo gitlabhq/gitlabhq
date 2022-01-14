@@ -180,6 +180,8 @@ The cost factor for a job running on a shared runner is:
 
 - `0.008` for public projects on GitLab SaaS, if [created 2021-07-17 or later](https://gitlab.com/gitlab-org/gitlab/-/issues/332708).
   (For every 125 minutes of job time, you accrue 1 CD/CD minute.)
+- `0.008` for projects members of GitLab [Open Source program](../../subscriptions/index.md#gitlab-for-open-source).
+  (For every 125 minutes of job time, you accrue 1 CD/CD minute.)
 - `0` for public projects on GitLab self-managed instances, and for GitLab SaaS public projects created before 2021-07-17.
 - `1` for internal and private projects.
 

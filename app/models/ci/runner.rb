@@ -255,18 +255,16 @@ module Ci
         Arel.sql("(#{arel_tag_names_array.to_sql})")
       ]
 
-      ::Gitlab::Database.allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/339621') do
-        group(*unique_params).pluck('array_agg(ci_runners.id)', *unique_params).map do |values|
-          Gitlab::Ci::Matching::RunnerMatcher.new({
-            runner_ids: values[0],
-            runner_type: values[1],
-            public_projects_minutes_cost_factor: values[2],
-            private_projects_minutes_cost_factor: values[3],
-            run_untagged: values[4],
-            access_level: values[5],
-            tag_list: values[6]
-          })
-        end
+      group(*unique_params).pluck('array_agg(ci_runners.id)', *unique_params).map do |values|
+        Gitlab::Ci::Matching::RunnerMatcher.new({
+          runner_ids: values[0],
+          runner_type: values[1],
+          public_projects_minutes_cost_factor: values[2],
+          private_projects_minutes_cost_factor: values[3],
+          run_untagged: values[4],
+          access_level: values[5],
+          tag_list: values[6]
+        })
       end
     end
 

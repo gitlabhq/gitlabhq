@@ -6,16 +6,13 @@ module QA
       class New < Chemlab::Page
         path '/-/trials/new'
 
-        # TODO: Supplant with data-qa-selectors
-        text_field :first_name, id: 'first_name'
-        text_field :last_name, id: 'last_name'
-        text_field :company_name, id: 'company_name'
-        select :number_of_employees, id: 'company_size'
-        text_field :telephone_number, id: 'phone_number'
-
-        select :country, id: 'country_select'
-
-        button :continue, value: 'Continue'
+        text_field :first_name
+        text_field :last_name
+        text_field :company_name
+        select :number_of_employees
+        text_field :telephone_number
+        select :country
+        button :continue
       end
     end
   end

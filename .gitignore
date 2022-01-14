@@ -13,6 +13,7 @@
 eslint-report.html
 /.gitlab_shell_secret
 .idea
+.nova
 /.vscode/*
 /.rbenv-version
 .rbx/

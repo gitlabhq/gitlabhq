@@ -55,24 +55,4 @@ module PackagesHelper
     project.container_expiration_policy.nil? &&
     project.container_repositories.exists?
   end
-
-  def package_details_data(project, package)
-    {
-      package_id: package.id,
-      can_delete: can?(current_user, :destroy_package, project).to_s,
-      svg_path: image_path('illustrations/no-packages.svg'),
-      npm_path: package_registry_instance_url(:npm),
-      npm_project_path: package_registry_project_url(project.id, :npm),
-      maven_path: package_registry_project_url(project.id, :maven),
-      conan_path: package_registry_project_url(project.id, :conan),
-      nuget_path: nuget_package_registry_url(project.id),
-      pypi_path: pypi_registry_url(project.id),
-      pypi_setup_path: package_registry_project_url(project.id, :pypi),
-      composer_path: composer_registry_url(project&.group&.id),
-      project_name: project.name,
-      project_list_url: project_packages_path(project),
-      group_list_url: project.group ? group_packages_path(project.group) : '',
-      composer_config_repository_name: composer_config_repository_name(project.group&.id)
-    }
-  end
 end

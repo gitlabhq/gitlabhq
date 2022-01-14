@@ -22,5 +22,21 @@ RSpec.describe QA::Support::WaitForRequests do
         subject.wait_for_requests(skip_finished_loading_check: true)
       end
     end
+
+    context 'when skip_resp_code_check is defaulted to false' do
+      it 'call report' do
+        allow(QA::Support::PageErrorChecker).to receive(:check_page_for_error_code).with(Capybara.page)
+
+        subject.wait_for_requests
+      end
+    end
+
+    context 'when skip_resp_code_check is true' do
+      it 'does not parse for an error code' do
+        expect(QA::Support::PageErrorChecker).not_to receive(:check_page_for_error_code)
+
+        subject.wait_for_requests(skip_resp_code_check: true)
+      end
+    end
   end
 end

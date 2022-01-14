@@ -125,7 +125,7 @@ module PageLayoutHelper
   end
 
   def fluid_layout
-    current_user && current_user.layout == "fluid"
+    @force_fluid_layout == true || (current_user && current_user.layout == "fluid")
   end
 
   def blank_container(enabled = false)

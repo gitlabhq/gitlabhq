@@ -627,6 +627,10 @@ When writing about the Owner role:
 
 Do not use **Owner permissions**. A user who is assigned the Owner role has a set of associated permissions.
 
+## Package Registry
+
+Use title case for the GitLab Package Registry.
+
 ## permissions
 
 Do not use [**roles**](#roles) and **permissions** interchangeably. Each user is assigned a role. Each role includes a set of permissions.
