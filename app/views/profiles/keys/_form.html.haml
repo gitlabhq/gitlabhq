@@ -5,7 +5,7 @@
 
     .form-group
       = f.label :key, s_('Profiles|Key'), class: 'label-bold'
-      = f.text_area :key, class: "form-control gl-form-input js-add-ssh-key-validation-input qa-key-public-key-field", rows: 8, required: true
+      = f.text_area :key, class: "form-control gl-form-input js-add-ssh-key-validation-input qa-key-public-key-field", rows: 8, required: true, data: { supported_algorithms: Gitlab::SSHPublicKey.supported_algorithms }
       %p.form-text.text-muted= s_('Profiles|Begins with %{ssh_key_algorithms}.') % { ssh_key_algorithms: ssh_key_allowed_algorithms }
     .form-row
       .col.form-group

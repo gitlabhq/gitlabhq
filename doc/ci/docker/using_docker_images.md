@@ -401,10 +401,10 @@ pulling from Docker Hub fails. Docker daemon tries to use the same credentials f
 
 > Introduced in GitLab Runner 12.0.
 
-As an example, let's assume that you want to use the `aws_account_id.dkr.ecr.region.amazonaws.com/private/image:latest`
+As an example, let's assume that you want to use the `<aws_account_id>.dkr.ecr.<region>.amazonaws.com/private/image:latest`
 image. This image is private and requires you to log in into a private container registry.
 
-To configure access for `aws_account_id.dkr.ecr.region.amazonaws.com`, follow these steps:
+To configure access for `<aws_account_id>.dkr.ecr.<region>.amazonaws.com`, follow these steps:
 
 1. Make sure `docker-credential-ecr-login` is available in the GitLab Runner `$PATH`.
 1. Have any of the following [AWS credentials setup](https://github.com/awslabs/amazon-ecr-credential-helper#aws-credentials).
@@ -418,7 +418,7 @@ To configure access for `aws_account_id.dkr.ecr.region.amazonaws.com`, follow th
      ```json
      {
        "credHelpers": {
-         "aws_account_id.dkr.ecr.region.amazonaws.com": "ecr-login"
+         "<aws_account_id>.dkr.ecr.<region>.amazonaws.com": "ecr-login"
        }
      }
      ```
@@ -438,14 +438,14 @@ To configure access for `aws_account_id.dkr.ecr.region.amazonaws.com`, follow th
      GitLab Runner reads this configuration file and uses the needed helper for this
      specific repository.
 
-1. You can now use any private image from `aws_account_id.dkr.ecr.region.amazonaws.com` defined in
+1. You can now use any private image from `<aws_account_id>.dkr.ecr.<region>.amazonaws.com` defined in
    `image` and/or `services` in your `.gitlab-ci.yml` file:
 
    ```yaml
-   image: aws_account_id.dkr.ecr.region.amazonaws.com/private/image:latest
+   image: <aws_account_id>.dkr.ecr.<region>.amazonaws.com/private/image:latest
    ```
 
-   In the example, GitLab Runner looks at `aws_account_id.dkr.ecr.region.amazonaws.com` for the
+   In the example, GitLab Runner looks at `<aws_account_id>.dkr.ecr.<region>.amazonaws.com` for the
    image `private/image:latest`.
 
 You can add configuration for as many registries as you want, adding more

@@ -306,6 +306,15 @@ Planned removal milestone: 15.0 (2022-05-22)
 
 ## 14.7
 
+### Godep support in License Compliance
+
+The Godep dependency manager for Golang was deprecated in 2020 by Go and
+has been replaced with Go modules.
+To reduce our maintenance cost we are deprecating License Compliance for Godep projects as of 14.7
+and will remove it in GitLab 15.0
+
+Planned removal milestone: 15.0 (2022-06-22)
+
 ### Logging in GitLab
 
 The logging features in GitLab allow users to install the ELK stack (Elasticsearch, Logstash, and Kibana) to aggregate and manage application logs. Users can search for relevant logs in GitLab. However, since deprecating certificate-based integration with Kubernetes clusters and GitLab Managed Apps, we don't have a recommended solution for logging within GitLab. For more information, you can follow the issue for [integrating Opstrace with GitLab](https://gitlab.com/groups/gitlab-org/-/epics/6976).
