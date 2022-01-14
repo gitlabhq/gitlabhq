@@ -17,11 +17,14 @@ class RegistrationsController < Devise::RegistrationsController
     check_rate_limit!(:user_sign_up, scope: request.ip) if Feature.enabled?(:rate_limit_user_sign_up_endpoint, default_enabled: :yaml)
   end
 
+  before_action only: [:new] do
+    push_frontend_feature_flag(:gitlab_gtm_datalayer, type: :ops)
+  end
+
   feature_category :authentication_and_authorization
 
   def new
     @resource = build_resource
-    push_frontend_feature_flag(:gitlab_gtm_datalayer, type: :ops)
   end
 
   def create

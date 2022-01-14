@@ -11,14 +11,21 @@ GitLab SaaS is the GitLab software-as-a-service offering, which is available at 
 You don't need to install anything to use GitLab SaaS, you only need to
 [sign up](https://gitlab.com/users/sign_up). When you sign up, you choose:
 
-- [A license tier](https://about.gitlab.com/pricing/).
+- [A subscription](https://about.gitlab.com/pricing/).
 - [The number of seats you want](#how-seat-usage-is-determined).
 
-All GitLab SaaS public projects, regardless of the subscription, get access to features in the **Ultimate** tier.
+The subscription determines which features are available for your private projects. Public projects automatically get **Ultimate** tier features.
+
 Qualifying open source projects also get 50,000 CI/CD minutes and free access to the **Ultimate** tier
 through the [GitLab for Open Source program](https://about.gitlab.com/solutions/open-source/).
 
 ## Obtain a GitLab SaaS subscription
+
+A GitLab SaaS subscription applies to a top-level group.
+Members of every subgroup and project in the group:
+
+- Can use the features of the subscription.
+- Consume seats in the subscription.
 
 To subscribe to GitLab SaaS:
 
@@ -26,10 +33,10 @@ To subscribe to GitLab SaaS:
    and decide which tier you want.
 1. Create a user account for yourself by using the
    [sign up page](https://gitlab.com/users/sign_up).
-1. Create a [group](../../user/group/index.md#create-a-group). You use the group to grant users access to several projects
-   at once. A group is not required if you plan to have projects in a personal namespace instead.
+1. Create a [group](../../user/group/index.md#create-a-group). Your license tier applies to the top-level group, its subgroups, and projects.
 1. Create additional users and
-   [add them to the group](../../user/group/index.md#add-users-to-a-group).
+   [add them to the group](../../user/group/index.md#add-users-to-a-group). The users in this group, its subgroups, and projects can use
+   the features of your license tier, and they consume a seat in your subscription.
 1. On the left sidebar, select **Billing** and choose a tier.
 1. Fill out the form to complete your purchase.
 
@@ -62,9 +69,11 @@ The following information is displayed:
     email address.
 
 A GitLab SaaS subscription uses a concurrent (_seat_) model. You pay for a
-subscription according to the maximum number of users enabled at one time. You can
+subscription according to the maximum number of users assigned to the top-level group or its children during the billing period. You can
 add and remove users during the subscription period, as long as the total users
 at any given time doesn't exceed the subscription count.
+
+A top-level group can be [changed](../../user/group/index.md#change-a-groups-path) like any other group.
 
 Every user is included in seat usage, with the following exceptions:
 
@@ -76,6 +85,12 @@ Every user is included in seat usage, with the following exceptions:
   so on.)
 
 Seat usage is reviewed [quarterly or annually](../quarterly_reconciliation.md).
+
+If a user navigates to a different top-level group (one they have created themselves, for example)
+and that group does not have a paid subscription, they would not see any of the paid features.
+
+It is also possible for users to belong to two different top-level groups with different subscriptions.
+In this case, they would see only the features available to that subscription.
 
 ### View seat usage
 
@@ -124,7 +139,7 @@ and is not affected by the current search.
 A GitLab subscription is valid for a specific number of users.
 
 If the number of billable users exceeds the number included in the subscription, known
-as the number of **seats owed**, you must pay for the excess number of users before renewal.
+as the number of **seats owed**, you must pay for the excess number of users.
 
 For example, if you purchase a subscription for 10 users:
 
@@ -138,9 +153,9 @@ Seats owed = 12 - 10 (Maximum users - users in subscription)
 
 ### Add users to your subscription
 
-You can add users to your subscription at any time during the subscription period. The cost of
-additional users added during the subscription period is prorated from the date of purchase through
-the end of the subscription period.
+Your subscription cost is based on the maximum number of seats you use during the billing period.
+Even if you reach the number of seats in your subscription, you can continue to add users.
+GitLab [bills you for the overage](../quarterly_reconciliation.md).
 
 To add users to a subscription:
 

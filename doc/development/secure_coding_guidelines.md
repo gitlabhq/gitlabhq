@@ -767,3 +767,354 @@ In the example above, the `is_admin?` method is overwritten when passing it to t
   - If you must, be **very** confident that you've sanitized the values correctly.
     Consider creating an allowlist of values, and validating the user input against that.
 - When extending classes that use metaprogramming, make sure you don't inadvertently override any method definition safety checks.
+
+## Working with archive files
+
+Working with archive files like `zip`, `tar`, `jar`, `war`, `cpio`, `apk`, `rar` and `7z` presents an area where potentially critical security vulnerabilities can sneak into an application.
+
+### Zip Slip
+
+In 2018, the security company Snyk [released a blog post](https://snyk.io/research/zip-slip-vulnerability) describing research into a widespread and critical vulnerability present in many libraries and applications which allows an attacker to overwrite arbitrary files on the server file system which, in many cases, can be leveraged to achieve remote code execution. The vulnerability was dubbed Zip Slip.
+
+A Zip Slip vulnerability happens when an application extracts an archive without validating and sanitizing the filenames inside the archive for directory traversal sequences that change the file location when the file is extracted.
+
+Example malicious file names:
+
+- `../../etc/passwd`
+- `../../root/.ssh/authorized_keys`
+- `../../etc/gitlab/gitlab.rb`
+
+If a vulnerable application extracts an archive file with any of these file names, the attacker can overwrite these files with arbitrary content.
+
+### Insecure archive extraction examples
+
+#### Ruby
+
+For zip files, the [rubyzip](https://rubygems.org/gems/rubyzip) Ruby gem is already patched against the Zip Slip vulnerability and will refuse to extract files that try to perform directory traversal, so for this vulnerable example we will extract a `tar.gz` file with `Gem::Package::TarReader`:
+
+```ruby
+# Vulnerable tar.gz extraction example!
+
+begin
+  tar_extract = Gem::Package::TarReader.new(Zlib::GzipReader.open("/tmp/uploaded.tar.gz"))
+rescue Errno::ENOENT
+  STDERR.puts("archive file does not exist or is not readable")
+  exit(false)
+end
+tar_extract.rewind
+
+tar_extract.each do |entry|
+  next unless entry.file? # Only process files in this example for simplicity.
+
+  destination = "/tmp/extracted/#{entry.full_name}" # Oops! We blindly use the entry file name for the destination.
+  File.open(destination, "wb") do |out|
+    out.write(entry.read)
+  end
+end
+```
+
+#### Go
+
+```golang
+// unzip INSECURELY extracts source zip file to destination.
+func unzip(src, dest string) error {
+  r, err := zip.OpenReader(src)
+  if err != nil {
+    return err
+  }
+  defer r.Close()
+
+  os.MkdirAll(dest, 0750)
+
+  for _, f := range r.File {
+    if f.FileInfo().IsDir() { // Skip directories in this example for simplicity.
+      continue
+    }
+
+    rc, err := f.Open()
+    if err != nil {
+      return err
+    }
+    defer rc.Close()
+
+    path := filepath.Join(dest, f.Name) // Oops! We blindly use the entry file name for the destination.
+    os.MkdirAll(filepath.Dir(path), f.Mode())
+    f, err := os.OpenFile(path, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, f.Mode())
+    if err != nil {
+      return err
+    }
+    defer f.Close()
+
+    if _, err := io.Copy(f, rc); err != nil {
+      return err
+    }
+  }
+
+  return nil
+}
+```
+
+#### Best practices
+
+Always expand the destination file path by resolving all potential directory traversals and other sequences that can alter the path and refuse extraction if the final destination path does not start with the intended destination directory.
+
+##### Ruby
+
+```ruby
+# tar.gz extraction example with protection against Zip Slip attacks.
+
+begin
+  tar_extract = Gem::Package::TarReader.new(Zlib::GzipReader.open("/tmp/uploaded.tar.gz"))
+rescue Errno::ENOENT
+  STDERR.puts("archive file does not exist or is not readable")
+  exit(false)
+end
+tar_extract.rewind
+
+tar_extract.each do |entry|
+  next unless entry.file? # Only process files in this example for simplicity.
+
+  # safe_destination will raise an exception in case of Zip Slip / directory traversal.
+  destination = safe_destination(entry.full_name, "/tmp/extracted")
+
+  File.open(destination, "wb") do |out|
+    out.write(entry.read)
+  end
+end
+
+def safe_destination(filename, destination_dir)
+  raise "filename cannot start with '/'" if filename.start_with?("/")
+
+  destination_dir = File.realpath(destination_dir)
+  destination = File.expand_path(filename, destination_dir)
+
+  raise "filename is outside of destination directory" unless
+    destination.start_with?(destination_dir + "/"))
+
+  destination
+end
+```
+
+```ruby
+# zip extraction example using rubyzip with built-in protection against Zip Slip attacks.
+require 'zip'
+
+Zip::File.open("/tmp/uploaded.zip") do |zip_file|
+  zip_file.each do |entry|
+    # Extract entry to /tmp/extracted directory.
+    entry.extract("/tmp/extracted")
+  end
+end
+```
+
+##### Go
+
+You are encouraged to use the secure archive utilities provided by [LabSec](https://gitlab.com/gitlab-com/gl-security/appsec/labsec) which will handle Zip Slip and other types of vulnerabilities for you. The LabSec utilities are also context aware which makes it possible to cancel or timeout extractions:
+
+```golang
+package main
+
+import "gitlab-com/gl-security/appsec/labsec/archive/zip"
+
+func main() {
+  f, err := os.Open("/tmp/uploaded.zip")
+  if err != nil {
+    panic(err)
+  }
+  defer f.Close()
+
+  fi, err := f.Stat()
+  if err != nil {
+    panic(err)
+  }
+
+  if err := zip.Extract(context.Background(), f, fi.Size(), "/tmp/extracted"); err != nil {
+    panic(err)
+  }
+}
+```
+
+In case the LabSec utilities do not fit your needs, here is an example for extracting a zip file with protection against Zip Slip attacks:
+
+```golang
+// unzip extracts source zip file to destination with protection against Zip Slip attacks.
+func unzip(src, dest string) error {
+  r, err := zip.OpenReader(src)
+  if err != nil {
+    return err
+  }
+  defer r.Close()
+
+  os.MkdirAll(dest, 0750)
+
+  for _, f := range r.File {
+    if f.FileInfo().IsDir() { // Skip directories in this example for simplicity.
+      continue
+    }
+
+    rc, err := f.Open()
+    if err != nil {
+      return err
+    }
+    defer rc.Close()
+
+    path := filepath.Join(dest, f.Name)
+
+    // Check for Zip Slip / directory traversal
+    if !strings.HasPrefix(path, filepath.Clean(dest) + string(os.PathSeparator)) {
+      return fmt.Errorf("illegal file path: %s", path)
+    }
+
+    os.MkdirAll(filepath.Dir(path), f.Mode())
+    f, err := os.OpenFile(path, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, f.Mode())
+    if err != nil {
+      return err
+    }
+    defer f.Close()
+
+    if _, err := io.Copy(f, rc); err != nil {
+      return err
+    }
+  }
+
+  return nil
+}
+```
+
+### Symlink attacks
+
+Symlink attacks makes it possible for an attacker to read the contents of arbitrary files on the server of a vulnerable application. While it is a high-severity vulnerability that can often lead to remote code execution and other critical vulnerabilities, it is only exploitable in scenarios where a vulnerable application accepts archive files from the attacker and somehow displays the extracted contents back to the attacker without any validation or sanitization of symbolic links inside the archive.
+
+### Insecure archive symlink extraction examples
+
+#### Ruby
+
+For zip files, the [rubyzip](https://rubygems.org/gems/rubyzip) Ruby gem is already patched against symlink attacks as it simply ignores symbolic links, so for this vulnerable example we will extract a `tar.gz` file with `Gem::Package::TarReader`:
+
+```ruby
+# Vulnerable tar.gz extraction example!
+
+begin
+  tar_extract = Gem::Package::TarReader.new(Zlib::GzipReader.open("/tmp/uploaded.tar.gz"))
+rescue Errno::ENOENT
+  STDERR.puts("archive file does not exist or is not readable")
+  exit(false)
+end
+tar_extract.rewind
+
+# Loop over each entry and output file contents
+tar_extract.each do |entry|
+  next if entry.directory?
+
+  # Oops! We don't check if the file is actually a symbolic link to a potentially sensitive file.
+  puts entry.read
+end
+```
+
+#### Go
+
+```golang
+// printZipContents INSECURELY prints contents of files in a zip file.
+func printZipContents(src string) error {
+  r, err := zip.OpenReader(src)
+  if err != nil {
+    return err
+  }
+  defer r.Close()
+
+  // Loop over each entry and output file contents
+  for _, f := range r.File {
+    if f.FileInfo().IsDir() {
+      continue
+    }
+
+    rc, err := f.Open()
+    if err != nil {
+      return err
+    }
+    defer rc.Close()
+
+    // Oops! We don't check if the file is actually a symbolic link to a potentially sensitive file.
+    buf, err := ioutil.ReadAll(rc)
+    if err != nil {
+      return err
+    }
+
+    fmt.Println(buf.String())
+  }
+
+  return nil
+}
+```
+
+#### Best practices
+
+Always check the type of the archive entry before reading the contents and ignore entries that are not plain files. If you absolutely must support symbolic links, ensure that they only point to files inside the archive and nowhere else.
+
+##### Ruby
+
+```ruby
+# tar.gz extraction example with protection against symlink attacks.
+
+begin
+  tar_extract = Gem::Package::TarReader.new(Zlib::GzipReader.open("/tmp/uploaded.tar.gz"))
+rescue Errno::ENOENT
+  STDERR.puts("archive file does not exist or is not readable")
+  exit(false)
+end
+tar_extract.rewind
+
+# Loop over each entry and output file contents
+tar_extract.each do |entry|
+  next if entry.directory?
+
+  # By skipping symbolic links entirely, we are sure they can't cause any trouble!
+  next if entry.symlink?
+
+  puts entry.read
+end
+```
+
+##### Go
+
+You are encouraged to use the secure archive utilities provided by [LabSec](https://gitlab.com/gitlab-com/gl-security/appsec/labsec) which will handle Zip Slip and symlink vulnerabilities for you. The LabSec utilities are also context aware which makes it possible to cancel or timeout extractions.
+
+In case the LabSec utilities do not fit your needs, here is an example for extracting a zip file with protection against symlink attacks:
+
+```golang
+// printZipContents prints contents of files in a zip file with protection against symlink attacks.
+func printZipContents(src string) error {
+  r, err := zip.OpenReader(src)
+  if err != nil {
+    return err
+  }
+  defer r.Close()
+
+  // Loop over each entry and output file contents
+  for _, f := range r.File {
+    if f.FileInfo().IsDir() {
+      continue
+    }
+
+    // By skipping all irregular file types (including symbolic links), we are sure they can't cause any trouble!
+    if !zf.Mode().IsRegular() {
+      continue
+    }
+
+    rc, err := f.Open()
+    if err != nil {
+      return err
+    }
+    defer rc.Close()
+
+    buf, err := ioutil.ReadAll(rc)
+    if err != nil {
+      return err
+    }
+
+    fmt.Println(buf.String())
+  }
+
+  return nil
+}
+```

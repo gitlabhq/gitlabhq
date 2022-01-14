@@ -13224,6 +13224,7 @@ Represents vulnerability finding of a security report on the pipeline.
 | <a id="projectvulnerabilityscanners"></a>`vulnerabilityScanners` | [`VulnerabilityScannerConnection`](#vulnerabilityscannerconnection) | Vulnerability scanners reported on the project vulnerabilities. (see [Connections](#connections)) |
 | <a id="projectweburl"></a>`webUrl` | [`String`](#string) | Web URL of the project. |
 | <a id="projectwikienabled"></a>`wikiEnabled` | [`Boolean`](#boolean) | Indicates if Wikis are enabled for the current user. |
+| <a id="projectworkitemtypes"></a>`workItemTypes` | [`WorkItemTypeConnection`](#workitemtypeconnection) | Work item types available to the project. Available only when feature flag `work_items` is enabled. This flag is disabled by default, because the feature is experimental and is subject to change without notice. (see [Connections](#connections)) |
 
 #### Fields with arguments
 

@@ -333,3 +333,14 @@ Planned removal milestone: 15.0 (2021-06-22)
 Tracing in GitLab is an integration with Jaeger, an open-source end-to-end distributed tracing system. GitLab users can navigate to their Jaeger instance to gain insight into the performance of a deployed application, tracking each function or microservice that handles a given request. Tracing in GitLab is deprecated in GitLab 14.7, and scheduled for removal in 15.0. To track work on a possible replacement, see the issue for [Opstrace integration with GitLab](https://gitlab.com/groups/gitlab-org/-/epics/6976).
 
 Planned removal milestone: 15.0 (2022-05-22)
+
+## 14.8
+
+### Removal of `artifacts:report:cobertura` keyword
+
+Currently, test coverage visualizations in GitLab only support Cobertura reports. Starting 15.0, the
+`artifacts:report:cobertura` keyword will be replaced by
+[`artifacts:reports:coverage_report`](https://gitlab.com/gitlab-org/gitlab/-/issues/344533). Cobertura will be the
+only supported report file in 15.0, but this is the first step towards GitLab supporting other report types.
+
+Planned removal milestone: 15.0 (2022-06-22)

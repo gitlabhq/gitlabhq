@@ -1669,24 +1669,6 @@ If a feature is moved to another tier:
 > - [Moved](<link-to-issue>) from GitLab Premium to GitLab Free in 12.0.
 ```
 
-If a feature is deprecated, include a link to a replacement (when available):
-
-```markdown
-> - [Deprecated](<link-to-issue>) in GitLab 11.3. Replaced by [meaningful text](<link-to-appropriate-documentation>).
-```
-
-You can also describe the replacement in surrounding text, if available. If the
-deprecation isn't obvious in existing text, you may want to include a warning:
-
-```markdown
-WARNING:
-This feature was [deprecated](link-to-issue) in GitLab 12.3 and replaced by
-[Feature name](link-to-feature-documentation).
-```
-
-In the first major GitLab version after the feature was deprecated, be sure to
-remove information about that deprecated feature.
-
 #### Inline version text
 
 If you're adding content to an existing topic, you can add version information
@@ -1785,6 +1767,47 @@ instructions for users of GitLab 10 should be removed.
 To view historical information about a feature, review GitLab
 [release posts](https://about.gitlab.com/releases/), or search for the issue or
 merge request where the work was done.
+
+### Deprecated features
+
+When a feature is deprecated, add `(DEPRECATED)` to the page title or to
+the heading of the section documenting the feature, immediately before
+the tier badge:
+
+```markdown
+<!-- Page title example: -->
+# Feature A (DEPRECATED) **(ALL TIERS)**
+
+<!-- Doc section example: -->
+## Feature B (DEPRECATED) **(PREMIUM SELF)**
+```
+
+Add the deprecation to the version history note (you can include a link
+to a replacement when available):
+
+```markdown
+> - [Deprecated](<link-to-issue>) in GitLab 11.3. Replaced by [meaningful text](<link-to-appropriate-documentation>).
+```
+
+You can also describe the replacement in surrounding text, if available. If the
+deprecation isn't obvious in existing text, you may want to include a warning:
+
+```markdown
+WARNING:
+This feature was [deprecated](link-to-issue) in GitLab 12.3 and replaced by
+[Feature name](link-to-feature-documentation).
+```
+
+If you add `(DEPRECATED)` to the page's title and the document is linked from the docs
+navigation, either remove the page from the nav or update the nav item to include the
+same text before the feature name:
+
+```yaml
+ - doc_title: (DEPRECATED) Feature A
+```
+
+In the first major GitLab version after the feature was deprecated, be sure to
+remove information about that deprecated feature.
 
 ## Products and features
 

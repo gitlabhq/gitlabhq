@@ -187,7 +187,7 @@ describe('~/environments/components/new_environments_app.vue', () => {
 
       expect(environmentAppMock).toHaveBeenCalledWith(
         expect.anything(),
-        expect.objectContaining({ scope: 'stopped' }),
+        expect.objectContaining({ scope: 'stopped', page: 1 }),
         expect.anything(),
         expect.anything(),
       );

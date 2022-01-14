@@ -145,7 +145,7 @@ export default {
     },
     setScope(scope) {
       this.scope = scope;
-      this.resetPolling();
+      this.moveToPage(1);
     },
     movePage(direction) {
       this.moveToPage(this.pageInfo[`${direction}Page`]);

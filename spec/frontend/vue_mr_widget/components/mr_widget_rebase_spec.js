@@ -10,7 +10,7 @@ import {
 
 let wrapper;
 
-function createWrapper(propsData, mergeRequestWidgetGraphql) {
+function createWrapper(propsData, mergeRequestWidgetGraphql, rebaseWithoutCiUi) {
   wrapper = shallowMount(WidgetRebase, {
     propsData,
     data() {
@@ -24,7 +24,7 @@ function createWrapper(propsData, mergeRequestWidgetGraphql) {
         },
       };
     },
-    provide: { glFeatures: { mergeRequestWidgetGraphql } },
+    provide: { glFeatures: { mergeRequestWidgetGraphql, rebaseWithoutCiUi } },
     mocks: {
       $apollo: {
         queries: {
@@ -38,7 +38,8 @@ function createWrapper(propsData, mergeRequestWidgetGraphql) {
 describe('Merge request widget rebase component', () => {
   const findRebaseMessage = () => wrapper.find('[data-testid="rebase-message"]');
   const findRebaseMessageText = () => findRebaseMessage().text();
-  const findRebaseButton = () => wrapper.find(ActionsButton);
+  const findRebaseButtonActions = () => wrapper.find(ActionsButton);
+  const findStandardRebaseButton = () => wrapper.find('[data-testid="standard-rebase-button"]');
 
   afterEach(() => {
     wrapper.destroy();
@@ -65,7 +66,7 @@ describe('Merge request widget rebase component', () => {
         const rebaseMock = jest.fn().mockResolvedValue();
         const pollMock = jest.fn().mockResolvedValue({});
 
-        beforeEach(() => {
+        it('renders the warning message', () => {
           createWrapper(
             {
               mr: {
@@ -79,9 +80,7 @@ describe('Merge request widget rebase component', () => {
             },
             mergeRequestWidgetGraphql,
           );
-        });
 
-        it('renders the warning message', () => {
           const text = findRebaseMessageText();
 
           expect(text).toContain('Merge blocked');
@@ -91,6 +90,20 @@ describe('Merge request widget rebase component', () => {
         });
 
         it('renders an error message when rebasing has failed', async () => {
+          createWrapper(
+            {
+              mr: {
+                rebaseInProgress: false,
+                canPushToSourceBranch: true,
+              },
+              service: {
+                rebase: rebaseMock,
+                poll: pollMock,
+              },
+            },
+            mergeRequestWidgetGraphql,
+          );
+
           // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
           // eslint-disable-next-line no-restricted-syntax
           wrapper.setData({ rebasingError: 'Something went wrong!' });
@@ -99,13 +112,31 @@ describe('Merge request widget rebase component', () => {
           expect(findRebaseMessageText()).toContain('Something went wrong!');
         });
 
-        describe('"Rebase" button', () => {
-          it('is rendered', () => {
-            expect(findRebaseButton().exists()).toBe(true);
+        describe('Rebase button with flag rebaseWithoutCiUi', () => {
+          beforeEach(() => {
+            createWrapper(
+              {
+                mr: {
+                  rebaseInProgress: false,
+                  canPushToSourceBranch: true,
+                },
+                service: {
+                  rebase: rebaseMock,
+                  poll: pollMock,
+                },
+              },
+              mergeRequestWidgetGraphql,
+              { rebaseWithoutCiUi: true },
+            );
+          });
+
+          it('rebase button with actions is rendered', () => {
+            expect(findRebaseButtonActions().exists()).toBe(true);
+            expect(findStandardRebaseButton().exists()).toBe(false);
           });
 
           it('has rebase and rebase without CI actions', () => {
-            const actionNames = findRebaseButton()
+            const actionNames = findRebaseButtonActions()
               .props('actions')
               .map((action) => action.key);
 
@@ -113,13 +144,13 @@ describe('Merge request widget rebase component', () => {
           });
 
           it('defaults to rebase action', () => {
-            expect(findRebaseButton().props('selectedKey')).toStrictEqual(REBASE_BUTTON_KEY);
+            expect(findRebaseButtonActions().props('selectedKey')).toStrictEqual(REBASE_BUTTON_KEY);
           });
 
           it('starts the rebase when clicking', async () => {
             // ActionButtons use the actions props instead of emitting
             // a click event, therefore simulating the behavior here:
-            findRebaseButton()
+            findRebaseButtonActions()
               .props('actions')
               .find((x) => x.key === REBASE_BUTTON_KEY)
               .handle();
@@ -132,7 +163,7 @@ describe('Merge request widget rebase component', () => {
           it('starts the CI-skipping rebase when clicking on "Rebase without CI"', async () => {
             // ActionButtons use the actions props instead of emitting
             // a click event, therefore simulating the behavior here:
-            findRebaseButton()
+            findRebaseButtonActions()
               .props('actions')
               .find((x) => x.key === REBASE_WITHOUT_CI_BUTTON_KEY)
               .handle();
@@ -142,12 +173,91 @@ describe('Merge request widget rebase component', () => {
             expect(rebaseMock).toHaveBeenCalledWith({ skipCi: true });
           });
         });
+
+        describe('Rebase button with rebaseWithoutCiUI flag disabled', () => {
+          beforeEach(() => {
+            createWrapper(
+              {
+                mr: {
+                  rebaseInProgress: false,
+                  canPushToSourceBranch: true,
+                },
+                service: {
+                  rebase: rebaseMock,
+                  poll: pollMock,
+                },
+              },
+              mergeRequestWidgetGraphql,
+            );
+          });
+
+          it('standard rebase button is rendered', () => {
+            expect(findStandardRebaseButton().exists()).toBe(true);
+            expect(findRebaseButtonActions().exists()).toBe(false);
+          });
+
+          it('calls rebase method with skip_ci false', () => {
+            findStandardRebaseButton().vm.$emit('click');
+
+            expect(rebaseMock).toHaveBeenCalledWith({ skipCi: false });
+          });
+        });
       });
 
       describe('without permissions', () => {
         const exampleTargetBranch = 'fake-branch-to-test-with';
 
-        beforeEach(() => {
+        describe('UI text', () => {
+          beforeEach(() => {
+            createWrapper(
+              {
+                mr: {
+                  rebaseInProgress: false,
+                  canPushToSourceBranch: false,
+                  targetBranch: exampleTargetBranch,
+                },
+                service: {},
+              },
+              mergeRequestWidgetGraphql,
+            );
+          });
+
+          it('renders a message explaining user does not have permissions', () => {
+            const text = findRebaseMessageText();
+
+            expect(text).toContain(
+              'Merge blocked: the source branch must be rebased onto the target branch.',
+            );
+            expect(text).toContain('the source branch must be rebased');
+          });
+
+          it('renders the correct target branch name', () => {
+            const elem = findRebaseMessage();
+
+            expect(elem.text()).toContain(
+              'Merge blocked: the source branch must be rebased onto the target branch.',
+            );
+          });
+        });
+
+        it('does not render the rebase actions button with rebaseWithoutCiUI flag enabled', () => {
+          createWrapper(
+            {
+              mr: {
+                rebaseInProgress: false,
+                canPushToSourceBranch: false,
+                targetBranch: exampleTargetBranch,
+              },
+              service: {},
+            },
+            mergeRequestWidgetGraphql,
+            { rebaseWithoutCiUi: true },
+          );
+
+          expect(findRebaseButtonActions().exists()).toBe(false);
+        });
+
+        it('does not render the standard rebase button with rebaseWithoutCiUI flag disabled', () => {
           createWrapper(
             {
               mr: {
@@ -159,27 +269,8 @@ describe('Merge request widget rebase component', () => {
             },
             mergeRequestWidgetGraphql,
           );
-        });
 
-        it('renders a message explaining user does not have permissions', () => {
-          const text = findRebaseMessageText();
-
-          expect(text).toContain(
-            'Merge blocked: the source branch must be rebased onto the target branch.',
-          );
-          expect(text).toContain('the source branch must be rebased');
-        });
-
-        it('renders the correct target branch name', () => {
-          const elem = findRebaseMessage();
-
-          expect(elem.text()).toContain(
-            `Merge blocked: the source branch must be rebased onto the target branch.`,
-          );
-        });
-
-        it('does not render the "Rebase" button', () => {
-          expect(findRebaseButton().exists()).toBe(false);
+          expect(findStandardRebaseButton().exists()).toBe(false);
         });
       });
 

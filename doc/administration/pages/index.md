@@ -289,6 +289,8 @@ control over how the Pages daemon runs and serves content in your environment.
 | `use_legacy_storage`                    | Temporarily-introduced parameter allowing to use legacy domain configuration source and storage. [Removed in 14.3](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/6166). |
 | `rate_limit_source_ip`                  | Rate limit per source IP in number of requests per second. Set to `0` to disable this feature. |
 | `rate_limit_source_ip_burst`            | Rate limit per source IP maximum burst allowed per second. |
+| `rate_limit_domain`                     | Rate limit per domain in number of requests per second. Set to `0` to disable this feature. |
+| `rate_limit_domain_burst`               | Rate limit per domain maximum burst allowed per second. |
 
 ## Advanced configuration
 
@@ -1077,15 +1079,22 @@ than GitLab to prevent XSS attacks.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-pages/-/issues/631) in GitLab 14.5.
 
-You can enforce source-IP rate limits to help minimize the risk of a Denial of Service (DoS) attack. GitLab Pages
+You can enforce rate limits to help minimize the risk of a Denial of Service (DoS) attack. GitLab Pages
 uses a [token bucket algorithm](https://en.wikipedia.org/wiki/Token_bucket) to enforce rate limiting. By default,
 requests that exceed the specified limits are reported but not rejected.
 
-Source-IP rate limits are enforced using the following:
+GitLab Pages supports the following types of rate limiting:
 
-- `rate_limit_source_ip`: Set the maximum threshold in number of requests per second. Set to 0 to disable this feature.
-- `rate_limit_source_ip_burst`: Sets the maximum threshold of number of requests allowed in an initial outburst of requests.
+- Per `source_ip`. It limits how many requests are allowed from the single client IP address.
+- Per `domain`. It limits how many requests are allowed per domain hosted on GitLab Pages. It can be a custom domain like `example.com`, or group domain like `group.gitlab.io`.
+
+Rate limits are enforced using the following:
+
+- `rate_limit_source_ip`: Set the maximum threshold in number of requests per client IP per second. Set to 0 to disable this feature.
+- `rate_limit_source_ip_burst`: Sets the maximum threshold of number of requests allowed in an initial outburst of requests per client IP.
   For example, when you load a web page that loads a number of resources at the same time.
+- `rate_limit_domain_ip`: Set the maximum threshold in number of requests per hosted pages domain per second. Set to 0 to disable this feature.
+- `rate_limit_domain_burst`: Sets the maximum threshold of number of requests allowed in an initial outburst of requests per hosted pages domain.
 
 #### Enable source-IP rate limits
 
@@ -1101,6 +1110,24 @@ Source-IP rate limits are enforced using the following:
 
    ```ruby
    gitlab_pages['env'] = {'FF_ENFORCE_IP_RATE_LIMITS' => 'true'}
+   ```
+
+1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
+
+#### Enable domain rate limits
+
+1. Set rate limits in `/etc/gitlab/gitlab.rb`:
+
+   ```ruby
+   gitlab_pages['rate_limit_domain'] = 1000
+   gitlab_pages['rate_limit_domain_burst'] = 5000
+   ```
+
+1. To reject requests that exceed the specified limits, enable the `FF_ENFORCE_DOMAIN_RATE_LIMITS` feature flag in
+   `/etc/gitlab/gitlab.rb`:
+
+   ```ruby
+   gitlab_pages['env'] = {'FF_ENFORCE_DOMAIN_RATE_LIMITS' => 'true'}
    ```
 
 1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).

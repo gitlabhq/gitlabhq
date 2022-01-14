@@ -20,6 +20,9 @@ Configure Gitaly Cluster using either:
 
 Smaller GitLab installations may need only [Gitaly itself](index.md).
 
+To upgrade a Gitaly Cluster, follow the documentation for
+[zero downtime upgrades](../../update/zero_downtime.md#gitaly-cluster).
+
 ## Requirements
 
 The minimum recommended configuration for a Gitaly Cluster requires:
@@ -376,8 +379,8 @@ configuration option is set. For more details, consult the PgBouncer documentati
 
 If there are multiple Praefect nodes:
 
-- Complete the following steps for **each** node.
-- Designate one node as the "deploy node", and configure it first.
+1. Designate one node as the deploy node, and configure it using the following steps.
+1. Complete the following steps for each additional node.
 
 To complete this section you need a [configured PostgreSQL server](#postgresql), including:
 
@@ -415,10 +418,21 @@ On the **Praefect** node:
 
    ```ruby
    praefect['listen_addr'] = '0.0.0.0:2305'
+   ```
 
+1. Configure Prometheus metrics by editing
+   `/etc/gitlab/gitlab.rb`:
+
+   ```ruby
    # Enable Prometheus metrics access to Praefect. You must use firewalls
    # to restrict access to this address/port.
+   # The default metrics endpoint is /metrics
    praefect['prometheus_listen_addr'] = '0.0.0.0:9652'
+
+   # Some metrics run queries against the database. Enabling separate database metrics allows
+   # these metrics to be collected when the metrics are
+   # scraped on a separate /db_metrics endpoint. 
+   praefect['separate_database_metrics'] = true
    ```
 
 1. Configure a strong `auth_token` for **Praefect** by editing
@@ -555,8 +569,6 @@ On the **Praefect** node:
    If the check fails, make sure you have followed the steps correctly. If you
    edit `/etc/gitlab/gitlab.rb`, remember to run `sudo gitlab-ctl reconfigure`
    again before trying the `sql-ping` command.
-
-**The steps above must be completed for each Praefect node!**
 
 #### Enabling TLS support
 

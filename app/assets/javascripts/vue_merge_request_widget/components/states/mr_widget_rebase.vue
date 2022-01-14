@@ -1,5 +1,5 @@
 <script>
-import { GlSkeletonLoader } from '@gitlab/ui';
+import { GlButton, GlSkeletonLoader } from '@gitlab/ui';
 import createFlash from '~/flash';
 import { __ } from '~/locale';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
@@ -29,6 +29,7 @@ export default {
     statusIcon,
     GlSkeletonLoader,
     ActionsButton,
+    GlButton,
   },
   mixins: [glFeatureFlagMixin(), mergeRequestQueryVariablesMixin],
   props: {
@@ -52,6 +53,9 @@ export default {
   computed: {
     isLoading() {
       return this.glFeatures.mergeRequestWidgetGraphql && this.$apollo.queries.state.loading;
+    },
+    showRebaseWithoutCi() {
+      return this.glFeatures?.rebaseWithoutCiUi;
     },
     rebaseInProgress() {
       if (this.glFeatures.mergeRequestWidgetGraphql) {
@@ -196,8 +200,18 @@ export default {
           v-if="!rebaseInProgress && canPushToSourceBranch && !isMakingRequest"
           class="accept-merge-holder clearfix js-toggle-container accept-action media space-children"
         >
+          <gl-button
+            v-if="!glFeatures.restructuredMrWidget && !showRebaseWithoutCi"
+            :loading="isMakingRequest"
+            variant="confirm"
+            data-qa-selector="mr_rebase_button"
+            data-testid="standard-rebase-button"
+            @click="rebase"
+          >
+            {{ __('Rebase') }}
+          </gl-button>
           <actions-button
-            v-if="!glFeatures.restructuredMrWidget"
+            v-if="!glFeatures.restructuredMrWidget && showRebaseWithoutCi"
             :actions="actions"
             :selected-key="selectedRebaseAction"
             variant="confirm"

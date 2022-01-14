@@ -406,6 +406,11 @@ module Types
           description: 'Labels available on this project.',
           resolver: Resolvers::LabelsResolver
 
+    field :work_item_types, Types::WorkItems::TypeType.connection_type,
+          resolver: Resolvers::WorkItems::TypesResolver,
+          description: 'Work item types available to the project.',
+          feature_flag: :work_items
+
     def avatar_url
       object.avatar_url(only_path: false)
     end
