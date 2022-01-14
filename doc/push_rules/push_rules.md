@@ -147,10 +147,10 @@ Secrets such as credential files, SSH private keys, and other files containing s
 GitLab enables you to turn on a predefined denylist of files which can't be
 pushed to a repository. The list stops those commits from reaching the remote repository.
 
-By selecting the checkbox *Prevent committing secrets to Git*, GitLab prevents
+By selecting the checkbox *Prevent pushing secret files*, GitLab prevents
 pushes to the repository when a file matches a regular expression as read from
 [`files_denylist.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/gitlab/checks/files_denylist.yml) (make sure you are at the right branch
-as your GitLab version when viewing this file).
+as your GitLab version when viewing this file). This checkbox is able to be set globally via **Admin Area > Push Rules**, or per-project via **Settings > Repository > Push Rules**.
 
 NOTE:
 Files already committed aren't restricted by this push rule.

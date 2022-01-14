@@ -181,6 +181,7 @@ export const contentTop = () => {
     },
     () => getOuterHeight('.merge-request-tabs'),
     () => getOuterHeight('.js-diff-files-changed'),
+    () => getOuterHeight('.issue-sticky-header.gl-fixed'),
     ({ desktop }) => {
       const diffsTabIsActive = window.mrTabs?.currentAction === 'diffs';
       let size;

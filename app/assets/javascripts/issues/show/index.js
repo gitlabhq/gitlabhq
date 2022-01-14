@@ -2,6 +2,7 @@ import Vue from 'vue';
 import { mapGetters } from 'vuex';
 import errorTrackingStore from '~/error_tracking/store';
 import { parseBoolean } from '~/lib/utils/common_utils';
+import { scrollToTargetOnResize } from '~/lib/utils/resize_observer';
 import IssueApp from './components/app.vue';
 import HeaderActions from './components/header_actions.vue';
 import IncidentTabs from './components/incidents/incident_tabs.vue';
@@ -71,6 +72,10 @@ export function initIssueApp(issueData, store) {
 
   if (!el) {
     return undefined;
+  }
+
+  if (gon?.features?.fixCommentScroll) {
+    scrollToTargetOnResize();
   }
 
   bootstrapApollo({ ...issueState, issueType: el.dataset.issueType });
