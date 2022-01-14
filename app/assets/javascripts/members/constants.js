@@ -1,8 +1,18 @@
 import { __ } from '~/locale';
 
+export const FIELD_KEY_ACCOUNT = 'account';
+export const FIELD_KEY_SOURCE = 'source';
+export const FIELD_KEY_GRANTED = 'granted';
+export const FIELD_KEY_INVITED = 'invited';
+export const FIELD_KEY_REQUESTED = 'requested';
+export const FIELD_KEY_MAX_ROLE = 'maxRole';
+export const FIELD_KEY_EXPIRATION = 'expiration';
+export const FIELD_KEY_LAST_SIGN_IN = 'lastSignIn';
+export const FIELD_KEY_ACTIONS = 'actions';
+
 export const FIELDS = [
   {
-    key: 'account',
+    key: FIELD_KEY_ACCOUNT,
     label: __('Account'),
     sort: {
       asc: 'name_asc',
@@ -10,13 +20,13 @@ export const FIELDS = [
     },
   },
   {
-    key: 'source',
+    key: FIELD_KEY_SOURCE,
     label: __('Source'),
     thClass: 'col-meta',
     tdClass: 'col-meta',
   },
   {
-    key: 'granted',
+    key: FIELD_KEY_GRANTED,
     label: __('Access granted'),
     thClass: 'col-meta',
     tdClass: 'col-meta',
@@ -26,19 +36,19 @@ export const FIELDS = [
     },
   },
   {
-    key: 'invited',
+    key: FIELD_KEY_INVITED,
     label: __('Invited'),
     thClass: 'col-meta',
     tdClass: 'col-meta',
   },
   {
-    key: 'requested',
+    key: FIELD_KEY_REQUESTED,
     label: __('Requested'),
     thClass: 'col-meta',
     tdClass: 'col-meta',
   },
   {
-    key: 'maxRole',
+    key: FIELD_KEY_MAX_ROLE,
     label: __('Max role'),
     thClass: 'col-max-role',
     tdClass: 'col-max-role',
@@ -48,13 +58,13 @@ export const FIELDS = [
     },
   },
   {
-    key: 'expiration',
+    key: FIELD_KEY_EXPIRATION,
     label: __('Expiration'),
     thClass: 'col-expiration',
     tdClass: 'col-expiration',
   },
   {
-    key: 'lastSignIn',
+    key: FIELD_KEY_LAST_SIGN_IN,
     label: __('Last sign-in'),
     sort: {
       asc: 'recent_sign_in',
@@ -62,10 +72,8 @@ export const FIELDS = [
     },
   },
   {
-    key: 'actions',
+    key: FIELD_KEY_ACTIONS,
     thClass: 'col-actions',
-    showFunction: 'showActionsField',
-    tdClassFunction: 'tdClassActions',
   },
 ];
 

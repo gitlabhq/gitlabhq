@@ -39,12 +39,12 @@ Using the same example, if a seat is $100 per year, then it is $25 per quarter.
 
 - In Q2, 105 users was the maximum. You did not go over 110 users, so no charge.
 
-- In Q3, you had 120 users. 10 users over license x $25 per user x 2 quarters = **$500**
+- In Q3, you had 120 users. 10 users over license x $25 per user x 1 remaining quarter = **$250**
   The license is now paid for 120 users.
 
-- In Q4, you had 120 users. You did not go over 120 users, so no charge.
+- In Q4, you had 120 users. You did not exceed the number of users. However, if you had, you would not be charged, because in Q4, there are no charges for exceeding the number.
 
-Annual total: **$1250**
+Annual total: **$1000**
 
 With quarterly reconciliation, you pay less annually.
 

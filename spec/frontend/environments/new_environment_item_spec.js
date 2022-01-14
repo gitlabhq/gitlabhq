@@ -6,6 +6,7 @@ import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { stubTransition } from 'helpers/stub_transition';
 import { __, s__ } from '~/locale';
 import EnvironmentItem from '~/environments/components/new_environment_item.vue';
+import Deployment from '~/environments/components/deployment.vue';
 import { resolvedEnvironment } from './graphql/mock_data';
 
 Vue.use(VueApollo);
@@ -23,6 +24,8 @@ describe('~/environments/components/new_environment_item.vue', () => {
       propsData: { environment: resolvedEnvironment, ...propsData },
       stubs: { transition: stubTransition() },
     });
+
+  const findDeployment = () => wrapper.findComponent(Deployment);
 
   afterEach(() => {
     wrapper?.destroy();
@@ -273,12 +276,37 @@ describe('~/environments/components/new_environment_item.vue', () => {
     });
 
     it('opens on click', async () => {
+      expect(findDeployment().isVisible()).toBe(false);
+
       await button.trigger('click');
 
       expect(button.attributes('aria-label')).toBe(__('Collapse'));
       expect(collapse.attributes('visible')).toBe('visible');
       expect(icon.props('name')).toEqual('angle-down');
       expect(environmentName.classes('gl-font-weight-bold')).toBe(true);
+      expect(findDeployment().isVisible()).toBe(true);
+    });
+  });
+  describe('last deployment', () => {
+    it('should pass the last deployment to the deployment component when it exists', () => {
+      wrapper = createWrapper({ apolloProvider: createApolloProvider() });
+
+      const deployment = findDeployment();
+      expect(deployment.props('deployment')).toEqual(resolvedEnvironment.lastDeployment);
+    });
+    it('should not show the last deployment to the deployment component when it is missing', () => {
+      const environment = {
+        ...resolvedEnvironment,
+        lastDeployment: null,
+      };
+
+      wrapper = createWrapper({
+        propsData: { environment },
+        apolloProvider: createApolloProvider(),
+      });
+
+      const deployment = findDeployment();
+      expect(deployment.exists()).toBe(false);
     });
   });
 });

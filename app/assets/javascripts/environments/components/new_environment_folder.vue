@@ -70,9 +70,9 @@ export default {
 <template>
   <div
     :class="{ 'gl-pb-5': !visible }"
-    class="gl-border-b-solid gl-border-gray-100 gl-border-1 gl-px-3 gl-pt-3"
+    class="gl-border-b-solid gl-border-gray-100 gl-border-1 gl-pt-3"
   >
-    <div class="gl-w-full gl-display-flex gl-align-items-center">
+    <div class="gl-w-full gl-display-flex gl-align-items-center gl-px-3">
       <gl-button
         class="gl-mr-4 gl-fill-current-color gl-text-gray-500"
         :aria-label="label"
@@ -94,7 +94,7 @@ export default {
         :key="environment.name"
         :environment="environment"
         :class="{ 'gl-mt-5': isFirstEnvironment(index) }"
-        class="gl-border-gray-100 gl-border-t-solid gl-border-1 gl-pl-7 gl-pt-3"
+        class="gl-border-gray-100 gl-border-t-solid gl-border-1 gl-pt-3"
         in-folder
       />
     </gl-collapse>

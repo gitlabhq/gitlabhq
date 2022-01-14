@@ -130,7 +130,11 @@ release creation, the release job fails.
 #### CI/CD example of the `release` keyword
 
 To create a release when you push a Git tag, or when you add a Git tag
-in the UI by going to **Repository > Tags**:
+in the UI by going to **Repository > Tags**: 
+
+NOTE:
+Do not provide **Release notes** when you create the Git tag in the UI.
+Providing release notes creates a release, resulting in the pipeline failing.
 
 ```yaml
 release_job:
@@ -827,3 +831,7 @@ Make sure that the user or a service/bot account is allowed to
 [create the protected tag](../protected_tags.md#configuring-protected-tags) too.
 
 See [the release permissions](#release-permissions) for more information.
+
+### Note about storage
+
+Note that the feature is built on top of Git tags, so virtually no extra data is needed besides to create the release itself. Additional assets and the release evidence that is automatically generated consume storage.

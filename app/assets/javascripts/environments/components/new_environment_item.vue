@@ -17,6 +17,7 @@ import Pin from './environment_pin.vue';
 import Monitoring from './environment_monitoring.vue';
 import Terminal from './environment_terminal_button.vue';
 import Delete from './environment_delete.vue';
+import Deployment from './deployment.vue';
 
 export default {
   components: {
@@ -25,6 +26,7 @@ export default {
     GlButton,
     GlLink,
     Actions,
+    Deployment,
     ExternalUrl,
     StopComponent,
     Rollback,
@@ -75,11 +77,17 @@ export default {
     label() {
       return this.visible ? this.$options.i18n.collapse : this.$options.i18n.expand;
     },
+    lastDeployment() {
+      return this.environment?.lastDeployment;
+    },
+    upcomingDeployment() {
+      return this.environment?.upcomingDeployment;
+    },
     actions() {
-      if (!this.environment?.lastDeployment) {
+      if (!this.lastDeployment) {
         return [];
       }
-      const { manualActions = [], scheduledActions = [] } = this.environment.lastDeployment;
+      const { manualActions = [], scheduledActions = [] } = this.lastDeployment;
       const combinedActions = [...manualActions, ...scheduledActions];
       return combinedActions.map((action) => ({
         ...action,
@@ -89,7 +97,7 @@ export default {
       return this.environment?.canStop;
     },
     retryPath() {
-      return this.environment?.lastDeployment?.deployable?.retryPath;
+      return this.lastDeployment?.deployable?.retryPath;
     },
     hasExtraActions() {
       return Boolean(
@@ -131,6 +139,14 @@ export default {
       this.visible = !this.visible;
     },
   },
+  deploymentClasses: [
+    'gl-border-gray-100',
+    'gl-border-t-solid',
+    'gl-border-1',
+    'gl-py-5',
+    'gl-pl-7',
+    'gl-bg-gray-10',
+  ],
 };
 </script>
 <template>
@@ -138,7 +154,10 @@ export default {
     <div
       class="gl-px-3 gl-pt-3 gl-pb-5 gl-display-flex gl-justify-content-space-between gl-align-items-center"
     >
-      <div class="gl-min-w-0 gl-mr-4 gl-display-flex gl-align-items-center">
+      <div
+        :class="{ 'gl-ml-7': inFolder }"
+        class="gl-min-w-0 gl-mr-4 gl-display-flex gl-align-items-center"
+      >
         <gl-button
           class="gl-mr-4 gl-min-w-fit-content"
           :icon="icon"
@@ -234,6 +253,13 @@ export default {
         </div>
       </div>
     </div>
-    <gl-collapse :visible="visible" />
+    <gl-collapse :visible="visible">
+      <div v-if="lastDeployment" :class="$options.deploymentClasses">
+        <deployment :deployment="lastDeployment" :class="{ 'gl-ml-7': inFolder }" />
+      </div>
+      <div v-if="upcomingDeployment" :class="$options.deploymentClasses">
+        <deployment :deployment="upcomingDeployment" :class="{ 'gl-ml-7': inFolder }" />
+      </div>
+    </gl-collapse>
   </div>
 </template>
