@@ -1,16 +1,12 @@
 /**
  * An event hub with a Vue instance like API
  *
- * NOTE: There's an [issue open][4] to eventually remove this when some
- * coupling in our codebase has been fixed.
- *
  * NOTE: This is a derivative work from [mitt][1] v1.2.0 which is licensed by
  * [MIT License][2] © [Jason Miller][3]
  *
  * [1]: https://github.com/developit/mitt
  * [2]: https://opensource.org/licenses/MIT
  * [3]: https://jasonformat.com/
- * [4]: https://gitlab.com/gitlab-org/gitlab/-/issues/223864
  */
 class EventHub {
   constructor() {
@@ -90,9 +86,6 @@ class EventHub {
  * - $off
  * - $once
  * - $emit
- *
- * Please note, this was once implemented with `mitt`, but since then has been reverted
- * because of some API issues. https://gitlab.com/gitlab-org/gitlab/-/merge_requests/35074
  *
  * We'd like to shy away from using a full fledged Vue instance from this in the future.
  */
