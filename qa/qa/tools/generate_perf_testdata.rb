@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'yaml'
-require_relative '../../qa'
+
 # This script generates testdata for Performance Testing.
 # Required environment variables: GITLAB_QA_ACCESS_TOKEN and GITLAB_ADDRESS
 # This job creates a urls.txt which contains a hash of all the URLs needed for Performance Testing

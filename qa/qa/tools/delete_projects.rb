@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require_relative '../../qa'
-
 # This script deletes all projects directly under a group specified by ENV['TOP_LEVEL_GROUP_NAME']
 # Required environment variables: GITLAB_QA_ACCESS_TOKEN and GITLAB_ADDRESS
 # Optional environment variable: TOP_LEVEL_GROUP_NAME (defaults to 'gitlab-qa-sandbox-group')

@@ -1,14 +1,9 @@
 # frozen_string_literal: true
 # rubocop:disable Rails/RakeEnvironment
 
-Dir['tasks/*.rake'].each { |file| load file }
+require_relative "qa"
 
-require_relative 'qa/tools/revoke_all_personal_access_tokens'
-require_relative 'qa/tools/delete_subgroups'
-require_relative 'qa/tools/generate_perf_testdata'
-require_relative 'qa/tools/delete_test_ssh_keys'
-require_relative 'qa/tools/initialize_gitlab_auth'
-require_relative 'qa/tools/delete_projects'
+Dir['tasks/*.rake'].each { |file| load file }
 
 desc "Revokes all personal access tokens"
 task :revoke_personal_access_tokens do

@@ -2,7 +2,7 @@
 name: track_geo_proxy_events
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/76587
 rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/348414
-milestone: '14.6'
+milestone: '14.7'
 type: development
 group: group::geo
-default_enabled: false
+default_enabled: true

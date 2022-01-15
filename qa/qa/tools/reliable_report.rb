@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require_relative "../../qa"
-
 require "influxdb-client"
 require "terminal-table"
 require "slack-notifier"
