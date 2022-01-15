@@ -10,7 +10,7 @@ exports[`packages_list_app renders 1`] = `
    
   <div>
     <section
-      class="gl-display-flex gl-flex-wrap empty-state gl-text-center gl-flex-direction-column"
+      class="gl-display-flex empty-state gl-text-center gl-flex-direction-column"
     >
       <div
         class="gl-max-w-full"

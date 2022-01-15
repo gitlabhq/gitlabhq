@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`EmptyStateComponent should render content 1`] = `
-"<section class=\\"gl-display-flex gl-flex-wrap empty-state gl-text-center gl-flex-direction-column\\">
+"<section class=\\"gl-display-flex empty-state gl-text-center gl-flex-direction-column\\">
   <div class=\\"gl-max-w-full\\">
     <div class=\\"svg-250 svg-content\\"><img src=\\"/image.svg\\" alt=\\"\\" role=\\"img\\" class=\\"gl-max-w-full\\"></div>
   </div>
