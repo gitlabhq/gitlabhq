@@ -1035,10 +1035,8 @@ The on-demand DAST scan runs and the project's dashboard shows the results.
 To run a saved on-demand scan:
 
 1. On the top bar, select **Menu > Projects** and find your project.
-1. On the left sidebar, select **Security & Compliance > Configuration**.
-1. Select **Manage DAST scans**.
-1. In the **DAST Profiles** row, select **Manage**.
-1. Select the **Saved Scans** tab.
+1. On the left sidebar, select **Security & Compliance > On-demand Scans**.
+1. Select the **Scan library** tab.
 1. In the scan's row, select **Run scan**.
 
    If the branch saved in the scan no longer exists, you must first
@@ -1074,27 +1072,23 @@ To schedule a scan:
 
 To list saved on-demand scans:
 
-1. From your project's home page, go to **Security & Compliance > Configuration**.
-1. Select the **Saved Scans** tab.
+1. From your project's home page, go to **Security & Compliance > On-demand Scans**.
+1. Select the **Scan library** tab.
 
 #### View details of an on-demand scan
 
 To view details of an on-demand scan:
 
-1. From your project's home page, go to **Security & Compliance > Configuration**.
-1. Select **Manage DAST scans**.
-1. Select **Manage** in the **DAST Profiles** row.
-1. Select the **Saved Scans** tab.
+1. From your project's home page, go to **Security & Compliance > On-demand Scans**.
+1. Select the **Scan library** tab.
 1. In the saved scan's row select **More actions** (**{ellipsis_v}**), then select **Edit**.
 
 #### Edit an on-demand scan
 
 To edit an on-demand scan:
 
-1. From your project's home page, go to **Security & Compliance > Configuration**.
-1. Select **Manage DAST scans**.
-1. Select **Manage** in the **DAST Profiles** row.
-1. Select the **Saved Scans** tab.
+1. From your project's home page, go to **Security & Compliance > On-demand Scans**.
+1. Select the **Scan library** tab.
 1. In the saved scan's row select **More actions** (**{ellipsis_v}**), then select **Edit**.
 1. Edit the form.
 1. Select **Save scan**.
@@ -1103,10 +1097,8 @@ To edit an on-demand scan:
 
 To delete an on-demand scan:
 
-1. From your project's home page, go to **Security & Compliance > Configuration**.
-1. Select **Manage DAST scans**.
-1. Select **Manage** in the **DAST Profiles** row.
-1. Select the **Saved Scans** tab.
+1. From your project's home page, go to **Security & Compliance > On-demand Scans**.
+1. Select the **Scan library** tab.
 1. In the saved scan's row select **More actions** (**{ellipsis_v}**), then select **Delete**.
 1. Select **Delete** to confirm the deletion.
 

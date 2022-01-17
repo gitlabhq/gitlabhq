@@ -780,6 +780,10 @@ class Group < Namespace
     crm_settings&.enabled?
   end
 
+  def shared_with_group_links_visible_to_user(user)
+    shared_with_group_links.preload_shared_with_groups.filter { |link| Ability.allowed?(user, :read_group, link.shared_with_group) }
+  end
+
   private
 
   def max_member_access(user_ids)

@@ -127,7 +127,8 @@ To purge files from a GitLab repository:
 
    Refer to the Git [`replace`](https://git-scm.com/book/en/v2/Git-Tools-Replace) documentation for information on how this works.
 
-1. Run a [repository cleanup](#repository-cleanup).
+1. Wait at least 30 minutes, because the repository cleanup process only processes object older than 30 minutes.
+1. Run [repository cleanup](#repository-cleanup).
 
 ## Repository cleanup
 

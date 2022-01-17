@@ -1,0 +1,8 @@
+---
+name: require_verification_for_group_creation
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/77569
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/349857
+milestone: '14.7'
+type: experiment
+group: group::activation
+default_enabled: false

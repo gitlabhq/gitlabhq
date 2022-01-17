@@ -17841,6 +17841,12 @@ msgstr ""
 msgid "Identities"
 msgstr ""
 
+msgid "IdentityVerification|Before you create your group, we need you to verify your identity with a valid payment method."
+msgstr ""
+
+msgid "IdentityVerification|Verify your identity"
+msgstr ""
+
 msgid "If any indexed field exceeds this limit, it is truncated to this number of characters. The rest of the content is neither indexed nor searchable. This does not apply to repository and wiki indexing. For unlimited characters, set this to 0."
 msgstr ""
 

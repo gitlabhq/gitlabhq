@@ -394,9 +394,9 @@ the roulette is not available, choose someone else from that list.
 
 It is the responsibility of the author for the merge request to be reviewed. If it stays in the `ready for review` state too long it is recommended to request a review from a specific reviewer.
 
-#### List of merge requests ready for review
+### Volunteering to review
 
-Developers who have capacity can regularly check the list of [merge requests to review](https://gitlab.com/groups/gitlab-org/-/merge_requests?state=opened&label_name%5B%5D=workflow%3A%3Aready%20for%20review) and add themselves as a reviewer for any merge request they want to review.
+GitLab engineers who have capacity can regularly check the list of [merge requests to review](https://gitlab.com/groups/gitlab-org/-/merge_requests?state=opened&label_name%5B%5D=workflow%3A%3Aready%20for%20review) and add themselves as a reviewer for any merge request they want to review.
 
 ### Reviewing a merge request
 
@@ -522,9 +522,12 @@ If the MR source branch is more than 1,000 commits behind the target branch:
   or check with the contributor first when they're actively working on the MR.
 - The rebase can usually be done inside GitLab with the `/rebase` [quick action](../user/project/quick_actions.md).
 
+#### Taking over a community merge request
+
 When an MR needs further changes but the author is not responding for a long period of time,
-or unable to finish the MR, we can take it over in accordance with our
-[Closing policy for issues and merge requests](contributing/#closing-policy-for-issues-and-merge-requests):
+or is unable to finish the MR, GitLab can take it over in accordance with our
+[Closing policy for issues and merge requests](contributing/#closing-policy-for-issues-and-merge-requests).
+A GitLab engineer (generally the merge request coach) will:
 
 1. Add a comment to their MR saying you'll take it over to be able to get it merged.
 1. Add the label `~"coach will finish"` to their MR.

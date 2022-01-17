@@ -2859,4 +2859,55 @@ RSpec.describe Group do
       expect(described_class.get_ids_by_ids_or_paths([new_group_id], [group_path])).to match_array([group_id, new_group_id])
     end
   end
+
+  describe '#shared_with_group_links_visible_to_user' do
+    let_it_be(:admin) { create :admin }
+    let_it_be(:normal_user) { create :user }
+    let_it_be(:user_with_access) { create :user }
+    let_it_be(:user_with_parent_access) { create :user }
+    let_it_be(:user_without_access) { create :user }
+    let_it_be(:shared_group) { create :group }
+    let_it_be(:parent_group) { create :group, :private }
+    let_it_be(:shared_with_private_group) { create :group, :private, parent: parent_group }
+    let_it_be(:shared_with_internal_group) { create :group, :internal }
+    let_it_be(:shared_with_public_group) { create :group, :public }
+    let_it_be(:private_group_group_link) { create(:group_group_link, shared_group: shared_group, shared_with_group: shared_with_private_group) }
+    let_it_be(:internal_group_group_link) { create(:group_group_link, shared_group: shared_group, shared_with_group: shared_with_internal_group) }
+    let_it_be(:public_group_group_link) { create(:group_group_link, shared_group: shared_group, shared_with_group: shared_with_public_group) }
+
+    before do
+      shared_with_private_group.add_developer(user_with_access)
+      parent_group.add_developer(user_with_parent_access)
+    end
+
+    context 'when user is admin', :enable_admin_mode do
+      it 'returns all existing shared group links' do
+        expect(shared_group.shared_with_group_links_visible_to_user(admin)).to contain_exactly(private_group_group_link, internal_group_group_link, public_group_group_link)
+      end
+    end
+
+    context 'when user is nil' do
+      it 'returns only link of public shared group' do
+        expect(shared_group.shared_with_group_links_visible_to_user(nil)).to contain_exactly(public_group_group_link)
+      end
+    end
+
+    context 'when user has no access to private shared group' do
+      it 'returns links of internal and public shared groups' do
+        expect(shared_group.shared_with_group_links_visible_to_user(normal_user)).to contain_exactly(internal_group_group_link, public_group_group_link)
+      end
+    end
+
+    context 'when user is member of private shared group' do
+      it 'returns links of private, internal and public shared groups' do
+        expect(shared_group.shared_with_group_links_visible_to_user(user_with_access)).to contain_exactly(private_group_group_link, internal_group_group_link, public_group_group_link)
+      end
+    end
+
+    context 'when user is inherited member of private shared group' do
+      it 'returns links of private, internal and public shared groups' do
+        expect(shared_group.shared_with_group_links_visible_to_user(user_with_parent_access)).to contain_exactly(private_group_group_link, internal_group_group_link, public_group_group_link)
+      end
+    end
+  end
 end

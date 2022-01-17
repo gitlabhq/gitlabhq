@@ -15,7 +15,7 @@ initFilePickers();
 new Group(); // eslint-disable-line no-new
 
 function initNewGroupCreation(el) {
-  const { hasErrors } = el.dataset;
+  const { hasErrors, verificationRequired, verificationFormUrl, subscriptionsUrl } = el.dataset;
 
   const props = {
     hasErrors: parseBoolean(hasErrors),
@@ -23,6 +23,11 @@ function initNewGroupCreation(el) {
 
   return new Vue({
     el,
+    provide: {
+      verificationRequired: parseBoolean(verificationRequired),
+      verificationFormUrl,
+      subscriptionsUrl,
+    },
     render(h) {
       return h(NewGroupCreationApp, { props });
     },

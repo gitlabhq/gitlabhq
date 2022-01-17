@@ -965,7 +965,7 @@ However, some projects may fail to be migrated for different reasons.
 To verify that all projects have been migrated successfully, you can manually run the migration:
 
 ```shell
-gitlab-rake gitlab:pages:migrate_legacy_storage
+sudo gitlab-rake gitlab:pages:migrate_legacy_storage
 ```
 
 It's safe to interrupt this task and run it multiple times.
