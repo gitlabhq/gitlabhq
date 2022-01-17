@@ -10,6 +10,10 @@ class AnalyticsIssueEntity < Grape::Entity
     object[:project_path]
   end
 
+  expose :namespace_full_path do |object|
+    object[:namespace_path]
+  end
+
   expose :iid do |object|
     object[:iid].to_s
   end

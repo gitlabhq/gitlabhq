@@ -31567,6 +31567,9 @@ msgstr ""
 msgid "SecurityConfiguration|Vulnerability details and statistics in the merge request"
 msgstr ""
 
+msgid "SecurityOrchestration| or "
+msgstr ""
+
 msgid "SecurityOrchestration|%{branches} %{plural}"
 msgstr ""
 
@@ -31654,6 +31657,9 @@ msgstr ""
 msgid "SecurityOrchestration|Policy type"
 msgstr ""
 
+msgid "SecurityOrchestration|Require %{approvals} %{plural} from %{approvers} if any of the following occur:"
+msgstr ""
+
 msgid "SecurityOrchestration|Rule"
 msgstr ""
 
@@ -31702,6 +31708,9 @@ msgstr ""
 msgid "SecurityOrchestration|Status"
 msgstr ""
 
+msgid "SecurityOrchestration|The %{scanners} %{severities} in an open merge request targeting the %{branches}."
+msgstr ""
+
 msgid "SecurityOrchestration|There was a problem creating the new security policy"
 msgstr ""
 
@@ -31720,7 +31729,49 @@ msgstr ""
 msgid "SecurityOrchestration|Update scan execution policies"
 msgstr ""
 
+msgid "SecurityOrchestration|a"
+msgstr ""
+
+msgid "SecurityOrchestration|an"
+msgstr ""
+
+msgid "SecurityOrchestration|branch"
+msgstr ""
+
+msgid "SecurityOrchestration|branches"
+msgstr ""
+
+msgid "SecurityOrchestration|members of groups"
+msgstr ""
+
+msgid "SecurityOrchestration|members of groups with ids"
+msgstr ""
+
+msgid "SecurityOrchestration|members of the group"
+msgstr ""
+
+msgid "SecurityOrchestration|members of the group with id"
+msgstr ""
+
+msgid "SecurityOrchestration|scanner finds"
+msgstr ""
+
+msgid "SecurityOrchestration|scanners find"
+msgstr ""
+
+msgid "SecurityOrchestration|user with id"
+msgstr ""
+
+msgid "SecurityOrchestration|users with ids"
+msgstr ""
+
 msgid "SecurityOrchestration|view results"
+msgstr ""
+
+msgid "SecurityOrchestration|vulnerabilities"
+msgstr ""
+
+msgid "SecurityOrchestration|vulnerability"
 msgstr ""
 
 msgid "SecurityPolicies|+%{count} more"
@@ -41505,6 +41556,11 @@ msgstr ""
 
 msgid "any-approver for the project already exists"
 msgstr ""
+
+msgid "approval"
+msgid_plural "approvals"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "approved by: "
 msgstr ""

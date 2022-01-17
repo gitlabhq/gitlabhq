@@ -198,6 +198,7 @@ describe('StageTable', () => {
   });
 
   describe('includeProjectName set', () => {
+    const fakenamespace = 'some/fake/path';
     beforeEach(() => {
       wrapper = createComponent({ includeProjectName: true });
     });
@@ -208,6 +209,37 @@ describe('StageTable', () => {
       const links = evs.wrappers.map((ev) => findStageEventLink(ev).text());
       issueEventItems.forEach((ev, index) => {
         expect(links[index]).toBe(`${ev.projectPath}#${ev.iid}`);
+      });
+    });
+
+    describe.each`
+      namespaceFullPath | hasFullPath
+      ${'fake'}         | ${false}
+      ${fakenamespace}  | ${true}
+    `('with a namespace', ({ namespaceFullPath, hasFullPath }) => {
+      let evs = null;
+      let links = null;
+
+      beforeEach(() => {
+        wrapper = createComponent({
+          includeProjectName: true,
+          stageEvents: issueEventItems.map((ie) => ({ ...ie, namespaceFullPath })),
+        });
+
+        evs = findStageEvents();
+        links = evs.wrappers.map((ev) => findStageEventLink(ev).text());
+      });
+
+      it(`with namespaceFullPath='${namespaceFullPath}' ${
+        hasFullPath ? 'will' : 'does not'
+      } include the namespace`, () => {
+        issueEventItems.forEach((ev, index) => {
+          if (hasFullPath) {
+            expect(links[index]).toBe(`${namespaceFullPath}/${ev.projectPath}#${ev.iid}`);
+          } else {
+            expect(links[index]).toBe(`${ev.projectPath}#${ev.iid}`);
+          }
+        });
       });
     });
   });

@@ -32,6 +32,9 @@ const WORKFLOW_COLUMN_TITLES = {
   mergeRequests: { ...DEFAULT_WORKFLOW_TITLE_PROPERTIES, label: __('Merge requests') },
 };
 
+const fullProjectPath = ({ namespaceFullPath = '', projectPath }) =>
+  namespaceFullPath.split('/').length > 1 ? `${namespaceFullPath}/${projectPath}` : projectPath;
+
 export default {
   name: 'StageTable',
   components: {
@@ -149,8 +152,10 @@ export default {
     isMrLink(url = '') {
       return url.includes('/merge_request');
     },
-    itemId({ iid, projectPath }, separator = '#') {
-      const prefix = this.includeProjectName ? projectPath : '';
+    itemId({ iid, projectPath, namespaceFullPath = '' }, separator = '#') {
+      const prefix = this.includeProjectName
+        ? fullProjectPath({ namespaceFullPath, projectPath })
+        : '';
       return `${prefix}${separator}${iid}`;
     },
     itemDisplayName(item) {

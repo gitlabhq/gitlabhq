@@ -13,6 +13,10 @@ class AnalyticsBuildEntity < Grape::Entity
     build.project.path
   end
 
+  expose :namespace_full_path do |build|
+    build.project.namespace.full_path
+  end
+
   expose :started_at, as: :date do |build|
     interval_in_words(build[:started_at])
   end

@@ -313,7 +313,7 @@ has been replaced with Go modules.
 To reduce our maintenance cost we are deprecating License Compliance for Godep projects as of 14.7
 and will remove it in GitLab 15.0
 
-Planned removal milestone: 15.0 (2022-06-22)
+Planned removal milestone: 15.0 (2022-05-22)
 
 ### Logging in GitLab
 
@@ -335,15 +335,13 @@ can cause production issues with large databases,
 and can interfere with object storage development.
 It is now considered deprecated, and will be removed in GitLab 15.0.
 
-Planned removal milestone: 15.0 (2021-06-22)
+Planned removal milestone: 15.0 (2021-05-22)
 
-### Tracing in GitLab
+### Removal of Static Site Editor
 
-Tracing in GitLab is an integration with Jaeger, an open-source end-to-end distributed tracing system. GitLab users can navigate to their Jaeger instance to gain insight into the performance of a deployed application, tracking each function or microservice that handles a given request. Tracing in GitLab is deprecated in GitLab 14.7, and scheduled for removal in 15.0. To track work on a possible replacement, see the issue for [Opstrace integration with GitLab](https://gitlab.com/groups/gitlab-org/-/epics/6976).
+The Static Site Editor will no longer be available starting in GitLab 15.0. Improvements to the Markdown editing experience across GitLab will deliver smiliar benefit but with a wider reach. Incoming requests to the Static Site Editor will be redirected to the Web IDE. Current users of the Static Site Editor can view the [documentation](https://docs.gitlab.com/ee/user/project/static_site_editor/) for more information, including how to remove the configuration files from existing projects.
 
 Planned removal milestone: 15.0 (2022-05-22)
-
-## 14.8
 
 ### Removal of `artifacts:report:cobertura` keyword
 
@@ -352,4 +350,10 @@ Currently, test coverage visualizations in GitLab only support Cobertura reports
 [`artifacts:reports:coverage_report`](https://gitlab.com/gitlab-org/gitlab/-/issues/344533). Cobertura will be the
 only supported report file in 15.0, but this is the first step towards GitLab supporting other report types.
 
-Planned removal milestone: 15.0 (2022-06-22)
+Planned removal milestone: 15.0 (2022-05-22)
+
+### Tracing in GitLab
+
+Tracing in GitLab is an integration with Jaeger, an open-source end-to-end distributed tracing system. GitLab users can navigate to their Jaeger instance to gain insight into the performance of a deployed application, tracking each function or microservice that handles a given request. Tracing in GitLab is deprecated in GitLab 14.7, and scheduled for removal in 15.0. To track work on a possible replacement, see the issue for [Opstrace integration with GitLab](https://gitlab.com/groups/gitlab-org/-/epics/6976).
+
+Planned removal milestone: 15.0 (2022-05-22)

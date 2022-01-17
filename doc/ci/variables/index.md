@@ -81,7 +81,7 @@ to execute scripts. Each shell has its own set of reserved variable names.
 Make sure each variable is defined for the [scope you want to use it in](where_variables_can_be_used.md).
 
 By default, pipelines from forked projects can't access CI/CD variables in the parent project.
-If you [run a merge request pipeline in the parent project for a merge request from a fork](../pipelines/merge_request_pipelines.md#run-pipelines-in-the-parent-project-for-merge-requests-from-a-forked-project),
+If you [run a merge request pipeline in the parent project for a merge request from a fork](../pipelines/merge_request_pipelines.md#run-pipelines-in-the-parent-project),
 all variables become available to the pipeline.
 
 ### Create a custom CI/CD variable in the `.gitlab-ci.yml` file
@@ -394,7 +394,7 @@ runs on a [protected branch](../../user/project/protected_branches.md) or
 
 Review all merge requests that introduce changes to the `.gitlab-ci.yml` file before you:
 
-- [Run a pipeline in the parent project for a merge request submitted from a forked project](../pipelines/merge_request_pipelines.md#run-pipelines-in-the-parent-project-for-merge-requests-from-a-forked-project).
+- [Run a pipeline in the parent project for a merge request submitted from a forked project](../pipelines/merge_request_pipelines.md#run-pipelines-in-the-parent-project).
 - Merge the changes.
 
 The following example shows malicious code in a `.gitlab-ci.yml` file:

@@ -98,7 +98,7 @@ the tiers are no longer mentioned in GitLab documentation:
     - [Bidirectional mirroring](../user/project/repository/mirror/bidirectional.md)
     - [Mirror with Perforce Helix with Git Fusion](../user/project/repository/mirror/bidirectional.md#mirror-with-perforce-helix-with-git-fusion)
 - Runners:
-  - Run pipelines in the parent project [for merge requests from a forked project](../ci/pipelines/merge_request_pipelines.md#run-pipelines-in-the-parent-project-for-merge-requests-from-a-forked-project)
+  - Run pipelines in the parent project [for merge requests from a forked project](../ci/pipelines/merge_request_pipelines.md#run-pipelines-in-the-parent-project)
   - [Shared runners CI/CD minutes](../ci/pipelines/cicd_minutes.md)
 - [Push rules](../push_rules/push_rules.md)
 - SAML for self-managed GitLab instance:

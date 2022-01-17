@@ -415,6 +415,7 @@ and the pipeline is for either:
 - You can use the [`workflow:rules` templates](workflow.md#workflowrules-templates) to import
   a preconfigured `workflow: rules` entry.
 - [Common `if` clauses for `workflow:rules`](workflow.md#common-if-clauses-for-workflowrules).
+- [Use `rules` to run pipelines for merge requests](../pipelines/merge_request_pipelines.md#use-rules-to-add-jobs).
 
 #### `workflow:rules:variables`
 
@@ -3079,6 +3080,7 @@ job:
 
 - [Common `if` expressions for `rules`](../jobs/job_control.md#common-if-clauses-for-rules).
 - [Avoid duplicate pipelines](../jobs/job_control.md#avoid-duplicate-pipelines).
+- [Use `rules` to run pipelines for merge requests](../pipelines/merge_request_pipelines.md#use-rules-to-add-jobs).
 
 #### `rules:changes`
 

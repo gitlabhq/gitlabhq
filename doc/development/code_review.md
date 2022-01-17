@@ -501,7 +501,7 @@ Merge Results against the latest `main` at the time of the pipeline creation.
 
 WARNING:
 **Review all changes thoroughly for malicious code before starting a
-[Pipeline for Merged Results](../ci/pipelines/merge_request_pipelines.md#run-pipelines-in-the-parent-project-for-merge-requests-from-a-forked-project).**
+[Pipeline for Merged Results](../ci/pipelines/merge_request_pipelines.md#run-pipelines-in-the-parent-project).**
 
 When reviewing merge requests added by wider community contributors:
 

@@ -36,6 +36,10 @@ RSpec.describe AnalyticsIssueEntity do
       expect(subject).to include(:project_path)
     end
 
+    it 'contains the namespace full path' do
+      expect(subject).to include(:namespace_full_path)
+    end
+
     it 'does not contain sensitive information' do
       expect(subject).not_to include(/token/)
       expect(subject).not_to include(/variables/)
