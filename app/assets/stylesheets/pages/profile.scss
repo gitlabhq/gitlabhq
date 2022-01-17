@@ -363,25 +363,12 @@ table.u2f-registrations {
   color: $gl-text-color-secondary;
 }
 
-.gitlab-slack-gif {
-  width: 100%;
-  max-width: $add-to-slack-gif-max-width;
+.gitlab-slack-body {
+  max-width: 420px;
 }
 
-.gitlab-slack-well {
-  background-color: $white;
-  box-shadow: none;
-  max-width: $add-to-slack-well-max-width;
-}
-
-.gitlab-slack-logo {
-  width: $add-to-slack-logo-size;
-  height: $add-to-slack-logo-size;
-}
-
-.gitlab-slack-popup {
-  width: 100%;
-  max-width: $add-to-slack-popup-max-width;
+.gitlab-slack-slack-logo {
+  transform: scale(200%); // Slack logo SVG is scaled down 50% and has empty space around it
 }
 
 .skype-icon {

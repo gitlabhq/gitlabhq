@@ -19,7 +19,7 @@ module QA
         @virtual_storage = 'default'
       end
 
-      attr_reader :primary_node, :secondary_node, :tertiary_node
+      attr_reader :primary_node, :secondary_node, :tertiary_node, :postgres
 
       # Executes the praefect `dataloss` command.
       #
@@ -87,6 +87,13 @@ module QA
 
       def stop_node(name)
         shell "docker stop #{name}"
+        wait_until_shell_command_matches(
+          "docker inspect -f {{.State.Running}} #{name}",
+          /false/,
+          sleep_interval: 3,
+          max_duration: 180,
+          retry_on_exception: true
+        )
       end
 
       def clear_replication_queue
@@ -167,6 +174,7 @@ module QA
       end
 
       def start_all_nodes
+        start_node(@postgres)
         start_node(@primary_node)
         start_node(@secondary_node)
         start_node(@tertiary_node)
@@ -195,6 +203,14 @@ module QA
         end
       end
 
+      def praefect_sql_ping_healthy?
+        cmd = "docker exec #{@praefect} bash -c '/opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml sql-ping'"
+        wait_until_shell_command(cmd) do |line|
+          QA::Runtime::Logger.debug(line.chomp)
+          break line.include?('praefect sql-ping: OK')
+        end
+      end
+
       def wait_for_sql_ping
         wait_until_shell_command_matches(
           "docker exec #{@praefect} bash -c '/opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml sql-ping'",
@@ -204,6 +220,34 @@ module QA
 
       def health_check_failure_message?(msg)
         ['error when pinging healthcheck', 'failed checking node health'].include?(msg)
+      end
+
+      def wait_for_dial_nodes_successful
+        Support::Waiter.repeat_until(max_attempts: 3, max_duration: 120, sleep_interval: 1) do
+          nodes_confirmed = {
+            @primary_node => false,
+            @secondary_node => false,
+            @tertiary_node => false
+          }
+
+          nodes_confirmed.each_key do |node|
+            nodes_confirmed[node] = true if praefect_dial_nodes_status?(node)
+          end
+
+          nodes_confirmed.values.all?
+        end
+      end
+
+      def praefect_dial_nodes_status?(node, expect_healthy = true)
+        cmd = "docker exec #{@praefect} bash -c '/opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml dial-nodes -timeout 1s'"
+        if expect_healthy
+          wait_until_shell_command_matches(cmd, /SUCCESS: confirmed Gitaly storage "#{node}" in virtual storages \[#{@virtual_storage}\] is served/)
+        else
+          wait_until_shell_command(cmd, raise_on_failure: false) do |line|
+            QA::Runtime::Logger.debug(line.chomp)
+            break true if line.include?('the following nodes are not healthy') && line.include?(node)
+          end
+        end
       end
 
       def wait_for_health_check_all_nodes

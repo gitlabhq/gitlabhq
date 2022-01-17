@@ -54,7 +54,7 @@ For example:
   ```shell
   curl --request POST \
        --form token=<token> \
-       --formref=<ref_name> \
+       --form ref=<ref_name> \
        "https://gitlab.example.com/api/v4/projects/<project_id>/trigger/pipeline"
   ```
 

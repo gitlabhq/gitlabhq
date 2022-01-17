@@ -1982,9 +1982,6 @@ msgstr ""
 msgid "Add CONTRIBUTING"
 msgstr ""
 
-msgid "Add GitLab to Slack"
-msgstr ""
-
 msgid "Add Jaeger URL"
 msgstr ""
 
@@ -2196,9 +2193,6 @@ msgid "Add system hook"
 msgstr ""
 
 msgid "Add text to the sign-in page. Markdown enabled."
-msgstr ""
-
-msgid "Add to Slack"
 msgstr ""
 
 msgid "Add to board"
@@ -16166,9 +16160,6 @@ msgstr ""
 msgid "GitLab export"
 msgstr ""
 
-msgid "GitLab for Slack"
-msgstr ""
-
 msgid "GitLab group: %{source_link}"
 msgstr ""
 
@@ -16191,6 +16182,9 @@ msgid "GitLab is open source software to collaborate on code."
 msgstr ""
 
 msgid "GitLab is undergoing maintenance and is operating in read-only mode."
+msgstr ""
+
+msgid "GitLab logo"
 msgstr ""
 
 msgid "GitLab member or Email address"
@@ -17722,9 +17716,6 @@ msgid "How do I use a web terminal?"
 msgstr ""
 
 msgid "How do I use file templates?"
-msgstr ""
-
-msgid "How it works"
 msgstr ""
 
 msgid "How many days need to pass between marking entity for deletion and actual removing it."
@@ -23138,9 +23129,6 @@ msgid "Months"
 msgstr ""
 
 msgid "More Information"
-msgstr ""
-
-msgid "More Slack commands"
 msgstr ""
 
 msgid "More actions"
@@ -32065,9 +32053,6 @@ msgstr ""
 msgid "Select Git revision"
 msgstr ""
 
-msgid "Select GitLab project to link with your Slack team"
-msgstr ""
-
 msgid "Select Page"
 msgstr ""
 
@@ -33116,6 +33101,15 @@ msgid "Slack application"
 msgstr ""
 
 msgid "Slack integration allows you to interact with GitLab via slash commands in a chat window."
+msgstr ""
+
+msgid "Slack logo"
+msgstr ""
+
+msgid "SlackIntegration|GitLab for Slack"
+msgstr ""
+
+msgid "SlackIntegration|Select a GitLab project to link with your Slack workspace."
 msgstr ""
 
 msgid "SlackIntegration|Sends notifications about project events to Slack channels."
@@ -37464,9 +37458,6 @@ msgstr ""
 msgid "Track time with quick actions"
 msgstr ""
 
-msgid "Track your GitLab projects with GitLab for Slack."
-msgstr ""
-
 msgid "Training mode"
 msgstr ""
 
@@ -38640,6 +38631,9 @@ msgid "User and IP rate limits"
 msgstr ""
 
 msgid "User cap"
+msgstr ""
+
+msgid "User cap cannot be enabled. The group or one of its subgroups or projects is shared externally."
 msgstr ""
 
 msgid "User created at"
@@ -42389,9 +42383,6 @@ msgid "loading"
 msgstr ""
 
 msgid "locked by %{path_lock_user_name} %{created_at}"
-msgstr ""
-
-msgid "log in"
 msgstr ""
 
 msgid "manual"

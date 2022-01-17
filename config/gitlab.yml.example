@@ -9,6 +9,8 @@
 # If you change this file in a merge request, please also create       #
 # a MR on https://gitlab.com/gitlab-org/omnibus-gitlab/merge_requests. #
 # For more details see https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/doc/settings/gitlab.yml.md #
+# Be sure to create a MR against the GDK configuration                 #
+# file (https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/support/templates/gitlab/config/gitlab.yml.erb) too. #
 ########################################################################
 #
 #
@@ -1435,7 +1437,7 @@ test:
         provider: AWS # Only AWS supported at the moment
         aws_access_key_id: AWS_ACCESS_KEY_ID
         aws_secret_access_key: AWS_SECRET_ACCESS_KEY
-        region: us-east-1 
+        region: us-east-1
 
   gitlab:
     host: localhost
