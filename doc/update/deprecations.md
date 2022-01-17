@@ -335,7 +335,7 @@ can cause production issues with large databases,
 and can interfere with object storage development.
 It is now considered deprecated, and will be removed in GitLab 15.0.
 
-Planned removal milestone: 15.0 (2021-05-22)
+Planned removal milestone: 15.0 (2022-05-22)
 
 ### Removal of Static Site Editor
 
@@ -349,6 +349,30 @@ Currently, test coverage visualizations in GitLab only support Cobertura reports
 `artifacts:report:cobertura` keyword will be replaced by
 [`artifacts:reports:coverage_report`](https://gitlab.com/gitlab-org/gitlab/-/issues/344533). Cobertura will be the
 only supported report file in 15.0, but this is the first step towards GitLab supporting other report types.
+
+Planned removal milestone: 15.0 (2022-05-22)
+
+### Sidekiq metrics and health checks configuration
+
+Exporting Sidekiq metrics and health checks using a single process and port is deprecated.
+Support will be removed in 15.0.
+
+We have updated Sidekiq to export [metrics and health checks from two separate processes](https://gitlab.com/groups/gitlab-org/-/epics/6409)
+to improve stability and availability and prevent data loss in edge cases.
+As those are two separate servers, a configuration change will be required in 15.0
+to explicitly set separate ports for metrics and health-checks.
+The newly introduced settings for `sidekiq['health_checks_*']`
+should always be set in `gitlab.rb`.
+For more information, check the documentation for [configuring Sidekiq](https://docs.gitlab.com/ee/administration/sidekiq.html).
+
+These changes also require updates in either Prometheus to scrape the new endpoint or k8s health-checks to target the new
+health-check port to work properly, otherwise either metrics or health-checks will disappear.
+
+For the deprecation period those settings are optional
+and GitLab will default the Sidekiq health-checks port to the same port as `sidekiq_exporter`
+and only run one server (not changing the current behaviour).
+Only if they are both set and a different port is provided, a separate metrics server will spin up
+to serve the Sidekiq metrics, similar to the way Sidekiq will behave in 15.0.
 
 Planned removal milestone: 15.0 (2022-05-22)
 

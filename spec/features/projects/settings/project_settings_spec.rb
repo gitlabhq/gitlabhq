@@ -47,7 +47,7 @@ RSpec.describe 'Projects settings' do
       # disable by clicking toggle
       forking_enabled_button.click
       page.within('.sharing-permissions') do
-        find('input[value="Save changes"]').click
+        find('[data-testid="project-features-save-button"]').click
       end
       wait_for_requests
 
@@ -77,7 +77,7 @@ RSpec.describe 'Projects settings' do
       expect(default_award_emojis_input.value).to eq('false')
 
       page.within('.sharing-permissions') do
-        find('input[value="Save changes"]').click
+        find('[data-testid="project-features-save-button"]').click
       end
       wait_for_requests
 

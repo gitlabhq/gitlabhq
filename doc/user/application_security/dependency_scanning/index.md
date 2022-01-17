@@ -63,6 +63,9 @@ vulnerability.
 
 ## Requirements
 
+Dependency Scanning runs in the `test` stage, which is available by default. If you redefine the
+stages in the `.gitlab-ci.yml` file, the `test` stage is required.
+
 To run dependency scanning jobs, by default, you need GitLab Runner with the
 [`docker`](https://docs.gitlab.com/runner/executors/docker.html) or
 [`kubernetes`](https://docs.gitlab.com/runner/install/kubernetes.html) executor.

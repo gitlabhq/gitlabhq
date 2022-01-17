@@ -370,10 +370,10 @@ For information on this, see the [general Application Security troubleshooting s
 
 ### Error: `Couldn't run the gitleaks command: exit status 2`
 
-If a pipeline is triggered from a Merge Request containing 60 commits while the `GIT_DEPTH` variable
-is set to 50 (a [project default](../../../ci/pipelines/settings.md#limit-the-number-of-changes-fetched-during-clone)),
-the Secret Detection job fails as the clone is not deep enough to contain all of the
-relevant commits.
+If a pipeline is triggered from a Merge Request containing 60 commits while the `GIT_DEPTH` variable's
+value is less than that, the Secret Detection job fails as the clone is not deep enough to contain all of the
+relevant commits. For information on the current default value, see the
+[pipeline configuration documentation](../../../ci/pipelines/settings.md#limit-the-number-of-changes-fetched-during-clone).
 
 To confirm this as the cause of the error, set the
 [logging level](../../application_security/secret_detection/index.md#logging-level) to `debug`, then

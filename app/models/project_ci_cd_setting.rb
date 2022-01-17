@@ -3,7 +3,7 @@
 class ProjectCiCdSetting < ApplicationRecord
   belongs_to :project, inverse_of: :ci_cd_settings
 
-  DEFAULT_GIT_DEPTH = 50
+  DEFAULT_GIT_DEPTH = 20
 
   before_create :set_default_git_depth
 

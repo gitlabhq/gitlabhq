@@ -54,7 +54,7 @@ RSpec.describe 'Projects > Settings > User manages merge request settings' do
 
         within('.sharing-permissions-form') do
           find('.project-feature-controls[data-for="project[project_feature_attributes][merge_requests_access_level]"] .gl-toggle').click
-          find('input[value="Save changes"]').send_keys(:return)
+          find('[data-testid="project-features-save-button"]').send_keys(:return)
         end
 
         expect(page).not_to have_content 'Pipelines must succeed'
@@ -74,7 +74,7 @@ RSpec.describe 'Projects > Settings > User manages merge request settings' do
 
         within('.sharing-permissions-form') do
           find('.project-feature-controls[data-for="project[project_feature_attributes][builds_access_level]"] .gl-toggle').click
-          find('input[value="Save changes"]').send_keys(:return)
+          find('[data-testid="project-features-save-button"]').send_keys(:return)
         end
 
         expect(page).to have_content 'Pipelines must succeed'
@@ -95,7 +95,7 @@ RSpec.describe 'Projects > Settings > User manages merge request settings' do
 
       within('.sharing-permissions-form') do
         find('.project-feature-controls[data-for="project[project_feature_attributes][merge_requests_access_level]"] .gl-toggle').click
-        find('input[value="Save changes"]').send_keys(:return)
+        find('[data-testid="project-features-save-button"]').send_keys(:return)
       end
 
       expect(page).to have_content 'Pipelines must succeed'

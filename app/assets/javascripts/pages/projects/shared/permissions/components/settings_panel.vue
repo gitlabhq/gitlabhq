@@ -1,6 +1,6 @@
 <script>
-import { GlIcon, GlSprintf, GlLink, GlFormCheckbox, GlToggle } from '@gitlab/ui';
-
+import { GlButton, GlIcon, GlSprintf, GlLink, GlFormCheckbox, GlToggle } from '@gitlab/ui';
+import ConfirmDanger from '~/vue_shared/components/confirm_danger/confirm_danger.vue';
 import settingsMixin from 'ee_else_ce/pages/projects/shared/permissions/mixins/settings_pannel_mixin';
 import { __, s__ } from '~/locale';
 import {
@@ -41,16 +41,19 @@ export default {
     pucWarningHelpText: s__(
       'ProjectSettings|Highlight the usage of hidden unicode characters. These have innocent uses for right-to-left languages, but can also be used in potential exploits.',
     ),
+    confirmButtonText: __('Save changes'),
   },
 
   components: {
     projectFeatureSetting,
     projectSettingRow,
+    GlButton,
     GlIcon,
     GlSprintf,
     GlLink,
     GlFormCheckbox,
     GlToggle,
+    ConfirmDanger,
   },
   mixins: [settingsMixin],
 
@@ -163,6 +166,15 @@ export default {
       required: false,
       default: '',
     },
+    confirmationPhrase: {
+      type: String,
+      required: true,
+    },
+    showVisibilityConfirmModal: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     const defaults = {
@@ -273,6 +285,12 @@ export default {
     },
     cveIdRequestIsDisabled() {
       return this.visibilityLevel !== visibilityOptions.PUBLIC;
+    },
+    isVisibilityReduced() {
+      return (
+        this.showVisibilityConfirmModal &&
+        this.visibilityLevel < this.currentSettings.visibilityLevel
+      );
     },
   },
 
@@ -774,5 +792,24 @@ export default {
         <template #help>{{ $options.i18n.pucWarningHelpText }}</template>
       </gl-form-checkbox>
     </project-setting-row>
+    <confirm-danger
+      v-if="isVisibilityReduced"
+      button-class="qa-visibility-features-permissions-save-button"
+      button-variant="confirm"
+      :disabled="false"
+      :phrase="confirmationPhrase"
+      :button-text="$options.i18n.confirmButtonText"
+      data-testid="project-features-save-button"
+      @confirm="$emit('confirm')"
+    />
+    <gl-button
+      v-else
+      type="submit"
+      variant="confirm"
+      data-testid="project-features-save-button"
+      button-class="qa-visibility-features-permissions-save-button"
+    >
+      {{ $options.i18n.confirmButtonText }}
+    </gl-button>
   </div>
 </template>

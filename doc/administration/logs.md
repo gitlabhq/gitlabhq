@@ -28,14 +28,14 @@ A logger emits a log message only if its log level is equal to or above the mini
 
 The following log levels are supported:
 
-| Level | Name    |
-|-------|---------|
-| 0     | DEBUG   |
-| 1     | INFO    |
-| 2     | WARN    |
-| 3     | ERROR   |
-| 4     | FATAL   |
-| 5     | UNKNOWN |
+| Level | Name      |
+|:------|:----------|
+| 0     | `DEBUG`   |
+| 1     | `INFO`    |
+| 2     | `WARN`    |
+| 3     | `ERROR`   |
+| 4     | `FATAL`   |
+| 5     | `UNKNOWN` |
 
 GitLab loggers emit all log messages because they are set to `DEBUG` by default.
 
@@ -53,8 +53,8 @@ GITLAB_LOG_LEVEL=info
 For some services, other log levels are in place that are not affected by this setting.
 Some of these services have their own environment variables to override the log level. For example:
 
-| Service              | Log Level | Environment variable |
-|----------------------|-----------|----------------------|
+| Service              | Log level | Environment variable |
+|:---------------------|:----------|:---------------------|
 | GitLab API           | `INFO`    |                      |
 | GitLab Cleanup       | `INFO`    | `DEBUG`              |
 | GitLab Doctor        | `INFO`    | `VERBOSE`            |
@@ -84,26 +84,26 @@ are written to a file called `current`. The `logrotate` service built into GitLa
 [manages all logs](https://docs.gitlab.com/omnibus/settings/logs.html#logrotate)
 except those captured by `runit`.
 
-| Log type                                        | Managed by logrotate   | Managed by svlogd/runit |
-|-------------------------------------------------|------------------------|-------------------------|
-| [Alertmanager Logs](#alertmanager-logs)         | **{dotted-circle}** No | **{check-circle}** Yes  |
-| [Crond Logs](#crond-logs)                       | **{dotted-circle}** No | **{check-circle}** Yes  |
-| [Gitaly](#gitaly-logs)                          | **{check-circle}** Yes | **{check-circle}** Yes  |
-| [GitLab Exporter for Omnibus](#gitlab-exporter) | **{dotted-circle}** No | **{check-circle}** Yes  |
-| [GitLab Pages Logs](#pages-logs)                | **{check-circle}** Yes | **{check-circle}** Yes  |
-| GitLab Rails                                    | **{check-circle}** Yes | **{dotted-circle}** No  |
-| [GitLab Shell Logs](#gitlab-shelllog)           | **{check-circle}** Yes | **{dotted-circle}** No  |
-| [Grafana Logs](#grafana-logs)                   | **{dotted-circle}** No | **{check-circle}** Yes  |
-| [LogRotate Logs](#logrotate-logs)               | **{dotted-circle}** No | **{check-circle}** Yes  |
-| [Mailroom](#mail_room_jsonlog-default)          | **{check-circle}** Yes | **{check-circle}** Yes  |
-| [NGINX](#nginx-logs)                            | **{check-circle}** Yes | **{check-circle}** Yes  |
-| [PostgreSQL Logs](#postgresql-logs)             | **{dotted-circle}** No | **{check-circle}** Yes  |
-| [Praefect Logs](#praefect-logs)                 | **{dotted-circle}** Yes| **{check-circle}** Yes  |
-| [Prometheus Logs](#prometheus-logs)             | **{dotted-circle}** No | **{check-circle}** Yes  |
-| [Puma](#puma-logs)                              | **{check-circle}** Yes | **{check-circle}** Yes  |
-| [Redis Logs](#redis-logs)                       | **{dotted-circle}** No | **{check-circle}** Yes  |
-| [Registry Logs](#registry-logs)                 | **{dotted-circle}** No | **{check-circle}** Yes  |
-| [Workhorse Logs](#workhorse-logs)               | **{check-circle}** Yes | **{check-circle}** Yes  |
+| Log type                                        | Managed by logrotate    | Managed by svlogd/runit |
+|:------------------------------------------------|:------------------------|:------------------------|
+| [Alertmanager Logs](#alertmanager-logs)         | **{dotted-circle}** No  | **{check-circle}** Yes  |
+| [Crond Logs](#crond-logs)                       | **{dotted-circle}** No  | **{check-circle}** Yes  |
+| [Gitaly](#gitaly-logs)                          | **{check-circle}** Yes  | **{check-circle}** Yes  |
+| [GitLab Exporter for Omnibus](#gitlab-exporter) | **{dotted-circle}** No  | **{check-circle}** Yes  |
+| [GitLab Pages Logs](#pages-logs)                | **{check-circle}** Yes  | **{check-circle}** Yes  |
+| GitLab Rails                                    | **{check-circle}** Yes  | **{dotted-circle}** No  |
+| [GitLab Shell Logs](#gitlab-shelllog)           | **{check-circle}** Yes  | **{dotted-circle}** No  |
+| [Grafana Logs](#grafana-logs)                   | **{dotted-circle}** No  | **{check-circle}** Yes  |
+| [LogRotate Logs](#logrotate-logs)               | **{dotted-circle}** No  | **{check-circle}** Yes  |
+| [Mailroom](#mail_room_jsonlog-default)          | **{check-circle}** Yes  | **{check-circle}** Yes  |
+| [NGINX](#nginx-logs)                            | **{check-circle}** Yes  | **{check-circle}** Yes  |
+| [PostgreSQL Logs](#postgresql-logs)             | **{dotted-circle}** No  | **{check-circle}** Yes  |
+| [Praefect Logs](#praefect-logs)                 | **{dotted-circle}** Yes | **{check-circle}** Yes  |
+| [Prometheus Logs](#prometheus-logs)             | **{dotted-circle}** No  | **{check-circle}** Yes  |
+| [Puma](#puma-logs)                              | **{check-circle}** Yes  | **{check-circle}** Yes  |
+| [Redis Logs](#redis-logs)                       | **{dotted-circle}** No  | **{check-circle}** Yes  |
+| [Registry Logs](#registry-logs)                 | **{dotted-circle}** No  | **{check-circle}** Yes  |
+| [Workhorse Logs](#workhorse-logs)               | **{check-circle}** Yes  | **{check-circle}** Yes  |
 
 ## `production_json.log`
 

@@ -672,18 +672,16 @@ module ProjectsHelper
     html_escape(message) % { strong_start: strong_start, strong_end: strong_end, project_name: project.name, group_name: project.group ? project.group.name : nil }
   end
 
-  def visibility_confirm_modal_data(project, remove_form_id = nil)
+  def visibility_confirm_modal_data(project, target_form_id = nil)
     {
-      remove_form_id: remove_form_id,
-      qa_selector: 'visibility_features_permissions_save_button',
-      button_text: _('Save changes'),
+      target_form_id: target_form_id,
       button_testid: 'reduce-project-visibility-button',
-      button_variant: 'confirm',
       confirm_button_text: _('Reduce project visibility'),
       confirm_danger_message: confirm_reduce_visibility_message(project),
       phrase: project.full_path,
       additional_information: _('Note: current forks will keep their visibility level.'),
-      html_confirmation_message: true
+      html_confirmation_message: true.to_s,
+      show_visibility_confirm_modal: show_visibility_confirm_modal?(project).to_s
     }
   end
 

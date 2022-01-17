@@ -159,7 +159,8 @@ in the `.gitlab-ci.yml` file.
 
 ## Limit the number of changes fetched during clone
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/28919) in GitLab 12.0.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/28919) in GitLab 12.0.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/77576) `git depth` value in GitLab 14.7.
 
 You can limit the number of changes that GitLab CI/CD fetches when it clones
 a repository.
@@ -171,8 +172,8 @@ a repository.
    The maximum value is `1000`. To disable shallow clone and make GitLab CI/CD
    fetch all branches and tags each time, keep the value empty or set to `0`.
 
-In GitLab 12.0 and later, newly created projects automatically have a default
-`git depth` value of `50`.
+In GitLab versions 14.7 and later, newly created projects have a default `git depth`
+value of `20`. GitLab versions 14.6 and earlier have a default `git depth` value of `50`.
 
 This value can be overridden by the [`GIT_DEPTH` variable](../large_repositories/index.md#shallow-cloning)
 in the `.gitlab-ci.yml` file.

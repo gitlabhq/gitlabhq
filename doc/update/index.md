@@ -537,6 +537,31 @@ See [Maintenance mode issue in GitLab 13.9 to 14.4](#maintenance-mode-issue-in-g
 
 - See [Maintenance mode issue in GitLab 13.9 to 14.4](#maintenance-mode-issue-in-gitlab-139-to-144).
 
+- For GitLab Enterprise Edition customers, we noticed an issue when [subscription expiration is upcoming, and you create new subgroups and projects](https://gitlab.com/gitlab-org/gitlab/-/issues/322546). If you fall under that category and get 500 errors, you can work around this issue:
+
+  1. SSH into you GitLab server, and open a Rails console:
+
+     ```shell
+     sudo gitlab-rails console
+     ```
+
+  1. Disable the following features:
+
+     ```ruby
+     Feature.disable(:subscribable_subscription_banner)
+     Feature.disable(:subscribable_license_banner)
+     ```
+
+  1. Restart Puma or Unicorn:
+
+     ```shell
+     #For installations using Puma
+     sudo gitlab-ctl restart puma
+
+     #For installations using Unicorn
+     sudo gitlab-ctl restart unicorn
+     ```
+
 ### 13.8.8
 
 GitLab 13.8 includes a background migration to address [an issue with duplicate service records](https://gitlab.com/gitlab-org/gitlab/-/issues/290008). If duplicate services are present, this background migration must complete before a unique index is applied to the services table, which was [introduced in GitLab 13.9](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/52563). Upgrades from GitLab 13.8 and earlier to later versions must include an intermediate upgrade to GitLab 13.8.8 and [must wait until the background migrations complete](#checking-for-background-migrations-before-upgrading) before proceeding.

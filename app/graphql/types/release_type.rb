@@ -20,7 +20,6 @@ module Types
           authorize: :download_code
     field :description, GraphQL::Types::String, null: true,
           description: 'Description (also known as "release notes") of the release.'
-    markdown_field :description_html, null: true
     field :name, GraphQL::Types::String, null: true,
           description: 'Name of the release.'
     field :created_at, Types::TimeType, null: true,
@@ -42,13 +41,15 @@ module Types
     field :author, Types::UserType, null: true,
           description: 'User that created the release.'
 
-    def author
-      Gitlab::Graphql::Loaders::BatchModelLoader.new(User, release.author_id).find
-    end
-
     field :commit, Types::CommitType, null: true,
           complexity: 10, calls_gitaly: true,
           description: 'Commit associated with the release.'
+
+    markdown_field :description_html, null: true
+
+    def author
+      Gitlab::Graphql::Loaders::BatchModelLoader.new(User, release.author_id).find
+    end
 
     def commit
       return if release.sha.nil?

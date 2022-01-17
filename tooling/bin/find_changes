@@ -48,7 +48,7 @@ class FindChanges # rubocop:disable Gitlab/NamespacedClass
 
         mr_changes = Gitlab.merge_request_changes(mr_project_path, mr_iid)
 
-        mr_changes.changes.map { |change| change['new_path'] }
+        mr_changes.changes.map { |change| change['new_path'] unless change['deleted_file'] }.compact
       end
   end
 
