@@ -66,6 +66,28 @@ RSpec.describe ::Ci::DestroyPipelineService do
           expect { subject }.to change { Ci::DeletedObject.count }
         end
       end
+
+      context 'when job has trace chunks' do
+        let(:connection_params) { Gitlab.config.artifacts.object_store.connection.symbolize_keys }
+        let(:connection) { ::Fog::Storage.new(connection_params) }
+
+        before do
+          stub_object_storage(connection_params: connection_params, remote_directory: 'artifacts')
+          stub_artifacts_object_storage
+        end
+
+        let!(:trace_chunk) { create(:ci_build_trace_chunk, :fog_with_data, build: build) }
+
+        it 'destroys associated trace chunks' do
+          subject
+
+          expect { trace_chunk.reload }.to raise_error(ActiveRecord::RecordNotFound)
+        end
+
+        it 'removes data from object store' do
+          expect { subject }.to change { Ci::BuildTraceChunks::Fog.new.data(trace_chunk) }
+        end
+      end
     end
 
     context 'when pipeline is in cancelable state' do

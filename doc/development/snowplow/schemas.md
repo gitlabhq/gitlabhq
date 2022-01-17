@@ -19,6 +19,7 @@ The [`StandardContext`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/g
 | `project_id`   | **{dotted-circle}** | integer               |                                                                 |
 | `namespace_id` | **{dotted-circle}** | integer               |                                                               |
 | `user_id`      | **{dotted-circle}** | integer               | User database record ID attribute. This file undergoes a pseudonymization process at the collector level. |
+| `context_generated_at` | **{dotted-circle}** | string (date time format) | Timestamp indicating when context was generated.                                                                |
 | `environment`  | **{check-circle}**  | string (max 32 chars) | Name of the source environment, such as `production` or `staging`             |
 | `source`       | **{check-circle}**  | string (max 32 chars) | Name of the source application, such as  `gitlab-rails` or `gitlab-javascript` |
 | `plan`         | **{dotted-circle}**  | string (max 32 chars) | Name of the plan for the namespace, such as `free`, `premium`, or `ultimate`. Automatically picked from the `namespace`. |

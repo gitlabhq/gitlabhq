@@ -31,6 +31,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
   it { is_expected.to have_many(:statuses_order_id_desc) }
   it { is_expected.to have_many(:bridges) }
   it { is_expected.to have_many(:job_artifacts).through(:builds) }
+  it { is_expected.to have_many(:build_trace_chunks).through(:builds) }
   it { is_expected.to have_many(:auto_canceled_pipelines) }
   it { is_expected.to have_many(:auto_canceled_jobs) }
   it { is_expected.to have_many(:sourced_pipelines) }

@@ -1004,6 +1004,63 @@ RSpec.describe Ci::PipelineProcessing::AtomicProcessingService do
       end
     end
 
+    context 'when the dependency is stage-independent', :sidekiq_inline do
+      let(:config) do
+        <<-EOY
+        stages: [A, B]
+
+        A1:
+          stage: A
+          script: exit 0
+          when: manual
+
+        A2:
+          stage: A
+          script: exit 0
+          needs: [A1]
+
+        B:
+          stage: B
+          needs: [A2]
+          script: exit 0
+        EOY
+      end
+
+      let(:pipeline) do
+        Ci::CreatePipelineService.new(project, user, { ref: 'master' }).execute(:push).payload
+      end
+
+      before do
+        stub_ci_pipeline_yaml_file(config)
+      end
+
+      it 'processes subsequent jobs in the correct order when playing first job' do
+        expect(all_builds_names).to eq(%w[A1 A2 B])
+        expect(all_builds_statuses).to eq(%w[manual skipped skipped])
+
+        play_manual_action('A1')
+
+        expect(all_builds_names).to eq(%w[A1 A2 B])
+        expect(all_builds_statuses).to eq(%w[pending created created])
+      end
+
+      context 'when the FF ci_order_subsequent_jobs_by_stage is disabled' do
+        before do
+          stub_feature_flags(ci_order_subsequent_jobs_by_stage: false)
+        end
+
+        it 'processes subsequent jobs in an incorrect order when playing first job' do
+          expect(all_builds_names).to eq(%w[A1 A2 B])
+          expect(all_builds_statuses).to eq(%w[manual skipped skipped])
+
+          play_manual_action('A1')
+
+          expect(all_builds_names).to eq(%w[A1 A2 B])
+          expect(all_builds_statuses).to eq(%w[pending created skipped])
+        end
+      end
+    end
+
     private
 
     def all_builds

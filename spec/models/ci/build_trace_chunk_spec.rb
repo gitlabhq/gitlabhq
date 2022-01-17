@@ -49,9 +49,8 @@ RSpec.describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state, :clean_git
   end
 
   context 'FastDestroyAll' do
-    let(:project) { create(:project) }
-    let(:pipeline) { create(:ci_pipeline, project: project) }
-    let!(:build) { create(:ci_build, :running, :trace_live, pipeline: pipeline, project: project) }
+    let(:pipeline) { create(:ci_pipeline) }
+    let!(:build) { create(:ci_build, :running, :trace_live, pipeline: pipeline) }
     let(:subjects) { build.trace_chunks }
 
     describe 'Forbid #destroy and #destroy_all' do
@@ -84,13 +83,7 @@ RSpec.describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state, :clean_git
         expect(external_data_counter).to be > 0
         expect(subjects.count).to be > 0
 
-        ::Gitlab::Database::QueryAnalyzers::PreventCrossDatabaseModification.allow_cross_database_modification_within_transaction(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/350185') do
-          # This should use to prevent cross-DB modification
-          # but due to https://gitlab.com/gitlab-org/gitlab/-/issues/350185
-          # the build trace chunks are not destroyed by Projects::DestroyService
-          # Change to: expect { Projects::DestroyService.new(project, project.owner).execute }.to eq(true)
-          expect { project.destroy! }.not_to raise_error
-        end
+        expect { pipeline.destroy! }.not_to raise_error
 
         expect(subjects.count).to eq(0)
         expect(external_data_counter).to eq(0)
@@ -858,13 +851,7 @@ RSpec.describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state, :clean_git
 
     context 'when project is destroyed' do
       let(:subject) do
-        ::Gitlab::Database::QueryAnalyzers::PreventCrossDatabaseModification.allow_cross_database_modification_within_transaction(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/350185') do
-          # This should use to prevent cross-DB modification
-          # but due to https://gitlab.com/gitlab-org/gitlab/-/issues/350185
-          # the build trace chunks are not destroyed by Projects::DestroyService
-          # Change to: Projects::DestroyService.new(project, project.owner).execute
-          project.destroy!
-        end
+        Projects::DestroyService.new(project, project.owner).execute
       end
 
       it_behaves_like 'deletes all build_trace_chunk and data in redis'

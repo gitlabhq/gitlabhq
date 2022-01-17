@@ -240,7 +240,6 @@ class ProjectPolicy < BasePolicy
     enable :read_wiki
     enable :read_issue
     enable :read_label
-    enable :read_work_items_hierarchy
     enable :read_milestone
     enable :read_snippet
     enable :read_project_member
@@ -573,7 +572,6 @@ class ProjectPolicy < BasePolicy
     enable :read_issue_board_list
     enable :read_wiki
     enable :read_label
-    enable :read_work_items_hierarchy
     enable :read_milestone
     enable :read_snippet
     enable :read_project_member

@@ -2,7 +2,6 @@
 import { GlSafeHtmlDirective } from '@gitlab/ui';
 import LineNumbers from '~/vue_shared/components/line_numbers.vue';
 import { sanitize } from '~/lib/dompurify';
-import '~/sourcegraph/load';
 
 const LINE_SELECT_CLASS_NAME = 'hll';
 

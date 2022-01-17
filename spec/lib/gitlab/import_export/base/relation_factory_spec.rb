@@ -11,7 +11,7 @@ RSpec.describe Gitlab::ImportExport::Base::RelationFactory do
   let(:excluded_keys) { [] }
 
   subject do
-    described_class.create(relation_sym: relation_sym,
+    described_class.create(relation_sym: relation_sym, # rubocop:disable Rails/SaveBang
                            relation_hash: relation_hash,
                            relation_index: 1,
                            object_builder: Gitlab::ImportExport::Project::ObjectBuilder,

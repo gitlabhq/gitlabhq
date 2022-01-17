@@ -313,10 +313,10 @@ Use this schema to define `clusters` objects in the [`schedule` rule type](#sche
 
 | Field        | Type                | Possible values          | Description |
 |--------------|---------------------|--------------------------|-------------|
-| `containers` | `array` of `string` | | The container name to be scanned (only the first value is currently supported). |
-| `resources`  | `array` of `string` | | The resource name to be scanned (only the first value is currently supported). |
-| `namespaces` | `array` of `string` | | The namespace to be scanned (only the first value is currently supported). |
-| `kinds`      | `array` of `string` | `deployment`/`daemonset` | The resource kind to be scanned (only the first value is currently supported). |
+| `containers` | `array` of `string` | | The container name that is scanned (only the first value is currently supported). |
+| `resources`  | `array` of `string` | | The resource name that is scanned (only the first value is currently supported). |
+| `namespaces` | `array` of `string` | | The namespace that is scanned (only the first value is currently supported). |
+| `kinds`      | `array` of `string` | `deployment`/`daemonset` | The resource kind that should be scanned (only the first value is currently supported). |
 
 ### `scan` action type
 

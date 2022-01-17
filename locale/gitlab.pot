@@ -722,6 +722,9 @@ msgstr ""
 msgid "%{level_name} is not allowed since the fork source project has lower visibility."
 msgstr ""
 
+msgid "%{linkStart}Learn more.%{linkEnd}"
+msgstr ""
+
 msgid "%{link_start}Learn more%{link_end} about roles."
 msgstr ""
 
@@ -2478,6 +2481,12 @@ msgid "AdminArea|You’re about to stop all jobs. This will halt all current job
 msgstr ""
 
 msgid "AdminDashboard|Error loading the statistics. Please try again"
+msgstr ""
+
+msgid "AdminGeo|The URL of the primary site that is used internally by the secondary sites."
+msgstr ""
+
+msgid "AdminGeo|The URL of the secondary site that is used internally by the primary site."
 msgstr ""
 
 msgid "AdminLabels|Define your default set of project labels"
@@ -7069,9 +7078,6 @@ msgid "Cherry-pick this merge request"
 msgstr ""
 
 msgid "Child"
-msgstr ""
-
-msgid "Child epic"
 msgstr ""
 
 msgid "Child epic does not exist."
@@ -17619,33 +17625,6 @@ msgstr[1] ""
 msgid "Hide values"
 msgstr ""
 
-msgid "Hierarchy|Current structure"
-msgstr ""
-
-msgid "Hierarchy|Deliver value more efficiently by breaking down necessary work into a hierarchical structure. This structure helps teams understand scope, priorities, and how work cascades up toward larger goals."
-msgstr ""
-
-msgid "Hierarchy|Help us improve work items in GitLab!"
-msgstr ""
-
-msgid "Hierarchy|Is there a framework or type of work item you wish you had access to in GitLab? Give us your feedback and help us build the experiences valuable to you."
-msgstr ""
-
-msgid "Hierarchy|Planning hierarchy"
-msgstr ""
-
-msgid "Hierarchy|Take the work items survey"
-msgstr ""
-
-msgid "Hierarchy|These items are unavailable in the current structure."
-msgstr ""
-
-msgid "Hierarchy|Unavailable structure"
-msgstr ""
-
-msgid "Hierarchy|You can start using these items now."
-msgstr ""
-
 msgid "High or unknown vulnerabilities present"
 msgstr ""
 
@@ -26530,9 +26509,6 @@ msgstr ""
 msgid "Plan:"
 msgstr ""
 
-msgid "Planning hierarchy"
-msgstr ""
-
 msgid "PlantUML"
 msgstr ""
 
@@ -30254,9 +30230,6 @@ msgid "Required in this project."
 msgstr ""
 
 msgid "Required only if you are not using role instance credentials."
-msgstr ""
-
-msgid "Requirement"
 msgstr ""
 
 msgid "Requirement %{reference} has been added"
@@ -34942,9 +34915,6 @@ msgstr ""
 msgid "Target-Branch"
 msgstr ""
 
-msgid "Task"
-msgstr ""
-
 msgid "Task ID: %{elastic_task}"
 msgstr ""
 
@@ -35190,9 +35160,6 @@ msgstr ""
 msgid "Test Cases"
 msgstr ""
 
-msgid "Test case"
-msgstr ""
-
 msgid "Test coverage parsing"
 msgstr ""
 
@@ -35404,12 +35371,6 @@ msgid "The Prometheus server responded with \"bad request\". Please check your q
 msgstr ""
 
 msgid "The Snowplow cookie domain."
-msgstr ""
-
-msgid "The URL defined on the primary node that secondary nodes should use to contact it."
-msgstr ""
-
-msgid "The URL defined on the primary node that secondary nodes should use to contact it. %{linkStart}Learn more%{linkEnd}"
 msgstr ""
 
 msgid "The URL of the Jenkins server."

@@ -1,0 +1,8 @@
+---
+name: ci_order_subsequent_jobs_by_stage
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/77528
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/349977
+milestone: '14.7'
+type: development
+group: group::pipeline authoring
+default_enabled: false

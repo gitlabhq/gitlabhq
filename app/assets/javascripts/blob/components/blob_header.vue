@@ -81,7 +81,7 @@ export default {
       </blob-filepath>
     </div>
 
-    <div class="gl-display-none gl-sm-display-flex">
+    <div class="gl-display-none gl-sm-display-flex file-actions">
       <viewer-switcher v-if="showViewerSwitcher" v-model="viewer" />
 
       <slot name="actions"></slot>

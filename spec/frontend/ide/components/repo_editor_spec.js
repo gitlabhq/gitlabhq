@@ -5,7 +5,6 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import '~/behaviors/markdown/render_gfm';
 import waitForPromises from 'helpers/wait_for_promises';
-import waitUsingRealTimer from 'helpers/wait_using_real_timer';
 import { exampleConfigs, exampleFiles } from 'jest/ide/lib/editorconfig/mock_data';
 import { EDITOR_CODE_INSTANCE_FN, EDITOR_DIFF_INSTANCE_FN } from '~/editor/constants';
 import { EditorMarkdownExtension } from '~/editor/extensions/source_editor_markdown_ext';
@@ -540,7 +539,6 @@ describe('RepoEditor', () => {
         },
       });
       await vm.$nextTick();
-      await vm.$nextTick();
 
       expect(vm.initEditor).toHaveBeenCalled();
     });
@@ -567,8 +565,8 @@ describe('RepoEditor', () => {
         // switching from edit to diff mode usually triggers editor initialization
         vm.$store.state.viewer = viewerTypes.diff;
 
-        // we delay returning the file to make sure editor doesn't initialize before we fetch file content
-        await waitUsingRealTimer(30);
+        jest.runOnlyPendingTimers();
+
         return 'rawFileData123\n';
       });
 
@@ -598,8 +596,9 @@ describe('RepoEditor', () => {
           return aContent;
         })
         .mockImplementationOnce(async () => {
-          // we delay returning fileB content to make sure the editor doesn't initialize prematurely
-          await waitUsingRealTimer(30);
+          // we delay returning fileB content
+          // to make sure the editor doesn't initialize prematurely
+          jest.advanceTimersByTime(30);
           return bContent;
         });
 

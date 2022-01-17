@@ -3,6 +3,7 @@ import { GlButton } from '@gitlab/ui';
 import { __ } from '~/locale';
 import createFlash from '~/flash';
 import getRefMixin from '~/repository/mixins/get_ref';
+import initSourcegraph from '~/sourcegraph';
 import { updateElementsVisibility } from '../utils/dom';
 import blobControlsQuery from '../queries/blob_controls.query.graphql';
 
@@ -76,6 +77,9 @@ export default {
     showBlobControls(shouldShow) {
       updateElementsVisibility('.tree-controls', !shouldShow);
     },
+    blobInfo() {
+      initSourcegraph();
+    },
   },
 };
 </script>
@@ -97,6 +101,7 @@ export default {
       data-testid="permalink"
       :href="blobInfo.permalinkPath"
       :class="$options.buttonClassList"
+      class="js-data-file-blob-permalink-url"
     >
       {{ $options.i18n.permalink }}
     </gl-button>

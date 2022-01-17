@@ -55,20 +55,30 @@ you can increase the values to complete backfill in a shorter time. If it's
 under heavy load and backfill reduces its availability for normal requests,
 you can decrease them.
 
-## Using a different URL for synchronization
+## Set up the internal URLs
+
+> Setting up internal URLs in secondary sites was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/77179) in GitLab 14.7.
+
+You can set up a different URL for synchronization between the primary and secondary site.
 
 The **primary** site's Internal URL is used by **secondary** sites to contact it
 (to sync repositories, for example). The name Internal URL distinguishes it from
 [External URL](https://docs.gitlab.com/omnibus/settings/configuration.html#configuring-the-external-url-for-gitlab),
 which is used by users. Internal URL does not need to be a private address.
 
-Internal URL defaults to external URL, but you can also customize it:
+When [Geo secondary proxying](../../administration/geo/secondary_proxy/index.md) is enabled,
+the primary uses the secondary's internal URL to contact it directly.
+
+The internal URL defaults to external URL. To change it:
 
 1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Geo > Nodes**.
 1. Select **Edit** on the site you want to customize.
 1. Edit the internal URL.
 1. Select **Save changes**.
+
+When enabled, the Admin Area for Geo shows replication details for each site directly
+from the primary site's UI, and through the Geo secondary proxy, if enabled.
 
 WARNING:
 We recommend using an HTTPS connection while configuring the Geo sites. To avoid

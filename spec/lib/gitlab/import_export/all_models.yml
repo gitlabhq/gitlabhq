@@ -281,6 +281,7 @@ ci_pipelines:
 - dast_site_profiles_pipeline
 - package_build_infos
 - package_file_build_infos
+- build_trace_chunks
 ci_refs:
 - project
 - ci_pipelines

@@ -96,7 +96,7 @@ RSpec.describe Gitlab::GitAccess do
 
           context 'when the DeployKey has access to the project' do
             before do
-              deploy_key.deploy_keys_projects.create(project: project, can_push: true)
+              deploy_key.deploy_keys_projects.create!(project: project, can_push: true)
             end
 
             it 'allows push and pull access' do
@@ -820,7 +820,7 @@ RSpec.describe Gitlab::GitAccess do
             project.add_role(user, role)
           end
 
-          protected_branch.save
+          protected_branch.save!
 
           aggregate_failures do
             matrix.each do |action, allowed|
@@ -1090,7 +1090,7 @@ RSpec.describe Gitlab::GitAccess do
     context 'when deploy_key can push' do
       context 'when project is authorized' do
         before do
-          key.deploy_keys_projects.create(project: project, can_push: true)
+          key.deploy_keys_projects.create!(project: project, can_push: true)
         end
 
         it { expect { push_access_check }.not_to raise_error }
@@ -1120,7 +1120,7 @@ RSpec.describe Gitlab::GitAccess do
     context 'when deploy_key cannot push' do
       context 'when project is authorized' do
         before do
-          key.deploy_keys_projects.create(project: project, can_push: false)
+          key.deploy_keys_projects.create!(project: project, can_push: false)
         end
 
         it { expect { push_access_check }.to raise_forbidden(described_class::ERROR_MESSAGES[:deploy_key_upload]) }

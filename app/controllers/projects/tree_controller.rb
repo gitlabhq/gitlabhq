@@ -6,6 +6,7 @@ class Projects::TreeController < Projects::ApplicationController
   include CreatesCommit
   include ActionView::Helpers::SanitizeHelper
   include RedirectsForMissingPathOnTree
+  include SourcegraphDecorator
 
   around_action :allow_gitaly_ref_name_caching, only: [:show]
 

@@ -212,9 +212,7 @@ module TestEnv
     spawn_script = Rails.root.join('scripts/gitaly-test-spawn').to_s
     Bundler.with_original_env do
       unless system(spawn_script)
-        message = 'gitaly spawn failed'
-        message += " (try `rm -rf #{gitaly_dir}` ?)" unless ci?
-        raise message
+        raise gitaly_failure_message
       end
     end
 
@@ -615,6 +613,39 @@ module TestEnv
     return false if exit_status != 0
 
     expected_version == sha.chomp
+  end
+
+  def gitaly_failure_message
+    message = "gitaly spawn failed\n\n"
+
+    message += "- The `gitaly` binary does not exist: #{gitaly_binary}\n" unless File.exist?(gitaly_binary)
+    message += "- The `praefect` binary does not exist: #{praefect_binary}\n" unless File.exist?(praefect_binary)
+    message += "- The `git` binary does not exist: #{git_binary}\n" unless File.exist?(git_binary)
+
+    message += "\nCheck log/gitaly-test.log for errors.\n"
+
+    unless ci?
+      message += "\nIf binaries are missing, try running `make -C tmp/tests/gitaly build git.`\n"
+      message += "\nOtherwise, try running `rm -rf #{gitaly_dir}`."
+    end
+
+    message
+  end
+
+  def git_binary
+    File.join(gitaly_dir, "_build", "deps", "git", "install", "bin", "git")
+  end
+
+  def gitaly_binary
+    File.join(gitaly_dir, "_build", "bin", "gitaly")
+  end
+
+  def praefect_binary
+    File.join(gitaly_dir, "_build", "bin", "praefect")
+  end
+
+  def git_binary_exists?
+    File.exist?(git_binary)
   end
 end
 

@@ -100,6 +100,14 @@ You can give a user access to all projects in a group.
 1. Fill in the fields.
    - The role applies to all projects in the group. [Learn more about permissions](../permissions.md).
    - On the **Access expiration date**, the user can no longer access projects in the group.
+1. Select **Invite**.
+
+Members that are not automatically added are displayed on the **Invited** tab.
+Users can be on this tab because they:
+
+- Have not yet accepted the invitation.
+- Are waiting for [approval from an administrator](../admin_area/moderate_users.md).
+- [Exceed the group user cap](#user-cap-for-groups).
 
 ## Request access to a group
 
@@ -507,6 +515,74 @@ To prevent a project from being shared with other groups:
 
 This setting applies to all subgroups unless overridden by a group owner. Groups already
 added to a project lose access when the setting is enabled.
+
+## User cap for groups
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/330027) in GitLab 14.7.
+
+FLAG:
+On self-managed GitLab, this feature is not available. On GitLab.com, this feature is available for some groups.
+This feature is not ready for production use.
+
+When the number of billable members reaches the user cap, new users can't be added to the group
+without being approved by the group owner.
+
+Groups with the user cap feature enabled have [group sharing](#share-a-group-with-another-group)
+disabled for the group and its subgroups.
+
+### Specify a user cap for a group
+
+Prerequisite:
+
+- You must be assigned the [Owner role](../permissions.md#group-members-permissions) for the group.
+
+To specify a user cap:
+
+1. On the top bar, select **Menu > Groups** and find your group.
+   You can set a cap on the top-level group only.
+1. On the left sidebar, select **Settings > General**.
+1. Expand **Permissions and group features**.
+1. In the **User cap** box, enter the desired number of users.
+1. Select **Save changes**.
+
+If you already have more users in the group than the user cap value, users
+are not removed. However, you can't add more without approval.
+
+Increasing the user cap does not approve pending members.
+
+### Remove the user cap for a group
+
+You can remove the user cap, so there is no limit on the number of members you can add to a group.
+
+Prerequisite:
+
+- You must be assigned the [Owner role](../permissions.md#group-members-permissions) for the group.
+
+To remove the user cap:
+
+1. On the top bar, select **Menu > Groups** and find your group.
+1. On the left sidebar, select **Settings > General**.
+1. Expand **Permissions and group features**.
+1. In the **User cap** box, delete the value.
+1. Select **Save changes**.
+
+Decreasing the user cap does not approve pending members.
+
+### Approve pending members for a group
+
+When the number of billable users reaches the user cap, any new member is put in a pending state
+and must be approved.
+
+Prerequisite:
+
+- You must be assigned the [Owner role](../permissions.md#group-members-permissions) for the group.
+
+To approve members that are pending because they've exceeded the user cap:
+
+1. On the top bar, select **Menu > Groups** and find your group.
+1. On the left sidebar, select **Settings > Usage Quotas**.
+1. On the **Seats** tab, under the alert, select **View pending approvals**.
+1. For each member you want to approve, select **Approve**.
 
 ## Prevent members from being added to projects in a group **(PREMIUM)**
 

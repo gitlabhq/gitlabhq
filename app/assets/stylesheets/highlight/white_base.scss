@@ -255,18 +255,23 @@ span.highlight_word {
 
 .hll { background-color: $white-hll-bg; }
 
-.c { color: $white-c;
+.c,
+.hljs-comment { color: $white-c;
   font-style: italic; }
 
 .err { color: $white-err;
   background-color: $white-err-bg; }
-.k { font-weight: $gl-font-weight-bold; }
+
+.k,
+.hljs-variable.language_,
+.hljs-built_in { font-weight: $gl-font-weight-bold; }
 .o { font-weight: $gl-font-weight-bold; }
 
 .cm { color: $white-cm;
   font-style: italic; }
 
-.cp { color: $white-cp;
+.cp,
+.hljs-meta { color: $white-cp;
   font-weight: $gl-font-weight-bold; }
 
 .c1 { color: $white-c1;
@@ -310,20 +315,34 @@ span.highlight_word {
   font-weight: $gl-font-weight-bold; }
 .gt { color: $white-gt; }
 .kc { font-weight: $gl-font-weight-bold; }
-.kd { font-weight: $gl-font-weight-bold; }
+
+.kd,
+.hljs-keyword { font-weight: $gl-font-weight-bold; }
 .kn { font-weight: $gl-font-weight-bold; }
 .kp { font-weight: $gl-font-weight-bold; }
 .kr { font-weight: $gl-font-weight-bold; }
 
-.kt { color: $white-kt;
+.kt,
+.hljs-type { color: $white-kt;
   font-weight: $gl-font-weight-bold; }
 .m { color: $white-m; }
 .s { color: $white-s; }
-.n { color: $white-n; }
-.na { color: $white-na; }
-.nb { color: $white-nb; }
 
-.nc { color: $white-nc;
+.n,
+.hljs-built_in { color: $white-n; }
+
+.na,
+.hljs-attr,
+.hljs-property,
+.hljs-title.function_ { color: $white-na; }
+
+.nb,
+.hljs-title.class_,
+.hljs-literal { color: $white-nb; }
+
+.nc,
+.hljs-title.class_,
+.hljs-built_in { color: $white-nc;
   font-weight: $gl-font-weight-bold; }
 .no { color: $white-no; }
 .ni { color: $white-ni; }
@@ -331,7 +350,9 @@ span.highlight_word {
 .ne { color: $white-ne;
   font-weight: $gl-font-weight-bold; }
 
-.nf { color: $white-nf;
+.nf,
+.hljs-title,
+.hljs-title.function_ { color: $white-nf;
   font-weight: $gl-font-weight-bold; }
 .nn { color: $white-nn; }
 .nt { color: $white-nt; }
@@ -340,7 +361,9 @@ span.highlight_word {
 .w { color: $white-w; }
 .mf { color: $white-mf; }
 .mh { color: $white-mh; }
-.mi { color: $white-mi; }
+
+.mi,
+.hljs-number { color: $white-mi; }
 .mo { color: $white-mo; }
 .sb { color: $white-sb; }
 .sc { color: $white-sc; }
@@ -351,7 +374,9 @@ span.highlight_word {
 .si { color: $white-si; }
 .sx { color: $white-sx; }
 .sr { color: $white-sr; }
-.s1 { color: $white-s1; }
+
+.s1,
+.hljs-string { color: $white-s1; }
 .ss { color: $white-ss; }
 .bp { color: $white-bp; }
 .vc { color: $white-vc; }

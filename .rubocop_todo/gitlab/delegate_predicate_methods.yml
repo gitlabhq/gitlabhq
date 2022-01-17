@@ -5,4 +5,3 @@ Gitlab/DelegatePredicateMethods:
   - app/models/concerns/integrations/base_data_fields.rb
   - app/models/project.rb
   - ee/app/models/concerns/ee/ci/metadatable.rb
-  - lib/gitlab/ci/trace/stream.rb

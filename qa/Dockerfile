@@ -63,6 +63,7 @@ WORKDIR /home/gitlab/qa
 
 # Install qa dependencies or fetch from cache if unchanged
 COPY ./qa/Gemfile* /home/gitlab/qa/
+RUN gem install bundler --no-document --conservative --version 2.3.5
 RUN bundle install --jobs=$(nproc) --retry=3 --without=development --quiet
 
 ##

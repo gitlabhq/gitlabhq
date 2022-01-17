@@ -92,7 +92,7 @@ RSpec.describe Gitlab::Gfm::ReferenceRewriter do
           let!(:group_label) { create(:group_label, id: 321, name: 'group label', group: old_group) }
 
           before do
-            old_project.update(namespace: old_group)
+            old_project.update!(namespace: old_group)
           end
 
           context 'label referenced by id' do

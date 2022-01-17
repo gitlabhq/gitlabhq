@@ -641,7 +641,6 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         post :generate_new_export
         get :download_export
         get :activity
-        get :planning_hierarchy
         get :refs
         put :new_issuable_address
         get :unfoldered_environment_names

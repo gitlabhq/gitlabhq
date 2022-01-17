@@ -5,6 +5,7 @@ FactoryBot.define do
     name { 'test' }
     add_attribute(:protected) { false }
     created_at { 'Di 29. Okt 09:50:00 CET 2013' }
+    scheduling_type { 'stage' }
     pending
 
     options do
@@ -33,6 +34,8 @@ FactoryBot.define do
     end
 
     trait :dependent do
+      scheduling_type { 'dag' }
+
       transient do
         sequence(:needed_name) { |n| "dependency #{n}" }
         needed { association(:ci_build, name: needed_name, pipeline: pipeline) }
