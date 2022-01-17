@@ -283,6 +283,50 @@ RSpec.describe 'Query.project(fullPath).pipelines' do
     end
   end
 
+  describe 'warningMessages' do
+    let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
+    let_it_be(:warning_message) { create(:ci_pipeline_message, pipeline: pipeline, content: 'warning') }
+
+    let(:pipelines_graphql_data) { graphql_data.dig(*%w[project pipelines nodes]).first }
+
+    let(:query) do
+      %(
+        query {
+          project(fullPath: "#{project.full_path}") {
+            pipelines {
+              nodes {
+                warningMessages {
+                  content
+                }
+              }
+            }
+          }
+        }
+      )
+    end
+
+    it 'returns pipeline warnings' do
+      post_graphql(query, current_user: user)
+
+      expect(pipelines_graphql_data['warningMessages']).to contain_exactly(
+        a_hash_including('content' => 'warning')
+      )
+    end
+
+    it 'avoids N+1 queries' do
+      control_count = ActiveRecord::QueryRecorder.new do
+        post_graphql(query, current_user: user)
+      end
+
+      pipeline_2 = create(:ci_pipeline, project: project)
+      create(:ci_pipeline_message, pipeline: pipeline_2, content: 'warning')
+
+      expect do
+        post_graphql(query, current_user: user)
+      end.not_to exceed_query_limit(control_count)
+    end
+  end
+
   describe '.jobs(securityReportTypes)' do
     let_it_be(:query) do
       %(

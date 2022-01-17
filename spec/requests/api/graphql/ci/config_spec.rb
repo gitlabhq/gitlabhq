@@ -233,7 +233,7 @@ RSpec.describe 'Query.ciConfig' do
     it 'returns a warning' do
       post_graphql_query
 
-      expect(graphql_data['ciConfig']['warnings']).to include('root `types` is deprecated in 9.0 and will be removed in 15.0 - read more: https://docs.gitlab.com/ee/ci/yaml/#deprecated-keywords')
+      expect(graphql_data['ciConfig']['warnings']).to include('root `types` is deprecated in 9.0 and will be removed in 15.0.')
     end
   end
 

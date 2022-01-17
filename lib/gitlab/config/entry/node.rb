@@ -143,8 +143,7 @@ module Gitlab
           deprecation = entry.deprecation
           add_warning(
             "`#{entry.key}` is deprecated in " \
-            "#{deprecation[:deprecated]} and will be removed in #{deprecation[:removed]} " \
-            "- read more: #{deprecation[:documentation]}"
+            "#{deprecation[:deprecated]} and will be removed in #{deprecation[:removed]}."
           )
         end
       end

@@ -306,6 +306,93 @@ Planned removal milestone: 15.0 (2022-05-22)
 
 ## 14.7
 
+### Container scanning schemas below 14.0.0
+
+[Container scanning report schemas](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/releases)
+versions earlier than 14.0.0 will no longer be supported in GitLab 15.0. Reports that do not pass validation
+against the schema version declared in the report will also no longer be supported in GitLab 15.0.
+
+Third-party tools that [integrate with GitLab by outputting a container scanning security report](https://docs.gitlab.com/ee/development/integrations/secure.html#report)
+as a pipeline job artifact are affected. You must ensure that all output reports adhere to the correct schema with a minimum version of 14.0.0. Reports with a lower version or that fail to validate against the declared schema version will not be processed, and vulnerability findings will not display in MRs, pipelines, or Vulnerability Reports.
+
+To help with the transition, from GitLab 14.10, non-compliant reports will display a
+[warning](https://gitlab.com/gitlab-org/gitlab/-/issues/335789#note_672853791)
+in the Vulnerability Report.
+
+Planned removal milestone: 15.0 ()
+
+### Coverage guided fuzzing schemas below 14.0.0
+
+[Coverage guided fuzzing report schemas](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/releases)
+below version 14.0.0 will no longer be supported in GitLab 15.0. Reports that do not pass validation
+against the schema version declared in the report will also no longer be supported in GitLab 15.0.
+
+Third-party tools that [integrate with GitLab by outputting a coverage guided fuzzing security report](https://docs.gitlab.com/ee/development/integrations/secure.html#report)
+as a pipeline job artifact are affected. You must ensure that all output reports adhere to the correct
+schema with a minimum version of 14.0.0. Any reports with a lower version or that fail to validate
+against the declared schema version will not be processed, and vulnerability
+findings will not display in MRs, pipelines, or Vulnerability Reports.
+
+To help with the transition, from GitLab 14.10, non-compliant reports will display a
+[warning](https://gitlab.com/gitlab-org/gitlab/-/issues/335789#note_672853791)
+in the Vulnerability Report.
+
+Planned removal milestone: 15.0 ()
+
+### DAST schemas below 14.0.0
+
+[DAST report schemas](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/releases)
+versions earlier than 14.0.0 will no longer be supported in GitLab 15.0. Reports that do not pass validation
+against the schema version declared in the report will also no longer be supported as of GitLab 15.0.
+
+Third-party tools that [integrate with GitLab by outputting a DAST security report](https://docs.gitlab.com/ee/development/integrations/secure.html#report)
+as a pipeline job artifact are affected. You must ensure that all output reports adhere to the correct
+schema with a minimum version of 14.0.0. Reports with a lower version or that fail to validate
+against the declared schema version will not be processed, and vulnerability
+findings will not display in MRs, pipelines, or Vulnerability Reports.
+
+To help with the transition, from GitLab 14.10, non-compliant reports will cause a
+[warning to be displayed](https://gitlab.com/gitlab-org/gitlab/-/issues/335789#note_672853791)
+in the Vulnerability Report.
+
+Planned removal milestone: 15.0 ()
+
+### Dependency scanning schemas below 14.0.0
+
+[Dependency scanning report schemas](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/releases)
+versions earlier than 14.0.0 will no longer be supported in GitLab 15.0. Reports that do not pass validation
+against the schema version declared in the report will also no longer be supported as of GitLab 15.0.
+
+Third-party tools that [integrate with GitLab by outputting a Dependency scanning security report](https://docs.gitlab.com/ee/development/integrations/secure.html#report)
+as a pipeline job artifact are affected. You must ensure that all output reports adhere to the correct
+schema with a minimum version of 14.0.0. Reports with a lower version or that fail to validate
+against the declared schema version will not be processed, and vulnerability
+findings will not display in MRs, pipelines, or Vulnerability Reports.
+
+To help with the transition, from GitLab 14.10, non-compliant reports will cause a
+[warning to be displayed](https://gitlab.com/gitlab-org/gitlab/-/issues/335789#note_672853791)
+in the Vulnerability Report.
+
+Planned removal milestone: 15.0 ()
+
+### Enforced validation of security report schemas
+
+[Security report schemas](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/releases)
+versions earlier than 14.0.0 will no longer be supported in GitLab 15.0. Reports that do not pass validation
+against the schema version declared in the report will also no longer be supported in GitLab 15.0.
+
+Security tools that [integrate with GitLab by outputting security reports](https://docs.gitlab.com/ee/development/integrations/secure.html#report)
+as pipeline job artifacts are affected. You must ensure that all output reports adhere to the correct
+schema with a minimum version of 14.0.0. Reports with a lower version or that fail to validate
+against the declared schema version will not be processed, and vulnerability
+findings will not display in MRs, pipelines, or Vulnerability Reports.
+
+To help with the transition, from GitLab 14.10, non-compliant reports will display a
+[warning](https://gitlab.com/gitlab-org/gitlab/-/issues/335789#note_672853791)
+in the Vulnerability Report.
+
+Planned removal milestone: 15.0 ()
+
 ### Godep support in License Compliance
 
 The Godep dependency manager for Golang was deprecated in 2020 by Go and
@@ -351,6 +438,42 @@ Currently, test coverage visualizations in GitLab only support Cobertura reports
 only supported report file in 15.0, but this is the first step towards GitLab supporting other report types.
 
 Planned removal milestone: 15.0 (2022-05-22)
+
+### SAST schemas below 14.0.0
+
+[SAST report schemas](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/releases)
+versions earlier than 14.0.0 will no longer be supported in GitLab 15.0. Reports that do not pass validation
+against the schema version declared in the report will also no longer be supported as of GitLab 15.0.
+
+Third-party tools that [integrate with GitLab by outputting a SAST security report](https://docs.gitlab.com/ee/development/integrations/secure.html#report)
+as a pipeline job artifact are affected. You must ensure that all output reports adhere to the correct
+schema with a minimum version of 14.0.0. Reports with a lower version or that fail to validate
+against the declared schema version will not be processed, and vulnerability
+findings will not display in MRs, pipelines, or Vulnerability Reports.
+
+To help with the transition, from GitLab 14.10, non-compliant reports will display a
+[warning](https://gitlab.com/gitlab-org/gitlab/-/issues/335789#note_672853791)
+in the Vulnerability Report.
+
+Planned removal milestone: 15.0 ()
+
+### Secret detection schemas below 14.0.0
+
+[Secret detection report schemas](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/releases)
+versions earlier than 14.0.0 will no longer be supported in GitLab 15.0. Reports that do not pass validation
+against the schema version declared in the report will also no longer be supported as of GitLab 15.0.
+
+Third-party tools that [integrate with GitLab by outputting a Secret detection security report](https://docs.gitlab.com/ee/development/integrations/secure.html#report)
+as a pipeline job artifact are affected. You must ensure that all output reports adhere to the correct
+schema with a minimum version of 14.0.0. Reports with a lower version or that fail to validate
+against the declared schema version will not be processed, and vulnerability
+findings will not display in MRs, pipelines, or Vulnerability Reports.
+
+To help with the transition, from GitLab 14.10, non-compliant reports will display a
+[warning](https://gitlab.com/gitlab-org/gitlab/-/issues/335789#note_672853791)
+in the Vulnerability Report.
+
+Planned removal milestone: 15.0 ()
 
 ### Sidekiq metrics and health checks configuration
 

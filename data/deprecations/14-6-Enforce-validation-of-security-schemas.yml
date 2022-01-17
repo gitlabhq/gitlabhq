@@ -1,0 +1,26 @@
+- name: "Enforced validation of security report schemas" # The name of the feature to be deprecated
+  announcement_milestone: "14.7" # The milestone when this feature was first announced as deprecated.
+  announcement_date: "2022-01-22" # The date of the milestone release when this feature was first announced as deprecated. This should almost always be the 22nd of a month (YYYY-MM-22), unless you did an out of band blog post.
+  removal_milestone: "15.0" # The milestone when this feature is planned to be removed
+  body: | # Do not modify this line, instead modify the lines below.
+    [Security report schemas](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/releases)
+    versions earlier than 14.0.0 will no longer be supported in GitLab 15.0. Reports that do not pass validation
+    against the schema version declared in the report will also no longer be supported in GitLab 15.0.
+
+    Security tools that [integrate with GitLab by outputting security reports](https://docs.gitlab.com/ee/development/integrations/secure.html#report)
+    as pipeline job artifacts are affected. You must ensure that all output reports adhere to the correct
+    schema with a minimum version of 14.0.0. Reports with a lower version or that fail to validate
+    against the declared schema version will not be processed, and vulnerability
+    findings will not display in MRs, pipelines, or Vulnerability Reports.
+
+    To help with the transition, from GitLab 14.10, non-compliant reports will display a
+    [warning](https://gitlab.com/gitlab-org/gitlab/-/issues/335789#note_672853791)
+    in the Vulnerability Report.
+# The following items are not published on the docs page, but may be used in the future.
+  stage: Secure # (optional - may be required in the future) String value of the stage that the feature was created in. e.g., Growth
+  tiers: [Core, Premium, Ultimate] # (optional - may be required in the future) An array of tiers that the feature is available in currently.  e.g., [Free, Silver, Gold, Core, Premium, Ultimate]
+  issue_url: https://gitlab.com/groups/gitlab-org/-/epics/6968 # (optional) This is a link to the deprecation issue in GitLab
+  documentation_url: # (optional) This is a link to the current documentation page
+  image_url: # (optional) This is a link to a thumbnail image depicting the feature
+  video_url: # (optional) Use the youtube thumbnail URL with the structure of https://img.youtube.com/vi/UNIQUEID/hqdefault.jpg
+  removal_date: # (optional - may be required in the future) YYYY-MM-DD format. This should almost always be the 22nd of a month (YYYY-MM-22), the date of the milestone release when this feature is planned to be removed

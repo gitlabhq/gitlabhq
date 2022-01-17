@@ -172,6 +172,9 @@ module Types
             description: 'Reference path to the branch from which the pipeline was triggered.',
             method: :source_ref_path
 
+      field :warning_messages, [Types::Ci::PipelineMessageType], null: true,
+            description: 'Pipeline warning messages.'
+
       def detailed_status
         object.detailed_status(current_user)
       end

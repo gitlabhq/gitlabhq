@@ -53,7 +53,9 @@ RSpec.describe API::Internal::Kubernetes do
 
   shared_examples 'agent token tracking' do
     it 'tracks token usage' do
-      expect { response }.to change { agent_token.reload.read_attribute(:last_used_at) }
+      expect do
+        send_request(headers: { 'Authorization' => "Bearer #{agent_token.token}" })
+      end.to change { agent_token.reload.read_attribute(:last_used_at) }
     end
   end
 
@@ -149,7 +151,7 @@ RSpec.describe API::Internal::Kubernetes do
       let(:agent) { agent_token.agent }
       let(:project) { agent.project }
 
-      shared_examples 'agent token tracking'
+      include_examples 'agent token tracking'
 
       it 'returns expected data', :aggregate_failures do
         send_request(headers: { 'Authorization' => "Bearer #{agent_token.token}" })

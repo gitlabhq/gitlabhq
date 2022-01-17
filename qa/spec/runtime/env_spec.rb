@@ -360,4 +360,36 @@ RSpec.describe QA::Runtime::Env do
       end
     end
   end
+
+  describe '.test_resources_created_filepath' do
+    context 'when not in CI' do
+      before do
+        allow(described_class).to receive(:running_in_ci?).and_return(false)
+      end
+
+      it 'returns default path if QA_TEST_RESOURCES_CREATED_FILEPATH is not defined' do
+        stub_env('QA_TEST_RESOURCES_CREATED_FILEPATH', nil)
+
+        expect(described_class.test_resources_created_filepath).to include('tmp/test-resources.json')
+      end
+
+      it 'returns path if QA_TEST_RESOURCES_CREATED_FILEPATH is defined' do
+        stub_env('QA_TEST_RESOURCES_CREATED_FILEPATH', 'path/to_file')
+
+        expect(described_class.test_resources_created_filepath).to eq('path/to_file')
+      end
+    end
+
+    context 'when in CI' do
+      before do
+        allow(described_class).to receive(:running_in_ci?).and_return(true)
+        allow(SecureRandom).to receive(:hex).with(3).and_return('abc123')
+        stub_env('QA_TEST_RESOURCES_CREATED_FILEPATH', nil)
+      end
+
+      it 'returns path with random hex in file name' do
+        expect(described_class.test_resources_created_filepath).to include('tmp/test-resources-abc123.json')
+      end
+    end
+  end
 end

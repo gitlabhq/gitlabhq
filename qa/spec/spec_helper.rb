@@ -67,6 +67,9 @@ RSpec.configure do |config|
   config.after(:suite) do |suite|
     # If any tests failed, leave the resources behind to help troubleshoot
     QA::Resource::ReusableProject.remove_all_via_api! unless suite.reporter.failed_examples.present?
+
+    # Write all test created resources to JSON file
+    QA::Tools::TestResourceDataProcessor.write_to_file
   end
 
   config.append_after(:suite) do

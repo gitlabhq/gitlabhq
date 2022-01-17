@@ -71,7 +71,25 @@ module QA
           resource_web_url = yield
           resource.web_url = resource_web_url
 
+          QA::Tools::TestResourceDataProcessor.collect(resource, resource_identifier(resource))
+
           resource
+        end
+
+        def resource_identifier(resource)
+          if resource.respond_to?(:username) && resource.username
+            "with username '#{resource.username}'"
+          elsif resource.respond_to?(:full_path) && resource.full_path
+            "with full_path '#{resource.full_path}'"
+          elsif resource.respond_to?(:name) && resource.name
+            "with name '#{resource.name}'"
+          elsif resource.respond_to?(:id) && resource.id
+            "with id '#{resource.id}'"
+          elsif resource.respond_to?(:iid) && resource.iid
+            "with iid '#{resource.iid}'"
+          end
+        rescue QA::Resource::Base::NoValueError
+          nil
         end
 
         def log_fabrication(method, resource, parents, args)
@@ -80,19 +98,6 @@ module QA
           Support::FabricationTracker.start_fabrication
           result = yield.tap do
             fabrication_time = Time.now - start
-            resource_identifier = begin
-              if resource.respond_to?(:username) && resource.username
-                "with username '#{resource.username}'"
-              elsif resource.respond_to?(:full_path) && resource.full_path
-                "with full_path '#{resource.full_path}'"
-              elsif resource.respond_to?(:name) && resource.name
-                "with name '#{resource.name}'"
-              elsif resource.respond_to?(:id) && resource.id
-                "with id '#{resource.id}'"
-              end
-            rescue QA::Resource::Base::NoValueError
-              nil
-            end
 
             fabrication_http_method = if resource.api_fabrication_http_method == :get
                                         if self.include?(Reusable)
@@ -108,7 +113,7 @@ module QA
             Runtime::Logger.debug do
               msg = ["==#{'=' * parents.size}>"]
               msg << "#{fabrication_http_method} a #{name}"
-              msg << resource_identifier if resource_identifier
+              msg << resource_identifier(resource) if resource_identifier(resource)
               msg << "as a dependency of #{parents.last}" if parents.any?
               msg << "via #{method}"
               msg << "in #{fabrication_time} seconds"

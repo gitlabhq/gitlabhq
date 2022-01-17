@@ -59,4 +59,9 @@ desc "Deletes projects directly under the provided group"
 task :delete_projects do
   QA::Tools::DeleteProjects.new.run
 end
+
+desc "Deletes resources created during E2E test runs"
+task :delete_test_resources, :file_pattern do |t, args|
+  QA::Tools::DeleteTestResources.new(args[:file_pattern]).run
+end
 # rubocop:enable Rails/RakeEnvironment

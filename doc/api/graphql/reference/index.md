@@ -13024,6 +13024,7 @@ Represents a file or directory in the project repository that has been locked.
 | <a id="pipelineuser"></a>`user` | [`UserCore`](#usercore) | Pipeline user. |
 | <a id="pipelineuserpermissions"></a>`userPermissions` | [`PipelinePermissions!`](#pipelinepermissions) | Permissions for the current user on the resource. |
 | <a id="pipelineusesneeds"></a>`usesNeeds` | [`Boolean`](#boolean) | Indicates if the pipeline has jobs with `needs` dependencies. |
+| <a id="pipelinewarningmessages"></a>`warningMessages` | [`[PipelineMessage!]`](#pipelinemessage) | Pipeline warning messages. |
 | <a id="pipelinewarnings"></a>`warnings` | [`Boolean!`](#boolean) | Indicates if a pipeline has warnings. |
 
 #### Fields with arguments
@@ -13135,6 +13136,15 @@ Represents the Geo sync and verification state of a pipeline artifact.
 | <a id="pipelineartifactregistryretryat"></a>`retryAt` | [`Time`](#time) | Timestamp after which the PipelineArtifactRegistry should be resynced. |
 | <a id="pipelineartifactregistryretrycount"></a>`retryCount` | [`Int`](#int) | Number of consecutive failed sync attempts of the PipelineArtifactRegistry. |
 | <a id="pipelineartifactregistrystate"></a>`state` | [`RegistryState`](#registrystate) | Sync state of the PipelineArtifactRegistry. |
+
+### `PipelineMessage`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="pipelinemessagecontent"></a>`content` | [`String!`](#string) | Content of the pipeline message. |
+| <a id="pipelinemessageid"></a>`id` | [`ID!`](#id) | ID of the pipeline message. |
 
 ### `PipelinePermissions`
 

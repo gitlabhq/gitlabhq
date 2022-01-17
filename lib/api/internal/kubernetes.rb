@@ -53,7 +53,7 @@ module API
         def check_agent_token
           unauthorized! unless agent_token
 
-          agent_token.track_usage
+          Clusters::AgentTokens::TrackUsageService.new(agent_token).execute
         end
       end
 

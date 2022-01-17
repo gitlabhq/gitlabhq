@@ -70,7 +70,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Root do
 
         it 'returns array of types as stages with a warning' do
           expect(root.stages_value).to eq %w[test deploy]
-          expect(root.warnings).to eq(["root `types` is deprecated in 9.0 and will be removed in 15.0 - read more: https://docs.gitlab.com/ee/ci/yaml/#deprecated-keywords"])
+          expect(root.warnings).to match_array(["root `types` is deprecated in 9.0 and will be removed in 15.0."])
         end
 
         it 'logs usage of types keyword' do
