@@ -15,23 +15,12 @@
     .input-group.gl-flex-nowrap
       - if current_user.can_select_namespace?
         - namespace_id = namespace_id_from(params)
-        - if Feature.enabled?(:paginatable_namespace_drop_down_for_project_creation, current_user, default_enabled: :yaml)
-          .js-vue-new-project-url-select{ data: { namespace_full_path: GroupFinder.new(current_user).execute(id: namespace_id)&.full_path,
-            namespace_id: namespace_id,
-            root_url: root_url,
-            track_label: track_label,
-            user_namespace_full_path: current_user.namespace.full_path,
-            user_namespace_id: current_user.namespace.id } }
-        - else
-          .input-group-prepend.flex-shrink-0.has-tooltip{ title: root_url }
-            .input-group-text
-              = root_url
-          = f.select(:namespace_id,
-                     namespaces_options_with_developer_maintainer_access(selected: namespace_id,
-                                                                        display_path: true,
-                                                                        extra_group: namespace_id),
-                     {},
-                     { class: 'select2 js-select-namespace qa-project-namespace-select block-truncated', data: { track_label: "#{track_label}", track_action: "activate_form_input", track_property: "project_path", track_value: "", qa_selector: "select_namespace_dropdown" }})
+        .js-vue-new-project-url-select{ data: { namespace_full_path: GroupFinder.new(current_user).execute(id: namespace_id)&.full_path,
+          namespace_id: namespace_id,
+          root_url: root_url,
+          track_label: track_label,
+          user_namespace_full_path: current_user.namespace.full_path,
+          user_namespace_id: current_user.namespace.id } }
       - else
         .input-group-prepend.static-namespace.flex-shrink-0.has-tooltip{ title: user_url(current_user.username) + '/' }
           .input-group-text.border-0

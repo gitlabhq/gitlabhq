@@ -294,10 +294,39 @@ describe('~/environments/components/new_environment_item.vue', () => {
       const deployment = findDeployment();
       expect(deployment.props('deployment')).toEqual(resolvedEnvironment.lastDeployment);
     });
-    it('should not show the last deployment to the deployment component when it is missing', () => {
+    it('should not show the last deployment when it is missing', () => {
       const environment = {
         ...resolvedEnvironment,
         lastDeployment: null,
+      };
+
+      wrapper = createWrapper({
+        propsData: { environment },
+        apolloProvider: createApolloProvider(),
+      });
+
+      const deployment = findDeployment();
+      expect(deployment.exists()).toBe(false);
+    });
+  });
+
+  describe('upcoming deployment', () => {
+    it('should pass the upcoming deployment to the deployment component when it exists', () => {
+      const upcomingDeployment = resolvedEnvironment.lastDeployment;
+      const environment = { ...resolvedEnvironment, lastDeployment: null, upcomingDeployment };
+      wrapper = createWrapper({
+        propsData: { environment },
+        apolloProvider: createApolloProvider(),
+      });
+
+      const deployment = findDeployment();
+      expect(deployment.props('deployment')).toEqual(upcomingDeployment);
+    });
+    it('should not show the upcoming deployment when it is missing', () => {
+      const environment = {
+        ...resolvedEnvironment,
+        lastDeployment: null,
+        upcomingDeployment: null,
       };
 
       wrapper = createWrapper({

@@ -6,7 +6,6 @@ RSpec.describe 'User creates a project', :js do
   let(:user) { create(:user) }
 
   before do
-    stub_feature_flags(paginatable_namespace_drop_down_for_project_creation: false)
     sign_in(user)
     create(:personal_key, user: user)
   end
@@ -44,9 +43,7 @@ RSpec.describe 'User creates a project', :js do
     expect(page).to have_checked_field 'Initialize repository with a README'
     expect(page).to have_checked_field 'Enable Static Application Security Testing (SAST)'
 
-    page.within('#content-body') do
-      click_button('Create project')
-    end
+    click_button('Create project')
 
     project = Project.last
 
@@ -96,12 +93,10 @@ RSpec.describe 'User creates a project', :js do
       fill_in :project_name, with: 'A Subgroup Project'
       fill_in :project_path, with: 'a-subgroup-project'
 
-      page.find('.js-select-namespace').click
-      page.find("div[role='option']", text: subgroup.full_path).click
+      click_button user.username
+      click_button subgroup.full_path
 
-      page.within('#content-body') do
-        click_button('Create project')
-      end
+      click_button('Create project')
 
       expect(page).to have_content("Project 'A Subgroup Project' was successfully created")
 
@@ -125,8 +120,8 @@ RSpec.describe 'User creates a project', :js do
       fill_in :project_name, with: 'a-new-project'
       fill_in :project_path, with: 'a-new-project'
 
-      page.find('.js-select-namespace').click
-      page.find("div[role='option']", text: group.full_path).click
+      click_button user.username
+      click_button group.full_path
 
       page.within('#content-body') do
         click_button('Create project')

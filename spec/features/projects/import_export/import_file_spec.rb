@@ -10,12 +10,11 @@ RSpec.describe 'Import/Export - project import integration test', :js do
   let(:export_path) { "#{Dir.tmpdir}/import_file_spec" }
 
   before do
-    stub_feature_flags(paginatable_namespace_drop_down_for_project_creation: false)
     stub_uploads_object_storage(FileUploader)
     allow_next_instance_of(Gitlab::ImportExport) do |instance|
       allow(instance).to receive(:storage_path).and_return(export_path)
     end
-    gitlab_sign_in(user)
+    sign_in(user)
   end
 
   after do

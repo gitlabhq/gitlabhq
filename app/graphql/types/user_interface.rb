@@ -64,8 +64,7 @@ module Types
           description: 'Group memberships of the user.'
     field :groups,
           resolver: Resolvers::Users::GroupsResolver,
-          description: 'Groups where the user has access. Will always return `null` if ' \
-                       '`paginatable_namespace_drop_down_for_project_creation` feature flag is disabled.'
+          description: 'Groups where the user has access.'
     field :group_count,
           resolver: Resolvers::Users::GroupCountResolver,
           description: 'Group count for the user.'

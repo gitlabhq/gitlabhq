@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Manage', :smoke do
-    describe 'Project', :requires_admin do
+    describe 'Project' do
       shared_examples 'successful project creation' do
         it 'creates a new project' do
           Page::Project::Show.perform do |project_page|
@@ -17,7 +17,6 @@ module QA
       end
 
       before do
-        Runtime::Feature.enable(:paginatable_namespace_drop_down_for_project_creation)
         Flow::Login.sign_in
         project
       end

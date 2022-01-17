@@ -59,23 +59,6 @@ RSpec.describe Groups::UserGroupsFinder do
         )
       end
 
-      context 'when paginatable_namespace_drop_down_for_project_creation feature flag is disabled' do
-        before do
-          stub_feature_flags(paginatable_namespace_drop_down_for_project_creation: false)
-        end
-
-        it 'ignores project creation scope and returns all groups where the user is a direct member' do
-          is_expected.to match(
-            [
-              public_maintainer_group,
-              private_maintainer_group,
-              public_developer_group,
-              guest_group
-            ]
-          )
-        end
-      end
-
       context 'when search is provided' do
         let(:arguments) { { permission_scope: :create_projects, search: 'maintainer' } }
 

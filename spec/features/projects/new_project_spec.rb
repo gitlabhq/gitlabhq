@@ -6,10 +6,6 @@ RSpec.describe 'New project', :js do
   include Select2Helper
   include Spec::Support::Helpers::Features::TopNavSpecHelpers
 
-  before do
-    stub_feature_flags(paginatable_namespace_drop_down_for_project_creation: false)
-  end
-
   context 'as a user' do
     let(:user) { create(:user) }
 
@@ -179,7 +175,7 @@ RSpec.describe 'New project', :js do
       it 'does not show the initialize with Readme checkbox on "Import project" tab' do
         visit new_project_path
         click_link 'Import project'
-        first('.js-import-git-toggle-button').click
+        click_button 'Repo by URL'
 
         page.within '#import-project-pane' do
           expect(page).not_to have_css('input#project_initialize_with_readme')
@@ -196,9 +192,7 @@ RSpec.describe 'New project', :js do
         end
 
         it 'selects the user namespace' do
-          page.within('#blank-project-pane') do
-            expect(page).to have_select('project[namespace_id]', visible: false, selected: user.username)
-          end
+          expect(page).to have_button user.username
         end
       end
 
@@ -212,9 +206,7 @@ RSpec.describe 'New project', :js do
         end
 
         it 'selects the group namespace' do
-          page.within('#blank-project-pane') do
-            expect(page).to have_select('project[namespace_id]', visible: false, selected: group.name)
-          end
+          expect(page).to have_button group.name
         end
       end
 
@@ -229,9 +221,7 @@ RSpec.describe 'New project', :js do
         end
 
         it 'selects the group namespace' do
-          page.within('#blank-project-pane') do
-            expect(page).to have_select('project[namespace_id]', visible: false, selected: subgroup.full_path)
-          end
+          expect(page).to have_button subgroup.full_path
         end
       end
 
@@ -249,22 +239,30 @@ RSpec.describe 'New project', :js do
         end
 
         it 'enables the correct visibility options' do
-          select2(user.namespace_id, from: '#project_namespace_id')
+          click_button public_group.full_path
+          click_button user.username
+
           expect(find("#project_visibility_level_#{Gitlab::VisibilityLevel::PRIVATE}")).not_to be_disabled
           expect(find("#project_visibility_level_#{Gitlab::VisibilityLevel::INTERNAL}")).not_to be_disabled
           expect(find("#project_visibility_level_#{Gitlab::VisibilityLevel::PUBLIC}")).not_to be_disabled
 
-          select2(public_group.id, from: '#project_namespace_id')
+          click_button user.username
+          click_button public_group.full_path
+
           expect(find("#project_visibility_level_#{Gitlab::VisibilityLevel::PRIVATE}")).not_to be_disabled
           expect(find("#project_visibility_level_#{Gitlab::VisibilityLevel::INTERNAL}")).not_to be_disabled
           expect(find("#project_visibility_level_#{Gitlab::VisibilityLevel::PUBLIC}")).not_to be_disabled
 
-          select2(internal_group.id, from: '#project_namespace_id')
+          click_button public_group.full_path
+          click_button internal_group.full_path
+
           expect(find("#project_visibility_level_#{Gitlab::VisibilityLevel::PRIVATE}")).not_to be_disabled
           expect(find("#project_visibility_level_#{Gitlab::VisibilityLevel::INTERNAL}")).not_to be_disabled
           expect(find("#project_visibility_level_#{Gitlab::VisibilityLevel::PUBLIC}")).to be_disabled
 
-          select2(private_group.id, from: '#project_namespace_id')
+          click_button internal_group.full_path
+          click_button private_group.full_path
+
           expect(find("#project_visibility_level_#{Gitlab::VisibilityLevel::PRIVATE}")).not_to be_disabled
           expect(find("#project_visibility_level_#{Gitlab::VisibilityLevel::INTERNAL}")).to be_disabled
           expect(find("#project_visibility_level_#{Gitlab::VisibilityLevel::PUBLIC}")).to be_disabled
@@ -355,9 +353,7 @@ RSpec.describe 'New project', :js do
         end
 
         it 'selects the group namespace' do
-          page.within('#blank-project-pane') do
-            expect(page).to have_select('project[namespace_id]', visible: false, selected: group.full_path)
-          end
+          expect(page).to have_button group.full_path
         end
       end
     end

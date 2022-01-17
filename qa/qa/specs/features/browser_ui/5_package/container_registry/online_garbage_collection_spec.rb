@@ -2,8 +2,7 @@
 
 module QA
   RSpec.describe 'Package' do
-    # TODO: Remove :requires_admin when the `Runtime::Feature.enable` method call is removed
-    describe 'Container Registry Online Garbage Collection', :registry_gc, :requires_admin, only: { subdomain: %i[pre] } do
+    describe 'Container Registry Online Garbage Collection', :registry_gc, only: { subdomain: %i[pre] } do
       let(:group) { Resource::Group.fabricate_via_api! }
 
       let(:imported_project) do
@@ -65,8 +64,6 @@ module QA
       end
 
       before do
-        Runtime::Feature.enable(:paginatable_namespace_drop_down_for_project_creation)
-
         Flow::Login.sign_in
 
         imported_project

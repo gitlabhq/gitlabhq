@@ -26,14 +26,6 @@ RSpec.describe Resolvers::Users::GroupsResolver do
       public_maintainer_group.add_maintainer(user)
     end
 
-    context 'when paginatable_namespace_drop_down_for_project_creation feature flag is disabled' do
-      before do
-        stub_feature_flags(paginatable_namespace_drop_down_for_project_creation: false)
-      end
-
-      it { is_expected.to be_nil }
-    end
-
     context 'when resolver object is current user' do
       context 'when permission is :create_projects' do
         let(:group_arguments) { { permission_scope: :create_projects } }
