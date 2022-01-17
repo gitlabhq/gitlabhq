@@ -17,13 +17,13 @@ Publish generic files, like release binaries, in your project's Package Registry
 
 ## Authenticate to the Package Registry
 
-To authenticate to the Package Registry, you need either a [personal access token](../../../api/index.md#personalproject-access-tokens),
+To authenticate to the Package Registry, you need either a [personal access token](../../../api/index.md#personalprojectgroup-access-tokens),
 [CI/CD job token](../../../ci/jobs/ci_job_token.md), or [deploy token](../../project/deploy_tokens/index.md).
 
 In addition to the standard API authentication mechanisms, the generic package
 API allows authentication with HTTP Basic authentication for use with tools that
 do not support the other available mechanisms. The `user-id` is not checked and
-may be any value, and the `password` must be either a [personal access token](../../../api/index.md#personalproject-access-tokens),
+may be any value, and the `password` must be either a [personal access token](../../../api/index.md#personalprojectgroup-access-tokens),
 a [CI/CD job token](../../../ci/jobs/ci_job_token.md), or a [deploy token](../../project/deploy_tokens/index.md).
 
 ## Publish a package file

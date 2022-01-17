@@ -169,24 +169,24 @@ for examples requesting a new access token using a refresh token.
 
 A default refresh setting of two hours is tracked in [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/336598).
 
-### Personal/project access tokens
+### Personal/project/group access tokens
 
 You can use access tokens to authenticate with the API by passing it in either
 the `private_token` parameter or the `PRIVATE-TOKEN` header.
 
-Example of using the personal or project access token in a parameter:
+Example of using the personal, project, or group access token in a parameter:
 
 ```shell
 curl "https://gitlab.example.com/api/v4/projects?private_token=<your_access_token>"
 ```
 
-Example of using the personal or project access token in a header:
+Example of using the personal, project, or group access token in a header:
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects"
 ```
 
-You can also use personal or project access tokens with OAuth-compliant headers:
+You can also use personal, project, or group access tokens with OAuth-compliant headers:
 
 ```shell
 curl --header "Authorization: Bearer <your_access_token>" "https://gitlab.example.com/api/v4/projects"

@@ -6,13 +6,13 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Group access tokens API **(FREE)**
 
-You can read more about [group access tokens](../user/project/settings/project_access_tokens.md#group-access-tokens).
+You can read more about [group access tokens](../user/group/settings/group_access_tokens.md).
 
 ## List group access tokens
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/77236) in GitLab 14.7.
 
-Get a list of [group access tokens](../user/project/settings/project_access_tokens.md#group-access-tokens).
+Get a list of [group access tokens](../user/group/settings/group_access_tokens.md).
 
 ```plaintext
 GET groups/:id/access_tokens
@@ -48,7 +48,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/77236) in GitLab 14.7.
 
-Create a [group access token](../user/project/settings/project_access_tokens.md#group-access-tokens).
+Create a [group access token](../user/group/settings/group_access_tokens.md).
 
 ```plaintext
 POST groups/:id/access_tokens
@@ -91,7 +91,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/77236) in GitLab 14.7.
 
-Revoke a [group access token](../user/project/settings/project_access_tokens.md#group-access-tokens).
+Revoke a [group access token](../user/group/settings/group_access_tokens.md).
 
 ```plaintext
 DELETE groups/:id/access_tokens/:token_id

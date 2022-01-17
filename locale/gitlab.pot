@@ -9898,13 +9898,13 @@ msgstr ""
 msgid "Could not restore the group"
 msgstr ""
 
+msgid "Could not revoke access token %{access_token_name}."
+msgstr ""
+
 msgid "Could not revoke impersonation token %{token_name}."
 msgstr ""
 
 msgid "Could not revoke personal access token %{personal_access_token_name}."
-msgstr ""
-
-msgid "Could not revoke project access token %{project_access_token_name}."
 msgstr ""
 
 msgid "Could not save configuration. Please refresh the page, or try again later."
@@ -14638,7 +14638,7 @@ msgstr ""
 msgid "Failed to create merge request. Please try again."
 msgstr ""
 
-msgid "Failed to create new project access token: %{token_response_message}"
+msgid "Failed to create new access token: %{token_response_message}"
 msgstr ""
 
 msgid "Failed to create repository"
@@ -15576,6 +15576,9 @@ msgid "General settings"
 msgstr ""
 
 msgid "Generate a default set of labels"
+msgstr ""
+
+msgid "Generate group access tokens scoped to this group for your applications that need access to the GitLab API."
 msgstr ""
 
 msgid "Generate key"
@@ -16676,6 +16679,9 @@ msgstr ""
 msgid "Group %{group_name} was successfully created."
 msgstr ""
 
+msgid "Group Access Tokens"
+msgstr ""
+
 msgid "Group Git LFS status:"
 msgstr ""
 
@@ -16692,6 +16698,9 @@ msgid "Group SAML must be enabled to test"
 msgstr ""
 
 msgid "Group URL"
+msgstr ""
+
+msgid "Group access token creation is disabled in this group. You can still use and manage existing tokens. %{link_start}Learn more.%{link_end}"
 msgstr ""
 
 msgid "Group application: %{name}"
@@ -17105,7 +17114,7 @@ msgstr ""
 msgid "GroupSelect|Select a group"
 msgstr ""
 
-msgid "GroupSettings|Allow project access token creation"
+msgid "GroupSettings|Allow project and group access token creation"
 msgstr ""
 
 msgid "GroupSettings|Allows creating organizations and contacts and associating them with issues."
@@ -17252,7 +17261,7 @@ msgstr ""
 msgid "GroupSettings|Transfer group"
 msgstr ""
 
-msgid "GroupSettings|Users can create %{link_start}project access tokens%{link_end} for projects in this group."
+msgid "GroupSettings|Users can create %{link_start_project}project access tokens%{link_end} and %{link_start_group}group access tokens%{link_end} in this group."
 msgstr ""
 
 msgid "GroupSettings|What are badges?"
@@ -30519,13 +30528,13 @@ msgstr ""
 msgid "Revoked"
 msgstr ""
 
+msgid "Revoked access token %{access_token_name}!"
+msgstr ""
+
 msgid "Revoked impersonation token %{token_name}!"
 msgstr ""
 
 msgid "Revoked personal access token %{personal_access_token_name}!"
-msgstr ""
-
-msgid "Revoked project access token %{project_access_token_name}!"
 msgstr ""
 
 msgid "RightSidebar|Copy email address"
@@ -36380,6 +36389,9 @@ msgstr ""
 msgid "This group has been scheduled for permanent removal on %{date}"
 msgstr ""
 
+msgid "This group has no active access tokens."
+msgstr ""
+
 msgid "This group is linked to a subscription"
 msgstr ""
 
@@ -40642,6 +40654,9 @@ msgstr ""
 msgid "You can also upload existing files from your computer using the instructions below."
 msgstr ""
 
+msgid "You can also use group access tokens with Git to authenticate over HTTP(S). %{link_start}Learn more.%{link_end}"
+msgstr ""
+
 msgid "You can also use project access tokens with Git to authenticate over HTTP(S). %{link_start}Learn more.%{link_end}"
 msgstr ""
 
@@ -40685,6 +40700,9 @@ msgid "You can easily contribute to them by requesting to join these groups."
 msgstr ""
 
 msgid "You can enable Registration Features because Service Ping is enabled. To continue using Registration Features in the future, you will also need to register with GitLab via a new cloud licensing service."
+msgstr ""
+
+msgid "You can enable group access token creation in %{link_start}group settings%{link_end}."
 msgstr ""
 
 msgid "You can enable project access token creation in %{link_start}group settings%{link_end}."
@@ -41352,13 +41370,13 @@ msgstr ""
 msgid "Your new SCIM token"
 msgstr ""
 
+msgid "Your new access token has been created."
+msgstr ""
+
 msgid "Your new comment"
 msgstr ""
 
 msgid "Your new personal access token has been created."
-msgstr ""
-
-msgid "Your new project access token has been created."
 msgstr ""
 
 msgid "Your password isn't required to view this page. If a password or any other personal details are requested, please contact your administrator to report abuse."
@@ -42224,6 +42242,12 @@ msgid "frontmatter"
 msgstr ""
 
 msgid "group"
+msgstr ""
+
+msgid "group access token"
+msgstr ""
+
+msgid "group access tokens"
 msgstr ""
 
 msgid "group members"

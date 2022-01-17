@@ -1,7 +1,7 @@
 - no_active_tokens_message = local_assigns.fetch(:no_active_tokens_message, _('This user has no active %{type}.') % { type: type_plural })
 - impersonation = local_assigns.fetch(:impersonation, false)
-- project = local_assigns.fetch(:project, false)
-- personal = !impersonation && !project
+- resource = local_assigns.fetch(:resource, false)
+- personal = !impersonation && !resource
 
 %hr
 
@@ -30,7 +30,7 @@
             = _('Last Used')
             = link_to sprite_icon('question-o'), help_page_path('user/profile/personal_access_tokens.md', anchor: 'view-the-last-time-a-token-was-used'), target: '_blank', rel: 'noopener noreferrer'
           %th= _('Expires')
-          - if project
+          - if resource
             %th= _('Role')
           %th
       %tbody
@@ -54,8 +54,8 @@
                     = time_ago_with_tooltip(token.expires_at)
               - else
                 %span.token-never-expires-label= _('Never')
-            - if project
-              %td= project.member(token.user).human_access
+            - if resource
+              %td= resource.member(token.user).human_access
             %td= link_to _('Revoke'), revoke_route_helper.call(token), method: :put, class: "gl-button btn btn-danger btn-sm float-right qa-revoke-button #{'btn-danger-secondary' unless token.expires?}", data: { confirm: _('Are you sure you want to revoke this %{type}? This action cannot be undone.') % { type: type } }
 - else
   .settings-message.text-center

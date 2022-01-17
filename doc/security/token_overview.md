@@ -93,17 +93,19 @@ This table shows available scopes per token. Scopes can be limited further on to
 
 |                             | API access | Registry access | Repository access |
 |-----------------------------|------------|-----------------|-------------------|
-| Personal access token       | ✅          | ✅               | ✅                 |
-| OAuth2 token                | ✅          | 🚫               | ✅                 |
-| Impersonation token         | ✅          | ✅               | ✅                 |
-| Project access token        | ✅(1)       | ✅(1)            | ✅(1)              |
-| Deploy token                | 🚫          | ✅               | ✅                 |
-| Deploy key                  | 🚫          | 🚫               | ✅                 |
-| Runner registration token   | 🚫          | 🚫               | ✴️(2)                 |
-| Runner authentication token | 🚫          | 🚫               | ✴️(2)                 |
-| Job token                   | ✴️(3)       | 🚫               | ✅                 |
+| Personal access token       | ✅         | ✅              | ✅                |
+| OAuth2 token                | ✅         | 🚫              | ✅                |
+| Impersonation token         | ✅         | ✅              | ✅                |
+| Project access token        | ✅(1)      | ✅(1)           | ✅(1)             |
+| Group access token          | ✅(2)      | ✅(2)           | ✅(2)             |
+| Deploy token                | 🚫         | ✅              | ✅                |
+| Deploy key                  | 🚫         | 🚫              | ✅                |
+| Runner registration token   | 🚫         | 🚫              | ✴️(3)              |
+| Runner authentication token | 🚫         | 🚫              | ✴️(3)              |
+| Job token                   | ✴️(4)       | 🚫              | ✅                |
 
 1. Limited to the one project.
+1. Limited to the one group.
 1. Runner registration and authentication token don't provide direct access to repositories, but can be used to register and authenticate a new runner that may execute jobs which do have access to the repository
 1. Limited to certain [endpoints](../ci/jobs/ci_job_token.md).
 
@@ -113,7 +115,7 @@ Access tokens should be treated like passwords and kept secure.
 
 Adding them to URLs is a security risk. This is especially true when cloning or adding a remote, as Git then writes the URL to its `.git/config` file in plain text. URLs are also generally logged by proxies and application servers, which makes those credentials visible to system administrators.
 
-Instead, API calls can be passed an access token using headers, like [the `Private-Token` header](../api/index.md#personalproject-access-tokens).
+Instead, API calls can be passed an access token using headers, like [the `Private-Token` header](../api/index.md#personalprojectgroup-access-tokens).
 
 Tokens can also be stored using a [Git credential storage](https://git-scm.com/book/en/v2/Git-Tools-Credential-Storage).
 

@@ -14,18 +14,19 @@ type: reference, howto
 
 You can use a project access token to authenticate:
 
-- With the [GitLab API](../../../api/index.md#personalproject-access-tokens).
+- With the [GitLab API](../../../api/index.md#personalprojectgroup-access-tokens).
 - With Git, when using HTTP Basic Authentication.
 
 After you configure a project access token, you don't need a password when you authenticate.
 Instead, you can enter any non-blank value.
 
-Project access tokens are similar to [personal access tokens](../../profile/personal_access_tokens.md),
-except they are associated with a project rather than a user.
+Project access tokens are similar to [group access tokens](../../group/settings/group_access_tokens.md)
+and [personal access tokens](../../profile/personal_access_tokens.md), except they are
+associated with a project rather than a group or user.
 
 You can use project access tokens:
 
-- On GitLab SaaS if you have the Premium license tier or higher. Personal access tokens are not available with a [trial license](https://about.gitlab.com/free-trial/).
+- On GitLab SaaS if you have the Premium license tier or higher. Project access tokens are not available with a [trial license](https://about.gitlab.com/free-trial/).
 - On self-managed instances of GitLab, with any license tier. If you have the Free tier:
   - Review your security and compliance policies around
     [user self-enrollment](../../admin_area/settings/sign_up_restrictions.md#disable-new-sign-ups).
@@ -79,7 +80,7 @@ To enable or disable project access token creation for all projects in a top-lev
 1. On the top bar, select **Menu > Groups** and find your group.
 1. On the left sidebar, select **Settings > General**.
 1. Expand **Permissions and group features**.
-1. Under **Permissions**, turn on or off **Allow project access token creation**.
+1. Under **Permissions**, turn on or off **Allow project and group access token creation**.
 
 Even when creation is disabled, you can still use and revoke existing project access tokens.
 

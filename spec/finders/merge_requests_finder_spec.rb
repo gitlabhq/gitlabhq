@@ -278,33 +278,38 @@ RSpec.describe MergeRequestsFinder do
       end
 
       describe 'draft state' do
-        let!(:wip_merge_request1) { create(:merge_request, :simple, author: user, source_project: project5, target_project: project5, title: 'WIP: thing') }
-        let!(:wip_merge_request2) { create(:merge_request, :simple, author: user, source_project: project6, target_project: project6, title: 'wip thing') }
-        let!(:wip_merge_request3) { create(:merge_request, :simple, author: user, source_project: project1, target_project: project1, title: '[wip] thing') }
-        let!(:wip_merge_request4) { create(:merge_request, :simple, author: user, source_project: project1, target_project: project2, title: 'wip: thing') }
-        let!(:draft_merge_request1) { create(:merge_request, :simple, author: user, source_branch: 'draft1', source_project: project5, target_project: project5, title: 'Draft: thing') }
-        let!(:draft_merge_request2) { create(:merge_request, :simple, author: user, source_branch: 'draft2', source_project: project6, target_project: project6, title: '[draft] thing') }
-        let!(:draft_merge_request3) { create(:merge_request, :simple, author: user, source_branch: 'draft3', source_project: project1, target_project: project1, title: '(draft) thing') }
-        let!(:draft_merge_request4) { create(:merge_request, :simple, author: user, source_branch: 'draft4', source_project: project1, target_project: project2, title: 'Draft - thing') }
+        shared_examples 'draft MRs filtering' do |draft_param_key, draft_param_value, title_prefix, draft_only|
+          it "filters by #{draft_param_key} => #{draft_param_value}" do
+            merge_request1.reload.update!(title: "#{title_prefix} #{merge_request1.title}")
 
-        [:wip, :draft].each do |draft_param_key|
-          it "filters by #{draft_param_key}" do
-            params = { draft_param_key => 'yes' }
+            params = { draft_param_key => draft_param_value }
 
             merge_requests = described_class.new(user, params).execute
 
-            expect(merge_requests).to contain_exactly(
-              merge_request4, merge_request5, wip_merge_request1, wip_merge_request2, wip_merge_request3, wip_merge_request4,
-              draft_merge_request1, draft_merge_request2, draft_merge_request3, draft_merge_request4
-            )
+            if draft_only
+              expect(merge_requests).to contain_exactly(merge_request1, merge_request4, merge_request5)
+            else
+              expect(merge_requests).to contain_exactly(merge_request2, merge_request3)
+            end
           end
+        end
 
-          it "filters by not #{draft_param_key}" do
-            params = { draft_param_key => 'no' }
+        {
+          wip: ["WIP:", "wip", "[wip]"],
+          draft: ["Draft:", "Draft -", "[Draft]", "(Draft)"]
+        }.each do |draft_param_key, title_prefixes|
+          title_prefixes.each do |title_prefix|
+            it_behaves_like 'draft MRs filtering', draft_param_key, 1, title_prefix, true
+            it_behaves_like 'draft MRs filtering', draft_param_key, '1', title_prefix, true
+            it_behaves_like 'draft MRs filtering', draft_param_key, true, title_prefix, true
+            it_behaves_like 'draft MRs filtering', draft_param_key, 'true', title_prefix, true
+            it_behaves_like 'draft MRs filtering', draft_param_key, 'yes', title_prefix, true
 
-            merge_requests = described_class.new(user, params).execute
-
-            expect(merge_requests).to contain_exactly(merge_request1, merge_request2, merge_request3)
+            it_behaves_like 'draft MRs filtering', draft_param_key, 0, title_prefix, false
+            it_behaves_like 'draft MRs filtering', draft_param_key, '0', title_prefix, false
+            it_behaves_like 'draft MRs filtering', draft_param_key, false, title_prefix, false
+            it_behaves_like 'draft MRs filtering', draft_param_key, 'false', title_prefix, false
+            it_behaves_like 'draft MRs filtering', draft_param_key, 'no', title_prefix, false
           end
 
           it "returns all items if no valid #{draft_param_key} param exists" do
@@ -313,43 +318,41 @@ RSpec.describe MergeRequestsFinder do
             merge_requests = described_class.new(user, params).execute
 
             expect(merge_requests).to contain_exactly(
-              merge_request1, merge_request2, merge_request3, merge_request4,
-              merge_request5, wip_merge_request1, wip_merge_request2, wip_merge_request3, wip_merge_request4,
-              draft_merge_request1, draft_merge_request2, draft_merge_request3, draft_merge_request4
+              merge_request1, merge_request2, merge_request3, merge_request4, merge_request5
             )
           end
         end
+      end
 
-        context 'filter by deployment' do
-          let_it_be(:project_with_repo) { create(:project, :repository) }
+      context 'filter by deployment' do
+        let_it_be(:project_with_repo) { create(:project, :repository) }
 
-          it 'returns the relevant merge requests' do
-            deployment1 = create(
-              :deployment,
-              project: project_with_repo,
-              sha: project_with_repo.commit.id
-            )
-            deployment2 = create(
-              :deployment,
-              project: project_with_repo,
-              sha: project_with_repo.commit.id
-            )
-            deployment1.link_merge_requests(MergeRequest.where(id: [merge_request1.id, merge_request2.id]))
-            deployment2.link_merge_requests(MergeRequest.where(id: merge_request3.id))
+        it 'returns the relevant merge requests' do
+          deployment1 = create(
+            :deployment,
+            project: project_with_repo,
+            sha: project_with_repo.commit.id
+          )
+          deployment2 = create(
+            :deployment,
+            project: project_with_repo,
+            sha: project_with_repo.commit.id
+          )
+          deployment1.link_merge_requests(MergeRequest.where(id: [merge_request1.id, merge_request2.id]))
+          deployment2.link_merge_requests(MergeRequest.where(id: merge_request3.id))
 
-            params = { deployment_id: deployment1.id }
+          params = { deployment_id: deployment1.id }
+          merge_requests = described_class.new(user, params).execute
+
+          expect(merge_requests).to contain_exactly(merge_request1, merge_request2)
+        end
+
+        context 'when a deployment does not contain any merge requests' do
+          it 'returns an empty result' do
+            params = { deployment_id: create(:deployment, project: project_with_repo, sha: project_with_repo.commit.sha).id }
             merge_requests = described_class.new(user, params).execute
 
-            expect(merge_requests).to contain_exactly(merge_request1, merge_request2)
-          end
-
-          context 'when a deployment does not contain any merge requests' do
-            it 'returns an empty result' do
-              params = { deployment_id: create(:deployment, project: project_with_repo, sha: project_with_repo.commit.sha).id }
-              merge_requests = described_class.new(user, params).execute
-
-              expect(merge_requests).to be_empty
-            end
+            expect(merge_requests).to be_empty
           end
         end
       end

@@ -14,7 +14,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 Personal access tokens can be an alternative to [OAuth2](../../api/oauth2.md) and used to:
 
-- Authenticate with the [GitLab API](../../api/index.md#personalproject-access-tokens).
+- Authenticate with the [GitLab API](../../api/index.md#personalprojectgroup-access-tokens).
 - Authenticate with Git using HTTP Basic Authentication.
 
 In both cases, you authenticate with a personal access token in place of your password.
@@ -33,7 +33,7 @@ Though required, GitLab usernames are ignored when authenticating with a persona
 There is an [issue for tracking](https://gitlab.com/gitlab-org/gitlab/-/issues/212953) to make GitLab
 use the username.
 
-For examples of how you can use a personal access token to authenticate with the API, see the [API documentation](../../api/index.md#personalproject-access-tokens).
+For examples of how you can use a personal access token to authenticate with the API, see the [API documentation](../../api/index.md#personalprojectgroup-access-tokens).
 
 Alternately, GitLab administrators can use the API to create [impersonation tokens](../../api/index.md#impersonation-tokens).
 Use impersonation tokens to automate authentication as a specific user.

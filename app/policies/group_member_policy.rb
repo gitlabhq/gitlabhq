@@ -5,6 +5,7 @@ class GroupMemberPolicy < BasePolicy
 
   with_scope :subject
   condition(:last_owner) { @subject.group.member_last_owner?(@subject) || @subject.group.member_last_blocked_owner?(@subject) }
+  condition(:project_bot) { @subject.user&.project_bot? && @subject.group.member?(@subject.user) }
 
   desc "Membership is users' own"
   with_score 0
@@ -20,10 +21,12 @@ class GroupMemberPolicy < BasePolicy
     prevent :destroy_group_member
   end
 
-  rule { can?(:admin_group_member) }.policy do
+  rule { ~project_bot & can?(:admin_group_member) }.policy do
     enable :update_group_member
     enable :destroy_group_member
   end
+
+  rule { project_bot & can?(:admin_group_member) }.enable :destroy_project_bot_member
 
   rule { is_target_user }.policy do
     enable :destroy_group_member

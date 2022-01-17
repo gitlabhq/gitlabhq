@@ -289,6 +289,7 @@ RSpec.describe GitlabSchema.types['Project'] do
                                             :source_branches,
                                             :target_branches,
                                             :state,
+                                            :draft,
                                             :labels,
                                             :before,
                                             :after,

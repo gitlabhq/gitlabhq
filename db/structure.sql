@@ -26859,6 +26859,8 @@ CREATE UNIQUE INDEX index_on_project_id_escalation_policy_name_unique ON inciden
 
 CREATE INDEX index_on_projects_lower_path ON projects USING btree (lower((path)::text));
 
+CREATE INDEX index_on_projects_path ON projects USING btree (path);
+
 CREATE INDEX index_on_routes_lower_path ON routes USING btree (lower((path)::text));
 
 CREATE INDEX index_on_users_lower_email ON users USING btree (lower((email)::text));

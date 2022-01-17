@@ -10,6 +10,7 @@ module Sidebars
 
           add_item(general_menu_item)
           add_item(integrations_menu_item)
+          add_item(access_tokens_menu_item)
           add_item(group_projects_menu_item)
           add_item(repository_menu_item)
           add_item(ci_cd_menu_item)
@@ -53,6 +54,19 @@ module Sidebars
             link: group_settings_integrations_path(context.group),
             active_routes: { controller: :integrations },
             item_id: :integrations
+          )
+        end
+
+        def access_tokens_menu_item
+          unless can?(context.current_user, :read_resource_access_tokens, context.group)
+            return ::Sidebars::NilMenuItem.new(item_id: :access_tokens)
+          end
+
+          ::Sidebars::MenuItem.new(
+            title: _('Access Tokens'),
+            link: group_settings_access_tokens_path(context.group),
+            active_routes: { path: 'access_tokens#index' },
+            item_id: :access_tokens
           )
         end
 
