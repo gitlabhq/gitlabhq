@@ -14024,6 +14024,18 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="projectscanexecutionpoliciesactionscantypes"></a>`actionScanTypes` | [`[SecurityReportTypeEnum!]`](#securityreporttypeenum) | Filters policies by the action scan type. Only these scan types are supported: `dast`, `secret_detection`, `cluster_image_scanning`, `container_scanning`, `sast`. |
 
+##### `Project.securityTrainingProviders`
+
+List of security training providers for the project.
+
+Returns [`[ProjectSecurityTraining!]`](#projectsecuritytraining).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectsecuritytrainingprovidersonlyenabled"></a>`onlyEnabled` | [`Boolean`](#boolean) | Filter the list by only enabled security trainings. |
+
 ##### `Project.sentryDetailedError`
 
 Detailed version of a Sentry error on the project.
@@ -14246,6 +14258,20 @@ Represents a Project Membership.
 | <a id="projectpermissionsupdatepages"></a>`updatePages` | [`Boolean!`](#boolean) | Indicates the user can perform `update_pages` on this resource. |
 | <a id="projectpermissionsupdatewiki"></a>`updateWiki` | [`Boolean!`](#boolean) | Indicates the user can perform `update_wiki` on this resource. |
 | <a id="projectpermissionsuploadfile"></a>`uploadFile` | [`Boolean!`](#boolean) | Indicates the user can perform `upload_file` on this resource. |
+
+### `ProjectSecurityTraining`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectsecuritytrainingdescription"></a>`description` | [`String`](#string) | Description of the training provider. |
+| <a id="projectsecuritytrainingid"></a>`id` | [`GlobalID!`](#globalid) | ID of the training provider. |
+| <a id="projectsecuritytrainingisenabled"></a>`isEnabled` | [`Boolean!`](#boolean) | Represents whether the provider is enabled or not. |
+| <a id="projectsecuritytrainingisprimary"></a>`isPrimary` | [`Boolean!`](#boolean) | Represents whether the provider is set as primary or not. |
+| <a id="projectsecuritytraininglogourl"></a>`logoUrl` | [`String`](#string) | Logo URL of the provider. |
+| <a id="projectsecuritytrainingname"></a>`name` | [`String!`](#string) | Name of the training provider. |
+| <a id="projectsecuritytrainingurl"></a>`url` | [`String!`](#string) | URL of the provider. |
 
 ### `ProjectStatistics`
 

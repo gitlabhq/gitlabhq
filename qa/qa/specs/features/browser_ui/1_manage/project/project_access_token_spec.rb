@@ -9,7 +9,7 @@ module QA
         expect(project_access_token.token).not_to be_nil
 
         project_access_token.revoke_via_ui!
-        expect(page).to have_text("Revoked project access token #{project_access_token.name}!")
+        expect(page).to have_text("Revoked access token #{project_access_token.name}!")
       end
 
       after do

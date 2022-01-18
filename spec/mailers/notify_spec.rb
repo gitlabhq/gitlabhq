@@ -213,7 +213,7 @@ RSpec.describe Notify do
         subject { described_class.issue_due_email(recipient.id, issue.id) }
 
         before do
-          issue.update(due_date: Date.tomorrow)
+          issue.update!(due_date: Date.tomorrow)
         end
 
         it_behaves_like 'an answer to an existing thread with reply-by-email enabled' do
@@ -1229,7 +1229,7 @@ RSpec.describe Notify do
         end
 
         context 'when a comment on an existing discussion' do
-          let(:first_note) { create(model) }
+          let(:first_note) { create(model) } # rubocop:disable Rails/SaveBang
           let(:note) { create(model, author: note_author, noteable: nil, in_reply_to: first_note) }
 
           it 'contains an introduction' do
@@ -1505,7 +1505,7 @@ RSpec.describe Notify do
 
         context 'member is not created by a user' do
           before do
-            group_member.update(created_by: nil)
+            group_member.update!(created_by: nil)
           end
 
           it_behaves_like 'no email is sent'
@@ -1513,7 +1513,7 @@ RSpec.describe Notify do
 
         context 'member is a known user' do
           before do
-            group_member.update(user: create(:user))
+            group_member.update!(user: create(:user))
           end
 
           it_behaves_like 'no email is sent'
@@ -1737,7 +1737,7 @@ RSpec.describe Notify do
       stub_config_setting(email_subject_suffix: 'A Nice Suffix')
       perform_enqueued_jobs do
         user.email = "new-email@mail.com"
-        user.save
+        user.save!
       end
     end
 

@@ -34,9 +34,9 @@ RSpec.describe BulkImports::ArchiveExtractionService do
 
     context 'when dir is not in tmpdir' do
       it 'raises an error' do
-        ['/etc', '/usr', '/', '/home', '', '/some/other/path', Rails.root].each do |path|
+        ['/etc', '/usr', '/', '/home', '/some/other/path', Rails.root.to_s].each do |path|
           expect { described_class.new(tmpdir: path, filename: 'filename').execute }
-            .to raise_error(BulkImports::Error, 'Invalid target directory')
+            .to raise_error(StandardError, "path #{path} is not allowed")
         end
       end
     end
@@ -52,7 +52,7 @@ RSpec.describe BulkImports::ArchiveExtractionService do
 
     context 'when filepath is being traversed' do
       it 'raises an error' do
-        expect { described_class.new(tmpdir: File.join(tmpdir, '../../../'), filename: 'name').execute }
+        expect { described_class.new(tmpdir: File.join(Dir.mktmpdir, 'test', '..'), filename: 'name').execute }
           .to raise_error(Gitlab::Utils::PathTraversalAttackError, 'Invalid path')
       end
     end

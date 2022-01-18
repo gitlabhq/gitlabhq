@@ -2,6 +2,15 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 14.6.3 (2022-01-18)
+
+### Fixed (4 changes)
+
+- [Fix destruction of projects with pipelines](gitlab-org/gitlab@83e1616fe46b933c5b78b2d43e08463fdae4264a) ([merge request](gitlab-org/gitlab!78401))
+- [Geo: Resolve "undefined method each_batch"](gitlab-org/gitlab@a38bf23ebd0a9931ec5bb91377955824dcda39ea) ([merge request](gitlab-org/gitlab!78401)) **GitLab Enterprise Edition**
+- [Fix migration for cases with empty strings](gitlab-org/gitlab@ddda8880db35b7d48ca8e4ec8efe54954d64f41f) ([merge request](gitlab-org/gitlab!78401))
+- [Geo: adapt verification timed out query to use state table](gitlab-org/gitlab@89212752226d6c5f34830e3f4a73c5a56764ed17) ([merge request](gitlab-org/gitlab!78401)) **GitLab Enterprise Edition**
+
 ## 14.6.2 (2022-01-10)
 
 No changes.

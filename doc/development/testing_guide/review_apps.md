@@ -14,6 +14,7 @@ For any of the following scenarios, the `start-review-app-pipeline` job would be
 
 - for merge requests with CI config changes
 - for merge requests with frontend changes
+- for merge requests with changes to `{,ee/,jh/}{app/controllers}/**/*`
 - for merge requests with QA changes
 - for scheduled pipelines
 - the MR has the `pipeline:run-review-app` label set

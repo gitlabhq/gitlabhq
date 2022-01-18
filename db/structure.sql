@@ -19446,6 +19446,47 @@ CREATE SEQUENCE security_scans_id_seq
 
 ALTER SEQUENCE security_scans_id_seq OWNED BY security_scans.id;
 
+CREATE TABLE security_training_providers (
+    id bigint NOT NULL,
+    name text NOT NULL,
+    description text,
+    url text NOT NULL,
+    logo_url text,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    CONSTRAINT check_544b3dc935 CHECK ((char_length(url) <= 512)),
+    CONSTRAINT check_6fe222f071 CHECK ((char_length(logo_url) <= 512)),
+    CONSTRAINT check_a8ff21ced5 CHECK ((char_length(description) <= 512)),
+    CONSTRAINT check_dae433eed6 CHECK ((char_length(name) <= 256))
+);
+
+CREATE SEQUENCE security_training_providers_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE security_training_providers_id_seq OWNED BY security_training_providers.id;
+
+CREATE TABLE security_trainings (
+    id bigint NOT NULL,
+    project_id bigint NOT NULL,
+    provider_id bigint NOT NULL,
+    is_primary boolean DEFAULT false NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL
+);
+
+CREATE SEQUENCE security_trainings_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE security_trainings_id_seq OWNED BY security_trainings.id;
+
 CREATE TABLE self_managed_prometheus_alert_events (
     id bigint NOT NULL,
     project_id bigint NOT NULL,
@@ -22074,6 +22115,10 @@ ALTER TABLE ONLY security_orchestration_policy_rule_schedules ALTER COLUMN id SE
 
 ALTER TABLE ONLY security_scans ALTER COLUMN id SET DEFAULT nextval('security_scans_id_seq'::regclass);
 
+ALTER TABLE ONLY security_training_providers ALTER COLUMN id SET DEFAULT nextval('security_training_providers_id_seq'::regclass);
+
+ALTER TABLE ONLY security_trainings ALTER COLUMN id SET DEFAULT nextval('security_trainings_id_seq'::regclass);
+
 ALTER TABLE ONLY self_managed_prometheus_alert_events ALTER COLUMN id SET DEFAULT nextval('self_managed_prometheus_alert_events_id_seq'::regclass);
 
 ALTER TABLE ONLY sent_notifications ALTER COLUMN id SET DEFAULT nextval('sent_notifications_id_seq'::regclass);
@@ -24014,6 +24059,12 @@ ALTER TABLE ONLY security_orchestration_policy_rule_schedules
 
 ALTER TABLE ONLY security_scans
     ADD CONSTRAINT security_scans_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY security_training_providers
+    ADD CONSTRAINT security_training_providers_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY security_trainings
+    ADD CONSTRAINT security_trainings_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY self_managed_prometheus_alert_events
     ADD CONSTRAINT self_managed_prometheus_alert_events_pkey PRIMARY KEY (id);
@@ -27486,6 +27537,12 @@ CREATE INDEX index_security_scans_on_pipeline_id ON security_scans USING btree (
 
 CREATE INDEX index_security_scans_on_project_id ON security_scans USING btree (project_id);
 
+CREATE INDEX index_security_trainings_on_project_id ON security_trainings USING btree (project_id);
+
+CREATE INDEX index_security_trainings_on_provider_id ON security_trainings USING btree (provider_id);
+
+CREATE UNIQUE INDEX index_security_trainings_on_unique_project_id ON security_trainings USING btree (project_id) WHERE (is_primary IS TRUE);
+
 CREATE INDEX index_self_managed_prometheus_alert_events_on_environment_id ON self_managed_prometheus_alert_events USING btree (environment_id);
 
 CREATE INDEX index_sent_notifications_on_noteable_type_noteable_id ON sent_notifications USING btree (noteable_id) WHERE ((noteable_type)::text = 'Issue'::text);
@@ -30753,6 +30810,9 @@ ALTER TABLE ONLY required_code_owners_sections
 ALTER TABLE ONLY dast_site_profiles
     ADD CONSTRAINT fk_rails_83e309d69e FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY security_trainings
+    ADD CONSTRAINT fk_rails_84c7951d72 FOREIGN KEY (provider_id) REFERENCES security_training_providers(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY zentao_tracker_data
     ADD CONSTRAINT fk_rails_84efda7be0 FOREIGN KEY (integration_id) REFERENCES integrations(id) ON DELETE CASCADE;
 
@@ -31457,6 +31517,9 @@ ALTER TABLE ONLY internal_ids
 
 ALTER TABLE ONLY issues_self_managed_prometheus_alert_events
     ADD CONSTRAINT fk_rails_f7db2d72eb FOREIGN KEY (self_managed_prometheus_alert_event_id) REFERENCES self_managed_prometheus_alert_events(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY security_trainings
+    ADD CONSTRAINT fk_rails_f80240fae0 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY merge_requests_closing_issues
     ADD CONSTRAINT fk_rails_f8540692be FOREIGN KEY (issue_id) REFERENCES issues(id) ON DELETE CASCADE;

@@ -288,7 +288,7 @@ Shown metrics and charts includes:
 
 > Sorting the stage table [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/301082) in GitLab 13.12.
 
-![Value stream analytics stage table](img/vsa_stage_table_v13_12.png "VSA stage table")
+![Value stream analytics stage table](img/vsa_stage_table_v14_7.png "VSA stage table")
 
 The stage table shows a list of related workflow items for the selected stage. This can include:
 

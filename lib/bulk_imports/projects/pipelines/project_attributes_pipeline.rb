@@ -8,15 +8,16 @@ module BulkImports
 
         transformer ::BulkImports::Common::Transformers::ProhibitedAttributesTransformer
 
-        def extract(context)
-          download_service(tmp_dir, context).execute
-          decompression_service(tmp_dir).execute
+        def extract(_context)
+          download_service.execute
+          decompression_service.execute
+
           project_attributes = json_decode(json_attributes)
 
           BulkImports::Pipeline::ExtractedData.new(data: project_attributes)
         end
 
-        def transform(_, data)
+        def transform(_context, data)
           subrelations = config.portable_relations_tree.keys.map(&:to_s)
 
           Gitlab::ImportExport::AttributeCleaner.clean(
@@ -26,42 +27,42 @@ module BulkImports
           ).except(*subrelations)
         end
 
-        def load(_, data)
+        def load(_context, data)
           portable.assign_attributes(data)
           portable.reconcile_shared_runners_setting!
           portable.drop_visibility_level!
           portable.save!
         end
 
-        def after_run(_)
-          FileUtils.remove_entry(tmp_dir)
+        def after_run(_context)
+          FileUtils.remove_entry(tmpdir) if Dir.exist?(tmpdir)
         end
 
         def json_attributes
-          @json_attributes ||= File.read(File.join(tmp_dir, filename))
+          @json_attributes ||= File.read(File.join(tmpdir, filename))
         end
 
         private
 
-        def tmp_dir
-          @tmp_dir ||= Dir.mktmpdir
+        def tmpdir
+          @tmpdir ||= Dir.mktmpdir('bulk_imports')
         end
 
         def config
           @config ||= BulkImports::FileTransfer.config_for(portable)
         end
 
-        def download_service(tmp_dir, context)
+        def download_service
           @download_service ||= BulkImports::FileDownloadService.new(
             configuration: context.configuration,
-            relative_url: context.entity.relation_download_url_path(BulkImports::FileTransfer::BaseConfig::SELF_RELATION),
-            dir: tmp_dir,
+            relative_url:  context.entity.relation_download_url_path(BulkImports::FileTransfer::BaseConfig::SELF_RELATION),
+            tmpdir: tmpdir,
             filename: compressed_filename
           )
         end
 
-        def decompression_service(tmp_dir)
-          @decompression_service ||= BulkImports::FileDecompressionService.new(dir: tmp_dir, filename: compressed_filename)
+        def decompression_service
+          @decompression_service ||= BulkImports::FileDecompressionService.new(tmpdir: tmpdir, filename: compressed_filename)
         end
 
         def compressed_filename

@@ -56,7 +56,7 @@ RSpec.describe BulkImports::Projects::Pipelines::ProjectAttributesPipeline do
   subject(:pipeline) { described_class.new(context) }
 
   before do
-    allow(Dir).to receive(:mktmpdir).and_return(tmpdir)
+    allow(Dir).to receive(:mktmpdir).with('bulk_imports').and_return(tmpdir)
   end
 
   after do
@@ -95,13 +95,13 @@ RSpec.describe BulkImports::Projects::Pipelines::ProjectAttributesPipeline do
         .with(
           configuration: context.configuration,
           relative_url: "/#{entity.pluralized_name}/#{entity.source_full_path}/export_relations/download?relation=self",
-          dir: tmpdir,
+          tmpdir: tmpdir,
           filename: 'self.json.gz')
         .and_return(file_download_service)
 
       expect(BulkImports::FileDecompressionService)
         .to receive(:new)
-        .with(dir: tmpdir, filename: 'self.json.gz')
+        .with(tmpdir: tmpdir, filename: 'self.json.gz')
         .and_return(file_decompression_service)
 
       expect(file_download_service).to receive(:execute)
@@ -154,6 +154,27 @@ RSpec.describe BulkImports::Projects::Pipelines::ProjectAttributesPipeline do
       expect_file_read(filepath)
 
       pipeline.json_attributes
+    end
+  end
+
+  describe '#after_run' do
+    it 'removes tmp dir' do
+      allow(FileUtils).to receive(:remove_entry).and_call_original
+      expect(FileUtils).to receive(:remove_entry).with(tmpdir).and_call_original
+
+      pipeline.after_run(nil)
+
+      expect(Dir.exist?(tmpdir)).to eq(false)
+    end
+
+    context 'when dir does not exist' do
+      it 'does not attempt to remove tmpdir' do
+        FileUtils.remove_entry(tmpdir)
+
+        expect(FileUtils).not_to receive(:remove_entry).with(tmpdir)
+
+        pipeline.after_run(nil)
+      end
     end
   end
 end

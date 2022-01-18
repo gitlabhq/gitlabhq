@@ -1438,6 +1438,16 @@ RSpec.describe Ci::Runner do
     end
   end
 
+  describe '.belonging_to_group_and_ancestors' do
+    let_it_be(:parent_group) { create(:group) }
+    let_it_be(:parent_runner) { create(:ci_runner, :group, groups: [parent_group]) }
+    let_it_be(:group) { create(:group, parent: parent_group) }
+
+    it 'returns the group runner from the parent group' do
+      expect(described_class.belonging_to_group_and_ancestors(group.id)).to contain_exactly(parent_runner)
+    end
+  end
+
   describe '.belonging_to_group_or_project_descendants' do
     it 'returns the specific group runners' do
       group1 = create(:group)

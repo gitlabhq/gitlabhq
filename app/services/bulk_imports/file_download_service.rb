@@ -1,6 +1,13 @@
 # frozen_string_literal: true
 
-# Downloads a remote file. If no filename is given, it'll use the remote filename
+# File Download Service allows remote file download into tmp directory.
+#
+# @param configuration [BulkImports::Configuration] Config object containing url and access token
+# @param relative_url [String] Relative URL to download the file from
+# @param tmpdir [String] Temp directory to store downloaded file to. Must be located under `Dir.tmpdir`.
+# @param file_size_limit [Integer] Maximum allowed file size
+# @param allowed_content_types [Array<String>] Allowed file content types
+# @param filename [String] Name of the file to download, if known. Use remote filename if none given.
 module BulkImports
   class FileDownloadService
     ServiceError = Class.new(StandardError)
@@ -13,20 +20,21 @@ module BulkImports
     def initialize(
       configuration:,
       relative_url:,
-      dir:,
+      tmpdir:,
       file_size_limit: DEFAULT_FILE_SIZE_LIMIT,
       allowed_content_types: DEFAULT_ALLOWED_CONTENT_TYPES,
       filename: nil)
       @configuration = configuration
       @relative_url = relative_url
       @filename = filename
-      @dir = dir
+      @tmpdir = tmpdir
       @file_size_limit = file_size_limit
       @allowed_content_types = allowed_content_types
     end
 
     def execute
-      validate_dir
+      validate_tmpdir
+      validate_filepath
       validate_url
       validate_content_type
       validate_content_length
@@ -40,7 +48,7 @@ module BulkImports
 
     private
 
-    attr_reader :configuration, :relative_url, :dir, :file_size_limit, :allowed_content_types
+    attr_reader :configuration, :relative_url, :tmpdir, :file_size_limit, :allowed_content_types
 
     def download_file
       File.open(filepath, 'wb') do |file|
@@ -76,8 +84,12 @@ module BulkImports
       @headers ||= http_client.head(relative_url).headers
     end
 
-    def validate_dir
-      raise(ServiceError, 'Invalid target directory') unless dir.start_with?(Dir.tmpdir)
+    def validate_filepath
+      Gitlab::Utils.check_path_traversal!(filepath)
+    end
+
+    def validate_tmpdir
+      Gitlab::Utils.check_allowed_absolute_path!(tmpdir, [Dir.tmpdir])
     end
 
     def validate_symlink
@@ -119,7 +131,7 @@ module BulkImports
     end
 
     def filepath
-      @filepath ||= File.join(@dir, filename)
+      @filepath ||= File.join(@tmpdir, filename)
     end
 
     def filename

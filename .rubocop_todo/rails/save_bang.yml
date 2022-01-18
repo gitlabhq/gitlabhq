@@ -50,9 +50,3 @@ Rails/SaveBang:
   - spec/lib/gitlab/import_export/snippets_repo_restorer_spec.rb
   - spec/lib/gitlab/import_export/snippets_repo_saver_spec.rb
   - spec/lib/gitlab/import_export/uploads_manager_spec.rb
-  - spec/lib/gitlab/import_export/uploads_saver_spec.rb
-  - spec/lib/gitlab/import_export/wiki_restorer_spec.rb
-  - spec/lib/gitlab/lets_encrypt/client_spec.rb
-  - spec/lib/gitlab/middleware/go_spec.rb
-  - spec/lib/gitlab/shard_health_cache_spec.rb
-  - spec/mailers/notify_spec.rb

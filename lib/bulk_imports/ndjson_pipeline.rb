@@ -68,7 +68,7 @@ module BulkImports
       end
 
       def after_run(_)
-        extractor.remove_tmp_dir if extractor.respond_to?(:remove_tmp_dir)
+        extractor.remove_tmpdir if extractor.respond_to?(:remove_tmpdir)
       end
 
       def relation_class(relation_key)

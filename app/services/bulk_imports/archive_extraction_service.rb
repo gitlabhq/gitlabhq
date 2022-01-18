@@ -28,8 +28,8 @@ module BulkImports
     end
 
     def execute
-      validate_filepath
       validate_tmpdir
+      validate_filepath
       validate_symlink
 
       extract_archive
@@ -46,7 +46,7 @@ module BulkImports
     end
 
     def validate_tmpdir
-      raise(BulkImports::Error, 'Invalid target directory') unless File.expand_path(tmpdir).start_with?(Dir.tmpdir)
+      Gitlab::Utils.check_allowed_absolute_path!(tmpdir, [Dir.tmpdir])
     end
 
     def validate_symlink

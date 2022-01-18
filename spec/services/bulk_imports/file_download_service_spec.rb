@@ -33,7 +33,7 @@ RSpec.describe BulkImports::FileDownloadService do
       described_class.new(
         configuration: config,
         relative_url: '/test',
-        dir: tmpdir,
+        tmpdir: tmpdir,
         filename: filename,
         file_size_limit: file_size_limit,
         allowed_content_types: allowed_content_types
@@ -72,7 +72,7 @@ RSpec.describe BulkImports::FileDownloadService do
         service = described_class.new(
           configuration: double,
           relative_url: '/test',
-          dir: tmpdir,
+          tmpdir: tmpdir,
           filename: filename,
           file_size_limit: file_size_limit,
           allowed_content_types: allowed_content_types
@@ -157,7 +157,7 @@ RSpec.describe BulkImports::FileDownloadService do
         described_class.new(
           configuration: config,
           relative_url: '/test',
-          dir: tmpdir,
+          tmpdir: tmpdir,
           filename: 'symlink',
           file_size_limit: file_size_limit,
           allowed_content_types: allowed_content_types
@@ -179,7 +179,7 @@ RSpec.describe BulkImports::FileDownloadService do
         described_class.new(
           configuration: config,
           relative_url: '/test',
-          dir: '/etc',
+          tmpdir: '/etc',
           filename: filename,
           file_size_limit: file_size_limit,
           allowed_content_types: allowed_content_types
@@ -188,8 +188,28 @@ RSpec.describe BulkImports::FileDownloadService do
 
       it 'raises an error' do
         expect { subject.execute }.to raise_error(
-          described_class::ServiceError,
-          'Invalid target directory'
+          StandardError,
+          'path /etc is not allowed'
+        )
+      end
+    end
+
+    context 'when dir path is being traversed' do
+      subject do
+        described_class.new(
+          configuration: config,
+          relative_url: '/test',
+          tmpdir: File.join(Dir.mktmpdir('bulk_imports'), 'test', '..'),
+          filename: filename,
+          file_size_limit: file_size_limit,
+          allowed_content_types: allowed_content_types
+        )
+      end
+
+      it 'raises an error' do
+        expect { subject.execute }.to raise_error(
+          Gitlab::Utils::PathTraversalAttackError,
+          'Invalid path'
         )
       end
     end

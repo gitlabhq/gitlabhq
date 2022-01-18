@@ -42,7 +42,7 @@ RSpec.describe ::Gitlab::LetsEncrypt::Client do
     context 'when private key is saved in settings' do
       let!(:saved_private_key) do
         key = OpenSSL::PKey::RSA.new(4096).to_pem
-        Gitlab::CurrentSettings.current_application_settings.update(lets_encrypt_private_key: key)
+        Gitlab::CurrentSettings.current_application_settings.update!(lets_encrypt_private_key: key)
         key
       end
 

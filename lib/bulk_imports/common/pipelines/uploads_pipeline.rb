@@ -15,7 +15,7 @@ module BulkImports
           decompression_service.execute
           extraction_service.execute
 
-          upload_file_paths = Dir.glob(File.join(tmp_dir, '**', '*'))
+          upload_file_paths = Dir.glob(File.join(tmpdir, '**', '*'))
 
           BulkImports::Pipeline::ExtractedData.new(data: upload_file_paths)
         end
@@ -37,7 +37,7 @@ module BulkImports
         end
 
         def after_run(_)
-          FileUtils.remove_entry(tmp_dir) if Dir.exist?(tmp_dir)
+          FileUtils.remove_entry(tmpdir) if Dir.exist?(tmpdir)
         end
 
         private
@@ -46,17 +46,17 @@ module BulkImports
           BulkImports::FileDownloadService.new(
             configuration: context.configuration,
             relative_url: context.entity.relation_download_url_path(relation),
-            dir: tmp_dir,
+            tmpdir: tmpdir,
             filename: targz_filename
           )
         end
 
         def decompression_service
-          BulkImports::FileDecompressionService.new(dir: tmp_dir, filename: targz_filename)
+          BulkImports::FileDecompressionService.new(tmpdir: tmpdir, filename: targz_filename)
         end
 
         def extraction_service
-          BulkImports::ArchiveExtractionService.new(tmpdir: tmp_dir, filename: tar_filename)
+          BulkImports::ArchiveExtractionService.new(tmpdir: tmpdir, filename: tar_filename)
         end
 
         def relation
@@ -71,8 +71,8 @@ module BulkImports
           "#{tar_filename}.gz"
         end
 
-        def tmp_dir
-          @tmp_dir ||= Dir.mktmpdir('bulk_imports')
+        def tmpdir
+          @tmpdir ||= Dir.mktmpdir('bulk_imports')
         end
 
         def file_uploader

@@ -462,6 +462,8 @@ security_findings: :gitlab_main
 security_orchestration_policy_configurations: :gitlab_main
 security_orchestration_policy_rule_schedules: :gitlab_main
 security_scans: :gitlab_main
+security_training_providers: :gitlab_main
+security_trainings: :gitlab_main
 self_managed_prometheus_alert_events: :gitlab_main
 sent_notifications: :gitlab_main
 sentry_issues: :gitlab_main

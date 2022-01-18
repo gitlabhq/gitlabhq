@@ -145,6 +145,8 @@ or [manually finish it](#manually-finishing-a-batched-background-migration).
 
 ### Manually finishing a batched background migration
 
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/62634) in GitLab 14.1
+
 If you need to manually finish a batched background migration due to an
 error, you can run:
 
