@@ -4,8 +4,9 @@ require 'spec_helper'
 
 RSpec.describe ErrorTracking::CollectErrorService do
   let_it_be(:project) { create(:project) }
-  let_it_be(:parsed_event_file) { 'error_tracking/parsed_event.json' }
-  let_it_be(:parsed_event) { Gitlab::Json.parse(fixture_file(parsed_event_file)) }
+
+  let(:parsed_event_file) { 'error_tracking/parsed_event.json' }
+  let(:parsed_event) { parse_valid_event(parsed_event_file) }
 
   subject { described_class.new(project, nil, event: parsed_event) }
 
@@ -43,7 +44,7 @@ RSpec.describe ErrorTracking::CollectErrorService do
     end
 
     context 'python sdk event' do
-      let(:parsed_event) { Gitlab::Json.parse(fixture_file('error_tracking/python_event.json')) }
+      let(:parsed_event_file) { 'error_tracking/python_event.json' }
 
       it 'creates a valid event' do
         expect { subject.execute }.to change { ErrorTracking::ErrorEvent.count }.by(1)
@@ -75,7 +76,7 @@ RSpec.describe ErrorTracking::CollectErrorService do
     end
 
     context 'go payload' do
-      let(:parsed_event) { Gitlab::Json.parse(fixture_file('error_tracking/go_parsed_event.json')) }
+      let(:parsed_event_file) { 'error_tracking/go_parsed_event.json' }
 
       it 'has correct values set' do
         subject.execute
@@ -94,7 +95,7 @@ RSpec.describe ErrorTracking::CollectErrorService do
       end
 
       context 'with two exceptions' do
-        let(:parsed_event) { Gitlab::Json.parse(fixture_file('error_tracking/go_two_exception_event.json')) }
+        let(:parsed_event_file) { 'error_tracking/go_two_exception_event.json' }
 
         it 'reports using second exception', :aggregate_failures do
           subject.execute
@@ -112,5 +113,18 @@ RSpec.describe ErrorTracking::CollectErrorService do
         end
       end
     end
+  end
+
+  private
+
+  def parse_valid_event(parsed_event_file)
+    parsed_event = Gitlab::Json.parse(fixture_file(parsed_event_file))
+
+    validator = ErrorTracking::Collector::PayloadValidator.new
+    # This a precondition for all specs to verify that
+    # submitted JSON payload is valid.
+    expect(validator).to be_valid(parsed_event)
+
+    parsed_event
   end
 end

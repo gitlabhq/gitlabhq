@@ -2,12 +2,7 @@
 
 module QA
   describe 'Manage', :requires_admin do
-    describe 'Gitlab migration', quarantine: {
-      only: { subdomain: :staging },
-      issue: "https://gitlab.com/gitlab-org/gitlab/-/issues/349556",
-      type: :bug
-    } do
-      let!(:staging?) { Runtime::Scenario.gitlab_address.include?('staging.gitlab.com') }
+    describe 'Gitlab migration' do
       let!(:admin_api_client) { Runtime::API::Client.as_admin }
       let!(:user) do
         Resource::User.fabricate_via_api! do |usr|

@@ -21,7 +21,7 @@ RSpec.describe "User sorts things" do
   end
 
   it "issues -> project home page -> issues" do
-    sort_option = "Last updated"
+    sort_option = 'Updated date'
 
     visit(project_issues_path(project))
 
@@ -34,7 +34,7 @@ RSpec.describe "User sorts things" do
   end
 
   it "issues -> merge requests" do
-    sort_option = "Last updated"
+    sort_option = 'Updated date'
 
     visit(project_issues_path(project))
 
@@ -46,7 +46,7 @@ RSpec.describe "User sorts things" do
   end
 
   it "merge requests -> dashboard merge requests" do
-    sort_option = "Last updated"
+    sort_option = 'Updated date'
 
     visit(project_merge_requests_path(project))
 

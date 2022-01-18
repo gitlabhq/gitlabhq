@@ -1535,8 +1535,8 @@ class User < ApplicationRecord
     end
   end
 
-  def manageable_namespaces
-    @manageable_namespaces ||= [namespace] + manageable_groups
+  def forkable_namespaces
+    @forkable_namespaces ||= [namespace] + manageable_groups(include_groups_with_developer_maintainer_access: true)
   end
 
   def manageable_groups(include_groups_with_developer_maintainer_access: false)

@@ -32,6 +32,25 @@ When you view packages in a group:
 
 For information on how to create and upload a package, view the GitLab documentation for your package type.
 
+## Authenticate with the registry
+
+Authentication depends on the package manager being used. For more information, see the docs on the
+specific package format you want to use.
+
+For most package types, the following credential types are valid:
+
+- [Personal access token](../../profile/personal_access_tokens.md):
+  authenticates with your user permissions. Good for personal and local use of the package registry.
+- [Project deploy token](../../project/deploy_tokens/index.md):
+  allows access to all packages in a project. Good for granting and revoking project access to many
+  users.
+- [Group deploy token](../../project/deploy_tokens/index.md#group-deploy-token):
+  allows access to all packages in a group and its subgroups. Good for granting and revoking access
+  to a large number of packages to sets of users.
+- [Job token](../../../ci/jobs/ci_job_token.md):
+  allows access to packages in the project running the job for the users running the pipeline.
+  Access to other external projects can be configured.
+
 ## Use GitLab CI/CD to build packages
 
 You can use [GitLab CI/CD](../../../ci/index.md) to build packages.

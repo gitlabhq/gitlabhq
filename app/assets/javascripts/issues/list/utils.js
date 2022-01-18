@@ -72,7 +72,7 @@ export const getSortOptions = (hasIssueWeightsFeature, hasBlockedIssuesFeature) 
     },
     {
       id: 3,
-      title: __('Last updated'),
+      title: __('Updated date'),
       sortDirection: {
         ascending: UPDATED_ASC,
         descending: UPDATED_DESC,

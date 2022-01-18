@@ -124,13 +124,6 @@ const writeButtonSelector = '.js-md-write-button';
 lastTextareaPreviewed = null;
 const markdownToolbar = $('.md-header-toolbar');
 
-$.fn.setupMarkdownPreview = function () {
-  const $form = $(this);
-  $form.find('textarea.markdown-area').on('input', () => {
-    markdownPreview.hideReferencedUsers($form);
-  });
-};
-
 $(document).on('markdown-preview:show', (e, $form) => {
   if (!$form) {
     return;

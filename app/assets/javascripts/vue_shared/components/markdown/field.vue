@@ -2,7 +2,7 @@
 import { GlIcon } from '@gitlab/ui';
 import $ from 'jquery';
 import '~/behaviors/markdown/render_gfm';
-import { unescape } from 'lodash';
+import { debounce, unescape } from 'lodash';
 import createFlash from '~/flash';
 import GLForm from '~/gl_form';
 import axios from '~/lib/utils/axios_utils';
@@ -110,7 +110,7 @@ export default {
     return {
       markdownPreview: '',
       referencedCommands: '',
-      referencedUsers: '',
+      referencedUsers: [],
       hasSuggestion: false,
       markdownPreviewLoading: false,
       previewMarkdown: false,
@@ -188,6 +188,24 @@ export default {
         });
       }
     },
+
+    textareaValue: {
+      immediate: true,
+      handler(textareaValue, oldVal) {
+        const all = /@all([^\w._-]|$)/;
+        const hasAll = all.test(textareaValue);
+        const hadAll = all.test(oldVal);
+
+        const justAddedAll = !hadAll && hasAll;
+        const justRemovedAll = hadAll && !hasAll;
+
+        if (justAddedAll) {
+          this.debouncedFetchMarkdown();
+        } else if (justRemovedAll) {
+          this.referencedUsers = [];
+        }
+      },
+    },
   },
   mounted() {
     // GLForm class handles all the toolbar buttons
@@ -222,9 +240,9 @@ export default {
       if (this.textareaValue) {
         this.markdownPreviewLoading = true;
         this.markdownPreview = __('Loading…');
-        axios
-          .post(this.markdownPreviewPath, { text: this.textareaValue })
-          .then((response) => this.renderMarkdown(response.data))
+
+        this.fetchMarkdown()
+          .then((data) => this.renderMarkdown(data))
           .catch(() =>
             createFlash({
               message: __('Error loading markdown preview'),
@@ -239,16 +257,27 @@ export default {
       this.previewMarkdown = false;
     },
 
+    fetchMarkdown() {
+      return axios.post(this.markdownPreviewPath, { text: this.textareaValue }).then(({ data }) => {
+        const { references } = data;
+        if (references) {
+          this.referencedCommands = references.commands;
+          this.referencedUsers = references.users;
+          this.hasSuggestion = references.suggestions?.length > 0;
+          this.suggestions = references.suggestions;
+        }
+
+        return data;
+      });
+    },
+
+    debouncedFetchMarkdown: debounce(function debouncedFetchMarkdown() {
+      return this.fetchMarkdown();
+    }, 400),
+
     renderMarkdown(data = {}) {
       this.markdownPreviewLoading = false;
       this.markdownPreview = data.body || __('Nothing to preview.');
-
-      if (data.references) {
-        this.referencedCommands = data.references.commands;
-        this.referencedUsers = data.references.users;
-        this.hasSuggestion = data.references.suggestions && data.references.suggestions.length;
-        this.suggestions = data.references.suggestions;
-      }
 
       this.$nextTick()
         .then(() => $(this.$refs['markdown-preview']).renderGFM())
@@ -326,18 +355,14 @@ export default {
         v-html="markdownPreview /* eslint-disable-line vue/no-v-html */"
       ></div>
     </template>
-    <template v-if="previewMarkdown && !markdownPreviewLoading">
-      <div
-        v-if="referencedCommands"
-        class="referenced-commands"
-        v-html="referencedCommands /* eslint-disable-line vue/no-v-html */"
-      ></div>
-      <div v-if="shouldShowReferencedUsers" class="referenced-users">
-        <gl-icon name="warning-solid" />
-        <span
-          v-html="addMultipleToDiscussionWarning /* eslint-disable-line vue/no-v-html */"
-        ></span>
-      </div>
-    </template>
+    <div
+      v-if="referencedCommands && previewMarkdown && !markdownPreviewLoading"
+      class="referenced-commands"
+      v-html="referencedCommands /* eslint-disable-line vue/no-v-html */"
+    ></div>
+    <div v-if="shouldShowReferencedUsers" class="referenced-users">
+      <gl-icon name="warning-solid" />
+      <span v-html="addMultipleToDiscussionWarning /* eslint-disable-line vue/no-v-html */"></span>
+    </div>
   </div>
 </template>

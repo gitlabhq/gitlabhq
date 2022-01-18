@@ -7,7 +7,7 @@ description: Require approvals prior to deploying to a Protected Environment
 
 # Deployment approvals **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/215888) in GitLab 14.7 with a flag named `deployment_approvals`. Disabled by default.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/343864) in GitLab 14.7 with a flag named `deployment_approvals`. Disabled by default.
 
 WARNING:
 This feature is in an alpha stage and subject to change without prior notice.

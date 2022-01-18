@@ -41,10 +41,10 @@ RSpec.describe 'User sorts projects and order persists' do
       sign_in(user)
       visit(explore_projects_path)
       find('#sort-projects-dropdown').click
-      first(:link, 'Last updated').click
+      first(:link, 'Updated date').click
     end
 
-    it_behaves_like "sort order persists across all views", "Last updated", "Last updated"
+    it_behaves_like "sort order persists across all views", 'Updated date', 'Updated date'
   end
 
   context 'from dashboard projects' do

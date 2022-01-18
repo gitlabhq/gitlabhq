@@ -44,6 +44,13 @@ class GraphqlController < ApplicationController
   # The default feature category is overridden to read from request
   feature_category :not_owned
 
+  # We don't know what the query is going to be, so we can't set a high urgency
+  # See https://gitlab.com/groups/gitlab-org/-/epics/5841 for the work that will
+  # allow us to specify an urgency per query.
+  # Currently, all queries have a default urgency. And this is measured in the `graphql_queries`
+  # SLI. But queries could be multiplexed, so the total duration could be longer.
+  urgency :low, [:execute]
+
   def execute
     result = multiplex? ? execute_multiplex : execute_query
     render json: result

@@ -117,7 +117,7 @@ RSpec.describe 'Branches' do
       it 'sorts the branches by name', :js do
         visit project_branches_filtered_path(project, state: 'all')
 
-        click_button "Last updated" # Open sorting dropdown
+        click_button "Updated date" # Open sorting dropdown
         within '[data-testid="branches-dropdown"]' do
           find('p', text: 'Name').click
         end
@@ -128,7 +128,7 @@ RSpec.describe 'Branches' do
       it 'sorts the branches by oldest updated', :js do
         visit project_branches_filtered_path(project, state: 'all')
 
-        click_button "Last updated" # Open sorting dropdown
+        click_button "Updated date" # Open sorting dropdown
         within '[data-testid="branches-dropdown"]' do
           find('p', text: 'Oldest updated').click
         end

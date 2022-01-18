@@ -141,7 +141,7 @@ module SearchHelper
         }
       },
       {
-        title: _('Last updated'),
+        title: _('Updated date'),
         sortable: true,
         sortParam: {
           asc: 'updated_asc',

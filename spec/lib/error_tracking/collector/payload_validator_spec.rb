@@ -18,43 +18,25 @@ RSpec.describe ErrorTracking::Collector::PayloadValidator do
       end
     end
 
-    context 'ruby payload' do
-      let(:payload) { Gitlab::Json.parse(fixture_file('error_tracking/parsed_event.json')) }
+    context 'with event fixtures' do
+      where(:event_fixture) do
+        Dir.glob(Rails.root.join('spec/fixtures/error_tracking/*event*.json'))
+      end
 
-      it_behaves_like 'valid payload'
+      with_them do
+        let(:payload) { Gitlab::Json.parse(fixture_file(event_fixture)) }
+
+        it_behaves_like 'valid payload'
+      end
     end
 
-    context 'python payload' do
-      let(:payload) { Gitlab::Json.parse(fixture_file('error_tracking/python_event.json')) }
-
-      it_behaves_like 'valid payload'
-    end
-
-    context 'python payload in repl' do
-      let(:payload) { Gitlab::Json.parse(fixture_file('error_tracking/python_event_repl.json')) }
-
-      it_behaves_like 'valid payload'
-    end
-
-    context 'browser payload' do
-      let(:payload) { Gitlab::Json.parse(fixture_file('error_tracking/browser_event.json')) }
-
-      it_behaves_like 'valid payload'
-    end
-
-    context 'go payload' do
-      let(:payload) { Gitlab::Json.parse(fixture_file('error_tracking/go_parsed_event.json')) }
-
-      it_behaves_like 'valid payload'
-    end
-
-    context 'empty payload' do
+    context 'when empty' do
       let(:payload) { '' }
 
       it_behaves_like 'invalid payload'
     end
 
-    context 'invalid payload' do
+    context 'when invalid' do
       let(:payload) { { 'foo' => 'bar' } }
 
       it_behaves_like 'invalid payload'

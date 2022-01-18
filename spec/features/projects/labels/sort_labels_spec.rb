@@ -34,7 +34,7 @@ RSpec.describe 'Sort labels', :js do
     expect(sort_options[1]).to eq('Name, descending')
     expect(sort_options[2]).to eq('Last created')
     expect(sort_options[3]).to eq('Oldest created')
-    expect(sort_options[4]).to eq('Last updated')
+    expect(sort_options[4]).to eq('Updated date')
     expect(sort_options[5]).to eq('Oldest updated')
 
     click_link 'Name, descending'

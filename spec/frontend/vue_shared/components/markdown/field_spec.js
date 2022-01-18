@@ -1,4 +1,5 @@
 import { mount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import AxiosMockAdapter from 'axios-mock-adapter';
 import $ from 'jquery';
 import { TEST_HOST, FIXTURES_PATH } from 'spec/test_constants';
@@ -241,6 +242,41 @@ describe('Markdown field component', () => {
         clickAttachButton();
 
         expect(dropzoneSpy).toHaveBeenCalled();
+      });
+
+      describe('mentioning all users', () => {
+        const users = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map((i) => `user_${i}`);
+
+        it('shows warning on mention of all users', async () => {
+          axiosMock.onPost(markdownPreviewPath).reply(200, { references: { users } });
+
+          subject.setProps({ textareaValue: 'hello @all' });
+
+          await axios.waitFor(markdownPreviewPath).then(() => {
+            expect(subject.text()).toContain(
+              'You are about to add 11 people to the discussion. They will all receive a notification.',
+            );
+          });
+        });
+
+        it('removes warning when all mention is removed', async () => {
+          axiosMock.onPost(markdownPreviewPath).reply(200, { references: { users } });
+
+          subject.setProps({ textareaValue: 'hello @all' });
+
+          await axios.waitFor(markdownPreviewPath);
+
+          jest.spyOn(axios, 'post');
+
+          subject.setProps({ textareaValue: 'hello @allan' });
+
+          await nextTick();
+
+          expect(axios.post).not.toHaveBeenCalled();
+          expect(subject.text()).not.toContain(
+            'You are about to add 11 people to the discussion. They will all receive a notification.',
+          );
+        });
       });
     });
   });

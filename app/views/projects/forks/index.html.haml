@@ -25,7 +25,7 @@
         = forks_sort_direction_button(sort_value)
 
     - if current_user && can?(current_user, :fork_project, @project)
-      - if current_user.already_forked?(@project) && current_user.manageable_namespaces.size < 2
+      - if current_user.already_forked?(@project) && current_user.forkable_namespaces.size < 2
         = link_to namespace_project_path(current_user, current_user.fork_of(@project)), title: _('Go to your fork'), class: 'btn gl-button btn-confirm gl-md-ml-3' do
           = sprite_icon('fork', size: 12)
           %span= _('Fork')
