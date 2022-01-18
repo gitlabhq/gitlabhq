@@ -419,6 +419,30 @@
   height: $gl-font-size * $code-line-height * 0.9;
 }
 
+@mixin email-code-block {
+  .code.language-email {
+    font-family: inherit;
+    font-size: inherit;
+
+    code {
+      white-space: pre-wrap;
+      font-family: inherit;
+
+      // Rouge `Name.Tag` and `Operator` token (email header key + ':')
+      .nt,
+      .o {
+        color: inherit;
+        font-weight: bold;
+      }
+
+      // Rouge `Name.Attribute` token (email header value)
+      .na {
+        color: inherit;
+      }
+    }
+  }
+}
+
 @mixin avatar-counter($border-radius: 1em) {
   background-color: $gray-darkest;
   color: $white;

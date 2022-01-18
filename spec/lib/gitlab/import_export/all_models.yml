@@ -136,6 +136,7 @@ project_members:
 - source
 - project
 - member_task
+- member_namespace
 merge_requests:
 - status_check_responses
 - subscriptions

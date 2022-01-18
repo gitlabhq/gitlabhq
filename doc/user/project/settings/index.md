@@ -183,8 +183,6 @@ include:  # Execute individual project's configuration (if project contains .git
   project: '$CI_PROJECT_PATH'
   file: '$CI_CONFIG_PATH'
   ref: '$CI_COMMIT_REF_NAME' # Must be defined or MR pipelines always use the use default branch
-  rules:
-    - exists: '$CI_CONFIG_PATH'
 ```
 
 ##### Ensure compliance jobs are always run

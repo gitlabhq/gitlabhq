@@ -904,6 +904,7 @@ excluded_attributes:
     - :release_id
   project_members:
     - :source_id
+    - :member_namespace_id
     - :invite_email_success
     - :state
   group_members:

@@ -1,3 +1,4 @@
+@import 'framework/mixins';
 @import 'framework/variables';
 
 img {
@@ -37,4 +38,15 @@ pre.commit-message {
 
 .gl-label-text-dark {
   color: $gl-text-color;
+}
+
+.content {
+  .markdown-code-block pre.code {
+    padding: $gl-padding-8 $input-horizontal-padding;
+    margin: 0 0 $gl-padding-8;
+    border: 1px solid $gray-100;
+    border-radius: $border-radius-small;
+  }
+
+  @include email-code-block;
 }

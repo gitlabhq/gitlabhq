@@ -597,6 +597,8 @@
   .text-justify {
     text-align: justify !important;
   }
+
+  @include email-code-block;
 }
 
 /**

@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 description: Require approvals prior to deploying to a Protected Environment
 ---
 
-# Deployment Approvals **(PREMIUM)**
+# Deployment approvals **(PREMIUM)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/215888) in GitLab 14.7 with a flag named `deployment_approvals`. Disabled by default.
 

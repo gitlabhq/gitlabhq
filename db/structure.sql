@@ -15979,7 +15979,8 @@ CREATE TABLE members (
     ldap boolean DEFAULT false NOT NULL,
     override boolean DEFAULT false NOT NULL,
     state smallint DEFAULT 0,
-    invite_email_success boolean DEFAULT true NOT NULL
+    invite_email_success boolean DEFAULT true NOT NULL,
+    member_namespace_id bigint
 );
 
 CREATE SEQUENCE members_id_seq
@@ -26567,6 +26568,8 @@ CREATE INDEX index_members_on_invite_email ON members USING btree (invite_email)
 
 CREATE UNIQUE INDEX index_members_on_invite_token ON members USING btree (invite_token);
 
+CREATE INDEX index_members_on_member_namespace_id ON members USING btree (member_namespace_id);
+
 CREATE INDEX index_members_on_requested_at ON members USING btree (requested_at);
 
 CREATE INDEX index_members_on_source_id_and_source_type ON members USING btree (source_id, source_type);
@@ -29585,6 +29588,9 @@ ALTER TABLE ONLY epics
 
 ALTER TABLE ONLY dast_profiles
     ADD CONSTRAINT fk_aa76ef30e9 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY members
+    ADD CONSTRAINT fk_aa82dcc1c6 FOREIGN KEY (member_namespace_id) REFERENCES namespaces(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY alert_management_alerts
     ADD CONSTRAINT fk_aad61aedca FOREIGN KEY (environment_id) REFERENCES environments(id) ON DELETE SET NULL;

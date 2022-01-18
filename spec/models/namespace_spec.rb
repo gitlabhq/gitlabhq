@@ -29,6 +29,7 @@ RSpec.describe Namespace do
     it { is_expected.to have_one :admin_note }
     it { is_expected.to have_many :pending_builds }
     it { is_expected.to have_one :namespace_route }
+    it { is_expected.to have_many :namespace_members }
 
     describe '#children' do
       let_it_be(:group) { create(:group) }

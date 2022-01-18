@@ -248,9 +248,9 @@ NOTE:
 Configuration [with the UI](https://gitlab.com/gitlab-org/gitlab/-/issues/325249)
 is scheduled for a later release.
 
-## Deployment Approvals
+## Deployment approvals
 
-Protected Environments can also be used to require manual approvals before deployments. See [Deployment Approvals](deployment_approvals.md) for more information.
+Protected environments can also be used to require manual approvals before deployments. See [Deployment approvals](deployment_approvals.md) for more information.
 
 <!-- ## Troubleshooting
 
