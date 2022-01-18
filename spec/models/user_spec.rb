@@ -3967,7 +3967,7 @@ RSpec.describe User do
     end
   end
 
-  describe '#ci_owned_runners' do
+  shared_context '#ci_owned_runners' do
     let(:user) { create(:user) }
 
     shared_examples :nested_groups_owner do
@@ -4272,6 +4272,16 @@ RSpec.describe User do
 
       it_behaves_like :group_member
     end
+  end
+
+  it_behaves_like '#ci_owned_runners'
+
+  context 'when FF ci_owned_runners_cross_joins_fix is disabled' do
+    before do
+      stub_feature_flags(ci_owned_runners_cross_joins_fix: false)
+    end
+
+    it_behaves_like '#ci_owned_runners'
   end
 
   describe '#projects_with_reporter_access_limited_to' do

@@ -419,6 +419,18 @@ The following is emailed to you:
 [Upload the new license](../../user/admin_area/license.md#upload-your-license) to your instance.
 The new tier takes effect when the new license is uploaded.
 
+## Add or change the contacts for your subscription
+
+Contacts can renew a subscription, cancel a subscription, or transfer the subscription to a different namespace.
+
+To change the contacts:
+
+1. Ensure an account exists in the
+   [Customers Portal](https://customers.gitlab.com/customers/sign_in) for the user you want to add.
+1. Verify you have access to at least one of
+   [these requirements](https://about.gitlab.com/handbook/support/license-and-renewals/workflows/customersdot/associating_purchases.html).
+1. [Create a ticket with the Support team](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=360000071293). Include any relevant material in your request.
+
 ## Subscription expiry
 
 When your license expires, GitLab locks down features, like Git pushes

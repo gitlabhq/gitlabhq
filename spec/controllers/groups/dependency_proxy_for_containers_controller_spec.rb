@@ -178,10 +178,6 @@ RSpec.describe Groups::DependencyProxyForContainersController do
     subject { get_manifest(tag) }
 
     context 'feature enabled' do
-      before do
-        enable_dependency_proxy
-      end
-
       it_behaves_like 'without a token'
       it_behaves_like 'without permission'
       it_behaves_like 'feature flag disabled with private group'
@@ -270,7 +266,6 @@ RSpec.describe Groups::DependencyProxyForContainersController do
           let_it_be_with_reload(:group) { create(:group, parent: parent_group) }
 
           before do
-            parent_group.create_dependency_proxy_setting!(enabled: true)
             group_deploy_token.update_column(:group_id, parent_group.id)
           end
 
@@ -294,10 +289,6 @@ RSpec.describe Groups::DependencyProxyForContainersController do
     subject { get_blob }
 
     context 'feature enabled' do
-      before do
-        enable_dependency_proxy
-      end
-
       it_behaves_like 'without a token'
       it_behaves_like 'without permission'
       it_behaves_like 'feature flag disabled with private group'
@@ -341,7 +332,6 @@ RSpec.describe Groups::DependencyProxyForContainersController do
           let_it_be_with_reload(:group) { create(:group, parent: parent_group) }
 
           before do
-            parent_group.create_dependency_proxy_setting!(enabled: true)
             group_deploy_token.update_column(:group_id, parent_group.id)
           end
 
@@ -472,10 +462,6 @@ RSpec.describe Groups::DependencyProxyForContainersController do
         end
       end
     end
-  end
-
-  def enable_dependency_proxy
-    group.create_dependency_proxy_setting!(enabled: true)
   end
 
   def disable_dependency_proxy

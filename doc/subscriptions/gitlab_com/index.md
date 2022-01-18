@@ -267,10 +267,17 @@ previous period), log in to the [Customers Portal](https://customers.gitlab.com/
 If you have difficulty during the renewal process, contact the
 [Support team](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=360000071293) for assistance.
 
-## Change the contact person for your subscription
+## Add or change the contacts for your subscription
 
-To change the contact person who manages your subscription,
-contact the GitLab [Support team](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=360000071293).
+Contacts can renew a subscription, cancel a subscription, or transfer the subscription to a different namespace.
+
+To change the contacts:
+
+1. Ensure an account exists in the
+   [Customers Portal](https://customers.gitlab.com/customers/sign_in) for the user you want to add.
+1. Verify you have access to at least one of
+   [these requirements](https://about.gitlab.com/handbook/support/license-and-renewals/workflows/customersdot/associating_purchases.html).
+1. [Create a ticket with the Support team](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=360000071293). Include any relevant material in your request.
 
 ## CI/CD minutes
 

@@ -10,6 +10,10 @@ module Ci
       where('traversal_ids @> ARRAY[?]::int[]', id)
     end
 
+    scope :contains_any_of_namespaces, -> (ids) do
+      where('traversal_ids && ARRAY[?]::int[]', ids)
+    end
+
     scope :by_namespace_id, -> (namespace_id) { where(namespace_id: namespace_id) }
 
     class << self

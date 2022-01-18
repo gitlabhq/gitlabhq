@@ -2823,6 +2823,26 @@ RSpec.describe Group do
     end
   end
 
+  describe '#dependency_proxy_setting' do
+    subject(:setting) { group.dependency_proxy_setting }
+
+    it 'builds a new policy if one does not exist', :aggregate_failures do
+      expect(setting.enabled).to eq(true)
+      expect(setting).not_to be_persisted
+    end
+
+    context 'with existing policy' do
+      before do
+        group.dependency_proxy_setting.update!(enabled: false)
+      end
+
+      it 'returns the policy if it already exists', :aggregate_failures do
+        expect(setting.enabled).to eq(false)
+        expect(setting).to be_persisted
+      end
+    end
+  end
+
   describe '#crm_enabled?' do
     it 'returns false where no crm_settings exist' do
       expect(group.crm_enabled?).to be_falsey

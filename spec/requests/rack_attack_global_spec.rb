@@ -499,9 +499,7 @@ RSpec.describe 'Rack Attack global throttles', :use_clean_rails_memory_store_cac
 
     before do
       group.add_owner(user)
-      group.create_dependency_proxy_setting!(enabled: true)
       other_group.add_owner(other_user)
-      other_group.create_dependency_proxy_setting!(enabled: true)
 
       allow(Gitlab.config.dependency_proxy)
         .to receive(:enabled).and_return(true)

@@ -43,6 +43,10 @@ module API
           # This is a separate method so that EE can alter its behaviour more
           # easily.
 
+          if Feature.enabled?(:rate_limit_gitlab_shell, default_enabled: :yaml)
+            check_rate_limit!(:gitlab_shell_operation, scope: [params[:action], params[:project], actor.key_or_user])
+          end
+
           # Stores some Git-specific env thread-safely
           env = parse_env
           Gitlab::Git::HookEnv.set(gl_repository, env) if container

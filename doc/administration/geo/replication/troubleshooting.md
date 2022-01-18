@@ -432,7 +432,16 @@ If large repositories are affected by this problem,
 their resync may take a long time and cause significant load on your Geo nodes,
 storage and network systems.
 
-If you get the error message `Synchronization failed - Error syncing repository` along with the following log messages, this indicates that the expected `geo` remote is not present in the `.git/config` file
+If you see the error message `Synchronization failed - Error syncing repository` along with `fatal: fsck error in packed object`, this indicates
+a consistency check error when syncing the repository.
+
+One example of a consistency error is: `error: object f4a87a3be694fbbd6e50a668a31a8513caeaafe3: hasDotgit: contains '.git`.
+
+Removing the malformed objects causing consistency errors require rewriting the repository history, which is not always an option. However,
+it's possible to override the consistency checks instead. To do that, follow
+[the instructions in the Gitaly docs](../../gitaly/configure_gitaly.md#repository-consistency-checks).
+
+You can also get the error message `Synchronization failed - Error syncing repository` along with the following log messages, this indicates that the expected `geo` remote is not present in the `.git/config` file
 of a repository on the secondary Geo node's file system:
 
 ```json

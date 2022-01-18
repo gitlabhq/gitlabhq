@@ -909,7 +909,6 @@ RSpec.describe GroupPolicy do
     context 'feature enabled' do
       before do
         stub_config(dependency_proxy: { enabled: true })
-        group.create_dependency_proxy_setting!(enabled: true)
       end
 
       context 'reporter' do
@@ -955,7 +954,6 @@ RSpec.describe GroupPolicy do
 
       before do
         stub_config(dependency_proxy: { enabled: true })
-        group.create_dependency_proxy_setting!(enabled: true)
       end
 
       it { is_expected.to be_allowed(:read_dependency_proxy) }

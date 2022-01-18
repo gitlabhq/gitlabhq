@@ -7,8 +7,13 @@ type: reference, how-to
 
 # Sourcegraph integration **(FREE)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/16556) in GitLab 12.5.
-> - Note that this integration is in BETA and deployed [behind a feature flag](#enable-the-sourcegraph-feature-flag) disabled by default. Self-managed instances can opt to enable it.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/16556) in GitLab 12.5 [with a flag](../administration/feature_flags.md) named `sourcegraph`. Disabled by default.
+> - Enabled on GitLab.com in GitLab 12.5.
+> - [Enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/73116) in GitLab 14.8.
+
+FLAG:
+On self-managed GitLab, by default this feature is available. To hide the feature, ask an administrator to [disable the feature flag](../administration/feature_flags.md) named `sourcegraph`.
+On GitLab.com, this feature is available for public projects only.
 
 [Sourcegraph](https://sourcegraph.com) provides code intelligence features, natively integrated into the GitLab UI.
 
@@ -26,41 +31,9 @@ you can choose to enable Sourcegraph [through your user preferences](#enable-sou
 ## Set up for self-managed GitLab instances **(FREE SELF)**
 
 Before you can enable Sourcegraph code intelligence in GitLab you must:
+configure a Sourcegraph instance with your GitLab instance as an external service.
 
-- Enable the `sourcegraph` feature flag for your GitLab instance.
-- Configure a Sourcegraph instance with your GitLab instance as an external service.
-
-### Enable the Sourcegraph feature flag
-
-NOTE:
-If you are running a self-managed instance, the Sourcegraph integration is unavailable
-unless the feature flag `sourcegraph` is enabled. This can be done from the Rails console
-by instance administrators.
-
-Use these commands to start the Rails console:
-
-```shell
-# Omnibus GitLab
-gitlab-rails console
-
-# Installation from source
-cd /home/git/gitlab
-sudo -u git -H bin/rails console -e production
-```
-
-Then run the following command to enable the feature flag:
-
-```ruby
-Feature.enable(:sourcegraph)
-```
-
-You can also enable the feature flag only for specific projects with:
-
-```ruby
-Feature.enable(:sourcegraph, Project.find_by_full_path('my_group/my_project'))
-```
-
-### Set up a self-managed Sourcegraph instance
+### Set up a self-managed Sourcegraph instance **(FREE SELF)**
 
 If you are new to Sourcegraph, head over to the [Sourcegraph installation documentation](https://docs.sourcegraph.com/admin) and get your instance up and running.
 

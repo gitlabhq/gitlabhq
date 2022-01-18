@@ -372,7 +372,38 @@ RSpec.describe API::Internal::Base do
     end
   end
 
-  describe "POST /internal/allowed", :clean_gitlab_redis_shared_state do
+  describe "POST /internal/allowed", :clean_gitlab_redis_shared_state, :clean_gitlab_redis_rate_limiting do
+    shared_examples 'rate limited request' do
+      let(:action) { 'git-upload-pack' }
+      let(:actor) { key }
+
+      it 'is throttled by rate limiter' do
+        allow(::Gitlab::ApplicationRateLimiter).to receive(:threshold).and_return(1)
+        expect(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).with(:gitlab_shell_operation, scope: [action, project.full_path, actor]).twice.and_call_original
+
+        request
+
+        expect(response).to have_gitlab_http_status(:ok)
+
+        request
+
+        expect(response).to have_gitlab_http_status(:too_many_requests)
+        expect(json_response['message']['error']).to eq('This endpoint has been requested too many times. Try again later.')
+      end
+
+      context 'when rate_limit_gitlab_shell feature flag is disabled' do
+        before do
+          stub_feature_flags(rate_limit_gitlab_shell: false)
+        end
+
+        it 'is not throttled by rate limiter' do
+          expect(::Gitlab::ApplicationRateLimiter).not_to receive(:throttled?)
+
+          subject
+        end
+      end
+    end
+
     context "access granted" do
       let(:env) { {} }
 
@@ -530,6 +561,32 @@ RSpec.describe API::Internal::Base do
             expect(json_response["gitaly"]["features"]).to eq('gitaly-feature-mep-mep' => 'true')
             expect(user.reload.last_activity_on).to eql(Date.today)
           end
+
+          it_behaves_like 'rate limited request' do
+            def request
+              pull(key, project)
+            end
+          end
+
+          context 'when user_id is passed' do
+            it_behaves_like 'rate limited request' do
+              let(:actor) { user }
+
+              def request
+                post(
+                  api("/internal/allowed"),
+                  params: {
+                    user_id: user.id,
+                    project: full_path_for(project),
+                    gl_repository: gl_repository_for(project),
+                    action: 'git-upload-pack',
+                    secret_token: secret_token,
+                    protocol: 'ssh'
+                  }
+                )
+              end
+            end
+          end
         end
 
         context "with a feature flag enabled for a project" do
@@ -575,6 +632,14 @@ RSpec.describe API::Internal::Base do
             expect(json_response["gitaly"]["address"]).to eq(Gitlab::GitalyClient.address(project.repository_storage))
             expect(json_response["gitaly"]["token"]).to eq(Gitlab::GitalyClient.token(project.repository_storage))
             expect(user.reload.last_activity_on).to be_nil
+          end
+
+          it_behaves_like 'rate limited request' do
+            let(:action) { 'git-receive-pack' }
+
+            def request
+              push(key, project)
+            end
           end
         end
 
@@ -837,6 +902,14 @@ RSpec.describe API::Internal::Base do
           expect(json_response["gitaly"]["repository"]["relative_path"]).to eq(project.repository.gitaly_repository.relative_path)
           expect(json_response["gitaly"]["address"]).to eq(Gitlab::GitalyClient.address(project.repository_storage))
           expect(json_response["gitaly"]["token"]).to eq(Gitlab::GitalyClient.token(project.repository_storage))
+        end
+
+        it_behaves_like 'rate limited request' do
+          let(:action) { 'git-upload-archive' }
+
+          def request
+            archive(key, project)
+          end
         end
       end
 

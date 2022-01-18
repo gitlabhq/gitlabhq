@@ -776,6 +776,10 @@ class Group < Namespace
     super || build_dependency_proxy_image_ttl_policy
   end
 
+  def dependency_proxy_setting
+    super || build_dependency_proxy_setting
+  end
+
   def crm_enabled?
     crm_settings&.enabled?
   end

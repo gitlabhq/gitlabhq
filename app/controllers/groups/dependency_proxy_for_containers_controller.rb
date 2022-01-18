@@ -145,8 +145,7 @@ class Groups::DependencyProxyForContainersController < ::Groups::DependencyProxy
   end
 
   def dependency_proxy
-    @dependency_proxy ||=
-      group.dependency_proxy_setting || group.create_dependency_proxy_setting
+    @dependency_proxy ||= group.dependency_proxy_setting
   end
 
   def ensure_group

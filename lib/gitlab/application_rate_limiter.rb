@@ -56,7 +56,8 @@ module Gitlab
           profile_update_username:            { threshold: 10, interval: 1.minute },
           update_environment_canary_ingress:  { threshold: 1, interval: 1.minute },
           auto_rollback_deployment:           { threshold: 1, interval: 3.minutes },
-          user_email_lookup:            { threshold: -> { application_settings.user_email_lookup_limit }, interval: 1.minute }
+          user_email_lookup:            { threshold: -> { application_settings.user_email_lookup_limit }, interval: 1.minute },
+          gitlab_shell_operation:       { threshold: 600, interval: 1.minute }
         }.freeze
       end
 
@@ -64,7 +65,7 @@ module Gitlab
       # be throttled.
       #
       # @param key [Symbol] Key attribute registered in `.rate_limits`
-      # @param scope [Array<ActiveRecord>] Array of ActiveRecord models to scope throttling to a specific request (e.g. per user per project)
+      # @param scope [Array<ActiveRecord>] Array of ActiveRecord models, Strings or Symbols to scope throttling to a specific request (e.g. per user per project)
       # @param threshold [Integer] Optional threshold value to override default one registered in `.rate_limits`
       # @param users_allowlist [Array<String>] Optional list of usernames to exclude from the limit. This param will only be functional if Scope includes a current user.
       # @param peek [Boolean] Optional. When true the key will not be incremented but the current throttled state will be returned.

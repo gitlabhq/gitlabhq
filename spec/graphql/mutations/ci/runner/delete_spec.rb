@@ -5,9 +5,9 @@ require 'spec_helper'
 RSpec.describe Mutations::Ci::Runner::Delete do
   include GraphqlHelpers
 
-  let_it_be(:user) { create(:user) }
   let_it_be(:runner) { create(:ci_runner) }
 
+  let(:user) { create(:user) }
   let(:current_ctx) { { current_user: user } }
 
   let(:mutation_params) do
@@ -46,10 +46,10 @@ RSpec.describe Mutations::Ci::Runner::Delete do
     end
 
     context 'when user can delete owned runner' do
-      let_it_be(:project) { create(:project, creator_id: user.id) }
-      let_it_be(:project_runner, reload: true) { create(:ci_runner, :project, description: 'Project runner', projects: [project]) }
+      let!(:project) { create(:project, creator_id: user.id) }
+      let!(:project_runner) { create(:ci_runner, :project, description: 'Project runner', projects: [project]) }
 
-      before_all do
+      before do
         project.add_maintainer(user)
       end
 
@@ -63,10 +63,10 @@ RSpec.describe Mutations::Ci::Runner::Delete do
       end
 
       context 'with more than one associated project' do
-        let_it_be(:project2) { create(:project, creator_id: user.id) }
-        let_it_be(:two_projects_runner) { create(:ci_runner, :project, description: 'Two projects runner', projects: [project, project2]) }
+        let!(:project2) { create(:project, creator_id: user.id) }
+        let!(:two_projects_runner) { create(:ci_runner, :project, description: 'Two projects runner', projects: [project, project2]) }
 
-        before_all do
+        before do
           project2.add_maintainer(user)
         end
 

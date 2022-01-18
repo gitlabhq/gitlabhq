@@ -8,13 +8,14 @@ module Gitlab
       end
 
       def feature_available?
-        # The sourcegraph_bundle feature could be conditionally applied, so check if `!off?`
-        !feature.off?
+        # The sourcegraph feature could be conditionally applied, so check if `!off?`
+        # We also can't just check !off? because the ActiveRecord might not exist yet
+        self.feature_enabled? || !feature.off?
       end
 
       def feature_enabled?(actor = nil)
         # Some CI jobs grep for Feature.enabled? in our codebase, so it is important this reference stays around.
-        Feature.enabled?(:sourcegraph, actor)
+        Feature.enabled?(:sourcegraph, actor, default_enabled: :yaml)
       end
 
       private

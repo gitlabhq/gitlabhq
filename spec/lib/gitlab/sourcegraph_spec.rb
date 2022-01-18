@@ -37,6 +37,12 @@ RSpec.describe Gitlab::Sourcegraph do
 
       it { is_expected.to be_truthy }
     end
+
+    context 'when feature is disabled' do
+      let(:feature_scope) { false }
+
+      it { is_expected.to be_falsey }
+    end
   end
 
   describe '.feature_enabled?' do
