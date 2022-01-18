@@ -81,7 +81,7 @@ module Packages
         return unless @package
 
         strong_memoize(:package_files) do
-          if Feature.enabled?(:packages_installable_package_files)
+          if Feature.enabled?(:packages_installable_package_files, default_enabled: :yaml)
             @package.installable_package_files.preload_conan_file_metadata
           else
             @package.package_files.preload_conan_file_metadata

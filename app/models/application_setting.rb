@@ -365,6 +365,10 @@ class ApplicationSetting < ApplicationRecord
             allow_nil: false,
             numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
+  validates :packages_cleanup_package_file_worker_capacity,
+            allow_nil: false,
+            numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+
   validates :invisible_captcha_enabled,
             inclusion: { in: [true, false], message: _('must be a boolean value') }
 

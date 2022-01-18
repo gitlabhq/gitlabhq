@@ -97,7 +97,7 @@ module Packages
         end
 
         def package_files
-          if Feature.enabled?(:packages_installable_package_files)
+          if Feature.enabled?(:packages_installable_package_files, default_enabled: :yaml)
             ::Packages::PackageFile.installable
                                    .for_package_ids(packages.select(:id))
           else

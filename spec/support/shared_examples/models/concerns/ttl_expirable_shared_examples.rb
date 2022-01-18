@@ -29,23 +29,12 @@ RSpec.shared_examples 'ttl_expirable' do
   describe '.active' do
     # rubocop:disable Rails/SaveBang
     let_it_be(:item1) { create(class_symbol) }
-    let_it_be(:item2) { create(class_symbol, :expired) }
+    let_it_be(:item2) { create(class_symbol, :pending_destruction) }
     let_it_be(:item3) { create(class_symbol, status: :error) }
     # rubocop:enable Rails/SaveBang
 
     it 'returns only active items' do
       expect(described_class.active).to contain_exactly(item1)
-    end
-  end
-
-  describe '.lock_next_by' do
-    let_it_be(:item1) { create(class_symbol, created_at: 1.month.ago, updated_at: 1.day.ago) }
-    let_it_be(:item2) { create(class_symbol, created_at: 1.year.ago, updated_at: 1.year.ago) }
-    let_it_be(:item3) { create(class_symbol, created_at: 2.years.ago, updated_at: 1.month.ago) }
-
-    it 'returns the first item sorted by the argument' do
-      expect(described_class.lock_next_by(:updated_at)).to contain_exactly(item2)
-      expect(described_class.lock_next_by(:created_at)).to contain_exactly(item3)
     end
   end
 

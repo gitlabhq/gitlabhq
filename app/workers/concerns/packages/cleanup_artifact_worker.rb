@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
-module DependencyProxy
-  module CleanupWorker
+module Packages
+  module CleanupArtifactWorker
     extend ActiveSupport::Concern
+    include LimitedCapacity::Worker
     include Gitlab::Utils::StrongMemoize
 
     def perform_work
@@ -15,12 +16,8 @@ module DependencyProxy
       artifact&.error!
     end
 
-    def max_running_jobs
-      ::Gitlab::CurrentSettings.dependency_proxy_ttl_group_policy_worker_capacity
-    end
-
     def remaining_work_count
-      expired_artifacts.limit(max_running_jobs + 1).count
+      artifacts_pending_destruction.limit(max_running_jobs + 1).count
     end
 
     private
@@ -52,12 +49,12 @@ module DependencyProxy
       end
     end
 
-    def expired_artifacts
-      model.expired
+    def artifacts_pending_destruction
+      model.pending_destruction
     end
 
     def next_item
-      expired_artifacts.lock_next_by(:updated_at).first
+      model.next_pending_destruction(order_by: :updated_at)
     end
   end
 end

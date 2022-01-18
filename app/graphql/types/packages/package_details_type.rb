@@ -37,7 +37,7 @@ module Types
       end
 
       def package_files
-        if Feature.enabled?(:packages_installable_package_files)
+        if Feature.enabled?(:packages_installable_package_files, default_enabled: :yaml)
           object.installable_package_files
         else
           object.package_files

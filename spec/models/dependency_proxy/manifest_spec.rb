@@ -3,6 +3,7 @@ require 'spec_helper'
 
 RSpec.describe DependencyProxy::Manifest, type: :model do
   it_behaves_like 'ttl_expirable'
+  it_behaves_like 'destructible', factory: :dependency_proxy_manifest
 
   describe 'relationships' do
     it { is_expected.to belong_to(:group) }

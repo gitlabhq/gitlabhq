@@ -9,6 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - `reference` was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20354) in GitLab 12.10 in favour of `references`.
 > - `reviewer_username` and `reviewer_id` were [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/49341) in GitLab 13.8.
 > - `draft` was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/63473) as a replacement for `work_in_progress` in GitLab 14.0.
+> - `merge_user` was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/349031) as an eventual replacement for `merged_by` in GitLab 14.7.
 
 Every API call to merge requests must be authenticated.
 
@@ -41,6 +42,11 @@ adding the `access_raw_diffs` parameter, accessing diffs not from the database b
 This approach is generally slower and more resource-intensive, but isn't subject to size limits
 placed on database-backed diffs. [Limits inherent to Gitaly](../development/diffs.md#diff-limits)
 still apply.
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/349031) in GitLab 14.7,
+field `merge_user` can be either user who merged this merge request, 
+user who set it to merge when pipeline succeeds or `null`.
+Field `merged_by` (user who merged this merge request or `null`) has been deprecated.
 
 ## List merge requests
 
@@ -111,7 +117,15 @@ Parameters:
     "title": "test1",
     "description": "fixed login page css paddings",
     "state": "merged",
-    "merged_by": {
+    "merged_by": { // Deprecated and will be removed in API v5, use `merge_user` instead
+      "id": 87854,
+      "name": "Douwe Maan",
+      "username": "DouweM",
+      "state": "active",
+      "avatar_url": "https://gitlab.example.com/uploads/-/system/user/avatar/87854/avatar.png",
+      "web_url": "https://gitlab.com/DouweM"
+    },
+    "merge_user": {
       "id": 87854,
       "name": "Douwe Maan",
       "username": "DouweM",
@@ -295,7 +309,15 @@ Parameters:
     "title": "test1",
     "description": "fixed login page css paddings",
     "state": "merged",
-    "merged_by": {
+    "merged_by": { // Deprecated and will be removed in API v5, use `merge_user` instead
+      "id": 87854,
+      "name": "Douwe Maan",
+      "username": "DouweM",
+      "state": "active",
+      "avatar_url": "https://gitlab.example.com/uploads/-/system/user/avatar/87854/avatar.png",
+      "web_url": "https://gitlab.com/DouweM"
+    },
+    "merge_user": {
       "id": 87854,
       "name": "Douwe Maan",
       "username": "DouweM",
@@ -481,7 +503,15 @@ Parameters:
     "title": "test1",
     "description": "fixed login page css paddings",
     "state": "merged",
-    "merged_by": {
+    "merged_by": { // Deprecated and will be removed in API v5, use `merge_user` instead
+      "id": 87854,
+      "name": "Douwe Maan",
+      "username": "DouweM",
+      "state": "active",
+      "avatar_url": "https://gitlab.example.com/uploads/-/system/user/avatar/87854/avatar.png",
+      "web_url": "https://gitlab.com/DouweM"
+    },
+    "merge_user": {
       "id": 87854,
       "name": "Douwe Maan",
       "username": "DouweM",
@@ -717,7 +747,15 @@ Parameters:
   "squash": false,
   "subscribed": false,
   "changes_count": "1",
-  "merged_by": {
+  "merged_by": { // Deprecated and will be removed in API v5, use `merge_user` instead
+    "id": 87854,
+    "name": "Douwe Maan",
+    "username": "DouweM",
+    "state": "active",
+    "avatar_url": "https://gitlab.example.com/uploads/-/system/user/avatar/87854/avatar.png",
+    "web_url": "https://gitlab.com/DouweM"
+  },
+  "merge_user": {
     "id": 87854,
     "name": "Douwe Maan",
     "username": "DouweM",
@@ -1159,7 +1197,15 @@ POST /projects/:id/merge_requests
   "squash": false,
   "subscribed": false,
   "changes_count": "1",
-  "merged_by": {
+  "merged_by": { // Deprecated and will be removed in API v5, use `merge_user` instead
+    "id": 87854,
+    "name": "Douwe Maan",
+    "username": "DouweM",
+    "state": "active",
+    "avatar_url": "https://gitlab.example.com/uploads/-/system/user/avatar/87854/avatar.png",
+    "web_url": "https://gitlab.com/DouweM"
+  },
+  "merge_user": {
     "id": 87854,
     "name": "Douwe Maan",
     "username": "DouweM",
@@ -1330,7 +1376,15 @@ Must include at least one non-required attribute from above.
   "squash": false,
   "subscribed": false,
   "changes_count": "1",
-  "merged_by": {
+  "merged_by": { // Deprecated and will be removed in API v5, use `merge_user` instead
+    "id": 87854,
+    "name": "Douwe Maan",
+    "username": "DouweM",
+    "state": "active",
+    "avatar_url": "https://gitlab.example.com/uploads/-/system/user/avatar/87854/avatar.png",
+    "web_url": "https://gitlab.com/DouweM"
+  },
+  "merge_user": {
     "id": 87854,
     "name": "Douwe Maan",
     "username": "DouweM",
@@ -1516,7 +1570,15 @@ Parameters:
   "squash": false,
   "subscribed": false,
   "changes_count": "1",
-  "merged_by": {
+  "merged_by": { // Deprecated and will be removed in API v5, use `merge_user` instead
+    "id": 87854,
+    "name": "Douwe Maan",
+    "username": "DouweM",
+    "state": "active",
+    "avatar_url": "https://gitlab.example.com/uploads/-/system/user/avatar/87854/avatar.png",
+    "web_url": "https://gitlab.com/DouweM"
+  },
+  "merge_user": {
     "id": 87854,
     "name": "Douwe Maan",
     "username": "DouweM",
@@ -1705,7 +1767,15 @@ Parameters:
   "squash": false,
   "subscribed": false,
   "changes_count": "1",
-  "merged_by": {
+  "merged_by": { // Deprecated and will be removed in API v5, use `merge_user` instead
+    "id": 87854,
+    "name": "Douwe Maan",
+    "username": "DouweM",
+    "state": "active",
+    "avatar_url": "https://gitlab.example.com/uploads/-/system/user/avatar/87854/avatar.png",
+    "web_url": "https://gitlab.com/DouweM"
+  },
+  "merge_user": {
     "id": 87854,
     "name": "Douwe Maan",
     "username": "DouweM",
@@ -2006,7 +2076,15 @@ Example response:
   "squash": false,
   "subscribed": false,
   "changes_count": "1",
-  "merged_by": {
+  "merged_by": { // Deprecated and will be removed in API v5, use `merge_user` instead
+    "id": 87854,
+    "name": "Douwe Maan",
+    "username": "DouweM",
+    "state": "active",
+    "avatar_url": "https://gitlab.example.com/uploads/-/system/user/avatar/87854/avatar.png",
+    "web_url": "https://gitlab.com/DouweM"
+  },
+  "merge_user": {
     "id": 87854,
     "name": "Douwe Maan",
     "username": "DouweM",
@@ -2166,7 +2244,15 @@ Example response:
   "squash": false,
   "subscribed": false,
   "changes_count": "1",
-  "merged_by": {
+  "merged_by": { // Deprecated and will be removed in API v5, use `merge_user` instead
+    "id": 87854,
+    "name": "Douwe Maan",
+    "username": "DouweM",
+    "state": "active",
+    "avatar_url": "https://gitlab.example.com/uploads/-/system/user/avatar/87854/avatar.png",
+    "web_url": "https://gitlab.com/DouweM"
+  },
+  "merge_user": {
     "id": 87854,
     "name": "Douwe Maan",
     "username": "DouweM",

@@ -36,7 +36,7 @@ module Packages
         refs = []
 
         @packages.map do |package|
-          package_files = if Feature.enabled?(:packages_installable_package_files)
+          package_files = if Feature.enabled?(:packages_installable_package_files, default_enabled: :yaml)
                             package.installable_package_files
                           else
                             package.package_files

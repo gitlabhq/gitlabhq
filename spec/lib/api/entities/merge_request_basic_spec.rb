@@ -21,7 +21,8 @@ RSpec.describe ::API::Entities::MergeRequestBasic do
   it 'includes basic fields' do
     is_expected.to include(
       draft: merge_request.draft?,
-      work_in_progress: merge_request.draft?
+      work_in_progress: merge_request.draft?,
+      merge_user: nil
     )
   end
 

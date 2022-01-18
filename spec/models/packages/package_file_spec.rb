@@ -11,6 +11,7 @@ RSpec.describe Packages::PackageFile, type: :model do
   let_it_be(:debian_package) { create(:debian_package, project: project) }
 
   it_behaves_like 'having unique enum values'
+  it_behaves_like 'destructible', factory: :package_file
 
   describe 'relationships' do
     it { is_expected.to belong_to(:package) }

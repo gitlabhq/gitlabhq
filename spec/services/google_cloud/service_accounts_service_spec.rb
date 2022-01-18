@@ -60,8 +60,8 @@ RSpec.describe GoogleCloud::ServiceAccountsService do
     let_it_be(:project) { create(:project) }
 
     it 'saves GCP creds as project CI vars' do
-      service.add_for_project('env_1', 'gcp_prj_id_1', 'srv_acc_1', 'srv_acc_key_1')
-      service.add_for_project('env_2', 'gcp_prj_id_2', 'srv_acc_2', 'srv_acc_key_2')
+      service.add_for_project('env_1', 'gcp_prj_id_1', 'srv_acc_1', 'srv_acc_key_1', true)
+      service.add_for_project('env_2', 'gcp_prj_id_2', 'srv_acc_2', 'srv_acc_key_2', false)
 
       list = service.find_for_project
 
@@ -81,7 +81,7 @@ RSpec.describe GoogleCloud::ServiceAccountsService do
     end
 
     it 'replaces previously stored CI vars with new CI vars' do
-      service.add_for_project('env_1', 'new_project', 'srv_acc_1', 'srv_acc_key_1')
+      service.add_for_project('env_1', 'new_project', 'srv_acc_1', 'srv_acc_key_1', false)
 
       list = service.find_for_project
 
@@ -101,9 +101,16 @@ RSpec.describe GoogleCloud::ServiceAccountsService do
       end
     end
 
-    it 'underlying project CI vars must be protected' do
-      expect(project.variables.first.protected).to eq(true)
-      expect(project.variables.second.protected).to eq(true)
+    it 'underlying project CI vars must be protected as per value' do
+      service.add_for_project('env_1', 'gcp_prj_id_1', 'srv_acc_1', 'srv_acc_key_1', true)
+      service.add_for_project('env_2', 'gcp_prj_id_2', 'srv_acc_2', 'srv_acc_key_2', false)
+
+      expect(project.variables[0].protected).to eq(true)
+      expect(project.variables[1].protected).to eq(true)
+      expect(project.variables[2].protected).to eq(true)
+      expect(project.variables[3].protected).to eq(false)
+      expect(project.variables[4].protected).to eq(false)
+      expect(project.variables[5].protected).to eq(false)
     end
   end
 end

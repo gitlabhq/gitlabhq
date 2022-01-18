@@ -1269,6 +1269,7 @@ RSpec.describe API::MergeRequests do
         get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}", user)
 
         expect(json_response).to include('merged_by',
+          'merge_user',
           'merged_at',
           'closed_by',
           'closed_at',
@@ -1279,9 +1280,10 @@ RSpec.describe API::MergeRequests do
       end
 
       it 'returns correct values' do
-        get api("/projects/#{project.id}/merge_requests/#{merge_request.reload.iid}", user)
+        get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}", user)
 
         expect(json_response['merged_by']['id']).to eq(merge_request.metrics.merged_by_id)
+        expect(json_response['merge_user']['id']).to eq(merge_request.metrics.merged_by_id)
         expect(Time.parse(json_response['merged_at'])).to be_like_time(merge_request.metrics.merged_at)
         expect(json_response['closed_by']['id']).to eq(merge_request.metrics.latest_closed_by_id)
         expect(Time.parse(json_response['closed_at'])).to be_like_time(merge_request.metrics.latest_closed_at)
@@ -1289,6 +1291,32 @@ RSpec.describe API::MergeRequests do
         expect(Time.parse(json_response['latest_build_started_at'])).to be_like_time(merge_request.metrics.latest_build_started_at)
         expect(Time.parse(json_response['latest_build_finished_at'])).to be_like_time(merge_request.metrics.latest_build_finished_at)
         expect(Time.parse(json_response['first_deployed_to_production_at'])).to be_like_time(merge_request.metrics.first_deployed_to_production_at)
+      end
+    end
+
+    context 'merge_user' do
+      context 'when MR is set to MWPS' do
+        let(:merge_request) { create(:merge_request, :merge_when_pipeline_succeeds, source_project: project, target_project: project) }
+
+        it 'returns user who set MWPS' do
+          get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}", user)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['merge_user']['id']).to eq(user.id)
+        end
+
+        context 'when MR is already merged' do
+          before do
+            merge_request.metrics.update!(merged_by: user2)
+          end
+
+          it 'returns user who actually merged' do
+            get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}", user)
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response['merge_user']['id']).to eq(user2.id)
+          end
+        end
       end
     end
 

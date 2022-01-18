@@ -24,24 +24,15 @@ class Projects::GoogleCloud::ServiceAccountsController < Projects::GoogleCloud::
   end
 
   def create
-    google_api_client = GoogleApi::CloudPlatform::Client.new(token_in_session, nil)
-    service_accounts_service = GoogleCloud::ServiceAccountsService.new(project)
-    gcp_project = params[:gcp_project]
-    environment = params[:environment]
-    generated_name = "GitLab :: #{@project.name} :: #{environment}"
-    generated_desc = "GitLab generated service account for project '#{@project.name}' and environment '#{environment}'"
+    response = GoogleCloud::CreateServiceAccountsService.new(
+      project,
+      current_user,
+      google_oauth2_token: token_in_session,
+      gcp_project_id: params[:gcp_project],
+      environment_name: params[:environment]
+    ).execute
 
-    service_account = google_api_client.create_service_account(gcp_project, generated_name, generated_desc)
-    service_account_key = google_api_client.create_service_account_key(gcp_project, service_account.unique_id)
-
-    service_accounts_service.add_for_project(
-      environment,
-      service_account.project_id,
-      service_account.to_json,
-      service_account_key.to_json
-    )
-
-    redirect_to project_google_cloud_index_path(project), notice: _('Service account generated successfully')
+    redirect_to project_google_cloud_index_path(project), notice: response.message
   rescue Google::Apis::ClientError, Google::Apis::ServerError, Google::Apis::AuthorizationError => error
     handle_gcp_error(error, project)
   end

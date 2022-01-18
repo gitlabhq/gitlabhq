@@ -33187,10 +33187,19 @@ msgstr ""
 msgid "SlackIntegration|GitLab for Slack"
 msgstr ""
 
+msgid "SlackIntegration|Project alias"
+msgstr ""
+
 msgid "SlackIntegration|Select a GitLab project to link with your Slack workspace."
 msgstr ""
 
 msgid "SlackIntegration|Sends notifications about project events to Slack channels."
+msgstr ""
+
+msgid "SlackIntegration|Team name"
+msgstr ""
+
+msgid "SlackIntegration|To set up this integration press \"Add to Slack\""
 msgstr ""
 
 msgid "SlackService|1. %{slash_command_link_start}Add a slash command%{slash_command_link_end} in your Slack team using this information:"

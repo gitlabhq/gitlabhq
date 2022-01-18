@@ -10,7 +10,7 @@ module DependencyProxy
 
     def expire_artifacts(collection)
       collection.each_batch(of: UPDATE_BATCH_SIZE) do |batch|
-        batch.update_all(status: :expired)
+        batch.update_all(status: :pending_destruction)
       end
     end
   end

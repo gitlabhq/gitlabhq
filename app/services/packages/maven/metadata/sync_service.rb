@@ -93,7 +93,7 @@ module Packages
         def metadata_package_file_for(package)
           return unless package
 
-          package_files = if Feature.enabled?(:packages_installable_package_files)
+          package_files = if Feature.enabled?(:packages_installable_package_files, default_enabled: :yaml)
                             package.installable_package_files
                           else
                             package.package_files

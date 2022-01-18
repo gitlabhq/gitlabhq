@@ -26,7 +26,7 @@ module Packages
                                      .preload_npm_metadatum
 
           batched_packages.each do |package|
-            package_file = if Feature.enabled?(:packages_installable_package_files)
+            package_file = if Feature.enabled?(:packages_installable_package_files, default_enabled: :yaml)
                              package.installable_package_files.last
                            else
                              package.package_files.last

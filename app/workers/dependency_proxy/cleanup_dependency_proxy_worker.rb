@@ -11,8 +11,8 @@ module DependencyProxy
     feature_category :dependency_proxy
 
     def perform
-      enqueue_blob_cleanup_job if DependencyProxy::Blob.expired.any?
-      enqueue_manifest_cleanup_job if DependencyProxy::Manifest.expired.any?
+      enqueue_blob_cleanup_job if DependencyProxy::Blob.pending_destruction.any?
+      enqueue_manifest_cleanup_job if DependencyProxy::Manifest.pending_destruction.any?
     end
 
     private

@@ -3,6 +3,7 @@ class Packages::PackageFile < ApplicationRecord
   include UpdateProjectStatistics
   include FileStoreMounter
   include Packages::Installable
+  include Packages::Destructible
 
   INSTALLABLE_STATUSES = [:default].freeze
 
@@ -11,7 +12,7 @@ class Packages::PackageFile < ApplicationRecord
   delegate :file_type, :dsc?, :component, :architecture, :fields, to: :debian_file_metadatum, prefix: :debian
   delegate :channel, :metadata, to: :helm_file_metadatum, prefix: :helm
 
-  enum status: { default: 0, pending_destruction: 1 }
+  enum status: { default: 0, pending_destruction: 1, processing: 2, error: 3 }
 
   belongs_to :package
 
@@ -57,7 +58,7 @@ class Packages::PackageFile < ApplicationRecord
                .merge(project.packages.helm.installable)
                .joins(:helm_file_metadatum)
                .where(packages_helm_file_metadata: { channel: channel })
-    result = result.installable if Feature.enabled?(:packages_installable_package_files)
+    result = result.installable if Feature.enabled?(:packages_installable_package_files, default_enabled: :yaml)
     result
   end
 
@@ -108,7 +109,7 @@ class Packages::PackageFile < ApplicationRecord
     cte_name = :packages_cte
     cte = Gitlab::SQL::CTE.new(cte_name, packages.select(:id))
 
-    package_files = if Feature.enabled?(:packages_installable_package_files)
+    package_files = if Feature.enabled?(:packages_installable_package_files, default_enabled: :yaml)
                       ::Packages::PackageFile.installable.limit_recent(1)
                         .where(arel_table[:package_id].eq(Arel.sql("#{cte_name}.id")))
                     else

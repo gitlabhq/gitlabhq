@@ -69,7 +69,7 @@ module API
           package_files = ::Packages::PackageFile
                             .for_rubygem_with_file_name(user_project, params[:file_name])
 
-          package_files = package_files.installable if Feature.enabled?(:packages_installable_package_files)
+          package_files = package_files.installable if Feature.enabled?(:packages_installable_package_files, default_enabled: :yaml)
 
           package_file = package_files.last!
 

@@ -17,19 +17,19 @@ RSpec.describe DependencyProxy::ImageTtlGroupPolicyWorker do
       let_it_be_with_reload(:new_blob) { create(:dependency_proxy_blob, group: group) }
       let_it_be_with_reload(:new_manifest) { create(:dependency_proxy_manifest, group: group) }
 
-      it 'updates the old images to expired' do
+      it 'updates the old images to pending_destruction' do
         expect { subject }
-          .to change { old_blob.reload.status }.from('default').to('expired')
-          .and change { old_manifest.reload.status }.from('default').to('expired')
+          .to change { old_blob.reload.status }.from('default').to('pending_destruction')
+          .and change { old_manifest.reload.status }.from('default').to('pending_destruction')
           .and not_change { new_blob.reload.status }
           .and not_change { new_manifest.reload.status }
       end
     end
 
     context 'counts logging' do
-      let_it_be(:expired_blob) { create(:dependency_proxy_blob, :expired, group: group) }
-      let_it_be(:expired_blob2) { create(:dependency_proxy_blob, :expired, group: group) }
-      let_it_be(:expired_manifest) { create(:dependency_proxy_manifest, :expired, group: group) }
+      let_it_be(:expired_blob) { create(:dependency_proxy_blob, :pending_destruction, group: group) }
+      let_it_be(:expired_blob2) { create(:dependency_proxy_blob, :pending_destruction, group: group) }
+      let_it_be(:expired_manifest) { create(:dependency_proxy_manifest, :pending_destruction, group: group) }
       let_it_be(:processing_blob) { create(:dependency_proxy_blob, status: :processing, group: group) }
       let_it_be(:processing_manifest) { create(:dependency_proxy_manifest, status: :processing, group: group) }
       let_it_be(:error_blob) { create(:dependency_proxy_blob, status: :error, group: group) }

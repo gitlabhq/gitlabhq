@@ -133,7 +133,7 @@ class Packages::Package < ApplicationRecord
   scope :without_nuget_temporary_name, -> { where.not(name: Packages::Nuget::TEMPORARY_PACKAGE_NAME) }
 
   scope :has_version, -> { where.not(version: nil) }
-  scope :preload_files, -> { Feature.enabled?(:packages_installable_package_files) ? preload(:installable_package_files) : preload(:package_files) }
+  scope :preload_files, -> { Feature.enabled?(:packages_installable_package_files, default_enabled: :yaml) ? preload(:installable_package_files) : preload(:package_files) }
   scope :preload_pipelines, -> { preload(pipelines: :user) }
   scope :last_of_each_version, -> { where(id: all.select('MAX(id) AS id').group(:version)) }
   scope :limit_recent, ->(limit) { order_created_desc.limit(limit) }

@@ -10482,9 +10482,11 @@ CREATE TABLE application_settings (
     static_objects_external_storage_auth_token_encrypted text,
     future_subscriptions jsonb DEFAULT '[]'::jsonb NOT NULL,
     user_email_lookup_limit integer DEFAULT 60 NOT NULL,
+    packages_cleanup_package_file_worker_capacity smallint DEFAULT 2 NOT NULL,
     CONSTRAINT app_settings_container_reg_cleanup_tags_max_list_size_positive CHECK ((container_registry_cleanup_tags_service_max_list_size >= 0)),
     CONSTRAINT app_settings_dep_proxy_ttl_policies_worker_capacity_positive CHECK ((dependency_proxy_ttl_group_policy_worker_capacity >= 0)),
     CONSTRAINT app_settings_ext_pipeline_validation_service_url_text_limit CHECK ((char_length(external_pipeline_validation_service_url) <= 255)),
+    CONSTRAINT app_settings_p_cleanup_package_file_worker_capacity_positive CHECK ((packages_cleanup_package_file_worker_capacity >= 0)),
     CONSTRAINT app_settings_registry_exp_policies_worker_capacity_positive CHECK ((container_registry_expiration_policies_worker_capacity >= 0)),
     CONSTRAINT app_settings_yaml_max_depth_positive CHECK ((max_yaml_depth > 0)),
     CONSTRAINT app_settings_yaml_max_size_positive CHECK ((max_yaml_size_bytes > 0)),
@@ -27016,6 +27018,8 @@ CREATE INDEX index_packages_package_files_on_package_id_and_file_name ON package
 CREATE INDEX index_packages_package_files_on_package_id_id ON packages_package_files USING btree (package_id, id);
 
 CREATE INDEX index_packages_package_files_on_package_id_status_and_id ON packages_package_files USING btree (package_id, status, id);
+
+CREATE INDEX index_packages_package_files_on_status ON packages_package_files USING btree (status);
 
 CREATE INDEX index_packages_package_files_on_verification_state ON packages_package_files USING btree (verification_state);
 

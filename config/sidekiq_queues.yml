@@ -297,6 +297,8 @@
   - 1
 - - object_storage
   - 1
+- - package_cleanup
+  - 1
 - - package_repositories
   - 1
 - - packages_composer_cache_update

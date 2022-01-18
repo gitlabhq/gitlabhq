@@ -19,7 +19,7 @@ class Packages::PackageFileFinder
   private
 
   def package_files
-    files = if Feature.enabled?(:packages_installable_package_files)
+    files = if Feature.enabled?(:packages_installable_package_files, default_enabled: :yaml)
               package.installable_package_files
             else
               package.package_files
