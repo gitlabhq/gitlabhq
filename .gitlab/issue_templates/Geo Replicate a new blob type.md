@@ -452,6 +452,8 @@ That's all of the required database changes.
   ``` ruby
   module Geo
     class CoolWidgetState < ApplicationRecord
+      include EachBatch
+      
       self.primary_key = :cool_widget_id
 
       belongs_to :cool_widget, inverse_of: :cool_widget_state

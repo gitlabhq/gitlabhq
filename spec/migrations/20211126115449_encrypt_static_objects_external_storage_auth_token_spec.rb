@@ -53,4 +53,26 @@ RSpec.describe EncryptStaticObjectsExternalStorageAuthToken, :migration do
       end
     end
   end
+
+  context 'when static_objects_external_storage_auth_token is empty string' do
+    it 'does not break' do
+      settings = application_settings.create!
+      settings.update_column(:static_objects_external_storage_auth_token, '')
+
+      reversible_migration do |migration|
+        migration.before -> {
+          settings = application_settings.first
+
+          expect(settings.static_objects_external_storage_auth_token).to eq('')
+          expect(settings.static_objects_external_storage_auth_token_encrypted).to be_nil
+        }
+        migration.after -> {
+          settings = application_settings.first
+
+          expect(settings.static_objects_external_storage_auth_token).to eq('')
+          expect(settings.static_objects_external_storage_auth_token_encrypted).to be_nil
+        }
+      end
+    end
+  end
 end

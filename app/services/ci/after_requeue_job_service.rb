@@ -3,39 +3,50 @@
 module Ci
   class AfterRequeueJobService < ::BaseService
     def execute(processable)
-      process_subsequent_jobs(processable)
-      reset_source_bridge(processable)
+      @processable = processable
+
+      process_subsequent_jobs
+      reset_source_bridge
     end
 
     private
 
-    def process_subsequent_jobs(processable)
-      (stage_dependent_jobs(processable) | needs_dependent_jobs(processable))
-      .each do |processable|
-        process(processable)
+    def process_subsequent_jobs
+      dependent_jobs.each do |job|
+        process(job)
       end
     end
 
-    def reset_source_bridge(processable)
-      processable.pipeline.reset_source_bridge!(current_user)
+    def reset_source_bridge
+      @processable.pipeline.reset_source_bridge!(current_user)
     end
 
-    def process(processable)
-      Gitlab::OptimisticLocking.retry_lock(processable, name: 'ci_requeue_job') do |processable|
-        processable.process(current_user)
+    def dependent_jobs
+      if ::Feature.enabled?(:ci_order_subsequent_jobs_by_stage, @processable.pipeline.project, default_enabled: :yaml)
+        stage_dependent_jobs
+          .or(needs_dependent_jobs.except(:preload))
+          .ordered_by_stage
+      else
+        stage_dependent_jobs | needs_dependent_jobs
       end
     end
 
-    def skipped_jobs(processable)
-      processable.pipeline.processables.skipped
+    def process(job)
+      Gitlab::OptimisticLocking.retry_lock(job, name: 'ci_requeue_job') do |job|
+        job.process(current_user)
+      end
     end
 
-    def stage_dependent_jobs(processable)
-      skipped_jobs(processable).after_stage(processable.stage_idx)
+    def stage_dependent_jobs
+      skipped_jobs.after_stage(@processable.stage_idx)
     end
 
-    def needs_dependent_jobs(processable)
-      skipped_jobs(processable).scheduling_type_dag.with_needs([processable.name])
+    def needs_dependent_jobs
+      skipped_jobs.scheduling_type_dag.with_needs([@processable.name])
+    end
+
+    def skipped_jobs
+      @skipped_jobs ||= @processable.pipeline.processables.skipped
     end
   end
 end
