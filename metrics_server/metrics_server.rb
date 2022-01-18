@@ -54,7 +54,7 @@ class MetricsServer # rubocop:disable Gitlab/NamespacedClass
 
     exporter_class = "Gitlab::Metrics::Exporter::#{@target.camelize}Exporter".constantize
     settings = Settings.new(Settings.monitoring[name])
-    server = exporter_class.instance(settings, synchronous: true)
+    server = exporter_class.instance(settings, gc_requests: true, synchronous: true)
 
     server.start
   end

@@ -11,10 +11,11 @@ module Gitlab
 
         attr_accessor :readiness_checks
 
-        def initialize(settings, log_enabled:, log_file:, **options)
+        def initialize(settings, log_enabled:, log_file:, gc_requests: false, **options)
           super(**options)
 
           @settings = settings
+          @gc_requests = gc_requests
 
           # log_enabled does not exist for all exporters
           log_sink = log_enabled ? File.join(Rails.root, 'log', log_file) : File::NULL
@@ -71,11 +72,13 @@ module Gitlab
           readiness = readiness_probe
           liveness = liveness_probe
           pid = thread_name
+          gc_requests = @gc_requests
 
           Rack::Builder.app do
             use Rack::Deflater
             use Gitlab::Metrics::Exporter::MetricsMiddleware, pid
             use Gitlab::Metrics::Exporter::HealthChecksMiddleware, readiness, liveness
+            use Gitlab::Metrics::Exporter::GcRequestMiddleware if gc_requests
             use ::Prometheus::Client::Rack::Exporter if ::Gitlab::Metrics.metrics_folder_present?
             run -> (env) { [404, {}, ['']] }
           end

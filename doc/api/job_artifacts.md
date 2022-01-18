@@ -287,12 +287,11 @@ If the artifacts were deleted successfully, a response with status `204 No Conte
 
 ## Delete project artifacts
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/223793) in GitLab 14.7 [with a flag](../administration/feature_flags.md) named `bulk_expire_project_artifacts`. Disabled by default on GitLab self-managed. Enabled on GitLab.com.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/223793) in GitLab 14.7 [with a flag](../administration/feature_flags.md) named `bulk_expire_project_artifacts`. Enabled by default on GitLab self-managed. Enabled on GitLab.com.
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it
-available, ask an administrator to [enable the `bulk_expire_project_artifacts` flag](../administration/feature_flags.md).
-On GitLab.com, this feature is available.
+On self-managed GitLab, by default this feature is available. To hide the feature, ask an administrator to
+[disable the `bulk_expire_project_artifacts` flag](../administration/feature_flags.md). On GitLab.com, this feature is available.
 
 [Expire artifacts of a project that can be deleted](https://gitlab.com/gitlab-org/gitlab/-/issues/223793) but that don't have an expiry time.
 

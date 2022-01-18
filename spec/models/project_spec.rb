@@ -4581,11 +4581,25 @@ RSpec.describe Project, factory_default: :keep do
     include ProjectHelpers
 
     let_it_be(:group) { create(:group) }
+    let_it_be_with_reload(:project) { create(:project, namespace: group) }
 
-    let!(:project) { create(:project, project_level, namespace: group ) }
     let(:user) { create_user_from_membership(project, membership) }
 
-    context 'reporter level access' do
+    subject { described_class.filter_by_feature_visibility(feature, user) }
+
+    shared_examples 'filter respects visibility' do
+      it 'respects visibility' do
+        enable_admin_mode!(user) if admin_mode
+        project.update!(visibility_level: Gitlab::VisibilityLevel.level_value(project_level.to_s))
+        update_feature_access_level(project, feature_access_level)
+
+        expected_objects = expected_count == 1 ? [project] : []
+
+        expect(subject).to eq(expected_objects)
+      end
+    end
+
+    context 'with reporter level access' do
       let(:feature) { MergeRequest }
 
       where(:project_level, :feature_access_level, :membership, :admin_mode, :expected_count) do
@@ -4593,20 +4607,11 @@ RSpec.describe Project, factory_default: :keep do
       end
 
       with_them do
-        it "respects visibility" do
-          enable_admin_mode!(user) if admin_mode
-          update_feature_access_level(project, feature_access_level)
-
-          expected_objects = expected_count == 1 ? [project] : []
-
-          expect(
-            described_class.filter_by_feature_visibility(feature, user)
-          ).to eq(expected_objects)
-        end
+        it_behaves_like 'filter respects visibility'
       end
     end
 
-    context 'issues' do
+    context 'with feature issues' do
       let(:feature) { Issue }
 
       where(:project_level, :feature_access_level, :membership, :admin_mode, :expected_count) do
@@ -4614,20 +4619,11 @@ RSpec.describe Project, factory_default: :keep do
       end
 
       with_them do
-        it "respects visibility" do
-          enable_admin_mode!(user) if admin_mode
-          update_feature_access_level(project, feature_access_level)
-
-          expected_objects = expected_count == 1 ? [project] : []
-
-          expect(
-            described_class.filter_by_feature_visibility(feature, user)
-          ).to eq(expected_objects)
-        end
+        it_behaves_like 'filter respects visibility'
       end
     end
 
-    context 'wiki' do
+    context 'with feature wiki' do
       let(:feature) { :wiki }
 
       where(:project_level, :feature_access_level, :membership, :admin_mode, :expected_count) do
@@ -4635,20 +4631,11 @@ RSpec.describe Project, factory_default: :keep do
       end
 
       with_them do
-        it "respects visibility" do
-          enable_admin_mode!(user) if admin_mode
-          update_feature_access_level(project, feature_access_level)
-
-          expected_objects = expected_count == 1 ? [project] : []
-
-          expect(
-            described_class.filter_by_feature_visibility(feature, user)
-          ).to eq(expected_objects)
-        end
+        it_behaves_like 'filter respects visibility'
       end
     end
 
-    context 'code' do
+    context 'with feature code' do
       let(:feature) { :repository }
 
       where(:project_level, :feature_access_level, :membership, :admin_mode, :expected_count) do
@@ -4656,16 +4643,7 @@ RSpec.describe Project, factory_default: :keep do
       end
 
       with_them do
-        it "respects visibility" do
-          enable_admin_mode!(user) if admin_mode
-          update_feature_access_level(project, feature_access_level)
-
-          expected_objects = expected_count == 1 ? [project] : []
-
-          expect(
-            described_class.filter_by_feature_visibility(feature, user)
-          ).to eq(expected_objects)
-        end
+        it_behaves_like 'filter respects visibility'
       end
     end
   end

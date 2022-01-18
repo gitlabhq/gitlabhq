@@ -70,7 +70,9 @@ RSpec.describe MetricsServer do # rubocop:disable RSpec/FilePath
 
     before do
       stub_const('Gitlab::Metrics::Exporter::FakeExporter', exporter_class)
-      expect(exporter_class).to receive(:instance).with(settings['fake_exporter'], synchronous: true).and_return(exporter_double)
+      expect(exporter_class).to receive(:instance).with(
+        settings['fake_exporter'], gc_requests: true, synchronous: true
+      ).and_return(exporter_double)
       expect(Settings).to receive(:monitoring).and_return(settings)
 
       allow(Gitlab::Metrics::Samplers::RubySampler).to receive(:initialize_instance).and_return(ruby_sampler_double)
