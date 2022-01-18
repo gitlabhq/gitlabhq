@@ -2508,8 +2508,7 @@ docker build:
 - [`only: changes` and `except: changes` examples](../jobs/job_control.md#onlychanges--exceptchanges-examples).
 - If you use `changes` with [only allow merge requests to be merged if the pipeline succeeds](../../user/project/merge_requests/merge_when_pipeline_succeeds.md#only-allow-merge-requests-to-be-merged-if-the-pipeline-succeeds),
   you should [also use `only:merge_requests`](../jobs/job_control.md#use-onlychanges-with-pipelines-for-merge-requests).
-- Use `changes` with [new branches or tags *without* pipelines for merge requests](../jobs/job_control.md#use-onlychanges-without-pipelines-for-merge-requests).
-- Use `changes` with [scheduled pipelines](../jobs/job_control.md#use-onlychanges-with-scheduled-pipelines).
+- [Jobs or pipelines can run unexpectedly when using `only: changes`](../jobs/job_control.md#jobs-or-pipelines-run-unexpectedly-when-using-changes).
 
 #### `only:kubernetes` / `except:kubernetes`
 
@@ -3124,6 +3123,10 @@ docker build:
 - `rules: changes` works the same way as [`only: changes` and `except: changes`](#onlychanges--exceptchanges).
 - You can use `when: never` to implement a rule similar to [`except:changes`](#onlychanges--exceptchanges).
 - `changes` resolves to `true` if any of the matching files are changed (an `OR` operation).
+
+**Related topics**:
+
+- [Jobs or pipelines can run unexpectedly when using `rules: changes`](../jobs/job_control.md#jobs-or-pipelines-run-unexpectedly-when-using-changes).
 
 #### `rules:exists`
 

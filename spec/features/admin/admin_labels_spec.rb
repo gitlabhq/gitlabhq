@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'admin issues labels' do
+  include Spec::Support::Helpers::ModalHelpers
+
   let!(:bug_label) { Label.create!(title: 'bug', template: true) }
   let!(:feature_label) { Label.create!(title: 'feature', template: true) }
 
@@ -98,6 +100,20 @@ RSpec.describe 'admin issues labels' do
       page.within '.manage-labels-list' do
         expect(page).to have_content('fix')
       end
+    end
+
+    it 'allows user to delete label', :js do
+      visit edit_admin_label_path(bug_label)
+
+      click_button 'Delete'
+
+      within_modal do
+        expect(page).to have_content("#{bug_label.title} will be permanently deleted. This cannot be undone.")
+
+        click_link 'Delete label'
+      end
+
+      expect(page).to have_content('Label was removed')
     end
   end
 end

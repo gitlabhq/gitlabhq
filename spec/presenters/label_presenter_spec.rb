@@ -10,6 +10,7 @@ RSpec.describe LabelPresenter do
 
   let(:label) { build_stubbed(:label, project: project).present(issuable_subject: project) }
   let(:group_label) { build_stubbed(:group_label, group: group).present(issuable_subject: project) }
+  let(:admin_label) { build_stubbed(:admin_label).present(issuable_subject: nil) }
 
   describe '#edit_path' do
     context 'with group label' do
@@ -22,6 +23,12 @@ RSpec.describe LabelPresenter do
       subject { label.edit_path }
 
       it { is_expected.to eq(edit_project_label_path(project, label)) }
+    end
+
+    context 'with an admin label' do
+      subject { admin_label.edit_path }
+
+      it { is_expected.to eq(edit_admin_label_path(admin_label)) }
     end
   end
 
@@ -36,6 +43,12 @@ RSpec.describe LabelPresenter do
       subject { label.destroy_path }
 
       it { is_expected.to eq(project_label_path(project, label)) }
+    end
+
+    context 'with an admin label' do
+      subject { admin_label.destroy_path }
+
+      it { is_expected.to eq(admin_label_path(admin_label)) }
     end
   end
 
@@ -91,6 +104,12 @@ RSpec.describe LabelPresenter do
 
       it { is_expected.to eq(label.project.name) }
     end
+
+    context 'with an admin label' do
+      subject { admin_label.subject_name }
+
+      it { is_expected.to be_nil }
+    end
   end
 
   describe '#subject_full_name' do
@@ -104,6 +123,12 @@ RSpec.describe LabelPresenter do
       subject { label.subject_full_name }
 
       it { is_expected.to eq(label.project.full_name) }
+    end
+
+    context 'with an admin label' do
+      subject { admin_label.subject_full_name }
+
+      it { is_expected.to be_nil }
     end
   end
 end

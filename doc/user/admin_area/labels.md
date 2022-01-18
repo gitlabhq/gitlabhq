@@ -7,13 +7,12 @@ type: reference
 
 # Labels administration **(FREE SELF)**
 
-In the Admin Area, you can manage labels for the GitLab instance. For more details, see [Labels](../project/labels.md).
+To manage labels for the GitLab instance, select **Labels** (**{labels}**) from the Admin Area sidebar. For more details on how to manage labels, see [Labels](../project/labels.md).
 
-## Default Labels
+Labels created in the Admin Area are automatically added to new projects.
+Updating or adding labels in the Admin Area does not modify labels in existing projects.
 
-Labels created in the Admin Area become available to each _new_ project.
-
-![Default label set](img/admin_labels.png)
+![Default label set](img/admin_labels_v14_7.png)
 
 <!-- ## Troubleshooting
 

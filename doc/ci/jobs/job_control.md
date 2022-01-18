@@ -404,10 +404,7 @@ build:
 If you change multiple files, but only one file ends in `.md`,
 the `build` job is still skipped. The job does not run for any of the files.
 
-Read more about how to use `only:changes` and `except:changes`:
-
-- [New branches or tags *without* pipelines for merge requests](#use-onlychanges-without-pipelines-for-merge-requests).
-- [Scheduled pipelines](#use-onlychanges-with-scheduled-pipelines).
+With some configurations that use `changes`, [jobs or pipelines might run unexpectedly](#jobs-or-pipelines-run-unexpectedly-when-using-changes)
 
 #### Use `only:changes` with pipelines for merge requests
 
@@ -458,22 +455,6 @@ it doesn't matter that an earlier pipeline failed because of a change that has n
 
 When you use this configuration, ensure that the most recent pipeline
 properly corrects any failures from previous pipelines.
-
-#### Use `only:changes` without pipelines for merge requests
-
-Without [pipelines for merge requests](../pipelines/merge_request_pipelines.md), pipelines
-run on branches or tags that don't have an explicit association with a merge request.
-In this case, a previous SHA is used to calculate the diff, which is equivalent to `git diff HEAD~`.
-This can result in some unexpected behavior, including:
-
-- When pushing a new branch or a new tag to GitLab, the policy always evaluates to true.
-- When pushing a new commit, the changed files are calculated by using the previous commit
-  as the base SHA.
-
-#### Use `only:changes` with scheduled pipelines
-
-`only:changes` always evaluates as true in [Scheduled pipelines](../pipelines/schedules.md).
-All files are considered to have changed when a scheduled pipeline runs.
 
 ### Combine multiple keywords with `only` or `except`
 
@@ -943,3 +924,23 @@ For example:
 - `($VARIABLE1 =~ /^content.*/ || $VARIABLE2) && ($VARIABLE3 =~ /thing$/ || $VARIABLE4)`
 - `($VARIABLE1 =~ /^content.*/ || $VARIABLE2 =~ /thing$/) && $VARIABLE3`
 - `$CI_COMMIT_BRANCH == "my-branch" || (($VARIABLE1 == "thing" || $VARIABLE2 == "thing") && $VARIABLE3)`
+
+## Troubleshooting
+
+### Jobs or pipelines run unexpectedly when using `changes:`
+
+You might have jobs or pipelines that run unexpectedly when using [`rules: changes`](../yaml/index.md#ruleschanges)
+or [`only: changes`](../yaml/index.md#onlychanges--exceptchanges) without
+[pipelines for merge requests](../pipelines/merge_request_pipelines.md).
+
+Pipelines on branches or tags that don't have an explicit association with a merge request
+use a previous SHA to calculate the diff. This calculation is equivalent to `git diff HEAD~`
+and can cause unexpected behavior, including:
+
+- The `changes` rule always evaluates to true when pushing a new branch or a new tag to GitLab.
+- When pushing a new commit, the changed files are calculated by using the previous commit
+  as the base SHA.
+
+Additionally, rules with `changes` always evaluate as true in [scheduled pipelines](../pipelines/schedules.md).
+All files are considered to have changed when a scheduled pipeline runs, so jobs
+might always be added to scheduled pipelines that use `changes`.

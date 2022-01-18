@@ -26,9 +26,14 @@
         %br
         = _("Or you can choose one of the suggested colors below")
       = render_suggested_colors
-  .form-actions
+  .gl-display-flex.gl-justify-content-space-between.gl-p-5.gl-bg-gray-10.gl-border-t-solid.gl-border-t-gray-100.gl-border-t-1
+    %div
+      - if @label.persisted?
+        = f.submit _('Save changes'), class: 'btn gl-button btn-confirm js-save-button'
+      - else
+        = f.submit _('Create label'), class: 'btn gl-button btn-confirm js-save-button qa-label-create-button'
+      = link_to _('Cancel'), back_path, class: 'btn gl-button btn-default btn-cancel'
     - if @label.persisted?
-      = f.submit _('Save changes'), class: 'btn gl-button btn-confirm js-save-button'
-    - else
-      = f.submit _('Create label'), class: 'btn gl-button btn-confirm js-save-button qa-label-create-button'
-    = link_to _('Cancel'), back_path, class: 'btn gl-button btn-default btn-cancel'
+      - presented_label = @label.present
+      %button.btn.btn-danger.gl-button.btn-danger-secondary.js-delete-label-modal-button{ type: 'button', data: { label_name: presented_label.name, subject_name: presented_label.subject_name, destroy_path: presented_label.destroy_path } }
+        %span.gl-button-text= _('Delete')

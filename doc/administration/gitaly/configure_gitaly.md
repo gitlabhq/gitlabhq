@@ -1125,3 +1125,66 @@ Example:
   "time":"2021-03-25T14:57:53.543Z"
 }
 ```
+
+## Repository consistency checks
+
+Gitaly runs repository consistency checks:
+
+- When triggering a repository check.
+- When changes are fetched from a mirrored repository.
+- When users push changes into repository.
+
+These consistency checks verify that a repository has all required objects and
+that these objects are valid objects. They can be categorized as:
+
+- Basic checks that assert that a repository doesn't become corrupt. This
+  includes connectivity checks and checks that objects can be parsed.
+- Security checks that recognize objects that are suitable to exploit past
+  security-related bugs in Git.
+- Cosmetic checks that verify that all object metadata is valid. Older Git
+  versions and other Git implementations may have produced objects with invalid
+  metadata, but newer versions can interpret these malformed objects.
+
+Removing malformed objects that fail the consistency checks requires a
+rewrite of the repository's history, which often can't be done. Therefore,
+Gitaly by default disables consistency checks for a range of cosmetic issues
+that don't negatively impact repository consistency.
+
+By default, Gitaly doesn't disable basic or security-related checks so
+to not distribute objects that can trigger known vulnerabilities in Git
+clients. This also limits the ability to import repositories containing such
+objects even if the project doesn't have malicious intent.
+
+### Override repository consistency checks
+
+Instance administrators can override consistency checks if they must
+process repositories that do not pass consistency checks.
+
+For Omnibus GitLab installations, edit `/etc/gitlab/gitlab.rb` and set the
+following keys (in this example, to disable the `hasDotgit` consistency check):
+
+```ruby
+ignored_git_errors = ["hasDotgit = ignore"]
+omnibus_gitconfig['system'] = {
+        "fsck" => ignored_git_errors,
+        "fetch.fsck" => ignored_git_errors,
+        "receive.fsck" => ignored_git_errors,
+}
+```
+
+For source installs, edit the Gitaly configuration (`gitaly.toml`) to do the
+equivalent:
+
+```toml
+[[git.config]]
+key = "fsck.hasDotgit"
+value = "ignore"
+
+[[git.config]]
+key = "fetch.fsck.hasDotgit"
+value = "ignore"
+
+[[git.config]]
+key = "receive.fsck.hasDotgit"
+value = "ignore"
+```

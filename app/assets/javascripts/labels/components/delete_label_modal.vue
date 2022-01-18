@@ -56,9 +56,22 @@ export default {
       </gl-sprintf>
     </template>
     <gl-sprintf
+      v-if="subjectName"
       :message="
         __(
           `%{strongStart}${labelName}%{strongEnd} will be permanently deleted from ${subjectName}. This cannot be undone.`,
+        )
+      "
+    >
+      <template #strong="{ content }">
+        <strong>{{ content }}</strong>
+      </template>
+    </gl-sprintf>
+    <gl-sprintf
+      v-else
+      :message="
+        __(
+          `%{strongStart}${labelName}%{strongEnd} will be permanently deleted. This cannot be undone.`,
         )
       "
     >
