@@ -30,14 +30,6 @@ RSpec.describe Gitlab::Ci::Trace::RemoteChecksum do
       context 'with remote files' do
         let(:file_store) { JobArtifactUploader::Store::REMOTE }
 
-        context 'when the feature flag is disabled' do
-          before do
-            stub_feature_flags(ci_archived_build_trace_checksum: false)
-          end
-
-          it { is_expected.to be_nil }
-        end
-
         context 'with AWS as provider' do
           it { is_expected.to eq(checksum) }
         end

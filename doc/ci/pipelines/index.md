@@ -50,10 +50,6 @@ Pipelines can be configured in many different ways:
   followed by the next stage.
 - [Directed Acyclic Graph Pipeline (DAG) pipelines](../directed_acyclic_graph/index.md) are based on relationships
   between jobs and can run more quickly than basic pipelines.
-- [Multi-project pipelines](multi_project_pipelines.md) combine pipelines for different projects together.
-- [Parent-Child pipelines](parent_child_pipelines.md) break down complex pipelines
-  into one parent pipeline that can trigger multiple child sub-pipelines, which all
-  run in the same project and with the same SHA. This pipeline architecture is commonly used for mono-repos.
 - [Pipelines for Merge Requests](../pipelines/merge_request_pipelines.md) run for merge
   requests only (rather than for every commit).
 - [Pipelines for Merged Results](../pipelines/pipelines_for_merged_results.md)
@@ -61,6 +57,44 @@ Pipelines can be configured in many different ways:
   already been merged into the target branch.
 - [Merge Trains](../pipelines/merge_trains.md)
   use pipelines for merged results to queue merges one after the other.
+- [Parent-Child pipelines](parent_child_pipelines.md) break down complex pipelines
+  into one parent pipeline that can trigger multiple child sub-pipelines, which all
+  run in the same project and with the same SHA. This pipeline architecture is commonly used for mono-repos.
+- [Multi-project pipelines](multi_project_pipelines.md) combine pipelines for different projects together.
+
+### How parent-child pipelines compare to multi-project pipelines
+
+Parent-child pipelines and multi-project pipelines can sometimes be used for similar
+purposes, but there are some key differences:
+
+Parent-child pipelines:
+
+- Run under the same project, ref, and commit SHA as the parent pipeline.
+- Affect the overall status of the ref the pipeline runs against. For example,
+  if a pipeline fails for the main branch, it's common to say that "main is broken".
+  The status of child pipelines don't directly affect the status of the ref, unless the child
+  pipeline is triggered with [`strategy:depend`](../yaml/index.md#triggerstrategy).
+- Are automatically canceled if the pipeline is configured with [`interruptible`](../yaml/index.md#interruptible)
+  when a new pipeline is created for the same ref.
+- Display only the parent pipelines in the pipeline index page. Child pipelines are
+  visible when visiting their parent pipeline's page.
+- Are limited to 2 levels of nesting. A parent pipeline can trigger multiple child pipelines,
+  and those child pipeline can trigger multiple child pipelines (`A -> B -> C`).
+
+Multi-project pipelines:
+
+- Are triggered from another pipeline, but the upstream (triggering) pipeline does
+  not have much control over the downstream (triggered) pipeline. However, it can
+  choose the ref of the downstream pipeline, and pass CI/CD variables to it.
+- Affect the overall status of the ref of the project it runs in, but does not
+  affect the status of the triggering pipeline's ref, unless it was triggered with
+  [`strategy:depend`](../yaml/index.md#triggerstrategy).
+- Are not automatically canceled in the downstream project when using [`interruptible`](../yaml/index.md#interruptible)
+  if a new pipeline runs for the same ref in the upstream pipeline. They can be
+  automatically canceled if a new pipeline is triggered for the same ref on the downstream project.
+- Multi-project pipelines are standalone pipelines because they are normal pipelines
+  that happened to be triggered by an external project. They are all visible on the pipeline index page.
+- Are independent, so there are no nesting limits.
 
 ## Configure a pipeline
 

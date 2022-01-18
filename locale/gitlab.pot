@@ -1982,7 +1982,7 @@ msgstr ""
 msgid "Add LICENSE"
 msgstr ""
 
-msgid "Add New Node"
+msgid "Add New Site"
 msgstr ""
 
 msgid "Add README"
@@ -12799,7 +12799,7 @@ msgstr ""
 msgid "Edit Deploy Key"
 msgstr ""
 
-msgid "Edit Geo Node"
+msgid "Edit Geo Site"
 msgstr ""
 
 msgid "Edit Group Hook"
@@ -15614,13 +15614,13 @@ msgstr ""
 msgid "Geo"
 msgstr ""
 
-msgid "Geo Nodes"
-msgstr ""
-
 msgid "Geo Replication"
 msgstr ""
 
 msgid "Geo Settings"
+msgstr ""
+
+msgid "Geo Sites"
 msgstr ""
 
 msgid "Geo sites"
@@ -24090,6 +24090,9 @@ msgid "No prioritized labels with such name or description"
 msgstr ""
 
 msgid "No profiles found"
+msgstr ""
+
+msgid "No project subscribes to the pipelines in this project."
 msgstr ""
 
 msgid "No projects found"
@@ -34264,6 +34267,9 @@ msgstr ""
 msgid "Subscribed to this %{quick_action_target}."
 msgstr ""
 
+msgid "Subscribed to this project"
+msgstr ""
+
 msgid "Subscribes to this %{quick_action_target}."
 msgstr ""
 
@@ -36627,6 +36633,9 @@ msgid "This project is archived and cannot be commented on."
 msgstr ""
 
 msgid "This project is licensed under the %{strong_start}%{license_name}%{strong_end}."
+msgstr ""
+
+msgid "This project is not subscribed to any project pipelines."
 msgstr ""
 
 msgid "This project manages its dependencies using %{strong_start}%{manager_name}%{strong_end}"

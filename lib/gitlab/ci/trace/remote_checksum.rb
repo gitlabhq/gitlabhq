@@ -26,7 +26,6 @@ module Gitlab
         delegate :aws?, :google?, to: :object_store_config, prefix: :provider
 
         def fetch_md5_checksum
-          return unless Feature.enabled?(:ci_archived_build_trace_checksum, trace_artifact.project, default_enabled: :yaml)
           return unless object_store_config.enabled?
           return if trace_artifact.local_store?
 

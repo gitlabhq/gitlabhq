@@ -376,7 +376,7 @@ It supports the same parameters as the [Merge Requests API](merge_requests.md#li
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/deployments/42/merge_requests"
 ```
 
-## Approve or Reject a blocked Deployment
+## Approve or reject a blocked deployment **(PREMIUM)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/343864) in GitLab 14.7 [with a flag](../administration/feature_flags.md) named `deployment_approvals`. Disabled by default. This feature is not ready for production use.
 

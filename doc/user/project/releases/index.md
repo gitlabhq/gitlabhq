@@ -130,7 +130,7 @@ release creation, the release job fails.
 #### CI/CD example of the `release` keyword
 
 To create a release when you push a Git tag, or when you add a Git tag
-in the UI by going to **Repository > Tags**: 
+in the UI by going to **Repository > Tags**:
 
 NOTE:
 Do not provide **Release notes** when you create the Git tag in the UI.

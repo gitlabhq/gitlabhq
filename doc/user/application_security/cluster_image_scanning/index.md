@@ -41,6 +41,8 @@ in your existing `.gitlab-ci.yml` file.
 
 To enable cluster image scanning in your pipeline, you need the following:
 
+- Cluster Image Scanning runs in the `test` stage, which is available by default. If you redefine the stages
+  in the `.gitlab-ci.yml` file, the `test` stage is required.
 - [GitLab Runner](https://docs.gitlab.com/runner/)
   with the [`docker`](https://docs.gitlab.com/runner/executors/docker.html)
   or [`kubernetes`](https://docs.gitlab.com/runner/install/kubernetes.html)
@@ -52,7 +54,6 @@ To enable cluster image scanning in your pipeline, you need the following:
 - The configuration for accessing your Kubernetes cluster stored in the `CIS_KUBECONFIG`
   [configuration variable](#cicd-variables-for-cluster-image-scanning)
   with the type set to `File` (see [Configuring the cluster](#configuring-the-cluster)).
-- GitLab CI/CD pipeline must include the `test` stage, which is available unless overridden with the [`stages`](../../../ci/yaml/index.md#stages) keyword.
 
 ### Configuring the cluster
 

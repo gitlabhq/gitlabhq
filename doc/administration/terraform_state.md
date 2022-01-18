@@ -104,7 +104,7 @@ The following settings are:
 WARNING:
 It's not possible to migrate Terraform state files from object storage back to local storage,
 so proceed with caution. [An issue exists](https://gitlab.com/gitlab-org/gitlab/-/issues/350187)
-to change this behavior. 
+to change this behavior.
 
 To migrate Terraform state files to object storage, follow the instructions below.
 

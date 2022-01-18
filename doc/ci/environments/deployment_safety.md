@@ -144,6 +144,10 @@ appropriate permissions in the other project.
 
 For more information, see [Custom CI/CD configuration path](../pipelines/settings.md#specify-a-custom-cicd-configuration-file).
 
+## Require an approval before deploying
+
+Before promoting a deployment to a production environment, cross-verifying it with a dedicated testing group is an effective way to ensure safety. For more information, see [Deployment Approvals](deployment_approvals.md).
+
 ## Troubleshooting
 
 ### Pipelines jobs fail with `The deployment job is older than the previously succeeded deployment job...`
