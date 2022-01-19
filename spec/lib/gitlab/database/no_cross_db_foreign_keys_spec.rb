@@ -23,7 +23,6 @@ RSpec.describe 'cross-database foreign keys' do
       ci_job_token_project_scope_links.target_project_id
       ci_pending_builds.namespace_id
       ci_pending_builds.project_id
-      ci_pipeline_artifacts.project_id
       ci_pipeline_schedules.owner_id
       ci_pipeline_schedules.project_id
       ci_pipelines.merge_request_id

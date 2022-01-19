@@ -43,6 +43,10 @@ gl-emoji {
   border-bottom-color: transparent;
 }
 
+.emoji-picker-category-active {
+  border-bottom-color: var(--gl-theme-accent, $theme-indigo-500);
+}
+
 .emoji-picker .gl-new-dropdown-inner > :last-child {
   padding-bottom: 0;
 }

@@ -352,6 +352,10 @@ this is not really json but just trying out whether this case works or not
     );
   });
 
+  it('does not serialize an image when src and canonicalSrc are empty', () => {
+    expect(serialize(paragraph(image({})))).toBe('');
+  });
+
   it('correctly serializes an image with a title', () => {
     expect(serialize(paragraph(image({ src: 'img.jpg', title: 'baz', alt: 'foo bar' })))).toBe(
       '![foo bar](img.jpg "baz")',

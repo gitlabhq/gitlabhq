@@ -154,3 +154,7 @@ ci_secure_files:
   - table: projects
     column: project_id
     on_delete: async_delete
+ci_pipeline_artifacts:
+  - table: projects
+    column: project_id
+    on_delete: async_delete

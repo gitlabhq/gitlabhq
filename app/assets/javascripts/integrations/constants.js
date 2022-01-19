@@ -26,3 +26,5 @@ export const I18N_SUCCESSFUL_CONNECTION_MESSAGE = s__('Integrations|Connection s
 
 export const settingsTabTitle = __('Settings');
 export const overridesTabTitle = s__('Integrations|Projects using custom settings');
+
+export const INTEGRATION_FORM_SELECTOR = '.js-integration-settings-form';

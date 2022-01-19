@@ -66,6 +66,17 @@ export default Image.extend({
       },
     ];
   },
+  renderHTML({ HTMLAttributes }) {
+    return [
+      'img',
+      {
+        src: HTMLAttributes.src,
+        alt: HTMLAttributes.alt,
+        title: HTMLAttributes.title,
+        'data-canonical-src': HTMLAttributes.canonicalSrc,
+      },
+    ];
+  },
   addNodeView() {
     return VueNodeViewRenderer(ImageWrapper);
   },

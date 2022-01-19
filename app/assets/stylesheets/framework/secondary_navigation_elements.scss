@@ -40,9 +40,11 @@
     a.active {
       color: $black;
       font-weight: $gl-font-weight-bold;
+      border-bottom: 2px solid var(--gl-theme-accent, $theme-indigo-500);
 
       .badge.badge-pill {
         color: $black;
+        font-weight: $gl-font-weight-bold;
       }
     }
 
@@ -126,14 +128,6 @@
     input {
       display: inline-block;
       position: relative;
-
-      &:not[type='checkbox'] {
-        /* Medium devices (desktops, 992px and up) */
-        @include media-breakpoint-up(md) { width: 200px; }
-
-        /* Large devices (large desktops, 1200px and up) */
-        @include media-breakpoint-up(lg) { width: 250px; }
-      }
     }
 
     @include media-breakpoint-up(md) {

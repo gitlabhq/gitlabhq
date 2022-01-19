@@ -90,7 +90,9 @@ module IntegrationsHelper
       cancel_path: scoped_integrations_path(project: project, group: group),
       can_test: integration.testable?.to_s,
       test_path: scoped_test_integration_path(integration, project: project, group: group),
-      reset_path: scoped_reset_integration_path(integration, group: group)
+      reset_path: scoped_reset_integration_path(integration, group: group),
+      form_path: scoped_integration_path(integration, project: project, group: group),
+      redirect_to: request.referer
     }
 
     if integration.is_a?(Integrations::Jira)
@@ -225,6 +227,10 @@ module IntegrationsHelper
       edit_path: scoped_edit_integration_path(integration, group: group, project: project),
       name: integration.to_param
     }
+  end
+
+  def vue_integration_form_enabled?
+    Feature.enabled?(:vue_integration_form, current_user, default_enabled: :yaml)
   end
 end
 

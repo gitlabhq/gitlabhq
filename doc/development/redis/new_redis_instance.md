@@ -110,6 +110,131 @@ documentation for feature flags.
 When we have been using the new instance 100% of the time in production for a
 while and there are no issues, we can proceed.
 
+### Proposed solution: Migrate data by using MultiStore with the fallback strategy
+
+We need a way to migrate users to a new Redis store without causing any inconveniences from UX perspective. 
+We also want the ability to fall back to the "old" Redis instance if something goes wrong with the new instance.
+
+Migration Requirements:
+
+- No downtime.
+- No loss of stored data until the TTL for storing data expires.
+- Partial rollout using Feature Flags or ENV vars or combinations of both.
+- Monitoring of the switch.
+- Prometheus metrics in place.
+- Easy rollback without downtime in case the new instance or logic does not behave as expected.
+
+It is somewhat similar to the zero-downtime DB table rename.
+We need to write data into both Redis instances (old + new).
+We read from the new instance, but we need to fall back to the old instance when pre-fetching from the new dedicated Redis instance that failed.
+We need to log any issues or exceptions with a new instance, but still fall back to the old instance.
+
+The proposed migration strategy is to implement and use the [MultiStore](https://gitlab.com/gitlab-org/gitlab/-/blob/fcc42e80ed261a862ee6ca46b182eee293ae60b6/lib/gitlab/redis/multi_store.rb). 
+We used this approach with [adding new dedicated Redis instance for session keys](https://gitlab.com/groups/gitlab-com/gl-infra/-/epics/579). 
+Also MultiStore comes with corresponding [specs](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/lib/gitlab/redis/multi_store_spec.rb).
+
+The MultiStore looks like a `redis-rb ::Redis` instance.
+
+In the new Redis instance class you added in [Step 1](#step-1-support-configuring-the-new-instance), 
+override the [Redis](https://gitlab.com/gitlab-org/gitlab/-/blob/fcc42e80ed261a862ee6ca46b182eee293ae60b6/lib/gitlab/redis/sessions.rb#L20-28) method from the `::Gitlab::Redis::Wrapper`
+
+```ruby
+module Gitlab
+  module Redis
+    class Foo < ::Gitlab::Redis::Wrapper
+      ...
+      def self.redis
+        # Don't use multistore if redis.foo configuration is not provided
+        return super if config_fallback?
+
+        primary_store = ::Redis.new(params)
+        secondary_store = ::Redis.new(config_fallback.params)
+
+        MultiStore.new(primary_store, secondary_store, store_name)
+      end
+    end
+  end
+end
+```
+
+MultiStore is initialized by providing the new Redis instance as a primary store, and [old (fallback-instance)](#fallback-instance) as a secondary store.
+The third argument is `store_name` which is used for logs, metrics and feature flag names, in case we use MultiStore implementation for different Redis stores at the same time.
+
+By default, the MultiStore reads and writes only from the default Redis store.
+The default Redis store is `secondary_store` (the old fallback-instance).
+This allows us to introduce MultiStore without changing the default behavior.
+
+MultiStore uses two feature flags to control the actual migration:
+
+- `use_primary_and_secondary_stores_for_[store_name]`
+- `use_primary_store_as_default_for_[store_name]`
+
+For example, if our new Redis instance is called `Gitlab::Redis::Foo`, we can [create](../../../ee/development/feature_flags/#create-a-new-feature-flag) two feature flags by executing:
+
+```shell
+bin/feature-flag use_primary_and_secondary_stores_for_foo
+bin/feature-flag use_primary_store_as_default_for_foo
+```
+
+By enabling `use_primary_and_secondary_stores_for_foo` feature flag, our `Gitlab::Redis::Foo` will use `MultiStore` to write to both new Redis instance
+and the [old (fallback-instance)](#fallback-instance). 
+If we fail to fetch data from the new instance, we will fallback and read from the old Redis instance.
+
+We can monitor logs for `Gitlab::Redis::MultiStore::ReadFromPrimaryError`, and also the Prometheus counter `gitlab_redis_multi_store_read_fallback_total`.
+Once we stop seeing them, this means that we are no longer relying on the data stored on the old Redis store.
+At this point, we are probably safe to move the traffic to the new Redis store.
+
+By enabling `use_primary_store_as_default_for_foo` feature flag, the `MultiStore` will use `primary_store` (new instance) as default Redis store.
+
+Once this feature flag is enabled, we can disable `use_primary_and_secondary_stores_for_foo` feature flag.
+This will allow the MultiStore to read and write only from the primary Redis store (new store), moving all the traffic to the new Redis store.
+
+Once we have moved all our traffic to the primary store, our data migration is complete.
+We can safely remove the MultiStore implementation and continue to use newly introduced Redis store instance.
+
+#### Implementation details
+
+MultiStore implements read and write Redis commands separately.
+
+##### Read commands
+
+- `get`
+- `mget`
+- `smembers`
+- `scard`
+
+##### Write commands
+
+- `set`
+- `setnx`
+- `setex`
+- `sadd`
+- `srem`
+- `del`
+- `pipelined`
+- `flushdb`
+
+When a command outside of the supported list is used, `method_missing` will pass it to the old Redis instance and keep track of it.
+This ensures that anything unexpected behaves like it would before.
+
+NOTE:
+By tracking `gitlab_redis_multi_store_method_missing_total` counter and `Gitlab::Redis::MultiStore::MethodMissingError`, 
+a developer will need to add an implementation for missing Redis commands before proceeding with the migration.
+
+##### Errors
+
+| error                                           | message                                                               |
+|-------------------------------------------------|-----------------------------------------------------------------------|
+| `Gitlab::Redis::MultiStore::ReadFromPrimaryError` | Value not found on the Redis primary store. Read from the Redis secondary store successful. |
+| `Gitlab::Redis::MultiStore::MethodMissingError`   | Method missing. Falling back to execute method on the Redis secondary store. |
+
+##### Metrics
+
+| metrics name                                    | type               | labels                 | description                                        |
+|-------------------------------------------------|--------------------|------------------------|----------------------------------------------------|
+| gitlab_redis_multi_store_read_fallback_total    | Prometheus Counter | command, instance_name | Client side Redis MultiStore reading fallback total|
+| gitlab_redis_multi_store_method_missing_total   | Prometheus Counter | command, instance_name | Client side Redis MultiStore method missing total  |
+
 ## Step 4: clean up after the migration
 
 <!-- markdownlint-disable MD044 -->

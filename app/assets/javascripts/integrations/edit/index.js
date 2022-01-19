@@ -28,9 +28,11 @@ function parseDatasetToProps(data) {
     cancelPath,
     testPath,
     resetPath,
+    formPath,
     vulnerabilitiesIssuetype,
     jiraIssueTransitionAutomatic,
     jiraIssueTransitionId,
+    redirectTo,
     ...booleanAttributes
   } = data;
   const {
@@ -57,6 +59,7 @@ function parseDatasetToProps(data) {
     canTest,
     testPath,
     resetPath,
+    formPath,
     triggerFieldsProps: {
       initialTriggerCommit: commitEvents,
       initialTriggerMergeRequest: mergeRequestEvents,
@@ -82,10 +85,11 @@ function parseDatasetToProps(data) {
     inheritFromId: parseInt(inheritFromId, 10),
     integrationLevel,
     id: parseInt(id, 10),
+    redirectTo,
   };
 }
 
-export default function initIntegrationSettingsForm(formSelector) {
+export default function initIntegrationSettingsForm() {
   const customSettingsEl = document.querySelector('.js-vue-integration-settings');
   const defaultSettingsEl = document.querySelector('.js-vue-default-integration-settings');
 
@@ -115,7 +119,6 @@ export default function initIntegrationSettingsForm(formSelector) {
       return createElement(IntegrationForm, {
         props: {
           helpHtml,
-          formSelector,
         },
       });
     },

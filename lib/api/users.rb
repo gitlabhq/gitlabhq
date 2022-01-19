@@ -1076,7 +1076,7 @@ module API
 
         attrs = declared_params(include_missing: false)
 
-        service = ::Users::UpsertCreditCardValidationService.new(attrs).execute
+        service = ::Users::UpsertCreditCardValidationService.new(attrs, user).execute
 
         if service.success?
           present user.credit_card_validation, with: Entities::UserCreditCardValidations

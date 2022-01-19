@@ -357,13 +357,19 @@ class ApplicationSetting < ApplicationRecord
   validates :hashed_storage_enabled, inclusion: { in: [true], message: _("Hashed storage can't be disabled anymore for new projects") }
 
   validates :container_registry_delete_tags_service_timeout,
+            :container_registry_cleanup_tags_service_max_list_size,
+            :container_registry_expiration_policies_worker_capacity,
             numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
-  validates :container_registry_cleanup_tags_service_max_list_size,
+  validates :container_registry_import_max_tags_count,
+            :container_registry_import_max_retries,
+            :container_registry_import_start_max_retries,
+            :container_registry_import_max_step_duration,
+            allow_nil: false,
             numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
-  validates :container_registry_expiration_policies_worker_capacity,
-            numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+  validates :container_registry_import_target_plan, presence: true
+  validates :container_registry_import_created_before, presence: true
 
   validates :dependency_proxy_ttl_group_policy_worker_capacity,
             allow_nil: false,

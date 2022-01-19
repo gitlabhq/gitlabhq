@@ -196,7 +196,7 @@ gem 'acts-as-taggable-on', '~> 9.0'
 
 # Background jobs
 gem 'sidekiq', '~> 6.3'
-gem 'sidekiq-cron', '~> 1.0'
+gem 'sidekiq-cron', '~> 1.2'
 gem 'redis-namespace', '~> 1.8.1'
 gem 'gitlab-sidekiq-fetcher', '0.8.0', require: 'sidekiq-reliable-fetch'
 
@@ -391,8 +391,6 @@ group :development, :test do
   gem 'png_quantizator', '~> 0.2.1', require: false
 
   gem 'parallel', '~> 1.19', require: false
-
-  gem 'rblineprof', '~> 0.3.6', platform: :mri, require: false
 
   gem 'test_file_finder', '~> 0.1.3'
 end

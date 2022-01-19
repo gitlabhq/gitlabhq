@@ -1,0 +1,8 @@
+---
+name: ci_unsafe_regexp_logger
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/78458
+rollout_issue_url:
+milestone: '14.8'
+type: ops
+group: group::pipeline authoring
+default_enabled: true

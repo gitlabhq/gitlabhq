@@ -348,9 +348,7 @@ module Ci
 
     def store_after_commit?
       strong_memoize(:store_after_commit) do
-        trace? &&
-          JobArtifactUploader.direct_upload_enabled? &&
-          Feature.enabled?(:ci_store_trace_outside_transaction, project, default_enabled: :yaml)
+        trace? && JobArtifactUploader.direct_upload_enabled?
       end
     end
 

@@ -110,6 +110,13 @@ ssh_exchange_identification: Connection closed by remote host
 fatal: The remote end hung up unexpectedly
 ```
 
+or
+
+```plaintext
+kex_exchange_identification: Connection closed by remote host
+Connection closed by x.x.x.x port 22
+```
+
 This error usually indicates that SSH daemon's `MaxStartups` value is throttling
 SSH connections. This setting specifies the maximum number of concurrent, unauthenticated
 connections to the SSH daemon. This affects users with proper authentication

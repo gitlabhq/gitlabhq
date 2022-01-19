@@ -19,4 +19,19 @@ RSpec.describe 'User activates the instance-level Mattermost Slash Command integ
     expect(page).to have_link('Settings', href: edit_path)
     expect(page).to have_link('Projects using custom settings', href: overrides_path)
   end
+
+  it 'does not render integration form element' do
+    expect(page).not_to have_selector('[data-testid="integration-form"]')
+  end
+
+  context 'when `vue_integration_form` feature flag is disabled' do
+    before do
+      stub_feature_flags(vue_integration_form: false)
+      visit_instance_integration('Mattermost slash commands')
+    end
+
+    it 'renders integration form element' do
+      expect(page).to have_selector('[data-testid="integration-form"]')
+    end
+  end
 end

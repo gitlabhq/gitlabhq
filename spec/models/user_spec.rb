@@ -83,6 +83,9 @@ RSpec.describe User do
 
     it { is_expected.to delegate_method(:registration_objective).to(:user_detail).allow_nil }
     it { is_expected.to delegate_method(:registration_objective=).to(:user_detail).with_arguments(:args).allow_nil }
+
+    it { is_expected.to delegate_method(:requires_credit_card_verification).to(:user_detail).allow_nil }
+    it { is_expected.to delegate_method(:requires_credit_card_verification=).to(:user_detail).with_arguments(:args).allow_nil }
   end
 
   describe 'associations' do

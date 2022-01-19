@@ -235,6 +235,54 @@ RSpec.describe Experiment do
     end
   end
 
+  describe '#record_conversion_event_for_subject' do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:experiment) { create(:experiment) }
+    let_it_be(:context) { { a: 42 } }
+
+    subject(:record_conversion) { experiment.record_conversion_event_for_subject(user, context) }
+
+    context 'when no existing experiment_subject record exists for the given user' do
+      it 'does not update or create an experiment_subject record' do
+        expect { record_conversion }.not_to change { ExperimentSubject.all.to_a }
+      end
+    end
+
+    context 'when an existing experiment_subject exists for the given user' do
+      context 'but it has already been converted' do
+        let(:experiment_subject) { create(:experiment_subject, experiment: experiment, user: user, converted_at: 2.days.ago) }
+
+        it 'does not update the converted_at value' do
+          expect { record_conversion }.not_to change { experiment_subject.converted_at }
+        end
+      end
+
+      context 'and it has not yet been converted' do
+        let(:experiment_subject) { create(:experiment_subject, experiment: experiment, user: user) }
+
+        it 'updates the converted_at value' do
+          expect { record_conversion }.to change { experiment_subject.reload.converted_at }
+        end
+      end
+
+      context 'with no existing context' do
+        let(:experiment_subject) { create(:experiment_subject, experiment: experiment, user: user) }
+
+        it 'updates the context' do
+          expect { record_conversion }.to change { experiment_subject.reload.context }.to('a' => 42)
+        end
+      end
+
+      context 'with an existing context' do
+        let(:experiment_subject) { create(:experiment_subject, experiment: experiment, user: user, converted_at: 2.days.ago, context: { b: 1 } ) }
+
+        it 'merges the context' do
+          expect { record_conversion }.to change { experiment_subject.reload.context }.to('a' => 42, 'b' => 1)
+        end
+      end
+    end
+  end
+
   describe '#record_subject_and_variant!' do
     let_it_be(:subject_to_record) { create(:group) }
     let_it_be(:variant) { :control }

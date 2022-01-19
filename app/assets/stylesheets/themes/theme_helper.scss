@@ -4,12 +4,16 @@
  */
 @mixin gitlab-theme(
   $search-and-nav-links,
-  $active-tab-border,
+  $accent,
   $border-and-box-shadow,
   $sidebar-text,
   $nav-svg-color,
   $color-alternate
 ) {
+  // Set custom properties
+
+  --gl-theme-accent: #{$accent};
+
   // Header
 
   .navbar-gitlab {
@@ -217,22 +221,6 @@
         color: var(--gray-900, $gray-900);
       }
     }
-  }
-
-  .nav-links li {
-    &.active a,
-    &.md-header-tab.active button,
-    a.active {
-      border-bottom: 2px solid $active-tab-border;
-
-      .badge.badge-pill {
-        font-weight: $gl-font-weight-bold;
-      }
-    }
-  }
-
-  .emoji-picker-category-active {
-    border-bottom-color: $active-tab-border;
   }
 
   .branch-header-title {

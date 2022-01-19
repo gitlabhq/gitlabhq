@@ -12,6 +12,9 @@ class Projects::ServicesController < Projects::ApplicationController
   before_action :web_hook_logs, only: [:edit, :update]
   before_action :set_deprecation_notice_for_prometheus_integration, only: [:edit, :update]
   before_action :redirect_deprecated_prometheus_integration, only: [:update]
+  before_action do
+    push_frontend_feature_flag(:vue_integration_form, current_user, default_enabled: :yaml)
+  end
 
   respond_to :html
 

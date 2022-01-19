@@ -13,9 +13,15 @@ class ContainerRepository < ApplicationRecord
 
   validates :name, length: { minimum: 0, allow_nil: false }
   validates :name, uniqueness: { scope: :project_id }
+  validates :migration_state, presence: true
+
+  validates :migration_retries_count, presence: true,
+                                      numericality: { greater_than_or_equal_to: 0 },
+                                      allow_nil: false
 
   enum status: { delete_scheduled: 0, delete_failed: 1 }
   enum expiration_policy_cleanup_status: { cleanup_unscheduled: 0, cleanup_scheduled: 1, cleanup_unfinished: 2, cleanup_ongoing: 3 }
+  enum migration_skipped_reason: { not_in_plan: 0, too_many_retries: 1, too_many_tags: 2, root_namespace_in_deny_list: 3 }
 
   delegate :client, to: :registry
 

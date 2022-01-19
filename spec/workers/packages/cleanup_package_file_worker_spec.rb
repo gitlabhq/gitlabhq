@@ -20,10 +20,7 @@ RSpec.describe Packages::CleanupPackageFileWorker do
       let_it_be(:package_file3) { create(:package_file, :pending_destruction, package: package, updated_at: 1.year.ago, created_at: 1.year.ago) }
 
       it 'deletes the oldest package file pending destruction based on id', :aggregate_failures do
-        # NOTE: The worker doesn't explicitly look for the lower id value, but this is how PostgreSQL works when
-        # using LIMIT without ORDER BY.
-        expect(worker).to receive(:log_extra_metadata_on_done).with(:package_file_id, package_file2.id)
-        expect(worker).to receive(:log_extra_metadata_on_done).with(:package_id, package.id)
+        expect(worker).to receive(:log_extra_metadata_on_done).twice
 
         expect { subject }.to change { Packages::PackageFile.count }.by(-1)
       end

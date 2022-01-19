@@ -545,20 +545,8 @@ RSpec.describe Ci::JobArtifact do
       context 'when the artifact is a trace' do
         let(:file_type) { :trace }
 
-        context 'when ci_store_trace_outside_transaction is enabled' do
-          it 'returns true' do
-            expect(artifact.store_after_commit?).to be_truthy
-          end
-        end
-
-        context 'when ci_store_trace_outside_transaction is disabled' do
-          before do
-            stub_feature_flags(ci_store_trace_outside_transaction: false)
-          end
-
-          it 'returns false' do
-            expect(artifact.store_after_commit?).to be_falsey
-          end
+        it 'returns true' do
+          expect(artifact.store_after_commit?).to be_truthy
         end
       end
 
