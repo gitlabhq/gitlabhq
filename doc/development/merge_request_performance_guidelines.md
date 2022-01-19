@@ -13,9 +13,7 @@ _every_ merge request **should** adhere to the guidelines outlined in this
 document. There are no exceptions to this rule unless specifically discussed
 with and agreed upon by backend maintainers and performance specialists.
 
-To measure the impact of a merge request you can use
-[Sherlock](profiling.md#sherlock). It's also highly recommended that you read
-the following guides:
+It's also highly recommended that you read the following guides:
 
 - [Performance Guidelines](performance.md)
 - [Avoiding downtime in migrations](avoiding_downtime_in_migrations.md)

@@ -397,6 +397,10 @@ module Ci
       auto_retry.allowed?
     end
 
+    def auto_retry_expected?
+      failed? && auto_retry_allowed?
+    end
+
     def detailed_status(current_user)
       Gitlab::Ci::Status::Build::Factory
         .new(self.present, current_user)
@@ -1069,12 +1073,7 @@ module Ci
     end
 
     def drop_with_exit_code!(failure_reason, exit_code)
-      ::Gitlab::Database::QueryAnalyzers::PreventCrossDatabaseModification.allow_cross_database_modification_within_transaction(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/348495') do
-        transaction do
-          conditionally_allow_failure!(exit_code)
-          drop!(failure_reason)
-        end
-      end
+      drop!(::Gitlab::Ci::Build::Status::Reason.new(self, failure_reason, exit_code))
     end
 
     def exit_codes_defined?
@@ -1115,6 +1114,13 @@ module Ci
           end
         end
       end
+    end
+
+    def allowed_to_fail_with_code?(exit_code)
+      options
+        .dig(:allow_failure_criteria, :exit_codes)
+        .to_a
+        .include?(exit_code)
     end
 
     protected
@@ -1205,21 +1211,6 @@ module Ci
       rescue OpenSSL::PKey::RSAError, Gitlab::Ci::Jwt::NoSigningKeyError => e
         Gitlab::ErrorTracking.track_exception(e)
       end
-    end
-
-    def conditionally_allow_failure!(exit_code)
-      return unless exit_code
-
-      if allowed_to_fail_with_code?(exit_code)
-        update_columns(allow_failure: true)
-      end
-    end
-
-    def allowed_to_fail_with_code?(exit_code)
-      options
-        .dig(:allow_failure_criteria, :exit_codes)
-        .to_a
-        .include?(exit_code)
     end
 
     def cache_for_online_runners(&block)

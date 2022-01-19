@@ -170,8 +170,11 @@ class CommitStatus < Ci::ApplicationRecord
     end
 
     before_transition any => :failed do |commit_status, transition|
-      failure_reason = transition.args.first
-      commit_status.failure_reason = CommitStatus.failure_reasons[failure_reason]
+      reason = ::Gitlab::Ci::Build::Status::Reason
+        .fabricate(commit_status, transition.args.first)
+
+      commit_status.failure_reason = reason.failure_reason_enum
+      commit_status.allow_failure = true if reason.force_allow_failure?
     end
 
     before_transition [:skipped, :manual] => :created do |commit_status, transition|

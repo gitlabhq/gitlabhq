@@ -4,7 +4,7 @@ group: Optimize
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Repository analytics **(FREE)**
+# Repository analytics for projects **(FREE)**
 
 Use repository analytics to view information about a project's Git repository:
 
@@ -35,4 +35,5 @@ To review repository analytics for a project:
 
 ## How repository analytics chart data is updated
 
-Data in the charts are queued. Background workers update the charts 10 minutes after each commit in the default branch. Depending on the size of the GitLab installation, it may take longer for data to refresh due to variations in the size of background job queues.
+Data in the charts are queued. Background workers update the charts 10 minutes after each commit in the default branch.
+Depending on the size of the GitLab installation, it may take longer for data to refresh due to variations in the size of background job queues.

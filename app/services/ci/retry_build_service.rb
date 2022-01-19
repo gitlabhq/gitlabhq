@@ -25,10 +25,6 @@ module Ci
 
         Gitlab::OptimisticLocking.retry_lock(new_build, name: 'retry_build', &:enqueue)
         AfterRequeueJobService.new(project, current_user).execute(build)
-
-        ::MergeRequests::AddTodoWhenBuildFailsService
-          .new(project: project, current_user: current_user)
-          .close(new_build)
       end
     end
 
@@ -42,6 +38,12 @@ module Ci
       check_access!(build)
 
       new_build = clone_build(build)
+
+      new_build.run_after_commit do
+        ::MergeRequests::AddTodoWhenBuildFailsService
+          .new(project: project)
+          .close(new_build)
+      end
 
       if create_deployment_in_separate_transaction?
         new_build.run_after_commit do |new_build|

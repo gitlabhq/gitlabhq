@@ -108,20 +108,6 @@ Find more information about different sampling modes in the [Stackprof docs](htt
 
 This is enabled for all users that can access the performance bar.
 
-## Sherlock
-
-Sherlock is a custom profiling tool built into GitLab. Sherlock is _only_
-available when running GitLab in development mode _and_ when setting the
-environment variable `ENABLE_SHERLOCK` to a non empty value. For example:
-
-```shell
-ENABLE_SHERLOCK=1 bundle exec rails s
-```
-
-Sherlock is also [available though the GitLab GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/sherlock.md).
-
-Recorded transactions can be found by navigating to `/sherlock/transactions`.
-
 ## Bullet
 
 Bullet is a Gem that can be used to track down N+1 query problems. Bullet section is

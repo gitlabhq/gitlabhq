@@ -794,7 +794,6 @@ export default {
     </project-setting-row>
     <confirm-danger
       v-if="isVisibilityReduced"
-      button-class="qa-visibility-features-permissions-save-button"
       button-variant="confirm"
       :disabled="false"
       :phrase="confirmationPhrase"
@@ -807,7 +806,7 @@ export default {
       type="submit"
       variant="confirm"
       data-testid="project-features-save-button"
-      button-class="qa-visibility-features-permissions-save-button"
+      data-qa-selector="visibility_features_permissions_save_button"
     >
       {{ $options.i18n.confirmButtonText }}
     </gl-button>

@@ -233,8 +233,6 @@ class Issue < ApplicationRecord
   end
 
   def next_object_by_relative_position(ignoring: nil, order: :asc)
-    return super unless Feature.enabled?(:optimized_issue_neighbor_queries, project, default_enabled: :yaml)
-
     array_mapping_scope = -> (id_expression) do
       relation = Issue.where(Issue.arel_table[:project_id].eq(id_expression))
 

@@ -57,6 +57,10 @@ ci_runner_namespaces:
   - table: namespaces
     column: namespace_id
     on_delete: async_delete
+ci_running_builds:
+  - table: projects
+    column: project_id
+    on_delete: async_delete
 ci_namespace_mirrors:
   - table: namespaces
     column: namespace_id

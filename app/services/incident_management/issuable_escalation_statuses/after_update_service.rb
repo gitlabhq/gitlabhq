@@ -27,7 +27,7 @@ module IncidentManagement
 
       def sync_to_alert
         return unless alert
-        return unless escalation_status.status_previously_changed?
+        return if alert.status == escalation_status.status
 
         ::AlertManagement::Alerts::UpdateService.new(
           alert,

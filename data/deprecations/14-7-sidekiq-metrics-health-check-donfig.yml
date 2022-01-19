@@ -1,7 +1,7 @@
 - name: "Sidekiq metrics and health checks configuration"
   announcement_milestone: "14.7"
   announcement_date: "2021-01-22"
-  removal_milestone: "15.0" 
+  removal_milestone: "15.0"
   removal_date: "2022-05-22"
   breaking_change: true
   body: | # Do not modify this line, instead modify the lines below.
@@ -25,6 +25,6 @@
     Only if they are both set and a different port is provided, a separate metrics server will spin up
     to serve the Sidekiq metrics, similar to the way Sidekiq will behave in 15.0.
   stage: Enablement
-  tiers: [Free, Premium, Ultimate] 
+  tiers: [Free, Premium, Ultimate]
   issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/347509
   documentation_url: https://docs.gitlab.com/ee/administration/sidekiq.html

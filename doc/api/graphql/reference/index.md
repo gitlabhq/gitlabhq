@@ -4336,6 +4336,25 @@ Input type: `TerraformStateUnlockInput`
 | <a id="mutationterraformstateunlockclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationterraformstateunlockerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
+### `Mutation.timelineEventDestroy`
+
+Input type: `TimelineEventDestroyInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationtimelineeventdestroyclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationtimelineeventdestroyid"></a>`id` | [`IncidentManagementTimelineEventID!`](#incidentmanagementtimelineeventid) | Timeline event ID to remove. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationtimelineeventdestroyclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationtimelineeventdestroyerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationtimelineeventdestroytimelineevent"></a>`timelineEvent` | [`TimelineEventType`](#timelineeventtype) | Timeline event. |
+
 ### `Mutation.todoCreate`
 
 Input type: `TodoCreateInput`
@@ -11837,6 +11856,7 @@ Maven metadata.
 | <a id="mergerequestautomergestrategy"></a>`autoMergeStrategy` | [`String`](#string) | Selected auto merge strategy. |
 | <a id="mergerequestavailableautomergestrategies"></a>`availableAutoMergeStrategies` | [`[String!]`](#string) | Array of available auto merge strategies. |
 | <a id="mergerequestcommitcount"></a>`commitCount` | [`Int`](#int) | Number of commits in the merge request. |
+| <a id="mergerequestcommits"></a>`commits` | [`CommitConnection`](#commitconnection) | Merge request commits. (see [Connections](#connections)) |
 | <a id="mergerequestcommitswithoutmergecommits"></a>`commitsWithoutMergeCommits` | [`CommitConnection`](#commitconnection) | Merge request commits excluding merge commits. (see [Connections](#connections)) |
 | <a id="mergerequestconflicts"></a>`conflicts` | [`Boolean!`](#boolean) | Indicates if the merge request has conflicts. |
 | <a id="mergerequestcreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp of when the merge request was created. |

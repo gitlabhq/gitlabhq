@@ -5370,6 +5370,9 @@ msgstr ""
 msgid "Based on"
 msgstr ""
 
+msgid "Basic information"
+msgstr ""
+
 msgid "Be careful. Changing the project's namespace can have unintended side effects."
 msgstr ""
 
@@ -8957,6 +8960,9 @@ msgid "ComplianceReport|Approved by committer"
 msgstr ""
 
 msgid "ComplianceReport|Less than 2 approvers"
+msgstr ""
+
+msgid "ComplianceReport|No violations found"
 msgstr ""
 
 msgid "Component"
@@ -23550,9 +23556,6 @@ msgstr ""
 msgid "NetworkPolicies|To enable alerts, %{installLinkStart}install an agent%{installLinkEnd} first."
 msgstr ""
 
-msgid "NetworkPolicies|Traffic that does not match any rule will be blocked."
-msgstr ""
-
 msgid "NetworkPolicies|all DNS names"
 msgstr ""
 
@@ -30449,7 +30452,7 @@ msgstr ""
 msgid "Resync"
 msgstr ""
 
-msgid "Retrieving the compliance report failed. Please refresh the page and try again."
+msgid "Retrieving the compliance report failed. Refresh the page and try again."
 msgstr ""
 
 msgid "Retry"
@@ -31681,10 +31684,10 @@ msgstr ""
 msgid "SecurityOrchestration|Policy editor"
 msgstr ""
 
-msgid "SecurityOrchestration|Policy preview"
+msgid "SecurityOrchestration|Policy status"
 msgstr ""
 
-msgid "SecurityOrchestration|Policy status"
+msgid "SecurityOrchestration|Policy summary"
 msgstr ""
 
 msgid "SecurityOrchestration|Policy type"
@@ -40966,6 +40969,9 @@ msgid "You have insufficient permissions to create an HTTP integration for this 
 msgstr ""
 
 msgid "You have insufficient permissions to create an on-call schedule for this project"
+msgstr ""
+
+msgid "You have insufficient permissions to manage timeline events for this incident"
 msgstr ""
 
 msgid "You have insufficient permissions to remove an on-call rotation from this project"

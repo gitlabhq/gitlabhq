@@ -487,7 +487,7 @@ To help with the transition, from GitLab 14.10, non-compliant reports will displ
 [warning](https://gitlab.com/gitlab-org/gitlab/-/issues/335789#note_672853791)
 in the Vulnerability Report.
 
-**Planned removal milestone: 15.0 ()**
+**Planned removal milestone: 15.0 (2022-05-22)**
 
 ### Coverage guided fuzzing schemas below 14.0.0
 
@@ -505,7 +505,7 @@ To help with the transition, from GitLab 14.10, non-compliant reports will displ
 [warning](https://gitlab.com/gitlab-org/gitlab/-/issues/335789#note_672853791)
 in the Vulnerability Report.
 
-**Planned removal milestone: 15.0 ()**
+**Planned removal milestone: 15.0 (2022-05-22)**
 
 ### DAST schemas below 14.0.0
 
@@ -523,7 +523,7 @@ To help with the transition, from GitLab 14.10, non-compliant reports will cause
 [warning to be displayed](https://gitlab.com/gitlab-org/gitlab/-/issues/335789#note_672853791)
 in the Vulnerability Report.
 
-**Planned removal milestone: 15.0 ()**
+**Planned removal milestone: 15.0 (2022-05-22)**
 
 ### Dependency scanning schemas below 14.0.0
 
@@ -541,7 +541,7 @@ To help with the transition, from GitLab 14.10, non-compliant reports will cause
 [warning to be displayed](https://gitlab.com/gitlab-org/gitlab/-/issues/335789#note_672853791)
 in the Vulnerability Report.
 
-**Planned removal milestone: 15.0 ()**
+**Planned removal milestone: 15.0 (2022-05-22)**
 
 ### Enforced validation of security report schemas
 
@@ -559,7 +559,7 @@ To help with the transition, from GitLab 14.10, non-compliant reports will displ
 [warning](https://gitlab.com/gitlab-org/gitlab/-/issues/335789#note_672853791)
 in the Vulnerability Report.
 
-**Planned removal milestone: 15.0 ()**
+**Planned removal milestone: 15.0 (2022-05-22)**
 
 ### Godep support in License Compliance
 
@@ -635,7 +635,7 @@ To help with the transition, from GitLab 14.10, non-compliant reports will displ
 [warning](https://gitlab.com/gitlab-org/gitlab/-/issues/335789#note_672853791)
 in the Vulnerability Report.
 
-**Planned removal milestone: 15.0 ()**
+**Planned removal milestone: 15.0 (2022-05-22)**
 
 ### Secret detection schemas below 14.0.0
 
@@ -653,7 +653,7 @@ To help with the transition, from GitLab 14.10, non-compliant reports will displ
 [warning](https://gitlab.com/gitlab-org/gitlab/-/issues/335789#note_672853791)
 in the Vulnerability Report.
 
-**Planned removal milestone: 15.0 ()**
+**Planned removal milestone: 15.0 (2022-05-22)**
 
 ### Sidekiq metrics and health checks configuration
 
@@ -701,7 +701,7 @@ Tracing in GitLab is an integration with Jaeger, an open-source end-to-end distr
 
 The `merged_by` field in the [merge request API](https://docs.gitlab.com/ee/api/merge_requests.html#list-merge-requests) is being deprecated and will be removed in GitLab 15.0. This field is being replaced with the `merge_user` field (already present in GraphQL) which more correctly identifies who merged a merge request when performing actions (merge when pipeline succeeds, add to merge train) other than a simple merge.
 
-**Planned removal milestone: 15.0 ()**
+**Planned removal milestone: 15.0 (2022-05-22)**
 
 ## 14.8
 

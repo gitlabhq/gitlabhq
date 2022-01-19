@@ -31338,9 +31338,6 @@ ALTER TABLE ONLY issues_prometheus_alert_events
 ALTER TABLE ONLY board_user_preferences
     ADD CONSTRAINT fk_rails_dbebdaa8fe FOREIGN KEY (board_id) REFERENCES boards(id) ON DELETE CASCADE;
 
-ALTER TABLE ONLY ci_running_builds
-    ADD CONSTRAINT fk_rails_dc1d0801e8 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
-
 ALTER TABLE ONLY vulnerability_occurrence_pipelines
     ADD CONSTRAINT fk_rails_dc3ae04693 FOREIGN KEY (occurrence_id) REFERENCES vulnerability_occurrences(id) ON DELETE CASCADE;
 
@@ -31406,9 +31403,6 @@ ALTER TABLE ONLY approval_merge_request_rule_sources
 
 ALTER TABLE ONLY prometheus_alerts
     ADD CONSTRAINT fk_rails_e6351447ec FOREIGN KEY (prometheus_metric_id) REFERENCES prometheus_metrics(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY requirements_management_test_reports
-    ADD CONSTRAINT fk_rails_e67d085910 FOREIGN KEY (build_id) REFERENCES ci_builds(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY merge_request_metrics
     ADD CONSTRAINT fk_rails_e6d7c24d1b FOREIGN KEY (merge_request_id) REFERENCES merge_requests(id) ON DELETE CASCADE;

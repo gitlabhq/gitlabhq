@@ -565,6 +565,26 @@ RSpec.describe Ci::Build do
         expect(build.reload.runtime_metadata).not_to be_present
       end
     end
+
+    context 'when a failure reason is provided' do
+      context 'when a failure reason is a symbol' do
+        it 'correctly sets a failure reason' do
+          build.drop!(:script_failure)
+
+          expect(build.failure_reason).to eq 'script_failure'
+        end
+      end
+
+      context 'when a failure reason is an object' do
+        it 'correctly sets a failure reason' do
+          reason = ::Gitlab::Ci::Build::Status::Reason.new(build, :script_failure)
+
+          build.drop!(reason)
+
+          expect(build.failure_reason).to eq 'script_failure'
+        end
+      end
+    end
   end
 
   describe '#schedulable?' do
@@ -2183,6 +2203,28 @@ RSpec.describe Ci::Build do
         subject
 
         expect(artifact.reload.expire_at).to be_nil
+      end
+    end
+  end
+
+  describe '#auto_retry_expected?' do
+    subject { create(:ci_build, :failed) }
+
+    context 'when build is failed and auto retry is configured' do
+      before do
+        allow(subject)
+          .to receive(:auto_retry_allowed?)
+          .and_return(true)
+      end
+
+      it 'expects auto-retry to happen' do
+        expect(subject.auto_retry_expected?).to be true
+      end
+    end
+
+    context 'when build failed by auto retry is not configured' do
+      it 'does not expect auto-retry to happen' do
+        expect(subject.auto_retry_expected?).to be false
       end
     end
   end
@@ -5277,19 +5319,6 @@ RSpec.describe Ci::Build do
       it 'drops the build' do
         expect { drop_with_exit_code }
           .to change { build.reload.failed? }
-      end
-
-      it 'is executed inside a transaction' do
-        expect(build).to receive(:drop!)
-          .with(:unknown_failure)
-          .and_raise(ActiveRecord::Rollback)
-
-        expect(build).to receive(:conditionally_allow_failure!)
-          .with(1)
-          .and_call_original
-
-        expect { drop_with_exit_code }
-          .not_to change { build.reload.allow_failure }
       end
 
       context 'when exit_code is nil' do

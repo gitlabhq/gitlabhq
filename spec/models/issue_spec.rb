@@ -1328,28 +1328,10 @@ RSpec.describe Issue do
     let_it_be(:issue1) { create(:issue, project: project, relative_position: nil) }
     let_it_be(:issue2) { create(:issue, project: project, relative_position: nil) }
 
-    context 'when optimized_issue_neighbor_queries is enabled' do
-      before do
-        stub_feature_flags(optimized_issue_neighbor_queries: true)
-      end
-
-      it_behaves_like "a class that supports relative positioning" do
-        let_it_be(:project) { reusable_project }
-        let(:factory) { :issue }
-        let(:default_params) { { project: project } }
-      end
-    end
-
-    context 'when optimized_issue_neighbor_queries is disabled' do
-      before do
-        stub_feature_flags(optimized_issue_neighbor_queries: false)
-      end
-
-      it_behaves_like "a class that supports relative positioning" do
-        let_it_be(:project) { reusable_project }
-        let(:factory) { :issue }
-        let(:default_params) { { project: project } }
-      end
+    it_behaves_like "a class that supports relative positioning" do
+      let_it_be(:project) { reusable_project }
+      let(:factory) { :issue }
+      let(:default_params) { { project: project } }
     end
 
     it 'is not blocked for repositioning by default' do

@@ -31,14 +31,12 @@ RSpec.describe IncidentManagement::IssuableEscalationStatuses::AfterUpdateServic
   end
 
   context 'with status attributes' do
-    it 'updates an the associated alert with status changes' do
-      expect(::AlertManagement::Alerts::UpdateService)
-        .to receive(:new)
-        .with(alert, current_user, { status: :acknowledged })
-        .and_call_original
+    it 'updates the alert with the new alert status' do
+      expect(::AlertManagement::Alerts::UpdateService).to receive(:new).once.and_call_original
+      expect(described_class).to receive(:new).once.and_call_original
 
-      expect(result).to be_success
-      expect(alert.reload.status).to eq(escalation_status.reload.status)
+      expect { result }.to change { escalation_status.reload.acknowledged? }.to(true)
+                       .and change { alert.reload.acknowledged? }.to(true)
     end
 
     context 'when incident is not associated with an alert' do
@@ -49,7 +47,7 @@ RSpec.describe IncidentManagement::IssuableEscalationStatuses::AfterUpdateServic
       it_behaves_like 'does not attempt to update the alert'
     end
 
-    context 'when status was not changed' do
+    context 'when new status matches the current status' do
       let(:status_event) { :trigger }
 
       it_behaves_like 'does not attempt to update the alert'

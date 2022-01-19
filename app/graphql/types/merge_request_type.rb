@@ -189,6 +189,8 @@ module Types
           description: 'Indicates if the merge request has CI.'
     field :mergeable, GraphQL::Types::Boolean, null: false, method: :mergeable?, calls_gitaly: true,
           description: 'Indicates if the merge request is mergeable.'
+    field :commits, Types::CommitType.connection_type, null: true,
+          calls_gitaly: true, description: 'Merge request commits.'
     field :commits_without_merge_commits, Types::CommitType.connection_type, null: true,
           calls_gitaly: true, description: 'Merge request commits excluding merge commits.'
     field :security_auto_fix, GraphQL::Types::Boolean, null: true,
@@ -263,6 +265,10 @@ module Types
 
     def available_auto_merge_strategies
       AutoMergeService.new(object.project, current_user).available_strategies(object)
+    end
+
+    def commits
+      object.commits.commits
     end
 
     def commits_without_merge_commits
