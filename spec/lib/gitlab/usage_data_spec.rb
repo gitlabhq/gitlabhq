@@ -925,10 +925,25 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
       end
 
       context 'when retrieve component setting meets exception' do
-        it 'returns -1 for component enable status' do
+        before do
+          allow(Gitlab::ErrorTracking).to receive(:should_raise_for_dev?).and_return(should_raise_for_dev)
           allow(Settings).to receive(:[]).with(component).and_raise(StandardError)
+        end
 
-          expect(subject).to eq({ enabled: -1 })
+        context 'with should_raise_for_dev? false' do
+          let(:should_raise_for_dev) { false }
+
+          it 'returns -1 for component enable status' do
+            expect(subject).to eq({ enabled: -1 })
+          end
+        end
+
+        context 'with should_raise_for_dev? true' do
+          let(:should_raise_for_dev) { true }
+
+          it 'raises an error' do
+            expect { subject.value }.to raise_error(StandardError)
+          end
         end
       end
     end

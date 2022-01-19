@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe LooseForeignKeys::CleanupWorker do
   include MigrationsHelpers
+  using RSpec::Parameterized::TableSyntax
 
   def create_table_structure
     migration = ActiveRecord::Migration.new.extend(Gitlab::Database::MigrationHelpers::LooseForeignKeyHelpers)
@@ -147,6 +148,33 @@ RSpec.describe LooseForeignKeys::CleanupWorker do
 
     it 'does nothing' do
       expect { described_class.new.perform }.not_to change { LooseForeignKeys::DeletedRecord.status_processed.count }
+    end
+  end
+
+  describe 'multi-database support' do
+    where(:current_minute, :configured_base_models, :expected_connection) do
+      2 | { main: ApplicationRecord, ci: Ci::ApplicationRecord } | ApplicationRecord.connection
+      3 | { main: ApplicationRecord, ci: Ci::ApplicationRecord } | Ci::ApplicationRecord.connection
+      2 | { main: ApplicationRecord } | ApplicationRecord.connection
+      3 | { main: ApplicationRecord } | ApplicationRecord.connection
+    end
+
+    with_them do
+      before do
+        allow(Gitlab::Database).to receive(:database_base_models).and_return(configured_base_models)
+      end
+
+      it 'uses the correct connection' do
+        LooseForeignKeys::DeletedRecord.count.times do
+          expect_next_found_instance_of(LooseForeignKeys::DeletedRecord) do |instance|
+            expect(instance.class.connection).to eq(expected_connection)
+          end
+        end
+
+        travel_to DateTime.new(2019, 1, 1, 10, current_minute) do
+          described_class.new.perform
+        end
+      end
     end
   end
 end

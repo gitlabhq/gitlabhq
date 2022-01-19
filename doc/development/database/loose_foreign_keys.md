@@ -43,7 +43,7 @@ we can:
 
 1. Create a `DELETE` trigger on the `projects` table.
    Record the deletions in a separate table (`deleted_records`).
-1. A job checks the `deleted_records` table every 5 minutes.
+1. A job checks the `deleted_records` table every minute or two.
 1. For each record in the table, delete the associated `ci_pipelines` records
    using the `project_id` column.
 

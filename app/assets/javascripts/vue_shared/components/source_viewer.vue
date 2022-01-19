@@ -56,6 +56,9 @@ export default {
     highlightedContent() {
       this.$nextTick(() => this.selectLine());
     },
+    $route() {
+      this.selectLine();
+    },
   },
   async mounted() {
     this.hljs = await this.loadHighlightJS();
@@ -90,7 +93,8 @@ export default {
           .join('\r\n')
       );
     },
-    selectLine(hash = sanitize(window.location.hash)) {
+    selectLine() {
+      const hash = sanitize(this.$route.hash);
       const lineToSelect = hash && this.$el.querySelector(hash);
 
       if (!lineToSelect) {
@@ -112,7 +116,7 @@ export default {
 </script>
 <template>
   <div class="file-content code js-syntax-highlight" :class="$options.userColorScheme">
-    <line-numbers :lines="lineNumbers" @select-line="selectLine" />
+    <line-numbers :lines="lineNumbers" />
     <pre class="code"><code v-safe-html="highlightedContent"></code>
     </pre>
   </div>

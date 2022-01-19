@@ -5,11 +5,13 @@ require 'spec_helper'
 RSpec.describe Gitlab::Utils::UsageData do
   include Database::DatabaseHelpers
 
-  shared_examples 'failing hardening method' do
+  shared_examples 'failing hardening method' do |raised_exception|
+    let(:exception) { raised_exception || ActiveRecord::StatementInvalid }
+
     before do
       allow(Gitlab::ErrorTracking).to receive(:should_raise_for_dev?).and_return(should_raise_for_dev)
       stub_const("Gitlab::Utils::UsageData::FALLBACK", fallback)
-      allow(failing_class).to receive(failing_method).and_raise(ActiveRecord::StatementInvalid)
+      allow(failing_class).to receive(failing_method).and_raise(exception) unless failing_class.nil?
     end
 
     context 'with should_raise_for_dev? false' do
@@ -24,7 +26,7 @@ RSpec.describe Gitlab::Utils::UsageData do
       let(:should_raise_for_dev) { true }
 
       it 'raises an error' do
-        expect { subject }.to raise_error(ActiveRecord::StatementInvalid)
+        expect { subject }.to raise_error(exception)
       end
     end
   end
@@ -366,8 +368,13 @@ RSpec.describe Gitlab::Utils::UsageData do
       expect(described_class.add).to eq(0)
     end
 
-    it 'returns the fallback value when adding fails' do
-      expect(described_class.add(nil, 3)).to eq(-1)
+    context 'when adding fails' do
+      subject { described_class.add(nil, 3) }
+
+      let(:fallback) { -1 }
+      let(:failing_class) { nil }
+
+      it_behaves_like 'failing hardening method', StandardError
     end
 
     it 'returns the fallback value one of the arguments is negative' do
@@ -376,8 +383,13 @@ RSpec.describe Gitlab::Utils::UsageData do
   end
 
   describe '#alt_usage_data' do
-    it 'returns the fallback when it gets an error' do
-      expect(described_class.alt_usage_data { raise StandardError } ).to eq(-1)
+    context 'when method fails' do
+      subject { described_class.alt_usage_data { raise StandardError } }
+
+      let(:fallback) { -1 }
+      let(:failing_class) { nil }
+
+      it_behaves_like 'failing hardening method', StandardError
     end
 
     it 'returns the evaluated block when give' do
@@ -391,14 +403,22 @@ RSpec.describe Gitlab::Utils::UsageData do
 
   describe '#redis_usage_data' do
     context 'with block given' do
-      it 'returns the fallback when it gets an error' do
-        expect(described_class.redis_usage_data { raise ::Redis::CommandError } ).to eq(-1)
+      context 'when method fails' do
+        subject { described_class.redis_usage_data { raise ::Redis::CommandError } }
+
+        let(:fallback) { -1 }
+        let(:failing_class) { nil }
+
+        it_behaves_like 'failing hardening method', ::Redis::CommandError
       end
 
-      it 'returns the fallback when Redis HLL raises any error' do
-        stub_const("Gitlab::Utils::UsageData::FALLBACK", 15)
+      context 'when Redis HLL raises any error' do
+        subject { described_class.redis_usage_data { raise Gitlab::UsageDataCounters::HLLRedisCounter::CategoryMismatch } }
 
-        expect(described_class.redis_usage_data { raise Gitlab::UsageDataCounters::HLLRedisCounter::CategoryMismatch } ).to eq(15)
+        let(:fallback) { 15 }
+        let(:failing_class) { nil }
+
+        it_behaves_like 'failing hardening method', Gitlab::UsageDataCounters::HLLRedisCounter::CategoryMismatch
       end
 
       it 'returns the evaluated block when given' do
@@ -407,9 +427,14 @@ RSpec.describe Gitlab::Utils::UsageData do
     end
 
     context 'with counter given' do
-      it 'returns the falback values for all counter keys when it gets an error' do
-        allow(::Gitlab::UsageDataCounters::WikiPageCounter).to receive(:totals).and_raise(::Redis::CommandError)
-        expect(described_class.redis_usage_data(::Gitlab::UsageDataCounters::WikiPageCounter)).to eql(::Gitlab::UsageDataCounters::WikiPageCounter.fallback_totals)
+      context 'when gets an error' do
+        subject { described_class.redis_usage_data(::Gitlab::UsageDataCounters::WikiPageCounter) }
+
+        let(:fallback) { ::Gitlab::UsageDataCounters::WikiPageCounter.fallback_totals }
+        let(:failing_class) { ::Gitlab::UsageDataCounters::WikiPageCounter }
+        let(:failing_method) { :totals }
+
+        it_behaves_like 'failing hardening method', ::Redis::CommandError
       end
 
       it 'returns the totals when couter is given' do

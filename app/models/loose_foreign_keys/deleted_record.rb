@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class LooseForeignKeys::DeletedRecord < ApplicationRecord
+class LooseForeignKeys::DeletedRecord < Gitlab::Database::SharedModel
   PARTITION_DURATION = 1.day
 
   include PartitionedTable

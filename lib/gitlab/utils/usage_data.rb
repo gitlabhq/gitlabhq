@@ -169,7 +169,8 @@ module Gitlab
         return -1 if args.any?(&:negative?)
 
         args.sum
-      rescue StandardError
+      rescue StandardError => error
+        Gitlab::ErrorTracking.track_and_raise_for_dev_exception(error)
         FALLBACK
       end
 
@@ -179,7 +180,8 @@ module Gitlab
         else
           value
         end
-      rescue StandardError
+      rescue StandardError => error
+        Gitlab::ErrorTracking.track_and_raise_for_dev_exception(error)
         fallback
       end
 
@@ -295,13 +297,15 @@ module Gitlab
 
       def redis_usage_counter
         yield
-      rescue ::Redis::CommandError, Gitlab::UsageDataCounters::BaseCounter::UnknownEvent, Gitlab::UsageDataCounters::HLLRedisCounter::EventError
+      rescue ::Redis::CommandError, Gitlab::UsageDataCounters::BaseCounter::UnknownEvent, Gitlab::UsageDataCounters::HLLRedisCounter::EventError => error
+        Gitlab::ErrorTracking.track_and_raise_for_dev_exception(error)
         FALLBACK
       end
 
       def redis_usage_data_totals(counter)
         counter.totals
-      rescue ::Redis::CommandError, Gitlab::UsageDataCounters::BaseCounter::UnknownEvent
+      rescue ::Redis::CommandError, Gitlab::UsageDataCounters::BaseCounter::UnknownEvent => error
+        Gitlab::ErrorTracking.track_and_raise_for_dev_exception(error)
         counter.fallback_totals
       end
     end

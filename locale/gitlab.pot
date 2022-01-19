@@ -13300,6 +13300,12 @@ msgstr ""
 msgid "Enable repository checks"
 msgstr ""
 
+msgid "Enable security training"
+msgstr ""
+
+msgid "Enable security training to help your developers learn how to fix vulnerabilities. Developers can view security training from selected educational providers, relevant to the detected vulnerability."
+msgstr ""
+
 msgid "Enable shared runners for all projects and subgroups in this group."
 msgstr ""
 
@@ -29351,6 +29357,9 @@ msgid "Reduce incident management alert volume (for example, if too many issues 
 msgstr ""
 
 msgid "Reduce project visibility"
+msgstr ""
+
+msgid "Reduce risk and triage fewer vulnerabilities with security training"
 msgstr ""
 
 msgid "Reduce this project’s visibility?"

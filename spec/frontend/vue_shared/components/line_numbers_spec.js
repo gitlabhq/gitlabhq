@@ -23,7 +23,7 @@ describe('Line Numbers component', () => {
       expect(findLineNumbers().length).toBe(lines);
       expect(findFirstLineNumber().attributes()).toMatchObject({
         id: 'L1',
-        href: '#LC1',
+        to: '#LC1',
       });
     });
 
@@ -32,17 +32,6 @@ describe('Line Numbers component', () => {
         size: 12,
         name: 'link',
       });
-    });
-  });
-
-  describe('clicking a line number', () => {
-    beforeEach(() => {
-      jest.spyOn(wrapper.vm, '$emit');
-      findFirstLineNumber().vm.$emit('click');
-    });
-
-    it('emits a select-line event', () => {
-      expect(wrapper.vm.$emit).toHaveBeenCalledWith('select-line', '#LC1');
     });
   });
 });

@@ -20,10 +20,9 @@ export default {
       v-for="line in lines"
       :id="`L${line}`"
       :key="line"
-      class="diff-line-num"
-      :href="`#LC${line}`"
+      class="diff-line-num gl-shadow-none!"
+      :to="`#LC${line}`"
       :data-line-number="line"
-      @click="$emit('select-line', `#LC${line}`)"
     >
       <gl-icon :size="12" name="link" />
       {{ line }}

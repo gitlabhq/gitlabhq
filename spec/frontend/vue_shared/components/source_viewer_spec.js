@@ -1,10 +1,14 @@
 import hljs from 'highlight.js/lib/core';
+import Vue, { nextTick } from 'vue';
+import VueRouter from 'vue-router';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import SourceViewer from '~/vue_shared/components/source_viewer.vue';
 import LineNumbers from '~/vue_shared/components/line_numbers.vue';
 import waitForPromises from 'helpers/wait_for_promises';
 
 jest.mock('highlight.js/lib/core');
+Vue.use(VueRouter);
+const router = new VueRouter();
 
 describe('Source Viewer component', () => {
   let wrapper;
@@ -16,7 +20,10 @@ describe('Source Viewer component', () => {
   hljs.highlightAuto.mockImplementation(() => ({ value: highlightedContent }));
 
   const createComponent = async (props = {}) => {
-    wrapper = shallowMountExtended(SourceViewer, { propsData: { content, language, ...props } });
+    wrapper = shallowMountExtended(SourceViewer, {
+      router,
+      propsData: { content, language, ...props },
+    });
     await waitForPromises();
   };
 
@@ -69,16 +76,18 @@ describe('Source Viewer component', () => {
       jest.spyOn(firstLineElement, 'scrollIntoView');
       jest.spyOn(firstLineElement.classList, 'add');
       jest.spyOn(firstLineElement.classList, 'remove');
-
-      findLineNumbers().vm.$emit('select-line', '#LC1');
     });
 
-    it('adds the highlight (hll) class', () => {
+    it('adds the highlight (hll) class', async () => {
+      wrapper.vm.$router.push('#LC1');
+      await nextTick();
+
       expect(firstLineElement.classList.add).toHaveBeenCalledWith('hll');
     });
 
-    it('removes the highlight (hll) class from a previously highlighted line', () => {
-      findLineNumbers().vm.$emit('select-line', '#LC2');
+    it('removes the highlight (hll) class from a previously highlighted line', async () => {
+      wrapper.vm.$router.push('#LC2');
+      await nextTick();
 
       expect(firstLineElement.classList.remove).toHaveBeenCalledWith('hll');
     });
