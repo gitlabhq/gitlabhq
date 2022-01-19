@@ -408,7 +408,7 @@ On the **Praefect** node:
    # Enable only the Praefect service
    praefect['enable'] = true
 
-   # Prevent database connections during 'gitlab-ctl reconfigure'
+   # Disable database migrations to prevent database connections during 'gitlab-ctl reconfigure'
    gitlab_rails['auto_migrate'] = false
    praefect['auto_migrate'] = false
    ```
@@ -531,7 +531,7 @@ On the **Praefect** node:
 1. For:
 
    - The "deploy node":
-     1. Enable Praefect auto-migration again by setting `praefect['auto_migrate'] = true` in
+     1. Enable Praefect database auto-migration again by setting `praefect['auto_migrate'] = true` in
         `/etc/gitlab/gitlab.rb`.
      1. To ensure database migrations are only run during reconfigure and not automatically on
         upgrade, run:
@@ -767,7 +767,7 @@ For more information on Gitaly server configuration, see our
    # Enable Prometheus if needed
    prometheus['enable'] = true
 
-   # Prevent database connections during 'gitlab-ctl reconfigure'
+   # Disable database migrations to prevent database connections during 'gitlab-ctl reconfigure'
    gitlab_rails['auto_migrate'] = false
    ```
 
@@ -1229,9 +1229,9 @@ To migrate existing clusters:
 
 1. Praefect nodes didn't historically keep database records of every repository stored on the cluster. When
    the `per_repository` election strategy is configured, Praefect expects to have database records of
-   each repository. A [background migration](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/2749) is
-   included in GitLab 13.6 and later to create any missing database records for repositories. Before migrating
-   you should verify the migration has run by checking Praefect's logs:
+   each repository. A [background database migration](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/2749) is
+   included in GitLab 13.6 and later to create any missing database records for repositories. Before migrating,
+   check Praefect's logs to verify that the database migration ran.
 
    Check Praefect's logs for `repository importer finished` message. The `virtual_storages` field contains
    the names of virtual storages and whether they've had any missing database records created.
@@ -1248,8 +1248,8 @@ To migrate existing clusters:
    {"level":"info","msg":"repository importer finished","pid":19752,"time":"2021-04-28T11:41:36.743Z","virtual_storages":{"default":false}}
    ```
 
-   The migration is ran when Praefect starts up. If the migration is unsuccessful, you can restart
-   a Praefect node to reattempt it. The migration only runs with `sql` election strategy configured.
+   The database migration runs when Praefect starts. If the database migration is unsuccessful, you can restart
+   a Praefect node to reattempt it.
 
 1. Running two different election strategies side by side can cause a split brain, where different
    Praefect nodes consider repositories to have different primaries. This can be avoided either:

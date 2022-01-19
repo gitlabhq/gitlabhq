@@ -7,10 +7,15 @@ type: reference, howto
 
 # Group access tokens
 
+With group access tokens, you can use a single token to:
+
+- Perform actions for groups.
+- Manage the projects within the group.
+
 You can use a group access token to authenticate:
 
 - With the [GitLab API](../../../api/index.md#personalprojectgroup-access-tokens).
-- With Git, when using HTTP Basic Authentication.
+- In [GitLab 14.2](https://gitlab.com/gitlab-org/gitlab/-/issues/330718) and later, authenticate with Git over HTTPS.
 
 After you configure a group access token, you don't need a password when you authenticate.
 Instead, you can enter any non-blank value.

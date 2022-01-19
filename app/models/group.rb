@@ -725,8 +725,8 @@ class Group < Namespace
     end
   end
 
-  def default_owner
-    owners.first || parent&.default_owner || owner
+  def first_owner
+    owners.first || parent&.first_owner || owner
   end
 
   def default_branch_name

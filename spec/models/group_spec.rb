@@ -2539,7 +2539,7 @@ RSpec.describe Group do
     end
   end
 
-  describe '#default_owner' do
+  describe '#first_owner' do
     let(:group) { build(:group) }
 
     context 'the group has owners' do
@@ -2549,7 +2549,7 @@ RSpec.describe Group do
       end
 
       it 'is the first owner' do
-        expect(group.default_owner)
+        expect(group.first_owner)
           .to eq(group.owners.first)
           .and be_a(User)
       end
@@ -2564,8 +2564,8 @@ RSpec.describe Group do
       end
 
       it 'is the first owner of the parent' do
-        expect(group.default_owner)
-          .to eq(parent.default_owner)
+        expect(group.first_owner)
+          .to eq(parent.first_owner)
           .and be_a(User)
       end
     end
@@ -2576,7 +2576,7 @@ RSpec.describe Group do
       end
 
       it 'is the group.owner' do
-        expect(group.default_owner)
+        expect(group.first_owner)
           .to eq(group.owner)
           .and be_a(User)
       end

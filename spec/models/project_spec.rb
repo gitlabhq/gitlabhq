@@ -1299,7 +1299,7 @@ RSpec.describe Project, factory_default: :keep do
     end
   end
 
-  describe '#default_owner' do
+  describe '#first_owner' do
     let_it_be(:owner)     { create(:user) }
     let_it_be(:namespace) { create(:namespace, owner: owner) }
 
@@ -1307,7 +1307,7 @@ RSpec.describe Project, factory_default: :keep do
       let(:project) { build(:project, namespace: namespace) }
 
       it 'is the namespace owner' do
-        expect(project.default_owner).to eq(owner)
+        expect(project.first_owner).to eq(owner)
       end
     end
 
@@ -1316,9 +1316,9 @@ RSpec.describe Project, factory_default: :keep do
       let(:project) { build(:project, group: group, namespace: namespace) }
 
       it 'is the group owner' do
-        allow(group).to receive(:default_owner).and_return(Object.new)
+        allow(group).to receive(:first_owner).and_return(Object.new)
 
-        expect(project.default_owner).to eq(group.default_owner)
+        expect(project.first_owner).to eq(group.first_owner)
       end
     end
   end

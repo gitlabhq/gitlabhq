@@ -1514,11 +1514,11 @@ class Project < ApplicationRecord
     group || namespace.try(:owner)
   end
 
-  def default_owner
+  def first_owner
     obj = owner
 
-    if obj.respond_to?(:default_owner)
-      obj.default_owner
+    if obj.respond_to?(:first_owner)
+      obj.first_owner
     else
       obj
     end

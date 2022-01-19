@@ -17,7 +17,7 @@ module HasWiki
 
   def wiki
     strong_memoize(:wiki) do
-      Wiki.for_container(self, self.default_owner)
+      Wiki.for_container(self, self.first_owner)
     end
   end
 

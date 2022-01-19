@@ -16,7 +16,7 @@ module DesignManagement
         @temporary_branch = "CopyDesignCollectionService_#{SecureRandom.hex}"
         # The user who triggered the copy may not have permissions to push
         # to the design repository.
-        @git_user = @target_project.default_owner
+        @git_user = @target_project.first_owner
 
         @designs = DesignManagement::Design.unscoped.where(issue: issue).order(:id).load
         @versions = DesignManagement::Version.unscoped.where(issue: issue).order(:id).includes(:designs).load
