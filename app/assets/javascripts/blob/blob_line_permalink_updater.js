@@ -1,6 +1,6 @@
 import { getLocationHash } from '../lib/utils/url_utility';
 
-const lineNumberRe = /^L[0-9]+/;
+const lineNumberRe = /^(L|LC)[0-9]+/;
 
 const updateLineNumbersOnBlobPermalinks = (linksToUpdate) => {
   const hash = getLocationHash();

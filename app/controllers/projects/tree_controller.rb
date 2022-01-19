@@ -21,6 +21,8 @@ class Projects::TreeController < Projects::ApplicationController
     push_frontend_feature_flag(:new_dir_modal, @project, default_enabled: :yaml)
     push_frontend_feature_flag(:refactor_blob_viewer, @project, default_enabled: :yaml)
     push_frontend_feature_flag(:highlight_js, @project, default_enabled: :yaml)
+    push_licensed_feature(:file_locks) if @project.licensed_feature_available?(:file_locks)
+    push_frontend_feature_flag(:consolidated_edit_button, @project, default_enabled: :yaml)
   end
 
   feature_category :source_code_management

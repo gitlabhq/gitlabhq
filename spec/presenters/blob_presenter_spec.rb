@@ -53,6 +53,10 @@ RSpec.describe BlobPresenter do
     end
   end
 
+  describe '#archived?' do
+    it { expect(presenter.archived?).to eq(project.archived) }
+  end
+
   describe '#pipeline_editor_path' do
     context 'when blob is .gitlab-ci.yml' do
       before do

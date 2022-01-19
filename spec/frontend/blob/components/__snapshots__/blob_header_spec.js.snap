@@ -17,7 +17,7 @@ exports[`Blob Header Default Actions rendering matches the snapshot 1`] = `
   </div>
    
   <div
-    class="gl-display-none gl-sm-display-flex file-actions"
+    class="gl-sm-display-flex file-actions"
   >
     <viewer-switcher-stub
       value="simple"

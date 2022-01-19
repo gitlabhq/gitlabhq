@@ -1,22 +1,14 @@
+#import "ee_else_ce/repository/queries/path_locks.fragment.graphql"
+
 query getBlobInfo($projectPath: ID!, $filePath: String!, $ref: String!) {
   project(fullPath: $projectPath) {
-    id
     userPermissions {
       pushCode
       downloadCode
       createMergeRequestIn
       forkProject
     }
-    pathLocks {
-      nodes {
-        id
-        path
-        user {
-          id
-          username
-        }
-      }
-    }
+    ...ProjectPathLocksFragment
     repository {
       empty
       blobs(paths: [$filePath], ref: $ref) {
@@ -35,6 +27,7 @@ query getBlobInfo($projectPath: ID!, $filePath: String!, $ref: String!) {
           ideForkAndEditPath
           canModifyBlob
           canCurrentUserPushToBranch
+          archived
           storedExternally
           externalStorage
           rawPath

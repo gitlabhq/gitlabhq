@@ -114,6 +114,9 @@ module Types
       field :can_current_user_push_to_branch, GraphQL::Types::Boolean, null: true, method: :can_current_user_push_to_branch?,
             description: 'Whether the current user can push to the branch.'
 
+      field :archived, GraphQL::Types::Boolean, null: true, method: :archived?,
+            description: 'Whether the current project is archived.'
+
       def raw_text_blob
         object.data unless object.binary?
       end

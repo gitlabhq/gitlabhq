@@ -294,11 +294,6 @@ RSpec.configure do |config|
       # once the Vue issues page has feature parity with the current Haml page
       stub_feature_flags(vue_issues_list: false)
 
-      # Disable `refactor_blob_viewer` as we refactor
-      # the blob viewer. See the follwing epic for more:
-      # https://gitlab.com/groups/gitlab-org/-/epics/5531
-      stub_feature_flags(refactor_blob_viewer: false)
-
       # Disable `main_branch_over_master` as we migrate
       # from `master` to `main` accross our codebase.
       # It's done in order to preserve the concistency in tests

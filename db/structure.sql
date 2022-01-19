@@ -15273,6 +15273,7 @@ CREATE TABLE integrations (
     group_id bigint,
     type_new text,
     vulnerability_events boolean DEFAULT false NOT NULL,
+    archive_trace_events boolean DEFAULT false NOT NULL,
     CONSTRAINT check_a948a0aa7e CHECK ((char_length(type_new) <= 255))
 );
 

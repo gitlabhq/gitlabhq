@@ -5,9 +5,9 @@ require 'spec_helper'
 RSpec.describe BlobPolicy do
   include_context 'ProjectPolicyTable context'
   include ProjectHelpers
-  using RSpec::Parameterized::TableSyntax
 
-  let(:project) { create(:project, :repository, project_level) }
+  let_it_be_with_reload(:project) { create(:project, :repository) }
+
   let(:user) { create_user_from_membership(project, membership) }
   let(:blob) { project.repository.blob_at(SeedRepo::FirstCommit::ID, 'README.md') }
 
@@ -18,8 +18,9 @@ RSpec.describe BlobPolicy do
   end
 
   with_them do
-    it "grants permission" do
+    it 'grants permission' do
       enable_admin_mode!(user) if admin_mode
+      project.update!(visibility_level: Gitlab::VisibilityLevel.level_value(project_level.to_s))
       update_feature_access_level(project, feature_access_level)
 
       if expected_count == 1

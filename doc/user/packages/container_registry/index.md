@@ -724,3 +724,55 @@ Use your own URLs to complete the following steps:
    ```
 
 Follow [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/18383) for details.
+
+### Tags on S3 backend remain after successful deletion requests
+
+With S3 as your storage backend, tags may remain even though:
+
+- In the UI, you see that the tags are scheduled for deletion.
+- In the API, you get an HTTP `200` response.
+- The registry log shows a successful `Delete` request.
+
+An example `DELETE` request in the registry log:
+
+```shell
+{"content_type":"","correlation_id":"01FQGNSKVMHQEAVE21KYTJN2P4","duration_ms":62,"host":"localhost:5000","level":"info","method":"DELETE","msg":"access","proto":"HTTP/1.1","referrer":"","remote_addr":"127.0.0.1:47498","remote_ip":"127.0.0.1","status":202,"system":"http","time":"2021-12-22T08:58:15Z","ttfb_ms":62,"uri":"/v2/<path to repo>/tags/reference/<tag_name>","user_agent":"GitLab/<version>","written_bytes":0}
+```
+
+There may be some errors not properly cached. Follow these steps to investigate further:
+
+1. In your configuration file, set the registry's log level to `debug`, and the S3 driver's log
+   level to `logdebugwithhttpbody`. For Omnibus, make these edits in the `gitlab.rb` file:
+
+   ```shell
+      # Change the registry['log_level'] to debug
+      registry['log_level'] = 'debug'
+
+      # Set log level for registry log from storage side
+      registry['storage'] = {
+        's3' => {
+          'bucket' => 'your-s3-bucket',
+          'region' => 'your-s3-region'
+        },
+
+        'loglevel' = "logdebugwithhttpbody"
+      }
+   ```
+
+   Then save and reconfigure GitLab:
+
+   ```shell
+   sudo gitlab-ctl reconfigure
+   ```
+
+1. Attempt to delete one or more tags using the GitLab UI or API.
+
+1. Inspect the registry logs and look for a response from S3. Although the response could be
+   `200 OK`, the body might have the error `AccessDenied`. This indicates a permission problem from
+   the S3 side.
+
+1. Ensure your S3 configuration has the `deleteObject` permisson scope. Here's an
+   [example role for an S3 bucket](../../../administration/object_storage.md#iam-permissions).
+   Once adjusted, trigger another tag deletion. You should be able to successfully delete tags.
+
+Follow [this issue](https://gitlab.com/gitlab-org/container-registry/-/issues/551) for details.

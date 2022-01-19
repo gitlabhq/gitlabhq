@@ -338,34 +338,10 @@ describe('Blob content viewer component', () => {
           deletePath: webPath,
           canPushCode: pushCode,
           canLock: true,
-          isLocked: true,
+          isLocked: false,
           emptyRepo: empty,
         });
       });
-
-      it.each`
-        canPushCode | canDownloadCode | username   | canLock
-        ${true}     | ${true}         | ${'root'}  | ${true}
-        ${false}    | ${true}         | ${'root'}  | ${false}
-        ${true}     | ${false}        | ${'root'}  | ${false}
-        ${true}     | ${true}         | ${'peter'} | ${false}
-      `(
-        'passes the correct lock states',
-        async ({ canPushCode, canDownloadCode, username, canLock }) => {
-          gon.current_username = username;
-
-          await createComponent(
-            {
-              pushCode: canPushCode,
-              downloadCode: canDownloadCode,
-              empty,
-            },
-            mount,
-          );
-
-          expect(findBlobButtonGroup().props('canLock')).toBe(canLock);
-        },
-      );
 
       it('does not render if not logged in', async () => {
         isLoggedIn.mockReturnValueOnce(false);

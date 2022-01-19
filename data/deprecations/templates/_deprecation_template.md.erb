@@ -40,10 +40,17 @@ For deprecation reviewers (Technical Writers only):
 ## <%= milestone %>
     <%- entries.select{|d| d["announcement_milestone"] == milestone}.each do |deprecation| %>
 ### <%= deprecation["name"]%>
+<% if deprecation["breaking_change"] -%>
 
-<%= deprecation["body"] -%>
+WARNING:
+This feature will be changed or removed in <%= deprecation["removal_milestone"]%>
+as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Before updating GitLab, review the details carefully to determine if you need to make any
+changes to your code, settings, or workflow.
 
-Planned removal milestone: <%= deprecation["removal_milestone"]%> (<%= deprecation["removal_date"]%>)
+<%= deprecation["body"] -%><% else %>
+<%= deprecation["body"] -%><% end %>
+**Planned removal milestone: <%= deprecation["removal_milestone"]%> (<%= deprecation["removal_date"]%>)**
     <%- end -%>
   <%- end -%>
 <%- else -%>

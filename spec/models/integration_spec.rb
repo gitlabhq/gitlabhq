@@ -107,33 +107,25 @@ RSpec.describe Integration do
       end
     end
 
-    describe '.confidential_note_hooks' do
-      it 'includes integrations where confidential_note_events is true' do
-        create(:integration, active: true, confidential_note_events: true)
+    shared_examples 'hook scope' do |hook_type|
+      describe ".#{hook_type}_hooks" do
+        it "includes services where #{hook_type}_events is true" do
+          create(:integration, active: true, "#{hook_type}_events": true)
 
-        expect(described_class.confidential_note_hooks.count).to eq 1
-      end
+          expect(described_class.send("#{hook_type}_hooks").count).to eq 1
+        end
 
-      it 'excludes integrations where confidential_note_events is false' do
-        create(:integration, active: true, confidential_note_events: false)
+        it "excludes services where #{hook_type}_events is false" do
+          create(:integration, active: true, "#{hook_type}_events": false)
 
-        expect(described_class.confidential_note_hooks.count).to eq 0
-      end
-    end
-
-    describe '.alert_hooks' do
-      it 'includes integrations where alert_events is true' do
-        create(:integration, active: true, alert_events: true)
-
-        expect(described_class.alert_hooks.count).to eq 1
-      end
-
-      it 'excludes integrations where alert_events is false' do
-        create(:integration, active: true, alert_events: false)
-
-        expect(described_class.alert_hooks.count).to eq 0
+          expect(described_class.send("#{hook_type}_hooks").count).to eq 0
+        end
       end
     end
+
+    include_examples 'hook scope', 'confidential_note'
+    include_examples 'hook scope', 'alert'
+    include_examples 'hook scope', 'archive_trace'
   end
 
   describe '#operating?' do

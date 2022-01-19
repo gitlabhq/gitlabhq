@@ -35,6 +35,7 @@ RSpec.describe Types::Repository::BlobType do
       :plain_data,
       :can_modify_blob,
       :can_current_user_push_to_branch,
+      :archived,
       :ide_edit_path,
       :external_storage_url,
       :fork_and_edit_path,

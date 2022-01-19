@@ -55,8 +55,10 @@ RSpec.describe API::Integrations do
           current_integration = project.integrations.first
           events = current_integration.event_names.empty? ? ["foo"].freeze : current_integration.event_names
           query_strings = []
-          events.each do |event|
-            query_strings << "#{event}=#{!current_integration[event]}"
+          events.map(&:to_sym).each do |event|
+            event_value = !current_integration[event]
+            query_strings << "#{event}=#{event_value}"
+            integration_attrs[event] = event_value if integration_attrs[event].present?
           end
           query_strings = query_strings.join('&')
 

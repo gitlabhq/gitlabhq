@@ -243,7 +243,7 @@ describe('Web IDE link component', () => {
     ])(
       'emits the correct event when an action handler is called',
       async ({ props, expectedEventPayload }) => {
-        createComponent({ ...props, needsToFork: true });
+        createComponent({ ...props, needsToFork: true, disableForkModal: true });
 
         findActionsButton().props('actions')[0].handle();
 

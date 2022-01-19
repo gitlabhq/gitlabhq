@@ -111,7 +111,7 @@ export default {
 };
 </script>
 <template>
-  <div class="file-content code" :class="$options.userColorScheme">
+  <div class="file-content code js-syntax-highlight" :class="$options.userColorScheme">
     <line-numbers :lines="lineNumbers" @select-line="selectLine" />
     <pre class="code"><code v-safe-html="highlightedContent"></code>
     </pre>

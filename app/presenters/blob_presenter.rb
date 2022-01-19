@@ -102,6 +102,10 @@ class BlobPresenter < Gitlab::View::Presenter::Delegated
     user_access(project).can_push_to_branch?(blob.commit_id)
   end
 
+  def archived?
+    project.archived
+  end
+
   def ide_edit_path
     super(project, blob.commit_id, blob.path)
   end

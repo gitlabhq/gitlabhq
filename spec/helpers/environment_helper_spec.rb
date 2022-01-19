@@ -21,6 +21,16 @@ RSpec.describe EnvironmentHelper do
         expect(html).to have_css('a.ci-status.ci-success')
       end
     end
+
+    context 'for a blocked deployment' do
+      subject { helper.render_deployment_status(deployment) }
+
+      let(:deployment) { build(:deployment, :blocked) }
+
+      it 'indicates the status' do
+        expect(subject).to have_text('blocked')
+      end
+    end
   end
 
   describe '#environments_detail_data_json' do

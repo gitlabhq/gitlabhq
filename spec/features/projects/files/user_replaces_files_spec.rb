@@ -17,6 +17,7 @@ RSpec.describe 'Projects > Files > User replaces files', :js do
   let(:user) { create(:user) }
 
   before do
+    stub_feature_flags(refactor_blob_viewer: false) # This stub will be removed in https://gitlab.com/gitlab-org/gitlab/-/issues/349953
     sign_in(user)
   end
 

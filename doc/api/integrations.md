@@ -314,13 +314,15 @@ PUT /projects/:id/integrations/datadog
 
 Parameters:
 
-| Parameter | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `api_key`         | string | true  | API key used for authentication with Datadog |
-| `api_url`         | string | false | (Advanced) Define the full URL for your Datadog site directly |
-| `datadog_site`    | string | false | Choose the Datadog site to send data to. Set to `datadoghq.eu` to send data to the EU site |
-| `datadog_service` | string | false | Name of this GitLab instance that all data will be tagged with |
-| `datadog_env`     | string | false | The environment tag that traces will be tagged with |
+| Parameter              | Type    | Required | Description |
+| ---------------------- | ------- | -------- | ----------- |
+| `api_key`              | string  | true     | API key used for authentication with Datadog |
+| `api_url`              | string  | false    | (Advanced) The full URL for your Datadog site |
+<!-- | `archive_trace_events` | boolean | false    | When enabled, job logs are collected by Datadog and displayed along with pipeline execution traces ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/346339) in GitLab 14.7) | -->
+<!-- TODO: uncomment the archive_trace_events field once :datadog_integration_logs_collection is rolled out. Rollout issue: https://gitlab.com/gitlab-org/gitlab/-/issues/346339 -->
+| `datadog_env`          | string  | false    | For self-managed deployments, set the env% tag for all the data sent to Datadog. |
+| `datadog_service`      | string  | false    | Tag all data from this GitLab instance in Datadog. Useful when managing several self-managed deployments |
+| `datadog_site`         | string  | false    | The Datadog site to send data to. To send data to the EU site, use `datadoghq.eu` |
 
 ### Disable Datadog integration
 

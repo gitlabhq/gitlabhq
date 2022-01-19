@@ -98,6 +98,11 @@ export default {
       required: false,
       default: '',
     },
+    disableForkModal: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -118,7 +123,11 @@ export default {
         ? {
             href: '#modal-confirm-fork-edit',
             handle: () => {
-              this.$emit('edit', 'simple');
+              if (this.disableForkModal) {
+                this.$emit('edit', 'simple');
+                return;
+              }
+
               this.showJQueryModal('#modal-confirm-fork-edit');
             },
           }
@@ -157,7 +166,11 @@ export default {
         ? {
             href: '#modal-confirm-fork-webide',
             handle: () => {
-              this.$emit('edit', 'ide');
+              if (this.disableForkModal) {
+                this.$emit('edit', 'ide');
+                return;
+              }
+
               this.showJQueryModal('#modal-confirm-fork-webide');
             },
           }

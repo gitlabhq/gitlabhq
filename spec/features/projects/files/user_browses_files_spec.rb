@@ -340,6 +340,7 @@ RSpec.describe "User browses files" do
     let(:newrev) { project.repository.commit('master').sha }
 
     before do
+      stub_feature_flags(refactor_blob_viewer: false) # This stub will be removed in https://gitlab.com/gitlab-org/gitlab/-/issues/350456
       create_file_in_repo(project, 'master', 'master', filename, 'Test file')
       path = File.join('master', filename)
 
@@ -355,6 +356,7 @@ RSpec.describe "User browses files" do
 
   context "when browsing a raw file" do
     before do
+      stub_feature_flags(refactor_blob_viewer: false) # This stub will be removed in https://gitlab.com/gitlab-org/gitlab/-/issues/350456
       path = File.join(RepoHelpers.sample_commit.id, RepoHelpers.sample_blob.path)
 
       visit(project_blob_path(project, path))

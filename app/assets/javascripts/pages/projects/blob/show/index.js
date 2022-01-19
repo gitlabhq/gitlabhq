@@ -41,6 +41,7 @@ if (viewBlobEl) {
   });
 
   initAuxiliaryViewer();
+  initBlob();
 } else {
   new BlobViewer(); // eslint-disable-line no-new
   initBlob();

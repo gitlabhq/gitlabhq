@@ -6284,7 +6284,19 @@ msgstr ""
 msgid "CICDAnalytics|Releases"
 msgstr ""
 
+msgid "CICDAnalytics|Shared Runners Usage"
+msgstr ""
+
+msgid "CICDAnalytics|Shared runner usage"
+msgstr ""
+
+msgid "CICDAnalytics|Shared runner usage is the total runtime of all jobs that ran on shared runners"
+msgstr ""
+
 msgid "CICDAnalytics|Something went wrong while fetching release statistics"
+msgstr ""
+
+msgid "CICDAnalytics|What is shared runner usage?"
 msgstr ""
 
 msgid "CICD|Add a %{base_domain_link_start}base domain%{link_end} to your %{kubernetes_cluster_link_start}Kubernetes cluster%{link_end} for your deployment strategy to work."
@@ -11976,6 +11988,9 @@ msgstr ""
 msgid "Deployment|This deployment was created using the API"
 msgstr ""
 
+msgid "Deployment|blocked"
+msgstr ""
+
 msgid "Deployment|canceled"
 msgstr ""
 
@@ -12534,9 +12549,6 @@ msgid "Discover|Security capabilities, integrated into your development lifecycl
 msgstr ""
 
 msgid "Discover|See the other features of the %{linkStart}ultimate plan%{linkEnd}"
-msgstr ""
-
-msgid "Discover|Send feedback"
 msgstr ""
 
 msgid "Discover|Start a free trial"
@@ -13232,6 +13244,9 @@ msgid "Enable kuromoji custom analyzer: Indexing"
 msgstr ""
 
 msgid "Enable kuromoji custom analyzer: Search"
+msgstr ""
+
+msgid "Enable logs collection"
 msgstr ""
 
 msgid "Enable maintenance mode"
@@ -40191,6 +40206,9 @@ msgid "When enabled, SSH keys with no expiry date or an invalid expiration date 
 msgstr ""
 
 msgid "When enabled, existing personal access tokens may be revoked. Leave blank for no limit."
+msgstr ""
+
+msgid "When enabled, job logs are collected by Datadog and displayed along with pipeline execution traces."
 msgstr ""
 
 msgid "When inactive, an external authentication provider must be used."

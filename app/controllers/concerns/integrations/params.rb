@@ -11,6 +11,7 @@ module Integrations
       :api_key,
       :api_token,
       :api_url,
+      :archive_trace_events,
       :bamboo_url,
       :branches_to_be_notified,
       :labels_to_be_notified,

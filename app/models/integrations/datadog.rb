@@ -2,7 +2,6 @@
 
 module Integrations
   class Datadog < Integration
-    include ActionView::Helpers::UrlHelper
     include HasWebHook
     extend Gitlab::Utils::Override
 
@@ -34,12 +33,21 @@ module Integrations
       SUPPORTED_EVENTS
     end
 
+    def supported_events
+      events = super
+
+      return events + ['archive_trace'] if Feature.enabled?(:datadog_integration_logs_collection, parent)
+
+      events
+    end
+
     def self.default_test_event
       'pipeline'
     end
 
     def configurable_events
       [] # do not allow to opt out of required hooks
+      # archive_trace is opt-in but we handle it with a more detailed field below
     end
 
     def title
@@ -51,7 +59,11 @@ module Integrations
     end
 
     def help
-      docs_link = link_to s_('DatadogIntegration|How do I set up this integration?'), Rails.application.routes.url_helpers.help_page_url('integration/datadog'), target: '_blank', rel: 'noopener noreferrer'
+      docs_link = ActionController::Base.helpers.link_to(
+        s_('DatadogIntegration|How do I set up this integration?'),
+        Rails.application.routes.url_helpers.help_page_url('integration/datadog'),
+        target: '_blank', rel: 'noopener noreferrer'
+      )
       s_('DatadogIntegration|Send CI/CD pipeline information to Datadog to monitor for job failures and troubleshoot performance issues. %{docs_link}').html_safe % { docs_link: docs_link.html_safe }
     end
 
@@ -60,7 +72,7 @@ module Integrations
     end
 
     def fields
-      [
+      f = [
         {
           type: 'text',
           name: 'datadog_site',
@@ -93,7 +105,21 @@ module Integrations
             linkClose: '</a>'.html_safe
           },
           required: true
-        },
+        }
+      ]
+
+      if Feature.enabled?(:datadog_integration_logs_collection, parent)
+        f.append({
+          type: 'checkbox',
+          name: 'archive_trace_events',
+          title: s_('Logs'),
+          checkbox_label: s_('Enable logs collection'),
+          help: s_('When enabled, job logs are collected by Datadog and displayed along with pipeline execution traces.'),
+          required: false
+        })
+      end
+
+      f += [
         {
           type: 'text',
           name: 'datadog_service',
@@ -116,6 +142,8 @@ module Integrations
           }
         }
       ]
+
+      f
     end
 
     override :hook_url
@@ -136,8 +164,7 @@ module Integrations
       object_kind = 'job' if object_kind == 'build'
       return unless supported_events.include?(object_kind)
 
-      data = data.with_retried_builds if data.respond_to?(:with_retried_builds)
-
+      data = hook_data(data, object_kind)
       execute_web_hook!(data, "#{object_kind} hook")
     end
 
@@ -157,6 +184,14 @@ module Integrations
       # https://docs.datadoghq.com/getting_started/site/ is confusing for internal URLs.
       # US3 needs to keep a prefix but other datacenters cannot have the listed "app" prefix
       datadog_site.delete_prefix("app.")
+    end
+
+    def hook_data(data, object_kind)
+      if object_kind == 'pipeline' && data.respond_to?(:with_retried_builds)
+        return data.with_retried_builds
+      end
+
+      data
     end
   end
 end

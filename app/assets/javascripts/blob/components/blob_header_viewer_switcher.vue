@@ -53,6 +53,8 @@ export default {
       icon="code"
       category="primary"
       variant="default"
+      class="js-blob-viewer-switch-btn"
+      data-viewer="simple"
       @click="switchToViewer($options.SIMPLE_BLOB_VIEWER)"
     />
     <gl-button
@@ -63,6 +65,8 @@ export default {
       icon="document"
       category="primary"
       variant="default"
+      class="js-blob-viewer-switch-btn"
+      data-viewer="rich"
       @click="switchToViewer($options.RICH_BLOB_VIEWER)"
     />
   </gl-button-group>

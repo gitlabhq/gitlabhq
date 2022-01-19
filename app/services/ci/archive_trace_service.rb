@@ -27,6 +27,10 @@ module Ci
       job.trace.archive!
       job.remove_pending_state!
 
+      if Feature.enabled?(:datadog_integration_logs_collection, job.project) && job.job_artifacts_trace.present?
+        job.project.execute_integrations(Gitlab::DataBuilder::ArchiveTrace.build(job), :archive_trace_hooks)
+      end
+
       # TODO: Remove this logging once we confirmed new live trace architecture is functional.
       # See https://gitlab.com/gitlab-com/gl-infra/infrastructure/issues/4667.
       unless job.has_archived_trace?

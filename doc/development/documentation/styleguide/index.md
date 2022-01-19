@@ -394,33 +394,16 @@ especially in tutorials, instructional documentation, and
 
 Some contractions, however, should be avoided:
 
-- Do not use the word "GitLab" in a contraction.
+<!-- vale gitlab.Possessive = NO -->
 
-- Do not use contractions with a proper noun and a verb. For example:
+| Do not use a contraction      | Example                                          | Use instead                                                      |
+|-------------------------------|--------------------------------------------------|------------------------------------------------------------------|
+| With a proper noun and a verb | The **Container Registry's** a powerful feature. | The **Container Registry** is a powerful feature.                |
+| To emphasize a negative       | **Don't** install X with Y.                      | **Do not** install X with Y.                                     |
+| In reference documentation    | **Don't** set a limit.                           | **Do not** set a limit.                                          |
+| In error messages             | Requests to localhost **aren't** allowed.        | Requests to localhost **are not** allowed.                        |
 
-  | Do                                       | Don't                                   |
-  |------------------------------------------|-----------------------------------------|
-  | Canada is establishing X.                | Canada's establishing X.                |
-
-- Do not use contractions when you need to emphasize a negative. For example:
-
-  | Do                                       | Don't                                   |
-  |------------------------------------------|-----------------------------------------|
-  | Do not install X with Y.               | Don't install X with Y.               |
-
-- Do not use contractions in reference documentation. For example:
-
-  | Do                                       | Don't                                   |
-  |------------------------------------------|-----------------------------------------|
-  | Do not set a limit greater than 1000.  | Don't set a limit greater than 1000.  |
-  | For `parameter1`, the default is 10.     | For `parameter1`, the default's 10.     |
-
-- Avoid contractions in error messages. Examples:
-
-  | Do                                       | Don't                                   |
-  |------------------------------------------|-----------------------------------------|
-  | Requests to localhost are not allowed.   | Requests to localhost aren't allowed.   |
-  | Specified URL cannot be used.            | Specified URL can't be used.            |
+<!-- vale gitlab.Possessive = YES -->
 
 ### Acronyms
 

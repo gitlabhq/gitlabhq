@@ -55,6 +55,8 @@ export default {
                 blamePath: null,
                 historyPath: null,
                 permalinkPath: null,
+                storedExternally: null,
+                externalStorage: null,
               },
             ],
           },
@@ -71,6 +73,9 @@ export default {
     },
     blobInfo() {
       return this.project?.repository?.blobs?.nodes[0] || {};
+    },
+    showBlameButton() {
+      return !this.blobInfo.storedExternally && this.blobInfo.externalStorage !== 'lfs';
     },
   },
   watch: {
@@ -89,7 +94,12 @@ export default {
     <gl-button data-testid="find" :href="blobInfo.findFilePath" :class="$options.buttonClassList">
       {{ $options.i18n.findFile }}
     </gl-button>
-    <gl-button data-testid="blame" :href="blobInfo.blamePath" :class="$options.buttonClassList">
+    <gl-button
+      v-if="showBlameButton"
+      data-testid="blame"
+      :href="blobInfo.blamePath"
+      :class="$options.buttonClassList"
+    >
       {{ $options.i18n.blame }}
     </gl-button>
 

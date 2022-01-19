@@ -50,6 +50,7 @@ export default {
     :web-ide-url="webIdePath"
     :needs-to-fork="needsToFork"
     :is-blob="true"
+    disable-fork-modal
     @edit="onEdit"
   />
   <div v-else>

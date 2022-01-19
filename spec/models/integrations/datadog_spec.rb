@@ -38,6 +38,11 @@ RSpec.describe Integrations::Datadog do
 
   let(:pipeline_data) { Gitlab::DataBuilder::Pipeline.build(pipeline) }
   let(:build_data) { Gitlab::DataBuilder::Build.build(build) }
+  let(:archive_trace_data) do
+    create(:ci_job_artifact, :trace, job: build)
+
+    Gitlab::DataBuilder::ArchiveTrace.build(build)
+  end
 
   it_behaves_like Integrations::HasWebHook do
     let(:integration) { instance }
@@ -98,6 +103,13 @@ RSpec.describe Integrations::Datadog do
       it { is_expected.to be_valid }
       it { is_expected.not_to validate_presence_of(:api_key) }
     end
+  end
+
+  describe '#help' do
+    subject { instance.help }
+
+    it { is_expected.to be_a(String) }
+    it { is_expected.not_to be_empty }
   end
 
   describe '#hook_url' do
@@ -161,9 +173,12 @@ RSpec.describe Integrations::Datadog do
     end
 
     before do
+      stub_feature_flags(datadog_integration_logs_collection: enable_logs_collection)
       stub_request(:post, expected_hook_url)
       saved_instance.execute(data)
     end
+
+    let(:enable_logs_collection) { true }
 
     context 'with pipeline data' do
       let(:data) { pipeline_data }
@@ -179,6 +194,20 @@ RSpec.describe Integrations::Datadog do
       let(:expected_body) { data.to_json }
 
       it { expect(a_request(:post, expected_hook_url).with(headers: expected_headers, body: expected_body)).to have_been_made }
+    end
+
+    context 'with archive trace data' do
+      let(:data) { archive_trace_data }
+      let(:expected_headers) { { ::Gitlab::WebHooks::GITLAB_EVENT_HEADER => 'Archive Trace Hook' } }
+      let(:expected_body) { data.to_json }
+
+      it { expect(a_request(:post, expected_hook_url).with(headers: expected_headers, body: expected_body)).to have_been_made }
+
+      context 'but feature flag disabled' do
+        let(:enable_logs_collection) { false }
+
+        it { expect(a_request(:post, expected_hook_url)).not_to have_been_made }
+      end
     end
   end
 end
