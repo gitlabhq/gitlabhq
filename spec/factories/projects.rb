@@ -49,6 +49,8 @@ FactoryBot.define do
       forward_deployment_enabled { nil }
       restrict_user_defined_variables { nil }
       ci_job_token_scope_enabled { nil }
+      runner_token_expiration_interval { nil }
+      runner_token_expiration_interval_human_readable { nil }
     end
 
     after(:build) do |project, evaluator|
@@ -92,6 +94,8 @@ FactoryBot.define do
       project.keep_latest_artifact = evaluator.keep_latest_artifact unless evaluator.keep_latest_artifact.nil?
       project.restrict_user_defined_variables = evaluator.restrict_user_defined_variables unless evaluator.restrict_user_defined_variables.nil?
       project.ci_job_token_scope_enabled = evaluator.ci_job_token_scope_enabled unless evaluator.ci_job_token_scope_enabled.nil?
+      project.runner_token_expiration_interval = evaluator.runner_token_expiration_interval unless evaluator.runner_token_expiration_interval.nil?
+      project.runner_token_expiration_interval_human_readable = evaluator.runner_token_expiration_interval_human_readable unless evaluator.runner_token_expiration_interval_human_readable.nil?
 
       if evaluator.import_status
         import_state = project.import_state || project.build_import_state

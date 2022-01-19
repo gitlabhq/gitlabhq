@@ -1,7 +1,11 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Manage', :requires_admin do
+  RSpec.describe 'Manage', :requires_admin, quarantine: {
+    issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/350598',
+    type: :needs_update,
+    only: { subdomain: :staging }
+  } do
     describe 'Add project member' do
       before do
         Runtime::Feature.enable(:invite_members_group_modal)

@@ -692,6 +692,7 @@ Badge:
 - type
 ProjectCiCdSetting:
 - group_runners_enabled
+- runner_token_expiration_interval
 ProjectSetting:
 - allow_merge_on_skipped_pipeline
 - has_confluence

@@ -236,16 +236,6 @@ module Issues
       SystemNoteService.change_issue_confidentiality(issue, issue.project, current_user)
     end
 
-    override :add_incident_label?
-    def add_incident_label?(issue)
-      issue.issue_type != params[:issue_type] && !issue.incident?
-    end
-
-    override :remove_incident_label?
-    def remove_incident_label?(issue)
-      issue.issue_type != params[:issue_type] && issue.incident?
-    end
-
     def handle_issue_type_change(issue)
       return unless issue.previous_changes.include?('issue_type')
 

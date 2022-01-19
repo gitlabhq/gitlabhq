@@ -128,16 +128,6 @@ RSpec.describe Gitlab::WebHooks::RecursionDetection, :clean_gitlab_redis_shared_
         end
       end
     end
-
-    it 'does not store anything if the feature flag is disabled' do
-      stub_feature_flags(webhook_recursion_detection: false)
-
-      described_class.register!(web_hook)
-
-      ::Gitlab::Redis::SharedState.with do |redis|
-        expect(redis.exists(cache_key(web_hook))).to eq(false)
-      end
-    end
   end
 
   describe 'block?' do
@@ -167,12 +157,6 @@ RSpec.describe Gitlab::WebHooks::RecursionDetection, :clean_gitlab_redis_shared_
         is_expected.to eq(true)
       end
 
-      it 'returns false if the feature flag is disabled' do
-        stub_feature_flags(webhook_recursion_detection: false)
-
-        is_expected.to eq(false)
-      end
-
       context 'when the request UUID changes again' do
         before do
           uuid_class.instance.request_uuid = SecureRandom.uuid
@@ -197,12 +181,6 @@ RSpec.describe Gitlab::WebHooks::RecursionDetection, :clean_gitlab_redis_shared_
 
       it 'returns true' do
         is_expected.to eq(true)
-      end
-
-      it 'returns false if the feature flag is disabled' do
-        stub_feature_flags(webhook_recursion_detection: false)
-
-        is_expected.to eq(false)
       end
 
       context 'when the request UUID changes again' do

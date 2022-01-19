@@ -10483,6 +10483,9 @@ CREATE TABLE application_settings (
     future_subscriptions jsonb DEFAULT '[]'::jsonb NOT NULL,
     user_email_lookup_limit integer DEFAULT 60 NOT NULL,
     packages_cleanup_package_file_worker_capacity smallint DEFAULT 2 NOT NULL,
+    runner_token_expiration_interval integer,
+    group_runner_token_expiration_interval integer,
+    project_runner_token_expiration_interval integer,
     CONSTRAINT app_settings_container_reg_cleanup_tags_max_list_size_positive CHECK ((container_registry_cleanup_tags_service_max_list_size >= 0)),
     CONSTRAINT app_settings_dep_proxy_ttl_policies_worker_capacity_positive CHECK ((dependency_proxy_ttl_group_policy_worker_capacity >= 0)),
     CONSTRAINT app_settings_ext_pipeline_validation_service_url_text_limit CHECK ((char_length(external_pipeline_validation_service_url) <= 255)),
@@ -16505,6 +16508,9 @@ CREATE TABLE namespace_settings (
     new_user_signups_cap integer,
     setup_for_company boolean,
     jobs_to_be_done smallint,
+    runner_token_expiration_interval integer,
+    subgroup_runner_token_expiration_interval integer,
+    project_runner_token_expiration_interval integer,
     CONSTRAINT check_0ba93c78c7 CHECK ((char_length(default_branch_name) <= 255))
 );
 
@@ -18169,7 +18175,8 @@ CREATE TABLE project_ci_cd_settings (
     auto_rollback_enabled boolean DEFAULT false NOT NULL,
     keep_latest_artifact boolean DEFAULT true NOT NULL,
     restrict_user_defined_variables boolean DEFAULT false NOT NULL,
-    job_token_scope_enabled boolean DEFAULT false NOT NULL
+    job_token_scope_enabled boolean DEFAULT false NOT NULL,
+    runner_token_expiration_interval integer
 );
 
 CREATE SEQUENCE project_ci_cd_settings_id_seq
@@ -30496,9 +30503,6 @@ ALTER TABLE ONLY geo_repository_renamed_events
 
 ALTER TABLE ONLY aws_roles
     ADD CONSTRAINT fk_rails_4ed56f4720 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY security_scans
-    ADD CONSTRAINT fk_rails_4ef1e6b4c6 FOREIGN KEY (build_id) REFERENCES ci_builds(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY packages_debian_publications
     ADD CONSTRAINT fk_rails_4fc8ebd03e FOREIGN KEY (distribution_id) REFERENCES packages_debian_project_distributions(id) ON DELETE CASCADE;

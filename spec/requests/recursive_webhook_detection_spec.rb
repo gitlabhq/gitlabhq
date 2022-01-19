@@ -45,20 +45,6 @@ RSpec.describe 'Recursive webhook detection', :sidekiq_inline, :clean_gitlab_red
         .once
     end
 
-    shared_examples 'when the feature flag is disabled' do
-      it 'executes and logs no errors' do
-        stub_feature_flags(webhook_recursion_detection: false)
-        stub_requests
-
-        expect(Gitlab::AuthLogger).not_to receive(:error)
-
-        trigger_web_hooks
-
-        expect(WebMock).to have_requested(:post, stubbed_hostname(project_hook.url)).once
-        expect(WebMock).to have_requested(:post, stubbed_hostname(system_hook.url)).once
-      end
-    end
-
     context 'when one of the webhooks is recursive' do
       before do
         # Recreate the necessary state for the previous request to be
@@ -87,8 +73,6 @@ RSpec.describe 'Recursive webhook detection', :sidekiq_inline, :clean_gitlab_red
         expect(WebMock).to have_requested(:post, stubbed_hostname(project_hook.url)).once
         expect(WebMock).to have_requested(:post, stubbed_hostname(system_hook.url)).once
       end
-
-      include_examples 'when the feature flag is disabled'
     end
 
     context 'when the count limit has been reached' do
@@ -134,8 +118,6 @@ RSpec.describe 'Recursive webhook detection', :sidekiq_inline, :clean_gitlab_red
         expect(WebMock).to have_requested(:post, stubbed_hostname(system_hook.url)).once
       end
     end
-
-    include_examples 'when the feature flag is disabled'
   end
 
   context 'when the recursive webhook detection header is absent' do

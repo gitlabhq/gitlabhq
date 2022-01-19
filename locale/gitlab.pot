@@ -4712,9 +4712,6 @@ msgstr ""
 msgid "Are you sure you want to remove this list?"
 msgstr ""
 
-msgid "Are you sure you want to reset the SCIM token? SCIM provisioning will stop working until the new token is updated."
-msgstr ""
-
 msgid "Are you sure you want to reset the health check token?"
 msgstr ""
 
@@ -17057,16 +17054,10 @@ msgstr ""
 msgid "GroupSAML|SAML group link was successfully removed."
 msgstr ""
 
-msgid "GroupSAML|SCIM API endpoint URL"
-msgstr ""
-
 msgid "GroupSAML|SCIM Token"
 msgstr ""
 
 msgid "GroupSAML|SHA1 fingerprint of the SAML token signing certificate. Get this from your identity provider, where it can also be called \"Thumbprint\"."
-msgstr ""
-
-msgid "GroupSAML|The SCIM token is now hidden. To see the value of the token again, you need to "
 msgstr ""
 
 msgid "GroupSAML|The SCIM token is now hidden. To see the value of the token again, you need to %{linkStart}reset it%{linkEnd}."
@@ -17091,9 +17082,6 @@ msgid "GroupSAML|Valid SAML Response"
 msgstr ""
 
 msgid "GroupSAML|With prohibit outer forks flag enabled group members will be able to fork project only inside your group."
-msgstr ""
-
-msgid "GroupSAML|Your SCIM token"
 msgstr ""
 
 msgid "GroupSAML|as %{access_level}"
@@ -31828,6 +31816,9 @@ msgstr ""
 msgid "SecurityPolicies|Policy type"
 msgstr ""
 
+msgid "SecurityReports|%{count}+ projects"
+msgstr ""
+
 msgid "SecurityReports|%{firstProject} and %{secondProject}"
 msgstr ""
 
@@ -32866,9 +32857,6 @@ msgid "SharedRunnersMinutesSettings|Reset pipeline minutes"
 msgstr ""
 
 msgid "SharedRunnersMinutesSettings|Reset used pipeline minutes"
-msgstr ""
-
-msgid "Sherlock Transactions"
 msgstr ""
 
 msgid "Shimo|Go to Shimo Workspace"
@@ -41415,9 +41403,6 @@ msgstr ""
 msgid "Your new %{type}"
 msgstr ""
 
-msgid "Your new SCIM token"
-msgstr ""
-
 msgid "Your new access token has been created."
 msgstr ""
 
@@ -42726,7 +42711,7 @@ msgstr ""
 msgid "mrWidget|Merge blocked: this merge request must be approved."
 msgstr ""
 
-msgid "mrWidget|Merge blocked: you can only merge once above items are resolved."
+msgid "mrWidget|Merge blocked: you can only merge after the above items are resolved."
 msgstr ""
 
 msgid "mrWidget|Merge failed."
@@ -43154,9 +43139,6 @@ msgid "repository:"
 msgstr ""
 
 msgid "required"
-msgstr ""
-
-msgid "reset it."
 msgstr ""
 
 msgid "satisfied"

@@ -53,7 +53,6 @@ module SimpleCovEnv
       track_files '{app,config/initializers,config/initializers_before_autoloader,db/post_migrate,haml_lint,lib,rubocop,tooling}/**/*.rb'
 
       add_filter '/vendor/ruby/'
-      add_filter '/app/controllers/sherlock/' # Profiling tool used only in development
       add_filter '/bin/'
       add_filter 'db/fixtures/development/' # Matches EE files as well
 

@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Group do
   include ReloadHelpers
+  include StubGitlabCalls
 
   let!(:group) { create(:group) }
 
@@ -2928,6 +2929,224 @@ RSpec.describe Group do
       it 'returns links of private, internal and public shared groups' do
         expect(shared_group.shared_with_group_links_visible_to_user(user_with_parent_access)).to contain_exactly(private_group_group_link, internal_group_group_link, public_group_group_link)
       end
+    end
+  end
+
+  describe '#enforced_runner_token_expiration_interval and #effective_runner_token_expiration_interval' do
+    shared_examples 'no enforced expiration interval' do
+      it { expect(subject.enforced_runner_token_expiration_interval).to be_nil }
+    end
+
+    shared_examples 'enforced expiration interval' do |enforced_interval:|
+      it { expect(subject.enforced_runner_token_expiration_interval).to eq(enforced_interval) }
+    end
+
+    shared_examples 'no effective expiration interval' do
+      it { expect(subject.effective_runner_token_expiration_interval).to be_nil }
+    end
+
+    shared_examples 'effective expiration interval' do |effective_interval:|
+      it { expect(subject.effective_runner_token_expiration_interval).to eq(effective_interval) }
+    end
+
+    context 'when there is no interval in group settings' do
+      let_it_be(:group) { create(:group) }
+
+      subject { group }
+
+      it_behaves_like 'no enforced expiration interval'
+      it_behaves_like 'no effective expiration interval'
+    end
+
+    context 'when there is a group interval' do
+      let(:group_settings) { create(:namespace_settings, runner_token_expiration_interval: 3.days.to_i) }
+
+      subject { create(:group, namespace_settings: group_settings) }
+
+      it_behaves_like 'no enforced expiration interval'
+      it_behaves_like 'effective expiration interval', effective_interval: 3.days
+    end
+
+    # runner_token_expiration_interval should not affect the expiration interval, only
+    # group_runner_token_expiration_interval should.
+    context 'when there is a site-wide enforced shared interval' do
+      before do
+        stub_application_setting(runner_token_expiration_interval: 5.days.to_i)
+      end
+
+      let_it_be(:group) { create(:group) }
+
+      subject { group }
+
+      it_behaves_like 'no enforced expiration interval'
+      it_behaves_like 'no effective expiration interval'
+    end
+
+    context 'when there is a site-wide enforced group interval' do
+      before do
+        stub_application_setting(group_runner_token_expiration_interval: 5.days.to_i)
+      end
+
+      let_it_be(:group) { create(:group) }
+
+      subject { group }
+
+      it_behaves_like 'enforced expiration interval', enforced_interval: 5.days
+      it_behaves_like 'effective expiration interval', effective_interval: 5.days
+    end
+
+    # project_runner_token_expiration_interval should not affect the expiration interval, only
+    # group_runner_token_expiration_interval should.
+    context 'when there is a site-wide enforced project interval' do
+      before do
+        stub_application_setting(project_runner_token_expiration_interval: 5.days.to_i)
+      end
+
+      let_it_be(:group) { create(:group) }
+
+      subject { group }
+
+      it_behaves_like 'no enforced expiration interval'
+      it_behaves_like 'no effective expiration interval'
+    end
+
+    # runner_token_expiration_interval should not affect the expiration interval, only
+    # subgroup_runner_token_expiration_interval should.
+    context 'when there is a grandparent group enforced group interval' do
+      let_it_be(:grandparent_group_settings) { create(:namespace_settings, runner_token_expiration_interval: 4.days.to_i) }
+      let_it_be(:grandparent_group) { create(:group, namespace_settings: grandparent_group_settings) }
+      let_it_be(:parent_group) { create(:group, parent: grandparent_group) }
+      let_it_be(:subgroup) { create(:group, parent: parent_group) }
+
+      subject { subgroup }
+
+      it_behaves_like 'no enforced expiration interval'
+      it_behaves_like 'no effective expiration interval'
+    end
+
+    context 'when there is a grandparent group enforced subgroup interval' do
+      let_it_be(:grandparent_group_settings) { create(:namespace_settings, subgroup_runner_token_expiration_interval: 4.days.to_i) }
+      let_it_be(:grandparent_group) { create(:group, namespace_settings: grandparent_group_settings) }
+      let_it_be(:parent_group) { create(:group, parent: grandparent_group) }
+      let_it_be(:subgroup) { create(:group, parent: parent_group) }
+
+      subject { subgroup }
+
+      it_behaves_like 'enforced expiration interval', enforced_interval: 4.days
+      it_behaves_like 'effective expiration interval', effective_interval: 4.days
+    end
+
+    # project_runner_token_expiration_interval should not affect the expiration interval, only
+    # subgroup_runner_token_expiration_interval should.
+    context 'when there is a grandparent group enforced project interval' do
+      let_it_be(:grandparent_group_settings) { create(:namespace_settings, project_runner_token_expiration_interval: 4.days.to_i) }
+      let_it_be(:grandparent_group) { create(:group, namespace_settings: grandparent_group_settings) }
+      let_it_be(:parent_group) { create(:group, parent: grandparent_group) }
+      let_it_be(:subgroup) { create(:group, parent: parent_group) }
+
+      subject { subgroup }
+
+      it_behaves_like 'no enforced expiration interval'
+      it_behaves_like 'no effective expiration interval'
+    end
+
+    context 'when there is a parent group enforced interval overridden by group interval' do
+      let_it_be(:parent_group_settings) { create(:namespace_settings, subgroup_runner_token_expiration_interval: 5.days.to_i) }
+      let_it_be(:parent_group) { create(:group, namespace_settings: parent_group_settings) }
+      let_it_be(:group_settings) { create(:namespace_settings, runner_token_expiration_interval: 4.days.to_i) }
+      let_it_be(:subgroup_with_settings) { create(:group, parent: parent_group, namespace_settings: group_settings) }
+
+      subject { subgroup_with_settings }
+
+      it_behaves_like 'enforced expiration interval', enforced_interval: 5.days
+      it_behaves_like 'effective expiration interval', effective_interval: 4.days
+
+      it 'has human-readable expiration intervals' do
+        expect(subject.enforced_runner_token_expiration_interval_human_readable).to eq('5d')
+        expect(subject.effective_runner_token_expiration_interval_human_readable).to eq('4d')
+      end
+    end
+
+    context 'when site-wide enforced interval overrides group interval' do
+      before do
+        stub_application_setting(group_runner_token_expiration_interval: 3.days.to_i)
+      end
+
+      let_it_be(:group_settings) { create(:namespace_settings, runner_token_expiration_interval: 4.days.to_i) }
+      let_it_be(:group_with_settings) { create(:group, namespace_settings: group_settings) }
+
+      subject { group_with_settings }
+
+      it_behaves_like 'enforced expiration interval', enforced_interval: 3.days
+      it_behaves_like 'effective expiration interval', effective_interval: 3.days
+    end
+
+    context 'when group interval overrides site-wide enforced interval' do
+      before do
+        stub_application_setting(group_runner_token_expiration_interval: 5.days.to_i)
+      end
+
+      let_it_be(:group_settings) { create(:namespace_settings, runner_token_expiration_interval: 4.days.to_i) }
+      let_it_be(:group_with_settings) { create(:group, namespace_settings: group_settings) }
+
+      subject { group_with_settings }
+
+      it_behaves_like 'enforced expiration interval', enforced_interval: 5.days
+      it_behaves_like 'effective expiration interval', effective_interval: 4.days
+    end
+
+    context 'when site-wide enforced interval overrides parent group enforced interval' do
+      before do
+        stub_application_setting(group_runner_token_expiration_interval: 3.days.to_i)
+      end
+
+      let_it_be(:parent_group_settings) { create(:namespace_settings, subgroup_runner_token_expiration_interval: 4.days.to_i) }
+      let_it_be(:parent_group) { create(:group, namespace_settings: parent_group_settings) }
+      let_it_be(:subgroup) { create(:group, parent: parent_group) }
+
+      subject { subgroup }
+
+      it_behaves_like 'enforced expiration interval', enforced_interval: 3.days
+      it_behaves_like 'effective expiration interval', effective_interval: 3.days
+    end
+
+    context 'when parent group enforced interval overrides site-wide enforced interval' do
+      before do
+        stub_application_setting(group_runner_token_expiration_interval: 5.days.to_i)
+      end
+
+      let_it_be(:parent_group_settings) { create(:namespace_settings, subgroup_runner_token_expiration_interval: 4.days.to_i) }
+      let_it_be(:parent_group) { create(:group, namespace_settings: parent_group_settings) }
+      let_it_be(:subgroup) { create(:group, parent: parent_group) }
+
+      subject { subgroup }
+
+      it_behaves_like 'enforced expiration interval', enforced_interval: 4.days
+      it_behaves_like 'effective expiration interval', effective_interval: 4.days
+    end
+
+    # Unrelated groups should not affect the expiration interval.
+    context 'when there is an enforced group interval in an unrelated group' do
+      let_it_be(:unrelated_group_settings) { create(:namespace_settings, subgroup_runner_token_expiration_interval: 4.days.to_i) }
+      let_it_be(:unrelated_group) { create(:group, namespace_settings: unrelated_group_settings) }
+      let_it_be(:group) { create(:group) }
+
+      subject { group }
+
+      it_behaves_like 'no enforced expiration interval'
+      it_behaves_like 'no effective expiration interval'
+    end
+
+    # Subgroups should not affect the parent group expiration interval.
+    context 'when there is an enforced group interval in a subgroup' do
+      let_it_be(:subgroup_settings) { create(:namespace_settings, subgroup_runner_token_expiration_interval: 4.days.to_i) }
+      let_it_be(:subgroup) { create(:group, parent: group, namespace_settings: subgroup_settings) }
+      let_it_be(:group) { create(:group) }
+
+      subject { group }
+
+      it_behaves_like 'no enforced expiration interval'
+      it_behaves_like 'no effective expiration interval'
     end
   end
 end

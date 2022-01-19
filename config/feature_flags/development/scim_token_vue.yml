@@ -1,8 +1,0 @@
----
-name: scim_token_vue
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/74743
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/347270
-milestone: '14.6'
-type: development
-group: group::access
-default_enabled: true

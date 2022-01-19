@@ -76,7 +76,6 @@ Rails/TimeZone:
   - lib/gitlab/prometheus/queries/additional_metrics_environment_query.rb
   - lib/gitlab/prometheus/queries/matched_metric_query.rb
   - lib/gitlab/prometheus_client.rb
-  - lib/gitlab/sherlock/transaction.rb
   - lib/gitlab/task_helpers.rb
   - lib/gitlab/x509/tag.rb
   - lib/grafana/time_window.rb
@@ -141,7 +140,6 @@ Rails/TimeZone:
   - spec/lib/gitlab/prometheus/queries/additional_metrics_deployment_query_spec.rb
   - spec/lib/gitlab/prometheus/queries/deployment_query_spec.rb
   - spec/lib/gitlab/prometheus/queries/validate_query_spec.rb
-  - spec/lib/gitlab/sherlock/transaction_spec.rb
   - spec/lib/gitlab/sidekiq_logging/json_formatter_spec.rb
   - spec/lib/gitlab/sidekiq_middleware/duplicate_jobs/strategies/until_executing_spec.rb
   - spec/lib/gitlab/updated_notes_paginator_spec.rb

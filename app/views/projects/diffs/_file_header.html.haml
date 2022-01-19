@@ -36,5 +36,5 @@
       #{diff_file.a_mode} → #{diff_file.b_mode}
 
   - if diff_file.stored_externally? && diff_file.external_storage == :lfs
-    %span.badge.label-lfs.gl-mr-2 LFS
+    = gl_badge_tag(_('LFS'), variant: :neutral)
 

@@ -120,6 +120,7 @@ included_attributes:
     - :name
   ci_cd_settings:
     - :group_runners_enabled
+    - :runner_token_expiration_interval
   metrics_setting:
     - :dashboard_timezone
     - :external_dashboard_url

@@ -132,6 +132,7 @@ module API
         Ability.allowed?(options[:current_user], :change_repository_storage, project)
       }
       expose :keep_latest_artifacts_available?, as: :keep_latest_artifact
+      expose :runner_token_expiration_interval
 
       # rubocop: disable CodeReuse/ActiveRecord
       def self.preload_resource(project)

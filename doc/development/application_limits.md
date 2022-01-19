@@ -141,6 +141,8 @@ end
 
 ### Subscription Plans
 
+> The `opensource` plan was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/346399) in GitLab 14.7.
+
 Self-managed:
 
 - `default`: Everyone.
@@ -156,5 +158,6 @@ GitLab.com:
 - `gold`: Namespaces and projects with an Ultimate subscription.
 - `ultimate`: Namespaces and projects with an Ultimate subscription.
 - `ultimate_trial`: Namespaces and projects with an Ultimate Trial subscription.
+- `opensource`: Namespaces and projects that are member of GitLab Open Source program.
 
 The `test` environment doesn't have any plans.

@@ -42,6 +42,8 @@ exports[`Registry Breadcrumb when is not rootRoute renders 1`] = `
         </span>
       </a>
     </li>
+     
+    <!---->
     <li
       class="breadcrumb-item gl-breadcrumb-item"
     >
@@ -57,6 +59,8 @@ exports[`Registry Breadcrumb when is not rootRoute renders 1`] = `
         <!---->
       </a>
     </li>
+     
+    <!---->
   </ol>
 </nav>
 `;
@@ -85,6 +89,8 @@ exports[`Registry Breadcrumb when is rootRoute renders 1`] = `
         <!---->
       </a>
     </li>
+     
+    <!---->
   </ol>
 </nav>
 `;

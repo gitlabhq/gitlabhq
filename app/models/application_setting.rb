@@ -78,6 +78,10 @@ class ApplicationSetting < ApplicationRecord
 
   chronic_duration_attr_writer :archive_builds_in_human_readable, :archive_builds_in_seconds
 
+  chronic_duration_attr :runner_token_expiration_interval_human_readable, :runner_token_expiration_interval
+  chronic_duration_attr :group_runner_token_expiration_interval_human_readable, :group_runner_token_expiration_interval
+  chronic_duration_attr :project_runner_token_expiration_interval_human_readable, :project_runner_token_expiration_interval
+
   validates :grafana_url,
             system_hook_url: {
               blocked_message: "is blocked: %{exception_message}. " + GRAFANA_URL_ERROR_MESSAGE

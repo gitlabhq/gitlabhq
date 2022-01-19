@@ -20,7 +20,6 @@ Rails.application.routes.draw do
   get 'favicon.png', to: favicon_redirect
   get 'favicon.ico', to: favicon_redirect
 
-  draw :sherlock
   draw :development
 
   use_doorkeeper do

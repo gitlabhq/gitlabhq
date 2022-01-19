@@ -189,15 +189,6 @@ module Nav
         end
       end
       # rubocop: enable Cop/UserAdmin
-
-      if Gitlab::Sherlock.enabled?
-        builder.add_secondary_menu_item(
-          id: 'sherlock',
-          title: _('Sherlock Transactions'),
-          icon: 'admin',
-          href: sherlock_transactions_path
-        )
-      end
     end
 
     def projects_menu_item_attrs

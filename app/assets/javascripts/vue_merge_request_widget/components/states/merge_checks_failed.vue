@@ -6,7 +6,7 @@ export default {
   i18n: {
     approvalNeeded: s__('mrWidget|Merge blocked: this merge request must be approved.'),
     blockingMergeRequests: s__(
-      'mrWidget|Merge blocked: you can only merge once above items are resolved.',
+      'mrWidget|Merge blocked: you can only merge after the above items are resolved.',
     ),
   },
   components: {

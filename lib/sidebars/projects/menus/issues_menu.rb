@@ -8,7 +8,7 @@ module Sidebars
 
         override :configure_menu_items
         def configure_menu_items
-          return unless can?(context.current_user, :read_issue, context.project)
+          return false unless show_issues_menu_items?
 
           add_item(list_menu_item)
           add_item(boards_menu_item)
@@ -69,6 +69,10 @@ module Sidebars
         end
 
         private
+
+        def show_issues_menu_items?
+          can?(context.current_user, :read_issue, context.project)
+        end
 
         def list_menu_item
           ::Sidebars::MenuItem.new(

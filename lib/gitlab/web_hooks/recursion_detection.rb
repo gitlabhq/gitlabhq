@@ -37,8 +37,6 @@ module Gitlab
         # Adds the webhook ID to a cache (see `#cache_key_for_hook` for
         # details of the cache).
         def register!(hook)
-          return if disabled?(hook)
-
           cache_key = cache_key_for_hook(hook)
 
           ::Gitlab::Redis::SharedState.with do |redis|
@@ -53,8 +51,6 @@ module Gitlab
         # number of IDs in the cache exceeds the limit (see
         # `#cache_key_for_hook` for details of the cache).
         def block?(hook)
-          return false if disabled?(hook)
-
           # If a request UUID has not been set then we know the request was not
           # made by a webhook, and no recursion is possible.
           return false unless UUID.instance.request_uuid
@@ -79,10 +75,6 @@ module Gitlab
         end
 
         private
-
-        def disabled?(hook)
-          Feature.disabled?(:webhook_recursion_detection, hook.parent)
-        end
 
         # Returns a cache key scoped to a UUID.
         #

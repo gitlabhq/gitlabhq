@@ -39,7 +39,7 @@ RSpec.describe IncidentManagement::Incidents::CreateService do
 
         let(:issue) { new_issue }
 
-        include_examples 'has incident label'
+        include_examples 'does not have incident label'
       end
 
       context 'with default severity' do
@@ -71,8 +71,8 @@ RSpec.describe IncidentManagement::Incidents::CreateService do
       end
 
       context 'when incident label does not exists' do
-        it 'creates incident label' do
-          expect { create_incident }.to change { project.labels.where(title: label_title).count }.by(1)
+        it 'does not create incident label' do
+          expect { create_incident }.to not_change { project.labels.where(title: label_title).count }
         end
       end
 

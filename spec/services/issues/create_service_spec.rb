@@ -114,11 +114,11 @@ RSpec.describe Issues::CreateService do
           end
 
           it_behaves_like 'incident issue'
-          it_behaves_like 'has incident label'
+          it_behaves_like 'does not have incident label'
 
-          it 'does create an incident label' do
+          it 'does not create an incident label' do
             expect { subject }
-              .to change { Label.where(incident_label_attributes).count }.by(1)
+              .to not_change { Label.where(incident_label_attributes).count }
           end
 
           it 'calls IncidentManagement::Incidents::CreateEscalationStatusService' do

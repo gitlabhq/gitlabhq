@@ -37,6 +37,7 @@ class Project < ApplicationRecord
   include EachBatch
   include GitlabRoutingHelper
   include BulkMemberAccessLoad
+  include RunnerTokenExpirationInterval
 
   extend Gitlab::Cache::RequestCache
   extend Gitlab::Utils::Override
@@ -454,6 +455,7 @@ class Project < ApplicationRecord
   delegate :job_token_scope_enabled, :job_token_scope_enabled=, to: :ci_cd_settings, prefix: :ci, allow_nil: true
   delegate :keep_latest_artifact, :keep_latest_artifact=, to: :ci_cd_settings, allow_nil: true
   delegate :restrict_user_defined_variables, :restrict_user_defined_variables=, to: :ci_cd_settings, allow_nil: true
+  delegate :runner_token_expiration_interval, :runner_token_expiration_interval=, :runner_token_expiration_interval_human_readable, :runner_token_expiration_interval_human_readable=, to: :ci_cd_settings, allow_nil: true
   delegate :actual_limits, :actual_plan_name, :actual_plan, to: :namespace, allow_nil: true
   delegate :allow_merge_on_skipped_pipeline, :allow_merge_on_skipped_pipeline?,
     :allow_merge_on_skipped_pipeline=, :has_confluence?, :has_shimo?,
@@ -2697,6 +2699,10 @@ class Project < ApplicationRecord
     ci_cd_settings.keep_latest_artifact?
   end
 
+  def runner_token_expiration_interval
+    ci_cd_settings&.runner_token_expiration_interval
+  end
+
   def group_runners_enabled?
     return false unless ci_cd_settings
 
@@ -2726,6 +2732,17 @@ class Project < ApplicationRecord
     user_ids.each_slice(per_batch) do |user_ids_batch|
       project_authorizations.where(user_id: user_ids_batch).delete_all
     end
+  end
+
+  def enforced_runner_token_expiration_interval
+    all_parent_groups = Gitlab::ObjectHierarchy.new(Group.where(id: group)).base_and_ancestors
+    all_group_settings = NamespaceSetting.where(namespace_id: all_parent_groups)
+    group_interval = all_group_settings.where.not(project_runner_token_expiration_interval: nil).minimum(:project_runner_token_expiration_interval)&.seconds
+
+    [
+      Gitlab::CurrentSettings.project_runner_token_expiration_interval&.seconds,
+      group_interval
+    ].compact.min
   end
 
   private

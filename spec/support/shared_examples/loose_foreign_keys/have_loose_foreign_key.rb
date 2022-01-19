@@ -55,8 +55,13 @@ RSpec.shared_examples 'cleanup by a loose foreign key' do
   end
 
   def find_model
-    primary_key = model.class.primary_key.to_sym
-    model.class.find_by(primary_key => model.public_send(primary_key))
+    query = model.class
+    # handle composite primary keys
+    connection = model.class.connection
+    connection.primary_keys(model.class.table_name).each do |primary_key|
+      query = query.where(primary_key => model.public_send(primary_key))
+    end
+    query.first
   end
 
   it 'cleans up (delete or nullify) the model' do

@@ -191,11 +191,6 @@ RSpec.describe Issues::UpdateService, :mailer do
             end
           end
 
-          it 'adds a `incident` label if one does not exist' do
-            expect { update_issue(issue_type: 'incident') }.to change(issue.labels, :count).by(1)
-            expect(issue.labels.pluck(:title)).to eq(['incident'])
-          end
-
           it 'creates system note about issue type' do
             update_issue(issue_type: 'incident')
 
@@ -222,18 +217,6 @@ RSpec.describe Issues::UpdateService, :mailer do
               expect(issue.labels).to eq([label_1])
             end
           end
-
-          context 'filtering the incident label' do
-            let(:params) { { add_label_ids: [] } }
-
-            before do
-              update_issue(issue_type: 'incident')
-            end
-
-            it 'creates and add a incident label id to add_label_ids' do
-              expect(issue.label_ids).to contain_exactly(label_1.id)
-            end
-          end
         end
 
         context 'from incident to issue' do
@@ -248,10 +231,8 @@ RSpec.describe Issues::UpdateService, :mailer do
           context 'for an incident with multiple labels' do
             let(:issue) { create(:incident, project: project, labels: [label_1, label_2]) }
 
-            it 'removes an `incident` label if one exists on the incident' do
-              expect { update_issue(issue_type: 'issue') }.to change(issue, :label_ids)
-                .from(containing_exactly(label_1.id, label_2.id))
-                .to([label_2.id])
+            it 'does not remove an `incident` label if one exists on the incident' do
+              expect { update_issue(issue_type: 'issue') }.to not_change(issue, :label_ids)
             end
           end
 
@@ -259,10 +240,8 @@ RSpec.describe Issues::UpdateService, :mailer do
             let(:issue) { create(:incident, project: project, labels: [label_1, label_2]) }
             let(:params) { { label_ids: [label_1.id, label_2.id], remove_label_ids: [] } }
 
-            it 'adds an incident label id to remove_label_ids for it to be removed' do
-              expect { update_issue(issue_type: 'issue') }.to change(issue, :label_ids)
-                .from(containing_exactly(label_1.id, label_2.id))
-                .to([label_2.id])
+            it 'does not add an incident label id to remove_label_ids for it to be removed' do
+              expect { update_issue(issue_type: 'issue') }.to not_change(issue, :label_ids)
             end
           end
         end
