@@ -58,7 +58,7 @@
             .float-right
               = form_for project.runner_projects.new, url: admin_namespace_project_runner_projects_path(project.namespace, project), method: :post do |f|
                 = f.hidden_field :runner_id, value: @runner.id
-                = f.submit _('Enable'), class: 'gl-button btn btn-sm', data: { confirm: (s_('Runners|You are about to change this instance runner to a project runner. This operation is not reversible. Are you sure you want to continue?') if @runner.instance_type?) }
+                = f.submit _('Enable'), aria: { label: s_('Runners|Change to project runner') }, class: 'gl-button btn btn-sm', data: { confirm: (s_('Runners|You are about to change this instance runner to a project runner. This operation is not reversible. Are you sure you want to continue?') if @runner.instance_type?), confirm_btn_variant: 'danger' }
     = paginate_without_count @projects
 
   .col-md-6

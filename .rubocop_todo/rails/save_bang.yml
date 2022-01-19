@@ -2,13 +2,6 @@
 Rails/SaveBang:
   Exclude:
   - ee/spec/lib/analytics/merge_request_metrics_calculator_spec.rb
-  - ee/spec/models/application_setting_spec.rb
-  - ee/spec/models/approval_merge_request_rule_spec.rb
-  - ee/spec/models/approval_project_rule_spec.rb
-  - ee/spec/models/burndown_spec.rb
-  - ee/spec/models/elasticsearch_indexed_namespace_spec.rb
-  - ee/spec/models/gitlab_subscription_spec.rb
-  - ee/spec/models/issue_spec.rb
   - ee/spec/models/protected_environment_spec.rb
   - ee/spec/models/repository_spec.rb
   - ee/spec/models/scim_identity_spec.rb

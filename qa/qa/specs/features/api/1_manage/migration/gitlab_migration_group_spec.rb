@@ -174,7 +174,6 @@ module QA
           expect { imported_group.import_status }.to eventually_eq('finished').within(import_wait_duration)
 
           imported_member = imported_group.reload!.members.find { |usr| usr.username == member.username }
-
           aggregate_failures do
             expect(imported_member).not_to be_nil
             expect(imported_member.access_level).to eq(Resource::Members::AccessLevel::DEVELOPER)

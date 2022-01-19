@@ -30687,6 +30687,9 @@ msgstr ""
 msgid "Runners|Can run untagged jobs"
 msgstr ""
 
+msgid "Runners|Change to project runner"
+msgstr ""
+
 msgid "Runners|Command to register runner"
 msgstr ""
 

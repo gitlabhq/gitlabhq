@@ -65,9 +65,9 @@ module QA
           'successfully imports repository',
           testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347570'
         ) do
-          aggregate_failures do
-            expect_import_finished
+          expect_import_finished
 
+          aggregate_failures do
             expect(imported_commits).to match_array(source_commits)
             expect(imported_tags).to match_array(source_tags)
             expect(imported_branches).to match_array(source_branches)

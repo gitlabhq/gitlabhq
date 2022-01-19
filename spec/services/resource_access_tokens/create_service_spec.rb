@@ -10,6 +10,10 @@ RSpec.describe ResourceAccessTokens::CreateService do
   let_it_be(:group) { create(:group, :private) }
   let_it_be(:params) { {} }
 
+  before do
+    stub_config_setting(host: 'example.com')
+  end
+
   describe '#execute' do
     shared_examples 'token creation fails' do
       let(:resource) { create(:project)}
@@ -85,6 +89,15 @@ RSpec.describe ResourceAccessTokens::CreateService do
 
             expect(access_token.user.name).to eq(params[:name])
           end
+        end
+      end
+
+      context 'bot email' do
+        it 'check email domain' do
+          response = subject
+          access_token = response.payload[:access_token]
+
+          expect(access_token.user.email).to end_with("@noreply.#{Gitlab.config.gitlab.host}")
         end
       end
 

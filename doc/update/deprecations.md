@@ -702,3 +702,17 @@ Tracing in GitLab is an integration with Jaeger, an open-source end-to-end distr
 The `merged_by` field in the [merge request API](https://docs.gitlab.com/ee/api/merge_requests.html#list-merge-requests) is being deprecated and will be removed in GitLab 15.0. This field is being replaced with the `merge_user` field (already present in GraphQL) which more correctly identifies who merged a merge request when performing actions (merge when pipeline succeeds, add to merge train) other than a simple merge.
 
 **Planned removal milestone: 15.0 ()**
+
+## 14.8
+
+### `fixup!` commit messages setting draft status of associated Merge Request
+
+The use of `fixup!` as a commit message to trigger draft status
+of the associated Merge Request is generally unused, and can cause
+confusion with other uses of the term. "Draft" is the preferred
+and supported trigger for triggering draft status from commit
+messages, as part of our streamlining of the feature.
+Support for `fixup!` is now considered deprecated, and will be
+removed in GitLab 15.0.
+
+**Planned removal milestone: 15.0 (2022-06-22)**

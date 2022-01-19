@@ -212,7 +212,7 @@
     "@gitlab/stylelint-config": "2.6.0",
     "@graphql-eslint/eslint-plugin": "3.0.0",
     "@testing-library/dom": "^7.16.2",
-    "@vue/test-utils": "1.2.0",
+    "@vue/test-utils": "1.3.0",
     "acorn": "^6.3.0",
     "axios-mock-adapter": "^1.15.0",
     "babel-jest": "^26.5.2",
