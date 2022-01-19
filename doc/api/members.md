@@ -114,7 +114,7 @@ GET /projects/:id/members/all
 | `id`      | integer/string | yes | The ID or [URL-encoded path of the project or group](index.md#namespaced-path-encoding) owned by the authenticated user |
 | `query`   | string | no     | A query string to search for members |
 | `user_ids`   | array of integers | no     | Filter the results on the given user IDs |
-| `state`   | string | no | Filter results by member state, one of `awaiting`, `active` or `created` **(PREMIUM)** |
+| `state`   | string | no | Filter results by member state, one of `awaiting` or `active` **(PREMIUM)** |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/:id/members/all"

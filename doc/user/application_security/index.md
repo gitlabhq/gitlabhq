@@ -115,7 +115,9 @@ rules:
 
 If you add the security scanning jobs as described in [Security scanning with Auto DevOps](#security-scanning-with-auto-devops) or [Security scanning without Auto DevOps](#security-scanning-without-auto-devops) to your `.gitlab-ci.yml` each added [security scanning tool](#security-scanning-tools) behave as described below.
 
-For each compatible analyzer, a job is created in the `test`, `dast` or `fuzz` stage of your pipeline and runs on the next new branch pipeline. Features such as the [Security Dashboard](security_dashboard/index.md), [Vulnerability Report](vulnerability_report/index.md), and [Dependency List](dependency_list/index.md) that rely on this scan data only show results from pipelines on the default branch. One tool might use many analyzers.
+For each compatible analyzer, a job is created in the `test`, `dast` or `fuzz` stage of your pipeline and runs on the next new branch pipeline.
+Features such as the [Security Dashboard](security_dashboard/index.md), [Vulnerability Report](vulnerability_report/index.md), and [Dependency List](dependency_list/index.md)
+that rely on this scan data only show results from pipelines on the default branch, only if all jobs are finished, including manual ones. One tool might use many analyzers.
 
 Our language and package manager specific jobs attempt to assess which analyzer(s) they should run for your project so that you can do less configuration.
 
@@ -643,5 +645,17 @@ The `sast` or `dependency_scanning` stanzas can be used to make changes to all S
 such as changing `variables` or the `stage`, but they cannot be used to define shared `rules`.
 
 There [is an issue open to improve extendability](https://gitlab.com/gitlab-org/gitlab/-/issues/218444).
+Please upvote the issue to help with prioritization, and
+[contributions are welcomed](https://about.gitlab.com/community/contribute/).
+
+### Empty Vulnerability Report, Dependency List, License list pages
+
+If the pipeline has manual steps with a job that has the `allow_failure: false` option, and this job is not finished,
+GitLab can't populate listed pages with the data from security reports.
+In this case, [the Vulnerability Report](vulnerability_report/index.md), [the Dependency List](dependency_list/index.md),
+and [the License list](../compliance/license_compliance/index.md#license-list) pages will be empty.
+These security pages can be populated by running the jobs from the manual step of the pipeline.
+
+There is [an issue open to handle this scenario](https://gitlab.com/gitlab-org/gitlab/-/issues/346843).
 Please upvote the issue to help with prioritization, and
 [contributions are welcomed](https://about.gitlab.com/community/contribute/).

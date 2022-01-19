@@ -673,7 +673,9 @@ To restrict group access by domain:
 
 ![Domain restriction by email](img/restrict-by-email.gif)
 
-Any time you attempt to add a new user, they are compared against this list.
+Any time you attempt to add a new user, the user's [primary email](../profile/index.md#change-your-primary-email) is compared against this list.
+Only users with a [primary email](../profile/index.md#change-your-primary-email) that matches any of the configured email domain restrictions
+can be added to the group.
 
 Some domains cannot be restricted. These are the most popular public email domains, such as:
 
