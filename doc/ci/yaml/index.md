@@ -1467,7 +1467,7 @@ Use `environment` to define the [environment](../environments/index.md) that a j
 formats:
 
 - Plain text, including letters, digits, spaces, and these characters: `-`, `_`, `/`, `$`, `{`, `}`.
-- CI/CD variables, including predefined, secure, or variables defined in the
+- CI/CD variables, including predefined, project, group, instance, or variables defined in the
   `.gitlab-ci.yml` file. You can't use variables defined in a `script` section.
 
 **Example of `environment`**:
@@ -1496,7 +1496,7 @@ Common environment names are `qa`, `staging`, and `production`, but you can use 
 formats:
 
 - Plain text, including letters, digits, spaces, and these characters: `-`, `_`, `/`, `$`, `{`, `}`.
-- CI/CD variables, including predefined, secure, or variables defined in the
+- CI/CD variables, including predefined, project, group, instance, or variables defined in the
   `.gitlab-ci.yml` file. You can't use variables defined in a `script` section.
 
 **Example of `environment:name`**:
@@ -1518,7 +1518,7 @@ Set a URL for an [environment](../environments/index.md).
 **Possible inputs**: A single URL, in one of these formats:
 
 - Plain text, like `https://prod.example.com`.
-- CI/CD variables, including predefined, secure, or variables defined in the
+- CI/CD variables, including predefined, project, group, instance, or variables defined in the
   `.gitlab-ci.yml` file. You can't use variables defined in a `script` section.
 
 **Example of `environment:url`**:

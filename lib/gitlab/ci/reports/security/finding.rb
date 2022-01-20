@@ -171,10 +171,20 @@ module Gitlab
             original_data['location']
           end
 
+          def location_fingerprint
+            max_priority_signature_hex || location&.fingerprint
+          end
+
           private
 
           def generate_project_fingerprint
             Digest::SHA1.hexdigest(compare_key)
+          end
+
+          def max_priority_signature_hex
+            return unless @vulnerability_finding_signatures_enabled && signatures.present?
+
+            signatures.max_by(&:priority).signature_hex
           end
         end
       end
