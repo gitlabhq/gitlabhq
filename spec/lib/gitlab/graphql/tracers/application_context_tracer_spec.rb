@@ -1,7 +1,6 @@
 # frozen_string_literal: true
-require "fast_spec_helper"
-require "support/graphql/fake_tracer"
-require "support/graphql/fake_query_type"
+
+require 'spec_helper'
 
 RSpec.describe Gitlab::Graphql::Tracers::ApplicationContextTracer do
   let(:tracer_spy) { spy('tracer_spy') }

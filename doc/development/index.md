@@ -221,7 +221,7 @@ the [reviewer values](https://about.gitlab.com/handbook/engineering/workflow/rev
 - [Geo development](geo.md)
 - [Redis guidelines](redis.md)
   - [Adding a new Redis instance](redis/new_redis_instance.md)
-- [Sidekiq guidelines](sidekiq_style_guide.md) for working with Sidekiq workers
+- [Sidekiq guidelines](sidekiq/index.md) for working with Sidekiq workers
 - [Working with Gitaly](gitaly.md)
 - [Elasticsearch integration docs](elasticsearch.md)
 - [Working with Merge Request diffs](diffs.md)

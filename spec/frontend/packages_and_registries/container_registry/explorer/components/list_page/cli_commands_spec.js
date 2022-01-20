@@ -1,7 +1,7 @@
 import { GlDropdown } from '@gitlab/ui';
 import { mount, createLocalVue } from '@vue/test-utils';
 import Vuex from 'vuex';
-import QuickstartDropdown from '~/packages_and_registries/container_registry/explorer/components/list_page/cli_commands.vue';
+import QuickstartDropdown from '~/packages_and_registries/shared/components/cli_commands.vue';
 import {
   QUICK_START,
   LOGIN_COMMAND_LABEL,
@@ -22,22 +22,14 @@ localVue.use(Vuex);
 describe('cli_commands', () => {
   let wrapper;
 
-  const config = {
-    repositoryUrl: 'foo',
-    registryHostUrlWithPort: 'bar',
-  };
-
   const findDropdownButton = () => wrapper.find(GlDropdown);
   const findCodeInstruction = () => wrapper.findAll(CodeInstruction);
 
   const mountComponent = () => {
     wrapper = mount(QuickstartDropdown, {
       localVue,
-      provide() {
-        return {
-          config,
-          ...dockerCommands,
-        };
+      propsData: {
+        ...dockerCommands,
       },
     });
   };

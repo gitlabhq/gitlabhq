@@ -100,7 +100,7 @@ module Ci
 
     def tick_for(build, runners)
       runners = runners.with_recent_runner_queue
-      runners = runners.with_tags if Feature.enabled?(:ci_preload_runner_tags, default_enabled: :yaml)
+      runners = runners.with_tags
 
       metrics.observe_active_runners(-> { runners.to_a.size })
 

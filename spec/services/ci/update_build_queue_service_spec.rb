@@ -308,36 +308,12 @@ RSpec.describe Ci::UpdateBuildQueueService do
       let!(:build) { create(:ci_build, pipeline: pipeline, tag_list: %w[a b]) }
       let!(:project_runner) { create(:ci_runner, :project, :online, projects: [project], tag_list: %w[a b c]) }
 
-      context 'when ci_preload_runner_tags is enabled' do
-        before do
-          stub_feature_flags(
-            ci_preload_runner_tags: true
-          )
-        end
+      it 'does execute the same amount of queries regardless of number of runners' do
+        control_count = ActiveRecord::QueryRecorder.new { subject.tick(build) }.count
 
-        it 'does execute the same amount of queries regardless of number of runners' do
-          control_count = ActiveRecord::QueryRecorder.new { subject.tick(build) }.count
+        create_list(:ci_runner, 10, :project, :online, projects: [project], tag_list: %w[b c d])
 
-          create_list(:ci_runner, 10, :project, :online, projects: [project], tag_list: %w[b c d])
-
-          expect { subject.tick(build) }.not_to exceed_all_query_limit(control_count)
-        end
-      end
-
-      context 'when ci_preload_runner_tags are disabled' do
-        before do
-          stub_feature_flags(
-            ci_preload_runner_tags: false
-          )
-        end
-
-        it 'does execute more queries for more runners' do
-          control_count = ActiveRecord::QueryRecorder.new { subject.tick(build) }.count
-
-          create_list(:ci_runner, 10, :project, :online, projects: [project], tag_list: %w[b c d])
-
-          expect { subject.tick(build) }.to exceed_all_query_limit(control_count)
-        end
+        expect { subject.tick(build) }.not_to exceed_all_query_limit(control_count)
       end
     end
   end

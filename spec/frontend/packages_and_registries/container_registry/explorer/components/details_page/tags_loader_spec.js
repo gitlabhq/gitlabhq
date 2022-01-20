@@ -1,5 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
-import component from '~/packages_and_registries/container_registry/explorer/components/details_page/tags_loader.vue';
+import component from '~/packages_and_registries/shared/components/tags_loader.vue';
 import { GlSkeletonLoader } from '../../stubs';
 
 describe('TagsLoader component', () => {

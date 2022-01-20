@@ -1,12 +1,10 @@
 # frozen_string_literal: true
 
-require_relative '../../fast_spec_helper'
+require 'spec_helper'
+
 require_relative '../../../tooling/docs/deprecation_handling'
-require_relative '../../support/helpers/next_instance_of'
 
 RSpec.describe Docs::DeprecationHandling do
-  include ::NextInstanceOf
-
   let(:type) { 'deprecation' }
 
   subject { described_class.new(type).render }

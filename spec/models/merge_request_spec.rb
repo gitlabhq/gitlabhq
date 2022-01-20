@@ -4965,4 +4965,11 @@ RSpec.describe MergeRequest, factory_default: :keep do
   it_behaves_like 'it has loose foreign keys' do
     let(:factory_name) { :merge_request }
   end
+
+  context 'loose foreign key on merge_requests.head_pipeline_id' do
+    it_behaves_like 'cleanup by a loose foreign key' do
+      let!(:parent) { create(:ci_pipeline) }
+      let!(:model) { create(:merge_request, head_pipeline: parent) }
+    end
+  end
 end

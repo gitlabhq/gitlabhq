@@ -63,6 +63,8 @@ module Ci
       @logger = build_logger
       @pipeline = Ci::Pipeline.new
 
+      ::Gitlab::SafeRequestStore.write(:enable_ci_variable_caching, ::Feature.enabled?(:enable_ci_variable_caching, project, default_enabled: :yaml))
+
       command = Gitlab::Ci::Pipeline::Chain::Command.new(
         source: source,
         origin_ref: params[:ref],

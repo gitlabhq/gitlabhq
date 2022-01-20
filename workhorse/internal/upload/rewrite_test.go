@@ -1,6 +1,8 @@
 package upload
 
 import (
+	"mime/multipart"
+	"net/textproto"
 	"os"
 	"runtime"
 	"testing"
@@ -53,4 +55,48 @@ func TestImageTypeRecongition(t *testing.T) {
 			require.Less(t, m.TotalAlloc-start, uint64(50000), "must take reasonable amount of memory to recognise the type")
 		})
 	}
+}
+
+func TestVerifyContentDisposition(t *testing.T) {
+	tests := []struct {
+		desc               string
+		contentDisposition string
+		error              error
+	}{
+		{
+			desc:               "without content disposition",
+			contentDisposition: "",
+			error:              nil,
+		}, {
+			desc:               "content disposition without filename",
+			contentDisposition: `form-data; name="filename"`,
+			error:              nil,
+		}, {
+			desc:               "with filename",
+			contentDisposition: `form-data; name="file"; filename=foobar`,
+			error:              ErrUnexpectedFilePart,
+		}, {
+			desc:               "with filename*",
+			contentDisposition: `form-data; name="file"; filename*=UTF-8''foobar`,
+			error:              ErrUnexpectedFilePart,
+		}, {
+			desc:               "filename and filename*",
+			contentDisposition: `form-data; name="file"; filename=foobar; filename*=UTF-8''foobar`,
+			error:              ErrUnexpectedFilePart,
+		},
+	}
+
+	for _, testCase := range tests {
+		t.Run(testCase.desc, func(t *testing.T) {
+			h := make(textproto.MIMEHeader)
+
+			if testCase.contentDisposition != "" {
+				h.Set("Content-Disposition", testCase.contentDisposition)
+				h.Set("Content-Type", "application/octet-stream")
+			}
+
+			require.Equal(t, testCase.error, verifyContentDisposition(&multipart.Part{Header: h}))
+		})
+	}
+
 }

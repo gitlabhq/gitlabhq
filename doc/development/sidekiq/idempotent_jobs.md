@@ -1,0 +1,232 @@
+---
+stage: none
+group: unassigned
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+---
+
+# Sidekiq idempotent jobs
+
+It's known that a job can fail for multiple reasons. For example, network outages or bugs.
+In order to address this, Sidekiq has a built-in retry mechanism that is
+used by default by most workers within GitLab.
+
+It's expected that a job can run again after a failure without major side-effects for the
+application or users, which is why Sidekiq encourages
+jobs to be [idempotent and transactional](https://github.com/mperham/sidekiq/wiki/Best-Practices#2-make-your-job-idempotent-and-transactional).
+
+As a general rule, a worker can be considered idempotent if:
+
+- It can safely run multiple times with the same arguments.
+- Application side-effects are expected to happen only once
+  (or side-effects of a second run do not have an effect).
+
+A good example of that would be a cache expiration worker.
+
+A job scheduled for an idempotent worker is [deduplicated](#deduplication) when
+an unstarted job with the same arguments is already in the queue.
+
+## Ensuring a worker is idempotent
+
+Make sure the worker tests pass using the following shared example:
+
+```ruby
+include_examples 'an idempotent worker' do
+  it 'marks the MR as merged' do
+    # Using subject inside this block will process the job multiple times
+    subject
+
+    expect(merge_request.state).to eq('merged')
+  end
+end
+```
+
+Use the `perform_multiple` method directly instead of `job.perform` (this
+helper method is automatically included for workers).
+
+## Declaring a worker as idempotent
+
+```ruby
+class IdempotentWorker
+  include ApplicationWorker
+
+  # Declares a worker is idempotent and can
+  # safely run multiple times.
+  idempotent!
+
+  # ...
+end
+```
+
+It's encouraged to only have the `idempotent!` call in the top-most worker class, even if
+the `perform` method is defined in another class or module.
+
+If the worker class isn't marked as idempotent, a cop fails. Consider skipping
+the cop if you're not confident your job can safely run multiple times.
+
+## Deduplication
+
+When a job for an idempotent worker is enqueued while another
+unstarted job is already in the queue, GitLab drops the second
+job. The work is skipped because the same work would be
+done by the job that was scheduled first; by the time the second
+job executed, the first job would do nothing.
+
+### Strategies
+
+GitLab supports two deduplication strategies:
+
+- `until_executing`
+- `until_executed`
+
+More [deduplication strategies have been
+suggested](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/195). If
+you are implementing a worker that could benefit from a different
+strategy, please comment in the issue.
+
+#### Until Executing
+
+This strategy takes a lock when a job is added to the queue, and removes that lock before the job starts.
+
+For example, `AuthorizedProjectsWorker` takes a user ID. When the
+worker runs, it recalculates a user's authorizations. GitLab schedules
+this job each time an action potentially changes a user's
+authorizations. If the same user is added to two projects at the
+same time, the second job can be skipped if the first job hasn't
+begun, because when the first job runs, it creates the
+authorizations for both projects.
+
+```ruby
+module AuthorizedProjectUpdate
+  class UserRefreshOverUserRangeWorker
+    include ApplicationWorker
+
+    deduplicate :until_executing
+    idempotent!
+
+    # ...
+  end
+end
+```
+
+#### Until Executed
+
+This strategy takes a lock when a job is added to the queue, and removes that lock after the job finishes.
+It can be used to prevent jobs from running simultaneously multiple times.
+
+```ruby
+module Ci
+  class BuildTraceChunkFlushWorker
+    include ApplicationWorker
+
+    deduplicate :until_executed
+    idempotent!
+
+    # ...
+  end
+end
+```
+
+Also, you can pass `if_deduplicated: :reschedule_once` option to re-run a job once after
+the currently running job finished and deduplication happened at least once.
+This ensures that the latest result is always produced even if a race condition
+happened. See [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/342123) for more information.
+
+### Scheduling jobs in the future
+
+GitLab doesn't skip jobs scheduled in the future, as we assume that
+the state has changed by the time the job is scheduled to
+execute. Deduplication of jobs scheduled in the feature is possible
+for both `until_executed` and `until_executing` strategies.
+
+If you do want to deduplicate jobs scheduled in the future,
+this can be specified on the worker by passing `including_scheduled: true` argument
+when defining deduplication strategy:
+
+```ruby
+module AuthorizedProjectUpdate
+  class UserRefreshOverUserRangeWorker
+    include ApplicationWorker
+
+    deduplicate :until_executing, including_scheduled: true
+    idempotent!
+
+    # ...
+  end
+end
+```
+
+## Setting the deduplication time-to-live (TTL)
+
+Deduplication depends on an idempotency key that is stored in Redis. This is normally
+cleared by the configured deduplication strategy.
+
+However, the key can remain until its TTL in certain cases like:
+
+1. `until_executing` is used but the job was never enqueued or executed after the Sidekiq
+   client middleware was run.
+
+1. `until_executed` is used but the job fails to finish due to retry exhaustion, gets
+   interrupted the maximum number of times, or gets lost.
+
+The default value is 6 hours. During this time, jobs won't be enqueued even if the first
+job never executed or finished.
+
+The TTL can be configured with:
+
+```ruby
+class ProjectImportScheduleWorker
+  include ApplicationWorker
+
+  idempotent!
+  deduplicate :until_executing, ttl: 5.minutes
+end
+```
+
+Duplicate jobs can happen when the TTL is reached, so make sure you lower this only for jobs
+that can tolerate some duplication.
+
+## Deduplication with load balancing
+
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/6763) in GitLab 14.4.
+
+Jobs that declare either `:sticky` or `:delayed` data consistency
+are eligible for database load-balancing.
+In both cases, jobs are [scheduled in the future](#scheduling-jobs-in-the-future) with a short delay (1 second).
+This minimizes the chance of replication lag after a write.
+
+If you really want to deduplicate jobs eligible for load balancing,
+specify `including_scheduled: true` argument when defining deduplication strategy:
+
+```ruby
+class DelayedIdempotentWorker
+  include ApplicationWorker
+  data_consistency :delayed
+
+  deduplicate :until_executing, including_scheduled: true
+  idempotent!
+
+  # ...
+end
+```
+
+### Preserve the latest WAL location for idempotent jobs
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/69372) in GitLab 14.3.
+> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/338350) in GitLab 14.4.
+> - [Enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/338350) in GitLab 14.6.
+
+The deduplication always take into account the latest binary replication pointer, not the first one.
+This happens because we drop the same job scheduled for the second time and the Write-Ahead Log (WAL) is lost.
+This could lead to comparing the old WAL location and reading from a stale replica.
+
+To support both deduplication and maintaining data consistency with load balancing,
+we are preserving the latest WAL location for idempotent jobs in Redis.
+This way we are always comparing the latest binary replication pointer,
+making sure that we read from the replica that is fully caught up.
+
+FLAG:
+On self-managed GitLab, by default this feature is available. To hide the feature, ask an administrator to
+[disable the feature flag](../../administration/feature_flags.md) named `preserve_latest_wal_locations_for_idempotent_jobs`.
+
+This feature flag is related to GitLab development and is not intended to be used by GitLab administrators, though.
+On GitLab.com, this feature is available.

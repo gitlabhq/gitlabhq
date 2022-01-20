@@ -31,7 +31,26 @@ module Ci
     end
 
     def to_runner_variable
+      return uncached_runner_variable unless ::Gitlab::SafeRequestStore.read(:enable_ci_variable_caching)
+
+      var_cache_key = to_runner_variable_cache_key
+
+      return uncached_runner_variable unless var_cache_key
+
+      ::Gitlab::SafeRequestStore.fetch(var_cache_key) { uncached_runner_variable }
+    end
+
+    private
+
+    def uncached_runner_variable
       { key: key, value: value, public: false, file: file? }
+    end
+
+    def to_runner_variable_cache_key
+      return unless persisted?
+
+      variable_id = read_attribute(self.class.primary_key)
+      "#{self.class}#to_runner_variable:#{variable_id}:#{key}"
     end
   end
 end

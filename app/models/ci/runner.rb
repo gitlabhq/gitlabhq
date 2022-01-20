@@ -388,8 +388,6 @@ module Ci
     end
 
     def tag_list
-      return super unless Feature.enabled?(:ci_preload_runner_tags, default_enabled: :yaml)
-
       if tags.loaded?
         tags.map(&:name)
       else

@@ -1,0 +1,8 @@
+---
+name: enable_ci_variable_caching
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/78440
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/350529
+milestone: '14.8'
+type: development
+group: group::pipeline execution
+default_enabled: false

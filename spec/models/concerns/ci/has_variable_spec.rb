@@ -68,9 +68,68 @@ RSpec.describe Ci::HasVariable do
   end
 
   describe '#to_runner_variable' do
+    let_it_be(:ci_variable) { create(:ci_variable) }
+
+    subject { ci_variable }
+
     it 'returns a hash for the runner' do
       expect(subject.to_runner_variable)
         .to include(key: subject.key, value: subject.value, public: false)
+    end
+
+    context 'with RequestStore enabled', :request_store do
+      let(:expected) do
+        {
+          file: false,
+          key: subject.key,
+          value: subject.value,
+          public: false,
+          masked: false
+        }
+      end
+
+      before do
+        # CreatePipelineService normally writes this because this feature flag
+        # cannot be checked in a tight loop
+        ::Gitlab::SafeRequestStore[:enable_ci_variable_caching] = true
+      end
+
+      it 'decrypts once' do
+        expect(OpenSSL::PKCS5).to receive(:pbkdf2_hmac).once.and_call_original
+
+        2.times { expect(subject.reload.to_runner_variable).to eq(expected) }
+      end
+
+      it 'does not cache similar keys', :aggregate_failures do
+        group_var = create(:ci_group_variable, key: subject.key, value: 'group')
+        project_var = create(:ci_variable, key: subject.key, value: 'project')
+
+        expect(subject.to_runner_variable).to include(key: subject.key, value: subject.value)
+        expect(group_var.to_runner_variable).to include(key: subject.key, value: 'group')
+        expect(project_var.to_runner_variable).to include(key: subject.key, value: 'project')
+      end
+
+      it 'does not cache unpersisted values' do
+        new_variable = Ci::Variable.new(key: SecureRandom.hex, value: "12345")
+        old_value = new_variable.to_runner_variable
+        new_variable.value = '98765'
+
+        expect(new_variable.to_runner_variable).not_to eq(old_value)
+      end
+
+      context 'with enable_ci_variable_caching feature flag disabled' do
+        before do
+          # CreatePipelineService normally writes this because this feature flag
+          # cannot be checked in a tight loop
+          ::Gitlab::SafeRequestStore[:enable_ci_variable_caching] = false
+        end
+
+        it 'decrypts twice' do
+          expect(OpenSSL::PKCS5).to receive(:pbkdf2_hmac).twice.and_call_original
+
+          2.times { expect(subject.reload.to_runner_variable).to eq(expected) }
+        end
+      end
     end
   end
 end

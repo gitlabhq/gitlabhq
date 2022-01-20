@@ -11997,6 +11997,9 @@ msgstr ""
 msgid "Deployment|Failed"
 msgstr ""
 
+msgid "Deployment|Latest Deployed"
+msgstr ""
+
 msgid "Deployment|Running"
 msgstr ""
 
@@ -33998,6 +34001,9 @@ msgid "Starts: %{startsAt}"
 msgstr ""
 
 msgid "State your message to activate"
+msgstr ""
+
+msgid "State/Province"
 msgstr ""
 
 msgid "State/Province/City"

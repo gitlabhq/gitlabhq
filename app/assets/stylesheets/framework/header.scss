@@ -150,7 +150,7 @@ $top-nav-hover-bg: var(--indigo-900-alpha-008, $indigo-900-alpha-008) !important
       }
 
       li {
-        .badge.badge-pill:not(.merge-request-badge):not(.version-check-badge) {
+        .badge.badge-pill:not(.gl-badge) {
           box-shadow: none;
           font-weight: $gl-font-weight-bold;
         }
@@ -417,7 +417,7 @@ $top-nav-hover-bg: var(--indigo-900-alpha-008, $indigo-900-alpha-008) !important
 
 .title-container,
 .navbar-nav {
-  .badge.badge-pill:not(.merge-request-badge):not(.version-check-badge) {
+  .badge.badge-pill:not(.gl-badge) {
     position: inherit;
     font-weight: $gl-font-weight-normal;
     margin-left: -6px;

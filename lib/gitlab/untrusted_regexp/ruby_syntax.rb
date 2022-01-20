@@ -40,7 +40,7 @@ module Gitlab
 
           if Feature.enabled?(:ci_unsafe_regexp_logger, type: :ops, default_enabled: :yaml)
             Gitlab::AppJsonLogger.info(
-              class: self.class.name,
+              class: self.name,
               regexp: pattern.to_s,
               fabricated: 'unsafe ruby regexp',
               project_id: project&.id,

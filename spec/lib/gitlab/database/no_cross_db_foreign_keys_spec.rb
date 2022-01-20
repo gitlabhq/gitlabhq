@@ -44,8 +44,6 @@ RSpec.describe 'cross-database foreign keys' do
       dast_profiles_pipelines.ci_pipeline_id
       dast_site_profiles_pipelines.ci_pipeline_id
       external_pull_requests.project_id
-      merge_requests.head_pipeline_id
-      merge_trains.pipeline_id
       vulnerability_feedback.pipeline_id
       vulnerability_occurrence_pipelines.pipeline_id
       vulnerability_statistics.latest_pipeline_id

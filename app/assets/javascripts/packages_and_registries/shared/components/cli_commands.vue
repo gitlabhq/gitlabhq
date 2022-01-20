@@ -10,7 +10,7 @@ import {
   COPY_BUILD_TITLE,
   PUSH_COMMAND_LABEL,
   COPY_PUSH_TITLE,
-} from '../../constants/index';
+} from '../constants';
 
 const trackingLabel = 'quickstart_dropdown';
 
@@ -20,7 +20,20 @@ export default {
     CodeInstruction,
   },
   mixins: [Tracking.mixin({ label: trackingLabel })],
-  inject: ['config', 'dockerBuildCommand', 'dockerPushCommand', 'dockerLoginCommand'],
+  props: {
+    dockerBuildCommand: {
+      type: String,
+      required: true,
+    },
+    dockerPushCommand: {
+      type: String,
+      required: true,
+    },
+    dockerLoginCommand: {
+      type: String,
+      required: true,
+    },
+  },
   trackingLabel,
   i18n: {
     QUICK_START,

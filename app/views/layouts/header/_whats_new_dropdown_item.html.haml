@@ -2,5 +2,4 @@
   %li
     %button.gl-justify-content-space-between.gl-align-items-center.js-whats-new-trigger{ type: 'button', class: 'gl-display-flex!' }
       = _("What's new")
-      %span.js-whats-new-notification-count.gl-badge.badge.sm.badge-dark.badge-pill
-        = whats_new_most_recent_release_items_count
+      = gl_badge_tag whats_new_most_recent_release_items_count, { size: :sm }, { class: 'js-whats-new-notification-count' }

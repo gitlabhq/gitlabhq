@@ -11,12 +11,14 @@ import { useFakeDate } from 'helpers/fake_date';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
+import { MAX_LIST_COUNT, TOKEN_STATUS_ACTIVE } from '~/clusters/agents/constants';
 
 const localVue = createLocalVue();
 localVue.use(VueApollo);
 
 describe('ClusterAgentShow', () => {
   let wrapper;
+  let agentQueryResponse;
   useFakeDate([2021, 2, 15]);
 
   const provide = {
@@ -40,7 +42,7 @@ describe('ClusterAgentShow', () => {
   };
 
   const createWrapper = ({ clusterAgent, queryResponse = null }) => {
-    const agentQueryResponse =
+    agentQueryResponse =
       queryResponse ||
       jest.fn().mockResolvedValue({ data: { project: { id: 'project-1', clusterAgent } } });
     const apolloProvider = createMockApollo([[getAgentQuery, agentQueryResponse]]);
@@ -82,6 +84,18 @@ describe('ClusterAgentShow', () => {
   describe('default behaviour', () => {
     beforeEach(() => {
       return createWrapper({ clusterAgent: defaultClusterAgent });
+    });
+
+    it('sends expected params', () => {
+      const variables = {
+        agentName: provide.agentName,
+        projectPath: provide.projectPath,
+        tokenStatus: TOKEN_STATUS_ACTIVE,
+        first: MAX_LIST_COUNT,
+        last: null,
+      };
+
+      expect(agentQueryResponse).toHaveBeenCalledWith(variables);
     });
 
     it('displays the agent name', () => {

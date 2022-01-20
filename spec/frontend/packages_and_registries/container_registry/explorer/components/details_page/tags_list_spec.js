@@ -8,7 +8,7 @@ import { stripTypenames } from 'helpers/graphql_helpers';
 
 import component from '~/packages_and_registries/container_registry/explorer/components/details_page/tags_list.vue';
 import TagsListRow from '~/packages_and_registries/container_registry/explorer/components/details_page/tags_list_row.vue';
-import TagsLoader from '~/packages_and_registries/container_registry/explorer/components/details_page/tags_loader.vue';
+import TagsLoader from '~/packages_and_registries/shared/components/tags_loader.vue';
 import RegistryList from '~/packages_and_registries/shared/components/registry_list.vue';
 import PersistedSearch from '~/packages_and_registries/shared/components/persisted_search.vue';
 import getContainerRepositoryTagsQuery from '~/packages_and_registries/container_registry/explorer/graphql/queries/get_container_repository_tags.query.graphql';

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
+require 'spec_helper'
 
 RSpec.describe ::Gitlab::Graphql::Authorize::ObjectAuthorization do
   describe '#ok?' do

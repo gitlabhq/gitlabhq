@@ -75,7 +75,7 @@ To view the total number of vulnerabilities per scan:
 
 Depending on the type of security scanner, you can download:
 
-- A JSON artifact that contains the security scanner [report]('https://docs.gitlab.com/ee/development/integrations/secure.html#report').
+- A JSON artifact that contains the security scanner [report](../../../development/integrations/secure.md#report).
 - A CSV file that contains URLs and endpoints scanned by the security scanner.
 
 To download a security scan output:

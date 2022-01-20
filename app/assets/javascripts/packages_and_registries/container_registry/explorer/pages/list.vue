@@ -52,7 +52,7 @@ export default {
       ),
     CliCommands: () =>
       import(
-        /* webpackChunkName: 'container_registry_components' */ '../components/list_page/cli_commands.vue'
+        /* webpackChunkName: 'container_registry_components' */ '~/packages_and_registries/shared/components/cli_commands.vue'
       ),
     GlModal,
     GlSprintf,
@@ -68,7 +68,7 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   mixins: [Tracking.mixin()],
-  inject: ['config'],
+  inject: ['config', 'dockerBuildCommand', 'dockerPushCommand', 'dockerLoginCommand'],
   loader: {
     repeat: 10,
     width: 1000,
@@ -321,7 +321,12 @@ export default {
         :hide-expiration-policy-data="config.isGroupPage"
       >
         <template #commands>
-          <cli-commands v-if="showCommands" />
+          <cli-commands
+            v-if="showCommands"
+            :docker-build-command="dockerBuildCommand"
+            :docker-push-command="dockerPushCommand"
+            :docker-login-command="dockerLoginCommand"
+          />
         </template>
       </registry-header>
 

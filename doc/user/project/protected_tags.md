@@ -66,6 +66,26 @@ all matching tags:
 
 ![Protected tag matches](img/protected_tag_matches.png)
 
+## Prevent tag creation with the same name as branches
+
+A tag and a branch with identical names can contain different commits. If your
+tags and branches use the same names, users running `git checkout`
+commands might check out the _tag_ `qa` when they instead meant to check out
+the _branch_ `qa`.
+
+To prevent this problem:
+
+1. Identify the branch names you do not want used as tags.
+1. As described in [Configuring protected tags](#configuring-protected-tags),
+   create a protected tag:
+
+   - For the **Name**, provide a name, such as `stable`. You can also create a wildcard
+     like `stable-*` to match multiple names, like `stable-v1` and `stable-v2`.
+   - For **Allowed to Create**, select **No one**.
+   - Select **Protect**.
+
+Users can still create branches, but not tags, with the protected names.
+
 <!-- ## Troubleshooting
 
 Include any troubleshooting steps that you can foresee. If you know beforehand what issues

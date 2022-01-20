@@ -5,6 +5,7 @@ import createFlash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { joinPaths } from '~/lib/utils/url_utility';
 import Tracking from '~/tracking';
+import TagsLoader from '~/packages_and_registries/shared/components/tags_loader.vue';
 import DeleteImage from '../components/delete_image.vue';
 import DeleteAlert from '../components/details_page/delete_alert.vue';
 import DeleteModal from '../components/details_page/delete_modal.vue';
@@ -12,7 +13,6 @@ import DetailsHeader from '../components/details_page/details_header.vue';
 import PartialCleanupAlert from '../components/details_page/partial_cleanup_alert.vue';
 import StatusAlert from '../components/details_page/status_alert.vue';
 import TagsList from '../components/details_page/tags_list.vue';
-import TagsLoader from '../components/details_page/tags_loader.vue';
 
 import {
   ALERT_SUCCESS_TAG,

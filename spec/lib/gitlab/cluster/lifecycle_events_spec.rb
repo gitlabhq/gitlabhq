@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
-require 'rspec-parameterized'
+require 'spec_helper'
 
 RSpec.describe Gitlab::Cluster::LifecycleEvents do
   # we create a new instance to ensure that we do not touch existing hooks

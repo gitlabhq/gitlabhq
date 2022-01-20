@@ -144,7 +144,7 @@ export default {
     'gl-border-t-solid',
     'gl-border-1',
     'gl-py-5',
-    'gl-pl-7',
+    'gl-md-pl-7',
     'gl-bg-gray-10',
   ],
 };
@@ -255,10 +255,19 @@ export default {
     </div>
     <gl-collapse :visible="visible">
       <div v-if="lastDeployment" :class="$options.deploymentClasses">
-        <deployment :deployment="lastDeployment" :class="{ 'gl-ml-7': inFolder }" />
+        <deployment
+          :deployment="lastDeployment"
+          :class="{ 'gl-ml-7': inFolder }"
+          latest
+          class="gl-pl-4"
+        />
       </div>
       <div v-if="upcomingDeployment" :class="$options.deploymentClasses">
-        <deployment :deployment="upcomingDeployment" :class="{ 'gl-ml-7': inFolder }" />
+        <deployment
+          :deployment="upcomingDeployment"
+          :class="{ 'gl-ml-7': inFolder }"
+          class="gl-pl-4"
+        />
       </div>
     </gl-collapse>
   </div>

@@ -11,7 +11,7 @@ import DetailsHeader from '~/packages_and_registries/container_registry/explorer
 import PartialCleanupAlert from '~/packages_and_registries/container_registry/explorer/components/details_page/partial_cleanup_alert.vue';
 import StatusAlert from '~/packages_and_registries/container_registry/explorer/components/details_page/status_alert.vue';
 import TagsList from '~/packages_and_registries/container_registry/explorer/components/details_page/tags_list.vue';
-import TagsLoader from '~/packages_and_registries/container_registry/explorer/components/details_page/tags_loader.vue';
+import TagsLoader from '~/packages_and_registries/shared/components/tags_loader.vue';
 
 import {
   UNFINISHED_STATUS,
