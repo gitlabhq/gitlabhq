@@ -25,6 +25,13 @@ Try to avoid **`@mention`**. Say **mention** instead, and consider linking to th
 [mentions topic](../../../user/discussions/index.md#mentions).
 Don't use backticks.
 
+## 2FA, two-factor authentication
+
+Spell out **two-factor authentication** in sentence case for the first use and in section headings, and **2FA**
+thereafter. If the first word in a sentence, do not capitalize `factor` or `authentication`. For example:
+
+- Two-factor authentication (2FA) helps secure your account. Set up 2FA when you first log in.
+
 ## above
 
 Try to avoid using **above** when referring to an example or table in a documentation page. If required, use **previous** instead. For example:
@@ -845,6 +852,10 @@ Use title case for **To-Do List**. ([Vale](../testing.md#vale) rule: [`ToDo.yml`
 You **turn on** or **turn off** a toggle. For example:
 
 - Turn on the **blah** toggle.
+
+## TFA, two-factor authentication
+
+Use [**2FA** and **two-factor authentication**](#2fa-two-factor-authentication) instead.
 
 ## type
 

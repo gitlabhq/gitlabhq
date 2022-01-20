@@ -87,6 +87,33 @@ There is a rate limit for [testing webhooks](../user/project/integrations/webhoo
 
 The **rate limit** is 5 requests per minute per user.
 
+### Users sign up
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/77835) in GitLab 14.7.
+
+There is a rate limit per IP address on the `/users/sign_up` endpoint. This is to mitigate attempts to misuse the endpoint. For example, to mass
+discover usernames or email addresses in use. 
+
+The **rate limit** is 20 calls per minute per IP address.
+
+### Update username
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/77221) in GitLab 14.7.
+
+There is a rate limit on the update username action. This is enforced to mitigate misuse of the feature. For example, to mass discover
+which usernames are in use.
+
+The **rate limit** is 10 calls per minute per signed-in user.
+
+### Username exists
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/77119) in GitLab 14.7.
+
+There is a rate limit for the internal endpoint `/users/:username/exists`, used by registration to perform a client-side validation for
+uniqueness of the chosen username. This is to mitigate the risk of misuses, such as mass discovery of usernames in use.
+
+The **rate limit** is 20 calls per minute per IP address. 
+
 ## Troubleshooting
 
 ### Rack Attack is denylisting the load balancer

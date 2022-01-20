@@ -533,12 +533,14 @@ You can also monitor the [Praefect logs](../logs.md#praefect-logs).
 
 #### Database metrics `/db_metrics` endpoint
 
+> [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/3286) in GitLab 14.5.
+
 The following metrics are available from the `/db_metrics` endpoint:
 
 - `gitaly_praefect_unavailable_repositories`, the number of repositories that have no healthy, up to date replicas.
 - `gitaly_praefect_read_only_repositories`, the number of repositories in read-only mode within a virtual storage.
-  This is an older metric that is still available for backwards compatibility reasons. `gitaly_praefect_unavailable_repositories`
-  is a more accurate.
+  This metric is available for backwards compatibility reasons. `gitaly_praefect_unavailable_repositories` is more
+  accurate.
 - `gitaly_praefect_replication_queue_depth`, the number of jobs in the replication queue.
 
 ## Recover from failure

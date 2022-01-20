@@ -366,7 +366,7 @@ Microsoft
 middleware
 middlewares
 migratus
-Minikube
+minikube
 MinIO
 misconfiguration
 misconfigurations

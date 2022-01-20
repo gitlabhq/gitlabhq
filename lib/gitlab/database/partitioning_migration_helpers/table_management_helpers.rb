@@ -406,7 +406,8 @@ module Gitlab
         end
 
         def copy_missed_records(source_table_name, partitioned_table_name, source_column)
-          backfill_table = BackfillPartitionedTable.new
+          backfill_table = BackfillPartitionedTable.new(connection: connection)
+
           relation = ::Gitlab::Database::BackgroundMigrationJob.pending
             .for_partitioning_migration(MIGRATION_CLASS_NAME, source_table_name)
 

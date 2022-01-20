@@ -221,9 +221,9 @@ all Kubernetes resources and dependent charts:
   helm get manifest <release name>
   ```
 
-## Installation of minimal GitLab configuration via Minikube on macOS
+## Installation of minimal GitLab configuration via minikube on macOS
 
-This section is based on [Developing for Kubernetes with Minikube](https://docs.gitlab.com/charts/development/minikube/index.html)
+This section is based on [Developing for Kubernetes with minikube](https://docs.gitlab.com/charts/development/minikube/index.html)
 and [Helm](https://docs.gitlab.com/charts/installation/tools.html#helm). Refer
 to those documents for details.
 
@@ -233,13 +233,13 @@ to those documents for details.
   brew install kubernetes-cli
   ```
 
-- Install Minikube via Homebrew:
+- Install minikube via Homebrew:
 
   ```shell
   brew cask install minikube
   ```
 
-- Start Minikube and configure it. If Minikube cannot start, try running `minikube delete && minikube start`
+- Start minikube and configure it. If minikube cannot start, try running `minikube delete && minikube start`
   and repeat the steps:
 
   ```shell
@@ -253,7 +253,7 @@ to those documents for details.
   brew install helm
   ```
 
-- Copy the [Minikube minimum values YAML file](https://gitlab.com/gitlab-org/charts/gitlab/raw/master/examples/values-minikube-minimum.yaml)
+- Copy the [minikube minimum values YAML file](https://gitlab.com/gitlab-org/charts/gitlab/raw/master/examples/values-minikube-minimum.yaml)
   to your workstation:
 
   ```shell

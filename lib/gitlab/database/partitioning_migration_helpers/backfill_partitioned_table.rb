@@ -4,7 +4,7 @@ module Gitlab
   module Database
     module PartitioningMigrationHelpers
       # Class that will generically copy data from a given table into its corresponding partitioned table
-      class BackfillPartitionedTable
+      class BackfillPartitionedTable < ::Gitlab::BackgroundMigration::BaseJob
         include ::Gitlab::Database::DynamicModelHelpers
 
         SUB_BATCH_SIZE = 2_500
@@ -21,7 +21,7 @@ module Gitlab
             return
           end
 
-          bulk_copy = BulkCopy.new(source_table, partitioned_table, source_column)
+          bulk_copy = BulkCopy.new(source_table, partitioned_table, source_column, connection: connection)
           parent_batch_relation = relation_scoped_to_range(source_table, source_column, start_id, stop_id)
 
           parent_batch_relation.each_batch(of: SUB_BATCH_SIZE) do |sub_batch|
@@ -36,10 +36,6 @@ module Gitlab
 
         private
 
-        def connection
-          ActiveRecord::Base.connection
-        end
-
         def transaction_open?
           connection.transaction_open?
         end
@@ -53,7 +49,8 @@ module Gitlab
         end
 
         def relation_scoped_to_range(source_table, source_key_column, start_id, stop_id)
-          define_batchable_model(source_table).where(source_key_column => start_id..stop_id)
+          define_batchable_model(source_table)
+            .where(source_key_column => start_id..stop_id)
         end
 
         def mark_jobs_as_succeeded(*arguments)
@@ -64,12 +61,13 @@ module Gitlab
         class BulkCopy
           DELIMITER = ', '
 
-          attr_reader :source_table, :destination_table, :source_column
+          attr_reader :source_table, :destination_table, :source_column, :connection
 
-          def initialize(source_table, destination_table, source_column)
+          def initialize(source_table, destination_table, source_column, connection:)
             @source_table = source_table
             @destination_table = destination_table
             @source_column = source_column
+            @connection = connection
           end
 
           def copy_between(start_id, stop_id)
@@ -84,10 +82,6 @@ module Gitlab
           end
 
           private
-
-          def connection
-            @connection ||= ActiveRecord::Base.connection
-          end
 
           def column_listing
             @column_listing ||= connection.columns(source_table).map(&:name).join(DELIMITER)

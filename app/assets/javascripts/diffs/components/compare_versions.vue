@@ -182,7 +182,7 @@ export default {
           class="gl-mr-3"
           @click="expandAllFiles"
         >
-          {{ __('Expand all') }}
+          {{ __('Expand all files') }}
         </gl-button>
         <settings-dropdown />
       </div>
