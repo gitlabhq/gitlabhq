@@ -58,6 +58,14 @@ export default {
       required: true,
     },
   },
+  data() {
+    return {
+      retryBtnDisabled: false,
+      cancelBtnDisabled: false,
+      playManualBtnDisabled: false,
+      unscheduleBtnDisabled: false,
+    };
+  },
   computed: {
     hasArtifacts() {
       return this.job.artifacts.nodes.find((artifact) => artifact.fileType === FILE_TYPE_ARCHIVE);
@@ -132,15 +140,23 @@ export default {
       });
     },
     cancelJob() {
+      this.cancelBtnDisabled = true;
+
       this.postJobAction(this.$options.jobCancel, cancelJobMutation);
     },
     retryJob() {
+      this.retryBtnDisabled = true;
+
       this.postJobAction(this.$options.jobRetry, retryJobMutation);
     },
     playJob() {
+      this.playManualBtnDisabled = true;
+
       this.postJobAction(this.$options.jobPlay, playJobMutation);
     },
     unscheduleJob() {
+      this.unscheduleBtnDisabled = true;
+
       this.postJobAction(this.$options.jobUnschedule, unscheduleJobMutation);
     },
   },
@@ -155,6 +171,7 @@ export default {
         data-testid="cancel-button"
         icon="cancel"
         :title="$options.CANCEL"
+        :disabled="cancelBtnDisabled"
         @click="cancelJob()"
       />
       <template v-else-if="isScheduled">
@@ -179,6 +196,7 @@ export default {
         <gl-button
           icon="time-out"
           :title="$options.ACTIONS_UNSCHEDULE"
+          :disabled="unscheduleBtnDisabled"
           data-testid="unschedule"
           @click="unscheduleJob()"
         />
@@ -189,6 +207,7 @@ export default {
           v-if="manualJobPlayable"
           icon="play"
           :title="$options.ACTIONS_PLAY"
+          :disabled="playManualBtnDisabled"
           data-testid="play"
           @click="playJob()"
         />
@@ -197,6 +216,7 @@ export default {
           icon="repeat"
           :title="$options.ACTIONS_RETRY"
           :method="currentJobMethod"
+          :disabled="retryBtnDisabled"
           data-testid="retry"
           @click="retryJob()"
         />

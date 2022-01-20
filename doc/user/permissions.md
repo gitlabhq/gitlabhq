@@ -73,8 +73,7 @@ The following table lists project permissions available for each role:
 | [CI/CD](../ci/index.md):<br>View a job with [debug logging](../ci/variables/index.md#debug-logging)                                                                                       |          |          | ✓         | ✓          | ✓     |
 | [CI/CD](../ci/index.md):<br>Manage CI/CD variables                                                                                                                                        |          |          |           | ✓          | ✓     |
 | [CI/CD](../ci/index.md):<br>Manage job triggers                                                                                                                                           |          |          |           | ✓          | ✓     |
-| [CI/CD](../ci/index.md):<br>Manage group runners                                                                                                                                          |          |          |           |            | ✓     |
-| [CI/CD](../ci/index.md):<br>Manage project runners                                                                                                                                        |          |          |           | ✓          | ✓     |
+| [CI/CD](../ci/index.md):<br>Manage runners                                                                                                                                                |          |          |           | ✓          | ✓     |
 | [CI/CD](../ci/index.md):<br>Run Web IDE's Interactive Web Terminals **(ULTIMATE ONLY)**                                                                                                   |          |          |           | ✓          | ✓     |
 | [CI/CD](../ci/index.md):<br>Use [environment terminals](../ci/environments/index.md#web-terminals-deprecated)                                                                             |          |          |           | ✓          | ✓     |
 | [CI/CD](../ci/index.md):<br>Delete pipelines                                                                                                                                              |          |          |           |            | ✓     |
@@ -293,56 +292,57 @@ The following table lists group permissions available for each role:
 
 <!-- Keep this table sorted: first, by minimum role, then alphabetically. -->
 
-| Action                                                 | Guest | Reporter | Developer | Maintainer | Owner |
-|--------------------------------------------------------|-------|----------|-----------|------------|-------|
-| Browse group                                           | ✓     | ✓        | ✓         | ✓          | ✓     |
-| Edit SAML SSO Billing **(PREMIUM SAAS)**               | ✓     | ✓        | ✓         | ✓          | ✓ (4) |
-| Pull a container image using the dependency proxy      | ✓     | ✓        | ✓         | ✓          | ✓     |
-| View Contribution analytics                            | ✓     | ✓        | ✓         | ✓          | ✓     |
-| View group epic **(PREMIUM)**                          | ✓     | ✓        | ✓         | ✓          | ✓     |
-| View group wiki pages **(PREMIUM)**                    | ✓ (6) | ✓        | ✓         | ✓          | ✓     |
-| View Insights **(ULTIMATE)**                           | ✓     | ✓        | ✓         | ✓          | ✓     |
-| View Insights charts **(ULTIMATE)**                    | ✓     | ✓        | ✓         | ✓          | ✓     |
-| View Issue analytics **(PREMIUM)**                     | ✓     | ✓        | ✓         | ✓          | ✓     |
-| View Value Stream analytics                            | ✓     | ✓        | ✓         | ✓          | ✓     |
-| Create/edit group epic **(PREMIUM)**                   |       | ✓        | ✓         | ✓          | ✓     |
-| Create/edit/delete epic boards **(PREMIUM)**           |       | ✓        | ✓         | ✓          | ✓     |
-| Manage group labels                                    |       | ✓        | ✓         | ✓          | ✓     |
-| Pull [packages](packages/index.md)                     |       | ✓        | ✓         | ✓          | ✓     |
-| View a container registry                              |       | ✓        | ✓         | ✓          | ✓     |
-| View Group DevOps Adoption **(ULTIMATE)**              |       | ✓        | ✓         | ✓          | ✓     |
-| View metrics dashboard annotations                     |       | ✓        | ✓         | ✓          | ✓     |
-| View Productivity analytics **(PREMIUM)**              |       | ✓        | ✓         | ✓          | ✓     |
-| Create and edit group wiki pages **(PREMIUM)**         |       |          | ✓         | ✓          | ✓     |
-| Create project in group                                |       |          | ✓ (3)(5)  | ✓ (3)      | ✓ (3) |
-| Create/edit/delete group milestones                    |       |          | ✓         | ✓          | ✓     |
-| Create/edit/delete iterations                          |       |          | ✓         | ✓          | ✓     |
-| Create/edit/delete metrics dashboard annotations       |       |          | ✓         | ✓          | ✓     |
-| Enable/disable a dependency proxy                      |       |          | ✓         | ✓          | ✓     |
-| Purge the dependency proxy for a group                 |       |          |           |            | ✓     |
-| Publish [packages](packages/index.md)                  |       |          | ✓         | ✓          | ✓     |
-| Use security dashboard **(ULTIMATE)**                  |       |          | ✓         | ✓          | ✓     |
-| View group Audit Events                                |       |          | ✓ (7)     | ✓ (7)      | ✓     |
-| Create subgroup                                        |       |          |           | ✓ (1)      | ✓     |
-| Delete group wiki pages **(PREMIUM)**                  |       |          | ✓         | ✓          | ✓     |
-| Edit epic comments (posted by any user) **(ULTIMATE)** |       |          |           | ✓ (2)      | ✓ (2) |
-| List group deploy tokens                               |       |          |           | ✓          | ✓     |
-| Manage [group push rules](group/index.md#group-push-rules) **(PREMIUM)** | | |        | ✓          | ✓     |
-| View/manage group-level Kubernetes cluster             |       |          |           | ✓          | ✓     |
-| Administer project compliance frameworks               |       |          |           |            | ✓     |
-| Create/Delete group deploy tokens                      |       |          |           |            | ✓     |
-| Change group visibility level                          |       |          |           |            | ✓     |
-| Delete group                                           |       |          |           |            | ✓     |
-| Delete group epic **(PREMIUM)**                        |       |          |           |            | ✓     |
-| Disable notification emails                            |       |          |           |            | ✓     |
-| Edit group settings                                    |       |          |           |            | ✓     |
-| Filter members by 2FA status                           |       |          |           |            | ✓     |
-| Manage group level CI/CD variables                     |       |          |           |            | ✓     |
-| Manage group members                                   |       |          |           |            | ✓     |
-| Share (invite) groups with groups                      |       |          |           |            | ✓     |
-| View 2FA status of members                             |       |          |           |            | ✓     |
-| View Billing **(FREE SAAS)**                           |       |          |           |            | ✓ (4) |
-| View Usage Quotas **(FREE SAAS)**                      |       |          |           |            | ✓ (4) |
+| Action                                                                   | Guest | Reporter | Developer | Maintainer | Owner |
+|--------------------------------------------------------------------------|-------|----------|-----------|------------|-------|
+| Browse group                                                             | ✓     | ✓        | ✓         | ✓          | ✓     |
+| Edit SAML SSO Billing **(PREMIUM SAAS)**                                 | ✓     | ✓        | ✓         | ✓          | ✓ (4) |
+| Pull a container image using the dependency proxy                        | ✓     | ✓        | ✓         | ✓          | ✓     |
+| View Contribution analytics                                              | ✓     | ✓        | ✓         | ✓          | ✓     |
+| View group epic **(PREMIUM)**                                            | ✓     | ✓        | ✓         | ✓          | ✓     |
+| View group wiki pages **(PREMIUM)**                                      | ✓ (6) | ✓        | ✓         | ✓          | ✓     |
+| View Insights **(ULTIMATE)**                                             | ✓     | ✓        | ✓         | ✓          | ✓     |
+| View Insights charts **(ULTIMATE)**                                      | ✓     | ✓        | ✓         | ✓          | ✓     |
+| View Issue analytics **(PREMIUM)**                                       | ✓     | ✓        | ✓         | ✓          | ✓     |
+| View Value Stream analytics                                              | ✓     | ✓        | ✓         | ✓          | ✓     |
+| Create/edit group epic **(PREMIUM)**                                     |       | ✓        | ✓         | ✓          | ✓     |
+| Create/edit/delete epic boards **(PREMIUM)**                             |       | ✓        | ✓         | ✓          | ✓     |
+| Manage group labels                                                      |       | ✓        | ✓         | ✓          | ✓     |
+| Pull [packages](packages/index.md)                                       |       | ✓        | ✓         | ✓          | ✓     |
+| View a container registry                                                |       | ✓        | ✓         | ✓          | ✓     |
+| View Group DevOps Adoption **(ULTIMATE)**                                |       | ✓        | ✓         | ✓          | ✓     |
+| View metrics dashboard annotations                                       |       | ✓        | ✓         | ✓          | ✓     |
+| View Productivity analytics **(PREMIUM)**                                |       | ✓        | ✓         | ✓          | ✓     |
+| Create and edit group wiki pages **(PREMIUM)**                           |       |          | ✓         | ✓          | ✓     |
+| Create project in group                                                  |       |          | ✓ (3)(5)  | ✓ (3)      | ✓ (3) |
+| Create/edit/delete group milestones                                      |       |          | ✓         | ✓          | ✓     |
+| Create/edit/delete iterations                                            |       |          | ✓         | ✓          | ✓     |
+| Create/edit/delete metrics dashboard annotations                         |       |          | ✓         | ✓          | ✓     |
+| Enable/disable a dependency proxy                                        |       |          | ✓         | ✓          | ✓     |
+| Purge the dependency proxy for a group                                   |       |          |           |            | ✓     |
+| Publish [packages](packages/index.md)                                    |       |          | ✓         | ✓          | ✓     |
+| Use security dashboard **(ULTIMATE)**                                    |       |          | ✓         | ✓          | ✓     |
+| View group Audit Events                                                  |       |          | ✓ (7)     | ✓ (7)      | ✓     |
+| Create subgroup                                                          |       |          |           | ✓ (1)      | ✓     |
+| Delete group wiki pages **(PREMIUM)**                                    |       |          | ✓         | ✓          | ✓     |
+| Edit epic comments (posted by any user) **(ULTIMATE)**                   |       |          |           | ✓ (2)      | ✓ (2) |
+| List group deploy tokens                                                 |       |          |           | ✓          | ✓     |
+| Manage [group push rules](group/index.md#group-push-rules) **(PREMIUM)** |       |          |           | ✓          | ✓     |
+| View/manage group-level Kubernetes cluster                               |       |          |           | ✓          | ✓     |
+| Administer project compliance frameworks                                 |       |          |           |            | ✓     |
+| Create/Delete group deploy tokens                                        |       |          |           |            | ✓     |
+| Change group visibility level                                            |       |          |           |            | ✓     |
+| Delete group                                                             |       |          |           |            | ✓     |
+| Delete group epic **(PREMIUM)**                                          |       |          |           |            | ✓     |
+| Disable notification emails                                              |       |          |           |            | ✓     |
+| Edit group settings                                                      |       |          |           |            | ✓     |
+| Filter members by 2FA status                                             |       |          |           |            | ✓     |
+| Manage group level CI/CD variables                                       |       |          |           |            | ✓     |
+| Manage group members                                                     |       |          |           |            | ✓     |
+| Share (invite) groups with groups                                        |       |          |           |            | ✓     |
+| View 2FA status of members                                               |       |          |           |            | ✓     |
+| View Billing **(FREE SAAS)**                                             |       |          |           |            | ✓ (4) |
+| View Usage Quotas **(FREE SAAS)**                                        |       |          |           |            | ✓ (4) |
+| Manage runners                                                           |       |          |           |            | ✓     |
 
 1. Groups can be set to [allow either Owners or Owners and
   Maintainers to create subgroups](group/subgroups/index.md#creating-a-subgroup)

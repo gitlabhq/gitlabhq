@@ -1,10 +1,8 @@
 import {
-  VALIDATE_INTEGRATION_FORM_EVENT,
   I18N_FETCH_TEST_SETTINGS_DEFAULT_ERROR_MESSAGE,
   I18N_DEFAULT_ERROR_MESSAGE,
 } from '~/integrations/constants';
 import { testIntegrationSettings } from '../api';
-import eventHub from '../event_hub';
 import * as types from './mutation_types';
 
 export const setOverride = ({ commit }, override) => commit(types.SET_OVERRIDE, override);
@@ -19,7 +17,6 @@ export const requestJiraIssueTypes = ({ commit, dispatch, getters }, formData) =
         data: { issuetypes, error, message = I18N_FETCH_TEST_SETTINGS_DEFAULT_ERROR_MESSAGE },
       }) => {
         if (error || !issuetypes?.length) {
-          eventHub.$emit(VALIDATE_INTEGRATION_FORM_EVENT);
           throw new Error(message);
         }
 

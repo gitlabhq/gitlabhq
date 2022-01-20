@@ -7,8 +7,8 @@ RSpec.describe 'Issue board filters', :js do
   let_it_be(:user) { create(:user) }
   let_it_be(:board) { create(:board, project: project) }
   let_it_be(:project_label) { create(:label, project: project, title: 'Label') }
-  let_it_be(:milestone_1) { create(:milestone, project: project) }
-  let_it_be(:milestone_2) { create(:milestone, project: project) }
+  let_it_be(:milestone_1) { create(:milestone, project: project, due_date: 3.days.from_now ) }
+  let_it_be(:milestone_2) { create(:milestone, project: project, due_date: Date.tomorrow ) }
   let_it_be(:release) { create(:release, tag: 'v1.0', project: project, milestones: [milestone_1]) }
   let_it_be(:release_2) { create(:release, tag: 'v2.0', project: project, milestones: [milestone_2]) }
   let_it_be(:issue_1) { create(:issue, project: project, milestone: milestone_1, author: user) }
@@ -134,8 +134,11 @@ RSpec.describe 'Issue board filters', :js do
       expect(filter_dropdown).to have_content('Any')
       expect(filter_dropdown).to have_content('Started')
       expect(filter_dropdown).to have_content('Upcoming')
-      expect(filter_dropdown).to have_content(milestone_1.title)
-      expect(filter_dropdown).to have_content(milestone_2.title)
+
+      dropdown_nodes = page.find_all('.gl-filtered-search-suggestion-list > .gl-filtered-search-suggestion')
+
+      expect(dropdown_nodes[4]).to have_content(milestone_2.title)
+      expect(dropdown_nodes.last).to have_content(milestone_1.title)
 
       click_on milestone_1.title
       filter_submit.click

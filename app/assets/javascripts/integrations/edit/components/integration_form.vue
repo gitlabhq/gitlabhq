@@ -5,7 +5,6 @@ import * as Sentry from '@sentry/browser';
 import { mapState, mapActions, mapGetters } from 'vuex';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import {
-  VALIDATE_INTEGRATION_FORM_EVENT,
   I18N_FETCH_TEST_SETTINGS_DEFAULT_ERROR_MESSAGE,
   I18N_DEFAULT_ERROR_MESSAGE,
   I18N_SUCCESSFUL_CONNECTION_MESSAGE,
@@ -14,7 +13,6 @@ import {
 } from '~/integrations/constants';
 import { refreshCurrentPage } from '~/lib/utils/url_utility';
 import csrf from '~/lib/utils/csrf';
-import eventHub from '../event_hub';
 import { testIntegrationSettings } from '../api';
 import ActiveCheckbox from './active_checkbox.vue';
 import ConfirmationModal from './confirmation_modal.vue';
@@ -57,6 +55,7 @@ export default {
       isTesting: false,
       isSaving: false,
       isResetting: false,
+      isValidated: false,
     };
   },
   computed: {
@@ -107,13 +106,16 @@ export default {
       : document.querySelector(INTEGRATION_FORM_SELECTOR);
   },
   methods: {
-    ...mapActions(['setOverride', 'fetchResetIntegration', 'requestJiraIssueTypes']),
+    ...mapActions(['setOverride', 'requestJiraIssueTypes']),
+    setIsValidated() {
+      this.isValidated = true;
+    },
     onSaveClick() {
       this.isSaving = true;
 
       if (this.integrationActive && !this.form.checkValidity()) {
         this.isSaving = false;
-        eventHub.$emit(VALIDATE_INTEGRATION_FORM_EVENT);
+        this.setIsValidated();
         return;
       }
 
@@ -123,14 +125,14 @@ export default {
       this.isTesting = true;
 
       if (!this.form.checkValidity()) {
-        eventHub.$emit(VALIDATE_INTEGRATION_FORM_EVENT);
+        this.setIsValidated();
         return;
       }
 
       testIntegrationSettings(this.propsSource.testPath, this.getFormData())
         .then(({ data: { error, message = I18N_FETCH_TEST_SETTINGS_DEFAULT_ERROR_MESSAGE } }) => {
           if (error) {
-            eventHub.$emit(VALIDATE_INTEGRATION_FORM_EVENT);
+            this.setIsValidated();
             this.$toast.show(message);
             return;
           }
@@ -227,6 +229,7 @@ export default {
           v-if="isJira"
           :key="`${currentKey}-jira-trigger-fields`"
           v-bind="propsSource.triggerFieldsProps"
+          :is-validated="isValidated"
         />
         <trigger-fields
           v-else-if="propsSource.triggerEvents.length"
@@ -238,11 +241,13 @@ export default {
           v-for="field in propsSource.fields"
           :key="`${currentKey}-${field.name}`"
           v-bind="field"
+          :is-validated="isValidated"
         />
         <jira-issues-fields
           v-if="isJira && !isInstanceOrGroupLevel"
           :key="`${currentKey}-jira-issues-fields`"
           v-bind="propsSource.jiraIssuesProps"
+          :is-validated="isValidated"
           @request-jira-issue-types="onRequestJiraIssueTypes"
         />
 

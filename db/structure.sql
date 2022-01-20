@@ -10775,7 +10775,9 @@ CREATE TABLE audit_events_external_audit_event_destinations (
     destination_url text NOT NULL,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
-    CONSTRAINT check_2feafb9daf CHECK ((char_length(destination_url) <= 255))
+    verification_token text,
+    CONSTRAINT check_2feafb9daf CHECK ((char_length(destination_url) <= 255)),
+    CONSTRAINT check_8ec80a7d06 CHECK ((char_length(verification_token) <= 24))
 );
 
 CREATE SEQUENCE audit_events_external_audit_event_destinations_id_seq
@@ -25354,6 +25356,8 @@ CREATE INDEX index_approvers_on_target_id_and_target_type ON approvers USING btr
 CREATE INDEX index_approvers_on_user_id ON approvers USING btree (user_id);
 
 CREATE UNIQUE INDEX index_atlassian_identities_on_extern_uid ON atlassian_identities USING btree (extern_uid);
+
+CREATE UNIQUE INDEX index_audit_events_external_audit_on_verification_token ON audit_events_external_audit_event_destinations USING btree (verification_token);
 
 CREATE INDEX index_authentication_events_on_provider ON authentication_events USING btree (provider);
 

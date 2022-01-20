@@ -339,12 +339,6 @@ rspec fast_spec_helper:
     # Load fast_spec_helper as well just in case there are no specs available.
     - bin/rspec --dry-run spec/fast_spec_helper.rb $fast_spec_helper_specs
 
-rspec fast_spec_helper minimal:
-  extends:
-    - rspec fast_spec_helper
-    - .minimal-rspec-tests
-    - .rails:rules:ee-and-foss-fast_spec_helper:minimal
-
 db:rollback:
   extends: .db-job-base
   script:

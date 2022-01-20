@@ -9,9 +9,7 @@ import {
 } from '@gitlab/ui';
 import { mapGetters } from 'vuex';
 import { helpPagePath } from '~/helpers/help_page_helper';
-import { VALIDATE_INTEGRATION_FORM_EVENT } from '~/integrations/constants';
 import { s__ } from '~/locale';
-import eventHub from '../event_hub';
 
 const commentDetailOptions = [
   {
@@ -92,10 +90,14 @@ export default {
       required: false,
       default: '',
     },
+    isValidated: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
-      validated: false,
       triggerCommit: this.initialTriggerCommit,
       triggerMergeRequest: this.initialTriggerMergeRequest,
       enableComments: this.initialEnableComments,
@@ -115,19 +117,10 @@ export default {
       return this.triggerCommit || this.triggerMergeRequest;
     },
     validIssueTransitionId() {
-      return !this.validated || Boolean(this.jiraIssueTransitionId);
+      return !this.isValidated || Boolean(this.jiraIssueTransitionId);
     },
-  },
-  created() {
-    eventHub.$on(VALIDATE_INTEGRATION_FORM_EVENT, this.validateForm);
-  },
-  beforeDestroy() {
-    eventHub.$off(VALIDATE_INTEGRATION_FORM_EVENT, this.validateForm);
   },
   methods: {
-    validateForm() {
-      this.validated = true;
-    },
     showCustomIssueTransitions(currentOption) {
       return (
         this.jiraIssueTransitionAutomatic === ISSUE_TRANSITION_CUSTOM &&

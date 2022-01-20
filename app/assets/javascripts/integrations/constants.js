@@ -1,7 +1,5 @@
 import { s__, __ } from '~/locale';
 
-export const VALIDATE_INTEGRATION_FORM_EVENT = 'validateIntegrationForm';
-
 export const integrationLevels = {
   GROUP: 'group',
   INSTANCE: 'instance',

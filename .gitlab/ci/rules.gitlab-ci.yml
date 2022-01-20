@@ -980,32 +980,7 @@
       changes: *core-backend-patterns
     - <<: *if-merge-request
       changes: *ci-patterns
-    - <<: *if-automated-merge-request
-      changes: ["config/**/*"]
-    - <<: *if-security-merge-request
-      changes: ["config/**/*"]
-    - <<: *if-merge-request-not-approved
-      when: never
     - changes: ["config/**/*"]
-
-.rails:rules:ee-and-foss-fast_spec_helper:minimal:
-  rules:
-    - <<: *if-merge-request-approved
-      when: never
-    - <<: *if-automated-merge-request
-      when: never
-    - <<: *if-security-merge-request
-      when: never
-    - <<: *if-merge-request-labels-run-all-rspec
-      when: never
-    - <<: *if-merge-request
-      changes: *core-backend-patterns
-      when: never
-    - <<: *if-merge-request
-      changes: *ci-patterns
-      when: never
-    - <<: *if-merge-request
-      changes: ["config/**/*"]
 
 .rails:rules:code-backstage-qa:
   rules:

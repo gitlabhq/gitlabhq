@@ -14,25 +14,39 @@ RSpec.describe Gitlab::Database::QueryAnalyzers::PreventCrossDatabaseModificatio
     Gitlab::Database::QueryAnalyzer.instance.within { example.run }
   end
 
-  shared_examples 'successful examples' do
+  shared_examples 'successful examples' do |model:|
+    let(:model) { model }
+
     context 'outside transaction' do
       it { expect { run_queries }.not_to raise_error }
     end
 
-    context 'within transaction' do
+    context "within #{model} transaction" do
       it do
-        Project.transaction do
+        model.transaction do
           expect { run_queries }.not_to raise_error
         end
       end
     end
 
-    context 'within nested transaction' do
+    context "within nested #{model} transaction" do
       it do
-        Project.transaction(requires_new: true) do
-          Project.transaction(requires_new: true) do
+        model.transaction(requires_new: true) do
+          model.transaction(requires_new: true) do
             expect { run_queries }.not_to raise_error
           end
+        end
+      end
+    end
+  end
+
+  shared_examples 'cross-database modification errors' do |model:|
+    let(:model) { model }
+
+    context "within #{model} transaction" do
+      it 'raises error' do
+        model.transaction do
+          expect { run_queries }.to raise_error /Cross-database data modification/
         end
       end
     end
@@ -44,7 +58,8 @@ RSpec.describe Gitlab::Database::QueryAnalyzers::PreventCrossDatabaseModificatio
       project.reload
     end
 
-    include_examples 'successful examples'
+    include_examples 'successful examples', model: Project
+    include_examples 'successful examples', model: Ci::Pipeline
   end
 
   context 'when only CI data is modified' do
@@ -53,7 +68,9 @@ RSpec.describe Gitlab::Database::QueryAnalyzers::PreventCrossDatabaseModificatio
       project.reload
     end
 
-    include_examples 'successful examples'
+    include_examples 'successful examples', model: Ci::Pipeline
+
+    include_examples 'cross-database modification errors', model: Project
   end
 
   context 'when other data is modified' do
@@ -62,7 +79,9 @@ RSpec.describe Gitlab::Database::QueryAnalyzers::PreventCrossDatabaseModificatio
       project.touch
     end
 
-    include_examples 'successful examples'
+    include_examples 'successful examples', model: Project
+
+    include_examples 'cross-database modification errors', model: Ci::Pipeline
   end
 
   context 'when both CI and other data is modified' do
@@ -144,7 +163,9 @@ RSpec.describe Gitlab::Database::QueryAnalyzers::PreventCrossDatabaseModificatio
         project.save!
       end
 
-      include_examples 'successful examples'
+      include_examples 'successful examples', model: Ci::Pipeline
+
+      include_examples 'cross-database modification errors', model: Project
     end
 
     describe '.allow_cross_database_modification_within_transaction' do

@@ -1,13 +1,22 @@
 <!-- Set the correct label and milestone using autocomplete for guidance. Please @mention only the DRI(s) for each stage or group rather than an entire department. -->
 
-**Be sure to link this MR to the relevant deprecation issue(s).**
+/label ~"release post" ~"release post item" ~"Technical Writing" ~devops:: ~group:: ~"release post item::removal"
+/milestone %
+/assign `@EM/PM` (choose the DRI; remove backticks here, and below)
 
-If the MR does not have a deprecation issue, hit pause and:
+**Be sure to link this MR to the relevant issue(s).**
 
-- Review [this handbook documentation](https://about.gitlab.com/handbook/product/gitlab-the-product/#process-for-deprecating-and-removing-a-feature).
-- Connect with the Product Manager DRI. 
+- Removal Issue (or earlier deprecation issue):
+- MR that removes the feature (optional):
 
-Removals must be [announced as Deprecations](https://about.gitlab.com/handbook/marketing/blog/release-posts/#deprecations) at least 2 milestones in advance of the planned removal date. Removals can only be removed in a XX.0 major release if it creates a [breaking change](https://about.gitlab.com/handbook/product/gitlab-the-product/#breaking-changes-deprecations-and-removing-features).
+If there is no relevant removal or deprecation issue, hit pause and:
+
+- Review the [process for deprecating and removing features](https://about.gitlab.com/handbook/product/gitlab-the-product/#process-for-deprecating-and-removing-a-feature).
+- Connect with the Product Manager DRI.
+
+Removals must be [announced as deprecations](https://about.gitlab.com/handbook/marketing/blog/release-posts/#deprecations) at least 2 milestones in advance of the planned removal date.
+
+If the removal creates a [breaking change](https://about.gitlab.com/handbook/product/gitlab-the-product/#breaking-changes-deprecations-and-removing-features), it can only be removed in a major "XX.0" release.
 
 **By the 10th**: Assign this MR to these team members as reviewers, and for approval:
 
@@ -26,11 +35,6 @@ Removals must be [announced as Deprecations](https://about.gitlab.com/handbook/m
 ---
 
 Please review the [guidelines for removals](https://about.gitlab.com/handbook/marketing/blog/release-posts/#removals).
-
-## Links
-
-- Removal Issue:
-- Removal MR (optional):
 
 ## EM/PM release post item checklist
 
@@ -97,7 +101,3 @@ must be updated before this MR is merged:
 1. Set the MR to merge when the pipeline succeeds (or merge if the pipeline is already complete).
 
 If you have trouble running the rake task, check the [troubleshooting steps](https://about.gitlab.com/handbook/marketing/blog/release-posts/#deprecation-rake-task-troubleshooting).
-
-/label ~"release post" ~"release post item" ~"Technical Writing" ~devops:: ~group:: ~"release post item::removal"
-/milestone %
-/assign `@EM/PM` (choose the DRI; remove backticks here, and below)

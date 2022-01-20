@@ -145,8 +145,9 @@ RSpec.describe 'package details' do
       let(:pipeline_gids) { pipelines.sort_by(&:id).map(&:to_gid).map(&:to_s).reverse }
 
       before do
-        composer_package.pipelines = pipelines
-        composer_package.save!
+        pipelines.each do |pipeline|
+          create(:package_build_info, package: composer_package, pipeline: pipeline)
+        end
       end
 
       def run_query(args)

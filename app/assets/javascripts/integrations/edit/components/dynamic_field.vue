@@ -9,8 +9,6 @@ import {
 } from '@gitlab/ui';
 import { capitalize, lowerCase, isEmpty } from 'lodash';
 import { mapGetters } from 'vuex';
-import { VALIDATE_INTEGRATION_FORM_EVENT } from '~/integrations/constants';
-import eventHub from '../event_hub';
 
 export default {
   name: 'DynamicField',
@@ -70,11 +68,15 @@ export default {
       required: false,
       default: null,
     },
+    isValidated: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
       model: this.value,
-      validated: false,
     };
   },
   computed: {
@@ -123,22 +125,13 @@ export default {
       };
     },
     valid() {
-      return !this.required || !isEmpty(this.model) || this.isNonEmptyPassword || !this.validated;
+      return !this.required || !isEmpty(this.model) || this.isNonEmptyPassword || !this.isValidated;
     },
   },
   created() {
     if (this.isNonEmptyPassword) {
       this.model = null;
     }
-    eventHub.$on(VALIDATE_INTEGRATION_FORM_EVENT, this.validateForm);
-  },
-  beforeDestroy() {
-    eventHub.$off(VALIDATE_INTEGRATION_FORM_EVENT, this.validateForm);
-  },
-  methods: {
-    validateForm() {
-      this.validated = true;
-    },
   },
   helpHtmlConfig: {
     ADD_ATTR: ['target'], // allow external links, can be removed after https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1427 is implemented

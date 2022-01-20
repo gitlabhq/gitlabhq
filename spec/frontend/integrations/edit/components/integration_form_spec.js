@@ -17,16 +17,13 @@ import TriggerFields from '~/integrations/edit/components/trigger_fields.vue';
 import {
   integrationLevels,
   I18N_SUCCESSFUL_CONNECTION_MESSAGE,
-  VALIDATE_INTEGRATION_FORM_EVENT,
   I18N_DEFAULT_ERROR_MESSAGE,
 } from '~/integrations/constants';
 import { createStore } from '~/integrations/edit/store';
-import eventHub from '~/integrations/edit/event_hub';
 import httpStatus from '~/lib/utils/http_status';
 import { refreshCurrentPage } from '~/lib/utils/url_utility';
-import { mockIntegrationProps } from '../mock_data';
+import { mockIntegrationProps, mockField } from '../mock_data';
 
-jest.mock('~/integrations/edit/event_hub');
 jest.mock('@sentry/browser');
 jest.mock('~/lib/utils/url_utility');
 
@@ -97,6 +94,7 @@ describe('IntegrationForm', () => {
   const findGlForm = () => wrapper.findComponent(GlForm);
   const findRedirectToField = () => wrapper.findByTestId('redirect-to-field');
   const findFormElement = () => (vueIntegrationFormFeatureFlag ? findGlForm().element : mockForm);
+  const findDynamicField = () => wrapper.findComponent(DynamicField);
 
   const mockFormFunctions = ({ checkValidityReturn }) => {
     jest.spyOn(findFormElement(), 'checkValidity').mockReturnValue(checkValidityReturn);
@@ -490,6 +488,7 @@ describe('IntegrationForm', () => {
                 showActive: true,
                 canTest: true,
                 initialActivated: true,
+                fields: [mockField],
               },
               mountFn: mountExtended,
             });
@@ -510,27 +509,28 @@ describe('IntegrationForm', () => {
             expect(findTestButton().props('disabled')).toBe(false);
           });
 
-          it('emits `VALIDATE_INTEGRATION_FORM_EVENT`', () => {
-            expect(eventHub.$emit).toHaveBeenCalledWith(VALIDATE_INTEGRATION_FORM_EVENT);
+          it('sets `isValidated` props on form fields', () => {
+            expect(findDynamicField().props('isValidated')).toBe(true);
           });
         });
       });
 
       describe('when `test` button is clicked', () => {
         describe('when form is invalid', () => {
-          it('emits `VALIDATE_INTEGRATION_FORM_EVENT` event to the event hub', () => {
+          it('sets `isValidated` props on form fields', async () => {
             createComponent({
               customStateProps: {
                 showActive: true,
                 canTest: true,
+                fields: [mockField],
               },
               mountFn: mountExtended,
             });
             mockFormFunctions({ checkValidityReturn: false });
 
-            findTestButton().vm.$emit('click', new Event('click'));
+            await findTestButton().vm.$emit('click', new Event('click'));
 
-            expect(eventHub.$emit).toHaveBeenCalledWith(VALIDATE_INTEGRATION_FORM_EVENT);
+            expect(findDynamicField().props('isValidated')).toBe(true);
           });
         });
 

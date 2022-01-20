@@ -1,0 +1,8 @@
+---
+name: track_gitlab_schema_in_current_transaction
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/76717
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/349944
+milestone: '14.8'
+type: development
+group: group::sharding
+default_enabled: false

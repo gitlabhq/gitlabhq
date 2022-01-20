@@ -1,12 +1,18 @@
 <!-- Set the correct label and milestone using autocomplete for guidance. Please @mention only the DRI(s) for each stage or group rather than an entire department. -->
 
-/label ~"release post" ~"release post item" ~"Technical Writing" ~"devops::" ~"group::" ~"release post item::deprecation"
+/label ~"release post" ~"release post item" ~"Technical Writing" ~devops:: ~group:: ~"release post item::deprecation"
 /milestone %
 /assign `@EM/PM` (choose the DRI; remove backticks here, and below)
 
 **Be sure to link this MR to the relevant deprecation issue(s).**
 
-If the MR does not have a deprecation issue, hit pause and review [this handbook documentation](https://about.gitlab.com/handbook/product/gitlab-the-product/#process-for-deprecating-and-removing-a-feature) and connect with the Product Manager DRI. 
+- Deprecation Issue:
+- MR that deprecates the feature (optional):
+
+If there is no relevant removal or deprecation issue, hit pause and:
+
+- Review the [process for deprecating and removing features](https://about.gitlab.com/handbook/product/gitlab-the-product/#process-for-deprecating-and-removing-a-feature).
+- Connect with the Product Manager DRI.
 
 Deprecation announcements can and should be created and merged into Docs at any time, to optimize user awareness and planning. We encourage confirmed deprecations to be merged as soon as the required reviews are complete, even if weeks ahead of the target milestone's release post. For the announcement to be included in a specific release post and that release's documentation packages, this MR must be reviewed/merged per the due dates below:
 
@@ -27,11 +33,6 @@ Deprecation announcements can and should be created and merged into Docs at any 
 Please review the [guidelines for deprecations](https://about.gitlab.com/handbook/marketing/blog/release-posts/#deprecations),
 as well as the process for [creating a deprecation entry](https://about.gitlab.com/handbook/marketing/blog/release-posts/#creating-a-deprecation-entry).
 They are frequently updated, and everyone should make sure they are aware of the current standards (PM, PMM, EM, and TW).
-
-## Links
-
-- Deprecation Issue:
-- Deprecation MR (optional):
 
 ## EM/PM release post item checklist
 

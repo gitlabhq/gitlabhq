@@ -10531,6 +10531,7 @@ Represents an external resource to send audit events to.
 | <a id="externalauditeventdestinationdestinationurl"></a>`destinationUrl` | [`String!`](#string) | External destination to send audit events to. |
 | <a id="externalauditeventdestinationgroup"></a>`group` | [`Group!`](#group) | Group the destination belongs to. |
 | <a id="externalauditeventdestinationid"></a>`id` | [`ID!`](#id) | ID of the destination. |
+| <a id="externalauditeventdestinationverificationtoken"></a>`verificationToken` | [`String!`](#string) | Verification token to validate source of event. |
 
 ### `ExternalIssue`
 

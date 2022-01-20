@@ -15,8 +15,9 @@ RSpec.describe Resolvers::PackagePipelinesResolver do
     subject { resolve(described_class, obj: package, args: args, ctx: { current_user: user }) }
 
     before do
-      package.pipelines = pipelines
-      package.save!
+      pipelines.each do |pipeline|
+        create(:package_build_info, package: package, pipeline: pipeline)
+      end
     end
 
     it { is_expected.to contain_exactly(*pipelines) }
