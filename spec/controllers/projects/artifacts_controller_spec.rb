@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Projects::ArtifactsController do
   include RepoHelpers
 
-  let(:user) { project.owner }
+  let(:user) { project.first_owner }
   let_it_be(:project) { create(:project, :repository, :public) }
 
   let_it_be(:pipeline, reload: true) do

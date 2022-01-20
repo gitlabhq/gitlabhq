@@ -89,7 +89,7 @@ module Projects
     end
 
     def after_create_actions
-      log_info("#{@project.owner.name} created a new project \"#{@project.full_name}\"")
+      log_info("#{current_user.name} created a new project \"#{@project.full_name}\"")
 
       if @project.import?
         experiment(:combined_registration, user: current_user).track(:import_project)

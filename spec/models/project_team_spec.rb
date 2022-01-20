@@ -77,6 +77,32 @@ RSpec.describe ProjectTeam do
     end
   end
 
+  describe 'owner methods' do
+    context 'personal project' do
+      let(:project) { create(:project) }
+      let(:owner) { project.owner }
+
+      specify { expect(project.team.owners).to contain_exactly(owner) }
+      specify { expect(project.team.owner?(owner)).to be_truthy }
+    end
+
+    context 'group project' do
+      let(:group) { create(:group) }
+      let(:project) { create(:project, group: group) }
+      let(:user1) { create(:user) }
+      let(:user2) { create(:user) }
+
+      before do
+        group.add_owner(user1)
+        group.add_owner(user2)
+      end
+
+      specify { expect(project.team.owners).to contain_exactly(user1, user2) }
+      specify { expect(project.team.owner?(user1)).to be_truthy }
+      specify { expect(project.team.owner?(user2)).to be_truthy }
+    end
+  end
+
   describe '#fetch_members' do
     context 'personal project' do
       let(:project) { create(:project) }

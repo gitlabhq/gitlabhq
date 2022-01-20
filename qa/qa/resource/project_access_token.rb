@@ -9,7 +9,9 @@ module QA
 
       attribute :id
       attribute :project do
-        Project.fabricate!
+        Project.fabricate! do |project|
+          project.initialize_with_readme = true
+        end
       end
       attribute :token do
         Page::Project::Settings::AccessTokens.perform(&:created_access_token)

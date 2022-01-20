@@ -4,9 +4,7 @@ module QA
   RSpec.describe 'Manage' do
     describe 'Project access token' do
       before(:all) do
-        @project_access_token = QA::Resource::ProjectAccessToken.fabricate_via_api! do |pat|
-          pat.project = Resource::ReusableProject.fabricate_via_api!
-        end
+        @project_access_token = QA::Resource::ProjectAccessToken.fabricate_via_api!
 
         @user_api_client = Runtime::API::Client.new(:gitlab, personal_access_token: @project_access_token.token)
       end

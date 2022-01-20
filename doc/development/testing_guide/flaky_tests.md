@@ -14,14 +14,14 @@ eventually.
 ## Quarantined tests
 
 When a test frequently fails in `main`,
-[a ~"master:broken" issue](https://about.gitlab.com/handbook/engineering/workflow/#broken-master)
-should be created.
+create [a ~"failure::flaky-test" issue](https://about.gitlab.com/handbook/engineering/workflow/#broken-master).
+
 If the test cannot be fixed in a timely fashion, there is an impact on the
-productivity of all the developers, so it should be placed in quarantine by
-assigning the `:quarantine` metadata with the issue URL.
+productivity of all the developers, so it should be quarantined by
+assigning the `:quarantine` metadata with the issue URL, and add the `~"quarantined test"` label to the issue.
 
 ```ruby
-it 'should succeed', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/12345' do
+it 'succeeds', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/12345' do
   expect(response).to have_gitlab_http_status(:ok)
 end
 ```
@@ -32,23 +32,13 @@ This means it is skipped unless run with `--tag quarantine`:
 bin/rspec --tag quarantine
 ```
 
-**Before putting a test in quarantine, you should make sure that a
-~"master:broken" issue exists for it so it doesn't stay in quarantine forever.**
-
 Once a test is in quarantine, there are 3 choices:
 
-- Should the test be fixed (that is, get rid of its flakiness)?
-- Should the test be moved to a lower level of testing?
-- Should the test be removed entirely (for example, because there's already a
+- Fix the test (that is, get rid of its flakiness).
+- Move the test to a lower level of testing.
+- Remove the test entirely (for example, because there's already a
   lower-level test, or it's duplicating another same-level test, or it's testing
-  too much etc.)?
-
-### Quarantine tests on the CI
-
-Quarantined tests are run on the CI in dedicated jobs that are allowed to fail:
-
-- `rspec-pg-quarantine` (CE & EE)
-- `rspec-pg-quarantine-ee` (EE only)
+  too much etc.).
 
 ## Automatic retries and flaky tests detection
 

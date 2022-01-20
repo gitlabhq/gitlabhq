@@ -9,7 +9,7 @@ RSpec.describe Projects::MergeRequestsController do
   let_it_be_with_refind(:project) { create(:project, :repository) }
   let_it_be_with_reload(:project_public_with_private_builds) { create(:project, :repository, :public, :builds_private) }
 
-  let(:user) { project.owner }
+  let(:user) { project.first_owner }
   let(:merge_request) { create(:merge_request_with_diffs, target_project: project, source_project: merge_request_source_project, allow_collaboration: false) }
   let(:merge_request_source_project) { project }
 

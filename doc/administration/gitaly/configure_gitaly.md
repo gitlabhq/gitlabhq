@@ -476,7 +476,7 @@ example:
 ```ruby
 git_data_dirs({
   'default' => { 'gitaly_address' => 'tcp://gitaly1.internal:8075' },
-  # Address of the GitLab server that has Gitaly running on it
+  # Address of the GitLab server that also has Gitaly running on it
   'storage1' => { 'gitaly_address' => 'tcp://gitlab.internal:8075', 'path' => '/mnt/gitlab/git-data' },
   'storage2' => { 'gitaly_address' => 'tcp://gitaly2.internal:8075' },
 })

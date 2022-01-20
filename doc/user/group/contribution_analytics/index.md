@@ -11,8 +11,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 With Contribution Analytics, you can get an overview of the [contribution events](../../index.md#user-contribution-events) in your
 group.
 
-- Analyze your team's contributions over a period of time, and offer a bonus for the top
-  contributors.
+- Analyze your team's contributions over a period of time.
 - Identify opportunities for improvement with group members who may benefit from additional
   support.
 

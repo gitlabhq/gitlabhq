@@ -191,7 +191,7 @@ RSpec.describe Types::GlobalIDType do
 
       describe 'executing against the schema' do
         let(:query_result) do
-          context = { current_user: issue.project.owner }
+          context = { current_user: issue.project.first_owner }
           variables = { 'id' => gid }
 
           run_with_clean_state(query, context: context, variables: variables).to_h

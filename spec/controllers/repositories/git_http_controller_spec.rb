@@ -29,7 +29,7 @@ RSpec.describe Repositories::GitHttpController do
   context 'when repository container is a project' do
     it_behaves_like Repositories::GitHttpController do
       let(:container) { project }
-      let(:user) { project.owner }
+      let(:user) { project.first_owner }
       let(:access_checker_class) { Gitlab::GitAccess }
 
       it_behaves_like 'handles unavailable Gitaly'
@@ -103,7 +103,7 @@ RSpec.describe Repositories::GitHttpController do
   context 'when repository container is a project wiki' do
     it_behaves_like Repositories::GitHttpController do
       let(:container) { create(:project_wiki, :empty_repo, project: project) }
-      let(:user) { project.owner }
+      let(:user) { project.first_owner }
       let(:access_checker_class) { Gitlab::GitAccessWiki }
     end
   end

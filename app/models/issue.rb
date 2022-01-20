@@ -584,7 +584,7 @@ class Issue < ApplicationRecord
   def readable_by?(user)
     if user.can_read_all_resources?
       true
-    elsif project.owner == user
+    elsif project.personal? && project.team.owner?(user)
       true
     elsif confidential? && !assignee_or_author?(user)
       project.team.member?(user, Gitlab::Access::REPORTER)

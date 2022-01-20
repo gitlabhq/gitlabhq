@@ -8,7 +8,7 @@ RSpec.describe Resolvers::PackagePipelinesResolver do
   let_it_be_with_reload(:package) { create(:package) }
   let_it_be(:pipelines) { create_list(:ci_pipeline, 3, project: package.project) }
 
-  let(:user) { package.project.owner }
+  let(:user) { package.project.first_owner }
   let(:args) { {} }
 
   describe '#resolve' do

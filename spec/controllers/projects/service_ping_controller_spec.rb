@@ -32,7 +32,7 @@ RSpec.describe Projects::ServicePingController do
 
   shared_examples 'counter is increased' do |counter|
     context 'when the authenticated user has access to the project' do
-      let(:user) { project.owner }
+      let(:user) { project.first_owner }
 
       it 'increments the usage counter' do
         expect do
@@ -55,7 +55,7 @@ RSpec.describe Projects::ServicePingController do
     end
 
     context 'when web ide clientside preview is not enabled' do
-      let(:user) { project.owner }
+      let(:user) { project.first_owner }
 
       before do
         stub_application_setting(web_ide_clientside_preview_enabled: false)

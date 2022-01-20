@@ -8,7 +8,7 @@ RSpec.describe Mutations::AlertManagement::Alerts::Todo::Create do
   let_it_be(:alert) { create(:alert_management_alert) }
   let_it_be(:project) { alert.project }
 
-  let(:current_user) { project.owner }
+  let(:current_user) { project.first_owner }
 
   let(:args) { { project_path: project.full_path, iid: alert.iid } }
 
