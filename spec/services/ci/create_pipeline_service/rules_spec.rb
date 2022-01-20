@@ -3,7 +3,7 @@ require 'spec_helper'
 
 RSpec.describe Ci::CreatePipelineService do
   let(:project)     { create(:project, :repository) }
-  let(:user)        { project.owner }
+  let(:user)        { project.first_owner }
   let(:ref)         { 'refs/heads/master' }
   let(:source)      { :push }
   let(:service)     { described_class.new(project, user, { ref: ref }) }

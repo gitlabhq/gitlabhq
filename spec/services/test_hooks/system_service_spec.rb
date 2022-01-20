@@ -9,7 +9,7 @@ RSpec.describe TestHooks::SystemService do
     let_it_be(:project) { create(:project, :repository) }
 
     let(:hook)    { create(:system_hook) }
-    let(:service) { described_class.new(hook, project.owner, trigger) }
+    let(:service) { described_class.new(hook, project.first_owner, trigger) }
     let(:success_result) { { status: :success, http_status: 200, message: 'ok' } }
 
     before do

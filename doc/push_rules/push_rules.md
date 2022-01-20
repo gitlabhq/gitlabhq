@@ -143,76 +143,80 @@ Feature.disable(:reject_unsigned_commits_by_gitlab)
 
 > Moved to GitLab Premium in 13.9.
 
-Secrets such as credential files, SSH private keys, and other files containing secrets should never be committed to source control.
-GitLab enables you to turn on a predefined denylist of files which can't be
-pushed to a repository. The list stops those commits from reaching the remote repository.
+Secrets, such as credential files and SSH private keys, should never be committed to a version control
+system. In GitLab, you can use a predefined list of files to block those files from a
+repository. Any merge request containing a file matching the list is blocked from being merged.
+Files already committed to the repository are not restricted by this push rule.
 
-By selecting the checkbox *Prevent pushing secret files*, GitLab prevents
-pushes to the repository when a file matches a regular expression as read from
-[`files_denylist.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/gitlab/checks/files_denylist.yml) (make sure you are at the right branch
-as your GitLab version when viewing this file). This checkbox is able to be set globally via **Admin Area > Push Rules**, or per-project via **Settings > Repository > Push Rules**.
+Files blocked by this rule are listed below. For a complete list of criteria, see
+[`files_denylist.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/gitlab/checks/files_denylist.yml).
 
-NOTE:
-Files already committed aren't restricted by this push rule.
+- AWS CLI credential blobs:
 
-Below is an example list of what GitLab rejects with these regular expressions:
+  - `.aws/credentials`
+  - `aws/credentials`
+  - `homefolder/aws/credentials`
 
-```shell
-#####################
-# AWS CLI credential blobs
-#####################
-.aws/credentials
-aws/credentials
-homefolder/aws/credentials
+- Private RSA SSH keys:
 
-#####################
-# Private RSA SSH keys
-#####################
-/ssh/id_rsa
-/.ssh/personal_rsa
-/config/server_rsa
-id_rsa
-.id_rsa
+  - `/ssh/id_rsa`
+  - `/.ssh/personal_rsa`
+  - `/config/server_rsa`
+  - `id_rsa`
+  - `.id_rsa`
 
-#####################
-# Private DSA SSH keys
-#####################
-/ssh/id_dsa
-/.ssh/personal_dsa
-/config/server_dsa
-id_dsa
-.id_dsa
+- Private DSA SSH keys:
 
-#####################
-# Private ed25519 SSH keys
-#####################
-/ssh/id_ed25519
-/.ssh/personal_ed25519
-/config/server_ed25519
-id_ed25519
-.id_ed25519
+  - `/ssh/id_dsa`
+  - `/.ssh/personal_dsa`
+  - `/config/server_dsa`
+  - `id_dsa`
+  - `.id_dsa`
 
-#####################
-# Private ECDSA SSH keys
-#####################
-/ssh/id_ecdsa
-/.ssh/personal_ecdsa
-/config/server_ecdsa
-id_ecdsa
-.id_ecdsa
+- Private ed25519 SSH keys:
 
-#####################
-# Any file with .pem or .key extensions
-#####################
-*.pem
-*.key
+  - `/ssh/id_ed25519`
+  - `/.ssh/personal_ed25519`
+  - `/config/server_ed25519`
+  - `id_ed25519`
+  - `.id_ed25519`
 
-#####################
-# Any file ending with _history or .history extension
-#####################
-*.history
-*_history
-```
+- Private ECDSA SSH keys:
+
+  - `/ssh/id_ecdsa`
+  - `/.ssh/personal_ecdsa`
+  - `/config/server_ecdsa`
+  - `id_ecdsa`
+  - `.id_ecdsa`
+
+- Any files ending with these suffixes:
+
+  - `*.pem`
+  - `*.key`
+  - `*.history`
+  - `*_history`
+
+### Prevent pushing secrets to all projects
+
+To set a global push rule to prevent pushing secrets to all projects:
+
+1. On the top bar, select **Menu > Admin**.
+1. On the left sidebar, select **Push Rules**.
+1. Expand **Push rules**.
+1. Select **Prevent pushing secret files**.
+1. Select **Save push rules**.
+
+### Prevent pushing secrets to a project
+
+The push rule of a project overrides the global push rule.
+
+To prevent pushing secrets to a project:
+
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > Repository**.
+1. Expand **Push rules**.
+1. Select **Prevent pushing secret files**.
+1. Select **Save push rules**.
 
 ## Prohibited file names
 

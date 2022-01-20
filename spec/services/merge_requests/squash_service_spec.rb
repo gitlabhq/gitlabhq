@@ -6,7 +6,7 @@ RSpec.describe MergeRequests::SquashService do
   include GitHelpers
 
   let(:service) { described_class.new(project: project, current_user: user, params: { merge_request: merge_request }) }
-  let(:user) { project.owner }
+  let(:user) { project.first_owner }
   let(:project) { create(:project, :repository) }
   let(:repository) { project.repository.raw }
   let(:log_error) { "Failed to squash merge request #{merge_request.to_reference(full: true)}:" }

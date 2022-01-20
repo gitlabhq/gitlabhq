@@ -10,7 +10,7 @@ RSpec.describe ::Ci::DestroyPipelineService do
   subject { described_class.new(project, user).execute(pipeline) }
 
   context 'user is owner' do
-    let(:user) { project.owner }
+    let(:user) { project.first_owner }
 
     it 'destroys the pipeline' do
       subject

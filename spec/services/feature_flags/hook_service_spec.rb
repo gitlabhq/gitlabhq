@@ -7,7 +7,7 @@ RSpec.describe FeatureFlags::HookService do
     let_it_be(:namespace) { create(:namespace) }
     let_it_be(:project) { create(:project, :repository, namespace: namespace) }
     let_it_be(:feature_flag) { create(:operations_feature_flag, project: project) }
-    let_it_be(:user) { namespace.owner }
+    let_it_be(:user) { namespace.first_owner }
 
     let!(:hook) { create(:project_hook, project: project) }
     let(:hook_data) { double }

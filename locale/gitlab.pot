@@ -15761,6 +15761,9 @@ msgstr ""
 msgid "Geo|Does not match the primary storage configuration"
 msgstr ""
 
+msgid "Geo|Edit %{nodeType} site"
+msgstr ""
+
 msgid "Geo|Failed"
 msgstr ""
 
@@ -15888,6 +15891,9 @@ msgid "Geo|Redownload"
 msgstr ""
 
 msgid "Geo|Remove"
+msgstr ""
+
+msgid "Geo|Remove %{nodeType} site"
 msgstr ""
 
 msgid "Geo|Remove entry"

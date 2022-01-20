@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Ci::PipelineProcessing::AtomicProcessingService do
   describe 'Pipeline Processing Service Tests With Yaml' do
     let_it_be(:project) { create(:project, :repository) }
-    let_it_be(:user)    { project.owner }
+    let_it_be(:user)    { project.first_owner }
 
     where(:test_file_path) do
       Dir.glob(Rails.root.join('spec/services/ci/pipeline_processing/test_cases/*.yml'))
@@ -65,7 +65,7 @@ RSpec.describe Ci::PipelineProcessing::AtomicProcessingService do
 
   describe 'Pipeline Processing Service' do
     let(:project) { create(:project, :repository) }
-    let(:user)    { project.owner }
+    let(:user)    { project.first_owner }
 
     let(:pipeline) do
       create(:ci_empty_pipeline, ref: 'master', project: project)

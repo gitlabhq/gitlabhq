@@ -244,11 +244,7 @@ module Ci
             ::JiraConnect::SyncBuildsWorker.perform_async(pipeline.id, seq_id)
           end
 
-          if Feature.enabled?(:expire_job_and_pipeline_cache_synchronously, pipeline.project, default_enabled: :yaml)
-            Ci::ExpirePipelineCacheService.new.execute(pipeline) # rubocop: disable CodeReuse/ServiceClass
-          else
-            ExpirePipelineCacheWorker.perform_async(pipeline.id)
-          end
+          Ci::ExpirePipelineCacheService.new.execute(pipeline) # rubocop: disable CodeReuse/ServiceClass
         end
       end
 

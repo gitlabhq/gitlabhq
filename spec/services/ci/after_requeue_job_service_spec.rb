@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Ci::AfterRequeueJobService do
   let_it_be(:project) { create(:project) }
-  let_it_be(:user) { project.owner }
+  let_it_be(:user) { project.first_owner }
 
   let(:pipeline) { create(:ci_pipeline, project: project) }
 

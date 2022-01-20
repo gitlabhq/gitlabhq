@@ -46,28 +46,10 @@ RSpec.describe CommitStatus do
   describe 'status state machine' do
     let!(:commit_status) { create(:commit_status, :running, project: project) }
 
-    context 'when expire_job_and_pipeline_cache_synchronously is enabled' do
-      before do
-        stub_feature_flags(expire_job_and_pipeline_cache_synchronously: true)
-      end
+    it 'invalidates the cache after a transition' do
+      expect(commit_status).to receive(:expire_etag_cache!)
 
-      it 'invalidates the cache after a transition' do
-        expect(commit_status).to receive(:expire_etag_cache!)
-
-        commit_status.success!
-      end
-    end
-
-    context 'when expire_job_and_pipeline_cache_synchronously is disabled' do
-      before do
-        stub_feature_flags(expire_job_and_pipeline_cache_synchronously: false)
-      end
-
-      it 'invalidates the cache after a transition' do
-        expect(ExpireJobCacheWorker).to receive(:perform_async).with(commit_status.id)
-
-        commit_status.success!
-      end
+      commit_status.success!
     end
 
     describe 'transitioning to running' do

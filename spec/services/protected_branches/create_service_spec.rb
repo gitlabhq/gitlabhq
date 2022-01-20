@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe ProtectedBranches::CreateService do
   let(:project) { create(:project) }
-  let(:user) { project.owner }
+  let(:user) { project.first_owner }
   let(:params) do
     {
       name: name,

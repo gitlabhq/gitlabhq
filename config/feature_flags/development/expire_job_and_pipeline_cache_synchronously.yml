@@ -1,8 +1,0 @@
----
-name: expire_job_and_pipeline_cache_synchronously
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/75611
-rollout_issue_url: https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/1380
-milestone: '14.6'
-type: development
-group: group::project management
-default_enabled: false

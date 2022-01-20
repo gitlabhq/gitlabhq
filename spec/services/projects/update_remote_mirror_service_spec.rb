@@ -15,7 +15,7 @@ RSpec.describe Projects::UpdateRemoteMirrorService do
     subject(:execute!) { service.execute(remote_mirror, retries) }
 
     before do
-      project.repository.add_branch(project.owner, 'existing-branch', 'master')
+      project.repository.add_branch(project.first_owner, 'existing-branch', 'master')
 
       allow(remote_mirror)
         .to receive(:update_repository)

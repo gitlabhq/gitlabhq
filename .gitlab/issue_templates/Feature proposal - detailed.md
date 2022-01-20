@@ -118,6 +118,6 @@ Use the following resources to find the appropriate labels:
 - https://gitlab.com/gitlab-org/gitlab/-/labels
 - https://about.gitlab.com/handbook/product/categories/features/
 -->
-/label ~"group::" ~"section::" ~"Category::"
+/label ~group:: ~section:: ~Category:
 /label ~"GitLab Free" ~"GitLab Premium" ~"GitLab Ultimate"
 /label ~"type::feature" ~documentation ~direction

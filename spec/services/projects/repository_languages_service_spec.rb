@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Projects::RepositoryLanguagesService do
-  let(:service) { described_class.new(project, project.owner) }
+  let(:service) { described_class.new(project, project.first_owner) }
 
   context 'when detected_repository_languages flag is set' do
     let(:project) { create(:project) }

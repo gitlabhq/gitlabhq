@@ -301,6 +301,10 @@ class Namespace < ApplicationRecord
     user_namespace?
   end
 
+  def first_owner
+    owner
+  end
+
   def find_fork_of(project)
     return unless project.fork_network
 

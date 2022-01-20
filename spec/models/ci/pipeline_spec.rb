@@ -1517,30 +1517,12 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
     end
 
     describe 'pipeline caching' do
-      context 'when expire_job_and_pipeline_cache_synchronously is enabled' do
-        before do
-          stub_feature_flags(expire_job_and_pipeline_cache_synchronously: true)
+      it 'executes Ci::ExpirePipelineCacheService' do
+        expect_next_instance_of(Ci::ExpirePipelineCacheService) do |service|
+          expect(service).to receive(:execute).with(pipeline)
         end
 
-        it 'executes Ci::ExpirePipelineCacheService' do
-          expect_next_instance_of(Ci::ExpirePipelineCacheService) do |service|
-            expect(service).to receive(:execute).with(pipeline)
-          end
-
-          pipeline.cancel
-        end
-      end
-
-      context 'when expire_job_and_pipeline_cache_synchronously is disabled' do
-        before do
-          stub_feature_flags(expire_job_and_pipeline_cache_synchronously: false)
-        end
-
-        it 'performs ExpirePipelinesCacheWorker' do
-          expect(ExpirePipelineCacheWorker).to receive(:perform_async).with(pipeline.id)
-
-          pipeline.cancel
-        end
+        pipeline.cancel
       end
     end
 

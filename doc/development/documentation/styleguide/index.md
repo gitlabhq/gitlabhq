@@ -410,6 +410,10 @@ Some contractions, however, should be avoided:
 If you use an acronym, spell it out on first use on a page. You do not need to spell it out more than once on a page.
 When possible, try to avoid acronyms in headings.
 
+### Numbers
+
+When using numbers in text, spell out zero through nine, and use numbers for 10 and greater. For details, see the [Microsoft Style Guide](https://docs.microsoft.com/en-us/style-guide/numbers).
+
 ## Text
 
 - [Write in Markdown](#markdown).

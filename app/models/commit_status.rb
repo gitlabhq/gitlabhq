@@ -194,11 +194,7 @@ class CommitStatus < Ci::ApplicationRecord
       commit_status.run_after_commit do
         PipelineProcessWorker.perform_async(pipeline_id) unless transition_options[:skip_pipeline_processing]
 
-        if Feature.enabled?(:expire_job_and_pipeline_cache_synchronously, project, default_enabled: :yaml)
-          expire_etag_cache!
-        else
-          ExpireJobCacheWorker.perform_async(id)
-        end
+        expire_etag_cache!
       end
     end
 

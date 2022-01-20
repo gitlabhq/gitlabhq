@@ -1,4 +1,6 @@
-const crypto = require('crypto');
+// eslint-disable-next-line import/order
+const crypto = require('./helpers/patched_crypto');
+
 const fs = require('fs');
 const path = require('path');
 

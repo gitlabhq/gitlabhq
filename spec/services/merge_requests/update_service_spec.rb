@@ -1132,7 +1132,7 @@ RSpec.describe MergeRequests::UpdateService, :mailer do
     context 'updating `force_remove_source_branch`' do
       let(:target_project) { create(:project, :repository, :public) }
       let(:source_project) { fork_project(target_project, nil, repository: true) }
-      let(:user) { target_project.owner }
+      let(:user) { target_project.first_owner }
       let(:merge_request) do
         create(:merge_request,
                source_project: source_project,

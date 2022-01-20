@@ -5,6 +5,7 @@ module QA
     module Matchers
       module HaveMatcher
         PREDICATE_TARGETS = %w[
+          auto_devops_container
           element
           file_content
           assignee
@@ -17,6 +18,8 @@ module QA
           package
           pipeline
           related_issue_item
+          sast_status
+          security_configuration_history_link
           snippet_description
           tag
           label

@@ -6,7 +6,7 @@ RSpec.describe Ci::CreatePipelineService do
   include ProjectForksHelper
 
   let_it_be_with_refind(:project) { create(:project, :repository) }
-  let_it_be_with_reload(:user) { project.owner }
+  let_it_be_with_reload(:user) { project.first_owner }
 
   let(:ref_name) { 'refs/heads/master' }
 

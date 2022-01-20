@@ -61,7 +61,7 @@ RSpec.describe Projects::ForkService do
 
           it { expect(to_project).to be_persisted }
           it { expect(to_project.errors).to be_empty }
-          it { expect(to_project.owner).to eq(@to_user) }
+          it { expect(to_project.first_owner).to eq(@to_user) }
           it { expect(to_project.namespace).to eq(@to_user.namespace) }
           it { expect(to_project.star_count).to be_zero }
           it { expect(to_project.description).to eq(@from_project.description) }
@@ -274,7 +274,7 @@ RSpec.describe Projects::ForkService do
 
           expect(to_project).to                be_persisted
           expect(to_project.errors).to         be_empty
-          expect(to_project.owner).to          eq(@group)
+          expect(to_project.first_owner).to    eq(@group_owner)
           expect(to_project.namespace).to      eq(@group)
           expect(to_project.name).to           eq(@project.name)
           expect(to_project.path).to           eq(@project.path)

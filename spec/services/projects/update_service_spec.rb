@@ -149,7 +149,7 @@ RSpec.describe Projects::UpdateService do
 
     describe 'when updating project that has forks' do
       let(:project) { create(:project, :internal) }
-      let(:user) { project.owner }
+      let(:user) { project.first_owner }
       let(:forked_project) { fork_project(project) }
 
       context 'and unlink forks feature flag is off' do
