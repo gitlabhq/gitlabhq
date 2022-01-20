@@ -84,7 +84,7 @@ RSpec.describe Gitlab::Metrics::Samplers::RubySampler do
   end
 
   describe '#sample_gc' do
-    let!(:sampler) { described_class.new(5) }
+    let!(:sampler) { described_class.new }
 
     let(:gc_reports) { [{ GC_TIME: 0.1 }, { GC_TIME: 0.2 }, { GC_TIME: 0.3 }] }
 

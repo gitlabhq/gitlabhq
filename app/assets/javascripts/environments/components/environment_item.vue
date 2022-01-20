@@ -1,5 +1,5 @@
 <script>
-import { GlDropdown, GlTooltipDirective, GlIcon, GlLink, GlSprintf } from '@gitlab/ui';
+import { GlDropdown, GlTooltipDirective, GlIcon, GlLink, GlSprintf, GlBadge } from '@gitlab/ui';
 import { isEmpty } from 'lodash';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import { __, s__, sprintf } from '~/locale';
@@ -30,6 +30,7 @@ export default {
     CommitComponent,
     ExternalUrlComponent,
     GlDropdown,
+    GlBadge,
     GlIcon,
     GlLink,
     GlSprintf,
@@ -621,9 +622,9 @@ export default {
           <span v-if="model.size === 1">{{ model.name }}</span>
           <span v-else>{{ model.name_without_type }}</span>
         </a>
-        <span v-if="isProtected" class="badge badge-success">
-          {{ s__('Environments|protected') }}
-        </span>
+        <gl-badge v-if="isProtected" variant="success">{{
+          s__('Environments|protected')
+        }}</gl-badge>
       </span>
       <span
         v-else
@@ -639,7 +640,7 @@ export default {
 
         <span> {{ model.folderName }} </span>
 
-        <span class="badge badge-pill"> {{ model.size }} </span>
+        <gl-badge>{{ model.size }}</gl-badge>
       </span>
     </div>
 

@@ -17,6 +17,7 @@ The following lists the currently supported OSs and their possible EOL dates.
 
 | OS Version       | First supported GitLab version | Arch            | OS EOL        | Details                                                      |
 | ---------------- | ------------------------------ | --------------- | ------------- | ------------------------------------------------------------ |
+| AlmaLinux 8      | GitLab CE / GitLab EE 14.5.0   | x86_64, aarch64 | 2029          | <https://almalinux.org/>                                     |
 | CentOS 7         | GitLab CE / GitLab EE 7.10.0   | x86_64          | June 2024     | <https://wiki.centos.org/About/Product>                      |
 | CentOS 8         | GitLab CE / GitLab EE 12.8.1   | x86_64, aarch64 | Dec 2021      | <https://wiki.centos.org/About/Product>                      |
 | Debian 9         | GitLab CE / GitLab EE 9.3.0    | amd64           | 2022          | <https://wiki.debian.org/LTS>                                |

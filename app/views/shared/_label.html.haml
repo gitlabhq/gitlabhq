@@ -10,18 +10,18 @@
   = render "shared/label_row", label: label, force_priority: force_priority
   %ul.label-actions-list
     - if can?(current_user, :admin_label, @project)
-      %li.inline.js-toggle-priority{ data: { url: remove_priority_project_label_path(@project, label),
+      %li.gl-display-inline-block.js-toggle-priority.gl-ml-3{ data: { url: remove_priority_project_label_path(@project, label),
         dom_id: dom_id(label), type: label.type } }
-        %button.add-priority.btn.gl-button.btn-default-tertiary.btn-sm.has-tooltip.gl-ml-3{ title: _('Prioritize'), type: 'button', data: { placement: 'bottom' }, aria_label: _('Prioritize label') }
+        %button.add-priority.btn.gl-button.btn-default-tertiary.btn-sm.has-tooltip{ title: _('Prioritize'), type: 'button', data: { placement: 'bottom' }, aria_label: _('Prioritize label') }
           = sprite_icon('star-o')
-        %button.remove-priority.btn.gl-button.btn-default-tertiary.btn-sm.has-tooltip.gl-ml-3{ title: _('Remove priority'), type: 'button', data: { placement: 'bottom' }, aria_label: _('Deprioritize label') }
+        %button.remove-priority.btn.gl-button.btn-default-tertiary.btn-sm.has-tooltip{ title: _('Remove priority'), type: 'button', data: { placement: 'bottom' }, aria_label: _('Deprioritize label') }
           = sprite_icon('star')
     - if can?(current_user, :admin_label, label)
-      %li.inline
+      %li.gl-display-inline-block
         = link_to label.edit_path, class: 'btn gl-button btn-default-tertiary btn-sm edit has-tooltip', title: _('Edit'), data: { placement: 'bottom' }, aria_label: _('Edit') do
           = sprite_icon('pencil')
     - if can?(current_user, :admin_label, label)
-      %li.inline
+      %li.gl-display-inline-block
         .dropdown
           %button{ type: 'button', class: 'btn gl-button btn-default-tertiary btn-sm js-label-options-dropdown', data: { toggle: 'dropdown' }, aria_label: _('Label actions dropdown') }
             = sprite_icon('ellipsis_v')
@@ -41,23 +41,23 @@
                   %button.text-danger.js-delete-label-modal-button{ type: 'button', data: { label_name: label.name, subject_name: label.subject_name, destroy_path: label.destroy_path } }
                     = _('Delete')
     - if current_user
-      %li.inline.label-subscription
+      %li.gl-display-inline-block.label-subscription.js-label-subscription.gl-ml-3
         - if label.can_subscribe_to_label_in_different_levels?
-          %button.js-unsubscribe-button.gl-button.label-subscribe-button.btn.btn-default.gl-ml-3{ class: ('hidden' if status.unsubscribed?), data: { url: toggle_subscription_path, toggle: 'tooltip' }, title: tooltip_title }
-            %span= _('Unsubscribe')
+          %button.js-unsubscribe-button.gl-button.btn.btn-default.gl-w-full{ class: ('hidden' if status.unsubscribed?), data: { url: toggle_subscription_path, toggle: 'tooltip' }, title: tooltip_title }
+            %span.gl-button-text= _('Unsubscribe')
           .dropdown.dropdown-group-label{ class: ('hidden' unless status.unsubscribed?) }
-            %button.gl-button.label-subscribe-button.btn.btn-default.gl-ml-3{ data: { toggle: 'dropdown' } }
-              %span
+            %button.gl-button.btn.btn-default.gl-w-full{ data: { toggle: 'dropdown' } }
+              %span.gl-button-text
                 = _('Subscribe')
                 = sprite_icon('chevron-down')
             .dropdown-menu.dropdown-open-left
               %ul
                 %li
-                  %button.js-subscribe-button.label-subscribe-button.gl-button.btn.btn-default{ class: ('hidden' unless status.unsubscribed?), data: { status: status, url: toggle_subscription_project_label_path(@project, label) } }
-                    %span= _('Subscribe at project level')
+                  %button.js-subscribe-button{ class: ('hidden' unless status.unsubscribed?), data: { status: status, url: toggle_subscription_project_label_path(@project, label) } }
+                    %span.gl-button-text= _('Subscribe at project level')
                 %li
-                  %button.js-subscribe-button.js-group-level.label-subscribe-button.gl-button.btn.btn-default{ class: ('hidden' unless status.unsubscribed?), data: { status: status, url: toggle_subscription_group_label_path(label.group, label) } }
-                    %span= _('Subscribe at group level')
+                  %button.js-subscribe-button.js-group-level{ class: ('hidden' unless status.unsubscribed?), data: { status: status, url: toggle_subscription_group_label_path(label.group, label) } }
+                    %span.gl-button-text= _('Subscribe at group level')
         - else
-          %button.gl-button.js-subscribe-button.label-subscribe-button.btn.btn-default.gl-ml-3{ data: { status: status, url: toggle_subscription_path, toggle: 'tooltip' }, title: tooltip_title }
-            %span= label_subscription_toggle_button_text(label, @project)
+          %button.gl-button.js-subscribe-button.btn.btn-default.gl-w-full{ data: { status: status, url: toggle_subscription_path, toggle: 'tooltip' }, title: tooltip_title }
+            %span.gl-button-text= label_subscription_toggle_button_text(label, @project)

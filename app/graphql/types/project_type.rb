@@ -27,7 +27,6 @@ module Types
 
     field :description, GraphQL::Types::String, null: true,
           description: 'Short description of the project.'
-    markdown_field :description_html, null: true
 
     field :tag_list, GraphQL::Types::String, null: true,
           deprecated: { reason: 'Use `topics`', milestone: '13.12' },
@@ -74,21 +73,6 @@ module Types
 
     field :avatar_url, GraphQL::Types::String, null: true, calls_gitaly: true,
           description: 'URL to avatar image file of the project.'
-
-    {
-      issues: "Issues are",
-      merge_requests: "Merge Requests are",
-      wiki: 'Wikis are',
-      snippets: 'Snippets are',
-      container_registry: 'Container Registry is'
-    }.each do |feature, name_string|
-      field "#{feature}_enabled", GraphQL::Types::Boolean, null: true,
-            description: "Indicates if #{name_string} enabled for the current user"
-
-      define_method "#{feature}_enabled" do
-        object.feature_available?(feature, context[:current_user])
-      end
-    end
 
     field :jobs_enabled, GraphQL::Types::Boolean, null: true,
           description: 'Indicates if CI/CD pipeline jobs are enabled for the current user.'
@@ -391,6 +375,17 @@ module Types
           null: true,
           description: 'Template used to create squash commit message in merge requests.'
 
+    field :labels,
+          Types::LabelType.connection_type,
+          null: true,
+          description: 'Labels available on this project.',
+          resolver: Resolvers::LabelsResolver
+
+    field :work_item_types, Types::WorkItems::TypeType.connection_type,
+          resolver: Resolvers::WorkItems::TypesResolver,
+          description: 'Work item types available to the project.',
+          feature_flag: :work_items
+
     def label(title:)
       BatchLoader::GraphQL.for(title).batch(key: project) do |titles, loader, args|
         LabelsFinder
@@ -400,11 +395,22 @@ module Types
       end
     end
 
-    field :labels,
-          Types::LabelType.connection_type,
-          null: true,
-          description: 'Labels available on this project.',
-          resolver: Resolvers::LabelsResolver
+    {
+      issues: "Issues are",
+      merge_requests: "Merge Requests are",
+      wiki: 'Wikis are',
+      snippets: 'Snippets are',
+      container_registry: 'Container Registry is'
+    }.each do |feature, name_string|
+      field "#{feature}_enabled", GraphQL::Types::Boolean, null: true,
+            description: "Indicates if #{name_string} enabled for the current user"
+
+      define_method "#{feature}_enabled" do
+        object.feature_available?(feature, context[:current_user])
+      end
+    end
+
+    markdown_field :description_html, null: true
 
     def avatar_url
       object.avatar_url(only_path: false)

@@ -30,16 +30,28 @@ RSpec.describe Events::DestroyService do
       expect(unrelated_event.reload).to be_present
     end
 
+    context 'batch delete' do
+      before do
+        stub_const("#{described_class}::BATCH_SIZE", 2)
+      end
+
+      it 'splits delete queries into batches' do
+        expect(project).to receive(:events).twice.and_call_original
+
+        subject.execute
+      end
+    end
+
     context 'when an error is raised while deleting the records' do
       before do
-        allow(project).to receive_message_chain(:events, :all, :delete_all).and_raise(ActiveRecord::ActiveRecordError)
+        allow(project).to receive_message_chain(:events, :limit, :delete_all).and_raise(ActiveRecord::ActiveRecordError, 'custom error')
       end
 
       it 'returns error' do
         response = subject.execute
 
         expect(response).to be_error
-        expect(response.message).to eq 'Failed to remove events.'
+        expect(response.message).to eq 'custom error'
       end
 
       it 'does not delete events' do

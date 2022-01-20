@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::BackgroundMigration::WrongfullyConfirmedEmailUnconfirmer, schema: 20181228175414 do
+RSpec.describe Gitlab::BackgroundMigration::WrongfullyConfirmedEmailUnconfirmer, schema: 20210301200959 do
   let(:users) { table(:users) }
   let(:emails) { table(:emails) }
   let(:user_synced_attributes_metadata) { table(:user_synced_attributes_metadata) }

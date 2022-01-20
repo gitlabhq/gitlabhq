@@ -2,7 +2,6 @@
 stage: none
 group: unassigned
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
-type: reference
 ---
 
 # Sign-in restrictions **(FREE SELF)**
@@ -21,8 +20,11 @@ To access sign-in restriction settings:
 
 You can restrict the password authentication for web interface and Git over HTTP(S):
 
-- **Web interface**: When this feature is disabled, the **Standard** sign-in tab is removed and an [external authentication provider](../../../administration/auth/index.md) must be used.
-- **Git over HTTP(S)**: When this feature is disabled, a [Personal Access Token](../../profile/personal_access_tokens.md) must be used to authenticate.
+- **Web interface**: When this feature is disabled, the **Standard** sign-in tab
+  is removed and an [external authentication provider](../../../administration/auth/index.md)
+  must be used.
+- **Git over HTTP(S)**: When this feature is disabled, a [Personal Access Token](../../profile/personal_access_tokens.md)
+  or LDAP password must be used to authenticate.
 
 In the event of an external authentication provider outage, use the [GitLab Rails console](../../../administration/operations/rails_console.md) to [re-enable the standard web sign-in form](../../../administration/troubleshooting/gitlab_rails_cheat_sheet.md#re-enable-standard-web-sign-in-form). This configuration can also be changed over the [Application settings REST API](../../../api/settings.md#change-application-settings) while authenticating with an administrator account's personal access token.
 

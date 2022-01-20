@@ -10,6 +10,8 @@
 
   .flash-container {
     margin-bottom: $gl-padding;
+    position: relative;
+    top: 8px;
   }
 
   .brand-holder {
@@ -203,7 +205,7 @@
 
   &.with-system-header {
     .login-page-broadcast {
-      margin-top: $system-header-height + $header-height;
+      margin-top: calc(#{$system-header-height} + #{$header-height});
     }
   }
 

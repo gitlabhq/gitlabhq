@@ -105,8 +105,10 @@ export default {
                 forkAndEditPath: '',
                 ideForkAndEditPath: '',
                 storedExternally: false,
+                externalStorage: '',
                 canModifyBlob: false,
                 canCurrentUserPushToBranch: false,
+                archived: false,
                 rawPath: '',
                 externalStorageUrl: '',
                 replacePath: '',
@@ -166,7 +168,7 @@ export default {
       return pushCode && downloadCode;
     },
     pathLockedByUser() {
-      const pathLock = this.project.pathLocks.nodes.find((node) => node.path === this.path);
+      const pathLock = this.project?.pathLocks?.nodes.find((node) => node.path === this.path);
 
       return pathLock ? pathLock.user : null;
     },
@@ -249,6 +251,7 @@ export default {
       >
         <template #actions>
           <blob-edit
+            v-if="!blobInfo.archived"
             :show-edit-button="!isBinaryFileType"
             :edit-path="blobInfo.editBlobPath"
             :web-ide-path="blobInfo.ideEditPath"
@@ -268,7 +271,7 @@ export default {
           </gl-button>
 
           <blob-button-group
-            v-if="isLoggedIn"
+            v-if="isLoggedIn && !blobInfo.archived"
             :path="path"
             :name="blobInfo.name"
             :replace-path="blobInfo.replacePath"
@@ -279,6 +282,8 @@ export default {
             :project-path="projectPath"
             :is-locked="Boolean(pathLockedByUser)"
             :can-lock="canLock"
+            :show-fork-suggestion="showForkSuggestion"
+            @fork="setForkTarget('ide')"
           />
         </template>
       </blob-header>
@@ -289,6 +294,7 @@ export default {
       />
       <blob-content
         v-if="!blobViewer"
+        class="js-syntax-highlight"
         :rich-viewer="legacyRichViewer"
         :blob="blobInfo"
         :content="legacySimpleViewer"

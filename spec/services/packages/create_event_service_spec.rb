@@ -2,7 +2,7 @@
 require 'spec_helper'
 
 RSpec.describe Packages::CreateEventService do
-  let(:scope) { 'container' }
+  let(:scope) { 'generic' }
   let(:event_name) { 'push_package' }
 
   let(:params) do
@@ -75,24 +75,24 @@ RSpec.describe Packages::CreateEventService do
     context 'with a user' do
       let(:user) { create(:user) }
 
-      it_behaves_like 'db package event creation', 'user', 'container'
-      it_behaves_like 'redis package unique event creation', 'user', 'container'
-      it_behaves_like 'redis package count event creation', 'user', 'container'
+      it_behaves_like 'db package event creation', 'user', 'generic'
+      it_behaves_like 'redis package unique event creation', 'user', 'generic'
+      it_behaves_like 'redis package count event creation', 'user', 'generic'
     end
 
     context 'with a deploy token' do
       let(:user) { create(:deploy_token) }
 
-      it_behaves_like 'db package event creation', 'deploy_token', 'container'
-      it_behaves_like 'redis package unique event creation', 'deploy_token', 'container'
-      it_behaves_like 'redis package count event creation', 'deploy_token', 'container'
+      it_behaves_like 'db package event creation', 'deploy_token', 'generic'
+      it_behaves_like 'redis package unique event creation', 'deploy_token', 'generic'
+      it_behaves_like 'redis package count event creation', 'deploy_token', 'generic'
     end
 
     context 'with no user' do
       let(:user) { nil }
 
-      it_behaves_like 'db package event creation', 'guest', 'container'
-      it_behaves_like 'redis package count event creation', 'guest', 'container'
+      it_behaves_like 'db package event creation', 'guest', 'generic'
+      it_behaves_like 'redis package count event creation', 'guest', 'generic'
     end
 
     context 'with a package as scope' do

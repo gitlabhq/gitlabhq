@@ -28,18 +28,16 @@ module Ci
 
       return if events.empty?
 
-      first = events.first
-      last_processed = nil
+      processed_events = []
 
       begin
         events.each do |event|
           @sync_class.sync!(event)
 
-          last_processed = event
+          processed_events << event
         end
       ensure
-        # remove events till the one that was last succesfully processed
-        @sync_event_class.id_in(first.id..last_processed.id).delete_all if last_processed
+        @sync_event_class.id_in(processed_events).delete_all
       end
     end
 

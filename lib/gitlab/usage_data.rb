@@ -304,7 +304,8 @@ module Gitlab
             # rubocop: disable UsageData/LargeTable
             adapter: alt_usage_data { ApplicationRecord.database.adapter_name },
             version: alt_usage_data { ApplicationRecord.database.version },
-            pg_system_id: alt_usage_data { ApplicationRecord.database.system_id }
+            pg_system_id: alt_usage_data { ApplicationRecord.database.system_id },
+            flavor: alt_usage_data { ApplicationRecord.database.flavor }
             # rubocop: enable UsageData/LargeTable
           },
           mail: {
@@ -521,11 +522,7 @@ module Gitlab
           projects_with_disable_overriding_approvers_per_merge_request: count(::Project.where(time_period.merge(disable_overriding_approvers_per_merge_request: true))),
           projects_without_disable_overriding_approvers_per_merge_request: count(::Project.where(time_period.merge(disable_overriding_approvers_per_merge_request: [false, nil]))),
           remote_mirrors: distinct_count(::Project.with_remote_mirrors.where(time_period), :creator_id),
-          snippets: distinct_count(::Snippet.where(time_period), :author_id),
-          suggestions: distinct_count(::Note.with_suggestions.where(time_period),
-                                      :author_id,
-                                      start: minimum_id(::User),
-                                      finish: maximum_id(::User))
+          snippets: distinct_count(::Snippet.where(time_period), :author_id)
         }.tap do |h|
           if time_period.present?
             h[:merge_requests_users] = merge_requests_users(time_period)
@@ -552,33 +549,11 @@ module Gitlab
           user_auth_by_provider: distinct_count_user_auth_by_provider(time_period),
           unique_users_all_imports: unique_users_all_imports(time_period),
           bulk_imports: {
-            gitlab: DEPRECATED_VALUE,
             gitlab_v1: count(::BulkImport.where(**time_period, source_type: :gitlab))
           },
           project_imports: project_imports(time_period),
           issue_imports: issue_imports(time_period),
-          group_imports: group_imports(time_period),
-
-          # Deprecated data to be removed
-          projects_imported: {
-            total: DEPRECATED_VALUE,
-            gitlab_project: DEPRECATED_VALUE,
-            gitlab: DEPRECATED_VALUE,
-            github: DEPRECATED_VALUE,
-            bitbucket: DEPRECATED_VALUE,
-            bitbucket_server: DEPRECATED_VALUE,
-            gitea: DEPRECATED_VALUE,
-            git: DEPRECATED_VALUE,
-            manifest: DEPRECATED_VALUE
-          },
-          issues_imported: {
-            jira: DEPRECATED_VALUE,
-            fogbugz: DEPRECATED_VALUE,
-            phabricator: DEPRECATED_VALUE,
-            csv: DEPRECATED_VALUE
-          },
-          groups_imported: DEPRECATED_VALUE
-          # End of deprecated keys
+          group_imports: group_imports(time_period)
         }
       end
       # rubocop: enable CodeReuse/ActiveRecord

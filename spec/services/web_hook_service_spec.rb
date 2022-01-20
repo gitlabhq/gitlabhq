@@ -2,19 +2,11 @@
 
 require 'spec_helper'
 
-RSpec.describe WebHookService do
+RSpec.describe WebHookService, :request_store, :clean_gitlab_redis_shared_state do
   include StubRequests
 
   let_it_be(:project) { create(:project) }
   let_it_be_with_reload(:project_hook) { create(:project_hook, project: project) }
-
-  let(:headers) do
-    {
-      'Content-Type' => 'application/json',
-      'User-Agent' => "GitLab/#{Gitlab::VERSION}",
-      'X-Gitlab-Event' => 'Push Hook'
-    }
-  end
 
   let(:data) do
     { before: 'oldrev', after: 'newrev', ref: 'ref' }
@@ -61,6 +53,21 @@ RSpec.describe WebHookService do
   end
 
   describe '#execute' do
+    let!(:uuid) { SecureRandom.uuid }
+    let(:headers) do
+      {
+        'Content-Type' => 'application/json',
+        'User-Agent' => "GitLab/#{Gitlab::VERSION}",
+        'X-Gitlab-Event' => 'Push Hook',
+        'X-Gitlab-Event-UUID' => uuid
+      }
+    end
+
+    before do
+      # Set a stable value for the `X-Gitlab-Event-UUID` header.
+      Gitlab::WebHooks::RecursionDetection.set_request_uuid(uuid)
+    end
+
     context 'when token is defined' do
       let_it_be(:project_hook) { create(:project_hook, :token) }
 
@@ -127,10 +134,73 @@ RSpec.describe WebHookService do
       expect(service_instance.execute).to eq({ status: :error, message: 'Hook disabled' })
     end
 
+    it 'executes and registers the hook with the recursion detection', :aggregate_failures do
+      stub_full_request(project_hook.url, method: :post)
+      cache_key = Gitlab::WebHooks::RecursionDetection.send(:cache_key_for_hook, project_hook)
+
+      ::Gitlab::Redis::SharedState.with do |redis|
+        expect { service_instance.execute }.to change {
+          redis.sismember(cache_key, project_hook.id)
+        }.to(true)
+      end
+
+      expect(WebMock).to have_requested(:post, stubbed_hostname(project_hook.url))
+        .with(headers: headers)
+        .once
+    end
+
+    it 'executes and logs if a recursive web hook is detected', :aggregate_failures do
+      stub_full_request(project_hook.url, method: :post)
+      Gitlab::WebHooks::RecursionDetection.register!(project_hook)
+
+      expect(Gitlab::AuthLogger).to receive(:error).with(
+        include(
+          message: 'Webhook recursion detected and will be blocked in future',
+          hook_id: project_hook.id,
+          hook_type: 'ProjectHook',
+          hook_name: 'push_hooks',
+          recursion_detection: Gitlab::WebHooks::RecursionDetection.to_log(project_hook),
+          'correlation_id' => kind_of(String)
+        )
+      )
+
+      service_instance.execute
+
+      expect(WebMock).to have_requested(:post, stubbed_hostname(project_hook.url))
+        .with(headers: headers)
+        .once
+    end
+
+    it 'executes and logs if the recursion count limit would be exceeded', :aggregate_failures do
+      stub_full_request(project_hook.url, method: :post)
+      stub_const("#{Gitlab::WebHooks::RecursionDetection.name}::COUNT_LIMIT", 3)
+      previous_hooks = create_list(:project_hook, 3)
+      previous_hooks.each { Gitlab::WebHooks::RecursionDetection.register!(_1) }
+
+      expect(Gitlab::AuthLogger).to receive(:error).with(
+        include(
+          message: 'Webhook recursion detected and will be blocked in future',
+          hook_id: project_hook.id,
+          hook_type: 'ProjectHook',
+          hook_name: 'push_hooks',
+          recursion_detection: Gitlab::WebHooks::RecursionDetection.to_log(project_hook),
+          'correlation_id' => kind_of(String)
+        )
+      )
+
+      service_instance.execute
+
+      expect(WebMock).to have_requested(:post, stubbed_hostname(project_hook.url))
+        .with(headers: headers)
+        .once
+    end
+
     it 'handles exceptions' do
       exceptions = Gitlab::HTTP::HTTP_ERRORS + [
         Gitlab::Json::LimitedEncoder::LimitExceeded, URI::InvalidURIError
       ]
+
+      allow(Gitlab::WebHooks::RecursionDetection).to receive(:block?).and_return(false)
 
       exceptions.each do |exception_class|
         exception = exception_class.new('Exception message')
@@ -417,6 +487,57 @@ RSpec.describe WebHookService do
 
           described_class.new(other_hook, data, :push_hooks).async_execute
         end
+      end
+    end
+
+    context 'recursion detection' do
+      before do
+        # Set a request UUID so `RecursionDetection.block?` will query redis.
+        Gitlab::WebHooks::RecursionDetection.set_request_uuid(SecureRandom.uuid)
+      end
+
+      it 'queues a worker and logs an error if the call chain limit would be exceeded' do
+        stub_const("#{Gitlab::WebHooks::RecursionDetection.name}::COUNT_LIMIT", 3)
+        previous_hooks = create_list(:project_hook, 3)
+        previous_hooks.each { Gitlab::WebHooks::RecursionDetection.register!(_1) }
+
+        expect(WebHookWorker).to receive(:perform_async)
+        expect(Gitlab::AuthLogger).to receive(:error).with(
+          include(
+            message: 'Webhook recursion detected and will be blocked in future',
+            hook_id: project_hook.id,
+            hook_type: 'ProjectHook',
+            hook_name: 'push_hooks',
+            recursion_detection: Gitlab::WebHooks::RecursionDetection.to_log(project_hook),
+            'correlation_id' => kind_of(String),
+            'meta.project' => project.full_path,
+            'meta.related_class' => 'ProjectHook',
+            'meta.root_namespace' => project.root_namespace.full_path
+          )
+        )
+
+        service_instance.async_execute
+      end
+
+      it 'queues a worker and logs an error if a recursive call chain is detected' do
+        Gitlab::WebHooks::RecursionDetection.register!(project_hook)
+
+        expect(WebHookWorker).to receive(:perform_async)
+        expect(Gitlab::AuthLogger).to receive(:error).with(
+          include(
+            message: 'Webhook recursion detected and will be blocked in future',
+            hook_id: project_hook.id,
+            hook_type: 'ProjectHook',
+            hook_name: 'push_hooks',
+            recursion_detection: Gitlab::WebHooks::RecursionDetection.to_log(project_hook),
+            'correlation_id' => kind_of(String),
+            'meta.project' => project.full_path,
+            'meta.related_class' => 'ProjectHook',
+            'meta.root_namespace' => project.root_namespace.full_path
+          )
+        )
+
+        service_instance.async_execute
       end
     end
 

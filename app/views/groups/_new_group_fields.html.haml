@@ -7,14 +7,15 @@
       = _('Visibility level')
     %p
       = _('Who will be able to see this group?')
-      = link_to _('View the documentation'), help_page_path("public_access/public_access"), target: '_blank'
+      = link_to _('View the documentation'), help_page_path("public_access/public_access"), target: '_blank', rel: 'noopener noreferrer'
     = render 'shared/visibility_level', f: f, visibility_level: default_group_visibility, can_change_visibility_level: true, form_model: @group, with_label: false
 
 - if Gitlab.config.mattermost.enabled
   .row
     = render 'create_chat_team', f: f
 
-= render 'personalize', f: f
+- unless Gitlab::CurrentSettings.current_application_settings.hide_third_party_offers?
+  = render 'personalize', f: f
 
 .row.js-invite-members-section
   .col-sm-4

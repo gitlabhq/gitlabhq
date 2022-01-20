@@ -234,6 +234,18 @@ RSpec.describe AutocompleteController do
         expect(json_response.first).to have_key('can_merge')
       end
     end
+
+    it_behaves_like 'rate limited endpoint', rate_limit_key: :user_email_lookup do
+      let(:current_user) { user }
+
+      def request
+        get(:users, params: { search: 'foo@bar.com' })
+      end
+
+      before do
+        sign_in(current_user)
+      end
+    end
   end
 
   context 'GET projects' do

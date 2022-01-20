@@ -20,13 +20,33 @@ RSpec.describe 'projects/services/_form' do
     )
   end
 
-  context 'commit_events and merge_request_events' do
-    it 'display merge_request_events and commit_events descriptions' do
-      allow(Integrations::Redmine).to receive(:supported_events).and_return(%w(commit merge_request))
-
+  context 'integrations form' do
+    it 'does not render form element' do
       render
 
-      expect(rendered).to have_css("input[name='redirect_to'][value='/services']", count: 1, visible: false)
+      expect(rendered).not_to have_selector('[data-testid="integration-form"]')
+    end
+
+    context 'when vue_integration_form feature flag is disabled' do
+      before do
+        stub_feature_flags(vue_integration_form: false)
+      end
+
+      it 'renders form element' do
+        render
+
+        expect(rendered).to have_selector('[data-testid="integration-form"]')
+      end
+
+      context 'commit_events and merge_request_events' do
+        it 'display merge_request_events and commit_events descriptions' do
+          allow(Integrations::Redmine).to receive(:supported_events).and_return(%w(commit merge_request))
+
+          render
+
+          expect(rendered).to have_css("input[name='redirect_to'][value='/services']", count: 1, visible: false)
+        end
+      end
     end
   end
 end

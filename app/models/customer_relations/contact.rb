@@ -24,11 +24,12 @@ class CustomerRelations::Contact < ApplicationRecord
   validates :email, length: { maximum: 255 }
   validates :description, length: { maximum: 1024 }
   validate :validate_email_format
+  validate :unique_email_for_group_hierarchy
 
-  def self.find_ids_by_emails(group_id, emails)
+  def self.find_ids_by_emails(group, emails)
     raise ArgumentError, "Cannot lookup more than #{MAX_PLUCK} emails" if emails.length > MAX_PLUCK
 
-    where(group_id: group_id, email: emails)
+    where(group_id: group.self_and_ancestor_ids, email: emails)
       .pluck(:id)
   end
 
@@ -38,5 +39,15 @@ class CustomerRelations::Contact < ApplicationRecord
     return unless email
 
     self.errors.add(:email, I18n.t(:invalid, scope: 'valid_email.validations.email')) unless ValidateEmail.valid?(self.email)
+  end
+
+  def unique_email_for_group_hierarchy
+    return unless group
+    return unless email
+
+    duplicate_email_exists = CustomerRelations::Contact
+      .where(group_id: group.self_and_hierarchy.pluck(:id), email: email)
+      .where.not(id: id).exists?
+    self.errors.add(:email, _('contact with same email already exists in group hierarchy')) if duplicate_email_exists
   end
 end

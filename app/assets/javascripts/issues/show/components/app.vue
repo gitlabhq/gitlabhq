@@ -6,7 +6,7 @@ import { IssuableStatus, IssuableStatusText, IssuableType } from '~/issues/const
 import Poll from '~/lib/utils/poll';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { __, sprintf } from '~/locale';
-import { IssueTypePath, IncidentTypePath, IncidentType, POLLING_DELAY } from '../constants';
+import { ISSUE_TYPE_PATH, INCIDENT_TYPE_PATH, INCIDENT_TYPE, POLLING_DELAY } from '../constants';
 import eventHub from '../event_hub';
 import getIssueStateQuery from '../queries/get_issue_state.query.graphql';
 import Service from '../services/index';
@@ -378,15 +378,15 @@ export default {
         .then((data) => {
           if (
             !window.location.pathname.includes(data.web_url) &&
-            issueState.issueType !== IncidentType
+            issueState.issueType !== INCIDENT_TYPE
           ) {
             visitUrl(data.web_url);
           }
 
           if (issueState.isDirty) {
             const URI =
-              issueState.issueType === IncidentType
-                ? data.web_url.replace(IssueTypePath, IncidentTypePath)
+              issueState.issueType === INCIDENT_TYPE
+                ? data.web_url.replace(ISSUE_TYPE_PATH, INCIDENT_TYPE_PATH)
                 : data.web_url;
             visitUrl(URI);
           }

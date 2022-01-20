@@ -3,83 +3,93 @@
 require 'spec_helper'
 
 RSpec.describe GroupMembersFinder, '#execute' do
-  let(:group)         { create(:group) }
-  let(:sub_group)     { create(:group, parent: group) }
-  let(:sub_sub_group) { create(:group, parent: sub_group) }
-  let(:user1)         { create(:user) }
-  let(:user2)         { create(:user) }
-  let(:user3)         { create(:user) }
-  let(:user4)         { create(:user) }
-  let(:user5)         { create(:user, :two_factor_via_otp) }
+  let_it_be(:group)                { create(:group) }
+  let_it_be(:sub_group)            { create(:group, parent: group) }
+  let_it_be(:sub_sub_group)        { create(:group, parent: sub_group) }
+  let_it_be(:public_shared_group)  { create(:group, :public) }
+  let_it_be(:private_shared_group) { create(:group, :private) }
+  let_it_be(:user1)                { create(:user) }
+  let_it_be(:user2)                { create(:user) }
+  let_it_be(:user3)                { create(:user) }
+  let_it_be(:user4)                { create(:user) }
+  let_it_be(:user5)                { create(:user, :two_factor_via_otp) }
+
+  let!(:link) do
+    create(:group_group_link, shared_group: group,     shared_with_group: public_shared_group)
+    create(:group_group_link, shared_group: sub_group, shared_with_group: private_shared_group)
+  end
 
   let(:groups) do
     {
-      group:         group,
-      sub_group:     sub_group,
-      sub_sub_group: sub_sub_group
+      group:                group,
+      sub_group:            sub_group,
+      sub_sub_group:        sub_sub_group,
+      public_shared_group:  public_shared_group,
+      private_shared_group: private_shared_group
     }
   end
 
   context 'relations' do
     let!(:members) do
       {
-        user1_sub_sub_group: create(:group_member, :maintainer, group: sub_sub_group, user: user1),
-        user1_sub_group:     create(:group_member, :developer,  group: sub_group,     user: user1),
-        user1_group:         create(:group_member, :reporter,   group: group,         user: user1),
-        user2_sub_sub_group: create(:group_member, :reporter,   group: sub_sub_group, user: user2),
-        user2_sub_group:     create(:group_member, :developer,  group: sub_group,     user: user2),
-        user2_group:         create(:group_member, :maintainer, group: group,         user: user2),
-        user3_sub_sub_group: create(:group_member, :developer,  group: sub_sub_group, user: user3, expires_at: 1.day.from_now),
-        user3_sub_group:     create(:group_member, :developer,  group: sub_group,     user: user3, expires_at: 2.days.from_now),
-        user3_group:         create(:group_member, :reporter,   group: group,         user: user3),
-        user4_sub_sub_group: create(:group_member, :reporter,   group: sub_sub_group, user: user4),
-        user4_sub_group:     create(:group_member, :developer,  group: sub_group,     user: user4, expires_at: 1.day.from_now),
-        user4_group:         create(:group_member, :developer,  group: group,         user: user4, expires_at: 2.days.from_now)
+        user1_sub_sub_group:        create(:group_member, :maintainer, group: sub_sub_group,        user: user1),
+        user1_sub_group:            create(:group_member, :developer,  group: sub_group,            user: user1),
+        user1_group:                create(:group_member, :reporter,   group: group,                user: user1),
+        user1_public_shared_group:  create(:group_member, :maintainer, group: public_shared_group,  user: user1),
+        user1_private_shared_group: create(:group_member, :maintainer, group: private_shared_group, user: user1),
+        user2_sub_sub_group:        create(:group_member, :reporter,   group: sub_sub_group,        user: user2),
+        user2_sub_group:            create(:group_member, :developer,  group: sub_group,            user: user2),
+        user2_group:                create(:group_member, :maintainer, group: group,                user: user2),
+        user2_public_shared_group:  create(:group_member, :developer,  group: public_shared_group,  user: user2),
+        user2_private_shared_group: create(:group_member, :developer,  group: private_shared_group, user: user2),
+        user3_sub_sub_group:        create(:group_member, :developer,  group: sub_sub_group,        user: user3, expires_at: 1.day.from_now),
+        user3_sub_group:            create(:group_member, :developer,  group: sub_group,            user: user3, expires_at: 2.days.from_now),
+        user3_group:                create(:group_member, :reporter,   group: group,                user: user3),
+        user3_public_shared_group:  create(:group_member, :reporter,   group: public_shared_group,  user: user3),
+        user3_private_shared_group: create(:group_member, :reporter,   group: private_shared_group, user: user3),
+        user4_sub_sub_group:        create(:group_member, :reporter,   group: sub_sub_group,        user: user4),
+        user4_sub_group:            create(:group_member, :developer,  group: sub_group,            user: user4, expires_at: 1.day.from_now),
+        user4_group:                create(:group_member, :developer,  group: group,                user: user4, expires_at: 2.days.from_now),
+        user4_public_shared_group:  create(:group_member, :developer,  group: public_shared_group,  user: user4),
+        user4_private_shared_group: create(:group_member, :developer,  group: private_shared_group, user: user4)
       }
     end
 
     it 'raises an error if a non-supported relation type is used' do
       expect do
         described_class.new(group).execute(include_relations: [:direct, :invalid_relation_type])
-      end.to raise_error(ArgumentError, "invalid_relation_type is not a valid relation type. Valid relation types are direct, inherited, descendants.")
+      end.to raise_error(ArgumentError, "invalid_relation_type is not a valid relation type. Valid relation types are direct, inherited, descendants, shared_from_groups.")
     end
 
     using RSpec::Parameterized::TableSyntax
 
     where(:subject_relations, :subject_group, :expected_members) do
-      nil                                 | :group         | [:user1_group,         :user2_group,         :user3_group,         :user4_group]
-      [:direct]                           | :group         | [:user1_group,         :user2_group,         :user3_group,         :user4_group]
-      [:inherited]                        | :group         | []
-      [:descendants]                      | :group         | [:user1_sub_sub_group, :user2_sub_group,     :user3_sub_group,     :user4_sub_group]
-      [:direct, :inherited]               | :group         | [:user1_group,         :user2_group,         :user3_group,         :user4_group]
-      [:direct, :descendants]             | :group         | [:user1_sub_sub_group, :user2_group,         :user3_sub_group,     :user4_group]
-      [:descendants, :inherited]          | :group         | [:user1_sub_sub_group, :user2_sub_group,     :user3_sub_group,     :user4_sub_group]
-      [:direct, :descendants, :inherited] | :group         | [:user1_sub_sub_group, :user2_group,         :user3_sub_group,     :user4_group]
-      nil                                 | :sub_group     | [:user1_sub_group,     :user2_group,         :user3_sub_group,     :user4_group]
-      [:direct]                           | :sub_group     | [:user1_sub_group,     :user2_sub_group,     :user3_sub_group,     :user4_sub_group]
-      [:inherited]                        | :sub_group     | [:user1_group,         :user2_group,         :user3_group,         :user4_group]
-      [:descendants]                      | :sub_group     | [:user1_sub_sub_group, :user2_sub_sub_group, :user3_sub_sub_group, :user4_sub_sub_group]
-      [:direct, :inherited]               | :sub_group     | [:user1_sub_group,     :user2_group,         :user3_sub_group,     :user4_group]
-      [:direct, :descendants]             | :sub_group     | [:user1_sub_sub_group, :user2_sub_group,     :user3_sub_group,     :user4_sub_group]
-      [:descendants, :inherited]          | :sub_group     | [:user1_sub_sub_group, :user2_group,         :user3_sub_sub_group, :user4_group]
-      [:direct, :descendants, :inherited] | :sub_group     | [:user1_sub_sub_group, :user2_group,         :user3_sub_group,     :user4_group]
-      nil                                 | :sub_sub_group | [:user1_sub_sub_group, :user2_group,         :user3_sub_group,     :user4_group]
-      [:direct]                           | :sub_sub_group | [:user1_sub_sub_group, :user2_sub_sub_group, :user3_sub_sub_group, :user4_sub_sub_group]
-      [:inherited]                        | :sub_sub_group | [:user1_sub_group,     :user2_group,         :user3_sub_group,     :user4_group]
-      [:descendants]                      | :sub_sub_group | []
-      [:direct, :inherited]               | :sub_sub_group | [:user1_sub_sub_group, :user2_group,         :user3_sub_group,     :user4_group]
-      [:direct, :descendants]             | :sub_sub_group | [:user1_sub_sub_group, :user2_sub_sub_group, :user3_sub_sub_group, :user4_sub_sub_group]
-      [:descendants, :inherited]          | :sub_sub_group | [:user1_sub_group,     :user2_group,         :user3_sub_group,     :user4_group]
-      [:direct, :descendants, :inherited] | :sub_sub_group | [:user1_sub_sub_group, :user2_group,         :user3_sub_group,     :user4_group]
+      []                                                       | :group         | []
+      GroupMembersFinder::DEFAULT_RELATIONS                    | :group         | [:user1_group, :user2_group, :user3_group, :user4_group]
+      [:direct]                                                | :group         | [:user1_group, :user2_group, :user3_group, :user4_group]
+      [:inherited]                                             | :group         | []
+      [:descendants]                                           | :group         | [:user1_sub_sub_group, :user2_sub_group, :user3_sub_group, :user4_sub_group]
+      [:shared_from_groups]                                    | :group         | [:user1_public_shared_group, :user2_public_shared_group, :user3_public_shared_group, :user4_public_shared_group]
+      [:direct, :inherited, :descendants, :shared_from_groups] | :group         | [:user1_sub_sub_group, :user2_group, :user3_sub_group, :user4_public_shared_group]
+      []                                                       | :sub_group     | []
+      GroupMembersFinder::DEFAULT_RELATIONS                    | :sub_group     | [:user1_sub_group, :user2_group, :user3_sub_group, :user4_group]
+      [:direct]                                                | :sub_group     | [:user1_sub_group, :user2_sub_group, :user3_sub_group, :user4_sub_group]
+      [:inherited]                                             | :sub_group     | [:user1_group, :user2_group, :user3_group, :user4_group]
+      [:descendants]                                           | :sub_group     | [:user1_sub_sub_group, :user2_sub_sub_group, :user3_sub_sub_group, :user4_sub_sub_group]
+      [:shared_from_groups]                                    | :sub_group     | []
+      [:direct, :inherited, :descendants, :shared_from_groups] | :sub_group     | [:user1_sub_sub_group, :user2_group, :user3_sub_group, :user4_group]
+      []                                                       | :sub_sub_group | []
+      GroupMembersFinder::DEFAULT_RELATIONS                    | :sub_sub_group | [:user1_sub_sub_group, :user2_group, :user3_sub_group, :user4_group]
+      [:direct]                                                | :sub_sub_group | [:user1_sub_sub_group, :user2_sub_sub_group, :user3_sub_sub_group, :user4_sub_sub_group]
+      [:inherited]                                             | :sub_sub_group | [:user1_sub_group, :user2_group, :user3_sub_group, :user4_group]
+      [:descendants]                                           | :sub_sub_group | []
+      [:shared_from_groups]                                    | :sub_sub_group | []
+      [:direct, :inherited, :descendants, :shared_from_groups] | :sub_sub_group | [:user1_sub_sub_group, :user2_group, :user3_sub_group, :user4_group]
     end
 
     with_them do
       it 'returns correct members' do
-        result = if subject_relations
-                   described_class.new(groups[subject_group]).execute(include_relations: subject_relations)
-                 else
-                   described_class.new(groups[subject_group]).execute
-                 end
+        result = described_class.new(groups[subject_group]).execute(include_relations: subject_relations)
 
         expect(result.to_a).to match_array(expected_members.map { |name| members[name] })
       end

@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import VueRouter from 'vue-router';
 import TableOfContents from '~/blob/components/table_contents.vue';
 import PipelineTourSuccessModal from '~/blob/pipeline_tour_success_modal.vue';
 import { BlobViewer, initAuxiliaryViewer } from '~/blob/viewer/index';
@@ -12,10 +13,13 @@ import BlobContentViewer from '~/repository/components/blob_content_viewer.vue';
 import '~/sourcegraph/load';
 
 Vue.use(VueApollo);
+Vue.use(VueRouter);
 
 const apolloProvider = new VueApollo({
   defaultClient: createDefaultClient(),
 });
+
+const router = new VueRouter({ mode: 'history' });
 
 const viewBlobEl = document.querySelector('#js-view-blob-app');
 
@@ -25,6 +29,7 @@ if (viewBlobEl) {
   // eslint-disable-next-line no-new
   new Vue({
     el: viewBlobEl,
+    router,
     apolloProvider,
     provide: {
       targetBranch,
@@ -41,6 +46,7 @@ if (viewBlobEl) {
   });
 
   initAuxiliaryViewer();
+  initBlob();
 } else {
   new BlobViewer(); // eslint-disable-line no-new
   initBlob();

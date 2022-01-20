@@ -4,7 +4,11 @@ module API
   class Search < ::API::Base
     include PaginationParams
 
-    before { authenticate! }
+    before do
+      authenticate!
+
+      check_rate_limit!(:user_email_lookup, scope: [current_user]) if search_service.params.email_lookup?
+    end
 
     feature_category :global_search
 
@@ -36,7 +40,7 @@ module API
         }.freeze
       end
 
-      def search(additional_params = {})
+      def search_service(additional_params = {})
         search_params = {
           scope: params[:scope],
           search: params[:search],
@@ -50,7 +54,11 @@ module API
           sort: params[:sort]
         }.merge(additional_params)
 
-        results = SearchService.new(current_user, search_params).search_objects(preload_method)
+        SearchService.new(current_user, search_params)
+      end
+
+      def search(additional_params = {})
+        results = search_service(additional_params).search_objects(preload_method)
 
         Gitlab::UsageDataCounters::SearchCounter.count(:all_searches)
 

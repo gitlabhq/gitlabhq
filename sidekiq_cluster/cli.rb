@@ -200,9 +200,7 @@ module Gitlab
       end
 
       def sidekiq_exporter_enabled?
-        ::Settings.monitoring.sidekiq_exporter.enabled
-      rescue Settingslogic::MissingSetting
-        nil
+        ::Settings.dig('monitoring', 'sidekiq_exporter', 'enabled')
       end
 
       def exporter_has_a_unique_port?
@@ -216,15 +214,11 @@ module Gitlab
       end
 
       def sidekiq_exporter_port
-        ::Settings.monitoring.sidekiq_exporter.port
-      rescue Settingslogic::MissingSetting
-        nil
+        ::Settings.dig('monitoring', 'sidekiq_exporter', 'port')
       end
 
       def sidekiq_health_check_port
-        ::Settings.monitoring.sidekiq_health_checks.port
-      rescue Settingslogic::MissingSetting
-        nil
+        ::Settings.dig('monitoring', 'sidekiq_health_checks', 'port')
       end
 
       def metrics_server_enabled?

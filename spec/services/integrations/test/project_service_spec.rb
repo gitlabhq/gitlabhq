@@ -9,7 +9,7 @@ RSpec.describe Integrations::Test::ProjectService do
     let_it_be(:project) { create(:project) }
 
     let(:integration) { create(:integrations_slack, project: project) }
-    let(:user) { project.owner }
+    let(:user) { project.first_owner }
     let(:event) { nil }
     let(:sample_data) { { data: 'sample' } }
     let(:success_result) { { success: true, result: {} } }

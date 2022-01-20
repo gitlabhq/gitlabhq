@@ -922,6 +922,22 @@ RSpec.describe Issuable do
     end
   end
 
+  describe '#supports_escalation?' do
+    where(:issuable_type, :supports_escalation) do
+      :issue         | false
+      :incident      | true
+      :merge_request | false
+    end
+
+    with_them do
+      let(:issuable) { build_stubbed(issuable_type) }
+
+      subject { issuable.supports_escalation? }
+
+      it { is_expected.to eq(supports_escalation) }
+    end
+  end
+
   describe '#incident?' do
     where(:issuable_type, :incident) do
       :issue         | false

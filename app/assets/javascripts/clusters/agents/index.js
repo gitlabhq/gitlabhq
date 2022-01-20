@@ -1,9 +1,6 @@
 import Vue from 'vue';
-import VueApollo from 'vue-apollo';
-import createDefaultClient from '~/lib/graphql';
 import AgentShowPage from 'ee_else_ce/clusters/agents/components/show.vue';
-
-Vue.use(VueApollo);
+import apolloProvider from './graphql/provider';
 
 export default () => {
   const el = document.querySelector('#js-cluster-agent-details');
@@ -12,20 +9,19 @@ export default () => {
     return null;
   }
 
-  const defaultClient = createDefaultClient();
-  const { agentName, projectPath, activityEmptyStateImage } = el.dataset;
+  const { activityEmptyStateImage, agentName, emptyStateSvgPath, projectPath } = el.dataset;
 
   return new Vue({
     el,
-    apolloProvider: new VueApollo({ defaultClient }),
-    provide: { agentName, projectPath, activityEmptyStateImage },
+    apolloProvider,
+    provide: {
+      activityEmptyStateImage,
+      agentName,
+      emptyStateSvgPath,
+      projectPath,
+    },
     render(createElement) {
-      return createElement(AgentShowPage, {
-        props: {
-          agentName,
-          projectPath,
-        },
-      });
+      return createElement(AgentShowPage);
     },
   });
 };

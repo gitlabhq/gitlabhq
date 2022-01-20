@@ -7,7 +7,7 @@ RSpec.describe Clusters::Integrations::CreateService, '#execute' do
   let_it_be_with_reload(:cluster) { create(:cluster, :provided_by_gcp, projects: [project]) }
 
   let(:service) do
-    described_class.new(container: project, cluster: cluster, current_user: project.owner, params: params)
+    described_class.new(container: project, cluster: cluster, current_user: project.first_owner, params: params)
   end
 
   shared_examples_for 'a cluster integration' do |application_type|

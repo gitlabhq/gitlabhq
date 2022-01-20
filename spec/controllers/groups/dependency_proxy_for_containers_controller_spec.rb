@@ -178,10 +178,6 @@ RSpec.describe Groups::DependencyProxyForContainersController do
     subject { get_manifest(tag) }
 
     context 'feature enabled' do
-      before do
-        enable_dependency_proxy
-      end
-
       it_behaves_like 'without a token'
       it_behaves_like 'without permission'
       it_behaves_like 'feature flag disabled with private group'
@@ -270,7 +266,6 @@ RSpec.describe Groups::DependencyProxyForContainersController do
           let_it_be_with_reload(:group) { create(:group, parent: parent_group) }
 
           before do
-            parent_group.create_dependency_proxy_setting!(enabled: true)
             group_deploy_token.update_column(:group_id, parent_group.id)
           end
 
@@ -294,10 +289,6 @@ RSpec.describe Groups::DependencyProxyForContainersController do
     subject { get_blob }
 
     context 'feature enabled' do
-      before do
-        enable_dependency_proxy
-      end
-
       it_behaves_like 'without a token'
       it_behaves_like 'without permission'
       it_behaves_like 'feature flag disabled with private group'
@@ -341,79 +332,10 @@ RSpec.describe Groups::DependencyProxyForContainersController do
           let_it_be_with_reload(:group) { create(:group, parent: parent_group) }
 
           before do
-            parent_group.create_dependency_proxy_setting!(enabled: true)
             group_deploy_token.update_column(:group_id, parent_group.id)
           end
 
           it_behaves_like 'a successful blob pull'
-        end
-      end
-
-      context 'when dependency_proxy_workhorse disabled' do
-        let(:blob_response) { { status: :success, blob: blob, from_cache: false } }
-
-        before do
-          stub_feature_flags(dependency_proxy_workhorse: false)
-
-          allow_next_instance_of(DependencyProxy::FindOrCreateBlobService) do |instance|
-            allow(instance).to receive(:execute).and_return(blob_response)
-          end
-        end
-
-        context 'remote blob request fails' do
-          let(:blob_response) do
-            {
-              status: :error,
-              http_status: 400,
-              message: ''
-            }
-          end
-
-          before do
-            group.add_guest(user)
-          end
-
-          it 'proxies status from the remote blob request', :aggregate_failures do
-            subject
-
-            expect(response).to have_gitlab_http_status(:bad_request)
-            expect(response.body).to be_empty
-          end
-        end
-
-        context 'a valid user' do
-          before do
-            group.add_guest(user)
-          end
-
-          it_behaves_like 'a successful blob pull'
-          it_behaves_like 'a package tracking event', described_class.name, 'pull_blob'
-
-          context 'with a cache entry' do
-            let(:blob_response) { { status: :success, blob: blob, from_cache: true } }
-
-            it_behaves_like 'returning response status', :success
-            it_behaves_like 'a package tracking event', described_class.name, 'pull_blob_from_cache'
-          end
-        end
-
-        context 'a valid deploy token' do
-          let_it_be(:user) { create(:deploy_token, :group, :dependency_proxy_scopes) }
-          let_it_be(:group_deploy_token) { create(:group_deploy_token, deploy_token: user, group: group) }
-
-          it_behaves_like 'a successful blob pull'
-
-          context 'pulling from a subgroup' do
-            let_it_be_with_reload(:parent_group) { create(:group) }
-            let_it_be_with_reload(:group) { create(:group, parent: parent_group) }
-
-            before do
-              parent_group.create_dependency_proxy_setting!(enabled: true)
-              group_deploy_token.update_column(:group_id, parent_group.id)
-            end
-
-            it_behaves_like 'a successful blob pull'
-          end
         end
       end
     end
@@ -540,10 +462,6 @@ RSpec.describe Groups::DependencyProxyForContainersController do
         end
       end
     end
-  end
-
-  def enable_dependency_proxy
-    group.create_dependency_proxy_setting!(enabled: true)
   end
 
   def disable_dependency_proxy

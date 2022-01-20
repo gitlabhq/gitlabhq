@@ -119,7 +119,7 @@ RSpec.describe Projects::CreateService, '#execute' do
       project = create_project(user, opts)
 
       expect(project).to be_valid
-      expect(project.owner).to eq(user)
+      expect(project.first_owner).to eq(user)
       expect(project.team.maintainers).to include(user)
       expect(project.namespace).to eq(user.namespace)
       expect(project.project_namespace).to be_in_sync_with_project(project)
@@ -154,6 +154,7 @@ RSpec.describe Projects::CreateService, '#execute' do
 
         expect(project).to be_persisted
         expect(project.owner).to eq(user)
+        expect(project.first_owner).to eq(user)
         expect(project.team.maintainers).to contain_exactly(user)
         expect(project.namespace).to eq(user.namespace)
         expect(project.project_namespace).to be_in_sync_with_project(project)

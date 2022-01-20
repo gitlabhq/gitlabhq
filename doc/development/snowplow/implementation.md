@@ -397,6 +397,7 @@ Before you test frontend events in development, you must:
 
 All URLs are pseudonymized. The entity identifier [replaces](https://docs.snowplowanalytics.com/docs/collecting-data/collecting-from-own-applications/javascript-trackers/javascript-tracker/javascript-tracker-v2/tracker-setup/other-parameters-2/#Setting_a_custom_page_URL_and_referrer_URL) personally identifiable
 information (PII). PII includes usernames, group, and project names.
+Page titles are hardcoded as `GitLab` for the same reason.
 
 #### Snowplow Analytics Debugger Chrome Extension
 

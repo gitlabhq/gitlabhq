@@ -18,6 +18,7 @@ RSpec.describe Types::Ci::JobType do
       created_by_tag
       detailedStatus
       duration
+      downstreamPipeline
       finished_at
       id
       manual_job

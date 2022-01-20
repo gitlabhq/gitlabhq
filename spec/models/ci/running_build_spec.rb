@@ -49,4 +49,9 @@ RSpec.describe Ci::RunningBuild do
       end
     end
   end
+
+  it_behaves_like 'cleanup by a loose foreign key' do
+    let!(:parent) { create(:project) }
+    let!(:model) { create(:ci_running_build, project: parent) }
+  end
 end

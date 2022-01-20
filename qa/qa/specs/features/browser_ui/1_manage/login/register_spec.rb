@@ -64,6 +64,7 @@ module QA
             Page::Profile::Accounts::Show.perform do |show|
               show.delete_account(user.password)
             end
+            Support::Waiter.wait_until { !user.exists? }
           end
 
           it 'allows recreating with same credentials', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347868' do
@@ -83,7 +84,7 @@ module QA
           end
 
           after do
-            @recreated_user.remove_via_api!
+            @recreated_user&.remove_via_api!
           end
 
           def admin_api_client
@@ -117,11 +118,12 @@ module QA
 
           Flow::Login.sign_in(as: @user, skip_page_validation: true)
 
-          Page::Registration::Welcome.perform(&:click_get_started_button_if_available)
+          Flow::UserOnboarding.onboard_user
 
-          Page::Main::Menu.perform do |menu|
-            expect(menu).to have_personal_area
-          end
+          # In development env and .com the user is asked to create a group and a project which can be skipped for
+          # the purpose of this test
+          Runtime::Browser.visit(:gitlab, Page::Dashboard::Welcome)
+          Page::Main::Menu.perform(&:has_personal_area?)
         end
 
         after do

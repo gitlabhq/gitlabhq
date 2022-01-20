@@ -1,6 +1,6 @@
 import IssuableFilteredSearchTokenKeys from 'ee_else_ce/filtered_search/issuable_filtered_search_token_keys';
-import issuableInitBulkUpdateSidebar from '~/issuable/bulk_update_sidebar/issuable_init_bulk_update_sidebar';
-import { mountIssuablesListApp, mountIssuesListApp } from '~/issues_list';
+import { initBulkUpdateSidebar } from '~/issuable/bulk_update_sidebar';
+import { mountIssuesListApp } from '~/issues/list';
 import initManualOrdering from '~/issues/manual_ordering';
 import { FILTERED_SEARCH } from '~/filtered_search/constants';
 import initFilteredSearch from '~/pages/search/init_filtered_search';
@@ -13,7 +13,7 @@ if (gon.features?.vueIssuesList) {
 
   IssuableFilteredSearchTokenKeys.addExtraTokensForIssues();
   IssuableFilteredSearchTokenKeys.removeTokensForKeys('release');
-  issuableInitBulkUpdateSidebar.init(ISSUE_BULK_UPDATE_PREFIX);
+  initBulkUpdateSidebar(ISSUE_BULK_UPDATE_PREFIX);
 
   initFilteredSearch({
     page: FILTERED_SEARCH.ISSUES,
@@ -23,8 +23,4 @@ if (gon.features?.vueIssuesList) {
   });
   projectSelect();
   initManualOrdering();
-
-  if (gon.features?.vueIssuablesList) {
-    mountIssuablesListApp();
-  }
 }

@@ -6,6 +6,7 @@ import { canOverride, canRemove, canResend, canUpdate } from 'ee_else_ce/members
 import { mergeUrlParams } from '~/lib/utils/url_utility';
 import initUserPopovers from '~/user_popovers';
 import {
+  FIELD_KEY_ACTIONS,
   FIELDS,
   ACTIVE_TAB_QUERY_PARAM_NAME,
   TAB_QUERY_PARAM_VALUES,
@@ -63,17 +64,10 @@ export default {
         return state[this.namespace].pagination;
       },
     }),
-    filteredFields() {
+    filteredAndModifiedFields() {
       return FIELDS.filter(
         (field) => this.tableFields.includes(field.key) && this.showField(field),
-      ).map((field) => {
-        const tdClassFunction = this[field.tdClassFunction];
-
-        return {
-          ...field,
-          ...(tdClassFunction && { tdClass: tdClassFunction }),
-        };
-      });
+      ).map(this.modifyFieldDefinition);
     },
     userIsLoggedIn() {
       return this.currentUserId !== null;
@@ -100,20 +94,29 @@ export default {
       );
     },
     showField(field) {
-      if (!Object.prototype.hasOwnProperty.call(field, 'showFunction')) {
-        return true;
-      }
+      switch (field.key) {
+        case FIELD_KEY_ACTIONS:
+          if (!this.userIsLoggedIn) {
+            return false;
+          }
 
-      return this[field.showFunction]();
-    },
-    showActionsField() {
-      if (!this.userIsLoggedIn) {
-        return false;
+          return this.members.some((member) => this.hasActionButtons(member));
+        default:
+          return true;
       }
-
-      return this.members.some((member) => this.hasActionButtons(member));
     },
-    tdClassActions(value, key, member) {
+    modifyFieldDefinition(field) {
+      switch (field.key) {
+        case FIELD_KEY_ACTIONS:
+          return {
+            ...field,
+            tdClass: this.actionsFieldTdClass,
+          };
+        default:
+          return field;
+      }
+    },
+    actionsFieldTdClass(value, key, member) {
       if (this.hasActionButtons(member)) {
         return 'col-actions';
       }
@@ -219,7 +222,7 @@ export default {
       data-testid="members-table"
       head-variant="white"
       stacked="lg"
-      :fields="filteredFields"
+      :fields="filteredAndModifiedFields"
       :items="members"
       primary-key="id"
       thead-class="border-bottom"

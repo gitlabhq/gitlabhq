@@ -170,6 +170,15 @@ Reply by email should now be working.
    cd /home/git/gitlab
    ```
 
+1. Install the `gitlab-mail_room` gem manually:
+
+   ```shell
+   gem install gitlab-mail_room
+   ```
+
+   NOTE: This step is necessary to avoid thread deadlocks and to support the latest MailRoom features. See
+   [this explanation](../development/emails.md#mailroom-gem-updates) for more details.
+
 1. Find the `incoming_email` section in `config/gitlab.yml`, enable the feature
   and fill in the details for your specific IMAP server and email account (see [examples](#configuration-examples) below).
 
@@ -470,6 +479,10 @@ incoming_email:
 
 ##### Dedicated email address
 
+NOTE:
+Supports [Reply by Email](reply_by_email.md) only.
+Cannot support [Service Desk](../user/project/service_desk.md).
+
 Assumes the dedicated email address `incoming@exchange.example.com`.
 
 Example for Omnibus installs:
@@ -531,19 +544,20 @@ enabled by default, and must be enabled through PowerShell.
 
 This series of PowerShell commands enables [sub-addressing](#email-sub-addressing)
 at the organization level in Office 365. This allows all mailboxes in the organization
-to receive sub-addressed mail:
+to receive sub-addressed mail.
 
-```powershell
-Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
+To enable sub-addressing:
 
-$UserCredential = Get-Credential
+1. Download and install the `ExchangeOnlineManagement` module from the [PowerShell gallery](https://www.powershellgallery.com/packages/ExchangeOnlineManagement/).
+1. In PowerShell, run the following commands:
 
-$Session = New-PSSession -ConfigurationName Microsoft.Exchange -ConnectionUri https://outlook.office365.com/powershell-liveid/ -Credential $UserCredential -Authentication Basic -AllowRedirection
-
-Import-PSSession $Session -DisableNameChecking
-
-Set-OrganizationConfig -AllowPlusAddressInRecipients $true
-```
+   ```powershell
+   Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
+   Import-Module ExchangeOnlineManagement
+   Connect-ExchangeOnline
+   Set-OrganizationConfig -AllowPlusAddressInRecipients $true
+   Disconnect-ExchangeOnline
+   ```
 
 This example for Omnibus GitLab assumes the mailbox `incoming@office365.example.com`:
 
@@ -654,6 +668,10 @@ incoming_email:
 ```
 
 ##### Dedicated email address
+
+NOTE:
+Supports [Reply by Email](reply_by_email.md) only.
+Cannot support [Service Desk](../user/project/service_desk.md).
 
 This example for Omnibus installs assumes the dedicated email address `incoming@office365.example.com`:
 

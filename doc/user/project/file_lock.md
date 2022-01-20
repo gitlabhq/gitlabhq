@@ -2,7 +2,6 @@
 stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
-type: reference, howto
 ---
 
 # File Locking **(FREE)**
@@ -42,8 +41,6 @@ or any other means, and are shown an error like: `The path '.gitignore' is
 locked by Administrator`.
 
 ## Exclusive file locks **(FREE)**
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/35856) in GitLab 10.5.
 
 This process allows you to lock single files or file extensions and it is
 done through the command line. It doesn't require GitLab paid subscriptions.

@@ -203,11 +203,11 @@ module Gitlab
       end
 
       def verify_api_request!(request_headers)
-        decode_jwt(request_headers[INTERNAL_API_REQUEST_HEADER])
+        decode_jwt_with_issuer(request_headers[INTERNAL_API_REQUEST_HEADER])
       end
 
-      def decode_jwt(encoded_message)
-        decode_jwt_for_issuer('gitlab-workhorse', encoded_message)
+      def decode_jwt_with_issuer(encoded_message)
+        decode_jwt(encoded_message, issuer: 'gitlab-workhorse')
       end
 
       def secret_path

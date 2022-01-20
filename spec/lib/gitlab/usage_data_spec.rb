@@ -9,6 +9,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
     stub_usage_data_connections
     stub_object_store_settings
     clear_memoized_values(described_class::CE_MEMOIZED_VALUES)
+    stub_database_flavor_check('Cloud SQL for PostgreSQL')
   end
 
   describe '.uncached_data' do
@@ -160,7 +161,6 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
         another_project = create(:project, :repository, creator: another_user)
         create(:remote_mirror, project: another_project, enabled: false)
         create(:snippet, author: user)
-        create(:suggestion, note: create(:note, project: project))
       end
 
       expect(described_class.usage_activity_by_stage_create({})).to include(
@@ -170,8 +170,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
         projects_with_disable_overriding_approvers_per_merge_request: 2,
         projects_without_disable_overriding_approvers_per_merge_request: 6,
         remote_mirrors: 2,
-        snippets: 2,
-        suggestions: 2
+        snippets: 2
       )
       expect(described_class.usage_activity_by_stage_create(described_class.monthly_time_range_db_params)).to include(
         deploy_keys: 1,
@@ -180,8 +179,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
         projects_with_disable_overriding_approvers_per_merge_request: 1,
         projects_without_disable_overriding_approvers_per_merge_request: 3,
         remote_mirrors: 1,
-        snippets: 1,
-        suggestions: 1
+        snippets: 1
       )
     end
   end
@@ -278,8 +276,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
       expect(described_class.usage_activity_by_stage_manage({})).to include(
         {
           bulk_imports: {
-            gitlab_v1: 2,
-            gitlab: Gitlab::UsageData::DEPRECATED_VALUE
+            gitlab_v1: 2
           },
           project_imports: {
             bitbucket: 2,
@@ -302,32 +299,13 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
           group_imports: {
             group_import: 2,
             gitlab_migration: 2
-          },
-          projects_imported: {
-            total: Gitlab::UsageData::DEPRECATED_VALUE,
-            gitlab_project: Gitlab::UsageData::DEPRECATED_VALUE,
-            gitlab: Gitlab::UsageData::DEPRECATED_VALUE,
-            github: Gitlab::UsageData::DEPRECATED_VALUE,
-            bitbucket: Gitlab::UsageData::DEPRECATED_VALUE,
-            bitbucket_server: Gitlab::UsageData::DEPRECATED_VALUE,
-            gitea: Gitlab::UsageData::DEPRECATED_VALUE,
-            git: Gitlab::UsageData::DEPRECATED_VALUE,
-            manifest: Gitlab::UsageData::DEPRECATED_VALUE
-          },
-          issues_imported: {
-            jira: Gitlab::UsageData::DEPRECATED_VALUE,
-            fogbugz: Gitlab::UsageData::DEPRECATED_VALUE,
-            phabricator: Gitlab::UsageData::DEPRECATED_VALUE,
-            csv: Gitlab::UsageData::DEPRECATED_VALUE
-          },
-          groups_imported: Gitlab::UsageData::DEPRECATED_VALUE
+          }
         }
       )
       expect(described_class.usage_activity_by_stage_manage(described_class.monthly_time_range_db_params)).to include(
         {
           bulk_imports: {
-            gitlab_v1: 1,
-            gitlab: Gitlab::UsageData::DEPRECATED_VALUE
+            gitlab_v1: 1
           },
           project_imports: {
             bitbucket: 1,
@@ -350,25 +328,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
           group_imports: {
             group_import: 1,
             gitlab_migration: 1
-          },
-          projects_imported: {
-            total: Gitlab::UsageData::DEPRECATED_VALUE,
-            gitlab_project: Gitlab::UsageData::DEPRECATED_VALUE,
-            gitlab: Gitlab::UsageData::DEPRECATED_VALUE,
-            github: Gitlab::UsageData::DEPRECATED_VALUE,
-            bitbucket: Gitlab::UsageData::DEPRECATED_VALUE,
-            bitbucket_server: Gitlab::UsageData::DEPRECATED_VALUE,
-            gitea: Gitlab::UsageData::DEPRECATED_VALUE,
-            git: Gitlab::UsageData::DEPRECATED_VALUE,
-            manifest: Gitlab::UsageData::DEPRECATED_VALUE
-          },
-          issues_imported: {
-            jira: Gitlab::UsageData::DEPRECATED_VALUE,
-            fogbugz: Gitlab::UsageData::DEPRECATED_VALUE,
-            phabricator: Gitlab::UsageData::DEPRECATED_VALUE,
-            csv: Gitlab::UsageData::DEPRECATED_VALUE
-          },
-          groups_imported: Gitlab::UsageData::DEPRECATED_VALUE
+          }
         }
       )
     end
@@ -920,6 +880,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
         expect(subject[:database][:adapter]).to eq(ApplicationRecord.database.adapter_name)
         expect(subject[:database][:version]).to eq(ApplicationRecord.database.version)
         expect(subject[:database][:pg_system_id]).to eq(ApplicationRecord.database.system_id)
+        expect(subject[:database][:flavor]).to eq('Cloud SQL for PostgreSQL')
         expect(subject[:mail][:smtp_server]).to eq(ActionMailer::Base.smtp_settings[:address])
         expect(subject[:gitaly][:version]).to be_present
         expect(subject[:gitaly][:servers]).to be >= 1
@@ -964,10 +925,25 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
       end
 
       context 'when retrieve component setting meets exception' do
-        it 'returns -1 for component enable status' do
+        before do
+          allow(Gitlab::ErrorTracking).to receive(:should_raise_for_dev?).and_return(should_raise_for_dev)
           allow(Settings).to receive(:[]).with(component).and_raise(StandardError)
+        end
 
-          expect(subject).to eq({ enabled: -1 })
+        context 'with should_raise_for_dev? false' do
+          let(:should_raise_for_dev) { false }
+
+          it 'returns -1 for component enable status' do
+            expect(subject).to eq({ enabled: -1 })
+          end
+        end
+
+        context 'with should_raise_for_dev? true' do
+          let(:should_raise_for_dev) { true }
+
+          it 'raises an error' do
+            expect { subject.value }.to raise_error(StandardError)
+          end
         end
       end
     end
@@ -1328,6 +1304,8 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
 
     let(:categories) { ::Gitlab::UsageDataCounters::HLLRedisCounter.categories }
 
+    let(:ignored_metrics) { ["i_package_composer_deploy_token_weekly"] }
+
     it 'has all known_events' do
       expect(subject).to have_key(:redis_hll_counters)
 
@@ -1337,6 +1315,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
         keys = ::Gitlab::UsageDataCounters::HLLRedisCounter.events_for_category(category)
 
         metrics = keys.map { |key| "#{key}_weekly" } + keys.map { |key| "#{key}_monthly" }
+        metrics -= ignored_metrics
 
         if ::Gitlab::UsageDataCounters::HLLRedisCounter::CATEGORIES_FOR_TOTALS.include?(category)
           metrics.append("#{category}_total_unique_counts_weekly", "#{category}_total_unique_counts_monthly")

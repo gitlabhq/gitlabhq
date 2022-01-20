@@ -138,7 +138,7 @@ RSpec.describe Participable do
       allow(instance).to receive_message_chain(:model_name, :element) { 'class' }
       expect(instance).to receive(:foo).and_return(user2)
       expect(instance).to receive(:bar).and_return(user3)
-      expect(instance).to receive(:project).thrice.and_return(project)
+      expect(instance).to receive(:project).twice.and_return(project)
 
       participants = instance.visible_participants(user1)
 
@@ -159,30 +159,9 @@ RSpec.describe Participable do
 
         allow(instance).to receive_message_chain(:model_name, :element) { 'class' }
         allow(instance).to receive(:bar).and_return(user2)
-        expect(instance).to receive(:project).thrice.and_return(project)
+        expect(instance).to receive(:project).twice.and_return(project)
 
         expect(instance.visible_participants(user1)).to be_empty
-      end
-
-      context 'when feature flag is disabled' do
-        before do
-          stub_feature_flags(verify_participants_access: false)
-        end
-
-        it 'returns unavailable participants' do
-          model.participant(:bar)
-
-          instance = model.new
-          user1 = build(:user)
-          user2 = build(:user)
-          project = build(:project, :public)
-
-          allow(instance).to receive_message_chain(:model_name, :element) { 'class' }
-          allow(instance).to receive(:bar).and_return(user2)
-          expect(instance).to receive(:project).thrice.and_return(project)
-
-          expect(instance.visible_participants(user1)).to match_array([user2])
-        end
       end
     end
   end

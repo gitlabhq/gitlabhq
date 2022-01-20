@@ -11,44 +11,41 @@ module Gitlab
 
         attr_accessor :readiness_checks
 
-        def initialize(settings, **options)
+        def initialize(settings, log_enabled:, log_file:, gc_requests: false, **options)
           super(**options)
 
           @settings = settings
+          @gc_requests = gc_requests
+
+          # log_enabled does not exist for all exporters
+          log_sink = log_enabled ? File.join(Rails.root, 'log', log_file) : File::NULL
+          @logger = WEBrick::Log.new(log_sink)
+          @logger.time_format = "[%Y-%m-%dT%H:%M:%S.%L%z]"
         end
 
         def enabled?
           settings.enabled
         end
 
-        def log_filename
-          raise NotImplementedError
-        end
-
         private
 
-        attr_reader :settings
+        attr_reader :settings, :logger
 
         def start_working
-          logger = WEBrick::Log.new(log_filename)
-          logger.time_format = "[%Y-%m-%dT%H:%M:%S.%L%z]"
-
           access_log = [
             [logger, WEBrick::AccessLog::COMBINED_LOG_FORMAT]
           ]
 
           @server = ::WEBrick::HTTPServer.new(
             Port: settings.port, BindAddress: settings.address,
-            Logger: logger, AccessLog: access_log)
-          server.mount_proc '/readiness' do |req, res|
-            render_probe(readiness_probe, req, res)
-          end
-          server.mount_proc '/liveness' do |req, res|
-            render_probe(liveness_probe, req, res)
-          end
+            Logger: logger, AccessLog: access_log
+          )
           server.mount '/', Rack::Handler::WEBrick, rack_app
 
           true
+        rescue StandardError => e
+          logger.error(e)
+          false
         end
 
         def run_thread
@@ -72,8 +69,16 @@ module Gitlab
         end
 
         def rack_app
+          readiness = readiness_probe
+          liveness = liveness_probe
+          pid = thread_name
+          gc_requests = @gc_requests
+
           Rack::Builder.app do
             use Rack::Deflater
+            use Gitlab::Metrics::Exporter::MetricsMiddleware, pid
+            use Gitlab::Metrics::Exporter::HealthChecksMiddleware, readiness, liveness
+            use Gitlab::Metrics::Exporter::GcRequestMiddleware if gc_requests
             use ::Prometheus::Client::Rack::Exporter if ::Gitlab::Metrics.metrics_folder_present?
             run -> (env) { [404, {}, ['']] }
           end
@@ -85,14 +90,6 @@ module Gitlab
 
         def liveness_probe
           ::Gitlab::HealthChecks::Probes::Collection.new
-        end
-
-        def render_probe(probe, req, res)
-          result = probe.execute
-
-          res.status = result.http_status
-          res.content_type = 'application/json; charset=utf-8'
-          res.body = result.json.to_json
         end
       end
     end

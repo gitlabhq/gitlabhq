@@ -13,6 +13,6 @@ Use the following resources to find the appropriate labels:
 - https://about.gitlab.com/handbook/product/categories/features/
 -->
 
-/label ~"group::" ~"section::" ~"Category::" 
+/label ~group:: ~section:: ~Category:
 /label ~"GitLab Free" ~"GitLab Premium" ~"GitLab Ultimate"
 /label ~"type::feature" ~"feature::addition" ~documentation

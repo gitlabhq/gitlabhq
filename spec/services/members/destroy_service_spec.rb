@@ -424,7 +424,7 @@ RSpec.describe Members::DestroyService do
   end
 
   context 'deletion of invitations created by deleted project member' do
-    let(:user) { project.owner }
+    let(:user) { project.first_owner }
     let(:member_user) { create(:user) }
 
     let(:project) { create(:project) }

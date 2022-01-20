@@ -3,7 +3,7 @@
 mutation CreateIssue($input: CreateIssueInput!) {
   createIssue(input: $input) {
     issue {
-      ...IssueNode
+      ...Issue
     }
     errors
   }

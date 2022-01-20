@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Ci::CreatePipelineService do
   context 'include:' do
     let_it_be(:project) { create(:project, :repository) }
-    let_it_be(:user)    { project.owner }
+    let_it_be(:user)    { project.first_owner }
 
     let(:ref)                  { 'refs/heads/master' }
     let(:variables_attributes) { [{ key: 'MYVAR', secret_value: 'hello' }] }

@@ -36,16 +36,18 @@ can create in their personal namespace:
 
 ## Max attachment size
 
-You can change the maximum file size for attachments in comments and replies in GitLab:
+The maximum file size for attachments in GitLab comments and replies is 10 MB.
+To change the maximum attachment size:
 
 1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Settings > General**, then expand **Account and limit**.
 1. Increase or decrease by changing the value in **Maximum attachment size (MB)**.
 
-NOTE:
 If you choose a size larger than the configured value for the web server,
-you may receive errors. See the [troubleshooting section](#troubleshooting) for more
+you may receive errors. Read the [troubleshooting section](#troubleshooting) for more
 details.
+
+For GitLab.com repository size limits, read [accounts and limit settings](../../gitlab_com/index.md#account-and-limit-settings).
 
 ## Max push size
 
@@ -64,16 +66,19 @@ Use [Git LFS](../../../topics/git/lfs/index.md) to add large files to a reposito
 
 ## Max import size
 
-You can change the maximum file size for imports in GitLab:
+> [Modified](https://gitlab.com/gitlab-org/gitlab/-/issues/251106) from 50 MB to unlimited in GitLab 13.8.
+
+To modify the maximum file size for imports in GitLab:
 
 1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Settings > General**, then expand **Account and limit**.
 1. Increase or decrease by changing the value in **Maximum import size (MB)**.
 
-NOTE:
 If you choose a size larger than the configured value for the web server,
 you may receive errors. See the [troubleshooting section](#troubleshooting) for more
 details.
+
+For GitLab.com repository size limits, read [accounts and limit settings](../../gitlab_com/index.md#account-and-limit-settings).
 
 ## Personal access token prefix
 
@@ -118,6 +123,9 @@ For instance, consider the following workflow:
 1. Before you exceed available storage, you set up a limit of 10 GB
    per repository.
 
+NOTE:
+For GitLab.com repository size limits, read [accounts and limit settings](../../gitlab_com/index.md#account-and-limit-settings).
+
 ### How it works
 
 Only a GitLab administrator can set those limits. Setting the limit to `0` means
@@ -149,9 +157,6 @@ The repository size limit includes repository files and LFS, but does not includ
 wiki, packages, or snippets. The repository size limit applies to both private and public projects.
 
 For details on manually purging files, see [reducing the repository size using Git](../../project/repository/reducing_the_repo_size_using_git.md).
-
-NOTE:
-For GitLab.com repository size limits, see [accounts and limit settings](../../gitlab_com/index.md#account-and-limit-settings).
 
 ## Troubleshooting
 
@@ -196,11 +201,7 @@ To set a limit on how long these sessions are valid:
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/1007) in GitLab 14.6 [with a flag](../../../administration/feature_flags.md) named `ff_limit_ssh_key_lifetime`. Disabled by default.
 > - [Enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/346753) in GitLab 14.6.
-
-FLAG:
-On self-managed GitLab, by default this feature is available. To hide the feature,
-ask an administrator to [disable the feature flag](../../../administration/feature_flags.md) named `ff_limit_ssh_key_lifetime`.
-On GitLab.com, this feature is not available.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/1007) in GitLab 14.7. [Feature flag ff_limit_ssh_key_lifetime](https://gitlab.com/gitlab-org/gitlab/-/issues/347408) removed.
 
 Users can optionally specify a lifetime for
 [SSH keys](../../../ssh/index.md).

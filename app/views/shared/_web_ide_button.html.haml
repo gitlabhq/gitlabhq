@@ -6,5 +6,3 @@
   = render 'shared/confirm_fork_modal', fork_path: fork_and_edit_path(@project, @ref, @path), type: 'edit'
 - if show_web_ide_button?
   = render 'shared/confirm_fork_modal', fork_path: ide_fork_and_edit_path(@project, @ref, @path), type: 'webide'
-- if show_gitpod_button?
-  = render 'shared/gitpod/enable_gitpod_modal'

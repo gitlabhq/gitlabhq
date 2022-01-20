@@ -33,6 +33,15 @@ qa:selectors:
   script:
     - bundle exec bin/qa Test::Sanity::Selectors
 
+qa:auto_quarantine:
+  extends:
+    - .qa-job-base
+  rules:
+    - if: '$QA_TRIGGER_AUTO_QUARANTINE =~ /true|yes|1/i'
+  script:
+    - bundle exec confiner -r .confiner/quarantine.yml
+  allow_failure: true
+
 qa:selectors-as-if-foss:
   extends:
     - qa:selectors

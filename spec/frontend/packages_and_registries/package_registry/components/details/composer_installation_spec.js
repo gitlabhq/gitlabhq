@@ -7,6 +7,7 @@ import {
   TRACKING_ACTION_COPY_COMPOSER_REGISTRY_INCLUDE_COMMAND,
   TRACKING_ACTION_COPY_COMPOSER_PACKAGE_INCLUDE_COMMAND,
   PACKAGE_TYPE_COMPOSER,
+  COMPOSER_HELP_PATH,
 } from '~/packages_and_registries/package_registry/constants';
 
 const packageEntity = { ...packageData(), packageType: PACKAGE_TYPE_COMPOSER };
@@ -24,9 +25,6 @@ describe('ComposerInstallation', () => {
   function createComponent(groupListUrl = 'groupListUrl') {
     wrapper = shallowMountExtended(ComposerInstallation, {
       provide: {
-        composerHelpPath: 'composerHelpPath',
-        composerConfigRepositoryName: 'composerConfigRepositoryName',
-        composerPath: 'composerPath',
         groupListUrl,
       },
       propsData: { packageEntity },
@@ -61,7 +59,7 @@ describe('ComposerInstallation', () => {
       const registryIncludeCommand = findRegistryInclude();
       expect(registryIncludeCommand.exists()).toBe(true);
       expect(registryIncludeCommand.props()).toMatchObject({
-        instruction: `composer config repositories.composerConfigRepositoryName '{"type": "composer", "url": "composerPath"}'`,
+        instruction: `composer config repositories.${packageEntity.composerConfigRepositoryUrl} '{"type": "composer", "url": "${packageEntity.composerUrl}"}'`,
         copyText: 'Copy registry include',
         trackingAction: TRACKING_ACTION_COPY_COMPOSER_REGISTRY_INCLUDE_COMMAND,
       });
@@ -96,7 +94,7 @@ describe('ComposerInstallation', () => {
         'For more information on Composer packages in GitLab, see the documentation.',
       );
       expect(findHelpLink().attributes()).toMatchObject({
-        href: 'composerHelpPath',
+        href: COMPOSER_HELP_PATH,
         target: '_blank',
       });
     });

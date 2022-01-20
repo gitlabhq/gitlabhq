@@ -167,6 +167,7 @@ RSpec.describe ButtonHelper do
           expect(element.attr('class')).to eq('btn btn-clipboard btn-transparent')
           expect(element.attr('type')).to eq('button')
           expect(element.attr('aria-label')).to eq('Copy')
+          expect(element.attr('aria-live')).to eq('polite')
           expect(element.attr('data-toggle')).to eq('tooltip')
           expect(element.attr('data-placement')).to eq('bottom')
           expect(element.attr('data-container')).to eq('body')

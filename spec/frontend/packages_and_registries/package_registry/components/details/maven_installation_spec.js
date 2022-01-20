@@ -1,3 +1,4 @@
+import { GlLink, GlSprintf } from '@gitlab/ui';
 import { nextTick } from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 
@@ -16,6 +17,7 @@ import {
   TRACKING_ACTION_COPY_KOTLIN_INSTALL_COMMAND,
   TRACKING_ACTION_COPY_KOTLIN_ADD_TO_SOURCE_COMMAND,
   PACKAGE_TYPE_MAVEN,
+  MAVEN_HELP_PATH,
 } from '~/packages_and_registries/package_registry/constants';
 import CodeInstructions from '~/vue_shared/components/registry/code_instruction.vue';
 
@@ -28,9 +30,6 @@ describe('MavenInstallation', () => {
     metadata: mavenMetadata(),
   };
 
-  const mavenHelpPath = 'mavenHelpPath';
-  const mavenPath = 'mavenPath';
-
   const xmlCodeBlock = `<dependency>
   <groupId>appGroup</groupId>
   <artifactId>appName</artifactId>
@@ -40,42 +39,42 @@ describe('MavenInstallation', () => {
   const mavenSetupXml = `<repositories>
   <repository>
     <id>gitlab-maven</id>
-    <url>${mavenPath}</url>
+    <url>${packageEntity.mavenUrl}</url>
   </repository>
 </repositories>
 
 <distributionManagement>
   <repository>
     <id>gitlab-maven</id>
-    <url>${mavenPath}</url>
+    <url>${packageEntity.mavenUrl}</url>
   </repository>
 
   <snapshotRepository>
     <id>gitlab-maven</id>
-    <url>${mavenPath}</url>
+    <url>${packageEntity.mavenUrl}</url>
   </snapshotRepository>
 </distributionManagement>`;
   const gradleGroovyInstallCommandText = `implementation 'appGroup:appName:appVersion'`;
   const gradleGroovyAddSourceCommandText = `maven {
-  url '${mavenPath}'
+  url '${packageEntity.mavenUrl}'
 }`;
   const gradleKotlinInstallCommandText = `implementation("appGroup:appName:appVersion")`;
-  const gradleKotlinAddSourceCommandText = `maven("${mavenPath}")`;
+  const gradleKotlinAddSourceCommandText = `maven("${packageEntity.mavenUrl}")`;
 
   const findCodeInstructions = () => wrapper.findAllComponents(CodeInstructions);
   const findInstallationTitle = () => wrapper.findComponent(InstallationTitle);
+  const findSetupDocsLink = () => wrapper.findComponent(GlLink);
 
   function createComponent({ data = {} } = {}) {
     wrapper = shallowMountExtended(MavenInstallation, {
-      provide: {
-        mavenHelpPath,
-        mavenPath,
-      },
       propsData: {
         packageEntity,
       },
       data() {
         return data;
+      },
+      stubs: {
+        GlSprintf,
       },
     });
   }
@@ -146,6 +145,13 @@ describe('MavenInstallation', () => {
           instruction: mavenSetupXml,
           multiline: true,
           trackingAction: TRACKING_ACTION_COPY_MAVEN_SETUP,
+        });
+      });
+
+      it('has a setup link', () => {
+        expect(findSetupDocsLink().attributes()).toMatchObject({
+          href: MAVEN_HELP_PATH,
+          target: '_blank',
         });
       });
     });

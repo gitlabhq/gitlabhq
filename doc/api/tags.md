@@ -1,16 +1,14 @@
 ---
 stage: Create
 group: Source Code
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments"
-type: reference, api
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Tags API **(FREE)**
 
 ## List project repository tags
 
-Get a list of repository tags from a project, sorted by name in reverse
-alphabetical order. This endpoint can be accessed without authentication if the
+Get a list of repository tags from a project, sorted by update date and time in descending order. This endpoint can be accessed without authentication if the
 repository is publicly accessible.
 
 ```plaintext
@@ -25,8 +23,6 @@ Parameters:
 | `order_by` | string | no | Return tags ordered by `name` or `updated` fields. Default is `updated` |
 | `sort` | string | no | Return tags sorted in `asc` or `desc` order. Default is `desc` |
 | `search` | string | no | Return list of tags matching the search criteria. You can use `^term` and `term$` to find tags that begin and end with `term` respectively. |
-
-> Support for `search` was [introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/54401) in GitLab 11.8.
 
 ```json
 [

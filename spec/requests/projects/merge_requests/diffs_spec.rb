@@ -29,7 +29,6 @@ RSpec.describe 'Merge Requests Diffs' do
 
     def collection_arguments(pagination_data = {})
       {
-        environment: nil,
         merge_request: merge_request,
         commit: nil,
         diff_view: :inline,
@@ -107,21 +106,6 @@ RSpec.describe 'Merge Requests Diffs' do
           it_behaves_like 'serializes diffs with expected arguments' do
             let(:collection) { Gitlab::Diff::FileCollection::MergeRequestDiffBatch }
             let(:expected_options) { collection_arguments(total_pages: 20) }
-          end
-        end
-
-        context 'with a new environment' do
-          let(:environment) do
-            create(:environment, :available, project: project)
-          end
-
-          let!(:deployment) do
-            create(:deployment, :success, environment: environment, ref: merge_request.source_branch)
-          end
-
-          it_behaves_like 'serializes diffs with expected arguments' do
-            let(:collection) { Gitlab::Diff::FileCollection::MergeRequestDiffBatch }
-            let(:expected_options) { collection_arguments(total_pages: 20).merge(environment: environment) }
           end
         end
 

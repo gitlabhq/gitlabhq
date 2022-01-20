@@ -12,8 +12,4 @@ class Packages::Debian::GroupDistribution < ApplicationRecord
       .for_projects(group.all_projects.public_only)
       .with_debian_codename(codename)
   end
-
-  def package_files
-    ::Packages::PackageFile.for_package_ids(packages.select(:id))
-  end
 end

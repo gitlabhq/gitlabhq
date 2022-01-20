@@ -83,6 +83,8 @@ describe('GkeProjectIdDropdown', () => {
     it('returns default toggle text', () => {
       bootstrap();
 
+      // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+      // eslint-disable-next-line no-restricted-syntax
       wrapper.setData({ isLoading: false });
 
       return wrapper.vm.$nextTick().then(() => {
@@ -99,6 +101,8 @@ describe('GkeProjectIdDropdown', () => {
           hasProject: () => true,
         },
       );
+      // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+      // eslint-disable-next-line no-restricted-syntax
       wrapper.setData({ isLoading: false });
 
       return wrapper.vm.$nextTick().then(() => {
@@ -110,6 +114,8 @@ describe('GkeProjectIdDropdown', () => {
       bootstrap({
         projects: null,
       });
+      // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+      // eslint-disable-next-line no-restricted-syntax
       wrapper.setData({ isLoading: false });
 
       return wrapper.vm.$nextTick().then(() => {

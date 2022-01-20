@@ -2,7 +2,6 @@
 stage: Create
 group: Code Review
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
-type: howto
 description: "How to create merge requests in GitLab."
 disqus_identifier: 'https://docs.gitlab.com/ee/gitlab-basics/add-merge-request.html'
 ---
@@ -78,7 +77,7 @@ You can create a merge request by running Git commands on your local machine.
 
    ```plaintext
    ...
-   remote: To create a merge request for docs-new-merge-request, visit:
+   remote: To create a merge request for my-new-branch, visit:
    remote:   https://gitlab.example.com/my-group/my-project/merge_requests/new?merge_request%5Bsource_branch%5D=my-new-branch
    ```
 
@@ -111,10 +110,6 @@ For more information, [see the forking workflow documentation](../repository/for
 
 ## By sending an email
 
-> The format of the generated email address changed in GitLab 11.7.
-  The earlier format is still supported so existing aliases
-  or contacts still work.
-
 You can create a merge request by sending an email message to GitLab.
 The merge request target branch is the project's default branch.
 
@@ -141,8 +136,6 @@ To create a merge request by sending an email:
 A merge request is created.
 
 ### Add attachments when creating a merge request by email
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/22723) in GitLab 11.5.
 
 You can add commits to a merge request by adding
 patches as attachments to the email. All attachments with a filename

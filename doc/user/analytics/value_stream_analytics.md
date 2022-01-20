@@ -4,31 +4,34 @@ group: Optimize
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Value Stream Analytics **(FREE)**
+# Value stream analytics for projects **(FREE)**
 
-> - Introduced as Cycle Analytics prior to GitLab 12.3 at the project level.
+> - Introduced as cycle analytics prior to GitLab 12.3 at the project level.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12077) in GitLab Premium 12.3 at the group level.
-> - [Renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/23427) from Cycle Analytics to Value Stream Analytics in GitLab 12.8.
+> - [Renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/23427) from cycle analytics to value stream analytics in GitLab 12.8.
 
-Value Stream Analytics measures the time spent to go from an
+Value stream analytics measures the time spent to go from an
 [idea to production](https://about.gitlab.com/blog/2016/08/05/continuous-integration-delivery-and-deployment-with-gitlab/#from-idea-to-production-with-gitlab)
-(also known as cycle time) for each of your projects or groups. Value Stream Analytics displays the median time
+(also known as cycle time) for each of your projects or groups. Value stream analytics displays the median time
 spent in each stage defined in the process.
 
-You can use Value Stream Analytics to determine the velocity of a given
+You can use value stream analytics to determine the velocity of a given
 project. It points to bottlenecks in the development process, enabling management
 to uncover, triage, and identify the root cause of slowdowns in the software development life cycle.
 
-For information about how to contribute to the development of Value Stream Analytics, see our [contributor documentation](../../development/value_stream_analytics.md).
+For information about how to contribute to the development of value stream analytics, see our [contributor documentation](../../development/value_stream_analytics.md).
 
-Project-level Value Stream Analytics is available by using **Project > Analytics > Value Stream**.
+To access value stream analytics for a project:
+
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Analytics > Value stream**.
 
 NOTE:
-[Group-level Value Stream Analytics](../group/value_stream_analytics) is also available.
+[Value stream analytics for groups](../group/value_stream_analytics) is also available.
 
 ## Default stages
 
-The stages tracked by Value Stream Analytics by default represent the [GitLab flow](../../topics/gitlab_flow.md). You can customize these stages in group-level Value Stream Analytics.
+The stages tracked by value stream analytics by default represent the [GitLab flow](../../topics/gitlab_flow.md). You can customize these stages in value stream analytics for groups.
 
 - **Issue** (Tracker)
   - Time to schedule an issue (by milestone or by adding it to an issue board)
@@ -43,7 +46,7 @@ The stages tracked by Value Stream Analytics by default represent the [GitLab fl
 - **Staging** (Continuous Deployment)
   - Time between merging and deploying to production
 
-## Filter Value Stream Analytics data
+## Filter value stream analytics data
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/326701) in GitLab 14.3
 
@@ -60,7 +63,7 @@ To filter results:
 1. Select a parameter.
 1. Select a value. To find a value in the list, enter the value name.
 
-![Value stream analytics filter bar](img/project_vsa_filter_v14_3.png "Active filter bar for a project's Value Stream Analytics")
+![Value stream analytics filter bar](img/project_vsa_filter_v14_3.png "Active filter bar for a project's value stream analytics")
 
 ### Date ranges
 
@@ -72,7 +75,7 @@ from the date picker (default: last 30 days).
 
 > Sorting the stage table [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/335974) in GitLab 14.4.
 
-![Value Stream Analytics Stage table](img/project_vsa_stage_table_v14_4.png "Project VSA stage table")
+![Value stream analytics stage table](img/project_vsa_stage_table_v14_4.png "Project VSA stage table")
 
 The stage table shows a list of related workflow items for the selected stage. This can include:
 
@@ -108,18 +111,18 @@ The **Time** metrics near the top of the page are measured as follows:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/337256) in GitLab 11.3.
 
-Value Stream Analytics exposes two deployment related metrics near the top of the page:
+Value stream analytics exposes two deployment related metrics near the top of the page:
 
 - **Deploys:** The number of successful deployments in the date range.
 - **Deployment Frequency:** The average number of successful deployments.
 
 The deployment metrics calculation uses the same method as the
-[group-level Value Stream Analytics](../group/value_stream_analytics/index.md#how-metrics-are-measured).
+[value stream analytics for groups](../group/value_stream_analytics/index.md#how-metrics-are-measured).
 Both of them are based on the [DORA API](../../api/dora/metrics.md#devops-research-and-assessment-dora-key-metrics-api).
 
 ## How the stages are measured
 
-Value Stream Analytics uses start events and end events to measure the time that an issue or merge request spends in each stage.
+Value stream analytics uses start events and end events to measure the time that an issue or merge request spends in each stage.
 For example, a stage might start when one label is added to an issue and end when another label is added.
 Items aren't included in the stage time calculation if they have not reached the end event.
 
@@ -143,7 +146,7 @@ How this works:
 1. For the remaining pairs, review information needed for stages, including
    issue creation date and merge request merge time.
 
-In short, the Value Stream Analytics dashboard tracks data related to [GitLab flow](../../topics/gitlab_flow.md). It does not include data for:
+In short, the value stream analytics dashboard tracks data related to [GitLab flow](../../topics/gitlab_flow.md). It does not include data for:
 
 - Merge requests that do not close an issue.
 - Issues that do not include labels present in the issue board.
@@ -152,7 +155,7 @@ In short, the Value Stream Analytics dashboard tracks data related to [GitLab fl
 
 ## How the production environment is identified
 
-Value Stream Analytics identifies production environments based on the
+Value stream analytics identifies production environments based on the
 [deployment tier of environments](../../ci/environments/index.md#deployment-tier-of-environments).
 
 ## Example workflow
@@ -197,12 +200,12 @@ More information:
   the cycle. The time is included in the **Review** process, as every merge request should be
   tested.
 - The previous example illustrates only one cycle of the multiple stages. Value
-  Stream Analytics, on its dashboard, shows the calculated median elapsed time
+  stream analytics, on its dashboard, shows the calculated median elapsed time
   for these issues.
 
 ## Permissions
 
-The permissions for the project-level Value Stream Analytics dashboard include:
+The permissions for the value stream analytics for projects dashboard include:
 
 | Project type | Permissions                           |
 |--------------|---------------------------------------|
@@ -214,8 +217,8 @@ You can [read more about permissions](../../user/permissions.md) in general.
 
 ## More resources
 
-Learn more about Value Stream Analytics with the following resources:
+Learn more about value stream analytics with the following resources:
 
-- [Value Stream Analytics feature page](https://about.gitlab.com/stages-devops-lifecycle/value-stream-analytics/).
-- [Value Stream Analytics feature preview](https://about.gitlab.com/blog/2016/09/16/feature-preview-introducing-cycle-analytics/).
-- [Value Stream Analytics feature highlight](https://about.gitlab.com/blog/2016/09/21/cycle-analytics-feature-highlight/).
+- [Value stream analytics feature page](https://about.gitlab.com/stages-devops-lifecycle/value-stream-analytics/).
+- [Value stream analytics feature preview](https://about.gitlab.com/blog/2016/09/16/feature-preview-introducing-cycle-analytics/).
+- [Value stream analytics feature highlight](https://about.gitlab.com/blog/2016/09/21/cycle-analytics-feature-highlight/).

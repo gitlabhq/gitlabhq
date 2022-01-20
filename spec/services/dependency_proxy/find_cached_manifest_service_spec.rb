@@ -91,9 +91,9 @@ RSpec.describe DependencyProxy::FindCachedManifestService do
         it_behaves_like 'returning no manifest'
       end
 
-      context 'when the cached manifest is expired' do
+      context 'when the cached manifest is pending destruction' do
         before do
-          dependency_proxy_manifest.update_column(:status, DependencyProxy::Manifest.statuses[:expired])
+          dependency_proxy_manifest.update_column(:status, DependencyProxy::Manifest.statuses[:pending_destruction])
           stub_manifest_head(image, tag, headers: headers)
           stub_manifest_download(image, tag, headers: headers)
         end

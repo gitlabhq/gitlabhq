@@ -13,11 +13,8 @@ export default class Group {
     this.updateGroupPathSlugHandler = this.updateGroupPathSlug.bind(this);
 
     this.groupNames.forEach((groupName) => {
-      if (groupName.value === '') {
-        groupName.addEventListener('keyup', this.updateHandler);
-
-        groupName.addEventListener('keyup', this.updateGroupPathSlugHandler);
-      }
+      groupName.addEventListener('keyup', this.updateHandler);
+      groupName.addEventListener('keyup', this.updateGroupPathSlugHandler);
     });
 
     this.groupPaths.forEach((groupPath) => {

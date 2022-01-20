@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe HooksHelper do
   let(:project) { create(:project) }
   let(:project_hook) { create(:project_hook, project: project) }
+  let(:service_hook) { create(:service_hook, integration: create(:drone_ci_integration)) }
   let(:system_hook) { create(:system_hook) }
 
   describe '#link_to_test_hook' do
@@ -24,6 +25,15 @@ RSpec.describe HooksHelper do
   describe '#hook_log_path' do
     context 'with a project hook' do
       let(:web_hook_log) { create(:web_hook_log, web_hook: project_hook) }
+
+      it 'returns project-namespaced link' do
+        expect(helper.hook_log_path(project_hook, web_hook_log))
+          .to eq(web_hook_log.present.details_path)
+      end
+    end
+
+    context 'with a service hook' do
+      let(:web_hook_log) { create(:web_hook_log, web_hook: service_hook) }
 
       it 'returns project-namespaced link' do
         expect(helper.hook_log_path(project_hook, web_hook_log))

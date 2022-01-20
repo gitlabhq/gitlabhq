@@ -4,8 +4,8 @@
 module PreferencesHelper
   def layout_choices
     [
-      ['Fixed', :fixed],
-      ['Fluid', :fluid]
+      [s_('Layout|Fixed'), :fixed],
+      [s_('Layout|Fluid'), :fluid]
     ]
   end
 
@@ -40,9 +40,9 @@ module PreferencesHelper
 
   def project_view_choices
     [
-      ['Files and Readme (default)', :files],
-      ['Activity', :activity],
-      ['Readme', :readme]
+      [s_('ProjectView|Files and Readme (default)'), :files],
+      [s_('ProjectView|Activity'), :activity],
+      [s_('ProjectView|Readme'), :readme]
     ]
   end
 

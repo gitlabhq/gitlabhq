@@ -18,6 +18,7 @@ RSpec.describe API::UsageDataNonSqlMetrics do
     context 'with authentication' do
       before do
         stub_feature_flags(usage_data_non_sql_metrics: true)
+        stub_database_flavor_check
       end
 
       it 'returns non sql metrics if user is admin' do

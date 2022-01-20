@@ -32,6 +32,9 @@ const WORKFLOW_COLUMN_TITLES = {
   mergeRequests: { ...DEFAULT_WORKFLOW_TITLE_PROPERTIES, label: __('Merge requests') },
 };
 
+const fullProjectPath = ({ namespaceFullPath = '', projectPath }) =>
+  namespaceFullPath.split('/').length > 1 ? `${namespaceFullPath}/${projectPath}` : projectPath;
+
 export default {
   name: 'StageTable',
   components: {
@@ -89,6 +92,11 @@ export default {
       required: false,
       default: true,
     },
+    includeProjectName: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     if (this.pagination) {
@@ -144,8 +152,15 @@ export default {
     isMrLink(url = '') {
       return url.includes('/merge_request');
     },
-    itemId({ url, iid }) {
-      return this.isMrLink(url) ? `!${iid}` : `#${iid}`;
+    itemId({ iid, projectPath, namespaceFullPath = '' }, separator = '#') {
+      const prefix = this.includeProjectName
+        ? fullProjectPath({ namespaceFullPath, projectPath })
+        : '';
+      return `${prefix}${separator}${iid}`;
+    },
+    itemDisplayName(item) {
+      const separator = this.isMrLink(item.url) ? '!' : '#';
+      return this.itemId(item, separator);
     },
     itemTitle(item) {
       return item.title || item.name;
@@ -201,8 +216,11 @@ export default {
         <div data-testid="vsa-stage-event">
           <div v-if="item.id" data-testid="vsa-stage-content">
             <p class="gl-m-0">
-              <gl-link class="gl-text-black-normal pipeline-id" :href="item.url"
-                >#{{ item.id }}</gl-link
+              <gl-link
+                data-testid="vsa-stage-event-link"
+                class="gl-text-black-normal"
+                :href="item.url"
+                >{{ itemId(item.id, '#') }}</gl-link
               >
               <gl-icon :size="16" name="fork" />
               <gl-link
@@ -240,7 +258,12 @@ export default {
               <gl-link class="gl-text-black-normal" :href="item.url">{{ itemTitle(item) }}</gl-link>
             </h5>
             <p class="gl-m-0">
-              <gl-link class="gl-text-black-normal" :href="item.url">{{ itemId(item) }}</gl-link>
+              <gl-link
+                data-testid="vsa-stage-event-link"
+                class="gl-text-black-normal"
+                :href="item.url"
+                >{{ itemDisplayName(item) }}</gl-link
+              >
               <span class="gl-font-lg">&middot;</span>
               <span data-testid="vsa-stage-event-date">
                 {{ s__('OpenedNDaysAgo|Opened') }}

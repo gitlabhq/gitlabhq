@@ -589,6 +589,87 @@ LIMIT 20
 NOTE:
 To make the query efficient, the following columns need to be covered with an index: `project_id`, `issue_type`, `created_at`, and `id`.
 
+#### Using calculated ORDER BY expression
+
+The following example orders epic records by the duration between the creation time and closed
+time. It is calculated with the following formula:
+
+```sql
+SELECT EXTRACT('epoch' FROM epics.closed_at - epics.created_at) FROM epics
+```
+
+The query above returns the duration in seconds (`double precision`) between the two timestamp
+columns in seconds. To order the records by this expression, you must reference it
+in the `ORDER BY` clause:
+
+```sql
+SELECT EXTRACT('epoch' FROM epics.closed_at - epics.created_at)
+FROM epics
+ORDER BY EXTRACT('epoch' FROM epics.closed_at - epics.created_at) DESC
+```
+
+To make this ordering efficient on the group-level with the in-operator optimization, use a
+custom `ORDER BY` configuration. Since the duration is not a distinct value (no unique index
+present), you must add a tie-breaker column (`id`).
+
+The following example shows the final `ORDER BY` clause:
+
+```sql
+ORDER BY extract('epoch' FROM epics.closed_at - epics.created_at) DESC, epics.id DESC
+```
+
+Snippet for loading records ordered by the calcualted duration:
+
+```ruby
+arel_table =  Epic.arel_table
+order = Gitlab::Pagination::Keyset::Order.build([
+  Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+    attribute_name: 'duration_in_seconds',
+    order_expression: Arel.sql('EXTRACT(EPOCH FROM epics.closed_at - epics.created_at)').desc,
+    distinct: false,
+    sql_type: 'double precision' # important for calculated SQL expressions
+  ),
+  Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+    attribute_name: 'id',
+    order_expression: arel_table[:id].desc
+  )
+])
+
+records = Gitlab::Pagination::Keyset::InOperatorOptimization::QueryBuilder.new(
+  scope: Epic.where.not(closed_at: nil).reorder(order), # filter out NULL values
+  array_scope: Group.find(9970).self_and_descendants.select(:id),
+  array_mapping_scope: -> (id_expression) { Epic.where(Epic.arel_table[:group_id].eq(id_expression)) }
+).execute.limit(20)
+
+puts records.pluck(:duration_in_seconds, :id) # other columnns are not available
+```
+
+Building the query requires quite a bit of configuration. For the order configuration you
+can find more information within the
+[complex order configuration](keyset_pagination.md#complex-order-configuration)
+section for keyset paginated database queries.
+
+The query requires a specialized database index:
+
+```sql
+CREATE INDEX index_epics_on_duration ON epics USING btree (group_id, EXTRACT(EPOCH FROM epics.closed_at - epics.created_at) DESC, id DESC) WHERE (closed_at IS NOT NULL);
+```
+
+Notice that the `finder_query` parameter is not used. The query only returns the `ORDER BY` columns
+which are the `duration_in_seconds` (calculated column) and the `id` columns. This is a limitation
+of the feature, defining the `finder_query` with calculated `ORDER BY` expressions is not supported.
+To get the complete database records, an extra query can be invoked by the returned `id` column:
+
+```ruby
+records_by_id = records.index_by(&:id)
+complete_records = Epic.where(id: records_by_id.keys).index_by(&:id)
+
+# Printing the complete records according to the `ORDER BY` clause
+records_by_id.each do |id, _|
+  puts complete_records[id].attributes
+end
+```
+
 #### Batch iteration
 
 Batch iteration over the records is possible via the keyset `Iterator` class.

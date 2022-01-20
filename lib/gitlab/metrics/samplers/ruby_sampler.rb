@@ -7,12 +7,12 @@ module Gitlab
         DEFAULT_SAMPLING_INTERVAL_SECONDS = 60
         GC_REPORT_BUCKETS = [0.01, 0.05, 0.1, 0.2, 0.3, 0.5, 1].freeze
 
-        def initialize(*)
+        def initialize(...)
           GC::Profiler.clear
 
           metrics[:process_start_time_seconds].set(labels, Time.now.to_i)
 
-          super
+          super(...)
         end
 
         def metrics

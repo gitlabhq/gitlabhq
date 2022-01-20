@@ -43,13 +43,9 @@ module ResourceAccessTokens
 
     def find_member
       strong_memoize(:member) do
-        if resource.is_a?(Project)
-          resource.project_member(bot_user)
-        elsif resource.is_a?(Group)
-          resource.group_member(bot_user)
-        else
-          false
-        end
+        next false unless resource.is_a?(Project) || resource.is_a?(Group)
+
+        resource.member(bot_user)
       end
     end
 

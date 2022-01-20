@@ -5,11 +5,11 @@ require 'spec_helper'
 RSpec.describe Oauth::TokenInfoController do
   describe '#show' do
     context 'when the user is not authenticated' do
-      it 'responds with a 400' do
+      it 'responds with a 401' do
         get :show
 
-        expect(response).to have_gitlab_http_status(:bad_request)
-        expect(Gitlab::Json.parse(response.body)).to include('error' => 'invalid_request')
+        expect(response).to have_gitlab_http_status(:unauthorized)
+        expect(Gitlab::Json.parse(response.body)).to include('error' => 'invalid_token')
       end
     end
 
@@ -36,11 +36,11 @@ RSpec.describe Oauth::TokenInfoController do
     end
 
     context 'when the doorkeeper_token is not recognised' do
-      it 'responds with a 400' do
+      it 'responds with a 401' do
         get :show, params: { access_token: 'unknown_token' }
 
-        expect(response).to have_gitlab_http_status(:bad_request)
-        expect(Gitlab::Json.parse(response.body)).to include('error' => 'invalid_request')
+        expect(response).to have_gitlab_http_status(:unauthorized)
+        expect(Gitlab::Json.parse(response.body)).to include('error' => 'invalid_token')
       end
     end
 
@@ -49,22 +49,22 @@ RSpec.describe Oauth::TokenInfoController do
         create(:oauth_access_token, created_at: 2.days.ago, expires_in: 10.minutes)
       end
 
-      it 'responds with a 400' do
+      it 'responds with a 401' do
         get :show, params: { access_token: access_token.token }
 
-        expect(response).to have_gitlab_http_status(:bad_request)
-        expect(Gitlab::Json.parse(response.body)).to include('error' => 'invalid_request')
+        expect(response).to have_gitlab_http_status(:unauthorized)
+        expect(Gitlab::Json.parse(response.body)).to include('error' => 'invalid_token')
       end
     end
 
     context 'when the token is revoked' do
       let(:access_token) { create(:oauth_access_token, revoked_at: 2.days.ago) }
 
-      it 'responds with a 400' do
+      it 'responds with a 401' do
         get :show, params: { access_token: access_token.token }
 
-        expect(response).to have_gitlab_http_status(:bad_request)
-        expect(Gitlab::Json.parse(response.body)).to include('error' => 'invalid_request')
+        expect(response).to have_gitlab_http_status(:unauthorized)
+        expect(Gitlab::Json.parse(response.body)).to include('error' => 'invalid_token')
       end
     end
   end

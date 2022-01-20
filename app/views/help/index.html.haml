@@ -4,12 +4,15 @@
     = markdown_field(Gitlab::CurrentSettings.current_application_settings, :help_page_text)
   %hr
 
-%h1
-  = default_brand_title
-  - if user_signed_in?
-    %span= link_to_version
-    = version_status_badge
-  %hr
+.gl-display-flex.gl-align-items-flex-end
+  %h1.gl-mt-5.gl-mb-3
+    = default_brand_title
+    - if user_signed_in?
+      %span= link_to_version
+  - if show_version_check?
+    %span.gl-mt-5.gl-mb-3.gl-ml-3
+      .js-gitlab-version-check{ data: { "size": "lg" } }
+%hr
 
 - unless Gitlab::CurrentSettings.help_page_hide_commercial_content?
   %p.slead

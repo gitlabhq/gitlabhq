@@ -3,6 +3,11 @@
 require 'spec_helper'
 
 RSpec.describe Ci::UnitTest do
+  it_behaves_like 'cleanup by a loose foreign key' do
+    let!(:parent) { create(:project) }
+    let!(:model) { create(:ci_unit_test, project: parent) }
+  end
+
   describe 'relationships' do
     it { is_expected.to belong_to(:project) }
     it { is_expected.to have_many(:unit_test_failures) }

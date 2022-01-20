@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Gitlab::Database::Partitioning::SlidingListStrategy do
   let(:connection) { ActiveRecord::Base.connection }
   let(:table_name) { :_test_partitioned_test }
-  let(:model) { double('model', table_name: table_name, ignored_columns: %w[partition]) }
+  let(:model) { double('model', table_name: table_name, ignored_columns: %w[partition], connection: connection) }
   let(:next_partition_if) { double('next_partition_if') }
   let(:detach_partition_if) { double('detach_partition_if') }
 
@@ -94,7 +94,8 @@ RSpec.describe Gitlab::Database::Partitioning::SlidingListStrategy do
       let(:detach_partition_if) { ->(p) { p != 5 } }
 
       it 'is the leading set of partitions before that value' do
-        expect(strategy.extra_partitions.map(&:value)).to contain_exactly(1, 2, 3, 4)
+        # should not contain partition 2 since it's the default value for the partition column
+        expect(strategy.extra_partitions.map(&:value)).to contain_exactly(1, 3, 4)
       end
     end
 
@@ -102,7 +103,7 @@ RSpec.describe Gitlab::Database::Partitioning::SlidingListStrategy do
       let(:detach_partition_if) { proc { true } }
 
       it 'is all but the most recent partition', :aggregate_failures do
-        expect(strategy.extra_partitions.map(&:value)).to contain_exactly(1, 2, 3, 4, 5, 6, 7, 8, 9)
+        expect(strategy.extra_partitions.map(&:value)).to contain_exactly(1, 3, 4, 5, 6, 7, 8, 9)
 
         expect(strategy.current_partitions.map(&:value).max).to eq(10)
       end

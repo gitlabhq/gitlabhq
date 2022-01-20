@@ -5,6 +5,11 @@ require 'spec_helper'
 RSpec.describe Ci::FreezePeriod, type: :model do
   subject { build(:ci_freeze_period) }
 
+  it_behaves_like 'cleanup by a loose foreign key' do
+    let!(:parent) { create(:project) }
+    let!(:model) { create(:ci_freeze_period, project: parent) }
+  end
+
   let(:invalid_cron) { '0 0 0 * *' }
 
   it { is_expected.to belong_to(:project) }

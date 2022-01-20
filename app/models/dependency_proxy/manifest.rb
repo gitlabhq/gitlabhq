@@ -3,6 +3,7 @@
 class DependencyProxy::Manifest < ApplicationRecord
   include FileStoreMounter
   include TtlExpirable
+  include Packages::Destructible
   include EachBatch
 
   belongs_to :group

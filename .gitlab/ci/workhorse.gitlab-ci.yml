@@ -4,7 +4,7 @@ workhorse:verify:
   stage: test
   needs: []
   script:
-    - make -C workhorse # test build
+    - make -C workhorse  # test build
     - make -C workhorse verify
 
 .workhorse:test:

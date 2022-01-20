@@ -178,5 +178,14 @@ RSpec.describe Gitlab::ErrorTracking::Processor::SidekiqProcessor do
         expect(result_hash.dig(:extra, :sidekiq)).to be_nil
       end
     end
+
+    context 'when there is Sidekiq data but no job' do
+      let(:value) { { other: 'foo' } }
+      let(:wrapped_value) { { extra: { sidekiq: value } } }
+
+      it 'does nothing' do
+        expect(result_hash.dig(:extra, :sidekiq)).to eq(value)
+      end
+    end
   end
 end

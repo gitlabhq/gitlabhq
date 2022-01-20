@@ -15,6 +15,7 @@ module API
         params do
           requires :token, type: String, desc: 'Registration token'
           optional :description, type: String, desc: %q(Runner's description)
+          optional :maintainer_note, type: String, desc: %q(Runner's maintainer notes)
           optional :info, type: Hash, desc: %q(Runner's metadata)
           optional :active, type: Boolean, desc: 'Should Runner be active'
           optional :locked, type: Boolean, desc: 'Should Runner be locked for current project'
@@ -25,24 +26,11 @@ module API
           optional :maximum_timeout, type: Integer, desc: 'Maximum timeout set when this Runner will handle the job'
         end
         post '/', feature_category: :runner do
-          attributes = attributes_for_keys([:description, :active, :locked, :run_untagged, :tag_list, :access_level, :maximum_timeout])
+          attributes = attributes_for_keys(%i[description maintainer_note active locked run_untagged tag_list access_level maximum_timeout])
             .merge(get_runner_details_from_request)
 
-          attributes =
-            if runner_registration_token_valid?
-              # Create shared runner. Requires admin access
-              attributes.merge(runner_type: :instance_type)
-            elsif runner_registrar_valid?('project') && @project = Project.find_by_runners_token(params[:token])
-              # Create a specific runner for the project
-              attributes.merge(runner_type: :project_type, projects: [@project])
-            elsif runner_registrar_valid?('group') && @group = Group.find_by_runners_token(params[:token])
-              # Create a specific runner for the group
-              attributes.merge(runner_type: :group_type, groups: [@group])
-            else
-              forbidden!
-            end
-
-          @runner = ::Ci::Runner.create(attributes)
+          @runner = ::Ci::RegisterRunnerService.new.execute(params[:token], attributes)
+          forbidden! unless @runner
 
           if @runner.persisted?
             present @runner, with: Entities::Ci::RunnerRegistrationDetails

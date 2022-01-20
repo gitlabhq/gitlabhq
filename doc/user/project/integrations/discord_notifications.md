@@ -6,8 +6,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Discord Notifications service **(FREE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/22684) in GitLab 11.6.
-
 The Discord Notifications service sends event notifications from GitLab to the channel for which the webhook was created.
 
 To send GitLab event notifications to a Discord channel, [create a webhook in Discord](https://support.discord.com/hc/en-us/articles/228383668-Intro-to-Webhooks)
@@ -17,10 +15,12 @@ and configure it in GitLab.
 
 1. Open the Discord channel you want to receive GitLab event notifications.
 1. From the channel menu, select **Edit channel**.
-1. Click on **Webhooks** menu item.
-1. Click the **Create Webhook** button and fill in the name of the bot to post the messages. Optionally, edit the avatar.
-1. Note the URL from the **WEBHOOK URL** field.
-1. Click the **Save** button.
+1. Select **Integrations**.
+1. If there are no existing webhooks, select **Create Webhook**. Otherwise, select **View Webhooks** then **New Webhook**.
+1. Enter the name of the bot to post the message.
+1. Optional. Edit the avatar.
+1. Copy the URL from the **WEBHOOK URL** field.
+1. Select **Save**.
 
 ## Configure created webhook in GitLab
 

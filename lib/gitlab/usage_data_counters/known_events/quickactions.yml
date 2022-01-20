@@ -39,6 +39,10 @@
   category: quickactions
   redis_slot: quickactions
   aggregation: weekly
+- name: i_quickactions_clear_health_status
+  category: quickactions
+  redis_slot: quickactions
+  aggregation: weekly
 - name: i_quickactions_clone
   category: quickactions
   redis_slot: quickactions
@@ -260,6 +264,10 @@
   redis_slot: quickactions
   aggregation: weekly
 - name: i_quickactions_weight
+  category: quickactions
+  redis_slot: quickactions
+  aggregation: weekly
+- name: i_quickactions_health_status
   category: quickactions
   redis_slot: quickactions
   aggregation: weekly

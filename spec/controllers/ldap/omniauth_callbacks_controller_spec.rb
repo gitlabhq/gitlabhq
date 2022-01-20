@@ -58,7 +58,7 @@ RSpec.describe Ldap::OmniauthCallbacksController do
   end
 
   context 'sign up' do
-    let(:user) { double(email: +'new@example.com') }
+    let(:user) { create(:user) }
 
     before do
       stub_omniauth_setting(block_auto_created_users: false)

@@ -642,6 +642,11 @@ should either:
 It takes around one second to load tests that are using `fast_spec_helper`
 instead of 30+ seconds in case of a regular `spec_helper`.
 
+WARNING:
+To verify that code and its specs are well-isolated from Rails, run the spec
+individually via `bin/rspec`. Don't use `bin/spring rspec` as it loads
+`spec_helper` automatically.
+
 ### `subject` and `let` variables
 
 The GitLab RSpec suite has made extensive use of `let`(along with its strict, non-lazy

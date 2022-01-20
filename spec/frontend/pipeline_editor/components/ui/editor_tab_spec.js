@@ -75,34 +75,83 @@ describe('~/pipeline_editor/components/ui/editor_tab.vue', () => {
     expect(mockChildMounted).toHaveBeenCalledWith(mockContent1);
   });
 
-  describe('showing the tab content depending on `isEmpty` and `isInvalid`', () => {
-    it.each`
-      isEmpty      | isInvalid    | showSlotComponent | text
-      ${undefined} | ${undefined} | ${true}           | ${'renders'}
-      ${false}     | ${false}     | ${true}           | ${'renders'}
-      ${undefined} | ${true}      | ${false}          | ${'hides'}
-      ${true}      | ${false}     | ${false}          | ${'hides'}
-      ${false}     | ${true}      | ${false}          | ${'hides'}
-    `(
-      '$text the slot component when isEmpty:$isEmpty and isInvalid:$isInvalid',
-      ({ isEmpty, isInvalid, showSlotComponent }) => {
+  describe('alerts', () => {
+    describe('unavailable state', () => {
+      beforeEach(() => {
+        createWrapper({ props: { isUnavailable: true } });
+      });
+
+      it('shows the invalid alert when the status is invalid', () => {
+        const alert = findAlert();
+
+        expect(alert.exists()).toBe(true);
+        expect(alert.text()).toContain(wrapper.vm.$options.i18n.unavailable);
+      });
+    });
+
+    describe('invalid state', () => {
+      beforeEach(() => {
+        createWrapper({ props: { isInvalid: true } });
+      });
+
+      it('shows the invalid alert when the status is invalid', () => {
+        const alert = findAlert();
+
+        expect(alert.exists()).toBe(true);
+        expect(alert.text()).toBe(wrapper.vm.$options.i18n.invalid);
+      });
+    });
+
+    describe('empty state', () => {
+      const text = 'my custom alert message';
+
+      beforeEach(() => {
         createWrapper({
-          props: { isEmpty, isInvalid },
+          props: { isEmpty: true, emptyMessage: text },
+        });
+      });
+
+      it('displays an empty message', () => {
+        createWrapper({
+          props: { isEmpty: true },
+        });
+
+        const alert = findAlert();
+
+        expect(alert.exists()).toBe(true);
+        expect(alert.text()).toBe(
+          'This tab will be usable when the CI/CD configuration file is populated with valid syntax.',
+        );
+      });
+
+      it('can have a custom empty message', () => {
+        const alert = findAlert();
+
+        expect(alert.exists()).toBe(true);
+        expect(alert.text()).toBe(text);
+      });
+    });
+  });
+
+  describe('showing the tab content depending on `isEmpty`, `isUnavailable` and `isInvalid`', () => {
+    it.each`
+      isEmpty      | isUnavailable | isInvalid    | showSlotComponent | text
+      ${undefined} | ${undefined}  | ${undefined} | ${true}           | ${'renders'}
+      ${false}     | ${false}      | ${false}     | ${true}           | ${'renders'}
+      ${undefined} | ${true}       | ${true}      | ${false}          | ${'hides'}
+      ${true}      | ${false}      | ${false}     | ${false}          | ${'hides'}
+      ${false}     | ${true}       | ${false}     | ${false}          | ${'hides'}
+      ${false}     | ${false}      | ${true}      | ${false}          | ${'hides'}
+    `(
+      '$text the slot component when isEmpty:$isEmpty, isUnavailable:$isUnavailable and isInvalid:$isInvalid',
+      ({ isEmpty, isUnavailable, isInvalid, showSlotComponent }) => {
+        createWrapper({
+          props: { isEmpty, isUnavailable, isInvalid },
         });
         expect(findSlotComponent().exists()).toBe(showSlotComponent);
         expect(findAlert().exists()).toBe(!showSlotComponent);
       },
     );
-
-    it('can have a custom empty message', () => {
-      const text = 'my custom alert message';
-      createWrapper({ props: { isEmpty: true, emptyMessage: text } });
-
-      const alert = findAlert();
-
-      expect(alert.exists()).toBe(true);
-      expect(alert.text()).toBe(text);
-    });
   });
 
   describe('user interaction', () => {

@@ -2,15 +2,15 @@
 
 module Admin
   module BackgroundMigrationsHelper
-    def batched_migration_status_badge_class_name(migration)
-      class_names = {
-        'active' => 'badge-info',
-        'paused' => 'badge-warning',
-        'failed' => 'badge-danger',
-        'finished' => 'badge-success'
+    def batched_migration_status_badge_variant(migration)
+      variants = {
+        'active' => :info,
+        'paused' => :warning,
+        'failed' => :danger,
+        'finished' => :success
       }
 
-      class_names[migration.status]
+      variants[migration.status]
     end
 
     # The extra logic here is needed because total_tuple_count is just

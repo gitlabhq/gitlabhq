@@ -13,12 +13,12 @@ RSpec.shared_examples 'dependency_proxy_cleanup_worker' do
     end
 
     context 'with work to do' do
-      let_it_be(:artifact1) { create(factory_type, :expired, group: group) }
-      let_it_be(:artifact2) { create(factory_type, :expired, group: group, updated_at: 6.months.ago, created_at: 2.years.ago) }
-      let_it_be_with_reload(:artifact3) { create(factory_type, :expired, group: group, updated_at: 1.year.ago, created_at: 1.year.ago) }
+      let_it_be(:artifact1) { create(factory_type, :pending_destruction, group: group) }
+      let_it_be(:artifact2) { create(factory_type, :pending_destruction, group: group, updated_at: 6.months.ago, created_at: 2.years.ago) }
+      let_it_be_with_reload(:artifact3) { create(factory_type, :pending_destruction, group: group, updated_at: 1.year.ago, created_at: 1.year.ago) }
       let_it_be(:artifact4) { create(factory_type, group: group, updated_at: 2.years.ago, created_at: 2.years.ago) }
 
-      it 'deletes the oldest expired artifact based on updated_at', :aggregate_failures do
+      it 'deletes the oldest artifact pending destruction based on updated_at', :aggregate_failures do
         expect(worker).to receive(:log_extra_metadata_on_done).with("#{factory_type}_id".to_sym, artifact3.id)
         expect(worker).to receive(:log_extra_metadata_on_done).with(:group_id, group.id)
 
@@ -40,10 +40,8 @@ RSpec.shared_examples 'dependency_proxy_cleanup_worker' do
   end
 
   describe '#remaining_work_count' do
-    let_it_be(:expired_artifacts) do
-      (1..3).map do |_|
-        create(factory_type, :expired, group: group)
-      end
+    before(:context) do
+      create_list(factory_type, 3, :pending_destruction, group: group)
     end
 
     subject { worker.remaining_work_count }

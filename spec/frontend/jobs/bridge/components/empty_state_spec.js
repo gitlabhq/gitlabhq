@@ -6,14 +6,13 @@ import { MOCK_EMPTY_ILLUSTRATION_PATH, MOCK_PATH_TO_DOWNSTREAM } from '../mock_d
 describe('Bridge Empty State', () => {
   let wrapper;
 
-  const createComponent = (props) => {
+  const createComponent = ({ downstreamPipelinePath }) => {
     wrapper = shallowMount(BridgeEmptyState, {
       provide: {
         emptyStateIllustrationPath: MOCK_EMPTY_ILLUSTRATION_PATH,
       },
       propsData: {
-        downstreamPipelinePath: MOCK_PATH_TO_DOWNSTREAM,
-        ...props,
+        downstreamPipelinePath,
       },
     });
   };
@@ -28,7 +27,7 @@ describe('Bridge Empty State', () => {
 
   describe('template', () => {
     beforeEach(() => {
-      createComponent();
+      createComponent({ downstreamPipelinePath: MOCK_PATH_TO_DOWNSTREAM });
     });
 
     it('renders illustration', () => {

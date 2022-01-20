@@ -16,10 +16,6 @@ GitLab can check your application for security vulnerabilities including:
 Statistics and details on vulnerabilities are included in the merge request. Providing
 actionable information _before_ changes are merged enables you to be proactive.
 
-INFO:
-Want to try out security scanning?
-[Try GitLab Ultimate free for 30 days](https://about.gitlab.com/free-trial/index.html?glm_source=docs.gitlab.com&glm_content=u-application-security-docs).
-
 GitLab also provides high-level statistics of vulnerabilities across projects and groups:
 
 - The [Security Dashboard](security_dashboard/index.md) provides a
@@ -119,7 +115,9 @@ rules:
 
 If you add the security scanning jobs as described in [Security scanning with Auto DevOps](#security-scanning-with-auto-devops) or [Security scanning without Auto DevOps](#security-scanning-without-auto-devops) to your `.gitlab-ci.yml` each added [security scanning tool](#security-scanning-tools) behave as described below.
 
-For each compatible analyzer, a job is created in the `test`, `dast` or `fuzz` stage of your pipeline and runs on the next new branch pipeline. Features such as the [Security Dashboard](security_dashboard/index.md), [Vulnerability Report](vulnerability_report/index.md), and [Dependency List](dependency_list/index.md) that rely on this scan data only show results from pipelines on the default branch. One tool might use many analyzers.
+For each compatible analyzer, a job is created in the `test`, `dast` or `fuzz` stage of your pipeline and runs on the next new branch pipeline.
+Features such as the [Security Dashboard](security_dashboard/index.md), [Vulnerability Report](vulnerability_report/index.md), and [Dependency List](dependency_list/index.md)
+that rely on this scan data only show results from pipelines on the default branch, only if all jobs are finished, including manual ones. One tool might use many analyzers.
 
 Our language and package manager specific jobs attempt to assess which analyzer(s) they should run for your project so that you can do less configuration.
 
@@ -172,7 +170,7 @@ From the merge request security widget, select **Expand** to unfold the widget, 
 
 A pipeline's security tab lists all findings in the current branch. It includes new findings introduced by this branch and existing vulnerabilities that were already present when the branch was created. These results likely do not match the findings displayed in the Merge Request security widget as those do not include the existing vulnerabilities (with the exception of showing any existing vulnerabilities that are no longer detected in the feature branch).
 
-For more details, see [security tab](security_dashboard/index.md#pipeline-security).
+For more details, see [security tab](security_dashboard/index.md#view-vulnerabilities-in-a-pipeline).
 
 ## View security scan information in the Security Dashboard
 
@@ -406,9 +404,9 @@ sast:
 You can interact with the results of the security scanning tools in several locations:
 
 - [Scan information in merge requests](#view-security-scan-information-in-merge-requests)
-- [Project Security Dashboard](security_dashboard/#project-security-dashboard)
-- [Security pipeline tab](security_dashboard/#pipeline-security)
-- [Group Security Dashboard](security_dashboard/#group-security-dashboard)
+- [Project Security Dashboard](security_dashboard/index.md)
+- [Security pipeline tab](security_dashboard/index.md)
+- [Group Security Dashboard](security_dashboard/index.md)
 - [Security Center](security_dashboard/#security-center)
 - [Vulnerability Report](vulnerability_report/index.md)
 - [Vulnerability Pages](vulnerabilities/index.md)
@@ -440,6 +438,46 @@ When customizing the configuration:
   made between major GitLab versions. The [latest](../../development/cicd/templates.md#latest-version)
   version contains the most recent changes, but may have significant changes between minor GitLab versions.
 - Only override values in the template as needed. All other values are inherited from the template.
+
+### Enforce scan execution
+
+Security and compliance teams must ensure that security scans:
+
+- Run on a regular basis for all projects.
+- Can't be disabled by developers.
+
+GitLab provides two methods of accomplishing this, each with advantages and disadvantages.
+
+- [Compliance framework pipelines](../project/settings/#compliance-pipeline-configuration)
+  are recommended when:
+
+  - Scan execution enforcement is required for SAST IaC, Container Scanning, Dependency Scanning,
+    License Compliance, API Fuzzing, or Coverage-guided Fuzzing.
+  - Scan execution enforcement of SAST or Secret Detection when customization of the default scan
+    variables is required.
+  - Scan execution enforcement is required for scanners external to GitLab.
+  - Enforced execution is required for custom jobs other than security scans.
+
+- [Scan execution policies](policies/#scan-execution-policies)
+  are recommended when:
+
+  - Scan execution enforcement is required for DAST.
+  - Scan execution enforcement is required for SAST or Secret Detection with the default scan
+    variables.
+  - Scans are required to run on a regular, scheduled cadence.
+
+Additional details about the differences between the two solutions are outlined below:
+
+| | Compliance Framework Pipelines | Scan Execution Policies |
+| ------ | ------ | ------ |
+| **Flexibility** | Supports anything that can be done in a CI file. | Limited to only the items for which GitLab has explicitly added support. DAST, SAST, and Secret Detection scans are supported. |
+| **Usability** | Requires knowledge of CI YAML. | Follows a `rules` and `actions`-based YAML structure. |
+| **Inclusion in CI pipeline** | The compliance pipeline is executed instead of the project's `gitlab-ci.yml` file. To include the project's `gitlab-ci.yml` file, use an `include` statement. Defined variables aren't allowed to be overwritten by the included project's YAML file. | Forced inclusion of a new job into the CI pipeline. DAST jobs that must be customized on a per-project basis can have project-level Site Profiles and Scan Profiles defined. To ensure separation of duties, these profiles are immutable when referenced in a scan execution policy. |
+| **Schedulable** | Can be scheduled through a scheduled pipeline on the group. | Can be scheduled natively through the policy configuration itself. |
+| **Separation of Duties** | Only group owners can create compliance framework labels. Only project owners can apply compliance framework labels to projects. The ability to make or approve changes to the compliance pipeline definition is limited to individuals who are explicitly given access to the project that contains the compliance pipeline. | Only project owners can define a linked security policy project. The ability to make or approve changes to security policies is limited to individuals who are explicitly given access to the security policy project. |
+| **Ability to apply one standard to multiple projects** | The same compliance framework label can be applied to multiple projects inside a group. | The same security policy project can be used for multiple projects across GitLab with no requirement of being located in the same group. |
+
+Feedback is welcome on our vision for [unifying the user experience for these two features](https://gitlab.com/groups/gitlab-org/-/epics/7312)
 
 ## Troubleshooting
 
@@ -607,5 +645,17 @@ The `sast` or `dependency_scanning` stanzas can be used to make changes to all S
 such as changing `variables` or the `stage`, but they cannot be used to define shared `rules`.
 
 There [is an issue open to improve extendability](https://gitlab.com/gitlab-org/gitlab/-/issues/218444).
+Please upvote the issue to help with prioritization, and
+[contributions are welcomed](https://about.gitlab.com/community/contribute/).
+
+### Empty Vulnerability Report, Dependency List, License list pages
+
+If the pipeline has manual steps with a job that has the `allow_failure: false` option, and this job is not finished,
+GitLab can't populate listed pages with the data from security reports.
+In this case, [the Vulnerability Report](vulnerability_report/index.md), [the Dependency List](dependency_list/index.md),
+and [the License list](../compliance/license_compliance/index.md#license-list) pages will be empty.
+These security pages can be populated by running the jobs from the manual step of the pipeline.
+
+There is [an issue open to handle this scenario](https://gitlab.com/gitlab-org/gitlab/-/issues/346843).
 Please upvote the issue to help with prioritization, and
 [contributions are welcomed](https://about.gitlab.com/community/contribute/).

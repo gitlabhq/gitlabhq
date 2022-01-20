@@ -23,6 +23,8 @@ module Import
 
       return ServiceResponse.error(message: "#{@params[:url]} is not a valid URL") unless uri
 
+      return ServiceResponse.success if uri.scheme == 'git'
+
       uri.fragment = nil
       url = Gitlab::Utils.append_path(uri.to_s, "/info/refs?service=#{GIT_SERVICE_NAME}")
 

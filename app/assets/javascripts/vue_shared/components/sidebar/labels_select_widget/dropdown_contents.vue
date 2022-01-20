@@ -179,6 +179,9 @@ export default {
       this.searchKey = '';
       this.setFocus();
     },
+    selectFirstItem() {
+      this.$refs.dropdownContentsView.selectFirstItem();
+    },
   },
 };
 </script>
@@ -204,11 +207,13 @@ export default {
         @toggleDropdownContentsCreateView="toggleDropdownContent"
         @closeDropdown="$emit('closeDropdown')"
         @input="debouncedSearchKeyUpdate"
+        @searchEnter="selectFirstItem"
       />
     </template>
     <template #default>
       <component
         :is="dropdownContentsView"
+        ref="dropdownContentsView"
         v-model="localSelectedLabels"
         :search-key="searchKey"
         :allow-multiselect="allowMultiselect"

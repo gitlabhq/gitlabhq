@@ -32,10 +32,18 @@ Two things need to be configured for the interactive web terminal to work:
 - If you are using a reverse proxy with your GitLab instance, web terminals need to be
   [enabled](../../administration/integration/terminal.md#enabling-and-disabling-terminal-support)
 
-NOTE:
-Interactive web terminals are not yet supported by
-[`gitlab-runner` Helm chart](https://docs.gitlab.com/charts/charts/gitlab/gitlab-runner/index.html).
-Support is tracked [in this issue](https://gitlab.com/gitlab-org/charts/gitlab-runner/-/issues/79).
+### Partial support for Helm chart
+
+Interactive web terminals are partially supported in `gitlab-runner` Helm chart.
+They are enabled when:
+
+- The number of replica is one
+- You use the `loadBalancer` service
+
+Support for fixing these limitations is tracked in the following issues:
+
+- [Support of more than one replica](https://gitlab.com/gitlab-org/charts/gitlab-runner/-/issues/323)
+- [Support of more service types](https://gitlab.com/gitlab-org/charts/gitlab-runner/-/issues/324)
 
 ## Debugging a running job
 

@@ -37,6 +37,7 @@ class Project < ApplicationRecord
   include EachBatch
   include GitlabRoutingHelper
   include BulkMemberAccessLoad
+  include RunnerTokenExpirationInterval
 
   extend Gitlab::Cache::RequestCache
   extend Gitlab::Utils::Override
@@ -340,6 +341,7 @@ class Project < ApplicationRecord
   has_many :runners, through: :runner_projects, source: :runner, class_name: 'Ci::Runner'
   has_many :variables, class_name: 'Ci::Variable'
   has_many :triggers, class_name: 'Ci::Trigger'
+  has_many :secure_files, class_name: 'Ci::SecureFile'
   has_many :environments
   has_many :environments_for_dashboard, -> { from(with_rank.unfoldered.available, :environments).where('rank <= 3') }, class_name: 'Environment'
   has_many :deployments
@@ -436,6 +438,7 @@ class Project < ApplicationRecord
     prefix: :import, to: :import_state, allow_nil: true
   delegate :squash_always?, :squash_never?, :squash_enabled_by_default?, :squash_readonly?, to: :project_setting
   delegate :squash_option, :squash_option=, to: :project_setting
+  delegate :mr_default_target_self, :mr_default_target_self=, to: :project_setting
   delegate :previous_default_branch, :previous_default_branch=, to: :project_setting
   delegate :no_import?, to: :import_state, allow_nil: true
   delegate :name, to: :owner, allow_nil: true, prefix: true
@@ -452,7 +455,8 @@ class Project < ApplicationRecord
   delegate :job_token_scope_enabled, :job_token_scope_enabled=, to: :ci_cd_settings, prefix: :ci, allow_nil: true
   delegate :keep_latest_artifact, :keep_latest_artifact=, to: :ci_cd_settings, allow_nil: true
   delegate :restrict_user_defined_variables, :restrict_user_defined_variables=, to: :ci_cd_settings, allow_nil: true
-  delegate :actual_limits, :actual_plan_name, to: :namespace, allow_nil: true
+  delegate :runner_token_expiration_interval, :runner_token_expiration_interval=, :runner_token_expiration_interval_human_readable, :runner_token_expiration_interval_human_readable=, to: :ci_cd_settings, allow_nil: true
+  delegate :actual_limits, :actual_plan_name, :actual_plan, to: :namespace, allow_nil: true
   delegate :allow_merge_on_skipped_pipeline, :allow_merge_on_skipped_pipeline?,
     :allow_merge_on_skipped_pipeline=, :has_confluence?, :has_shimo?,
     to: :project_setting
@@ -983,7 +987,7 @@ class Project < ApplicationRecord
   end
 
   def context_commits_enabled?
-    Feature.enabled?(:context_commits, default_enabled: true)
+    Feature.enabled?(:context_commits, self, default_enabled: :yaml)
   end
 
   # LFS and hashed repository storage are required for using Design Management.
@@ -1512,11 +1516,11 @@ class Project < ApplicationRecord
     group || namespace.try(:owner)
   end
 
-  def default_owner
+  def first_owner
     obj = owner
 
-    if obj.respond_to?(:default_owner)
-      obj.default_owner
+    if obj.respond_to?(:first_owner)
+      obj.first_owner
     else
       obj
     end
@@ -1660,7 +1664,7 @@ class Project < ApplicationRecord
     attrs
   end
 
-  def project_member(user)
+  def member(user)
     if project_members.loaded?
       project_members.find { |member| member.user_id == user.id }
     else
@@ -1773,17 +1777,12 @@ class Project < ApplicationRecord
 
   def all_runners
     Ci::Runner.from_union([runners, group_runners, shared_runners])
-      .allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/339937')
   end
 
   def all_available_runners
     Ci::Runner.from_union([runners, group_runners, available_shared_runners])
-      .allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/339937')
   end
 
-  # Once issue 339937 is fixed, please search for all mentioned of
-  # https://gitlab.com/gitlab-org/gitlab/-/issues/339937,
-  # and remove the allow_cross_joins_across_databases.
   def active_runners
     strong_memoize(:active_runners) do
       all_available_runners.active
@@ -1791,9 +1790,7 @@ class Project < ApplicationRecord
   end
 
   def any_online_runners?(&block)
-    ::Gitlab::Database.allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/339937') do
-      online_runners_with_tags.any?(&block)
-    end
+    online_runners_with_tags.any?(&block)
   end
 
   def valid_runners_token?(token)
@@ -2702,6 +2699,10 @@ class Project < ApplicationRecord
     ci_cd_settings.keep_latest_artifact?
   end
 
+  def runner_token_expiration_interval
+    ci_cd_settings&.runner_token_expiration_interval
+  end
+
   def group_runners_enabled?
     return false unless ci_cd_settings
 
@@ -2731,6 +2732,17 @@ class Project < ApplicationRecord
     user_ids.each_slice(per_batch) do |user_ids_batch|
       project_authorizations.where(user_id: user_ids_batch).delete_all
     end
+  end
+
+  def enforced_runner_token_expiration_interval
+    all_parent_groups = Gitlab::ObjectHierarchy.new(Group.where(id: group)).base_and_ancestors
+    all_group_settings = NamespaceSetting.where(namespace_id: all_parent_groups)
+    group_interval = all_group_settings.where.not(project_runner_token_expiration_interval: nil).minimum(:project_runner_token_expiration_interval)&.seconds
+
+    [
+      Gitlab::CurrentSettings.project_runner_token_expiration_interval&.seconds,
+      group_interval
+    ].compact.min
   end
 
   private

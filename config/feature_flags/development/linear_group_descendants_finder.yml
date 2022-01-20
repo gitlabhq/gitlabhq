@@ -1,8 +1,0 @@
----
-name: linear_group_descendants_finder
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68954
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/339440
-milestone: '14.6'
-type: development
-group: group::access
-default_enabled: false

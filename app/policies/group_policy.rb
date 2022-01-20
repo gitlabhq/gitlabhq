@@ -23,6 +23,9 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
   condition(:parent_share_with_group_locked, scope: :subject) { @subject.parent&.share_with_group_lock? }
   condition(:can_change_parent_share_with_group_lock) { can?(:change_share_with_group_lock, @subject.parent) }
 
+  desc "User is a project bot"
+  condition(:project_bot) { user.project_bot? && access_level >= GroupMember::GUEST }
+
   condition(:has_projects) do
     group_projects_for(user: @user, group: @subject).any?
   end
@@ -75,7 +78,7 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
   with_scope :subject
   condition(:has_project_with_service_desk_enabled) { @subject.has_project_with_service_desk_enabled? }
 
-  condition(:crm_enabled, score: 0, scope: :subject) { Feature.enabled?(:customer_relations, @subject) }
+  condition(:crm_enabled, score: 0, scope: :subject) { Feature.enabled?(:customer_relations, @subject) && @subject.crm_enabled? }
 
   with_scope :subject
   condition(:group_runner_registration_allowed, score: 0, scope: :subject) do
@@ -120,8 +123,6 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     enable :read_group_member
     enable :read_custom_emoji
     enable :read_counts
-    enable :read_crm_organization
-    enable :read_crm_contact
   end
 
   rule { ~public_group & ~has_access }.prevent :read_counts
@@ -156,13 +157,14 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     enable :read_prometheus
     enable :read_package
     enable :read_package_settings
+    enable :read_crm_organization
+    enable :read_crm_contact
   end
 
   rule { maintainer }.policy do
     enable :destroy_package
     enable :create_projects
     enable :admin_pipeline
-    enable :admin_group_runners
     enable :admin_build
     enable :read_cluster
     enable :add_cluster
@@ -179,6 +181,10 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     enable :admin_namespace
     enable :admin_group_member
     enable :change_visibility_level
+
+    enable :read_group_runners
+    enable :admin_group_runners
+    enable :register_group_runners
 
     enable :set_note_created_at
     enable :set_emails_disabled
@@ -203,10 +209,6 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
 
   rule { can?(:read_cross_project) & can?(:read_group) }.policy do
     enable :read_nested_project_resources
-  end
-
-  rule { can?(:admin_group_runners) }.policy do
-    enable :register_group_runners
   end
 
   rule { owner }.enable :create_subgroup
@@ -250,6 +252,8 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     enable :admin_dependency_proxy
   end
 
+  rule { project_bot }.enable :project_bot_access
+
   rule { can?(:admin_group) & resource_access_token_feature_available }.policy do
     enable :read_resource_access_tokens
     enable :destroy_resource_access_tokens
@@ -258,6 +262,10 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
 
   rule { resource_access_token_creation_allowed & can?(:read_resource_access_tokens) }.policy do
     enable :create_resource_access_tokens
+  end
+
+  rule { can?(:project_bot_access) }.policy do
+    prevent :create_resource_access_tokens
   end
 
   rule { support_bot & has_project_with_service_desk_enabled }.policy do

@@ -275,7 +275,7 @@ RSpec.describe 'Admin updates settings' do
 
       it 'enable hiding third party offers' do
         page.within('.as-third-party-offers') do
-          check 'Do not display offers from third parties'
+          check 'Do not display content for customer experience improvement and offers from third parties'
           click_button 'Save changes'
         end
 
@@ -530,6 +530,7 @@ RSpec.describe 'Admin updates settings' do
 
       it 'loads usage ping payload on click', :js do
         stub_usage_data_connections
+        stub_database_flavor_check
 
         page.within('#js-usage-settings') do
           expected_payload_content = /(?=.*"uuid")(?=.*"hostname")/m

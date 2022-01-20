@@ -2885,7 +2885,7 @@ RSpec.describe NotificationService, :mailer do
       let(:member) { create(:user) }
 
       before do
-        project.add_developer(member, current_user: project.owner)
+        project.add_developer(member, current_user: project.first_owner)
       end
 
       it do
@@ -3287,7 +3287,7 @@ RSpec.describe NotificationService, :mailer do
     let_it_be(:domain, reload: true) { create(:pages_domain, project: project) }
     let_it_be(:u_blocked) { create(:user, :blocked) }
     let_it_be(:u_silence) { create_user_with_notification(:disabled, 'silent', project) }
-    let_it_be(:u_owner) { project.owner }
+    let_it_be(:u_owner) { project.first_owner }
     let_it_be(:u_maintainer1) { create(:user) }
     let_it_be(:u_maintainer2) { create(:user) }
     let_it_be(:u_developer) { create(:user) }
@@ -3395,7 +3395,7 @@ RSpec.describe NotificationService, :mailer do
       let(:remote_mirror) { create(:remote_mirror, project: project) }
       let(:u_blocked) { create(:user, :blocked) }
       let(:u_silence) { create_user_with_notification(:disabled, 'silent-maintainer', project) }
-      let(:u_owner)   { project.owner }
+      let(:u_owner)   { project.first_owner }
       let(:u_maintainer1) { create(:user) }
       let(:u_maintainer2) { create(:user) }
       let(:u_developer) { create(:user) }
@@ -3489,7 +3489,7 @@ RSpec.describe NotificationService, :mailer do
 
     it 'sends the email to owners and masters' do
       expect(Notify).to receive(:prometheus_alert_fired_email).with(project, master, alert).and_call_original
-      expect(Notify).to receive(:prometheus_alert_fired_email).with(project, project.owner, alert).and_call_original
+      expect(Notify).to receive(:prometheus_alert_fired_email).with(project, project.first_owner, alert).and_call_original
       expect(Notify).not_to receive(:prometheus_alert_fired_email).with(project, developer, alert)
 
       subject.prometheus_alerts_fired(project, [alert])

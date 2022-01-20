@@ -219,7 +219,7 @@ RSpec.describe 'Gcp Cluster', :js do
     it 'user does not see the offer' do
       page.within('.as-third-party-offers') do
         click_button 'Expand'
-        check 'Do not display offers from third parties'
+        check 'Do not display content for customer experience improvement and offers from third parties'
         click_button 'Save changes'
       end
 

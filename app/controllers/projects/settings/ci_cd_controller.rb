@@ -26,9 +26,13 @@ module Projects
           ).to_json
         end
 
-        # @assignable_runners is using ci_owned_runners
-        ::Gitlab::Database.allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/336436') do
+        if current_user.ci_owned_runners_cross_joins_fix_enabled?
           render
+        else
+          # @assignable_runners is using ci_owned_runners
+          ::Gitlab::Database.allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/336436') do
+            render
+          end
         end
       end
 

@@ -287,12 +287,6 @@ RSpec.describe ApplicationWorker do
   end
 
   context 'different kinds of push_bulk' do
-    shared_context 'disable the `sidekiq_push_bulk_in_batches` feature flag' do
-      before do
-        stub_feature_flags(sidekiq_push_bulk_in_batches: false)
-      end
-    end
-
     shared_context 'set safe limit beyond the number of jobs to be enqueued' do
       before do
         stub_const("#{described_class}::SAFE_PUSH_BULK_LIMIT", args.count + 1)
@@ -408,27 +402,6 @@ RSpec.describe ApplicationWorker do
           it_behaves_like 'returns job_id of all enqueued jobs'
           it_behaves_like 'does not schedule the jobs for any specific time'
         end
-
-        context 'when the feature flag `sidekiq_push_bulk_in_batches` is disabled' do
-          include_context 'disable the `sidekiq_push_bulk_in_batches` feature flag'
-
-          context 'when the number of jobs to be enqueued does not exceed the safe limit' do
-            include_context 'set safe limit beyond the number of jobs to be enqueued'
-
-            it_behaves_like 'enqueues jobs in one go'
-            it_behaves_like 'logs bulk insertions'
-            it_behaves_like 'returns job_id of all enqueued jobs'
-            it_behaves_like 'does not schedule the jobs for any specific time'
-          end
-
-          context 'when the number of jobs to be enqueued exceeds safe limit' do
-            include_context 'set safe limit below the number of jobs to be enqueued'
-
-            it_behaves_like 'enqueues jobs in one go'
-            it_behaves_like 'returns job_id of all enqueued jobs'
-            it_behaves_like 'does not schedule the jobs for any specific time'
-          end
-        end
       end
     end
 
@@ -475,26 +448,6 @@ RSpec.describe ApplicationWorker do
             it_behaves_like 'enqueues the jobs in a batched fashion, with each batch enqueing jobs as per the set safe limit'
             it_behaves_like 'returns job_id of all enqueued jobs'
             it_behaves_like 'schedules all the jobs at a specific time'
-          end
-
-          context 'when the feature flag `sidekiq_push_bulk_in_batches` is disabled' do
-            include_context 'disable the `sidekiq_push_bulk_in_batches` feature flag'
-
-            context 'when the number of jobs to be enqueued does not exceed the safe limit' do
-              include_context 'set safe limit beyond the number of jobs to be enqueued'
-
-              it_behaves_like 'enqueues jobs in one go'
-              it_behaves_like 'returns job_id of all enqueued jobs'
-              it_behaves_like 'schedules all the jobs at a specific time'
-            end
-
-            context 'when the number of jobs to be enqueued exceeds safe limit' do
-              include_context 'set safe limit below the number of jobs to be enqueued'
-
-              it_behaves_like 'enqueues jobs in one go'
-              it_behaves_like 'returns job_id of all enqueued jobs'
-              it_behaves_like 'schedules all the jobs at a specific time'
-            end
           end
         end
       end
@@ -574,26 +527,6 @@ RSpec.describe ApplicationWorker do
             it_behaves_like 'enqueues the jobs in a batched fashion, with each batch enqueing jobs as per the set safe limit'
             it_behaves_like 'returns job_id of all enqueued jobs'
             it_behaves_like 'schedules all the jobs at a specific time, per batch'
-          end
-
-          context 'when the feature flag `sidekiq_push_bulk_in_batches` is disabled' do
-            include_context 'disable the `sidekiq_push_bulk_in_batches` feature flag'
-
-            context 'when the number of jobs to be enqueued does not exceed the safe limit' do
-              include_context 'set safe limit beyond the number of jobs to be enqueued'
-
-              it_behaves_like 'enqueues jobs in one go'
-              it_behaves_like 'returns job_id of all enqueued jobs'
-              it_behaves_like 'schedules all the jobs at a specific time, per batch'
-            end
-
-            context 'when the number of jobs to be enqueued exceeds safe limit' do
-              include_context 'set safe limit below the number of jobs to be enqueued'
-
-              it_behaves_like 'enqueues jobs in one go'
-              it_behaves_like 'returns job_id of all enqueued jobs'
-              it_behaves_like 'schedules all the jobs at a specific time, per batch'
-            end
           end
         end
       end

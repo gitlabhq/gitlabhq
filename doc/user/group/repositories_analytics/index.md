@@ -5,11 +5,15 @@ group: Testing
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Repositories Analytics **(PREMIUM)**
+# Repositories analytics for groups **(PREMIUM)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/215104) in GitLab 13.4.
 
-![Group repositories analytics](../img/group_code_coverage_analytics_v13_9.png)
+Repositories analytics for groups provides information about test coverage for all projects in a group. An
+[issue exists](https://gitlab.com/gitlab-org/gitlab/-/issues/273527) to also extend support for all projects in
+subgroups.
+
+It is similar to [repository analytics for projects](../../analytics/repository_analytics.md).
 
 ## Current group code coverage
 

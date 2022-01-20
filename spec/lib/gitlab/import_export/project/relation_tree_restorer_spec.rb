@@ -54,38 +54,6 @@ RSpec.describe Gitlab::ImportExport::Project::RelationTreeRestorer do
     end
   end
 
-  shared_examples 'logging of relations creation' do
-    context 'when log_import_export_relation_creation feature flag is enabled' do
-      before do
-        stub_feature_flags(log_import_export_relation_creation: group)
-      end
-
-      it 'logs top-level relation creation' do
-        expect(shared.logger)
-          .to receive(:info)
-          .with(hash_including(message: '[Project/Group Import] Created new object relation'))
-          .at_least(:once)
-
-        subject
-      end
-    end
-
-    context 'when log_import_export_relation_creation feature flag is disabled' do
-      before do
-        stub_feature_flags(log_import_export_relation_creation: false)
-      end
-
-      it 'does not log top-level relation creation' do
-        expect(shared.logger)
-          .to receive(:info)
-          .with(hash_including(message: '[Project/Group Import] Created new object relation'))
-          .never
-
-        subject
-      end
-    end
-  end
-
   context 'with legacy reader' do
     let(:path) { 'spec/fixtures/lib/gitlab/import_export/complex/project.json' }
     let(:relation_reader) do
@@ -106,7 +74,14 @@ RSpec.describe Gitlab::ImportExport::Project::RelationTreeRestorer do
         create(:project, :builds_enabled, :issues_disabled, name: 'project', path: 'project', group: group)
       end
 
-      include_examples 'logging of relations creation'
+      it 'logs top-level relation creation' do
+        expect(shared.logger)
+          .to receive(:info)
+          .with(hash_including(message: '[Project/Group Import] Created new object relation'))
+          .at_least(:once)
+
+        subject
+      end
     end
   end
 

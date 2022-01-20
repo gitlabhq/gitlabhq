@@ -83,23 +83,11 @@ replacing the class name and arguments with whatever values are necessary for
 your migration:
 
 ```ruby
-migrate_async('BackgroundMigrationClassName', [arg1, arg2, ...])
+migrate_in('BackgroundMigrationClassName', [arg1, arg2, ...])
 ```
 
-Usually it's better to enqueue jobs in bulk, for this you can use
-`bulk_migrate_async`:
-
-```ruby
-bulk_migrate_async(
-  [['BackgroundMigrationClassName', [1]],
-   ['BackgroundMigrationClassName', [2]]]
-)
-```
-
-Note that this will queue a Sidekiq job immediately: if you have a large number
-of records, this may not be what you want. You can use the function
-`queue_background_migration_jobs_by_range_at_intervals` to split the job into
-batches:
+You can use the function `queue_background_migration_jobs_by_range_at_intervals`
+to automatically split the job into batches:
 
 ```ruby
 queue_background_migration_jobs_by_range_at_intervals(
@@ -116,16 +104,6 @@ consuming migrations it's best to schedule a background job using an
 `after_create` hook so this doesn't affect response timings. The same applies to
 updates. Removals in turn can be handled by simply defining foreign keys with
 cascading deletes.
-
-If you would like to schedule jobs in bulk with a delay, you can use
-`BackgroundMigrationWorker.bulk_perform_in`:
-
-```ruby
-jobs = [['BackgroundMigrationClassName', [1]],
-        ['BackgroundMigrationClassName', [2]]]
-
-bulk_migrate_in(5.minutes, jobs)
-```
 
 ### Rescheduling background migrations
 
@@ -197,53 +175,47 @@ the new format.
 
 ## Example
 
-To explain all this, let's use the following example: the table `services` has a
+To explain all this, let's use the following example: the table `integrations` has a
 field called `properties` which is stored in JSON. For all rows you want to
-extract the `url` key from this JSON object and store it in the `services.url`
-column. There are millions of services and parsing JSON is slow, thus you can't
+extract the `url` key from this JSON object and store it in the `integrations.url`
+column. There are millions of integrations and parsing JSON is slow, thus you can't
 do this in a regular migration.
 
 To do this using a background migration we'll start with defining our migration
 class:
 
 ```ruby
-class Gitlab::BackgroundMigration::ExtractServicesUrl
-  class Service < ActiveRecord::Base
-    self.table_name = 'services'
+class Gitlab::BackgroundMigration::ExtractIntegrationsUrl
+  class Integration < ActiveRecord::Base
+    self.table_name = 'integrations'
   end
 
-  def perform(service_id)
-    # A row may be removed between scheduling and starting of a job, thus we
-    # need to make sure the data is still present before doing any work.
-    service = Service.select(:properties).find_by(id: service_id)
+  def perform(start_id, end_id)
+    Integration.where(id: start_id..end_id).each do |integration|
+      json = JSON.load(integration.properties)
 
-    return unless service
-
-    begin
-      json = JSON.load(service.properties)
+      integration.update(url: json['url']) if json['url']
     rescue JSON::ParserError
       # If the JSON is invalid we don't want to keep the job around forever,
       # instead we'll just leave the "url" field to whatever the default value
       # is.
-      return
+      next
     end
-
-    service.update(url: json['url']) if json['url']
   end
 end
 ```
 
 Next we'll need to adjust our code so we schedule the above migration for newly
-created and updated services. We can do this using something along the lines of
+created and updated integrations. We can do this using something along the lines of
 the following:
 
 ```ruby
-class Service < ActiveRecord::Base
-  after_commit :schedule_service_migration, on: :update
-  after_commit :schedule_service_migration, on: :create
+class Integration < ActiveRecord::Base
+  after_commit :schedule_integration_migration, on: :update
+  after_commit :schedule_integration_migration, on: :create
 
-  def schedule_service_migration
-    BackgroundMigrationWorker.perform_async('ExtractServicesUrl', [id])
+  def schedule_integration_migration
+    BackgroundMigrationWorker.perform_async('ExtractIntegrationsUrl', [id, id])
   end
 end
 ```
@@ -253,21 +225,20 @@ before the transaction completes as doing so can lead to race conditions where
 the changes are not yet visible to the worker.
 
 Next we'll need a post-deployment migration that schedules the migration for
-existing data. Since we're dealing with a lot of rows we'll schedule jobs in
-batches instead of doing this one by one:
+existing data.
 
 ```ruby
-class ScheduleExtractServicesUrl < Gitlab::Database::Migration[1.0]
+class ScheduleExtractIntegrationsUrl < Gitlab::Database::Migration[1.0]
   disable_ddl_transaction!
 
-  def up
-    define_batchable_model('services').select(:id).in_batches do |relation|
-      jobs = relation.pluck(:id).map do |id|
-        ['ExtractServicesUrl', [id]]
-      end
+  MIGRATION = 'ExtractIntegrationsUrl'
+  DELAY_INTERVAL = 2.minutes
 
-      BackgroundMigrationWorker.bulk_perform_async(jobs)
-    end
+  def up
+    queue_background_migration_jobs_by_range_at_intervals(
+      define_batchable_model('integrations'),
+      MIGRATION,
+      DELAY_INTERVAL)
   end
 
   def down
@@ -284,18 +255,18 @@ jobs and manually run on any un-migrated rows. Such a migration would look like
 this:
 
 ```ruby
-class ConsumeRemainingExtractServicesUrlJobs < Gitlab::Database::Migration[1.0]
+class ConsumeRemainingExtractIntegrationsUrlJobs < Gitlab::Database::Migration[1.0]
   disable_ddl_transaction!
 
   def up
     # This must be included
-    Gitlab::BackgroundMigration.steal('ExtractServicesUrl')
+    Gitlab::BackgroundMigration.steal('ExtractIntegrationsUrl')
 
     # This should be included, but can be skipped - see below
-    define_batchable_model('services').where(url: nil).each_batch(of: 50) do |batch|
+    define_batchable_model('integrations').where(url: nil).each_batch(of: 50) do |batch|
       range = batch.pluck('MIN(id)', 'MAX(id)').first
 
-      Gitlab::BackgroundMigration::ExtractServicesUrl.new.perform(*range)
+      Gitlab::BackgroundMigration::ExtractIntegrationsUrl.new.perform(*range)
     end
   end
 
@@ -313,9 +284,9 @@ If the application does not depend on the data being 100% migrated (for
 instance, the data is advisory, and not mission-critical), then this final step
 can be skipped.
 
-This migration will then process any jobs for the ExtractServicesUrl migration
+This migration will then process any jobs for the ExtractIntegrationsUrl migration
 and continue once all jobs have been processed. Once done you can safely remove
-the `services.properties` column.
+the `integrations.properties` column.
 
 ## Testing
 

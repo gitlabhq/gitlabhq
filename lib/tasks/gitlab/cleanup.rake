@@ -100,15 +100,13 @@ namespace :gitlab do
     namespace :sessions do
       desc "GitLab | Cleanup | Sessions | Clean ActiveSession lookup keys"
       task active_sessions_lookup_keys: :gitlab_environment do
-        use_redis_session_store = Gitlab::Utils.to_boolean(ENV['GITLAB_USE_REDIS_SESSIONS_STORE'], default: true)
-        redis_store_class = use_redis_session_store ? Gitlab::Redis::Sessions : Gitlab::Redis::SharedState
         session_key_pattern = "#{Gitlab::Redis::Sessions::USER_SESSIONS_LOOKUP_NAMESPACE}:*"
         last_save_check = Time.at(0)
         wait_time = 10.seconds
         cursor = 0
         total_users_scanned = 0
 
-        redis_store_class.with do |redis|
+        Gitlab::Redis::Sessions.with do |redis|
           begin
             cursor, keys = redis.scan(cursor, match: session_key_pattern)
             total_users_scanned += keys.count

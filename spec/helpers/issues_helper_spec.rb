@@ -9,7 +9,7 @@ RSpec.describe IssuesHelper do
 
   describe '#work_item_type_icon' do
     it 'returns icon of all standard base types' do
-      WorkItem::Type.base_types.each do |type|
+      WorkItems::Type.base_types.each do |type|
         expect(work_item_type_icon(type[0])).to eq "issue-type-#{type[0].to_s.dasherize}"
       end
     end
@@ -243,27 +243,6 @@ RSpec.describe IssuesHelper do
 
     it 'is false when moved issue project has service desk enabled' do
       expect(helper.show_moved_service_desk_issue_warning?(new_issue)).to be(false)
-    end
-  end
-
-  describe '#use_startup_call' do
-    it 'returns false when a query param is present' do
-      allow(controller.request).to receive(:query_parameters).and_return({ foo: 'bar' })
-
-      expect(helper.use_startup_call?).to eq(false)
-    end
-
-    it 'returns false when user has stored sort preference' do
-      controller.instance_variable_set(:@sort, 'updated_asc')
-
-      expect(helper.use_startup_call?).to eq(false)
-    end
-
-    it 'returns true when request.query_parameters is empty with default sorting preference' do
-      controller.instance_variable_set(:@sort, 'created_date')
-      allow(controller.request).to receive(:query_parameters).and_return({})
-
-      expect(helper.use_startup_call?).to eq(true)
     end
   end
 

@@ -15,12 +15,10 @@ export default {
     onCiConfigUpdate(content) {
       this.$emit('updateCiConfig', content);
     },
-    registerCiSchema() {
+    registerCiSchema({ detail: { instance } }) {
       if (this.glFeatures.schemaLinting) {
-        const editorInstance = this.$refs.editor.getEditor();
-
-        editorInstance.use({ definition: CiSchemaExtension });
-        editorInstance.registerCiSchema();
+        instance.use({ definition: CiSchemaExtension });
+        instance.registerCiSchema();
       }
     },
   },
@@ -33,7 +31,7 @@ export default {
       ref="editor"
       :file-name="ciConfigPath"
       v-bind="$attrs"
-      @[$options.readyEvent]="registerCiSchema"
+      @[$options.readyEvent]="registerCiSchema($event)"
       @input="onCiConfigUpdate"
       v-on="$listeners"
     />

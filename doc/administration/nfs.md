@@ -12,6 +12,8 @@ recommended for performance reasons.
 
 For data objects such as LFS, Uploads, Artifacts, and so on, an [Object Storage service](object_storage.md)
 is recommended over NFS where possible, due to better performance.
+When eliminating the usage of NFS, there are [additional steps you need to take](object_storage.md#other-alternatives-to-file-system-storage)
+in addition to moving to Object Storage.
 
 File system performance can impact overall GitLab performance, especially for
 actions that read or write to Git repositories. For steps you can use to test

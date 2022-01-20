@@ -1,3 +1,4 @@
+import { GlLink, GlSprintf } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { packageData } from 'jest/packages_and_registries/package_registry/mock_data';
 import InstallationTitle from '~/packages_and_registries/package_registry/components/details/installation_title.vue';
@@ -6,6 +7,7 @@ import {
   TRACKING_ACTION_COPY_NUGET_INSTALL_COMMAND,
   TRACKING_ACTION_COPY_NUGET_SETUP_COMMAND,
   PACKAGE_TYPE_NUGET,
+  NUGET_HELP_PATH,
 } from '~/packages_and_registries/package_registry/constants';
 import CodeInstructions from '~/vue_shared/components/registry/code_instruction.vue';
 
@@ -15,21 +17,18 @@ describe('NugetInstallation', () => {
   let wrapper;
 
   const nugetInstallationCommandStr = 'nuget install @gitlab-org/package-15 -Source "GitLab"';
-  const nugetSetupCommandStr =
-    'nuget source Add -Name "GitLab" -Source "nugetPath" -UserName <your_username> -Password <your_token>';
+  const nugetSetupCommandStr = `nuget source Add -Name "GitLab" -Source "${packageEntity.nugetUrl}" -UserName <your_username> -Password <your_token>`;
 
   const findCodeInstructions = () => wrapper.findAllComponents(CodeInstructions);
   const findInstallationTitle = () => wrapper.findComponent(InstallationTitle);
+  const findSetupDocsLink = () => wrapper.findComponent(GlLink);
 
   function createComponent() {
     wrapper = shallowMountExtended(NugetInstallation, {
-      provide: {
-        nugetHelpPath: 'nugetHelpPath',
-        nugetPath: 'nugetPath',
-      },
       propsData: {
         packageEntity,
       },
+      stubs: { GlSprintf },
     });
   }
 
@@ -69,6 +68,13 @@ describe('NugetInstallation', () => {
       expect(findCodeInstructions().at(1).props()).toMatchObject({
         instruction: nugetSetupCommandStr,
         trackingAction: TRACKING_ACTION_COPY_NUGET_SETUP_COMMAND,
+      });
+    });
+
+    it('it has docs link', () => {
+      expect(findSetupDocsLink().attributes()).toMatchObject({
+        href: NUGET_HELP_PATH,
+        target: '_blank',
       });
     });
   });

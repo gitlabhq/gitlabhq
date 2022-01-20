@@ -56,6 +56,9 @@ module Types
       field :stored_externally, GraphQL::Types::Boolean, null: true, method: :stored_externally?,
             description: "Whether the blob's content is stored externally (for instance, in LFS)."
 
+      field :external_storage, GraphQL::Types::String, null: true, method: :external_storage,
+            description: "External storage being used, if enabled (for instance, 'LFS')."
+
       field :edit_blob_path, GraphQL::Types::String, null: true,
             description: 'Web path to edit the blob in the old-style editor.'
 
@@ -70,6 +73,19 @@ module Types
 
       field :pipeline_editor_path, GraphQL::Types::String, null: true,
             description: 'Web path to edit .gitlab-ci.yml file.'
+
+      field :find_file_path, GraphQL::Types::String, null: true,
+            description: 'Web path to find file.'
+
+      field :blame_path, GraphQL::Types::String, null: true,
+            description: 'Web path to blob blame page.'
+
+      field :history_path, GraphQL::Types::String, null: true,
+            description: 'Web path to blob history page.'
+
+      field :permalink_path, GraphQL::Types::String, null: true,
+            description: 'Web path to blob permalink.',
+            calls_gitaly: true
 
       field :code_owners, [Types::UserType], null: true,
             description: 'List of code owners for the blob.',
@@ -97,6 +113,9 @@ module Types
 
       field :can_current_user_push_to_branch, GraphQL::Types::Boolean, null: true, method: :can_current_user_push_to_branch?,
             description: 'Whether the current user can push to the branch.'
+
+      field :archived, GraphQL::Types::Boolean, null: true, method: :archived?,
+            description: 'Whether the current project is archived.'
 
       def raw_text_blob
         object.data unless object.binary?

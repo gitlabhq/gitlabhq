@@ -12,9 +12,11 @@ export default {
 </script>
 <template>
   <div class="mr-widget-body media">
-    <status-icon :show-disabled-button="!glFeatures.restructuredMrWidget" status="loading" />
+    <status-icon :show-disabled-button="true" status="loading" />
     <div class="media-body space-children">
-      <span class="bold"> {{ s__('mrWidget|Checking if merge request can be merged…') }} </span>
+      <span :class="{ 'gl-ml-0! gl-text-body!': glFeatures.restructuredMrWidget }" class="bold">
+        {{ s__('mrWidget|Checking if merge request can be merged…') }}
+      </span>
     </div>
   </div>
 </template>

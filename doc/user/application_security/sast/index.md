@@ -2,13 +2,11 @@
 stage: Secure
 group: Static Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
-type: reference, howto
 ---
 
 # Static Application Security Testing (SAST) **(FREE)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/3775) in GitLab 10.3.
-> - All open source (OSS) analyzers were moved from GitLab Ultimate to GitLab Free in GitLab 13.3.
+> All open source (OSS) analyzers were moved from GitLab Ultimate to GitLab Free in GitLab 13.3.
 
 NOTE:
 The whitepaper ["A Seismic Shift in Application Security"](https://about.gitlab.com/resources/whitepaper-seismic-shift-application-security/)
@@ -50,6 +48,8 @@ the analyzer outputs an [exit code](../../../development/integrations/secure.md#
   be leveraged to unauthorized access to session data.
 
 ## Requirements
+
+SAST runs in the `test` stage, which is available by default. If you redefine the stages in the `.gitlab-ci.yml` file, the `test` stage is required.
 
 To run SAST jobs, by default, you need GitLab Runner with the
 [`docker`](https://docs.gitlab.com/runner/executors/docker.html) or
@@ -168,10 +168,9 @@ To configure SAST for a project you can:
 
 ### Configure SAST manually
 
-For GitLab 11.9 and later, to enable SAST you must [include](../../../ci/yaml/index.md#includetemplate)
+To enable SAST you must [include](../../../ci/yaml/index.md#includetemplate)
 the [`SAST.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/SAST.gitlab-ci.yml)
-provided as a part of your GitLab installation. For GitLab versions earlier than 11.9, you
-can copy and use the job as defined that template.
+provided as a part of your GitLab installation.
 
 Add the following to your `.gitlab-ci.yml` file:
 
@@ -269,7 +268,7 @@ versions are pulled, there are certain cases where it can be beneficial to pin
 an analyzer to a specific release. To do so, override the `SAST_ANALYZER_IMAGE_TAG` CI/CD variable
 in the job template directly.
 
-In the example below, we pin to a specific patch version of the `spotbugs` analyzer and minor version of the `semgrep` analyzer:
+In the example below, we pin to a minor version of the `semgrep` analyzer and a specific patch version of the `brakeman` analyzer:
 
 ```yaml
 include:
@@ -277,11 +276,11 @@ include:
 
 semgrep-sast:
   variables:
-    SAST_ANALYZER_IMAGE_TAG: "2.12"
+    SAST_ANALYZER_IMAGE_TAG: "2.16"
 
-spotbugs-sast:
+brakeman-sast:
   variables:
-    SAST_ANALYZER_IMAGE_TAG: "2.28.1"
+    SAST_ANALYZER_IMAGE_TAG: "2.21.1"
 ```
 
 ### Customize rulesets **(ULTIMATE)**
@@ -311,9 +310,9 @@ To disable analyzer rules:
 
 1. Set the `disabled` flag to `true` in the context of a `ruleset` section
 
-1. In one or more `ruleset.identifier` sub sections, list the rules that you want disabled. Every `ruleset.identifier` section has: 
+1. In one or more `ruleset.identifier` sub sections, list the rules that you want disabled. Every `ruleset.identifier` section has:
 
-- a `type` field, to name the predefined rule identifier that the targeted analyzer uses. 
+- a `type` field, to name the predefined rule identifier that the targeted analyzer uses.
 
 - a `value` field, to name the rule to be disabled.
 
@@ -346,7 +345,7 @@ and `sobelow` by matching the `type` and `value` of identifiers:
 
 #### Synthesize a custom configuration
 
-To create a custom configuration, you can use passthrough chains. 
+To create a custom configuration, you can use passthrough chains.
 
 A passthrough is a single step in a passthrough chain. The passthrough is evaluated
 in a sequence to incrementally build a configuration. The configuration is then
@@ -360,8 +359,8 @@ parameters:
 | `description` | Description about the analyzer configuration section. |
 | `targetdir`   | The `targetdir` parameter defines the directory where the final configuration is located. If `targetdir` is empty, the analyzer uses a random directory. The maximum size of `targetdir` is 100MB. |
 | `validate`    | If set to `true`, the target files for passthroughs (`raw`, `file` and `url`) are validated. The validation works for `yaml`, `xml`, `json` and `toml` files. The proper validator is identified based on the extension of the target file. By default, `validate` is set to `false`. |
-| `interpolate` | If set to `true`, environment variable interpolation is enabled so that the configuration uses secrets/tokens. We advise using this feature with caution to not leak any secrets. By default, `interpolate` is set to `false`. | 
-| `timeout`     | The total `timeout` for the evaluation of a passthrough chain is set to 60 seconds. If `timeout` is not set, the default timeout is 60 seconds. The timeout cannot exceed 300 seconds. | 
+| `interpolate` | If set to `true`, environment variable interpolation is enabled so that the configuration uses secrets/tokens. We advise using this feature with caution to not leak any secrets. By default, `interpolate` is set to `false`. |
+| `timeout`     | The total `timeout` for the evaluation of a passthrough chain is set to 60 seconds. If `timeout` is not set, the default timeout is 60 seconds. The timeout cannot exceed 300 seconds. |
 
 A configuration section can include one or more passthrough sections. The maximum number of passthrough sections is 20.
 There are several types of passthroughs:
@@ -374,12 +373,12 @@ There are several types of passthroughs:
 | `url`  | Fetch the analyzer configuration through HTTP. |
 
 If multiple passthrough sections are defined in a passthrough chain, their
-position in the chain defines the order in which they are evaluated. 
+position in the chain defines the order in which they are evaluated.
 
-- Passthroughs listed later in the chain sequence have a higher precedence. 
+- Passthroughs listed later in the chain sequence have a higher precedence.
 - Passthroughs with a higher precedence overwrite (default) and append data
   yielded by previous passthroughs. This is useful for cases where you need to
-  use or modify an existing configuration. 
+  use or modify an existing configuration.
 
 Configure a passthrough these parameters:
 
@@ -454,7 +453,7 @@ file `gosec-config.json`:
 ##### Passthrough chain for semgrep
 
 In the below example, we generate a custom configuration under the `/sgrules`
-target directory with a total `timeout` of 60 seconds. 
+target directory with a total `timeout` of 60 seconds.
 
 Several passthrouh types generate a configuration for the target analyzer:
 
@@ -463,17 +462,17 @@ Several passthrouh types generate a configuration for the target analyzer:
   `97f7686` from the `sast-rules` Git repostory. From the `sast-rules` Git
   repository, only data from the `go` subdirectory is considered.
   - The `sast-rules` entry has a higher precedence because it appears later in
-    the configuration. 
+    the configuration.
   - If there is a filename collision between files in both repositories, files
     from the `sast` repository overwrite files from the `myrules` repository,
     as `sast-rules` has higher precedence.  
 - The `raw` entry creates a file named `insecure.yml` under `/sgrules`. The
-  full path is `/sgrules/insecure.yml`. 
+  full path is `/sgrules/insecure.yml`.
 - The `url` entry fetches a configuration made available through a URL and
-  stores it in the `/sgrules/gosec.yml` file. 
+  stores it in the `/sgrules/gosec.yml` file.
 
 Afterwards, semgrep is invoked with the final configuration located under
-`/sgrules`. 
+`/sgrules`.
 
 ```toml
 [semgrep]
@@ -537,17 +536,17 @@ It does not explicitly store credentials in the configuration file. To reduce th
 ##### Configure the append mode for passthroughs
 
 To append data to previous passthroughs, use the `append` mode for the
-passthrough types `file`, `url`, and `raw`. 
+passthrough types `file`, `url`, and `raw`.
 
 Passthroughs in `override` mode overwrite files
 created when preceding passthroughs in the chain find a naming
 collision. If `mode` is set to `append`, a passthrough appends data to the
-files created by its predecessors instead of overwriting. 
+files created by its predecessors instead of overwriting.
 
 In the below semgrep configuration,`/sgrules/insecure.yml` assembles two passthroughs. The rules are:
 
 - `insecure`
-- `secret` 
+- `secret`
 
 These rules add a search pattern to the analyzer and extends semgrep capabilities.
 
@@ -1056,6 +1055,12 @@ For Maven builds, add the following to your `pom.xml` file:
   <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 </properties>
 ```
+
+### SpotBugs Error: `Project couldn't be built`
+
+If your job is failing at the build step with the message "Project couldn't be built", it's most likely because your job is asking SpotBugs to build with a tool that isn't part of its default tools. For a list of the SpotBugs default tools, see [SpotBugs' asdf dependencies](https://gitlab.com/gitlab-org/security-products/analyzers/spotbugs/-/raw/master/config/.tool-versions).
+
+The solution is to use [pre-compilation](#pre-compilation). Pre-compilation ensures the images required by SpotBugs are available in the job's container.
 
 ### Flawfinder encoding error
 

@@ -40,7 +40,8 @@ module Users
       profile_personal_access_token_expiry: 37,  # EE-only
       terraform_notification_dismissed: 38,
       security_newsletter_callout: 39,
-      verification_reminder: 40                  # EE-only
+      verification_reminder: 40,                  # EE-only
+      ci_deprecation_warning_for_types_keyword: 41
     }
 
     validates :feature_name,

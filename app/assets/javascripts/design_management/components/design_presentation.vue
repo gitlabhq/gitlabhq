@@ -1,5 +1,6 @@
 <script>
 import { throttle } from 'lodash';
+import { isLoggedIn } from '~/lib/utils/common_utils';
 import DesignOverlay from './design_overlay.vue';
 import DesignImage from './image.vue';
 
@@ -54,6 +55,7 @@ export default {
       initialLoad: true,
       lastDragPosition: null,
       isDraggingDesign: false,
+      isLoggedIn: isLoggedIn(),
     };
   },
   computed: {
@@ -311,7 +313,7 @@ export default {
         :position="overlayPosition"
         :notes="discussionStartingNotes"
         :current-comment-form="currentCommentForm"
-        :disable-commenting="isDraggingDesign"
+        :disable-commenting="!isLoggedIn || isDraggingDesign"
         :resolved-discussions-expanded="resolvedDiscussionsExpanded"
         @openCommentForm="openCommentForm"
         @closeCommentForm="closeCommentForm"

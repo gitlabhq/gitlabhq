@@ -268,6 +268,10 @@ module Ci
         !build.any_unmet_prerequisites? # If false is returned, it stops the transition
       end
 
+      before_transition on: :enqueue do |build|
+        !build.waiting_for_deployment_approval? # If false is returned, it stops the transition
+      end
+
       after_transition created: :scheduled do |build|
         build.run_after_commit do
           Ci::BuildScheduleWorker.perform_at(build.scheduled_at, build.id)
@@ -393,6 +397,10 @@ module Ci
       auto_retry.allowed?
     end
 
+    def auto_retry_expected?
+      failed? && auto_retry_allowed?
+    end
+
     def detailed_status(current_user)
       Gitlab::Ci::Status::Build::Factory
         .new(self.present, current_user)
@@ -416,6 +424,10 @@ module Ci
       true
     end
 
+    def save_tags
+      super unless Thread.current['ci_bulk_insert_tags']
+    end
+
     def archived?
       return true if degenerated?
 
@@ -424,7 +436,11 @@ module Ci
     end
 
     def playable?
-      action? && !archived? && (manual? || scheduled? || retryable?)
+      action? && !archived? && (manual? || scheduled? || retryable?) && !waiting_for_deployment_approval?
+    end
+
+    def waiting_for_deployment_approval?
+      manual? && starts_environment? && deployment&.blocked?
     end
 
     def schedulable?
@@ -751,9 +767,7 @@ module Ci
 
     def any_runners_available?
       cache_for_available_runners do
-        ::Gitlab::Database.allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/339937') do
-          project.active_runners.exists?
-        end
+        project.active_runners.exists?
       end
     end
 
@@ -1021,7 +1035,15 @@ module Ci
       transaction do
         update_columns(status: :failed, failure_reason: :data_integrity_failure)
         all_queuing_entries.delete_all
+        all_runtime_metadata.delete_all
       end
+
+      Gitlab::AppLogger.info(
+        message: 'Build doomed',
+        class: self.class.name,
+        build_id: id,
+        pipeline_id: pipeline_id,
+        project_id: project_id)
     end
 
     def degradation_threshold
@@ -1051,10 +1073,7 @@ module Ci
     end
 
     def drop_with_exit_code!(failure_reason, exit_code)
-      transaction do
-        conditionally_allow_failure!(exit_code)
-        drop!(failure_reason)
-      end
+      drop!(::Gitlab::Ci::Build::Status::Reason.new(self, failure_reason, exit_code))
     end
 
     def exit_codes_defined?
@@ -1063,6 +1082,10 @@ module Ci
 
     def create_queuing_entry!
       ::Ci::PendingBuild.upsert_from_build!(self)
+    end
+
+    def create_runtime_metadata!
+      ::Ci::RunningBuild.upsert_shared_runner_build!(self)
     end
 
     ##
@@ -1091,6 +1114,13 @@ module Ci
           end
         end
       end
+    end
+
+    def allowed_to_fail_with_code?(exit_code)
+      options
+        .dig(:allow_failure_criteria, :exit_codes)
+        .to_a
+        .include?(exit_code)
     end
 
     protected
@@ -1174,25 +1204,13 @@ module Ci
         break variables unless Feature.enabled?(:ci_job_jwt, project, default_enabled: true)
 
         jwt = Gitlab::Ci::Jwt.for_build(self)
+        jwt_v2 = Gitlab::Ci::JwtV2.for_build(self)
         variables.append(key: 'CI_JOB_JWT', value: jwt, public: false, masked: true)
+        variables.append(key: 'CI_JOB_JWT_V1', value: jwt, public: false, masked: true)
+        variables.append(key: 'CI_JOB_JWT_V2', value: jwt_v2, public: false, masked: true)
       rescue OpenSSL::PKey::RSAError, Gitlab::Ci::Jwt::NoSigningKeyError => e
         Gitlab::ErrorTracking.track_exception(e)
       end
-    end
-
-    def conditionally_allow_failure!(exit_code)
-      return unless exit_code
-
-      if allowed_to_fail_with_code?(exit_code)
-        update_columns(allow_failure: true)
-      end
-    end
-
-    def allowed_to_fail_with_code?(exit_code)
-      options
-        .dig(:allow_failure_criteria, :exit_codes)
-        .to_a
-        .include?(exit_code)
     end
 
     def cache_for_online_runners(&block)

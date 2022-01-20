@@ -18,11 +18,15 @@ class Member < ApplicationRecord
   AVATAR_SIZE = 40
   ACCESS_REQUEST_APPROVERS_TO_BE_NOTIFIED_LIMIT = 10
 
+  STATE_ACTIVE = 0
+  STATE_AWAITING = 1
+
   attr_accessor :raw_invite_token
 
   belongs_to :created_by, class_name: "User"
   belongs_to :user
   belongs_to :source, polymorphic: true # rubocop:disable Cop/PolymorphicAssociations
+  belongs_to :member_namespace, inverse_of: :namespace_members, foreign_key: 'member_namespace_id', class_name: 'Namespace'
   has_one :member_task
 
   delegate :name, :username, :email, :last_activity_on, to: :user, prefix: true
@@ -231,14 +235,7 @@ class Member < ApplicationRecord
     end
 
     def left_join_users
-      users = User.arel_table
-      members = Member.arel_table
-
-      member_users = members.join(users, Arel::Nodes::OuterJoin)
-                             .on(members[:user_id].eq(users[:id]))
-                             .join_sources
-
-      joins(member_users)
+      left_outer_joins(:user)
     end
 
     def access_for_user_ids(user_ids)

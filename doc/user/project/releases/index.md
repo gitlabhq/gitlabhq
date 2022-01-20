@@ -6,8 +6,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Releases **(FREE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/41766) in GitLab 11.7.
-
 In GitLab, a release enables you to create a snapshot of your project for your users, including
 installation packages and release notes. You can create a GitLab release on any branch. Creating a
 release also creates a [Git tag](https://git-scm.com/book/en/v2/Git-Basics-Tagging) to mark the
@@ -133,6 +131,10 @@ release creation, the release job fails.
 
 To create a release when you push a Git tag, or when you add a Git tag
 in the UI by going to **Repository > Tags**:
+
+NOTE:
+Do not provide **Release notes** when you create the Git tag in the UI.
+Providing release notes creates a release, resulting in the pipeline failing.
 
 ```yaml
 release_job:
@@ -829,3 +831,7 @@ Make sure that the user or a service/bot account is allowed to
 [create the protected tag](../protected_tags.md#configuring-protected-tags) too.
 
 See [the release permissions](#release-permissions) for more information.
+
+### Note about storage
+
+Note that the feature is built on top of Git tags, so virtually no extra data is needed besides to create the release itself. Additional assets and the release evidence that is automatically generated consume storage.

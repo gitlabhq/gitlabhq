@@ -11,10 +11,6 @@ type: reference
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/233479) in GitLab 13.6.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/241983) in GitLab 13.7.
 
-INFO:
-Create test cases in GitLab Ultimate.
-[Try it free for 30 days](https://about.gitlab.com/free-trial/index.html?glm_source=docs.gitlab.com&glm_content=u-test-cases-docs).
-
 Test cases in GitLab can help your teams create testing scenarios in their existing development platform.
 
 Now your Implementation and Testing teams can collaborate better, as they no longer have to

@@ -1,8 +1,0 @@
----
-name: dast_view_scans
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/69571
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/340388
-milestone: '14.3'
-type: development
-group: group::dynamic analysis
-default_enabled: true

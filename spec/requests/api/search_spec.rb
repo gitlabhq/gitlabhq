@@ -346,6 +346,14 @@ RSpec.describe API::Search do
         end
       end
     end
+
+    it_behaves_like 'rate limited endpoint', rate_limit_key: :user_email_lookup do
+      let(:current_user) { user }
+
+      def request
+        get api(endpoint, current_user), params: { scope: 'users', search: 'foo@bar.com' }
+      end
+    end
   end
 
   describe "GET /groups/:id/search" do
@@ -512,6 +520,14 @@ RSpec.describe API::Search do
         end
 
         it_behaves_like 'response is correct', schema: 'public_api/v4/user/basics'
+      end
+
+      it_behaves_like 'rate limited endpoint', rate_limit_key: :user_email_lookup do
+        let(:current_user) { user }
+
+        def request
+          get api(endpoint, current_user), params: { scope: 'users', search: 'foo@bar.com' }
+        end
       end
     end
   end
@@ -784,6 +800,14 @@ RSpec.describe API::Search do
             expect(response).to have_gitlab_http_status(:ok)
             expect(json_response.size).to eq(1)
           end
+        end
+      end
+
+      it_behaves_like 'rate limited endpoint', rate_limit_key: :user_email_lookup do
+        let(:current_user) { user }
+
+        def request
+          get api(endpoint, current_user), params: { scope: 'users', search: 'foo@bar.com' }
         end
       end
     end

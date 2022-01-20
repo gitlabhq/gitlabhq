@@ -59,7 +59,7 @@ module CycleAnalyticsHelpers
   def save_value_stream(custom_value_stream_name)
     fill_in 'create-value-stream-name', with: custom_value_stream_name
 
-    page.find_button(s_('CreateValueStreamForm|Create Value Stream')).click
+    page.find_button(s_('CreateValueStreamForm|Create value stream')).click
     wait_for_requests
   end
 

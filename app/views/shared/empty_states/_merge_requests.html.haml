@@ -40,6 +40,6 @@
         - if has_button
           .text-center
             - if project_select_button
-              = render 'shared/new_project_item_select', path: 'merge_requests/new', label: _('New merge request'), type: :merge_requests, with_feature_enabled: 'merge_requests'
+              = render 'shared/new_project_item_select', path: 'merge_requests/new', label: _('merge request'), type: :merge_requests, with_feature_enabled: 'merge_requests'
             - else
               = link_to _('New merge request'), button_path, class: 'gl-button btn btn-confirm', title: _('New merge request'), id: 'new_merge_request_link'

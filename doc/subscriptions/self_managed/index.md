@@ -254,7 +254,7 @@ To subscribe to GitLab through a GitLab self-managed installation:
 
 1. Go to the [Customers Portal](https://customers.gitlab.com/) and purchase a GitLab self-managed plan.
 1. After purchase, a license file is sent to the email address associated to the Customers Portal account,
-   which must be [uploaded to your GitLab instance](../../user/admin_area/license.md#uploading-your-license).
+   which must be [uploaded to your GitLab instance](../../user/admin_area/license.md#upload-your-license).
 
 NOTE:
 If you're purchasing a subscription for an existing **Free** GitLab self-managed
@@ -373,7 +373,7 @@ To add seats to a subscription:
 The following items are emailed to you:
 
 - A payment receipt. You can also access this information in the Customers Portal under [**View invoices**](https://customers.gitlab.com/receipts).
-- A new license. [Upload this license](../../user/admin_area/license.md#uploading-your-license) to your instance to use it.
+- A new license. [Upload this license](../../user/admin_area/license.md#upload-your-license) to your instance to use it.
 
 ### Renew a subscription
 
@@ -384,6 +384,8 @@ We recommend following these steps during renewal:
 1. Prune any inactive or unwanted users by [blocking them](../../user/admin_area/moderate_users.md#block-a-user).
 1. Determine if you have a need for user growth in the upcoming subscription.
 1. Log in to the [Customers Portal](https://customers.gitlab.com/customers/sign_in) and select the **Renew** button beneath your existing subscription.
+The **Renew** button remains disabled (grayed-out) until 15 days before a subscription expires.
+You can hover your mouse on the **Renew** button to see the date when it will become active.
 
    NOTE:
    If you need to change your [GitLab tier](https://about.gitlab.com/pricing/), contact our sales team via [the sales contact form](https://about.gitlab.com/sales/) for assistance as this can't be done in the Customers Portal.
@@ -392,7 +394,7 @@ We recommend following these steps during renewal:
 1. Enter the number of [users over license](#users-over-license) in the second box for the user overage incurred in your previous subscription term.
 1. Review your renewal details and complete the payment process.
 1. A license for the renewal term is available for download on the [Manage Purchases](https://customers.gitlab.com/subscriptions) page on the relevant subscription card. Select **Copy license to clipboard** or **Download license** to get a copy.
-1. [Upload](../../user/admin_area/license.md#uploading-your-license) your new license to your instance.
+1. [Upload](../../user/admin_area/license.md#upload-your-license) your new license to your instance.
 
 An invoice is generated for the renewal and available for viewing or download on the [View invoices](https://customers.gitlab.com/receipts) page. If you have difficulty during the renewal process, contact our [support team](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=360000071293) for assistance.
 
@@ -414,8 +416,20 @@ The following is emailed to you:
   [**View invoices**](https://customers.gitlab.com/receipts).
 - A new license.
 
-[Upload the new license](../../user/admin_area/license.md#uploading-your-license) to your instance.
+[Upload the new license](../../user/admin_area/license.md#upload-your-license) to your instance.
 The new tier takes effect when the new license is uploaded.
+
+## Add or change the contacts for your subscription
+
+Contacts can renew a subscription, cancel a subscription, or transfer the subscription to a different namespace.
+
+To change the contacts:
+
+1. Ensure an account exists in the
+   [Customers Portal](https://customers.gitlab.com/customers/sign_in) for the user you want to add.
+1. Verify you have access to at least one of
+   [these requirements](https://about.gitlab.com/handbook/support/license-and-renewals/workflows/customersdot/associating_purchases.html).
+1. [Create a ticket with the Support team](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=360000071293). Include any relevant material in your request.
 
 ## Subscription expiry
 

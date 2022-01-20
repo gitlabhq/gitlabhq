@@ -8,8 +8,10 @@ class UpdateHeadPipelineForMergeRequestWorker
   sidekiq_options retry: 3
   include PipelineQueue
 
+  # NOTE: this worker belongs to :code_review since there is no CI logic.
   queue_namespace :pipeline_processing
   feature_category :continuous_integration
+
   urgency :high
   worker_resource_boundary :cpu
 

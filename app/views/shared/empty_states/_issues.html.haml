@@ -42,7 +42,7 @@
         - if has_button
           .text-center
             - if project_select_button
-              = render 'shared/new_project_item_select', path: 'issues/new', label: _('New issue'), type: :issues, with_feature_enabled: 'issues'
+              = render 'shared/new_project_item_select', path: 'issues/new', label: _('issue'), type: :issues, with_feature_enabled: 'issues'
             - elsif show_new_issue_link?(@project)
               = link_to _('New issue'), button_path, class: 'gl-button btn btn-confirm', id: 'new_issue_link'
 

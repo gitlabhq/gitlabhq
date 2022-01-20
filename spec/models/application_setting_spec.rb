@@ -77,8 +77,23 @@ RSpec.describe ApplicationSetting do
     it { is_expected.to validate_numericality_of(:container_registry_cleanup_tags_service_max_list_size).only_integer.is_greater_than_or_equal_to(0) }
     it { is_expected.to validate_numericality_of(:container_registry_expiration_policies_worker_capacity).only_integer.is_greater_than_or_equal_to(0) }
 
+    it { is_expected.to validate_numericality_of(:container_registry_import_max_tags_count).only_integer.is_greater_than_or_equal_to(0) }
+    it { is_expected.to validate_numericality_of(:container_registry_import_max_retries).only_integer.is_greater_than_or_equal_to(0) }
+    it { is_expected.to validate_numericality_of(:container_registry_import_start_max_retries).only_integer.is_greater_than_or_equal_to(0) }
+    it { is_expected.to validate_numericality_of(:container_registry_import_max_step_duration).only_integer.is_greater_than_or_equal_to(0) }
+    it { is_expected.not_to allow_value(nil).for(:container_registry_import_max_tags_count) }
+    it { is_expected.not_to allow_value(nil).for(:container_registry_import_max_retries) }
+    it { is_expected.not_to allow_value(nil).for(:container_registry_import_start_max_retries) }
+    it { is_expected.not_to allow_value(nil).for(:container_registry_import_max_step_duration) }
+
+    it { is_expected.to validate_presence_of(:container_registry_import_target_plan) }
+    it { is_expected.to validate_presence_of(:container_registry_import_created_before) }
+
     it { is_expected.to validate_numericality_of(:dependency_proxy_ttl_group_policy_worker_capacity).only_integer.is_greater_than_or_equal_to(0) }
     it { is_expected.not_to allow_value(nil).for(:dependency_proxy_ttl_group_policy_worker_capacity) }
+
+    it { is_expected.to validate_numericality_of(:packages_cleanup_package_file_worker_capacity).only_integer.is_greater_than_or_equal_to(0) }
+    it { is_expected.not_to allow_value(nil).for(:packages_cleanup_package_file_worker_capacity) }
 
     it { is_expected.to validate_numericality_of(:snippet_size_limit).only_integer.is_greater_than(0) }
     it { is_expected.to validate_numericality_of(:wiki_page_max_content_bytes).only_integer.is_greater_than_or_equal_to(1024) }
@@ -126,11 +141,13 @@ RSpec.describe ApplicationSetting do
     it { is_expected.not_to allow_value('default' => 101).for(:repository_storages_weighted).with_message("value for 'default' must be between 0 and 100") }
     it { is_expected.not_to allow_value('default' => 100, shouldntexist: 50).for(:repository_storages_weighted).with_message("can't include: shouldntexist") }
 
-    it { is_expected.to allow_value(400).for(:notes_create_limit) }
-    it { is_expected.not_to allow_value('two').for(:notes_create_limit) }
-    it { is_expected.not_to allow_value(nil).for(:notes_create_limit) }
-    it { is_expected.not_to allow_value(5.5).for(:notes_create_limit) }
-    it { is_expected.not_to allow_value(-2).for(:notes_create_limit) }
+    %i[notes_create_limit user_email_lookup_limit].each do |setting|
+      it { is_expected.to allow_value(400).for(setting) }
+      it { is_expected.not_to allow_value('two').for(setting) }
+      it { is_expected.not_to allow_value(nil).for(setting) }
+      it { is_expected.not_to allow_value(5.5).for(setting) }
+      it { is_expected.not_to allow_value(-2).for(setting) }
+    end
 
     def many_usernames(num = 100)
       Array.new(num) { |i| "username#{i}" }
@@ -489,7 +506,7 @@ RSpec.describe ApplicationSetting do
 
     context 'key restrictions' do
       it 'supports all key types' do
-        expect(described_class::SUPPORTED_KEY_TYPES).to contain_exactly(:rsa, :dsa, :ecdsa, :ed25519)
+        expect(described_class::SUPPORTED_KEY_TYPES).to eq(Gitlab::SSHPublicKey.supported_types)
       end
 
       it 'does not allow all key types to be disabled' do
@@ -1242,7 +1259,7 @@ RSpec.describe ApplicationSetting do
     end
   end
 
-  describe '#static_objects_external_storage_auth_token=' do
+  describe '#static_objects_external_storage_auth_token=', :aggregate_failures do
     subject { setting.static_objects_external_storage_auth_token = token }
 
     let(:token) { 'Test' }
@@ -1261,6 +1278,21 @@ RSpec.describe ApplicationSetting do
       it 'removes an encrypted version of the token' do
         subject
 
+        expect(setting[:static_objects_external_storage_auth_token]).to be_nil
+        expect(setting[:static_objects_external_storage_auth_token_encrypted]).to be_nil
+        expect(setting.static_objects_external_storage_auth_token).to be_nil
+      end
+    end
+
+    context 'with plaintext token only' do
+      let(:token) { '' }
+
+      it 'ignores the plaintext token' do
+        subject
+
+        ApplicationSetting.update_all(static_objects_external_storage_auth_token: 'Test')
+
+        setting.reload
         expect(setting[:static_objects_external_storage_auth_token]).to be_nil
         expect(setting[:static_objects_external_storage_auth_token_encrypted]).to be_nil
         expect(setting.static_objects_external_storage_auth_token).to be_nil

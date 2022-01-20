@@ -9,6 +9,7 @@ allowlist
 allowlisted
 allowlisting
 allowlists
+AlmaLinux
 anonymization
 anonymized
 Ansible
@@ -220,6 +221,7 @@ Fluentd
 Flycheck
 Forgerock
 formatters
+Fortinet
 Fugit
 fuzzer
 Gantt
@@ -364,7 +366,7 @@ Microsoft
 middleware
 middlewares
 migratus
-Minikube
+minikube
 MinIO
 misconfiguration
 misconfigurations

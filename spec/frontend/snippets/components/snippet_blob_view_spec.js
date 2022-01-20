@@ -157,6 +157,8 @@ describe('Blob Embeddable', () => {
           });
 
           // mimic apollo's update
+          // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+          // eslint-disable-next-line no-restricted-syntax
           wrapper.setData({
             blobContent: wrapper.vm.onContentUpdate(apolloData),
           });

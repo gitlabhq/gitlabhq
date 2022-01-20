@@ -20,7 +20,6 @@ Rails.application.routes.draw do
   get 'favicon.png', to: favicon_redirect
   get 'favicon.ico', to: favicon_redirect
 
-  draw :sherlock
   draw :development
 
   use_doorkeeper do
@@ -108,6 +107,9 @@ Rails.application.routes.draw do
       get '/autocomplete/namespace_routes' => 'autocomplete#namespace_routes'
     end
 
+    # sandbox
+    get '/sandbox/mermaid' => 'sandbox#mermaid'
+
     get '/whats_new' => 'whats_new#index'
 
     # '/-/health' implemented by BasicHealthCheck middleware
@@ -144,9 +146,6 @@ Rails.application.routes.draw do
     end
 
     get 'acme-challenge/' => 'acme_challenges#show'
-
-    # UserCallouts
-    resources :user_callouts, controller: 'users/callouts', only: [:create] # remove after 14.6 2021-12-22 to handle mixed deployments
 
     scope :ide, as: :ide, format: false do
       get '/', to: 'ide#index'

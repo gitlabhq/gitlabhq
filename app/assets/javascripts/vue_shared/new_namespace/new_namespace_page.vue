@@ -10,9 +10,16 @@ export default {
     GlIcon,
     WelcomePage,
     LegacyContainer,
+    CreditCardVerification: () =>
+      import('ee_component/pages/groups/new/components/credit_card_verification.vue'),
   },
   directives: {
     SafeHtml,
+  },
+  inject: {
+    verificationRequired: {
+      default: false,
+    },
   },
   props: {
     title: {
@@ -41,6 +48,7 @@ export default {
   data() {
     return {
       activePanelName: null,
+      verificationCompleted: false,
     };
   },
 
@@ -66,6 +74,10 @@ export default {
         { text: this.initialBreadcrumb, href: '#' },
         { text: this.activePanel.title, href: `#${this.activePanel.name}` },
       ];
+    },
+
+    shouldVerify() {
+      return this.verificationRequired && !this.verificationCompleted;
     },
   },
 
@@ -93,12 +105,16 @@ export default {
         localStorage.setItem(this.persistenceKey, this.activePanelName);
       }
     },
+    onVerified() {
+      this.verificationCompleted = true;
+    },
   },
 };
 </script>
 
 <template>
-  <welcome-page v-if="!activePanelName" :panels="panels" :title="title">
+  <credit-card-verification v-if="shouldVerify" @verified="onVerified" />
+  <welcome-page v-else-if="!activePanelName" :panels="panels" :title="title">
     <template #footer>
       <slot name="welcome-footer"> </slot>
     </template>

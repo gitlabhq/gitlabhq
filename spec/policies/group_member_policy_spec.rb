@@ -83,6 +83,23 @@ RSpec.describe GroupMemberPolicy do
     specify { expect_allowed(:read_group) }
   end
 
+  context 'with bot user' do
+    let(:current_user) { create(:user, :project_bot) }
+
+    before do
+      group.add_owner(current_user)
+    end
+
+    specify { expect_allowed(:read_group, :destroy_project_bot_member) }
+  end
+
+  context 'with anonymous bot user' do
+    let(:current_user) { create(:user, :project_bot) }
+    let(:membership) { guest.members.first }
+
+    specify { expect_disallowed(:read_group, :destroy_project_bot_member) }
+  end
+
   context 'with one owner' do
     let(:current_user) { owner }
 
@@ -106,6 +123,7 @@ RSpec.describe GroupMemberPolicy do
     end
 
     specify { expect_allowed(*member_related_permissions) }
+    specify { expect_disallowed(:destroy_project_bot_member) }
   end
 
   context 'with the group parent' do

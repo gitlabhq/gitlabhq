@@ -7,11 +7,6 @@ type: index, reference
 
 # GitLab subscription **(PREMIUM)**
 
-INFO:
-Get advanced search and more with
-[a trial of GitLab Ultimate](https://about.gitlab.com/free-trial/index.html?glm_source=docs.gitlab.com&glm_content=u-subscription-docs).
-Free for 30 days.
-
 GitLab offers tiers of features. Your subscription determines which tier you
 have access to. Subscriptions are valid for 12 months.
 
@@ -177,7 +172,7 @@ To change the password for this customers portal account:
 ### GitLab for Education
 
 For qualifying non-profit educational institutions, the [GitLab for Education](https://about.gitlab.com/solutions/education/) program provides
-the top GitLab tier, plus 50,000 CI minutes per month.
+the top GitLab tier, plus 50,000 CI/CD minutes per month.
 
 The GitLab for Education license can only be used for instructional-use or
 non-commercial academic research.
@@ -188,7 +183,7 @@ Find more information on how to apply and renew at
 ### GitLab for Open Source
 
 For qualifying open source projects, the [GitLab for Open Source](https://about.gitlab.com/solutions/open-source/) program provides
-the top GitLab tier, plus 50,000 CI minutes per month.
+the top GitLab tier, plus 50,000 CI/CD minutes per month.
 
 You can find more information about the [program requirements](https://about.gitlab.com/solutions/open-source/join/#requirements),
 [renewals](https://about.gitlab.com/solutions/open-source/join/#renewals),
@@ -253,7 +248,7 @@ if a project holds sensitive data. Email `opensource@gitlab.com` with details of
 ### GitLab for Startups
 
 For qualifying startups, the [GitLab for Startups](https://about.gitlab.com/solutions/startups/) program provides
-the top GitLab tier, plus 50,000 CI minutes per month for 12 months.
+the top GitLab tier, plus 50,000 CI/CD minutes per month for 12 months.
 
 For more information, including program requirements, see the [Startup program's landing page](https://about.gitlab.com/solutions/startups/).
 

@@ -6,13 +6,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # GitLab Container Registry **(FREE)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/4040) in GitLab 8.8.
-> - Docker Registry manifest `v1` support was added in GitLab 8.9 to support Docker
->   versions earlier than 1.10.
-> - Starting in GitLab 8.12, if you have [two-factor authentication](../../profile/account/two_factor_authentication.md) enabled in your account, you need
->   to pass a [personal access token](../../profile/personal_access_tokens.md) instead of your password to
->   sign in to the Container Registry.
-> - Support for multiple level image names was added in GitLab 9.1.
 > - The group-level Container Registry was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/23315) in GitLab 12.10.
 > - Searching by image repository name was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/31322) in GitLab 13.0.
 
@@ -41,6 +34,21 @@ containers on this page. You can share a filtered view by copying the URL from y
 Only members of the project or group can access a private project's Container Registry.
 
 If a project is public, so is the Container Registry.
+
+### View the tags of a specific image
+
+You can view a list of tags associated with a given container image:
+
+1. Go to your project or group.
+1. Go to **Packages & Registries > Container Registry**.
+1. Select the container image you are interested in.
+
+This brings up the Container Registry **Tag Details** page. You can view details about each tag,
+such as when it was published, how much storage it consumes, and the manifest and configuration
+digests.
+
+You can search, sort (by tag name), filter, and [delete](#delete-images-from-within-gitlab)
+tags on this page. You can share a filtered view by copying the URL from your browser.
 
 ## Use images from the Container Registry
 
@@ -306,7 +314,7 @@ is set to `always`.
 
 To use your own Docker images for Docker-in-Docker, follow these steps
 in addition to the steps in the
-[Docker-in-Docker](../../../ci/docker/using_docker_build.md#use-the-docker-executor-with-the-docker-image-docker-in-docker) section:
+[Docker-in-Docker](../../../ci/docker/using_docker_build.md#use-docker-in-docker) section:
 
 1. Update the `image` and `service` to point to your registry.
 1. Add a service [alias](../../../ci/services/index.md#available-settings-for-services).
@@ -336,7 +344,7 @@ error during connect: Get http://docker:2376/v1.39/info: dial tcp: lookup docker
 
 To use your own Docker images with Dependency Proxy, follow these steps
 in addition to the steps in the
-[Docker-in-Docker](../../../ci/docker/using_docker_build.md#use-the-docker-executor-with-the-docker-image-docker-in-docker) section:
+[Docker-in-Docker](../../../ci/docker/using_docker_build.md#use-docker-in-docker) section:
 
 1. Update the `image` and `service` to point to your registry.
 1. Add a service [alias](../../../ci/services/index.md#available-settings-for-services).
@@ -475,255 +483,8 @@ defined in the `delete_image` job.
 
 ### Delete images by using a cleanup policy
 
-You can create a per-project [cleanup policy](#cleanup-policy) to ensure older tags and images are regularly removed from the
+You can create a per-project [cleanup policy](reduce_container_registry_storage.md#cleanup-policy) to ensure older tags and images are regularly removed from the
 Container Registry.
-
-## Cleanup policy
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15398) in GitLab 12.8.
-> - [Renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/218737) from "expiration policy" to "cleanup policy" in GitLab 13.2.
-
-The cleanup policy is a scheduled job you can use to remove tags from the Container Registry.
-For the project where it's defined, tags matching the regex pattern are removed.
-The underlying layers and images remain.
-
-To delete the underlying layers and images that aren't associated with any tags, administrators can use
-[garbage collection](../../../administration/packages/container_registry.md#removing-untagged-manifests-and-unreferenced-layers) with the `-m` switch.
-
-### Enable the cleanup policy
-
-Cleanup policies can be run on all projects, with these exceptions:
-
-- For GitLab.com, the project must have been created after 2020-02-22.
-  Support for projects created earlier is tracked
-  [in this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/196124).
-- For self-managed GitLab instances, the project must have been created
-  in GitLab 12.8 or later. However, an administrator can enable the cleanup policy
-  for all projects (even those created before 12.8) in
-  [GitLab application settings](../../../api/settings.md#change-application-settings)
-  by setting `container_expiration_policies_enable_historic_entries` to true.
-  Alternatively, you can execute the following command in the [Rails console](../../../administration/operations/rails_console.md#starting-a-rails-console-session):
-
-  ```ruby
-  ApplicationSetting.last.update(container_expiration_policies_enable_historic_entries: true)
-  ```
-
-  There are performance risks with enabling it for all projects, especially if you
-  are using an [external registry](index.md#use-with-external-container-registries).
-- For self-managed GitLab instances, you can enable or disable the cleanup policy for a specific
-  project.
-
-  To enable it:
-
-  ```ruby
-  Feature.enable(:container_expiration_policies_historic_entry, Project.find(<project id>))
-  ```
-
-  To disable it:
-
-  ```ruby
-  Feature.disable(:container_expiration_policies_historic_entry, Project.find(<project id>))
-  ```
-
-WARNING:
-For performance reasons, enabled cleanup policies are automatically disabled for projects on
-GitLab.com that don't have a container image.
-
-### How the cleanup policy works
-
-The cleanup policy collects all tags in the Container Registry and excludes tags
-until only the tags to be deleted remain.
-
-The cleanup policy searches for images based on the tag name. Support for the full path [has not yet been implemented](https://gitlab.com/gitlab-org/gitlab/-/issues/281071), but would allow you to clean up dynamically-named tags.
-
-The cleanup policy:
-
-1. Collects all tags for a given repository in a list.
-1. Excludes the tag named `latest` from the list.
-1. Evaluates the `name_regex` (tags to expire), excluding non-matching names from the list.
-1. Excludes from the list any tags matching the `name_regex_keep` value (tags to preserve).
-1. Excludes any tags that do not have a manifest (not part of the options in the UI).
-1. Orders the remaining tags by `created_date`.
-1. Excludes from the list the N tags based on the `keep_n` value (Number of tags to retain).
-1. Excludes from the list the tags more recent than the `older_than` value (Expiration interval).
-1. Finally, the remaining tags in the list are deleted from the Container Registry.
-
-WARNING:
-On GitLab.com, the execution time for the cleanup policy is limited, and some of the tags may remain in
-the Container Registry after the policy runs. The next time the policy runs, the remaining tags are included,
-so it may take multiple runs for all tags to be deleted.
-
-WARNING:
-GitLab self-managed installs support for third-party container registries that comply with the
-[Docker Registry HTTP API V2](https://docs.docker.com/registry/spec/api/)
-specification. However, this specification does not include a tag delete operation. Therefore, when
-interacting with third-party container registries, GitLab uses a workaround to delete tags. See the
-[related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/15737)
-for more information. Due to possible implementation variations, this workaround is not guaranteed
-to work with all third-party registries in the same predictable way. If you use the GitLab Container
-Registry, this workaround is not required because we implemented a special tag delete operation. In
-this case, you can expect cleanup policies to be consistent and predictable.
-
-### Create a cleanup policy
-
-You can create a cleanup policy in [the API](#use-the-cleanup-policy-api) or the UI.
-
-To create a cleanup policy in the UI:
-
-1. For your project, go to **Settings > Packages & Registries**.
-1. Expand the **Clean up image tags** section.
-1. Complete the fields.
-
-   | Field                                                                     | Description                                                                                                       |
-   |---------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------|
-   | **Toggle** | Turn the policy on or off. |
-   | **Run cleanup** | How often the policy should run. |
-   | **Keep the most recent** | How many tags to _always_ keep for each image. |
-   | **Keep tags matching** | The regex pattern that determines which tags to preserve. The `latest` tag is always preserved. For all tags, use `.*`. See other [regex pattern examples](#regex-pattern-examples). |
-   | **Remove tags older than** | Remove only tags older than X days. |
-   | **Remove tags matching**  | The regex pattern that determines which tags to remove. This value cannot be blank. For all tags, use `.*`. See other [regex pattern examples](#regex-pattern-examples). |
-
-1. Click **Save**.
-
-Depending on the interval you chose, the policy is scheduled to run.
-
-NOTE:
-If you edit the policy and click **Save** again, the interval is reset.
-
-### Regex pattern examples
-
-Cleanup policies use regex patterns to determine which tags should be preserved or removed, both in the UI and the API.
-
-Regex patterns are automatically surrounded with `\A` and `\Z` anchors. Do not include any `\A`, `\Z`, `^` or `$` token in the regex patterns as they are not necessary.
-
-Here are examples of regex patterns you may want to use:
-
-- Match all tags:
-
-  ```plaintext
-  .*
-  ```
-
-  This is the default value for the expiration regex.
-
-- Match tags that start with `v`:
-
-  ```plaintext
-  v.+
-  ```
-
-- Match only the tag named `main`:
-
-  ```plaintext
-  main
-  ```
-
-- Match tags that are either named or start with `release`:
-
-  ```plaintext
-  release.*
-  ```
-
-- Match tags that either start with `v`, are named `main`, or begin with `release`:
-
-  ```plaintext
-  (?:v.+|main|release.*)
-  ```
-
-### Set cleanup limits to conserve resources
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/288812) in GitLab 13.9.
-> - It's [deployed behind a feature flag](../../feature_flags.md), disabled by default.
-> - It's enabled on GitLab.com.
-> - It's not recommended for production use.
-> - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-cleanup-policy-limits).
-
-Cleanup policies are executed as a background process. This process is complex, and depending on the number of tags to delete,
-the process can take time to finish.
-
-To prevent server resource starvation, the following application settings are available:
-
-- `container_registry_expiration_policies_worker_capacity`. The maximum number of cleanup workers running concurrently. This must be greater than `1`.
-   We recommend starting with a low number and increasing it after monitoring the resources used by the background workers.
-- `container_registry_delete_tags_service_timeout`. The maximum time, in seconds, that the cleanup process can take to delete a batch of tags.
-- `container_registry_cleanup_tags_service_max_list_size`. The maximum number of tags that can be deleted in a single execution. Additional tags must be deleted in another execution.
-   We recommend starting with a low number, like `100`, and increasing it after monitoring that container images are properly deleted.
-
-For self-managed instances, those settings can be updated in the [Rails console](../../../administration/operations/rails_console.md#starting-a-rails-console-session):
-
-  ```ruby
-  ApplicationSetting.last.update(container_registry_expiration_policies_worker_capacity: 3)
-  ```
-
-Alternatively, once the limits are [enabled](#enable-or-disable-cleanup-policy-limits),
-they are available in the [administrator area](../../admin_area/index.md):
-
-1. On the top bar, select **Menu > Admin**.
-1. Go to **Settings > CI/CD > Container Registry**.
-
-#### Enable or disable cleanup policy limits
-
-The cleanup policies limits are under development and not ready for production use. They are
-deployed behind a feature flag that is **disabled by default**.
-[GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md)
-can enable it.
-
-To enable it:
-
-```ruby
-Feature.enable(:container_registry_expiration_policies_throttling)
-```
-
-To disable it:
-
-```ruby
-Feature.disable(:container_registry_expiration_policies_throttling)
-```
-
-### Use the cleanup policy API
-
-You can set, update, and disable the cleanup policies using the GitLab API.
-
-Examples:
-
-- Select all tags, keep at least 1 tag per image, clean up any tag older than 14 days, run once a month, preserve any images with the name `main` and the policy is enabled:
-
-  ```shell
-  curl --request PUT --header 'Content-Type: application/json;charset=UTF-8' --header "PRIVATE-TOKEN: <your_access_token>" \
-       --data-binary '{"container_expiration_policy_attributes":{"cadence":"1month","enabled":true,"keep_n":1,"older_than":"14d","name_regex":"","name_regex_delete":".*","name_regex_keep":".*-main"}}' \
-       "https://gitlab.example.com/api/v4/projects/2"
-  ```
-
-Valid values for `cadence` when using the API are:
-
-- `1d` (every day)
-- `7d` (every week)
-- `14d` (every two weeks)
-- `1month` (every month)
-- `3month` (every quarter)
-
-See the API documentation for further details: [Edit project](../../../api/projects.md#edit-project).
-
-### Use with external container registries
-
-When using an [external container registry](../../../administration/packages/container_registry.md#use-an-external-container-registry-with-gitlab-as-an-auth-endpoint),
-running a cleanup policy on a project may have some performance risks.
-If a project runs a policy to remove thousands of tags
-the GitLab background jobs may get backed up or fail completely.
-It is recommended you only enable container cleanup
-policies for projects that were created before GitLab 12.8 if you are confident the number of tags
-being cleaned up is minimal.
-
-### Troubleshooting cleanup policies
-
-If you see the following message:
-
-"Something went wrong while updating the cleanup policy."
-
-Check the regex patterns to ensure they are valid.
-
-GitLab uses [RE2 syntax](https://github.com/google/re2/wiki/Syntax) for regular expressions in the cleanup policy. You can test them with the [regex101 regex tester](https://regex101.com/).
-View some common [regex pattern examples](#regex-pattern-examples).
 
 ## Limitations
 
@@ -844,7 +605,7 @@ There can be different reasons behind this:
 
   To fix this, there are two workarounds:
 
-  - If you are on GitLab 13.9 or later, you can [set limits for the cleanup policy](#set-cleanup-limits-to-conserve-resources).
+  - If you are on GitLab 13.9 or later, you can [set limits for the cleanup policy](reduce_container_registry_storage.md#set-cleanup-limits-to-conserve-resources).
     This limits the cleanup execution in time, and avoids the expired token error.
 
   - Extend the expiration delay of the Container Registry authentication tokens. This defaults to 5
@@ -869,14 +630,14 @@ these steps:
 
    If you have Rails console access, you can enter the following commands to retrieve a list of tags limited by date:
 
-   ```shell  
+   ```shell
    output = File.open( "/tmp/list_o_tags.out","w" )
    Project.find(<Project_id>).container_repositories.find(<container_repo_id>).tags.each do |tag|
      output << tag.name + "\n" if tag.created_at < 1.month.ago
    end;nil
    output.close
    ```
-  
+
    This set of commands creates a `/tmp/list_o_tags.out` file listing all tags with a `created_at` date of older than one month.
 
 1. Remove from the `list_o_tags.out` file any tags that you want to keep. Here are some example
@@ -963,3 +724,55 @@ Use your own URLs to complete the following steps:
    ```
 
 Follow [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/18383) for details.
+
+### Tags on S3 backend remain after successful deletion requests
+
+With S3 as your storage backend, tags may remain even though:
+
+- In the UI, you see that the tags are scheduled for deletion.
+- In the API, you get an HTTP `200` response.
+- The registry log shows a successful `Delete` request.
+
+An example `DELETE` request in the registry log:
+
+```shell
+{"content_type":"","correlation_id":"01FQGNSKVMHQEAVE21KYTJN2P4","duration_ms":62,"host":"localhost:5000","level":"info","method":"DELETE","msg":"access","proto":"HTTP/1.1","referrer":"","remote_addr":"127.0.0.1:47498","remote_ip":"127.0.0.1","status":202,"system":"http","time":"2021-12-22T08:58:15Z","ttfb_ms":62,"uri":"/v2/<path to repo>/tags/reference/<tag_name>","user_agent":"GitLab/<version>","written_bytes":0}
+```
+
+There may be some errors not properly cached. Follow these steps to investigate further:
+
+1. In your configuration file, set the registry's log level to `debug`, and the S3 driver's log
+   level to `logdebugwithhttpbody`. For Omnibus, make these edits in the `gitlab.rb` file:
+
+   ```shell
+      # Change the registry['log_level'] to debug
+      registry['log_level'] = 'debug'
+
+      # Set log level for registry log from storage side
+      registry['storage'] = {
+        's3' => {
+          'bucket' => 'your-s3-bucket',
+          'region' => 'your-s3-region'
+        },
+
+        'loglevel' = "logdebugwithhttpbody"
+      }
+   ```
+
+   Then save and reconfigure GitLab:
+
+   ```shell
+   sudo gitlab-ctl reconfigure
+   ```
+
+1. Attempt to delete one or more tags using the GitLab UI or API.
+
+1. Inspect the registry logs and look for a response from S3. Although the response could be
+   `200 OK`, the body might have the error `AccessDenied`. This indicates a permission problem from
+   the S3 side.
+
+1. Ensure your S3 configuration has the `deleteObject` permisson scope. Here's an
+   [example role for an S3 bucket](../../../administration/object_storage.md#iam-permissions).
+   Once adjusted, trigger another tag deletion. You should be able to successfully delete tags.
+
+Follow [this issue](https://gitlab.com/gitlab-org/container-registry/-/issues/551) for details.

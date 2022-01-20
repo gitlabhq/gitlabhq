@@ -89,6 +89,3 @@ To add a [namespace](../../user/group/index.md#namespaces) to Jira:
    `--cookies "<cookies from the request>"`.
 1. Submit the cURL request.
 1. If the response is `{"success":true}`, the namespace was added.
-1. Append the cookies to the cURL command in your terminal `--cookies "PASTE COOKIES HERE"`.
-1. Submit the cURL request.
-1. If the response is `{"success":true}` the namespace was added.

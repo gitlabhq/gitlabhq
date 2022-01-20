@@ -162,7 +162,7 @@ RSpec.describe API::Ci::Triggers do
         expect do
           post api("/projects/#{project.id}/ref/master/trigger/pipeline?token=#{trigger_token}"),
             params: { ref: 'refs/heads/other-branch' },
-            headers: { WebHookService::GITLAB_EVENT_HEADER => 'Pipeline Hook' }
+            headers: { ::Gitlab::WebHooks::GITLAB_EVENT_HEADER => 'Pipeline Hook' }
         end.not_to change(Ci::Pipeline, :count)
 
         expect(response).to have_gitlab_http_status(:forbidden)

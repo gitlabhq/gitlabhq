@@ -120,12 +120,22 @@ export const packageVersions = () => [
 
 export const packageData = (extend) => ({
   id: 'gid://gitlab/Packages::Package/111',
+  canDestroy: true,
   name: '@gitlab-org/package-15',
   packageType: 'NPM',
   version: '1.0.0',
   createdAt: '2020-08-17T14:23:32Z',
   updatedAt: '2020-08-17T14:23:32Z',
   status: 'DEFAULT',
+  mavenUrl: 'http://gdk.test:3000/api/v4/projects/1/packages/maven',
+  npmUrl: 'http://gdk.test:3000/api/v4/projects/1/packages/npm',
+  nugetUrl: 'http://gdk.test:3000/api/v4/projects/1/packages/nuget/index.json',
+  composerConfigRepositoryUrl: 'gdk.test/22',
+  composerUrl: 'http://gdk.test:3000/api/v4/group/22/-/packages/composer/packages.json',
+  conanUrl: 'http://gdk.test:3000/api/v4/projects/1/packages/conan',
+  pypiUrl:
+    'http://__token__:<your_personal_token>@gdk.test:3000/api/v4/projects/1/packages/pypi/simple',
+  pypiSetupUrl: 'http://gdk.test:3000/api/v4/projects/1/packages/pypi',
   ...extend,
 });
 
@@ -185,6 +195,7 @@ export const packageDetailsQuery = (extendPackage) => ({
       project: {
         id: '1',
         path: 'projectPath',
+        name: 'gitlab-test',
       },
       tags: {
         nodes: packageTags(),

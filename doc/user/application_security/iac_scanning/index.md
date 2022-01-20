@@ -14,6 +14,8 @@ Currently, IaC scanning supports configuration files for Terraform, Ansible, AWS
 
 ## Requirements
 
+IaC Scanning runs in the `test` stage, which is available by default. If you redefine the stages in the `.gitlab-ci.yml` file, the `test` stage is required.
+
 To run IaC scanning jobs, by default, you need GitLab Runner with the
 [`docker`](https://docs.gitlab.com/runner/executors/docker.html) or
 [`kubernetes`](https://docs.gitlab.com/runner/install/kubernetes.html) executor.
@@ -48,7 +50,7 @@ as shown in the following table:
 
 | Capability                                                                             | In Free             | In Ultimate        |
 |:---------------------------------------------------------------------------------------|:--------------------|:-------------------|
-| [Configure IaC Scanners](#configuration)                              v                | **{check-circle}**  | **{check-circle}** |
+| [Configure IaC Scanners](#configuration)                                               | **{check-circle}**  | **{check-circle}** |
 | View [JSON Report](#reports-json-format)                                               | **{check-circle}**  | **{check-circle}** |
 | Presentation of JSON Report in Merge Request                                           | **{dotted-circle}** | **{check-circle}** |
 | [Address vulnerabilities](../../application_security/vulnerabilities/index.md)         | **{dotted-circle}** | **{check-circle}** |

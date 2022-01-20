@@ -14,10 +14,11 @@ module Types
 
       field :description, GraphQL::Types::String, null: true,
             description: 'Description of the topic.'
-      markdown_field :description_html, null: true
 
       field :avatar_url, GraphQL::Types::String, null: true,
             description: 'URL to avatar image file of the topic.'
+
+      markdown_field :description_html, null: true
 
       def avatar_url
         object.avatar_url(only_path: false)

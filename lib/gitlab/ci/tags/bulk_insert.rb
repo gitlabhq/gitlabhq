@@ -4,12 +4,13 @@ module Gitlab
   module Ci
     module Tags
       class BulkInsert
+        include Gitlab::Utils::StrongMemoize
+
         TAGGINGS_BATCH_SIZE = 1000
         TAGS_BATCH_SIZE = 500
 
-        def initialize(statuses, tag_list_by_status)
+        def initialize(statuses)
           @statuses = statuses
-          @tag_list_by_status = tag_list_by_status
         end
 
         def insert!
@@ -20,7 +21,18 @@ module Gitlab
 
         private
 
-        attr_reader :statuses, :tag_list_by_status
+        attr_reader :statuses
+
+        def tag_list_by_status
+          strong_memoize(:tag_list_by_status) do
+            statuses.each.with_object({}) do |status, acc|
+              tag_list = status.tag_list
+              next unless tag_list
+
+              acc[status] = tag_list
+            end
+          end
+        end
 
         def persist_build_tags!
           all_tags = tag_list_by_status.values.flatten.uniq.reject(&:blank?)
@@ -54,7 +66,7 @@ module Gitlab
 
         def build_taggings_attributes(tag_records_by_name)
           taggings = statuses.flat_map do |status|
-            tag_list = tag_list_by_status[status.name]
+            tag_list = tag_list_by_status[status]
             next unless tag_list
 
             tags = tag_records_by_name.values_at(*tag_list)

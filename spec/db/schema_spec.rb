@@ -88,7 +88,8 @@ RSpec.describe 'Database schema' do
     users_star_projects: %w[user_id],
     vulnerability_identifiers: %w[external_id],
     vulnerability_scanners: %w[external_id],
-    security_scans: %w[pipeline_id] # foreign key is not added as ci_pipeline table will be moved into different db soon
+    security_scans: %w[pipeline_id], # foreign key is not added as ci_pipeline table will be moved into different db soon
+    vulnerability_reads: %w[cluster_agent_id]
   }.with_indifferent_access.freeze
 
   context 'for table' do

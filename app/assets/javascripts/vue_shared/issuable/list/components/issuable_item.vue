@@ -193,7 +193,13 @@ export default {
           :title="__('This issue is hidden because its author has been banned')"
           :aria-label="__('Hidden')"
         />
-        <gl-link class="issue-title-text" dir="auto" :href="webUrl" v-bind="issuableTitleProps">
+        <gl-link
+          class="issue-title-text"
+          dir="auto"
+          :href="webUrl"
+          data-qa-selector="issuable_title_link"
+          v-bind="issuableTitleProps"
+        >
           {{ issuable.title }}
           <gl-icon v-if="isIssuableUrlExternal" name="external-link" class="gl-ml-2" />
         </gl-link>

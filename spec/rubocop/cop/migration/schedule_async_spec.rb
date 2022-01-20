@@ -43,24 +43,18 @@ RSpec.describe RuboCop::Cop::Migration::ScheduleAsync do
       end
 
       context 'BackgroundMigrationWorker.perform_async' do
-        it 'adds an offense when calling `BackgroundMigrationWorker.peform_async` and corrects', :aggregate_failures do
+        it 'adds an offense when calling `BackgroundMigrationWorker.peform_async`' do
           expect_offense(<<~RUBY)
             def up
               BackgroundMigrationWorker.perform_async(ClazzName, "Bar", "Baz")
               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Don't call [...]
             end
           RUBY
-
-          expect_correction(<<~RUBY)
-            def up
-              migrate_async(ClazzName, "Bar", "Baz")
-            end
-          RUBY
         end
       end
 
       context 'BackgroundMigrationWorker.perform_in' do
-        it 'adds an offense and corrects', :aggregate_failures do
+        it 'adds an offense' do
           expect_offense(<<~RUBY)
             def up
               BackgroundMigrationWorker
@@ -68,17 +62,11 @@ RSpec.describe RuboCop::Cop::Migration::ScheduleAsync do
                 .perform_in(delay, ClazzName, "Bar", "Baz")
             end
           RUBY
-
-          expect_correction(<<~RUBY)
-            def up
-              migrate_in(delay, ClazzName, "Bar", "Baz")
-            end
-          RUBY
         end
       end
 
       context 'BackgroundMigrationWorker.bulk_perform_async' do
-        it 'adds an offense and corrects', :aggregate_failures do
+        it 'adds an offense' do
           expect_offense(<<~RUBY)
             def up
               BackgroundMigrationWorker
@@ -86,28 +74,16 @@ RSpec.describe RuboCop::Cop::Migration::ScheduleAsync do
                 .bulk_perform_async(jobs)
             end
           RUBY
-
-          expect_correction(<<~RUBY)
-            def up
-              bulk_migrate_async(jobs)
-            end
-          RUBY
         end
       end
 
       context 'BackgroundMigrationWorker.bulk_perform_in' do
-        it 'adds an offense and corrects', :aggregate_failures do
+        it 'adds an offense' do
           expect_offense(<<~RUBY)
             def up
               BackgroundMigrationWorker
               ^^^^^^^^^^^^^^^^^^^^^^^^^ Don't call [...]
                 .bulk_perform_in(5.minutes, jobs)
-            end
-          RUBY
-
-          expect_correction(<<~RUBY)
-            def up
-              bulk_migrate_in(5.minutes, jobs)
             end
           RUBY
         end

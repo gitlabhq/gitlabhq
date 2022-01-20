@@ -16,7 +16,7 @@ RSpec.describe BulkImports::Common::Extractors::NdjsonExtractor do
   before do
     allow(FileUtils).to receive(:remove_entry).with(any_args).and_call_original
 
-    subject.instance_variable_set(:@tmp_dir, tmpdir)
+    subject.instance_variable_set(:@tmpdir, tmpdir)
   end
 
   after(:all) do
@@ -43,11 +43,11 @@ RSpec.describe BulkImports::Common::Extractors::NdjsonExtractor do
     end
   end
 
-  describe '#remove_tmp_dir' do
+  describe '#remove_tmpdir' do
     it 'removes tmp dir' do
       expect(FileUtils).to receive(:remove_entry).with(tmpdir).once
 
-      subject.remove_tmp_dir
+      subject.remove_tmpdir
     end
   end
 end

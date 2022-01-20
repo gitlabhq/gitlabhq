@@ -38,20 +38,6 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::CreateDeployments do
         expect(job.deployment.environment).to eq(job.persisted_environment)
       end
 
-      context 'when creation failure occures' do
-        before do
-          allow_next_instance_of(Deployment) do |deployment|
-            allow(deployment).to receive(:save!) { raise ActiveRecord::RecordInvalid }
-          end
-        end
-
-        it 'trackes the exception' do
-          expect { subject }.to raise_error(described_class::DeploymentCreationError)
-
-          expect(Deployment.count).to eq(0)
-        end
-      end
-
       context 'when the corresponding environment does not exist' do
         let!(:environment) { }
 

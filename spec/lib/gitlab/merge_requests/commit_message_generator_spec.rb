@@ -15,7 +15,8 @@ RSpec.describe Gitlab::MergeRequests::CommitMessageGenerator do
     )
   end
 
-  let(:user) { project.creator }
+  let(:current_user) { create(:user, name: 'John Doe', email: 'john.doe@example.com') }
+  let(:author) { project.creator }
   let(:source_branch) { 'feature' }
   let(:merge_request_description) { "Merge Request Description\nNext line" }
   let(:merge_request_title) { 'Bugfix' }
@@ -27,13 +28,13 @@ RSpec.describe Gitlab::MergeRequests::CommitMessageGenerator do
       target_project: project,
       target_branch: 'master',
       source_branch: source_branch,
-      author: user,
+      author: author,
       description: merge_request_description,
       title: merge_request_title
     )
   end
 
-  subject { described_class.new(merge_request: merge_request) }
+  subject { described_class.new(merge_request: merge_request, current_user: current_user) }
 
   shared_examples_for 'commit message with template' do |message_template_name|
     it 'returns nil when template is not set in target project' do
@@ -53,6 +54,19 @@ RSpec.describe Gitlab::MergeRequests::CommitMessageGenerator do
 
           See merge request #{merge_request.to_reference(full: true)}
         MSG
+      end
+    end
+
+    context 'when project has commit template with only the title' do
+      let(:merge_request) do
+        double(:merge_request, title: 'Fixes', target_project: project, to_reference: '!123', metrics: nil, merge_user: nil)
+      end
+
+      let(message_template_name) { '%{title}' }
+
+      it 'evaluates only necessary variables' do
+        expect(result_message).to eq 'Fixes'
+        expect(merge_request).not_to have_received(:to_reference)
       end
     end
 
@@ -274,17 +288,319 @@ RSpec.describe Gitlab::MergeRequests::CommitMessageGenerator do
         end
       end
     end
+
+    context 'when project has merge commit template with approvers' do
+      let(:user1) { create(:user) }
+      let(:user2) { create(:user) }
+      let(message_template_name) { <<~MSG.rstrip }
+        Merge branch '%{source_branch}' into '%{target_branch}'
+
+        %{approved_by}
+      MSG
+
+      context 'and mr has no approval' do
+        before do
+          merge_request.approved_by_users = []
+        end
+
+        it 'removes variable and blank line' do
+          expect(result_message).to eq <<~MSG.rstrip
+            Merge branch 'feature' into 'master'
+          MSG
+        end
+
+        context 'when there is blank line after approved_by' do
+          let(message_template_name) { <<~MSG.rstrip }
+            Merge branch '%{source_branch}' into '%{target_branch}'
+
+            %{approved_by}
+
+            Type: merge
+          MSG
+
+          it 'removes blank line before it' do
+            expect(result_message).to eq <<~MSG.rstrip
+              Merge branch 'feature' into 'master'
+
+              Type: merge
+            MSG
+          end
+        end
+
+        context 'when there is no blank line after approved_by' do
+          let(message_template_name) { <<~MSG.rstrip }
+            Merge branch '%{source_branch}' into '%{target_branch}'
+
+            %{approved_by}
+            Type: merge
+          MSG
+
+          it 'does not remove blank line before it' do
+            expect(result_message).to eq <<~MSG.rstrip
+              Merge branch 'feature' into 'master'
+
+              Type: merge
+            MSG
+          end
+        end
+      end
+
+      context 'and mr has one approval' do
+        before do
+          merge_request.approved_by_users = [user1]
+        end
+
+        it 'returns user name and email' do
+          expect(result_message).to eq <<~MSG.rstrip
+            Merge branch 'feature' into 'master'
+
+            Approved-by: #{user1.name} <#{user1.email}>
+          MSG
+        end
+      end
+
+      context 'and mr has multiple approvals' do
+        before do
+          merge_request.approved_by_users = [user1, user2]
+        end
+
+        it 'returns users names and emails' do
+          expect(result_message).to eq <<~MSG.rstrip
+            Merge branch 'feature' into 'master'
+
+            Approved-by: #{user1.name} <#{user1.email}>
+            Approved-by: #{user2.name} <#{user2.email}>
+          MSG
+        end
+      end
+    end
+
+    context 'when project has merge commit template with url' do
+      let(message_template_name) do
+        "Merge Request URL is '%{url}'"
+      end
+
+      context "and merge request has url" do
+        it "returns mr url" do
+          expect(result_message).to eq <<~MSG.rstrip
+          Merge Request URL is '#{Gitlab::UrlBuilder.build(merge_request)}'
+          MSG
+        end
+      end
+    end
+
+    context 'when project has merge commit template with merged_by' do
+      let(message_template_name) do
+        "Merge Request merged by '%{merged_by}'"
+      end
+
+      context "and current_user is passed" do
+        it "returns user name and email" do
+          expect(result_message).to eq <<~MSG.rstrip
+          Merge Request merged by '#{current_user.name} <#{current_user.email}>'
+          MSG
+        end
+      end
+    end
+
+    context 'user' do
+      subject { described_class.new(merge_request: merge_request, current_user: nil) }
+
+      let(:user1) { create(:user) }
+      let(:user2) { create(:user) }
+      let(message_template_name) do
+        "Merge Request merged by '%{merged_by}'"
+      end
+
+      context 'comes from metrics' do
+        before do
+          merge_request.metrics.merged_by = user1
+        end
+
+        it "returns user name and email" do
+          expect(result_message).to eq <<~MSG.rstrip
+          Merge Request merged by '#{user1.name} <#{user1.email}>'
+          MSG
+        end
+      end
+
+      context 'comes from merge_user' do
+        before do
+          merge_request.merge_user = user2
+        end
+
+        it "returns user name and email" do
+          expect(result_message).to eq <<~MSG.rstrip
+          Merge Request merged by '#{user2.name} <#{user2.email}>'
+          MSG
+        end
+      end
+    end
+
+    context 'when project has commit template with the same variable used twice' do
+      let(message_template_name) { '%{title} %{title}' }
+
+      it 'uses custom template' do
+        expect(result_message).to eq 'Bugfix Bugfix'
+      end
+    end
+
+    context 'when project has commit template without any variable' do
+      let(message_template_name) { 'static text' }
+
+      it 'uses custom template' do
+        expect(result_message).to eq 'static text'
+      end
+    end
+
+    context 'when project has template with all variables' do
+      let(message_template_name) { <<~MSG.rstrip }
+        source_branch:%{source_branch}
+        target_branch:%{target_branch}
+        title:%{title}
+        issues:%{issues}
+        description:%{description}
+        first_commit:%{first_commit}
+        first_multiline_commit:%{first_multiline_commit}
+        url:%{url}
+        approved_by:%{approved_by}
+        merged_by:%{merged_by}
+        co_authored_by:%{co_authored_by}
+      MSG
+
+      it 'uses custom template' do
+        expect(result_message).to eq <<~MSG.rstrip
+          source_branch:feature
+          target_branch:master
+          title:Bugfix
+          issues:
+          description:Merge Request Description
+          Next line
+          first_commit:Feature added
+
+          Signed-off-by: Dmitriy Zaporozhets <dmitriy.zaporozhets@gmail.com>
+          first_multiline_commit:Feature added
+
+          Signed-off-by: Dmitriy Zaporozhets <dmitriy.zaporozhets@gmail.com>
+          url:#{Gitlab::UrlBuilder.build(merge_request)}
+          approved_by:
+          merged_by:#{current_user.name} <#{current_user.commit_email_or_default}>
+          co_authored_by:Co-authored-by: Dmitriy Zaporozhets <dmitriy.zaporozhets@gmail.com>
+        MSG
+      end
+    end
+
+    context 'when project has merge commit template with co_authored_by' do
+      let(:source_branch) { 'signed-commits' }
+      let(message_template_name) { <<~MSG.rstrip }
+        %{title}
+
+        %{co_authored_by}
+      MSG
+
+      it 'uses custom template' do
+        expect(result_message).to eq <<~MSG.rstrip
+          Bugfix
+
+          Co-authored-by: Nannie Bernhard <nannie.bernhard@example.com>
+          Co-authored-by: Winnie Hellmann <winnie@gitlab.com>
+        MSG
+      end
+
+      context 'when author and merging user is one of the commit authors' do
+        let(:author) { create(:user, email: 'nannie.bernhard@example.com') }
+
+        before do
+          merge_request.merge_user = author
+        end
+
+        it 'skips his mail in coauthors' do
+          expect(result_message).to eq <<~MSG.rstrip
+            Bugfix
+
+            Co-authored-by: Winnie Hellmann <winnie@gitlab.com>
+          MSG
+        end
+      end
+
+      context 'when author and merging user is the only author of commits' do
+        let(:author) { create(:user, email: 'dmitriy.zaporozhets@gmail.com') }
+        let(:source_branch) { 'feature' }
+
+        before do
+          merge_request.merge_user = author
+        end
+
+        it 'skips coauthors and empty lines before it' do
+          expect(result_message).to eq <<~MSG.rstrip
+            Bugfix
+          MSG
+        end
+      end
+    end
   end
 
   describe '#merge_message' do
     let(:result_message) { subject.merge_message }
 
     it_behaves_like 'commit message with template', :merge_commit_template
+
+    context 'when project has merge commit template with co_authored_by' do
+      let(:source_branch) { 'signed-commits' }
+      let(:merge_commit_template) { <<~MSG.rstrip }
+        %{title}
+
+        %{co_authored_by}
+      MSG
+
+      context 'when author and merging user are one of the commit authors' do
+        let(:author) { create(:user, email: 'nannie.bernhard@example.com') }
+        let(:merge_user) { create(:user, email: 'winnie@gitlab.com') }
+
+        before do
+          merge_request.merge_user = merge_user
+        end
+
+        it 'skips merging user, but does not skip merge request author' do
+          expect(result_message).to eq <<~MSG.rstrip
+            Bugfix
+
+            Co-authored-by: Nannie Bernhard <nannie.bernhard@example.com>
+          MSG
+        end
+      end
+    end
   end
 
   describe '#squash_message' do
     let(:result_message) { subject.squash_message }
 
     it_behaves_like 'commit message with template', :squash_commit_template
+
+    context 'when project has merge commit template with co_authored_by' do
+      let(:source_branch) { 'signed-commits' }
+      let(:squash_commit_template) { <<~MSG.rstrip }
+        %{title}
+
+        %{co_authored_by}
+      MSG
+
+      context 'when author and merging user are one of the commit authors' do
+        let(:author) { create(:user, email: 'nannie.bernhard@example.com') }
+        let(:merge_user) { create(:user, email: 'winnie@gitlab.com') }
+
+        before do
+          merge_request.merge_user = merge_user
+        end
+
+        it 'skips merge request author, but does not skip merging user' do
+          expect(result_message).to eq <<~MSG.rstrip
+            Bugfix
+
+            Co-authored-by: Winnie Hellmann <winnie@gitlab.com>
+          MSG
+        end
+      end
+    end
   end
 end

@@ -5,8 +5,6 @@ describe('Integration form state factory', () => {
     expect(createState()).toEqual({
       defaultState: null,
       customState: {},
-      isSaving: false,
-      isResetting: false,
       override: false,
       isLoadingJiraIssueTypes: false,
       jiraIssueTypes: [],

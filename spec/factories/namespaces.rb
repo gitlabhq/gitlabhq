@@ -11,6 +11,14 @@ FactoryBot.define do
 
     owner { association(:user, strategy: :build, namespace: instance, username: path) }
 
+    after(:create) do |namespace, evaluator|
+      # simulating ::Namespaces::ProcessSyncEventsWorker because most tests don't run Sidekiq inline
+      # Note: we need to get refreshed `traversal_ids` it is updated via SQL query
+      #       in `Namespaces::Traversal::Linear#sync_traversal_ids` (see the NOTE in that method).
+      #       We cannot use `.reload` because it cleans other on-the-fly attributes.
+      namespace.create_ci_namespace_mirror!(traversal_ids: Namespace.find(namespace.id).traversal_ids) unless namespace.ci_namespace_mirror
+    end
+
     trait :with_aggregation_schedule do
       after(:create) do |namespace|
         create(:namespace_aggregation_schedules, namespace: namespace)

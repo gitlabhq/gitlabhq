@@ -1,0 +1,44 @@
+# frozen_string_literal: true
+
+module Packages
+  class CleanupPackageFileWorker
+    include ApplicationWorker
+    include ::Packages::CleanupArtifactWorker
+    include Gitlab::Utils::StrongMemoize
+
+    data_consistency :always
+    queue_namespace :package_cleanup
+    feature_category :package_registry
+    urgency :low
+    worker_resource_boundary :unknown
+    idempotent!
+
+    def max_running_jobs
+      ::Gitlab::CurrentSettings.packages_cleanup_package_file_worker_capacity
+    end
+
+    private
+
+    def model
+      Packages::PackageFile
+    end
+
+    def next_item
+      model.next_pending_destruction
+    end
+
+    def log_metadata(package_file)
+      log_extra_metadata_on_done(:package_file_id, package_file.id)
+      log_extra_metadata_on_done(:package_id, package_file.package_id)
+    end
+
+    def log_cleanup_item(package_file)
+      logger.info(
+        structured_payload(
+          package_id: package_file.package_id,
+          package_file_id: package_file.id
+        )
+      )
+    end
+  end
+end

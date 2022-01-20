@@ -1,0 +1,8 @@
+---
+name: rate_limit_user_sign_up_endpoint
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/77835
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/349843
+milestone: '14.7'
+type: development
+group: group::optimize
+default_enabled: false

@@ -69,7 +69,7 @@ Slack channel for the stage the feature is relevant to. For example, use the
 `#s_monitor` channel for features developed by the Monitor stage, Health
 group.
 
-To enable a feature for 25% of all users, run the following in Slack:
+To enable a feature for 25% of the time, run the following in Slack:
 
 ```shell
 /chatops run feature set new_navigation_bar 25 --dev
@@ -302,6 +302,19 @@ feature flag in the codebase increases the complexity of the application
 and reduces confidence in our testing suite covering all possible combinations.
 Additionally, a feature flag overwritten in some of the environments can result
 in undefined and untested system behavior.
+
+`development` type feature flags should have a short life-cycle because their purpose
+is for rolling out a persistent change. `development` feature flags that are older
+than 2 milestones are reported to engineering managers. The
+[report tool](https://gitlab.com/gitlab-org/gitlab-feature-flag-alert) runs on a
+monthly basis. For example, see [the report for December 2021](https://gitlab.com/gitlab-org/quality/triage-reports/-/issues/5480).
+
+If a `development` feature flag is still present in the codebase after 6 months we should
+take one of the following actions:
+
+- Enable the feature flag by default and remove it.
+- Convert it to an instance, group, or project setting.
+- Revert the changes if it's still disabled and not needed anymore.
 
 To remove a feature flag, open **one merge request** to make the changes. In the MR:
 

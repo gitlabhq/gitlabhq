@@ -94,7 +94,6 @@ To add a redirect:
    ```
 
    If you don't want to use the Rake task, you can use the following template.
-   However, the file paths must be relative to the `doc` or `docs` directory.
 
    Replace the value of `redirect_to` with the new file path and `YYYY-MM-DD`
    with the date the file should be removed.

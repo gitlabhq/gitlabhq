@@ -31,7 +31,6 @@ RSpec.describe 'Merge Requests Context Commit Diffs' do
 
     def collection_arguments(pagination_data = {})
       {
-        environment: nil,
         merge_request: merge_request,
         commit: nil,
         diff_view: :inline,

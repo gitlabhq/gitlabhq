@@ -1,0 +1,8 @@
+---
+name: use_typhoeus_elasticsearch_adapter
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/76879
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/348607
+milestone: '14.7'
+type: development
+group: group::global search
+default_enabled: false

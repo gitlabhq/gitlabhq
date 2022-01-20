@@ -4,7 +4,7 @@ import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import IssueTypeField, { i18n } from '~/issues/show/components/fields/type.vue';
-import { IssuableTypes } from '~/issues/show/constants';
+import { issuableTypes } from '~/issues/show/constants';
 import {
   getIssueStateQueryResponse,
   updateIssueStateQueryResponse,
@@ -69,8 +69,8 @@ describe('Issue type field component', () => {
 
   it.each`
     at   | text                     | icon
-    ${0} | ${IssuableTypes[0].text} | ${IssuableTypes[0].icon}
-    ${1} | ${IssuableTypes[1].text} | ${IssuableTypes[1].icon}
+    ${0} | ${issuableTypes[0].text} | ${issuableTypes[0].icon}
+    ${1} | ${issuableTypes[1].text} | ${issuableTypes[1].icon}
   `(`renders the issue type $text with an icon in the dropdown`, ({ at, text, icon }) => {
     expect(findTypeFromDropDownItemIconAt(at).attributes('name')).toBe(icon);
     expect(findTypeFromDropDownItemAt(at).text()).toBe(text);
@@ -81,20 +81,20 @@ describe('Issue type field component', () => {
   });
 
   it('renders a form select with the `issue_type` value', () => {
-    expect(findTypeFromDropDown().attributes('value')).toBe(IssuableTypes.issue);
+    expect(findTypeFromDropDown().attributes('value')).toBe(issuableTypes.issue);
   });
 
   describe('with Apollo cache mock', () => {
     it('renders the selected issueType', async () => {
       mockIssueStateData.mockResolvedValue(getIssueStateQueryResponse);
       await waitForPromises();
-      expect(findTypeFromDropDown().attributes('value')).toBe(IssuableTypes.issue);
+      expect(findTypeFromDropDown().attributes('value')).toBe(issuableTypes.issue);
     });
 
     it('updates the `issue_type` in the apollo cache when the value is changed', async () => {
-      findTypeFromDropDownItems().at(1).vm.$emit('click', IssuableTypes.incident);
+      findTypeFromDropDownItems().at(1).vm.$emit('click', issuableTypes.incident);
       await wrapper.vm.$nextTick();
-      expect(findTypeFromDropDown().attributes('value')).toBe(IssuableTypes.incident);
+      expect(findTypeFromDropDown().attributes('value')).toBe(issuableTypes.incident);
     });
 
     describe('when user is a guest', () => {
@@ -104,7 +104,7 @@ describe('Issue type field component', () => {
 
         expect(findTypeFromDropDownItemAt(0).isVisible()).toBe(true);
         expect(findTypeFromDropDownItemAt(1).isVisible()).toBe(false);
-        expect(findTypeFromDropDown().attributes('value')).toBe(IssuableTypes.issue);
+        expect(findTypeFromDropDown().attributes('value')).toBe(issuableTypes.issue);
       });
 
       it('and incident is selected, includes incident in the dropdown', async () => {
@@ -113,7 +113,7 @@ describe('Issue type field component', () => {
 
         expect(findTypeFromDropDownItemAt(0).isVisible()).toBe(true);
         expect(findTypeFromDropDownItemAt(1).isVisible()).toBe(true);
-        expect(findTypeFromDropDown().attributes('value')).toBe(IssuableTypes.incident);
+        expect(findTypeFromDropDown().attributes('value')).toBe(issuableTypes.incident);
       });
     });
   });

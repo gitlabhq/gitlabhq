@@ -1,0 +1,20 @@
+query getGroupRunnersCount(
+  $groupFullPath: ID!
+  $status: CiRunnerStatus
+  $type: CiRunnerType
+  $tagList: [String!]
+  $search: String
+) {
+  group(fullPath: $groupFullPath) {
+    id # Apollo required
+    runners(
+      membership: DESCENDANTS
+      status: $status
+      type: $type
+      tagList: $tagList
+      search: $search
+    ) {
+      count
+    }
+  }
+}

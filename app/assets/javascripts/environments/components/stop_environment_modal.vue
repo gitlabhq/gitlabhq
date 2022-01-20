@@ -2,6 +2,7 @@
 import { GlSprintf, GlTooltipDirective, GlModal } from '@gitlab/ui';
 import { __, s__ } from '~/locale';
 import eventHub from '../event_hub';
+import stopEnvironmentMutation from '../graphql/mutations/stop_environment.mutation.graphql';
 
 export default {
   id: 'stop-environment-modal',
@@ -21,6 +22,11 @@ export default {
       type: Object,
       required: true,
     },
+    graphql: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
 
   computed: {
@@ -39,7 +45,14 @@ export default {
 
   methods: {
     onSubmit() {
-      eventHub.$emit('stopEnvironment', this.environment);
+      if (this.graphql) {
+        this.$apollo.mutate({
+          mutation: stopEnvironmentMutation,
+          variables: { environment: this.environment },
+        });
+      } else {
+        eventHub.$emit('stopEnvironment', this.environment);
+      }
     },
   },
 };

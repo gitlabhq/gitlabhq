@@ -49,7 +49,7 @@ RSpec.describe Emails::Profile do
 
   describe 'for users that signed up, the email' do
     let(:example_site_path) { root_path }
-    let(:new_user) { create(:user, email: new_user_address, password: "securePassword") }
+    let(:new_user) { create(:user, email: new_user_address, password: Gitlab::Password.test_default) }
 
     subject { Notify.new_user_email(new_user.id) }
 

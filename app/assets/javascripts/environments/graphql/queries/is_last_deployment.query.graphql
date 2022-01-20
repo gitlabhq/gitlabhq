@@ -1,0 +1,3 @@
+query isLastDeployment($environment: LocalEnvironment) {
+  isLastDeployment(environment: $environment) @client
+}

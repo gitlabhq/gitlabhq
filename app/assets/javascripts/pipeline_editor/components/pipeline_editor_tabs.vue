@@ -11,6 +11,7 @@ import {
   EDITOR_APP_STATUS_INVALID,
   EDITOR_APP_STATUS_LOADING,
   EDITOR_APP_STATUS_VALID,
+  EDITOR_APP_STATUS_LINT_UNAVAILABLE,
   LINT_TAB,
   MERGED_TAB,
   TAB_QUERY_PARAM,
@@ -106,6 +107,9 @@ export default {
     isInvalid() {
       return this.appStatus === EDITOR_APP_STATUS_INVALID;
     },
+    isLintUnavailable() {
+      return this.appStatus === EDITOR_APP_STATUS_LINT_UNAVAILABLE;
+    },
     isValid() {
       return this.appStatus === EDITOR_APP_STATUS_VALID;
     },
@@ -142,6 +146,7 @@ export default {
 <template>
   <gl-tabs
     class="file-editor gl-mb-3"
+    data-qa-selector="file_editor_container"
     :query-param-name="$options.query.TAB_QUERY_PARAM"
     sync-active-tab-with-query-params
   >
@@ -166,6 +171,7 @@ export default {
       :empty-message="$options.i18n.empty.visualization"
       :is-empty="isEmpty"
       :is-invalid="isInvalid"
+      :is-unavailable="isLintUnavailable"
       :keep-component-mounted="false"
       :title="$options.i18n.tabGraph"
       lazy
@@ -179,6 +185,7 @@ export default {
       class="gl-mb-3"
       :empty-message="$options.i18n.empty.lint"
       :is-empty="isEmpty"
+      :is-unavailable="isLintUnavailable"
       :title="$options.i18n.tabLint"
       data-testid="lint-tab"
       @click="setCurrentTab($options.tabConstants.LINT_TAB)"
@@ -192,6 +199,7 @@ export default {
       :keep-component-mounted="false"
       :is-empty="isEmpty"
       :is-invalid="isInvalid"
+      :is-unavailable="isLintUnavailable"
       :title="$options.i18n.tabMergedYaml"
       lazy
       data-testid="merged-tab"

@@ -14,7 +14,7 @@ module ApplicationSettingImplementation
   # Setting a key restriction to `-1` means that all keys of this type are
   # forbidden.
   FORBIDDEN_KEY_VALUE = KeyRestrictionValidator::FORBIDDEN
-  SUPPORTED_KEY_TYPES = %i[rsa dsa ecdsa ed25519].freeze
+  SUPPORTED_KEY_TYPES = Gitlab::SSHPublicKey.supported_types
   VALID_RUNNER_REGISTRAR_TYPES = %w(project group).freeze
 
   DEFAULT_PROTECTED_PATHS = [
@@ -217,12 +217,19 @@ module ApplicationSettingImplementation
         wiki_page_max_content_bytes: 50.megabytes,
         container_registry_delete_tags_service_timeout: 250,
         container_registry_expiration_policies_worker_capacity: 0,
+        container_registry_import_max_tags_count: 100,
+        container_registry_import_max_retries: 3,
+        container_registry_import_start_max_retries: 50,
+        container_registry_import_max_step_duration: 5.minutes,
+        container_registry_import_target_plan: 'free',
+        container_registry_import_created_before: '2022-01-23 00:00:00',
         kroki_enabled: false,
         kroki_url: nil,
         kroki_formats: { blockdiag: false, bpmn: false, excalidraw: false },
         rate_limiting_response_text: nil,
         whats_new_variant: 0,
-        user_deactivation_emails_enabled: true
+        user_deactivation_emails_enabled: true,
+        user_email_lookup_limit: 60
       }
     end
 

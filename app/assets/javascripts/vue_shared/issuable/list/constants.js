@@ -38,7 +38,7 @@ export const AvailableSortOptions = [
   },
   {
     id: 2,
-    title: __('Last updated'),
+    title: __('Updated date'),
     sortDirection: {
       descending: 'updated_desc',
       ascending: 'updated_asc',

@@ -3,6 +3,7 @@ import { shallowMount } from '@vue/test-utils';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
+import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 import workItemQuery from '~/work_items/graphql/work_item.query.graphql';
 import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
 import WorkItemsRoot from '~/work_items/pages/work_item_root.vue';
@@ -15,6 +16,7 @@ Vue.use(VueApollo);
 const WORK_ITEM_ID = '1';
 
 describe('Work items root component', () => {
+  const mockUpdatedTitle = 'Updated title';
   let wrapper;
   let fakeApollo;
 
@@ -53,7 +55,6 @@ describe('Work items root component', () => {
   it('updates the title when it is edited', async () => {
     createComponent();
     jest.spyOn(wrapper.vm.$apollo, 'mutate');
-    const mockUpdatedTitle = 'Updated title';
 
     await findTitle().vm.$emit('title-changed', mockUpdatedTitle);
 
@@ -90,5 +91,33 @@ describe('Work items root component', () => {
     createComponent({ queryResponse });
 
     expect(findTitle().exists()).toBe(false);
+  });
+
+  describe('tracking', () => {
+    let trackingSpy;
+
+    beforeEach(() => {
+      trackingSpy = mockTracking('_category_', undefined, jest.spyOn);
+
+      createComponent();
+    });
+
+    afterEach(() => {
+      unmockTracking();
+    });
+
+    it('tracks item title updates', async () => {
+      await findTitle().vm.$emit('title-changed', mockUpdatedTitle);
+
+      await waitForPromises();
+
+      expect(trackingSpy).toHaveBeenCalledTimes(1);
+      expect(trackingSpy).toHaveBeenCalledWith('workItems:show', undefined, {
+        action: 'updated_title',
+        category: 'workItems:show',
+        label: 'item_title',
+        property: '[type_work_item]',
+      });
+    });
   });
 });

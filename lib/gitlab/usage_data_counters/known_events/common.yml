@@ -368,8 +368,18 @@
   redis_slot: testing
   category: testing
   aggregation: weekly
+- name: users_clicking_license_testing_visiting_external_website
+  redis_slot: testing
+  category: testing
+  aggregation: weekly
 # Container Security - Network Policies
 - name: clusters_using_network_policies_ui
   redis_slot: network_policies
   category: network_policies
   aggregation: weekly
+# Geo group
+- name: g_geo_proxied_requests
+  category: geo
+  redis_slot: geo
+  aggregation: daily
+  feature_flag: track_geo_proxy_events

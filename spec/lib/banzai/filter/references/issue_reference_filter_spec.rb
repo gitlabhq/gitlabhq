@@ -122,6 +122,7 @@ RSpec.describe Banzai::Filter::References::IssueReferenceFilter do
 
       expect(link).to have_attribute('data-reference-format')
       expect(link.attr('data-reference-format')).to eq('+')
+      expect(link.attr('href')).to eq(issue_url)
     end
 
     it 'includes a data-reference-format attribute for URL references' do
@@ -130,6 +131,7 @@ RSpec.describe Banzai::Filter::References::IssueReferenceFilter do
 
       expect(link).to have_attribute('data-reference-format')
       expect(link.attr('data-reference-format')).to eq('+')
+      expect(link.attr('href')).to eq(issue_url)
     end
 
     it 'supports an :only_path context' do

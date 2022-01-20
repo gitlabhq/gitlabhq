@@ -3,7 +3,7 @@
 exports[`Package code instruction multiline to match the snapshot 1`] = `
 <div>
   <label
-    for="instruction-input_3"
+    for="instruction-input_1"
   >
     foo_label
   </label>
@@ -23,7 +23,7 @@ multiline text
 exports[`Package code instruction single line to match the default snapshot 1`] = `
 <div>
   <label
-    for="instruction-input_2"
+    for="instruction-input_1"
   >
     foo_label
   </label>
@@ -37,7 +37,7 @@ exports[`Package code instruction single line to match the default snapshot 1`] 
       <input
         class="form-control gl-font-monospace"
         data-testid="instruction-input"
-        id="instruction-input_2"
+        id="instruction-input_1"
         readonly="readonly"
         type="text"
       />
@@ -47,9 +47,12 @@ exports[`Package code instruction single line to match the default snapshot 1`] 
         data-testid="instruction-button"
       >
         <button
-          aria-label="Copy this value"
+          aria-label="Copy npm install command"
+          aria-live="polite"
           class="btn input-group-text btn-default btn-md gl-button btn-default-secondary btn-icon"
+          data-clipboard-handle-tooltip="false"
           data-clipboard-text="npm i @my-package"
+          id="clipboard-button-1"
           title="Copy npm install command"
           type="button"
         >

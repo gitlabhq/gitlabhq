@@ -338,6 +338,10 @@ FactoryBot.define do
       running
 
       runner factory: :ci_runner
+
+      after(:create) do |build|
+        build.create_runtime_metadata!
+      end
     end
 
     trait :artifacts do
@@ -594,6 +598,11 @@ FactoryBot.define do
     trait :forward_deployment_failure do
       failed
       failure_reason { 13 }
+    end
+
+    trait :deployment_rejected do
+      failed
+      failure_reason { 22 }
     end
 
     trait :with_runner_session do

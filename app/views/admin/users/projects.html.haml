@@ -5,7 +5,7 @@
 
 - if @user.groups.any?
   .card
-    .card-header= _('Group projects')
+    .card-header= _('Groups')
     %ul.hover-list
       - @user.group_members.includes(:source).each do |group_member| # rubocop: disable CodeReuse/ActiveRecord
         - group = group_member.group

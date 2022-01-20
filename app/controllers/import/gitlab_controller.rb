@@ -41,7 +41,7 @@ class Import::GitlabController < Import::BaseController
 
   override :importable_repos
   def importable_repos
-    client.projects(starting_page: 1, page_limit: MAX_PROJECT_PAGES, per_page: PER_PAGE_PROJECTS)
+    client.projects(starting_page: 1, page_limit: MAX_PROJECT_PAGES, per_page: PER_PAGE_PROJECTS).to_a
   end
 
   override :incompatible_repos

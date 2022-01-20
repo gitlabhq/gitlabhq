@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Discussions::UpdateDiffPositionService do
   let(:project) { create(:project, :repository) }
-  let(:current_user) { project.owner }
+  let(:current_user) { project.first_owner }
   let(:create_commit) { project.commit("913c66a37b4a45b9769037c55c2d238bd0942d2e") }
   let(:modify_commit) { project.commit("874797c3a73b60d2187ed6e2fcabd289ff75171e") }
   let(:edit_commit) { project.commit("570e7b2abdd848b95f2f578043fc23bd6f6fd24d") }

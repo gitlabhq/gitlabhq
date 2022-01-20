@@ -314,25 +314,33 @@ module API
               required: false,
               name: :datadog_site,
               type: String,
-              desc: 'Choose the Datadog site to send data to. Set to "datadoghq.eu" to send data to the EU site'
+              desc: 'The Datadog site to send data to. To send data to the EU site, use datadoghq.eu'
             },
             {
               required: false,
               name: :api_url,
               type: String,
-              desc: '(Advanced) Define the full URL for your Datadog site directly'
+              desc: '(Advanced) The full URL for your Datadog site'
             },
+            # TODO: uncomment this field once :datadog_integration_logs_collection is rolled out
+            # https://gitlab.com/gitlab-org/gitlab/-/issues/346339
+            # {
+            #   required: false,
+            #   name: :archive_trace_events,
+            #   type: Boolean,
+            #   desc: 'When enabled, job logs will be collected by Datadog and shown along pipeline execution traces'
+            # },
             {
               required: false,
               name: :datadog_service,
               type: String,
-              desc: 'Name of this GitLab instance that all data will be tagged with'
+              desc: 'Tag all data from this GitLab instance in Datadog. Useful when managing several self-managed deployments'
             },
             {
               required: false,
               name: :datadog_env,
               type: String,
-              desc: 'The environment tag that traces will be tagged with'
+              desc: 'For self-managed deployments, set the env tag for all the data sent to Datadog. How do I use tags?'
             }
           ],
           'discord' => [

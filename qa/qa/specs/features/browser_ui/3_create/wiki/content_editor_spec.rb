@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Create', :requires_admin do # remove :requires_admin once the ff is enabled by default in https://gitlab.com/gitlab-org/gitlab/-/issues/345398
+  RSpec.describe 'Create', :requires_admin, quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/350220', type: :investigating } do # remove :requires_admin once the ff is enabled by default in https://gitlab.com/gitlab-org/gitlab/-/issues/345398
     context 'Content Editor' do
       let(:initial_wiki) { Resource::Wiki::ProjectPage.fabricate_via_api! }
       let(:page_title) { 'Content Editor Page' }

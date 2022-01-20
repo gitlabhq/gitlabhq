@@ -3,6 +3,7 @@
 module AuthHelper
   PROVIDERS_WITH_ICONS = %w(
     atlassian_oauth2
+    auth0
     authentiq
     azure_activedirectory_v2
     azure_oauth2
@@ -12,8 +13,10 @@ module AuthHelper
     github
     gitlab
     google_oauth2
+    jwt
     openid_connect
     salesforce
+    shibboleth
     twitter
   ).freeze
   LDAP_PROVIDER = /\Aldap/.freeze
@@ -177,15 +180,13 @@ module AuthHelper
   def google_tag_manager_enabled?
     return false unless Gitlab.dev_env_or_com?
 
-    has_config_key = if Feature.enabled?(:gtm_nonce, type: :ops)
-                       extra_config.has_key?('google_tag_manager_nonce_id') &&
-                          extra_config.google_tag_manager_nonce_id.present?
-                     else
-                       extra_config.has_key?('google_tag_manager_id') &&
-                          extra_config.google_tag_manager_id.present?
-                     end
-
-    has_config_key && !current_user
+    if Feature.enabled?(:gtm_nonce, type: :ops)
+      extra_config.has_key?('google_tag_manager_nonce_id') &&
+         extra_config.google_tag_manager_nonce_id.present?
+    else
+      extra_config.has_key?('google_tag_manager_id') &&
+         extra_config.google_tag_manager_id.present?
+    end
   end
 
   def google_tag_manager_id

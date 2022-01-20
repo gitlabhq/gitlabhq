@@ -8,10 +8,13 @@ export default () => {
     return null;
   }
 
-  const { overridesPath } = el.dataset;
+  const { editPath, overridesPath } = el.dataset;
 
   return new Vue({
     el,
+    provide: {
+      editPath,
+    },
     render(createElement) {
       return createElement(IntegrationOverrides, {
         props: {

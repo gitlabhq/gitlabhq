@@ -69,7 +69,9 @@ describe('RunnerList', () => {
     const { id, description, version, ipAddress, shortSha } = mockRunners[0];
 
     // Badges
-    expect(findCell({ fieldKey: 'status' }).text()).toMatchInterpolatedText('not connected paused');
+    expect(findCell({ fieldKey: 'status' }).text()).toMatchInterpolatedText(
+      'never contacted paused',
+    );
 
     // Runner summary
     expect(findCell({ fieldKey: 'summary' }).text()).toContain(

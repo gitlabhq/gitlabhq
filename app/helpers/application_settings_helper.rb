@@ -144,36 +144,39 @@ module ApplicationSettingsHelper
   end
 
   def external_authorization_description
-    _("If enabled, access to projects will be validated on an external service"\
+    s_("ExternalAuthorization|Access to projects is validated on an external service"\
         " using their classification label.")
   end
 
   def external_authorization_timeout_help_text
-    _("Time in seconds GitLab will wait for a response from the external "\
-        "service. When the service does not respond in time, access will be "\
-        "denied.")
+    s_("ExternalAuthorization|Period GitLab waits for a response from the external "\
+        "service. If there is no response, access is denied. Default: 0.5 seconds.")
   end
 
   def external_authorization_url_help_text
-    _("When leaving the URL blank, classification labels can still be "\
-        "specified without disabling cross project features or performing "\
-        "external authorization checks.")
+    s_("ExternalAuthorization|URL to which the projects make authorization requests. If the URL is blank, cross-project "\
+      "features are available and can still specify classification "\
+      "labels for projects.")
   end
 
   def external_authorization_client_certificate_help_text
-    _("The X509 Certificate to use when mutual TLS is required to communicate "\
-        "with the external authorization service. If left blank, the server "\
-        "certificate is still validated when accessing over HTTPS.")
+    s_("ExternalAuthorization|Certificate used to authenticate with the external authorization service. "\
+        "If blank, the server certificate is validated when accessing over HTTPS.")
   end
 
   def external_authorization_client_key_help_text
-    _("The private key to use when a client certificate is provided. This value "\
-        "is encrypted at rest.")
+    s_("ExternalAuthorization|Private key of client authentication certificate. "\
+        "Encrypted when stored.")
   end
 
   def external_authorization_client_pass_help_text
-    _("The passphrase required to decrypt the private key. This is optional "\
-        "and the value is encrypted at rest.")
+    s_("ExternalAuthorization|Passphrase required to decrypt the private key. "\
+        "Encrypted when stored.")
+  end
+
+  def external_authorization_client_url_help_text
+    s_("ExternalAuthorization|Classification label to use when requesting authorization if no specific "\
+      " label is defined on the project.")
   end
 
   def sidekiq_job_limiter_mode_help_text
@@ -401,6 +404,12 @@ module ApplicationSettingsHelper
       :rate_limiting_response_text,
       :container_registry_expiration_policies_worker_capacity,
       :container_registry_cleanup_tags_service_max_list_size,
+      :container_registry_import_max_tags_count,
+      :container_registry_import_max_retries,
+      :container_registry_import_start_max_retries,
+      :container_registry_import_max_step_duration,
+      :container_registry_import_target_plan,
+      :container_registry_import_created_before,
       :keep_latest_artifact,
       :whats_new_variant,
       :user_deactivation_emails_enabled,
@@ -411,7 +420,8 @@ module ApplicationSettingsHelper
       :sidekiq_job_limiter_mode,
       :sidekiq_job_limiter_compression_threshold_bytes,
       :sidekiq_job_limiter_limit_bytes,
-      :suggest_pipeline_enabled
+      :suggest_pipeline_enabled,
+      :user_email_lookup_limit
     ].tap do |settings|
       settings << :deactivate_dormant_users unless Gitlab.com?
     end
@@ -485,6 +495,10 @@ module ApplicationSettingsHelper
 
   def pending_user_count
     User.blocked_pending_approval.count
+  end
+
+  def registration_features_can_be_prompted?
+    !Gitlab::CurrentSettings.usage_ping_enabled?
   end
 end
 

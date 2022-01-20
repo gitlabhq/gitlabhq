@@ -6,9 +6,9 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Release links API **(FREE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/41766) in GitLab 11.7.
+Use this API to manipulate GitLab [Release](../../user/project/releases/index.md)
+links. For manipulating other Release assets, see [Release API](index.md).
 
-Using this API you can manipulate GitLab [Release](../../user/project/releases/index.md) links. For manipulating other Release assets, see [Release API](index.md).
 GitLab supports links to `http`, `https`, and `ftp` assets.
 
 ## Get links

@@ -129,6 +129,15 @@
   :weight: 2
   :idempotent:
   :tags: []
+- :name: cluster_agent:clusters_agents_delete_expired_events
+  :worker_name: Clusters::Agents::DeleteExpiredEventsWorker
+  :feature_category: :kubernetes_management
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: container_repository:cleanup_container_repository
   :worker_name: CleanupContainerRepositoryWorker
   :feature_category: :container_registry
@@ -434,6 +443,15 @@
   :resource_boundary: :cpu
   :weight: 1
   :idempotent:
+  :tags: []
+- :name: cronjob:packages_cleanup_package_registry
+  :worker_name: Packages::CleanupPackageRegistryWorker
+  :feature_category: :package_registry
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
   :tags: []
 - :name: cronjob:packages_composer_cache_cleanup
   :worker_name: Packages::Composer::CacheCleanupWorker
@@ -1357,6 +1375,15 @@
   :weight: 1
   :idempotent:
   :tags: []
+- :name: package_cleanup:packages_cleanup_package_file
+  :worker_name: Packages::CleanupPackageFileWorker
+  :feature_category: :package_registry
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: package_repositories:packages_debian_generate_distribution
   :worker_name: Packages::Debian::GenerateDistributionWorker
   :feature_category: :package_registry
@@ -1539,7 +1566,7 @@
   :tags: []
 - :name: pipeline_creation:ci_external_pull_requests_create_pipeline
   :worker_name: Ci::ExternalPullRequests::CreatePipelineWorker
-  :feature_category: :pipeline_authoring
+  :feature_category: :continuous_integration
   :has_external_dependencies:
   :urgency: :high
   :resource_boundary: :cpu
@@ -1987,6 +2014,15 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: ci_job_artifacts_expire_project_build_artifacts
+  :worker_name: Ci::JobArtifacts::ExpireProjectBuildArtifactsWorker
+  :feature_category: :build_artifacts
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: create_commit_signature
   :worker_name: CreateCommitSignatureWorker
   :feature_category: :source_code_management
@@ -2417,6 +2453,15 @@
   :has_external_dependencies:
   :urgency: :high
   :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+- :name: merge_requests_update_head_pipeline
+  :worker_name: MergeRequests::UpdateHeadPipelineWorker
+  :feature_category: :code_review
+  :has_external_dependencies:
+  :urgency: :high
+  :resource_boundary: :cpu
   :weight: 1
   :idempotent: true
   :tags: []
@@ -2909,7 +2954,7 @@
   :tags: []
 - :name: update_external_pull_requests
   :worker_name: UpdateExternalPullRequestsWorker
-  :feature_category: :source_code_management
+  :feature_category: :continuous_integration
   :has_external_dependencies:
   :urgency: :low
   :resource_boundary: :unknown

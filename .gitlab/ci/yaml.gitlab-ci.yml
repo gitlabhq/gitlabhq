@@ -10,4 +10,4 @@ lint-yaml:
   variables:
     LINT_PATHS: .gitlab-ci.yml .gitlab/ci lib/gitlab/ci/templates
   script:
-    - yamllint -f colored $LINT_PATHS
+    - yamllint --strict -f colored $LINT_PATHS

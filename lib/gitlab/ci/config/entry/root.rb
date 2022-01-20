@@ -59,7 +59,8 @@ module Gitlab
 
           entry :types, Entry::Stages,
             description: 'Deprecated: stages for this pipeline.',
-            reserved: true
+            reserved: true,
+            deprecation: { deprecated: '9.0', warning: '14.8', removed: '15.0', documentation: 'https://docs.gitlab.com/ee/ci/yaml/#deprecated-keywords' }
 
           entry :cache, Entry::Caches,
             description: 'Configure caching between build jobs.',
@@ -122,8 +123,9 @@ module Gitlab
             # Deprecated `:types` key workaround - if types are defined and
             # stages are not defined we use types definition as stages.
             #
-            if types_defined? && !stages_defined?
-              @entries[:stages] = @entries[:types]
+            if types_defined?
+              @entries[:stages] = @entries[:types] unless stages_defined?
+              log_and_warn_deprecated_entry(@entries[:types])
             end
 
             @entries.delete(:types)

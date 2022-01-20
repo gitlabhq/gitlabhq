@@ -121,8 +121,38 @@ AtlErSqafbECNDSwS5BX8yDpu5yRBJ4xegO/rNlmb8ICRYkuJapD1xXicFOsmfUK
       expect(config.adapter_options).to eq(
         host: 'ldap.example.com',
         port: 386,
+        hosts: nil,
         encryption: nil
       )
+    end
+
+    it 'includes failover hosts when set' do
+      stub_ldap_config(
+        options: {
+          'host'                => 'ldap.example.com',
+          'port'                => 686,
+          'hosts'               => [
+            ['ldap1.example.com', 636],
+            ['ldap2.example.com', 636]
+          ],
+          'encryption'          => 'simple_tls',
+          'verify_certificates' => true,
+          'bind_dn'             => 'uid=admin,dc=example,dc=com',
+          'password'            => 'super_secret'
+        }
+      )
+
+      expect(config.adapter_options).to include({
+        hosts: [
+          ['ldap1.example.com', 636],
+          ['ldap2.example.com', 636]
+        ],
+        auth: {
+          method: :simple,
+          username: 'uid=admin,dc=example,dc=com',
+          password: 'super_secret'
+        }
+      })
     end
 
     it 'includes authentication options when auth is configured' do

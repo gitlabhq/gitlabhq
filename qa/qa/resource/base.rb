@@ -71,7 +71,25 @@ module QA
           resource_web_url = yield
           resource.web_url = resource_web_url
 
+          QA::Tools::TestResourceDataProcessor.collect(resource, resource_identifier(resource))
+
           resource
+        end
+
+        def resource_identifier(resource)
+          if resource.respond_to?(:username) && resource.username
+            "with username '#{resource.username}'"
+          elsif resource.respond_to?(:full_path) && resource.full_path
+            "with full_path '#{resource.full_path}'"
+          elsif resource.respond_to?(:name) && resource.name
+            "with name '#{resource.name}'"
+          elsif resource.respond_to?(:id) && resource.id
+            "with id '#{resource.id}'"
+          elsif resource.respond_to?(:iid) && resource.iid
+            "with iid '#{resource.iid}'"
+          end
+        rescue QA::Resource::Base::NoValueError
+          nil
         end
 
         def log_fabrication(method, resource, parents, args)
@@ -80,25 +98,22 @@ module QA
           Support::FabricationTracker.start_fabrication
           result = yield.tap do
             fabrication_time = Time.now - start
-            resource_identifier = begin
-              if resource.respond_to?(:username) && resource.username
-                "with username '#{resource.username}'"
-              elsif resource.respond_to?(:full_path) && resource.full_path
-                "with full_path '#{resource.full_path}'"
-              elsif resource.respond_to?(:name) && resource.name
-                "with name '#{resource.name}'"
-              elsif resource.respond_to?(:id) && resource.id
-                "with id '#{resource.id}'"
-              end
-            rescue QA::Resource::Base::NoValueError
-              nil
-            end
+
+            fabrication_http_method = if resource.api_fabrication_http_method == :get
+                                        if self.include?(Reusable)
+                                          "Retrieved for reuse"
+                                        else
+                                          "Retrieved"
+                                        end
+                                      else
+                                        "Built"
+                                      end
 
             Support::FabricationTracker.save_fabrication(:"#{method}_fabrication", fabrication_time)
             Runtime::Logger.debug do
               msg = ["==#{'=' * parents.size}>"]
-              msg << "Built a #{name}"
-              msg << resource_identifier if resource_identifier
+              msg << "#{fabrication_http_method} a #{name}"
+              msg << resource_identifier(resource) if resource_identifier(resource)
               msg << "as a dependency of #{parents.last}" if parents.any?
               msg << "via #{method}"
               msg << "in #{fabrication_time} seconds"
@@ -156,11 +171,11 @@ module QA
         raise NotImplementedError
       end
 
-      def visit!
+      def visit!(skip_resp_code_check: false)
         Runtime::Logger.debug(%(Visiting #{self.class.name} at "#{web_url}"))
 
         # Just in case an async action is not yet complete
-        Support::WaitForRequests.wait_for_requests
+        Support::WaitForRequests.wait_for_requests(skip_resp_code_check: skip_resp_code_check)
 
         Support::Retrier.retry_until do
           visit(web_url)
@@ -168,7 +183,7 @@ module QA
         end
 
         # Wait until the new page is ready for us to interact with it
-        Support::WaitForRequests.wait_for_requests
+        Support::WaitForRequests.wait_for_requests(skip_resp_code_check: skip_resp_code_check)
       end
 
       def populate(*attribute_names)
@@ -177,6 +192,30 @@ module QA
 
       def wait_until(max_duration: 60, sleep_interval: 0.1, &block)
         QA::Support::Waiter.wait_until(max_duration: max_duration, sleep_interval: sleep_interval, &block)
+      end
+
+      # Object comparison
+      #
+      # @param [QA::Resource::Base] other
+      # @return [Boolean]
+      def ==(other)
+        other.is_a?(self.class) && comparable == other.comparable
+      end
+
+      # Override inspect for a better rspec failure diff output
+      #
+      # @return [String]
+      def inspect
+        JSON.pretty_generate(comparable)
+      end
+
+      protected
+
+      # Custom resource comparison logic using resource attributes from api_resource
+      #
+      # @return [Hash]
+      def comparable
+        raise("comparable method needs to be implemented in order to compare resources via '=='")
       end
 
       private

@@ -185,6 +185,42 @@ RSpec.describe EnvironmentSerializer do
     end
   end
 
+  context 'batching loading' do
+    let(:resource) { Environment.all }
+
+    before do
+      create(:environment, name: 'staging/review-1')
+      create_environment_with_associations(project)
+    end
+
+    it 'uses the custom preloader service' do
+      expect_next_instance_of(Preloaders::Environments::DeploymentPreloader) do |preloader|
+        expect(preloader).to receive(:execute_with_union).with(:last_deployment, hash_including(:deployable)).and_call_original
+      end
+
+      expect_next_instance_of(Preloaders::Environments::DeploymentPreloader) do |preloader|
+        expect(preloader).to receive(:execute_with_union).with(:upcoming_deployment, hash_including(:deployable)).and_call_original
+      end
+
+      json
+    end
+
+    # Including for test coverage pipeline failure, remove along with feature flag.
+    context 'when custom preload feature is disabled' do
+      before do
+        Feature.disable(:custom_preloader_for_deployments)
+      end
+
+      it 'avoids N+1 database queries' do
+        control_count = ActiveRecord::QueryRecorder.new { json }.count
+
+        create_environment_with_associations(project)
+
+        expect { json }.not_to exceed_query_limit(control_count)
+      end
+    end
+  end
+
   def create_environment_with_associations(project)
     create(:environment, project: project).tap do |environment|
       create(:deployment, :success, environment: environment, project: project)

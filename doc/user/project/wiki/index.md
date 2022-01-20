@@ -1,8 +1,7 @@
 ---
 stage: Create
 group: Editor
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments"
-type: reference, how-to
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Wiki **(FREE)**
@@ -87,11 +86,7 @@ Users with the [Developer role](../../permissions.md) can create new wiki pages:
    [special characters](#special-characters-in-page-titles) for subdirectories and formatting,
    and have [length restrictions](#length-restrictions-for-file-and-directory-names).
 1. Add content to your wiki page.
-1. Optional. Attach a file, and GitLab stores it according to your installed version of GitLab:
-   - *Files added in [GitLab 11.3 and later](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/33475):*
-     Files are stored in the wiki's Git repository.
-   - *Files added GitLab 11.2 and earlier:* Files are stored in GitLab itself. To add
-     the file to the wiki's Git repository, you must re-upload the file.
+1. Optional. Attach a file, and GitLab stores it in the wiki's Git repository.
 1. Add a **Commit message**. Git requires a commit message, so GitLab creates one
    if you don't enter one yourself.
 1. Select **Create page**.
@@ -227,9 +222,9 @@ You can see the changes made in a version of a wiki page, similar to versioned d
 
 ## Track wiki events
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/14902) in **GitLab 12.10.**
-> - Git events were [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/216014) in **GitLab 13.0.**
-> - [Feature flag for Git events was removed](https://gitlab.com/gitlab-org/gitlab/-/issues/258665) in **GitLab 13.5**
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/14902) in GitLab 12.10.
+> - Git events were [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/216014) in GitLab 13.0.
+> - [Feature flag for Git events was removed](https://gitlab.com/gitlab-org/gitlab/-/issues/258665) in GitLab 13.5.
 
 GitLab tracks wiki creation, deletion, and update events. These events are displayed on these pages:
 

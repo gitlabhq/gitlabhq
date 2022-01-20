@@ -4,7 +4,7 @@ module API
   module Entities
     class GroupDetail < Group
       expose :shared_with_groups do |group, options|
-        SharedGroupWithGroup.represent(group.shared_with_group_links.public_or_visible_to_user(group, options[:current_user]))
+        SharedGroupWithGroup.represent(group.shared_with_group_links_visible_to_user(options[:current_user]))
       end
       expose :runners_token, if: lambda { |group, options| options[:user_can_admin_group] }
       expose :prevent_sharing_groups_outside_hierarchy, if: ->(group) { group.root? }

@@ -46,7 +46,7 @@ RSpec.describe TriggerableHooks do
   describe '.select_active' do
     it 'returns hooks that match the active filter' do
       TestableHook.create!(url: 'http://example1.com', push_events: true)
-      TestableHook.create!(url: 'http://example2.com', push_events: true)
+      TestableHook.create!(url: 'http://example.org', push_events: true)
       filter1 = double(:filter1)
       filter2 = double(:filter2)
       allow(ActiveHookFilter).to receive(:new).twice.and_return(filter1, filter2)

@@ -596,7 +596,9 @@ export default {
         :disabled="disableSubmitButton"
         >{{ submitButtonText }}</gl-button
       >
-      <gl-button :href="cancelFormPath" class="float-right">{{ $options.i18n.cancel }}</gl-button>
+      <gl-button data-testid="wiki-cancel-button" :href="cancelFormPath" class="float-right">{{
+        $options.i18n.cancel
+      }}</gl-button>
     </div>
   </gl-form>
 </template>

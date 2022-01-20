@@ -173,6 +173,34 @@ RSpec.describe API::RubygemPackages do
         it_behaves_like params[:shared_examples_name], params[:user_role], params[:expected_status], params[:member]
       end
     end
+
+    context 'with package files pending destruction' do
+      let_it_be(:package_file_pending_destruction) { create(:package_file, :pending_destruction, :xml, package: package, file_name: file_name) }
+
+      before do
+        project.update_column(:visibility_level, Gitlab::VisibilityLevel::PUBLIC)
+      end
+
+      it 'does not return them' do
+        subject
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response.body).not_to eq(package_file_pending_destruction.file.file.read)
+      end
+
+      context 'with packages_installable_package_files disabled' do
+        before do
+          stub_feature_flags(packages_installable_package_files: false)
+        end
+
+        it 'returns them' do
+          subject
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response.body).to eq(package_file_pending_destruction.file.file.read)
+        end
+      end
+    end
   end
 
   describe 'POST /api/v4/projects/:project_id/packages/rubygems/api/v1/gems/authorize' do

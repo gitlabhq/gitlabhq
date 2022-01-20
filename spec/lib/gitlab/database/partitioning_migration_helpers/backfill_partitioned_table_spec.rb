@@ -3,14 +3,15 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::BackfillPartitionedTable, '#perform' do
-  subject { described_class.new }
+  subject(:backfill_job) { described_class.new(connection: connection) }
 
+  let(:connection) { ActiveRecord::Base.connection }
   let(:source_table) { '_test_partitioning_backfills' }
   let(:destination_table) { "#{source_table}_part" }
   let(:unique_key) { 'id' }
 
   before do
-    allow(subject).to receive(:transaction_open?).and_return(false)
+    allow(backfill_job).to receive(:transaction_open?).and_return(false)
   end
 
   context 'when the destination table exists' do
@@ -50,10 +51,9 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::BackfillPartition
       stub_const("#{described_class}::SUB_BATCH_SIZE", 2)
       stub_const("#{described_class}::PAUSE_SECONDS", pause_seconds)
 
-      allow(subject).to receive(:sleep)
+      allow(backfill_job).to receive(:sleep)
     end
 
-    let(:connection) { ActiveRecord::Base.connection }
     let(:source_model) { Class.new(ActiveRecord::Base) }
     let(:destination_model) { Class.new(ActiveRecord::Base) }
     let(:timestamp) { Time.utc(2020, 1, 2).round }
@@ -66,7 +66,7 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::BackfillPartition
     it 'copies data into the destination table idempotently' do
       expect(destination_model.count).to eq(0)
 
-      subject.perform(source1.id, source3.id, source_table, destination_table, unique_key)
+      backfill_job.perform(source1.id, source3.id, source_table, destination_table, unique_key)
 
       expect(destination_model.count).to eq(3)
 
@@ -76,7 +76,7 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::BackfillPartition
         expect(destination_record.attributes).to eq(source_record.attributes)
       end
 
-      subject.perform(source1.id, source3.id, source_table, destination_table, unique_key)
+      backfill_job.perform(source1.id, source3.id, source_table, destination_table, unique_key)
 
       expect(destination_model.count).to eq(3)
     end
@@ -87,13 +87,13 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::BackfillPartition
         expect(bulk_copy).to receive(:copy_between).with(source3.id, source3.id)
       end
 
-      subject.perform(source1.id, source3.id, source_table, destination_table, unique_key)
+      backfill_job.perform(source1.id, source3.id, source_table, destination_table, unique_key)
     end
 
     it 'pauses after copying each sub-batch' do
-      expect(subject).to receive(:sleep).with(pause_seconds).twice
+      expect(backfill_job).to receive(:sleep).with(pause_seconds).twice
 
-      subject.perform(source1.id, source3.id, source_table, destination_table, unique_key)
+      backfill_job.perform(source1.id, source3.id, source_table, destination_table, unique_key)
     end
 
     it 'marks each job record as succeeded after processing' do
@@ -103,7 +103,7 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::BackfillPartition
       expect(::Gitlab::Database::BackgroundMigrationJob).to receive(:mark_all_as_succeeded).and_call_original
 
       expect do
-        subject.perform(source1.id, source3.id, source_table, destination_table, unique_key)
+        backfill_job.perform(source1.id, source3.id, source_table, destination_table, unique_key)
       end.to change { ::Gitlab::Database::BackgroundMigrationJob.succeeded.count }.from(0).to(1)
     end
 
@@ -111,24 +111,24 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::BackfillPartition
       create(:background_migration_job, class_name: "::#{described_class.name}",
         arguments: [source1.id, source3.id, source_table, destination_table, unique_key])
 
-      jobs_updated = subject.perform(source1.id, source3.id, source_table, destination_table, unique_key)
+      jobs_updated = backfill_job.perform(source1.id, source3.id, source_table, destination_table, unique_key)
 
       expect(jobs_updated).to eq(1)
     end
 
     context 'when the job is run within an explicit transaction block' do
+      subject(:backfill_job) { described_class.new(connection: mock_connection) }
+
       let(:mock_connection) { double('connection') }
 
-      before do
-        allow(subject).to receive(:connection).and_return(mock_connection)
-        allow(subject).to receive(:transaction_open?).and_return(true)
-      end
-
       it 'raises an error before copying data' do
+        expect(backfill_job).to receive(:transaction_open?).and_call_original
+
+        expect(mock_connection).to receive(:transaction_open?).and_return(true)
         expect(mock_connection).not_to receive(:execute)
 
         expect do
-          subject.perform(1, 100, source_table, destination_table, unique_key)
+          backfill_job.perform(1, 100, source_table, destination_table, unique_key)
         end.to raise_error(/Aborting job to backfill partitioned #{source_table}/)
 
         expect(destination_model.count).to eq(0)
@@ -137,24 +137,25 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::BackfillPartition
   end
 
   context 'when the destination table does not exist' do
+    subject(:backfill_job) { described_class.new(connection: mock_connection) }
+
     let(:mock_connection) { double('connection') }
     let(:mock_logger) { double('logger') }
 
     before do
-      allow(subject).to receive(:connection).and_return(mock_connection)
-      allow(subject).to receive(:logger).and_return(mock_logger)
-
-      expect(mock_connection).to receive(:table_exists?).with(destination_table).and_return(false)
+      allow(backfill_job).to receive(:logger).and_return(mock_logger)
       allow(mock_logger).to receive(:warn)
     end
 
     it 'exits without attempting to copy data' do
+      expect(mock_connection).to receive(:table_exists?).with(destination_table).and_return(false)
       expect(mock_connection).not_to receive(:execute)
 
       subject.perform(1, 100, source_table, destination_table, unique_key)
     end
 
     it 'logs a warning message that the job was skipped' do
+      expect(mock_connection).to receive(:table_exists?).with(destination_table).and_return(false)
       expect(mock_logger).to receive(:warn).with(/#{destination_table} does not exist/)
 
       subject.perform(1, 100, source_table, destination_table, unique_key)

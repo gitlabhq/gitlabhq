@@ -99,17 +99,15 @@ module Ci
     private
 
     def tick_for(build, runners)
-      ::Gitlab::Database.allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/339937') do
-        runners = runners.with_recent_runner_queue
-        runners = runners.with_tags if Feature.enabled?(:ci_preload_runner_tags, default_enabled: :yaml)
+      runners = runners.with_recent_runner_queue
+      runners = runners.with_tags if Feature.enabled?(:ci_preload_runner_tags, default_enabled: :yaml)
 
-        metrics.observe_active_runners(-> { runners.to_a.size })
+      metrics.observe_active_runners(-> { runners.to_a.size })
 
-        runners.each do |runner|
-          metrics.increment_runner_tick(runner)
+      runners.each do |runner|
+        metrics.increment_runner_tick(runner)
 
-          runner.pick_build!(build)
-        end
+        runner.pick_build!(build)
       end
     end
 

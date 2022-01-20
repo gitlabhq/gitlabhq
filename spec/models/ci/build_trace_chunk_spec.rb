@@ -49,9 +49,8 @@ RSpec.describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state, :clean_git
   end
 
   context 'FastDestroyAll' do
-    let(:parent) { create(:project) }
-    let(:pipeline) { create(:ci_pipeline, project: parent) }
-    let!(:build) { create(:ci_build, :running, :trace_live, pipeline: pipeline, project: parent) }
+    let(:pipeline) { create(:ci_pipeline) }
+    let!(:build) { create(:ci_build, :running, :trace_live, pipeline: pipeline) }
     let(:subjects) { build.trace_chunks }
 
     describe 'Forbid #destroy and #destroy_all' do
@@ -84,7 +83,7 @@ RSpec.describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state, :clean_git
         expect(external_data_counter).to be > 0
         expect(subjects.count).to be > 0
 
-        expect { parent.destroy! }.not_to raise_error
+        expect { pipeline.destroy! }.not_to raise_error
 
         expect(subjects.count).to eq(0)
         expect(external_data_counter).to eq(0)
@@ -830,7 +829,7 @@ RSpec.describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state, :clean_git
 
         expect(described_class.count).to eq(3)
 
-        subject
+        expect(subject).to be_truthy
 
         expect(described_class.count).to eq(0)
 
@@ -852,7 +851,7 @@ RSpec.describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state, :clean_git
 
     context 'when project is destroyed' do
       let(:subject) do
-        project.destroy!
+        Projects::DestroyService.new(project, project.owner).execute
       end
 
       it_behaves_like 'deletes all build_trace_chunk and data in redis'

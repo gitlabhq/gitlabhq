@@ -6,161 +6,6 @@
 *.rb @gitlab-org/maintainers/rails-backend
 *.rake @gitlab-org/maintainers/rails-backend
 
-[Documentation Directories]
-.markdownlint.yml @marcel.amirault @eread @aqualls @cnorris
-/doc/.markdownlint @marcel.amirault @eread @aqualls @cnorris
-/doc/ @gl-docsteam
-/doc/.vale/ @marcel.amirault @eread @aqualls @cnorris
-/doc/administration/geo/ @axil
-/doc/administration/gitaly/ @eread
-/doc/administration/lfs/ @aqualls
-/doc/administration/monitoring/ @ngaskill
-/doc/administration/operations/ @axil @eread @marcia
-/doc/administration/packages/ @ngaskill
-/doc/administration/pages/ @rdickenson @kpaizee
-/doc/administration/postgresql/ @marcia
-/doc/administration/raketasks/ @axil @eread
-/doc/administration/redis/ @axil
-/doc/administration/reference_architectures/ @axil
-/doc/administration/snippets/ @aqualls
-/doc/administration/troubleshooting @axil @marcia @eread
-/doc/api/graphql/ @msedlakjakubowski @kpaizee
-/doc/api/graphql/reference/ @kpaizee
-/doc/api/group_activity_analytics.md @fneill
-/doc/api/vulnerabilities.md @fneill
-/doc/ci/ @marcel.amirault @sselhorn
-/doc/ci/environments/ @rdickenson
-/doc/ci/services/ @sselhorn
-/doc/ci/test_cases/ @msedlakjakubowski
-/doc/development/ @marcia
-/doc/development/documentation/ @cnorris @dianalogan
-/doc/development/i18n/ @ngaskill
-/doc/development/value_stream_analytics.md @fneill
-/doc/gitlab-basics/ @aqualls
-/doc/install/ @axil
-/doc/operations/ @ngaskill @rdickenson
-/doc/push_rules/ @aqualls
-/doc/security/ @eread
-/doc/ssh/ @eread
-/doc/subscriptions/ @sselhorn
-/doc/topics/autodevops/ @marcia
-/doc/topics/git/ @aqualls
-/doc/update/ @axil @marcia
-/doc/user/analytics/ @fneill @ngaskill
-/doc/user/application_security/ @rdickenson
-/doc/user/application_security/container_scanning/ @ngaskill
-/doc/user/application_security/cluster_image_scanning/ @ngaskill
-/doc/user/application_security/cve_id_request.md @fneill
-/doc/user/application_security/security_dashboard @fneill
-/doc/user/application_security/vulnerabilities @fneill
-/doc/user/application_security/vulnerability_report @fneill
-/doc/user/clusters/ @marcia
-/doc/user/compliance/ @rdickenson @eread
-/doc/user/group/ @msedlakjakubowski
-/doc/user/group/devops_adoption/ @fneill
-/doc/user/group/epics/ @msedlakjakubowski
-/doc/user/group/insights/ @fneill
-/doc/user/group/iterations/ @msedlakjakubowski
-/doc/user/group/roadmap/ @msedlakjakubowski
-/doc/user/group/value_stream_analytics/ @fneill
-/doc/user/infrastructure/ @marcia
-/doc/user/packages/ @ngaskill
-/doc/user/packages/infrastructure_registry/ @marcia
-/doc/user/packages/terraform_module_registry/ @marcia
-/doc/user/profile/ @msedlakjakubowski @eread
-/doc/user/project/ @aqualls @rdickenson @eread @msedlakjakubowski @ngaskill
-/doc/user/project/clusters/ @marcia
-/doc/user/project/import/ @ngaskill @msedlakjakubowski
-/doc/user/project/issues/ @msedlakjakubowski
-/doc/user/project/merge_requests/ @aqualls @eread
-/doc/user/project/milestones/ @msedlakjakubowski
-/doc/user/project/pages/ @rdickenson
-/doc/user/project/repository/ @aqualls
-/doc/user/project/settings/ @aqualls @eread
-/doc/user/project/static_site_editor/index.md @aqualls
-/doc/user/project/web_ide/index.md @aqualls
-/doc/user/project/wiki/index.md @aqualls
-/doc/user/search/ @marcia @aqualls
-/doc/user/workspace/ @fneill 
-
-[Docs Create]
-/doc/administration/file_hooks.md @aqualls
-/doc/administration/git_protocol.md @aqualls
-/doc/administration/invalidate_markdown_cache.md @aqualls
-/doc/administration/issue_closing_pattern.md @aqualls
-/doc/administration/merge_request_diffs.md @aqualls
-/doc/administration/repository_checks.md @aqualls
-/doc/administration/static_objects_external_storage.md @aqualls
-/doc/api/access_requests.md @aqualls
-/doc/api/branches.md @aqualls
-/doc/api/commits.md @aqualls
-/doc/api/discussions.md @aqualls
-/doc/api/group_wikis.md @aqualls
-/doc/api/keys.md @aqualls
-/doc/api/markdown.md @aqualls
-/doc/api/merge_request_approvals.md @aqualls
-/doc/api/merge_request_context_commits.md @aqualls
-/doc/api/merge_requests.md @aqualls
-/doc/api/project_aliases.md @aqualls
-/doc/api/project_badges.md @aqualls
-/doc/api/project_import_export.md @aqualls
-/doc/api/project_level_variables.md @aqualls
-/doc/api/project_snippets.md @aqualls
-/doc/api/project_statistics.md @aqualls
-/doc/api/project_templates.md @aqualls
-/doc/api/project_vulnerabilities.md @aqualls
-/doc/api/protected_branches.md @aqualls
-/doc/api/protected_tags.md @aqualls
-/doc/api/remote_mirrors.md @aqualls
-/doc/api/repositories.md @aqualls
-/doc/api/repository_files.md @aqualls
-/doc/api/repository_submodules.md @aqualls
-/doc/api/search.md @aqualls
-/doc/api/services.md @aqualls
-/doc/api/snippets.md @aqualls
-/doc/api/suggestions.md @aqualls
-/doc/api/tags.md @aqualls
-/doc/api/visual_review_discussions.md @aqualls
-/doc/api/wikis.md @aqualls
-/doc/intro/index.md @aqualls
-/doc/topics/gitlab_flow.md @aqualls
-/doc/user/admin_area/settings/account_and_limit_settings.md @aqualls
-/doc/user/admin_area/settings/instance_template_repository.md @aqualls
-/doc/user/admin_area/settings/project_integration_management.md @aqualls
-/doc/user/admin_area/settings/push_event_activities_limit.md @aqualls
-/doc/user/admin_area/settings/visibility_and_access_controls.md @aqualls
-/doc/user/asciidoc.md @aqualls
-/doc/user/index.md @aqualls
-/doc/user/markdown.md @aqualls
-/doc/user/project/autocomplete_characters.md @aqualls
-/doc/user/project/badges.md @aqualls
-/doc/user/project/code_intelligence.md @aqualls
-/doc/user/project/code_owners.md @aqualls
-/doc/user/project/file_lock.md @aqualls
-/doc/user/project/git_attributes.md @aqualls
-/doc/user/project/highlighting.md @aqualls
-/doc/user/project/index.md @aqualls
-/doc/user/project/protected_branches.md @aqualls
-/doc/user/project/protected_tags.md @aqualls
-/doc/user/project/push_options.md @aqualls
-/doc/user/project/settings/import_export.md @aqualls
-/doc/user/snippets.md @aqualls
-
-[Docs Ecosystem]
-/doc/administration/integration/ @kpaizee
-/doc/integration/ @kpaizee
-/doc/user/project/integrations/ @kpaizee
-/doc/user/project/integrations/prometheus_library/ @ngaskill
-
-[Docs Growth]
-/doc/administration/instance_review.md @kpaizee
-/doc/api/invitations.md @kpaizee
-/doc/api/experiments.md @kpaizee
-/doc/development/experiment_guide/ @kpaizee
-/doc/development/snowplow/ @fneill
-/doc/development/service_ping/ @fneill
-/doc/user/admin_area/license.md @kpaizee
-
 [Frontend]
 *.scss @annabeldunstone @gitlab-org/maintainers/frontend
 *.js @gitlab-org/maintainers/frontend
@@ -357,3 +202,158 @@ ee/lib/ee/gitlab/git_access.rb @proglottis @toon @zj-gitlab
 ee/lib/ee/gitlab/git_access_*.rb @proglottis @toon @zj-gitlab
 ee/lib/ee/gitlab/checks/** @proglottis @toon @zj-gitlab
 lib/gitlab/checks/** @proglottis @toon @zj-gitlab
+
+[Documentation Directories]
+.markdownlint.yml @marcel.amirault @eread @aqualls @cnorris
+/doc/.markdownlint @marcel.amirault @eread @aqualls @cnorris
+/doc/ @gl-docsteam
+/doc/.vale/ @marcel.amirault @eread @aqualls @cnorris
+/doc/administration/geo/ @axil
+/doc/administration/gitaly/ @eread
+/doc/administration/lfs/ @aqualls
+/doc/administration/monitoring/ @ngaskill
+/doc/administration/operations/ @axil @eread @marcia
+/doc/administration/packages/ @ngaskill
+/doc/administration/pages/ @rdickenson @kpaizee
+/doc/administration/postgresql/ @marcia
+/doc/administration/raketasks/ @axil @eread
+/doc/administration/redis/ @axil
+/doc/administration/reference_architectures/ @axil
+/doc/administration/snippets/ @aqualls
+/doc/administration/troubleshooting @axil @marcia @eread
+/doc/api/graphql/ @msedlakjakubowski @kpaizee
+/doc/api/graphql/reference/ @kpaizee
+/doc/api/group_activity_analytics.md @fneill
+/doc/api/vulnerabilities.md @fneill
+/doc/ci/ @marcel.amirault @sselhorn
+/doc/ci/environments/ @rdickenson
+/doc/ci/services/ @sselhorn
+/doc/ci/test_cases/ @msedlakjakubowski
+/doc/development/ @marcia
+/doc/development/documentation/ @cnorris @dianalogan
+/doc/development/i18n/ @ngaskill
+/doc/development/value_stream_analytics.md @fneill
+/doc/gitlab-basics/ @aqualls
+/doc/install/ @axil
+/doc/operations/ @ngaskill @rdickenson
+/doc/push_rules/ @aqualls
+/doc/security/ @eread
+/doc/ssh/ @eread
+/doc/subscriptions/ @sselhorn
+/doc/topics/autodevops/ @marcia
+/doc/topics/git/ @aqualls
+/doc/update/ @axil @marcia
+/doc/user/analytics/ @fneill @ngaskill
+/doc/user/application_security/ @rdickenson
+/doc/user/application_security/container_scanning/ @ngaskill
+/doc/user/application_security/cluster_image_scanning/ @ngaskill
+/doc/user/application_security/cve_id_request.md @fneill
+/doc/user/application_security/security_dashboard @fneill
+/doc/user/application_security/vulnerabilities @fneill
+/doc/user/application_security/vulnerability_report @fneill
+/doc/user/clusters/ @marcia
+/doc/user/compliance/ @rdickenson @eread
+/doc/user/group/ @msedlakjakubowski
+/doc/user/group/devops_adoption/ @fneill
+/doc/user/group/epics/ @msedlakjakubowski
+/doc/user/group/insights/ @fneill
+/doc/user/group/iterations/ @msedlakjakubowski
+/doc/user/group/roadmap/ @msedlakjakubowski
+/doc/user/group/value_stream_analytics/ @fneill
+/doc/user/infrastructure/ @marcia
+/doc/user/packages/ @ngaskill
+/doc/user/packages/infrastructure_registry/ @marcia
+/doc/user/packages/terraform_module_registry/ @marcia
+/doc/user/profile/ @msedlakjakubowski @eread
+/doc/user/project/ @aqualls @rdickenson @eread @msedlakjakubowski @ngaskill
+/doc/user/project/clusters/ @marcia
+/doc/user/project/import/ @ngaskill @msedlakjakubowski
+/doc/user/project/issues/ @msedlakjakubowski
+/doc/user/project/merge_requests/ @aqualls @eread
+/doc/user/project/milestones/ @msedlakjakubowski
+/doc/user/project/pages/ @rdickenson
+/doc/user/project/repository/ @aqualls
+/doc/user/project/settings/ @aqualls @eread
+/doc/user/project/static_site_editor/index.md @aqualls
+/doc/user/project/web_ide/index.md @aqualls
+/doc/user/project/wiki/index.md @aqualls
+/doc/user/search/ @marcia @aqualls
+/doc/user/workspace/ @fneill 
+
+[Docs Create]
+/doc/administration/file_hooks.md @aqualls
+/doc/administration/git_protocol.md @aqualls
+/doc/administration/invalidate_markdown_cache.md @aqualls
+/doc/administration/issue_closing_pattern.md @aqualls
+/doc/administration/merge_request_diffs.md @aqualls
+/doc/administration/repository_checks.md @aqualls
+/doc/administration/static_objects_external_storage.md @aqualls
+/doc/api/access_requests.md @aqualls
+/doc/api/branches.md @aqualls
+/doc/api/commits.md @aqualls
+/doc/api/discussions.md @aqualls
+/doc/api/group_wikis.md @aqualls
+/doc/api/keys.md @aqualls
+/doc/api/markdown.md @aqualls
+/doc/api/merge_request_approvals.md @aqualls
+/doc/api/merge_request_context_commits.md @aqualls
+/doc/api/merge_requests.md @aqualls
+/doc/api/project_aliases.md @aqualls
+/doc/api/project_badges.md @aqualls
+/doc/api/project_import_export.md @aqualls
+/doc/api/project_level_variables.md @aqualls
+/doc/api/project_snippets.md @aqualls
+/doc/api/project_statistics.md @aqualls
+/doc/api/project_templates.md @aqualls
+/doc/api/project_vulnerabilities.md @aqualls
+/doc/api/protected_branches.md @aqualls
+/doc/api/protected_tags.md @aqualls
+/doc/api/remote_mirrors.md @aqualls
+/doc/api/repositories.md @aqualls
+/doc/api/repository_files.md @aqualls
+/doc/api/repository_submodules.md @aqualls
+/doc/api/search.md @aqualls
+/doc/api/services.md @aqualls
+/doc/api/snippets.md @aqualls
+/doc/api/suggestions.md @aqualls
+/doc/api/tags.md @aqualls
+/doc/api/visual_review_discussions.md @aqualls
+/doc/api/wikis.md @aqualls
+/doc/intro/index.md @aqualls
+/doc/topics/gitlab_flow.md @aqualls
+/doc/user/admin_area/settings/account_and_limit_settings.md @aqualls
+/doc/user/admin_area/settings/instance_template_repository.md @aqualls
+/doc/user/admin_area/settings/project_integration_management.md @aqualls
+/doc/user/admin_area/settings/push_event_activities_limit.md @aqualls
+/doc/user/admin_area/settings/visibility_and_access_controls.md @aqualls
+/doc/user/asciidoc.md @aqualls
+/doc/user/index.md @aqualls
+/doc/user/markdown.md @aqualls
+/doc/user/project/autocomplete_characters.md @aqualls
+/doc/user/project/badges.md @aqualls
+/doc/user/project/code_intelligence.md @aqualls
+/doc/user/project/code_owners.md @aqualls
+/doc/user/project/file_lock.md @aqualls
+/doc/user/project/git_attributes.md @aqualls
+/doc/user/project/highlighting.md @aqualls
+/doc/user/project/index.md @aqualls
+/doc/user/project/protected_branches.md @aqualls
+/doc/user/project/protected_tags.md @aqualls
+/doc/user/project/push_options.md @aqualls
+/doc/user/project/settings/import_export.md @aqualls
+/doc/user/snippets.md @aqualls
+
+[Docs Ecosystem]
+/doc/administration/integration/ @kpaizee
+/doc/integration/ @kpaizee
+/doc/user/project/integrations/ @kpaizee
+/doc/user/project/integrations/prometheus_library/ @ngaskill
+
+[Docs Growth]
+/doc/administration/instance_review.md @kpaizee
+/doc/api/invitations.md @kpaizee
+/doc/api/experiments.md @kpaizee
+/doc/development/experiment_guide/ @kpaizee
+/doc/development/snowplow/ @fneill
+/doc/development/service_ping/ @fneill
+/doc/user/admin_area/license.md @kpaizee

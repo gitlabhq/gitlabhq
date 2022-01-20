@@ -75,3 +75,15 @@ export const getAgentResponse = {
     },
   },
 };
+
+export const mockDeleteResponse = {
+  data: { clusterAgentDelete: { errors: [] } },
+};
+
+export const mockErrorDeleteResponse = {
+  data: {
+    clusterAgentDelete: {
+      errors: ['could not delete agent'],
+    },
+  },
+};

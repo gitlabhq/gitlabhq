@@ -268,10 +268,27 @@ RSpec.describe 'Runners' do
         it 'group runners are not available' do
           visit project_runners_path(project)
 
+          expect(page).not_to have_content 'Group owners can register group runners in the group\'s CI/CD settings.'
+          expect(page).to have_content 'Ask your group owner to set up a group runner'
+        end
+      end
+    end
+
+    context 'as project maintainer and group owner' do
+      before do
+        group.add_owner(user)
+      end
+
+      context 'project with a group but no group runner' do
+        let(:project) { create :project, group: group }
+
+        it 'group runners are available' do
+          visit project_runners_path(project)
+
           expect(page).to have_content 'This group does not have any group runners yet.'
 
-          expect(page).to have_content 'Group maintainers can register group runners in the group\'s CI/CD settings.'
-          expect(page).not_to have_content 'Ask your group maintainer to set up a group runner'
+          expect(page).to have_content 'Group owners can register group runners in the group\'s CI/CD settings.'
+          expect(page).not_to have_content 'Ask your group owner to set up a group runner'
         end
       end
     end
@@ -296,8 +313,8 @@ RSpec.describe 'Runners' do
 
           expect(page).to have_content 'This group does not have any group runners yet.'
 
-          expect(page).not_to have_content 'Group maintainers can register group runners in the group\'s CI/CD settings.'
-          expect(page).to have_content 'Ask your group maintainer to set up a group runner.'
+          expect(page).not_to have_content 'Group owners can register group runners in the group\'s CI/CD settings.'
+          expect(page).to have_content 'Ask your group owner to set up a group runner.'
         end
       end
 

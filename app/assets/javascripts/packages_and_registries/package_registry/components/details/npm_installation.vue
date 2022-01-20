@@ -13,6 +13,7 @@ import {
   YARN_PACKAGE_MANAGER,
   PROJECT_PACKAGE_ENDPOINT_TYPE,
   INSTANCE_PACKAGE_ENDPOINT_TYPE,
+  NPM_HELP_PATH,
 } from '~/packages_and_registries/package_registry/constants';
 import CodeInstruction from '~/vue_shared/components/registry/code_instruction.vue';
 
@@ -25,7 +26,7 @@ export default {
     GlSprintf,
     GlFormRadioGroup,
   },
-  inject: ['npmHelpPath', 'npmPath', 'npmProjectPath'],
+  inject: ['npmInstanceUrl'],
   props: {
     packageEntity: {
       type: Object,
@@ -65,7 +66,9 @@ export default {
     npmSetupCommand(type, endpointType) {
       const scope = this.packageEntity.name.substring(0, this.packageEntity.name.indexOf('/'));
       const npmPathForEndpoint =
-        endpointType === INSTANCE_PACKAGE_ENDPOINT_TYPE ? this.npmPath : this.npmProjectPath;
+        endpointType === INSTANCE_PACKAGE_ENDPOINT_TYPE
+          ? this.npmInstanceUrl
+          : this.packageEntity.npmUrl;
 
       if (type === NPM_PACKAGE_MANAGER) {
         return `echo ${scope}:registry=${npmPathForEndpoint}/ >> .npmrc`;
@@ -89,6 +92,7 @@ export default {
       'PackageRegistry|You may also need to setup authentication using an auth token. %{linkStart}See the documentation%{linkEnd} to find out more.',
     ),
   },
+  links: { NPM_HELP_PATH },
   installOptions: [
     { value: NPM_PACKAGE_MANAGER, label: s__('PackageRegistry|Show NPM commands') },
     { value: YARN_PACKAGE_MANAGER, label: s__('PackageRegistry|Show Yarn commands') },
@@ -150,7 +154,7 @@ export default {
 
     <gl-sprintf :message="$options.i18n.helpText">
       <template #link="{ content }">
-        <gl-link :href="npmHelpPath" target="_blank">{{ content }}</gl-link>
+        <gl-link :href="$options.links.NPM_HELP_PATH" target="_blank">{{ content }}</gl-link>
       </template>
     </gl-sprintf>
   </div>

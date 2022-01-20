@@ -12,8 +12,6 @@ This is the API documentation of [GitLab Packages](../administration/packages/in
 
 ### Within a project
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/9259) in GitLab 11.8.
-
 Get a list of project packages. All package types are included in results. When
 accessed without authentication, only packages of public projects are returned.
 
@@ -26,7 +24,7 @@ GET /projects/:id/packages
 | `id`      | integer/string | yes | ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) |
 | `order_by`| string | no | The field to use as order. One of `created_at` (default), `name`, `version`, or `type`. |
 | `sort`    | string | no | The direction of the order, either `asc` (default) for ascending order or `desc` for descending order. |
-| `package_type` | string | no | Filter the returned packages by type. One of `conan`, `maven`, `npm`, `pypi`, `composer`, `nuget`, `helm`, or `golang`. (_Introduced in GitLab 12.9_)
+| `package_type` | string | no | Filter the returned packages by type. One of `conan`, `maven`, `npm`, `pypi`, `composer`, `nuget`, `helm`, `terraform_module`, or `golang`. (_Introduced in GitLab 12.9_)
 | `package_name` | string | no | Filter the project packages with a fuzzy search by name. (_Introduced in GitLab 12.9_)
 | `include_versionless` | boolean | no | When set to true, versionless packages are included in the response. (_Introduced in GitLab 13.8_)
 | `status` | string | no | Filter the returned packages by status. One of `default` (default), `hidden`, or `processing`. (_Introduced in GitLab 13.9_)
@@ -176,8 +174,6 @@ can result in malformed data or broken packages.
 
 ## Get a project package
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/9667) in GitLab 11.9.
-
 Get a single project package.
 
 ```plaintext
@@ -258,8 +254,6 @@ The `_links` object contains the following properties:
 
 ## List package files
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/9305) in GitLab 11.8.
-
 Get a list of package files of a single package.
 
 ```plaintext
@@ -330,8 +324,6 @@ Example response:
 By default, the `GET` request returns 20 results, because the API is [paginated](index.md#pagination).
 
 ## Delete a project package
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/9623) in GitLab 11.9.
 
 Deletes a project package.
 

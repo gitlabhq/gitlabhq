@@ -59,7 +59,7 @@ module SortingTitlesValuesHelper
   end
 
   def sort_title_latest_activity
-    s_('SortOptions|Last updated')
+    _('Updated date')
   end
 
   def sort_title_milestone
@@ -127,7 +127,7 @@ module SortingTitlesValuesHelper
   end
 
   def sort_title_recently_updated
-    s_('SortOptions|Last updated')
+    _('Updated date')
   end
 
   def sort_title_start_date_later

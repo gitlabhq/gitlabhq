@@ -1,8 +1,0 @@
----
-name: paginatable_namespace_drop_down_for_project_creation
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/66112
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/338930
-milestone: '14.3'
-type: development
-group: group::project management
-default_enabled: true

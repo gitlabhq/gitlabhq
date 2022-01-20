@@ -83,7 +83,41 @@ where:
 - Configuration imported with [`include`](../yaml/index.md#include) is copied into the view.
 - Jobs that use [`extends`](../yaml/index.md#extends) display with the
   [extended configuration merged into the job](../yaml/yaml_optimization.md#merge-details).
-- YAML anchors are [replaced with the linked configuration](../yaml/yaml_optimization.md#anchors).
+- [YAML anchors](../yaml/yaml_optimization.md#anchors) are replaced with the linked configuration.
+- [YAML `!reference` tags](../yaml/yaml_optimization.md#reference-tags) are also replaced
+  with the linked configuration.
+
+Using `!refence` tags can cause nested configuration that display with
+multiple hyphens (`-`) in the expanded view. This behavior is expected, and the extra
+hyphens do not affect the job's execution. For example, this configuration and
+fully expanded version are both valid:
+
+- `.gitlab-ci.yml` file:
+
+  ```yaml
+  .python-req:
+    script:
+      - pip install pyflakes
+
+  lint-python:
+    image: python:latest
+    script:
+      - !reference [.python-req, script]
+      - pyflakes python/
+  ```
+
+- Expanded configuration in **View merged YAML** tab:
+
+  ```yaml
+  ".python-req":
+    script:
+    - pip install pyflakes
+  lint-python:
+    script:
+    - - pip install pyflakes  # <- The extra hyphens do not affect the job's execution.
+    - pyflakes python/
+    image: python:latest
+  ```
 
 ## Commit changes to CI configuration
 
@@ -97,3 +131,20 @@ If you enter a new branch name, the **Start a new merge request with these chang
 checkbox appears. Select it to start a new merge request after you commit the changes.
 
 ![The commit form with a new branch](img/pipeline_editor_commit_v13_8.png)
+
+## Troubleshooting
+
+### `Configuration validation currently not available` message
+
+This message is due to a problem with the syntax validation in the pipeline editor.
+If GitLab is unable to communicate with the service that validates the syntax, the
+information in these sections may not display properly:
+
+- The syntax status on the **Edit** tab (valid or invalid).
+- The **Visualize** tab.
+- The **Lint** tab.
+- The **View merged YAML** tab.
+
+You can still work on your CI/CD configuration and commit the changes you made without
+any issues. As soon as the service becomes available again, the syntax validation
+should display immediately.

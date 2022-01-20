@@ -19,13 +19,7 @@ export function publishPackage(
     status: 'default',
   };
 
-  const formData = new FormData();
-  formData.append('file', files[0]);
-
-  return axios.put(url, formData, {
-    headers: {
-      'Content-Type': 'multipart/form-data',
-    },
+  return axios.put(url, files[0], {
     params: Object.assign(defaults, options),
     ...axiosOptions,
   });

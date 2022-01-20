@@ -118,6 +118,32 @@ view 'app/views/devise/passwords/new_edit_behind_ff.html.haml' do
 end
 ```
 
+## Working with resource classes
+
+If a resource class must behave differently when a feature flag is active, toggle a
+variable with the name of the feature flag inside the class. This variable and condition
+ensure all actions are handled appropriately.
+
+You can set this variable inside the `fabricate_via_api` call. For a consistent approach:
+
+- Use an `activated` check, not a deactivated one.
+- Add the word `activated` to the end of a variable's name.
+- Inside the `initialize` method, set the variable's default value.
+
+For example: 
+
+```ruby
+def initialize
+  name_of_the_future_flag_activated = false
+  ...
+end
+```
+
+### Cleanup
+
+After the feature flag is removed, clean up the resource class and delete the variable.
+All methods should use the condition procedures of the now-default state.
+
 ## Running a scenario with a feature flag enabled
 
 It's also possible to run an entire scenario with a feature flag enabled, without having to edit

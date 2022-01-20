@@ -1,4 +1,5 @@
 <script>
+import { GlBadge } from '@gitlab/ui';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import FileIcon from '~/vue_shared/components/file_icon.vue';
@@ -7,6 +8,7 @@ export default {
   components: {
     FileIcon,
     ClipboardButton,
+    GlBadge,
   },
   props: {
     blob: {
@@ -20,6 +22,9 @@ export default {
     },
     gfmCopyText() {
       return `\`${this.blob.path}\``;
+    },
+    showLfsBadge() {
+      return this.blob.storedExternally && this.blob.externalStorage === 'lfs';
     },
   },
 };
@@ -37,8 +42,6 @@ export default {
       >
     </template>
 
-    <small class="mr-2">{{ blobSize }}</small>
-
     <clipboard-button
       :text="blob.path"
       :gfm="gfmCopyText"
@@ -46,5 +49,9 @@ export default {
       category="tertiary"
       css-class="btn-clipboard btn-transparent lh-100 position-static"
     />
+
+    <small class="mr-2">{{ blobSize }}</small>
+
+    <gl-badge v-if="showLfsBadge">{{ __('LFS') }}</gl-badge>
   </div>
 </template>

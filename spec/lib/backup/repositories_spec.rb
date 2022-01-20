@@ -25,7 +25,7 @@ RSpec.describe Backup::Repositories do
         expect(strategy).to have_received(:enqueue).with(project, Gitlab::GlRepository::DESIGN)
         expect(strategy).to have_received(:enqueue).with(project_snippet, Gitlab::GlRepository::SNIPPET)
         expect(strategy).to have_received(:enqueue).with(personal_snippet, Gitlab::GlRepository::SNIPPET)
-        expect(strategy).to have_received(:wait)
+        expect(strategy).to have_received(:finish!)
       end
     end
 
@@ -49,7 +49,7 @@ RSpec.describe Backup::Repositories do
         projects.each do |project|
           expect(strategy).to receive(:enqueue).with(project, Gitlab::GlRepository::PROJECT)
         end
-        expect(strategy).to receive(:wait)
+        expect(strategy).to receive(:finish!)
 
         subject.dump(max_concurrency: 1, max_storage_concurrency: 1)
       end
@@ -91,7 +91,7 @@ RSpec.describe Backup::Repositories do
         projects.each do |project|
           expect(strategy).to receive(:enqueue).with(project, Gitlab::GlRepository::PROJECT)
         end
-        expect(strategy).to receive(:wait)
+        expect(strategy).to receive(:finish!)
 
         subject.dump(max_concurrency: 2, max_storage_concurrency: 2)
       end
@@ -114,7 +114,7 @@ RSpec.describe Backup::Repositories do
           projects.each do |project|
             expect(strategy).to receive(:enqueue).with(project, Gitlab::GlRepository::PROJECT)
           end
-          expect(strategy).to receive(:wait)
+          expect(strategy).to receive(:finish!)
 
           subject.dump(max_concurrency: 1, max_storage_concurrency: max_storage_concurrency)
         end
@@ -128,7 +128,7 @@ RSpec.describe Backup::Repositories do
           projects.each do |project|
             expect(strategy).to receive(:enqueue).with(project, Gitlab::GlRepository::PROJECT)
           end
-          expect(strategy).to receive(:wait)
+          expect(strategy).to receive(:finish!)
 
           subject.dump(max_concurrency: 3, max_storage_concurrency: max_storage_concurrency)
         end
@@ -184,7 +184,7 @@ RSpec.describe Backup::Repositories do
       expect(strategy).to have_received(:enqueue).with(project, Gitlab::GlRepository::DESIGN)
       expect(strategy).to have_received(:enqueue).with(project_snippet, Gitlab::GlRepository::SNIPPET)
       expect(strategy).to have_received(:enqueue).with(personal_snippet, Gitlab::GlRepository::SNIPPET)
-      expect(strategy).to have_received(:wait)
+      expect(strategy).to have_received(:finish!)
     end
 
     context 'restoring object pools' do

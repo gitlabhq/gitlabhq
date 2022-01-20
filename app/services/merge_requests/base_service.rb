@@ -59,7 +59,9 @@ module MergeRequests
       merge_request_activity_counter.track_users_review_requested(users: new_reviewers)
       merge_request_activity_counter.track_reviewers_changed_action(user: current_user)
 
-      remove_attention_requested(merge_request, current_user)
+      unless new_reviewers.include?(current_user)
+        remove_attention_requested(merge_request, current_user)
+      end
     end
 
     def cleanup_environments(merge_request)

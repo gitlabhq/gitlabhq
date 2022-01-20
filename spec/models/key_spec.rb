@@ -21,6 +21,28 @@ RSpec.describe Key, :mailer do
     it { is_expected.to allow_value(attributes_for(:ecdsa_key_256)[:key]).for(:key) }
     it { is_expected.to allow_value(attributes_for(:ed25519_key_256)[:key]).for(:key) }
     it { is_expected.not_to allow_value('foo-bar').for(:key) }
+
+    context 'key format' do
+      let(:key) { build(:key) }
+
+      it 'does not allow the key that begins with an algorithm name that is unsupported' do
+        key.key = 'unsupported-ssh-rsa key'
+
+        key.valid?
+
+        expect(key.errors.of_kind?(:key, :invalid)).to eq(true)
+      end
+
+      Gitlab::SSHPublicKey.supported_algorithms.each do |supported_algorithm|
+        it "allows the key that begins with supported algorithm name '#{supported_algorithm}'" do
+          key.key = "#{supported_algorithm} key"
+
+          key.valid?
+
+          expect(key.errors.of_kind?(:key, :invalid)).to eq(false)
+        end
+      end
+    end
   end
 
   describe "Methods" do

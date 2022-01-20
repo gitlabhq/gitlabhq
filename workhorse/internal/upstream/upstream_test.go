@@ -209,6 +209,23 @@ func TestGeoProxyFeatureEnablingAndDisabling(t *testing.T) {
 	runTestCases(t, ws, testCasesProxied)
 }
 
+func TestGeoProxySetsCustomHeader(t *testing.T) {
+	remoteServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		require.Equal(t, "1", r.Header.Get("Gitlab-Workhorse-Geo-Proxy"), "custom proxy header")
+		w.WriteHeader(http.StatusOK)
+	}))
+	defer remoteServer.Close()
+
+	geoProxyEndpointResponseBody := fmt.Sprintf(`{"geo_proxy_url":"%v"}`, remoteServer.URL)
+	railsServer, deferredClose := startRailsServer("Local Rails server", &geoProxyEndpointResponseBody)
+	defer deferredClose()
+
+	ws, wsDeferredClose, _ := startWorkhorseServer(railsServer.URL, true)
+	defer wsDeferredClose()
+
+	http.Get(ws.URL)
+}
+
 func runTestCases(t *testing.T, ws *httptest.Server, testCases []testCase) {
 	t.Helper()
 	for _, tc := range testCases {

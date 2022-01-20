@@ -46,11 +46,11 @@ RSpec.describe Gitlab::Integrations::StiType do
         SQL
       end
 
-      let_it_be(:service) { create(:service) }
+      let_it_be(:integration) { create(:integration) }
 
       it 'forms SQL UPDATE statements correctly' do
         sql_statements = types.map do |type|
-          record = ActiveRecord::QueryRecorder.new { service.update_column(:type, type) }
+          record = ActiveRecord::QueryRecorder.new { integration.update_column(:type, type) }
           record.log.first
         end
 
@@ -64,8 +64,6 @@ RSpec.describe Gitlab::Integrations::StiType do
           DELETE FROM "integrations" WHERE "integrations"."type" = 'AsanaService'
         SQL
       end
-
-      let(:service) { create(:service) }
 
       it 'forms SQL DELETE statements correctly' do
         sql_statements = types.map do |type|
@@ -81,7 +79,7 @@ RSpec.describe Gitlab::Integrations::StiType do
   describe '#deserialize' do
     specify 'it deserializes type correctly', :aggregate_failures do
       types.each do |type|
-        service = create(:service, type: type)
+        service = create(:integration, type: type)
 
         expect(service.type).to eq('AsanaService')
       end
@@ -90,7 +88,7 @@ RSpec.describe Gitlab::Integrations::StiType do
 
   describe '#cast' do
     it 'casts type as model correctly', :aggregate_failures do
-      create(:service, type: 'AsanaService')
+      create(:integration, type: 'AsanaService')
 
       types.each do |type|
         expect(Integration.find_by(type: type)).to be_kind_of(Integrations::Asana)
@@ -100,7 +98,7 @@ RSpec.describe Gitlab::Integrations::StiType do
 
   describe '#changed?' do
     it 'detects changes correctly', :aggregate_failures do
-      service = create(:service, type: 'AsanaService')
+      service = create(:integration, type: 'AsanaService')
 
       types.each do |type|
         service.type = type

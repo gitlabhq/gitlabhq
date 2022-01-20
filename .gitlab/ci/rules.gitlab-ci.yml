@@ -171,12 +171,13 @@
   - ".markdownlint.yml"
   - "scripts/lint-doc.sh"
 
-.docs-deprecations-patterns: &docs-deprecations-patterns
+.docs-deprecations-and-removals-patterns: &docs-deprecations-and-removals-patterns
   - "doc/update/deprecations.md"
-  - "data/deprecations/*.yml"
-  - "data/deprecations/templates/_deprecation_template.md.erb"
+  - "doc/update/removals.md"
+  - "data/deprecations/**/*"
+  - "data/removals/**/*"
+  - "tooling/docs/**/*"
   - "lib/tasks/gitlab/docs/compile_deprecations.rake"
-  - "tooling/deprecations/docs.rb"
 
 .bundler-patterns: &bundler-patterns
   - '{Gemfile.lock,*/Gemfile.lock,*/*/Gemfile.lock}'
@@ -228,6 +229,9 @@
   - "vendor/assets/**/*"
   - "{,ee/,jh/}{app/assets,app/helpers,app/presenters,app/views,locale,public,symbol}/**/*"
 
+.controllers-patterns: &controllers-patterns
+  - "{,ee/,jh/}{app/controllers}/**/*"
+
 .startup-css-patterns: &startup-css-patterns
   - "{,ee/,jh/}app/assets/stylesheets/startup/**/*"
 
@@ -256,7 +260,7 @@
   - "lib/gitlab/markdown_cache/active_record/**/*"
   - "config/prometheus/common_metrics.yml"  # Used by Gitlab::DatabaseImporters::CommonMetrics::Importer
   - "{,ee/,jh/}app/models/project_statistics.rb"  # Used to calculate sizes in migration specs
-  - "GITALY_SERVER_VERSION" # Has interactions with background migrations:https://gitlab.com/gitlab-org/gitlab/-/issues/336538
+  - "GITALY_SERVER_VERSION"  # Has interactions with background migrations:https://gitlab.com/gitlab-org/gitlab/-/issues/336538
   # CI changes
   - ".gitlab-ci.yml"
   - ".gitlab/ci/**/*"
@@ -279,7 +283,7 @@
   - ".dockerignore"
   - "qa/**/*"
 
-# Code patterns + .ci-patterns + .workhorse-patterns
+# Code patterns + .ci-patterns
 .code-patterns: &code-patterns
   - "{package.json,yarn.lock}"
   - ".browserslistrc"
@@ -541,10 +545,10 @@
       changes: *docs-patterns
       when: on_success
 
-.docs:rules:deprecations:
+.docs:rules:deprecations-and-removals:
   rules:
     - <<: *if-default-refs
-      changes: *docs-deprecations-patterns
+      changes: *docs-deprecations-and-removals-patterns
 
 ##################
 # GraphQL rules  #
@@ -1613,11 +1617,13 @@
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *frontend-patterns
     - <<: *if-dot-com-gitlab-org-merge-request
+      changes: *controllers-patterns
+    - <<: *if-dot-com-gitlab-org-merge-request
+      changes: *qa-patterns
+    - <<: *if-dot-com-gitlab-org-merge-request
       changes: *code-patterns
       when: manual
       allow_failure: true
-    - <<: *if-dot-com-gitlab-org-merge-request
-      changes: *qa-patterns
     - <<: *if-dot-com-gitlab-org-schedule
       variables:
         KNAPSACK_GENERATE_REPORT: "true"
@@ -1648,56 +1654,51 @@
   rules:
     - when: on_success
 
-# The rule needs to be duplicated between `on_success` and `on_failure`
-# because the jobs `needs` the previous job to complete.
-# With `when: always`, and the `review-qa-*` jobs are manual, the `allure-report-qa-*` jobs
-# would start running before the qa jobs have started.
-# See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/63844#note_599012559
+# If the needed job isn't allowed to fail, we need to use `when: always` in
+# order to keep the job always running after it.
+#
+# If the needed job is allowed to fail, we need to use both
+# `when: on_success` and `when: on_failure` in order to keep
+# the job always running after it.
+# Not that if the needed job has `when: on_success` we can use `when: always`
+# for the depending job.
+#
+# See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/76756
+
+# Since `review-qa-smoke` isn't allowed to fail, we need to use `when: always` for `review-qa-smoke-report`.
 .review:rules:review-qa-smoke-report:
   rules:
-    - when: on_success
-    - when: on_failure
+    - when: always
 
 .review:rules:review-qa-reliable:
   rules:
     - when: on_success
-      allow_failure: true
+
+# Since `review-qa-reliable` isn't allowed to fail, we need to use `when: always`for `review-qa-reliable-report`.
+.review:rules:review-qa-reliable-report:
+  rules:
+    - when: always
 
 .review:rules:review-qa-all:
   rules:
-    - <<: *if-merge-request-labels-run-review-app  # we explicitely don't allow the job to fail in that case
+    - <<: *if-merge-request-labels-run-review-app  # we explicitly don't allow the job to fail in that case
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *code-patterns
       when: manual
-      allow_failure: true # manual jobs needs to be allowd to fail, otherwise they block the pipeline
+      allow_failure: true  # manual jobs needs to be allowed to fail, otherwise they block the pipeline
     - when: on_success
       allow_failure: true
 
-# The rule needs to be duplicated between `on_success` and `on_failure`
-# because the jobs `needs` the previous job to complete.
-# With `when: always`, and the `review-qa-*` jobs are manual, the `allure-report-qa-*` jobs
-# would start running before the qa jobs have started.
-# See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/63844#note_599012559
+# Since `review-qa-all` is allowed to fail (and potentially manual), we need to use `when: on_success` and `when: on_failure` for `review-qa-all-report`.
 .review:rules:review-qa-all-report:
   rules:
     - when: on_success
-      allow_failure: true
     - when: on_failure
-      allow_failure: true
 
-# Generate knapsack report on successful runs only
-# Reliable suite will pass most of the time so this should yield best distribution
-.review:rules:knapsack-report-qa-reliable:
-  rules:
-    - if: '$KNAPSACK_GENERATE_REPORT == "true"'
-      when: on_success
-      allow_failure: true
-
-.review:rules:knapsack-report-qa-all:
+.review:rules:knapsack-report:
   rules:
     - if: '$KNAPSACK_GENERATE_REPORT == "true"'
       when: always
-      allow_failure: true
 
 .review:rules:review-cleanup:
   rules:

@@ -12,13 +12,14 @@ module Issues
     # spam_checking is likely to be necessary.  However, if there is not a request available in scope
     # in the caller (for example, an issue created via email) and the required arguments to the
     # SpamParams constructor are not otherwise available, spam_params: must be explicitly passed as nil.
-    def initialize(project:, current_user: nil, params: {}, spam_params:)
+    def initialize(project:, current_user: nil, params: {}, spam_params:, build_service: nil)
       super(project: project, current_user: current_user, params: params)
       @spam_params = spam_params
+      @build_service = build_service || BuildService.new(project: project, current_user: current_user, params: params)
     end
 
     def execute(skip_system_notes: false)
-      @issue = BuildService.new(project: project, current_user: current_user, params: params).execute
+      @issue = @build_service.execute
 
       filter_resolve_discussion_params
 

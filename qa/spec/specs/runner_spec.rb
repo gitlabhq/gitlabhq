@@ -28,6 +28,26 @@ RSpec.describe QA::Specs::Runner do
       end
     end
 
+    context 'when count_examples_only is set as an option' do
+      let(:out) { StringIO.new }
+
+      before do
+        QA::Runtime::Scenario.define(:count_examples_only, true)
+        out.string = '22 examples,'
+        allow(StringIO).to receive(:new).and_return(out)
+      end
+
+      it 'sets the `--dry-run` flag' do
+        expect_rspec_runner_arguments(['--dry-run', '--tag', '~orchestrated', '--tag', '~transient', '--tag', '~geo', *described_class::DEFAULT_TEST_PATH_ARGS], [$stderr, anything])
+
+        subject.perform
+      end
+
+      after do
+        QA::Runtime::Scenario.attributes.delete(:count_examples_only)
+      end
+    end
+
     context 'when tags are set' do
       subject { described_class.new.tap { |runner| runner.tags = %i[orchestrated github] } }
 
@@ -158,10 +178,10 @@ RSpec.describe QA::Specs::Runner do
       end
     end
 
-    def expect_rspec_runner_arguments(arguments)
+    def expect_rspec_runner_arguments(arguments, std_arguments = described_class::DEFAULT_STD_ARGS)
       expect(RSpec::Core::Runner).to receive(:run)
-        .with(arguments, $stderr, $stdout)
-        .and_return(0)
+                                       .with(arguments, *std_arguments)
+                                       .and_return(0)
     end
   end
 end

@@ -112,5 +112,11 @@ FactoryBot.define do
         )
       end
     end
+
+    trait :crm_enabled do
+      after(:create) do |group|
+        create(:crm_settings, group: group, enabled: true)
+      end
+    end
   end
 end

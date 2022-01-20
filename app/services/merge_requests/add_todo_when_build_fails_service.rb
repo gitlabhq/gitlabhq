@@ -16,9 +16,7 @@ module MergeRequests
     # build is retried
     #
     def close(commit_status)
-      pipeline_merge_requests(commit_status.pipeline) do |merge_request|
-        todo_service.merge_request_build_retried(merge_request)
-      end
+      close_all(commit_status.pipeline)
     end
 
     def close_all(pipeline)

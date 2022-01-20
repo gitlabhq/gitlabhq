@@ -1,13 +1,10 @@
 ---
 stage: Create
 group: Editor
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments"
-type: reference, api
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Snippets API **(FREE)**
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/6373) in GitLab 8.15.
 
 Snippets API operates on [snippets](../user/snippets.md). Related APIs exist for
 [project snippets](project_snippets.md) and
@@ -448,8 +445,6 @@ Example response:
 ```
 
 ## Get user agent details
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/12655) in GitLab 9.4.
 
 NOTE:
 Available only for administrators.

@@ -17,8 +17,8 @@ module Namespaces
             .where(namespaces: { parent_id: nil })
         end
 
-        def self_and_ancestors(include_self: true, hierarchy_order: nil)
-          records = Gitlab::ObjectHierarchy.new(all).base_and_ancestors(hierarchy_order: hierarchy_order)
+        def self_and_ancestors(include_self: true, upto: nil, hierarchy_order: nil)
+          records = Gitlab::ObjectHierarchy.new(all).base_and_ancestors(upto: upto, hierarchy_order: hierarchy_order)
 
           if include_self
             records

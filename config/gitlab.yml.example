@@ -9,6 +9,8 @@
 # If you change this file in a merge request, please also create       #
 # a MR on https://gitlab.com/gitlab-org/omnibus-gitlab/merge_requests. #
 # For more details see https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/doc/settings/gitlab.yml.md #
+# Be sure to create a MR against the GDK configuration                 #
+# file (https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/support/templates/gitlab/config/gitlab.yml.erb) too. #
 ########################################################################
 #
 #
@@ -227,6 +229,10 @@ production: &base
     #   tenant_id: "YOUR-TENANT-ID"
     #   client_id: "YOUR-CLIENT-ID"
     #   client_secret: "YOUR-CLIENT-SECRET"
+
+    # File that contains the shared secret key for verifying access for mailroom's incoming_email.
+    # Default is '.gitlab_mailroom_secret' relative to Rails.root (i.e. root of the GitLab app).
+    # secret_file: /home/git/gitlab/.gitlab_mailroom_secret
 
   ## Consolidated object store config
   ## This will only take effect if the object_store sections are not defined
@@ -1415,6 +1421,18 @@ test:
     object_store:
       enabled: false
       remote_directory: terraform
+      connection:
+        provider: AWS # Only AWS supported at the moment
+        aws_access_key_id: AWS_ACCESS_KEY_ID
+        aws_secret_access_key: AWS_SECRET_ACCESS_KEY
+        region: us-east-1
+
+  ci_secure_files:
+    enabled: true
+    storage_path: tmp/tests/ci_secure_files
+    object_store:
+      enabled: false
+      remote_directory: ci_secure_files
       connection:
         provider: AWS # Only AWS supported at the moment
         aws_access_key_id: AWS_ACCESS_KEY_ID

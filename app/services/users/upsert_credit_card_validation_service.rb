@@ -2,8 +2,9 @@
 
 module Users
   class UpsertCreditCardValidationService < BaseService
-    def initialize(params)
+    def initialize(params, user)
       @params = params.to_h.with_indifferent_access
+      @current_user = user
     end
 
     def execute
@@ -17,6 +18,8 @@ module Users
       }
 
       ::Users::CreditCardValidation.upsert(@params)
+
+      ::Users::UpdateService.new(current_user, user: current_user, requires_credit_card_verification: false).execute!
 
       ServiceResponse.success(message: 'CreditCardValidation was set')
     rescue ActiveRecord::InvalidForeignKey, ActiveRecord::NotNullViolation => e

@@ -7,13 +7,13 @@ class Projects::ServiceHookLogsController < Projects::HookLogsController
 
   def retry
     execute_hook
-    redirect_to edit_project_service_path(@project, @integration)
+    redirect_to edit_project_integration_path(@project, @integration)
   end
 
   private
 
   def integration
-    @integration ||= @project.find_or_initialize_integration(params[:service_id])
+    @integration ||= @project.find_or_initialize_integration(params[:integration_id])
   end
 
   override :hook

@@ -1,0 +1,8 @@
+---
+name: inline_haml_diff_line_rendering
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/57237
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/330582
+milestone: '14.7'
+type: development
+group: group::source code
+default_enabled: false

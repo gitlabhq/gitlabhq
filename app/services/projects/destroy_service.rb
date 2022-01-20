@@ -41,6 +41,8 @@ module Projects
 
       true
     rescue StandardError => error
+      context = Gitlab::ApplicationContext.current.merge(project_id: project.id)
+      Gitlab::ErrorTracking.track_exception(error, **context)
       attempt_rollback(project, error.message)
       false
     rescue Exception => error # rubocop:disable Lint/RescueException
@@ -80,7 +82,13 @@ module Projects
     end
 
     def remove_events
+      log_info("Attempting to destroy events from #{project.full_path} (#{project.id})")
+
       response = ::Events::DestroyService.new(project).execute
+
+      if response.error?
+        log_error("Event deletion failed on #{project.full_path} with the following message: #{response.message}")
+      end
 
       response.success?
     end

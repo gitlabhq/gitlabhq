@@ -11,7 +11,9 @@ const Template = (args, { argTypes }) => ({
   props: Object.keys(argTypes),
   template: '<confirm-danger v-bind="$props" />',
   provide: {
-    confirmDangerMessage: 'You require more Vespene Gas',
+    additionalInformation: args.additionalInformation || null,
+    confirmDangerMessage: args.confirmDangerMessage || 'You require more Vespene Gas',
+    htmlConfirmationMessage: args.confirmDangerMessage || false,
   },
 });
 
@@ -25,4 +27,17 @@ export const Disabled = Template.bind({});
 Disabled.args = {
   ...Default.args,
   disabled: true,
+};
+
+export const AdditionalInformation = Template.bind({});
+AdditionalInformation.args = {
+  ...Default.args,
+  additionalInformation: 'This replaces the default warning information',
+};
+
+export const HtmlMessage = Template.bind({});
+HtmlMessage.args = {
+  ...Default.args,
+  confirmDangerMessage: 'You strongly require more <strong>Vespene Gas</strong>',
+  htmlConfirmationMessage: true,
 };

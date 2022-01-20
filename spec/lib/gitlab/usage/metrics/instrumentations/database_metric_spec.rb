@@ -19,7 +19,7 @@ RSpec.describe Gitlab::Usage::Metrics::Instrumentations::DatabaseMetric do
     let_it_be(:issues) { Issue.all }
 
     before do
-      allow(ActiveRecord::Base.connection).to receive(:transaction_open?).and_return(false)
+      allow(Issue.connection).to receive(:transaction_open?).and_return(false)
     end
 
     it 'calculates a correct result' do
@@ -82,7 +82,7 @@ RSpec.describe Gitlab::Usage::Metrics::Instrumentations::DatabaseMetric do
         end.new(time_frame: 'all')
       end
 
-      it 'calculates a correct result' do
+      it 'calculates a correct result', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/349762' do
         expect(subject.value).to be_within(Gitlab::Database::PostgresHll::BatchDistinctCounter::ERROR_RATE).percent_of(3)
       end
 

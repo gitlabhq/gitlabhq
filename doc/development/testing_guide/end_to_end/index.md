@@ -170,6 +170,35 @@ Helm chart](https://gitlab.com/gitlab-org/charts/gitlab/), itself deployed with 
 
 See [Review Apps](../review_apps.md) for more details about Review Apps.
 
+### Run tests in parallel
+
+To run tests in parallel on CI, the [Knapsack](https://github.com/KnapsackPro/knapsack)
+gem is used. Knapsack reports are generated automatically and stored in the `GCS` bucket
+`knapsack-reports` in the `gitlab-qa-resources` project. The [`KnapsackReport`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/qa/qa/tools/knapsack_report.rb)
+helper handles automated report generation and upload.
+
+## Test metrics
+
+For additional test health visibility, use a custom setup to export test execution
+results to your [InfluxDb](https://influxdb.quality.gitlab.net/) instance, and visualize
+results as [Grafana](https://dashboards.quality.gitlab.net/) dashboards.
+
+### Provisioning
+
+Provisioning of all components is performed by the
+[`engineering-productivity-infrastructure`](https://gitlab.com/gitlab-org/quality/engineering-productivity-infrastructure) project.
+
+### Exporting metrics in CI
+
+Use these environment variables to configure metrics export:
+
+| Variable | Required | Information |
+| -------- | -------- | ----------- |
+| `QA_INFLUXDB_URL` | `true` | Should be set to `https://influxdb.quality.gitlab.net`. No default value. |
+| `QA_INFLUXDB_TOKEN` | `true` | InfluxDB write token that can be found under `Influxdb auth tokens` document in `Gitlab-QA` `1Password` vault. No default value. |
+| `QA_RUN_TYPE` | `false` | Arbitrary name for test execution, like `package-and-qa`. Automatically inferred from the project name for live environment test executions. No default value. |
+| `QA_EXPORT_TEST_METRICS` | `false` | Flag to enable or disable metrics export. Defaults to `true`. |
+
 ## Test reports
 
 ### Allure report

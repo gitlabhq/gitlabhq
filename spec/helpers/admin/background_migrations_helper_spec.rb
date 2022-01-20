@@ -3,22 +3,22 @@
 require "spec_helper"
 
 RSpec.describe Admin::BackgroundMigrationsHelper do
-  describe '#batched_migration_status_badge_class_name' do
+  describe '#batched_migration_status_badge_variant' do
     using RSpec::Parameterized::TableSyntax
 
-    where(:status, :class_name) do
-      :active   | 'badge-info'
-      :paused   | 'badge-warning'
-      :failed   | 'badge-danger'
-      :finished | 'badge-success'
+    where(:status, :variant) do
+      :active   | :info
+      :paused   | :warning
+      :failed   | :danger
+      :finished | :success
     end
 
-    subject { helper.batched_migration_status_badge_class_name(migration) }
+    subject { helper.batched_migration_status_badge_variant(migration) }
 
     with_them do
       let(:migration) { build(:batched_background_migration, status: status) }
 
-      it { is_expected.to eq(class_name) }
+      it { is_expected.to eq(variant) }
     end
   end
 

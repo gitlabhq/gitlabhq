@@ -65,47 +65,6 @@ RSpec.describe Banzai::Pipeline::FullPipeline do
 
       expect(html.lines.map(&:strip).join("\n")).to eq filtered_footnote.strip
     end
-
-    context 'using ruby-based HTML renderer' do
-      let(:html)       { described_class.to_html(footnote_markdown, project: project) }
-      let(:identifier) { html[/.*fnref1-(\d+).*/, 1] }
-      let(:footnote_markdown) do
-        <<~EOF
-          first[^1] and second[^second] and twenty[^twenty]
-          [^1]: one
-          [^second]: two
-          [^twenty]: twenty
-        EOF
-      end
-
-      let(:filtered_footnote) do
-        <<~EOF
-          <p dir="auto">first<sup class="footnote-ref"><a href="#fn1-#{identifier}" id="fnref1-#{identifier}">1</a></sup> and second<sup class="footnote-ref"><a href="#fn2-#{identifier}" id="fnref2-#{identifier}">2</a></sup> and twenty<sup class="footnote-ref"><a href="#fn3-#{identifier}" id="fnref3-#{identifier}">3</a></sup></p>
-
-          <section class="footnotes"><ol>
-          <li id="fn1-#{identifier}">
-          <p>one <a href="#fnref1-#{identifier}" class="footnote-backref"><gl-emoji title="leftwards arrow with hook" data-name="leftwards_arrow_with_hook" data-unicode-version="1.1">↩</gl-emoji></a></p>
-          </li>
-          <li id="fn2-#{identifier}">
-          <p>two <a href="#fnref2-#{identifier}" class="footnote-backref"><gl-emoji title="leftwards arrow with hook" data-name="leftwards_arrow_with_hook" data-unicode-version="1.1">↩</gl-emoji></a></p>
-          </li>
-          <li id="fn3-#{identifier}">
-          <p>twenty <a href="#fnref3-#{identifier}" class="footnote-backref"><gl-emoji title="leftwards arrow with hook" data-name="leftwards_arrow_with_hook" data-unicode-version="1.1">↩</gl-emoji></a></p>
-          </li>
-          </ol></section>
-        EOF
-      end
-
-      before do
-        stub_feature_flags(use_cmark_renderer: false)
-      end
-
-      it 'properly adds the necessary ids and classes' do
-        stub_commonmark_sourcepos_disabled
-
-        expect(html.lines.map(&:strip).join("\n")).to eq filtered_footnote
-      end
-    end
   end
 
   describe 'links are detected as malicious' do

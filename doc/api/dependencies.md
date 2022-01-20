@@ -16,7 +16,7 @@ across GitLab releases.
 
 Every call to this endpoint requires authentication. To perform this call, user should be authorized to read repository.
 To see vulnerabilities in response, user should be authorized to read
-[Project Security Dashboard](../user/application_security/security_dashboard/index.md#project-security-dashboard).
+[Project Security Dashboard](../user/application_security/security_dashboard/index.md).
 
 ## List project dependencies
 

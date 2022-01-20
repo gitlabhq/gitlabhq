@@ -23,14 +23,18 @@ exports[`ConanInstallation renders all the messages 1`] = `
    
   <code-instruction-stub
     copytext="Copy Conan Setup Command"
-    instruction="conan remote add gitlab conanPath"
+    instruction="conan remote add gitlab http://gdk.test:3000/api/v4/projects/1/packages/conan"
     label="Add Conan Remote"
     trackingaction="copy_conan_setup_command"
     trackinglabel="code_instruction"
   />
-   
-  <gl-sprintf-stub
-    message="For more information on the Conan registry, %{linkStart}see the documentation%{linkEnd}."
-  />
+   For more information on the Conan registry, 
+  <gl-link-stub
+    href="/help/user/packages/conan_repository/index"
+    target="_blank"
+  >
+    see the documentation
+  </gl-link-stub>
+  .
 </div>
 `;

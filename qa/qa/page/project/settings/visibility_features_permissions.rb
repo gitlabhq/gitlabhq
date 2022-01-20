@@ -5,14 +5,9 @@ module QA
     module Project
       module Settings
         class VisibilityFeaturesPermissions < Page::Base
-          include QA::Page::Component::Select2
-
-          view 'app/views/projects/edit.html.haml' do
-            element :visibility_features_permissions_save_button
-          end
-
           view 'app/assets/javascripts/pages/projects/shared/permissions/components/settings_panel.vue' do
             element :project_visibility_dropdown
+            element :visibility_features_permissions_save_button
           end
 
           def set_project_visibility(visibility)

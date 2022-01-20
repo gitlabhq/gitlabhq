@@ -63,7 +63,7 @@ module ResourceAccessTokens
         name: params[:name] || "#{resource.name.to_s.humanize} bot",
         email: generate_email,
         username: generate_username,
-        user_type: "#{resource_type}_bot".to_sym,
+        user_type: :project_bot,
         skip_confirmation: true # Bot users should always have their emails confirmed.
       }
     end
@@ -75,7 +75,8 @@ module ResourceAccessTokens
     end
 
     def generate_email
-      email_pattern = "#{resource_type}#{resource.id}_bot%s@example.com"
+      # Default emaildomain need to be reworked. See gitlab-org/gitlab#260305
+      email_pattern = "#{resource_type}#{resource.id}_bot%s@noreply.#{Gitlab.config.gitlab.host}"
 
       uniquify.string(-> (n) { Kernel.sprintf(email_pattern, n) }) do |s|
         User.find_by_email(s)

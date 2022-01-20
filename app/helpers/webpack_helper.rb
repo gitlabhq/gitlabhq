@@ -25,6 +25,10 @@ module WebpackHelper
     else
       preload_link_tag(path, options)
     end
+  rescue Gitlab::Webpack::Manifest::AssetMissingError
+    # In development/test, incremental compilation may be enabled, meaning not
+    # all chunks may be available/split out
+    raise unless Gitlab.dev_or_test_env?
   end
 
   def webpack_controller_bundle_tags

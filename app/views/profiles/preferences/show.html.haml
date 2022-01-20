@@ -2,7 +2,7 @@
 - @content_class = "limit-container-width" unless fluid_layout
 - user_theme_id = Gitlab::Themes.for_user(@user).id
 - user_fields = { theme: user_theme_id, gitpod_enabled: @user.gitpod_enabled, sourcegraph_enabled: @user.sourcegraph_enabled }.to_json
-- @themes = Gitlab::Themes::THEMES.to_json
+- @themes = Gitlab::Themes::available_themes.to_json
 - data_attributes = { themes: @themes, integration_views: integration_views.to_json, user_fields: user_fields, body_classes: Gitlab::Themes.body_classes, profile_preferences_path: profile_preferences_path }
 
 - Gitlab::Themes.each do |theme|
@@ -33,7 +33,7 @@
       %p
         = s_('Preferences|This setting allows you to customize the appearance of the syntax.')
         = succeed '.' do
-          = link_to _('Learn more'), help_page_path('user/profile/preferences', anchor: 'syntax-highlighting-theme'), target: '_blank'
+          = link_to _('Learn more'), help_page_path('user/profile/preferences', anchor: 'syntax-highlighting-theme'), target: '_blank', rel: 'noopener noreferrer'
     .col-lg-8.syntax-theme
       - Gitlab::ColorSchemes.each do |scheme|
         = label_tag do
@@ -51,7 +51,7 @@
       %p
         = s_('Preferences|This setting allows you to customize the behavior of the system layout and default views.')
         = succeed '.' do
-          = link_to _('Learn more'), help_page_path('user/profile/preferences', anchor: 'behavior'), target: '_blank'
+          = link_to _('Learn more'), help_page_path('user/profile/preferences', anchor: 'behavior'), target: '_blank', rel: 'noopener noreferrer'
     .col-lg-8
       .form-group
         = f.label :layout, class: 'label-bold' do
@@ -94,8 +94,7 @@
           = s_('Preferences|Surround text selection when typing quotes or brackets')
         .form-text.text-muted
           - supported_characters = %w(" ' ` \( [ { < * _).map {|char| "<code>#{char}</code>" }.join(', ')
-          - msg = "Preferences|When you type in a description or comment box, selected text is surrounded by the corresponding character after typing one of the following characters: #{supported_characters}."
-          = s_(msg).html_safe
+          = sprintf(s_( "Preferences|When you type in a description or comment box, selected text is surrounded by the corresponding character after typing one of the following characters: %{supported_characters}."), { supported_characters: supported_characters }).html_safe
 
       .form-group
         = f.label :tab_width, s_('Preferences|Tab width'), class: 'label-bold'
@@ -116,7 +115,7 @@
       %p
         = _('Customize language and region related settings.')
         = succeed '.' do
-          = link_to _('Learn more'), help_page_path('user/profile/preferences', anchor: 'localization'), target: '_blank'
+          = link_to _('Learn more'), help_page_path('user/profile/preferences', anchor: 'localization'), target: '_blank', rel: 'noopener noreferrer'
     .col-lg-8
       .form-group
         = f.label :preferred_language, class: 'label-bold' do
@@ -137,7 +136,7 @@
       %p
         = s_('Preferences|Configure how dates and times display for you.')
         = succeed '.' do
-          = link_to _('Learn more'), help_page_path('user/profile/preferences', anchor: 'time-preferences'), target: '_blank'
+          = link_to _('Learn more'), help_page_path('user/profile/preferences', anchor: 'time-preferences'), target: '_blank', rel: 'noopener noreferrer'
     .col-lg-8
       .form-group.form-check
         = f.check_box :time_display_relative, class: 'form-check-input'

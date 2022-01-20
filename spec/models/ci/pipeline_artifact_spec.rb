@@ -215,4 +215,11 @@ RSpec.describe Ci::PipelineArtifact, type: :model do
       end
     end
   end
+
+  context 'loose foreign key on ci_pipeline_artifacts.project_id' do
+    it_behaves_like 'cleanup by a loose foreign key' do
+      let!(:parent) { create(:project) }
+      let!(:model) { create(:ci_pipeline_artifact, project: parent) }
+    end
+  end
 end

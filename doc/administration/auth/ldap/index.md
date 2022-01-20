@@ -1,7 +1,7 @@
 ---
 type: reference
 stage: Manage
-group: Access
+group: Authentication & Authorization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
@@ -21,7 +21,7 @@ This integration works with most LDAP-compliant directory servers, including:
 
 Users added through LDAP:
 
-- Take a [licensed seat](../../../subscriptions/self_managed/index.md#billable-users).
+- Usually use a [licensed seat](../../../subscriptions/self_managed/index.md#billable-users).
 - Can authenticate with Git using either their GitLab username or their email and LDAP password,
   even if password authentication for Git
   [is disabled](../../../user/admin_area/settings/sign_in_restrictions.md#password-authentication-enabled).
@@ -153,13 +153,22 @@ production:
 
 ### Basic configuration settings
 
+> `hosts` configuration setting [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/139) in GitLab 14.7.
+
+You can configure either:
+
+- A single LDAP server using `host` and `port`.
+- Many LDAP servers using `hosts`. This setting takes precedence over `host` and `port`. GitLab attempts to use the
+  LDAP servers in the order specified, and the first reachable LDAP server is used.
+
 These configuration settings are available:
 
 | Setting            | Description | Required | Examples |
 |--------------------|-------------|----------|----------|
 | `label`            | A human-friendly name for your LDAP server. It is displayed on your sign-in page. | **{check-circle}** Yes | `'Paris'` or `'Acme, Ltd.'` |
-| `host`             | IP address or domain name of your LDAP server. | **{check-circle}** Yes | `'ldap.mydomain.com'` |
-| `port`             | The port to connect with on your LDAP server. Always an integer, not a string. | **{check-circle}** Yes | `389` or `636` (for SSL) |
+| `host`             | IP address or domain name of your LDAP server. Ignored when `hosts` is defined. | **{check-circle}** Yes | `'ldap.mydomain.com'` |
+| `port`             | The port to connect with on your LDAP server. Always an integer, not a string. Ignored when `hosts` is defined. | **{check-circle}** Yes | `389` or `636` (for SSL) |
+| `hosts` (GitLab 14.7 and later) | An array of host and port pairs to open connections. | **{dotted-circle}** No | `[['ldap1.mydomain.com', 636], ['ldap2.mydomain.com', 636]]` |
 | `uid`              | LDAP attribute for username. Should be the attribute, not the value that maps to the `uid`. | **{check-circle}** Yes | `'sAMAccountName'` or `'uid'` or `'userPrincipalName'` |
 | `bind_dn`          | The full DN of the user you bind with. | **{dotted-circle}** No | `'america\momo'` or `'CN=Gitlab,OU=Users,DC=domain,DC=com'` |
 | `password`         | The password of the bind user. | **{dotted-circle}** No | `'your_great_password'` |

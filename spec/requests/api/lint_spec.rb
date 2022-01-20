@@ -121,8 +121,8 @@ RSpec.describe API::Lint do
           expect(response).to have_gitlab_http_status(:ok)
           expect(json_response).to be_an Hash
           expect(json_response['status']).to eq('valid')
-          expect(json_response['warnings']).to eq([])
-          expect(json_response['errors']).to eq([])
+          expect(json_response['warnings']).to match_array([])
+          expect(json_response['errors']).to match_array([])
         end
 
         it 'outputs expanded yaml content' do
@@ -149,7 +149,20 @@ RSpec.describe API::Lint do
           expect(response).to have_gitlab_http_status(:ok)
           expect(json_response['status']).to eq('valid')
           expect(json_response['warnings']).not_to be_empty
-          expect(json_response['errors']).to eq([])
+          expect(json_response['errors']).to match_array([])
+        end
+      end
+
+      context 'with valid .gitlab-ci.yaml using deprecated keywords' do
+        let(:yaml_content) { { job: { script: 'ls' }, types: ['test'] }.to_yaml }
+
+        it 'passes validation but returns warnings' do
+          post api('/ci/lint', api_user), params: { content: yaml_content }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['status']).to eq('valid')
+          expect(json_response['warnings']).not_to be_empty
+          expect(json_response['errors']).to match_array([])
         end
       end
 

@@ -20,6 +20,18 @@
         },
         "additionalProperties": false
       },
+      "merge_user": {
+        "type": ["object", "null"],
+        "properties": {
+          "name": { "type": "string" },
+          "username": { "type": "string" },
+          "id": { "type": "integer" },
+          "state": { "type": "string" },
+          "avatar_url": { "type": "uri" },
+          "web_url": { "type": "uri" }
+        },
+        "additionalProperties": false
+      },
       "merged_at": { "type": ["string", "null"] },
       "closed_by": {
         "type": ["object", "null"],

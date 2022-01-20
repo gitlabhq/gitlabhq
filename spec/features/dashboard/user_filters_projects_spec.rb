@@ -168,7 +168,7 @@ RSpec.describe 'Dashboard > User filters projects' do
 
         sorting_dropdown.click
 
-        ['Last updated', 'Created date', 'Name', 'Stars'].each do |label|
+        ['Updated date', 'Created date', 'Name', 'Stars'].each do |label|
           expect(sorting_dropdown).to have_content(label)
         end
       end
@@ -192,9 +192,9 @@ RSpec.describe 'Dashboard > User filters projects' do
         end
       end
 
-      context 'Sorting by Last updated' do
+      context 'Sorting by Updated date' do
         it 'sorts the project list' do
-          select_dropdown_option '#filtered-search-sorting-dropdown', 'Last updated'
+          select_dropdown_option '#filtered-search-sorting-dropdown', 'Updated date'
 
           expect_to_see_projects(desc_sorted_project_names)
 

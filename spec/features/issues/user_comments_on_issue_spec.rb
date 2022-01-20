@@ -11,6 +11,7 @@ RSpec.describe "User comments on issue", :js do
 
   before do
     stub_feature_flags(tribute_autocomplete: false)
+    stub_feature_flags(sandboxed_mermaid: false)
     project.add_guest(user)
     sign_in(user)
 
@@ -49,7 +50,7 @@ RSpec.describe "User comments on issue", :js do
 
       add_note(comment)
 
-      expect(page.find('svg.mermaid')).to have_content html_content
+      expect(page.find('svg.mermaid')).not_to have_content 'javascript'
       within('svg.mermaid') { expect(page).not_to have_selector('img') }
     end
 

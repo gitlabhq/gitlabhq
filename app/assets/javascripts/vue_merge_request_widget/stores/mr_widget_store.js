@@ -222,6 +222,8 @@ export default class MergeRequestStore {
     this.showGitpodButton = data.show_gitpod_button;
     this.gitpodUrl = data.gitpod_url;
     this.gitpodEnabled = data.gitpod_enabled;
+    this.userPreferencesGitpodPath = data.user_preferences_gitpod_path;
+    this.userProfileEnableGitpodPath = data.user_profile_enable_gitpod_path;
   }
 
   setState() {
@@ -357,15 +359,13 @@ export default class MergeRequestStore {
   setApprovals(data) {
     this.approvals = data;
     this.isApproved = data.approved || false;
+
+    this.setState();
   }
 
+  // eslint-disable-next-line class-methods-use-this
   get hasMergeChecksFailed() {
-    if (!window.gon?.features?.restructuredMrWidget) return false;
-
-    return (
-      this.hasMergeableDiscussionsState ||
-      (this.onlyAllowMergeIfPipelineSucceeds && this.isPipelineFailed)
-    );
+    return false;
   }
 
   // Because the state machine doesn't yet handle every state and transition,

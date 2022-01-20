@@ -53,6 +53,7 @@ After your merge request has been approved according to our [approval guidelines
 | Description | Link |
 | -------- | -------- |
 | Issue on [GitLab](https://gitlab.com/gitlab-org/gitlab/issues) | #TODO  |
+| CVE ID request on [`gitlab-org/cves`](https://gitlab.com/gitlab-org/cves/-/issues?sort=created_date&state=opened) | #TODO for AppSec  |
 
 ### Details
 

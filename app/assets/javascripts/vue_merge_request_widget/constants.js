@@ -162,3 +162,6 @@ export const EXTENSION_SUMMARY_FAILED_CLASS = 'gl-text-red-500';
 export const EXTENSION_SUMMARY_NEUTRAL_CLASS = 'gl-text-gray-700';
 
 export { STATE_MACHINE };
+
+export const REBASE_BUTTON_KEY = 'rebase';
+export const REBASE_WITHOUT_CI_BUTTON_KEY = 'rebaseWithoutCi';

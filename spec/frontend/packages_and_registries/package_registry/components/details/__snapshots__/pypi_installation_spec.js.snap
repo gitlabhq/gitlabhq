@@ -10,7 +10,7 @@ exports[`PypiInstallation renders all the messages 1`] = `
   <code-instruction-stub
     copytext="Copy Pip command"
     data-testid="pip-command"
-    instruction="pip install @gitlab-org/package-15 --extra-index-url pypiPath"
+    instruction="pip install @gitlab-org/package-15 --extra-index-url http://__token__:<your_personal_token>@gdk.test:3000/api/v4/projects/1/packages/pypi/simple"
     label="Pip Command"
     trackingaction="copy_pip_install_command"
     trackinglabel="code_instruction"
@@ -23,16 +23,18 @@ exports[`PypiInstallation renders all the messages 1`] = `
   </h3>
    
   <p>
-    <gl-sprintf-stub
-      message="If you haven't already done so, you will need to add the below to your %{codeStart}.pypirc%{codeEnd} file."
-    />
+    If you haven't already done so, you will need to add the below to your 
+    <code>
+      .pypirc
+    </code>
+     file.
   </p>
    
   <code-instruction-stub
     copytext="Copy .pypirc content"
     data-testid="pypi-setup-content"
     instruction="[gitlab]
-repository = pypiSetupPath
+repository = http://gdk.test:3000/api/v4/projects/1/packages/pypi
 username = __token__
 password = <your personal access token>"
     label=""
@@ -40,9 +42,13 @@ password = <your personal access token>"
     trackingaction="copy_pypi_setup_command"
     trackinglabel="code_instruction"
   />
-   
-  <gl-sprintf-stub
-    message="For more information on the PyPi registry, %{linkStart}see the documentation%{linkEnd}."
-  />
+   For more information on the PyPi registry, 
+  <gl-link-stub
+    href="/help/user/packages/pypi_repository/index"
+    target="_blank"
+  >
+    see the documentation
+  </gl-link-stub>
+  .
 </div>
 `;

@@ -7,4 +7,7 @@
       full_path: @project.full_path,
       endpoint: project_packages_path(@project),
       page_type: 'projects',
-      empty_list_illustration: image_path('illustrations/no-packages.svg'), } }
+      empty_list_illustration: image_path('illustrations/no-packages.svg'),
+      npm_instance_url: package_registry_instance_url(:npm),
+      project_list_url: project_packages_path(@project),
+      group_list_url: '' } }

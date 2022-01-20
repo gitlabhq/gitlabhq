@@ -1,9 +1,0 @@
-.empty-state.gl-display-flex.gl-flex-direction-column.gl-flex-wrap.gl-text-center
-  .gl-flex-grow-0.gl-flex-shrink-0
-    .svg-250.svg-content
-      = image_tag 'illustrations/empty-state/empty-deploy-keys-lg.svg'
-  .gl-flex-grow-0.gl-flex-shrink-0
-    .text-content.gl-mx-auto.gl-my-0.gl-p-5
-      %h4.h4= _('Deploy Keys')
-      %p= _('Deploy keys grant read/write access to all repositories in your instance')
-      = link_to _('New deploy key'), new_admin_deploy_key_path, class: 'gl-button btn btn-confirm btn-md'

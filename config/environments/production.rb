@@ -36,7 +36,9 @@ Rails.application.configure do
   # Force all access to the app over SSL, use Strict-Transport-Security, and use secure cookies.
   # config.force_ssl = true
 
-  # See everything in the log (default is :info)
+  # Include generic and useful information about system operation, but avoid logging too much
+  # information to avoid inadvertent exposure of personally identifiable information (PII).
+  # Note: This configuration does not affect the log level of `Gitlab::Logger` and its subclasses.
   config.log_level = :info
 
   # Suppress 'Rendered template ...' messages in the log

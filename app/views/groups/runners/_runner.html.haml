@@ -3,17 +3,13 @@
     .table-mobile-header{ role: 'rowheader' }= _('Type')
     .table-mobile-content
       - if runner.group_type?
-        %span.badge.badge-pill.gl-badge.sm.badge-success
-          = s_('Runners|group')
+        = gl_badge_tag s_('Runners|group'), variant: :success, size: :sm
       - else
-        %span.badge.badge-pill.gl-badge.sm.badge-info
-          = s_('Runners|specific')
+        = gl_badge_tag s_('Runners|specific'), variant: :info, size: :sm
       - if runner.locked?
-        %span.badge.badge-pill.gl-badge.sm.badge-warning
-          = s_('Runners|locked')
+        = gl_badge_tag s_('Runners|locked'), variant: :warning, size: :sm
       - unless runner.active?
-        %span.badge.badge-pill.gl-badge.sm.badge-danger
-          = s_('Runners|paused')
+        = gl_badge_tag s_('Runners|paused'), variant: :danger, size: :sm
 
   .table-section.section-30
     .table-mobile-header{ role: 'rowheader' }= s_('Runners|Runner')
@@ -50,8 +46,7 @@
     .table-mobile-header{ role: 'rowheader' }= _('Tags')
     .table-mobile-content
       - runner.tags.map(&:name).sort.each do |tag|
-        %span.badge.badge-primary.str-truncated.has-tooltip{ title: tag }
-          = tag
+        = gl_badge_tag tag, { variant: :info }, { class: 'str-truncated has-tooltip', title: tag }
 
   .table-section.section-10
     .table-mobile-header{ role: 'rowheader' }= _('Last contact')
@@ -81,5 +76,5 @@
             = sprite_icon('close', css_class: 'gl-icon')
       - else
         .btn-group
-          = link_to group_runner_path(@group, runner), method: :delete, class: 'gl-button btn btn-danger btn-icon has-tooltip', title: _('Remove'), ref: 'tooltip', aria: { label: _('Remove') }, data: { placement: 'top', container: 'body', confirm: _('Are you sure?') } do
+          = link_to group_runner_path(@group, runner), method: :delete, class: 'gl-button btn btn-danger btn-icon has-tooltip', title: _('Remove'), ref: 'tooltip', aria: { label: _('Remove') }, data: { placement: 'top', container: 'body', confirm: _('Are you sure?'), confirm_btn_variant: "danger" } do
             = sprite_icon('close', css_class: 'gl-icon')

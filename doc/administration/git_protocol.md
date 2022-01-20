@@ -1,20 +1,17 @@
 ---
 stage: Create
 group: Source Code
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments"
-type: reference
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 description: "Set and configure Git protocol v2"
 ---
 
 # Configuring Git Protocol v2 **(FREE)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/46555) in GitLab 11.4.
-> - [Temporarily disabled](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/55769) in GitLab 11.5.8, 11.6.6, 11.7.1, and 11.8+.
-> - [Re-enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/27828) in GitLab 12.8.
+> [Re-enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/27828) in GitLab 12.8.
 
 Git protocol v2 improves the v1 wire protocol in several ways and is
-enabled by default in GitLab for HTTP requests. In order to enable SSH,
-further configuration is needed by the administrator.
+enabled by default in GitLab for HTTP requests. To enable SSH, additional
+configuration is required by an administrator.
 
 More details about the new features and improvements are available in
 the [Google Open Source Blog](https://opensource.googleblog.com/2018/05/introducing-git-protocol-version-2.html)
@@ -51,7 +48,7 @@ sudo systemctl restart ssh
 
 ## Instructions
 
-In order to use the new protocol, clients need to either pass the configuration
+To use the new protocol, clients need to either pass the configuration
 `-c protocol.version=2` to the Git command, or set it globally:
 
 ```shell

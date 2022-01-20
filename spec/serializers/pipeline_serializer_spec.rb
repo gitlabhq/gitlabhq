@@ -202,7 +202,7 @@ RSpec.describe PipelineSerializer do
           # Existing numbers are high and require performance optimization
           # Ongoing issue:
           # https://gitlab.com/gitlab-org/gitlab/-/issues/225156
-          expected_queries = Gitlab.ee? ? 74 : 70
+          expected_queries = Gitlab.ee? ? 78 : 74
 
           expect(recorded.count).to be_within(2).of(expected_queries)
           expect(recorded.cached_count).to eq(0)

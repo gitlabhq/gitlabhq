@@ -82,6 +82,8 @@ module API
       expose :forked_from_project, using: Entities::BasicProjectDetails, if: ->(project, options) do
         project.forked? && Ability.allowed?(options[:current_user], :read_project, project.forked_from_project)
       end
+      expose :mr_default_target_self, if: -> (project) { project.forked? }
+
       expose :import_status
 
       expose :import_error, if: lambda { |_project, options| options[:user_can_admin_project] } do |project|
@@ -130,6 +132,7 @@ module API
         Ability.allowed?(options[:current_user], :change_repository_storage, project)
       }
       expose :keep_latest_artifacts_available?, as: :keep_latest_artifact
+      expose :runner_token_expiration_interval
 
       # rubocop: disable CodeReuse/ActiveRecord
       def self.preload_resource(project)

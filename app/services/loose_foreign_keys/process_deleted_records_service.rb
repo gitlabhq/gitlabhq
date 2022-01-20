@@ -10,7 +10,6 @@ module LooseForeignKeys
 
     def execute
       modification_tracker = ModificationTracker.new
-
       tracked_tables.cycle do |table|
         records = load_batch_for_table(table)
 

@@ -189,7 +189,7 @@ hr {
   color: #303030;
   background-color: #fff;
   background-clip: padding-box;
-  border: 1px solid #dbdbdb;
+  border: 1px solid #868686;
   border-radius: 0.25rem;
 }
 @media (prefers-reduced-motion: reduce) {
@@ -419,7 +419,7 @@ body.navless {
   }
 }
 .navless-container {
-  margin-top: 40px;
+  margin-top: var(--header-height, 40px);
   padding-top: 32px;
 }
 .btn {
@@ -506,7 +506,7 @@ label.label-bold {
 }
 .navbar-empty {
   justify-content: center;
-  height: 40px;
+  height: var(--header-height, 40px);
   background: #fff;
   border-bottom: 1px solid #dbdbdb;
 }
@@ -548,6 +548,8 @@ svg {
 }
 .login-page .flash-container {
   margin-bottom: 16px;
+  position: relative;
+  top: 8px;
 }
 .login-page .brand-holder {
   font-size: 18px;
@@ -769,6 +771,9 @@ svg {
 }
 .gl-mt-2 {
   margin-top: 0.25rem;
+}
+.gl-mt-5 {
+  margin-top: 1rem;
 }
 .gl-mb-3 {
   margin-bottom: 0.5rem;

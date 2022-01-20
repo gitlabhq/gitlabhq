@@ -1,11 +1,11 @@
 import $ from 'jquery';
 import { joinPaths } from '~/lib/utils/url_utility';
-import CreateMergeRequestDropdown from '~/create_merge_request_dropdown';
 import createFlash from '~/flash';
 import { EVENT_ISSUABLE_VUE_APP_CHANGE } from '~/issuable/constants';
 import axios from '~/lib/utils/axios_utils';
 import { addDelimiter } from '~/lib/utils/text_utility';
 import { __ } from '~/locale';
+import CreateMergeRequestDropdown from './create_merge_request_dropdown';
 
 export default class Issue {
   constructor() {

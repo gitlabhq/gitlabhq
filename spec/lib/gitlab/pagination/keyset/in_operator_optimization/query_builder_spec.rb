@@ -33,14 +33,14 @@ RSpec.describe Gitlab::Pagination::Keyset::InOperatorOptimization::QueryBuilder 
     ]
   end
 
-  shared_examples 'correct ordering examples' do
-    let(:iterator) do
-      Gitlab::Pagination::Keyset::Iterator.new(
-        scope: scope.limit(batch_size),
-        in_operator_optimization_options: in_operator_optimization_options
-      )
-    end
+  let(:iterator) do
+    Gitlab::Pagination::Keyset::Iterator.new(
+      scope: scope.limit(batch_size),
+      in_operator_optimization_options: in_operator_optimization_options
+    )
+  end
 
+  shared_examples 'correct ordering examples' do |opts = {}|
     let(:all_records) do
       all_records = []
       iterator.each_batch(of: batch_size) do |records|
@@ -49,8 +49,10 @@ RSpec.describe Gitlab::Pagination::Keyset::InOperatorOptimization::QueryBuilder 
       all_records
     end
 
-    it 'returns records in correct order' do
-      expect(all_records).to eq(expected_order)
+    unless opts[:skip_finder_query_test]
+      it 'returns records in correct order' do
+        expect(all_records).to eq(expected_order)
+      end
     end
 
     context 'when not passing the finder query' do
@@ -247,5 +249,58 @@ RSpec.describe Gitlab::Pagination::Keyset::InOperatorOptimization::QueryBuilder 
     }
 
     expect { described_class.new(**options).execute }.to raise_error(/The order on the scope does not support keyset pagination/)
+  end
+
+  context 'when ordering by SQL expression' do
+    let(:order) do
+      # ORDER BY (id * 10), id
+      Gitlab::Pagination::Keyset::Order.build([
+        Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+          attribute_name: 'id_multiplied_by_ten',
+          order_expression: Arel.sql('(id * 10)').asc,
+          sql_type: 'integer'
+        ),
+        Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+          attribute_name: :id,
+          order_expression: Issue.arel_table[:id].asc
+        )
+      ])
+    end
+
+    let(:scope) { Issue.reorder(order) }
+    let(:expected_order) { issues.sort_by(&:id) }
+
+    let(:in_operator_optimization_options) do
+      {
+        array_scope: Project.where(namespace_id: top_level_group.self_and_descendants.select(:id)).select(:id),
+        array_mapping_scope: -> (id_expression) { Issue.where(Issue.arel_table[:project_id].eq(id_expression)) }
+      }
+    end
+
+    context 'when iterating records one by one' do
+      let(:batch_size) { 1 }
+
+      it_behaves_like 'correct ordering examples', skip_finder_query_test: true
+    end
+
+    context 'when iterating records with LIMIT 3' do
+      let(:batch_size) { 3 }
+
+      it_behaves_like 'correct ordering examples', skip_finder_query_test: true
+    end
+
+    context 'when passing finder query' do
+      let(:batch_size) { 3 }
+
+      it 'raises error, loading complete rows are not supported with SQL expressions' do
+        in_operator_optimization_options[:finder_query] = -> (_, _) { Issue.select(:id, '(id * 10)').where(id: -1) }
+
+        expect(in_operator_optimization_options[:finder_query]).not_to receive(:call)
+
+        expect do
+          iterator.each_batch(of: batch_size) { |records| records.to_a }
+        end.to raise_error /The "RecordLoaderStrategy" does not support/
+      end
+    end
   end
 end

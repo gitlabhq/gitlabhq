@@ -134,6 +134,8 @@ describe('packages_list', () => {
     });
 
     it('deleteItemConfirmation resets itemToBeDeleted', () => {
+      // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+      // eslint-disable-next-line no-restricted-syntax
       wrapper.setData({ itemToBeDeleted: 1 });
       wrapper.vm.deleteItemConfirmation();
       expect(wrapper.vm.itemToBeDeleted).toEqual(null);
@@ -141,6 +143,8 @@ describe('packages_list', () => {
 
     it('deleteItemConfirmation emit package:delete', () => {
       const itemToBeDeleted = { id: 2 };
+      // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+      // eslint-disable-next-line no-restricted-syntax
       wrapper.setData({ itemToBeDeleted });
       wrapper.vm.deleteItemConfirmation();
       return wrapper.vm.$nextTick(() => {
@@ -149,6 +153,8 @@ describe('packages_list', () => {
     });
 
     it('deleteItemCanceled resets itemToBeDeleted', () => {
+      // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+      // eslint-disable-next-line no-restricted-syntax
       wrapper.setData({ itemToBeDeleted: 1 });
       wrapper.vm.deleteItemCanceled();
       expect(wrapper.vm.itemToBeDeleted).toEqual(null);
@@ -194,6 +200,8 @@ describe('packages_list', () => {
     beforeEach(() => {
       mountComponent();
       eventSpy = jest.spyOn(Tracking, 'event');
+      // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+      // eslint-disable-next-line no-restricted-syntax
       wrapper.setData({ itemToBeDeleted: { package_type: 'conan' } });
     });
 

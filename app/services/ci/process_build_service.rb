@@ -4,14 +4,7 @@ module Ci
   class ProcessBuildService < BaseService
     def execute(build, current_status)
       if valid_statuses_for_build(build).include?(current_status)
-        if build.schedulable?
-          build.schedule
-        elsif build.action?
-          build.actionize
-        else
-          enqueue(build)
-        end
-
+        process(build)
         true
       else
         build.skip
@@ -20,6 +13,16 @@ module Ci
     end
 
     private
+
+    def process(build)
+      if build.schedulable?
+        build.schedule
+      elsif build.action?
+        build.actionize
+      else
+        enqueue(build)
+      end
+    end
 
     def enqueue(build)
       build.enqueue

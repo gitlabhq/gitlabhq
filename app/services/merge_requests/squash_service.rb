@@ -39,7 +39,7 @@ module MergeRequests
     end
 
     def message
-      params[:squash_commit_message].presence || merge_request.default_squash_commit_message
+      params[:squash_commit_message].presence || merge_request.default_squash_commit_message(user: current_user)
     end
   end
 end

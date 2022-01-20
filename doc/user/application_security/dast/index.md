@@ -16,10 +16,6 @@ Dynamic Application Security Testing (DAST) examines applications for
 vulnerabilities like these in deployed environments. DAST uses the open source
 tool [OWASP Zed Attack Proxy](https://www.zaproxy.org/) for analysis.
 
-INFO:
-Want to try out security scanning?
-[Try GitLab Ultimate free for 30 days](https://about.gitlab.com/free-trial/index.html?glm_source=docs.gitlab.com&glm_content=u-dast-docs).
-
 After DAST creates its report, GitLab evaluates it for discovered
 vulnerabilities between the source and target branches. Relevant
 findings are noted in the merge request.
@@ -57,6 +53,7 @@ results. On failure, the analyzer outputs an
 - [GitLab Runner](../../../ci/runners/index.md) available, with the
 [`docker` executor](https://docs.gitlab.com/runner/executors/docker.html).
 - Target application deployed. For more details, read [Deployment options](#deployment-options).
+- DAST runs in the `test` stage, which is available by default. If you redefine the stages in the `.gitlab-ci.yml` file, the `test` stage is required.
 
 ### Deployment options
 
@@ -638,7 +635,7 @@ These CI/CD variables are specific to DAST. They can be used to customize the be
 | `DAST_XML_REPORT`                                | string        | The filename of the XML report written at the end of a scan. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12652) in GitLab 13.1. |
 | `DAST_WEBSITE` <sup>1</sup>                      | URL           | The URL of the website to scan. The variable `DAST_API_OPENAPI` must be specified if this is omitted. |
 | `DAST_ZAP_CLI_OPTIONS`                           | string        | ZAP server command-line options. For example, `-Xmx3072m` would set the Java maximum memory allocation pool size. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12652) in GitLab 13.1. |
-| `DAST_ZAP_LOG_CONFIGURATION`                     | string        | Set to a semicolon-separated list of additional log4j properties for the ZAP Server. Example: `log4j.logger.org.parosproxy.paros.network.HttpSender=DEBUG;log4j.logger.com.crawljax=DEBUG` |
+| `DAST_ZAP_LOG_CONFIGURATION`                     | string        | Set to a semicolon-separated list of additional log4j properties for the ZAP Server. Example: `logger.httpsender.name=org.parosproxy.paros.network.HttpSender;logger.httpsender.level=debug;logger.sitemap.name=org.parosproxy.paros.model.SiteMap;logger.sitemap.level=debug;` |
 | `SECURE_ANALYZERS_PREFIX`                        | URL           | Set the Docker registry base address from which to download the analyzer. |
 
 1. Available to an on-demand DAST scan.
@@ -969,6 +966,8 @@ To view running completed and scheduled on-demand DAST scans for a project, go t
   failed, or was canceled.
 - To view scheduled scans, select **Scheduled**. It shows on-demand scans that have a schedule
   set up. Those are _not_ included in the **All** tab.
+- To view saved on-demand scan profiles, select **Scan library**.
+  Those are _not_ included in the **All** tab.
 
 #### Cancel an on-demand scan
 
@@ -1036,10 +1035,8 @@ The on-demand DAST scan runs and the project's dashboard shows the results.
 To run a saved on-demand scan:
 
 1. On the top bar, select **Menu > Projects** and find your project.
-1. On the left sidebar, select **Security & Compliance > Configuration**.
-1. Select **Manage DAST scans**.
-1. In the **DAST Profiles** row, select **Manage**.
-1. Select the **Saved Scans** tab.
+1. On the left sidebar, select **Security & Compliance > On-demand Scans**.
+1. Select the **Scan library** tab.
 1. In the scan's row, select **Run scan**.
 
    If the branch saved in the scan no longer exists, you must first
@@ -1075,27 +1072,23 @@ To schedule a scan:
 
 To list saved on-demand scans:
 
-1. From your project's home page, go to **Security & Compliance > Configuration**.
-1. Select the **Saved Scans** tab.
+1. From your project's home page, go to **Security & Compliance > On-demand Scans**.
+1. Select the **Scan library** tab.
 
 #### View details of an on-demand scan
 
 To view details of an on-demand scan:
 
-1. From your project's home page, go to **Security & Compliance > Configuration**.
-1. Select **Manage DAST scans**.
-1. Select **Manage** in the **DAST Profiles** row.
-1. Select the **Saved Scans** tab.
+1. From your project's home page, go to **Security & Compliance > On-demand Scans**.
+1. Select the **Scan library** tab.
 1. In the saved scan's row select **More actions** (**{ellipsis_v}**), then select **Edit**.
 
 #### Edit an on-demand scan
 
 To edit an on-demand scan:
 
-1. From your project's home page, go to **Security & Compliance > Configuration**.
-1. Select **Manage DAST scans**.
-1. Select **Manage** in the **DAST Profiles** row.
-1. Select the **Saved Scans** tab.
+1. From your project's home page, go to **Security & Compliance > On-demand Scans**.
+1. Select the **Scan library** tab.
 1. In the saved scan's row select **More actions** (**{ellipsis_v}**), then select **Edit**.
 1. Edit the form.
 1. Select **Save scan**.
@@ -1104,10 +1097,8 @@ To edit an on-demand scan:
 
 To delete an on-demand scan:
 
-1. From your project's home page, go to **Security & Compliance > Configuration**.
-1. Select **Manage DAST scans**.
-1. Select **Manage** in the **DAST Profiles** row.
-1. Select the **Saved Scans** tab.
+1. From your project's home page, go to **Security & Compliance > On-demand Scans**.
+1. Select the **Scan library** tab.
 1. In the saved scan's row select **More actions** (**{ellipsis_v}**), then select **Delete**.
 1. Select **Delete** to confirm the deletion.
 
@@ -1131,6 +1122,9 @@ A site profile contains the following:
   - **Password form field**: The name of password field at the sign-in HTML form.
 
 When an API site type is selected, a [host override](#host-override) is used to ensure the API being scanned is on the same host as the target. This is done to reduce the risk of running an active scan against the wrong API.
+
+When configured, request headers and password fields are encrypted using [`aes-256-gcm`](https://en.wikipedia.org/wiki/Advanced_Encryption_Standard) before being stored in the database.
+This data can only be read and decrypted with a valid secrets file.
 
 #### Site profile validation
 

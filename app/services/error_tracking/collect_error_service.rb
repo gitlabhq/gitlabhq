@@ -2,6 +2,8 @@
 
 module ErrorTracking
   class CollectErrorService < ::BaseService
+    include Gitlab::Utils::StrongMemoize
+
     def execute
       # Error is a way to group events based on common data like name or cause
       # of exception. We need to keep a sane balance here between taking too little
@@ -43,16 +45,29 @@ module ErrorTracking
     end
 
     def exception
-      event['exception']['values'].first
+      strong_memoize(:exception) do
+        # Find the first exception that has a stacktrace since the first
+        # exception may not provide adequate context (e.g. in the Go SDK).
+        entries = event['exception']['values']
+        entries.find { |x| x.key?('stacktrace') } || entries.first
+      end
+    end
+
+    def stacktrace_frames
+      strong_memoize(:stacktrace_frames) do
+        exception.dig('stacktrace', 'frames')
+      end
     end
 
     def actor
       return event['transaction'] if event['transaction']
 
-      # Some SDK do not have transaction attribute.
+      # Some SDKs do not have a transaction attribute.
       # So we build it by combining function name and module name from
       # the last item in stacktrace.
-      last_line = exception.dig('stacktrace', 'frames').last
+      return unless stacktrace_frames.present?
+
+      last_line = stacktrace_frames.last
 
       "#{last_line['function']}(#{last_line['module']})"
     end

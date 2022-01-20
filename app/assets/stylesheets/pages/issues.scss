@@ -256,7 +256,7 @@ ul.related-merge-requests > li gl-emoji {
 }
 
 .with-performance-bar .issue-sticky-header {
-  top: $header-height + $performance-bar-height;
+  top: calc(#{$header-height} + #{$performance-bar-height});
 }
 
 @include media-breakpoint-up(md) {

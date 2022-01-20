@@ -53,6 +53,7 @@ module Issues
       old_mentioned_users = old_associations.fetch(:mentioned_users, [])
       old_assignees = old_associations.fetch(:assignees, [])
       old_severity = old_associations[:severity]
+      old_escalation_status = old_associations[:escalation_status]
 
       if has_changes?(issue, old_labels: old_labels, old_assignees: old_assignees)
         todo_service.resolve_todos_for_target(issue, current_user)
@@ -69,6 +70,7 @@ module Issues
       handle_milestone_change(issue)
       handle_added_mentions(issue, old_mentioned_users)
       handle_severity_change(issue, old_severity)
+      handle_escalation_status_change(issue, old_escalation_status)
       handle_issue_type_change(issue)
     end
 
@@ -208,6 +210,13 @@ module Issues
       ::IncidentManagement::AddSeveritySystemNoteWorker.perform_async(issue.id, current_user.id)
     end
 
+    def handle_escalation_status_change(issue, old_escalation_status)
+      return unless old_escalation_status.present?
+      return if issue.escalation_status&.slice(:status, :policy_id) == old_escalation_status
+
+      ::IncidentManagement::IssuableEscalationStatuses::AfterUpdateService.new(issue, current_user).execute
+    end
+
     # rubocop: disable CodeReuse/ActiveRecord
     def issuable_for_positioning(id, board_group_id = nil)
       return unless id
@@ -227,16 +236,6 @@ module Issues
       SystemNoteService.change_issue_confidentiality(issue, issue.project, current_user)
     end
 
-    override :add_incident_label?
-    def add_incident_label?(issue)
-      issue.issue_type != params[:issue_type] && !issue.incident?
-    end
-
-    override :remove_incident_label?
-    def remove_incident_label?(issue)
-      issue.issue_type != params[:issue_type] && issue.incident?
-    end
-
     def handle_issue_type_change(issue)
       return unless issue.previous_changes.include?('issue_type')
 
@@ -245,6 +244,8 @@ module Issues
 
     def do_handle_issue_type_change(issue)
       SystemNoteService.change_issue_type(issue, current_user)
+
+      ::IncidentManagement::IssuableEscalationStatuses::CreateService.new(issue).execute if issue.supports_escalation?
     end
   end
 end

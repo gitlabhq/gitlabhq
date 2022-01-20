@@ -25,6 +25,19 @@ RSpec.describe Projects::Settings::CiCdController do
       expect(response).to render_template(:show)
     end
 
+    context 'when the FF ci_owned_runners_cross_joins_fix is disabled' do
+      before do
+        stub_feature_flags(ci_owned_runners_cross_joins_fix: false)
+      end
+
+      it 'renders show with 200 status code' do
+        get :show, params: { namespace_id: project.namespace, project_id: project }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to render_template(:show)
+      end
+    end
+
     context 'with CI/CD disabled' do
       before do
         project.project_feature.update_attribute(:builds_access_level, ProjectFeature::DISABLED)

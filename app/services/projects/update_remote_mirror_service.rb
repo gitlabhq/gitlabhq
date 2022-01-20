@@ -41,18 +41,49 @@ module Projects
       remote_mirror.update_start!
 
       # LFS objects must be sent first, or the push has dangling pointers
-      send_lfs_objects!(remote_mirror)
+      lfs_status = send_lfs_objects!(remote_mirror)
 
       response = remote_mirror.update_repository
+      failed, failure_message = failure_status(lfs_status, response, remote_mirror)
 
-      if response.divergent_refs.any?
-        message = "Some refs have diverged and have not been updated on the remote:"
-        message += "\n\n#{response.divergent_refs.join("\n")}"
-
-        remote_mirror.mark_as_failed!(message)
+      # When the issue https://gitlab.com/gitlab-org/gitlab/-/issues/349262 is closed,
+      # we can move this block within failure_status.
+      if failed
+        remote_mirror.mark_as_failed!(failure_message)
       else
         remote_mirror.update_finish!
       end
+    end
+
+    def failure_status(lfs_status, response, remote_mirror)
+      message = ''
+      failed = false
+      lfs_sync_failed = false
+
+      if lfs_status&.dig(:status) == :error
+        lfs_sync_failed = true
+        message += "Error synchronizing LFS files:"
+        message += "\n\n#{lfs_status[:message]}\n\n"
+
+        failed = Feature.enabled?(:remote_mirror_fail_on_lfs, project, default_enabled: :yaml)
+      end
+
+      if response.divergent_refs.any?
+        message += "Some refs have diverged and have not been updated on the remote:"
+        message += "\n\n#{response.divergent_refs.join("\n")}"
+        failed = true
+      end
+
+      if message.present?
+        Gitlab::AppJsonLogger.info(message: "Error synching remote mirror",
+          project_id: project.id,
+          project_path: project.full_path,
+          remote_mirror_id: remote_mirror.id,
+          lfs_sync_failed: lfs_sync_failed,
+          divergent_ref_list: response.divergent_refs)
+      end
+
+      [failed, message]
     end
 
     def send_lfs_objects!(remote_mirror)

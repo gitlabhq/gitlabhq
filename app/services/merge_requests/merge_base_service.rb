@@ -56,7 +56,7 @@ module MergeRequests
 
     def commit_message
       params[:commit_message] ||
-        merge_request.default_merge_commit_message
+        merge_request.default_merge_commit_message(user: current_user)
     end
 
     def squash_sha!

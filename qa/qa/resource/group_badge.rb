@@ -39,27 +39,12 @@ module QA
       # @return [String]
       def resource_web_url(_resource); end
 
-      # Object comparison
-      #
-      # @param [QA::Resource::GroupBadge] other
-      # @return [Boolean]
-      def ==(other)
-        other.is_a?(GroupBadge) && comparable_badge == other.comparable_badge
-      end
-
-      # Override inspect for a better rspec failure diff output
-      #
-      # @return [String]
-      def inspect
-        JSON.pretty_generate(comparable_badge)
-      end
-
       protected
 
       # Return subset of fields for comparing badges
       #
       # @return [Hash]
-      def comparable_badge
+      def comparable
         reload! unless api_response
 
         api_response.slice(

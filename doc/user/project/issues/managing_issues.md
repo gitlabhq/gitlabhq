@@ -22,7 +22,7 @@ You can create an issue in many ways in GitLab:
 - [From another issue](#from-another-issue)
 - [From an issue board](#from-an-issue-board)
 - [By sending an email](#by-sending-an-email)
-- Using a URL with prefilled fields
+- [Using a URL with prefilled values](#using-a-url-with-prefilled-values)
 - [Using Service Desk](#using-service-desk)
 
 ### From a project
@@ -638,6 +638,9 @@ You can then see the issue's status in the issues list and the epic tree.
 
 After an issue is closed, its health status can't be edited and the **Edit** button becomes disabled
 until the issue is reopened.
+
+You can also set and clear health statuses using the `/health_status` and `/clear_health_status`
+[quick actions](../quick_actions.md#issues-merge-requests-and-epics).
 
 ## Publish an issue **(ULTIMATE)**
 

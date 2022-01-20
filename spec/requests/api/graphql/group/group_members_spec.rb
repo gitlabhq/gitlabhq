@@ -56,12 +56,16 @@ RSpec.describe 'getting group members information' do
   context 'member relations' do
     let_it_be(:child_group) { create(:group, :public, parent: parent_group) }
     let_it_be(:grandchild_group) { create(:group, :public, parent: child_group) }
+    let_it_be(:invited_group) { create(:group, :public) }
     let_it_be(:child_user) { create(:user) }
     let_it_be(:grandchild_user) { create(:user) }
+    let_it_be(:invited_user) { create(:user) }
+    let_it_be(:group_link) { create(:group_group_link, shared_group: child_group, shared_with_group: invited_group) }
 
     before_all do
       child_group.add_guest(child_user)
       grandchild_group.add_guest(grandchild_user)
+      invited_group.add_guest(invited_user)
     end
 
     it 'returns direct members' do
@@ -69,6 +73,13 @@ RSpec.describe 'getting group members information' do
 
       expect(graphql_errors).to be_nil
       expect_array_response(child_user)
+    end
+
+    it 'returns invited members plus inherited members' do
+      fetch_members(group: child_group, args: { relations: [:DIRECT, :INHERITED, :SHARED_FROM_GROUPS] })
+
+      expect(graphql_errors).to be_nil
+      expect_array_response(invited_user, user_1, user_2, child_user)
     end
 
     it 'returns direct and inherited members' do

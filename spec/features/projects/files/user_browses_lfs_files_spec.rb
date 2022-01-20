@@ -35,7 +35,7 @@ RSpec.describe 'Projects > Files > User browses LFS files' do
       expect(page).to have_content 'version https://git-lfs.github.com/spec/v1'
       expect(page).to have_content 'oid sha256:91eff75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897'
       expect(page).to have_content 'size 1575078'
-      expect(page).not_to have_content 'Download (1.5 MB)'
+      expect(page).not_to have_content 'Download (1.50 MiB)'
     end
   end
 
@@ -56,7 +56,7 @@ RSpec.describe 'Projects > Files > User browses LFS files' do
       click_link('lfs')
       click_link('lfs_object.iso')
 
-      expect(page).to have_content('Download (1.5 MB)')
+      expect(page).to have_content('Download (1.50 MiB)')
       expect(page).not_to have_content('version https://git-lfs.github.com/spec/v1')
       expect(page).not_to have_content('oid sha256:91eff75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897')
       expect(page).not_to have_content('size 1575078')
@@ -88,7 +88,7 @@ RSpec.describe 'Projects > Files > User browses LFS files' do
       it 'does not show single file edit link' do
         page.within('.content') do
           expect(page).to have_selector(:link_or_button, 'Web IDE')
-          expect(page).not_to have_selector(:link_or_button, 'Edit')
+          expect(page).not_to have_css('button[data-testid="edit"')
         end
       end
     end

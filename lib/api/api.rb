@@ -299,6 +299,7 @@ module API
     mount ::API::Internal::Lfs
     mount ::API::Internal::Pages
     mount ::API::Internal::Kubernetes
+    mount ::API::Internal::MailRoom
 
     version 'v3', using: :path do
       # Although the following endpoints are kept behind V3 namespace,

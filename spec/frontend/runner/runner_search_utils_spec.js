@@ -1,6 +1,7 @@
 import { RUNNER_PAGE_SIZE } from '~/runner/constants';
 import {
   searchValidator,
+  updateOutdatedUrl,
   fromUrlQueryToSearch,
   fromSearchToUrl,
   fromSearchToVariables,
@@ -187,6 +188,23 @@ describe('search_params.js', () => {
       it(`Validates ${name} as a search object`, () => {
         expect(searchValidator(search)).toBe(true);
       });
+    });
+  });
+
+  describe('updateOutdatedUrl', () => {
+    it('returns null for urls that do not need updating', () => {
+      expect(updateOutdatedUrl('http://test.host/')).toBe(null);
+      expect(updateOutdatedUrl('http://test.host/?a=b')).toBe(null);
+    });
+
+    it('returns updated url for updating NOT_CONNECTED to NEVER_CONTACTED', () => {
+      expect(updateOutdatedUrl('http://test.host/admin/runners?status[]=NOT_CONNECTED')).toBe(
+        'http://test.host/admin/runners?status[]=NEVER_CONTACTED',
+      );
+
+      expect(updateOutdatedUrl('http://test.host/admin/runners?status[]=NOT_CONNECTED&a=b')).toBe(
+        'http://test.host/admin/runners?status[]=NEVER_CONTACTED&a=b',
+      );
     });
   });
 

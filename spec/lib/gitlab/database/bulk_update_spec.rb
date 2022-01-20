@@ -101,7 +101,7 @@ RSpec.describe Gitlab::Database::BulkUpdate do
     before do
       configuration_hash = ActiveRecord::Base.connection_db_config.configuration_hash
 
-      ActiveRecord::Base.establish_connection(
+      ActiveRecord::Base.establish_connection( # rubocop: disable Database/EstablishConnection
         configuration_hash.merge(prepared_statements: prepared_statements)
       )
     end

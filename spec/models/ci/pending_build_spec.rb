@@ -223,4 +223,14 @@ RSpec.describe Ci::PendingBuild do
       end
     end
   end
+
+  it_behaves_like 'cleanup by a loose foreign key' do
+    let!(:parent) { create(:namespace) }
+    let!(:model) { create(:ci_pending_build, namespace: parent) }
+  end
+
+  it_behaves_like 'cleanup by a loose foreign key' do
+    let!(:parent) { create(:project) }
+    let!(:model) { create(:ci_pending_build, project: parent) }
+  end
 end

@@ -2,7 +2,7 @@
 
 FactoryBot.define do
   factory :incident_management_issuable_escalation_status, class: 'IncidentManagement::IssuableEscalationStatus' do
-    issue
+    association :issue, factory: :incident
     triggered
 
     trait :triggered do

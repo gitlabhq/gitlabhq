@@ -35,7 +35,7 @@ to ensure the major components of GitLab are working:
    sudo gitlab-rake gitlab:check
    ```
 
-1. Confirm that encrypted database values [can be decrypted](../administration/raketasks/doctor.md#verify-database-values-can-be-decrypted-using-the-current-secrets):
+1. Confirm that encrypted database values [can be decrypted](../administration/raketasks/check.md#verify-database-values-can-be-decrypted-using-the-current-secrets):
 
    ```shell
    sudo gitlab-rake gitlab:doctor:secrets
@@ -59,6 +59,16 @@ to ensure the major components of GitLab are working:
    ```
 
 1. If using Elasticsearch, verify that searches are successful.
+
+1. If you are using [Reply by Email](../administration/reply_by_email.md) or [Service Desk](../user/project/service_desk.md),
+   manually install the latest version of `gitlab-mail_room`:
+
+   ```shell
+   gem install gitlab-mail_room
+   ```
+
+   NOTE: This step is necessary to avoid thread deadlocks and to support the latest MailRoom features. See
+   [this explanation](../development/emails.md#mailroom-gem-updates) for more details.
 
 If in any case something goes wrong, see [how to troubleshoot](#troubleshooting).
 

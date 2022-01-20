@@ -1,13 +1,10 @@
 ---
 stage: Create
 group: Source Code
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments"
-type: reference, api
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Project import/export API **(FREE)**
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/41899) in GitLab 10.6.
 
 See also:
 
@@ -23,7 +20,7 @@ all the necessary information to upload the exported project to a web server or
 to any S3-compatible platform. At the moment we only support binary
 data file uploads to the final server.
 
-From GitLab 10.7, the `upload[url]` parameter is required if the `upload` parameter is present.
+The `upload[url]` parameter is required if the `upload` parameter is present.
 
 ```plaintext
 POST /projects/:id/export

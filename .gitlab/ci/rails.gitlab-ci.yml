@@ -346,7 +346,7 @@ rspec fast_spec_helper minimal:
 db:rollback:
   extends: .db-job-base
   script:
-    - scripts/db_tasks db:migrate VERSION=20181228175414
+    - scripts/db_tasks db:migrate VERSION=20210301200959
     - scripts/db_tasks db:migrate SKIP_SCHEMA_VERSION_CHECK=true
 
 db:rollback decomposed:
@@ -359,6 +359,12 @@ db:migrate:reset:
   extends: .db-job-base
   script:
     - bundle exec rake db:migrate:reset
+
+db:migrate:reset decomposed:
+  extends:
+    - db:migrate:reset
+    - .decomposed-database
+    - .rails:rules:decomposed-databases
 
 db:migrate-from-previous-major-version:
   extends: .db-job-base
@@ -457,7 +463,7 @@ db:backup_and_restore:
   script:
     - . scripts/prepare_build.sh
     - bundle exec rake db:drop db:create db:structure:load db:seed_fu
-    - mkdir -p tmp/tests/public/uploads tmp/tests/{artifacts,pages,lfs-objects,registry}
+    - mkdir -p tmp/tests/public/uploads tmp/tests/{artifacts,pages,lfs-objects,terraform_state,registry,packages}
     - bundle exec rake gitlab:backup:create
     - date
     - bundle exec rake gitlab:backup:restore
@@ -592,8 +598,10 @@ rspec:undercoverage:
       else
         echo "Using \$CI_COMMIT_SHA ($CI_COMMIT_SHA) for this non-merge result pipeline.";
       fi;
+    - UNDERCOVERAGE_COMPARE="${CI_MERGE_REQUEST_DIFF_BASE_SHA:-$(git merge-base origin/master HEAD)}"
+    - echo "Undercoverage comparing with ${UNDERCOVERAGE_COMPARE}"
     - if [ -f scripts/undercoverage ]; then
-        run_timed_command "scripts/undercoverage";
+        run_timed_command "scripts/undercoverage ${UNDERCOVERAGE_COMPARE}";
       fi;
 
 rspec:feature-flags:

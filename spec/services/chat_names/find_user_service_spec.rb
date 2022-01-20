@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe ChatNames::FindUserService, :clean_gitlab_redis_shared_state do
   describe '#execute' do
-    let(:integration) { create(:service) }
+    let(:integration) { create(:integration) }
 
     subject { described_class.new(integration, params).execute }
 

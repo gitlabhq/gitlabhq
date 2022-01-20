@@ -4,15 +4,6 @@ export default {
   [types.SET_OVERRIDE](state, override) {
     state.override = override;
   },
-  [types.SET_IS_RESETTING](state, isResetting) {
-    state.isResetting = isResetting;
-  },
-  [types.REQUEST_RESET_INTEGRATION](state) {
-    state.isResetting = true;
-  },
-  [types.RECEIVE_RESET_INTEGRATION_ERROR](state) {
-    state.isResetting = false;
-  },
   [types.SET_JIRA_ISSUE_TYPES](state, jiraIssueTypes) {
     state.jiraIssueTypes = jiraIssueTypes;
   },

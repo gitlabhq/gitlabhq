@@ -13,7 +13,7 @@ class Oauth::TokenInfoController < Doorkeeper::TokenInfoController
         'expires_in_seconds' => token_json[:expires_in]
       ), status: :ok
     else
-      error = Doorkeeper::OAuth::ErrorResponse.new(name: :invalid_request)
+      error = Doorkeeper::OAuth::InvalidTokenResponse.new
       response.headers.merge!(error.headers)
       render json: error.body, status: error.status
     end

@@ -7,15 +7,7 @@ class UserGroupNotificationSettingsFinder
   end
 
   def execute
-    # rubocop: disable CodeReuse/ActiveRecord
-    selected_groups = Group.where(id: groups.select(:id))
-    groups_with_ancestors = if Feature.enabled?(:linear_user_group_notification_settings_finder_ancestors_scopes, user, default_enabled: :yaml)
-                              selected_groups.self_and_ancestors
-                            else
-                              Gitlab::ObjectHierarchy.new(selected_groups).base_and_ancestors
-                            end
-    # rubocop: enable CodeReuse/ActiveRecord
-
+    groups_with_ancestors = groups.self_and_ancestors
     @loaded_groups_with_ancestors = groups_with_ancestors.index_by(&:id)
     @loaded_notification_settings = user.notification_settings_for_groups(groups_with_ancestors).preload_source_route.index_by(&:source_id)
 

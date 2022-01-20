@@ -38,6 +38,8 @@ describe('Issue title suggestions component', () => {
     });
 
     it('renders component', () => {
+      // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+      // eslint-disable-next-line no-restricted-syntax
       wrapper.setData(data);
 
       return wrapper.vm.$nextTick(() => {
@@ -47,6 +49,8 @@ describe('Issue title suggestions component', () => {
 
     it('does not render with empty search', () => {
       wrapper.setProps({ search: '' });
+      // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+      // eslint-disable-next-line no-restricted-syntax
       wrapper.setData(data);
 
       return wrapper.vm.$nextTick(() => {
@@ -55,6 +59,8 @@ describe('Issue title suggestions component', () => {
     });
 
     it('does not render when loading', () => {
+      // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+      // eslint-disable-next-line no-restricted-syntax
       wrapper.setData({
         ...data,
         loading: 1,
@@ -66,6 +72,8 @@ describe('Issue title suggestions component', () => {
     });
 
     it('does not render with empty issues data', () => {
+      // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+      // eslint-disable-next-line no-restricted-syntax
       wrapper.setData({ issues: [] });
 
       return wrapper.vm.$nextTick(() => {
@@ -74,6 +82,8 @@ describe('Issue title suggestions component', () => {
     });
 
     it('renders list of issues', () => {
+      // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+      // eslint-disable-next-line no-restricted-syntax
       wrapper.setData(data);
 
       return wrapper.vm.$nextTick(() => {
@@ -82,6 +92,8 @@ describe('Issue title suggestions component', () => {
     });
 
     it('adds margin class to first item', () => {
+      // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+      // eslint-disable-next-line no-restricted-syntax
       wrapper.setData(data);
 
       return wrapper.vm.$nextTick(() => {
@@ -90,6 +102,8 @@ describe('Issue title suggestions component', () => {
     });
 
     it('does not add margin class to last item', () => {
+      // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+      // eslint-disable-next-line no-restricted-syntax
       wrapper.setData(data);
 
       return wrapper.vm.$nextTick(() => {

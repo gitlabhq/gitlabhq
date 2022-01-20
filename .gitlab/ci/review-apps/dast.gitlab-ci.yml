@@ -45,7 +45,6 @@
 # 10019, 10021	Missing security headers
 # 10023, 10024, 10025, 10037 Information Disclosure
 # 10040	Secure Pages Include Mixed Content
-# 10055	CSP
 # 10056	X-Debug-Token Information Leak
 # Duration: 14 minutes 20 seconds
 
@@ -54,7 +53,7 @@ dast:secureHeaders-csp-infoLeak:
     - .dast_conf
   variables:
     DAST_USERNAME: "user1"
-    DAST_ONLY_INCLUDE_RULES: "10019,10021,10023,10024,10025,10037,10040,10055,10056"
+    DAST_ONLY_INCLUDE_RULES: "10019,10021,10023,10024,10025,10037,10040,10056"
   script:
     - /analyze
 

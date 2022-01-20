@@ -29,7 +29,7 @@ module IntegrationsHelper
 
   def scoped_integration_path(integration, project: nil, group: nil)
     if project.present?
-      project_service_path(project, integration)
+      project_integration_path(project, integration)
     elsif group.present?
       group_settings_integration_path(group, integration)
     else
@@ -39,7 +39,7 @@ module IntegrationsHelper
 
   def scoped_edit_integration_path(integration, project: nil, group: nil)
     if project.present?
-      edit_project_service_path(project, integration)
+      edit_project_integration_path(project, integration)
     elsif group.present?
       edit_group_settings_integration_path(group, integration)
     else
@@ -53,7 +53,7 @@ module IntegrationsHelper
 
   def scoped_test_integration_path(integration, project: nil, group: nil)
     if project.present?
-      test_project_service_path(project, integration)
+      test_project_integration_path(project, integration)
     elsif group.present?
       test_group_settings_integration_path(group, integration)
     else
@@ -90,7 +90,9 @@ module IntegrationsHelper
       cancel_path: scoped_integrations_path(project: project, group: group),
       can_test: integration.testable?.to_s,
       test_path: scoped_test_integration_path(integration, project: project, group: group),
-      reset_path: scoped_reset_integration_path(integration, group: group)
+      reset_path: scoped_reset_integration_path(integration, group: group),
+      form_path: scoped_integration_path(integration, project: project, group: group),
+      redirect_to: request.referer
     }
 
     if integration.is_a?(Integrations::Jira)
@@ -101,8 +103,9 @@ module IntegrationsHelper
     form_data
   end
 
-  def integration_overrides_data(integration)
+  def integration_overrides_data(integration, project: nil, group: nil)
     {
+      edit_path: scoped_edit_integration_path(integration, project: project, group: group),
       overrides_path: scoped_overrides_integration_path(integration, format: :json)
     }
   end
@@ -224,6 +227,10 @@ module IntegrationsHelper
       edit_path: scoped_edit_integration_path(integration, group: group, project: project),
       name: integration.to_param
     }
+  end
+
+  def vue_integration_form_enabled?
+    Feature.enabled?(:vue_integration_form, current_user, default_enabled: :yaml)
   end
 end
 

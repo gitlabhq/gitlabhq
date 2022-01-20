@@ -193,7 +193,8 @@ Replication and verification continues to work but proxied Git pushes to primary
 
 ### Secure features
 
-Features that depend on creating issues or creating or approving Merge Requests, do not work.
+Features that depend on creating issues or creating or approving merge requests,
+do not work.
 
 Exporting a vulnerability list from a Vulnerability Report page does not work.
 

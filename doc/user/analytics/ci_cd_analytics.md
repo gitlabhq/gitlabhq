@@ -10,8 +10,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > [Renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/38318) to CI/CD Analytics in GitLab 12.8.
 
-GitLab tracks the history of your pipeline successes and failures, as well as how long each pipeline
-ran. To view this information for a project, go to **Analytics > CI/CD Analytics**.
+CI/CD Analytics shows the history of your pipeline successes and failures, as well as how long each pipeline
+ran.
 
 View successful pipelines:
 
@@ -26,6 +26,13 @@ project regardless of status. The data available for each individual day is base
 on when the pipeline was created. The total pipeline calculation includes child
 pipelines and pipelines that failed with invalid YAML. If you are interested in
 filtering pipelines based on other attributes, consider using the [Pipelines API](../../api/pipelines.md#list-project-pipelines).
+
+## View CI/CD analytics
+
+To view CI/CD analytics:
+
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Analytics > CI/CD Analytics**.
 
 ## DevOps Research and Assessment (DORA) key metrics **(ULTIMATE)**
 

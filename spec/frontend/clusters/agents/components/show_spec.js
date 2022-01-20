@@ -19,7 +19,7 @@ describe('ClusterAgentShow', () => {
   let wrapper;
   useFakeDate([2021, 2, 15]);
 
-  const propsData = {
+  const provide = {
     agentName: 'cluster-agent',
     projectPath: 'path/to/project',
   };
@@ -49,7 +49,7 @@ describe('ClusterAgentShow', () => {
       shallowMount(ClusterAgentShow, {
         localVue,
         apolloProvider,
-        propsData,
+        provide,
         stubs: { GlSprintf, TimeAgoTooltip, GlTab },
       }),
     );
@@ -60,7 +60,7 @@ describe('ClusterAgentShow', () => {
 
     wrapper = extendedWrapper(
       shallowMount(ClusterAgentShow, {
-        propsData,
+        provide,
         mocks: { $apollo, clusterAgent },
         slots,
         stubs: { GlTab },
@@ -85,7 +85,7 @@ describe('ClusterAgentShow', () => {
     });
 
     it('displays the agent name', () => {
-      expect(wrapper.text()).toContain(propsData.agentName);
+      expect(wrapper.text()).toContain(provide.agentName);
     });
 
     it('displays agent create information', () => {

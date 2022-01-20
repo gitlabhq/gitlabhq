@@ -57,9 +57,9 @@ describe('~/pages/shared/nav/sidebar_tracking.js', () => {
         menu.classList.add('is-over', 'is-showing-fly-out');
         menuLink.click();
 
-        expect(menu.dataset).toMatchObject({
-          trackAction: 'click_menu',
-          trackExtra: JSON.stringify({
+        expect(menu).toHaveTrackingAttributes({
+          action: 'click_menu',
+          extra: JSON.stringify({
             sidebar_display: 'Expanded',
             menu_display: 'Fly out',
           }),
@@ -74,9 +74,9 @@ describe('~/pages/shared/nav/sidebar_tracking.js', () => {
         submenuList.classList.add('fly-out-list');
         menuLink.click();
 
-        expect(menu.dataset).toMatchObject({
-          trackAction: 'click_menu_item',
-          trackExtra: JSON.stringify({
+        expect(menu).toHaveTrackingAttributes({
+          action: 'click_menu_item',
+          extra: JSON.stringify({
             sidebar_display: 'Expanded',
             menu_display: 'Fly out',
           }),
@@ -92,9 +92,9 @@ describe('~/pages/shared/nav/sidebar_tracking.js', () => {
         menu.classList.add('active');
         menuLink.click();
 
-        expect(menu.dataset).toMatchObject({
-          trackAction: 'click_menu',
-          trackExtra: JSON.stringify({
+        expect(menu).toHaveTrackingAttributes({
+          action: 'click_menu',
+          extra: JSON.stringify({
             sidebar_display: 'Expanded',
             menu_display: 'Expanded',
           }),
@@ -108,9 +108,9 @@ describe('~/pages/shared/nav/sidebar_tracking.js', () => {
         menu.classList.add('active');
         menuLink.click();
 
-        expect(menu.dataset).toMatchObject({
-          trackAction: 'click_menu_item',
-          trackExtra: JSON.stringify({
+        expect(menu).toHaveTrackingAttributes({
+          action: 'click_menu_item',
+          extra: JSON.stringify({
             sidebar_display: 'Expanded',
             menu_display: 'Expanded',
           }),
@@ -131,9 +131,9 @@ describe('~/pages/shared/nav/sidebar_tracking.js', () => {
       menu.classList.add('is-over', 'is-showing-fly-out');
       menuLink.click();
 
-      expect(menu.dataset).toMatchObject({
-        trackAction: 'click_menu',
-        trackExtra: JSON.stringify({
+      expect(menu).toHaveTrackingAttributes({
+        action: 'click_menu',
+        extra: JSON.stringify({
           sidebar_display: 'Collapsed',
           menu_display: 'Fly out',
         }),
@@ -148,9 +148,9 @@ describe('~/pages/shared/nav/sidebar_tracking.js', () => {
       submenuList.classList.add('fly-out-list');
       menuLink.click();
 
-      expect(menu.dataset).toMatchObject({
-        trackAction: 'click_menu_item',
-        trackExtra: JSON.stringify({
+      expect(menu).toHaveTrackingAttributes({
+        action: 'click_menu_item',
+        extra: JSON.stringify({
           sidebar_display: 'Collapsed',
           menu_display: 'Fly out',
         }),

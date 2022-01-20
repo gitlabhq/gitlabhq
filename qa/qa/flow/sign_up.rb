@@ -26,9 +26,12 @@ module QA
           sign_up.click_new_user_register_button
         end
 
-        Page::Registration::Welcome.perform(&:click_get_started_button_if_available)
+        Flow::UserOnboarding.onboard_user
 
         success = if user.expect_fabrication_success
+                    # In development env and .com the user is asked to create a group and a project which can be skipped for
+                    # the purpose of signing up
+                    Runtime::Browser.visit(:gitlab, Page::Dashboard::Welcome)
                     Page::Main::Menu.perform(&:has_personal_area?)
                   else
                     Page::Main::Menu.perform(&:not_signed_in?)

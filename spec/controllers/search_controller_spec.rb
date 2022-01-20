@@ -290,6 +290,14 @@ RSpec.describe SearchController do
           expect(assigns[:search_objects].count).to eq(0)
         end
       end
+
+      it_behaves_like 'rate limited endpoint', rate_limit_key: :user_email_lookup do
+        let(:current_user) { user }
+
+        def request
+          get(:show, params: { search: 'foo@bar.com', scope: 'users' })
+        end
+      end
     end
 
     describe 'GET #count', :aggregate_failures do
@@ -346,6 +354,14 @@ RSpec.describe SearchController do
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response).to eq({ 'count' => '0' })
       end
+
+      it_behaves_like 'rate limited endpoint', rate_limit_key: :user_email_lookup do
+        let(:current_user) { user }
+
+        def request
+          get(:count, params: { search: 'foo@bar.com', scope: 'users' })
+        end
+      end
     end
 
     describe 'GET #autocomplete' do
@@ -357,6 +373,14 @@ RSpec.describe SearchController do
         get :autocomplete, params: { term: ('hal' * 9000), scope: 'projects' }
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response).to match_array([])
+      end
+
+      it_behaves_like 'rate limited endpoint', rate_limit_key: :user_email_lookup do
+        let(:current_user) { user }
+
+        def request
+          get(:autocomplete, params: { term: 'foo@bar.com', scope: 'users' })
+        end
       end
     end
 
@@ -372,9 +396,10 @@ RSpec.describe SearchController do
           expect(payload[:metadata]['meta.search.force_search_results']).to eq('true')
           expect(payload[:metadata]['meta.search.filters.confidential']).to eq('true')
           expect(payload[:metadata]['meta.search.filters.state']).to eq('true')
+          expect(payload[:metadata]['meta.search.project_ids']).to eq(%w(456 789))
         end
 
-        get :show, params: { scope: 'issues', search: 'hello world', group_id: '123', project_id: '456', confidential: true, state: true, force_search_results: true }
+        get :show, params: { scope: 'issues', search: 'hello world', group_id: '123', project_id: '456', project_ids: %w(456 789), confidential: true, state: true, force_search_results: true }
       end
 
       it 'appends the default scope in meta.search.scope' do

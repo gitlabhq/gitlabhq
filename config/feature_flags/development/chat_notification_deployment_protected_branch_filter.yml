@@ -1,0 +1,8 @@
+---
+name: chat_notification_deployment_protected_branch_filter
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/74423
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/349131
+milestone: '14.7'
+type: development
+group: group::integrations
+default_enabled: false

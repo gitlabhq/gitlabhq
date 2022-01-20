@@ -19,6 +19,12 @@ export const IssuableType = {
   Alert: 'alert',
 };
 
+export const IssueType = {
+  Issue: 'issue',
+  Incident: 'incident',
+  TestCase: 'test_case',
+};
+
 export const WorkspaceType = {
   project: 'project',
   group: 'group',

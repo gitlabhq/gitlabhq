@@ -801,6 +801,54 @@ RSpec.describe API::Groups do
         expect(json_response['shared_projects'].count).to eq(limit)
       end
     end
+
+    context 'when a group is shared', :aggregate_failures do
+      let_it_be(:shared_group) { create(:group) }
+      let_it_be(:group2_sub) { create(:group, :private, parent: group2) }
+      let_it_be(:group_link_1) { create(:group_group_link, shared_group: shared_group, shared_with_group: group1) }
+      let_it_be(:group_link_2) { create(:group_group_link, shared_group: shared_group, shared_with_group: group2_sub) }
+
+      subject(:shared_with_groups) { json_response['shared_with_groups'].map { _1['group_id']} }
+
+      context 'when authenticated as admin' do
+        it 'returns all groups that share the group' do
+          get api("/groups/#{shared_group.id}", admin)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(shared_with_groups).to contain_exactly(group_link_1.shared_with_group_id, group_link_2.shared_with_group_id)
+        end
+      end
+
+      context 'when unauthenticated' do
+        it 'returns only public groups that share the group' do
+          get api("/groups/#{shared_group.id}")
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(shared_with_groups).to contain_exactly(group_link_1.shared_with_group_id)
+        end
+      end
+
+      context 'when authenticated as a member of a parent group that has shared the group' do
+        it 'returns private group if direct member' do
+          group2_sub.add_guest(user3)
+
+          get api("/groups/#{shared_group.id}", user3)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(shared_with_groups).to contain_exactly(group_link_1.shared_with_group_id, group_link_2.shared_with_group_id)
+        end
+
+        it 'returns private group if inherited member' do
+          inherited_guest_member = create(:user)
+          group2.add_guest(inherited_guest_member)
+
+          get api("/groups/#{shared_group.id}", inherited_guest_member)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(shared_with_groups).to contain_exactly(group_link_1.shared_with_group_id, group_link_2.shared_with_group_id)
+        end
+      end
+    end
   end
 
   describe 'PUT /groups/:id' do

@@ -22,41 +22,25 @@
       .icon-container
         = sprite_icon('flag')
       - if @pipeline.child?
-        %span.js-pipeline-child.badge.badge-pill.gl-badge.sm.badge-primary.has-tooltip{ title: s_("Pipelines|This is a child pipeline within the parent pipeline") }
-          = s_('Pipelines|Child pipeline')
-          = surround '(', ')' do
-            = link_to s_('Pipelines|parent'), pipeline_path(@pipeline.triggered_by_pipeline), class: 'text-white text-underline'
+        - text = sprintf(s_('Pipelines|Child pipeline (%{link_start}parent%{link_end})'), { link_start: "<a href='#{pipeline_path(@pipeline.triggered_by_pipeline)}' class='text-underline'>", link_end: "</a>"}).html_safe
+        = gl_badge_tag text, { variant: :info, size: :sm }, { class: 'js-pipeline-child has-tooltip', title: s_("Pipelines|This is a child pipeline within the parent pipeline") }
       - if @pipeline.latest?
-        %span.js-pipeline-url-latest.badge.badge-pill.gl-badge.sm.badge-success.has-tooltip{ title: _("Latest pipeline for the most recent commit on this branch") }
-          latest
+        = gl_badge_tag s_('Pipelines|latest'), { variant: :success, size: :sm }, { class: 'js-pipeline-url-latest has-tooltip', title: _("Latest pipeline for the most recent commit on this branch") }
       - if @pipeline.merge_train_pipeline?
-        %span.js-pipeline-url-train.badge.badge-pill.gl-badge.sm.badge-info.has-tooltip{ title: _("This is a merge train pipeline") }
-          train
+        = gl_badge_tag s_('Pipelines|train'), { variant: :info, size: :sm }, { class: 'js-pipeline-url-train has-tooltip', title: _("This is a merge train pipeline") }
       - if @pipeline.has_yaml_errors?
-        %span.js-pipeline-url-yaml.badge.badge-pill.gl-badge.sm.badge-danger.has-tooltip{ title: @pipeline.yaml_errors }
-          yaml invalid
+        = gl_badge_tag s_('Pipelines|yaml invalid'), { variant: :danger, size: :sm }, { class: 'js-pipeline-url-yaml has-tooltip', title: @pipeline.yaml_errors }
       - if @pipeline.failure_reason?
-        %span.js-pipeline-url-failure.badge.badge-pill.gl-badge.sm.badge-danger.has-tooltip{ title: @pipeline.failure_reason }
-          error
+        = gl_badge_tag s_('Pipelines|error'), { variant: :danger, size: :sm }, { class: 'js-pipeline-url-failure has-tooltip', title: @pipeline.failure_reason }
       - if @pipeline.auto_devops_source?
         - popover_title_text = html_escape(_('This pipeline makes use of a predefined CI/CD configuration enabled by %{b_open}Auto DevOps.%{b_close}')) % { b_open: '<b>'.html_safe, b_close: '</b>'.html_safe }
         - popover_content_url = help_page_path('topics/autodevops/index.md')
         - popover_content_text = _('Learn more about Auto DevOps')
-        %a.js-pipeline-url-autodevops.badge.badge-pill.gl-badge.sm.badge-info.autodevops-badge{ href: "#", tabindex: "0", role: "button", data: { container: "body",
-          toggle: "popover",
-          placement: "top",
-          html: "true",
-          triggers: "focus",
-          title: "<div class='gl-font-weight-normal gl-line-height-normal'>#{popover_title_text}</div>",
-          content: "<a href='#{popover_content_url}' target='_blank' rel='noopener noreferrer nofollow'>#{popover_content_text}</a>",
-        } }
-          Auto DevOps
+        = gl_badge_tag s_('Pipelines|Auto DevOps'), { variant: :info, size: :sm }, { class: 'js-pipeline-url-autodevops', href: "#", tabindex: "0", role: "button", data: { container: 'body', toggle: 'popover', placement: 'top', html: 'true', triggers: 'focus', title: "<div class='gl-font-weight-normal gl-line-height-normal'>#{popover_title_text}</div>", content: "<a href='#{popover_content_url}' target='_blank' rel='noopener noreferrer nofollow'>#{popover_content_text}</a>" } }
       - if @pipeline.detached_merge_request_pipeline?
-        %span.js-pipeline-url-mergerequest.badge.badge-pill.gl-badge.sm.badge-info.has-tooltip{ title: _('Pipelines for merge requests are configured. A detached pipeline runs in the context of the merge request, and not against the merged result. Learn more in the documentation for Pipelines for Merged Results.') }
-          detached
+        = gl_badge_tag s_('Pipelines|detached'), { variant: :info, size: :sm }, { class: 'js-pipeline-url-mergerequest has-tooltip', title: _('Pipelines for merge requests are configured. A detached pipeline runs in the context of the merge request, and not against the merged result. Learn more in the documentation for Pipelines for Merged Results.') }
       - if @pipeline.stuck?
-        %span.js-pipeline-url-stuck.badge.badge-pill.gl-badge.sm.badge-warning
-          stuck
+        = gl_badge_tag s_('Pipelines|stuck'), { variant: :warning, size: :sm }, { class: 'js-pipeline-url-stuck has-tooltip' }
 
   .well-segment.branch-info
     .icon-container.commit-icon

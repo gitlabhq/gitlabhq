@@ -28,7 +28,7 @@ RSpec.describe Gitlab::Database::Migrations::Runner do
     allow(ActiveRecord::Migrator).to receive(:new) do |dir, _all_migrations, _schema_migration_class, version_to_migrate|
       migrator = double(ActiveRecord::Migrator)
       expect(migrator).to receive(:run) do
-        migration_runs << OpenStruct.new(dir: dir, version_to_migrate: version_to_migrate)
+        migration_runs << double('migrator', dir: dir, version_to_migrate: version_to_migrate)
       end
       migrator
     end

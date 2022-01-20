@@ -2,7 +2,6 @@
 stage: Enablement
 group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
-type: howto
 ---
 
 # Automatic background verification **(PREMIUM SELF)**
@@ -88,8 +87,6 @@ the checksum for every node after every update to make sure that they are all
 in sync.
 
 ## Repository re-verification
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/8550) in GitLab 11.6.
 
 Due to bugs or transient infrastructure failures, it is possible for Git
 repositories to change unexpectedly without being marked for verification.

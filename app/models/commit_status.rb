@@ -170,8 +170,11 @@ class CommitStatus < Ci::ApplicationRecord
     end
 
     before_transition any => :failed do |commit_status, transition|
-      failure_reason = transition.args.first
-      commit_status.failure_reason = CommitStatus.failure_reasons[failure_reason]
+      reason = ::Gitlab::Ci::Build::Status::Reason
+        .fabricate(commit_status, transition.args.first)
+
+      commit_status.failure_reason = reason.failure_reason_enum
+      commit_status.allow_failure = true if reason.force_allow_failure?
     end
 
     before_transition [:skipped, :manual] => :created do |commit_status, transition|
@@ -191,11 +194,7 @@ class CommitStatus < Ci::ApplicationRecord
       commit_status.run_after_commit do
         PipelineProcessWorker.perform_async(pipeline_id) unless transition_options[:skip_pipeline_processing]
 
-        if Feature.enabled?(:expire_job_and_pipeline_cache_synchronously, project, default_enabled: :yaml)
-          expire_etag_cache!
-        else
-          ExpireJobCacheWorker.perform_async(id)
-        end
+        expire_etag_cache!
       end
     end
 
@@ -221,8 +220,8 @@ class CommitStatus < Ci::ApplicationRecord
     false
   end
 
-  def self.bulk_insert_tags!(statuses, tag_list_by_build)
-    Gitlab::Ci::Tags::BulkInsert.new(statuses, tag_list_by_build).insert!
+  def self.bulk_insert_tags!(statuses)
+    Gitlab::Ci::Tags::BulkInsert.new(statuses).insert!
   end
 
   def locking_enabled?

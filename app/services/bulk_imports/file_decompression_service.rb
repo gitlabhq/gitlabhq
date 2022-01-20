@@ -1,21 +1,26 @@
 # frozen_string_literal: true
 
+# File Decompression Service allows gzipped files decompression into tmp directory.
+#
+# @param tmpdir [String] Temp directory to store downloaded file to. Must be located under `Dir.tmpdir`.
+# @param filename [String] Name of the file to decompress.
 module BulkImports
   class FileDecompressionService
     include Gitlab::ImportExport::CommandLineUtil
 
     ServiceError = Class.new(StandardError)
 
-    def initialize(dir:, filename:)
-      @dir = dir
+    def initialize(tmpdir:, filename:)
+      @tmpdir = tmpdir
       @filename = filename
-      @filepath = File.join(@dir, @filename)
+      @filepath = File.join(@tmpdir, @filename)
       @decompressed_filename = File.basename(@filename, '.gz')
-      @decompressed_filepath = File.join(@dir, @decompressed_filename)
+      @decompressed_filepath = File.join(@tmpdir, @decompressed_filename)
     end
 
     def execute
-      validate_dir
+      validate_tmpdir
+      validate_filepath
       validate_decompressed_file_size if Feature.enabled?(:validate_import_decompressed_archive_size, default_enabled: :yaml)
       validate_symlink(filepath)
 
@@ -33,10 +38,14 @@ module BulkImports
 
     private
 
-    attr_reader :dir, :filename, :filepath, :decompressed_filename, :decompressed_filepath
+    attr_reader :tmpdir, :filename, :filepath, :decompressed_filename, :decompressed_filepath
 
-    def validate_dir
-      raise(ServiceError, 'Invalid target directory') unless dir.start_with?(Dir.tmpdir)
+    def validate_filepath
+      Gitlab::Utils.check_path_traversal!(filepath)
+    end
+
+    def validate_tmpdir
+      Gitlab::Utils.check_allowed_absolute_path!(tmpdir, [Dir.tmpdir])
     end
 
     def validate_decompressed_file_size
@@ -48,7 +57,7 @@ module BulkImports
     end
 
     def decompress_file
-      gunzip(dir: dir, filename: filename)
+      gunzip(dir: tmpdir, filename: filename)
     end
 
     def size_validator

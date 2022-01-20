@@ -22,16 +22,6 @@ RSpec.describe Environments::EnvironmentsByDeploymentsFinder do
         create(:deployment, :success, environment: environment_two, ref: 'v1.1.0', tag: true, sha: project.commit('HEAD~1').id)
       end
 
-      it 'returns environment when with_tags is set' do
-        expect(described_class.new(project, user, ref: 'master', commit: commit, with_tags: true).execute)
-          .to contain_exactly(environment, environment_two)
-      end
-
-      it 'does not return environment when no with_tags is set' do
-        expect(described_class.new(project, user, ref: 'master', commit: commit).execute)
-          .to be_empty
-      end
-
       it 'does not return environment when commit is not part of deployment' do
         expect(described_class.new(project, user, ref: 'master', commit: project.commit('feature')).execute)
           .to be_empty
@@ -41,7 +31,7 @@ RSpec.describe Environments::EnvironmentsByDeploymentsFinder do
       # This tests to ensure we don't call one CommitIsAncestor per environment
       it 'only calls Gitaly twice when multiple environments are present', :request_store do
         expect do
-          result = described_class.new(project, user, ref: 'master', commit: commit, with_tags: true, find_latest: true).execute
+          result = described_class.new(project, user, ref: 'v1.1.0', commit: commit, find_latest: true).execute
 
           expect(result).to contain_exactly(environment_two)
         end.to change { Gitlab::GitalyClient.get_request_count }.by(2)

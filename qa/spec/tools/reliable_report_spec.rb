@@ -13,30 +13,43 @@ describe QA::Tools::ReliableReport do
   let(:slack_channel) { "#quality-reports" }
   let(:range) { 14 }
   let(:issue_url) { "https://gitlab.com/issue/1" }
+  let(:time) { "2021-12-07T04:05:25.000000000+00:00" }
 
   let(:runs) do
-    values = { "name" => "stable spec", "status" => "passed", "file_path" => "some/spec.rb", "stage" => "manage" }
+    values = {
+      "name" => "stable spec",
+      "status" => "passed",
+      "file_path" => "some/spec.rb",
+      "stage" => "manage",
+      "_time" => time
+    }
     {
       0 => instance_double(
         "InfluxDB2::FluxTable",
         records: [
           instance_double("InfluxDB2::FluxRecord", values: values),
           instance_double("InfluxDB2::FluxRecord", values: values),
-          instance_double("InfluxDB2::FluxRecord", values: values)
+          instance_double("InfluxDB2::FluxRecord", values: values.merge({ "_time" => Time.now.to_s }))
         ]
       )
     }
   end
 
   let(:reliable_runs) do
-    values = { "name" => "unstable spec", "status" => "failed", "file_path" => "some/spec.rb", "stage" => "create" }
+    values = {
+      "name" => "unstable spec",
+      "status" => "failed",
+      "file_path" => "some/spec.rb",
+      "stage" => "create",
+      "_time" => time
+    }
     {
       0 => instance_double(
         "InfluxDB2::FluxTable",
         records: [
           instance_double("InfluxDB2::FluxRecord", values: { **values, "status" => "passed" }),
           instance_double("InfluxDB2::FluxRecord", values: values),
-          instance_double("InfluxDB2::FluxRecord", values: values)
+          instance_double("InfluxDB2::FluxRecord", values: values.merge({ "_time" => Time.now.to_s }))
         ]
       )
     }
@@ -67,41 +80,34 @@ describe QA::Tools::ReliableReport do
 
   def markdown_section(summary, result, stage, type)
     <<~SECTION.strip
-      ```
-      #{summary_table(summary, type)}
-      ```
+      #{summary_table(summary, type, true)}
 
-      ## #{stage}
+      ## #{stage} (1)
 
       <details>
       <summary>Executions table</summary>
 
-      ```
-      #{table(result, ['NAME', 'RUNS', 'FAILURES', 'FAILURE RATE'], "Top #{type} specs in '#{stage}' stage for past #{range} days")}
-      ```
+      #{table(result, ['NAME', 'RUNS', 'FAILURES', 'FAILURE RATE'], "Top #{type} specs in '#{stage}' stage for past #{range} days", true)}
 
       </details>
     SECTION
   end
 
-  def summary_table(summary, type)
-    table(summary, %w[STAGE COUNT], "#{type.capitalize} spec summary for past #{range} days".ljust(50))
+  def summary_table(summary, type, markdown = false)
+    table(summary, %w[STAGE COUNT], "#{type.capitalize} spec summary for past #{range} days".ljust(50), markdown)
   end
 
-  def table(rows, headings, title)
+  def table(rows, headings, title, markdown = false)
     Terminal::Table.new(
       headings: headings,
-      style: { all_separators: true },
-      title: title,
-      rows: rows
+      title: markdown ? nil : title,
+      rows: rows,
+      style: markdown ? { border: :markdown } : { all_separators: true }
     )
   end
 
   def name_column(spec_name)
-    name = "name: '#{spec_name}'"
-    file = "file: 'spec.rb'".ljust(160)
-
-    "#{name}\n#{file}"
+    "**name**: #{spec_name}<br>**file**: spec.rb"
   end
 
   before do
@@ -136,11 +142,15 @@ describe QA::Tools::ReliableReport do
       <<~TXT.strip
         [[_TOC_]]
 
-        # Candidates for promotion to reliable
+        # Candidates for promotion to reliable (#{Date.today - range} - #{Date.today})
+
+        Total amount: **1**
 
         #{markdown_section([['manage', 1]], [[name_column('stable spec'), 3, 0, '0%']], 'manage', 'stable')}
 
-        # Reliable specs with failures
+        # Reliable specs with failures (#{Date.today - range} - #{Date.today})
+
+        Total amount: **1**
 
         #{markdown_section([['create', 1]], [[name_column('unstable spec'), 3, 2, '66.67%']], 'create', 'unstable')}
       TXT
@@ -155,9 +165,9 @@ describe QA::Tools::ReliableReport do
         verify_ssl: false,
         headers: { "PRIVATE-TOKEN" => "gitlab_token" },
         payload: {
-          title: "Reliable spec report",
+          title: "Reliable e2e test report",
           description: issue_body,
-          labels: "Quality,test"
+          labels: "Quality,test,type::maintenance,reliable test report"
         }
       )
       expect(slack_notifier).to have_received(:post).with(
@@ -180,7 +190,7 @@ describe QA::Tools::ReliableReport do
     end
 
     it "notifies failure", :aggregate_failures do
-      expect { expect { run }.to raise_error(SystemExit) }.to output.to_stdout
+      expect { expect { run }.to raise_error("Connection error!") }.to output.to_stdout
 
       expect(slack_notifier).to have_received(:post).with(
         icon_emoji: ":sadpanda:",

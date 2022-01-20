@@ -20,7 +20,7 @@ RSpec.describe Gitlab::ImportExport::AvatarSaver do
   end
 
   it 'saves a project avatar' do
-    described_class.new(project: project_with_avatar, shared: shared).save
+    described_class.new(project: project_with_avatar, shared: shared).save # rubocop:disable Rails/SaveBang
 
     expect(File).to exist(Dir["#{shared.export_path}/avatar/**/dk.png"].first)
   end

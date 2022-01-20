@@ -363,6 +363,7 @@ module API
         optional :name, type: String, desc: 'The name that will be assigned to the fork'
         optional :description, type: String, desc: 'The description that will be assigned to the fork'
         optional :visibility, type: String, values: Gitlab::VisibilityLevel.string_values, desc: 'The visibility of the fork'
+        optional :mr_default_target_self, Boolean, desc: 'Merge requests of this forked project targets itself by default'
       end
       post ':id/fork', feature_category: :source_code_management do
         Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/20759')

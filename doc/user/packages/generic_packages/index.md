@@ -13,20 +13,17 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - It's recommended for production use.
 > - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-generic-packages-in-the-package-registry).
 
-WARNING:
-This feature might not be available to you. Check the **version history** note above for details.
-
 Publish generic files, like release binaries, in your project's Package Registry. Then, install the packages whenever you need to use them as a dependency.
 
 ## Authenticate to the Package Registry
 
-To authenticate to the Package Registry, you need either a [personal access token](../../../api/index.md#personalproject-access-tokens),
+To authenticate to the Package Registry, you need either a [personal access token](../../../api/index.md#personalprojectgroup-access-tokens),
 [CI/CD job token](../../../ci/jobs/ci_job_token.md), or [deploy token](../../project/deploy_tokens/index.md).
 
 In addition to the standard API authentication mechanisms, the generic package
 API allows authentication with HTTP Basic authentication for use with tools that
 do not support the other available mechanisms. The `user-id` is not checked and
-may be any value, and the `password` must be either a [personal access token](../../../api/index.md#personalproject-access-tokens),
+may be any value, and the `password` must be either a [personal access token](../../../api/index.md#personalprojectgroup-access-tokens),
 a [CI/CD job token](../../../ci/jobs/ci_job_token.md), or a [deploy token](../../project/deploy_tokens/index.md).
 
 ## Publish a package file

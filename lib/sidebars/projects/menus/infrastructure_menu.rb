@@ -100,7 +100,7 @@ module Sidebars
           ::Sidebars::MenuItem.new(
             title: _('Google Cloud'),
             link: project_google_cloud_index_path(context.project),
-            active_routes: { controller: [:google_cloud, :service_accounts] },
+            active_routes: { controller: [:google_cloud, :service_accounts, :deployments] },
             item_id: :google_cloud
           )
         end

@@ -20,6 +20,9 @@ Configure Gitaly Cluster using either:
 
 Smaller GitLab installations may need only [Gitaly itself](index.md).
 
+To upgrade a Gitaly Cluster, follow the documentation for
+[zero downtime upgrades](../../update/zero_downtime.md#gitaly-cluster).
+
 ## Requirements
 
 The minimum recommended configuration for a Gitaly Cluster requires:
@@ -376,8 +379,8 @@ configuration option is set. For more details, consult the PgBouncer documentati
 
 If there are multiple Praefect nodes:
 
-- Complete the following steps for **each** node.
-- Designate one node as the "deploy node", and configure it first.
+1. Designate one node as the deploy node, and configure it using the following steps.
+1. Complete the following steps for each additional node.
 
 To complete this section you need a [configured PostgreSQL server](#postgresql), including:
 
@@ -405,7 +408,7 @@ On the **Praefect** node:
    # Enable only the Praefect service
    praefect['enable'] = true
 
-   # Prevent database connections during 'gitlab-ctl reconfigure'
+   # Disable database migrations to prevent database connections during 'gitlab-ctl reconfigure'
    gitlab_rails['auto_migrate'] = false
    praefect['auto_migrate'] = false
    ```
@@ -415,10 +418,21 @@ On the **Praefect** node:
 
    ```ruby
    praefect['listen_addr'] = '0.0.0.0:2305'
+   ```
 
+1. Configure Prometheus metrics by editing
+   `/etc/gitlab/gitlab.rb`:
+
+   ```ruby
    # Enable Prometheus metrics access to Praefect. You must use firewalls
    # to restrict access to this address/port.
+   # The default metrics endpoint is /metrics
    praefect['prometheus_listen_addr'] = '0.0.0.0:9652'
+
+   # Some metrics run queries against the database. Enabling separate database metrics allows
+   # these metrics to be collected when the metrics are
+   # scraped on a separate /db_metrics endpoint. 
+   praefect['separate_database_metrics'] = true
    ```
 
 1. Configure a strong `auth_token` for **Praefect** by editing
@@ -517,7 +531,7 @@ On the **Praefect** node:
 1. For:
 
    - The "deploy node":
-     1. Enable Praefect auto-migration again by setting `praefect['auto_migrate'] = true` in
+     1. Enable Praefect database auto-migration again by setting `praefect['auto_migrate'] = true` in
         `/etc/gitlab/gitlab.rb`.
      1. To ensure database migrations are only run during reconfigure and not automatically on
         upgrade, run:
@@ -555,8 +569,6 @@ On the **Praefect** node:
    If the check fails, make sure you have followed the steps correctly. If you
    edit `/etc/gitlab/gitlab.rb`, remember to run `sudo gitlab-ctl reconfigure`
    again before trying the `sql-ping` command.
-
-**The steps above must be completed for each Praefect node!**
 
 #### Enabling TLS support
 
@@ -755,7 +767,7 @@ For more information on Gitaly server configuration, see our
    # Enable Prometheus if needed
    prometheus['enable'] = true
 
-   # Prevent database connections during 'gitlab-ctl reconfigure'
+   # Disable database migrations to prevent database connections during 'gitlab-ctl reconfigure'
    gitlab_rails['auto_migrate'] = false
    ```
 
@@ -883,9 +895,9 @@ of choice already. Some examples include [HAProxy](https://www.haproxy.org/)
 Big-IP LTM, and Citrix Net Scaler. This documentation outlines what ports
 and protocols you need configure.
 
-WARNING:
-Long-running background jobs can maintain an idle connection with Praefect for up 6 hours. Set your load balancer timeout to be at least
-6 hours long.
+NOTE:
+We recommend the equivalent of HAProxy `leastconn` load-balancing strategy because long-running operations (for example,
+clones) keep some connections open for extended periods.
 
 | LB Port | Backend Port | Protocol |
 |:--------|:-------------|:---------|
@@ -1217,9 +1229,9 @@ To migrate existing clusters:
 
 1. Praefect nodes didn't historically keep database records of every repository stored on the cluster. When
    the `per_repository` election strategy is configured, Praefect expects to have database records of
-   each repository. A [background migration](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/2749) is
-   included in GitLab 13.6 and later to create any missing database records for repositories. Before migrating
-   you should verify the migration has run by checking Praefect's logs:
+   each repository. A [background database migration](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/2749) is
+   included in GitLab 13.6 and later to create any missing database records for repositories. Before migrating,
+   check Praefect's logs to verify that the database migration ran.
 
    Check Praefect's logs for `repository importer finished` message. The `virtual_storages` field contains
    the names of virtual storages and whether they've had any missing database records created.
@@ -1236,8 +1248,8 @@ To migrate existing clusters:
    {"level":"info","msg":"repository importer finished","pid":19752,"time":"2021-04-28T11:41:36.743Z","virtual_storages":{"default":false}}
    ```
 
-   The migration is ran when Praefect starts up. If the migration is unsuccessful, you can restart
-   a Praefect node to reattempt it. The migration only runs with `sql` election strategy configured.
+   The database migration runs when Praefect starts. If the database migration is unsuccessful, you can restart
+   a Praefect node to reattempt it.
 
 1. Running two different election strategies side by side can cause a split brain, where different
    Praefect nodes consider repositories to have different primaries. This can be avoided either:

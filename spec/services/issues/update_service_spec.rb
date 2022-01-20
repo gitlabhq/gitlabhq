@@ -7,7 +7,7 @@ RSpec.describe Issues::UpdateService, :mailer do
   let_it_be(:user2) { create(:user) }
   let_it_be(:user3) { create(:user) }
   let_it_be(:guest) { create(:user) }
-  let_it_be(:group) { create(:group, :public) }
+  let_it_be(:group) { create(:group, :public, :crm_enabled) }
   let_it_be(:project, reload: true) { create(:project, :repository, group: group) }
   let_it_be(:label) { create(:label, project: project) }
   let_it_be(:label2) { create(:label, project: project) }
@@ -22,10 +22,10 @@ RSpec.describe Issues::UpdateService, :mailer do
   end
 
   before_all do
-    project.add_maintainer(user)
-    project.add_developer(user2)
-    project.add_developer(user3)
-    project.add_guest(guest)
+    group.add_maintainer(user)
+    group.add_developer(user2)
+    group.add_developer(user3)
+    group.add_guest(guest)
   end
 
   describe 'execute' do
@@ -191,17 +191,19 @@ RSpec.describe Issues::UpdateService, :mailer do
             end
           end
 
-          it 'adds a `incident` label if one does not exist' do
-            expect { update_issue(issue_type: 'incident') }.to change(issue.labels, :count).by(1)
-            expect(issue.labels.pluck(:title)).to eq(['incident'])
-          end
-
           it 'creates system note about issue type' do
             update_issue(issue_type: 'incident')
 
             note = find_note('changed issue type to incident')
 
             expect(note).not_to eq(nil)
+          end
+
+          it 'creates an escalation status' do
+            expect { update_issue(issue_type: 'incident') }
+            .to change { issue.reload.incident_management_issuable_escalation_status }
+            .from(nil)
+            .to(a_kind_of(IncidentManagement::IssuableEscalationStatus))
           end
 
           context 'for an issue with multiple labels' do
@@ -213,18 +215,6 @@ RSpec.describe Issues::UpdateService, :mailer do
 
             it 'does not add an `incident` label if one already exist' do
               expect(issue.labels).to eq([label_1])
-            end
-          end
-
-          context 'filtering the incident label' do
-            let(:params) { { add_label_ids: [] } }
-
-            before do
-              update_issue(issue_type: 'incident')
-            end
-
-            it 'creates and add a incident label id to add_label_ids' do
-              expect(issue.label_ids).to contain_exactly(label_1.id)
             end
           end
         end
@@ -241,10 +231,8 @@ RSpec.describe Issues::UpdateService, :mailer do
           context 'for an incident with multiple labels' do
             let(:issue) { create(:incident, project: project, labels: [label_1, label_2]) }
 
-            it 'removes an `incident` label if one exists on the incident' do
-              expect { update_issue(issue_type: 'issue') }.to change(issue, :label_ids)
-                .from(containing_exactly(label_1.id, label_2.id))
-                .to([label_2.id])
+            it 'does not remove an `incident` label if one exists on the incident' do
+              expect { update_issue(issue_type: 'issue') }.to not_change(issue, :label_ids)
             end
           end
 
@@ -252,10 +240,8 @@ RSpec.describe Issues::UpdateService, :mailer do
             let(:issue) { create(:incident, project: project, labels: [label_1, label_2]) }
             let(:params) { { label_ids: [label_1.id, label_2.id], remove_label_ids: [] } }
 
-            it 'adds an incident label id to remove_label_ids for it to be removed' do
-              expect { update_issue(issue_type: 'issue') }.to change(issue, :label_ids)
-                .from(containing_exactly(label_1.id, label_2.id))
-                .to([label_2.id])
+            it 'does not add an incident label id to remove_label_ids for it to be removed' do
+              expect { update_issue(issue_type: 'issue') }.to not_change(issue, :label_ids)
             end
           end
         end
@@ -1154,6 +1140,83 @@ RSpec.describe Issues::UpdateService, :mailer do
 
       context 'when issue type is not incident' do
         it_behaves_like 'does not change the severity'
+      end
+    end
+
+    context 'updating escalation status' do
+      let(:opts) { { escalation_status: { status: 'acknowledged' } } }
+      let(:escalation_update_class) { ::IncidentManagement::IssuableEscalationStatuses::AfterUpdateService }
+
+      shared_examples 'updates the escalation status record' do |expected_status|
+        let(:service_double) { instance_double(escalation_update_class) }
+
+        it 'has correct value' do
+          expect(escalation_update_class).to receive(:new).with(issue, user).and_return(service_double)
+          expect(service_double).to receive(:execute)
+
+          update_issue(opts)
+
+          expect(issue.escalation_status.status_name).to eq(expected_status)
+        end
+      end
+
+      shared_examples 'does not change the status record' do
+        it 'retains the original value' do
+          expected_status = issue.escalation_status&.status_name
+
+          update_issue(opts)
+
+          expect(issue.escalation_status&.status_name).to eq(expected_status)
+        end
+
+        it 'does not trigger side-effects' do
+          expect(escalation_update_class).not_to receive(:new)
+
+          update_issue(opts)
+        end
+      end
+
+      context 'when issue is an incident' do
+        let(:issue) { create(:incident, project: project) }
+
+        context 'with an escalation status record' do
+          before do
+            create(:incident_management_issuable_escalation_status, issue: issue)
+          end
+
+          it_behaves_like 'updates the escalation status record', :acknowledged
+
+          context 'with associated alert' do
+            let!(:alert) { create(:alert_management_alert, issue: issue, project: project) }
+
+            it 'syncs the update back to the alert' do
+              update_issue(opts)
+
+              expect(issue.escalation_status.status_name).to eq(:acknowledged)
+              expect(alert.reload.status_name).to eq(:acknowledged)
+            end
+          end
+
+          context 'with unsupported status value' do
+            let(:opts) { { escalation_status: { status: 'unsupported-status' } } }
+
+            it_behaves_like 'does not change the status record'
+          end
+
+          context 'with status value defined but unchanged' do
+            let(:opts) { { escalation_status: { status: issue.escalation_status.status_name } } }
+
+            it_behaves_like 'does not change the status record'
+          end
+        end
+
+        context 'without an escalation status record' do
+          it_behaves_like 'does not change the status record'
+        end
+      end
+
+      context 'when issue type is not incident' do
+        it_behaves_like 'does not change the status record'
       end
     end
 

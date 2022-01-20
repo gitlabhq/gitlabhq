@@ -4,6 +4,7 @@ module Types
   module Ci
     class RunnerType < BaseObject
       edge_type_class(RunnerWebUrlEdge)
+      connection_type_class(Types::CountableConnectionType)
       graphql_name 'CiRunner'
       authorize :read_runner
       present_using ::Ci::RunnerPresenter
@@ -18,8 +19,10 @@ module Types
             description: 'ID of the runner.'
       field :description, GraphQL::Types::String, null: true,
             description: 'Description of the runner.'
+      field :created_at, Types::TimeType, null: true,
+            description: 'Timestamp of creation of this runner.'
       field :contacted_at, Types::TimeType, null: true,
-            description: 'Last contact from the runner.',
+            description: 'Timestamp of last contact from this runner.',
             method: :contacted_at
       field :maximum_timeout, GraphQL::Types::Int, null: true,
             description: 'Maximum timeout (in seconds) for jobs processed by the runner.'
@@ -54,6 +57,12 @@ module Types
             description: "Number of jobs processed by the runner (limited to #{JOB_COUNT_LIMIT}, plus one to indicate that more items exist)."
       field :admin_url, GraphQL::Types::String, null: true,
             description: 'Admin URL of the runner. Only available for administrators.'
+      field :edit_admin_url, GraphQL::Types::String, null: true,
+            description: 'Admin form URL of the runner. Only available for administrators.'
+      field :executor_name, GraphQL::Types::String, null: true,
+            description: 'Executor last advertised by the runner.',
+            method: :executor_name,
+            feature_flag: :graphql_ci_runner_executor
 
       def job_count
         # We limit to 1 above the JOB_COUNT_LIMIT to indicate that more items exist after JOB_COUNT_LIMIT
@@ -62,6 +71,10 @@ module Types
 
       def admin_url
         Gitlab::Routing.url_helpers.admin_runner_url(runner) if can_admin_runners?
+      end
+
+      def edit_admin_url
+        Gitlab::Routing.url_helpers.edit_admin_runner_url(runner) if can_admin_runners?
       end
 
       # rubocop: disable CodeReuse/ActiveRecord

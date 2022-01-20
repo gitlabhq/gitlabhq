@@ -53,8 +53,7 @@ module Groups
     end
 
     def permission_scope_create_projects?
-      params[:permission_scope] == :create_projects &&
-        Feature.enabled?(:paginatable_namespace_drop_down_for_project_creation, current_user, default_enabled: :yaml)
+      params[:permission_scope] == :create_projects
     end
   end
 end

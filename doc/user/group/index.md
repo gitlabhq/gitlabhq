@@ -1,7 +1,7 @@
 ---
 type: reference, howto
 stage: Manage
-group: Access
+group: Authentication & Authorization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
@@ -100,6 +100,14 @@ You can give a user access to all projects in a group.
 1. Fill in the fields.
    - The role applies to all projects in the group. [Learn more about permissions](../permissions.md).
    - On the **Access expiration date**, the user can no longer access projects in the group.
+1. Select **Invite**.
+
+Members that are not automatically added are displayed on the **Invited** tab.
+Users can be on this tab because they:
+
+- Have not yet accepted the invitation.
+- Are waiting for [approval from an administrator](../admin_area/moderate_users.md).
+- [Exceed the group user cap](#user-cap-for-groups).
 
 ## Request access to a group
 
@@ -123,7 +131,7 @@ your group.
 1. Select **Your Groups**.
 1. Find the group and select it.
 1. From the left menu, select **Settings > General**.
-1. Expand the **Permissions, LFS, 2FA** section.
+1. Expand the **Permissions and group features** section.
 1. Clear the **Allow users to request access** checkbox.
 1. Select **Save changes**.
 
@@ -219,7 +227,7 @@ To change this setting for a specific group:
 1. Select **Your Groups**.
 1. Find the group and select it.
 1. From the left menu, select **Settings > General**.
-1. Expand the **Permissions, LFS, 2FA** section.
+1. Expand the **Permissions and group features** section.
 1. Select the desired option in the **Default branch protection** dropdown list.
 1. Select **Save changes**.
 
@@ -250,7 +258,7 @@ To change this setting for a specific group:
 1. Select **Your Groups**.
 1. Find the group and select it.
 1. From the left menu, select **Settings > General**.
-1. Expand the **Permissions, LFS, 2FA** section.
+1. Expand the **Permissions and group features** section.
 1. Select the desired option in the **Allowed to create projects** dropdown list.
 1. Select **Save changes**.
 
@@ -489,7 +497,7 @@ If you select this setting in the **Animals** group:
 To prevent sharing outside of the group's hierarchy:
 
 1. Go to the group's **Settings > General** page.
-1. Expand the **Permissions, LFS, 2FA** section.
+1. Expand the **Permissions and group features** section.
 1. Select **Prevent members from sending invitations to groups outside of `<group_name>` and its subgroups**.
 1. Select **Save changes**.
 
@@ -501,12 +509,80 @@ a project with another group](../project/members/share_project_with_groups.md) t
 To prevent a project from being shared with other groups:
 
 1. Go to the group's **Settings > General** page.
-1. Expand the **Permissions, LFS, 2FA** section.
+1. Expand the **Permissions and group features** section.
 1. Select **Prevent sharing a project within `<group_name>` with other groups**.
 1. Select **Save changes**.
 
 This setting applies to all subgroups unless overridden by a group owner. Groups already
 added to a project lose access when the setting is enabled.
+
+## User cap for groups
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/330027) in GitLab 14.7.
+
+FLAG:
+On self-managed GitLab, this feature is not available. On GitLab.com, this feature is available for some groups.
+This feature is not ready for production use.
+
+When the number of billable members reaches the user cap, new users can't be added to the group
+without being approved by the group owner.
+
+Groups with the user cap feature enabled have [group sharing](#share-a-group-with-another-group)
+disabled for the group and its subgroups.
+
+### Specify a user cap for a group
+
+Prerequisite:
+
+- You must be assigned the [Owner role](../permissions.md#group-members-permissions) for the group.
+
+To specify a user cap:
+
+1. On the top bar, select **Menu > Groups** and find your group.
+   You can set a cap on the top-level group only.
+1. On the left sidebar, select **Settings > General**.
+1. Expand **Permissions and group features**.
+1. In the **User cap** box, enter the desired number of users.
+1. Select **Save changes**.
+
+If you already have more users in the group than the user cap value, users
+are not removed. However, you can't add more without approval.
+
+Increasing the user cap does not approve pending members.
+
+### Remove the user cap for a group
+
+You can remove the user cap, so there is no limit on the number of members you can add to a group.
+
+Prerequisite:
+
+- You must be assigned the [Owner role](../permissions.md#group-members-permissions) for the group.
+
+To remove the user cap:
+
+1. On the top bar, select **Menu > Groups** and find your group.
+1. On the left sidebar, select **Settings > General**.
+1. Expand **Permissions and group features**.
+1. In the **User cap** box, delete the value.
+1. Select **Save changes**.
+
+Decreasing the user cap does not approve pending members.
+
+### Approve pending members for a group
+
+When the number of billable users reaches the user cap, any new member is put in a pending state
+and must be approved.
+
+Prerequisite:
+
+- You must be assigned the [Owner role](../permissions.md#group-members-permissions) for the group.
+
+To approve members that are pending because they've exceeded the user cap:
+
+1. On the top bar, select **Menu > Groups** and find your group.
+1. On the left sidebar, select **Settings > Usage Quotas**.
+1. On the **Seats** tab, under the alert, select **View pending approvals**.
+1. For each member you want to approve, select **Approve**.
 
 ## Prevent members from being added to projects in a group **(PREMIUM)**
 
@@ -523,7 +599,7 @@ The setting does not cascade. Projects in subgroups observe the subgroup configu
 To prevent members from being added to projects in a group:
 
 1. Go to the group's **Settings > General** page.
-1. Expand the **Permissions, LFS, 2FA** section.
+1. Expand the **Permissions and group features** section.
 1. Under **Member lock**, select **Prevent adding new members to project membership within this group**.
 1. Select **Save changes**.
 
@@ -535,9 +611,9 @@ API requests to add a new user to a project are not possible.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/287940) in GitLab 14.2.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/336520) in GitLab 14.5.
 
-You can export a list of members in a group as a CSV.
+You can export a list of members in a group or subgroup as a CSV.
 
-1. Go to your project and select **Project information > Members**.
+1. Go to your group or subgroup and select either **Group information > Members** or **Subgroup information > Members**.
 1. Select **Export as CSV**.
 1. Once the CSV file has been generated, it is emailed as an attachment to the user that requested it.
 
@@ -574,7 +650,7 @@ You should consider these security implications before configuring IP address re
 To restrict group access by IP address:
 
 1. Go to the group's **Settings > General** page.
-1. Expand the **Permissions, LFS, 2FA** section.
+1. Expand the **Permissions and group features** section.
 1. In the **Allow access to the following IP addresses** field, enter IP address ranges in CIDR notation.
 1. Select **Save changes**.
 
@@ -591,13 +667,15 @@ You can prevent users with email addresses in specific domains from being added 
 To restrict group access by domain:
 
 1. Go to the group's **Settings > General** page.
-1. Expand the **Permissions, LFS, 2FA** section.
+1. Expand the **Permissions and group features** section.
 1. In the **Restrict membership by email** field, enter the domain names.
 1. Select **Save changes**.
 
 ![Domain restriction by email](img/restrict-by-email.gif)
 
-Any time you attempt to add a new user, they are compared against this list.
+Any time you attempt to add a new user, the user's [primary email](../profile/index.md#change-your-primary-email) is compared against this list.
+Only users with a [primary email](../profile/index.md#change-your-primary-email) that matches any of the configured email domain restrictions
+can be added to the group.
 
 Some domains cannot be restricted. These are the most popular public email domains, such as:
 
@@ -645,7 +723,7 @@ You can disable all email notifications related to the group, which includes its
 To disable email notifications:
 
 1. Go to the group's **Settings > General** page.
-1. Expand the **Permissions, LFS, 2FA** section.
+1. Expand the **Permissions and group features** section.
 1. Select **Disable email notifications**.
 1. Select **Save changes**.
 
@@ -663,7 +741,7 @@ This is particularly helpful for groups with a large number of users.
 To disable group mentions:
 
 1. Go to the group's **Settings > General** page.
-1. Expand the **Permissions, LFS, 2FA** section.
+1. Expand the **Permissions and group features** section.
 1. Select **Disable group mentions**.
 1. Select **Save changes**.
 
@@ -688,7 +766,7 @@ the default setting.
 To enable delayed deletion of projects in a group:
 
 1. Go to the group's **Settings > General** page.
-1. Expand the **Permissions, LFS, 2FA** section.
+1. Expand the **Permissions and group features** section.
 1. Check **Enable delayed project deletion**.
 1. Optional. To prevent subgroups from changing this setting, select **Enforce for all subgroups**.
 1. Select **Save changes**.
@@ -713,7 +791,7 @@ If even one is set to `true`, then the group does not allow outside forks.
 To prevent projects from being forked outside the group:
 
 1. Go to the top-level group's **Settings > General** page.
-1. Expand the **Permissions, LFS, 2FA** section.
+1. Expand the **Permissions and group features** section.
 1. Check **Prevent project forking outside current group**.
 1. Select **Save changes**.
 
@@ -774,7 +852,7 @@ To view the merge request approval rules for a group:
 - [Webhooks](../project/integrations/webhooks.md).
 - [Kubernetes cluster integration](clusters/index.md).
 - [Audit Events](../../administration/audit_events.md#group-events).
-- [Pipelines quota](../admin_area/settings/continuous_integration.md): Keep track of the pipeline quota for the group.
+- [CI/CD minutes quota](../../ci/pipelines/cicd_minutes.md): Keep track of the CI/CD minute quota for the group.
 - [Integrations](../admin_area/settings/project_integration_management.md).
 - [Transfer a project into a group](../project/settings/index.md#transferring-an-existing-project-into-another-namespace).
 - [Share a project with a group](../project/members/share_project_with_groups.md): Give all group members access to the project at once.

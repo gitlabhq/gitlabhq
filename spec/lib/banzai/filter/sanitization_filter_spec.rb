@@ -177,53 +177,6 @@ RSpec.describe Banzai::Filter::SanitizationFilter do
           expect(act.to_html).to eq exp
         end
       end
-
-      context 'using ruby-based HTML renderer' do
-        before do
-          stub_feature_flags(use_cmark_renderer: false)
-        end
-
-        it 'allows correct footnote id property on links' do
-          exp = %q(<a href="#fn1" id="fnref1">foo/bar.md</a>)
-          act = filter(exp)
-
-          expect(act.to_html).to eq exp
-        end
-
-        it 'allows correct footnote id property on li element' do
-          exp = %q(<ol><li id="fn1">footnote</li></ol>)
-          act = filter(exp)
-
-          expect(act.to_html).to eq exp
-        end
-
-        it 'removes invalid id for footnote links' do
-          exp = %q(<a href="#fn1">link</a>)
-
-          %w[fnrefx test xfnref1].each do |id|
-            act = filter(%(<a href="#fn1" id="#{id}">link</a>))
-
-            expect(act.to_html).to eq exp
-          end
-        end
-
-        it 'removes invalid id for footnote li' do
-          exp = %q(<ol><li>footnote</li></ol>)
-
-          %w[fnx test xfn1].each do |id|
-            act = filter(%(<ol><li id="#{id}">footnote</li></ol>))
-
-            expect(act.to_html).to eq exp
-          end
-        end
-
-        it 'allows footnotes numbered higher than 9' do
-          exp = %q(<a href="#fn15" id="fnref15">link</a><ol><li id="fn15">footnote</li></ol>)
-          act = filter(exp)
-
-          expect(act.to_html).to eq exp
-        end
-      end
     end
   end
 end

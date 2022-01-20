@@ -85,6 +85,8 @@ describe('Participants', () => {
         numberOfLessParticipants,
       });
 
+      // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+      // eslint-disable-next-line no-restricted-syntax
       wrapper.setData({
         isShowingMoreParticipants: false,
       });
@@ -101,6 +103,8 @@ describe('Participants', () => {
         numberOfLessParticipants: 2,
       });
 
+      // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+      // eslint-disable-next-line no-restricted-syntax
       wrapper.setData({
         isShowingMoreParticipants: true,
       });
@@ -129,6 +133,8 @@ describe('Participants', () => {
         numberOfLessParticipants: 2,
       });
 
+      // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+      // eslint-disable-next-line no-restricted-syntax
       wrapper.setData({
         isShowingMoreParticipants: false,
       });
@@ -145,6 +151,8 @@ describe('Participants', () => {
         numberOfLessParticipants: 2,
       });
 
+      // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+      // eslint-disable-next-line no-restricted-syntax
       wrapper.setData({
         isShowingMoreParticipants: true,
       });

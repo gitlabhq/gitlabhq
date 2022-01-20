@@ -92,6 +92,35 @@ RSpec.describe Auth::ContainerRegistryAuthenticationService do
 
       it_behaves_like 'a modified token'
     end
+
+    context 'with a project with a path with trailing underscore' do
+      let(:bad_project) { create(:project) }
+
+      before do
+        bad_project.update!(path: bad_project.path + '_')
+        bad_project.add_developer(current_user)
+      end
+
+      describe '#full_access_token' do
+        let(:token) { described_class.full_access_token(bad_project.full_path) }
+        let(:access) do
+          [{ 'type' => 'repository',
+             'name' => bad_project.full_path,
+             'actions' => ['*'],
+             'migration_eligible' => false }]
+        end
+
+        subject { { token: token } }
+
+        it 'logs an exception and returns a valid access token' do
+          expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception)
+
+          expect(token).to be_present
+          expect(payload).to be_a(Hash)
+          expect(payload).to include('access' => access)
+        end
+      end
+    end
   end
 
   context 'when not in migration mode' do
@@ -114,6 +143,30 @@ RSpec.describe Auth::ContainerRegistryAuthenticationService do
       subject { { token: token } }
 
       it_behaves_like 'an unmodified token'
+    end
+  end
+
+  context 'CDN redirection' do
+    include_context 'container registry auth service context'
+
+    let_it_be(:current_user) { create(:user) }
+    let_it_be(:project) { create(:project) }
+    let_it_be(:current_params) { { scopes: ["repository:#{project.full_path}:pull"] } }
+
+    before do
+      project.add_developer(current_user)
+    end
+
+    it_behaves_like 'a valid token'
+    it { expect(payload['access']).to include(include('cdn_redirect' => true)) }
+
+    context 'when the feature flag is disabled' do
+      before do
+        stub_feature_flags(container_registry_cdn_redirect: false)
+      end
+
+      it_behaves_like 'a valid token'
+      it { expect(payload['access']).not_to include(have_key('cdn_redirect')) }
     end
   end
 end

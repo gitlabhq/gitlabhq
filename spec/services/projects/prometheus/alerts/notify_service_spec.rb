@@ -224,6 +224,78 @@ RSpec.describe Projects::Prometheus::Alerts::NotifyService do
         end
       end
     end
+
+    context 'when payload exceeds max amount of processable alerts' do
+      # We are defining 2 alerts in payload_raw above
+      let(:max_alerts) { 1 }
+
+      before do
+        stub_const("#{described_class}::PROCESS_MAX_ALERTS", max_alerts)
+
+        create(:prometheus_integration, project: project)
+        create(:project_alerting_setting, project: project, token: token)
+
+        allow(Gitlab::AppLogger).to receive(:warn)
+      end
+
+      shared_examples 'process truncated alerts' do
+        it 'returns 200 but skips processing and logs a warning', :aggregate_failures do
+          expect(subject).to be_success
+          expect(subject.payload[:alerts].size).to eq(max_alerts)
+          expect(Gitlab::AppLogger)
+            .to have_received(:warn)
+            .with(
+              message: 'Prometheus payload exceeded maximum amount of alerts. Truncating alerts.',
+              project_id: project.id,
+              alerts: {
+                total: 2,
+                max: max_alerts
+              })
+        end
+      end
+
+      shared_examples 'process all alerts' do
+        it 'returns 200 and process alerts without warnings', :aggregate_failures do
+          expect(subject).to be_success
+          expect(subject.payload[:alerts].size).to eq(2)
+          expect(Gitlab::AppLogger).not_to have_received(:warn)
+        end
+      end
+
+      context 'with feature flag globally enabled' do
+        before do
+          stub_feature_flags(prometheus_notify_max_alerts: true)
+        end
+
+        include_examples 'process truncated alerts'
+      end
+
+      context 'with feature flag enabled on project' do
+        before do
+          stub_feature_flags(prometheus_notify_max_alerts: project)
+        end
+
+        include_examples 'process truncated alerts'
+      end
+
+      context 'with feature flag enabled on unrelated project' do
+        let(:another_project) { create(:project) }
+
+        before do
+          stub_feature_flags(prometheus_notify_max_alerts: another_project)
+        end
+
+        include_examples 'process all alerts'
+      end
+
+      context 'with feature flag disabled' do
+        before do
+          stub_feature_flags(prometheus_notify_max_alerts: false)
+        end
+
+        include_examples 'process all alerts'
+      end
+    end
   end
 
   context 'with invalid payload' do

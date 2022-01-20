@@ -63,6 +63,10 @@ module QA
         process_api_response(parse_body(response))
       end
 
+      def api_fabrication_http_method
+        @api_fabrication_http_method ||= :post
+      end
+
       private
 
       def resource_web_url(resource)
@@ -84,6 +88,8 @@ module QA
         elsif response.code != HTTP_STATUS_OK
           raise ResourceNotFoundError, "Resource at #{request.mask_url} could not be found (#{response.code}): `#{response}`."
         end
+
+        @api_fabrication_http_method = :get # rubocop:disable Gitlab/ModuleWithInstanceVariables
 
         response
       end

@@ -12,6 +12,7 @@ import {
   TRACKING_ACTION_COPY_KOTLIN_ADD_TO_SOURCE_COMMAND,
   TRACKING_LABEL_CODE_INSTRUCTION,
   TRACKING_LABEL_MAVEN_INSTALLATION,
+  MAVEN_HELP_PATH,
 } from '~/packages_and_registries/package_registry/constants';
 import CodeInstruction from '~/vue_shared/components/registry/code_instruction.vue';
 
@@ -23,7 +24,6 @@ export default {
     GlLink,
     GlSprintf,
   },
-  inject: ['mavenHelpPath', 'mavenPath'],
   props: {
     packageEntity: {
       type: Object,
@@ -36,6 +36,9 @@ export default {
     };
   },
   computed: {
+    mavenUrl() {
+      return this.packageEntity.mavenUrl;
+    },
     appGroup() {
       return this.packageEntity.metadata.appGroup;
     },
@@ -61,19 +64,19 @@ export default {
       return `<repositories>
   <repository>
     <id>gitlab-maven</id>
-    <url>${this.mavenPath}</url>
+    <url>${this.mavenUrl}</url>
   </repository>
 </repositories>
 
 <distributionManagement>
   <repository>
     <id>gitlab-maven</id>
-    <url>${this.mavenPath}</url>
+    <url>${this.mavenUrl}</url>
   </repository>
 
   <snapshotRepository>
     <id>gitlab-maven</id>
-    <url>${this.mavenPath}</url>
+    <url>${this.mavenUrl}</url>
   </snapshotRepository>
 </distributionManagement>`;
     },
@@ -86,7 +89,7 @@ export default {
     gradleGroovyAddSourceCommand() {
       // eslint-disable-next-line @gitlab/require-i18n-strings
       return `maven {
-  url '${this.mavenPath}'
+  url '${this.mavenUrl}'
 }`;
     },
 
@@ -95,7 +98,7 @@ export default {
     },
 
     gradleKotlinAddSourceCommand() {
-      return `maven("${this.mavenPath}")`;
+      return `maven("${this.mavenUrl}")`;
     },
     showMaven() {
       return this.instructionType === 'maven';
@@ -126,7 +129,7 @@ export default {
     TRACKING_LABEL_CODE_INSTRUCTION,
     TRACKING_LABEL_MAVEN_INSTALLATION,
   },
-
+  links: { MAVEN_HELP_PATH },
   installOptions: [
     { value: 'maven', label: s__('PackageRegistry|Maven XML') },
     { value: 'groovy', label: s__('PackageRegistry|Gradle Groovy DSL') },
@@ -185,7 +188,7 @@ export default {
       />
       <gl-sprintf :message="$options.i18n.helpText">
         <template #link="{ content }">
-          <gl-link :href="mavenHelpPath" target="_blank">{{ content }}</gl-link>
+          <gl-link :href="$options.links.MAVEN_HELP_PATH" target="_blank">{{ content }}</gl-link>
         </template>
       </gl-sprintf>
     </template>

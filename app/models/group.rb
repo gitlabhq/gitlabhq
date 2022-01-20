@@ -17,6 +17,8 @@ class Group < Namespace
   include GroupAPICompatibility
   include EachBatch
   include BulkMemberAccessLoad
+  include ChronicDurationAttribute
+  include RunnerTokenExpirationInterval
 
   def self.sti_name
     'Group'
@@ -91,6 +93,11 @@ class Group < Namespace
   has_many :group_callouts, class_name: 'Users::GroupCallout', foreign_key: :group_id
 
   delegate :prevent_sharing_groups_outside_hierarchy, :new_user_signups_cap, :setup_for_company, :jobs_to_be_done, to: :namespace_settings
+  delegate :runner_token_expiration_interval, :runner_token_expiration_interval=, :runner_token_expiration_interval_human_readable, :runner_token_expiration_interval_human_readable=, to: :namespace_settings, allow_nil: true
+  delegate :subgroup_runner_token_expiration_interval, :subgroup_runner_token_expiration_interval=, :subgroup_runner_token_expiration_interval_human_readable, :subgroup_runner_token_expiration_interval_human_readable=, to: :namespace_settings, allow_nil: true
+  delegate :project_runner_token_expiration_interval, :project_runner_token_expiration_interval=, :project_runner_token_expiration_interval_human_readable, :project_runner_token_expiration_interval_human_readable=, to: :namespace_settings, allow_nil: true
+
+  has_one :crm_settings, class_name: 'Group::CrmSettings', inverse_of: :group
 
   accepts_nested_attributes_for :variables, allow_destroy: true
 
@@ -120,6 +127,8 @@ class Group < Namespace
   scope :with_onboarding_progress, -> { joins(:onboarding_progress) }
 
   scope :by_id, ->(groups) { where(id: groups) }
+
+  scope :by_ids_or_paths, -> (ids, paths) { by_id(ids).or(where(path: paths)) }
 
   scope :for_authorized_group_members, -> (user_ids) do
     joins(:group_members)
@@ -210,6 +219,10 @@ class Group < Namespace
         .pluck(:id)
 
       Set.new(group_ids)
+    end
+
+    def get_ids_by_ids_or_paths(ids, paths)
+      by_ids_or_paths(ids, paths).pluck(:id)
     end
 
     private
@@ -619,7 +632,7 @@ class Group < Namespace
     end
   end
 
-  def group_member(user)
+  def member(user)
     if group_members.loaded?
       group_members.find { |gm| gm.user_id == user.id }
     else
@@ -629,6 +642,10 @@ class Group < Namespace
 
   def highest_group_member(user)
     GroupMember.where(source_id: self_and_ancestors_ids, user_id: user.id).order(:access_level).last
+  end
+
+  def bots
+    users.project_bot
   end
 
   def related_group_ids
@@ -713,8 +730,8 @@ class Group < Namespace
     end
   end
 
-  def default_owner
-    owners.first || parent&.default_owner || owner
+  def first_owner
+    owners.first || parent&.first_owner || owner
   end
 
   def default_branch_name
@@ -762,6 +779,29 @@ class Group < Namespace
 
   def dependency_proxy_image_ttl_policy
     super || build_dependency_proxy_image_ttl_policy
+  end
+
+  def dependency_proxy_setting
+    super || build_dependency_proxy_setting
+  end
+
+  def crm_enabled?
+    crm_settings&.enabled?
+  end
+
+  def shared_with_group_links_visible_to_user(user)
+    shared_with_group_links.preload_shared_with_groups.filter { |link| Ability.allowed?(user, :read_group, link.shared_with_group) }
+  end
+
+  def enforced_runner_token_expiration_interval
+    all_parent_groups = Gitlab::ObjectHierarchy.new(Group.where(id: id)).ancestors
+    all_group_settings = NamespaceSetting.where(namespace_id: all_parent_groups)
+    group_interval = all_group_settings.where.not(subgroup_runner_token_expiration_interval: nil).minimum(:subgroup_runner_token_expiration_interval)&.seconds
+
+    [
+      Gitlab::CurrentSettings.group_runner_token_expiration_interval&.seconds,
+      group_interval
+    ].compact.min
   end
 
   private

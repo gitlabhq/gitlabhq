@@ -48,7 +48,7 @@ class Issue < ApplicationRecord
   belongs_to :duplicated_to, class_name: 'Issue'
   belongs_to :closed_by, class_name: 'User'
   belongs_to :iteration, foreign_key: 'sprint_id'
-  belongs_to :work_item_type, class_name: 'WorkItem::Type', inverse_of: :work_items
+  belongs_to :work_item_type, class_name: 'WorkItems::Type', inverse_of: :work_items
 
   belongs_to :moved_to, class_name: 'Issue'
   has_one :moved_from, class_name: 'Issue', foreign_key: :moved_to_id
@@ -85,13 +85,16 @@ class Issue < ApplicationRecord
   has_many :issue_customer_relations_contacts, class_name: 'CustomerRelations::IssueContact', inverse_of: :issue
   has_many :customer_relations_contacts, through: :issue_customer_relations_contacts, source: :contact, class_name: 'CustomerRelations::Contact', inverse_of: :issues
 
+  alias_attribute :escalation_status, :incident_management_issuable_escalation_status
+
   accepts_nested_attributes_for :issuable_severity, update_only: true
   accepts_nested_attributes_for :sentry_issue
+  accepts_nested_attributes_for :incident_management_issuable_escalation_status, update_only: true
 
   validates :project, presence: true
   validates :issue_type, presence: true
 
-  enum issue_type: WorkItem::Type.base_types
+  enum issue_type: WorkItems::Type.base_types
 
   alias_method :issuing_parent, :project
 
@@ -230,8 +233,6 @@ class Issue < ApplicationRecord
   end
 
   def next_object_by_relative_position(ignoring: nil, order: :asc)
-    return super unless Feature.enabled?(:optimized_issue_neighbor_queries, project, default_enabled: :yaml)
-
     array_mapping_scope = -> (id_expression) do
       relation = Issue.where(Issue.arel_table[:project_id].eq(id_expression))
 
@@ -598,6 +599,11 @@ class Issue < ApplicationRecord
 
   def hidden?
     author&.banned?
+  end
+
+  # Necessary until all issues are backfilled and we add a NOT NULL constraint on the DB
+  def work_item_type
+    super || WorkItems::Type.default_by_type(issue_type)
   end
 
   private

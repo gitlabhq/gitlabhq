@@ -13,7 +13,7 @@
     border: 1px solid var(--border-color, $border-color);
 
     .with-performance-bar & {
-      top: $header-height + $performance-bar-height;
+      top: calc(#{$header-height} + #{$performance-bar-height});
     }
   }
 
@@ -21,10 +21,10 @@
     @include build-log-top-bar(50px);
 
     &.has-archived-block {
-      top: $header-height + 28px;
+      top: calc(#{$header-height} + 28px);
 
       .with-performance-bar & {
-        top: $header-height + $performance-bar-height + 28px;
+        top: calc(#{$header-height} + #{$performance-bar-height} + 28px);
       }
     }
 

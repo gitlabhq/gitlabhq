@@ -43,7 +43,7 @@ RSpec.describe UsersStatistics do
       create_list(:user, 2, :bot)
       create_list(:user, 1, :blocked)
 
-      allow(ActiveRecord::Base.connection).to receive(:transaction_open?).and_return(false)
+      allow(described_class.connection).to receive(:transaction_open?).and_return(false)
     end
 
     context 'when successful' do

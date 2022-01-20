@@ -20,6 +20,12 @@ RSpec.describe IntegrationsHelper do
   end
 
   describe '#integration_form_data' do
+    before do
+      allow(helper).to receive_messages(
+        request: double(referer: '/services')
+      )
+    end
+
     let(:fields) do
       [
         :id,
@@ -39,7 +45,9 @@ RSpec.describe IntegrationsHelper do
         :cancel_path,
         :can_test,
         :test_path,
-        :reset_path
+        :reset_path,
+        :form_path,
+        :redirect_to
       ]
     end
 
@@ -61,6 +69,10 @@ RSpec.describe IntegrationsHelper do
       specify do
         expect(subject[:reset_path]).to eq(helper.scoped_reset_integration_path(integration))
       end
+
+      specify do
+        expect(subject[:redirect_to]).to eq('/services')
+      end
     end
 
     context 'Jira service' do
@@ -68,6 +80,20 @@ RSpec.describe IntegrationsHelper do
 
       it { is_expected.to include(*fields, *jira_fields) }
     end
+  end
+
+  describe '#integration_overrides_data' do
+    let(:integration) { build_stubbed(:jira_integration) }
+    let(:fields) do
+      [
+        edit_path: edit_admin_application_settings_integration_path(integration),
+        overrides_path: overrides_admin_application_settings_integration_path(integration, format: :json)
+      ]
+    end
+
+    subject { helper.integration_overrides_data(integration) }
+
+    it { is_expected.to include(*fields) }
   end
 
   describe '#scoped_reset_integration_path' do

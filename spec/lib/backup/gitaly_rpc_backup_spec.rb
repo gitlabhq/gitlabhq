@@ -33,7 +33,7 @@ RSpec.describe Backup::GitalyRpcBackup do
         subject.enqueue(project, Gitlab::GlRepository::DESIGN)
         subject.enqueue(personal_snippet, Gitlab::GlRepository::SNIPPET)
         subject.enqueue(project_snippet, Gitlab::GlRepository::SNIPPET)
-        subject.wait
+        subject.finish!
 
         expect(File).to exist(File.join(Gitlab.config.backup.path, 'repositories', project.disk_path + '.bundle'))
         expect(File).to exist(File.join(Gitlab.config.backup.path, 'repositories', project.disk_path + '.wiki.bundle'))
@@ -52,7 +52,7 @@ RSpec.describe Backup::GitalyRpcBackup do
         it 'logs an appropriate message', :aggregate_failures do
           subject.start(:create)
           subject.enqueue(project, Gitlab::GlRepository::PROJECT)
-          subject.wait
+          subject.finish!
 
           expect(progress).to have_received(:puts).with("[Failed] backing up #{project.full_path} (#{project.disk_path})")
           expect(progress).to have_received(:puts).with("Error Fail in tests")
@@ -96,7 +96,7 @@ RSpec.describe Backup::GitalyRpcBackup do
       subject.enqueue(project, Gitlab::GlRepository::DESIGN)
       subject.enqueue(personal_snippet, Gitlab::GlRepository::SNIPPET)
       subject.enqueue(project_snippet, Gitlab::GlRepository::SNIPPET)
-      subject.wait
+      subject.finish!
 
       collect_commit_shas = -> (repo) { repo.commits('master', limit: 10).map(&:sha) }
 
@@ -129,7 +129,7 @@ RSpec.describe Backup::GitalyRpcBackup do
       subject.enqueue(project, Gitlab::GlRepository::DESIGN)
       subject.enqueue(personal_snippet, Gitlab::GlRepository::SNIPPET)
       subject.enqueue(project_snippet, Gitlab::GlRepository::SNIPPET)
-      subject.wait
+      subject.finish!
     end
 
     context 'failure' do
@@ -143,7 +143,7 @@ RSpec.describe Backup::GitalyRpcBackup do
       it 'logs an appropriate message', :aggregate_failures do
         subject.start(:restore)
         subject.enqueue(project, Gitlab::GlRepository::PROJECT)
-        subject.wait
+        subject.finish!
 
         expect(progress).to have_received(:puts).with("[Failed] restoring #{project.full_path} (#{project.disk_path})")
         expect(progress).to have_received(:puts).with("Error Fail in tests")

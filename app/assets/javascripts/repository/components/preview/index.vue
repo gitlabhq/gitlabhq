@@ -47,6 +47,9 @@ export default {
       }
     },
   },
+  safeHtmlConfig: {
+    ADD_TAGS: ['copy-code'],
+  },
 };
 </script>
 
@@ -62,7 +65,11 @@ export default {
     </div>
     <div class="blob-viewer" data-qa-selector="blob_viewer_content" itemprop="about">
       <gl-loading-icon v-if="loading > 0" size="md" color="dark" class="my-4 mx-auto" />
-      <div v-else-if="readme" ref="readme" v-safe-html="readme.html"></div>
+      <div
+        v-else-if="readme"
+        ref="readme"
+        v-safe-html:[$options.safeHtmlConfig]="readme.html"
+      ></div>
     </div>
   </article>
 </template>

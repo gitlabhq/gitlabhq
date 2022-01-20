@@ -4,8 +4,8 @@ require 'spec_helper'
 
 RSpec.describe Mutations::CustomerRelations::Contacts::Create do
   let_it_be(:user) { create(:user) }
-  let_it_be(:group) { create(:group) }
 
+  let(:group) { create(:group, :crm_enabled) }
   let(:not_found_or_does_not_belong) { 'The specified organization was not found or does not belong to this group' }
   let(:valid_params) do
     attributes_for(:contact,
@@ -34,14 +34,23 @@ RSpec.describe Mutations::CustomerRelations::Contacts::Create do
     end
 
     context 'when the user has permission' do
-      before_all do
+      before do
         group.add_developer(user)
       end
 
-      context 'when the feature is disabled' do
+      context 'when the feature flag is disabled' do
         before do
           stub_feature_flags(customer_relations: false)
         end
+
+        it 'raises an error' do
+          expect { resolve_mutation }.to raise_error(Gitlab::Graphql::Errors::ResourceNotAvailable)
+            .with_message("The resource that you are attempting to access does not exist or you don't have permission to perform this action")
+        end
+      end
+
+      context 'when crm_enabled is false' do
+        let(:group) { create(:group) }
 
         it 'raises an error' do
           expect { resolve_mutation }.to raise_error(Gitlab::Graphql::Errors::ResourceNotAvailable)

@@ -13,7 +13,7 @@ modifying Sidekiq workers.
 
 All workers should include `ApplicationWorker` instead of `Sidekiq::Worker`,
 which adds some convenience methods and automatically sets the queue based on
-the worker's name.
+the [routing rules](../administration/operations/extra_sidekiq_routing.md#queue-routing-rules).
 
 ## Retries
 
@@ -45,19 +45,26 @@ Each retry for a worker is counted as a failure in our metrics. A worker
 which always fails 9 times and succeeds on the 10th would have a 90%
 error rate.
 
-## Dedicated Queues
+## Sidekiq Queues
 
-All workers should use their own queue, which is automatically set based on the
+Previously, each worker had its own queue, which was automatically set based on the
 worker class name. For a worker named `ProcessSomethingWorker`, the queue name
-would be `process_something`. If you're not sure what queue a worker uses,
+would be `process_something`. You can now route workers to a specific queue using
+[queue routing rules](../administration/operations/extra_sidekiq_routing.md#queue-routing-rules).
+In GDK, new workers are routed to a queue named `default`.
+
+If you're not sure what queue a worker uses,
 you can find it using `SomeWorker.queue`. There is almost never a reason to
 manually override the queue name using `sidekiq_options queue: :some_queue`.
 
-After adding a new queue, run `bin/rake
+After adding a new worker, run `bin/rake
 gitlab:sidekiq:all_queues_yml:generate` to regenerate
 `app/workers/all_queues.yml` or `ee/app/workers/all_queues.yml` so that
 it can be picked up by
-[`sidekiq-cluster`](../administration/operations/extra_sidekiq_processes.md).
+[`sidekiq-cluster`](../administration/operations/extra_sidekiq_processes.md)
+in installations that don't use routing rules. To learn more about potential changes,
+read [Use routing rules by default and deprecate queue selectors for self-managed](https://gitlab.com/groups/gitlab-com/gl-infra/-/epics/596).
+
 Additionally, run
 `bin/rake gitlab:sidekiq:sidekiq_queues_yml:generate` to regenerate
 `config/sidekiq_queues.yml`.

@@ -51,7 +51,6 @@ export default function dropzoneInput(form, config = { parallelUploads: 2 }) {
 
   // Add dropzone area to the form.
   const $mdArea = formTextarea.closest('.md-area');
-  form.setupMarkdownPreview();
   const $formDropzone = form.find('.div-dropzone');
   $formDropzone.parent().addClass('div-dropzone-wrapper');
   $formDropzone.append(divHover);

@@ -939,21 +939,19 @@ RSpec.describe Gitlab::Auth::AuthFinders do
   end
 
   describe '#cluster_agent_token_from_authorization_token' do
-    let_it_be(:agent_token, freeze: true) { create(:cluster_agent_token) }
+    let_it_be(:agent_token) { create(:cluster_agent_token) }
+
+    subject { cluster_agent_token_from_authorization_token }
 
     context 'when route_setting is empty' do
-      it 'returns nil' do
-        expect(cluster_agent_token_from_authorization_token).to be_nil
-      end
+      it { is_expected.to be_nil }
     end
 
     context 'when route_setting allows cluster agent token' do
       let(:route_authentication_setting) { { cluster_agent_token_allowed: true } }
 
       context 'Authorization header is empty' do
-        it 'returns nil' do
-          expect(cluster_agent_token_from_authorization_token).to be_nil
-        end
+        it { is_expected.to be_nil }
       end
 
       context 'Authorization header is incorrect' do
@@ -961,9 +959,7 @@ RSpec.describe Gitlab::Auth::AuthFinders do
           request.headers['Authorization'] = 'Bearer ABCD'
         end
 
-        it 'returns nil' do
-          expect(cluster_agent_token_from_authorization_token).to be_nil
-        end
+        it { is_expected.to be_nil }
       end
 
       context 'Authorization header is malformed' do
@@ -971,9 +967,7 @@ RSpec.describe Gitlab::Auth::AuthFinders do
           request.headers['Authorization'] = 'Bearer'
         end
 
-        it 'returns nil' do
-          expect(cluster_agent_token_from_authorization_token).to be_nil
-        end
+        it { is_expected.to be_nil }
       end
 
       context 'Authorization header matches agent token' do
@@ -981,8 +975,14 @@ RSpec.describe Gitlab::Auth::AuthFinders do
           request.headers['Authorization'] = "Bearer #{agent_token.token}"
         end
 
-        it 'returns the agent token' do
-          expect(cluster_agent_token_from_authorization_token).to eq(agent_token)
+        it { is_expected.to eq(agent_token) }
+
+        context 'agent token has been revoked' do
+          before do
+            agent_token.revoked!
+          end
+
+          it { is_expected.to be_nil }
         end
       end
     end

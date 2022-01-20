@@ -69,6 +69,8 @@ module Projects
         new_params[:avatar] = @project.avatar
       end
 
+      new_params[:mr_default_target_self] = target_mr_default_target_self unless target_mr_default_target_self.nil?
+
       new_params.merge!(@project.object_pool_params)
 
       new_params
@@ -126,6 +128,10 @@ module Projects
       target_level = [target_level, Gitlab::VisibilityLevel.level_value(params[:visibility])].min if params.key?(:visibility)
 
       Gitlab::VisibilityLevel.closest_allowed_level(target_level)
+    end
+
+    def target_mr_default_target_self
+      @target_mr_default_target_self ||= params[:mr_default_target_self]
     end
   end
 end

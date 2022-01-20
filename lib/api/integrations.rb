@@ -111,7 +111,14 @@ module API
           integration = user_project.find_or_initialize_integration(params[:slug].underscore)
 
           destroy_conditionally!(integration) do
-            attrs = integration_attributes(integration).index_with { nil }.merge(active: false)
+            attrs = integration_attributes(integration).index_with do |attr|
+              column = integration.column_for_attribute(attr)
+              if column.is_a?(ActiveRecord::ConnectionAdapters::NullColumn)
+                nil
+              else
+                column.default
+              end
+            end.merge(active: false)
 
             render_api_error!('400 Bad Request', 400) unless integration.update(attrs)
           end

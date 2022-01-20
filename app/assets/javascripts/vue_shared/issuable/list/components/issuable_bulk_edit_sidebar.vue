@@ -13,6 +13,7 @@ export default {
       if (layoutPageEl) {
         layoutPageEl.classList.toggle('right-sidebar-expanded', value);
         layoutPageEl.classList.toggle('right-sidebar-collapsed', !value);
+        layoutPageEl.classList.toggle('issuable-bulk-update-sidebar', !value);
       }
     },
   },

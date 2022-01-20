@@ -37,32 +37,8 @@ If you need cross-component communication (between different Vue apps), then per
 
 **What to use instead**
 
-Vue documentation recommends using the [mitt](https://github.com/developit/mitt) library. It's relatively small (200 bytes, compressed) and has a clear API:
+We have created a factory that you can use to instantiate a new [mitt](https://github.com/developit/mitt)-like event hub.
 
-```javascript
-import mitt from 'mitt'
-
-const emitter = mitt()
-
-// listen to an event
-emitter.on('foo', e => console.log('foo', e) )
-
-// listen to all events
-emitter.on('*', (type, e) => console.log(type, e) )
-
-// fire an event
-emitter.emit('foo', { a: 'b' })
-
-// working with handler references:
-function onFoo() {}
-
-emitter.on('foo', onFoo)   // listen
-emitter.off('foo', onFoo)  // unlisten
-```
-
-**Event hub factory**
-
-We have created a factory that you can use to instantiate a new mitt-based event hub.
 This makes it easier to migrate existing event hubs to the new recommended approach, or
 to create new ones.
 

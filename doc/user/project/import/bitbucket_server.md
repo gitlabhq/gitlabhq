@@ -33,6 +33,7 @@ created as private in GitLab as well.
   and quote part of the original comment.
 - Declined pull requests have unreachable commits, which prevents the GitLab importer from
   generating a proper diff. These pull requests show up as empty changes.
+- Pull request approvals are not imported.
 - Attachments in Markdown are not imported.
 - Task lists are not imported.
 - Emoji reactions are not imported.

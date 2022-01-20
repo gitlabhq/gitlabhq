@@ -26,6 +26,16 @@
           "value": "PREDICTABLE_RANDOM",
           "url": "https://find-sec-bugs.github.io/bugs.htm#PREDICTABLE_RANDOM"
         }
+      ],
+      "links": [
+        {
+          "name": "Link1",
+          "url": "https://www.url1.com"
+        },
+        {
+          "name": "Link2",
+          "url": "https://www.url2.com"
+        }
       ]
     },
     {

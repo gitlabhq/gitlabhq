@@ -8,7 +8,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build do
 
   let(:pipeline) { build(:ci_empty_pipeline, project: project, sha: head_sha) }
   let(:root_variables) { [] }
-  let(:seed_context) { double(pipeline: pipeline, root_variables: root_variables) }
+  let(:seed_context) { Gitlab::Ci::Pipeline::Seed::Context.new(pipeline, root_variables: root_variables) }
   let(:attributes) { { name: 'rspec', ref: 'master', scheduling_type: :stage, when: 'on_success' } }
   let(:previous_stages) { [] }
   let(:current_stage) { double(seeds_names: [attributes[:name]]) }

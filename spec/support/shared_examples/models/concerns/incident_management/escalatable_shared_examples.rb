@@ -95,6 +95,12 @@ RSpec.shared_examples 'a model including Escalatable' do
         it { is_expected.to eq([ignored_escalatable, resolved_escalatable, acknowledged_escalatable, triggered_escalatable]) }
       end
     end
+
+    describe '.open' do
+      subject { all_escalatables.open }
+
+      it { is_expected.to contain_exactly(acknowledged_escalatable, triggered_escalatable) }
+    end
   end
 
   describe '.status_value' do
@@ -129,6 +135,24 @@ RSpec.shared_examples 'a model including Escalatable' do
     with_them do
       it 'returns status name by its values' do
         expect(described_class.status_name(raw_status)).to eq(status)
+      end
+    end
+  end
+
+  describe '.open_status?' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:status, :is_open_status) do
+      :triggered    | true
+      :acknowledged | true
+      :resolved     | false
+      :ignored      | false
+      nil           | false
+    end
+
+    with_them do
+      it 'returns true when the status is open status' do
+        expect(described_class.open_status?(status)).to eq(is_open_status)
       end
     end
   end
@@ -234,6 +258,15 @@ RSpec.shared_examples 'a model including Escalatable' do
       it 'returns event by status name' do
         expect(escalatable.status_event_for(for_status)).to eq(event)
       end
+    end
+  end
+
+  describe '#open?' do
+    it 'returns true when the status is open status' do
+      expect(triggered_escalatable.open?).to be true
+      expect(acknowledged_escalatable.open?).to be true
+      expect(resolved_escalatable.open?).to be false
+      expect(ignored_escalatable.open?).to be false
     end
   end
 

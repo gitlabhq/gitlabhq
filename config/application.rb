@@ -68,6 +68,9 @@ module Gitlab
     require_dependency Rails.root.join('lib/gitlab/middleware/rack_multipart_tempfile_factory')
     require_dependency Rails.root.join('lib/gitlab/runtime')
     require_dependency Rails.root.join('lib/gitlab/patch/legacy_database_config')
+    require_dependency Rails.root.join('lib/gitlab/exceptions_app')
+
+    config.exceptions_app = Gitlab::ExceptionsApp.new(Rails.public_path)
 
     # To be removed in 15.0
     # This preload is needed to convert legacy `database.yml`

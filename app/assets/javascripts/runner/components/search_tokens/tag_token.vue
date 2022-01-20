@@ -1,6 +1,6 @@
 <script>
 import { GlFilteredSearchSuggestion, GlToken } from '@gitlab/ui';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { s__ } from '~/locale';
 
@@ -50,7 +50,7 @@ export default {
       try {
         this.tags = await this.getTagsOptions(searchTerm);
       } catch {
-        createFlash({
+        createAlert({
           message: s__('Runners|Something went wrong while fetching the tags suggestions'),
         });
       } finally {

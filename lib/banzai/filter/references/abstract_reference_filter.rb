@@ -216,6 +216,8 @@ module Banzai
                   url_for_object_cached(object, parent)
                 end
 
+              url.chomp!(matches[:format]) if matches.names.include?("format")
+
               content = link_content || object_link_text(object, matches)
 
               link = %(<a href="#{url}" #{data}

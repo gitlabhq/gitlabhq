@@ -1,14 +1,15 @@
 <script>
 import { GlBadge, GlLink } from '@gitlab/ui';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { fetchPolicies } from '~/lib/graphql';
 import { updateHistory } from '~/lib/utils/url_utility';
+import { formatNumber } from '~/locale';
 
 import RegistrationDropdown from '../components/registration/registration_dropdown.vue';
 import RunnerFilteredSearchBar from '../components/runner_filtered_search_bar.vue';
 import RunnerList from '../components/runner_list.vue';
 import RunnerName from '../components/runner_name.vue';
-import RunnerOnlineStat from '../components/stat/runner_online_stat.vue';
+import RunnerStats from '../components/stat/runner_stats.vue';
 import RunnerPagination from '../components/runner_pagination.vue';
 import RunnerTypeTabs from '../components/runner_type_tabs.vue';
 
@@ -19,15 +20,30 @@ import {
   INSTANCE_TYPE,
   GROUP_TYPE,
   PROJECT_TYPE,
+  STATUS_ONLINE,
+  STATUS_OFFLINE,
+  STATUS_STALE,
   I18N_FETCH_ERROR,
 } from '../constants';
 import getRunnersQuery from '../graphql/get_runners.query.graphql';
+import getRunnersCountQuery from '../graphql/get_runners_count.query.graphql';
 import {
   fromUrlQueryToSearch,
   fromSearchToUrl,
   fromSearchToVariables,
 } from '../runner_search_utils';
 import { captureException } from '../sentry_utils';
+
+const runnersCountSmartQuery = {
+  query: getRunnersCountQuery,
+  fetchPolicy: fetchPolicies.CACHE_AND_NETWORK,
+  update(data) {
+    return data?.runners?.count;
+  },
+  error(error) {
+    this.reportToSentry(error);
+  },
+};
 
 export default {
   name: 'AdminRunnersApp',
@@ -38,32 +54,12 @@ export default {
     RunnerFilteredSearchBar,
     RunnerList,
     RunnerName,
-    RunnerOnlineStat,
+    RunnerStats,
     RunnerPagination,
     RunnerTypeTabs,
   },
   props: {
     registrationToken: {
-      type: String,
-      required: true,
-    },
-    activeRunnersCount: {
-      type: String,
-      required: true,
-    },
-    allRunnersCount: {
-      type: String,
-      required: true,
-    },
-    instanceRunnersCount: {
-      type: String,
-      required: true,
-    },
-    groupRunnersCount: {
-      type: String,
-      required: true,
-    },
-    projectRunnersCount: {
       type: String,
       required: true,
     },
@@ -95,15 +91,77 @@ export default {
         };
       },
       error(error) {
-        createFlash({ message: I18N_FETCH_ERROR });
+        createAlert({ message: I18N_FETCH_ERROR });
 
         this.reportToSentry(error);
+      },
+    },
+    allRunnersCount: {
+      ...runnersCountSmartQuery,
+      variables() {
+        return this.countVariables;
+      },
+    },
+    instanceRunnersCount: {
+      ...runnersCountSmartQuery,
+      variables() {
+        return {
+          ...this.countVariables,
+          type: INSTANCE_TYPE,
+        };
+      },
+    },
+    groupRunnersCount: {
+      ...runnersCountSmartQuery,
+      variables() {
+        return {
+          ...this.countVariables,
+          type: GROUP_TYPE,
+        };
+      },
+    },
+    projectRunnersCount: {
+      ...runnersCountSmartQuery,
+      variables() {
+        return {
+          ...this.countVariables,
+          type: PROJECT_TYPE,
+        };
+      },
+    },
+    onlineRunnersTotal: {
+      ...runnersCountSmartQuery,
+      variables() {
+        return {
+          status: STATUS_ONLINE,
+        };
+      },
+    },
+    offlineRunnersTotal: {
+      ...runnersCountSmartQuery,
+      variables() {
+        return {
+          status: STATUS_OFFLINE,
+        };
+      },
+    },
+    staleRunnersTotal: {
+      ...runnersCountSmartQuery,
+      variables() {
+        return {
+          status: STATUS_STALE,
+        };
       },
     },
   },
   computed: {
     variables() {
       return fromSearchToVariables(this.search);
+    },
+    countVariables() {
+      // Exclude pagination variables, leave only filters variables
+      const { sort, before, last, after, first, ...countVariables } = this.variables;
+      return countVariables;
     },
     runnersLoading() {
       return this.$apollo.queries.runners.loading;
@@ -125,7 +183,7 @@ export default {
     search: {
       deep: true,
       handler() {
-        // TODO Implement back button reponse using onpopstate
+        // TODO Implement back button response using onpopstate
         updateHistory({
           url: fromSearchToUrl(this.search),
           title: document.title,
@@ -138,18 +196,27 @@ export default {
   },
   methods: {
     tabCount({ runnerType }) {
+      let count;
       switch (runnerType) {
         case null:
-          return this.allRunnersCount;
+          count = this.allRunnersCount;
+          break;
         case INSTANCE_TYPE:
-          return this.instanceRunnersCount;
+          count = this.instanceRunnersCount;
+          break;
         case GROUP_TYPE:
-          return this.groupRunnersCount;
+          count = this.groupRunnersCount;
+          break;
         case PROJECT_TYPE:
-          return this.projectRunnersCount;
+          count = this.projectRunnersCount;
+          break;
         default:
           return null;
       }
+      if (typeof count === 'number') {
+        return formatNumber(count);
+      }
+      return '';
     },
     reportToSentry(error) {
       captureException({ error, component: this.$options.name });
@@ -161,7 +228,11 @@ export default {
 </script>
 <template>
   <div>
-    <runner-online-stat class="gl-py-6 gl-px-5" :value="activeRunnersCount" />
+    <runner-stats
+      :online-runners-count="onlineRunnersTotal"
+      :offline-runners-count="offlineRunnersTotal"
+      :stale-runners-count="staleRunnersTotal"
+    />
 
     <div
       class="gl-display-flex gl-align-items-center gl-flex-direction-column-reverse gl-md-flex-direction-row gl-mt-3 gl-md-mt-0"

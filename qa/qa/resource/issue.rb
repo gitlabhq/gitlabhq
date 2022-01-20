@@ -3,7 +3,7 @@
 module QA
   module Resource
     class Issue < Base
-      attr_writer :description, :milestone, :template, :weight
+      attr_writer :milestone, :template, :weight
 
       attribute :project do
         Project.fabricate! do |resource|
@@ -95,19 +95,13 @@ module QA
         )
       end
 
-      # Object comparison
+      # Create a new comment
       #
-      # @param [QA::Resource::Issue] other
-      # @return [Boolean]
-      def ==(other)
-        other.is_a?(Issue) && comparable_issue == other.comparable_issue
-      end
-
-      # Override inspect for a better rspec failure diff output
-      #
-      # @return [String]
-      def inspect
-        JSON.pretty_generate(comparable_issue)
+      # @param [String] body
+      # @param [Boolean] confidential
+      # @return [Hash]
+      def add_comment(body:, confidential: false)
+        api_post_to(api_comments_path, body: body, confidential: confidential)
       end
 
       protected
@@ -115,7 +109,7 @@ module QA
       # Return subset of fields for comparing issues
       #
       # @return [Hash]
-      def comparable_issue
+      def comparable
         reload! if api_response.nil?
 
         api_resource.slice(

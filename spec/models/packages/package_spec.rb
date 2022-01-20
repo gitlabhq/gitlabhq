@@ -413,9 +413,17 @@ RSpec.describe Packages::Package, type: :model do
       it_behaves_like 'validating version to be SemVer compliant for', :terraform_module_package
 
       context 'nuget package' do
-        it_behaves_like 'validating version to be SemVer compliant for', :nuget_package
+        subject { build_stubbed(:nuget_package) }
 
+        it { is_expected.to allow_value('1.2').for(:version) }
+        it { is_expected.to allow_value('1.2.3').for(:version) }
         it { is_expected.to allow_value('1.2.3.4').for(:version) }
+        it { is_expected.to allow_value('1.2.3-beta').for(:version) }
+        it { is_expected.to allow_value('1.2.3-alpha.3').for(:version) }
+        it { is_expected.not_to allow_value('1').for(:version) }
+        it { is_expected.not_to allow_value('1./2.3').for(:version) }
+        it { is_expected.not_to allow_value('../../../../../1.2.3').for(:version) }
+        it { is_expected.not_to allow_value('%2e%2e%2f1.2.3').for(:version) }
       end
     end
 
@@ -839,6 +847,7 @@ RSpec.describe Packages::Package, type: :model do
     end
 
     context 'status scopes' do
+      let_it_be(:default_package) { create(:maven_package, :default) }
       let_it_be(:hidden_package) { create(:maven_package, :hidden) }
       let_it_be(:processing_package) { create(:maven_package, :processing) }
       let_it_be(:error_package) { create(:maven_package, :error) }
@@ -856,10 +865,14 @@ RSpec.describe Packages::Package, type: :model do
       describe '.installable' do
         subject { described_class.installable }
 
-        it 'does not include non-displayable packages', :aggregate_failures do
+        it 'does not include non-installable packages', :aggregate_failures do
           is_expected.not_to include(error_package)
-          is_expected.not_to include(hidden_package)
           is_expected.not_to include(processing_package)
+        end
+
+        it 'includes installable packages', :aggregate_failures do
+          is_expected.to include(default_package)
+          is_expected.to include(hidden_package)
         end
       end
 

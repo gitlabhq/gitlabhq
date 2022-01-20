@@ -22,8 +22,12 @@ export default {
     FileSha,
   },
   mixins: [Tracking.mixin()],
-  inject: ['canDelete'],
   props: {
+    canDelete: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     packageFiles: {
       type: Array,
       required: false,

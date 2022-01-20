@@ -9,4 +9,6 @@ fragment RunnerDetailsShared on CiRunner {
   description
   maximumTimeout
   tagList
+  createdAt
+  status(legacyMode: null)
 }

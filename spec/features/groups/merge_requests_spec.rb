@@ -67,7 +67,7 @@ RSpec.describe 'Group merge requests page' do
     end
 
     it 'shows projects only with merge requests feature enabled', :js do
-      find('.new-project-item-link').click
+      find('.js-new-project-item-link').click
 
       page.within('.select2-results') do
         expect(page).to have_content(project.name_with_namespace)

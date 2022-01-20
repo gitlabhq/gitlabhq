@@ -32,10 +32,10 @@ RSpec.describe 'Profile > SSH Keys' do
       expect(find('.breadcrumbs-sub-title')).to have_link(attrs[:title])
     end
 
-    it 'shows a confirmable warning if the key does not start with ssh-' do
+    it 'shows a confirmable warning if the key begins with an algorithm name that is unsupported' do
       attrs = attributes_for(:key)
 
-      fill_in('Key', with: 'invalid-key')
+      fill_in('Key', with: 'unsupported-ssh-rsa key')
       fill_in('Title', with: attrs[:title])
       click_button('Add key')
 

@@ -54,7 +54,7 @@ class GroupsFinder < UnionFinder
     groups = []
 
     if current_user
-      if Feature.enabled?(:use_traversal_ids_groups_finder, default_enabled: :yaml)
+      if Feature.enabled?(:use_traversal_ids_groups_finder, current_user, default_enabled: :yaml)
         groups << current_user.authorized_groups.self_and_ancestors
         groups << current_user.groups.self_and_descendants
       else
@@ -81,7 +81,7 @@ class GroupsFinder < UnionFinder
       .groups
       .where('members.access_level >= ?', params[:min_access_level])
 
-    if Feature.enabled?(:use_traversal_ids_groups_finder, default_enabled: :yaml)
+    if Feature.enabled?(:use_traversal_ids_groups_finder, current_user, default_enabled: :yaml)
       groups.self_and_descendants
     else
       Gitlab::ObjectHierarchy

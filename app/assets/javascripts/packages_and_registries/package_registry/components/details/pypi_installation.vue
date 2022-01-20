@@ -7,6 +7,7 @@ import {
   TRACKING_ACTION_COPY_PIP_INSTALL_COMMAND,
   TRACKING_ACTION_COPY_PYPI_SETUP_COMMAND,
   TRACKING_LABEL_CODE_INSTRUCTION,
+  PYPI_HELP_PATH,
 } from '~/packages_and_registries/package_registry/constants';
 import CodeInstruction from '~/vue_shared/components/registry/code_instruction.vue';
 
@@ -18,7 +19,6 @@ export default {
     GlLink,
     GlSprintf,
   },
-  inject: ['pypiHelpPath', 'pypiPath', 'pypiSetupPath'],
   props: {
     packageEntity: {
       type: Object,
@@ -28,11 +28,11 @@ export default {
   computed: {
     pypiPipCommand() {
       // eslint-disable-next-line @gitlab/require-i18n-strings
-      return `pip install ${this.packageEntity.name} --extra-index-url ${this.pypiPath}`;
+      return `pip install ${this.packageEntity.name} --extra-index-url ${this.packageEntity.pypiUrl}`;
     },
     pypiSetupCommand() {
       return `[gitlab]
-repository = ${this.pypiSetupPath}
+repository = ${this.packageEntity.pypiSetupUrl}
 username = __token__
 password = <your personal access token>`;
     },
@@ -50,6 +50,7 @@ password = <your personal access token>`;
       'PackageRegistry|For more information on the PyPi registry, %{linkStart}see the documentation%{linkEnd}.',
     ),
   },
+  links: { PYPI_HELP_PATH },
   installOptions: [{ value: 'pypi', label: s__('PackageRegistry|Show PyPi commands') }],
 };
 </script>
@@ -86,7 +87,7 @@ password = <your personal access token>`;
     />
     <gl-sprintf :message="$options.i18n.helpText">
       <template #link="{ content }">
-        <gl-link :href="pypiHelpPath" target="_blank">{{ content }}</gl-link>
+        <gl-link :href="$options.links.PYPI_HELP_PATH" target="_blank">{{ content }}</gl-link>
       </template>
     </gl-sprintf>
   </div>

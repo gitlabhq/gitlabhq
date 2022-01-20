@@ -204,7 +204,7 @@ module Integrations
       when "wiki_page"
         Integrations::ChatMessage::WikiPageMessage.new(data)
       when "deployment"
-        Integrations::ChatMessage::DeploymentMessage.new(data)
+        Integrations::ChatMessage::DeploymentMessage.new(data) if notify_for_ref?(data)
       end
     end
 
@@ -241,7 +241,11 @@ module Integrations
 
     def notify_for_ref?(data)
       return true if data[:object_kind] == 'tag_push'
-      return true if data.dig(:object_attributes, :tag)
+      return true if data[:object_kind] == 'deployment' && !Feature.enabled?(:chat_notification_deployment_protected_branch_filter, project)
+
+      ref = data[:ref] || data.dig(:object_attributes, :ref)
+      return true if ref.blank? # No need to check protected branches when there is no ref
+      return true if Gitlab::Git.tag_ref?(ref) # Skip protected branch check because it doesn't support tags
 
       notify_for_branch?(data)
     end

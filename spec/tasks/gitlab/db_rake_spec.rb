@@ -214,7 +214,7 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout do
         expect(Gitlab::Database::Reindexing).to receive(:enabled?).and_return(false)
         expect(Gitlab::Database::Reindexing).not_to receive(:invoke)
 
-        run_rake_task('gitlab:db:reindex')
+        expect { run_rake_task('gitlab:db:reindex') }.to raise_error(SystemExit)
       end
     end
   end
@@ -233,7 +233,7 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout do
           expect(Gitlab::Database::Reindexing).to receive(:enabled?).and_return(false)
           expect(Gitlab::Database::Reindexing).not_to receive(:invoke).with(database_name)
 
-          run_rake_task("gitlab:db:reindex:#{database_name}")
+          expect { run_rake_task("gitlab:db:reindex:#{database_name}") }.to raise_error(SystemExit)
         end
       end
     end

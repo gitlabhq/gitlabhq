@@ -1,5 +1,7 @@
 ---
 info: For assistance with this Style Guide page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments-to-other-projects-and-subjects.
+stage: none
+group: unassigned
 description: 'Writing styles, markup, formatting, and other standards for GitLab Documentation.'
 ---
 
@@ -13,7 +15,7 @@ use the `#docs-processes` channel.
 In addition to this page, the following resources can help you craft and contribute to documentation:
 
 - [Doc contribution guidelines](../index.md)
-- [A-Z word list](word_list.md)
+- [Recommended word list](word_list.md)
 - [Doc style and consistency testing](../testing.md)
 - [UI text guidelines](https://design.gitlab.com/content/error-messages/)
 - [GitLab Handbook style guidelines](https://about.gitlab.com/handbook/communication/#writing-style-guidelines)
@@ -392,38 +394,25 @@ especially in tutorials, instructional documentation, and
 
 Some contractions, however, should be avoided:
 
-- Do not use the word "GitLab" in a contraction.
+<!-- vale gitlab.Possessive = NO -->
 
-- Do not use contractions with a proper noun and a verb. For example:
+| Do not use a contraction      | Example                                          | Use instead                                                      |
+|-------------------------------|--------------------------------------------------|------------------------------------------------------------------|
+| With a proper noun and a verb | The **Container Registry's** a powerful feature. | The **Container Registry** is a powerful feature.                |
+| To emphasize a negative       | **Don't** install X with Y.                      | **Do not** install X with Y.                                     |
+| In reference documentation    | **Don't** set a limit.                           | **Do not** set a limit.                                          |
+| In error messages             | Requests to localhost **aren't** allowed.        | Requests to localhost **are not** allowed.                        |
 
-  | Do                                       | Don't                                   |
-  |------------------------------------------|-----------------------------------------|
-  | Canada is establishing X.                | Canada's establishing X.                |
-
-- Do not use contractions when you need to emphasize a negative. For example:
-
-  | Do                                       | Don't                                   |
-  |------------------------------------------|-----------------------------------------|
-  | Do not install X with Y.               | Don't install X with Y.               |
-
-- Do not use contractions in reference documentation. For example:
-
-  | Do                                       | Don't                                   |
-  |------------------------------------------|-----------------------------------------|
-  | Do not set a limit greater than 1000.  | Don't set a limit greater than 1000.  |
-  | For `parameter1`, the default is 10.     | For `parameter1`, the default's 10.     |
-
-- Avoid contractions in error messages. Examples:
-
-  | Do                                       | Don't                                   |
-  |------------------------------------------|-----------------------------------------|
-  | Requests to localhost are not allowed.   | Requests to localhost aren't allowed.   |
-  | Specified URL cannot be used.            | Specified URL can't be used.            |
+<!-- vale gitlab.Possessive = YES -->
 
 ### Acronyms
 
 If you use an acronym, spell it out on first use on a page. You do not need to spell it out more than once on a page.
 When possible, try to avoid acronyms in headings.
+
+### Numbers
+
+When using numbers in text, spell out zero through nine, and use numbers for 10 and greater. For details, see the [Microsoft Style Guide](https://docs.microsoft.com/en-us/style-guide/numbers).
 
 ## Text
 
@@ -1626,7 +1615,7 @@ the section. The version information must:
 - Be surrounded by blank lines.
 - Start with `>`. If there are multiple bullets, each line must start with `> -`.
 - The string must include these words in this order (capitalization doesn't matter):
-  - `introduced`, `deprecated`, `changed`, `moved`, `recommended` (as in the
+  - `introduced`, `enabled`, `deprecated`, `changed`, `moved`, `recommended` (as in the
   [feature flag documentation](../feature_flags.md)), `removed`, or `renamed`
   - `in` or `to`
   - `GitLab`
@@ -1666,24 +1655,6 @@ If a feature is moved to another tier:
 > - [Moved](<link-to-issue>) from GitLab Ultimate to GitLab Premium in 11.8.
 > - [Moved](<link-to-issue>) from GitLab Premium to GitLab Free in 12.0.
 ```
-
-If a feature is deprecated, include a link to a replacement (when available):
-
-```markdown
-> - [Deprecated](<link-to-issue>) in GitLab 11.3. Replaced by [meaningful text](<link-to-appropriate-documentation>).
-```
-
-You can also describe the replacement in surrounding text, if available. If the
-deprecation isn't obvious in existing text, you may want to include a warning:
-
-```markdown
-WARNING:
-This feature was [deprecated](link-to-issue) in GitLab 12.3 and replaced by
-[Feature name](link-to-feature-documentation).
-```
-
-In the first major GitLab version after the feature was deprecated, be sure to
-remove information about that deprecated feature.
 
 #### Inline version text
 
@@ -1783,6 +1754,47 @@ instructions for users of GitLab 10 should be removed.
 To view historical information about a feature, review GitLab
 [release posts](https://about.gitlab.com/releases/), or search for the issue or
 merge request where the work was done.
+
+### Deprecated features
+
+When a feature is deprecated, add `(DEPRECATED)` to the page title or to
+the heading of the section documenting the feature, immediately before
+the tier badge:
+
+```markdown
+<!-- Page title example: -->
+# Feature A (DEPRECATED) **(ALL TIERS)**
+
+<!-- Doc section example: -->
+## Feature B (DEPRECATED) **(PREMIUM SELF)**
+```
+
+Add the deprecation to the version history note (you can include a link
+to a replacement when available):
+
+```markdown
+> - [Deprecated](<link-to-issue>) in GitLab 11.3. Replaced by [meaningful text](<link-to-appropriate-documentation>).
+```
+
+You can also describe the replacement in surrounding text, if available. If the
+deprecation isn't obvious in existing text, you may want to include a warning:
+
+```markdown
+WARNING:
+This feature was [deprecated](link-to-issue) in GitLab 12.3 and replaced by
+[Feature name](link-to-feature-documentation).
+```
+
+If you add `(DEPRECATED)` to the page's title and the document is linked from the docs
+navigation, either remove the page from the nav or update the nav item to include the
+same text before the feature name:
+
+```yaml
+ - doc_title: (DEPRECATED) Feature A
+```
+
+In the first major GitLab version after the feature was deprecated, be sure to
+remove information about that deprecated feature.
 
 ## Products and features
 

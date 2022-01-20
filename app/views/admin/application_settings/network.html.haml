@@ -75,11 +75,13 @@
 %section.settings.as-outbound.no-animate#js-outbound-settings{ class: ('expanded' if expanded_by_default?), data: { qa_selector: 'outbound_requests_content' } }
   .settings-header
     %h4
-      = _('Outbound requests')
+      = s_('OutboundRequests|Outbound requests')
+
     %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
       = expanded_by_default? ? _('Collapse') : _('Expand')
     %p
-      = _('Allow requests to the local network from hooks and services.')
+      = s_('OutboundRequests|Allow requests to the local network from hooks and services.')
+      = link_to _('Learn more.'), help_page_path('security/webhooks.md'), target: '_blank', rel: 'noopener noreferrer'
   .settings-content
     = render 'outbound'
 

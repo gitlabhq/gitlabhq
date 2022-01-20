@@ -421,16 +421,37 @@ RSpec.describe Admin::UsersController do
   end
 
   describe 'PUT confirm/:id' do
-    let(:user) { create(:user, confirmed_at: nil) }
+    shared_examples_for 'confirms the user' do
+      it 'confirms the user' do
+        put :confirm, params: { id: user.username }
+        user.reload
+        expect(user.confirmed?).to be_truthy
+      end
+    end
+
+    let(:expired_confirmation_sent_at) { Date.today - User.confirm_within - 7.days }
+    let(:extant_confirmation_sent_at) { Date.today }
+
+    let(:user) do
+      create(:user, :unconfirmed).tap do |user|
+        user.update!(confirmation_sent_at: confirmation_sent_at)
+      end
+    end
 
     before do
       request.env["HTTP_REFERER"] = "/"
     end
 
-    it 'confirms user' do
-      put :confirm, params: { id: user.username }
-      user.reload
-      expect(user.confirmed?).to be_truthy
+    context 'when the confirmation period has expired' do
+      let(:confirmation_sent_at) {  expired_confirmation_sent_at }
+
+      it_behaves_like 'confirms the user'
+    end
+
+    context 'when the confirmation period has not expired' do
+      let(:confirmation_sent_at) {  extant_confirmation_sent_at }
+
+      it_behaves_like 'confirms the user'
     end
   end
 
@@ -591,8 +612,8 @@ RSpec.describe Admin::UsersController do
       end
 
       context 'when the new password does not match the password confirmation' do
-        let(:password) { 'some_password' }
-        let(:password_confirmation) { 'not_same_as_password' }
+        let(:password) { Gitlab::Password.test_default }
+        let(:password_confirmation) { "not" + Gitlab::Password.test_default }
 
         it 'shows the edit page again' do
           update_password(user, password, password_confirmation)

@@ -1,0 +1,3 @@
+query isEnvironmentStopping($environment: LocalEnvironment) {
+  isEnvironmentStopping(environment: $environment) @client
+}

@@ -48,7 +48,7 @@ module Issues
     end
 
     def add_by_email
-      contact_ids = ::CustomerRelations::Contact.find_ids_by_emails(project_group.id, params[:add_emails])
+      contact_ids = ::CustomerRelations::Contact.find_ids_by_emails(project_group, params[:add_emails])
       add_by_id(contact_ids)
     end
 

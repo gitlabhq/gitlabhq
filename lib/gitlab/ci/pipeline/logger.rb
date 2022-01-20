@@ -37,6 +37,16 @@ module Gitlab
           result
         end
 
+        def instrument_with_sql(operation, &block)
+          op_start_db_counters = current_db_counter_payload
+
+          result = instrument(operation, &block)
+
+          observe_sql_counters(operation, op_start_db_counters, current_db_counter_payload)
+
+          result
+        end
+
         def observe(operation, value)
           return unless enabled?
 
@@ -50,11 +60,20 @@ module Gitlab
             class: self.class.name.to_s,
             pipeline_creation_caller: caller,
             project_id: project.id,
-            pipeline_id: pipeline.id,
             pipeline_persisted: pipeline.persisted?,
             pipeline_source: pipeline.source,
             pipeline_creation_service_duration_s: age
-          }.stringify_keys.merge(observations_hash)
+          }
+
+          if pipeline.persisted?
+            attributes[:pipeline_builds_tags_count] = pipeline.tags_count
+            attributes[:pipeline_builds_distinct_tags_count] = pipeline.distinct_tags_count
+            attributes[:pipeline_id] = pipeline.id
+          end
+
+          attributes.compact!
+          attributes.stringify_keys!
+          attributes.merge!(observations_hash)
 
           destination.info(attributes)
         end
@@ -96,6 +115,19 @@ module Gitlab
 
         def observations
           @observations ||= Hash.new { |hash, key| hash[key] = [] }
+        end
+
+        def observe_sql_counters(operation, start_db_counters, end_db_counters)
+          end_db_counters.each do |key, value|
+            result = value - start_db_counters.fetch(key, 0)
+            next if result == 0
+
+            observe("#{operation}_#{key}", result)
+          end
+        end
+
+        def current_db_counter_payload
+          ::Gitlab::Metrics::Subscribers::ActiveRecord.db_counter_payload
         end
       end
     end

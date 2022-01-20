@@ -529,7 +529,7 @@ export default {
 <template>
   <div
     :class="{
-      'gl-border-t-1 gl-border-t-solid gl-border-gray-100 gl-bg-gray-10 gl-pl-7':
+      'gl-border-t-1 gl-border-t-solid gl-border-gray-100 gl-bg-gray-10 gl-pl-7 gl-rounded-bottom-left-base gl-rounded-bottom-right-base':
         glFeatures.restructuredMrWidget,
     }"
   >

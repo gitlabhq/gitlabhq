@@ -101,6 +101,8 @@ describe('RevisionDropdown component', () => {
       const findGlDropdownItems = () => wrapper.findAll(GlDropdownItem);
       const findFirstGlDropdownItem = () => findGlDropdownItems().at(0);
 
+      // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+      // eslint-disable-next-line no-restricted-syntax
       wrapper.setData({ branches: ['some-branch'] });
 
       await wrapper.vm.$nextTick();

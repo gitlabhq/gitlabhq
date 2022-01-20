@@ -41,12 +41,14 @@ module Gitlab
 
           def included?
             strong_memoize(:inclusion) do
-              if @using_rules
-                rules_result.pass?
-              elsif @using_only || @using_except
-                all_of_only? && none_of_except?
-              else
-                true
+              logger.instrument(:pipeline_seed_build_inclusion) do
+                if @using_rules
+                  rules_result.pass?
+                elsif @using_only || @using_except
+                  all_of_only? && none_of_except?
+                else
+                  true
+                end
               end
             end
           end
@@ -121,6 +123,8 @@ module Gitlab
           end
 
           private
+
+          delegate :logger, to: :@context
 
           def all_of_only?
             @only.all? { |spec| spec.satisfied_by?(@pipeline, evaluate_context) }

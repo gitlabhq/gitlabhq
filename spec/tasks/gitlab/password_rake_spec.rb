@@ -3,7 +3,7 @@
 require 'rake_helper'
 
 RSpec.describe 'gitlab:password rake tasks', :silence_stdout do
-  let_it_be(:user_1) { create(:user, username: 'foobar', password: 'initial_password') }
+  let_it_be(:user_1) { create(:user, username: 'foobar', password: Gitlab::Password.test_default) }
 
   def stub_username(username)
     allow(Gitlab::TaskHelpers).to receive(:prompt).with('Enter username: ').and_return(username)
@@ -19,14 +19,14 @@ RSpec.describe 'gitlab:password rake tasks', :silence_stdout do
     Rake.application.rake_require 'tasks/gitlab/password'
 
     stub_username('foobar')
-    stub_password('secretpassword')
+    stub_password(Gitlab::Password.test_default)
   end
 
   describe ':reset' do
     context 'when all inputs are correct' do
       it 'updates the password properly' do
         run_rake_task('gitlab:password:reset', user_1.username)
-        expect(user_1.reload.valid_password?('secretpassword')).to eq(true)
+        expect(user_1.reload.valid_password?(Gitlab::Password.test_default)).to eq(true)
       end
     end
 
@@ -55,7 +55,7 @@ RSpec.describe 'gitlab:password rake tasks', :silence_stdout do
 
     context 'when passwords do not match' do
       before do
-        stub_password('randompassword', 'differentpassword')
+        stub_password(Gitlab::Password.test_default, "different" + Gitlab::Password.test_default)
       end
 
       it 'aborts with an error' do

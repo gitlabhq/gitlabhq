@@ -51,7 +51,7 @@ Click on the service links to see further configuration instructions and details
 | [Mattermost slash commands](mattermost_slash_commands.md) | Perform common tasks with slash commands.                                                    | **{dotted-circle}** No |
 | [Microsoft Teams notifications](microsoft_teams.md)       | Receive event notifications.                                                                 | **{dotted-circle}** No |
 | Packagist                                                 | Keep your PHP dependencies updated on Packagist.                                             | **{check-circle}** Yes |
-| Pipelines emails                                          | Send the pipeline status to a list of recipients by email.                                   | **{dotted-circle}** No |
+| [Pipelines emails](pipeline_status_emails.md)             | Send the pipeline status to a list of recipients by email.                                   | **{dotted-circle}** No |
 | [Pivotal Tracker](pivotal_tracker.md)                      | Add commit messages as comments to Pivotal Tracker stories.                                                    | **{dotted-circle}** No |
 | [Prometheus](prometheus.md)                               | Monitor application metrics.                                                                 | **{dotted-circle}** No |
 | Pushover                                                  | Get real-time notifications on your device.                                                  | **{dotted-circle}** No |

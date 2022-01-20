@@ -1,13 +1,10 @@
 ---
 stage: Create
 group: Source Code
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments"
-type: reference, api
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Protected branches API **(FREE)**
-
-> Introduced in GitLab 9.5.
 
 **Valid access levels**
 
@@ -201,13 +198,13 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitla
 | -------------------------------------------- | ---- | -------- | ----------- |
 | `id`                                         | integer/string | yes | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user |
 | `name`                                       | string         | yes | The name of the branch or wildcard |
-| `push_access_level`                          | string         | no  | Access levels allowed to push (defaults: `40`, Maintainer role) |
-| `merge_access_level`                         | string         | no  | Access levels allowed to merge (defaults: `40`, Maintainer role) |
-| `unprotect_access_level`                     | string         | no  | Access levels allowed to unprotect (defaults: `40`, Maintainer role) |
+| `push_access_level`                          | integer        | no  | Access levels allowed to push (defaults: `40`, Maintainer role) |
+| `merge_access_level`                         | integer        | no  | Access levels allowed to merge (defaults: `40`, Maintainer role) |
+| `unprotect_access_level`                     | integer        | no  | Access levels allowed to unprotect (defaults: `40`, Maintainer role) |
 | `allow_force_push`                           | boolean        | no  | Allow all users with push access to force push. (default: `false`) |
-| `allowed_to_push` **(PREMIUM)**              | array          | no  | Array of access levels allowed to push, with each described by a hash |
-| `allowed_to_merge` **(PREMIUM)**             | array          | no  | Array of access levels allowed to merge, with each described by a hash |
-| `allowed_to_unprotect` **(PREMIUM)**         | array          | no  | Array of access levels allowed to unprotect, with each described by a hash |
+| `allowed_to_push` **(PREMIUM)**              | array          | no  | Array of access levels allowed to push, with each described by a hash of the form `{user_id: integer}`, `{group_id: integer}`, or `{access_level: integer}` |
+| `allowed_to_merge` **(PREMIUM)**             | array          | no  | Array of access levels allowed to merge, with each described by a hash of the form `{user_id: integer}`, `{group_id: integer}`, or `{access_level: integer}` |
+| `allowed_to_unprotect` **(PREMIUM)**         | array          | no  | Array of access levels allowed to unprotect, with each described by a hash of the form `{user_id: integer}`, `{group_id: integer}`, or `{access_level: integer}` |
 | `code_owner_approval_required` **(PREMIUM)** | boolean        | no  | Prevent pushes to this branch if it matches an item in the [`CODEOWNERS` file](../user/project/code_owners.md). (defaults: false) |
 
 Example response:
@@ -332,7 +329,6 @@ curl --request POST \
      --header "PRIVATE-TOKEN: <your_access_token>" \
      --header "Content-Type: application/json" \
      --data '{
-      "id": 5,
       "name": "master",
       "allowed_to_push": [{"access_level": 30}],
       "allowed_to_merge": [{

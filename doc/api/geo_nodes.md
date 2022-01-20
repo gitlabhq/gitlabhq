@@ -62,7 +62,7 @@ Example response:
   "container_repositories_max_capacity": 10,
   "sync_object_storage": false,
   "clone_protocol": "http",
-  "web_edit_url": "https://primary.example.com/admin/geo/nodes/3/edit",
+  "web_edit_url": "https://primary.example.com/admin/geo/sites/3/edit",
   "web_geo_projects_url": "http://secondary.example.com/admin/geo/projects",
   "_links": {
      "self": "https://primary.example.com/api/v4/geo_nodes/3",
@@ -103,7 +103,7 @@ Example response:
     "selective_sync_namespace_ids": [1, 25],
     "minimum_reverification_interval": 7,
     "clone_protocol": "http",
-    "web_edit_url": "https://primary.example.com/admin/geo/nodes/1/edit",
+    "web_edit_url": "https://primary.example.com/admin/geo/sites/1/edit",
     "_links": {
       "self": "https://primary.example.com/api/v4/geo_nodes/1",
       "status":"https://primary.example.com/api/v4/geo_nodes/1/status",
@@ -128,7 +128,7 @@ Example response:
     "minimum_reverification_interval": 7,
     "sync_object_storage": true,
     "clone_protocol": "http",
-    "web_edit_url": "https://primary.example.com/admin/geo/nodes/2/edit",
+    "web_edit_url": "https://primary.example.com/admin/geo/sites/2/edit",
     "web_geo_projects_url": "https://secondary.example.com/admin/geo/projects",
     "_links": {
       "self":"https://primary.example.com/api/v4/geo_nodes/2",
@@ -169,7 +169,7 @@ Example response:
   "selective_sync_namespace_ids": [1, 25],
   "minimum_reverification_interval": 7,
   "clone_protocol": "http",
-  "web_edit_url": "https://primary.example.com/admin/geo/nodes/1/edit",
+  "web_edit_url": "https://primary.example.com/admin/geo/sites/1/edit",
   "_links": {
     "self": "https://primary.example.com/api/v4/geo_nodes/1",
     "status":"https://primary.example.com/api/v4/geo_nodes/1/status",
@@ -226,7 +226,7 @@ Example response:
   "minimum_reverification_interval": 7,
   "sync_object_storage": true,
   "clone_protocol": "http",
-  "web_edit_url": "https://primary.example.com/admin/geo/nodes/2/edit",
+  "web_edit_url": "https://primary.example.com/admin/geo/sites/2/edit",
   "web_geo_projects_url": "https://secondary.example.com/admin/geo/projects",
   "_links": {
     "self":"https://primary.example.com/api/v4/geo_nodes/2",
@@ -277,7 +277,7 @@ Example response:
   "container_repositories_max_capacity": 10,
   "verification_max_capacity": 100,
   "clone_protocol": "http",
-  "web_edit_url": "https://primary.example.com/admin/geo/nodes/1/edit",
+  "web_edit_url": "https://primary.example.com/admin/geo/sites/1/edit",
   "_links": {
     "self": "https://primary.example.com/api/v4/geo_nodes/1",
     "status":"https://primary.example.com/api/v4/geo_nodes/1/status",

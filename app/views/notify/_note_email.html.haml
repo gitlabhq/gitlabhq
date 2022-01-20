@@ -26,12 +26,10 @@
     = stylesheet_link_tag 'mailers/highlighted_diff_email'
 
   %table
-    = render partial: "projects/diffs/line",
+    = render partial: "projects/diffs/email_line",
       collection: discussion.truncated_diff_lines(diff_limit: diff_limit),
       as: :line,
-      locals: { diff_file: discussion.diff_file,
-        plain: true,
-        email: true }
+      locals: { diff_file: discussion.diff_file }
 
 %div{ style: note_style }
   = markdown(note.note, pipeline: :email, author: note.author, current_user: @recipient, issuable_reference_expansion_enabled: true)

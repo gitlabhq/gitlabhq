@@ -7,7 +7,6 @@ Rails/IncludeUrlHelper:
   - app/models/integrations/campfire.rb
   - app/models/integrations/confluence.rb
   - app/models/integrations/custom_issue_tracker.rb
-  - app/models/integrations/datadog.rb
   - app/models/integrations/discord.rb
   - app/models/integrations/ewm.rb
   - app/models/integrations/external_wiki.rb

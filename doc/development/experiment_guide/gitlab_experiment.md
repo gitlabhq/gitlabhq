@@ -71,6 +71,8 @@ class Cached cached
 
 ## Implement an experiment
 
+[Examples](https://gitlab.com/gitlab-org/growth/growth/-/wikis/GLEX-Framework-code-examples)
+
 Start by generating a feature flag using the `bin/feature-flag` command as you
 normally would for a development feature flag, making sure to use `experiment` for
 the type. For the sake of documentation let's name our feature flag (and experiment)

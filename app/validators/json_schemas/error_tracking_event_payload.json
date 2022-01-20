@@ -13,57 +13,72 @@
       "type": "object"
     },
     "exception": {
-      "type": "object",
-      "required": ["values"],
-      "properties": {
-        "values": {
+      "oneOf": [
+        {
           "type": "array",
           "items": {
-            "type": "object",
-            "required": [],
-            "properties": {
-              "type": {
-                "type": "string"
-              },
-              "value": {
-                "type": "string"
-              },
-              "stacktrace": {
+            "$ref": "#/definitions/exception"
+          }
+        },
+        {
+          "type": "object",
+          "required": ["values"],
+          "properties": {
+            "values": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/exception"
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  "definitions": {
+    "exception": {
+      "type": "object",
+      "required": [],
+      "properties": {
+        "type": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string"
+        },
+        "stacktrace": {
+          "type": "object",
+          "required": [],
+          "properties": {
+            "frames": {
+              "type": "array",
+              "items": {
                 "type": "object",
                 "required": [],
                 "properties": {
-                  "frames": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "required": [],
-                      "properties": {
-                        "abs_path": {
-                          "type": "string"
-                        },
-                        "function": {
-                          "type": "string"
-                        },
-                        "lineno": {
-                          "type": "number"
-                        },
-                        "in_app": {
-                          "type": "boolean"
-                        },
-                        "filename": {
-                          "type": "string"
-                        },
-                        "pre_context": {
-                          "type": "array"
-                        },
-                        "context_line": {
-                          "type": ["string", "null"]
-                        },
-                        "post_context": {
-                          "type": "array"
-                        }
-                      }
-                    }
+                  "abs_path": {
+                    "type": "string"
+                  },
+                  "function": {
+                    "type": "string"
+                  },
+                  "lineno": {
+                    "type": "number"
+                  },
+                  "in_app": {
+                    "type": "boolean"
+                  },
+                  "filename": {
+                    "type": "string"
+                  },
+                  "pre_context": {
+                    "type": "array"
+                  },
+                  "context_line": {
+                    "type": ["string", "null"]
+                  },
+                  "post_context": {
+                    "type": "array"
                   }
                 }
               }

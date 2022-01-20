@@ -2,6 +2,7 @@
 
 # This is needed for sidekiq-cluster
 require 'json'
+require 'sidekiq/job_retry'
 
 module Gitlab
   module SidekiqLogging

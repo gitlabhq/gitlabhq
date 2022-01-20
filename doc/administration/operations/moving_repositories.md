@@ -184,8 +184,8 @@ Each of the approaches we list can or does overwrite data in the target director
 
 ### Recommended approach in all cases
 
-The GitLab [backup and restore capability](../../raketasks/backup_restore.md) should be used. Git
-repositories are accessed, managed, and stored on GitLab servers by Gitaly as a database. Data loss
+For either Gitaly or Gitaly Cluster targets, the GitLab [backup and restore capability](../../raketasks/backup_restore.md)
+should be used. Git repositories are accessed, managed, and stored on GitLab servers by Gitaly as a database. Data loss
 can result from directly accessing and copying Gitaly's files using tools like `rsync`.
 
 - From GitLab 13.3, backup performance can be improved by
@@ -193,13 +193,15 @@ can result from directly accessing and copying Gitaly's files using tools like `
 - Backups can be created of just the repositories using the
   [skip feature](../../raketasks/backup_restore.md#excluding-specific-directories-from-the-backup).
 
+No other method works for Gitaly Cluster targets.
+
 ### Target directory is empty: use a `tar` pipe
 
-If the target directory `/mnt/gitlab/repositories` is empty the
-simplest thing to do is to use a `tar` pipe. This method has low
-overhead and `tar` is almost always already installed on your system.
-However, it is not possible to resume an interrupted `tar` pipe: if
-that happens then all data must be copied again.
+For Gitaly targets (use [recommended approach](#recommended-approach-in-all-cases) for Gitaly Cluster targets), if the
+target directory `/mnt/gitlab/repositories` is empty the simplest thing to do is to use a `tar` pipe. This method has
+low overhead and `tar` is almost always already installed on your system.
+
+However, it is not possible to resume an interrupted `tar` pipe; if that happens then all data must be copied again.
 
 ```shell
 sudo -u git sh -c 'tar -C /var/opt/gitlab/git-data/repositories -cf - -- . |\
@@ -210,9 +212,9 @@ If you want to see progress, replace `-xf` with `-xvf`.
 
 #### `tar` pipe to another server
 
-You can also use a `tar` pipe to copy data to another server. If your
-`git` user has SSH access to the new server as `git@newserver`, you
-can pipe the data through SSH.
+For Gitaly targets (use [recommended approach](#recommended-approach-in-all-cases) for Gitaly Cluster targets), you can
+also use a `tar` pipe to copy data to another server. If your `git` user has SSH access to the new server as
+`git@newserver`, you can pipe the data through SSH.
 
 ```shell
 sudo -u git sh -c 'tar -C /var/opt/gitlab/git-data/repositories -cf - -- . |\
@@ -228,11 +230,11 @@ WARNING:
 Using `rsync` to migrate Git data can cause data loss and repository corruption.
 [These instructions are being reviewed](https://gitlab.com/gitlab-org/gitlab/-/issues/270422).
 
-If the target directory already contains a partial / outdated copy
-of the repositories it may be wasteful to copy all the data again
-with `tar`. In this scenario it is better to use `rsync`. This utility
-is either already installed on your system, or installable
-by using `apt` or `yum`.
+If the target directory already contains a partial or outdated copy of the repositories it may be wasteful to copy all
+the data again with `tar`. In this scenario it is better to use `rsync` for Gitaly targets (use
+[recommended approach](#recommended-approach-in-all-cases) for Gitaly Cluster targets).
+
+This utility is either already installed on your system, or installable using `apt` or `yum`.
 
 ```shell
 sudo -u git  sh -c 'rsync -a --delete /var/opt/gitlab/git-data/repositories/. \
@@ -249,8 +251,9 @@ WARNING:
 Using `rsync` to migrate Git data can cause data loss and repository corruption.
 [These instructions are being reviewed](https://gitlab.com/gitlab-org/gitlab/-/issues/270422).
 
-If the `git` user on your source system has SSH access to the target
-server you can send the repositories over the network with `rsync`.
+For Gitaly targets (use [recommended approach](#recommended-approach-in-all-cases) for Gitaly Cluster targets), if the
+`git` user on your source system has SSH access to the target server you can send the repositories over the network with
+`rsync`.
 
 ```shell
 sudo -u git sh -c 'rsync -a --delete /var/opt/gitlab/git-data/repositories/. \
@@ -269,17 +272,18 @@ Every time you start an `rsync` job it must:
 - Inspect all files in the target directory.
 - Decide whether or not to copy files.
 
-If the source or target directory
-has many contents, this startup phase of `rsync` can become a burden
-for your GitLab server. You can reduce the workload of `rsync` by dividing its
-work in smaller pieces, and sync one repository at a time.
+If the source or target directory has many contents, this startup phase of `rsync` can become a burden for your GitLab
+server. You can reduce the workload of `rsync` by dividing its work into smaller pieces, and sync one repository at a
+time.
 
 In addition to `rsync` we use [GNU Parallel](http://www.gnu.org/software/parallel/).
 This utility is not included in GitLab, so you must install it yourself with `apt`
 or `yum`.
 
-This process does not clean up repositories at the target location that no
-longer exist at the source.
+This process:
+
+- Doesn't clean up repositories at the target location that no longer exist at the source.
+- Only works for Gitaly targets. Use [recommended approach](#recommended-approach-in-all-cases) for Gitaly Cluster targets.
 
 #### Parallel `rsync` for all repositories known to GitLab
 

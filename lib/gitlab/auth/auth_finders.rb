@@ -165,7 +165,7 @@ module Gitlab
 
         authorization_token, _options = token_and_options(current_request)
 
-        ::Clusters::AgentToken.find_by_token(authorization_token)
+        ::Clusters::AgentToken.active.find_by_token(authorization_token)
       end
 
       def find_runner_from_token

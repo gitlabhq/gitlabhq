@@ -7,6 +7,8 @@ export const ANY_TRIGGER_AUTHOR = 'Any';
 export const SUPPORTED_FILTER_PARAMETERS = ['username', 'ref', 'status', 'source'];
 export const FILTER_TAG_IDENTIFIER = 'tag';
 export const SCHEDULE_ORIGIN = 'schedule';
+export const NEEDS_PROPERTY = 'needs';
+export const EXPLICIT_NEEDS_PROPERTY = 'previousStageJobsOrNeeds';
 
 export const TestStatus = {
   FAILED: 'failed',

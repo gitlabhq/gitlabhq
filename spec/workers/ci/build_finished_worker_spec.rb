@@ -50,6 +50,21 @@ RSpec.describe Ci::BuildFinishedWorker do
 
           subject
         end
+
+        context 'when a build can be auto-retried' do
+          before do
+            allow(build)
+              .to receive(:auto_retry_allowed?)
+              .and_return(true)
+          end
+
+          it 'does not add a todo' do
+            expect(::Ci::MergeRequests::AddTodoWhenBuildFailsWorker)
+              .not_to receive(:perform_async)
+
+            subject
+          end
+        end
       end
 
       context 'when build has a chat' do

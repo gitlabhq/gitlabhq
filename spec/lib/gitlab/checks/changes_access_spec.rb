@@ -44,16 +44,30 @@ RSpec.describe Gitlab::Checks::ChangesAccess do
     it 'calls #new_commits' do
       expect(project.repository).to receive(:new_commits).and_call_original
 
-      expect(subject.commits).to eq([])
+      expect(subject.commits).to match_array([])
     end
 
     context 'when changes contain empty revisions' do
-      let(:changes) { [{ newrev: newrev }, { newrev: '' }, { newrev: Gitlab::Git::BLANK_SHA }] }
       let(:expected_commit) { instance_double(Commit) }
 
-      it 'returns only commits with non empty revisions' do
-        expect(project.repository).to receive(:new_commits).with([newrev], { allow_quarantine: true }) { [expected_commit] }
-        expect(subject.commits).to eq([expected_commit])
+      shared_examples 'returns only commits with non empty revisions' do
+        specify do
+          expect(project.repository).to receive(:new_commits).with([newrev], { allow_quarantine: allow_quarantine }) { [expected_commit] }
+          expect(subject.commits).to match_array([expected_commit])
+        end
+      end
+
+      it_behaves_like 'returns only commits with non empty revisions' do
+        let(:changes) { [{ oldrev: oldrev, newrev: newrev }, { newrev: '' }, { newrev: Gitlab::Git::BLANK_SHA }] }
+        let(:allow_quarantine) { true }
+      end
+
+      context 'without oldrev' do
+        it_behaves_like 'returns only commits with non empty revisions' do
+          let(:changes) { [{ newrev: newrev }, { newrev: '' }, { newrev: Gitlab::Git::BLANK_SHA }] }
+          # The quarantine directory should not be used because we're lacking oldrev.
+          let(:allow_quarantine) { false }
+        end
       end
     end
   end
@@ -61,12 +75,13 @@ RSpec.describe Gitlab::Checks::ChangesAccess do
   describe '#commits_for' do
     let(:new_commits) { [] }
     let(:expected_commits) { [] }
+    let(:oldrev) { Gitlab::Git::BLANK_SHA }
 
     shared_examples 'a listing of new commits' do
       it 'returns expected commits' do
         expect(subject).to receive(:commits).and_return(new_commits)
 
-        expect(subject.commits_for(newrev)).to eq(expected_commits)
+        expect(subject.commits_for(oldrev, newrev)).to eq(expected_commits)
       end
     end
 
@@ -172,6 +187,31 @@ RSpec.describe Gitlab::Checks::ChangesAccess do
 
       it_behaves_like 'a listing of new commits'
     end
+
+    context 'with over-push' do
+      let(:newrev) { '1' }
+      let(:oldrev) { '3' }
+
+      # `#new_commits` returns too many commits, where some commits are not
+      # part of the current change.
+      let(:new_commits) do
+        [
+          create_commit('1', %w[2]),
+          create_commit('2', %w[3]),
+          create_commit('3', %w[4]),
+          create_commit('4', %w[])
+        ]
+      end
+
+      let(:expected_commits) do
+        [
+          create_commit('1', %w[2]),
+          create_commit('2', %w[3])
+        ]
+      end
+
+      it_behaves_like 'a listing of new commits'
+    end
   end
 
   describe '#single_change_accesses' do
@@ -180,10 +220,10 @@ RSpec.describe Gitlab::Checks::ChangesAccess do
 
     shared_examples '#single_change_access' do
       before do
-        commits_for.each do |id, commits|
+        commits_for.each do |oldrev, newrev, commits|
           expect(subject)
             .to receive(:commits_for)
-            .with(id)
+            .with(oldrev, newrev)
             .and_return(commits)
         end
       end
@@ -205,7 +245,12 @@ RSpec.describe Gitlab::Checks::ChangesAccess do
     end
 
     context 'with a single change and no new commits' do
-      let(:commits_for) { { 'new' => [] } }
+      let(:commits_for) do
+        [
+          ['old', 'new', []]
+        ]
+      end
+
       let(:changes) do
         [
           { oldrev: 'old', newrev: 'new', ref: 'refs/heads/branch' }
@@ -222,7 +267,12 @@ RSpec.describe Gitlab::Checks::ChangesAccess do
     end
 
     context 'with a single change and new commits' do
-      let(:commits_for) { { 'new' => [create_commit('new', [])] } }
+      let(:commits_for) do
+        [
+          ['old', 'new', [create_commit('new', [])]]
+        ]
+      end
+
       let(:changes) do
         [
           { oldrev: 'old', newrev: 'new', ref: 'refs/heads/branch' }
@@ -240,11 +290,11 @@ RSpec.describe Gitlab::Checks::ChangesAccess do
 
     context 'with multiple changes' do
       let(:commits_for) do
-        {
-          'a' => [create_commit('a', [])],
-          'c' => [create_commit('c', [])],
-          'd' => []
-        }
+        [
+          [nil, 'a', [create_commit('a', [])]],
+          ['a', 'c', [create_commit('c', [])]],
+          [nil, 'd', []]
+        ]
       end
 
       let(:changes) do

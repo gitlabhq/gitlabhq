@@ -26,8 +26,8 @@ module Gitlab
         attr_reader :running
 
         # This exporter is always run on master process
-        def initialize
-          super(Settings.monitoring.web_exporter)
+        def initialize(**options)
+          super(Settings.monitoring.web_exporter, log_enabled: true, log_file: 'web_exporter.log', **options)
 
           # DEPRECATED:
           # these `readiness_checks` are deprecated
@@ -37,10 +37,6 @@ module Gitlab
             WebExporter::ExporterCheck.new(self),
             Gitlab::HealthChecks::PumaCheck
           ]
-        end
-
-        def log_filename
-          File.join(Rails.root, 'log', 'web_exporter.log')
         end
 
         def mark_as_not_running!

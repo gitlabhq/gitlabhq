@@ -6,7 +6,3 @@ GraphQL/FieldMethod:
   - app/graphql/types/metrics/dashboards/annotation_type.rb
   - app/graphql/types/packages/package_details_type.rb
   - app/graphql/types/project_type.rb
-  - ee/app/graphql/types/dast/profile_type.rb
-  - ee/app/graphql/types/dast_site_validation_type.rb
-  - ee/app/graphql/types/group_release_stats_type.rb
-  - ee/app/graphql/types/incident_management/oncall_rotation_type.rb

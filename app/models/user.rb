@@ -48,7 +48,7 @@ class User < ApplicationRecord
 
   add_authentication_token_field :incoming_email_token, token_generator: -> { SecureRandom.hex.to_i(16).to_s(36) }
   add_authentication_token_field :feed_token
-  add_authentication_token_field :static_object_token
+  add_authentication_token_field :static_object_token, encrypted: :optional
 
   default_value_for :admin, false
   default_value_for(:external) { Gitlab::CurrentSettings.user_default_external }
@@ -81,6 +81,7 @@ class User < ApplicationRecord
   # This module adds async behaviour to Devise emails
   # and should be added after Devise modules are initialized.
   include AsyncDeviseEmail
+  include ForcedEmailConfirmation
 
   MINIMUM_INACTIVE_DAYS = 90
 
@@ -250,7 +251,7 @@ class User < ApplicationRecord
   validate :notification_email_verified, if: :notification_email_changed?
   validate :public_email_verified, if: :public_email_changed?
   validate :commit_email_verified, if: :commit_email_changed?
-  validate :signup_email_valid?, on: :create, if: ->(user) { !user.created_by_id }
+  validate :email_allowed_by_restrictions?, if: ->(user) { user.new_record? ? !user.created_by_id : user.email_changed? }
   validate :check_username_format, if: :username_changed?
 
   validates :theme_id, allow_nil: true, inclusion: { in: Gitlab::Themes.valid_ids,
@@ -330,6 +331,7 @@ class User < ApplicationRecord
   delegate :pronouns, :pronouns=, to: :user_detail, allow_nil: true
   delegate :pronunciation, :pronunciation=, to: :user_detail, allow_nil: true
   delegate :registration_objective, :registration_objective=, to: :user_detail, allow_nil: true
+  delegate :requires_credit_card_verification, :requires_credit_card_verification=, to: :user_detail, allow_nil: true
 
   accepts_nested_attributes_for :user_preference, update_only: true
   accepts_nested_attributes_for :user_detail, update_only: true
@@ -465,7 +467,7 @@ class User < ApplicationRecord
   scope :dormant, -> { with_state(:active).human_or_service_user.where('last_activity_on <= ?', MINIMUM_INACTIVE_DAYS.day.ago.to_date) }
   scope :with_no_activity, -> { with_state(:active).human_or_service_user.where(last_activity_on: nil) }
   scope :by_provider_and_extern_uid, ->(provider, extern_uid) { joins(:identities).merge(Identity.with_extern_uid(provider, extern_uid)) }
-  scope :get_ids_by_username, -> (username) { where(username: username).pluck(:id) }
+  scope :by_ids_or_usernames, -> (ids, usernames) { where(username: usernames).or(where(id: ids)) }
 
   strip_attributes! :name
 
@@ -536,27 +538,15 @@ class User < ApplicationRecord
   end
 
   def self.with_two_factor
-    with_u2f_registrations = <<-SQL
-      EXISTS (
-        SELECT *
-        FROM u2f_registrations AS u2f
-        WHERE u2f.user_id = users.id
-      ) OR users.otp_required_for_login = ?
-      OR
-      EXISTS (
-        SELECT *
-        FROM webauthn_registrations AS webauthn
-        WHERE webauthn.user_id = users.id
-      )
-    SQL
-
-    where(with_u2f_registrations, true)
+    where(otp_required_for_login: true)
+      .or(where_exists(U2fRegistration.where(U2fRegistration.arel_table[:user_id].eq(arel_table[:id]))))
+      .or(where_exists(WebauthnRegistration.where(WebauthnRegistration.arel_table[:user_id].eq(arel_table[:id]))))
   end
 
   def self.without_two_factor
-    joins("LEFT OUTER JOIN u2f_registrations AS u2f ON u2f.user_id = users.id
-           LEFT OUTER JOIN webauthn_registrations AS webauthn ON webauthn.user_id = users.id")
-      .where("u2f.id IS NULL AND webauthn.id IS NULL AND users.otp_required_for_login = ?", false)
+    where
+      .missing(:u2f_registrations, :webauthn_registrations)
+      .where(otp_required_for_login: false)
   end
 
   #
@@ -720,11 +710,17 @@ class User < ApplicationRecord
         .take(1) # at most 1 record as there is a unique constraint
 
       where(
-        fuzzy_arel_match(:name, query)
-          .or(fuzzy_arel_match(:username, query))
+        fuzzy_arel_match(:name, query, use_minimum_char_limit: user_search_minimum_char_limit)
+          .or(fuzzy_arel_match(:username, query, use_minimum_char_limit: user_search_minimum_char_limit))
           .or(arel_table[:email].eq(query))
           .or(arel_table[:id].eq(matched_by_email_user_id))
       )
+    end
+
+    # This method is overridden in JiHu.
+    # https://gitlab.com/gitlab-org/gitlab/-/issues/348509
+    def user_search_minimum_char_limit
+      true
     end
 
     def by_login(login)
@@ -840,6 +836,10 @@ class User < ApplicationRecord
 
     def single_user
       User.non_internal.first if single_user?
+    end
+
+    def get_ids_by_ids_or_usernames(ids, usernames)
+      by_ids_or_usernames(ids, usernames).pluck(:id)
     end
   end
 
@@ -1337,7 +1337,7 @@ class User < ApplicationRecord
 
   def can_leave_project?(project)
     project.namespace != namespace &&
-      project.project_member(self)
+      project.member(self)
   end
 
   def full_website_url
@@ -1536,8 +1536,8 @@ class User < ApplicationRecord
     end
   end
 
-  def manageable_namespaces
-    @manageable_namespaces ||= [namespace] + manageable_groups
+  def forkable_namespaces
+    @forkable_namespaces ||= [namespace] + manageable_groups(include_groups_with_developer_maintainer_access: true)
   end
 
   def manageable_groups(include_groups_with_developer_maintainer_access: false)
@@ -1606,23 +1606,32 @@ class User < ApplicationRecord
 
   def ci_owned_runners
     @ci_owned_runners ||= begin
-      project_runners = Ci::RunnerProject
-        .where(project: authorized_projects(Gitlab::Access::MAINTAINER))
-        .joins(:runner)
-        .select('ci_runners.*')
-
-      group_runners = Ci::RunnerNamespace
-        .where(namespace_id: owned_groups.self_and_descendant_ids)
-        .joins(:runner)
-        .select('ci_runners.*')
-
-      Ci::Runner.from_union([project_runners, group_runners]).allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/336436')
+      if ci_owned_runners_cross_joins_fix_enabled?
+        Ci::Runner
+          .from_union([ci_owned_project_runners_from_project_members,
+                       ci_owned_project_runners_from_group_members,
+                       ci_owned_group_runners])
+      else
+        Ci::Runner
+          .from_union([ci_legacy_owned_project_runners, ci_legacy_owned_group_runners])
+          .allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/336436')
+      end
     end
   end
 
   def owns_runner?(runner)
-    ::Gitlab::Database.allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/336436') do
+    if ci_owned_runners_cross_joins_fix_enabled?
       ci_owned_runners.exists?(runner.id)
+    else
+      ::Gitlab::Database.allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/336436') do
+        ci_owned_runners.exists?(runner.id)
+      end
+    end
+  end
+
+  def ci_owned_runners_cross_joins_fix_enabled?
+    strong_memoize(:ci_owned_runners_cross_joins_fix_enabled) do
+      Feature.enabled?(:ci_owned_runners_cross_joins_fix, self, default_enabled: :yaml)
     end
   end
 
@@ -1902,6 +1911,10 @@ class User < ApplicationRecord
     true
   end
 
+  def can_log_in_with_non_expired_password?
+    can?(:log_in) && !password_expired_if_applicable?
+  end
+
   def can_be_deactivated?
     active? && no_recent_activity? && !internal?
   end
@@ -1980,18 +1993,22 @@ class User < ApplicationRecord
     ci_job_token_scope.present?
   end
 
-  # override from Devise::Confirmable
+  # override from Devise::Models::Confirmable
   #
   # Add the primary email to user.emails (or confirm it if it was already
   # present) when the primary email is confirmed.
-  def confirm(*args)
-    saved = super(*args)
+  def confirm(args = {})
+    saved = super(args)
     return false unless saved
 
     email_to_confirm = self.emails.find_by(email: self.email)
 
     if email_to_confirm.present?
-      email_to_confirm.confirm(*args)
+      if skip_confirmation_period_expiry_check
+        email_to_confirm.force_confirm(args)
+      else
+        email_to_confirm.confirm(args)
+      end
     else
       add_primary_email_to_emails!
     end
@@ -2142,14 +2159,14 @@ class User < ApplicationRecord
     end
   end
 
-  def signup_email_valid?
+  def email_allowed_by_restrictions?
     error = validate_admin_signup_restrictions(email)
 
     errors.add(:email, error) if error
   end
 
   def signup_email_invalid_message
-    _('is not allowed for sign-up.')
+    self.new_record? ? _('is not allowed for sign-up.') : _('is not allowed.')
   end
 
   def check_username_format
@@ -2191,6 +2208,50 @@ class User < ApplicationRecord
     return unless ::Gitlab::Auth::Ldap::Config.enabled? && ldap_blocked?
 
     ::Gitlab::Auth::Ldap::Access.allowed?(self)
+  end
+
+  def ci_legacy_owned_project_runners
+    Ci::RunnerProject
+      .select('ci_runners.*')
+      .joins(:runner)
+      .where(project: authorized_projects(Gitlab::Access::MAINTAINER))
+  end
+
+  def ci_legacy_owned_group_runners
+    Ci::RunnerNamespace
+      .select('ci_runners.*')
+      .joins(:runner)
+      .where(namespace_id: owned_groups.self_and_descendant_ids)
+  end
+
+  def ci_owned_project_runners_from_project_members
+    Ci::RunnerProject
+      .select('ci_runners.*')
+      .joins(:runner)
+      .where(project: project_members.where('access_level >= ?', Gitlab::Access::MAINTAINER).pluck(:source_id))
+  end
+
+  def ci_owned_project_runners_from_group_members
+    Ci::RunnerProject
+      .select('ci_runners.*')
+      .joins(:runner)
+      .joins('JOIN ci_project_mirrors ON ci_project_mirrors.project_id = ci_runner_projects.project_id')
+      .joins('JOIN ci_namespace_mirrors ON ci_namespace_mirrors.namespace_id = ci_project_mirrors.namespace_id')
+      .merge(ci_namespace_mirrors_for_group_members(Gitlab::Access::MAINTAINER))
+  end
+
+  def ci_owned_group_runners
+    Ci::RunnerNamespace
+      .select('ci_runners.*')
+      .joins(:runner)
+      .joins('JOIN ci_namespace_mirrors ON ci_namespace_mirrors.namespace_id = ci_runner_namespaces.namespace_id')
+      .merge(ci_namespace_mirrors_for_group_members(Gitlab::Access::OWNER))
+  end
+
+  def ci_namespace_mirrors_for_group_members(level)
+    Ci::NamespaceMirror.contains_any_of_namespaces(
+      group_members.where('access_level >= ?', level).pluck(:source_id)
+    )
   end
 end
 

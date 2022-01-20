@@ -3,9 +3,8 @@
 module DependencyProxy
   class CleanupManifestWorker
     include ApplicationWorker
-    include LimitedCapacity::Worker
+    include ::Packages::CleanupArtifactWorker
     include Gitlab::Utils::StrongMemoize
-    include DependencyProxy::CleanupWorker
 
     data_consistency :always
 
@@ -16,6 +15,10 @@ module DependencyProxy
     urgency :low
     worker_resource_boundary :unknown
     idempotent!
+
+    def max_running_jobs
+      ::Gitlab::CurrentSettings.dependency_proxy_ttl_group_policy_worker_capacity
+    end
 
     private
 

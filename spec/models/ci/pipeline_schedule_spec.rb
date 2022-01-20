@@ -23,6 +23,11 @@ RSpec.describe Ci::PipelineSchedule do
     subject { build(:ci_pipeline_schedule, project: project) }
   end
 
+  it_behaves_like 'cleanup by a loose foreign key' do
+    let!(:parent) { create(:user) }
+    let!(:model) { create(:ci_pipeline_schedule, owner: parent) }
+  end
+
   describe 'validations' do
     it 'does not allow invalid cron patterns' do
       pipeline_schedule = build(:ci_pipeline_schedule, cron: '0 0 0 * *')

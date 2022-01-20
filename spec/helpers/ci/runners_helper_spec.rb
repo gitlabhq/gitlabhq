@@ -12,7 +12,7 @@ RSpec.describe Ci::RunnersHelper do
   describe '#runner_status_icon', :clean_gitlab_redis_cache do
     it "returns - not contacted yet" do
       runner = create(:ci_runner)
-      expect(helper.runner_status_icon(runner)).to include("not connected yet")
+      expect(helper.runner_status_icon(runner)).to include("not contacted yet")
     end
 
     it "returns offline text" do
@@ -79,12 +79,7 @@ RSpec.describe Ci::RunnersHelper do
     it 'returns the data in format' do
       expect(helper.admin_runners_data_attributes).to eq({
         runner_install_help_page: 'https://docs.gitlab.com/runner/install/',
-        registration_token: Gitlab::CurrentSettings.runners_registration_token,
-        active_runners_count: '0',
-        all_runners_count: '2',
-        instance_runners_count: '1',
-        group_runners_count: '0',
-        project_runners_count: '1'
+        registration_token: Gitlab::CurrentSettings.runners_registration_token
       })
     end
   end

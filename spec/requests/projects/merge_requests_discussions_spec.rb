@@ -244,7 +244,7 @@ RSpec.describe 'merge requests discussions' do
 
       context 'when current_user role changes' do
         before do
-          Members::UpdateService.new(owner, access_level: Gitlab::Access::GUEST).execute(project.project_member(user))
+          Members::UpdateService.new(owner, access_level: Gitlab::Access::GUEST).execute(project.member(user))
         end
 
         it_behaves_like 'cache miss' do

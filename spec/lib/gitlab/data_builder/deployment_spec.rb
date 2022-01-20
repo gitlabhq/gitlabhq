@@ -37,6 +37,7 @@ RSpec.describe Gitlab::DataBuilder::Deployment do
       expect(data[:user_url]).to eq(expected_user_url)
       expect(data[:commit_url]).to eq(expected_commit_url)
       expect(data[:commit_title]).to eq(commit.title)
+      expect(data[:ref]).to eq(deployment.ref)
     end
 
     it 'does not include the deployable URL when there is no deployable' do

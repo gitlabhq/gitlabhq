@@ -15,6 +15,7 @@ const mockOverlayData = {
 };
 
 describe('Design management design presentation component', () => {
+  const originalGon = window.gon;
   let wrapper;
 
   function createComponent(
@@ -39,6 +40,8 @@ describe('Design management design presentation component', () => {
       stubs,
     });
 
+    // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+    // eslint-disable-next-line no-restricted-syntax
     wrapper.setData(data);
     wrapper.element.scrollTo = jest.fn();
   }
@@ -113,8 +116,13 @@ describe('Design management design presentation component', () => {
       });
   }
 
+  beforeEach(() => {
+    window.gon = { current_user_id: 1 };
+  });
+
   afterEach(() => {
     wrapper.destroy();
+    window.gon = originalGon;
   });
 
   it('renders image and overlay when image provided', () => {
@@ -547,6 +555,25 @@ describe('Design management design presentation component', () => {
         ).then(() => {
           expect(wrapper.emitted('openCommentForm')).toBeDefined();
         });
+      });
+    });
+  });
+
+  describe('when user is not logged in', () => {
+    beforeEach(() => {
+      window.gon = { current_user_id: null };
+      createComponent(
+        {
+          image: 'test.jpg',
+          imageName: 'test',
+        },
+        mockOverlayData,
+      );
+    });
+
+    it('disables commenting from design overlay', () => {
+      expect(wrapper.findComponent(DesignOverlay).props()).toMatchObject({
+        disableCommenting: true,
       });
     });
   });

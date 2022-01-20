@@ -11,7 +11,7 @@ RSpec.describe InjectEnterpriseEditionModule do
 
   before do
     # Make sure we're not relying on which mode we're running under
-    allow(Gitlab).to receive(:extensions).and_return([extension_name.downcase])
+    allow(GitlabEdition).to receive(:extensions).and_return([extension_name.downcase])
 
     # Test on an imagined extension and imagined class
     stub_const(fish_name, fish_class) # Fish

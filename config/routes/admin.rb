@@ -159,7 +159,7 @@ namespace :admin do
 
   resources :labels
 
-  resources :runners, only: [:index, :show, :update, :destroy] do
+  resources :runners, only: [:index, :show, :edit, :update, :destroy] do
     member do
       post :resume
       post :pause

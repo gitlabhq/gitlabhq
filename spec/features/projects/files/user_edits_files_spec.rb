@@ -150,7 +150,7 @@ RSpec.describe 'Projects > Files > User edits files', :js do
 
       expect_fork_prompt
 
-      click_link_or_button('Fork project')
+      click_link_or_button('Fork')
 
       expect_fork_status
 
@@ -169,7 +169,7 @@ RSpec.describe 'Projects > Files > User edits files', :js do
 
       expect_fork_prompt
 
-      click_link_or_button('Fork project')
+      click_link_or_button('Fork')
 
       expect_fork_status
 
@@ -183,7 +183,7 @@ RSpec.describe 'Projects > Files > User edits files', :js do
       click_link_or_button('Edit')
 
       expect_fork_prompt
-      click_link_or_button('Fork project')
+      click_link_or_button('Fork')
 
       find('.file-editor', match: :first)
 
@@ -214,7 +214,7 @@ RSpec.describe 'Projects > Files > User edits files', :js do
         click_link('.gitignore')
         click_link_or_button('Edit')
 
-        expect(page).not_to have_link('Fork project')
+        expect(page).not_to have_link('Fork')
 
         find('#editor')
         set_editor_value('*.rbca')

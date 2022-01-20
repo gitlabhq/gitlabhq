@@ -21,11 +21,7 @@ For public and internal projects, you can change who can see your:
 - Pipelines
 - Job output logs
 - Job artifacts
-- [Pipeline security dashboard](../../user/application_security/security_dashboard/index.md#pipeline-security)
-
-However:
-
-- Job output logs and artifacts are [never visible for Guest users and non-project members](https://gitlab.com/gitlab-org/gitlab/-/issues/25649).
+- [Pipeline security dashboard](../../user/application_security/security_dashboard/index.md#view-vulnerabilities-in-a-pipeline)
 
 To change the visibility of your pipelines and related features:
 
@@ -41,8 +37,10 @@ To change the visibility of your pipelines and related features:
 
    When it is cleared:
 
-   - For **public** projects, pipelines are visible to everyone. Related features are visible
-     only to project members (Reporter or higher).
+   - For **public** projects, job logs, job artifacts, the pipeline security dashboard,
+     and the **CI/CD** menu items are visible only to project members (Reporter or higher).
+     Other users, including guest users, can only view the status of pipelines and jobs, and only
+     when viewing merge requests or commits.
    - For **internal** projects, pipelines are visible to all logged in users except [external users](../../user/permissions.md#external-users).
      Related features are visible only to project members (Reporter or higher).
    - For **private** projects, pipelines and related features are visible to project members (Reporter or higher) only.
@@ -161,7 +159,8 @@ in the `.gitlab-ci.yml` file.
 
 ## Limit the number of changes fetched during clone
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/28919) in GitLab 12.0.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/28919) in GitLab 12.0.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/77576) `git depth` value in GitLab 14.7.
 
 You can limit the number of changes that GitLab CI/CD fetches when it clones
 a repository.
@@ -173,8 +172,8 @@ a repository.
    The maximum value is `1000`. To disable shallow clone and make GitLab CI/CD
    fetch all branches and tags each time, keep the value empty or set to `0`.
 
-In GitLab 12.0 and later, newly created projects automatically have a default
-`git depth` value of `50`.
+In GitLab versions 14.7 and later, newly created projects have a default `git depth`
+value of `20`. GitLab versions 14.6 and earlier have a default `git depth` value of `50`.
 
 This value can be overridden by the [`GIT_DEPTH` variable](../large_repositories/index.md#shallow-cloning)
 in the `.gitlab-ci.yml` file.

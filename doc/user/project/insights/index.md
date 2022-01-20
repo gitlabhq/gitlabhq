@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Insights **(ULTIMATE)**
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/725) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.0.
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/725) in GitLab 12.0.
 
 Configure the Insights that matter for your projects to explore data such as
 triage hygiene, issues created/closed per a given period, average time for merge
@@ -297,7 +297,7 @@ you may see `created_at` in place of `merged_at`. `created_at` is used instead.
 
 ### `projects`
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/10904) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.4.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/10904) in GitLab 12.4.
 
 You can limit where the "issuables" can be queried from:
 

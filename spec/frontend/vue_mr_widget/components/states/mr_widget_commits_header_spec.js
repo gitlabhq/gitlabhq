@@ -60,6 +60,8 @@ describe('Commits header component', () => {
 
     it('has a chevron-right icon', () => {
       createComponent();
+      // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+      // eslint-disable-next-line no-restricted-syntax
       wrapper.setData({ expanded: false });
 
       return wrapper.vm.$nextTick().then(() => {
@@ -111,6 +113,8 @@ describe('Commits header component', () => {
   describe('when expanded', () => {
     beforeEach(() => {
       createComponent();
+      // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+      // eslint-disable-next-line no-restricted-syntax
       wrapper.setData({ expanded: true });
     });
 

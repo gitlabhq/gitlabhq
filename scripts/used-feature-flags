@@ -3,7 +3,7 @@
 
 require 'set'
 require 'fileutils'
-require_relative 'lib/gitlab'
+require_relative '../lib/gitlab_edition'
 
 class String
   def red
@@ -28,7 +28,7 @@ flags_paths = [
 ]
 
 # For EE additionally process `ee/` feature flags
-if Gitlab.ee?
+if GitlabEdition.ee?
   flags_paths << 'ee/config/feature_flags/**/*.yml'
 
   # Geo feature flags are constructed dynamically and there's no explicit checks in the codebase so we mark all
@@ -43,7 +43,7 @@ if Gitlab.ee?
 end
 
 # For JH additionally process `jh/` feature flags
-if Gitlab.jh?
+if GitlabEdition.jh?
   flags_paths << 'jh/config/feature_flags/**/*.yml'
 
   Dir.glob('jh/app/replicators/geo/*_replicator.rb').each_with_object(Set.new) do |path, memo|

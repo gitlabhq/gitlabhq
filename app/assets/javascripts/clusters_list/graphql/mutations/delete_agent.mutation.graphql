@@ -1,0 +1,5 @@
+mutation deleteClusterAgent($input: ClusterAgentDeleteInput!) {
+  clusterAgentDelete(input: $input) {
+    errors
+  }
+}

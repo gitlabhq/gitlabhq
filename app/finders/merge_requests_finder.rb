@@ -140,14 +140,13 @@ class MergeRequestsFinder < IssuableFinder
 
   # rubocop: disable CodeReuse/ActiveRecord
   def by_draft(items)
-    draft_param = params[:draft] || params[:wip]
+    draft_param = Gitlab::Utils.to_boolean(params.fetch(:draft) { params.fetch(:wip, nil) })
+    return items if draft_param.nil?
 
-    if draft_param == 'yes'
+    if draft_param
       items.where(wip_match(items.arel_table))
-    elsif draft_param == 'no'
-      items.where.not(wip_match(items.arel_table))
     else
-      items
+      items.where.not(wip_match(items.arel_table))
     end
   end
   # rubocop: enable CodeReuse/ActiveRecord

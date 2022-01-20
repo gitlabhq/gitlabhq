@@ -83,6 +83,46 @@ RSpec.describe QA::Runtime::Env do
     end
   end
 
+  describe '.running_on_dot_com?' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:url, :result) do
+      'https://www.gitlab.com'     | true
+      'https://staging.gitlab.com' | true
+      'http://www.gitlab.com'      | true
+      'http://localhost:3000'      | false
+      'http://localhost'           | false
+      'http://gdk.test:3000'       | false
+    end
+
+    with_them do
+      before do
+        QA::Runtime::Scenario.define(:gitlab_address, url)
+      end
+
+      it { expect(described_class.running_on_dot_com?).to eq result }
+    end
+  end
+
+  describe '.running_on_dev?' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:url, :result) do
+      'https://www.gitlab.com' | false
+      'http://localhost:3000'  | true
+      'http://localhost'       | false
+      'http://gdk.test:3000'   | true
+    end
+
+    with_them do
+      before do
+        QA::Runtime::Scenario.define(:gitlab_address, url)
+      end
+
+      it { expect(described_class.running_on_dev?).to eq result }
+    end
+  end
+
   describe '.personal_access_token' do
     around do |example|
       described_class.instance_variable_set(:@personal_access_token, nil)
@@ -173,31 +213,23 @@ RSpec.describe QA::Runtime::Env do
       stub_env('CI_NODE_TOTAL', '2')
     end
 
-    it 'returns true if KNAPSACK_GENERATE_REPORT is defined' do
-      stub_env('KNAPSACK_GENERATE_REPORT', 'true')
-
+    it 'returns true if running in parallel CI run' do
       expect(described_class.knapsack?).to be_truthy
     end
 
-    it 'returns true if KNAPSACK_REPORT_PATH is defined' do
-      stub_env('KNAPSACK_REPORT_PATH', '/a/path')
-
-      expect(described_class.knapsack?).to be_truthy
-    end
-
-    it 'returns true if KNAPSACK_TEST_FILE_PATTERN is defined' do
-      stub_env('KNAPSACK_TEST_FILE_PATTERN', '/a/**/pattern')
-
-      expect(described_class.knapsack?).to be_truthy
-    end
-
-    it 'returns false if neither KNAPSACK_GENERATE_REPORT nor KNAPSACK_REPORT_PATH nor KNAPSACK_TEST_FILE_PATTERN are defined' do
+    it 'returns false if knapsack disabled' do
+      stub_env('NO_KNAPSACK', 'true')
       expect(described_class.knapsack?).to be_falsey
     end
 
-    it 'returns false if not running in parallel job' do
+    it 'returns false if not running in a parallel job' do
       stub_env('CI_NODE_TOTAL', '1')
-      stub_env('KNAPSACK_GENERATE_REPORT', 'true')
+
+      expect(described_class.knapsack?).to be_falsey
+    end
+
+    it 'returns false if not running in ci' do
+      stub_env('CI_NODE_TOTAL', nil)
 
       expect(described_class.knapsack?).to be_falsey
     end
@@ -325,6 +357,38 @@ RSpec.describe QA::Runtime::Env do
         stub_env('QA_REMOTE_GRID', 'localhost:4444')
 
         expect(described_class.remote_grid).to eq('http://localhost:4444/wd/hub')
+      end
+    end
+  end
+
+  describe '.test_resources_created_filepath' do
+    context 'when not in CI' do
+      before do
+        allow(described_class).to receive(:running_in_ci?).and_return(false)
+      end
+
+      it 'returns default path if QA_TEST_RESOURCES_CREATED_FILEPATH is not defined' do
+        stub_env('QA_TEST_RESOURCES_CREATED_FILEPATH', nil)
+
+        expect(described_class.test_resources_created_filepath).to include('tmp/test-resources.json')
+      end
+
+      it 'returns path if QA_TEST_RESOURCES_CREATED_FILEPATH is defined' do
+        stub_env('QA_TEST_RESOURCES_CREATED_FILEPATH', 'path/to_file')
+
+        expect(described_class.test_resources_created_filepath).to eq('path/to_file')
+      end
+    end
+
+    context 'when in CI' do
+      before do
+        allow(described_class).to receive(:running_in_ci?).and_return(true)
+        allow(SecureRandom).to receive(:hex).with(3).and_return('abc123')
+        stub_env('QA_TEST_RESOURCES_CREATED_FILEPATH', nil)
+      end
+
+      it 'returns path with random hex in file name' do
+        expect(described_class.test_resources_created_filepath).to include('tmp/test-resources-abc123.json')
       end
     end
   end

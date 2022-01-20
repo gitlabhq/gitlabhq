@@ -39,6 +39,12 @@ module Ci
         job.pipeline = pipeline
         job.project = pipeline.project
         job.ref = pipeline.ref
+
+        # update metadata since it might have been lazily initialised before this call
+        # metadata is present on `Ci::Processable`
+        if job.respond_to?(:metadata) && job.metadata
+          job.metadata.project = pipeline.project
+        end
       end
     end
   end

@@ -21,6 +21,7 @@ describe('Blob viewer', () => {
   setTestTimeout(2000);
 
   beforeEach(() => {
+    window.gon.features = { refactorBlobViewer: false }; // This file is based on the old (non-refactored) blob viewer
     jest.spyOn(window, 'requestIdleCallback').mockImplementation(execImmediately);
     $.fn.extend(jQueryMock);
     mock = new MockAdapter(axios);

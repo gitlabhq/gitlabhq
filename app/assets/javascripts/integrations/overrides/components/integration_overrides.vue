@@ -11,6 +11,8 @@ import { __, s__ } from '~/locale';
 import ProjectAvatar from '~/vue_shared/components/project_avatar.vue';
 import UrlSync from '~/vue_shared/components/url_sync.vue';
 
+import IntegrationTabs from './integration_tabs.vue';
+
 const DEFAULT_PAGE = 1;
 
 export default {
@@ -23,6 +25,7 @@ export default {
     GlAlert,
     ProjectAvatar,
     UrlSync,
+    IntegrationTabs,
   },
   props: {
     overridesPath: {
@@ -46,6 +49,9 @@ export default {
     };
   },
   computed: {
+    overridesCount() {
+      return this.isLoading ? null : this.totalItems;
+    },
     showPagination() {
       return this.totalItems > this.$options.DEFAULT_PER_PAGE && this.overrides.length > 0;
     },
@@ -100,6 +106,7 @@ export default {
 
 <template>
   <div>
+    <integration-tabs :project-overrides-count="overridesCount" />
     <gl-alert v-if="errorMessage" variant="danger" :dismissible="false">
       {{ errorMessage }}
     </gl-alert>

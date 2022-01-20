@@ -1,6 +1,6 @@
 - title: Introducing Infrastructure as Code (IaC) security scanning
   body: |
-    With Gitlab 14.5 we're introducing security scanning for Infrastructure as Code (IaC) configuration files. Like all our SAST scanners, we've chosen to make this capability available for all customers for free to encourage secure coding practices with the rise of IaC. The initial version of this IaC security scanner supports configuration files for Terraform, Ansible, AWS CloudFormation, and Kubernetes and is based on the open-source [Keeping Infrastructure as Code Secure (KICS) project](https://kics.io/). This new IaC scanning capability joins our [existing Kubernetes manifest SAST scanner](https://docs.gitlab.com/ee/user/application_security/sast/#enabling-kubesec-analyzer).
+    With GitLab 14.5 we're introducing security scanning for Infrastructure as Code (IaC) configuration files. Like all our SAST scanners, we've chosen to make this capability available for all customers for free to encourage secure coding practices with the rise of IaC. The initial version of this IaC security scanner supports configuration files for Terraform, Ansible, AWS CloudFormation, and Kubernetes and is based on the open-source [Keeping Infrastructure as Code Secure (KICS) project](https://kics.io/). This new IaC scanning capability joins our [existing Kubernetes manifest SAST scanner](https://docs.gitlab.com/ee/user/application_security/sast/#enabling-kubesec-analyzer).
   stage: Secure
   self-managed: true
   gitlab-com: true

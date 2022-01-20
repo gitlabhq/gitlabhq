@@ -117,6 +117,8 @@ describe('Design overlay component', () => {
         it.each([notes[0].discussion.notes.nodes[1], notes[0].discussion.notes.nodes[0]])(
           'should not apply inactive class to the pin for the active discussion',
           (note) => {
+            // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+            // eslint-disable-next-line no-restricted-syntax
             wrapper.setData({
               activeDiscussion: {
                 id: note.id,
@@ -131,6 +133,8 @@ describe('Design overlay component', () => {
         );
 
         it('should apply inactive class to all pins besides the active one', () => {
+          // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+          // eslint-disable-next-line no-restricted-syntax
           wrapper.setData({
             activeDiscussion: {
               id: notes[0].id,
@@ -212,6 +216,8 @@ describe('Design overlay component', () => {
       const { position } = note;
       const newCoordinates = { x: 20, y: 20 };
 
+      // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+      // eslint-disable-next-line no-restricted-syntax
       wrapper.setData({
         movingNoteNewPosition: {
           ...position,
@@ -345,6 +351,8 @@ describe('Design overlay component', () => {
           });
 
           const newCoordinates = { x: 20, y: 20 };
+          // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+          // eslint-disable-next-line no-restricted-syntax
           wrapper.setData({
             movingNoteStartPosition: {
               ...notes[0].position,
@@ -368,6 +376,8 @@ describe('Design overlay component', () => {
     it('should calculate delta correctly from state', () => {
       createComponent();
 
+      // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+      // eslint-disable-next-line no-restricted-syntax
       wrapper.setData({
         movingNoteStartPosition: {
           clientX: 10,

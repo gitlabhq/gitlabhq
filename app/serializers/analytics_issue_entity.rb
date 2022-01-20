@@ -6,6 +6,13 @@ class AnalyticsIssueEntity < Grape::Entity
 
   expose :title
   expose :author, using: UserEntity
+  expose :project_path do |object|
+    object[:project_path]
+  end
+
+  expose :namespace_full_path do |object|
+    object[:namespace_path]
+  end
 
   expose :iid do |object|
     object[:iid].to_s

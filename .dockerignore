@@ -5,7 +5,7 @@
 # Following are the files we need:
 # - ./config/initializers/0_inject_enterprise_edition_module.rb
 # - ./ee/app/models/license.rb
-# - ./lib/gitlab.rb
+# - ./lib/gitlab_edition.rb
 # - ./lib/gitlab/utils.rb
 # - ./qa/
 # - ./INSTALLATION_TYPE

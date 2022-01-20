@@ -9,6 +9,7 @@ class ApplicationSetting < ApplicationRecord
   include Sanitizable
 
   ignore_columns %i[elasticsearch_shards elasticsearch_replicas], remove_with: '14.4', remove_after: '2021-09-22'
+  ignore_columns %i[static_objects_external_storage_auth_token], remove_with: '14.9', remove_after: '2022-03-22'
 
   INSTANCE_REVIEW_MIN_USERS = 50
   GRAFANA_URL_ERROR_MESSAGE = 'Please check your Grafana URL setting in ' \
@@ -21,7 +22,7 @@ class ApplicationSetting < ApplicationRecord
 
   add_authentication_token_field :runners_registration_token, encrypted: -> { Feature.enabled?(:application_settings_tokens_optional_encryption) ? :optional : :required }
   add_authentication_token_field :health_check_access_token
-  add_authentication_token_field :static_objects_external_storage_auth_token, encrypted: :optional
+  add_authentication_token_field :static_objects_external_storage_auth_token, encrypted: :required
 
   belongs_to :self_monitoring_project, class_name: "Project", foreign_key: 'instance_administration_project_id'
   belongs_to :push_rule
@@ -76,6 +77,10 @@ class ApplicationSetting < ApplicationRecord
   default_value_for :kroki_formats, {}
 
   chronic_duration_attr_writer :archive_builds_in_human_readable, :archive_builds_in_seconds
+
+  chronic_duration_attr :runner_token_expiration_interval_human_readable, :runner_token_expiration_interval
+  chronic_duration_attr :group_runner_token_expiration_interval_human_readable, :group_runner_token_expiration_interval
+  chronic_duration_attr :project_runner_token_expiration_interval_human_readable, :project_runner_token_expiration_interval
 
   validates :grafana_url,
             system_hook_url: {
@@ -352,15 +357,25 @@ class ApplicationSetting < ApplicationRecord
   validates :hashed_storage_enabled, inclusion: { in: [true], message: _("Hashed storage can't be disabled anymore for new projects") }
 
   validates :container_registry_delete_tags_service_timeout,
+            :container_registry_cleanup_tags_service_max_list_size,
+            :container_registry_expiration_policies_worker_capacity,
             numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
-  validates :container_registry_cleanup_tags_service_max_list_size,
+  validates :container_registry_import_max_tags_count,
+            :container_registry_import_max_retries,
+            :container_registry_import_start_max_retries,
+            :container_registry_import_max_step_duration,
+            allow_nil: false,
             numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
-  validates :container_registry_expiration_policies_worker_capacity,
-            numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+  validates :container_registry_import_target_plan, presence: true
+  validates :container_registry_import_created_before, presence: true
 
   validates :dependency_proxy_ttl_group_policy_worker_capacity,
+            allow_nil: false,
+            numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+
+  validates :packages_cleanup_package_file_worker_capacity,
             allow_nil: false,
             numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
@@ -498,6 +513,9 @@ class ApplicationSetting < ApplicationRecord
   end
 
   validates :notes_create_limit,
+            numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+
+  validates :user_email_lookup_limit,
             numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
   validates :notes_create_limit_allowlist,

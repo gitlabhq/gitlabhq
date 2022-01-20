@@ -336,8 +336,8 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigration, type: :m
   end
 
   describe '#smoothed_time_efficiency' do
-    let(:migration) { create(:batched_background_migration, interval: 120.seconds) }
-    let(:end_time) { Time.zone.now }
+    let_it_be(:migration) { create(:batched_background_migration, interval: 120.seconds) }
+    let_it_be(:end_time) { Time.zone.now }
 
     around do |example|
       freeze_time do
@@ -345,7 +345,7 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigration, type: :m
       end
     end
 
-    let(:common_attrs) do
+    let_it_be(:common_attrs) do
       {
         status: :succeeded,
         batched_migration: migration,
@@ -364,13 +364,14 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigration, type: :m
     end
 
     context 'when there are enough jobs' do
+      let_it_be(:number_of_jobs) { 10 }
+      let_it_be(:jobs) { create_list(:batched_background_migration_job, number_of_jobs, **common_attrs.merge(batched_migration: migration)) }
+
       subject { migration.smoothed_time_efficiency(number_of_jobs: number_of_jobs) }
 
-      let!(:jobs) { create_list(:batched_background_migration_job, number_of_jobs, **common_attrs.merge(batched_migration: migration)) }
-      let(:number_of_jobs) { 10 }
-
       before do
-        expect(migration).to receive_message_chain(:batched_jobs, :successful_in_execution_order, :reverse_order, :limit).with(no_args).with(no_args).with(number_of_jobs).and_return(jobs)
+        expect(migration).to receive_message_chain(:batched_jobs, :successful_in_execution_order, :reverse_order, :limit, :with_preloads)
+                               .and_return(jobs)
       end
 
       def mock_efficiencies(*effs)
@@ -409,6 +410,18 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigration, type: :m
 
           expect(subject).to be_within(0.02).of(0.96)
         end
+      end
+    end
+
+    context 'with preloaded batched migration' do
+      it 'avoids N+1' do
+        create_list(:batched_background_migration_job, 11, **common_attrs.merge(started_at: end_time - 10.seconds))
+
+        control = ActiveRecord::QueryRecorder.new do
+          migration.smoothed_time_efficiency(number_of_jobs: 10)
+        end
+
+        expect { migration.smoothed_time_efficiency(number_of_jobs: 11) }.not_to exceed_query_limit(control)
       end
     end
   end

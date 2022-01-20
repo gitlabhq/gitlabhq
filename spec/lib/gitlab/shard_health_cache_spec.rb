@@ -6,7 +6,7 @@ RSpec.describe Gitlab::ShardHealthCache, :clean_gitlab_redis_cache do
   let(:shards) { %w(foo bar) }
 
   before do
-    described_class.update(shards)
+    described_class.update(shards) # rubocop:disable Rails/SaveBang
   end
 
   describe '.clear' do
@@ -24,7 +24,7 @@ RSpec.describe Gitlab::ShardHealthCache, :clean_gitlab_redis_cache do
 
     it 'replaces the existing set' do
       new_set = %w(test me more)
-      described_class.update(new_set)
+      described_class.update(new_set) # rubocop:disable Rails/SaveBang
 
       expect(described_class.cached_healthy_shards).to match_array(new_set)
     end
@@ -36,7 +36,7 @@ RSpec.describe Gitlab::ShardHealthCache, :clean_gitlab_redis_cache do
     end
 
     it 'returns 0 if no shards are available' do
-      described_class.update([])
+      described_class.update([]) # rubocop:disable Rails/SaveBang
 
       expect(described_class.healthy_shard_count).to eq(0)
     end

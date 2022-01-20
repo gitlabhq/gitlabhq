@@ -70,6 +70,7 @@ export default {
         variant="confirm"
         size="small"
         class="gl-display-none gl-md-display-block gl-float-left"
+        data-testid="extension-actions-button"
         @click="onClickAction(btn)"
       >
         {{ btn.text }}

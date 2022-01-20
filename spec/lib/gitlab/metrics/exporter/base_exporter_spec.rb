@@ -4,13 +4,8 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::Metrics::Exporter::BaseExporter do
   let(:settings) { double('settings') }
-  let(:exporter) { described_class.new(settings) }
-  let(:log_filename) { File.join(Rails.root, 'log', 'sidekiq_exporter.log') }
-
-  before do
-    allow_any_instance_of(described_class).to receive(:log_filename).and_return(log_filename)
-    allow_any_instance_of(described_class).to receive(:settings).and_return(settings)
-  end
+  let(:log_enabled) { false }
+  let(:exporter) { described_class.new(settings, log_enabled: log_enabled, log_file: 'test_exporter.log') }
 
   describe 'when exporter is enabled' do
     before do
@@ -60,6 +55,38 @@ RSpec.describe Gitlab::Metrics::Exporter::BaseExporter do
             allow_any_instance_of(::WEBrick::HTTPServer).to receive(:start)
 
             exporter.start.join
+          end
+
+          context 'logging enabled' do
+            let(:log_enabled) { true }
+            let(:logger) { instance_double(WEBrick::Log) }
+
+            before do
+              allow(logger).to receive(:time_format=)
+              allow(logger).to receive(:info)
+            end
+
+            it 'configures a WEBrick logger with the given file' do
+              expect(WEBrick::Log).to receive(:new).with(end_with('test_exporter.log')).and_return(logger)
+
+              exporter
+            end
+
+            it 'logs any errors during startup' do
+              expect(::WEBrick::Log).to receive(:new).and_return(logger)
+              expect(::WEBrick::HTTPServer).to receive(:new).and_raise 'fail'
+              expect(logger).to receive(:error)
+
+              exporter.start
+            end
+          end
+
+          context 'logging disabled' do
+            it 'configures a WEBrick logger with the null device' do
+              expect(WEBrick::Log).to receive(:new).with(File::NULL).and_call_original
+
+              exporter
+            end
           end
         end
 
@@ -111,6 +138,18 @@ RSpec.describe Gitlab::Metrics::Exporter::BaseExporter do
   describe 'request handling' do
     using RSpec::Parameterized::TableSyntax
 
+    let(:fake_collector) do
+      Class.new do
+        def initialize(app, ...)
+          @app = app
+        end
+
+        def call(env)
+          @app.call(env)
+        end
+      end
+    end
+
     where(:method_class, :path, :http_status) do
       Net::HTTP::Get | '/metrics' | 200
       Net::HTTP::Get | '/liveness' | 200
@@ -123,6 +162,8 @@ RSpec.describe Gitlab::Metrics::Exporter::BaseExporter do
       allow(settings).to receive(:port).and_return(0)
       allow(settings).to receive(:address).and_return('127.0.0.1')
 
+      stub_const('Gitlab::Metrics::Exporter::MetricsMiddleware', fake_collector)
+
       # We want to wrap original method
       # and run handling of requests
       # in separate thread
@@ -134,8 +175,6 @@ RSpec.describe Gitlab::Metrics::Exporter::BaseExporter do
           # is raised as we close listeners
         end
       end
-
-      exporter.start.join
     end
 
     after do
@@ -146,11 +185,24 @@ RSpec.describe Gitlab::Metrics::Exporter::BaseExporter do
       let(:config) { exporter.server.config }
       let(:request) { method_class.new(path) }
 
-      it 'responds with proper http_status' do
+      subject(:response) do
         http = Net::HTTP.new(config[:BindAddress], config[:Port])
-        response = http.request(request)
+        http.request(request)
+      end
+
+      it 'responds with proper http_status' do
+        exporter.start.join
 
         expect(response.code).to eq(http_status.to_s)
+      end
+
+      it 'collects request metrics' do
+        expect_next_instance_of(fake_collector) do |instance|
+          expect(instance).to receive(:call).and_call_original
+        end
+
+        exporter.start.join
+        response
       end
     end
   end

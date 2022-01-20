@@ -118,7 +118,7 @@ module Gitlab
         end
 
         def filter_attributes(params)
-          if use_attributes_permitter? && attributes_permitter.permitted_attributes_defined?(importable_class_sym)
+          if attributes_permitter.permitted_attributes_defined?(importable_class_sym)
             attributes_permitter.permit(importable_class_sym, params)
           else
             Gitlab::ImportExport::AttributeCleaner.clean(
@@ -130,10 +130,6 @@ module Gitlab
 
         def attributes_permitter
           @attributes_permitter ||= Gitlab::ImportExport::AttributesPermitter.new
-        end
-
-        def use_attributes_permitter?
-          Feature.enabled?(:permitted_attributes_for_import_export, default_enabled: :yaml)
         end
 
         def present_override_params
@@ -264,14 +260,12 @@ module Gitlab
           @relation_reader.sort_ci_pipelines_by_id
         end
 
-        # Enable logging of each top-level relation creation when Importing
-        # into a Group if feature flag is enabled
+        # Enable logging of each top-level relation creation when Importing into a Group
         def log_relation_creation(importable, relation_key, relation_object)
           root_ancestor_group = importable.try(:root_ancestor)
 
           return unless root_ancestor_group
           return unless root_ancestor_group.instance_of?(::Group)
-          return unless Feature.enabled?(:log_import_export_relation_creation, root_ancestor_group)
 
           @shared.logger.info(
             importable_type: importable.class.to_s,

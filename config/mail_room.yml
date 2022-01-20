@@ -1,7 +1,7 @@
 :mailboxes:
   <%
     require_relative "../lib/gitlab/mail_room" unless defined?(Gitlab::MailRoom)
-    Gitlab::MailRoom.enabled_configs.each do |config|
+    Gitlab::MailRoom.enabled_configs.each do |_key, config|
   %>
     -
       :host: <%= config[:host].to_json %>

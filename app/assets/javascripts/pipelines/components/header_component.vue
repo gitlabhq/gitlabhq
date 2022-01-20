@@ -212,7 +212,9 @@ export default {
 </script>
 <template>
   <div class="js-pipeline-header-container">
-    <gl-alert v-if="hasError" :variant="failure.variant">{{ failure.text }}</gl-alert>
+    <gl-alert v-if="hasError" :variant="failure.variant" :dismissible="false">{{
+      failure.text
+    }}</gl-alert>
     <ci-header
       v-if="shouldRenderContent"
       :status="pipeline.detailedStatus"

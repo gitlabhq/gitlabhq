@@ -1,8 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments"
-type: reference, howto
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Protected branches **(FREE)**
@@ -75,8 +74,6 @@ To protect multiple branches at the same time:
 The protected branch displays in the list of protected branches.
 
 ## Create a protected branch
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/53361) in GitLab 11.9.
 
 Users with the Developer or higher [role](../permissions.md) can create a protected branch.
 

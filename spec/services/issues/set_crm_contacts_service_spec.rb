@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Issues::SetCrmContactsService do
   let_it_be(:user) { create(:user) }
-  let_it_be(:group) { create(:group) }
+  let_it_be(:group) { create(:group, :crm_enabled) }
   let_it_be(:project) { create(:project, group: group) }
   let_it_be(:contacts) { create_list(:contact, 4, group: group) }
 

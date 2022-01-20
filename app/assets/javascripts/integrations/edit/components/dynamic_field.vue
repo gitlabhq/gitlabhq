@@ -153,7 +153,7 @@ export default {
     :invalid-feedback="__('This field is required.')"
     :state="valid"
   >
-    <template #description>
+    <template v-if="!isCheckbox" #description>
       <span v-safe-html:[$options.helpHtmlConfig]="help"></span>
     </template>
 
@@ -161,6 +161,9 @@ export default {
       <input :name="fieldName" type="hidden" :value="model || false" />
       <gl-form-checkbox :id="fieldId" v-model="model" :disabled="isInheriting">
         {{ checkboxLabel || humanizedTitle }}
+        <template #help>
+          <span v-safe-html:[$options.helpHtmlConfig]="help"></span>
+        </template>
       </gl-form-checkbox>
     </template>
     <template v-else-if="isSelect">

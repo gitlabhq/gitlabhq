@@ -19,8 +19,7 @@ Alerts are not currently supported for [Prometheus cluster integrations](../../u
 
 ## External Prometheus instances
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9258) in GitLab Ultimate 11.8.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/42640) to GitLab Free in 12.10.
+> [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/42640) to GitLab Free in 12.10.
 
 For manually configured Prometheus servers, GitLab provides a notify endpoint for
 use with Prometheus webhooks. If you have manual configuration enabled, an
@@ -60,8 +59,6 @@ Prometheus server to use the
 [Generic alerts integration](../incident_management/integrations.md).
 
 ## Trigger actions from alerts **(ULTIMATE)**
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/4925) in GitLab 11.11.
 
 Alerts can be used to trigger actions, like opening an issue automatically
 (disabled by default since `13.1`). To configure the actions:

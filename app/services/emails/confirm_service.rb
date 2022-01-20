@@ -7,3 +7,5 @@ module Emails
     end
   end
 end
+
+Emails::ConfirmService.prepend_mod

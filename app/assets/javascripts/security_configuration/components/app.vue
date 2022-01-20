@@ -27,6 +27,9 @@ export const i18n = {
   securityConfiguration: __('Security Configuration'),
   vulnerabilityManagement: s__('SecurityConfiguration|Vulnerability Management'),
   securityTraining: s__('SecurityConfiguration|Security training'),
+  securityTrainingDescription: s__(
+    'SecurityConfiguration|Enable security training to help your developers learn how to fix vulnerabilities. Developers can view security training from selected educational providers, relevant to the detected vulnerability.',
+  ),
 };
 
 export default {
@@ -160,8 +163,12 @@ export default {
       </template>
     </user-callout-dismisser>
 
-    <gl-tabs content-class="gl-pt-0">
-      <gl-tab data-testid="security-testing-tab" :title="$options.i18n.securityTesting">
+    <gl-tabs content-class="gl-pt-0" sync-active-tab-with-query-params lazy>
+      <gl-tab
+        data-testid="security-testing-tab"
+        :title="$options.i18n.securityTesting"
+        query-param-value="security-testing"
+      >
         <auto-dev-ops-enabled-alert
           v-if="shouldShowAutoDevopsEnabledAlert"
           class="gl-mt-3"
@@ -185,9 +192,12 @@ export default {
               {{ $options.i18n.description }}
             </p>
             <p v-if="canViewCiHistory">
-              <gl-link data-testid="security-view-history-link" :href="gitlabCiHistoryPath">{{
-                $options.i18n.configurationHistory
-              }}</gl-link>
+              <gl-link
+                data-testid="security-view-history-link"
+                data-qa-selector="security_configuration_history_link"
+                :href="gitlabCiHistoryPath"
+                >{{ $options.i18n.configurationHistory }}</gl-link
+              >
             </p>
           </template>
 
@@ -203,7 +213,11 @@ export default {
           </template>
         </section-layout>
       </gl-tab>
-      <gl-tab data-testid="compliance-testing-tab" :title="$options.i18n.compliance">
+      <gl-tab
+        data-testid="compliance-testing-tab"
+        :title="$options.i18n.compliance"
+        query-param-value="compliance-testing"
+      >
         <section-layout :heading="$options.i18n.compliance">
           <template #description>
             <p>
@@ -241,8 +255,14 @@ export default {
         v-if="glFeatures.secureVulnerabilityTraining"
         data-testid="vulnerability-management-tab"
         :title="$options.i18n.vulnerabilityManagement"
+        query-param-value="vulnerability-management"
       >
         <section-layout :heading="$options.i18n.securityTraining">
+          <template #description>
+            <p>
+              {{ $options.i18n.securityTrainingDescription }}
+            </p>
+          </template>
           <template #features>
             <training-provider-list />
           </template>

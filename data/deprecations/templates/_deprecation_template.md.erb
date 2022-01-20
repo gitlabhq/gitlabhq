@@ -4,7 +4,7 @@ group: none
 info: "See the Technical Writers assigned to Development Guidelines: https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments-to-development-guidelines"
 ---
 
-# Deprecated feature removal schedule
+# Deprecations by milestone
 
 DISCLAIMER:
 This page contains information related to upcoming products, features, and functionality.
@@ -38,13 +38,19 @@ For deprecation reviewers (Technical Writers only):
 <% if milestones.any? -%>
   <%- milestones.each do |milestone| %>
 ## <%= milestone %>
-    <%- deprecations.select{|d| d["removal_milestone"] == milestone}.each do |deprecation| %>
+    <%- entries.select{|d| d["announcement_milestone"] == milestone}.each do |deprecation| %>
 ### <%= deprecation["name"]%>
+<% if deprecation["breaking_change"] -%>
 
-<%= deprecation["body"] -%>
+WARNING:
+This feature will be changed or removed in <%= deprecation["removal_milestone"]%>
+as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Before updating GitLab, review the details carefully to determine if you need to make any
+changes to your code, settings, or workflow.
 
-Announced: <%= deprecation["announcement_date"]%>
-Planned removal: <%= deprecation["removal_date"]%>
+<%= deprecation["body"] -%><% else %>
+<%= deprecation["body"] -%><% end %>
+**Planned removal milestone: <%= deprecation["removal_milestone"]%> (<%= deprecation["removal_date"]%>)**
     <%- end -%>
   <%- end -%>
 <%- else -%>

@@ -26,6 +26,7 @@ import trackShowInviteMemberLink from '~/sidebar/track_invite_members';
 import { DropdownVariant } from '~/vue_shared/components/sidebar/labels_select_vue/constants';
 import LabelsSelectWidget from '~/vue_shared/components/sidebar/labels_select_widget/labels_select_root.vue';
 import { LabelType } from '~/vue_shared/components/sidebar/labels_select_widget/constants';
+import eventHub from '~/sidebar/event_hub';
 import Translate from '../vue_shared/translate';
 import SidebarAssignees from './components/assignees/sidebar_assignees.vue';
 import CopyEmailToClipboard from './components/copy_email_to_clipboard.vue';
@@ -600,6 +601,12 @@ export function mountSidebar(mediator, store) {
   mountTimeTrackingComponent();
 
   mountSeverityComponent();
+
+  if (window.gon?.features?.mrAttentionRequests) {
+    eventHub.$on('removeCurrentUserAttentionRequested', () =>
+      mediator.removeCurrentUserAttentionRequested(),
+    );
+  }
 }
 
 export { getSidebarOptions };

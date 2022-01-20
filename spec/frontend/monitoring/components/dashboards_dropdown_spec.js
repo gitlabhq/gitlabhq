@@ -38,6 +38,8 @@ describe('DashboardsDropdown', () => {
   const findSearchInput = () => wrapper.find({ ref: 'monitorDashboardsDropdownSearch' });
   const findNoItemsMsg = () => wrapper.find({ ref: 'monitorDashboardsDropdownMsg' });
   const findStarredListDivider = () => wrapper.find({ ref: 'starredListDivider' });
+  // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+  // eslint-disable-next-line no-restricted-syntax
   const setSearchTerm = (searchTerm) => wrapper.setData({ searchTerm });
 
   beforeEach(() => {

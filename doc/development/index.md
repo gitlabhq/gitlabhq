@@ -164,6 +164,7 @@ the [reviewer values](https://about.gitlab.com/handbook/engineering/workflow/rev
 ### General
 
 - [Directory structure](directory_structure.md)
+- [GitLab EventStore](event_store.md) to publish/subscribe to domain events
 - [GitLab utilities](utilities.md)
 - [Newlines style guide](newlines_styleguide.md)
 - [Logging](logging.md)
@@ -263,8 +264,7 @@ the [reviewer values](https://about.gitlab.com/handbook/engineering/workflow/rev
 - [Caching guidelines](caching.md) for using caching in Rails under a GitLab environment.
 - [Merge request performance guidelines](merge_request_performance_guidelines.md)
   for ensuring merge requests do not negatively impact GitLab performance
-- [Profiling](profiling.md) a URL, measuring performance using Sherlock, or
-  tracking down N+1 queries using Bullet.
+- [Profiling](profiling.md) a URL or tracking down N+1 queries using Bullet.
 - [Cached queries guidelines](cached_queries.md), for tracking down N+1 queries
   masked by query caching, memory profiling and why should we avoid cached
   queries.

@@ -123,7 +123,7 @@ module Nav
       if dashboard_nav_link?(:milestones)
         builder.add_primary_menu_item_with_shortcut(
           id: 'milestones',
-          title: 'Milestones',
+          title: _('Milestones'),
           href: dashboard_milestones_path,
           active: active_nav_link?(controller: 'dashboard/milestones'),
           icon: 'clock',
@@ -144,7 +144,7 @@ module Nav
       if dashboard_nav_link?(:activity)
         builder.add_primary_menu_item_with_shortcut(
           id: 'activity',
-          title: 'Activity',
+          title: _('Activity'),
           href: activity_dashboard_path,
           active: active_nav_link?(path: 'dashboard#activity'),
           icon: 'history',
@@ -189,15 +189,6 @@ module Nav
         end
       end
       # rubocop: enable Cop/UserAdmin
-
-      if Gitlab::Sherlock.enabled?
-        builder.add_secondary_menu_item(
-          id: 'sherlock',
-          title: _('Sherlock Transactions'),
-          icon: 'admin',
-          href: sherlock_transactions_path
-        )
-      end
     end
 
     def projects_menu_item_attrs
@@ -212,7 +203,7 @@ module Nav
     def groups_menu_item_attrs
       {
         id: 'groups',
-        title: 'Groups',
+        title: _('Groups'),
         icon: 'group',
         shortcut_class: 'dashboard-shortcuts-groups'
       }

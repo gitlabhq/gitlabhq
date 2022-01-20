@@ -13,6 +13,7 @@ module QA
         'Specify FEATURE_FLAGS as comma-separated flag=state pairs, e.g., "flag1=enabled,flag2=disabled"'
       attribute :parallel, '--parallel', 'Execute tests in parallel'
       attribute :loop, '--loop', 'Execute test repeatedly'
+      attribute :count_examples_only, '--count-examples-only', 'Return the number of examples without running them'
     end
   end
 end

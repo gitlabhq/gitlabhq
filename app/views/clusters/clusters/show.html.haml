@@ -36,7 +36,7 @@
       = sprite_icon('close', css_class: 'gl-icon')
     .gl-alert-body
       = s_('ClusterApplicationsRemoved|One-click application management was removed in GitLab 14.0. Your applications are still installed in your cluster, and integrations continue working.')
-      = link_to _('More information.'), help_page_path("user/clusters/applications"), target: '_blank'
+      = link_to _('More information.'), help_page_path("user/clusters/applications"), target: '_blank', rel: 'noopener noreferrer'
 
   - if cluster_created?(@cluster)
     .js-toggle-container

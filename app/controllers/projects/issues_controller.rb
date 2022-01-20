@@ -43,7 +43,6 @@ class Projects::IssuesController < Projects::ApplicationController
 
   before_action do
     push_frontend_feature_flag(:tribute_autocomplete, @project)
-    push_frontend_feature_flag(:vue_issuables_list, project)
     push_frontend_feature_flag(:improved_emoji_picker, project, default_enabled: :yaml)
     push_frontend_feature_flag(:vue_issues_list, project&.group, default_enabled: :yaml)
     push_frontend_feature_flag(:iteration_cadences, project&.group, default_enabled: :yaml)
@@ -54,6 +53,7 @@ class Projects::IssuesController < Projects::ApplicationController
     push_frontend_feature_flag(:confidential_notes, project&.group, default_enabled: :yaml)
     push_frontend_feature_flag(:issue_assignees_widget, @project, default_enabled: :yaml)
     push_frontend_feature_flag(:paginated_issue_discussions, @project, default_enabled: :yaml)
+    push_frontend_feature_flag(:fix_comment_scroll, @project, default_enabled: :yaml)
   end
 
   around_action :allow_gitaly_ref_name_caching, only: [:discussions]
@@ -291,10 +291,12 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   def issue_params
-    params.require(:issue).permit(
+    all_params = params.require(:issue).permit(
       *issue_params_attributes,
       sentry_issue_attributes: [:sentry_issue_identifier]
     )
+
+    clean_params(all_params)
   end
 
   def issue_params_attributes
@@ -347,6 +349,13 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   private
+
+  def clean_params(all_params)
+    issue_type = all_params[:issue_type].to_s
+    all_params.delete(:issue_type) unless WorkItems::Type.allowed_types_for_issues.include?(issue_type)
+
+    all_params
+  end
 
   def finder_options
     options = super

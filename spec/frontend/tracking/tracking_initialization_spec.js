@@ -81,7 +81,8 @@ describe('Tracking', () => {
     it('should activate features based on what has been enabled', () => {
       initDefaultTrackers();
       expect(snowplowSpy).toHaveBeenCalledWith('enableActivityTracking', 30, 30);
-      expect(snowplowSpy).toHaveBeenCalledWith('trackPageView', null, [standardContext]);
+      expect(snowplowSpy).toHaveBeenCalledWith('trackPageView', 'GitLab', [standardContext]);
+      expect(snowplowSpy).toHaveBeenCalledWith('setDocumentTitle', 'GitLab');
       expect(snowplowSpy).not.toHaveBeenCalledWith('enableFormTracking');
       expect(snowplowSpy).not.toHaveBeenCalledWith('enableLinkClickTracking');
 
@@ -130,7 +131,7 @@ describe('Tracking', () => {
 
       it('includes those contexts alongside the standard context', () => {
         initDefaultTrackers();
-        expect(snowplowSpy).toHaveBeenCalledWith('trackPageView', null, [
+        expect(snowplowSpy).toHaveBeenCalledWith('trackPageView', 'GitLab', [
           standardContext,
           ...experimentContexts,
         ]);

@@ -109,6 +109,8 @@ describe('Alert Details Sidebar Assignees', () => {
     });
 
     it('renders a unassigned option', async () => {
+      // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+      // eslint-disable-next-line no-restricted-syntax
       wrapper.setData({ isDropdownSearching: false });
       await wrapper.vm.$nextTick();
       expect(findDropdown().text()).toBe('Unassigned');
@@ -120,6 +122,8 @@ describe('Alert Details Sidebar Assignees', () => {
 
     it('calls `$apollo.mutate` with `AlertSetAssignees` mutation and variables containing `iid`, `assigneeUsernames`, & `projectPath`', async () => {
       jest.spyOn(wrapper.vm.$apollo, 'mutate').mockResolvedValue(mockUpdatedMutationResult);
+      // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+      // eslint-disable-next-line no-restricted-syntax
       wrapper.setData({ isDropdownSearching: false });
 
       await wrapper.vm.$nextTick();
@@ -136,6 +140,8 @@ describe('Alert Details Sidebar Assignees', () => {
     });
 
     it('emits an error when request contains error messages', () => {
+      // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+      // eslint-disable-next-line no-restricted-syntax
       wrapper.setData({ isDropdownSearching: false });
       const errorMutationResult = {
         data: {

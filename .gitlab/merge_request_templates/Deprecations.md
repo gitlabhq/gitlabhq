@@ -2,9 +2,11 @@
 
 /label ~"release post" ~"release post item" ~"Technical Writing" ~"devops::" ~"group::" ~"release post item::deprecation"
 /milestone %
-/assign `@PM`
+/assign `@EM/PM` (choose the DRI; remove backticks here, and below)
 
 **Be sure to link this MR to the relevant deprecation issue(s).**
+
+If the MR does not have a deprecation issue, hit pause and review [this handbook documentation](https://about.gitlab.com/handbook/product/gitlab-the-product/#process-for-deprecating-and-removing-a-feature) and connect with the Product Manager DRI. 
 
 Deprecation announcements can and should be created and merged into Docs at any time, to optimize user awareness and planning. We encourage confirmed deprecations to be merged as soon as the required reviews are complete, even if weeks ahead of the target milestone's release post. For the announcement to be included in a specific release post and that release's documentation packages, this MR must be reviewed/merged per the due dates below:
 
@@ -12,11 +14,11 @@ Deprecation announcements can and should be created and merged into Docs at any 
 
 - Product Marketing: `@PMM`
 - Product Designer(s): `@ProductDesigners`
-- Group Manager or Director: `@manager`
+- Product Group Manager or Director: `@PM` - Required
 - Engineering Manager: `@EM` - Required
 - Technical writer: `@TW` - Required
 
-**By 11:59 AM PDT 15th**: PM assigns this MR to the TW reviewer for final review and merge: `@PM`
+**By 11:59 AM PDT 15th**: EM/PM assigns this MR to the TW reviewer for final review and merge: `@EM/PM`
 
 **By 11:59 PM PDT 17th**: TW Reviewer updates Docs by merging this MR to `master`: `@TW`
 
@@ -31,9 +33,9 @@ They are frequently updated, and everyone should make sure they are aware of the
 - Deprecation Issue:
 - Deprecation MR (optional):
 
-## PM release post item checklist
+## EM/PM release post item checklist
 
-- [ ] Set yourself as the Assignee.
+- [ ] Set yourself as the Assignee, meaning you are the DRI.
 - [ ] If the deprecation is a [breaking change](https://about.gitlab.com/handbook/product/gitlab-the-product/#breaking-change), add label `breaking change`.
 - [ ] Follow the process to [create a deprecation YAML file](https://about.gitlab.com/handbook/marketing/blog/release-posts/#creating-a-deprecation-entry).
 - [ ] Add reviewers by the 10th.

@@ -56,6 +56,12 @@ RSpec.describe Sidebars::Groups::Menus::SettingsMenu do
       it_behaves_like 'access rights checks'
     end
 
+    describe 'Access Tokens' do
+      let(:item_id) { :access_tokens }
+
+      it_behaves_like 'access rights checks'
+    end
+
     describe 'Repository menu' do
       let(:item_id) { :repository }
 

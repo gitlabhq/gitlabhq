@@ -98,6 +98,8 @@ describe('IssuableListRoot', () => {
 
           await wrapper.vm.$nextTick();
 
+          // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+          // eslint-disable-next-line no-restricted-syntax
           wrapper.setData({
             checkedIssuables,
           });
@@ -111,6 +113,8 @@ describe('IssuableListRoot', () => {
 
     describe('bulkEditIssuables', () => {
       it('returns array of issuables which have `checked` set to true within checkedIssuables map', async () => {
+        // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+        // eslint-disable-next-line no-restricted-syntax
         wrapper.setData({
           checkedIssuables: mockCheckedIssuables,
         });
@@ -180,6 +184,8 @@ describe('IssuableListRoot', () => {
 
     describe('issuableChecked', () => {
       it('returns boolean value representing checked status of issuable item', async () => {
+        // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+        // eslint-disable-next-line no-restricted-syntax
         wrapper.setData({
           checkedIssuables: {
             [mockIssuables[0].iid]: { checked: true, issuable: mockIssuables[0] },

@@ -827,11 +827,17 @@ module Ci
         end
 
         context 'when project already has running jobs' do
-          let!(:build2) { create(:ci_build, :running, pipeline: pipeline, runner: shared_runner) }
-          let!(:build3) { create(:ci_build, :running, pipeline: pipeline, runner: shared_runner) }
+          let(:build2) { create(:ci_build, :running, pipeline: pipeline, runner: shared_runner) }
+          let(:build3) { create(:ci_build, :running, pipeline: pipeline, runner: shared_runner) }
+
+          before do
+            ::Ci::RunningBuild.upsert_shared_runner_build!(build2)
+            ::Ci::RunningBuild.upsert_shared_runner_build!(build3)
+          end
 
           it 'counts job queuing time histogram with expected labels' do
             allow(attempt_counter).to receive(:increment)
+
             expect(job_queue_duration_seconds).to receive(:observe)
               .with({ shared_runner: expected_shared_runner,
                       jobs_running_for_project: expected_jobs_running_for_project_third_job,
@@ -845,6 +851,14 @@ module Ci
       shared_examples 'metrics collector' do
         it_behaves_like 'attempt counter collector'
         it_behaves_like 'jobs queueing time histogram collector'
+
+        context 'when using denormalized data is disabled' do
+          before do
+            stub_feature_flags(ci_pending_builds_maintain_denormalized_data: false)
+          end
+
+          it_behaves_like 'jobs queueing time histogram collector'
+        end
       end
 
       context 'when shared runner is used' do
@@ -871,6 +885,16 @@ module Ci
         context 'when multiple metrics_shard tag is defined' do
           let(:runner) { create(:ci_runner, :instance, tag_list: %w(tag1 metrics_shard::shard_tag metrics_shard::shard_tag_2 tag2)) }
           let(:expected_shard) { 'shard_tag' }
+
+          it_behaves_like 'metrics collector'
+        end
+
+        context 'when max running jobs bucket size is exceeded' do
+          before do
+            stub_const('Gitlab::Ci::Queue::Metrics::JOBS_RUNNING_FOR_PROJECT_MAX_BUCKET', 1)
+          end
+
+          let(:expected_jobs_running_for_project_third_job) { '1+' }
 
           it_behaves_like 'metrics collector'
         end

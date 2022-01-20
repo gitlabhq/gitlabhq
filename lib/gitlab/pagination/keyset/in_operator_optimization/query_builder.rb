@@ -120,7 +120,7 @@ module Gitlab
               .from(array_cte)
               .join(Arel.sql("LEFT JOIN LATERAL (#{initial_keyset_query.to_sql}) #{table_name} ON TRUE"))
 
-            order_by_columns.each { |column| q.where(column.arel_column.not_eq(nil)) }
+            order_by_columns.each { |column| q.where(column.column_expression.not_eq(nil)) }
 
             q.as('array_scope_lateral_query')
           end
@@ -231,7 +231,7 @@ module Gitlab
 
             order
               .apply_cursor_conditions(keyset_scope, cursor_values, use_union_optimization: true)
-              .reselect(*order_by_columns.arel_columns)
+              .reselect(*order_by_columns.map(&:column_for_projection))
               .limit(1)
           end
 

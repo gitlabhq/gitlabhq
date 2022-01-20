@@ -1,5 +1,12 @@
 <script>
-import { GlAlert, GlModal, GlFormGroup, GlFormInput, GlSprintf } from '@gitlab/ui';
+import {
+  GlAlert,
+  GlModal,
+  GlFormGroup,
+  GlFormInput,
+  GlSafeHtmlDirective as SafeHtml,
+  GlSprintf,
+} from '@gitlab/ui';
 import {
   CONFIRM_DANGER_MODAL_BUTTON,
   CONFIRM_DANGER_MODAL_TITLE,
@@ -17,12 +24,21 @@ export default {
     GlFormInput,
     GlSprintf,
   },
+  directives: {
+    SafeHtml,
+  },
   inject: {
+    htmlConfirmationMessage: {
+      default: false,
+    },
     confirmDangerMessage: {
       default: '',
     },
     confirmButtonText: {
       default: CONFIRM_DANGER_MODAL_BUTTON,
+    },
+    additionalInformation: {
+      default: CONFIRM_DANGER_WARNING,
     },
   },
   props: {
@@ -81,9 +97,12 @@ export default {
       :dismissible="false"
       class="gl-mb-4"
     >
-      {{ confirmDangerMessage }}
+      <span v-if="htmlConfirmationMessage" v-safe-html="confirmDangerMessage"></span>
+      <span v-else>
+        {{ confirmDangerMessage }}
+      </span>
     </gl-alert>
-    <p data-testid="confirm-danger-warning">{{ $options.i18n.CONFIRM_DANGER_WARNING }}</p>
+    <p data-testid="confirm-danger-warning">{{ additionalInformation }}</p>
     <p data-testid="confirm-danger-phrase">
       <gl-sprintf :message="$options.i18n.CONFIRM_DANGER_PHRASE_TEXT">
         <template #phrase_code>

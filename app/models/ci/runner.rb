@@ -95,7 +95,33 @@ module Ci
       joins(:runner_projects).where(ci_runner_projects: { project_id: project_id })
     }
 
-    scope :belonging_to_group, -> (group_id, include_ancestors: false) {
+    scope :belonging_to_group, -> (group_id) {
+      joins(:runner_namespaces)
+        .where(ci_runner_namespaces: { namespace_id: group_id })
+    }
+
+    scope :belonging_to_group_or_project_descendants, -> (group_id) {
+      group_ids = Ci::NamespaceMirror.contains_namespace(group_id).select(:namespace_id)
+      project_ids = Ci::ProjectMirror.by_namespace_id(group_ids).select(:project_id)
+
+      group_runners = joins(:runner_namespaces).where(ci_runner_namespaces: { namespace_id: group_ids })
+      project_runners = joins(:runner_projects).where(ci_runner_projects: { project_id: project_ids })
+
+      union_sql = ::Gitlab::SQL::Union.new([group_runners, project_runners]).to_sql
+
+      from("(#{union_sql}) #{table_name}")
+    }
+
+    scope :belonging_to_group_and_ancestors, -> (group_id) {
+      group_self_and_ancestors_ids = ::Group.find_by(id: group_id)&.self_and_ancestor_ids
+
+      joins(:runner_namespaces)
+        .where(ci_runner_namespaces: { namespace_id: group_self_and_ancestors_ids })
+    }
+
+    # deprecated
+    # split this into: belonging_to_group & belonging_to_group_and_ancestors
+    scope :legacy_belonging_to_group, -> (group_id, include_ancestors: false) {
       groups = ::Group.where(id: group_id)
       groups = groups.self_and_ancestors if include_ancestors
 
@@ -104,7 +130,8 @@ module Ci
         .allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/336433')
     }
 
-    scope :belonging_to_group_or_project, -> (group_id, project_id) {
+    # deprecated
+    scope :legacy_belonging_to_group_or_project, -> (group_id, project_id) {
       groups = ::Group.where(id: group_id)
 
       group_runners = joins(:runner_namespaces).where(ci_runner_namespaces: { namespace_id: groups })
@@ -117,11 +144,11 @@ module Ci
     }
 
     scope :belonging_to_parent_group_of_project, -> (project_id) {
+      raise ArgumentError, "only 1 project_id allowed for performance reasons" unless project_id.is_a?(Integer)
+
       project_groups = ::Group.joins(:projects).where(projects: { id: project_id })
 
-      joins(:groups)
-        .where(namespaces: { id: project_groups.self_and_ancestors.as_ids })
-        .allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/336433')
+      belonging_to_group(project_groups.self_and_ancestors.pluck(:id))
     }
 
     scope :owned_or_instance_wide, -> (project_id) do
@@ -132,7 +159,7 @@ module Ci
           instance_type
         ],
         remove_duplicates: false
-      ).allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/336433')
+      )
     end
 
     scope :assignable_for, ->(project) do
@@ -182,6 +209,8 @@ module Ci
                       message: 'needs to be non-negative' }
 
     validates :config, json_schema: { filename: 'ci_runner_config' }
+
+    validates :maintainer_note, length: { maximum: 255 }
 
     # Searches for runners matching the given query.
     #
@@ -233,18 +262,16 @@ module Ci
         Arel.sql("(#{arel_tag_names_array.to_sql})")
       ]
 
-      ::Gitlab::Database.allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/339621') do
-        group(*unique_params).pluck('array_agg(ci_runners.id)', *unique_params).map do |values|
-          Gitlab::Ci::Matching::RunnerMatcher.new({
-            runner_ids: values[0],
-            runner_type: values[1],
-            public_projects_minutes_cost_factor: values[2],
-            private_projects_minutes_cost_factor: values[3],
-            run_untagged: values[4],
-            access_level: values[5],
-            tag_list: values[6]
-          })
-        end
+      group(*unique_params).pluck('array_agg(ci_runners.id)', *unique_params).map do |values|
+        Gitlab::Ci::Matching::RunnerMatcher.new({
+          runner_ids: values[0],
+          runner_type: values[1],
+          public_projects_minutes_cost_factor: values[2],
+          private_projects_minutes_cost_factor: values[3],
+          run_untagged: values[4],
+          access_level: values[5],
+          tag_list: values[6]
+        })
       end
     end
 
@@ -441,6 +468,7 @@ module Ci
     private
 
     EXECUTOR_NAME_TO_TYPES = {
+      'unknown' => :unknown,
       'custom' => :custom,
       'shell' => :shell,
       'docker' => :docker,
@@ -453,6 +481,8 @@ module Ci
       'docker-ssh+machine' => :docker_ssh_machine,
       'kubernetes' => :kubernetes
     }.freeze
+
+    EXECUTOR_TYPE_TO_NAMES = EXECUTOR_NAME_TO_TYPES.invert.freeze
 
     def cleanup_runner_queue
       Gitlab::Redis::SharedState.with do |redis|

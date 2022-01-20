@@ -59,20 +59,20 @@ Your Slack team now starts receiving GitLab event notifications as configured.
 
 The following triggers are available for Slack notifications:
 
-| Trigger name             | Trigger event                                           |
-| ------------------------ | ------------------------------------------------------  |
-| **Push**                 | A push to the repository.                               |
-| **Issue**                | An issue is created, updated, or closed.                |
-| **Confidential issue**   | A confidential issue is created, updated, or closed.    |
-| **Merge request**        | A merge request is created, updated, or merged.         |
-| **Note**                 | A comment is added.                                     |
-| **Confidential note**    | A confidential note is added.                           |
-| **Tag push**             | A new tag is pushed to the repository.                  |
-| **Pipeline**             | A pipeline status changed.                              |
-| **Wiki page**            | A wiki page is created or updated.                      |
-| **Deployment**           | A deployment starts or finishes.                        |
-| **Alert**                | A new, unique alert is recorded.                        |
-| **Vulnerability**        | **(ULTIMATE)** A new, unique vulnerability is recorded. |
+| Trigger name                                                             | Trigger event                                        |
+|--------------------------------------------------------------------------|------------------------------------------------------|
+| **Push**                                                                 | A push to the repository.                            |
+| **Issue**                                                                | An issue is created, updated, or closed.             |
+| **Confidential issue**                                                   | A confidential issue is created, updated, or closed. |
+| **Merge request**                                                        | A merge request is created, updated, or merged.      |
+| **Note**                                                                 | A comment is added.                                  |
+| **Confidential note**                                                    | A confidential note is added.                        |
+| **Tag push**                                                             | A new tag is pushed to the repository.               |
+| **Pipeline**                                                             | A pipeline status changed.                           |
+| **Wiki page**                                                            | A wiki page is created or updated.                   |
+| **Deployment**                                                           | A deployment starts or finishes.                     |
+| **Alert**                                                                | A new, unique alert is recorded.                     |
+| [**Vulnerability**](../../application_security/vulnerabilities/index.md) | A new, unique vulnerability is recorded.             |
 
 ## Troubleshooting
 

@@ -396,6 +396,8 @@ describe('ErrorTrackingList', () => {
               GlPagination: false,
             },
           });
+          // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+          // eslint-disable-next-line no-restricted-syntax
           wrapper.setData({ pageValue: 2 });
           return wrapper.vm.$nextTick();
         });

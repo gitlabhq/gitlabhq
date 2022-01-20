@@ -82,6 +82,8 @@ describe('ClusterIntegrationForm', () => {
         .then(() => {
           // setData is a bad approach because it changes the internal implementation which we should not touch
           // but our GlFormInput lacks the ability to set a new value.
+          // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+          // eslint-disable-next-line no-restricted-syntax
           wrapper.setData({ toggleEnabled: !defaultStoreValues.enabled });
         })
         .then(() => {
@@ -93,6 +95,8 @@ describe('ClusterIntegrationForm', () => {
       return wrapper.vm
         .$nextTick()
         .then(() => {
+          // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+          // eslint-disable-next-line no-restricted-syntax
           wrapper.setData({ envScope: `${defaultStoreValues.environmentScope}1` });
         })
         .then(() => {

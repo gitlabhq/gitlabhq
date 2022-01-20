@@ -26,7 +26,7 @@ Read more about update policies and warnings in the PostgreSQL
 
 | GitLab version | PostgreSQL versions | Default version for fresh installs | Default version for upgrades | Notes |
 | -------------- | --------------------- | ---------------------------------- | ---------------------------- | ----- |
-| 14.1 | 12.6, 13.3 | 12.6 | 12.6 | PostgreSQL 13 available for fresh installations if not using Geo or High Availability. |
+| 14.1 | 12.6, 13.3 | 12.6 | 12.6 | PostgreSQL 13 available for fresh installations if not using [Geo](../geo/index.md#requirements-for-running-geo) or [Patroni](../postgresql/index.md#postgresql-replication-and-failover-with-omnibus-gitlab).
 | 14.0 | 12.6       | 12.6 | 12.6 | HA installations with repmgr are no longer supported and will be prevented from upgrading to Omnibus GitLab 14.0 |
 | 13.8 | 11.9, 12.4 | 12.4 | 12.4 | Package upgrades automatically performed PostgreSQL upgrade for nodes that are not part of a Geo or HA cluster.). |
 | 13.7 | 11.9, 12.4 | 12.4 | 11.9 | For upgrades users can manually upgrade to 12.4 following the [upgrade docs](https://docs.gitlab.com/omnibus/settings/database.html#gitlab-133-and-later). |

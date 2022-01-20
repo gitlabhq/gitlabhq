@@ -29,6 +29,10 @@ RSpec.describe 'File blob', :js do
     ).execute
   end
 
+  before do
+    stub_feature_flags(refactor_blob_viewer: false) # This stub will be removed in https://gitlab.com/gitlab-org/gitlab/-/issues/350455
+  end
+
   context 'Ruby file' do
     before do
       visit_blob('files/ruby/popen.rb')

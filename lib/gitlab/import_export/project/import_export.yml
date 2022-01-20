@@ -120,6 +120,7 @@ included_attributes:
     - :name
   ci_cd_settings:
     - :group_runners_enabled
+    - :runner_token_expiration_interval
   metrics_setting:
     - :dashboard_timezone
     - :external_dashboard_url
@@ -904,6 +905,7 @@ excluded_attributes:
     - :release_id
   project_members:
     - :source_id
+    - :member_namespace_id
     - :invite_email_success
     - :state
   group_members:

@@ -181,7 +181,7 @@ After you have the route mapping set up, it takes effect in the following locati
 
     ![View app file list in merge request widget](img/view_on_mr_widget.png)
 
-- In the diff for a merge request, comparison, or commit.
+- In the diff for a comparison or commit.
 
   ![View on environment button in merge request diff](img/view_on_env_mr.png)
 

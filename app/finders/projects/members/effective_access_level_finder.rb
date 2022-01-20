@@ -27,13 +27,9 @@ module Projects
       attr_reader :project
 
       def generate_from_statement(user_ids_and_access_levels)
-        "(VALUES #{generate_values_expression(user_ids_and_access_levels)}) members (user_id, access_level)"
-      end
+        values_list = Arel::Nodes::ValuesList.new(user_ids_and_access_levels).to_sql
 
-      def generate_values_expression(user_ids_and_access_levels)
-        user_ids_and_access_levels.map do |user_id, access_level|
-          "(#{user_id}, #{access_level})"
-        end.join(",")
+        "(#{values_list}) members (user_id, access_level)"
       end
 
       def no_members?

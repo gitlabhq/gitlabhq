@@ -9,7 +9,7 @@ RSpec.describe 'GraphiQL' do
     end
 
     it 'has the correct graphQLEndpoint' do
-      expect(page.body).to include('var graphQLEndpoint = "/api/graphql";')
+      expect(page.body).to include('<div id="graphiql-container" data-graphql-endpoint-path="/api/graphql"')
     end
   end
 
@@ -26,7 +26,7 @@ RSpec.describe 'GraphiQL' do
     end
 
     it 'has the correct graphQLEndpoint' do
-      expect(page.body).to include('var graphQLEndpoint = "/gitlab/root/api/graphql";')
+      expect(page.body).to include('<div id="graphiql-container" data-graphql-endpoint-path="/gitlab/root/api/graphql"')
     end
   end
 end

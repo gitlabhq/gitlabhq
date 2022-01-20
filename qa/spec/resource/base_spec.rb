@@ -277,15 +277,28 @@ RSpec.describe QA::Resource::Base do
   describe '#visit!' do
     include_context 'with simple resource'
 
+    let(:wait_for_requests_class) { QA::Support::WaitForRequests }
+
     before do
       allow(resource).to receive(:visit)
     end
 
     it 'calls #visit with the underlying #web_url' do
       allow(resource).to receive(:current_url).and_return(subject.current_url)
+      expect(wait_for_requests_class).to receive(:wait_for_requests).with({ skip_resp_code_check: false }).twice
 
       resource.web_url = subject.current_url
       resource.visit!
+
+      expect(resource).to have_received(:visit).with(subject.current_url)
+    end
+
+    it 'calls #visit with the underlying #web_url with skip_resp_code_check specified as true' do
+      allow(resource).to receive(:current_url).and_return(subject.current_url)
+      expect(wait_for_requests_class).to receive(:wait_for_requests).with({ skip_resp_code_check: true }).twice
+
+      resource.web_url = subject.current_url
+      resource.visit!(skip_resp_code_check: true)
 
       expect(resource).to have_received(:visit).with(subject.current_url)
     end

@@ -122,7 +122,7 @@ RSpec.describe Ci::PlayBuildService, '#execute' do
   end
 
   context 'when build is not a playable manual action' do
-    let(:build) { create(:ci_build, when: :manual, pipeline: pipeline) }
+    let(:build) { create(:ci_build, :success, pipeline: pipeline) }
     let!(:branch) { create(:protected_branch, :developers_can_merge, name: build.ref, project: project) }
 
     it 'duplicates the build' do
@@ -137,6 +137,18 @@ RSpec.describe Ci::PlayBuildService, '#execute' do
 
       expect(build.user).not_to eq user
       expect(duplicate.user).to eq user
+    end
+
+    context 'and is not retryable' do
+      let(:build) { create(:ci_build, :deployment_rejected, pipeline: pipeline) }
+
+      it 'does not duplicate the build' do
+        expect { service.execute(build) }.not_to change { Ci::Build.count }
+      end
+
+      it 'does not enqueue the build' do
+        expect { service.execute(build) }.not_to change { build.status }
+      end
     end
   end
 

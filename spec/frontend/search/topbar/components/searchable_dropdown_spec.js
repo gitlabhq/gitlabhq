@@ -133,6 +133,8 @@ describe('Global Search Searchable Dropdown', () => {
       describe(`when search is ${searchText} and frequentItems length is ${frequentItems.length}`, () => {
         beforeEach(() => {
           createComponent({}, { frequentItems });
+          // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+          // eslint-disable-next-line no-restricted-syntax
           wrapper.setData({ searchText });
         });
 
@@ -202,6 +204,8 @@ describe('Global Search Searchable Dropdown', () => {
 
       describe('not for the first time', () => {
         beforeEach(() => {
+          // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+          // eslint-disable-next-line no-restricted-syntax
           wrapper.setData({ hasBeenOpened: true });
           findGlDropdown().vm.$emit('show');
         });

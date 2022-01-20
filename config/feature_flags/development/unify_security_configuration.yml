@@ -1,0 +1,8 @@
+---
+name: unify_security_configuration
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/76866
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/350177
+milestone: '14.7'
+type: development
+group: group::composition analysis
+default_enabled: false

@@ -149,7 +149,7 @@ export default class SourceEditor {
     });
 
     this.instances.push(instance);
-    el.dispatchEvent(new CustomEvent(EDITOR_READY_EVENT, { instance }));
+    el.dispatchEvent(new CustomEvent(EDITOR_READY_EVENT, { detail: { instance } }));
     return instance;
   }
 

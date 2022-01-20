@@ -47,11 +47,13 @@ module Resolvers
           {
             status: :valid,
             errors: [],
+            warnings: result.warnings,
             stages: make_stages(result.jobs)
           }
         else
           {
             status: :invalid,
+            warnings: result.warnings,
             errors: result.errors
           }
         end

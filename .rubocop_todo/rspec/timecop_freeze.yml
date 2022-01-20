@@ -2,9 +2,6 @@
 RSpec/TimecopFreeze:
   Exclude:
   - ee/spec/lib/gitlab/analytics/cycle_analytics/data_collector_spec.rb
-  - ee/spec/lib/gitlab/geo/git_push_http_spec.rb
-  - ee/spec/lib/gitlab/geo/log_cursor/daemon_spec.rb
-  - ee/spec/lib/gitlab/geo/oauth/login_state_spec.rb
   - ee/spec/lib/gitlab/insights/reducers/count_per_period_reducer_spec.rb
   - ee/spec/models/merge_train_spec.rb
   - ee/spec/support/shared_contexts/lib/gitlab/insights/reducers/reducers_shared_contexts.rb

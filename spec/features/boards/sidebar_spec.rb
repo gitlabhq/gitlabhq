@@ -6,9 +6,11 @@ RSpec.describe 'Project issue boards sidebar', :js do
   include BoardHelpers
 
   let_it_be(:user)    { create(:user) }
-  let_it_be(:project) { create(:project, :public) }
+  let_it_be(:group)   { create(:group, :public) }
+  let_it_be(:project) { create(:project, :public, namespace: group) }
   let_it_be(:board)   { create(:board, project: project) }
-  let_it_be(:list)    { create(:list, board: board, position: 0) }
+  let_it_be(:label) { create(:label, project: project, name: 'Label') }
+  let_it_be(:list)    { create(:list, board: board, label: label, position: 0) }
 
   let_it_be(:issue, reload: true) { create(:issue, project: project, relative_position: 1) }
 

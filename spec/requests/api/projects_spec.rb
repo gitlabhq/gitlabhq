@@ -3704,6 +3704,46 @@ RSpec.describe API::Projects do
         expect { subject }.to change { project.reload.keep_latest_artifact }.to(true)
       end
     end
+
+    context 'attribute mr_default_target_self' do
+      let_it_be(:source_project) { create(:project, :public) }
+
+      let(:forked_project) { fork_project(source_project, user) }
+
+      it 'is by default set to false' do
+        expect(source_project.mr_default_target_self).to be false
+        expect(forked_project.mr_default_target_self).to be false
+      end
+
+      describe 'for a non-forked project' do
+        before_all do
+          source_project.add_maintainer(user)
+        end
+
+        it 'is not exposed' do
+          get api("/projects/#{source_project.id}", user)
+
+          expect(json_response).not_to include('mr_default_target_self')
+        end
+
+        it 'is not possible to update' do
+          put api("/projects/#{source_project.id}", user), params: { mr_default_target_self: true }
+
+          source_project.reload
+          expect(source_project.mr_default_target_self).to be false
+          expect(response).to have_gitlab_http_status(:bad_request)
+        end
+      end
+
+      describe 'for a forked project' do
+        it 'updates to true' do
+          put api("/projects/#{forked_project.id}", user), params: { mr_default_target_self: true }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['mr_default_target_self']).to eq(true)
+        end
+      end
+    end
   end
 
   describe 'POST /projects/:id/archive' do
@@ -4213,7 +4253,13 @@ RSpec.describe API::Projects do
       end
 
       it 'accepts custom parameters for the target project' do
-        post api("/projects/#{project.id}/fork", user2), params: { name: 'My Random Project', description: 'A description', visibility: 'private' }
+        post api("/projects/#{project.id}/fork", user2),
+          params: {
+            name: 'My Random Project',
+            description: 'A description',
+            visibility: 'private',
+            mr_default_target_self: true
+          }
 
         expect(response).to have_gitlab_http_status(:created)
         expect(json_response['name']).to eq('My Random Project')
@@ -4224,6 +4270,7 @@ RSpec.describe API::Projects do
         expect(json_response['description']).to eq('A description')
         expect(json_response['visibility']).to eq('private')
         expect(json_response['import_status']).to eq('scheduled')
+        expect(json_response['mr_default_target_self']).to eq(true)
         expect(json_response).to include("import_error")
       end
 

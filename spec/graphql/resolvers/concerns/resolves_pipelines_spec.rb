@@ -62,24 +62,12 @@ RSpec.describe ResolvesPipelines do
   context 'filtering by source' do
     let_it_be(:source_pipeline) { create(:ci_pipeline, project: project, source: 'web') }
 
-    context 'when `dast_view_scans` feature flag is disabled' do
-      before do
-        stub_feature_flags(dast_view_scans: false)
-      end
-
-      it 'does not filter by source' do
-        expect(resolve_pipelines(source: 'web')).to contain_exactly(*all_pipelines, source_pipeline)
-      end
+    it 'does filter by source' do
+      expect(resolve_pipelines(source: 'web')).to contain_exactly(source_pipeline)
     end
 
-    context 'when `dast_view_scans` feature flag is enabled' do
-      it 'does filter by source' do
-        expect(resolve_pipelines(source: 'web')).to contain_exactly(source_pipeline)
-      end
-
-      it 'returns all the pipelines' do
-        expect(resolve_pipelines).to contain_exactly(*all_pipelines, source_pipeline)
-      end
+    it 'returns all the pipelines' do
+      expect(resolve_pipelines).to contain_exactly(*all_pipelines, source_pipeline)
     end
   end
 

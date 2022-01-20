@@ -20,7 +20,7 @@
             %hr
           = f.hidden_field :header_logo_cache
           = f.file_field :header_logo, class: "", accept: 'image/*'
-          .hint
+          .form-text.text-muted
             = _('Maximum file size is 1MB. Pages are optimized for a 28px tall header logo')
   %hr
   .row
@@ -39,7 +39,7 @@
             %hr
           = f.hidden_field :favicon_cache
           = f.file_field :favicon, class: '', accept: 'image/*'
-          .hint
+          .form-text.text-muted
             = _("Maximum file size is 1 MB. Image size must be 32 x 32 pixels. Allowed image formats are %{favicon_extension_whitelist}.") % { favicon_extension_whitelist: favicon_extension_whitelist }
             %br
             = _("Images with incorrect dimensions are not resized automatically, and may result in unexpected behavior.")
@@ -58,7 +58,7 @@
       .form-group
         = f.label :description, class: 'col-form-label label-bold'
         = f.text_area :description, class: "form-control gl-form-input", rows: 10
-        .hint
+        .form-text.text-muted
           = parsed_with_gfm
       .form-group
         = f.label :logo, class: 'col-form-label label-bold pt-0'
@@ -71,7 +71,7 @@
             %hr
           = f.hidden_field :logo_cache
           = f.file_field :logo, class: "", accept: 'image/*'
-          .hint
+          .form-text.text-muted
             = _('Maximum file size is 1MB. Pages are optimized for a 640x360 px logo.')
 
   %hr
@@ -84,7 +84,7 @@
         = f.label :new_project_guidelines, class: 'col-form-label label-bold'
         %p
           = f.text_area :new_project_guidelines, class: "form-control gl-form-input", rows: 10
-          .hint
+          .form-text.text-muted
             = parsed_with_gfm
 
   %hr
@@ -97,7 +97,7 @@
         = f.label :profile_image_guidelines, class: 'col-form-label label-bold'
         %p
           = f.text_area :profile_image_guidelines, class: "form-control gl-form-input", rows: 10
-          .hint
+          .form-text.text-muted
             = parsed_with_gfm
 
       .gl-mt-3.gl-mb-3

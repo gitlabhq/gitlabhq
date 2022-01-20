@@ -9,7 +9,7 @@ RSpec.describe Users::RefreshAuthorizedProjectsService do
   # triggered twice.
   let!(:project) { create(:project) }
 
-  let(:user) { project.namespace.owner }
+  let(:user) { project.namespace.first_owner }
   let(:service) { described_class.new(user) }
 
   describe '#execute', :clean_gitlab_redis_shared_state do

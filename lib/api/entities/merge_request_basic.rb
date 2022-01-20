@@ -3,8 +3,12 @@
 module API
   module Entities
     class MergeRequestBasic < IssuableEntity
+      # Deprecated in favour of merge_user
       expose :merged_by, using: Entities::UserBasic do |merge_request, _options|
         merge_request.metrics&.merged_by
+      end
+      expose :merge_user, using: Entities::UserBasic do |merge_request|
+        merge_request.metrics&.merged_by || merge_request.merge_user
       end
       expose :merged_at do |merge_request, _options|
         merge_request.metrics&.merged_at

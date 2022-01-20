@@ -364,7 +364,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
       if clusters.empty?
         AnchorData.new(false,
                        statistic_icon + _('Add Kubernetes cluster'),
-                       new_project_cluster_path(project))
+                       project_clusters_path(project))
       else
         cluster_link = clusters.count == 1 ? project_cluster_path(project, clusters.first) : project_clusters_path(project)
 

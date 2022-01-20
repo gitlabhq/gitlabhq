@@ -57,4 +57,33 @@ RSpec.describe "Admin::Users" do
       expect(page).to have_content("#{Time.now.strftime('%b %Y')} 3 0")
     end
   end
+
+  describe 'prompt user about registration features' do
+    let(:message) { s_("RegistrationFeatures|Want to %{feature_title} for free?") % { feature_title: s_('RegistrationFeatures|send emails to users') } }
+
+    it 'does not render registration features CTA when service ping is enabled' do
+      stub_application_setting(usage_ping_enabled: true)
+
+      visit admin_users_path
+
+      expect(page).not_to have_content(message)
+    end
+
+    context 'with no license and service ping disabled' do
+      before do
+        stub_application_setting(usage_ping_enabled: false)
+
+        if Gitlab.ee?
+          allow(License).to receive(:current).and_return(nil)
+        end
+      end
+
+      it 'renders registration features CTA' do
+        visit admin_users_path
+
+        expect(page).to have_content(message)
+        expect(page).to have_link(s_('RegistrationFeatures|Registration Features Program'))
+      end
+    end
+  end
 end

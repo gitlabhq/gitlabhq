@@ -18,7 +18,7 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager do
     let(:model) { double(partitioning_strategy: partitioning_strategy, table_name: table, connection: connection) }
     let(:partitioning_strategy) { double(missing_partitions: partitions, extra_partitions: [], after_adding_partitions: nil) }
     let(:connection) { ActiveRecord::Base.connection }
-    let(:table) { "some_table" }
+    let(:table) { "issues" }
 
     before do
       allow(connection).to receive(:table_exists?).and_call_original
@@ -36,6 +36,7 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager do
     end
 
     it 'creates the partition' do
+      expect(connection).to receive(:execute).with("LOCK TABLE \"#{table}\" IN ACCESS EXCLUSIVE MODE")
       expect(connection).to receive(:execute).with(partitions.first.to_sql)
       expect(connection).to receive(:execute).with(partitions.second.to_sql)
 

@@ -50,7 +50,7 @@ RSpec.shared_context 'ProjectPolicy context' do
       resolve_note update_build update_commit_status update_container_image
       update_deployment update_environment update_merge_request
       update_metrics_dashboard_annotation update_pipeline update_release destroy_release
-      read_resource_group update_resource_group
+      read_resource_group update_resource_group update_escalation_status
     ]
   end
 

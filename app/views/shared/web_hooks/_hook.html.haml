@@ -1,22 +1,23 @@
+- sslStatus = hook.enable_ssl_verification ? _('enabled') : _('disabled')
+- sslBadgeText = _('SSL Verification:') + ' ' + sslStatus
+
 %li
   .row
     .col-md-8.col-lg-7
       %strong.light-header
         = hook.url
         - if hook.rate_limited?
-          %span.gl-badge.badge-danger.badge-pill.sm= _('Disabled')
+          = gl_badge_tag(_('Disabled'), variant: :danger, size: :sm)
         - elsif hook.permanently_disabled?
-          %span.gl-badge.badge-danger.badge-pill.sm= s_('Webhooks|Failed to connect')
+          = gl_badge_tag(s_('Webhooks|Failed to connect'), variant: :danger, size: :sm)
         - elsif hook.temporarily_disabled?
-          %span.gl-badge.badge-warning.badge-pill.sm= s_('Webhooks|Fails to connect')
+          = gl_badge_tag(s_('Webhooks|Fails to connect'), variant: :warning, size: :sm)
 
       %div
         - hook.class.triggers.each_value do |trigger|
           - if hook.public_send(trigger)
-            %span.gl-badge.badge-muted.badge-pill.sm.gl-mt-2.deploy-project-label= trigger.to_s.titleize
-        %span.gl-badge.badge-muted.badge-pill.sm.gl-mt-2
-          = _('SSL Verification:')
-          = hook.enable_ssl_verification ? _('enabled') : _('disabled')
+            = gl_badge_tag(trigger.to_s.titleize, size: :sm)
+        = gl_badge_tag(sslBadgeText, size: :sm)
 
     .col-md-4.col-lg-5.text-right-md.gl-mt-2
       %span>= render 'shared/web_hooks/test_button', hook: hook, button_class: 'btn-sm btn-default gl-mr-3'

@@ -17,11 +17,11 @@ RSpec.describe Namespaces::ProjectNamespace, type: :model do
     let_it_be(:project) { create(:project) }
     let_it_be(:project_namespace) { project.project_namespace }
 
-    it 'also deletes the associated project' do
+    it 'keeps the associated project' do
       project_namespace.delete
 
       expect { project_namespace.reload }.to raise_error(ActiveRecord::RecordNotFound)
-      expect { project.reload }.to raise_error(ActiveRecord::RecordNotFound)
+      expect(project.reload.project_namespace).to be_nil
     end
   end
 end

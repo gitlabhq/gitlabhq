@@ -9,14 +9,9 @@ namespace :gitlab do
     task create: :gitlab_environment do
       warn_user_is_not_gitlab
 
-      Rake::Task['gitlab:backup:db:create'].invoke
-      Rake::Task['gitlab:backup:repo:create'].invoke
-      Rake::Task['gitlab:backup:uploads:create'].invoke
-      Rake::Task['gitlab:backup:builds:create'].invoke
-      Rake::Task['gitlab:backup:artifacts:create'].invoke
-      Rake::Task['gitlab:backup:pages:create'].invoke
-      Rake::Task['gitlab:backup:lfs:create'].invoke
-      Rake::Task['gitlab:backup:registry:create'].invoke
+      %w(db repo uploads builds artifacts pages lfs terraform_state registry packages).each do |type|
+        Rake::Task["gitlab:backup:#{type}:create"].invoke
+      end
 
       backup = Backup::Manager.new(progress)
       backup.write_info
@@ -83,7 +78,9 @@ namespace :gitlab do
       Rake::Task['gitlab:backup:artifacts:restore'].invoke unless backup.skipped?('artifacts')
       Rake::Task['gitlab:backup:pages:restore'].invoke unless backup.skipped?('pages')
       Rake::Task['gitlab:backup:lfs:restore'].invoke unless backup.skipped?('lfs')
+      Rake::Task['gitlab:backup:terraform_state:restore'].invoke unless backup.skipped?('terraform_state')
       Rake::Task['gitlab:backup:registry:restore'].invoke unless backup.skipped?('registry')
+      Rake::Task['gitlab:backup:packages:restore'].invoke unless backup.skipped?('packages')
       Rake::Task['gitlab:shell:setup'].invoke
       Rake::Task['cache:clear'].invoke
 
@@ -133,8 +130,12 @@ namespace :gitlab do
         if ENV["SKIP"] && ENV["SKIP"].include?("db")
           puts_time "[SKIPPED]".color(:cyan)
         else
-          Backup::Database.new(progress).dump
-          puts_time "done".color(:green)
+          begin
+            Backup::Database.new(progress).dump
+            puts_time "done".color(:green)
+          rescue Backup::DatabaseBackupError => e
+            progress.puts "#{e.message}"
+          end
         end
       end
 
@@ -166,8 +167,12 @@ namespace :gitlab do
         if ENV["SKIP"] && ENV["SKIP"].include?("builds")
           puts_time "[SKIPPED]".color(:cyan)
         else
-          Backup::Builds.new(progress).dump
-          puts_time "done".color(:green)
+          begin
+            Backup::Builds.new(progress).dump
+            puts_time "done".color(:green)
+          rescue Backup::FileBackupError => e
+            progress.puts "#{e.message}"
+          end
         end
       end
 
@@ -185,8 +190,12 @@ namespace :gitlab do
         if ENV["SKIP"] && ENV["SKIP"].include?("uploads")
           puts_time "[SKIPPED]".color(:cyan)
         else
-          Backup::Uploads.new(progress).dump
-          puts_time "done".color(:green)
+          begin
+            Backup::Uploads.new(progress).dump
+            puts_time "done".color(:green)
+          rescue Backup::FileBackupError => e
+            progress.puts "#{e.message}"
+          end
         end
       end
 
@@ -204,8 +213,12 @@ namespace :gitlab do
         if ENV["SKIP"] && ENV["SKIP"].include?("artifacts")
           puts_time "[SKIPPED]".color(:cyan)
         else
-          Backup::Artifacts.new(progress).dump
-          puts_time "done".color(:green)
+          begin
+            Backup::Artifacts.new(progress).dump
+            puts_time "done".color(:green)
+          rescue Backup::FileBackupError => e
+            progress.puts "#{e.message}"
+          end
         end
       end
 
@@ -223,8 +236,12 @@ namespace :gitlab do
         if ENV["SKIP"] && ENV["SKIP"].include?("pages")
           puts_time "[SKIPPED]".color(:cyan)
         else
-          Backup::Pages.new(progress).dump
-          puts_time "done".color(:green)
+          begin
+            Backup::Pages.new(progress).dump
+            puts_time "done".color(:green)
+          rescue Backup::FileBackupError => e
+            progress.puts "#{e.message}"
+          end
         end
       end
 
@@ -242,14 +259,37 @@ namespace :gitlab do
         if ENV["SKIP"] && ENV["SKIP"].include?("lfs")
           puts_time "[SKIPPED]".color(:cyan)
         else
-          Backup::Lfs.new(progress).dump
-          puts_time "done".color(:green)
+          begin
+            Backup::Lfs.new(progress).dump
+            puts_time "done".color(:green)
+          rescue Backup::FileBackupError => e
+            progress.puts "#{e.message}"
+          end
         end
       end
 
       task restore: :gitlab_environment do
         puts_time "Restoring lfs objects ... ".color(:blue)
         Backup::Lfs.new(progress).restore
+        puts_time "done".color(:green)
+      end
+    end
+
+    namespace :terraform_state do
+      task create: :gitlab_environment do
+        puts_time "Dumping terraform states ... ".color(:blue)
+
+        if ENV["SKIP"] && ENV["SKIP"].include?("terraform_state")
+          puts_time "[SKIPPED]".color(:cyan)
+        else
+          Backup::TerraformState.new(progress).dump
+          puts_time "done".color(:green)
+        end
+      end
+
+      task restore: :gitlab_environment do
+        puts_time "Restoring terraform states ... ".color(:blue)
+        Backup::TerraformState.new(progress).restore
         puts_time "done".color(:green)
       end
     end
@@ -262,8 +302,12 @@ namespace :gitlab do
           if ENV["SKIP"] && ENV["SKIP"].include?("registry")
             puts_time "[SKIPPED]".color(:cyan)
           else
-            Backup::Registry.new(progress).dump
-            puts_time "done".color(:green)
+            begin
+              Backup::Registry.new(progress).dump
+              puts_time "done".color(:green)
+            rescue Backup::FileBackupError => e
+              progress.puts "#{e.message}"
+            end
           end
         else
           puts_time "[DISABLED]".color(:cyan)
@@ -279,6 +323,25 @@ namespace :gitlab do
         else
           puts_time "[DISABLED]".color(:cyan)
         end
+      end
+    end
+
+    namespace :packages do
+      task create: :gitlab_environment do
+        puts_time "Dumping packages ... ".color(:blue)
+
+        if ENV['SKIP'] && ENV['SKIP'].include?('packages')
+          puts_time "[SKIPPED]".color(:cyan)
+        else
+          Backup::Packages.new(progress).dump
+          puts_time "done".color(:green)
+        end
+      end
+
+      task restore: :gitlab_environment do
+        puts_time "Restoring packages ...".color(:blue)
+        Backup::Packages.new(progress).restore
+        puts_time "done".color(:green)
       end
     end
 
@@ -302,7 +365,7 @@ namespace :gitlab do
       if Feature.enabled?(:gitaly_backup, default_enabled: :yaml)
         max_concurrency = ENV['GITLAB_BACKUP_MAX_CONCURRENCY'].presence
         max_storage_concurrency = ENV['GITLAB_BACKUP_MAX_STORAGE_CONCURRENCY'].presence
-        Backup::GitalyBackup.new(progress, parallel: max_concurrency, parallel_storage: max_storage_concurrency)
+        Backup::GitalyBackup.new(progress, max_parallelism: max_concurrency, storage_parallelism: max_storage_concurrency)
       else
         Backup::GitalyRpcBackup.new(progress)
       end

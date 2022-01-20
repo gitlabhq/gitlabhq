@@ -45,7 +45,7 @@ System hooks can be used, for example, for logging or changing information in an
 LDAP server.
 
 In addition to these default events, you can enable triggers for other events,
-such as push events, and disable the `repository_update` event 
+such as push events, and disable the `repository_update` event
 when you create a system hook.
 
 NOTE:

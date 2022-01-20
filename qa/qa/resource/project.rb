@@ -107,32 +107,6 @@ module QA
         super
       end
 
-      def has_file?(file_path)
-        response = repository_tree
-
-        raise ResourceNotFoundError, (response[:message]).to_s if response.is_a?(Hash) && response.has_key?(:message)
-
-        response.any? { |file| file[:path] == file_path }
-      end
-
-      def has_branch?(branch)
-        has_branches?(Array(branch))
-      end
-
-      def has_branches?(branches)
-        branches.all? do |branch|
-          response = get(request_url("#{api_repository_branches_path}/#{branch}"))
-          response.code == HTTP_STATUS_OK
-        end
-      end
-
-      def has_tags?(tags)
-        tags.all? do |tag|
-          response = get(request_url("#{api_repository_tags_path}/#{tag}"))
-          response.code == HTTP_STATUS_OK
-        end
-      end
-
       def api_get_path
         "/projects/#{CGI.escape(path_with_namespace)}"
       end
@@ -235,6 +209,32 @@ module QA
         post_body[:template_name] = @template_name if @template_name
 
         post_body
+      end
+
+      def has_file?(file_path)
+        response = repository_tree
+
+        raise ResourceNotFoundError, (response[:message]).to_s if response.is_a?(Hash) && response.has_key?(:message)
+
+        response.any? { |file| file[:path] == file_path }
+      end
+
+      def has_branch?(branch)
+        has_branches?(Array(branch))
+      end
+
+      def has_branches?(branches)
+        branches.all? do |branch|
+          response = get(request_url("#{api_repository_branches_path}/#{branch}"))
+          response.code == HTTP_STATUS_OK
+        end
+      end
+
+      def has_tags?(tags)
+        tags.all? do |tag|
+          response = get(request_url("#{api_repository_tags_path}/#{tag}"))
+          response.code == HTTP_STATUS_OK
+        end
       end
 
       def change_repository_storage(new_storage)
@@ -372,27 +372,12 @@ module QA
         api_post_to(api_wikis_path, title: title, content: content)
       end
 
-      # Object comparison
-      #
-      # @param [QA::Resource::Project] other
-      # @return [Boolean]
-      def ==(other)
-        other.is_a?(Project) && comparable_project == other.comparable_project
-      end
-
-      # Override inspect for a better rspec failure diff output
-      #
-      # @return [String]
-      def inspect
-        JSON.pretty_generate(comparable_project)
-      end
-
       protected
 
       # Return subset of fields for comparing projects
       #
       # @return [Hash]
-      def comparable_project
+      def comparable
         reload! if api_response.nil?
 
         api_resource.slice(

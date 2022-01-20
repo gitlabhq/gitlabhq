@@ -1,0 +1,5 @@
+mutation action($action: LocalAction) {
+  action(action: $action) @client {
+    errors
+  }
+}

@@ -39,7 +39,7 @@ module HooksHelper
 
   def hook_log_path(hook, hook_log)
     case hook
-    when ProjectHook
+    when ProjectHook, ServiceHook
       hook_log.present.details_path
     when SystemHook
       admin_hook_hook_log_path(hook, hook_log)

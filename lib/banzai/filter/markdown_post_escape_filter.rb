@@ -8,8 +8,10 @@ module Banzai
       NOT_LITERAL_REGEX = %r{#{LITERAL_KEYWORD}-((%5C|\\).+?)-#{LITERAL_KEYWORD}}.freeze
       SPAN_REGEX        = %r{<span>(.*?)</span>}.freeze
 
-      CSS_A   = 'a'
-      XPATH_A = Gitlab::Utils::Nokogiri.css_to_xpath(CSS_A).freeze
+      CSS_A          = 'a'
+      XPATH_A        = Gitlab::Utils::Nokogiri.css_to_xpath(CSS_A).freeze
+      CSS_LANG_TAG   = 'pre'
+      XPATH_LANG_TAG = Gitlab::Utils::Nokogiri.css_to_xpath(CSS_LANG_TAG).freeze
 
       def call
         return doc unless result[:escaped_literals]
@@ -32,21 +34,11 @@ module Banzai
           node.attributes['title'].value = node.attributes['title'].value.gsub(SPAN_REGEX, '\1') if node.attributes['title']
         end
 
-        doc.xpath(lang_tag).each do |node|
+        doc.xpath(XPATH_LANG_TAG).each do |node|
           node.attributes['lang'].value  = node.attributes['lang'].value.gsub(SPAN_REGEX, '\1') if node.attributes['lang']
         end
 
         doc
-      end
-
-      private
-
-      def lang_tag
-        if Feature.enabled?(:use_cmark_renderer, default_enabled: :yaml)
-          Gitlab::Utils::Nokogiri.css_to_xpath('pre')
-        else
-          Gitlab::Utils::Nokogiri.css_to_xpath('code')
-        end
       end
     end
   end

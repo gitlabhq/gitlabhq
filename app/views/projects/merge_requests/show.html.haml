@@ -97,6 +97,4 @@
 #js-review-bar
 
 = render 'projects/invite_members_modal', project: @project
-- if Gitlab::CurrentSettings.gitpod_enabled && !current_user&.gitpod_enabled
-  = render 'shared/gitpod/enable_gitpod_modal'
 = render 'shared/web_ide_path'

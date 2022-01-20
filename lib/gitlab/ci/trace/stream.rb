@@ -11,10 +11,6 @@ module Gitlab
 
         delegate :close, :tell, :seek, :size, :url, :truncate, to: :stream, allow_nil: true
 
-        delegate :valid?, to: :stream, allow_nil: true
-
-        alias_method :present?, :valid?
-
         def initialize(metrics = Trace::Metrics.new)
           @stream = yield
           @stream&.binmode
@@ -24,6 +20,7 @@ module Gitlab
         def valid?
           self.stream.present?
         end
+        alias_method :present?, :valid?
 
         def file?
           self.path.present?

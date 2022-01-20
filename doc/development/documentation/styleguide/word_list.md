@@ -25,6 +25,13 @@ Try to avoid **`@mention`**. Say **mention** instead, and consider linking to th
 [mentions topic](../../../user/discussions/index.md#mentions).
 Don't use backticks.
 
+## 2FA, two-factor authentication
+
+Spell out **two-factor authentication** in sentence case for the first use and in section headings, and **2FA**
+thereafter. If the first word in a sentence, do not capitalize `factor` or `authentication`. For example:
+
+- Two-factor authentication (2FA) helps secure your account. Set up 2FA when you first log in.
+
 ## above
 
 Try to avoid using **above** when referring to an example or table in a documentation page. If required, use **previous** instead. For example:
@@ -182,6 +189,11 @@ Use **check out** as a verb. For the Git command, use `checkout`.
 
 CI/CD is always uppercase. No need to spell it out on first use.
 
+## CI/CD minutes
+
+Use **CI/CD minutes** instead of **CI minutes**, **pipeline minutes**, **pipeline minutes quota**, or
+**CI pipeline minutes**. This decision was made in [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/342813).
+
 ## click
 
 Do not use **click**. Instead, use **select** with buttons, links, menu items, and lists.
@@ -197,10 +209,18 @@ Use **confirmation dialog** to describe the dialog box that asks you to confirm 
 
 - On the confirmation dialog, select **OK**.
 
+## Container Registry
+
+Use title case for the GitLab Container Registry.
+
 ## currently
 
 Do not use **currently** when talking about the product or its features. The documentation describes the product as it is today.
 ([Vale](../testing.md#vale) rule: [`CurrentStatus.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/CurrentStatus.yml))
+
+## Dependency Proxy
+
+Use title case for the GitLab Dependency Proxy.
 
 ## deploy board
 
@@ -614,6 +634,10 @@ When writing about the Owner role:
 
 Do not use **Owner permissions**. A user who is assigned the Owner role has a set of associated permissions.
 
+## Package Registry
+
+Use title case for the GitLab Package Registry.
+
 ## permissions
 
 Do not use [**roles**](#roles) and **permissions** interchangeably. Each user is assigned a role. Each role includes a set of permissions.
@@ -633,6 +657,10 @@ Use **press** when talking about keyboard keys. For example:
 ## profanity
 
 Do not use profanity. Doing so may negatively affect other users and contributors, which is contrary to the GitLab value of [Diversity, Inclusion, and Belonging](https://about.gitlab.com/handbook/values/#diversity-inclusion).
+
+## push rules
+
+Use lowercase for **push rules**.
 
 ## Reporter
 
@@ -824,6 +852,10 @@ Use title case for **To-Do List**. ([Vale](../testing.md#vale) rule: [`ToDo.yml`
 You **turn on** or **turn off** a toggle. For example:
 
 - Turn on the **blah** toggle.
+
+## TFA, two-factor authentication
+
+Use [**2FA** and **two-factor authentication**](#2fa-two-factor-authentication) instead.
 
 ## type
 

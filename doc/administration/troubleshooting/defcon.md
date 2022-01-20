@@ -23,7 +23,7 @@ Side effects:
 
 ## `ci_queueing_disaster_recovery_disable_quota`
 
-This feature flag, if temporarily enabled, disables enforcing CI minutes quota
+This feature flag, if temporarily enabled, disables enforcing CI/CD minutes quota
 on shared runners. This can help to reduce system resource usage on the
 `jobs/request` endpoint by significantly reducing the computations being
 performed.

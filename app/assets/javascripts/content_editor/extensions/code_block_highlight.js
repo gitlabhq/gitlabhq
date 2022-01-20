@@ -19,7 +19,14 @@ export default CodeBlockLowlight.extend({
     };
   },
   renderHTML({ HTMLAttributes }) {
-    return ['div', ['pre', HTMLAttributes, ['code', {}, 0]]];
+    return [
+      'pre',
+      {
+        ...HTMLAttributes,
+        class: `content-editor-code-block ${HTMLAttributes.class}`,
+      },
+      ['code', {}, 0],
+    ];
   },
 }).configure({
   lowlight,

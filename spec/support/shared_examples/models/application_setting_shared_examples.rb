@@ -94,7 +94,7 @@ RSpec.shared_examples 'application settings examples' do
         '1:2:3:4:5::7:8',
         '[1:2:3:4:5::7:8]',
         '[2001:db8:85a3:8d3:1319:8a2e:370:7348]:443',
-        'www.example2.com:8080',
+        'www.example.org:8080',
         'example.com:8080'
       ]
 
@@ -114,7 +114,7 @@ RSpec.shared_examples 'application settings examples' do
         an_object_having_attributes(domain: 'example.com'),
         an_object_having_attributes(domain: 'subdomain.example.com'),
         an_object_having_attributes(domain: 'www.example.com'),
-        an_object_having_attributes(domain: 'www.example2.com', port: 8080),
+        an_object_having_attributes(domain: 'www.example.org', port: 8080),
         an_object_having_attributes(domain: 'example.com', port: 8080)
       ]
 

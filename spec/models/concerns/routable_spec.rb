@@ -141,6 +141,11 @@ RSpec.describe Group, 'Routable', :with_clean_rails_cache do
     end
   end
 
+  it 'creates route with namespace referencing group' do
+    expect(group.route).not_to be_nil
+    expect(group.route.namespace).to eq(group)
+  end
+
   describe '.where_full_path_in' do
     context 'without any paths' do
       it 'returns an empty relation' do
@@ -208,30 +213,20 @@ RSpec.describe Project, 'Routable', :with_clean_rails_cache do
   it_behaves_like 'routable resource with parent' do
     let_it_be(:record) { project }
   end
+
+  it 'creates route with namespace referencing project namespace' do
+    expect(project.route).not_to be_nil
+    expect(project.route.namespace).to eq(project.project_namespace)
+  end
 end
 
 RSpec.describe Namespaces::ProjectNamespace, 'Routable', :with_clean_rails_cache do
   let_it_be(:group) { create(:group) }
-  let_it_be(:project_namespace) do
-    # For now we create only project namespace w/o project, otherwise same path
-    # would be used for project and project namespace.
-    # This can be removed when route is created automatically for project namespaces.
-    # https://gitlab.com/gitlab-org/gitlab/-/issues/346448
-    create(:project_namespace, project: nil, parent: group,
-           visibility_level: Gitlab::VisibilityLevel::PUBLIC,
-           path: 'foo', name: 'foo').tap do |project_namespace|
-      Route.create!(source: project_namespace, path: project_namespace.full_path,
-                    name: project_namespace.full_name)
-    end
-  end
 
-  # we have couple of places where we use generic Namespace, in that case
-  # we don't want to include ProjectNamespace routes yet
-  it 'ignores project namespace when searching for generic namespace' do
-    redirect_route = create(:redirect_route, source: project_namespace)
-
-    expect(Namespace.find_by_full_path(project_namespace.full_path)).to be_nil
-    expect(Namespace.find_by_full_path(redirect_route.path, follow_redirects: true)).to be_nil
+  it 'skips route creation for the resource' do
+    expect do
+      described_class.create!(project: nil, parent: group, visibility_level: Gitlab::VisibilityLevel::PUBLIC, path: 'foo', name: 'foo')
+    end.not_to change { Route.count }
   end
 end
 

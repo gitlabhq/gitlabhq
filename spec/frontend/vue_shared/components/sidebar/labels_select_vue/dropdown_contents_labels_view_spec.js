@@ -63,6 +63,8 @@ describe('DropdownContentsLabelsView', () => {
   describe('computed', () => {
     describe('visibleLabels', () => {
       it('returns matching labels filtered with `searchKey`', () => {
+        // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+        // eslint-disable-next-line no-restricted-syntax
         wrapper.setData({
           searchKey: 'bug',
         });
@@ -72,6 +74,8 @@ describe('DropdownContentsLabelsView', () => {
       });
 
       it('returns matching labels with fuzzy filtering', () => {
+        // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+        // eslint-disable-next-line no-restricted-syntax
         wrapper.setData({
           searchKey: 'bg',
         });
@@ -82,6 +86,8 @@ describe('DropdownContentsLabelsView', () => {
       });
 
       it('returns all labels when `searchKey` is empty', () => {
+        // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+        // eslint-disable-next-line no-restricted-syntax
         wrapper.setData({
           searchKey: '',
         });
@@ -100,6 +106,8 @@ describe('DropdownContentsLabelsView', () => {
       `(
         'returns $returnValue when searchKey is "$searchKey" and visibleLabels is $labelsDescription',
         async ({ searchKey, labels, returnValue }) => {
+          // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+          // eslint-disable-next-line no-restricted-syntax
           wrapper.setData({
             searchKey,
           });
@@ -161,6 +169,8 @@ describe('DropdownContentsLabelsView', () => {
 
     describe('handleKeyDown', () => {
       it('decreases `currentHighlightItem` value by 1 when Up arrow key is pressed', () => {
+        // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+        // eslint-disable-next-line no-restricted-syntax
         wrapper.setData({
           currentHighlightItem: 1,
         });
@@ -173,6 +183,8 @@ describe('DropdownContentsLabelsView', () => {
       });
 
       it('increases `currentHighlightItem` value by 1 when Down arrow key is pressed', () => {
+        // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+        // eslint-disable-next-line no-restricted-syntax
         wrapper.setData({
           currentHighlightItem: 1,
         });
@@ -185,6 +197,8 @@ describe('DropdownContentsLabelsView', () => {
       });
 
       it('resets the search text when the Enter key is pressed', () => {
+        // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+        // eslint-disable-next-line no-restricted-syntax
         wrapper.setData({
           currentHighlightItem: 1,
           searchKey: 'bug',
@@ -201,6 +215,8 @@ describe('DropdownContentsLabelsView', () => {
 
       it('calls action `updateSelectedLabels` with currently highlighted label when Enter key is pressed', () => {
         jest.spyOn(wrapper.vm, 'updateSelectedLabels').mockImplementation();
+        // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+        // eslint-disable-next-line no-restricted-syntax
         wrapper.setData({
           currentHighlightItem: 2,
         });
@@ -220,6 +236,8 @@ describe('DropdownContentsLabelsView', () => {
 
       it('calls action `toggleDropdownContents` when Esc key is pressed', () => {
         jest.spyOn(wrapper.vm, 'toggleDropdownContents').mockImplementation();
+        // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+        // eslint-disable-next-line no-restricted-syntax
         wrapper.setData({
           currentHighlightItem: 1,
         });
@@ -233,6 +251,8 @@ describe('DropdownContentsLabelsView', () => {
 
       it('calls action `scrollIntoViewIfNeeded` in next tick when any key is pressed', () => {
         jest.spyOn(wrapper.vm, 'scrollIntoViewIfNeeded').mockImplementation();
+        // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+        // eslint-disable-next-line no-restricted-syntax
         wrapper.setData({
           currentHighlightItem: 1,
         });
@@ -320,6 +340,8 @@ describe('DropdownContentsLabelsView', () => {
     });
 
     it('renders label element with `highlight` set to true when value of `currentHighlightItem` is more than -1', () => {
+      // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+      // eslint-disable-next-line no-restricted-syntax
       wrapper.setData({
         currentHighlightItem: 0,
       });
@@ -332,6 +354,8 @@ describe('DropdownContentsLabelsView', () => {
     });
 
     it('renders element containing "No matching results" when `searchKey` does not match with any label', () => {
+      // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+      // eslint-disable-next-line no-restricted-syntax
       wrapper.setData({
         searchKey: 'abc',
       });

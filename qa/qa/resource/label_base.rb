@@ -49,27 +49,12 @@ module QA
         }
       end
 
-      # Object comparison
-      #
-      # @param [QA::Resource::GroupBase] other
-      # @return [Boolean]
-      def ==(other)
-        other.is_a?(LabelBase) && comparable_label == other.comparable_label
-      end
-
-      # Override inspect for a better rspec failure diff output
-      #
-      # @return [String]
-      def inspect
-        JSON.pretty_generate(comparable_label)
-      end
-
       protected
 
       # Return subset of fields for comparing labels
       #
       # @return [Hash]
-      def comparable_label
+      def comparable
         reload! unless api_response
 
         api_response.slice(

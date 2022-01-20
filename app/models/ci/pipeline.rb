@@ -69,6 +69,7 @@ module Ci
     has_many :builds, foreign_key: :commit_id, inverse_of: :pipeline
     has_many :generic_commit_statuses, foreign_key: :commit_id, inverse_of: :pipeline, class_name: 'GenericCommitStatus'
     has_many :job_artifacts, through: :builds
+    has_many :build_trace_chunks, class_name: 'Ci::BuildTraceChunk', through: :builds, source: :trace_chunks
     has_many :trigger_requests, dependent: :destroy, foreign_key: :commit_id # rubocop:disable Cop/ActiveRecordDependent
     has_many :variables, class_name: 'Ci::PipelineVariable'
     has_many :deployments, through: :builds
@@ -130,6 +131,7 @@ module Ci
     after_create :keep_around_commits, unless: :importing?
 
     use_fast_destroy :job_artifacts
+    use_fast_destroy :build_trace_chunks
 
     # We use `Enums::Ci::Pipeline.sources` here so that EE can more easily extend
     # this `Hash` with new values.
@@ -242,11 +244,7 @@ module Ci
             ::JiraConnect::SyncBuildsWorker.perform_async(pipeline.id, seq_id)
           end
 
-          if Feature.enabled?(:expire_job_and_pipeline_cache_synchronously, pipeline.project, default_enabled: :yaml)
-            Ci::ExpirePipelineCacheService.new.execute(pipeline) # rubocop: disable CodeReuse/ServiceClass
-          else
-            ExpirePipelineCacheWorker.perform_async(pipeline.id)
-          end
+          Ci::ExpirePipelineCacheService.new.execute(pipeline) # rubocop: disable CodeReuse/ServiceClass
         end
       end
 
@@ -464,6 +462,14 @@ module Ci
 
     def total_size
       statuses.count(:id)
+    end
+
+    def tags_count
+      ActsAsTaggableOn::Tagging.where(taggable: builds).count
+    end
+
+    def distinct_tags_count
+      ActsAsTaggableOn::Tagging.where(taggable: builds).count('distinct(tag_id)')
     end
 
     def stages_names
@@ -1281,6 +1287,12 @@ module Ci
     def create_deployment_in_separate_transaction?
       strong_memoize(:create_deployment_in_separate_transaction) do
         ::Feature.enabled?(:create_deployment_in_separate_transaction, project, default_enabled: :yaml)
+      end
+    end
+
+    def use_variables_builder_definitions?
+      strong_memoize(:use_variables_builder_definitions) do
+        ::Feature.enabled?(:ci_use_variables_builder_definitions, project, default_enabled: :yaml)
       end
     end
 

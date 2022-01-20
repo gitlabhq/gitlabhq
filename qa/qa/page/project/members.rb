@@ -41,6 +41,11 @@ module QA
             click_button 'Remove group'
           end
         end
+
+        def has_group?(group_name)
+          click_element :groups_list_tab
+          has_element?(:group_row, text: group_name)
+        end
       end
     end
   end

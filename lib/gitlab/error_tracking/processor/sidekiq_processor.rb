@@ -53,6 +53,8 @@ module Gitlab
             # 'args' in :job => from default error handler
             job_holder = sidekiq.key?('args') ? sidekiq : sidekiq[:job]
 
+            return event unless job_holder
+
             if job_holder['args']
               job_holder['args'] = filter_arguments(job_holder['args'], job_holder['class']).to_a
             end

@@ -18,11 +18,17 @@ module Ci
 
       delegate :timeout, to: :metadata, prefix: true, allow_nil: true
       delegate :interruptible, to: :metadata, prefix: false, allow_nil: true
-      delegate :has_exposed_artifacts?, to: :metadata, prefix: false, allow_nil: true
       delegate :environment_auto_stop_in, to: :metadata, prefix: false, allow_nil: true
       delegate :set_cancel_gracefully, to: :metadata, prefix: false, allow_nil: false
-      delegate :cancel_gracefully?, to: :metadata, prefix: false, allow_nil: false
       before_create :ensure_metadata
+    end
+
+    def has_exposed_artifacts?
+      !!metadata&.has_exposed_artifacts?
+    end
+
+    def cancel_gracefully?
+      !!metadata&.cancel_gracefully?
     end
 
     def ensure_metadata

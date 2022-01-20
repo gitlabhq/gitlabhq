@@ -1,11 +1,13 @@
 <script>
 import { GlTabs, GlTab } from '@gitlab/ui';
+import DeploymentsServiceTable from './deployments_service_table.vue';
 import ServiceAccountsList from './service_accounts_list.vue';
 
 export default {
   components: {
     GlTabs,
     GlTab,
+    DeploymentsServiceTable,
     ServiceAccountsList,
   },
   props: {
@@ -18,6 +20,14 @@ export default {
       required: true,
     },
     emptyIllustrationUrl: {
+      type: String,
+      required: true,
+    },
+    deploymentsCloudRunUrl: {
+      type: String,
+      required: true,
+    },
+    deploymentsCloudStorageUrl: {
       type: String,
       required: true,
     },
@@ -35,7 +45,12 @@ export default {
         :empty-illustration-url="emptyIllustrationUrl"
       />
     </gl-tab>
-    <gl-tab :title="__('Deployments')" disabled />
+    <gl-tab :title="__('Deployments')">
+      <deployments-service-table
+        :cloud-run-url="deploymentsCloudRunUrl"
+        :cloud-storage-url="deploymentsCloudStorageUrl"
+      />
+    </gl-tab>
     <gl-tab :title="__('Services')" disabled />
   </gl-tabs>
 </template>

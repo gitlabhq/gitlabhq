@@ -3,10 +3,10 @@
 require 'spec_helper'
 
 RSpec.describe BulkImports::Common::Pipelines::UploadsPipeline do
-  let_it_be(:tmpdir) { Dir.mktmpdir }
   let_it_be(:project) { create(:project) }
   let_it_be(:group) { create(:group) }
 
+  let(:tmpdir) { Dir.mktmpdir }
   let(:uploads_dir_path) { File.join(tmpdir, '72a497a02fe3ee09edae2ed06d390038') }
   let(:upload_file_path) { File.join(uploads_dir_path, 'upload.txt')}
   let(:tracker) { create(:bulk_import_tracker, entity: entity) }
@@ -80,10 +80,10 @@ RSpec.describe BulkImports::Common::Pipelines::UploadsPipeline do
           .with(
             configuration: context.configuration,
             relative_url: "/#{entity.pluralized_name}/test/export_relations/download?relation=uploads",
-            dir: tmpdir,
+            tmpdir: tmpdir,
             filename: 'uploads.tar.gz')
           .and_return(download_service)
-        expect(BulkImports::FileDecompressionService).to receive(:new).with(dir: tmpdir, filename: 'uploads.tar.gz').and_return(decompression_service)
+        expect(BulkImports::FileDecompressionService).to receive(:new).with(tmpdir: tmpdir, filename: 'uploads.tar.gz').and_return(decompression_service)
         expect(BulkImports::ArchiveExtractionService).to receive(:new).with(tmpdir: tmpdir, filename: 'uploads.tar').and_return(extraction_service)
 
         expect(download_service).to receive(:execute)
@@ -120,6 +120,31 @@ RSpec.describe BulkImports::Common::Pipelines::UploadsPipeline do
           FileUtils.ln_s(File.join(tmpdir, upload_file_path), symlink)
 
           expect { pipeline.load(context, symlink) }.not_to change { portable.uploads.count }
+        end
+      end
+    end
+
+    describe '#after_run' do
+      before do
+        allow(Dir).to receive(:mktmpdir).with('bulk_imports').and_return(tmpdir)
+      end
+
+      it 'removes tmp dir' do
+        allow(FileUtils).to receive(:remove_entry).and_call_original
+        expect(FileUtils).to receive(:remove_entry).with(tmpdir).and_call_original
+
+        pipeline.after_run(nil)
+
+        expect(Dir.exist?(tmpdir)).to eq(false)
+      end
+
+      context 'when dir does not exist' do
+        it 'does not attempt to remove tmpdir' do
+          FileUtils.remove_entry(tmpdir)
+
+          expect(FileUtils).not_to receive(:remove_entry).with(tmpdir)
+
+          pipeline.after_run(nil)
         end
       end
     end

@@ -109,14 +109,18 @@ export default {
       </gl-skeleton-loader>
     </div>
     <div v-else class="media-body space-children gl-display-flex gl-align-items-center">
-      <span v-if="shouldBeRebased" class="bold">
+      <span
+        v-if="shouldBeRebased"
+        :class="{ 'gl-ml-0! gl-text-body!': glFeatures.restructuredMrWidget }"
+        class="bold"
+      >
         {{
           s__(`mrWidget|Merge blocked: fast-forward merge is not possible.
   To merge this request, first rebase locally.`)
         }}
       </span>
       <template v-else>
-        <span class="bold">
+        <span :class="{ 'gl-ml-0! gl-text-body!': glFeatures.restructuredMrWidget }" class="bold">
           {{ s__('mrWidget|Merge blocked: merge conflicts must be resolved.') }}
           <span v-if="!canMerge">
             {{
@@ -129,6 +133,7 @@ export default {
         <gl-button
           v-if="showResolveButton"
           :href="mr.conflictResolutionPath"
+          :size="glFeatures.restructuredMrWidget ? 'small' : 'medium'"
           data-testid="resolve-conflicts-button"
         >
           {{ s__('mrWidget|Resolve conflicts') }}
@@ -136,6 +141,7 @@ export default {
         <gl-button
           v-if="canMerge"
           v-gl-modal-directive="'modal-merge-info'"
+          :size="glFeatures.restructuredMrWidget ? 'small' : 'medium'"
           data-testid="merge-locally-button"
         >
           {{ s__('mrWidget|Merge locally') }}

@@ -1,0 +1,8 @@
+---
+name: datadog_integration_logs_collection
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/74725
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/346339
+milestone: '14.8'
+type: development
+group: group::integrations
+default_enabled: false

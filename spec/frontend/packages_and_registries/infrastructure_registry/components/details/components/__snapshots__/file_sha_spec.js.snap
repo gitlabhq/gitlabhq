@@ -15,11 +15,14 @@ exports[`FileSha renders 1`] = `
     foo
     
       <gl-button-stub
-        aria-label="Copy this value"
+        aria-label="Copy SHA"
+        aria-live="polite"
         buttontextclasses=""
         category="tertiary"
+        data-clipboard-handle-tooltip="false"
         data-clipboard-text="foo"
         icon="copy-to-clipboard"
+        id="clipboard-button-1"
         size="small"
         title="Copy SHA"
         variant="default"

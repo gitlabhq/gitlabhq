@@ -7,8 +7,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # Geo (development) **(PREMIUM SELF)**
 
 Geo connects GitLab instances together. One GitLab instance is
-designated as a **primary** node and can be run with multiple
-**secondary** nodes. Geo orchestrates quite a few components that can be seen on
+designated as a **primary** site and can be run with multiple
+**secondary** sites. Geo orchestrates quite a few components that can be seen on
 the diagram below and are described in more detail within this document.
 
 ![Geo Architecture Diagram](../administration/geo/replication/img/geo_architecture.png)
@@ -22,16 +22,16 @@ Geo handles replication for different components:
 - [Uploaded blobs](#uploads-replication): includes anything from images attached on issues
   to raw logs and assets from CI.
 
-With the exception of the Database replication, on a *secondary* node, everything is coordinated
+With the exception of the Database replication, on a *secondary* site, everything is coordinated
 by the [Geo Log Cursor](#geo-log-cursor).
 
 ### Geo Log Cursor daemon
 
 The [Geo Log Cursor daemon](#geo-log-cursor-daemon) is a separate process running on
-each **secondary** node. It monitors the [Geo Event Log](#geo-event-log)
+each **secondary** site. It monitors the [Geo Event Log](#geo-event-log)
 for new events and creates background jobs for each specific event type.
 
-For example when a repository is updated, the Geo **primary** node creates
+For example when a repository is updated, the Geo **primary** site creates
 a Geo event with an associated repository updated event. The Geo Log Cursor daemon
 picks the event up and schedules a `Geo::ProjectSyncWorker` job which will
 use the `Geo::RepositorySyncService` and `Geo::WikiSyncService` classes
@@ -41,7 +41,7 @@ The Geo Log Cursor daemon can operate in High Availability mode automatically.
 The daemon will try to acquire a lock from time to time and once acquired, it
 will behave as the *active* daemon.
 
-Any additional running daemons on the same node, will be in standby
+Any additional running daemons on the same site, will be in standby
 mode, ready to resume work if the *active* daemon releases its lock.
 
 We use the [`ExclusiveLease`](https://www.rubydoc.info/github/gitlabhq/gitlabhq/Gitlab/ExclusiveLease) lock type with a small TTL, that is renewed at every
@@ -53,14 +53,14 @@ the lock, it switches to standby mode.
 ### Database replication
 
 Geo uses [streaming replication](#streaming-replication) to replicate
-the database from the **primary** to the **secondary** nodes. This
-replication gives the **secondary** nodes access to all the data saved
+the database from the **primary** to the **secondary** sites. This
+replication gives the **secondary** sites access to all the data saved
 in the database. So users can log in on the **secondary** and read all
-the issues, merge requests, and so on, on the **secondary** node.
+the issues, merge requests, and so on, on the **secondary** site.
 
 ### Repository replication
 
-Geo also replicates repositories. Each **secondary** node keeps track of
+Geo also replicates repositories. Each **secondary** site keeps track of
 the state of every repository in the [tracking database](#tracking-database).
 
 There are a few ways a repository gets replicated by the:
@@ -92,7 +92,7 @@ background and it searches the `Geo::ProjectRegistry` model for
 projects that need updating. Those projects can be:
 
 - Unsynced: Projects that have never been synced on the **secondary**
-  node and so do not exist yet.
+  site and so do not exist yet.
 - Updated recently: Projects that have a `last_repository_updated_at`
   timestamp that is more recent than the `last_repository_successful_sync_at`
   timestamp in the `Geo::ProjectRegistry` model.
@@ -106,7 +106,7 @@ it's successful, we replace the main repository with the newly cloned one.
 
 ### Uploads replication
 
-File uploads are also being replicated to the **secondary** node. To
+File uploads are also being replicated to the **secondary** site. To
 track the state of syncing, the `Geo::UploadRegistry` model is used.
 
 #### Upload Registry
@@ -123,7 +123,7 @@ models respectively.
 Also similar to the [Repository Sync worker](#repository-sync-worker),
 there is a `Geo::FileDownloadDispatchWorker` class that is run
 periodically to sync all uploads that aren't synced to the Geo
-**secondary** node yet.
+**secondary** site yet.
 
 Files are copied via HTTP(s) and initiated via the
 `/api/v4/geo/transfers/:type/:id` endpoint,
@@ -136,18 +136,18 @@ To authenticate file transfers, each `GeoNode` record has two fields:
 - A public access key (`access_key` field).
 - A secret access key (`secret_access_key` field).
 
-The **secondary** node authenticates itself via a [JWT request](https://jwt.io/).
-When the **secondary** node wishes to download a file, it sends an
+The **secondary** site authenticates itself via a [JWT request](https://jwt.io/).
+When the **secondary** site wishes to download a file, it sends an
 HTTP request with the `Authorization` header:
 
 ```plaintext
 Authorization: GL-Geo <access_key>:<JWT payload>
 ```
 
-The **primary** node uses the `access_key` field to look up the
-corresponding **secondary** node and decrypts the JWT payload,
+The **primary** site uses the `access_key` field to look up the
+corresponding **secondary** site and decrypts the JWT payload,
 which contains additional information to identify the file
-request. This ensures that the **secondary** node downloads the right
+request. This ensures that the **secondary** site downloads the right
 file for the right database ID. For example, for an LFS object, the
 request must also include the SHA256 sum of the file. An example JWT
 payload looks like:
@@ -157,7 +157,7 @@ payload looks like:
 ```
 
 If the requested file matches the requested SHA256 sum, then the Geo
-**primary** node sends data via the [X-Sendfile](https://www.nginx.com/resources/wiki/start/topics/examples/xsendfile/)
+**primary** site sends data via the [X-Sendfile](https://www.nginx.com/resources/wiki/start/topics/examples/xsendfile/)
 feature, which allows NGINX to handle the file transfer without tying
 up Rails or Workhorse.
 
@@ -168,34 +168,34 @@ involved, otherwise it may fail with an encryption error.
 ## Git Push to Geo secondary
 
 The Git Push Proxy exists as a functionality built inside the `gitlab-shell` component.
-It is active on a **secondary** node only. It allows the user that has cloned a repository
-from the secondary node to push to the same URL.
+It is active on a **secondary** site only. It allows the user that has cloned a repository
+from the secondary site to push to the same URL.
 
-Git `push` requests directed to a **secondary** node will be sent over to the **primary** node,
-while `pull` requests will continue to be served by the **secondary** node for maximum efficiency.
+Git `push` requests directed to a **secondary** site will be sent over to the **primary** site,
+while `pull` requests will continue to be served by the **secondary** site for maximum efficiency.
 
 HTTPS and SSH requests are handled differently:
 
-- With HTTPS, we will give the user a `HTTP 302 Redirect` pointing to the project on the **primary** node.
+- With HTTPS, we will give the user a `HTTP 302 Redirect` pointing to the project on the **primary** site.
   The Git client is wise enough to understand that status code and process the redirection.
 - With SSH, because there is no equivalent way to perform a redirect, we have to proxy the request.
   This is done inside [`gitlab-shell`](https://gitlab.com/gitlab-org/gitlab-shell), by first translating the request
-  to the HTTP protocol, and then proxying it to the **primary** node.
+  to the HTTP protocol, and then proxying it to the **primary** site.
 
 The [`gitlab-shell`](https://gitlab.com/gitlab-org/gitlab-shell) daemon knows when to proxy based on the response
 from `/api/v4/allowed`. A special `HTTP 300` status code is returned and we execute a "custom action",
 specified in the response body. The response contains additional data that allows the proxied `push` operation
-to happen on the **primary** node.
+to happen on the **primary** site.
 
 ## Using the Tracking Database
 
 Along with the main database that is replicated, a Geo **secondary**
-node has its own separate [Tracking database](#tracking-database).
+site has its own separate [Tracking database](#tracking-database).
 
-The tracking database contains the state of the **secondary** node.
+The tracking database contains the state of the **secondary** site.
 
 Any database migration that needs to be run as part of an upgrade
-needs to be applied to the tracking database on each **secondary** node.
+needs to be applied to the tracking database on each **secondary** site.
 
 ### Configuration
 
@@ -223,12 +223,12 @@ projects/attachments/ and so on, in the tracking database and main database.
 
 ## Redis
 
-Redis on the **secondary** node works the same as on the **primary**
-node. It is used for caching, storing sessions, and other persistent
+Redis on the **secondary** site works the same as on the **primary**
+site. It is used for caching, storing sessions, and other persistent
 data.
 
-Redis data replication between **primary** and **secondary** node is
-not used, so sessions and so on, aren't shared between nodes.
+Redis data replication between **primary** and **secondary** site is
+not used, so sessions and so on, aren't shared between sites.
 
 ## Object Storage
 
@@ -244,7 +244,7 @@ ignores items in object storage. Either:
 
 - The object storage layer should take care of its own geographical
   replication.
-- All secondary nodes should use the same storage node.
+- All secondary sites should use the same storage site.
 
 ## Verification
 
@@ -252,29 +252,29 @@ ignores items in object storage. Either:
 
 Repositories are verified with a checksum.
 
-The **primary** node calculates a checksum on the repository. It
+The **primary** site calculates a checksum on the repository. It
 basically hashes all Git refs together and stores that hash in the
 `project_repository_states` table of the database.
 
-The **secondary** node does the same to calculate the hash of its
-clone, and compares the hash with the value the **primary** node
+The **secondary** site does the same to calculate the hash of its
+clone, and compares the hash with the value the **primary** site
 calculated. If there is a mismatch, Geo will mark this as a mismatch
 and the administrator can see this in the [Geo admin panel](../user/admin_area/geo_nodes.md).
 
 ## Glossary
 
-### Primary node
+### Primary site
 
-A **primary** node is the single node in a Geo setup that read-write
+A **primary** site is the single site in a Geo setup that read-write
 capabilities. It's the single source of truth and the Geo
-**secondary** nodes replicate their data from there.
+**secondary** sites replicate their data from there.
 
-In a Geo setup, there can only be one **primary** node. All
-**secondary** nodes connect to that **primary**.
+In a Geo setup, there can only be one **primary** site. All
+**secondary** sites connect to that **primary**.
 
-### Secondary node
+### Secondary site
 
-A **secondary** node is a read-only replica of the **primary** node
+A **secondary** site is a read-only replica of the **primary** site
 running in a different geographical location.
 
 ### Streaming replication
@@ -287,11 +287,11 @@ Streaming replication depends on the Write Ahead Logs, or WAL. Those
 logs are copied over to the replica and replayed there.
 
 Since streaming replication also replicates the schema, the database
-migration do not need to run on the secondary nodes.
+migration do not need to run on the secondary sites.
 
 ### Tracking database
 
-A database on each Geo **secondary** node that keeps state for the node
+A database on each Geo **secondary** site that keeps state for the site
 on which it resides. Read more in [Using the Tracking database](#using-the-tracking-database).
 
 ## Geo Event Log
@@ -312,7 +312,7 @@ events include:
 
 ### Geo Log Cursor
 
-The process running on the **secondary** node that looks for new
+The process running on the **secondary** site that looks for new
 `Geo::EventLog` rows.
 
 ## Code features
@@ -327,51 +327,51 @@ Many of these methods are cached using the `RequestStore` class, to
 reduce the performance impact of using the methods throughout the
 codebase.
 
-#### Current node
+#### Current site
 
 The class method `.current_node` returns the `GeoNode` record for the
-current node.
+current site.
 
 We use the `host`, `port`, and `relative_url_root` values from
-`gitlab.yml` and search in the database to identify which node we are
+`gitlab.yml` and search in the database to identify which site we are
 in (see `GeoNode.current_node`).
 
 #### Primary or secondary
 
-To determine whether the current node is a **primary** node or a
-**secondary** node use the `.primary?` and `.secondary?` class
+To determine whether the current site is a **primary** site or a
+**secondary** site use the `.primary?` and `.secondary?` class
 methods.
 
-It is possible for these methods to both return `false` on a node when
-the node is not enabled. See [Enablement](#enablement).
+It is possible for these methods to both return `false` on a site when
+the site is not enabled. See [Enablement](#enablement).
 
 #### Geo Database configured?
 
 There is also an additional gotcha when dealing with things that
 happen during initialization time. In a few places, we use the
-`Gitlab::Geo.geo_database_configured?` method to check if the node has
+`Gitlab::Geo.geo_database_configured?` method to check if the site has
 the tracking database, which only exists on the **secondary**
-node. This overcomes race conditions that could happen during
-bootstrapping of a new node.
+site. This overcomes race conditions that could happen during
+bootstrapping of a new site.
 
 #### Enablement
 
 We consider Geo feature enabled when the user has a valid license with the
-feature included, and they have at least one node defined at the Geo Nodes
+feature included, and they have at least one site defined at the Geo Nodes
 screen.
 
 See `Gitlab::Geo.enabled?` and `Gitlab::Geo.license_allows?` methods.
 
 #### Read-only
 
-All Geo **secondary** nodes are read-only.
+All Geo **secondary** sites are read-only.
 
 The general principle of a [read-only database](verifying_database_capabilities.md#read-only-database)
-applies to all Geo **secondary** nodes. So the
+applies to all Geo **secondary** sites. So the
 `Gitlab::Database.read_only?` method will always return `true` on a
-**secondary** node.
+**secondary** site.
 
-When some write actions are not allowed because the node is a
+When some write actions are not allowed because the site is a
 **secondary**, consider adding the `Gitlab::Database.read_only?` or
 `Gitlab::Database.read_write?` guard, instead of `Gitlab::Geo.secondary?`.
 
@@ -393,7 +393,7 @@ that need to be taken care of:
 - Verification.
 - Cleaner. When sync settings are changed for the secondary site, some resources need to be cleaned up.
 - Geo Node Status. We need to provide API endpoints as well as some presentation in the GitLab Admin Area.
-- Health Check. If we can perform some pre-cheсks and make node unhealthy if something is wrong, we should do that.
+- Health Check. If we can perform some pre-cheсks and make site unhealthy if something is wrong, we should do that.
   The `rake gitlab:geo:check` command has to be updated too.
 
 ## History of communication channel
@@ -404,7 +404,7 @@ check here historic decisions and why we moved to new implementations.
 ### Custom code (GitLab 8.6 and earlier)
 
 In GitLab versions before 8.6, custom code is used to handle
-notification from **primary** node to **secondary** nodes by HTTP
+notification from **primary** site to **secondary** sites by HTTP
 requests.
 
 ### System hooks (GitLab 8.7 to 9.5)

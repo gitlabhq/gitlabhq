@@ -7,7 +7,7 @@ module IssuesHelper
     classes = ["issue"]
     classes << "closed" if issue.closed?
     classes << "today" if issue.new?
-    classes << "user-can-drag" if @sort == 'relative_position'
+    classes << "gl-cursor-grab" if @sort == 'relative_position'
     classes.join(' ')
   end
 
@@ -51,7 +51,7 @@ module IssuesHelper
   end
 
   def work_item_type_icon(issue_type)
-    if WorkItem::Type.base_types.include?(issue_type)
+    if WorkItems::Type.base_types.include?(issue_type)
       "issue-type-#{issue_type.to_s.dasherize}"
     else
       'issue-type-issue'
@@ -166,21 +166,6 @@ module IssuesHelper
     return false unless issue.from_service_desk?
 
     issue.moved_from.project.service_desk_enabled? && !issue.project.service_desk_enabled?
-  end
-
-  def use_startup_call?
-    request.query_parameters.empty? && @sort == 'created_date'
-  end
-
-  def startup_call_params
-    {
-      state: 'opened',
-      with_labels_details: 'true',
-      page: 1,
-      per_page: 20,
-      order_by: 'created_at',
-      sort: 'desc'
-    }
   end
 
   def issue_header_actions_data(project, issuable, current_user)

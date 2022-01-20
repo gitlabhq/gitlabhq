@@ -1,6 +1,5 @@
 import { GlButton } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
-import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
+import { mountExtended } from 'helpers/vue_test_utils_helper';
 import BlobButtonGroup from '~/repository/components/blob_button_group.vue';
 import DeleteBlobModal from '~/repository/components/delete_blob_modal.vue';
 import UploadBlobModal from '~/repository/components/upload_blob_modal.vue';
@@ -16,6 +15,7 @@ const DEFAULT_PROPS = {
   projectPath: 'some/project/path',
   isLocked: false,
   canLock: true,
+  showForkSuggestion: false,
 };
 
 const DEFAULT_INJECT = {
@@ -27,16 +27,13 @@ describe('BlobButtonGroup component', () => {
   let wrapper;
 
   const createComponent = (props = {}) => {
-    wrapper = shallowMount(BlobButtonGroup, {
+    wrapper = mountExtended(BlobButtonGroup, {
       propsData: {
         ...DEFAULT_PROPS,
         ...props,
       },
       provide: {
         ...DEFAULT_INJECT,
-      },
-      directives: {
-        GlModal: createMockDirective(),
       },
     });
   };
@@ -47,7 +44,8 @@ describe('BlobButtonGroup component', () => {
 
   const findDeleteBlobModal = () => wrapper.findComponent(DeleteBlobModal);
   const findUploadBlobModal = () => wrapper.findComponent(UploadBlobModal);
-  const findReplaceButton = () => wrapper.find('[data-testid="replace"]');
+  const findDeleteButton = () => wrapper.findByTestId('delete');
+  const findReplaceButton = () => wrapper.findByTestId('replace');
 
   it('renders component', () => {
     createComponent();
@@ -63,6 +61,8 @@ describe('BlobButtonGroup component', () => {
   describe('buttons', () => {
     beforeEach(() => {
       createComponent();
+      jest.spyOn(findUploadBlobModal().vm, 'show');
+      jest.spyOn(findDeleteBlobModal().vm, 'show');
     });
 
     it('renders both the replace and delete button', () => {
@@ -75,10 +75,37 @@ describe('BlobButtonGroup component', () => {
     });
 
     it('triggers the UploadBlobModal from the replace button', () => {
-      const { value } = getBinding(findReplaceButton().element, 'gl-modal');
-      const modalId = findUploadBlobModal().props('modalId');
+      findReplaceButton().trigger('click');
 
-      expect(modalId).toEqual(value);
+      expect(findUploadBlobModal().vm.show).toHaveBeenCalled();
+    });
+
+    it('triggers the DeleteBlobModal from the delete button', () => {
+      findDeleteButton().trigger('click');
+
+      expect(findDeleteBlobModal().vm.show).toHaveBeenCalled();
+    });
+
+    describe('showForkSuggestion set to true', () => {
+      beforeEach(() => {
+        createComponent({ showForkSuggestion: true });
+        jest.spyOn(findUploadBlobModal().vm, 'show');
+        jest.spyOn(findDeleteBlobModal().vm, 'show');
+      });
+
+      it('does not trigger the UploadBlobModal from the replace button', () => {
+        findReplaceButton().trigger('click');
+
+        expect(findUploadBlobModal().vm.show).not.toHaveBeenCalled();
+        expect(wrapper.emitted().fork).toBeTruthy();
+      });
+
+      it('does not trigger the DeleteBlobModal from the delete button', () => {
+        findDeleteButton().trigger('click');
+
+        expect(findDeleteBlobModal().vm.show).not.toHaveBeenCalled();
+        expect(wrapper.emitted().fork).toBeTruthy();
+      });
     });
   });
 

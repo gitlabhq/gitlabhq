@@ -105,6 +105,35 @@ module Gitlab
         row['system_identifier']
       end
 
+      def flavor
+        {
+          # Based on https://aws.amazon.com/premiumsupport/knowledge-center/aurora-version-number/
+          'Amazon Aurora PostgreSQL' => { statement: 'SELECT AURORA_VERSION()', error: /PG::UndefinedFunction/ },
+          # Based on https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/CHAP_PostgreSQL.html#PostgreSQL.Concepts.General.FeatureSupport.Extensions,
+          # this is also available for both Aurora and RDS, so we need to check for the former first.
+          'PostgreSQL on Amazon RDS' => { statement: 'SHOW rds.extensions', error: /PG::UndefinedObject/ },
+          # Based on https://cloud.google.com/sql/docs/postgres/flags#postgres-c this should be specific
+          # to Cloud SQL for PostgreSQL
+          'Cloud SQL for PostgreSQL' =>  { statement: 'SHOW cloudsql.iam_authentication', error: /PG::UndefinedObject/ },
+          # Based on
+          #   - https://docs.microsoft.com/en-us/azure/postgresql/flexible-server/concepts-extensions
+          #   - https://docs.microsoft.com/en-us/azure/postgresql/concepts-extensions
+          # this should be available only for Azure Database for PostgreSQL - Flexible Server.
+          'Azure Database for PostgreSQL - Flexible Server' => { statement: 'SHOW azure.extensions', error: /PG::UndefinedObject/ },
+          # Based on
+          #   - https://docs.microsoft.com/en-us/azure/postgresql/flexible-server/concepts-servers
+          #   - https://docs.microsoft.com/en-us/azure/postgresql/concepts-servers#managing-your-server
+          # this database is present on both Flexible and Single server, so we should check the former first.
+          'Azure Database for PostgreSQL - Single Server' => { statement: "SELECT datname FROM pg_database WHERE datname = 'azure_maintenance'" }
+        }.each do |flavor, conditions|
+          return flavor if connection.execute(conditions[:statement]).to_a.present?
+        rescue ActiveRecord::StatementInvalid => e
+          raise if conditions[:error] && !e.message.match?(conditions[:error])
+        end
+
+        nil
+      end
+
       private
 
       def connection

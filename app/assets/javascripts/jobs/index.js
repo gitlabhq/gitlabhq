@@ -54,7 +54,13 @@ const initializeJobPage = (element) => {
 };
 
 const initializeBridgePage = (el) => {
-  const { buildName, emptyStateIllustrationPath } = el.dataset;
+  const {
+    buildId,
+    downstreamPipelinePath,
+    emptyStateIllustrationPath,
+    pipelineIid,
+    projectFullPath,
+  } = el.dataset;
 
   Vue.use(VueApollo);
   const apolloProvider = new VueApollo({
@@ -65,8 +71,11 @@ const initializeBridgePage = (el) => {
     el,
     apolloProvider,
     provide: {
-      buildName,
+      buildId,
+      downstreamPipelinePath,
       emptyStateIllustrationPath,
+      pipelineIid,
+      projectFullPath,
     },
     render(h) {
       return h(BridgeApp);

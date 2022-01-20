@@ -103,7 +103,7 @@ describe('Customer relations organizations root app', () => {
       await waitForPromises();
 
       expect(findError().exists()).toBe(true);
-      expect(findError().text()).toBe('Name cannot be blank.');
+      expect(findError().text()).toBe('create organization is invalid.');
     });
   });
 });

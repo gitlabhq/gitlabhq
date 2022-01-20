@@ -63,3 +63,25 @@ export function addAgentConfigToStore(
     });
   }
 }
+
+export function removeAgentFromStore(store, deleteClusterAgent, query, variables) {
+  if (!hasErrors(deleteClusterAgent)) {
+    const sourceData = store.readQuery({
+      query,
+      variables,
+    });
+
+    const data = produce(sourceData, (draftData) => {
+      draftData.project.clusterAgents.nodes = draftData.project.clusterAgents.nodes.filter(
+        ({ id }) => id !== deleteClusterAgent.id,
+      );
+      draftData.project.clusterAgents.count -= 1;
+    });
+
+    store.writeQuery({
+      query,
+      variables,
+      data,
+    });
+  }
+}

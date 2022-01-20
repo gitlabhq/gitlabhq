@@ -5,10 +5,15 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 
+import { resolvers } from '~/pipeline_editor/graphql/resolvers';
 import PipelineEditorTabs from '~/pipeline_editor/components/pipeline_editor_tabs.vue';
 import PipelineEditorEmptyState from '~/pipeline_editor/components/ui/pipeline_editor_empty_state.vue';
 import PipelineEditorMessages from '~/pipeline_editor/components/ui/pipeline_editor_messages.vue';
-import { COMMIT_SUCCESS, COMMIT_FAILURE, LOAD_FAILURE_UNKNOWN } from '~/pipeline_editor/constants';
+import PipelineEditorHeader from '~/pipeline_editor/components/header/pipeline_editor_header.vue';
+import ValidationSegment, {
+  i18n as validationSegmenti18n,
+} from '~/pipeline_editor/components/header/validation_segment.vue';
+import { COMMIT_SUCCESS, COMMIT_FAILURE } from '~/pipeline_editor/constants';
 import getBlobContent from '~/pipeline_editor/graphql/queries/blob_content.query.graphql';
 import getCiConfigData from '~/pipeline_editor/graphql/queries/ci_config.query.graphql';
 import getTemplate from '~/pipeline_editor/graphql/queries/get_starter_template.query.graphql';
@@ -61,11 +66,6 @@ describe('Pipeline editor app component', () => {
     wrapper = shallowMount(PipelineEditorApp, {
       provide: { ...mockProvide, ...provide },
       stubs,
-      data() {
-        return {
-          commitSha: '',
-        };
-      },
       mocks: {
         $apollo: {
           queries: {
@@ -90,17 +90,11 @@ describe('Pipeline editor app component', () => {
       [getLatestCommitShaQuery, mockLatestCommitShaQuery],
       [getPipelineQuery, mockPipelineQuery],
     ];
-    mockApollo = createMockApollo(handlers);
+
+    mockApollo = createMockApollo(handlers, resolvers);
 
     const options = {
       localVue,
-      data() {
-        return {
-          currentBranch: mockDefaultBranch,
-          lastCommitBranch: '',
-          appStatus: '',
-        };
-      },
       mocks: {},
       apolloProvider: mockApollo,
     };
@@ -116,6 +110,7 @@ describe('Pipeline editor app component', () => {
   const findEmptyState = () => wrapper.findComponent(PipelineEditorEmptyState);
   const findEmptyStateButton = () =>
     wrapper.findComponent(PipelineEditorEmptyState).findComponent(GlButton);
+  const findValidationSegment = () => wrapper.findComponent(ValidationSegment);
 
   beforeEach(() => {
     mockBlobContentData = jest.fn();
@@ -237,6 +232,26 @@ describe('Pipeline editor app component', () => {
 
         expect(findEmptyState().exists()).toBe(false);
         expect(findEditorHome().exists()).toBe(true);
+      });
+    });
+
+    describe('when the lint query returns a 500 error', () => {
+      beforeEach(async () => {
+        mockCiConfigData.mockRejectedValueOnce(new Error(500));
+        await createComponentWithApollo({
+          stubs: { PipelineEditorHome, PipelineEditorHeader, ValidationSegment },
+        });
+      });
+
+      it('shows that the lint service is down', () => {
+        expect(findValidationSegment().text()).toContain(
+          validationSegmenti18n.unavailableValidation,
+        );
+      });
+
+      it('does not report an error or scroll to the top', () => {
+        expect(findAlert().exists()).toBe(false);
+        expect(window.scrollTo).not.toHaveBeenCalled();
       });
     });
 
@@ -408,94 +423,6 @@ describe('Pipeline editor app component', () => {
 
       expect(findEmptyState().exists()).toBe(false);
       expect(findEditorHome().exists()).toBe(true);
-    });
-  });
-
-  describe('when multiple errors occurs in a row', () => {
-    const updateFailureMessage = 'The GitLab CI configuration could not be updated.';
-    const unknownFailureMessage = 'The CI configuration was not loaded, please try again.';
-    const unknownReasons = ['Commit failed'];
-    const alertErrorMessage = `${updateFailureMessage} ${unknownReasons[0]}`;
-
-    const emitError = (type = COMMIT_FAILURE, reasons = unknownReasons) =>
-      findEditorHome().vm.$emit('showError', {
-        type,
-        reasons,
-      });
-
-    beforeEach(async () => {
-      mockBlobContentData.mockResolvedValue(mockBlobContentQueryResponse);
-      mockCiConfigData.mockResolvedValue(mockCiConfigQueryResponse);
-      mockLatestCommitShaQuery.mockResolvedValue(mockCommitShaResults);
-
-      window.scrollTo = jest.fn();
-
-      await createComponentWithApollo({ stubs: { PipelineEditorMessages } });
-      await emitError();
-    });
-
-    it('shows an error message for the first error', () => {
-      expect(findAlert().text()).toMatchInterpolatedText(alertErrorMessage);
-    });
-
-    it('scrolls to the top of the page to bring attention to the error message', () => {
-      expect(window.scrollTo).toHaveBeenCalledWith({ top: 0, behavior: 'smooth' });
-      expect(window.scrollTo).toHaveBeenCalledTimes(1);
-    });
-
-    it('does not scroll to the top of the page if the same error occur multiple times in a row', async () => {
-      await emitError();
-
-      expect(window.scrollTo).toHaveBeenCalledTimes(1);
-      expect(findAlert().text()).toMatchInterpolatedText(alertErrorMessage);
-    });
-
-    it('scrolls to the top if the error is different', async () => {
-      await emitError(LOAD_FAILURE_UNKNOWN, []);
-
-      expect(findAlert().text()).toMatchInterpolatedText(unknownFailureMessage);
-      expect(window.scrollTo).toHaveBeenCalledTimes(2);
-    });
-
-    describe('when a user dismiss the alert', () => {
-      beforeEach(async () => {
-        await findAlert().vm.$emit('dismiss');
-      });
-
-      it('shows an error if the type is the same, but the reason is different', async () => {
-        const newReason = 'Something broke';
-
-        await emitError(COMMIT_FAILURE, [newReason]);
-
-        expect(window.scrollTo).toHaveBeenCalledTimes(2);
-        expect(findAlert().text()).toMatchInterpolatedText(`${updateFailureMessage} ${newReason}`);
-      });
-
-      it('does not show an error or scroll if a new error with the same type occurs', async () => {
-        await emitError();
-
-        expect(window.scrollTo).toHaveBeenCalledTimes(1);
-        expect(findAlert().exists()).toBe(false);
-      });
-
-      it('it shows an error and scroll when a new type is emitted', async () => {
-        await emitError(LOAD_FAILURE_UNKNOWN, []);
-
-        expect(window.scrollTo).toHaveBeenCalledTimes(2);
-        expect(findAlert().text()).toMatchInterpolatedText(unknownFailureMessage);
-      });
-
-      it('it shows an error and scroll if a previously shown type happen again', async () => {
-        await emitError(LOAD_FAILURE_UNKNOWN, []);
-
-        expect(window.scrollTo).toHaveBeenCalledTimes(2);
-        expect(findAlert().text()).toMatchInterpolatedText(unknownFailureMessage);
-
-        await emitError();
-
-        expect(window.scrollTo).toHaveBeenCalledTimes(3);
-        expect(findAlert().text()).toMatchInterpolatedText(alertErrorMessage);
-      });
     });
   });
 

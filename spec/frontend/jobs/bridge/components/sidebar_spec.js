@@ -1,24 +1,38 @@
 import { GlButton, GlDropdown } from '@gitlab/ui';
-import { GlBreakpointInstance } from '@gitlab/ui/dist/utils';
-import { nextTick } from 'vue';
 import { shallowMount } from '@vue/test-utils';
 import BridgeSidebar from '~/jobs/bridge/components/sidebar.vue';
-import { BUILD_NAME } from '../mock_data';
+import CommitBlock from '~/jobs/components/commit_block.vue';
+import { mockCommit, mockJob } from '../mock_data';
 
 describe('Bridge Sidebar', () => {
   let wrapper;
 
-  const createComponent = () => {
+  const MockHeaderEl = {
+    getBoundingClientRect() {
+      return {
+        bottom: '40',
+      };
+    },
+  };
+
+  const createComponent = ({ featureFlag } = {}) => {
     wrapper = shallowMount(BridgeSidebar, {
       provide: {
-        buildName: BUILD_NAME,
+        glFeatures: {
+          triggerJobRetryAction: featureFlag,
+        },
+      },
+      propsData: {
+        bridgeJob: mockJob,
+        commit: mockCommit,
       },
     });
   };
 
-  const findSidebar = () => wrapper.find('aside');
+  const findJobTitle = () => wrapper.find('h4');
+  const findCommitBlock = () => wrapper.findComponent(CommitBlock);
   const findRetryDropdown = () => wrapper.find(GlDropdown);
-  const findToggle = () => wrapper.find(GlButton);
+  const findToggleBtn = () => wrapper.findComponent(GlButton);
 
   afterEach(() => {
     wrapper.destroy();
@@ -29,8 +43,23 @@ describe('Bridge Sidebar', () => {
       createComponent();
     });
 
-    it('renders retry dropdown', () => {
-      expect(findRetryDropdown().exists()).toBe(true);
+    it('renders job name', () => {
+      expect(findJobTitle().text()).toBe(mockJob.name);
+    });
+
+    it('renders commit information', () => {
+      expect(findCommitBlock().exists()).toBe(true);
+    });
+  });
+
+  describe('styles', () => {
+    beforeEach(async () => {
+      jest.spyOn(document, 'querySelector').mockReturnValue(MockHeaderEl);
+      createComponent();
+    });
+
+    it('calculates root styles correctly', () => {
+      expect(wrapper.attributes('style')).toBe('width: 290px; top: 40px;');
     });
   });
 
@@ -39,38 +68,32 @@ describe('Bridge Sidebar', () => {
       createComponent();
     });
 
-    it('toggles expansion on button click', async () => {
-      expect(findSidebar().classes()).not.toContain('gl-display-none');
+    it('emits toggle sidebar event on button click', async () => {
+      expect(wrapper.emitted('toggleSidebar')).toBe(undefined);
 
-      findToggle().vm.$emit('click');
-      await nextTick();
+      findToggleBtn().vm.$emit('click');
 
-      expect(findSidebar().classes()).toContain('gl-display-none');
+      expect(wrapper.emitted('toggleSidebar')).toHaveLength(1);
+    });
+  });
+
+  describe('retry action', () => {
+    describe('when feature flag is ON', () => {
+      beforeEach(() => {
+        createComponent({ featureFlag: true });
+      });
+
+      it('renders retry dropdown', () => {
+        expect(findRetryDropdown().exists()).toBe(true);
+      });
     });
 
-    describe('on resize', () => {
-      it.each`
-        breakpoint | isSidebarExpanded
-        ${'xs'}    | ${false}
-        ${'sm'}    | ${false}
-        ${'md'}    | ${true}
-        ${'lg'}    | ${true}
-        ${'xl'}    | ${true}
-      `(
-        'sets isSidebarExpanded to `$isSidebarExpanded` when the breakpoint is "$breakpoint"',
-        async ({ breakpoint, isSidebarExpanded }) => {
-          jest.spyOn(GlBreakpointInstance, 'getBreakpointSize').mockReturnValue(breakpoint);
+    describe('when feature flag is OFF', () => {
+      it('does not render retry dropdown', () => {
+        createComponent({ featureFlag: false });
 
-          window.dispatchEvent(new Event('resize'));
-          await nextTick();
-
-          if (isSidebarExpanded) {
-            expect(findSidebar().classes()).not.toContain('gl-display-none');
-          } else {
-            expect(findSidebar().classes()).toContain('gl-display-none');
-          }
-        },
-      );
+        expect(findRetryDropdown().exists()).toBe(false);
+      });
     });
   });
 });

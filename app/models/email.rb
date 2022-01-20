@@ -6,8 +6,8 @@ class Email < ApplicationRecord
 
   belongs_to :user, optional: false
 
-  validates :email, presence: true, uniqueness: true
-  validate :validate_email_format
+  validates :email, presence: true, uniqueness: true, devise_email: true
+
   validate :unique_email, if: ->(email) { email.email_changed? }
 
   scope :confirmed, -> { where.not(confirmed_at: nil) }
@@ -19,6 +19,7 @@ class Email < ApplicationRecord
   # This module adds async behaviour to Devise emails
   # and should be added after Devise modules are initialized.
   include AsyncDeviseEmail
+  include ForcedEmailConfirmation
 
   self.reconfirmable = false # currently email can't be changed, no need to reconfirm
 
@@ -30,10 +31,6 @@ class Email < ApplicationRecord
 
   def unique_email
     self.errors.add(:email, 'has already been taken') if primary_email_of_another_user?
-  end
-
-  def validate_email_format
-    self.errors.add(:email, I18n.t(:invalid, scope: 'valid_email.validations.email')) unless ValidateEmail.valid?(self.email)
   end
 
   # once email is confirmed, update the gpg signatures

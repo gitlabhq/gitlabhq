@@ -26,7 +26,7 @@ const INVITATIONS_API_MULTIPLE_EMAIL_RESTRICTED = {
 
 const INVITATIONS_API_EMAIL_TAKEN = {
   message: {
-    'email@example2.com': 'Invite email has already been taken',
+    'email@example.org': 'Invite email has already been taken',
   },
   status: 'error',
 };

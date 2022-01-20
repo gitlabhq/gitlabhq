@@ -16,7 +16,7 @@ To explore projects:
 1. On the top bar, select **Menu > Projects**.
 1. Select **Explore projects**.
 
-The **Projects** page shows a list of projects, sorted by last updated date. 
+The **Projects** page shows a list of projects, sorted by last updated date.
 
 - To view projects with the most [stars](#star-a-project), select **Most stars**.
 - To view projects with the largest number of comments in the past month, select **Trending**.
@@ -326,7 +326,7 @@ on the project dashboard when a project is part of a group under a
 Prerequisites:
 
 - Contact your administrator to enable the [GitLab Go Proxy](../packages/go_proxy/index.md).
-- To use a private project in a subgroup as a Go package, you must [authenticate Go requests](#authenticate-go-requests-to-private-projects). Go requests that are not authenticated cause 
+- To use a private project in a subgroup as a Go package, you must [authenticate Go requests](#authenticate-go-requests-to-private-projects). Go requests that are not authenticated cause
 `go get` to fail. You don't need to authenticate Go requests for projects that are not in subgroups.
 
 To use a project as a Go package, use the `go get` and `godoc.org` discovery requests. You can use the meta tags:

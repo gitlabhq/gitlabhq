@@ -1,5 +1,12 @@
 <script>
-import { GlTooltipDirective, GlButton, GlFormInput, GlLink, GlLoadingIcon } from '@gitlab/ui';
+import {
+  GlAlert,
+  GlTooltipDirective,
+  GlButton,
+  GlFormInput,
+  GlLink,
+  GlLoadingIcon,
+} from '@gitlab/ui';
 import produce from 'immer';
 import createFlash from '~/flash';
 import { __ } from '~/locale';
@@ -11,6 +18,7 @@ const errorMessage = __('Error creating label.');
 
 export default {
   components: {
+    GlAlert,
     GlButton,
     GlFormInput,
     GlLink,
@@ -42,6 +50,7 @@ export default {
       labelTitle: '',
       selectedColor: '',
       labelCreateInProgress: false,
+      error: undefined,
     };
   },
   computed: {
@@ -111,13 +120,14 @@ export default {
           ) => this.updateLabelsInCache(store, label),
         });
         if (labelCreate.errors.length) {
-          createFlash({ message: errorMessage });
+          [this.error] = labelCreate.errors;
+        } else {
+          this.$emit('hideCreateView');
         }
       } catch {
         createFlash({ message: errorMessage });
       }
       this.labelCreateInProgress = false;
-      this.$emit('hideCreateView');
     },
   },
 };
@@ -126,6 +136,9 @@ export default {
 <template>
   <div class="labels-select-contents-create js-labels-create">
     <div class="dropdown-input">
+      <gl-alert v-if="error" variant="danger" :dismissible="false" class="gl-mb-3">
+        {{ error }}
+      </gl-alert>
       <gl-form-input
         v-model.trim="labelTitle"
         :placeholder="__('Name new label')"

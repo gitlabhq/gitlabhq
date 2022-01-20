@@ -87,13 +87,7 @@ class GroupDescendantsFinder
       visible_to_user = visible_to_user.or(authorized_to_user)
     end
 
-    group_to_query = if Feature.enabled?(:linear_group_descendants_finder, current_user, default_enabled: :yaml)
-                       parent_group
-                     else
-                       hierarchy_for_parent
-                     end
-
-    group_to_query.descendants.where(visible_to_user)
+    parent_group.descendants.where(visible_to_user)
     # rubocop: enable CodeReuse/Finder
   end
   # rubocop: enable CodeReuse/ActiveRecord
@@ -159,13 +153,7 @@ class GroupDescendantsFinder
   # rubocop: disable CodeReuse/ActiveRecord
   def projects_matching_filter
     # rubocop: disable CodeReuse/Finder
-    objects_in_hierarchy = if Feature.enabled?(:linear_group_descendants_finder, current_user, default_enabled: :yaml)
-                             parent_group.self_and_descendants.as_ids
-                           else
-                             hierarchy_for_parent.base_and_descendants.select(:id)
-                           end
-
-    projects_nested_in_group = Project.where(namespace_id: objects_in_hierarchy)
+    projects_nested_in_group = Project.where(namespace_id: parent_group.self_and_descendants.as_ids)
     params_with_search = params.merge(search: params[:filter])
 
     ProjectsFinder.new(params: params_with_search,

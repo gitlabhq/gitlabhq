@@ -86,12 +86,17 @@ read-only view to discourage this behavior.
 > - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/300324) in GitLab 13.11.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/331231) in GitLab 14.2.
 
-Group owners can use compliance pipeline configuration to add additional pipeline configuration to
-projects to define compliance requirements such as scans or tests.
+Compliance framework pipelines allow group owners to define
+a compliance pipeline in a separate repository that gets
+executed in place of the local project's `gitlab-ci.yml` file. As part of this pipeline, an
+`include` statement can reference the local project's `gitlab-ci.yml` file. This way, the two CI
+files are merged together any time the pipeline runs. Jobs and variables defined in the compliance
+pipeline can't be changed by variables in the local project's `gitlab-ci.yml` file.
 
-[Compliance frameworks](#compliance-frameworks) allow group owners to specify the location of
-compliance pipeline configuration stored and managed in dedicated projects, separate from regular
-projects.
+When used to enforce scan execution, this feature has some overlap with [scan execution policies](../../application_security/policies/#scan-execution-policies),
+as we have not [unified the user experience for these two features](https://gitlab.com/groups/gitlab-org/-/epics/7312).
+For details on the similarities and differences between these features, see
+[Enforce scan execution](../../application_security/#enforce-scan-execution).
 
 When you set up the compliance framework, use the **Compliance pipeline configuration** box to link
 the compliance framework to specific CI/CD configuration. Use the
@@ -178,8 +183,6 @@ include:  # Execute individual project's configuration (if project contains .git
   project: '$CI_PROJECT_PATH'
   file: '$CI_CONFIG_PATH'
   ref: '$CI_COMMIT_REF_NAME' # Must be defined or MR pipelines always use the use default branch
-  rules:
-    - exists: '$CI_CONFIG_PATH'
 ```
 
 ##### Ensure compliance jobs are always run
@@ -265,7 +268,7 @@ Some features depend on others:
 
 - If you disable the **Issues** option, GitLab also removes the following
   features:
-  - **issue boards**
+  - **Issue Boards**
   - [**Service Desk**](#service-desk)
 
   NOTE:
@@ -324,7 +327,7 @@ Enable [Service Desk](../service_desk.md) for your project to offer customer sup
 
 ### Export project
 
-Learn how to [export a project](import_export.md#import-the-project) in GitLab.
+Learn how to [export a project](import_export.md#import-a-project-and-its-data) in GitLab.
 
 ### Advanced settings
 

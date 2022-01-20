@@ -5,6 +5,12 @@ module QA
     class ReusableProject < Project
       prepend Reusable
 
+      attribute :group do
+        ReusableGroup.fabricate_via_api! do |resource|
+          resource.api_client = api_client
+        end
+      end
+
       def initialize
         super
 

@@ -24,6 +24,7 @@ const findTable = () => wrapper.findComponent(GlTable);
 const findTableHead = () => wrapper.find('thead');
 const findTableHeadColumns = () => findTableHead().findAll('th');
 const findStageEventTitle = (ev) => extendedWrapper(ev).findByTestId('vsa-stage-event-title');
+const findStageEventLink = (ev) => extendedWrapper(ev).findByTestId('vsa-stage-event-link');
 const findStageTime = () => wrapper.findByTestId('vsa-stage-event-time');
 const findIcon = (name) => wrapper.findByTestId(`${name}-icon`);
 
@@ -84,6 +85,15 @@ describe('StageTable', () => {
       const titles = evs.wrappers.map((ev) => findStageEventTitle(ev).text());
       issueEventItems.forEach((ev, index) => {
         expect(titles[index]).toBe(ev.title);
+      });
+    });
+
+    it('will not display the project name in the record link', () => {
+      const evs = findStageEvents();
+
+      const links = evs.wrappers.map((ev) => findStageEventLink(ev).text());
+      issueEventItems.forEach((ev, index) => {
+        expect(links[index]).toBe(`#${ev.iid}`);
       });
     });
   });
@@ -184,6 +194,53 @@ describe('StageTable', () => {
     it('will display the custom message', () => {
       expect(wrapper.html()).not.toContain(notEnoughDataError);
       expect(wrapper.html()).toContain(emptyStateTitle);
+    });
+  });
+
+  describe('includeProjectName set', () => {
+    const fakenamespace = 'some/fake/path';
+    beforeEach(() => {
+      wrapper = createComponent({ includeProjectName: true });
+    });
+
+    it('will display the project name in the record link', () => {
+      const evs = findStageEvents();
+
+      const links = evs.wrappers.map((ev) => findStageEventLink(ev).text());
+      issueEventItems.forEach((ev, index) => {
+        expect(links[index]).toBe(`${ev.projectPath}#${ev.iid}`);
+      });
+    });
+
+    describe.each`
+      namespaceFullPath | hasFullPath
+      ${'fake'}         | ${false}
+      ${fakenamespace}  | ${true}
+    `('with a namespace', ({ namespaceFullPath, hasFullPath }) => {
+      let evs = null;
+      let links = null;
+
+      beforeEach(() => {
+        wrapper = createComponent({
+          includeProjectName: true,
+          stageEvents: issueEventItems.map((ie) => ({ ...ie, namespaceFullPath })),
+        });
+
+        evs = findStageEvents();
+        links = evs.wrappers.map((ev) => findStageEventLink(ev).text());
+      });
+
+      it(`with namespaceFullPath='${namespaceFullPath}' ${
+        hasFullPath ? 'will' : 'does not'
+      } include the namespace`, () => {
+        issueEventItems.forEach((ev, index) => {
+          if (hasFullPath) {
+            expect(links[index]).toBe(`${namespaceFullPath}/${ev.projectPath}#${ev.iid}`);
+          } else {
+            expect(links[index]).toBe(`${ev.projectPath}#${ev.iid}`);
+          }
+        });
+      });
     });
   });
 

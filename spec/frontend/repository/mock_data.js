@@ -13,7 +13,9 @@ export const simpleViewerMock = {
   ideForkAndEditPath: 'some_file.js/fork/ide',
   canModifyBlob: true,
   canCurrentUserPushToBranch: true,
+  archived: false,
   storedExternally: false,
+  externalStorage: 'lfs',
   rawPath: 'some_file.js',
   replacePath: 'some_file.js/replace',
   pipelineEditorPath: '',
@@ -50,7 +52,7 @@ export const projectMock = {
     nodes: [
       {
         id: 'test',
-        path: simpleViewerMock.path,
+        path: 'locked_file.js',
         user: { id: '123', username: 'root' },
       },
     ],
@@ -63,3 +65,22 @@ export const projectMock = {
 export const propsMock = { path: 'some_file.js', projectPath: 'some/path' };
 
 export const refMock = 'default-ref';
+
+export const blobControlsDataMock = {
+  id: '1234',
+  repository: {
+    blobs: {
+      nodes: [
+        {
+          id: '5678',
+          findFilePath: 'find/file.js',
+          blamePath: 'blame/file.js',
+          historyPath: 'history/file.js',
+          permalinkPath: 'permalink/file.js',
+          storedExternally: false,
+          externalStorage: '',
+        },
+      ],
+    },
+  },
+};

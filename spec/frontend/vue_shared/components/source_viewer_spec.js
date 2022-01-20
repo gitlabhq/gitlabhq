@@ -1,27 +1,35 @@
 import hljs from 'highlight.js/lib/core';
+import Vue, { nextTick } from 'vue';
+import VueRouter from 'vue-router';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import SourceViewer from '~/vue_shared/components/source_viewer.vue';
 import LineNumbers from '~/vue_shared/components/line_numbers.vue';
 import waitForPromises from 'helpers/wait_for_promises';
 
 jest.mock('highlight.js/lib/core');
+Vue.use(VueRouter);
+const router = new VueRouter();
 
 describe('Source Viewer component', () => {
   let wrapper;
   const content = `// Some source code`;
-  const highlightedContent = `<span data-testid='test-highlighted'>${content}</span>`;
+  const highlightedContent = `<span data-testid='test-highlighted' id='LC1'>${content}</span><span id='LC2'></span>`;
   const language = 'javascript';
 
   hljs.highlight.mockImplementation(() => ({ value: highlightedContent }));
   hljs.highlightAuto.mockImplementation(() => ({ value: highlightedContent }));
 
   const createComponent = async (props = {}) => {
-    wrapper = shallowMountExtended(SourceViewer, { propsData: { content, language, ...props } });
+    wrapper = shallowMountExtended(SourceViewer, {
+      router,
+      propsData: { content, language, ...props },
+    });
     await waitForPromises();
   };
 
   const findLineNumbers = () => wrapper.findComponent(LineNumbers);
   const findHighlightedContent = () => wrapper.findByTestId('test-highlighted');
+  const findFirstLine = () => wrapper.find('#LC1');
 
   beforeEach(() => createComponent());
 
@@ -54,6 +62,41 @@ describe('Source Viewer component', () => {
 
     it('renders the highlighted content', () => {
       expect(findHighlightedContent().exists()).toBe(true);
+    });
+  });
+
+  describe('selecting a line', () => {
+    let firstLine;
+    let firstLineElement;
+
+    beforeEach(() => {
+      firstLine = findFirstLine();
+      firstLineElement = firstLine.element;
+
+      jest.spyOn(firstLineElement, 'scrollIntoView');
+      jest.spyOn(firstLineElement.classList, 'add');
+      jest.spyOn(firstLineElement.classList, 'remove');
+    });
+
+    it('adds the highlight (hll) class', async () => {
+      wrapper.vm.$router.push('#LC1');
+      await nextTick();
+
+      expect(firstLineElement.classList.add).toHaveBeenCalledWith('hll');
+    });
+
+    it('removes the highlight (hll) class from a previously highlighted line', async () => {
+      wrapper.vm.$router.push('#LC2');
+      await nextTick();
+
+      expect(firstLineElement.classList.remove).toHaveBeenCalledWith('hll');
+    });
+
+    it('scrolls the line into view', () => {
+      expect(firstLineElement.scrollIntoView).toHaveBeenCalledWith({
+        behavior: 'smooth',
+        block: 'center',
+      });
     });
   });
 });

@@ -5,10 +5,10 @@ class RefMatcher
     @ref_name_or_pattern = ref_name_or_pattern
   end
 
-  # Returns all branches/tags (among the given list of refs [`Gitlab::Git::Branch`])
+  # Returns all branches/tags (among the given list of refs [`Gitlab::Git::Branch`] or their names [`String`])
   # that match the current protected ref.
   def matching(refs)
-    refs.select { |ref| matches?(ref.name) }
+    refs.select { |ref| ref.is_a?(String) ? matches?(ref) : matches?(ref.name) }
   end
 
   # Checks if the protected ref matches the given ref name.

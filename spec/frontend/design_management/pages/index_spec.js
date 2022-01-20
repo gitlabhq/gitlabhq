@@ -91,6 +91,8 @@ const designToMove = {
 };
 
 describe('Design management index page', () => {
+  const registerPath = '/users/sign_up?redirect_to_referer=yes';
+  const signInPath = '/users/sign_in?redirect_to_referer=yes';
   let mutate;
   let wrapper;
   let fakeApollo;
@@ -164,6 +166,8 @@ describe('Design management index page', () => {
       provide: {
         projectPath: 'project-path',
         issueIid: '1',
+        registerPath,
+        signInPath,
       },
     });
   }
@@ -186,6 +190,10 @@ describe('Design management index page', () => {
       apolloProvider: fakeApollo,
       router,
       stubs: { VueDraggable },
+      provide: {
+        registerPath,
+        signInPath,
+      },
     });
   }
 
@@ -204,6 +212,8 @@ describe('Design management index page', () => {
     it('renders error', async () => {
       createComponent();
 
+      // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+      // eslint-disable-next-line no-restricted-syntax
       wrapper.setData({ error: true });
 
       await nextTick();
@@ -381,6 +391,8 @@ describe('Design management index page', () => {
 
     it('updates state appropriately after upload complete', async () => {
       createComponent({ stubs: { GlEmptyState } });
+      // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+      // eslint-disable-next-line no-restricted-syntax
       wrapper.setData({ filesToBeSaved: [{ name: 'test' }] });
 
       wrapper.vm.onUploadDesignDone(designUploadMutationCreatedResponse);
@@ -393,6 +405,8 @@ describe('Design management index page', () => {
 
     it('updates state appropriately after upload error', async () => {
       createComponent({ stubs: { GlEmptyState } });
+      // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+      // eslint-disable-next-line no-restricted-syntax
       wrapper.setData({ filesToBeSaved: [{ name: 'test' }] });
 
       wrapper.vm.onUploadDesignError();

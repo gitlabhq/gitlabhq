@@ -24,12 +24,13 @@ A GitLab CI/CD pipeline configuration includes:
 
 - [Global keywords](#global-keywords) that configure pipeline behavior:
 
-  | Keyword                 | Description |
-  |-------------------------|:------------|
-  | [`default`](#default)   | Custom default values for job keywords. |
-  | [`include`](#include)   | Import configuration from other YAML files. |
-  | [`stages`](#stages)     | The names and order of the pipeline stages. |
-  | [`workflow`](#workflow) | Control what types of pipeline run. |
+  | Keyword                   | Description |
+  |---------------------------|:------------|
+  | [`default`](#default)     | Custom default values for job keywords. |
+  | [`include`](#include)     | Import configuration from other YAML files. |
+  | [`stages`](#stages)       | The names and order of the pipeline stages. |
+  | [`variables`](#variables) | Define CI/CD variables for all job in the pipeline. |
+  | [`workflow`](#workflow)   | Control what types of pipeline run. |
 
 - [Jobs](../jobs/index.md) configured with [job keywords](#job-keywords):
 
@@ -414,6 +415,7 @@ and the pipeline is for either:
 - You can use the [`workflow:rules` templates](workflow.md#workflowrules-templates) to import
   a preconfigured `workflow: rules` entry.
 - [Common `if` clauses for `workflow:rules`](workflow.md#common-if-clauses-for-workflowrules).
+- [Use `rules` to run pipelines for merge requests](../pipelines/merge_request_pipelines.md#use-rules-to-add-jobs).
 
 #### `workflow:rules:variables`
 
@@ -1429,13 +1431,13 @@ test osx:
   stage: test
   script: make test:osx
   dependencies:
-    - build:osx
+    - build osx
 
 test linux:
   stage: test
   script: make test:linux
   dependencies:
-    - build:linux
+    - build linux
 
 deploy:
   stage: deploy
@@ -2506,8 +2508,7 @@ docker build:
 - [`only: changes` and `except: changes` examples](../jobs/job_control.md#onlychanges--exceptchanges-examples).
 - If you use `changes` with [only allow merge requests to be merged if the pipeline succeeds](../../user/project/merge_requests/merge_when_pipeline_succeeds.md#only-allow-merge-requests-to-be-merged-if-the-pipeline-succeeds),
   you should [also use `only:merge_requests`](../jobs/job_control.md#use-onlychanges-with-pipelines-for-merge-requests).
-- Use `changes` with [new branches or tags *without* pipelines for merge requests](../jobs/job_control.md#use-onlychanges-without-pipelines-for-merge-requests).
-- Use `changes` with [scheduled pipelines](../jobs/job_control.md#use-onlychanges-with-scheduled-pipelines).
+- [Jobs or pipelines can run unexpectedly when using `only: changes`](../jobs/job_control.md#jobs-or-pipelines-run-unexpectedly-when-using-changes).
 
 #### `only:kubernetes` / `except:kubernetes`
 
@@ -3066,8 +3067,10 @@ job:
 
 - If a rule matches and has no `when` defined, the rule uses the `when`
   defined for the job, which defaults to `on_success` if not defined.
-- You can define `when` once per rule, or once at the job-level, which applies to
-  all rules. You can't mix `when` at the job-level with `when` in rules.
+- In GitLab 14.5 and earlier, you can define `when` once per rule, or once at the job-level,
+  which applies to all rules. You can't mix `when` at the job-level with `when` in rules.
+- In GitLab 14.6 and later, you can [mix `when` at the job-level with `when` in rules](https://gitlab.com/gitlab-org/gitlab/-/issues/219437).
+  `when` configuration in `rules` takes precedence over `when` at the job-level.
 - Unlike variables in [`script`](../variables/index.md#use-cicd-variables-in-job-scripts)
   sections, variables in rules expressions are always formatted as `$VARIABLE`.
   - You can use `rules:if` with `include` to [conditionally include other configuration files](includes.md#use-rules-with-include).
@@ -3076,6 +3079,7 @@ job:
 
 - [Common `if` expressions for `rules`](../jobs/job_control.md#common-if-clauses-for-rules).
 - [Avoid duplicate pipelines](../jobs/job_control.md#avoid-duplicate-pipelines).
+- [Use `rules` to run pipelines for merge requests](../pipelines/merge_request_pipelines.md#use-rules-to-add-jobs).
 
 #### `rules:changes`
 
@@ -3119,6 +3123,10 @@ docker build:
 - `rules: changes` works the same way as [`only: changes` and `except: changes`](#onlychanges--exceptchanges).
 - You can use `when: never` to implement a rule similar to [`except:changes`](#onlychanges--exceptchanges).
 - `changes` resolves to `true` if any of the matching files are changed (an `OR` operation).
+
+**Related topics**:
+
+- [Jobs or pipelines can run unexpectedly when using `rules: changes`](../jobs/job_control.md#jobs-or-pipelines-run-unexpectedly-when-using-changes).
 
 #### `rules:exists`
 
@@ -3834,13 +3842,13 @@ The following keywords are deprecated.
 ### Globally-defined `types`
 
 WARNING:
-`types` is deprecated, and could be removed in a future release.
+`types` is deprecated, and is [scheduled to be removed in GitLab 15.0](https://gitlab.com/gitlab-org/gitlab/-/issues/346823).
 Use [`stages`](#stages) instead.
 
 ### Job-defined `type`
 
 WARNING:
-`type` is deprecated, and could be removed in one of the future releases.
+`type` is deprecated, and is [scheduled to be removed in GitLab 15.0](https://gitlab.com/gitlab-org/gitlab/-/issues/346823).
 Use [`stage`](#stage) instead.
 
 ### Globally-defined `image`, `services`, `cache`, `before_script`, `after_script`

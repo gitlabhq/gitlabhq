@@ -83,7 +83,6 @@ module API
               ::Packages::Debian::ProcessChangesWorker.perform_async(package_file.id, current_user.id) # rubocop:disable CodeReuse/Worker
             end
 
-            track_package_event('push_package', :debian, user: current_user, project: authorized_user_project, namespace: authorized_user_project.namespace)
             created!
           rescue ObjectStorage::RemoteStoreError => e
             Gitlab::ErrorTracking.track_exception(e, extra: { file_name: params[:file_name], project_id: authorized_user_project.id })

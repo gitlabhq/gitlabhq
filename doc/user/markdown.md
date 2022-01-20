@@ -1,8 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments"
-type: reference, howto
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # GitLab Flavored Markdown **(FREE)**
@@ -1507,56 +1506,3 @@ entry and paste the spreadsheet:
   at Daring Fireball is an excellent resource for a detailed explanation of standard Markdown.
 - You can find the detailed specification for CommonMark in the [CommonMark Spec](https://spec.commonmark.org/current/).
 - The [CommonMark Dingus](https://spec.commonmark.org/dingus/) helps you test CommonMark syntax.
-
-## Transition from Redcarpet to CommonMark
-
-- In GitLab 11.8, the [Redcarpet Ruby library](https://github.com/vmg/redcarpet)
-  was removed. All issues and comments, including those in 11.1 and earlier, are now processed
-  by using the [CommonMark Ruby Library](https://github.com/gjtorikian/commonmarker).
-- In GitLab 11.3 and later, CommonMark processes wiki pages and Markdown
-  files (`*.md`) in repositories.
-- In GitLab 11.1 and later, the [CommonMark Ruby Library](https://github.com/gjtorikian/commonmarker)
-  for Markdown processes all new issues, merge requests, comments, and other Markdown
-  content.
-
-The documentation website migrated its Markdown engine
-[from Redcarpet to Kramdown](https://gitlab.com/gitlab-org/gitlab-docs/-/merge_requests/108)
-in October 2018.
-
-You may have older issues, merge requests, or Markdown documents in your
-repository that relied upon nuances of the GitLab RedCarpet version
-of Markdown. Because CommonMark uses slightly stricter syntax, these documents
-may now appear differently after the transition to CommonMark.
-
-For example, numbered lists with nested lists may
-render incorrectly:
-
-```markdown
-1. Chocolate
-  - dark
-  - milk
-```
-
-To fix this issue, add a space to each nested item. The `-` must be aligned with the first
-character of the top list item (`C` in this case):
-
-```markdown
-1. Chocolate
-   - dark
-   - milk
-```
-
-1. Chocolate
-   - dark
-   - milk
-
-We flag any significant differences between Redcarpet and CommonMark Markdown in this document.
-
-If you have many Markdown files, it can be tedious to determine
-if they display correctly or not. You can use the
-[`diff_redcarpet_cmark`](https://gitlab.com/digitalmoksha/diff_redcarpet_cmark)
-tool to generate a list of files and the
-differences between how RedCarpet and CommonMark render the files. It indicates
-if any changes are needed.
-
-`diff_redcarpet_cmark` is not an officially supported product.

@@ -349,6 +349,8 @@ describe('AlertDetails', () => {
         ${1}  | ${'metrics'}
         ${2}  | ${'activity'}
       `('will navigate to the correct tab via $tabId', ({ index, tabId }) => {
+        // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+        // eslint-disable-next-line no-restricted-syntax
         wrapper.setData({ currentTabIndex: index });
         expect($router.replace).toHaveBeenCalledWith({ name: 'tab', params: { tabId } });
       });

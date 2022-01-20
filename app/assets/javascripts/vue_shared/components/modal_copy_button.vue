@@ -1,6 +1,6 @@
 <script>
 import { GlButton, GlTooltipDirective } from '@gitlab/ui';
-import Clipboard from 'clipboard';
+import ClipboardJS from 'clipboard';
 import { uniqueId } from 'lodash';
 import { BV_HIDE_TOOLTIP } from '~/lib/utils/constants';
 
@@ -69,7 +69,7 @@ export default {
   },
   mounted() {
     this.$nextTick(() => {
-      this.clipboard = new Clipboard(this.$el, {
+      this.clipboard = new ClipboardJS(this.$el, {
         container:
           document.querySelector(`${this.modalDomId} div.modal-content`) ||
           document.getElementById(this.container) ||

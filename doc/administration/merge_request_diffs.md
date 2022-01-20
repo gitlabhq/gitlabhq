@@ -1,13 +1,10 @@
 ---
 stage: Create
 group: Editor
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments"
-type: reference
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Merge request diffs storage **(FREE SELF)**
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/52568) in GitLab 11.8.
 
 Merge request diffs are size-limited copies of diffs associated with merge
 requests. When viewing a merge request, diffs are sourced from these copies
@@ -17,7 +14,8 @@ By default, merge request diffs are stored in the database, in a table named
 `merge_request_diff_files`. Larger installations may find this table grows too
 large, in which case, switching to external storage is recommended.
 
-Merge request diffs can be stored on disk, or in object storage. In general, it
+Merge request diffs can be stored [on disk](#using-external-storage), or in
+[object storage](#using-object-storage). In general, it
 is better to store the diffs in the database than on disk. A compromise is available
 that only [stores outdated diffs](#alternative-in-database-storage) outside of database.
 
@@ -41,6 +39,7 @@ that only [stores outdated diffs](#alternative-in-database-storage) outside of d
    ```
 
 1. Save the file and [reconfigure GitLab](restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
+   GitLab then migrates your existing merge request diffs to external storage.
 
 **In installations from source:**
 
@@ -64,6 +63,7 @@ that only [stores outdated diffs](#alternative-in-database-storage) outside of d
    ```
 
 1. Save the file and [restart GitLab](restart_gitlab.md#installations-from-source) for the changes to take effect.
+   GitLab then migrates your existing merge request diffs to external storage.
 
 ## Using object storage
 
@@ -84,6 +84,7 @@ be configured already.
 
 1. Set [object storage settings](#object-storage-settings).
 1. Save the file and [reconfigure GitLab](restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
+   GitLab then migrates your existing merge request diffs to external storage.
 
 **In installations from source:**
 
@@ -97,6 +98,7 @@ be configured already.
 
 1. Set [object storage settings](#object-storage-settings).
 1. Save the file and [restart GitLab](restart_gitlab.md#installations-from-source) for the changes to take effect.
+   GitLab then migrates your existing merge request diffs to external storage.
 
 [Read more about using object storage with GitLab](object_storage.md).
 

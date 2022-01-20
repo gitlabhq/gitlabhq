@@ -8,6 +8,7 @@ RSpec.describe Route do
 
   describe 'relationships' do
     it { is_expected.to belong_to(:source) }
+    it { is_expected.to belong_to(:namespace) }
   end
 
   describe 'validations' do

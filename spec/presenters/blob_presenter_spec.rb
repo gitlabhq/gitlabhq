@@ -53,6 +53,10 @@ RSpec.describe BlobPresenter do
     end
   end
 
+  describe '#archived?' do
+    it { expect(presenter.archived?).to eq(project.archived) }
+  end
+
   describe '#pipeline_editor_path' do
     context 'when blob is .gitlab-ci.yml' do
       before do
@@ -65,6 +69,22 @@ RSpec.describe BlobPresenter do
 
       it { expect(presenter.pipeline_editor_path).to eq("/#{project.full_path}/-/ci/editor?branch_name=#{blob.commit_id}") }
     end
+  end
+
+  describe '#find_file_path' do
+    it { expect(presenter.find_file_path).to eq("/#{project.full_path}/-/find_file/HEAD/files/ruby/regex.rb") }
+  end
+
+  describe '#blame_path' do
+    it { expect(presenter.blame_path).to eq("/#{project.full_path}/-/blame/HEAD/files/ruby/regex.rb") }
+  end
+
+  describe '#history_path' do
+    it { expect(presenter.history_path).to eq("/#{project.full_path}/-/commits/HEAD/files/ruby/regex.rb") }
+  end
+
+  describe '#permalink_path' do
+    it { expect(presenter.permalink_path).to eq("/#{project.full_path}/-/blob/#{project.repository.commit.sha}/files/ruby/regex.rb") }
   end
 
   describe '#code_owners' do

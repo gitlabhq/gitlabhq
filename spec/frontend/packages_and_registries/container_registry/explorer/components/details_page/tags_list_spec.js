@@ -1,16 +1,25 @@
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 import { nextTick } from 'vue';
+import { GlEmptyState } from '@gitlab/ui';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { stripTypenames } from 'helpers/graphql_helpers';
-import EmptyTagsState from '~/packages_and_registries/container_registry/explorer/components/details_page/empty_state.vue';
+
 import component from '~/packages_and_registries/container_registry/explorer/components/details_page/tags_list.vue';
 import TagsListRow from '~/packages_and_registries/container_registry/explorer/components/details_page/tags_list_row.vue';
 import TagsLoader from '~/packages_and_registries/container_registry/explorer/components/details_page/tags_loader.vue';
 import RegistryList from '~/packages_and_registries/shared/components/registry_list.vue';
+import PersistedSearch from '~/packages_and_registries/shared/components/persisted_search.vue';
 import getContainerRepositoryTagsQuery from '~/packages_and_registries/container_registry/explorer/graphql/queries/get_container_repository_tags.query.graphql';
-import { GRAPHQL_PAGE_SIZE } from '~/packages_and_registries/container_registry/explorer/constants/index';
+import {
+  GRAPHQL_PAGE_SIZE,
+  NO_TAGS_TITLE,
+  NO_TAGS_MESSAGE,
+  NO_TAGS_MATCHING_FILTERS_TITLE,
+  NO_TAGS_MATCHING_FILTERS_DESCRIPTION,
+} from '~/packages_and_registries/container_registry/explorer/constants/index';
+import { FILTERED_SEARCH_TERM } from '~/packages_and_registries/shared/constants';
 import { tagsMock, imageTagsMock, tagsPageInfo } from '../../mock_data';
 
 const localVue = createLocalVue();
@@ -21,10 +30,19 @@ describe('Tags List', () => {
   let resolver;
   const tags = [...tagsMock];
 
+  const defaultConfig = {
+    noContainersImage: 'noContainersImage',
+  };
+
+  const findPersistedSearch = () => wrapper.findComponent(PersistedSearch);
   const findTagsListRow = () => wrapper.findAllComponents(TagsListRow);
   const findRegistryList = () => wrapper.findComponent(RegistryList);
-  const findEmptyState = () => wrapper.findComponent(EmptyTagsState);
+  const findEmptyState = () => wrapper.findComponent(GlEmptyState);
   const findTagsLoader = () => wrapper.findComponent(TagsLoader);
+
+  const fireFirstSortUpdate = () => {
+    findPersistedSearch().vm.$emit('update', { sort: 'NAME_ASC', filters: [] });
+  };
 
   const waitForApolloRequestRender = async () => {
     await waitForPromises();
@@ -44,7 +62,7 @@ describe('Tags List', () => {
       stubs: { RegistryList },
       provide() {
         return {
-          config: {},
+          config: defaultConfig,
         };
       },
     });
@@ -61,8 +79,21 @@ describe('Tags List', () => {
   describe('registry list', () => {
     beforeEach(() => {
       mountComponent();
-
+      fireFirstSortUpdate();
       return waitForApolloRequestRender();
+    });
+
+    it('has a persisted search', () => {
+      expect(findPersistedSearch().props()).toMatchObject({
+        defaultOrder: 'NAME',
+        defaultSort: 'asc',
+        sortableFields: [
+          {
+            label: 'Name',
+            orderBy: 'NAME',
+          },
+        ],
+      });
     });
 
     it('binds the correct props', () => {
@@ -75,11 +106,13 @@ describe('Tags List', () => {
     });
 
     describe('events', () => {
-      it('prev-page fetch the previous page', () => {
+      it('prev-page fetch the previous page', async () => {
         findRegistryList().vm.$emit('prev-page');
 
         expect(resolver).toHaveBeenCalledWith({
           first: null,
+          name: '',
+          sort: 'NAME_ASC',
           before: tagsPageInfo.startCursor,
           last: GRAPHQL_PAGE_SIZE,
           id: '1',
@@ -92,6 +125,8 @@ describe('Tags List', () => {
         expect(resolver).toHaveBeenCalledWith({
           after: tagsPageInfo.endCursor,
           first: GRAPHQL_PAGE_SIZE,
+          name: '',
+          sort: 'NAME_ASC',
           id: '1',
         });
       });
@@ -108,6 +143,7 @@ describe('Tags List', () => {
   describe('list rows', () => {
     it('one row exist for each tag', async () => {
       mountComponent();
+      fireFirstSortUpdate();
 
       await waitForApolloRequestRender();
 
@@ -116,6 +152,7 @@ describe('Tags List', () => {
 
     it('the correct props are bound to it', async () => {
       mountComponent({ propsData: { disabled: true, id: 1 } });
+      fireFirstSortUpdate();
 
       await waitForApolloRequestRender();
 
@@ -130,7 +167,7 @@ describe('Tags List', () => {
     describe('events', () => {
       it('select event update the selected items', async () => {
         mountComponent();
-
+        fireFirstSortUpdate();
         await waitForApolloRequestRender();
 
         findTagsListRow().at(0).vm.$emit('select');
@@ -142,7 +179,7 @@ describe('Tags List', () => {
 
       it('delete event emit a delete event', async () => {
         mountComponent();
-
+        fireFirstSortUpdate();
         await waitForApolloRequestRender();
 
         findTagsListRow().at(0).vm.$emit('delete');
@@ -154,32 +191,45 @@ describe('Tags List', () => {
   describe('when the list of tags is empty', () => {
     beforeEach(() => {
       resolver = jest.fn().mockResolvedValue(imageTagsMock([]));
+      mountComponent();
+      fireFirstSortUpdate();
+      return waitForApolloRequestRender();
     });
 
-    it('has the empty state', async () => {
-      mountComponent();
-
-      await waitForApolloRequestRender();
-
-      expect(findEmptyState().exists()).toBe(true);
-    });
-
-    it('does not show the loader', async () => {
-      mountComponent();
-
-      await waitForApolloRequestRender();
-
+    it('does not show the loader', () => {
       expect(findTagsLoader().exists()).toBe(false);
     });
 
-    it('does not show the list', async () => {
-      mountComponent();
-
-      await waitForApolloRequestRender();
-
+    it('does not show the list', () => {
       expect(findRegistryList().exists()).toBe(false);
     });
+
+    describe('empty state', () => {
+      it('default empty state', () => {
+        expect(findEmptyState().props()).toMatchObject({
+          svgPath: defaultConfig.noContainersImage,
+          title: NO_TAGS_TITLE,
+          description: NO_TAGS_MESSAGE,
+        });
+      });
+
+      it('when filtered shows a filtered message', async () => {
+        findPersistedSearch().vm.$emit('update', {
+          sort: 'NAME_ASC',
+          filters: [{ type: FILTERED_SEARCH_TERM, value: { data: 'foo' } }],
+        });
+
+        await waitForApolloRequestRender();
+
+        expect(findEmptyState().props()).toMatchObject({
+          svgPath: defaultConfig.noContainersImage,
+          title: NO_TAGS_MATCHING_FILTERS_TITLE,
+          description: NO_TAGS_MATCHING_FILTERS_DESCRIPTION,
+        });
+      });
+    });
   });
+
   describe('loading state', () => {
     it.each`
       isImageLoading | queryExecuting | loadingVisible
@@ -191,7 +241,7 @@ describe('Tags List', () => {
       'when the isImageLoading is $isImageLoading, and is $queryExecuting that the query is still executing is $loadingVisible that the loader is shown',
       async ({ isImageLoading, queryExecuting, loadingVisible }) => {
         mountComponent({ propsData: { isImageLoading, isMobile: false, id: 1 } });
-
+        fireFirstSortUpdate();
         if (!queryExecuting) {
           await waitForApolloRequestRender();
         }

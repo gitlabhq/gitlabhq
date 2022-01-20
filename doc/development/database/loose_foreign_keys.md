@@ -43,7 +43,7 @@ we can:
 
 1. Create a `DELETE` trigger on the `projects` table.
    Record the deletions in a separate table (`deleted_records`).
-1. A job checks the `deleted_records` table every 5 minutes.
+1. A job checks the `deleted_records` table every minute or two.
 1. For each record in the table, delete the associated `ci_pipelines` records
    using the `project_id` column.
 
@@ -89,9 +89,10 @@ ci_pipelines:
 
 ### Track record changes
 
-To know about deletions in the `projects` table, configure a `DELETE` trigger using a database
-migration (post-migration). The trigger needs to be configured only once. If the model already has
-at least one `loose_foreign_key` definition, then this step can be skipped:
+To know about deletions in the `projects` table, configure a `DELETE` trigger
+using a [post-deployment migration](../post_deployment_migrations.md). The
+trigger needs to be configured only once. If the model already has at least one
+`loose_foreign_key` definition, then this step can be skipped:
 
 ```ruby
 class TrackProjectRecordChanges < Gitlab::Database::Migration[1.0]
@@ -122,15 +123,20 @@ REFERENCES projects(id)
 ON DELETE CASCADE;
 ```
 
-The migration should run after the `DELETE` trigger is installed. If the foreign key is deleted
-earlier, there is a good chance of introducing data inconsistency which needs manual cleanup:
+The migration must run after the `DELETE` trigger is installed and the loose
+foreign key definition is deployed. As such, it must be a [post-deployment
+migration](../post_deployment_migrations.md) dated after the migration for the
+trigger. If the foreign key is deleted earlier, there is a good chance of
+introducing data inconsistency which needs manual cleanup:
 
 ```ruby
 class RemoveProjectsCiPipelineFk < Gitlab::Database::Migration[1.0]
-  enable_lock_retries!
+  disable_ddl_transaction!
 
   def up
-    remove_foreign_key_if_exists(:ci_pipelines, :projects, name: "fk_86635dbd80")
+    with_lock_retries do
+      remove_foreign_key_if_exists(:ci_pipelines, :projects, name: "fk_86635dbd80")
+    end
   end
 
   def down
@@ -152,6 +158,17 @@ Simply add to the model test file:
 ```ruby
 it_behaves_like 'it has loose foreign keys' do
   let(:factory_name) { :project }
+end
+```
+
+**After** [removing a foreign key](#remove-the-foreign-key),
+use the "`cleanup by a loose foreign key`" shared example to test a child record's deletion or nullification
+via the added loose foreign key:
+
+```ruby
+it_behaves_like 'cleanup by a loose foreign key' do
+  let!(:model) { create(:ci_pipeline, user: create(:user)) }
+  let!(:parent) { model.user }
 end
 ```
 

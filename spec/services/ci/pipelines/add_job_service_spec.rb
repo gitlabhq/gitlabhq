@@ -31,7 +31,7 @@ RSpec.describe Ci::Pipelines::AddJobService do
         execute
       end.to change { job.slice(:pipeline, :project, :ref) }.to(
         pipeline: pipeline, project: pipeline.project, ref: pipeline.ref
-      )
+      ).and change { job.metadata.project }.to(pipeline.project)
     end
 
     it 'returns a service response with the job as payload' do

@@ -258,6 +258,11 @@ class ProjectPolicy < BasePolicy
 
   rule { can?(:reporter_access) & can?(:create_issue) }.enable :create_incident
 
+  rule { can?(:guest_access) & can?(:create_issue) }.policy do
+    enable :create_task
+    enable :create_work_item
+  end
+
   # These abilities are not allowed to admins that are not members of the project,
   # that's why they are defined separately.
   rule { guest & can?(:download_code) }.enable :build_download_code
@@ -399,6 +404,7 @@ class ProjectPolicy < BasePolicy
     enable :destroy_feature_flag
     enable :admin_feature_flag
     enable :admin_feature_flags_user_lists
+    enable :update_escalation_status
   end
 
   rule { can?(:developer_access) & user_confirmed? }.policy do

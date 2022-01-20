@@ -65,8 +65,8 @@ import {
 const defaultSerializerConfig = {
   marks: {
     [Bold.name]: defaultMarkdownSerializer.marks.strong,
-    [Code.name]: defaultMarkdownSerializer.marks.code,
     [Italic.name]: { open: '_', close: '_', mixable: true, expelEnclosingWhitespace: true },
+    [Code.name]: defaultMarkdownSerializer.marks.code,
     [Subscript.name]: { open: '<sub>', close: '</sub>', mixable: true },
     [Superscript.name]: { open: '<sup>', close: '</sup>', mixable: true },
     [InlineDiff.name]: {

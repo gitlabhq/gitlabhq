@@ -1,0 +1,8 @@
+---
+name: runner_read_only_admin_view
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/77682
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/350164
+milestone: '14.7'
+type: development
+group: group::runner
+default_enabled: false

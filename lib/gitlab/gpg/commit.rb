@@ -102,7 +102,7 @@ module Gitlab
       end
 
       def verification_status(gpg_key)
-        return :multiple_signatures if multiple_signatures? && Feature.enabled?(:multiple_gpg_signatures, @commit.project, default_enabled: :yaml)
+        return :multiple_signatures if multiple_signatures?
         return :unknown_key unless gpg_key
         return :unverified_key unless gpg_key.verified?
         return :unverified unless verified_signature&.valid?

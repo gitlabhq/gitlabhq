@@ -46,10 +46,6 @@ GitLab supports the following OmniAuth providers.
 
 ## Configure initial settings
 
-NOTE:
-In GitLab 11.4 and later, OmniAuth is enabled by default. If you're using an
-earlier version, you must explicitly enable it.
-
 Before you configure the OmniAuth provider,
 configure the settings that are common for all providers.
 
@@ -153,7 +149,7 @@ To enable or disable an OmniAuth provider:
 
 ## Disable OmniAuth
 
-In GitLab 11.4 and later, OmniAuth is enabled by default. However, OmniAuth only works
+OmniAuth is enabled by default. However, OmniAuth only works
 if providers are configured and [enabled](#enable-or-disable-sign-in-with-an-omniauth-provider-without-disabling-import-sources).
 
 If OmniAuth providers are causing problems even when individually disabled, you
@@ -385,3 +381,9 @@ then override the icon in one of two ways:
              ...
            }
      ```
+
+## Limitations
+
+Most supported OmniAuth providers don't support Git over HTTP password authentication.
+The only exception is [Atlassian Crowd](../administration/auth/crowd.md) (since GitLab [13.7](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/46935)).
+As a workaround, you can authenticate using a [personal access token](../user/profile/personal_access_tokens.md).

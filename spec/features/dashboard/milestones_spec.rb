@@ -41,7 +41,7 @@ RSpec.describe 'Dashboard > Milestones' do
           first('.select2-result-label').click
         end
 
-        find('.new-project-item-link').click
+        find('.js-new-project-item-link').click
 
         expect(current_path).to eq(new_group_milestone_path(group))
       end

@@ -13,6 +13,10 @@ describe('DeleteLabelModal', () => {
       subjectName: 'GitLab Org',
       destroyPath: `${TEST_HOST}/2`,
     },
+    {
+      labelName: 'admin label',
+      destroyPath: `${TEST_HOST}/3`,
+    },
   ];
 
   beforeEach(() => {
@@ -22,8 +26,12 @@ describe('DeleteLabelModal', () => {
       const button = document.createElement('button');
       button.setAttribute('class', 'js-delete-label-modal-button');
       button.setAttribute('data-label-name', x.labelName);
-      button.setAttribute('data-subject-name', x.subjectName);
       button.setAttribute('data-destroy-path', x.destroyPath);
+
+      if (x.subjectName) {
+        button.setAttribute('data-subject-name', x.subjectName);
+      }
+
       button.innerHTML = 'Action';
       buttonContainer.appendChild(button);
     });
@@ -62,6 +70,7 @@ describe('DeleteLabelModal', () => {
     index
     ${0}
     ${1}
+    ${2}
   `(`when multiple buttons exist`, ({ index }) => {
     beforeEach(() => {
       initDeleteLabelModal();
@@ -69,14 +78,22 @@ describe('DeleteLabelModal', () => {
     });
 
     it('correct props are passed to gl-modal', () => {
-      expect(findModal().querySelector('.modal-title').innerHTML).toContain(
-        buttons[index].labelName,
-      );
-      expect(findModal().querySelector('.modal-body').innerHTML).toContain(
-        buttons[index].subjectName,
-      );
+      const button = buttons[index];
+
+      expect(findModal().querySelector('.modal-title').innerHTML).toContain(button.labelName);
+
+      if (button.subjectName) {
+        expect(findModal().querySelector('.modal-body').textContent).toContain(
+          `${button.labelName} will be permanently deleted from ${button.subjectName}. This cannot be undone.`,
+        );
+      } else {
+        expect(findModal().querySelector('.modal-body').textContent).toContain(
+          `${button.labelName} will be permanently deleted. This cannot be undone.`,
+        );
+      }
+
       expect(findModal().querySelector('.modal-footer .btn-danger').href).toContain(
-        buttons[index].destroyPath,
+        button.destroyPath,
       );
     });
   });

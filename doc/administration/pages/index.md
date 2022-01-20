@@ -192,6 +192,33 @@ to use the HTTPS protocol.
 WARNING:
 Multiple wildcards for one instance is not supported. Only one wildcard per instance can be assigned.
 
+### Wildcard domains with TLS-terminating Load Balancer
+
+**Requirements:**
+
+- [Wildcard DNS setup](#dns-configuration)
+- [TLS-terminating load balancer](../../install/aws/manual_install_aws.md#load-balancer)
+
+---
+
+URL scheme: `https://<namespace>.example.io/<project_slug>`
+
+This setup is primarily intended to be used when [installing a GitLab POC on Amazon Web Services](../../install/aws/manual_install_aws.md). This includes a TLS-terminating [classic load balancer](../../install/aws/manual_install_aws.md#load-balancer) that listens for HTTPS connections, manages TLS certificates, and forwards HTTP traffic to the instance.
+
+1. In `/etc/gitlab/gitlab.rb` specify the following configuration:
+
+   ```ruby
+   external_url "https://gitlab.example.com" # external_url here is only for reference
+   pages_external_url "https://pages.example.com" # not a subdomain of external_url
+
+   pages_nginx['enable'] = true
+   pages_nginx['listen_port'] = 80
+   pages_nginx['listen_https'] = false
+   pages_nginx['redirect_http_to_https'] = true
+   ```
+
+1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
+
 ### Global settings
 
 Below is a table of all configuration settings known to Pages in Omnibus GitLab,
@@ -262,6 +289,8 @@ control over how the Pages daemon runs and serves content in your environment.
 | `use_legacy_storage`                    | Temporarily-introduced parameter allowing to use legacy domain configuration source and storage. [Removed in 14.3](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/6166). |
 | `rate_limit_source_ip`                  | Rate limit per source IP in number of requests per second. Set to `0` to disable this feature. |
 | `rate_limit_source_ip_burst`            | Rate limit per source IP maximum burst allowed per second. |
+| `rate_limit_domain`                     | Rate limit per domain in number of requests per second. Set to `0` to disable this feature. |
+| `rate_limit_domain_burst`               | Rate limit per domain maximum burst allowed per second. |
 
 ## Advanced configuration
 
@@ -518,6 +547,14 @@ After an archive reaches `zip_cache_expiration`, it's marked as expired and remo
 
 ![ZIP cache configuration](img/zip_cache_configuration.png)
 
+### HTTP Strict Transport Security (HSTS) support
+
+HTTP Strict Transport Security (HSTS) can be enabled through the `gitlab_pages['headers']` configuration option. HSTS informs browsers that the website they are visiting should always provide its content over HTTPS to ensure that attackers cannot force subsequent connections to happen unencrypted. It can also improve loading speed of pages as it prevents browsers from attempting to connect over an unencrypted HTTP channel before being redirected to HTTPS.
+
+```ruby
+gitlab_pages['headers'] = ['Strict-Transport-Security: max-age=63072000']
+```
+
 ## Activate verbose logging for daemon
 
 Follow the steps below to configure verbose logging of GitLab Pages daemon.
@@ -695,6 +732,9 @@ database encryption. Proceed with caution.
    pages_external_url "http://<pages_server_URL>"
 
    gitlab_pages['gitlab_server'] = 'http://<gitlab_server_IP_or_URL>'
+
+   ## If access control was enabled on step 3
+   gitlab_pages['access_control'] = true
    ```
 
 1. If you have custom UID/GID settings on the **GitLab server**, add them to the **Pages server** `/etc/gitlab/gitlab.rb` as well,
@@ -717,7 +757,7 @@ database encryption. Proceed with caution.
    mv /var/opt/gitlab/gitlab-rails/shared/pages/gitlab-secrets.json /etc/gitlab/gitlab-secrets.json
    ```
 
-1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
+1. [Reconfigure the **Pages server**](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
 
 1. On the **GitLab server**, make the following changes to `/etc/gitlab/gitlab.rb`:
 
@@ -727,7 +767,7 @@ database encryption. Proceed with caution.
    pages_nginx['enable'] = false
    ```
 
-1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
+1. [Reconfigure the **GitLab server**](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
 
 It's possible to run GitLab Pages on multiple servers if you wish to distribute
 the load. You can do this through standard load balancing practices such as
@@ -925,7 +965,7 @@ However, some projects may fail to be migrated for different reasons.
 To verify that all projects have been migrated successfully, you can manually run the migration:
 
 ```shell
-gitlab-rake gitlab:pages:migrate_legacy_storage
+sudo gitlab-rake gitlab:pages:migrate_legacy_storage
 ```
 
 It's safe to interrupt this task and run it multiple times.
@@ -1039,15 +1079,22 @@ than GitLab to prevent XSS attacks.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-pages/-/issues/631) in GitLab 14.5.
 
-You can enforce source-IP rate limits to help minimize the risk of a Denial of Service (DoS) attack. GitLab Pages
+You can enforce rate limits to help minimize the risk of a Denial of Service (DoS) attack. GitLab Pages
 uses a [token bucket algorithm](https://en.wikipedia.org/wiki/Token_bucket) to enforce rate limiting. By default,
 requests that exceed the specified limits are reported but not rejected.
 
-Source-IP rate limits are enforced using the following:
+GitLab Pages supports the following types of rate limiting:
 
-- `rate_limit_source_ip`: Set the maximum threshold in number of requests per second. Set to 0 to disable this feature.
-- `rate_limit_source_ip_burst`: Sets the maximum threshold of number of requests allowed in an initial outburst of requests.
+- Per `source_ip`. It limits how many requests are allowed from the single client IP address.
+- Per `domain`. It limits how many requests are allowed per domain hosted on GitLab Pages. It can be a custom domain like `example.com`, or group domain like `group.gitlab.io`.
+
+Rate limits are enforced using the following:
+
+- `rate_limit_source_ip`: Set the maximum threshold in number of requests per client IP per second. Set to 0 to disable this feature.
+- `rate_limit_source_ip_burst`: Sets the maximum threshold of number of requests allowed in an initial outburst of requests per client IP.
   For example, when you load a web page that loads a number of resources at the same time.
+- `rate_limit_domain_ip`: Set the maximum threshold in number of requests per hosted pages domain per second. Set to 0 to disable this feature.
+- `rate_limit_domain_burst`: Sets the maximum threshold of number of requests allowed in an initial outburst of requests per hosted pages domain.
 
 #### Enable source-IP rate limits
 
@@ -1063,6 +1110,24 @@ Source-IP rate limits are enforced using the following:
 
    ```ruby
    gitlab_pages['env'] = {'FF_ENFORCE_IP_RATE_LIMITS' => 'true'}
+   ```
+
+1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
+
+#### Enable domain rate limits
+
+1. Set rate limits in `/etc/gitlab/gitlab.rb`:
+
+   ```ruby
+   gitlab_pages['rate_limit_domain'] = 1000
+   gitlab_pages['rate_limit_domain_burst'] = 5000
+   ```
+
+1. To reject requests that exceed the specified limits, enable the `FF_ENFORCE_DOMAIN_RATE_LIMITS` feature flag in
+   `/etc/gitlab/gitlab.rb`:
+
+   ```ruby
+   gitlab_pages['env'] = {'FF_ENFORCE_DOMAIN_RATE_LIMITS' => 'true'}
    ```
 
 1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
@@ -1282,6 +1347,15 @@ This can happen if your `gitlab-secrets.json` file is out of date between GitLab
 Pages. Follow steps 8-10 of [Running GitLab Pages on a separate server](#running-gitlab-pages-on-a-separate-server),
 in all of your GitLab Pages instances.
 
+### Intermittent 502 errors when using an AWS Network Load Balancer and GitLab Pages is running on multiple application servers
+
+Connections will time out when using a Network Load Balancer with client IP preservation enabled and [the request is looped back to the source server](https://docs.aws.amazon.com/elasticloadbalancing/latest/network/load-balancer-troubleshooting.html#loopback-timeout).
+This can happen to GitLab instances with multiple servers
+running both the core GitLab application and GitLab Pages.
+
+AWS [recommends using an IP target type](https://aws.amazon.com/premiumsupport/knowledge-center/target-connection-fails-load-balancer/)
+to resolve this issue.
+
 ### 500 error with `securecookie: failed to generate random iv` and `Failed to save the session`
 
 This problem most likely results from an [out-dated operating system](../package_information/supported_os.md#os-versions-that-are-no-longer-supported).
@@ -1332,8 +1406,11 @@ Once added, reconfigure with `sudo gitlab-ctl reconfigure` and restart GitLab wi
 
 ### `The redirect URI included is not valid.` when using Pages Access Control
 
-Verify that the **Callback URL**/Redirect URI in the GitLab Pages [System OAuth application](../../integration/oauth_provider.md#instance-wide-applications)
+You may see this error if `pages_external_url` was updated at some point of time. Verify the following:
+
+1. The **Callback URL**/Redirect URI in the GitLab Pages [System OAuth application](../../integration/oauth_provider.md#instance-wide-applications)
 is using the protocol (HTTP or HTTPS) that `pages_external_url` is configured to use.
+1. The domain and path components of `Redirect URI` are valid: they should look like `projects.<pages_external_url>/auth`.
 
 ### 500 error `cannot serve from disk`
 

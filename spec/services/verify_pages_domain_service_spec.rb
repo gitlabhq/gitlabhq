@@ -269,56 +269,6 @@ RSpec.describe VerifyPagesDomainService do
       end
     end
 
-    context 'pages configuration updates' do
-      context 'enabling a disabled domain' do
-        let(:domain) { create(:pages_domain, :disabled) }
-
-        it 'schedules an update' do
-          stub_resolver(domain.domain => domain.verification_code)
-
-          expect(domain).to receive(:update_daemon)
-
-          service.execute
-        end
-      end
-
-      context 'verifying an enabled domain' do
-        let(:domain) { create(:pages_domain) }
-
-        it 'schedules an update' do
-          stub_resolver(domain.domain => domain.verification_code)
-
-          expect(domain).not_to receive(:update_daemon)
-
-          service.execute
-        end
-      end
-
-      context 'disabling an expired domain' do
-        let(:domain) { create(:pages_domain, :expired) }
-
-        it 'schedules an update' do
-          stub_resolver
-
-          expect(domain).to receive(:update_daemon)
-
-          service.execute
-        end
-      end
-
-      context 'failing to verify a disabled domain' do
-        let(:domain) { create(:pages_domain, :disabled) }
-
-        it 'does not schedule an update' do
-          stub_resolver
-
-          expect(domain).not_to receive(:update_daemon)
-
-          service.execute
-        end
-      end
-    end
-
     context 'no verification code' do
       let(:domain) { create(:pages_domain) }
 

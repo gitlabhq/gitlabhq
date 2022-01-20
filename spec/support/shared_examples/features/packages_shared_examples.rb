@@ -19,14 +19,12 @@ RSpec.shared_examples 'packages list' do |check_project_name: false|
 end
 
 RSpec.shared_examples 'package details link' do |property|
-  let(:package) { packages.first }
-
   it 'navigates to the correct url' do
     page.within(packages_table_selector) do
       click_link package.name
     end
 
-    expect(page).to have_current_path(project_package_path(package.project, package))
+    expect(page).to have_current_path(package_details_path)
 
     expect(page).to have_css('.packages-app h2[data-testid="title"]', text: package.name)
 

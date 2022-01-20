@@ -1,3 +1,3 @@
-import ProjectImport from '~/project_import';
+import ProjectImport from '~/projects/project_import';
 
 new ProjectImport(); // eslint-disable-line no-new

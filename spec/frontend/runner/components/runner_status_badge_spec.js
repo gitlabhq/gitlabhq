@@ -6,7 +6,6 @@ import {
   STATUS_ONLINE,
   STATUS_OFFLINE,
   STATUS_STALE,
-  STATUS_NOT_CONNECTED,
   STATUS_NEVER_CONTACTED,
 } from '~/runner/constants';
 
@@ -50,20 +49,7 @@ describe('RunnerTypeBadge', () => {
     expect(getTooltip().value).toBe('Runner is online; last contact was 1 minute ago');
   });
 
-  it('renders not connected state', () => {
-    createComponent({
-      runner: {
-        contactedAt: null,
-        status: STATUS_NOT_CONNECTED,
-      },
-    });
-
-    expect(wrapper.text()).toBe('not connected');
-    expect(findBadge().props('variant')).toBe('muted');
-    expect(getTooltip().value).toMatch('This runner has never connected');
-  });
-
-  it('renders never contacted state as not connected, for backwards compatibility', () => {
+  it('renders never contacted state', () => {
     createComponent({
       runner: {
         contactedAt: null,
@@ -71,9 +57,9 @@ describe('RunnerTypeBadge', () => {
       },
     });
 
-    expect(wrapper.text()).toBe('not connected');
+    expect(wrapper.text()).toBe('never contacted');
     expect(findBadge().props('variant')).toBe('muted');
-    expect(getTooltip().value).toMatch('This runner has never connected');
+    expect(getTooltip().value).toMatch('This runner has never contacted');
   });
 
   it('renders offline state', () => {

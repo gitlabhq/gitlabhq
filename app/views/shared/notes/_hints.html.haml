@@ -2,10 +2,10 @@
 - supports_file_upload = local_assigns.fetch(:supports_file_upload, true)
 .comment-toolbar.clearfix
   .toolbar-text
-    = link_to _('Markdown'), help_page_path('user/markdown'), target: '_blank'
+    = link_to _('Markdown'), help_page_path('user/markdown'), target: '_blank', rel: 'noopener noreferrer'
     - if supports_quick_actions
       and
-      = link_to _('quick actions'), help_page_path('user/project/quick_actions'), target: '_blank'
+      = link_to _('quick actions'), help_page_path('user/project/quick_actions'), target: '_blank', rel: 'noopener noreferrer'
       are
     - else
       is

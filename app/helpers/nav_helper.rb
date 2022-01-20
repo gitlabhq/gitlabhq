@@ -46,10 +46,6 @@ module NavHelper
     class_names
   end
 
-  def has_extra_nav_icons?
-    Gitlab::Sherlock.enabled? || current_user.admin?
-  end
-
   def page_has_markdown?
     current_path?('merge_requests#show') ||
       current_path?('projects/merge_requests/conflicts#show') ||

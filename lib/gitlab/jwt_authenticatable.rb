@@ -13,26 +13,38 @@ module Gitlab
     module ClassMethods
       include Gitlab::Utils::StrongMemoize
 
-      def decode_jwt_for_issuer(issuer, encoded_message)
-        JWT.decode(
-          encoded_message,
-          secret,
-          true,
-          { iss: issuer, verify_iss: true, algorithm: 'HS256' }
-        )
+      def decode_jwt(encoded_message, jwt_secret = secret, issuer: nil, iat_after: nil)
+        options = { algorithm: 'HS256' }
+        options = options.merge(iss: issuer, verify_iss: true) if issuer.present?
+        options = options.merge(verify_iat: true) if iat_after.present?
+
+        decoded_message = JWT.decode(encoded_message, jwt_secret, true, options)
+        payload = decoded_message[0]
+        if iat_after.present?
+          raise JWT::DecodeError, "JWT iat claim is missing" if payload['iat'].blank?
+
+          iat = payload['iat'].to_i
+          raise JWT::ExpiredSignature, 'Token has expired' if iat < iat_after.to_i
+        end
+
+        decoded_message
       end
 
       def secret
         strong_memoize(:secret) do
-          Base64.strict_decode64(File.read(secret_path).chomp).tap do |bytes|
-            raise "#{secret_path} does not contain #{SECRET_LENGTH} bytes" if bytes.length != SECRET_LENGTH
-          end
+          read_secret(secret_path)
         end
       end
 
-      def write_secret
+      def read_secret(path)
+        Base64.strict_decode64(File.read(path).chomp).tap do |bytes|
+          raise "#{path} does not contain #{SECRET_LENGTH} bytes" if bytes.length != SECRET_LENGTH
+        end
+      end
+
+      def write_secret(path = secret_path)
         bytes = SecureRandom.random_bytes(SECRET_LENGTH)
-        File.open(secret_path, 'w:BINARY', 0600) do |f|
+        File.open(path, 'w:BINARY', 0600) do |f|
           f.chmod(0600) # If the file already existed, the '0600' passed to 'open' above was a no-op.
           f.write(Base64.strict_encode64(bytes))
         end

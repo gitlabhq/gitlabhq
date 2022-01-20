@@ -43,6 +43,7 @@ Example response:
   {
     "id": 53,
     "iid": 13,
+    "sequence": 1,
     "group_id": 5,
     "title": "Iteration II",
     "description": "Ipsum Lorem ipsum",

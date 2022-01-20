@@ -1,5 +1,5 @@
 - object = @target_project || @project || @group
-- noteable_type = @noteable.class if @noteable.present?
+- noteable_type = @noteable_type || @noteable&.class
 
 - datasources = autocomplete_data_sources(object, noteable_type)
 

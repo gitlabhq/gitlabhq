@@ -1,8 +1,7 @@
 ---
 stage: Create
 group: Editor
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments"
-type: index, reference, howto
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Searching in GitLab **(FREE)**
@@ -102,8 +101,7 @@ You can filter the **Issues** list to individual instances by their ID. For exam
 
 ### Filtering merge requests by approvers **(PREMIUM)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/9468) in GitLab 11.9.
-> - Moved to GitLab Premium in 13.9.
+> Moved to GitLab Premium in 13.9.
 
 To filter merge requests by an individual approver, you can type (or select from
 the dropdown) **Approver** and select the user.
@@ -143,7 +141,7 @@ you can choose from:
 
 ![Filter MRs by their environment](img/filtering_merge_requests_by_environment_v14_6.png)
 
-When filtering by `Deployed-before` or `Deployed-after`, the date refers to when 
+When filtering by `Deployed-before` or `Deployed-after`, the date refers to when
 the deployment to an environment (triggered by the merge commit) completed successfully.
 You must enter the deploy date manually. Deploy dates
 use the format `YYYY-MM-DD`, and must be quoted if you wish to specify
@@ -272,8 +270,10 @@ search, or choose a specific group or project.
 
 To search through code or other documents in a single project, you can use
 the search field on the top-right of your screen while the project page is open.
+Code search shows only the first result in the file. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/327052)
+in GitLab 14.7, you can access Git blame from any line that returned a result from the code search:
 
-![code search results](img/project_code_search.png)
+![code search results](img/code_search.png)
 
 ### SHA search
 

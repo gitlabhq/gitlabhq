@@ -9,3 +9,4 @@ testdata/alt-public
 /_build
 coverage.html
 /*.toml
+/gitaly.pid

@@ -17,30 +17,6 @@ describe('Integration form store mutations', () => {
     });
   });
 
-  describe(`${types.SET_IS_RESETTING}`, () => {
-    it('sets isResetting', () => {
-      mutations[types.SET_IS_RESETTING](state, true);
-
-      expect(state.isResetting).toBe(true);
-    });
-  });
-
-  describe(`${types.REQUEST_RESET_INTEGRATION}`, () => {
-    it('sets isResetting', () => {
-      mutations[types.REQUEST_RESET_INTEGRATION](state);
-
-      expect(state.isResetting).toBe(true);
-    });
-  });
-
-  describe(`${types.RECEIVE_RESET_INTEGRATION_ERROR}`, () => {
-    it('sets isResetting', () => {
-      mutations[types.RECEIVE_RESET_INTEGRATION_ERROR](state);
-
-      expect(state.isResetting).toBe(false);
-    });
-  });
-
   describe(`${types.SET_JIRA_ISSUE_TYPES}`, () => {
     it('sets jiraIssueTypes', () => {
       const jiraIssueTypes = ['issue', 'epic'];

@@ -88,7 +88,7 @@ RSpec.describe Gitlab::ImportExport::Project::RelationFactory, :use_clean_rails_
     end
 
     context 'original service exists' do
-      let(:service_id) { create(:service, project: project).id }
+      let(:service_id) { create(:integration, project: project).id }
 
       it 'does not have the original service_id' do
         expect(created_object.service_id).not_to eq(service_id)

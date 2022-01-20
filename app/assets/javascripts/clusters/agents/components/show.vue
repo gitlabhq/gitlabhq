@@ -51,16 +51,7 @@ export default {
     TokenTable,
     ActivityEvents,
   },
-  props: {
-    agentName: {
-      required: true,
-      type: String,
-    },
-    projectPath: {
-      required: true,
-      type: String,
-    },
-  },
+  inject: ['agentName', 'projectPath'],
   data() {
     return {
       cursor: {
@@ -135,7 +126,7 @@ export default {
           <activity-events :agent-name="agentName" :project-path="projectPath" />
         </gl-tab>
 
-        <slot name="ee-security-tab"></slot>
+        <slot name="ee-security-tab" :cluster-agent-id="clusterAgent.id"></slot>
 
         <gl-tab query-param-value="tokens">
           <template #title>

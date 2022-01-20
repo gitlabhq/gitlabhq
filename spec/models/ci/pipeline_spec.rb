@@ -31,6 +31,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
   it { is_expected.to have_many(:statuses_order_id_desc) }
   it { is_expected.to have_many(:bridges) }
   it { is_expected.to have_many(:job_artifacts).through(:builds) }
+  it { is_expected.to have_many(:build_trace_chunks).through(:builds) }
   it { is_expected.to have_many(:auto_canceled_pipelines) }
   it { is_expected.to have_many(:auto_canceled_jobs) }
   it { is_expected.to have_many(:sourced_pipelines) }
@@ -1516,30 +1517,12 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
     end
 
     describe 'pipeline caching' do
-      context 'when expire_job_and_pipeline_cache_synchronously is enabled' do
-        before do
-          stub_feature_flags(expire_job_and_pipeline_cache_synchronously: true)
+      it 'executes Ci::ExpirePipelineCacheService' do
+        expect_next_instance_of(Ci::ExpirePipelineCacheService) do |service|
+          expect(service).to receive(:execute).with(pipeline)
         end
 
-        it 'executes Ci::ExpirePipelineCacheService' do
-          expect_next_instance_of(Ci::ExpirePipelineCacheService) do |service|
-            expect(service).to receive(:execute).with(pipeline)
-          end
-
-          pipeline.cancel
-        end
-      end
-
-      context 'when expire_job_and_pipeline_cache_synchronously is disabled' do
-        before do
-          stub_feature_flags(expire_job_and_pipeline_cache_synchronously: false)
-        end
-
-        it 'performs ExpirePipelinesCacheWorker' do
-          expect(ExpirePipelineCacheWorker).to receive(:perform_async).with(pipeline.id)
-
-          pipeline.cancel
-        end
+        pipeline.cancel
       end
     end
 
@@ -4676,5 +4659,24 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
   it_behaves_like 'cleanup by a loose foreign key' do
     let!(:model) { create(:ci_pipeline, user: create(:user)) }
     let!(:parent) { model.user }
+  end
+
+  describe 'tags count' do
+    let_it_be_with_refind(:pipeline) do
+      create(:ci_empty_pipeline, project: project)
+    end
+
+    it { expect(pipeline.tags_count).to eq(0) }
+    it { expect(pipeline.distinct_tags_count).to eq(0) }
+
+    context 'with builds' do
+      before do
+        create(:ci_build, pipeline: pipeline, tag_list: %w[a b])
+        create(:ci_build, pipeline: pipeline, tag_list: %w[b c])
+      end
+
+      it { expect(pipeline.tags_count).to eq(4) }
+      it { expect(pipeline.distinct_tags_count).to eq(3) }
+    end
   end
 end

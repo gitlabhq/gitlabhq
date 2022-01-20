@@ -6,13 +6,18 @@ RSpec.describe 'Setting issues crm contacts' do
   include GraphqlHelpers
 
   let_it_be(:user) { create(:user) }
-  let_it_be(:group) { create(:group) }
-  let_it_be(:project) { create(:project, group: group) }
-  let_it_be(:contacts) { create_list(:contact, 4, group: group) }
+  let_it_be(:group) { create(:group, :crm_enabled) }
+  let_it_be(:subgroup) { create(:group, :crm_enabled, parent: group) }
+  let_it_be(:project) { create(:project, group: subgroup) }
+  let_it_be(:group_contacts) { create_list(:contact, 4, group: group) }
+  let_it_be(:subgroup_contacts) { create_list(:contact, 4, group: subgroup) }
 
   let(:issue) { create(:issue, project: project) }
   let(:operation_mode) { Types::MutationOperationModeEnum.default_mode }
-  let(:contact_ids) { [global_id_of(contacts[1]), global_id_of(contacts[2])] }
+  let(:contacts) { subgroup_contacts }
+  let(:initial_contacts) { contacts[0..1] }
+  let(:mutation_contacts) { contacts[1..2] }
+  let(:contact_ids) { contact_global_ids(mutation_contacts) }
   let(:does_not_exist_or_no_permission) { "The resource that you are attempting to access does not exist or you don't have permission to perform this action" }
 
   let(:mutation) do
@@ -42,9 +47,47 @@ RSpec.describe 'Setting issues crm contacts' do
     graphql_mutation_response(:issue_set_crm_contacts)
   end
 
+  def contact_global_ids(contacts)
+    contacts.map { |contact| global_id_of(contact) }
+  end
+
   before do
-    create(:issue_customer_relations_contact, issue: issue, contact: contacts[0])
-    create(:issue_customer_relations_contact, issue: issue, contact: contacts[1])
+    initial_contacts.each { |contact| create(:issue_customer_relations_contact, issue: issue, contact: contact) }
+  end
+
+  shared_examples 'successful mutation' do
+    context 'replace' do
+      it 'updates the issue with correct contacts' do
+        post_graphql_mutation(mutation, current_user: user)
+
+        expect(graphql_data_at(:issue_set_crm_contacts, :issue, :customer_relations_contacts, :nodes, :id))
+          .to match_array(contact_global_ids(mutation_contacts))
+      end
+    end
+
+    context 'append' do
+      let(:mutation_contacts) { [contacts[3]] }
+      let(:operation_mode) { Types::MutationOperationModeEnum.enum[:append] }
+
+      it 'updates the issue with correct contacts' do
+        post_graphql_mutation(mutation, current_user: user)
+
+        expect(graphql_data_at(:issue_set_crm_contacts, :issue, :customer_relations_contacts, :nodes, :id))
+          .to match_array(contact_global_ids(initial_contacts + mutation_contacts))
+      end
+    end
+
+    context 'remove' do
+      let(:mutation_contacts) { [contacts[0]] }
+      let(:operation_mode) { Types::MutationOperationModeEnum.enum[:remove] }
+
+      it 'updates the issue with correct contacts' do
+        post_graphql_mutation(mutation, current_user: user)
+
+        expect(graphql_data_at(:issue_set_crm_contacts, :issue, :customer_relations_contacts, :nodes, :id))
+          .to match_array(contact_global_ids(initial_contacts - mutation_contacts))
+      end
+    end
   end
 
   context 'when the user has no permission' do
@@ -73,37 +116,14 @@ RSpec.describe 'Setting issues crm contacts' do
       end
     end
 
-    context 'replace' do
-      it 'updates the issue with correct contacts' do
-        post_graphql_mutation(mutation, current_user: user)
+    context 'with issue group contacts' do
+      let(:contacts) { subgroup_contacts }
 
-        expect(graphql_data_at(:issue_set_crm_contacts, :issue, :customer_relations_contacts, :nodes, :id))
-          .to match_array([global_id_of(contacts[1]), global_id_of(contacts[2])])
-      end
+      it_behaves_like 'successful mutation'
     end
 
-    context 'append' do
-      let(:contact_ids) { [global_id_of(contacts[3])] }
-      let(:operation_mode) { Types::MutationOperationModeEnum.enum[:append] }
-
-      it 'updates the issue with correct contacts' do
-        post_graphql_mutation(mutation, current_user: user)
-
-        expect(graphql_data_at(:issue_set_crm_contacts, :issue, :customer_relations_contacts, :nodes, :id))
-          .to match_array([global_id_of(contacts[0]), global_id_of(contacts[1]), global_id_of(contacts[3])])
-      end
-    end
-
-    context 'remove' do
-      let(:contact_ids) { [global_id_of(contacts[0])] }
-      let(:operation_mode) { Types::MutationOperationModeEnum.enum[:remove] }
-
-      it 'updates the issue with correct contacts' do
-        post_graphql_mutation(mutation, current_user: user)
-
-        expect(graphql_data_at(:issue_set_crm_contacts, :issue, :customer_relations_contacts, :nodes, :id))
-          .to match_array([global_id_of(contacts[1])])
-      end
+    context 'with issue ancestor group contacts' do
+      it_behaves_like 'successful mutation'
     end
 
     context 'when the contact does not exist' do
@@ -118,7 +138,7 @@ RSpec.describe 'Setting issues crm contacts' do
     end
 
     context 'when the contact belongs to a different group' do
-      let(:group2) { create(:group) }
+      let(:group2) { create(:group, :crm_enabled) }
       let(:contact) { create(:contact, group: group2) }
       let(:contact_ids) { [global_id_of(contact)] }
 
@@ -156,6 +176,19 @@ RSpec.describe 'Setting issues crm contacts' do
 
         expect(graphql_data_at(:issue_set_crm_contacts, :errors)).to be_empty
       end
+    end
+  end
+
+  context 'when crm_enabled is false' do
+    let(:issue) { create(:issue) }
+    let(:initial_contacts) { [] }
+
+    it 'raises expected error' do
+      issue.project.add_reporter(user)
+
+      post_graphql_mutation(mutation, current_user: user)
+
+      expect(graphql_errors).to include(a_hash_including('message' => 'Feature disabled'))
     end
   end
 end

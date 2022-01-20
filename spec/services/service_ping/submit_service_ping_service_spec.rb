@@ -110,6 +110,7 @@ RSpec.describe ServicePing::SubmitService do
   context 'when product_intelligence_enabled is true' do
     before do
       stub_usage_data_connections
+      stub_database_flavor_check
 
       allow(ServicePing::ServicePingSettings).to receive(:product_intelligence_enabled?).and_return(true)
     end
@@ -126,6 +127,7 @@ RSpec.describe ServicePing::SubmitService do
   context 'when usage ping is enabled' do
     before do
       stub_usage_data_connections
+      stub_database_flavor_check
       stub_application_setting(usage_ping_enabled: true)
     end
 

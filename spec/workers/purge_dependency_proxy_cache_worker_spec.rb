@@ -25,11 +25,11 @@ RSpec.describe PurgeDependencyProxyCacheWorker do
         include_examples 'an idempotent worker' do
           let(:job_args) { [user.id, group_id] }
 
-          it 'expires the blobs and returns ok', :aggregate_failures do
+          it 'marks the blobs as pending_destruction and returns ok', :aggregate_failures do
             subject
 
-            expect(blob).to be_expired
-            expect(manifest).to be_expired
+            expect(blob).to be_pending_destruction
+            expect(manifest).to be_pending_destruction
           end
         end
       end

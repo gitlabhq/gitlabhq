@@ -18,8 +18,8 @@ export const I18N_PROJECT_RUNNER_DESCRIPTION = s__('Runners|Associated with one 
 export const I18N_ONLINE_RUNNER_TIMEAGO_DESCRIPTION = s__(
   'Runners|Runner is online; last contact was %{timeAgo}',
 );
-export const I18N_NOT_CONNECTED_RUNNER_DESCRIPTION = s__(
-  'Runners|This runner has never connected to this instance',
+export const I18N_NEVER_CONTACTED_RUNNER_DESCRIPTION = s__(
+  'Runners|This runner has never contacted this instance',
 );
 export const I18N_OFFLINE_RUNNER_TIMEAGO_DESCRIPTION = s__(
   'Runners|No recent contact from this runner; last contact was %{timeAgo}',
@@ -60,7 +60,6 @@ export const STATUS_ACTIVE = 'ACTIVE';
 export const STATUS_PAUSED = 'PAUSED';
 
 export const STATUS_ONLINE = 'ONLINE';
-export const STATUS_NOT_CONNECTED = 'NOT_CONNECTED';
 export const STATUS_NEVER_CONTACTED = 'NEVER_CONTACTED';
 export const STATUS_OFFLINE = 'OFFLINE';
 export const STATUS_STALE = 'STALE';

@@ -13,7 +13,7 @@ query getGroupRunners(
   $sort: CiRunnerSort
 ) {
   group(fullPath: $groupFullPath) {
-    id
+    id # Apollo required
     runners(
       membership: DESCENDANTS
       before: $before

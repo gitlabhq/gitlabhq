@@ -202,23 +202,50 @@ RSpec.describe Gitlab::BackgroundMigration::JobCoordinator do
   end
 
   describe '#perform' do
-    let(:migration) { spy(:migration) }
-    let(:connection) { double('connection') }
+    let(:connection) { double(:connection) }
 
     before do
-      stub_const('Gitlab::BackgroundMigration::Foo', migration)
-
       allow(coordinator).to receive(:connection).and_return(connection)
     end
 
-    it 'performs a background migration with the configured shared connection' do
-      expect(coordinator).to receive(:with_shared_connection).and_call_original
+    context 'when the background migration does not inherit from BaseJob' do
+      let(:migration_class) { Class.new }
 
-      expect(migration).to receive(:perform).with(10, 20).once do
-        expect(Gitlab::Database::SharedModel.connection).to be(connection)
+      before do
+        stub_const('Gitlab::BackgroundMigration::Foo', migration_class)
       end
 
-      coordinator.perform('Foo', [10, 20])
+      it 'performs a background migration with the configured shared connection' do
+        expect(coordinator).to receive(:with_shared_connection).and_call_original
+
+        expect_next_instance_of(migration_class) do |migration|
+          expect(migration).to receive(:perform).with(10, 20).once do
+            expect(Gitlab::Database::SharedModel.connection).to be(connection)
+          end
+        end
+
+        coordinator.perform('Foo', [10, 20])
+      end
+    end
+
+    context 'when the background migration inherits from BaseJob' do
+      let(:migration_class) { Class.new(::Gitlab::BackgroundMigration::BaseJob) }
+      let(:migration) { double(:migration) }
+
+      before do
+        stub_const('Gitlab::BackgroundMigration::Foo', migration_class)
+      end
+
+      it 'passes the correct connection when constructing the migration' do
+        expect(coordinator).to receive(:with_shared_connection).and_call_original
+
+        expect(migration_class).to receive(:new).with(connection: connection).and_return(migration)
+        expect(migration).to receive(:perform).with(10, 20).once do
+          expect(Gitlab::Database::SharedModel.connection).to be(connection)
+        end
+
+        coordinator.perform('Foo', [10, 20])
+      end
     end
   end
 

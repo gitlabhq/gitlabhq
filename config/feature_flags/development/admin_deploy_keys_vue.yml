@@ -1,8 +1,0 @@
----
-name: admin_deploy_keys_vue
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/73580
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/344855
-milestone: '14.5'
-type: development
-group: group::access
-default_enabled: true

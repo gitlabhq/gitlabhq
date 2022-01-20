@@ -1,8 +1,0 @@
----
-name: hide_access_tokens
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/76280
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/347490
-milestone: '14.6'
-type: development
-group: group::access
-default_enabled: true

@@ -325,7 +325,6 @@ Performance/Sum:
     - 'lib/container_registry/tag.rb'
     - 'lib/gitlab/ci/reports/test_suite_comparer.rb'
     - 'lib/gitlab/diff/file.rb'
-    - 'lib/gitlab/sherlock/transaction.rb'
     - 'lib/gitlab/usage_data.rb'
     - 'lib/peek/views/detailed_view.rb'
     - 'spec/models/namespace/root_storage_statistics_spec.rb'

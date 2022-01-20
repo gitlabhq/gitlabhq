@@ -23,7 +23,7 @@ in one place.
 
 GitLab provides several analytics features at the group level. Some of these features require you to use a higher tier than GitLab Free.
 
-- [Application Security](../application_security/security_dashboard/#group-security-dashboard)
+- [Application Security](../application_security/security_dashboard/index.md)
 - [Contribution](../group/contribution_analytics/index.md)
 - [DevOps Adoption](../group/devops_adoption/index.md)
 - [Insights](../group/insights/index.md)
@@ -36,7 +36,7 @@ GitLab provides several analytics features at the group level. Some of these fea
 
 You can use GitLab to review analytics at the project level. Some of these features require you to use a higher tier than GitLab Free.
 
-- [Application Security](../application_security/security_dashboard/#project-security-dashboard)
+- [Application Security](../application_security/security_dashboard/index.md)
 - [CI/CD](ci_cd_analytics.md)
 - [Code Review](code_review_analytics.md)
 - [Insights](../project/insights/index.md)

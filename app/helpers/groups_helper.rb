@@ -134,6 +134,16 @@ module GroupsHelper
     @group_projects_sort || @sort || params[:sort] || sort_value_recently_created
   end
 
+  def verification_for_group_creation_data
+    # overridden in EE
+    {}
+  end
+
+  def require_verification_for_group_creation_enabled?
+    # overridden in EE
+    false
+  end
+
   private
 
   def group_title_link(group, hidable: false, show_avatar: false, for_dropdown: false)

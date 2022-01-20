@@ -26,6 +26,11 @@ describe('content/components/wrappers/frontmatter', () => {
     expect(wrapper.findComponent(NodeViewWrapper).classes()).toContain('gl-relative');
   });
 
+  it('adds content-editor-code-block class to the pre element', () => {
+    createWrapper();
+    expect(wrapper.findComponent(NodeViewWrapper).classes()).toContain('content-editor-code-block');
+  });
+
   it('renders a node-view-content as a code element', () => {
     createWrapper();
 

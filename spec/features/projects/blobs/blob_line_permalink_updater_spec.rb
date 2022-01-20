@@ -34,26 +34,23 @@ RSpec.describe 'Blob button line permalinks (BlobLinePermalinkUpdater)', :js do
       end
 
       it 'changes fragment hash if line number clicked' do
-        ending_fragment = "L5"
-
         visit_blob
 
         find('#L3').click
-        find("##{ending_fragment}").click
+        find("#L5").click
 
-        expect(find('.js-data-file-blob-permalink-url')['href']).to eq(get_absolute_url(project_blob_path(project, tree_join(sha, path), anchor: ending_fragment)))
+        expect(find('.js-data-file-blob-permalink-url')['href']).to eq(get_absolute_url(project_blob_path(project, tree_join(sha, path), anchor: "LC5")))
       end
 
       it 'with initial fragment hash, changes fragment hash if line number clicked' do
         fragment = "L1"
-        ending_fragment = "L5"
 
         visit_blob(fragment)
 
         find('#L3').click
-        find("##{ending_fragment}").click
+        find("#L5").click
 
-        expect(find('.js-data-file-blob-permalink-url')['href']).to eq(get_absolute_url(project_blob_path(project, tree_join(sha, path), anchor: ending_fragment)))
+        expect(find('.js-data-file-blob-permalink-url')['href']).to eq(get_absolute_url(project_blob_path(project, tree_join(sha, path), anchor: "LC5")))
       end
     end
 
@@ -73,26 +70,23 @@ RSpec.describe 'Blob button line permalinks (BlobLinePermalinkUpdater)', :js do
       end
 
       it 'changes fragment hash if line number clicked' do
-        ending_fragment = "L5"
-
         visit_blob
 
         find('#L3').click
-        find("##{ending_fragment}").click
+        find("#L5").click
 
-        expect(find('.js-blob-blame-link')['href']).to eq(get_absolute_url(project_blame_path(project, tree_join('master', path), anchor: ending_fragment)))
+        expect(find('.js-blob-blame-link')['href']).to eq(get_absolute_url(project_blame_path(project, tree_join('master', path), anchor: "LC5")))
       end
 
       it 'with initial fragment hash, changes fragment hash if line number clicked' do
         fragment = "L1"
-        ending_fragment = "L5"
 
         visit_blob(fragment)
 
         find('#L3').click
-        find("##{ending_fragment}").click
+        find("#L5").click
 
-        expect(find('.js-blob-blame-link')['href']).to eq(get_absolute_url(project_blame_path(project, tree_join('master', path), anchor: ending_fragment)))
+        expect(find('.js-blob-blame-link')['href']).to eq(get_absolute_url(project_blame_path(project, tree_join('master', path), anchor: "LC5")))
       end
     end
   end

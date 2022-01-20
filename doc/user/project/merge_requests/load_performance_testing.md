@@ -103,7 +103,7 @@ job.
 An example configuration workflow:
 
 1. Set up GitLab Runner to run Docker containers, like the
-   [Docker-in-Docker workflow](../../../ci/docker/using_docker_build.md#use-the-docker-executor-with-the-docker-image-docker-in-docker).
+   [Docker-in-Docker workflow](../../../ci/docker/using_docker_build.md#use-docker-in-docker).
 1. Configure the default Load Performance Testing CI/CD job in your `.gitlab-ci.yml` file.
    You need to include the template and configure it with CI/CD variables:
 

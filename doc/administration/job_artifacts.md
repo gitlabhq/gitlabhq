@@ -6,7 +6,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Jobs artifacts administration **(FREE SELF)**
 
-This is the administration documentation. For the user guide see [pipelines/job_artifacts](../ci/pipelines/job_artifacts.md).
+This is the administration documentation. To learn how to use job artifacts in your GitLab CI/CD pipeline,
+see the [job artifacts configuration documentation](../ci/pipelines/job_artifacts.md).
 
 An artifact is a list of files and directories attached to a job after it
 finishes. This feature is enabled by default in all GitLab installations.

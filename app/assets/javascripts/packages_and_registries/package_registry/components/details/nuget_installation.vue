@@ -6,6 +6,7 @@ import {
   TRACKING_ACTION_COPY_NUGET_INSTALL_COMMAND,
   TRACKING_ACTION_COPY_NUGET_SETUP_COMMAND,
   TRACKING_LABEL_CODE_INSTRUCTION,
+  NUGET_HELP_PATH,
 } from '~/packages_and_registries/package_registry/constants';
 import CodeInstruction from '~/vue_shared/components/registry/code_instruction.vue';
 
@@ -17,7 +18,6 @@ export default {
     GlLink,
     GlSprintf,
   },
-  inject: ['nugetHelpPath', 'nugetPath'],
   props: {
     packageEntity: {
       type: Object,
@@ -29,7 +29,7 @@ export default {
       return `nuget install ${this.packageEntity.name} -Source "GitLab"`;
     },
     nugetSetupCommand() {
-      return `nuget source Add -Name "GitLab" -Source "${this.nugetPath}" -UserName <your_username> -Password <your_token>`;
+      return `nuget source Add -Name "GitLab" -Source "${this.packageEntity.nugetUrl}" -UserName <your_username> -Password <your_token>`;
     },
   },
   tracking: {
@@ -42,6 +42,7 @@ export default {
       'PackageRegistry|For more information on the NuGet registry, %{linkStart}see the documentation%{linkEnd}.',
     ),
   },
+  links: { NUGET_HELP_PATH },
   installOptions: [{ value: 'nuget', label: s__('PackageRegistry|Show Nuget commands') }],
 };
 </script>
@@ -68,7 +69,7 @@ export default {
     />
     <gl-sprintf :message="$options.i18n.helpText">
       <template #link="{ content }">
-        <gl-link :href="nugetHelpPath" target="_blank">{{ content }}</gl-link>
+        <gl-link :href="$options.links.NUGET_HELP_PATH" target="_blank">{{ content }}</gl-link>
       </template>
     </gl-sprintf>
   </div>

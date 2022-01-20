@@ -1,5 +1,6 @@
 <script>
-import { GlButton, GlModalDirective, GlSafeHtmlDirective as SafeHtml } from '@gitlab/ui';
+import { GlButton, GlModalDirective, GlSafeHtmlDirective as SafeHtml, GlForm } from '@gitlab/ui';
+import axios from 'axios';
 import * as Sentry from '@sentry/browser';
 import { mapState, mapActions, mapGetters } from 'vuex';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
@@ -8,8 +9,11 @@ import {
   I18N_FETCH_TEST_SETTINGS_DEFAULT_ERROR_MESSAGE,
   I18N_DEFAULT_ERROR_MESSAGE,
   I18N_SUCCESSFUL_CONNECTION_MESSAGE,
+  INTEGRATION_FORM_SELECTOR,
   integrationLevels,
 } from '~/integrations/constants';
+import { refreshCurrentPage } from '~/lib/utils/url_utility';
+import csrf from '~/lib/utils/csrf';
 import eventHub from '../event_hub';
 import { testIntegrationSettings } from '../api';
 import ActiveCheckbox from './active_checkbox.vue';
@@ -33,6 +37,7 @@ export default {
     ConfirmationModal,
     ResetConfirmationModal,
     GlButton,
+    GlForm,
   },
   directives: {
     GlModal: GlModalDirective,
@@ -40,10 +45,6 @@ export default {
   },
   mixins: [glFeatureFlagsMixin()],
   props: {
-    formSelector: {
-      type: String,
-      required: true,
-    },
     helpHtml: {
       type: String,
       required: false,
@@ -55,11 +56,12 @@ export default {
       integrationActive: false,
       isTesting: false,
       isSaving: false,
+      isResetting: false,
     };
   },
   computed: {
     ...mapGetters(['currentKey', 'propsSource']),
-    ...mapState(['defaultState', 'customState', 'override', 'isResetting']),
+    ...mapState(['defaultState', 'customState', 'override']),
     isEditable() {
       return this.propsSource.editable;
     },
@@ -81,10 +83,28 @@ export default {
     disableButtons() {
       return Boolean(this.isSaving || this.isResetting || this.isTesting);
     },
+    useVueForm() {
+      return this.glFeatures?.vueIntegrationForm;
+    },
+    formContainerProps() {
+      return this.useVueForm
+        ? {
+            ref: 'integrationForm',
+            method: 'post',
+            class: 'gl-mb-3 gl-show-field-errors integration-settings-form',
+            action: this.propsSource.formPath,
+            novalidate: !this.integrationActive,
+          }
+        : {};
+    },
+    formContainer() {
+      return this.useVueForm ? GlForm : 'div';
+    },
   },
   mounted() {
-    // this form element is defined in Haml
-    this.form = document.querySelector(this.formSelector);
+    this.form = this.useVueForm
+      ? this.$refs.integrationForm.$el
+      : document.querySelector(INTEGRATION_FORM_SELECTOR);
   },
   methods: {
     ...mapActions(['setOverride', 'fetchResetIntegration', 'requestJiraIssueTypes']),
@@ -126,7 +146,20 @@ export default {
         });
     },
     onResetClick() {
-      this.fetchResetIntegration();
+      this.isResetting = true;
+
+      return axios
+        .post(this.propsSource.resetPath)
+        .then(() => {
+          refreshCurrentPage();
+        })
+        .catch((error) => {
+          this.$toast.show(I18N_DEFAULT_ERROR_MESSAGE);
+          Sentry.captureException(error);
+        })
+        .finally(() => {
+          this.isResetting = false;
+        });
     },
     onRequestJiraIssueTypes() {
       this.requestJiraIssueTypes(this.getFormData());
@@ -136,7 +169,7 @@ export default {
     },
     onToggleIntegrationState(integrationActive) {
       this.integrationActive = integrationActive;
-      if (!this.form) {
+      if (!this.form || this.useVueForm) {
         return;
       }
 
@@ -153,11 +186,23 @@ export default {
     ADD_TAGS: ['use'], // to support icon SVGs
     FORBID_ATTR: [], // This is trusted input so we can override the default config to allow data-* attributes
   },
+  csrf,
 };
 </script>
 
 <template>
-  <div class="gl-mb-3">
+  <component :is="formContainer" v-bind="formContainerProps">
+    <template v-if="useVueForm">
+      <input type="hidden" name="_method" value="put" />
+      <input type="hidden" name="authenticity_token" :value="$options.csrf.token" />
+      <input
+        type="hidden"
+        name="redirect_to"
+        :value="propsSource.redirectTo"
+        data-testid="redirect-to-field"
+      />
+    </template>
+
     <override-dropdown
       v-if="defaultState !== null"
       :inherit-from-id="defaultState.id"
@@ -200,63 +245,71 @@ export default {
           v-bind="propsSource.jiraIssuesProps"
           @request-jira-issue-types="onRequestJiraIssueTypes"
         />
-        <div v-if="isEditable" class="footer-block row-content-block">
-          <template v-if="isInstanceOrGroupLevel">
+
+        <div
+          v-if="isEditable"
+          class="footer-block row-content-block gl-display-flex gl-justify-content-space-between"
+        >
+          <div>
+            <template v-if="isInstanceOrGroupLevel">
+              <gl-button
+                v-gl-modal.confirmSaveIntegration
+                category="primary"
+                variant="confirm"
+                :loading="isSaving"
+                :disabled="disableButtons"
+                data-testid="save-button-instance-group"
+                data-qa-selector="save_changes_button"
+              >
+                {{ __('Save changes') }}
+              </gl-button>
+              <confirmation-modal @submit="onSaveClick" />
+            </template>
             <gl-button
-              v-gl-modal.confirmSaveIntegration
+              v-else
               category="primary"
               variant="confirm"
+              type="submit"
               :loading="isSaving"
               :disabled="disableButtons"
+              data-testid="save-button"
               data-qa-selector="save_changes_button"
+              @click.prevent="onSaveClick"
             >
               {{ __('Save changes') }}
             </gl-button>
-            <confirmation-modal @submit="onSaveClick" />
-          </template>
-          <gl-button
-            v-else
-            category="primary"
-            variant="confirm"
-            type="submit"
-            :loading="isSaving"
-            :disabled="disableButtons"
-            data-testid="save-button"
-            data-qa-selector="save_changes_button"
-            @click.prevent="onSaveClick"
-          >
-            {{ __('Save changes') }}
-          </gl-button>
 
-          <gl-button
-            v-if="showTestButton"
-            category="secondary"
-            variant="confirm"
-            :loading="isTesting"
-            :disabled="disableButtons"
-            data-testid="test-button"
-            @click.prevent="onTestClick"
-          >
-            {{ __('Test settings') }}
-          </gl-button>
+            <gl-button
+              v-if="showTestButton"
+              category="secondary"
+              variant="confirm"
+              :loading="isTesting"
+              :disabled="disableButtons"
+              data-testid="test-button"
+              @click.prevent="onTestClick"
+            >
+              {{ __('Test settings') }}
+            </gl-button>
+
+            <gl-button :href="propsSource.cancelPath">{{ __('Cancel') }}</gl-button>
+          </div>
 
           <template v-if="showResetButton">
             <gl-button
               v-gl-modal.confirmResetIntegration
-              category="secondary"
-              variant="confirm"
+              category="tertiary"
+              variant="danger"
               :loading="isResetting"
               :disabled="disableButtons"
               data-testid="reset-button"
             >
               {{ __('Reset') }}
             </gl-button>
+
             <reset-confirmation-modal @reset="onResetClick" />
           </template>
-
-          <gl-button :href="propsSource.cancelPath">{{ __('Cancel') }}</gl-button>
         </div>
       </div>
     </div>
-  </div>
+  </component>
 </template>

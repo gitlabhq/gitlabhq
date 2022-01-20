@@ -25,7 +25,7 @@ module Gitlab
 
     # Email specific configuration which is merged with configuration
     # fetched from YML config file.
-    ADDRESS_SPECIFIC_CONFIG = {
+    MAILBOX_SPECIFIC_CONFIGS = {
       incoming_email: {
         queue: 'email_receiver',
         worker: 'EmailReceiverWorker'
@@ -38,7 +38,15 @@ module Gitlab
 
     class << self
       def enabled_configs
-        @enabled_configs ||= configs.select { |config| enabled?(config) }
+        @enabled_configs ||= configs.select { |_key, config| enabled?(config) }
+      end
+
+      def enabled_mailbox_types
+        enabled_configs.keys.map(&:to_s)
+      end
+
+      def worker_for(mailbox_type)
+        MAILBOX_SPECIFIC_CONFIGS.try(:[], mailbox_type.to_sym).try(:[], :worker).try(:safe_constantize)
       end
 
       private
@@ -48,7 +56,7 @@ module Gitlab
       end
 
       def configs
-        ADDRESS_SPECIFIC_CONFIG.keys.map { |key| fetch_config(key) }
+        MAILBOX_SPECIFIC_CONFIGS.to_h { |key, _value| [key, fetch_config(key)] }
       end
 
       def fetch_config(config_key)
@@ -63,7 +71,7 @@ module Gitlab
 
       def merged_configs(config_key)
         yml_config = load_yaml.fetch(config_key, {})
-        specific_config = ADDRESS_SPECIFIC_CONFIG.fetch(config_key, {})
+        specific_config = MAILBOX_SPECIFIC_CONFIGS.fetch(config_key, {})
         DEFAULT_CONFIG.merge(specific_config, yml_config) do |_key, oldval, newval|
           newval.nil? ? oldval : newval
         end

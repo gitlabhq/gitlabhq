@@ -28,27 +28,21 @@ module QA
           RSpec::Matchers.define(:"eventually_#{op}") do |*expected|
             chain(:within) do |kwargs = {}|
               @retry_args = kwargs
-              @retry_args[:sleep_interval] = 0.5 unless @retry_args[:sleep_interval]
+              @retry_args[:sleep_interval] = 0.5 unless kwargs[:sleep_interval]
             end
 
-            def supports_block_expectations?
-              true
-            end
+            description { "eventually #{operator_msg}: #{expected_formatted}" }
 
             match { |actual| wait_and_check(actual, :default_expectation) }
 
             match_when_negated { |actual| wait_and_check(actual, :when_negated_expectation) }
 
-            description do
-              "eventually #{operator_msg} #{expected.inspect}"
-            end
+            failure_message { fail_message }
 
-            failure_message do
-              "#{e}:\nexpected to #{description}, last attempt was #{@result.nil? ? 'nil' : @result}"
-            end
+            failure_message_when_negated { fail_message(negate: true) }
 
-            failure_message_when_negated do
-              "#{e}:\nexpected not to #{description}, last attempt was #{@result.nil? ? 'nil' : @result}"
+            def supports_block_expectations?
+              true
             end
 
             # Execute rspec expectation within retrier
@@ -60,9 +54,9 @@ module QA
               attempt = 0
 
               QA::Runtime::Logger.debug(
-                "Running eventually matcher with '#{operator_msg}' operator with: #{@retry_args}"
+                "Running eventually matcher with '#{operator_msg}' operator with: '#{retry_args}' arguments"
               )
-              QA::Support::Retrier.retry_until(**@retry_args, log: false) do
+              QA::Support::Retrier.retry_until(**retry_args, log: false) do
                 QA::Runtime::Logger.debug("evaluating expectation, attempt: #{attempt += 1}")
 
                 public_send(expectation_name, actual)
@@ -131,6 +125,44 @@ module QA
               else
                 [operator, expected]
               end
+            end
+
+            # Custom retry arguments
+            #
+            # @return [Hash]
+            def retry_args
+              @retry_args ||= { sleep_interval: 0.5 }
+            end
+
+            # Custom failure message
+            #
+            # @param [Boolean] negate
+            # @return [String]
+            def fail_message(negate: false)
+              "#{e}:\n\nexpected #{negate ? 'not ' : ''}to #{description}\n\n"\
+              "last attempt was: #{@result.nil? ? 'nil' : actual_formatted}\n\n"\
+              "Diff:#{diff}"
+            end
+
+            # Formatted expect
+            #
+            # @return [String]
+            def expected_formatted
+              RSpec::Support::ObjectFormatter.format(expected)
+            end
+
+            # Formatted actual result
+            #
+            # @return [String]
+            def actual_formatted
+              RSpec::Support::ObjectFormatter.format(@result)
+            end
+
+            # Object diff
+            #
+            # @return [String]
+            def diff
+              RSpec::Support::Differ.new(color: true).diff(@result, expected)
             end
           end
         end

@@ -112,7 +112,7 @@ describe('Customer relations contact form component', () => {
       await waitForPromises();
 
       expect(findError().exists()).toBe(true);
-      expect(findError().text()).toBe('Phone is invalid.');
+      expect(findError().text()).toBe('create contact is invalid.');
     });
   });
 
@@ -151,7 +151,7 @@ describe('Customer relations contact form component', () => {
       await waitForPromises();
 
       expect(findError().exists()).toBe(true);
-      expect(findError().text()).toBe('Email is invalid.');
+      expect(findError().text()).toBe('update contact is invalid.');
     });
   });
 });

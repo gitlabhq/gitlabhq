@@ -7,6 +7,7 @@ module Gitlab
 
       SEARCH_CHAR_LIMIT = 4096
       SEARCH_TERM_LIMIT = 64
+      MIN_TERM_LENGTH = 3
 
       # Generic validation
       validates :query_string, length: { maximum: SEARCH_CHAR_LIMIT }
@@ -53,6 +54,10 @@ module Gitlab
         errors[:query_string].none? { |msg| msg.include? SEARCH_TERM_LIMIT.to_s }
       end
 
+      def email_lookup?
+        search_terms.any? { |term| term =~ URI::MailTo::EMAIL_REGEXP }
+      end
+
       def validate
         if detect_abuse?
           abuse_detection.validate
@@ -75,8 +80,12 @@ module Gitlab
         @detect_abuse
       end
 
+      def search_terms
+        @search_terms ||= query_string.split.select { |word| word.length >= MIN_TERM_LENGTH }
+      end
+
       def not_too_many_terms
-        if query_string.split.count { |word| word.length >= 3 } > SEARCH_TERM_LIMIT
+        if search_terms.count > SEARCH_TERM_LIMIT
           errors.add :query_string, "has too many search terms (maximum is #{SEARCH_TERM_LIMIT})"
         end
       end

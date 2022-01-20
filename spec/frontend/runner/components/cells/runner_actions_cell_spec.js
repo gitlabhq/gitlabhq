@@ -4,7 +4,7 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 
 import { captureException } from '~/runner/sentry_utils';
@@ -40,15 +40,17 @@ describe('RunnerTypeCell', () => {
   const findDeleteBtn = () => wrapper.findByTestId('delete-runner');
   const getTooltip = (w) => getBinding(w.element, 'gl-tooltip')?.value;
 
-  const createComponent = ({ active = true } = {}, options) => {
+  const createComponent = (runner = {}, options) => {
     wrapper = extendedWrapper(
       shallowMount(RunnerActionCell, {
         propsData: {
           runner: {
             id: mockRunner.id,
             shortSha: mockRunner.shortSha,
-            adminUrl: mockRunner.adminUrl,
-            active,
+            editAdminUrl: mockRunner.editAdminUrl,
+            userPermissions: mockRunner.userPermissions,
+            active: mockRunner.active,
+            ...runner,
           },
         },
         localVue,
@@ -101,7 +103,26 @@ describe('RunnerTypeCell', () => {
     it('Displays the runner edit link with the correct href', () => {
       createComponent();
 
-      expect(findEditBtn().attributes('href')).toBe(mockRunner.adminUrl);
+      expect(findEditBtn().attributes('href')).toBe(mockRunner.editAdminUrl);
+    });
+
+    it('Does not render the runner edit link when user cannot update', () => {
+      createComponent({
+        userPermissions: {
+          ...mockRunner.userPermissions,
+          updateRunner: false,
+        },
+      });
+
+      expect(findEditBtn().exists()).toBe(false);
+    });
+
+    it('Does not render the runner edit link when editAdminUrl is not provided', () => {
+      createComponent({
+        editAdminUrl: null,
+      });
+
+      expect(findEditBtn().exists()).toBe(false);
     });
   });
 
@@ -179,7 +200,7 @@ describe('RunnerTypeCell', () => {
           });
 
           it('error is shown to the user', () => {
-            expect(createFlash).toHaveBeenCalledTimes(1);
+            expect(createAlert).toHaveBeenCalledTimes(1);
           });
         });
 
@@ -208,10 +229,21 @@ describe('RunnerTypeCell', () => {
           });
 
           it('error is shown to the user', () => {
-            expect(createFlash).toHaveBeenCalledTimes(1);
+            expect(createAlert).toHaveBeenCalledTimes(1);
           });
         });
       });
+    });
+
+    it('Does not render the runner toggle active button when user cannot update', () => {
+      createComponent({
+        userPermissions: {
+          ...mockRunner.userPermissions,
+          updateRunner: false,
+        },
+      });
+
+      expect(findToggleActiveBtn().exists()).toBe(false);
     });
   });
 
@@ -223,6 +255,10 @@ describe('RunnerTypeCell', () => {
           stubs: { RunnerDeleteModal },
         },
       );
+    });
+
+    it('Renders delete button', () => {
+      expect(findDeleteBtn().exists()).toBe(true);
     });
 
     it('Delete button opens delete modal', () => {
@@ -257,6 +293,18 @@ describe('RunnerTypeCell', () => {
         awaitRefetchQueries: true,
         refetchQueries: [getRunnersQueryName, getGroupRunnersQueryName],
       });
+    });
+
+    it('Does not render the runner delete button when user cannot delete', () => {
+      createComponent({
+        userPermissions: {
+          ...mockRunner.userPermissions,
+          deleteRunner: false,
+        },
+      });
+
+      expect(findDeleteBtn().exists()).toBe(false);
+      expect(findRunnerDeleteModal().exists()).toBe(false);
     });
 
     describe('When delete is clicked', () => {
@@ -302,7 +350,7 @@ describe('RunnerTypeCell', () => {
         });
 
         it('error is shown to the user', () => {
-          expect(createFlash).toHaveBeenCalledTimes(1);
+          expect(createAlert).toHaveBeenCalledTimes(1);
         });
 
         it('toast notification is not shown', () => {
@@ -334,7 +382,7 @@ describe('RunnerTypeCell', () => {
         });
 
         it('error is shown to the user', () => {
-          expect(createFlash).toHaveBeenCalledTimes(1);
+          expect(createAlert).toHaveBeenCalledTimes(1);
         });
       });
     });

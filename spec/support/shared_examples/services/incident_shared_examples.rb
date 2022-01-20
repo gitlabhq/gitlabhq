@@ -17,16 +17,6 @@ RSpec.shared_examples 'incident issue' do
   end
 end
 
-RSpec.shared_examples 'has incident label' do
-  let(:label_properties) { attributes_for(:label, :incident) }
-
-  it 'has exactly one incident label' do
-    expect(issue.labels).to be_one do |label|
-      label.slice(*label_properties.keys).symbolize_keys == label_properties
-    end
-  end
-end
-
 # This shared_example requires the following variables:
 # - issue (required)
 #
@@ -44,6 +34,12 @@ RSpec.shared_examples 'not an incident issue' do
     expect(issue.issue_type).not_to eq('incident')
     expect(issue.work_item_type.base_type).not_to eq('incident')
   end
+
+  it_behaves_like 'does not have incident label'
+end
+
+RSpec.shared_examples 'does not have incident label' do
+  let(:label_properties) { attributes_for(:label, :incident) }
 
   it 'has not an incident label' do
     expect(issue.labels).not_to include(have_attributes(label_properties))

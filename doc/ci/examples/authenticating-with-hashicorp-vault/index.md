@@ -189,6 +189,28 @@ Combined with [protected branches](../../../user/project/protected_branches.md),
 
 [`bound_claims_type`](https://www.vaultproject.io/api-docs/auth/jwt#bound_claims_type) configures the interpretation of the `bound_claims` values. If set to `glob`, the values are interpreted as globs, with `*` matching any number of characters.
 
+The claim fields listed in [the table above](#how-it-works) can also be accessed for [Vault's policy path templating](https://learn.hashicorp.com/tutorials/vault/policy-templating?in=vault/policies) purposes by using the accessor name of the JWT auth within Vault. The [mount accessor name](https://learn.hashicorp.com/tutorials/vault/identity#step-1-create-an-entity-with-alias) (`ACCESSOR_NAME` in the example below) can be retrieved by running `vault auth list`.
+
+Policy template example making use of a named metadata field named `project_path`:
+
+```plaintext
+path "secret/data/{{identity.entity.aliases.ACCESSOR_NAME.metadata.project_path}}/staging/*" {
+  capabilities = [ "read" ]
+}
+```
+
+Role example to support the templated policy above, mapping the claim field `project_path` as a metadata field through use of [`claim_mappings`](https://www.vaultproject.io/api-docs/auth/jwt#claim_mappings) configuration:
+
+```plaintext
+{
+  "role_type": "jwt",
+  ...
+  "claim_mappings": {
+    "project_path": "project_path"
+  }
+}
+```
+
 For the full list of options, see Vault's [Create Role documentation](https://www.vaultproject.io/api/auth/jwt#create-role).
 
 WARNING:

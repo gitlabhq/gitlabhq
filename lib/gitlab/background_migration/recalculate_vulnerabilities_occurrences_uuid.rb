@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # rubocop: disable Style/Documentation
-class Gitlab::BackgroundMigration::RecalculateVulnerabilitiesOccurrencesUuid
+class Gitlab::BackgroundMigration::RecalculateVulnerabilitiesOccurrencesUuid # rubocop:disable Metrics/ClassLength
   # rubocop: disable Gitlab/NamespacedClass
   class VulnerabilitiesIdentifier < ActiveRecord::Base
     self.table_name = "vulnerability_identifiers"
@@ -9,10 +9,14 @@ class Gitlab::BackgroundMigration::RecalculateVulnerabilitiesOccurrencesUuid
   end
 
   class VulnerabilitiesFinding < ActiveRecord::Base
+    include EachBatch
     include ShaAttribute
 
     self.table_name = "vulnerability_occurrences"
+
+    has_many :signatures, foreign_key: 'finding_id', class_name: 'VulnerabilityFindingSignature', inverse_of: :finding
     belongs_to :primary_identifier, class_name: 'VulnerabilitiesIdentifier', inverse_of: :primary_findings, foreign_key: 'primary_identifier_id'
+
     REPORT_TYPES = {
       sast: 0,
       dependency_scanning: 1,
@@ -20,12 +24,33 @@ class Gitlab::BackgroundMigration::RecalculateVulnerabilitiesOccurrencesUuid
       dast: 3,
       secret_detection: 4,
       coverage_fuzzing: 5,
-      api_fuzzing: 6
+      api_fuzzing: 6,
+      cluster_image_scanning: 7,
+      generic: 99
     }.with_indifferent_access.freeze
     enum report_type: REPORT_TYPES
 
     sha_attribute :fingerprint
     sha_attribute :location_fingerprint
+  end
+
+  class VulnerabilityFindingSignature < ActiveRecord::Base
+    include ShaAttribute
+
+    self.table_name = 'vulnerability_finding_signatures'
+    belongs_to :finding, foreign_key: 'finding_id', inverse_of: :signatures, class_name: 'VulnerabilitiesFinding'
+
+    sha_attribute :signature_sha
+  end
+
+  class VulnerabilitiesFindingPipeline < ActiveRecord::Base
+    include EachBatch
+    self.table_name = "vulnerability_occurrence_pipelines"
+  end
+
+  class Vulnerability < ActiveRecord::Base
+    include EachBatch
+    self.table_name = "vulnerabilities"
   end
 
   class CalculateFindingUUID
@@ -52,41 +77,136 @@ class Gitlab::BackgroundMigration::RecalculateVulnerabilitiesOccurrencesUuid
   end
   # rubocop: enable Gitlab/NamespacedClass
 
+  # rubocop: disable Metrics/AbcSize,Metrics/MethodLength,Metrics/BlockLength
   def perform(start_id, end_id)
-    findings = VulnerabilitiesFinding
-      .joins(:primary_identifier)
-      .select(:id, :report_type, :fingerprint, :location_fingerprint, :project_id)
-      .where(id: start_id..end_id)
-
-    mappings = findings.each_with_object({}) do |finding, hash|
-      hash[finding] = { uuid: calculate_uuid_v5_for_finding(finding) }
+    unless Feature.enabled?(:migrate_vulnerability_finding_uuids, default_enabled: true)
+      return log_info('Migration is disabled by the feature flag', start_id: start_id, end_id: end_id)
     end
 
-    ::Gitlab::Database::BulkUpdate.execute(%i[uuid], mappings)
+    log_info('Migration started', start_id: start_id, end_id: end_id)
 
-    logger.info(message: 'RecalculateVulnerabilitiesOccurrencesUuid Migration: recalculation is done for:',
-              finding_ids: mappings.keys.pluck(:id))
+    VulnerabilitiesFinding
+      .joins(:primary_identifier)
+      .includes(:signatures)
+      .select(:id, :report_type, :primary_identifier_id, :fingerprint, :location_fingerprint, :project_id, :created_at, :vulnerability_id, :uuid)
+      .where(id: start_id..end_id)
+      .each_batch(of: 50) do |relation|
+      duplicates = find_duplicates(relation)
+      remove_findings(ids: duplicates) if duplicates.present?
+
+      to_update = relation.reject { |finding| duplicates.include?(finding.id) }
+
+      begin
+        known_uuids = Set.new
+        to_be_deleted = []
+
+        mappings = to_update.each_with_object({}) do |finding, hash|
+          uuid = calculate_uuid_v5_for_finding(finding)
+
+          if known_uuids.add?(uuid)
+            hash[finding] = { uuid: uuid }
+          else
+            to_be_deleted << finding.id
+          end
+        end
+
+        # It is technically still possible to have duplicate uuids
+        # if the data integrity is broken somehow and the primary identifiers of
+        # the findings are pointing to different projects with the same fingerprint values.
+        if to_be_deleted.present?
+          log_info('Conflicting UUIDs found within the batch', finding_ids: to_be_deleted)
+
+          remove_findings(ids: to_be_deleted)
+        end
+
+        ::Gitlab::Database::BulkUpdate.execute(%i[uuid], mappings) if mappings.present?
+
+        log_info('Recalculation is done', finding_ids: mappings.keys.pluck(:id))
+      rescue ActiveRecord::RecordNotUnique => error
+        log_info('RecordNotUnique error received')
+
+        match_data = /\(uuid\)=\((?<uuid>\S{36})\)/.match(error.message)
+
+        # This exception returns the **correct** UUIDv5 which probably comes from a later record
+        # and it's the one we can drop in the easiest way before retrying the UPDATE query
+        if match_data
+          uuid = match_data[:uuid]
+          log_info('Conflicting UUID found', uuid: uuid)
+
+          id = VulnerabilitiesFinding.find_by(uuid: uuid)&.id
+          remove_findings(ids: id) if id
+          retry
+        else
+          log_error('Couldnt find conflicting uuid')
+
+          Gitlab::ErrorTracking.track_and_raise_exception(error)
+        end
+      end
+    end
 
     mark_job_as_succeeded(start_id, end_id)
   rescue StandardError => error
-    Gitlab::ErrorTracking.track_and_raise_for_dev_exception(error)
+    log_error('An exception happened')
+
+    Gitlab::ErrorTracking.track_and_raise_exception(error)
   end
+  # rubocop: disable Metrics/AbcSize,Metrics/MethodLength,Metrics/BlockLength
 
   private
+
+  def find_duplicates(relation)
+    to_exclude = []
+    relation.flat_map do |record|
+      # Assuming we're scanning id 31 and the duplicate is id 40
+      # first we'd process 31 and add 40 to the list of ids to remove
+      # then we would process record 40 and add 31 to the list of removals
+      # so we would drop both records
+      to_exclude << record.id
+
+      VulnerabilitiesFinding.where(
+        report_type: record.report_type,
+        location_fingerprint: record.location_fingerprint,
+        primary_identifier_id: record.primary_identifier_id,
+        project_id: record.project_id
+      ).where.not(id: to_exclude).pluck(:id)
+    end
+  end
+
+  def remove_findings(ids:)
+    ids = Array(ids)
+    log_info('Removing Findings and associated records', ids: ids)
+
+    vulnerability_ids = VulnerabilitiesFinding.where(id: ids).pluck(:vulnerability_id).uniq.compact
+
+    VulnerabilitiesFindingPipeline.where(occurrence_id: ids).each_batch { |batch| batch.delete_all }
+    Vulnerability.where(id: vulnerability_ids).each_batch { |batch| batch.delete_all }
+    VulnerabilitiesFinding.where(id: ids).delete_all
+  end
 
   def calculate_uuid_v5_for_finding(vulnerability_finding)
     return unless vulnerability_finding
 
+    signatures = vulnerability_finding.signatures.sort_by { |signature| signature.algorithm_type_before_type_cast }
+    location_fingerprint = signatures.last&.signature_sha || vulnerability_finding.location_fingerprint
+
     uuid_v5_name_components = {
       report_type: vulnerability_finding.report_type,
       primary_identifier_fingerprint: vulnerability_finding.fingerprint,
-      location_fingerprint: vulnerability_finding.location_fingerprint,
+      location_fingerprint: location_fingerprint,
       project_id: vulnerability_finding.project_id
     }
 
     name = uuid_v5_name_components.values.join('-')
 
     CalculateFindingUUID.call(name)
+  end
+
+  def log_info(message, **extra)
+    logger.info(migrator: 'RecalculateVulnerabilitiesOccurrencesUuid', message: message, **extra)
+  end
+
+  def log_error(message, **extra)
+    logger.error(migrator: 'RecalculateVulnerabilitiesOccurrencesUuid', message: message, **extra)
   end
 
   def logger

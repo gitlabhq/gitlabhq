@@ -109,12 +109,13 @@ export default {
     <div v-if="hasDropdownActions" class="gl-p-2">
       <gl-dropdown
         data-testid="dropdown-toggle"
-        right
         :text="$options.i18n.userAdministration"
         :text-sr-only="!showButtonLabels"
         icon="ellipsis_h"
         data-qa-selector="user_actions_dropdown_toggle"
         :data-qa-username="user.username"
+        no-caret
+        right
       >
         <gl-dropdown-section-header>{{
           $options.i18n.userAdministration

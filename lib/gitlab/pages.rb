@@ -10,7 +10,7 @@ module Gitlab
 
     class << self
       def verify_api_request(request_headers)
-        decode_jwt_for_issuer('gitlab-pages', request_headers[INTERNAL_API_REQUEST_HEADER])
+        decode_jwt(request_headers[INTERNAL_API_REQUEST_HEADER], issuer: 'gitlab-pages')
       rescue JWT::DecodeError
         false
       end

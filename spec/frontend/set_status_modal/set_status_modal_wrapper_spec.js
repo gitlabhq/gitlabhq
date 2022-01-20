@@ -110,14 +110,23 @@ describe('SetStatusModalWrapper', () => {
   });
 
   describe('improvedEmojiPicker is true', () => {
+    const getEmojiPicker = () => wrapper.findComponent(EmojiPicker);
+
     beforeEach(async () => {
       await initEmojiMock();
       wrapper = createComponent({}, true);
       return initModal();
     });
 
+    it('renders emoji picker dropdown with custom positioning', () => {
+      expect(getEmojiPicker().props()).toMatchObject({
+        right: false,
+        boundary: 'viewport',
+      });
+    });
+
     it('sets emojiTag when clicking in emoji picker', async () => {
-      await wrapper.findComponent(EmojiPicker).vm.$emit('click', 'thumbsup');
+      await getEmojiPicker().vm.$emit('click', 'thumbsup');
 
       expect(wrapper.vm.emojiTag).toContain('data-name="thumbsup"');
     });

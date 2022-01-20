@@ -196,7 +196,7 @@ module Gitlab
         end
 
         def use_attributes_permitter?
-          Feature.enabled?(:permitted_attributes_for_import_export, default_enabled: :yaml)
+          true
         end
 
         def existing_or_new_object

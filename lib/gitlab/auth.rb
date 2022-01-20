@@ -84,7 +84,7 @@ module Gitlab
         Gitlab::Auth::UniqueIpsLimiter.limit_user! do
           user = User.by_login(login)
 
-          break if user && !can_user_login_with_non_expired_password?(user)
+          break if user && !user.can_log_in_with_non_expired_password?
 
           authenticators = []
 
@@ -187,7 +187,7 @@ module Gitlab
 
           if valid_oauth_token?(token)
             user = User.id_in(token.resource_owner_id).first
-            return unless user && can_user_login_with_non_expired_password?(user)
+            return unless user && user.can_log_in_with_non_expired_password?
 
             Gitlab::Auth::Result.new(user, nil, :oauth, abilities_for_scopes(token.scopes))
           end
@@ -210,7 +210,7 @@ module Gitlab
           return unless token_bot_in_project?(token.user, project) || token_bot_in_group?(token.user, project)
         end
 
-        if can_user_login_with_non_expired_password?(token.user) || token.user.project_bot?
+        if token.user.can_log_in_with_non_expired_password? || token.user.project_bot?
           Gitlab::Auth::Result.new(token.user, nil, :personal_access_token, abilities_for_scopes(token.scopes))
         end
       end
@@ -309,7 +309,7 @@ module Gitlab
         return unless build.project.builds_enabled?
 
         if build.user
-          return unless can_user_login_with_non_expired_password?(build.user) || (build.user.project_bot? && build.project.bots&.include?(build.user))
+          return unless build.user.can_log_in_with_non_expired_password? || (build.user.project_bot? && build.project.bots&.include?(build.user))
 
           # If user is assigned to build, use restricted credentials of user
           Gitlab::Auth::Result.new(build.user, build.project, :build, build_authentication_abilities)
@@ -405,10 +405,6 @@ module Gitlab
         return user.unlock_access! if success
 
         user.increment_failed_attempts!
-      end
-
-      def can_user_login_with_non_expired_password?(user)
-        user.can?(:log_in) && !user.password_expired_if_applicable?
       end
     end
   end

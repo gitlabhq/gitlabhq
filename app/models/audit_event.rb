@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class AuditEvent < ApplicationRecord
+  include AfterCommitQueue
   include CreatedAtFilterable
   include BulkInsertSafe
   include EachBatch

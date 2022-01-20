@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::BackgroundMigration::BackfillArtifactExpiryDate, :migration, schema: 20181228175414 do
+RSpec.describe Gitlab::BackgroundMigration::BackfillArtifactExpiryDate, :migration, schema: 20210301200959 do
   subject(:perform) { migration.perform(1, 99) }
 
   let(:migration) { described_class.new }

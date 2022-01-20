@@ -7,7 +7,7 @@ class Experiment < ApplicationRecord
   validates :name, presence: true, uniqueness: true, length: { maximum: 255 }
 
   def self.add_user(name, group_type, user, context = {})
-    find_or_create_by!(name: name).record_user_and_group(user, group_type, context)
+    by_name(name).record_user_and_group(user, group_type, context)
   end
 
   def self.add_group(name, variant:, group:)
@@ -15,11 +15,15 @@ class Experiment < ApplicationRecord
   end
 
   def self.add_subject(name, variant:, subject:)
-    find_or_create_by!(name: name).record_subject_and_variant!(subject, variant)
+    by_name(name).record_subject_and_variant!(subject, variant)
   end
 
   def self.record_conversion_event(name, user, context = {})
-    find_or_create_by!(name: name).record_conversion_event_for_user(user, context)
+    by_name(name).record_conversion_event_for_user(user, context)
+  end
+
+  def self.by_name(name)
+    find_or_create_by!(name: name)
   end
 
   # Create or update the recorded experiment_user row for the user in this experiment.
@@ -41,6 +45,16 @@ class Experiment < ApplicationRecord
     experiment_user.update!(converted_at: Time.current, context: merged_context(experiment_user, context))
   end
 
+  def record_conversion_event_for_subject(subject, context = {})
+    raise 'Incompatible subject provided!' unless ExperimentSubject.valid_subject?(subject)
+
+    attr_name = subject.class.table_name.singularize.to_sym
+    experiment_subject = experiment_subjects.find_by(attr_name => subject)
+    return unless experiment_subject
+
+    experiment_subject.update!(converted_at: Time.current, context: merged_context(experiment_subject, context))
+  end
+
   def record_subject_and_variant!(subject, variant)
     raise 'Incompatible subject provided!' unless ExperimentSubject.valid_subject?(subject)
 
@@ -57,7 +71,7 @@ class Experiment < ApplicationRecord
 
   private
 
-  def merged_context(experiment_user, new_context)
-    experiment_user.context.deep_merge(new_context.deep_stringify_keys)
+  def merged_context(experiment_subject, new_context)
+    experiment_subject.context.deep_merge(new_context.deep_stringify_keys)
   end
 end

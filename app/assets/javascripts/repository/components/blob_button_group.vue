@@ -1,5 +1,5 @@
 <script>
-import { GlButtonGroup, GlButton, GlModalDirective } from '@gitlab/ui';
+import { GlButtonGroup, GlButton } from '@gitlab/ui';
 import { uniqueId } from 'lodash';
 import { sprintf, __ } from '~/locale';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
@@ -19,9 +19,6 @@ export default {
     UploadBlobModal,
     DeleteBlobModal,
     LockButton: () => import('ee_component/repository/components/lock_button.vue'),
-  },
-  directives: {
-    GlModal: GlModalDirective,
   },
   mixins: [getRefMixin, glFeatureFlagMixin()],
   inject: {
@@ -73,6 +70,10 @@ export default {
       type: Boolean,
       required: true,
     },
+    showForkSuggestion: {
+      type: Boolean,
+      required: true,
+    },
   },
   computed: {
     replaceModalId() {
@@ -91,6 +92,16 @@ export default {
       return this.canLock ? 'lock_button' : 'disabled_lock_button';
     },
   },
+  methods: {
+    showModal(modalId) {
+      if (this.showForkSuggestion) {
+        this.$emit('fork');
+        return;
+      }
+
+      this.$refs[modalId].show();
+    },
+  },
 };
 </script>
 
@@ -107,14 +118,15 @@ export default {
         data-testid="lock"
         :data-qa-selector="lockBtnQASelector"
       />
-      <gl-button v-gl-modal="replaceModalId" data-testid="replace">
+      <gl-button data-testid="replace" @click="showModal(replaceModalId)">
         {{ $options.i18n.replace }}
       </gl-button>
-      <gl-button v-gl-modal="deleteModalId" data-testid="delete">
+      <gl-button data-testid="delete" @click="showModal(deleteModalId)">
         {{ $options.i18n.delete }}
       </gl-button>
     </gl-button-group>
     <upload-blob-modal
+      :ref="replaceModalId"
       :modal-id="replaceModalId"
       :modal-title="replaceModalTitle"
       :commit-message="replaceModalTitle"
@@ -126,6 +138,7 @@ export default {
       :primary-btn-text="$options.i18n.replacePrimaryBtnText"
     />
     <delete-blob-modal
+      :ref="deleteModalId"
       :modal-id="deleteModalId"
       :modal-title="deleteModalTitle"
       :delete-path="deletePath"

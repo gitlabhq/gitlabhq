@@ -12,8 +12,9 @@ import PipelineEditorMessages from './components/ui/pipeline_editor_messages.vue
 import {
   COMMIT_SHA_POLL_INTERVAL,
   EDITOR_APP_STATUS_EMPTY,
-  EDITOR_APP_VALID_STATUSES,
   EDITOR_APP_STATUS_LOADING,
+  EDITOR_APP_STATUS_LINT_UNAVAILABLE,
+  EDITOR_APP_VALID_STATUSES,
   LOAD_FAILURE_UNKNOWN,
   STARTER_TEMPLATE_NAME,
 } from './constants';
@@ -51,6 +52,7 @@ export default {
       failureReasons: [],
       initialCiFileContent: '',
       isFetchingCommitSha: false,
+      isLintUnavailable: false,
       isNewCiConfigFile: false,
       lastCommittedContent: '',
       shouldSkipStartScreen: false,
@@ -147,10 +149,19 @@ export default {
         return { ...ciConfig, stages };
       },
       result({ data }) {
-        this.setAppStatus(data?.ciConfig?.status);
+        if (data?.ciConfig?.status) {
+          this.setAppStatus(data.ciConfig.status);
+          if (this.isLintUnavailable) {
+            this.isLintUnavailable = false;
+          }
+        }
       },
-      error(err) {
-        this.reportFailure(LOAD_FAILURE_UNKNOWN, [String(err)]);
+      error() {
+        // We are not using `reportFailure` here because we don't
+        // need to bring attention to the linter being down. We let
+        // the user work on their file and if they look at their
+        // lint status, they will notice that the service is down
+        this.isLintUnavailable = true;
       },
       watchLoading(isLoading) {
         if (isLoading) {
@@ -247,6 +258,13 @@ export default {
         this.setAppStatus(EDITOR_APP_STATUS_EMPTY);
       }
     },
+    isLintUnavailable(flag) {
+      if (flag) {
+        // We cannot set this status directly in the `error`
+        // hook otherwise we get an infinite loop caused by apollo.
+        this.setAppStatus(EDITOR_APP_STATUS_LINT_UNAVAILABLE);
+      }
+    },
   },
   mounted() {
     this.loadTemplateFromURL();
@@ -269,14 +287,10 @@ export default {
       await this.$apollo.queries.initialCiFileContent.refetch();
     },
     reportFailure(type, reasons = []) {
-      const isCurrentFailure = this.failureType === type && this.failureReasons[0] === reasons[0];
-
-      if (!isCurrentFailure) {
-        this.showFailure = true;
-        this.failureType = type;
-        this.failureReasons = reasons;
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      }
+      this.showFailure = true;
+      this.failureType = type;
+      this.failureReasons = reasons;
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     },
     reportSuccess(type) {
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -289,7 +303,10 @@ export default {
     },
     setAppStatus(appStatus) {
       if (EDITOR_APP_VALID_STATUSES.includes(appStatus)) {
-        this.$apollo.mutate({ mutation: updateAppStatus, variables: { appStatus } });
+        this.$apollo.mutate({
+          mutation: updateAppStatus,
+          variables: { appStatus },
+        });
       }
     },
     setNewEmptyCiConfigFile() {

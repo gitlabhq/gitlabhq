@@ -28,6 +28,8 @@ RSpec.describe Namespace do
     it { is_expected.to have_one :onboarding_progress }
     it { is_expected.to have_one :admin_note }
     it { is_expected.to have_many :pending_builds }
+    it { is_expected.to have_one :namespace_route }
+    it { is_expected.to have_many :namespace_members }
 
     describe '#children' do
       let_it_be(:group) { create(:group) }
@@ -1249,6 +1251,32 @@ RSpec.describe Namespace do
     context 'when use_traversal_ids_for_ancestors_upto feature flag is false' do
       before do
         stub_feature_flags(use_traversal_ids_for_ancestors_upto: false)
+      end
+
+      it { is_expected.to eq false }
+    end
+
+    context 'when use_traversal_ids? feature flag is false' do
+      before do
+        stub_feature_flags(use_traversal_ids: false)
+      end
+
+      it { is_expected.to eq false }
+    end
+  end
+
+  describe '#use_traversal_ids_for_self_and_hierarchy?' do
+    let_it_be(:namespace, reload: true) { create(:namespace) }
+
+    subject { namespace.use_traversal_ids_for_self_and_hierarchy? }
+
+    it { is_expected.to eq true }
+
+    it_behaves_like 'disabled feature flag when traversal_ids is blank'
+
+    context 'when use_traversal_ids_for_self_and_hierarchy feature flag is false' do
+      before do
+        stub_feature_flags(use_traversal_ids_for_self_and_hierarchy: false)
       end
 
       it { is_expected.to eq false }

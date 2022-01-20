@@ -35,16 +35,17 @@ In the case of [custom domains](#custom-domains) (but not
 ports `80` and/or `443`. For that reason, there is some flexibility in the way
 which you can set it up:
 
-1. Run the Pages daemon in the same server as GitLab, listening on a secondary IP.
-1. Run the Pages daemon in a separate server. In that case, the
-   [Pages path](#change-storage-path) must also be present in the server that
-   the Pages daemon is installed, so you must share it through the network.
-1. Run the Pages daemon in the same server as GitLab, listening on the same IP
-   but on different ports. In that case, you must proxy the traffic with
-   a load balancer. If you choose that route, you should use TCP load
-   balancing for HTTPS. If you use TLS-termination (HTTPS-load balancing), the
-   pages aren't able to be served with user-provided certificates. For
-   HTTP, it's OK to use HTTP or TCP load balancing.
+- Run the Pages daemon in the same server as GitLab, listening on a secondary
+  IP.
+- Run the Pages daemon in a separate server. In that case, the
+  [Pages path](#change-storage-path) must also be present in the server that
+  the Pages daemon is installed, so you must share it through the network.
+- Run the Pages daemon in the same server as GitLab, listening on the same IP
+  but on different ports. In that case, you must proxy the traffic with a load
+  balancer. If you choose that route, you should use TCP load balancing for
+  HTTPS. If you use TLS-termination (HTTPS-load balancing), the pages aren't
+  able to be served with user-provided certificates. For HTTP, you can use HTTP
+  or TCP load balancing.
 
 In this document, we proceed assuming the first option. If you aren't
 supporting custom domains, a secondary IP isn't needed.
@@ -53,16 +54,16 @@ supporting custom domains, a secondary IP isn't needed.
 
 Before proceeding with the Pages configuration, make sure that:
 
-1. You have a separate domain to serve GitLab Pages from. In
-   this document we assume that to be `example.io`.
-1. You have configured a **wildcard DNS record** for that domain.
-1. You have installed the `zip` and `unzip` packages in the same server that
-   GitLab is installed since they are needed to compress and decompress the
-   Pages artifacts.
-1. Optional. You have a **wildcard certificate** for the Pages domain if you
-   decide to serve Pages (`*.example.io`) under HTTPS.
-1. Optional but recommended. You have configured and enabled the [shared runners](../../ci/runners/index.md)
-   so that your users don't have to bring their own.
+- You have a separate domain to serve GitLab Pages from. In this document we
+  assume that to be `example.io`.
+- You have configured a **wildcard DNS record** for that domain.
+- You have installed the `zip` and `unzip` packages in the same server that
+  GitLab is installed since they are needed to compress and decompress the
+  Pages artifacts.
+- Optional. You have a **wildcard certificate** for the Pages domain if you
+  decide to serve Pages (`*.example.io`) under HTTPS.
+- Optional but recommended. You have configured and enabled the [shared runners](../../ci/runners/index.md)
+  so your users don't have to bring their own.
 
 ### DNS configuration
 
@@ -416,8 +417,6 @@ server_name ~^.*\.pages\.example\.io$;
 ```
 
 ## Access control
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/33422) in GitLab 11.5.
 
 GitLab Pages access control can be configured per-project, and allows access to a Pages
 site to be controlled based on a user's membership to that project.

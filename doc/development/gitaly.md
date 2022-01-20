@@ -112,10 +112,9 @@ bundle exec rake gitlab:features:disable_rugged
 Most of this code exists in the `lib/gitlab/git/rugged_impl` directory.
 
 NOTE:
-You should *not* need to add or modify code related to
-Rugged unless explicitly discussed with the
-[Gitaly Team](https://gitlab.com/groups/gl-gitaly/group_members). This code does
-NOT work on GitLab.com or other GitLab instances that do not use NFS.
+You should *not* have to add or modify code related to Rugged unless explicitly discussed with the
+[Gitaly Team](https://gitlab.com/groups/gl-gitaly/group_members). This code does not work on GitLab.com or other GitLab
+instances that do not use NFS.
 
 ## `TooManyInvocationsError` errors
 
@@ -197,7 +196,7 @@ If you make changes to your local Gitaly in between test runs you need
 to manually run `make` again.
 
 Note that CI tests do not use your locally modified version of
-Gitaly. To use a custom Gitaly version in CI you need to update
+Gitaly. To use a custom Gitaly version in CI, you must update
 GITALY_SERVER_VERSION as described at the beginning of this section.
 
 To use a different Gitaly repository, such as if your changes are present
@@ -326,7 +325,7 @@ default value. The default value depends on the GitLab version.
 To be sure that the flag is set correctly and it goes into Gitaly, you can check
 the integration by using GDK:
 
-1. The state of the flag must be observable. To check it, you need to enable it
+1. The state of the flag must be observable. To check it, you must enable it
    by fetching the Prometheus metrics:
    1. Navigate to GDK's root directory.
    1. Make sure you have the proper branch checked out for Gitaly.

@@ -258,7 +258,7 @@ RSpec.describe Gitlab::ImportExport::FastHashSerializer do
     create(:resource_label_event, label: group_label, merge_request: merge_request)
 
     create(:event, :created, target: milestone, project: project, author: user)
-    create(:service, project: project, type: 'CustomIssueTrackerService', category: 'issue_tracker', properties: { one: 'value' })
+    create(:integration, project: project, type: 'CustomIssueTrackerService', category: 'issue_tracker', properties: { one: 'value' })
 
     create(:project_custom_attribute, project: project)
     create(:project_custom_attribute, project: project)

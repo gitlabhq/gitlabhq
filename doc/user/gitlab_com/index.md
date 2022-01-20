@@ -70,7 +70,7 @@ To back up an entire project on GitLab.com, you can export it either:
   can also use the API to programmatically upload exports to a storage platform,
   such as Amazon S3.
 
-With exports, be aware of [what is and is not](../project/settings/import_export.md#exported-contents)
+With exports, be aware of [what is and is not](../project/settings/import_export.md#items-that-are-exported)
 included in a project export.
 
 GitLab is built on Git, so you can back up just the repository of a project by
@@ -162,17 +162,18 @@ varies by format:
 
 ## Account and limit settings
 
-GitLab.com has the following [account limits](../admin_area/settings/account_and_limit_settings.md)
-enabled. If a setting is not listed, it is set to the default value.
+GitLab.com has the following account limits enabled. If a setting is not listed,
+the default value [is the same as for self-managed instances](../admin_area/settings/account_and_limit_settings.md):
+
+| Setting                       | GitLab.com default |
+|-------------------------------|--------------------|
+| [Repository size including LFS](../admin_area/settings/account_and_limit_settings.md#repository-size-limit) | 10 GB |
+| Maximum import size           | 5 GB               |
+| Maximum attachment size       | 10 MB              |
 
 If you are near or over the repository size limit, you can either
-[reduce your repository size with Git](../project/repository/reducing_the_repo_size_using_git.md) or [purchase additional storage](https://about.gitlab.com/pricing/licensing-faq/#can-i-buy-more-storage).
-
-| Setting                       | GitLab.com  | Default |
-|-------------------------------|-------------|---------|
-| [Repository size including LFS](../admin_area/settings/account_and_limit_settings.md#repository-size-limit) | 10 GB       | Unlimited     |
-| Maximum import size           | 5 GB        | Unlimited ([Modified](https://gitlab.com/gitlab-org/gitlab/-/issues/251106) from 50MB to unlimited in GitLab 13.8.) |
-| Maximum attachment size       | 10 MB       | 10 MB   |
+[reduce your repository size with Git](../project/repository/reducing_the_repo_size_using_git.md)
+or [purchase additional storage](https://about.gitlab.com/pricing/licensing-faq/#can-i-buy-more-storage).
 
 NOTE:
 `git push` and GitLab project imports are limited to 5 GB per request through
@@ -209,13 +210,17 @@ also load certain page content directly from common public CDN hostnames.
 
 ## Webhooks
 
-The following limits apply for [Webhooks](../project/integrations/webhooks.md):
+The following limits apply for [webhooks](../project/integrations/webhooks.md):
 
-| Setting              | GitLab.com  | Default |
-|----------------------|-------------|---------|
-| [Webhook rate limit](../../administration/instance_limits.md#webhook-rate-limit) | `120` calls per minute for GitLab Free, unlimited for GitLab Premium and GitLab Ultimate | Unlimited |
-| [Number of webhooks](../../administration/instance_limits.md#number-of-webhooks) | `100` per project, `50` per group | `100` per project, `50` per group |
-| Maximum payload size | 25 MB       | 25 MB   |
+| Setting              | Default for GitLab.com  |
+|----------------------|-------------------------|
+| Webhook rate limit   | `120` calls per minute for GitLab Free, unlimited for GitLab Premium and GitLab Ultimate |
+| Number of webhooks   | `100` per project, `50` per group |
+| Maximum payload size | 25 MB                   |
+
+For self-managed instance limits, see
+[Webhook rate limit](../../administration/instance_limits.md#webhook-rate-limit)
+and [Number of webhooks](../../administration/instance_limits.md#number-of-webhooks).
 
 ## Runner SaaS
 

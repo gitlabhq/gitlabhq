@@ -67,7 +67,7 @@ module DbCleaner
     # Migrate each database individually
     with_reestablished_active_record_base do
       all_connection_classes.each do |connection_class|
-        ActiveRecord::Base.establish_connection(connection_class.connection_db_config)
+        ActiveRecord::Base.establish_connection(connection_class.connection_db_config) # rubocop: disable Database/EstablishConnection
 
         ActiveRecord::Tasks::DatabaseTasks.migrate
       end

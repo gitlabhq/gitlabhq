@@ -64,7 +64,7 @@ RSpec.describe Projects::DestroyService, :aggregate_failures do
         create(:ci_pipeline_artifact, pipeline: pipeline)
         create_list(:ci_build_trace_chunk, 3, build: builds[0])
 
-        expect { destroy_project(project, project.owner, {}) }.not_to exceed_query_limit(recorder)
+        expect { destroy_project(project, project.first_owner, {}) }.not_to exceed_query_limit(recorder)
       end
 
       it_behaves_like 'deleting the project'
@@ -76,6 +76,11 @@ RSpec.describe Projects::DestroyService, :aggregate_failures do
       expect do
         destroy_project(project, user, {})
       end.not_to raise_error
+    end
+
+    it 'reports the error' do
+      expect(Gitlab::ErrorTracking).to receive(:track_exception).and_call_original
+      destroy_project(project, user, {})
     end
 
     it 'unmarks the project as "pending deletion"' do

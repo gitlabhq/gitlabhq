@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 FactoryBot.define do
-  factory :integration, aliases: [:service] do
+  factory :integration do
     project
     type { 'Integration' }
   end

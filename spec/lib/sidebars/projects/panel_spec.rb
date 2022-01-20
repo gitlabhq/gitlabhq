@@ -3,7 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Sidebars::Projects::Panel do
-  let(:project) { build(:project) }
+  let_it_be(:project) { create(:project) }
+
   let(:context) { Sidebars::Projects::Context.new(current_user: nil, container: project) }
 
   subject { described_class.new(context) }

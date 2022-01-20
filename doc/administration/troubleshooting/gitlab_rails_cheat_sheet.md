@@ -2,7 +2,6 @@
 stage: Enablement
 group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
-type: reference
 ---
 
 # GitLab Rails Console Cheat Sheet **(FREE SELF)**
@@ -526,7 +525,7 @@ master               f05321a5b5728bd8a89b7bf530aa44043c951dce...7d02e575fd790e76
 
 ### Find mirrors with "bad decrypt" errors
 
-This content has been converted to a Rake task, see the [Doctor Rake tasks docs](../raketasks/doctor.md).
+This content has been converted to a Rake task, see [verify database values can be decrypted using the current secrets](../raketasks/check.md#verify-database-values-can-be-decrypted-using-the-current-secrets).
 
 ### Transfer mirror users and tokens to a single service account
 
@@ -909,6 +908,14 @@ end
 Gitlab::CurrentSettings.current_application_settings.runners_registration_token
 ```
 
+### Seed runners registration token
+
+```ruby
+appSetting = Gitlab::CurrentSettings.current_application_settings
+appSetting.set_runners_registration_token('<new-runners-registration-token>')
+appSetting.save!
+```
+
 ### Run pipeline schedules manually
 
 You can run pipeline schedules manually through the Rails console to reveal any errors that are usually not visible.
@@ -979,7 +986,7 @@ This is needed for example in a known edge-case with
 
 ### Remove licenses
 
-To clean up the [License History table](../../user/admin_area/license.md#license-history):
+To clean up the [License History table](../../user/admin_area/license.md#view-license-details-and-history):
 
 ```ruby
 TYPE = :trial?
@@ -1065,7 +1072,7 @@ area on disk. It remains to be seen exactly how or whether the deletion is usefu
 
 ### Bad Decrypt Script (for encrypted variables)
 
-This content has been converted to a Rake task, see the [Doctor Rake tasks docs](../raketasks/doctor.md).
+This content has been converted to a Rake task, see [verify database values can be decrypted using the current secrets](../raketasks/check.md#verify-database-values-can-be-decrypted-using-the-current-secrets).
 
 As an example of repairing, if `ProjectImportData Bad count:` is detected and the decision is made to delete the
 encrypted credentials to allow manual reentry:
@@ -1108,7 +1115,7 @@ gitlab-rails runner /tmp/encrypted-tokens.rb
 
 ### Decrypt Script for encrypted tokens
 
-This content has been converted to a Rake task, see the [Doctor Rake tasks docs](../raketasks/doctor.md).
+This content has been converted to a Rake task, see [verify database values can be decrypted using the current secrets](../raketasks/check.md#verify-database-values-can-be-decrypted-using-the-current-secrets).
 
 ## Geo
 
@@ -1262,10 +1269,20 @@ registry = Geo::SnippetRepositoryRegistry.find(registry_id)
 registry.replicator.send(:sync_repository)
 ```
 
+## Gitaly
+
+### Find available and used space
+
+A Gitaly storage resource can be polled through Rails to determine the available and used space.
+
+```ruby
+Gitlab::GitalyClient::ServerService.new("default").storage_disk_statistics
+```
+
 ## Generate Service Ping
 
-The [Service Ping Guide](../../development/service_ping/index.md) in our developer documentation 
-has more information about Service Ping. 
+The [Service Ping Guide](../../development/service_ping/index.md) in our developer documentation
+has more information about Service Ping.
 
 ### Generate or get the cached Service Ping
 
@@ -1291,7 +1308,7 @@ rake gitlab:usage_data:generate
 
 Generates Service Ping data in YAML format:
 
-```shell 
+```shell
 rake gitlab:usage_data:dump_sql_in_yaml
 ```
 

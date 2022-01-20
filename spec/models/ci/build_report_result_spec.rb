@@ -5,6 +5,11 @@ require 'spec_helper'
 RSpec.describe Ci::BuildReportResult do
   let(:build_report_result) { build(:ci_build_report_result, :with_junit_success) }
 
+  it_behaves_like 'cleanup by a loose foreign key' do
+    let!(:parent) { create(:project) }
+    let!(:model) { create(:ci_build_report_result, project: parent) }
+  end
+
   describe 'associations' do
     it { is_expected.to belong_to(:build) }
     it { is_expected.to belong_to(:project) }

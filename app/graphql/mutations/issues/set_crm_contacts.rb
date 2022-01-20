@@ -18,7 +18,8 @@ module Mutations
       def resolve(project_path:, iid:, contact_ids:, operation_mode: Types::MutationOperationModeEnum.enum[:replace])
         issue = authorized_find!(project_path: project_path, iid: iid)
         project = issue.project
-        raise Gitlab::Graphql::Errors::ResourceNotAvailable, 'Feature disabled' unless Feature.enabled?(:customer_relations, project.group, default_enabled: :yaml)
+
+        raise Gitlab::Graphql::Errors::ResourceNotAvailable, 'Feature disabled' unless feature_enabled?(project)
 
         contact_ids = contact_ids.compact.map do |contact_id|
           raise Gitlab::Graphql::Errors::ArgumentError, "Contact #{contact_id} is invalid." unless contact_id.respond_to?(:model_id)
@@ -42,6 +43,12 @@ module Mutations
           issue: issue,
           errors: response.errors
         }
+      end
+
+      private
+
+      def feature_enabled?(project)
+        Feature.enabled?(:customer_relations, project.group, default_enabled: :yaml) && project.group&.crm_enabled?
       end
     end
   end

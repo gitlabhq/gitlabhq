@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe ProtectedTags::DestroyService do
   let(:protected_tag) { create(:protected_tag) }
   let(:project) { protected_tag.project }
-  let(:user) { project.owner }
+  let(:user) { project.first_owner }
 
   describe '#execute' do
     subject(:service) { described_class.new(project, user) }

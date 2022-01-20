@@ -76,12 +76,12 @@ RSpec.describe Clusters::Agent do
     end
   end
 
-  describe '#active?' do
+  describe '#connected?' do
     let_it_be(:agent) { create(:cluster_agent) }
 
     let!(:token) { create(:cluster_agent_token, agent: agent, last_used_at: last_used_at) }
 
-    subject { agent.active? }
+    subject { agent.connected? }
 
     context 'agent has never connected' do
       let(:last_used_at) { nil }
@@ -99,6 +99,14 @@ RSpec.describe Clusters::Agent do
       let(:last_used_at) { 2.minutes.ago }
 
       it { is_expected.to be_truthy }
+
+      context 'agent token has been revoked' do
+        before do
+          token.revoked!
+        end
+
+        it { is_expected.to be_falsey }
+      end
     end
 
     context 'agent has multiple tokens' do
@@ -107,5 +115,20 @@ RSpec.describe Clusters::Agent do
 
       it { is_expected.to be_truthy }
     end
+  end
+
+  describe '#activity_event_deletion_cutoff' do
+    let_it_be(:agent) { create(:cluster_agent) }
+    let_it_be(:event1) { create(:agent_activity_event, agent: agent, recorded_at: 1.hour.ago) }
+    let_it_be(:event2) { create(:agent_activity_event, agent: agent, recorded_at: 2.hours.ago) }
+    let_it_be(:event3) { create(:agent_activity_event, agent: agent, recorded_at: 3.hours.ago) }
+
+    subject { agent.activity_event_deletion_cutoff }
+
+    before do
+      stub_const("#{described_class}::ACTIVITY_EVENT_LIMIT", 2)
+    end
+
+    it { is_expected.to be_like_time(event2.recorded_at) }
   end
 end

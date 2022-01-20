@@ -6,13 +6,13 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Install the GitLab Agent Server (KAS) **(FREE SELF)**
 
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3834) in GitLab 13.10, the GitLab Agent Server (KAS) became available on GitLab.com under `wss://kas.gitlab.com`.
 > [Moved](https://gitlab.com/groups/gitlab-org/-/epics/6290) from GitLab Premium to GitLab Free in 14.5.
 
 The GitLab Agent Server (KAS) is a GitLab backend service dedicated to
 managing the [GitLab Agent](../../user/clusters/agent/index.md).
 
 The KAS is already installed and available in GitLab.com under `wss://kas.gitlab.com`.
-See [how to use GitLab.com's KAS](../../user/clusters/agent/install/index.md#set-up-the-agent-server).
 This document describes how to install a KAS for GitLab self-managed instances.
 
 ## Installation options

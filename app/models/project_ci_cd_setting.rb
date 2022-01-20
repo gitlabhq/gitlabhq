@@ -1,9 +1,11 @@
 # frozen_string_literal: true
 
 class ProjectCiCdSetting < ApplicationRecord
+  include ChronicDurationAttribute
+
   belongs_to :project, inverse_of: :ci_cd_settings
 
-  DEFAULT_GIT_DEPTH = 50
+  DEFAULT_GIT_DEPTH = 20
 
   before_create :set_default_git_depth
 
@@ -16,6 +18,8 @@ class ProjectCiCdSetting < ApplicationRecord
     allow_nil: true
 
   default_value_for :forward_deployment_enabled, true
+
+  chronic_duration_attr :runner_token_expiration_interval_human_readable, :runner_token_expiration_interval
 
   def forward_deployment_enabled?
     super && ::Feature.enabled?(:forward_deployment_enabled, project, default_enabled: true)

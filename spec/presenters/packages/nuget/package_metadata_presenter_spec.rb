@@ -24,6 +24,20 @@ RSpec.describe Packages::Nuget::PackageMetadataPresenter do
     subject { presenter.archive_url }
 
     it { is_expected.to end_with(expected_suffix) }
+
+    context 'with package files pending destruction' do
+      let_it_be(:package_file_pending_destruction) { create(:package_file, :pending_destruction, package: package, file_name: 'pending_destruction.nupkg') }
+
+      it { is_expected.not_to include('pending_destruction.nupkg') }
+
+      context 'with packages_installable_package_files disabled' do
+        before do
+          stub_feature_flags(packages_installable_package_files: false)
+        end
+
+        it { is_expected.to include('pending_destruction.nupkg') }
+      end
+    end
   end
 
   describe '#catalog_entry' do

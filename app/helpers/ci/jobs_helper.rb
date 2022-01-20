@@ -19,10 +19,12 @@ module Ci
       }
     end
 
-    def bridge_data(build)
+    def bridge_data(build, project)
       {
-        "build_name" =>  build.name,
-        "empty-state-illustration-path" => image_path('illustrations/job-trigger-md.svg')
+        "build_id" => build.id,
+        "empty-state-illustration-path" => image_path('illustrations/job-trigger-md.svg'),
+        "pipeline_iid" => build.pipeline.iid,
+        "project_full_path" => project.full_path
       }
     end
 

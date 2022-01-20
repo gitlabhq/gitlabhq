@@ -1,0 +1,8 @@
+---
+name: ci_use_variables_builder_definitions
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/75254
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/349049
+milestone: '14.7'
+type: development
+group: group::pipeline execution
+default_enabled: false

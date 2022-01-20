@@ -71,7 +71,7 @@ RSpec.describe 'Dashboard Issues' do
       find('#select2-drop-mask', visible: false)
       execute_script("$('#select2-drop-mask').remove();")
 
-      find('.new-project-item-link').click
+      find('.js-new-project-item-link').click
 
       expect(page).to have_current_path("#{project_path}/-/issues/new")
 

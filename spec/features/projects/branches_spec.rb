@@ -117,7 +117,7 @@ RSpec.describe 'Branches' do
       it 'sorts the branches by name', :js do
         visit project_branches_filtered_path(project, state: 'all')
 
-        click_button "Last updated" # Open sorting dropdown
+        click_button "Updated date" # Open sorting dropdown
         within '[data-testid="branches-dropdown"]' do
           find('p', text: 'Name').click
         end
@@ -128,7 +128,7 @@ RSpec.describe 'Branches' do
       it 'sorts the branches by oldest updated', :js do
         visit project_branches_filtered_path(project, state: 'all')
 
-        click_button "Last updated" # Open sorting dropdown
+        click_button "Updated date" # Open sorting dropdown
         within '[data-testid="branches-dropdown"]' do
           find('p', text: 'Oldest updated').click
         end
@@ -174,26 +174,6 @@ RSpec.describe 'Branches' do
 
         expect(page).not_to have_content('fix')
         expect(all('.all-branches').last).to have_selector('li', count: 0)
-      end
-
-      context 'when the delete_branch_confirmation_modals feature flag is disabled' do
-        it 'removes branch after confirmation', :js do
-          stub_feature_flags(delete_branch_confirmation_modals: false)
-          stub_feature_flags(bootstrap_confirmation_modals: false)
-
-          visit project_branches_filtered_path(project, state: 'all')
-
-          search_for_branch('fix')
-
-          expect(page).to have_content('fix')
-          expect(find('.all-branches')).to have_selector('li', count: 1)
-          accept_confirm do
-            within('.js-branch-item', match: :first) { click_link(title: 'Delete branch') }
-          end
-
-          expect(page).not_to have_content('fix')
-          expect(find('.all-branches')).to have_selector('li', count: 0)
-        end
       end
     end
 

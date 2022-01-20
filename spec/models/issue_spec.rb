@@ -15,7 +15,7 @@ RSpec.describe Issue do
     it { is_expected.to belong_to(:iteration) }
     it { is_expected.to belong_to(:project) }
     it { is_expected.to have_one(:namespace).through(:project) }
-    it { is_expected.to belong_to(:work_item_type).class_name('WorkItem::Type') }
+    it { is_expected.to belong_to(:work_item_type).class_name('WorkItems::Type') }
     it { is_expected.to belong_to(:moved_to).class_name('Issue') }
     it { is_expected.to have_one(:moved_from).class_name('Issue') }
     it { is_expected.to belong_to(:duplicated_to).class_name('Issue') }
@@ -235,6 +235,17 @@ RSpec.describe Issue do
     it 'returns ordered list' do
       expect(project.issues.order_by_relative_position)
         .to match [issue3, issue4, issue1, issue2]
+    end
+  end
+
+  # TODO: Remove when NOT NULL constraint is added to the relationship
+  describe '#work_item_type' do
+    let(:issue) { create(:issue, :incident, project: reusable_project, work_item_type: nil) }
+
+    it 'returns a default type if the legacy issue does not have a work item type associated yet' do
+      expect(issue.work_item_type_id).to be_nil
+      expect(issue.issue_type).to eq('incident')
+      expect(issue.work_item_type).to eq(WorkItems::Type.default_by_type(:incident))
     end
   end
 
@@ -1317,28 +1328,10 @@ RSpec.describe Issue do
     let_it_be(:issue1) { create(:issue, project: project, relative_position: nil) }
     let_it_be(:issue2) { create(:issue, project: project, relative_position: nil) }
 
-    context 'when optimized_issue_neighbor_queries is enabled' do
-      before do
-        stub_feature_flags(optimized_issue_neighbor_queries: true)
-      end
-
-      it_behaves_like "a class that supports relative positioning" do
-        let_it_be(:project) { reusable_project }
-        let(:factory) { :issue }
-        let(:default_params) { { project: project } }
-      end
-    end
-
-    context 'when optimized_issue_neighbor_queries is disabled' do
-      before do
-        stub_feature_flags(optimized_issue_neighbor_queries: false)
-      end
-
-      it_behaves_like "a class that supports relative positioning" do
-        let_it_be(:project) { reusable_project }
-        let(:factory) { :issue }
-        let(:default_params) { { project: project } }
-      end
+    it_behaves_like "a class that supports relative positioning" do
+      let_it_be(:project) { reusable_project }
+      let(:factory) { :issue }
+      let(:default_params) { { project: project } }
     end
 
     it 'is not blocked for repositioning by default' do
@@ -1578,6 +1571,15 @@ RSpec.describe Issue do
       participant = create(:issue_email_participant, email: 'SomEoNe@ExamPLe.com')
 
       expect(participant.issue.email_participants_emails_downcase).to match([participant.email.downcase])
+    end
+  end
+
+  describe '#escalation_status' do
+    it 'returns the incident_management_issuable_escalation_status association' do
+      escalation_status = create(:incident_management_issuable_escalation_status)
+      issue = escalation_status.issue
+
+      expect(issue.escalation_status).to eq(escalation_status)
     end
   end
 end

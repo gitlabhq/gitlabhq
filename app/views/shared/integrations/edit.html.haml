@@ -7,4 +7,7 @@
   = @integration.title
 
 = render 'shared/integrations/tabs', integration: @integration, active_tab: 'edit' do
-  = render 'shared/integrations/form', integration: @integration
+  - if vue_integration_form_enabled?
+    = render 'shared/integration_settings', integration: @integration
+  - else
+    = render 'shared/integrations/form', integration: @integration

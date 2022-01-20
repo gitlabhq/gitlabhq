@@ -1,0 +1,8 @@
+---
+name: rebase_without_ci_ui
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/78194
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/350262
+milestone: '14.7'
+type: development
+group: group::pipeline execution
+default_enabled: false

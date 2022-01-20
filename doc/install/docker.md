@@ -141,23 +141,25 @@ install, and upgrade your Docker-based GitLab installation:
 1. Create a `docker-compose.yml` file (or [download an example](https://gitlab.com/gitlab-org/omnibus-gitlab/raw/master/docker/docker-compose.yml)):
 
    ```yaml
-   web:
-     image: 'gitlab/gitlab-ee:latest'
-     restart: always
-     hostname: 'gitlab.example.com'
-     environment:
-       GITLAB_OMNIBUS_CONFIG: |
-         external_url 'https://gitlab.example.com'
-         # Add any other gitlab.rb configuration here, each on its own line
-     ports:
-       - '80:80'
-       - '443:443'
-       - '22:22'
-     volumes:
-       - '$GITLAB_HOME/config:/etc/gitlab'
-       - '$GITLAB_HOME/logs:/var/log/gitlab'
-       - '$GITLAB_HOME/data:/var/opt/gitlab'
-     shm_size: '256m'
+   version: '3.6'
+   services:
+     web:
+       image: 'gitlab/gitlab-ee:latest'
+       restart: always
+       hostname: 'gitlab.example.com'
+       environment:
+         GITLAB_OMNIBUS_CONFIG: |
+           external_url 'https://gitlab.example.com'
+           # Add any other gitlab.rb configuration here, each on its own line
+       ports:
+         - '80:80'
+         - '443:443'
+         - '22:22'
+       volumes:
+         - '$GITLAB_HOME/config:/etc/gitlab'
+         - '$GITLAB_HOME/logs:/var/log/gitlab'
+         - '$GITLAB_HOME/data:/var/opt/gitlab'
+       shm_size: '256m'
    ```
 
 1. Make sure you are in the same directory as `docker-compose.yml` and start
@@ -176,22 +178,24 @@ HTTP and SSH port. Notice how the `GITLAB_OMNIBUS_CONFIG` variables match the
 `ports` section:
 
 ```yaml
-web:
-  image: 'gitlab/gitlab-ee:latest'
-  restart: always
-  hostname: 'gitlab.example.com'
-  environment:
-    GITLAB_OMNIBUS_CONFIG: |
-      external_url 'http://gitlab.example.com:8929'
-      gitlab_rails['gitlab_shell_ssh_port'] = 2224
-  ports:
-    - '8929:8929'
-    - '2224:22'
-  volumes:
-    - '$GITLAB_HOME/config:/etc/gitlab'
-    - '$GITLAB_HOME/logs:/var/log/gitlab'
-    - '$GITLAB_HOME/data:/var/opt/gitlab'
-  shm_size: '256m'
+version: '3.6'
+services:
+  web:
+    image: 'gitlab/gitlab-ee:latest'
+    restart: always
+    hostname: 'gitlab.example.com'
+    environment:
+      GITLAB_OMNIBUS_CONFIG: |
+        external_url 'http://gitlab.example.com:8929'
+        gitlab_rails['gitlab_shell_ssh_port'] = 2224
+    ports:
+      - '8929:8929'
+      - '2224:22'
+    volumes:
+      - '$GITLAB_HOME/config:/etc/gitlab'
+      - '$GITLAB_HOME/logs:/var/log/gitlab'
+      - '$GITLAB_HOME/data:/var/opt/gitlab'
+    shm_size: '256m'
 ```
 
 This is the same as using `--publish 8929:8929 --publish 2224:22`.
@@ -653,3 +657,15 @@ purpose.
 ### Docker containers exhausts space due to the `json-file`
 
 Docker's [default logging driver is `json-file`](https://docs.docker.com/config/containers/logging/configure/#configure-the-default-logging-driver), which performs no log rotation by default. As a result of this lack of rotation, log files stored by the `json-file` driver can consume a significant amount of disk space for containers that generate a lot of output. This can lead to disk space exhaustion. To address this, use [`journald`](https://docs.docker.com/config/containers/logging/journald/) as the logging driver when available, or [another supported driver](https://docs.docker.com/config/containers/logging/configure/#supported-logging-drivers) with native rotation support.
+
+### Buffer overflow error when starting Docker
+
+If you receive this buffer overflow error, you should purge old log files in
+`/var/log/gitlab`:
+
+```plaintext
+buffer overflow detected : terminated
+xargs: tail: terminated by signal 6
+```
+
+Removing old log files helps fix the error, and ensures a clean startup of the instance.

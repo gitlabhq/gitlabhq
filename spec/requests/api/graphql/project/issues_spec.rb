@@ -539,6 +539,43 @@ RSpec.describe 'getting an issue list for a project' do
     end
   end
 
+  context 'when fetching escalation status' do
+    let_it_be(:escalation_status) { create(:incident_management_issuable_escalation_status, issue: issue_a) }
+
+    let(:statuses) { issue_data.to_h { |issue| [issue['iid'], issue['escalationStatus']] } }
+    let(:fields) do
+      <<~QUERY
+        edges {
+          node {
+            id
+            escalationStatus
+          }
+        }
+      QUERY
+    end
+
+    before do
+      issue_a.update!(issue_type: Issue.issue_types[:incident])
+    end
+
+    it 'returns the escalation status values' do
+      post_graphql(query, current_user: current_user)
+
+      statuses = issues_data.map { |issue| issue.dig('node', 'escalationStatus') }
+
+      expect(statuses).to contain_exactly(escalation_status.status_name.upcase.to_s, nil)
+    end
+
+    it 'avoids N+1 queries', :aggregate_failures do
+      base_count = ActiveRecord::QueryRecorder.new { run_with_clean_state(query, context: { current_user: current_user }) }
+
+      new_incident = create(:incident, project: project)
+      create(:incident_management_issuable_escalation_status, issue: new_incident)
+
+      expect { run_with_clean_state(query, context: { current_user: current_user }) }.not_to exceed_query_limit(base_count)
+    end
+  end
+
   describe 'N+1 query checks' do
     let(:extra_iid_for_second_query) { issue_b.iid.to_s }
     let(:search_params) { { iids: [issue_a.iid.to_s] } }

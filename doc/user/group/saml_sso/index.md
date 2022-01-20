@@ -1,7 +1,7 @@
 ---
 type: reference, howto
 stage: Manage
-group: Access
+group: Authentication & Authorization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
@@ -13,10 +13,6 @@ This page describes SAML for groups. For instance-wide SAML on self-managed GitL
 [View the differences between SaaS and Self-Managed Authentication and Authorization Options](../../../administration/auth/index.md#saas-vs-self-managed-comparison).
 
 SAML on GitLab.com allows users to sign in through their SAML identity provider. If the user is not already a member, the sign-in process automatically adds the user to the appropriate group.
-
-INFO:
-Use your own SAML authentication to log in to [GitLab.com](http://gitlab.com/).
-[Try GitLab Ultimate free for 30 days](https://about.gitlab.com/free-trial/index.html?glm_source=docs.gitlab.com&glm_content=p-saml-sso-docs).
 
 User synchronization of SAML SSO groups is supported through [SCIM](scim_setup.md). SCIM supports adding and removing users from the GitLab group automatically.
 For example, if you remove a user from the SCIM app, SCIM removes that same user from the GitLab group.
@@ -72,10 +68,10 @@ To create users with the correct information for improved [user access and manag
 the user's details must be passed to GitLab as attributes in the SAML assertion. At a minimum, the user's email address
 must be specified as an attribute named `email` or `mail`.
 
-GitLab.com supports the following attributes:
+You can configure the following attributes with GitLab.com Group SAML:
 
 - `username` or `nickname`. We recommend you configure only one of these.
-- The [attributes also available](../../../integration/saml.md#assertions) to self-managed GitLab instances.
+- The [attributes available](../../../integration/saml.md#assertions) to self-managed GitLab instances.
 
 ### Metadata configuration
 
@@ -110,6 +106,7 @@ The certificate [fingerprint algorithm](../../../integration/saml.md#notes-on-co
 > - [Improved](https://gitlab.com/gitlab-org/gitlab/-/issues/292811) in GitLab 13.8, with an updated timeout experience.
 > - [Improved](https://gitlab.com/gitlab-org/gitlab/-/issues/211962) in GitLab 13.8 with allowing group owners to not go through SSO.
 > - [Improved](https://gitlab.com/gitlab-org/gitlab/-/issues/9152) in GitLab 13.11 with enforcing open SSO session to use Git if this setting is switched on.
+> - [Improved](https://gitlab.com/gitlab-org/gitlab/-/issues/339888) in GitLab 14.7 to not enforce SSO checks for Git activity originating from CI/CD jobs.
 
 With this option enabled, users (except users with the Owner role) must access GitLab using your group GitLab single sign-on URL to access group resources. Users added manually as members can't access group resources.
 
@@ -127,6 +124,7 @@ SSO has the following effects when enabled:
   even if the project is forked.
 - For Git activity over SSH and HTTPS, users must have at least one active session signed-in through SSO before they can push to or
   pull from a GitLab repository.
+- Git activity originating from CI/CD jobs do not have the SSO check enforced.
 - Credentials that are not tied to regular users (for example, access tokens and deploy keys) do not have the SSO check enforced.
 - Users must be signed-in through SSO before they can pull images using the [Dependency Proxy](../../packages/dependency_proxy/index.md).
 <!-- Add bullet for API activity when https://gitlab.com/gitlab-org/gitlab/-/issues/9152 is complete -->
@@ -136,8 +134,6 @@ When SSO is enforced, users are not immediately revoked. If the user:
 - Is signed out, they cannot access the group after being removed from the identity provider.
 - Has an active session, they can continue accessing the group for up to 24 hours until the identity
   provider session times out.
-
-When SCIM updates, the user's access is immediately revoked.
 
 ## Providers
 
@@ -167,10 +163,11 @@ objectID mapping and the [SCIM documentation should be followed](scim_setup.md#a
 | Identity provider single sign-on URL | Login URL                                  |
 | Certificate fingerprint              | Thumbprint                                 |
 
-We recommend:
+The recommended attributes and claims settings are:
 
 - **Unique User Identifier (Name identifier)** set to `user.objectID`.
 - **nameid-format** set to persistent.
+- Additional claims set to [supported attributes](#user-attributes).
 
 If using [Group Sync](#group-sync), customize the name of the group claim to match the required attribute.
 
@@ -304,7 +301,14 @@ If a user is already a member of the group, linking the SAML identity does not c
 
 ### Blocking access
 
-Please refer to [Blocking access via SCIM](scim_setup.md#blocking-access).
+To rescind a user's access to the group when only SAML SSO is configured, either:
+
+- Remove (in order) the user from:
+  1. The user data store on the identity provider or the list of users on the specific app.
+  1. The GitLab.com group.
+- Use Group Sync at the top-level of your group to [automatically remove the user](#automatic-member-removal).
+
+To rescind a user's access to the group when also using SCIM, refer to [Blocking access](scim_setup.md#blocking-access).
 
 ### Unlinking accounts
 
@@ -348,6 +352,10 @@ Ensure your SAML identity provider sends an attribute statement named `Groups` o
   </saml:Attribute>
 </saml:AttributeStatement>
 ```
+
+WARNING:
+Setting up Group Sync can disconnect users from SAML IDP if there is any mismatch in the configuration. Ensure the
+`Groups` attribute is included in the SAML response, and the **SAML Group Name** matches the `AttributeValue` attribute.
 
 Other attribute names such as `http://schemas.microsoft.com/ws/2008/06/identity/claims/groups`
 are not accepted as a source of groups.

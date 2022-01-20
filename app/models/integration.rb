@@ -92,6 +92,7 @@ class Integration < ApplicationRecord
   scope :note_hooks, -> { where(note_events: true, active: true) }
   scope :confidential_note_hooks, -> { where(confidential_note_events: true, active: true) }
   scope :job_hooks, -> { where(job_events: true, active: true) }
+  scope :archive_trace_hooks, -> { where(archive_trace_events: true, active: true) }
   scope :pipeline_hooks, -> { where(pipeline_events: true, active: true) }
   scope :wiki_page_hooks, -> { where(wiki_page_events: true, active: true) }
   scope :deployment_hooks, -> { where(deployment_events: true, active: true) }

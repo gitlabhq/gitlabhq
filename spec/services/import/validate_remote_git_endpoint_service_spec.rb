@@ -24,6 +24,17 @@ RSpec.describe Import::ValidateRemoteGitEndpointService do
       expect(Gitlab::HTTP).to have_received(:get).with(endpoint_url, basic_auth: nil, stream_body: true, follow_redirects: false)
     end
 
+    context 'when uri is using git:// protocol' do
+      subject { described_class.new(url: 'git://demo.host/repo')}
+
+      it 'returns success' do
+        result = subject.execute
+
+        expect(result).to be_a(ServiceResponse)
+        expect(result.success?).to be(true)
+      end
+    end
+
     context 'when receiving HTTP response' do
       subject { described_class.new(url: base_url) }
 

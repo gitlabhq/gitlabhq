@@ -20,6 +20,10 @@ RSpec.describe RegistrationsController do
   end
 
   describe '#create' do
+    before do
+      allow(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).and_return(false)
+    end
+
     let_it_be(:base_user_params) do
       { first_name: 'first', last_name: 'last', username: 'new_username', email: 'new@user.com', password: 'Any_password' }
     end
@@ -410,6 +414,18 @@ RSpec.describe RegistrationsController do
       end
     end
 
+    context 'when the rate limit has been reached' do
+      it 'returns status 429 Too Many Requests', :aggregate_failures do
+        ip = '1.2.3.4'
+        expect(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).with(:user_sign_up, scope: ip).and_return(true)
+
+        controller.request.env['REMOTE_ADDR'] = ip
+        post(:create, params: user_params, session: session_params)
+
+        expect(response).to have_gitlab_http_status(:too_many_requests)
+      end
+    end
+
     it "logs a 'User Created' message" do
       expect(Gitlab::AppLogger).to receive(:info).with(/\AUser Created: username=new_username email=new@user.com.+\z/).and_call_original
 
@@ -483,7 +499,7 @@ RSpec.describe RegistrationsController do
       end
 
       it 'succeeds if password is confirmed' do
-        post :destroy, params: { password: '12345678' }
+        post :destroy, params: { password: Gitlab::Password.test_default }
 
         expect_success
       end
@@ -524,7 +540,7 @@ RSpec.describe RegistrationsController do
           end
 
           it 'fails' do
-            delete :destroy, params: { password: '12345678' }
+            delete :destroy, params: { password: Gitlab::Password.test_default }
 
             expect_failure(s_('Profiles|You must transfer ownership or delete groups you are an owner of before you can delete your account'))
           end

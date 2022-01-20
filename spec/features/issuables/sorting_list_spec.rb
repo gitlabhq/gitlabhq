@@ -54,10 +54,10 @@ RSpec.describe 'Sort Issuable List' do
       context 'in the "merge requests / merged" tab', :js do
         let(:issuable_type) { :merged_merge_request }
 
-        it 'is "last updated"' do
+        it 'is "updated date"' do
           visit_merge_requests_with_state(project, 'merged')
 
-          expect(page).to have_button 'Last updated'
+          expect(page).to have_button 'Updated date'
           expect(first_merge_request).to include(last_updated_issuable.title)
           expect(last_merge_request).to include(first_updated_issuable.title)
         end
@@ -66,10 +66,10 @@ RSpec.describe 'Sort Issuable List' do
       context 'in the "merge requests / closed" tab', :js do
         let(:issuable_type) { :closed_merge_request }
 
-        it 'is "last updated"' do
+        it 'is "updated date"' do
           visit_merge_requests_with_state(project, 'closed')
 
-          expect(page).to have_button 'Last updated'
+          expect(page).to have_button 'Updated date'
           expect(first_merge_request).to include(last_updated_issuable.title)
           expect(last_merge_request).to include(first_updated_issuable.title)
         end
@@ -95,7 +95,7 @@ RSpec.describe 'Sort Issuable List' do
         visit_merge_requests_with_state(project, 'open')
 
         click_button('Created date')
-        click_link('Last updated')
+        click_link('Updated date')
 
         expect(first_merge_request).to include(last_updated_issuable.title)
         expect(last_merge_request).to include(first_updated_issuable.title)
@@ -152,10 +152,10 @@ RSpec.describe 'Sort Issuable List' do
       context 'in the "issues / closed" tab', :js do
         let(:issuable_type) { :closed_issue }
 
-        it 'is "last updated"' do
+        it 'is "updated date"' do
           visit_issues_with_state(project, 'closed')
 
-          expect(page).to have_button 'Last updated'
+          expect(page).to have_button 'Updated date'
           expect(first_issue).to include(last_updated_issuable.title)
           expect(last_issue).to include(first_updated_issuable.title)
         end
@@ -195,7 +195,7 @@ RSpec.describe 'Sort Issuable List' do
         visit_issues_with_state(project, 'opened')
 
         click_button('Created date')
-        click_on('Last updated')
+        click_on('Updated date')
 
         expect(page).to have_css('.issue:first-child', text: last_updated_issuable.title)
         expect(page).to have_css('.issue:last-child', text: first_updated_issuable.title)

@@ -10,7 +10,7 @@ RSpec.describe Email do
   end
 
   describe 'validations' do
-    it_behaves_like 'an object with RFC3696 compliant email-formatted attributes', :email do
+    it_behaves_like 'an object with email-formatted attributes', :email do
       subject { build(:email) }
     end
 
@@ -69,6 +69,86 @@ RSpec.describe Email do
           user.emails.create!(email: 'hello@hello.com')
         end.to have_enqueued_job.on_queue('mailers')
       end
+    end
+  end
+
+  describe '#confirm' do
+    let(:expired_confirmation_sent_at) { Date.today - described_class.confirm_within - 7.days }
+    let(:extant_confirmation_sent_at) { Date.today }
+
+    let(:email) do
+      create(:email, email: 'test@gitlab.com').tap do |email|
+        email.update!(confirmation_sent_at: confirmation_sent_at)
+      end
+    end
+
+    shared_examples_for 'unconfirmed email' do
+      it 'returns unconfirmed' do
+        expect(email.confirmed?).to be_falsey
+      end
+    end
+
+    context 'when the confirmation period has expired' do
+      let(:confirmation_sent_at) {  expired_confirmation_sent_at }
+
+      it_behaves_like 'unconfirmed email'
+
+      it 'does not confirm the email' do
+        email.confirm
+
+        expect(email.confirmed?).to be_falsey
+      end
+    end
+
+    context 'when the confirmation period has not expired' do
+      let(:confirmation_sent_at) {  extant_confirmation_sent_at }
+
+      it_behaves_like 'unconfirmed email'
+
+      it 'confirms the email' do
+        email.confirm
+
+        expect(email.confirmed?).to be_truthy
+      end
+    end
+  end
+
+  describe '#force_confirm' do
+    let(:expired_confirmation_sent_at) { Date.today - described_class.confirm_within - 7.days }
+    let(:extant_confirmation_sent_at) { Date.today }
+
+    let(:email) do
+      create(:email, email: 'test@gitlab.com').tap do |email|
+        email.update!(confirmation_sent_at: confirmation_sent_at)
+      end
+    end
+
+    shared_examples_for 'unconfirmed email' do
+      it 'returns unconfirmed' do
+        expect(email.confirmed?).to be_falsey
+      end
+    end
+
+    shared_examples_for 'confirms the email on force_confirm' do
+      it 'confirms an email' do
+        email.force_confirm
+
+        expect(email.reload.confirmed?).to be_truthy
+      end
+    end
+
+    context 'when the confirmation period has expired' do
+      let(:confirmation_sent_at) {  expired_confirmation_sent_at }
+
+      it_behaves_like 'unconfirmed email'
+      it_behaves_like 'confirms the email on force_confirm'
+    end
+
+    context 'when the confirmation period has not expired' do
+      let(:confirmation_sent_at) {  extant_confirmation_sent_at }
+
+      it_behaves_like 'unconfirmed email'
+      it_behaves_like 'confirms the email on force_confirm'
     end
   end
 end

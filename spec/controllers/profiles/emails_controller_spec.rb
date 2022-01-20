@@ -49,7 +49,7 @@ RSpec.describe Profiles::EmailsController do
     end
 
     context 'when email address is invalid' do
-      let(:email) { 'invalid.@example.com' }
+      let(:email) { 'invalid@@example.com' }
 
       it 'does not send an email confirmation' do
         expect { subject }.not_to change { ActionMailer::Base.deliveries.size }

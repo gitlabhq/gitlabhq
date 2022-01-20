@@ -272,6 +272,8 @@ describe('Clusters', () => {
     describe('when updating currentPage', () => {
       beforeEach(() => {
         mockPollingApi(200, apiData, paginationHeader(totalSecondPage, perPage, 2));
+        // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+        // eslint-disable-next-line no-restricted-syntax
         wrapper.setData({ currentPage: 2 });
         return axios.waitForAll();
       });

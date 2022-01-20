@@ -1,14 +1,15 @@
-import { GlDropdownItem, GlLoadingIcon, GlToast } from '@gitlab/ui';
+import { GlDropdownItem, GlLoadingIcon, GlToast, GlModal } from '@gitlab/ui';
 import { createLocalVue, shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import RegistrationTokenResetDropdownItem from '~/runner/components/registration/registration_token_reset_dropdown_item.vue';
 import { INSTANCE_TYPE, GROUP_TYPE, PROJECT_TYPE } from '~/runner/constants';
 import runnersRegistrationTokenResetMutation from '~/runner/graphql/runners_registration_token_reset.mutation.graphql';
 import { captureException } from '~/runner/sentry_utils';
+import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 
 jest.mock('~/flash');
 jest.mock('~/runner/sentry_utils');
@@ -18,14 +19,18 @@ localVue.use(VueApollo);
 localVue.use(GlToast);
 
 const mockNewToken = 'NEW_TOKEN';
+const modalID = 'token-reset-modal';
 
 describe('RegistrationTokenResetDropdownItem', () => {
   let wrapper;
   let runnersRegistrationTokenResetMutationHandler;
   let showToast;
 
+  const mockEvent = { preventDefault: jest.fn() };
   const findDropdownItem = () => wrapper.findComponent(GlDropdownItem);
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
+  const findModal = () => wrapper.findComponent(GlModal);
+  const clickSubmit = () => findModal().vm.$emit('primary', mockEvent);
 
   const createComponent = ({ props, provide = {} } = {}) => {
     wrapper = shallowMount(RegistrationTokenResetDropdownItem, {
@@ -38,6 +43,9 @@ describe('RegistrationTokenResetDropdownItem', () => {
       apolloProvider: createMockApollo([
         [runnersRegistrationTokenResetMutation, runnersRegistrationTokenResetMutationHandler],
       ]),
+      directives: {
+        GlModal: createMockDirective(),
+      },
     });
 
     showToast = wrapper.vm.$toast ? jest.spyOn(wrapper.vm.$toast, 'show') : null;
@@ -54,8 +62,6 @@ describe('RegistrationTokenResetDropdownItem', () => {
     });
 
     createComponent();
-
-    jest.spyOn(window, 'confirm');
   });
 
   afterEach(() => {
@@ -64,6 +70,18 @@ describe('RegistrationTokenResetDropdownItem', () => {
 
   it('Displays reset button', () => {
     expect(findDropdownItem().exists()).toBe(true);
+  });
+
+  describe('modal directive integration', () => {
+    it('has the correct ID on the dropdown', () => {
+      const binding = getBinding(findDropdownItem().element, 'gl-modal');
+
+      expect(binding.value).toBe(modalID);
+    });
+
+    it('has the correct ID on the modal', () => {
+      expect(findModal().props('modalId')).toBe(modalID);
+    });
   });
 
   describe('On click and confirmation', () => {
@@ -82,9 +100,8 @@ describe('RegistrationTokenResetDropdownItem', () => {
           props: { type },
         });
 
-        window.confirm.mockReturnValueOnce(true);
-
         findDropdownItem().trigger('click');
+        clickSubmit();
         await waitForPromises();
       });
 
@@ -114,7 +131,6 @@ describe('RegistrationTokenResetDropdownItem', () => {
 
   describe('On click without confirmation', () => {
     beforeEach(async () => {
-      window.confirm.mockReturnValueOnce(false);
       findDropdownItem().vm.$emit('click');
       await waitForPromises();
     });
@@ -142,11 +158,11 @@ describe('RegistrationTokenResetDropdownItem', () => {
 
       runnersRegistrationTokenResetMutationHandler.mockRejectedValueOnce(new Error(mockErrorMsg));
 
-      window.confirm.mockReturnValueOnce(true);
       findDropdownItem().trigger('click');
+      clickSubmit();
       await waitForPromises();
 
-      expect(createFlash).toHaveBeenLastCalledWith({
+      expect(createAlert).toHaveBeenLastCalledWith({
         message: `Network error: ${mockErrorMsg}`,
       });
       expect(captureException).toHaveBeenCalledWith({
@@ -168,11 +184,11 @@ describe('RegistrationTokenResetDropdownItem', () => {
         },
       });
 
-      window.confirm.mockReturnValueOnce(true);
       findDropdownItem().trigger('click');
+      clickSubmit();
       await waitForPromises();
 
-      expect(createFlash).toHaveBeenLastCalledWith({
+      expect(createAlert).toHaveBeenLastCalledWith({
         message: `${mockErrorMsg} ${mockErrorMsg2}`,
       });
       expect(captureException).toHaveBeenCalledWith({
@@ -184,8 +200,8 @@ describe('RegistrationTokenResetDropdownItem', () => {
 
   describe('Immediately after click', () => {
     it('shows loading state', async () => {
-      window.confirm.mockReturnValue(true);
       findDropdownItem().trigger('click');
+      clickSubmit();
       await nextTick();
 
       expect(findLoadingIcon().exists()).toBe(true);

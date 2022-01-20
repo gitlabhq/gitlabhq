@@ -1,13 +1,10 @@
 ---
-type: reference, howto
 stage: Release
 group: Release
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Create a Pages website from a template **(FREE)**
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/47857) in GitLab 11.8.
 
 GitLab provides templates for the most popular Static Site Generators (SSGs).
 You can create a new project from a template and run the CI/CD pipeline to generate a Pages website.

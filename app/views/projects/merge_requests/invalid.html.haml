@@ -1,11 +1,8 @@
 - page_title "#{@merge_request.title} (#{@merge_request.to_reference}", _("Merge requests")
 
-- badge_start = '<span class="badge badge-pill gl-badge sm badge-info">'.html_safe
-- badge_end = '</span>'.html_safe
-
 - err_fork_project_removed = s_("MergeRequest|Can't show this merge request because the fork project was deleted.")
-- err_source_branch = s_("MergeRequest|Can't show this merge request because the source branch %{badge_start}%{source_branch}%{badge_end} is missing from project %{badge_start}%{project_path}%{badge_end}. Close this merge request or update the source branch.")
-- err_target_branch = s_("MergeRequest|Can't show this merge request because the target branch %{badge_start}%{target_branch}%{badge_end} is missing from project %{badge_start}%{project_path}%{badge_end}. Close this merge request or update the target branch.")
+- err_source_branch = s_("MergeRequest|Can't show this merge request because the source branch %{branch_badge} is missing from project %{path_badge}. Close this merge request or update the source branch.")
+- err_target_branch = s_("MergeRequest|Can't show this merge request because the target branch %{branch_badge} is missing from project %{path_badge}. Close this merge request or update the target branch.")
 - err_internal = s_("MergeRequest|Can't show this merge request because of an internal error. Contact your administrator.")
 
 .merge-request
@@ -20,8 +17,8 @@
           - if @merge_request.for_fork? && !@merge_request.source_project
             = err_fork_project_removed
           - elsif !@merge_request.source_branch_exists?
-            = err_source_branch.html_safe % { badge_start: badge_start, badge_end: badge_end, source_branch: @merge_request.source_branch, project_path: @merge_request.source_project_path }
+            = err_source_branch.html_safe % { branch_badge: gl_badge_tag(@merge_request.source_branch, variant: :info, size: :sm), path_badge: gl_badge_tag(@merge_request.source_project_path, variant: :info, size: :sm) }
           - elsif !@merge_request.target_branch_exists?
-            = err_target_branch.html_safe % { badge_start: badge_start, badge_end: badge_end, target_branch: @merge_request.target_branch, project_path: @merge_request.source_project_path }
+            = err_target_branch.html_safe % { branch_badge: gl_badge_tag(@merge_request.target_branch, variant: :info, size: :sm), path_badge: gl_badge_tag(@merge_request.source_project_path, variant: :info, size: :sm) }
           - else
             = err_internal

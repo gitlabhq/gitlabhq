@@ -151,7 +151,11 @@ export default {
 
   <section v-else-if="agentList">
     <div v-if="agentList.length">
-      <agent-table :agents="agentList" />
+      <agent-table
+        :agents="agentList"
+        :default-branch-name="defaultBranchName"
+        :max-agents="cursor.first"
+      />
 
       <div v-if="showPagination" class="gl-display-flex gl-justify-content-center gl-mt-5">
         <gl-keyset-pagination v-bind="agentPageInfo" @prev="prevPage" @next="nextPage" />

@@ -70,17 +70,17 @@ if !Rails.env.test? && Gitlab::Metrics.prometheus_metrics_enabled?
 
   Gitlab::Cluster::LifecycleEvents.on_worker_start do
     defined?(::Prometheus::Client.reinitialize_on_pid_change) && ::Prometheus::Client.reinitialize_on_pid_change
-
-    Gitlab::Metrics::Samplers::RubySampler.initialize_instance.start
-    Gitlab::Metrics::Samplers::DatabaseSampler.initialize_instance.start
-    Gitlab::Metrics::Samplers::ThreadsSampler.initialize_instance.start
+    logger = Gitlab::AppLogger
+    Gitlab::Metrics::Samplers::RubySampler.initialize_instance(logger: logger).start
+    Gitlab::Metrics::Samplers::DatabaseSampler.initialize_instance(logger: logger).start
+    Gitlab::Metrics::Samplers::ThreadsSampler.initialize_instance(logger: logger).start
 
     if Gitlab::Runtime.web_server?
-      Gitlab::Metrics::Samplers::ActionCableSampler.instance.start
+      Gitlab::Metrics::Samplers::ActionCableSampler.instance(logger: logger).start
     end
 
     if Gitlab.ee? && Gitlab::Runtime.sidekiq?
-      Gitlab::Metrics::Samplers::GlobalSearchSampler.instance.start
+      Gitlab::Metrics::Samplers::GlobalSearchSampler.instance(logger: logger).start
     end
 
     Gitlab::Ci::Parsers.instrument!

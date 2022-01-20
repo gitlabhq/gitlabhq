@@ -4,6 +4,8 @@ import FileSha from '~/packages_and_registries/package_registry/components/detai
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import DetailsRow from '~/vue_shared/components/registry/details_row.vue';
 
+jest.mock('lodash/uniqueId', () => (prefix) => (prefix ? `${prefix}1` : 1));
+
 describe('FileSha', () => {
   let wrapper;
 

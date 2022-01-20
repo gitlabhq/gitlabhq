@@ -16,7 +16,9 @@ RSpec.describe ForkTargetsFinder do
   end
 
   let!(:developer_group) do
-    create(:group).tap { |g| g.add_developer(user) }
+    create(:group, project_creation_level: ::Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS).tap do |g|
+      g.add_developer(user)
+    end
   end
 
   let!(:reporter_group) do
@@ -33,11 +35,11 @@ RSpec.describe ForkTargetsFinder do
 
   describe '#execute' do
     it 'returns all user manageable namespaces' do
-      expect(finder.execute).to match_array([user.namespace, maintained_group, owned_group, project.namespace])
+      expect(finder.execute).to match_array([user.namespace, maintained_group, owned_group, project.namespace, developer_group])
     end
 
     it 'returns only groups when only_groups option is passed' do
-      expect(finder.execute(only_groups: true)).to match_array([maintained_group, owned_group, project.namespace])
+      expect(finder.execute(only_groups: true)).to match_array([maintained_group, owned_group, project.namespace, developer_group])
     end
 
     it 'returns groups relation when only_groups option is passed' do

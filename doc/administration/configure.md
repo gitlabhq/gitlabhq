@@ -15,7 +15,7 @@ Customize and configure your self-managed GitLab installation. Here are some qui
 - [Geo](geo/index.md)
 - [Packages](packages/index.md)
 
-The following tables are intended to guide you to choose the right combination of capabilties based on your requirements. It is common to want the most
+The following tables are intended to guide you to choose the right combination of capabilities based on your requirements. It is common to want the most
 available, quickly recoverable, highly performant and fully data resilient solution. However, there are tradeoffs.
 
 The tables lists features on the left and provides their capabilities to the right along with known trade-offs.

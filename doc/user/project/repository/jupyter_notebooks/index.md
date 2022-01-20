@@ -25,10 +25,10 @@ GitLab.
 
 ## Cleaner diffs
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/epics/6589) in GitLab 14.5 [with a flag](../../../../administration/feature_flags.md) named `jupyter_clean_diffs`. Disabled by default.
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/6589) in GitLab 14.5 [with a flag](../../../../administration/feature_flags.md) named `jupyter_clean_diffs`. Enabled by default.
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../../../../administration/feature_flags.md) named `jupyter_clean_diffs`.
+On self-managed GitLab, by default this feature is available. To hide the feature, ask an administrator to [disable the feature flag](../../../../administration/feature_flags.md) named `jupyter_clean_diffs`.
 On GitLab.com, this feature is available.
 
 When commits include changes to Jupyter Notebook files, GitLab:

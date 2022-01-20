@@ -90,9 +90,10 @@ label section of the right sidebar of an issue or a merge request:
      color value for a specific color.
 1. Click **Create**.
 
-Once created, you can edit a label by clicking the pencil (**{pencil}**), or delete
-a label by clicking the three dots (**{ellipsis_v}**) next to the **Subscribe** button
-and selecting **Delete**.
+To edit a label after you create it, select (**{pencil}**).
+
+To delete a project label, select (**{ellipsis_v}**) next to the **Subscribe** button
+and select **Delete** or select **Delete** when you edit a label.
 
 WARNING:
 If you delete a label, it is permanently deleted. All references to the label are removed from the system and you cannot undo the deletion.

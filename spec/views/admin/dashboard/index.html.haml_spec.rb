@@ -53,11 +53,14 @@ RSpec.describe 'admin/dashboard/index.html.haml' do
     expect(rendered).not_to have_content "Users over License"
   end
 
-  it 'links to the GitLab Changelog' do
-    stub_application_setting(version_check_enabled: true)
+  describe 'when show_version_check? is true' do
+    before do
+      allow(view).to receive(:show_version_check?).and_return(true)
+      render
+    end
 
-    render
-
-    expect(rendered).to have_link(href: 'https://gitlab.com/gitlab-org/gitlab/-/blob/master/CHANGELOG.md')
+    it 'renders the version check badge' do
+      expect(rendered).to have_selector('.js-gitlab-version-check')
+    end
   end
 end

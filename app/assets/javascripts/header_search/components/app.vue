@@ -19,8 +19,7 @@ import HeaderSearchScopedItems from './header_search_scoped_items.vue';
 export default {
   name: 'HeaderSearchApp',
   i18n: {
-    searchPlaceholder: s__('GlobalSearch|Search or jump to...'),
-    searchAria: s__('GlobalSearch|Search GitLab'),
+    searchGitlab: s__('GlobalSearch|Search GitLab'),
     searchInputDescribeByNoDropdown: s__(
       'GlobalSearch|Type and press the enter key to submit search.',
     ),
@@ -136,7 +135,7 @@ export default {
   <form
     v-outside="closeDropdown"
     role="search"
-    :aria-label="$options.i18n.searchAria"
+    :aria-label="$options.i18n.searchGitlab"
     class="header-search gl-relative"
   >
     <gl-search-box-by-type
@@ -145,7 +144,7 @@ export default {
       role="searchbox"
       class="gl-z-index-1"
       autocomplete="off"
-      :placeholder="$options.i18n.searchPlaceholder"
+      :placeholder="$options.i18n.searchGitlab"
       :aria-activedescendant="currentFocusedId"
       :aria-describedby="$options.SEARCH_INPUT_DESCRIPTION"
       @focus="openDropdown"

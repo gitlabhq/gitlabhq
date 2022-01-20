@@ -51,6 +51,10 @@ module Resolvers
              required: false,
              description: 'Merge request state. If provided, all resolved merge requests will have this state.'
 
+    argument :draft, GraphQL::Types::Boolean,
+             required: false,
+             description: 'Limit result to draft merge requests.'
+
     argument :labels, [GraphQL::Types::String],
              required: false,
              as: :label_name,

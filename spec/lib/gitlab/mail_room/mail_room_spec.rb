@@ -30,6 +30,7 @@ RSpec.describe Gitlab::MailRoom do
   end
 
   before do
+    allow(described_class).to receive(:load_yaml).and_return(configs)
     described_class.instance_variable_set(:@enabled_configs, nil)
   end
 
@@ -38,10 +39,6 @@ RSpec.describe Gitlab::MailRoom do
   end
 
   describe '#enabled_configs' do
-    before do
-      allow(described_class).to receive(:load_yaml).and_return(configs)
-    end
-
     context 'when both email and address is set' do
       it 'returns email configs' do
         expect(described_class.enabled_configs.size).to eq(2)
@@ -79,7 +76,7 @@ RSpec.describe Gitlab::MailRoom do
       let(:custom_config) { { enabled: true, address: 'address@example.com' } }
 
       it 'overwrites missing values with the default' do
-        expect(described_class.enabled_configs.first[:port]).to eq(Gitlab::MailRoom::DEFAULT_CONFIG[:port])
+        expect(described_class.enabled_configs.each_value.first[:port]).to eq(Gitlab::MailRoom::DEFAULT_CONFIG[:port])
       end
     end
 
@@ -88,7 +85,7 @@ RSpec.describe Gitlab::MailRoom do
 
       it 'returns only encoming_email' do
         expect(described_class.enabled_configs.size).to eq(1)
-        expect(described_class.enabled_configs.first[:worker]).to eq('EmailReceiverWorker')
+        expect(described_class.enabled_configs.each_value.first[:worker]).to eq('EmailReceiverWorker')
       end
     end
 
@@ -100,11 +97,12 @@ RSpec.describe Gitlab::MailRoom do
       end
 
       it 'sets redis config' do
-        config = described_class.enabled_configs.first
-
-        expect(config[:redis_url]).to eq('localhost')
-        expect(config[:redis_db]).to eq(99)
-        expect(config[:sentinels]).to eq('yes, them')
+        config = described_class.enabled_configs.each_value.first
+        expect(config).to include(
+          redis_url: 'localhost',
+          redis_db: 99,
+          sentinels: 'yes, them'
+        )
       end
     end
 
@@ -113,7 +111,7 @@ RSpec.describe Gitlab::MailRoom do
         let(:custom_config) { { log_path: 'tiny_log.log' } }
 
         it 'expands the log path to an absolute value' do
-          new_path = Pathname.new(described_class.enabled_configs.first[:log_path])
+          new_path = Pathname.new(described_class.enabled_configs.each_value.first[:log_path])
           expect(new_path.absolute?).to be_truthy
         end
       end
@@ -122,8 +120,47 @@ RSpec.describe Gitlab::MailRoom do
         let(:custom_config) { { log_path: '/dev/null' } }
 
         it 'leaves the path as-is' do
-          expect(described_class.enabled_configs.first[:log_path]).to eq '/dev/null'
+          expect(described_class.enabled_configs.each_value.first[:log_path]).to eq '/dev/null'
         end
+      end
+    end
+  end
+
+  describe '#enabled_mailbox_types' do
+    context 'when all mailbox types are enabled' do
+      it 'returns the mailbox types' do
+        expect(described_class.enabled_mailbox_types).to match(%w[incoming_email service_desk_email])
+      end
+    end
+
+    context 'when an mailbox_types is disabled' do
+      let(:incoming_email_config) { yml_config.merge(enabled: false) }
+
+      it 'returns the mailbox types' do
+        expect(described_class.enabled_mailbox_types).to match(%w[service_desk_email])
+      end
+    end
+
+    context 'when email is disabled' do
+      let(:custom_config) { { enabled: false } }
+
+      it 'returns an empty array' do
+        expect(described_class.enabled_mailbox_types).to match_array([])
+      end
+    end
+  end
+
+  describe '#worker_for' do
+    context 'matched mailbox types' do
+      it 'returns the constantized worker class' do
+        expect(described_class.worker_for('incoming_email')).to eql(EmailReceiverWorker)
+        expect(described_class.worker_for('service_desk_email')).to eql(ServiceDeskEmailReceiverWorker)
+      end
+    end
+
+    context 'non-existing mailbox_type' do
+      it 'returns nil' do
+        expect(described_class.worker_for('another_mailbox_type')).to be(nil)
       end
     end
   end

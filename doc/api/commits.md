@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments"
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Commits API **(FREE)**
@@ -502,9 +502,8 @@ Example response:
 
 Adds a comment to a commit.
 
-In order to post a comment in a particular line of a particular file, you must
-specify the full commit SHA, the `path`, the `line` and `line_type` should be
-`new`.
+To post a comment in a particular line of a particular file, you must specify
+the full commit SHA, the `path`, the `line`, and `line_type` should be `new`.
 
 The comment is added at the end of the last commit if at least one of the
 cases below is valid:

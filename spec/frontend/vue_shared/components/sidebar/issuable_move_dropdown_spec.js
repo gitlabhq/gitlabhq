@@ -68,6 +68,8 @@ describe('IssuableMoveDropdown', () => {
     describe('searchKey', () => {
       it('calls `fetchProjects` with value of the prop', async () => {
         jest.spyOn(wrapper.vm, 'fetchProjects');
+        // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+        // eslint-disable-next-line no-restricted-syntax
         wrapper.setData({
           searchKey: 'foo',
         });
@@ -143,6 +145,8 @@ describe('IssuableMoveDropdown', () => {
       `(
         'returns $returnValue when selectedProject and provided project param $title',
         async ({ project, selectedProject, returnValue }) => {
+          // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+          // eslint-disable-next-line no-restricted-syntax
           wrapper.setData({
             selectedProject,
           });
@@ -154,6 +158,8 @@ describe('IssuableMoveDropdown', () => {
       );
 
       it('returns false when selectedProject is null', async () => {
+        // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+        // eslint-disable-next-line no-restricted-syntax
         wrapper.setData({
           selectedProject: null,
         });
@@ -206,6 +212,8 @@ describe('IssuableMoveDropdown', () => {
       });
 
       it('renders gl-loading-icon component when projectsListLoading prop is true', async () => {
+        // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+        // eslint-disable-next-line no-restricted-syntax
         wrapper.setData({
           projectsListLoading: true,
         });
@@ -216,6 +224,8 @@ describe('IssuableMoveDropdown', () => {
       });
 
       it('renders gl-dropdown-item components for available projects', async () => {
+        // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+        // eslint-disable-next-line no-restricted-syntax
         wrapper.setData({
           projects: mockProjects,
           selectedProject: mockProjects[0],
@@ -234,6 +244,8 @@ describe('IssuableMoveDropdown', () => {
       });
 
       it('renders string "No matching results" when search does not yield any matches', async () => {
+        // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+        // eslint-disable-next-line no-restricted-syntax
         wrapper.setData({
           searchKey: 'foo',
         });
@@ -241,6 +253,8 @@ describe('IssuableMoveDropdown', () => {
         // Wait for `searchKey` watcher to run.
         await wrapper.vm.$nextTick();
 
+        // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+        // eslint-disable-next-line no-restricted-syntax
         wrapper.setData({
           projects: [],
           projectsListLoading: false,
@@ -254,6 +268,8 @@ describe('IssuableMoveDropdown', () => {
       });
 
       it('renders string "Failed to load projects" when loading projects list fails', async () => {
+        // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+        // eslint-disable-next-line no-restricted-syntax
         wrapper.setData({
           projects: [],
           projectsListLoading: false,
@@ -273,6 +289,8 @@ describe('IssuableMoveDropdown', () => {
         expect(moveButtonEl.text()).toBe('Move');
         expect(moveButtonEl.attributes('disabled')).toBe('true');
 
+        // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+        // eslint-disable-next-line no-restricted-syntax
         wrapper.setData({
           selectedProject: mockProjects[0],
         });
@@ -303,6 +321,8 @@ describe('IssuableMoveDropdown', () => {
       });
 
       it('gl-dropdown component prevents dropdown body from closing on `hide` event when `projectItemClick` prop is true', async () => {
+        // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+        // eslint-disable-next-line no-restricted-syntax
         wrapper.setData({
           projectItemClick: true,
         });
@@ -326,6 +346,8 @@ describe('IssuableMoveDropdown', () => {
       });
 
       it('sets project for clicked gl-dropdown-item to selectedProject', async () => {
+        // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+        // eslint-disable-next-line no-restricted-syntax
         wrapper.setData({
           projects: mockProjects,
         });
@@ -338,6 +360,8 @@ describe('IssuableMoveDropdown', () => {
       });
 
       it('hides dropdown and emits `move-issuable` event when move button is clicked', async () => {
+        // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+        // eslint-disable-next-line no-restricted-syntax
         wrapper.setData({
           selectedProject: mockProjects[0],
         });

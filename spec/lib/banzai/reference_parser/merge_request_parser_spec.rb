@@ -23,14 +23,6 @@ RSpec.describe Banzai::ReferenceParser::MergeRequestParser do
       end
 
       it_behaves_like "referenced feature visibility", "merge_requests"
-
-      context 'when optimize_merge_request_parser feature flag is off' do
-        before do
-          stub_feature_flags(optimize_merge_request_parser: false)
-        end
-
-        it_behaves_like "referenced feature visibility", "merge_requests"
-      end
     end
   end
 

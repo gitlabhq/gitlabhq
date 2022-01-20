@@ -1,14 +1,10 @@
 ---
 stage: Create
 group: Source Code
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments"
-type: concepts, howto
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Signing commits with GPG **(FREE)**
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/9546) in GitLab 9.5.
-> - Subkeys support was added in GitLab 10.1.
 
 You can use a GPG key to sign Git commits made in a GitLab repository. Signed
 commits are labeled **Verified** if the identity of the committer can be

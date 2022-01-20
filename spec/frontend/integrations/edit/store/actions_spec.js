@@ -4,17 +4,12 @@ import testAction from 'helpers/vuex_action_helper';
 import { I18N_FETCH_TEST_SETTINGS_DEFAULT_ERROR_MESSAGE } from '~/integrations/constants';
 import {
   setOverride,
-  setIsResetting,
-  requestResetIntegration,
-  receiveResetIntegrationSuccess,
-  receiveResetIntegrationError,
   requestJiraIssueTypes,
   receiveJiraIssueTypesSuccess,
   receiveJiraIssueTypesError,
 } from '~/integrations/edit/store/actions';
 import * as types from '~/integrations/edit/store/mutation_types';
 import createState from '~/integrations/edit/store/state';
-import { refreshCurrentPage } from '~/lib/utils/url_utility';
 import { mockJiraIssueTypes } from '../mock_data';
 
 jest.mock('~/lib/utils/url_utility');
@@ -35,38 +30,6 @@ describe('Integration form store actions', () => {
   describe('setOverride', () => {
     it('should commit override mutation', () => {
       return testAction(setOverride, true, state, [{ type: types.SET_OVERRIDE, payload: true }]);
-    });
-  });
-
-  describe('setIsResetting', () => {
-    it('should commit isResetting mutation', () => {
-      return testAction(setIsResetting, true, state, [
-        { type: types.SET_IS_RESETTING, payload: true },
-      ]);
-    });
-  });
-
-  describe('requestResetIntegration', () => {
-    it('should commit REQUEST_RESET_INTEGRATION mutation', () => {
-      return testAction(requestResetIntegration, null, state, [
-        { type: types.REQUEST_RESET_INTEGRATION },
-      ]);
-    });
-  });
-
-  describe('receiveResetIntegrationSuccess', () => {
-    it('should call refreshCurrentPage()', () => {
-      return testAction(receiveResetIntegrationSuccess, null, state, [], [], () => {
-        expect(refreshCurrentPage).toHaveBeenCalled();
-      });
-    });
-  });
-
-  describe('receiveResetIntegrationError', () => {
-    it('should commit RECEIVE_RESET_INTEGRATION_ERROR mutation', () => {
-      return testAction(receiveResetIntegrationError, null, state, [
-        { type: types.RECEIVE_RESET_INTEGRATION_ERROR },
-      ]);
     });
   });
 

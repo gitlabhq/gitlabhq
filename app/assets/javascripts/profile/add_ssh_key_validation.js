@@ -1,7 +1,16 @@
 export default class AddSshKeyValidation {
-  constructor(inputElement, warningElement, originalSubmitElement, confirmSubmitElement) {
+  constructor(
+    supportedAlgorithms,
+    inputElement,
+    warningElement,
+    originalSubmitElement,
+    confirmSubmitElement,
+  ) {
     this.inputElement = inputElement;
     this.form = inputElement.form;
+
+    this.supportedAlgorithms = supportedAlgorithms;
+    this.publicKeyRegExp = new RegExp(`^(${this.supportedAlgorithms.join('|')})`);
 
     this.warningElement = warningElement;
 
@@ -23,7 +32,7 @@ export default class AddSshKeyValidation {
   }
 
   submit(event) {
-    this.isValid = AddSshKeyValidation.isPublicKey(this.inputElement.value);
+    this.isValid = this.isPublicKey(this.inputElement.value);
 
     if (this.isValid) return true;
 
@@ -37,7 +46,7 @@ export default class AddSshKeyValidation {
     this.originalSubmitElement.classList.toggle('hide', isVisible);
   }
 
-  static isPublicKey(value) {
-    return /^(ssh|ecdsa-sha2)-/.test(value);
+  isPublicKey(value) {
+    return this.publicKeyRegExp.test(value);
   }
 }

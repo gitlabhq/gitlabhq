@@ -290,15 +290,9 @@ RSpec.configure do |config|
 
       stub_feature_flags(diffs_virtual_scrolling: false)
 
-      # The following `vue_issues_list`/`vue_issuables_list` stubs can be removed
+      # The following `vue_issues_list` stub can be removed
       # once the Vue issues page has feature parity with the current Haml page
       stub_feature_flags(vue_issues_list: false)
-      stub_feature_flags(vue_issuables_list: false)
-
-      # Disable `refactor_blob_viewer` as we refactor
-      # the blob viewer. See the follwing epic for more:
-      # https://gitlab.com/groups/gitlab-org/-/epics/5531
-      stub_feature_flags(refactor_blob_viewer: false)
 
       # Disable `main_branch_over_master` as we migrate
       # from `master` to `main` accross our codebase.
@@ -459,8 +453,21 @@ RSpec.configure do |config|
     end
   end
 
+  # Ensures that any Javascript script that tries to make the external VersionCheck API call skips it and returns a response
+  config.before(:each, :js) do
+    allow_any_instance_of(VersionCheck).to receive(:response).and_return({ "severity" => "success" })
+  end
+
   config.after(:each, :silence_stdout) do
     $stdout = STDOUT
+  end
+
+  config.around(:each, stubbing_settings_source: true) do |example|
+    original_instance = ::Settings.instance_variable_get(:@instance)
+
+    example.run
+
+    ::Settings.instance_variable_set(:@instance, original_instance)
   end
 
   config.disable_monkey_patching!

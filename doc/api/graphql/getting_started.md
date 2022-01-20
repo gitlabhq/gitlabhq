@@ -44,8 +44,7 @@ you to explore the schema and types.
 
 The examples below:
 
-- Can be run directly against GitLab 11.0 or later, though some of the types
-  and fields may not be supported in older versions.
+- Can be run directly against GitLab.
 - Works against GitLab.com without any further setup. Make sure you are signed
   in and navigate to the [GraphiQL Explorer](https://gitlab.com/-/graphql-explorer).
 
@@ -60,7 +59,7 @@ either:
 Refer to [running GraphiQL](index.md#graphiql) for more information.
 
 NOTE:
-If you are running GitLab 11.0 to 12.0, enable the `graphql`
+If you are running GitLab 12.0, enable the `graphql`
 [feature flag](../features.md#set-or-create-a-feature).
 
 ## Queries and mutations

@@ -183,7 +183,7 @@ RSpec.describe Projects::ServicesController do
       let(:params) { project_params(service: integration_params) }
 
       let(:message) { 'Jira settings saved and active.' }
-      let(:redirect_url) { edit_project_service_path(project, integration) }
+      let(:redirect_url) { edit_project_integration_path(project, integration) }
 
       before do
         stub_jira_integration_test
@@ -341,7 +341,7 @@ RSpec.describe Projects::ServicesController do
         it 'redirects user back to edit page with alert' do
           put :update, params: project_params.merge(service: integration_params)
 
-          expect(response).to redirect_to(edit_project_service_path(project, integration))
+          expect(response).to redirect_to(edit_project_integration_path(project, integration))
           expected_alert = [
             "You can now manage your Prometheus settings on the",
             %(<a href="#{project_settings_operations_path(project)}">Operations</a> page.),

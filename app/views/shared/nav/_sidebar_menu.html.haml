@@ -13,7 +13,7 @@
       %span.nav-item-name{ **sidebar_menu.title_html_options }
         = sidebar_menu.title
       - if sidebar_menu.has_pill?
-        %span.badge.badge-pill.count{ **sidebar_menu.pill_html_options }
+        = gl_badge_tag({ variant: :info, size: :sm }, { class: "count #{sidebar_menu.pill_html_options[:class]}" }) do
           = number_with_delimiter(sidebar_menu.pill_count)
 
     = render partial: 'shared/nav/sidebar_submenu', locals: { sidebar_menu: sidebar_menu }

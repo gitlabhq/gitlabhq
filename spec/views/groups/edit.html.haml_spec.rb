@@ -115,4 +115,52 @@ RSpec.describe 'groups/edit.html.haml' do
       end
     end
   end
+
+  context 'ip_restriction' do
+    let(:group) { create(:group) }
+    let(:user) { create(:user) }
+
+    before do
+      group.add_owner(user)
+
+      assign(:group, group)
+      allow(view).to receive(:current_user) { user }
+    end
+
+    context 'prompt user about registration features' do
+      before do
+        if Gitlab.ee?
+          allow(License).to receive(:current).and_return(nil)
+        end
+      end
+
+      context 'with service ping disabled' do
+        before do
+          stub_application_setting(usage_ping_enabled: false)
+        end
+
+        it 'renders a placeholder input with registration features message' do
+          render
+
+          expect(rendered).to have_field(:group_disabled_ip_restriction_ranges, disabled: true)
+          expect(rendered).to have_content(s_("RegistrationFeatures|Want to %{feature_title} for free?") % { feature_title: s_('RegistrationFeatures|use this feature') })
+          expect(rendered).to have_link(s_('RegistrationFeatures|Registration Features Program'))
+        end
+      end
+
+      context 'with service ping enabled' do
+        before do
+          stub_application_setting(usage_ping_enabled: true)
+        end
+
+        it 'does not render a placeholder input with registration features message' do
+          render
+
+          expect(rendered).not_to have_field(:group_disabled_ip_restriction_ranges, disabled: true)
+          expect(rendered).not_to have_content(s_("RegistrationFeatures|Want to %{feature_title} for free?") % { feature_title: s_('RegistrationFeatures|use this feature') })
+          expect(rendered).not_to have_link(s_('RegistrationFeatures|Registration Features Program'))
+        end
+      end
+    end
+  end
 end

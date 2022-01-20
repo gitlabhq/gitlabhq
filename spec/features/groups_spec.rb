@@ -171,6 +171,28 @@ RSpec.describe 'Group' do
         expect(page).not_to have_css('.recaptcha')
       end
     end
+
+    describe 'showing personalization questions on group creation when it is enabled' do
+      before do
+        stub_application_setting(hide_third_party_offers: false)
+        visit new_group_path(anchor: 'create-group-pane')
+      end
+
+      it 'renders personalization questions' do
+        expect(page).to have_content('Now, personalize your GitLab experience')
+      end
+    end
+
+    describe 'not showing personalization questions on group creation when it is enabled' do
+      before do
+        stub_application_setting(hide_third_party_offers: true)
+        visit new_group_path(anchor: 'create-group-pane')
+      end
+
+      it 'does not render personalization questions' do
+        expect(page).not_to have_content('Now, personalize your GitLab experience')
+      end
+    end
   end
 
   describe 'create a nested group', :js do

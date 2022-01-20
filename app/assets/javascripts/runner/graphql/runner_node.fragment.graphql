@@ -12,4 +12,8 @@ fragment RunnerNode on CiRunner {
   tagList
   contactedAt
   status(legacyMode: null)
+  userPermissions {
+    updateRunner
+    deleteRunner
+  }
 }

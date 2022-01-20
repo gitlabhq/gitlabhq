@@ -1,8 +1,0 @@
----
-name: permitted_attributes_for_import_export
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/70168
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/340789
-milestone: '14.4'
-type: development
-group: group::import
-default_enabled: true

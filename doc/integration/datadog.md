@@ -32,9 +32,11 @@ project, group, or instance level:
 1. Scroll to **Add an integration**, and select **Datadog**.
 1. Select **Active** to enable the integration.
 1. Specify the [**Datadog site**](https://docs.datadoghq.com/getting_started/site/) to send data to.
+1. Provide your Datadog **API key**.
+<!-- 1. Optional. Select **Enable logs collection** to enable logs collection for the output of jobs. ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/346339) in GitLab 14.8.) -->
+<!-- TODO: uncomment the archive_trace_events field once :datadog_integration_logs_collection is rolled out. Rollout issue: https://gitlab.com/gitlab-org/gitlab/-/issues/346339 -->
 1. Optional. To override the API URL used to send data directly, provide an **API URL**.
    Used only in advanced scenarios.
-1. Provide your Datadog **API key**.
 1. Optional. If you use more than one GitLab instance, provide a unique **Service** name
    to differentiate between your GitLab instances.
 1. Optional. If you use groups of GitLab instances (such as staging and production

@@ -7,10 +7,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Dependency Scanning **(ULTIMATE)**
 
-INFO:
-Try out Dependency Scanning in GitLab Ultimate.
-[It's free for 30 days](https://about.gitlab.com/free-trial/index.html?glm_source=docs.gitlab.com&glm_content=u-dependency-scanning-docs).
-
 The Dependency Scanning feature can automatically find security vulnerabilities in your
 software dependencies while you're developing and testing your applications. For example,
 dependency scanning lets you know if your application uses an external (open source)
@@ -66,6 +62,9 @@ vulnerability.
 ![Dependency scanning Widget](img/dependency_scanning_v13_2.png)
 
 ## Requirements
+
+Dependency Scanning runs in the `test` stage, which is available by default. If you redefine the
+stages in the `.gitlab-ci.yml` file, the `test` stage is required.
 
 To run dependency scanning jobs, by default, you need GitLab Runner with the
 [`docker`](https://docs.gitlab.com/runner/executors/docker.html) or
@@ -921,6 +920,8 @@ gemnasium-dependency_scanning:
 ```
 
 ## Warnings
+
+We recommend that you use the most recent version of all containers, and the most recent supported version of all package managers and languages. Using previous versions carries an increased security risk because unsupported versions may no longer benefit from active security reporting and backporting of security fixes.
 
 ### Python projects
 

@@ -24,7 +24,7 @@ module ResolvesPipelines
     argument :source,
              GraphQL::Types::String,
              required: false,
-             description: "Filter pipelines by their source. Will be ignored if `dast_view_scans` feature flag is disabled."
+             description: "Filter pipelines by their source."
   end
 
   class_methods do
@@ -38,8 +38,6 @@ module ResolvesPipelines
   end
 
   def resolve_pipelines(project, params = {})
-    params.delete(:source) unless Feature.enabled?(:dast_view_scans, project, default_enabled: :yaml)
-
     Ci::PipelinesFinder.new(project, context[:current_user], params).execute
   end
 end

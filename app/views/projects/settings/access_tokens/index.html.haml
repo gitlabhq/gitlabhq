@@ -5,7 +5,7 @@
 - @content_class = 'limit-container-width' unless fluid_layout
 
 .row.gl-mt-3
-  .col-lg-4.profile-settings-sidebar
+  .col-lg-4
     %h4.gl-mt-0
       = page_title
     %p
@@ -24,26 +24,26 @@
         = _('You can enable project access token creation in %{link_start}group settings%{link_end}.').html_safe % { link_start: link_start, link_end: '</a>'.html_safe }
 
   .col-lg-8
-    - if @new_project_access_token
+    - if @new_resource_access_token
       = render 'shared/access_tokens/created_container',
           type: type,
-          new_token_value: @new_project_access_token
+          new_token_value: @new_resource_access_token
 
     - if current_user.can?(:create_resource_access_tokens, @project)
       = render 'shared/access_tokens/form',
           type: type,
           path: project_settings_access_tokens_path(@project),
-          project: @project,
-          token: @project_access_token,
+          resource: @project,
+          token: @resource_access_token,
           scopes: @scopes,
           access_levels: ProjectMember.access_level_roles,
           default_access_level: Gitlab::Access::MAINTAINER,
-          prefix: :project_access_token,
+          prefix: :resource_access_token,
           help_path: help_page_path('user/project/settings/project_access_tokens', anchor: 'scopes-for-a-project-access-token')
 
     = render 'shared/access_tokens/table',
-        active_tokens: @active_project_access_tokens,
-        project: @project,
+        active_tokens: @active_resource_access_tokens,
+        resource: @project,
         type: type,
         type_plural: type_plural,
         revoke_route_helper: ->(token) { revoke_namespace_project_settings_access_token_path(id: token) },

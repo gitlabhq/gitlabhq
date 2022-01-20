@@ -1,16 +1,20 @@
+export const testProjectPath = 'foo/bar';
+
+export const textProviderIds = [101, 102];
+
 export const securityTrainingProviders = [
   {
-    id: 101,
-    name: 'Kontra',
-    description: 'Interactive developer security education.',
-    url: 'https://application.security/',
+    id: textProviderIds[0],
+    name: 'Vendor Name 1',
+    description: 'Interactive developer security education',
+    url: 'https://www.example.org/security/training',
     isEnabled: false,
   },
   {
-    id: 102,
-    name: 'SecureCodeWarrior',
+    id: textProviderIds[1],
+    name: 'Vendor Name 2',
     description: 'Security training with guide and learning pathways.',
-    url: 'https://www.securecodewarrior.com/',
+    url: 'https://www.vendornametwo.com/',
     isEnabled: true,
   },
 ];
@@ -21,10 +25,15 @@ export const securityTrainingProvidersResponse = {
   },
 };
 
-export const mockResolvers = {
+const defaultMockResolvers = {
   Query: {
     securityTrainingProviders() {
       return securityTrainingProviders;
     },
   },
 };
+
+export const createMockResolvers = ({ resolvers: customMockResolvers = {} } = {}) => ({
+  ...defaultMockResolvers,
+  ...customMockResolvers,
+});

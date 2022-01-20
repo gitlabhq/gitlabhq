@@ -1,0 +1,10 @@
+query getRunnersCount(
+  $status: CiRunnerStatus
+  $type: CiRunnerType
+  $tagList: [String!]
+  $search: String
+) {
+  runners(status: $status, type: $type, tagList: $tagList, search: $search) {
+    count
+  }
+}

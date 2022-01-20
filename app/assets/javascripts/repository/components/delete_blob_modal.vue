@@ -146,6 +146,9 @@ export default {
     /* eslint-enable dot-notation */
   },
   methods: {
+    show() {
+      this.$refs[this.modalId].show();
+    },
     submitForm(e) {
       e.preventDefault(); // Prevent modal from closing
       this.form.showValidation = true;
@@ -164,6 +167,7 @@ export default {
 
 <template>
   <gl-modal
+    :ref="modalId"
     v-bind="$attrs"
     data-testid="modal-delete"
     :modal-id="modalId"

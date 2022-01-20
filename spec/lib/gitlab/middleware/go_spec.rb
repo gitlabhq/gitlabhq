@@ -100,7 +100,7 @@ RSpec.describe Gitlab::Middleware::Go do
 
                   context 'without access to the project', :sidekiq_inline do
                     before do
-                      project.team.find_member(current_user).destroy
+                      project.team.find_member(current_user).destroy!
                     end
 
                     it_behaves_like 'unauthorized'

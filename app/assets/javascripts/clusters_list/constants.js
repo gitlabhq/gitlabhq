@@ -106,7 +106,7 @@ export const I18N_AGENT_MODAL = {
   empty_state: {
     modalTitle: s__('ClusterAgents|Connect your cluster through the Agent'),
     modalBody: s__(
-      "ClusterAgents|To install a new agent, first add the agent's configuration file to this repository. %{linkStart}What's the agent's configuration file?%{linkEnd}",
+      "ClusterAgents|To install a new agent, first add the agent's configuration file to this repository. %{linkStart}Learn more about installing GitLab Agent.%{linkEnd}",
     ),
     enableKasText: s__(
       "ClusterAgents|Your instance doesn't have the %{linkStart}GitLab Agent Server (KAS)%{linkEnd} set up. Ask a GitLab Administrator to install it.",
@@ -242,3 +242,5 @@ export const EVENT_ACTIONS_CHANGE = 'change_tab';
 
 export const MODAL_TYPE_EMPTY = 'empty_state';
 export const MODAL_TYPE_REGISTER = 'agent_registration';
+
+export const DELETE_AGENT_MODAL_ID = 'delete-agent-modal-%{agentName}';

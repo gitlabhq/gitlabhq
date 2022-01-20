@@ -3,7 +3,7 @@
 module Clusters
   module Applications
     class Runner < ApplicationRecord
-      VERSION = '0.35.0'
+      VERSION = '0.36.0'
 
       self.table_name = 'clusters_applications_runners'
 
@@ -41,7 +41,7 @@ module Clusters
       end
 
       def prepare_uninstall
-        runner&.update!(active: false)
+        # No op, see https://gitlab.com/gitlab-org/gitlab/-/issues/350180.
       end
 
       def post_uninstall

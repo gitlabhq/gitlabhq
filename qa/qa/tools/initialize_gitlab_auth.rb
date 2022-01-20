@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require_relative '../../qa'
-
 module QA
   module Tools
     # Task to set default password from Runtime::Env.default_password if not set already

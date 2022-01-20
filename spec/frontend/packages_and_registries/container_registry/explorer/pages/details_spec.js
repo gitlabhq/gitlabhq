@@ -1,4 +1,4 @@
-import { GlKeysetPagination } from '@gitlab/ui';
+import { GlKeysetPagination, GlEmptyState } from '@gitlab/ui';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 import VueApollo from 'vue-apollo';
 import { nextTick } from 'vue';
@@ -8,7 +8,6 @@ import axios from '~/lib/utils/axios_utils';
 import DeleteImage from '~/packages_and_registries/container_registry/explorer/components/delete_image.vue';
 import DeleteAlert from '~/packages_and_registries/container_registry/explorer/components/details_page/delete_alert.vue';
 import DetailsHeader from '~/packages_and_registries/container_registry/explorer/components/details_page/details_header.vue';
-import EmptyTagsState from '~/packages_and_registries/container_registry/explorer/components/details_page/empty_state.vue';
 import PartialCleanupAlert from '~/packages_and_registries/container_registry/explorer/components/details_page/partial_cleanup_alert.vue';
 import StatusAlert from '~/packages_and_registries/container_registry/explorer/components/details_page/status_alert.vue';
 import TagsList from '~/packages_and_registries/container_registry/explorer/components/details_page/tags_list.vue';
@@ -20,6 +19,8 @@ import {
   ALERT_DANGER_IMAGE,
   MISSING_OR_DELETED_IMAGE_BREADCRUMB,
   ROOT_IMAGE_TEXT,
+  MISSING_OR_DELETED_IMAGE_TITLE,
+  MISSING_OR_DELETED_IMAGE_MESSAGE,
 } from '~/packages_and_registries/container_registry/explorer/constants';
 import deleteContainerRepositoryTagsMutation from '~/packages_and_registries/container_registry/explorer/graphql/mutations/delete_container_repository_tags.mutation.graphql';
 import getContainerRepositoryDetailsQuery from '~/packages_and_registries/container_registry/explorer/graphql/queries/get_container_repository_details.query.graphql';
@@ -50,7 +51,7 @@ describe('Details Page', () => {
   const findTagsList = () => wrapper.find(TagsList);
   const findDeleteAlert = () => wrapper.find(DeleteAlert);
   const findDetailsHeader = () => wrapper.find(DetailsHeader);
-  const findEmptyState = () => wrapper.find(EmptyTagsState);
+  const findEmptyState = () => wrapper.find(GlEmptyState);
   const findPartialCleanupAlert = () => wrapper.find(PartialCleanupAlert);
   const findStatusAlert = () => wrapper.find(StatusAlert);
   const findDeleteImage = () => wrapper.find(DeleteImage);
@@ -59,6 +60,10 @@ describe('Details Page', () => {
 
   const breadCrumbState = {
     updateName: jest.fn(),
+  };
+
+  const defaultConfig = {
+    noContainersImage: 'noContainersImage',
   };
 
   const cleanTags = tagsMock.map((t) => {
@@ -78,7 +83,7 @@ describe('Details Page', () => {
     mutationResolver = jest.fn().mockResolvedValue(graphQLDeleteImageRepositoryTagsMock),
     tagsResolver = jest.fn().mockResolvedValue(graphQLImageDetailsMock(imageTagsMock)),
     options,
-    config = {},
+    config = defaultConfig,
   } = {}) => {
     localVue.use(VueApollo);
 
@@ -154,7 +159,11 @@ describe('Details Page', () => {
 
       await waitForApolloRequestRender();
 
-      expect(findEmptyState().exists()).toBe(true);
+      expect(findEmptyState().props()).toMatchObject({
+        description: MISSING_OR_DELETED_IMAGE_MESSAGE,
+        svgPath: defaultConfig.noContainersImage,
+        title: MISSING_OR_DELETED_IMAGE_TITLE,
+      });
     });
   });
 

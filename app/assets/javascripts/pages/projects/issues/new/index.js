@@ -1,3 +1,3 @@
-import initForm from 'ee_else_ce/issues/form';
+import { initForm } from 'ee_else_ce/issues';
 
 initForm();

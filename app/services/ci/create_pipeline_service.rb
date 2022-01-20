@@ -95,7 +95,10 @@ module Ci
         .build!
 
       if pipeline.persisted?
-        schedule_head_pipeline_update
+        Gitlab::EventStore.publish(
+          Ci::PipelineCreatedEvent.new(data: { pipeline_id: pipeline.id })
+        )
+
         create_namespace_onboarding_action
       else
         # If pipeline is not persisted, try to recover IID
@@ -132,12 +135,6 @@ module Ci
 
     def sha
       commit.try(:id)
-    end
-
-    def schedule_head_pipeline_update
-      pipeline.all_merge_requests.opened.each do |merge_request|
-        UpdateHeadPipelineForMergeRequestWorker.perform_async(merge_request.id)
-      end
     end
 
     def create_namespace_onboarding_action

@@ -2,6 +2,7 @@ import { GlCollapse, GlPopover } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import Cookies from 'js-cookie';
 import DesignDiscussion from '~/design_management/components/design_notes/design_discussion.vue';
+import DesignNoteSignedOut from '~/design_management/components/design_notes/design_note_signed_out.vue';
 import DesignSidebar from '~/design_management/components/design_sidebar.vue';
 import DesignTodoButton from '~/design_management/components/design_todo_button.vue';
 import updateActiveDiscussionMutation from '~/design_management/graphql/mutations/update_active_discussion.mutation.graphql';
@@ -30,6 +31,7 @@ const cookieKey = 'hide_design_resolved_comments_popover';
 const mutate = jest.fn().mockResolvedValue();
 
 describe('Design management design sidebar component', () => {
+  const originalGon = window.gon;
   let wrapper;
 
   const findDiscussions = () => wrapper.findAll(DesignDiscussion);
@@ -58,11 +60,20 @@ describe('Design management design sidebar component', () => {
         },
       },
       stubs: { GlPopover },
+      provide: {
+        registerPath: '/users/sign_up?redirect_to_referer=yes',
+        signInPath: '/users/sign_in?redirect_to_referer=yes',
+      },
     });
   }
 
+  beforeEach(() => {
+    window.gon = { current_user_id: 1 };
+  });
+
   afterEach(() => {
     wrapper.destroy();
+    window.gon = originalGon;
   });
 
   it('renders participants', () => {
@@ -246,6 +257,46 @@ describe('Design management design sidebar component', () => {
       jest.spyOn(Cookies, 'set');
       wrapper.trigger('click');
       expect(Cookies.set).toHaveBeenCalledWith(cookieKey, 'true', { expires: 365 * 10 });
+    });
+  });
+
+  describe('when user is not logged in', () => {
+    const findDesignNoteSignedOut = () => wrapper.findComponent(DesignNoteSignedOut);
+
+    beforeEach(() => {
+      window.gon = { current_user_id: null };
+    });
+
+    describe('design has no discussions', () => {
+      beforeEach(() => {
+        createComponent({
+          design: {
+            ...design,
+            discussions: {
+              nodes: [],
+            },
+          },
+        });
+      });
+
+      it('does not render a message about possibility to create a new discussion', () => {
+        expect(findNewDiscussionDisclaimer().exists()).toBe(false);
+      });
+
+      it('renders design-note-signed-out component', () => {
+        expect(findDesignNoteSignedOut().exists()).toBe(true);
+      });
+    });
+
+    describe('design has discussions', () => {
+      beforeEach(() => {
+        Cookies.set(cookieKey, true);
+        createComponent();
+      });
+
+      it('renders design-note-signed-out component', () => {
+        expect(findDesignNoteSignedOut().exists()).toBe(true);
+      });
     });
   });
 });

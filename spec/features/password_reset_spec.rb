@@ -44,8 +44,8 @@ RSpec.describe 'Password reset' do
 
       visit(edit_user_password_path(reset_password_token: token))
 
-      fill_in 'New password', with: 'hello1234'
-      fill_in 'Confirm new password', with: 'hello1234'
+      fill_in 'New password', with: "new" + Gitlab::Password.test_default
+      fill_in 'Confirm new password', with: "new" + Gitlab::Password.test_default
 
       click_button 'Change your password'
 

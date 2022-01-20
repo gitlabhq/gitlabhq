@@ -3,33 +3,34 @@
 require 'spec_helper'
 
 RSpec.describe VersionCheckHelper do
-  describe '#version_status_badge' do
-    it 'returns nil if not dev environment and not enabled' do
-      stub_rails_env('development')
-      allow(Gitlab::CurrentSettings.current_application_settings).to receive(:version_check_enabled) { false }
+  let_it_be(:user) { create(:user) }
 
-      expect(helper.version_status_badge).to be(nil)
-    end
-
-    context 'when production and enabled' do
-      before do
-        stub_rails_env('production')
-        allow(Gitlab::CurrentSettings.current_application_settings).to receive(:version_check_enabled) { true }
-        allow(VersionCheck).to receive(:image_url) { 'https://version.host.com/check.svg?gitlab_info=xxx' }
+  describe '#show_version_check?' do
+    describe 'return conditions' do
+      where(:enabled, :consent, :is_admin, :result) do
+        [
+          [false, false, false, false],
+          [false, false, true, false],
+          [false, true, false, false],
+          [false, true, true, false],
+          [true, false, false, false],
+          [true, false, true, true],
+          [true, true, false, false],
+          [true, true, true, false]
+        ]
       end
 
-      it 'returns an image tag' do
-        expect(helper.version_status_badge).to start_with('<img')
-      end
+      with_them do
+        before do
+          stub_application_setting(version_check_enabled: enabled)
+          allow(User).to receive(:single_user).and_return(double(user, requires_usage_stats_consent?: consent))
+          allow(helper).to receive(:current_user).and_return(user)
+          allow(user).to receive(:can_read_all_resources?).and_return(is_admin)
+        end
 
-      it 'has a js prefixed css class' do
-        expect(helper.version_status_badge)
-          .to match(/class="js-version-status-badge lazy"/)
-      end
-
-      it 'has a VersionCheck image_url as the src' do
-        expect(helper.version_status_badge)
-          .to include(%{src="https://version.host.com/check.svg?gitlab_info=xxx"})
+        it 'returns correct results' do
+          expect(helper.show_version_check?).to eq result
+        end
       end
     end
   end

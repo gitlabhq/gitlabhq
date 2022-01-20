@@ -1,8 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments"
-type: reference, concepts
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Merge request approval settings **(PREMIUM)**
@@ -32,8 +31,7 @@ In this section of general settings, you can configure the following settings:
 
 ## Prevent approval by author
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/3349) in GitLab 11.3.
-> - Moved to GitLab Premium in 13.9.
+> Moved to GitLab Premium in 13.9.
 
 By default, the author of a merge request cannot approve it. To change this setting:
 
@@ -54,8 +52,7 @@ this setting, unless you configure one of these options:
 
 ## Prevent approvals by users who add commits
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/10441) in GitLab 11.10.
-> - Moved to GitLab Premium in 13.9.
+> Moved to GitLab Premium in 13.9.
 
 By default, users who commit to a merge request can still approve it. At both
 the project level or [instance level](../../../admin_area/merge_requests_approvals.md)

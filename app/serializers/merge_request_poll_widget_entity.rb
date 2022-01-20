@@ -19,7 +19,9 @@ class MergeRequestPollWidgetEntity < Grape::Entity
   # User entities
   expose :merge_user, using: UserEntity
 
-  expose :default_merge_commit_message
+  expose :default_merge_commit_message do |merge_request, options|
+    merge_request.default_merge_commit_message(include_description: false, user: current_user)
+  end
 
   expose :mergeable do |merge_request, options|
     next merge_request.mergeable? if Feature.disabled?(:check_mergeability_async_in_widget, merge_request.project, default_enabled: :yaml)

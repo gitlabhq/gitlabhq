@@ -1,8 +1,7 @@
 ---
 stage: Create
 group: Editor
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments"
-type: reference, api
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Project snippets **(FREE)**
@@ -246,8 +245,6 @@ curl "https://gitlab.com/api/v4/projects/1/snippets/2/files/master/snippet%2Erb/
 ```
 
 ## Get user agent details
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/29508) in GitLab 9.4.
 
 Available only for users with the Administrator [role](../user/permissions.md).
 

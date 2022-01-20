@@ -17,6 +17,7 @@ module Tooling
         product_intelligence
         utility_css
         vue_shared_documentation
+        datateam
       ].freeze
 
       CI_ONLY_RULES ||= %w[

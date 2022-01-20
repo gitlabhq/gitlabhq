@@ -172,6 +172,28 @@ RSpec.describe Resolvers::MergeRequestsResolver do
       end
     end
 
+    context 'with draft argument' do
+      before do
+        merge_request_4.update!(title: MergeRequest.wip_title(merge_request_4.title))
+      end
+
+      context 'with draft: true argument' do
+        it 'takes one argument' do
+          result = resolve_mr(project, draft: true)
+
+          expect(result).to contain_exactly(merge_request_4)
+        end
+      end
+
+      context 'with draft: false argument' do
+        it 'takes one argument' do
+          result = resolve_mr(project, draft: false)
+
+          expect(result).not_to contain_exactly(merge_request_1, merge_request_2, merge_request_3, merge_request_5, merge_request_6)
+        end
+      end
+    end
+
     context 'with label argument' do
       let_it_be(:label) { merge_request_6.labels.first }
       let_it_be(:with_label) { create(:labeled_merge_request, :closed, labels: [label], **common_attrs) }

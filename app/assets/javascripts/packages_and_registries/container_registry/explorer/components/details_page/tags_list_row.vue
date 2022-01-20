@@ -107,11 +107,8 @@ export default {
     isInvalidTag() {
       return !this.tag.digest;
     },
-    isCheckboxDisabled() {
-      return this.isInvalidTag || this.disabled;
-    },
     isDeleteDisabled() {
-      return this.isInvalidTag || this.disabled || !this.tag.canDelete;
+      return this.disabled || !this.tag.canDelete;
     },
   },
 };
@@ -122,7 +119,7 @@ export default {
     <template #left-action>
       <gl-form-checkbox
         v-if="tag.canDelete"
-        :disabled="isCheckboxDisabled"
+        :disabled="disabled"
         class="gl-m-0"
         :checked="selected"
         @change="$emit('select')"

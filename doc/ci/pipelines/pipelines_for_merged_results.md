@@ -2,17 +2,11 @@
 stage: Verify
 group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
-type: reference
-last_update: 2019-07-03
 ---
 
 # Pipelines for merged results **(PREMIUM)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/7380) in GitLab 11.10.
-
-INFO:
-Get these pipelines and more in GitLab Ultimate.
-[Try a free 30-day trial now](https://about.gitlab.com/free-trial/index.html?glm_source=docs.gitlab.com&glm_content=p-ci-cd-external-docs).
 
 When you submit a merge request, you are requesting to merge changes from a
 source branch into a target branch. By default, the CI pipeline runs jobs
@@ -61,7 +55,7 @@ To enable pipelines for merge results:
 
 To enable pipelines for merged results for your project:
 
-1. [Configure your CI/CD configuration file](merge_request_pipelines.md#configure-pipelines-for-merge-requests)
+1. [Configure your CI/CD configuration file](merge_request_pipelines.md#prerequisites)
    so that the pipeline or individual jobs run for merge requests.
 1. Visit your project's **Settings > General** and expand **Merge requests**.
 1. Check **Enable merged results pipelines**.

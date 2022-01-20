@@ -9,6 +9,7 @@ RSpec.describe ::Packages::Conan::PackagePresenter do
   let_it_be(:conan_package_reference) { '123456789'}
 
   let(:params) { { package_scope: :instance } }
+  let(:presenter) { described_class.new(package, user, project, params) }
 
   shared_examples 'no existing package' do
     context 'when package does not exist' do
@@ -21,7 +22,7 @@ RSpec.describe ::Packages::Conan::PackagePresenter do
   shared_examples 'conan_file_metadatum is not found' do
     context 'when no conan_file_metadatum exists' do
       before do
-        package.package_files.each do |file|
+        package.installable_package_files.each do |file|
           file.conan_file_metadatum.delete
           file.reload
         end
@@ -32,7 +33,7 @@ RSpec.describe ::Packages::Conan::PackagePresenter do
   end
 
   describe '#recipe_urls' do
-    subject { described_class.new(package, user, project, params).recipe_urls }
+    subject { presenter.recipe_urls }
 
     it_behaves_like 'no existing package'
     it_behaves_like 'conan_file_metadatum is not found'
@@ -71,7 +72,9 @@ RSpec.describe ::Packages::Conan::PackagePresenter do
   end
 
   describe '#recipe_snapshot' do
-    subject { described_class.new(package, user, project).recipe_snapshot }
+    let(:params) { {} }
+
+    subject { presenter.recipe_snapshot }
 
     it_behaves_like 'no existing package'
     it_behaves_like 'conan_file_metadatum is not found'
@@ -180,12 +183,9 @@ RSpec.describe ::Packages::Conan::PackagePresenter do
 
   describe '#package_snapshot' do
     let(:reference) { conan_package_reference }
+    let(:params) { { conan_package_reference: reference } }
 
-    subject do
-      described_class.new(
-        package, user, project, conan_package_reference: reference
-      ).package_snapshot
-    end
+    subject { presenter.package_snapshot }
 
     it_behaves_like 'no existing package'
     it_behaves_like 'conan_file_metadatum is not found'
@@ -206,6 +206,24 @@ RSpec.describe ::Packages::Conan::PackagePresenter do
 
         it { is_expected.to eq({}) }
       end
+    end
+  end
+
+  # TODO when cleaning up packages_installable_package_files, consider removing this context and
+  # add a dummy package file pending destruction on L8
+  context 'with package files pending destruction' do
+    let_it_be(:package_file_pending_destruction) { create(:package_file, :pending_destruction, package: package) }
+
+    subject { presenter.send(:package_files).to_a }
+
+    it { is_expected.not_to include(package_file_pending_destruction) }
+
+    context 'with packages_installable_package_files disabled' do
+      before do
+        stub_feature_flags(packages_installable_package_files: false)
+      end
+
+      it { is_expected.to include(package_file_pending_destruction) }
     end
   end
 end

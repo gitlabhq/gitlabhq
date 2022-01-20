@@ -42,4 +42,10 @@ RSpec.describe Ci::GroupVariable do
       end
     end
   end
+
+  it_behaves_like 'cleanup by a loose foreign key' do
+    let!(:model) { create(:ci_group_variable) }
+
+    let!(:parent) { model.group }
+  end
 end

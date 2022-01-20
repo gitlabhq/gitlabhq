@@ -8,8 +8,8 @@ FactoryBot.define do
     file_name { 'a3ed95caeb02ffe68cdd9fd84406680ae93d633cb16422d00e8a7c22955b46d4.gz' }
     status { :default }
 
-    trait :expired do
-      status { :expired }
+    trait :pending_destruction do
+      status { :pending_destruction }
     end
   end
 
@@ -22,8 +22,8 @@ FactoryBot.define do
     content_type { 'application/vnd.docker.distribution.manifest.v2+json' }
     status { :default }
 
-    trait :expired do
-      status { :expired }
+    trait :pending_destruction do
+      status { :pending_destruction }
     end
   end
 end

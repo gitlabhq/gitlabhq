@@ -50,10 +50,6 @@ Pipelines can be configured in many different ways:
   followed by the next stage.
 - [Directed Acyclic Graph Pipeline (DAG) pipelines](../directed_acyclic_graph/index.md) are based on relationships
   between jobs and can run more quickly than basic pipelines.
-- [Multi-project pipelines](multi_project_pipelines.md) combine pipelines for different projects together.
-- [Parent-Child pipelines](parent_child_pipelines.md) break down complex pipelines
-  into one parent pipeline that can trigger multiple child sub-pipelines, which all
-  run in the same project and with the same SHA. This pipeline architecture is commonly used for mono-repos.
 - [Pipelines for Merge Requests](../pipelines/merge_request_pipelines.md) run for merge
   requests only (rather than for every commit).
 - [Pipelines for Merged Results](../pipelines/pipelines_for_merged_results.md)
@@ -61,6 +57,44 @@ Pipelines can be configured in many different ways:
   already been merged into the target branch.
 - [Merge Trains](../pipelines/merge_trains.md)
   use pipelines for merged results to queue merges one after the other.
+- [Parent-Child pipelines](parent_child_pipelines.md) break down complex pipelines
+  into one parent pipeline that can trigger multiple child sub-pipelines, which all
+  run in the same project and with the same SHA. This pipeline architecture is commonly used for mono-repos.
+- [Multi-project pipelines](multi_project_pipelines.md) combine pipelines for different projects together.
+
+### How parent-child pipelines compare to multi-project pipelines
+
+Parent-child pipelines and multi-project pipelines can sometimes be used for similar
+purposes, but there are some key differences:
+
+Parent-child pipelines:
+
+- Run under the same project, ref, and commit SHA as the parent pipeline.
+- Affect the overall status of the ref the pipeline runs against. For example,
+  if a pipeline fails for the main branch, it's common to say that "main is broken".
+  The status of child pipelines don't directly affect the status of the ref, unless the child
+  pipeline is triggered with [`strategy:depend`](../yaml/index.md#triggerstrategy).
+- Are automatically canceled if the pipeline is configured with [`interruptible`](../yaml/index.md#interruptible)
+  when a new pipeline is created for the same ref.
+- Display only the parent pipelines in the pipeline index page. Child pipelines are
+  visible when visiting their parent pipeline's page.
+- Are limited to 2 levels of nesting. A parent pipeline can trigger multiple child pipelines,
+  and those child pipeline can trigger multiple child pipelines (`A -> B -> C`).
+
+Multi-project pipelines:
+
+- Are triggered from another pipeline, but the upstream (triggering) pipeline does
+  not have much control over the downstream (triggered) pipeline. However, it can
+  choose the ref of the downstream pipeline, and pass CI/CD variables to it.
+- Affect the overall status of the ref of the project it runs in, but does not
+  affect the status of the triggering pipeline's ref, unless it was triggered with
+  [`strategy:depend`](../yaml/index.md#triggerstrategy).
+- Are not automatically canceled in the downstream project when using [`interruptible`](../yaml/index.md#interruptible)
+  if a new pipeline runs for the same ref in the upstream pipeline. They can be
+  automatically canceled if a new pipeline is triggered for the same ref on the downstream project.
+- Multi-project pipelines are standalone pipelines because they are normal pipelines
+  that happened to be triggered by an external project. They are all visible on the pipeline index page.
+- Are independent, so there are no nesting limits.
 
 ## Configure a pipeline
 
@@ -257,14 +291,33 @@ WARNING:
 Deleting a pipeline expires all pipeline caches, and deletes all related objects,
 such as builds, logs, artifacts, and triggers. **This action cannot be undone.**
 
-### Pipeline quotas
+### Pipeline security on protected branches
 
-Each user has a personal pipeline quota that tracks the usage of shared runners in all personal projects.
-Each group has a [usage quota](../../subscriptions/gitlab_com/index.md#ci-pipeline-minutes) that tracks the usage of shared runners for all projects created within the group.
+A strict security model is enforced when pipelines are executed on
+[protected branches](../../user/project/protected_branches.md).
 
-When a pipeline is triggered, regardless of who triggered it, the pipeline quota for the project owner's [namespace](../../user/group/index.md#namespaces) is used. In this case, the namespace can be the user or group that owns the project.
+The following actions are allowed on protected branches only if the user is
+[allowed to merge or push](../../user/project/protected_branches.md)
+on that specific branch:
 
-#### How pipeline duration is calculated
+- Run manual pipelines (using the [Web UI](#run-a-pipeline-manually) or [pipelines API](#pipelines-api)).
+- Run scheduled pipelines.
+- Run pipelines using triggers.
+- Run on-demand DAST scan.
+- Trigger manual actions on existing pipelines.
+- Retry or cancel existing jobs (using the Web UI or pipelines API).
+
+**Variables** marked as **protected** are accessible only to jobs that
+run on protected branches, preventing untrusted users getting unintended access to
+sensitive information like deployment credentials and tokens.
+
+**Runners** marked as **protected** can run jobs only on protected
+branches, preventing untrusted code from executing on the protected runner and
+preserving deployment keys and other credentials from being unintentionally
+accessed. In order to ensure that jobs intended to be executed on protected
+runners do not use regular runners, they must be tagged accordingly.
+
+### How pipeline duration is calculated
 
 Total running time for a given pipeline excludes retries and pending
 (queued) time.
@@ -300,44 +353,6 @@ The union of A, B, and C is (1, 4) and (6, 7). Therefore, the total running time
 ```plaintext
 (4 - 1) + (7 - 6) => 4
 ```
-
-#### How pipeline quota usage is calculated
-
-Pipeline quota usage is calculated as the sum of the duration of each individual job. This is slightly different to how pipeline _duration_ is [calculated](#how-pipeline-duration-is-calculated). Pipeline quota usage doesn't consider any overlap of jobs running in parallel.
-
-For example, a pipeline consists of the following jobs:
-
-- Job A takes 3 minutes.
-- Job B takes 3 minutes.
-- Job C takes 2 minutes.
-
-The pipeline quota usage is the sum of each job's duration. In this example, 8 runner minutes would be used, calculated as: 3 + 3 + 2.
-
-### Pipeline security on protected branches
-
-A strict security model is enforced when pipelines are executed on
-[protected branches](../../user/project/protected_branches.md).
-
-The following actions are allowed on protected branches only if the user is
-[allowed to merge or push](../../user/project/protected_branches.md)
-on that specific branch:
-
-- Run manual pipelines (using the [Web UI](#run-a-pipeline-manually) or [pipelines API](#pipelines-api)).
-- Run scheduled pipelines.
-- Run pipelines using triggers.
-- Run on-demand DAST scan.
-- Trigger manual actions on existing pipelines.
-- Retry or cancel existing jobs (using the Web UI or pipelines API).
-
-**Variables** marked as **protected** are accessible only to jobs that
-run on protected branches, preventing untrusted users getting unintended access to
-sensitive information like deployment credentials and tokens.
-
-**Runners** marked as **protected** can run jobs only on protected
-branches, preventing untrusted code from executing on the protected runner and
-preserving deployment keys and other credentials from being unintentionally
-accessed. In order to ensure that jobs intended to be executed on protected
-runners do not use regular runners, they must be tagged accordingly.
 
 ## Visualize pipelines
 

@@ -1,17 +1,14 @@
 ---
 stage: Create
 group: Editor
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments"
-type: reference, how-to
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Web IDE **(FREE)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/4539) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 10.4.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/44157) to GitLab Free in 10.7.
-
-The Web Integrated Development Environment (IDE) editor makes it faster and easier to contribute changes to your
-projects by providing an advanced editor with commit staging.
+The Web Integrated Development Environment (IDE) editor streamlines the process
+to contribute changes to your projects, by providing an advanced editor with
+commit staging.
 
 ## Open the Web IDE
 
@@ -35,8 +32,6 @@ and from merge requests:
      1. Select **Open in Web IDE** to open the editor.
 
 ## File finder
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/18323) in [GitLab Free](https://about.gitlab.com/pricing/) 10.8.
 
 The file finder allows you to quickly open files in the current branch by
 searching for fragments of the file path. The file finder is launched using the keyboard shortcut
@@ -150,7 +145,7 @@ Each schema entry supports two properties:
 
 ## Configure the Web IDE
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/23352) in [GitLab Free](https://about.gitlab.com/pricing/) 13.1.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/23352) in GitLab Free 13.1.
 
 The Web IDE supports configuration of certain editor settings by using
 [`.editorconfig` files](https://editorconfig.org/). When opening a file, the
@@ -169,12 +164,10 @@ The Web IDE currently supports the following `.editorconfig` settings:
 
 ## Commit changes
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/4539) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 10.4.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/44157) to GitLab Free in 10.7.
-> - From [GitLab 12.7 onward](https://gitlab.com/gitlab-org/gitlab/-/issues/33441), files were automatically staged.
-> - From [GitLab 12.9 onward](https://gitlab.com/gitlab-org/gitlab/-/issues/196609), support for staging files was removed to prevent loss of unstaged data. All your current changes necessarily have to be committed or discarded.
+> - Starting with [GitLab 12.7](https://gitlab.com/gitlab-org/gitlab/-/issues/33441), files are automatically staged.
+> - In [GitLab 12.9](https://gitlab.com/gitlab-org/gitlab/-/issues/196609), support for staging files was removed to prevent loss of unstaged data. All of your current changes must be committed or discarded.
 
-After making your changes, click the **Commit** button on the bottom-left to
+After making your changes, select **Commit** on the bottom-left to
 review the list of changed files.
 
 After you have finalized your changes, you can add a commit message, commit the
@@ -182,8 +175,8 @@ changes and directly create a merge request. In case you don't have write
 access to the selected branch, you see a warning, but can still create
 a new branch and start a merge request.
 
-To discard a change in a particular file, click the **Discard changes** button on that
-file in the changes tab. To discard all the changes, click the trash icon on the
+To discard a change in a particular file, select **Discard changes** on that
+file in the changes tab. To discard all the changes, select the trash icon on the
 top-right corner of the changes sidebar.
 
 ![Commit changes](img/commit_changes_v13_11.png)
@@ -198,8 +191,6 @@ shows you a preview of the merge request diff if you commit your changes.
 
 ## View CI job logs
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/19279) in [GitLab Free](https://about.gitlab.com/pricing/) 11.0.
-
 You can use the Web IDE to quickly fix failing tests by opening
 the branch or merge request in the Web IDE and opening the logs of the failed
 job. You can access the status of all jobs for the most recent pipeline and job
@@ -211,15 +202,11 @@ left.
 
 ## Switching merge requests
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/19318) in [GitLab Free](https://about.gitlab.com/pricing/) 11.0.
-
 To switch between your authored and assigned merge requests, click the
 dropdown in the top of the sidebar to open a list of merge requests. You must commit or discard all your changes before switching to a different merge
 request.
 
 ## Switching branches
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/20850) in [GitLab Free](https://about.gitlab.com/pricing/) 11.2.
 
 To switch between branches of the current project repository, click the dropdown
 in the top of the sidebar to open a list of branches.
@@ -228,9 +215,8 @@ different branch.
 
 ## Markdown editing
 
-> - Markdown preview [introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/18059) in [GitLab Free](https://about.gitlab.com/pricing/) 10.7.
-> - Support for pasting images [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/22822) in [GitLab Free](https://about.gitlab.com/pricing/) 13.1.
-> - Side-by-side Markdown preview [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68274) in [GitLab Free](https://about.gitlab.com/pricing/) 14.3
+> - Support for pasting images [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/22822) in GitLab Free 13.1.
+> - Side-by-side Markdown preview [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68274) in GitLab Free 14.3.
 
 To edit Markdown files in the Web IDE:
 
@@ -255,8 +241,7 @@ There are two ways to preview Markdown content in the Web IDE:
 
 ## Live Preview
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/19764) in [GitLab Free](https://about.gitlab.com/pricing/) 11.2.
-> - [Renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/213853) from _Client Side Evaluation_ to _Live Preview_ in GitLab 13.0.
+> [Renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/213853) from _Client Side Evaluation_ to _Live Preview_ in GitLab 13.0.
 
 You can use the Web IDE to preview JavaScript projects right in the browser.
 This feature uses CodeSandbox to compile and bundle the JavaScript used to
@@ -301,8 +286,7 @@ An example `package.json`:
 
 ## Interactive Web Terminals for the Web IDE
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/5426) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.6.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/211685) to GitLab Free in 13.1.
+> [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/211685) to GitLab Free in 13.1.
 
 WARNING:
 Interactive Web Terminals for the Web IDE is currently in **Beta**.
@@ -407,8 +391,8 @@ click **Restart Terminal** to start a new terminal session.
 
 ### File syncing to web terminal
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/5276) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.0.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/211686) to GitLab Free in 13.1.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/5276) in GitLab Ultimate 12.0.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/211686) from GitLab Ultimate to GitLab Free in 13.1.
 
 File changes in the Web IDE can be synced to a running web terminal.
 This enables users to test their code changes in a preconfigured terminal

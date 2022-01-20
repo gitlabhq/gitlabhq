@@ -34,6 +34,8 @@ describe('Design management design version dropdown component', () => {
       stubs: { GlSprintf },
     });
 
+    // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+    // eslint-disable-next-line no-restricted-syntax
     wrapper.setData({
       allVersions: maxVersions > -1 ? mockAllVersions.slice(0, maxVersions) : mockAllVersions,
     });

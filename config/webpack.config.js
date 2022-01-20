@@ -1,4 +1,6 @@
-const crypto = require('crypto');
+// eslint-disable-next-line import/order
+const crypto = require('./helpers/patched_crypto');
+
 const fs = require('fs');
 const path = require('path');
 
@@ -141,6 +143,7 @@ function generateEntries() {
     sentry: './sentry/index.js',
     performance_bar: './performance_bar/index.js',
     jira_connect_app: './jira_connect/subscriptions/index.js',
+    sandboxed_mermaid: './lib/mermaid.js',
   };
 
   return Object.assign(manualEntries, incrementalCompiler.filterEntryPoints(autoEntries));

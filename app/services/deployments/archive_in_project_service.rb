@@ -7,10 +7,6 @@ module Deployments
     BATCH_SIZE = 100
 
     def execute
-      unless ::Feature.enabled?(:deployments_archive, project, default_enabled: :yaml)
-        return error('Feature flag is not enabled')
-      end
-
       deployments = Deployment.archivables_in(project, limit: BATCH_SIZE)
 
       return success(result: :empty) if deployments.empty?

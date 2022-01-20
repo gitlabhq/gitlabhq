@@ -54,7 +54,7 @@ Supported applications:
 - [PostHog](#install-posthog-using-gitlab-cicd)
 - [Prometheus](#install-prometheus-using-gitlab-cicd)
 
-### Usage
+### Prerequisites
 
 You can find and import all the files referenced below
 in the [example cluster applications
@@ -95,7 +95,7 @@ applications you have configured. In case of pipeline failure, the
 output of the [Helm Tiller](https://v2.helm.sh/docs/install/#running-tiller-locally) binary
 is saved as a [CI job artifact](../../ci/pipelines/job_artifacts.md).
 
-#### Usage in GitLab versions earlier than 13.5
+#### Prerequisites in GitLab versions earlier than 13.5
 
 For GitLab versions 13.5 and earlier, the Ingress, Fluentd, Prometheus, and Sentry
 apps were fetched from the central Helm stable repository (`https://kubernetes-charts.storage.googleapis.com/`).
@@ -443,7 +443,7 @@ You can check the recommended variables for each cluster type in the official do
 - [Google GKE](https://docs.cilium.io/en/v1.8/gettingstarted/k8s-install-gke/#deploy-cilium)
 - [AWS EKS](https://docs.cilium.io/en/v1.8/gettingstarted/k8s-install-eks/#deploy-cilium)
 
-Do not use `clusterType` for sandbox environments like [Minikube](https://minikube.sigs.k8s.io/docs/).
+Do not use `clusterType` for sandbox environments like [minikube](https://minikube.sigs.k8s.io/docs/).
 
 You can customize Cilium's Helm variables by defining the
 `.gitlab/managed-apps/cilium/values.yaml` file in your cluster

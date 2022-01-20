@@ -38,7 +38,7 @@ We can differentiate two different types of configuration:
 - Sensitive: Configuration that can cause major service outage (like data integrity,
   installation integrity, or preventing users from reaching the installation)
 - Regular: Configuration that can make a feature unavailable but still makes the
-  installation useable (like a change in default project/group settings, or
+  installation usable (like a change in default project/group settings, or
   miscommunication with other components)
 
 We also need to differentiate deprecation and removal procedure.

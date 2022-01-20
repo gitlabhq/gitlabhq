@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments"
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 disqus_identifier: 'https://docs.gitlab.com/ee/workflow/gitlab_flow.html'
 ---
 
@@ -47,9 +47,11 @@ For a video introduction of how this works in GitLab, see [GitLab Flow](https://
 
 <!-- vale gitlab.Spelling = YES -->
 
-Git flow was one of the first proposals to use Git branches, and it has received a lot of attention.
-It suggests a `main` branch and a separate `develop` branch, as well as supporting branches for features, releases, and hotfixes.
-The development happens on the `develop` branch, moves to a release branch, and is finally merged into the `main` branch.
+Git flow was one of the first proposals to use Git branches, and it has received
+a lot of attention. It suggests a `main` branch and a separate `develop` branch,
+with supporting branches for features, releases, and hotfixes. The development
+happens on the `develop` branch, moves to a release branch, and is finally merged
+into the `main` branch.
 
 Git flow is a well-defined standard, but its complexity introduces two problems.
 The first problem is that developers must use the `develop` branch and not `main`. `main` is reserved for code that is released to production.

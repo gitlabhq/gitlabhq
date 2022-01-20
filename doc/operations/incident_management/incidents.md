@@ -47,8 +47,6 @@ To create an incident from the Issues List:
 
 ### Create incidents automatically **(ULTIMATE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/4925) in GitLab 11.11.
-
 With at least the Maintainer [role](../../user/permissions.md), you can enable
  GitLab to create incident automatically whenever an alert is triggered:
 

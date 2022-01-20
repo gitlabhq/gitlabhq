@@ -357,7 +357,9 @@
   }
 
   > li {
-    .badge.badge-pill {
+    // TODO: Remove this block once all sidebar badges use gl_badge_tag
+    // https://gitlab.com/gitlab-org/gitlab/-/issues/350061
+    .badge.badge-pill:not(.gl-badge) {
       @include gl-rounded-lg;
       @include gl-py-1;
       @include gl-px-3;
@@ -370,7 +372,9 @@
         display: block;
       }
 
-      .badge.badge-pill {
+      // TODO: Remove this block once all sidebar badges use gl_badge_tag
+      // https://gitlab.com/gitlab-org/gitlab/-/issues/350061
+      .badge.badge-pill:not(.gl-badge) {
         @include gl-font-weight-normal;
         color: $blue-700;
       }

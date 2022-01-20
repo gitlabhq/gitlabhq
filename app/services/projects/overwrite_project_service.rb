@@ -11,7 +11,9 @@ module Projects
         move_before_destroy_relationships(source_project)
         # Reset is required in order to get the proper
         # uncached fork network method calls value.
-        destroy_old_project(source_project.reset)
+        ::Gitlab::Database::QueryAnalyzers::PreventCrossDatabaseModification.allow_cross_database_modification_within_transaction(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/340256') do
+          destroy_old_project(source_project.reset)
+        end
         rename_project(source_project.name, source_project.path)
 
         @project

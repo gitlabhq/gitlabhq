@@ -16,6 +16,7 @@ export default class CreateLabelDropdown {
     this.$colorPreview = $('.js-dropdown-label-color-preview', this.$el);
     this.$addList = $('.js-add-list', this.$el);
     this.$newLabelError = $('.js-label-error', this.$el);
+    this.$newLabelErrorContent = $('.gl-alert-content', this.$newLabelError);
     this.$newLabelCreateButton = $('.js-new-label-btn', this.$el);
     this.$colorSuggestions = $('.suggest-colors-dropdown a', this.$el);
 
@@ -119,7 +120,8 @@ export default class CreateLabelDropdown {
               .join('<br/>');
           }
 
-          this.$newLabelError.html(errors).show();
+          this.$newLabelErrorContent.html(errors);
+          this.$newLabelError.show();
         } else {
           const addNewList = this.$addList.is(':checked');
           this.$dropdownBack.trigger('click');

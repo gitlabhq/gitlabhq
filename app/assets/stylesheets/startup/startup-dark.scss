@@ -140,7 +140,7 @@ h1 {
   color: #fafafa;
   background-color: #333;
   background-clip: padding-box;
-  border: 1px solid #404040;
+  border: 1px solid #868686;
   border-radius: 0.25rem;
 }
 @media (prefers-reduced-motion: reduce) {
@@ -314,6 +314,10 @@ h1 {
   padding-left: 0.6em;
   border-radius: 10rem;
 }
+.badge-info {
+  color: #fff;
+  background-color: #428fdc;
+}
 .bg-transparent {
   background-color: transparent !important;
 }
@@ -371,6 +375,24 @@ h1 {
   padding-bottom: 0.25rem;
   padding-left: 0.5rem;
   padding-right: 0.5rem;
+}
+.gl-badge.sm {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+.gl-badge.badge-info {
+  background-color: #064787;
+  color: #9dc7f1;
+}
+a.gl-badge.badge-info.active,
+a.gl-badge.badge-info:active {
+  color: #e9f3fc;
+  background-color: #0b5cad;
+}
+a.gl-badge.badge-info:active {
+  box-shadow: inset 0 0 0 1px rgba(51, 51, 51, 0.8),
+    0 0 0 1px rgba(51, 51, 51, 0.4), 0 0 0 4px rgba(66, 143, 220, 0.48);
+  outline: none;
 }
 .gl-button .gl-badge {
   top: 0;
@@ -704,7 +726,7 @@ input {
   padding: 0 16px;
   z-index: 1000;
   margin-bottom: 0;
-  min-height: 40px;
+  min-height: var(--header-height, 40px);
   border: 0;
   position: fixed;
   top: 0;
@@ -729,7 +751,7 @@ input {
   display: flex;
   justify-content: space-between;
   position: relative;
-  min-height: 40px;
+  min-height: var(--header-height, 40px);
   padding-left: 0;
 }
 .navbar-gitlab .header-content .title-container {
@@ -815,7 +837,7 @@ input {
   .container-fluid
   .navbar-nav
   li
-  .badge.badge-pill:not(.merge-request-badge) {
+  .badge.badge-pill:not(.merge-request-badge):not(.version-check-badge) {
   box-shadow: none;
   font-weight: 600;
 }
@@ -898,8 +920,10 @@ input {
   line-height: 18px;
   margin: 4px 0 4px 2px;
 }
-.title-container .badge.badge-pill:not(.merge-request-badge),
-.navbar-nav .badge.badge-pill:not(.merge-request-badge) {
+.title-container
+  .badge.badge-pill:not(.merge-request-badge):not(.version-check-badge),
+.navbar-nav
+  .badge.badge-pill:not(.merge-request-badge):not(.version-check-badge) {
   position: inherit;
   font-weight: 400;
   margin-left: -6px;
@@ -910,17 +934,22 @@ input {
   border-radius: 7px;
   box-shadow: 0 1px 0 rgba(76, 78, 84, 0.2);
 }
-.title-container .badge.badge-pill:not(.merge-request-badge).green-badge,
-.navbar-nav .badge.badge-pill:not(.merge-request-badge).green-badge {
+.title-container
+  .badge.badge-pill:not(.merge-request-badge):not(.version-check-badge).green-badge,
+.navbar-nav
+  .badge.badge-pill:not(.merge-request-badge):not(.version-check-badge).green-badge {
   background-color: var(--green-400, #108548);
 }
 .title-container
-  .badge.badge-pill:not(.merge-request-badge).merge-requests-count,
-.navbar-nav .badge.badge-pill:not(.merge-request-badge).merge-requests-count {
+  .badge.badge-pill:not(.merge-request-badge):not(.version-check-badge).merge-requests-count,
+.navbar-nav
+  .badge.badge-pill:not(.merge-request-badge):not(.version-check-badge).merge-requests-count {
   background-color: var(--orange-400, #ab6100);
 }
-.title-container .badge.badge-pill:not(.merge-request-badge).todos-count,
-.navbar-nav .badge.badge-pill:not(.merge-request-badge).todos-count {
+.title-container
+  .badge.badge-pill:not(.merge-request-badge):not(.version-check-badge).todos-count,
+.navbar-nav
+  .badge.badge-pill:not(.merge-request-badge):not(.version-check-badge).todos-count {
   background-color: var(--blue-400, #1f75cb);
 }
 .title-container .canary-badge .badge,
@@ -1030,7 +1059,7 @@ input {
   left: 0;
   z-index: 600;
   width: 220px;
-  top: 40px;
+  top: var(--header-height, 40px);
   background-color: #303030;
   transform: translate3d(0, 0, 0);
 }
@@ -1367,7 +1396,7 @@ input {
   border-radius: 4px;
   box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.08);
 }
-.sidebar-top-level-items > li .badge.badge-pill {
+.sidebar-top-level-items > li .badge.badge-pill:not(.gl-badge) {
   border-radius: 0.5rem;
   padding-top: 0.125rem;
   padding-bottom: 0.125rem;
@@ -1381,7 +1410,7 @@ input {
   .sidebar-sub-level-items:not(.is-fly-out-only) {
   display: block;
 }
-.sidebar-top-level-items > li.active .badge.badge-pill {
+.sidebar-top-level-items > li.active .badge.badge-pill:not(.gl-badge) {
   font-weight: 400;
   color: #9dc7f1;
 }
@@ -1766,6 +1795,9 @@ body.gl-dark {
 .nav-sidebar li.active:not(.fly-out-top-item) > a:not(.has-sub-items) {
   background-color: var(--indigo-900-alpha-008);
 }
+body.gl-dark {
+  --gl-theme-accent: #868686;
+}
 body.gl-dark .navbar-gitlab {
   background-color: #fafafa;
 }
@@ -1838,7 +1870,7 @@ body.gl-dark .header-search input::placeholder {
   color: rgba(250, 250, 250, 0.8);
 }
 body.gl-dark .header-search input:active::placeholder {
-  color: #fafafa;
+  color: #868686;
 }
 body.gl-dark .search form {
   background-color: rgba(250, 250, 250, 0.2);

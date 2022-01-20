@@ -4,8 +4,8 @@ import { isArray } from 'lodash';
 import { mapActions, mapGetters } from 'vuex';
 import imageDiffMixin from 'ee_else_ce/diffs/mixins/image_diff';
 
-function calcPercent(pos, size, renderedSize) {
-  return (((pos / size) * 100) / ((renderedSize / size) * 100)) * 100;
+function calcPercent(pos, renderedSize) {
+  return (100 * pos) / renderedSize;
 }
 
 export default {
@@ -65,8 +65,8 @@ export default {
     ...mapActions('diffs', ['openDiffFileCommentForm']),
     getImageDimensions() {
       return {
-        width: this.$parent.width,
-        height: this.$parent.height,
+        width: Math.round(this.$parent.width),
+        height: Math.round(this.$parent.height),
       };
     },
     getPositionForObject(meta) {
@@ -87,15 +87,15 @@ export default {
     },
     clickedImage(x, y) {
       const { width, height } = this.getImageDimensions();
-      const xPercent = calcPercent(x, width, this.renderedWidth);
-      const yPercent = calcPercent(y, height, this.renderedHeight);
+      const xPercent = calcPercent(x, this.renderedWidth);
+      const yPercent = calcPercent(y, this.renderedHeight);
 
       this.openDiffFileCommentForm({
         fileHash: this.fileHash,
         width,
         height,
-        x: width * (xPercent / 100),
-        y: height * (yPercent / 100),
+        x: Math.round(width * (xPercent / 100)),
+        y: Math.round(height * (yPercent / 100)),
         xPercent,
         yPercent,
       });

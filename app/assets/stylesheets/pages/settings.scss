@@ -293,10 +293,8 @@
   }
 }
 
-.modal-doorkeepr-auth {
-  .modal-body {
-    padding: $gl-padding;
-  }
+.doorkeeper-authorize {
+  max-width: px-to-rem(500px);
 }
 
 .created-deploy-token-container {
@@ -314,12 +312,6 @@
     display: block;
     margin-bottom: 0;
   }
-}
-
-.mirror-error-badge {
-  background-color: $red-400;
-  border-radius: $border-radius-default;
-  color: $white;
 }
 
 .push-pull-table {

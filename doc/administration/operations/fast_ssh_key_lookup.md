@@ -27,13 +27,13 @@ lookup of authorized SSH keys.
 
 WARNING:
 OpenSSH version 6.9+ is required because `AuthorizedKeysCommand` must be
-able to accept a fingerprint. Check the version of OpenSSH on your server.
+able to accept a fingerprint. Check the version of OpenSSH on your server with `sshd -V`.
 
 ## Fast lookup is required for Geo **(PREMIUM)**
 
 By default, GitLab manages an `authorized_keys` file that is located in the
 `git` user's home directory. For most installations, this will be located under
-`/var/opt/gitlab/.ssh/authorized_keys`, but you can use the following command to locate the `authorized_keys` on your system.:
+`/var/opt/gitlab/.ssh/authorized_keys`, but you can use the following command to locate the `authorized_keys` on your system:
 
 ```shell
 getent passwd git | cut -d: -f6 | awk '{print $1"/.ssh/authorized_keys"}'
@@ -77,9 +77,13 @@ sudo service sshd reload
 ```
 
 Confirm that SSH is working by commenting out your user's key in the `authorized_keys`
-file (start the line with a `#` to comment it), and attempting to pull a repository.
+file (start the line with a `#` to comment it), and from your local machine, attempt to pull a repository or run:
 
-A successful pull would mean that GitLab was able to find the key in the database,
+```shell
+ssh -T git@gitlab.example.com
+```
+
+A successful pull or [welcome message](../../ssh/index.md#verify-that-you-can-connect) would mean that GitLab was able to find the key in the database,
 since it is not present in the file anymore.
 
 NOTE:
@@ -114,7 +118,7 @@ adding a new one, and attempting to pull a repository.
 
 Then you can backup and delete your `authorized_keys` file for best performance.
 The current users' keys are already present in the database, so there is no need for migration
-or for asking users to re-add their keys.
+or for users to re-add their keys.
 
 ## How to go back to using the `authorized_keys` file
 

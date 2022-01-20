@@ -172,8 +172,12 @@ export default class Todos {
 
   updateBadges(data) {
     $(document).trigger('todo:toggle', data.count);
-    document.querySelector('.js-todos-pending .badge').innerHTML = addDelimiter(data.count);
-    document.querySelector('.js-todos-done .badge').innerHTML = addDelimiter(data.done_count);
+    document.querySelector('.js-todos-pending .js-todos-badge').innerHTML = addDelimiter(
+      data.count,
+    );
+    document.querySelector('.js-todos-done .js-todos-badge').innerHTML = addDelimiter(
+      data.done_count,
+    );
   }
 
   goToTodoUrl(e) {

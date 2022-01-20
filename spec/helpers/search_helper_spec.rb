@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe SearchHelper do
   include MarkupHelper
+  include BadgesHelper
 
   # Override simple_sanitize for our testing purposes
   def simple_sanitize(str)
@@ -640,7 +641,7 @@ RSpec.describe SearchHelper do
         }
       },
       {
-        title: _('Last updated'),
+        title: _('Updated date'),
         sortable: true,
         sortParam: {
           asc: 'updated_asc',

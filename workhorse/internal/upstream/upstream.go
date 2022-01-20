@@ -37,6 +37,7 @@ var (
 		upload.RewrittenFieldsHeader,
 	}
 	geoProxyApiPollingInterval = 10 * time.Second
+	geoProxyWorkhorseHeaders   = map[string]string{"Gitlab-Workhorse-Geo-Proxy": "1"}
 )
 
 type upstream struct {
@@ -237,7 +238,12 @@ func (u *upstream) updateGeoProxyFields(geoProxyURL *url.URL) {
 	}
 
 	geoProxyRoundTripper := roundtripper.NewBackendRoundTripper(u.geoProxyBackend, "", u.ProxyHeadersTimeout, u.DevelopmentMode)
-	geoProxyUpstream := proxypkg.NewProxy(u.geoProxyBackend, u.Version, geoProxyRoundTripper)
+	geoProxyUpstream := proxypkg.NewProxy(
+		u.geoProxyBackend,
+		u.Version,
+		geoProxyRoundTripper,
+		proxypkg.WithCustomHeaders(geoProxyWorkhorseHeaders),
+	)
 	u.geoProxyCableRoute = u.wsRoute(`^/-/cable\z`, geoProxyUpstream)
 	u.geoProxyRoute = u.route("", "", geoProxyUpstream, withGeoProxy())
 }

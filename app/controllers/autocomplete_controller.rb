@@ -2,6 +2,7 @@
 
 class AutocompleteController < ApplicationController
   skip_before_action :authenticate_user!, only: [:users, :award_emojis, :merge_request_target_branches]
+  before_action :check_email_search_rate_limit!, only: [:users]
 
   feature_category :users, [:users, :user]
   feature_category :projects, [:projects]
@@ -70,6 +71,12 @@ class AutocompleteController < ApplicationController
 
   def target_branch_params
     params.permit(:group_id, :project_id).select { |_, v| v.present? }
+  end
+
+  def check_email_search_rate_limit!
+    search_params = Gitlab::Search::Params.new(params)
+
+    check_rate_limit!(:user_email_lookup, scope: [current_user]) if search_params.email_lookup?
   end
 end
 

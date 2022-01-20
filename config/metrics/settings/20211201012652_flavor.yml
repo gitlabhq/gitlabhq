@@ -1,0 +1,24 @@
+---
+key_path: database.flavor
+description: What PostgreSQL flavor is being used. Possible values are
+  "Amazon Aurora PostgreSQL", "PostgreSQL on Amazon RDS", "Cloud SQL for PostgreSQL",
+  "Azure Database for PostgreSQL - Single Server", "Azure Database for PostgreSQL - Flexible Server",
+  or "null".
+product_section: enablement
+product_stage: enablement
+product_group: group::database
+product_category: database
+value_type: string
+status: active
+milestone: "14.6"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/75587
+time_frame: none
+data_source: system
+data_category: optional
+distribution:
+- ce
+- ee
+tier:
+- free
+- premium
+- ultimate

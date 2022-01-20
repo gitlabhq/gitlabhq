@@ -703,10 +703,10 @@ Example response:
 
 - CustomersDot
 
-## CI minute provisioning
+## CI/CD minutes provisioning
 
-The CI Minute endpoints are used by [CustomersDot](https://gitlab.com/gitlab-org/customers-gitlab-com) (`customers.gitlab.com`)
-to apply additional packs of CI minutes, for personal namespaces or top-level groups within GitLab.com.
+The CI/CD Minutes endpoints are used by [CustomersDot](https://gitlab.com/gitlab-org/customers-gitlab-com) (`customers.gitlab.com`)
+to apply additional packs of CI/CD minutes, for personal namespaces or top-level groups within GitLab.com.
 
 ### Creating an additional pack
 
@@ -824,6 +824,32 @@ Example response:
 
 ```plaintext
 200
+```
+
+### Deleting an `upcoming_reconciliation`
+
+Use a DELETE command to delete an `upcoming_reconciliation`.
+
+```plaintext
+DELETE /internal/upcoming_reconciliations
+```
+
+| Attribute      | Type    | Required | Description                                                                       |
+|:---------------|:--------|:---------|:----------------------------------------------------------------------------------|
+| `namespace_id` | integer | yes | The ID of the GitLab.com namespace that no longer has an upcoming reconciliation. |
+
+Example request:
+
+```shell
+curl --request DELETE \
+  --url "http://localhost:3000/api/v4/internal/upcoming_reconciliations?namespace_id=22" \
+  --header 'PRIVATE-TOKEN: <admin_access_token>'
+```
+
+Example response:
+
+```plaintext
+204
 ```
 
 ### Known consumers

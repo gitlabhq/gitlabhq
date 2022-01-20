@@ -110,6 +110,19 @@ describe('DropdownContentsLabelsView', () => {
     });
   });
 
+  it('first item is highlighted when search is not empty', async () => {
+    createComponent({
+      queryHandler: jest.fn().mockResolvedValue(workspaceLabelsQueryResponse),
+      searchKey: 'Label',
+    });
+    await makeObserverAppear();
+    await waitForPromises();
+    await nextTick();
+
+    expect(findLabelsList().exists()).toBe(true);
+    expect(findFirstLabel().attributes('active')).toBe('true');
+  });
+
   it('when search returns 0 results', async () => {
     createComponent({
       queryHandler: jest.fn().mockResolvedValue({

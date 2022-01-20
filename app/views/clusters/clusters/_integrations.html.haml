@@ -1,7 +1,7 @@
 .settings.expanded.border-0.m-0
   %p
     = s_('ClusterIntegration|Integrations allow you to use applications installed in your cluster as part of your GitLab workflow.')
-    = link_to _('Learn more'), help_page_path('user/clusters/integrations.md'), target: '_blank'
+    = link_to _('Learn more'), help_page_path('user/clusters/integrations.md'), target: '_blank', rel: 'noopener noreferrer'
   .settings-content#integrations-settings-section
     - if can?(current_user, :admin_cluster, @cluster)
       .sub-section.form-group

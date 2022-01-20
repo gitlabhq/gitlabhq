@@ -98,15 +98,15 @@
             - unless @user.skype.blank?
               = render 'middle_dot_divider' do
                 = link_to "skype:#{@user.skype}", class: 'gl-hover-text-decoration-none', title: "Skype" do
-                  = sprite_icon('skype')
+                  = sprite_icon('skype', css_class: 'skype-icon')
             - unless @user.linkedin.blank?
               = render 'middle_dot_divider' do
                 = link_to linkedin_url(@user), class: 'gl-hover-text-decoration-none', title: "LinkedIn", target: '_blank', rel: 'noopener noreferrer nofollow' do
-                  = sprite_icon('linkedin')
+                  = sprite_icon('linkedin', css_class: 'linkedin-icon')
             - unless @user.twitter.blank?
               = render 'middle_dot_divider', breakpoint: 'sm' do
                 = link_to twitter_url(@user), class: 'gl-hover-text-decoration-none', title: "Twitter", target: '_blank', rel: 'noopener noreferrer nofollow' do
-                  = sprite_icon('twitter')
+                  = sprite_icon('twitter', css_class: 'twitter-icon')
             - unless @user.website_url.blank?
               = render 'middle_dot_divider', stacking: true do
                 - if Feature.enabled?(:security_auto_fix) && @user.bot?

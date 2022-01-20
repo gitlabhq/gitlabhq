@@ -25,10 +25,18 @@ RSpec.describe ContainerRepository do
         headers: { 'Content-Type' => 'application/json' })
   end
 
+  it_behaves_like 'having unique enum values'
+
   describe 'associations' do
     it 'belongs to the project' do
       expect(repository).to belong_to(:project)
     end
+  end
+
+  describe 'validations' do
+    it { is_expected.to validate_presence_of(:migration_retries_count) }
+    it { is_expected.to validate_numericality_of(:migration_retries_count).is_greater_than_or_equal_to(0) }
+    it { is_expected.to validate_presence_of(:migration_state) }
   end
 
   describe '#tag' do

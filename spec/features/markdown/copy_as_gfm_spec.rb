@@ -7,6 +7,10 @@ RSpec.describe 'Copy as GFM', :js do
   include RepoHelpers
   include ActionView::Helpers::JavaScriptHelper
 
+  before do
+    stub_feature_flags(refactor_blob_viewer: false) # This stub will be removed in https://gitlab.com/gitlab-org/gitlab/-/issues/350454
+  end
+
   describe 'Copying rendered GFM' do
     before do
       @feat = MarkdownFeature.new

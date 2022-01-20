@@ -1,21 +1,23 @@
 <script>
-import {
-  GlLink,
-  GlModalDirective,
-  GlTable,
-  GlIcon,
-  GlSprintf,
-  GlTooltip,
-  GlPopover,
-} from '@gitlab/ui';
-import { s__ } from '~/locale';
+import { GlLink, GlTable, GlIcon, GlSprintf, GlTooltip, GlPopover } from '@gitlab/ui';
+import { s__, __ } from '~/locale';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
 import { helpPagePath } from '~/helpers/help_page_helper';
-import { INSTALL_AGENT_MODAL_ID, AGENT_STATUSES } from '../constants';
+import { AGENT_STATUSES } from '../constants';
 import { getAgentConfigPath } from '../clusters_util';
+import AgentOptions from './agent_options.vue';
 
 export default {
+  i18n: {
+    nameLabel: s__('ClusterAgents|Name'),
+    statusLabel: s__('ClusterAgents|Connection status'),
+    lastContactLabel: s__('ClusterAgents|Last contact'),
+    configurationLabel: s__('ClusterAgents|Configuration'),
+    optionsLabel: __('Options'),
+    troubleshootingText: s__('ClusterAgents|Learn how to troubleshoot'),
+    neverConnectedText: s__('ClusterAgents|Never'),
+  },
   components: {
     GlLink,
     GlTable,
@@ -24,14 +26,10 @@ export default {
     GlTooltip,
     GlPopover,
     TimeAgoTooltip,
-  },
-  directives: {
-    GlModalDirective,
+    AgentOptions,
   },
   mixins: [timeagoMixin],
-  INSTALL_AGENT_MODAL_ID,
   AGENT_STATUSES,
-
   troubleshooting_link: helpPagePath('user/clusters/agent/index', {
     anchor: 'troubleshooting',
   }),
@@ -40,6 +38,16 @@ export default {
       required: true,
       type: Array,
     },
+    defaultBranchName: {
+      default: '.noBranch',
+      required: false,
+      type: String,
+    },
+    maxAgents: {
+      default: null,
+      required: false,
+      type: Number,
+    },
   },
   computed: {
     fields() {
@@ -47,22 +55,27 @@ export default {
       return [
         {
           key: 'name',
-          label: s__('ClusterAgents|Name'),
+          label: this.$options.i18n.nameLabel,
           tdClass,
         },
         {
           key: 'status',
-          label: s__('ClusterAgents|Connection status'),
+          label: this.$options.i18n.statusLabel,
           tdClass,
         },
         {
           key: 'lastContact',
-          label: s__('ClusterAgents|Last contact'),
+          label: this.$options.i18n.lastContactLabel,
           tdClass,
         },
         {
           key: 'configuration',
-          label: s__('ClusterAgents|Configuration'),
+          label: this.$options.i18n.configurationLabel,
+          tdClass,
+        },
+        {
+          key: 'options',
+          label: this.$options.i18n.optionsLabel,
           tdClass,
         },
       ];
@@ -118,7 +131,7 @@ export default {
         </p>
         <p class="gl-mb-0">
           <gl-link :href="$options.troubleshooting_link" target="_blank" class="gl-font-sm">
-            {{ s__('ClusterAgents|Learn how to troubleshoot') }}</gl-link
+            {{ $options.i18n.troubleshootingText }}</gl-link
           >
         </p>
       </gl-popover>
@@ -127,7 +140,7 @@ export default {
     <template #cell(lastContact)="{ item }">
       <span data-testid="cluster-agent-last-contact">
         <time-ago-tooltip v-if="item.lastContact" :time="item.lastContact" />
-        <span v-else>{{ s__('ClusterAgents|Never') }}</span>
+        <span v-else>{{ $options.i18n.neverConnectedText }}</span>
       </span>
     </template>
 
@@ -139,6 +152,14 @@ export default {
 
         <span v-else>{{ getAgentConfigPath(item.name) }}</span>
       </span>
+    </template>
+
+    <template #cell(options)="{ item }">
+      <agent-options
+        :agent="item"
+        :default-branch-name="defaultBranchName"
+        :max-agents="maxAgents"
+      />
     </template>
   </gl-table>
 </template>

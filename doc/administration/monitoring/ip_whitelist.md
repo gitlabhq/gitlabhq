@@ -6,8 +6,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # IP whitelist **(FREE SELF)**
 
-> Introduced in GitLab 9.4.
-
 NOTE:
 We intend to [rename IP whitelist as `IP allowlist`](https://gitlab.com/groups/gitlab-org/-/epics/3478).
 

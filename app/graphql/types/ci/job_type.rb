@@ -50,6 +50,8 @@ module Types
             null: true,
             description: 'How long the job was enqueued before starting.'
 
+      field :downstream_pipeline, Types::Ci::PipelineType, null: true,
+            description: 'Downstream pipeline for a bridge.'
       field :previous_stage_jobs_or_needs, Types::Ci::JobNeedUnion.connection_type, null: true,
             description: 'Jobs that must complete before the job runs. Returns `BuildNeed`, which is the needed jobs if the job uses the `needs` keyword, or the previous stage jobs otherwise.'
       field :detailed_status, Types::Ci::DetailedStatusType, null: true,
@@ -87,6 +89,10 @@ module Types
 
       def pipeline
         Gitlab::Graphql::Loaders::BatchModelLoader.new(::Ci::Pipeline, object.pipeline_id).find
+      end
+
+      def downstream_pipeline
+        object.downstream_pipeline if object.respond_to?(:downstream_pipeline)
       end
 
       def tags

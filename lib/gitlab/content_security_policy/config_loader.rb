@@ -147,7 +147,7 @@ module Gitlab
       # Using 'self' in the CSP introduces several CSP bypass opportunities
       # for this reason we list the URLs where GitLab frames itself instead
       def self.allow_framed_gitlab_paths(directives)
-        ['/admin/', '/assets/', '/-/speedscope/index.html'].map do |path|
+        ['/admin/', '/assets/', '/-/speedscope/index.html', '/-/sandbox/mermaid'].map do |path|
           append_to_directive(directives, 'frame_src', Gitlab::Utils.append_path(Gitlab.config.gitlab.url, path))
         end
       end

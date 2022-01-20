@@ -8,18 +8,15 @@
       %li.nav-item{ role: 'presentation' }
         %a.nav-link.gl-tab-nav-item{ href: admin_background_migrations_path, class: (active_tab_classes if @current_tab == 'queued'), role: 'tab' }
           = _('Queued')
-          %span.badge.gl-tab-counter-badge.badge-muted.badge-pill.gl-badge.sm
-            = limited_counter_with_delimiter(@relations_by_tab['queued'])
+          = gl_tab_counter_badge limited_counter_with_delimiter(@relations_by_tab['queued'])
       %li.nav-item{ role: 'presentation' }
         %a.nav-link.gl-tab-nav-item{ href: admin_background_migrations_path(tab: 'failed'), class: (active_tab_classes if @current_tab == 'failed'), role: 'tab' }
           = _('Failed')
-          %span.badge.gl-tab-counter-badge.badge-muted.badge-pill.gl-badge.sm
-            = limited_counter_with_delimiter(@relations_by_tab['failed'])
+          = gl_tab_counter_badge limited_counter_with_delimiter(@relations_by_tab['failed'])
       %li.nav-item{ role: 'presentation' }
         %a.nav-link.gl-tab-nav-item{ href: admin_background_migrations_path(tab: 'finished'), class: (active_tab_classes if @current_tab == 'finished'), role: 'tab' }
           = _('Finished')
-          %span.badge.gl-tab-counter-badge.badge-muted.badge-pill.gl-badge.sm
-            = limited_counter_with_delimiter(@relations_by_tab['finished'])
+          = gl_tab_counter_badge limited_counter_with_delimiter(@relations_by_tab['finished'])
 
   .tab-content.gl-tab-content
     .tab-pane.active{ role: 'tabpanel' }

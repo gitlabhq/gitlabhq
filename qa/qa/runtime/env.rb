@@ -9,6 +9,7 @@ module QA
       extend self
 
       attr_writer :personal_access_token, :admin_personal_access_token
+      attr_accessor :dry_run
 
       ENV_VARIABLES = Gitlab::QA::Runtime::Env::ENV_VARIABLES
 
@@ -87,6 +88,20 @@ module QA
 
       def accept_insecure_certs?
         enabled?(ENV['ACCEPT_INSECURE_CERTS'])
+      end
+
+      def running_on_dot_com?
+        uri = URI.parse(Runtime::Scenario.gitlab_address)
+        uri.host.include?('.com')
+      end
+
+      def running_on_dev?
+        uri = URI.parse(Runtime::Scenario.gitlab_address)
+        uri.port != 80 && uri.port != 443
+      end
+
+      def running_on_dev_or_dot_com?
+        running_on_dev? || running_on_dot_com?
       end
 
       def running_in_ci?
@@ -281,9 +296,7 @@ module QA
       end
 
       def knapsack?
-        return false unless ENV['CI_NODE_TOTAL'].to_i > 1
-
-        !!(ENV['KNAPSACK_GENERATE_REPORT'] || ENV['KNAPSACK_REPORT_PATH'] || ENV['KNAPSACK_TEST_FILE_PATTERN'])
+        ENV['CI_NODE_TOTAL'].to_i > 1 && ENV['NO_KNAPSACK'] != "true"
       end
 
       def ldap_username
@@ -401,7 +414,7 @@ module QA
       end
 
       def gitlab_agentk_version
-        ENV.fetch('GITLAB_AGENTK_VERSION', 'v14.4.0')
+        ENV.fetch('GITLAB_AGENTK_VERSION', 'v14.5.0')
       end
 
       def transient_trials
@@ -414,6 +427,11 @@ module QA
 
       def export_metrics?
         running_in_ci? && enabled?(ENV['QA_EXPORT_TEST_METRICS'], default: true)
+      end
+
+      def test_resources_created_filepath
+        file_name = running_in_ci? ? "test-resources-#{SecureRandom.hex(3)}.json" : 'test-resources.json'
+        ENV.fetch('QA_TEST_RESOURCES_CREATED_FILEPATH', File.join(Path.qa_root, 'tmp', file_name))
       end
 
       private

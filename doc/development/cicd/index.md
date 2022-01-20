@@ -109,6 +109,11 @@ After the server receives the request it selects a `pending` job based on the [`
 
 Once all jobs are completed for the current stage, the server "unlocks" all the jobs from the next stage by changing their state to `pending`. These can now be picked by the scheduling algorithm when the runner requests new jobs, and continues like this until all stages are completed.
 
+If a job is not picked up by a runner in 24 hours it is automatically removed from
+the processing queue after that time. If a pending job is stuck, when there is no
+runner available that can process it, it is removed from the queue after 1 hour.
+In both cases the job's status is changed to `failed` with an appropriate failure reason.
+
 ### Communication between runner and GitLab server
 
 After the runner is [registered](https://docs.gitlab.com/runner/register/) using the registration token, the server knows what type of jobs it can execute. This depends on:
@@ -169,18 +174,18 @@ We have a few inconsistencies in our codebase that should be refactored.
 For example, `CommitStatus` should be `Ci::Job` and `Ci::JobArtifact` should be `Ci::BuildArtifact`.
 See [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/16111) for the full refactoring plan.
 
-## CI Minutes
+## CI/CD Minutes
 
-This diagram shows how the [CI minutes](../../subscriptions/gitlab_com/index.md#ci-pipeline-minutes)
+This diagram shows how the [CI/CD minutes](../../ci/pipelines/cicd_minutes.md)
 feature and its components work.
 
-![CI Minutes architecture](img/ci_minutes.png)
+![CI/CD minutes architecture](img/ci_minutes.png)
 <!-- Editable diagram available at https://app.diagrams.net/?libs=general;flowchart#G1XjLPvJXbzMofrC3eKRyDEk95clV6ypOb -->
 
 Watch a walkthrough of this feature in details in the video below.
 
 <div class="video-fallback">
-  See the video: <a href="https://www.youtube.com/watch?v=NmdWRGT8kZg">CI Minutes - architectural overview</a>.
+  See the video: <a href="https://www.youtube.com/watch?v=NmdWRGT8kZg">CI/CD minutes - architectural overview</a>.
 </div>
 <figure class="video-container">
   <iframe src="https://www.youtube.com/embed/NmdWRGT8kZg" frameborder="0" allowfullscreen="true"> </iframe>

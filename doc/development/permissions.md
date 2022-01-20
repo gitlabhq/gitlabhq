@@ -1,10 +1,10 @@
 ---
 stage: Manage
-group: Access
+group: Authentication & Authorization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# GitLab permissions guide
+# Implementing permissions
 
 There are multiple types of permissions across GitLab, and when implementing
 anything that deals with permissions, all of them should be considered.

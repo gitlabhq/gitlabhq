@@ -23,10 +23,6 @@ module Resolvers
         Preloaders::GroupPolicyPreloader.new(nodes, current_user).execute
       end
 
-      def ready?(**args)
-        Feature.enabled?(:paginatable_namespace_drop_down_for_project_creation, current_user, default_enabled: :yaml)
-      end
-
       private
 
       def resolve_groups(**args)

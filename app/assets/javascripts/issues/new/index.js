@@ -5,14 +5,14 @@ import TitleSuggestions from './components/title_suggestions.vue';
 import TypePopover from './components/type_popover.vue';
 
 export function initTitleSuggestions() {
-  Vue.use(VueApollo);
-
   const el = document.getElementById('js-suggestions');
   const issueTitle = document.getElementById('issue_title');
 
   if (!el) {
     return undefined;
   }
+
+  Vue.use(VueApollo);
 
   const apolloProvider = new VueApollo({
     defaultClient: createDefaultClient(),

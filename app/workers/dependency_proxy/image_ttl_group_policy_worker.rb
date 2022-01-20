@@ -26,8 +26,8 @@ module DependencyProxy
 
     def log_counts
       use_replica_if_available do
-        expired_blob_count = DependencyProxy::Blob.expired.count
-        expired_manifest_count = DependencyProxy::Manifest.expired.count
+        expired_blob_count = DependencyProxy::Blob.pending_destruction.count
+        expired_manifest_count = DependencyProxy::Manifest.pending_destruction.count
         processing_blob_count = DependencyProxy::Blob.processing.count
         processing_manifest_count = DependencyProxy::Manifest.processing.count
         error_blob_count = DependencyProxy::Blob.error.count

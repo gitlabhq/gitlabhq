@@ -42,15 +42,12 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     push_frontend_feature_flag(:restructured_mr_widget, project, default_enabled: :yaml)
     push_frontend_feature_flag(:mr_changes_fluid_layout, project, default_enabled: :yaml)
     push_frontend_feature_flag(:mr_attention_requests, project, default_enabled: :yaml)
-
+    push_frontend_feature_flag(:refactor_mr_widgets_extensions, @project, default_enabled: :yaml)
+    push_frontend_feature_flag(:rebase_without_ci_ui, @project, default_enabled: :yaml)
     # Usage data feature flags
     push_frontend_feature_flag(:users_expanding_widgets_usage_data, @project, default_enabled: :yaml)
     push_frontend_feature_flag(:diff_settings_usage_data, default_enabled: :yaml)
     push_frontend_feature_flag(:diff_searching_usage_data, @project, default_enabled: :yaml)
-  end
-
-  before_action do
-    push_frontend_feature_flag(:show_relevant_approval_rule_approvers, @project, default_enabled: :yaml)
   end
 
   around_action :allow_gitaly_ref_name_caching, only: [:index, :show, :discussions]
@@ -66,7 +63,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
 
   feature_category :code_testing, [:test_reports, :coverage_reports]
   feature_category :code_quality, [:codequality_reports, :codequality_mr_diff_reports]
-  feature_category :accessibility_testing, [:accessibility_reports]
+  feature_category :code_testing, [:accessibility_reports]
   feature_category :infrastructure_as_code, [:terraform_reports]
   feature_category :continuous_integration, [:pipeline_status, :pipelines, :exposed_artifacts]
 

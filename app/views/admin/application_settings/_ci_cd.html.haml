@@ -9,13 +9,13 @@
           = s_('CICD|Default to Auto DevOps pipeline for all projects')
         .form-text.text-muted
           = s_('CICD|The Auto DevOps pipeline runs by default in all projects with no CI/CD configuration file.')
-          = link_to _('What is Auto DevOps?'), help_page_path('topics/autodevops/index.md'), target: '_blank'
+          = link_to _('What is Auto DevOps?'), help_page_path('topics/autodevops/index.md'), target: '_blank', rel: 'noopener noreferrer'
     .form-group
       = f.label :auto_devops_domain, s_('AdminSettings|Auto DevOps domain'), class: 'label-bold'
       = f.text_field :auto_devops_domain, class: 'form-control gl-form-input', placeholder: 'example.com'
       .form-text.text-muted
         = s_("AdminSettings|The default domain to use for Auto Review Apps and Auto Deploy stages in all projects.")
-        = link_to _('Learn more.'), help_page_path('topics/autodevops/stages.md', anchor: 'auto-review-apps'), target: '_blank'
+        = link_to _('Learn more.'), help_page_path('topics/autodevops/stages.md', anchor: 'auto-review-apps'), target: '_blank', rel: 'noopener noreferrer'
 
     .form-group
       .form-check
@@ -68,7 +68,7 @@
       = f.text_field :default_ci_config_path, class: 'form-control gl-form-input', placeholder: '.gitlab-ci.yml'
       %p.form-text.text-muted
         = _("The default CI/CD configuration file and path for new projects.").html_safe
-        = link_to sprite_icon('question-o'), help_page_path('ci/pipelines/settings', anchor: 'specify-a-custom-cicd-configuration-file'), target: '_blank'
+        = link_to sprite_icon('question-o'), help_page_path('ci/pipelines/settings', anchor: 'specify-a-custom-cicd-configuration-file'), target: '_blank', rel: 'noopener noreferrer'
     .form-group
       .form-check
         = f.check_box :suggest_pipeline_enabled, class: 'form-check-input'

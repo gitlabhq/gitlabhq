@@ -18,6 +18,14 @@ module Projects
 
         SUPPORTED_VERSION = '4'
 
+        # If feature flag :prometheus_notify_max_alerts is enabled truncate
+        # alerts to 100 and process only them.
+        # If feature flag is disabled process any amount of alerts.
+        #
+        # This is to mitigate incident:
+        # https://gitlab.com/gitlab-com/gl-infra/production/-/issues/6086
+        PROCESS_MAX_ALERTS = 100
+
         def initialize(project, payload)
           @project = project
           @payload = payload
@@ -27,6 +35,8 @@ module Projects
           return bad_request unless valid_payload_size?
           return unprocessable_entity unless self.class.processable?(payload)
           return unauthorized unless valid_alert_manager_token?(token, integration)
+
+          truncate_alerts! if max_alerts_exceeded?
 
           alert_responses = process_prometheus_alerts
 
@@ -49,12 +59,23 @@ module Projects
           Gitlab::Utils::DeepSize.new(payload).valid?
         end
 
-        def firings
-          @firings ||= alerts_by_status('firing')
+        def max_alerts_exceeded?
+          return false unless Feature.enabled?(:prometheus_notify_max_alerts, project, type: :ops)
+
+          alerts.size > PROCESS_MAX_ALERTS
         end
 
-        def alerts_by_status(status)
-          alerts.select { |alert| alert['status'] == status }
+        def truncate_alerts!
+          Gitlab::AppLogger.warn(
+            message: 'Prometheus payload exceeded maximum amount of alerts. Truncating alerts.',
+            project_id: project.id,
+            alerts: {
+              total: alerts.size,
+              max: PROCESS_MAX_ALERTS
+            }
+          )
+
+          payload['alerts'] = alerts.first(PROCESS_MAX_ALERTS)
         end
 
         def alerts
@@ -137,7 +158,7 @@ module Projects
         end
 
         def alert_response(alert_responses)
-          alerts = alert_responses.map { |resp| resp.payload[:alert] }.compact
+          alerts = alert_responses.flat_map { |resp| resp.payload[:alerts] }.compact
 
           success(alerts)
         end

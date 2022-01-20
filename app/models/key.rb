@@ -22,7 +22,7 @@ class Key < ApplicationRecord
   validates :key,
     presence: true,
     length: { maximum: 5000 },
-    format: { with: /\A(ssh|ecdsa)-.*\Z/ }
+    format: { with: /\A(#{Gitlab::SSHPublicKey.supported_algorithms.join('|')})/ }
 
   validates :fingerprint,
     uniqueness: true,

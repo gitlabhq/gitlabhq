@@ -2,7 +2,6 @@
 stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
-type: concepts, howto
 ---
 
 # Repository **(FREE)**
@@ -66,8 +65,6 @@ Alternatively, you can clone directly into a code editor.
 
 ### Clone and open in Apple Xcode
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/45820) in GitLab 11.0.
-
 Projects that contain a `.xcodeproj` or `.xcworkspace` directory can be cloned
 into Xcode on macOS.
 
@@ -98,8 +95,7 @@ Visual Studio Code:
 
 ## Download the code in a repository
 
-> - Support for directory download was [introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/24704) in GitLab 11.11.
-> - Support for [including Git LFS blobs](../../../topics/git/lfs#lfs-objects-in-project-archives) was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15079) in GitLab 13.5.
+> Support for [including Git LFS blobs](../../../topics/git/lfs#lfs-objects-in-project-archives) was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15079) in GitLab 13.5.
 
 You can download the source code that's stored in a repository.
 

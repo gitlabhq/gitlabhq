@@ -42,6 +42,9 @@ RSpec.describe 'Group Packages' do
       let_it_be(:maven_package) { create(:maven_package, project: second_project, name: 'aaa', created_at: 2.days.ago, version: '2.0.0') }
       let_it_be(:packages) { [npm_package, maven_package] }
 
+      let(:package) { packages.first }
+      let(:package_details_path) { group_package_path(group, package) }
+
       it_behaves_like 'packages list', check_project_name: true
 
       it_behaves_like 'package details link'

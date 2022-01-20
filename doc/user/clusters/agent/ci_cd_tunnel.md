@@ -19,11 +19,8 @@ Only CI/CD jobs set in the configuration project can access one of the configure
 
 ## Prerequisites
 
-- A running [`kas` instance](install/index.md#set-up-the-agent-server).
-- A [configuration repository](install/index.md#define-a-configuration-repository) with an agent config file
-  installed (`.gitlab/agents/<agent-name>/config.yaml`).
-- A [registered agent](install/index.md#register-an-agent-with-gitlab).
-- The agent [installed in the cluster](install/index.md#install-the-agent-into-the-cluster).
+- An existing Kubernetes cluster.
+- An agent [installed on your cluster](install/index.md#install-the-agent-into-the-cluster).
 
 ## Use the CI/CD Tunnel to run Kubernetes commands from GitLab CI/CD
 

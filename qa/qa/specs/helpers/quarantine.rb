@@ -11,9 +11,9 @@ module QA
         extend self
 
         # Skip tests in quarantine unless we explicitly focus on them.
-        def skip_or_run_quarantined_tests_or_contexts(filters, example)
+        def skip_or_run_quarantined_tests_or_contexts(example)
           if filters.key?(:quarantine)
-            included_filters = filters_other_than_quarantine(filters)
+            included_filters = filters_other_than_quarantine
 
             # If :quarantine is focused, skip the test/context unless its metadata
             # includes quarantine and any other filters
@@ -29,18 +29,17 @@ module QA
           elsif example.metadata.key?(:quarantine)
             quarantine_tag = example.metadata[:quarantine]
 
-            if quarantine_tag.is_a?(Hash) && quarantine_tag&.key?(:only) && !ContextSelector.context_matches?(quarantine_tag[:only])
-              # If the :quarantine hash contains :only, we respect that.
-              # For instance `quarantine: { only: { subdomain: :staging } }` will only quarantine the test when it runs against staging.
-              return
-            end
+            # If the :quarantine hash contains :only, we respect that.
+            # For instance `quarantine: { only: { subdomain: :staging } }`
+            # will only quarantine the test when it runs against staging.
+            return if quarantined_different_context?(quarantine_tag)
 
             example.metadata[:skip] = quarantine_message(quarantine_tag)
           end
         end
 
-        def filters_other_than_quarantine(filter)
-          filter.reject { |key, _| key == :quarantine }
+        def filters_other_than_quarantine
+          filters.reject { |key, _| key == :quarantine }
         end
 
         def quarantine_message(quarantine_tag)
@@ -69,6 +68,14 @@ module QA
           return false if included_filters.empty?
 
           (metadata.keys & included_filters.keys).empty?
+        end
+
+        def quarantined_different_context?(quarantine)
+          quarantine.is_a?(Hash) && quarantine.key?(:only) && !ContextSelector.context_matches?(quarantine[:only])
+        end
+
+        def filters
+          @filters ||= ::RSpec.configuration.inclusion_filter.rules
         end
       end
     end

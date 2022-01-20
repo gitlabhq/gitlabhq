@@ -38,14 +38,14 @@ describe('Timezone Dropdown', () => {
         const tzStr = '[UTC + 5.5] Sri Jayawardenepura';
         const tzValue = 'Asia/Colombo';
 
-        expect($inputEl.val()).toBe('UTC');
+        expect($inputEl.val()).toBe('Etc/UTC');
 
         $(`${tzListSel}:contains('${tzStr}')`, $wrapper).trigger('click');
 
         const val = $inputEl.val();
 
         expect(val).toBe(tzValue);
-        expect(val).not.toBe('UTC');
+        expect(val).not.toBe('Etc/UTC');
       });
 
       it('will format data array of timezones into a list of offsets', () => {
@@ -67,7 +67,7 @@ describe('Timezone Dropdown', () => {
         it('will default the timezone to UTC', () => {
           const tz = $inputEl.val();
 
-          expect(tz).toBe('UTC');
+          expect(tz).toBe('Etc/UTC');
         });
       });
 

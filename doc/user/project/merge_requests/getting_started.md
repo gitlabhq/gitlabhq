@@ -2,7 +2,6 @@
 stage: Create
 group: Code Review
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
-type: index, reference
 description: "Getting started with merge requests."
 ---
 
@@ -92,8 +91,7 @@ and the merge request is added to their
 
 #### Multiple assignees **(PREMIUM)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/2004) in GitLab 11.11.
-> - Moved to GitLab Premium in 13.9
+> Moved to GitLab Premium in 13.9
 
 Multiple people often review merge requests at the same time.
 GitLab allows you to have multiple assignees for merge requests
@@ -207,7 +205,7 @@ This improvement is [tracked as a follow-up](https://gitlab.com/gitlab-org/gitla
 
 - When working locally in your branch, add multiple commits and only push when
   you're done, so GitLab runs only one pipeline for all the commits pushed
-  at once. By doing so, you save pipeline minutes.
+  at once. By doing so, you save CI/CD minutes.
 - Delete feature branches on merge or after merging them to keep your repository clean.
 - Take one thing at a time and ship the smallest changes possible. By doing so,
   reviews are faster and your changes are less prone to errors.

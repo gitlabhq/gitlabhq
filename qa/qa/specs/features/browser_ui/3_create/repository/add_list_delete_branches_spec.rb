@@ -24,8 +24,6 @@ module QA
           proj.initialize_with_readme = true
         end
 
-        Runtime::Feature.enable(:delete_branch_confirmation_modals, project: project)
-
         master_branch = project.default_branch
 
         Git::Repository.perform do |repository|

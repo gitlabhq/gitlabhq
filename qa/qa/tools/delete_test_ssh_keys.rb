@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require_relative '../../qa'
-
 # This script deletes all selected test ssh keys for a specific user
 # Keys can be selected by a string matching part of the key's title and by created date
 #   - Specify `title_portion` to delete only keys that include the string provided

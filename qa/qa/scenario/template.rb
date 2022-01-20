@@ -33,9 +33,15 @@ module QA
         Runtime::Scenario.define(:about_address, URI(-> { gitlab_address.host = "about.#{gitlab_address.host}"; gitlab_address }.call).to_s) # rubocop:disable Style/Semicolon
 
         ##
+        # Setup knapsack and download latest report
+        #
+        Tools::KnapsackReport.configure! if Runtime::Env.knapsack?
+
+        ##
         # Perform before hooks, which are different for CE and EE
         #
-        Runtime::Release.perform_before_hooks
+
+        Runtime::Release.perform_before_hooks unless Runtime::Env.dry_run
 
         Runtime::Feature.enable(options[:enable_feature]) if options.key?(:enable_feature)
         Runtime::Feature.disable(options[:disable_feature]) if options.key?(:disable_feature) && (@feature_enabled = Runtime::Feature.enabled?(options[:disable_feature]))

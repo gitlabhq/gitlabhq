@@ -58,6 +58,7 @@ issues:
 - test_reports
 - requirement
 - incident_management_issuable_escalation_status
+- incident_management_timeline_events
 - pending_escalations
 - customer_relations_contacts
 - issue_customer_relations_contacts
@@ -135,6 +136,7 @@ project_members:
 - source
 - project
 - member_task
+- member_namespace
 merge_requests:
 - status_check_responses
 - subscriptions
@@ -280,6 +282,7 @@ ci_pipelines:
 - dast_site_profiles_pipeline
 - package_build_infos
 - package_file_build_infos
+- build_trace_chunks
 ci_refs:
 - project
 - ci_pipelines
@@ -601,6 +604,7 @@ project:
 - bulk_import_exports
 - ci_project_mirror
 - sync_events
+- secure_files
 award_emoji:
 - awardable
 - user

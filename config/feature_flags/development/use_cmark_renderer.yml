@@ -1,8 +1,0 @@
----
-name: use_cmark_renderer
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/61792
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/345744
-milestone: '14.6'
-type: development
-group: group::project management
-default_enabled: true

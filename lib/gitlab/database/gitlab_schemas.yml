@@ -107,6 +107,7 @@ ci_runner_projects: :gitlab_ci
 ci_runners: :gitlab_ci
 ci_running_builds: :gitlab_ci
 ci_sources_pipelines: :gitlab_ci
+ci_secure_files: :gitlab_ci
 ci_sources_projects: :gitlab_ci
 ci_stages: :gitlab_ci
 ci_subscriptions_projects: :gitlab_ci
@@ -200,7 +201,7 @@ experiment_subjects: :gitlab_main
 experiment_users: :gitlab_main
 external_approval_rules: :gitlab_main
 external_approval_rules_protected_branches: :gitlab_main
-external_pull_requests: :gitlab_main
+external_pull_requests: :gitlab_ci
 external_status_checks: :gitlab_main
 external_status_checks_protected_branches: :gitlab_main
 feature_gates: :gitlab_main
@@ -231,6 +232,7 @@ gpg_key_subkeys: :gitlab_main
 gpg_signatures: :gitlab_main
 grafana_integrations: :gitlab_main
 group_custom_attributes: :gitlab_main
+group_crm_settings: :gitlab_main
 group_deletion_schedules: :gitlab_main
 group_deploy_keys: :gitlab_main
 group_deploy_keys_groups: :gitlab_main
@@ -460,6 +462,8 @@ security_findings: :gitlab_main
 security_orchestration_policy_configurations: :gitlab_main
 security_orchestration_policy_rule_schedules: :gitlab_main
 security_scans: :gitlab_main
+security_training_providers: :gitlab_main
+security_trainings: :gitlab_main
 self_managed_prometheus_alert_events: :gitlab_main
 sent_notifications: :gitlab_main
 sentry_issues: :gitlab_main
@@ -521,13 +525,7 @@ vulnerabilities: :gitlab_main
 vulnerability_exports: :gitlab_main
 vulnerability_external_issue_links: :gitlab_main
 vulnerability_feedback: :gitlab_main
-vulnerability_finding_evidence_assets: :gitlab_main
-vulnerability_finding_evidence_headers: :gitlab_main
-vulnerability_finding_evidence_requests: :gitlab_main
-vulnerability_finding_evidence_responses: :gitlab_main
 vulnerability_finding_evidences: :gitlab_main
-vulnerability_finding_evidence_sources: :gitlab_main
-vulnerability_finding_evidence_supporting_messages: :gitlab_main
 vulnerability_finding_links: :gitlab_main
 vulnerability_finding_signatures: :gitlab_main
 vulnerability_findings_remediations: :gitlab_main

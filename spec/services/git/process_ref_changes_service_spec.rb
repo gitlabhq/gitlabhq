@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Git::ProcessRefChangesService do
   let(:project) { create(:project, :repository) }
-  let(:user) { project.owner }
+  let(:user) { project.first_owner }
   let(:params) { { changes: git_changes } }
 
   subject { described_class.new(project, user, params) }
@@ -34,7 +34,7 @@ RSpec.describe Git::ProcessRefChangesService do
     it "calls #{push_service_class}" do
       expect(push_service_class)
         .to receive(:new)
-        .with(project, project.owner, hash_including(execute_project_hooks: true, create_push_event: true))
+        .with(project, project.first_owner, hash_including(execute_project_hooks: true, create_push_event: true))
         .exactly(changes.count).times
         .and_return(service)
 
@@ -58,7 +58,7 @@ RSpec.describe Git::ProcessRefChangesService do
       it "calls #{push_service_class} with execute_project_hooks set to false" do
         expect(push_service_class)
           .to receive(:new)
-          .with(project, project.owner, hash_including(execute_project_hooks: false))
+          .with(project, project.first_owner, hash_including(execute_project_hooks: false))
           .exactly(changes.count).times
           .and_return(service)
 
@@ -86,7 +86,7 @@ RSpec.describe Git::ProcessRefChangesService do
       it "calls #{push_service_class} with create_push_event set to false" do
         expect(push_service_class)
           .to receive(:new)
-          .with(project, project.owner, hash_including(create_push_event: false))
+          .with(project, project.first_owner, hash_including(create_push_event: false))
           .exactly(changes.count).times
           .and_return(service)
 
@@ -170,7 +170,7 @@ RSpec.describe Git::ProcessRefChangesService do
 
         allow(push_service_class)
           .to receive(:new)
-          .with(project, project.owner, hash_including(execute_project_hooks: true, create_push_event: true))
+          .with(project, project.first_owner, hash_including(execute_project_hooks: true, create_push_event: true))
           .exactly(changes.count).times
           .and_return(service)
       end

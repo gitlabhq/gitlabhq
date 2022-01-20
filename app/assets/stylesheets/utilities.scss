@@ -58,6 +58,13 @@
   }
 }
 
+.gl-first-child-ml-sm-0 > a:first-child,
+.gl-first-child-ml-sm-0 > button:first-child {
+  @include media-breakpoint-up(sm) {
+    @include gl-ml-0;
+  }
+}
+
 .mh-50vh { max-height: 50vh; }
 
 .min-width-0 {
@@ -240,16 +247,6 @@ $gl-line-height-42: px-to-rem(42px);
   max-width: 50%;
 }
 
-// Will be moved to @gitlab/ui by https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1465
-.gl-popover {
-  .popover-header {
-    .gl-button.close {
-      margin-top: -$gl-spacing-scale-3;
-      margin-right: -$gl-spacing-scale-4;
-    }
-  }
-}
-
 // Will be moved to @gitlab/ui by https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1490
 .gl-w-grid-size-28 {
   width: $grid-size * 28;
@@ -306,4 +303,9 @@ $gl-line-height-42: px-to-rem(42px);
   @include gl-media-breakpoint-up(lg) {
     width: 25%;
   }
+}
+
+// Will be moved to @gitlab/ui by https://gitlab.com/gitlab-org/gitlab-ui/-/merge_requests/2600
+.gl-pr-10 {
+  padding-right: $gl-spacing-scale-10;
 }

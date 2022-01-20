@@ -20,7 +20,7 @@ export default {
 };
 </script>
 <template>
-  <node-view-wrapper class="gl-relative code highlight" as="pre">
+  <node-view-wrapper class="content-editor-code-block gl-relative code highlight" as="pre">
     <span
       data-testid="frontmatter-label"
       class="gl-absolute gl-top-0 gl-right-3"

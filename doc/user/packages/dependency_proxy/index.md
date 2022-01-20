@@ -6,7 +6,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Dependency Proxy **(FREE)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/7934) in GitLab 11.11.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/273655) from GitLab Premium to GitLab Free in 13.6.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/11582) support for private groups in GitLab 13.7.
 > - Anonymous access to images in public groups is no longer available starting in GitLab 13.7.
@@ -20,7 +19,8 @@ upstream image from a registry, acting as a pull-through cache.
 
 ## Prerequisites
 
-- The Dependency Proxy is enabled by default but can be [turned off by an administrator](../../../administration/packages/dependency_proxy.md).
+To use the Dependency Proxy, it must be enabled for the GitLab instance. It's enabled by default,
+but [administrators can turn it off](../../../administration/packages/dependency_proxy.md).
 
 ### Supported images and packages
 
@@ -33,13 +33,17 @@ The following images and packages are supported.
 For a list of planned additions, view the
 [direction page](https://about.gitlab.com/direction/package/#dependency-proxy).
 
-## Enable or disable the Dependency Proxy for a group
+## Enable or turn off the Dependency Proxy for a group
 
-To enable or disable the Dependency Proxy for a group:
+To enable or turn off the Dependency Proxy for a group:
 
 1. Go to your group's **Settings > Packages & Registries**.
 1. Expand the **Dependency Proxy** section.
-1. To enable the proxy, turn on **Enable Proxy**. To disable it, turn the toggle off.
+1. To enable the proxy, turn on **Enable Proxy**. To turn it off, turn the toggle off.
+
+This setting only affects the Dependency Proxy for a group. Only an administrator can
+[turn the Dependency Proxy on or off](../../../administration/packages/dependency_proxy.md)
+for the entire GitLab instance.
 
 ## View the Dependency Proxy
 
@@ -227,7 +231,7 @@ You can enable an automatic time-to-live (TTL) policy for the Dependency Proxy f
 interface. To do this, navigate to your group's **Settings > Packages & Registries > Dependency Proxy**
 and enable the setting to automatically clear items from the cache after 90 days.
 
-#### Enable cleanup policies with GraphQL 
+#### Enable cleanup policies with GraphQL
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/294187) in GitLab 14.4.
 
@@ -259,7 +263,7 @@ mutation {
 ```
 
 See the [Getting started with GraphQL](../../../api/graphql/getting_started.md)
-guide to learn how to make GraphQL queries. 
+guide to learn how to make GraphQL queries.
 
 When the policy is initially enabled, the default TTL setting is 90 days. Once enabled, stale
 dependency proxy files are queued for deletion each day. Deletion may not occur right away due to

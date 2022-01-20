@@ -20,7 +20,7 @@ const updateIssue = (url, issueList, { move_before_id, move_after_id }) =>
       });
     });
 
-const initManualOrdering = (draggableSelector = 'li.issue') => {
+const initManualOrdering = () => {
   const issueList = document.querySelector('.manual-ordering');
 
   if (!issueList || !(gon.current_user_id > 0)) {
@@ -37,14 +37,14 @@ const initManualOrdering = (draggableSelector = 'li.issue') => {
       group: {
         name: 'issues',
       },
-      draggable: draggableSelector,
+      draggable: 'li.issue',
       onStart: () => {
         sortableStart();
       },
       onUpdate: (event) => {
         const el = event.item;
 
-        const url = el.getAttribute('url') || el.dataset.url;
+        const url = el.getAttribute('url');
 
         const prev = el.previousElementSibling;
         const next = el.nextElementSibling;

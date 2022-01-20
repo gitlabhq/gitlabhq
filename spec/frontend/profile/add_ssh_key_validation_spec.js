@@ -3,18 +3,18 @@ import AddSshKeyValidation from '../../../app/assets/javascripts/profile/add_ssh
 describe('AddSshKeyValidation', () => {
   describe('submit', () => {
     it('returns true if isValid is true', () => {
-      const addSshKeyValidation = new AddSshKeyValidation({});
-      jest.spyOn(AddSshKeyValidation, 'isPublicKey').mockReturnValue(true);
+      const addSshKeyValidation = new AddSshKeyValidation([], {});
+      jest.spyOn(addSshKeyValidation, 'isPublicKey').mockReturnValue(true);
 
-      expect(addSshKeyValidation.submit()).toBeTruthy();
+      expect(addSshKeyValidation.submit()).toBe(true);
     });
 
     it('calls preventDefault and toggleWarning if isValid is false', () => {
-      const addSshKeyValidation = new AddSshKeyValidation({});
+      const addSshKeyValidation = new AddSshKeyValidation([], {});
       const event = {
         preventDefault: jest.fn(),
       };
-      jest.spyOn(AddSshKeyValidation, 'isPublicKey').mockReturnValue(false);
+      jest.spyOn(addSshKeyValidation, 'isPublicKey').mockReturnValue(false);
       jest.spyOn(addSshKeyValidation, 'toggleWarning').mockImplementation(() => {});
 
       addSshKeyValidation.submit(event);
@@ -31,14 +31,15 @@ describe('AddSshKeyValidation', () => {
       warningElement.classList.add('hide');
 
       const addSshKeyValidation = new AddSshKeyValidation(
+        [],
         {},
         warningElement,
         originalSubmitElement,
       );
       addSshKeyValidation.toggleWarning(true);
 
-      expect(warningElement.classList.contains('hide')).toBeFalsy();
-      expect(originalSubmitElement.classList.contains('hide')).toBeTruthy();
+      expect(warningElement.classList.contains('hide')).toBe(false);
+      expect(originalSubmitElement.classList.contains('hide')).toBe(true);
     });
 
     it('hides warningElement and shows originalSubmitElement if isVisible is false', () => {
@@ -47,25 +48,32 @@ describe('AddSshKeyValidation', () => {
       originalSubmitElement.classList.add('hide');
 
       const addSshKeyValidation = new AddSshKeyValidation(
+        [],
         {},
         warningElement,
         originalSubmitElement,
       );
       addSshKeyValidation.toggleWarning(false);
 
-      expect(warningElement.classList.contains('hide')).toBeTruthy();
-      expect(originalSubmitElement.classList.contains('hide')).toBeFalsy();
+      expect(warningElement.classList.contains('hide')).toBe(true);
+      expect(originalSubmitElement.classList.contains('hide')).toBe(false);
     });
   });
 
   describe('isPublicKey', () => {
-    it('returns false if probably invalid public ssh key', () => {
-      expect(AddSshKeyValidation.isPublicKey('nope')).toBeFalsy();
+    it('returns false if value begins with an algorithm name that is unsupported', () => {
+      const addSshKeyValidation = new AddSshKeyValidation(['ssh-rsa', 'ssh-algorithm'], {});
+
+      expect(addSshKeyValidation.isPublicKey('nope key')).toBe(false);
+      expect(addSshKeyValidation.isPublicKey('ssh- key')).toBe(false);
+      expect(addSshKeyValidation.isPublicKey('unsupported-ssh-rsa key')).toBe(false);
     });
 
-    it('returns true if probably valid public ssh key', () => {
-      expect(AddSshKeyValidation.isPublicKey('ssh-')).toBeTruthy();
-      expect(AddSshKeyValidation.isPublicKey('ecdsa-sha2-')).toBeTruthy();
+    it('returns true if value begins with an algorithm name that is supported', () => {
+      const addSshKeyValidation = new AddSshKeyValidation(['ssh-rsa', 'ssh-algorithm'], {});
+
+      expect(addSshKeyValidation.isPublicKey('ssh-rsa key')).toBe(true);
+      expect(addSshKeyValidation.isPublicKey('ssh-algorithm key')).toBe(true);
     });
   });
 });

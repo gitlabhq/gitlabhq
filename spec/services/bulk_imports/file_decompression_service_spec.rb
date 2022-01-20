@@ -18,7 +18,7 @@ RSpec.describe BulkImports::FileDecompressionService do
     FileUtils.remove_entry(tmpdir)
   end
 
-  subject { described_class.new(dir: tmpdir, filename: gz_filename) }
+  subject { described_class.new(tmpdir: tmpdir, filename: gz_filename) }
 
   describe '#execute' do
     it 'decompresses specified file' do
@@ -55,10 +55,18 @@ RSpec.describe BulkImports::FileDecompressionService do
     end
 
     context 'when dir is not in tmpdir' do
-      subject { described_class.new(dir: '/etc', filename: 'filename') }
+      subject { described_class.new(tmpdir: '/etc', filename: 'filename') }
 
       it 'raises an error' do
-        expect { subject.execute }.to raise_error(described_class::ServiceError, 'Invalid target directory')
+        expect { subject.execute }.to raise_error(StandardError, 'path /etc is not allowed')
+      end
+    end
+
+    context 'when path is being traversed' do
+      subject { described_class.new(tmpdir: File.join(Dir.mktmpdir, 'test', '..'), filename: 'filename') }
+
+      it 'raises an error' do
+        expect { subject.execute }.to raise_error(Gitlab::Utils::PathTraversalAttackError, 'Invalid path')
       end
     end
 
@@ -69,7 +77,7 @@ RSpec.describe BulkImports::FileDecompressionService do
         FileUtils.ln_s(File.join(tmpdir, gz_filename), symlink)
       end
 
-      subject { described_class.new(dir: tmpdir, filename: 'symlink.gz') }
+      subject { described_class.new(tmpdir: tmpdir, filename: 'symlink.gz') }
 
       it 'raises an error and removes the file' do
         expect { subject.execute }.to raise_error(described_class::ServiceError, 'Invalid file')
@@ -87,7 +95,7 @@ RSpec.describe BulkImports::FileDecompressionService do
         subject.instance_variable_set(:@decompressed_filepath, symlink)
       end
 
-      subject { described_class.new(dir: tmpdir, filename: gz_filename) }
+      subject { described_class.new(tmpdir: tmpdir, filename: gz_filename) }
 
       it 'raises an error and removes the file' do
         expect { subject.execute }.to raise_error(described_class::ServiceError, 'Invalid file')

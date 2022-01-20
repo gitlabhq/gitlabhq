@@ -210,6 +210,11 @@ module Types
           null: true,
           description: "Find contacts of this group."
 
+    field :work_item_types, Types::WorkItems::TypeType.connection_type,
+          resolver: Resolvers::WorkItems::TypesResolver,
+          description: 'Work item types available to the group.',
+          feature_flag: :work_items
+
     def avatar_url
       object.avatar_url(only_path: false)
     end

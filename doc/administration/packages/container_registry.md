@@ -694,7 +694,7 @@ project, you can [disable it from your project's settings](../../user/project/se
 ## Use an external container registry with GitLab as an auth endpoint
 
 If you use an external container registry, some features associated with the
-container registry may be unavailable or have [inherent risks](../../user/packages/container_registry/index.md#use-with-external-container-registries).
+container registry may be unavailable or have [inherent risks](../../user/packages/container_registry/reduce_container_registry_storage.md#use-with-external-container-registries).
 
 For the integration to work, the external registry must be configured to
 use a JSON Web Token to authenticate with GitLab. The
@@ -883,7 +883,7 @@ project.container_repositories.find_each do |repo|
 end
 ```
 
-You can also [run cleanup on a schedule](../../user/packages/container_registry/index.md#cleanup-policy).
+You can also [run cleanup on a schedule](../../user/packages/container_registry/reduce_container_registry_storage.md#cleanup-policy).
 
 ## Container Registry garbage collection
 
@@ -964,8 +964,6 @@ although this is a way more destructive operation, and you should first
 understand the implications.
 
 ### Removing untagged manifests and unreferenced layers
-
-> [Introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/3097) in Omnibus GitLab 11.10.
 
 WARNING:
 This is a destructive operation.
@@ -1341,7 +1339,10 @@ Start with a value between `25000000` (25MB) and `50000000` (50MB).
 
 ### Supporting older Docker clients
 
-As of GitLab 11.9, we began shipping version 2.7.1 of the Docker container registry, which disables the schema1 manifest by default. If you are still using older Docker clients (1.9 or older), you may experience an error pushing images. See [omnibus-4145](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/4145) for more details.
+The Docker container registry shipped with GitLab disables the schema1 manifest
+by default. If you are still using older Docker clients (1.9 or older), you may
+experience an error pushing images. See
+[omnibus-4145](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/4145) for more details.
 
 You can add a configuration option for backwards compatibility.
 

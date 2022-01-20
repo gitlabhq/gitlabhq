@@ -15,35 +15,12 @@ describe('Merge request widget merge checks failed state component', () => {
   });
 
   it.each`
-    mrState                                   | displayText
-    ${{ isPipelineFailed: true }}             | ${'pipelineFailed'}
-    ${{ approvals: true, isApproved: false }} | ${'approvalNeeded'}
-    ${{ hasMergeableDiscussionsState: true }} | ${'unresolvedDiscussions'}
+    mrState                                          | displayText
+    ${{ approvals: true, isApproved: false }}        | ${'approvalNeeded'}
+    ${{ blockingMergeRequests: { total_count: 1 } }} | ${'blockingMergeRequests'}
   `('display $displayText text for $mrState', ({ mrState, displayText }) => {
     factory({ mr: mrState });
 
     expect(wrapper.text()).toContain(MergeChecksFailed.i18n[displayText]);
-  });
-
-  describe('unresolved discussions', () => {
-    it('renders jump to button', () => {
-      factory({ mr: { hasMergeableDiscussionsState: true } });
-
-      expect(wrapper.find('[data-testid="jumpToUnresolved"]').exists()).toBe(true);
-    });
-
-    it('renders resolve thread button', () => {
-      factory({
-        mr: {
-          hasMergeableDiscussionsState: true,
-          createIssueToResolveDiscussionsPath: 'https://gitlab.com',
-        },
-      });
-
-      expect(wrapper.find('[data-testid="resolveIssue"]').exists()).toBe(true);
-      expect(wrapper.find('[data-testid="resolveIssue"]').attributes('href')).toBe(
-        'https://gitlab.com',
-      );
-    });
   });
 });

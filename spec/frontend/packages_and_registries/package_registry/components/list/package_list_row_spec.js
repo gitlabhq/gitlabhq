@@ -1,6 +1,10 @@
-import { GlLink, GlSprintf } from '@gitlab/ui';
+import { GlSprintf } from '@gitlab/ui';
+import { createLocalVue } from '@vue/test-utils';
+import VueRouter from 'vue-router';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
+
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 
 import PackagesListRow from '~/packages_and_registries/package_registry/components/list/package_list_row.vue';
 import PackagePath from '~/packages_and_registries/shared/components/package_path.vue';
@@ -12,6 +16,9 @@ import { PACKAGE_ERROR_STATUS } from '~/packages_and_registries/package_registry
 
 import ListItem from '~/vue_shared/components/registry/list_item.vue';
 import { packageData, packagePipelines, packageProject, packageTags } from '../../mock_data';
+
+const localVue = createLocalVue();
+localVue.use(VueRouter);
 
 describe('packages_list_row', () => {
   let wrapper;
@@ -28,7 +35,7 @@ describe('packages_list_row', () => {
   const findDeleteButton = () => wrapper.findByTestId('action-delete');
   const findPackageIconAndName = () => wrapper.find(PackageIconAndName);
   const findListItem = () => wrapper.findComponent(ListItem);
-  const findPackageLink = () => wrapper.findComponent(GlLink);
+  const findPackageLink = () => wrapper.findByTestId('details-link');
   const findWarningIcon = () => wrapper.findByTestId('warning-icon');
   const findLeftSecondaryInfos = () => wrapper.findByTestId('left-secondary-infos');
   const findPublishMethod = () => wrapper.findComponent(PublishMethod);
@@ -40,6 +47,7 @@ describe('packages_list_row', () => {
     provide = defaultProvide,
   } = {}) => {
     wrapper = shallowMountExtended(PackagesListRow, {
+      localVue,
       provide,
       stubs: {
         ListItem,
@@ -61,6 +69,15 @@ describe('packages_list_row', () => {
   it('renders', () => {
     mountComponent();
     expect(wrapper.element).toMatchSnapshot();
+  });
+
+  it('has a link to navigate to the details page', () => {
+    mountComponent();
+
+    expect(findPackageLink().props()).toMatchObject({
+      event: 'click',
+      to: { name: 'details', params: { id: getIdFromGraphQLId(packageWithoutTags.id) } },
+    });
   });
 
   describe('tags', () => {
@@ -120,7 +137,7 @@ describe('packages_list_row', () => {
     });
 
     it('details link is disabled', () => {
-      expect(findPackageLink().attributes('disabled')).toBe('true');
+      expect(findPackageLink().props('event')).toBe('');
     });
 
     it('has a warning icon', () => {

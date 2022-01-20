@@ -36,4 +36,10 @@ describe('content_editor/extensions/code_block_highlight', () => {
 
     expect(editorHtmlOutput.classList.toString()).toContain('code highlight js-syntax-highlight');
   });
+
+  it('adds content-editor-code-block class to the pre element', () => {
+    const editorHtmlOutput = parseHTML(tiptapEditor.getHTML()).querySelector('pre');
+
+    expect(editorHtmlOutput.classList.toString()).toContain('content-editor-code-block');
+  });
 });

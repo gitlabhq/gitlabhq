@@ -4,4 +4,4 @@
 %h3.page-title
   = _('Edit Label')
 %hr
-= render 'form'
+= render 'shared/labels/form', url: admin_label_path(@label), back_path: admin_labels_path

@@ -7,7 +7,7 @@ module Issues
     def execute
       filter_resolve_discussion_params
 
-      @issue = project.issues.new(issue_params).tap do |issue|
+      @issue = model_klass.new(issue_params.merge(project: project)).tap do |issue|
         ensure_milestone_available(issue)
       end
     end
@@ -62,15 +62,24 @@ module Issues
     def issue_params
       @issue_params ||= build_issue_params
 
-      # If :issue_type is nil then params[:issue_type] was either nil
-      # or not permitted.  Either way, the :issue_type will default
-      # to the column default of `issue`. And that means we need to
-      # ensure the work_item_type_id is set
-      @issue_params[:work_item_type_id] = get_work_item_type_id(@issue_params[:issue_type])
+      if @issue_params[:work_item_type].present?
+        @issue_params[:issue_type] = @issue_params[:work_item_type].base_type
+      else
+        # If :issue_type is nil then params[:issue_type] was either nil
+        # or not permitted.  Either way, the :issue_type will default
+        # to the column default of `issue`. And that means we need to
+        # ensure the work_item_type_id is set
+        @issue_params[:work_item_type_id] = get_work_item_type_id(@issue_params[:issue_type])
+      end
+
       @issue_params
     end
 
     private
+
+    def model_klass
+      ::Issue
+    end
 
     def allowed_issue_params
       allowed_params = [
@@ -79,8 +88,11 @@ module Issues
         :confidential
       ]
 
+      params[:work_item_type] = WorkItems::Type.find_by(id: params[:work_item_type_id]) if params[:work_item_type_id].present? # rubocop: disable CodeReuse/ActiveRecord
+
       allowed_params << :milestone_id if can?(current_user, :admin_issue, project)
       allowed_params << :issue_type if create_issue_type_allowed?(project, params[:issue_type])
+      allowed_params << :work_item_type if create_issue_type_allowed?(project, params[:work_item_type]&.base_type)
 
       params.slice(*allowed_params)
     end

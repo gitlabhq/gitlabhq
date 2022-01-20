@@ -498,6 +498,10 @@ RSpec.describe API::Users do
   describe "GET /users/:id" do
     let_it_be(:user2, reload: true) { create(:user, username: 'another_user') }
 
+    before do
+      allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?).with(:users_get_by_id, scope: user).and_return(false)
+    end
+
     it "returns a user by id" do
       get api("/users/#{user.id}", user)
 
@@ -591,6 +595,55 @@ RSpec.describe API::Users do
 
       expect(json_response).not_to have_key('note')
       expect(json_response).not_to have_key('sign_in_count')
+    end
+
+    context 'when the rate limit is not exceeded' do
+      it 'returns a success status' do
+        expect(Gitlab::ApplicationRateLimiter)
+          .to receive(:throttled?).with(:users_get_by_id, scope: user)
+          .and_return(false)
+
+        get api("/users/#{user.id}", user)
+
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+    end
+
+    context 'when the rate limit is exceeded' do
+      context 'when feature flag is enabled' do
+        it 'returns "too many requests" status' do
+          expect(Gitlab::ApplicationRateLimiter)
+            .to receive(:throttled?).with(:users_get_by_id, scope: user)
+            .and_return(true)
+
+          get api("/users/#{user.id}", user)
+
+          expect(response).to have_gitlab_http_status(:too_many_requests)
+        end
+
+        it 'still allows admin users' do
+          expect(Gitlab::ApplicationRateLimiter)
+            .not_to receive(:throttled?)
+
+          get api("/users/#{user.id}", admin)
+
+          expect(response).to have_gitlab_http_status(:ok)
+        end
+      end
+
+      context 'when feature flag is disabled' do
+        before do
+          stub_feature_flags(rate_limit_user_by_id_endpoint: false)
+        end
+
+        it 'does not throttle the request' do
+          expect(Gitlab::ApplicationRateLimiter).not_to receive(:throttled?)
+
+          get api("/users/#{user.id}", user)
+
+          expect(response).to have_gitlab_http_status(:ok)
+        end
+      end
     end
 
     context 'when job title is present' do
@@ -974,7 +1027,7 @@ RSpec.describe API::Users do
       post api('/users', admin),
         params: {
           email: 'invalid email',
-          password: 'password',
+          password: Gitlab::Password.test_default,
           name: 'test'
         }
       expect(response).to have_gitlab_http_status(:bad_request)
@@ -1040,7 +1093,7 @@ RSpec.describe API::Users do
         post api('/users', admin),
           params: {
             email: 'test@example.com',
-            password: 'password',
+            password: Gitlab::Password.test_default,
             username: 'test',
             name: 'foo'
           }
@@ -1052,7 +1105,7 @@ RSpec.describe API::Users do
             params: {
               name: 'foo',
               email: 'test@example.com',
-              password: 'password',
+              password: Gitlab::Password.test_default,
               username: 'foo'
             }
         end.to change { User.count }.by(0)
@@ -1066,7 +1119,7 @@ RSpec.describe API::Users do
             params: {
               name: 'foo',
               email: 'foo@example.com',
-              password: 'password',
+              password: Gitlab::Password.test_default,
               username: 'test'
             }
         end.to change { User.count }.by(0)
@@ -1080,7 +1133,7 @@ RSpec.describe API::Users do
             params: {
               name: 'foo',
               email: 'foo@example.com',
-              password: 'password',
+              password: Gitlab::Password.test_default,
               username: 'TEST'
             }
         end.to change { User.count }.by(0)
@@ -1425,8 +1478,8 @@ RSpec.describe API::Users do
 
     context "with existing user" do
       before do
-        post api("/users", admin), params: { email: 'test@example.com', password: 'password', username: 'test', name: 'test' }
-        post api("/users", admin), params: { email: 'foo@bar.com', password: 'password', username: 'john', name: 'john' }
+        post api("/users", admin), params: { email: 'test@example.com', password: Gitlab::Password.test_default, username: 'test', name: 'test' }
+        post api("/users", admin), params: { email: 'foo@bar.com', password: Gitlab::Password.test_default, username: 'john', name: 'john' }
         @user = User.all.last
       end
 

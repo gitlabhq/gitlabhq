@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'Profile > Chat' do
   let(:user) { create(:user) }
-  let(:integration) { create(:service) }
+  let(:integration) { create(:integration) }
 
   before do
     sign_in(user)

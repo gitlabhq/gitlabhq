@@ -36,9 +36,7 @@ module Ci
         update_pipeline!
         update_statuses_processed!
 
-        if Feature.enabled?(:expire_job_and_pipeline_cache_synchronously, pipeline.project, default_enabled: :yaml)
-          Ci::ExpirePipelineCacheService.new.execute(pipeline)
-        end
+        Ci::ExpirePipelineCacheService.new.execute(pipeline)
 
         true
       end

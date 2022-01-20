@@ -92,6 +92,8 @@ describe('Pipelines table in Commits and Merge requests', () => {
         it('should make an API request when using pagination', async () => {
           jest.spyOn(wrapper.vm, 'updateContent').mockImplementation(() => {});
 
+          // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+          // eslint-disable-next-line no-restricted-syntax
           await wrapper.setData({
             store: {
               state: {

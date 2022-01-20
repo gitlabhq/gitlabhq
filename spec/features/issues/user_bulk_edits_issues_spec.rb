@@ -104,6 +104,26 @@ RSpec.describe 'Multiple issue updating from issues#index', :js do
     end
   end
 
+  describe 'select all issues' do
+    let!(:issue_2) { create(:issue, project: project) }
+
+    before do
+      stub_feature_flags(vue_issues_list: true)
+    end
+
+    it 'after selecting all issues, unchecking one issue only unselects that one issue' do
+      visit project_issues_path(project)
+
+      click_button 'Edit issues'
+      check 'Select all'
+      uncheck issue.title
+
+      expect(page).to have_unchecked_field 'Select all'
+      expect(page).to have_unchecked_field issue.title
+      expect(page).to have_checked_field issue_2.title
+    end
+  end
+
   def create_closed
     create(:issue, project: project, state: :closed)
   end

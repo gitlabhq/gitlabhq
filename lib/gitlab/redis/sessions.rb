@@ -9,39 +9,9 @@ module Gitlab
       IP_SESSIONS_LOOKUP_NAMESPACE = 'session:lookup:ip:gitlab2'
       OTP_SESSIONS_NAMESPACE = 'session:otp'
 
-      class << self
-        # The data we store on Sessions used to be stored on SharedState.
-        def config_fallback
-          SharedState
-        end
-
-        private
-
-        def redis
-          # Don't use multistore if redis.sessions configuration is not provided
-          return super if config_fallback?
-
-          primary_store = ::Redis.new(params)
-          secondary_store = ::Redis.new(config_fallback.params)
-
-          MultiStore.new(primary_store, secondary_store, store_name)
-        end
-      end
-
-      def store(extras = {})
-        # Don't use multistore if redis.sessions configuration is not provided
-        return super if self.class.config_fallback?
-
-        primary_store = create_redis_store(redis_store_options, extras)
-        secondary_store = create_redis_store(self.class.config_fallback.params, extras)
-
-        MultiStore.new(primary_store, secondary_store, self.class.store_name)
-      end
-
-      private
-
-      def create_redis_store(options, extras)
-        ::Redis::Store.new(options.merge(extras))
+      # The data we store on Sessions used to be stored on SharedState.
+      def self.config_fallback
+        SharedState
       end
     end
   end

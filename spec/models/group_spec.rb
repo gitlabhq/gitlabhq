@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Group do
   include ReloadHelpers
+  include StubGitlabCalls
 
   let!(:group) { create(:group) }
 
@@ -39,6 +40,7 @@ RSpec.describe Group do
     it { is_expected.to have_many(:bulk_import_exports).class_name('BulkImports::Export') }
     it { is_expected.to have_many(:contacts).class_name('CustomerRelations::Contact') }
     it { is_expected.to have_many(:organizations).class_name('CustomerRelations::Organization') }
+    it { is_expected.to have_one(:crm_settings) }
 
     describe '#members & #requesters' do
       let(:requester) { create(:user) }
@@ -63,6 +65,7 @@ RSpec.describe Group do
 
   describe 'validations' do
     it { is_expected.to validate_presence_of :name }
+    it { is_expected.not_to allow_value('colon:in:path').for(:path) } # This is to validate that a specially crafted name cannot bypass a pattern match. See !72555
     it { is_expected.to allow_value('group test_4').for(:name) }
     it { is_expected.not_to allow_value('test/../foo').for(:name) }
     it { is_expected.not_to allow_value('<script>alert("Attack!")</script>').for(:name) }
@@ -502,6 +505,10 @@ RSpec.describe Group do
         it { expect(group.descendants.to_sql).not_to include 'traversal_ids @>' }
       end
 
+      describe '#self_and_hierarchy' do
+        it { expect(group.self_and_hierarchy.to_sql).not_to include 'traversal_ids @>' }
+      end
+
       describe '#ancestors' do
         it { expect(group.ancestors.to_sql).not_to include 'traversal_ids <@' }
       end
@@ -524,6 +531,10 @@ RSpec.describe Group do
 
       describe '#descendants' do
         it { expect(group.descendants.to_sql).to include 'traversal_ids @>' }
+      end
+
+      describe '#self_and_hierarchy' do
+        it { expect(group.self_and_hierarchy.to_sql).to include 'traversal_ids @>' }
       end
 
       describe '#ancestors' do
@@ -668,6 +679,26 @@ RSpec.describe Group do
         result = described_class.for_authorized_project_members([user1.id, user2.id])
 
         expect(result).to match_array([internal_group])
+      end
+    end
+
+    describe 'by_ids_or_paths' do
+      let(:group_path) { 'group_path' }
+      let!(:group) { create(:group, path: group_path) }
+      let(:group_id) { group.id }
+
+      it 'returns matching records based on paths' do
+        expect(described_class.by_ids_or_paths(nil, [group_path])).to match_array([group])
+      end
+
+      it 'returns matching records based on ids' do
+        expect(described_class.by_ids_or_paths([group_id], nil)).to match_array([group])
+      end
+
+      it 'returns matching records based on both paths and ids' do
+        new_group = create(:group)
+
+        expect(described_class.by_ids_or_paths([new_group.id], [group_path])).to match_array([group, new_group])
       end
     end
   end
@@ -2056,6 +2087,23 @@ RSpec.describe Group do
     end
   end
 
+  describe '#bots' do
+    subject { group.bots }
+
+    let_it_be(:group) { create(:group) }
+    let_it_be(:project_bot) { create(:user, :project_bot) }
+    let_it_be(:user) { create(:user) }
+
+    before_all do
+      [project_bot, user].each do |member|
+        group.add_maintainer(member)
+      end
+    end
+
+    it { is_expected.to contain_exactly(project_bot) }
+    it { is_expected.not_to include(user) }
+  end
+
   describe '#related_group_ids' do
     let(:nested_group) { create(:group, parent: group) }
     let(:shared_with_group) { create(:group, parent: group) }
@@ -2492,7 +2540,7 @@ RSpec.describe Group do
     end
   end
 
-  describe '#default_owner' do
+  describe '#first_owner' do
     let(:group) { build(:group) }
 
     context 'the group has owners' do
@@ -2502,7 +2550,7 @@ RSpec.describe Group do
       end
 
       it 'is the first owner' do
-        expect(group.default_owner)
+        expect(group.first_owner)
           .to eq(group.owners.first)
           .and be_a(User)
       end
@@ -2517,8 +2565,8 @@ RSpec.describe Group do
       end
 
       it 'is the first owner of the parent' do
-        expect(group.default_owner)
-          .to eq(parent.default_owner)
+        expect(group.first_owner)
+          .to eq(parent.first_owner)
           .and be_a(User)
       end
     end
@@ -2529,7 +2577,7 @@ RSpec.describe Group do
       end
 
       it 'is the group.owner' do
-        expect(group.default_owner)
+        expect(group.first_owner)
           .to eq(group.owner)
           .and be_a(User)
       end
@@ -2773,6 +2821,332 @@ RSpec.describe Group do
         expect(ttl_policy.created_at).not_to be_nil
         expect(ttl_policy.updated_at).not_to be_nil
       end
+    end
+  end
+
+  describe '#dependency_proxy_setting' do
+    subject(:setting) { group.dependency_proxy_setting }
+
+    it 'builds a new policy if one does not exist', :aggregate_failures do
+      expect(setting.enabled).to eq(true)
+      expect(setting).not_to be_persisted
+    end
+
+    context 'with existing policy' do
+      before do
+        group.dependency_proxy_setting.update!(enabled: false)
+      end
+
+      it 'returns the policy if it already exists', :aggregate_failures do
+        expect(setting.enabled).to eq(false)
+        expect(setting).to be_persisted
+      end
+    end
+  end
+
+  describe '#crm_enabled?' do
+    it 'returns false where no crm_settings exist' do
+      expect(group.crm_enabled?).to be_falsey
+    end
+
+    it 'returns false where crm_settings.state is disabled' do
+      create(:crm_settings, enabled: false, group: group)
+
+      expect(group.crm_enabled?).to be_falsey
+    end
+
+    it 'returns true where crm_settings.state is enabled' do
+      create(:crm_settings, enabled: true, group: group)
+
+      expect(group.crm_enabled?).to be_truthy
+    end
+  end
+  describe '.get_ids_by_ids_or_paths' do
+    let(:group_path) { 'group_path' }
+    let!(:group) { create(:group, path: group_path) }
+    let(:group_id) { group.id }
+
+    it 'returns ids matching records based on paths' do
+      expect(described_class.get_ids_by_ids_or_paths(nil, [group_path])).to match_array([group_id])
+    end
+
+    it 'returns ids matching records based on ids' do
+      expect(described_class.get_ids_by_ids_or_paths([group_id], nil)).to match_array([group_id])
+    end
+
+    it 'returns ids matching records based on both paths and ids' do
+      new_group_id = create(:group).id
+
+      expect(described_class.get_ids_by_ids_or_paths([new_group_id], [group_path])).to match_array([group_id, new_group_id])
+    end
+  end
+
+  describe '#shared_with_group_links_visible_to_user' do
+    let_it_be(:admin) { create :admin }
+    let_it_be(:normal_user) { create :user }
+    let_it_be(:user_with_access) { create :user }
+    let_it_be(:user_with_parent_access) { create :user }
+    let_it_be(:user_without_access) { create :user }
+    let_it_be(:shared_group) { create :group }
+    let_it_be(:parent_group) { create :group, :private }
+    let_it_be(:shared_with_private_group) { create :group, :private, parent: parent_group }
+    let_it_be(:shared_with_internal_group) { create :group, :internal }
+    let_it_be(:shared_with_public_group) { create :group, :public }
+    let_it_be(:private_group_group_link) { create(:group_group_link, shared_group: shared_group, shared_with_group: shared_with_private_group) }
+    let_it_be(:internal_group_group_link) { create(:group_group_link, shared_group: shared_group, shared_with_group: shared_with_internal_group) }
+    let_it_be(:public_group_group_link) { create(:group_group_link, shared_group: shared_group, shared_with_group: shared_with_public_group) }
+
+    before do
+      shared_with_private_group.add_developer(user_with_access)
+      parent_group.add_developer(user_with_parent_access)
+    end
+
+    context 'when user is admin', :enable_admin_mode do
+      it 'returns all existing shared group links' do
+        expect(shared_group.shared_with_group_links_visible_to_user(admin)).to contain_exactly(private_group_group_link, internal_group_group_link, public_group_group_link)
+      end
+    end
+
+    context 'when user is nil' do
+      it 'returns only link of public shared group' do
+        expect(shared_group.shared_with_group_links_visible_to_user(nil)).to contain_exactly(public_group_group_link)
+      end
+    end
+
+    context 'when user has no access to private shared group' do
+      it 'returns links of internal and public shared groups' do
+        expect(shared_group.shared_with_group_links_visible_to_user(normal_user)).to contain_exactly(internal_group_group_link, public_group_group_link)
+      end
+    end
+
+    context 'when user is member of private shared group' do
+      it 'returns links of private, internal and public shared groups' do
+        expect(shared_group.shared_with_group_links_visible_to_user(user_with_access)).to contain_exactly(private_group_group_link, internal_group_group_link, public_group_group_link)
+      end
+    end
+
+    context 'when user is inherited member of private shared group' do
+      it 'returns links of private, internal and public shared groups' do
+        expect(shared_group.shared_with_group_links_visible_to_user(user_with_parent_access)).to contain_exactly(private_group_group_link, internal_group_group_link, public_group_group_link)
+      end
+    end
+  end
+
+  describe '#enforced_runner_token_expiration_interval and #effective_runner_token_expiration_interval' do
+    shared_examples 'no enforced expiration interval' do
+      it { expect(subject.enforced_runner_token_expiration_interval).to be_nil }
+    end
+
+    shared_examples 'enforced expiration interval' do |enforced_interval:|
+      it { expect(subject.enforced_runner_token_expiration_interval).to eq(enforced_interval) }
+    end
+
+    shared_examples 'no effective expiration interval' do
+      it { expect(subject.effective_runner_token_expiration_interval).to be_nil }
+    end
+
+    shared_examples 'effective expiration interval' do |effective_interval:|
+      it { expect(subject.effective_runner_token_expiration_interval).to eq(effective_interval) }
+    end
+
+    context 'when there is no interval in group settings' do
+      let_it_be(:group) { create(:group) }
+
+      subject { group }
+
+      it_behaves_like 'no enforced expiration interval'
+      it_behaves_like 'no effective expiration interval'
+    end
+
+    context 'when there is a group interval' do
+      let(:group_settings) { create(:namespace_settings, runner_token_expiration_interval: 3.days.to_i) }
+
+      subject { create(:group, namespace_settings: group_settings) }
+
+      it_behaves_like 'no enforced expiration interval'
+      it_behaves_like 'effective expiration interval', effective_interval: 3.days
+    end
+
+    # runner_token_expiration_interval should not affect the expiration interval, only
+    # group_runner_token_expiration_interval should.
+    context 'when there is a site-wide enforced shared interval' do
+      before do
+        stub_application_setting(runner_token_expiration_interval: 5.days.to_i)
+      end
+
+      let_it_be(:group) { create(:group) }
+
+      subject { group }
+
+      it_behaves_like 'no enforced expiration interval'
+      it_behaves_like 'no effective expiration interval'
+    end
+
+    context 'when there is a site-wide enforced group interval' do
+      before do
+        stub_application_setting(group_runner_token_expiration_interval: 5.days.to_i)
+      end
+
+      let_it_be(:group) { create(:group) }
+
+      subject { group }
+
+      it_behaves_like 'enforced expiration interval', enforced_interval: 5.days
+      it_behaves_like 'effective expiration interval', effective_interval: 5.days
+    end
+
+    # project_runner_token_expiration_interval should not affect the expiration interval, only
+    # group_runner_token_expiration_interval should.
+    context 'when there is a site-wide enforced project interval' do
+      before do
+        stub_application_setting(project_runner_token_expiration_interval: 5.days.to_i)
+      end
+
+      let_it_be(:group) { create(:group) }
+
+      subject { group }
+
+      it_behaves_like 'no enforced expiration interval'
+      it_behaves_like 'no effective expiration interval'
+    end
+
+    # runner_token_expiration_interval should not affect the expiration interval, only
+    # subgroup_runner_token_expiration_interval should.
+    context 'when there is a grandparent group enforced group interval' do
+      let_it_be(:grandparent_group_settings) { create(:namespace_settings, runner_token_expiration_interval: 4.days.to_i) }
+      let_it_be(:grandparent_group) { create(:group, namespace_settings: grandparent_group_settings) }
+      let_it_be(:parent_group) { create(:group, parent: grandparent_group) }
+      let_it_be(:subgroup) { create(:group, parent: parent_group) }
+
+      subject { subgroup }
+
+      it_behaves_like 'no enforced expiration interval'
+      it_behaves_like 'no effective expiration interval'
+    end
+
+    context 'when there is a grandparent group enforced subgroup interval' do
+      let_it_be(:grandparent_group_settings) { create(:namespace_settings, subgroup_runner_token_expiration_interval: 4.days.to_i) }
+      let_it_be(:grandparent_group) { create(:group, namespace_settings: grandparent_group_settings) }
+      let_it_be(:parent_group) { create(:group, parent: grandparent_group) }
+      let_it_be(:subgroup) { create(:group, parent: parent_group) }
+
+      subject { subgroup }
+
+      it_behaves_like 'enforced expiration interval', enforced_interval: 4.days
+      it_behaves_like 'effective expiration interval', effective_interval: 4.days
+    end
+
+    # project_runner_token_expiration_interval should not affect the expiration interval, only
+    # subgroup_runner_token_expiration_interval should.
+    context 'when there is a grandparent group enforced project interval' do
+      let_it_be(:grandparent_group_settings) { create(:namespace_settings, project_runner_token_expiration_interval: 4.days.to_i) }
+      let_it_be(:grandparent_group) { create(:group, namespace_settings: grandparent_group_settings) }
+      let_it_be(:parent_group) { create(:group, parent: grandparent_group) }
+      let_it_be(:subgroup) { create(:group, parent: parent_group) }
+
+      subject { subgroup }
+
+      it_behaves_like 'no enforced expiration interval'
+      it_behaves_like 'no effective expiration interval'
+    end
+
+    context 'when there is a parent group enforced interval overridden by group interval' do
+      let_it_be(:parent_group_settings) { create(:namespace_settings, subgroup_runner_token_expiration_interval: 5.days.to_i) }
+      let_it_be(:parent_group) { create(:group, namespace_settings: parent_group_settings) }
+      let_it_be(:group_settings) { create(:namespace_settings, runner_token_expiration_interval: 4.days.to_i) }
+      let_it_be(:subgroup_with_settings) { create(:group, parent: parent_group, namespace_settings: group_settings) }
+
+      subject { subgroup_with_settings }
+
+      it_behaves_like 'enforced expiration interval', enforced_interval: 5.days
+      it_behaves_like 'effective expiration interval', effective_interval: 4.days
+
+      it 'has human-readable expiration intervals' do
+        expect(subject.enforced_runner_token_expiration_interval_human_readable).to eq('5d')
+        expect(subject.effective_runner_token_expiration_interval_human_readable).to eq('4d')
+      end
+    end
+
+    context 'when site-wide enforced interval overrides group interval' do
+      before do
+        stub_application_setting(group_runner_token_expiration_interval: 3.days.to_i)
+      end
+
+      let_it_be(:group_settings) { create(:namespace_settings, runner_token_expiration_interval: 4.days.to_i) }
+      let_it_be(:group_with_settings) { create(:group, namespace_settings: group_settings) }
+
+      subject { group_with_settings }
+
+      it_behaves_like 'enforced expiration interval', enforced_interval: 3.days
+      it_behaves_like 'effective expiration interval', effective_interval: 3.days
+    end
+
+    context 'when group interval overrides site-wide enforced interval' do
+      before do
+        stub_application_setting(group_runner_token_expiration_interval: 5.days.to_i)
+      end
+
+      let_it_be(:group_settings) { create(:namespace_settings, runner_token_expiration_interval: 4.days.to_i) }
+      let_it_be(:group_with_settings) { create(:group, namespace_settings: group_settings) }
+
+      subject { group_with_settings }
+
+      it_behaves_like 'enforced expiration interval', enforced_interval: 5.days
+      it_behaves_like 'effective expiration interval', effective_interval: 4.days
+    end
+
+    context 'when site-wide enforced interval overrides parent group enforced interval' do
+      before do
+        stub_application_setting(group_runner_token_expiration_interval: 3.days.to_i)
+      end
+
+      let_it_be(:parent_group_settings) { create(:namespace_settings, subgroup_runner_token_expiration_interval: 4.days.to_i) }
+      let_it_be(:parent_group) { create(:group, namespace_settings: parent_group_settings) }
+      let_it_be(:subgroup) { create(:group, parent: parent_group) }
+
+      subject { subgroup }
+
+      it_behaves_like 'enforced expiration interval', enforced_interval: 3.days
+      it_behaves_like 'effective expiration interval', effective_interval: 3.days
+    end
+
+    context 'when parent group enforced interval overrides site-wide enforced interval' do
+      before do
+        stub_application_setting(group_runner_token_expiration_interval: 5.days.to_i)
+      end
+
+      let_it_be(:parent_group_settings) { create(:namespace_settings, subgroup_runner_token_expiration_interval: 4.days.to_i) }
+      let_it_be(:parent_group) { create(:group, namespace_settings: parent_group_settings) }
+      let_it_be(:subgroup) { create(:group, parent: parent_group) }
+
+      subject { subgroup }
+
+      it_behaves_like 'enforced expiration interval', enforced_interval: 4.days
+      it_behaves_like 'effective expiration interval', effective_interval: 4.days
+    end
+
+    # Unrelated groups should not affect the expiration interval.
+    context 'when there is an enforced group interval in an unrelated group' do
+      let_it_be(:unrelated_group_settings) { create(:namespace_settings, subgroup_runner_token_expiration_interval: 4.days.to_i) }
+      let_it_be(:unrelated_group) { create(:group, namespace_settings: unrelated_group_settings) }
+      let_it_be(:group) { create(:group) }
+
+      subject { group }
+
+      it_behaves_like 'no enforced expiration interval'
+      it_behaves_like 'no effective expiration interval'
+    end
+
+    # Subgroups should not affect the parent group expiration interval.
+    context 'when there is an enforced group interval in a subgroup' do
+      let_it_be(:subgroup_settings) { create(:namespace_settings, subgroup_runner_token_expiration_interval: 4.days.to_i) }
+      let_it_be(:subgroup) { create(:group, parent: group, namespace_settings: subgroup_settings) }
+      let_it_be(:group) { create(:group) }
+
+      subject { group }
+
+      it_behaves_like 'no enforced expiration interval'
+      it_behaves_like 'no effective expiration interval'
     end
   end
 end

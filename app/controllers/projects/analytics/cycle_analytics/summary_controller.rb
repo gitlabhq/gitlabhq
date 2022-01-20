@@ -9,6 +9,8 @@ class Projects::Analytics::CycleAnalytics::SummaryController < Projects::Applica
 
   before_action :authorize_read_cycle_analytics!
 
+  urgency :low
+
   def show
     render json: project_level.summary
   end

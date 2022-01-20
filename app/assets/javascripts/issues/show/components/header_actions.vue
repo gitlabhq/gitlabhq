@@ -11,9 +11,8 @@ import {
 import { mapActions, mapGetters, mapState } from 'vuex';
 import createFlash, { FLASH_TYPES } from '~/flash';
 import { EVENT_ISSUABLE_VUE_APP_CHANGE } from '~/issuable/constants';
-import { IssuableType } from '~/vue_shared/issuable/show/constants';
-import { IssuableStatus } from '~/issues/constants';
-import { IssueStateEvent } from '~/issues/show/constants';
+import { IssuableStatus, IssueType } from '~/issues/constants';
+import { ISSUE_STATE_EVENT_CLOSE, ISSUE_STATE_EVENT_REOPEN } from '~/issues/show/constants';
 import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { s__, __, sprintf } from '~/locale';
@@ -83,7 +82,7 @@ export default {
       default: '',
     },
     issueType: {
-      default: IssuableType.Issue,
+      default: IssueType.Issue,
     },
     newIssuePath: {
       default: '',
@@ -106,8 +105,8 @@ export default {
     },
     issueTypeText() {
       const issueTypeTexts = {
-        [IssuableType.Issue]: s__('HeaderAction|issue'),
-        [IssuableType.Incident]: s__('HeaderAction|incident'),
+        [IssueType.Issue]: s__('HeaderAction|issue'),
+        [IssueType.Incident]: s__('HeaderAction|incident'),
       };
 
       return issueTypeTexts[this.issueType] ?? this.issueType;
@@ -163,7 +162,7 @@ export default {
             input: {
               iid: this.iid.toString(),
               projectPath: this.projectPath,
-              stateEvent: this.isClosed ? IssueStateEvent.Reopen : IssueStateEvent.Close,
+              stateEvent: this.isClosed ? ISSUE_STATE_EVENT_REOPEN : ISSUE_STATE_EVENT_CLOSE,
             },
           },
         })

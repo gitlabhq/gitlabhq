@@ -23,7 +23,7 @@ module Backup
       end
     end
 
-    def wait
+    def finish!
       @type = nil
     end
 

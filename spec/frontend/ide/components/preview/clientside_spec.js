@@ -73,6 +73,8 @@ describe('IDE clientside preview', () => {
 
   const createInitializedComponent = () => {
     createComponent();
+    // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+    // eslint-disable-next-line no-restricted-syntax
     wrapper.setData({
       sandpackReady: true,
       manager: {
@@ -202,6 +204,8 @@ describe('IDE clientside preview', () => {
 
       it('returns false if loading and mainEntry exists', () => {
         createComponent({ getters: { packageJson: dummyPackageJson } });
+        // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+        // eslint-disable-next-line no-restricted-syntax
         wrapper.setData({ loading: true });
 
         expect(wrapper.vm.showPreview).toBe(false);
@@ -209,6 +213,8 @@ describe('IDE clientside preview', () => {
 
       it('returns true if not loading and mainEntry exists', () => {
         createComponent({ getters: { packageJson: dummyPackageJson } });
+        // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+        // eslint-disable-next-line no-restricted-syntax
         wrapper.setData({ loading: false });
 
         expect(wrapper.vm.showPreview).toBe(true);
@@ -218,12 +224,16 @@ describe('IDE clientside preview', () => {
     describe('showEmptyState', () => {
       it('returns true if no mainEntry exists', () => {
         createComponent();
+        // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+        // eslint-disable-next-line no-restricted-syntax
         wrapper.setData({ loading: false });
         expect(wrapper.vm.showEmptyState).toBe(true);
       });
 
       it('returns false if loading', () => {
         createComponent();
+        // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+        // eslint-disable-next-line no-restricted-syntax
         wrapper.setData({ loading: true });
 
         expect(wrapper.vm.showEmptyState).toBe(false);
@@ -231,6 +241,8 @@ describe('IDE clientside preview', () => {
 
       it('returns false if not loading and mainEntry exists', () => {
         createComponent({ getters: { packageJson: dummyPackageJson } });
+        // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+        // eslint-disable-next-line no-restricted-syntax
         wrapper.setData({ loading: false });
 
         expect(wrapper.vm.showEmptyState).toBe(false);
@@ -307,6 +319,8 @@ describe('IDE clientside preview', () => {
     describe('update', () => {
       it('initializes manager if manager is empty', () => {
         createComponent({ getters: { packageJson: dummyPackageJson } });
+        // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+        // eslint-disable-next-line no-restricted-syntax
         wrapper.setData({ sandpackReady: true });
         wrapper.vm.update();
 
@@ -340,6 +354,8 @@ describe('IDE clientside preview', () => {
   describe('template', () => {
     it('renders ide-preview element when showPreview is true', () => {
       createComponent({ getters: { packageJson: dummyPackageJson } });
+      // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+      // eslint-disable-next-line no-restricted-syntax
       wrapper.setData({ loading: false });
 
       return wrapper.vm.$nextTick(() => {
@@ -349,6 +365,8 @@ describe('IDE clientside preview', () => {
 
     it('renders empty state', () => {
       createComponent();
+      // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+      // eslint-disable-next-line no-restricted-syntax
       wrapper.setData({ loading: false });
 
       return wrapper.vm.$nextTick(() => {
@@ -360,6 +378,8 @@ describe('IDE clientside preview', () => {
 
     it('renders loading icon', () => {
       createComponent();
+      // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+      // eslint-disable-next-line no-restricted-syntax
       wrapper.setData({ loading: true });
 
       return wrapper.vm.$nextTick(() => {

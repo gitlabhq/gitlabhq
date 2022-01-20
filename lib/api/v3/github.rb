@@ -183,7 +183,9 @@ module API
         params do
           use :project_full_path
         end
-        get ':namespace/:project/pulls' do
+        # TODO Remove the custom Apdex SLO target `urgency: :low` when this endpoint has been optimised.
+        # https://gitlab.com/gitlab-org/gitlab/-/issues/337269
+        get ':namespace/:project/pulls', urgency: :low do
           user_project = find_project_with_access(params)
 
           merge_requests = authorized_merge_requests_for_project(user_project)
@@ -236,7 +238,9 @@ module API
           use :project_full_path
           use :pagination
         end
-        get ':namespace/:project/branches' do
+        # TODO Remove the custom Apdex SLO target `urgency: :low` when this endpoint has been optimised.
+        # https://gitlab.com/gitlab-org/gitlab/-/issues/337268
+        get ':namespace/:project/branches', urgency: :low do
           user_project = find_project_with_access(params)
 
           update_project_feature_usage_for(user_project)

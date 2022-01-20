@@ -1,7 +1,7 @@
 <script>
 import { GlCollapse, GlButton, GlPopover } from '@gitlab/ui';
 import Cookies from 'js-cookie';
-import { parseBoolean } from '~/lib/utils/common_utils';
+import { parseBoolean, isLoggedIn } from '~/lib/utils/common_utils';
 import { s__ } from '~/locale';
 import Participants from '~/sidebar/components/participants/participants.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
@@ -9,11 +9,13 @@ import { ACTIVE_DISCUSSION_SOURCE_TYPES } from '../constants';
 import updateActiveDiscussionMutation from '../graphql/mutations/update_active_discussion.mutation.graphql';
 import { extractDiscussions, extractParticipants } from '../utils/design_management_utils';
 import DesignDiscussion from './design_notes/design_discussion.vue';
+import DesignNoteSignedOut from './design_notes/design_note_signed_out.vue';
 import DesignTodoButton from './design_todo_button.vue';
 
 export default {
   components: {
     DesignDiscussion,
+    DesignNoteSignedOut,
     Participants,
     GlCollapse,
     GlButton,
@@ -26,6 +28,12 @@ export default {
       default: '',
     },
     issueIid: {
+      default: '',
+    },
+    registerPath: {
+      default: '',
+    },
+    signInPath: {
       default: '',
     },
   },
@@ -47,6 +55,7 @@ export default {
     return {
       isResolvedCommentsPopoverHidden: parseBoolean(Cookies.get(this.$options.cookieKey)),
       discussionWithOpenForm: '',
+      isLoggedIn: isLoggedIn(),
     };
   },
   computed: {
@@ -134,12 +143,19 @@ export default {
       class="gl-mb-4"
     />
     <h2
-      v-if="unresolvedDiscussions.length === 0"
+      v-if="isLoggedIn && unresolvedDiscussions.length === 0"
       class="new-discussion-disclaimer gl-font-base gl-m-0 gl-mb-4"
       data-testid="new-discussion-disclaimer"
     >
       {{ s__("DesignManagement|Click the image where you'd like to start a new discussion") }}
     </h2>
+    <design-note-signed-out
+      v-if="!isLoggedIn"
+      class="gl-mb-4"
+      :register-path="registerPath"
+      :sign-in-path="signInPath"
+      :is-add-discussion="true"
+    />
     <design-discussion
       v-for="discussion in unresolvedDiscussions"
       :key="discussion.id"
@@ -147,6 +163,8 @@ export default {
       :design-id="$route.params.id"
       :noteable-id="design.id"
       :markdown-preview-path="markdownPreviewPath"
+      :register-path="registerPath"
+      :sign-in-path="signInPath"
       :resolved-discussions-expanded="resolvedDiscussionsExpanded"
       :discussion-with-open-form="discussionWithOpenForm"
       data-testid="unresolved-discussion"
@@ -197,6 +215,8 @@ export default {
           :design-id="$route.params.id"
           :noteable-id="design.id"
           :markdown-preview-path="markdownPreviewPath"
+          :register-path="registerPath"
+          :sign-in-path="signInPath"
           :resolved-discussions-expanded="resolvedDiscussionsExpanded"
           :discussion-with-open-form="discussionWithOpenForm"
           data-testid="resolved-discussion"

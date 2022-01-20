@@ -236,20 +236,32 @@ Project owners can unlink Security Policy projects from development projects. To
 the steps described in [Security Policy project selection](#security-policy-project-selection),
 but select the trash can icon in the modal.
 
+## Scan execution policies
+
+Project owners can use scan execution policies to require that security scans run on a specified
+schedule or with the project pipeline. Required scans are injected into the CI pipeline as new jobs
+with a long, random job name. In the unlikely event of a job name collision, the security policy job
+overwrites any pre-existing job in the pipeline.
+
+This feature has some overlap with [compliance framework pipelines](../../project/settings/#compliance-pipeline-configuration),
+as we have not [unified the user experience for these two features](https://gitlab.com/groups/gitlab-org/-/epics/7312).
+For details on the similarities and differences between these features, see
+[Enforce scan execution](../#enforce-scan-execution).
+
 ### Scan Execution Policy editor
 
 NOTE:
 Only project Owners have the [permissions](../../permissions.md#project-members-permissions)
 to select Security Policy Project.
 
-Once your policy is complete, save it by selecting **Create merge request**
+Once your policy is complete, save it by selecting **Create via merge request**
 at the bottom of the editor. You are redirected to the merge request on the project's
 configured security policy project. If one does not link to your project, a security
 policy project is automatically created. Existing policies can also be
 removed from the editor interface by selecting **Delete policy**
 at the bottom of the editor.
 
-![Scan Execution Policy Editor YAML Mode](img/scan_execution_policy_yaml_mode_v14_3.png)
+![Scan Execution Policy Editor YAML Mode](img/scan_execution_policy_yaml_mode_v14_7.png)
 
 The policy editor currently only supports the YAML mode. The Rule mode is tracked in the [Allow Users to Edit Rule-mode Scan Execution Policies in the Policy UI](https://gitlab.com/groups/gitlab-org/-/epics/5363) epic.
 
@@ -301,10 +313,10 @@ Use this schema to define `clusters` objects in the [`schedule` rule type](#sche
 
 | Field        | Type                | Possible values          | Description |
 |--------------|---------------------|--------------------------|-------------|
-| `containers` | `array` of `string` | | The container name to be scanned (only the first value is currently supported). |
-| `resources`  | `array` of `string` | | The resource name to be scanned (only the first value is currently supported). |
-| `namespaces` | `array` of `string` | | The namespace to be scanned (only the first value is currently supported). |
-| `kinds`      | `array` of `string` | `deployment`/`daemonset` | The resource kind to be scanned (only the first value is currently supported). |
+| `containers` | `array` of `string` | | The container name that is scanned (only the first value is currently supported). |
+| `resources`  | `array` of `string` | | The resource name that is scanned (only the first value is currently supported). |
+| `namespaces` | `array` of `string` | | The namespace that is scanned (only the first value is currently supported). |
+| `kinds`      | `array` of `string` | `deployment`/`daemonset` | The resource kind that should be scanned (only the first value is currently supported). |
 
 ### `scan` action type
 
@@ -389,7 +401,7 @@ scan_execution_policy:
   enabled: true
   rules:
   - type: schedule
-    cadence: "15 3 * * *
+    cadence: "15 3 * * *"
     clusters:
       production-cluster:
         containers:

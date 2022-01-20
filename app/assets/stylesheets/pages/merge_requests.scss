@@ -689,14 +689,14 @@ $tabs-holder-z-index: 250;
   @include media-breakpoint-up(md) {
     position: -webkit-sticky;
     position: sticky;
-    top: $header-height + $mr-tabs-height;
+    top: calc(#{$header-height} + #{$mr-tabs-height});
 
     .with-system-header & {
-      top: $header-height + $mr-tabs-height + $system-header-height;
+      top: calc(#{$header-height} + #{$mr-tabs-height} + #{$system-header-height});
     }
 
     .with-system-header.with-performance-bar & {
-      top: $header-height + $mr-tabs-height + $system-header-height + $performance-bar-height;
+      top: calc(#{$header-height} + #{$mr-tabs-height} + #{$system-header-height} + #{$performance-bar-height});
     }
 
     .mr-version-menus-container {
@@ -704,7 +704,7 @@ $tabs-holder-z-index: 250;
     }
 
     .with-performance-bar & {
-      top: $header-height + $performance-bar-height + $mr-tabs-height;
+      top: calc(#{$header-height} + #{$performance-bar-height} + #{$mr-tabs-height});
     }
   }
 }
@@ -717,11 +717,11 @@ $tabs-holder-z-index: 250;
   border-bottom: 1px solid $border-color;
 
   .with-system-header & {
-    top: $header-height + $system-header-height;
+    top: calc(#{$header-height} + #{$system-header-height});
   }
 
   .with-system-header.with-performance-bar & {
-    top: $header-height + $system-header-height + $performance-bar-height;
+    top: calc(#{$header-height} + #{$system-header-height} + #{$performance-bar-height});
   }
 
   @include media-breakpoint-up(sm) {
@@ -752,7 +752,7 @@ $tabs-holder-z-index: 250;
 .with-performance-bar {
   .merge-request-tabs-holder,
   .epic-tabs-holder {
-    top: $header-height + $performance-bar-height;
+    top: calc(#{$header-height} + #{$performance-bar-height});
   }
 }
 
@@ -957,10 +957,10 @@ $tabs-holder-z-index: 250;
 
 .mr-compare {
   .diff-file .file-title-flex-parent {
-    top: $header-height + $mr-tabs-height + 36px;
+    top: calc(#{$header-height} + #{$mr-tabs-height} + 36px);
 
     .with-performance-bar & {
-      top: $performance-bar-height + $header-height + $mr-tabs-height + 36px;
+      top: calc(#{$performance-bar-height} + #{$header-height} + #{$mr-tabs-height} + 36px);
     }
   }
 }

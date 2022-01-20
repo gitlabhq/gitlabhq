@@ -1,19 +1,12 @@
 ---
 stage: Create
 group: Source Code
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments"
-type: reference
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Code Owners **(PREMIUM)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/6916) in GitLab 11.3.
-> - Code Owners for merge request approvals was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/4418) in GitLab Premium 11.9.
-> - Moved to GitLab Premium in 13.9.
-
-INFO:
-Get access to Code Owners and more with a
-[free 30-day trial of GitLab Ultimate](https://about.gitlab.com/free-trial/index.html?glm_source=docs.gitlab.com&glm_content=p-code-owners-docs).
+> Moved to GitLab Premium in 13.9.
 
 Code Owners define who owns specific files or directories in a repository.
 
@@ -283,3 +276,26 @@ model/db   @database
 [DOCUMENTATION]
 README.md  @docs
 ```
+
+## Troubleshooting
+
+### Approvals shown as optional
+
+A Code Owner approval rule is optional if these conditions are not met:
+
+- The user or group are not a member of the project or parent group.
+- [Code Owner approval on a protected branch](protected_branches.md#require-code-owner-approval-on-a-protected-branch) has not been set up.
+- The section is [marked as optional](#make-a-code-owners-section-optional).
+
+### Approvals do not show
+
+Code Owner approval rules only update when the merge request is created.
+If you update the `CODEOWNERS` file, close the merge request and create a new one.
+
+### User not shown as possible approver
+
+A user might not show as an approver on the Code Owner merge request approval rules.
+
+This result occurs when a rule prevents the specific user from approving the merge request.
+Check the project
+[merge request approval setting](merge_requests/approvals/settings.md#edit-merge-request-approval-settings).

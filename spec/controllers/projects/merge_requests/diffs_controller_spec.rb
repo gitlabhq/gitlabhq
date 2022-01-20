@@ -205,7 +205,6 @@ RSpec.describe Projects::MergeRequests::DiffsController do
         let(:collection) { Gitlab::Diff::FileCollection::MergeRequestDiff }
         let(:expected_options) do
           {
-            environment: nil,
             merge_request: merge_request,
             merge_request_diff: merge_request.merge_request_diff,
             merge_request_diffs: merge_request.merge_request_diffs,
@@ -280,7 +279,6 @@ RSpec.describe Projects::MergeRequests::DiffsController do
         let(:collection) { Gitlab::Diff::FileCollection::MergeRequestDiff }
         let(:expected_options) do
           {
-            environment: nil,
             merge_request: merge_request,
             merge_request_diff: merge_request.merge_request_diff,
             merge_request_diffs: merge_request.merge_request_diffs,
@@ -303,7 +301,6 @@ RSpec.describe Projects::MergeRequests::DiffsController do
         let(:collection) { Gitlab::Diff::FileCollection::Commit }
         let(:expected_options) do
           {
-            environment: nil,
             merge_request: merge_request,
             merge_request_diff: nil,
             merge_request_diffs: merge_request.merge_request_diffs,
@@ -330,7 +327,6 @@ RSpec.describe Projects::MergeRequests::DiffsController do
         let(:collection) { Gitlab::Diff::FileCollection::MergeRequestDiff }
         let(:expected_options) do
           {
-            environment: nil,
             merge_request: merge_request,
             merge_request_diff: merge_request.merge_request_diff,
             merge_request_diffs: merge_request.merge_request_diffs,
@@ -494,7 +490,6 @@ RSpec.describe Projects::MergeRequests::DiffsController do
 
     def collection_arguments(pagination_data = {})
       {
-        environment: nil,
         merge_request: merge_request,
         commit: nil,
         diff_view: :inline,

@@ -33,6 +33,8 @@ class GroupChildEntity < Grape::Entity
   end
 
   # Project only attributes
+  expose :last_activity_at, if: lambda { |instance| project? }
+
   expose :star_count, :archived,
          if: lambda { |_instance, _options| project? }
 

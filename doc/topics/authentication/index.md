@@ -1,6 +1,6 @@
 ---
 stage: Manage
-group: Access
+group: Authentication & Authorization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
@@ -11,7 +11,7 @@ This page gathers all the resources for the topic **Authentication** within GitL
 ## GitLab users
 
 - [SSH](../../ssh/index.md)
-- [Two-factor authentication (2FA)](../../user/profile/account/two_factor_authentication.md#two-factor-authentication)
+- [Two-factor authentication](../../user/profile/account/two_factor_authentication.md)
 - [Why do I keep getting signed out?](../../user/profile/index.md#why-do-i-keep-getting-signed-out)
 - **Articles:**
   - [Support for Universal 2nd Factor Authentication - YubiKeys](https://about.gitlab.com/blog/2016/06/22/gitlab-adds-support-for-u2f/)
@@ -40,8 +40,9 @@ This page gathers all the resources for the topic **Authentication** within GitL
 ## API
 
 - [OAuth 2 Tokens](../../api/index.md#oauth2-tokens)
-- [Personal access tokens](../../api/index.md#personalproject-access-tokens)
-- [Project access tokens](../../api/index.md#personalproject-access-tokens)
+- [Personal access tokens](../../api/index.md#personalprojectgroup-access-tokens)
+- [Project access tokens](../../api/index.md#personalprojectgroup-access-tokens)
+- [Group access tokens](../../api/index.md#personalprojectgroup-access-tokens)
 - [Impersonation tokens](../../api/index.md#impersonation-tokens)
 - [OAuth 2.0 identity provider API](../../api/oauth2.md)
 

@@ -179,8 +179,8 @@ That's all of the required database changes.
 #### Step 1. Implement replication and verification
 
 - [ ] Add the following lines to the `cool_widget` model to accomplish some important tasks:
-  - Include `Gitlab::Geo::ReplicableModel` in the `CoolWidget` class, and specify the Replicator class `with_replicator Geo::CoolWidgetReplicator`.
-  - Include the `::Gitlab::Geo::VerificationState` concern.
+  - Include `::Geo::ReplicableModel` in the `CoolWidget` class, and specify the Replicator class `with_replicator Geo::CoolWidgetReplicator`.
+  - Include the `::Geo::VerifiableModel` concern.
   - Delegate verification related methods to the `cool_widget_state` model.
   - For verification, override some scopes to use the `cool_widget_states` table instead of the model table.
   - Implement the `verification_state_object` method to return the object that holds
@@ -194,8 +194,8 @@ That's all of the required database changes.
 
   class CoolWidget < ApplicationRecord
     ...
-    include ::Gitlab::Geo::ReplicableModel
-    include ::Gitlab::Geo::VerificationState
+    include ::Geo::ReplicableModel
+    include ::Geo::VerifiableModel
 
     with_replicator Geo::CoolWidgetReplicator
 

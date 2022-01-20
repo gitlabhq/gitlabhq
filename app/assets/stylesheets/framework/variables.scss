@@ -433,7 +433,7 @@ $browser-scrollbar-size: 10px;
 /*
  * Misc
  */
-$header-height: 40px;
+$header-height: var(--header-height, 40px);
 $header-zindex: 1000;
 $zindex-dropdown-menu: 300;
 $suggestion-header-height: 46px;
@@ -610,6 +610,14 @@ $pagination-disabled-color: #cdcdcd;
  */
 $status-icon-size: 22px;
 
+
+/*
+* Social Icons
+*/
+$twitter: #1d9bf0;
+$skype: #0078d7;
+$linkedin: #2867b2;
+
 /*
  *  Award emoji
  */
@@ -667,18 +675,18 @@ $issue-boards-filter-height: 68px;
 $issue-boards-filter-height-md: 110px;
 $issue-boards-filter-height-sm: 299px;
 $issue-boards-breadcrumbs-height-xs: 63px;
-$issue-board-list-difference-xs: $header-height + $issue-boards-breadcrumbs-height-xs;
-$issue-board-list-difference-sm: $header-height + $breadcrumb-min-height;
-$issue-board-list-difference-md: $issue-board-list-difference-sm + $issue-boards-filter-height-md;
-$issue-board-list-difference-lg: $issue-board-list-difference-sm + $issue-boards-filter-height;
+$issue-board-list-difference-xs: calc(#{$header-height} + #{$issue-boards-breadcrumbs-height-xs});
+$issue-board-list-difference-sm: calc(#{$header-height} + #{$breadcrumb-min-height});
+$issue-board-list-difference-md: calc(#{$issue-board-list-difference-sm} + #{$issue-boards-filter-height-md});
+$issue-board-list-difference-lg: calc(#{$issue-board-list-difference-sm} + #{$issue-boards-filter-height});
 /*
  The following heights are used in environment_logs.scss and are used for calculation of the log viewer height.
 */
 $environment-logs-breadcrumbs-height: 63px;
 $environment-logs-breadcrumbs-height-md: $breadcrumb-min-height;
 
-$environment-logs-difference-xs-up: $header-height + $environment-logs-breadcrumbs-height;
-$environment-logs-difference-md-up: $header-height + $environment-logs-breadcrumbs-height-md;
+$environment-logs-difference-xs-up: calc(#{$header-height} + #{$environment-logs-breadcrumbs-height});
+$environment-logs-difference-md-up: calc(#{$header-height} + #{$environment-logs-breadcrumbs-height-md});
 
 /*
 * Avatar
@@ -867,21 +875,12 @@ $image-comment-cursor-left-offset: 12;
 $image-comment-cursor-top-offset: 12;
 
 /*
-Add GitLab Slack Application
-*/
-$add-to-slack-popup-max-width: 400px;
-$add-to-slack-gif-max-width: 850px;
-$add-to-slack-well-max-width: 750px;
-$add-to-slack-logo-size: 100px;
-
-/*
 Security & Compliance Carousel
 */
 $security-and-compliance-carousel-image-carousel-width: 1000px;
 $security-and-compliance-carousel-image-discover-button-width: 45%;
 $security-and-compliance-carousel-image-discover-buttons-max-width: 280px;
 $security-and-compliance-carousel-image-discover-footer-max-width: 500px;
-$security-and-compliance-carousel-image-discover-feedback-width: 30%;
 $security-and-compliance-carousel-image-discover-text-carousel-max-width: 650px;
 $security-and-compliance-carousel-image-discover-text-carousel-caption-height: 100%;
 $security-and-compliance-carousel-image-discover-text-carousel-caption-max-width: 500px;

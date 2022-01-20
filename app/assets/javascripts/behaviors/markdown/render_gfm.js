@@ -4,6 +4,7 @@ import initUserPopovers from '../../user_popovers';
 import highlightCurrentUser from './highlight_current_user';
 import renderMath from './render_math';
 import renderMermaid from './render_mermaid';
+import renderSandboxedMermaid from './render_sandboxed_mermaid';
 import renderMetrics from './render_metrics';
 
 // Render GitLab flavoured Markdown
@@ -13,7 +14,11 @@ import renderMetrics from './render_metrics';
 $.fn.renderGFM = function renderGFM() {
   syntaxHighlight(this.find('.js-syntax-highlight').get());
   renderMath(this.find('.js-render-math'));
-  renderMermaid(this.find('.js-render-mermaid'));
+  if (gon.features?.sandboxedMermaid) {
+    renderSandboxedMermaid(this.find('.js-render-mermaid'));
+  } else {
+    renderMermaid(this.find('.js-render-mermaid'));
+  }
   highlightCurrentUser(this.find('.gfm-project_member').get());
   initUserPopovers(this.find('.js-user-link').get());
 

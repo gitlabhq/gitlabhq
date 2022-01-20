@@ -40,7 +40,7 @@ module Backup
 
       raise errors.pop unless errors.empty?
     ensure
-      strategy.wait
+      strategy.finish!
     end
 
     def restore
@@ -48,7 +48,7 @@ module Backup
       enqueue_consecutive
 
     ensure
-      strategy.wait
+      strategy.finish!
 
       cleanup_snippets_without_repositories
       restore_object_pools

@@ -188,13 +188,6 @@ RSpec.describe Ci::RetryBuildService do
         expect(new_build).to be_pending
       end
 
-      it 'resolves todos for old build that failed' do
-        expect(::MergeRequests::AddTodoWhenBuildFailsService)
-          .to receive_message_chain(:new, :close)
-
-        service.execute(build)
-      end
-
       context 'when there are subsequent processables that are skipped' do
         let!(:subsequent_build) do
           create(:ci_build, :skipped, stage_idx: 2,
@@ -270,6 +263,17 @@ RSpec.describe Ci::RetryBuildService do
           service.execute(build)
 
           expect(bridge.reload).to be_pending
+        end
+      end
+
+      context 'when there is a failed job todo for the MR' do
+        let!(:merge_request) { create(:merge_request, source_project: project, author: user, head_pipeline: pipeline) }
+        let!(:todo) { create(:todo, :build_failed, user: user, project: project, author: user, target: merge_request) }
+
+        it 'resolves the todo for the old failed build' do
+          expect do
+            service.execute(build)
+          end.to change { todo.reload.state }.from('pending').to('done')
         end
       end
     end
@@ -367,6 +371,14 @@ RSpec.describe Ci::RetryBuildService do
       it_behaves_like 'when build with dynamic environment is retried'
 
       context 'when create_deployment_in_separate_transaction feature flag is disabled' do
+        let(:new_build) do
+          travel_to(1.second.from_now) do
+            ::Gitlab::Database::QueryAnalyzers::PreventCrossDatabaseModification.allow_cross_database_modification_within_transaction(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/345668') do
+              service.clone!(build)
+            end
+          end
+        end
+
         before do
           stub_feature_flags(create_deployment_in_separate_transaction: false)
         end

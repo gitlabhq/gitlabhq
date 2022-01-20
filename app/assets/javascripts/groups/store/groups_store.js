@@ -98,6 +98,9 @@ export default class GroupsStore {
       updatedAt: rawGroupItem.updated_at,
       pendingRemoval: rawGroupItem.marked_for_deletion,
       microdata: this.showSchemaMarkup ? getGroupItemMicrodata(rawGroupItem) : {},
+      lastActivityAt: rawGroupItem.last_activity_at
+        ? rawGroupItem.last_activity_at
+        : rawGroupItem.updated_at,
     };
 
     if (!isEmpty(rawGroupItem.compliance_management_framework)) {

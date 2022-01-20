@@ -6,12 +6,18 @@ FactoryBot.define do
 
     file_name { 'somefile.txt' }
 
+    status { :default }
+
     transient do
       file_fixture { 'spec/fixtures/packages/conan/recipe_files/conanfile.py' }
     end
 
     after(:build) do |package_file, evaluator|
       package_file.file = fixture_file_upload(evaluator.file_fixture)
+    end
+
+    trait :pending_destruction do
+      status { :pending_destruction }
     end
 
     factory :conan_package_file do

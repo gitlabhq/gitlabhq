@@ -9,7 +9,7 @@ before_script:
 variables:
   DB_NAME: postgres
 
-types:
+stages:
   - test
   - deploy
   - notify
@@ -36,7 +36,7 @@ staging:
     KEY1: value1
     KEY2: value2
   script: "cap deploy stating"
-  type: deploy
+  stage: deploy
   tags:
     - ruby
     - mysql
@@ -46,7 +46,7 @@ staging:
 production:
   variables:
     DB_NAME: mysql
-  type: deploy
+  stage: deploy
   script:
     - cap deploy production
     - cap notify
@@ -58,7 +58,7 @@ production:
     - /^deploy-.*$/
 
 dockerhub:
-  type: notify
+  stage: notify
   script: "curl http://dockerhub/URL"
   tags:
     - ruby

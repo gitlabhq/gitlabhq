@@ -4,7 +4,7 @@ module LooseForeignKeys
   class ModificationTracker
     MAX_DELETES = 100_000
     MAX_UPDATES = 50_000
-    MAX_RUNTIME = 3.minutes
+    MAX_RUNTIME = 30.seconds # must be less than the scheduling frequency of the LooseForeignKeys::CleanupWorker cron worker
 
     delegate :monotonic_time, to: :'Gitlab::Metrics::System'
 

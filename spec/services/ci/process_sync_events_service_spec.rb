@@ -28,10 +28,10 @@ RSpec.describe Ci::ProcessSyncEventsService do
       it 'consumes events' do
         expect { execute }.to change(Projects::SyncEvent, :count).from(2).to(0)
 
-        expect(project1.ci_project_mirror).to have_attributes(
+        expect(project1.reload.ci_project_mirror).to have_attributes(
           namespace_id: parent_group_1.id
         )
-        expect(project2.ci_project_mirror).to have_attributes(
+        expect(project2.reload.ci_project_mirror).to have_attributes(
           namespace_id: parent_group_2.id
         )
       end
@@ -71,6 +71,24 @@ RSpec.describe Ci::ProcessSyncEventsService do
           expect { execute }.not_to change(Projects::SyncEvent, :count)
         end
       end
+
+      it 'does not delete non-executed events' do
+        new_project = create(:project)
+        sync_event_class.delete_all
+
+        project1.update!(group: parent_group_2)
+        new_project.update!(group: parent_group_1)
+        project2.update!(group: parent_group_1)
+
+        new_project_sync_event = new_project.sync_events.last
+
+        allow(sync_event_class).to receive(:preload_synced_relation).and_return(
+          sync_event_class.where.not(id: new_project_sync_event)
+        )
+
+        expect { execute }.to change(Projects::SyncEvent, :count).from(3).to(1)
+        expect(new_project_sync_event.reload).to be_persisted
+      end
     end
 
     context 'for Namespaces::SyncEvent' do
@@ -88,10 +106,10 @@ RSpec.describe Ci::ProcessSyncEventsService do
         it 'consumes events' do
           expect { execute }.to change(Namespaces::SyncEvent, :count).from(2).to(0)
 
-          expect(group.ci_namespace_mirror).to have_attributes(
+          expect(group.reload.ci_namespace_mirror).to have_attributes(
             traversal_ids: [parent_group_1.id, parent_group_2.id, group.id]
           )
-          expect(parent_group_2.ci_namespace_mirror).to have_attributes(
+          expect(parent_group_2.reload.ci_namespace_mirror).to have_attributes(
             traversal_ids: [parent_group_1.id, parent_group_2.id]
           )
         end

@@ -1,13 +1,10 @@
 ---
 stage: Create
 group: Source Code
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments"
-type: reference, howto
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Badges **(FREE)**
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/41174) in GitLab 10.7.
 
 Badges are a unified way to present condensed pieces of information about your
 projects. They consist of a small image and a URL that the image
@@ -87,7 +84,7 @@ Badges directly associated with a project can be configured on the
 
 ## Placeholders
 
-The URL a badge points to, as well as the image URL, can contain placeholders
+Both the URL a badge points to and the image URL can contain placeholders
 which are evaluated when displaying the badge. The following placeholders
 are available:
 

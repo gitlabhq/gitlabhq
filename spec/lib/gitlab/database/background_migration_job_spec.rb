@@ -5,6 +5,8 @@ require 'spec_helper'
 RSpec.describe Gitlab::Database::BackgroundMigrationJob do
   it_behaves_like 'having unique enum values'
 
+  it { is_expected.to be_a Gitlab::Database::SharedModel }
+
   describe '.for_migration_execution' do
     let!(:job1) { create(:background_migration_job) }
     let!(:job2) { create(:background_migration_job, arguments: ['hi', 2]) }

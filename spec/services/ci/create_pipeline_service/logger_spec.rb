@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Ci::CreatePipelineService do
   context 'pipeline logger' do
     let_it_be(:project) { create(:project, :repository) }
-    let_it_be(:user)    { project.owner }
+    let_it_be(:user)    { project.first_owner }
 
     let(:ref) { 'refs/heads/master' }
     let(:service)  { described_class.new(project, user, { ref: ref }) }
@@ -35,7 +35,10 @@ RSpec.describe Ci::CreatePipelineService do
         'pipeline_creation_service_duration_s' => a_kind_of(Numeric),
         'pipeline_creation_duration_s' => counters,
         'pipeline_size_count' => counters,
-        'pipeline_step_gitlab_ci_pipeline_chain_seed_duration_s' => counters
+        'pipeline_step_gitlab_ci_pipeline_chain_seed_duration_s' => counters,
+        'pipeline_seed_build_inclusion_duration_s' => counters,
+        'pipeline_builds_tags_count' => a_kind_of(Numeric),
+        'pipeline_builds_distinct_tags_count' => a_kind_of(Numeric)
       }
     end
 
@@ -81,7 +84,6 @@ RSpec.describe Ci::CreatePipelineService do
           {
             'pipeline_creation_caller' => 'Ci::CreatePipelineService',
             'pipeline_source' => 'push',
-            'pipeline_id' => nil,
             'pipeline_persisted' => false,
             'project_id' => project.id,
             'pipeline_creation_service_duration_s' => a_kind_of(Numeric),

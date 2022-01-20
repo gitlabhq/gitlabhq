@@ -10,9 +10,9 @@ require 'active_support/core_ext/object/blank'
 require_relative 'qa_deprecation_toolkit_env'
 QaDeprecationToolkitEnv.configure!
 
-Knapsack::Adapters::RSpecAdapter.bind if ENV['CI'] && QA::Runtime::Env.knapsack? && !ENV['NO_KNAPSACK']
+Knapsack::Adapters::RSpecAdapter.bind if QA::Runtime::Env.knapsack?
 
-QA::Runtime::Browser.configure!
+QA::Runtime::Browser.configure! unless QA::Runtime::Env.dry_run
 QA::Runtime::AllureReport.configure!
 QA::Runtime::Scenario.from_env(QA::Runtime::Env.runtime_scenario_attributes)
 
@@ -66,9 +66,14 @@ RSpec.configure do |config|
 
   config.after(:suite) do |suite|
     # If any tests failed, leave the resources behind to help troubleshoot
-    next if suite.reporter.failed_examples.present?
+    QA::Resource::ReusableProject.remove_all_via_api! unless suite.reporter.failed_examples.present?
 
-    QA::Resource::ReusableProject.remove_all_via_api!
+    # Write all test created resources to JSON file
+    QA::Tools::TestResourceDataProcessor.write_to_file
+  end
+
+  config.append_after(:suite) do
+    QA::Tools::KnapsackReport.move_regenerated_report if QA::Runtime::Env.knapsack?
   end
 
   config.expect_with :rspec do |expectations|
@@ -95,8 +100,14 @@ RSpec.configure do |config|
   if ENV['CI'] && !QA::Runtime::Env.disable_rspec_retry?
     non_quarantine_retries = QA::Runtime::Env.ci_project_name =~ /staging|canary|production/ ? 3 : 2
     config.around do |example|
-      retry_times = example.metadata.key?(:quarantine) ? 1 : non_quarantine_retries
-      example.run_with_retry retry: retry_times
+      quarantine = example.metadata[:quarantine]
+      different_quarantine_context = QA::Specs::Helpers::Quarantine.quarantined_different_context?(quarantine)
+      focused_quarantine = QA::Specs::Helpers::Quarantine.filters.key?(:quarantine)
+
+      # Do not disable retry when spec is quarantined but on different environment
+      next example.run_with_retry(retry: non_quarantine_retries) if different_quarantine_context && !focused_quarantine
+
+      example.run_with_retry(retry: quarantine ? 1 : non_quarantine_retries)
     end
   end
 end

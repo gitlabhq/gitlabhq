@@ -5,9 +5,6 @@ GraphQL/FieldDefinitions:
   - app/graphql/types/group_type.rb
   - app/graphql/types/issue_type.rb
   - app/graphql/types/label_type.rb
-  - app/graphql/types/project_type.rb
-  - app/graphql/types/projects/topic_type.rb
-  - app/graphql/types/release_type.rb
   - ee/app/graphql/types/ci/code_quality_degradation_type.rb
   - ee/app/graphql/types/epic_type.rb
   - ee/app/graphql/types/group_release_stats_type.rb

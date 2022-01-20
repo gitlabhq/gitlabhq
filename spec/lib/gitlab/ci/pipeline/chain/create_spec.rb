@@ -7,7 +7,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Create do
   let_it_be(:user) { create(:user) }
 
   let(:pipeline) do
-    build(:ci_empty_pipeline, project: project, ref: 'master')
+    build(:ci_empty_pipeline, project: project, ref: 'master', user: user)
   end
 
   let(:command) do
@@ -59,7 +59,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Create do
 
   context 'tags persistence' do
     let(:stage) do
-      build(:ci_stage_entity, pipeline: pipeline)
+      build(:ci_stage_entity, pipeline: pipeline, project: project)
     end
 
     let(:job) do
@@ -79,12 +79,11 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Create do
       it 'extracts an empty tag list' do
         expect(CommitStatus)
           .to receive(:bulk_insert_tags!)
-          .with(stage.statuses, {})
+          .with([job])
           .and_call_original
 
         step.perform!
 
-        expect(job.instance_variable_defined?(:@tag_list)).to be_falsey
         expect(job).to be_persisted
         expect(job.tag_list).to eq([])
       end
@@ -98,14 +97,13 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Create do
       it 'bulk inserts tags' do
         expect(CommitStatus)
           .to receive(:bulk_insert_tags!)
-          .with(stage.statuses, { job.name => %w[tag1 tag2] })
+          .with([job])
           .and_call_original
 
         step.perform!
 
-        expect(job.instance_variable_defined?(:@tag_list)).to be_falsey
         expect(job).to be_persisted
-        expect(job.tag_list).to match_array(%w[tag1 tag2])
+        expect(job.reload.tag_list).to match_array(%w[tag1 tag2])
       end
     end
 
@@ -120,7 +118,6 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Create do
 
         step.perform!
 
-        expect(job.instance_variable_defined?(:@tag_list)).to be_truthy
         expect(job).to be_persisted
         expect(job.reload.tag_list).to match_array(%w[tag1 tag2])
       end

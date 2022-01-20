@@ -36,6 +36,8 @@ module Gitlab
 
       attr_reader :worker_class
 
+      delegate :minimum_interval, :perform_in, to: :worker_class
+
       def queue
         @queue ||= worker_class.sidekiq_options['queue']
       end
@@ -79,7 +81,7 @@ module Gitlab
 
       def perform(class_name, arguments)
         with_shared_connection do
-          migration_class_for(class_name).new.perform(*arguments)
+          migration_instance_for(class_name).perform(*arguments)
         end
       end
 
@@ -111,6 +113,16 @@ module Gitlab
         retry_set = Sidekiq::RetrySet.new
 
         enqueued_job?([retry_set], migration_class)
+      end
+
+      def migration_instance_for(class_name)
+        migration_class = migration_class_for(class_name)
+
+        if migration_class < Gitlab::BackgroundMigration::BaseJob
+          migration_class.new(connection: connection)
+        else
+          migration_class.new
+        end
       end
 
       def migration_class_for(class_name)

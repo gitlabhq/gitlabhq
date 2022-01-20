@@ -31,3 +31,6 @@
         = s_('ProjectSettings|Fast-forward merges only.')
         %br
         = s_('ProjectSettings|When there is a merge conflict, the user is given the option to rebase.')
+        %div
+          = s_('ProjectSettings|If merge trains are enabled, merging is only possible if the branch can be rebased without conflicts.')
+          = link_to sprite_icon('question-o'), help_page_path('ci/pipelines/merge_trains.md', anchor: 'enable-merge-trains'), target: '_blank', rel: 'noopener noreferrer'

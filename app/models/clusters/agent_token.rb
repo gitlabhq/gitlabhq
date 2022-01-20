@@ -10,9 +10,6 @@ module Clusters
 
     self.table_name = 'cluster_agent_tokens'
 
-    # The `UPDATE_USED_COLUMN_EVERY` defines how often the token DB entry can be updated
-    UPDATE_USED_COLUMN_EVERY = (40.minutes..55.minutes).freeze
-
     belongs_to :agent, class_name: 'Clusters::Agent', optional: false
     belongs_to :created_by_user, class_name: 'User', optional: true
 
@@ -22,40 +19,11 @@ module Clusters
     validates :name, presence: true, length: { maximum: 255 }
 
     scope :order_last_used_at_desc, -> { order(::Gitlab::Database.nulls_last_order('last_used_at', 'DESC')) }
+    scope :with_status, -> (status) { where(status: status) }
 
-    def track_usage
-      track_values = { last_used_at: Time.current.utc }
-
-      cache_attributes(track_values)
-
-      if can_update_track_values?
-        log_activity_event!(track_values[:last_used_at]) unless agent.active?
-
-        # Use update_column so updated_at is skipped
-        update_columns(track_values)
-      end
-    end
-
-    private
-
-    def can_update_track_values?
-      # Use a random threshold to prevent beating DB updates.
-      last_used_at_max_age = Random.rand(UPDATE_USED_COLUMN_EVERY)
-
-      real_last_used_at = read_attribute(:last_used_at)
-
-      # Handle too many updates from high token traffic
-      real_last_used_at.nil? ||
-        (Time.current - real_last_used_at) >= last_used_at_max_age
-    end
-
-    def log_activity_event!(recorded_at)
-      agent.activity_events.create!(
-        kind: :agent_connected,
-        level: :info,
-        recorded_at: recorded_at,
-        agent_token: self
-      )
-    end
+    enum status: {
+      active: 0,
+      revoked: 1
+    }
   end
 end

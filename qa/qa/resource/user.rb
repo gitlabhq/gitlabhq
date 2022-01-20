@@ -98,6 +98,12 @@ module QA
         super
       end
 
+      def exists?
+        api_get
+      rescue ResourceNotFoundError
+        false
+      end
+
       def api_delete
         super
 
@@ -179,6 +185,15 @@ module QA
           ResourceUpdateFailedError,
           "Failed to set public email. Request returned (#{response.code}): `#{response}`."
         )
+      end
+
+      protected
+
+      # Compare users by username and password
+      #
+      # @return [Array]
+      def comparable
+        [username, password]
       end
 
       private

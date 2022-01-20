@@ -490,7 +490,15 @@ The following are useful queries for monitoring Gitaly:
 
 ### Monitor Gitaly Cluster
 
-To monitor Gitaly Cluster (Praefect), you can use these Prometheus metrics:
+To monitor Gitaly Cluster (Praefect), you can use these Prometheus metrics. There are two separate metrics
+endpoints from which metrics can be scraped:
+
+- The default `/metrics` endpoint.
+- `/db_metrics`, which contains metrics that require database queries.
+
+#### Default Prometheus `/metrics` endpoint
+
+The following metrics are available from the `/metrics` endpoint:
 
 - `gitaly_praefect_read_distribution`, a counter to track [distribution of reads](#distributed-reads).
   It has two labels:
@@ -522,6 +530,18 @@ To monitor [strong consistency](#strong-consistency), you can use the following 
   the transaction to be committed.
 
 You can also monitor the [Praefect logs](../logs.md#praefect-logs).
+
+#### Database metrics `/db_metrics` endpoint
+
+> [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/3286) in GitLab 14.5.
+
+The following metrics are available from the `/db_metrics` endpoint:
+
+- `gitaly_praefect_unavailable_repositories`, the number of repositories that have no healthy, up to date replicas.
+- `gitaly_praefect_read_only_repositories`, the number of repositories in read-only mode within a virtual storage.
+  This metric is available for backwards compatibility reasons. `gitaly_praefect_unavailable_repositories` is more
+  accurate.
+- `gitaly_praefect_replication_queue_depth`, the number of jobs in the replication queue.
 
 ## Recover from failure
 

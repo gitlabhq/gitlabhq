@@ -35,6 +35,8 @@ describe('MR Popover', () => {
 
   describe('loaded state', () => {
     it('matches the snapshot', () => {
+      // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+      // eslint-disable-next-line no-restricted-syntax
       wrapper.setData({
         mergeRequest: {
           title: 'Updated Title',
@@ -55,6 +57,8 @@ describe('MR Popover', () => {
     });
 
     it('does not show CI Icon if there is no pipeline data', () => {
+      // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+      // eslint-disable-next-line no-restricted-syntax
       wrapper.setData({
         mergeRequest: {
           state: 'opened',

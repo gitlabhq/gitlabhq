@@ -8,10 +8,9 @@ RSpec.describe 'Issue Sidebar' do
   let_it_be(:group) { create(:group, :nested) }
   let_it_be(:project) { create(:project, :public, namespace: group) }
   let_it_be(:user) { create(:user) }
-  let_it_be(:label) { create(:label, project: project, title: 'bug') }
-  let_it_be(:issue) { create(:labeled_issue, project: project, labels: [label]) }
+  let_it_be(:issue) { create(:issue, project: project) }
+  let_it_be(:label) { create(:label, project: project, name: 'Label') }
   let_it_be(:mock_date) { Date.today.at_beginning_of_month + 2.days }
-  let_it_be(:xss_label) { create(:label, project: project, title: '&lt;script&gt;alert("xss");&lt;&#x2F;script&gt;') }
 
   before do
     stub_incoming_email_setting(enabled: true, address: "p+%{key}@gl.ab")
@@ -223,14 +222,6 @@ RSpec.describe 'Issue Sidebar' do
           restore_window_size
           open_issue_sidebar
         end
-
-        it 'escapes XSS when viewing issue labels' do
-          page.within('.block.labels') do
-            click_on 'Edit'
-
-            expect(page).to have_content '<script>alert("xss");</script>'
-          end
-        end
       end
 
       context 'editing issue milestone', :js do
@@ -242,62 +233,7 @@ RSpec.describe 'Issue Sidebar' do
       end
 
       context 'editing issue labels', :js do
-        before do
-          issue.update!(labels: [label])
-          page.within('.block.labels') do
-            click_on 'Edit'
-          end
-        end
-
-        it 'shows the current set of labels' do
-          page.within('.issuable-show-labels') do
-            expect(page).to have_content label.title
-          end
-        end
-
-        it 'shows option to create a project label' do
-          page.within('.block.labels') do
-            expect(page).to have_content 'Create project'
-          end
-        end
-
-        context 'creating a project label', :js, quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/27992' do
-          before do
-            page.within('.block.labels') do
-              click_link 'Create project'
-            end
-          end
-
-          it 'shows dropdown switches to "create label" section' do
-            page.within('.block.labels') do
-              expect(page).to have_content 'Create project label'
-            end
-          end
-
-          it 'adds new label' do
-            page.within('.block.labels') do
-              fill_in 'new_label_name', with: 'wontfix'
-              page.find('.suggest-colors a', match: :first).click
-              page.find('button', text: 'Create').click
-
-              page.within('.dropdown-page-one') do
-                expect(page).to have_content 'wontfix'
-              end
-            end
-          end
-
-          it 'shows error message if label title is taken' do
-            page.within('.block.labels') do
-              fill_in 'new_label_name', with: label.title
-              page.find('.suggest-colors a', match: :first).click
-              page.find('button', text: 'Create').click
-
-              page.within('.dropdown-page-two') do
-                expect(page).to have_content 'Title has already been taken'
-              end
-            end
-          end
-        end
+        it_behaves_like 'labels sidebar widget'
       end
 
       context 'interacting with collapsed sidebar', :js do

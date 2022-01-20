@@ -30,18 +30,27 @@ RSpec.describe Import::GitlabController do
       expect(session[:gitlab_access_token]).to eq(token)
       expect(controller).to redirect_to(status_import_gitlab_url)
     end
+
+    it "importable_repos should return an array" do
+      allow_next_instance_of(Gitlab::GitlabImport::Client) do |instance|
+        allow(instance).to receive(:projects).and_return([{ "id": 1 }].to_enum)
+      end
+
+      expect(controller.send(:importable_repos)).to be_an_instance_of(Array)
+    end
   end
 
   describe "GET status" do
+    let(:repo_fake) { Struct.new(:id, :path, :path_with_namespace, :web_url, keyword_init: true) }
+    let(:repo) { repo_fake.new(id: 1, path: 'vim', path_with_namespace: 'asd/vim', web_url: 'https://gitlab.com/asd/vim') }
+
     before do
-      @repo = OpenStruct.new(id: 1, path: 'vim', path_with_namespace: 'asd/vim', web_url: 'https://gitlab.com/asd/vim')
       assign_session_token
     end
 
     it_behaves_like 'import controller status' do
-      let(:repo) { @repo }
-      let(:repo_id) { @repo.id }
-      let(:import_source) { @repo.path_with_namespace }
+      let(:repo_id) { repo.id }
+      let(:import_source) { repo.path_with_namespace }
       let(:provider_name) { 'gitlab' }
       let(:client_repos_field) { :projects }
     end

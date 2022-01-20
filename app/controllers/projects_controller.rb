@@ -9,6 +9,7 @@ class ProjectsController < Projects::ApplicationController
   include RecordUserLastActivity
   include ImportUrlParams
   include FiltersEvents
+  include SourcegraphDecorator
 
   prepend_before_action(only: [:show]) { authenticate_sessionless_user!(:rss) }
 
@@ -39,6 +40,7 @@ class ProjectsController < Projects::ApplicationController
     push_frontend_feature_flag(:increase_page_size_exponentially, @project, default_enabled: :yaml)
     push_frontend_feature_flag(:new_dir_modal, @project, default_enabled: :yaml)
     push_licensed_feature(:file_locks) if @project.present? && @project.licensed_feature_available?(:file_locks)
+    push_frontend_feature_flag(:consolidated_edit_button, @project, default_enabled: :yaml)
   end
 
   layout :determine_layout

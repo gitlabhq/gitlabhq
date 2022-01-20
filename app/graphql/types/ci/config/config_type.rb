@@ -15,6 +15,8 @@ module Types
               description: 'Stages of the pipeline.'
         field :status, Types::Ci::Config::StatusEnum, null: true,
               description: 'Status of linting, can be either valid or invalid.'
+        field :warnings, [GraphQL::Types::String], null: true,
+              description: 'Linting warnings.'
       end
     end
   end

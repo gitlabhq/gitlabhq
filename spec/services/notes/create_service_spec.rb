@@ -402,7 +402,7 @@ RSpec.describe Notes::CreateService do
 
       let_it_be(:design) { create(:design, :with_file) }
       let_it_be(:project) { design.project }
-      let_it_be(:user) { project.owner }
+      let_it_be(:user) { project.first_owner }
       let_it_be(:params) do
         {
           type: 'DiffNote',

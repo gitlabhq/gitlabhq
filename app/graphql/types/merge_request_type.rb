@@ -189,6 +189,8 @@ module Types
           description: 'Indicates if the merge request has CI.'
     field :mergeable, GraphQL::Types::Boolean, null: false, method: :mergeable?, calls_gitaly: true,
           description: 'Indicates if the merge request is mergeable.'
+    field :commits, Types::CommitType.connection_type, null: true,
+          calls_gitaly: true, description: 'Merge request commits.'
     field :commits_without_merge_commits, Types::CommitType.connection_type, null: true,
           calls_gitaly: true, description: 'Merge request commits excluding merge commits.'
     field :security_auto_fix, GraphQL::Types::Boolean, null: true,
@@ -196,7 +198,7 @@ module Types
     field :auto_merge_strategy, GraphQL::Types::String, null: true,
           description: 'Selected auto merge strategy.'
     field :merge_user, Types::UserType, null: true,
-          description: 'User who merged this merge request.'
+          description: 'User who merged this merge request or set it to merge when pipeline succeeds.'
     field :timelogs, Types::TimelogType.connection_type, null: false,
           description: 'Timelogs on the merge request.'
 
@@ -249,16 +251,28 @@ module Types
       !!object.discussion_locked
     end
 
+    def default_merge_commit_message
+      object.default_merge_commit_message(include_description: false, user: current_user)
+    end
+
     def default_merge_commit_message_with_description
       object.default_merge_commit_message(include_description: true)
+    end
+
+    def default_squash_commit_message
+      object.default_squash_commit_message(user: current_user)
     end
 
     def available_auto_merge_strategies
       AutoMergeService.new(object.project, current_user).available_strategies(object)
     end
 
+    def commits
+      object.commits.commits
+    end
+
     def commits_without_merge_commits
-      object.recent_commits.without_merge_commits
+      object.commits.without_merge_commits
     end
 
     def security_auto_fix
@@ -267,6 +281,10 @@ module Types
 
     def reviewers
       object.reviewers
+    end
+
+    def merge_user
+      object.metrics&.merged_by || object.merge_user
     end
   end
 end

@@ -106,16 +106,21 @@ The `gitlab:check` Rake task runs the following Rake tasks:
 - `gitlab:gitlab_shell:check`
 - `gitlab:gitaly:check`
 - `gitlab:sidekiq:check`
+- `gitlab:incoming_email:check`
+- `gitlab:ldap:check`
 - `gitlab:app:check`
 
 It checks that each component was set up according to the installation guide and suggest fixes
 for issues found. This command must be run from your application server and doesn't work correctly on
 component servers like [Gitaly](../gitaly/configure_gitaly.md#run-gitaly-on-its-own-server).
+If you're running Geo, see also the [Geo Health check Rake task](../geo/replication/troubleshooting.md#health-check-rake-task).
 
 You may also have a look at our troubleshooting guides for:
 
 - [GitLab](../index.md#troubleshooting)
 - [Omnibus GitLab](https://docs.gitlab.com/omnibus/index.html#troubleshooting)
+
+Additionally you should also [verify database values can be decrypted using the current secrets](check.md#verify-database-values-can-be-decrypted-using-the-current-secrets).
 
 To run `gitlab:check`, run:
 

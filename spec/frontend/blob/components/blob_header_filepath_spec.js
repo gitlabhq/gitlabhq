@@ -1,3 +1,4 @@
+import { GlBadge } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import BlobHeaderFilepath from '~/blob/components/blob_header_filepath.vue';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
@@ -23,6 +24,8 @@ describe('Blob Header Filepath', () => {
   afterEach(() => {
     wrapper.destroy();
   });
+
+  const findBadge = () => wrapper.find(GlBadge);
 
   describe('rendering', () => {
     it('matches the snapshot', () => {
@@ -52,6 +55,11 @@ describe('Blob Header Filepath', () => {
       createComponent();
       expect(numberToHumanSize).toHaveBeenCalled();
       expect(wrapper.vm.blobSize).toBe('a lot');
+    });
+
+    it('renders LFS badge if LFS if enabled', () => {
+      createComponent({ storedExternally: true, externalStorage: 'lfs' });
+      expect(findBadge().text()).toBe('LFS');
     });
 
     it('renders a slot and prepends its contents to the existing one', () => {
