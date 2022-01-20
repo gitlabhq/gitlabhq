@@ -61,4 +61,11 @@ RSpec.describe Ci::Trigger do
   it_behaves_like 'includes Limitable concern' do
     subject { build(:ci_trigger, owner: project.owner, project: project) }
   end
+
+  context 'loose foreign key on ci_triggers.owner_id' do
+    it_behaves_like 'cleanup by a loose foreign key' do
+      let!(:parent) { create(:user) }
+      let!(:model) { create(:ci_trigger, owner: parent) }
+    end
+  end
 end

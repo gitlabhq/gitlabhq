@@ -5,7 +5,7 @@ class AuditEventService
 
   # Instantiates a new service
   #
-  # @param [User] author the user who authors the change
+  # @param [User, token String] author the entity who authors the change
   # @param [User, Project, Group] entity the scope which audit event belongs to
   #   This param is also used to determine the visibility of the audit event.
   #   - Project: events are visible at Project and Instance level
@@ -44,7 +44,7 @@ class AuditEventService
 
   # Writes event to a file and creates an event record in DB
   #
-  # @return [AuditEvent] persited if saves and non-persisted if fails
+  # @return [AuditEvent] persisted if saves and non-persisted if fails
   def security_event
     log_security_event_to_file
     log_authentication_event_to_database

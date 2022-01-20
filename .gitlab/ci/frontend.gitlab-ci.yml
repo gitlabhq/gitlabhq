@@ -306,11 +306,6 @@ qa-frontend-node:latest:
     - .qa-frontend-node
     - .frontend:rules:qa-frontend-node-latest
   image: ${GITLAB_DEPENDENCY_PROXY}node:latest
-  # This is a workaround for https://github.com/webpack/webpack/issues/14532 until
-  # we can upgrade to Webpack 5 and switch to SHA256: https://gitlab.com/gitlab-org/gitlab/-/issues/350120
-  script:
-    - *yarn-install
-    - run_timed_command "retry yarn run webpack-prod-node-latest"
 
 webpack-dev-server:
   extends:

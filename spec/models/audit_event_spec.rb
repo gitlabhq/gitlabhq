@@ -93,4 +93,37 @@ RSpec.describe AuditEvent do
       end
     end
   end
+
+  describe '#author' do
+    subject { audit_event.author }
+
+    context "when a runner_registration_token's present" do
+      let(:audit_event) { build(:project_audit_event, details: { target_id: 678 }) }
+
+      it 'returns a NullAuthor' do
+        expect(::Gitlab::Audit::NullAuthor).to receive(:for)
+          .and_call_original
+          .once
+
+        is_expected.to be_a_kind_of(::Gitlab::Audit::NullAuthor)
+      end
+    end
+
+    context "when a runner_registration_token's present" do
+      let(:audit_event) { build(:project_audit_event, details: { target_id: 678, runner_registration_token: 'abc123' }) }
+
+      it 'returns a RunnerRegistrationTokenAuthor' do
+        expect(::Gitlab::Audit::RunnerRegistrationTokenAuthor).to receive(:new)
+          .with({ token: 'abc123', entity_type: 'Project', entity_path: audit_event.entity_path })
+          .and_call_original
+          .once
+
+        is_expected.to be_an_instance_of(::Gitlab::Audit::RunnerRegistrationTokenAuthor)
+      end
+
+      it 'name consists of prefix and token' do
+        expect(subject.name).to eq('Registration token: abc123')
+      end
+    end
+  end
 end

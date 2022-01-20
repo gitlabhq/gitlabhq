@@ -14,7 +14,7 @@ module MultipleBoardsActions
   end
 
   def recent
-    recent_visits = ::Boards::VisitsFinder.new(parent, current_user).latest(4)
+    recent_visits = ::Boards::VisitsFinder.new(parent, current_user).latest(Board::RECENT_BOARDS_SIZE)
     recent_boards = recent_visits.map(&:board)
 
     render json: serialize_as_json(recent_boards)

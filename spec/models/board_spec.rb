@@ -16,6 +16,10 @@ RSpec.describe Board do
     it { is_expected.to validate_presence_of(:project) }
   end
 
+  describe 'constants' do
+    it { expect(described_class::RECENT_BOARDS_SIZE).to be_a(Integer) }
+  end
+
   describe '#order_by_name_asc' do
     let!(:board_B) { create(:board, project: project, name: 'B') }
     let!(:board_C) { create(:board, project: project, name: 'C') }

@@ -94,6 +94,12 @@ module Types
           max_page_size: 2000,
           resolver: Resolvers::BoardsResolver
 
+    field :recent_issue_boards,
+          Types::BoardType.connection_type,
+          null: true,
+          description: 'List of recently visited boards of the group. Maximum size is 4.',
+          resolver: Resolvers::RecentBoardsResolver
+
     field :board,
           Types::BoardType,
           null: true,

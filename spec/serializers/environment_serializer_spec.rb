@@ -204,21 +204,6 @@ RSpec.describe EnvironmentSerializer do
 
       json
     end
-
-    # Including for test coverage pipeline failure, remove along with feature flag.
-    context 'when custom preload feature is disabled' do
-      before do
-        Feature.disable(:custom_preloader_for_deployments)
-      end
-
-      it 'avoids N+1 database queries' do
-        control_count = ActiveRecord::QueryRecorder.new { json }.count
-
-        create_environment_with_associations(project)
-
-        expect { json }.not_to exceed_query_limit(control_count)
-      end
-    end
   end
 
   def create_environment_with_associations(project)

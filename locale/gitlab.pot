@@ -34687,6 +34687,9 @@ msgstr ""
 msgid "SuperSonics|Subscription details"
 msgstr ""
 
+msgid "SuperSonics|Subscription unavailable"
+msgstr ""
+
 msgid "SuperSonics|Sync subscription details"
 msgstr ""
 
@@ -34741,6 +34744,9 @@ msgstr ""
 msgid "SuperSonics|You'll be charged for %{trueUpLinkStart}users over license%{trueUpLinkEnd} on a quarterly or annual basis, depending on the terms of your agreement."
 msgstr ""
 
+msgid "SuperSonics|Your %{subscriptionEntryName} cannot be displayed at the moment. Please refresh the page to try again."
+msgstr ""
+
 msgid "SuperSonics|Your future dated license was successfully added"
 msgstr ""
 
@@ -34751,6 +34757,12 @@ msgid "SuperSonics|Your subscription details will sync shortly."
 msgstr ""
 
 msgid "SuperSonics|Your subscription was successfully activated. You can see the details below."
+msgstr ""
+
+msgid "SuperSonics|current subscription"
+msgstr ""
+
+msgid "SuperSonics|history subscriptions"
 msgstr ""
 
 msgid "Support"

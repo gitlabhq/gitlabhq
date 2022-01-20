@@ -14,9 +14,17 @@ module Gitlab
       # @param [Integer] id
       # @param [String] name
       #
-      # @return [Gitlab::Audit::UnauthenticatedAuthor, Gitlab::Audit::DeletedAuthor]
-      def self.for(id, name)
-        if id == -1
+      # @return [Gitlab::Audit::UnauthenticatedAuthor, Gitlab::Audit::DeletedAuthor, Gitlab::Audit::RunnerRegistrationTokenAuthor]
+      def self.for(id, audit_event)
+        name = audit_event[:author_name] || audit_event.details[:author_name]
+
+        if audit_event.details.include?(:runner_registration_token)
+          ::Gitlab::Audit::RunnerRegistrationTokenAuthor.new(
+            token: audit_event.details[:runner_registration_token],
+            entity_type: audit_event.entity_type || audit_event.details[:entity_type],
+            entity_path: audit_event.entity_path || audit_event.details[:entity_path]
+          )
+        elsif id == -1
           Gitlab::Audit::UnauthenticatedAuthor.new(name: name)
         else
           Gitlab::Audit::DeletedAuthor.new(id: id, name: name)
@@ -29,6 +37,10 @@ module Gitlab
       end
 
       def current_sign_in_ip
+        nil
+      end
+
+      def full_path
         nil
       end
     end

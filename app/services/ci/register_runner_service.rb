@@ -3,7 +3,7 @@
 module Ci
   class RegisterRunnerService
     def execute(registration_token, attributes)
-      runner_type_attrs = check_token_and_extract_attrs(registration_token)
+      runner_type_attrs = extract_runner_type_attrs(registration_token)
 
       return unless runner_type_attrs
 
@@ -12,16 +12,32 @@ module Ci
 
     private
 
-    def check_token_and_extract_attrs(registration_token)
+    def extract_runner_type_attrs(registration_token)
+      @attrs_from_token ||= check_token(registration_token)
+
+      return unless @attrs_from_token
+
+      attrs = @attrs_from_token.clone
+      case attrs[:runner_type]
+      when :project_type
+        attrs[:projects] = [attrs.delete(:scope)]
+      when :group_type
+        attrs[:groups] = [attrs.delete(:scope)]
+      end
+
+      attrs
+    end
+
+    def check_token(registration_token)
       if runner_registration_token_valid?(registration_token)
         # Create shared runner. Requires admin access
         { runner_type: :instance_type }
       elsif runner_registrar_valid?('project') && project = ::Project.find_by_runners_token(registration_token)
         # Create a specific runner for the project
-        { runner_type: :project_type, projects: [project] }
+        { runner_type: :project_type, scope: project }
       elsif runner_registrar_valid?('group') && group = ::Group.find_by_runners_token(registration_token)
         # Create a specific runner for the group
-        { runner_type: :group_type, groups: [group] }
+        { runner_type: :group_type, scope: group }
       end
     end
 
@@ -32,5 +48,11 @@ module Ci
     def runner_registrar_valid?(type)
       Feature.disabled?(:runner_registration_control) || Gitlab::CurrentSettings.valid_runner_registrars.include?(type)
     end
+
+    def token_scope
+      @attrs_from_token[:scope]
+    end
   end
 end
+
+Ci::RegisterRunnerService.prepend_mod

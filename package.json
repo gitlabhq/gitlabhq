@@ -44,8 +44,7 @@
     "stylelint-create-utility-map": "node scripts/frontend/stylelint/stylelint-utility-map.js",
     "webpack": "NODE_OPTIONS=\"--max-old-space-size=3584\" webpack --config config/webpack.config.js",
     "webpack-vendor": "NODE_OPTIONS=\"--max-old-space-size=3584\" webpack --config config/webpack.vendor.config.js",
-    "webpack-prod": "NODE_OPTIONS=\"--max-old-space-size=3584\" NODE_ENV=production webpack --config config/webpack.config.js",
-    "webpack-prod-node-latest": "NODE_OPTIONS=\"--max-old-space-size=3584 --openssl-legacy-provider\" NODE_ENV=production webpack --config config/webpack.config.js"
+    "webpack-prod": "NODE_OPTIONS=\"--max-old-space-size=3584\" NODE_ENV=production webpack --config config/webpack.config.js"
   },
   "dependencies": {
     "@babel/core": "^7.10.1",
