@@ -434,6 +434,10 @@ module QA
         ENV.fetch('QA_TEST_RESOURCES_CREATED_FILEPATH', File.join(Path.qa_root, 'tmp', file_name))
       end
 
+      def ee_activation_code
+        ENV['QA_EE_ACTIVATION_CODE']
+      end
+
       private
 
       def remote_grid_credentials

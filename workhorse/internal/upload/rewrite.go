@@ -10,7 +10,6 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
-	"regexp"
 	"strings"
 
 	"github.com/prometheus/client_golang/prometheus"
@@ -31,10 +30,7 @@ const maxFilesAllowed = 10
 var (
 	ErrInjectedClientParam  = errors.New("injected client parameter")
 	ErrTooManyFilesUploaded = fmt.Errorf("upload request contains more than %v files", maxFilesAllowed)
-	ErrUnexpectedFilePart   = errors.New("Content-Disposition contains unexpected filepart")
 )
-
-var filePartRegex = regexp.MustCompile(`;\s*filename\b`)
 
 var (
 	multipartUploadRequests = promauto.NewCounterVec(
@@ -111,25 +107,12 @@ func rewriteFormFilesFromMultipart(r *http.Request, writer *multipart.Writer, pr
 		if p.FileName() != "" {
 			err = rew.handleFilePart(r.Context(), name, p, opts)
 		} else {
-			err = verifyContentDisposition(p)
-			if err != nil {
-				return err
-			}
-
 			err = rew.copyPart(r.Context(), name, p)
 		}
 
 		if err != nil {
 			return err
 		}
-	}
-
-	return nil
-}
-
-func verifyContentDisposition(p *multipart.Part) error {
-	if filePartRegex.MatchString(p.Header.Get("Content-Disposition")) {
-		return ErrUnexpectedFilePart
 	}
 
 	return nil

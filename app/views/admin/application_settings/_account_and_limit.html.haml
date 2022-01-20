@@ -15,6 +15,7 @@
       = f.label :max_attachment_size, _('Maximum attachment size (MB)'), class: 'label-bold'
       = f.number_field :max_attachment_size, class: 'form-control gl-form-input', title: _('Maximum size of individual attachments in comments.'), data: { toggle: 'tooltip', container: 'body' }
 
+    = render 'admin/application_settings/repository_size_limit_setting_registration_features_cta', form: f
     = render_if_exists 'admin/application_settings/repository_size_limit_setting', form: f
 
     .form-group

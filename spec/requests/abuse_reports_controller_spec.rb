@@ -21,7 +21,7 @@ RSpec.describe AbuseReportsController do
         user_id = user.id
         user.destroy!
 
-        get :new, params: { user_id: user_id }
+        get new_abuse_report_path(user_id: user_id)
 
         expect(response).to redirect_to root_path
         expect(flash[:alert]).to eq(_('Cannot create the abuse report. The user has been deleted.'))
@@ -32,7 +32,7 @@ RSpec.describe AbuseReportsController do
       it 'redirects the reporter to the user\'s profile' do
         user.block
 
-        get :new, params: { user_id: user.id }
+        get new_abuse_report_path(user_id: user.id)
 
         expect(response).to redirect_to user
         expect(flash[:alert]).to eq(_('Cannot create the abuse report. This user has been blocked.'))
@@ -44,7 +44,7 @@ RSpec.describe AbuseReportsController do
     context 'with valid attributes' do
       it 'saves the abuse report' do
         expect do
-          post :create, params: { abuse_report: attrs }
+          post abuse_reports_path(abuse_report: attrs)
         end.to change { AbuseReport.count }.by(1)
       end
 
@@ -53,22 +53,22 @@ RSpec.describe AbuseReportsController do
           expect(instance).to receive(:notify)
         end
 
-        post :create, params: { abuse_report: attrs }
+        post abuse_reports_path(abuse_report: attrs)
       end
 
       it 'redirects back to root' do
-        post :create, params: { abuse_report: attrs }
+        post abuse_reports_path(abuse_report: attrs)
 
         expect(response).to redirect_to root_path
       end
     end
 
     context 'with invalid attributes' do
-      it 'renders new' do
+      it 'redirects back to root' do
         attrs.delete(:user_id)
-        post :create, params: { abuse_report: attrs }
+        post abuse_reports_path(abuse_report: attrs)
 
-        expect(response).to render_template(:new)
+        expect(response).to redirect_to root_path
       end
     end
   end

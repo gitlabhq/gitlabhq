@@ -28,7 +28,7 @@ module Gitlab
             end
           end
 
-          entry :before_script, ::Gitlab::Ci::Config::Entry::Script,
+          entry :before_script, ::Gitlab::Ci::Config::Entry::Commands,
             description: 'Global before script overridden in this job.'
 
           entry :script, ::Gitlab::Ci::Config::Entry::Commands,

@@ -147,7 +147,7 @@ class InstanceConfiguration
   end
 
   def ssh_algorithm_sha256(ssh_file_content)
-    Gitlab::SSHPublicKey.new(ssh_file_content).fingerprint('SHA256')
+    Gitlab::SSHPublicKey.new(ssh_file_content).fingerprint_sha256
   end
 
   def application_settings

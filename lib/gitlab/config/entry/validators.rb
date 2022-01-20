@@ -278,20 +278,6 @@ module Gitlab
           end
         end
 
-        class NestedArrayOfStringsValidator < ArrayOfStringsOrStringValidator
-          def validate_each(record, attribute, value)
-            unless validate_nested_array_of_strings(value)
-              record.errors.add(attribute, 'should be an array containing strings and arrays of strings')
-            end
-          end
-
-          private
-
-          def validate_nested_array_of_strings(values)
-            values.is_a?(Array) && values.all? { |element| validate_array_of_strings_or_string(element) }
-          end
-        end
-
         class StringOrNestedArrayOfStringsValidator < ActiveModel::EachValidator
           include LegacyValidationHelpers
           include NestedArrayHelpers

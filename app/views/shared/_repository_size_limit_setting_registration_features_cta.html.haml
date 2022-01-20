@@ -1,0 +1,9 @@
+- return unless registration_features_can_be_prompted?
+
+.row
+  .form-group.col-md-9
+    = form.label :disabled_repository_size_limit, class: 'label-bold' do
+      = _('Repository size limit (MB)')
+    = form.number_field :disabled_repository_size_limit, value: '', class: 'form-control', disabled: true
+    %span.form-text.text-muted
+      = render 'shared/registration_features_discovery_message'

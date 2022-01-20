@@ -710,16 +710,16 @@ module Gitlab
             end
           end
 
-          context 'when script is array of arrays of strings' do
+          context 'when script is nested arrays of strings' do
             let(:config) do
               {
-                before_script: [["global script", "echo 1"], ["ls"], "pwd"],
+                before_script: [[["global script"], "echo 1"], "echo 2", ["ls"], "pwd"],
                 test: { script: ["script"] }
               }
             end
 
             it "return commands with scripts concatenated" do
-              expect(subject[:options][:before_script]).to eq(["global script", "echo 1", "ls", "pwd"])
+              expect(subject[:options][:before_script]).to eq(["global script", "echo 1", "echo 2", "ls", "pwd"])
             end
           end
         end
@@ -737,15 +737,15 @@ module Gitlab
             end
           end
 
-          context 'when script is array of arrays of strings' do
+          context 'when script is nested arrays of strings' do
             let(:config) do
               {
-                test: { script: [["script"], ["echo 1"], "ls"] }
+                test: { script: [[["script"], "echo 1", "echo 2"], "ls"] }
               }
             end
 
             it "return commands with scripts concatenated" do
-              expect(subject[:options][:script]).to eq(["script", "echo 1", "ls"])
+              expect(subject[:options][:script]).to eq(["script", "echo 1", "echo 2", "ls"])
             end
           end
         end
@@ -790,16 +790,16 @@ module Gitlab
             end
           end
 
-          context 'when script is array of arrays of strings' do
+          context 'when script is nested arrays of strings' do
             let(:config) do
               {
-                after_script: [["global script", "echo 1"], ["ls"], "pwd"],
+                after_script: [[["global script"], "echo 1"], "echo 2", ["ls"], "pwd"],
                 test: { script: ["script"] }
               }
             end
 
             it "return after_script in options" do
-              expect(subject[:options][:after_script]).to eq(["global script", "echo 1", "ls", "pwd"])
+              expect(subject[:options][:after_script]).to eq(["global script", "echo 1", "echo 2", "ls", "pwd"])
             end
           end
         end
@@ -2469,40 +2469,16 @@ module Gitlab
           it_behaves_like 'returns errors', 'jobs:rspec:tags config should be an array of strings'
         end
 
-        context 'returns errors if before_script parameter is invalid' do
-          let(:config) { YAML.dump({ before_script: "bundle update", rspec: { script: "test" } }) }
-
-          it_behaves_like 'returns errors', 'before_script config should be an array containing strings and arrays of strings'
-        end
-
         context 'returns errors if job before_script parameter is not an array of strings' do
           let(:config) { YAML.dump({ rspec: { script: "test", before_script: [10, "test"] } }) }
 
-          it_behaves_like 'returns errors', 'jobs:rspec:before_script config should be an array containing strings and arrays of strings'
-        end
-
-        context 'returns errors if job before_script parameter is multi-level nested array of strings' do
-          let(:config) { YAML.dump({ rspec: { script: "test", before_script: [["ls", ["pwd"]], "test"] } }) }
-
-          it_behaves_like 'returns errors', 'jobs:rspec:before_script config should be an array containing strings and arrays of strings'
-        end
-
-        context 'returns errors if after_script parameter is invalid' do
-          let(:config) { YAML.dump({ after_script: "bundle update", rspec: { script: "test" } }) }
-
-          it_behaves_like 'returns errors', 'after_script config should be an array containing strings and arrays of strings'
+          it_behaves_like 'returns errors', 'jobs:rspec:before_script config should be a string or a nested array of strings up to 10 levels deep'
         end
 
         context 'returns errors if job after_script parameter is not an array of strings' do
           let(:config) { YAML.dump({ rspec: { script: "test", after_script: [10, "test"] } }) }
 
-          it_behaves_like 'returns errors', 'jobs:rspec:after_script config should be an array containing strings and arrays of strings'
-        end
-
-        context 'returns errors if job after_script parameter is multi-level nested array of strings' do
-          let(:config) { YAML.dump({ rspec: { script: "test", after_script: [["ls", ["pwd"]], "test"] } }) }
-
-          it_behaves_like 'returns errors', 'jobs:rspec:after_script config should be an array containing strings and arrays of strings'
+          it_behaves_like 'returns errors', 'jobs:rspec:after_script config should be a string or a nested array of strings up to 10 levels deep'
         end
 
         context 'returns errors if image parameter is invalid' do

@@ -7,10 +7,10 @@ module Gitlab
     # See https://man.openbsd.org/sshd#AUTHORIZED_KEYS_FILE_FORMAT for the list of
     # supported algorithms.
     TECHNOLOGIES = [
-      Technology.new(:rsa, OpenSSL::PKey::RSA, [1024, 2048, 3072, 4096], %w(ssh-rsa)),
-      Technology.new(:dsa, OpenSSL::PKey::DSA, [1024, 2048, 3072], %w(ssh-dss)),
-      Technology.new(:ecdsa, OpenSSL::PKey::EC, [256, 384, 521], %w(ecdsa-sha2-nistp256 ecdsa-sha2-nistp384 ecdsa-sha2-nistp521)),
-      Technology.new(:ed25519, Net::SSH::Authentication::ED25519::PubKey, [256], %w(ssh-ed25519))
+      Technology.new(:rsa, SSHData::PublicKey::RSA, [1024, 2048, 3072, 4096], %w(ssh-rsa)),
+      Technology.new(:dsa, SSHData::PublicKey::DSA, [1024, 2048, 3072], %w(ssh-dss)),
+      Technology.new(:ecdsa, SSHData::PublicKey::ECDSA, [256, 384, 521], %w(ecdsa-sha2-nistp256 ecdsa-sha2-nistp384 ecdsa-sha2-nistp521)),
+      Technology.new(:ed25519, SSHData::PublicKey::ED25519, [256], %w(ssh-ed25519))
     ].freeze
 
     def self.technology(name)
@@ -18,7 +18,7 @@ module Gitlab
     end
 
     def self.technology_for_key(key)
-      TECHNOLOGIES.find { |tech| key.is_a?(tech.key_class) }
+      TECHNOLOGIES.find { |tech| key.instance_of?(tech.key_class) }
     end
 
     def self.supported_types
@@ -45,7 +45,7 @@ module Gitlab
       parts.each_with_object(+"#{ssh_type} ").with_index do |(part, content), index|
         content << part
 
-        if Gitlab::SSHPublicKey.new(content).valid?
+        if self.new(content).valid?
           break [content, parts[index + 1]].compact.join(' ') # Add the comment part if present
         elsif parts.size == index + 1 # return original content if we've reached the last element
           break key_content
@@ -55,41 +55,49 @@ module Gitlab
 
     attr_reader :key_text, :key
 
-    # Unqualified MD5 fingerprint for compatibility
-    delegate :fingerprint, to: :key, allow_nil: true
-
     def initialize(key_text)
       @key_text = key_text
 
+      # We need to strip options to parse key with options or in known_hosts
+      # format. See https://man.openbsd.org/sshd#AUTHORIZED_KEYS_FILE_FORMAT
+      # and https://man.openbsd.org/sshd#SSH_KNOWN_HOSTS_FILE_FORMAT
+      key_text_without_options = @key_text.to_s.match(/(\A|\s)(#{self.class.supported_algorithms.join('|')}).*/).to_s
+
       @key =
         begin
-          Net::SSH::KeyFactory.load_data_public_key(key_text)
-        rescue StandardError, NotImplementedError
+          SSHData::PublicKey.parse_openssh(key_text_without_options)
+        rescue SSHData::DecodeError
         end
     end
 
     def valid?
-      SSHKey.valid_ssh_public_key?(key_text)
+      key.present?
     end
 
     def type
-      technology.name if key.present?
+      technology.name if valid?
+    end
+
+    def fingerprint
+      key.fingerprint(md5: true) if valid?
+    end
+
+    def fingerprint_sha256
+      'SHA256:' + key.fingerprint(md5: false) if valid?
     end
 
     def bits
-      return if key.blank?
+      return unless valid?
 
       case type
       when :rsa
-        key.n&.num_bits
+        key.n.num_bits
       when :dsa
-        key.p&.num_bits
+        key.p.num_bits
       when :ecdsa
-        key.group.order&.num_bits
+        key.openssl.group.order.num_bits
       when :ed25519
         256
-      else
-        raise "Unsupported key type: #{type}"
       end
     end
 
@@ -97,7 +105,11 @@ module Gitlab
 
     def technology
       @technology ||=
-        self.class.technology_for_key(key) || raise("Unsupported key type: #{key.class}")
+        self.class.technology_for_key(key) || raise_unsupported_key_type_error
+    end
+
+    def raise_unsupported_key_type_error
+      raise("Unsupported key type: #{key.class}")
     end
   end
 end

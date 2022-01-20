@@ -55,6 +55,14 @@ RSpec.describe X509CertificateCredentialsValidator do
       expect(record.errors[:private_key]).to include('could not read private key, is the passphrase correct?')
     end
 
+    it 'adds an error when private key does not match certificate' do
+      record.private_key = SSHData::PrivateKey::RSA.generate(4096).openssl.to_pem
+
+      validator.validate(record)
+
+      expect(record.errors[:private_key]).to include('private key does not match certificate.')
+    end
+
     it 'has no error when the private key is correct' do
       record.private_key = pkey_data
 
@@ -85,7 +93,7 @@ RSpec.describe X509CertificateCredentialsValidator do
 
       validator.validate(record)
 
-      expect(record.errors[:private_key]).not_to be_empty
+      expect(record.errors[:private_key]).to include('could not read private key, is the passphrase correct?')
     end
   end
 end

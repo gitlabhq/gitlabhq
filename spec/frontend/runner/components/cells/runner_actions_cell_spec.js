@@ -1,7 +1,7 @@
-import { createLocalVue, shallowMount } from '@vue/test-utils';
+import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
-import { extendedWrapper } from 'helpers/vue_test_utils_helper';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import { createAlert } from '~/flash';
@@ -21,8 +21,7 @@ const mockRunner = runnersData.data.runners.nodes[0];
 const getRunnersQueryName = getRunnersQuery.definitions[0].name.value;
 const getGroupRunnersQueryName = getGroupRunnersQuery.definitions[0].name.value;
 
-const localVue = createLocalVue();
-localVue.use(VueApollo);
+Vue.use(VueApollo);
 
 jest.mock('~/flash');
 jest.mock('~/runner/sentry_utils');
@@ -41,35 +40,32 @@ describe('RunnerTypeCell', () => {
   const getTooltip = (w) => getBinding(w.element, 'gl-tooltip')?.value;
 
   const createComponent = (runner = {}, options) => {
-    wrapper = extendedWrapper(
-      shallowMount(RunnerActionCell, {
-        propsData: {
-          runner: {
-            id: mockRunner.id,
-            shortSha: mockRunner.shortSha,
-            editAdminUrl: mockRunner.editAdminUrl,
-            userPermissions: mockRunner.userPermissions,
-            active: mockRunner.active,
-            ...runner,
-          },
+    wrapper = shallowMountExtended(RunnerActionCell, {
+      propsData: {
+        runner: {
+          id: mockRunner.id,
+          shortSha: mockRunner.shortSha,
+          editAdminUrl: mockRunner.editAdminUrl,
+          userPermissions: mockRunner.userPermissions,
+          active: mockRunner.active,
+          ...runner,
         },
-        localVue,
-        apolloProvider: createMockApollo([
-          [runnerDeleteMutation, runnerDeleteMutationHandler],
-          [runnerActionsUpdateMutation, runnerActionsUpdateMutationHandler],
-        ]),
-        directives: {
-          GlTooltip: createMockDirective(),
-          GlModal: createMockDirective(),
+      },
+      apolloProvider: createMockApollo([
+        [runnerDeleteMutation, runnerDeleteMutationHandler],
+        [runnerActionsUpdateMutation, runnerActionsUpdateMutationHandler],
+      ]),
+      directives: {
+        GlTooltip: createMockDirective(),
+        GlModal: createMockDirective(),
+      },
+      mocks: {
+        $toast: {
+          show: mockToastShow,
         },
-        mocks: {
-          $toast: {
-            show: mockToastShow,
-          },
-        },
-        ...options,
-      }),
-    );
+      },
+      ...options,
+    });
   };
 
   beforeEach(() => {

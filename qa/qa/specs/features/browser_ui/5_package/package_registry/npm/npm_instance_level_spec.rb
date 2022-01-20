@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Package Registry', :orchestrated, :packages, :object_storage do
+  RSpec.describe 'Package Registry', :orchestrated, :reliable, :packages, :object_storage do
     describe 'npm instance level endpoint' do
       using RSpec::Parameterized::TableSyntax
       include Runtime::Fixtures

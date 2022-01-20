@@ -3542,7 +3542,7 @@ msgstr ""
 msgid "Allow this key to push to this repository"
 msgstr ""
 
-msgid "Allow this secondary node to replicate content on Object Storage"
+msgid "Allow this secondary site to replicate content on Object Storage"
 msgstr ""
 
 msgid "Allow use of licensed EE features"
@@ -6533,6 +6533,9 @@ msgstr ""
 msgid "Cannot be merged automatically"
 msgstr ""
 
+msgid "Cannot create the abuse report. The reported user was invalid. Please try again or contact support."
+msgstr ""
+
 msgid "Cannot create the abuse report. The user has been deleted."
 msgstr ""
 
@@ -7518,7 +7521,7 @@ msgstr ""
 msgid "ClusterAgents|%{name} successfully deleted"
 msgstr ""
 
-msgid "ClusterAgents|%{number} of %{total} agents"
+msgid "ClusterAgents|%{number} of %{total} Agents"
 msgstr ""
 
 msgid "ClusterAgents|%{number} of %{total} clusters connected through cluster certificates"
@@ -7590,10 +7593,10 @@ msgstr ""
 msgid "ClusterAgents|Connect existing cluster"
 msgstr ""
 
-msgid "ClusterAgents|Connect with a certificate"
+msgid "ClusterAgents|Connect with Agent"
 msgstr ""
 
-msgid "ClusterAgents|Connect with the Agent"
+msgid "ClusterAgents|Connect with a certificate"
 msgstr ""
 
 msgid "ClusterAgents|Connect with the GitLab Agent"
@@ -7656,7 +7659,7 @@ msgstr ""
 msgid "ClusterAgents|How to register an agent?"
 msgstr ""
 
-msgid "ClusterAgents|Install a new agent"
+msgid "ClusterAgents|Install new Agent"
 msgstr ""
 
 msgid "ClusterAgents|Last connected %{timeAgo}."
@@ -7683,7 +7686,7 @@ msgstr ""
 msgid "ClusterAgents|Never connected"
 msgstr ""
 
-msgid "ClusterAgents|No agents"
+msgid "ClusterAgents|No Agents"
 msgstr ""
 
 msgid "ClusterAgents|No clusters connected through cluster certificates"
@@ -11994,6 +11997,9 @@ msgstr ""
 msgid "Deployment|Created"
 msgstr ""
 
+msgid "Deployment|Deployment ID"
+msgstr ""
+
 msgid "Deployment|Failed"
 msgstr ""
 
@@ -15842,12 +15848,6 @@ msgstr ""
 msgid "Geo|No available replication slots"
 msgstr ""
 
-msgid "Geo|Node name can't be blank"
-msgstr ""
-
-msgid "Geo|Node name should be between 1 and 255 characters"
-msgstr ""
-
 msgid "Geo|Not synced yet"
 msgstr ""
 
@@ -15902,13 +15902,13 @@ msgstr ""
 msgid "Geo|Remove entry"
 msgstr ""
 
-msgid "Geo|Remove node"
+msgid "Geo|Remove site"
 msgstr ""
 
 msgid "Geo|Remove tracking database entry"
 msgstr ""
 
-msgid "Geo|Removing a Geo node stops the synchronization to and from that node. Are you sure?"
+msgid "Geo|Removing a Geo site stops the synchronization to and from that site. Are you sure?"
 msgstr ""
 
 msgid "Geo|Replicated data is verified with the secondary site(s) using checksums"
@@ -15971,6 +15971,12 @@ msgstr ""
 msgid "Geo|Selective (%{syncLabel})"
 msgstr ""
 
+msgid "Geo|Site name can't be blank"
+msgstr ""
+
+msgid "Geo|Site name should be between 1 and 255 characters"
+msgstr ""
+
 msgid "Geo|Site's status was updated %{timeAgo}."
 msgstr ""
 
@@ -16007,10 +16013,10 @@ msgstr ""
 msgid "Geo|There are no %{replicable_type} to show"
 msgstr ""
 
-msgid "Geo|There was an error deleting the Geo Node"
+msgid "Geo|There was an error deleting the Geo Site"
 msgstr ""
 
-msgid "Geo|There was an error fetching the Geo Nodes"
+msgid "Geo|There was an error fetching the Geo Sites"
 msgstr ""
 
 msgid "Geo|This will resync all %{replicableType}. It may take some time to complete. Are you sure you want to continue?"
@@ -29445,7 +29451,7 @@ msgstr ""
 msgid "RegistrationFeatures|Enable Service Ping and register for this feature."
 msgstr ""
 
-msgid "RegistrationFeatures|Read more about the %{linkStart}%{label}%{linkEnd}."
+msgid "RegistrationFeatures|Read more about the %{link_start}Registration Features Program%{link_end}."
 msgstr ""
 
 msgid "RegistrationFeatures|Registration Features Program"
@@ -30209,6 +30215,9 @@ msgid "Repository must contain at least 1 file."
 msgstr ""
 
 msgid "Repository size is above the limit."
+msgstr ""
+
+msgid "Repository size limit (MB)"
 msgstr ""
 
 msgid "Repository storage"
@@ -36140,7 +36149,7 @@ msgstr ""
 msgid "There was an error fetching the Geo Settings"
 msgstr ""
 
-msgid "There was an error fetching the Node's Groups"
+msgid "There was an error fetching the Sites's Groups"
 msgstr ""
 
 msgid "There was an error fetching the deploy freezes."
@@ -36191,7 +36200,7 @@ msgstr ""
 msgid "There was an error retrieving the Jira users."
 msgstr ""
 
-msgid "There was an error saving this Geo Node."
+msgid "There was an error saving this Geo Site"
 msgstr ""
 
 msgid "There was an error saving your changes."

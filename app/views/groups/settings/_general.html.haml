@@ -18,6 +18,7 @@
         = f.text_area :description, class: 'form-control', rows: 3, maxlength: 250
         .form-text.text-muted= _('Optional.')
 
+  = render 'shared/repository_size_limit_setting_registration_features_cta', form: f
   = render_if_exists 'shared/repository_size_limit_setting', form: f, type: :group
 
   .form-group.gl-mt-3.gl-mb-6

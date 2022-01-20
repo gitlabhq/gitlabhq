@@ -139,4 +139,26 @@ RSpec.describe 'projects/edit' do
       end
     end
   end
+
+  describe 'prompt user about registration features' do
+    context 'when service ping is enabled' do
+      before do
+        stub_application_setting(usage_ping_enabled: true)
+      end
+
+      it_behaves_like 'does not render registration features prompt', :project_disabled_repository_size_limit
+    end
+
+    context 'with no license and service ping disabled' do
+      before do
+        stub_application_setting(usage_ping_enabled: false)
+
+        if Gitlab.ee?
+          allow(License).to receive(:current).and_return(nil)
+        end
+      end
+
+      it_behaves_like 'renders registration features prompt', :project_disabled_repository_size_limit
+    end
+  end
 end

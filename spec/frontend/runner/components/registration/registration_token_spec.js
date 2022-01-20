@@ -1,7 +1,7 @@
 import { nextTick } from 'vue';
 import { GlToast } from '@gitlab/ui';
-import { createLocalVue, shallowMount } from '@vue/test-utils';
-import { extendedWrapper } from 'helpers/vue_test_utils_helper';
+import { createLocalVue } from '@vue/test-utils';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import RegistrationToken from '~/runner/components/registration/registration_token.vue';
 import ModalCopyButton from '~/vue_shared/components/modal_copy_button.vue';
 
@@ -25,15 +25,13 @@ describe('RegistrationToken', () => {
   const createComponent = ({ props = {}, withGlToast = true } = {}) => {
     const localVue = withGlToast ? vueWithGlToast() : undefined;
 
-    wrapper = extendedWrapper(
-      shallowMount(RegistrationToken, {
-        propsData: {
-          value: mockToken,
-          ...props,
-        },
-        localVue,
-      }),
-    );
+    wrapper = shallowMountExtended(RegistrationToken, {
+      propsData: {
+        value: mockToken,
+        ...props,
+      },
+      localVue,
+    });
 
     showToast = wrapper.vm.$toast ? jest.spyOn(wrapper.vm.$toast, 'show') : null;
   };

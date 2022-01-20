@@ -2598,6 +2598,45 @@ RSpec.describe QuickActions::InterpretService do
         expect(service.commands_executed_count).to eq(3)
       end
     end
+
+    describe 'crm commands' do
+      let(:add_contacts) { '/add_contacts' }
+      let(:remove_contacts) { '/remove_contacts' }
+
+      before_all do
+        group.add_developer(developer)
+      end
+
+      context 'when group has no contacts' do
+        it '/add_contacts is not available' do
+          _, explanations = service.explain(add_contacts, issue)
+
+          expect(explanations).to be_empty
+        end
+
+        it '/remove_contacts is not available' do
+          _, explanations = service.explain(remove_contacts, issue)
+
+          expect(explanations).to be_empty
+        end
+      end
+
+      context 'when group has contacts' do
+        let!(:contact) { create(:contact, group: group) }
+
+        it '/add_contacts is available' do
+          _, explanations = service.explain(add_contacts, issue)
+
+          expect(explanations).to contain_exactly("Add customer relation contact(s).")
+        end
+
+        it '/remove_contacts is available' do
+          _, explanations = service.explain(remove_contacts, issue)
+
+          expect(explanations).to contain_exactly("Remove customer relation contact(s).")
+        end
+      end
+    end
   end
 
   describe '#available_commands' do

@@ -39,7 +39,7 @@ They are frequently updated, and everyone should make sure they are aware of the
 - [ ] If the deprecation is a [breaking change](https://about.gitlab.com/handbook/product/gitlab-the-product/#breaking-change), add label `breaking change`.
 - [ ] Follow the process to [create a deprecation YAML file](https://about.gitlab.com/handbook/marketing/blog/release-posts/#creating-a-deprecation-entry).
 - [ ] Add reviewers by the 10th.
-- [ ] When ready to be merged and not later than the 15th, add the ~ready label and @ message the TW for final review and merge.
+- [ ] When ready to be merged and not later than the 15th, add the `~ready` label and @ message the TW for final review and merge.
 
 ## Reviewers
 
@@ -68,7 +68,7 @@ yourself as a reviewer if it's not ready for merge yet.
 - [ ] Title:
   - Length limit: 7 words (not including articles or prepositions).
   - Capitalization: ensure the title is [sentence cased](https://design.gitlab.com/content/punctuation#case).
-  - No Markdown `` `code` `` formatting in the title, as it doesn't render correctly in the release post.
+  - Rewrite to exclude the words `deprecation`, `deprecate`, `removal`, and `remove` if necessary.
 - [ ] Consistency:
   - Ensure that all resources (docs, deprecation, etc.) refer to the feature with the same term / feature name.
 - [ ] Content:
@@ -98,4 +98,4 @@ must be updated before this MR is merged:
 1. Commit the updated file and push the changes.
 1. Set the MR to merge when the pipeline succeeds (or merge if the pipeline is already complete).
 
-If you have trouble running the rake task, check the [troubleshooting steps](https://about.gitlab.com/handbook/marketing/blog/release-posts/#deprecation-rake-task-troubleshooting).
+If you have trouble running the Rake task, check the [troubleshooting steps](https://about.gitlab.com/handbook/marketing/blog/release-posts/#deprecation-rake-task-troubleshooting).

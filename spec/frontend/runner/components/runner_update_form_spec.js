@@ -1,9 +1,8 @@
+import Vue, { nextTick } from 'vue';
 import { GlForm } from '@gitlab/ui';
-import { createLocalVue, mount } from '@vue/test-utils';
-import { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
-import { extendedWrapper } from 'helpers/vue_test_utils_helper';
+import { mountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert, VARIANT_SUCCESS } from '~/flash';
 import RunnerUpdateForm from '~/runner/components/runner_update_form.vue';
@@ -23,8 +22,7 @@ jest.mock('~/runner/sentry_utils');
 
 const mockRunner = runnerData.data.runner;
 
-const localVue = createLocalVue();
-localVue.use(VueApollo);
+Vue.use(VueApollo);
 
 describe('RunnerUpdateForm', () => {
   let wrapper;
@@ -61,16 +59,13 @@ describe('RunnerUpdateForm', () => {
   });
 
   const createComponent = ({ props } = {}) => {
-    wrapper = extendedWrapper(
-      mount(RunnerUpdateForm, {
-        localVue,
-        propsData: {
-          runner: mockRunner,
-          ...props,
-        },
-        apolloProvider: createMockApollo([[runnerUpdateMutation, runnerUpdateHandler]]),
-      }),
-    );
+    wrapper = mountExtended(RunnerUpdateForm, {
+      propsData: {
+        runner: mockRunner,
+        ...props,
+      },
+      apolloProvider: createMockApollo([[runnerUpdateMutation, runnerUpdateHandler]]),
+    });
   };
 
   const expectToHaveSubmittedRunnerContaining = (submittedRunner) => {

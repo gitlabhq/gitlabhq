@@ -335,7 +335,9 @@ rspec fast_spec_helper:
     - .rspec-base-pg12
     - .rails:rules:ee-and-foss-fast_spec_helper
   script:
-    - bin/rspec spec/fast_spec_helper.rb
+    - fast_spec_helper_specs=$(git grep -l -E '^require.*fast_spec_helper')
+    # Load fast_spec_helper as well just in case there are no specs available.
+    - bin/rspec --dry-run spec/fast_spec_helper.rb $fast_spec_helper_specs
 
 rspec fast_spec_helper minimal:
   extends:

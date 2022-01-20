@@ -98,4 +98,31 @@ RSpec.describe CustomerRelations::Contact, type: :model do
       expect { described_class.find_ids_by_emails(group, Array(0..too_many_emails)) }.to raise_error(ArgumentError)
     end
   end
+
+  describe '#self.exists_for_group?' do
+    let(:group) { create(:group) }
+    let(:subgroup) { create(:group, parent: group) }
+
+    context 'with no contacts in group or parent' do
+      it 'returns false' do
+        expect(described_class.exists_for_group?(subgroup)).to be_falsey
+      end
+    end
+
+    context 'with contacts in group' do
+      it 'returns true' do
+        create(:contact, group: subgroup)
+
+        expect(described_class.exists_for_group?(subgroup)).to be_truthy
+      end
+    end
+
+    context 'with contacts in parent' do
+      it 'returns true' do
+        create(:contact, group: group)
+
+        expect(described_class.exists_for_group?(subgroup)).to be_truthy
+      end
+    end
+  end
 end

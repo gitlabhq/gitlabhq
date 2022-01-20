@@ -4,12 +4,10 @@ import (
 	"bytes"
 	"context"
 	"fmt"
-	"io"
 	"io/ioutil"
 	"mime/multipart"
 	"net/http"
 	"net/http/httptest"
-	"net/textproto"
 	"os"
 	"regexp"
 	"strconv"
@@ -383,99 +381,6 @@ func TestInvalidFileNames(t *testing.T) {
 		HandleFileUploads(response, httpRequest, nilHandler, apiResponse, &SavedFileTracker{Request: httpRequest}, opts)
 		require.Equal(t, testCase.code, response.Code)
 		require.Equal(t, testCase.expectedPrefix, opts.TempFilePrefix)
-	}
-}
-
-func TestContentDisposition(t *testing.T) {
-	testhelper.ConfigureSecret()
-
-	tempPath, err := ioutil.TempDir("", "uploads")
-	require.NoError(t, err)
-	defer os.RemoveAll(tempPath)
-
-	tests := []struct {
-		desc               string
-		contentDisposition string
-		code               int
-		body               string
-	}{
-		{
-			desc:               "empty header",
-			contentDisposition: "",
-			code:               200,
-			body:               "",
-		},
-		{
-			desc:               "without filename",
-			contentDisposition: `form-data; name="filename"`,
-			code:               200,
-			body:               "",
-		},
-		{
-			desc:               "with filename",
-			contentDisposition: `form-data; name="file"; filename=foobar`,
-			code:               200,
-			body:               "",
-		},
-		{
-			desc:               "with filename* supported charset",
-			contentDisposition: `form-data; name="file"; filename*=UTF-8''foobar`,
-			code:               200,
-			body:               "",
-		},
-		{
-			desc:               "with both filename and filename* supported charset",
-			contentDisposition: `form-data; name="file"; filename=foobar; filename*=UTF-8''foobar`,
-			code:               200,
-			body:               "",
-		},
-		{
-			desc:               "with filename and filename* unsupported charset",
-			contentDisposition: `form-data; name="file"; filename=foobar; filename*=UTF-16''foobar`,
-			code:               200,
-			body:               "",
-		},
-		{
-			desc:               "unsupported charset",
-			contentDisposition: `form-data; name="file"; filename*=UTF-16''foobar`,
-			code:               400,
-			body:               ErrUnexpectedFilePart.Error() + "\n",
-		},
-	}
-
-	for _, testCase := range tests {
-		t.Run(testCase.desc, func(t *testing.T) {
-			// Create custom Content-Disposition with filename* and charset
-			// Example: filename*=UTF-8''application.log
-			h := make(textproto.MIMEHeader)
-
-			h.Set("Content-Disposition", testCase.contentDisposition)
-			h.Set("Content-Type", "application/octet-stream")
-
-			buffer := &bytes.Buffer{}
-			writer := multipart.NewWriter(buffer)
-			file, err := writer.CreatePart(h)
-			require.NoError(t, err)
-			fmt.Fprint(file, "test")
-			writer.Close()
-
-			httpRequest := httptest.NewRequest("POST", "/example", buffer)
-			httpRequest.Header.Set("Content-Type", writer.FormDataContentType())
-
-			response := httptest.NewRecorder()
-			apiResponse := &api.Response{TempPath: tempPath}
-			preparer := &DefaultPreparer{}
-			opts, _, err := preparer.Prepare(apiResponse)
-			require.NoError(t, err)
-
-			HandleFileUploads(response, httpRequest, nilHandler, apiResponse, &SavedFileTracker{Request: httpRequest}, opts)
-
-			body, err := io.ReadAll(response.Body)
-			require.NoError(t, err)
-
-			require.Equal(t, testCase.code, response.Code)
-			require.Equal(t, testCase.body, string(body))
-		})
 	}
 }
 

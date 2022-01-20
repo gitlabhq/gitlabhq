@@ -176,8 +176,8 @@ export const I18N_CLUSTERS_EMPTY_STATE = {
 
 export const AGENT_CARD_INFO = {
   tabName: 'agent',
-  title: sprintf(s__('ClusterAgents|%{number} of %{total} agents')),
-  emptyTitle: s__('ClusterAgents|No agents'),
+  title: sprintf(s__('ClusterAgents|%{number} of %{total} Agents')),
+  emptyTitle: s__('ClusterAgents|No Agents'),
   tooltip: {
     label: s__('ClusterAgents|Recommended'),
     title: s__('ClusterAgents|GitLab Agent'),
@@ -188,7 +188,7 @@ export const AGENT_CARD_INFO = {
     ),
     link: helpPagePath('user/clusters/agent/index'),
   },
-  actionText: s__('ClusterAgents|Install a new agent'),
+  actionText: s__('ClusterAgents|Install new Agent'),
   footerText: sprintf(s__('ClusterAgents|View all %{number} agents')),
 };
 
@@ -226,7 +226,7 @@ export const CLUSTERS_TABS = [
 export const CLUSTERS_ACTIONS = {
   actionsButton: s__('ClusterAgents|Actions'),
   createNewCluster: s__('ClusterAgents|Create a new cluster'),
-  connectWithAgent: s__('ClusterAgents|Connect with the Agent'),
+  connectWithAgent: s__('ClusterAgents|Connect with Agent'),
   connectExistingCluster: s__('ClusterAgents|Connect with a certificate'),
 };
 

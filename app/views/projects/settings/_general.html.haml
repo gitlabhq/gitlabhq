@@ -27,6 +27,7 @@
 
   .row= render_if_exists 'projects/classification_policy_settings', f: f
 
+  = render 'shared/repository_size_limit_setting_registration_features_cta', form: f
   = render_if_exists 'shared/repository_size_limit_setting', form: f, type: :project
 
   .form-group.gl-mt-3.gl-mb-3

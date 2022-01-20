@@ -130,7 +130,7 @@ class Key < ApplicationRecord
     return unless public_key.valid?
 
     self.fingerprint_md5 = public_key.fingerprint
-    self.fingerprint_sha256 = public_key.fingerprint("SHA256").gsub("SHA256:", "")
+    self.fingerprint_sha256 = public_key.fingerprint_sha256.gsub("SHA256:", "")
   end
 
   def key_meets_restrictions

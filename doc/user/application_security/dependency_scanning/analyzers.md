@@ -33,7 +33,7 @@ Dependency Scanning is pre-configured with a set of **default images** that are
 maintained by GitLab, but users can also integrate their own **custom images**.
 
 WARNING:
-The `bundler-audit` analyzer is deprecated and will be removed in GitLab 15.0 since it duplicates the functionality of the `gemnasium` analyzer. For more information, read the [deprecation announcement](../../../update/deprecations.md#deprecation-of-bundler-audit-dependency-scanning-tool).
+The `bundler-audit` analyzer is deprecated and will be removed in GitLab 15.0 since it duplicates the functionality of the `gemnasium` analyzer. For more information, read the [deprecation announcement](../../../update/deprecations.md#bundler-audit-dependency-scanning-tool).
 
 ## Official default analyzers
 

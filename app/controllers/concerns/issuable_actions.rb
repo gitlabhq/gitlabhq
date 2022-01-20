@@ -17,7 +17,10 @@ module IssuableActions
   def show
     respond_to do |format|
       format.html do
-        @show_crm_contacts = issuable.is_a?(Issue) && can?(current_user, :read_crm_contact, issuable.project.group) # rubocop:disable Gitlab/ModuleWithInstanceVariables
+        @show_crm_contacts = issuable.is_a?(Issue) && # rubocop:disable Gitlab/ModuleWithInstanceVariables
+          can?(current_user, :read_crm_contact, issuable.project.group) &&
+          CustomerRelations::Contact.exists_for_group?(issuable.project.group)
+
         @issuable_sidebar = serializer.represent(issuable, serializer: 'sidebar') # rubocop:disable Gitlab/ModuleWithInstanceVariables
         render 'show'
       end

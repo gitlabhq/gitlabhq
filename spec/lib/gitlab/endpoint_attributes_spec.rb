@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
 require 'fast_spec_helper'
-require_relative "../../support/matchers/be_request_urgency"
-require_relative "../../../lib/gitlab/endpoint_attributes"
+require_relative '../../support/matchers/be_request_urgency'
+require_relative '../../../lib/gitlab/endpoint_attributes/config'
+require_relative '../../../lib/gitlab/endpoint_attributes'
 
 RSpec.describe Gitlab::EndpointAttributes do
   let(:base_controller) do

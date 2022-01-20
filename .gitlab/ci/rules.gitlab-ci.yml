@@ -940,6 +940,8 @@
     - <<: *if-merge-request
       changes: *core-backend-patterns
     - <<: *if-merge-request
+      changes: *workhorse-patterns
+    - <<: *if-merge-request
       changes: *ci-patterns
     - <<: *if-automated-merge-request
       changes: *code-backstage-patterns
@@ -961,6 +963,9 @@
       when: never
     - <<: *if-merge-request
       changes: *core-backend-patterns
+      when: never
+    - <<: *if-merge-request
+      changes: *workhorse-patterns
       when: never
     - <<: *if-merge-request
       changes: *ci-patterns
@@ -1132,6 +1137,8 @@
     - <<: *if-merge-request
       changes: *core-backend-patterns
     - <<: *if-merge-request
+      changes: *workhorse-patterns
+    - <<: *if-merge-request
       changes: *ci-patterns
     - <<: *if-automated-merge-request
       changes: *code-backstage-patterns
@@ -1155,6 +1162,9 @@
       when: never
     - <<: *if-merge-request
       changes: *core-backend-patterns
+      when: never
+    - <<: *if-merge-request
+      changes: *workhorse-patterns
       when: never
     - <<: *if-merge-request
       changes: *ci-patterns
@@ -1284,6 +1294,8 @@
     - <<: *if-merge-request
       changes: *core-backend-patterns
     - <<: *if-merge-request
+      changes: *workhorse-patterns
+    - <<: *if-merge-request
       changes: *ci-patterns
     - <<: *if-automated-merge-request
       changes: *code-backstage-patterns
@@ -1306,6 +1318,9 @@
       when: never
     - <<: *if-merge-request
       changes: *core-backend-patterns
+      when: never
+    - <<: *if-merge-request
+      changes: *workhorse-patterns
       when: never
     - <<: *if-merge-request
       changes: *ci-patterns

@@ -5,8 +5,8 @@ require 'spec_helper'
 RSpec.describe Gitlab::Config::Entry::Factory do
   describe '#create!' do
     before do
-      stub_const('Script', Class.new(Gitlab::Config::Entry::Node))
-      Script.class_eval do
+      stub_const('Commands', Class.new(Gitlab::Config::Entry::Node))
+      Commands.class_eval do
         include Gitlab::Config::Entry::Validatable
 
         validations do
@@ -15,7 +15,7 @@ RSpec.describe Gitlab::Config::Entry::Factory do
       end
     end
 
-    let(:entry) { Script }
+    let(:entry) { Commands }
     let(:factory) { described_class.new(entry) }
 
     context 'when setting a concrete value' do

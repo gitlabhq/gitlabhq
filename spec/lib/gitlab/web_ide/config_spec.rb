@@ -56,7 +56,7 @@ RSpec.describe Gitlab::WebIde::Config do
     end
 
     context 'when config logic is incorrect' do
-      let(:yml) { 'terminal: { before_script: "ls" }' }
+      let(:yml) { 'terminal: { before_script: 123 }' }
 
       describe '#valid?' do
         it 'is not valid' do

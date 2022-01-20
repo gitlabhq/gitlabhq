@@ -154,7 +154,7 @@ RSpec.describe API::Lint do
       end
 
       context 'with valid .gitlab-ci.yaml using deprecated keywords' do
-        let(:yaml_content) { { job: { script: 'ls' }, types: ['test'] }.to_yaml }
+        let(:yaml_content) { { job: { script: 'ls', type: 'test' }, types: ['test'] }.to_yaml }
 
         it 'passes validation but returns warnings' do
           post api('/ci/lint', api_user), params: { content: yaml_content }

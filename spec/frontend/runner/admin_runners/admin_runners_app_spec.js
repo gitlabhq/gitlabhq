@@ -1,9 +1,13 @@
+import Vue from 'vue';
 import { GlLink } from '@gitlab/ui';
-import { createLocalVue, mount, shallowMount } from '@vue/test-utils';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import setWindowLocation from 'helpers/set_window_location_helper';
-import { extendedWrapper } from 'helpers/vue_test_utils_helper';
+import {
+  extendedWrapper,
+  shallowMountExtended,
+  mountExtended,
+} from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/flash';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
@@ -46,8 +50,7 @@ jest.mock('~/lib/utils/url_utility', () => ({
   updateHistory: jest.fn(),
 }));
 
-const localVue = createLocalVue();
-localVue.use(VueApollo);
+Vue.use(VueApollo);
 
 describe('AdminRunnersApp', () => {
   let wrapper;
@@ -65,22 +68,19 @@ describe('AdminRunnersApp', () => {
   const findRunnerFilteredSearchBar = () => wrapper.findComponent(RunnerFilteredSearchBar);
   const findFilteredSearch = () => wrapper.findComponent(FilteredSearch);
 
-  const createComponent = ({ props = {}, mountFn = shallowMount } = {}) => {
+  const createComponent = ({ props = {}, mountFn = shallowMountExtended } = {}) => {
     const handlers = [
       [getRunnersQuery, mockRunnersQuery],
       [getRunnersCountQuery, mockRunnersCountQuery],
     ];
 
-    wrapper = extendedWrapper(
-      mountFn(AdminRunnersApp, {
-        localVue,
-        apolloProvider: createMockApollo(handlers),
-        propsData: {
-          registrationToken: mockRegistrationToken,
-          ...props,
-        },
-      }),
-    );
+    wrapper = mountFn(AdminRunnersApp, {
+      apolloProvider: createMockApollo(handlers),
+      propsData: {
+        registrationToken: mockRegistrationToken,
+        ...props,
+      },
+    });
   };
 
   beforeEach(async () => {
@@ -98,7 +98,7 @@ describe('AdminRunnersApp', () => {
   });
 
   it('shows total runner counts', async () => {
-    createComponent({ mountFn: mount });
+    createComponent({ mountFn: mountExtended });
 
     await waitForPromises();
 
@@ -129,7 +129,7 @@ describe('AdminRunnersApp', () => {
       return Promise.resolve({ data: { runners: { count } } });
     });
 
-    createComponent({ mountFn: mount });
+    createComponent({ mountFn: mountExtended });
     await waitForPromises();
 
     expect(findRunnerTypeTabs().text()).toMatchInterpolatedText(
@@ -157,7 +157,7 @@ describe('AdminRunnersApp', () => {
       return Promise.resolve({ data: { runners: { count } } });
     });
 
-    createComponent({ mountFn: mount });
+    createComponent({ mountFn: mountExtended });
     await waitForPromises();
 
     expect(findRunnerTypeTabs().text()).toMatchInterpolatedText(
@@ -175,7 +175,7 @@ describe('AdminRunnersApp', () => {
   });
 
   it('runner item links to the runner admin page', async () => {
-    createComponent({ mountFn: mount });
+    createComponent({ mountFn: mountExtended });
 
     await waitForPromises();
 
@@ -198,7 +198,7 @@ describe('AdminRunnersApp', () => {
   });
 
   it('sets tokens in the filtered search', () => {
-    createComponent({ mountFn: mount });
+    createComponent({ mountFn: mountExtended });
 
     expect(findFilteredSearch().props('tokens')).toEqual([
       expect.objectContaining({
@@ -310,7 +310,7 @@ describe('AdminRunnersApp', () => {
     beforeEach(() => {
       mockRunnersQuery = jest.fn().mockResolvedValue(runnersDataPaginated);
 
-      createComponent({ mountFn: mount });
+      createComponent({ mountFn: mountExtended });
     });
 
     it('more pages can be selected', () => {

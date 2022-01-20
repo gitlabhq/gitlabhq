@@ -33,6 +33,12 @@ class CustomerRelations::Contact < ApplicationRecord
       .pluck(:id)
   end
 
+  def self.exists_for_group?(group)
+    return false unless group
+
+    exists?(group_id: group.self_and_ancestor_ids)
+  end
+
   private
 
   def validate_email_format

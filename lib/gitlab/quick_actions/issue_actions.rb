@@ -290,7 +290,8 @@ module Gitlab
         params 'contact@example.com person@example.org'
         types Issue
         condition do
-          current_user.can?(:set_issue_crm_contacts, quick_action_target)
+          current_user.can?(:set_issue_crm_contacts, quick_action_target) &&
+            CustomerRelations::Contact.exists_for_group?(quick_action_target.project.group)
         end
         execution_message do
           _('One or more contacts were successfully added.')
@@ -304,7 +305,8 @@ module Gitlab
         params 'contact@example.com person@example.org'
         types Issue
         condition do
-          current_user.can?(:set_issue_crm_contacts, quick_action_target)
+          current_user.can?(:set_issue_crm_contacts, quick_action_target) &&
+            CustomerRelations::Contact.exists_for_group?(quick_action_target.project.group)
         end
         execution_message do
           _('One or more contacts were successfully removed.')

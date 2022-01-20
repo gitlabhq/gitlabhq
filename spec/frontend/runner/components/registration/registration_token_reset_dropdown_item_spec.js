@@ -1,7 +1,7 @@
+import Vue, { nextTick } from 'vue';
 import { GlDropdownItem, GlLoadingIcon, GlToast, GlModal } from '@gitlab/ui';
-import { createLocalVue, shallowMount } from '@vue/test-utils';
-import { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/flash';
@@ -14,9 +14,8 @@ import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 jest.mock('~/flash');
 jest.mock('~/runner/sentry_utils');
 
-const localVue = createLocalVue();
-localVue.use(VueApollo);
-localVue.use(GlToast);
+Vue.use(VueApollo);
+Vue.use(GlToast);
 
 const mockNewToken = 'NEW_TOKEN';
 const modalID = 'token-reset-modal';
@@ -33,8 +32,7 @@ describe('RegistrationTokenResetDropdownItem', () => {
   const clickSubmit = () => findModal().vm.$emit('primary', mockEvent);
 
   const createComponent = ({ props, provide = {} } = {}) => {
-    wrapper = shallowMount(RegistrationTokenResetDropdownItem, {
-      localVue,
+    wrapper = shallowMountExtended(RegistrationTokenResetDropdownItem, {
       provide,
       propsData: {
         type: INSTANCE_TYPE,

@@ -1,6 +1,6 @@
-import { nextTick } from 'vue';
+import Vue, { nextTick } from 'vue';
 import { GlLink } from '@gitlab/ui';
-import { createLocalVue, shallowMount, mount } from '@vue/test-utils';
+import { shallowMount, mount } from '@vue/test-utils';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import setWindowLocation from 'helpers/set_window_location_helper';
@@ -33,8 +33,7 @@ import { captureException } from '~/runner/sentry_utils';
 import FilteredSearch from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
 import { groupRunnersData, groupRunnersDataPaginated, groupRunnersCountData } from '../mock_data';
 
-const localVue = createLocalVue();
-localVue.use(VueApollo);
+Vue.use(VueApollo);
 
 const mockGroupFullPath = 'group1';
 const mockRegistrationToken = 'AABBCC';
@@ -69,7 +68,6 @@ describe('GroupRunnersApp', () => {
     ];
 
     wrapper = mountFn(GroupRunnersApp, {
-      localVue,
       apolloProvider: createMockApollo(handlers),
       propsData: {
         registrationToken: mockRegistrationToken,
