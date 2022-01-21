@@ -92,17 +92,22 @@ describe('Value stream analytics utils', () => {
   describe('prepareTimeMetricsData', () => {
     let prepared;
     const [first, second] = metricsData;
-    const firstKey = slugify(first.title);
-    const secondKey = slugify(second.title);
+    delete second.identifier; // testing the case when identifier is missing
+
+    const firstIdentifier = first.identifier;
+    const secondIdentifier = slugify(second.title);
 
     beforeEach(() => {
       prepared = prepareTimeMetricsData([first, second], {
-        [firstKey]: { description: 'Is a value that is good' },
+        [firstIdentifier]: { description: 'Is a value that is good' },
       });
     });
 
-    it('will add a `key` based on the title', () => {
-      expect(prepared).toMatchObject([{ key: firstKey }, { key: secondKey }]);
+    it('will add a `identifier` based on the title', () => {
+      expect(prepared).toMatchObject([
+        { identifier: firstIdentifier },
+        { identifier: secondIdentifier },
+      ]);
     });
 
     it('will add a `label` key', () => {

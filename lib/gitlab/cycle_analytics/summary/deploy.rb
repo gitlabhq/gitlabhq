@@ -4,6 +4,10 @@ module Gitlab
   module CycleAnalytics
     module Summary
       class Deploy < Base
+        def identifier
+          :deploys
+        end
+
         def title
           n_('Deploy', 'Deploys', value.to_i)
         end

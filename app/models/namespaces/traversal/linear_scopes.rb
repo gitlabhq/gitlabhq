@@ -53,7 +53,7 @@ module Namespaces
         end
 
         def self_and_descendants(include_self: true)
-          return super unless use_traversal_ids?
+          return super unless use_traversal_ids_for_descendants_scopes?
 
           if Feature.enabled?(:traversal_ids_btree, default_enabled: :yaml)
             self_and_descendants_with_comparison_operators(include_self: include_self)
@@ -65,7 +65,7 @@ module Namespaces
         end
 
         def self_and_descendant_ids(include_self: true)
-          return super unless use_traversal_ids?
+          return super unless use_traversal_ids_for_descendants_scopes?
 
           if Feature.enabled?(:traversal_ids_btree, default_enabled: :yaml)
             self_and_descendants_with_comparison_operators(include_self: include_self).as_ids
@@ -106,6 +106,11 @@ module Namespaces
 
         def use_traversal_ids_for_ancestor_scopes?
           Feature.enabled?(:use_traversal_ids_for_ancestor_scopes, default_enabled: :yaml) &&
+          use_traversal_ids?
+        end
+
+        def use_traversal_ids_for_descendants_scopes?
+          Feature.enabled?(:use_traversal_ids_for_descendants_scopes, default_enabled: :yaml) &&
           use_traversal_ids?
         end
 

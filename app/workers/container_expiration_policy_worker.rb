@@ -57,7 +57,7 @@ class ContainerExpirationPolicyWorker # rubocop:disable Scalability/IdempotentWo
   def perform_unthrottled
     with_runnable_policy(preloaded: true) do |policy|
       with_context(project: policy.project,
-                   user: policy.project.owner) do |project:, user:|
+                   user: nil) do |project:, user:|
         ContainerExpirationPolicyService.new(project, user)
                                         .execute(policy)
       end

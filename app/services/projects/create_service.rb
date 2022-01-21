@@ -167,7 +167,7 @@ module Projects
     end
 
     def readme_content
-      @readme_template.presence || experiment(:new_project_readme_content, namespace: @project.namespace).run_with(@project)
+      @readme_template.presence || ReadmeRendererService.new(@project, current_user).execute
     end
 
     def skip_wiki?

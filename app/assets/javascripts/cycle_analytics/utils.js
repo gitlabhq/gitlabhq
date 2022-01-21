@@ -80,7 +80,7 @@ export const filterStagesByHiddenStatus = (stages = [], isHidden = true) =>
  * @typedef {Object} TransformedMetricData
  * @property {String} label - Title of the metric measured
  * @property {String} value - String representing the decimal point value, e.g '1.5'
- * @property {String} key - Slugified string based on the 'title'
+ * @property {String} identifier - Slugified string based on the 'title' or the provided 'identifier' attribute
  * @property {String} description - String to display for a description
  * @property {String} unit - String representing the decimal point value, e.g '1.5'
  */
@@ -94,13 +94,13 @@ export const filterStagesByHiddenStatus = (stages = [], isHidden = true) =>
  */
 
 export const prepareTimeMetricsData = (data = [], popoverContent = {}) =>
-  data.map(({ title: label, ...rest }) => {
-    const key = slugify(label);
+  data.map(({ title: label, identifier, ...rest }) => {
+    const metricIdentifier = identifier || slugify(label);
     return {
       ...rest,
       label,
-      key,
-      description: popoverContent[key]?.description || '',
+      identifier: metricIdentifier,
+      description: popoverContent[metricIdentifier]?.description || '',
     };
   });
 

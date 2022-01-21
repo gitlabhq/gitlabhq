@@ -67,14 +67,14 @@ RSpec.describe GitlabSchema.types['User'] do
       )
     end
 
-    subject { GitlabSchema.execute(query, context: { current_user: current_user }).as_json.dig('data', 'user', 'name') }
+    subject(:user_name) { GitlabSchema.execute(query, context: { current_user: current_user }).as_json.dig('data', 'user', 'name') }
 
     context 'user requests' do
       let(:current_user) { user }
 
       context 'a user' do
         it 'returns name' do
-          expect(subject).to eq('John Smith')
+          expect(user_name).to eq('John Smith')
         end
       end
 
@@ -85,21 +85,39 @@ RSpec.describe GitlabSchema.types['User'] do
           let(:current_user) { nil }
 
           it 'returns `****`' do
-            expect(subject).to eq('****')
+            expect(user_name).to eq('****')
           end
         end
 
-        it 'returns `****` for a regular user' do
-          expect(subject).to eq('****')
+        context 'when the requester is not a project member' do
+          it 'returns `Project bot` for a non project member in a public project' do
+            expect(user_name).to eq('Project bot')
+          end
+
+          context 'in a private project' do
+            let(:project) { create(:project, :private) }
+
+            it 'returns `****` for a non project member in a private project' do
+              expect(user_name).to eq('****')
+            end
+          end
         end
 
-        context 'when requester is a project maintainer' do
+        context 'with a project member' do
           before do
-            project.add_maintainer(user)
+            project.add_guest(user)
           end
 
-          it 'returns name' do
-            expect(subject).to eq('Project bot')
+          it 'returns `Project bot` for a project member' do
+            expect(user_name).to eq('Project bot')
+          end
+
+          context 'in a private project' do
+            let(:project) { create(:project, :private) }
+
+            it 'returns `Project bot` for a project member in a private project' do
+              expect(user_name).to eq('Project bot')
+            end
           end
         end
       end

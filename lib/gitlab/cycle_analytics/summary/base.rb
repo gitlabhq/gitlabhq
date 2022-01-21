@@ -9,6 +9,10 @@ module Gitlab
           @options = options
         end
 
+        def identifier
+          self.class.name.demodulize.underscore.to_sym
+        end
+
         def title
           raise NotImplementedError, "Expected #{self.name} to implement title"
         end

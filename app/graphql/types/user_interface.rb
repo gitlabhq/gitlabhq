@@ -31,7 +31,7 @@ module Types
           null: false,
           resolver_method: :redacted_name,
           description: 'Human-readable name of the user. ' \
-          'Will return `****` if the user is a project bot and the requester does not have permission to read resource access tokens.'
+          'Returns `****` if the user is a project bot and the requester does not have permission to view the project.'
 
     field :state,
           type: Types::UserStateEnum,
@@ -127,7 +127,7 @@ module Types
     def redacted_name
       return object.name unless object.project_bot?
 
-      return object.name if context[:current_user]&.can?(:read_resource_access_tokens, object.projects.first)
+      return object.name if context[:current_user]&.can?(:read_project, object.projects.first)
 
       # If the requester does not have permission to read the project bot name,
       # the API returns an arbitrary string. UI changes will be addressed in a follow up issue:

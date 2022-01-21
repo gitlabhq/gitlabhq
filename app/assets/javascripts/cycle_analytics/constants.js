@@ -36,11 +36,21 @@ export const OVERVIEW_METRICS = {
   RECENT_ACTIVITY: 'RECENT_ACTIVITY',
 };
 
+// Some content is duplicated due to backward compatibility.
+// It will be removed with https://gitlab.com/gitlab-org/gitlab/-/issues/350614 in 14.9
 export const METRICS_POPOVER_CONTENT = {
   'lead-time': {
     description: s__('ValueStreamAnalytics|Median time from issue created to issue closed.'),
   },
+  lead_time: {
+    description: s__('ValueStreamAnalytics|Median time from issue created to issue closed.'),
+  },
   'cycle-time': {
+    description: s__(
+      "ValueStreamAnalytics|Median time from the earliest commit of a linked issue's merge request to when that issue is closed.",
+    ),
+  },
+  cycle_time: {
     description: s__(
       "ValueStreamAnalytics|Median time from the earliest commit of a linked issue's merge request to when that issue is closed.",
     ),
@@ -50,10 +60,19 @@ export const METRICS_POPOVER_CONTENT = {
       'ValueStreamAnalytics|Median time between merge request merge and deployment to a production environment for all MRs deployed in the given time period.',
     ),
   },
+  lead_time_for_changes: {
+    description: s__(
+      'ValueStreamAnalytics|Median time between merge request merge and deployment to a production environment for all MRs deployed in the given time period.',
+    ),
+  },
+  issues: { description: s__('ValueStreamAnalytics|Number of new issues created.') },
   'new-issue': { description: s__('ValueStreamAnalytics|Number of new issues created.') },
   'new-issues': { description: s__('ValueStreamAnalytics|Number of new issues created.') },
   deploys: { description: s__('ValueStreamAnalytics|Total number of deploys to production.') },
   'deployment-frequency': {
+    description: s__('ValueStreamAnalytics|Average number of deployments to production per day.'),
+  },
+  deployment_frequency: {
     description: s__('ValueStreamAnalytics|Average number of deployments to production per day.'),
   },
   commits: {

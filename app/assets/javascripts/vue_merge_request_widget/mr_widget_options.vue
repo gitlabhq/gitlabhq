@@ -45,6 +45,7 @@ import eventHub from './event_hub';
 import mergeRequestQueryVariablesMixin from './mixins/merge_request_query_variables';
 import getStateQuery from './queries/get_state.query.graphql';
 import terraformExtension from './extensions/terraform';
+import accessibilityExtension from './extensions/accessibility';
 
 export default {
   // False positive i18n lint: https://gitlab.com/gitlab-org/frontend/eslint-plugin-i18n/issues/25
@@ -205,7 +206,7 @@ export default {
       );
     },
     shouldShowAccessibilityReport() {
-      return this.mr.accessibilityReportPath;
+      return Boolean(this.mr?.accessibilityReportPath);
     },
     formattedHumanAccess() {
       return (this.mr.humanAccess || '').toLowerCase();
@@ -238,6 +239,11 @@ export default {
     shouldRenderTerraformPlans(newVal) {
       if (newVal) {
         this.registerTerraformPlans();
+      }
+    },
+    shouldShowAccessibilityReport(newVal) {
+      if (newVal) {
+        this.registerAccessibilityExtension();
       }
     },
   },
@@ -476,6 +482,11 @@ export default {
     registerTerraformPlans() {
       if (this.shouldRenderTerraformPlans && this.shouldShowExtension) {
         registerExtension(terraformExtension);
+      }
+    },
+    registerAccessibilityExtension() {
+      if (this.shouldShowAccessibilityReport && this.shouldShowExtension) {
+        registerExtension(accessibilityExtension);
       }
     },
   },

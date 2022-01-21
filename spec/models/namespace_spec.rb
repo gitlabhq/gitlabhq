@@ -361,6 +361,66 @@ RSpec.describe Namespace do
     context 'linear' do
       it_behaves_like 'namespace traversal scopes'
     end
+
+    shared_examples 'makes recursive queries' do
+      specify do
+        expect { subject }.to make_queries_matching(/WITH RECURSIVE/)
+      end
+    end
+
+    shared_examples 'does not make recursive queries' do
+      specify do
+        expect { subject }.not_to make_queries_matching(/WITH RECURSIVE/)
+      end
+    end
+
+    describe '.self_and_descendants' do
+      let_it_be(:namespace) { create(:namespace) }
+
+      subject { described_class.where(id: namespace).self_and_descendants.load }
+
+      it_behaves_like 'does not make recursive queries'
+
+      context 'when feature flag :use_traversal_ids is disabled' do
+        before do
+          stub_feature_flags(use_traversal_ids: false)
+        end
+
+        it_behaves_like 'makes recursive queries'
+      end
+
+      context 'when feature flag :use_traversal_ids_for_descendants_scopes is disabled' do
+        before do
+          stub_feature_flags(use_traversal_ids_for_descendants_scopes: false)
+        end
+
+        it_behaves_like 'makes recursive queries'
+      end
+    end
+
+    describe '.self_and_descendant_ids' do
+      let_it_be(:namespace) { create(:namespace) }
+
+      subject { described_class.where(id: namespace).self_and_descendant_ids.load }
+
+      it_behaves_like 'does not make recursive queries'
+
+      context 'when feature flag :use_traversal_ids is disabled' do
+        before do
+          stub_feature_flags(use_traversal_ids: false)
+        end
+
+        it_behaves_like 'makes recursive queries'
+      end
+
+      context 'when feature flag :use_traversal_ids_for_descendants_scopes is disabled' do
+        before do
+          stub_feature_flags(use_traversal_ids_for_descendants_scopes: false)
+        end
+
+        it_behaves_like 'makes recursive queries'
+      end
+    end
   end
 
   context 'traversal_ids on create' do

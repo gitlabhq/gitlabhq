@@ -139,7 +139,7 @@ export default {
           fetchData: () => this.fetchCollapsedData(this.$props),
         },
         method: 'fetchData',
-        successCallback: (data) => {
+        successCallback: ({ data }) => {
           if (Object.keys(data).length > 0) {
             poll.stop();
             this.setCollapsedData(data);
@@ -317,9 +317,13 @@ export default {
                   <div v-if="data.link">
                     <gl-link :href="data.link.href">{{ data.link.text }}</gl-link>
                   </div>
+                  <div v-if="data.supportingText">
+                    <p v-safe-html="generateText(data.supportingText)" class="gl-m-0"></p>
+                  </div>
                   <gl-badge v-if="data.badge" :variant="data.badge.variant || 'info'">
                     {{ data.badge.text }}
                   </gl-badge>
+
                   <actions
                     :widget="$options.label || $options.name"
                     :tertiary-buttons="data.actions"

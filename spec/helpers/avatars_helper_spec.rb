@@ -428,7 +428,7 @@ RSpec.describe AvatarsHelper do
     subject { helper.avatar_without_link(resource, options) }
 
     context 'with users' do
-      let(:resource) { user }
+      let(:resource) { user.namespace }
 
       it 'displays user avatar' do
         is_expected.to eq tag(

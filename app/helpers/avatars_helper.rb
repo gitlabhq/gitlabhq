@@ -103,8 +103,8 @@ module AvatarsHelper
   end
 
   def avatar_without_link(resource, options = {})
-    if resource.is_a?(User)
-      user_avatar_without_link(options.merge(user: resource))
+    if resource.is_a?(Namespaces::UserNamespace)
+      user_avatar_without_link(options.merge(user: resource.first_owner))
     elsif resource.is_a?(Group)
       group_icon(resource, options.merge(class: 'avatar'))
     end

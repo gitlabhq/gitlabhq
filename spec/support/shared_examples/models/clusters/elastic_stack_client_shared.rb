@@ -47,7 +47,7 @@ RSpec.shared_examples 'cluster-based #elasticsearch_client' do |factory|
       it 'copies proxy_url, options and headers from kube client to elasticsearch_client' do
         expect(Elasticsearch::Client)
           .to(receive(:new))
-          .with(url: a_valid_url)
+          .with(url: a_valid_url, adapter: :net_http)
           .and_call_original
 
         client = subject.elasticsearch_client

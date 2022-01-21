@@ -57,13 +57,26 @@ RSpec.describe API::UsageData do
         end
       end
 
-      %w[merge_requests commits].each do |postfix|
-        context 'with correct params' do
-          let(:known_event_postfix) { postfix }
+      context 'with correct params' do
+        using RSpec::Parameterized::TableSyntax
 
-          it 'returns status ok' do
-            expect(Gitlab::UsageDataCounters::BaseCounter).to receive(:count).with(known_event_postfix)
-            post api(endpoint, user), params: { event: known_event }
+        where(:prefix, :event) do
+          'static_site_editor' | 'merge_requests'
+          'static_site_editor' | 'commits'
+        end
+
+        before do
+          stub_application_setting(usage_ping_enabled: true)
+          stub_feature_flags(usage_data_api: true)
+          allow(Gitlab::RequestForgeryProtection).to receive(:verified?).and_return(true)
+          stub_feature_flags("usage_data_#{prefix}_#{event}" => true)
+        end
+
+        with_them do
+          it 'returns status :ok' do
+            expect(Gitlab::UsageDataCounters::BaseCounter).to receive(:count).with(event)
+
+            post api(endpoint, user), params: { event: "#{prefix}_#{event}" }
 
             expect(response).to have_gitlab_http_status(:ok)
           end
