@@ -67,7 +67,7 @@ billable user, with the following exceptions:
 - Users without project or group memberships on an Ultimate subscription.
 - GitLab-created service accounts: `Ghost User` and bots
   ([`Support Bot`](../../user/project/service_desk.md#support-bot-user),
-  [`Project bot users`](../../user/project/settings/project_access_tokens.md#project-bot-users), and
+  [Bot users for projects](../../user/project/settings/project_access_tokens.md#bot-users-for-projects), and
   so on.)
 
 **Billable users** as reported in the `/admin` section is updated once per day.

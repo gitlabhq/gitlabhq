@@ -37,8 +37,8 @@ the following tables:
 
 |  GitLab analyzer                                                                                       | Outputs severity levels? | Native severity level type | Native severity level example      |
 |--------------------------------------------------------------------------------------------------------|--------------------------|----------------------------|------------------------------------|
-| [`security-code-scan`](https://gitlab.com/gitlab-org/security-products/analyzers/security-code-scan)     | **{dotted-circle}** No   | N/A                        | N/A                                |
-| [`brakeman`](https://gitlab.com/gitlab-org/security-products/analyzers/brakeman)                         | **{dotted-circle}** No   | N/A                        | N/A                                |
+| [`security-code-scan`](https://gitlab.com/gitlab-org/security-products/analyzers/security-code-scan)     | **{check-circle}** Yes   | N/A                        | Hardcodes all severity levels to `Unknown` |
+| [`brakeman`](https://gitlab.com/gitlab-org/security-products/analyzers/brakeman)                         | **{check-circle}** Yes   | String                     | `HIGH`, `MEDIUM`, `LOW`            |
 | [`sobelow`](https://gitlab.com/gitlab-org/security-products/analyzers/sobelow)                           | **{check-circle}** Yes   | N/A                        | Hardcodes all severity levels to `Unknown` |
 | [`nodejs-scan`](https://gitlab.com/gitlab-org/security-products/analyzers/nodejs-scan)                   | **{check-circle}** Yes   | String                     | `INFO`, `WARNING`, `ERROR`         |
 | [`flawfinder`](https://gitlab.com/gitlab-org/security-products/analyzers/flawfinder)                     | **{check-circle}** Yes   | Integer                    | `0`, `1`, `2`, `3`, `4`, `5`       |

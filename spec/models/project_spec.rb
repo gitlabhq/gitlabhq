@@ -7784,7 +7784,8 @@ RSpec.describe Project, factory_default: :keep do
   end
 
   describe '#context_commits_enabled?' do
-    let_it_be(:project) { create(:project) }
+    let_it_be(:group) { create(:group) }
+    let_it_be(:project) { create(:project, namespace: group) }
 
     subject(:result) { project.context_commits_enabled? }
 
@@ -7804,19 +7805,19 @@ RSpec.describe Project, factory_default: :keep do
       it { is_expected.to be_falsey }
     end
 
-    context 'when context_commits feature flag is enabled on this project' do
+    context 'when context_commits feature flag is enabled on project group' do
       before do
-        stub_feature_flags(context_commits: project)
+        stub_feature_flags(context_commits: group)
       end
 
       it { is_expected.to be_truthy }
     end
 
-    context 'when context_commits feature flag is enabled on another project' do
-      let(:another_project) { create(:project) }
+    context 'when context_commits feature flag is enabled on another group' do
+      let(:another_group) { create(:group) }
 
       before do
-        stub_feature_flags(context_commits: another_project)
+        stub_feature_flags(context_commits: another_group)
       end
 
       it { is_expected.to be_falsey }

@@ -84,16 +84,16 @@ To enable or disable project access token creation for all projects in a top-lev
 
 Even when creation is disabled, you can still use and revoke existing project access tokens.
 
-## Project bot users
+## Bot users for projects
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/210181) in GitLab 13.0.
 > - [Excluded from license seat use](https://gitlab.com/gitlab-org/gitlab/-/issues/223695) in GitLab 13.5.
 
-Project bot users are [GitLab-created service accounts](../../../subscriptions/self_managed/index.md#billable-users).
+Bot users for projects are [GitLab-created service accounts](../../../subscriptions/self_managed/index.md#billable-users).
 Each time you create a project access token, a bot user is created and added to the project.
 These bot users do not count as licensed seats.
 
-The bot users have [permissions](../../permissions.md#project-members-permissions) that correspond with the
+The bot users for projects have [permissions](../../permissions.md#project-members-permissions) that correspond with the
 selected role and [scope](#scopes-for-a-project-access-token) of the project access token.
 
 - The name is set to the name of the token.
@@ -106,7 +106,7 @@ selected role and [scope](#scopes-for-a-project-access-token) of the project acc
 
 API calls made with a project access token are associated with the corresponding bot user.
 
-Bot users:
+Bot users for projects:
 
 - Are included in a project's member list but cannot be modified.
 - Cannot be added to any other project.

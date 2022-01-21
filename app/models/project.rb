@@ -987,7 +987,7 @@ class Project < ApplicationRecord
   end
 
   def context_commits_enabled?
-    Feature.enabled?(:context_commits, self, default_enabled: :yaml)
+    Feature.enabled?(:context_commits, self.group, default_enabled: :yaml)
   end
 
   # LFS and hashed repository storage are required for using Design Management.

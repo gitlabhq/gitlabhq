@@ -44,8 +44,21 @@ are scoped to a project. As with [Personal access tokens](#personal-access-token
 - The GitLab registry.
 
 You can limit the scope and expiration date of project access tokens. When you
-create a project access token, GitLab creates a [project bot user](../user/project/settings/project_access_tokens.md#project-bot-users). Project
-bot users are service accounts and do not count as licensed seats.
+create a project access token, GitLab creates a [bot user for projects](../user/project/settings/project_access_tokens.md#bot-users-for-projects).
+Bot users for projects are service accounts and do not count as licensed seats.
+
+## Group access tokens
+
+[Group access tokens](../user/group/settings/group_access_tokens.md#group-access-tokens)
+are scoped to a group. As with [Personal access tokens](#personal-access-tokens), you can use them to authenticate with:
+
+- The GitLab API.
+- GitLab repositories.
+- The GitLab registry.
+
+You can limit the scope and expiration date of group access tokens. When you
+create a group access token, GitLab creates a [bot user for groups](../user/group/settings/group_access_tokens.md#bot-users-for-groups).
+Bot users for groups are service accounts and do not count as licensed seats.
 
 ## Deploy tokens
 

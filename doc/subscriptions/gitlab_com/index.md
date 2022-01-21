@@ -81,7 +81,7 @@ Every user is included in seat usage, with the following exceptions:
 - Members with the Guest role on an Ultimate subscription.
 - GitLab-created service accounts: `Ghost User` and bots
   ([`Support Bot`](../../user/project/service_desk.md#support-bot-user),
-  [`Project bot users`](../../user/project/settings/project_access_tokens.md#project-bot-users), and
+  [Bot users for projects](../../user/project/settings/project_access_tokens.md#bot-users-for-projects), and
   so on.)
 
 Seat usage is reviewed [quarterly or annually](../quarterly_reconciliation.md).

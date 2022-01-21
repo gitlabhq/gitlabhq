@@ -140,8 +140,8 @@ To enable or disable group access token creation for all sub-groups in a top-lev
 
 Even when creation is disabled, you can still use and revoke existing group access tokens.
 
-## Bot users
+## Bot users for groups
 
 Each time you create a group access token, a bot user is created and added to the group.
-These bot users are similar to [project bot users](../../project/settings/project_access_tokens.md#project-bot-users), but are added to groups instead of projects. For more information, see
-[Project bot users](../../project/settings/project_access_tokens.md#project-bot-users).
+These bot users are similar to [bot users for projects](../../project/settings/project_access_tokens.md#bot-users-for-projects), but are added to groups instead of projects. For more information, see
+[Bot users for projects](../../project/settings/project_access_tokens.md#bot-users-for-projects).

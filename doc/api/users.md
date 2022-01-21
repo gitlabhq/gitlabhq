@@ -84,7 +84,8 @@ from the users' list, with the `exclude_internal=true` parameter,
 - Alert bot
 - Support bot
 
-However, this action does not exclude [project bot users](../user/project/settings/project_access_tokens.md#project-bot-users).
+However, this action does not exclude [bot users for projects](../user/project/settings/project_access_tokens.md#bot-users-for-projects)
+or [bot users for groups](../user/group/settings/group_access_tokens.md#bot-users-for-groups).
 
 ```plaintext
 GET /users?exclude_internal=true
