@@ -1,13 +1,13 @@
 import { GlButton } from '@gitlab/ui';
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
+import Vue from 'vue';
 import Vuex from 'vuex';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import { modalData } from 'jest/members/mock_data';
 import RemoveMemberButton from '~/members/components/action_buttons/remove_member_button.vue';
 import { MEMBER_TYPES } from '~/members/constants';
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 describe('RemoveMemberButton', () => {
   let wrapper;
@@ -33,7 +33,6 @@ describe('RemoveMemberButton', () => {
 
   const createComponent = (propsData = {}, state) => {
     wrapper = shallowMount(RemoveMemberButton, {
-      localVue,
       store: createStore(state),
       provide: {
         namespace: MEMBER_TYPES.user,

@@ -224,7 +224,7 @@ You can edit an issue's title and description.
 
 Prerequisites:
 
-- You must have at least the [Reporter role](../../permissions.md) for the project.
+- You must have at least the [Reporter role](../../permissions.md) for the project, be the author of the issue, or be assigned to the issue.
 
 To edit an issue:
 
@@ -351,7 +351,7 @@ The issue is marked as closed but is not deleted.
 
 Prerequisites:
 
-- You must have at least the [Reporter role](../../permissions.md) for the project.
+- You must have at least the [Reporter role](../../permissions.md) for the project, be the author of the issue, or be assigned to the issue.
 
 To close an issue, you can do the following:
 
@@ -364,7 +364,7 @@ To close an issue, you can do the following:
 
 Prerequisites:
 
-- You must have at least the [Reporter role](../../permissions.md) for the project.
+- You must have at least the [Reporter role](../../permissions.md) for the project, be the author of the issue, or be assigned to the issue.
 
 To reopen a closed issue, at the top of the issue, select **Reopen issue**.
 A reopened issue is no different from any other open issue.
@@ -476,7 +476,7 @@ of your installation.
 
 Prerequisites:
 
-- You must be the issue author or have at least the [Reporter role](../../permissions.md) for the project.
+- You must be the issue author or have at least the [Reporter role](../../permissions.md) for the project, be the author of the issue, or be assigned to the issue.
 
 To change issue type:
 

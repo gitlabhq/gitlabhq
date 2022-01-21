@@ -1,11 +1,11 @@
-import { mount, createLocalVue } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
+import Vue from 'vue';
 import Vuex from 'vuex';
 import EditorHeader from '~/ide/components/commit_sidebar/editor_header.vue';
 import { createStore } from '~/ide/stores';
 import { file } from '../../helpers';
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 const TEST_FILE_PATH = 'test/file/path';
 
@@ -16,7 +16,6 @@ describe('IDE commit editor header', () => {
   const createComponent = (fileProps = {}) => {
     wrapper = mount(EditorHeader, {
       store,
-      localVue,
       propsData: {
         activeFile: {
           ...file(TEST_FILE_PATH),

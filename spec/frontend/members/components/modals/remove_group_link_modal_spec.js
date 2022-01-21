@@ -1,7 +1,7 @@
 import { GlModal, GlForm } from '@gitlab/ui';
 import { within } from '@testing-library/dom';
-import { mount, createLocalVue, createWrapper } from '@vue/test-utils';
-import { nextTick } from 'vue';
+import { mount, createWrapper } from '@vue/test-utils';
+import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 import RemoveGroupLinkModal from '~/members/components/modals/remove_group_link_modal.vue';
 import { REMOVE_GROUP_LINK_MODAL_ID, MEMBER_TYPES } from '~/members/constants';
@@ -9,8 +9,7 @@ import { group } from '../../mock_data';
 
 jest.mock('~/lib/utils/csrf', () => ({ token: 'mock-csrf-token' }));
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 describe('RemoveGroupLinkModal', () => {
   let wrapper;
@@ -38,7 +37,6 @@ describe('RemoveGroupLinkModal', () => {
 
   const createComponent = (state) => {
     wrapper = mount(RemoveGroupLinkModal, {
-      localVue,
       store: createStore(state),
       provide: {
         namespace: MEMBER_TYPES.group,

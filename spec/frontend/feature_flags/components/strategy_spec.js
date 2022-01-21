@@ -1,5 +1,6 @@
 import { GlAlert, GlFormSelect, GlLink, GlToken, GlButton } from '@gitlab/ui';
-import { mount, createLocalVue } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
+import Vue from 'vue';
 import { last } from 'lodash';
 import Vuex from 'vuex';
 import Api from '~/api';
@@ -26,8 +27,7 @@ const provide = {
   environmentsEndpoint: '',
 };
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 describe('Feature flags strategy', () => {
   let wrapper;
@@ -48,7 +48,7 @@ describe('Feature flags strategy', () => {
       wrapper.destroy();
       wrapper = null;
     }
-    wrapper = mount(Strategy, { localVue, store: createStore({ projectId: '1' }), ...opts });
+    wrapper = mount(Strategy, { store: createStore({ projectId: '1' }), ...opts });
   };
 
   beforeEach(() => {

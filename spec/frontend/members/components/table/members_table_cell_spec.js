@@ -1,4 +1,5 @@
-import { mount, createLocalVue } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
+import Vue from 'vue';
 import Vuex from 'vuex';
 import MembersTableCell from '~/members/components/table/members_table_cell.vue';
 import { MEMBER_TYPES } from '~/members/constants';
@@ -36,9 +37,8 @@ describe('MembersTableCell', () => {
     },
   };
 
-  const localVue = createLocalVue();
-  localVue.use(Vuex);
-  localVue.component('WrappedComponent', WrappedComponent);
+  Vue.use(Vuex);
+  Vue.component('WrappedComponent', WrappedComponent);
 
   const createStore = (state = {}) => {
     return new Vuex.Store({
@@ -50,7 +50,6 @@ describe('MembersTableCell', () => {
 
   const createComponent = (propsData, state) => {
     wrapper = mount(MembersTableCell, {
-      localVue,
       propsData,
       store: createStore(state),
       provide: {

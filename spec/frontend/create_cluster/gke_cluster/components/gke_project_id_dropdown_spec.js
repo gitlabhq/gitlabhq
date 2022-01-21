@@ -1,4 +1,5 @@
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
+import Vue from 'vue';
 import Vuex from 'vuex';
 import GkeProjectIdDropdown from '~/create_cluster/gke_cluster/components/gke_project_id_dropdown.vue';
 import createState from '~/create_cluster/gke_cluster/store/state';
@@ -19,9 +20,7 @@ const LABELS = {
   EMPTY: 'No projects found',
 };
 
-const localVue = createLocalVue();
-
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 describe('GkeProjectIdDropdown', () => {
   let wrapper;
@@ -52,7 +51,6 @@ describe('GkeProjectIdDropdown', () => {
     shallowMount(GkeProjectIdDropdown, {
       propsData,
       store,
-      localVue,
     });
 
   const bootstrap = (initialState, getters) => {

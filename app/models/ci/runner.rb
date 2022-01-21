@@ -67,7 +67,7 @@ module Ci
 
     has_many :builds
     has_many :runner_projects, inverse_of: :runner, autosave: true, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
-    has_many :projects, through: :runner_projects
+    has_many :projects, through: :runner_projects, disable_joins: -> { ::Feature.enabled?(:ci_runner_projects_disable_joins, default_enabled: :yaml) }
     has_many :runner_namespaces, inverse_of: :runner, autosave: true
     has_many :groups, through: :runner_namespaces, disable_joins: true
 
@@ -378,9 +378,7 @@ module Ci
     end
 
     def only_for?(project)
-      ::Gitlab::Database.allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/338659') do
-        projects == [project]
-      end
+      !runner_projects.where.not(project_id: project.id).exists?
     end
 
     def short_sha

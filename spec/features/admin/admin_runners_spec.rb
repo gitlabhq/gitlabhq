@@ -254,6 +254,18 @@ RSpec.describe "Admin Runners" do
           expect(page).not_to have_content 'runner-group'
         end
 
+        it 'show the same counts after selecting another tab' do
+          visit admin_runners_path
+
+          page.within('[data-testid="runner-type-tabs"]') do
+            click_on('Project')
+
+            expect(page).to have_link('All 2')
+            expect(page).to have_link('Group 1')
+            expect(page).to have_link('Project 1')
+          end
+        end
+
         it 'shows no runner when type does not match' do
           visit admin_runners_path
 

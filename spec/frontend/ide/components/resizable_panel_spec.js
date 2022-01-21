@@ -1,4 +1,5 @@
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
+import Vue from 'vue';
 import Vuex from 'vuex';
 import ResizablePanel from '~/ide/components/resizable_panel.vue';
 import { SIDE_LEFT, SIDE_RIGHT } from '~/ide/constants';
@@ -8,8 +9,7 @@ const TEST_WIDTH = 500;
 const TEST_MIN_WIDTH = 400;
 
 describe('~/ide/components/resizable_panel', () => {
-  const localVue = createLocalVue();
-  localVue.use(Vuex);
+  Vue.use(Vuex);
 
   let wrapper;
   let store;
@@ -33,7 +33,6 @@ describe('~/ide/components/resizable_panel', () => {
         ...props,
       },
       store,
-      localVue,
     });
   };
   const findResizer = () => wrapper.find(PanelResizer);

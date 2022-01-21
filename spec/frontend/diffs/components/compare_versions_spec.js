@@ -1,4 +1,5 @@
-import { mount, createLocalVue } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
+import Vue from 'vue';
 import Vuex from 'vuex';
 import getDiffWithCommit from 'test_fixtures/merge_request_diffs/with_commit.json';
 import setWindowLocation from 'helpers/set_window_location_helper';
@@ -8,8 +9,7 @@ import CompareVersionsComponent from '~/diffs/components/compare_versions.vue';
 import { createStore } from '~/mr_notes/stores';
 import diffsMockData from '../mock_data/merge_request_diffs';
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 const NEXT_COMMIT_URL = `${TEST_HOST}/?commit_id=next`;
 const PREV_COMMIT_URL = `${TEST_HOST}/?commit_id=prev`;
@@ -30,7 +30,6 @@ describe('CompareVersions', () => {
     }
 
     wrapper = mount(CompareVersionsComponent, {
-      localVue,
       store,
       propsData: {
         mergeRequestDiffs: diffsMockData,

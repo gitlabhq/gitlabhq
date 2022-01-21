@@ -1,4 +1,4 @@
-import { mount, createLocalVue } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import mockData from 'test_fixtures/issues/related_merge_requests.json';
 import axios from '~/lib/utils/axios_utils';
@@ -7,7 +7,6 @@ import createStore from '~/issues/related_merge_requests/store/index';
 import RelatedIssuableItem from '~/issuable/components/related_issuable_item.vue';
 
 const API_ENDPOINT = '/api/v4/projects/2/issues/33/related_merge_requests';
-const localVue = createLocalVue();
 
 describe('RelatedMergeRequests', () => {
   let wrapper;
@@ -21,8 +20,7 @@ describe('RelatedMergeRequests', () => {
     mock = new MockAdapter(axios);
     mock.onGet(`${API_ENDPOINT}?per_page=100`).reply(200, mockData, { 'x-total': 2 });
 
-    wrapper = mount(localVue.extend(RelatedMergeRequests), {
-      localVue,
+    wrapper = mount(RelatedMergeRequests, {
       store: createStore(),
       propsData: {
         endpoint: API_ENDPOINT,

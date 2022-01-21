@@ -1,10 +1,10 @@
 import { GlDropdown, GlDropdownItem, GlIcon } from '@gitlab/ui';
-import { mount, createLocalVue } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
+import Vue from 'vue';
 import Vuex from 'vuex';
 import CiEnvironmentsDropdown from '~/ci_variable_list/components/ci_environments_dropdown.vue';
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 describe('Ci environments dropdown', () => {
   let wrapper;
@@ -22,7 +22,6 @@ describe('Ci environments dropdown', () => {
 
     wrapper = mount(CiEnvironmentsDropdown, {
       store,
-      localVue,
       propsData: {
         value: term,
       },

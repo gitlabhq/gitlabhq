@@ -1,5 +1,5 @@
 import { GlCard, GlLoadingIcon, GlButton, GlSprintf, GlBadge } from '@gitlab/ui';
-import { createLocalVue } from '@vue/test-utils';
+import Vue from 'vue';
 import Vuex from 'vuex';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import ClustersViewAll from '~/clusters_list/components/clusters_view_all.vue';
@@ -16,8 +16,7 @@ import {
 } from '~/clusters_list/constants';
 import { sprintf } from '~/locale';
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 const addClusterPath = '/path/to/add/cluster';
 const defaultBranchName = 'default-branch';
@@ -59,7 +58,6 @@ describe('ClustersViewAllComponent', () => {
 
   const createWrapper = ({ initialState }) => {
     wrapper = shallowMountExtended(ClustersViewAll, {
-      localVue,
       store: createStore(initialState),
       propsData,
       provide: provideData,

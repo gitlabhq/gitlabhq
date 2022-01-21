@@ -1,5 +1,6 @@
 import { GlAlert } from '@gitlab/ui';
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
+import Vue from 'vue';
 import Vuex from 'vuex';
 import { TEST_HOST } from 'spec/test_constants';
 import Form from '~/feature_flags/components/form.vue';
@@ -10,8 +11,7 @@ import { allUsersStrategy } from '../mock_data';
 const userCalloutId = 'feature_flags_new_version';
 const userCalloutsPath = `${TEST_HOST}/user_callouts`;
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 describe('New feature flag form', () => {
   let wrapper;
@@ -27,7 +27,6 @@ describe('New feature flag form', () => {
       wrapper = null;
     }
     wrapper = shallowMount(NewFeatureFlag, {
-      localVue,
       store,
       provide: {
         showUserCallout: true,

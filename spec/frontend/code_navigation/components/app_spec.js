@@ -1,15 +1,15 @@
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
+import Vue from 'vue';
 import Vuex from 'vuex';
 import App from '~/code_navigation/components/app.vue';
 import Popover from '~/code_navigation/components/popover.vue';
 import createState from '~/code_navigation/store/state';
 
-const localVue = createLocalVue();
 const fetchData = jest.fn();
 const showDefinition = jest.fn();
 let wrapper;
 
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 function factory(initialState = {}) {
   const store = new Vuex.Store({
@@ -24,7 +24,7 @@ function factory(initialState = {}) {
     },
   });
 
-  wrapper = shallowMount(App, { store, localVue });
+  wrapper = shallowMount(App, { store });
 }
 
 describe('Code navigation app component', () => {

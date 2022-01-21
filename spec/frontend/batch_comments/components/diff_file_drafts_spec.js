@@ -1,11 +1,10 @@
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
+import Vue from 'vue';
 import Vuex from 'vuex';
 import DiffFileDrafts from '~/batch_comments/components/diff_file_drafts.vue';
 import DraftNote from '~/batch_comments/components/draft_note.vue';
 
-const localVue = createLocalVue();
-
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 describe('Batch comments diff file drafts component', () => {
   let vm;
@@ -22,9 +21,8 @@ describe('Batch comments diff file drafts component', () => {
       },
     });
 
-    vm = shallowMount(localVue.extend(DiffFileDrafts), {
+    vm = shallowMount(DiffFileDrafts, {
       store,
-      localVue,
       propsData: { fileHash: 'filehash' },
     });
   }

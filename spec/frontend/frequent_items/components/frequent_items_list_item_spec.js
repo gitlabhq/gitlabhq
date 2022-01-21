@@ -1,5 +1,6 @@
 import { GlButton } from '@gitlab/ui';
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
+import Vue from 'vue';
 import Vuex from 'vuex';
 import { trimText } from 'helpers/text_helper';
 import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
@@ -8,8 +9,7 @@ import { createStore } from '~/frequent_items/store';
 import ProjectAvatar from '~/vue_shared/components/project_avatar.vue';
 import { mockProject } from '../mock_data';
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 describe('FrequentItemsListItemComponent', () => {
   let wrapper;
@@ -40,7 +40,6 @@ describe('FrequentItemsListItemComponent', () => {
       provide: {
         vuexModule: 'frequentProjects',
       },
-      localVue,
     });
   };
 

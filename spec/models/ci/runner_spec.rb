@@ -23,6 +23,26 @@ RSpec.describe Ci::Runner do
     end
   end
 
+  describe 'projects association' do
+    let(:runner) { create(:ci_runner, :project) }
+
+    it 'does not create a cross-database query' do
+      with_cross_joins_prevented do
+        expect(runner.projects.count).to eq(1)
+      end
+    end
+
+    context 'when ci_runner_projects_disable_joins is disabled' do
+      before do
+        stub_feature_flags(ci_runner_projects_disable_joins: false)
+      end
+
+      it 'creates a cross-database query' do
+        expect { runner.projects.count }.to raise_error(Database::PreventCrossJoins::CrossJoinAcrossUnsupportedTablesError)
+      end
+    end
+  end
+
   describe 'validation' do
     it { is_expected.to validate_presence_of(:access_level) }
     it { is_expected.to validate_presence_of(:runner_type) }
@@ -288,6 +308,30 @@ RSpec.describe Ci::Runner do
     it 'returns the token if the description is an empty string' do
       runner = build(:ci_runner, description: '', token: 'token')
       expect(runner.display_name).to eq runner.token
+    end
+  end
+
+  describe '#only_for' do
+    let_it_be_with_reload(:runner) { create(:ci_runner, :project) }
+    let_it_be(:project) { runner.projects.first }
+
+    subject { runner.only_for?(project) }
+
+    context 'with matching project' do
+      it { is_expected.to be_truthy }
+    end
+
+    context 'without matching project' do
+      let_it_be(:project) { create(:project) }
+
+      it { is_expected.to be_falsey }
+    end
+
+    context 'with runner having multiple projects' do
+      let_it_be(:other_project) { create(:project) }
+      let_it_be(:runner_project) { create(:ci_runner_project, project: other_project, runner: runner) }
+
+      it { is_expected.to be_falsey }
     end
   end
 

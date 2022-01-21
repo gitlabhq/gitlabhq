@@ -1,5 +1,6 @@
 import { GlButton, GlFormInput } from '@gitlab/ui';
-import { createLocalVue, shallowMount, mount } from '@vue/test-utils';
+import { shallowMount, mount } from '@vue/test-utils';
+import Vue from 'vue';
 import Vuex from 'vuex';
 import { mockTracking } from 'helpers/tracking_helper';
 import CiEnvironmentsDropdown from '~/ci_variable_list/components/ci_environments_dropdown.vue';
@@ -9,8 +10,7 @@ import createStore from '~/ci_variable_list/store';
 import mockData from '../services/mock_data';
 import ModalStub from '../stubs';
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 describe('Ci variable modal', () => {
   let wrapper;
@@ -26,7 +26,6 @@ describe('Ci variable modal', () => {
       stubs: {
         GlModal: ModalStub,
       },
-      localVue,
       store,
       ...options,
     });

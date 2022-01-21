@@ -1,4 +1,5 @@
-import { shallowMount, mount, createLocalVue } from '@vue/test-utils';
+import { shallowMount, mount } from '@vue/test-utils';
+import Vue from 'vue';
 import Vuex from 'vuex';
 import TreeList from '~/diffs/components/tree_list.vue';
 import createStore from '~/diffs/store/modules';
@@ -8,13 +9,11 @@ describe('Diffs tree list component', () => {
   let wrapper;
   let store;
   const getFileRows = () => wrapper.findAll('.file-row');
-  const localVue = createLocalVue();
-  localVue.use(Vuex);
+  Vue.use(Vuex);
 
   const createComponent = (mountFn = mount) => {
     wrapper = mountFn(TreeList, {
       store,
-      localVue,
       propsData: { hideFileStats: false },
     });
   };

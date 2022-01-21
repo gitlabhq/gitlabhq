@@ -1,11 +1,11 @@
 import { GlLoadingIcon } from '@gitlab/ui';
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
+import Vue from 'vue';
 import $ from 'jquery';
 import Vuex from 'vuex';
 import Dropdown from '~/ide/components/file_templates/dropdown.vue';
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 describe('IDE file templates dropdown component', () => {
   let wrapper;
@@ -44,7 +44,6 @@ describe('IDE file templates dropdown component', () => {
         ...props,
       },
       store: fakeStore,
-      localVue,
     });
 
     ({ element } = wrapper);

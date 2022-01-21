@@ -85,7 +85,11 @@ class Admin::RunnersController < Admin::ApplicationController
 
   # rubocop: disable CodeReuse/ActiveRecord
   def assign_builds_and_projects
-    @builds = runner.builds.order('id DESC').preload_project_and_pipeline_project.first(30)
+    @builds = runner
+      .builds
+      .order_id_desc
+      .preload_project_and_pipeline_project.first(30)
+
     @projects =
       if params[:search].present?
         ::Project.search(params[:search])
@@ -93,12 +97,10 @@ class Admin::RunnersController < Admin::ApplicationController
         Project.all
       end
 
-    ::Gitlab::Database.allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/338659') do
-      @projects = @projects.where.not(id: runner.projects.select(:id)) if runner.projects.any?
-      @projects = @projects.allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/338659')
-      @projects = @projects.inc_routes
-      @projects = @projects.page(params[:page]).per(30).without_count
-    end
+    runner_projects_ids = runner.runner_projects.pluck(:project_id)
+    @projects = @projects.where.not(id: runner_projects_ids) if runner_projects_ids.any?
+    @projects = @projects.inc_routes
+    @projects = @projects.page(params[:page]).per(30).without_count
   end
   # rubocop: enable CodeReuse/ActiveRecord
 end

@@ -1,5 +1,6 @@
 import { GlLoadingIcon } from '@gitlab/ui';
-import { mount, createLocalVue } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
+import Vue from 'vue';
 import MockAdapter from 'axios-mock-adapter';
 import Vuex from 'vuex';
 import delayedJobFixture from 'test_fixtures/jobs/delayed.json';
@@ -16,8 +17,7 @@ import axios from '~/lib/utils/axios_utils';
 import job from '../mock_data';
 
 describe('Job App', () => {
-  const localVue = createLocalVue();
-  localVue.use(Vuex);
+  Vue.use(Vuex);
 
   let store;
   let wrapper;

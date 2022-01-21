@@ -1,5 +1,6 @@
 import { GlButton, GlCard } from '@gitlab/ui';
-import { createLocalVue, mount, shallowMount } from '@vue/test-utils';
+import { mount, shallowMount } from '@vue/test-utils';
+import Vue from 'vue';
 import Vuex from 'vuex';
 import { TEST_HOST } from 'helpers/test_constants';
 import EmbedGroup from '~/monitoring/components/embeds/embed_group.vue';
@@ -12,8 +13,7 @@ import {
   multipleEmbedProps,
 } from './mock_data';
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 describe('Embed Group', () => {
   let wrapper;
@@ -23,7 +23,6 @@ describe('Embed Group', () => {
   function mountComponent({ urls = [TEST_HOST], shallow = true, stubs } = {}) {
     const mountMethod = shallow ? shallowMount : mount;
     wrapper = mountMethod(EmbedGroup, {
-      localVue,
       store,
       propsData: {
         urls,

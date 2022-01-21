@@ -1,19 +1,18 @@
 import { GlDropdown, GlDropdownItem } from '@gitlab/ui';
-import { createLocalVue, shallowMount } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
+import Vue from 'vue';
 import { pick, clone } from 'lodash';
 import Vuex from 'vuex';
 import ProjectDropdown from '~/error_tracking_settings/components/project_dropdown.vue';
 import { defaultProps, projectList, staleProject } from '../mock';
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 describe('error tracking settings project dropdown', () => {
   let wrapper;
 
   function mountComponent() {
     wrapper = shallowMount(ProjectDropdown, {
-      localVue,
       propsData: {
         ...pick(
           defaultProps,

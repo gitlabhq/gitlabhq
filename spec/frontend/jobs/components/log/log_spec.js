@@ -1,4 +1,5 @@
-import { mount, createLocalVue } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
+import Vue from 'vue';
 import Vuex from 'vuex';
 import Log from '~/jobs/components/log/log.vue';
 import { logLinesParserLegacy, logLinesParser } from '~/jobs/store/utils';
@@ -11,12 +12,10 @@ describe('Job Log', () => {
   let store;
   let origGon;
 
-  const localVue = createLocalVue();
-  localVue.use(Vuex);
+  Vue.use(Vuex);
 
   const createComponent = () => {
     wrapper = mount(Log, {
-      localVue,
       store,
     });
   };
@@ -91,12 +90,10 @@ describe('Job Log, infinitelyCollapsibleSections feature flag enabled', () => {
   let store;
   let origGon;
 
-  const localVue = createLocalVue();
-  localVue.use(Vuex);
+  Vue.use(Vuex);
 
   const createComponent = () => {
     wrapper = mount(Log, {
-      localVue,
       store,
     });
   };

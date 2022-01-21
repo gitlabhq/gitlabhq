@@ -1,4 +1,4 @@
-import { mount, createLocalVue } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
 import Vue from 'vue';
 import Vuex from 'vuex';
 import {
@@ -10,13 +10,12 @@ import {
 
 const TEST_MODULE_NAME = 'testModuleName';
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 // setup test component and store ----------------------------------------------
 //
 // These are used to indirectly test `vuex_module_mappers`.
-const TestComponent = Vue.extend({
+const TestComponent = {
   props: {
     vuexModule: {
       type: String,
@@ -47,7 +46,7 @@ const TestComponent = Vue.extend({
   <pre data-testid="state">{{ stateJson }}</pre>
   <pre data-testid="getters">{{ gettersJson }}</pre>
 </div>`,
-});
+};
 
 const createTestStore = () => {
   return new Vuex.Store({
@@ -94,7 +93,6 @@ describe('~/lib/utils/vuex_module_mappers', () => {
         vuexModule: TEST_MODULE_NAME,
       },
       store,
-      localVue,
     });
   });
 

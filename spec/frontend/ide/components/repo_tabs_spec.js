@@ -1,11 +1,11 @@
-import { mount, createLocalVue } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
+import Vue from 'vue';
 import Vuex from 'vuex';
 import RepoTabs from '~/ide/components/repo_tabs.vue';
 import { createStore } from '~/ide/stores';
 import { file } from '../helpers';
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 describe('RepoTabs', () => {
   let wrapper;
@@ -22,7 +22,6 @@ describe('RepoTabs', () => {
         activeFile: file('activeFile'),
       },
       store,
-      localVue,
     });
   });
 

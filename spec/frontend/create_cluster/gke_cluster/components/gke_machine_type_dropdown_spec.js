@@ -1,4 +1,5 @@
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
+import Vue from 'vue';
 import Vuex from 'vuex';
 import GkeMachineTypeDropdown from '~/create_cluster/gke_cluster/components/gke_machine_type_dropdown.vue';
 import createState from '~/create_cluster/gke_cluster/store/state';
@@ -19,15 +20,12 @@ const LABELS = {
   DEFAULT: 'Select machine type',
 };
 
-const localVue = createLocalVue();
-
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 const createComponent = (store, propsData = componentConfig) =>
   shallowMount(GkeMachineTypeDropdown, {
     propsData,
     store,
-    localVue,
   });
 
 const createStore = (initialState = {}, getters = {}) =>

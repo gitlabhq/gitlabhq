@@ -1,11 +1,11 @@
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
+import Vue from 'vue';
 import Vuex from 'vuex';
 import DiffDiscussionReply from '~/diffs/components/diff_discussion_reply.vue';
 import ReplyPlaceholder from '~/notes/components/discussion_reply_placeholder.vue';
 import NoteSignedOutWidget from '~/notes/components/note_signed_out_widget.vue';
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 describe('DiffDiscussionReply', () => {
   let wrapper;
@@ -15,7 +15,6 @@ describe('DiffDiscussionReply', () => {
   const createComponent = (props = {}, slots = {}) => {
     wrapper = shallowMount(DiffDiscussionReply, {
       store,
-      localVue,
       propsData: {
         ...props,
       },

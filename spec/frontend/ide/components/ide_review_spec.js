@@ -1,4 +1,4 @@
-import { createLocalVue, mount } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
 import Vue from 'vue';
 import Vuex from 'vuex';
 import { keepAlive } from 'helpers/keep_alive_component_helper';
@@ -9,8 +9,7 @@ import { createStore } from '~/ide/stores';
 import { file } from '../helpers';
 import { projectData } from '../mock_data';
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 describe('IDE review mode', () => {
   let wrapper;
@@ -28,7 +27,6 @@ describe('IDE review mode', () => {
 
     wrapper = mount(keepAlive(IdeReview), {
       store,
-      localVue,
     });
   });
 

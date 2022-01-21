@@ -1,29 +1,12 @@
 # frozen_string_literal: true
 
 module Gitlab
-  # This class implements a simple rate limiter that can be used to throttle
+  # This module implements a simple rate limiter that can be used to throttle
   # certain actions. Unlike Rack Attack and Rack::Throttle, which operate at
   # the middleware level, this can be used at the controller or API level.
   # See CheckRateLimit concern for usage.
-  class ApplicationRateLimiter
+  module ApplicationRateLimiter
     InvalidKeyError = Class.new(StandardError)
-
-    def initialize(key, **options)
-      @key = key
-      @options = options
-    end
-
-    def throttled?
-      self.class.throttled?(key, **options)
-    end
-
-    def threshold_value
-      options[:threshold] || self.class.threshold(key)
-    end
-
-    def interval_value
-      self.class.interval(key)
-    end
 
     class << self
       # Application rate limits
@@ -201,9 +184,5 @@ module Gitlab
         scoped_user.username.downcase.in?(users_allowlist)
       end
     end
-
-    private
-
-    attr_reader :key, :options
   end
 end

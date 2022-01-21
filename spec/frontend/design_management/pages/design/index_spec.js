@@ -1,5 +1,6 @@
 import { GlAlert } from '@gitlab/ui';
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
+import Vue from 'vue';
 import { ApolloMutation } from 'vue-apollo';
 import VueRouter from 'vue-router';
 import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
@@ -78,8 +79,7 @@ const createDiscussionMutationVariables = {
   },
 };
 
-const localVue = createLocalVue();
-localVue.use(VueRouter);
+Vue.use(VueRouter);
 
 describe('Design management design index page', () => {
   let wrapper;
@@ -128,7 +128,6 @@ describe('Design management design index page', () => {
           ...data,
         };
       },
-      localVue,
       router,
     });
   }

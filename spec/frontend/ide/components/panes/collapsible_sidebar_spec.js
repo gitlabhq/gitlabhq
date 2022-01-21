@@ -1,12 +1,12 @@
-import { createLocalVue, shallowMount } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
+import Vue from 'vue';
 import Vuex from 'vuex';
 import IdeSidebarNav from '~/ide/components/ide_sidebar_nav.vue';
 import CollapsibleSidebar from '~/ide/components/panes/collapsible_sidebar.vue';
 import { createStore } from '~/ide/stores';
 import paneModule from '~/ide/stores/modules/pane';
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 describe('ide/components/panes/collapsible_sidebar.vue', () => {
   let wrapper;
@@ -17,7 +17,6 @@ describe('ide/components/panes/collapsible_sidebar.vue', () => {
 
   const createComponent = (props) => {
     wrapper = shallowMount(CollapsibleSidebar, {
-      localVue,
       store,
       propsData: {
         extensionTabs: [],
@@ -46,7 +45,7 @@ describe('ide/components/panes/collapsible_sidebar.vue', () => {
     let extensionTabs;
 
     beforeEach(() => {
-      const FakeComponent = localVue.component(fakeComponentName, {
+      const FakeComponent = Vue.component(fakeComponentName, {
         render: () => null,
       });
 

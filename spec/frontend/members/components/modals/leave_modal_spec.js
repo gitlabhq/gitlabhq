@@ -1,8 +1,8 @@
 import { GlModal, GlForm } from '@gitlab/ui';
 import { within } from '@testing-library/dom';
-import { mount, createLocalVue, createWrapper } from '@vue/test-utils';
+import { mount, createWrapper } from '@vue/test-utils';
 import { cloneDeep } from 'lodash';
-import { nextTick } from 'vue';
+import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 import LeaveModal from '~/members/components/modals/leave_modal.vue';
 import { LEAVE_MODAL_ID, MEMBER_TYPES } from '~/members/constants';
@@ -12,8 +12,7 @@ import { member } from '../../mock_data';
 
 jest.mock('~/lib/utils/csrf', () => ({ token: 'mock-csrf-token' }));
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 describe('LeaveModal', () => {
   let wrapper;
@@ -34,7 +33,6 @@ describe('LeaveModal', () => {
 
   const createComponent = (propsData = {}, state) => {
     wrapper = mount(LeaveModal, {
-      localVue,
       store: createStore(state),
       provide: {
         namespace: MEMBER_TYPES.user,

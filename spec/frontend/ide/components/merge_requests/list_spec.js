@@ -1,13 +1,13 @@
 import { GlLoadingIcon } from '@gitlab/ui';
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
+import Vue from 'vue';
 import Vuex from 'vuex';
 import Item from '~/ide/components/merge_requests/item.vue';
 import List from '~/ide/components/merge_requests/list.vue';
 import TokenedInput from '~/ide/components/shared/tokened_input.vue';
 import { mergeRequests as mergeRequestsMock } from '../../mock_data';
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 describe('IDE merge requests list', () => {
   let wrapper;
@@ -41,7 +41,6 @@ describe('IDE merge requests list', () => {
 
     wrapper = shallowMount(List, {
       store: fakeStore,
-      localVue,
     });
   };
 

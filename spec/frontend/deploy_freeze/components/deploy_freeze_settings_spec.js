@@ -1,4 +1,5 @@
-import { createLocalVue, shallowMount } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
+import Vue from 'vue';
 import Vuex from 'vuex';
 import DeployFreezeModal from '~/deploy_freeze/components/deploy_freeze_modal.vue';
 import DeployFreezeSettings from '~/deploy_freeze/components/deploy_freeze_settings.vue';
@@ -6,8 +7,7 @@ import DeployFreezeTable from '~/deploy_freeze/components/deploy_freeze_table.vu
 import createStore from '~/deploy_freeze/store';
 import { timezoneDataFixture } from '../helpers';
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 describe('Deploy freeze settings', () => {
   let wrapper;
@@ -20,7 +20,6 @@ describe('Deploy freeze settings', () => {
     });
     jest.spyOn(store, 'dispatch').mockImplementation();
     wrapper = shallowMount(DeployFreezeSettings, {
-      localVue,
       store,
     });
   });

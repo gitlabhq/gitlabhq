@@ -1,12 +1,12 @@
 import { GlButton } from '@gitlab/ui';
-import { createLocalVue, shallowMount, mount } from '@vue/test-utils';
+import { shallowMount, mount } from '@vue/test-utils';
+import Vue from 'vue';
 import Vuex from 'vuex';
 import NoChanges from '~/diffs/components/no_changes.vue';
 import { createStore } from '~/mr_notes/stores';
 import diffsMockData from '../mock_data/merge_request_diffs';
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 const TEST_TARGET_BRANCH = 'foo';
 const TEST_SOURCE_BRANCH = 'dev/update';
@@ -17,7 +17,6 @@ describe('Diff no changes empty state', () => {
 
   function createComponent(mountFn = shallowMount) {
     wrapper = mountFn(NoChanges, {
-      localVue,
       store,
       propsData: {
         changesEmptyStateIllustration: '',

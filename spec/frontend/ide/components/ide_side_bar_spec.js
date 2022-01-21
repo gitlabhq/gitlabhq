@@ -1,5 +1,6 @@
 import { GlSkeletonLoading } from '@gitlab/ui';
-import { mount, createLocalVue } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
+import Vue from 'vue';
 import Vuex from 'vuex';
 import waitForPromises from 'helpers/wait_for_promises';
 import IdeReview from '~/ide/components/ide_review.vue';
@@ -10,8 +11,7 @@ import { leftSidebarViews } from '~/ide/constants';
 import { createStore } from '~/ide/stores';
 import { projectData } from '../mock_data';
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 describe('IdeSidebar', () => {
   let wrapper;
@@ -26,7 +26,6 @@ describe('IdeSidebar', () => {
 
     return mount(IdeSidebar, {
       store,
-      localVue,
     });
   }
 

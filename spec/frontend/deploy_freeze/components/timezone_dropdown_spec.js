@@ -1,12 +1,12 @@
 import { GlDropdownItem, GlDropdown } from '@gitlab/ui';
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
+import Vue from 'vue';
 import Vuex from 'vuex';
 import createStore from '~/deploy_freeze/store';
 import TimezoneDropdown from '~/vue_shared/components/timezone_dropdown.vue';
 import { findTzByName, formatTz, timezoneDataFixture } from '../helpers';
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 describe('Deploy freeze timezone dropdown', () => {
   let wrapper;
@@ -19,7 +19,6 @@ describe('Deploy freeze timezone dropdown', () => {
     });
     wrapper = shallowMount(TimezoneDropdown, {
       store,
-      localVue,
       propsData: {
         value: selectedTimezone,
         timezoneData: timezoneDataFixture,

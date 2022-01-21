@@ -1,5 +1,6 @@
 import { GlButton } from '@gitlab/ui';
-import { createLocalVue, shallowMount } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
+import Vue from 'vue';
 import Vuex from 'vuex';
 import TerminalSession from '~/ide/components/terminal/session.vue';
 import Terminal from '~/ide/components/terminal/terminal.vue';
@@ -13,8 +14,7 @@ import {
 
 const TEST_TERMINAL_PATH = 'terminal/path';
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 describe('IDE TerminalSession', () => {
   let wrapper;
@@ -33,7 +33,6 @@ describe('IDE TerminalSession', () => {
     });
 
     wrapper = shallowMount(TerminalSession, {
-      localVue,
       store,
       ...options,
     });

@@ -99,7 +99,10 @@ export default {
     allRunnersCount: {
       ...runnersCountSmartQuery,
       variables() {
-        return this.countVariables;
+        return {
+          ...this.countVariables,
+          type: null,
+        };
       },
     },
     instanceRunnersCount: {

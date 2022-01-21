@@ -7,7 +7,8 @@ import {
   GlAlert,
   GlSprintf,
 } from '@gitlab/ui';
-import { createLocalVue, shallowMount } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
+import Vue from 'vue';
 import Vuex from 'vuex';
 import {
   severityLevel,
@@ -27,8 +28,7 @@ import Tracking from '~/tracking';
 
 jest.mock('~/flash');
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 describe('ErrorDetails', () => {
   let store;
@@ -53,7 +53,6 @@ describe('ErrorDetails', () => {
   function mountComponent() {
     wrapper = shallowMount(ErrorDetails, {
       stubs: { GlButton, GlSprintf },
-      localVue,
       store,
       mocks,
       propsData: {

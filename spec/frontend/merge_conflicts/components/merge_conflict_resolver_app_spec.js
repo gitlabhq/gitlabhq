@@ -1,5 +1,6 @@
 import { GlSprintf } from '@gitlab/ui';
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
+import Vue from 'vue';
 import Vuex from 'vuex';
 import InlineConflictLines from '~/merge_conflicts/components/inline_conflict_lines.vue';
 import ParallelConflictLines from '~/merge_conflicts/components/parallel_conflict_lines.vue';
@@ -8,8 +9,7 @@ import { createStore } from '~/merge_conflicts/store';
 import { decorateFiles } from '~/merge_conflicts/utils';
 import { conflictsMock } from '../mock_data';
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 describe('Merge Conflict Resolver App', () => {
   let wrapper;

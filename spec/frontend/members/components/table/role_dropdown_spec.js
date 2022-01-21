@@ -1,8 +1,8 @@
 import { GlDropdown, GlDropdownItem } from '@gitlab/ui';
 import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
 import { within } from '@testing-library/dom';
-import { mount, createWrapper, createLocalVue } from '@vue/test-utils';
-import { nextTick } from 'vue';
+import { mount, createWrapper } from '@vue/test-utils';
+import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 import waitForPromises from 'helpers/wait_for_promises';
 import { BV_DROPDOWN_SHOW } from '~/lib/utils/constants';
@@ -10,8 +10,7 @@ import RoleDropdown from '~/members/components/table/role_dropdown.vue';
 import { MEMBER_TYPES } from '~/members/constants';
 import { member } from '../../mock_data';
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 describe('RoleDropdown', () => {
   let wrapper;
@@ -42,7 +41,6 @@ describe('RoleDropdown', () => {
         permissions: {},
         ...propsData,
       },
-      localVue,
       store: createStore(),
       mocks: {
         $toast,

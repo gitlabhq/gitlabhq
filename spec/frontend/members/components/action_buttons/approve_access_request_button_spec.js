@@ -1,5 +1,6 @@
 import { GlButton, GlForm } from '@gitlab/ui';
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
+import Vue from 'vue';
 import Vuex from 'vuex';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import ApproveAccessRequestButton from '~/members/components/action_buttons/approve_access_request_button.vue';
@@ -7,8 +8,7 @@ import { MEMBER_TYPES } from '~/members/constants';
 
 jest.mock('~/lib/utils/csrf', () => ({ token: 'mock-csrf-token' }));
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 describe('ApproveAccessRequestButton', () => {
   let wrapper;
@@ -29,7 +29,6 @@ describe('ApproveAccessRequestButton', () => {
 
   const createComponent = (propsData = {}, state) => {
     wrapper = shallowMount(ApproveAccessRequestButton, {
-      localVue,
       store: createStore(state),
       provide: {
         namespace: MEMBER_TYPES.accessRequest,

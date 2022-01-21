@@ -1,10 +1,10 @@
-import { createLocalVue, shallowMount } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
+import Vue from 'vue';
 import Vuex from 'vuex';
 import CiVariableSettings from '~/ci_variable_list/components/ci_variable_settings.vue';
 import createStore from '~/ci_variable_list/store';
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 describe('Ci variable table', () => {
   let wrapper;
@@ -16,7 +16,6 @@ describe('Ci variable table', () => {
     store.state.isGroup = groupState;
     jest.spyOn(store, 'dispatch').mockImplementation();
     wrapper = shallowMount(CiVariableSettings, {
-      localVue,
       store,
     });
   };

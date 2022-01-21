@@ -5,7 +5,7 @@ module API
     # == RateLimiter
     #
     # Helper that checks if the rate limit for a given endpoint is throttled by calling the
-    # Gitlab::ApplicationRateLimiter class. If the action is throttled for the current user, the request
+    # Gitlab::ApplicationRateLimiter module. If the action is throttled for the current user, the request
     # will be logged and an error message will be rendered with a Too Many Requests response status.
     # See app/controllers/concerns/check_rate_limit.rb for Rails controllers version
     module RateLimiter

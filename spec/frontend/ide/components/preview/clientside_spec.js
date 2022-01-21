@@ -1,5 +1,6 @@
 import { GlLoadingIcon } from '@gitlab/ui';
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
+import Vue from 'vue';
 import smooshpack from 'smooshpack';
 import Vuex from 'vuex';
 import Clientside from '~/ide/components/preview/clientside.vue';
@@ -9,8 +10,7 @@ jest.mock('smooshpack', () => ({
   Manager: jest.fn(),
 }));
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 const dummyPackageJson = () => ({
   raw: JSON.stringify({
@@ -67,7 +67,6 @@ describe('IDE clientside preview', () => {
 
     wrapper = shallowMount(Clientside, {
       store,
-      localVue,
     });
   };
 

@@ -1,13 +1,11 @@
 import { getByRole } from '@testing-library/dom';
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
 import { stubComponent } from 'helpers/stub_component';
 import DraftNote from '~/batch_comments/components/draft_note.vue';
 import { createStore } from '~/batch_comments/stores';
 import NoteableNote from '~/notes/components/noteable_note.vue';
 import '~/behaviors/markdown/render_gfm';
 import { createDraft } from '../mock_data';
-
-const localVue = createLocalVue();
 
 const NoteableNoteStub = stubComponent(NoteableNote, {
   template: `
@@ -31,10 +29,9 @@ describe('Batch comments draft note component', () => {
   const getList = () => getByRole(wrapper.element, 'list');
 
   const createComponent = (propsData = { draft }) => {
-    wrapper = shallowMount(localVue.extend(DraftNote), {
+    wrapper = shallowMount(DraftNote, {
       store,
       propsData,
-      localVue,
       stubs: {
         NoteableNote: NoteableNoteStub,
       },

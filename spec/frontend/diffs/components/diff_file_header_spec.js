@@ -1,4 +1,5 @@
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
+import Vue from 'vue';
 import { cloneDeep } from 'lodash';
 import Vuex from 'vuex';
 
@@ -37,8 +38,7 @@ const diffFile = Object.freeze(
   }),
 );
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 describe('DiffFileHeader component', () => {
   let wrapper;
@@ -103,7 +103,6 @@ describe('DiffFileHeader component', () => {
         ...props,
       },
       ...options,
-      localVue,
       store,
     });
   };

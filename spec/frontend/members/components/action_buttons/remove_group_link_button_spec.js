@@ -1,13 +1,13 @@
 import { GlButton } from '@gitlab/ui';
-import { mount, createLocalVue } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
+import Vue from 'vue';
 import Vuex from 'vuex';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import RemoveGroupLinkButton from '~/members/components/action_buttons/remove_group_link_button.vue';
 import { MEMBER_TYPES } from '~/members/constants';
 import { group } from '../../mock_data';
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 describe('RemoveGroupLinkButton', () => {
   let wrapper;
@@ -29,7 +29,6 @@ describe('RemoveGroupLinkButton', () => {
 
   const createComponent = () => {
     wrapper = mount(RemoveGroupLinkButton, {
-      localVue,
       store: createStore(),
       provide: {
         namespace: MEMBER_TYPES.group,

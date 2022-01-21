@@ -1,11 +1,11 @@
 import { GlButton } from '@gitlab/ui';
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
+import Vue from 'vue';
 import Vuex from 'vuex';
 import ServiceCredentialsForm from '~/create_cluster/eks_cluster/components/service_credentials_form.vue';
 import eksClusterState from '~/create_cluster/eks_cluster/store/state';
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 describe('ServiceCredentialsForm', () => {
   let vm;
@@ -33,7 +33,6 @@ describe('ServiceCredentialsForm', () => {
         createRoleArnHelpPath: '',
         externalLinkIcon: '',
       },
-      localVue,
       store,
     });
   });

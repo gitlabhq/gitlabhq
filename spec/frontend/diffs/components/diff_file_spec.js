@@ -1,6 +1,6 @@
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
-import { nextTick } from 'vue';
+import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 
 import DiffContentComponent from 'jh_else_ce/diffs/components/diff_content.vue';
@@ -70,9 +70,7 @@ function markFileToBeRendered(store, index = 0) {
 }
 
 function createComponent({ file, first = false, last = false, options = {}, props = {} }) {
-  const localVue = createLocalVue();
-
-  localVue.use(Vuex);
+  Vue.use(Vuex);
 
   const store = new Vuex.Store({
     ...createNotesStore(),
@@ -85,7 +83,6 @@ function createComponent({ file, first = false, last = false, options = {}, prop
 
   const wrapper = shallowMount(DiffFileComponent, {
     store,
-    localVue,
     propsData: {
       file,
       canCurrentUserFork: false,
@@ -98,7 +95,6 @@ function createComponent({ file, first = false, last = false, options = {}, prop
   });
 
   return {
-    localVue,
     wrapper,
     store,
   };

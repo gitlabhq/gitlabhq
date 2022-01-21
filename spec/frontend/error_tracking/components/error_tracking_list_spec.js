@@ -1,5 +1,6 @@
 import { GlEmptyState, GlLoadingIcon, GlFormInput, GlPagination, GlDropdown } from '@gitlab/ui';
-import { createLocalVue, mount } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
+import Vue from 'vue';
 import Vuex from 'vuex';
 import stubChildren from 'helpers/stub_children';
 import ErrorTrackingActions from '~/error_tracking/components/error_tracking_actions.vue';
@@ -8,8 +9,7 @@ import { trackErrorListViewsOptions, trackErrorStatusUpdateOptions } from '~/err
 import Tracking from '~/tracking';
 import errorsList from './list_mock.json';
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 describe('ErrorTrackingList', () => {
   let store;
@@ -32,7 +32,6 @@ describe('ErrorTrackingList', () => {
     stubs = {},
   } = {}) {
     wrapper = mount(ErrorTrackingList, {
-      localVue,
       store,
       propsData: {
         indexPath: '/path',

@@ -1,5 +1,5 @@
 import { GlBadge, GlPagination, GlTable } from '@gitlab/ui';
-import { createLocalVue } from '@vue/test-utils';
+import Vue from 'vue';
 import Vuex from 'vuex';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import { mountExtended, extendedWrapper } from 'helpers/vue_test_utils_helper';
@@ -28,8 +28,7 @@ import {
   pagination,
 } from '../../mock_data';
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 describe('MembersTable', () => {
   let wrapper;
@@ -56,7 +55,6 @@ describe('MembersTable', () => {
 
   const createComponent = (state, provide = {}) => {
     wrapper = mountExtended(MembersTable, {
-      localVue,
       propsData: {
         tabQueryParamValue: TAB_QUERY_PARAM_VALUES.invite,
       },

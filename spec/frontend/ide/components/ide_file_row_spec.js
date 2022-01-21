@@ -1,12 +1,12 @@
-import { createLocalVue, mount } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
+import Vue from 'vue';
 import Vuex from 'vuex';
 import FileRowExtra from '~/ide/components/file_row_extra.vue';
 import IdeFileRow from '~/ide/components/ide_file_row.vue';
 import { createStore } from '~/ide/stores';
 import FileRow from '~/vue_shared/components/file_row.vue';
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 const TEST_EXTRA_PROPS = {
   testattribute: 'abc',
@@ -30,7 +30,6 @@ describe('Ide File Row component', () => {
         ...props,
       },
       store: createStore(),
-      localVue,
       ...options,
     });
   };

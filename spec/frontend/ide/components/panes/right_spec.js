@@ -1,4 +1,4 @@
-import { createLocalVue, shallowMount } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
 import Vuex from 'vuex';
 import CollapsibleSidebar from '~/ide/components/panes/collapsible_sidebar.vue';
@@ -7,8 +7,7 @@ import { rightSidebarViews } from '~/ide/constants';
 import { createStore } from '~/ide/stores';
 import extendStore from '~/ide/stores/extend';
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 describe('ide/components/panes/right.vue', () => {
   let wrapper;
@@ -18,7 +17,6 @@ describe('ide/components/panes/right.vue', () => {
     extendStore(store, document.createElement('div'));
 
     wrapper = shallowMount(RightPane, {
-      localVue,
       store,
       propsData: {
         ...props,

@@ -1,5 +1,5 @@
 import { GlFormCheckbox } from '@gitlab/ui';
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
 import Vuex from 'vuex';
 
@@ -7,8 +7,7 @@ import EksClusterConfigurationForm from '~/create_cluster/eks_cluster/components
 import eksClusterFormState from '~/create_cluster/eks_cluster/store/state';
 import clusterDropdownStoreState from '~/create_cluster/store/cluster_dropdown/state';
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 describe('EksClusterConfigurationForm', () => {
   let store;
@@ -151,7 +150,6 @@ describe('EksClusterConfigurationForm', () => {
 
   const buildWrapper = () => {
     vm = shallowMount(EksClusterConfigurationForm, {
-      localVue,
       store,
       propsData: {
         gitlabManagedClusterHelpPath: '',

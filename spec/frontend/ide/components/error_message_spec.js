@@ -1,10 +1,10 @@
 import { GlLoadingIcon } from '@gitlab/ui';
-import { mount, createLocalVue } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
+import Vue from 'vue';
 import Vuex from 'vuex';
 import ErrorMessage from '~/ide/components/error_message.vue';
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 describe('IDE error message component', () => {
   let wrapper;
@@ -25,7 +25,6 @@ describe('IDE error message component', () => {
         },
       },
       store: fakeStore,
-      localVue,
     });
   };
 

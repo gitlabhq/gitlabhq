@@ -1,4 +1,5 @@
-import { mount, createLocalVue } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
+import Vue from 'vue';
 import Vuex from 'vuex';
 import Item from '~/ide/components/merge_requests/item.vue';
 import { createRouter } from '~/ide/ide_router';
@@ -11,8 +12,7 @@ const TEST_ITEM = {
 };
 
 describe('IDE merge request item', () => {
-  const localVue = createLocalVue();
-  localVue.use(Vuex);
+  Vue.use(Vuex);
 
   let wrapper;
   let store;
@@ -28,7 +28,6 @@ describe('IDE merge request item', () => {
         currentProjectId: TEST_ITEM.projectPathWithNamespace,
         ...props,
       },
-      localVue,
       router,
       store,
     });

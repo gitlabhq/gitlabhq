@@ -1,12 +1,12 @@
 import { GlFormInput, GlButton } from '@gitlab/ui';
-import { createLocalVue, shallowMount } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
+import Vue from 'vue';
 import Vuex from 'vuex';
 import ErrorTrackingForm from '~/error_tracking_settings/components/error_tracking_form.vue';
 import createStore from '~/error_tracking_settings/store';
 import { defaultProps } from '../mock';
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 describe('error tracking settings form', () => {
   let wrapper;
@@ -14,7 +14,6 @@ describe('error tracking settings form', () => {
 
   function mountComponent() {
     wrapper = shallowMount(ErrorTrackingForm, {
-      localVue,
       store,
       propsData: defaultProps,
     });

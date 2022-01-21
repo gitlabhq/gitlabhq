@@ -1,5 +1,6 @@
 import { GlAlert, GlEmptyState, GlLoadingIcon } from '@gitlab/ui';
-import { mount, createLocalVue } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
+import Vue from 'vue';
 import MockAdapter from 'axios-mock-adapter';
 import Vuex from 'vuex';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -13,8 +14,7 @@ import axios from '~/lib/utils/axios_utils';
 import TablePagination from '~/vue_shared/components/pagination/table_pagination.vue';
 import { getRequestData } from '../mock_data';
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 describe('Feature flags', () => {
   const mockData = {
@@ -45,7 +45,6 @@ describe('Feature flags', () => {
   const factory = (provide = mockData, fn = mount) => {
     store = createStore(mockState);
     wrapper = fn(FeatureFlagsComponent, {
-      localVue,
       store,
       provide,
       stubs: {

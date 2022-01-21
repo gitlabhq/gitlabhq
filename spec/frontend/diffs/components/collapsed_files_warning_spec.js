@@ -1,5 +1,5 @@
-import { shallowMount, mount, createLocalVue } from '@vue/test-utils';
-import { nextTick } from 'vue';
+import { shallowMount, mount } from '@vue/test-utils';
+import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 import CollapsedFilesWarning from '~/diffs/components/collapsed_files_warning.vue';
 import { CENTERED_LIMITED_CONTAINER_CLASSES, EVT_EXPAND_ALL_FILES } from '~/diffs/constants';
@@ -23,11 +23,10 @@ async function files(store, count) {
 }
 
 describe('CollapsedFilesWarning', () => {
-  const localVue = createLocalVue();
   let store;
   let wrapper;
 
-  localVue.use(Vuex);
+  Vue.use(Vuex);
 
   const getAlertActionButton = () =>
     wrapper.find(CollapsedFilesWarning).find('button.gl-alert-action:first-child');
@@ -43,7 +42,6 @@ describe('CollapsedFilesWarning', () => {
 
     wrapper = mounter(CollapsedFilesWarning, {
       propsData: { ...propsData, ...props },
-      localVue,
       store,
     });
   };

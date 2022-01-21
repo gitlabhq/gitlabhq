@@ -1,5 +1,6 @@
 import { GlDropdown, GlDropdownItem, GlSearchBoxByType, GlLoadingIcon } from '@gitlab/ui';
-import { mount, createLocalVue } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
+import Vue from 'vue';
 import Vuex from 'vuex';
 import Api from '~/api';
 import GitlabUserList from '~/feature_flags/components/strategies/gitlab_user_list.vue';
@@ -12,15 +13,13 @@ const DEFAULT_PROPS = {
   strategy: userListStrategy,
 };
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 describe('~/feature_flags/components/strategies/gitlab_user_list.vue', () => {
   let wrapper;
 
   const factory = (props = {}) =>
     mount(GitlabUserList, {
-      localVue,
       store: createStore({ projectId: '1' }),
       propsData: { ...DEFAULT_PROPS, ...props },
     });

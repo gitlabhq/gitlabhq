@@ -25707,7 +25707,7 @@ CREATE UNIQUE INDEX index_ci_runner_namespaces_on_runner_id_and_namespace_id ON 
 
 CREATE INDEX index_ci_runner_projects_on_project_id ON ci_runner_projects USING btree (project_id);
 
-CREATE INDEX index_ci_runner_projects_on_runner_id ON ci_runner_projects USING btree (runner_id);
+CREATE INDEX index_ci_runner_projects_on_runner_id_and_project_id ON ci_runner_projects USING btree (runner_id, project_id);
 
 CREATE INDEX index_ci_runners_on_active ON ci_runners USING btree (active, id);
 
@@ -30630,9 +30630,6 @@ ALTER TABLE ONLY evidences
 
 ALTER TABLE ONLY jira_imports
     ADD CONSTRAINT fk_rails_63cbe52ada FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY vulnerability_occurrence_pipelines
-    ADD CONSTRAINT fk_rails_6421e35d7d FOREIGN KEY (pipeline_id) REFERENCES ci_pipelines(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY group_deploy_tokens
     ADD CONSTRAINT fk_rails_6477b01f6b FOREIGN KEY (deploy_token_id) REFERENCES deploy_tokens(id) ON DELETE CASCADE;

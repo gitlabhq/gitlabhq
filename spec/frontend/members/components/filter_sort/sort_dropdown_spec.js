@@ -1,13 +1,13 @@
 import { GlSorting, GlSortingItem } from '@gitlab/ui';
-import { mount, createLocalVue } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
+import Vue from 'vue';
 import Vuex from 'vuex';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import * as urlUtilities from '~/lib/utils/url_utility';
 import SortDropdown from '~/members/components/filter_sort/sort_dropdown.vue';
 import { MEMBER_TYPES } from '~/members/constants';
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 describe('SortDropdown', () => {
   let wrapper;
@@ -35,7 +35,6 @@ describe('SortDropdown', () => {
     });
 
     wrapper = mount(SortDropdown, {
-      localVue,
       provide: {
         sourceId: 1,
         namespace: MEMBER_TYPES.user,

@@ -1,4 +1,5 @@
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
+import Vue from 'vue';
 import Vuex from 'vuex';
 import waitForPromises from 'helpers/wait_for_promises';
 import { TEST_HOST } from 'spec/test_constants';
@@ -9,8 +10,7 @@ import TerminalView from '~/ide/components/terminal/view.vue';
 const TEST_HELP_PATH = `${TEST_HOST}/help`;
 const TEST_SVG_PATH = `${TEST_HOST}/illustration.svg`;
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 describe('IDE TerminalView', () => {
   let state;
@@ -30,7 +30,7 @@ describe('IDE TerminalView', () => {
       },
     });
 
-    wrapper = shallowMount(TerminalView, { localVue, store });
+    wrapper = shallowMount(TerminalView, { store });
 
     // Uses deferred components, so wait for those to load...
     await waitForPromises();

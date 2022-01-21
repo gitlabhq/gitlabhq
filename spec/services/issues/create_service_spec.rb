@@ -17,7 +17,7 @@ RSpec.describe Issues::CreateService do
 
       expect(described_class.rate_limiter_scoped_and_keyed.key).to eq(:issues_create)
       expect(described_class.rate_limiter_scoped_and_keyed.opts[:scope]).to eq(%i[project current_user external_author])
-      expect(described_class.rate_limiter_scoped_and_keyed.rate_limiter_klass).to eq(Gitlab::ApplicationRateLimiter)
+      expect(described_class.rate_limiter_scoped_and_keyed.rate_limiter).to eq(Gitlab::ApplicationRateLimiter)
     end
   end
 

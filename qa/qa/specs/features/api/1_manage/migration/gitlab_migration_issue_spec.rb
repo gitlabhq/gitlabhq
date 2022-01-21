@@ -40,13 +40,13 @@ module QA
           testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347608'
         ) do
           expect_import_finished
+          expect(imported_issues.count).to eq(1)
 
           aggregate_failures do
-            expect(imported_issues.count).to eq(1)
             expect(imported_issue).to eq(source_issue.reload!)
 
             expect(imported_comments.count).to eq(1)
-            expect(imported_comments.first[:body]).to include(source_comment[:body])
+            expect(imported_comments.first&.fetch(:body)).to include(source_comment[:body])
           end
         end
       end

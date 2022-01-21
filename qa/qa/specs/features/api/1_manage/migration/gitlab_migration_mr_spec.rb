@@ -52,9 +52,9 @@ module QA
           testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348478'
         ) do
           expect_import_finished
+          expect(imported_mrs.count).to eq(1)
 
           aggregate_failures do
-            expect(imported_mrs.count).to eq(1)
             # TODO: remove custom comparison after member migration is implemented
             # https://gitlab.com/gitlab-org/gitlab/-/issues/341886
             expect(imported_mr.comparable.except(:author)).to eq(source_mr.reload!.comparable.except(:author))

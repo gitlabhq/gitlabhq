@@ -1,11 +1,11 @@
 import { GlToggle, GlButton } from '@gitlab/ui';
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
+import Vue from 'vue';
 import Vuex from 'vuex';
 import IntegrationForm from '~/clusters/forms/components/integration_form.vue';
 import { createStore } from '~/clusters/forms/stores/index';
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 describe('ClusterIntegrationForm', () => {
   let wrapper;
@@ -19,7 +19,6 @@ describe('ClusterIntegrationForm', () => {
 
   const createWrapper = (storeValues = defaultStoreValues) => {
     wrapper = shallowMount(IntegrationForm, {
-      localVue,
       store: createStore(storeValues),
       provide: {
         autoDevopsHelpPath: 'topics/autodevops/index',

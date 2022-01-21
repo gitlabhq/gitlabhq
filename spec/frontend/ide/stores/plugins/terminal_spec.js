@@ -1,4 +1,4 @@
-import { createLocalVue } from '@vue/test-utils';
+import Vue from 'vue';
 import Vuex from 'vuex';
 import { TEST_HOST } from 'helpers/test_constants';
 import terminalModule from '~/ide/stores/modules/terminal';
@@ -11,8 +11,7 @@ const TEST_DATASET = {
   eeWebTerminalConfigHelpPath: `${TEST_HOST}/web/terminal/config/help`,
   eeWebTerminalRunnersHelpPath: `${TEST_HOST}/web/terminal/runners/help`,
 };
-const localVue = createLocalVue();
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 describe('ide/stores/extend', () => {
   let store;

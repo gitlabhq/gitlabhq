@@ -1,11 +1,11 @@
-import { createLocalVue, mount } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
+import Vue from 'vue';
 import Vuex from 'vuex';
 import CiVariableTable from '~/ci_variable_list/components/ci_variable_table.vue';
 import createStore from '~/ci_variable_list/store';
 import mockData from '../services/mock_data';
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 describe('Ci variable table', () => {
   let wrapper;
@@ -16,7 +16,6 @@ describe('Ci variable table', () => {
     jest.spyOn(store, 'dispatch').mockImplementation();
     wrapper = mount(CiVariableTable, {
       attachTo: document.body,
-      localVue,
       store,
     });
   };

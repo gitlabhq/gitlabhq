@@ -1,5 +1,6 @@
 import { GlButton } from '@gitlab/ui';
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
+import Vue from 'vue';
 import Vuex from 'vuex';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import ResendInviteButton from '~/members/components/action_buttons/resend_invite_button.vue';
@@ -7,8 +8,7 @@ import { MEMBER_TYPES } from '~/members/constants';
 
 jest.mock('~/lib/utils/csrf', () => ({ token: 'mock-csrf-token' }));
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 describe('ResendInviteButton', () => {
   let wrapper;
@@ -29,7 +29,6 @@ describe('ResendInviteButton', () => {
 
   const createComponent = (propsData = {}, state) => {
     wrapper = shallowMount(ResendInviteButton, {
-      localVue,
       store: createStore(state),
       provide: {
         namespace: MEMBER_TYPES.invite,

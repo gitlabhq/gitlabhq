@@ -1,13 +1,13 @@
 import { GlModal } from '@gitlab/ui';
-import { createLocalVue, mount } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
+import Vue from 'vue';
 import Vuex from 'vuex';
 import DeployFreezeTable from '~/deploy_freeze/components/deploy_freeze_table.vue';
 import createStore from '~/deploy_freeze/store';
 import { RECEIVE_FREEZE_PERIODS_SUCCESS } from '~/deploy_freeze/store/mutation_types';
 import { freezePeriodsFixture, timezoneDataFixture } from '../helpers';
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 describe('Deploy freeze table', () => {
   let wrapper;
@@ -21,7 +21,6 @@ describe('Deploy freeze table', () => {
     jest.spyOn(store, 'dispatch').mockImplementation();
     wrapper = mount(DeployFreezeTable, {
       attachTo: document.body,
-      localVue,
       store,
     });
   };

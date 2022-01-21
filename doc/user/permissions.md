@@ -97,13 +97,13 @@ The following table lists project permissions available for each role:
 | [Incident Management](../operations/incident_management/index.md):<br>Manage [escalation policies](../operations/incident_management/escalation_policies.md)                              |  |   |   | ✓          | ✓ |
 | [Issues](project/issues/index.md):<br>Add Labels                                                                                                                                          | ✓ (*16*) | ✓        | ✓         | ✓          | ✓     |
 | [Issues](project/issues/index.md):<br>Assign                                                                                                                                              | ✓ (*16*) | ✓        | ✓         | ✓          | ✓     |
-| [Issues](project/issues/index.md):<br>Create                                                                                                                                              | ✓        | ✓        | ✓         | ✓          | ✓     |
+| [Issues](project/issues/index.md):<br>Create (*19*)                                                                                                                                       | ✓        | ✓        | ✓         | ✓          | ✓     |
 | [Issues](project/issues/index.md):<br>Create [confidential issues](project/issues/confidential_issues.md)                                                                                 | ✓        | ✓        | ✓         | ✓          | ✓     |
 | [Issues](project/issues/index.md):<br>View [Design Management](project/issues/design_management.md) pages                                                                                 | ✓        | ✓        | ✓         | ✓          | ✓     |
 | [Issues](project/issues/index.md):<br>View related issues                                                                                                                                 | ✓        | ✓        | ✓         | ✓          | ✓     |
 | [Issues](project/issues/index.md):<br>Set weight                                                                                                                                          | ✓ (*16*) | ✓        | ✓         | ✓          | ✓     |
 | [Issues](project/issues/index.md):<br>View [confidential issues](project/issues/confidential_issues.md)                                                                                   | (*2*)    | ✓        | ✓         | ✓          | ✓     |
-| [Issues](project/issues/index.md):<br>Close / reopen                                                                                                                                      |          | ✓        | ✓         | ✓          | ✓     |
+| [Issues](project/issues/index.md):<br>Close / reopen (*20*)                                                                                                                               |          | ✓        | ✓         | ✓          | ✓     |
 | [Issues](project/issues/index.md):<br>Lock threads                                                                                                                                        |          | ✓        | ✓         | ✓          | ✓     |
 | [Issues](project/issues/index.md):<br>Manage related issues                                                                                                                               |          | ✓        | ✓         | ✓          | ✓     |
 | [Issues](project/issues/index.md):<br>Manage tracker                                                                                                                                      |          | ✓        | ✓         | ✓          | ✓     |
@@ -234,7 +234,10 @@ The following table lists project permissions available for each role:
 1. Guest users can only set metadata (for example, labels, assignees, or milestones)
    when creating an issue. They cannot change the metadata on existing issues.
 1. In GitLab 14.5 or later, Guests are not allowed to [create incidents](../operations/incident_management/incidents.md#incident-creation).
+   A guest who created an incident when they had the Reporter role or who is assigned to the incident can modify the title, description and metrics. They can also close and reopen the incident.
 1. In projects that accept contributions from external members, users can create, edit, and close their own merge requests.
+1. Authors and assignees of issues can modify the title and description even if they don't have the Reporter role.
+1. Authors and assignees can close and reopen issues even if they don't have the Reporter role.
 
 ## Project features permissions
 

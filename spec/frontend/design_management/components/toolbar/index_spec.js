@@ -1,12 +1,12 @@
 import { GlButton } from '@gitlab/ui';
-import { createLocalVue, shallowMount } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
+import Vue from 'vue';
 import VueRouter from 'vue-router';
 import DeleteButton from '~/design_management/components/delete_button.vue';
 import Toolbar from '~/design_management/components/toolbar/index.vue';
 import { DESIGNS_ROUTE_NAME } from '~/design_management/router/constants';
 
-const localVue = createLocalVue();
-localVue.use(VueRouter);
+Vue.use(VueRouter);
 const router = new VueRouter();
 
 const RouterLinkStub = {
@@ -28,7 +28,6 @@ describe('Design management toolbar component', () => {
     updatedAt.setHours(updatedAt.getHours() - 1);
 
     wrapper = shallowMount(Toolbar, {
-      localVue,
       router,
       propsData: {
         id: '1',

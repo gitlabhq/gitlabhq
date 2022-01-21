@@ -1,4 +1,5 @@
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
+import Vue from 'vue';
 import Vuex from 'vuex';
 import BoardNewIssue from '~/boards/components/board_new_issue.vue';
 import BoardNewItem from '~/boards/components/board_new_item.vue';
@@ -7,9 +8,7 @@ import eventHub from '~/boards/eventhub';
 
 import { mockList, mockGroupProjects } from '../mock_data';
 
-const localVue = createLocalVue();
-
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 const addListNewIssuesSpy = jest.fn().mockResolvedValue();
 const mockActions = { addListNewIssue: addListNewIssuesSpy };
@@ -20,7 +19,6 @@ const createComponent = ({
   getters = { isGroupBoard: () => true, isProjectBoard: () => false },
 } = {}) =>
   shallowMount(BoardNewIssue, {
-    localVue,
     store: new Vuex.Store({
       state,
       actions,
