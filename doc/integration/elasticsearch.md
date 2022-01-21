@@ -30,6 +30,12 @@ Elasticsearch and follows Elasticsearch's [End of Life Policy](https://www.elast
 When we change Elasticsearch supported versions in GitLab, we announce them in [deprecation notes](https://about.gitlab.com/handbook/marketing/blog/release-posts/#deprecations) in monthly release posts
 before we remove them.
 
+NOTE:
+We do not support
+[Amazon's OpenSearch](https://aws.amazon.com/blogs/opensource/opensearch-1-0-launches/)
+(a [fork of Elasticsearch](https://www.elastic.co/what-is/opensearch)).
+Follow our progress in [issue #327560](https://gitlab.com/gitlab-org/gitlab/-/issues/327560).
+
 ## System requirements
 
 Elasticsearch requires additional resources to those documented in the
