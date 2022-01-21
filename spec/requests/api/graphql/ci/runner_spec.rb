@@ -223,6 +223,29 @@ RSpec.describe 'Query.runner(id)' do
     end
   end
 
+  describe 'for group runner request' do
+    let(:query) do
+      %(
+        query {
+          runner(id: "gid://gitlab/Ci::Runner/#{active_group_runner.id}") {
+            groups {
+              nodes {
+                id
+              }
+            }
+          }
+        }
+      )
+    end
+
+    it 'retrieves groups field with expected value' do
+      post_graphql(query, current_user: user)
+
+      runner_data = graphql_data_at(:runner, :groups)
+      expect(runner_data).to eq 'nodes' => [{ 'id' => group.to_global_id.to_s }]
+    end
+  end
+
   describe 'for runner with status' do
     let_it_be(:stale_runner) { create(:ci_runner, description: 'Stale runner 1', created_at: 3.months.ago) }
     let_it_be(:never_contacted_instance_runner) { create(:ci_runner, description: 'Missing runner 1', created_at: 1.month.ago, contacted_at: nil) }
@@ -326,7 +349,13 @@ RSpec.describe 'Query.runner(id)' do
   describe 'by regular user' do
     let(:user) { create(:user) }
 
-    it_behaves_like 'retrieval by unauthorized user', :active_instance_runner
+    context 'on instance runner' do
+      it_behaves_like 'retrieval by unauthorized user', :active_instance_runner
+    end
+
+    context 'on group runner' do
+      it_behaves_like 'retrieval by unauthorized user', :active_group_runner
+    end
   end
 
   describe 'by non-admin user' do

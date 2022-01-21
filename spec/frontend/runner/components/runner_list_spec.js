@@ -6,6 +6,7 @@ import {
 } from 'helpers/vue_test_utils_helper';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import RunnerList from '~/runner/components/runner_list.vue';
+import RunnerEditButton from '~/runner/components/runner_edit_button.vue';
 import { runnersData } from '../mock_data';
 
 const mockRunners = runnersData.data.runners.nodes;
@@ -90,7 +91,7 @@ describe('RunnerList', () => {
     // Actions
     const actions = findCell({ fieldKey: 'actions' });
 
-    expect(actions.findByTestId('edit-runner').exists()).toBe(true);
+    expect(actions.findComponent(RunnerEditButton).exists()).toBe(true);
     expect(actions.findByTestId('toggle-active-runner').exists()).toBe(true);
   });
 

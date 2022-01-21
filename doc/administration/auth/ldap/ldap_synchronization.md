@@ -347,3 +347,7 @@ These metrics are meant to provide a baseline and performance may vary based on
 any number of factors. This benchmark was extreme and most instances don't
 have near this many users or groups. Disk speed, database performance,
 network and LDAP server response time affects these metrics.
+
+## Troubleshooting
+
+See our [administrator guide to troubleshooting LDAP](ldap-troubleshooting.md).

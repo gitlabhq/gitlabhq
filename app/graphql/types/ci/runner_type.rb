@@ -63,6 +63,8 @@ module Types
             description: 'Executor last advertised by the runner.',
             method: :executor_name,
             feature_flag: :graphql_ci_runner_executor
+      field :groups, ::Types::GroupType.connection_type, null: true,
+            description: 'Groups the runner is associated with. For group runners only.'
 
       def job_count
         # We limit to 1 above the JOB_COUNT_LIMIT to indicate that more items exist after JOB_COUNT_LIMIT
@@ -89,6 +91,24 @@ module Types
 
           ids.each do |id|
             loader.call(id, counts[id]&.count)
+          end
+        end
+      end
+
+      def groups
+        BatchLoader::GraphQL.for(runner.id).batch(key: :runner_groups) do |runner_ids, loader, args|
+          runner_and_namespace_ids =
+            ::Ci::RunnerNamespace
+              .where(runner_id: runner_ids)
+              .pluck(:runner_id, :namespace_id)
+
+          group_ids_by_runner_id = runner_and_namespace_ids.group_by(&:first).transform_values { |v| v.pluck(1) }
+          group_ids = runner_and_namespace_ids.pluck(1).uniq
+
+          groups = Group.where(id: group_ids).index_by(&:id)
+
+          runner_ids.each do |runner_id|
+            loader.call(runner_id, group_ids_by_runner_id[runner_id]&.map { |group_id| groups[group_id] })
           end
         end
       end

@@ -11,4 +11,11 @@ fragment RunnerDetailsShared on CiRunner {
   tagList
   createdAt
   status(legacyMode: null)
+  contactedAt
+  version
+  editAdminUrl
+  userPermissions {
+    updateRunner
+    deleteRunner
+  }
 }

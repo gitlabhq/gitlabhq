@@ -9,6 +9,7 @@ import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 
 import { captureException } from '~/runner/sentry_utils';
 import RunnerActionCell from '~/runner/components/cells/runner_actions_cell.vue';
+import RunnerEditButton from '~/runner/components/runner_edit_button.vue';
 import RunnerDeleteModal from '~/runner/components/runner_delete_modal.vue';
 import getGroupRunnersQuery from '~/runner/graphql/get_group_runners.query.graphql';
 import getRunnersQuery from '~/runner/graphql/get_runners.query.graphql';
@@ -33,7 +34,7 @@ describe('RunnerTypeCell', () => {
   const runnerDeleteMutationHandler = jest.fn();
   const runnerActionsUpdateMutationHandler = jest.fn();
 
-  const findEditBtn = () => wrapper.findByTestId('edit-runner');
+  const findEditBtn = () => wrapper.findComponent(RunnerEditButton);
   const findToggleActiveBtn = () => wrapper.findByTestId('toggle-active-runner');
   const findRunnerDeleteModal = () => wrapper.findComponent(RunnerDeleteModal);
   const findDeleteBtn = () => wrapper.findByTestId('delete-runner');

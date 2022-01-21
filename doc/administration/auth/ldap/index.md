@@ -468,7 +468,7 @@ If initially your LDAP configuration looked like:
      password: '123'
    ```
 
-1. Edit `/etc/gitlab/gitlab.rb` and remove the settings for `user_bn` and `password`.
+1. Edit `/etc/gitlab/gitlab.rb` and remove the settings for `user_dn` and `password`.
 
 1. [Reconfigure GitLab](../../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
 
@@ -502,7 +502,7 @@ If initially your LDAP configuration looked like:
     password: '123'
    ```
 
-1. Edit `config/gitlab.yaml` and remove the settings for `user_bn` and `password`.
+1. Edit `config/gitlab.yaml` and remove the settings for `user_dn` and `password`.
 
 1. [Restart GitLab](../../restart_gitlab.md#installations-from-source) for the changes to take effect.
 

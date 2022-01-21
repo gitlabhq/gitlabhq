@@ -20,7 +20,7 @@ export default {
 };
 </script>
 <template>
-  <div>
+  <span>
     <runner-tag
       v-for="tag in tagList"
       :key="tag"
@@ -28,5 +28,5 @@ export default {
       :tag="tag"
       :size="size"
     />
-  </div>
+  </span>
 </template>

@@ -30738,6 +30738,9 @@ msgstr ""
 msgid "Runners|Command to register runner"
 msgstr ""
 
+msgid "Runners|Configuration"
+msgstr ""
+
 msgid "Runners|Copy instructions"
 msgstr ""
 
@@ -30754,6 +30757,9 @@ msgid "Runners|Deploy GitLab Runner in AWS"
 msgstr ""
 
 msgid "Runners|Description"
+msgstr ""
+
+msgid "Runners|Details"
 msgstr ""
 
 msgid "Runners|Download and install binary"
@@ -30906,13 +30912,16 @@ msgstr ""
 msgid "Runners|Runners in this group: %{groupRunnersCount}"
 msgstr ""
 
+msgid "Runners|Runs untagged jobs"
+msgstr ""
+
 msgid "Runners|Shared runners are available to every project in a GitLab instance. If you want a runner to build only specific projects, restrict the project in the table below. After you restrict a runner to a project, you cannot change it back to a shared runner."
 msgstr ""
 
-msgid "Runners|Show Runner installation instructions"
+msgid "Runners|Show runner installation and registration instructions"
 msgstr ""
 
-msgid "Runners|Show runner installation and registration instructions"
+msgid "Runners|Show runner installation instructions"
 msgstr ""
 
 msgid "Runners|Something went wrong while fetching runner data."
@@ -32743,7 +32752,7 @@ msgstr ""
 msgid "Set up Jira Integration"
 msgstr ""
 
-msgid "Set up a %{type} Runner for a project"
+msgid "Set up a %{type} runner for a project"
 msgstr ""
 
 msgid "Set up a hardware device as a second factor to sign in."

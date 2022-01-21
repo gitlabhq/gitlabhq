@@ -22,9 +22,9 @@ describe('RunnerInstructions component', () => {
     wrapper.destroy();
   });
 
-  it('should show the "Show Runner installation instructions" button', () => {
+  it('should show the "Show runner installation instructions" button', () => {
     expect(findModalButton().exists()).toBe(true);
-    expect(findModalButton().text()).toBe('Show Runner installation instructions');
+    expect(findModalButton().text()).toBe('Show runner installation instructions');
   });
 
   it('should not render the modal once mounted', () => {

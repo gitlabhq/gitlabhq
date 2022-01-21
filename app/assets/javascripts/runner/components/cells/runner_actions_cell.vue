@@ -6,9 +6,9 @@ import runnerDeleteMutation from '~/runner/graphql/runner_delete.mutation.graphq
 import runnerActionsUpdateMutation from '~/runner/graphql/runner_actions_update.mutation.graphql';
 import { captureException } from '~/runner/sentry_utils';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import RunnerEditButton from '../runner_edit_button.vue';
 import RunnerDeleteModal from '../runner_delete_modal.vue';
 
-const I18N_EDIT = __('Edit');
 const I18N_PAUSE = __('Pause');
 const I18N_RESUME = __('Resume');
 const I18N_DELETE = s__('Runners|Delete runner');
@@ -19,6 +19,7 @@ export default {
   components: {
     GlButton,
     GlButtonGroup,
+    RunnerEditButton,
     RunnerDeleteModal,
   },
   directives: {
@@ -147,7 +148,6 @@ export default {
       captureException({ error, component: this.$options.name });
     },
   },
-  I18N_EDIT,
   I18N_DELETE,
 };
 </script>
@@ -161,14 +161,7 @@ export default {
 
       See https://gitlab.com/gitlab-org/gitlab/-/issues/334802
     -->
-    <gl-button
-      v-if="canUpdate && runner.editAdminUrl"
-      v-gl-tooltip.hover.viewport="$options.I18N_EDIT"
-      :href="runner.editAdminUrl"
-      :aria-label="$options.I18N_EDIT"
-      icon="pencil"
-      data-testid="edit-runner"
-    />
+    <runner-edit-button v-if="canUpdate && runner.editAdminUrl" :href="runner.editAdminUrl" />
     <gl-button
       v-if="canUpdate"
       v-gl-tooltip.hover.viewport="toggleActiveTitle"

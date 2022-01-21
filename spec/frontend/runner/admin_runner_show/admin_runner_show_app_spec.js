@@ -1,4 +1,5 @@
-import { createLocalVue, mount, shallowMount } from '@vue/test-utils';
+import Vue from 'vue';
+import { mount, shallowMount } from '@vue/test-utils';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -6,8 +7,9 @@ import { createAlert } from '~/flash';
 
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import RunnerHeader from '~/runner/components/runner_header.vue';
+import RunnerDetails from '~/runner/components/runner_details.vue';
 import getRunnerQuery from '~/runner/graphql/get_runner.query.graphql';
-import AdminRunnerEditApp from '~//runner/admin_runner_edit/admin_runner_edit_app.vue';
+import AdminRunnerShowApp from '~/runner/admin_runner_show/admin_runner_show_app.vue';
 import { captureException } from '~/runner/sentry_utils';
 
 import { runnerData } from '../mock_data';
@@ -18,18 +20,17 @@ jest.mock('~/runner/sentry_utils');
 const mockRunnerGraphqlId = runnerData.data.runner.id;
 const mockRunnerId = `${getIdFromGraphQLId(mockRunnerGraphqlId)}`;
 
-const localVue = createLocalVue();
-localVue.use(VueApollo);
+Vue.use(VueApollo);
 
-describe('AdminRunnerEditApp', () => {
+describe('AdminRunnerShowApp', () => {
   let wrapper;
   let mockRunnerQuery;
 
   const findRunnerHeader = () => wrapper.findComponent(RunnerHeader);
+  const findRunnerDetails = () => wrapper.findComponent(RunnerDetails);
 
-  const createComponentWithApollo = ({ props = {}, mountFn = shallowMount } = {}) => {
-    wrapper = mountFn(AdminRunnerEditApp, {
-      localVue,
+  const createComponent = ({ props = {}, mountFn = shallowMount } = {}) => {
+    wrapper = mountFn(AdminRunnerShowApp, {
       apolloProvider: createMockApollo([[getRunnerQuery, mockRunnerQuery]]),
       propsData: {
         runnerId: mockRunnerId,
@@ -49,36 +50,43 @@ describe('AdminRunnerEditApp', () => {
     wrapper.destroy();
   });
 
-  it('expect GraphQL ID to be requested', async () => {
-    await createComponentWithApollo();
+  describe('When showing runner details', () => {
+    beforeEach(async () => {
+      await createComponent({ mountFn: mount });
+    });
 
-    expect(mockRunnerQuery).toHaveBeenCalledWith({ id: mockRunnerGraphqlId });
-  });
+    it('expect GraphQL ID to be requested', async () => {
+      expect(mockRunnerQuery).toHaveBeenCalledWith({ id: mockRunnerGraphqlId });
+    });
 
-  it('displays the runner id and creation date', async () => {
-    await createComponentWithApollo({ mountFn: mount });
+    it('displays the runner header', async () => {
+      expect(findRunnerHeader().text()).toContain(`Runner #${mockRunnerId}`);
+    });
 
-    expect(findRunnerHeader().text()).toContain(`Runner #${mockRunnerId}`);
-    expect(findRunnerHeader().text()).toContain('created');
-  });
+    it('shows basic runner details', async () => {
+      const expected = `Details
+                        Description Instance runner
+                        Last contact Never contacted
+                        Version 1.0.0
+                        IP Address 127.0.0.1
+                        Configuration Runs untagged jobs
+                        Maximum job timeout None
+                        Tags None`.replace(/\s+/g, ' ');
 
-  it('displays the runner type and status', async () => {
-    await createComponentWithApollo({ mountFn: mount });
-
-    expect(findRunnerHeader().text()).toContain(`never contacted`);
-    expect(findRunnerHeader().text()).toContain(`shared`);
+      expect(findRunnerDetails().text()).toMatchInterpolatedText(expected);
+    });
   });
 
   describe('When there is an error', () => {
     beforeEach(async () => {
       mockRunnerQuery = jest.fn().mockRejectedValueOnce(new Error('Error!'));
-      await createComponentWithApollo();
+      await createComponent();
     });
 
     it('error is reported to sentry', () => {
       expect(captureException).toHaveBeenCalledWith({
         error: new Error('Network error: Error!'),
-        component: 'AdminRunnerEditApp',
+        component: 'AdminRunnerShowApp',
       });
     });
 

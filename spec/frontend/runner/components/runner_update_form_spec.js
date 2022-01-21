@@ -121,8 +121,18 @@ describe('RunnerUpdateForm', () => {
   it('Updates runner with no changes', async () => {
     await submitFormAndWait();
 
-    // Some fields are not submitted
-    const { ipAddress, runnerType, createdAt, status, ...submitted } = mockRunner;
+    // Some read-only fields are not submitted
+    const {
+      ipAddress,
+      runnerType,
+      createdAt,
+      status,
+      editAdminUrl,
+      contactedAt,
+      userPermissions,
+      version,
+      ...submitted
+    } = mockRunner;
 
     expectToHaveSubmittedRunnerContaining(submitted);
   });
