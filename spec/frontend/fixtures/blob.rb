@@ -7,7 +7,7 @@ RSpec.describe Projects::BlobController, '(JavaScript fixtures)', type: :control
 
   let(:namespace) { create(:namespace, name: 'frontend-fixtures' )}
   let(:project) { create(:project, :repository, namespace: namespace, path: 'branches-project') }
-  let(:user) { project.owner }
+  let(:user) { project.first_owner }
 
   render_views
 

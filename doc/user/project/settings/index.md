@@ -404,11 +404,17 @@ NOTE:
 Only project owners and administrators have the [permissions](../../permissions.md#project-members-permissions)
 to transfer a project.
 
-You can transfer an existing project into a [group](../../group/index.md) if:
+You can transfer an existing project into a [group](../../group/index.md).
 
-- You have at least **Maintainer** [role](../../permissions.md#project-members-permissions) in that group.
-- You're at least an **Owner** of the project to be transferred.
+Prerequisites:
+
+- You must have at least **Maintainer** [role](../../permissions.md#project-members-permissions) in that group.
+- You must be **Owner** of that project.
 - The group to which the project is being transferred to must allow creation of new projects.
+- The project must not contain any [container images](../../packages/container_registry/index.md#limitations).
+  - If you transfer a project to a different root namespace,
+    the project must not contain any
+    [NPM packages](../../packages/npm_registry/index.md#limitations).
 
 To transfer a project:
 
@@ -423,8 +429,8 @@ read what happens with the
 [redirects from the old project to the new one](../repository/index.md#what-happens-when-a-repository-path-changes).
 
 NOTE:
-GitLab administrators can use the administration interface to move any project to any
-namespace if needed.
+GitLab administrators can use the [administration interface](../../admin_area/index.md#administering-projects)
+to move any project to any namespace if needed.
 
 ##### Transferring a GitLab.com project to a different subscription tier
 

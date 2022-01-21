@@ -68,9 +68,13 @@ module Sidebars
             return ::Sidebars::NilMenuItem.new(item_id: :pipelines_editor)
           end
 
+          params = {
+            branch_name: context.current_ref || context.project.default_branch
+          }
+
           ::Sidebars::MenuItem.new(
             title: s_('Pipelines|Editor'),
-            link: project_ci_pipeline_editor_path(context.project),
+            link: project_ci_pipeline_editor_path(context.project, params),
             active_routes: { path: 'projects/ci/pipeline_editor#show' },
             item_id: :pipelines_editor
           )

@@ -47,6 +47,10 @@
     margin-bottom: $gl-spacing-scale-2;
   }
 
+  img {
+    max-width: 100%;
+  }
+
   img:not(.emoji) {
     margin: 0 0 8px;
   }
@@ -62,7 +66,6 @@
     min-width: inherit;
     min-height: inherit;
     background-color: inherit;
-    max-width: 100%;
   }
 
   &:not(.md) img:not(.emoji) {
@@ -375,7 +378,8 @@
     // Loose lists need bottom margin added back
     p ~ ol,
     p ~ ul {
-      margin-bottom: 16px;    }
+      margin-bottom: 16px;
+    }
   }
 
   ul:dir(rtl),

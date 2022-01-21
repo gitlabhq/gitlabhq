@@ -26,6 +26,7 @@ RSpec.describe 'Projects > Members > Member leaves project' do
 
     page.accept_confirm
 
+    wait_for_all_requests
     expect(find('.flash-notice')).to have_content "You left the \"#{project.full_name}\" project"
     expect(current_path).to eq(dashboard_projects_path)
     expect(project.users.exists?(user.id)).to be_falsey

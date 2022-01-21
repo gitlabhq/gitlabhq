@@ -91,6 +91,12 @@ RSpec.describe Banzai::Filter::TableOfContentsFilter do
         # ExternalLinkFilter (see https://gitlab.com/gitlab-org/gitlab/issues/26210)
         expect(doc.css('h1 a').first.attr('href')).to eq "##{CGI.escape('한글')}"
       end
+
+      it 'limits header href length with 255 characters' do
+        doc = filter(header(1, 'a' * 500))
+
+        expect(doc.css('h1 a').first.attr('href')).to eq "##{'a' * 255}"
+      end
     end
   end
 

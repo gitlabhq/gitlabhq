@@ -120,7 +120,7 @@ module GitalySetup
   end
 
   def build_gitaly
-    run_command(%w[make all git], env: env.merge('GIT_VERSION' => nil))
+    run_command(%w[make all WITH_BUNDLED_GIT=YesPlease], env: env.merge('GIT_VERSION' => nil))
   end
 
   def start_gitaly(toml = nil)
@@ -327,8 +327,8 @@ module GitalySetup
 
     message += "\nCheck log/gitaly-test.log for errors.\n"
 
-    unless ci?
-      message += "\nIf binaries are missing, try running `make -C tmp/tests/gitaly build git.`\n"
+    unless ENV['CI']
+      message += "\nIf binaries are missing, try running `make -C tmp/tests/gitaly all WITH_BUNDLED_GIT=YesPlease`.\n"
       message += "\nOtherwise, try running `rm -rf #{tmp_tests_gitaly_dir}`."
     end
 
@@ -336,7 +336,7 @@ module GitalySetup
   end
 
   def git_binary
-    File.join(tmp_tests_gitaly_dir, "_build", "deps", "git", "install", "bin", "git")
+    File.join(tmp_tests_gitaly_dir, "_build", "bin", "gitaly-git")
   end
 
   def gitaly_binary

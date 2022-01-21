@@ -32,7 +32,7 @@ module Banzai
 
         doc.xpath(XPATH).each do |node|
           if header_content = node.children.first
-            id = string_to_anchor(node.text)
+            id = string_to_anchor(node.text[0...255])
 
             uniq = headers[id] > 0 ? "-#{headers[id]}" : ''
             headers[id] += 1

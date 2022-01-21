@@ -107,23 +107,6 @@ You can combine the filter options. For example, to list only public projects wi
 1. Click the **Public** tab.
 1. Enter `score` in the **Filter by name...** input box.
 
-#### Projects pending deletion **(PREMIUM SELF)**
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/37014) in GitLab 13.3.
-> - [Tab renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/347468) from **Deleted projects** in GitLab 14.6.
-
-When delayed project deletion is [enabled for a group](../group/index.md#enable-delayed-project-deletion),
-projects within that group are not deleted immediately, but only after a delay. To access a list of all projects that are pending deletion:
-
-1. On the top bar, select **Menu > Projects > Explore projects**.
-1. Select the **Pending deletion** tab (in GitLab 14.6 and later) or the **Deleted projects** tab (GitLab 14.5 and earlier).
-
-Listed for each project is:
-
-- The time the project was marked for deletion.
-- The time the project is scheduled for final deletion.
-- A **Restore** link to stop the project being eventually deleted.
-
 ### Administering Users
 
 You can administer all users in the GitLab instance from the Admin Area's Users page:

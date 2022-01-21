@@ -6,7 +6,7 @@ RSpec.describe 'Commit (JavaScript fixtures)' do
   include JavaScriptFixturesHelpers
 
   let_it_be(:project) { create(:project, :repository) }
-  let_it_be(:user)    { project.owner }
+  let_it_be(:user)    { project.first_owner }
   let_it_be(:commit)  { project.commit("master") }
 
   before do

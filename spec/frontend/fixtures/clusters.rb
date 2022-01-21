@@ -8,7 +8,7 @@ RSpec.describe Projects::ClustersController, '(JavaScript fixtures)', type: :con
   let(:namespace) { create(:namespace, name: 'frontend-fixtures' )}
   let(:project) { create(:project, :repository, namespace: namespace) }
   let(:cluster) { create(:cluster, :provided_by_gcp, projects: [project]) }
-  let(:user) { project.owner }
+  let(:user) { project.first_owner }
 
   render_views
 

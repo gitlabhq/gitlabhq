@@ -7,7 +7,7 @@ RSpec.describe Projects::MergeRequestsController, '(JavaScript fixtures)', type:
 
   let(:namespace) { create(:namespace, name: 'frontend-fixtures' )}
   let(:project) { create(:project, :repository, namespace: namespace, path: 'merge-requests-project') }
-  let(:user) { project.owner }
+  let(:user) { project.first_owner }
 
   # rubocop: disable Layout/TrailingWhitespace
   let(:description) do

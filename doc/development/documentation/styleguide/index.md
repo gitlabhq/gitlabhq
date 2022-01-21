@@ -1151,7 +1151,8 @@ When you take screenshots:
 - **Review how the image renders on the page.** Preview the image locally or use the
 review app in the merge request. Make sure the image isn't blurry or overwhelming.
 - **Be consistent.** Coordinate screenshots with the other screenshots already on
-  a documentation page for a consistent reading experience.
+  a documentation page for a consistent reading experience. Ensure your navigation theme
+  is **Indigo** and the syntax highlighting theme is **Light**. These are the default preferences.
 
 ### Add callouts
 

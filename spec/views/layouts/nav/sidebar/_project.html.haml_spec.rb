@@ -286,10 +286,20 @@ RSpec.describe 'layouts/nav/sidebar/_project' do
     end
 
     describe 'Pipeline Editor' do
-      it 'has a link to the pipeline editor' do
-        render
+      context 'with a current_ref' do
+        it 'has a link to the pipeline editor' do
+          render
 
-        expect(rendered).to have_link('Editor', href: project_ci_pipeline_editor_path(project))
+          expect(rendered).to have_link('Editor', href: project_ci_pipeline_editor_path(project, params: { branch_name: current_ref }))
+        end
+      end
+
+      context 'with the default_branch' do
+        it 'has a link to the pipeline editor' do
+          render
+
+          expect(rendered).to have_link('Editor', href: project_ci_pipeline_editor_path(project, params: { branch_name: project.default_branch }))
+        end
       end
 
       context 'when user cannot access pipeline editor' do

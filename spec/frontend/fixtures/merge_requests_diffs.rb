@@ -7,7 +7,7 @@ RSpec.describe Projects::MergeRequests::DiffsController, '(JavaScript fixtures)'
 
   let(:namespace) { create(:namespace, name: 'frontend-fixtures' )}
   let(:project) { create(:project, :repository, namespace: namespace, path: 'merge-requests-project') }
-  let(:user) { project.owner }
+  let(:user) { project.first_owner }
   let(:merge_request) { create(:merge_request, source_project: project, target_project: project, description: '- [ ] Task List Item') }
   let(:path) { "files/ruby/popen.rb" }
   let(:position) do

@@ -489,11 +489,13 @@ Container Registry.
 ## Limitations
 
 - Moving or renaming existing Container Registry repositories is not supported
-once you have pushed images, because the images are stored in a path that matches
-the repository path. To move or rename a repository with a
-Container Registry, you must delete all existing images.
+  once you have pushed images, because the images are stored in a path that matches
+  the repository path. To move or rename a repository with a
+  Container Registry, you must delete all existing images.
+  Community suggestions to work around this limitation have been shared in
+  [issue 18383](https://gitlab.com/gitlab-org/gitlab/-/issues/18383#possible-workaround).
 - Prior to GitLab 12.10, any tags that use the same image ID as the `latest` tag
-are not deleted by the cleanup policy.
+  are not deleted by the cleanup policy.
 
 ## Disable the Container Registry for a project
 

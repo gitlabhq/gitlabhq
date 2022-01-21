@@ -12193,6 +12193,7 @@ CREATE TABLE ci_runners (
     config jsonb DEFAULT '{}'::jsonb NOT NULL,
     executor_type smallint,
     maintainer_note text,
+    token_expires_at timestamp with time zone,
     CONSTRAINT check_56f5ea8804 CHECK ((char_length(maintainer_note) <= 255))
 );
 
@@ -25732,6 +25733,10 @@ CREATE INDEX index_ci_runners_on_runner_type ON ci_runners USING btree (runner_t
 CREATE INDEX index_ci_runners_on_token ON ci_runners USING btree (token);
 
 CREATE INDEX index_ci_runners_on_token_encrypted ON ci_runners USING btree (token_encrypted);
+
+CREATE INDEX index_ci_runners_on_token_expires_at_and_id_desc ON ci_runners USING btree (token_expires_at, id DESC);
+
+CREATE INDEX index_ci_runners_on_token_expires_at_desc_and_id_desc ON ci_runners USING btree (token_expires_at DESC, id DESC);
 
 CREATE UNIQUE INDEX index_ci_running_builds_on_build_id ON ci_running_builds USING btree (build_id);
 

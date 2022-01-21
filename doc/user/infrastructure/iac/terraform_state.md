@@ -313,6 +313,7 @@ the old state is, you can tell it about the new location:
 TF_ADDRESS="https://gitlab.com/api/v4/projects/${PROJECT_ID}/terraform/state/new-state-name"
 
 terraform init \
+  -migrate-state \
   -backend-config=address=${TF_ADDRESS} \
   -backend-config=lock_address=${TF_ADDRESS}/lock \
   -backend-config=unlock_address=${TF_ADDRESS}/lock \

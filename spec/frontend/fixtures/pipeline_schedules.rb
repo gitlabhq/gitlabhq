@@ -7,7 +7,7 @@ RSpec.describe Projects::PipelineSchedulesController, '(JavaScript fixtures)', t
 
   let(:namespace) { create(:namespace, name: 'frontend-fixtures' )}
   let(:project) { create(:project, :public, :repository) }
-  let(:user) { project.owner }
+  let(:user) { project.first_owner }
   let!(:pipeline_schedule) { create(:ci_pipeline_schedule, project: project, owner: user) }
   let!(:pipeline_schedule_populated) { create(:ci_pipeline_schedule, project: project, owner: user) }
   let!(:pipeline_schedule_variable1) { create(:ci_pipeline_schedule_variable, key: 'foo', value: 'foovalue', pipeline_schedule: pipeline_schedule_populated) }

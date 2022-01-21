@@ -2609,6 +2609,9 @@ DELETE /projects/:id/push_rule
 
 > Introduced in GitLab 11.1.
 
+See the [Project documentation](../user/project/settings/index.md#transferring-an-existing-project-into-another-namespace)
+for prerequisites to transfer a project.
+
 ```plaintext
 PUT /projects/:id/transfer
 ```

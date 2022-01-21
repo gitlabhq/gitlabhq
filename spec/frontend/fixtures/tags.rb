@@ -6,7 +6,7 @@ RSpec.describe 'Tags (JavaScript fixtures)' do
   include JavaScriptFixturesHelpers
 
   let_it_be(:project) { create(:project, :repository, path: 'tags-project') }
-  let_it_be(:user) { project.owner }
+  let_it_be(:user) { project.first_owner }
 
   after(:all) do
     remove_repository(project)

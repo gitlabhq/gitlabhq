@@ -2,7 +2,6 @@
 stage: Create
 group: Source Code
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments"
-type: reference, howto
 ---
 
 # Push rules **(PREMIUM)**
@@ -122,17 +121,17 @@ The following options are available:
 This push rule ignores commits that are authenticated and created by GitLab
 (either through the UI or API). When the **Reject unsigned commits** push rule is
 enabled, unsigned commits may still show up in the commit history if a commit was
-created **within** GitLab itself. As expected, commits created outside GitLab and
+created **in** GitLab itself. As expected, commits created outside GitLab and
 pushed to the repository are rejected. For more information about how GitLab
 plans to fix this issue, read [issue #19185](https://gitlab.com/gitlab-org/gitlab/-/issues/19185).
 
 #### "Reject unsigned commits" push rule disables Web IDE
 
-In 13.10, if a project has the "Reject unsigned commits" push rule, the user will not be allowed to
+In 13.10, if a project has the "Reject unsigned commits" push rule, the user is not allowed to
 commit through GitLab Web IDE.
 
-To allow committing through the Web IDE on a project with this push rule, a GitLab administrator will
-need to disable the feature flag `reject_unsigned_commits_by_gitlab`. This can be done through a
+To allow committing through the Web IDE on a project with this push rule, a GitLab administrator
+must disable the feature flag `reject_unsigned_commits_by_gitlab`. This can be done through a
 [rails console](../administration/operations/rails_console.md) and running:
 
 ```ruby
@@ -226,7 +225,7 @@ Each filename contained in a Git push is compared to the regular expression in t
 
 The following examples make use of regex string boundary characters which match the beginning of a string (`^`), and the end (`$`). They also include instances where either the directory path or the filename can include `.` or `/`. Both of these special regex characters have to be escaped with a backslash `\\` to be used as normal characters in a match condition.
 
-Example: prevent pushing any `.exe` files to any location in the repository. This is an example of a partial match, which can match any filename that contains `.exe` at the end:
+Example: prevent pushing any `.exe` files to any location in the repository. This uses a partial match, which matches any filename that contains `.exe` at the end:
 
 ```plaintext
 \.exe$
