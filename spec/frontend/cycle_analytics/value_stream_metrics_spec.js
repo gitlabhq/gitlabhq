@@ -88,12 +88,12 @@ describe('ValueStreamMetrics', () => {
       });
 
       describe.each`
-        index | value                   | title                   | unit                   | clickable
-        ${0}  | ${metricsData[0].value} | ${metricsData[0].title} | ${metricsData[0].unit} | ${false}
-        ${1}  | ${metricsData[1].value} | ${metricsData[1].title} | ${metricsData[1].unit} | ${false}
-        ${2}  | ${metricsData[2].value} | ${metricsData[2].title} | ${metricsData[2].unit} | ${false}
-        ${3}  | ${metricsData[3].value} | ${metricsData[3].title} | ${metricsData[3].unit} | ${true}
-      `('metric tiles', ({ index, value, title, unit, clickable }) => {
+        index | value                   | title                   | unit                   | animationDecimalPlaces | clickable
+        ${0}  | ${metricsData[0].value} | ${metricsData[0].title} | ${metricsData[0].unit} | ${0}                   | ${false}
+        ${1}  | ${metricsData[1].value} | ${metricsData[1].title} | ${metricsData[1].unit} | ${0}                   | ${false}
+        ${2}  | ${metricsData[2].value} | ${metricsData[2].title} | ${metricsData[2].unit} | ${0}                   | ${false}
+        ${3}  | ${metricsData[3].value} | ${metricsData[3].title} | ${metricsData[3].unit} | ${1}                   | ${true}
+      `('metric tiles', ({ index, value, title, unit, animationDecimalPlaces, clickable }) => {
         it(`renders a single stat component for "${title}" with value and unit`, () => {
           const metric = findMetrics().at(index);
           expect(metric.props()).toMatchObject({ value, title, unit: unit ?? '' });
@@ -110,6 +110,11 @@ describe('ValueStreamMetrics', () => {
           } else {
             expect(redirectTo).not.toHaveBeenCalled();
           }
+        });
+
+        it(`will render ${animationDecimalPlaces} decimal places for the ${title} metric with the value "${value}"`, () => {
+          const metric = findMetrics().at(index);
+          expect(metric.props('animationDecimalPlaces')).toBe(animationDecimalPlaces);
         });
       });
 

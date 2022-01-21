@@ -119,7 +119,7 @@ changes to its content or the checkbox is unchecked.
 > - [Deployed behind a feature flag](../../feature_flags.md), disabled by default.
 > - Disabled on GitLab.com.
 > - Not recommended for production use.
-> - To use in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-merge-request-conflicts-in-diff). **(FREE SELF)**
+> - To use in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-merge-request-conflicts-in-diff).
 
 This in-development feature might not be available for your use. There can be
 [risks when enabling features still in development](../../../administration/feature_flags.md#risks-when-enabling-features-still-in-development).

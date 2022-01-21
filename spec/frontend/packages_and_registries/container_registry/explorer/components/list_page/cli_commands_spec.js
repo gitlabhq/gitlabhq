@@ -1,5 +1,6 @@
 import { GlDropdown } from '@gitlab/ui';
-import { mount, createLocalVue } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
+import Vue from 'vue';
 import Vuex from 'vuex';
 import QuickstartDropdown from '~/packages_and_registries/shared/components/cli_commands.vue';
 import {
@@ -16,8 +17,7 @@ import CodeInstruction from '~/vue_shared/components/registry/code_instruction.v
 
 import { dockerCommands } from '../../mock_data';
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 describe('cli_commands', () => {
   let wrapper;
@@ -27,7 +27,6 @@ describe('cli_commands', () => {
 
   const mountComponent = () => {
     wrapper = mount(QuickstartDropdown, {
-      localVue,
       propsData: {
         ...dockerCommands,
       },

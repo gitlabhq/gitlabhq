@@ -1,4 +1,4 @@
-import { mount, createLocalVue, createWrapper } from '@vue/test-utils';
+import { mount, createWrapper } from '@vue/test-utils';
 import AxiosMockAdapter from 'axios-mock-adapter';
 import Vue from 'vue';
 import { TEST_HOST } from 'spec/test_constants';
@@ -20,11 +20,9 @@ describe('noteActions', () => {
   const findUserAccessRoleBadgeText = (idx) => findUserAccessRoleBadge(idx).text().trim();
 
   const mountNoteActions = (propsData, computed) => {
-    const localVue = createLocalVue();
-    return mount(localVue.extend(noteActions), {
+    return mount(noteActions, {
       store,
       propsData,
-      localVue,
       computed,
     });
   };

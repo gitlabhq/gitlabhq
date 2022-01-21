@@ -5,7 +5,7 @@ module IncidentManagement
     class PrepareUpdateService
       include Gitlab::Utils::StrongMemoize
 
-      SUPPORTED_PARAMS = %i[status].freeze
+      SUPPORTED_PARAMS = %i[status status_change_reason].freeze
 
       InvalidParamError = Class.new(StandardError)
 

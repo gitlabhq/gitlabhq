@@ -26,6 +26,7 @@
       - lint_link_start = '<a href="%{url}" class="gl-text-blue-500!">'.html_safe % { url: lint_link_url }
       = s_('You can also test your %{gitlab_ci_yml} in %{lint_link_start}CI Lint%{lint_link_end}').html_safe % { gitlab_ci_yml: '.gitlab-ci.yml', lint_link_start: lint_link_start, lint_link_end: '</a>'.html_safe }
 
+  #js-pipeline-notification{ data: { deprecated_keywords_doc_path: help_page_path('ci/yaml/index.md', anchor: 'deprecated-keywords'), full_path: @project.full_path, pipeline_iid: @pipeline.iid } }
   = render "projects/pipelines/with_tabs", pipeline: @pipeline, stages: @stages, pipeline_has_errors: pipeline_has_errors
 
 .js-pipeline-details-vue{ data: { metrics_path: namespace_project_ci_prometheus_metrics_histograms_path(namespace_id: @project.namespace, project_id: @project, format: :json), pipeline_project_path: @project.full_path, pipeline_iid: @pipeline.iid, graphql_resource_etag: graphql_etag_pipeline_path(@pipeline) } }

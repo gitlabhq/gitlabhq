@@ -1,6 +1,7 @@
 import VueApollo from 'vue-apollo';
 import { GlFormTextarea, GlFormInput, GlLoadingIcon } from '@gitlab/ui';
-import { createLocalVue, mount } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
+import Vue from 'vue';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { objectToQuery, redirectTo } from '~/lib/utils/url_utility';
@@ -25,8 +26,6 @@ import {
   mockProjectFullPath,
   mockNewMergeRequestPath,
 } from '../../mock_data';
-
-const localVue = createLocalVue();
 
 jest.mock('~/lib/utils/url_utility', () => ({
   redirectTo: jest.fn(),
@@ -79,11 +78,10 @@ describe('Pipeline Editor | Commit section', () => {
 
   const createComponentWithApollo = (options) => {
     const handlers = [[commitCreate, mockMutateCommitData]];
-    localVue.use(VueApollo);
+    Vue.use(VueApollo);
     mockApollo = createMockApollo(handlers);
 
     const apolloConfig = {
-      localVue,
       apolloProvider: mockApollo,
     };
 

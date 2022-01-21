@@ -66,4 +66,28 @@ RSpec.describe ::SystemNotes::IncidentService do
       expect(noteable.notes.last.note).to eq('changed the status to **Resolved** by closing the incident')
     end
   end
+
+  describe '#change_incident_status' do
+    let_it_be(:escalation_status) { create(:incident_management_issuable_escalation_status, issue: noteable) }
+
+    let(:service) { described_class.new(noteable: noteable, project: project, author: author) }
+
+    context 'with a provided reason' do
+      subject(:change_incident_status) { service.change_incident_status(' by changing the alert status') }
+
+      it 'creates a new note for an incident status change', :aggregate_failures do
+        expect { change_incident_status }.to change { noteable.notes.count }.by(1)
+        expect(noteable.notes.last.note).to eq("changed the incident status to **Triggered** by changing the alert status")
+      end
+    end
+
+    context 'without provided reason' do
+      subject(:change_incident_status) { service.change_incident_status(nil) }
+
+      it 'creates a new note for an incident status change', :aggregate_failures do
+        expect { change_incident_status }.to change { noteable.notes.count }.by(1)
+        expect(noteable.notes.last.note).to eq("changed the incident status to **Triggered**")
+      end
+    end
+  end
 end

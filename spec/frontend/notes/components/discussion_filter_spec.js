@@ -1,5 +1,6 @@
 import { GlDropdown } from '@gitlab/ui';
-import { createLocalVue, mount } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
+import Vue from 'vue';
 import AxiosMockAdapter from 'axios-mock-adapter';
 import Vuex from 'vuex';
 import { TEST_HOST } from 'helpers/test_constants';
@@ -12,9 +13,7 @@ import notesModule from '~/notes/stores/modules';
 
 import { discussionFiltersMock, discussionMock } from '../mock_data';
 
-const localVue = createLocalVue();
-
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 const DISCUSSION_PATH = `${TEST_HOST}/example`;
 
@@ -58,7 +57,6 @@ describe('DiscussionFilter component', () => {
         filters: discussionFiltersMock,
         selectedValue: DISCUSSION_FILTERS_DEFAULT_VALUE,
       },
-      localVue,
     });
   };
 

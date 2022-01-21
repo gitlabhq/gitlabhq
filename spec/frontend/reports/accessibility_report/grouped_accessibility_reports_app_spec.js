@@ -1,22 +1,20 @@
-import { mount, createLocalVue } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
+import Vue from 'vue';
 import Vuex from 'vuex';
 import AccessibilityIssueBody from '~/reports/accessibility_report/components/accessibility_issue_body.vue';
 import GroupedAccessibilityReportsApp from '~/reports/accessibility_report/grouped_accessibility_reports_app.vue';
 import { getStoreConfig } from '~/reports/accessibility_report/store';
 import { mockReport } from './mock_data';
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 describe('Grouped accessibility reports app', () => {
-  const Component = localVue.extend(GroupedAccessibilityReportsApp);
   let wrapper;
   let mockStore;
 
   const mountComponent = () => {
-    wrapper = mount(Component, {
+    wrapper = mount(GroupedAccessibilityReportsApp, {
       store: mockStore,
-      localVue,
       propsData: {
         endpoint: 'endpoint.json',
       },

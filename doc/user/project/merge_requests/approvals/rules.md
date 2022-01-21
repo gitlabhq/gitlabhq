@@ -76,9 +76,9 @@ To edit a merge request approval rule:
      select **{remove}** **Remove**.
 1. Select **Update approval rule**.
 
-## Add multiple approval rules **(PREMIUM)**
+## Add multiple approval rules
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/1979) in GitLab Premium 11.10.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/1979) in GitLab 11.10.
 
 In GitLab Premium and higher tiers, you can enforce multiple approval rules on a
 merge request, and multiple default approval rules for a project. If your tier
@@ -143,7 +143,7 @@ approve in these ways:
   [**Prevent committers approval**](settings.md#prevent-approvals-by-users-who-add-commits)
   project setting.
 
-### Code owners as eligible approvers **(PREMIUM)**
+### Code owners as eligible approvers
 
 > Moved to GitLab Premium in 13.9.
 
@@ -158,9 +158,9 @@ become eligible approvers in the project. To enable this merge request approval 
 
 You can also
 [require code owner approval](../../protected_branches.md#require-code-owner-approval-on-a-protected-branch)
-for protected branches. **(PREMIUM)**
+for protected branches.
 
-## Merge request approval segregation of duties **(PREMIUM)**
+## Merge request approval segregation of duties
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/40491) in GitLab 13.4.
 > - Moved to GitLab Premium in 13.9.
@@ -202,7 +202,7 @@ on a merge request, you can either add or remove approvers:
 Administrators can change the [merge request approvals settings](settings.md#prevent-editing-approval-rules-in-merge-requests)
 to prevent users from overriding approval rules for merge requests.
 
-## Configure optional approval rules **(PREMIUM)**
+## Configure optional approval rules
 
 Merge request approvals can be optional for projects where approvals are
 appreciated, but not required. To make an approval rule optional:
@@ -211,9 +211,9 @@ appreciated, but not required. To make an approval rule optional:
 - Use the [Merge requests approvals API](../../../../api/merge_request_approvals.md#update-merge-request-level-rule)
   to set the `approvals_required` attribute to `0`.
 
-## Approvals for protected branches **(PREMIUM)**
+## Approvals for protected branches
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/460) in GitLab Premium 12.8.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/460) in GitLab 12.8.
 
 Approval rules are often relevant only to specific branches, like your
 [default branch](../../repository/branches/default.md). To configure an

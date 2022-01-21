@@ -86,6 +86,10 @@ export default {
         redirectTo(links[0].url);
       }
     },
+    getDecimalPlaces(value) {
+      const parsedFloat = parseFloat(value);
+      return Number.isNaN(parsedFloat) || Number.isInteger(parsedFloat) ? 0 : 1;
+    },
   },
 };
 </script>
@@ -104,7 +108,7 @@ export default {
         :title="metric.label"
         :unit="metric.unit || ''"
         :should-animate="true"
-        :animation-decimal-places="1"
+        :animation-decimal-places="getDecimalPlaces(metric.value)"
         :class="{ 'gl-hover-cursor-pointer': hasLinks(metric.links) }"
         tabindex="0"
         @click="clickHandler(metric)"

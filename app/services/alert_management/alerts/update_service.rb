@@ -12,6 +12,7 @@ module AlertManagement
         @alert = alert
         @param_errors = []
         @status = params.delete(:status)
+        @status_change_reason = params.delete(:status_change_reason)
 
         super(project: alert.project, current_user: current_user, params: params)
       end
@@ -36,7 +37,7 @@ module AlertManagement
 
       private
 
-      attr_reader :alert, :param_errors, :status
+      attr_reader :alert, :param_errors, :status, :status_change_reason
 
       def allowed?
         current_user&.can?(:update_alert_management_alert, alert)
@@ -133,7 +134,7 @@ module AlertManagement
       end
 
       def add_status_change_system_note
-        SystemNoteService.change_alert_status(alert, current_user)
+        SystemNoteService.change_alert_status(alert, current_user, status_change_reason)
       end
 
       def resolve_todos
@@ -144,7 +145,12 @@ module AlertManagement
         ::Issues::UpdateService.new(
           project: project,
           current_user: current_user,
-          params: { escalation_status: { status: status } }
+          params: {
+            escalation_status: {
+              status: status,
+              status_change_reason: " by changing the status of #{alert.to_reference(project)}"
+            }
+          }
         ).execute(alert.issue)
       end
 

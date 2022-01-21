@@ -1,6 +1,6 @@
 import { GlEmptyState } from '@gitlab/ui';
-import { mount, createLocalVue } from '@vue/test-utils';
-import { nextTick } from 'vue';
+import { mount } from '@vue/test-utils';
+import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 import { useMockLocationHelper } from 'helpers/mock_window_location_helper';
 import stubChildren from 'helpers/stub_children';
@@ -19,8 +19,7 @@ import Tracking from '~/tracking';
 
 import { mavenPackage, mavenFiles, npmPackage } from '../../mock_data';
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 useMockLocationHelper();
 
@@ -60,7 +59,6 @@ describe('PackagesApp', () => {
     });
 
     wrapper = mount(PackagesApp, {
-      localVue,
       store,
       stubs: {
         ...stubChildren(PackagesApp),

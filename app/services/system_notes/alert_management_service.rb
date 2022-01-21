@@ -24,11 +24,12 @@ module SystemNotes
     # Example Note text:
     #
     #   "changed the status to Acknowledged"
+    #   "changed the status to Acknowledged by changing the incident status of #540"
     #
     # Returns the created Note object
-    def change_alert_status(alert)
-      status = alert.state.to_s.titleize
-      body = "changed the status to **#{status}**"
+    def change_alert_status(reason)
+      status = noteable.state.to_s.titleize
+      body = "changed the status to **#{status}**#{reason}"
 
       create_note(NoteSummary.new(noteable, project, author, body, action: 'status'))
     end

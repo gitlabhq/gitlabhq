@@ -134,7 +134,7 @@ RSpec.describe 'Value Stream Analytics', :js do
       end
 
       it 'can filter the metrics by date' do
-        expect(metrics_values).to match_array(["21.0", "2.0", "1.0", "0.0"])
+        expect(metrics_values).to match_array(%w[21 2 1 0])
 
         set_daterange(from, to)
 

@@ -1,13 +1,13 @@
 import { GlBadge, GlButton } from '@gitlab/ui';
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
+import Vue from 'vue';
 import Vuex from 'vuex';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import IssueStatusIcon from '~/reports/components/issue_status_icon.vue';
 import TestIssueBody from '~/reports/grouped_test_report/components/test_issue_body.vue';
 import { failedIssue, successIssue } from '../../mock_data/mock_data';
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 describe('Test issue body', () => {
   let wrapper;
@@ -29,7 +29,6 @@ describe('Test issue body', () => {
     wrapper = extendedWrapper(
       shallowMount(TestIssueBody, {
         store,
-        localVue,
         propsData: {
           issue,
         },

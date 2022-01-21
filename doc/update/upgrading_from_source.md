@@ -410,6 +410,20 @@ Example:
 Additional instructions here.
 -->
 
+### 14.5.0
+
+As part of [enabling real-time issue assignees](https://gitlab.com/gitlab-org/gitlab/-/issues/330117), Action Cable is now enabled by default, and requires `config/cable.yml` to be present.
+You can configure this by running:
+
+```shell
+cd /home/git/gitlab
+
+sudo -u git -H cp config/cable.yml.example config/cable.yml
+
+# Change the Redis socket path if you are not using the default Debian / Ubuntu configuration
+sudo -u git -H editor config/cable.yml
+```
+
 ### 13.0.1
 
 As part of [deprecating Rack Attack throttles on Omnibus GitLab](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/4750), the Rack Attack initializer on GitLab

@@ -1,5 +1,6 @@
 import { GlTable, GlPagination, GlModal } from '@gitlab/ui';
-import { mount, createLocalVue } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
+import Vue from 'vue';
 import { last } from 'lodash';
 import Vuex from 'vuex';
 import stubChildren from 'helpers/stub_children';
@@ -11,8 +12,7 @@ import { TRACK_CATEGORY } from '~/packages_and_registries/infrastructure_registr
 import Tracking from '~/tracking';
 import { packageList } from '../../mock_data';
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 describe('packages_list', () => {
   let wrapper;
@@ -61,7 +61,6 @@ describe('packages_list', () => {
     createStore(isGroupPage, packages, isLoading);
 
     wrapper = mount(PackagesList, {
-      localVue,
       store,
       stubs: {
         ...stubChildren(PackagesList),

@@ -26,14 +26,14 @@ module RackAttackSpecHelpers
     { 'AUTHORIZATION' => "Basic #{encoded_login}" }
   end
 
-  def expect_rejection(name = nil, &block)
+  def expect_rejection(&block)
     yield
 
     expect(response).to have_gitlab_http_status(:too_many_requests)
 
     expect(response.headers.to_h).to include(
       'RateLimit-Limit' => a_string_matching(/^\d+$/),
-      'RateLimit-Name' => name || a_string_matching(/^throttle_.*$/),
+      'RateLimit-Name' => a_string_matching(/^throttle_.*$/),
       'RateLimit-Observed' => a_string_matching(/^\d+$/),
       'RateLimit-Remaining' => a_string_matching(/^\d+$/),
       'Retry-After' => a_string_matching(/^\d+$/)

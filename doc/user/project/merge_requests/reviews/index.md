@@ -23,8 +23,8 @@ review merge requests in Visual Studio Code.
 
 ## Review a merge request
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/4213) in GitLab Premium 11.4.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/28154) to GitLab Free in 13.1.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/4213) in GitLab 11.4.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/28154) from GitLab Premium to GitLab Free in 13.1.
 
 When you review a merge request, you can create comments that are visible only
 to you. When you're ready, you can publish them together in a single action.
@@ -179,9 +179,9 @@ To update multiple project merge requests at the same time:
 1. Select the appropriate fields and their values from the sidebar.
 1. Click **Update all**.
 
-## Bulk edit merge requests at the group level
+## Bulk edit merge requests at the group level **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12719) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.2.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12719) in GitLab 12.2.
 
 Users with permission level of [Developer or higher](../../../permissions.md) can manage merge requests.
 

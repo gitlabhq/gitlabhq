@@ -175,27 +175,35 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper do
       end
     end
 
-    context "when duplicate 'include' is defined" do
+    context "when duplicate 'include's are defined" do
+      let(:values) do
+        { include: [
+          { 'local' => local_file },
+          { 'local' => local_file }
+        ],
+        image: 'ruby:2.7' }
+      end
+
+      it 'does not raise an exception' do
+        expect { subject }.not_to raise_error
+      end
+    end
+
+    context 'when passing max number of files' do
       let(:values) do
         { include: [
             { 'local' => local_file },
-            { 'local' => local_file }
+            { 'remote' => remote_url }
           ],
           image: 'ruby:2.7' }
       end
 
-      it 'raises an exception' do
-        expect { subject }.to raise_error(described_class::DuplicateIncludesError)
+      before do
+        stub_const("#{described_class}::MAX_INCLUDES", 2)
       end
 
-      context 'when including multiple files from a project' do
-        let(:values) do
-          { include: { project: project.full_path, file: [local_file, local_file] } }
-        end
-
-        it 'raises an exception' do
-          expect { subject }.to raise_error(described_class::DuplicateIncludesError)
-        end
+      it 'does not raise an exception' do
+        expect { subject }.not_to raise_error
       end
     end
 

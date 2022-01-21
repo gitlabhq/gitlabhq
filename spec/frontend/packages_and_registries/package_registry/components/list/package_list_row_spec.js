@@ -1,5 +1,5 @@
 import { GlSprintf } from '@gitlab/ui';
-import { createLocalVue } from '@vue/test-utils';
+import Vue from 'vue';
 import VueRouter from 'vue-router';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
@@ -17,8 +17,7 @@ import { PACKAGE_ERROR_STATUS } from '~/packages_and_registries/package_registry
 import ListItem from '~/vue_shared/components/registry/list_item.vue';
 import { packageData, packagePipelines, packageProject, packageTags } from '../../mock_data';
 
-const localVue = createLocalVue();
-localVue.use(VueRouter);
+Vue.use(VueRouter);
 
 describe('packages_list_row', () => {
   let wrapper;
@@ -47,7 +46,6 @@ describe('packages_list_row', () => {
     provide = defaultProvide,
   } = {}) => {
     wrapper = shallowMountExtended(PackagesListRow, {
-      localVue,
       provide,
       stubs: {
         ListItem,

@@ -1,4 +1,5 @@
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
+import Vue from 'vue';
 import Vuex from 'vuex';
 import SortDiscussion from '~/notes/components/sort_discussion.vue';
 import { ASC, DESC } from '~/notes/constants';
@@ -6,8 +7,7 @@ import createStore from '~/notes/stores';
 import Tracking from '~/tracking';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 describe('Sort Discussion component', () => {
   let wrapper;
@@ -17,7 +17,6 @@ describe('Sort Discussion component', () => {
     jest.spyOn(store, 'dispatch').mockImplementation();
 
     wrapper = shallowMount(SortDiscussion, {
-      localVue,
       store,
     });
   };

@@ -1,12 +1,12 @@
 import { GlSprintf } from '@gitlab/ui';
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
+import Vue from 'vue';
 import Vuex from 'vuex';
 import projectEmptyState from '~/packages_and_registries/container_registry/explorer/components/list_page/project_empty_state.vue';
 import { dockerCommands } from '../../mock_data';
 import { GlEmptyState } from '../../stubs';
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 describe('Registry Project Empty state', () => {
   let wrapper;
@@ -21,7 +21,6 @@ describe('Registry Project Empty state', () => {
 
   beforeEach(() => {
     wrapper = shallowMount(projectEmptyState, {
-      localVue,
       stubs: {
         GlEmptyState,
         GlSprintf,

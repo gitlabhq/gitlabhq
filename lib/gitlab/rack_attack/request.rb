@@ -3,8 +3,6 @@
 module Gitlab
   module RackAttack
     module Request
-      include ::Gitlab::Utils::StrongMemoize
-
       FILES_PATH_REGEX = %r{^/api/v\d+/projects/[^/]+/repository/files/.+}.freeze
       GROUP_PATH_REGEX = %r{^/api/v\d+/groups/[^/]+/?$}.freeze
 
@@ -32,15 +30,15 @@ module Gitlab
       end
 
       def api_internal_request?
-        path.match?(%r{^/api/v\d+/internal/})
+        path =~ %r{^/api/v\d+/internal/}
       end
 
       def health_check_request?
-        path.match?(%r{^/-/(health|liveness|readiness|metrics)})
+        path =~ %r{^/-/(health|liveness|readiness|metrics)}
       end
 
       def container_registry_event?
-        path.match?(%r{^/api/v\d+/container_registry_event/})
+        path =~ %r{^/api/v\d+/container_registry_event/}
       end
 
       def product_analytics_collector_request?
@@ -60,7 +58,7 @@ module Gitlab
       end
 
       def protected_path_regex
-        path.match?(protected_paths_regex)
+        path =~ protected_paths_regex
       end
 
       def throttle?(throttle, authenticated:)
@@ -72,7 +70,6 @@ module Gitlab
       def throttle_unauthenticated_api?
         api_request? &&
         !should_be_skipped? &&
-        !frontend_request? &&
         !throttle_unauthenticated_packages_api? &&
         !throttle_unauthenticated_files_api? &&
         !throttle_unauthenticated_deprecated_api? &&
@@ -81,7 +78,7 @@ module Gitlab
       end
 
       def throttle_unauthenticated_web?
-        (web_request? || frontend_request?) &&
+        web_request? &&
         !should_be_skipped? &&
         # TODO: Column will be renamed in https://gitlab.com/gitlab-org/gitlab/-/issues/340031
         Gitlab::Throttle.settings.throttle_unauthenticated_enabled &&
@@ -90,7 +87,6 @@ module Gitlab
 
       def throttle_authenticated_api?
         api_request? &&
-        !frontend_request? &&
         !throttle_authenticated_packages_api? &&
         !throttle_authenticated_files_api? &&
         !throttle_authenticated_deprecated_api? &&
@@ -98,7 +94,7 @@ module Gitlab
       end
 
       def throttle_authenticated_web?
-        (web_request? || frontend_request?) &&
+        web_request? &&
         !throttle_authenticated_git_lfs? &&
         Gitlab::Throttle.settings.throttle_authenticated_web_enabled
       end
@@ -182,26 +178,15 @@ module Gitlab
       end
 
       def packages_api_path?
-        path.match?(::Gitlab::Regex::Packages::API_PATH_REGEX)
+        path =~ ::Gitlab::Regex::Packages::API_PATH_REGEX
       end
 
       def git_lfs_path?
-        path.match?(Gitlab::PathRegex.repository_git_lfs_route_regex)
+        path =~ Gitlab::PathRegex.repository_git_lfs_route_regex
       end
 
       def files_api_path?
-        path.match?(FILES_PATH_REGEX)
-      end
-
-      def frontend_request?
-        return false unless Feature.enabled?(:rate_limit_frontend_requests, default_enabled: :yaml)
-
-        strong_memoize(:frontend_request) do
-          next false unless env.include?('HTTP_X_CSRF_TOKEN') && session.include?(:_csrf_token)
-
-          # CSRF tokens are not verified for GET/HEAD requests, so we pretend that we always have a POST request.
-          Gitlab::RequestForgeryProtection.verified?(env.merge('REQUEST_METHOD' => 'POST'))
-        end
+        path =~ FILES_PATH_REGEX
       end
 
       def deprecated_api_request?
@@ -210,7 +195,7 @@ module Gitlab
         with_projects = params['with_projects']
         with_projects = true if with_projects.blank?
 
-        path.match?(GROUP_PATH_REGEX) && Gitlab::Utils.to_boolean(with_projects)
+        path =~ GROUP_PATH_REGEX && Gitlab::Utils.to_boolean(with_projects)
       end
     end
   end

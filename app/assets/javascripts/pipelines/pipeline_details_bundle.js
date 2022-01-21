@@ -3,6 +3,7 @@ import { __ } from '~/locale';
 import createDagApp from './pipeline_details_dag';
 import { createPipelinesDetailApp } from './pipeline_details_graph';
 import { createPipelineHeaderApp } from './pipeline_details_header';
+import { createPipelineNotificationApp } from './pipeline_details_notification';
 import { createPipelineJobsApp } from './pipeline_details_jobs';
 import { apolloProvider } from './pipeline_shared_client';
 import { createTestDetails } from './pipeline_test_details';
@@ -11,6 +12,7 @@ const SELECTORS = {
   PIPELINE_DETAILS: '.js-pipeline-details-vue',
   PIPELINE_GRAPH: '#js-pipeline-graph-vue',
   PIPELINE_HEADER: '#js-pipeline-header-vue',
+  PIPELINE_NOTIFICATION: '#js-pipeline-notification',
   PIPELINE_TESTS: '#js-pipeline-tests-detail',
   PIPELINE_JOBS: '#js-pipeline-jobs-vue',
 };
@@ -36,6 +38,14 @@ export default async function initPipelineDetailsBundle() {
 
   try {
     createPipelineHeaderApp(SELECTORS.PIPELINE_HEADER, apolloProvider, dataset.graphqlResourceEtag);
+  } catch {
+    createFlash({
+      message: __('An error occurred while loading a section of this page.'),
+    });
+  }
+
+  try {
+    createPipelineNotificationApp(SELECTORS.PIPELINE_NOTIFICATION, apolloProvider);
   } catch {
     createFlash({
       message: __('An error occurred while loading a section of this page.'),

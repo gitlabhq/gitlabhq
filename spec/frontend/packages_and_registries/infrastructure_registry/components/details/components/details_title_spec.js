@@ -1,11 +1,11 @@
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
+import Vue from 'vue';
 import Vuex from 'vuex';
 import component from '~/packages_and_registries/infrastructure_registry/details/components/details_title.vue';
 import TitleArea from '~/vue_shared/components/registry/title_area.vue';
 import { terraformModule, mavenFiles, npmPackage } from '../../mock_data';
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 describe('PackageTitle', () => {
   let wrapper;
@@ -23,7 +23,6 @@ describe('PackageTitle', () => {
     });
 
     wrapper = shallowMount(component, {
-      localVue,
       store,
       stubs: {
         TitleArea,

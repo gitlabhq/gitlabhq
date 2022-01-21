@@ -319,8 +319,8 @@ module SystemNoteService
     merge_requests_service(noteable, noteable.project, user).unapprove_mr
   end
 
-  def change_alert_status(alert, author)
-    ::SystemNotes::AlertManagementService.new(noteable: alert, project: alert.project, author: author).change_alert_status(alert)
+  def change_alert_status(alert, author, reason = nil)
+    ::SystemNotes::AlertManagementService.new(noteable: alert, project: alert.project, author: author).change_alert_status(reason)
   end
 
   def new_alert_issue(alert, issue, author)
@@ -337,6 +337,10 @@ module SystemNoteService
 
   def resolve_incident_status(incident, author)
     ::SystemNotes::IncidentService.new(noteable: incident, project: incident.project, author: author).resolve_incident_status
+  end
+
+  def change_incident_status(incident, author, reason = nil)
+    ::SystemNotes::IncidentService.new(noteable: incident, project: incident.project, author: author).change_incident_status(reason)
   end
 
   def log_resolving_alert(alert, monitoring_tool)

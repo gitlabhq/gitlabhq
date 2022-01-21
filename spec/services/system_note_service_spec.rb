@@ -572,12 +572,26 @@ RSpec.describe SystemNoteService do
   describe '.change_alert_status' do
     let(:alert) { build(:alert_management_alert) }
 
-    it 'calls AlertManagementService' do
-      expect_next_instance_of(SystemNotes::AlertManagementService) do |service|
-        expect(service).to receive(:change_alert_status).with(alert)
-      end
+    context 'with status change reason' do
+      let(:reason) { 'reason for status change' }
 
-      described_class.change_alert_status(alert, author)
+      it 'calls AlertManagementService' do
+        expect_next_instance_of(SystemNotes::AlertManagementService) do |service|
+          expect(service).to receive(:change_alert_status).with(reason)
+        end
+
+        described_class.change_alert_status(alert, author, reason)
+      end
+    end
+
+    context 'without status change reason' do
+      it 'calls AlertManagementService' do
+        expect_next_instance_of(SystemNotes::AlertManagementService) do |service|
+          expect(service).to receive(:change_alert_status).with(nil)
+        end
+
+        described_class.change_alert_status(alert, author)
+      end
     end
   end
 
@@ -627,6 +641,32 @@ RSpec.describe SystemNoteService do
       end
 
       described_class.resolve_incident_status(incident, author)
+    end
+  end
+
+  describe '.change_incident_status' do
+    let(:incident) { instance_double('Issue', project: project) }
+
+    context 'with status change reason' do
+      let(:reason) { 'reason for status change' }
+
+      it 'calls IncidentService' do
+        expect_next_instance_of(SystemNotes::IncidentService) do |service|
+          expect(service).to receive(:change_incident_status).with(reason)
+        end
+
+        described_class.change_incident_status(incident, author, reason)
+      end
+    end
+
+    context 'without status change reason' do
+      it 'calls IncidentService' do
+        expect_next_instance_of(SystemNotes::IncidentService) do |service|
+          expect(service).to receive(:change_incident_status).with(nil)
+        end
+
+        described_class.change_incident_status(incident, author)
+      end
     end
   end
 

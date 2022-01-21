@@ -1,5 +1,6 @@
 import { GlEmptyState, GlSprintf, GlLink } from '@gitlab/ui';
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
+import Vue from 'vue';
 import Vuex from 'vuex';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import createFlash from '~/flash';
@@ -17,8 +18,7 @@ import InfrastructureSearch from '~/packages_and_registries/infrastructure_regis
 jest.mock('~/lib/utils/common_utils');
 jest.mock('~/flash');
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 describe('packages_list_app', () => {
   let wrapper;
@@ -53,7 +53,6 @@ describe('packages_list_app', () => {
 
   const mountComponent = (provide) => {
     wrapper = shallowMount(PackageListApp, {
-      localVue,
       store,
       stubs: {
         GlEmptyState,

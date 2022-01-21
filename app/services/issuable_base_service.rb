@@ -162,6 +162,8 @@ class IssuableBaseService < ::BaseProjectService
 
     return unless result.success? && result.payload.present?
 
+    @escalation_status_change_reason = result[:escalation_status].delete(:status_change_reason)
+
     params[:incident_management_issuable_escalation_status_attributes] = result[:escalation_status]
   end
 

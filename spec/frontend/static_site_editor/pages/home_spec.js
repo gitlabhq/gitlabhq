@@ -1,4 +1,4 @@
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
 import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 import EditArea from '~/static_site_editor/components/edit_area.vue';
 import EditMetaModal from '~/static_site_editor/components/edit_meta_modal.vue';
@@ -28,8 +28,6 @@ import {
   baseUrl,
   imageRoot,
 } from '../mock_data';
-
-const localVue = createLocalVue();
 
 describe('static_site_editor/pages/home', () => {
   let wrapper;
@@ -78,7 +76,6 @@ describe('static_site_editor/pages/home', () => {
 
   const buildWrapper = (data = {}) => {
     wrapper = shallowMount(Home, {
-      localVue,
       store,
       mocks: {
         $apollo,

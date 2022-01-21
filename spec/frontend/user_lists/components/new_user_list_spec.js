@@ -1,5 +1,5 @@
 import { GlAlert } from '@gitlab/ui';
-import { mount, createLocalVue } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
 import Vue from 'vue';
 import Vuex from 'vuex';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -12,8 +12,7 @@ import { userList } from '../../feature_flags/mock_data';
 jest.mock('~/api');
 jest.mock('~/lib/utils/url_utility');
 
-const localVue = createLocalVue(Vue);
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 describe('user_lists/components/new_user_list', () => {
   let wrapper;
@@ -24,7 +23,6 @@ describe('user_lists/components/new_user_list', () => {
 
   beforeEach(() => {
     wrapper = mount(NewUserList, {
-      localVue,
       store: createStore({ projectId: '1' }),
       provide: {
         featureFlagsPath: '/feature_flags',

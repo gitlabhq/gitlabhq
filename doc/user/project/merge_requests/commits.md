@@ -33,7 +33,7 @@ To seamlessly navigate among commits in a merge request:
 > - [Deployed behind a feature flag](../../feature_flags.md), enabled by default.
 > - Disabled on GitLab.com.
 > - Not recommended for production use.
-> - To use in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-viewing-merge-request-commits-in-context). **(FREE SELF)**
+> - To use in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-viewing-merge-request-commits-in-context).
 
 WARNING:
 This feature is in [beta](https://about.gitlab.com/handbook/product/gitlab-the-product/#beta)

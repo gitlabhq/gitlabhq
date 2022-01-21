@@ -1,5 +1,6 @@
 import { GlButton } from '@gitlab/ui';
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
+import Vue from 'vue';
 import Vuex from 'vuex';
 import TimelineToggle, {
   timelineEnabledTooltip,
@@ -10,8 +11,7 @@ import createStore from '~/notes/stores';
 import { trackToggleTimelineView } from '~/notes/utils';
 import Tracking from '~/tracking';
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 describe('Timeline toggle', () => {
   let wrapper;
@@ -23,7 +23,6 @@ describe('Timeline toggle', () => {
     jest.spyOn(Tracking, 'event').mockImplementation();
 
     wrapper = shallowMount(TimelineToggle, {
-      localVue,
       store,
     });
   };

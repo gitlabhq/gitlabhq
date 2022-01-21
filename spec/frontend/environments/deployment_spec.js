@@ -1,5 +1,6 @@
 import { mountExtended } from 'helpers/vue_test_utils_helper';
-import { s__ } from '~/locale';
+import { __, s__ } from '~/locale';
+import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import Deployment from '~/environments/components/deployment.vue';
 import DeploymentStatusBadge from '~/environments/components/deployment_status_badge.vue';
 import { resolvedEnvironment } from './graphql/mock_data';
@@ -78,6 +79,49 @@ describe('~/environments/components/deployment.vue', () => {
       it('should not show an icon for the iid', () => {
         const deploymentIcon = findDeploymentIcon();
         expect(deploymentIcon.exists()).toBe(false);
+      });
+    });
+  });
+
+  describe('shortSha', () => {
+    describe('is present', () => {
+      beforeEach(() => {
+        wrapper = createWrapper();
+      });
+
+      it('shows the short SHA for the commit of the deployment', () => {
+        const sha = wrapper.findByTitle(__('Commit SHA'));
+
+        expect(sha.exists()).toBe(true);
+        expect(sha.text()).toBe(deployment.commit.shortId);
+      });
+
+      it('shows the commit icon', () => {
+        const icon = wrapper.findComponent({ ref: 'deployment-commit-icon' });
+        expect(icon.props('name')).toBe('commit');
+      });
+
+      it('shows a copy button for the sha', () => {
+        const button = wrapper.findComponent(ClipboardButton);
+        expect(button.props()).toMatchObject({
+          text: deployment.commit.shortId,
+          title: __('Copy commit SHA'),
+        });
+      });
+    });
+
+    describe('is not present', () => {
+      it('does not show the short SHA for the commit of the deployment', () => {
+        wrapper = createWrapper({
+          propsData: {
+            deployment: {
+              ...deployment,
+              commit: null,
+            },
+          },
+        });
+        const sha = wrapper.findByTestId('deployment-commit-sha');
+        expect(sha.exists()).toBe(false);
       });
     });
   });

@@ -1,5 +1,6 @@
 import { GlKeysetPagination } from '@gitlab/ui';
-import { mount, createLocalVue } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
+import Vue from 'vue';
 import Vuex from 'vuex';
 import { historyPushState } from '~/lib/utils/common_utils';
 import ReleasesPagination from '~/releases/components/releases_pagination.vue';
@@ -11,8 +12,7 @@ jest.mock('~/lib/utils/common_utils', () => ({
   historyPushState: jest.fn(),
 }));
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 describe('~/releases/components/releases_pagination.vue', () => {
   let wrapper;
@@ -39,7 +39,6 @@ describe('~/releases/components/releases_pagination.vue', () => {
         },
         featureFlags: {},
       }),
-      localVue,
     });
   };
 

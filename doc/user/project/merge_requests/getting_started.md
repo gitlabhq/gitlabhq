@@ -56,7 +56,7 @@ request's page at the top-right side, or by using
 - [Assign](#assignee) the merge request to a colleague for review. With [multiple assignees](#multiple-assignees), you can assign it to more than one person at a time.
 - Set a [milestone](../milestones/index.md) to track time-sensitive changes.
 - Add [labels](../labels.md) to help contextualize and filter your merge requests over time.
-- [Require approval](approvals/index.md#required-approvals) from your team. **(PREMIUM)**
+- [Require approval](approvals/index.md#required-approvals) from your team.
 - [Close issues automatically](#merge-requests-to-close-issues) when they are merged.
 - Enable the [delete source branch when merge request is accepted](#deleting-the-source-branch) option to keep your repository clean.
 - Enable the [squash commits when merge request is accepted](squash_and_merge.md) option to combine all the commits into one before merging, thus keep a clean commit history in your repository.
@@ -66,7 +66,7 @@ After you have created the merge request, you can also:
 
 - [Discuss](../../discussions/index.md) your implementation with your team in the merge request thread.
 - [Perform inline code reviews](reviews/index.md).
-- Add [merge request dependencies](merge_request_dependencies.md) to restrict it to be merged only when other merge requests have been merged. **(PREMIUM)**
+- Add [merge request dependencies](merge_request_dependencies.md) to restrict it to be merged only when other merge requests have been merged.
 - Preview continuous integration [pipelines on the merge request widget](widgets.md).
 - Preview how your changes look directly on your deployed application with [Review Apps](widgets.md#live-preview-with-review-apps).
 - [Allow collaboration on merge requests across forks](allow_collaboration.md).

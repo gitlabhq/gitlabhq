@@ -214,7 +214,11 @@ module Issues
       return unless old_escalation_status.present?
       return if issue.escalation_status&.slice(:status, :policy_id) == old_escalation_status
 
-      ::IncidentManagement::IssuableEscalationStatuses::AfterUpdateService.new(issue, current_user).execute
+      ::IncidentManagement::IssuableEscalationStatuses::AfterUpdateService.new(
+        issue,
+        current_user,
+        status_change_reason: @escalation_status_change_reason # Defined in IssuableBaseService before save
+      ).execute
     end
 
     # rubocop: disable CodeReuse/ActiveRecord

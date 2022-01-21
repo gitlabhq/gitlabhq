@@ -1,13 +1,12 @@
 import { GlSprintf } from '@gitlab/ui';
-import { shallowMount, createLocalVue } from '@vue/test-utils';
-import { nextTick } from 'vue';
+import { shallowMount } from '@vue/test-utils';
+import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 import NoteHeader from '~/notes/components/note_header.vue';
 import { AVAILABILITY_STATUS } from '~/set_status_modal/utils';
 import UserNameWithStatus from '~/sidebar/components/assignees/user_name_with_status.vue';
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 const actions = {
   setTargetNoteHash: jest.fn(),
@@ -42,7 +41,6 @@ describe('NoteHeader component', () => {
 
   const createComponent = (props) => {
     wrapper = shallowMount(NoteHeader, {
-      localVue,
       store: new Vuex.Store({
         actions,
       }),

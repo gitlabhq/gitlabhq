@@ -1,11 +1,11 @@
-import { createLocalVue, shallowMount } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
+import Vue from 'vue';
 import Vuex from 'vuex';
 import { MOCK_QUERY } from 'jest/search/mock_data';
 import ConfidentialityFilter from '~/search/sidebar/components/confidentiality_filter.vue';
 import RadioFilter from '~/search/sidebar/components/radio_filter.vue';
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 describe('ConfidentialityFilter', () => {
   let wrapper;
@@ -25,7 +25,6 @@ describe('ConfidentialityFilter', () => {
     });
 
     wrapper = shallowMount(ConfidentialityFilter, {
-      localVue,
       store,
     });
   };

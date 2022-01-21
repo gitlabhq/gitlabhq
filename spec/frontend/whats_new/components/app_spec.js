@@ -1,5 +1,6 @@
 import { GlDrawer, GlInfiniteScroll } from '@gitlab/ui';
-import { createLocalVue, mount } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
+import Vue from 'vue';
 import Vuex from 'vuex';
 import { mockTracking, unmockTracking, triggerEvent } from 'helpers/tracking_helper';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
@@ -12,8 +13,7 @@ jest.mock('~/whats_new/utils/get_drawer_body_height', () => ({
   getDrawerBodyHeight: jest.fn().mockImplementation(() => MOCK_DRAWER_BODY_HEIGHT),
 }));
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 describe('App', () => {
   let wrapper;
@@ -46,7 +46,6 @@ describe('App', () => {
     });
 
     wrapper = mount(App, {
-      localVue,
       store,
       propsData: buildProps(),
       directives: {

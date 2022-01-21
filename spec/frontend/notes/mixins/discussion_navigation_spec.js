@@ -1,5 +1,5 @@
-import { shallowMount, createLocalVue } from '@vue/test-utils';
-import { nextTick } from 'vue';
+import { shallowMount } from '@vue/test-utils';
+import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 import { setHTMLFixture } from 'helpers/fixtures';
 import createEventHub from '~/helpers/event_hub_factory';
@@ -27,8 +27,7 @@ const createComponent = () => ({
 });
 
 describe('Discussion navigation mixin', () => {
-  const localVue = createLocalVue();
-  localVue.use(Vuex);
+  Vue.use(Vuex);
 
   let wrapper;
   let store;
@@ -65,7 +64,7 @@ describe('Discussion navigation mixin', () => {
     });
     store.state.notes.discussions = createDiscussions();
 
-    wrapper = shallowMount(createComponent(), { store, localVue });
+    wrapper = shallowMount(createComponent(), { store });
   });
 
   afterEach(() => {

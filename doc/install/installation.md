@@ -578,9 +578,10 @@ sudo -u git -H git config --global core.fsyncObjectFiles true
 
 # Configure Redis connection settings
 sudo -u git -H cp config/resque.yml.example config/resque.yml
+sudo -u git -H cp config/cable.yml.example config/cable.yml
 
 # Change the Redis socket path if you are not using the default Debian / Ubuntu configuration
-sudo -u git -H editor config/resque.yml
+sudo -u git -H editor config/resque.yml config/cable.yml
 ```
 
 Make sure to edit both `gitlab.yml` and `puma.rb` to match your setup.
