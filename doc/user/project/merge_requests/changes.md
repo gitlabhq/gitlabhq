@@ -5,149 +5,151 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: index, reference
 ---
 
-# Changes tab in merge requests **(FREE)**
+# Changes in merge requests **(FREE)**
 
-The **Changes** tab on a [merge request](index.md), below the main merge request details and next to the discussion tab,
-shows the changes to files between branches or commits. This view of changes to a
-file is also known as a **diff**. By default, the diff view compares the file in the
-merge request branch and the file in the target branch.
+A [merge request](index.md) proposes a set of changes to files in a branch in your repository. These
+changes are shown as a _diff_ (difference) between the current state and the proposed
+changes.
 
-The diff view includes the following:
+By default, the diff view compares the versions of files in the merge request source branch
+to the files in the target branch, and shows only the parts of a file that have changed.
 
-- The file's name and path.
-- The number of lines added and deleted.
-- Buttons for the following options:
-  - Toggle comments for this file; useful for inline reviews.
-  - Edit the file in the merge request's branch.
-  - Show full file, in case you want to look at the changes in context with the rest of the file.
-  - View file at the current commit.
-  - Preview the changes with [Review Apps](../../../ci/review_apps/index.md).
-- The changed lines, with the specific changes highlighted.
+![Example screenshot of a source code diff](img/mr-diff-example_v14_8.png)
 
-![Example screenshot of a source code diff](img/merge_request_diff_v12_2.png)
+## Show all changes in a merge request
 
-## Merge request diff file navigation
+To view the diff of changes included in a merge request:
 
-When reviewing changes in the **Changes** tab, the diff can be navigated using
-the file tree or file list. As you scroll through large diffs with many
-changes, you can quickly jump to any changed file using the file tree or file
-list.
+1. Go to your merge request.
+1. Below the merge request title, select **Changes**.
+1. If the merge request changes many files, you can jump directly to a specific file:
+   1. Select **Show file browser** (**{file-tree}**) to display the file tree.
+   1. Select the file you want to view.
+   1. To hide the file browser, select **Show file browser** again.
 
-![Merge request diff file navigation](img/merge_request_diff_file_navigation.png)
+In [GitLab 13.4](https://gitlab.com/gitlab-org/gitlab/-/issues/232820) and later, files
+with many changes are collapsed to improve performance. GitLab displays the message:
+**Some changes are not shown**. To view the changes for that file, select **Expand file**.
 
-## Collapsed files in the Changes view
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/232820) in GitLab 13.4.
-
-When you review changes in the **Changes** tab, files with a large number of changes are collapsed
-to improve performance. When files are collapsed, a warning appears at the top of the changes.
-Select **Expand file** on any file to view the changes for that file.
-
-## File-by-file diff navigation
+## Show one file at a time
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/222790) in GitLab 13.2.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/229848) in GitLab 13.7.
 
-For larger merge requests, consider reviewing one file at a time. To enable this feature:
+For larger merge requests, you can review one file at a time. You can change this setting
+[temporarily in a merge request](#in-a-merge-request-show-only-one-file-at-a-time), or
+so it [applies to all merge requests](#in-all-merge-requests-show-only-one-file-at-a-time).
+
+### In a merge request, show only one file at a time
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/233898) in GitLab 13.7.
+
+To temporarily change your viewing preferences for a specific merge request:
+
+1. Go to your merge request, and below the merge request title, select **Changes**.
+1. Select **Preferences** (**{settings}**).
+1. Select or clear the **Show one file at a time** checkbox.
+
+This change overrides your choice in your user preferences. It persists until you
+clear your browser's cookies or change this behavior again.
+
+### In all merge requests, show only one file at a time
+
+To view one file at a time for all of your merge requests:
 
 1. In the top-right corner, select your avatar.
 1. Select **Preferences**.
-1. Scroll to the **Behavior** section and select **Show one file at a time on merge request's Changes tab**.
+1. Scroll to the **Behavior** section and select the **Show one file at a time on merge request's Changes tab** checkbox.
 1. Select **Save changes**.
 
-After you enable this setting, GitLab displays only one file at a time in the **Changes** tab when you review merge requests. You can select **Prev** and **Next** to view other changed files.
+After you enable this setting, GitLab displays only one file at a time when you review
+merge requests. To view other changed files, either:
 
-![File-by-file diff navigation](img/file_by_file_v13_2.png)
+- Scroll to the end of the file and select either **Prev** or **Next**.
+- Select **Show file browser** (**{file-tree}**) and select another file to view.
 
-In [GitLab 13.7](https://gitlab.com/gitlab-org/gitlab/-/issues/233898) and later, if you want to change
-this behavior, you can do so from your **User preferences** (as explained above) or directly in a
-merge request:
+## Compare changes inline
 
-1. Go to the merge request's **Changes** tab.
-1. Select the cog icon (**{settings}**) to reveal the merge request's settings dropdown.
-1. Select or clear the checkbox **Show one file at a time** to change the setting accordingly.
+You can view the changes inline:
 
-This change overrides the choice you made in your user preferences and persists until you clear your
-browser's cookies or change this behavior again.
+1. Go to your merge request, and below the title, select **Changes**.
+1. Select **Preferences** (**{settings}**).
+1. In the **Compare changes** area, select **Inline**.
 
-## Incrementally expand merge request diffs
+The changes are displayed after the original text.
 
-By default, the diff shows only the parts of a file which are changed.
-To view more unchanged lines above or below a change select the
-**Expand up** or **Expand down** icons. You can also select **Show unchanged lines**
-to expand the entire file.
+![inline changes](img/changes-inline_v14_8.png)
 
-![Incrementally expand merge request diffs](img/incrementally_expand_merge_request_diffs_v12_2.png)
+## Compare changes side-by-side
 
-In GitLab [versions 13.1 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/205401), when viewing a
-merge request's **Changes** tab, if a certain file was only renamed, you can expand it to see the
-entire content by selecting **Show file contents**.
+Depending on the length of the changes in your merge request, you may find it
+easier to view the changes inline, or side-by-side:
 
-## Ignore whitespace changes in Merge Request diff view
+1. Go to your merge request, and below the title, select **Changes**.
+1. Select **Preferences** (**{settings}**).
+1. In the **Compare changes** area, select **Side-by-side**.
+
+The changes are displayed across from one another.
+
+![side-by-side changes](img/changes-sidebyside_v14_8.png)
+
+## Expand or collapse comments
+
+When reviewing code changes, you can hide inline comments:
+
+1. Go to your merge request, and below the title, select **Changes**.
+1. Scroll to the file that contains the comments you want to hide.
+1. Scroll to the line the comment is attached to, and select **Collapse** (**{collapse}**):
+   ![collapse a comment](img/collapse-comment_v14_8.png)
+
+To expand inline comments and show them again:
+
+1. Go to your merge request, and below the title, select **Changes**.
+1. Scroll to the file that contains the collapsed comments you want to show.
+1. Scroll to the line the comment is attached to, and select the user avatar:
+   ![expand a comment](img/expand-comment_v14_8.png)
+
+## Ignore whitespace changes
 
 Whitespace changes can make it more difficult to see the substantive changes in
 a merge request. You can choose to hide or show whitespace changes:
 
-1. Go to your merge request, and select the **Changes** tab.
-1. Above the list of changed files, select **(settings)** **Preferences** to
-   display the preferences menu.
-1. Select or deselect **Show whitespace changes**:
+1. Go to your merge request, and below the title, select **Changes**.
+1. Before the list of changed files, select **Preferences** (**{settings}**).
+1. Select or clear the **Show whitespace changes** checkbox:
 
    ![MR diff](img/merge_request_diff_v14_2.png)
 
 ## Mark files as viewed
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/51513) in GitLab 13.9 behind a feature flag, enabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/51513) in GitLab 13.9 [with a flag](../../../administration/feature_flags.md) named `local_file_reviews`. Enabled by default.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/296674) in GitLab 14.3.
 
-When reviewing a merge request with many files multiple times, it may be useful to the reviewer
-to focus on new changes and ignore the files that they have already reviewed and don't want to
-see anymore unless they are changed again.
+When reviewing a merge request with many files multiple times, you can ignore files
+you've already reviewed. To hide files that haven't changed since your last review:
 
-To mark a file as viewed:
+1. Go to your merge request, and below the title, select **Changes**.
+1. In the file's header, select the **Viewed** checkbox.
 
-1. Go to the merge request's **Diffs** tab.
-1. On the right-top of the file, locate the **Viewed** checkbox.
-1. Select it to mark the file as viewed.
+Files marked as viewed are not shown to you again unless either:
 
-Once checked, the file remains marked for that reviewer unless there are newly introduced
-changes to its content or the checkbox is unchecked.
+- New changes are made to its content.
+- You clear the **Viewed** checkbox.
 
-## Show merge request conflicts in diff
+## Show merge request conflicts in diff **(FREE SELF)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/232484) in GitLab 13.5.
-> - [Deployed behind a feature flag](../../feature_flags.md), disabled by default.
-> - Disabled on GitLab.com.
-> - Not recommended for production use.
-> - To use in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-merge-request-conflicts-in-diff).
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/232484) in GitLab 13.5 [with a flag](../../../administration/feature_flags.md) named `display_merge_conflicts_in_diff`. Disabled by default.
 
-This in-development feature might not be available for your use. There can be
-[risks when enabling features still in development](../../../administration/feature_flags.md#risks-when-enabling-features-still-in-development).
-Refer to this feature's version history for more details.
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available,
+ask an administrator to [enable the feature flag](../../../administration/feature_flags.md)
+named `display_merge_conflicts_in_diff`. On GitLab.com, this feature is not available.
+The feature is not ready for production use.
 
 To avoid displaying the changes that are already on target branch in the diff,
 we compare the merge request's source branch with HEAD of the target branch.
 
 When there are conflicts between the source and target branch, we show the
-conflicts on the merge request diff as well:
+conflicts on the merge request diff:
 
 ![Example of a conflict shown in a merge request diff](img/conflict_ui_v14_0.png)
-
-### Enable or disable merge request conflicts in diff **(FREE SELF)**
-
-Merge request conflicts in diff is under development and not ready for production use. It is
-deployed behind a feature flag that is **disabled by default**.
-[GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md)
-can enable it.
-
-To enable it:
-
-```ruby
-Feature.enable(:display_merge_conflicts_in_diff)
-```
-
-To disable it:
-
-```ruby
-Feature.disable(:display_merge_conflicts_in_diff)
-```
