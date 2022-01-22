@@ -773,6 +773,7 @@ Merge request events are triggered when:
 - A new merge request is created.
 - An existing merge request is updated, approved, unapproved, merged, or closed.
 - A commit is added in the source branch.
+- All threads are resolved on the merge request.
 
 The available values for `object_attributes.action` in the payload are:
 
@@ -838,6 +839,7 @@ Payload example:
     "updated_at": "2013-12-03T17:23:34Z",
     "milestone_id": null,
     "state": "opened",
+    "blocking_discussions_resolved": true,
     "merge_status": "unchecked",
     "target_project_id": 14,
     "iid": 1,
