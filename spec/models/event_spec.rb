@@ -31,14 +31,15 @@ RSpec.describe Event do
 
     describe 'after_create :set_last_repository_updated_at' do
       context 'with a push event' do
-        it 'updates the project last_repository_updated_at' do
-          project.update!(last_repository_updated_at: 1.year.ago)
+        it 'updates the project last_repository_updated_at and updated_at' do
+          project.touch(:last_repository_updated_at, time: 1.year.ago) # rubocop: disable Rails/SkipsModelValidations
 
-          create_push_event(project, project.owner)
+          event = create_push_event(project, project.owner)
 
           project.reload
 
-          expect(project.last_repository_updated_at).to be_within(1.minute).of(Time.current)
+          expect(project.last_repository_updated_at).to be_like_time(event.created_at)
+          expect(project.updated_at).to be_like_time(event.created_at)
         end
       end
 
@@ -835,13 +836,14 @@ RSpec.describe Event do
 
     context 'when a project was updated more than 1 hour ago' do
       it 'updates the project' do
-        project.update!(last_activity_at: 1.year.ago)
+        project.touch(:last_activity_at, time: 1.year.ago) # rubocop: disable Rails/SkipsModelValidations
 
-        create_push_event(project, project.owner)
+        event = create_push_event(project, project.owner)
 
         project.reload
 
-        expect(project.last_activity_at).to be_within(1.minute).of(Time.current)
+        expect(project.last_activity_at).to be_like_time(event.created_at)
+        expect(project.updated_at).to be_like_time(event.created_at)
       end
     end
   end
