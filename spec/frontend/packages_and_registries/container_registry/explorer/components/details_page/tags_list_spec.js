@@ -108,6 +108,7 @@ describe('Tags List', () => {
     describe('events', () => {
       it('prev-page fetch the previous page', async () => {
         findRegistryList().vm.$emit('prev-page');
+        await waitForPromises();
 
         expect(resolver).toHaveBeenCalledWith({
           first: null,
@@ -119,8 +120,9 @@ describe('Tags List', () => {
         });
       });
 
-      it('next-page fetch the previous page', () => {
+      it('next-page fetch the previous page', async () => {
         findRegistryList().vm.$emit('next-page');
+        await waitForPromises();
 
         expect(resolver).toHaveBeenCalledWith({
           after: tagsPageInfo.endCursor,

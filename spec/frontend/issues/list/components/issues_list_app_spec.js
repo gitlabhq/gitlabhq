@@ -131,9 +131,10 @@ describe('CE IssuesListApp component', () => {
   });
 
   describe('IssuableList', () => {
-    beforeEach(() => {
+    beforeEach(async () => {
       wrapper = mountComponent();
       jest.runOnlyPendingTimers();
+      await waitForPromises();
     });
 
     it('renders', () => {
@@ -167,8 +168,9 @@ describe('CE IssuesListApp component', () => {
   });
 
   describe('header action buttons', () => {
-    it('renders rss button', () => {
+    it('renders rss button', async () => {
       wrapper = mountComponent({ mountFn: mount });
+      await waitForPromises();
 
       expect(findGlButtonAt(0).props('icon')).toBe('rss');
       expect(findGlButtonAt(0).attributes()).toMatchObject({
@@ -177,8 +179,9 @@ describe('CE IssuesListApp component', () => {
       });
     });
 
-    it('renders calendar button', () => {
+    it('renders calendar button', async () => {
       wrapper = mountComponent({ mountFn: mount });
+      await waitForPromises();
 
       expect(findGlButtonAt(1).props('icon')).toBe('calendar');
       expect(findGlButtonAt(1).attributes()).toMatchObject({
@@ -191,12 +194,13 @@ describe('CE IssuesListApp component', () => {
       describe('when user is signed in', () => {
         const search = '?search=refactor&sort=created_date&state=opened';
 
-        beforeEach(() => {
+        beforeEach(async () => {
           setWindowLocation(search);
 
           wrapper = mountComponent({ provide: { isSignedIn: true }, mountFn: mount });
 
           jest.runOnlyPendingTimers();
+          await waitForPromises();
         });
 
         it('renders', () => {
@@ -585,11 +589,12 @@ describe('CE IssuesListApp component', () => {
       ${'fetching issues'}       | ${'issuesQueryResponse'}       | ${IssuesListApp.i18n.errorFetchingIssues}
       ${'fetching issue counts'} | ${'issuesCountsQueryResponse'} | ${IssuesListApp.i18n.errorFetchingCounts}
     `('when there is an error $error', ({ mountOption, message }) => {
-      beforeEach(() => {
+      beforeEach(async () => {
         wrapper = mountComponent({
           [mountOption]: jest.fn().mockRejectedValue(new Error('ERROR')),
         });
         jest.runOnlyPendingTimers();
+        await waitForPromises();
       });
 
       it('shows an error message', () => {

@@ -2,6 +2,7 @@
   removal_date: "2021-06-22"
   removal_milestone: "14.0"
   reporter: deuley
+  breaking_change: true
   body: |
     Service Templates are [removed in GitLab 14.0](https://gitlab.com/groups/gitlab-org/-/epics/5672). They were used to apply identical settings to a large number of projects, but they only did so at the time of project creation.
 

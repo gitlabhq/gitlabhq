@@ -8,7 +8,6 @@
         = _('There was an error loading users activity calendar.')
         %a.js-retry-load{ href: '#' }
           = s_('UserProfile|Retry')
-    .user-calendar-activities
 - if @user.user_readme&.rich_viewer
   .row.justify-content-center
     .col-12.col-md-10.col-lg-8.gl-my-6
@@ -24,6 +23,8 @@
           .gl-ml-auto
             = link_to _('Edit'), edit_blob_path(@user.user_project, @user.user_project.default_branch, @user.user_readme.path)
       = render 'projects/blob/viewer', viewer: @user.user_readme.rich_viewer, load_async: false
+.row
+  .col-12.user-calendar-activities
 .row
   %div{ class: activity_pane_class }
     - if can?(current_user, :read_cross_project)

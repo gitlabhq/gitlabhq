@@ -311,8 +311,6 @@
   - 1
 - - pages_transfer
   - 1
-- - pages_update_configuration
-  - 1
 - - personal_access_tokens
   - 1
 - - phabricator_import_import_tasks

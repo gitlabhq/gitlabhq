@@ -2,7 +2,6 @@
 
 module Ci
   class InstanceVariable < Ci::ApplicationRecord
-    extend Gitlab::ProcessMemoryCache::Helper
     include Ci::NewHasVariable
     include Ci::Maskable
     include Limitable
@@ -36,14 +35,22 @@ module Ci
         cached_data[:unprotected]
       end
 
+      def invalidate_memory_cache(key)
+        cache_backend.delete(key)
+      end
+
       private
 
       def cached_data
-        fetch_memory_cache(:ci_instance_variable_data) do
+        cache_backend.fetch(:ci_instance_variable_data, expires_in: 30.seconds) do
           all_records = unscoped.all.to_a
 
           { all: all_records, unprotected: all_records.reject(&:protected?) }
         end
+      end
+
+      def cache_backend
+        Gitlab::ProcessMemoryCache.cache_backend
       end
     end
   end

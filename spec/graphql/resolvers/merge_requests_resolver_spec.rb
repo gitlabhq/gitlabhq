@@ -321,7 +321,7 @@ RSpec.describe Resolvers::MergeRequestsResolver do
     end
 
     describe 'sorting' do
-      let(:mrs) do
+      let_it_be(:mrs) do
         [
           merge_request_with_milestone, merge_request_6, merge_request_5, merge_request_4,
           merge_request_3, merge_request_2, merge_request_1
@@ -363,28 +363,44 @@ RSpec.describe Resolvers::MergeRequestsResolver do
         def merged_at(mr)
           nils_last(mr.metrics.merged_at)
         end
+      end
 
-        context 'when sorting by closed at' do
-          before do
-            merge_request_1.metrics.update!(latest_closed_at: 10.days.ago)
-            merge_request_3.metrics.update!(latest_closed_at: 5.days.ago)
-          end
+      context 'when sorting by closed at' do
+        before do
+          merge_request_1.metrics.update!(latest_closed_at: 10.days.ago)
+          merge_request_3.metrics.update!(latest_closed_at: 5.days.ago)
+        end
 
-          it 'sorts merge requests ascending' do
-            expect(resolve_mr(project, sort: :closed_at_asc))
-              .to match_array(mrs)
-              .and be_sorted(->(mr) { [closed_at(mr), -mr.id] })
-          end
+        it 'sorts merge requests ascending' do
+          expect(resolve_mr(project, sort: :closed_at_asc))
+            .to match_array(mrs)
+            .and be_sorted(->(mr) { [closed_at(mr), -mr.id] })
+        end
 
-          it 'sorts merge requests descending' do
-            expect(resolve_mr(project, sort: :closed_at_desc))
-              .to match_array(mrs)
-              .and be_sorted(->(mr) { [-closed_at(mr), -mr.id] })
-          end
+        it 'sorts merge requests descending' do
+          expect(resolve_mr(project, sort: :closed_at_desc))
+            .to match_array(mrs)
+            .and be_sorted(->(mr) { [-closed_at(mr), -mr.id] })
+        end
 
-          def closed_at(mr)
-            nils_last(mr.metrics.latest_closed_at)
-          end
+        def closed_at(mr)
+          nils_last(mr.metrics.latest_closed_at)
+        end
+      end
+
+      context 'when sorting by title' do
+        let_it_be(:project) { create(:project, :repository) }
+        let_it_be(:mr1) { create(:merge_request, :unique_branches, title: 'foo', source_project: project) }
+        let_it_be(:mr2) { create(:merge_request, :unique_branches, title: 'bar', source_project: project) }
+        let_it_be(:mr3) { create(:merge_request, :unique_branches, title: 'baz', source_project: project) }
+        let_it_be(:mr4) { create(:merge_request, :unique_branches, title: 'Baz 2', source_project: project) }
+
+        it 'sorts issues ascending' do
+          expect(resolve_mr(project, sort: :title_asc).to_a).to eq [mr2, mr3, mr4, mr1]
+        end
+
+        it 'sorts issues descending' do
+          expect(resolve_mr(project, sort: :title_desc).to_a).to eq [mr1, mr4, mr3, mr2]
         end
       end
     end

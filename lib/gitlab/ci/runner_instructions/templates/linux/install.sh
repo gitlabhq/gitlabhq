@@ -4,7 +4,7 @@ sudo curl -L --output /usr/local/bin/gitlab-runner ${GITLAB_CI_RUNNER_DOWNLOAD_L
 # Give it permission to execute
 sudo chmod +x /usr/local/bin/gitlab-runner
 
-# Create a GitLab user
+# Create a GitLab Runner user
 sudo useradd --comment 'GitLab Runner' --create-home gitlab-runner --shell /bin/bash
 
 # Install and run as a service

@@ -6,6 +6,7 @@ import { ENTER_KEY } from '~/lib/utils/keys';
 import getAgentsQuery from '~/clusters_list/graphql/queries/get_agents.query.graphql';
 import deleteAgentMutation from '~/clusters_list/graphql/mutations/delete_agent.mutation.graphql';
 import createMockApollo from 'helpers/mock_apollo_helper';
+import waitForPromises from 'helpers/wait_for_promises';
 import AgentOptions from '~/clusters_list/components/agent_options.vue';
 import { MAX_LIST_COUNT } from '~/clusters_list/constants';
 import { getAgentResponse, mockDeleteResponse, mockErrorDeleteResponse } from '../mocks/apollo';
@@ -83,6 +84,7 @@ describe('AgentOptions', () => {
     findDeleteBtn().vm.$emit('click');
     findInput().vm.$emit('input', agent.name);
     await findModal().vm.$emit('primary');
+    await waitForPromises();
   };
 
   beforeEach(() => {
@@ -173,8 +175,7 @@ describe('AgentOptions', () => {
   describe('when getting an error deleting agent', () => {
     beforeEach(async () => {
       await createWrapper({ mutationResponse: mockErrorDeleteResponse });
-
-      submitAgentToDelete();
+      await submitAgentToDelete();
     });
 
     it('displays the error message', () => {
@@ -187,7 +188,7 @@ describe('AgentOptions', () => {
       const loadingResponse = new Promise(() => {});
       await createWrapper({ mutationResponse: loadingResponse });
 
-      submitAgentToDelete();
+      await submitAgentToDelete();
     });
 
     it('reenables the options dropdown', async () => {

@@ -2,6 +2,7 @@
   removal_date: "2021-06-22"
   removal_milestone: "14.0"
   reporter: nicoleschwartz
+  breaking_change: true
   body: |
     As mentioned in [13.9](https://about.gitlab.com/releases/2021/02/22/gitlab-13-9-released/#deprecations-for-dependency-scanning) and [this blog post](https://about.gitlab.com/blog/2021/02/08/composition-analysis-14-deprecations-and-removals/) several removals for Dependency Scanning take effect.
 

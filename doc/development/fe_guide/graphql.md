@@ -1081,55 +1081,6 @@ If you use the RubyMine IDE, and have marked the `tmp` directory as
 `gitlab/tmp/tests/graphql`. This will allow the **JS GraphQL** plugin to
 automatically find and index the schema.
 
-#### Mocking response as component data
-
-<!-- vale gitlab.Spelling = NO -->
-
-With [Vue Test Utils](https://vue-test-utils.vuejs.org/) one can quickly test components that
-fetch GraphQL queries. The simplest way is to use `shallowMount` and then set
-the data on the component:
-
-<!-- vale gitlab.Spelling = YES -->
-
-```javascript
-it('tests apollo component', () => {
-  const vm = shallowMount(App);
-
-  vm.setData({
-    ...mockData
-  });
-});
-```
-
-#### Testing loading state
-
-To test how a component renders when results from the GraphQL API are still loading, mock a loading state into respective Apollo queries/mutations:
-
-```javascript
-  function createComponent({
-    loading = false,
-  } = {}) {
-    const $apollo = {
-      queries: {
-        designs: {
-          loading,
-        },
-      },
-    };
-
-    wrapper = shallowMount(Index, {
-      sync: false,
-      mocks: { $apollo }
-    });
-  }
-
-  it('renders loading icon', () => {
-  createComponent({ loading: true });
-
-  expect(wrapper.element).toMatchSnapshot();
-})
-```
-
 #### Testing Apollo components
 
 If we use `ApolloQuery` or `ApolloMutation` in our components, in order to test their functionality we need to add a stub first:
@@ -1197,11 +1148,9 @@ it('calls mutation on submitting form ', () => {
 });
 ```
 
-### Testing with mocked Apollo Client
+#### Mocking Apollo Client
 
-To test the logic of Apollo cache updates, we might want to mock an Apollo Client in our unit tests. We use [`mock-apollo-client`](https://www.npmjs.com/package/mock-apollo-client) library to mock Apollo client and [`createMockApollo` helper](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/frontend/__helpers__/mock_apollo_helper.js) we created on top of it.
-
-To separate tests with mocked client from 'usual' unit tests, create an additional factory and pass the created `mockApollo` as an option to the `createComponent`-factory. This way we only create Apollo Client instance when it's necessary.
+To test the components with Apollo operations, we need to mock an Apollo Client in our unit tests. We use [`mock-apollo-client`](https://www.npmjs.com/package/mock-apollo-client) library to mock Apollo client and [`createMockApollo` helper](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/frontend/__helpers__/mock_apollo_helper.js) we created on top of it.
 
 We need to inject `VueApollo` into the Vue instance by calling `Vue.use(VueApollo)`. This will install `VueApollo` globally for all the tests in the file. It is recommended to call `Vue.use(VueApollo)` just after the imports.
 
@@ -1320,8 +1269,7 @@ it('renders designs list', async () => {
   const mockApollo = createMockApolloProvider();
   const wrapper = createComponent({ mockApollo });
 
-  jest.runOnlyPendingTimers();
-  await wrapper.vm.$nextTick();
+  await waitForPromises()
 
   expect(findDesigns()).toHaveLength(3);
 });
@@ -1342,8 +1290,7 @@ function createMockApolloProvider() {
 it('renders error if query fails', async () => {
   const wrapper = createComponent();
 
-  jest.runOnlyPendingTimers();
-  await wrapper.vm.$nextTick();
+  await waitForPromises()
 
   expect(wrapper.find('.test-error').exists()).toBe(true)
 })
@@ -1351,7 +1298,7 @@ it('renders error if query fails', async () => {
 
 Request handlers can also be passed to component factory as a parameter.
 
-Mutations could be tested the same way with a few additional `nextTick`s to get the updated result:
+Mutations could be tested the same way:
 
 ```javascript
 function createMockApolloProvider({
@@ -1391,7 +1338,7 @@ it('calls a mutation with correct parameters and reorders designs', async () => 
 
   expect(moveDesignHandler).toHaveBeenCalled();
 
-  await wrapper.vm.$nextTick();
+  await waitForPromises();
 
   expect(
     findDesigns()
@@ -1407,8 +1354,7 @@ To mock multiple query response states, success and failure, Apollo Client's nat
 describe('when query times out', () => {
   const advanceApolloTimers = async () => {
     jest.runOnlyPendingTimers();
-    await wrapper.vm.$nextTick();
-    await wrapper.vm.$nextTick();
+    await waitForPromises()
   };
 
   beforeEach(async () => {
@@ -1419,7 +1365,7 @@ describe('when query times out', () => {
       .mockResolvedValueOnce({ errors: [{ message: 'timeout' }] });
 
     createComponentWithApollo(failSucceedFail);
-    await wrapper.vm.$nextTick();
+    await waitForPromises();
   });
 
   it('shows correct errors and does not overwrite populated data when data is empty', async () => {

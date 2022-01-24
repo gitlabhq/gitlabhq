@@ -33,6 +33,7 @@ For removal reviewers (Technical Writers only):
     <%- entries.select{|entry| entry["removal_milestone"] == milestone}.each do |removal| %>
 ### <%= removal["name"]%>
 <% if removal["breaking_change"] -%>
+
 WARNING:
 This feature was changed or removed in <%= removal["removal_milestone"]%>
 as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).

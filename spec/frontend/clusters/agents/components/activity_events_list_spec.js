@@ -70,8 +70,9 @@ describe('ActivityEvents', () => {
   });
 
   describe('when there are no agentEvents', () => {
-    beforeEach(() => {
+    beforeEach(async () => {
       createWrapper({ queryResponse: jest.fn().mockResolvedValue(mockEmptyResponse) });
+      await waitForPromises();
     });
 
     it('displays an empty state with the correct illustration', () => {
@@ -83,9 +84,11 @@ describe('ActivityEvents', () => {
   describe('when the agentEvents are present', () => {
     const length = mockResponse.data?.project?.clusterAgent?.activityEvents?.nodes?.length;
 
-    beforeEach(() => {
+    beforeEach(async () => {
       createWrapper();
+      await waitForPromises();
     });
+
     it('renders an activity-history-item components for every event', () => {
       expect(findAllActivityHistoryItems()).toHaveLength(length);
     });

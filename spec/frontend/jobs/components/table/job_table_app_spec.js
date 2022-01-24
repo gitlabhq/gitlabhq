@@ -112,7 +112,7 @@ describe('Job table app', () => {
         },
       });
 
-      await wrapper.vm.$nextTick();
+      await waitForPromises();
 
       // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
       // eslint-disable-next-line no-restricted-syntax
@@ -150,7 +150,7 @@ describe('Job table app', () => {
         },
       });
 
-      await wrapper.vm.$nextTick();
+      await waitForPromises();
 
       expect(findPrevious().exists()).toBe(true);
       expect(findPrevious().classes('disabled')).toBe(true);

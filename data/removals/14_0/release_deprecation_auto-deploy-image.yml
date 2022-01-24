@@ -3,6 +3,7 @@
   removal_date: "2021-06-22"
   removal_milestone: "14.0"
   issue_url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/300862'
+  breaking_change: true
   body: |
     In GitLab 14.0, we will update the [Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/stages.html#auto-deploy) CI template to the latest version. This includes new features, bug fixes, and performance improvements with a dependency on the v2 [auto-deploy-image](https://gitlab.com/gitlab-org/cluster-integration/auto-deploy-image). Auto Deploy CI tempalte v1 will is deprecated going forward.
 

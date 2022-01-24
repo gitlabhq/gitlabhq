@@ -1,6 +1,7 @@
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
+import waitForPromises from 'helpers/wait_for_promises';
 import PipelineEditorMiniGraph from '~/pipeline_editor/components/header/pipeline_editor_mini_graph.vue';
 import PipelineMiniGraph from '~/pipelines/components/pipelines_list/pipeline_mini_graph.vue';
 import getLinkedPipelinesQuery from '~/projects/commit_box/info/graphql/queries/get_linked_pipelines.query.graphql';
@@ -89,13 +90,14 @@ describe('Pipeline Status', () => {
     });
 
     describe('when query fails', () => {
-      beforeEach(() => {
+      beforeEach(async () => {
         mockLinkedPipelinesQuery.mockRejectedValue(new Error());
         createComponentWithApollo();
+        await waitForPromises();
       });
 
       it('should emit an error event when query fails', async () => {
-        expect(wrapper.emitted('showError')).toHaveLength(1);
+        expect(wrapper.emitted('showError')).toHaveLength(2);
         expect(wrapper.emitted('showError')[0]).toEqual([
           {
             type: PIPELINE_FAILURE,

@@ -218,6 +218,7 @@ describe('GroupRunnersApp', () => {
         },
       });
       createComponent();
+      await waitForPromises();
     });
 
     it('shows a message for no results', async () => {
@@ -226,9 +227,10 @@ describe('GroupRunnersApp', () => {
   });
 
   describe('when runners query fails', () => {
-    beforeEach(() => {
+    beforeEach(async () => {
       mockGroupRunnersQuery = jest.fn().mockRejectedValue(new Error('Error!'));
       createComponent();
+      await waitForPromises();
     });
 
     it('error is shown to the user', async () => {

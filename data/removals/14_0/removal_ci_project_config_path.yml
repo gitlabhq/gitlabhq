@@ -2,6 +2,7 @@
   removal_date: "2021-06-22"
   removal_milestone: "14.0"
   reporter: stkerr
+  breaking_change: true
   body: |
     The `CI_PROJECT_CONFIG_PATH` [predefined project variable](https://docs.gitlab.com/ee/ci/variables/predefined_variables.html)
     has been removed in favor of `CI_CONFIG_PATH`, which is functionally the same.

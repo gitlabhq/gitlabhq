@@ -6,7 +6,7 @@ RSpec.describe Ci::DailyBuildGroupReportResultsFinder do
   describe '#execute' do
     let_it_be(:project) { create(:project, :private) }
     let(:user_without_permission) { create(:user) }
-    let_it_be(:user_with_permission) { project.owner }
+    let_it_be(:user_with_permission) { project.first_owner }
     let_it_be(:ref_path) { 'refs/heads/master' }
     let(:limit) { nil }
     let_it_be(:default_branch) { false }

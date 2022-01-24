@@ -5,6 +5,7 @@ import VueApollo, { ApolloMutation } from 'vue-apollo';
 import VueRouter from 'vue-router';
 import VueDraggable from 'vuedraggable';
 import createMockApollo from 'helpers/mock_apollo_helper';
+import waitForPromises from 'helpers/wait_for_promises';
 import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 import permissionsQuery from 'shared_queries/design_management/design_permissions.query.graphql';
 import getDesignListQuery from 'shared_queries/design_management/get_design_list.query.graphql';
@@ -115,8 +116,7 @@ describe('Design management index page', () => {
   const findDesignToolbarWrapper = () => wrapper.find('[data-testid="design-toolbar-wrapper"]');
 
   async function moveDesigns(localWrapper) {
-    await jest.runOnlyPendingTimers();
-    await nextTick();
+    await waitForPromises();
 
     localWrapper.find(VueDraggable).vm.$emit('input', reorderedDesigns);
     localWrapper.find(VueDraggable).vm.$emit('change', {
@@ -746,9 +746,7 @@ describe('Design management index page', () => {
   describe('with mocked Apollo client', () => {
     it('has a design with id 1 as a first one', async () => {
       createComponentWithApollo({});
-
-      await jest.runOnlyPendingTimers();
-      await nextTick();
+      await waitForPromises();
 
       expect(findDesigns()).toHaveLength(3);
       expect(findDesigns().at(0).props('id')).toBe('1');
@@ -773,9 +771,7 @@ describe('Design management index page', () => {
 
       expect(draggableAttributes().disabled).toBe(true);
 
-      await jest.runOnlyPendingTimers(); // kick off the mocked GQL stuff (promises)
-      await nextTick(); // kick off the DOM update
-      await nextTick(); // kick off the DOM update for finally block
+      await waitForPromises();
 
       expect(draggableAttributes().disabled).toBe(false);
     });
@@ -787,7 +783,7 @@ describe('Design management index page', () => {
 
       await moveDesigns(wrapper);
 
-      await nextTick();
+      await waitForPromises();
 
       expect(createFlash).toHaveBeenCalledWith({ message: 'Houston, we have a problem' });
     });
@@ -799,9 +795,7 @@ describe('Design management index page', () => {
 
       await moveDesigns(wrapper);
 
-      await nextTick(); // kick off the DOM update
-      await jest.runOnlyPendingTimers(); // kick off the mocked GQL stuff (promises)
-      await nextTick(); // kick off the DOM update for flash
+      await waitForPromises();
 
       expect(createFlash).toHaveBeenCalledWith({
         message: 'Something went wrong when reordering designs. Please try again',

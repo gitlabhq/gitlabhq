@@ -1,6 +1,7 @@
-import { GlAlert, GlButton, GlFormInputGroup } from '@gitlab/ui';
+import { GlAlert, GlButton, GlFormInputGroup, GlSprintf } from '@gitlab/ui';
 import { createLocalVue } from '@vue/test-utils';
 import VueApollo from 'vue-apollo';
+import { sprintf } from '~/locale';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { mockTracking } from 'helpers/tracking_helper';
 import AvailableAgentsDropdown from '~/clusters_list/components/available_agents_dropdown.vue';
@@ -27,6 +28,7 @@ import {
   createAgentTokenResponse,
   createAgentTokenErrorResponse,
   getAgentResponse,
+  kasDisabledErrorResponse,
 } from '../mocks/apollo';
 import ModalStub from '../stubs';
 
@@ -35,7 +37,6 @@ localVue.use(VueApollo);
 
 const projectPath = 'path/to/project';
 const kasAddress = 'kas.example.com';
-const kasEnabled = true;
 const emptyStateImage = 'path/to/image';
 const defaultBranchName = 'default';
 const maxAgents = MAX_LIST_COUNT;
@@ -80,7 +81,6 @@ describe('InstallAgentModal', () => {
     const provide = {
       projectPath,
       kasAddress,
-      kasEnabled,
       emptyStateImage,
     };
 
@@ -92,6 +92,7 @@ describe('InstallAgentModal', () => {
     wrapper = shallowMountExtended(InstallAgentModal, {
       attachTo: document.body,
       stubs: {
+        GlSprintf,
         GlModal: ModalStub,
       },
       localVue,
@@ -118,7 +119,7 @@ describe('InstallAgentModal', () => {
     createWrapper();
     writeQuery();
 
-    await wrapper.vm.$nextTick();
+    await waitForPromises();
 
     wrapper.vm.setAgentName('agent-name');
     findActionButton().vm.$emit('click');
@@ -126,11 +127,12 @@ describe('InstallAgentModal', () => {
     return waitForPromises();
   };
 
-  beforeEach(() => {
+  beforeEach(async () => {
     apolloProvider = createMockApollo([
       [getAgentConfigurations, jest.fn().mockResolvedValue(apolloQueryResponse)],
     ]);
     createWrapper();
+    await waitForPromises();
     trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
   });
 
@@ -304,6 +306,36 @@ describe('InstallAgentModal', () => {
         label: EVENT_LABEL_MODAL,
         property: MODAL_TYPE_EMPTY,
       });
+    });
+  });
+
+  describe('when KAS is disabled', () => {
+    const i18n = I18N_AGENT_MODAL.empty_state;
+    beforeEach(() => {
+      apolloProvider = createMockApollo([
+        [getAgentConfigurations, jest.fn().mockResolvedValue(kasDisabledErrorResponse)],
+      ]);
+
+      return mockSelectedAgentResponse();
+    });
+
+    it('renders empty state image', () => {
+      expect(findImage().attributes('src')).toBe(emptyStateImage);
+    });
+
+    it('renders an instruction to enable the KAS', () => {
+      expect(findModal().text()).toContain(
+        sprintf(i18n.enableKasText, { linkStart: '', linkEnd: '' }),
+      );
+    });
+
+    it('renders a cancel button', () => {
+      expect(findActionButton().isVisible()).toBe(true);
+      expect(findActionButton().text()).toBe(i18n.done);
+    });
+
+    it("doesn't render a secondary button", () => {
+      expect(findSecondaryButton().exists()).toBe(false);
     });
   });
 });

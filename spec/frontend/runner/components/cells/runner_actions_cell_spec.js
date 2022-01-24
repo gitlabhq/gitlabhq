@@ -186,7 +186,8 @@ describe('RunnerTypeCell', () => {
           beforeEach(async () => {
             runnerActionsUpdateMutationHandler.mockRejectedValueOnce(new Error(mockErrorMsg));
 
-            await findToggleActiveBtn().vm.$emit('click');
+            findToggleActiveBtn().vm.$emit('click');
+            await waitForPromises();
           });
 
           it('error is reported to sentry', () => {
@@ -215,7 +216,8 @@ describe('RunnerTypeCell', () => {
               },
             });
 
-            await findToggleActiveBtn().vm.$emit('click');
+            findToggleActiveBtn().vm.$emit('click');
+            await waitForPromises();
           });
 
           it('error is reported to sentry', () => {
@@ -305,8 +307,9 @@ describe('RunnerTypeCell', () => {
     });
 
     describe('When delete is clicked', () => {
-      beforeEach(() => {
+      beforeEach(async () => {
         findRunnerDeleteModal().vm.$emit('primary');
+        await waitForPromises();
       });
 
       it('The delete mutation is called correctly', () => {
@@ -333,10 +336,11 @@ describe('RunnerTypeCell', () => {
       describe('On a network error', () => {
         const mockErrorMsg = 'Delete error!';
 
-        beforeEach(() => {
+        beforeEach(async () => {
           runnerDeleteMutationHandler.mockRejectedValueOnce(new Error(mockErrorMsg));
 
           findRunnerDeleteModal().vm.$emit('primary');
+          await waitForPromises();
         });
 
         it('error is reported to sentry', () => {
@@ -359,7 +363,7 @@ describe('RunnerTypeCell', () => {
         const mockErrorMsg = 'Runner not found!';
         const mockErrorMsg2 = 'User not allowed!';
 
-        beforeEach(() => {
+        beforeEach(async () => {
           runnerDeleteMutationHandler.mockResolvedValue({
             data: {
               runnerDelete: {
@@ -369,6 +373,7 @@ describe('RunnerTypeCell', () => {
           });
 
           findRunnerDeleteModal().vm.$emit('primary');
+          await waitForPromises();
         });
 
         it('error is reported to sentry', () => {

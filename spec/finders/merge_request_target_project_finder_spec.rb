@@ -65,8 +65,8 @@ RSpec.describe MergeRequestTargetProjectFinder do
 
   context 'private projects' do
     let(:base_project) { create(:project, :private, path: 'base') }
-    let(:forked_project) { fork_project(base_project, base_project.owner) }
-    let(:other_fork) { fork_project(base_project, base_project.owner) }
+    let(:forked_project) { fork_project(base_project, base_project.first_owner) }
+    let(:other_fork) { fork_project(base_project, base_project.first_owner) }
 
     context 'when the user is a member of all projects' do
       before do

@@ -15,6 +15,7 @@
   removal_milestone: "XX.YY" # The milestone when this feature is being removed.
   removal_date: "YYYY-MM-DD" # This should almost always be the 22nd of a month (YYYY-MM-DD), the date of the milestone release when this feature will be removed.
   breaking_change: false # Change to true if this removal is a breaking change.
+  reporter: exampleuser # GitLab username of the person reporting the removal
   body: | # Do not modify this line, instead modify the lines below.
     <!-- START OF BODY COMMENT
 

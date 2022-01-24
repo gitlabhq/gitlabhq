@@ -195,8 +195,9 @@ describe('DependencyProxyApp', () => {
               });
             });
 
-            it('prev-page event on list fetches the previous page', () => {
+            it('prev-page event on list fetches the previous page', async () => {
               findManifestList().vm.$emit('prev-page');
+              await waitForPromises();
 
               expect(resolver).toHaveBeenCalledWith({
                 before: pagination().startCursor,
@@ -206,8 +207,9 @@ describe('DependencyProxyApp', () => {
               });
             });
 
-            it('next-page event on list fetches the next page', () => {
+            it('next-page event on list fetches the next page', async () => {
               findManifestList().vm.$emit('next-page');
+              await waitForPromises();
 
               expect(resolver).toHaveBeenCalledWith({
                 after: pagination().endCursor,

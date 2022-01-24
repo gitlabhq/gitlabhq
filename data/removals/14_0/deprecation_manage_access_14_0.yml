@@ -3,6 +3,7 @@
   removal_milestone: "14.0"
   reporter: ogolowisnki
   issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/257829
+  breaking_change: true
   body: |
     To improve performance, we are limiting the number of projects returned from the `GET /groups/:id/` API call to 100. A complete list of projects can still be retrieved with the `GET /groups/:id/projects` API call.
 
@@ -11,6 +12,7 @@
   removal_milestone: "14.0"
   reporter: ogolowinski
   issue_url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/288516'
+  breaking_change: true
   body: |
     GitLab is deprecating the [OAuth 2 implicit grant flow](https://docs.gitlab.com/ee/api/oauth2.html#implicit-grant-flow) as it has been removed for [OAuth 2.1](https://oauth.net/2.1/).
 

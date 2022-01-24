@@ -2623,15 +2623,6 @@
   :weight: 1
   :idempotent:
   :tags: []
-- :name: pages_update_configuration
-  :worker_name: PagesUpdateConfigurationWorker
-  :feature_category: :pages
-  :has_external_dependencies:
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: true
-  :tags: []
 - :name: phabricator_import_import_tasks
   :worker_name: Gitlab::PhabricatorImport::ImportTasksWorker
   :feature_category: :importers

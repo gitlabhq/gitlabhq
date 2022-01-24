@@ -48,12 +48,12 @@ RSpec.describe BulkImports::Groups::Transformers::MemberAttributesTransformer do
       data = member_data(email: user.email)
 
       expect(subject.transform(context, data)).to eq(
-        'access_level' => 30,
-        'user_id' => user.id,
-        'created_by_id' => user.id,
-        'created_at' => '2020-01-01T00:00:00Z',
-        'updated_at' => '2020-01-01T00:00:00Z',
-        'expires_at' => nil
+        access_level: 30,
+        user_id: user.id,
+        created_by_id: user.id,
+        created_at: '2020-01-01T00:00:00Z',
+        updated_at: '2020-01-01T00:00:00Z',
+        expires_at: nil
       )
     end
 
@@ -62,12 +62,12 @@ RSpec.describe BulkImports::Groups::Transformers::MemberAttributesTransformer do
       data = member_data(email: secondary_email)
 
       expect(subject.transform(context, data)).to eq(
-        'access_level' => 30,
-        'user_id' => user.id,
-        'created_by_id' => user.id,
-        'created_at' => '2020-01-01T00:00:00Z',
-        'updated_at' => '2020-01-01T00:00:00Z',
-        'expires_at' => nil
+        access_level: 30,
+        user_id: user.id,
+        created_by_id: user.id,
+        created_at: '2020-01-01T00:00:00Z',
+        updated_at: '2020-01-01T00:00:00Z',
+        expires_at: nil
       )
     end
 

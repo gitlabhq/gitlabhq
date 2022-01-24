@@ -4,6 +4,7 @@ import VueApollo from 'vue-apollo';
 import originalAllReleasesQueryResponse from 'test_fixtures/graphql/releases/graphql/queries/all_releases.query.graphql.json';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import waitForPromises from 'helpers/wait_for_promises';
 import allReleasesQuery from 'shared_queries/releases/all_releases.query.graphql';
 import createFlash from '~/flash';
 import { historyPushState } from '~/lib/utils/common_utils';
@@ -141,7 +142,8 @@ describe('app_index_apollo_client.vue', () => {
           });
         });
 
-        it(`${toDescription(loadingIndicator)} render a loading indicator`, () => {
+        it(`${toDescription(loadingIndicator)} render a loading indicator`, async () => {
+          await waitForPromises();
           expect(findLoadingIndicator().exists()).toBe(loadingIndicator);
         });
 

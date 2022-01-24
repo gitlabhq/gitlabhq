@@ -585,6 +585,21 @@ RSpec.describe MergeRequest, factory_default: :keep do
         expect(merge_requests).to eq([older_mr, newer_mr])
       end
     end
+
+    context 'title' do
+      let_it_be(:first_mr) { create(:merge_request, :closed, title: 'One') }
+      let_it_be(:second_mr) { create(:merge_request, :closed, title: 'Two') }
+
+      it 'sorts asc' do
+        merge_requests = described_class.sort_by_attribute(:title_asc)
+        expect(merge_requests).to eq([first_mr, second_mr])
+      end
+
+      it 'sorts desc' do
+        merge_requests = described_class.sort_by_attribute(:title_desc)
+        expect(merge_requests).to eq([second_mr, first_mr])
+      end
+    end
   end
 
   describe 'time to merge calculations' do

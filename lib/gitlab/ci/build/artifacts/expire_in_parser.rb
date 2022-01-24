@@ -16,9 +16,7 @@ module Gitlab
           def validate_duration
             return true if never?
 
-            parse
-          rescue ChronicDuration::DurationParseError
-            false
+            cached_parse
           end
 
           def seconds_from_now
@@ -29,10 +27,26 @@ module Gitlab
 
           attr_reader :value
 
+          def cached_parse
+            return validation_cache[value] if validation_cache.key?(value)
+
+            validation_cache[value] = safe_parse
+          end
+
+          def safe_parse
+            parse
+          rescue ChronicDuration::DurationParseError
+            false
+          end
+
           def parse
             return if never?
 
             ChronicDuration.parse(value)
+          end
+
+          def validation_cache
+            Gitlab::SafeRequestStore[:ci_expire_in_parser_cache] ||= {}
           end
 
           def never?

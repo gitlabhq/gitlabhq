@@ -39,7 +39,7 @@ export default {
         this.jobsPageInfo = data.project?.pipeline?.jobs?.pageInfo || {};
       },
       error() {
-        createFlash({ message: __('An error occured while fetching the pipelines jobs.') });
+        createFlash({ message: __('An error occurred while fetching the pipelines jobs.') });
       },
     },
   },

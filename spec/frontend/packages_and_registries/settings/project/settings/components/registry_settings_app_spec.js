@@ -2,6 +2,7 @@ import { GlAlert, GlSprintf, GlLink } from '@gitlab/ui';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
+import waitForPromises from 'helpers/wait_for_promises';
 import component from '~/packages_and_registries/settings/project/components/registry_settings_app.vue';
 import SettingsForm from '~/packages_and_registries/settings/project/components/settings_form.vue';
 import {
@@ -64,8 +65,6 @@ describe('Registry Settings App', () => {
       localVue,
       apolloProvider: fakeApollo,
     });
-
-    return requestHandlers.map((request) => request[1]);
   };
 
   afterEach(() => {
@@ -101,25 +100,25 @@ describe('Registry Settings App', () => {
       ${'response and changes'}                    | ${expirationPolicyPayload()}      | ${{ ...containerExpirationPolicyData(), nameRegex: '12345' }} | ${true}
       ${'response and empty'}                      | ${expirationPolicyPayload()}      | ${{}}                                                         | ${true}
     `('$description', async ({ apiResponse, workingCopy, result }) => {
-      const requests = mountComponentWithApollo({
+      mountComponentWithApollo({
         provide: { ...defaultProvidedValues, enableHistoricEntries: true },
         resolver: jest.fn().mockResolvedValue(apiResponse),
       });
-      await Promise.all(requests);
+      await waitForPromises();
 
       findSettingsComponent().vm.$emit('input', workingCopy);
 
-      await wrapper.vm.$nextTick();
+      await waitForPromises();
 
       expect(findSettingsComponent().props('isEdited')).toBe(result);
     });
   });
 
   it('renders the setting form', async () => {
-    const requests = mountComponentWithApollo({
+    mountComponentWithApollo({
       resolver: jest.fn().mockResolvedValue(expirationPolicyPayload()),
     });
-    await Promise.all(requests);
+    await waitForPromises();
 
     expect(findSettingsComponent().exists()).toBe(true);
   });
@@ -153,11 +152,11 @@ describe('Registry Settings App', () => {
   });
 
   describe('fetchSettingsError', () => {
-    beforeEach(() => {
-      const requests = mountComponentWithApollo({
+    beforeEach(async () => {
+      mountComponentWithApollo({
         resolver: jest.fn().mockRejectedValue(new Error('GraphQL error')),
       });
-      return Promise.all(requests);
+      await waitForPromises();
     });
 
     it('the form is hidden', () => {
@@ -175,14 +174,14 @@ describe('Registry Settings App', () => {
       ${true}               | ${true}
       ${false}              | ${false}
     `('is $isShown that the form is shown', async ({ enableHistoricEntries, isShown }) => {
-      const requests = mountComponentWithApollo({
+      mountComponentWithApollo({
         provide: {
           ...defaultProvidedValues,
           enableHistoricEntries,
         },
         resolver: jest.fn().mockResolvedValue(emptyExpirationPolicyPayload()),
       });
-      await Promise.all(requests);
+      await waitForPromises();
 
       expect(findSettingsComponent().exists()).toBe(isShown);
     });

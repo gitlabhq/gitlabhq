@@ -3,6 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe Autocomplete::UsersFinder do
+  # TODO update when multiple owners are possible in projects
+  # https://gitlab.com/gitlab-org/gitlab/-/issues/21432
+
   describe '#execute' do
     let!(:user1) { create(:user, username: 'johndoe') }
     let!(:user2) { create(:user, :blocked, username: 'notsorandom') }
@@ -25,19 +28,19 @@ RSpec.describe Autocomplete::UsersFinder do
     context 'when project passed' do
       let(:project) { create(:project) }
 
-      it { is_expected.to match_array([project.owner]) }
+      it { is_expected.to match_array([project.first_owner]) }
 
       context 'when author_id passed' do
         context 'and author is active' do
           let(:params) { { author_id: user1.id } }
 
-          it { is_expected.to match_array([project.owner, user1]) }
+          it { is_expected.to match_array([project.first_owner, user1]) }
         end
 
         context 'and author is blocked' do
           let(:params) { { author_id: user2.id } }
 
-          it { is_expected.to match_array([project.owner]) }
+          it { is_expected.to match_array([project.first_owner]) }
         end
       end
     end

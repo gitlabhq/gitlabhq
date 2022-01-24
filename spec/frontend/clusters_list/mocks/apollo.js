@@ -76,6 +76,11 @@ export const getAgentResponse = {
   },
 };
 
+export const kasDisabledErrorResponse = {
+  data: {},
+  errors: [{ message: 'Gitlab::Kas::Client::ConfigurationError' }],
+};
+
 export const mockDeleteResponse = {
   data: { clusterAgentDelete: { errors: [] } },
 };

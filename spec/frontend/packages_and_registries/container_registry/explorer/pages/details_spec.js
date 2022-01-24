@@ -522,7 +522,7 @@ describe('Details Page', () => {
 
       findDeleteImage().vm.$emit('start');
 
-      await nextTick();
+      await waitForPromises();
 
       expect(findTagsLoader().exists()).toBe(true);
 

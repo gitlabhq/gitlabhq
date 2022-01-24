@@ -436,6 +436,26 @@ RSpec.describe API::MergeRequests do
           response_dates = json_response.map { |merge_request| merge_request['created_at'] }
           expect(response_dates).to eq(response_dates.sort)
         end
+
+        context 'returns an array of merge_requests ordered by title' do
+          it 'asc when requested' do
+            path = endpoint_path + '?order_by=title&sort=asc'
+
+            get api(path, user)
+
+            response_titles = json_response.map { |merge_request| merge_request['title'] }
+            expect(response_titles).to eq(response_titles.sort)
+          end
+
+          it 'desc when requested' do
+            path = endpoint_path + '?order_by=title&sort=desc'
+
+            get api(path, user)
+
+            response_titles = json_response.map { |merge_request| merge_request['title'] }
+            expect(response_titles).to eq(response_titles.sort.reverse)
+          end
+        end
       end
 
       context 'NOT params' do

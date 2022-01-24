@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe BulkImports::Projects::Graphql::GetRepositoryQuery do
+RSpec.describe BulkImports::Projects::Graphql::GetProjectQuery do
   let_it_be(:tracker) { create(:bulk_import_tracker) }
   let_it_be(:context) { BulkImports::Pipeline::Context.new(tracker) }
 
@@ -17,10 +17,6 @@ RSpec.describe BulkImports::Projects::Graphql::GetRepositoryQuery do
     result = GitlabSchema.static_validator.validate(parsed_query)
 
     expect(result[:errors]).to be_empty
-  end
-
-  it 'returns project repository url' do
-    expect(subject.to_s).to include('httpUrlToRepo')
   end
 
   it 'queries project based on source_full_path' do

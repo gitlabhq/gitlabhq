@@ -2,6 +2,7 @@
   removal_date: "2021-06-22"
   removal_milestone: "14.0"
   reporter: jheimbuck_gl
+  breaking_change: true
   body: |
     Browser Performance Testing has run in a job named `performance` by default. With the introduction of [Load Performance Testing](https://docs.gitlab.com/ee/user/project/merge_requests/load_performance_testing.html) in GitLab 13.2, this naming could be confusing. To make it clear which job is running [Browser Performance Testing](https://docs.gitlab.com/ee/user/project/merge_requests/browser_performance_testing.html), the default job name is changed from `performance` to `browser_performance` in the template in GitLab 14.0.
 
@@ -10,6 +11,7 @@
   removal_date: "2021-06-22"
   removal_milestone: "14.0"
   reporter: jheimbuck_gl
+  breaking_change: true
   body: |
     By default, the Code Quality feature has not provided support for Ruby 2.6+ if you're using the Code Quality template. To better support the latest versions of Ruby, the default RuboCop version is updated to add support for Ruby 2.4 through 3.0. As a result, support for Ruby 2.1, 2.2, and 2.3 is removed. You can re-enable support for older versions by [customizing your configuration](https://docs.gitlab.com/ee/user/project/merge_requests/code_quality.html#rubocop-errors).
 
@@ -18,6 +20,7 @@
   removal_date: "2021-06-22"
   removal_milestone: "14.0"
   reporter: jheimbuck_gl
+  breaking_change: true
   body: |
     By default, the `Ruby.gitlab-ci.yml` file has included Ruby 2.5.
 

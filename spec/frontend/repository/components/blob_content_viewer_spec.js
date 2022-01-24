@@ -209,7 +209,7 @@ describe('Blob content viewer component', () => {
     it('does not render a BlobContent component if a Blob viewer is available', async () => {
       loadViewer.mockReturnValue(() => true);
       await createComponent({ blob: richViewerMock });
-
+      await waitForPromises();
       expect(findBlobContent().exists()).toBe(false);
     });
 
@@ -235,7 +235,7 @@ describe('Blob content viewer component', () => {
           },
         });
 
-        await nextTick();
+        await waitForPromises();
 
         expect(loadViewer).toHaveBeenCalledWith(viewer);
         expect(wrapper.findComponent(loadViewerReturnValue).exists()).toBe(true);

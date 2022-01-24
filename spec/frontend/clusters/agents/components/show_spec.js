@@ -82,8 +82,9 @@ describe('ClusterAgentShow', () => {
   });
 
   describe('default behaviour', () => {
-    beforeEach(() => {
-      return createWrapper({ clusterAgent: defaultClusterAgent });
+    beforeEach(async () => {
+      createWrapper({ clusterAgent: defaultClusterAgent });
+      await waitForPromises();
     });
 
     it('sends expected params', () => {
@@ -131,8 +132,9 @@ describe('ClusterAgentShow', () => {
       createdByUser: null,
     };
 
-    beforeEach(() => {
-      return createWrapper({ clusterAgent: missingUser });
+    beforeEach(async () => {
+      createWrapper({ clusterAgent: missingUser });
+      await waitForPromises();
     });
 
     it('displays agent create information with unknown user', () => {
@@ -146,8 +148,9 @@ describe('ClusterAgentShow', () => {
       tokens: null,
     };
 
-    beforeEach(() => {
-      return createWrapper({ clusterAgent: missingTokens });
+    beforeEach(async () => {
+      createWrapper({ clusterAgent: missingTokens });
+      await waitForPromises();
     });
 
     it('displays token header with no count', () => {
@@ -171,8 +174,9 @@ describe('ClusterAgentShow', () => {
       },
     };
 
-    beforeEach(() => {
-      return createWrapper({ clusterAgent: tokenPagination });
+    beforeEach(async () => {
+      createWrapper({ clusterAgent: tokenPagination });
+      await waitForPromises();
     });
 
     it('should render pagination buttons', () => {

@@ -1,6 +1,7 @@
 import { mount, shallowMount, createLocalVue } from '@vue/test-utils';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
+import waitForPromises from 'helpers/wait_for_promises';
 import getPipelineDetails from 'shared_queries/pipelines/get_pipeline_details.query.graphql';
 import {
   DOWNSTREAM,
@@ -87,13 +88,12 @@ describe('Linked Pipelines Column', () => {
   describe('click action', () => {
     const clickExpandButton = async () => {
       await findExpandButton().trigger('click');
-      await wrapper.vm.$nextTick();
+      await waitForPromises();
     };
 
     const clickExpandButtonAndAwaitTimers = async () => {
       await clickExpandButton();
       jest.runOnlyPendingTimers();
-      await wrapper.vm.$nextTick();
     };
 
     describe('layer type rendering', () => {
@@ -162,7 +162,10 @@ describe('Linked Pipelines Column', () => {
 
         it('emits the error', async () => {
           await clickExpandButton();
-          expect(wrapper.emitted().error).toEqual([[{ type: LOAD_FAILURE, skipSentry: true }]]);
+          expect(wrapper.emitted().error).toEqual([
+            [{ type: LOAD_FAILURE, skipSentry: true }],
+            [{ type: LOAD_FAILURE, skipSentry: true }],
+          ]);
         });
 
         it('does not show the pipeline', async () => {
@@ -213,7 +216,10 @@ describe('Linked Pipelines Column', () => {
 
         it('emits the error', async () => {
           await clickExpandButton();
-          expect(wrapper.emitted().error).toEqual([[{ type: LOAD_FAILURE, skipSentry: true }]]);
+          expect(wrapper.emitted().error).toEqual([
+            [{ type: LOAD_FAILURE, skipSentry: true }],
+            [{ type: LOAD_FAILURE, skipSentry: true }],
+          ]);
         });
 
         it('does not show the pipeline', async () => {

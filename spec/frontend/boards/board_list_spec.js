@@ -1,6 +1,7 @@
 import Draggable from 'vuedraggable';
 import { DraggableItemTypes } from 'ee_else_ce/boards/constants';
 import { useFakeRequestAnimationFrame } from 'helpers/fake_request_animation_frame';
+import waitForPromises from 'helpers/wait_for_promises';
 import createComponent from 'jest/boards/board_list_helper';
 import BoardCard from '~/boards/components/board_card.vue';
 import eventHub from '~/boards/eventhub';
@@ -132,7 +133,6 @@ describe('Board list component', () => {
     });
 
     it('shows how many more issues to load', async () => {
-      // wrapper.vm.showCount = true;
       wrapper = createComponent({
         data: {
           showCount: true,
@@ -140,6 +140,9 @@ describe('Board list component', () => {
       });
 
       await wrapper.vm.$nextTick();
+      await waitForPromises();
+      await wrapper.vm.$nextTick();
+
       expect(wrapper.find('.board-list-count').text()).toBe('Showing 1 of 20 issues');
     });
   });

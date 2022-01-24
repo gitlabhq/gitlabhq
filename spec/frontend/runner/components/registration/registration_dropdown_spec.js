@@ -82,7 +82,7 @@ describe('RegistrationDropdown', () => {
       const findModalInBody = () =>
         createWrapper(document.body).find('[data-testid="runner-instructions-modal"]');
 
-      beforeEach(() => {
+      beforeEach(async () => {
         createComponent(
           {
             localVue,
@@ -94,7 +94,7 @@ describe('RegistrationDropdown', () => {
           mountExtended,
         );
 
-        findRegistrationInstructionsDropdownItem().trigger('click');
+        await findRegistrationInstructionsDropdownItem().trigger('click');
       });
 
       afterEach(() => {

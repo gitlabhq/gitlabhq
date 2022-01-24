@@ -70,13 +70,13 @@ describe('Pipeline Status', () => {
 
   describe('when querying data', () => {
     describe('when data is set', () => {
-      beforeEach(() => {
+      beforeEach(async () => {
         mockPipelineQuery.mockResolvedValue({
           data: { project: mockProjectPipeline() },
         });
 
         createComponentWithApollo();
-        waitForPromises();
+        await waitForPromises();
       });
 
       it('query is called with correct variables', async () => {

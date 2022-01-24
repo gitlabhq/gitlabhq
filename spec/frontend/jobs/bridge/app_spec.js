@@ -81,10 +81,10 @@ describe('Bridge Show Page', () => {
   });
 
   describe('after pipeline query is loaded', () => {
-    beforeEach(() => {
+    beforeEach(async () => {
       mockPipelineQuery.mockResolvedValue(mockPipelineQueryResponse);
       createComponentWithApollo();
-      waitForPromises();
+      await waitForPromises();
     });
 
     it('query is called with correct variables', async () => {
@@ -109,10 +109,10 @@ describe('Bridge Show Page', () => {
   });
 
   describe('sidebar expansion', () => {
-    beforeEach(() => {
+    beforeEach(async () => {
       mockPipelineQuery.mockResolvedValue(mockPipelineQueryResponse);
       createComponentWithApollo();
-      waitForPromises();
+      await waitForPromises();
     });
 
     describe('on resize', () => {

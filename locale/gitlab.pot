@@ -3659,9 +3659,6 @@ msgstr ""
 msgid "An error in reporting in which a test result incorrectly indicates the presence of a vulnerability in a system when the vulnerability is not present."
 msgstr ""
 
-msgid "An error occured while fetching the pipelines jobs."
-msgstr ""
-
 msgid "An error occurred adding a draft to the thread."
 msgstr ""
 
@@ -3807,6 +3804,9 @@ msgid "An error occurred while fetching the jobs."
 msgstr ""
 
 msgid "An error occurred while fetching the latest pipeline."
+msgstr ""
+
+msgid "An error occurred while fetching the pipelines jobs."
 msgstr ""
 
 msgid "An error occurred while fetching the releases. Please try again."
@@ -19358,7 +19358,7 @@ msgstr ""
 msgid "Internal URL (optional)"
 msgstr ""
 
-msgid "Internal error occured while delivering this webhook."
+msgid "Internal error occurred while delivering this webhook."
 msgstr ""
 
 msgid "Internal users"
@@ -29068,7 +29068,7 @@ msgstr ""
 msgid "Purchase more storage"
 msgstr ""
 
-msgid "PurchaseStep|An error occured in the purchase step. If the problem persists please contact support@gitlab.com."
+msgid "PurchaseStep|An error occurred in the purchase step. If the problem persists please contact support@gitlab.com."
 msgstr ""
 
 msgid "Push"

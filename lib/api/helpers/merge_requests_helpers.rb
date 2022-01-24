@@ -47,9 +47,9 @@ module API
                  desc: 'Return opened, closed, locked, merged, or all merge requests'
         optional :order_by,
                  type: String,
-                 values: %w[created_at updated_at],
+                 values: Helpers::MergeRequestsHelpers.sort_options,
                  default: 'created_at',
-                 desc: 'Return merge requests ordered by `created_at` or `updated_at` fields.'
+                 desc: "Return merge requests ordered by #{Helpers::MergeRequestsHelpers.sort_options_help} fields."
         optional :sort,
                  type: String,
                  values: %w[asc desc],
@@ -114,6 +114,22 @@ module API
         conflict!(errors[:validate_branches]) if errors.has_key?(:validate_branches)
 
         render_validation_error!(merge_request)
+      end
+
+      def self.sort_options
+        %w[
+          created_at
+          label_priority
+          milestone_due
+          popularity
+          priority
+          title
+          updated_at
+        ]
+      end
+
+      def self.sort_options_help
+        sort_options.map {|y| "`#{y}`" }.to_sentence(last_word_connector: ' or ')
       end
     end
   end

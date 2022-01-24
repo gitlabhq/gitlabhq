@@ -16,7 +16,7 @@ module BulkImports
             stage: 1
           },
           members: {
-            pipeline: BulkImports::Groups::Pipelines::MembersPipeline,
+            pipeline: BulkImports::Common::Pipelines::MembersPipeline,
             stage: 1
           },
           labels: {

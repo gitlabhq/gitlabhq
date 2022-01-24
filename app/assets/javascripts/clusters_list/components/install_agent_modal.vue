@@ -142,6 +142,9 @@ export default {
     isAgentRegistrationModal() {
       return this.modalType === MODAL_TYPE_REGISTER;
     },
+    isKasEnabledInEmptyStateModal() {
+      return this.isEmptyStateModal && !this.kasDisabled;
+    },
   },
   methods: {
     setAgentName(name) {
@@ -350,18 +353,18 @@ export default {
         <img :alt="i18n.altText" :src="emptyStateImage" height="100" />
       </div>
 
-      <p>
-        <gl-sprintf :message="i18n.modalBody">
+      <p v-if="kasDisabled">
+        <gl-sprintf :message="i18n.enableKasText">
           <template #link="{ content }">
-            <gl-link :href="$options.installAgentPath"> {{ content }}</gl-link>
+            <gl-link :href="$options.enableKasPath">{{ content }}</gl-link>
           </template>
         </gl-sprintf>
       </p>
 
-      <p v-if="kasDisabled">
-        <gl-sprintf :message="i18n.enableKasText">
+      <p v-else>
+        <gl-sprintf :message="i18n.modalBody">
           <template #link="{ content }">
-            <gl-link :href="$options.enableKasPath"> {{ content }}</gl-link>
+            <gl-link :href="$options.installAgentPath">{{ content }}</gl-link>
           </template>
         </gl-sprintf>
       </p>
@@ -401,7 +404,7 @@ export default {
       </gl-button>
 
       <gl-button
-        v-if="isEmptyStateModal"
+        v-if="isKasEnabledInEmptyStateModal"
         :href="repositoryPath"
         variant="confirm"
         category="secondary"

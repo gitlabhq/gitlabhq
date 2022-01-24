@@ -16,7 +16,11 @@ export function createMockClient(handlers = [], resolvers = {}, cacheOptions = {
   const mockClient = createMockApolloClient({ cache, resolvers });
 
   if (Array.isArray(handlers)) {
-    handlers.forEach(([query, value]) => mockClient.setRequestHandler(query, value));
+    handlers.forEach(([query, value]) =>
+      mockClient.setRequestHandler(query, (...args) =>
+        Promise.resolve(value(...args)).then((r) => ({ ...r })),
+      ),
+    );
   } else {
     throw new Error('You should pass an array of handlers to mock Apollo client');
   }

@@ -281,6 +281,7 @@ describe('AdminRunnersApp', () => {
         },
       });
       createComponent();
+      await waitForPromises();
     });
 
     it('shows a message for no results', async () => {
@@ -289,9 +290,10 @@ describe('AdminRunnersApp', () => {
   });
 
   describe('when runners query fails', () => {
-    beforeEach(() => {
+    beforeEach(async () => {
       mockRunnersQuery = jest.fn().mockRejectedValue(new Error('Error!'));
       createComponent();
+      await waitForPromises();
     });
 
     it('error is shown to the user', async () => {

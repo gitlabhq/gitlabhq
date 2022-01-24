@@ -5,25 +5,26 @@ module BulkImports
     module Transformers
       class MemberAttributesTransformer
         def transform(context, data)
-          data
-            .then { |data| add_user(data, context) }
-            .then { |data| add_access_level(data) }
-            .then { |data| add_author(data, context) }
-        end
-
-        private
-
-        def add_user(data, context)
           user = find_user(data&.dig('user', 'public_email'))
+          access_level = data&.dig('access_level', 'integer_value')
 
+          return unless data
           return unless user
+          return unless valid_access_level?(access_level)
 
           cache_source_user_id(data, user, context)
 
-          data
-            .except('user')
-            .merge('user_id' => user.id)
+          {
+            user_id: user.id,
+            access_level: access_level,
+            created_at: data['created_at'],
+            updated_at: data['updated_at'],
+            expires_at: data['expires_at'],
+            created_by_id: context.current_user.id
+          }
         end
+
+        private
 
         def find_user(email)
           return unless email
@@ -31,24 +32,8 @@ module BulkImports
           User.find_by_any_email(email, confirmed: true)
         end
 
-        def add_access_level(data)
-          access_level = data&.dig('access_level', 'integer_value')
-
-          return unless valid_access_level?(access_level)
-
-          data.merge('access_level' => access_level)
-        end
-
         def valid_access_level?(access_level)
-          Gitlab::Access
-            .options_with_owner
-            .value?(access_level)
-        end
-
-        def add_author(data, context)
-          return unless data
-
-          data.merge('created_by_id' => context.current_user.id)
+          Gitlab::Access.options_with_owner.value?(access_level)
         end
 
         def cache_source_user_id(data, user, context)

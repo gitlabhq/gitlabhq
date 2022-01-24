@@ -85,7 +85,7 @@ describe('PackagesListApp', () => {
     wrapper.destroy();
   });
 
-  const waitForFirstRequest = () => {
+  const waitForFirstRequest = async () => {
     // emit a search update so the query is executed
     findSearch().vm.$emit('update', { sort: 'NAME_DESC', filters: [] });
     return waitForPromises();
@@ -149,11 +149,10 @@ describe('PackagesListApp', () => {
     beforeEach(() => {
       resolver = jest.fn().mockResolvedValue(packagesListQuery());
       mountComponent({ resolver });
-
-      return waitForFirstRequest();
     });
 
-    it('exists and has the right props', () => {
+    it('exists and has the right props', async () => {
+      await waitForFirstRequest();
       expect(findListComponent().props()).toMatchObject({
         list: expect.arrayContaining([expect.objectContaining({ id: packageData().id })]),
         isLoading: false,
@@ -161,16 +160,20 @@ describe('PackagesListApp', () => {
       });
     });
 
-    it('when list emits next-page fetches the next set of records', () => {
+    it('when list emits next-page fetches the next set of records', async () => {
+      await waitForFirstRequest();
       findListComponent().vm.$emit('next-page');
+      await waitForPromises();
 
       expect(resolver).toHaveBeenCalledWith(
         expect.objectContaining({ after: pagination().endCursor, first: GRAPHQL_PAGE_SIZE }),
       );
     });
 
-    it('when list emits prev-page fetches the prev set of records', () => {
+    it('when list emits prev-page fetches the prev set of records', async () => {
+      await waitForFirstRequest();
       findListComponent().vm.$emit('prev-page');
+      await waitForPromises();
 
       expect(resolver).toHaveBeenCalledWith(
         expect.objectContaining({ before: pagination().startCursor, last: GRAPHQL_PAGE_SIZE }),

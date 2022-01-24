@@ -322,9 +322,10 @@ describe('Sidebar assignees widget', () => {
   });
 
   describe('when user is not signed in', () => {
-    beforeEach(() => {
+    beforeEach(async () => {
       gon.current_username = undefined;
       createComponent();
+      await waitForPromises();
     });
 
     it('passes signedIn prop as false to IssuableAssignees', () => {

@@ -1,15 +1,20 @@
 # frozen_string_literal: true
 
 module BulkImports
-  module Groups
+  module Common
     module Graphql
-      module GetMembersQuery
-        extend self
+      class GetMembersQuery
+        attr_reader :context
+
+        def initialize(context:)
+          @context = context
+        end
+
         def to_s
-          <<-'GRAPHQL'
+          <<-GRAPHQL
           query($full_path: ID!, $cursor: String, $per_page: Int) {
-            group(fullPath: $full_path) {
-              group_members: groupMembers(relations: DIRECT, first: $per_page, after: $cursor) {
+            portable: #{context.entity.entity_type}(fullPath: $full_path) {
+              members: #{members_type}(relations: [DIRECT, INHERITED], first: $per_page, after: $cursor) {
                 page_info: pageInfo {
                   next_page: endCursor
                   has_next_page: hasNextPage
@@ -32,16 +37,12 @@ module BulkImports
           GRAPHQL
         end
 
-        def variables(context)
+        def variables
           {
             full_path: context.entity.source_full_path,
             cursor: context.tracker.next_page,
             per_page: ::BulkImports::Tracker::DEFAULT_PAGE_SIZE
           }
-        end
-
-        def base_path
-          %w[data group group_members]
         end
 
         def data_path
@@ -50,6 +51,20 @@ module BulkImports
 
         def page_info_path
           base_path << 'page_info'
+        end
+
+        private
+
+        def base_path
+          %w[data portable members]
+        end
+
+        def members_type
+          if context.entity.group?
+            'groupMembers'
+          else
+            'projectMembers'
+          end
         end
       end
     end

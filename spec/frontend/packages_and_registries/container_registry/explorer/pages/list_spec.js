@@ -361,7 +361,7 @@ describe('List Page', () => {
 
         findRegistrySearch().vm.$emit('filter:submit');
 
-        await nextTick();
+        await waitForPromises();
       };
 
       it('has a search box element', async () => {
@@ -429,7 +429,7 @@ describe('List Page', () => {
         await waitForApolloRequestRender();
 
         findImageList().vm.$emit('prev-page');
-        await nextTick();
+        await waitForPromises();
 
         expect(resolver).toHaveBeenCalledWith(
           expect.objectContaining({ before: pageInfo.startCursor }),
@@ -449,7 +449,7 @@ describe('List Page', () => {
         await waitForApolloRequestRender();
 
         findImageList().vm.$emit('next-page');
-        await nextTick();
+        await waitForPromises();
 
         expect(resolver).toHaveBeenCalledWith(
           expect.objectContaining({ after: pageInfo.endCursor }),
@@ -471,8 +471,9 @@ describe('List Page', () => {
     });
 
     it('contains a description with the path of the item to delete', async () => {
+      await waitForPromises();
       findImageList().vm.$emit('delete', { path: 'foo' });
-      await nextTick();
+      await waitForPromises();
       expect(findDeleteModal().html()).toContain('foo');
     });
   });
