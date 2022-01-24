@@ -473,11 +473,16 @@ with the permissions described on the documentation on [auditor users permission
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/40942) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.4.
 
-Owners can add members with a "minimal access" role to a parent group. Such users don't
-automatically have access to projects and subgroups underneath. To support such access, owners must explicitly add these "minimal access" users to the specific subgroups/projects.
+Owners can add members with a "minimal access" role to a parent group. Such users don't automatically have access to
+projects and subgroups underneath. Owners must explicitly add these "minimal access" users to the specific subgroups and
+projects.
 
-Users with minimal access can list the group in the UI and through the API. However, they cannot see
-details such as projects or subgroups. They do not have access to the group's page or list any of its subgroups or projects.
+Because of an [outstanding issue](https://gitlab.com/gitlab-org/gitlab/-/issues/267996), when minimal access users:
+
+- Sign in with standard web authentication, they receive a `404` error when accessing the parent group.
+- Sign in with Group SSO, they receive a `404` error immediately because they are redirected to the parent group page.
+
+To work around the issue, give these users the Guest role or higher to any project or subgroup within the parent group.
 
 ### Minimal access users take license seats
 

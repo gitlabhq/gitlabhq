@@ -25,6 +25,7 @@ class DraftNote < ApplicationRecord
   validates :merge_request_id, presence: true
   validates :author_id, presence: true, uniqueness: { scope: [:merge_request_id, :discussion_id] }, if: :discussion_id?
   validates :discussion_id, allow_nil: true, format: { with: /\A\h{40}\z/ }
+  validates :line_code, length: { maximum: 255 }, allow_nil: true
 
   scope :authored_by, ->(u) { where(author_id: u.id) }
 
@@ -89,7 +90,11 @@ class DraftNote < ApplicationRecord
   end
 
   def line_code
-    @line_code ||= diff_file&.line_code_for_position(original_position)
+    super.presence || find_line_code
+  end
+
+  def find_line_code
+    write_attribute(:line_code, diff_file&.line_code_for_position(original_position))
   end
 
   def publish_params

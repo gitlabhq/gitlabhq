@@ -17,7 +17,7 @@ RSpec.describe 'Merge request > User sees MR with deleted source branch', :js do
   end
 
   it 'shows a message about missing source branch' do
-    expect(page).to have_content('Source branch does not exist.')
+    expect(page).to have_content('The source branch this-branch-does-not-exist does not exist.')
   end
 
   it 'still contains Discussion, Commits and Changes tabs' do
@@ -27,7 +27,7 @@ RSpec.describe 'Merge request > User sees MR with deleted source branch', :js do
       expect(page).to have_content('Changes')
     end
 
-    expect(page).to have_content('Source branch does not exist.')
+    expect(page).to have_content('The source branch this-branch-does-not-exist does not exist.')
 
     click_on 'Changes'
     wait_for_requests

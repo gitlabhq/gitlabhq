@@ -13688,7 +13688,9 @@ CREATE TABLE draft_notes (
     "position" text,
     original_position text,
     change_position text,
-    commit_id bytea
+    commit_id bytea,
+    line_code text,
+    CONSTRAINT check_c497a94a0e CHECK ((char_length(line_code) <= 255))
 );
 
 CREATE SEQUENCE draft_notes_id_seq
@@ -19397,7 +19399,6 @@ CREATE TABLE security_findings (
     confidence smallint NOT NULL,
     project_fingerprint text,
     deduplicated boolean DEFAULT false NOT NULL,
-    "position" integer,
     uuid uuid,
     overridden_uuid uuid,
     CONSTRAINT check_b9508c6df8 CHECK ((char_length(project_fingerprint) <= 40))
@@ -27559,8 +27560,6 @@ CREATE INDEX index_security_findings_on_confidence ON security_findings USING bt
 CREATE INDEX index_security_findings_on_project_fingerprint ON security_findings USING btree (project_fingerprint);
 
 CREATE INDEX index_security_findings_on_scan_id_and_deduplicated ON security_findings USING btree (scan_id, deduplicated);
-
-CREATE UNIQUE INDEX index_security_findings_on_scan_id_and_position ON security_findings USING btree (scan_id, "position");
 
 CREATE INDEX index_security_findings_on_scanner_id ON security_findings USING btree (scanner_id);
 

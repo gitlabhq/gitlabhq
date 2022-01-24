@@ -40,7 +40,7 @@ describe('MRWidgetMissingBranch', () => {
         async ({ sourceBranchRemoved, branchName }) => {
           await factory(sourceBranchRemoved, mergeRequestWidgetGraphql);
 
-          expect(wrapper.find('[data-testid="missingBranchName"]').text()).toContain(branchName);
+          expect(wrapper.find('[data-testid="widget-content"]').text()).toContain(branchName);
         },
       );
     });

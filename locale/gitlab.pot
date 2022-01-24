@@ -42646,9 +42646,6 @@ msgstr ""
 msgid "mrWidgetNothingToMerge|Use merge requests to propose changes to your project and discuss them with your team. To make changes, push a commit or edit this merge request to use a different branch. With %{linkStart}CI/CD%{linkEnd}, automatically test your changes before merging."
 msgstr ""
 
-msgid "mrWidget| Please restore it or use a different %{missingBranchName} branch"
-msgstr ""
-
 msgid "mrWidget|%{boldHeaderStart}Looks like there's no pipeline here.%{boldHeaderEnd}"
 msgstr ""
 
@@ -42771,7 +42768,7 @@ msgstr ""
 msgid "mrWidget|Hide %{widget} details"
 msgstr ""
 
-msgid "mrWidget|If the %{missingBranchName} branch exists in your local repository, you can merge this merge request manually using the command line"
+msgid "mrWidget|If the %{type} branch exists in your local repository, you can merge this merge request manually using the command line."
 msgstr ""
 
 msgid "mrWidget|If the last pipeline ran in the fork project, it may be inaccurate. Before merge, we advise running a pipeline in this project."
@@ -42875,6 +42872,9 @@ msgstr ""
 msgid "mrWidget|Plain diff"
 msgstr ""
 
+msgid "mrWidget|Please restore it or use a different %{type} branch."
+msgstr ""
+
 msgid "mrWidget|Ready to be merged automatically. Ask someone with write access to this repository to merge this request"
 msgstr ""
 
@@ -42920,6 +42920,9 @@ msgstr ""
 msgid "mrWidget|Show %{widget} details"
 msgstr ""
 
+msgid "mrWidget|The %{type} branch %{codeStart}%{name}%{codeEnd} does not exist."
+msgstr ""
+
 msgid "mrWidget|The changes were merged into"
 msgstr ""
 
@@ -42963,9 +42966,6 @@ msgid "mrWidget|What is a merge train?"
 msgstr ""
 
 msgid "mrWidget|Your password"
-msgstr ""
-
-msgid "mrWidget|branch does not exist."
 msgstr ""
 
 msgid "mrWidget|into"

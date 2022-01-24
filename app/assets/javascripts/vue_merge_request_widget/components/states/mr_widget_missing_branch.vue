@@ -1,9 +1,14 @@
 <script>
-import { GlIcon, GlTooltipDirective } from '@gitlab/ui';
-import { sprintf, s__ } from '~/locale';
+import { GlIcon, GlTooltipDirective, GlSprintf } from '@gitlab/ui';
+import { sprintf } from '~/locale';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import mergeRequestQueryVariablesMixin from '../../mixins/merge_request_query_variables';
 import missingBranchQuery from '../../queries/states/missing_branch.query.graphql';
+import {
+  MR_WIDGET_MISSING_BRANCH_WHICH,
+  MR_WIDGET_MISSING_BRANCH_RESTORE,
+  MR_WIDGET_MISSING_BRANCH_MANUALCLI,
+} from '../../i18n';
 import statusIcon from '../mr_widget_status_icon.vue';
 
 export default {
@@ -13,6 +18,7 @@ export default {
   },
   components: {
     GlIcon,
+    GlSprintf,
     statusIcon,
   },
   mixins: [glFeatureFlagMixin(), mergeRequestQueryVariablesMixin],
@@ -45,26 +51,20 @@ export default {
 
       return this.mr.sourceBranchRemoved;
     },
-    missingBranchName() {
+    type() {
       return this.sourceBranchRemoved ? 'source' : 'target';
     },
-    missingBranchNameMessage() {
-      return sprintf(
-        s__('mrWidget| Please restore it or use a different %{missingBranchName} branch'),
-        {
-          missingBranchName: this.missingBranchName,
-        },
-      );
+    name() {
+      return this.type === 'source' ? this.mr.sourceBranch : this.mr.targetBranch;
+    },
+    warning() {
+      return sprintf(MR_WIDGET_MISSING_BRANCH_WHICH, { type: this.type, name: this.name });
+    },
+    restore() {
+      return sprintf(MR_WIDGET_MISSING_BRANCH_RESTORE, { type: this.type });
     },
     message() {
-      return sprintf(
-        s__(
-          'mrWidget|If the %{missingBranchName} branch exists in your local repository, you can merge this merge request manually using the command line',
-        ),
-        {
-          missingBranchName: this.missingBranchName,
-        },
-      );
+      return sprintf(MR_WIDGET_MISSING_BRANCH_MANUALCLI, { type: this.type });
     },
   },
 };
@@ -79,9 +79,14 @@ export default {
           'gl-ml-0! gl-text-body!': glFeatures.restructuredMrWidget,
         }"
         class="bold js-branch-text"
+        data-testid="widget-content"
       >
-        <span class="capitalize" data-testid="missingBranchName"> {{ missingBranchName }} </span>
-        {{ s__('mrWidget|branch does not exist.') }} {{ missingBranchNameMessage }}
+        <gl-sprintf :message="warning">
+          <template #code="{ content }">
+            <code>{{ content }}</code>
+          </template>
+        </gl-sprintf>
+        {{ restore }}
         <gl-icon
           v-gl-tooltip
           :title="message"

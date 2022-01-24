@@ -21,7 +21,7 @@ SAML SSO is only configurable at the top-level group.
 
 If required, you can find [a glossary of common terms](../../../integration/saml.md#glossary-of-common-terms).
 
-## Configuring your identity provider
+## Configure your identity provider
 
 1. On the top bar, select **Menu > Groups** and find your group.
 1. On the left sidebar, select **Settings > SAML SSO**.
@@ -32,7 +32,7 @@ If required, you can find [a glossary of common terms](../../../integration/saml
 1. Configure the required [user attributes](#user-attributes), ensuring you include the user's email address.
 1. While the default is enabled for most SAML providers, please ensure the app is set to have service provider
    initiated calls in order to link existing GitLab accounts.
-1. Once the identity provider is set up, move on to [configuring GitLab](#configuring-gitlab).
+1. Once the identity provider is set up, move on to [configuring GitLab](#configure-gitlab).
 
 ![Issuer and callback for configuring SAML identity provider with GitLab.com](img/group_saml_configuration_information.png)
 
@@ -82,7 +82,7 @@ GitLab provides metadata XML that can be used to configure your identity provide
 1. Copy the provided **GitLab metadata URL**.
 1. Follow your identity provider's documentation and paste the metadata URL when it's requested.
 
-## Configuring GitLab
+## Configure GitLab
 
 After you set up your identity provider to work with GitLab, you must configure GitLab to use it for authentication:
 
@@ -139,7 +139,7 @@ When SSO is enforced, users are not immediately revoked. If the user:
 
 The SAML standard means that you can use a wide range of identity providers with GitLab. Your identity provider might have relevant documentation. It can be generic SAML documentation or specifically targeted for GitLab.
 
-When [configuring your identity provider](#configuring-your-identity-provider), please consider the notes below for specific providers to help avoid common issues and as a guide for terminology used.
+When [configuring your identity provider](#configure-your-identity-provider), please consider the notes below for specific providers to help avoid common issues and as a guide for terminology used.
 
 For providers not listed below, you can refer to the [instance SAML notes on configuring an identity provider](../../../integration/saml.md#notes-on-configuring-your-identity-provider)
 for additional guidance on information your identity provider may require.
@@ -293,11 +293,15 @@ convert the information to XML. An example SAML response is shown here.
 
 ### Role
 
-Starting from [GitLab 13.3](https://gitlab.com/gitlab-org/gitlab/-/issues/214523), group owners can set a 'Default membership role' other than 'Guest'. To do so, [configure the SAML SSO for the group](#configuring-gitlab). That role becomes the starting access level of all users added to the group.
+Starting from [GitLab 13.3](https://gitlab.com/gitlab-org/gitlab/-/issues/214523), group owners can set a
+"Default membership role" other than Guest. To do so, [configure the SAML SSO for the group](#configure-gitlab).
+That role becomes the starting access level of all users added to the group.
 
 Existing members with appropriate privileges can promote or demote users, as needed.
 
 If a user is already a member of the group, linking the SAML identity does not change their role.
+
+Users given a "minimal access" role have [specific restrictions](../../permissions.md#users-with-minimal-access).
 
 ### Blocking access
 
@@ -533,7 +537,7 @@ This can then be compared to the [NameID](#nameid) being sent by the identity pr
 If you receive a `404` during setup when using "verify configuration", make sure you have used the correct
 [SHA-1 generated fingerprint](../../../integration/saml.md#notes-on-configuring-your-identity-provider).
 
-If a user is trying to sign in for the first time and the GitLab single sign-on URL has not [been configured](#configuring-your-identity-provider), they may see a 404.
+If a user is trying to sign in for the first time and the GitLab single sign-on URL has not [been configured](#configure-your-identity-provider), they may see a 404.
 As outlined in the [user access section](#linking-saml-to-your-existing-gitlabcom-account), a group Owner needs to provide the URL to users.
 
 ### Message: "SAML authentication failed: Extern UID has already been taken"

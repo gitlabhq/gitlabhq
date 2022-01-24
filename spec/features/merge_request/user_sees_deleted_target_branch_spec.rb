@@ -15,7 +15,7 @@ RSpec.describe 'Merge request > User sees deleted target branch', :js do
   end
 
   it 'shows a message about missing target branch' do
-    expect(page).to have_content('Target branch does not exist')
+    expect(page).to have_content('The target branch feature does not exist')
   end
 
   it 'does not show link to target branch' do
