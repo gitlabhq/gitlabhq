@@ -73,7 +73,7 @@ RSpec.describe Gitlab::Graphql::MarkdownField do
           end
 
           it 'shows the reference to users that are allowed to see it' do
-            context = GraphQL::Query::Context.new(query: query, values: { current_user: project.owner }, object: nil)
+            context = GraphQL::Query::Context.new(query: query, values: { current_user: project.first_owner }, object: nil)
             type_instance = type_class.authorized_new(note, context)
 
             expect(field.to_graphql.resolve(type_instance, {}, context)).to include(issue_path(issue))

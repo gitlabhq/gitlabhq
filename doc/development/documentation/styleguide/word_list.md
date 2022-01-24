@@ -883,10 +883,6 @@ Instead of:
 Do not use **utilize**. Use **use** instead. It's more succinct and easier for non-native English speakers to understand.
 ([Vale](../testing.md#vale) rule: [`SubstitutionSuggestions.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/SubstitutionSuggestions.yml))
 
-## Value Stream Analytics
-
-Use title case for **Value Stream Analytics**.
-
 ## via
 
 Do not use Latin abbreviations. Use **with**, **through**, or **by using** instead. ([Vale](../testing.md#vale) rule: [`LatinTerms.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/LatinTerms.yml))

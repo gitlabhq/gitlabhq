@@ -11,7 +11,7 @@ RSpec.describe Sidebars::Projects::Menus::InviteTeamMembersMenu do
   subject(:invite_menu) { described_class.new(context) }
 
   context 'when the project is viewed by an owner of the group' do
-    let(:owner) { project.owner }
+    let(:owner) { project.first_owner }
 
     describe '#render?' do
       it 'renders the Invite team members link' do

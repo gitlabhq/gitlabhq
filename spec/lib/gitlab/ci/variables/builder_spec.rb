@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Gitlab::Ci::Variables::Builder do
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
-  let_it_be(:user) { project.owner }
+  let_it_be(:user) { project.first_owner }
   let_it_be(:job) do
     create(:ci_build,
       pipeline: pipeline,

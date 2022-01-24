@@ -160,7 +160,7 @@ RSpec.describe API::Helpers do
   describe '#find_project!' do
     let_it_be(:project) { create(:project) }
 
-    let(:user) { project.owner}
+    let(:user) { project.first_owner}
 
     before do
       allow(subject).to receive(:current_user).and_return(user)

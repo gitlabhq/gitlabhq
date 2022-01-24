@@ -7,7 +7,7 @@ RSpec.describe 'Jobs/SAST-IaC.latest.gitlab-ci.yml' do
 
   describe 'the created pipeline' do
     let_it_be(:project) { create(:project, :repository) }
-    let_it_be(:user) { project.owner }
+    let_it_be(:user) { project.first_owner }
 
     let(:default_branch) { 'main' }
     let(:pipeline_ref) { default_branch }

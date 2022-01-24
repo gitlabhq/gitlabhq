@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe API::Entities::BasicProjectDetails do
   let_it_be(:project) { create(:project) }
 
-  let(:current_user) { project.owner }
+  let(:current_user) { project.first_owner }
 
   subject(:output) { described_class.new(project, current_user: current_user).as_json }
 

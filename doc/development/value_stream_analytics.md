@@ -4,11 +4,11 @@ group: Optimize
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Value Stream Analytics development guide
+# Value stream analytics development guide
 
 Value stream analytics calculates the time between two arbitrary events recorded on domain objects and provides aggregated statistics about the duration.
 
-For information on how to configure Value Stream Analytics in GitLab, see our [analytics documentation](../user/analytics/value_stream_analytics.md).
+For information on how to configure value stream analytics in GitLab, see our [analytics documentation](../user/analytics/value_stream_analytics.md).
 
 ## Stage
 

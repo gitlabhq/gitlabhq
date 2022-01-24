@@ -353,58 +353,78 @@ foo:
   });
 
   describe('highlight', () => {
-    const highlightPathOnSetup = 'abc';
     const value = `foo:
   bar:
     - baz
     - boo
-  abc: def
+abc: def
 `;
     let instance;
     let highlightLinesSpy;
     let removeHighlightsSpy;
 
-    beforeEach(() => {
-      instance = getEditorInstanceWithExtension({ highlightPath: highlightPathOnSetup }, { value });
-      highlightLinesSpy = jest.fn();
-      removeHighlightsSpy = jest.fn();
-      spyOnApi(baseExtension, {
-        highlightLines: highlightLinesSpy,
-        removeHighlights: removeHighlightsSpy,
-      });
-    });
-
     afterEach(() => {
       jest.clearAllMocks();
     });
 
-    it('saves the highlighted path in highlightPath', () => {
-      const path = 'foo.bar';
-      instance.highlight(path);
-      expect(yamlExtension.obj.highlightPath).toEqual(path);
-    });
+    it.each`
+      highlightPathOnSetup | path              | keepOnNotFound | expectHighlightLinesToBeCalled | withLines    | expectRemoveHighlightsToBeCalled | storedHighlightPath
+      ${null}              | ${undefined}      | ${false}       | ${false}                       | ${undefined} | ${true}                          | ${null}
+      ${'abc'}             | ${'abc'}          | ${undefined}   | ${false}                       | ${undefined} | ${false}                         | ${'abc'}
+      ${null}              | ${null}           | ${false}       | ${false}                       | ${undefined} | ${false}                         | ${null}
+      ${null}              | ${''}             | ${false}       | ${false}                       | ${undefined} | ${true}                          | ${null}
+      ${null}              | ${''}             | ${true}        | ${false}                       | ${undefined} | ${true}                          | ${null}
+      ${'abc'}             | ${''}             | ${false}       | ${false}                       | ${undefined} | ${true}                          | ${null}
+      ${'abc'}             | ${'foo.bar'}      | ${false}       | ${true}                        | ${[2, 4]}    | ${false}                         | ${'foo.bar'}
+      ${'abc'}             | ${['foo', 'bar']} | ${false}       | ${true}                        | ${[2, 4]}    | ${false}                         | ${['foo', 'bar']}
+      ${'abc'}             | ${'invalid'}      | ${true}        | ${false}                       | ${undefined} | ${false}                         | ${'abc'}
+      ${'abc'}             | ${'invalid'}      | ${false}       | ${false}                       | ${undefined} | ${true}                          | ${null}
+      ${'abc'}             | ${'invalid'}      | ${undefined}   | ${false}                       | ${undefined} | ${true}                          | ${null}
+      ${'abc'}             | ${['invalid']}    | ${undefined}   | ${false}                       | ${undefined} | ${true}                          | ${null}
+      ${'abc'}             | ${['invalid']}    | ${true}        | ${false}                       | ${undefined} | ${false}                         | ${'abc'}
+      ${'abc'}             | ${[]}             | ${true}        | ${false}                       | ${undefined} | ${true}                          | ${null}
+      ${'abc'}             | ${[]}             | ${false}       | ${false}                       | ${undefined} | ${true}                          | ${null}
+    `(
+      'returns correct result for highlightPathOnSetup=$highlightPathOnSetup, path=$path' +
+        ' and keepOnNotFound=$keepOnNotFound',
+      ({
+        highlightPathOnSetup,
+        path,
+        keepOnNotFound,
+        expectHighlightLinesToBeCalled,
+        withLines,
+        expectRemoveHighlightsToBeCalled,
+        storedHighlightPath,
+      }) => {
+        instance = getEditorInstanceWithExtension(
+          { highlightPath: highlightPathOnSetup },
+          { value },
+        );
 
-    it('calls highlightLines with a number of lines', () => {
-      const path = 'foo.bar';
-      instance.highlight(path);
-      expect(highlightLinesSpy).toHaveBeenCalledWith(instance, [2, 4]);
-    });
+        highlightLinesSpy = jest.fn();
+        removeHighlightsSpy = jest.fn();
+        spyOnApi(baseExtension, {
+          highlightLines: highlightLinesSpy,
+          removeHighlights: removeHighlightsSpy,
+        });
 
-    it('calls removeHighlights if path is null', () => {
-      instance.highlight(null);
-      expect(removeHighlightsSpy).toHaveBeenCalledWith(instance);
-      expect(highlightLinesSpy).not.toHaveBeenCalled();
-      expect(yamlExtension.obj.highlightPath).toBeNull();
-    });
+        instance.highlight(path, keepOnNotFound);
 
-    it('throws an error if path is invalid and does not change the highlighted path', () => {
-      expect(() => instance.highlight('invalidPath[0]')).toThrow(
-        'The node invalidPath[0] could not be found inside the document.',
-      );
-      expect(yamlExtension.obj.highlightPath).toEqual(highlightPathOnSetup);
-      expect(highlightLinesSpy).not.toHaveBeenCalled();
-      expect(removeHighlightsSpy).not.toHaveBeenCalled();
-    });
+        if (expectHighlightLinesToBeCalled) {
+          expect(highlightLinesSpy).toHaveBeenCalledWith(instance, withLines);
+        } else {
+          expect(highlightLinesSpy).not.toHaveBeenCalled();
+        }
+
+        if (expectRemoveHighlightsToBeCalled) {
+          expect(removeHighlightsSpy).toHaveBeenCalled();
+        } else {
+          expect(removeHighlightsSpy).not.toHaveBeenCalled();
+        }
+
+        expect(yamlExtension.obj.highlightPath).toEqual(storedHighlightPath);
+      },
+    );
   });
 
   describe('locate', () => {
@@ -446,10 +466,10 @@ foo:
       expect(instance.locate(path)).toEqual(expected);
     });
 
-    it('throws an error if a path cannot be found inside the yaml', () => {
+    it('returns [null, null] if a path cannot be found inside the yaml', () => {
       const path = 'baz[8]';
       const instance = getEditorInstanceWithExtension(options);
-      expect(() => instance.locate(path)).toThrow();
+      expect(instance.locate(path)).toEqual([null, null]);
     });
 
     it('returns the expected line numbers for a path to an array entry inside the yaml', () => {

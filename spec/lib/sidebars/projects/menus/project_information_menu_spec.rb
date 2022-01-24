@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Sidebars::Projects::Menus::ProjectInformationMenu do
   let_it_be_with_reload(:project) { create(:project, :repository) }
 
-  let(:user) { project.owner }
+  let(:user) { project.first_owner }
   let(:context) { Sidebars::Projects::Context.new(current_user: user, container: project) }
 
   describe '#container_html_options' do

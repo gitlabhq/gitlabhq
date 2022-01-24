@@ -1,8 +1,6 @@
 ---
 RSpec/TimecopFreeze:
   Exclude:
-  - ee/spec/lib/gitlab/analytics/cycle_analytics/data_collector_spec.rb
-  - ee/spec/lib/gitlab/insights/reducers/count_per_period_reducer_spec.rb
   - ee/spec/models/merge_train_spec.rb
   - ee/spec/support/shared_contexts/lib/gitlab/insights/reducers/reducers_shared_contexts.rb
   - qa/spec/support/repeater_spec.rb

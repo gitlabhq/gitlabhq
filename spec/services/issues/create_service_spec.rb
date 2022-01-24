@@ -100,7 +100,6 @@ RSpec.describe Issues::CreateService do
         end
 
         let(:current_user) { user }
-        let(:incident_label_attributes) { attributes_for(:label, :incident) }
 
         subject { issue }
 
@@ -114,12 +113,6 @@ RSpec.describe Issues::CreateService do
           end
 
           it_behaves_like 'incident issue'
-          it_behaves_like 'does not have incident label'
-
-          it 'does not create an incident label' do
-            expect { subject }
-              .to not_change { Label.where(incident_label_attributes).count }
-          end
 
           it 'calls IncidentManagement::Incidents::CreateEscalationStatusService' do
             expect_next(::IncidentManagement::IssuableEscalationStatuses::CreateService, a_kind_of(Issue))

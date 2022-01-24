@@ -49,8 +49,6 @@
       = render "projects/merge_requests/tabs/pane", id: "notes", class: "notes voting_notes" do
         .row
           %section.col-md-12
-            -# haml-lint:disable InlineJavaScript
-            %script.js-notes-data{ type: "application/json" }= initial_notes_data(true).to_json.html_safe
             .issuable-discussion.js-vue-notes-event
               - if @merge_request.description.present?
                 .detail-page-description

@@ -58,14 +58,6 @@ FactoryBot.define do
       # Tracing
       create(:project_tracing_setting, project: projects[0])
 
-      # Incident Labeled Issues
-      incident_label = create(:label, :incident, project: projects[0])
-      create(:labeled_issue, project: projects[0], labels: [incident_label])
-      incident_label_scoped_to_project = create(:label, :incident, project: projects[1])
-      incident_label_scoped_to_group = create(:group_label, :incident, group: group)
-      create(:labeled_issue, project: projects[1], labels: [incident_label_scoped_to_project])
-      create(:labeled_issue, project: projects[1], labels: [incident_label_scoped_to_group])
-
       # Alert Issues
       create(:alert_management_alert, issue: issues[0], project: projects[0])
       create(:alert_management_alert, issue: alert_bot_issues[0], project: projects[0])

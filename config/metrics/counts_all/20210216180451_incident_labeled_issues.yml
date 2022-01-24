@@ -7,7 +7,7 @@ product_stage: monitor
 product_group: group::monitor
 product_category: incident_management
 value_type: number
-status: active
+status: removed
 time_frame: all
 data_source: database
 distribution:
@@ -19,3 +19,4 @@ tier:
 - ultimate
 performance_indicator_type: []
 milestone: "<13.9"
+milestone_removed: "14.8"

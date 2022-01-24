@@ -728,13 +728,13 @@ RSpec.describe Feature, stub_feature_flags: false do
     describe '#targets' do
       let(:project) { create(:project) }
       let(:group) { create(:group) }
-      let(:user_name) { project.owner.username }
+      let(:user_name) { project.first_owner.username }
 
       subject { described_class.new(user: user_name, project: project.full_path, group: group.full_path) }
 
       it 'returns all found targets' do
         expect(subject.targets).to be_an(Array)
-        expect(subject.targets).to eq([project.owner, project, group])
+        expect(subject.targets).to eq([project.first_owner, project, group])
       end
     end
   end

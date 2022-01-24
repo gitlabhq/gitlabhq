@@ -4,11 +4,7 @@ require_relative 'gitlab_project_migration_common'
 
 module QA
   RSpec.describe 'Manage', :requires_admin do
-    describe 'Gitlab migration', quarantine: {
-      only: { job: 'praefect' },
-      type: :investigating,
-      issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/348999'
-    } do
+    describe 'Gitlab migration' do
       include_context 'with gitlab project migration'
 
       context 'with merge request' do

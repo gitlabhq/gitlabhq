@@ -15,7 +15,7 @@ RSpec.describe Backup::Repositories do
     RSpec.shared_examples 'creates repository bundles' do
       it 'calls enqueue for each repository type', :aggregate_failures do
         project_snippet = create(:project_snippet, :repository, project: project)
-        personal_snippet = create(:personal_snippet, :repository, author: project.owner)
+        personal_snippet = create(:personal_snippet, :repository, author: project.first_owner)
 
         subject.dump(max_concurrency: 1, max_storage_concurrency: 1)
 
@@ -172,8 +172,8 @@ RSpec.describe Backup::Repositories do
 
   describe '#restore' do
     let_it_be(:project) { create(:project) }
-    let_it_be(:personal_snippet) { create(:personal_snippet, author: project.owner) }
-    let_it_be(:project_snippet) { create(:project_snippet, project: project, author: project.owner) }
+    let_it_be(:personal_snippet) { create(:personal_snippet, author: project.first_owner) }
+    let_it_be(:project_snippet) { create(:project_snippet, project: project, author: project.first_owner) }
 
     it 'calls enqueue for each repository type', :aggregate_failures do
       subject.restore

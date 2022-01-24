@@ -259,9 +259,9 @@ Maintainers and Developers from pushing to a protected branch. Read through the 
 [protected branches](project/protected_branches.md)
 to learn more.
 
-### Value Stream Analytics permissions
+### Value stream analytics permissions
 
-Find the current permissions on the Value Stream Analytics dashboard, as described in
+Find the current permissions on the value stream analytics dashboard, as described in
 [related documentation](analytics/value_stream_analytics.md#permissions).
 
 ### Issue board permissions
@@ -306,7 +306,7 @@ The following table lists group permissions available for each role:
 | View Insights **(ULTIMATE)**                                             | ✓     | ✓        | ✓         | ✓          | ✓     |
 | View Insights charts **(ULTIMATE)**                                      | ✓     | ✓        | ✓         | ✓          | ✓     |
 | View Issue analytics **(PREMIUM)**                                       | ✓     | ✓        | ✓         | ✓          | ✓     |
-| View Value Stream analytics                                              | ✓     | ✓        | ✓         | ✓          | ✓     |
+| View value stream analytics                                              | ✓     | ✓        | ✓         | ✓          | ✓     |
 | Create/edit group epic **(PREMIUM)**                                     |       | ✓        | ✓         | ✓          | ✓     |
 | Create/edit/delete epic boards **(PREMIUM)**                             |       | ✓        | ✓         | ✓          | ✓     |
 | Manage group labels                                                      |       | ✓        | ✓         | ✓          | ✓     |

@@ -320,10 +320,11 @@ create an issue or an MR to propose a change to the user interface text.
 #### Feature names
 
 - Feature names are typically lowercase.
-- Some features are capitalized, typically nouns that name GitLab-specific
-  capabilities or tools.
-
-See the [word list](word_list.md) for details.
+- Some features require title case, typically nouns that name GitLab-specific capabilities or tools. Features requiring
+  title case should be:
+  - Added as a proper name to markdownlint [configuration](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.markdownlint.yml),
+    so that it can be consistently applied across all documentation.
+  - Added to the [word list](word_list.md).
 
 If the term is not in the word list, ask a GitLab Technical Writer for advice.
 

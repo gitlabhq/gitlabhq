@@ -1,5 +1,5 @@
 <script>
-import { GlModal, GlTabs, GlTab, GlSearchBoxByType, GlSprintf } from '@gitlab/ui';
+import { GlModal, GlTabs, GlTab, GlSearchBoxByType, GlSprintf, GlBadge } from '@gitlab/ui';
 import { mapState, mapActions } from 'vuex';
 import ReviewTabContainer from '~/add_context_commits_modal/components/review_tab_container.vue';
 import createFlash from '~/flash';
@@ -21,6 +21,7 @@ export default {
     ReviewTabContainer,
     GlSearchBoxByType,
     GlSprintf,
+    GlBadge,
   },
   props: {
     contextCommitsPath: {
@@ -239,7 +240,7 @@ export default {
         <template #title>
           <gl-sprintf :message="__(`Commits in %{codeStart}${targetBranch}%{codeEnd}`)">
             <template #code="{ content }">
-              <code>{{ content }}</code>
+              <code class="gl-ml-2">{{ content }}</code>
             </template>
           </gl-sprintf>
         </template>
@@ -262,7 +263,7 @@ export default {
       <gl-tab>
         <template #title>
           {{ __('Selected commits') }}
-          <span class="badge badge-pill">{{ selectedCommitsCount }}</span>
+          <gl-badge size="sm" class="gl-ml-2">{{ selectedCommitsCount }}</gl-badge>
         </template>
         <review-tab-container
           :is-loading="isLoadingContextCommits"

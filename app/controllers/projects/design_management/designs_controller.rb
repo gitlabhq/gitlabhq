@@ -4,6 +4,7 @@ class Projects::DesignManagement::DesignsController < Projects::ApplicationContr
   before_action :authorize_read_design!
 
   feature_category :design_management
+  urgency :low
 
   private
 

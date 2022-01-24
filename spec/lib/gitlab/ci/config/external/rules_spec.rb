@@ -45,7 +45,7 @@ RSpec.describe Gitlab::Ci::Config::External::Rules do
         let(:context) { double(project: project, sha: project.repository.tree.sha, top_level_worktree_paths: ['Dockerfile']) }
 
         before do
-          project.repository.create_file(project.owner, 'Dockerfile', "commit", message: 'test', branch_name: "master")
+          project.repository.create_file(project.first_owner, 'Dockerfile', "commit", message: 'test', branch_name: "master")
         end
 
         it { is_expected.to eq(true) }

@@ -1,7 +1,14 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.shared_context 'with gitlab project migration' do
+  RSpec.shared_context 'with gitlab project migration', quarantine: {
+    only: { job: 'praefect', subdomain: :staging },
+    type: :investigating,
+    issue: [
+      'https://gitlab.com/gitlab-org/gitlab/-/issues/348999',
+      'https://gitlab.com/gitlab-org/gitlab/-/issues/350965'
+    ]
+  } do
     let(:source_project_with_readme) { false }
     let(:import_wait_duration) { { max_duration: 300, sleep_interval: 2 } }
     let(:admin_api_client) { Runtime::API::Client.as_admin }

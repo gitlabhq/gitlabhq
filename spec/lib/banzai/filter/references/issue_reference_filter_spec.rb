@@ -515,7 +515,7 @@ RSpec.describe Banzai::Filter::References::IssueReferenceFilter do
       enable_design_management(enabled)
     end
 
-    let(:current_user) { project.owner }
+    let(:current_user) { project.first_owner }
     let(:enabled) { true }
     let(:matches) { Issue.link_reference_pattern.match(input_text) }
     let(:extras) { subject.object_link_text_extras(issue, matches) }

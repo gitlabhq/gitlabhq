@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Banzai::ObjectRenderer do
   let(:project) { create(:project, :repository) }
-  let(:user) { project.owner }
+  let(:user) { project.first_owner }
   let(:renderer) do
     described_class.new(
       default_project: project,

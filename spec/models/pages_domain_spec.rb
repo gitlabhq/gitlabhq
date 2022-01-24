@@ -36,9 +36,12 @@ RSpec.describe PagesDomain do
         '123.456.789'      => true,
         '0x12345.com'      => true,
         '0123123'          => true,
-        '_foo.com'         => false,
+        'a-reserved.com'   => true,
+        'a.b-reserved.com' => true,
         'reserved.com'     => false,
+        '_foo.com'         => false,
         'a.reserved.com'   => false,
+        'a.b.reserved.com' => false,
         nil                => false
       }.each do |value, validity|
         context "domain #{value.inspect} validity" do

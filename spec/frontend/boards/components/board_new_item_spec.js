@@ -39,6 +39,27 @@ describe('BoardNewItem', () => {
   });
 
   describe('template', () => {
+    describe('when the user provides a valid input', () => {
+      it('finds an enabled create button', async () => {
+        expect(wrapper.findByTestId('create-button').props('disabled')).toBe(true);
+
+        wrapper.find(GlFormInput).vm.$emit('input', 'hello');
+        await wrapper.vm.$nextTick();
+
+        expect(wrapper.findByTestId('create-button').props('disabled')).toBe(false);
+      });
+    });
+
+    describe('when the user types in a string with only spaces', () => {
+      it('disables the Create Issue button', async () => {
+        wrapper.find(GlFormInput).vm.$emit('input', '    ');
+
+        await wrapper.vm.$nextTick();
+
+        expect(wrapper.findByTestId('create-button').props('disabled')).toBe(true);
+      });
+    });
+
     it('renders gl-form component', () => {
       expect(wrapper.findComponent(GlForm).exists()).toBe(true);
     });
@@ -72,6 +93,19 @@ describe('BoardNewItem', () => {
         await glForm().trigger('submit');
 
         expect(wrapper.emitted('form-submit')).toBeTruthy();
+        expect(wrapper.emitted('form-submit')[0]).toEqual([
+          {
+            title: 'Foo',
+            list: mockList,
+          },
+        ]);
+      });
+
+      it('emits `form-submit` event with trimmed title', async () => {
+        titleInput().setValue(' Foo   ');
+
+        await glForm().trigger('submit');
+
         expect(wrapper.emitted('form-submit')[0]).toEqual([
           {
             title: 'Foo',

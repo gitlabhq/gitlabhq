@@ -334,7 +334,7 @@ RSpec.describe Gitlab::ProjectAuthorizations do
       let(:common_id) { non_existing_record_id }
       let!(:group) { create(:group, id: common_id) }
       let!(:unrelated_project) { create(:project, id: common_id) }
-      let(:user) { unrelated_project.owner }
+      let(:user) { unrelated_project.first_owner }
 
       it 'does not have access to group and its projects' do
         mapping = map_access_levels(authorizations)

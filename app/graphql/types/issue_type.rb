@@ -21,10 +21,8 @@ module Types
           description: "Internal ID of the issue."
     field :title, GraphQL::Types::String, null: false,
           description: 'Title of the issue.'
-    markdown_field :title_html, null: true
     field :description, GraphQL::Types::String, null: true,
           description: 'Description of the issue.'
-    markdown_field :description_html, null: true
     field :state, IssueStateEnum, null: false,
           description: 'State of the issue.'
 
@@ -142,6 +140,9 @@ module Types
 
     field :escalation_status, Types::IncidentManagement::EscalationStatusEnum, null: true,
           description: 'Escalation status of the issue.'
+
+    markdown_field :title_html, null: true
+    markdown_field :description_html, null: true
 
     def author
       Gitlab::Graphql::Loaders::BatchModelLoader.new(User, object.author_id).find
