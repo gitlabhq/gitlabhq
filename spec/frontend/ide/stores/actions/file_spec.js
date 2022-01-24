@@ -1,5 +1,5 @@
 import MockAdapter from 'axios-mock-adapter';
-import Vue from 'vue';
+import { nextTick } from 'vue';
 import eventHub from '~/ide/eventhub';
 import { createRouter } from '~/ide/ide_router';
 import service from '~/ide/services';
@@ -68,7 +68,7 @@ describe('IDE store file actions', () => {
 
       return store
         .dispatch('closeFile', localFile)
-        .then(Vue.nextTick)
+        .then(nextTick)
         .then(() => {
           expect(store.state.openFiles.length).toBe(0);
           expect(store.state.changedFiles.length).toBe(1);
@@ -83,7 +83,7 @@ describe('IDE store file actions', () => {
 
       return store
         .dispatch('closeFile', localFile)
-        .then(Vue.nextTick)
+        .then(nextTick)
         .then(() => {
           expect(router.push).toHaveBeenCalledWith('/project/test/test/tree/main/-/newOpenFile/');
         });

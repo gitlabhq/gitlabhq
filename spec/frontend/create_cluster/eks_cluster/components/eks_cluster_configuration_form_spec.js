@@ -1,6 +1,6 @@
 import { GlFormCheckbox } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 
 import EksClusterConfigurationForm from '~/create_cluster/eks_cluster/components/eks_cluster_configuration_form.vue';
@@ -223,108 +223,98 @@ describe('EksClusterConfigurationForm', () => {
     });
   });
 
-  it('sets isLoadingRoles to RoleDropdown loading property', () => {
+  it('sets isLoadingRoles to RoleDropdown loading property', async () => {
     rolesState.isLoadingItems = true;
 
-    return Vue.nextTick().then(() => {
-      expect(findRoleDropdown().props('loading')).toBe(rolesState.isLoadingItems);
-    });
+    await nextTick();
+    expect(findRoleDropdown().props('loading')).toBe(rolesState.isLoadingItems);
   });
 
   it('sets roles to RoleDropdown items property', () => {
     expect(findRoleDropdown().props('items')).toBe(rolesState.items);
   });
 
-  it('sets RoleDropdown hasErrors to true when loading roles failed', () => {
+  it('sets RoleDropdown hasErrors to true when loading roles failed', async () => {
     rolesState.loadingItemsError = new Error();
 
-    return Vue.nextTick().then(() => {
-      expect(findRoleDropdown().props('hasErrors')).toEqual(true);
-    });
+    await nextTick();
+    expect(findRoleDropdown().props('hasErrors')).toEqual(true);
   });
 
   it('disables KeyPairDropdown when no region is selected', () => {
     expect(findKeyPairDropdown().props('disabled')).toBe(true);
   });
 
-  it('enables KeyPairDropdown when no region is selected', () => {
+  it('enables KeyPairDropdown when no region is selected', async () => {
     state.selectedRegion = { name: 'west-1 ' };
 
-    return Vue.nextTick().then(() => {
-      expect(findKeyPairDropdown().props('disabled')).toBe(false);
-    });
+    await nextTick();
+    expect(findKeyPairDropdown().props('disabled')).toBe(false);
   });
 
-  it('sets isLoadingKeyPairs to KeyPairDropdown loading property', () => {
+  it('sets isLoadingKeyPairs to KeyPairDropdown loading property', async () => {
     keyPairsState.isLoadingItems = true;
 
-    return Vue.nextTick().then(() => {
-      expect(findKeyPairDropdown().props('loading')).toBe(keyPairsState.isLoadingItems);
-    });
+    await nextTick();
+    expect(findKeyPairDropdown().props('loading')).toBe(keyPairsState.isLoadingItems);
   });
 
   it('sets keyPairs to KeyPairDropdown items property', () => {
     expect(findKeyPairDropdown().props('items')).toBe(keyPairsState.items);
   });
 
-  it('sets KeyPairDropdown hasErrors to true when loading key pairs fails', () => {
+  it('sets KeyPairDropdown hasErrors to true when loading key pairs fails', async () => {
     keyPairsState.loadingItemsError = new Error();
 
-    return Vue.nextTick().then(() => {
-      expect(findKeyPairDropdown().props('hasErrors')).toEqual(true);
-    });
+    await nextTick();
+    expect(findKeyPairDropdown().props('hasErrors')).toEqual(true);
   });
 
   it('disables VpcDropdown when no region is selected', () => {
     expect(findVpcDropdown().props('disabled')).toBe(true);
   });
 
-  it('enables VpcDropdown when no region is selected', () => {
+  it('enables VpcDropdown when no region is selected', async () => {
     state.selectedRegion = { name: 'west-1 ' };
 
-    return Vue.nextTick().then(() => {
-      expect(findVpcDropdown().props('disabled')).toBe(false);
-    });
+    await nextTick();
+    expect(findVpcDropdown().props('disabled')).toBe(false);
   });
 
-  it('sets isLoadingVpcs to VpcDropdown loading property', () => {
+  it('sets isLoadingVpcs to VpcDropdown loading property', async () => {
     vpcsState.isLoadingItems = true;
 
-    return Vue.nextTick().then(() => {
-      expect(findVpcDropdown().props('loading')).toBe(vpcsState.isLoadingItems);
-    });
+    await nextTick();
+    expect(findVpcDropdown().props('loading')).toBe(vpcsState.isLoadingItems);
   });
 
   it('sets vpcs to VpcDropdown items property', () => {
     expect(findVpcDropdown().props('items')).toBe(vpcsState.items);
   });
 
-  it('sets VpcDropdown hasErrors to true when loading vpcs fails', () => {
+  it('sets VpcDropdown hasErrors to true when loading vpcs fails', async () => {
     vpcsState.loadingItemsError = new Error();
 
-    return Vue.nextTick().then(() => {
-      expect(findVpcDropdown().props('hasErrors')).toEqual(true);
-    });
+    await nextTick();
+    expect(findVpcDropdown().props('hasErrors')).toEqual(true);
   });
 
   it('disables SubnetDropdown when no vpc is selected', () => {
     expect(findSubnetDropdown().props('disabled')).toBe(true);
   });
 
-  it('enables SubnetDropdown when a vpc is selected', () => {
+  it('enables SubnetDropdown when a vpc is selected', async () => {
     state.selectedVpc = { name: 'vpc-1 ' };
 
-    return Vue.nextTick().then(() => {
-      expect(findSubnetDropdown().props('disabled')).toBe(false);
-    });
+    await nextTick();
+    expect(findSubnetDropdown().props('disabled')).toBe(false);
   });
 
-  it('sets isLoadingSubnets to SubnetDropdown loading property', () => {
+  it('sets isLoadingSubnets to SubnetDropdown loading property', async () => {
     subnetsState.isLoadingItems = true;
 
-    return Vue.nextTick().then(() => {
-      expect(findSubnetDropdown().props('loading')).toBe(subnetsState.isLoadingItems);
-    });
+    await nextTick();
+    expect(findSubnetDropdown().props('loading')).toBe(subnetsState.isLoadingItems);
   });
 
   it('sets subnets to SubnetDropdown items property', () => {
@@ -360,32 +350,29 @@ describe('EksClusterConfigurationForm', () => {
     expect(findSecurityGroupDropdown().props('disabled')).toBe(true);
   });
 
-  it('enables SecurityGroupDropdown when a vpc is selected', () => {
+  it('enables SecurityGroupDropdown when a vpc is selected', async () => {
     state.selectedVpc = { name: 'vpc-1 ' };
 
-    return Vue.nextTick().then(() => {
-      expect(findSecurityGroupDropdown().props('disabled')).toBe(false);
-    });
+    await nextTick();
+    expect(findSecurityGroupDropdown().props('disabled')).toBe(false);
   });
 
-  it('sets isLoadingSecurityGroups to SecurityGroupDropdown loading property', () => {
+  it('sets isLoadingSecurityGroups to SecurityGroupDropdown loading property', async () => {
     securityGroupsState.isLoadingItems = true;
 
-    return Vue.nextTick().then(() => {
-      expect(findSecurityGroupDropdown().props('loading')).toBe(securityGroupsState.isLoadingItems);
-    });
+    await nextTick();
+    expect(findSecurityGroupDropdown().props('loading')).toBe(securityGroupsState.isLoadingItems);
   });
 
   it('sets securityGroups to SecurityGroupDropdown items property', () => {
     expect(findSecurityGroupDropdown().props('items')).toBe(securityGroupsState.items);
   });
 
-  it('sets SecurityGroupDropdown hasErrors to true when loading security groups fails', () => {
+  it('sets SecurityGroupDropdown hasErrors to true when loading security groups fails', async () => {
     securityGroupsState.loadingItemsError = new Error();
 
-    return Vue.nextTick().then(() => {
-      expect(findSecurityGroupDropdown().props('hasErrors')).toEqual(true);
-    });
+    await nextTick();
+    expect(findSecurityGroupDropdown().props('hasErrors')).toEqual(true);
   });
 
   it('dispatches setClusterName when cluster name input changes', () => {

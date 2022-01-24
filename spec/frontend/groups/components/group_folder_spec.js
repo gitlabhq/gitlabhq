@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 
 import groupFolderComponent from '~/groups/components/group_folder.vue';
 import groupItemComponent from '~/groups/components/group_item.vue';
@@ -18,13 +18,13 @@ const createComponent = (groups = mockGroups, parentGroup = mockParentGroupItem)
 describe('GroupFolderComponent', () => {
   let vm;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     Vue.component('GroupItem', groupItemComponent);
 
     vm = createComponent();
     vm.$mount();
 
-    return Vue.nextTick();
+    await nextTick();
   });
 
   afterEach(() => {

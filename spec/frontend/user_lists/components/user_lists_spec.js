@@ -1,7 +1,7 @@
 import { GlEmptyState, GlLoadingIcon } from '@gitlab/ui';
 import { within } from '@testing-library/dom';
 import { mount, createWrapper } from '@vue/test-utils';
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 import waitForPromises from 'helpers/wait_for_promises';
 import Api from '~/api';
@@ -82,7 +82,7 @@ describe('~/user_lists/components/user_lists.vue', () => {
 
         factory();
         await waitForPromises();
-        await Vue.nextTick();
+        await nextTick();
 
         emptyState = wrapper.findComponent(GlEmptyState);
       });
@@ -130,7 +130,7 @@ describe('~/user_lists/components/user_lists.vue', () => {
 
         factory();
         jest.spyOn(store, 'dispatch');
-        await Vue.nextTick();
+        await nextTick();
         table = wrapper.findComponent(UserListsTable);
       });
 
@@ -171,7 +171,7 @@ describe('~/user_lists/components/user_lists.vue', () => {
       Api.fetchFeatureFlagUserLists.mockRejectedValue();
       factory();
 
-      await Vue.nextTick();
+      await nextTick();
     });
 
     it('should render error state', () => {

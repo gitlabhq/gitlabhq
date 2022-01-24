@@ -85,10 +85,9 @@ To remove a metric:
 1. Verify that removing the metric from the Service Ping payload does not cause
    errors in [Version App](https://gitlab.com/gitlab-services/version-gitlab-com)
    when the updated payload is collected and processed. Version App collects
-   and persists all Service Ping reports. To do that you can modify
-   [fixtures](https://gitlab.com/gitlab-services/version-gitlab-com/-/blob/master/spec/support/usage_data_helpers.rb#L540)
-   used to test
-   [`UsageDataController#create`](https://gitlab.com/gitlab-services/version-gitlab-com/-/blob/3760ef28/spec/controllers/usage_data_controller_spec.rb#L75)
+   and persists all Service Ping reports. To verify Service Ping processing in your local development environment, follow this [guide](https://www.youtube.com/watch?v=FS5emplabRU).
+   Alternatively, you can modify [fixtures](https://gitlab.com/gitlab-services/version-gitlab-com/-/blob/master/spec/support/usage_data_helpers.rb#L540)
+   used to test the [`UsageDataController#create`](https://gitlab.com/gitlab-services/version-gitlab-com/-/blob/3760ef28/spec/controllers/usage_data_controller_spec.rb#L75)
    endpoint, and assure that test suite does not fail when metric that you wish to remove is not included into test payload.
 
 1. Create an issue in the

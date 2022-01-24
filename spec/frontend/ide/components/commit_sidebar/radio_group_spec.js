@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import { createComponentWithStore } from 'helpers/vue_mount_component_helper';
 import radioGroup from '~/ide/components/commit_sidebar/radio_group.vue';
 import { createStore } from '~/ide/stores';
@@ -7,7 +7,7 @@ describe('IDE commit sidebar radio group', () => {
   let vm;
   let store;
 
-  beforeEach((done) => {
+  beforeEach(async () => {
     store = createStore();
 
     const Component = Vue.extend(radioGroup);
@@ -22,7 +22,7 @@ describe('IDE commit sidebar radio group', () => {
 
     vm.$mount();
 
-    Vue.nextTick(done);
+    await nextTick();
   });
 
   afterEach(() => {
@@ -33,7 +33,7 @@ describe('IDE commit sidebar radio group', () => {
     expect(vm.$el.textContent).toContain('test');
   });
 
-  it('uses slot if label is not present', (done) => {
+  it('uses slot if label is not present', async () => {
     vm.$destroy();
 
     vm = new Vue({
@@ -47,25 +47,19 @@ describe('IDE commit sidebar radio group', () => {
 
     vm.$mount();
 
-    Vue.nextTick(() => {
-      expect(vm.$el.textContent).toContain('Testing slot');
-
-      done();
-    });
+    await nextTick();
+    expect(vm.$el.textContent).toContain('Testing slot');
   });
 
-  it('updates store when changing radio button', (done) => {
+  it('updates store when changing radio button', async () => {
     vm.$el.querySelector('input').dispatchEvent(new Event('change'));
 
-    Vue.nextTick(() => {
-      expect(store.state.commit.commitAction).toBe('1');
-
-      done();
-    });
+    await nextTick();
+    expect(store.state.commit.commitAction).toBe('1');
   });
 
   describe('with input', () => {
-    beforeEach((done) => {
+    beforeEach(async () => {
       vm.$destroy();
 
       const Component = Vue.extend(radioGroup);
@@ -82,32 +76,27 @@ describe('IDE commit sidebar radio group', () => {
 
       vm.$mount();
 
-      Vue.nextTick(done);
+      await nextTick();
     });
 
     it('renders input box when commitAction matches value', () => {
       expect(vm.$el.querySelector('.form-control')).not.toBeNull();
     });
 
-    it('hides input when commitAction doesnt match value', (done) => {
+    it('hides input when commitAction doesnt match value', async () => {
       store.state.commit.commitAction = '2';
 
-      Vue.nextTick(() => {
-        expect(vm.$el.querySelector('.form-control')).toBeNull();
-        done();
-      });
+      await nextTick();
+      expect(vm.$el.querySelector('.form-control')).toBeNull();
     });
 
-    it('updates branch name in store on input', (done) => {
+    it('updates branch name in store on input', async () => {
       const input = vm.$el.querySelector('.form-control');
       input.value = 'testing-123';
       input.dispatchEvent(new Event('input'));
 
-      Vue.nextTick(() => {
-        expect(store.state.commit.newBranchName).toBe('testing-123');
-
-        done();
-      });
+      await nextTick();
+      expect(store.state.commit.newBranchName).toBe('testing-123');
     });
 
     it('renders newBranchName if present', () => {

@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils';
-import Vue from 'vue';
+import { nextTick } from 'vue';
 import ExpandButton from '~/vue_shared/components/expand_button.vue';
 
 const text = {
@@ -66,9 +66,9 @@ describe('Expand button', () => {
   });
 
   describe('on click', () => {
-    beforeEach((done) => {
+    beforeEach(async () => {
       expanderPrependEl().trigger('click');
-      Vue.nextTick(done);
+      await nextTick();
     });
 
     afterEach(() => {
@@ -85,7 +85,7 @@ describe('Expand button', () => {
     });
 
     describe('when short text is provided', () => {
-      beforeEach((done) => {
+      beforeEach(async () => {
         factory({
           slots: {
             expanded: `<p>${text.expanded}</p>`,
@@ -94,7 +94,7 @@ describe('Expand button', () => {
         });
 
         expanderPrependEl().trigger('click');
-        Vue.nextTick(done);
+        await nextTick();
       });
 
       it('only renders expanded text', () => {
@@ -110,31 +110,29 @@ describe('Expand button', () => {
   });
 
   describe('append button', () => {
-    beforeEach((done) => {
+    beforeEach(async () => {
       expanderPrependEl().trigger('click');
-      Vue.nextTick(done);
+      await nextTick();
     });
 
-    it('clicking hides itself and shows prepend', () => {
+    it('clicking hides itself and shows prepend', async () => {
       expect(expanderAppendEl().isVisible()).toBe(true);
       expanderAppendEl().trigger('click');
 
-      return wrapper.vm.$nextTick().then(() => {
-        expect(expanderPrependEl().isVisible()).toBe(true);
-      });
+      await nextTick();
+      expect(expanderPrependEl().isVisible()).toBe(true);
     });
 
-    it('clicking hides expanded text', () => {
+    it('clicking hides expanded text', async () => {
       expect(wrapper.find(ExpandButton).text().trim()).toBe(text.expanded);
       expanderAppendEl().trigger('click');
 
-      return wrapper.vm.$nextTick().then(() => {
-        expect(wrapper.find(ExpandButton).text().trim()).not.toBe(text.expanded);
-      });
+      await nextTick();
+      expect(wrapper.find(ExpandButton).text().trim()).not.toBe(text.expanded);
     });
 
     describe('when short text is provided', () => {
-      beforeEach((done) => {
+      beforeEach(async () => {
         factory({
           slots: {
             expanded: `<p>${text.expanded}</p>`,
@@ -143,16 +141,15 @@ describe('Expand button', () => {
         });
 
         expanderPrependEl().trigger('click');
-        Vue.nextTick(done);
+        await nextTick();
       });
 
-      it('clicking reveals short text', () => {
+      it('clicking reveals short text', async () => {
         expect(wrapper.find(ExpandButton).text().trim()).toBe(text.expanded);
         expanderAppendEl().trigger('click');
 
-        return wrapper.vm.$nextTick().then(() => {
-          expect(wrapper.find(ExpandButton).text().trim()).toBe(text.short);
-        });
+        await nextTick();
+        expect(wrapper.find(ExpandButton).text().trim()).toBe(text.short);
       });
     });
   });

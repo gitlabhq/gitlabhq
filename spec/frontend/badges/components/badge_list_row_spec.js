@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import { mountComponentWithStore } from 'helpers/vue_mount_component_helper';
 import BadgeListRow from '~/badges/components/badge_list_row.vue';
 import { GROUP_BADGE, PROJECT_BADGE } from '~/badges/constants';
@@ -73,25 +73,21 @@ describe('BadgeListRow component', () => {
     expect(vm.editBadge).toHaveBeenCalled();
   });
 
-  it('calls updateBadgeInModal and shows modal when clicking then delete button', (done) => {
+  it('calls updateBadgeInModal and shows modal when clicking then delete button', async () => {
     jest.spyOn(vm, 'updateBadgeInModal').mockImplementation(() => {});
 
     const deleteButton = vm.$el.querySelector('.table-button-footer button:last-of-type');
     deleteButton.click();
 
-    Vue.nextTick()
-      .then(() => {
-        expect(vm.updateBadgeInModal).toHaveBeenCalled();
-      })
-      .then(done)
-      .catch(done.fail);
+    await nextTick();
+    expect(vm.updateBadgeInModal).toHaveBeenCalled();
   });
 
   describe('for a group badge', () => {
-    beforeEach((done) => {
+    beforeEach(async () => {
       badge.kind = GROUP_BADGE;
 
-      Vue.nextTick().then(done).catch(done.fail);
+      await nextTick();
     });
 
     it('renders the badge kind', () => {

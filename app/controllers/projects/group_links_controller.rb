@@ -28,7 +28,7 @@ class Projects::GroupLinksController < Projects::ApplicationController
 
     if group_link.expires?
       render json: {
-        expires_in: helpers.distance_of_time_in_words_to_now(group_link.expires_at),
+        expires_in: helpers.time_ago_with_tooltip(group_link.expires_at),
         expires_soon: group_link.expires_soon?
       }
     else

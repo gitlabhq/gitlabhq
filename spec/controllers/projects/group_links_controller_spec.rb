@@ -178,7 +178,7 @@ RSpec.describe Projects::GroupLinksController do
 
     context 'when `expires_at` is set' do
       it 'returns correct json response' do
-        expect(json_response).to eq({ "expires_in" => "about 1 month", "expires_soon" => false })
+        expect(json_response).to eq({ "expires_in" => controller.helpers.time_ago_with_tooltip(expiry_date), "expires_soon" => false })
       end
     end
 

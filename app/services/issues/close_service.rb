@@ -81,7 +81,7 @@ module Issues
       return if alert.resolved?
 
       if alert.resolve
-        SystemNotes::AlertManagementService.new(noteable: alert, project: alert.project, author: current_user).closed_alert_issue(issue)
+        SystemNoteService.change_alert_status(alert, current_user, " by closing incident #{issue.to_reference(project)}")
       else
         Gitlab::AppLogger.warn(
           message: 'Cannot resolve an associated Alert Management alert',
@@ -97,7 +97,7 @@ module Issues
 
       status = issue.incident_management_issuable_escalation_status || issue.build_incident_management_issuable_escalation_status
 
-      SystemNoteService.resolve_incident_status(issue, current_user) if status.resolve
+      SystemNoteService.change_incident_status(issue, current_user, ' by closing the incident') if status.resolve
     end
 
     def store_first_mentioned_in_commit_at(issue, merge_request, max_commit_lookup: 100)

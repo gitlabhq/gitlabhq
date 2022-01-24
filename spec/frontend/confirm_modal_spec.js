@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import { nextTick } from 'vue';
 import { TEST_HOST } from 'helpers/test_constants';
 import initConfirmModal from '~/confirm_modal';
 
@@ -92,10 +92,9 @@ describe('ConfirmModal', () => {
       });
 
       describe('Cancel Button', () => {
-        beforeEach(() => {
+        beforeEach(async () => {
           findModalCancelButton(findModal()).click();
-
-          return Vue.nextTick();
+          await nextTick();
         });
 
         it('closes the modal', () => {

@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import WorkInProgress from '~/vue_merge_request_widget/components/states/work_in_progress.vue';
 import toast from '~/vue_shared/plugins/global_toast';
 import eventHub from '~/vue_merge_request_widget/event_hub';
@@ -94,7 +94,7 @@ describe('Wip', () => {
     it('should not show removeWIP button is user cannot update MR', (done) => {
       vm.mr.removeWIPPath = '';
 
-      Vue.nextTick(() => {
+      nextTick(() => {
         expect(el.querySelector('.js-remove-draft')).toEqual(null);
         done();
       });

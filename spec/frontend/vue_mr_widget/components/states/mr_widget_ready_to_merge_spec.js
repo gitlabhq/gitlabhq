@@ -1,5 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
-import Vue from 'vue';
+import { nextTick } from 'vue';
 import { GlSprintf } from '@gitlab/ui';
 import simplePoll from '~/lib/utils/simple_poll';
 import CommitEdit from '~/vue_merge_request_widget/components/states/commit_edit.vue';
@@ -196,7 +196,7 @@ describe('ReadyToMerge', () => {
         // eslint-disable-next-line no-restricted-syntax
         wrapper.setData({ isMergingImmediately: true });
 
-        await Vue.nextTick();
+        await nextTick();
 
         expect(wrapper.vm.mergeButtonText).toEqual('Merge in progress');
       });
@@ -266,7 +266,7 @@ describe('ReadyToMerge', () => {
         // eslint-disable-next-line no-restricted-syntax
         wrapper.setData({ isMakingRequest: true });
 
-        await Vue.nextTick();
+        await nextTick();
 
         expect(wrapper.vm.isMergeButtonDisabled).toBe(true);
       });

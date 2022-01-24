@@ -4,7 +4,9 @@ module QA
   RSpec.describe 'Manage' do
     describe 'Project access token' do
       before(:all) do
-        @project_access_token = QA::Resource::ProjectAccessToken.fabricate_via_api!
+        @project_access_token = QA::Resource::ProjectAccessToken.fabricate_via_api! do |pat|
+          pat.project = Resource::ReusableProject.fabricate_via_api!
+        end
 
         @user_api_client = Runtime::API::Client.new(:gitlab, personal_access_token: @project_access_token.token)
       end
@@ -75,11 +77,6 @@ module QA
         after(:all) do
           @different_project.remove_via_api!
         end
-      end
-
-      after(:all) do
-        @project_access_token.remove_via_api!
-        @project_access_token.project.remove_via_api!
       end
     end
   end

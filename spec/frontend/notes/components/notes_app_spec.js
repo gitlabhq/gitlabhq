@@ -1,7 +1,7 @@
 import { mount, shallowMount } from '@vue/test-utils';
 import AxiosMockAdapter from 'axios-mock-adapter';
 import $ from 'jquery';
-import Vue from 'vue';
+import { nextTick } from 'vue';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import { setTestTimeout } from 'helpers/timeout';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -294,24 +294,22 @@ describe('note_app', () => {
       return waitForDiscussionsRequest();
     });
 
-    it('should render markdown docs url', () => {
+    it('should render markdown docs url', async () => {
       wrapper.find('.js-note-edit').trigger('click');
       const { markdownDocsPath } = mockData.notesDataMock;
 
-      return Vue.nextTick().then(() => {
-        expect(wrapper.find(`.edit-note a[href="${markdownDocsPath}"]`).text().trim()).toEqual(
-          'Markdown is supported',
-        );
-      });
+      await nextTick();
+      expect(wrapper.find(`.edit-note a[href="${markdownDocsPath}"]`).text().trim()).toEqual(
+        'Markdown is supported',
+      );
     });
 
-    it('should not render quick actions docs url', () => {
+    it('should not render quick actions docs url', async () => {
       wrapper.find('.js-note-edit').trigger('click');
       const { quickActionsDocsPath } = mockData.notesDataMock;
 
-      return wrapper.vm.$nextTick().then(() => {
-        expect(wrapper.find(`.edit-note a[href="${quickActionsDocsPath}"]`).exists()).toBe(false);
-      });
+      await nextTick();
+      expect(wrapper.find(`.edit-note a[href="${quickActionsDocsPath}"]`).exists()).toBe(false);
     });
   });
 

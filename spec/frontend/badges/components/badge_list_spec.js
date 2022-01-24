@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import { mountComponentWithStore } from 'helpers/vue_mount_component_helper';
 import BadgeList from '~/badges/components/badge_list.vue';
 import { GROUP_BADGE, PROJECT_BADGE } from '~/badges/constants';
@@ -48,46 +48,34 @@ describe('BadgeList component', () => {
     expect(rows).toHaveLength(numberOfDummyBadges);
   });
 
-  it('renders a message if no badges exist', (done) => {
+  it('renders a message if no badges exist', async () => {
     store.state.badges = [];
 
-    Vue.nextTick()
-      .then(() => {
-        expect(vm.$el.innerText).toMatch('This project has no badges');
-      })
-      .then(done)
-      .catch(done.fail);
+    await nextTick();
+    expect(vm.$el.innerText).toMatch('This project has no badges');
   });
 
-  it('shows a loading icon when loading', (done) => {
+  it('shows a loading icon when loading', async () => {
     store.state.isLoading = true;
 
-    Vue.nextTick()
-      .then(() => {
-        const loadingIcon = vm.$el.querySelector('.gl-spinner');
+    await nextTick();
+    const loadingIcon = vm.$el.querySelector('.gl-spinner');
 
-        expect(loadingIcon).toBeVisible();
-      })
-      .then(done)
-      .catch(done.fail);
+    expect(loadingIcon).toBeVisible();
   });
 
   describe('for group badges', () => {
-    beforeEach((done) => {
+    beforeEach(async () => {
       store.state.kind = GROUP_BADGE;
 
-      Vue.nextTick().then(done).catch(done.fail);
+      await nextTick();
     });
 
-    it('renders a message if no badges exist', (done) => {
+    it('renders a message if no badges exist', async () => {
       store.state.badges = [];
 
-      Vue.nextTick()
-        .then(() => {
-          expect(vm.$el.innerText).toMatch('This group has no badges');
-        })
-        .then(done)
-        .catch(done.fail);
+      await nextTick();
+      expect(vm.$el.innerText).toMatch('This group has no badges');
     });
   });
 });

@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import { createComponentWithStore } from 'helpers/vue_mount_component_helper';
 import commitSidebarList from '~/ide/components/commit_sidebar/list.vue';
 import { createStore } from '~/ide/stores';
@@ -31,12 +31,11 @@ describe('Multi-file editor commit sidebar list', () => {
   });
 
   describe('with a list of files', () => {
-    beforeEach((done) => {
+    beforeEach(async () => {
       const f = file('file name');
       f.changed = true;
       vm.fileList.push(f);
-
-      Vue.nextTick(done);
+      await nextTick();
     });
 
     it('renders list', () => {

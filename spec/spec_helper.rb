@@ -462,14 +462,6 @@ RSpec.configure do |config|
     $stdout = STDOUT
   end
 
-  config.around(:each, stubbing_settings_source: true) do |example|
-    original_instance = ::Settings.instance_variable_get(:@instance)
-
-    example.run
-
-    ::Settings.instance_variable_set(:@instance, original_instance)
-  end
-
   config.disable_monkey_patching!
 end
 

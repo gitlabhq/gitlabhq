@@ -4,7 +4,6 @@
   .content-wrapper.content-wrapper-margin{ class: "#{@content_wrapper_class}" }
     .mobile-overlay
     = render_if_exists 'layouts/header/verification_reminder'
-    = yield :group_invite_members_banner
     .alert-wrapper.gl-force-block-formatting-context
       = render 'shared/outdated_browser'
       = render_if_exists "layouts/header/licensed_user_count_threshold"
@@ -21,6 +20,7 @@
       = render_if_exists "shared/namespace_user_cap_reached_alert"
       = render_if_exists "shared/new_user_signups_cap_reached_alert"
       = yield :page_level_alert
+      = yield :group_invite_members_banner
       - unless @hide_breadcrumbs
         = render "layouts/nav/breadcrumbs"
     %div{ class: "#{(container_class unless @no_container)} #{@content_class}" }

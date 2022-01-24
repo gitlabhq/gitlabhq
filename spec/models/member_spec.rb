@@ -894,4 +894,15 @@ RSpec.describe Member do
       end
     end
   end
+
+  describe '#set_member_namespace_id' do
+    let(:group) { create(:group) }
+    let(:member) { create(:group_member, group: group) }
+
+    describe 'on create' do
+      it 'sets the member_namespace_id' do
+        expect(member.member_namespace_id).to eq group.id
+      end
+    end
+  end
 end

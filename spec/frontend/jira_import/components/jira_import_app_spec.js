@@ -1,6 +1,6 @@
 import { GlAlert, GlLoadingIcon } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import Vue from 'vue';
+import { nextTick } from 'vue';
 import JiraImportApp from '~/jira_import/components/jira_import_app.vue';
 import JiraImportForm from '~/jira_import/components/jira_import_form.vue';
 import JiraImportProgress from '~/jira_import/components/jira_import_progress.vue';
@@ -230,7 +230,7 @@ describe('JiraImportApp', () => {
 
       getFormComponent().vm.$emit('error', 'There was an error');
 
-      await Vue.nextTick();
+      await nextTick();
 
       expect(getAlert().exists()).toBe(true);
     });
@@ -248,7 +248,7 @@ describe('JiraImportApp', () => {
 
       getAlert().vm.$emit('dismiss');
 
-      await Vue.nextTick();
+      await nextTick();
 
       expect(getAlert().exists()).toBe(false);
     });

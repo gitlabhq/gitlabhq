@@ -3,9 +3,10 @@
 require 'fast_spec_helper'
 require 'rspec-parameterized'
 
+require_relative '../../support/stub_settings_source'
 require_relative '../../../sidekiq_cluster/cli'
 
-RSpec.describe Gitlab::SidekiqCluster::CLI, stubbing_settings_source: true do # rubocop:disable RSpec/FilePath
+RSpec.describe Gitlab::SidekiqCluster::CLI, stub_settings_source: true do # rubocop:disable RSpec/FilePath
   let(:cli) { described_class.new('/dev/null') }
   let(:timeout) { Gitlab::SidekiqCluster::DEFAULT_SOFT_TIMEOUT_SECONDS }
   let(:default_options) do

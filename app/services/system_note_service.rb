@@ -335,10 +335,6 @@ module SystemNoteService
     ::SystemNotes::IncidentService.new(noteable: incident, project: incident.project, author: author).change_incident_severity
   end
 
-  def resolve_incident_status(incident, author)
-    ::SystemNotes::IncidentService.new(noteable: incident, project: incident.project, author: author).resolve_incident_status
-  end
-
   def change_incident_status(incident, author, reason = nil)
     ::SystemNotes::IncidentService.new(noteable: incident, project: incident.project, author: author).change_incident_status(reason)
   end

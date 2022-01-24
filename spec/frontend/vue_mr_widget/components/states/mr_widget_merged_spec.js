@@ -1,5 +1,5 @@
 import { getByRole } from '@testing-library/dom';
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import mountComponent from 'helpers/vue_mount_component_helper';
 import { OPEN_REVERT_MODAL, OPEN_CHERRY_PICK_MODAL } from '~/projects/commit/constants';
 import modalEventHub from '~/projects/commit/event_hub';
@@ -200,7 +200,7 @@ describe('MRWidgetMerged', () => {
   it('hides button to copy commit SHA if SHA does not exist', (done) => {
     vm.mr.mergeCommitSha = null;
 
-    Vue.nextTick(() => {
+    nextTick(() => {
       expect(selectors.copyMergeShaButton).toBe(null);
       expect(vm.$el.querySelector('.mr-info-list').innerText).not.toContain('with');
       done();
@@ -216,7 +216,7 @@ describe('MRWidgetMerged', () => {
   it('should not show source branch deleted text', (done) => {
     vm.mr.sourceBranchRemoved = false;
 
-    Vue.nextTick(() => {
+    nextTick(() => {
       expect(vm.$el.innerText).not.toContain('The source branch has been deleted');
       done();
     });
@@ -226,7 +226,7 @@ describe('MRWidgetMerged', () => {
     vm.mr.isRemovingSourceBranch = true;
     vm.mr.sourceBranchRemoved = false;
 
-    Vue.nextTick(() => {
+    nextTick(() => {
       expect(vm.$el.innerText).toContain('The source branch is being deleted');
       expect(vm.$el.innerText).not.toContain('The source branch has been deleted');
       done();

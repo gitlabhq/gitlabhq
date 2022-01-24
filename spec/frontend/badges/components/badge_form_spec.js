@@ -1,5 +1,5 @@
 import MockAdapter from 'axios-mock-adapter';
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import { DUMMY_IMAGE_URL, TEST_HOST } from 'helpers/test_constants';
 import { mountComponentWithStore } from 'helpers/vue_mount_component_helper';
 import BadgeForm from '~/badges/components/badge_form.vue';
@@ -74,7 +74,7 @@ describe('BadgeForm component', () => {
       expect(feedbackElement).toBeVisible();
     };
 
-    beforeEach((done) => {
+    beforeEach(async () => {
       jest.spyOn(vm, submitAction).mockReturnValue(Promise.resolve());
       store.replaceState({
         ...store.state,
@@ -83,14 +83,10 @@ describe('BadgeForm component', () => {
         isSaving: false,
       });
 
-      Vue.nextTick()
-        .then(() => {
-          setValue(nameSelector, 'TestBadge');
-          setValue(linkUrlSelector, `${TEST_HOST}/link/url`);
-          setValue(imageUrlSelector, `${window.location.origin}${DUMMY_IMAGE_URL}`);
-        })
-        .then(done)
-        .catch(done.fail);
+      await nextTick();
+      setValue(nameSelector, 'TestBadge');
+      setValue(linkUrlSelector, `${TEST_HOST}/link/url`);
+      setValue(imageUrlSelector, `${window.location.origin}${DUMMY_IMAGE_URL}`);
     });
 
     it('returns immediately if imageUrl is empty', () => {

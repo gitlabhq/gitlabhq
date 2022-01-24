@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import mountComponent from 'helpers/vue_mount_component_helper';
 import { DUMMY_IMAGE_URL, TEST_HOST } from 'spec/test_constants';
 import Badge from '~/badges/components/badge.vue';
@@ -27,7 +27,7 @@ describe('Badge component', () => {
       badgeImage.addEventListener('load', resolve);
       // Manually dispatch load event as it is not triggered
       badgeImage.dispatchEvent(new Event('load'));
-    }).then(() => Vue.nextTick());
+    }).then(() => nextTick());
   };
 
   afterEach(() => {
@@ -36,34 +36,25 @@ describe('Badge component', () => {
 
   describe('watchers', () => {
     describe('imageUrl', () => {
-      it('sets isLoading and resets numRetries and hasError', (done) => {
+      it('sets isLoading and resets numRetries and hasError', async () => {
         const props = { ...dummyProps };
-        createComponent(props)
-          .then(() => {
-            expect(vm.isLoading).toBe(false);
-            vm.hasError = true;
-            vm.numRetries = 42;
+        await createComponent(props);
+        expect(vm.isLoading).toBe(false);
+        vm.hasError = true;
+        vm.numRetries = 42;
 
-            vm.imageUrl = `${props.imageUrl}#something/else`;
-
-            return Vue.nextTick();
-          })
-          .then(() => {
-            expect(vm.isLoading).toBe(true);
-            expect(vm.numRetries).toBe(0);
-            expect(vm.hasError).toBe(false);
-          })
-          .then(done)
-          .catch(done.fail);
+        vm.imageUrl = `${props.imageUrl}#something/else`;
+        await nextTick();
+        expect(vm.isLoading).toBe(true);
+        expect(vm.numRetries).toBe(0);
+        expect(vm.hasError).toBe(false);
       });
     });
   });
 
   describe('methods', () => {
-    beforeEach((done) => {
-      createComponent({ ...dummyProps })
-        .then(done)
-        .catch(done.fail);
+    beforeEach(async () => {
+      await createComponent({ ...dummyProps });
     });
 
     it('onError resets isLoading and sets hasError', () => {
@@ -116,37 +107,29 @@ describe('Badge component', () => {
       expect(vm.$el.querySelector('.btn-group')).toBeHidden();
     });
 
-    it('shows a loading icon when loading', (done) => {
+    it('shows a loading icon when loading', async () => {
       vm.isLoading = true;
 
-      Vue.nextTick()
-        .then(() => {
-          const { badgeImage, loadingIcon, reloadButton } = findElements();
+      await nextTick();
+      const { badgeImage, loadingIcon, reloadButton } = findElements();
 
-          expect(badgeImage).toBeHidden();
-          expect(loadingIcon).toBeVisible();
-          expect(reloadButton).toBeHidden();
-          expect(vm.$el.querySelector('.btn-group')).toBeHidden();
-        })
-        .then(done)
-        .catch(done.fail);
+      expect(badgeImage).toBeHidden();
+      expect(loadingIcon).toBeVisible();
+      expect(reloadButton).toBeHidden();
+      expect(vm.$el.querySelector('.btn-group')).toBeHidden();
     });
 
-    it('shows an error and reload button if loading failed', (done) => {
+    it('shows an error and reload button if loading failed', async () => {
       vm.hasError = true;
 
-      Vue.nextTick()
-        .then(() => {
-          const { badgeImage, loadingIcon, reloadButton } = findElements();
+      await nextTick();
+      const { badgeImage, loadingIcon, reloadButton } = findElements();
 
-          expect(badgeImage).toBeHidden();
-          expect(loadingIcon).toBeHidden();
-          expect(reloadButton).toBeVisible();
-          expect(reloadButton).toHaveSpriteIcon('retry');
-          expect(vm.$el.innerText.trim()).toBe('No badge image');
-        })
-        .then(done)
-        .catch(done.fail);
+      expect(badgeImage).toBeHidden();
+      expect(loadingIcon).toBeHidden();
+      expect(reloadButton).toBeVisible();
+      expect(reloadButton).toHaveSpriteIcon('retry');
+      expect(vm.$el.innerText.trim()).toBe('No badge image');
     });
   });
 });

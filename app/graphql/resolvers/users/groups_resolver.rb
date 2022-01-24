@@ -11,13 +11,13 @@ module Resolvers
       authorize :read_user_groups
       authorizes_object!
 
-      argument :search, GraphQL::Types::String,
-               required: false,
-               description: 'Search by group name or path.'
       argument :permission_scope,
                ::Types::PermissionTypes::GroupEnum,
                required: false,
                description: 'Filter by permissions the user has on groups.'
+      argument :search, GraphQL::Types::String,
+               required: false,
+               description: 'Search by group name or path.'
 
       before_connection_authorization do |nodes, current_user|
         Preloaders::GroupPolicyPreloader.new(nodes, current_user).execute

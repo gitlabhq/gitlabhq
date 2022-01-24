@@ -54,6 +54,8 @@ module Gitlab
         File.open(archive_file) { |file| upload.export_file = file }
 
         upload.save!
+
+        true
       end
 
       def error_message

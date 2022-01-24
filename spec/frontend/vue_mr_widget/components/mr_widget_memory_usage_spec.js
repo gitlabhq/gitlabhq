@@ -1,6 +1,6 @@
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import MemoryUsage from '~/vue_merge_request_widget/components/deployment/memory_usage.vue';
 import MRWidgetService from '~/vue_merge_request_widget/services/mr_widget_service';
 
@@ -184,7 +184,7 @@ describe('MemoryUsage', () => {
       vm.hasMetrics = false;
       vm.loadFailed = false;
 
-      Vue.nextTick(() => {
+      nextTick(() => {
         expect(el.querySelector('.js-usage-info.usage-info-loading')).toBeDefined();
 
         expect(el.querySelector('.js-usage-info .usage-info-load-spinner')).toBeDefined();
@@ -203,7 +203,7 @@ describe('MemoryUsage', () => {
       vm.loadFailed = false;
       vm.memoryMetrics = metricsMockData.metrics.memory_values[0].values;
 
-      Vue.nextTick(() => {
+      nextTick(() => {
         expect(el.querySelector('.memory-graph-container')).toBeDefined();
         expect(el.querySelector('.js-usage-info').innerText).toContain(messages.hasMetrics);
         done();
@@ -215,7 +215,7 @@ describe('MemoryUsage', () => {
       vm.hasMetrics = false;
       vm.loadFailed = true;
 
-      Vue.nextTick(() => {
+      nextTick(() => {
         expect(el.querySelector('.js-usage-info.usage-info-failed')).toBeDefined();
 
         expect(el.querySelector('.js-usage-info').innerText).toContain(messages.loadFailed);
@@ -228,7 +228,7 @@ describe('MemoryUsage', () => {
       vm.hasMetrics = false;
       vm.loadFailed = false;
 
-      Vue.nextTick(() => {
+      nextTick(() => {
         expect(el.querySelector('.js-usage-info.usage-info-unavailable')).toBeDefined();
 
         expect(el.querySelector('.js-usage-info').innerText).toContain(messages.metricsUnavailable);

@@ -528,7 +528,7 @@ RSpec.describe 'Admin updates settings' do
         expect(find_field('Allow access to members of the following group').value).to be_nil
       end
 
-      it 'loads usage ping payload on click', :js do
+      it 'loads togglable usage ping payload on click', :js do
         stub_usage_data_connections
         stub_database_flavor_check
 
@@ -544,6 +544,10 @@ RSpec.describe 'Admin updates settings' do
           expect(page).to have_selector '.js-service-ping-payload'
           expect(page).to have_button 'Hide payload'
           expect(page).to have_content expected_payload_content
+
+          click_button('Hide payload')
+
+          expect(page).not_to have_content expected_payload_content
         end
       end
     end

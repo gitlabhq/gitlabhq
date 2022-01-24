@@ -716,3 +716,15 @@ Support for `fixup!` is now considered deprecated, and will be
 removed in GitLab 15.0.
 
 **Planned removal milestone: 15.0 (2022-06-22)**
+
+### `started` iterations API field
+
+WARNING:
+This feature will be changed or removed in 15.0
+as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Before updating GitLab, review the details carefully to determine if you need to make any
+changes to your code, settings, or workflow.
+
+The `started` field in the [iterations API](https://docs.gitlab.com/ee/api/iterations.html#list-project-iterations) is being deprecated and will be removed in GitLab 15.0. This field is being replaced with the `current` field (already available) which aligns with the naming for other time-based entities, such as milestones.
+
+**Planned removal milestone: 15.0 (2022-05-22)**

@@ -55,6 +55,13 @@ module Resolvers
              required: false,
              description: 'Limit result to draft merge requests.'
 
+    argument :created_after, Types::TimeType,
+             required: false,
+             description: 'Merge requests created after this timestamp.'
+    argument :created_before, Types::TimeType,
+             required: false,
+             description: 'Merge requests created before this timestamp.'
+
     argument :labels, [GraphQL::Types::String],
              required: false,
              as: :label_name,
@@ -72,12 +79,6 @@ module Resolvers
              description: 'Sort merge requests by this criteria.',
              required: false,
              default_value: :created_desc
-    argument :created_after, Types::TimeType,
-             required: false,
-             description: 'Merge requests created after this timestamp.'
-    argument :created_before, Types::TimeType,
-             required: false,
-             description: 'Merge requests created before this timestamp.'
 
     negated do
       argument :labels, [GraphQL::Types::String],

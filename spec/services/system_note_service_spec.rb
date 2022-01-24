@@ -632,18 +632,6 @@ RSpec.describe SystemNoteService do
     end
   end
 
-  describe '.resolve_incident_status' do
-    let(:incident) { build(:incident, :closed) }
-
-    it 'calls IncidentService' do
-      expect_next_instance_of(SystemNotes::IncidentService) do |service|
-        expect(service).to receive(:resolve_incident_status)
-      end
-
-      described_class.resolve_incident_status(incident, author)
-    end
-  end
-
   describe '.change_incident_status' do
     let(:incident) { instance_double('Issue', project: project) }
 
