@@ -1021,6 +1021,22 @@ Migrate your existing Pages deployments from local storage to object storage:
 sudo gitlab-rake gitlab:pages:deployments:migrate_to_object_storage
 ```
 
+You can track progress and verify that all Pages deployments migrated successfully using the 
+[PostgreSQL console](https://docs.gitlab.com/omnibus/settings/database.html#connecting-to-the-bundled-postgresql-database):
+
+- `sudo gitlab-rails dbconsole` for Omnibus GitLab instances.
+- `sudo -u git -H psql -d gitlabhq_production` for source-installed instances.
+
+Verify `objectstg` below (where `store=2`) has count of all Pages deployments:
+
+```shell
+gitlabhq_production=# SELECT count(*) AS total, sum(case when file_store = '1' then 1 else 0 end) AS filesystem, sum(case when file_store = '2' then 1 else 0 end) AS objectstg FROM pages_deployments;
+
+total | filesystem | objectstg
+------+------------+-----------
+   10 |          0 |        10
+```
+
 ### Rolling Pages deployments back to local storage
 
 After the migration to object storage is performed, you can choose to move your Pages deployments back to local storage:

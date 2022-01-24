@@ -184,6 +184,8 @@ and [possessive quantifiers](https://www.regular-expressions.info/possessive.htm
 - Avoid nested quantifiers if possible (for example `(a+)+`)
 - Try to be as precise as possible in your regex and avoid the `.` if there's an alternative
   - For example, Use `_[^_]+_` instead of `_.*_` to match `_text here_`
+- Use reasonable ranges (for example, `{1,10}`) for repeating patterns instead of unbounded `*` and `+` matchers
+- When possible, perform simple input validation such as maximum string length checks before using regular expressions
 - If in doubt, don't hesitate to ping `@gitlab-com/gl-security/appsec`
 
 #### Go
