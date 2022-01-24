@@ -1,5 +1,5 @@
 <script>
-import { GlLoadingIcon, GlButton, GlModalDirective } from '@gitlab/ui';
+import { GlLoadingIcon, GlButton, GlModalDirective, GlBadge } from '@gitlab/ui';
 import { mapActions, mapState } from 'vuex';
 import { s__ } from '~/locale';
 import { PROJECT_BADGE } from '../constants';
@@ -11,6 +11,7 @@ export default {
     Badge,
     GlLoadingIcon,
     GlButton,
+    GlBadge,
   },
   directives: {
     GlModal: GlModalDirective,
@@ -49,7 +50,7 @@ export default {
     />
     <div class="table-section section-30">
       <label class="label-bold str-truncated mb-0">{{ badge.name }}</label>
-      <span class="badge badge-pill">{{ badgeKindText }}</span>
+      <gl-badge size="sm">{{ badgeKindText }}</gl-badge>
     </div>
     <span class="table-section section-30 str-truncated">{{ badge.linkUrl }}</span>
     <div class="table-section section-10 table-button-footer">

@@ -2,15 +2,6 @@
 Rails/SaveBang:
   Exclude:
   - ee/spec/lib/analytics/merge_request_metrics_calculator_spec.rb
-  - ee/spec/models/protected_environment_spec.rb
-  - ee/spec/models/repository_spec.rb
-  - ee/spec/models/scim_identity_spec.rb
-  - ee/spec/models/scim_oauth_access_token_spec.rb
-  - ee/spec/models/upload_spec.rb
-  - ee/spec/models/user_preference_spec.rb
-  - ee/spec/models/visible_approvable_spec.rb
-  - ee/spec/models/vulnerabilities/feedback_spec.rb
-  - ee/spec/models/vulnerabilities/issue_link_spec.rb
   - spec/lib/backup/manager_spec.rb
   - spec/lib/gitlab/alerting/alert_spec.rb
   - spec/lib/gitlab/analytics/cycle_analytics/records_fetcher_spec.rb

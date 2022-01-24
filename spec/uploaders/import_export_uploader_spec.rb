@@ -10,6 +10,20 @@ RSpec.describe ImportExportUploader do
   subject { described_class.new(model, :import_file) }
 
   context 'local store' do
+    describe '#move_to_cache' do
+      it 'returns false' do
+        expect(subject.move_to_cache).to be false
+      end
+
+      context 'with project export' do
+        subject { described_class.new(model, :export_file) }
+
+        it 'returns true' do
+          expect(subject.move_to_cache).to be true
+        end
+      end
+    end
+
     describe '#move_to_store' do
       it 'returns true' do
         expect(subject.move_to_store).to be true
@@ -31,6 +45,20 @@ RSpec.describe ImportExportUploader do
 
     it_behaves_like 'builds correct paths', patterns do
       let(:fixture) { File.join('spec', 'fixtures', 'group_export.tar.gz') }
+    end
+
+    describe '#move_to_cache' do
+      it 'returns false' do
+        expect(subject.move_to_cache).to be false
+      end
+
+      context 'with project export' do
+        subject { described_class.new(model, :export_file) }
+
+        it 'returns true' do
+          expect(subject.move_to_cache).to be false
+        end
+      end
     end
 
     describe '#move_to_store' do

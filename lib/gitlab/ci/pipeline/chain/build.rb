@@ -21,10 +21,6 @@ module Gitlab
               merge_request: @command.merge_request,
               external_pull_request: @command.external_pull_request,
               locked: @command.project.default_pipeline_lock)
-
-            # Initialize the feature flag at the beginning of the pipeline creation process
-            # so that the flag references in the latter chains return the same value.
-            @pipeline.create_deployment_in_separate_transaction?
           end
 
           def break?

@@ -1,9 +1,9 @@
 <script>
-import { GlButton, GlFormGroup, GlFormSelect } from '@gitlab/ui';
+import { GlButton, GlFormGroup, GlFormSelect, GlFormCheckbox } from '@gitlab/ui';
 import { __ } from '~/locale';
 
 export default {
-  components: { GlButton, GlFormGroup, GlFormSelect },
+  components: { GlButton, GlFormGroup, GlFormSelect, GlFormCheckbox },
   props: {
     gcpProjects: { required: true, type: Array },
     environments: { required: true, type: Array },
@@ -19,6 +19,9 @@ export default {
     environmentDescription: __('Generated service account is linked to the selected environment'),
     submitLabel: __('Create service account'),
     cancelLabel: __('Cancel'),
+    checkboxLabel: __(
+      'I understand the responsibilities involved with managing service account keys',
+    ),
   },
 };
 </script>
@@ -58,6 +61,11 @@ export default {
           {{ environment.name }}
         </option>
       </gl-form-select>
+    </gl-form-group>
+    <gl-form-group>
+      <gl-form-checkbox name="confirmation" required>
+        {{ $options.i18n.checkboxLabel }}
+      </gl-form-checkbox>
     </gl-form-group>
 
     <div class="form-actions row">

@@ -2,7 +2,7 @@
 
 %label.label-bold
   = s_('Profiles|Connected Accounts')
-  %p= s_('Profiles|Click on icon to activate signin with one of the following services')
+  %p= s_('Profiles|Select a service to sign in with.')
   - providers.each do |provider|
     - unlink_allowed = unlink_provider_allowed?(provider)
     - link_allowed = link_provider_allowed?(provider)

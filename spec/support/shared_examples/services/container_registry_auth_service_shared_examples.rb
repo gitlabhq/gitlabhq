@@ -167,7 +167,7 @@ RSpec.shared_examples 'a container registry auth service' do
     stub_feature_flags(container_registry_cdn_redirect: false)
   end
 
-  describe '#full_access_token' do
+  describe '.full_access_token' do
     let_it_be(:project) { create(:project) }
 
     let(:token) { described_class.full_access_token(project.full_path) }
@@ -181,7 +181,21 @@ RSpec.shared_examples 'a container registry auth service' do
     it_behaves_like 'not a container repository factory'
   end
 
-  describe '#pull_access_token' do
+  describe '.import_access_token' do
+    let_it_be(:project) { create(:project) }
+
+    let(:token) { described_class.import_access_token(project.full_path) }
+
+    subject { { token: token } }
+
+    it_behaves_like 'an accessible' do
+      let(:actions) { ['import'] }
+    end
+
+    it_behaves_like 'not a container repository factory'
+  end
+
+  describe '.pull_access_token' do
     let_it_be(:project) { create(:project) }
 
     let(:token) { described_class.pull_access_token(project.full_path) }
@@ -1123,6 +1137,74 @@ RSpec.shared_examples 'a container registry auth service' do
 
         it_behaves_like 'a pushable'
         it_behaves_like 'container repository factory'
+      end
+    end
+  end
+
+  context 'when importing' do
+    let_it_be(:container_repository) { create(:container_repository, :root, migration_state: 'importing') }
+    let_it_be(:current_project) { container_repository.project }
+    let_it_be(:current_user) { create(:user) }
+
+    before do
+      current_project.add_developer(current_user)
+    end
+
+    shared_examples 'containing the import error' do
+      it 'includes a helpful error message' do
+        expect(subject[:errors].first).to include(message: /Your repository is currently being migrated/)
+      end
+    end
+
+    context 'push request' do
+      let(:current_params) do
+        { scopes: ["repository:#{container_repository.path}:push"] }
+      end
+
+      it_behaves_like 'a forbidden' do
+        it_behaves_like 'containing the import error'
+      end
+    end
+
+    context 'delete request' do
+      let(:current_params) do
+        { scopes: ["repository:#{container_repository.path}:delete"] }
+      end
+
+      it_behaves_like 'a forbidden' do
+        it_behaves_like 'containing the import error'
+      end
+    end
+
+    context '* request' do
+      let(:current_params) do
+        { scopes: ["repository:#{container_repository.path}:*"] }
+      end
+
+      it_behaves_like 'a forbidden' do
+        it_behaves_like 'containing the import error'
+      end
+    end
+
+    context 'pull request' do
+      let(:current_params) do
+        { scopes: ["repository:#{container_repository.path}:pull"] }
+      end
+
+      let(:project) { current_project }
+
+      it_behaves_like 'a pullable'
+    end
+
+    context 'mixed request' do
+      let(:current_params) do
+        { scopes: ["repository:#{container_repository.path}:pull,push"] }
+      end
+
+      let(:project) { current_project }
+
+      it_behaves_like 'a forbidden' do
+        it_behaves_like 'containing the import error'
       end
     end
   end

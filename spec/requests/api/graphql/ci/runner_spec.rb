@@ -25,6 +25,8 @@ RSpec.describe 'Query.runner(id)' do
            access_level: 0, tag_list: %w[tag1 tag2], run_untagged: true, executor_type: :shell)
   end
 
+  let_it_be(:active_project_runner) { create(:ci_runner, :project) }
+
   def get_runner(id)
     case id
     when :active_instance_runner
@@ -33,6 +35,8 @@ RSpec.describe 'Query.runner(id)' do
       inactive_instance_runner
     when :active_group_runner
       active_group_runner
+    when :active_project_runner
+      active_project_runner
     end
   end
 
@@ -55,7 +59,7 @@ RSpec.describe 'Query.runner(id)' do
 
       runner = get_runner(runner_id)
       expect(runner_data).to match a_hash_including(
-        'id' => "gid://gitlab/Ci::Runner/#{runner.id}",
+        'id' => runner.to_global_id.to_s,
         'description' => runner.description,
         'createdAt' => runner.created_at&.iso8601,
         'contactedAt' => runner.contacted_at&.iso8601,
@@ -103,7 +107,7 @@ RSpec.describe 'Query.runner(id)' do
 
       runner = get_runner(runner_id)
       expect(runner_data).to match a_hash_including(
-        'id' => "gid://gitlab/Ci::Runner/#{runner.id}",
+        'id' => runner.to_global_id.to_s,
         'adminUrl' => nil
       )
       expect(runner_data['tagList']).to match_array runner.tag_list
@@ -179,7 +183,7 @@ RSpec.describe 'Query.runner(id)' do
         runner_data = graphql_data_at(:runner)
 
         expect(runner_data).to match a_hash_including(
-          'id' => "gid://gitlab/Ci::Runner/#{project_runner.id}",
+          'id' => project_runner.to_global_id.to_s,
           'locked' => is_locked
         )
       end
@@ -216,7 +220,7 @@ RSpec.describe 'Query.runner(id)' do
         a_hash_including(
           'webUrl' => "http://localhost/groups/#{group.full_path}/-/runners/#{active_group_runner.id}",
           'node' => {
-            'id' => "gid://gitlab/Ci::Runner/#{active_group_runner.id}"
+            'id' => active_group_runner.to_global_id.to_s
           }
         )
       ]
@@ -227,7 +231,7 @@ RSpec.describe 'Query.runner(id)' do
     let(:query) do
       %(
         query {
-          runner(id: "gid://gitlab/Ci::Runner/#{active_group_runner.id}") {
+          runner(id: "#{active_group_runner.to_global_id}") {
             groups {
               nodes {
                 id
@@ -302,21 +306,36 @@ RSpec.describe 'Query.runner(id)' do
 
     let!(:job) { create(:ci_build, runner: project_runner1) }
 
-    context 'requesting project and job counts' do
+    context 'requesting projects and counts for projects and jobs' do
       let(:query) do
         %(
           query {
             projectRunner1: runner(id: "#{project_runner1.to_global_id}") {
               projectCount
               jobCount
+              projects {
+                nodes {
+                  id
+                }
+              }
             }
             projectRunner2: runner(id: "#{project_runner2.to_global_id}") {
               projectCount
               jobCount
+              projects {
+                nodes {
+                  id
+                }
+              }
             }
             activeInstanceRunner: runner(id: "#{active_instance_runner.to_global_id}") {
               projectCount
               jobCount
+              projects {
+                nodes {
+                  id
+                }
+              }
             }
           }
         )
@@ -335,13 +354,23 @@ RSpec.describe 'Query.runner(id)' do
 
         expect(runner1_data).to match a_hash_including(
           'jobCount' => 1,
-          'projectCount' => 2)
+          'projectCount' => 2,
+          'projects' => {
+            'nodes' => [
+              { 'id' => project1.to_global_id.to_s },
+              { 'id' => project2.to_global_id.to_s }
+            ]
+          })
         expect(runner2_data).to match a_hash_including(
           'jobCount' => 0,
-          'projectCount' => 0)
+          'projectCount' => 0,
+          'projects' => {
+            'nodes' => []
+          })
         expect(runner3_data).to match a_hash_including(
           'jobCount' => 0,
-          'projectCount' => nil)
+          'projectCount' => nil,
+          'projects' => nil)
       end
     end
   end
@@ -355,6 +384,10 @@ RSpec.describe 'Query.runner(id)' do
 
     context 'on group runner' do
       it_behaves_like 'retrieval by unauthorized user', :active_group_runner
+    end
+
+    context 'on project runner' do
+      it_behaves_like 'retrieval by unauthorized user', :active_project_runner
     end
   end
 

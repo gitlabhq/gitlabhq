@@ -47,18 +47,6 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::CreateDeployments do
           expect(job.deployment).to be_nil
         end
       end
-
-      context 'when create_deployment_in_separate_transaction feature flag is disabled' do
-        before do
-          stub_feature_flags(create_deployment_in_separate_transaction: false)
-        end
-
-        it 'does not create a deployment record' do
-          expect { subject }.not_to change { Deployment.count }
-
-          expect(job.deployment).to be_nil
-        end
-      end
     end
 
     context 'when a pipeline contains a teardown job' do

@@ -141,7 +141,7 @@ RSpec.describe "User sorts issues" do
       page.within '.issues-list' do
         expect(page).to have_content('foo')
         expect(page).to have_content('bar')
-        expect(page).to have_content('baz')
+        expect(page).not_to have_content('baz')
       end
     end
 

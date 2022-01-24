@@ -1,11 +1,15 @@
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { __, s__ } from '~/locale';
+import { formatDate } from '~/lib/utils/datetime_utility';
+import { useFakeDate } from 'helpers/fake_date';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import Deployment from '~/environments/components/deployment.vue';
 import DeploymentStatusBadge from '~/environments/components/deployment_status_badge.vue';
 import { resolvedEnvironment } from './graphql/mock_data';
 
 describe('~/environments/components/deployment.vue', () => {
+  useFakeDate(2022, 0, 8, 16);
+
   const deployment = resolvedEnvironment.lastDeployment;
   let wrapper;
 
@@ -122,6 +126,25 @@ describe('~/environments/components/deployment.vue', () => {
         });
         const sha = wrapper.findByTestId('deployment-commit-sha');
         expect(sha.exists()).toBe(false);
+      });
+    });
+  });
+
+  describe('created at time', () => {
+    describe('is present', () => {
+      it('shows the timestamp the deployment was deployed at', () => {
+        wrapper = createWrapper();
+        const date = wrapper.findByTitle(formatDate(deployment.createdAt));
+
+        expect(date.text()).toBe('1 day ago');
+      });
+    });
+    describe('is not present', () => {
+      it('does not show the timestamp', () => {
+        wrapper = createWrapper({ propsData: { deployment: { createdAt: null } } });
+        const date = wrapper.findByTitle(formatDate(deployment.createdAt));
+
+        expect(date.exists()).toBe(false);
       });
     });
   });

@@ -6,8 +6,6 @@ module Gitlab
       module Chain
         class EnsureEnvironments < Chain::Base
           def perform!
-            return unless pipeline.create_deployment_in_separate_transaction?
-
             pipeline.stages.map(&:statuses).flatten.each(&method(:ensure_environment))
           end
 

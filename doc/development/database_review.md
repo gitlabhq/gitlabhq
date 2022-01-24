@@ -49,7 +49,7 @@ If new migrations are introduced, in the MR **you are required to provide**:
 
 Note that we have automated tooling for
 [GitLab](https://gitlab.com/gitlab-org/gitlab) (provided by the
-`db:check-migrations` pipeline job) that provides this output for migrations on
+[`db:check-migrations`](database/dbcheck-migrations-job.md) pipeline job) that provides this output for migrations on
 ~database merge requests. You do not need to provide this information manually
 if the bot can do it for you. The bot also checks that migrations are correctly
 reversible.

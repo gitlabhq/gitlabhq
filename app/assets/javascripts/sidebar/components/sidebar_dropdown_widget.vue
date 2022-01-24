@@ -307,7 +307,12 @@ export default {
     @close="handleClose"
   >
     <template #collapsed>
-      <div v-if="isClassicSidebar" v-gl-tooltip class="sidebar-collapsed-icon">
+      <div
+        v-if="isClassicSidebar"
+        v-gl-tooltip.left.viewport
+        :title="attributeTypeTitle"
+        class="sidebar-collapsed-icon"
+      >
         <gl-icon :size="16" :aria-label="attributeTypeTitle" :name="attributeTypeIcon" />
         <span class="collapse-truncated-title">
           {{ attributeTitle }}

@@ -496,6 +496,9 @@ The steps depend on the scope of the list:
 
 ### Filter issues
 
+> - Filtering by iteration [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/118742) in GitLab 13.6.
+> - Filtering by issue type [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/268152) in GitLab 14.6.
+
 You can use the filters on top of your issue board to show only
 the results you want. It's similar to the filtering used in the [issue tracker](issues/index.md).
 
@@ -504,11 +507,12 @@ You can filter by the following:
 - Assignee
 - Author
 - Epic
-- Iteration ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/118742) in GitLab 13.6)
+- Iteration
 - Label
 - Milestone
 - My Reaction
 - Release
+- Type (issue/incident)
 - Weight
 
 #### Filtering issues in a group board

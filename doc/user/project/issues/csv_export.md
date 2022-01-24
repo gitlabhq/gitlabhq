@@ -61,29 +61,29 @@ fields if needed, and newlines to separate rows. The first row contains the
 headers, which are listed in the following table along with a description of
 the values:
 
-| Column            | Description |
-|-------------------|-------------|
-| Issue ID          | Issue `iid` |
-| URL               | A link to the issue on GitLab |
-| Title             | Issue `title` |
-| State             | `Open` or `Closed` |
-| Description       | Issue `description` |
-| Author            | Full name of the issue author |
-| Author Username   | Username of the author, with the `@` symbol omitted |
-| Assignee          | Full name of the issue assignee |
-| Assignee Username | Username of the author, with the `@` symbol omitted |
-| Confidential      | `Yes` or `No` |
-| Locked            | `Yes` or `No` |
-| Due Date          | Formatted as `YYYY-MM-DD` |
-| Created At (UTC)  | Formatted as `YYYY-MM-DD HH:MM:SS` |
-| Updated At (UTC)  | Formatted as `YYYY-MM-DD HH:MM:SS` |
-| Milestone         | Title of the issue milestone |
-| Weight            | Issue weight |
-| Labels            | Title of any labels joined with a `,` |
-| Time Estimate     | [Time estimate](../time_tracking.md#estimates) in seconds |
-| Time Spent        | [Time spent](../time_tracking.md#time-spent) in seconds |
-| Epic ID           | ID of the parent epic **(ULTIMATE)**, introduced in 12.7 |
-| Epic Title        | Title of the parent epic **(ULTIMATE)**, introduced in 12.7 |
+| Column                                   | Description                                               |
+|------------------------------------------|-----------------------------------------------------------|
+| Issue ID                                 | Issue `iid`                                               |
+| URL                                      | A link to the issue on GitLab                             |
+| Title                                    | Issue `title`                                             |
+| State                                    | `Open` or `Closed`                                        |
+| Description                              | Issue `description`                                       |
+| Author                                   | Full name of the issue author                             |
+| Author Username                          | Username of the author, with the `@` symbol omitted       |
+| Assignee                                 | Full name of the issue assignee                           |
+| Assignee Username                        | Username of the author, with the `@` symbol omitted       |
+| Confidential                             | `Yes` or `No`                                             |
+| Locked                                   | `Yes` or `No`                                             |
+| Due Date                                 | Formatted as `YYYY-MM-DD`                                 |
+| Created At (UTC)                         | Formatted as `YYYY-MM-DD HH:MM:SS`                        |
+| Updated At (UTC)                         | Formatted as `YYYY-MM-DD HH:MM:SS`                        |
+| Milestone                                | Title of the issue milestone                              |
+| Weight                                   | Issue weight                                              |
+| Labels                                   | Title of any labels joined with a `,`                     |
+| Time Estimate                            | [Time estimate](../time_tracking.md#estimates) in seconds |
+| Time Spent                               | [Time spent](../time_tracking.md#time-spent) in seconds   |
+| [Epic](../../group/epics/index.md) ID    | ID of the parent epic, introduced in 12.7                 |
+| [Epic](../../group/epics/index.md) Title | Title of the parent epic, introduced in 12.7              |
 
 ## Limitations
 

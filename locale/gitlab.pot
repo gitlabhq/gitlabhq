@@ -17799,6 +17799,9 @@ msgstr ""
 msgid "I forgot my password"
 msgstr ""
 
+msgid "I understand the responsibilities involved with managing service account keys"
+msgstr ""
+
 msgid "I want to explore GitLab to see if it’s worth switching to"
 msgstr ""
 
@@ -27223,9 +27226,6 @@ msgstr ""
 msgid "Profiles|Clear status"
 msgstr ""
 
-msgid "Profiles|Click on icon to activate signin with one of the following services"
-msgstr ""
-
 msgid "Profiles|Commit email"
 msgstr ""
 
@@ -27401,6 +27401,9 @@ msgid "Profiles|Publicly visible private SSH keys can compromise your system."
 msgstr ""
 
 msgid "Profiles|Remove avatar"
+msgstr ""
+
+msgid "Profiles|Select a service to sign in with."
 msgstr ""
 
 msgid "Profiles|Set new profile picture"

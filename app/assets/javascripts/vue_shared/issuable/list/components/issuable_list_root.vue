@@ -78,6 +78,11 @@ export default {
       required: false,
       default: null,
     },
+    truncateCounts: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     currentTab: {
       type: String,
       required: true,
@@ -261,6 +266,7 @@ export default {
       :tabs="tabs"
       :tab-counts="tabCounts"
       :current-tab="currentTab"
+      :truncate-counts="truncateCounts"
       @click="$emit('click-tab', $event)"
     >
       <template #nav-actions>

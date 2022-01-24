@@ -1,5 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
-import { GlButton, GlFormGroup, GlFormSelect } from '@gitlab/ui';
+import { GlButton, GlFormGroup, GlFormSelect, GlFormCheckbox } from '@gitlab/ui';
 import ServiceAccountsForm from '~/google_cloud/components/service_accounts_form.vue';
 
 describe('ServiceAccountsForm component', () => {
@@ -9,11 +9,12 @@ describe('ServiceAccountsForm component', () => {
   const findAllFormGroups = () => wrapper.findAllComponents(GlFormGroup);
   const findAllFormSelects = () => wrapper.findAllComponents(GlFormSelect);
   const findAllButtons = () => wrapper.findAllComponents(GlButton);
+  const findCheckbox = () => wrapper.findComponent(GlFormCheckbox);
 
   const propsData = { gcpProjects: [], environments: [], cancelPath: '#cancel-url' };
 
   beforeEach(() => {
-    wrapper = shallowMount(ServiceAccountsForm, { propsData });
+    wrapper = shallowMount(ServiceAccountsForm, { propsData, stubs: { GlFormCheckbox } });
   });
 
   afterEach(() => {
@@ -35,8 +36,8 @@ describe('ServiceAccountsForm component', () => {
   });
 
   it('contains Environments form group', () => {
-    const formGorup = findAllFormGroups().at(1);
-    expect(formGorup.exists()).toBe(true);
+    const formGroup = findAllFormGroups().at(1);
+    expect(formGroup.exists()).toBe(true);
   });
 
   it('contains Environments dropdown', () => {
@@ -55,5 +56,15 @@ describe('ServiceAccountsForm component', () => {
     expect(button.exists()).toBe(true);
     expect(button.text()).toBe(ServiceAccountsForm.i18n.cancelLabel);
     expect(button.attributes('href')).toBe('#cancel-url');
+  });
+
+  it('contains Confirmation checkbox', () => {
+    const checkbox = findCheckbox();
+    expect(checkbox.text()).toBe(ServiceAccountsForm.i18n.checkboxLabel);
+  });
+
+  it('checkbox must be required', () => {
+    const checkbox = findCheckbox();
+    expect(checkbox.attributes('required')).toBe('true');
   });
 });

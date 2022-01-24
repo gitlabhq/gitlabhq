@@ -146,6 +146,10 @@ class ContainerRepository < ApplicationRecord
     update!(expiration_policy_started_at: Time.zone.now)
   end
 
+  def migration_importing?
+    migration_state == 'importing'
+  end
+
   def self.build_from_path(path)
     self.new(project: path.repository_project,
              name: path.repository_name)
@@ -167,6 +171,11 @@ class ContainerRepository < ApplicationRecord
 
   def self.find_by_path!(path)
     self.find_by!(project: path.repository_project,
+                  name: path.repository_name)
+  end
+
+  def self.find_by_path(path)
+    self.find_by(project: path.repository_project,
                   name: path.repository_name)
   end
 end

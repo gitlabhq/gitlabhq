@@ -10,12 +10,24 @@ class IssuesFinder
       user_can_see_all_issues?
     end
 
+    def filter_by_any_due_date?
+      due_date? && params[:due_date] == Issue::AnyDueDate.name
+    end
+
     def filter_by_no_due_date?
       due_date? && params[:due_date] == Issue::NoDueDate.name
     end
 
     def filter_by_overdue?
       due_date? && params[:due_date] == Issue::Overdue.name
+    end
+
+    def filter_by_due_today?
+      due_date? && params[:due_date] == Issue::DueToday.name
+    end
+
+    def filter_by_due_tomorrow?
+      due_date? && params[:due_date] == Issue::DueTomorrow.name
     end
 
     def filter_by_due_this_week?

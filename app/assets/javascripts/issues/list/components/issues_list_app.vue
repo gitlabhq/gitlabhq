@@ -644,6 +644,7 @@ export default {
       :tabs="$options.IssuableListTabs"
       :current-tab="state"
       :tab-counts="tabCounts"
+      :truncate-counts="!isProject"
       :issuables-loading="$apollo.queries.issues.loading"
       :is-manual-ordering="isManualOrdering"
       :show-bulk-edit-sidebar="showBulkEditSidebar"

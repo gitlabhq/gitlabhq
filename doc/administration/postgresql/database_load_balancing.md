@@ -147,9 +147,9 @@ When the list of hosts is updated, it might take a while for the old connections
 to be terminated. The `disconnect_timeout` setting can be used to enforce an
 upper limit on the time it takes to terminate all old database connections.
 
-### Handling Stale Reads **(PREMIUM SELF)**
+### Handling stale reads
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/3526) in GitLab 10.3.
+> [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/327902) from GitLab Premium to GitLab Free in 14.0.
 
 To prevent reading from an outdated secondary the load balancer checks if it
 is in sync with the primary. If the data is recent enough, the

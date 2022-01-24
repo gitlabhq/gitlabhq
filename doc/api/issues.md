@@ -29,7 +29,9 @@ When requested across groups or projects, it's expected to be the same as the `f
 
 ## List issues
 
+> The `due_date` property was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/233420) in GitLab 13.3.
 > The `weight` property moved to GitLab Premium in 13.9.
+> The `due_date` filters `any`, `today`, and `tomorrow` were [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/78460) in GitLab 14.8.
 
 Get all issues the authenticated user has access to. By default it
 returns only issues created by the current user. To get all issues,
@@ -61,7 +63,7 @@ GET /issues?state=opened
 | `confidential`      | boolean          | no         | Filter confidential or public issues.                                                                                                               |
 | `created_after`     | datetime         | no         | Return issues created on or after the given time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`) |
 | `created_before`    | datetime         | no         | Return issues created on or before the given time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`) |
-| `due_date`          | string           | no         | Return issues that have no due date, are overdue, or whose due date is this week, this month, or between two weeks ago and next month. Accepts: `0` (no due date), `overdue`, `week`, `month`, `next_month_and_previous_two_weeks`. _([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/233420) in GitLab 13.3)_ |
+| `due_date`          | string           | no         | Return issues that have no due date, are overdue, or whose due date is this week, this month, or between two weeks ago and next month. Accepts: `0` (no due date), `any`, `today`, `tomorrow`, `overdue`, `week`, `month`, `next_month_and_previous_two_weeks`. |
 | `epic_id` **(PREMIUM)** | integer      | no         | Return issues associated with the given epic ID. `None` returns issues that are not associated with an epic. `Any` returns issues that are associated with an epic. _([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/46887) in GitLab 13.6)_
 | `iids[]`            | integer array    | no         | Return only the issues having the given `iid`                                                                                                       |
 | `in`                | string           | no         | Modify the scope of the `search` attribute. `title`, `description`, or a string joining them with comma. Default is `title,description`             |
@@ -231,7 +233,9 @@ Please use `iid` of the `epic` attribute instead.
 
 ## List group issues
 
+> The `due_date` property was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/233420) in GitLab 13.3.
 > The `weight` property moved to GitLab Premium in 13.9.
+> The `due_date` filters `any`, `today`, and `tomorrow` were [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/78460) in GitLab 14.8.
 
 Get a list of a group's issues.
 
@@ -264,7 +268,7 @@ GET /groups/:id/issues?state=opened
 | `confidential`     | boolean          | no         | Filter confidential or public issues.                                                                                         |
 | `created_after`     | datetime         | no         | Return issues created on or after the given time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`) |
 | `created_before`    | datetime         | no         | Return issues created on or before the given time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`) |
-| `due_date`          | string           | no         | Return issues that have no due date, are overdue, or whose due date is this week, this month, or between two weeks ago and next month. Accepts: `0` (no due date), `overdue`, `week`, `month`, `next_month_and_previous_two_weeks`. _([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/233420) in GitLab 13.3)_ |
+| `due_date`          | string           | no         | Return issues that have no due date, are overdue, or whose due date is this week, this month, or between two weeks ago and next month. Accepts: `0` (no due date), `any`, `today`, `tomorrow`, `overdue`, `week`, `month`, `next_month_and_previous_two_weeks`. |
 | `epic_id` **(PREMIUM)** | integer      | no         | Return issues associated with the given epic ID. `None` returns issues that are not associated with an epic. `Any` returns issues that are associated with an epic. _([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/46887) in GitLab 13.6)_
 | `id`                | integer/string   | yes        | The ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) owned by the authenticated user                 |
 | `iids[]`            | integer array    | no         | Return only the issues having the given `iid`                                                                                 |
@@ -431,7 +435,9 @@ Please use `iid` of the `epic` attribute instead.
 
 ## List project issues
 
+> The `due_date` property was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/233420) in GitLab 13.3.
 > The `weight` property moved to GitLab Premium in 13.9.
+> The `due_date` filters `any`, `today`, and `tomorrow` were [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/78460) in GitLab 14.8.
 
 Get a list of a project's issues.
 
@@ -464,7 +470,7 @@ GET /projects/:id/issues?state=opened
 | `confidential`     | boolean          | no         | Filter confidential or public issues.                                                                                         |
 | `created_after`     | datetime         | no         | Return issues created on or after the given time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`) |
 | `created_before`    | datetime         | no         | Return issues created on or before the given time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`) |
-| `due_date`          | string           | no         | Return issues that have no due date, are overdue, or whose due date is this week, this month, or between two weeks ago and next month. Accepts: `0` (no due date), `overdue`, `week`, `month`, `next_month_and_previous_two_weeks`. _([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/233420) in GitLab 13.3)_ |
+| `due_date`          | string           | no         | Return issues that have no due date, are overdue, or whose due date is this week, this month, or between two weeks ago and next month. Accepts: `0` (no due date), `any`, `today`, `tomorrow`, `overdue`, `week`, `month`, `next_month_and_previous_two_weeks`. |
 | `epic_id` **(PREMIUM)** | integer      | no         | Return issues associated with the given epic ID. `None` returns issues that are not associated with an epic. `Any` returns issues that are associated with an epic. _([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/46887) in GitLab 13.6)_
 | `id`                | integer/string   | yes        | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user               |
 | `iids[]`            | integer array    | no         | Return only the issues having the given `iid`                                                                              |

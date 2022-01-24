@@ -1284,12 +1284,6 @@ module Ci
       end
     end
 
-    def create_deployment_in_separate_transaction?
-      strong_memoize(:create_deployment_in_separate_transaction) do
-        ::Feature.enabled?(:create_deployment_in_separate_transaction, project, default_enabled: :yaml)
-      end
-    end
-
     def use_variables_builder_definitions?
       strong_memoize(:use_variables_builder_definitions) do
         ::Feature.enabled?(:ci_use_variables_builder_definitions, project, default_enabled: :yaml)

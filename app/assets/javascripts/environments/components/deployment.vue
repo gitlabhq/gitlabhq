@@ -2,6 +2,7 @@
 import { GlBadge, GlIcon, GlTooltipDirective as GlTooltip } from '@gitlab/ui';
 import { __, s__ } from '~/locale';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
+import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import DeploymentStatusBadge from './deployment_status_badge.vue';
 
 export default {
@@ -10,6 +11,7 @@ export default {
     DeploymentStatusBadge,
     GlBadge,
     GlIcon,
+    TimeAgoTooltip,
   },
   directives: {
     GlTooltip,
@@ -34,6 +36,9 @@ export default {
     },
     shortSha() {
       return this.deployment?.commit?.shortId;
+    },
+    createdAt() {
+      return this.deployment?.createdAt;
     },
   },
   i18n: {
@@ -69,6 +74,9 @@ export default {
         :title="$options.i18n.copyButton"
         size="small"
       />
+      <time-ago-tooltip v-if="createdAt" :time="createdAt" class="gl-ml-5!">
+        <template #default="{ timeAgo }"> <gl-icon name="calendar" /> {{ timeAgo }} </template>
+      </time-ago-tooltip>
     </div>
   </div>
 </template>

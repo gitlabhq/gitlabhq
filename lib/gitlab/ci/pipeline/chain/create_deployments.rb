@@ -6,8 +6,6 @@ module Gitlab
       module Chain
         class CreateDeployments < Chain::Base
           def perform!
-            return unless pipeline.create_deployment_in_separate_transaction?
-
             create_deployments!
           end
 

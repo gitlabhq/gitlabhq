@@ -177,19 +177,14 @@ export default {
     />
     <gl-button
       v-if="isClassicSidebar"
+      v-gl-tooltip.left.viewport
+      :title="tootltipTitle"
       category="tertiary"
       type="reset"
       class="sidebar-collapsed-icon sidebar-collapsed-container gl-rounded-0! gl-shadow-none!"
       @click.stop.prevent="toggleTodo"
     >
-      <gl-icon
-        v-gl-tooltip.left.viewport
-        :title="tootltipTitle"
-        :size="16"
-        :class="{ 'todo-undone': hasTodo }"
-        :name="collapsedButtonIcon"
-        :aria-label="collapsedButtonIcon"
-      />
+      <gl-icon :class="{ 'todo-undone': hasTodo }" :name="collapsedButtonIcon" />
     </gl-button>
   </div>
 </template>

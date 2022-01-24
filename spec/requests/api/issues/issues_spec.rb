@@ -488,6 +488,8 @@ RSpec.describe API::Issues do
         let_it_be(:issue3) { create(:issue, project: project, author: user, due_date: frozen_time + 10.days) }
         let_it_be(:issue4) { create(:issue, project: project, author: user, due_date: frozen_time + 34.days) }
         let_it_be(:issue5) { create(:issue, project: project, author: user, due_date: frozen_time - 8.days) }
+        let_it_be(:issue6) { create(:issue, project: project, author: user, due_date: frozen_time) }
+        let_it_be(:issue7) { create(:issue, project: project, author: user, due_date: frozen_time + 1.day) }
 
         before do
           travel_to(frozen_time)
@@ -500,7 +502,13 @@ RSpec.describe API::Issues do
         it 'returns them all when argument is empty' do
           get api('/issues?due_date=', user)
 
-          expect_paginated_array_response(issue5.id, issue4.id, issue3.id, issue2.id, issue.id, closed_issue.id)
+          expect_paginated_array_response(issue7.id, issue6.id, issue5.id, issue4.id, issue3.id, issue2.id, issue.id, closed_issue.id)
+        end
+
+        it 'returns issues with due date' do
+          get api('/issues?due_date=any', user)
+
+          expect_paginated_array_response(issue7.id, issue6.id, issue5.id, issue4.id, issue3.id, issue2.id)
         end
 
         it 'returns issues without due date' do
@@ -512,19 +520,31 @@ RSpec.describe API::Issues do
         it 'returns issues due for this week' do
           get api('/issues?due_date=week', user)
 
-          expect_paginated_array_response(issue2.id)
+          expect_paginated_array_response(issue7.id, issue6.id, issue2.id)
         end
 
         it 'returns issues due for this month' do
           get api('/issues?due_date=month', user)
 
-          expect_paginated_array_response(issue3.id, issue2.id)
+          expect_paginated_array_response(issue7.id, issue6.id, issue3.id, issue2.id)
         end
 
         it 'returns issues that are due previous two weeks and next month' do
           get api('/issues?due_date=next_month_and_previous_two_weeks', user)
 
-          expect_paginated_array_response(issue5.id, issue4.id, issue3.id, issue2.id)
+          expect_paginated_array_response(issue7.id, issue6.id, issue5.id, issue4.id, issue3.id, issue2.id)
+        end
+
+        it 'returns issues that are due today' do
+          get api('/issues?due_date=today', user)
+
+          expect_paginated_array_response(issue6.id)
+        end
+
+        it 'returns issues that are due tomorrow' do
+          get api('/issues?due_date=tomorrow', user)
+
+          expect_paginated_array_response(issue7.id)
         end
 
         it 'returns issues that are overdue' do

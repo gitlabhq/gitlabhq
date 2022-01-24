@@ -12,6 +12,10 @@ class ImportExportUploader < AttachmentUploader
   end
 
   def move_to_cache
+    # Exports create temporary files that we can safely move.
+    # Imports may be from project templates that we want to copy.
+    return super if mounted_as == :export_file
+
     false
   end
 

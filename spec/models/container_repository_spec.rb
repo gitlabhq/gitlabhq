@@ -330,6 +330,52 @@ RSpec.describe ContainerRepository do
     end
   end
 
+  describe '.find_by_path' do
+    let_it_be(:container_repository) { create(:container_repository) }
+    let_it_be(:repository_path) { container_repository.project.full_path }
+
+    let(:path) { ContainerRegistry::Path.new(repository_path + '/' + container_repository.name) }
+
+    subject { described_class.find_by_path(path) }
+
+    context 'when repository exists' do
+      it 'finds the repository' do
+        expect(subject).to eq(container_repository)
+      end
+    end
+
+    context 'when repository does not exist' do
+      let(:path) { ContainerRegistry::Path.new(repository_path + '/some/image') }
+
+      it 'returns nil' do
+        expect(subject).to be_nil
+      end
+    end
+  end
+
+  describe '.find_by_path!' do
+    let_it_be(:container_repository) { create(:container_repository) }
+    let_it_be(:repository_path) { container_repository.project.full_path }
+
+    let(:path) { ContainerRegistry::Path.new(repository_path + '/' + container_repository.name) }
+
+    subject { described_class.find_by_path!(path) }
+
+    context 'when repository exists' do
+      it 'finds the repository' do
+        expect(subject).to eq(container_repository)
+      end
+    end
+
+    context 'when repository does not exist' do
+      let(:path) { ContainerRegistry::Path.new(repository_path + '/some/image') }
+
+      it 'raises an exception' do
+        expect { subject }.to raise_error(ActiveRecord::RecordNotFound)
+      end
+    end
+  end
+
   describe '.build_root_repository' do
     let(:repository) do
       described_class.build_root_repository(project)
@@ -456,6 +502,24 @@ RSpec.describe ContainerRepository do
     end
 
     it { is_expected.to eq([repository]) }
+  end
+
+  describe '#migration_importing?' do
+    let_it_be_with_reload(:container_repository) { create(:container_repository, migration_state: 'importing')}
+
+    subject { container_repository.migration_importing? }
+
+    it { is_expected.to eq(true) }
+
+    context 'when not importing' do
+      before do
+        # Technical debt: when the state machine is added, we should iterate through all possible states
+        # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/78499
+        container_repository.update_column(:migration_state, 'default')
+      end
+
+      it { is_expected.to eq(false) }
+    end
   end
 
   context 'with repositories' do

@@ -55,13 +55,14 @@ There are two options for deleting users:
 - **Delete user and contributions**
 
 When using the **Delete user** option, not all associated records are deleted with the user.
-Here's a list of things that are **not** deleted:
+Here's a list of things created by the user that are **not** deleted:
 
-- Issues that the user created.
-- Merge requests that the user created.
-- Notes that the user created.
-- Abuse reports that the user reported.
-- Award emoji that the user created.
+- Abuse reports
+- Award emoji
+- Epics
+- Issues
+- Merge requests
+- Notes
 
 Instead of being deleted, these records are moved to a system-wide
 user with the username "Ghost User", whose sole purpose is to act as a container

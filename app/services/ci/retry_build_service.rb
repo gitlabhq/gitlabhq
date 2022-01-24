@@ -40,15 +40,11 @@ module Ci
       new_build = clone_build(build)
 
       new_build.run_after_commit do
+        ::Deployments::CreateForBuildService.new.execute(new_build)
+
         ::MergeRequests::AddTodoWhenBuildFailsService
           .new(project: project)
           .close(new_build)
-      end
-
-      if create_deployment_in_separate_transaction?
-        new_build.run_after_commit do |new_build|
-          ::Deployments::CreateForBuildService.new.execute(new_build)
-        end
       end
 
       ::Ci::Pipelines::AddJobService.new(build.pipeline).execute!(new_build) do |job|
@@ -74,11 +70,7 @@ module Ci
     def check_assignable_runners!(build); end
 
     def clone_build(build)
-      project.builds.new(build_attributes(build)).tap do |new_build|
-        unless create_deployment_in_separate_transaction?
-          new_build.assign_attributes(deployment_attributes_for(new_build, build))
-        end
-      end
+      project.builds.new(build_attributes(build))
     end
 
     def build_attributes(build)
@@ -86,24 +78,13 @@ module Ci
         [attribute, build.public_send(attribute)] # rubocop:disable GitlabSecurity/PublicSend
       end
 
-      if create_deployment_in_separate_transaction? && build.persisted_environment.present?
+      if build.persisted_environment.present?
         attributes[:metadata_attributes] ||= {}
         attributes[:metadata_attributes][:expanded_environment_name] = build.expanded_environment_name
       end
 
       attributes[:user] = current_user
       attributes
-    end
-
-    def deployment_attributes_for(new_build, old_build)
-      ::Gitlab::Ci::Pipeline::Seed::Build
-        .deployment_attributes_for(new_build, old_build.persisted_environment)
-    end
-
-    def create_deployment_in_separate_transaction?
-      strong_memoize(:create_deployment_in_separate_transaction) do
-        ::Feature.enabled?(:create_deployment_in_separate_transaction, project, default_enabled: :yaml)
-      end
     end
   end
 end

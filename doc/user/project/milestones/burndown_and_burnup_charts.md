@@ -11,7 +11,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 ![burndown and burnup chart](img/burndown_and_burnup_charts_v13_6.png)
 
-## Burndown charts **(PREMIUM)**
+## Burndown charts
 
 > - [Added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/6495) to GitLab 11.2 for group milestones.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/6903) [fixed burndown charts](#fixed-burndown-charts) in GitLab 13.6.
@@ -100,7 +100,7 @@ Therefore, when the milestone start date is changed, the number of opened issues
 change.
 Reopened issues are considered as having been opened on the day after they were last closed.
 
-## Burnup charts **(PREMIUM)**
+## Burnup charts
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/6903) in GitLab 13.6.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/268350) in GitLab 13.7.

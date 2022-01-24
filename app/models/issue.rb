@@ -29,8 +29,10 @@ class Issue < ApplicationRecord
 
   DueDateStruct                   = Struct.new(:title, :name).freeze
   NoDueDate                       = DueDateStruct.new('No Due Date', '0').freeze
-  AnyDueDate                      = DueDateStruct.new('Any Due Date', '').freeze
+  AnyDueDate                      = DueDateStruct.new('Any Due Date', 'any').freeze
   Overdue                         = DueDateStruct.new('Overdue', 'overdue').freeze
+  DueToday                        = DueDateStruct.new('Due Today', 'today').freeze
+  DueTomorrow                     = DueDateStruct.new('Due Tomorrow', 'tomorrow').freeze
   DueThisWeek                     = DueDateStruct.new('Due This Week', 'week').freeze
   DueThisMonth                    = DueDateStruct.new('Due This Month', 'month').freeze
   DueNextMonthAndPreviousTwoWeeks = DueDateStruct.new('Due Next Month And Previous Two Weeks', 'next_month_and_previous_two_weeks').freeze
@@ -107,7 +109,9 @@ class Issue < ApplicationRecord
   scope :without_due_date, -> { where(due_date: nil) }
   scope :due_before, ->(date) { where('issues.due_date < ?', date) }
   scope :due_between, ->(from_date, to_date) { where('issues.due_date >= ?', from_date).where('issues.due_date <= ?', to_date) }
+  scope :due_today, -> { where(due_date: Date.current) }
   scope :due_tomorrow, -> { where(due_date: Date.tomorrow) }
+
   scope :not_authored_by, ->(user) { where.not(author_id: user) }
 
   scope :order_due_date_asc, -> { reorder(::Gitlab::Database.nulls_last_order('due_date', 'ASC')) }

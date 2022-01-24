@@ -1,4 +1,4 @@
-import { GlIcon } from '@gitlab/ui';
+import { GlIcon, GlButton } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
@@ -103,7 +103,7 @@ describe('Sidebar Todo Widget', () => {
     });
 
     it('sets default tooltip title', () => {
-      expect(wrapper.find(GlIcon).attributes('title')).toBe('Add a to do');
+      expect(wrapper.find(GlButton).attributes('title')).toBe('Add a to do');
     });
 
     it('when user has a to do', async () => {
@@ -113,7 +113,7 @@ describe('Sidebar Todo Widget', () => {
 
       await waitForPromises();
       expect(wrapper.find(GlIcon).props('name')).toBe('todo-done');
-      expect(wrapper.find(GlIcon).attributes('title')).toBe('Mark as done');
+      expect(wrapper.find(GlButton).attributes('title')).toBe('Mark as done');
     });
 
     it('emits `todoUpdated` event on click on icon', async () => {

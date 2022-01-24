@@ -1,5 +1,6 @@
 <script>
 import { GlTabs, GlTab, GlBadge } from '@gitlab/ui';
+import { numberToMetricPrefix } from '~/lib/utils/number_utils';
 import { formatNumber } from '~/locale';
 
 export default {
@@ -22,6 +23,11 @@ export default {
       type: String,
       required: true,
     },
+    truncateCounts: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   methods: {
     isTabActive(tabName) {
@@ -31,7 +37,7 @@ export default {
       return Number.isInteger(this.tabCounts[tab.name]);
     },
     formatNumber(count) {
-      return formatNumber(count);
+      return this.truncateCounts ? numberToMetricPrefix(count) : formatNumber(count);
     },
   },
 };

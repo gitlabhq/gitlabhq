@@ -6,8 +6,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Kubernetes Logs (DEPRECATED) **(FREE)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/4752) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.0.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/26383) to [GitLab Free](https://about.gitlab.com/pricing/) 12.9.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/4752) in GitLab 11.0.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/26383) from GitLab Ultimate to GitLab Free 12.9.
 > - [Deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
 
 WARNING:
