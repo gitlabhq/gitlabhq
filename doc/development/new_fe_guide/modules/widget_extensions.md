@@ -55,6 +55,98 @@ import issueExtension from '~/vue_merge_request_widget/extensions/issues';
 registerExtension(issueExtension);
 ```
 
+## Polling
+
+To enable polling for an extension, an options flag needs to be present in the extension.
+For example:
+
+```javascript
+export default {
+  //...
+  enablePolling: true
+};
+```
+
+This flag tells the base component that we should poll the `fetchCollapsedData()`
+defined in the extension. Polling stops if the response has data or if an error is present.
+
+When writing the logic for `fetchCollapsedData()`, a complete Axios response must be returned
+from the method, due to the polling utility needing data like polling headers.
+Otherwise, polling does not work correctly.
+
+```javascript
+export default {
+  //...
+  enablePolling: true
+  methods: {
+    fetchCollapsedData() {
+      return axios.get(this.reportPath)
+    },
+  },
+};
+```
+
+Most of the time the data returned from the extension's endpoint is not in the format
+the UI needs. We must format the data before setting the collapsed data in the base component.
+
+If the computed property `summary` can rely on `collapsedData`, you can format the data
+when `fetchFullData` is invoked:
+
+```javascript
+export default {
+  //...
+  enablePolling: true
+  methods: {
+    fetchCollapsedData() {
+      return axios.get(this.reportPath)
+    },
+     fetchFullData() {
+      return Promise.resolve(this.prepareReports());
+    },
+    // custom method
+    prepareReports() {
+      // unpack values from collapsedData
+      const { new_errors, existing_errors, resolved_errors } = this.collapsedData;
+
+      // perform data formatting
+
+      return [...newErrors, ...existingErrors, ...resolvedErrors]
+    }
+  },
+};
+```
+
+If the extension relies on `collapsedData` being formatted before invoking `fetchFullData()`,
+then `fetchCollapsedData()` must return the Axios response as well as the formatted data:
+
+```javascript
+export default {
+  //...
+  enablePolling: true
+  methods: {
+    fetchCollapsedData() {
+      return axios.get(this.reportPath).then(res => {
+        const formattedData = this.prepareReports(res.data)
+
+        return {
+          ...res,
+          data: formattedData,
+        }
+      })
+    },
+    // custom method
+    prepareReports() {
+      // unpack values from collapsedData
+      const { new_errors, existing_errors, resolved_errors } = this.collapsedData;
+
+      // perform data formatting
+
+      return [...newErrors, ...existingErrors, ...resolvedErrors]
+    }
+  },
+};
+```
+
 ## Fetching errors
 
 If `fetchCollapsedData()` or `fetchFullData()` methods throw an error:
