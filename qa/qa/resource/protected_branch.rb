@@ -61,6 +61,8 @@ module QA
       end
 
       def fabricate_via_api!
+        resource_web_url(api_get)
+      rescue ResourceNotFoundError
         populate_new_branch_if_required
 
         super
@@ -75,7 +77,11 @@ module QA
       end
 
       def api_delete_path
-        "/projects/#{project.id}/protected_branches/#{branch_name}"
+        api_get_path
+      end
+
+      def api_put_path
+        api_get_path
       end
 
       def api_post_path
@@ -105,6 +111,16 @@ module QA
         super
       rescue ResourceURLMissingError
         # this particular resource does not expose a web_url property
+      end
+
+      def set_require_code_owner_approval(require = true)
+        response = patch(Runtime::API::Request.new(api_client, api_put_path).url, { code_owner_approval_required: require })
+        return if response.code == HTTP_STATUS_OK
+
+        raise(
+          ResourceUpdateFailedError,
+          "Could not update code_owner_approval_required to #{require}. Request returned (#{response.code}): `#{response}`."
+        )
       end
 
       class Roles

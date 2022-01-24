@@ -57,7 +57,7 @@ export default {
       'totalClusters',
     ]),
     contentAlignClasses() {
-      return 'gl-display-flex gl-align-items-center gl-justify-content-end gl-justify-content-md-start';
+      return 'gl-display-flex gl-align-items-center gl-justify-content-end gl-md-justify-content-start';
     },
     currentPage: {
       get() {

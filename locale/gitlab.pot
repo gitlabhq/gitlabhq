@@ -31803,6 +31803,9 @@ msgstr ""
 msgid "SecurityOrchestration|Scan result"
 msgstr ""
 
+msgid "SecurityOrchestration|Scan result policies can only be created by project owners."
+msgstr ""
+
 msgid "SecurityOrchestration|Scan to be performed %{cadence}"
 msgstr ""
 
@@ -31848,7 +31851,7 @@ msgstr ""
 msgid "SecurityOrchestration|Unlinking a security project removes all policies stored in the linked security project. Save to confirm this action."
 msgstr ""
 
-msgid "SecurityOrchestration|Update scan execution policies"
+msgid "SecurityOrchestration|Update scan policies"
 msgstr ""
 
 msgid "SecurityOrchestration|a"

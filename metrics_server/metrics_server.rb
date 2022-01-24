@@ -50,7 +50,7 @@ class MetricsServer # rubocop:disable Gitlab/NamespacedClass
     # a race where not all Prometheus db files will be visible to the exporter, resulting
     # in missing metrics.
     # Warming up ensures that these files exist prior to the exporter starting up.
-    Gitlab::Metrics::Samplers::RubySampler.initialize_instance(warmup: true).start
+    Gitlab::Metrics::Samplers::RubySampler.initialize_instance(prefix: name, warmup: true).start
 
     exporter_class = "Gitlab::Metrics::Exporter::#{@target.camelize}Exporter".constantize
     settings = Settings.new(Settings.monitoring[name])
