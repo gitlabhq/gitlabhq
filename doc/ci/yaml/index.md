@@ -1322,12 +1322,14 @@ Use `coverage` with a custom regular expression to configure how code coverage
 is extracted from the job output. The coverage is shown in the UI if at least one
 line in the job output matches the regular expression.
 
-To extract the code coverage value in the matching line, GitLab uses this
-regular expression: `\d+(\.\d+)?`.
+To extract the code coverage value from the match, GitLab uses
+this smaller regular expression: `\d+(\.\d+)?`.
 
 **Possible inputs**:
 
-- A regular expression. Must start and end with `/`.
+- A regular expression. Must start and end with `/`. Must match the coverage number.
+  May match surrounding text as well, so you don't need to use a regular expression character group
+  to capture the exact number.
 
 **Example of `coverage`**:
 
@@ -1339,14 +1341,18 @@ job1:
 
 In this example:
 
-1. GitLab checks the job log for a line that matches the regular expression. A line
-   like `Code coverage: 67.89` would match.
-1. GitLab then checks the line to find a match to `\d+(\.\d+)?`. The sample matching
-   line above gives a code coverage of `67.89`.
+1. GitLab checks the job log for a match with the regular expression. A line
+   like `Code coverage: 67.89% of lines covered` would match.
+1. GitLab then checks the matched fragment to find a match to `\d+(\.\d+)?`.
+   The sample matching line above gives a code coverage of `67.89`.
 
 **Additional details**:
 
-- If there is more than one matched line in the job output, the last line is used.
+- If there is more than one matched line in the job output, the last line is used
+  (the first result of reverse search).
+- If there are multiple matches in a single line, the last match is searched
+  for the coverage number.
+- If there are multiple coverage numbers found in the matched fragment, the first number is used.
 - Leading zeros are removed.
 - Coverage output from [child pipelines](../pipelines/parent_child_pipelines.md)
   is not recorded or displayed. Check [the related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/280818)

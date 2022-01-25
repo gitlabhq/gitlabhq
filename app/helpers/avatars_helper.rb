@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 module AvatarsHelper
+  DEFAULT_AVATAR_PATH = 'no_avatar.png'
+
   def project_icon(project, options = {})
     source_icon(project, options)
   end
@@ -33,12 +35,12 @@ module AvatarsHelper
     end
   end
 
-  def avatar_icon_for_user(user = nil, size = nil, scale = 2, only_path: true)
-    if user
-      user.avatar_url(size: size, only_path: only_path) || default_avatar
-    else
-      gravatar_icon(nil, size, scale)
-    end
+  def avatar_icon_for_user(user = nil, size = nil, scale = 2, only_path: true, current_user: nil)
+    return gravatar_icon(nil, size, scale) unless user
+    return default_avatar if blocked_or_unconfirmed?(user) && !can_admin?(current_user)
+
+    user_avatar = user.avatar_url(size: size, only_path: only_path)
+    user_avatar || default_avatar
   end
 
   def gravatar_icon(user_email = '', size = nil, scale = 2)
@@ -47,7 +49,7 @@ module AvatarsHelper
   end
 
   def default_avatar
-    ActionController::Base.helpers.image_path('no_avatar.png')
+    ActionController::Base.helpers.image_path(DEFAULT_AVATAR_PATH)
   end
 
   def author_avatar(commit_or_event, options = {})
@@ -156,5 +158,15 @@ module AvatarsHelper
     content_tag(:span, class: options[:class].strip) do
       source.name[0, 1].upcase
     end
+  end
+
+  def blocked_or_unconfirmed?(user)
+    user.blocked? || !user.confirmed?
+  end
+
+  def can_admin?(user)
+    return false unless user
+
+    user.can_admin_all_resources?
   end
 end

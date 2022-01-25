@@ -126,6 +126,24 @@ If you don't want to install all of the dependencies to test the links, you can:
 If you manually install `haml-lint` with this process, it does not update automatically
 and you should make sure your version matches the version used by GitLab.
 
+## Update linter configuration
+
+[Vale configuration](#vale) and [markdownlint configuration](#markdownlint) is under source control in each 
+project, so updates must be committed to each project individually.
+
+We consider the configuration in the `gitlab` project as the source of truth and that's where all updates should
+first be made.
+
+On a regular basis, the changes made in `gitlab` project to the Vale and markdownlint configuration should be
+synchronized to the other projects. In `omnibus-gitlab`, `gitlab-runner`, and `charts/gitlab`:
+
+1. Create a new branch.
+1. Copy the configuration files from the `gitlab` project into this branch, overwriting
+   the project's old configuration. Make sure no project-specific changes from the `gitlab`
+   project are included. For example, [`RelativeLinks.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/RelativeLinks.yml)
+   is hard coded for specific projects.
+1. Create a merge request and submit it to a technical writer for review and merge.
+
 ## Local linters
 
 To help adhere to the [documentation style guidelines](styleguide/index.md), and improve the content
