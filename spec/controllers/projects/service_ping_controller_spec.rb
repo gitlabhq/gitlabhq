@@ -69,6 +69,33 @@ RSpec.describe Projects::ServicePingController do
     end
   end
 
+  describe 'POST #web_ide_clientside_preview_success' do
+    subject { post :web_ide_clientside_preview_success, params: { namespace_id: project.namespace, project_id: project } }
+
+    context 'when web ide clientside preview is enabled' do
+      before do
+        stub_application_setting(web_ide_clientside_preview_enabled: true)
+      end
+
+      it_behaves_like 'counter is not increased'
+      it_behaves_like 'counter is increased', 'WEB_IDE_PREVIEWS_SUCCESS_COUNT'
+    end
+
+    context 'when web ide clientside preview is not enabled' do
+      let(:user) { project.owner }
+
+      before do
+        stub_application_setting(web_ide_clientside_preview_enabled: false)
+      end
+
+      it 'returns 404' do
+        subject
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+  end
+
   describe 'POST #web_ide_pipelines_count' do
     subject { post :web_ide_pipelines_count, params: { namespace_id: project.namespace, project_id: project } }
 

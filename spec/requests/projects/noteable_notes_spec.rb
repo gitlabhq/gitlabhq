@@ -9,7 +9,7 @@ RSpec.describe 'Project noteable notes' do
     let(:etag_store) { Gitlab::EtagCaching::Store.new }
     let(:notes_path) { project_noteable_notes_path(project, target_type: merge_request.class.name.underscore, target_id: merge_request.id) }
     let(:project) { merge_request.project }
-    let(:user) { project.owner }
+    let(:user) { project.first_owner }
 
     let(:response_etag) { response.headers['ETag'] }
     let(:stored_etag) { "W/\"#{etag_store.get(notes_path)}\"" }

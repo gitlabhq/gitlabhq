@@ -33,7 +33,7 @@ RSpec.describe API::ProjectSnapshots do
     end
 
     it 'returns authentication error as project owner' do
-      get api("/projects/#{project.id}/snapshot", project.owner)
+      get api("/projects/#{project.id}/snapshot", project.first_owner)
 
       expect(response).to have_gitlab_http_status(:forbidden)
     end

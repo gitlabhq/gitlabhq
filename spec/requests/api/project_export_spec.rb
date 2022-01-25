@@ -450,7 +450,7 @@ RSpec.describe API::ProjectExport, :clean_gitlab_redis_cache do
           expect_next_instance_of(Projects::ImportExport::ExportService) do |service|
             expect(service).to receive(:execute)
           end
-          post api(path, project.owner), params: params
+          post api(path, project.first_owner), params: params
 
           expect(response).to have_gitlab_http_status(:accepted)
         end

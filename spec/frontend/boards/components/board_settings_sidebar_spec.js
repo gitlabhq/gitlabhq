@@ -1,8 +1,9 @@
-import { GlDrawer, GlLabel } from '@gitlab/ui';
+import { GlDrawer, GlLabel, GlModal, GlButton } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { MountingPortal } from 'portal-vue';
 import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
+import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import { stubComponent } from 'helpers/stub_component';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import BoardSettingsSidebar from '~/boards/components/board_settings_sidebar.vue';
@@ -20,8 +21,7 @@ describe('BoardSettingsSidebar', () => {
   const labelTitle = mockLabelList.label.title;
   const labelColor = mockLabelList.label.color;
   const listId = mockLabelList.id;
-
-  const findRemoveButton = () => wrapper.findByTestId('remove-list');
+  const modalID = 'board-settings-sidebar-modal';
 
   const createComponent = ({
     canAdminList = false,
@@ -46,6 +46,9 @@ describe('BoardSettingsSidebar', () => {
           canAdminList,
           scopedLabelsAvailable: false,
         },
+        directives: {
+          GlModal: createMockDirective(),
+        },
         stubs: {
           GlDrawer: stubComponent(GlDrawer, {
             template: '<div><slot name="header"></slot><slot></slot></div>',
@@ -56,6 +59,8 @@ describe('BoardSettingsSidebar', () => {
   };
   const findLabel = () => wrapper.find(GlLabel);
   const findDrawer = () => wrapper.find(GlDrawer);
+  const findModal = () => wrapper.find(GlModal);
+  const findRemoveButton = () => wrapper.find(GlButton);
 
   afterEach(() => {
     jest.restoreAllMocks();
@@ -160,6 +165,17 @@ describe('BoardSettingsSidebar', () => {
       createComponent({ canAdminList: true, activeId: listId, list: mockLabelList });
 
       expect(findRemoveButton().exists()).toBe(true);
+    });
+
+    it('has the correct ID on the button', () => {
+      createComponent({ canAdminList: true, activeId: listId, list: mockLabelList });
+      const binding = getBinding(findRemoveButton().element, 'gl-modal');
+      expect(binding.value).toBe(modalID);
+    });
+
+    it('has the correct ID on the modal', () => {
+      createComponent({ canAdminList: true, activeId: listId, list: mockLabelList });
+      expect(findModal().props('modalId')).toBe(modalID);
     });
   });
 });

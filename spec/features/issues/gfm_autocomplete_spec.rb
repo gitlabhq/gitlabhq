@@ -707,9 +707,10 @@ RSpec.describe 'GFM autocomplete', :js do
 
   def start_and_cancel_discussion
     fill_in('Reply to comment', with: 'Whoops!')
+    click_button('Cancel')
 
-    page.accept_alert 'Are you sure you want to cancel creating this comment?' do
-      click_button('Cancel')
+    page.within('.modal') do
+      click_button('OK', match: :first)
     end
 
     wait_for_requests

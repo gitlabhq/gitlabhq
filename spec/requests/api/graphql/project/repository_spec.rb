@@ -5,7 +5,7 @@ RSpec.describe 'getting a repository in a project' do
   include GraphqlHelpers
 
   let(:project) { create(:project, :repository) }
-  let(:current_user) { project.owner }
+  let(:current_user) { project.first_owner }
   let(:fields) do
     <<~QUERY
       #{all_graphql_fields_for('repository'.classify)}

@@ -2,8 +2,9 @@
 
 class Projects::AutocompleteSourcesController < Projects::ApplicationController
   before_action :authorize_read_milestone!, only: :milestones
+  before_action :authorize_read_crm_contact!, only: :contacts
 
-  feature_category :team_planning, [:issues, :labels, :milestones, :commands]
+  feature_category :team_planning, [:issues, :labels, :milestones, :commands, :contacts]
   feature_category :code_review, [:merge_requests]
   feature_category :users, [:members]
   feature_category :snippets, [:snippets]
@@ -38,6 +39,10 @@ class Projects::AutocompleteSourcesController < Projects::ApplicationController
     render json: autocomplete_service.snippets
   end
 
+  def contacts
+    render json: autocomplete_service.contacts
+  end
+
   private
 
   def autocomplete_service
@@ -48,6 +53,10 @@ class Projects::AutocompleteSourcesController < Projects::ApplicationController
     QuickActions::TargetService
       .new(project, current_user)
       .execute(params[:type], params[:type_id])
+  end
+
+  def authorize_read_crm_contact!
+    render_404 unless can?(current_user, :read_crm_contact, project.root_ancestor)
   end
 end
 

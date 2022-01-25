@@ -17,7 +17,7 @@ RSpec.describe 'container repository details' do
     )
   end
 
-  let(:user) { project.owner }
+  let(:user) { project.first_owner }
   let(:variables) { {} }
   let(:tags) { %w[latest tag1 tag2 tag3 tag4 tag5] }
   let(:container_repository_global_id) { container_repository.to_global_id.to_s }

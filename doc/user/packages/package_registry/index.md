@@ -12,6 +12,15 @@ With the GitLab Package Registry, you can use GitLab as a private or public regi
 of [supported package managers](#supported-package-managers).
 You can publish and share packages, which can be consumed as a dependency in downstream projects.
 
+## Package workflows
+
+Learn how to use the GitLab Package Registry to build your own custom package workflow:
+
+- [Use a project as a package registry](../workflows/project_registry.md)
+  to publish all of your packages to one project.
+
+- Publish multiple different packages from one [monorepo project](../workflows/working_with_monorepos.md).
+
 ## View packages
 
 You can view packages for your project or group.
@@ -77,46 +86,10 @@ when you view the package details:
 
 You can view which pipeline published the package, and the commit and user who triggered it. However, the history is limited to five updates of a given package.
 
-## Download a package
+## Reduce storage usage
 
-To download a package:
-
-1. Go to **Packages & Registries > Package Registry**.
-1. Select the name of the package you want to download.
-1. In the **Activity** section, select the name of the package you want to download.
-
-## Delete a package
-
-You cannot edit a package after you publish it in the Package Registry. Instead, you
-must delete and recreate it.
-
-To delete a package, you must have suitable [permissions](../../permissions.md).
-
-You can delete packages by using [the API](../../../api/packages.md#delete-a-project-package) or the UI.
-
-To delete a package in the UI, from your group or project:
-
-1. Go to **Packages & Registries > Package Registry**.
-1. Find the name of the package you want to delete.
-1. Click **Delete**.
-
-The package is permanently deleted.
-
-## Delete files associated with a package
-
-To delete package files, you must have suitable [permissions](../../permissions.md).
-
-You can delete packages by using [the API](../../../api/packages.md#delete-a-package-file) or the UI.
-
-To delete package files in the UI, from your group or project:
-
-1. Go to **Packages & Registries > Package Registry**.
-1. Find the name of the package you want to delete.
-1. Select the package to view additional details.
-1. Find the name of the file you would like to delete.
-1. Expand the ellipsis and select **Delete file**.
-
-The package files are permanently deleted.
+For information on reducing your storage use for the Package Registry, see
+[Reduce Dependency Proxy storage use](reduce_package_registry_storage.md).
 
 ## Disable the Package Registry
 
@@ -134,15 +107,6 @@ You can also remove the Package Registry for your project specifically:
 1. Click **Save changes**.
 
 The **Packages & Registries > Package Registry** entry is removed from the sidebar.
-
-## Package workflows
-
-Learn how to use the GitLab Package Registry to build your own custom package workflow:
-
-- [Use a project as a package registry](../workflows/project_registry.md)
-  to publish all of your packages to one project.
-
-- Publish multiple different packages from one [monorepo project](../workflows/working_with_monorepos.md).
 
 ## Supported package managers
 

@@ -1,11 +1,12 @@
 import MockAdapter from 'axios-mock-adapter';
 import { TEST_HOST } from 'helpers/test_constants';
 import testAction from 'helpers/vuex_action_helper';
+import { PING_USAGE_PREVIEW_KEY } from '~/ide/constants';
 import * as actions from '~/ide/stores/modules/clientside/actions';
 import axios from '~/lib/utils/axios_utils';
 
 const TEST_PROJECT_URL = `${TEST_HOST}/lorem/ipsum`;
-const TEST_USAGE_URL = `${TEST_PROJECT_URL}/service_ping/web_ide_clientside_preview`;
+const TEST_USAGE_URL = `${TEST_PROJECT_URL}/service_ping/${PING_USAGE_PREVIEW_KEY}`;
 
 describe('IDE store module clientside actions', () => {
   let rootGetters;
@@ -30,7 +31,7 @@ describe('IDE store module clientside actions', () => {
 
       mock.onPost(TEST_USAGE_URL).reply(() => usageSpy());
 
-      testAction(actions.pingUsage, null, rootGetters, [], [], () => {
+      testAction(actions.pingUsage, PING_USAGE_PREVIEW_KEY, rootGetters, [], [], () => {
         expect(usageSpy).toHaveBeenCalled();
         done();
       });

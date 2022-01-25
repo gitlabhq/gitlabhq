@@ -1,9 +1,11 @@
 import { GlLoadingIcon } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
+import { dispatch } from 'codesandbox-api';
 import smooshpack from 'smooshpack';
 import Vuex from 'vuex';
 import Clientside from '~/ide/components/preview/clientside.vue';
+import { PING_USAGE_PREVIEW_KEY, PING_USAGE_PREVIEW_SUCCESS_KEY } from '~/ide/constants';
 import eventHub from '~/ide/eventhub';
 
 jest.mock('smooshpack', () => ({
@@ -39,6 +41,7 @@ describe('IDE clientside preview', () => {
   const storeClientsideActions = {
     pingUsage: jest.fn().mockReturnValue(Promise.resolve({})),
   };
+  const dispatchCodesandboxReady = () => dispatch({ type: 'done' });
 
   const waitForCalls = () => new Promise(setImmediate);
 
@@ -110,6 +113,20 @@ describe('IDE clientside preview', () => {
 
     it('pings usage', () => {
       expect(storeClientsideActions.pingUsage).toHaveBeenCalledTimes(1);
+      expect(storeClientsideActions.pingUsage).toHaveBeenCalledWith(
+        expect.anything(),
+        PING_USAGE_PREVIEW_KEY,
+      );
+    });
+
+    it('pings usage success', async () => {
+      dispatchCodesandboxReady();
+      await wrapper.vm.$nextTick();
+      expect(storeClientsideActions.pingUsage).toHaveBeenCalledTimes(2);
+      expect(storeClientsideActions.pingUsage).toHaveBeenCalledWith(
+        expect.anything(),
+        PING_USAGE_PREVIEW_SUCCESS_KEY,
+      );
     });
   });
 

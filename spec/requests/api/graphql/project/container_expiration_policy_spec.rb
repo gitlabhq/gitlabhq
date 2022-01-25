@@ -5,7 +5,7 @@ RSpec.describe 'getting a repository in a project' do
   include GraphqlHelpers
 
   let_it_be(:project) { create(:project) }
-  let_it_be(:current_user) { project.owner }
+  let_it_be(:current_user) { project.first_owner }
   let_it_be(:container_expiration_policy) { project.container_expiration_policy }
 
   let(:fields) do

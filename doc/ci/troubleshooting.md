@@ -174,7 +174,7 @@ a branch to its remote repository. To illustrate the problem, suppose you've had
 This occurs because the previous pipeline cannot find a checkout-SHA (which is associated with the pipeline record)
 from the `example` branch that the commit history has already been overwritten by the force-push.
 Similarly, [Pipelines for merged results](pipelines/pipelines_for_merged_results.md)
-might have failed intermittently due to [the same reason](pipelines/pipelines_for_merged_results.md#intermittently-pipelines-fail-by-fatal-reference-is-not-a-tree-error).
+might have failed intermittently due to [the same reason](pipelines/pipelines_for_merged_results.md#pipelines-fail-intermittently-with-a-fatal-reference-is-not-a-tree-error).
 
 As of GitLab 12.4, we've improved this behavior by persisting pipeline refs exclusively.
 To illustrate its life cycle:

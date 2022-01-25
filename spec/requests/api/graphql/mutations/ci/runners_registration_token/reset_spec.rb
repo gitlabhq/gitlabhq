@@ -71,7 +71,7 @@ RSpec.describe 'RunnersRegistrationTokenReset' do
     end
 
     include_context 'when authorized', 'project' do
-      let_it_be(:user) { project.owner }
+      let_it_be(:user) { project.first_owner }
 
       def get_token
         project.reload.runners_token

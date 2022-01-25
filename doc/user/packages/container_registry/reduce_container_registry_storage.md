@@ -258,7 +258,7 @@ being cleaned up is minimal.
 - [Delete registry repository](../../../api/container_registry.md#delete-registry-repository)
 - [Delete a registry repository tag](../../../api/container_registry.md#delete-a-registry-repository-tag)
 - [Delete registry repository tags in bulk](../../../api/container_registry.md#delete-registry-repository-tags-in-bulk)
-- [Delete a package](../package_registry/index.md#delete-a-package)
+- [Delete a package](../package_registry/reduce_package_registry_storage.md#delete-a-package)
 
 ## Troubleshooting cleanup policies
 

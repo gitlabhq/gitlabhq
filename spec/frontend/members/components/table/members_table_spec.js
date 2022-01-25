@@ -16,6 +16,7 @@ import {
   MEMBER_STATE_AWAITING,
   MEMBER_STATE_ACTIVE,
   USER_STATE_BLOCKED_PENDING_APPROVAL,
+  BADGE_LABELS_AWAITING_USER_SIGNUP,
   BADGE_LABELS_PENDING_OWNER_APPROVAL,
   TAB_QUERY_PARAM_VALUES,
 } from '~/members/constants';
@@ -131,9 +132,9 @@ describe('MembersTable', () => {
     describe('Invited column', () => {
       describe.each`
         state                    | userState                              | expectedBadgeLabel
-        ${MEMBER_STATE_CREATED}  | ${null}                                | ${''}
+        ${MEMBER_STATE_CREATED}  | ${null}                                | ${BADGE_LABELS_AWAITING_USER_SIGNUP}
         ${MEMBER_STATE_CREATED}  | ${USER_STATE_BLOCKED_PENDING_APPROVAL} | ${BADGE_LABELS_PENDING_OWNER_APPROVAL}
-        ${MEMBER_STATE_AWAITING} | ${''}                                  | ${''}
+        ${MEMBER_STATE_AWAITING} | ${''}                                  | ${BADGE_LABELS_AWAITING_USER_SIGNUP}
         ${MEMBER_STATE_AWAITING} | ${USER_STATE_BLOCKED_PENDING_APPROVAL} | ${BADGE_LABELS_PENDING_OWNER_APPROVAL}
         ${MEMBER_STATE_AWAITING} | ${'something_else'}                    | ${BADGE_LABELS_PENDING_OWNER_APPROVAL}
         ${MEMBER_STATE_ACTIVE}   | ${null}                                | ${''}

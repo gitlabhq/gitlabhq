@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe BlobPresenter do
   let_it_be(:project) { create(:project, :repository) }
-  let_it_be(:user) { project.owner }
+  let_it_be(:user) { project.first_owner }
 
   let(:repository) { project.repository }
   let(:blob) { repository.blob_at('HEAD', 'files/ruby/regex.rb') }

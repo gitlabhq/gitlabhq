@@ -5250,6 +5250,9 @@ msgstr ""
 msgid "Average per day: %{average}"
 msgstr ""
 
+msgid "Awaiting user signup"
+msgstr ""
+
 msgid "Award added"
 msgstr ""
 

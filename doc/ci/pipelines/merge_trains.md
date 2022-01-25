@@ -145,8 +145,22 @@ This is the fastest option to get the change merged into the target branch.
 ![Merge Immediately](img/merge_train_immediate_merge_v12_6.png)
 
 WARNING:
-Each time you merge a merge request immediately, the current merge train
-is recreated and all pipelines restart.
+Each time you merge a merge request immediately, the current merge train is recreated,
+all pipelines restart, and [redundant pipelines are cancelled](#automatic-pipeline-cancellation).
+
+### Automatic pipeline cancellation
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12996) in GitLab 12.3.
+
+GitLab CI/CD can detect the presence of redundant pipelines, and cancels them
+to conserve CI resources.
+
+When a user merges a merge request immediately in an ongoing merge
+train, the train is reconstructed, because it recreates the expected
+post-merge commit and pipeline. In this case, the merge train may already
+have pipelines running against the previous expected post-merge commit.
+These pipelines are considered redundant and are automatically
+canceled.
 
 ## Troubleshooting
 

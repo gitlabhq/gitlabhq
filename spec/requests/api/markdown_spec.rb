@@ -71,7 +71,7 @@ RSpec.describe API::Markdown do
           end
 
           context "when authorized" do
-            let(:user) { project.owner }
+            let(:user) { project.first_owner }
 
             it_behaves_like "rendered markdown text without GFM"
           end
@@ -97,7 +97,7 @@ RSpec.describe API::Markdown do
 
         context "with project" do
           let(:params) { { text: text, gfm: true, project: project.full_path } }
-          let(:user) { project.owner }
+          let(:user) { project.first_owner }
 
           it "renders markdown text" do
             expect(response).to have_gitlab_http_status(:created)

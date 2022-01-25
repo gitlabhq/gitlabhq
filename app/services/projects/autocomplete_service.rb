@@ -33,6 +33,11 @@ module Projects
       SnippetsFinder.new(current_user, project: project).execute.select([:id, :title])
     end
 
+    def contacts
+      Crm::ContactsFinder.new(current_user, group: project.group).execute
+        .select([:id, :email, :first_name, :last_name])
+    end
+
     def labels_as_hash(target)
       super(target, project_id: project.id, include_ancestor_groups: true)
     end

@@ -5,7 +5,7 @@ RSpec.describe 'Getting Ci Cd Setting' do
   include GraphqlHelpers
 
   let_it_be_with_reload(:project) { create(:project, :repository) }
-  let_it_be(:current_user) { project.owner }
+  let_it_be(:current_user) { project.first_owner }
 
   let(:fields) do
     <<~QUERY

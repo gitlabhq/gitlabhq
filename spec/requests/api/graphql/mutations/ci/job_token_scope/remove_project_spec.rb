@@ -55,7 +55,7 @@ RSpec.describe 'CiJobTokenScopeRemoveProject' do
   end
 
   context 'when authorized' do
-    let_it_be(:current_user) { project.owner }
+    let_it_be(:current_user) { project.first_owner }
 
     before do
       target_project.add_guest(current_user)

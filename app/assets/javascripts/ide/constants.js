@@ -114,3 +114,7 @@ export const LIVE_PREVIEW_DEBOUNCE = 2000;
 export const MAX_MR_FILES_AUTO_OPEN = 10;
 
 export const DEFAULT_BRANCH = 'main';
+
+// Ping Usage Metrics Keys
+export const PING_USAGE_PREVIEW_KEY = 'web_ide_clientside_preview';
+export const PING_USAGE_PREVIEW_SUCCESS_KEY = 'web_ide_clientside_preview_success';

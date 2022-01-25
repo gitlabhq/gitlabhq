@@ -130,16 +130,17 @@ irb(main):001:0> Feature.enable(:my_awesome_feature)
 => nil
 ```
 
-To check if a flag is enabled or disabled you can use `Feature.enabled?` or `Feature.disabled?`. For example, for a fictional feature flag named `my_awesome_feature`:
+When the feature is ready, GitLab removes the feature flag, and the option for
+enabling and disabling it no longer exists. The feature becomes available in all instances.
+
+### Check if a feature flag is enabled
+
+To check if a flag is enabled or disabled, use `Feature.enabled?` or `Feature.disabled?`.
+For example, for a feature flag named `my_awesome_feature` that is already enabled:
 
 ```ruby
-Feature.enable(:my_awesome_feature)
-=> nil
 Feature.enabled?(:my_awesome_feature)
 => true
 Feature.disabled?(:my_awesome_feature)
 => false
 ```
-
-When the feature is ready, GitLab removes the feature flag, and the option for
-enabling and disabling it no longer exists. The feature becomes available in all instances.

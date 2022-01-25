@@ -7,7 +7,7 @@ RSpec.describe 'Getting designs related to an issue' do
   include DesignManagementTestHelpers
 
   let_it_be(:design) { create(:design, :with_smaller_image_versions, versions_count: 1) }
-  let_it_be(:current_user) { design.project.owner }
+  let_it_be(:current_user) { design.project.first_owner }
 
   let(:design_query) do
     <<~NODE

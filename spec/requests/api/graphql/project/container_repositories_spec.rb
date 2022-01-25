@@ -38,7 +38,7 @@ RSpec.describe 'getting container repositories in a project' do
     )
   end
 
-  let(:user) { project.owner }
+  let(:user) { project.first_owner }
   let(:variables) { {} }
   let(:container_repositories_response) { graphql_data.dig('project', 'containerRepositories', 'edges') }
   let(:container_repositories_count_response) { graphql_data.dig('project', 'containerRepositoriesCount') }

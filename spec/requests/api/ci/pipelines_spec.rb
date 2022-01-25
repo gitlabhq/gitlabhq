@@ -988,7 +988,7 @@ RSpec.describe API::Ci::Pipelines do
 
   describe 'DELETE /projects/:id/pipelines/:pipeline_id' do
     context 'authorized user' do
-      let(:owner) { project.owner }
+      let(:owner) { project.first_owner }
 
       it 'destroys the pipeline' do
         delete api("/projects/#{project.id}/pipelines/#{pipeline.id}", owner)

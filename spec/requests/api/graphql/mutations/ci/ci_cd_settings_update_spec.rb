@@ -45,7 +45,7 @@ RSpec.describe 'CiCdSettingsUpdate' do
   end
 
   context 'when authorized' do
-    let_it_be(:user) { project.owner }
+    let_it_be(:user) { project.first_owner }
 
     it 'updates ci cd settings' do
       post_graphql_mutation(mutation, current_user: user)

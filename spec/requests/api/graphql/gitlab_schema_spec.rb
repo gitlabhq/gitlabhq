@@ -166,7 +166,7 @@ RSpec.describe 'GitlabSchema configurations' do
     end
 
     context 'authentication' do
-      let(:current_user) { project.owner }
+      let(:current_user) { project.first_owner }
 
       it 'authenticates all queries' do
         subject
@@ -216,7 +216,7 @@ RSpec.describe 'GitlabSchema configurations' do
   context "global id's" do
     it 'uses GlobalID to expose ids' do
       post_graphql(graphql_query_for('project', { 'fullPath' => project.full_path }, %w(id)),
-                   current_user: project.owner)
+                   current_user: project.first_owner)
 
       parsed_id = GlobalID.parse(graphql_data['project']['id'])
 

@@ -2896,7 +2896,7 @@ RSpec.describe API::MergeRequests do
 
         it 'is false for an unauthorized user' do
           expect do
-            put api("/projects/#{target_project.id}/merge_requests/#{merge_request.iid}", target_project.owner), params: { state_event: 'close', remove_source_branch: true }
+            put api("/projects/#{target_project.id}/merge_requests/#{merge_request.iid}", target_project.first_owner), params: { state_event: 'close', remove_source_branch: true }
           end.not_to change { merge_request.reload.merge_params }
 
           expect(response).to have_gitlab_http_status(:ok)

@@ -12,7 +12,7 @@ RSpec.describe 'merge requests actions' do
                                       reviewers: [user2])
   end
 
-  let(:user) { project.owner }
+  let(:user) { project.first_owner }
   let(:user2) { create(:user) }
 
   before do

@@ -583,7 +583,11 @@ RSpec.describe 'Project issue boards', :js do
     end
 
     page.within(find('.js-board-settings-sidebar')) do
-      accept_confirm { find('[data-testid="remove-list"]').click }
+      click_button 'Remove list'
+    end
+
+    page.within('.modal') do
+      click_button 'Remove list'
     end
   end
 
