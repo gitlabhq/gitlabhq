@@ -194,7 +194,7 @@ If you want to force a Review App to be deployed regardless of your changes, you
 ## As-if-FOSS jobs
 
 The `* as-if-foss` jobs run the GitLab test suite "as if FOSS", meaning as if the jobs would run in the context
-of the `gitlab-org/gitlab-foss` project. These jobs are only created in the following cases:
+of `gitlab-org/gitlab-foss`. These jobs are only created in the following cases:
 
 - when the `pipeline:run-as-if-foss` label is set on the merge request
 - when the merge request is created in the `gitlab-org/security/gitlab` project
@@ -203,13 +203,12 @@ of the `gitlab-org/gitlab-foss` project. These jobs are only created in the foll
 The `* as-if-foss` jobs are run in addition to the regular EE-context jobs. They have the `FOSS_ONLY='1'` variable
 set and get the `ee/` folder removed before the tests start running.
 
-The intent is to ensure that a change doesn't introduce a failure after the `gitlab-org/gitlab` project is synced to
-the `gitlab-org/gitlab-foss` project.
+The intent is to ensure that a change doesn't introduce a failure after `gitlab-org/gitlab` is synced to `gitlab-org/gitlab-foss`.
 
 ## As-if-JH jobs
 
 The `* as-if-jh` jobs run the GitLab test suite "as if JiHu", meaning as if the jobs would run in the context
-of [the `gitlab-jh/gitlab` project](jh_features_review.md). These jobs are only created in the following cases:
+of [GitLab JH](jh_features_review.md). These jobs are only created in the following cases:
 
 - when the `pipeline:run-as-if-jh` label is set on the merge request
 - when the `pipeline:run-all-rspec` label is set on the merge request
@@ -218,15 +217,17 @@ of [the `gitlab-jh/gitlab` project](jh_features_review.md). These jobs are only 
 
 The `* as-if-jh` jobs are run in addition to the regular EE-context jobs. The `jh/` folder is added before the tests start running.
 
-The intent is to ensure that a change doesn't introduce a failure after the `gitlab-org/gitlab` project is synced to
-the `gitlab-jh/gitlab` project.
+The intent is to ensure that a change doesn't introduce a failure after the `gitlab-org/gitlab` is synced to [GitLab JH](https://jihulab.com/gitlab-cn/gitlab).
 
 ### Corresponding JH branch
 
-You can create a corresponding JH branch on the `gitlab-jh/gitlab` project by
+You can create a corresponding JH branch on [GitLab JH](https://jihulab.com/gitlab-cn/gitlab) by
 appending `-jh` to the branch name. If a corresponding JH branch is found,
 `* as-if-jh` jobs grab the `jh` folder from the respective branch,
 rather than from the default branch.
+
+NOTE:
+For now, CI will try to fetch the branch on the [GitLab JH mirror](https://gitlab.com/gitlab-org/gitlab-jh/gitlab), so it might take some time for the new JH branch to propagate to the mirror.
 
 ## `undercover` RSpec test
 

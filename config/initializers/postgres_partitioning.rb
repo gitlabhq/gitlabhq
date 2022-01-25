@@ -28,7 +28,7 @@ end
 unless Gitlab.jh?
   Gitlab::Database::Partitioning.register_tables([
     # This should be synchronized with the following model:
-    # https://gitlab.com/gitlab-jh/gitlab/-/blob/main-jh/jh/app/models/phone/verification_code.rb
+    # https://jihulab.com/gitlab-cn/gitlab/-/blob/main-jh/jh/app/models/phone/verification_code.rb
     {
       table_name: 'verification_codes',
       partitioned_column: :created_at, strategy: :monthly

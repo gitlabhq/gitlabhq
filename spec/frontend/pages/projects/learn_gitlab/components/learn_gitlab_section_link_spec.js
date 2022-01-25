@@ -12,6 +12,10 @@ const defaultProps = {
   completed: false,
 };
 
+const docLinkProps = {
+  url: 'https://docs.gitlab.com/ee/user/application_security/security_dashboard/',
+};
+
 describe('Learn GitLab Section Link', () => {
   let wrapper;
 
@@ -51,6 +55,14 @@ describe('Learn GitLab Section Link', () => {
     createWrapper('codeOwnersEnabled');
 
     expect(wrapper.find('[data-testid="trial-only"]').exists()).toBe(true);
+  });
+
+  it('renders doc links with blank target', () => {
+    createWrapper('securityScanEnabled', docLinkProps);
+    const linkElement = wrapper.find('[data-testid="uncompleted-learn-gitlab-link"]');
+
+    expect(linkElement.exists()).toBe(true);
+    expect(linkElement.attributes('target')).toEqual('_blank');
   });
 
   describe('rendering a link to open the invite_members modal instead of a regular link', () => {

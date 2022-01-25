@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: https://gitlab.com/gitlab-jh/gitlab
+info: https://jihulab.com/gitlab-cn/gitlab
 ---
 
 # Guidelines for reviewing JiHu (JH) Edition related merge requests
@@ -21,13 +21,13 @@ We have two kinds of changes related to JH:
   - We will generalize this so both EE and JH can share the same mechanism,
     then we wouldn't have to treat them differently.
 
-If needed, review the corresponding JH merge request located at [JH repository](https://gitlab.com/gitlab-jh/gitlab)
+If needed, review the corresponding JH merge request located at [JH repository](https://jihulab.com/gitlab-cn/gitlab)
 
 ## When to merge files to the GitLab Inc. repository
 
-Files that are added to the `gitlab-jh` repository outside of `jh/` must be mirrored in the GitLab Inc. repository.
+Files that are added to the GitLab JH repository outside of `jh/` must be mirrored in the GitLab Inc. repository.
 
-If code that is added to the GitLab Inc. repository references (for example, `render_if_exists`) any `gitlab-jh` file that does not
+If code that is added to the GitLab Inc. repository references (for example, `render_if_exists`) any GitLab JH file that does not
 exist in the GitLab Inc. codebase, add a comment with a link to the JiHu merge request or file. This is to prevent
 the reference from being misidentified as a missing partial and subsequently deleted in the `gitlab` codebase.
 
@@ -49,7 +49,7 @@ This page is the single source of truth for JiHu-related processes.
 ## CI pipelines in a JH context
 
 EE repository does not have `jh/` directory therefore there is no way to run
-JH pipelines in the EE repository. All JH tests should go to [JH repository](https://gitlab.com/gitlab-jh/gitlab).
+JH pipelines in the EE repository. All JH tests should go to [JH repository](https://jihulab.com/gitlab-cn/gitlab).
 
 The top-level JH CI configuration is located at `jh/.gitlab-ci.yml` (which
 does not exist in EE repository) and it'll include EE CI configurations
@@ -89,7 +89,7 @@ Do not use methods such as `prepend`, `extend`, and `include`. Instead, use
 the relevant EE and JH modules by the name of the receiver module.
 
 If reviewing the corresponding JH file is needed, it should be found at
-[JH repository](https://gitlab.com/gitlab-jh/gitlab).
+[JH repository](https://jihulab.com/gitlab-cn/gitlab).
 
 ### General guidance for writing JH extensions
 

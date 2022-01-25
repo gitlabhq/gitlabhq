@@ -179,6 +179,8 @@ module Ci
     scope :order_contacted_at_desc, -> { order(contacted_at: :desc) }
     scope :order_created_at_asc, -> { order(created_at: :asc) }
     scope :order_created_at_desc, -> { order(created_at: :desc) }
+    scope :order_token_expires_at_asc, -> { order(token_expires_at: :asc) }
+    scope :order_token_expires_at_desc, -> { order(token_expires_at: :desc) }
     scope :with_tags, -> { preload(:tags) }
 
     validate :tag_constraints
@@ -247,6 +249,10 @@ module Ci
         order_contacted_at_desc
       when 'created_at_asc'
         order_created_at_asc
+      when 'token_expires_at_asc'
+        order_token_expires_at_asc
+      when 'token_expires_at_desc'
+        order_token_expires_at_desc
       else
         order_created_at_desc
       end

@@ -62,6 +62,7 @@ export const ACTION_LABELS = {
     description: s__('LearnGitLab|Scan your code to uncover vulnerabilities before deploying.'),
     section: 'deploy',
     position: 1,
+    openInNewTab: true,
   },
   issueCreated: {
     title: s__('LearnGitLab|Create an issue'),

@@ -1303,6 +1303,18 @@ RSpec.describe Ci::Runner do
 
       expect(runners).to eq([runner2, runner1])
     end
+
+    it 'supports ordering by the token expiration' do
+      runner1 = create(:ci_runner, token_expires_at: 1.year.from_now)
+      runner2 = create(:ci_runner)
+      runner3 = create(:ci_runner, token_expires_at: 1.month.from_now)
+
+      runners = described_class.order_by('token_expires_at_asc')
+      expect(runners).to eq([runner3, runner1, runner2])
+
+      runners = described_class.order_by('token_expires_at_desc')
+      expect(runners).to eq([runner2, runner1, runner3])
+    end
   end
 
   describe '.runner_matchers' do
