@@ -6,7 +6,7 @@ RSpec.describe 'Contextual sidebar', :js do
   context 'when context is a project' do
     let_it_be(:project) { create(:project) }
 
-    let(:user) { project.owner }
+    let(:user) { project.first_owner }
 
     before do
       sign_in(user)

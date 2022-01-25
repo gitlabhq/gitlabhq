@@ -22,7 +22,7 @@ RSpec.describe 'When a user searches for Sentry errors', :js, :use_clean_rails_m
   end
 
   it 'displays the results' do
-    sign_in(project.owner)
+    sign_in(project.first_owner)
     visit project_error_tracking_index_path(project)
 
     page.within(find('.gl-table')) do

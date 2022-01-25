@@ -6,7 +6,7 @@ RSpec.describe 'User follows pipeline suggest nudge spec when feature is enabled
   include CookieHelper
 
   let(:project) { create(:project, :empty_repo) }
-  let(:user) { project.owner }
+  let(:user) { project.first_owner }
 
   describe 'viewing the new blob page' do
     before do

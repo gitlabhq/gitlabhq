@@ -4,7 +4,7 @@ require "spec_helper"
 
 RSpec.describe "User rebases a merge request", :js do
   let(:merge_request) { create(:merge_request, :simple, source_project: project) }
-  let(:user) { project.owner }
+  let(:user) { project.first_owner }
 
   before do
     sign_in(user)

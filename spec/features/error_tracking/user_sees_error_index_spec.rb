@@ -18,7 +18,7 @@ RSpec.describe 'View error index page', :js, :use_clean_rails_memory_store_cachi
 
   context 'with current user as project owner' do
     before do
-      sign_in(project.owner)
+      sign_in(project.first_owner)
 
       visit project_error_tracking_index_path(project)
     end
@@ -43,7 +43,7 @@ RSpec.describe 'View error index page', :js, :use_clean_rails_memory_store_cachi
   context 'with error tracking settings disabled' do
     before do
       project_error_tracking_settings.update!(enabled: false)
-      sign_in(project.owner)
+      sign_in(project.first_owner)
 
       visit project_error_tracking_index_path(project)
     end

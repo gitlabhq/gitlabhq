@@ -6,7 +6,7 @@ RSpec.describe 'IDE user commits changes', :js do
   include WebIdeSpecHelpers
 
   let(:project) { create(:project, :public, :repository) }
-  let(:user) { project.owner }
+  let(:user) { project.first_owner }
 
   before do
     sign_in(user)

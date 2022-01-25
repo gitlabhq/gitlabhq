@@ -7,7 +7,7 @@ RSpec.describe 'View error details page', :js, :use_clean_rails_memory_store_cac
 
   context 'with current user as project owner' do
     before do
-      sign_in(project.owner)
+      sign_in(project.first_owner)
 
       visit details_project_error_tracking_index_path(project, issue_id: issue_id)
     end

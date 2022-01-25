@@ -6,7 +6,7 @@ RSpec.describe 'User uploads new design', :js do
   include DesignManagementTestHelpers
 
   let(:project) { create(:project_empty_repo, :public) }
-  let(:user) { project.owner }
+  let(:user) { project.first_owner }
   let(:issue) { create(:issue, project: project) }
 
   before do

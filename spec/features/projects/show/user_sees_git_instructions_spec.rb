@@ -61,7 +61,7 @@ RSpec.describe 'Projects > Show > User sees Git instructions' do
       let_it_be(:project) { create(:project, :public) }
 
       before do
-        sign_in(project.owner)
+        sign_in(project.first_owner)
         visit project_path(project)
       end
 
@@ -77,7 +77,7 @@ RSpec.describe 'Projects > Show > User sees Git instructions' do
           .at_least(:once)
           .and_return('example_branch')
 
-        sign_in(project.owner)
+        sign_in(project.first_owner)
         visit project_path(project)
       end
 

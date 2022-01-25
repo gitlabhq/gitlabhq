@@ -13,7 +13,7 @@ RSpec.describe "User browses files", :js do
   let(:project) { create(:project, :repository, name: "Shop") }
   let(:project2) { create(:project, :repository, name: "Another Project", path: "another-project") }
   let(:tree_path_root_ref) { project_tree_path(project, project.repository.root_ref) }
-  let(:user) { project.owner }
+  let(:user) { project.first_owner }
 
   before do
     sign_in(user)

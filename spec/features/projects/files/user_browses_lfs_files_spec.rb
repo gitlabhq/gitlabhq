@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'Projects > Files > User browses LFS files' do
   let(:project) { create(:project, :repository) }
-  let(:user) { project.owner }
+  let(:user) { project.first_owner }
 
   before do
     sign_in(user)

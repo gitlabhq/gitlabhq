@@ -174,7 +174,7 @@ RSpec.describe 'File blob', :js do
       it 'displays no highlighted number of different ref' do
         Files::UpdateService.new(
           project,
-          project.owner,
+          project.first_owner,
           commit_message: 'Update',
           start_branch: 'feature',
           branch_name: 'feature',

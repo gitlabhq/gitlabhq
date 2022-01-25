@@ -7,7 +7,7 @@ RSpec.describe 'Projects > Files > User wants to add a .gitignore file', :js do
 
   before do
     project = create(:project, :repository)
-    sign_in project.owner
+    sign_in project.first_owner
     visit project_new_blob_path(project, 'master', file_name: '.gitignore')
   end
 

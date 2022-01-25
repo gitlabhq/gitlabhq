@@ -715,7 +715,7 @@ RSpec.describe 'Pipeline', :js do
         let(:schedule) do
           create(:ci_pipeline_schedule,
             project: project,
-            owner: project.owner,
+            owner: project.first_owner,
             description: 'blocked user schedule'
           ).tap do |schedule|
             schedule.update_column(:next_run_at, 1.minute.ago)

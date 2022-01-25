@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'Projects > Wiki > User views wiki in project page' do
   before do
-    sign_in(project.owner)
+    sign_in(project.first_owner)
   end
 
   context 'when repository is disabled for project' do

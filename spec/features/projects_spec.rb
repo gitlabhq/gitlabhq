@@ -59,7 +59,7 @@ RSpec.describe 'Project' do
     let(:path)    { project_path(project) }
 
     before do
-      sign_in(project.owner)
+      sign_in(project.first_owner)
     end
 
     it 'parses Markdown' do
@@ -123,7 +123,7 @@ RSpec.describe 'Project' do
     let(:path)    { project_path(project) }
 
     before do
-      sign_in(project.owner)
+      sign_in(project.first_owner)
       visit path
     end
 
@@ -154,7 +154,7 @@ RSpec.describe 'Project' do
     let(:path)    { project_path(project) }
 
     before do
-      sign_in(project.owner)
+      sign_in(project.first_owner)
       visit path
     end
 
@@ -201,7 +201,7 @@ RSpec.describe 'Project' do
 
     it 'does not show the name of the deleted project when the source was deleted', :sidekiq_might_not_need_inline do
       forked_project
-      Projects::DestroyService.new(base_project, base_project.owner).execute
+      Projects::DestroyService.new(base_project, base_project.first_owner).execute
 
       visit project_path(forked_project)
 

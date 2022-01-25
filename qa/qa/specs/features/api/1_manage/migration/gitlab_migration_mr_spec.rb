@@ -51,14 +51,10 @@ module QA
           expect(imported_mrs.count).to eq(1)
 
           aggregate_failures do
-            # TODO: remove custom comparison after member migration is implemented
-            # https://gitlab.com/gitlab-org/gitlab/-/issues/341886
-            expect(imported_mr.comparable.except(:author)).to eq(source_mr.reload!.comparable.except(:author))
+            expect(imported_mr).to eq(source_mr.reload!)
 
             expect(imported_mr_comments.count).to eq(1)
-            expect(imported_mr_comments.first[:body]).to include(source_comment[:body])
-            # Comment will have mention of original user since members are not migrated yet
-            expect(imported_mr_comments.first[:body]).to include(other_user.name)
+            expect(imported_mr_comments.first.except(:id, :noteable_id)).to eq(source_comment.except(:id, :noteable_id))
           end
         end
       end

@@ -663,7 +663,7 @@ RSpec.describe 'Copy as GFM', :js do
     let(:project) { create(:project, :repository) }
 
     before do
-      sign_in(project.owner)
+      sign_in(project.first_owner)
     end
 
     context 'from a diff' do

@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'Project Activity RSS' do
   let(:project) { create(:project, :public) }
-  let(:user) { project.owner }
+  let(:user) { project.first_owner }
   let(:path) { activity_project_path(project) }
 
   before do
@@ -13,7 +13,7 @@ RSpec.describe 'Project Activity RSS' do
 
   context 'when signed in' do
     before do
-      sign_in(project.owner)
+      sign_in(project.first_owner)
       visit path
     end
 

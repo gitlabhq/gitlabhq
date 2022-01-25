@@ -82,7 +82,7 @@ RSpec.describe 'Merge request > User sees diff', :js do
     end
 
     context 'when file contains html' do
-      let(:current_user) { project.owner }
+      let(:current_user) { project.first_owner }
       let(:branch_name) {"test_branch"}
 
       it 'escapes any HTML special characters in the diff chunk header' do
@@ -123,7 +123,7 @@ RSpec.describe 'Merge request > User sees diff', :js do
 
     context 'when file is stored in LFS' do
       let(:merge_request) { create(:merge_request, source_project: project) }
-      let(:current_user) { project.owner }
+      let(:current_user) { project.first_owner }
 
       context 'when LFS is enabled on the project' do
         before do

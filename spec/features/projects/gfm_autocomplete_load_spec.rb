@@ -6,7 +6,7 @@ RSpec.describe 'GFM autocomplete loading', :js do
   let(:project) { create(:project) }
 
   before do
-    sign_in(project.owner)
+    sign_in(project.first_owner)
 
     visit project_path(project)
   end

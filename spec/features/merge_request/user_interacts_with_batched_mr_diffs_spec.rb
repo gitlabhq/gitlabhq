@@ -10,7 +10,7 @@ RSpec.describe 'Batch diffs', :js do
   let(:merge_request) { create(:merge_request, source_project: project, source_branch: 'master', target_branch: 'empty-branch') }
 
   before do
-    sign_in(project.owner)
+    sign_in(project.first_owner)
 
     visit diffs_project_merge_request_path(merge_request.project, merge_request)
     wait_for_requests

@@ -18,7 +18,7 @@ With the Project Relations Export API, you can partially export project structur
 similar to [project export](project_import_export.md),
 but it exports each top-level relation (for example, milestones/boards/labels) as a separate file
 instead of one archive. The project relations export API is primarily used in
-[group migration](../user/group/import/index.md#enable-or-disable-gitlab-group-migration)
+[group migration](../user/group/import/index.md)
 to support group project import.
 
 ## Schedule new export

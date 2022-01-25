@@ -7,11 +7,11 @@ RSpec.describe 'Dashboard snippets' do
 
   context 'when the project has snippets' do
     let(:project) { create(:project, :public, creator: user) }
-    let!(:snippets) { create_list(:project_snippet, 2, :public, author: project.owner, project: project) }
+    let!(:snippets) { create_list(:project_snippet, 2, :public, author: project.first_owner, project: project) }
 
     before do
       allow(Snippet).to receive(:default_per_page).and_return(1)
-      sign_in(project.owner)
+      sign_in(project.first_owner)
       visit dashboard_snippets_path
     end
 
@@ -27,7 +27,7 @@ RSpec.describe 'Dashboard snippets' do
     let(:project) { create(:project, :public, creator: user) }
 
     before do
-      sign_in(project.owner)
+      sign_in(project.first_owner)
       visit dashboard_snippets_path
     end
 

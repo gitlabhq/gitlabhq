@@ -11,10 +11,7 @@
       .gl-alert-body
         - docs_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_page_path('user/group/import/index.md') }
         - link_end = '</a>'.html_safe
-        = s_('GroupsNew|This feature is deprecated and replaced by %{docs_link_start}Group Migration%{docs_link_end}.').html_safe % { docs_link_start: docs_link_start, docs_link_end: link_end }
-        - if Feature.enabled?(:bulk_import, default_enabled: :yaml)
-          - enable_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_page_path('user/group/import/index.md', anchor: 'enable-or-disable-gitlab-group-migration') }
-          = s_('GroupsNew|Ask your administrator to %{enable_link_start}enable%{enable_link_end} Group Migration.').html_safe % { enable_link_start: enable_link_start, enable_link_end: link_end }
+        = s_('GroupsNew|This feature is deprecated and replaced by %{docs_link_start}group migration%{docs_link_end}.').html_safe % { docs_link_start: docs_link_start, docs_link_end: link_end }
 
     .form-group.gl-display-flex.gl-flex-direction-column.gl-mt-5
       = f.label :name, _('New group name'), for: 'import_group_name'

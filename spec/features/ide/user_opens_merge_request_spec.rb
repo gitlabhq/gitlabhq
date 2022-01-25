@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe 'IDE merge request', :js do
   let(:merge_request) { create(:merge_request, :simple, source_project: project) }
   let(:project) { create(:project, :public, :repository) }
-  let(:user) { project.owner }
+  let(:user) { project.first_owner }
 
   before do
     sign_in(user)

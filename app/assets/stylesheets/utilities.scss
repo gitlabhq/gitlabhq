@@ -247,30 +247,6 @@ $gl-line-height-42: px-to-rem(42px);
   max-width: 50%;
 }
 
-// Will be moved to @gitlab/ui by https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1490
-.gl-w-grid-size-28 {
-  width: $grid-size * 28;
-}
-
-// Will be removed after https://gitlab.com/gitlab-org/gitlab-ui/-/merge_requests/2347 is merged
-.gl-min-w-8 {
-  min-width: $gl-spacing-scale-8;
-}
-
-// Will be removed after https://gitlab.com/gitlab-org/gitlab-ui/-/merge_requests/2347 is merged
-.gl-min-w-10 {
-  min-width: $gl-spacing-scale-10;
-}
-
-// Will both be moved to @gitlab/ui by https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1526
-.gl-opacity-6 {
-  opacity: 0.6;
-}
-
-.gl-opacity-7 {
-  opacity: 0.7;
-}
-
 /**
   Note: ::-webkit-scrollbar is a non-standard rule only
   supported by webkit browsers.

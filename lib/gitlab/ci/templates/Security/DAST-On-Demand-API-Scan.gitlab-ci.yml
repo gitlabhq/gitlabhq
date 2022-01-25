@@ -12,8 +12,6 @@ variables:
 dast:
   stage: dast
   image: $DAST_API_IMAGE
-  variables:
-    GIT_STRATEGY: none
   allow_failure: true
   script:
     - /peach/analyzer-dast-api

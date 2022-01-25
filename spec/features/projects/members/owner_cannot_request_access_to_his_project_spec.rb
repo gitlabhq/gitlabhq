@@ -6,7 +6,7 @@ RSpec.describe 'Projects > Members > Owner cannot request access to their own pr
   let(:project) { create(:project) }
 
   before do
-    sign_in(project.owner)
+    sign_in(project.first_owner)
     visit project_path(project)
   end
 

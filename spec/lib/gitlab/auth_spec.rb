@@ -156,8 +156,9 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching do
       let(:username) { 'gitlab-ci-token' }
 
       context 'for running build' do
-        let!(:build) { create(:ci_build, :running) }
-        let(:project) { build.project }
+        let!(:group) { create(:group) }
+        let!(:project) { create(:project, group: group) }
+        let!(:build) { create(:ci_build, :running, project: project) }
 
         it 'recognises user-less build' do
           expect(subject).to have_attributes(actor: nil, project: build.project, type: :ci, authentication_abilities: described_class.build_authentication_abilities)
@@ -165,6 +166,20 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching do
 
         it 'recognises user token' do
           build.update(user: create(:user))
+
+          expect(subject).to have_attributes(actor: build.user, project: build.project, type: :build, authentication_abilities: described_class.build_authentication_abilities)
+        end
+
+        it 'recognises project level bot access token' do
+          build.update(user: create(:user, :project_bot))
+          project.add_maintainer(build.user)
+
+          expect(subject).to have_attributes(actor: build.user, project: build.project, type: :build, authentication_abilities: described_class.build_authentication_abilities)
+        end
+
+        it 'recognises group level bot access token' do
+          build.update(user: create(:user, :project_bot))
+          group.add_maintainer(build.user)
 
           expect(subject).to have_attributes(actor: build.user, project: build.project, type: :build, authentication_abilities: described_class.build_authentication_abilities)
         end

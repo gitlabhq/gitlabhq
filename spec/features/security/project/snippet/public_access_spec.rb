@@ -6,9 +6,9 @@ RSpec.describe "Public Project Snippets Access" do
   include AccessMatchers
 
   let_it_be(:project) { create(:project, :public) }
-  let_it_be(:public_snippet)   { create(:project_snippet, :public,   project: project, author: project.owner) }
-  let_it_be(:internal_snippet) { create(:project_snippet, :internal, project: project, author: project.owner) }
-  let_it_be(:private_snippet)  { create(:project_snippet, :private,  project: project, author: project.owner) }
+  let_it_be(:public_snippet)   { create(:project_snippet, :public,   project: project, author: project.first_owner) }
+  let_it_be(:internal_snippet) { create(:project_snippet, :internal, project: project, author: project.first_owner) }
+  let_it_be(:private_snippet)  { create(:project_snippet, :private,  project: project, author: project.first_owner) }
 
   describe "GET /:project_path/snippets" do
     subject { project_snippets_path(project) }

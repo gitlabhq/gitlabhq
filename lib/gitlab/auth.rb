@@ -207,7 +207,7 @@ module Gitlab
         return unless valid_scoped_token?(token, all_available_scopes)
 
         if project && token.user.project_bot?
-          return unless token_bot_in_project?(token.user, project) || token_bot_in_group?(token.user, project)
+          return unless token_bot_in_resource?(token.user, project)
         end
 
         if token.user.can_log_in_with_non_expired_password? || token.user.project_bot?
@@ -228,6 +228,10 @@ module Gitlab
         project.group && project.group.members_with_parents.where(user_id: user.id).exists?
       end
       # rubocop: enable CodeReuse/ActiveRecord
+
+      def token_bot_in_resource?(user, project)
+        token_bot_in_project?(user, project) || token_bot_in_group?(user, project)
+      end
 
       def valid_oauth_token?(token)
         token && token.accessible? && valid_scoped_token?(token, Doorkeeper.configuration.scopes)
@@ -309,7 +313,7 @@ module Gitlab
         return unless build.project.builds_enabled?
 
         if build.user
-          return unless build.user.can_log_in_with_non_expired_password? || (build.user.project_bot? && build.project.bots&.include?(build.user))
+          return unless build.user.can_log_in_with_non_expired_password? || (build.user.project_bot? && token_bot_in_resource?(build.user, build.project))
 
           # If user is assigned to build, use restricted credentials of user
           Gitlab::Auth::Result.new(build.user, build.project, :build, build_authentication_abilities)

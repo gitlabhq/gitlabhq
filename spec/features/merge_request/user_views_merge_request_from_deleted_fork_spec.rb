@@ -11,7 +11,7 @@ RSpec.describe 'User views merged merge request from deleted fork' do
 
   let(:project) { create(:project, :repository) }
   let(:source_project) { fork_project(project, nil, repository: true) }
-  let(:user) { project.owner }
+  let(:user) { project.first_owner }
   let!(:merge_request) { create(:merge_request, :merged, source_project: source_project, target_project: project) }
 
   before do

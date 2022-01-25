@@ -43,9 +43,9 @@ RSpec.describe 'User changes public project visibility', :js do
 
   context 'when the project has forks' do
     before do
-      fork_project(project, project.owner)
+      fork_project(project, project.first_owner)
 
-      sign_in(project.owner)
+      sign_in(project.first_owner)
 
       visit edit_project_path(project)
     end
@@ -84,7 +84,7 @@ RSpec.describe 'User changes public project visibility', :js do
     let(:project) { create(:project, :empty_repo, :public) }
 
     before do
-      sign_in(project.owner)
+      sign_in(project.first_owner)
 
       visit edit_project_path(project)
     end
@@ -98,9 +98,9 @@ RSpec.describe 'User changes public project visibility', :js do
     before do
       stub_feature_flags(unlink_fork_network_upon_visibility_decrease: false)
 
-      fork_project(project, project.owner)
+      fork_project(project, project.first_owner)
 
-      sign_in(project.owner)
+      sign_in(project.first_owner)
 
       visit edit_project_path(project)
     end
