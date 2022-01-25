@@ -851,7 +851,7 @@ RSpec.describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state, :clean_git
 
     context 'when project is destroyed' do
       let(:subject) do
-        Projects::DestroyService.new(project, project.owner).execute
+        Projects::DestroyService.new(project, project.first_owner).execute
       end
 
       it_behaves_like 'deletes all build_trace_chunk and data in redis'

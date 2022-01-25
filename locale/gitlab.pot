@@ -4494,22 +4494,28 @@ msgstr ""
 msgid "ApprovalSettings|Merge request approval settings have been updated."
 msgstr ""
 
+msgid "ApprovalSettings|Prevent approval by author"
+msgstr ""
+
 msgid "ApprovalSettings|Prevent approval by author."
+msgstr ""
+
+msgid "ApprovalSettings|Prevent approvals by users who add commits"
 msgstr ""
 
 msgid "ApprovalSettings|Prevent approvals by users who add commits."
 msgstr ""
 
-msgid "ApprovalSettings|Prevent editing approval rules in merge requests."
+msgid "ApprovalSettings|Prevent editing approval rules in merge requests"
 msgstr ""
 
 msgid "ApprovalSettings|Prevent editing approval rules in projects and merge requests."
 msgstr ""
 
-msgid "ApprovalSettings|Remove all approvals when commits are added to the source branch."
+msgid "ApprovalSettings|Remove all approvals when commits are added to the source branch"
 msgstr ""
 
-msgid "ApprovalSettings|Require user password to approve."
+msgid "ApprovalSettings|Require user password to approve"
 msgstr ""
 
 msgid "ApprovalSettings|There was an error loading merge request approval settings."
@@ -31543,7 +31549,7 @@ msgstr ""
 msgid "SecurityApprovals|License-Check"
 msgstr ""
 
-msgid "SecurityApprovals|Requires approval for Denied licenses. %{linkStart}More information%{linkEnd}"
+msgid "SecurityApprovals|Requires approval for Denied licenses. %{linkStart}Learn more.%{linkEnd}"
 msgstr ""
 
 msgid "SecurityApprovals|Requires approval for decreases in test coverage. %{linkStart}Learn more.%{linkEnd}"

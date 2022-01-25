@@ -64,16 +64,20 @@ function setup_db() {
 }
 
 function install_api_client_dependencies_with_apk() {
-  apk add --update openssl curl jq
+  run_timed_command "apk add --update openssl curl jq"
 }
 
 function install_gitlab_gem() {
-  gem install httparty --no-document --version 0.18.1
-  gem install gitlab --no-document --version 4.17.0
+  run_timed_command "gem install httparty --no-document --version 0.18.1"
+  run_timed_command "gem install gitlab --no-document --version 4.17.0"
 }
 
 function install_tff_gem() {
-  gem install test_file_finder --version 0.1.1
+  run_timed_command "gem install test_file_finder --no-document --version 0.1.1"
+}
+
+function install_junit_merge_gem() {
+  run_timed_command "gem install junit_merge --no-document --version 0.1.2"
 }
 
 function run_timed_command() {

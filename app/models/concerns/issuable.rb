@@ -363,9 +363,10 @@ module Issuable
     end
 
     # Includes table keys in group by clause when sorting
-    # preventing errors in postgres
+    # preventing errors in Postgres
     #
-    # Returns an array of arel columns
+    # Returns an array of Arel columns
+    #
     def grouping_columns(sort)
       sort = sort.to_s
       grouping_columns = [arel_table[:id]]
@@ -384,9 +385,10 @@ module Issuable
     end
 
     # Includes all table keys in group by clause when sorting
-    # preventing errors in postgres when using CTE search optimisation
+    # preventing errors in Postgres when using CTE search optimization
     #
-    # Returns an array of arel columns
+    # Returns an array of Arel columns
+    #
     def issue_grouping_columns(use_cte: false)
       if use_cte
         attribute_names.map { |attr| arel_table[attr.to_sym] }

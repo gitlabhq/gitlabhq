@@ -59,7 +59,7 @@ RSpec.describe Ci::Trigger do
   end
 
   it_behaves_like 'includes Limitable concern' do
-    subject { build(:ci_trigger, owner: project.owner, project: project) }
+    subject { build(:ci_trigger, owner: project.first_owner, project: project) }
   end
 
   context 'loose foreign key on ci_triggers.owner_id' do

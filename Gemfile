@@ -466,15 +466,8 @@ gem 'sys-filesystem', '~> 1.4.3'
 # NTP client
 gem 'net-ntp'
 
-# SSH host key support
-gem 'net-ssh', '~> 6.0'
+# SSH keys support
 gem 'ssh_data', '~> 1.2'
-
-# Required for ED25519 SSH host key support
-group :ed25519 do
-  gem 'ed25519', '~> 1.2'
-  gem 'bcrypt_pbkdf', '~> 1.1'
-end
 
 # Spamcheck GRPC protocol definitions
 gem 'spamcheck', '~> 0.1.0'

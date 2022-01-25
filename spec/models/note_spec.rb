@@ -617,7 +617,7 @@ RSpec.describe Note do
       let(:note) do
         create :note,
           noteable: ext_issue, project: ext_proj,
-          note: "mentioned in #{ext_proj.owner.to_reference}",
+          note: "mentioned in #{ext_proj.first_owner.to_reference}",
           system: true
       end
 

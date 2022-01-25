@@ -27,4 +27,10 @@ RSpec.describe ContainerRegistry::Registry do
       it { is_expected.to eq(path) }
     end
   end
+
+  describe '#gitlab_api_client' do
+    subject { registry.gitlab_api_client }
+
+    it { is_expected.to be_instance_of(ContainerRegistry::GitlabApiClient) }
+  end
 end

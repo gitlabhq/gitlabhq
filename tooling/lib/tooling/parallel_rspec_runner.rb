@@ -38,12 +38,8 @@ module Tooling
       Knapsack.logger.info tests_to_run
       Knapsack.logger.info
 
-      if tests_to_run.empty?
-        Knapsack.logger.info 'No tests to run on this node, exiting.'
-        return
-      end
-
-      exec(*rspec_command)
+      Process.wait Process.spawn(*rspec_command)
+      Process.last_status.exitstatus
     end
 
     private

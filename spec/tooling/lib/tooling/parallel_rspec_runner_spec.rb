@@ -18,7 +18,9 @@ RSpec.describe Tooling::ParallelRSpecRunner do # rubocop:disable RSpec/FilePath
       allow(File).to receive(:exist?).with(filter_tests_file).and_return(true)
       allow(File).to receive(:read).and_call_original
       allow(File).to receive(:read).with(filter_tests_file).and_return(filter_tests)
-      allow(subject).to receive(:exec)
+      allow(Process).to receive(:spawn)
+      allow(Process).to receive(:wait)
+      allow(Process).to receive(:last_status).and_return(double(exitstatus: 0))
     end
 
     subject { described_class.new(allocator: allocator, filter_tests_file: filter_tests_file, rspec_args: rspec_args) }
@@ -86,7 +88,7 @@ RSpec.describe Tooling::ParallelRSpecRunner do # rubocop:disable RSpec/FilePath
     end
 
     def expect_command(cmd)
-      expect(subject).to receive(:exec).with(*cmd)
+      expect(Process).to receive(:spawn).with(*cmd)
     end
   end
 end

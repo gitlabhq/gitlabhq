@@ -88,4 +88,11 @@ RSpec.describe Ci::JobToken::ProjectScopeLink do
       it { is_expected.to be_nil }
     end
   end
+
+  context 'loose foreign key on ci_job_token_project_scope_links.source_project_id' do
+    it_behaves_like 'cleanup by a loose foreign key' do
+      let!(:parent) { create(:project) }
+      let!(:model) { create(:ci_job_token_project_scope_link, source_project: parent) }
+    end
+  end
 end

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ContainerRepository do
+RSpec.describe ContainerRepository, :aggregate_failures do
   using RSpec::Parameterized::TableSyntax
 
   let(:group) { create(:group, name: 'group') }
@@ -36,7 +36,282 @@ RSpec.describe ContainerRepository do
   describe 'validations' do
     it { is_expected.to validate_presence_of(:migration_retries_count) }
     it { is_expected.to validate_numericality_of(:migration_retries_count).is_greater_than_or_equal_to(0) }
-    it { is_expected.to validate_presence_of(:migration_state) }
+
+    it { is_expected.to validate_inclusion_of(:migration_aborted_in_state).in_array(ContainerRepository::ACTIVE_MIGRATION_STATES) }
+    it { is_expected.to allow_value(nil).for(:migration_aborted_in_state) }
+
+    context 'migration_state' do
+      it { is_expected.to validate_presence_of(:migration_state) }
+      it { is_expected.to validate_inclusion_of(:migration_state).in_array(ContainerRepository::MIGRATION_STATES) }
+
+      describe 'pre_importing' do
+        it 'validates expected attributes' do
+          expect(build(:container_repository, migration_state: 'pre_importing')).to be_invalid
+          expect(build(:container_repository, :pre_importing)).to be_valid
+        end
+      end
+
+      describe 'pre_import_done' do
+        it 'validates expected attributes' do
+          expect(build(:container_repository, migration_state: 'pre_import_done')).to be_invalid
+          expect(build(:container_repository, :pre_import_done)).to be_valid
+        end
+      end
+
+      describe 'importing' do
+        it 'validates expected attributes' do
+          expect(build(:container_repository, migration_state: 'importing')).to be_invalid
+          expect(build(:container_repository, :importing)).to be_valid
+        end
+      end
+
+      describe 'import_skipped' do
+        it 'validates expected attributes' do
+          expect(build(:container_repository, migration_state: 'import_skipped')).to be_invalid
+          expect(build(:container_repository, :import_skipped)).to be_valid
+        end
+      end
+
+      describe 'import_aborted' do
+        it 'validates expected attributes' do
+          expect(build(:container_repository, migration_state: 'import_aborted')).to be_invalid
+          expect(build(:container_repository, :import_aborted)).to be_valid
+        end
+      end
+    end
+  end
+
+  context ':migration_state state_machine' do
+    shared_examples 'no action when feature flag is disabled' do
+      context 'feature flag disabled' do
+        before do
+          stub_feature_flags(container_registry_migration_phase2_enabled: false)
+        end
+
+        it { is_expected.to eq(false) }
+      end
+    end
+
+    shared_examples 'transitioning to pre_importing', skip_pre_import_success: true do
+      before do
+        repository.update_column(:migration_pre_import_done_at, Time.zone.now)
+      end
+
+      it_behaves_like 'no action when feature flag is disabled'
+
+      context 'successful pre_import request' do
+        it 'sets migration_pre_import_started_at and resets migration_pre_import_done_at' do
+          expect(repository).to receive(:migration_pre_import).and_return(:ok)
+
+          expect { subject }.to change { repository.reload.migration_pre_import_started_at }
+            .and change { repository.migration_pre_import_done_at }.to(nil)
+
+          expect(repository).to be_pre_importing
+        end
+      end
+
+      context 'failed pre_import request' do
+        it 'sets migration_pre_import_started_at and resets migration_pre_import_done_at' do
+          expect(repository).to receive(:migration_pre_import).and_return(:error)
+
+          expect { subject }.to change { repository.reload.migration_pre_import_started_at }
+            .and change { repository.migration_aborted_at }
+            .and change { repository.migration_pre_import_done_at }.to(nil)
+
+          expect(repository.migration_aborted_in_state).to eq('pre_importing')
+          expect(repository).to be_import_aborted
+        end
+      end
+    end
+
+    shared_examples 'transitioning to importing', skip_import_success: true do
+      before do
+        repository.update_columns(migration_import_done_at: Time.zone.now)
+      end
+
+      context 'successful import request' do
+        it 'sets migration_import_started_at and resets migration_import_done_at' do
+          expect(repository).to receive(:migration_import).and_return(:ok)
+
+          expect { subject }.to change { repository.reload.migration_import_started_at }
+            .and change { repository.migration_import_done_at }.to(nil)
+
+          expect(repository).to be_importing
+        end
+      end
+
+      context 'failed import request' do
+        it 'sets migration_import_started_at and resets migration_import_done_at' do
+          expect(repository).to receive(:migration_import).and_return(:error)
+
+          expect { subject }.to change { repository.reload.migration_import_started_at }
+            .and change { repository.migration_aborted_at }
+
+          expect(repository.migration_aborted_in_state).to eq('importing')
+          expect(repository).to be_import_aborted
+        end
+      end
+    end
+
+    shared_examples 'transitioning out of import_aborted' do
+      it 'resets migration_aborted_at and migration_aborted_in_state' do
+        expect { subject }.to change { repository.reload.migration_aborted_in_state }.to(nil)
+          .and change { repository.migration_aborted_at }.to(nil)
+      end
+    end
+
+    shared_examples 'transitioning from allowed states' do |allowed_states|
+      ContainerRepository::MIGRATION_STATES.each do |state|
+        result = allowed_states.include?(state)
+
+        context "when transitioning from #{state}" do
+          let(:repository) { create(:container_repository, state.to_sym) }
+
+          it "returns #{result}" do
+            expect(subject).to eq(result)
+          end
+        end
+      end
+    end
+
+    describe '#start_pre_import' do
+      let_it_be_with_reload(:repository) { create(:container_repository) }
+
+      subject { repository.start_pre_import }
+
+      before do |example|
+        unless example.metadata[:skip_pre_import_success]
+          allow(repository).to receive(:migration_pre_import).and_return(:ok)
+        end
+      end
+
+      it_behaves_like 'transitioning from allowed states', %w[default]
+      it_behaves_like 'transitioning to pre_importing'
+    end
+
+    describe '#retry_pre_import' do
+      let_it_be_with_reload(:repository) { create(:container_repository, :import_aborted) }
+
+      subject { repository.retry_pre_import }
+
+      before do |example|
+        unless example.metadata[:skip_pre_import_success]
+          allow(repository).to receive(:migration_pre_import).and_return(:ok)
+        end
+      end
+
+      it_behaves_like 'transitioning from allowed states', %w[import_aborted]
+      it_behaves_like 'transitioning to pre_importing'
+      it_behaves_like 'transitioning out of import_aborted'
+    end
+
+    describe '#finish_pre_import' do
+      let_it_be_with_reload(:repository) { create(:container_repository, :pre_importing) }
+
+      subject { repository.finish_pre_import }
+
+      it_behaves_like 'transitioning from allowed states', %w[pre_importing]
+
+      it 'sets migration_pre_import_done_at' do
+        expect { subject }.to change { repository.reload.migration_pre_import_done_at }
+
+        expect(repository).to be_pre_import_done
+      end
+    end
+
+    describe '#start_import' do
+      let_it_be_with_reload(:repository) { create(:container_repository, :pre_import_done) }
+
+      subject { repository.start_import }
+
+      before do |example|
+        unless example.metadata[:skip_import_success]
+          allow(repository).to receive(:migration_import).and_return(:ok)
+        end
+      end
+
+      it_behaves_like 'transitioning from allowed states', %w[pre_import_done]
+      it_behaves_like 'transitioning to importing'
+    end
+
+    describe '#retry_import' do
+      let_it_be_with_reload(:repository) { create(:container_repository, :import_aborted) }
+
+      subject { repository.retry_import }
+
+      before do |example|
+        unless example.metadata[:skip_import_success]
+          allow(repository).to receive(:migration_import).and_return(:ok)
+        end
+      end
+
+      it_behaves_like 'transitioning from allowed states', %w[import_aborted]
+      it_behaves_like 'transitioning to importing'
+      it_behaves_like 'no action when feature flag is disabled'
+    end
+
+    describe '#finish_import' do
+      let_it_be_with_reload(:repository) { create(:container_repository, :importing) }
+
+      subject { repository.finish_import }
+
+      it_behaves_like 'transitioning from allowed states', %w[importing]
+
+      it 'sets migration_import_done_at' do
+        expect { subject }.to change { repository.reload.migration_import_done_at }
+
+        expect(repository).to be_import_done
+      end
+    end
+
+    describe '#already_migrated' do
+      let_it_be_with_reload(:repository) { create(:container_repository) }
+
+      subject { repository.already_migrated }
+
+      it_behaves_like 'transitioning from allowed states', %w[default]
+
+      it 'sets migration_import_done_at' do
+        subject
+
+        expect(repository).to be_import_done
+      end
+    end
+
+    describe '#abort_import' do
+      let_it_be_with_reload(:repository) { create(:container_repository, :importing) }
+
+      subject { repository.abort_import }
+
+      it_behaves_like 'transitioning from allowed states', %w[pre_importing importing]
+
+      it 'sets migration_aborted_at and migration_aborted_at and increments the retry count' do
+        expect { subject }.to change { repository.migration_aborted_at }
+          .and change { repository.reload.migration_retries_count }.by(1)
+
+        expect(repository.migration_aborted_in_state).to eq('importing')
+        expect(repository).to be_import_aborted
+      end
+    end
+
+    describe '#skip_import' do
+      let_it_be_with_reload(:repository) { create(:container_repository) }
+
+      subject { repository.skip_import(reason: :too_many_retries) }
+
+      it_behaves_like 'transitioning from allowed states', %w[default pre_importing importing]
+
+      it 'sets migration_skipped_at and migration_skipped_reason' do
+        expect { subject }.to change { repository.reload.migration_skipped_at }
+
+        expect(repository.migration_skipped_reason).to eq('too_many_retries')
+        expect(repository).to be_import_skipped
+      end
+
+      it 'raises and error if a reason is not given' do
+        expect { repository.skip_import }.to raise_error(ArgumentError)
+      end
+    end
   end
 
   describe '#tag' do
@@ -206,6 +481,46 @@ RSpec.describe ContainerRepository do
       expect(started_at).not_to be_nil
       expect { subject }
           .to change { repository.expiration_policy_started_at }.from(started_at).to(nil)
+    end
+  end
+
+  context 'registry migration' do
+    shared_examples 'handling the migration step' do |step|
+      let(:client_response) { :foobar }
+
+      before do
+        allow(repository.gitlab_api_client).to receive(:supports_gitlab_api?).and_return(true)
+      end
+
+      it 'returns the same response as the client' do
+        expect(repository.gitlab_api_client)
+          .to receive(step).with(repository.path).and_return(client_response)
+        expect(subject).to eq(client_response)
+      end
+
+      context 'when the gitlab_api feature is not supported' do
+        before do
+          allow(repository.gitlab_api_client).to receive(:supports_gitlab_api?).and_return(false)
+        end
+
+        it 'returns :error' do
+          expect(repository.gitlab_api_client).not_to receive(step)
+
+          expect(subject).to eq(:error)
+        end
+      end
+    end
+
+    describe '#migration_pre_import' do
+      subject { repository.migration_pre_import }
+
+      it_behaves_like 'handling the migration step', :pre_import_repository
+    end
+
+    describe '#migration_import' do
+      subject { repository.migration_import }
+
+      it_behaves_like 'handling the migration step', :import_repository
     end
   end
 
@@ -505,20 +820,14 @@ RSpec.describe ContainerRepository do
   end
 
   describe '#migration_importing?' do
-    let_it_be_with_reload(:container_repository) { create(:container_repository, migration_state: 'importing')}
-
     subject { container_repository.migration_importing? }
 
-    it { is_expected.to eq(true) }
+    ContainerRepository::MIGRATION_STATES.each do |state|
+      context "when in #{state} migration_state" do
+        let(:container_repository) { create(:container_repository, state.to_sym)}
 
-    context 'when not importing' do
-      before do
-        # Technical debt: when the state machine is added, we should iterate through all possible states
-        # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/78499
-        container_repository.update_column(:migration_state, 'default')
+        it { is_expected.to eq(state == 'importing') }
       end
-
-      it { is_expected.to eq(false) }
     end
   end
 

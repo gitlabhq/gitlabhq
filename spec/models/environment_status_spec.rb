@@ -161,7 +161,7 @@ RSpec.describe EnvironmentStatus do
 
     let!(:build) { create(:ci_build, :with_deployment, :deploy_to_production, pipeline: pipeline) }
     let(:environment) { build.deployment.environment }
-    let(:user) { project.owner }
+    let(:user) { project.first_owner }
 
     context 'when environment is created on a forked project', :sidekiq_inline do
       let(:project) { create(:project, :repository) }

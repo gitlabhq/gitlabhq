@@ -887,6 +887,8 @@ RSpec.describe Issue do
         end
       end
 
+      # TODO update when we have multiple owners of a project
+      # https://gitlab.com/gitlab-org/gitlab/-/issues/350605
       context 'with an owner' do
         before do
           project.add_maintainer(user)

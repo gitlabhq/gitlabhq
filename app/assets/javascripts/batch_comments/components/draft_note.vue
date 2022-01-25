@@ -115,10 +115,15 @@ export default {
       ></div>
 
       <p class="draft-note-actions d-flex">
-        <publish-button :show-count="true" :should-publish="false" category="secondary" />
+        <publish-button
+          :show-count="true"
+          :should-publish="false"
+          category="secondary"
+          :disabled="isPublishingDraft(draft.id)"
+        />
         <gl-button
-          ref="publishNowButton"
-          :loading="isPublishingDraft(draft.id) || isPublishing"
+          :disabled="isPublishing"
+          :loading="isPublishingDraft(draft.id)"
           class="gl-ml-3"
           @click="publishNow"
         >

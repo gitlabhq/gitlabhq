@@ -1249,7 +1249,7 @@ RSpec.describe Group do
         let(:common_id) { [Project.maximum(:id).to_i, Namespace.maximum(:id).to_i].max + 999 }
         let!(:group) { create(:group, id: common_id) }
         let!(:unrelated_project) { create(:project, id: common_id) }
-        let(:user) { unrelated_project.owner }
+        let(:user) { unrelated_project.first_owner }
 
         it 'returns correct access level' do
           expect(shared_group_parent.max_member_access_for_user(user)).to eq(Gitlab::Access::NO_ACCESS)

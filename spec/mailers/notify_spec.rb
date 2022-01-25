@@ -714,7 +714,7 @@ RSpec.describe Notify do
     describe 'project access requested' do
       let(:project) do
         create(:project, :public) do |project|
-          project.add_maintainer(project.owner)
+          project.add_maintainer(project.first_owner)
         end
       end
 

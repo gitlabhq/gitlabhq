@@ -36,6 +36,32 @@ RSpec.describe Gitlab::ImportExport::Saver do
       .to match(%r[\/uploads\/-\/system\/import_export_upload\/export_file.*])
   end
 
+  it 'logs metrics after saving' do
+    stub_uploads_object_storage(ImportExportUploader)
+    expect(Gitlab::Export::Logger).to receive(:info).with(
+      hash_including(
+        message: 'Export archive saved',
+        exportable_class: 'Project',
+        'correlation_id' => anything,
+        archive_file: anything,
+        compress_duration_s: anything
+      )).and_call_original
+
+    expect(Gitlab::Export::Logger).to receive(:info).with(
+      hash_including(
+        message: 'Export archive uploaded',
+        exportable_class: 'Project',
+        'correlation_id' => anything,
+        archive_file: anything,
+        compress_duration_s: anything,
+        assign_duration_s: anything,
+        upload_duration_s: anything,
+        upload_bytes: anything
+      )).and_call_original
+
+    subject.save
+  end
+
   it 'removes archive path and keeps base path untouched' do
     allow(shared).to receive(:archive_path).and_return(archive_path)
 
@@ -44,5 +70,23 @@ RSpec.describe Gitlab::ImportExport::Saver do
     expect(FileUtils).not_to have_received(:rm_rf).with(base_path)
     expect(FileUtils).to have_received(:rm_rf).with(archive_path)
     expect(Dir.exist?(archive_path)).to eq(false)
+  end
+
+  context 'when save throws an exception' do
+    before do
+      expect(subject).to receive(:save_upload).and_raise(SocketError.new)
+    end
+
+    it 'logs a saver error' do
+      allow(Gitlab::Export::Logger).to receive(:info).with(anything).and_call_original
+      expect(Gitlab::Export::Logger).to receive(:info).with(
+        hash_including(
+          message: 'Export archive saver failed',
+          exportable_class: 'Project',
+          'correlation_id' => anything
+        )).and_call_original
+
+      subject.save
+    end
   end
 end

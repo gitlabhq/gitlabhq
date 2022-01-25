@@ -1142,7 +1142,7 @@ RSpec.shared_examples 'a container registry auth service' do
   end
 
   context 'when importing' do
-    let_it_be(:container_repository) { create(:container_repository, :root, migration_state: 'importing') }
+    let_it_be(:container_repository) { create(:container_repository, :root, :importing) }
     let_it_be(:current_project) { container_repository.project }
     let_it_be(:current_user) { create(:user) }
 

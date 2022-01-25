@@ -170,9 +170,18 @@ After that, the next pipeline uses the up-to-date `knapsack/report-master.json` 
 
 ### Flaky tests
 
+#### Automatic skipping of flaky tests
+
 Tests that are [known to be flaky](testing_guide/flaky_tests.md#automatic-retries-and-flaky-tests-detection) are
 skipped unless the `$SKIP_FLAKY_TESTS_AUTOMATICALLY` variable is set to `false` or if the `~"pipeline:run-flaky-tests"`
 label is set on the MR.
+
+#### Automatic retry of failing tests in a separate process
+
+When the `$RETRY_FAILED_TESTS_IN_NEW_PROCESS` variable is set to `true`, RSpec tests that failed are automatically retried once in a separate
+RSpec process. The goal is to get rid of most side-effects from previous tests that may lead to a subsequent test failure.
+
+We keep track of retried tests in the `$RETRIED_TESTS_REPORT_FILE` file saved as artifact by the `rspec:flaky-tests-report` job.
 
 ### Monitoring
 

@@ -486,7 +486,7 @@ eos
     it 'uses the CachedMarkdownField cache instead of the Mentionable cache', :use_clean_rails_redis_caching do
       expect(commit.title_html).not_to be_present
 
-      commit.all_references(project.owner).all
+      commit.all_references(project.first_owner).all
 
       expect(commit.title_html).to be_present
       expect(Rails.cache.read("banzai/commit:#{commit.id}/safe_message/single_line")).to be_nil

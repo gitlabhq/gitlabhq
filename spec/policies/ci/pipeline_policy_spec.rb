@@ -89,7 +89,7 @@ RSpec.describe Ci::PipelinePolicy, :models do
       let(:project) { create(:project, :public) }
 
       context 'when user has owner access' do
-        let(:user) { project.owner }
+        let(:user) { project.first_owner }
 
         it 'is enabled' do
           expect(policy).to be_allowed :destroy_pipeline
@@ -107,7 +107,7 @@ RSpec.describe Ci::PipelinePolicy, :models do
       let(:project) { create(:project, :public) }
 
       context 'when user has owner access' do
-        let(:user) { project.owner }
+        let(:user) { project.first_owner }
 
         it 'is enabled' do
           expect(policy).to be_allowed :read_pipeline_variable
@@ -129,7 +129,7 @@ RSpec.describe Ci::PipelinePolicy, :models do
       end
 
       context 'when user is developer and it is not the creator of the pipeline' do
-        let(:pipeline) { create(:ci_empty_pipeline, project: project, user: project.owner) }
+        let(:pipeline) { create(:ci_empty_pipeline, project: project, user: project.first_owner) }
 
         before do
           project.add_developer(user)

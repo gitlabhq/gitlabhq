@@ -117,7 +117,7 @@ RSpec.describe ProjectPolicy do
     end
 
     describe 'for unconfirmed user' do
-      let(:current_user) { project.owner.tap { |u| u.update!(confirmed_at: nil) } }
+      let(:current_user) { project.first_owner.tap { |u| u.update!(confirmed_at: nil) } }
 
       it 'disallows to modify pipelines' do
         expect_disallowed(:create_pipeline)
@@ -144,7 +144,7 @@ RSpec.describe ProjectPolicy do
       end
 
       describe 'for project owner' do
-        let(:current_user) { project.owner }
+        let(:current_user) { project.first_owner }
 
         it 'allows :destroy_pipeline' do
           expect(current_user.can?(:destroy_pipeline, pipeline)).to be_truthy

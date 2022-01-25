@@ -16,19 +16,20 @@ module Gitlab
 
       def save
         if compress_and_save
-          Gitlab::Export::Logger.info(
-            message: 'Export archive saved',
-            exportable_class: @exportable.class.to_s,
-            archive_file: archive_file
-          )
+          log_export_results('Export archive saved')
 
           save_upload
+
+          log_export_results('Export archive uploaded')
         else
           @shared.error(Gitlab::ImportExport::Error.new(error_message))
+
           false
         end
       rescue StandardError => e
         @shared.error(e)
+        log_export_results('Export archive saver failed')
+
         false
       ensure
         remove_archive_tmp_dir
@@ -36,8 +37,16 @@ module Gitlab
 
       private
 
+      attr_accessor :compress_duration_s, :assign_duration_s, :upload_duration_s, :upload_bytes
+
       def compress_and_save
-        tar_czf(archive: archive_file, dir: @shared.export_path)
+        result = nil
+
+        @compress_duration_s = Benchmark.realtime do
+          result = tar_czf(archive: archive_file, dir: @shared.export_path)
+        end
+
+        result
       end
 
       def remove_archive_tmp_dir
@@ -51,9 +60,12 @@ module Gitlab
       def save_upload
         upload = initialize_upload
 
-        File.open(archive_file) { |file| upload.export_file = file }
+        @upload_bytes = File.size(archive_file)
+        @assign_duration_s = Benchmark.realtime do
+          File.open(archive_file) { |file| upload.export_file = file }
+        end
 
-        upload.save!
+        @upload_duration_s = Benchmark.realtime { upload.save! }
 
         true
       end
@@ -66,6 +78,23 @@ module Gitlab
         exportable_kind = @exportable.class.name.downcase
 
         ImportExportUpload.find_or_initialize_by(Hash[exportable_kind, @exportable])
+      end
+
+      def log_export_results(message)
+        Gitlab::Export::Logger.info(message: message, **log_data)
+      end
+
+      def log_data
+        ApplicationContext.current.merge(
+          {
+            exportable_class: @exportable.class.to_s,
+            archive_file: archive_file,
+            compress_duration_s: compress_duration_s&.round(6),
+            assign_duration_s: assign_duration_s&.round(6),
+            upload_duration_s: upload_duration_s&.round(6),
+            upload_bytes: upload_bytes
+          }
+        ).compact
       end
     end
   end

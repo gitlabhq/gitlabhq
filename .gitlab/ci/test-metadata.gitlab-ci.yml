@@ -6,8 +6,7 @@
     expire_in: 31d
     paths:
       - knapsack/
-      - rspec_flaky/
-      - rspec_profiling/
+      - rspec/
       - crystalball/
 
 retrieve-tests-metadata:
@@ -44,6 +43,6 @@ update-tests-metadata:
   script:
     - run_timed_command "retry gem install fog-aws mime-types activesupport rspec_profiling postgres-copy --no-document"
     - source ./scripts/rspec_helpers.sh
-    - test -f rspec_flaky/report-suite.json || echo -e "\e[31m" 'Consider add ~"pipeline:run-all-rspec" to run full rspec jobs' "\e[0m"
+    - test -f "${FLAKY_RSPEC_SUITE_REPORT_PATH}" || echo -e "\e[31m" 'Consider add ~"pipeline:run-all-rspec" to run full rspec jobs' "\e[0m"
     - update_tests_metadata
     - update_tests_mapping

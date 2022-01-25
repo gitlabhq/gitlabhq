@@ -16,4 +16,4 @@ OptionParser.new do |opts|
   end
 end.parse!
 
-Tooling::ParallelRSpecRunner.run(**options)
+exit Tooling::ParallelRSpecRunner.run(**options)

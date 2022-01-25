@@ -15,6 +15,12 @@ class UpdateContainerRegistryInfoService
     client = ContainerRegistry::Client.new(registry_config.api_url, token: token)
     info = client.registry_info
 
+    gitlab_api_client = ContainerRegistry::GitlabApiClient.new(registry_config.api_url, token: token)
+    if gitlab_api_client.supports_gitlab_api?
+      info[:features] ||= []
+      info[:features] << ContainerRegistry::GitlabApiClient::REGISTRY_GITLAB_V1_API_FEATURE
+    end
+
     Gitlab::CurrentSettings.update!(
       container_registry_vendor: info[:vendor] || '',
       container_registry_version: info[:version] || '',

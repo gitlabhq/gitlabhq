@@ -291,6 +291,7 @@ globally or for individual jobs:
 - [`GIT_CHECKOUT`](#git-checkout)
 - [`GIT_CLEAN_FLAGS`](#git-clean-flags)
 - [`GIT_FETCH_EXTRA_FLAGS`](#git-fetch-extra-flags)
+- [`GIT_SUBMODULE_UPDATE_FLAGS`](#git-submodule-update-flags)
 - [`GIT_DEPTH`](#shallow-cloning) (shallow cloning)
 - [`GIT_CLONE_PATH`](#custom-build-directories) (custom build directories)
 - [`TRANSFER_METER_FREQUENCY`](#artifact-and-cache-settings) (artifact/cache meter update frequency)
@@ -382,6 +383,8 @@ For this feature to work correctly, the submodules must be configured
 - a relative path to another repository on the same GitLab server. See the
   [Git submodules](../git_submodules.md) documentation.
 
+You can provide additional flags to control advanced behavior using [`GIT_SUBMODULE_UPDATE_FLAGS`](#git-submodule-update-flags).
+
 ### Git checkout
 
 > Introduced in GitLab Runner 9.3.
@@ -442,14 +445,14 @@ script:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/4142) in GitLab Runner 13.1.
 
-The `GIT_FETCH_EXTRA_FLAGS` variable is used to control the behavior of
+Use the `GIT_FETCH_EXTRA_FLAGS` variable to control the behavior of
 `git fetch`. You can set it globally or per-job in the [`variables`](../yaml/index.md#variables) section.
 
 `GIT_FETCH_EXTRA_FLAGS` accepts all options of the [`git fetch`](https://git-scm.com/docs/git-fetch) command. However, `GIT_FETCH_EXTRA_FLAGS` flags are appended after the default flags that can't be modified.
 
 The default flags are:
 
-- [GIT_DEPTH](#shallow-cloning).
+- [`GIT_DEPTH`](#shallow-cloning).
 - The list of [refspecs](https://git-scm.com/book/en/v2/Git-Internals-The-Refspec).
 - A remote called `origin`.
 
@@ -474,6 +477,47 @@ git fetch origin $REFSPECS --depth 50  --prune
 ```
 
 Where `$REFSPECS` is a value provided to the runner internally by GitLab.
+
+### Git submodule update flags
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/3192) in GitLab Runner 14.8.
+
+Use the `GIT_SUBMODULE_UPDATE_FLAGS` variable to control the behavior of `git submodule update`
+when [`GIT_SUBMODULE_STRATEGY`](#git-submodule-strategy) is set to either `normal` or `recursive`.
+You can set it globally or per-job in the [`variables`](../yaml/index.md#variables) section.
+
+`GIT_SUBMODULE_UPDATE_FLAGS` accepts all options of the
+[`git submodule update`](https://git-scm.com/docs/git-submodule#Documentation/git-submodule.txt-update--init--remote-N--no-fetch--no-recommend-shallow-f--force--checkout--rebase--merge--referenceltrepositorygt--depthltdepthgt--recursive--jobsltngt--no-single-branch--ltpathgt82308203)
+subcommand. However, note that `GIT_SUBMODULE_UPDATE_FLAGS` flags are appended after a few default flags:
+
+- `--init`, if [`GIT_SUBMODULE_STRATEGY`](#git-submodule-strategy) was set to `normal` or `recursive`.
+- `--recursive`, if [`GIT_SUBMODULE_STRATEGY`](#git-submodule-strategy) was set to `recursive`.
+- [`GIT_DEPTH`](#shallow-cloning). See the default value below.
+
+Git honors the last occurrence of a flag in the list of arguments, so manually
+providing them in `GIT_SUBMODULE_UPDATE_FLAGS` will also override these default flags.
+
+You can use this variable to fetch the latest remote `HEAD` instead of the commit tracked,
+in the repository, or to speed up the checkout by fetching submodules in multiple parallel jobs:
+
+```yaml
+variables:
+  GIT_SUBMODULE_STRATEGY: recursive
+  GIT_SUBMODULE_UPDATE_FLAGS: --remote --jobs 4
+script:
+  - ls -al .git/modules/
+```
+
+The configuration above results in `git submodule update` being called this way:
+
+```shell
+git submodule update --init --depth 50 --recursive --remote --jobs 4
+```
+
+WARNING:
+You should be aware of the implications for the security, stability, and reproducibility of
+your builds when using the `--remote` flag. In most cases, it is better to explicitly track
+submodule commits as designed, and update them using an auto-remediation/dependency bot.
 
 ### Shallow cloning
 

@@ -29,7 +29,9 @@
     GITLAB_USE_MODEL_LOAD_BALANCING: "true"
 
 .rspec-base:
-  extends: .rails-job-base
+  extends:
+    - .rails-job-base
+    - .base-artifacts
   stage: test
   variables:
     RUBY_GC_MALLOC_LIMIT: 67108864
@@ -40,6 +42,8 @@
   script:
     - !reference [.base-script, script]
     - rspec_paralellized_job "--tag ~quarantine --tag ~geo --tag ~level:migration"
+
+.base-artifacts:
   artifacts:
     expire_in: 31d
     when: always
@@ -48,16 +52,17 @@
       - crystalball/
       - deprecations/
       - knapsack/
-      - rspec_flaky/
-      - rspec_profiling/
+      - rspec/
       - tmp/capybara/
       - tmp/memory_test/
       - log/*.log
     reports:
-      junit: junit_rspec.xml
+      junit: ${JUNIT_RESULT_FILE}
 
 .rspec-base-migration:
-  extends: .rails:rules:ee-and-foss-migration
+  extends:
+    - .base-artifacts
+    - .rails:rules:ee-and-foss-migration
   script:
     - !reference [.base-script, script]
     - rspec_paralellized_job "--tag ~quarantine --tag ~geo --tag level:migration"
@@ -550,7 +555,6 @@ rspec:coverage:
     - rspec-ee integration pg12 geo minimal
     - rspec-ee system pg12 geo minimal
     # Memory jobs
-    - memory-static
     - memory-on-boot
     # As-if-FOSS jobs
     - rspec migration pg12-as-if-foss
@@ -617,54 +621,26 @@ rspec:feature-flags:
         run_timed_command "bundle exec scripts/used-feature-flags";
       fi
 
-rspec:skipped-flaky-tests-report:
+rspec:flaky-tests-report:
   extends:
     - .default-retry
-    - .rails:rules:skipped-flaky-tests-report
-  image: ruby:2.7-alpine
+    - .rails:rules:flaky-tests-report
   stage: post-test
   # We cannot use needs since it would mean needing 84 jobs (since most are parallelized)
   # so we use `dependencies` here.
-  dependencies:
-    # FOSS/EE jobs
-    - rspec migration pg12
-    - rspec unit pg12
-    - rspec integration pg12
-    - rspec system pg12
-    # FOSS/EE minimal jobs
-    - rspec migration pg12 minimal
-    - rspec unit pg12 minimal
-    - rspec integration pg12 minimal
-    - rspec system pg12 minimal
-    # EE jobs
-    - rspec-ee migration pg12
-    - rspec-ee unit pg12
-    - rspec-ee integration pg12
-    - rspec-ee system pg12
-    # EE minimal jobs
-    - rspec-ee migration pg12 minimal
-    - rspec-ee unit pg12 minimal
-    - rspec-ee integration pg12 minimal
-    - rspec-ee system pg12 minimal
-    # Geo jobs
-    - rspec-ee unit pg12 geo
-    - rspec-ee integration pg12 geo
-    - rspec-ee system pg12 geo
-    # Geo minimal jobs
-    - rspec-ee unit pg12 geo minimal
-    - rspec-ee integration pg12 geo minimal
-    - rspec-ee system pg12 geo minimal
+  dependencies: !reference ["rspec:coverage", "dependencies"]
   variables:
-    SKIPPED_FLAKY_TESTS_REPORT: skipped_flaky_tests_report.txt
+    SKIPPED_FLAKY_TESTS_REPORT_PATH: rspec/flaky/skipped_flaky_tests_report.txt
+    RETRIED_TESTS_REPORT_PATH: rspec/flaky/retried_tests_report.txt
   before_script:
-    - 'echo "SKIP_FLAKY_TESTS_AUTOMATICALLY: $SKIP_FLAKY_TESTS_AUTOMATICALLY"'
-    - mkdir -p rspec_flaky
+    - source scripts/utils.sh
+    - source scripts/rspec_helpers.sh
   script:
-    - find rspec_flaky/ -type f -name 'skipped_flaky_tests_*_report.txt' -exec cat {} + >> "${SKIPPED_FLAKY_TESTS_REPORT}"
+    - generate_flaky_tests_reports
   artifacts:
     expire_in: 31d
     paths:
-      - ${SKIPPED_FLAKY_TESTS_REPORT}
+      - rspec/
 
 # EE/FOSS: default refs (MRs, default branch, schedules) jobs #
 #######################################################

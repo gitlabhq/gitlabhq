@@ -3427,7 +3427,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
       create(:ci_pipeline,
              project: project,
              sha: project.commit('master').sha,
-             user: project.owner)
+             user: project.first_owner)
     end
 
     before do
@@ -4502,7 +4502,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
   describe '#reset_source_bridge!' do
     let(:pipeline) { create(:ci_pipeline, :created, project: project) }
 
-    subject(:reset_bridge) { pipeline.reset_source_bridge!(project.owner) }
+    subject(:reset_bridge) { pipeline.reset_source_bridge!(project.first_owner) }
 
     context 'when the pipeline is a child pipeline and the bridge is depended' do
       let!(:parent_pipeline) { create(:ci_pipeline) }

@@ -5,6 +5,7 @@ module ServicePing
     PRODUCTION_BASE_URL = 'https://version.gitlab.com'
     STAGING_BASE_URL = 'https://gitlab-services-version-gitlab-com-staging.gs-staging.gitlab.org'
     USAGE_DATA_PATH = 'usage_data'
+    ERROR_PATH = 'usage_ping_errors'
 
     SubmissionError = Class.new(StandardError)
 
@@ -15,11 +16,22 @@ module ServicePing
     def execute
       return unless ServicePing::ServicePingSettings.product_intelligence_enabled?
 
+      start = Time.current
       begin
         usage_data = BuildPayloadService.new.execute
         response = submit_usage_data_payload(usage_data)
-      rescue StandardError
+      rescue StandardError => e
         return unless Gitlab::CurrentSettings.usage_ping_enabled?
+
+        error_payload = {
+          time: Time.current,
+          uuid: Gitlab::UsageData.add_metric('UuidMetric'),
+          hostname: Gitlab::UsageData.add_metric('HostnameMetric'),
+          version: Gitlab::UsageData.alt_usage_data { Gitlab::VERSION },
+          message: e.message,
+          elapsed: (Time.current - start).round(1)
+        }
+        submit_payload({ error: error_payload }, url: error_url)
 
         usage_data = Gitlab::UsageData.data(force_refresh: true)
         response = submit_usage_data_payload(usage_data)
@@ -42,12 +54,16 @@ module ServicePing
       URI.join(base_url, USAGE_DATA_PATH)
     end
 
+    def error_url
+      URI.join(base_url, ERROR_PATH)
+    end
+
     private
 
-    def submit_payload(usage_data)
+    def submit_payload(payload, url: self.url)
       Gitlab::HTTP.post(
         url,
-        body: usage_data.to_json,
+        body: payload.to_json,
         allow_local_requests: true,
         headers: { 'Content-type' => 'application/json' }
       )

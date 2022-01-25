@@ -11,7 +11,9 @@
       metrics: "${METRICS_FILE}"
     expire_in: 31d
 
-memory-static:
+# Disabled since it causes intermittent SIGSEGV in CI:
+# https://gitlab.com/gitlab-org/gitlab/-/issues/350296
+.memory-static:
   extends: .only-code-memory-job-base
   stage: test
   needs: ["setup-test-env"]

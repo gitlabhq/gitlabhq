@@ -50,7 +50,9 @@ RSpec.describe IssueCollection do
       end
     end
 
-    context 'using a user that is the owner of a project' do
+    # TODO update when we have multiple owners of a project
+    # https://gitlab.com/gitlab-org/gitlab/-/issues/350605
+    context 'using a user that is an owner of a project' do
       it 'returns the issues of the project' do
         expect(collection.updatable_by_user(project.namespace.owner))
           .to eq([issue1, issue2])

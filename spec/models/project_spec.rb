@@ -871,6 +871,8 @@ RSpec.describe Project, factory_default: :keep do
   end
 
   describe 'reference methods' do
+    # TODO update when we have multiple owners of a project
+    # https://gitlab.com/gitlab-org/gitlab/-/issues/350605
     let_it_be(:owner)     { create(:user, name: 'Gitlab') }
     let_it_be(:namespace) { create(:namespace, name: 'Sample namespace', path: 'sample-namespace', owner: owner) }
     let_it_be(:project)   { create(:project, name: 'Sample project', path: 'sample-project', namespace: namespace) }
@@ -2874,7 +2876,7 @@ RSpec.describe Project, factory_default: :keep do
       end
 
       before do
-        project.repository.rm_branch(project.owner, branch.name)
+        project.repository.rm_branch(project.first_owner, branch.name)
       end
 
       subject { project.latest_pipeline(branch.name) }

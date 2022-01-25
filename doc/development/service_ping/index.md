@@ -205,6 +205,25 @@ sequenceDiagram
    If a firewall exception is needed, the required URL depends on several things. If
    the hostname is `version.gitlab.com`, the protocol is `TCP`, and the port number is `443`,
    the required URL is <https://version.gitlab.com/>.
+1. In case of an error, it will be reported to the Version application along with following pieces of information:
+
+- `uuid` - GitLab instance unique identifier
+- `hostname` - GitLab instance hostname
+- `version` - GitLab instance current versions 
+- `elapsed` - Amount of time which passed since Service Ping report process started and moment of error occurrence
+- `message` - Error message
+
+<pre>
+<code>
+{
+  "uuid"=>"02333324-1cd7-4c3b-a45b-a4993f05fb1d", 
+  "hostname"=>"127.0.0.1", 
+  "version"=>"14.7.0-pre", 
+  "elapsed"=>0.006946, 
+  "message"=>'PG::UndefinedColumn: ERROR:  column \"non_existent_attribute\" does not exist\nLINE 1: SELECT COUNT(non_existent_attribute) FROM \"issues\" /*applica...'
+}
+</code>
+</pre>
 
 ### On a Geo secondary site
 
@@ -510,7 +529,7 @@ To generate Service Ping, use [Teleport](https://goteleport.com/docs/) or a deta
 
 ### Verification (After approx 30 hours)
 
-#### Verify with a detached screen session
+#### Verify with Teleport
 
 1. Follow [the steps](https://gitlab.com/gitlab-com/runbooks/-/blob/master/docs/Teleport/Connect_to_Rails_Console_via_Teleport.md#how-to-use-teleport-to-connect-to-rails-console) to request a new access to the required environment and connect to the Rails console
 1. Check the last payload in `raw_usage_data` table: `RawUsageData.last.payload`

@@ -48,6 +48,7 @@ RSpec.describe UpdateContainerRegistryInfoService do
 
       before do
         stub_registry_info({})
+        stub_supports_gitlab_api(false)
       end
 
       it 'uses a token with no access permissions' do
@@ -63,6 +64,7 @@ RSpec.describe UpdateContainerRegistryInfoService do
     context 'when unabled to detect the container registry type' do
       it 'sets the application settings to their defaults' do
         stub_registry_info({})
+        stub_supports_gitlab_api(false)
 
         subject
 
@@ -76,20 +78,23 @@ RSpec.describe UpdateContainerRegistryInfoService do
     context 'when able to detect the container registry type' do
       context 'when using the GitLab container registry' do
         it 'updates application settings accordingly' do
-          stub_registry_info(vendor: 'gitlab', version: '2.9.1-gitlab', features: %w[a,b,c])
+          stub_registry_info(vendor: 'gitlab', version: '2.9.1-gitlab', features: %w[a b c])
+          stub_supports_gitlab_api(true)
 
           subject
 
           application_settings.reload
           expect(application_settings.container_registry_vendor).to eq('gitlab')
           expect(application_settings.container_registry_version).to eq('2.9.1-gitlab')
-          expect(application_settings.container_registry_features).to eq(%w[a,b,c])
+          expect(application_settings.container_registry_features)
+            .to match_array(%W[a b c #{ContainerRegistry::GitlabApiClient::REGISTRY_GITLAB_V1_API_FEATURE}])
         end
       end
 
       context 'when using a third-party container registry' do
         it 'updates application settings accordingly' do
           stub_registry_info(vendor: 'other', version: nil, features: nil)
+          stub_supports_gitlab_api(false)
 
           subject
 
@@ -110,6 +115,12 @@ RSpec.describe UpdateContainerRegistryInfoService do
   def stub_registry_info(output)
     allow_next_instance_of(ContainerRegistry::Client) do |client|
       allow(client).to receive(:registry_info).and_return(output)
+    end
+  end
+
+  def stub_supports_gitlab_api(output)
+    allow_next_instance_of(ContainerRegistry::GitlabApiClient) do |client|
+      allow(client).to receive(:supports_gitlab_api?).and_return(output)
     end
   end
 end

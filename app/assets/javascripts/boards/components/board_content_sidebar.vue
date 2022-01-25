@@ -184,29 +184,15 @@ export default {
             :issuable-type="issuableType"
             data-testid="sidebar-milestones"
           />
-          <template v-if="!glFeatures.iterationCadences">
-            <sidebar-dropdown-widget
-              v-if="iterationFeatureAvailable && !isIncidentSidebar"
-              :iid="activeBoardItem.iid"
-              issuable-attribute="iteration"
-              :workspace-path="projectPathForActiveIssue"
-              :attr-workspace-path="groupPathForActiveIssue"
-              :issuable-type="issuableType"
-              class="gl-mt-5"
-              data-testid="iteration-edit"
-            />
-          </template>
-          <template v-else>
-            <iteration-sidebar-dropdown-widget
-              v-if="iterationFeatureAvailable && !isIncidentSidebar"
-              :iid="activeBoardItem.iid"
-              :workspace-path="projectPathForActiveIssue"
-              :attr-workspace-path="groupPathForActiveIssue"
-              :issuable-type="issuableType"
-              class="gl-mt-5"
-              data-testid="iteration-edit"
-            />
-          </template>
+          <iteration-sidebar-dropdown-widget
+            v-if="iterationFeatureAvailable && !isIncidentSidebar"
+            :iid="activeBoardItem.iid"
+            :workspace-path="projectPathForActiveIssue"
+            :attr-workspace-path="groupPathForActiveIssue"
+            :issuable-type="issuableType"
+            class="gl-mt-5"
+            data-testid="iteration-edit"
+          />
         </div>
         <board-sidebar-time-tracker />
         <sidebar-date-widget

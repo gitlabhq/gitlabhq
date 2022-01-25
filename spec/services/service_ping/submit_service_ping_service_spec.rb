@@ -63,7 +63,7 @@ RSpec.describe ServicePing::SubmitService do
 
   shared_examples 'does not send a blank usage ping payload' do
     it do
-      expect(Gitlab::HTTP).not_to receive(:post)
+      expect(Gitlab::HTTP).not_to receive(:post).with(subject.url, any_args)
 
       expect { subject.execute }.to raise_error(described_class::SubmissionError) do |error|
         expect(error.message).to include('Usage data is blank')
@@ -129,6 +129,7 @@ RSpec.describe ServicePing::SubmitService do
       stub_usage_data_connections
       stub_database_flavor_check
       stub_application_setting(usage_ping_enabled: true)
+      stub_response(body: nil, url: subject.error_url, status: 201)
     end
 
     context 'and user requires usage stats consent' do
@@ -277,13 +278,23 @@ RSpec.describe ServicePing::SubmitService do
     context 'if payload service fails' do
       before do
         stub_response(body: with_dev_ops_score_params)
-        allow(ServicePing::BuildPayloadService).to receive(:execute).and_raise(described_class::SubmissionError, 'SubmissionError')
+        allow(ServicePing::BuildPayloadService).to receive_message_chain(:new, :execute)
+                                                     .and_raise(described_class::SubmissionError, 'SubmissionError')
       end
 
       it 'calls UsageData .data method' do
         usage_data = build_usage_data
 
         expect(Gitlab::UsageData).to receive(:data).and_return(usage_data)
+
+        subject.execute
+      end
+
+      it 'submits error' do
+        expect(Gitlab::HTTP).to receive(:post).with(subject.url, any_args)
+                                              .and_call_original
+        expect(Gitlab::HTTP).to receive(:post).with(subject.error_url, any_args)
+                                              .and_call_original
 
         subject.execute
       end

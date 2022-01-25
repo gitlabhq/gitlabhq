@@ -35,10 +35,17 @@ ci_job_token_project_scope_links:
   - table: users
     column: added_by_id
     on_delete: async_nullify
+  - table: projects
+    column: source_project_id
+    on_delete: async_delete
 ci_daily_build_group_report_results:
   - table: namespaces
     column: group_id
     on_delete: async_delete
+  - table: projects
+    column: project_id
+    on_delete: async_delete
+external_pull_requests:
   - table: projects
     column: project_id
     on_delete: async_delete
@@ -161,6 +168,10 @@ requirements_management_test_reports:
   - table: ci_builds
     column: build_id
     on_delete: async_nullify
+ci_subscriptions_projects:
+  - table: projects
+    column: downstream_project_id
+    on_delete: async_delete
 security_scans:
   - table: ci_builds
     column: build_id

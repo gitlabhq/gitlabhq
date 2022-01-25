@@ -19,7 +19,6 @@ RSpec.describe 'cross-database foreign keys' do
       ci_freeze_periods.project_id
       ci_job_artifacts.project_id
       ci_job_token_project_scope_links.added_by_id
-      ci_job_token_project_scope_links.source_project_id
       ci_job_token_project_scope_links.target_project_id
       ci_pending_builds.namespace_id
       ci_pending_builds.project_id
@@ -33,11 +32,9 @@ RSpec.describe 'cross-database foreign keys' do
       ci_running_builds.project_id
       ci_sources_projects.source_project_id
       ci_stages.project_id
-      ci_subscriptions_projects.downstream_project_id
       ci_subscriptions_projects.upstream_project_id
       ci_unit_tests.project_id
       dast_site_profiles_pipelines.ci_pipeline_id
-      external_pull_requests.project_id
       vulnerability_feedback.pipeline_id
     ).freeze
   end
