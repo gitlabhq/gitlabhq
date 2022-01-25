@@ -1,4 +1,5 @@
 import { shallowMount, createWrapper } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import { BV_HIDE_TOOLTIP } from '~/lib/utils/constants';
 import ModalCopyButton from '~/vue_shared/components/modal_copy_button.vue';
 
@@ -20,7 +21,7 @@ describe('modal copy button', () => {
   });
 
   describe('clipboard', () => {
-    it('should fire a `success` event on click', () => {
+    it('should fire a `success` event on click', async () => {
       const root = createWrapper(wrapper.vm.$root);
       document.execCommand = jest.fn(() => true);
       window.getSelection = jest.fn(() => ({
@@ -29,20 +30,18 @@ describe('modal copy button', () => {
       }));
       wrapper.trigger('click');
 
-      return wrapper.vm.$nextTick().then(() => {
-        expect(wrapper.emitted().success).not.toBeEmpty();
-        expect(document.execCommand).toHaveBeenCalledWith('copy');
-        expect(root.emitted(BV_HIDE_TOOLTIP)).toEqual([['test-id']]);
-      });
+      await nextTick();
+      expect(wrapper.emitted().success).not.toBeEmpty();
+      expect(document.execCommand).toHaveBeenCalledWith('copy');
+      expect(root.emitted(BV_HIDE_TOOLTIP)).toEqual([['test-id']]);
     });
-    it("should propagate the clipboard error event if execCommand doesn't work", () => {
+    it("should propagate the clipboard error event if execCommand doesn't work", async () => {
       document.execCommand = jest.fn(() => false);
       wrapper.trigger('click');
 
-      return wrapper.vm.$nextTick().then(() => {
-        expect(wrapper.emitted().error).not.toBeEmpty();
-        expect(document.execCommand).toHaveBeenCalledWith('copy');
-      });
+      await nextTick();
+      expect(wrapper.emitted().error).not.toBeEmpty();
+      expect(document.execCommand).toHaveBeenCalledWith('copy');
     });
   });
 });

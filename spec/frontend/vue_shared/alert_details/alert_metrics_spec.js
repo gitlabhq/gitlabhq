@@ -1,6 +1,7 @@
 import { shallowMount } from '@vue/test-utils';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
+import { nextTick } from 'vue';
 import waitForPromises from 'helpers/wait_for_promises';
 import MetricEmbed from '~/monitoring/components/embeds/metric_embed.vue';
 import AlertMetrics from '~/vue_shared/alert_details/components/alert_metrics.vue';
@@ -53,7 +54,7 @@ describe('Alert Metrics', () => {
       mountComponent({ props: { dashboardUrl: 'metrics.url' } });
 
       await waitForPromises();
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       expect(findEmptyState().exists()).toBe(false);
       expect(findChart().exists()).toBe(true);

@@ -1,5 +1,6 @@
 import { GlButton } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import DesignScaler from '~/design_management/components/design_scaler.vue';
 
 describe('Design management design scaler component', () => {
@@ -32,7 +33,7 @@ describe('Design management design scaler component', () => {
   describe('when `scale` value is greater than 1', () => {
     beforeEach(async () => {
       setScale(1.6);
-      await wrapper.vm.$nextTick();
+      await nextTick();
     });
 
     it('emits @scale event when "reset" button clicked', () => {
@@ -68,11 +69,11 @@ describe('Design management design scaler component', () => {
   it('computes & increments correct stepSize based on maxScale', async () => {
     wrapper.setProps({ maxScale: 11 });
 
-    await wrapper.vm.$nextTick();
+    await nextTick();
 
     getIncreaseScaleButton().vm.$emit('click');
 
-    await wrapper.vm.$nextTick();
+    await nextTick();
 
     expect(wrapper.emitted().scale[0][0]).toBe(3);
   });
@@ -96,7 +97,7 @@ describe('Design management design scaler component', () => {
   describe('when `scale` value is maximum', () => {
     beforeEach(async () => {
       setScale(2);
-      await wrapper.vm.$nextTick();
+      await nextTick();
     });
 
     it('disables the "increment" button', () => {

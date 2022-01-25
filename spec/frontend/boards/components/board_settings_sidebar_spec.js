@@ -1,7 +1,7 @@
 import { GlDrawer, GlLabel } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { MountingPortal } from 'portal-vue';
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 import { stubComponent } from 'helpers/stub_component';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
@@ -86,7 +86,7 @@ describe('BoardSettingsSidebar', () => {
 
         findDrawer().vm.$emit('close');
 
-        await wrapper.vm.$nextTick();
+        await nextTick();
 
         expect(wrapper.find(GlDrawer).exists()).toBe(false);
       });
@@ -96,7 +96,7 @@ describe('BoardSettingsSidebar', () => {
 
         sidebarEventHub.$emit('sidebar.closeAll');
 
-        await wrapper.vm.$nextTick();
+        await nextTick();
 
         expect(wrapper.find(GlDrawer).exists()).toBe(false);
       });

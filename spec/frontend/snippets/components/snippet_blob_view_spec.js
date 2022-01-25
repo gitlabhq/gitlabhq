@@ -86,21 +86,17 @@ describe('Blob Embeddable', () => {
       expect(wrapper.find(RichViewer).exists()).toBe(true);
     });
 
-    it('correctly switches viewer type', () => {
+    it('correctly switches viewer type', async () => {
       createComponent();
       expect(wrapper.find(SimpleViewer).exists()).toBe(true);
 
       wrapper.vm.switchViewer(RichViewerMock.type);
 
-      return wrapper.vm
-        .$nextTick()
-        .then(() => {
-          expect(wrapper.find(RichViewer).exists()).toBe(true);
-          wrapper.vm.switchViewer(SimpleViewerMock.type);
-        })
-        .then(() => {
-          expect(wrapper.find(SimpleViewer).exists()).toBe(true);
-        });
+      await nextTick();
+      expect(wrapper.find(RichViewer).exists()).toBe(true);
+      await wrapper.vm.switchViewer(SimpleViewerMock.type);
+
+      expect(wrapper.find(SimpleViewer).exists()).toBe(true);
     });
 
     it('passes information about render error down to blob header', () => {
@@ -191,22 +187,18 @@ describe('Blob Embeddable', () => {
       });
 
       describe('switchViewer()', () => {
-        it('switches to the passed viewer', () => {
+        it('switches to the passed viewer', async () => {
           createComponent();
 
           wrapper.vm.switchViewer(RichViewerMock.type);
-          return wrapper.vm
-            .$nextTick()
-            .then(() => {
-              expect(wrapper.vm.activeViewerType).toBe(RichViewerMock.type);
-              expect(wrapper.find(RichViewer).exists()).toBe(true);
 
-              wrapper.vm.switchViewer(SimpleViewerMock.type);
-            })
-            .then(() => {
-              expect(wrapper.vm.activeViewerType).toBe(SimpleViewerMock.type);
-              expect(wrapper.find(SimpleViewer).exists()).toBe(true);
-            });
+          await nextTick();
+          expect(wrapper.vm.activeViewerType).toBe(RichViewerMock.type);
+          expect(wrapper.find(RichViewer).exists()).toBe(true);
+
+          await wrapper.vm.switchViewer(SimpleViewerMock.type);
+          expect(wrapper.vm.activeViewerType).toBe(SimpleViewerMock.type);
+          expect(wrapper.find(SimpleViewer).exists()).toBe(true);
         });
       });
     });

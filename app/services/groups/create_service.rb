@@ -61,6 +61,8 @@ module Groups
         delay = Namespaces::InviteTeamEmailService::DELIVERY_DELAY_IN_MINUTES
         Namespaces::InviteTeamEmailWorker.perform_in(delay, group.id, current_user.id)
       end
+
+      track_experiment_event
     end
 
     def remove_unallowed_params
@@ -111,6 +113,15 @@ module Groups
 
       @group.shared_runners_enabled = @group.parent.shared_runners_enabled
       @group.allow_descendants_override_disabled_shared_runners = @group.parent.allow_descendants_override_disabled_shared_runners
+    end
+
+    def track_experiment_event
+      return unless group.persisted?
+
+      # Track namespace created events to relate them with signed up events for
+      # the same experiment.  This will let us associate created namespaces to
+      # users that signed up from the experimental logged out header.
+      experiment(:logged_out_marketing_header, actor: current_user).track(:namespace_created, namespace: group)
     end
   end
 end

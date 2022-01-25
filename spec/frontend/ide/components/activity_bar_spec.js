@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import { createComponentWithStore } from 'helpers/vue_mount_component_helper';
 import ActivityBar from '~/ide/components/activity_bar.vue';
 import { leftSidebarViews } from '~/ide/constants';
@@ -61,14 +61,11 @@ describe('IDE activity bar', () => {
       expect(vm.$el.querySelector('.js-ide-edit-mode').classList).toContain('active');
     });
 
-    it('sets commit item active', (done) => {
+    it('sets commit item active', async () => {
       vm.$store.state.currentActivityView = leftSidebarViews.commit.name;
 
-      vm.$nextTick(() => {
-        expect(vm.$el.querySelector('.js-ide-commit-mode').classList).toContain('active');
-
-        done();
-      });
+      await nextTick();
+      expect(vm.$el.querySelector('.js-ide-commit-mode').classList).toContain('active');
     });
   });
 

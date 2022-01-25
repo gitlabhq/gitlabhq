@@ -1,7 +1,7 @@
 import { GlLoadingIcon, GlAlert } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import AxiosMockAdapter from 'axios-mock-adapter';
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import createHttpIntegrationMutation from 'ee_else_ce/alerts_settings/graphql/mutations/create_http_integration.mutation.graphql';
 import updateHttpIntegrationMutation from 'ee_else_ce/alerts_settings/graphql/mutations/update_http_integration.mutation.graphql';
@@ -70,7 +70,7 @@ describe('AlertsSettingsWrapper', () => {
 
   async function destroyHttpIntegration(localWrapper) {
     await jest.runOnlyPendingTimers();
-    await localWrapper.vm.$nextTick();
+    await nextTick();
 
     localWrapper
       .find(IntegrationsList)

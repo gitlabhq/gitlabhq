@@ -1,5 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import Vuex from 'vuex';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -148,7 +148,7 @@ describe('Board List Header Component', () => {
 
       findCaret().vm.$emit('click');
 
-      await wrapper.vm.$nextTick();
+      await nextTick();
       expect(toggleListCollapsedSpy).toHaveBeenCalledTimes(1);
     });
 
@@ -156,7 +156,7 @@ describe('Board List Header Component', () => {
       createComponent({ withLocalStorage: false, currentUserId: 1 });
 
       findCaret().vm.$emit('click');
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       expect(updateListSpy).toHaveBeenCalledTimes(1);
       expect(localStorage.getItem(`${wrapper.vm.uniqueKey}.collapsed`)).toBe(null);
@@ -168,7 +168,7 @@ describe('Board List Header Component', () => {
       });
 
       findCaret().vm.$emit('click');
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       expect(updateListSpy).not.toHaveBeenCalled();
       expect(localStorage.getItem(`${wrapper.vm.uniqueKey}.collapsed`)).toBe(String(isCollapsed()));

@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import { createComponentWithStore } from 'helpers/vue_mount_component_helper';
 import FileRowExtra from '~/ide/components/file_row_extra.vue';
 import { createStore } from '~/ide/stores';
@@ -70,28 +70,22 @@ describe('IDE extra file row component', () => {
       expect(vm.$el.querySelector('.ide-tree-changes')).toBe(null);
     });
 
-    it('does not show when tree is open', (done) => {
+    it('does not show when tree is open', async () => {
       vm.file.type = 'tree';
       vm.file.opened = true;
       changesCount = 1;
 
-      vm.$nextTick(() => {
-        expect(vm.$el.querySelector('.ide-tree-changes')).toBe(null);
-
-        done();
-      });
+      await nextTick();
+      expect(vm.$el.querySelector('.ide-tree-changes')).toBe(null);
     });
 
-    it('shows for trees with changes', (done) => {
+    it('shows for trees with changes', async () => {
       vm.file.type = 'tree';
       vm.file.opened = false;
       changesCount = 1;
 
-      vm.$nextTick(() => {
-        expect(vm.$el.querySelector('.ide-tree-changes')).not.toBe(null);
-
-        done();
-      });
+      await nextTick();
+      expect(vm.$el.querySelector('.ide-tree-changes')).not.toBe(null);
     });
   });
 
@@ -100,55 +94,40 @@ describe('IDE extra file row component', () => {
       expect(vm.$el.querySelector('.file-changed-icon')).toBe(null);
     });
 
-    it('shows when file is changed', (done) => {
+    it('shows when file is changed', async () => {
       vm.file.changed = true;
 
-      vm.$nextTick(() => {
-        expect(vm.$el.querySelector('.file-changed-icon')).not.toBe(null);
-
-        done();
-      });
+      await nextTick();
+      expect(vm.$el.querySelector('.file-changed-icon')).not.toBe(null);
     });
 
-    it('shows when file is staged', (done) => {
+    it('shows when file is staged', async () => {
       vm.file.staged = true;
 
-      vm.$nextTick(() => {
-        expect(vm.$el.querySelector('.file-changed-icon')).not.toBe(null);
-
-        done();
-      });
+      await nextTick();
+      expect(vm.$el.querySelector('.file-changed-icon')).not.toBe(null);
     });
 
-    it('shows when file is a tempFile', (done) => {
+    it('shows when file is a tempFile', async () => {
       vm.file.tempFile = true;
 
-      vm.$nextTick(() => {
-        expect(vm.$el.querySelector('.file-changed-icon')).not.toBe(null);
-
-        done();
-      });
+      await nextTick();
+      expect(vm.$el.querySelector('.file-changed-icon')).not.toBe(null);
     });
 
-    it('shows when file is renamed', (done) => {
+    it('shows when file is renamed', async () => {
       vm.file.prevPath = 'original-file';
 
-      vm.$nextTick(() => {
-        expect(vm.$el.querySelector('.file-changed-icon')).not.toBe(null);
-
-        done();
-      });
+      await nextTick();
+      expect(vm.$el.querySelector('.file-changed-icon')).not.toBe(null);
     });
 
-    it('hides when file is renamed', (done) => {
+    it('hides when file is renamed', async () => {
       vm.file.prevPath = 'original-file';
       vm.file.type = 'tree';
 
-      vm.$nextTick(() => {
-        expect(vm.$el.querySelector('.file-changed-icon')).toBe(null);
-
-        done();
-      });
+      await nextTick();
+      expect(vm.$el.querySelector('.file-changed-icon')).toBe(null);
     });
   });
 
@@ -157,14 +136,11 @@ describe('IDE extra file row component', () => {
       expect(vm.$el.querySelector('[data-testid="git-merge-icon"]')).toBe(null);
     });
 
-    it('shows when a merge request change', (done) => {
+    it('shows when a merge request change', async () => {
       vm.file.mrChange = true;
 
-      vm.$nextTick(() => {
-        expect(vm.$el.querySelector('[data-testid="git-merge-icon"]')).not.toBe(null);
-
-        done();
-      });
+      await nextTick();
+      expect(vm.$el.querySelector('[data-testid="git-merge-icon"]')).not.toBe(null);
     });
   });
 });

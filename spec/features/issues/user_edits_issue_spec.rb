@@ -145,7 +145,7 @@ RSpec.describe "Issues > User edits issue", :js do
           fill_in 'Comment', with: '/label ~syzygy'
 
           click_button 'Comment'
-          expect(page).to have_text('added syzygy label just now', wait: 300)
+          expect(page).to have_text('added syzygy label just now')
 
           page.within '.block.labels' do
             # Remove `verisimilitude` label

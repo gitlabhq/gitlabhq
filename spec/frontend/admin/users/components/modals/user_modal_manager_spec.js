@@ -1,4 +1,5 @@
 import { mount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import UserModalManager from '~/admin/users/components/modals/user_modal_manager.vue';
 import ModalStub from './stubs/modal_stub';
 
@@ -50,20 +51,19 @@ describe('Users admin page Modal Manager', () => {
       expect(() => wrapper.vm.show({ glModalAction: 'action1' })).toThrow();
     });
 
-    it('renders modal with expected props when valid configuration is passed', () => {
+    it('renders modal with expected props when valid configuration is passed', async () => {
       createComponent();
       wrapper.vm.show({
         glModalAction: 'action1',
         extraProp: 'extraPropValue',
       });
 
-      return wrapper.vm.$nextTick().then(() => {
-        const modal = findModal();
-        expect(modal.exists()).toBeTruthy();
-        expect(modal.vm.$attrs.csrfToken).toEqual('dummyCSRF');
-        expect(modal.vm.$attrs.extraProp).toEqual('extraPropValue');
-        expect(modal.vm.showWasCalled).toBeTruthy();
-      });
+      await nextTick();
+      const modal = findModal();
+      expect(modal.exists()).toBeTruthy();
+      expect(modal.vm.$attrs.csrfToken).toEqual('dummyCSRF');
+      expect(modal.vm.$attrs.extraProp).toEqual('extraPropValue');
+      expect(modal.vm.showWasCalled).toBeTruthy();
     });
   });
 
@@ -101,7 +101,7 @@ describe('Users admin page Modal Manager', () => {
     it('renders the modal when the button is clicked', async () => {
       button.click();
 
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       expect(findModal().exists()).toBe(true);
     });
@@ -110,7 +110,7 @@ describe('Users admin page Modal Manager', () => {
       button.removeAttribute('data-gl-modal-action');
       button.click();
 
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       expect(findModal().exists()).toBe(false);
     });
@@ -118,7 +118,7 @@ describe('Users admin page Modal Manager', () => {
     it('does not render the modal when a button without the selector class is clicked', async () => {
       button2.click();
 
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       expect(findModal().exists()).toBe(false);
     });

@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import { createComponentWithStore } from 'helpers/vue_mount_component_helper';
 import { projectData, branches } from 'jest/ide/mock_data';
 import commitActions from '~/ide/components/commit_sidebar/actions.vue';
@@ -71,15 +71,12 @@ describe('IDE commit sidebar actions', () => {
     expect(findText()).toContain('Commit to main branch');
   });
 
-  it('hides merge request option when project merge requests are disabled', (done) => {
+  it('hides merge request option when project merge requests are disabled', async () => {
     createComponent({ hasMR: false });
 
-    vm.$nextTick(() => {
-      expect(findRadios().length).toBe(2);
-      expect(findText()).not.toContain('Create a new branch and merge request');
-
-      done();
-    });
+    await nextTick();
+    expect(findRadios().length).toBe(2);
+    expect(findText()).not.toContain('Create a new branch and merge request');
   });
 
   describe('currentBranchText', () => {
@@ -105,22 +102,18 @@ describe('IDE commit sidebar actions', () => {
       expect(vm.$store.dispatch).not.toHaveBeenCalled();
     });
 
-    it('calls again after staged changes', (done) => {
+    it('calls again after staged changes', async () => {
       createComponent({ currentBranchId: null });
 
       vm.$store.state.currentBranchId = 'main';
       vm.$store.state.changedFiles.push({});
       vm.$store.state.stagedFiles.push({});
 
-      vm.$nextTick()
-        .then(() => {
-          expect(vm.$store.dispatch).toHaveBeenCalledWith(
-            ACTION_UPDATE_COMMIT_ACTION,
-            expect.anything(),
-          );
-        })
-        .then(done)
-        .catch(done.fail);
+      await nextTick();
+      expect(vm.$store.dispatch).toHaveBeenCalledWith(
+        ACTION_UPDATE_COMMIT_ACTION,
+        expect.anything(),
+      );
     });
 
     it.each`

@@ -1,5 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
 
+import { nextTick } from 'vue';
 import IssuableBulkEditSidebar from '~/vue_shared/issuable/list/components/issuable_bulk_edit_sidebar.vue';
 
 const createComponent = ({ expanded = true } = {}) =>
@@ -48,7 +49,7 @@ describe('IssuableBulkEditSidebar', () => {
             expanded,
           });
 
-          await wrappeCustom.vm.$nextTick();
+          await nextTick();
 
           expect(document.querySelector('.layout-page').classList.contains(layoutPageClass)).toBe(
             true,
@@ -78,7 +79,7 @@ describe('IssuableBulkEditSidebar', () => {
           expanded,
         });
 
-        await wrappeCustom.vm.$nextTick();
+        await nextTick();
 
         expect(wrappeCustom.classes()).toContain(layoutPageClass);
 

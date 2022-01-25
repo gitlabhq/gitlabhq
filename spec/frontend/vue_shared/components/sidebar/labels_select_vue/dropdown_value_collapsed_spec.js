@@ -1,5 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
 import { GlIcon } from '@gitlab/ui';
+import { nextTick } from 'vue';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import DropdownValueCollapsedComponent from '~/vue_shared/components/sidebar/labels_select_vue/dropdown_value_collapsed.vue';
 
@@ -42,7 +43,7 @@ describe('DropdownValueCollapsedComponent', () => {
 
       wrapper.trigger('click');
 
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       expect(wrapper.emitted('onValueClick')[0]).toBeDefined();
     });

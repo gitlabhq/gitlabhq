@@ -100,58 +100,46 @@ describe('Markdown field component', () => {
         axiosMock.onPost(markdownPreviewPath).reply(200, { body: previewHTML });
       });
 
-      it('sets preview link as active', () => {
+      it('sets preview link as active', async () => {
         previewLink = getPreviewLink();
         previewLink.trigger('click');
 
-        return subject.vm.$nextTick().then(() => {
-          expect(previewLink.element.parentNode.classList.contains('active')).toBeTruthy();
-        });
+        await nextTick();
+        expect(previewLink.element.parentNode.classList.contains('active')).toBeTruthy();
       });
 
-      it('shows preview loading text', () => {
+      it('shows preview loading text', async () => {
         previewLink = getPreviewLink();
         previewLink.trigger('click');
 
-        return subject.vm.$nextTick(() => {
-          expect(subject.find('.md-preview-holder').element.textContent.trim()).toContain(
-            'Loading…',
-          );
-        });
+        await nextTick();
+        expect(subject.find('.md-preview-holder').element.textContent.trim()).toContain('Loading…');
       });
 
-      it('renders markdown preview and GFM', () => {
+      it('renders markdown preview and GFM', async () => {
         const renderGFMSpy = jest.spyOn($.fn, 'renderGFM');
 
         previewLink = getPreviewLink();
 
         previewLink.trigger('click');
 
-        return axios.waitFor(markdownPreviewPath).then(() => {
-          expect(subject.find('.md-preview-holder').element.innerHTML).toContain(previewHTML);
-          expect(renderGFMSpy).toHaveBeenCalled();
-        });
+        await axios.waitFor(markdownPreviewPath);
+        expect(subject.find('.md-preview-holder').element.innerHTML).toContain(previewHTML);
+        expect(renderGFMSpy).toHaveBeenCalled();
       });
 
-      it('calls video.pause() on comment input when isSubmitting is changed to true', () => {
+      it('calls video.pause() on comment input when isSubmitting is changed to true', async () => {
         previewLink = getPreviewLink();
         previewLink.trigger('click');
 
-        let callPause;
+        await axios.waitFor(markdownPreviewPath);
+        const video = getVideo();
+        const callPause = jest.spyOn(video.element, 'pause').mockImplementation(() => true);
 
-        return axios
-          .waitFor(markdownPreviewPath)
-          .then(() => {
-            const video = getVideo();
-            callPause = jest.spyOn(video.element, 'pause').mockImplementation(() => true);
+        subject.setProps({ isSubmitting: true });
 
-            subject.setProps({ isSubmitting: true });
-
-            return subject.vm.$nextTick();
-          })
-          .then(() => {
-            expect(callPause).toHaveBeenCalled();
-          });
+        await nextTick();
+        expect(callPause).toHaveBeenCalled();
       });
 
       it('clicking already active write or preview link does nothing', async () => {
@@ -159,56 +147,53 @@ describe('Markdown field component', () => {
         previewLink = getPreviewLink();
 
         writeLink.trigger('click');
-        await subject.vm.$nextTick();
+        await nextTick();
 
         assertMarkdownTabs(true, writeLink, previewLink, subject);
         writeLink.trigger('click');
-        await subject.vm.$nextTick();
+        await nextTick();
 
         assertMarkdownTabs(true, writeLink, previewLink, subject);
         previewLink.trigger('click');
-        await subject.vm.$nextTick();
+        await nextTick();
 
         assertMarkdownTabs(false, writeLink, previewLink, subject);
         previewLink.trigger('click');
-        await subject.vm.$nextTick();
+        await nextTick();
 
         assertMarkdownTabs(false, writeLink, previewLink, subject);
       });
     });
 
     describe('markdown buttons', () => {
-      it('converts single words', () => {
+      it('converts single words', async () => {
         const textarea = subject.find('textarea').element;
         textarea.setSelectionRange(0, 7);
         const markdownButton = getMarkdownButton();
         markdownButton.trigger('click');
 
-        return subject.vm.$nextTick(() => {
-          expect(textarea.value).toContain('**testing**');
-        });
+        await nextTick();
+        expect(textarea.value).toContain('**testing**');
       });
 
-      it('converts a line', () => {
+      it('converts a line', async () => {
         const textarea = subject.find('textarea').element;
         textarea.setSelectionRange(0, 0);
         const markdownButton = getAllMarkdownButtons().wrappers[5];
         markdownButton.trigger('click');
 
-        return subject.vm.$nextTick(() => {
-          expect(textarea.value).toContain('- testing');
-        });
+        await nextTick();
+        expect(textarea.value).toContain('- testing');
       });
 
-      it('converts multiple lines', () => {
+      it('converts multiple lines', async () => {
         const textarea = subject.find('textarea').element;
         textarea.setSelectionRange(0, 50);
         const markdownButton = getAllMarkdownButtons().wrappers[5];
         markdownButton.trigger('click');
 
-        return subject.vm.$nextTick(() => {
-          expect(textarea.value).toContain('- testing\n- 123');
-        });
+        await nextTick();
+        expect(textarea.value).toContain('- testing\n- 123');
       });
     });
 
@@ -229,7 +214,7 @@ describe('Markdown field component', () => {
         // Do something to trigger rerendering the class
         subject.setProps({ wrapperClasses: 'foo' });
 
-        await subject.vm.$nextTick();
+        await nextTick();
       });
 
       it('should have rerendered classes and kept gfm-form', () => {

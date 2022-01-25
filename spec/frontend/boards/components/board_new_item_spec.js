@@ -1,4 +1,5 @@
 import { GlForm, GlFormInput, GlButton } from '@gitlab/ui';
+import { nextTick } from 'vue';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 
 import BoardNewItem from '~/boards/components/board_new_item.vue';
@@ -44,7 +45,7 @@ describe('BoardNewItem', () => {
         expect(wrapper.findByTestId('create-button').props('disabled')).toBe(true);
 
         wrapper.find(GlFormInput).vm.$emit('input', 'hello');
-        await wrapper.vm.$nextTick();
+        await nextTick();
 
         expect(wrapper.findByTestId('create-button').props('disabled')).toBe(false);
       });
@@ -54,7 +55,7 @@ describe('BoardNewItem', () => {
       it('disables the Create Issue button', async () => {
         wrapper.find(GlFormInput).vm.$emit('input', '    ');
 
-        await wrapper.vm.$nextTick();
+        await nextTick();
 
         expect(wrapper.findByTestId('create-button').props('disabled')).toBe(true);
       });
@@ -124,7 +125,7 @@ describe('BoardNewItem', () => {
       it('emits `form-cancel` event and clears title value when `reset` is triggered on gl-form', async () => {
         titleInput().setValue('Foo');
 
-        await wrapper.vm.$nextTick();
+        await nextTick();
         expect(titleInput().element.value).toBe('Foo');
 
         await glForm().trigger('reset');

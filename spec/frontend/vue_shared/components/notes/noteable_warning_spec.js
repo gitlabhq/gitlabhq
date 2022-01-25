@@ -1,5 +1,6 @@
 import { GlIcon } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import NoteableWarning from '~/vue_shared/components/notes/noteable_warning.vue';
 
 describe('Issue Warning Component', () => {
@@ -64,7 +65,7 @@ describe('Issue Warning Component', () => {
       expect(findConfidentialBlock().exists()).toBe(true);
       expect(findConfidentialBlock().element).toMatchSnapshot();
 
-      await wrapper.vm.$nextTick();
+      await nextTick();
       expect(findConfidentialBlock(wrapper).text()).toContain('This is a confidential issue.');
     });
 
@@ -154,15 +155,15 @@ describe('Issue Warning Component', () => {
         noteableType: 'Epic',
       });
 
-      await wrapperLocked.vm.$nextTick();
+      await nextTick();
       expect(findLockedBlock(wrapperLocked).text()).toContain('This epic is locked.');
 
-      await wrapperConfidential.vm.$nextTick();
+      await nextTick();
       expect(findConfidentialBlock(wrapperConfidential).text()).toContain(
         'This is a confidential epic.',
       );
 
-      await wrapperLockedAndConfidential.vm.$nextTick();
+      await nextTick();
       expect(findLockedAndConfidentialBlock(wrapperLockedAndConfidential).text()).toContain(
         'This epic is confidential and locked.',
       );
@@ -179,15 +180,15 @@ describe('Issue Warning Component', () => {
         noteableType: 'MergeRequest',
       });
 
-      await wrapperLocked.vm.$nextTick();
+      await nextTick();
       expect(findLockedBlock(wrapperLocked).text()).toContain('This merge request is locked.');
 
-      await wrapperConfidential.vm.$nextTick();
+      await nextTick();
       expect(findConfidentialBlock(wrapperConfidential).text()).toContain(
         'This is a confidential merge request.',
       );
 
-      await wrapperLockedAndConfidential.vm.$nextTick();
+      await nextTick();
       expect(findLockedAndConfidentialBlock(wrapperLockedAndConfidential).text()).toContain(
         'This merge request is confidential and locked.',
       );

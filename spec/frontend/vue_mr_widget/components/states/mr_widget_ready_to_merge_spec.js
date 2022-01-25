@@ -710,7 +710,7 @@ describe('ReadyToMerge', () => {
             commitsWithoutMergeCommits: {},
           },
         });
-        await wrapper.vm.$nextTick();
+        await nextTick();
 
         expect(findCommitEditElements().length).toBe(2);
       });

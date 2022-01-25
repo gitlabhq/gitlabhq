@@ -1,6 +1,6 @@
 import { GlFormCheckbox, GlLink } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import UpdateKeepLatestArtifactProjectSetting from '~/artifacts_settings/graphql/mutations/update_keep_latest_artifact_project_setting.mutation.graphql';
@@ -109,13 +109,13 @@ describe('Keep latest artifact checkbox', () => {
     });
 
     it('sets correct setting value in checkbox with query result', async () => {
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       expect(wrapper.element).toMatchSnapshot();
     });
 
     it('checkbox is enabled when application setting is enabled', async () => {
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       expect(findCheckbox().attributes('disabled')).toBeUndefined();
     });

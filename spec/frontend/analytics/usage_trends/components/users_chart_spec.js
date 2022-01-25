@@ -1,7 +1,7 @@
 import { GlAlert } from '@gitlab/ui';
 import { GlAreaChart } from '@gitlab/ui/dist/charts';
 import { shallowMount } from '@vue/test-utils';
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import UsersChart from '~/analytics/usage_trends/components/users_chart.vue';
@@ -67,7 +67,7 @@ describe('UsersChart', () => {
   describe('without data', () => {
     beforeEach(async () => {
       wrapper = createComponent({ users: [] });
-      await wrapper.vm.$nextTick();
+      await nextTick();
     });
 
     it('renders an no data message', () => {
@@ -86,7 +86,7 @@ describe('UsersChart', () => {
   describe('with data', () => {
     beforeEach(async () => {
       wrapper = createComponent({ users: mockCountsData2 });
-      await wrapper.vm.$nextTick();
+      await nextTick();
     });
 
     it('hides the skeleton loader', () => {
@@ -107,7 +107,7 @@ describe('UsersChart', () => {
   describe('with errors', () => {
     beforeEach(async () => {
       wrapper = createComponent({ loadingError: true });
-      await wrapper.vm.$nextTick();
+      await nextTick();
     });
 
     it('renders an error message', () => {
@@ -134,7 +134,7 @@ describe('UsersChart', () => {
         });
 
         jest.spyOn(wrapper.vm.$apollo.queries.users, 'fetchMore');
-        await wrapper.vm.$nextTick();
+        await nextTick();
       });
 
       it('requests data twice', () => {
@@ -147,7 +147,7 @@ describe('UsersChart', () => {
     });
 
     describe('when the fetchMore query throws an error', () => {
-      beforeEach(() => {
+      beforeEach(async () => {
         wrapper = createComponent({
           users: mockCountsData2,
           additionalData: mockCountsData1,
@@ -156,7 +156,7 @@ describe('UsersChart', () => {
         jest
           .spyOn(wrapper.vm.$apollo.queries.users, 'fetchMore')
           .mockImplementation(jest.fn().mockRejectedValue());
-        return wrapper.vm.$nextTick();
+        await nextTick();
       });
 
       it('calls fetchMore', () => {

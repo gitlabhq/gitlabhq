@@ -1,5 +1,6 @@
 import { GlFilteredSearchToken, GlFilteredSearchTokenSegment } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import waitForPromises from 'helpers/wait_for_promises';
 import createFlash from '~/flash';
 import ReleaseToken from '~/vue_shared/components/filtered_search_bar/tokens/release_token.vue';
@@ -31,7 +32,7 @@ describe('ReleaseToken', () => {
 
   it('renders release value', async () => {
     wrapper = createComponent({ value: { data: id } });
-    await wrapper.vm.$nextTick();
+    await nextTick();
 
     const tokenSegments = wrapper.findAllComponents(GlFilteredSearchTokenSegment);
 

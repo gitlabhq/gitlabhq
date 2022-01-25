@@ -1,4 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import { HIGHLIGHT_CLASS_NAME } from '~/vue_shared/components/blob_viewers/constants';
 import SimpleViewer from '~/vue_shared/components/blob_viewers/simple_viewer.vue';
 
@@ -69,7 +70,7 @@ describe('Blob Simple Viewer component', () => {
       expect(linetoBeHighlighted.classes()).toContain(HIGHLIGHT_CLASS_NAME);
     });
 
-    it('switches highlighting when another line is selected', () => {
+    it('switches highlighting when another line is selected', async () => {
       const currentlyHighlighted = wrapper.find('#LC2');
       const hash = '#LC3';
       const linetoBeHighlighted = wrapper.find(hash);
@@ -78,11 +79,10 @@ describe('Blob Simple Viewer component', () => {
 
       wrapper.vm.scrollToLine(hash);
 
-      return wrapper.vm.$nextTick(() => {
-        expect(wrapper.vm.highlightedLine).toBe(linetoBeHighlighted.element);
-        expect(currentlyHighlighted.classes()).not.toContain(HIGHLIGHT_CLASS_NAME);
-        expect(linetoBeHighlighted.classes()).toContain(HIGHLIGHT_CLASS_NAME);
-      });
+      await nextTick();
+      expect(wrapper.vm.highlightedLine).toBe(linetoBeHighlighted.element);
+      expect(currentlyHighlighted.classes()).not.toContain(HIGHLIGHT_CLASS_NAME);
+      expect(linetoBeHighlighted.classes()).toContain(HIGHLIGHT_CLASS_NAME);
     });
   });
 });

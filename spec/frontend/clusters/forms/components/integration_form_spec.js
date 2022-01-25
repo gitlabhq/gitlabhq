@@ -1,6 +1,6 @@
 import { GlToggle, GlButton } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 import IntegrationForm from '~/clusters/forms/components/integration_form.vue';
 import { createStore } from '~/clusters/forms/stores/index';
@@ -75,32 +75,22 @@ describe('ClusterIntegrationForm', () => {
   describe('reactivity', () => {
     beforeEach(() => createWrapper());
 
-    it('enables the submit button on changing toggle to different value', () => {
-      return wrapper.vm
-        .$nextTick()
-        .then(() => {
-          // setData is a bad approach because it changes the internal implementation which we should not touch
-          // but our GlFormInput lacks the ability to set a new value.
-          // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-          // eslint-disable-next-line no-restricted-syntax
-          wrapper.setData({ toggleEnabled: !defaultStoreValues.enabled });
-        })
-        .then(() => {
-          expect(findSubmitButton().props('disabled')).toBe(false);
-        });
+    it('enables the submit button on changing toggle to different value', async () => {
+      await nextTick();
+      // setData is a bad approach because it changes the internal implementation which we should not touch
+      // but our GlFormInput lacks the ability to set a new value.
+      // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+      // eslint-disable-next-line no-restricted-syntax
+      await wrapper.setData({ toggleEnabled: !defaultStoreValues.enabled });
+      expect(findSubmitButton().props('disabled')).toBe(false);
     });
 
-    it('enables the submit button on changing input values', () => {
-      return wrapper.vm
-        .$nextTick()
-        .then(() => {
-          // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-          // eslint-disable-next-line no-restricted-syntax
-          wrapper.setData({ envScope: `${defaultStoreValues.environmentScope}1` });
-        })
-        .then(() => {
-          expect(findSubmitButton().props('disabled')).toBe(false);
-        });
+    it('enables the submit button on changing input values', async () => {
+      await nextTick();
+      // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+      // eslint-disable-next-line no-restricted-syntax
+      await wrapper.setData({ envScope: `${defaultStoreValues.environmentScope}1` });
+      expect(findSubmitButton().props('disabled')).toBe(false);
     });
   });
 });

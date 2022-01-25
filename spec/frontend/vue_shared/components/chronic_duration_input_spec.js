@@ -1,4 +1,5 @@
 import { mount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import ChronicDurationInput from '~/vue_shared/components/chronic_duration_input.vue';
 
 const MOCK_VALUE = 2 * 3600 + 20 * 60;
@@ -48,7 +49,7 @@ describe('vue_shared/components/chronic_duration_input', () => {
   describe('change', () => {
     const createAndDispatch = async (initialValue, humanReadableInput) => {
       createComponent({ value: initialValue });
-      await wrapper.vm.$nextTick();
+      await nextTick();
       textElement.value = humanReadableInput;
       textElement.dispatchEvent(new Event('input'));
     };
@@ -118,7 +119,7 @@ describe('vue_shared/components/chronic_duration_input', () => {
       it('emits valid with user input', async () => {
         textElement.value = '1m10s';
         textElement.dispatchEvent(new Event('input'));
-        await wrapper.vm.$nextTick();
+        await nextTick();
 
         expect(wrapper.emitted('valid')).toEqual([
           [{ valid: true, feedback: '' }],
@@ -133,7 +134,7 @@ describe('vue_shared/components/chronic_duration_input', () => {
 
         textElement.value = '';
         textElement.dispatchEvent(new Event('input'));
-        await wrapper.vm.$nextTick();
+        await nextTick();
 
         expect(wrapper.emitted('valid')).toEqual([
           [{ valid: true, feedback: '' }],
@@ -151,7 +152,7 @@ describe('vue_shared/components/chronic_duration_input', () => {
       it('emits invalid with user input', async () => {
         textElement.value = 'gobbledygook';
         textElement.dispatchEvent(new Event('input'));
-        await wrapper.vm.$nextTick();
+        await nextTick();
 
         expect(wrapper.emitted('valid')).toEqual([
           [{ valid: true, feedback: '' }],
@@ -186,7 +187,7 @@ describe('vue_shared/components/chronic_duration_input', () => {
 
       it('emits valid with updated value', async () => {
         wrapper.setProps({ value: MOCK_VALUE });
-        await wrapper.vm.$nextTick();
+        await nextTick();
 
         expect(wrapper.emitted('valid')).toEqual([
           [{ valid: null, feedback: '' }],
@@ -210,7 +211,7 @@ describe('vue_shared/components/chronic_duration_input', () => {
         it('emits valid when input is integer', async () => {
           textElement.value = '2hr20min';
           textElement.dispatchEvent(new Event('input'));
-          await wrapper.vm.$nextTick();
+          await nextTick();
 
           expect(wrapper.emitted('change')).toEqual([[MOCK_VALUE]]);
           expect(wrapper.emitted('valid')).toEqual([
@@ -228,7 +229,7 @@ describe('vue_shared/components/chronic_duration_input', () => {
         it('emits valid when input is decimal', async () => {
           textElement.value = '1.5s';
           textElement.dispatchEvent(new Event('input'));
-          await wrapper.vm.$nextTick();
+          await nextTick();
 
           expect(wrapper.emitted('change')).toEqual([[1.5]]);
           expect(wrapper.emitted('valid')).toEqual([
@@ -252,7 +253,7 @@ describe('vue_shared/components/chronic_duration_input', () => {
         it('emits valid when input is integer', async () => {
           textElement.value = '2hr20min';
           textElement.dispatchEvent(new Event('input'));
-          await wrapper.vm.$nextTick();
+          await nextTick();
 
           expect(wrapper.emitted('change')).toEqual([[MOCK_VALUE]]);
           expect(wrapper.emitted('valid')).toEqual([
@@ -270,7 +271,7 @@ describe('vue_shared/components/chronic_duration_input', () => {
         it('emits invalid when input is decimal', async () => {
           textElement.value = '1.5s';
           textElement.dispatchEvent(new Event('input'));
-          await wrapper.vm.$nextTick();
+          await nextTick();
 
           expect(wrapper.emitted('change')).toBeUndefined();
           expect(wrapper.emitted('valid')).toEqual([
@@ -318,7 +319,7 @@ describe('vue_shared/components/chronic_duration_input', () => {
         // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
         // eslint-disable-next-line no-restricted-syntax
         wrapper.setData({ value: MOCK_VALUE });
-        await wrapper.vm.$nextTick();
+        await nextTick();
 
         expect(textElement.value).toBe('2 hrs 20 mins');
         expect(hiddenElement.value).toBe(MOCK_VALUE.toString());
@@ -329,7 +330,7 @@ describe('vue_shared/components/chronic_duration_input', () => {
       it('passes user input to parent via v-model', async () => {
         textElement.value = '2hr20min';
         textElement.dispatchEvent(new Event('input'));
-        await wrapper.vm.$nextTick();
+        await nextTick();
 
         expect(wrapper.findComponent(ChronicDurationInput).props('value')).toBe(MOCK_VALUE);
         expect(textElement.value).toBe('2hr20min');
@@ -377,7 +378,7 @@ describe('vue_shared/components/chronic_duration_input', () => {
     it('creates form data with user-specified value', async () => {
       textElement.value = '1m10s';
       textElement.dispatchEvent(new Event('input'));
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       const formData = new FormData(wrapper.find('[data-testid=myForm]').element);
       const iter = formData.entries();

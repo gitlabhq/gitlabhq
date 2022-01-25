@@ -1,5 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
 import $ from 'jquery';
+import { nextTick } from 'vue';
 import HeaderComponent from '~/vue_shared/components/markdown/header.vue';
 import ToolbarButton from '~/vue_shared/components/markdown/toolbar_button.vue';
 
@@ -84,20 +85,16 @@ describe('Markdown field header component', () => {
     expect(wrapper.find('li:nth-child(2)').classes()).toContain('active');
   });
 
-  it('emits toggle markdown event when clicking preview', () => {
+  it('emits toggle markdown event when clicking preview', async () => {
     wrapper.find('.js-preview-link').trigger('click');
 
-    return wrapper.vm
-      .$nextTick()
-      .then(() => {
-        expect(wrapper.emitted('preview-markdown').length).toEqual(1);
+    await nextTick();
+    expect(wrapper.emitted('preview-markdown').length).toEqual(1);
 
-        wrapper.find('.js-write-link').trigger('click');
-        return wrapper.vm.$nextTick();
-      })
-      .then(() => {
-        expect(wrapper.emitted('write-markdown').length).toEqual(1);
-      });
+    wrapper.find('.js-write-link').trigger('click');
+
+    await nextTick();
+    expect(wrapper.emitted('write-markdown').length).toEqual(1);
   });
 
   it('does not emit toggle markdown event when triggered from another form', () => {

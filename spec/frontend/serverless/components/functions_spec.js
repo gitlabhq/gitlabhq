@@ -1,6 +1,6 @@
 import { GlLoadingIcon } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import AxiosMockAdapter from 'axios-mock-adapter';
 import Vuex from 'vuex';
 import { TEST_HOST } from 'helpers/test_constants';
@@ -73,15 +73,14 @@ describe('functionsComponent', () => {
     expect(component.find('.js-functions-loader').exists()).toBe(true);
   });
 
-  it('should render the functions list', () => {
+  it('should render the functions list', async () => {
     store = createStore({ clustersPath: 'clustersPath', helpPath: 'helpPath', statusPath });
 
     component = shallowMount(functionsComponent, { store });
 
-    component.vm.$store.dispatch('receiveFunctionsSuccess', mockServerlessFunctions);
+    await component.vm.$store.dispatch('receiveFunctionsSuccess', mockServerlessFunctions);
 
-    return component.vm.$nextTick().then(() => {
-      expect(component.find(EnvironmentRow).exists()).toBe(true);
-    });
+    await nextTick();
+    expect(component.find(EnvironmentRow).exists()).toBe(true);
   });
 });

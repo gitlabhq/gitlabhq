@@ -2,6 +2,7 @@ import { GlAlert, GlLoadingIcon } from '@gitlab/ui';
 import { mount, shallowMount } from '@vue/test-utils';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
+import { nextTick } from 'vue';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { joinPaths } from '~/lib/utils/url_utility';
@@ -216,17 +217,16 @@ describe('AlertDetails', () => {
         expect(findCreateIncidentBtn().exists()).toBe(false);
       });
 
-      it('should display "Create incident" button when incident doesn\'t exist yet', () => {
+      it('should display "Create incident" button when incident doesn\'t exist yet', async () => {
         const issue = null;
         mountComponent({
           mountMethod: mount,
           data: { alert: { ...mockAlert, issue } },
         });
 
-        return wrapper.vm.$nextTick().then(() => {
-          expect(findViewIncidentBtn().exists()).toBe(false);
-          expect(findCreateIncidentBtn().exists()).toBe(true);
-        });
+        await nextTick();
+        expect(findViewIncidentBtn().exists()).toBe(false);
+        expect(findCreateIncidentBtn().exists()).toBe(true);
       });
 
       it('calls `$apollo.mutate` with `createIssueQuery`', () => {

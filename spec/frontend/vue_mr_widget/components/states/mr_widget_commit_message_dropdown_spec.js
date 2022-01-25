@@ -1,5 +1,6 @@
 import { GlDropdownItem } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import CommitMessageDropdown from '~/vue_merge_request_widget/components/states/commit_message_dropdown.vue';
 
 const commits = [
@@ -51,11 +52,10 @@ describe('Commits message dropdown component', () => {
     expect(findFirstDropdownElement().text()).toContain('Commit 1');
   });
 
-  it('should emit a commit title on selecting commit', () => {
+  it('should emit a commit title on selecting commit', async () => {
     findFirstDropdownElement().vm.$emit('click');
 
-    return wrapper.vm.$nextTick().then(() => {
-      expect(wrapper.emitted().input[0]).toEqual(['Update test.txt']);
-    });
+    await nextTick();
+    expect(wrapper.emitted().input[0]).toEqual(['Update test.txt']);
   });
 });

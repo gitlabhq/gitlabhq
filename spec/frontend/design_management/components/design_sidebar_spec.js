@@ -1,6 +1,7 @@
 import { GlCollapse, GlPopover } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import Cookies from 'js-cookie';
+import { nextTick } from 'vue';
 import DesignDiscussion from '~/design_management/components/design_notes/design_discussion.vue';
 import DesignNoteSignedOut from '~/design_management/components/design_notes/design_note_signed_out.vue';
 import DesignSidebar from '~/design_management/components/design_sidebar.vue';
@@ -138,14 +139,13 @@ describe('Design management design sidebar component', () => {
       expect(wrapper.emitted('toggleResolvedComments')).toHaveLength(1);
     });
 
-    it('opens a collapsible when resolvedDiscussionsExpanded prop changes to true', () => {
+    it('opens a collapsible when resolvedDiscussionsExpanded prop changes to true', async () => {
       expect(findCollapsible().attributes('visible')).toBeUndefined();
       wrapper.setProps({
         resolvedDiscussionsExpanded: true,
       });
-      return wrapper.vm.$nextTick().then(() => {
-        expect(findCollapsible().attributes('visible')).toBe('true');
-      });
+      await nextTick();
+      expect(findCollapsible().attributes('visible')).toBe('true');
     });
 
     it('does not popover about resolved comments', () => {
@@ -182,12 +182,11 @@ describe('Design management design sidebar component', () => {
       expect(wrapper.emitted('resolveDiscussionError')).toEqual([['payload']]);
     });
 
-    it('changes prop correctly on opening discussion form', () => {
+    it('changes prop correctly on opening discussion form', async () => {
       findFirstDiscussion().vm.$emit('open-form', 'some-id');
 
-      return wrapper.vm.$nextTick().then(() => {
-        expect(findFirstDiscussion().props('discussionWithOpenForm')).toBe('some-id');
-      });
+      await nextTick();
+      expect(findFirstDiscussion().props('discussionWithOpenForm')).toBe('some-id');
     });
   });
 
@@ -246,11 +245,10 @@ describe('Design management design sidebar component', () => {
       expect(scrollIntoViewMock).toHaveBeenCalled();
     });
 
-    it('dismisses a popover on the outside click', () => {
+    it('dismisses a popover on the outside click', async () => {
       wrapper.trigger('click');
-      return wrapper.vm.$nextTick(() => {
-        expect(findPopover().exists()).toBe(false);
-      });
+      await nextTick();
+      expect(findPopover().exists()).toBe(false);
     });
 
     it(`sets a ${cookieKey} cookie on clicking outside the popover`, () => {

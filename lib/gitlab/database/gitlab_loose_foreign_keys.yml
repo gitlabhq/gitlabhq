@@ -27,6 +27,10 @@ clusters_applications_runners:
   - table: ci_runners
     column: runner_id
     on_delete: async_nullify
+ci_variables:
+  - table: projects
+    column: project_id
+    on_delete: async_delete
 ci_job_token_project_scope_links:
   - table: users
     column: added_by_id
@@ -83,6 +87,9 @@ ci_pipelines:
   - table: users
     column: user_id
     on_delete: async_nullify
+  - table: merge_requests
+    column: merge_request_id
+    on_delete: async_delete
 ci_project_mirrors:
   - table: projects
     column: project_id
@@ -138,6 +145,10 @@ merge_trains:
   - table: ci_pipelines
     column: pipeline_id
     on_delete: async_nullify
+ci_refs:
+  - table: projects
+    column: project_id
+    on_delete: async_delete
 ci_group_variables:
   - table: namespaces
     column: group_id
@@ -165,6 +176,9 @@ ci_pipeline_artifacts:
 ci_sources_pipelines:
   - table: projects
     column: source_project_id
+    on_delete: async_delete
+  - table: projects
+    column: project_id
     on_delete: async_delete
 ci_triggers:
   - table: users

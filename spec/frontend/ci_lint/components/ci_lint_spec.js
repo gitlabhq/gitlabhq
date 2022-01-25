@@ -1,5 +1,6 @@
 import { GlAlert } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import waitForPromises from 'helpers/wait_for_promises';
 import CiLint from '~/ci_lint/components/ci_lint.vue';
 import CiLintResults from '~/pipeline_editor/components/lint/ci_lint_results.vue';
@@ -81,7 +82,7 @@ describe('CI Lint', () => {
   it('validation displays results', async () => {
     findValidateBtn().vm.$emit('click');
 
-    await wrapper.vm.$nextTick();
+    await nextTick();
 
     expect(findValidateBtn().props('loading')).toBe(true);
 
@@ -96,7 +97,7 @@ describe('CI Lint', () => {
 
     findValidateBtn().vm.$emit('click');
 
-    await wrapper.vm.$nextTick();
+    await nextTick();
 
     expect(findValidateBtn().props('loading')).toBe(true);
 

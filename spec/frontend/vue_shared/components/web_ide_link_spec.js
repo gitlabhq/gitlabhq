@@ -213,7 +213,7 @@ describe('Web IDE link component', () => {
 
       findLocalStorageSync().vm.$emit('input', ACTION_GITPOD.key);
 
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       expect(findActionsButton().props('selectedKey')).toBe(ACTION_GITPOD.key);
     });
@@ -223,7 +223,7 @@ describe('Web IDE link component', () => {
 
       findActionsButton().vm.$emit('select', ACTION_GITPOD.key);
 
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       expect(findActionsButton().props('selectedKey')).toBe(ACTION_GITPOD.key);
       expect(findLocalStorageSync().props('value')).toBe(ACTION_GITPOD.key);

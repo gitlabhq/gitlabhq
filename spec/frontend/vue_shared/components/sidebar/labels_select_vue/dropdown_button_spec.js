@@ -1,6 +1,6 @@
 import { GlIcon, GlButton } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 
 import DropdownButton from '~/vue_shared/components/sidebar/labels_select_vue/dropdown_button.vue';
@@ -71,13 +71,12 @@ describe('DropdownButton', () => {
       expect(dropdownTextEl.text()).toBe('Label');
     });
 
-    it('renders provided button text element', () => {
+    it('renders provided button text element', async () => {
       store.state.dropdownButtonText = 'Custom label';
       const dropdownTextEl = findDropdownText();
 
-      return wrapper.vm.$nextTick().then(() => {
-        expect(dropdownTextEl.text()).toBe('Custom label');
-      });
+      await nextTick();
+      expect(dropdownTextEl.text()).toBe('Custom label');
     });
 
     it('renders chevron icon element', () => {

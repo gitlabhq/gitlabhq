@@ -1,4 +1,5 @@
 import { mount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import DesignReplyForm from '~/design_management/components/design_notes/design_reply_form.vue';
 
 const showModal = jest.fn();
@@ -64,24 +65,22 @@ describe('Design reply form component', () => {
       expect(findSubmitButton().attributes().disabled).toBeTruthy();
     });
 
-    it('does not emit submitForm event on textarea ctrl+enter keydown', () => {
+    it('does not emit submitForm event on textarea ctrl+enter keydown', async () => {
       findTextarea().trigger('keydown.enter', {
         ctrlKey: true,
       });
 
-      return wrapper.vm.$nextTick().then(() => {
-        expect(wrapper.emitted('submit-form')).toBeFalsy();
-      });
+      await nextTick();
+      expect(wrapper.emitted('submit-form')).toBeFalsy();
     });
 
-    it('does not emit submitForm event on textarea meta+enter keydown', () => {
+    it('does not emit submitForm event on textarea meta+enter keydown', async () => {
       findTextarea().trigger('keydown.enter', {
         metaKey: true,
       });
 
-      return wrapper.vm.$nextTick().then(() => {
-        expect(wrapper.emitted('submit-form')).toBeFalsy();
-      });
+      await nextTick();
+      expect(wrapper.emitted('submit-form')).toBeFalsy();
     });
 
     it('emits cancelForm event on pressing escape button on textarea', () => {
@@ -108,40 +107,36 @@ describe('Design reply form component', () => {
       expect(findSubmitButton().attributes().disabled).toBeFalsy();
     });
 
-    it('emits submitForm event on Comment button click', () => {
+    it('emits submitForm event on Comment button click', async () => {
       findSubmitButton().vm.$emit('click');
 
-      return wrapper.vm.$nextTick().then(() => {
-        expect(wrapper.emitted('submit-form')).toBeTruthy();
-      });
+      await nextTick();
+      expect(wrapper.emitted('submit-form')).toBeTruthy();
     });
 
-    it('emits submitForm event on textarea ctrl+enter keydown', () => {
+    it('emits submitForm event on textarea ctrl+enter keydown', async () => {
       findTextarea().trigger('keydown.enter', {
         ctrlKey: true,
       });
 
-      return wrapper.vm.$nextTick().then(() => {
-        expect(wrapper.emitted('submit-form')).toBeTruthy();
-      });
+      await nextTick();
+      expect(wrapper.emitted('submit-form')).toBeTruthy();
     });
 
-    it('emits submitForm event on textarea meta+enter keydown', () => {
+    it('emits submitForm event on textarea meta+enter keydown', async () => {
       findTextarea().trigger('keydown.enter', {
         metaKey: true,
       });
 
-      return wrapper.vm.$nextTick().then(() => {
-        expect(wrapper.emitted('submit-form')).toBeTruthy();
-      });
+      await nextTick();
+      expect(wrapper.emitted('submit-form')).toBeTruthy();
     });
 
-    it('emits input event on changing textarea content', () => {
+    it('emits input event on changing textarea content', async () => {
       findTextarea().setValue('test2');
 
-      return wrapper.vm.$nextTick().then(() => {
-        expect(wrapper.emitted('input')).toBeTruthy();
-      });
+      await nextTick();
+      expect(wrapper.emitted('input')).toBeTruthy();
     });
 
     it('emits cancelForm event on Escape key if text was not changed', () => {
@@ -150,13 +145,12 @@ describe('Design reply form component', () => {
       expect(wrapper.emitted('cancel-form')).toBeTruthy();
     });
 
-    it('opens confirmation modal on Escape key when text has changed', () => {
+    it('opens confirmation modal on Escape key when text has changed', async () => {
       wrapper.setProps({ value: 'test2' });
 
-      return wrapper.vm.$nextTick().then(() => {
-        findTextarea().trigger('keyup.esc');
-        expect(showModal).toHaveBeenCalled();
-      });
+      await nextTick();
+      findTextarea().trigger('keyup.esc');
+      expect(showModal).toHaveBeenCalled();
     });
 
     it('emits cancelForm event on Cancel button click if text was not changed', () => {
@@ -165,13 +159,12 @@ describe('Design reply form component', () => {
       expect(wrapper.emitted('cancel-form')).toBeTruthy();
     });
 
-    it('opens confirmation modal on Cancel button click when text has changed', () => {
+    it('opens confirmation modal on Cancel button click when text has changed', async () => {
       wrapper.setProps({ value: 'test2' });
 
-      return wrapper.vm.$nextTick().then(() => {
-        findCancelButton().trigger('click');
-        expect(showModal).toHaveBeenCalled();
-      });
+      await nextTick();
+      findCancelButton().trigger('click');
+      expect(showModal).toHaveBeenCalled();
     });
 
     it('emits cancelForm event on modal Ok button click', () => {

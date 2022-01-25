@@ -1,5 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 import BoardNewIssue from '~/boards/components/board_new_issue.vue';
 import BoardNewItem from '~/boards/components/board_new_item.vue';
@@ -45,7 +45,7 @@ describe('Issue boards new issue form', () => {
   beforeEach(async () => {
     wrapper = createComponent();
 
-    await wrapper.vm.$nextTick();
+    await nextTick();
   });
 
   afterEach(() => {
@@ -66,7 +66,7 @@ describe('Issue boards new issue form', () => {
   it('calls addListNewIssue action when `board-new-item` emits form-submit event', async () => {
     findBoardNewItem().vm.$emit('form-submit', { title: 'Foo' });
 
-    await wrapper.vm.$nextTick();
+    await nextTick();
     expect(addListNewIssuesSpy).toHaveBeenCalledWith(expect.any(Object), {
       list: mockList,
       issueInput: {
@@ -83,7 +83,7 @@ describe('Issue boards new issue form', () => {
     jest.spyOn(eventHub, '$emit').mockImplementation();
     findBoardNewItem().vm.$emit('form-cancel');
 
-    await wrapper.vm.$nextTick();
+    await nextTick();
     expect(eventHub.$emit).toHaveBeenCalledWith(`toggle-issue-form-${mockList.id}`);
   });
 

@@ -1,5 +1,5 @@
 import { shallowMount, mount } from '@vue/test-utils';
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 import {
   TRANSITION_LOAD_START,
@@ -126,15 +126,14 @@ describe('Renamed Diff Viewer', () => {
       store = null;
     });
 
-    it('calls the switchToFullDiffFromRenamedFile action when the method is triggered', () => {
+    it('calls the switchToFullDiffFromRenamedFile action when the method is triggered', async () => {
       store.dispatch.mockResolvedValue();
 
       wrapper.vm.switchToFull();
 
-      return wrapper.vm.$nextTick().then(() => {
-        expect(store.dispatch).toHaveBeenCalledWith('diffs/switchToFullDiffFromRenamedFile', {
-          diffFile,
-        });
+      await nextTick();
+      expect(store.dispatch).toHaveBeenCalledWith('diffs/switchToFullDiffFromRenamedFile', {
+        diffFile,
       });
     });
 
@@ -144,7 +143,7 @@ describe('Renamed Diff Viewer', () => {
       ${STATE_ERRORED} | ${'mockRejectedValue'} | ${'rejected'}
     `(
       'moves through the correct states during a $resolution request',
-      ({ after, resolvePromise }) => {
+      async ({ after, resolvePromise }) => {
         store.dispatch[resolvePromise]();
 
         expect(wrapper.vm.state).toEqual(STATE_IDLING);
@@ -153,16 +152,9 @@ describe('Renamed Diff Viewer', () => {
 
         expect(wrapper.vm.state).toEqual(STATE_LOADING);
 
-        return (
-          wrapper.vm
-            // This tick is needed for when the action (promise) finishes
-            .$nextTick()
-            // This tick waits for the state change in the promise .then/.catch to bubble into the component
-            .then(() => wrapper.vm.$nextTick())
-            .then(() => {
-              expect(wrapper.vm.state).toEqual(after);
-            })
-        );
+        await nextTick(); // This tick is needed for when the action (promise) finishes
+        await nextTick(); // This tick waits for the state change in the promise .then/.catch to bubble into the component
+        expect(wrapper.vm.state).toEqual(after);
       },
     );
   });

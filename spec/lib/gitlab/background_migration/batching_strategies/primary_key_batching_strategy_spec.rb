@@ -13,7 +13,7 @@ RSpec.describe Gitlab::BackgroundMigration::BatchingStrategies::PrimaryKeyBatchi
 
   context 'when starting on the first batch' do
     it 'returns the bounds of the next batch' do
-      batch_bounds = batching_strategy.next_batch(:namespaces, :id, batch_min_value: namespace1.id, batch_size: 3)
+      batch_bounds = batching_strategy.next_batch(:namespaces, :id, batch_min_value: namespace1.id, batch_size: 3, job_arguments: nil)
 
       expect(batch_bounds).to eq([namespace1.id, namespace3.id])
     end
@@ -21,7 +21,7 @@ RSpec.describe Gitlab::BackgroundMigration::BatchingStrategies::PrimaryKeyBatchi
 
   context 'when additional batches remain' do
     it 'returns the bounds of the next batch' do
-      batch_bounds = batching_strategy.next_batch(:namespaces, :id, batch_min_value: namespace2.id, batch_size: 3)
+      batch_bounds = batching_strategy.next_batch(:namespaces, :id, batch_min_value: namespace2.id, batch_size: 3, job_arguments: nil)
 
       expect(batch_bounds).to eq([namespace2.id, namespace4.id])
     end
@@ -29,7 +29,7 @@ RSpec.describe Gitlab::BackgroundMigration::BatchingStrategies::PrimaryKeyBatchi
 
   context 'when on the final batch' do
     it 'returns the bounds of the next batch' do
-      batch_bounds = batching_strategy.next_batch(:namespaces, :id, batch_min_value: namespace4.id, batch_size: 3)
+      batch_bounds = batching_strategy.next_batch(:namespaces, :id, batch_min_value: namespace4.id, batch_size: 3, job_arguments: nil)
 
       expect(batch_bounds).to eq([namespace4.id, namespace4.id])
     end
@@ -37,7 +37,7 @@ RSpec.describe Gitlab::BackgroundMigration::BatchingStrategies::PrimaryKeyBatchi
 
   context 'when no additional batches remain' do
     it 'returns nil' do
-      batch_bounds = batching_strategy.next_batch(:namespaces, :id, batch_min_value: namespace4.id + 1, batch_size: 1)
+      batch_bounds = batching_strategy.next_batch(:namespaces, :id, batch_min_value: namespace4.id + 1, batch_size: 1, job_arguments: nil)
 
       expect(batch_bounds).to be_nil
     end

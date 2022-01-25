@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import { TEST_HOST } from 'helpers/test_constants';
 import { createComponentWithStore } from 'helpers/vue_mount_component_helper';
 import JobDetail from '~/ide/components/jobs/detail.vue';
@@ -48,14 +48,11 @@ describe('IDE jobs detail view', () => {
       expect(vm.$el.querySelector('.bash').textContent).toContain('testing');
     });
 
-    it('renders empty message output', (done) => {
+    it('renders empty message output', async () => {
       vm.$store.state.pipelines.detailJob.output = '';
 
-      vm.$nextTick(() => {
-        expect(vm.$el.querySelector('.bash').textContent).toContain('No messages were logged');
-
-        done();
-      });
+      await nextTick();
+      expect(vm.$el.querySelector('.bash').textContent).toContain('No messages were logged');
     });
 
     it('renders loading icon', () => {
@@ -68,14 +65,11 @@ describe('IDE jobs detail view', () => {
       expect(vm.$el.querySelector('.bash').style.display).toBe('none');
     });
 
-    it('hide loading icon when isLoading is false', (done) => {
+    it('hide loading icon when isLoading is false', async () => {
       vm.$store.state.pipelines.detailJob.isLoading = false;
 
-      vm.$nextTick(() => {
-        expect(vm.$el.querySelector('.build-loader-animation').style.display).toBe('none');
-
-        done();
-      });
+      await nextTick();
+      expect(vm.$el.querySelector('.build-loader-animation').style.display).toBe('none');
     });
 
     it('resets detailJob when clicking header button', () => {
@@ -107,17 +101,16 @@ describe('IDE jobs detail view', () => {
       fnName          | btnName   | scrollPos
       ${'scrollDown'} | ${'down'} | ${0}
       ${'scrollUp'}   | ${'up'}   | ${1}
-    `('triggers $fnName when clicking $btnName button', ({ fnName, scrollPos }) => {
+    `('triggers $fnName when clicking $btnName button', async ({ fnName, scrollPos }) => {
       jest.spyOn(vm, fnName).mockImplementation();
 
       vm = vm.$mount();
 
       vm.scrollPos = scrollPos;
 
-      return vm.$nextTick().then(() => {
-        vm.$el.querySelector('.btn-scroll:not([disabled])').click();
-        expect(vm[fnName]).toHaveBeenCalled();
-      });
+      await nextTick();
+      vm.$el.querySelector('.btn-scroll:not([disabled])').click();
+      expect(vm[fnName]).toHaveBeenCalled();
     });
   });
 

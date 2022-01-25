@@ -1,6 +1,6 @@
 import { GlButton } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import VueRouter from 'vue-router';
 import DeleteButton from '~/design_management/components/delete_button.vue';
 import Toolbar from '~/design_management/components/toolbar/index.vue';
@@ -60,60 +60,54 @@ describe('Design management toolbar component', () => {
     wrapper.destroy();
   });
 
-  it('renders design and updated data', () => {
+  it('renders design and updated data', async () => {
     createComponent();
 
-    return wrapper.vm.$nextTick().then(() => {
-      expect(wrapper.element).toMatchSnapshot();
+    await nextTick();
+    expect(wrapper.element).toMatchSnapshot();
+  });
+
+  it('links back to designs list', async () => {
+    createComponent();
+
+    await nextTick();
+    const link = wrapper.find('a');
+
+    expect(link.props('to')).toEqual({
+      name: DESIGNS_ROUTE_NAME,
+      query: {
+        version: undefined,
+      },
     });
   });
 
-  it('links back to designs list', () => {
+  it('renders delete button on latest designs version with logged in user', async () => {
     createComponent();
 
-    return wrapper.vm.$nextTick().then(() => {
-      const link = wrapper.find('a');
-
-      expect(link.props('to')).toEqual({
-        name: DESIGNS_ROUTE_NAME,
-        query: {
-          version: undefined,
-        },
-      });
-    });
+    await nextTick();
+    expect(wrapper.find(DeleteButton).exists()).toBe(true);
   });
 
-  it('renders delete button on latest designs version with logged in user', () => {
-    createComponent();
-
-    return wrapper.vm.$nextTick().then(() => {
-      expect(wrapper.find(DeleteButton).exists()).toBe(true);
-    });
-  });
-
-  it('does not render delete button on non-latest version', () => {
+  it('does not render delete button on non-latest version', async () => {
     createComponent(false, true, { isLatestVersion: false });
 
-    return wrapper.vm.$nextTick().then(() => {
-      expect(wrapper.find(DeleteButton).exists()).toBe(false);
-    });
+    await nextTick();
+    expect(wrapper.find(DeleteButton).exists()).toBe(false);
   });
 
-  it('does not render delete button when user is not logged in', () => {
+  it('does not render delete button when user is not logged in', async () => {
     createComponent(false, false);
 
-    return wrapper.vm.$nextTick().then(() => {
-      expect(wrapper.find(DeleteButton).exists()).toBe(false);
-    });
+    await nextTick();
+    expect(wrapper.find(DeleteButton).exists()).toBe(false);
   });
 
-  it('emits `delete` event on deleteButton `delete-selected-designs` event', () => {
+  it('emits `delete` event on deleteButton `delete-selected-designs` event', async () => {
     createComponent();
 
-    return wrapper.vm.$nextTick().then(() => {
-      wrapper.find(DeleteButton).vm.$emit('delete-selected-designs');
-      expect(wrapper.emitted().delete).toBeTruthy();
-    });
+    await nextTick();
+    wrapper.find(DeleteButton).vm.$emit('delete-selected-designs');
+    expect(wrapper.emitted().delete).toBeTruthy();
   });
 
   it('renders download button with correct link', () => {

@@ -1,6 +1,6 @@
 import { GlButton } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 import ServiceCredentialsForm from '~/create_cluster/eks_cluster/components/service_credentials_form.vue';
 import eksClusterState from '~/create_cluster/eks_cluster/store/state';
@@ -65,14 +65,13 @@ describe('ServiceCredentialsForm', () => {
     expect(findSubmitButton().attributes('disabled')).toBeTruthy();
   });
 
-  it('enables submit button when role ARN is not provided', () => {
+  it('enables submit button when role ARN is not provided', async () => {
     // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
     // eslint-disable-next-line no-restricted-syntax
     vm.setData({ roleArn: '123' });
 
-    return vm.vm.$nextTick().then(() => {
-      expect(findSubmitButton().attributes('disabled')).toBeFalsy();
-    });
+    await nextTick();
+    expect(findSubmitButton().attributes('disabled')).toBeFalsy();
   });
 
   it('dispatches createRole action when submit button is clicked', () => {
@@ -86,14 +85,14 @@ describe('ServiceCredentialsForm', () => {
   });
 
   describe('when is creating role', () => {
-    beforeEach(() => {
+    beforeEach(async () => {
       // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
       // eslint-disable-next-line no-restricted-syntax
       vm.setData({ roleArn: '123' }); // set role ARN to enable button
 
       state.isCreatingRole = true;
 
-      return vm.vm.$nextTick();
+      await nextTick();
     });
 
     it('disables submit button', () => {

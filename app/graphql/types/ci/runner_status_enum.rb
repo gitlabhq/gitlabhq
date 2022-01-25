@@ -7,12 +7,20 @@ module Types
 
       value 'ACTIVE',
             description: 'Runner that is not paused.',
-            deprecated: { reason: 'Use CiRunnerType.active instead', milestone: '14.6' },
+            deprecated: {
+              reason: :renamed,
+              replacement: 'CiRunner.paused',
+              milestone: '14.6'
+            },
             value: :active
 
       value 'PAUSED',
             description: 'Runner that is paused.',
-            deprecated: { reason: 'Use CiRunnerType.active instead', milestone: '14.6' },
+            deprecated: {
+              reason: :renamed,
+              replacement: 'CiRunner.paused',
+              milestone: '14.6'
+            },
             value: :paused
 
       value 'ONLINE',

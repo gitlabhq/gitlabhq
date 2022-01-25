@@ -1,5 +1,6 @@
 import { GlIcon } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import DesignImage from '~/design_management/components/image.vue';
 
 describe('Design management large image component', () => {
@@ -36,7 +37,7 @@ describe('Design management large image component', () => {
     expect(wrapper.element).toMatchSnapshot();
   });
 
-  it('sets correct classes and styles if imageStyle is set', () => {
+  it('sets correct classes and styles if imageStyle is set', async () => {
     createComponent(
       {
         isLoading: false,
@@ -50,12 +51,11 @@ describe('Design management large image component', () => {
         },
       },
     );
-    return wrapper.vm.$nextTick().then(() => {
-      expect(wrapper.element).toMatchSnapshot();
-    });
+    await nextTick();
+    expect(wrapper.element).toMatchSnapshot();
   });
 
-  it('renders media broken icon on error', () => {
+  it('renders media broken icon on error', async () => {
     createComponent({
       isLoading: false,
       image: 'test.jpg',
@@ -64,10 +64,9 @@ describe('Design management large image component', () => {
 
     const image = wrapper.find('img');
     image.trigger('error');
-    return wrapper.vm.$nextTick().then(() => {
-      expect(image.isVisible()).toBe(false);
-      expect(wrapper.find(GlIcon).element).toMatchSnapshot();
-    });
+    await nextTick();
+    expect(image.isVisible()).toBe(false);
+    expect(wrapper.find(GlIcon).element).toMatchSnapshot();
   });
 
   describe('zoom', () => {
@@ -99,37 +98,34 @@ describe('Design management large image component', () => {
         .mockReturnValue(baseImageHeight);
     });
 
-    it('emits @resize event on zoom', () => {
+    it('emits @resize event on zoom', async () => {
       const zoomAmount = 2;
       wrapper.vm.zoom(zoomAmount);
 
-      return wrapper.vm.$nextTick().then(() => {
-        expect(wrapper.emitted('resize')).toEqual([
-          [{ width: baseImageWidth * zoomAmount, height: baseImageHeight * zoomAmount }],
-        ]);
-      });
+      await nextTick();
+      expect(wrapper.emitted('resize')).toEqual([
+        [{ width: baseImageWidth * zoomAmount, height: baseImageHeight * zoomAmount }],
+      ]);
     });
 
-    it('emits @resize event with base image size when scale=1', () => {
+    it('emits @resize event with base image size when scale=1', async () => {
       wrapper.vm.zoom(1);
 
-      return wrapper.vm.$nextTick().then(() => {
-        expect(wrapper.emitted('resize')).toEqual([
-          [{ width: baseImageWidth, height: baseImageHeight }],
-        ]);
-      });
+      await nextTick();
+      expect(wrapper.emitted('resize')).toEqual([
+        [{ width: baseImageWidth, height: baseImageHeight }],
+      ]);
     });
 
-    it('sets image style when zoomed', () => {
+    it('sets image style when zoomed', async () => {
       const zoomAmount = 2;
       wrapper.vm.zoom(zoomAmount);
       expect(wrapper.vm.imageStyle).toEqual({
         width: `${baseImageWidth * zoomAmount}px`,
         height: `${baseImageHeight * zoomAmount}px`,
       });
-      return wrapper.vm.$nextTick().then(() => {
-        expect(wrapper.element).toMatchSnapshot();
-      });
+      await nextTick();
+      expect(wrapper.element).toMatchSnapshot();
     });
   });
 });

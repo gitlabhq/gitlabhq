@@ -1,4 +1,5 @@
 import { mount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import data from 'test_fixtures/deploy_keys/keys.json';
 import key from '~/deploy_keys/components/key.vue';
 import DeployKeysStore from '~/deploy_keys/store';
@@ -95,18 +96,17 @@ describe('Deploy keys key', () => {
       expect(labels.at(1).attributes('title')).toContain('Expand');
     });
 
-    it('expands all project labels after click', () => {
+    it('expands all project labels after click', async () => {
       createComponent({ deployKey });
       const { length } = deployKey.deploy_keys_projects;
       wrapper.findAll('.deploy-project-label').at(1).trigger('click');
 
-      return wrapper.vm.$nextTick().then(() => {
-        const labels = wrapper.findAll('.deploy-project-label');
+      await nextTick();
+      const labels = wrapper.findAll('.deploy-project-label');
 
-        expect(labels.length).toBe(length);
-        expect(labels.at(1).text()).not.toContain(`+${length} others`);
-        expect(labels.at(1).attributes('title')).not.toContain('Expand');
-      });
+      expect(labels.length).toBe(length);
+      expect(labels.at(1).text()).not.toContain(`+${length} others`);
+      expect(labels.at(1).attributes('title')).not.toContain('Expand');
     });
 
     it('shows two projects', () => {

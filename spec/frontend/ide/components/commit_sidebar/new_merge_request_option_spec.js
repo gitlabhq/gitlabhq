@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import { createComponentWithStore } from 'helpers/vue_mount_component_helper';
 import { projectData, branches } from 'jest/ide/mock_data';
 import NewMergeRequestOption from '~/ide/components/commit_sidebar/new_merge_request_option.vue';
@@ -72,15 +72,11 @@ describe('create new MR checkbox', () => {
         expect(vm.$el.textContent).not.toBe('');
       });
 
-      it('has new MR', (done) => {
+      it('has new MR', async () => {
         setMR();
 
-        vm.$nextTick()
-          .then(() => {
-            expect(vm.$el.textContent).not.toBe('');
-          })
-          .then(done)
-          .catch(done.fail);
+        await nextTick();
+        expect(vm.$el.textContent).not.toBe('');
       });
     });
 
@@ -96,15 +92,11 @@ describe('create new MR checkbox', () => {
         expect(vm.$el.textContent).toBe('');
       });
 
-      it('has new MR', (done) => {
+      it('has new MR', async () => {
         setMR();
 
-        vm.$nextTick()
-          .then(() => {
-            expect(vm.$el.textContent).toBe('');
-          })
-          .then(done)
-          .catch(done.fail);
+        await nextTick();
+        expect(vm.$el.textContent).toBe('');
       });
     });
   });
@@ -121,15 +113,11 @@ describe('create new MR checkbox', () => {
         expect(vm.$el.textContent).not.toBe('');
       });
 
-      it('is rendered if MR exists', (done) => {
+      it('is rendered if MR exists', async () => {
         setMR();
 
-        vm.$nextTick()
-          .then(() => {
-            expect(vm.$el.textContent).not.toBe('');
-          })
-          .then(done)
-          .catch(done.fail);
+        await nextTick();
+        expect(vm.$el.textContent).not.toBe('');
       });
     });
 
@@ -144,15 +132,11 @@ describe('create new MR checkbox', () => {
         expect(vm.$el.textContent).not.toBe('');
       });
 
-      it('is hidden if MR exists', (done) => {
+      it('is hidden if MR exists', async () => {
         setMR();
 
-        vm.$nextTick()
-          .then(() => {
-            expect(vm.$el.textContent).toBe('');
-          })
-          .then(done)
-          .catch(done.fail);
+        await nextTick();
+        expect(vm.$el.textContent).toBe('');
       });
     });
   });
@@ -168,15 +152,11 @@ describe('create new MR checkbox', () => {
       expect(vm.$el.textContent).not.toBe('');
     });
 
-    it('is hidden if MR exists', (done) => {
+    it('is hidden if MR exists', async () => {
       setMR();
 
-      vm.$nextTick()
-        .then(() => {
-          expect(vm.$el.textContent).toBe('');
-        })
-        .then(done)
-        .catch(done.fail);
+      await nextTick();
+      expect(vm.$el.textContent).toBe('');
     });
 
     it('shows enablded checkbox', () => {

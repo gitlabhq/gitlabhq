@@ -632,6 +632,9 @@ msgstr ""
 msgid "%{group_name} group members"
 msgstr ""
 
+msgid "%{group_name} is approaching the limit of available seats"
+msgstr ""
+
 msgid "%{group_name} uses group managed accounts. You need to create a new GitLab account which will be managed by %{group_name}."
 msgstr ""
 
@@ -5421,9 +5424,6 @@ msgstr ""
 msgid "BillingPlans|@%{user_name} you are currently using the %{plan_name}."
 msgstr ""
 
-msgid "BillingPlans|Compare all plans"
-msgstr ""
-
 msgid "BillingPlans|Congratulations, your free trial is activated."
 msgstr ""
 
@@ -5458,9 +5458,6 @@ msgid "BillingPlans|This group uses the plan associated with its parent group."
 msgstr ""
 
 msgid "BillingPlans|To manage the plan for this group, visit the billing section of %{parent_billing_page_link}."
-msgstr ""
-
-msgid "BillingPlans|Upgrade to GitLab %{planNameForUpgrade}"
 msgstr ""
 
 msgid "BillingPlans|While GitLab is ending availability of the Bronze plan, you can still renew your Bronze subscription one additional time before %{eoa_bronze_plan_end_date}. We are also offering a limited time free upgrade to our Premium Plan (up to 25 users)! Learn more about the changes and offers in our %{announcement_link}."
@@ -15139,14 +15136,6 @@ msgid "FeatureFlag|User IDs"
 msgstr ""
 
 msgid "FeatureFlag|User List"
-msgstr ""
-
-msgid "FeatureHighlight|%{daysRemaining} day remaining to enjoy %{featureName}"
-msgid_plural "FeatureHighlight|%{daysRemaining} days remaining to enjoy %{featureName}"
-msgstr[0] ""
-msgstr[1] ""
-
-msgid "FeatureHighlight|Enjoying your GitLab %{planNameForTrial} trial? To continue using %{featureName} after your trial ends, upgrade to GitLab %{planNameForUpgrade}."
 msgstr ""
 
 msgid "Feb"
@@ -31127,9 +31116,6 @@ msgstr ""
 msgid "SSL verification"
 msgstr ""
 
-msgid "SVG illustration"
-msgstr ""
-
 msgid "Satisfied"
 msgstr ""
 
@@ -35058,6 +35044,9 @@ msgstr ""
 msgid "Target-Branch"
 msgstr ""
 
+msgid "Task"
+msgstr ""
+
 msgid "Task ID: %{elastic_task}"
 msgstr ""
 
@@ -35473,9 +35462,6 @@ msgid "That's it, well done!"
 msgstr ""
 
 msgid "The \"%{group_path}\" group allows you to sign in with your Single Sign-On Account"
-msgstr ""
-
-msgid "The %{featureName} feature is part of your GitLab Ultimate trial."
 msgstr ""
 
 msgid "The %{link_start}true-up model%{link_end} allows having more users, and additional users will incur a retroactive charge on renewal."
@@ -36479,9 +36465,6 @@ msgid "This epic already has the maximum number of child epics."
 msgstr ""
 
 msgid "This epic does not exist or you don't have sufficient permission."
-msgstr ""
-
-msgid "This feature is part of your GitLab Ultimate trial."
 msgstr ""
 
 msgid "This feature requires local storage to be enabled"
@@ -39529,6 +39512,9 @@ msgstr[1] ""
 msgid "View replaced file @ "
 msgstr ""
 
+msgid "View seat usage"
+msgstr ""
+
 msgid "View setting"
 msgstr ""
 
@@ -39865,6 +39851,9 @@ msgstr ""
 msgid "Vulnerability|Scanner Provider"
 msgstr ""
 
+msgid "Vulnerability|Secure Code Warrior"
+msgstr ""
+
 msgid "Vulnerability|Security Audit"
 msgstr ""
 
@@ -39896,6 +39885,9 @@ msgid "Vulnerability|Training not available for this vulnerability."
 msgstr ""
 
 msgid "Vulnerability|Unmodified Response"
+msgstr ""
+
+msgid "Vulnerability|View training"
 msgstr ""
 
 msgid "WARNING:"
@@ -40615,6 +40607,15 @@ msgid "Work in progress (open and unassigned)"
 msgstr ""
 
 msgid "Work in progress Limit"
+msgstr ""
+
+msgid "WorkItem|Convert to work item"
+msgstr ""
+
+msgid "WorkItem|Create work item"
+msgstr ""
+
+msgid "WorkItem|New Task"
 msgstr ""
 
 msgid "WorkItem|Work Items"
@@ -41586,6 +41587,9 @@ msgid "Your snippets"
 msgstr ""
 
 msgid "Your subscription expired!"
+msgstr ""
+
+msgid "Your subscription has %{remaining_seats_count} out of %{total_seats_count} seats remaining. Even if you reach the number of seats in your subscription, you can continue to add users, and GitLab will bill you for the overage."
 msgstr ""
 
 msgid "Your subscription is now expired. To renew, export your license usage file and email it to %{renewal_service_email}. A new license will be emailed to the email address registered in the %{customers_dot}. You can upload this license to your instance. To use Free tier, remove your current license."

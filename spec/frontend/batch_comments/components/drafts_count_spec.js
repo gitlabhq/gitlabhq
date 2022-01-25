@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import { mountComponentWithStore } from 'helpers/vue_mount_component_helper';
 import DraftsCount from '~/batch_comments/components/drafts_count.vue';
 import { createStore } from '~/batch_comments/stores';
@@ -27,17 +27,14 @@ describe('Batch comments drafts count component', () => {
     expect(vm.$el.textContent).toContain('1');
   });
 
-  it('renders screen reader text', (done) => {
+  it('renders screen reader text', async () => {
     const el = vm.$el.querySelector('.sr-only');
 
     expect(el.textContent).toContain('draft');
 
     vm.$store.state.batchComments.drafts.push('comment 2');
 
-    vm.$nextTick(() => {
-      expect(el.textContent).toContain('drafts');
-
-      done();
-    });
+    await nextTick();
+    expect(el.textContent).toContain('drafts');
   });
 });

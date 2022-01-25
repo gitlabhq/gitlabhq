@@ -1,5 +1,6 @@
 import { GlDeprecatedSkeletonLoading as GlSkeletonLoading, GlButton } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import Table from '~/repository/components/table/index.vue';
 import TableRow from '~/repository/components/table/row.vue';
 
@@ -86,18 +87,17 @@ describe('Repository table component', () => {
     ${'/'}          | ${'main'}
     ${'app/assets'} | ${'main'}
     ${'/'}          | ${'test'}
-  `('renders table caption for $ref in $path', ({ path, ref }) => {
+  `('renders table caption for $ref in $path', async ({ path, ref }) => {
     factory({ path });
 
     // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
     // eslint-disable-next-line no-restricted-syntax
     vm.setData({ ref });
 
-    return vm.vm.$nextTick(() => {
-      expect(vm.find('.table').attributes('aria-label')).toEqual(
-        `Files, directories, and submodules in the path ${path} for commit reference ${ref}`,
-      );
-    });
+    await nextTick();
+    expect(vm.find('.table').attributes('aria-label')).toEqual(
+      `Files, directories, and submodules in the path ${path} for commit reference ${ref}`,
+    );
   });
 
   it('shows loading icon', () => {
@@ -140,7 +140,7 @@ describe('Repository table component', () => {
 
       showMoreButton().vm.$emit('click');
 
-      await vm.vm.$nextTick();
+      await nextTick();
 
       expect(vm.emitted('showMore')).toHaveLength(1);
     });

@@ -68,6 +68,7 @@ RSpec.describe 'Query.runner(id)' do
         'revision' => runner.revision,
         'locked' => false,
         'active' => runner.active,
+        'paused' => !runner.active,
         'status' => runner.status('14.5').to_s.upcase,
         'maximumTimeout' => runner.maximum_timeout,
         'accessLevel' => runner.access_level.to_s.upcase,

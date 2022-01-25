@@ -1,18 +1,31 @@
 <script>
-import { GlSafeHtmlDirective as SafeHtml } from '@gitlab/ui';
+import {
+  GlSafeHtmlDirective as SafeHtml,
+  GlModal,
+  GlModalDirective,
+  GlPopover,
+  GlButton,
+} from '@gitlab/ui';
 import $ from 'jquery';
 import createFlash from '~/flash';
 import { __, sprintf } from '~/locale';
 import TaskList from '~/task_list';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import CreateWorkItem from '~/work_items/pages/create_work_item.vue';
 import animateMixin from '../mixins/animate';
 
 export default {
   directives: {
     SafeHtml,
+    GlModal: GlModalDirective,
   },
-
-  mixins: [animateMixin],
-
+  components: {
+    GlModal,
+    GlPopover,
+    CreateWorkItem,
+    GlButton,
+  },
+  mixins: [animateMixin, glFeatureFlagMixin()],
   props: {
     canUpdate: {
       type: Boolean,
@@ -53,7 +66,14 @@ export default {
       preAnimation: false,
       pulseAnimation: false,
       initialUpdate: true,
+      taskButtons: [],
+      activeTask: {},
     };
+  },
+  computed: {
+    workItemsEnabled() {
+      return this.glFeatures.workItems;
+    },
   },
   watch: {
     descriptionHtml(newDescription, oldDescription) {
@@ -74,6 +94,10 @@ export default {
   mounted() {
     this.renderGFM();
     this.updateTaskStatusText();
+
+    if (this.workItemsEnabled) {
+      this.renderTaskActions();
+    }
   },
   methods: {
     renderGFM() {
@@ -132,6 +156,55 @@ export default {
         $tasksShort.text('');
       }
     },
+    renderTaskActions() {
+      const taskListFields = this.$el.querySelectorAll('.task-list-item');
+      taskListFields.forEach((item, index) => {
+        const button = document.createElement('button');
+        button.classList.add(
+          'btn',
+          'btn-default',
+          'btn-md',
+          'gl-button',
+          'btn-default-tertiary',
+          'gl-left-0',
+          'gl-p-0!',
+          'gl-top-2',
+          'gl-absolute',
+          'js-add-task',
+        );
+        button.id = `js-task-button-${index}`;
+        this.taskButtons.push(button.id);
+        button.innerHTML =
+          '<svg data-testid="ellipsis_v-icon" role="img" aria-hidden="true" class="dropdown-icon gl-icon s14"><use href="/assets/icons-7f1680a3670112fe4c8ef57b9dfb93f0f61b43a2a479d7abd6c83bcb724b9201.svg#ellipsis_v"></use></svg>';
+        item.prepend(button);
+      });
+    },
+    openCreateTaskModal(id) {
+      this.activeTask = { id, title: this.$el.querySelector(`#${id}`).parentElement.innerText };
+      this.$refs.modal.show();
+    },
+    closeCreateTaskModal() {
+      this.$refs.modal.hide();
+    },
+    handleCreateTask(title) {
+      const listItem = this.$el.querySelector(`#${this.activeTask.id}`).parentElement;
+      const taskBadge = document.createElement('span');
+      taskBadge.innerHTML = `
+        <svg data-testid="issue-open-m-icon" role="img" aria-hidden="true" class="gl-icon gl-fill-green-500 s12">
+          <use href="/assets/icons-7f1680a3670112fe4c8ef57b9dfb93f0f61b43a2a479d7abd6c83bcb724b9201.svg#issue-open-m"></use>
+        </svg>
+        <span class="badge badge-info badge-pill gl-badge sm gl-mr-1">
+          ${__('Task')}
+        </span>
+        <a href="#">${title}</a>
+      `;
+      listItem.insertBefore(taskBadge, listItem.lastChild);
+      listItem.removeChild(listItem.lastChild);
+      this.closeCreateTaskModal();
+    },
+    focusButton() {
+      this.$refs.convertButton[0].$el.focus();
+    },
   },
   safeHtmlConfig: { ADD_TAGS: ['gl-emoji', 'copy-code'] },
 };
@@ -142,12 +215,14 @@ export default {
     v-if="descriptionHtml"
     :class="{
       'js-task-list-container': canUpdate,
+      'work-items-enabled': workItemsEnabled,
     }"
     class="description"
   >
     <div
       ref="gfm-content"
       v-safe-html:[$options.safeHtmlConfig]="descriptionHtml"
+      data-testid="gfm-content"
       :class="{
         'issue-realtime-pre-pulse': preAnimation,
         'issue-realtime-trigger-pulse': pulseAnimation,
@@ -157,13 +232,46 @@ export default {
     <!-- eslint-disable vue/no-mutating-props -->
     <textarea
       v-if="descriptionText"
-      ref="textarea"
       v-model="descriptionText"
       :data-update-url="updateUrl"
       class="hidden js-task-list-field"
       dir="auto"
+      data-testid="textarea"
     >
     </textarea>
     <!-- eslint-enable vue/no-mutating-props -->
+    <gl-modal
+      ref="modal"
+      modal-id="create-task-modal"
+      :title="s__('WorkItem|New Task')"
+      hide-footer
+      body-class="gl-py-0!"
+    >
+      <create-work-item
+        :is-modal="true"
+        :initial-title="activeTask.title"
+        @closeModal="closeCreateTaskModal"
+        @onCreate="handleCreateTask"
+      />
+    </gl-modal>
+    <template v-if="workItemsEnabled">
+      <gl-popover
+        v-for="item in taskButtons"
+        :key="item"
+        :target="item"
+        placement="top"
+        triggers="focus"
+        @shown="focusButton"
+      >
+        <gl-button
+          ref="convertButton"
+          variant="link"
+          data-testid="convert-to-task"
+          class="gl-text-gray-900! gl-text-decoration-none! gl-outline-0!"
+          @click="openCreateTaskModal(item)"
+          >{{ s__('WorkItem|Convert to work item') }}</gl-button
+        >
+      </gl-popover>
+    </template>
   </div>
 </template>

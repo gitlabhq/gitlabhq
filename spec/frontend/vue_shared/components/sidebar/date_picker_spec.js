@@ -1,5 +1,6 @@
 import { GlLoadingIcon } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import DatePicker from '~/vue_shared/components/pikaday.vue';
 import SidebarDatePicker from '~/vue_shared/components/sidebar/date_picker.vue';
 
@@ -79,7 +80,7 @@ describe('SidebarDatePicker', () => {
     it('should enable editing when edit button is clicked', async () => {
       findEditButton().trigger('click');
 
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       expect(wrapper.vm.editing).toBe(true);
     });

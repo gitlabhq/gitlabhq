@@ -1,6 +1,6 @@
 import { GlAlert } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import { ApolloMutation } from 'vue-apollo';
 import VueRouter from 'vue-router';
 import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
@@ -153,11 +153,11 @@ describe('Design management design index page', () => {
       jest.spyOn(utils, 'getPageLayoutElement').mockReturnValue(mockPageLayoutElement);
       createComponent({ loading: false }, { data: { design, scale: 2 } });
 
-      await wrapper.vm.$nextTick();
+      await nextTick();
       expect(findDesignPresentation().props('scale')).toBe(2);
 
       DesignIndex.beforeRouteUpdate.call(wrapper.vm, {}, {}, jest.fn());
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       expect(findDesignPresentation().props('scale')).toBe(1);
     });
@@ -200,7 +200,7 @@ describe('Design management design index page', () => {
     });
   });
 
-  it('opens a new discussion form', () => {
+  it('opens a new discussion form', async () => {
     createComponent(
       { loading: false },
       {
@@ -212,9 +212,8 @@ describe('Design management design index page', () => {
 
     findDesignPresentation().vm.$emit('openCommentForm', { x: 0, y: 0 });
 
-    return wrapper.vm.$nextTick().then(() => {
-      expect(findDiscussionForm().exists()).toBe(true);
-    });
+    await nextTick();
+    expect(findDiscussionForm().exists()).toBe(true);
   });
 
   it('keeps new discussion form focused', () => {
@@ -233,7 +232,7 @@ describe('Design management design index page', () => {
     expect(focusInput).toHaveBeenCalled();
   });
 
-  it('sends a mutation on submitting form and closes form', () => {
+  it('sends a mutation on submitting form and closes form', async () => {
     createComponent(
       { loading: false },
       {
@@ -248,17 +247,12 @@ describe('Design management design index page', () => {
     findDiscussionForm().vm.$emit('submit-form');
     expect(mutate).toHaveBeenCalledWith(createDiscussionMutationVariables);
 
-    return wrapper.vm
-      .$nextTick()
-      .then(() => {
-        return mutate({ variables: createDiscussionMutationVariables });
-      })
-      .then(() => {
-        expect(findDiscussionForm().exists()).toBe(false);
-      });
+    await nextTick();
+    await mutate({ variables: createDiscussionMutationVariables });
+    expect(findDiscussionForm().exists()).toBe(false);
   });
 
-  it('closes the form and clears the comment on canceling form', () => {
+  it('closes the form and clears the comment on canceling form', async () => {
     createComponent(
       { loading: false },
       {
@@ -274,9 +268,8 @@ describe('Design management design index page', () => {
 
     expect(wrapper.vm.comment).toBe('');
 
-    return wrapper.vm.$nextTick().then(() => {
-      expect(findDiscussionForm().exists()).toBe(false);
-    });
+    await nextTick();
+    expect(findDiscussionForm().exists()).toBe(false);
   });
 
   describe('with error', () => {
@@ -299,22 +292,21 @@ describe('Design management design index page', () => {
 
   describe('onDesignQueryResult', () => {
     describe('with no designs', () => {
-      it('redirects to /designs', () => {
+      it('redirects to /designs', async () => {
         createComponent({ loading: true });
         router.push = jest.fn();
 
         wrapper.vm.onDesignQueryResult({ data: mockResponseNoDesigns, loading: false });
-        return wrapper.vm.$nextTick().then(() => {
-          expect(createFlash).toHaveBeenCalledTimes(1);
-          expect(createFlash).toHaveBeenCalledWith({ message: DESIGN_NOT_FOUND_ERROR });
-          expect(router.push).toHaveBeenCalledTimes(1);
-          expect(router.push).toHaveBeenCalledWith({ name: DESIGNS_ROUTE_NAME });
-        });
+        await nextTick();
+        expect(createFlash).toHaveBeenCalledTimes(1);
+        expect(createFlash).toHaveBeenCalledWith({ message: DESIGN_NOT_FOUND_ERROR });
+        expect(router.push).toHaveBeenCalledTimes(1);
+        expect(router.push).toHaveBeenCalledWith({ name: DESIGNS_ROUTE_NAME });
       });
     });
 
     describe('when no design exists for given version', () => {
-      it('redirects to /designs', () => {
+      it('redirects to /designs', async () => {
         createComponent({ loading: true });
         // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
         // eslint-disable-next-line no-restricted-syntax
@@ -327,12 +319,11 @@ describe('Design management design index page', () => {
         router.push = jest.fn();
 
         wrapper.vm.onDesignQueryResult({ data: mockResponseWithDesigns, loading: false });
-        return wrapper.vm.$nextTick().then(() => {
-          expect(createFlash).toHaveBeenCalledTimes(1);
-          expect(createFlash).toHaveBeenCalledWith({ message: DESIGN_VERSION_NOT_EXIST_ERROR });
-          expect(router.push).toHaveBeenCalledTimes(1);
-          expect(router.push).toHaveBeenCalledWith({ name: DESIGNS_ROUTE_NAME });
-        });
+        await nextTick();
+        expect(createFlash).toHaveBeenCalledTimes(1);
+        expect(createFlash).toHaveBeenCalledWith({ message: DESIGN_VERSION_NOT_EXIST_ERROR });
+        expect(router.push).toHaveBeenCalledTimes(1);
+        expect(router.push).toHaveBeenCalledWith({ name: DESIGNS_ROUTE_NAME });
       });
     });
   });

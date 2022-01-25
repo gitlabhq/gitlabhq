@@ -1,5 +1,6 @@
 import { mount } from '@vue/test-utils';
 import { GlSprintf } from '@gitlab/ui';
+import { nextTick } from 'vue';
 import CommitsHeader from '~/vue_merge_request_widget/components/states/commits_header.vue';
 
 describe('Commits header component', () => {
@@ -58,15 +59,14 @@ describe('Commits header component', () => {
       expect(findCommitToggle().attributes('aria-label')).toBe('Expand');
     });
 
-    it('has a chevron-right icon', () => {
+    it('has a chevron-right icon', async () => {
       createComponent();
       // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
       // eslint-disable-next-line no-restricted-syntax
       wrapper.setData({ expanded: false });
 
-      return wrapper.vm.$nextTick().then(() => {
-        expect(findCommitToggle().props('icon')).toBe('chevron-right');
-      });
+      await nextTick();
+      expect(findCommitToggle().props('icon')).toBe('chevron-right');
     });
 
     describe('when squash is disabled', () => {
@@ -118,25 +118,19 @@ describe('Commits header component', () => {
       wrapper.setData({ expanded: true });
     });
 
-    it('toggle has aria-label equal to collapse', (done) => {
-      wrapper.vm.$nextTick(() => {
-        expect(findCommitToggle().attributes('aria-label')).toBe('Collapse');
-        done();
-      });
+    it('toggle has aria-label equal to collapse', async () => {
+      await nextTick();
+      expect(findCommitToggle().attributes('aria-label')).toBe('Collapse');
     });
 
-    it('has a chevron-down icon', (done) => {
-      wrapper.vm.$nextTick(() => {
-        expect(findCommitToggle().props('icon')).toBe('chevron-down');
-        done();
-      });
+    it('has a chevron-down icon', async () => {
+      await nextTick();
+      expect(findCommitToggle().props('icon')).toBe('chevron-down');
     });
 
-    it('has a collapse text', (done) => {
-      wrapper.vm.$nextTick(() => {
-        expect(findHeaderWrapper().text()).toBe('Collapse');
-        done();
-      });
+    it('has a collapse text', async () => {
+      await nextTick();
+      expect(findHeaderWrapper().text()).toBe('Collapse');
     });
   });
 });

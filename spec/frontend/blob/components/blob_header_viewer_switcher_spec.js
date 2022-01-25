@@ -1,5 +1,6 @@
 import { GlButtonGroup, GlButton } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import BlobHeaderViewerSwitcher from '~/blob/components/blob_header_viewer_switcher.vue';
 import {
   RICH_BLOB_VIEWER,
@@ -72,26 +73,24 @@ describe('Blob Header Viewer Switcher', () => {
       expect(wrapper.vm.$emit).not.toHaveBeenCalled();
     });
 
-    it('emits an event when a Rich Viewer button is clicked', () => {
+    it('emits an event when a Rich Viewer button is clicked', async () => {
       factory();
       expect(wrapper.vm.value).toBe(SIMPLE_BLOB_VIEWER);
 
       richBtn.vm.$emit('click');
 
-      return wrapper.vm.$nextTick().then(() => {
-        expect(wrapper.vm.$emit).toHaveBeenCalledWith('input', RICH_BLOB_VIEWER);
-      });
+      await nextTick();
+      expect(wrapper.vm.$emit).toHaveBeenCalledWith('input', RICH_BLOB_VIEWER);
     });
 
-    it('emits an event when a Simple Viewer button is clicked', () => {
+    it('emits an event when a Simple Viewer button is clicked', async () => {
       factory({
         value: RICH_BLOB_VIEWER,
       });
       simpleBtn.vm.$emit('click');
 
-      return wrapper.vm.$nextTick().then(() => {
-        expect(wrapper.vm.$emit).toHaveBeenCalledWith('input', SIMPLE_BLOB_VIEWER);
-      });
+      await nextTick();
+      expect(wrapper.vm.$emit).toHaveBeenCalledWith('input', SIMPLE_BLOB_VIEWER);
     });
   });
 });

@@ -7,6 +7,7 @@ import {
 import * as Sentry from '@sentry/browser';
 import { mount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
+import { nextTick } from 'vue';
 import Clusters from '~/clusters_list/components/clusters.vue';
 import ClustersEmptyState from '~/clusters_list/components/clusters_empty_state.vue';
 import ClusterStore from '~/clusters_list/store';
@@ -176,9 +177,9 @@ describe('Clusters', () => {
     });
 
     describe('nodes finish loading', () => {
-      beforeEach(() => {
+      beforeEach(async () => {
         wrapper.vm.$store.state.loadingNodes = false;
-        return wrapper.vm.$nextTick();
+        await nextTick();
       });
 
       it.each`

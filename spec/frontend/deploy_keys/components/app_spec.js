@@ -1,5 +1,6 @@
 import { mount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
+import { nextTick } from 'vue';
 import data from 'test_fixtures/deploy_keys/keys.json';
 import waitForPromises from 'helpers/wait_for_promises';
 import { TEST_HOST } from 'spec/test_constants';
@@ -39,20 +40,18 @@ describe('Deploy keys app component', () => {
   const findKeyPanels = () => wrapper.findAll('.deploy-keys .gl-tabs-nav li');
   const findModal = () => wrapper.findComponent(ConfirmModal);
 
-  it('renders loading icon while waiting for request', () => {
+  it('renders loading icon while waiting for request', async () => {
     mock.onGet(TEST_ENDPOINT).reply(() => new Promise());
 
     mountComponent();
 
-    return wrapper.vm.$nextTick().then(() => {
-      expect(findLoadingIcon().exists()).toBe(true);
-    });
+    await nextTick();
+    expect(findLoadingIcon().exists()).toBe(true);
   });
 
-  it('renders keys panels', () => {
-    return mountComponent().then(() => {
-      expect(findKeyPanels().length).toBe(3);
-    });
+  it('renders keys panels', async () => {
+    await mountComponent();
+    expect(findKeyPanels().length).toBe(3);
   });
 
   it.each`
@@ -75,72 +74,55 @@ describe('Deploy keys app component', () => {
     });
   });
 
-  it('re-fetches deploy keys when enabling a key', () => {
+  it('re-fetches deploy keys when enabling a key', async () => {
     const key = data.public_keys[0];
-    return mountComponent()
-      .then(() => {
-        jest.spyOn(wrapper.vm.service, 'getKeys').mockImplementation(() => {});
-        jest.spyOn(wrapper.vm.service, 'enableKey').mockImplementation(() => Promise.resolve());
+    await mountComponent();
+    jest.spyOn(wrapper.vm.service, 'getKeys').mockImplementation(() => {});
+    jest.spyOn(wrapper.vm.service, 'enableKey').mockImplementation(() => Promise.resolve());
 
-        eventHub.$emit('enable.key', key);
+    eventHub.$emit('enable.key', key);
 
-        return wrapper.vm.$nextTick();
-      })
-      .then(() => {
-        expect(wrapper.vm.service.enableKey).toHaveBeenCalledWith(key.id);
-        expect(wrapper.vm.service.getKeys).toHaveBeenCalled();
-      });
+    await nextTick();
+    expect(wrapper.vm.service.enableKey).toHaveBeenCalledWith(key.id);
+    expect(wrapper.vm.service.getKeys).toHaveBeenCalled();
   });
 
-  it('re-fetches deploy keys when disabling a key', () => {
+  it('re-fetches deploy keys when disabling a key', async () => {
     const key = data.public_keys[0];
-    return mountComponent()
-      .then(() => {
-        jest.spyOn(wrapper.vm.service, 'getKeys').mockImplementation(() => {});
-        jest.spyOn(wrapper.vm.service, 'disableKey').mockImplementation(() => Promise.resolve());
+    await mountComponent();
+    jest.spyOn(wrapper.vm.service, 'getKeys').mockImplementation(() => {});
+    jest.spyOn(wrapper.vm.service, 'disableKey').mockImplementation(() => Promise.resolve());
 
-        eventHub.$emit('disable.key', key, () => {});
+    eventHub.$emit('disable.key', key, () => {});
 
-        return wrapper.vm.$nextTick();
-      })
-      .then(() => {
-        expect(findModal().props('visible')).toBe(true);
-        findModal().vm.$emit('remove');
+    await nextTick();
+    expect(findModal().props('visible')).toBe(true);
+    findModal().vm.$emit('remove');
 
-        return wrapper.vm.$nextTick();
-      })
-      .then(() => {
-        expect(wrapper.vm.service.disableKey).toHaveBeenCalledWith(key.id);
-        expect(wrapper.vm.service.getKeys).toHaveBeenCalled();
-      });
+    await nextTick();
+    expect(wrapper.vm.service.disableKey).toHaveBeenCalledWith(key.id);
+    expect(wrapper.vm.service.getKeys).toHaveBeenCalled();
   });
 
-  it('calls disableKey when removing a key', () => {
+  it('calls disableKey when removing a key', async () => {
     const key = data.public_keys[0];
-    return mountComponent()
-      .then(() => {
-        jest.spyOn(wrapper.vm.service, 'getKeys').mockImplementation(() => {});
-        jest.spyOn(wrapper.vm.service, 'disableKey').mockImplementation(() => Promise.resolve());
+    await mountComponent();
+    jest.spyOn(wrapper.vm.service, 'getKeys').mockImplementation(() => {});
+    jest.spyOn(wrapper.vm.service, 'disableKey').mockImplementation(() => Promise.resolve());
 
-        eventHub.$emit('remove.key', key, () => {});
+    eventHub.$emit('remove.key', key, () => {});
 
-        return wrapper.vm.$nextTick();
-      })
-      .then(() => {
-        expect(findModal().props('visible')).toBe(true);
-        findModal().vm.$emit('remove');
+    await nextTick();
+    expect(findModal().props('visible')).toBe(true);
+    findModal().vm.$emit('remove');
 
-        return wrapper.vm.$nextTick();
-      })
-      .then(() => {
-        expect(wrapper.vm.service.disableKey).toHaveBeenCalledWith(key.id);
-        expect(wrapper.vm.service.getKeys).toHaveBeenCalled();
-      });
+    await nextTick();
+    expect(wrapper.vm.service.disableKey).toHaveBeenCalledWith(key.id);
+    expect(wrapper.vm.service.getKeys).toHaveBeenCalled();
   });
 
-  it('hasKeys returns true when there are keys', () => {
-    return mountComponent().then(() => {
-      expect(wrapper.vm.hasKeys).toEqual(3);
-    });
+  it('hasKeys returns true when there are keys', async () => {
+    await mountComponent();
+    expect(wrapper.vm.hasKeys).toEqual(3);
   });
 });

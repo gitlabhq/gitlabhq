@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import { trimText } from 'helpers/text_helper';
 import { createComponentWithStore } from 'helpers/vue_mount_component_helper';
 import listItem from '~/ide/components/commit_sidebar/list_item.vue';
@@ -41,26 +41,18 @@ describe('Multi-file editor commit sidebar list item', () => {
     expect(findPathText()).toContain(f.path);
   });
 
-  it('correctly renders renamed entries', (done) => {
+  it('correctly renders renamed entries', async () => {
     Vue.set(vm.file, 'prevName', 'Old name');
 
-    vm.$nextTick()
-      .then(() => {
-        expect(findPathText()).toEqual(`Old name → ${f.name}`);
-      })
-      .then(done)
-      .catch(done.fail);
+    await nextTick();
+    expect(findPathText()).toEqual(`Old name → ${f.name}`);
   });
 
-  it('correctly renders entry, the name of which did not change after rename (as within a folder)', (done) => {
+  it('correctly renders entry, the name of which did not change after rename (as within a folder)', async () => {
     Vue.set(vm.file, 'prevName', f.name);
 
-    vm.$nextTick()
-      .then(() => {
-        expect(findPathText()).toEqual(f.name);
-      })
-      .then(done)
-      .catch(done.fail);
+    await nextTick();
+    expect(findPathText()).toEqual(f.name);
   });
 
   it('opens a closed file in the editor when clicking the file path', (done) => {
@@ -134,14 +126,11 @@ describe('Multi-file editor commit sidebar list item', () => {
       expect(vm.$el.querySelector('.is-active')).toBe(null);
     });
 
-    it('adds active class when keys match', (done) => {
+    it('adds active class when keys match', async () => {
       vm.keyPrefix = 'staged';
 
-      vm.$nextTick(() => {
-        expect(vm.$el.querySelector('.is-active')).not.toBe(null);
-
-        done();
-      });
+      await nextTick();
+      expect(vm.$el.querySelector('.is-active')).not.toBe(null);
     });
   });
 });

@@ -1,5 +1,6 @@
 import { getByRole } from '@testing-library/dom';
 import { shallowMount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import { stubComponent } from 'helpers/stub_component';
 import DraftNote from '~/batch_comments/components/draft_note.vue';
 import { createStore } from '~/batch_comments/stores';
@@ -71,45 +72,37 @@ describe('Batch comments draft note component', () => {
       );
     });
 
-    it('sets as loading when draft is publishing', (done) => {
+    it('sets as loading when draft is publishing', async () => {
       createComponent();
       wrapper.vm.$store.state.batchComments.currentlyPublishingDrafts.push(1);
 
-      wrapper.vm.$nextTick(() => {
-        const publishNowButton = wrapper.find({ ref: 'publishNowButton' });
+      await nextTick();
+      const publishNowButton = wrapper.find({ ref: 'publishNowButton' });
 
-        expect(publishNowButton.props().loading).toBe(true);
-
-        done();
-      });
+      expect(publishNowButton.props().loading).toBe(true);
     });
   });
 
   describe('update', () => {
-    it('dispatches updateDraft', (done) => {
+    it('dispatches updateDraft', async () => {
       createComponent();
       const note = wrapper.find(NoteableNote);
 
       note.vm.$emit('handleEdit');
 
-      wrapper.vm
-        .$nextTick()
-        .then(() => {
-          const formData = {
-            note: draft,
-            noteText: 'a',
-            resolveDiscussion: false,
-          };
+      await nextTick();
+      const formData = {
+        note: draft,
+        noteText: 'a',
+        resolveDiscussion: false,
+      };
 
-          note.vm.$emit('handleUpdateNote', formData);
+      note.vm.$emit('handleUpdateNote', formData);
 
-          expect(wrapper.vm.$store.dispatch).toHaveBeenCalledWith(
-            'batchComments/updateDraft',
-            formData,
-          );
-        })
-        .then(done)
-        .catch(done.fail);
+      expect(wrapper.vm.$store.dispatch).toHaveBeenCalledWith(
+        'batchComments/updateDraft',
+        formData,
+      );
     });
   });
 
@@ -127,7 +120,7 @@ describe('Batch comments draft note component', () => {
   });
 
   describe('quick actions', () => {
-    it('renders referenced commands', (done) => {
+    it('renders referenced commands', async () => {
       createComponent();
       wrapper.setProps({
         draft: {
@@ -138,14 +131,11 @@ describe('Batch comments draft note component', () => {
         },
       });
 
-      wrapper.vm.$nextTick(() => {
-        const referencedCommands = wrapper.find('.referenced-commands');
+      await nextTick();
+      const referencedCommands = wrapper.find('.referenced-commands');
 
-        expect(referencedCommands.exists()).toBe(true);
-        expect(referencedCommands.text()).toContain('test command');
-
-        done();
-      });
+      expect(referencedCommands.exists()).toBe(true);
+      expect(referencedCommands.text()).toContain('test command');
     });
   });
 

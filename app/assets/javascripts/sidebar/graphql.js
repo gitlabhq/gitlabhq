@@ -2,6 +2,7 @@ import { IntrospectionFragmentMatcher } from 'apollo-cache-inmemory';
 import produce from 'immer';
 import VueApollo from 'vue-apollo';
 import getIssueStateQuery from '~/issues/show/queries/get_issue_state.query.graphql';
+import { resolvers as workItemResolvers } from '~/work_items/graphql/resolvers';
 import createDefaultClient from '~/lib/graphql';
 import introspectionQueryResultData from './fragmentTypes.json';
 
@@ -10,6 +11,7 @@ const fragmentMatcher = new IntrospectionFragmentMatcher({
 });
 
 const resolvers = {
+  ...workItemResolvers,
   Mutation: {
     updateIssueState: (_, { issueType = undefined, isDirty = false }, { cache }) => {
       const sourceData = cache.readQuery({ query: getIssueStateQuery });
@@ -18,6 +20,7 @@ const resolvers = {
       });
       cache.writeQuery({ query: getIssueStateQuery, data });
     },
+    ...workItemResolvers.Mutation,
   },
 };
 

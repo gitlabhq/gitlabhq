@@ -1,4 +1,5 @@
 import { mount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import todoMarkDoneMutation from '~/graphql_shared/mutations/todo_mark_done.mutation.graphql';
 import SidebarTodo from '~/vue_shared/alert_details/components/sidebar/sidebar_todo.vue';
 import createAlertTodoMutation from '~/vue_shared/alert_details/graphql/mutations/alert_todo_create.mutation.graphql';
@@ -57,7 +58,7 @@ describe('Alert Details Sidebar To Do', () => {
       });
 
       it('renders a button for adding a To-Do', async () => {
-        await wrapper.vm.$nextTick();
+        await nextTick();
 
         expect(findToDoButton().text()).toBe('Add a to do');
       });
@@ -66,7 +67,7 @@ describe('Alert Details Sidebar To Do', () => {
         jest.spyOn(wrapper.vm.$apollo, 'mutate').mockResolvedValue(mockUpdatedMutationResult);
 
         findToDoButton().trigger('click');
-        await wrapper.vm.$nextTick();
+        await nextTick();
 
         expect(wrapper.vm.$apollo.mutate).toHaveBeenCalledWith({
           mutation: createAlertTodoMutation,
@@ -88,7 +89,7 @@ describe('Alert Details Sidebar To Do', () => {
       });
 
       it('renders a Mark As Done button when todo is present', async () => {
-        await wrapper.vm.$nextTick();
+        await nextTick();
 
         expect(findToDoButton().text()).toBe('Mark as done');
       });
@@ -97,7 +98,7 @@ describe('Alert Details Sidebar To Do', () => {
         jest.spyOn(wrapper.vm.$apollo, 'mutate').mockResolvedValue(mockUpdatedMutationResult);
 
         findToDoButton().trigger('click');
-        await wrapper.vm.$nextTick();
+        await nextTick();
 
         expect(wrapper.vm.$apollo.mutate).toHaveBeenCalledWith({
           mutation: todoMarkDoneMutation,

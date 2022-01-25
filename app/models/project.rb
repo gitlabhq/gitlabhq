@@ -1519,6 +1519,10 @@ class Project < ApplicationRecord
     group || namespace.try(:owner)
   end
 
+  def owners
+    Array.wrap(owner)
+  end
+
   def first_owner
     obj = owner
 

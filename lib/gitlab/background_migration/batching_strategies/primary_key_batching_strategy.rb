@@ -17,7 +17,8 @@ module Gitlab
         # column_name - The column to batch over
         # batch_min_value - The minimum value which the next batch will start at
         # batch_size - The size of the next batch
-        def next_batch(table_name, column_name, batch_min_value:, batch_size:)
+        # job_arguments - The migration job arguments
+        def next_batch(table_name, column_name, batch_min_value:, batch_size:, job_arguments:)
           model_class = define_batchable_model(table_name)
 
           quoted_column_name = model_class.connection.quote_column_name(column_name)

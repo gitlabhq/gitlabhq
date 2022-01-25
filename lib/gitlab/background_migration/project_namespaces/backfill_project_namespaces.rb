@@ -5,19 +5,15 @@ module Gitlab
     module ProjectNamespaces
       # Back-fill project namespaces for projects that do not yet have a namespace.
       #
-      # TODO: remove this comment when an actuall backfill migration is added.
-      #
-      # This is first being added without an actual migration as we need to initially test
-      # if backfilling project namespaces affects performance in any significant way.
       # rubocop: disable Metrics/ClassLength
       class BackfillProjectNamespaces
-        BATCH_SIZE = 100
-        DELETE_BATCH_SIZE = 10
+        SUB_BATCH_SIZE = 25
         PROJECT_NAMESPACE_STI_NAME = 'Project'
 
         IsolatedModels = ::Gitlab::BackgroundMigration::ProjectNamespaces::Models
 
-        def perform(start_id, end_id, namespace_id, migration_type = 'up')
+        def perform(start_id, end_id, migration_table_name, migration_column_name, sub_batch_size, pause_ms, namespace_id, migration_type = 'up')
+          @sub_batch_size = sub_batch_size || SUB_BATCH_SIZE
           load_project_ids(start_id, end_id, namespace_id)
 
           case migration_type
@@ -34,10 +30,13 @@ module Gitlab
 
         private
 
-        attr_accessor :project_ids
+        attr_accessor :project_ids, :sub_batch_size
 
         def backfill_project_namespaces(namespace_id)
-          project_ids.each_slice(BATCH_SIZE) do |project_ids|
+          project_ids.each_slice(sub_batch_size) do |project_ids|
+            ActiveRecord::Base.connection.execute("select gin_clean_pending_list('index_namespaces_on_name_trigram')")
+            ActiveRecord::Base.connection.execute("select gin_clean_pending_list('index_namespaces_on_path_trigram')")
+
             # We need to lock these project records for the period when we create project namespaces
             # and link them to projects so that if a project is modified in the time between creating
             # project namespaces `batch_insert_namespaces` and linking them to projects `batch_update_projects`
@@ -45,18 +44,17 @@ module Gitlab
             #
             # see https://gitlab.com/gitlab-org/gitlab/-/merge_requests/72527#note_730679469
             Project.transaction do
-              Project.where(id: project_ids).select(:id).lock!('FOR UPDATE')
+              Project.where(id: project_ids).select(:id).lock!('FOR UPDATE').load
 
               batch_insert_namespaces(project_ids)
               batch_update_projects(project_ids)
+              batch_update_project_namespaces_traversal_ids(project_ids)
             end
-
-            batch_update_project_namespaces_traversal_ids(project_ids)
           end
         end
 
         def cleanup_backfilled_project_namespaces(namespace_id)
-          project_ids.each_slice(BATCH_SIZE) do |project_ids|
+          project_ids.each_slice(sub_batch_size) do |project_ids|
             # IMPORTANT: first nullify project_namespace_id in projects table to avoid removing projects when records
             # from namespaces are deleted due to FK/triggers
             nullify_project_namespaces_in_projects(project_ids)
@@ -109,7 +107,10 @@ module Gitlab
         end
 
         def delete_project_namespace_records(project_ids)
-          project_ids.each_slice(DELETE_BATCH_SIZE) do |p_ids|
+          # keep the deletes a 10x smaller batch as deletes seem to be much more expensive
+          delete_batch_size = (sub_batch_size / 10).to_i + 1
+
+          project_ids.each_slice(delete_batch_size) do |p_ids|
             IsolatedModels::Namespace.where(type: PROJECT_NAMESPACE_STI_NAME).where(tmp_project_id: p_ids).delete_all
           end
         end
@@ -117,7 +118,7 @@ module Gitlab
         def load_project_ids(start_id, end_id, namespace_id)
           projects = IsolatedModels::Project.arel_table
           relation = IsolatedModels::Project.where(projects[:id].between(start_id..end_id))
-          relation = relation.where(projects[:namespace_id].in(Arel::Nodes::SqlLiteral.new(hierarchy_cte(namespace_id)))) if namespace_id
+          relation = relation.where(projects[:namespace_id].in(Arel::Nodes::SqlLiteral.new(self.class.hierarchy_cte(namespace_id)))) if namespace_id
 
           @project_ids = relation.pluck(:id)
         end
@@ -126,7 +127,7 @@ module Gitlab
           ::Gitlab::Database::BackgroundMigrationJob.mark_all_as_succeeded('BackfillProjectNamespaces', arguments)
         end
 
-        def hierarchy_cte(root_namespace_id)
+        def self.hierarchy_cte(root_namespace_id)
           <<-SQL
               WITH RECURSIVE "base_and_descendants" AS (
                   (

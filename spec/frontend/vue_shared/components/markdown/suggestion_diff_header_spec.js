@@ -1,5 +1,6 @@
 import { GlLoadingIcon } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import ApplySuggestion from '~/vue_shared/components/markdown/apply_suggestion.vue';
 import SuggestionDiffHeader from '~/vue_shared/components/markdown/suggestion_diff_header.vue';
@@ -103,15 +104,14 @@ describe('Suggestion Diff component', () => {
       expect(wrapper.text()).toContain('Applying suggestion...');
     });
 
-    it('when callback of apply is called, hides loading', () => {
+    it('when callback of apply is called, hides loading', async () => {
       const [callback] = wrapper.emitted().apply[0];
 
       callback();
 
-      return wrapper.vm.$nextTick().then(() => {
-        expect(findApplyButton().exists()).toBe(true);
-        expect(findLoading().exists()).toBe(false);
-      });
+      await nextTick();
+      expect(findApplyButton().exists()).toBe(true);
+      expect(findLoading().exists()).toBe(false);
     });
   });
 

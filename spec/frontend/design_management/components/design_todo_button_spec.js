@@ -1,4 +1,5 @@
 import { shallowMount, mount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import DesignTodoButton from '~/design_management/components/design_todo_button.vue';
 import createDesignTodoMutation from '~/design_management/graphql/mutations/create_design_todo.mutation.graphql';
 import todoMarkDoneMutation from '~/graphql_shared/mutations/todo_mark_done.mutation.graphql';
@@ -71,7 +72,7 @@ describe('Design management design todo button', () => {
     describe('when clicked', () => {
       let dispatchEventSpy;
 
-      beforeEach(() => {
+      beforeEach(async () => {
         dispatchEventSpy = jest.spyOn(document, 'dispatchEvent');
         jest.spyOn(document, 'querySelector').mockReturnValue({
           innerText: 2,
@@ -79,7 +80,7 @@ describe('Design management design todo button', () => {
 
         createComponent({ design: mockDesignWithPendingTodos }, { mountFn: mount });
         wrapper.trigger('click');
-        return wrapper.vm.$nextTick();
+        await nextTick();
       });
 
       it('calls `$apollo.mutate` with the `todoMarkDone` mutation and variables containing `id`', async () => {
@@ -117,7 +118,7 @@ describe('Design management design todo button', () => {
     describe('when clicked', () => {
       let dispatchEventSpy;
 
-      beforeEach(() => {
+      beforeEach(async () => {
         dispatchEventSpy = jest.spyOn(document, 'dispatchEvent');
         jest.spyOn(document, 'querySelector').mockReturnValue({
           innerText: 2,
@@ -125,7 +126,7 @@ describe('Design management design todo button', () => {
 
         createComponent({}, { mountFn: mount });
         wrapper.trigger('click');
-        return wrapper.vm.$nextTick();
+        await nextTick();
       });
 
       it('calls `$apollo.mutate` with the `createDesignTodoMutation` mutation and variables containing `issuable_id`, `issue_id`, & `projectPath`', async () => {

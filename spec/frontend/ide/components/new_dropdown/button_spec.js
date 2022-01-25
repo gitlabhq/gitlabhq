@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import mountComponent from 'helpers/vue_mount_component_helper';
 import Button from '~/ide/components/new_dropdown/button.vue';
 
@@ -37,14 +37,11 @@ describe('IDE new entry dropdown button component', () => {
     expect(vm.$emit).toHaveBeenCalledWith('click');
   });
 
-  it('hides label if showLabel is false', (done) => {
+  it('hides label if showLabel is false', async () => {
     vm.showLabel = false;
 
-    vm.$nextTick(() => {
-      expect(vm.$el.textContent).not.toContain('Testing');
-
-      done();
-    });
+    await nextTick();
+    expect(vm.$el.textContent).not.toContain('Testing');
   });
 
   describe('tooltipTitle', () => {
@@ -52,14 +49,11 @@ describe('IDE new entry dropdown button component', () => {
       expect(vm.tooltipTitle).toBe('');
     });
 
-    it('returns label', (done) => {
+    it('returns label', async () => {
       vm.showLabel = false;
 
-      vm.$nextTick(() => {
-        expect(vm.tooltipTitle).toBe('Testing');
-
-        done();
-      });
+      await nextTick();
+      expect(vm.tooltipTitle).toBe('Testing');
     });
   });
 });

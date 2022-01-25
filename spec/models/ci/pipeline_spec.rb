@@ -390,19 +390,62 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
   end
 
   describe '#merge_request?' do
-    let(:pipeline) { create(:ci_pipeline, merge_request: merge_request) }
-    let(:merge_request) { create(:merge_request) }
-
-    it 'returns true' do
-      expect(pipeline).to be_merge_request
+    let_it_be(:merge_request) { create(:merge_request) }
+    let_it_be_with_reload(:pipeline) do
+      create(:ci_pipeline, project: project, merge_request_id: merge_request.id)
     end
 
-    context 'when merge request is nil' do
-      let(:merge_request) { nil }
+    it { expect(pipeline).to be_merge_request }
 
-      it 'returns false' do
+    context 'when merge request is already loaded' do
+      it 'does not reload the record and returns true' do
+        expect(pipeline.merge_request).to be_present
+
+        expect { pipeline.merge_request? }.not_to exceed_query_limit(0)
+        expect(pipeline).to be_merge_request
+      end
+    end
+
+    context 'when merge request is not loaded' do
+      it 'executes a database query and returns true' do
+        expect(pipeline).to be_present
+
+        expect { pipeline.merge_request? }.not_to exceed_query_limit(1)
+        expect(pipeline).to be_merge_request
+      end
+
+      it 'caches the result' do
+        expect(pipeline).to be_merge_request
+        expect { pipeline.merge_request? }.not_to exceed_query_limit(0)
+      end
+    end
+
+    context 'when merge request was removed' do
+      before do
+        pipeline.update!(merge_request_id: non_existing_record_id)
+      end
+
+      it 'executes a database query and returns false' do
+        expect { pipeline.merge_request? }.not_to exceed_query_limit(1)
         expect(pipeline).not_to be_merge_request
       end
+    end
+
+    context 'when merge request id is not present' do
+      before do
+        pipeline.update!(merge_request_id: nil)
+      end
+
+      it { expect(pipeline).not_to be_merge_request }
+    end
+
+    context 'when the feature flag is disabled' do
+      before do
+        stub_feature_flags(ci_pipeline_merge_request_presence_check: false)
+        pipeline.update!(merge_request_id: non_existing_record_id)
+      end
+
+      it { expect(pipeline).to be_merge_request }
     end
   end
 
@@ -4656,9 +4699,11 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
     let(:factory_name) { :ci_pipeline }
   end
 
-  it_behaves_like 'cleanup by a loose foreign key' do
-    let!(:model) { create(:ci_pipeline, user: create(:user)) }
-    let!(:parent) { model.user }
+  context 'loose foreign key on ci_pipelines.user_id' do
+    it_behaves_like 'cleanup by a loose foreign key' do
+      let!(:model) { create(:ci_pipeline, user: create(:user)) }
+      let!(:parent) { model.user }
+    end
   end
 
   describe 'tags count' do
@@ -4677,6 +4722,13 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
 
       it { expect(pipeline.tags_count).to eq(4) }
       it { expect(pipeline.distinct_tags_count).to eq(3) }
+    end
+  end
+
+  context 'loose foreign key on ci_pipelines.merge_request_id' do
+    it_behaves_like 'cleanup by a loose foreign key' do
+      let!(:parent) { create(:merge_request) }
+      let!(:model) { create(:ci_pipeline, merge_request: parent) }
     end
   end
 end

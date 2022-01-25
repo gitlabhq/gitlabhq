@@ -1,6 +1,6 @@
 import { GlDropdown, GlDropdownItem, GlSearchBoxByType, GlLoadingIcon } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 import ProjectSelect from '~/boards/components/project_select.vue';
 import defaultState from '~/boards/stores/state';
@@ -88,7 +88,7 @@ describe('ProjectSelect component', () => {
 
       expect(findGlDropdownLoadingIcon().exists()).toBe(true);
 
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       expect(findGlDropdownLoadingIcon().exists()).toBe(false);
     });

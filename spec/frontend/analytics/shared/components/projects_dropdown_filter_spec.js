@@ -1,4 +1,5 @@
 import { GlDropdown, GlDropdownItem } from '@gitlab/ui';
+import { nextTick } from 'vue';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { stubComponent } from 'helpers/stub_component';
 import { TEST_HOST } from 'helpers/test_constants';
@@ -99,9 +100,9 @@ describe('ProjectsDropdownFilter component', () => {
   const findDropdownFullPathAtIndex = (index) =>
     findDropdownAtIndex(index).find('[data-testid="project-full-path"]');
 
-  const selectDropdownItemAtIndex = (index) => {
+  const selectDropdownItemAtIndex = async (index) => {
     findDropdownAtIndex(index).find('button').trigger('click');
-    return wrapper.vm.$nextTick();
+    await nextTick();
   };
 
   // NOTE: Selected items are now visually separated from unselected items
@@ -132,16 +133,15 @@ describe('ProjectsDropdownFilter component', () => {
 
       expect(spyQuery).toHaveBeenCalledTimes(1);
 
-      await wrapper.vm.$nextTick(() => {
-        expect(spyQuery).toHaveBeenCalledWith({
-          query: getProjects,
-          variables: {
-            search: 'gitlab',
-            groupFullPath: wrapper.vm.groupNamespace,
-            first: 50,
-            includeSubgroups: true,
-          },
-        });
+      await nextTick();
+      expect(spyQuery).toHaveBeenCalledWith({
+        query: getProjects,
+        variables: {
+          search: 'gitlab',
+          groupFullPath: wrapper.vm.groupNamespace,
+          first: 50,
+          includeSubgroups: true,
+        },
       });
     });
   });
@@ -193,7 +193,7 @@ describe('ProjectsDropdownFilter component', () => {
         expect(wrapper.text()).toContain('2 projects selected');
 
         findClearAllButton().trigger('click');
-        await wrapper.vm.$nextTick();
+        await nextTick();
 
         expect(wrapper.text()).not.toContain('2 projects selected');
         expect(wrapper.text()).toContain('Select projects');
@@ -366,9 +366,8 @@ describe('ProjectsDropdownFilter component', () => {
         selectDropdownItemAtIndex(0);
         selectDropdownItemAtIndex(1);
 
-        await wrapper.vm.$nextTick().then(() => {
-          expect(findDropdownButton().text()).toBe('2 projects selected');
-        });
+        await nextTick();
+        expect(findDropdownButton().text()).toBe('2 projects selected');
       });
     });
   });

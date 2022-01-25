@@ -1,4 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import { useFakeDate } from 'helpers/fake_date';
 
 import IssuableBody from '~/vue_shared/issuable/show/components/issuable_body.vue';
@@ -68,7 +69,7 @@ describe('IssuableBody', () => {
             },
           });
 
-          await wrapper.vm.$nextTick();
+          await nextTick();
 
           expect(wrapper.vm.isUpdated).toBe(returnValue);
         },
@@ -90,13 +91,13 @@ describe('IssuableBody', () => {
           editFormVisible: true,
         });
 
-        await wrapper.vm.$nextTick();
+        await nextTick();
 
         wrapper.setProps({
           editFormVisible: false,
         });
 
-        await wrapper.vm.$nextTick();
+        await nextTick();
 
         expect(wrapper.vm.initTaskList).toHaveBeenCalled();
       });
@@ -182,7 +183,7 @@ describe('IssuableBody', () => {
         editFormVisible: true,
       });
 
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       const editFormEl = wrapper.find(IssuableEditForm);
       expect(editFormEl.exists()).toBe(true);
@@ -221,7 +222,7 @@ describe('IssuableBody', () => {
             editFormVisible: true,
           });
 
-          await wrapper.vm.$nextTick();
+          await nextTick();
 
           const issuableEditForm = wrapper.find(IssuableEditForm);
 

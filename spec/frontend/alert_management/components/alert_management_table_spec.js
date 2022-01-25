@@ -2,6 +2,7 @@ import { GlTable, GlAlert, GlLoadingIcon, GlDropdown, GlIcon, GlAvatar } from '@
 import { mount } from '@vue/test-utils';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
+import { nextTick } from 'vue';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import mockAlerts from 'jest/vue_shared/alert_details/mocks/alerts.json';
@@ -169,7 +170,7 @@ describe('AlertManagementTable', () => {
         loading: false,
       });
 
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       expect(wrapper.find(GlTable).exists()).toBe(true);
       expect(findAlertsTable().find(GlIcon).classes('icon-critical')).toBe(true);

@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils';
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 import CiVariableTable from '~/ci_variable_list/components/ci_variable_table.vue';
 import createStore from '~/ci_variable_list/store';
@@ -41,13 +41,12 @@ describe('Ci variable table', () => {
       expect(findEmptyVariablesPlaceholder().exists()).toBe(true);
     });
 
-    it('displays correct amount of variables present and no empty message', () => {
+    it('displays correct amount of variables present and no empty message', async () => {
       store.state.variables = mockData.mockVariables;
 
-      return wrapper.vm.$nextTick(() => {
-        expect(wrapper.findAll('.js-ci-variable-row').length).toBe(1);
-        expect(findEmptyVariablesPlaceholder().exists()).toBe(false);
-      });
+      await nextTick();
+      expect(wrapper.findAll('.js-ci-variable-row').length).toBe(1);
+      expect(findEmptyVariablesPlaceholder().exists()).toBe(false);
     });
   });
 

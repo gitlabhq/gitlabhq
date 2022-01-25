@@ -1,6 +1,7 @@
 import { GlDeprecatedSkeletonLoading as GlSkeletonLoading } from '@gitlab/ui';
 import { GlSingleStat } from '@gitlab/ui/dist/charts';
 import { shallowMount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import metricsData from 'test_fixtures/projects/analytics/value_stream_analytics/summary.json';
 import waitForPromises from 'helpers/wait_for_promises';
 import { METRIC_TYPE_SUMMARY } from '~/api/analytics_api';
@@ -55,7 +56,7 @@ describe('ValueStreamMetrics', () => {
     });
 
     it('will display a loader with pending requests', async () => {
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       expect(wrapper.findComponent(GlSkeletonLoading).exists()).toBe(true);
     });
@@ -67,7 +68,7 @@ describe('ValueStreamMetrics', () => {
       // eslint-disable-next-line no-restricted-syntax
       wrapper.setData({ isLoading: true });
 
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       const components = findMetrics();
 

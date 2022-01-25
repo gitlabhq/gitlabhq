@@ -1,5 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
 import { GlIcon } from '@gitlab/ui';
+import { nextTick } from 'vue';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 
 import CollapsedCalendarIcon from '~/vue_shared/components/sidebar/collapsed_calendar_icon.vue';
@@ -61,7 +62,7 @@ describe('CollapsedCalendarIcon', () => {
   it('emits click event when container is clicked', async () => {
     wrapper.trigger('click');
 
-    await wrapper.vm.$nextTick();
+    await nextTick();
 
     expect(wrapper.emitted('click')[0]).toBeDefined();
   });

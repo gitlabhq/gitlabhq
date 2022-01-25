@@ -1,8 +1,7 @@
+import { nextTick } from 'vue';
 import { initPopovers, dispose, destroy } from '~/popovers';
 
 describe('popovers/index.js', () => {
-  let popoversApp;
-
   const createPopoverTarget = (trigger = 'hover') => {
     const target = document.createElement('button');
     const dataset = {
@@ -22,7 +21,7 @@ describe('popovers/index.js', () => {
   };
 
   const buildPopoversApp = () => {
-    popoversApp = initPopovers('[data-toggle="popover"]');
+    initPopovers('[data-toggle="popover"]');
   };
 
   const triggerEvent = (target, eventName = 'mouseenter') => {
@@ -44,7 +43,7 @@ describe('popovers/index.js', () => {
 
       triggerEvent(target);
 
-      await popoversApp.$nextTick();
+      await nextTick();
       const html = document.querySelector('.gl-popover').innerHTML;
 
       expect(document.querySelector('.gl-popover')).not.toBe(null);
@@ -59,7 +58,7 @@ describe('popovers/index.js', () => {
       buildPopoversApp();
       triggerEvent(target, trigger);
 
-      await popoversApp.$nextTick();
+      await nextTick();
 
       expect(document.querySelector('.gl-popover')).not.toBe(null);
       expect(document.querySelector('.gl-popover').innerHTML).toContain('default title');
@@ -73,7 +72,7 @@ describe('popovers/index.js', () => {
       const trigger = 'click';
       const target = createPopoverTarget(trigger);
       triggerEvent(target, trigger);
-      await popoversApp.$nextTick();
+      await nextTick();
 
       expect(document.querySelector('.gl-popover')).not.toBe(null);
     });
@@ -86,17 +85,17 @@ describe('popovers/index.js', () => {
       buildPopoversApp();
       triggerEvent(target);
       triggerEvent(createPopoverTarget());
-      await popoversApp.$nextTick();
+      await nextTick();
 
       expect(document.querySelectorAll('.gl-popover')).toHaveLength(2);
 
       dispose([fakeTarget]);
-      await popoversApp.$nextTick();
+      await nextTick();
 
       expect(document.querySelectorAll('.gl-popover')).toHaveLength(2);
 
       dispose([target]);
-      await popoversApp.$nextTick();
+      await nextTick();
 
       expect(document.querySelectorAll('.gl-popover')).toHaveLength(1);
     });

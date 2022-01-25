@@ -10,6 +10,7 @@ import {
 import { shallowMount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 
+import { nextTick } from 'vue';
 import axios from '~/lib/utils/axios_utils';
 import IssuableMoveDropdown from '~/vue_shared/components/sidebar/issuable_move_dropdown.vue';
 
@@ -74,7 +75,7 @@ describe('IssuableMoveDropdown', () => {
           searchKey: 'foo',
         });
 
-        await wrapper.vm.$nextTick();
+        await nextTick();
 
         expect(wrapper.vm.fetchProjects).toHaveBeenCalledWith('foo');
       });
@@ -151,7 +152,7 @@ describe('IssuableMoveDropdown', () => {
             selectedProject,
           });
 
-          await wrapper.vm.$nextTick();
+          await nextTick();
 
           expect(wrapper.vm.isSelectedProject(project)).toBe(returnValue);
         },
@@ -164,7 +165,7 @@ describe('IssuableMoveDropdown', () => {
           selectedProject: null,
         });
 
-        await wrapper.vm.$nextTick();
+        await nextTick();
 
         expect(wrapper.vm.isSelectedProject(mockProjects[0])).toBe(false);
       });
@@ -218,7 +219,7 @@ describe('IssuableMoveDropdown', () => {
           projectsListLoading: true,
         });
 
-        await wrapper.vm.$nextTick();
+        await nextTick();
 
         expect(findDropdownEl().find(GlLoadingIcon).exists()).toBe(true);
       });
@@ -231,7 +232,7 @@ describe('IssuableMoveDropdown', () => {
           selectedProject: mockProjects[0],
         });
 
-        await wrapper.vm.$nextTick();
+        await nextTick();
 
         const dropdownItems = wrapper.findAll(GlDropdownItem);
 
@@ -251,7 +252,7 @@ describe('IssuableMoveDropdown', () => {
         });
 
         // Wait for `searchKey` watcher to run.
-        await wrapper.vm.$nextTick();
+        await nextTick();
 
         // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
         // eslint-disable-next-line no-restricted-syntax
@@ -260,7 +261,7 @@ describe('IssuableMoveDropdown', () => {
           projectsListLoading: false,
         });
 
-        await wrapper.vm.$nextTick();
+        await nextTick();
 
         const dropdownContentEl = wrapper.find('[data-testid="content"]');
 
@@ -276,7 +277,7 @@ describe('IssuableMoveDropdown', () => {
           projectsListLoadFailed: true,
         });
 
-        await wrapper.vm.$nextTick();
+        await nextTick();
 
         const dropdownContentEl = wrapper.find('[data-testid="content"]');
 
@@ -295,7 +296,7 @@ describe('IssuableMoveDropdown', () => {
           selectedProject: mockProjects[0],
         });
 
-        await wrapper.vm.$nextTick();
+        await nextTick();
 
         expect(
           wrapper.find('[data-testid="footer"]').find(GlButton).attributes('disabled'),
@@ -352,7 +353,7 @@ describe('IssuableMoveDropdown', () => {
           projects: mockProjects,
         });
 
-        await wrapper.vm.$nextTick();
+        await nextTick();
 
         wrapper.findAll(GlDropdownItem).at(0).vm.$emit('click', mockEvent);
 
@@ -366,7 +367,7 @@ describe('IssuableMoveDropdown', () => {
           selectedProject: mockProjects[0],
         });
 
-        await wrapper.vm.$nextTick();
+        await nextTick();
 
         wrapper.find('[data-testid="footer"]').find(GlButton).vm.$emit('click');
 

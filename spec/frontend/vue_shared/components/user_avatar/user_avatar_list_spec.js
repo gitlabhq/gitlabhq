@@ -1,5 +1,6 @@
 import { GlButton } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import { TEST_HOST } from 'spec/test_constants';
 import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
 import UserAvatarList from '~/vue_shared/components/user_avatar/user_avatar_list.vue';
@@ -142,14 +143,13 @@ describe('UserAvatarList', () => {
         expect(links.length).toEqual(props.items.length);
       });
 
-      it('with collapse clicked, it renders avatars up to breakpoint', () => {
+      it('with collapse clicked, it renders avatars up to breakpoint', async () => {
         clickButton();
 
-        return wrapper.vm.$nextTick(() => {
-          const links = wrapper.findAll(UserAvatarLink);
+        await nextTick();
+        const links = wrapper.findAll(UserAvatarLink);
 
-          expect(links.length).toEqual(TEST_BREAKPOINT);
-        });
+        expect(links.length).toEqual(TEST_BREAKPOINT);
       });
     });
   });

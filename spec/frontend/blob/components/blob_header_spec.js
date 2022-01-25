@@ -1,4 +1,5 @@
 import { shallowMount, mount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import BlobHeader from '~/blob/components/blob_header.vue';
 import DefaultActions from '~/blob/components/blob_header_default_actions.vue';
 import BlobFilepath from '~/blob/components/blob_header_filepath.vue';
@@ -139,26 +140,24 @@ describe('Blob Header Default Actions', () => {
       expect(wrapper.vm.viewer).toBe(null);
     });
 
-    it('watches the changes in viewer data and emits event when the change is registered', () => {
+    it('watches the changes in viewer data and emits event when the change is registered', async () => {
       factory();
       jest.spyOn(wrapper.vm, '$emit');
       wrapper.vm.viewer = newViewer;
 
-      return wrapper.vm.$nextTick().then(() => {
-        expect(wrapper.vm.$emit).toHaveBeenCalledWith('viewer-changed', newViewer);
-      });
+      await nextTick();
+      expect(wrapper.vm.$emit).toHaveBeenCalledWith('viewer-changed', newViewer);
     });
 
-    it('does not emit event if the switcher is not rendered', () => {
+    it('does not emit event if the switcher is not rendered', async () => {
       factory(true);
 
       expect(wrapper.vm.showViewerSwitcher).toBe(false);
       jest.spyOn(wrapper.vm, '$emit');
       wrapper.vm.viewer = newViewer;
 
-      return wrapper.vm.$nextTick().then(() => {
-        expect(wrapper.vm.$emit).not.toHaveBeenCalled();
-      });
+      await nextTick();
+      expect(wrapper.vm.$emit).not.toHaveBeenCalled();
     });
   });
 });

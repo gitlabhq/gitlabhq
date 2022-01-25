@@ -1,4 +1,5 @@
 import Draggable from 'vuedraggable';
+import { nextTick } from 'vue';
 import { DraggableItemTypes } from 'ee_else_ce/boards/constants';
 import { useFakeRequestAnimationFrame } from 'helpers/fake_request_animation_frame';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -65,14 +66,14 @@ describe('Board list component', () => {
     it('shows new issue form', async () => {
       wrapper.vm.toggleForm();
 
-      await wrapper.vm.$nextTick();
+      await nextTick();
       expect(wrapper.find('.board-new-issue-form').exists()).toBe(true);
     });
 
     it('shows new issue form after eventhub event', async () => {
       eventHub.$emit(`toggle-issue-form-${wrapper.vm.list.id}`);
 
-      await wrapper.vm.$nextTick();
+      await nextTick();
       expect(wrapper.find('.board-new-issue-form').exists()).toBe(true);
     });
 
@@ -86,7 +87,7 @@ describe('Board list component', () => {
     it('shows count list item', async () => {
       wrapper.vm.showCount = true;
 
-      await wrapper.vm.$nextTick();
+      await nextTick();
       expect(wrapper.find('.board-list-count').exists()).toBe(true);
 
       expect(wrapper.find('.board-list-count').text()).toBe('Showing all issues');
@@ -95,7 +96,7 @@ describe('Board list component', () => {
     it('sets data attribute with invalid id', async () => {
       wrapper.vm.showCount = true;
 
-      await wrapper.vm.$nextTick();
+      await nextTick();
       expect(wrapper.find('.board-list-count').attributes('data-issue-id')).toBe('-1');
     });
   });
@@ -127,7 +128,7 @@ describe('Board list component', () => {
         },
       });
 
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       expect(findIssueCountLoadingIcon().exists()).toBe(true);
     });
@@ -139,9 +140,9 @@ describe('Board list component', () => {
         },
       });
 
-      await wrapper.vm.$nextTick();
+      await nextTick();
       await waitForPromises();
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       expect(wrapper.find('.board-list-count').text()).toBe('Showing 1 of 20 issues');
     });
@@ -158,7 +159,7 @@ describe('Board list component', () => {
       it('sets background to bg-danger-100', async () => {
         wrapper.setProps({ list: { issuesCount: 4, maxIssueCount: 3 } });
 
-        await wrapper.vm.$nextTick();
+        await nextTick();
         expect(wrapper.find('.bg-danger-100').exists()).toBe(true);
       });
     });

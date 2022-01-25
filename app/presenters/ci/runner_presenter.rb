@@ -15,5 +15,9 @@ module Ci
     def executor_name
       Ci::Runner::EXECUTOR_TYPE_TO_NAMES[executor_type&.to_sym]
     end
+
+    def paused
+      !active
+    end
   end
 end

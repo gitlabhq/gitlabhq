@@ -6,6 +6,7 @@ import {
 } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
+import { nextTick } from 'vue';
 import waitForPromises from 'helpers/wait_for_promises';
 import createFlash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
@@ -167,7 +168,7 @@ describe('AuthorToken', () => {
       const tokenSegments = wrapper.findAllComponents(GlFilteredSearchTokenSegment);
       const suggestionsSegment = tokenSegments.at(2);
       suggestionsSegment.vm.$emit('activate');
-      await wrapper.vm.$nextTick();
+      await nextTick();
     };
 
     it('renders base-token component', () => {
@@ -185,23 +186,22 @@ describe('AuthorToken', () => {
       });
     });
 
-    it('renders token item when value is selected', () => {
+    it('renders token item when value is selected', async () => {
       wrapper = createComponent({
         value: { data: mockAuthors[0].username },
         data: { authors: mockAuthors },
         stubs: { Portal: true },
       });
 
-      return wrapper.vm.$nextTick(() => {
-        const tokenSegments = wrapper.findAll(GlFilteredSearchTokenSegment);
+      await nextTick();
+      const tokenSegments = wrapper.findAll(GlFilteredSearchTokenSegment);
 
-        expect(tokenSegments).toHaveLength(3); // Author, =, "Administrator"
+      expect(tokenSegments).toHaveLength(3); // Author, =, "Administrator"
 
-        const tokenValue = tokenSegments.at(2);
+      const tokenValue = tokenSegments.at(2);
 
-        expect(tokenValue.findComponent(GlAvatar).props('src')).toBe(mockAuthors[0].avatar_url);
-        expect(tokenValue.text()).toBe(mockAuthors[0].name); // "Administrator"
-      });
+      expect(tokenValue.findComponent(GlAvatar).props('src')).toBe(mockAuthors[0].avatar_url);
+      expect(tokenValue.text()).toBe(mockAuthors[0].name); // "Administrator"
     });
 
     it('renders token value with correct avatarUrl from author object', async () => {
@@ -220,7 +220,7 @@ describe('AuthorToken', () => {
         stubs: { Portal: true },
       });
 
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       expect(getAvatarEl().props('src')).toBe(mockAuthors[0].avatar_url);
 
@@ -236,7 +236,7 @@ describe('AuthorToken', () => {
         ],
       });
 
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       expect(getAvatarEl().props('src')).toBe(mockAuthors[0].avatar_url);
     });
@@ -268,7 +268,7 @@ describe('AuthorToken', () => {
       const tokenSegments = wrapper.findAll(GlFilteredSearchTokenSegment);
       const suggestionsSegment = tokenSegments.at(2);
       suggestionsSegment.vm.$emit('activate');
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       expect(wrapper.find(GlDropdownDivider).exists()).toBe(false);
     });
@@ -323,7 +323,7 @@ describe('AuthorToken', () => {
       it('does not show current user while searching', async () => {
         wrapper.findComponent(BaseToken).vm.handleInput({ data: 'foo' });
 
-        await wrapper.vm.$nextTick();
+        await nextTick();
 
         expect(wrapper.findComponent(GlFilteredSearchSuggestion).exists()).toBe(false);
       });

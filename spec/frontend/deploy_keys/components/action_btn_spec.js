@@ -1,5 +1,6 @@
 import { GlButton } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import data from 'test_fixtures/deploy_keys/keys.json';
 import actionBtn from '~/deploy_keys/components/action_btn.vue';
 import eventHub from '~/deploy_keys/eventhub';
@@ -37,21 +38,19 @@ describe('Deploy keys action btn', () => {
     });
   });
 
-  it('sends eventHub event with btn type', () => {
+  it('sends eventHub event with btn type', async () => {
     jest.spyOn(eventHub, '$emit').mockImplementation(() => {});
 
     findButton().vm.$emit('click');
 
-    return wrapper.vm.$nextTick().then(() => {
-      expect(eventHub.$emit).toHaveBeenCalledWith('enable.key', deployKey, expect.anything());
-    });
+    await nextTick();
+    expect(eventHub.$emit).toHaveBeenCalledWith('enable.key', deployKey, expect.anything());
   });
 
-  it('shows loading spinner after click', () => {
+  it('shows loading spinner after click', async () => {
     findButton().vm.$emit('click');
 
-    return wrapper.vm.$nextTick().then(() => {
-      expect(findButton().props('loading')).toBe(true);
-    });
+    await nextTick();
+    expect(findButton().props('loading')).toBe(true);
   });
 });

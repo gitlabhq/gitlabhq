@@ -1,5 +1,5 @@
 import { GlDropdown, GlDropdownItem, GlModal, GlFormInput } from '@gitlab/ui';
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { ENTER_KEY } from '~/lib/utils/keys';
@@ -54,7 +54,7 @@ describe('AgentOptions', () => {
     });
   };
 
-  const createWrapper = ({ mutationResponse = mockDeleteResponse } = {}) => {
+  const createWrapper = async ({ mutationResponse = mockDeleteResponse } = {}) => {
     apolloProvider = createMockApolloProvider({ mutationResponse });
     const provide = {
       projectPath,
@@ -77,7 +77,7 @@ describe('AgentOptions', () => {
     wrapper.vm.$refs.modal.hide = jest.fn();
 
     writeQuery();
-    return wrapper.vm.$nextTick();
+    await nextTick();
   };
 
   const submitAgentToDelete = async () => {

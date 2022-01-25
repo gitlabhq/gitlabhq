@@ -1,6 +1,6 @@
 import { GlModal } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 import DeployFreezeTable from '~/deploy_freeze/components/deploy_freeze_table.vue';
 import createStore from '~/deploy_freeze/store';
@@ -56,7 +56,7 @@ describe('Deploy freeze table', () => {
     describe('with data', () => {
       beforeEach(async () => {
         store.commit(RECEIVE_FREEZE_PERIODS_SUCCESS, freezePeriodsFixture);
-        await wrapper.vm.$nextTick();
+        await nextTick();
       });
 
       it('displays data', () => {
@@ -68,7 +68,7 @@ describe('Deploy freeze table', () => {
 
       it('allows user to edit deploy freeze', async () => {
         findEditDeployFreezeButton().trigger('click');
-        await wrapper.vm.$nextTick();
+        await nextTick();
 
         expect(store.dispatch).toHaveBeenCalledWith(
           'setFreezePeriod',

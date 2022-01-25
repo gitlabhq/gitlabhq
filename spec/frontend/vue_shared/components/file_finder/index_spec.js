@@ -1,5 +1,5 @@
 import Mousetrap from 'mousetrap';
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import waitForPromises from 'helpers/wait_for_promises';
 import { file } from 'jest/ide/helpers';
 import { UP_KEY_CODE, DOWN_KEY_CODE, ENTER_KEY_CODE, ESC_KEY_CODE } from '~/lib/utils/keycodes';
@@ -310,34 +310,26 @@ describe('File finder item spec', () => {
   });
 
   describe('keyboard shortcuts', () => {
-    beforeEach((done) => {
+    beforeEach(async () => {
       createComponent();
 
       jest.spyOn(vm, 'toggle').mockImplementation(() => {});
 
-      vm.$nextTick(done);
+      await nextTick();
     });
 
-    it('calls toggle on `t` key press', (done) => {
+    it('calls toggle on `t` key press', async () => {
       Mousetrap.trigger('t');
 
-      vm.$nextTick()
-        .then(() => {
-          expect(vm.toggle).toHaveBeenCalled();
-        })
-        .then(done)
-        .catch(done.fail);
+      await nextTick();
+      expect(vm.toggle).toHaveBeenCalled();
     });
 
-    it('calls toggle on `mod+p` key press', (done) => {
+    it('calls toggle on `mod+p` key press', async () => {
       Mousetrap.trigger('mod+p');
 
-      vm.$nextTick()
-        .then(() => {
-          expect(vm.toggle).toHaveBeenCalled();
-        })
-        .then(done)
-        .catch(done.fail);
+      await nextTick();
+      expect(vm.toggle).toHaveBeenCalled();
     });
 
     it('always allows `mod+p` to trigger toggle', () => {

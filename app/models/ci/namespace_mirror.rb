@@ -6,7 +6,7 @@ module Ci
   class NamespaceMirror < ApplicationRecord
     belongs_to :namespace
 
-    scope :contains_namespace, -> (id) do
+    scope :by_group_and_descendants, -> (id) do
       where('traversal_ids @> ARRAY[?]::int[]', id)
     end
 
@@ -32,7 +32,7 @@ module Ci
       private
 
       def sync_children_namespaces!(namespace_id, traversal_ids)
-        contains_namespace(namespace_id)
+        by_group_and_descendants(namespace_id)
           .where.not(namespace_id: namespace_id)
           .update_all(
             "traversal_ids = ARRAY[#{sanitize_sql(traversal_ids.join(','))}]::int[] || traversal_ids[array_position(traversal_ids, #{sanitize_sql(namespace_id)}) + 1:]"

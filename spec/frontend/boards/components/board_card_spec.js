@@ -1,6 +1,6 @@
 import { GlLabel } from '@gitlab/ui';
 import { shallowMount, mount } from '@vue/test-utils';
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 
 import BoardCard from '~/boards/components/board_card.vue';
@@ -65,12 +65,12 @@ describe('Board card', () => {
 
   const selectCard = async () => {
     wrapper.trigger('click');
-    await wrapper.vm.$nextTick();
+    await nextTick();
   };
 
   const multiSelectCard = async () => {
     wrapper.trigger('click', { ctrlKey: true });
-    await wrapper.vm.$nextTick();
+    await nextTick();
   };
 
   beforeEach(() => {

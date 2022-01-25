@@ -1,5 +1,6 @@
 import { GlBadge, GlLink, GlIcon, GlIntersectionObserver } from '@gitlab/ui';
 import { shallowMount, RouterLinkStub } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import TableRow from '~/repository/components/table/row.vue';
 import FileIcon from '~/vue_shared/components/file_icon.vue';
@@ -53,7 +54,7 @@ describe('Repository table row component', () => {
     vm.destroy();
   });
 
-  it('renders table row', () => {
+  it('renders table row', async () => {
     factory({
       id: '1',
       sha: '123',
@@ -62,12 +63,11 @@ describe('Repository table row component', () => {
       currentPath: '/',
     });
 
-    return vm.vm.$nextTick().then(() => {
-      expect(vm.element).toMatchSnapshot();
-    });
+    await nextTick();
+    expect(vm.element).toMatchSnapshot();
   });
 
-  it('renders a symlink table row', () => {
+  it('renders a symlink table row', async () => {
     factory({
       id: '1',
       sha: '123',
@@ -77,12 +77,11 @@ describe('Repository table row component', () => {
       mode: FILE_SYMLINK_MODE,
     });
 
-    return vm.vm.$nextTick().then(() => {
-      expect(vm.element).toMatchSnapshot();
-    });
+    await nextTick();
+    expect(vm.element).toMatchSnapshot();
   });
 
-  it('renders table row for path with special character', () => {
+  it('renders table row for path with special character', async () => {
     factory({
       id: '1',
       sha: '123',
@@ -91,9 +90,8 @@ describe('Repository table row component', () => {
       currentPath: 'test$',
     });
 
-    return vm.vm.$nextTick().then(() => {
-      expect(vm.element).toMatchSnapshot();
-    });
+    await nextTick();
+    expect(vm.element).toMatchSnapshot();
   });
 
   it('renders a gl-hover-load directive', () => {
@@ -116,7 +114,7 @@ describe('Repository table row component', () => {
     ${'tree'}   | ${RouterLinkStub} | ${'RouterLink'}
     ${'blob'}   | ${RouterLinkStub} | ${'RouterLink'}
     ${'commit'} | ${'a'}            | ${'hyperlink'}
-  `('renders a $componentName for type $type', ({ type, component }) => {
+  `('renders a $componentName for type $type', async ({ type, component }) => {
     factory({
       id: '1',
       sha: '123',
@@ -125,16 +123,15 @@ describe('Repository table row component', () => {
       currentPath: '/',
     });
 
-    return vm.vm.$nextTick().then(() => {
-      expect(vm.find(component).exists()).toBe(true);
-    });
+    await nextTick();
+    expect(vm.find(component).exists()).toBe(true);
   });
 
   it.each`
     path
     ${'test#'}
     ${'Änderungen'}
-  `('renders link for $path', ({ path }) => {
+  `('renders link for $path', async ({ path }) => {
     factory({
       id: '1',
       sha: '123',
@@ -143,14 +140,13 @@ describe('Repository table row component', () => {
       currentPath: '/',
     });
 
-    return vm.vm.$nextTick().then(() => {
-      expect(vm.find({ ref: 'link' }).props('to')).toEqual({
-        path: `/-/tree/main/${encodeURIComponent(path)}`,
-      });
+    await nextTick();
+    expect(vm.find({ ref: 'link' }).props('to')).toEqual({
+      path: `/-/tree/main/${encodeURIComponent(path)}`,
     });
   });
 
-  it('renders link for directory with hash', () => {
+  it('renders link for directory with hash', async () => {
     factory({
       id: '1',
       sha: '123',
@@ -159,12 +155,11 @@ describe('Repository table row component', () => {
       currentPath: '/',
     });
 
-    return vm.vm.$nextTick().then(() => {
-      expect(vm.find('.tree-item-link').props('to')).toEqual({ path: '/-/tree/main/test%23' });
-    });
+    await nextTick();
+    expect(vm.find('.tree-item-link').props('to')).toEqual({ path: '/-/tree/main/test%23' });
   });
 
-  it('renders commit ID for submodule', () => {
+  it('renders commit ID for submodule', async () => {
     factory({
       id: '1',
       sha: '123',
@@ -173,12 +168,11 @@ describe('Repository table row component', () => {
       currentPath: '/',
     });
 
-    return vm.vm.$nextTick().then(() => {
-      expect(vm.find('.commit-sha').text()).toContain('1');
-    });
+    await nextTick();
+    expect(vm.find('.commit-sha').text()).toContain('1');
   });
 
-  it('renders link with href', () => {
+  it('renders link with href', async () => {
     factory({
       id: '1',
       sha: '123',
@@ -188,12 +182,11 @@ describe('Repository table row component', () => {
       currentPath: '/',
     });
 
-    return vm.vm.$nextTick().then(() => {
-      expect(vm.find('a').attributes('href')).toEqual('https://test.com');
-    });
+    await nextTick();
+    expect(vm.find('a').attributes('href')).toEqual('https://test.com');
   });
 
-  it('renders LFS badge', () => {
+  it('renders LFS badge', async () => {
     factory({
       id: '1',
       sha: '123',
@@ -203,12 +196,11 @@ describe('Repository table row component', () => {
       lfsOid: '1',
     });
 
-    return vm.vm.$nextTick().then(() => {
-      expect(vm.find(GlBadge).exists()).toBe(true);
-    });
+    await nextTick();
+    expect(vm.find(GlBadge).exists()).toBe(true);
   });
 
-  it('renders commit and web links with href for submodule', () => {
+  it('renders commit and web links with href for submodule', async () => {
     factory({
       id: '1',
       sha: '123',
@@ -219,13 +211,12 @@ describe('Repository table row component', () => {
       currentPath: '/',
     });
 
-    return vm.vm.$nextTick().then(() => {
-      expect(vm.find('a').attributes('href')).toEqual('https://test.com');
-      expect(vm.find(GlLink).attributes('href')).toEqual('https://test.com/commit');
-    });
+    await nextTick();
+    expect(vm.find('a').attributes('href')).toEqual('https://test.com');
+    expect(vm.find(GlLink).attributes('href')).toEqual('https://test.com/commit');
   });
 
-  it('renders lock icon', () => {
+  it('renders lock icon', async () => {
     factory({
       id: '1',
       sha: '123',
@@ -234,10 +225,9 @@ describe('Repository table row component', () => {
       currentPath: '/',
     });
 
-    return vm.vm.$nextTick().then(() => {
-      expect(vm.find(GlIcon).exists()).toBe(true);
-      expect(vm.find(GlIcon).props('name')).toBe('lock');
-    });
+    await nextTick();
+    expect(vm.find(GlIcon).exists()).toBe(true);
+    expect(vm.find(GlIcon).props('name')).toBe('lock');
   });
 
   it('renders loading icon when path is loading', () => {

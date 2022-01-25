@@ -1,6 +1,6 @@
 import { GlIcon, GlLink, GlPopover, GlLoadingIcon } from '@gitlab/ui';
 import { shallowMount, mount } from '@vue/test-utils';
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
@@ -39,7 +39,7 @@ describe('BoardBlockedIcon', () => {
   const mouseenter = async () => {
     findGlIcon().vm.$emit('mouseenter');
 
-    await wrapper.vm.$nextTick();
+    await nextTick();
     await waitForApollo();
   };
 

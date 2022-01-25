@@ -1,7 +1,7 @@
 import { GlModal, GlLoadingIcon } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import AxiosMockAdapter from 'axios-mock-adapter';
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import waitForPromises from 'helpers/wait_for_promises';
 import createFlash from '~/flash';
 import appComponent from '~/groups/components/app.vue';
@@ -58,7 +58,7 @@ describe('AppComponent', () => {
     wrapper = null;
   });
 
-  beforeEach(() => {
+  beforeEach(async () => {
     mock = new AxiosMockAdapter(axios);
     mock.onGet('/dashboard/groups.json').reply(200, mockGroups);
     Vue.component('GroupFolder', groupFolderComponent);
@@ -66,7 +66,7 @@ describe('AppComponent', () => {
 
     createShallowComponent();
     getGroupsSpy = jest.spyOn(vm.service, 'getGroups');
-    return vm.$nextTick();
+    await nextTick();
   });
 
   describe('computed', () => {
@@ -397,66 +397,60 @@ describe('AppComponent', () => {
   });
 
   describe('created', () => {
-    it('should bind event listeners on eventHub', () => {
+    it('should bind event listeners on eventHub', async () => {
       jest.spyOn(eventHub, '$on').mockImplementation(() => {});
 
       createShallowComponent();
 
-      return vm.$nextTick().then(() => {
-        expect(eventHub.$on).toHaveBeenCalledWith('fetchPage', expect.any(Function));
-        expect(eventHub.$on).toHaveBeenCalledWith('toggleChildren', expect.any(Function));
-        expect(eventHub.$on).toHaveBeenCalledWith('showLeaveGroupModal', expect.any(Function));
-        expect(eventHub.$on).toHaveBeenCalledWith('updatePagination', expect.any(Function));
-        expect(eventHub.$on).toHaveBeenCalledWith('updateGroups', expect.any(Function));
-      });
+      await nextTick();
+      expect(eventHub.$on).toHaveBeenCalledWith('fetchPage', expect.any(Function));
+      expect(eventHub.$on).toHaveBeenCalledWith('toggleChildren', expect.any(Function));
+      expect(eventHub.$on).toHaveBeenCalledWith('showLeaveGroupModal', expect.any(Function));
+      expect(eventHub.$on).toHaveBeenCalledWith('updatePagination', expect.any(Function));
+      expect(eventHub.$on).toHaveBeenCalledWith('updateGroups', expect.any(Function));
     });
 
-    it('should initialize `searchEmptyMessage` prop with correct string when `hideProjects` is `false`', () => {
+    it('should initialize `searchEmptyMessage` prop with correct string when `hideProjects` is `false`', async () => {
       createShallowComponent();
-      return vm.$nextTick().then(() => {
-        expect(vm.searchEmptyMessage).toBe('No groups or projects matched your search');
-      });
+      await nextTick();
+      expect(vm.searchEmptyMessage).toBe('No groups or projects matched your search');
     });
 
-    it('should initialize `searchEmptyMessage` prop with correct string when `hideProjects` is `true`', () => {
+    it('should initialize `searchEmptyMessage` prop with correct string when `hideProjects` is `true`', async () => {
       createShallowComponent(true);
-      return vm.$nextTick().then(() => {
-        expect(vm.searchEmptyMessage).toBe('No groups matched your search');
-      });
+      await nextTick();
+      expect(vm.searchEmptyMessage).toBe('No groups matched your search');
     });
   });
 
   describe('beforeDestroy', () => {
-    it('should unbind event listeners on eventHub', () => {
+    it('should unbind event listeners on eventHub', async () => {
       jest.spyOn(eventHub, '$off').mockImplementation(() => {});
 
       createShallowComponent();
       wrapper.destroy();
 
-      return vm.$nextTick().then(() => {
-        expect(eventHub.$off).toHaveBeenCalledWith('fetchPage', expect.any(Function));
-        expect(eventHub.$off).toHaveBeenCalledWith('toggleChildren', expect.any(Function));
-        expect(eventHub.$off).toHaveBeenCalledWith('showLeaveGroupModal', expect.any(Function));
-        expect(eventHub.$off).toHaveBeenCalledWith('updatePagination', expect.any(Function));
-        expect(eventHub.$off).toHaveBeenCalledWith('updateGroups', expect.any(Function));
-      });
+      await nextTick();
+      expect(eventHub.$off).toHaveBeenCalledWith('fetchPage', expect.any(Function));
+      expect(eventHub.$off).toHaveBeenCalledWith('toggleChildren', expect.any(Function));
+      expect(eventHub.$off).toHaveBeenCalledWith('showLeaveGroupModal', expect.any(Function));
+      expect(eventHub.$off).toHaveBeenCalledWith('updatePagination', expect.any(Function));
+      expect(eventHub.$off).toHaveBeenCalledWith('updateGroups', expect.any(Function));
     });
   });
 
   describe('template', () => {
-    it('should render loading icon', () => {
+    it('should render loading icon', async () => {
       vm.isLoading = true;
-      return vm.$nextTick().then(() => {
-        expect(wrapper.find(GlLoadingIcon).exists()).toBe(true);
-      });
+      await nextTick();
+      expect(wrapper.find(GlLoadingIcon).exists()).toBe(true);
     });
 
-    it('should render groups tree', () => {
+    it('should render groups tree', async () => {
       vm.store.state.groups = [mockParentGroupItem];
       vm.isLoading = false;
-      return vm.$nextTick().then(() => {
-        expect(vm.$el.querySelector('.groups-list-tree-container')).toBeDefined();
-      });
+      await nextTick();
+      expect(vm.$el.querySelector('.groups-list-tree-container')).toBeDefined();
     });
 
     it('renders modal confirmation dialog', () => {

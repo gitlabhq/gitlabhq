@@ -1,5 +1,6 @@
 import { GlDropdown, GlDropdownItem, GlSprintf } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import DesignVersionDropdown from '~/design_management/components/upload/design_version_dropdown.vue';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
 import mockAllVersions from './mock_data/all_versions';
@@ -47,77 +48,69 @@ describe('Design management design version dropdown component', () => {
 
   const findVersionLink = (index) => wrapper.findAll(GlDropdownItem).at(index);
 
-  it('renders design version dropdown button', () => {
+  it('renders design version dropdown button', async () => {
     createComponent();
 
-    return wrapper.vm.$nextTick().then(() => {
-      expect(wrapper.element).toMatchSnapshot();
-    });
+    await nextTick();
+    expect(wrapper.element).toMatchSnapshot();
   });
 
-  it('renders design version list', () => {
+  it('renders design version list', async () => {
     createComponent();
 
-    return wrapper.vm.$nextTick().then(() => {
-      expect(wrapper.element).toMatchSnapshot();
-    });
+    await nextTick();
+    expect(wrapper.element).toMatchSnapshot();
   });
 
   describe('selected version name', () => {
-    it('has "latest" on most recent version item', () => {
+    it('has "latest" on most recent version item', async () => {
       createComponent();
 
-      return wrapper.vm.$nextTick().then(() => {
-        expect(findVersionLink(0).text()).toContain('latest');
-      });
+      await nextTick();
+      expect(findVersionLink(0).text()).toContain('latest');
     });
   });
 
   describe('versions list', () => {
-    it('displays latest version text by default', () => {
+    it('displays latest version text by default', async () => {
       createComponent();
 
-      return wrapper.vm.$nextTick().then(() => {
-        expect(wrapper.find(GlDropdown).attributes('text')).toBe('Showing latest version');
-      });
+      await nextTick();
+      expect(wrapper.find(GlDropdown).attributes('text')).toBe('Showing latest version');
     });
 
-    it('displays latest version text when only 1 version is present', () => {
+    it('displays latest version text when only 1 version is present', async () => {
       createComponent({ maxVersions: 1 });
 
-      return wrapper.vm.$nextTick().then(() => {
-        expect(wrapper.find(GlDropdown).attributes('text')).toBe('Showing latest version');
-      });
+      await nextTick();
+      expect(wrapper.find(GlDropdown).attributes('text')).toBe('Showing latest version');
     });
 
-    it('displays version text when the current version is not the latest', () => {
+    it('displays version text when the current version is not the latest', async () => {
       createComponent({ $route: designRouteFactory(PREVIOUS_VERSION_ID) });
 
-      return wrapper.vm.$nextTick().then(() => {
-        expect(wrapper.find(GlDropdown).attributes('text')).toBe(`Showing version #1`);
-      });
+      await nextTick();
+      expect(wrapper.find(GlDropdown).attributes('text')).toBe(`Showing version #1`);
     });
 
-    it('displays latest version text when the current version is the latest', () => {
+    it('displays latest version text when the current version is the latest', async () => {
       createComponent({ $route: designRouteFactory(LATEST_VERSION_ID) });
 
-      return wrapper.vm.$nextTick().then(() => {
-        expect(wrapper.find(GlDropdown).attributes('text')).toBe('Showing latest version');
-      });
+      await nextTick();
+      expect(wrapper.find(GlDropdown).attributes('text')).toBe('Showing latest version');
     });
 
-    it('should have the same length as apollo query', () => {
+    it('should have the same length as apollo query', async () => {
       createComponent();
 
-      return wrapper.vm.$nextTick().then(() => {
-        expect(wrapper.findAll(GlDropdownItem)).toHaveLength(wrapper.vm.allVersions.length);
-      });
+      await nextTick();
+      expect(wrapper.findAll(GlDropdownItem)).toHaveLength(wrapper.vm.allVersions.length);
     });
 
     it('should render TimeAgo', async () => {
       createComponent();
 
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       expect(wrapper.findAllComponents(TimeAgo)).toHaveLength(wrapper.vm.allVersions.length);
     });

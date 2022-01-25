@@ -1,4 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 
 describe('Local Storage Sync', () => {
@@ -49,7 +50,7 @@ describe('Local Storage Sync', () => {
 
     it.each('foo', 3, true, ['foo', 'bar'], { foo: 'bar' })(
       'saves updated value to localStorage',
-      (newValue) => {
+      async (newValue) => {
         createComponent({
           props: {
             storageKey,
@@ -59,9 +60,8 @@ describe('Local Storage Sync', () => {
 
         wrapper.setProps({ value: newValue });
 
-        return wrapper.vm.$nextTick().then(() => {
-          expect(localStorage.getItem(storageKey)).toBe(String(newValue));
-        });
+        await nextTick();
+        expect(localStorage.getItem(storageKey)).toBe(String(newValue));
       },
     );
 
@@ -109,7 +109,7 @@ describe('Local Storage Sync', () => {
       expect(localStorage.getItem(storageKey)).toBe(savedValue);
     });
 
-    it('updating the value updates localStorage', () => {
+    it('updating the value updates localStorage', async () => {
       createComponent({
         props: {
           storageKey,
@@ -122,9 +122,8 @@ describe('Local Storage Sync', () => {
         value: newValue,
       });
 
-      return wrapper.vm.$nextTick().then(() => {
-        expect(localStorage.getItem(storageKey)).toBe(newValue);
-      });
+      await nextTick();
+      expect(localStorage.getItem(storageKey)).toBe(newValue);
     });
 
     it('persists the value by default', async () => {
@@ -137,7 +136,7 @@ describe('Local Storage Sync', () => {
       });
 
       wrapper.setProps({ value: persistedValue });
-      await wrapper.vm.$nextTick();
+      await nextTick();
       expect(localStorage.getItem(storageKey)).toBe(persistedValue);
     });
 
@@ -151,7 +150,7 @@ describe('Local Storage Sync', () => {
       });
 
       wrapper.setProps({ persist: false, value: notPersistedValue });
-      await wrapper.vm.$nextTick();
+      await nextTick();
       expect(localStorage.getItem(storageKey)).not.toBe(notPersistedValue);
     });
   });
@@ -172,7 +171,7 @@ describe('Local Storage Sync', () => {
       ${{ foo: 'bar' }} | ${'{"foo":"bar"}'}
     `('given $value', ({ value, serializedValue }) => {
       describe('is a new value', () => {
-        beforeEach(() => {
+        beforeEach(async () => {
           createComponent({
             props: {
               storageKey,
@@ -183,7 +182,7 @@ describe('Local Storage Sync', () => {
 
           wrapper.setProps({ value });
 
-          return wrapper.vm.$nextTick();
+          await nextTick();
         });
 
         it('serializes the value correctly to localStorage', () => {
@@ -253,7 +252,7 @@ describe('Local Storage Sync', () => {
       value,
     });
 
-    await wrapper.vm.$nextTick();
+    await nextTick();
 
     expect(localStorage.getItem(storageKey)).toBe(value);
 
@@ -261,7 +260,7 @@ describe('Local Storage Sync', () => {
       clear: true,
     });
 
-    await wrapper.vm.$nextTick();
+    await nextTick();
 
     expect(localStorage.getItem(storageKey)).toBe(null);
   });

@@ -101,7 +101,7 @@ module Ci
     }
 
     scope :belonging_to_group_or_project_descendants, -> (group_id) {
-      group_ids = Ci::NamespaceMirror.contains_namespace(group_id).select(:namespace_id)
+      group_ids = Ci::NamespaceMirror.by_group_and_descendants(group_id).select(:namespace_id)
       project_ids = Ci::ProjectMirror.by_namespace_id(group_ids).select(:project_id)
 
       group_runners = joins(:runner_namespaces).where(ci_runner_namespaces: { namespace_id: group_ids })

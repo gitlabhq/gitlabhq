@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import { mountComponentWithStore } from 'helpers/vue_mount_component_helper';
 import PublishButton from '~/batch_comments/components/publish_button.vue';
 import { createStore } from '~/batch_comments/stores';
@@ -29,13 +29,10 @@ describe('Batch comments publish button component', () => {
     expect(vm.$store.dispatch).toHaveBeenCalledWith('batchComments/publishReview', undefined);
   });
 
-  it('sets loading when isPublishing is true', (done) => {
+  it('sets loading when isPublishing is true', async () => {
     vm.$store.state.batchComments.isPublishing = true;
 
-    vm.$nextTick(() => {
-      expect(vm.$el.getAttribute('disabled')).toBe('disabled');
-
-      done();
-    });
+    await nextTick();
+    expect(vm.$el.getAttribute('disabled')).toBe('disabled');
   });
 });

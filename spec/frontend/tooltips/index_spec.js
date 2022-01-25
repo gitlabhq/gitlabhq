@@ -1,3 +1,4 @@
+import { nextTick } from 'vue';
 import {
   add,
   initTooltips,
@@ -57,7 +58,7 @@ describe('tooltips/index.js', () => {
 
       triggerEvent(target);
 
-      await tooltipsApp.$nextTick();
+      await nextTick();
 
       expect(document.querySelector('.gl-tooltip')).not.toBe(null);
       expect(document.querySelector('.gl-tooltip').innerHTML).toContain('default title');
@@ -69,7 +70,7 @@ describe('tooltips/index.js', () => {
       buildTooltipsApp();
       triggerEvent(target, 'click');
 
-      await tooltipsApp.$nextTick();
+      await nextTick();
 
       expect(document.querySelector('.gl-tooltip')).not.toBe(null);
       expect(document.querySelector('.gl-tooltip').innerHTML).toContain('default title');
@@ -83,7 +84,7 @@ describe('tooltips/index.js', () => {
       buildTooltipsApp();
       add([target], { title: 'custom title' });
 
-      await tooltipsApp.$nextTick();
+      await nextTick();
 
       expect(document.querySelector('.gl-tooltip')).not.toBe(null);
       expect(document.querySelector('.gl-tooltip').innerHTML).toContain('custom title');
@@ -97,13 +98,13 @@ describe('tooltips/index.js', () => {
       buildTooltipsApp();
       triggerEvent(target);
 
-      await tooltipsApp.$nextTick();
+      await nextTick();
 
       expect(document.querySelector('.gl-tooltip')).not.toBe(null);
 
       dispose([target]);
 
-      await tooltipsApp.$nextTick();
+      await nextTick();
 
       expect(document.querySelector('.gl-tooltip')).toBe(null);
     });
@@ -122,7 +123,7 @@ describe('tooltips/index.js', () => {
 
       buildTooltipsApp();
 
-      await tooltipsApp.$nextTick();
+      await nextTick();
 
       jest.spyOn(tooltipsApp, 'triggerEvent');
 
@@ -137,7 +138,7 @@ describe('tooltips/index.js', () => {
 
     buildTooltipsApp();
 
-    await tooltipsApp.$nextTick();
+    await nextTick();
 
     jest.spyOn(tooltipsApp, 'fixTitle');
 

@@ -1163,7 +1163,11 @@ module Ci
     end
 
     def merge_request?
-      merge_request_id.present?
+      if Feature.enabled?(:ci_pipeline_merge_request_presence_check, default_enabled: :yaml)
+        merge_request_id.present? && merge_request
+      else
+        merge_request_id.present?
+      end
     end
 
     def external_pull_request?

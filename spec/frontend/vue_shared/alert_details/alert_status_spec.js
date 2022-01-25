@@ -1,4 +1,5 @@
 import { GlDropdown, GlDropdownItem } from '@gitlab/ui';
+import { nextTick } from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import updateAlertStatusMutation from '~/graphql_shared//mutations/alert_status_update.mutation.graphql';
@@ -121,7 +122,7 @@ describe('AlertManagementStatus', () => {
 
       it('emits an error when triggered a second time', async () => {
         await selectFirstStatusOption();
-        await wrapper.vm.$nextTick();
+        await nextTick();
         await selectFirstStatusOption();
         // Should emit two errors [0,1]
         expect(wrapper.emitted('alert-error').length > 1).toBe(true);

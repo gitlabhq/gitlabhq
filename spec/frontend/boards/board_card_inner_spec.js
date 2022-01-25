@@ -1,6 +1,7 @@
 import { GlLabel, GlLoadingIcon, GlTooltip } from '@gitlab/ui';
 import { range } from 'lodash';
 import Vuex from 'vuex';
+import { nextTick } from 'vue';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
@@ -261,7 +262,7 @@ describe('Board card component', () => {
           ],
         });
 
-        await wrapper.vm.$nextTick();
+        await nextTick();
 
         expect(wrapper.find('.board-card-assignee img').attributes('src')).toBe(
           'test_image_from_avatar_url?width=24',
@@ -376,7 +377,7 @@ describe('Board card component', () => {
           },
         });
 
-        await wrapper.vm.$nextTick();
+        await nextTick();
 
         expect(wrapper.find('.board-card-assignee .avatar-counter').text().trim()).toEqual('99+');
       });
@@ -399,7 +400,7 @@ describe('Board card component', () => {
     it('does not render label if label does not have an ID', async () => {
       wrapper.setProps({ item: { ...issue, labels: [label1, { title: 'closed' }] } });
 
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       expect(wrapper.findAll(GlLabel).length).toBe(1);
       expect(wrapper.text()).not.toContain('closed');

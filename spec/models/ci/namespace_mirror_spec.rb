@@ -20,10 +20,10 @@ RSpec.describe Ci::NamespaceMirror do
   end
 
   context 'scopes' do
-    describe '.contains_namespace' do
+    describe '.by_group_and_descendants' do
       let_it_be(:another_group) { create(:group) }
 
-      subject(:result) { described_class.contains_namespace(group2.id) }
+      subject(:result) { described_class.by_group_and_descendants(group2.id) }
 
       it 'returns groups having group2.id in traversal_ids' do
         expect(result.pluck(:namespace_id)).to contain_exactly(group2.id, group3.id, group4.id)

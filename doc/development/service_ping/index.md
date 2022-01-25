@@ -557,6 +557,10 @@ skip_db_write:
 ServicePing::SubmitService.new(skip_db_write: true).execute
 ```
 
+## Monitoring
+
+Service Ping reporting process state is monitored with [internal SiSense dashboard](https://app.periscopedata.com/app/gitlab/968489/Product-Intelligence---Service-Ping-Health). 
+
 ## Troubleshooting
 
 ### Cannot disable Service Ping using the configuration file

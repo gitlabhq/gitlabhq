@@ -1,0 +1,405 @@
+#!/usr/bin/env -S ENABLE_SPRING=0 bin/rails runner -e test
+
+# This is helper script to swap foreign key to loose foreign key
+# using DB schema
+
+require 'optparse'
+
+$options = {
+  milestone: "#{Gitlab.version_info.major}.#{Gitlab.version_info.minor}",
+  cross_schema: false,
+  dry_run: false,
+  branch: true,
+  rspec: true
+}
+
+OptionParser.new do |opts|
+  opts.banner = "Usage: #{$0} [options] <filters...>"
+
+  opts.on("-c", "--cross-schema", "Show only cross-schema foreign keys") do |v|
+    $options[:cross_schema] = v
+  end
+
+  opts.on("-n", "--dry-run", "Do not execute any commands (dry run)") do |v|
+    $options[:dry_run] = v
+  end
+
+  opts.on("-b", "--[no-]branch", "Create or not a new branch") do |v|
+    $options[:branch] = v
+  end
+
+  opts.on("-r", "--[no-]rspec", "Create or not a rspecs automatically") do |v|
+    $options[:rspec] = v
+  end
+
+  opts.on("-m", "--milestone MILESTONE", "Specify custom milestone (current: #{$options[:milestone]})") do |v|
+    $options[:milestone] = v
+  end
+
+  opts.on("-h", "--help", "Prints this help") do
+    puts opts
+    exit
+  end
+end.parse!
+
+unless system("git diff --quiet db/structure.sql")
+  raise "The db/structure.sql is changed. Reset branch or commit changes."
+end
+
+unless system("git diff --quiet")
+  raise "There are uncommitted changes. Commit to continue."
+end
+
+if Gitlab::Database.database_base_models.many?
+  raise 'Cannot run in multiple-databases mode. Use only `main:` in `config/database.yml`.'
+end
+
+puts "Re-creating current test database"
+ActiveRecord::Tasks::DatabaseTasks.drop_current
+ActiveRecord::Tasks::DatabaseTasks.create_current
+ActiveRecord::Tasks::DatabaseTasks.load_schema_current
+ActiveRecord::Tasks::DatabaseTasks.migrate
+ActiveRecord::Migration.check_pending!
+ActiveRecord::Base.connection_pool.disconnect!
+puts
+
+def exec_cmd(*args, fail: nil)
+  # output full command
+  if $options[:dry_run]
+    puts ">> #{args.shelljoin}"
+    return true
+  end
+
+  # truncate up-to 60 chars or first line
+  command = args.shelljoin
+  truncated_command = command.truncate([command.lines.first.length+3, 120].min)
+
+  puts ">> #{truncated_command}"
+  return true if system(*args)
+
+  raise fail if fail
+
+  puts "--------------------------------------------------"
+  puts "This command failed:"
+  puts ">> #{command}"
+  puts "--------------------------------------------------"
+  false
+end
+
+def has_lfk?(definition)
+  Gitlab::Database::LooseForeignKeys.definitions.any? do |lfk_definition|
+    lfk_definition.from_table == definition.from_table &&
+      lfk_definition.to_table == definition.to_table &&
+      lfk_definition.column == definition.column
+  end
+end
+
+def matching_filter?(definition, filters)
+  filters.all? do |filter|
+    definition.from_table.include?(filter) ||
+      definition.to_table.include?(filter) ||
+      definition.column.include?(filter)
+  end
+end
+
+def columns(*args)
+  puts("%5s | %7s | %40s | %20s | %30s | %15s " % args)
+end
+
+def add_definition_to_yaml(definition)
+  content = YAML.load_file(Rails.root.join('lib/gitlab/database/gitlab_loose_foreign_keys.yml'))
+  table_definitions = content[definition.from_table]
+
+  # insert new entry at random place to avoid conflicts
+  unless table_definitions
+    table_definitions = []
+    insert_idx = rand(content.count+1)
+
+    # insert at a given index in ordered hash
+    content = content.to_a
+    content.insert(insert_idx, [definition.from_table, table_definitions])
+    content = content.to_h
+  end
+
+  on_delete =
+    case definition.on_delete
+    when :cascade
+      'async_delete'
+    when :nullify
+      'async_nullify'
+    else
+      raise "Unsupported on_delete behavior: #{definition.on_delete}"
+    end
+
+  yaml_definition = {
+    "table" => definition.to_table,
+    "column" => definition.column,
+    "on_delete" => on_delete
+  }
+
+  # match and update by "table", "column"
+  if existing = table_definitions.pluck("table", "column").index([definition.to_table, definition.column])
+    puts "Updated existing definition from #{table_definitions[existing]} to #{yaml_definition}."
+    table_definitions[existing] = yaml_definition
+  else
+    puts "Add new definition for #{yaml_definition}."
+    table_definitions.append(yaml_definition)
+  end
+
+  # emulate existing formatting
+  File.write(
+    Rails.root.join('lib/gitlab/database/gitlab_loose_foreign_keys.yml'),
+    content.to_yaml.gsub(/^([- ] )/, '  \1')
+  )
+
+  exec_cmd("git", "add", "lib/gitlab/database/gitlab_loose_foreign_keys.yml")
+end
+
+def generate_migration(definition)
+  timestamp = Time.now.utc.strftime("%Y%m%d%H%M%S")
+
+  # db/post_migrate/20220111221516_remove_projects_ci_pending_builds_fk.rb
+
+  migration_name = "db/post_migrate/#{timestamp}_remove_#{definition.to_table}_#{definition.from_table}_#{definition.column}_fk.rb"
+  puts "Writing #{migration_name}"
+
+  content = <<-EOF.strip_heredoc
+    # frozen_string_literal: true
+
+    class Remove#{definition.to_table.camelcase}#{definition.from_table.camelcase}#{definition.column.camelcase}Fk < Gitlab::Database::Migration[1.0]
+      disable_ddl_transaction!
+
+      def up
+        return unless foreign_key_exists?(:#{definition.from_table}, :#{definition.to_table}, name: "#{definition.name}")
+
+        with_lock_retries do
+          execute('LOCK #{definition.to_table}, #{definition.from_table} IN ACCESS EXCLUSIVE MODE') if transaction_open?
+
+          remove_foreign_key_if_exists(:#{definition.from_table}, :#{definition.to_table}, name: "#{definition.name}")
+        end
+      end
+
+      def down
+        add_concurrent_foreign_key(:#{definition.from_table}, :#{definition.to_table}, name: "#{definition.name}", column: :#{definition.column}, target_column: :#{definition.primary_key}, on_delete: :#{definition.on_delete})
+      end
+    end
+  EOF
+
+  File.write(migration_name, content)
+
+  exec_cmd("git", "add", migration_name, fail: "Failed to add migration file.")
+  exec_cmd("bin/rails", "db:migrate", fail: "Failed to run db:migrate.")
+  exec_cmd("git", "add", "db/schema_migrations/#{timestamp}", "db/structure.sql", fail: "There are uncommitted changes. We should not have any.")
+  exec_cmd("git diff --exit-code --name-only", fail: "There are uncommitted changes. We should not have any.")
+end
+
+def class_by_table_name
+  @index_by_table_name ||= ActiveRecord::Base
+    .descendants
+    .reject(&:abstract_class)
+    .map(&:base_class)
+    .index_by(&:table_name)
+end
+
+def spec_from_clazz(clazz, definition)
+  %w[spec/models ee/spec/models].each do |specs_path|
+    path = File.join(specs_path, clazz.underscore + "_spec.rb")
+    return path if File.exist?(path)
+  end
+
+  raise "Cannot find specs for #{clazz} (#{definition.from_table})"
+end
+
+def add_test_to_specs(definition)
+  return unless $options[:rspec]
+
+  clazz = class_by_table_name[definition.from_table]
+  raise "Cannot map #{definition.from_table} to clazz" unless clazz
+
+  spec_path = spec_from_clazz(clazz, definition)
+  puts "Adding test to #{spec_path}..."
+
+  spec_test = <<-EOF.strip_heredoc.indent(2)
+    context 'loose foreign key on #{definition.from_table}.#{definition.column}' do
+      it_behaves_like 'cleanup by a loose foreign key' do
+        let!(:parent) { create(:#{definition.to_table.singularize}) }
+        let!(:model) { create(:#{definition.from_table.singularize}, #{definition.column.delete_suffix("_id").singularize}: parent) }
+      end
+    end
+  EOF
+
+  # append to end of file with empty line before
+  lines = File.readlines(spec_path)
+  insert_line = lines.count - 1
+  lines.insert(insert_line, "\n", *spec_test.lines)
+  File.write(spec_path, lines.join(""))
+
+  # find a matching line
+  test_lines = (1..lines.count).select do |line|
+    lines[line-1].include?("it_behaves_like 'cleanup by a loose foreign key' do")
+  end.join(":")
+
+  loop do
+    if system("bin/rspec", "#{spec_path}:#{test_lines}")
+      puts "Test seems fine?"
+      break
+    end
+
+    puts "--------------------------------------------------"
+    puts "Test failed:"
+    puts "Edit:   vim #{spec_path} (lines #{test_lines})"
+    puts "Re-run: bin/rspec #{spec_path}:#{test_lines}"
+    puts "--------------------------------------------------"
+    puts "Running bash. To exit do 'Ctrl-D' to re-run, or do 'Ctrl-C' to break (and ignore failure)."
+    puts
+
+    unless exec_cmd("bash")
+      break
+    end
+  end
+
+  exec_cmd("git", "add", spec_path, fail: "There are uncommitted changes. We should not have any.")
+end
+
+def update_no_cross_db_foreign_keys_spec(definition)
+  from_column = "#{definition.from_table}.#{definition.column}"
+  spec_path = "spec/lib/gitlab/database/no_cross_db_foreign_keys_spec.rb"
+
+  puts "Updating #{spec_path}..."
+  lines = File.readlines(spec_path)
+  updated = lines.reject { |line| line.strip == from_column }
+
+  if lines.count == updated.count
+    puts "Nothing changed."
+    return
+  end
+
+  File.write(spec_path, updated.join(""))
+  exec_cmd("git", "add", spec_path, fail: "Failed to add changes from #{spec_path}")
+end
+
+def commit_changes(definition)
+  branch_name = "remove-#{definition.to_table}_#{definition.from_table}_#{definition.column}-fk"
+  commit_title = "Swap FK #{definition.from_table} to #{definition.to_table} for LFK"
+  mr_title = "Swap FK #{definition.from_table}.#{definition.column} to #{definition.to_table} for LFK"
+  description = <<-EOF.strip_heredoc
+    Swaps FK for #{definition.from_table}.#{definition.column} to #{definition.to_table}
+
+    Changelog: changed
+  EOF
+
+  commit_message = "#{commit_title}\n\n#{description}"
+
+  existing_branch = %x[git rev-parse --abbrev-ref HEAD].strip
+
+  if $options[:branch]
+    unless exec_cmd("git", "checkout", "-b", branch_name)
+      raise "Failed to create branch: #{branch_name}"
+    end
+  end
+
+  unless exec_cmd("git", "commit", "-m", commit_message)
+    raise "Failed to commit changes."
+  end
+
+  if $options[:branch]
+    exec_cmd("git", "push", "origin", "-u", "HEAD",
+      "-o", "merge_request.create",
+      "-o", "merge_request.target=#{existing_branch}",
+      "-o", "merge_request.milestone=#{$options[:milestone]}",
+      "-o", "merge_request.title=#{mr_title}"
+    )
+
+    puts
+    puts "--------------------------------------------------"
+    puts "Put this as MR description:"
+    puts "--------------------------------------------------"
+    puts <<-EOF.strip_heredoc
+      ## What does this MR do and why?
+  
+      Per https://gitlab.com/groups/gitlab-org/-/epics/7249
+  
+      As part of our CI "decomposition" efforts we need to remove all foreign keys that are cross-database (ie. between the planned \`main\` and \`ci\` databases). We are going to replace them all with ["loose foreign keys"](https://docs.gitlab.com/ee/development/database/loose_foreign_keys.html).
+
+      Related: <DETAIL>
+
+      ## Validations
+
+      - **Best team to review (check off when reviewed):** TBD
+      - [ ] No way for user to access once parent is deleted. Please explain: <DETAIL>
+      - [ ] Possible to access once parent deleted but low user impact. Please explain: <DETAIL>
+      - [ ] Possible Sidekiq workers that may load directly and possibly lead to exceptions. Please explain: <DETAIL>
+      - [ ] Possible user impact to be evaluated or mitigated. Please explain: <DETAIL>
+      - [ ] Is this FK safe to be removed to avoid LOCKing problems? (Explanation: https://gitlab.com/groups/gitlab-org/-/epics/7249#note_819662046). Please explain: <DETAIL>
+
+      ## MR acceptance checklist
+  
+      This checklist encourages us to confirm any changes have been analyzed to reduce risks in quality, performance, reliability, security, and maintainability. 
+  
+      * [ ] I have evaluated the [MR acceptance checklist](https://docs.gitlab.com/ee/development/code_review.html#acceptance-checklist) for this MR.
+
+      /label ~"ci-decomposition::phase4" ~"database::review pending" ~"devops::enablement" ~"group::sharding" ~"section::enablement" ~"sharding::active" ~"type::feature" ~"workflow::in dev" ~backend ~"ci-decomposition" ~database ~"Category:Sharding"
+      /milestone %"#{$options[:milestone]}"
+      /assign_reviewer @ahegyi
+    EOF
+    puts "--------------------------------------------------"
+  end
+end
+
+all_foreign_keys = ActiveRecord::Base.connection.tables.flat_map do |table|
+  ActiveRecord::Base.connection.foreign_keys(table)
+end
+
+# Show only cross-schema foreign keys
+if $options[:cross_schema]
+  all_foreign_keys.select! do |definition|
+    Gitlab::Database::GitlabSchema.table_schema(definition.from_table) != Gitlab::Database::GitlabSchema.table_schema(definition.to_table)
+  end
+end
+
+if $options[:cross_schema]
+  puts "Showing cross-schema foreign keys (#{all_foreign_keys.count}):"
+else
+  puts "Showing all foreign keys (#{all_foreign_keys.count}):"
+  puts "Did you meant `#{$0} --cross-schema ...`?"
+end
+
+columns("ID", "HAS_LFK", "FROM", "TO", "COLUMN", "ON_DELETE")
+all_foreign_keys.each_with_index do |definition, idx|
+  columns(idx, has_lfk?(definition) ? 'Y' : 'N', definition.from_table, definition.to_table, definition.column, definition.on_delete)
+end
+puts
+
+puts "To match FK write one or many filters to match against FROM/TO/COLUMN:"
+puts "- #{$0} <filter(s)...>"
+puts "- #{$0} ci_job_artifacts project_id"
+puts "- #{$0} dast_site_profiles_pipelines"
+puts
+
+return if ARGV.empty?
+
+puts "Loading all models..."
+# Fix bug with loading `app/models/identity/uniqueness_scopes.rb`
+require_relative Rails.root.join('app/models/identity.rb')
+
+%w[app/models/**/*.rb ee/app/models/**/*.rb].each do |filter|
+  Dir.glob(filter).each do |path|
+    require_relative Rails.root.join(path)
+  end
+end
+puts
+
+puts "Generating Loose Foreign Key for given filters: #{ARGV}"
+
+all_foreign_keys.each_with_index do |definition, idx|
+  next unless matching_filter?(definition, ARGV)
+
+  puts "Matched: #{idx} (#{definition.from_table}, #{definition.to_table}, #{definition.column})"
+
+  add_definition_to_yaml(definition)
+  generate_migration(definition)
+  add_test_to_specs(definition)
+  update_no_cross_db_foreign_keys_spec(definition)
+  commit_changes(definition)
+end
+puts

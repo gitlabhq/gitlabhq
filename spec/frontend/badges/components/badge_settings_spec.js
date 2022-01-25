@@ -1,6 +1,6 @@
 import { GlModal } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 import BadgeList from '~/badges/components/badge_list.vue';
 import BadgeListRow from '~/badges/components/badge_list_row.vue';
@@ -40,7 +40,7 @@ describe('BadgeSettings component', () => {
     const button = wrapper.find('[data-testid="delete-badge"]');
 
     button.vm.$emit('click');
-    await wrapper.vm.$nextTick();
+    await nextTick();
 
     const modal = wrapper.find(GlModal);
     expect(modal.isVisible()).toBe(true);

@@ -495,7 +495,7 @@ RSpec.describe "Admin Runners" do
         description: 'runner-foo',
         version: '14.0',
         ip_address: '127.0.0.1',
-        tag_list: %w(tag1 tag2)
+        tag_list: ['tag1']
       )
     end
 
@@ -519,7 +519,7 @@ RSpec.describe "Admin Runners" do
         expect(page).to have_content 'IP Address 127.0.0.1'
         expect(page).to have_content 'Configuration Runs untagged jobs'
         expect(page).to have_content 'Maximum job timeout None'
-        expect(page).to have_content 'Tags tag1 tag2'
+        expect(page).to have_content 'Tags tag1'
       end
     end
   end

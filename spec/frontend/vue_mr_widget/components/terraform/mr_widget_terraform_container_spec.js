@@ -1,6 +1,7 @@
 import { GlDeprecatedSkeletonLoading as GlSkeletonLoading, GlSprintf } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
+import { nextTick } from 'vue';
 import axios from '~/lib/utils/axios_utils';
 import Poll from '~/lib/utils/poll';
 import MrWidgetExpanableSection from '~/vue_merge_request_widget/components/mr_widget_expandable_section.vue';
@@ -39,15 +40,14 @@ describe('MrWidgetTerraformConainer', () => {
   });
 
   describe('when data is loading', () => {
-    beforeEach(() => {
+    beforeEach(async () => {
       mockPollingApi(200, plans, {});
 
-      return mountWrapper().then(() => {
-        // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-        // eslint-disable-next-line no-restricted-syntax
-        wrapper.setData({ loading: true });
-        return wrapper.vm.$nextTick();
-      });
+      await mountWrapper();
+      // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+      // eslint-disable-next-line no-restricted-syntax
+      wrapper.setData({ loading: true });
+      await nextTick();
     });
 
     it('diplays loading skeleton', () => {

@@ -1,5 +1,6 @@
 import { GlFilteredSearchToken, GlLoadingIcon } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import {
   mockRegularLabel,
   mockLabels,
@@ -202,7 +203,7 @@ describe('BaseToken', () => {
           jest.useFakeTimers();
 
           findGlFilteredSearchToken().vm.$emit('input', { data: 'foo' });
-          await wrapper.vm.$nextTick();
+          await nextTick();
 
           jest.runAllTimers();
 
@@ -221,7 +222,7 @@ describe('BaseToken', () => {
           jest.useFakeTimers();
 
           findGlFilteredSearchToken().vm.$emit('input', { data: 'foo' });
-          await wrapper.vm.$nextTick();
+          await nextTick();
 
           jest.runAllTimers();
 

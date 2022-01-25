@@ -1,6 +1,7 @@
 import { GlAlert, GlKeysetPagination, GlLoadingIcon } from '@gitlab/ui';
 import { createLocalVue, shallowMount } from '@vue/test-utils';
 import VueApollo from 'vue-apollo';
+import { nextTick } from 'vue';
 import AgentEmptyState from '~/clusters_list/components/agent_empty_state.vue';
 import AgentTable from '~/clusters_list/components/agent_table.vue';
 import Agents from '~/clusters_list/components/agents.vue';
@@ -21,7 +22,13 @@ describe('Agents', () => {
     projectPath: 'path/to/project',
   };
 
-  const createWrapper = ({ props = {}, agents = [], pageInfo = null, trees = [], count = 0 }) => {
+  const createWrapper = async ({
+    props = {},
+    agents = [],
+    pageInfo = null,
+    trees = [],
+    count = 0,
+  }) => {
     const provide = provideData;
     const apolloQueryResponse = {
       data: {
@@ -47,7 +54,7 @@ describe('Agents', () => {
       provide: provideData,
     });
 
-    return wrapper.vm.$nextTick();
+    await nextTick();
   };
 
   const findAgentTable = () => wrapper.find(AgentTable);
@@ -239,14 +246,14 @@ describe('Agents', () => {
       },
     };
 
-    beforeEach(() => {
+    beforeEach(async () => {
       wrapper = shallowMount(Agents, {
         mocks,
         propsData: defaultProps,
         provide: provideData,
       });
 
-      return wrapper.vm.$nextTick();
+      await nextTick();
     });
 
     it('displays a loading icon', () => {

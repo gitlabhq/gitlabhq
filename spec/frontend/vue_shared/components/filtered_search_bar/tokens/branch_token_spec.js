@@ -6,6 +6,7 @@ import {
 } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
+import { nextTick } from 'vue';
 import waitForPromises from 'helpers/wait_for_promises';
 
 import createFlash from '~/flash';
@@ -115,7 +116,7 @@ describe('BranchToken', () => {
       const tokenSegments = wrapper.findAll(GlFilteredSearchTokenSegment);
       const suggestionsSegment = tokenSegments.at(2);
       suggestionsSegment.vm.$emit('activate');
-      await wrapper.vm.$nextTick();
+      await nextTick();
     }
 
     beforeEach(async () => {
@@ -127,7 +128,7 @@ describe('BranchToken', () => {
         branches: mockBranches,
       });
 
-      await wrapper.vm.$nextTick();
+      await nextTick();
     });
 
     it('renders gl-filtered-search-token component', () => {

@@ -1,6 +1,6 @@
 import { mount } from '@vue/test-utils';
 import katex from 'katex';
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import markdownTableJson from 'test_fixtures/blob/notebook/markdown-table.json';
 import basicJson from 'test_fixtures/blob/notebook/basic.json';
 import mathJson from 'test_fixtures/blob/notebook/math.json';
@@ -37,7 +37,7 @@ describe('Markdown component', () => {
   let cell;
   let json;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     json = basicJson;
 
     // eslint-disable-next-line prefer-destructuring
@@ -45,7 +45,7 @@ describe('Markdown component', () => {
 
     vm = buildCellComponent(cell);
 
-    return vm.$nextTick();
+    await nextTick();
   });
 
   it('does not render prompt', () => {
@@ -67,7 +67,7 @@ describe('Markdown component', () => {
       ],
     });
 
-    await vm.$nextTick();
+    await nextTick();
     expect(vm.$el.querySelector('a').getAttribute('href')).toBeNull();
   });
 
@@ -77,7 +77,7 @@ describe('Markdown component', () => {
       source: ['<a href="test.js" data-remote=true data-type="script" class="xss-link">XSS</a>\n'],
     });
 
-    await vm.$nextTick();
+    await nextTick();
     expect(findLink().getAttribute('data-remote')).toBe(null);
     expect(findLink().getAttribute('data-type')).toBe(null);
   });
@@ -99,7 +99,7 @@ describe('Markdown component', () => {
     ])('%s', async ([testMd, mustContain]) => {
       vm = buildMarkdownComponent([testMd], '/raw/');
 
-      await vm.$nextTick();
+      await nextTick();
 
       expect(vm.$el.innerHTML).toContain(mustContain);
     });
@@ -110,29 +110,28 @@ describe('Markdown component', () => {
       json = markdownTableJson;
     });
 
-    it('renders images and text', () => {
+    it('renders images and text', async () => {
       vm = buildCellComponent(json.cells[0]);
 
-      return vm.$nextTick().then(() => {
-        const images = vm.$el.querySelectorAll('img');
-        expect(images.length).toBe(5);
+      await nextTick();
+      const images = vm.$el.querySelectorAll('img');
+      expect(images.length).toBe(5);
 
-        const columns = vm.$el.querySelectorAll('td');
-        expect(columns.length).toBe(6);
+      const columns = vm.$el.querySelectorAll('td');
+      expect(columns.length).toBe(6);
 
-        expect(columns[0].textContent).toEqual('Hello ');
-        expect(columns[1].textContent).toEqual('Test ');
-        expect(columns[2].textContent).toEqual('World ');
-        expect(columns[3].textContent).toEqual('Fake ');
-        expect(columns[4].textContent).toEqual('External image: ');
-        expect(columns[5].textContent).toEqual('Empty');
+      expect(columns[0].textContent).toEqual('Hello ');
+      expect(columns[1].textContent).toEqual('Test ');
+      expect(columns[2].textContent).toEqual('World ');
+      expect(columns[3].textContent).toEqual('Fake ');
+      expect(columns[4].textContent).toEqual('External image: ');
+      expect(columns[5].textContent).toEqual('Empty');
 
-        expect(columns[0].innerHTML).toContain('<img src="data:image/jpeg;base64');
-        expect(columns[1].innerHTML).toContain('<img src="data:image/png;base64');
-        expect(columns[2].innerHTML).toContain('<img src="data:image/jpeg;base64');
-        expect(columns[3].innerHTML).toContain('<img>');
-        expect(columns[4].innerHTML).toContain('<img src="https://www.google.com/');
-      });
+      expect(columns[0].innerHTML).toContain('<img src="data:image/jpeg;base64');
+      expect(columns[1].innerHTML).toContain('<img src="data:image/png;base64');
+      expect(columns[2].innerHTML).toContain('<img src="data:image/jpeg;base64');
+      expect(columns[3].innerHTML).toContain('<img>');
+      expect(columns[4].innerHTML).toContain('<img src="https://www.google.com/');
     });
   });
 
@@ -144,28 +143,28 @@ describe('Markdown component', () => {
     it('renders multi-line katex', async () => {
       vm = buildCellComponent(json.cells[0]);
 
-      await vm.$nextTick();
+      await nextTick();
       expect(vm.$el.querySelector('.katex')).not.toBeNull();
     });
 
     it('renders inline katex', async () => {
       vm = buildCellComponent(json.cells[1]);
 
-      await vm.$nextTick();
+      await nextTick();
       expect(vm.$el.querySelector('p:first-child .katex')).not.toBeNull();
     });
 
     it('renders multiple inline katex', async () => {
       vm = buildCellComponent(json.cells[1]);
 
-      await vm.$nextTick();
+      await nextTick();
       expect(vm.$el.querySelectorAll('p:nth-child(2) .katex')).toHaveLength(4);
     });
 
     it('output cell in case of katex error', async () => {
       vm = buildMarkdownComponent(['Some invalid $a & b$ inline formula $b & c$\n', '\n']);
 
-      await vm.$nextTick();
+      await nextTick();
       // expect one paragraph with no katex formula in it
       expect(vm.$el.querySelectorAll('p')).toHaveLength(1);
       expect(vm.$el.querySelectorAll('p .katex')).toHaveLength(0);
@@ -177,7 +176,7 @@ describe('Markdown component', () => {
         '\n',
       ]);
 
-      await vm.$nextTick();
+      await nextTick();
       // expect one paragraph with no katex formula in it
       expect(vm.$el.querySelectorAll('p')).toHaveLength(1);
       expect(vm.$el.querySelectorAll('p .katex')).toHaveLength(1);
@@ -186,7 +185,7 @@ describe('Markdown component', () => {
     it('renders math formula in list object', async () => {
       vm = buildMarkdownComponent(["- list with inline $a=2$ inline formula $a' + b = c$\n", '\n']);
 
-      await vm.$nextTick();
+      await nextTick();
       // expect one list with a katex formula in it
       expect(vm.$el.querySelectorAll('li')).toHaveLength(1);
       expect(vm.$el.querySelectorAll('li .katex')).toHaveLength(2);
@@ -195,7 +194,7 @@ describe('Markdown component', () => {
     it("renders math formula with tick ' in it", async () => {
       vm = buildMarkdownComponent(["- list with inline $a=2$ inline formula $a' + b = c$\n", '\n']);
 
-      await vm.$nextTick();
+      await nextTick();
       // expect one list with a katex formula in it
       expect(vm.$el.querySelectorAll('li')).toHaveLength(1);
       expect(vm.$el.querySelectorAll('li .katex')).toHaveLength(2);
@@ -204,7 +203,7 @@ describe('Markdown component', () => {
     it('renders math formula with less-than-operator < in it', async () => {
       vm = buildMarkdownComponent(['- list with inline $a=2$ inline formula $a + b < c$\n', '\n']);
 
-      await vm.$nextTick();
+      await nextTick();
       // expect one list with a katex formula in it
       expect(vm.$el.querySelectorAll('li')).toHaveLength(1);
       expect(vm.$el.querySelectorAll('li .katex')).toHaveLength(2);
@@ -213,7 +212,7 @@ describe('Markdown component', () => {
     it('renders math formula with greater-than-operator > in it', async () => {
       vm = buildMarkdownComponent(['- list with inline $a=2$ inline formula $a + b > c$\n', '\n']);
 
-      await vm.$nextTick();
+      await nextTick();
       // expect one list with a katex formula in it
       expect(vm.$el.querySelectorAll('li')).toHaveLength(1);
       expect(vm.$el.querySelectorAll('li .katex')).toHaveLength(2);

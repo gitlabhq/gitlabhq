@@ -37,9 +37,8 @@ describe('Welcome page', () => {
     const link = wrapper.find('a');
     link.trigger('click');
     await nextTick();
-    return wrapper.vm.$nextTick().then(() => {
-      expect(trackingSpy).toHaveBeenCalledWith(undefined, 'click_tab', { label: 'test' });
-    });
+    await nextTick();
+    expect(trackingSpy).toHaveBeenCalledWith(undefined, 'click_tab', { label: 'test' });
   });
 
   it('renders footer slot if provided', () => {

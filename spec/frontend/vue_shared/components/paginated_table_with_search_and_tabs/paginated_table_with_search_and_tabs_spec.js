@@ -1,5 +1,6 @@
 import { GlAlert, GlBadge, GlPagination, GlTabs, GlTab } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import Tracking from '~/tracking';
 import { OPERATOR_IS_ONLY } from '~/vue_shared/components/filtered_search_bar/constants';
 import FilteredSearchBar from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
@@ -219,21 +220,21 @@ describe('AlertManagementEmptyState', () => {
       it('returns prevPage button', async () => {
         findPagination().vm.$emit('input', 3);
 
-        await wrapper.vm.$nextTick();
+        await nextTick();
         expect(findPagination().findAll('.page-item').at(0).text()).toBe('Prev');
       });
 
       it('returns prevPage number', async () => {
         findPagination().vm.$emit('input', 3);
 
-        await wrapper.vm.$nextTick();
+        await nextTick();
         expect(wrapper.vm.previousPage).toBe(2);
       });
 
       it('returns 0 when it is the first page', async () => {
         findPagination().vm.$emit('input', 1);
 
-        await wrapper.vm.$nextTick();
+        await nextTick();
         expect(wrapper.vm.previousPage).toBe(0);
       });
     });
@@ -242,7 +243,7 @@ describe('AlertManagementEmptyState', () => {
       it('returns nextPage button', async () => {
         findPagination().vm.$emit('input', 3);
 
-        await wrapper.vm.$nextTick();
+        await nextTick();
         expect(findPagination().findAll('.page-item').at(1).text()).toBe('Next');
       });
 
@@ -257,14 +258,14 @@ describe('AlertManagementEmptyState', () => {
         });
         findPagination().vm.$emit('input', 1);
 
-        await wrapper.vm.$nextTick();
+        await nextTick();
         expect(wrapper.vm.nextPage).toBe(2);
       });
 
       it('returns `null` when currentPage is already last page', async () => {
         findStatusTabs().vm.$emit('input', 1);
         findPagination().vm.$emit('input', 1);
-        await wrapper.vm.$nextTick();
+        await nextTick();
         expect(wrapper.vm.nextPage).toBeNull();
       });
     });
@@ -319,7 +320,7 @@ describe('AlertManagementEmptyState', () => {
         searchTerm,
       });
 
-      await wrapper.vm.$nextTick();
+      await nextTick();
       expect(wrapper.vm.filteredSearchValue).toEqual([searchTerm]);
     });
 

@@ -54,6 +54,7 @@ class Projects::IssuesController < Projects::ApplicationController
     push_frontend_feature_flag(:issue_assignees_widget, @project, default_enabled: :yaml)
     push_frontend_feature_flag(:paginated_issue_discussions, @project, default_enabled: :yaml)
     push_frontend_feature_flag(:fix_comment_scroll, @project, default_enabled: :yaml)
+    push_frontend_feature_flag(:work_items, project, default_enabled: :yaml)
   end
 
   around_action :allow_gitaly_ref_name_caching, only: [:discussions]

@@ -1,6 +1,7 @@
 import { GlDropdown, GlSearchBoxByType, GlDropdownItem } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 
+import { nextTick } from 'vue';
 import DropdownWidget from '~/vue_shared/components/dropdown/dropdown_widget/dropdown_widget.vue';
 
 describe('DropdownWidget component', () => {
@@ -53,7 +54,7 @@ describe('DropdownWidget component', () => {
   describe('when dropdown is open', () => {
     beforeEach(async () => {
       findDropdown().vm.$emit('show');
-      await wrapper.vm.$nextTick();
+      await nextTick();
     });
 
     it('emits search event when typing in search box', () => {
@@ -69,7 +70,7 @@ describe('DropdownWidget component', () => {
 
     it('emits set-option event when clicking on an option', async () => {
       wrapper.findAll('[data-testid="unselected-option"]').at(1).trigger('click');
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       expect(wrapper.emitted('set-option')).toEqual([[wrapper.props().options[1]]]);
     });

@@ -19,7 +19,7 @@ describe('Create work item component', () => {
   const findCreateButton = () => wrapper.find('[data-testid="create-button"]');
   const findCancelButton = () => wrapper.find('[data-testid="cancel-button"]');
 
-  const createComponent = ({ data = {} } = {}) => {
+  const createComponent = ({ data = {}, props = {} } = {}) => {
     fakeApollo = createMockApollo([], resolvers);
     wrapper = shallowMount(CreateWorkItem, {
       apolloProvider: fakeApollo,
@@ -27,6 +27,9 @@ describe('Create work item component', () => {
         return {
           ...data,
         };
+      },
+      propsData: {
+        ...props,
       },
       mocks: {
         $router: {
@@ -54,38 +57,97 @@ describe('Create work item component', () => {
     expect(findCreateButton().props('disabled')).toBe(true);
   });
 
-  it('redirects to the previous page on Cancel button click', () => {
-    createComponent();
-    findCancelButton().vm.$emit('click');
-
-    expect(wrapper.vm.$router.go).toHaveBeenCalledWith(-1);
-  });
-
-  it('hides the alert on dismissing the error', async () => {
-    createComponent({ data: { error: true } });
-    expect(findAlert().exists()).toBe(true);
-
-    findAlert().vm.$emit('dismiss');
-    await nextTick();
-    expect(findAlert().exists()).toBe(false);
-  });
-
-  describe('when title input field has a text', () => {
-    beforeEach(async () => {
-      const mockTitle = 'Test title';
+  describe('when displayed on a separate route', () => {
+    beforeEach(() => {
       createComponent();
-      await findTitleInput().vm.$emit('title-input', mockTitle);
     });
 
-    it('renders a non-disabled Create button', () => {
-      expect(findCreateButton().props('disabled')).toBe(false);
+    it('redirects to the previous page on Cancel button click', () => {
+      findCancelButton().vm.$emit('click');
+
+      expect(wrapper.vm.$router.go).toHaveBeenCalledWith(-1);
     });
 
     it('redirects to the work item page on successful mutation', async () => {
+      findTitleInput().vm.$emit('title-input', 'Test title');
+
       wrapper.find('form').trigger('submit');
       await waitForPromises();
 
       expect(wrapper.vm.$router.push).toHaveBeenCalled();
+    });
+
+    it('adds right margin for create button', () => {
+      expect(findCreateButton().classes()).toContain('gl-mr-3');
+    });
+
+    it('does not add right margin for cancel button', () => {
+      expect(findCancelButton().classes()).not.toContain('gl-mr-3');
+    });
+  });
+
+  describe('when displayed in a modal', () => {
+    beforeEach(() => {
+      createComponent({
+        props: {
+          isModal: true,
+        },
+      });
+    });
+
+    it('emits `closeModal` event on Cancel button click', () => {
+      findCancelButton().vm.$emit('click');
+
+      expect(wrapper.emitted('closeModal')).toEqual([[]]);
+    });
+
+    it('emits `onCreate` on successful mutation', async () => {
+      const mockTitle = 'Test title';
+      findTitleInput().vm.$emit('title-input', 'Test title');
+
+      wrapper.find('form').trigger('submit');
+      await waitForPromises();
+
+      expect(wrapper.emitted('onCreate')).toEqual([[mockTitle]]);
+    });
+
+    it('does not right margin for create button', () => {
+      expect(findCreateButton().classes()).not.toContain('gl-mr-3');
+    });
+
+    it('adds right margin for cancel button', () => {
+      expect(findCancelButton().classes()).toContain('gl-mr-3');
+    });
+  });
+
+  it('hides the alert on dismissing the error', async () => {
+    createComponent({ data: { error: true } });
+
+    expect(findAlert().exists()).toBe(true);
+
+    findAlert().vm.$emit('dismiss');
+    await nextTick();
+
+    expect(findAlert().exists()).toBe(false);
+  });
+
+  it('displays an initial title if passed', () => {
+    const initialTitle = 'Initial Title';
+    createComponent({
+      props: { initialTitle },
+    });
+    expect(findTitleInput().props('initialTitle')).toBe(initialTitle);
+  });
+
+  describe('when title input field has a text', () => {
+    beforeEach(() => {
+      const mockTitle = 'Test title';
+      createComponent();
+      findTitleInput().vm.$emit('title-input', mockTitle);
+    });
+
+    it('renders a non-disabled Create button', () => {
+      expect(findCreateButton().props('disabled')).toBe(false);
     });
 
     // TODO: write a proper test here when we have a backend implementation

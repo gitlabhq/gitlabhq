@@ -2,6 +2,7 @@ import { GlAlert, GlKeysetPagination, GlSkeletonLoading, GlPagination } from '@g
 import { shallowMount } from '@vue/test-utils';
 import VueDraggable from 'vuedraggable';
 
+import { nextTick } from 'vue';
 import { TEST_HOST } from 'helpers/test_constants';
 
 import IssuableItem from '~/vue_shared/issuable/list/components/issuable_item.vue';
@@ -77,7 +78,7 @@ describe('IssuableListRoot', () => {
             currentPage,
           });
 
-          await wrapper.vm.$nextTick();
+          await nextTick();
 
           expect(wrapper.vm.skeletonItemCount).toBe(returnValue);
         },
@@ -96,7 +97,7 @@ describe('IssuableListRoot', () => {
             issuables,
           });
 
-          await wrapper.vm.$nextTick();
+          await nextTick();
 
           // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
           // eslint-disable-next-line no-restricted-syntax
@@ -104,7 +105,7 @@ describe('IssuableListRoot', () => {
             checkedIssuables,
           });
 
-          await wrapper.vm.$nextTick();
+          await nextTick();
 
           expect(wrapper.vm.allIssuablesChecked).toBe(returnValue);
         },
@@ -119,7 +120,7 @@ describe('IssuableListRoot', () => {
           checkedIssuables: mockCheckedIssuables,
         });
 
-        await wrapper.vm.$nextTick();
+        await nextTick();
 
         expect(wrapper.vm.bulkEditIssuables).toHaveLength(mIssuables.length);
       });
@@ -137,7 +138,7 @@ describe('IssuableListRoot', () => {
           issuables: [mockIssuables[0]],
         });
 
-        await wrapper.vm.$nextTick();
+        await nextTick();
 
         expect(Object.keys(wrapper.vm.checkedIssuables)).toHaveLength(1);
         expect(wrapper.vm.checkedIssuables[mockIssuables[0].iid]).toEqual({
@@ -160,7 +161,7 @@ describe('IssuableListRoot', () => {
           urlParams,
         });
 
-        await wrapper.vm.$nextTick();
+        await nextTick();
 
         expect(global.window.location.href).toBe(
           `${TEST_HOST}/?state=${urlParams.state}&sort=${urlParams.sort}&page=${urlParams.page}&search=${urlParams.search}`,
@@ -192,7 +193,7 @@ describe('IssuableListRoot', () => {
           },
         });
 
-        await wrapper.vm.$nextTick();
+        await nextTick();
 
         expect(wrapper.vm.issuableChecked(mockIssuables[0])).toBe(true);
       });

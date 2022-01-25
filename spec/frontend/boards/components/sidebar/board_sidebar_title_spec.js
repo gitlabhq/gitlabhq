@@ -1,5 +1,6 @@
 import { GlAlert, GlFormInput, GlForm } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import BoardEditableItem from '~/boards/components/sidebar/board_editable_item.vue';
 import BoardSidebarTitle from '~/boards/components/sidebar/board_sidebar_title.vue';
 import { createStore } from '~/boards/stores';
@@ -75,7 +76,7 @@ describe('~/boards/components/sidebar/board_sidebar_title.vue', () => {
       });
       findFormInput().vm.$emit('input', TEST_TITLE);
       findForm().vm.$emit('submit', { preventDefault: () => {} });
-      await wrapper.vm.$nextTick();
+      await nextTick();
     });
 
     it('collapses sidebar and renders new title', () => {
@@ -98,7 +99,7 @@ describe('~/boards/components/sidebar/board_sidebar_title.vue', () => {
       jest.spyOn(wrapper.vm, 'setActiveItemTitle').mockImplementation(() => {});
       findFormInput().vm.$emit('input', '');
       findForm().vm.$emit('submit', { preventDefault: () => {} });
-      await wrapper.vm.$nextTick();
+      await nextTick();
     });
 
     it('commits change to the server', () => {
@@ -113,7 +114,7 @@ describe('~/boards/components/sidebar/board_sidebar_title.vue', () => {
       wrapper.vm.$refs.sidebarItem.expand();
       findFormInput().vm.$emit('input', TEST_TITLE);
       findEditableItem().vm.$emit('off-click');
-      await wrapper.vm.$nextTick();
+      await nextTick();
     });
 
     it('does not collapses sidebar and shows alert', () => {
@@ -148,7 +149,7 @@ describe('~/boards/components/sidebar/board_sidebar_title.vue', () => {
       });
       findFormInput().vm.$emit('input', TEST_TITLE);
       findCancelButton().vm.$emit('click');
-      await wrapper.vm.$nextTick();
+      await nextTick();
     });
 
     it('collapses sidebar and render former title', () => {
@@ -168,7 +169,7 @@ describe('~/boards/components/sidebar/board_sidebar_title.vue', () => {
       jest.spyOn(wrapper.vm, 'setError').mockImplementation(() => {});
       findFormInput().vm.$emit('input', 'Invalid title');
       findForm().vm.$emit('submit', { preventDefault: () => {} });
-      await wrapper.vm.$nextTick();
+      await nextTick();
     });
 
     it('collapses sidebar and renders former item title', () => {

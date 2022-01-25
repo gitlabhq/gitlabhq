@@ -1,4 +1,5 @@
 import { mount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import DesignOverlay from '~/design_management/components/design_overlay.vue';
 import { ACTIVE_DISCUSSION_SOURCE_TYPES } from '~/design_management/constants';
 import updateActiveDiscussion from '~/design_management/graphql/mutations/update_active_discussion.mutation.graphql';
@@ -17,12 +18,11 @@ describe('Design overlay component', () => {
   const findFirstBadge = () => findBadgeAtIndex(0);
   const findSecondBadge = () => findBadgeAtIndex(1);
 
-  const clickAndDragBadge = (elem, fromPoint, toPoint) => {
+  const clickAndDragBadge = async (elem, fromPoint, toPoint) => {
     elem.trigger('mousedown', { clientX: fromPoint.x, clientY: fromPoint.y });
-    return wrapper.vm.$nextTick().then(() => {
-      elem.trigger('mousemove', { clientX: toPoint.x, clientY: toPoint.y });
-      return wrapper.vm.$nextTick();
-    });
+    await nextTick();
+    elem.trigger('mousemove', { clientX: toPoint.x, clientY: toPoint.y });
+    await nextTick();
   };
 
   function createComponent(props = {}, data = {}) {
@@ -59,7 +59,7 @@ describe('Design overlay component', () => {
     expect(wrapper.attributes().style).toBe('width: 100px; height: 100px; top: 0px; left: 0px;');
   });
 
-  it('should emit `openCommentForm` when clicking on overlay', () => {
+  it('should emit `openCommentForm` when clicking on overlay', async () => {
     createComponent();
     const newCoordinates = {
       x: 10,
@@ -69,11 +69,10 @@ describe('Design overlay component', () => {
     wrapper
       .find('[data-qa-selector="design_image_button"]')
       .trigger('mouseup', { offsetX: newCoordinates.x, offsetY: newCoordinates.y });
-    return wrapper.vm.$nextTick().then(() => {
-      expect(wrapper.emitted('openCommentForm')).toEqual([
-        [{ x: newCoordinates.x, y: newCoordinates.y }],
-      ]);
-    });
+    await nextTick();
+    expect(wrapper.emitted('openCommentForm')).toEqual([
+      [{ x: newCoordinates.x, y: newCoordinates.y }],
+    ]);
   });
 
   describe('with notes', () => {
@@ -116,7 +115,7 @@ describe('Design overlay component', () => {
       describe('when a discussion is active', () => {
         it.each([notes[0].discussion.notes.nodes[1], notes[0].discussion.notes.nodes[0]])(
           'should not apply inactive class to the pin for the active discussion',
-          (note) => {
+          async (note) => {
             // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
             // eslint-disable-next-line no-restricted-syntax
             wrapper.setData({
@@ -126,13 +125,12 @@ describe('Design overlay component', () => {
               },
             });
 
-            return wrapper.vm.$nextTick().then(() => {
-              expect(findBadgeAtIndex(0).classes()).not.toContain('inactive');
-            });
+            await nextTick();
+            expect(findBadgeAtIndex(0).classes()).not.toContain('inactive');
           },
         );
 
-        it('should apply inactive class to all pins besides the active one', () => {
+        it('should apply inactive class to all pins besides the active one', async () => {
           // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
           // eslint-disable-next-line no-restricted-syntax
           wrapper.setData({
@@ -142,15 +140,14 @@ describe('Design overlay component', () => {
             },
           });
 
-          return wrapper.vm.$nextTick().then(() => {
-            expect(findSecondBadge().classes()).toContain('inactive');
-            expect(findFirstBadge().classes()).not.toContain('inactive');
-          });
+          await nextTick();
+          expect(findSecondBadge().classes()).toContain('inactive');
+          expect(findFirstBadge().classes()).not.toContain('inactive');
         });
       });
     });
 
-    it('should recalculate badges positions on window resize', () => {
+    it('should recalculate badges positions on window resize', async () => {
       createComponent({
         notes,
         dimensions: {
@@ -168,12 +165,11 @@ describe('Design overlay component', () => {
         },
       });
 
-      return wrapper.vm.$nextTick().then(() => {
-        expect(findFirstBadge().attributes().style).toBe('left: 20px; top: 30px;');
-      });
+      await nextTick();
+      expect(findFirstBadge().attributes().style).toBe('left: 20px; top: 30px;');
     });
 
-    it('should call an update active discussion mutation when clicking a note without moving it', () => {
+    it('should call an update active discussion mutation when clicking a note without moving it', async () => {
       const note = notes[0];
       const { position } = note;
       const mutationVariables = {
@@ -186,31 +182,25 @@ describe('Design overlay component', () => {
 
       findFirstBadge().trigger('mousedown', { clientX: position.x, clientY: position.y });
 
-      return wrapper.vm.$nextTick().then(() => {
-        findFirstBadge().trigger('mouseup', { clientX: position.x, clientY: position.y });
-        expect(mutate).toHaveBeenCalledWith(mutationVariables);
-      });
+      await nextTick();
+      findFirstBadge().trigger('mouseup', { clientX: position.x, clientY: position.y });
+      expect(mutate).toHaveBeenCalledWith(mutationVariables);
     });
   });
 
   describe('when moving notes', () => {
-    it('should update badge style when note is being moved', () => {
+    it('should update badge style when note is being moved', async () => {
       createComponent({
         notes,
       });
 
       const { position } = notes[0];
 
-      return clickAndDragBadge(
-        findFirstBadge(),
-        { x: position.x, y: position.y },
-        { x: 20, y: 20 },
-      ).then(() => {
-        expect(findFirstBadge().attributes().style).toBe('left: 20px; top: 20px;');
-      });
+      await clickAndDragBadge(findFirstBadge(), { x: position.x, y: position.y }, { x: 20, y: 20 });
+      expect(findFirstBadge().attributes().style).toBe('left: 20px; top: 20px;');
     });
 
-    it('should emit `moveNote` event when note-moving action ends', () => {
+    it('should emit `moveNote` event when note-moving action ends', async () => {
       createComponent({ notes });
       const note = notes[0];
       const { position } = note;
@@ -231,22 +221,19 @@ describe('Design overlay component', () => {
       });
 
       const badge = findFirstBadge();
-      return clickAndDragBadge(badge, { x: position.x, y: position.y }, newCoordinates)
-        .then(() => {
-          badge.trigger('mouseup');
-          return wrapper.vm.$nextTick();
-        })
-        .then(() => {
-          expect(wrapper.emitted('moveNote')).toEqual([
-            [
-              {
-                noteId: notes[0].id,
-                discussionId: notes[0].discussion.id,
-                coordinates: newCoordinates,
-              },
-            ],
-          ]);
-        });
+      await clickAndDragBadge(badge, { x: position.x, y: position.y }, newCoordinates);
+      badge.trigger('mouseup');
+
+      await nextTick();
+      expect(wrapper.emitted('moveNote')).toEqual([
+        [
+          {
+            noteId: notes[0].id,
+            discussionId: notes[0].discussion.id,
+            coordinates: newCoordinates,
+          },
+        ],
+      ]);
     });
 
     describe('without [repositionNote] permission', () => {
@@ -262,19 +249,18 @@ describe('Design overlay component', () => {
         y: mockNoteNotAuthorised.position.y,
       };
 
-      it('should be unable to move a note', () => {
+      it('should be unable to move a note', async () => {
         createComponent({
           dimensions: mockDimensions,
           notes: [mockNoteNotAuthorised],
         });
 
         const badge = findAllNotes().at(0);
-        return clickAndDragBadge(badge, { ...mockNoteCoordinates }, { x: 20, y: 20 }).then(() => {
-          // note position should not change after a click-and-drag attempt
-          expect(findFirstBadge().attributes().style).toContain(
-            `left: ${mockNoteCoordinates.x}px; top: ${mockNoteCoordinates.y}px;`,
-          );
-        });
+        await clickAndDragBadge(badge, { ...mockNoteCoordinates }, { x: 20, y: 20 });
+        // note position should not change after a click-and-drag attempt
+        expect(findFirstBadge().attributes().style).toContain(
+          `left: ${mockNoteCoordinates.x}px; top: ${mockNoteCoordinates.y}px;`,
+        );
       });
     });
   });
@@ -292,7 +278,7 @@ describe('Design overlay component', () => {
     });
 
     describe('when moving the comment badge', () => {
-      it('should update badge style to reflect new position', () => {
+      it('should update badge style to reflect new position', async () => {
         const { position } = notes[0];
 
         createComponent({
@@ -301,16 +287,15 @@ describe('Design overlay component', () => {
           },
         });
 
-        return clickAndDragBadge(
+        await clickAndDragBadge(
           findCommentBadge(),
           { x: position.x, y: position.y },
           { x: 20, y: 20 },
-        ).then(() => {
-          expect(findCommentBadge().attributes().style).toBe('left: 20px; top: 20px;');
-        });
+        );
+        expect(findCommentBadge().attributes().style).toBe('left: 20px; top: 20px;');
       });
 
-      it('should update badge style when note-moving action ends', () => {
+      it('should update badge style when note-moving action ends', async () => {
         const { position } = notes[0];
         createComponent({
           currentCommentForm: {
@@ -321,19 +306,16 @@ describe('Design overlay component', () => {
         const commentBadge = findCommentBadge();
         const toPoint = { x: 20, y: 20 };
 
-        return clickAndDragBadge(commentBadge, { x: position.x, y: position.y }, toPoint)
-          .then(() => {
-            commentBadge.trigger('mouseup');
-            // simulates the currentCommentForm being updated in index.vue component, and
-            // propagated back down to this prop
-            wrapper.setProps({
-              currentCommentForm: { height: position.height, width: position.width, ...toPoint },
-            });
-            return wrapper.vm.$nextTick();
-          })
-          .then(() => {
-            expect(commentBadge.attributes().style).toBe('left: 20px; top: 20px;');
-          });
+        await clickAndDragBadge(commentBadge, { x: position.x, y: position.y }, toPoint);
+        commentBadge.trigger('mouseup');
+        // simulates the currentCommentForm being updated in index.vue component, and
+        // propagated back down to this prop
+        wrapper.setProps({
+          currentCommentForm: { height: position.height, width: position.width, ...toPoint },
+        });
+
+        await nextTick();
+        expect(commentBadge.attributes().style).toBe('left: 20px; top: 20px;');
       });
 
       it.each`
@@ -342,7 +324,7 @@ describe('Design overlay component', () => {
         ${'comment badge'} | ${findCommentBadge} | ${'mouseup'}
       `(
         'should emit `openCommentForm` event when $event fired on $element element',
-        ({ getElementFunc, event }) => {
+        async ({ getElementFunc, event }) => {
           createComponent({
             notes,
             currentCommentForm: {
@@ -364,9 +346,8 @@ describe('Design overlay component', () => {
           });
 
           getElementFunc().trigger(event);
-          return wrapper.vm.$nextTick().then(() => {
-            expect(wrapper.emitted('openCommentForm')).toEqual([[newCoordinates]]);
-          });
+          await nextTick();
+          expect(wrapper.emitted('openCommentForm')).toEqual([[newCoordinates]]);
         },
       );
     });

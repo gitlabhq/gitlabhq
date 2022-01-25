@@ -1,7 +1,7 @@
 import { GlAlert } from '@gitlab/ui';
 import { GlLineChart } from '@gitlab/ui/dist/charts';
 import { shallowMount } from '@vue/test-utils';
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -164,7 +164,7 @@ describe('UsageTrendsCountChart', () => {
           .spyOn(wrapper.vm.$apollo.queries[identifier], 'fetchMore')
           .mockImplementation(jest.fn().mockRejectedValue());
 
-        await wrapper.vm.$nextTick();
+        await nextTick();
       });
 
       it('calls fetchMore', () => {

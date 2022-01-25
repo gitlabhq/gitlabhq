@@ -1,5 +1,6 @@
 import { GlIcon, GlSprintf } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import UploadDropzone from '~/vue_shared/components/upload_dropzone/upload_dropzone.vue';
 
 jest.mock('~/flash');
@@ -84,47 +85,40 @@ describe('Upload dropzone component', () => {
       ${'contains text'}           | ${mockDragEvent({ types: ['text'] })}
       ${'contains files and text'} | ${mockDragEvent({ types: ['Files', 'text'] })}
       ${'contains files'}          | ${mockDragEvent({ types: ['Files'] })}
-    `('renders correct template when drag event $description', ({ eventPayload }) => {
+    `('renders correct template when drag event $description', async ({ eventPayload }) => {
       createComponent();
 
       wrapper.trigger('dragenter', eventPayload);
-      return wrapper.vm.$nextTick().then(() => {
-        expect(wrapper.element).toMatchSnapshot();
-      });
+      await nextTick();
+      expect(wrapper.element).toMatchSnapshot();
     });
 
-    it('renders correct template when dragging stops', () => {
+    it('renders correct template when dragging stops', async () => {
       createComponent();
 
       wrapper.trigger('dragenter');
-      return wrapper.vm
-        .$nextTick()
-        .then(() => {
-          wrapper.trigger('dragleave');
-          return wrapper.vm.$nextTick();
-        })
-        .then(() => {
-          expect(wrapper.element).toMatchSnapshot();
-        });
+
+      await nextTick();
+      wrapper.trigger('dragleave');
+
+      await nextTick();
+      expect(wrapper.element).toMatchSnapshot();
     });
   });
 
   describe('when dropping', () => {
-    it('emits upload event', () => {
+    it('emits upload event', async () => {
       createComponent();
       const mockFile = { name: 'test', type: 'image/jpg' };
       const mockEvent = mockDragEvent({ files: [mockFile] });
 
       wrapper.trigger('dragenter', mockEvent);
-      return wrapper.vm
-        .$nextTick()
-        .then(() => {
-          wrapper.trigger('drop', mockEvent);
-          return wrapper.vm.$nextTick();
-        })
-        .then(() => {
-          expect(wrapper.emitted().change[0]).toEqual([[mockFile]]);
-        });
+
+      await nextTick();
+      wrapper.trigger('drop', mockEvent);
+
+      await nextTick();
+      expect(wrapper.emitted().change[0]).toEqual([[mockFile]]);
     });
   });
 

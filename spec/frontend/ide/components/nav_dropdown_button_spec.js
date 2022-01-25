@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import { trimText } from 'helpers/text_helper';
 import { mountComponentWithStore } from 'helpers/vue_mount_component_helper';
 import NavDropdownButton from '~/ide/components/nav_dropdown_button.vue';
@@ -36,38 +36,26 @@ describe('NavDropdown', () => {
       expect(trimText(vm.$el.textContent)).toEqual('- -');
     });
 
-    it('renders branch name, if state has currentBranchId', (done) => {
+    it('renders branch name, if state has currentBranchId', async () => {
       vm.$store.state.currentBranchId = TEST_BRANCH_ID;
 
-      vm.$nextTick()
-        .then(() => {
-          expect(trimText(vm.$el.textContent)).toEqual(`${TEST_BRANCH_ID} -`);
-        })
-        .then(done)
-        .catch(done.fail);
+      await nextTick();
+      expect(trimText(vm.$el.textContent)).toEqual(`${TEST_BRANCH_ID} -`);
     });
 
-    it('renders mr id, if state has currentMergeRequestId', (done) => {
+    it('renders mr id, if state has currentMergeRequestId', async () => {
       vm.$store.state.currentMergeRequestId = TEST_MR_ID;
 
-      vm.$nextTick()
-        .then(() => {
-          expect(trimText(vm.$el.textContent)).toEqual(`- !${TEST_MR_ID}`);
-        })
-        .then(done)
-        .catch(done.fail);
+      await nextTick();
+      expect(trimText(vm.$el.textContent)).toEqual(`- !${TEST_MR_ID}`);
     });
 
-    it('renders branch and mr, if state has both', (done) => {
+    it('renders branch and mr, if state has both', async () => {
       vm.$store.state.currentBranchId = TEST_BRANCH_ID;
       vm.$store.state.currentMergeRequestId = TEST_MR_ID;
 
-      vm.$nextTick()
-        .then(() => {
-          expect(trimText(vm.$el.textContent)).toEqual(`${TEST_BRANCH_ID} !${TEST_MR_ID}`);
-        })
-        .then(done)
-        .catch(done.fail);
+      await nextTick();
+      expect(trimText(vm.$el.textContent)).toEqual(`${TEST_BRANCH_ID} !${TEST_MR_ID}`);
     });
 
     it('shows icons', () => {

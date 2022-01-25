@@ -1,4 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import paginatedTreeQuery from 'shared_queries/repository/paginated_tree.query.graphql';
 import FilePreview from '~/repository/components/preview/index.vue';
 import FileTable from '~/repository/components/table/index.vue';
@@ -50,7 +51,7 @@ describe('Repository table component', () => {
     // eslint-disable-next-line no-restricted-syntax
     vm.setData({ entries: { blobs: [{ name: 'README.md' }] } });
 
-    await vm.vm.$nextTick();
+    await nextTick();
 
     expect(vm.find(FilePreview).exists()).toBe(true);
   });
@@ -60,7 +61,7 @@ describe('Repository table component', () => {
 
     jest.spyOn(vm.vm, 'fetchFiles').mockImplementation(() => {});
 
-    await vm.vm.$nextTick();
+    await nextTick();
 
     expect(vm.vm.fetchFiles).toHaveBeenCalled();
     expect(resetRequestedCommits).toHaveBeenCalled();
@@ -111,7 +112,7 @@ describe('Repository table component', () => {
       it('is changes hasShowMore to false when "showMore" event is emitted', async () => {
         findFileTable().vm.$emit('showMore');
 
-        await vm.vm.$nextTick();
+        await nextTick();
 
         expect(vm.vm.hasShowMore).toBe(false);
       });
@@ -119,7 +120,7 @@ describe('Repository table component', () => {
       it('changes clickedShowMore when "showMore" event is emitted', async () => {
         findFileTable().vm.$emit('showMore');
 
-        await vm.vm.$nextTick();
+        await nextTick();
 
         expect(vm.vm.clickedShowMore).toBe(true);
       });
@@ -140,7 +141,7 @@ describe('Repository table component', () => {
       // eslint-disable-next-line no-restricted-syntax
       vm.setData({ fetchCounter: 5, clickedShowMore: false });
 
-      await vm.vm.$nextTick();
+      await nextTick();
 
       expect(vm.vm.hasShowMore).toBe(false);
     });
@@ -161,7 +162,7 @@ describe('Repository table component', () => {
       // eslint-disable-next-line no-restricted-syntax
       vm.setData({ entries: { blobs }, pagesLoaded });
 
-      await vm.vm.$nextTick();
+      await nextTick();
 
       expect(findFileTable().props('hasMore')).toBe(limitReached);
     });

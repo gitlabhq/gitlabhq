@@ -1,6 +1,7 @@
 import { GlEmptyState, GlLoadingIcon, GlModal, GlTableLite } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
+import { nextTick } from 'vue';
 import fixture from 'test_fixtures/pipelines/pipelines.json';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -238,7 +239,7 @@ describe('Pipelines table in Commits and Merge requests', () => {
       it('on desktop, shows a security warning modal', async () => {
         await findRunPipelineBtn().trigger('click');
 
-        await wrapper.vm.$nextTick();
+        await nextTick();
 
         expect(findModal()).not.toBeNull();
       });

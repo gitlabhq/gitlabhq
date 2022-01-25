@@ -30,7 +30,7 @@ RSpec.describe Gitlab::BackgroundMigration::ProjectNamespaces::BackfillProjectNa
           start_id = ::Project.minimum(:id)
           end_id = ::Project.maximum(:id)
           projects_count = ::Project.count
-          batches_count = (projects_count / described_class::BATCH_SIZE.to_f).ceil
+          batches_count = (projects_count / described_class::SUB_BATCH_SIZE.to_f).ceil
           project_namespaces_count = ::Namespace.where(type: 'Project').count
           migration = described_class.new
 
@@ -39,7 +39,7 @@ RSpec.describe Gitlab::BackgroundMigration::ProjectNamespaces::BackfillProjectNa
           expect(migration).to receive(:batch_update_projects).exactly(batches_count).and_call_original
           expect(migration).to receive(:batch_update_project_namespaces_traversal_ids).exactly(batches_count).and_call_original
 
-          expect { migration.perform(start_id, end_id, nil, 'up') }.to change(Namespace.where(type: 'Project'), :count)
+          expect { migration.perform(start_id, end_id, nil, nil, nil, nil, nil, 'up') }.to change(Namespace.where(type: 'Project'), :count)
 
           expect(projects_count).to eq(::Namespace.where(type: 'Project').count)
           check_projects_in_sync_with(Namespace.where(type: 'Project'))
@@ -53,7 +53,7 @@ RSpec.describe Gitlab::BackgroundMigration::ProjectNamespaces::BackfillProjectNa
             start_id = backfilled_namespace_projects.minimum(:id)
             end_id = backfilled_namespace_projects.maximum(:id)
             group_projects_count = backfilled_namespace_projects.count
-            batches_count = (group_projects_count / described_class::BATCH_SIZE.to_f).ceil
+            batches_count = (group_projects_count / described_class::SUB_BATCH_SIZE.to_f).ceil
             project_namespaces_in_hierarchy = project_namespaces_in_hierarchy(base_ancestor(backfilled_namespace))
 
             migration = described_class.new
@@ -66,7 +66,7 @@ RSpec.describe Gitlab::BackgroundMigration::ProjectNamespaces::BackfillProjectNa
             expect(group_projects_count).to eq(14)
             expect(project_namespaces_in_hierarchy.count).to eq(0)
 
-            migration.perform(start_id, end_id, backfilled_namespace.id, 'up')
+            migration.perform(start_id, end_id, nil, nil, nil, nil, backfilled_namespace.id, 'up')
 
             expect(project_namespaces_in_hierarchy.count).to eq(14)
             check_projects_in_sync_with(project_namespaces_in_hierarchy)
@@ -79,7 +79,7 @@ RSpec.describe Gitlab::BackgroundMigration::ProjectNamespaces::BackfillProjectNa
             start_id = hierarchy1_projects.minimum(:id)
             end_id = hierarchy1_projects.maximum(:id)
 
-            described_class.new.perform(start_id, end_id, parent_group1.id, 'up')
+            described_class.new.perform(start_id, end_id, nil, nil, nil, nil, parent_group1.id, 'up')
           end
 
           it 'does not duplicate project namespaces' do
@@ -87,7 +87,7 @@ RSpec.describe Gitlab::BackgroundMigration::ProjectNamespaces::BackfillProjectNa
             projects_count = ::Project.count
             start_id = ::Project.minimum(:id)
             end_id = ::Project.maximum(:id)
-            batches_count = (projects_count / described_class::BATCH_SIZE.to_f).ceil
+            batches_count = (projects_count / described_class::SUB_BATCH_SIZE.to_f).ceil
             project_namespaces = ::Namespace.where(type: 'Project')
             migration = described_class.new
 
@@ -100,7 +100,7 @@ RSpec.describe Gitlab::BackgroundMigration::ProjectNamespaces::BackfillProjectNa
             expect(migration).to receive(:batch_update_projects).exactly(batches_count).and_call_original
             expect(migration).to receive(:batch_update_project_namespaces_traversal_ids).exactly(batches_count).and_call_original
 
-            expect { migration.perform(start_id, end_id, nil, 'up') }.to change(project_namespaces, :count).by(14)
+            expect { migration.perform(start_id, end_id, nil, nil, nil, nil, nil, 'up') }.to change(project_namespaces, :count).by(14)
 
             expect(projects_count).to eq(project_namespaces.count)
           end
@@ -125,7 +125,7 @@ RSpec.describe Gitlab::BackgroundMigration::ProjectNamespaces::BackfillProjectNa
 
       context 'back-fill project namespaces in batches' do
         before do
-          stub_const("#{described_class.name}::BATCH_SIZE", 2)
+          stub_const("#{described_class.name}::SUB_BATCH_SIZE", 2)
         end
 
         it_behaves_like 'back-fill project namespaces'
@@ -137,7 +137,7 @@ RSpec.describe Gitlab::BackgroundMigration::ProjectNamespaces::BackfillProjectNa
         start_id = ::Project.minimum(:id)
         end_id = ::Project.maximum(:id)
         # back-fill first
-        described_class.new.perform(start_id, end_id, nil, 'up')
+        described_class.new.perform(start_id, end_id, nil, nil, nil, nil, nil, 'up')
       end
 
       shared_examples 'cleanup project namespaces' do
@@ -146,7 +146,7 @@ RSpec.describe Gitlab::BackgroundMigration::ProjectNamespaces::BackfillProjectNa
           start_id = ::Project.minimum(:id)
           end_id = ::Project.maximum(:id)
           migration = described_class.new
-          batches_count = (projects_count / described_class::BATCH_SIZE.to_f).ceil
+          batches_count = (projects_count / described_class::SUB_BATCH_SIZE.to_f).ceil
 
           expect(projects_count).to be > 0
           expect(projects_count).to eq(::Namespace.where(type: 'Project').count)
@@ -154,7 +154,7 @@ RSpec.describe Gitlab::BackgroundMigration::ProjectNamespaces::BackfillProjectNa
           expect(migration).to receive(:nullify_project_namespaces_in_projects).exactly(batches_count).and_call_original
           expect(migration).to receive(:delete_project_namespace_records).exactly(batches_count).and_call_original
 
-          migration.perform(start_id, end_id, nil, 'down')
+          migration.perform(start_id, end_id, nil, nil, nil, nil, nil, 'down')
 
           expect(::Project.count).to be > 0
           expect(::Namespace.where(type: 'Project').count).to eq(0)
@@ -168,7 +168,7 @@ RSpec.describe Gitlab::BackgroundMigration::ProjectNamespaces::BackfillProjectNa
             start_id = backfilled_namespace_projects.minimum(:id)
             end_id = backfilled_namespace_projects.maximum(:id)
             group_projects_count = backfilled_namespace_projects.count
-            batches_count = (group_projects_count / described_class::BATCH_SIZE.to_f).ceil
+            batches_count = (group_projects_count / described_class::SUB_BATCH_SIZE.to_f).ceil
             project_namespaces_in_hierarchy = project_namespaces_in_hierarchy(base_ancestor(backfilled_namespace))
             migration = described_class.new
 
@@ -176,7 +176,7 @@ RSpec.describe Gitlab::BackgroundMigration::ProjectNamespaces::BackfillProjectNa
             expect(migration).to receive(:nullify_project_namespaces_in_projects).exactly(batches_count).and_call_original
             expect(migration).to receive(:delete_project_namespace_records).exactly(batches_count).and_call_original
 
-            migration.perform(start_id, end_id, backfilled_namespace.id, 'down')
+            migration.perform(start_id, end_id, nil, nil, nil, nil, backfilled_namespace.id, 'down')
 
             expect(::Namespace.where(type: 'Project').count).to be > 0
             expect(project_namespaces_in_hierarchy.count).to eq(0)
@@ -190,7 +190,7 @@ RSpec.describe Gitlab::BackgroundMigration::ProjectNamespaces::BackfillProjectNa
 
       context 'cleanup project namespaces in batches' do
         before do
-          stub_const("#{described_class.name}::BATCH_SIZE", 2)
+          stub_const("#{described_class.name}::SUB_BATCH_SIZE", 2)
         end
 
         it_behaves_like 'cleanup project namespaces'

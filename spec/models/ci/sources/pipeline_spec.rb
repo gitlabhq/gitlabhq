@@ -24,4 +24,11 @@ RSpec.describe Ci::Sources::Pipeline do
       let!(:model) { create(:ci_sources_pipeline, source_project: parent) }
     end
   end
+
+  context 'loose foreign key on ci_sources_pipelines.project_id' do
+    it_behaves_like 'cleanup by a loose foreign key' do
+      let!(:parent) { create(:project) }
+      let!(:model) { create(:ci_sources_pipeline, project: parent) }
+    end
+  end
 end

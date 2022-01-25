@@ -1,5 +1,6 @@
 import { GlDaterangePicker } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import { useFakeDate } from 'helpers/fake_date';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import Daterange from '~/analytics/shared/components/daterange.vue';
@@ -48,7 +49,7 @@ describe('Daterange component', () => {
     });
 
     describe('with a minDate being set', () => {
-      it('emits the change event with the minDate when the user enters a start date before the minDate', () => {
+      it('emits the change event with the minDate when the user enters a start date before the minDate', async () => {
         const startDate = new Date('2019-09-01');
         const endDate = new Date('2019-09-30');
         const minDate = new Date('2019-06-01');
@@ -60,9 +61,8 @@ describe('Daterange component', () => {
         input.setValue('2019-01-01');
         input.trigger('change');
 
-        return wrapper.vm.$nextTick().then(() => {
-          expect(wrapper.emitted().change).toEqual([[{ startDate: minDate, endDate }]]);
-        });
+        await nextTick();
+        expect(wrapper.emitted().change).toEqual([[{ startDate: minDate, endDate }]]);
       });
     });
 

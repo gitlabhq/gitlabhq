@@ -1,4 +1,5 @@
 import { GlLink, GlLabel, GlIcon, GlFormCheckbox, GlSprintf } from '@gitlab/ui';
+import { nextTick } from 'vue';
 import { useFakeDate } from 'helpers/fake_date';
 import { shallowMountExtended as shallowMount } from 'helpers/vue_test_utils_helper';
 import IssuableItem from '~/vue_shared/issuable/list/components/issuable_item.vue';
@@ -76,7 +77,7 @@ describe('IssuableItem', () => {
             },
           });
 
-          await wrapper.vm.$nextTick();
+          await nextTick();
 
           expect(wrapper.vm.authorId).toBe(returnValue);
         },
@@ -100,7 +101,7 @@ describe('IssuableItem', () => {
             },
           });
 
-          await wrapper.vm.$nextTick();
+          await nextTick();
 
           expect(wrapper.vm.isIssuableUrlExternal).toBe(returnValue);
         },
@@ -122,7 +123,7 @@ describe('IssuableItem', () => {
           },
         });
 
-        await wrapper.vm.$nextTick();
+        await nextTick();
 
         expect(wrapper.vm.labels).toEqual(mockLabels);
       });
@@ -135,7 +136,7 @@ describe('IssuableItem', () => {
           },
         });
 
-        await wrapper.vm.$nextTick();
+        await nextTick();
 
         expect(wrapper.vm.labels).toEqual([]);
       });
@@ -224,7 +225,7 @@ describe('IssuableItem', () => {
           enableLabelPermalinks: false,
         });
 
-        await wrapper.vm.$nextTick();
+        await nextTick();
 
         expect(wrapper.vm.labelTarget(mockRegularLabel)).toBe('#');
       });
@@ -248,7 +249,7 @@ describe('IssuableItem', () => {
           },
         });
 
-        await wrapper.vm.$nextTick();
+        await nextTick();
 
         const titleEl = wrapper.find('[data-testid="issuable-title"]');
 
@@ -264,7 +265,7 @@ describe('IssuableItem', () => {
         showCheckbox: true,
       });
 
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       expect(wrapper.find(GlFormCheckbox).exists()).toBe(true);
       expect(wrapper.find(GlFormCheckbox).attributes('checked')).not.toBeDefined();
@@ -273,7 +274,7 @@ describe('IssuableItem', () => {
         checked: true,
       });
 
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       expect(wrapper.find(GlFormCheckbox).attributes('checked')).toBe('true');
     });
@@ -286,7 +287,7 @@ describe('IssuableItem', () => {
         },
       });
 
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       expect(wrapper.find('[data-testid="issuable-title"]').find(GlLink).attributes('target')).toBe(
         '_blank',
@@ -301,7 +302,7 @@ describe('IssuableItem', () => {
         },
       });
 
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       const confidentialEl = wrapper.find('[data-testid="issuable-title"]').find(GlIcon);
 

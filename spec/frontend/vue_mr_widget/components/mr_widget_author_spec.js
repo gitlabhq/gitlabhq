@@ -1,4 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import MrWidgetAuthor from '~/vue_merge_request_widget/components/mr_widget_author.vue';
 
 window.gl = window.gl || {};
@@ -50,7 +51,7 @@ describe('MrWidgetAuthor', () => {
       },
     });
 
-    await wrapper.vm.$nextTick();
+    await nextTick();
 
     expect(wrapper.find('img').attributes('src')).toBe('no_avatar.png');
   });

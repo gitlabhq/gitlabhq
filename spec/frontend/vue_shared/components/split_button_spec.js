@@ -1,6 +1,7 @@
 import { GlDropdown, GlDropdownItem } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 
+import { nextTick } from 'vue';
 import SplitButton from '~/vue_shared/components/split_button.vue';
 
 const mockActionItems = [
@@ -27,15 +28,15 @@ describe('SplitButton', () => {
 
   const findDropdown = () => wrapper.find(GlDropdown);
   const findDropdownItem = (index = 0) => findDropdown().findAll(GlDropdownItem).at(index);
-  const selectItem = (index) => {
+  const selectItem = async (index) => {
     findDropdownItem(index).vm.$emit('click');
 
-    return wrapper.vm.$nextTick();
+    await nextTick();
   };
-  const clickToggleButton = () => {
+  const clickToggleButton = async () => {
     findDropdown().vm.$emit('click');
 
-    return wrapper.vm.$nextTick();
+    await nextTick();
   };
 
   it('fails for empty actionItems', () => {

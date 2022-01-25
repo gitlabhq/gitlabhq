@@ -6,6 +6,7 @@ import {
 } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
+import { nextTick } from 'vue';
 import waitForPromises from 'helpers/wait_for_promises';
 import createFlash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
@@ -127,7 +128,7 @@ describe('MilestoneToken', () => {
         milestones: mockMilestones,
       });
 
-      await wrapper.vm.$nextTick();
+      await nextTick();
     });
 
     it('renders gl-filtered-search-token component', () => {
@@ -150,7 +151,7 @@ describe('MilestoneToken', () => {
       const tokenSegments = wrapper.findAll(GlFilteredSearchTokenSegment);
       const suggestionsSegment = tokenSegments.at(2);
       suggestionsSegment.vm.$emit('activate');
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       const suggestions = wrapper.findAll(GlFilteredSearchSuggestion);
 
@@ -169,7 +170,7 @@ describe('MilestoneToken', () => {
       const tokenSegments = wrapper.findAll(GlFilteredSearchTokenSegment);
       const suggestionsSegment = tokenSegments.at(2);
       suggestionsSegment.vm.$emit('activate');
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       expect(wrapper.find(GlFilteredSearchSuggestion).exists()).toBe(false);
       expect(wrapper.find(GlDropdownDivider).exists()).toBe(false);
@@ -184,7 +185,7 @@ describe('MilestoneToken', () => {
       const tokenSegments = wrapper.findAll(GlFilteredSearchTokenSegment);
       const suggestionsSegment = tokenSegments.at(2);
       suggestionsSegment.vm.$emit('activate');
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       const suggestions = wrapper.findAll(GlFilteredSearchSuggestion);
 
