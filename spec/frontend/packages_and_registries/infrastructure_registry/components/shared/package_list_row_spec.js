@@ -1,4 +1,5 @@
 import { GlLink } from '@gitlab/ui';
+import { nextTick } from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 
@@ -126,7 +127,7 @@ describe('packages_list_row', () => {
 
       findDeleteButton().vm.$emit('click');
 
-      await wrapper.vm.$nextTick();
+      await nextTick();
       expect(wrapper.emitted('packageToDelete')).toBeTruthy();
       expect(wrapper.emitted('packageToDelete')[0]).toEqual([packageWithoutTags]);
     });

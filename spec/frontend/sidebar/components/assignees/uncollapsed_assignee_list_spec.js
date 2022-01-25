@@ -1,4 +1,5 @@
 import { mount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import { TEST_HOST } from 'helpers/test_constants';
 import UsersMockHelper from 'helpers/user_mock_data_helper';
 import AssigneeAvatarLink from '~/sidebar/components/assignees/assignee_avatar_link.vue';
@@ -84,10 +85,10 @@ describe('UncollapsedAssigneeList component', () => {
       });
 
       describe('when more button is clicked', () => {
-        beforeEach(() => {
+        beforeEach(async () => {
           findMoreButton().trigger('click');
 
-          return wrapper.vm.$nextTick();
+          await nextTick();
         });
 
         it('shows "show less" label', () => {

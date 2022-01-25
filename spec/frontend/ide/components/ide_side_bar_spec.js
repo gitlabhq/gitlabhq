@@ -1,6 +1,6 @@
 import { GlSkeletonLoading } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 import waitForPromises from 'helpers/wait_for_promises';
 import IdeReview from '~/ide/components/ide_review.vue';
@@ -45,7 +45,7 @@ describe('IdeSidebar', () => {
 
     store.state.loading = true;
 
-    await wrapper.vm.$nextTick();
+    await nextTick();
 
     expect(wrapper.findAll(GlSkeletonLoading)).toHaveLength(3);
   });
@@ -60,7 +60,7 @@ describe('IdeSidebar', () => {
 
       store.state.currentActivityView = leftSidebarViews.review.name;
       await waitForPromises();
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       expect(wrapper.find(IdeTree).exists()).toBe(false);
       expect(wrapper.find(IdeReview).exists()).toBe(true);
@@ -68,7 +68,7 @@ describe('IdeSidebar', () => {
 
       store.state.currentActivityView = leftSidebarViews.commit.name;
       await waitForPromises();
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       expect(wrapper.find(IdeTree).exists()).toBe(false);
       expect(wrapper.find(IdeReview).exists()).toBe(false);
@@ -84,7 +84,7 @@ describe('IdeSidebar', () => {
         view,
       });
       await waitForPromises();
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       expect(wrapper.find(IdeTree).exists()).toBe(tree);
       expect(wrapper.find(IdeReview).exists()).toBe(review);
@@ -99,7 +99,7 @@ describe('IdeSidebar', () => {
 
     store.state.currentActivityView = leftSidebarViews.commit.name;
     await waitForPromises();
-    await wrapper.vm.$nextTick();
+    await nextTick();
 
     expect(wrapper.find(IdeTree).exists()).toBe(false);
     expect(wrapper.find(RepoCommitSection).exists()).toBe(true);
@@ -107,7 +107,7 @@ describe('IdeSidebar', () => {
     store.state.currentActivityView = leftSidebarViews.edit.name;
 
     await waitForPromises();
-    await wrapper.vm.$nextTick();
+    await nextTick();
 
     // reference to the elements remains the same, meaning the components were kept alive
     expect(wrapper.find(IdeTree).element).toEqual(ideTreeComponent);

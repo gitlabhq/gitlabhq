@@ -1,5 +1,6 @@
 import { GlAlert, GlSprintf, GlLink } from '@gitlab/ui';
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
+import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -19,8 +20,6 @@ import {
   emptyExpirationPolicyPayload,
   containerExpirationPolicyData,
 } from '../mock_data';
-
-const localVue = createLocalVue();
 
 describe('Registry Settings App', () => {
   let wrapper;
@@ -56,13 +55,12 @@ describe('Registry Settings App', () => {
   };
 
   const mountComponentWithApollo = ({ provide = defaultProvidedValues, resolver } = {}) => {
-    localVue.use(VueApollo);
+    Vue.use(VueApollo);
 
     const requestHandlers = [[expirationPolicyQuery, resolver]];
 
     fakeApollo = createMockApollo(requestHandlers);
     mountComponent(provide, {
-      localVue,
       apolloProvider: fakeApollo,
     });
   };

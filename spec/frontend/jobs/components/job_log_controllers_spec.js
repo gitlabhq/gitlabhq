@@ -1,4 +1,5 @@
 import { mount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import JobLogControllers from '~/jobs/components/job_log_controllers.vue';
 
 describe('Job log controllers', () => {
@@ -111,7 +112,7 @@ describe('Job log controllers', () => {
         it('emits scrollJobLogTop event on click', async () => {
           findScrollTop().trigger('click');
 
-          await wrapper.vm.$nextTick();
+          await nextTick();
 
           expect(wrapper.emitted().scrollJobLogTop).toHaveLength(1);
         });
@@ -133,7 +134,7 @@ describe('Job log controllers', () => {
         it('does not emit scrollJobLogTop event on click', async () => {
           findScrollTop().trigger('click');
 
-          await wrapper.vm.$nextTick();
+          await nextTick();
 
           expect(wrapper.emitted().scrollJobLogTop).toBeUndefined();
         });
@@ -149,7 +150,7 @@ describe('Job log controllers', () => {
         it('emits scrollJobLogBottom event on click', async () => {
           findScrollBottom().trigger('click');
 
-          await wrapper.vm.$nextTick();
+          await nextTick();
 
           expect(wrapper.emitted().scrollJobLogBottom).toHaveLength(1);
         });
@@ -171,7 +172,7 @@ describe('Job log controllers', () => {
         it('does not emit scrollJobLogBottom event on click', async () => {
           findScrollBottom().trigger('click');
 
-          await wrapper.vm.$nextTick();
+          await nextTick();
 
           expect(wrapper.emitted().scrollJobLogBottom).toBeUndefined();
         });

@@ -1,5 +1,6 @@
 import { GlCard, GlForm, GlFormTextarea, GlAlert } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import DashboardPanel from '~/monitoring/components/dashboard_panel.vue';
 import DashboardPanelBuilder from '~/monitoring/components/dashboard_panel_builder.vue';
 import { createStore } from '~/monitoring/stores';
@@ -90,21 +91,20 @@ describe('dashboard invalid url parameters', () => {
       expect(mockShowToast).toHaveBeenCalledTimes(1);
     });
 
-    it('on submit fetches a panel preview', () => {
+    it('on submit fetches a panel preview', async () => {
       findForm().vm.$emit('submit', new Event('submit'));
 
-      return wrapper.vm.$nextTick().then(() => {
-        expect(store.dispatch).toHaveBeenCalledWith(
-          'monitoringDashboard/fetchPanelPreview',
-          expect.stringContaining('title:'),
-        );
-      });
+      await nextTick();
+      expect(store.dispatch).toHaveBeenCalledWith(
+        'monitoringDashboard/fetchPanelPreview',
+        expect.stringContaining('title:'),
+      );
     });
 
     describe('when form is submitted', () => {
-      beforeEach(() => {
+      beforeEach(async () => {
         store.commit(`monitoringDashboard/${types.REQUEST_PANEL_PREVIEW}`, 'mock yml content');
-        return wrapper.vm.$nextTick();
+        await nextTick();
       });
 
       it('submit button is disabled', () => {
@@ -118,23 +118,21 @@ describe('dashboard invalid url parameters', () => {
       expect(findTimeRangePicker().exists()).toBe(true);
     });
 
-    it('when changed does not trigger data fetch unless preview panel button is clicked', () => {
+    it('when changed does not trigger data fetch unless preview panel button is clicked', async () => {
       // mimic initial state where SET_PANEL_PREVIEW_IS_SHOWN is set to false
       store.commit(`monitoringDashboard/${types.SET_PANEL_PREVIEW_IS_SHOWN}`, false);
 
-      return wrapper.vm.$nextTick(() => {
-        expect(store.dispatch).not.toHaveBeenCalled();
-      });
+      await nextTick();
+      expect(store.dispatch).not.toHaveBeenCalled();
     });
 
-    it('when changed triggers data fetch if preview panel button is clicked', () => {
+    it('when changed triggers data fetch if preview panel button is clicked', async () => {
       findForm().vm.$emit('submit', new Event('submit'));
 
       store.commit(`monitoringDashboard/${types.SET_PANEL_PREVIEW_TIME_RANGE}`, mockTimeRange);
 
-      return wrapper.vm.$nextTick(() => {
-        expect(store.dispatch).toHaveBeenCalled();
-      });
+      await nextTick();
+      expect(store.dispatch).toHaveBeenCalled();
     });
   });
 
@@ -143,27 +141,25 @@ describe('dashboard invalid url parameters', () => {
       expect(findRefreshButton().exists()).toBe(true);
     });
 
-    it('when clicked does not trigger data fetch unless preview panel button is clicked', () => {
+    it('when clicked does not trigger data fetch unless preview panel button is clicked', async () => {
       // mimic initial state where SET_PANEL_PREVIEW_IS_SHOWN is set to false
       store.commit(`monitoringDashboard/${types.SET_PANEL_PREVIEW_IS_SHOWN}`, false);
 
-      return wrapper.vm.$nextTick(() => {
-        expect(store.dispatch).not.toHaveBeenCalled();
-      });
+      await nextTick();
+      expect(store.dispatch).not.toHaveBeenCalled();
     });
 
-    it('when clicked triggers data fetch if preview panel button is clicked', () => {
+    it('when clicked triggers data fetch if preview panel button is clicked', async () => {
       // mimic state where preview is visible. SET_PANEL_PREVIEW_IS_SHOWN is set to true
       store.commit(`monitoringDashboard/${types.SET_PANEL_PREVIEW_IS_SHOWN}`, true);
 
       findRefreshButton().vm.$emit('click');
 
-      return wrapper.vm.$nextTick(() => {
-        expect(store.dispatch).toHaveBeenCalledWith(
-          'monitoringDashboard/fetchPanelPreviewMetrics',
-          undefined,
-        );
-      });
+      await nextTick();
+      expect(store.dispatch).toHaveBeenCalledWith(
+        'monitoringDashboard/fetchPanelPreviewMetrics',
+        undefined,
+      );
     });
   });
 
@@ -190,9 +186,9 @@ describe('dashboard invalid url parameters', () => {
   describe('when there is an error', () => {
     const mockError = 'an error occurred!';
 
-    beforeEach(() => {
+    beforeEach(async () => {
       store.commit(`monitoringDashboard/${types.RECEIVE_PANEL_PREVIEW_FAILURE}`, mockError);
-      return wrapper.vm.$nextTick();
+      await nextTick();
     });
 
     it('displays an alert', () => {
@@ -204,19 +200,18 @@ describe('dashboard invalid url parameters', () => {
       expect(findPanel().props('graphData')).toBe(null);
     });
 
-    it('changing time range should not refetch data', () => {
+    it('changing time range should not refetch data', async () => {
       store.commit(`monitoringDashboard/${types.SET_PANEL_PREVIEW_TIME_RANGE}`, mockTimeRange);
 
-      return wrapper.vm.$nextTick(() => {
-        expect(store.dispatch).not.toHaveBeenCalled();
-      });
+      await nextTick();
+      expect(store.dispatch).not.toHaveBeenCalled();
     });
   });
 
   describe('when panel data is available', () => {
-    beforeEach(() => {
+    beforeEach(async () => {
       store.commit(`monitoringDashboard/${types.RECEIVE_PANEL_PREVIEW_SUCCESS}`, mockPanel);
-      return wrapper.vm.$nextTick();
+      await nextTick();
     });
 
     it('displays no alert', () => {

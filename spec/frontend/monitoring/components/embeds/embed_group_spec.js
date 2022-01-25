@@ -1,6 +1,6 @@
 import { GlButton, GlCard } from '@gitlab/ui';
 import { mount, shallowMount } from '@vue/test-utils';
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 import { TEST_HOST } from 'helpers/test_constants';
 import EmbedGroup from '~/monitoring/components/embeds/embed_group.vue';
@@ -75,16 +75,14 @@ describe('Embed Group', () => {
       expect(wrapper.find('.gl-card-body').classes()).not.toContain('d-none');
     });
 
-    it('collapses when clicked', (done) => {
+    it('collapses when clicked', async () => {
       metricsWithDataGetter.mockReturnValue([1]);
       mountComponent({ shallow: false, stubs: { MetricEmbed: true } });
 
       wrapper.find(GlButton).trigger('click');
 
-      wrapper.vm.$nextTick(() => {
-        expect(wrapper.find('.gl-card-body').classes()).toContain('d-none');
-        done();
-      });
+      await nextTick();
+      expect(wrapper.find('.gl-card-body').classes()).toContain('d-none');
     });
   });
 

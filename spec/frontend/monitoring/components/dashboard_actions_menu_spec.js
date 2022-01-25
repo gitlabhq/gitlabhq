@@ -1,5 +1,6 @@
 import { GlDropdownItem, GlModal } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import CustomMetricsFormFields from '~/custom_metrics/components/custom_metrics_form_fields.vue';
 import { redirectTo } from '~/lib/utils/url_utility';
 import ActionsMenu from '~/monitoring/components/dashboard_actions_menu.vue';
@@ -60,22 +61,20 @@ describe('Actions menu', () => {
   });
 
   describe('add metric item', () => {
-    it('is rendered when custom metrics are available', () => {
+    it('is rendered when custom metrics are available', async () => {
       createShallowWrapper();
 
-      return wrapper.vm.$nextTick(() => {
-        expect(findAddMetricItem().exists()).toBe(true);
-      });
+      await nextTick();
+      expect(findAddMetricItem().exists()).toBe(true);
     });
 
-    it('is not rendered when custom metrics are not available', () => {
+    it('is not rendered when custom metrics are not available', async () => {
       createShallowWrapper({
         addingMetricsAvailable: false,
       });
 
-      return wrapper.vm.$nextTick(() => {
-        expect(findAddMetricItem().exists()).toBe(false);
-      });
+      await nextTick();
+      expect(findAddMetricItem().exists()).toBe(false);
     });
 
     describe('when available', () => {
@@ -119,30 +118,23 @@ describe('Actions menu', () => {
         origPage = document.body.dataset.page;
         document.body.dataset.page = 'projects:environments:metrics';
 
-        wrapper.vm.$nextTick(done);
+        nextTick(done);
       });
 
       afterEach(() => {
         document.body.dataset.page = origPage;
       });
 
-      it('is tracked', (done) => {
+      it('is tracked', async () => {
         const submitButton = findAddMetricModalSubmitButton().vm;
 
-        wrapper.vm.$nextTick(() => {
-          submitButton.$el.click();
-          wrapper.vm.$nextTick(() => {
-            expect(Tracking.event).toHaveBeenCalledWith(
-              document.body.dataset.page,
-              'click_button',
-              {
-                label: 'add_new_metric',
-                property: 'modal',
-                value: undefined,
-              },
-            );
-            done();
-          });
+        await nextTick();
+        submitButton.$el.click();
+        await nextTick();
+        expect(Tracking.event).toHaveBeenCalledWith(document.body.dataset.page, 'click_button', {
+          label: 'add_new_metric',
+          property: 'modal',
+          value: undefined,
         });
       });
     });
@@ -172,14 +164,13 @@ describe('Actions menu', () => {
       );
     });
 
-    it('is disabled for ootb dashboards', () => {
+    it('is disabled for ootb dashboards', async () => {
       createShallowWrapper({
         isOotbDashboard: true,
       });
 
-      return wrapper.vm.$nextTick(() => {
-        expect(findAddPanelItemDisabled().exists()).toBe(true);
-      });
+      await nextTick();
+      expect(findAddPanelItemDisabled().exists()).toBe(true);
     });
 
     it('is visible for custom dashboards', () => {
@@ -256,16 +247,15 @@ describe('Actions menu', () => {
         expect(findDuplicateDashboardModal().exists()).toBe(true);
       });
 
-      it('clicking on item opens up the duplicate dashboard modal', () => {
+      it('clicking on item opens up the duplicate dashboard modal', async () => {
         const modalId = 'duplicateDashboard';
         const modalTrigger = findDuplicateDashboardItem();
         const rootEmit = jest.spyOn(wrapper.vm.$root, '$emit');
 
         modalTrigger.trigger('click');
 
-        return wrapper.vm.$nextTick().then(() => {
-          expect(rootEmit.mock.calls[0]).toContainEqual(modalId);
-        });
+        await nextTick();
+        expect(rootEmit.mock.calls[0]).toContainEqual(modalId);
       });
     });
 
@@ -300,16 +290,15 @@ describe('Actions menu', () => {
         setupAllDashboards(store, dashboardGitResponse[0].path);
       });
 
-      it('redirects to the newly created dashboard', () => {
+      it('redirects to the newly created dashboard', async () => {
         const newDashboard = dashboardGitResponse[1];
 
         const newDashboardUrl = 'root/sandbox/-/metrics/dashboard.yml';
         findDuplicateDashboardModal().vm.$emit('dashboardDuplicated', newDashboard);
 
-        return wrapper.vm.$nextTick().then(() => {
-          expect(redirectTo).toHaveBeenCalled();
-          expect(redirectTo).toHaveBeenCalledWith(newDashboardUrl);
-        });
+        await nextTick();
+        expect(redirectTo).toHaveBeenCalled();
+        expect(redirectTo).toHaveBeenCalledWith(newDashboardUrl);
       });
     });
   });
@@ -330,32 +319,30 @@ describe('Actions menu', () => {
       expect(findStarDashboardItem().attributes('disabled')).toBeFalsy();
     });
 
-    it('is disabled when starring is taking place', () => {
+    it('is disabled when starring is taking place', async () => {
       store.commit(`monitoringDashboard/${types.REQUEST_DASHBOARD_STARRING}`);
 
-      return wrapper.vm.$nextTick(() => {
-        expect(findStarDashboardItem().exists()).toBe(true);
-        expect(findStarDashboardItem().attributes('disabled')).toBe('true');
-      });
+      await nextTick();
+      expect(findStarDashboardItem().exists()).toBe(true);
+      expect(findStarDashboardItem().attributes('disabled')).toBe('true');
     });
 
-    it('on click it dispatches a toggle star action', () => {
+    it('on click it dispatches a toggle star action', async () => {
       findStarDashboardItem().vm.$emit('click');
 
-      return wrapper.vm.$nextTick().then(() => {
-        expect(store.dispatch).toHaveBeenCalledWith(
-          'monitoringDashboard/toggleStarredValue',
-          undefined,
-        );
-      });
+      await nextTick();
+      expect(store.dispatch).toHaveBeenCalledWith(
+        'monitoringDashboard/toggleStarredValue',
+        undefined,
+      );
     });
 
     describe('when dashboard is not starred', () => {
-      beforeEach(() => {
+      beforeEach(async () => {
         store.commit(`monitoringDashboard/${types.SET_INITIAL_STATE}`, {
           currentDashboard: dashboardGitResponse[0].path,
         });
-        return wrapper.vm.$nextTick();
+        await nextTick();
       });
 
       it('item text shows "Star dashboard"', () => {
@@ -364,11 +351,11 @@ describe('Actions menu', () => {
     });
 
     describe('when dashboard is starred', () => {
-      beforeEach(() => {
+      beforeEach(async () => {
         store.commit(`monitoringDashboard/${types.SET_INITIAL_STATE}`, {
           currentDashboard: dashboardGitResponse[1].path,
         });
-        return wrapper.vm.$nextTick();
+        await nextTick();
       });
 
       it('item text shows "Unstar dashboard"', () => {
@@ -403,16 +390,15 @@ describe('Actions menu', () => {
         expect(findCreateDashboardModal().exists()).toBe(true);
       });
 
-      it('clicking opens up the modal', () => {
+      it('clicking opens up the modal', async () => {
         const modalId = 'createDashboard';
         const modalTrigger = findCreateDashboardItem();
         const rootEmit = jest.spyOn(wrapper.vm.$root, '$emit');
 
         modalTrigger.trigger('click');
 
-        return wrapper.vm.$nextTick().then(() => {
-          expect(rootEmit.mock.calls[0]).toContainEqual(modalId);
-        });
+        await nextTick();
+        expect(rootEmit.mock.calls[0]).toContainEqual(modalId);
       });
 
       it('modal gets passed correct props', () => {

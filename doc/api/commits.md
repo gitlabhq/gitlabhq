@@ -740,9 +740,9 @@ Example response:
 }
 ```
 
-## List Merge Requests associated with a commit
+## List merge requests associated with a commit
 
-Get a list of Merge Requests related to the specified commit.
+Get a list of merge requests related to the specified commit.
 
 ```plaintext
 GET /projects/:id/repository/commits/:sha/merge_requests

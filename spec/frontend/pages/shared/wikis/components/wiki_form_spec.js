@@ -48,10 +48,10 @@ describe('WikiForm', () => {
     return format.find(`option[value=${value}]`).setSelected();
   };
 
-  const triggerFormSubmit = () => {
+  const triggerFormSubmit = async () => {
     findForm().element.dispatchEvent(new Event('submit'));
 
-    return nextTick();
+    await nextTick();
   };
 
   const dispatchBeforeUnload = () => {
@@ -574,7 +574,7 @@ describe('WikiForm', () => {
 
             wrapper.findComponent(GlModal).vm.$emit('primary');
 
-            await wrapper.vm.$nextTick();
+            await nextTick();
           });
 
           it('switches to classic editor', () => {

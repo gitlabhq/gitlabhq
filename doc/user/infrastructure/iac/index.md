@@ -83,12 +83,12 @@ GitLab can be used as a [Terraform module registry](../../packages/terraform_mod
 to create and publish Terraform modules to a private registry specific to your
 top-level namespace.
 
-## Terraform integration in Merge Requests
+## Terraform integration in merge requests
 
 Collaborating around Infrastructure as Code (IaC) changes requires both code changes
 and expected infrastructure changes to be checked and approved. GitLab provides a
 solution to help collaboration around Terraform code changes and their expected
-effects using the Merge Request pages. This way users don't have to build custom
+effects using the merge request pages. This way users don't have to build custom
 tools or rely on 3rd party solutions to streamline their IaC workflows.
 
 Read more on setting up and [using the merge request integrations](mr_integration.md).

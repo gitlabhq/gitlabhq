@@ -517,7 +517,7 @@ When performing a search, the GitLab index uses the following scopes:
 | `projects`       | Project data (default) |
 | `blobs`          | Code                   |
 | `issues`         | Issue data             |
-| `merge_requests` | Merge Request data     |
+| `merge_requests` | Merge request data     |
 | `milestones`     | Milestone data         |
 | `notes`          | Note data              |
 | `snippets`       | Snippet data           |

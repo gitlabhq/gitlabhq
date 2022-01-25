@@ -21,7 +21,7 @@ report on the merge request so that it's easier and faster to identify the
 failure without having to check the entire log. Unit test reports currently
 only support test reports in the JUnit report format.
 
-If you don't use Merge Requests but still want to see the unit test report
+If you don't use merge requests but still want to see the unit test report
 output without searching through job logs, the full
 [Unit test reports](#viewing-unit-test-reports-on-gitlab) are available
 in the pipeline detail view.
@@ -67,7 +67,7 @@ execution time and the error output.
 
 ### Number of recent failures
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/241759) in Merge Requests in GitLab 13.7.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/241759) in merge requests in GitLab 13.7.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/268249) in GitLab 13.8.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/235525) in Test Reports in GitLab 13.9.
 

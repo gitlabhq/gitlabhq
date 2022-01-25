@@ -19,7 +19,7 @@ async function files(store, count) {
   const copies = Array(count).fill(file);
   store.state.diffs.diffFiles.push(...copies);
 
-  return nextTick();
+  await nextTick();
 }
 
 describe('CollapsedFilesWarning', () => {
@@ -84,7 +84,7 @@ describe('CollapsedFilesWarning', () => {
 
       getAlertCloseButton().element.click();
 
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       expect(wrapper.find('[data-testid="root"]').exists()).toBe(false);
     });

@@ -377,3 +377,18 @@ Alternatively, you can mount the certificate file at a different location and in
           mountPath: /tmp/myCA.pem
           subPath: myCA.pem
 ```
+
+#### Project not found
+
+```json
+{
+  "level ":"error ",
+  "time ":"2022-01-05T15:18:11.331Z",
+  "msg ":"GetObjectsToSynchronize.Recv failed ",
+  "mod_name ":"gitops ",
+  "error ":"rpc error: code = NotFound desc = project not found ",
+}
+```
+
+This error is shown if the manifest project is not public. To fix it,
+[make sure your manifest project is public](repository.md#synchronize-manifest-projects).

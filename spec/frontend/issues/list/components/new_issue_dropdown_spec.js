@@ -1,5 +1,6 @@
 import { GlDropdown, GlDropdownItem, GlSearchBoxByType } from '@gitlab/ui';
-import { createLocalVue, mount, shallowMount } from '@vue/test-utils';
+import { mount, shallowMount } from '@vue/test-utils';
+import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -17,8 +18,7 @@ import {
 describe('NewIssueDropdown component', () => {
   let wrapper;
 
-  const localVue = createLocalVue();
-  localVue.use(VueApollo);
+  Vue.use(VueApollo);
 
   const mountComponent = ({
     search = '',
@@ -29,7 +29,6 @@ describe('NewIssueDropdown component', () => {
     const apolloProvider = createMockApollo(requestHandlers);
 
     return mountFn(NewIssueDropdown, {
-      localVue,
       apolloProvider,
       provide: {
         fullPath: 'mushroom-kingdom',

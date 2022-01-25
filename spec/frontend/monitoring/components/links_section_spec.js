@@ -36,7 +36,7 @@ describe('Links Section component', () => {
     expect(findLinks().length).toBe(0);
   });
 
-  it('renders a link inside a section', () => {
+  it('renders a link inside a section', async () => {
     setState([
       {
         title: 'GitLab Website',
@@ -44,23 +44,21 @@ describe('Links Section component', () => {
       },
     ]);
 
-    return wrapper.vm.$nextTick(() => {
-      expect(findLinks()).toHaveLength(1);
-      const firstLink = findLinks().at(0);
+    await nextTick();
+    expect(findLinks()).toHaveLength(1);
+    const firstLink = findLinks().at(0);
 
-      expect(firstLink.attributes('href')).toBe('https://gitlab.com');
-      expect(firstLink.text()).toBe('GitLab Website');
-    });
+    expect(firstLink.attributes('href')).toBe('https://gitlab.com');
+    expect(firstLink.text()).toBe('GitLab Website');
   });
 
-  it('renders multiple links inside a section', () => {
+  it('renders multiple links inside a section', async () => {
     const links = new Array(10)
       .fill(null)
       .map((_, i) => ({ title: `Title ${i}`, url: `https://gitlab.com/projects/${i}` }));
     setState(links);
 
-    return wrapper.vm.$nextTick(() => {
-      expect(findLinks()).toHaveLength(10);
-    });
+    await nextTick();
+    expect(findLinks()).toHaveLength(10);
   });
 });

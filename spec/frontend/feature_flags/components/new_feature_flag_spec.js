@@ -1,6 +1,6 @@
 import { GlAlert } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 import { TEST_HOST } from 'spec/test_constants';
 import Form from '~/feature_flags/components/form.vue';
@@ -51,13 +51,12 @@ describe('New feature flag form', () => {
   });
 
   describe('with error', () => {
-    it('should render the error', () => {
+    it('should render the error', async () => {
       store.dispatch('receiveCreateFeatureFlagError', { message: ['The name is required'] });
-      return wrapper.vm.$nextTick(() => {
-        const warningGlAlert = findWarningGlAlert();
-        expect(warningGlAlert.at(0).exists()).toBe(true);
-        expect(warningGlAlert.at(0).text()).toContain('The name is required');
-      });
+      await nextTick();
+      const warningGlAlert = findWarningGlAlert();
+      expect(warningGlAlert.at(0).exists()).toBe(true);
+      expect(warningGlAlert.at(0).text()).toContain('The name is required');
     });
   });
 

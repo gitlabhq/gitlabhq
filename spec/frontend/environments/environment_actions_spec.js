@@ -1,6 +1,6 @@
 import { GlDropdown, GlDropdownItem, GlLoadingIcon, GlIcon } from '@gitlab/ui';
 import { shallowMount, mount } from '@vue/test-utils';
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import { TEST_HOST } from 'helpers/test_constants';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
@@ -108,7 +108,7 @@ describe('EnvironmentActions Component', () => {
       jest.spyOn(window, 'confirm').mockImplementation(() => confirm);
 
       findDropdownItem(scheduledJobAction).vm.$emit('click');
-      await wrapper.vm.$nextTick();
+      await nextTick();
     };
 
     beforeEach(() => {

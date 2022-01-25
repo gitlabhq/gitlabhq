@@ -1,6 +1,7 @@
 import { GlAlert, GlToggle, GlTooltip } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import MockAxiosAdapter from 'axios-mock-adapter';
+import { nextTick } from 'vue';
 import waitForPromises from 'helpers/wait_for_promises';
 import axios from '~/lib/utils/axios_utils';
 import SharedRunnersToggleComponent from '~/projects/settings/components/shared_runners_toggle.vue';
@@ -121,7 +122,7 @@ describe('projects/settings/components/shared_runners', () => {
         expect(isToggleLoading()).toBe(false);
 
         findSharedRunnersToggle().vm.$emit('change', true);
-        await wrapper.vm.$nextTick();
+        await nextTick();
         expect(isToggleLoading()).toBe(true);
 
         await waitForPromises();

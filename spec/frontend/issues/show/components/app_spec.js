@@ -145,33 +145,30 @@ describe('Issuable output', () => {
       });
   });
 
-  it('shows actions if permissions are correct', () => {
+  it('shows actions if permissions are correct', async () => {
     wrapper.vm.showForm = true;
 
-    return wrapper.vm.$nextTick().then(() => {
-      expect(wrapper.find('.markdown-selector').exists()).toBe(true);
-    });
+    await nextTick();
+    expect(wrapper.find('.markdown-selector').exists()).toBe(true);
   });
 
-  it('does not show actions if permissions are incorrect', () => {
+  it('does not show actions if permissions are incorrect', async () => {
     wrapper.vm.showForm = true;
     wrapper.setProps({ canUpdate: false });
 
-    return wrapper.vm.$nextTick().then(() => {
-      expect(wrapper.find('.markdown-selector').exists()).toBe(false);
-    });
+    await nextTick();
+    expect(wrapper.find('.markdown-selector').exists()).toBe(false);
   });
 
-  it('does not update formState if form is already open', () => {
+  it('does not update formState if form is already open', async () => {
     wrapper.vm.updateAndShowForm();
 
     wrapper.vm.state.titleText = 'testing 123';
 
     wrapper.vm.updateAndShowForm();
 
-    return wrapper.vm.$nextTick().then(() => {
-      expect(wrapper.vm.store.formState.title).not.toBe('testing 123');
-    });
+    await nextTick();
+    expect(wrapper.vm.store.formState.title).not.toBe('testing 123');
   });
 
   describe('Pinned links propagated', () => {
@@ -186,31 +183,29 @@ describe('Issuable output', () => {
   });
 
   describe('updateIssuable', () => {
-    it('fetches new data after update', () => {
+    it('fetches new data after update', async () => {
       const updateStoreSpy = jest.spyOn(wrapper.vm, 'updateStoreState');
       const getDataSpy = jest.spyOn(wrapper.vm.service, 'getData');
       jest.spyOn(wrapper.vm.service, 'updateIssuable').mockResolvedValue({
         data: { web_url: window.location.pathname },
       });
 
-      return wrapper.vm.updateIssuable().then(() => {
-        expect(updateStoreSpy).toHaveBeenCalled();
-        expect(getDataSpy).toHaveBeenCalled();
-      });
+      await wrapper.vm.updateIssuable();
+      expect(updateStoreSpy).toHaveBeenCalled();
+      expect(getDataSpy).toHaveBeenCalled();
     });
 
-    it('correctly updates issuable data', () => {
+    it('correctly updates issuable data', async () => {
       const spy = jest.spyOn(wrapper.vm.service, 'updateIssuable').mockResolvedValue({
         data: { web_url: window.location.pathname },
       });
 
-      return wrapper.vm.updateIssuable().then(() => {
-        expect(spy).toHaveBeenCalledWith(wrapper.vm.formState);
-        expect(eventHub.$emit).toHaveBeenCalledWith('close.form');
-      });
+      await wrapper.vm.updateIssuable();
+      expect(spy).toHaveBeenCalledWith(wrapper.vm.formState);
+      expect(eventHub.$emit).toHaveBeenCalledWith('close.form');
     });
 
-    it('does not redirect if issue has not moved', () => {
+    it('does not redirect if issue has not moved', async () => {
       jest.spyOn(wrapper.vm.service, 'updateIssuable').mockResolvedValue({
         data: {
           web_url: window.location.pathname,
@@ -218,12 +213,11 @@ describe('Issuable output', () => {
         },
       });
 
-      return wrapper.vm.updateIssuable().then(() => {
-        expect(visitUrl).not.toHaveBeenCalled();
-      });
+      await wrapper.vm.updateIssuable();
+      expect(visitUrl).not.toHaveBeenCalled();
     });
 
-    it('does not redirect if issue has not moved and user has switched tabs', () => {
+    it('does not redirect if issue has not moved and user has switched tabs', async () => {
       jest.spyOn(wrapper.vm.service, 'updateIssuable').mockResolvedValue({
         data: {
           web_url: '',
@@ -231,12 +225,11 @@ describe('Issuable output', () => {
         },
       });
 
-      return wrapper.vm.updateIssuable().then(() => {
-        expect(visitUrl).not.toHaveBeenCalled();
-      });
+      await wrapper.vm.updateIssuable();
+      expect(visitUrl).not.toHaveBeenCalled();
     });
 
-    it('redirects if returned web_url has changed', () => {
+    it('redirects if returned web_url has changed', async () => {
       jest.spyOn(wrapper.vm.service, 'updateIssuable').mockResolvedValue({
         data: {
           web_url: '/testing-issue-move',
@@ -246,108 +239,95 @@ describe('Issuable output', () => {
 
       wrapper.vm.updateIssuable();
 
-      return wrapper.vm.updateIssuable().then(() => {
-        expect(visitUrl).toHaveBeenCalledWith('/testing-issue-move');
-      });
+      await wrapper.vm.updateIssuable();
+      expect(visitUrl).toHaveBeenCalledWith('/testing-issue-move');
     });
 
     describe('shows dialog when issue has unsaved changed', () => {
-      it('confirms on title change', () => {
+      it('confirms on title change', async () => {
         wrapper.vm.showForm = true;
         wrapper.vm.state.titleText = 'title has changed';
         const e = { returnValue: null };
         wrapper.vm.handleBeforeUnloadEvent(e);
 
-        return wrapper.vm.$nextTick().then(() => {
-          expect(e.returnValue).not.toBeNull();
-        });
+        await nextTick();
+        expect(e.returnValue).not.toBeNull();
       });
 
-      it('confirms on description change', () => {
+      it('confirms on description change', async () => {
         wrapper.vm.showForm = true;
         wrapper.vm.state.descriptionText = 'description has changed';
         const e = { returnValue: null };
         wrapper.vm.handleBeforeUnloadEvent(e);
 
-        return wrapper.vm.$nextTick().then(() => {
-          expect(e.returnValue).not.toBeNull();
-        });
+        await nextTick();
+        expect(e.returnValue).not.toBeNull();
       });
 
-      it('does nothing when nothing has changed', () => {
+      it('does nothing when nothing has changed', async () => {
         const e = { returnValue: null };
         wrapper.vm.handleBeforeUnloadEvent(e);
 
-        return wrapper.vm.$nextTick().then(() => {
-          expect(e.returnValue).toBeNull();
-        });
+        await nextTick();
+        expect(e.returnValue).toBeNull();
       });
     });
 
     describe('error when updating', () => {
-      it('closes form on error', () => {
+      it('closes form on error', async () => {
         jest.spyOn(wrapper.vm.service, 'updateIssuable').mockRejectedValue();
 
-        return wrapper.vm.updateIssuable().then(() => {
-          expect(eventHub.$emit).not.toHaveBeenCalledWith('close.form');
-          expect(document.querySelector('.flash-container .flash-text').innerText.trim()).toBe(
-            `Error updating issue`,
-          );
-        });
+        await wrapper.vm.updateIssuable();
+        expect(eventHub.$emit).not.toHaveBeenCalledWith('close.form');
+        expect(document.querySelector('.flash-container .flash-text').innerText.trim()).toBe(
+          `Error updating issue`,
+        );
       });
 
-      it('returns the correct error message for issuableType', () => {
+      it('returns the correct error message for issuableType', async () => {
         jest.spyOn(wrapper.vm.service, 'updateIssuable').mockRejectedValue();
         wrapper.setProps({ issuableType: 'merge request' });
 
-        return wrapper.vm
-          .$nextTick()
-          .then(wrapper.vm.updateIssuable)
-          .then(() => {
-            expect(eventHub.$emit).not.toHaveBeenCalledWith('close.form');
-            expect(document.querySelector('.flash-container .flash-text').innerText.trim()).toBe(
-              `Error updating merge request`,
-            );
-          });
+        await nextTick();
+        await wrapper.vm.updateIssuable();
+        expect(eventHub.$emit).not.toHaveBeenCalledWith('close.form');
+        expect(document.querySelector('.flash-container .flash-text').innerText.trim()).toBe(
+          `Error updating merge request`,
+        );
       });
 
-      it('shows error message from backend if exists', () => {
+      it('shows error message from backend if exists', async () => {
         const msg = 'Custom error message from backend';
         jest
           .spyOn(wrapper.vm.service, 'updateIssuable')
           .mockRejectedValue({ response: { data: { errors: [msg] } } });
 
-        return wrapper.vm.updateIssuable().then(() => {
-          expect(document.querySelector('.flash-container .flash-text').innerText.trim()).toBe(
-            `${wrapper.vm.defaultErrorMessage}. ${msg}`,
-          );
-        });
+        await wrapper.vm.updateIssuable();
+        expect(document.querySelector('.flash-container .flash-text').innerText.trim()).toBe(
+          `${wrapper.vm.defaultErrorMessage}. ${msg}`,
+        );
       });
     });
   });
 
   describe('updateAndShowForm', () => {
-    it('shows locked warning if form is open & data is different', () => {
-      return wrapper.vm
-        .$nextTick()
-        .then(() => {
-          wrapper.vm.updateAndShowForm();
+    it('shows locked warning if form is open & data is different', async () => {
+      await nextTick();
+      wrapper.vm.updateAndShowForm();
 
-          wrapper.vm.poll.makeRequest();
+      wrapper.vm.poll.makeRequest();
 
-          return new Promise((resolve) => {
-            wrapper.vm.$watch('formState.lockedWarningVisible', (value) => {
-              if (value) {
-                resolve();
-              }
-            });
-          });
-        })
-        .then(() => {
-          expect(wrapper.vm.formState.lockedWarningVisible).toBe(true);
-          expect(wrapper.vm.formState.lock_version).toBe(1);
-          expect(findAlert().exists()).toBe(true);
+      await new Promise((resolve) => {
+        wrapper.vm.$watch('formState.lockedWarningVisible', (value) => {
+          if (value) {
+            resolve();
+          }
         });
+      });
+
+      expect(wrapper.vm.formState.lockedWarningVisible).toBe(true);
+      expect(wrapper.vm.formState.lock_version).toBe(1);
+      expect(findAlert().exists()).toBe(true);
     });
   });
 
@@ -398,12 +378,11 @@ describe('Issuable output', () => {
       expect(wrapper.find('.btn-edit').exists()).toBe(true);
     });
 
-    it('should render if showInlineEditButton', () => {
+    it('should render if showInlineEditButton', async () => {
       wrapper.setProps({ showInlineEditButton: true });
 
-      return wrapper.vm.$nextTick(() => {
-        expect(wrapper.find('.btn-edit').exists()).toBe(true);
-      });
+      await nextTick();
+      expect(wrapper.find('.btn-edit').exists()).toBe(true);
     });
   });
 

@@ -1,6 +1,6 @@
 import { GlTable, GlPagination, GlModal } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import { last } from 'lodash';
 import Vuex from 'vuex';
 import stubChildren from 'helpers/stub_children';
@@ -120,16 +120,15 @@ describe('packages_list', () => {
       mountComponent();
     });
 
-    it('setItemToBeDeleted sets itemToBeDeleted and open the modal', () => {
+    it('setItemToBeDeleted sets itemToBeDeleted and open the modal', async () => {
       const mockModalShow = jest.spyOn(wrapper.vm.$refs.packageListDeleteModal, 'show');
       const item = last(wrapper.vm.list);
 
       findPackagesListRow().vm.$emit('packageToDelete', item);
 
-      return wrapper.vm.$nextTick().then(() => {
-        expect(wrapper.vm.itemToBeDeleted).toEqual(item);
-        expect(mockModalShow).toHaveBeenCalled();
-      });
+      await nextTick();
+      expect(wrapper.vm.itemToBeDeleted).toEqual(item);
+      expect(mockModalShow).toHaveBeenCalled();
     });
 
     it('deleteItemConfirmation resets itemToBeDeleted', () => {
@@ -140,15 +139,14 @@ describe('packages_list', () => {
       expect(wrapper.vm.itemToBeDeleted).toEqual(null);
     });
 
-    it('deleteItemConfirmation emit package:delete', () => {
+    it('deleteItemConfirmation emit package:delete', async () => {
       const itemToBeDeleted = { id: 2 };
       // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
       // eslint-disable-next-line no-restricted-syntax
       wrapper.setData({ itemToBeDeleted });
       wrapper.vm.deleteItemConfirmation();
-      return wrapper.vm.$nextTick(() => {
-        expect(wrapper.emitted('package:delete')[0]).toEqual([itemToBeDeleted]);
-      });
+      await nextTick();
+      expect(wrapper.emitted('package:delete')[0]).toEqual([itemToBeDeleted]);
     });
 
     it('deleteItemCanceled resets itemToBeDeleted', () => {

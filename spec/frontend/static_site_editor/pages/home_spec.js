@@ -1,4 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 import EditArea from '~/static_site_editor/components/edit_area.vue';
 import EditMetaModal from '~/static_site_editor/components/edit_meta_modal.vue';
@@ -179,7 +180,7 @@ describe('static_site_editor/pages/home', () => {
   });
 
   describe('when preparing submission', () => {
-    it('calls the show method when the edit-area submit event is emitted', () => {
+    it('calls the show method when the edit-area submit event is emitted', async () => {
       buildWrapper();
 
       const mockInstance = { show: jest.fn() };
@@ -187,9 +188,8 @@ describe('static_site_editor/pages/home', () => {
 
       findEditArea().vm.$emit('submit', { content });
 
-      return wrapper.vm.$nextTick().then(() => {
-        expect(mockInstance.show).toHaveBeenCalled();
-      });
+      await nextTick();
+      expect(mockInstance.show).toHaveBeenCalled();
     });
   });
 
@@ -200,13 +200,13 @@ describe('static_site_editor/pages/home', () => {
         .mockRejectedValueOnce(new Error(submitChangesError));
     };
 
-    beforeEach(() => {
+    beforeEach(async () => {
       setupMutateMock();
 
       buildWrapper({ content });
       findEditMetaModal().vm.$emit('primary', mergeRequestMeta);
 
-      return wrapper.vm.$nextTick();
+      await nextTick();
     });
 
     it('displays submit changes error message', () => {
@@ -221,12 +221,11 @@ describe('static_site_editor/pages/home', () => {
       expect(mutateMock).toHaveBeenCalled();
     });
 
-    it('hides submit changes error message when dismiss button is clicked', () => {
+    it('hides submit changes error message when dismiss button is clicked', async () => {
       findSubmitChangesError().vm.$emit('dismiss');
 
-      return wrapper.vm.$nextTick().then(() => {
-        expect(findSubmitChangesError().exists()).toBe(false);
-      });
+      await nextTick();
+      expect(findSubmitChangesError().exists()).toBe(false);
     });
   });
 
@@ -234,7 +233,7 @@ describe('static_site_editor/pages/home', () => {
     const newContent = `new ${content}`;
     const formattedMarkdown = `formatted ${content}`;
 
-    beforeEach(() => {
+    beforeEach(async () => {
       mutateMock.mockResolvedValueOnce(hasSubmittedChangesMutationPayload).mockResolvedValueOnce({
         data: {
           submitContentChanges: savedContentMeta,
@@ -249,7 +248,7 @@ describe('static_site_editor/pages/home', () => {
 
       findEditMetaModal().vm.$emit('primary', mergeRequestMeta);
 
-      return wrapper.vm.$nextTick();
+      await nextTick();
     });
 
     it('dispatches hasSubmittedChanges mutation', () => {

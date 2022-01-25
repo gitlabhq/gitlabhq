@@ -2,6 +2,7 @@ import { GlModal, GlForm, GlFormCheckbox, GlSprintf } from '@gitlab/ui';
 import { within } from '@testing-library/dom';
 import { shallowMount, mount, createWrapper } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
+import { nextTick } from 'vue';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import api from '~/api';
 import axios from '~/lib/utils/axios_utils';
@@ -156,7 +157,7 @@ describe('CommitFormModal', () => {
     it('Changes the start_branch input value', async () => {
       findBranchesDropdown().vm.$emit('selectBranch', '_changed_branch_value_');
 
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       expect(findStartBranch().attributes('value')).toBe('_changed_branch_value_');
     });
@@ -165,7 +166,7 @@ describe('CommitFormModal', () => {
       createComponent(shallowMount, {}, {}, { isCherryPick: true });
       findProjectsDropdown().vm.$emit('selectProject', '_changed_project_value_');
 
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       expect(findTargetProject().attributes('value')).toBe('_changed_project_value_');
     });
@@ -174,7 +175,7 @@ describe('CommitFormModal', () => {
   it('action primary button triggers Redis HLL tracking api call', async () => {
     createComponent(mount, {}, {}, { primaryActionEventName: 'test_event' });
 
-    await wrapper.vm.$nextTick();
+    await nextTick();
 
     jest.spyOn(findForm().element, 'submit');
 

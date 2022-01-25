@@ -33,7 +33,7 @@ At the top of the page, Usage Trends shows total counts for:
 - Projects
 - Groups
 - Issues
-- Merge Requests
+- Merge requests
 - Pipelines
 
 These figures can be useful for understanding how much data your instance contains in total.

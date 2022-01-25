@@ -1,4 +1,5 @@
 import { mount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import JobItem from '~/pipelines/components/graph/job_item.vue';
 
 describe('pipeline graph job item', () => {
@@ -74,22 +75,19 @@ describe('pipeline graph job item', () => {
   });
 
   describe('name with link', () => {
-    it('should render the job name and status with a link', (done) => {
+    it('should render the job name and status with a link', async () => {
       createWrapper({ job: mockJob });
 
-      wrapper.vm.$nextTick(() => {
-        const link = wrapper.find('a');
+      await nextTick();
+      const link = wrapper.find('a');
 
-        expect(link.attributes('href')).toBe(mockJob.status.detailsPath);
+      expect(link.attributes('href')).toBe(mockJob.status.detailsPath);
 
-        expect(link.attributes('title')).toBe(`${mockJob.name} - ${mockJob.status.label}`);
+      expect(link.attributes('title')).toBe(`${mockJob.name} - ${mockJob.status.label}`);
 
-        expect(wrapper.find('.ci-status-icon-success').exists()).toBe(true);
+      expect(wrapper.find('.ci-status-icon-success').exists()).toBe(true);
 
-        expect(wrapper.text()).toBe(mockJob.name);
-
-        done();
-      });
+      expect(wrapper.text()).toBe(mockJob.name);
     });
   });
 

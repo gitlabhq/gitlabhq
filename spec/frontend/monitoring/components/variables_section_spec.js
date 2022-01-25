@@ -1,5 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
 import Vuex from 'vuex';
+import { nextTick } from 'vue';
 import { updateHistory, mergeUrlParams } from '~/lib/utils/url_utility';
 import DropdownField from '~/monitoring/components/variables/dropdown_field.vue';
 import TextField from '~/monitoring/components/variables/text_field.vue';
@@ -40,11 +41,11 @@ describe('Metrics dashboard/variables section component', () => {
   });
 
   describe('when variables are set', () => {
-    beforeEach(() => {
+    beforeEach(async () => {
       store.state.monitoringDashboard.variables = storeVariables;
       createShallowWrapper();
 
-      return wrapper.vm.$nextTick;
+      await nextTick();
     });
 
     it('shows the variables section', () => {
@@ -83,34 +84,32 @@ describe('Metrics dashboard/variables section component', () => {
       createShallowWrapper();
     });
 
-    it('merges the url params and refreshes the dashboard when a text-based variables inputs are updated', () => {
+    it('merges the url params and refreshes the dashboard when a text-based variables inputs are updated', async () => {
       const firstInput = findTextInputs().at(0);
 
       firstInput.vm.$emit('input', 'test');
 
-      return wrapper.vm.$nextTick(() => {
-        expect(updateVariablesAndFetchData).toHaveBeenCalled();
-        expect(mergeUrlParams).toHaveBeenCalledWith(
-          convertVariablesForURL(storeVariables),
-          window.location.href,
-        );
-        expect(updateHistory).toHaveBeenCalled();
-      });
+      await nextTick();
+      expect(updateVariablesAndFetchData).toHaveBeenCalled();
+      expect(mergeUrlParams).toHaveBeenCalledWith(
+        convertVariablesForURL(storeVariables),
+        window.location.href,
+      );
+      expect(updateHistory).toHaveBeenCalled();
     });
 
-    it('merges the url params and refreshes the dashboard when a custom-based variables inputs are updated', () => {
+    it('merges the url params and refreshes the dashboard when a custom-based variables inputs are updated', async () => {
       const firstInput = findCustomInputs().at(0);
 
       firstInput.vm.$emit('input', 'test');
 
-      return wrapper.vm.$nextTick(() => {
-        expect(updateVariablesAndFetchData).toHaveBeenCalled();
-        expect(mergeUrlParams).toHaveBeenCalledWith(
-          convertVariablesForURL(storeVariables),
-          window.location.href,
-        );
-        expect(updateHistory).toHaveBeenCalled();
-      });
+      await nextTick();
+      expect(updateVariablesAndFetchData).toHaveBeenCalled();
+      expect(mergeUrlParams).toHaveBeenCalledWith(
+        convertVariablesForURL(storeVariables),
+        window.location.href,
+      );
+      expect(updateHistory).toHaveBeenCalled();
     });
 
     it('does not merge the url params and refreshes the dashboard if the value entered is not different that is what currently stored', () => {

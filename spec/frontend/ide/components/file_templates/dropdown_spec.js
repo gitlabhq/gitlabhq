@@ -1,6 +1,6 @@
 import { GlLoadingIcon } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import $ from 'jquery';
 import Vuex from 'vuex';
 import Dropdown from '~/ide/components/file_templates/dropdown.vue';
@@ -54,15 +54,14 @@ describe('IDE file templates dropdown component', () => {
     wrapper = null;
   });
 
-  it('calls clickItem on click', () => {
+  it('calls clickItem on click', async () => {
     const itemData = { name: 'test.yml ' };
     createComponent({ props: { data: [itemData] } });
     const item = findItemButtons().at(0);
     item.trigger('click');
 
-    return wrapper.vm.$nextTick().then(() => {
-      expect(wrapper.emitted().click[0][0]).toBe(itemData);
-    });
+    await nextTick();
+    expect(wrapper.emitted().click[0][0]).toBe(itemData);
   });
 
   it('renders dropdown title', () => {
@@ -111,7 +110,7 @@ describe('IDE file templates dropdown component', () => {
       expect(items.wrappers.map((x) => x.text())).toEqual(templates.map((x) => x.name));
     });
 
-    it('searches template data', () => {
+    it('searches template data', async () => {
       const templates = [{ name: 'match 1' }, { name: 'other' }, { name: 'match 2' }];
       const matches = ['match 1', 'match 2'];
       createComponent({
@@ -119,12 +118,11 @@ describe('IDE file templates dropdown component', () => {
         state: { templates },
       });
       findSearch().setValue('match');
-      return wrapper.vm.$nextTick().then(() => {
-        const items = findItemButtons();
+      await nextTick();
+      const items = findItemButtons();
 
-        expect(items.length).toBe(matches.length);
-        expect(items.wrappers.map((x) => x.text())).toEqual(matches);
-      });
+      expect(items.length).toBe(matches.length);
+      expect(items.wrappers.map((x) => x.text())).toEqual(matches);
     });
 
     it('does not render input when `searchable` is true & `showLoading` is true', () => {
@@ -159,17 +157,16 @@ describe('IDE file templates dropdown component', () => {
       expect(findSearch().exists()).toBe(true);
     });
 
-    it('searches data', () => {
+    it('searches data', async () => {
       const data = [{ name: 'match 1' }, { name: 'other' }, { name: 'match 2' }];
       const matches = ['match 1', 'match 2'];
       createComponent({ props: { searchable: true, data } });
       findSearch().setValue('match');
-      return wrapper.vm.$nextTick().then(() => {
-        const items = findItemButtons();
+      await nextTick();
+      const items = findItemButtons();
 
-        expect(items.length).toBe(matches.length);
-        expect(items.wrappers.map((x) => x.text())).toEqual(matches);
-      });
+      expect(items.length).toBe(matches.length);
+      expect(items.wrappers.map((x) => x.text())).toEqual(matches);
     });
   });
 });

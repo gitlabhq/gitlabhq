@@ -1,5 +1,6 @@
 import { GlAlert, GlEmptyState, GlLink, GlLoadingIcon } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import EmptyState from '~/feature_flags/components/empty_state.vue';
 
 const DEFAULT_PROPS = {
@@ -123,7 +124,7 @@ describe('feature_flags/components/feature_flags_tab.vue', () => {
 
     beforeEach(async () => {
       wrapper = factory();
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       slot = wrapper.find('[data-testid="test-slot"]');
     });

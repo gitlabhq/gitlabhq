@@ -1,4 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import ArtifactsBlock from '~/jobs/components/artifacts_block.vue';
 import JobRetryForwardDeploymentModal from '~/jobs/components/job_retry_forward_deployment_modal.vue';
@@ -189,7 +190,7 @@ describe('Sidebar details block', () => {
         locked: false,
       };
 
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       expect(findArtifactsBlock().exists()).toBe(true);
     });

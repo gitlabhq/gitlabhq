@@ -1,5 +1,6 @@
 import { GlAlert, GlModal } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import waitForPromises from 'helpers/wait_for_promises';
 import CanaryUpdateModal from '~/environments/components/canary_update_modal.vue';
 import updateCanaryIngress from '~/environments/graphql/mutations/update_canary_ingress.mutation.graphql';
@@ -86,7 +87,7 @@ describe('/environments/components/canary_update_modal.vue', () => {
     mutate.mockResolvedValue({ data: { environmentsCanaryIngressUpdate: { errors: [] } } });
     modal.vm.$emit('primary');
 
-    await wrapper.vm.$nextTick();
+    await nextTick();
 
     expect(findAlert().exists()).toBe(false);
   });
@@ -95,7 +96,7 @@ describe('/environments/components/canary_update_modal.vue', () => {
     mutate.mockResolvedValue({ data: { environmentsCanaryIngressUpdate: { errors: ['error'] } } });
     modal.vm.$emit('primary');
 
-    await wrapper.vm.$nextTick();
+    await nextTick();
 
     expect(findAlert().text()).toBe('error');
   });
@@ -105,7 +106,7 @@ describe('/environments/components/canary_update_modal.vue', () => {
     modal.vm.$emit('primary');
 
     await waitForPromises();
-    await wrapper.vm.$nextTick();
+    await nextTick();
 
     expect(findAlert().text()).toBe('Something went wrong. Please try again later');
   });
@@ -114,12 +115,12 @@ describe('/environments/components/canary_update_modal.vue', () => {
     mutate.mockResolvedValue({ data: { environmentsCanaryIngressUpdate: { errors: ['error'] } } });
     modal.vm.$emit('primary');
 
-    await wrapper.vm.$nextTick();
+    await nextTick();
 
     const alert = findAlert();
     alert.vm.$emit('dismiss');
 
-    await wrapper.vm.$nextTick();
+    await nextTick();
 
     expect(alert.exists()).toBe(false);
   });

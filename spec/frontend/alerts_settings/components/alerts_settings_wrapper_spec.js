@@ -1,6 +1,7 @@
 import { GlLoadingIcon, GlAlert } from '@gitlab/ui';
-import { mount, createLocalVue } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
 import AxiosMockAdapter from 'axios-mock-adapter';
+import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createHttpIntegrationMutation from 'ee_else_ce/alerts_settings/graphql/mutations/create_http_integration.mutation.graphql';
 import updateHttpIntegrationMutation from 'ee_else_ce/alerts_settings/graphql/mutations/update_http_integration.mutation.graphql';
@@ -48,8 +49,6 @@ import {
 import mockIntegrations from './mocks/integrations.json';
 
 jest.mock('~/flash');
-
-const localVue = createLocalVue();
 
 describe('AlertsSettingsWrapper', () => {
   let wrapper;
@@ -111,7 +110,7 @@ describe('AlertsSettingsWrapper', () => {
   function createComponentWithApollo({
     destroyHandler = jest.fn().mockResolvedValue(destroyIntegrationResponse),
   } = {}) {
-    localVue.use(VueApollo);
+    Vue.use(VueApollo);
     destroyIntegrationHandler = destroyHandler;
 
     const requestHandlers = [
@@ -122,7 +121,6 @@ describe('AlertsSettingsWrapper', () => {
     fakeApollo = createMockApollo(requestHandlers);
 
     wrapper = mount(AlertsSettingsWrapper, {
-      localVue,
       apolloProvider: fakeApollo,
       provide: {
         alertSettings: {

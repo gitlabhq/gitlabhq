@@ -40,6 +40,9 @@ with Kubernetes resource definitions in YAML or JSON format. The Agent monitors
 each project you declare, and when the project changes, GitLab deploys the changes
 using the Agent.
 
+WARNING:
+When using separate GitLab projects for manifest files and configuration repository, the manifests project must be public.
+
 To use multiple YAML files, specify a `paths` attribute in the `gitops.manifest_projects` section.
 
 ```yaml

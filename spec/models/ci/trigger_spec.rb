@@ -68,4 +68,11 @@ RSpec.describe Ci::Trigger do
       let!(:model) { create(:ci_trigger, owner: parent) }
     end
   end
+
+  context 'loose foreign key on ci_triggers.project_id' do
+    it_behaves_like 'cleanup by a loose foreign key' do
+      let!(:parent) { create(:project) }
+      let!(:model) { create(:ci_trigger, project: parent) }
+    end
+  end
 end

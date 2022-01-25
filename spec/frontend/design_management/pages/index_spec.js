@@ -1,6 +1,7 @@
 import { GlEmptyState } from '@gitlab/ui';
-import { createLocalVue, shallowMount } from '@vue/test-utils';
-import { nextTick } from 'vue';
+import { shallowMount } from '@vue/test-utils';
+import Vue, { nextTick } from 'vue';
+
 import VueApollo, { ApolloMutation } from 'vue-apollo';
 import VueRouter from 'vue-router';
 import VueDraggable from 'vuedraggable';
@@ -49,9 +50,8 @@ jest.spyOn(utils, 'getPageLayoutElement').mockReturnValue(mockPageEl);
 const scrollIntoViewMock = jest.fn();
 HTMLElement.prototype.scrollIntoView = scrollIntoViewMock;
 
-const localVue = createLocalVue();
 const router = createRouter();
-localVue.use(VueRouter);
+Vue.use(VueRouter);
 
 const mockDesigns = [
   {
@@ -159,7 +159,6 @@ describe('Design management index page', () => {
         };
       },
       mocks: { $apollo },
-      localVue,
       router,
       stubs: { DesignDestroyer, ApolloMutation, VueDraggable, ...stubs },
       attachTo: document.body,
@@ -175,7 +174,7 @@ describe('Design management index page', () => {
   function createComponentWithApollo({
     moveHandler = jest.fn().mockResolvedValue(moveDesignMutationResponse),
   }) {
-    localVue.use(VueApollo);
+    Vue.use(VueApollo);
     moveDesignHandler = moveHandler;
 
     const requestHandlers = [
@@ -186,7 +185,6 @@ describe('Design management index page', () => {
 
     fakeApollo = createMockApollo(requestHandlers);
     wrapper = shallowMount(Index, {
-      localVue,
       apolloProvider: fakeApollo,
       router,
       stubs: { VueDraggable },

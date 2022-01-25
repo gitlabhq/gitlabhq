@@ -1,5 +1,5 @@
 import { GlSearchBoxByType } from '@gitlab/ui';
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import HeaderSearchApp from '~/header_search/components/app.vue';
@@ -202,7 +202,7 @@ describe('HeaderSearchApp', () => {
           expect(findHeaderSearchDropdown().exists()).toBe(false);
           findHeaderSearchInput().vm.$emit('focus');
 
-          await wrapper.vm.$nextTick();
+          await nextTick();
 
           expect(findHeaderSearchDropdown().exists()).toBe(true);
         });
@@ -211,7 +211,7 @@ describe('HeaderSearchApp', () => {
           expect(findHeaderSearchDropdown().exists()).toBe(false);
           findHeaderSearchInput().vm.$emit('click');
 
-          await wrapper.vm.$nextTick();
+          await nextTick();
 
           expect(findHeaderSearchDropdown().exists()).toBe(true);
         });
@@ -265,7 +265,7 @@ describe('HeaderSearchApp', () => {
         expect(findHeaderSearchDropdown().exists()).toBe(true);
         findDropdownKeyboardNavigation().vm.$emit('tab');
 
-        await wrapper.vm.$nextTick();
+        await nextTick();
 
         expect(findHeaderSearchDropdown().exists()).toBe(false);
       });
@@ -284,7 +284,7 @@ describe('HeaderSearchApp', () => {
 
       it(`when currentFocusIndex changes to ${MOCK_INDEX} updates the data to searchOptions[${MOCK_INDEX}]`, async () => {
         findDropdownKeyboardNavigation().vm.$emit('change', MOCK_INDEX);
-        await wrapper.vm.$nextTick();
+        await nextTick();
         expect(wrapper.vm.currentFocusedOption).toBe(MOCK_DEFAULT_SEARCH_OPTIONS[MOCK_INDEX]);
       });
     });
@@ -299,7 +299,7 @@ describe('HeaderSearchApp', () => {
       it('onKey-enter submits a search', async () => {
         findHeaderSearchInput().vm.$emit('keydown', new KeyboardEvent({ key: ENTER_KEY }));
 
-        await wrapper.vm.$nextTick();
+        await nextTick();
 
         expect(visitUrl).toHaveBeenCalledWith(MOCK_SEARCH_QUERY);
       });
@@ -316,7 +316,7 @@ describe('HeaderSearchApp', () => {
 
       it('onKey-enter clicks the selected dropdown item rather than submitting a search', async () => {
         findDropdownKeyboardNavigation().vm.$emit('change', MOCK_INDEX);
-        await wrapper.vm.$nextTick();
+        await nextTick();
         findHeaderSearchInput().vm.$emit('keydown', new KeyboardEvent({ key: ENTER_KEY }));
         expect(visitUrl).toHaveBeenCalledWith(MOCK_DEFAULT_SEARCH_OPTIONS[MOCK_INDEX].url);
       });

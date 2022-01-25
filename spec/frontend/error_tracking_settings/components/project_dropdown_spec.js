@@ -1,6 +1,6 @@
 import { GlDropdown, GlDropdownItem } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import { pick, clone } from 'lodash';
 import Vuex from 'vuex';
 import ProjectDropdown from '~/error_tracking_settings/components/project_dropdown.vue';
@@ -63,10 +63,10 @@ describe('error tracking settings project dropdown', () => {
   });
 
   describe('populated project list', () => {
-    beforeEach(() => {
+    beforeEach(async () => {
       wrapper.setProps({ projects: clone(projectList), hasProjects: true });
 
-      return wrapper.vm.$nextTick();
+      await nextTick();
     });
 
     it('renders the dropdown', () => {
@@ -83,9 +83,9 @@ describe('error tracking settings project dropdown', () => {
   describe('selected project', () => {
     const selectedProject = clone(projectList[0]);
 
-    beforeEach(() => {
+    beforeEach(async () => {
       wrapper.setProps({ projects: clone(projectList), selectedProject, hasProjects: true });
-      return wrapper.vm.$nextTick();
+      await nextTick();
     });
 
     it('does not show helper text', () => {
@@ -95,13 +95,13 @@ describe('error tracking settings project dropdown', () => {
   });
 
   describe('invalid project selected', () => {
-    beforeEach(() => {
+    beforeEach(async () => {
       wrapper.setProps({
         projects: clone(projectList),
         selectedProject: staleProject,
         isProjectInvalid: true,
       });
-      return wrapper.vm.$nextTick();
+      await nextTick();
     });
 
     it('displays a error', () => {

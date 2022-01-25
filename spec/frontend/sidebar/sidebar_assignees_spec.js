@@ -1,6 +1,7 @@
 import { shallowMount } from '@vue/test-utils';
 import axios from 'axios';
 import AxiosMockAdapter from 'axios-mock-adapter';
+import { nextTick } from 'vue';
 import Assigness from '~/sidebar/components/assignees/assignees.vue';
 import AssigneesRealtime from '~/sidebar/components/assignees/assignees_realtime.vue';
 import SidebarAssignees from '~/sidebar/components/assignees/sidebar_assignees.vue';
@@ -74,16 +75,15 @@ describe('sidebar assignees', () => {
     expect(mediator.store.assignees.length).toBe(1);
   });
 
-  it('hides assignees until fetched', () => {
+  it('hides assignees until fetched', async () => {
     createComponent();
 
     expect(wrapper.find(Assigness).exists()).toBe(false);
 
     wrapper.vm.store.isFetching.assignees = false;
 
-    return wrapper.vm.$nextTick(() => {
-      expect(wrapper.find(Assigness).exists()).toBe(true);
-    });
+    await nextTick();
+    expect(wrapper.find(Assigness).exists()).toBe(true);
   });
 
   describe('when realTimeIssueSidebar is turned on', () => {

@@ -1,8 +1,9 @@
 import { GlDropdown, GlDropdownItem, GlDropdownForm } from '@gitlab/ui';
-import { createLocalVue, createWrapper } from '@vue/test-utils';
-import { nextTick } from 'vue';
+import { mount, shallowMount, createWrapper } from '@vue/test-utils';
+import Vue, { nextTick } from 'vue';
+
 import VueApollo from 'vue-apollo';
-import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_helper';
+import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 
 import RegistrationDropdown from '~/runner/components/registration/registration_dropdown.vue';
@@ -33,15 +34,17 @@ describe('RegistrationDropdown', () => {
 
   const findToggleMaskButton = () => wrapper.findByTestId('toggle-masked');
 
-  const createComponent = ({ props = {}, ...options } = {}, mountFn = shallowMountExtended) => {
-    wrapper = mountFn(RegistrationDropdown, {
-      propsData: {
-        registrationToken: mockToken,
-        type: INSTANCE_TYPE,
-        ...props,
-      },
-      ...options,
-    });
+  const createComponent = ({ props = {}, ...options } = {}, mountFn = shallowMount) => {
+    wrapper = extendedWrapper(
+      mountFn(RegistrationDropdown, {
+        propsData: {
+          registrationToken: mockToken,
+          type: INSTANCE_TYPE,
+          ...props,
+        },
+        ...options,
+      }),
+    );
   };
 
   it.each`
@@ -50,7 +53,7 @@ describe('RegistrationDropdown', () => {
     ${GROUP_TYPE}    | ${'Register a group runner'}
     ${PROJECT_TYPE}  | ${'Register a project runner'}
   `('Dropdown text for type $type is "$text"', () => {
-    createComponent({ props: { type: INSTANCE_TYPE } }, mountExtended);
+    createComponent({ props: { type: INSTANCE_TYPE } }, mount);
 
     expect(wrapper.text()).toContain('Register an instance runner');
   });
@@ -71,8 +74,7 @@ describe('RegistrationDropdown', () => {
     });
 
     describe('When the dropdown item is clicked', () => {
-      const localVue = createLocalVue();
-      localVue.use(VueApollo);
+      Vue.use(VueApollo);
 
       const requestHandlers = [
         [getRunnerPlatformsQuery, jest.fn().mockResolvedValue(mockGraphqlRunnerPlatforms)],
@@ -85,13 +87,12 @@ describe('RegistrationDropdown', () => {
       beforeEach(async () => {
         createComponent(
           {
-            localVue,
             // Mock load modal contents from API
             apolloProvider: createMockApollo(requestHandlers),
             // Use `attachTo` to find the modal
             attachTo: document.body,
           },
-          mountExtended,
+          mount,
         );
 
         await findRegistrationInstructionsDropdownItem().trigger('click');
@@ -129,7 +130,7 @@ describe('RegistrationDropdown', () => {
     });
 
     it('Displays masked value by default', () => {
-      createComponent({}, mountExtended);
+      createComponent({}, mount);
 
       expect(findTokenDropdownItem().text()).toMatchInterpolatedText(
         `Registration token ${maskToken}`,
@@ -152,7 +153,7 @@ describe('RegistrationDropdown', () => {
   });
 
   it('Updates the token when it gets reset', async () => {
-    createComponent({}, mountExtended);
+    createComponent({}, mount);
 
     const newToken = 'mock1';
 

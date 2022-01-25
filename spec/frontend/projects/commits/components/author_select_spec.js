@@ -1,6 +1,6 @@
 import { GlDropdown, GlDropdownSectionHeader, GlSearchBoxByType, GlDropdownItem } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 import * as urlUtility from '~/lib/utils/url_utility';
 import AuthorSelect from '~/projects/commits/components/author_select.vue';
@@ -63,36 +63,33 @@ describe('Author Select', () => {
   const findDropdownItems = () => wrapper.findAll(GlDropdownItem);
 
   describe('user is searching via "filter by commit message"', () => {
-    it('disables dropdown container', () => {
+    it('disables dropdown container', async () => {
       // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
       // eslint-disable-next-line no-restricted-syntax
       wrapper.setData({ hasSearchParam: true });
 
-      return wrapper.vm.$nextTick().then(() => {
-        expect(findDropdownContainer().attributes('disabled')).toBeFalsy();
-      });
+      await nextTick();
+      expect(findDropdownContainer().attributes('disabled')).toBeFalsy();
     });
 
-    it('has correct tooltip message', () => {
+    it('has correct tooltip message', async () => {
       // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
       // eslint-disable-next-line no-restricted-syntax
       wrapper.setData({ hasSearchParam: true });
 
-      return wrapper.vm.$nextTick().then(() => {
-        expect(findDropdownContainer().attributes('title')).toBe(
-          'Searching by both author and message is currently not supported.',
-        );
-      });
+      await nextTick();
+      expect(findDropdownContainer().attributes('title')).toBe(
+        'Searching by both author and message is currently not supported.',
+      );
     });
 
-    it('disables dropdown', () => {
+    it('disables dropdown', async () => {
       // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
       // eslint-disable-next-line no-restricted-syntax
       wrapper.setData({ hasSearchParam: false });
 
-      return wrapper.vm.$nextTick().then(() => {
-        expect(findDropdown().attributes('disabled')).toBeFalsy();
-      });
+      await nextTick();
+      expect(findDropdown().attributes('disabled')).toBeFalsy();
     });
 
     it('hasSearchParam if user types a truthy string', () => {
@@ -107,14 +104,13 @@ describe('Author Select', () => {
       expect(findDropdown().attributes('text')).toBe('Author');
     });
 
-    it('displays the current selected author', () => {
+    it('displays the current selected author', async () => {
       // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
       // eslint-disable-next-line no-restricted-syntax
       wrapper.setData({ currentAuthor });
 
-      return wrapper.vm.$nextTick().then(() => {
-        expect(findDropdown().attributes('text')).toBe(currentAuthor);
-      });
+      await nextTick();
+      expect(findDropdown().attributes('text')).toBe(currentAuthor);
     });
 
     it('displays correct header text', () => {
@@ -149,13 +145,12 @@ describe('Author Select', () => {
       expect(findDropdownItems().at(0).text()).toBe('Any Author');
     });
 
-    it('displays the project authors', () => {
-      return wrapper.vm.$nextTick().then(() => {
-        expect(findDropdownItems()).toHaveLength(authors.length + 1);
-      });
+    it('displays the project authors', async () => {
+      await nextTick();
+      expect(findDropdownItems()).toHaveLength(authors.length + 1);
     });
 
-    it('has the correct props', () => {
+    it('has the correct props', async () => {
       const [{ avatar_url, username }] = authors;
       const result = {
         avatarUrl: avatar_url,
@@ -167,15 +162,13 @@ describe('Author Select', () => {
       // eslint-disable-next-line no-restricted-syntax
       wrapper.setData({ currentAuthor });
 
-      return wrapper.vm.$nextTick().then(() => {
-        expect(findDropdownItems().at(1).props()).toEqual(expect.objectContaining(result));
-      });
+      await nextTick();
+      expect(findDropdownItems().at(1).props()).toEqual(expect.objectContaining(result));
     });
 
-    it("display the author's name", () => {
-      return wrapper.vm.$nextTick().then(() => {
-        expect(findDropdownItems().at(1).text()).toBe(currentAuthor);
-      });
+    it("display the author's name", async () => {
+      await nextTick();
+      expect(findDropdownItems().at(1).text()).toBe(currentAuthor);
     });
 
     it('passes selected author to redirectPath', () => {

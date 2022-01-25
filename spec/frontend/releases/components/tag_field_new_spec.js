@@ -1,6 +1,6 @@
 import { GlDropdownItem } from '@gitlab/ui';
 import { mount, shallowMount } from '@vue/test-utils';
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import { __ } from '~/locale';
 import TagFieldNew from '~/releases/components/tag_field_new.vue';
 import createStore from '~/releases/stores';
@@ -153,7 +153,7 @@ describe('releases/components/tag_field_new', () => {
        * Should be passed either 'shown' or 'hidden'
        */
       const expectValidationMessageToBe = async (state) => {
-        await wrapper.vm.$nextTick();
+        await nextTick();
 
         expect(findTagNameFormGroup().element).toHaveClass(
           state === 'shown' ? 'is-invalid' : 'is-valid',

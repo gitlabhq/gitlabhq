@@ -1,5 +1,6 @@
 import { GlLoadingIcon, GlIcon } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import GraphGroup from '~/monitoring/components/graph_group.vue';
 
 describe('Graph group component', () => {
@@ -38,13 +39,12 @@ describe('Graph group component', () => {
       expect(findCaretIcon().props('name')).toBe('angle-down');
     });
 
-    it('should show the angle-right caret icon when the user collapses the group', () => {
+    it('should show the angle-right caret icon when the user collapses the group', async () => {
       findToggleButton().trigger('click');
 
-      return wrapper.vm.$nextTick().then(() => {
-        expect(findContent().isVisible()).toBe(false);
-        expect(findCaretIcon().props('name')).toBe('angle-right');
-      });
+      await nextTick();
+      expect(findContent().isVisible()).toBe(false);
+      expect(findCaretIcon().props('name')).toBe('angle-right');
     });
 
     it('should contain a tab index for the collapse button', () => {
@@ -53,15 +53,14 @@ describe('Graph group component', () => {
       expect(groupToggle.attributes('tabindex')).toBeDefined();
     });
 
-    it('should show the open the group when collapseGroup is set to true', () => {
+    it('should show the open the group when collapseGroup is set to true', async () => {
       wrapper.setProps({
         collapseGroup: true,
       });
 
-      return wrapper.vm.$nextTick().then(() => {
-        expect(findContent().isVisible()).toBe(true);
-        expect(findCaretIcon().props('name')).toBe('angle-down');
-      });
+      await nextTick();
+      expect(findContent().isVisible()).toBe(true);
+      expect(findCaretIcon().props('name')).toBe('angle-down');
     });
   });
 
@@ -77,12 +76,11 @@ describe('Graph group component', () => {
       expect(findCaretIcon().props('name')).toBe('angle-right');
     });
 
-    it('should show the angle-right caret icon when collapseGroup is false', () => {
+    it('should show the angle-right caret icon when collapseGroup is false', async () => {
       findToggleButton().trigger('click');
 
-      return wrapper.vm.$nextTick().then(() => {
-        expect(findCaretIcon().props('name')).toBe('angle-down');
-      });
+      await nextTick();
+      expect(findCaretIcon().props('name')).toBe('angle-down');
     });
 
     it('should call collapse the graph group content when enter is pressed on the caret icon', () => {
@@ -137,15 +135,14 @@ describe('Graph group component', () => {
       expect(findCaretIcon().exists()).toBe(false);
     });
 
-    it('should show the panel content when collapse is set to false', () => {
+    it('should show the panel content when collapse is set to false', async () => {
       wrapper.setProps({
         collapseGroup: false,
       });
 
-      return wrapper.vm.$nextTick().then(() => {
-        expect(findContent().isVisible()).toBe(true);
-        expect(findCaretIcon().exists()).toBe(false);
-      });
+      await nextTick();
+      expect(findContent().isVisible()).toBe(true);
+      expect(findCaretIcon().exists()).toBe(false);
     });
   });
 });

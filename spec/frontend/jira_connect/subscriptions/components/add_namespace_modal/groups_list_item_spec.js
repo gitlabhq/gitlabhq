@@ -1,5 +1,6 @@
 import { GlButton } from '@gitlab/ui';
 import { mount, shallowMount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import waitForPromises from 'helpers/wait_for_promises';
 
 import * as JiraConnectApi from '~/jira_connect/subscriptions/api';
@@ -63,7 +64,7 @@ describe('GroupsListItem', () => {
 
       clickLinkButton();
 
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       expect(findLinkButton().props('loading')).toBe(true);
 

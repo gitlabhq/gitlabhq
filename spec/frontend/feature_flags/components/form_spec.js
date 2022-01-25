@@ -1,5 +1,6 @@
 import { GlButton } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import Api from '~/api';
 import Form from '~/feature_flags/components/form.vue';
@@ -126,28 +127,26 @@ describe('feature flag form', () => {
       expect(wrapper.findAll(Strategy)).toHaveLength(2);
     });
 
-    it('adds an all users strategy when clicking the Add button', () => {
+    it('adds an all users strategy when clicking the Add button', async () => {
       wrapper.find(GlButton).vm.$emit('click');
 
-      return wrapper.vm.$nextTick().then(() => {
-        const strategies = wrapper.findAll(Strategy);
+      await nextTick();
+      const strategies = wrapper.findAll(Strategy);
 
-        expect(strategies).toHaveLength(3);
-        expect(strategies.at(2).props('strategy')).toEqual(allUsersStrategy);
-      });
+      expect(strategies).toHaveLength(3);
+      expect(strategies.at(2).props('strategy')).toEqual(allUsersStrategy);
     });
 
-    it('should remove a strategy on delete', () => {
+    it('should remove a strategy on delete', async () => {
       const strategy = {
         type: ROLLOUT_STRATEGY_PERCENT_ROLLOUT,
         parameters: { percentage: '30' },
         scopes: [],
       };
       wrapper.find(Strategy).vm.$emit('delete');
-      return wrapper.vm.$nextTick().then(() => {
-        expect(wrapper.findAll(Strategy)).toHaveLength(1);
-        expect(wrapper.find(Strategy).props('strategy')).not.toEqual(strategy);
-      });
+      await nextTick();
+      expect(wrapper.findAll(Strategy)).toHaveLength(1);
+      expect(wrapper.find(Strategy).props('strategy')).not.toEqual(strategy);
     });
   });
 });

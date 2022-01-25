@@ -11,7 +11,7 @@ When implementing new features, please refer to these existing features to avoid
 
 - [Custom Dashboards](../operations/metrics/dashboards/index.md#add-a-new-dashboard-to-your-project): `.gitlab/dashboards/`.
 - [Issue Templates](../user/project/description_templates.md#create-an-issue-template): `.gitlab/issue_templates/`.
-- [Merge Request Templates](../user/project/description_templates.md#create-a-merge-request-template): `.gitlab/merge_request_templates/`.
+- [Merge request Templates](../user/project/description_templates.md#create-a-merge-request-template): `.gitlab/merge_request_templates/`.
 - [GitLab Agent](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/blob/master/doc/configuration_repository.md#layout): `.gitlab/agents/`.
 - [CODEOWNERS](../user/project/code_owners.md#set-up-code-owners): `.gitlab/CODEOWNERS`.
 - [Route Maps](../ci/review_apps/#route-maps): `.gitlab/route-map.yml`.

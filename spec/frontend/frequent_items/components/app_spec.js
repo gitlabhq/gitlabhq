@@ -1,5 +1,5 @@
 import MockAdapter from 'axios-mock-adapter';
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
@@ -97,7 +97,7 @@ describe('Frequent Items App Component', () => {
       triggerDropdownOpen();
       store.state[TEST_VUEX_MODULE].isLoadingItems = true;
 
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       const loading = findLoading();
 
@@ -119,7 +119,7 @@ describe('Frequent Items App Component', () => {
       expect(findFrequentItems().length).toBe(1);
 
       triggerDropdownOpen();
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       expect(findFrequentItems().length).toBe(expectedResult.length);
       expect(findFrequentItemsList().props()).toEqual({
@@ -135,7 +135,7 @@ describe('Frequent Items App Component', () => {
       mock.onGet(/\/api\/v4\/projects.json(.*)$/).replyOnce(200, mockSearchedProjects.data);
 
       setSearch('gitlab');
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       expect(findLoading().exists()).toBe(true);
 

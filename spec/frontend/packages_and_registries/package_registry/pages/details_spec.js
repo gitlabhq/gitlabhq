@@ -1,6 +1,6 @@
 import { GlEmptyState, GlBadge, GlTabs, GlTab } from '@gitlab/ui';
-import { createLocalVue } from '@vue/test-utils';
-import { nextTick } from 'vue';
+import Vue, { nextTick } from 'vue';
+
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { useMockLocationHelper } from 'helpers/mock_window_location_helper';
@@ -41,8 +41,6 @@ import {
 jest.mock('~/flash');
 useMockLocationHelper();
 
-const localVue = createLocalVue();
-
 describe('PackagesApp', () => {
   let wrapper;
   let apolloProvider;
@@ -64,7 +62,7 @@ describe('PackagesApp', () => {
     fileDeleteMutationResolver = jest.fn().mockResolvedValue(packageDestroyFileMutation()),
     routeId = '1',
   } = {}) {
-    localVue.use(VueApollo);
+    Vue.use(VueApollo);
 
     const requestHandlers = [
       [getPackageDetails, resolver],
@@ -73,7 +71,6 @@ describe('PackagesApp', () => {
     apolloProvider = createMockApollo(requestHandlers);
 
     wrapper = shallowMountExtended(PackagesApp, {
-      localVue,
       apolloProvider,
       provide,
       stubs: {

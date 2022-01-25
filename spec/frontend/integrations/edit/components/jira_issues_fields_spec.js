@@ -1,4 +1,5 @@
 import { GlFormCheckbox, GlFormInput } from '@gitlab/ui';
+import { nextTick } from 'vue';
 import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
 
 import JiraIssuesFields from '~/integrations/edit/components/jira_issues_fields.vue';
@@ -193,7 +194,7 @@ describe('JiraIssuesFields', () => {
         await setEnableCheckbox(true);
         expect(findJiraForVulnerabilities().attributes('show-full-feature')).toBe('true');
         wrapper.setProps({ showJiraVulnerabilitiesIntegration: false });
-        await wrapper.vm.$nextTick();
+        await nextTick();
         expect(findJiraForVulnerabilities().attributes('show-full-feature')).toBeUndefined();
       });
 

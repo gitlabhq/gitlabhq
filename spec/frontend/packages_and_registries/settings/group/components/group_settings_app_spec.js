@@ -1,7 +1,8 @@
 import { GlAlert } from '@gitlab/ui';
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
+import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
-import { nextTick } from 'vue';
+
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import PackagesSettings from '~/packages_and_registries/settings/group/components/packages_settings.vue';
@@ -19,8 +20,6 @@ import {
 
 jest.mock('~/flash');
 
-const localVue = createLocalVue();
-
 describe('Group Settings App', () => {
   let wrapper;
   let apolloProvider;
@@ -36,14 +35,13 @@ describe('Group Settings App', () => {
     resolver = jest.fn().mockResolvedValue(groupPackageSettingsMock),
     provide = defaultProvide,
   } = {}) => {
-    localVue.use(VueApollo);
+    Vue.use(VueApollo);
 
     const requestHandlers = [[getGroupPackagesSettingsQuery, resolver]];
 
     apolloProvider = createMockApollo(requestHandlers);
 
     wrapper = shallowMount(component, {
-      localVue,
       apolloProvider,
       provide,
       mocks: {

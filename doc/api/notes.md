@@ -320,7 +320,7 @@ Parameters:
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/snippets/52/notes/1659"
 ```
 
-## Merge Requests
+## Merge requests
 
 ### List all merge request notes
 

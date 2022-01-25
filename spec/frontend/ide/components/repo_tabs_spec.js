@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils';
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 import RepoTabs from '~/ide/components/repo_tabs.vue';
 import { createStore } from '~/ide/stores';
@@ -29,17 +29,14 @@ describe('RepoTabs', () => {
     wrapper.destroy();
   });
 
-  it('renders a list of tabs', (done) => {
+  it('renders a list of tabs', async () => {
     store.state.openFiles[0].active = true;
 
-    wrapper.vm.$nextTick(() => {
-      const tabs = [...wrapper.vm.$el.querySelectorAll('.multi-file-tab')];
+    await nextTick();
+    const tabs = [...wrapper.vm.$el.querySelectorAll('.multi-file-tab')];
 
-      expect(tabs.length).toEqual(2);
-      expect(tabs[0].parentNode.classList.contains('active')).toEqual(true);
-      expect(tabs[1].parentNode.classList.contains('active')).toEqual(false);
-
-      done();
-    });
+    expect(tabs.length).toEqual(2);
+    expect(tabs[0].parentNode.classList.contains('active')).toEqual(true);
+    expect(tabs[1].parentNode.classList.contains('active')).toEqual(false);
   });
 });

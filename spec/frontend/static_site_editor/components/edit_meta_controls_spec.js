@@ -1,6 +1,7 @@
 import { GlDropdown, GlDropdownItem, GlFormInput, GlFormTextarea } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 
+import { nextTick } from 'vue';
 import EditMetaControls from '~/static_site_editor/components/edit_meta_controls.vue';
 
 import { mergeRequestMeta, mergeRequestTemplates } from '../mock_data';
@@ -38,11 +39,11 @@ describe('~/static_site_editor/components/edit_meta_controls.vue', () => {
 
   const findGlFormTextAreaDescription = () => wrapper.find(GlFormTextarea);
 
-  beforeEach(() => {
+  beforeEach(async () => {
     buildWrapper();
     buildMocks();
 
-    return wrapper.vm.$nextTick();
+    await nextTick();
   });
 
   afterEach(() => {

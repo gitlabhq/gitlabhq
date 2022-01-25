@@ -285,7 +285,7 @@ Maintainers should check before merging if the merge request is approved by the
 required approvers. If still awaiting further approvals from others, remove yourself as a reviewer then `@` mention the author and explain why in a comment. Stay as reviewer if you're merging the code.
 
 Maintainers must check before merging if the merge request is introducing new
-vulnerabilities, by inspecting the list in the Merge Request
+vulnerabilities, by inspecting the list in the merge request
 [Security Widget](../user/application_security/index.md).
 When in doubt, a [Security Engineer](https://about.gitlab.com/company/team/) can be involved. The list of detected
 vulnerabilities must be either empty or containing:
@@ -296,8 +296,8 @@ vulnerabilities must be either empty or containing:
 Maintainers should **never** dismiss vulnerabilities to "empty" the list,
 without duly verifying them.
 
-Note that certain Merge Requests may target a stable branch. These are rare
-events. These types of Merge Requests cannot be merged by the Maintainer.
+Note that certain merge requests may target a stable branch. These are rare
+events. These types of merge requests cannot be merged by the Maintainer.
 Instead, these should be sent to the [Release Manager](https://about.gitlab.com/community/release-managers/).
 
 After merging, a maintainer should stay as the reviewer listed on the merge request.

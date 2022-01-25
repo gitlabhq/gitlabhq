@@ -1,6 +1,6 @@
 import { GlDropdown } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import AxiosMockAdapter from 'axios-mock-adapter';
 import Vuex from 'vuex';
 import { TEST_HOST } from 'helpers/test_constants';
@@ -151,13 +151,11 @@ describe('DiscussionFilter component', () => {
       window.mrTabs = undefined;
     });
 
-    it('only renders when discussion tab is active', (done) => {
+    it('only renders when discussion tab is active', async () => {
       eventHub.$emit('MergeRequestTabChange', 'commit');
 
-      wrapper.vm.$nextTick(() => {
-        expect(wrapper.html()).toBe('');
-        done();
-      });
+      await nextTick();
+      expect(wrapper.html()).toBe('');
     });
   });
 
@@ -166,58 +164,48 @@ describe('DiscussionFilter component', () => {
       window.location.hash = '';
     });
 
-    it('updates the filter when the URL links to a note', (done) => {
+    it('updates the filter when the URL links to a note', async () => {
       window.location.hash = `note_${discussionMock.notes[0].id}`;
       wrapper.vm.currentValue = discussionFiltersMock[2].value;
       wrapper.vm.handleLocationHash();
 
-      wrapper.vm.$nextTick(() => {
-        expect(wrapper.vm.currentValue).toBe(DISCUSSION_FILTERS_DEFAULT_VALUE);
-        done();
-      });
+      await nextTick();
+      expect(wrapper.vm.currentValue).toBe(DISCUSSION_FILTERS_DEFAULT_VALUE);
     });
 
-    it('does not update the filter when the current filter is "Show all activity"', (done) => {
+    it('does not update the filter when the current filter is "Show all activity"', async () => {
       window.location.hash = `note_${discussionMock.notes[0].id}`;
       wrapper.vm.handleLocationHash();
 
-      wrapper.vm.$nextTick(() => {
-        expect(wrapper.vm.currentValue).toBe(DISCUSSION_FILTERS_DEFAULT_VALUE);
-        done();
-      });
+      await nextTick();
+      expect(wrapper.vm.currentValue).toBe(DISCUSSION_FILTERS_DEFAULT_VALUE);
     });
 
-    it('only updates filter when the URL links to a note', (done) => {
+    it('only updates filter when the URL links to a note', async () => {
       window.location.hash = `testing123`;
       wrapper.vm.handleLocationHash();
 
-      wrapper.vm.$nextTick(() => {
-        expect(wrapper.vm.currentValue).toBe(DISCUSSION_FILTERS_DEFAULT_VALUE);
-        done();
-      });
+      await nextTick();
+      expect(wrapper.vm.currentValue).toBe(DISCUSSION_FILTERS_DEFAULT_VALUE);
     });
 
-    it('fetches discussions when there is a hash', (done) => {
+    it('fetches discussions when there is a hash', async () => {
       window.location.hash = `note_${discussionMock.notes[0].id}`;
       wrapper.vm.currentValue = discussionFiltersMock[2].value;
       jest.spyOn(wrapper.vm, 'selectFilter').mockImplementation(() => {});
       wrapper.vm.handleLocationHash();
 
-      wrapper.vm.$nextTick(() => {
-        expect(wrapper.vm.selectFilter).toHaveBeenCalled();
-        done();
-      });
+      await nextTick();
+      expect(wrapper.vm.selectFilter).toHaveBeenCalled();
     });
 
-    it('does not fetch discussions when there is no hash', (done) => {
+    it('does not fetch discussions when there is no hash', async () => {
       window.location.hash = '';
       jest.spyOn(wrapper.vm, 'selectFilter').mockImplementation(() => {});
       wrapper.vm.handleLocationHash();
 
-      wrapper.vm.$nextTick(() => {
-        expect(wrapper.vm.selectFilter).not.toHaveBeenCalled();
-        done();
-      });
+      await nextTick();
+      expect(wrapper.vm.selectFilter).not.toHaveBeenCalled();
     });
   });
 });

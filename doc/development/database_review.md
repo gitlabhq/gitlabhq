@@ -66,7 +66,7 @@ Refer to [Preparation when adding or modifying queries](#preparation-when-adding
 
 ### Roles and process
 
-A Merge Request **author**'s role is to:
+A merge request **author**'s role is to:
 
 - Decide whether a database review is needed.
 - If database review is needed, add the ~database label.

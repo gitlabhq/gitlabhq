@@ -1,8 +1,9 @@
 import { GlLoadingIcon } from '@gitlab/ui';
-import { mount, shallowMount, createLocalVue } from '@vue/test-utils';
+import { mount, shallowMount } from '@vue/test-utils';
+import Vue, { nextTick } from 'vue';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
-import { nextTick } from 'vue';
+
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -36,11 +37,10 @@ jest.mock('~/lib/utils/common_utils');
 let wrapper;
 let mockResolver;
 
-const localVue = createLocalVue();
 const mockAxios = new MockAdapter(axios);
 
 const createComponent = async (mockData = {}, mountFn = shallowMount) => {
-  localVue.use(VueApollo);
+  Vue.use(VueApollo);
 
   const {
     blob = simpleViewerMock,
@@ -75,7 +75,6 @@ const createComponent = async (mockData = {}, mountFn = shallowMount) => {
 
   wrapper = extendedWrapper(
     mountFn(BlobContentViewer, {
-      localVue,
       apolloProvider: fakeApollo,
       propsData: propsMock,
       mixins: [{ data: () => ({ ref: refMock }) }],

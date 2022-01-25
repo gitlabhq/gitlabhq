@@ -1,6 +1,7 @@
 import { GlDropdown, GlDropdownItem, GlButton } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import Visibility from 'visibilityjs';
+import { nextTick } from 'vue';
 import RefreshButton from '~/monitoring/components/refresh_button.vue';
 import { createStore } from '~/monitoring/stores';
 
@@ -79,9 +80,9 @@ describe('RefreshButton', () => {
   describe('when a refresh rate is chosen', () => {
     const optIndex = 2; // Other option than "Off"
 
-    beforeEach(() => {
+    beforeEach(async () => {
       findOptionAt(optIndex).vm.$emit('click');
-      return wrapper.vm.$nextTick;
+      await nextTick();
     });
 
     it('refresh rate appears in the dropdown', () => {
@@ -101,7 +102,7 @@ describe('RefreshButton', () => {
       jest.runOnlyPendingTimers();
       expectFetchDataToHaveBeenCalledTimes(2);
 
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       jest.runOnlyPendingTimers();
       expectFetchDataToHaveBeenCalledTimes(3);
@@ -113,7 +114,7 @@ describe('RefreshButton', () => {
       jest.runOnlyPendingTimers();
       expectFetchDataToHaveBeenCalledTimes(1);
 
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       jest.runOnlyPendingTimers();
       expectFetchDataToHaveBeenCalledTimes(1);
@@ -128,9 +129,9 @@ describe('RefreshButton', () => {
     });
 
     describe('when "Off" refresh rate is chosen', () => {
-      beforeEach(() => {
+      beforeEach(async () => {
         findOptionAt(0).vm.$emit('click');
-        return wrapper.vm.$nextTick;
+        await nextTick();
       });
 
       it('refresh rate is "Off" in the dropdown', () => {

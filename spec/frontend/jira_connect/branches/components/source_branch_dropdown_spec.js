@@ -1,13 +1,12 @@
 import { GlDropdown, GlDropdownItem, GlLoadingIcon, GlSearchBoxByType } from '@gitlab/ui';
-import { mount, shallowMount, createLocalVue } from '@vue/test-utils';
+import { mount, shallowMount } from '@vue/test-utils';
+import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import SourceBranchDropdown from '~/jira_connect/branches/components/source_branch_dropdown.vue';
 import { BRANCHES_PER_PAGE } from '~/jira_connect/branches/constants';
 import getProjectQuery from '~/jira_connect/branches/graphql/queries/get_project.query.graphql';
-
-const localVue = createLocalVue();
 
 const mockProject = {
   id: 'test',
@@ -45,7 +44,7 @@ describe('SourceBranchDropdown', () => {
   };
 
   function createMockApolloProvider({ getProjectQueryLoading = false } = {}) {
-    localVue.use(VueApollo);
+    Vue.use(VueApollo);
 
     const mockApollo = createMockApollo([
       [getProjectQuery, getProjectQueryLoading ? mockQueryLoading : mockGetProjectQuery],
@@ -56,7 +55,6 @@ describe('SourceBranchDropdown', () => {
 
   function createComponent({ mockApollo, props, mountFn = shallowMount } = {}) {
     wrapper = mountFn(SourceBranchDropdown, {
-      localVue,
       apolloProvider: mockApollo || createMockApolloProvider(),
       propsData: props,
     });

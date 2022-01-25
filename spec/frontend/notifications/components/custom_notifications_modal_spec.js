@@ -2,6 +2,7 @@ import { GlSprintf, GlModal, GlFormGroup, GlFormCheckbox, GlLoadingIcon } from '
 import { shallowMount } from '@vue/test-utils';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
+import { nextTick } from 'vue';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import httpStatus from '~/lib/utils/http_status';
@@ -97,7 +98,7 @@ describe('CustomNotificationsModal', () => {
           ],
         });
 
-        await wrapper.vm.$nextTick();
+        await nextTick();
       });
 
       it.each`
@@ -222,7 +223,7 @@ describe('CustomNotificationsModal', () => {
             ],
           });
 
-          await wrapper.vm.$nextTick();
+          await nextTick();
 
           findCheckboxAt(1).vm.$emit('change', true);
 
@@ -252,7 +253,7 @@ describe('CustomNotificationsModal', () => {
           ],
         });
 
-        await wrapper.vm.$nextTick();
+        await nextTick();
 
         findCheckboxAt(1).vm.$emit('change', true);
 

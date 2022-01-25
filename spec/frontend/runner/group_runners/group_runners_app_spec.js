@@ -1,6 +1,7 @@
 import Vue, { nextTick } from 'vue';
 import { GlLink } from '@gitlab/ui';
 import { shallowMount, mount } from '@vue/test-utils';
+
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import setWindowLocation from 'helpers/set_window_location_helper';

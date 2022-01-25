@@ -1,6 +1,7 @@
 import VueApollo from 'vue-apollo';
 import { GlIcon } from '@gitlab/ui';
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
+import Vue from 'vue';
 import { escape } from 'lodash';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -24,8 +25,7 @@ import {
   mockYmlHelpPagePath,
 } from '../../mock_data';
 
-const localVue = createLocalVue();
-localVue.use(VueApollo);
+Vue.use(VueApollo);
 
 describe('Validation segment component', () => {
   let wrapper;
@@ -45,7 +45,6 @@ describe('Validation segment component', () => {
 
     wrapper = extendedWrapper(
       shallowMount(ValidationSegment, {
-        localVue,
         apolloProvider: mockApollo,
         provide: {
           ymlHelpPagePath: mockYmlHelpPagePath,

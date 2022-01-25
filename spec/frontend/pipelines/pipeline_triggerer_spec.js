@@ -1,4 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import pipelineTriggerer from '~/pipelines/components/pipelines_list/pipeline_triggerer.vue';
 import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
 
@@ -47,15 +48,14 @@ describe('Pipelines Triggerer', () => {
     });
   });
 
-  it('should render "API" when no triggerer is provided', () => {
+  it('should render "API" when no triggerer is provided', async () => {
     wrapper.setProps({
       pipeline: {
         user: null,
       },
     });
 
-    return wrapper.vm.$nextTick(() => {
-      expect(wrapper.find('.js-pipeline-url-api').text()).toEqual('API');
-    });
+    await nextTick();
+    expect(wrapper.find('.js-pipeline-url-api').text()).toEqual('API');
   });
 });

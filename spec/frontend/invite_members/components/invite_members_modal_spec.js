@@ -8,6 +8,7 @@ import {
   GlModal,
 } from '@gitlab/ui';
 import MockAdapter from 'axios-mock-adapter';
+import { nextTick } from 'vue';
 import { stubComponent } from 'helpers/stub_component';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -508,7 +509,7 @@ describe('InviteMembersModal', () => {
 
             findMembersSelect().vm.$emit('clear');
 
-            await wrapper.vm.$nextTick();
+            await nextTick();
 
             expect(membersFormGroupInvalidFeedback()).toBe('');
             expect(findMembersFormGroup().props('state')).not.toBe(false);
@@ -518,7 +519,7 @@ describe('InviteMembersModal', () => {
           it('clears the error when the cancel button is clicked', async () => {
             clickCancelButton();
 
-            await wrapper.vm.$nextTick();
+            await nextTick();
 
             expect(membersFormGroupInvalidFeedback()).toBe('');
             expect(findMembersFormGroup().props('state')).not.toBe(false);
@@ -528,7 +529,7 @@ describe('InviteMembersModal', () => {
           it('clears the error when the modal is hidden', async () => {
             wrapper.findComponent(GlModal).vm.$emit('hide');
 
-            await wrapper.vm.$nextTick();
+            await nextTick();
 
             expect(membersFormGroupInvalidFeedback()).toBe('');
             expect(findMembersFormGroup().props('state')).not.toBe(false);

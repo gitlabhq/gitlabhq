@@ -1,5 +1,5 @@
-import { shallowMount, createLocalVue } from '@vue/test-utils';
-import { nextTick } from 'vue';
+import { shallowMount } from '@vue/test-utils';
+import Vue, { nextTick } from 'vue';
 import { GlEmptyState } from '@gitlab/ui';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -21,8 +21,6 @@ import {
 } from '~/packages_and_registries/container_registry/explorer/constants/index';
 import { FILTERED_SEARCH_TERM } from '~/packages_and_registries/shared/constants';
 import { tagsMock, imageTagsMock, tagsPageInfo } from '../../mock_data';
-
-const localVue = createLocalVue();
 
 describe('Tags List', () => {
   let wrapper;
@@ -50,13 +48,12 @@ describe('Tags List', () => {
   };
 
   const mountComponent = ({ propsData = { isMobile: false, id: 1 } } = {}) => {
-    localVue.use(VueApollo);
+    Vue.use(VueApollo);
 
     const requestHandlers = [[getContainerRepositoryTagsQuery, resolver]];
 
     apolloProvider = createMockApollo(requestHandlers);
     wrapper = shallowMount(component, {
-      localVue,
       apolloProvider,
       propsData,
       stubs: { RegistryList },

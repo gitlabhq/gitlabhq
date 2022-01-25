@@ -1,5 +1,6 @@
 import { GlIcon, GlSprintf } from '@gitlab/ui';
 import { GlBreakpointInstance } from '@gitlab/ui/dist/utils';
+import { nextTick } from 'vue';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import PackageTags from '~/packages_and_registries/shared/components/package_tags.vue';
@@ -24,7 +25,7 @@ const packageWithTags = {
 describe('PackageTitle', () => {
   let wrapper;
 
-  function createComponent(packageEntity = packageWithTags) {
+  async function createComponent(packageEntity = packageWithTags) {
     wrapper = shallowMountExtended(PackageTitle, {
       propsData: { packageEntity },
       stubs: {
@@ -35,7 +36,7 @@ describe('PackageTitle', () => {
         GlResizeObserver: createMockDirective(),
       },
     });
-    return wrapper.vm.$nextTick();
+    await nextTick();
   }
 
   const findTitleArea = () => wrapper.findComponent(TitleArea);
@@ -71,7 +72,7 @@ describe('PackageTitle', () => {
 
       await createComponent();
 
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       expect(findPackageBadges()).toHaveLength(packageTags().length);
     });
@@ -85,7 +86,7 @@ describe('PackageTitle', () => {
       const { value } = getBinding(wrapper.element, 'gl-resize-observer');
       value();
 
-      await wrapper.vm.$nextTick();
+      await nextTick();
       expect(findPackageBadges()).toHaveLength(packageTags().length);
     });
   });

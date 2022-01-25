@@ -1,5 +1,6 @@
 import { mount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
+import { nextTick } from 'vue';
 import createFlash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import {
@@ -51,23 +52,22 @@ describe('dashboard invalid url parameters', () => {
     queryToObject.mockReset();
   });
 
-  it('passes default url parameters to the time range picker', () => {
+  it('passes default url parameters to the time range picker', async () => {
     queryToObject.mockReturnValue({});
 
     createMountedWrapper();
 
-    return wrapper.vm.$nextTick().then(() => {
-      expect(findDateTimePicker().props('value')).toEqual(defaultTimeRange);
+    await nextTick();
+    expect(findDateTimePicker().props('value')).toEqual(defaultTimeRange);
 
-      expect(store.dispatch).toHaveBeenCalledWith(
-        'monitoringDashboard/setTimeRange',
-        expect.any(Object),
-      );
-      expect(store.dispatch).toHaveBeenCalledWith('monitoringDashboard/fetchData', undefined);
-    });
+    expect(store.dispatch).toHaveBeenCalledWith(
+      'monitoringDashboard/setTimeRange',
+      expect.any(Object),
+    );
+    expect(store.dispatch).toHaveBeenCalledWith('monitoringDashboard/fetchData', undefined);
   });
 
-  it('passes a fixed time range in the URL to the time range picker', () => {
+  it('passes a fixed time range in the URL to the time range picker', async () => {
     const params = {
       start: '2019-01-01T00:00:00.000Z',
       end: '2019-01-10T00:00:00.000Z',
@@ -77,37 +77,35 @@ describe('dashboard invalid url parameters', () => {
 
     createMountedWrapper();
 
-    return wrapper.vm.$nextTick().then(() => {
-      expect(findDateTimePicker().props('value')).toEqual(params);
+    await nextTick();
+    expect(findDateTimePicker().props('value')).toEqual(params);
 
-      expect(store.dispatch).toHaveBeenCalledWith('monitoringDashboard/setTimeRange', params);
-      expect(store.dispatch).toHaveBeenCalledWith('monitoringDashboard/fetchData', undefined);
-    });
+    expect(store.dispatch).toHaveBeenCalledWith('monitoringDashboard/setTimeRange', params);
+    expect(store.dispatch).toHaveBeenCalledWith('monitoringDashboard/fetchData', undefined);
   });
 
-  it('passes a rolling time range in the URL to the time range picker', () => {
+  it('passes a rolling time range in the URL to the time range picker', async () => {
     queryToObject.mockReturnValue({
       duration_seconds: '120',
     });
 
     createMountedWrapper();
 
-    return wrapper.vm.$nextTick().then(() => {
-      const expectedTimeRange = {
-        duration: { seconds: 60 * 2 },
-      };
+    await nextTick();
+    const expectedTimeRange = {
+      duration: { seconds: 60 * 2 },
+    };
 
-      expect(findDateTimePicker().props('value')).toMatchObject(expectedTimeRange);
+    expect(findDateTimePicker().props('value')).toMatchObject(expectedTimeRange);
 
-      expect(store.dispatch).toHaveBeenCalledWith(
-        'monitoringDashboard/setTimeRange',
-        expectedTimeRange,
-      );
-      expect(store.dispatch).toHaveBeenCalledWith('monitoringDashboard/fetchData', undefined);
-    });
+    expect(store.dispatch).toHaveBeenCalledWith(
+      'monitoringDashboard/setTimeRange',
+      expectedTimeRange,
+    );
+    expect(store.dispatch).toHaveBeenCalledWith('monitoringDashboard/fetchData', undefined);
   });
 
-  it('shows an error message and loads a default time range if invalid url parameters are passed', () => {
+  it('shows an error message and loads a default time range if invalid url parameters are passed', async () => {
     queryToObject.mockReturnValue({
       start: '<script>alert("XSS")</script>',
       end: '<script>alert("XSS")</script>',
@@ -115,37 +113,35 @@ describe('dashboard invalid url parameters', () => {
 
     createMountedWrapper();
 
-    return wrapper.vm.$nextTick().then(() => {
-      expect(createFlash).toHaveBeenCalled();
+    await nextTick();
+    expect(createFlash).toHaveBeenCalled();
 
-      expect(findDateTimePicker().props('value')).toEqual(defaultTimeRange);
+    expect(findDateTimePicker().props('value')).toEqual(defaultTimeRange);
 
-      expect(store.dispatch).toHaveBeenCalledWith(
-        'monitoringDashboard/setTimeRange',
-        defaultTimeRange,
-      );
-      expect(store.dispatch).toHaveBeenCalledWith('monitoringDashboard/fetchData', undefined);
-    });
+    expect(store.dispatch).toHaveBeenCalledWith(
+      'monitoringDashboard/setTimeRange',
+      defaultTimeRange,
+    );
+    expect(store.dispatch).toHaveBeenCalledWith('monitoringDashboard/fetchData', undefined);
   });
 
-  it('redirects to different time range', () => {
+  it('redirects to different time range', async () => {
     const toUrl = `${mockProjectDir}/-/environments/1/metrics`;
     removeParams.mockReturnValueOnce(toUrl);
 
     createMountedWrapper();
 
-    return wrapper.vm.$nextTick().then(() => {
-      findDateTimePicker().vm.$emit('input', {
-        duration: { seconds: 120 },
-      });
-
-      // redirect to with new parameters
-      expect(mergeUrlParams).toHaveBeenCalledWith({ duration_seconds: '120' }, toUrl);
-      expect(redirectTo).toHaveBeenCalledTimes(1);
+    await nextTick();
+    findDateTimePicker().vm.$emit('input', {
+      duration: { seconds: 120 },
     });
+
+    // redirect to with new parameters
+    expect(mergeUrlParams).toHaveBeenCalledWith({ duration_seconds: '120' }, toUrl);
+    expect(redirectTo).toHaveBeenCalledTimes(1);
   });
 
-  it('changes the url when a panel moves the time slider', () => {
+  it('changes the url when a panel moves the time slider', async () => {
     const timeRange = {
       start: '2020-01-01T00:00:00.000Z',
       end: '2020-01-01T01:00:00.000Z',
@@ -155,12 +151,11 @@ describe('dashboard invalid url parameters', () => {
 
     createMountedWrapper();
 
-    return wrapper.vm.$nextTick().then(() => {
-      wrapper.vm.onTimeRangeZoom(timeRange);
+    await nextTick();
+    wrapper.vm.onTimeRangeZoom(timeRange);
 
-      expect(updateHistory).toHaveBeenCalled();
-      expect(wrapper.vm.selectedTimeRange.start.toString()).toBe(timeRange.start);
-      expect(wrapper.vm.selectedTimeRange.end.toString()).toBe(timeRange.end);
-    });
+    expect(updateHistory).toHaveBeenCalled();
+    expect(wrapper.vm.selectedTimeRange.start.toString()).toBe(timeRange.start);
+    expect(wrapper.vm.selectedTimeRange.end.toString()).toBe(timeRange.end);
   });
 });

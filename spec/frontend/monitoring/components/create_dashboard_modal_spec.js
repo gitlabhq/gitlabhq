@@ -1,5 +1,6 @@
 import { GlModal } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import CreateDashboardModal from '~/monitoring/components/create_dashboard_modal.vue';
 
 describe('Create dashboard modal', () => {
@@ -32,13 +33,12 @@ describe('Create dashboard modal', () => {
     wrapper.destroy();
   });
 
-  it('has button that links to the project url', () => {
+  it('has button that links to the project url', async () => {
     findRepoButton().trigger('click');
 
-    return wrapper.vm.$nextTick().then(() => {
-      expect(findRepoButton().exists()).toBe(true);
-      expect(findRepoButton().attributes('href')).toBe(defaultProps.projectPath);
-    });
+    await nextTick();
+    expect(findRepoButton().exists()).toBe(true);
+    expect(findRepoButton().attributes('href')).toBe(defaultProps.projectPath);
   });
 
   it('has button that links to the docs', () => {

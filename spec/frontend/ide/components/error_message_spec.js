@@ -1,6 +1,6 @@
 import { GlLoadingIcon } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 import ErrorMessage from '~/ide/components/error_message.vue';
 
@@ -86,19 +86,15 @@ describe('IDE error message component', () => {
       expect(actionMock).toHaveBeenCalledWith(message.actionPayload);
     });
 
-    it('does not dispatch action when already loading', () => {
+    it('does not dispatch action when already loading', async () => {
       findActionButton().trigger('click');
       actionMock.mockReset();
-      return wrapper.vm.$nextTick(() => {
-        findActionButton().trigger('click');
-
-        return wrapper.vm.$nextTick().then(() => {
-          expect(actionMock).not.toHaveBeenCalled();
-        });
-      });
+      findActionButton().trigger('click');
+      await nextTick();
+      expect(actionMock).not.toHaveBeenCalled();
     });
 
-    it('shows loading icon when loading', () => {
+    it('shows loading icon when loading', async () => {
       let resolveAction;
       actionMock.mockImplementation(
         () =>
@@ -108,19 +104,16 @@ describe('IDE error message component', () => {
       );
       findActionButton().trigger('click');
 
-      return wrapper.vm.$nextTick(() => {
-        expect(wrapper.find(GlLoadingIcon).isVisible()).toBe(true);
-        resolveAction();
-      });
+      await nextTick();
+      expect(wrapper.find(GlLoadingIcon).isVisible()).toBe(true);
+      resolveAction();
     });
 
-    it('hides loading icon when operation finishes', () => {
+    it('hides loading icon when operation finishes', async () => {
       findActionButton().trigger('click');
-      return actionMock()
-        .then(() => wrapper.vm.$nextTick())
-        .then(() => {
-          expect(wrapper.find(GlLoadingIcon).isVisible()).toBe(false);
-        });
+      await actionMock();
+      await nextTick();
+      expect(wrapper.find(GlLoadingIcon).isVisible()).toBe(false);
     });
   });
 });

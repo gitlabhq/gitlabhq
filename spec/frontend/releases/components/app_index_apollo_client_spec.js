@@ -1,5 +1,5 @@
 import { cloneDeep } from 'lodash';
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import originalAllReleasesQueryResponse from 'test_fixtures/graphql/releases/graphql/queries/all_releases.query.graphql.json';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -296,7 +296,7 @@ describe('app_index_apollo_client.vue', () => {
       mockQueryParams = { after };
       findPagination().vm.$emit('next', after);
 
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       expect(queryMock.mock.calls).toEqual([
         [expect.objectContaining({ before })],
@@ -321,7 +321,7 @@ describe('app_index_apollo_client.vue', () => {
     it('requeries the GraphQL endpoint and updates the URL when the sort is changed', async () => {
       findSort().vm.$emit('input', CREATED_ASC);
 
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       expect(queryMock.mock.calls).toEqual([
         [expect.objectContaining({ sort: DEFAULT_SORT })],
@@ -337,7 +337,7 @@ describe('app_index_apollo_client.vue', () => {
     it('does not requery the GraphQL endpoint or update the URL if the sort is updated to the same value', async () => {
       findSort().vm.$emit('input', DEFAULT_SORT);
 
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       expect(queryMock.mock.calls).toEqual([
         [expect.objectContaining({ sort: DEFAULT_SORT })],
@@ -370,7 +370,7 @@ describe('app_index_apollo_client.vue', () => {
 
           findSort().vm.$emit('input', CREATED_ASC);
 
-          await wrapper.vm.$nextTick();
+          await nextTick();
         });
 
         it(`resets the page's "${paramName}" pagination cursor when the sort is changed`, () => {

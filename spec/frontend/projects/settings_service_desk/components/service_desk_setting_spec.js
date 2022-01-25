@@ -139,7 +139,7 @@ describe('ServiceDeskSetting', () => {
           input.setValue('abc_A.');
           input.trigger('blur');
 
-          await wrapper.vm.$nextTick();
+          await nextTick();
 
           const errorText = wrapper.find('.invalid-feedback');
           expect(errorText.exists()).toBe(true);

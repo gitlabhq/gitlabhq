@@ -1,4 +1,5 @@
 import { mount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import { TEST_HOST } from 'helpers/test_constants';
 import IssueDueDate from '~/boards/components/issue_due_date.vue';
 import { formatDate } from '~/lib/utils/datetime_utility';
@@ -105,7 +106,7 @@ describe('RelatedIssuableItem', () => {
         state: 'closed',
         closedAt: '2018-12-01T00:00:00.00Z',
       });
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       expect(tokenState().classes('issue-token-state-icon-closed')).toBe(true);
     });
@@ -140,7 +141,7 @@ describe('RelatedIssuableItem', () => {
           closedAt: '2018-12-01T00:00:00.00Z',
         },
       });
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       expect(wrapper.find(IssueDueDate).props('closed')).toBe(true);
     });
@@ -172,14 +173,14 @@ describe('RelatedIssuableItem', () => {
       // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
       // eslint-disable-next-line no-restricted-syntax
       wrapper.setData({ removeDisabled: true });
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       expect(findRemoveButton().attributes('disabled')).toEqual('disabled');
     });
 
     it('triggers onRemoveRequest when clicked', async () => {
       findRemoveButton().trigger('click');
-      await wrapper.vm.$nextTick();
+      await nextTick();
       const { relatedIssueRemoveRequest } = wrapper.emitted();
 
       expect(relatedIssueRemoveRequest.length).toBe(1);

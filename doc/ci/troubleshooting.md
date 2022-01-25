@@ -69,11 +69,11 @@ if you are using that type:
   and run separate pipelines in the same project. You can also
   [dynamically generate the child pipeline's configuration](pipelines/parent_child_pipelines.md#dynamic-child-pipelines)
   at runtime.
-- [Pipelines for Merge Requests](pipelines/merge_request_pipelines.md): Run a pipeline
+- [Pipelines for merge requests](pipelines/merge_request_pipelines.md): Run a pipeline
   in the context of a merge request.
-  - [Pipelines for Merge Results](pipelines/pipelines_for_merged_results.md):
+  - [Pipelines for merge results](pipelines/pipelines_for_merged_results.md):
     Pipelines for merge requests that run on the combined source and target branch
-  - [Merge Trains](pipelines/merge_trains.md):
+  - [Merge trains](pipelines/merge_trains.md):
     Multiple pipelines for merged results that queue and run automatically before
     changes are merged.
 

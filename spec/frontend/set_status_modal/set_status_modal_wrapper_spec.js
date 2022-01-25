@@ -1,5 +1,6 @@
 import { GlModal, GlFormCheckbox } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import { initEmojiMock, clearEmojiMock } from 'helpers/emoji';
 import * as UserApi from '~/api/user_api';
 import EmojiPicker from '~/emoji/components/picker.vue';
@@ -48,7 +49,7 @@ describe('SetStatusModalWrapper', () => {
   const findAvailabilityCheckbox = () => wrapper.find(GlFormCheckbox);
   const findClearStatusAtMessage = () => wrapper.find('[data-testid="clear-status-at-message"]');
 
-  const initModal = ({ mockOnUpdateSuccess = true, mockOnUpdateFailure = true } = {}) => {
+  const initModal = async ({ mockOnUpdateSuccess = true, mockOnUpdateFailure = true } = {}) => {
     const modal = findModal();
     // mock internal emoji methods
     wrapper.vm.showEmojiMenu = jest.fn();
@@ -57,7 +58,7 @@ describe('SetStatusModalWrapper', () => {
     if (mockOnUpdateFailure) wrapper.vm.onUpdateFail = jest.fn();
 
     modal.vm.$emit('shown');
-    return wrapper.vm.$nextTick();
+    await nextTick();
   };
 
   afterEach(() => {
@@ -207,7 +208,7 @@ describe('SetStatusModalWrapper', () => {
 
       it('clicking "removeStatus" clears the emoji and message fields', async () => {
         findModal().vm.$emit('secondary');
-        await wrapper.vm.$nextTick();
+        await nextTick();
 
         expect(findFormField('message').element.value).toBe('');
         expect(findFormField('emoji').element.value).toBe('');
@@ -215,7 +216,7 @@ describe('SetStatusModalWrapper', () => {
 
       it('clicking "setStatus" submits the user status', async () => {
         findModal().vm.$emit('primary');
-        await wrapper.vm.$nextTick();
+        await nextTick();
 
         // set the availability status
         findAvailabilityCheckbox().vm.$emit('input', true);
@@ -224,7 +225,7 @@ describe('SetStatusModalWrapper', () => {
         wrapper.find('[data-testid="thirtyMinutes"]').vm.$emit('click');
 
         findModal().vm.$emit('primary');
-        await wrapper.vm.$nextTick();
+        await nextTick();
 
         const commonParams = {
           emoji: defaultEmoji,
@@ -246,7 +247,7 @@ describe('SetStatusModalWrapper', () => {
 
       it('calls the "onUpdateSuccess" handler', async () => {
         findModal().vm.$emit('primary');
-        await wrapper.vm.$nextTick();
+        await nextTick();
 
         expect(wrapper.vm.onUpdateSuccess).toHaveBeenCalled();
       });
@@ -262,7 +263,7 @@ describe('SetStatusModalWrapper', () => {
 
       it('displays a toast success message', async () => {
         findModal().vm.$emit('primary');
-        await wrapper.vm.$nextTick();
+        await nextTick();
 
         expect($toast.show).toHaveBeenCalledWith('Status updated');
       });
@@ -279,7 +280,7 @@ describe('SetStatusModalWrapper', () => {
 
       it('calls the "onUpdateFail" handler', async () => {
         findModal().vm.$emit('primary');
-        await wrapper.vm.$nextTick();
+        await nextTick();
 
         expect(wrapper.vm.onUpdateFail).toHaveBeenCalled();
       });
@@ -295,7 +296,7 @@ describe('SetStatusModalWrapper', () => {
 
       it('flashes an error message', async () => {
         findModal().vm.$emit('primary');
-        await wrapper.vm.$nextTick();
+        await nextTick();
 
         expect(createFlash).toHaveBeenCalledWith({
           message: "Sorry, we weren't able to set your status. Please try again later.",

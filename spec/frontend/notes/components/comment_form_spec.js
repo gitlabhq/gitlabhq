@@ -466,8 +466,8 @@ describe('issue_comment_form component', () => {
 
               await findCloseReopenButton().trigger('click');
 
-              await wrapper.vm.$nextTick;
-              await wrapper.vm.$nextTick;
+              await nextTick;
+              await nextTick;
 
               expect(createFlash).toHaveBeenCalledWith({
                 message: `Something went wrong while closing the ${type}. Please try again later.`,
@@ -502,8 +502,8 @@ describe('issue_comment_form component', () => {
 
             await findCloseReopenButton().trigger('click');
 
-            await wrapper.vm.$nextTick;
-            await wrapper.vm.$nextTick;
+            await nextTick;
+            await nextTick;
 
             expect(createFlash).toHaveBeenCalledWith({
               message: `Something went wrong while reopening the ${type}. Please try again later.`,
@@ -521,7 +521,7 @@ describe('issue_comment_form component', () => {
 
           await findCloseReopenButton().trigger('click');
 
-          await wrapper.vm.$nextTick();
+          await nextTick();
 
           expect(refreshUserMergeRequestCounts).toHaveBeenCalled();
         });
@@ -581,7 +581,7 @@ describe('issue_comment_form component', () => {
             // check checkbox
             checkbox.element.checked = shouldCheckboxBeChecked;
             checkbox.trigger('change');
-            await wrapper.vm.$nextTick();
+            await nextTick();
 
             // submit comment
             findCommentButton().trigger('click');

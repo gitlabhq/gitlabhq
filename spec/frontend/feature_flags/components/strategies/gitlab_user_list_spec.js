@@ -1,6 +1,6 @@
 import { GlDropdown, GlDropdownItem, GlSearchBoxByType, GlLoadingIcon } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 import Api from '~/api';
 import GitlabUserList from '~/feature_flags/components/strategies/gitlab_user_list.vue';
@@ -71,7 +71,7 @@ describe('~/feature_flags/components/strategies/gitlab_user_list.vue', () => {
       );
       const searchWrapper = wrapper.find(GlSearchBoxByType);
       searchWrapper.vm.$emit('input', 'new');
-      await wrapper.vm.$nextTick();
+      await nextTick();
       const loadingIcon = wrapper.find(GlLoadingIcon);
 
       expect(loadingIcon.exists()).toBe(true);
@@ -79,7 +79,7 @@ describe('~/feature_flags/components/strategies/gitlab_user_list.vue', () => {
 
       r({ data: [userList] });
 
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       expect(loadingIcon.exists()).toBe(false);
     });

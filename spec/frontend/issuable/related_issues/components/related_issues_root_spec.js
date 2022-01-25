@@ -1,5 +1,6 @@
 import { mount, shallowMount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
+import { nextTick } from 'vue';
 import waitForPromises from 'helpers/wait_for_promises';
 import {
   defaultProps,
@@ -210,40 +211,37 @@ describe('RelatedIssuesRoot', () => {
         }),
       );
 
-      it('when canceling and hiding add issuable form', () => {
+      it('when canceling and hiding add issuable form', async () => {
         wrapper.vm.onPendingFormCancel();
 
-        return wrapper.vm.$nextTick().then(() => {
-          expect(wrapper.vm.isFormVisible).toEqual(false);
-          expect(wrapper.vm.inputValue).toEqual('');
-          expect(wrapper.vm.state.pendingReferences).toHaveLength(0);
-        });
+        await nextTick();
+        expect(wrapper.vm.isFormVisible).toEqual(false);
+        expect(wrapper.vm.inputValue).toEqual('');
+        expect(wrapper.vm.state.pendingReferences).toHaveLength(0);
       });
     });
 
     describe('fetchRelatedIssues', () => {
       beforeEach(() => createComponent());
 
-      it('sets isFetching while fetching', () => {
+      it('sets isFetching while fetching', async () => {
         wrapper.vm.fetchRelatedIssues();
 
         expect(wrapper.vm.isFetching).toEqual(true);
 
-        return waitForPromises().then(() => {
-          expect(wrapper.vm.isFetching).toEqual(false);
-        });
+        await waitForPromises();
+        expect(wrapper.vm.isFetching).toEqual(false);
       });
 
-      it('should fetch related issues', () => {
+      it('should fetch related issues', async () => {
         mock.onGet(defaultProps.endpoint).reply(200, [issuable1, issuable2]);
 
         wrapper.vm.fetchRelatedIssues();
 
-        return waitForPromises().then(() => {
-          expect(wrapper.vm.state.relatedIssues).toHaveLength(2);
-          expect(wrapper.vm.state.relatedIssues[0].id).toEqual(issuable1.id);
-          expect(wrapper.vm.state.relatedIssues[1].id).toEqual(issuable2.id);
-        });
+        await waitForPromises();
+        expect(wrapper.vm.state.relatedIssues).toHaveLength(2);
+        expect(wrapper.vm.state.relatedIssues[0].id).toEqual(issuable1.id);
+        expect(wrapper.vm.state.relatedIssues[1].id).toEqual(issuable2.id);
       });
     });
 

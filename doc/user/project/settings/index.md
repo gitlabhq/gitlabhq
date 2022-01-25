@@ -249,7 +249,7 @@ Use the switches to enable or disable the following features:
 |:---------------------------------|:--------------------------|:--------------|
 | **Issues**                       | ✓                         | Activates the GitLab issues tracker. |
 | **Repository**                   | ✓                         | Enables [repository](../repository/) functionality |
-| **Merge Requests**               | ✓                         | Enables [merge request](../merge_requests/) functionality; also see [Merge request settings](#merge-request-settings). |
+| **Merge requests**               | ✓                         | Enables [merge request](../merge_requests/) functionality; also see [Merge request settings](#merge-request-settings). |
 | **Forks**                        | ✓                         | Enables [forking](../repository/forking_workflow.md) functionality. |
 | **Git Large File Storage (LFS)** |                           | Enables the use of [large files](../../../topics/git/lfs/index.md#git-large-file-storage-lfs). |
 | **Packages**                     |                           | Supports configuration of a [package registry](../../../administration/packages/index.md#gitlab-package-registry-administration) functionality. |
@@ -281,7 +281,7 @@ Some features depend on others:
 
 - If you disable **Repository** functionality, GitLab also disables the following
   features for your project:
-  - **Merge Requests**
+  - **Merge requests**
   - **CI/CD**
   - **Container Registry**
   - **Git Large File Storage**

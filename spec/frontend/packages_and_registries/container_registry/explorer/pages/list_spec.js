@@ -1,6 +1,7 @@
 import { GlSkeletonLoader, GlSprintf, GlAlert } from '@gitlab/ui';
-import { shallowMount, createLocalVue } from '@vue/test-utils';
-import { nextTick } from 'vue';
+import { shallowMount } from '@vue/test-utils';
+import Vue, { nextTick } from 'vue';
+
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -38,8 +39,6 @@ import {
 } from '../mock_data';
 import { GlModal, GlEmptyState } from '../stubs';
 
-const localVue = createLocalVue();
-
 describe('List Page', () => {
   let wrapper;
   let apolloProvider;
@@ -75,7 +74,7 @@ describe('List Page', () => {
     config = { isGroupPage: false },
     query = {},
   } = {}) => {
-    localVue.use(VueApollo);
+    Vue.use(VueApollo);
 
     const requestHandlers = [
       [getContainerRepositoriesQuery, resolver],
@@ -86,7 +85,6 @@ describe('List Page', () => {
     apolloProvider = createMockApollo(requestHandlers);
 
     wrapper = shallowMount(component, {
-      localVue,
       apolloProvider,
       stubs: {
         GlModal,

@@ -50,14 +50,14 @@ Pipelines can be configured in many different ways:
   followed by the next stage.
 - [Directed Acyclic Graph Pipeline (DAG) pipelines](../directed_acyclic_graph/index.md) are based on relationships
   between jobs and can run more quickly than basic pipelines.
-- [Pipelines for Merge Requests](../pipelines/merge_request_pipelines.md) run for merge
+- [Pipelines for merge requests](../pipelines/merge_request_pipelines.md) run for merge
   requests only (rather than for every commit).
-- [Pipelines for Merged Results](../pipelines/pipelines_for_merged_results.md)
+- [Pipelines for merged results](../pipelines/pipelines_for_merged_results.md)
   are merge request pipelines that act as though the changes from the source branch have
   already been merged into the target branch.
-- [Merge Trains](../pipelines/merge_trains.md)
+- [Merge trains](../pipelines/merge_trains.md)
   use pipelines for merged results to queue merges one after the other.
-- [Parent-Child pipelines](parent_child_pipelines.md) break down complex pipelines
+- [Parent-child pipelines](parent_child_pipelines.md) break down complex pipelines
   into one parent pipeline that can trigger multiple child sub-pipelines, which all
   run in the same project and with the same SHA. This pipeline architecture is commonly used for mono-repos.
 - [Multi-project pipelines](multi_project_pipelines.md) combine pipelines for different projects together.

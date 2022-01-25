@@ -1,5 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 import component from '~/packages_and_registries/infrastructure_registry/details/components/details_title.vue';
 import TitleArea from '~/vue_shared/components/registry/title_area.vue';
@@ -11,7 +11,10 @@ describe('PackageTitle', () => {
   let wrapper;
   let store;
 
-  function createComponent({ packageFiles = mavenFiles, packageEntity = terraformModule } = {}) {
+  async function createComponent({
+    packageFiles = mavenFiles,
+    packageEntity = terraformModule,
+  } = {}) {
     store = new Vuex.Store({
       state: {
         packageEntity,
@@ -28,7 +31,7 @@ describe('PackageTitle', () => {
         TitleArea,
       },
     });
-    return wrapper.vm.$nextTick();
+    await nextTick();
   }
 
   const findTitleArea = () => wrapper.findComponent(TitleArea);

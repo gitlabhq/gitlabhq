@@ -1,5 +1,5 @@
 import { GlAlert, GlButton, GlFormInputGroup, GlSprintf } from '@gitlab/ui';
-import { createLocalVue } from '@vue/test-utils';
+import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import { sprintf } from '~/locale';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
@@ -32,8 +32,7 @@ import {
 } from '../mocks/apollo';
 import ModalStub from '../stubs';
 
-const localVue = createLocalVue();
-localVue.use(VueApollo);
+Vue.use(VueApollo);
 
 const projectPath = 'path/to/project';
 const kasAddress = 'kas.example.com';
@@ -95,7 +94,6 @@ describe('InstallAgentModal', () => {
         GlSprintf,
         GlModal: ModalStub,
       },
-      localVue,
       apolloProvider,
       provide,
       propsData,

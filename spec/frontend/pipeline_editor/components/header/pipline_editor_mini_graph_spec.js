@@ -1,4 +1,5 @@
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
+import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -8,8 +9,7 @@ import getLinkedPipelinesQuery from '~/projects/commit_box/info/graphql/queries/
 import { PIPELINE_FAILURE } from '~/pipeline_editor/constants';
 import { mockLinkedPipelines, mockProjectFullPath, mockProjectPipeline } from '../../mock_data';
 
-const localVue = createLocalVue();
-localVue.use(VueApollo);
+Vue.use(VueApollo);
 
 describe('Pipeline Status', () => {
   let wrapper;
@@ -36,7 +36,6 @@ describe('Pipeline Status', () => {
     createComponent({
       hasStages,
       options: {
-        localVue,
         apolloProvider: mockApollo,
       },
     });

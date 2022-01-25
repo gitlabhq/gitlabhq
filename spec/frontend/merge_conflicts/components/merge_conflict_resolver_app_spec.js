@@ -1,6 +1,6 @@
 import { GlSprintf } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 import InlineConflictLines from '~/merge_conflicts/components/inline_conflict_lines.vue';
 import ParallelConflictLines from '~/merge_conflicts/components/parallel_conflict_lines.vue';
@@ -93,7 +93,7 @@ describe('Merge Conflict Resolver App', () => {
         expect(inlineButton.props('selected')).toBe(false);
 
         inlineButton.vm.$emit('click');
-        await wrapper.vm.$nextTick();
+        await nextTick();
 
         expect(inlineButton.props('selected')).toBe(true);
       });
@@ -111,7 +111,7 @@ describe('Merge Conflict Resolver App', () => {
         mountComponent();
 
         findSideBySideButton().vm.$emit('click');
-        await wrapper.vm.$nextTick();
+        await nextTick();
 
         const parallelConflictLinesComponent = findParallelConflictLines(findFiles().at(0));
 

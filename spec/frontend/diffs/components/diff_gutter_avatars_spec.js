@@ -1,4 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import DiffGutterAvatars from '~/diffs/components/diff_gutter_avatars.vue';
 import discussionsMockData from '../mock_data/diff_discussions';
 
@@ -35,12 +36,11 @@ describe('DiffGutterAvatars', () => {
       expect(findCollapseButton().exists()).toBe(true);
     });
 
-    it('should emit toggleDiscussions event on button click', () => {
+    it('should emit toggleDiscussions event on button click', async () => {
       findCollapseButton().trigger('click');
 
-      return wrapper.vm.$nextTick().then(() => {
-        expect(wrapper.emitted().toggleLineDiscussions).toBeTruthy();
-      });
+      await nextTick();
+      expect(wrapper.emitted().toggleLineDiscussions).toBeTruthy();
     });
   });
 
@@ -65,20 +65,18 @@ describe('DiffGutterAvatars', () => {
       expect(findMoreCount().text()).toBe('+2');
     });
 
-    it('should emit toggleDiscussions event on avatars click', () => {
+    it('should emit toggleDiscussions event on avatars click', async () => {
       findUserAvatars().at(0).trigger('click');
 
-      return wrapper.vm.$nextTick().then(() => {
-        expect(wrapper.emitted().toggleLineDiscussions).toBeTruthy();
-      });
+      await nextTick();
+      expect(wrapper.emitted().toggleLineDiscussions).toBeTruthy();
     });
 
-    it('should emit toggleDiscussions event on more count text click', () => {
+    it('should emit toggleDiscussions event on more count text click', async () => {
       findMoreCount().trigger('click');
 
-      return wrapper.vm.$nextTick().then(() => {
-        expect(wrapper.emitted().toggleLineDiscussions).toBeTruthy();
-      });
+      await nextTick();
+      expect(wrapper.emitted().toggleLineDiscussions).toBeTruthy();
     });
   });
 

@@ -1,5 +1,6 @@
 import { GlFormInput } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import ParameterFormGroup from '~/feature_flags/components/strategies/parameter_form_group.vue';
 import PercentRollout from '~/feature_flags/components/strategies/percent_rollout.vue';
 import { PERCENT_ROLLOUT_GROUP_ID } from '~/feature_flags/constants';
@@ -39,7 +40,7 @@ describe('~/feature_flags/components/strategies/percent_rollout.vue', () => {
 
     it('emits a change when the value changes', async () => {
       input.setValue('75');
-      await wrapper.vm.$nextTick();
+      await nextTick();
       expect(wrapper.emitted('change')).toEqual([
         [{ parameters: { percentage: '75', groupId: PERCENT_ROLLOUT_GROUP_ID } }],
       ]);

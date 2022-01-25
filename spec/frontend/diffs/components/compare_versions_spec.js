@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils';
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 import getDiffWithCommit from 'test_fixtures/merge_request_diffs/with_commit.json';
 import setWindowLocation from 'helpers/set_window_location_helper';
@@ -232,14 +232,13 @@ describe('CompareVersions', () => {
         expect(link.element.getAttribute('href')).toEqual(PREV_COMMIT_URL);
       });
 
-      it('triggers the correct Vuex action on click', () => {
+      it('triggers the correct Vuex action on click', async () => {
         const link = getPrevCommitNavElement();
 
         link.trigger('click');
-        return wrapper.vm.$nextTick().then(() => {
-          expect(wrapper.vm.moveToNeighboringCommit).toHaveBeenCalledWith({
-            direction: 'previous',
-          });
+        await nextTick();
+        expect(wrapper.vm.moveToNeighboringCommit).toHaveBeenCalledWith({
+          direction: 'previous',
         });
       });
 
@@ -267,13 +266,12 @@ describe('CompareVersions', () => {
         expect(link.element.getAttribute('href')).toEqual(NEXT_COMMIT_URL);
       });
 
-      it('triggers the correct Vuex action on click', () => {
+      it('triggers the correct Vuex action on click', async () => {
         const link = getNextCommitNavElement();
 
         link.trigger('click');
-        return wrapper.vm.$nextTick().then(() => {
-          expect(wrapper.vm.moveToNeighboringCommit).toHaveBeenCalledWith({ direction: 'next' });
-        });
+        await nextTick();
+        expect(wrapper.vm.moveToNeighboringCommit).toHaveBeenCalledWith({ direction: 'next' });
       });
 
       it('renders a disabled button when there is no next commit', () => {

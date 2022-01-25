@@ -1,6 +1,7 @@
 import { GlLoadingIcon, GlButton, GlSearchBoxByType } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
+import { nextTick } from 'vue';
 import waitForPromises from 'helpers/wait_for_promises';
 import { TEST_HOST } from 'spec/test_constants';
 import EnvironmentsDropdown from '~/feature_flags/components/environments_dropdown.vue';
@@ -54,7 +55,7 @@ describe('Feature flags > Environments dropdown ', () => {
       factory();
       findEnvironmentSearchInput().vm.$emit('focus');
       await waitForPromises();
-      await wrapper.vm.$nextTick();
+      await nextTick();
       expect(wrapper.find('.dropdown-content > ul').exists()).toBe(true);
       expect(wrapper.findAll('.dropdown-content > ul > li').exists()).toBe(true);
     });
@@ -66,7 +67,7 @@ describe('Feature flags > Environments dropdown ', () => {
       factory();
       findEnvironmentSearchInput().vm.$emit('keyup');
       await waitForPromises();
-      await wrapper.vm.$nextTick();
+      await nextTick();
       expect(wrapper.find('.dropdown-content > ul').exists()).toBe(true);
       expect(wrapper.findAll('.dropdown-content > ul > li').exists()).toBe(true);
     });
@@ -80,7 +81,7 @@ describe('Feature flags > Environments dropdown ', () => {
         findEnvironmentSearchInput().vm.$emit('focus');
         findEnvironmentSearchInput().vm.$emit('input', 'production');
         await waitForPromises();
-        await wrapper.vm.$nextTick();
+        await nextTick();
       });
 
       it('sets filter value', () => {
@@ -103,7 +104,7 @@ describe('Feature flags > Environments dropdown ', () => {
             .filter((b) => b.text() === 'production')
             .at(0);
           button.vm.$emit('click');
-          await wrapper.vm.$nextTick();
+          await nextTick();
           expect(wrapper.emitted('selectEnvironment')).toEqual([['production']]);
         });
       });
@@ -111,7 +112,7 @@ describe('Feature flags > Environments dropdown ', () => {
       describe('on click clear button', () => {
         beforeEach(async () => {
           wrapper.find(GlButton).vm.$emit('click');
-          await wrapper.vm.$nextTick();
+          await nextTick();
         });
 
         it('resets filter value', () => {
@@ -132,12 +133,12 @@ describe('Feature flags > Environments dropdown ', () => {
       findEnvironmentSearchInput().vm.$emit('focus');
       findEnvironmentSearchInput().vm.$emit('input', 'production');
       await waitForPromises();
-      await wrapper.vm.$nextTick();
+      await nextTick();
     });
 
     it('emits create event', async () => {
       wrapper.findAll(GlButton).at(0).vm.$emit('click');
-      await wrapper.vm.$nextTick();
+      await nextTick();
       expect(wrapper.emitted('createClicked')).toEqual([['production']]);
     });
   });

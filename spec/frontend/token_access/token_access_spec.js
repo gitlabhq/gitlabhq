@@ -1,5 +1,5 @@
 import { GlToggle, GlLoadingIcon } from '@gitlab/ui';
-import { createLocalVue } from '@vue/test-utils';
+import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
@@ -22,9 +22,8 @@ import {
 
 const projectPath = 'root/my-repo';
 const error = new Error('Error');
-const localVue = createLocalVue();
 
-localVue.use(VueApollo);
+Vue.use(VueApollo);
 
 jest.mock('~/flash');
 
@@ -52,7 +51,6 @@ describe('TokenAccess component', () => {
 
   const createComponent = (requestHandlers, mountFn = shallowMountExtended) => {
     wrapper = mountFn(TokenAccess, {
-      localVue,
       provide: {
         fullPath: projectPath,
       },

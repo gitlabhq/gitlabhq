@@ -1,5 +1,6 @@
 import { GlTabs, GlTab } from '@gitlab/ui';
 import { merge } from 'lodash';
+import { nextTick } from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import { TEST_HOST } from 'helpers/test_constants';
@@ -99,7 +100,7 @@ describe('ProjectsPipelinesChartsApp', () => {
 
       tabs.vm.$emit('input', 1);
 
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       expect(tabs.attributes('value')).toBe('1');
     });
@@ -115,7 +116,7 @@ describe('ProjectsPipelinesChartsApp', () => {
 
       tabs.vm.$emit('input', 0);
 
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       expect(updateHistory).not.toHaveBeenCalled();
     });
@@ -183,7 +184,7 @@ describe('ProjectsPipelinesChartsApp', () => {
 
       popstateHandler();
 
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       expect(findGlTabs().attributes('value')).toBe('1');
     });

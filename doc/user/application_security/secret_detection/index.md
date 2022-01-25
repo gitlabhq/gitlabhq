@@ -63,7 +63,7 @@ as shown in the following table:
 | [Configure Secret Detection Scanners](#configuration)           | **{check-circle}**  | **{check-circle}** |
 | [Customize Secret Detection Settings](#customizing-settings)    | **{check-circle}**  | **{check-circle}** |
 | View [JSON Report](../sast/index.md#reports-json-format)        | **{check-circle}**  | **{check-circle}** |
-| Presentation of JSON Report in Merge Request                    | **{dotted-circle}** | **{check-circle}** |
+| Presentation of JSON Report in merge request                    | **{dotted-circle}** | **{check-circle}** |
 | View identified secrets in the pipelines' **Security** tab      | **{dotted-circle}** | **{check-circle}** |
 | [Interaction with Vulnerabilities](../vulnerabilities/index.md) | **{dotted-circle}** | **{check-circle}** |
 | [Access to Security Dashboard](../security_dashboard/index.md)  | **{dotted-circle}** | **{check-circle}** |
@@ -370,7 +370,7 @@ For information on this, see the [general Application Security troubleshooting s
 
 ### Error: `Couldn't run the gitleaks command: exit status 2`
 
-If a pipeline is triggered from a Merge Request containing 60 commits while the `GIT_DEPTH` variable's
+If a pipeline is triggered from a merge request containing 60 commits while the `GIT_DEPTH` variable's
 value is less than that, the Secret Detection job fails as the clone is not deep enough to contain all of the
 relevant commits. For information on the current default value, see the
 [pipeline configuration documentation](../../../ci/pipelines/settings.md#limit-the-number-of-changes-fetched-during-clone).

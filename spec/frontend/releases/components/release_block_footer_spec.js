@@ -1,6 +1,7 @@
 import { GlLink, GlIcon } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import { cloneDeep } from 'lodash';
+import { nextTick } from 'vue';
 import originalRelease from 'test_fixtures/api/releases/release.json';
 import { trimText } from 'helpers/text_helper';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
@@ -14,7 +15,7 @@ describe('Release block footer', () => {
   let wrapper;
   let release;
 
-  const factory = (props = {}) => {
+  const factory = async (props = {}) => {
     wrapper = mount(ReleaseBlockFooter, {
       propsData: {
         ...convertObjectPropsToCamelCase(release, { deep: true }),
@@ -22,7 +23,7 @@ describe('Release block footer', () => {
       },
     });
 
-    return wrapper.vm.$nextTick();
+    await nextTick();
   };
 
   beforeEach(() => {

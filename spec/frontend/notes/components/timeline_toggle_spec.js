@@ -1,6 +1,6 @@
 import { GlButton } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 import TimelineToggle, {
   timelineEnabledTooltip,
@@ -64,7 +64,7 @@ describe('Timeline toggle', () => {
     it('should set correct UI state', async () => {
       store.state.isTimelineEnabled = true;
       findGlButton().vm.$emit('click', mockEvent);
-      await wrapper.vm.$nextTick();
+      await nextTick();
       expect(findGlButton().attributes('title')).toBe(timelineEnabledTooltip);
       expect(findGlButton().attributes('selected')).toBe('true');
       expect(mockEvent.currentTarget.blur).toHaveBeenCalled();
@@ -72,7 +72,7 @@ describe('Timeline toggle', () => {
 
     it('should track Snowplow event', async () => {
       store.state.isTimelineEnabled = true;
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       findGlButton().trigger('click');
 
@@ -97,7 +97,7 @@ describe('Timeline toggle', () => {
     it('should set correct UI state', async () => {
       store.state.isTimelineEnabled = false;
       findGlButton().vm.$emit('click', mockEvent);
-      await wrapper.vm.$nextTick();
+      await nextTick();
       expect(findGlButton().attributes('title')).toBe(timelineDisabledTooltip);
       expect(findGlButton().attributes('selected')).toBe(undefined);
       expect(mockEvent.currentTarget.blur).toHaveBeenCalled();
@@ -105,7 +105,7 @@ describe('Timeline toggle', () => {
 
     it('should track Snowplow event', async () => {
       store.state.isTimelineEnabled = false;
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       findGlButton().trigger('click');
 

@@ -1,6 +1,6 @@
 import { GlModal } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import { stubComponent } from 'helpers/stub_component';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -98,7 +98,7 @@ describe('IDE commit form', () => {
     it(`at view=${viewFn.name}, ${buttonFn.name} has disabled=${disabled} tooltip=${tooltip}`, async () => {
       viewFn();
 
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       expect(buttonFn()).toEqual({
         disabled,
@@ -116,7 +116,7 @@ describe('IDE commit form', () => {
 
       goToEditView();
 
-      await wrapper.vm.$nextTick();
+      await nextTick();
     });
 
     it('renders commit button in compact mode', () => {
@@ -135,7 +135,7 @@ describe('IDE commit form', () => {
     it('when begin commit button is clicked, shows form', async () => {
       findBeginCommitButton().vm.$emit('click');
 
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       expect(findForm().exists()).toBe(true);
     });
@@ -143,7 +143,7 @@ describe('IDE commit form', () => {
     it('when begin commit button is clicked, sets activity view', async () => {
       findBeginCommitButton().vm.$emit('click');
 
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       expect(store.state.currentActivityView).toBe(leftSidebarViews.commit.name);
     });
@@ -153,14 +153,14 @@ describe('IDE commit form', () => {
       setLastCommitMessage('test');
       goToEditView();
 
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       expect(findForm().exists()).toBe(true);
 
       // Now test that it collapses when lastCommitMsg is cleared
       setLastCommitMessage('');
 
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       expect(findForm().exists()).toBe(false);
     });
@@ -177,7 +177,7 @@ describe('IDE commit form', () => {
 
       goToCommitView();
 
-      await wrapper.vm.$nextTick();
+      await nextTick();
     });
 
     afterEach(() => {
@@ -188,12 +188,12 @@ describe('IDE commit form', () => {
       expect(findForm().exists()).toBe(false);
 
       store.state.stagedFiles = [];
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       expect(findForm().exists()).toBe(false);
 
       store.state.stagedFiles.push('test');
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       expect(findForm().exists()).toBe(false);
     });
@@ -208,7 +208,7 @@ describe('IDE commit form', () => {
 
       goToCommitView();
 
-      await wrapper.vm.$nextTick();
+      await nextTick();
     });
 
     it('shows form', () => {
@@ -222,7 +222,7 @@ describe('IDE commit form', () => {
     describe('when no changed files', () => {
       beforeEach(async () => {
         store.state.stagedFiles = [];
-        await wrapper.vm.$nextTick();
+        await nextTick();
       });
 
       it('hides form', () => {
@@ -231,7 +231,7 @@ describe('IDE commit form', () => {
 
       it('expands again when staged files are added', async () => {
         store.state.stagedFiles.push('test');
-        await wrapper.vm.$nextTick();
+        await nextTick();
 
         expect(findForm().exists()).toBe(true);
       });
@@ -240,7 +240,7 @@ describe('IDE commit form', () => {
     it('updates commitMessage in store on input', async () => {
       setCommitMessageInput('testing commit message');
 
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       expect(store.state.commit.commitMessage).toBe('testing commit message');
     });
@@ -253,14 +253,14 @@ describe('IDE commit form', () => {
       it('resets commitMessage when clicking discard button', async () => {
         setCommitMessageInput('testing commit message');
 
-        await wrapper.vm.$nextTick();
+        await nextTick();
 
         expect(findCommitMessageInput().props('text')).toBe('testing commit message');
 
         // Test that commitMessage is cleared on click
         findDiscardDraftButton().vm.$emit('click');
 
-        await wrapper.vm.$nextTick();
+        await nextTick();
 
         expect(findCommitMessageInput().props('text')).toBe('');
       });
@@ -274,11 +274,11 @@ describe('IDE commit form', () => {
 
         goToCommitView();
 
-        await wrapper.vm.$nextTick();
+        await nextTick();
 
         setCommitMessageInput('testing commit message');
 
-        await wrapper.vm.$nextTick();
+        await nextTick();
 
         jest.spyOn(store, 'dispatch').mockResolvedValue();
       });
@@ -291,7 +291,7 @@ describe('IDE commit form', () => {
 
       it('when cannot push code, submitting does nothing', async () => {
         store.state.projects.abcproject.userPermissions.pushCode = false;
-        await wrapper.vm.$nextTick();
+        await nextTick();
 
         submitForm();
 
@@ -309,7 +309,7 @@ describe('IDE commit form', () => {
         const error = createError();
         store.state.commit.commitError = error;
 
-        await wrapper.vm.$nextTick();
+        await nextTick();
 
         expect(modal.vm.show).toHaveBeenCalled();
         expect(modal.props()).toMatchObject({
@@ -342,7 +342,7 @@ describe('IDE commit form', () => {
         async ({ commitError, expectedActions }) => {
           store.state.commit.commitError = commitError('test message');
 
-          await wrapper.vm.$nextTick();
+          await nextTick();
 
           wrapper.find(GlModal).vm.$emit('ok');
 

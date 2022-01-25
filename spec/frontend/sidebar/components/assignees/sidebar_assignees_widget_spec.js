@@ -1,6 +1,7 @@
 import { GlSearchBoxByType, GlDropdown } from '@gitlab/ui';
-import { shallowMount, createLocalVue } from '@vue/test-utils';
-import { nextTick } from 'vue';
+import { shallowMount } from '@vue/test-utils';
+import Vue, { nextTick } from 'vue';
+
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -23,8 +24,7 @@ const updateIssueAssigneesMutationSuccess = jest
   .mockResolvedValue(updateIssueAssigneesMutationResponse);
 const mockError = jest.fn().mockRejectedValue('Error!');
 
-const localVue = createLocalVue();
-localVue.use(VueApollo);
+Vue.use(VueApollo);
 
 const initialAssignees = [
   {
@@ -59,7 +59,6 @@ describe('Sidebar assignees widget', () => {
       [updateIssueAssigneesMutation, updateIssueAssigneesMutationHandler],
     ]);
     wrapper = shallowMount(SidebarAssigneesWidget, {
-      localVue,
       apolloProvider: fakeApollo,
       propsData: {
         iid: '1',

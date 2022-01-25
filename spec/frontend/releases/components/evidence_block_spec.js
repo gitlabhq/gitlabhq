@@ -1,5 +1,6 @@
 import { GlLink, GlIcon } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import originalRelease from 'test_fixtures/api/releases/release.json';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import { truncateSha } from '~/lib/utils/text_utility';
@@ -51,12 +52,11 @@ describe('Evidence Block', () => {
       expect(wrapper.find('.js-short').text()).toBe(truncateSha(release.evidences[0].sha));
     });
 
-    it('renders the long sha after expansion', () => {
+    it('renders the long sha after expansion', async () => {
       wrapper.find('.js-text-expander-prepend').trigger('click');
 
-      return wrapper.vm.$nextTick().then(() => {
-        expect(wrapper.find('.js-expanded').text()).toBe(release.evidences[0].sha);
-      });
+      await nextTick();
+      expect(wrapper.find('.js-expanded').text()).toBe(release.evidences[0].sha);
     });
   });
 

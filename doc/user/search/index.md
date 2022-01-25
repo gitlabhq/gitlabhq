@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 ## Search issues and merge requests
 
-To search through issues and merge requests in multiple projects, on the top bar, select the **Issues** or **Merge Requests** links.
+To search through issues and merge requests in multiple projects, on the top bar, select the **Issues** or **Merge requests** links.
 
 The numbers indicate how many issues, merge requests, and to-do items are assigned to you:
 
@@ -36,7 +36,7 @@ in the search field in the upper right corner:
 > - Filter by child Epics was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9029) in GitLab Ultimate 13.0.
 > - Filter by Iterations was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/118742) in GitLab 13.6. Moved to GitLab Premium in 13.9.
 
-Follow these steps to filter the **Issues** and **Merge Requests** list pages in projects and
+Follow these steps to filter the **Issues** and **Merge requests** list pages in projects and
 groups:
 
 1. Click in the field **Search or filter results...**.
@@ -95,7 +95,7 @@ You can add this URL to your feed reader.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/39908) in GitLab 12.1.
 
-You can filter the **Issues** list to individual instances by their ID. For example, enter filter `#10` to return only issue 10. The same applies to the **Merge Requests** list. Enter filter `#30` to return only merge request 30.
+You can filter the **Issues** list to individual instances by their ID. For example, enter filter `#10` to return only issue 10. The same applies to the **Merge requests** list. Enter filter `#30` to return only merge request 30.
 
 ![filter issues by specific ID](img/issue_search_by_id.png)
 

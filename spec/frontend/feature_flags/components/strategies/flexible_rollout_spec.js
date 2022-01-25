@@ -1,5 +1,6 @@
 import { GlFormInput, GlFormSelect } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import FlexibleRollout from '~/feature_flags/components/strategies/flexible_rollout.vue';
 import ParameterFormGroup from '~/feature_flags/components/strategies/parameter_form_group.vue';
 import { PERCENT_ROLLOUT_GROUP_ID } from '~/feature_flags/constants';
@@ -51,7 +52,7 @@ describe('feature_flags/components/strategies/flexible_rollout.vue', () => {
 
     it('emits a change when the percentage value changes', async () => {
       percentageInput.setValue('75');
-      await wrapper.vm.$nextTick();
+      await nextTick();
       expect(wrapper.emitted('change')).toEqual([
         [
           {

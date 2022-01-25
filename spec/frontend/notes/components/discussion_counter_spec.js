@@ -1,6 +1,6 @@
 import { GlButton } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 import DiscussionCounter from '~/notes/components/discussion_counter.vue';
 import notesModule from '~/notes/stores/modules';
@@ -113,7 +113,7 @@ describe('DiscussionCounter component', () => {
       expect(setExpandDiscussionsFn).toHaveBeenCalledTimes(1);
     });
 
-    it('collapses all discussions if expanded', () => {
+    it('collapses all discussions if expanded', async () => {
       updateStoreWithExpanded(true);
 
       expect(wrapper.vm.allExpanded).toBe(true);
@@ -121,13 +121,12 @@ describe('DiscussionCounter component', () => {
 
       toggleAllButton.vm.$emit('click');
 
-      return wrapper.vm.$nextTick().then(() => {
-        expect(wrapper.vm.allExpanded).toBe(false);
-        expect(toggleAllButton.props('icon')).toBe('angle-down');
-      });
+      await nextTick();
+      expect(wrapper.vm.allExpanded).toBe(false);
+      expect(toggleAllButton.props('icon')).toBe('angle-down');
     });
 
-    it('expands all discussions if collapsed', () => {
+    it('expands all discussions if collapsed', async () => {
       updateStoreWithExpanded(false);
 
       expect(wrapper.vm.allExpanded).toBe(false);
@@ -135,10 +134,9 @@ describe('DiscussionCounter component', () => {
 
       toggleAllButton.vm.$emit('click');
 
-      return wrapper.vm.$nextTick().then(() => {
-        expect(wrapper.vm.allExpanded).toBe(true);
-        expect(toggleAllButton.props('icon')).toBe('angle-up');
-      });
+      await nextTick();
+      expect(wrapper.vm.allExpanded).toBe(true);
+      expect(toggleAllButton.props('icon')).toBe('angle-up');
     });
   });
 });

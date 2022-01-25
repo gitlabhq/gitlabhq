@@ -49,7 +49,7 @@ Each metric is defined in a separate YAML file consisting of a number of fields:
 | `tier`              | yes      | `array`; may contain one or a combination of `free`, `premium` or `ultimate`. The [tier]( https://about.gitlab.com/handbook/marketing/strategic-marketing/tiers/) where the tracked feature is available. This should be verbose and contain all tiers where a metric is available. |
 | `milestone`         | no       | The milestone when the metric is introduced. |
 | `milestone_removed` | no       | The milestone when the metric is removed. |
-| `introduced_by_url` | no       | The URL to the Merge Request that introduced the metric. |
+| `introduced_by_url` | no       | The URL to the merge request that introduced the metric. |
 | `repair_issue_url`  | no       | The URL of the issue that was created to repair a metric with a `broken` status. |
 | `options`           | no       | `object`: options information needed to calculate the metric value. |
 | `skip_validation`   | no       | This should **not** be set. [Used for imported metrics until we review, update and make them valid](https://gitlab.com/groups/gitlab-org/-/epics/5425). |

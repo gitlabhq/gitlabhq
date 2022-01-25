@@ -1,5 +1,5 @@
 import { GlSprintf, GlLink } from '@gitlab/ui';
-import { createLocalVue } from '@vue/test-utils';
+import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -28,8 +28,6 @@ import {
 jest.mock('~/flash');
 jest.mock('~/packages_and_registries/settings/group/graphql/utils/optimistic_responses');
 
-const localVue = createLocalVue();
-
 describe('Packages Settings', () => {
   let wrapper;
   let apolloProvider;
@@ -42,14 +40,13 @@ describe('Packages Settings', () => {
   const mountComponent = ({
     mutationResolver = jest.fn().mockResolvedValue(groupPackageSettingsMutationMock()),
   } = {}) => {
-    localVue.use(VueApollo);
+    Vue.use(VueApollo);
 
     const requestHandlers = [[updateNamespacePackageSettings, mutationResolver]];
 
     apolloProvider = createMockApollo(requestHandlers);
 
     wrapper = shallowMountExtended(component, {
-      localVue,
       apolloProvider,
       provide: defaultProvide,
       propsData: {
@@ -252,7 +249,7 @@ describe('Packages Settings', () => {
 
         emitMavenSettingsUpdate();
 
-        await wrapper.vm.$nextTick();
+        await nextTick();
 
         // errors are reset on mutation call
         expect(findMavenDuplicatedSettings().props('duplicateExceptionRegexError')).toBe('');

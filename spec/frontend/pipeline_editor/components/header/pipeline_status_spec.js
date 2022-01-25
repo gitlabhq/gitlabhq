@@ -1,5 +1,6 @@
 import { GlIcon, GlLink, GlLoadingIcon, GlSprintf } from '@gitlab/ui';
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
+import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -8,8 +9,7 @@ import getPipelineQuery from '~/pipeline_editor/graphql/queries/pipeline.query.g
 import PipelineEditorMiniGraph from '~/pipeline_editor/components/header/pipeline_editor_mini_graph.vue';
 import { mockCommitSha, mockProjectPipeline, mockProjectFullPath } from '../../mock_data';
 
-const localVue = createLocalVue();
-localVue.use(VueApollo);
+Vue.use(VueApollo);
 
 describe('Pipeline Status', () => {
   let wrapper;
@@ -21,7 +21,6 @@ describe('Pipeline Status', () => {
     mockApollo = createMockApollo(handlers);
 
     wrapper = shallowMount(PipelineStatus, {
-      localVue,
       apolloProvider: mockApollo,
       propsData: {
         commitSha: mockCommitSha,

@@ -1,6 +1,6 @@
 import { GlDropdownItem, GlLoadingIcon, GlAvatar } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 import HeaderSearchAutocompleteItems from '~/header_search/components/header_search_autocomplete_items.vue';
 import {
@@ -143,7 +143,7 @@ describe('HeaderSearchAutocompleteItems', () => {
 
         wrapper.setProps({ currentFocusedOption: MOCK_SORTED_AUTOCOMPLETE_OPTIONS[0] });
 
-        await wrapper.vm.$nextTick();
+        await nextTick();
 
         expect(scrollSpy).toHaveBeenCalledWith(false);
         scrollSpy.mockRestore();

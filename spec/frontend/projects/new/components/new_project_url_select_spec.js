@@ -6,7 +6,7 @@ import {
   GlSearchBoxByType,
 } from '@gitlab/ui';
 import { mount, shallowMount } from '@vue/test-utils';
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -95,7 +95,7 @@ describe('NewProjectUrlSelect component', () => {
 
   const clickDropdownItem = async () => {
     wrapper.findComponent(GlDropdownItem).vm.$emit('click');
-    await wrapper.vm.$nextTick();
+    await nextTick();
   };
 
   const showDropdown = async () => {

@@ -1,6 +1,7 @@
 import { GlBanner } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
+import { nextTick } from 'vue';
 import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 import InviteMembersBanner from '~/groups/components/invite_members_banner.vue';
 import eventHub from '~/invite_members/event_hub';
@@ -140,7 +141,7 @@ describe('InviteMembersBanner', () => {
       expect(wrapper.find(GlBanner).exists()).toBe(true);
       wrapper.find(GlBanner).vm.$emit('close');
 
-      await wrapper.vm.$nextTick();
+      await nextTick();
       expect(wrapper.find(GlBanner).exists()).toBe(false);
     });
   });

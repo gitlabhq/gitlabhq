@@ -1,4 +1,5 @@
-import { createLocalVue, shallowMount } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
+import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import Vuex from 'vuex';
 
@@ -33,9 +34,8 @@ export default function createComponent({
   },
   issuesCount,
 } = {}) {
-  const localVue = createLocalVue();
-  localVue.use(VueApollo);
-  localVue.use(Vuex);
+  Vue.use(VueApollo);
+  Vue.use(Vuex);
 
   const fakeApollo = createMockApollo([
     [listQuery, jest.fn().mockResolvedValue(boardListQueryResponse(issuesCount))],
@@ -85,7 +85,6 @@ export default function createComponent({
 
   const component = shallowMount(BoardList, {
     apolloProvider: fakeApollo,
-    localVue,
     store,
     propsData: {
       disabled: false,

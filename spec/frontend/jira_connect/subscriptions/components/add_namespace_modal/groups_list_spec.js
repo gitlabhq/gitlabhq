@@ -1,5 +1,6 @@
 import { GlAlert, GlLoadingIcon, GlSearchBoxByType, GlPagination } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { fetchGroups } from '~/jira_connect/subscriptions/api';
@@ -61,7 +62,7 @@ describe('GroupsList', () => {
       fetchGroups.mockReturnValue(new Promise(() => {}));
       createComponent();
 
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       expect(findGlLoadingIcon().exists()).toBe(true);
     });
@@ -124,7 +125,7 @@ describe('GroupsList', () => {
 
       findFirstItem().vm.$emit('error', errorMessage);
 
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       expect(findGlAlert().exists()).toBe(true);
       expect(findGlAlert().text()).toContain(errorMessage);
@@ -139,7 +140,7 @@ describe('GroupsList', () => {
           fetchGroups.mockReturnValue(new Promise(() => {}));
 
           findSearchBox().vm.$emit('input', mockSearchTeam);
-          await wrapper.vm.$nextTick();
+          await nextTick();
         });
 
         it('calls `fetchGroups` with search term', () => {

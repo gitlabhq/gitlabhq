@@ -1,5 +1,6 @@
 import { GlIntersectionObserver, GlSkeletonLoader } from '@gitlab/ui';
-import { createLocalVue, shallowMount } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
+import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -9,8 +10,7 @@ import JobsTable from '~/jobs/components/table/jobs_table.vue';
 import getPipelineJobsQuery from '~/pipelines/graphql/queries/get_pipeline_jobs.query.graphql';
 import { mockPipelineJobsQueryResponse } from '../../mock_data';
 
-const localVue = createLocalVue();
-localVue.use(VueApollo);
+Vue.use(VueApollo);
 
 jest.mock('~/flash');
 
@@ -36,7 +36,6 @@ describe('Jobs app', () => {
         fullPath: 'root/ci-project',
         pipelineIid: 1,
       },
-      localVue,
       apolloProvider: createMockApolloProvider(resolver),
     });
   };

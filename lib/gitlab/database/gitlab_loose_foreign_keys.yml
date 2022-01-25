@@ -170,3 +170,6 @@ ci_triggers:
   - table: users
     column: owner_id
     on_delete: async_delete
+  - table: projects
+    column: project_id
+    on_delete: async_delete

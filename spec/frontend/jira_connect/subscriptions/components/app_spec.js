@@ -1,6 +1,7 @@
 import { GlAlert, GlLink, GlEmptyState } from '@gitlab/ui';
 import { mount, shallowMount } from '@vue/test-utils';
 
+import { nextTick } from 'vue';
 import JiraConnectApp from '~/jira_connect/subscriptions/components/app.vue';
 import AddNamespaceButton from '~/jira_connect/subscriptions/components/add_namespace_button.vue';
 import SignInButton from '~/jira_connect/subscriptions/components/sign_in_button.vue';
@@ -116,7 +117,7 @@ describe('JiraConnectApp', () => {
         createComponent();
 
         store.commit(SET_ALERT, { message, variant });
-        await wrapper.vm.$nextTick();
+        await nextTick();
 
         const alert = findAlert();
 
@@ -134,10 +135,10 @@ describe('JiraConnectApp', () => {
       createComponent();
 
       store.commit(SET_ALERT, { message: 'test message' });
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       findAlert().vm.$emit('dismiss');
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       expect(findAlert().exists()).toBe(false);
     });
@@ -149,7 +150,7 @@ describe('JiraConnectApp', () => {
         message: __('test message %{linkStart}test link%{linkEnd}'),
         linkUrl: 'https://gitlab.com',
       });
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       const alertLink = findAlertLink();
 

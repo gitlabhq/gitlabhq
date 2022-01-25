@@ -1,8 +1,8 @@
 import { GlEmptyState, GlSprintf, GlLink } from '@gitlab/ui';
-import { createLocalVue } from '@vue/test-utils';
+import Vue, { nextTick } from 'vue';
 
 import VueApollo from 'vue-apollo';
-import { nextTick } from 'vue';
+
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -26,8 +26,6 @@ import { packagesListQuery, packageData, pagination } from '../mock_data';
 
 jest.mock('~/lib/utils/common_utils');
 jest.mock('~/flash');
-
-const localVue = createLocalVue();
 
 describe('PackagesListApp', () => {
   let wrapper;
@@ -61,13 +59,12 @@ describe('PackagesListApp', () => {
     resolver = jest.fn().mockResolvedValue(packagesListQuery()),
     provide = defaultProvide,
   } = {}) => {
-    localVue.use(VueApollo);
+    Vue.use(VueApollo);
 
     const requestHandlers = [[getPackagesQuery, resolver]];
     apolloProvider = createMockApollo(requestHandlers);
 
     wrapper = shallowMountExtended(ListPage, {
-      localVue,
       apolloProvider,
       provide,
       stubs: {

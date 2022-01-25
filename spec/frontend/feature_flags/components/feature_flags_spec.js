@@ -1,6 +1,6 @@
 import { GlAlert, GlEmptyState, GlLoadingIcon } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import MockAdapter from 'axios-mock-adapter';
 import Vuex from 'vuex';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -172,7 +172,7 @@ describe('Feature flags', () => {
 
         factory();
         await waitForPromises();
-        await wrapper.vm.$nextTick();
+        await nextTick();
 
         emptyState = wrapper.findComponent(GlEmptyState);
       });

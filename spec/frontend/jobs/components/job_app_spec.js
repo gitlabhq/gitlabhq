@@ -1,6 +1,6 @@
 import { GlLoadingIcon } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import MockAdapter from 'axios-mock-adapter';
 import Vuex from 'vuex';
 import delayedJobFixture from 'test_fixtures/jobs/delayed.json';
@@ -45,7 +45,7 @@ describe('Job App', () => {
     wrapper = mount(JobApp, { propsData: { ...props }, store });
   };
 
-  const setupAndMount = ({ jobData = {}, jobLogData = {} } = {}) => {
+  const setupAndMount = async ({ jobData = {}, jobLogData = {} } = {}) => {
     mock.onGet(initSettings.endpoint).replyOnce(200, { ...job, ...jobData });
     mock.onGet(`${initSettings.pagePath}/trace.json`).reply(200, jobLogData);
 
@@ -53,12 +53,10 @@ describe('Job App', () => {
 
     createComponent();
 
-    return asyncInit
-      .then(() => {
-        jest.runOnlyPendingTimers();
-      })
-      .then(() => axios.waitForAll())
-      .then(() => wrapper.vm.$nextTick());
+    await asyncInit;
+    jest.runOnlyPendingTimers();
+    await axios.waitForAll();
+    await nextTick();
   };
 
   const findLoadingComponent = () => wrapper.find(GlLoadingIcon);

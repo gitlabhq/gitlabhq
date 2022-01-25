@@ -1,6 +1,6 @@
 import { GlButton } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 import TerminalSession from '~/ide/components/terminal/session.vue';
 import Terminal from '~/ide/components/terminal/terminal.vue';
@@ -67,32 +67,30 @@ describe('IDE TerminalSession', () => {
   });
 
   [STARTING, PENDING, RUNNING].forEach((status) => {
-    it(`show stop button when status is ${status}`, () => {
+    it(`show stop button when status is ${status}`, async () => {
       state.session = { status };
       factory();
 
       const button = findButton();
       button.vm.$emit('click');
 
-      return wrapper.vm.$nextTick().then(() => {
-        expect(button.text()).toEqual('Stop Terminal');
-        expect(actions.stopSession).toHaveBeenCalled();
-      });
+      await nextTick();
+      expect(button.text()).toEqual('Stop Terminal');
+      expect(actions.stopSession).toHaveBeenCalled();
     });
   });
 
   [STOPPING, STOPPED].forEach((status) => {
-    it(`show stop button when status is ${status}`, () => {
+    it(`show stop button when status is ${status}`, async () => {
       state.session = { status };
       factory();
 
       const button = findButton();
       button.vm.$emit('click');
 
-      return wrapper.vm.$nextTick().then(() => {
-        expect(button.text()).toEqual('Restart Terminal');
-        expect(actions.restartSession).toHaveBeenCalled();
-      });
+      await nextTick();
+      expect(button.text()).toEqual('Restart Terminal');
+      expect(actions.restartSession).toHaveBeenCalled();
     });
   });
 });

@@ -1,6 +1,7 @@
 import { GlDropdown, GlDropdownItem } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
+import { nextTick } from 'vue';
 import waitForPromises from 'helpers/wait_for_promises';
 import { TEST_HOST } from 'spec/test_constants';
 import createFlash from '~/flash';
@@ -68,7 +69,7 @@ describe('Pipelines Actions dropdown', () => {
 
         findAllDropdownItems().at(0).vm.$emit('click');
 
-        await wrapper.vm.$nextTick();
+        await nextTick();
         expect(findDropdown().props('loading')).toBe(true);
 
         await waitForPromises();
@@ -80,7 +81,7 @@ describe('Pipelines Actions dropdown', () => {
 
         findAllDropdownItems().at(0).vm.$emit('click');
 
-        await wrapper.vm.$nextTick();
+        await nextTick();
         expect(findDropdown().props('loading')).toBe(true);
 
         await waitForPromises();

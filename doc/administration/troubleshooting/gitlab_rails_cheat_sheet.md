@@ -818,7 +818,7 @@ conflicting_permanent_redirects = RedirectRoute.matching_path_and_descendants(pa
 conflicting_permanent_redirects.destroy_all
 ```
 
-## Merge Requests
+## Merge requests
 
 ### Close a merge request properly (if merged but still marked as open)
 

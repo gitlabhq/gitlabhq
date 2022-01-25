@@ -1,7 +1,7 @@
 import { GlAlert, GlEmptyState, GlLoadingIcon } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import { uniq } from 'lodash';
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 import Api from '~/api';
 import UserList from '~/user_lists/components/user_list.vue';
@@ -57,12 +57,12 @@ describe('User List', () => {
   describe('success', () => {
     let userIds;
 
-    beforeEach(() => {
+    beforeEach(async () => {
       userIds = parseUserIds(userList.user_xids);
       Api.fetchFeatureFlagUserList.mockResolvedValueOnce({ data: userList });
       factory();
 
-      return wrapper.vm.$nextTick();
+      await nextTick();
     });
 
     it('requests the user list on mount', () => {
@@ -101,10 +101,10 @@ describe('User List', () => {
       beforeEach(async () => {
         Api.updateFeatureFlagUserList.mockResolvedValue(userList);
         click('add-users');
-        await wrapper.vm.$nextTick();
+        await nextTick();
         wrapper.find('#add-user-ids').setValue(`${stringifyUserIds(newIds)},`);
         click('confirm-add-user-ids');
-        await wrapper.vm.$nextTick();
+        await nextTick();
         [[, { user_xids: receivedUserIds }]] = Api.updateFeatureFlagUserList.mock.calls;
         parsedReceivedUserIds = parseUserIds(receivedUserIds);
       });
@@ -140,7 +140,7 @@ describe('User List', () => {
       beforeEach(async () => {
         Api.updateFeatureFlagUserList.mockResolvedValue(userList);
         click('delete-user-id');
-        await wrapper.vm.$nextTick();
+        await nextTick();
         [[, { user_xids: receivedUserIds }]] = Api.updateFeatureFlagUserList.mock.calls;
       });
 
@@ -159,11 +159,11 @@ describe('User List', () => {
   describe('error', () => {
     const findAlert = () => wrapper.find(GlAlert);
 
-    beforeEach(() => {
+    beforeEach(async () => {
       Api.fetchFeatureFlagUserList.mockRejectedValue();
       factory();
 
-      return wrapper.vm.$nextTick();
+      await nextTick();
     });
 
     it('displays the alert message', () => {
@@ -175,18 +175,18 @@ describe('User List', () => {
       const alert = findAlert();
       alert.find('button').trigger('click');
 
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       expect(alert.exists()).toBe(false);
     });
   });
 
   describe('empty list', () => {
-    beforeEach(() => {
+    beforeEach(async () => {
       Api.fetchFeatureFlagUserList.mockResolvedValueOnce({ data: { ...userList, user_xids: '' } });
       factory();
 
-      return wrapper.vm.$nextTick();
+      await nextTick();
     });
 
     it('displays an empty state', () => {

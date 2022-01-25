@@ -1,6 +1,6 @@
 import { GlLoadingIcon } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import smooshpack from 'smooshpack';
 import Vuex from 'vuex';
 import Clientside from '~/ide/components/preview/clientside.vue';
@@ -351,39 +351,36 @@ describe('IDE clientside preview', () => {
   });
 
   describe('template', () => {
-    it('renders ide-preview element when showPreview is true', () => {
+    it('renders ide-preview element when showPreview is true', async () => {
       createComponent({ getters: { packageJson: dummyPackageJson } });
       // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
       // eslint-disable-next-line no-restricted-syntax
       wrapper.setData({ loading: false });
 
-      return wrapper.vm.$nextTick(() => {
-        expect(wrapper.find('#ide-preview').exists()).toBe(true);
-      });
+      await nextTick();
+      expect(wrapper.find('#ide-preview').exists()).toBe(true);
     });
 
-    it('renders empty state', () => {
+    it('renders empty state', async () => {
       createComponent();
       // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
       // eslint-disable-next-line no-restricted-syntax
       wrapper.setData({ loading: false });
 
-      return wrapper.vm.$nextTick(() => {
-        expect(wrapper.text()).toContain(
-          'Preview your web application using Web IDE client-side evaluation.',
-        );
-      });
+      await nextTick();
+      expect(wrapper.text()).toContain(
+        'Preview your web application using Web IDE client-side evaluation.',
+      );
     });
 
-    it('renders loading icon', () => {
+    it('renders loading icon', async () => {
       createComponent();
       // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
       // eslint-disable-next-line no-restricted-syntax
       wrapper.setData({ loading: true });
 
-      return wrapper.vm.$nextTick(() => {
-        expect(wrapper.find(GlLoadingIcon).exists()).toBe(true);
-      });
+      await nextTick();
+      expect(wrapper.find(GlLoadingIcon).exists()).toBe(true);
     });
   });
 

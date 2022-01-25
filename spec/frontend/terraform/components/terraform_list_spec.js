@@ -1,5 +1,6 @@
 import { GlAlert, GlBadge, GlKeysetPagination, GlLoadingIcon, GlTab } from '@gitlab/ui';
-import { createLocalVue, shallowMount } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
+import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -8,8 +9,7 @@ import StatesTable from '~/terraform/components/states_table.vue';
 import TerraformList from '~/terraform/components/terraform_list.vue';
 import getStatesQuery from '~/terraform/graphql/queries/get_states.query.graphql';
 
-const localVue = createLocalVue();
-localVue.use(VueApollo);
+Vue.use(VueApollo);
 
 describe('TerraformList', () => {
   let wrapper;
@@ -45,7 +45,6 @@ describe('TerraformList', () => {
     const apolloProvider = createMockApollo([[getStatesQuery, statsQueryResponse]], mockResolvers);
 
     wrapper = shallowMount(TerraformList, {
-      localVue,
       apolloProvider,
       propsData,
       stubs: {

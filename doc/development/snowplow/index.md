@@ -166,6 +166,19 @@ LIMIT 100
 
 Snowplow JavaScript adds [web-specific parameters](https://docs.snowplowanalytics.com/docs/collecting-data/collecting-from-own-applications/snowplow-tracker-protocol/#Web-specific_parameters) to all web events by default.
 
+## Snowplow monitoring
+
+For different stages in the processing pipeline, there are several tools that monitor Snowplow events tracking:
+
+- [Product Intelligence Grafana dashboard](https://dashboards.gitlab.net/d/product-intelligence-main/product-intelligence-product-intelligence?orgId=1) monitors backend events sent from GitLab.com instance to collectors fleet. This dashboard provides information about: 
+  - The number of events that successfully reach Snowplow collectors.
+  - The number of events that failed to reach Snowplow collectors. 
+  - The number of backend events that were sent.
+- [AWS CloudWatch dashboard](https://console.aws.amazon.com/cloudwatch/home?region=us-east-1#dashboards:name=SnowPlow;start=P3D) monitors the state of the events processing pipeline. The pipeline starts from Snowplow collectors, through to enrichers and pseudonymization, and up to persistence on S3 bucket from which events are imported to Snowflake Data Warehouse. To view this dashboard AWS access is required, follow this [instruction](https://gitlab.com/gitlab-org/growth/product-intelligence/snowplow-pseudonymization#monitoring) if you are interested in getting one.
+- [SiSense dashboard](https://app.periscopedata.com/app/gitlab/417669/Snowplow-Summary-Dashboard) provides information about the number of good and bad events imported into the Data Warehouse, in addition to the total number of imported Snowplow events. 
+
+For more information, see this [video walk-through](https://www.youtube.com/watch?v=NxPS0aKa_oU).
+
 ## Related topics
 
 - [Snowplow data structure](https://docs.snowplowanalytics.com/docs/understanding-your-pipeline/canonical-event/)

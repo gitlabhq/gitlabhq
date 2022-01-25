@@ -93,14 +93,13 @@ describe('Discussion navigation mixin', () => {
       expect(store.dispatch).toHaveBeenCalledWith('setCurrentDiscussionId', null);
     });
 
-    it('triggers the jumpToNextDiscussion action when the previous store action succeeds', () => {
+    it('triggers the jumpToNextDiscussion action when the previous store action succeeds', async () => {
       store.dispatch.mockResolvedValue();
 
       vm.jumpToFirstUnresolvedDiscussion();
 
-      return vm.$nextTick().then(() => {
-        expect(vm.jumpToNextDiscussion).toHaveBeenCalled();
-      });
+      await nextTick();
+      expect(vm.jumpToNextDiscussion).toHaveBeenCalled();
     });
   });
 
@@ -126,11 +125,11 @@ describe('Discussion navigation mixin', () => {
       });
 
       describe('on `show` active tab', () => {
-        beforeEach(() => {
+        beforeEach(async () => {
           window.mrTabs.currentAction = 'show';
           wrapper.vm[fn](...args);
 
-          return wrapper.vm.$nextTick();
+          await nextTick();
         });
 
         it('sets current discussion', () => {
@@ -150,11 +149,11 @@ describe('Discussion navigation mixin', () => {
       });
 
       describe('on `diffs` active tab', () => {
-        beforeEach(() => {
+        beforeEach(async () => {
           window.mrTabs.currentAction = 'diffs';
           wrapper.vm[fn](...args);
 
-          return wrapper.vm.$nextTick();
+          await nextTick();
         });
 
         it('sets current discussion', () => {
@@ -178,11 +177,11 @@ describe('Discussion navigation mixin', () => {
       });
 
       describe('on `other` active tab', () => {
-        beforeEach(() => {
+        beforeEach(async () => {
           window.mrTabs.currentAction = 'other';
           wrapper.vm[fn](...args);
 
-          return wrapper.vm.$nextTick();
+          await nextTick();
         });
 
         it('sets current discussion', () => {

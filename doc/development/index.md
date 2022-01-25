@@ -224,7 +224,7 @@ the [reviewer values](https://about.gitlab.com/handbook/engineering/workflow/rev
 - [Sidekiq guidelines](sidekiq/index.md) for working with Sidekiq workers
 - [Working with Gitaly](gitaly.md)
 - [Elasticsearch integration docs](elasticsearch.md)
-- [Working with Merge Request diffs](diffs.md)
+- [Working with merge request diffs](diffs.md)
 - [Approval Rules](approval_rules.md)
 - [Repository mirroring](repository_mirroring.md)
 - [File uploads](uploads.md)

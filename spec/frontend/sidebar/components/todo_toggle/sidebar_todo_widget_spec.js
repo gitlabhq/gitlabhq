@@ -1,6 +1,6 @@
 import { GlIcon, GlButton } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -119,7 +119,7 @@ describe('Sidebar Todo Widget', () => {
     it('emits `todoUpdated` event on click on icon', async () => {
       wrapper.find(GlIcon).vm.$emit('click', event);
 
-      await wrapper.vm.$nextTick();
+      await nextTick();
       expect(wrapper.emitted('todoUpdated')).toEqual([[false]]);
     });
   });

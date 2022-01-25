@@ -1,6 +1,7 @@
 import { GlButton } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import Cookies from 'js-cookie';
+import { nextTick } from 'vue';
 import PipelineSchedulesCallout from '~/pages/projects/pipeline_schedules/shared/components/pipeline_schedules_callout.vue';
 
 const cookieKey = 'pipeline_schedules_callout_dismissed';
@@ -27,7 +28,7 @@ describe('Pipeline Schedule Callout', () => {
       Cookies.set(cookieKey, true);
       createComponent();
 
-      await wrapper.vm.$nextTick();
+      await nextTick();
     });
 
     afterEach(() => {
@@ -71,7 +72,7 @@ describe('Pipeline Schedule Callout', () => {
 
         findDismissCalloutBtn().vm.$emit('click');
 
-        await wrapper.vm.$nextTick();
+        await nextTick();
 
         expect(findInnerContentOfCallout().exists()).toBe(false);
       });
@@ -90,7 +91,7 @@ describe('Pipeline Schedule Callout', () => {
     it('is hidden when close button is clicked', async () => {
       findDismissCalloutBtn().vm.$emit('click');
 
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       expect(findInnerContentOfCallout().exists()).toBe(false);
     });

@@ -527,9 +527,9 @@ DELETE /projects/:id/approval_rules/:approval_rule_id
 | `id`                 | integer or string | yes      | The ID or [URL-encoded path of a project](index.md#namespaced-path-encoding) |
 | `approval_rule_id`   | integer | yes      | The ID of a approval rule
 
-## Merge Request-level MR approvals
+## Merge request-level MR approvals
 
-Configuration for approvals on a specific Merge Request. Must be authenticated for all endpoints.
+Configuration for approvals on a specific merge request. Must be authenticated for all endpoints.
 
 ### Get Configuration
 
@@ -957,7 +957,7 @@ These are system generated rules.
 | `merge_request_iid` | integer | yes      | The IID of the merge request |
 | `approval_rule_id`  | integer | yes      | The ID of an approval rule |
 
-## Approve Merge Request
+## Approve merge request
 
 > Moved to GitLab Premium in 13.9.
 
@@ -1020,7 +1020,7 @@ does not match, the response code is `409`.
 }
 ```
 
-## Unapprove Merge Request
+## Unapprove merge request
 
 > Moved to GitLab Premium in 13.9.
 

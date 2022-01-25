@@ -1,5 +1,6 @@
 import { GlIcon } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import { trimText } from 'helpers/text_helper';
 import UsersMockHelper from 'helpers/user_mock_data_helper';
 import Assignee from '~/sidebar/components/assignees/assignees.vue';
@@ -59,7 +60,7 @@ describe('Assignee component', () => {
       expect(componentTextNoUsers).toContain('assign yourself');
     });
 
-    it('emits the assign-self event when "assign yourself" is clicked', () => {
+    it('emits the assign-self event when "assign yourself" is clicked', async () => {
       createWrapper({
         ...getDefaultProps(),
         editable: true,
@@ -68,9 +69,8 @@ describe('Assignee component', () => {
       jest.spyOn(wrapper.vm, '$emit');
       wrapper.find('[data-testid="assign-yourself"]').trigger('click');
 
-      return wrapper.vm.$nextTick().then(() => {
-        expect(wrapper.emitted('assign-self')).toBeTruthy();
-      });
+      await nextTick();
+      expect(wrapper.emitted('assign-self')).toBeTruthy();
     });
   });
 

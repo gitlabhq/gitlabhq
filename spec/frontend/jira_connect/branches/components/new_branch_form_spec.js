@@ -1,5 +1,6 @@
 import { GlAlert, GlForm, GlFormInput, GlButton } from '@gitlab/ui';
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
+import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -45,8 +46,6 @@ const mockCreateBranchMutationWithErrors = jest
 const mockCreateBranchMutationFailed = jest.fn().mockRejectedValue(new Error('GraphQL error'));
 const mockMutationLoading = jest.fn().mockReturnValue(new Promise(() => {}));
 
-const localVue = createLocalVue();
-
 describe('NewBranchForm', () => {
   let wrapper;
 
@@ -66,7 +65,7 @@ describe('NewBranchForm', () => {
   function createMockApolloProvider({
     mockCreateBranchMutation = mockCreateBranchMutationSuccess,
   } = {}) {
-    localVue.use(VueApollo);
+    Vue.use(VueApollo);
 
     const mockApollo = createMockApollo([[createBranchMutation, mockCreateBranchMutation]]);
 
@@ -75,7 +74,6 @@ describe('NewBranchForm', () => {
 
   function createComponent({ mockApollo, provide } = {}) {
     wrapper = shallowMount(NewBranchForm, {
-      localVue,
       apolloProvider: mockApollo || createMockApolloProvider(),
       provide: {
         initialBranchName: '',

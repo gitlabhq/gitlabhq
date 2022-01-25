@@ -1,13 +1,12 @@
 import { GlDropdown, GlDropdownItem, GlLoadingIcon, GlSearchBoxByType } from '@gitlab/ui';
-import { mount, shallowMount, createLocalVue } from '@vue/test-utils';
+import { mount, shallowMount } from '@vue/test-utils';
+import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import ProjectDropdown from '~/jira_connect/branches/components/project_dropdown.vue';
 import { PROJECTS_PER_PAGE } from '~/jira_connect/branches/constants';
 import getProjectsQuery from '~/jira_connect/branches/graphql/queries/get_projects.query.graphql';
-
-const localVue = createLocalVue();
 
 const mockProjects = [
   {
@@ -62,7 +61,7 @@ describe('ProjectDropdown', () => {
   const findSearchBox = () => wrapper.findComponent(GlSearchBoxByType);
 
   function createMockApolloProvider({ mockGetProjectsQuery = mockGetProjectsQuerySuccess } = {}) {
-    localVue.use(VueApollo);
+    Vue.use(VueApollo);
 
     const mockApollo = createMockApollo([[getProjectsQuery, mockGetProjectsQuery]]);
 
@@ -71,7 +70,6 @@ describe('ProjectDropdown', () => {
 
   function createComponent({ mockApollo, props, mountFn = shallowMount } = {}) {
     wrapper = mountFn(ProjectDropdown, {
-      localVue,
       apolloProvider: mockApollo || createMockApolloProvider(),
       propsData: props,
     });
@@ -101,7 +99,7 @@ describe('ProjectDropdown', () => {
     beforeEach(async () => {
       createComponent();
       await waitForPromises();
-      await wrapper.vm.$nextTick();
+      await nextTick();
     });
 
     it('sets dropdown `loading` prop to `false`', () => {

@@ -1,5 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import { cloneDeep } from 'lodash';
 import Vuex from 'vuex';
 
@@ -125,30 +125,27 @@ describe('DiffFileHeader component', () => {
     expect(findCollapseIcon().props('name')).toBe(icon);
   });
 
-  it('when header is clicked emits toggleFile', () => {
+  it('when header is clicked emits toggleFile', async () => {
     createComponent();
     findHeader().trigger('click');
 
-    return wrapper.vm.$nextTick().then(() => {
-      expect(wrapper.emitted().toggleFile).toBeDefined();
-    });
+    await nextTick();
+    expect(wrapper.emitted().toggleFile).toBeDefined();
   });
 
-  it('when collapseIcon is clicked emits toggleFile', () => {
+  it('when collapseIcon is clicked emits toggleFile', async () => {
     createComponent({ props: { collapsible: true } });
     findCollapseIcon().vm.$emit('click', new Event('click'));
-    return wrapper.vm.$nextTick().then(() => {
-      expect(wrapper.emitted().toggleFile).toBeDefined();
-    });
+    await nextTick();
+    expect(wrapper.emitted().toggleFile).toBeDefined();
   });
 
-  it('when other element in header is clicked does not emits toggleFile', () => {
+  it('when other element in header is clicked does not emits toggleFile', async () => {
     createComponent({ props: { collapsible: true } });
     findTitleLink().trigger('click');
 
-    return wrapper.vm.$nextTick().then(() => {
-      expect(wrapper.emitted().toggleFile).not.toBeDefined();
-    });
+    await nextTick();
+    expect(wrapper.emitted().toggleFile).not.toBeDefined();
   });
 
   describe('copy to clipboard', () => {

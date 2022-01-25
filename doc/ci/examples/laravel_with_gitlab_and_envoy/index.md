@@ -378,7 +378,7 @@ Now, we would need to deploy our app by running `envoy run deploy`, but it won't
 
 Now it's time to commit [Envoy.blade.php](https://gitlab.com/mehranrasulian/laravel-sample/blob/master/Envoy.blade.php) and push it to the `main` branch.
 To keep things simple, we commit directly to `main`, without using [feature-branches](../../../topics/gitlab_flow.md#github-flow-as-a-simpler-alternative) since collaboration is beyond the scope of this tutorial.
-In a real world project, teams may use [Issue Tracker](../../../user/project/issues/index.md) and [Merge Requests](../../../user/project/merge_requests/index.md) to move their code across branches:
+In a real world project, teams may use [Issue Tracker](../../../user/project/issues/index.md) and [merge requests](../../../user/project/merge_requests/index.md) to move their code across branches:
 
 ```shell
 git add Envoy.blade.php

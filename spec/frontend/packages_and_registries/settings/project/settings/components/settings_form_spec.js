@@ -1,5 +1,6 @@
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 import VueApollo from 'vue-apollo';
+import { nextTick } from 'vue';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { GlCard, GlLoadingIcon } from 'jest/packages_and_registries/shared/stubs';
@@ -201,7 +202,7 @@ describe('Settings Form', () => {
         finder().vm.$emit('input', 'foo');
         expect(finder().props('error')).toEqual('bar');
 
-        await wrapper.vm.$nextTick();
+        await nextTick();
 
         expect(finder().props('error')).toEqual('');
       });
@@ -213,7 +214,7 @@ describe('Settings Form', () => {
 
         finder().vm.$emit('validation', false);
 
-        await wrapper.vm.$nextTick();
+        await nextTick();
 
         expect(findSaveButton().props('disabled')).toBe(true);
       });
@@ -252,7 +253,7 @@ describe('Settings Form', () => {
 
         findForm().trigger('reset');
 
-        await wrapper.vm.$nextTick();
+        await nextTick();
 
         expect(findKeepRegexInput().props('error')).toBe('');
         expect(findRemoveRegexInput().props('error')).toBe('');
@@ -319,7 +320,7 @@ describe('Settings Form', () => {
 
         findForm().trigger('submit');
         await waitForPromises();
-        await wrapper.vm.$nextTick();
+        await nextTick();
 
         expect(wrapper.vm.$toast.show).toHaveBeenCalledWith(UPDATE_SETTINGS_SUCCESS_MESSAGE);
       });
@@ -335,7 +336,7 @@ describe('Settings Form', () => {
 
             findForm().trigger('submit');
             await waitForPromises();
-            await wrapper.vm.$nextTick();
+            await nextTick();
 
             expect(wrapper.vm.$toast.show).toHaveBeenCalledWith('foo');
           });
@@ -349,7 +350,7 @@ describe('Settings Form', () => {
 
             findForm().trigger('submit');
             await waitForPromises();
-            await wrapper.vm.$nextTick();
+            await nextTick();
 
             expect(wrapper.vm.$toast.show).toHaveBeenCalledWith(UPDATE_SETTINGS_ERROR_MESSAGE);
           });
@@ -368,7 +369,7 @@ describe('Settings Form', () => {
 
             findForm().trigger('submit');
             await waitForPromises();
-            await wrapper.vm.$nextTick();
+            await nextTick();
 
             expect(findKeepRegexInput().props('error')).toEqual('baz');
           });

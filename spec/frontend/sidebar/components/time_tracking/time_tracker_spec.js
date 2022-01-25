@@ -1,5 +1,6 @@
 import { mount } from '@vue/test-utils';
 
+import { nextTick } from 'vue';
 import { stubTransition } from 'helpers/stub_transition';
 import { createMockDirective } from 'helpers/vue_mock_directive';
 import TimeTracker from '~/sidebar/components/time_tracking/time_tracker.vue';
@@ -161,7 +162,7 @@ describe('Issuable Time Tracker', () => {
 
       it('should show the correct tooltip text', async () => {
         expect(findByTestId('timeTrackingComparisonPane').exists()).toBe(true);
-        await wrapper.vm.$nextTick();
+        await nextTick();
 
         expect(findComparisonMeter()).toBe('Time remaining: 26h 23m');
       });
@@ -179,7 +180,7 @@ describe('Issuable Time Tracker', () => {
             },
           },
         });
-        await wrapper.vm.$nextTick();
+        await nextTick();
       });
 
       it('should display the human readable version of time estimated', () => {
@@ -282,7 +283,7 @@ describe('Issuable Time Tracker', () => {
             },
           },
         });
-        await wrapper.vm.$nextTick();
+        await nextTick();
       });
 
       it('should not show the "Help" pane by default', () => {
@@ -292,19 +293,19 @@ describe('Issuable Time Tracker', () => {
       it('should show the "Help" pane when help button is clicked', async () => {
         findHelpButton().trigger('click');
 
-        await wrapper.vm.$nextTick();
+        await nextTick();
 
         expect(findByTestId('helpPane').exists()).toBe(true);
       });
 
       it('should not show the "Help" pane when help button is clicked and then closed', async () => {
         findHelpButton().trigger('click');
-        await wrapper.vm.$nextTick();
+        await nextTick();
 
         expect(findByTestId('helpPane').exists()).toBe(true);
 
         findCloseHelpButton().trigger('click');
-        await wrapper.vm.$nextTick();
+        await nextTick();
 
         expect(findByTestId('helpPane').exists()).toBe(false);
       });
@@ -315,7 +316,7 @@ describe('Issuable Time Tracker', () => {
     it('refetches issuableTimeTracking query when eventHub emits `timeTracker:refresh` event', async () => {
       SidebarEventHub.$emit('timeTracker:refresh');
 
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       expect(issuableTimeTrackingRefetchSpy).toHaveBeenCalled();
     });

@@ -5,7 +5,7 @@ import {
   GlSprintf,
   GlEmptyState,
 } from '@gitlab/ui';
-import { createLocalVue } from '@vue/test-utils';
+import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
@@ -21,8 +21,6 @@ import getDependencyProxyDetailsQuery from '~/packages_and_registries/dependency
 
 import { proxyDetailsQuery, proxyData, pagination, proxyManifests } from './mock_data';
 
-const localVue = createLocalVue();
-
 describe('DependencyProxyApp', () => {
   let wrapper;
   let apolloProvider;
@@ -35,14 +33,13 @@ describe('DependencyProxyApp', () => {
   };
 
   function createComponent({ provide = provideDefaults } = {}) {
-    localVue.use(VueApollo);
+    Vue.use(VueApollo);
 
     const requestHandlers = [[getDependencyProxyDetailsQuery, resolver]];
 
     apolloProvider = createMockApollo(requestHandlers);
 
     wrapper = shallowMountExtended(DependencyProxyApp, {
-      localVue,
       apolloProvider,
       provide,
       stubs: {

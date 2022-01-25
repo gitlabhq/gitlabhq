@@ -1,5 +1,6 @@
 import { GlIcon } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import { trimText } from 'helpers/text_helper';
 import IntervalPatternInput from '~/pages/projects/pipeline_schedules/shared/components/interval_pattern_input.vue';
 
@@ -98,7 +99,7 @@ describe('Interval Pattern Input Component', () => {
     it('when a default option is selected', async () => {
       selectEveryDayRadio();
 
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       expect(findCustomInput().attributes('disabled')).toBeUndefined();
     });
@@ -106,7 +107,7 @@ describe('Interval Pattern Input Component', () => {
     it('when the custom option is selected', async () => {
       selectCustomRadio();
 
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       expect(findCustomInput().attributes('disabled')).toBeUndefined();
     });
@@ -150,11 +151,11 @@ describe('Interval Pattern Input Component', () => {
 
       it('when everyday is selected, update value', async () => {
         selectEveryWeekRadio();
-        await wrapper.vm.$nextTick();
+        await nextTick();
         expect(findCustomInput().element.value).toBe(cronIntervalPresets.everyWeek);
 
         selectEveryDayRadio();
-        await wrapper.vm.$nextTick();
+        await nextTick();
         expect(findCustomInput().element.value).toBe(cronIntervalPresets.everyDay);
       });
     });
@@ -170,7 +171,7 @@ describe('Interval Pattern Input Component', () => {
 
         act();
 
-        await wrapper.vm.$nextTick();
+        await nextTick();
 
         expect(findCustomInput().element.value).toBe(expectedValue);
       });
@@ -189,7 +190,7 @@ describe('Interval Pattern Input Component', () => {
 
       findCustomInput().setValue(newValue);
 
-      await wrapper.vm.$nextTick;
+      await nextTick;
 
       expect(findSelectedRadioKey()).toBe(customKey);
     });

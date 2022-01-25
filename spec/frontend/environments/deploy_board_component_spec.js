@@ -1,6 +1,6 @@
 import { GlTooltip, GlIcon, GlLoadingIcon } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import CanaryIngress from '~/environments/components/canary_ingress.vue';
 import DeployBoard from '~/environments/components/deploy_board.vue';
 import { deployBoardMockData, environment } from './mock_data';
@@ -24,7 +24,7 @@ describe('Deploy Board', () => {
   describe('with valid data', () => {
     beforeEach((done) => {
       wrapper = createComponent();
-      wrapper.vm.$nextTick(done);
+      nextTick(done);
     });
 
     it('should render percentage with completion value provided', () => {
@@ -79,7 +79,7 @@ describe('Deploy Board', () => {
         isEmpty: true,
         logsPath,
       });
-      wrapper.vm.$nextTick(done);
+      nextTick(done);
     });
 
     it('should render the empty state', () => {
@@ -98,7 +98,7 @@ describe('Deploy Board', () => {
         isEmpty: false,
         logsPath,
       });
-      wrapper.vm.$nextTick(done);
+      nextTick(done);
     });
 
     it('should render loading spinner', () => {
@@ -116,7 +116,7 @@ describe('Deploy Board', () => {
         deployBoardData: deployBoardMockData,
       });
       ({ statuses } = wrapper.vm);
-      wrapper.vm.$nextTick(done);
+      nextTick(done);
     });
 
     it('with all the possible statuses', () => {

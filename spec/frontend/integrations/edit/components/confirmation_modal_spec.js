@@ -1,6 +1,7 @@
 import { GlModal } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 
+import { nextTick } from 'vue';
 import ConfirmationModal from '~/integrations/edit/components/confirmation_modal.vue';
 import { createStore } from '~/integrations/edit/store';
 
@@ -40,7 +41,7 @@ describe('ConfirmationModal', () => {
 
       findGlModal().vm.$emit('primary');
 
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       expect(wrapper.emitted().submit).toHaveLength(1);
     });

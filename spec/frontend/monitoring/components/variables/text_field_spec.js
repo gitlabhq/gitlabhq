@@ -1,5 +1,6 @@
 import { GlFormInput } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import TextField from '~/monitoring/components/variables/text_field.vue';
 
 describe('Text variable component', () => {
@@ -23,15 +24,14 @@ describe('Text variable component', () => {
     expect(findInput().exists()).toBe(true);
   });
 
-  it('always has a default value', () => {
+  it('always has a default value', async () => {
     createShallowWrapper();
 
-    return wrapper.vm.$nextTick(() => {
-      expect(findInput().attributes('value')).toBe(propsData.value);
-    });
+    await nextTick();
+    expect(findInput().attributes('value')).toBe(propsData.value);
   });
 
-  it('triggers keyup enter', () => {
+  it('triggers keyup enter', async () => {
     createShallowWrapper();
     jest.spyOn(wrapper.vm, '$emit');
 
@@ -39,12 +39,11 @@ describe('Text variable component', () => {
     findInput().trigger('input');
     findInput().trigger('keyup.enter');
 
-    return wrapper.vm.$nextTick(() => {
-      expect(wrapper.vm.$emit).toHaveBeenCalledWith('input', 'prod-pod');
-    });
+    await nextTick();
+    expect(wrapper.vm.$emit).toHaveBeenCalledWith('input', 'prod-pod');
   });
 
-  it('triggers blur enter', () => {
+  it('triggers blur enter', async () => {
     createShallowWrapper();
     jest.spyOn(wrapper.vm, '$emit');
 
@@ -52,8 +51,7 @@ describe('Text variable component', () => {
     findInput().trigger('input');
     findInput().trigger('blur');
 
-    return wrapper.vm.$nextTick(() => {
-      expect(wrapper.vm.$emit).toHaveBeenCalledWith('input', 'canary-pod');
-    });
+    await nextTick();
+    expect(wrapper.vm.$emit).toHaveBeenCalledWith('input', 'canary-pod');
   });
 });
