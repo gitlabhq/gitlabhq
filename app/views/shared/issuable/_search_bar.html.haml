@@ -206,7 +206,7 @@
 
               %button.clear-search.hidden{ type: 'button' }
                 = sprite_icon('close', size: 16, css_class: 'clear-search-icon')
-    .filter-dropdown-container.d-flex.flex-column.flex-md-row
+    .filter-dropdown-container.gl-display-flex.gl-flex-direction-column.gl-md-flex-direction-row.gl-align-items-flex-start
       - if type == :boards
         #js-board-labels-toggle
         - if current_user

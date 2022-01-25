@@ -45,7 +45,8 @@ describe QA::Support::Formatters::TestStatsFormatter do
         job_name: "test-job",
         merge_request: "false",
         run_type: run_type,
-        stage: stage.match(%r{\d{1,2}_(\w+)}).captures.first
+        stage: stage.match(%r{\d{1,2}_(\w+)}).captures.first,
+        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/1234'
       },
       fields: {
         id: './spec/support/formatters/test_stats_formatter_spec.rb[1:1]',
@@ -56,8 +57,7 @@ describe QA::Support::Formatters::TestStatsFormatter do
         retry_attempts: 0,
         job_url: ci_job_url,
         pipeline_url: ci_pipeline_url,
-        pipeline_id: ci_pipeline_id,
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/1234'
+        pipeline_id: ci_pipeline_id
       }
     }
   end

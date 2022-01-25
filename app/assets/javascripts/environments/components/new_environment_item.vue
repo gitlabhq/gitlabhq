@@ -4,9 +4,10 @@ import {
   GlDropdown,
   GlButton,
   GlLink,
+  GlSprintf,
   GlTooltipDirective as GlTooltip,
 } from '@gitlab/ui';
-import { __ } from '~/locale';
+import { __, s__ } from '~/locale';
 import { truncate } from '~/lib/utils/text_utility';
 import isLastDeployment from '../graphql/queries/is_last_deployment.query.graphql';
 import ExternalUrl from './environment_external_url.vue';
@@ -25,6 +26,7 @@ export default {
     GlDropdown,
     GlButton,
     GlLink,
+    GlSprintf,
     Actions,
     Deployment,
     ExternalUrl,
@@ -38,6 +40,7 @@ export default {
   directives: {
     GlTooltip,
   },
+  inject: ['helpPagePath'],
   props: {
     environment: {
       required: true,
@@ -60,6 +63,9 @@ export default {
   i18n: {
     collapse: __('Collapse'),
     expand: __('Expand'),
+    emptyState: s__(
+      'Environments|There are no deployments for this environment yet. %{linkStart}Learn more about setting up deployments.%{linkEnd}',
+    ),
   },
   data() {
     return { visible: false };
@@ -82,6 +88,9 @@ export default {
     },
     upcomingDeployment() {
       return this.environment?.upcomingDeployment;
+    },
+    hasDeployment() {
+      return Boolean(this.environment?.upcomingDeployment || this.environment?.lastDeployment);
     },
     actions() {
       if (!this.lastDeployment) {
@@ -254,20 +263,29 @@ export default {
       </div>
     </div>
     <gl-collapse :visible="visible">
-      <div v-if="lastDeployment" :class="$options.deploymentClasses">
-        <deployment
-          :deployment="lastDeployment"
-          :class="{ 'gl-ml-7': inFolder }"
-          latest
-          class="gl-pl-4"
-        />
-      </div>
-      <div v-if="upcomingDeployment" :class="$options.deploymentClasses">
-        <deployment
-          :deployment="upcomingDeployment"
-          :class="{ 'gl-ml-7': inFolder }"
-          class="gl-pl-4"
-        />
+      <template v-if="hasDeployment">
+        <div v-if="lastDeployment" :class="$options.deploymentClasses">
+          <deployment
+            :deployment="lastDeployment"
+            :class="{ 'gl-ml-7': inFolder }"
+            latest
+            class="gl-pl-4"
+          />
+        </div>
+        <div v-if="upcomingDeployment" :class="$options.deploymentClasses">
+          <deployment
+            :deployment="upcomingDeployment"
+            :class="{ 'gl-ml-7': inFolder }"
+            class="gl-pl-4"
+          />
+        </div>
+      </template>
+      <div v-else :class="$options.deploymentClasses">
+        <gl-sprintf :message="$options.i18n.emptyState">
+          <template #link="{ content }">
+            <gl-link :href="helpPagePath">{{ content }}</gl-link>
+          </template>
+        </gl-sprintf>
       </div>
     </gl-collapse>
   </div>

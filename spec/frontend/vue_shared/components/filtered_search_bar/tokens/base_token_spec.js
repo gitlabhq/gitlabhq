@@ -1,4 +1,4 @@
-import { GlFilteredSearchToken } from '@gitlab/ui';
+import { GlFilteredSearchToken, GlLoadingIcon } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import {
   mockRegularLabel,
@@ -61,13 +61,10 @@ const mockProps = {
   getActiveTokenValue: (labels, data) => labels.find((label) => label.title === data),
 };
 
-function createComponent({
-  props = { ...mockProps },
-  stubs = defaultStubs,
-  slots = defaultSlots,
-} = {}) {
+function createComponent({ props = {}, stubs = defaultStubs, slots = defaultSlots } = {}) {
   return mount(BaseToken, {
     propsData: {
+      ...mockProps,
       ...props,
     },
     provide: {
@@ -83,15 +80,7 @@ function createComponent({
 describe('BaseToken', () => {
   let wrapper;
 
-  beforeEach(() => {
-    wrapper = createComponent({
-      props: {
-        ...mockProps,
-        value: { data: `"${mockRegularLabel.title}"` },
-        suggestions: mockLabels,
-      },
-    });
-  });
+  const findGlFilteredSearchToken = () => wrapper.findComponent(GlFilteredSearchToken);
 
   afterEach(() => {
     wrapper.destroy();
@@ -99,20 +88,24 @@ describe('BaseToken', () => {
 
   describe('data', () => {
     it('calls `getRecentlyUsedSuggestions` to populate `recentSuggestions` when `recentSuggestionsStorageKey` is defined', () => {
+      wrapper = createComponent();
+
       expect(getRecentlyUsedSuggestions).toHaveBeenCalledWith(mockStorageKey);
     });
   });
 
   describe('computed', () => {
     describe('activeTokenValue', () => {
-      it('calls `getActiveTokenValue` when it is provided', async () => {
+      it('calls `getActiveTokenValue` when it is provided', () => {
         const mockGetActiveTokenValue = jest.fn();
 
-        wrapper.setProps({
-          getActiveTokenValue: mockGetActiveTokenValue,
+        wrapper = createComponent({
+          props: {
+            value: { data: `"${mockRegularLabel.title}"` },
+            suggestions: mockLabels,
+            getActiveTokenValue: mockGetActiveTokenValue,
+          },
         });
-
-        await wrapper.vm.$nextTick();
 
         expect(mockGetActiveTokenValue).toHaveBeenCalledTimes(1);
         expect(mockGetActiveTokenValue).toHaveBeenCalledWith(
@@ -125,33 +118,19 @@ describe('BaseToken', () => {
 
   describe('watch', () => {
     describe('active', () => {
-      let wrapperWithTokenActive;
-
       beforeEach(() => {
-        wrapperWithTokenActive = createComponent({
+        wrapper = createComponent({
           props: {
-            ...mockProps,
             value: { data: `"${mockRegularLabel.title}"` },
             active: true,
           },
         });
       });
 
-      afterEach(() => {
-        wrapperWithTokenActive.destroy();
-      });
-
       it('emits `fetch-suggestions` event on the component when value of this prop is changed to false and `suggestions` array is empty', async () => {
-        wrapperWithTokenActive.setProps({
-          active: false,
-        });
+        await wrapper.setProps({ active: false });
 
-        await wrapperWithTokenActive.vm.$nextTick();
-
-        expect(wrapperWithTokenActive.emitted('fetch-suggestions')).toBeTruthy();
-        expect(wrapperWithTokenActive.emitted('fetch-suggestions')).toEqual([
-          [`"${mockRegularLabel.title}"`],
-        ]);
+        expect(wrapper.emitted('fetch-suggestions')).toEqual([[`"${mockRegularLabel.title}"`]]);
       });
     });
   });
@@ -161,17 +140,15 @@ describe('BaseToken', () => {
       const mockTokenValue = mockLabels[0];
 
       it('calls `setTokenValueToRecentlyUsed` when `recentSuggestionsStorageKey` is defined', () => {
+        wrapper = createComponent({ props: { suggestions: mockLabels } });
+
         wrapper.vm.handleTokenValueSelected(mockTokenValue.title);
 
         expect(setTokenValueToRecentlyUsed).toHaveBeenCalledWith(mockStorageKey, mockTokenValue);
       });
 
-      it('does not add token from preloadedSuggestions', async () => {
-        wrapper.setProps({
-          preloadedSuggestions: [mockTokenValue],
-        });
-
-        await wrapper.vm.$nextTick();
+      it('does not add token from preloadedSuggestions', () => {
+        wrapper = createComponent({ props: { preloadedSuggestions: [mockTokenValue] } });
 
         wrapper.vm.handleTokenValueSelected(mockTokenValue.title);
 
@@ -182,58 +159,60 @@ describe('BaseToken', () => {
 
   describe('template', () => {
     it('renders gl-filtered-search-token component', () => {
-      const wrapperWithNoStubs = createComponent({
-        stubs: {},
-      });
-      const glFilteredSearchToken = wrapperWithNoStubs.find(GlFilteredSearchToken);
+      wrapper = createComponent({ stubs: {} });
 
-      expect(glFilteredSearchToken.exists()).toBe(true);
-      expect(glFilteredSearchToken.props('config')).toEqual(mockProps.config);
-
-      wrapperWithNoStubs.destroy();
+      expect(findGlFilteredSearchToken().props('config')).toEqual(mockProps.config);
     });
 
     it('renders `view-token` slot when present', () => {
+      wrapper = createComponent();
+
       expect(wrapper.find('.js-view-token').exists()).toBe(true);
     });
 
     it('renders `view` slot when present', () => {
+      wrapper = createComponent();
+
       expect(wrapper.find('.js-view').exists()).toBe(true);
     });
 
-    describe('events', () => {
-      let wrapperWithNoStubs;
-
-      afterEach(() => {
-        wrapperWithNoStubs.destroy();
+    it('renders loading spinner when loading', () => {
+      wrapper = createComponent({
+        props: {
+          active: true,
+          config: mockLabelToken,
+          suggestionsLoading: true,
+        },
+        stubs: { Portal: true },
       });
 
+      expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(true);
+    });
+
+    describe('events', () => {
       describe('when activeToken has been selected', () => {
         beforeEach(() => {
-          wrapperWithNoStubs = createComponent({
-            props: {
-              ...mockProps,
-              getActiveTokenValue: () => ({ title: '' }),
-              suggestionsLoading: true,
-            },
+          wrapper = createComponent({
+            props: { getActiveTokenValue: () => ({ title: '' }) },
             stubs: { Portal: true },
           });
         });
+
         it('does not emit `fetch-suggestions` event on component after a delay when component emits `input` event', async () => {
           jest.useFakeTimers();
 
-          wrapperWithNoStubs.find(GlFilteredSearchToken).vm.$emit('input', { data: 'foo' });
-          await wrapperWithNoStubs.vm.$nextTick();
+          findGlFilteredSearchToken().vm.$emit('input', { data: 'foo' });
+          await wrapper.vm.$nextTick();
 
           jest.runAllTimers();
 
-          expect(wrapperWithNoStubs.emitted('fetch-suggestions')).toEqual([['']]);
+          expect(wrapper.emitted('fetch-suggestions')).toEqual([['']]);
         });
       });
 
       describe('when activeToken has not been selected', () => {
         beforeEach(() => {
-          wrapperWithNoStubs = createComponent({
+          wrapper = createComponent({
             stubs: { Portal: true },
           });
         });
@@ -241,38 +220,27 @@ describe('BaseToken', () => {
         it('emits `fetch-suggestions` event on component after a delay when component emits `input` event', async () => {
           jest.useFakeTimers();
 
-          wrapperWithNoStubs.find(GlFilteredSearchToken).vm.$emit('input', { data: 'foo' });
-          await wrapperWithNoStubs.vm.$nextTick();
+          findGlFilteredSearchToken().vm.$emit('input', { data: 'foo' });
+          await wrapper.vm.$nextTick();
 
           jest.runAllTimers();
 
-          expect(wrapperWithNoStubs.emitted('fetch-suggestions')).toBeTruthy();
-          expect(wrapperWithNoStubs.emitted('fetch-suggestions')[2]).toEqual(['foo']);
+          expect(wrapper.emitted('fetch-suggestions')[2]).toEqual(['foo']);
         });
 
         describe('when search is started with a quote', () => {
-          it('emits `fetch-suggestions` with filtered value', async () => {
-            jest.useFakeTimers();
+          it('emits `fetch-suggestions` with filtered value', () => {
+            findGlFilteredSearchToken().vm.$emit('input', { data: '"foo' });
 
-            wrapperWithNoStubs.find(GlFilteredSearchToken).vm.$emit('input', { data: '"foo' });
-            await wrapperWithNoStubs.vm.$nextTick();
-
-            jest.runAllTimers();
-
-            expect(wrapperWithNoStubs.emitted('fetch-suggestions')[2]).toEqual(['foo']);
+            expect(wrapper.emitted('fetch-suggestions')[2]).toEqual(['foo']);
           });
         });
 
         describe('when search starts and ends with a quote', () => {
-          it('emits `fetch-suggestions` with filtered value', async () => {
-            jest.useFakeTimers();
+          it('emits `fetch-suggestions` with filtered value', () => {
+            findGlFilteredSearchToken().vm.$emit('input', { data: '"foo"' });
 
-            wrapperWithNoStubs.find(GlFilteredSearchToken).vm.$emit('input', { data: '"foo"' });
-            await wrapperWithNoStubs.vm.$nextTick();
-
-            jest.runAllTimers();
-
-            expect(wrapperWithNoStubs.emitted('fetch-suggestions')[2]).toEqual(['foo']);
+            expect(wrapper.emitted('fetch-suggestions')[2]).toEqual(['foo']);
           });
         });
       });

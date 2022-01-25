@@ -73,7 +73,8 @@ module QA
               job_name: job_name,
               merge_request: merge_request,
               run_type: env('QA_RUN_TYPE') || run_type,
-              stage: devops_stage(file_path)
+              stage: devops_stage(file_path),
+              testcase: example.metadata[:testcase]
             },
             fields: {
               id: example.id,
@@ -84,8 +85,7 @@ module QA
               retry_attempts: example.metadata[:retry_attempts] || 0,
               job_url: QA::Runtime::Env.ci_job_url,
               pipeline_url: env('CI_PIPELINE_URL'),
-              pipeline_id: env('CI_PIPELINE_ID'),
-              testcase: example.metadata[:testcase]
+              pipeline_id: env('CI_PIPELINE_ID')
             }
           }
         rescue StandardError => e
