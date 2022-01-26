@@ -195,7 +195,7 @@ gem 'state_machines-activerecord', '~> 0.8.0'
 gem 'acts-as-taggable-on', '~> 9.0'
 
 # Background jobs
-gem 'sidekiq', '~> 6.3'
+gem 'sidekiq', '~> 6.4'
 gem 'sidekiq-cron', '~> 1.2'
 gem 'redis-namespace', '~> 1.8.1'
 gem 'gitlab-sidekiq-fetcher', '0.8.0', require: 'sidekiq-reliable-fetch'

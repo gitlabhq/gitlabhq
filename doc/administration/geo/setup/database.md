@@ -893,6 +893,9 @@ Instead, follow the instructions below.
 A production-ready and secure setup requires at least three Consul nodes, two
 Patroni nodes and one PgBouncer node on the secondary site.
 
+Because of [omnibus-6587](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/6587), Consul can't track multiple
+services, so these need to be different than the nodes used for the Standby Cluster database.
+
 Be sure to use [password credentials](../../postgresql/replication_and_failover.md#database-authorization-for-patroni)
 and other database best practices.
 

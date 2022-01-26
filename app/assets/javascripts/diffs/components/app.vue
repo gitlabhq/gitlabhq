@@ -29,7 +29,6 @@ import {
   MAX_TREE_WIDTH,
   TREE_HIDE_STATS_WIDTH,
   MR_TREE_SHOW_KEY,
-  CENTERED_LIMITED_CONTAINER_CLASSES,
   ALERT_OVERFLOW_HIDDEN,
   ALERT_MERGE_CONFLICT,
   ALERT_COLLAPSED_FILES,
@@ -253,13 +252,6 @@ export default {
     hideFileStats() {
       return this.treeWidth <= TREE_HIDE_STATS_WIDTH;
     },
-    isLimitedContainer() {
-      if (this.glFeatures.mrChangesFluidLayout) {
-        return false;
-      }
-
-      return !this.renderFileTree && !this.isParallelView && !this.isFluidLayout;
-    },
     isFullChangeset() {
       return this.startVersion === null && this.latestDiff;
     },
@@ -394,8 +386,6 @@ export default {
   created() {
     this.adjustView();
     this.subscribeToEvents();
-
-    this.CENTERED_LIMITED_CONTAINER_CLASSES = CENTERED_LIMITED_CONTAINER_CLASSES;
 
     this.unwatchDiscussions = this.$watch(
       () => `${this.diffFiles.length}:${this.$store.state.notes.discussions.length}`,
@@ -643,10 +633,7 @@ export default {
   <div v-show="shouldShow">
     <div v-if="isLoading || !isTreeLoaded" class="loading"><gl-loading-icon size="lg" /></div>
     <div v-else id="diffs" :class="{ active: shouldShow }" class="diffs tab-pane">
-      <compare-versions
-        :is-limited-container="isLimitedContainer"
-        :diff-files-count-text="numTotalFiles"
-      />
+      <compare-versions :diff-files-count-text="numTotalFiles" />
 
       <template v-if="!isBatchLoadingError">
         <hidden-files-warning
@@ -656,10 +643,7 @@ export default {
           :plain-diff-path="plainDiffPath"
           :email-patch-path="emailPatchPath"
         />
-        <collapsed-files-warning
-          v-if="visibleWarning == $options.alerts.ALERT_COLLAPSED_FILES"
-          :limited="isLimitedContainer"
-        />
+        <collapsed-files-warning v-if="visibleWarning == $options.alerts.ALERT_COLLAPSED_FILES" />
       </template>
 
       <div
@@ -681,12 +665,7 @@ export default {
           />
           <tree-list :hide-file-stats="hideFileStats" />
         </div>
-        <div
-          class="col-12 col-md-auto diff-files-holder"
-          :class="{
-            [CENTERED_LIMITED_CONTAINER_CLASSES]: isLimitedContainer,
-          }"
-        >
+        <div class="col-12 col-md-auto diff-files-holder">
           <commit-widget v-if="commit" :commit="commit" :collapsible="false" />
           <gl-alert
             v-if="isBatchLoadingError"

@@ -228,7 +228,11 @@ There is a limit when embedding metrics in GitLab Flavored Markdown (GFM) for pe
 
 - **Max limit**: 100 embeds.
 
-## Number of webhooks
+## Webhook limits
+
+Also see [Webhook rate limits](#webhook-rate-limit).
+
+### Number of webhooks
 
 To set the maximum number of group or project webhooks for a self-managed installation,
 run the following in the [GitLab Rails console](operations/rails_console.md#starting-a-rails-console-session):
@@ -246,10 +250,32 @@ Plan.default.actual_limits.update!(group_hooks: 100)
 
 Set the limit to `0` to disable it.
 
-- **Default maximum number of webhooks**: `100` per project, `50` per group
-- **Maximum payload size**: 25 MB
+The default maximum number of webhooks is `100` per project, `50` per group.
 
 For GitLab.com, see the [webhook limits for GitLab.com](../user/gitlab_com/index.md#webhooks).
+
+### Webhook payload size
+
+The maximum webhook payload size is 25 MB.
+
+### Recursive webhooks
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/329743) in GitLab 14.8.
+
+GitLab detects and blocks webhooks that are recursive or that exceed the limit
+of webhooks that can be triggered from other webhooks. This enables GitLab to
+continue to support workflows that use webhooks to call the API non-recursively, or that
+do not trigger an unreasonable number of other webhooks.
+
+Recursion can happen when a webhook is configured to make a call
+to its own GitLab instance (for example, the API). The call then triggers the same
+webhook and creates an infinite loop.
+
+The maximum number of requests to an instance made by a series of webhooks that
+trigger other webhooks is 100. When the limit is reached, GitLab blocks any further
+webhooks that would be triggered by the series.
+
+Blocked recursive webhook calls are logged in `auth.log` with the message `"Recursive webhook blocked from executing"`.
 
 ## Pull Mirroring Interval
 

@@ -11,6 +11,11 @@ RSpec.describe 'Recursive webhook detection', :sidekiq_inline, :clean_gitlab_red
   let_it_be(:project_hook) { create(:project_hook, project: project, merge_requests_events: true) }
   let_it_be(:system_hook) { create(:system_hook, merge_requests_events: true) }
 
+  let(:stubbed_project_hook_hostname) { stubbed_hostname(project_hook.url, hostname: stubbed_project_hook_ip_address) }
+  let(:stubbed_system_hook_hostname) { stubbed_hostname(system_hook.url, hostname: stubbed_system_hook_ip_address) }
+  let(:stubbed_project_hook_ip_address) { '8.8.8.8' }
+  let(:stubbed_system_hook_ip_address) { '8.8.8.9' }
+
   # Trigger a change to the merge request to fire the webhooks.
   def trigger_web_hooks
     params = { merge_request: { description: FFaker::Lorem.sentence } }
@@ -18,8 +23,8 @@ RSpec.describe 'Recursive webhook detection', :sidekiq_inline, :clean_gitlab_red
   end
 
   def stub_requests
-    stub_full_request(project_hook.url, method: :post, ip_address: '8.8.8.8')
-    stub_full_request(system_hook.url, method: :post, ip_address: '8.8.8.9')
+    stub_full_request(project_hook.url, method: :post, ip_address: stubbed_project_hook_ip_address)
+    stub_full_request(system_hook.url, method: :post, ip_address: stubbed_system_hook_ip_address)
   end
 
   before do
@@ -37,10 +42,10 @@ RSpec.describe 'Recursive webhook detection', :sidekiq_inline, :clean_gitlab_red
 
       trigger_web_hooks
 
-      expect(WebMock).to have_requested(:post, stubbed_hostname(project_hook.url))
+      expect(WebMock).to have_requested(:post, stubbed_project_hook_hostname)
         .with { |req| req.headers['X-Gitlab-Event-Uuid'] == uuid }
         .once
-      expect(WebMock).to have_requested(:post, stubbed_hostname(system_hook.url))
+      expect(WebMock).to have_requested(:post, stubbed_system_hook_hostname)
         .with { |req| req.headers['X-Gitlab-Event-Uuid'] == uuid }
         .once
     end
@@ -54,24 +59,24 @@ RSpec.describe 'Recursive webhook detection', :sidekiq_inline, :clean_gitlab_red
         Gitlab::WebHooks::RecursionDetection.set_request_uuid(nil)
       end
 
-      it 'executes all webhooks and logs an error for the recursive hook', :aggregate_failures do
+      it 'blocks and logs an error for the recursive webhook, but execute the non-recursive webhook', :aggregate_failures do
         stub_requests
 
         expect(Gitlab::AuthLogger).to receive(:error).with(
           include(
-            message: 'Webhook recursion detected and will be blocked in future',
+            message: 'Recursive webhook blocked from executing',
             hook_id: project_hook.id,
             recursion_detection: {
               uuid: uuid,
               ids: [project_hook.id]
             }
           )
-        ).twice # Twice: once in `#async_execute`, and again in `#execute`.
+        ).once
 
         trigger_web_hooks
 
-        expect(WebMock).to have_requested(:post, stubbed_hostname(project_hook.url)).once
-        expect(WebMock).to have_requested(:post, stubbed_hostname(system_hook.url)).once
+        expect(WebMock).not_to have_requested(:post, stubbed_project_hook_hostname)
+        expect(WebMock).to have_requested(:post, stubbed_system_hook_hostname).once
       end
     end
 
@@ -87,35 +92,35 @@ RSpec.describe 'Recursive webhook detection', :sidekiq_inline, :clean_gitlab_red
         Gitlab::WebHooks::RecursionDetection.set_request_uuid(nil)
       end
 
-      it 'executes and logs errors for all hooks', :aggregate_failures do
+      it 'blocks and logs errors for all hooks', :aggregate_failures do
         stub_requests
         previous_hook_ids = previous_hooks.map(&:id)
 
         expect(Gitlab::AuthLogger).to receive(:error).with(
           include(
-            message: 'Webhook recursion detected and will be blocked in future',
+            message: 'Recursive webhook blocked from executing',
             hook_id: project_hook.id,
             recursion_detection: {
               uuid: uuid,
               ids: include(*previous_hook_ids)
             }
           )
-        ).twice
+        ).once
         expect(Gitlab::AuthLogger).to receive(:error).with(
           include(
-            message: 'Webhook recursion detected and will be blocked in future',
+            message: 'Recursive webhook blocked from executing',
             hook_id: system_hook.id,
             recursion_detection: {
               uuid: uuid,
               ids: include(*previous_hook_ids)
             }
           )
-        ).twice
+        ).once
 
         trigger_web_hooks
 
-        expect(WebMock).to have_requested(:post, stubbed_hostname(project_hook.url)).once
-        expect(WebMock).to have_requested(:post, stubbed_hostname(system_hook.url)).once
+        expect(WebMock).not_to have_requested(:post, stubbed_project_hook_hostname)
+        expect(WebMock).not_to have_requested(:post, stubbed_system_hook_hostname)
       end
     end
   end
@@ -156,10 +161,10 @@ RSpec.describe 'Recursive webhook detection', :sidekiq_inline, :clean_gitlab_red
 
       expect(uuid_headers).to all(be_present)
       expect(uuid_headers.uniq.length).to eq(2)
-      expect(WebMock).to have_requested(:post, stubbed_hostname(project_hook.url))
+      expect(WebMock).to have_requested(:post, stubbed_project_hook_hostname)
         .with { |req| uuid_headers.include?(req.headers['X-Gitlab-Event-Uuid']) }
         .once
-      expect(WebMock).to have_requested(:post, stubbed_hostname(system_hook.url))
+      expect(WebMock).to have_requested(:post, stubbed_system_hook_hostname)
         .with { |req| uuid_headers.include?(req.headers['X-Gitlab-Event-Uuid']) }
         .once
     end
@@ -175,8 +180,8 @@ RSpec.describe 'Recursive webhook detection', :sidekiq_inline, :clean_gitlab_red
       expect(uuid_headers).to all(be_present)
       expect(uuid_headers.length).to eq(4)
       expect(uuid_headers.uniq.length).to eq(4)
-      expect(WebMock).to have_requested(:post, stubbed_hostname(project_hook.url)).twice
-      expect(WebMock).to have_requested(:post, stubbed_hostname(system_hook.url)).twice
+      expect(WebMock).to have_requested(:post, stubbed_project_hook_hostname).twice
+      expect(WebMock).to have_requested(:post, stubbed_system_hook_hostname).twice
     end
   end
 end

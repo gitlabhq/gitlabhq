@@ -25,7 +25,6 @@ RSpec.describe Gitlab::BacktraceCleaner do
         "app/models/repository.rb:113:in `commit'",
         "lib/gitlab/i18n.rb:50:in `with_locale'",
         "lib/gitlab/middleware/multipart.rb:95:in `call'",
-        "lib/gitlab/request_profiler/middleware.rb:14:in `call'",
         "ee/lib/gitlab/database/load_balancing/rack_middleware.rb:37:in `call'",
         "ee/lib/gitlab/jira/middleware.rb:15:in `call'"
       ]

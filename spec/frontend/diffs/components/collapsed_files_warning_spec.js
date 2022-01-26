@@ -2,7 +2,7 @@ import { shallowMount, mount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 import CollapsedFilesWarning from '~/diffs/components/collapsed_files_warning.vue';
-import { CENTERED_LIMITED_CONTAINER_CLASSES, EVT_EXPAND_ALL_FILES } from '~/diffs/constants';
+import { EVT_EXPAND_ALL_FILES } from '~/diffs/constants';
 import eventHub from '~/diffs/event_hub';
 import createStore from '~/diffs/store/modules';
 
@@ -13,7 +13,6 @@ const propsData = {
   mergeable: true,
   resolutionPath: 'a-path',
 };
-const limitedClasses = CENTERED_LIMITED_CONTAINER_CLASSES.split(' ');
 
 async function files(store, count) {
   const copies = Array(count).fill(file);
@@ -51,20 +50,6 @@ describe('CollapsedFilesWarning', () => {
   });
 
   describe('when there is more than one file', () => {
-    it.each`
-      limited  | containerClasses
-      ${true}  | ${limitedClasses}
-      ${false} | ${[]}
-    `(
-      'has the correct container classes when limited is $limited',
-      async ({ limited, containerClasses }) => {
-        createComponent({ limited });
-        await files(store, 2);
-
-        expect(wrapper.classes()).toEqual(['col-12'].concat(containerClasses));
-      },
-    );
-
     it.each`
       present  | dismissed
       ${false} | ${true}

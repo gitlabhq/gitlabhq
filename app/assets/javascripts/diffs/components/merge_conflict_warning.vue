@@ -1,6 +1,5 @@
 <script>
 import { GlButton, GlAlert, GlModalDirective } from '@gitlab/ui';
-import { CENTERED_LIMITED_CONTAINER_CLASSES } from '../constants';
 
 export default {
   components: {
@@ -11,10 +10,6 @@ export default {
     GlModalDirective,
   },
   props: {
-    limited: {
-      type: Boolean,
-      required: true,
-    },
     mergeable: {
       type: Boolean,
       required: true,
@@ -24,18 +19,11 @@ export default {
       required: true,
     },
   },
-  computed: {
-    containerClasses() {
-      return {
-        [CENTERED_LIMITED_CONTAINER_CLASSES]: this.limited,
-      };
-    },
-  },
 };
 </script>
 
 <template>
-  <div :class="containerClasses">
+  <div>
     <gl-alert
       :dismissible="false"
       :title="__('There are merge conflicts')"

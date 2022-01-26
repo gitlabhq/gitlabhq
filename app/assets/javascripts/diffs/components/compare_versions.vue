@@ -3,7 +3,7 @@ import { GlTooltipDirective, GlIcon, GlLink, GlButtonGroup, GlButton, GlSprintf 
 import { mapActions, mapGetters, mapState } from 'vuex';
 import { __ } from '~/locale';
 import { setUrlParams } from '../../lib/utils/url_utility';
-import { CENTERED_LIMITED_CONTAINER_CLASSES, EVT_EXPAND_ALL_FILES } from '../constants';
+import { EVT_EXPAND_ALL_FILES } from '../constants';
 import eventHub from '../event_hub';
 import CompareDropdownLayout from './compare_dropdown_layout.vue';
 import DiffStats from './diff_stats.vue';
@@ -24,11 +24,6 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   props: {
-    isLimitedContainer: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
     diffFilesCountText: {
       type: String,
       required: false,
@@ -73,9 +68,6 @@ export default {
       return this.commit && (this.commit.next_commit_id || this.commit.prev_commit_id);
     },
   },
-  created() {
-    this.CENTERED_LIMITED_CONTAINER_CLASSES = CENTERED_LIMITED_CONTAINER_CLASSES;
-  },
   methods: {
     ...mapActions('diffs', ['setInlineDiffViewType', 'setParallelDiffViewType', 'setShowTreeList']),
     expandAllFiles() {
@@ -88,12 +80,7 @@ export default {
 
 <template>
   <div class="mr-version-controls border-top">
-    <div
-      class="mr-version-menus-container content-block"
-      :class="{
-        [CENTERED_LIMITED_CONTAINER_CLASSES]: isLimitedContainer,
-      }"
-    >
+    <div class="mr-version-menus-container content-block">
       <gl-button
         v-if="hasChanges"
         v-gl-tooltip.hover

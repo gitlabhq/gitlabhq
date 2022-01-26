@@ -154,22 +154,6 @@ describe('diffs/components/app', () => {
     });
   });
 
-  it.each`
-    props                      | state                                                              | expected
-    ${{ isFluidLayout: true }} | ${{ isParallelView: false }}                                       | ${false}
-    ${{}}                      | ${{ isParallelView: false }}                                       | ${true}
-    ${{}}                      | ${{ showTreeList: true, diffFiles: [{}], isParallelView: false }}  | ${false}
-    ${{}}                      | ${{ showTreeList: false, diffFiles: [{}], isParallelView: false }} | ${true}
-    ${{}}                      | ${{ showTreeList: false, diffFiles: [], isParallelView: false }}   | ${true}
-  `(
-    'uses container-limiting classes ($expected) with state ($state) and props ($props)',
-    ({ props, state, expected }) => {
-      createComponent(props, ({ state: origState }) => Object.assign(origState.diffs, state));
-
-      expect(wrapper.find('.container-limited.limit-container-width').exists()).toBe(expected);
-    },
-  );
-
   it('displays loading icon on loading', () => {
     createComponent({}, ({ state }) => {
       state.diffs.isLoading = true;
@@ -498,7 +482,6 @@ describe('diffs/components/app', () => {
       expect(wrapper.find(CompareVersions).exists()).toBe(true);
       expect(wrapper.find(CompareVersions).props()).toEqual(
         expect.objectContaining({
-          isLimitedContainer: false,
           diffFilesCountText: null,
         }),
       );

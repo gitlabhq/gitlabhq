@@ -24162,9 +24162,6 @@ msgstr ""
 msgid "No prioritized labels with such name or description"
 msgstr ""
 
-msgid "No profiles found"
-msgstr ""
-
 msgid "No project subscribes to the pipelines in this project."
 msgstr ""
 
@@ -25710,9 +25707,6 @@ msgid "Participants"
 msgstr ""
 
 msgid "Pass job variables"
-msgstr ""
-
-msgid "Pass the header %{codeOpen} X-Profile-Token: %{profile_token} %{codeClose} to profile the request"
 msgstr ""
 
 msgid "Passed"
@@ -30313,9 +30307,6 @@ msgstr ""
 msgid "Requests"
 msgstr ""
 
-msgid "Requests Profiles"
-msgstr ""
-
 msgid "Requests for pages at %{code_start}%{help_text_url}%{code_end} redirect to the URL. The destination must meet certain requirements. %{docs_link_start}Learn more.%{docs_link_end}"
 msgstr ""
 
@@ -30898,6 +30889,9 @@ msgid "Runners|Registration token"
 msgstr ""
 
 msgid "Runners|Registration token copied!"
+msgstr ""
+
+msgid "Runners|Reset token"
 msgstr ""
 
 msgid "Runners|Revision"

@@ -50,9 +50,6 @@ export const NEW_LINE_KEY = 'new_line';
 export const TYPE_KEY = 'type';
 export const LEFT_LINE_KEY = 'left';
 
-export const CENTERED_LIMITED_CONTAINER_CLASSES =
-  'container-limited limit-container-width mx-lg-auto px-3';
-
 export const MAX_RENDERING_DIFF_LINES = 500;
 export const MAX_RENDERING_BULK_ROWS = 30;
 export const MIN_RENDERING_MS = 2;

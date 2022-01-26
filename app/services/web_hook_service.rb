@@ -49,7 +49,10 @@ class WebHookService
   def execute
     return { status: :error, message: 'Hook disabled' } unless hook.executable?
 
-    log_recursion_limit if recursion_blocked?
+    if recursion_blocked?
+      log_recursion_blocked
+      return { status: :error, message: 'Recursive webhook blocked' }
+    end
 
     Gitlab::WebHooks::RecursionDetection.register!(hook)
 
@@ -96,9 +99,8 @@ class WebHookService
 
   def async_execute
     Gitlab::ApplicationContext.with_context(hook.application_context) do
-      break log_rate_limit if rate_limited?
-
-      log_recursion_limit if recursion_blocked?
+      break log_rate_limited if rate_limited?
+      break log_recursion_blocked if recursion_blocked?
 
       data[:_gitlab_recursion_detection_request_uuid] = Gitlab::WebHooks::RecursionDetection::UUID.instance.request_uuid
 
@@ -202,7 +204,7 @@ class WebHookService
     @rate_limit ||= hook.rate_limit
   end
 
-  def log_rate_limit
+  def log_rate_limited
     Gitlab::AuthLogger.error(
       message: 'Webhook rate limit exceeded',
       hook_id: hook.id,
@@ -212,9 +214,9 @@ class WebHookService
     )
   end
 
-  def log_recursion_limit
+  def log_recursion_blocked
     Gitlab::AuthLogger.error(
-      message: 'Webhook recursion detected and will be blocked in future',
+      message: 'Recursive webhook blocked from executing',
       hook_id: hook.id,
       hook_type: hook.type,
       hook_name: hook_name,

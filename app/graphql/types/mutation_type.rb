@@ -121,6 +121,7 @@ module Types
     mount_mutation Mutations::Namespace::PackageSettings::Update
     mount_mutation Mutations::Groups::Update
     mount_mutation Mutations::UserCallouts::Create
+    mount_mutation Mutations::UserPreferences::Update
     mount_mutation Mutations::Packages::Destroy
     mount_mutation Mutations::Packages::DestroyFile
     mount_mutation Mutations::Echo

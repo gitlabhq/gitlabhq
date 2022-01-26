@@ -442,6 +442,60 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
     end
   end
 
+  describe '#remove_foreign_key_if_exists' do
+    context 'when the foreign key does not exist' do
+      before do
+        allow(model).to receive(:foreign_key_exists?).and_return(false)
+      end
+
+      it 'does nothing' do
+        expect(model).not_to receive(:remove_foreign_key)
+
+        model.remove_foreign_key_if_exists(:projects, :users, column: :user_id)
+      end
+    end
+
+    context 'when the foreign key exists' do
+      before do
+        allow(model).to receive(:foreign_key_exists?).and_return(true)
+      end
+
+      it 'removes the foreign key' do
+        expect(model).to receive(:remove_foreign_key).with(:projects, :users, { column: :user_id })
+
+        model.remove_foreign_key_if_exists(:projects, :users, column: :user_id)
+      end
+
+      context 'when the target table is not given' do
+        it 'passes the options as the second parameter' do
+          expect(model).to receive(:remove_foreign_key).with(:projects, { column: :user_id })
+
+          model.remove_foreign_key_if_exists(:projects, column: :user_id)
+        end
+      end
+
+      context 'when the reverse_lock_order option is given' do
+        it 'requests for lock before removing the foreign key' do
+          expect(model).to receive(:transaction_open?).and_return(true)
+          expect(model).to receive(:execute).with(/LOCK TABLE users, projects/)
+          expect(model).not_to receive(:remove_foreign_key).with(:projects, :users)
+
+          model.remove_foreign_key_if_exists(:projects, :users, column: :user_id, reverse_lock_order: true)
+        end
+
+        context 'when not inside a transaction' do
+          it 'does not lock' do
+            expect(model).to receive(:transaction_open?).and_return(false)
+            expect(model).not_to receive(:execute).with(/LOCK TABLE users, projects/)
+            expect(model).to receive(:remove_foreign_key).with(:projects, :users, { column: :user_id })
+
+            model.remove_foreign_key_if_exists(:projects, :users, column: :user_id, reverse_lock_order: true)
+          end
+        end
+      end
+    end
+  end
+
   describe '#add_concurrent_foreign_key' do
     before do
       allow(model).to receive(:foreign_key_exists?).and_return(false)

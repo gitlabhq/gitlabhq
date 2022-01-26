@@ -690,6 +690,9 @@ Roles are not the same as [**access levels**](#access-level).
 
 Use lowercase for **runners**. These are the agents that run CI/CD jobs. See also [GitLab Runner](#gitlab-runner) and [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/233529).
 
+When referring to runners, if you have to specify that the runners are installed on a customer's GitLab instance,
+use **self-managed** rather than **self-hosted**.
+
 ## (s)
 
 Do not use **(s)** to make a word optionally plural. It can slow down comprehension. For example:
@@ -734,6 +737,10 @@ Instead of:
 
 Use **select** with buttons, links, menu items, and lists. **Select** applies to more devices,
 while **click** is more specific to a mouse.
+
+## self-managed
+
+Use **self-managed** to refer to a customer's installation of GitLab. Do not use **self-hosted**.
 
 ## Service Desk
 

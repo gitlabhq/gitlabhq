@@ -38,7 +38,6 @@ describe('CompareVersions', () => {
       },
     });
   };
-  const findLimitedContainer = () => wrapper.find('.container-limited.limit-container-width');
   const findCompareSourceDropdown = () => wrapper.find('.mr-version-dropdown');
   const findCompareTargetDropdown = () => wrapper.find('.mr-version-compare-dropdown');
   const getCommitNavButtonsElement = () => wrapper.find('.commit-nav-buttons');
@@ -97,18 +96,6 @@ describe('CompareVersions', () => {
       expect(parallelBtn.attributes('data-view-type')).toEqual('parallel');
       expect(inlineBtn.html()).toContain('Inline');
       expect(parallelBtn.html()).toContain('Side-by-side');
-    });
-
-    it('adds container-limiting classes when showFileTree is false with inline diffs', () => {
-      createWrapper({ isLimitedContainer: true });
-
-      expect(findLimitedContainer().exists()).toBe(true);
-    });
-
-    it('does not add container-limiting classes when showFileTree is false with inline diffs', () => {
-      createWrapper({ isLimitedContainer: false });
-
-      expect(findLimitedContainer().exists()).toBe(false);
     });
   });
 

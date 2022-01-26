@@ -597,15 +597,6 @@
   :weight: 1
   :idempotent:
   :tags: []
-- :name: cronjob:requests_profiles
-  :worker_name: RequestsProfilesWorker
-  :feature_category: :source_code_management
-  :has_external_dependencies:
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent:
-  :tags: []
 - :name: cronjob:schedule_merge_request_cleanup_refs
   :worker_name: ScheduleMergeRequestCleanupRefsWorker
   :feature_category: :code_review

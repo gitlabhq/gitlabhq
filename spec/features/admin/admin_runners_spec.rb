@@ -472,7 +472,7 @@ RSpec.describe "Admin Runners" do
           click_on 'Reset registration token'
 
           within_modal do
-            click_button('OK', match: :first)
+            click_button('Reset token', match: :first)
           end
 
           wait_for_requests

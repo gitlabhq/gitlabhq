@@ -1054,9 +1054,18 @@ module Gitlab
         Arel::Nodes::SqlLiteral.new(replace.to_sql)
       end
 
-      def remove_foreign_key_if_exists(...)
-        if foreign_key_exists?(...)
-          remove_foreign_key(...)
+      def remove_foreign_key_if_exists(source, target = nil, **kwargs)
+        reverse_lock_order = kwargs.delete(:reverse_lock_order)
+        return unless foreign_key_exists?(source, target, **kwargs)
+
+        if target && reverse_lock_order && transaction_open?
+          execute("LOCK TABLE #{target}, #{source} IN ACCESS EXCLUSIVE MODE")
+        end
+
+        if target
+          remove_foreign_key(source, target, **kwargs)
+        else
+          remove_foreign_key(source, **kwargs)
         end
       end
 

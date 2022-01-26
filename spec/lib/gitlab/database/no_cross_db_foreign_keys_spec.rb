@@ -13,7 +13,6 @@ RSpec.describe 'cross-database foreign keys' do
     %w(
       ci_build_report_results.project_id
       ci_builds.project_id
-      ci_builds_metadata.project_id
       ci_daily_build_group_report_results.group_id
       ci_daily_build_group_report_results.project_id
       ci_freeze_periods.project_id
