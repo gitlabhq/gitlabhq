@@ -268,7 +268,7 @@ On the EC2 dashboard, look for Load Balancer in the left navigation bar:
 1. Click **Configure Health Check** and set up a health check for your EC2 instances.
    1. For **Ping Protocol**, select HTTP.
    1. For **Ping Port**, enter 80.
-   1. For **Ping Path** - we recommend that you [use the Readiness check endpoint](../../administration/load_balancer.md#readiness-check). You'll need to add [the VPC IP Adddress Range (CIDR)](https://docs.aws.amazon.com/elasticloadbalancing/latest/classic/elb-security-groups.html#elb-vpc-nacl) to the [IP Allowlist](../../administration/monitoring/ip_whitelist.md) for the [Health Check endpoints](../../user/admin_area/monitoring/health_check.md)
+   1. For **Ping Path** - we recommend that you [use the Readiness check endpoint](../../administration/load_balancer.md#readiness-check). You'll need to add [the VPC IP Address Range (CIDR)](https://docs.aws.amazon.com/elasticloadbalancing/latest/classic/elb-security-groups.html#elb-vpc-nacl) to the [IP Allowlist](../../administration/monitoring/ip_whitelist.md) for the [Health Check endpoints](../../user/admin_area/monitoring/health_check.md)
    1. Keep the default **Advanced Details** or adjust them according to your needs.
 1. Click **Add EC2 Instances** - don't add anything as we will create an Auto Scaling Group later to manage instances for us.
 1. Click **Add Tags** and add any tags you need.
@@ -588,8 +588,8 @@ Let's create an EC2 instance where we'll install Gitaly:
    1. In the **Subnet** dropdown, select `gitlab-private-10.0.1.0` from the list of subnets we created earlier.
    1. Double check that **Auto-assign Public IP** is set to `Use subnet setting (Disable)`.
    1. Click **Add Storage**.
-1. Increase the Root volume size to `20 GiB` and change the **Volume Type** to `Provisoned IOPS SSD (io1)`. (This is an arbitrary size. Create a volume big enough for your repository storage requirements.)
-   1. For **IOPS** set `1000` (20 GiB x 50 IOPS). You can provision up to 50 IOPS per GiB. If you select a larger volume, increase the IOPS accordingly. Workloads where many small files are written in a serialized manner, like `git`, requires performant storage, hence the choice of `Provisoned IOPS SSD (io1)`.
+1. Increase the Root volume size to `20 GiB` and change the **Volume Type** to `Provisioned IOPS SSD (io1)`. (This is an arbitrary size. Create a volume big enough for your repository storage requirements.)
+   1. For **IOPS** set `1000` (20 GiB x 50 IOPS). You can provision up to 50 IOPS per GiB. If you select a larger volume, increase the IOPS accordingly. Workloads where many small files are written in a serialized manner, like `git`, requires performant storage, hence the choice of `Provisioned IOPS SSD (io1)`.
 1. Click on **Add Tags** and add your tags. In our case, we'll only set `Key: Name` and `Value: Gitaly`.
 1. Click on **Configure Security Group** and let's **Create a new security group**.
    1. Give your security group a name and description. We'll use `gitlab-gitaly-sec-group` for both.

@@ -408,7 +408,7 @@ for batched background migration:
 1. Change the index pattern to `pubsub-postgres-inf-gprd*`.
 1. Add filter for `json.endpoint_id.keyword: Database::BatchedBackgroundMigrationWorker`.
 1. Optional. To see only updates, add a filter for `json.command_tag.keyword: UPDATE`.
-1. Optional. To see only failed statements, add a filter for `json.error_severiry.keyword: ERROR`.
+1. Optional. To see only failed statements, add a filter for `json.error_severity.keyword: ERROR`.
 1. Optional. Add a filter by table name.
 
 #### Grafana dashboards

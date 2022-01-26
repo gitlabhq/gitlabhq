@@ -125,17 +125,6 @@ module Timebox
       fuzzy_search(query, [:title, :description])
     end
 
-    # Searches for timeboxes with a matching title.
-    #
-    # This method uses ILIKE on PostgreSQL
-    #
-    # query - The search query as a String
-    #
-    # Returns an ActiveRecord::Relation.
-    def search_title(query)
-      fuzzy_search(query, [:title])
-    end
-
     def filter_by_state(timeboxes, state)
       case state
       when 'closed' then timeboxes.closed

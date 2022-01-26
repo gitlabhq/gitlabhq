@@ -173,9 +173,7 @@ module Types
     end
 
     def escalation_status
-      return unless Feature.enabled?(:incident_escalations, object.project) && object.supports_escalation?
-
-      object.escalation_status&.status_name
+      object.supports_escalation? ? object.escalation_status&.status_name : nil
     end
   end
 end

@@ -50,8 +50,11 @@ describe('DiffView', () => {
   };
 
   it('renders a match line', () => {
-    const wrapper = createWrapper({ diffLines: [{ isMatchLineLeft: true }] });
+    const wrapper = createWrapper({
+      diffLines: [{ isMatchLineLeft: true, left: { rich_text: 'matched text', lineDraft: {} } }],
+    });
     expect(wrapper.find(DiffExpansionCell).exists()).toBe(true);
+    expect(wrapper.text()).toContain('matched text');
   });
 
   it.each`

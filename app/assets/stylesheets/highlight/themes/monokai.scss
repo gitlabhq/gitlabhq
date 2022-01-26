@@ -169,8 +169,8 @@ $monokai-gh: #75715e;
       }
     }
 
-    .diff-grid-left:hover,
-    .diff-grid-right:hover,
+    &:not(.match) .diff-grid-left:hover,
+    &:not(.match) .diff-grid-right:hover,
     &.code-search-line:hover {
       .diff-line-num:not(.empty-cell) {
         @include line-number-hover;

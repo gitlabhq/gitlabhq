@@ -101,6 +101,8 @@ describe('GroupsList', () => {
       });
       createComponent();
 
+      // wait for the initial loadGroups
+      // to finish.
       await waitForPromises();
     });
 
@@ -137,6 +139,8 @@ describe('GroupsList', () => {
       describe('while groups are loading', () => {
         beforeEach(async () => {
           fetchGroups.mockClear();
+          // return a never-ending promise to make test
+          // deterministic.
           fetchGroups.mockReturnValue(new Promise(() => {}));
 
           findSearchBox().vm.$emit('input', mockSearchTeam);
@@ -173,7 +177,7 @@ describe('GroupsList', () => {
       describe('when group search finishes loading', () => {
         beforeEach(async () => {
           fetchGroups.mockResolvedValue({ data: [mockGroup1] });
-          findSearchBox().vm.$emit('input');
+          findSearchBox().vm.$emit('input', mockSearchTeam);
 
           await waitForPromises();
         });
@@ -184,32 +188,48 @@ describe('GroupsList', () => {
         });
       });
 
-      it.each`
-        userSearchTerm | finalSearchTerm
-        ${'gitl'}      | ${'gitl'}
-        ${'git'}       | ${'git'}
-        ${'gi'}        | ${''}
-        ${'g'}         | ${''}
-        ${''}          | ${''}
-        ${undefined}   | ${undefined}
+      describe.each`
+        previousSearch | newSearch | shouldSearch | expectedSearchValue
+        ${''}          | ${'git'}  | ${true}      | ${'git'}
+        ${'g'}         | ${'git'}  | ${true}      | ${'git'}
+        ${'git'}       | ${'gitl'} | ${true}      | ${'gitl'}
+        ${'git'}       | ${'gi'}   | ${true}      | ${''}
+        ${'gi'}        | ${'g'}    | ${false}     | ${undefined}
+        ${'g'}         | ${''}     | ${false}     | ${undefined}
+        ${''}          | ${'g'}    | ${false}     | ${undefined}
       `(
-        'searches for "$finalSearchTerm" when user enters "$userSearchTerm"',
-        async ({ userSearchTerm, finalSearchTerm }) => {
-          fetchGroups.mockResolvedValue({
-            data: [mockGroup1],
-            headers: { 'X-PAGE': 1, 'X-TOTAL': 1 },
+        'when previous search was "$previousSearch" and user enters "$newSearch"',
+        ({ previousSearch, newSearch, shouldSearch, expectedSearchValue }) => {
+          beforeEach(async () => {
+            fetchGroups.mockResolvedValue({
+              data: [mockGroup1],
+              headers: { 'X-PAGE': 1, 'X-TOTAL': 1 },
+            });
+
+            // wait for initial load
+            createComponent();
+            await waitForPromises();
+
+            // set up the "previous search"
+            findSearchBox().vm.$emit('input', previousSearch);
+            await waitForPromises();
+
+            fetchGroups.mockClear();
           });
 
-          createComponent();
-          await waitForPromises();
+          it(`${shouldSearch ? 'should' : 'should not'} execute fetch new results`, () => {
+            // enter the new search
+            findSearchBox().vm.$emit('input', newSearch);
 
-          const searchBox = findSearchBox();
-          searchBox.vm.$emit('input', userSearchTerm);
-
-          expect(fetchGroups).toHaveBeenLastCalledWith(mockGroupsPath, {
-            page: 1,
-            perPage: DEFAULT_GROUPS_PER_PAGE,
-            search: finalSearchTerm,
+            if (shouldSearch) {
+              expect(fetchGroups).toHaveBeenCalledWith(mockGroupsPath, {
+                page: 1,
+                perPage: DEFAULT_GROUPS_PER_PAGE,
+                search: expectedSearchValue,
+              });
+            } else {
+              expect(fetchGroups).not.toHaveBeenCalled();
+            }
           });
         },
       );
@@ -227,7 +247,13 @@ describe('GroupsList', () => {
         await waitForPromises();
 
         const paginationEl = findPagination();
-        paginationEl.vm.$emit('input', 2);
+
+        // mock the response from page 2
+        fetchGroups.mockResolvedValue({
+          headers: { 'X-TOTAL': totalItems, 'X-PAGE': 2 },
+          data: mockGroups,
+        });
+        await paginationEl.vm.$emit('input', 2);
       });
 
       it('should load results for page 2', () => {
@@ -238,18 +264,23 @@ describe('GroupsList', () => {
         });
       });
 
-      it('resets page to 1 on search `input` event', () => {
-        const mockSearchTerm = 'gitlab';
-        const searchBox = findSearchBox();
+      it.each`
+        scenario                    | searchTerm  | expectedPage | expectedSearchTerm
+        ${'preserves current page'} | ${'gi'}     | ${2}         | ${''}
+        ${'resets page to 1'}       | ${'gitlab'} | ${1}         | ${'gitlab'}
+      `(
+        '$scenario when search term is $searchTerm',
+        ({ searchTerm, expectedPage, expectedSearchTerm }) => {
+          const searchBox = findSearchBox();
+          searchBox.vm.$emit('input', searchTerm);
 
-        searchBox.vm.$emit('input', mockSearchTerm);
-
-        expect(fetchGroups).toHaveBeenLastCalledWith(mockGroupsPath, {
-          page: 1,
-          perPage: DEFAULT_GROUPS_PER_PAGE,
-          search: mockSearchTerm,
-        });
-      });
+          expect(fetchGroups).toHaveBeenLastCalledWith(mockGroupsPath, {
+            page: expectedPage,
+            perPage: DEFAULT_GROUPS_PER_PAGE,
+            search: expectedSearchTerm,
+          });
+        },
+      );
     });
   });
 

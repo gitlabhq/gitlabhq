@@ -52,6 +52,17 @@ class Milestone < ApplicationRecord
     state :active
   end
 
+  # Searches for timeboxes with a matching title.
+  #
+  # This method uses ILIKE on PostgreSQL
+  #
+  # query - The search query as a String
+  #
+  # Returns an ActiveRecord::Relation.
+  def self.search_title(query)
+    fuzzy_search(query, [:title])
+  end
+
   def self.min_chars_for_partial_matching
     2
   end

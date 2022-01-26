@@ -33,9 +33,8 @@ module IncidentManagement
       attr_reader :issuable, :current_user, :params, :project
 
       def available?
-        Feature.enabled?(:incident_escalations, project) &&
+        issuable.supports_escalation? &&
           user_has_permissions? &&
-          issuable.supports_escalation? &&
           escalation_status.present?
       end
 

@@ -16,7 +16,7 @@
   self-managed: true
   gitlab-com: true
   packages: [Free, Premium, Ultimate]
-  url: 'https://docs.gitlab.com/ee/user/profile/#user-profile-readme'
+  url: 'https://docs.gitlab.com/ee/user/profile/#add-details-to-your-profile-with-a-readme'
   image_url: https://about.gitlab.com/images/14_5/user_profiles_readme.png
   published_at: 2021-11-22
   release: 14.5

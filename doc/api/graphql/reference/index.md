@@ -11064,12 +11064,15 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="groupiterationsenddate"></a>`endDate` **{warning-solid}** | [`Time`](#time) | **Deprecated** in 13.5. Use timeframe.end. |
 | <a id="groupiterationsid"></a>`id` | [`ID`](#id) | Global ID of the Iteration to look up. |
 | <a id="groupiterationsiid"></a>`iid` | [`ID`](#id) | Internal ID of the Iteration to look up. |
+| <a id="groupiterationsin"></a>`in` | [`[IterationSearchableField!]`](#iterationsearchablefield) | Fields in which the fuzzy-search should be performed with the query given in the argument `search`. Defaults to `[title]`. |
 | <a id="groupiterationsincludeancestors"></a>`includeAncestors` | [`Boolean`](#boolean) | Whether to include ancestor iterations. Defaults to true. |
 | <a id="groupiterationsiterationcadenceids"></a>`iterationCadenceIds` | [`[IterationsCadenceID!]`](#iterationscadenceid) | Global iteration cadence IDs by which to look up the iterations. |
+| <a id="groupiterationssearch"></a>`search` | [`String`](#string) | Query used for fuzzy-searching in the fields selected in the argument `in`. |
+| <a id="groupiterationssort"></a>`sort` | [`IterationSort`](#iterationsort) | List iterations by sort order. If unspecified, an arbitrary order (subject to change) is used. |
 | <a id="groupiterationsstartdate"></a>`startDate` **{warning-solid}** | [`Time`](#time) | **Deprecated** in 13.5. Use timeframe.start. |
 | <a id="groupiterationsstate"></a>`state` | [`IterationState`](#iterationstate) | Filter iterations by state. |
 | <a id="groupiterationstimeframe"></a>`timeframe` | [`Timeframe`](#timeframe) | List items overlapping the given timeframe. |
-| <a id="groupiterationstitle"></a>`title` | [`String`](#string) | Fuzzy search by title. |
+| <a id="groupiterationstitle"></a>`title` **{warning-solid}** | [`String`](#string) | **Deprecated** in 15.4. The argument will be removed in 15.4. Please use `search` and `in` fields instead. |
 
 ##### `Group.label`
 
@@ -13762,12 +13765,15 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="projectiterationsenddate"></a>`endDate` **{warning-solid}** | [`Time`](#time) | **Deprecated** in 13.5. Use timeframe.end. |
 | <a id="projectiterationsid"></a>`id` | [`ID`](#id) | Global ID of the Iteration to look up. |
 | <a id="projectiterationsiid"></a>`iid` | [`ID`](#id) | Internal ID of the Iteration to look up. |
+| <a id="projectiterationsin"></a>`in` | [`[IterationSearchableField!]`](#iterationsearchablefield) | Fields in which the fuzzy-search should be performed with the query given in the argument `search`. Defaults to `[title]`. |
 | <a id="projectiterationsincludeancestors"></a>`includeAncestors` | [`Boolean`](#boolean) | Whether to include ancestor iterations. Defaults to true. |
 | <a id="projectiterationsiterationcadenceids"></a>`iterationCadenceIds` | [`[IterationsCadenceID!]`](#iterationscadenceid) | Global iteration cadence IDs by which to look up the iterations. |
+| <a id="projectiterationssearch"></a>`search` | [`String`](#string) | Query used for fuzzy-searching in the fields selected in the argument `in`. |
+| <a id="projectiterationssort"></a>`sort` | [`IterationSort`](#iterationsort) | List iterations by sort order. If unspecified, an arbitrary order (subject to change) is used. |
 | <a id="projectiterationsstartdate"></a>`startDate` **{warning-solid}** | [`Time`](#time) | **Deprecated** in 13.5. Use timeframe.start. |
 | <a id="projectiterationsstate"></a>`state` | [`IterationState`](#iterationstate) | Filter iterations by state. |
 | <a id="projectiterationstimeframe"></a>`timeframe` | [`Timeframe`](#timeframe) | List items overlapping the given timeframe. |
-| <a id="projectiterationstitle"></a>`title` | [`String`](#string) | Fuzzy search by title. |
+| <a id="projectiterationstitle"></a>`title` **{warning-solid}** | [`String`](#string) | **Deprecated** in 15.4. The argument will be removed in 15.4. Please use `search` and `in` fields instead. |
 
 ##### `Project.jobs`
 
@@ -16999,6 +17005,23 @@ Issue type.
 | <a id="issuetypeissue"></a>`ISSUE` | Issue issue type. |
 | <a id="issuetyperequirement"></a>`REQUIREMENT` | Requirement issue type. |
 | <a id="issuetypetest_case"></a>`TEST_CASE` | Test Case issue type. |
+
+### `IterationSearchableField`
+
+Fields to perform the search in.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="iterationsearchablefieldcadence_title"></a>`CADENCE_TITLE` | Search in cadence_title field. |
+| <a id="iterationsearchablefieldtitle"></a>`TITLE` | Search in title field. |
+
+### `IterationSort`
+
+Iteration sort values.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="iterationsortcadence_and_due_date_asc"></a>`CADENCE_AND_DUE_DATE_ASC` | Sort by cadence id and due date in ascending order. |
 
 ### `IterationState`
 

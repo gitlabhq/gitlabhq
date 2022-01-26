@@ -171,6 +171,7 @@ module API
       mount ::API::Ci::ResourceGroups
       mount ::API::Ci::Runner
       mount ::API::Ci::Runners
+      mount ::API::Ci::SecureFiles
       mount ::API::Ci::Triggers
       mount ::API::Ci::Variables
       mount ::API::Commits

@@ -63,4 +63,4 @@ Use GitLab [Releases](../user/project/releases/index.md) to plan, build, and del
 
 ### Feature flags
 
-Use [feature flags](../operations/feature_flags.md) to control and strategically roullout application deployments.
+Use [feature flags](../operations/feature_flags.md) to control and strategically rollout application deployments.

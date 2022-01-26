@@ -368,7 +368,7 @@ then the query might perform worse than the non-optimized query. The `milestone_
 "index_issues_on_milestone_id" btree (milestone_id)
 ```
 
-Adding the `miletone_id = X` filter to the `scope` argument or to the optimized scope causes bad performance.
+Adding the `milestone_id = X` filter to the `scope` argument or to the optimized scope causes bad performance.
 
 Example (bad):
 
@@ -618,7 +618,7 @@ The following example shows the final `ORDER BY` clause:
 ORDER BY extract('epoch' FROM epics.closed_at - epics.created_at) DESC, epics.id DESC
 ```
 
-Snippet for loading records ordered by the calcualted duration:
+Snippet for loading records ordered by the calculated duration:
 
 ```ruby
 arel_table =  Epic.arel_table
@@ -641,7 +641,7 @@ records = Gitlab::Pagination::Keyset::InOperatorOptimization::QueryBuilder.new(
   array_mapping_scope: -> (id_expression) { Epic.where(Epic.arel_table[:group_id].eq(id_expression)) }
 ).execute.limit(20)
 
-puts records.pluck(:duration_in_seconds, :id) # other columnns are not available
+puts records.pluck(:duration_in_seconds, :id) # other columns are not available
 ```
 
 Building the query requires quite a bit of configuration. For the order configuration you

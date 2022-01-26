@@ -155,8 +155,7 @@ module AlertManagement
       end
 
       def should_sync_to_incident?
-        Feature.enabled?(:incident_escalations, project) &&
-          alert.issue &&
+        alert.issue &&
           alert.issue.supports_escalation? &&
           alert.issue.escalation_status &&
           alert.issue.escalation_status.status != alert.status

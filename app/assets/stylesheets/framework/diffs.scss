@@ -603,6 +603,14 @@ table.code {
     grid-template-columns: 50px 8px 0 1fr;
   }
 
+  .diff-grid-3-col {
+    grid-template-columns: 50px 1fr !important;
+  }
+
+  &.inline-diff-view .diff-grid-3-col {
+    grid-template-columns: 50px 50px 1fr !important;
+  }
+
   .diff-grid-comments {
     display: grid;
     grid-template-columns: 1fr 1fr;

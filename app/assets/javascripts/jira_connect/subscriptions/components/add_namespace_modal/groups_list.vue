@@ -30,7 +30,8 @@ export default {
       page: 1,
       totalItems: 0,
       errorMessage: null,
-      searchTerm: '',
+      userSearchTerm: '',
+      searchValue: '',
     };
   },
   computed: {
@@ -45,16 +46,11 @@ export default {
   },
   methods: {
     loadGroups() {
-      // fetchGroups returns no results for search terms 0 < {length} < 3.
-      // The desired UX is to return the unfiltered results for searches {length} < 3.
-      // Here, we set the search to an empty string if {length} < 3
-      const search = this.searchTerm?.length < MINIMUM_SEARCH_TERM_LENGTH ? '' : this.searchTerm;
-
       this.isLoadingMore = true;
       return fetchGroups(this.groupsPath, {
         page: this.page,
         perPage: this.$options.DEFAULT_GROUPS_PER_PAGE,
-        search,
+        search: this.searchValue,
       })
         .then((response) => {
           const { page, total } = parseIntPagination(normalizeHeaders(response.headers));
@@ -69,12 +65,24 @@ export default {
           this.isLoadingMore = false;
         });
     },
-    onGroupSearch(searchTerm) {
-      // keep a copy of the search term for pagination
-      this.searchTerm = searchTerm;
-      // reset the current page
+    onGroupSearch(userSearchTerm = '') {
+      this.userSearchTerm = userSearchTerm;
+
+      // fetchGroups returns no results for search terms 0 < {length} < 3.
+      // The desired UX is to return the unfiltered results for searches {length} < 3.
+      // Here, we set the search to an empty string '' if {length} < 3
+      const newSearchValue =
+        this.userSearchTerm.length < MINIMUM_SEARCH_TERM_LENGTH ? '' : this.userSearchTerm;
+
+      // don't fetch new results if the search value didn't change.
+      if (newSearchValue === this.searchValue) {
+        return;
+      }
+
+      // reset the page.
       this.page = 1;
-      return this.loadGroups();
+      this.searchValue = newSearchValue;
+      this.loadGroups();
     },
   },
   DEFAULT_GROUPS_PER_PAGE,
@@ -92,7 +100,7 @@ export default {
       debounce="500"
       :placeholder="__('Search by name')"
       :is-loading="isLoadingMore"
-      :value="searchTerm"
+      :value="userSearchTerm"
       @input="onGroupSearch"
     />
 

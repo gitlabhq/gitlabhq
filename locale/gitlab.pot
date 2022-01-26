@@ -6228,6 +6228,15 @@ msgstr ""
 msgid "By default, all projects and groups will use the global notifications setting."
 msgstr ""
 
+msgid "By month"
+msgstr ""
+
+msgid "By quarter"
+msgstr ""
+
+msgid "By week"
+msgstr ""
+
 msgid "ByAuthor|by"
 msgstr ""
 

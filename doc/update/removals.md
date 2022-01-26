@@ -624,7 +624,7 @@ as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#brea
 Before updating GitLab, review the details carefully to determine if you need to make any
 changes to your code, settings, or workflow.
 
-In GitLab 14.0, we will update the [Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/stages.html#auto-deploy) CI template to the latest version. This includes new features, bug fixes, and performance improvements with a dependency on the v2 [auto-deploy-image](https://gitlab.com/gitlab-org/cluster-integration/auto-deploy-image). Auto Deploy CI tempalte v1 will is deprecated going forward.
+In GitLab 14.0, we will update the [Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/stages.html#auto-deploy) CI template to the latest version. This includes new features, bug fixes, and performance improvements with a dependency on the v2 [auto-deploy-image](https://gitlab.com/gitlab-org/cluster-integration/auto-deploy-image). Auto Deploy CI template v1 will is deprecated going forward.
 
 Since the v1 and v2 versions are not backward-compatible, your project might encounter an unexpected failure if you already have a deployed application. Follow the [upgrade guide](https://docs.gitlab.com/ee/topics/autodevops/upgrading_auto_deploy_dependencies.html#upgrade-guide) to upgrade your environments. You can also start using the latest template today by following the [early adoption guide](https://docs.gitlab.com/ee/topics/autodevops/upgrading_auto_deploy_dependencies.html#early-adopters).
 

@@ -102,6 +102,8 @@ user profiles are only visible to signed-in users.
 
 ## Add details to your profile with a README
 
+### *Add personal README to profile*
+
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/232157) in GitLab 14.5.
 
 If you want to add more information to your profile page, you can create a README file. When you populate the README file with information, it's included on your profile page.
