@@ -300,7 +300,7 @@ export default {
         v-gl-tooltip
         :title="
           __(
-            'Pipelines for merge requests are configured. A detached pipeline runs in the context of the merge request, and not against the merged result. Learn more in the documentation for Pipelines for Merged Results.',
+            'Merge request pipelines are configured. A detached pipeline runs in the context of the merge request, and not against the merged result. Learn more in the documentation for merge request pipelines.',
           )
         "
         variant="info"

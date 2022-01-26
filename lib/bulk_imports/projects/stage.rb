@@ -87,6 +87,10 @@ module BulkImports
             pipeline: BulkImports::Common::Pipelines::UploadsPipeline,
             stage: 5
           },
+          lfs_objects: {
+            pipeline: BulkImports::Common::Pipelines::LfsObjectsPipeline,
+            stage: 5
+          },
           auto_devops: {
             pipeline: BulkImports::Projects::Pipelines::AutoDevopsPipeline,
             stage: 5

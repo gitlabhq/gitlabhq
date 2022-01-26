@@ -8,9 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/332747) in GitLab 14.5 [with a flag](../administration/feature_flags.md) named `ff_external_audit_events_namespace`. Disabled by default.
 > - [Enabled on GitLab.com and by default on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/338939) in GitLab 14.7.
-
-FLAG:
-On self-managed GitLab, by default this feature is available. To hide the feature per group, ask an administrator to [disable the feature flag](../administration/feature_flags.md) named `ff_external_audit_events_namespace`. On GitLab.com, this feature is available.
+> - [Feature flag `ff_external_audit_events_namespace`](https://gitlab.com/gitlab-org/gitlab/-/issues/349588) removed in GitLab 14.8.
 
 Event streaming allows owners of top-level groups to set an HTTP endpoint to receive **all** audit events about the group, and its
 subgroups and projects as structured JSON.

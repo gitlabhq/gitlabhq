@@ -306,16 +306,62 @@ RSpec.describe 'New project', :js do
           expect(page).to have_text('There is not a valid Git repository at this URL')
         end
 
+        it 'reports error if repo URL is not a valid Git repository and submit button is clicked immediately' do
+          stub_request(:get, "http://foo/bar/info/refs?service=git-upload-pack").to_return(status: 200, body: "not-a-git-repo")
+
+          fill_in 'project_import_url', with: 'http://foo/bar'
+          click_on 'Create project'
+
+          wait_for_requests
+
+          expect(page).to have_text('There is not a valid Git repository at this URL')
+        end
+
         it 'keeps "Import project" tab open after form validation error' do
           collision_project = create(:project, name: 'test-name-collision', namespace: user.namespace)
+          stub_request(:get, "http://foo/bar/info/refs?service=git-upload-pack").to_return({ status: 200,
+            body: '001e# service=git-upload-pack',
+            headers: { 'Content-Type': 'application/x-git-upload-pack-advertisement' } })
 
-          fill_in 'project_import_url', with: collision_project.http_url_to_repo
+          fill_in 'project_import_url', with: 'http://foo/bar'
           fill_in 'project_name', with: collision_project.name
 
           click_on 'Create project'
 
           expect(page).to have_css('#import-project-pane.active')
           expect(page).not_to have_css('.toggle-import-form.hide')
+        end
+      end
+
+      context 'when import is initiated from project page' do
+        before do
+          project_without_repo = create(:project, name: 'project-without-repo', namespace: user.namespace)
+          visit project_path(project_without_repo)
+          click_on 'Import repository'
+        end
+
+        it 'reports error when invalid url is provided' do
+          stub_request(:get, "http://foo/bar/info/refs?service=git-upload-pack").to_return(status: 200, body: "not-a-git-repo")
+
+          fill_in 'project_import_url', with: 'http://foo/bar'
+
+          click_on 'Start import'
+          wait_for_requests
+
+          expect(page).to have_text('There is not a valid Git repository at this URL')
+        end
+
+        it 'initiates import when valid repo url is provided' do
+          stub_request(:get, "http://foo/bar/info/refs?service=git-upload-pack").to_return({ status: 200,
+            body: '001e# service=git-upload-pack',
+            headers: { 'Content-Type': 'application/x-git-upload-pack-advertisement' } })
+
+          fill_in 'project_import_url', with: 'http://foo/bar'
+
+          click_on 'Start import'
+          wait_for_requests
+
+          expect(page).to have_text('Import in progress')
         end
       end
 

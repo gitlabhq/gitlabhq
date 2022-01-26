@@ -4356,6 +4356,27 @@ Input type: `TimelineEventDestroyInput`
 | <a id="mutationtimelineeventdestroyerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationtimelineeventdestroytimelineevent"></a>`timelineEvent` | [`TimelineEventType`](#timelineeventtype) | Timeline event. |
 
+### `Mutation.timelineEventUpdate`
+
+Input type: `TimelineEventUpdateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationtimelineeventupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationtimelineeventupdateid"></a>`id` | [`IncidentManagementTimelineEventID!`](#incidentmanagementtimelineeventid) | ID of the timeline event to update. |
+| <a id="mutationtimelineeventupdatenote"></a>`note` | [`String`](#string) | Text note of the timeline event. |
+| <a id="mutationtimelineeventupdateoccurredat"></a>`occurredAt` | [`Time`](#time) | Timestamp when the event occurred. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationtimelineeventupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationtimelineeventupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationtimelineeventupdatetimelineevent"></a>`timelineEvent` | [`TimelineEventType`](#timelineeventtype) | Timeline event. |
+
 ### `Mutation.todoCreate`
 
 Input type: `TodoCreateInput`

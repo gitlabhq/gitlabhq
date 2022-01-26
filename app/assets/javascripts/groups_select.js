@@ -28,6 +28,7 @@ const groupsSelect = () => {
         const skipGroups = $select.data('skipGroups') || [];
         const parentGroupID = $select.data('parentId');
         const groupsFilter = $select.data('groupsFilter');
+        const minAccessLevel = $select.data('minAccessLevel');
 
         $select.select2({
           placeholder: __('Search for a group'),
@@ -45,6 +46,7 @@ const groupsSelect = () => {
                 page,
                 per_page: window.GROUP_SELECT_PER_PAGE,
                 all_available: allAvailable,
+                min_access_level: minAccessLevel,
               };
             },
             results(data, page) {

@@ -428,6 +428,7 @@ export default {
         <group-select
           v-if="isInviteGroup"
           v-model="groupToBeSharedWith"
+          :access-levels="accessLevels"
           :groups-filter="groupSelectFilter"
           :parent-group-id="groupSelectParentId"
           @input="handleMembersTokenSelectClear"

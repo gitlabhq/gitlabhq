@@ -129,6 +129,10 @@ packages_package_file_build_infos:
   - table: ci_pipelines
     column: pipeline_id
     on_delete: async_nullify
+ci_project_monthly_usages:
+  - table: projects
+    column: project_id
+    on_delete: async_delete
 pages_deployments:
   - table: ci_builds
     column: ci_build_id

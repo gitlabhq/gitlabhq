@@ -16544,7 +16544,8 @@ CREATE TABLE namespace_statistics (
     shared_runners_seconds integer DEFAULT 0 NOT NULL,
     shared_runners_seconds_last_reset timestamp without time zone,
     storage_size bigint DEFAULT 0 NOT NULL,
-    wiki_size bigint DEFAULT 0 NOT NULL
+    wiki_size bigint DEFAULT 0 NOT NULL,
+    dependency_proxy_size bigint DEFAULT 0 NOT NULL
 );
 
 CREATE SEQUENCE namespace_statistics_id_seq
@@ -30486,9 +30487,6 @@ ALTER TABLE ONLY resource_iteration_events
 
 ALTER TABLE ONLY status_page_settings
     ADD CONSTRAINT fk_rails_506e5ba391 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY ci_project_monthly_usages
-    ADD CONSTRAINT fk_rails_508bcd4aa6 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY project_repository_storage_moves
     ADD CONSTRAINT fk_rails_5106dbd44a FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

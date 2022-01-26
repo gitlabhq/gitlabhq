@@ -214,31 +214,88 @@ RSpec.describe 'Project > Members > Invite group', :js do
     end
 
     context 'for a project in a nested group' do
-      let(:group) { create(:group) }
-      let!(:nested_group) { create(:group, parent: group) }
-      let!(:group_to_share_with) { create(:group) }
-      let!(:project) { create(:project, namespace: nested_group) }
+      let!(:parent_group) { create(:group, :public) }
+      let!(:public_subgroup) { create(:group, :public, parent: parent_group) }
+      let!(:public_sub_subgroup) { create(:group, :public, parent: public_subgroup) }
+      let!(:private_subgroup) { create(:group, :private, parent: parent_group) }
+      let!(:project) { create(:project, :public, namespace: public_subgroup) }
+
+      let!(:membership_group) { create(:group, :public) }
 
       before do
         project.add_maintainer(maintainer)
+        membership_group.add_guest(maintainer)
+
         sign_in(maintainer)
-        group.add_maintainer(maintainer)
-        group_to_share_with.add_maintainer(maintainer)
       end
 
-      # This behavior should be changed to exclude the ancestor and project
-      # group from the options once issue is fixed for the modal:
-      # https://gitlab.com/gitlab-org/gitlab/-/issues/329835
-      it 'the groups dropdown does show ancestors and the project group' do
-        visit project_project_members_path(project)
+      context 'when invite_members_group_modal feature enabled' do
+        it 'does not show the groups inherited from projects' do
+          visit project_project_members_path(project)
 
-        click_on 'Invite a group'
-        click_on 'Select a group'
-        wait_for_requests
+          click_on 'Invite a group'
+          click_on 'Select a group'
+          wait_for_requests
 
-        expect(page).to have_button(group_to_share_with.name)
-        expect(page).to have_button(group.name)
-        expect(page).to have_button(nested_group.name)
+          expect(page).to have_button(membership_group.name)
+          expect(page).not_to have_button(parent_group.name)
+          expect(page).not_to have_button(public_subgroup.name)
+          expect(page).not_to have_button(public_sub_subgroup.name)
+          expect(page).not_to have_button(private_subgroup.name)
+        end
+
+        # This behavior should be changed to exclude the ancestor and project
+        # group from the options once issue is fixed for the modal:
+        # https://gitlab.com/gitlab-org/gitlab/-/issues/329835
+        it 'does show ancestors and the project group' do
+          parent_group.add_maintainer(maintainer)
+
+          visit project_project_members_path(project)
+
+          click_on 'Invite a group'
+          click_on 'Select a group'
+          wait_for_requests
+
+          expect(page).to have_button(membership_group.name)
+          expect(page).to have_button(parent_group.name)
+          expect(page).to have_button(public_subgroup.name)
+        end
+      end
+
+      context 'when invite_members_group_modal feature disabled' do
+        let(:group_invite_dropdown) { find('#select2-results-2') }
+
+        before do
+          stub_feature_flags(invite_members_group_modal: false)
+        end
+
+        it 'does not show the groups inherited from projects' do
+          visit project_project_members_path(project)
+
+          click_on 'Invite group'
+          click_on 'Search for a group'
+          wait_for_requests
+
+          expect(group_invite_dropdown).to have_text(membership_group.name)
+          expect(group_invite_dropdown).not_to have_text(parent_group.name)
+          expect(group_invite_dropdown).not_to have_text(public_subgroup.name)
+          expect(group_invite_dropdown).not_to have_text(public_sub_subgroup.name)
+          expect(group_invite_dropdown).not_to have_text(private_subgroup.name)
+        end
+
+        it 'does not show ancestors and the project group' do
+          parent_group.add_maintainer(maintainer)
+
+          visit project_project_members_path(project)
+
+          click_on 'Invite group'
+          click_on 'Search for a group'
+          wait_for_requests
+
+          expect(group_invite_dropdown).to have_text(membership_group.name)
+          expect(group_invite_dropdown).not_to have_text(parent_group.name, exact: true)
+          expect(group_invite_dropdown).not_to have_text(public_subgroup.name, exact: true)
+        end
       end
     end
   end

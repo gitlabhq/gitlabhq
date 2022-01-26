@@ -634,13 +634,13 @@ RSpec.describe UsersController do
   end
 
   describe 'GET #exists' do
-    before do
-      sign_in(user)
-
-      allow(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).and_return(false)
-    end
-
     context 'when user exists' do
+      before do
+        sign_in(user)
+
+        allow(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).and_return(false)
+      end
+
       it 'returns JSON indicating the user exists' do
         get user_exists_url user.username
 
@@ -661,6 +661,15 @@ RSpec.describe UsersController do
     end
 
     context 'when the user does not exist' do
+      it 'will not show a signup page if registration is disabled' do
+        stub_application_setting(signup_enabled: false)
+        get user_exists_url 'foo'
+
+        expected_json = { error: "You must be authenticated to access this path." }.to_json
+        expect(response).to have_gitlab_http_status(:unauthorized)
+        expect(response.body).to eq(expected_json)
+      end
+
       it 'returns JSON indicating the user does not exist' do
         get user_exists_url 'foo'
 

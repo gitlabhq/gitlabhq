@@ -404,23 +404,23 @@ export default {
       </gl-button>
 
       <gl-button
-        v-if="isKasEnabledInEmptyStateModal"
-        :href="repositoryPath"
-        variant="confirm"
-        category="secondary"
-        data-testid="agent-secondary-button"
-        >{{ i18n.secondaryButton }}
-      </gl-button>
-
-      <gl-button
         v-if="isEmptyStateModal"
         variant="confirm"
-        category="primary"
+        category="secondary"
         :data-track-action="$options.EVENT_ACTIONS_CLICK"
         :data-track-label="$options.EVENT_LABEL_MODAL"
         data-track-property="done"
         @click="closeModal"
         >{{ i18n.done }}
+      </gl-button>
+
+      <gl-button
+        v-if="isKasEnabledInEmptyStateModal"
+        :href="repositoryPath"
+        variant="confirm"
+        category="primary"
+        data-testid="agent-primary-button"
+        >{{ i18n.primaryButton }}
       </gl-button>
     </template>
   </gl-modal>

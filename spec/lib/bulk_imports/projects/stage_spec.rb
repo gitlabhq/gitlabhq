@@ -26,6 +26,7 @@ RSpec.describe BulkImports::Projects::Stage do
       [4, BulkImports::Projects::Pipelines::ServiceDeskSettingPipeline],
       [5, BulkImports::Common::Pipelines::WikiPipeline],
       [5, BulkImports::Common::Pipelines::UploadsPipeline],
+      [5, BulkImports::Common::Pipelines::LfsObjectsPipeline],
       [5, BulkImports::Projects::Pipelines::AutoDevopsPipeline],
       [5, BulkImports::Projects::Pipelines::PipelineSchedulesPipeline],
       [6, BulkImports::Common::Pipelines::EntityFinisher]

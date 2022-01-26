@@ -1,6 +1,7 @@
 import $ from 'jquery';
 import { debounce } from 'lodash';
 import DEFAULT_PROJECT_TEMPLATES from 'ee_else_ce/projects/default_project_templates';
+import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '../lib/utils/constants';
 import axios from '../lib/utils/axios_utils';
 import {
   convertToTitleCase,
@@ -13,20 +14,26 @@ let hasUserDefinedProjectPath = false;
 let hasUserDefinedProjectName = false;
 const invalidInputClass = 'gl-field-error-outline';
 
+const cancelSource = axios.CancelToken.source();
+const endpoint = `${gon.relative_url_root}/import/url/validate`;
+let importCredentialsValidationPromise = null;
 const validateImportCredentials = (url, user, password) => {
-  const endpoint = `${gon.relative_url_root}/import/url/validate`;
-  return axios
-    .post(endpoint, {
-      url,
-      user,
-      password,
-    })
+  cancelSource.cancel();
+  importCredentialsValidationPromise = axios
+    .post(endpoint, { url, user, password }, { cancelToken: cancelSource.cancel() })
     .then(({ data }) => data)
-    .catch(() => ({
-      // intentionally reporting success in case of validation error
-      // we do not want to block users from trying import in case of validation exception
-      success: true,
-    }));
+    .catch((thrown) =>
+      axios.isCancel(thrown)
+        ? {
+            cancelled: true,
+          }
+        : {
+            // intentionally reporting success in case of validation error
+            // we do not want to block users from trying import in case of validation exception
+            success: true,
+          },
+    );
+  return importCredentialsValidationPromise;
 };
 
 const onProjectNameChange = ($projectNameInput, $projectPathInput) => {
@@ -72,7 +79,7 @@ const deriveProjectPathFromUrl = ($projectImportUrl) => {
     .parents('.toggle-import-form')
     .find('#project_path');
 
-  if (hasUserDefinedProjectPath) {
+  if (hasUserDefinedProjectPath || $currentProjectPath.length === 0) {
     return;
   }
 
@@ -114,7 +121,7 @@ const bindEvents = () => {
   const $projectImportUrlUser = $('#project_import_url_user');
   const $projectImportUrlPassword = $('#project_import_url_password');
   const $projectImportUrlError = $('.js-import-url-error');
-  const $projectImportForm = $('.project-import form');
+  const $projectImportForm = $('form.js-project-import');
   const $projectPath = $('.tab-pane.active #project_path');
   const $useTemplateBtn = $('.template-button > input');
   const $projectFieldsForm = $('.project-fields-form');
@@ -124,7 +131,7 @@ const bindEvents = () => {
   const $projectTemplateButtons = $('.project-templates-buttons');
   const $projectName = $('.tab-pane.active #project_name');
 
-  if ($newProjectForm.length !== 1) {
+  if ($newProjectForm.length !== 1 && $projectImportForm.length !== 1) {
     return;
   }
 
@@ -168,20 +175,28 @@ const bindEvents = () => {
     $projectPath.val($projectPath.val().trim());
   });
 
-  const updateUrlPathWarningVisibility = debounce(async () => {
-    const { success: isUrlValid } = await validateImportCredentials(
+  const updateUrlPathWarningVisibility = async () => {
+    const { success: isUrlValid, cancelled } = await validateImportCredentials(
       $projectImportUrl.val(),
       $projectImportUrlUser.val(),
       $projectImportUrlPassword.val(),
     );
+    if (cancelled) {
+      return;
+    }
+
     $projectImportUrl.toggleClass(invalidInputClass, !isUrlValid);
     $projectImportUrlError.toggleClass('hide', isUrlValid);
-  }, 500);
+  };
+  const debouncedUpdateUrlPathWarningVisibility = debounce(
+    updateUrlPathWarningVisibility,
+    DEFAULT_DEBOUNCE_AND_THROTTLE_MS,
+  );
 
   let isProjectImportUrlDirty = false;
   $projectImportUrl.on('blur', () => {
     isProjectImportUrlDirty = true;
-    updateUrlPathWarningVisibility();
+    debouncedUpdateUrlPathWarningVisibility();
   });
   $projectImportUrl.on('keyup', () => {
     deriveProjectPathFromUrl($projectImportUrl);
@@ -190,17 +205,33 @@ const bindEvents = () => {
   [$projectImportUrl, $projectImportUrlUser, $projectImportUrlPassword].forEach(($f) => {
     $f.on('input', () => {
       if (isProjectImportUrlDirty) {
-        updateUrlPathWarningVisibility();
+        debouncedUpdateUrlPathWarningVisibility();
       }
     });
   });
 
-  $projectImportForm.on('submit', (e) => {
+  $projectImportForm.on('submit', async (e) => {
+    e.preventDefault();
+
+    if (importCredentialsValidationPromise === null) {
+      // we didn't validate credentials yet
+      debouncedUpdateUrlPathWarningVisibility.cancel();
+      updateUrlPathWarningVisibility();
+    }
+
+    const submitBtn = $projectImportForm.find('input[type="submit"]');
+
+    submitBtn.disable();
+    await importCredentialsValidationPromise;
+    submitBtn.enable();
+
     const $invalidFields = $projectImportForm.find(`.${invalidInputClass}`);
     if ($invalidFields.length > 0) {
       $invalidFields[0].focus();
-      e.preventDefault();
-      e.stopPropagation();
+    } else {
+      // calling .submit() on HTMLFormElement does not trigger 'submit' event
+      // We are using this behavior to bypass this handler and avoid infinite loop
+      $projectImportForm[0].submit();
     }
   });
 

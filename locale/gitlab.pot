@@ -9811,10 +9811,22 @@ msgstr ""
 msgid "CorpusManagement|Corpus are used in fuzz testing as mutation source to Improve future testing."
 msgstr ""
 
+msgid "CorpusManagement|Corpus file"
+msgstr ""
+
+msgid "CorpusManagement|Corpus files must be in *.zip format. Maximum 5 GB"
+msgstr ""
+
 msgid "CorpusManagement|Corpus name"
 msgstr ""
 
 msgid "CorpusManagement|Currently, there are no uploaded or generated corpuses."
+msgstr ""
+
+msgid "CorpusManagement|File too large, Maximum 5 GB"
+msgstr ""
+
+msgid "CorpusManagement|Filename can contain only lowercase letters (a-z), uppercase letter (A-Z), numbers (0-9), dots (.), hyphens (-), or underscores (_)."
 msgstr ""
 
 msgid "CorpusManagement|Fuzz testing corpus management"
@@ -9827,9 +9839,6 @@ msgid "CorpusManagement|Last used"
 msgstr ""
 
 msgid "CorpusManagement|Latest Job:"
-msgstr ""
-
-msgid "CorpusManagement|New corpus needs to be a upload in *.zip format. Maximum 5GB"
 msgstr ""
 
 msgid "CorpusManagement|New upload"
@@ -22372,6 +22381,9 @@ msgstr ""
 msgid "Merge request events"
 msgstr ""
 
+msgid "Merge request pipelines are configured. A detached pipeline runs in the context of the merge request, and not against the merged result. Learn more in the documentation for merge request pipelines."
+msgstr ""
+
 msgid "Merge request reports"
 msgstr ""
 
@@ -26201,9 +26213,6 @@ msgstr ""
 msgid "Pipelines charts"
 msgstr ""
 
-msgid "Pipelines for merge requests are configured. A detached pipeline runs in the context of the merge request, and not against the merged result. Learn more in the documentation for Pipelines for Merged Results."
-msgstr ""
-
 msgid "Pipelines settings for '%{project_name}' were successfully updated."
 msgstr ""
 
@@ -28232,7 +28241,7 @@ msgstr ""
 msgid "ProjectSettings|This setting will be applied to all projects unless overridden by an admin."
 msgstr ""
 
-msgid "ProjectSettings|To enable this feature, configure pipelines. %{link_start}How to configure pipelines for merge requests?%{link_end}"
+msgid "ProjectSettings|To enable this feature, configure pipelines. %{link_start}How to configure merge request pipelines?%{link_end}"
 msgstr ""
 
 msgid "ProjectSettings|Transfer project"
@@ -28274,7 +28283,7 @@ msgstr ""
 msgid "ProjectSettings|What are badges?"
 msgstr ""
 
-msgid "ProjectSettings|When pipelines for merge requests are enabled in the CI/CD configuration file, pipelines validate the combined results of the source and target branches. %{link_start}How to configure pipelines for merge requests?%{link_end}"
+msgid "ProjectSettings|When merge request pipelines are enabled in the CI/CD configuration file, pipelines validate the combined results of the source and target branches. %{link_start}How to configure merge request pipelines?%{link_end}"
 msgstr ""
 
 msgid "ProjectSettings|When there is a merge conflict, the user is given the option to rebase."
@@ -41143,6 +41152,9 @@ msgid "You left the \"%{membershipable_human_name}\" %{source_type}."
 msgstr ""
 
 msgid "You may close the milestone now."
+msgstr ""
+
+msgid "You must be authenticated to access this path."
 msgstr ""
 
 msgid "You must be logged in to search across all of GitLab"

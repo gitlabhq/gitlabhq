@@ -112,7 +112,7 @@ export const I18N_AGENT_MODAL = {
       "ClusterAgents|Your instance doesn't have the %{linkStart}GitLab Agent Server (KAS)%{linkEnd} set up. Ask a GitLab Administrator to install it.",
     ),
     altText: s__('ClusterAgents|GitLab Agent for Kubernetes'),
-    secondaryButton: s__('ClusterAgents|Go to the repository files'),
+    primaryButton: s__('ClusterAgents|Go to the repository files'),
     done: __('Cancel'),
   },
 };

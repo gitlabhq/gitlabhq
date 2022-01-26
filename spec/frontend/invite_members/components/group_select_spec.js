@@ -4,8 +4,14 @@ import waitForPromises from 'helpers/wait_for_promises';
 import * as groupsApi from '~/api/groups_api';
 import GroupSelect from '~/invite_members/components/group_select.vue';
 
+const accessLevels = { Guest: 10, Reporter: 20, Developer: 30, Maintainer: 40, Owner: 50 };
+
 const createComponent = () => {
-  return mount(GroupSelect, {});
+  return mount(GroupSelect, {
+    propsData: {
+      accessLevels,
+    },
+  });
 };
 
 const group1 = { id: 1, full_name: 'Group One', avatar_url: 'test' };
@@ -61,6 +67,7 @@ describe('GroupSelect', () => {
       expect(groupsApi.getGroups).toHaveBeenCalledWith(group1.name, {
         active: true,
         exclude_internal: true,
+        min_access_level: accessLevels.Guest,
       });
     });
 

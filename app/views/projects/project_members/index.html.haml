@@ -61,7 +61,7 @@
               default_access_level: ProjectGroupLink.default_access,
               group_link_field: 'link_group_id',
               group_access_field: 'link_group_access',
-              groups_select_tag_data: { skip_groups: @skip_groups }
+              groups_select_tag_data: { min_access_level: Gitlab::Access::GUEST, skip_groups: @skip_groups }
       - elsif !membership_locked?
         .invite-member
           = render 'shared/members/invite_member',
@@ -78,7 +78,7 @@
             submit_url: project_group_links_path(@project),
             group_link_field: 'link_group_id',
             group_access_field: 'link_group_access',
-            groups_select_tag_data: { skip_groups: @skip_groups }
+            groups_select_tag_data: { min_access_level: Gitlab::Access::GUEST, skip_groups: @skip_groups }
     .js-project-members-list-app{ data: { members_data: project_members_app_data_json(@project,
                                                                                       members: @project_members,
                                                                                       group_links: @group_links,
