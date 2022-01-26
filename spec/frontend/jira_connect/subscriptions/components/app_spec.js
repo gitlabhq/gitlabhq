@@ -1,7 +1,7 @@
-import { GlAlert, GlLink, GlEmptyState } from '@gitlab/ui';
-import { mount, shallowMount } from '@vue/test-utils';
-
+import { GlLink, GlEmptyState } from '@gitlab/ui';
 import { nextTick } from 'vue';
+import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
+
 import JiraConnectApp from '~/jira_connect/subscriptions/components/app.vue';
 import AddNamespaceButton from '~/jira_connect/subscriptions/components/add_namespace_button.vue';
 import SignInButton from '~/jira_connect/subscriptions/components/sign_in_button.vue';
@@ -21,14 +21,14 @@ describe('JiraConnectApp', () => {
   let wrapper;
   let store;
 
-  const findAlert = () => wrapper.findComponent(GlAlert);
+  const findAlert = () => wrapper.findByTestId('jira-connect-persisted-alert');
   const findAlertLink = () => findAlert().findComponent(GlLink);
   const findSignInButton = () => wrapper.findComponent(SignInButton);
   const findAddNamespaceButton = () => wrapper.findComponent(AddNamespaceButton);
   const findSubscriptionsList = () => wrapper.findComponent(SubscriptionsList);
   const findEmptyState = () => wrapper.findComponent(GlEmptyState);
 
-  const createComponent = ({ provide, mountFn = shallowMount } = {}) => {
+  const createComponent = ({ provide, mountFn = shallowMountExtended } = {}) => {
     store = createStore();
 
     wrapper = mountFn(JiraConnectApp, {
@@ -144,7 +144,7 @@ describe('JiraConnectApp', () => {
     });
 
     it('renders link when `linkUrl` is set', async () => {
-      createComponent({ mountFn: mount });
+      createComponent({ mountFn: mountExtended });
 
       store.commit(SET_ALERT, {
         message: __('test message %{linkStart}test link%{linkEnd}'),

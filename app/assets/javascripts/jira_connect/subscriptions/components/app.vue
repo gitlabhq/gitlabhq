@@ -8,6 +8,7 @@ import SubscriptionsList from './subscriptions_list.vue';
 import AddNamespaceButton from './add_namespace_button.vue';
 import SignInButton from './sign_in_button.vue';
 import UserLink from './user_link.vue';
+import CompatibilityAlert from './compatibility_alert.vue';
 
 export default {
   name: 'JiraConnectApp',
@@ -20,6 +21,7 @@ export default {
     AddNamespaceButton,
     SignInButton,
     UserLink,
+    CompatibilityAlert,
   },
   inject: {
     usersPath: {
@@ -58,11 +60,14 @@ export default {
 
 <template>
   <div>
+    <compatibility-alert />
+
     <gl-alert
       v-if="shouldShowAlert"
       class="gl-mb-7"
       :variant="alert.variant"
       :title="alert.title"
+      data-testid="jira-connect-persisted-alert"
       @dismiss="setAlert"
     >
       <gl-sprintf v-if="alert.linkUrl" :message="alert.message">

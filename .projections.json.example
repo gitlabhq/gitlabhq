@@ -31,6 +31,14 @@
     "alternate": "lib/api/{}.rb",
     "type": "test"
   },
+  "rubocop/cop/*.rb": {
+    "alternate": "spec/rubocop/cop/{}_spec.rb",
+    "type": "source"
+  },
+  "spec/rubocop/cop/*_spec.rb": {
+    "alternate": "rubocop/cop/{}.rb",
+    "type": "test"
+  },
   "ee/lib/api/*.rb": {
     "alternate": "ee/spec/requests/api/{}_spec.rb",
     "type": "source"

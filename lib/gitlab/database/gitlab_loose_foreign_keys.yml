@@ -172,6 +172,9 @@ ci_subscriptions_projects:
   - table: projects
     column: downstream_project_id
     on_delete: async_delete
+  - table: projects
+    column: upstream_project_id
+    on_delete: async_delete
 security_scans:
   - table: ci_builds
     column: build_id
