@@ -255,15 +255,15 @@ It re-instantiates project object for each build, instead of using the same in-m
 In this particular case the workaround is fairly easy:
 
 ```ruby
+ActiveRecord::Associations::Preloader.new.preload(pipeline, [builds: :project])
+
 pipeline.builds.each do |build|
-  build.project = pipeline.project
   build.to_json(only: [:name], include: [project: { only: [:name]}])
 end
 ```
 
-We can assign `pipeline.project` to each `build.project`, since we know it should point to the same project.
-This allows us that each build point to the same in-memory project,
-avoiding the cached SQL query and re-instantiation of the project object for each build.
+`ActiveRecord::Associations::Preloader` uses the same in-memory object for the same project.
+This avoids the cached SQL query and also avoids re-instantiation of the project object for each build.
 
 ## Executing Queries in Loops
 

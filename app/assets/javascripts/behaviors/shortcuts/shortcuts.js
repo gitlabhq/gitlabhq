@@ -173,7 +173,12 @@ export default class Shortcuts {
     e.preventDefault();
     const canaryCookieName = 'gitlab_canary';
     const currentValue = parseBoolean(Cookies.get(canaryCookieName));
-    Cookies.set(canaryCookieName, (!currentValue).toString(), { expires: 365, path: '/' });
+    Cookies.set(canaryCookieName, (!currentValue).toString(), {
+      expires: 365,
+      path: '/',
+      // next.gitlab.com uses a leading period. See https://gitlab.com/gitlab-org/gitlab/-/issues/350186
+      domain: `.${window.location.hostname}`,
+    });
     refreshCurrentPage();
   }
 
