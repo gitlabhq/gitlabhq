@@ -653,7 +653,7 @@ export default {
         <div
           v-if="renderFileTree"
           :style="{ width: `${treeWidth}px` }"
-          class="diff-tree-list js-diff-tree-list px-3 pr-md-0"
+          class="diff-tree-list js-diff-tree-list gl-px-5"
         >
           <panel-resizer
             :size.sync="treeWidth"

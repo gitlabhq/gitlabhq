@@ -9,6 +9,10 @@ module Gitlab
 
       subject { described_class.new(config, user: nil).execute }
 
+      before do
+        stub_feature_flags(allow_unsafe_ruby_regexp: false)
+      end
+
       shared_examples 'returns errors' do |error_message|
         it 'adds a message when an error is encountered' do
           expect(subject.errors).to include(error_message)
@@ -609,13 +613,13 @@ module Gitlab
           context 'when it is an array of integers' do
             let(:only) { [1, 1] }
 
-            it_behaves_like 'returns errors', 'jobs:rspec:only config should be an array of strings or regexps'
+            it_behaves_like 'returns errors', 'jobs:rspec:only config should be an array of strings or regular expressions using re2 syntax'
           end
 
           context 'when it is invalid regex' do
             let(:only) { ["/*invalid/"] }
 
-            it_behaves_like 'returns errors', 'jobs:rspec:only config should be an array of strings or regexps'
+            it_behaves_like 'returns errors', 'jobs:rspec:only config should be an array of strings or regular expressions using re2 syntax'
           end
         end
 
@@ -633,13 +637,13 @@ module Gitlab
           context 'when it is an array of integers' do
             let(:except) { [1, 1] }
 
-            it_behaves_like 'returns errors', 'jobs:rspec:except config should be an array of strings or regexps'
+            it_behaves_like 'returns errors', 'jobs:rspec:except config should be an array of strings or regular expressions using re2 syntax'
           end
 
           context 'when it is invalid regex' do
             let(:except) { ["/*invalid/"] }
 
-            it_behaves_like 'returns errors', 'jobs:rspec:except config should be an array of strings or regexps'
+            it_behaves_like 'returns errors', 'jobs:rspec:except config should be an array of strings or regular expressions using re2 syntax'
           end
         end
       end

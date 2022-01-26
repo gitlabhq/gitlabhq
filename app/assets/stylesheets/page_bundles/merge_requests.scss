@@ -45,11 +45,9 @@
   top: calc(#{$top-pos} + var(--system-header-height, 0px) + var(--performance-bar-height, 0px));
   // stylelint-disable-next-line length-zero-no-unit
   max-height: calc(100vh - #{$top-pos} - var(--system-header-height, 0px) - var(--performance-bar-height, 0px) - var(--review-bar-height, 0px));
-  z-index: 205;
 
   .drag-handle {
     bottom: 16px;
-    transform: translateX(10px);
   }
 }
 

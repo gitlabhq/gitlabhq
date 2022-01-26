@@ -88,7 +88,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Policy do
         describe '#errors' do
           it 'saves errors' do
             expect(entry.errors)
-              .to include /policy config should be an array of strings or regexps/
+              .to include /policy config should be an array of strings or regular expressions/
           end
         end
       end

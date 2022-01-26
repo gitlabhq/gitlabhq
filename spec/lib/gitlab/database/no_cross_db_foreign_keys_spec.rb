@@ -27,7 +27,6 @@ RSpec.describe 'cross-database foreign keys' do
       ci_project_monthly_usages.project_id
       ci_resource_groups.project_id
       ci_runner_namespaces.namespace_id
-      ci_runner_projects.project_id
       ci_running_builds.project_id
       ci_sources_projects.source_project_id
       ci_stages.project_id

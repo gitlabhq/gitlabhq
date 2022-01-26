@@ -212,7 +212,9 @@ module Ci
 
     validates :config, json_schema: { filename: 'ci_runner_config' }
 
-    validates :maintainer_note, length: { maximum: 255 }
+    validates :maintenance_note, length: { maximum: 255 }
+
+    alias_attribute :maintenance_note, :maintainer_note
 
     # Searches for runners matching the given query.
     #

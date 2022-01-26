@@ -1,5 +1,5 @@
 import { nextTick } from 'vue';
-import { GlButton } from '@gitlab/ui';
+import { GlButton, GlBadge } from '@gitlab/ui';
 import { getByRole } from '@testing-library/dom';
 import { shallowMount } from '@vue/test-utils';
 import { stubComponent } from 'helpers/stub_component';
@@ -56,7 +56,7 @@ describe('Batch comments draft note component', () => {
 
   it('renders template', () => {
     createComponent();
-    expect(wrapper.find('.draft-pending-label').exists()).toBe(true);
+    expect(wrapper.findComponent(GlBadge).exists()).toBe(true);
 
     const note = wrapper.find(NoteableNote);
 

@@ -31,6 +31,10 @@ ci_variables:
   - table: projects
     column: project_id
     on_delete: async_delete
+ci_runner_projects:
+  - table: projects
+    column: project_id
+    on_delete: async_delete
 ci_job_token_project_scope_links:
   - table: users
     column: added_by_id

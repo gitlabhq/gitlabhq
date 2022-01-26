@@ -311,23 +311,7 @@ To configure Vale in your editor, install one of the following as appropriate:
 
 - Sublime Text [`SublimeLinter-contrib-vale` package](https://packagecontrol.io/packages/SublimeLinter-contrib-vale).
 - Visual Studio Code [`errata-ai.vale-server` extension](https://marketplace.visualstudio.com/items?itemName=errata-ai.vale-server).
-  You can configure the plugin to
-  [display only a subset of alerts](#show-subset-of-vale-alerts).
-
-  In the extension's settings:
-
-  <!-- vale gitlab.Spelling = NO -->
-
-  - Select the **Use CLI** checkbox.
-  - In the  **Config** setting, enter an absolute
-    path to [`.vale.ini`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.vale.ini)
-    in one of the cloned GitLab repositories on your computer.
-
-  <!-- vale gitlab.Spelling = YES -->
-
-  - In the **Path** setting, enter the absolute path to the Vale binary. In most
-    cases, `vale` should work. To find the location, run `which vale` in a terminal.
-
+  You can configure the plugin to [display only a subset of alerts](#show-subset-of-vale-alerts).
 - Vim [ALE plugin](https://github.com/dense-analysis/ale).
 - Emacs [Flycheck extension](https://github.com/flycheck/flycheck).
   This requires some configuration:
@@ -362,7 +346,7 @@ To configure Vale in your editor, install one of the following as appropriate:
   In this setup the `markdownlint` checker is set as a "next" checker from the defined `vale` checker.
   Enabling this custom Vale checker provides error linting from both Vale and markdownlint.
 
-We don't use [Vale Server](https://errata-ai.github.io/vale/#using-vale-with-a-text-editor-or-another-third-party-application).
+We don't use [Vale Server](https://docs.errata.ai/vale-server/install).
 
 ### Configure pre-push hooks
 

@@ -30,7 +30,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
           post api('/runners'), params: {
             token: 'valid token',
             description: 'server.hostname',
-            maintainer_note: 'Some maintainer notes',
+            maintenance_note: 'Some maintainer notes',
             run_untagged: false,
             tag_list: 'tag1, tag2',
             locked: true,
@@ -46,7 +46,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
           allow_next_instance_of(::Ci::RegisterRunnerService) do |service|
             expected_params = {
               description: 'server.hostname',
-              maintainer_note: 'Some maintainer notes',
+              maintenance_note: 'Some maintainer notes',
               run_untagged: false,
               tag_list: %w(tag1 tag2),
               locked: true,
@@ -78,6 +78,33 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
 
         it_behaves_like 'not executing any extra queries for the application context' do
           let(:subject_proc) { proc { request } }
+        end
+      end
+
+      context 'when deprecated maintainer_note field is provided' do
+        RSpec::Matchers.define_negated_matcher :excluding, :include
+
+        def request
+          post api('/runners'), params: {
+            token: 'valid token',
+            maintainer_note: 'Some maintainer notes'
+          }
+        end
+
+        let(:new_runner) { create(:ci_runner) }
+
+        it 'converts to maintenance_note param' do
+          allow_next_instance_of(::Ci::RegisterRunnerService) do |service|
+            expect(service).to receive(:execute)
+              .once
+              .with('valid token', a_hash_including('maintenance_note' => 'Some maintainer notes')
+                .and(excluding('maintainter_note' => anything)))
+              .and_return(new_runner)
+          end
+
+          request
+
+          expect(response).to have_gitlab_http_status(:created)
         end
       end
 

@@ -36,7 +36,7 @@ module Gitlab
           create_untrusted_regexp(matches[:regexp], matches[:flags])
         rescue RegexpError
           raise unless fallback &&
-              Feature.enabled?(:allow_unsafe_ruby_regexp, default_enabled: false)
+              Feature.enabled?(:allow_unsafe_ruby_regexp, default_enabled: :yaml)
 
           if Feature.enabled?(:ci_unsafe_regexp_logger, type: :ops, default_enabled: :yaml)
             Gitlab::AppJsonLogger.info(
