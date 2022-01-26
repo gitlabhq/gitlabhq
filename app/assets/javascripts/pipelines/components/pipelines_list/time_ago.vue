@@ -54,11 +54,14 @@ export default {
     showSkipped() {
       return !this.duration && !this.finishedTime && this.skipped;
     },
+    shouldDisplayAsBlock() {
+      return this.glFeatures?.rearrangePipelinesTable;
+    },
   },
 };
 </script>
 <template>
-  <div>
+  <div class="{ 'gl-display-block': shouldDisplayAsBlock }">
     <span v-if="showInProgress" data-testid="pipeline-in-progress">
       <gl-icon v-if="stuck" name="warning" class="gl-mr-2" :size="12" data-testid="warning-icon" />
       <gl-icon

@@ -33,12 +33,17 @@ describe('Pipelines Table', () => {
     return pipelines.find((p) => p.user !== null && p.commit !== null);
   };
 
-  const createComponent = (props = {}) => {
+  const createComponent = (props = {}, rearrangePipelinesTable = false) => {
     wrapper = extendedWrapper(
       mount(PipelinesTable, {
         propsData: {
           ...defaultProps,
           ...props,
+        },
+        provide: {
+          glFeatures: {
+            rearrangePipelinesTable,
+          },
         },
       }),
     );
@@ -71,7 +76,7 @@ describe('Pipelines Table', () => {
     wrapper = null;
   });
 
-  describe('Pipelines Table', () => {
+  describe('Pipelines Table with rearrangePipelinesTable feature flag turned off', () => {
     beforeEach(() => {
       createComponent({ pipelines: [pipeline], viewType: 'root' });
     });
@@ -186,6 +191,31 @@ describe('Pipelines Table', () => {
     describe('operations cell', () => {
       it('should render pipeline operations', () => {
         expect(findActions().exists()).toBe(true);
+      });
+    });
+  });
+
+  describe('Pipelines Table with rearrangePipelinesTable feature flag turned on', () => {
+    beforeEach(() => {
+      createComponent({ pipelines: [pipeline], viewType: 'root' }, true);
+    });
+
+    it('should render table head with correct columns', () => {
+      expect(findStatusTh().text()).toBe('Status');
+      expect(findPipelineTh().text()).toBe('Pipeline');
+      expect(findStagesTh().text()).toBe('Stages');
+      expect(findActionsTh().text()).toBe('Actions');
+    });
+
+    describe('triggerer cell', () => {
+      it('should render the pipeline triggerer', () => {
+        expect(findTriggerer().exists()).toBe(true);
+      });
+    });
+
+    describe('commit cell', () => {
+      it('should not render commit information', () => {
+        expect(findCommit().exists()).toBe(false);
       });
     });
   });

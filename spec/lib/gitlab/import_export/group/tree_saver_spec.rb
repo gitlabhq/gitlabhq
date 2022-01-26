@@ -42,7 +42,7 @@ RSpec.describe Gitlab::ImportExport::Group::TreeSaver do
 
     context 'exported files' do
       before do
-        group_tree_saver.save
+        group_tree_saver.save # rubocop:disable Rails/SaveBang
       end
 
       it 'has one group per line' do

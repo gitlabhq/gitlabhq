@@ -18,6 +18,7 @@ many organizations.
 > - **Supported users (approximate):** 1,000
 > - **High Availability:** No. For a highly-available environment, you can
 >   follow a modified [3K reference architecture](3k_users.md#supported-modifications-for-lower-user-counts-ha).
+> - **Estimated Costs:** [See cost table](index.md#cost-to-run)
 > - **Cloud Native Hybrid:** No. For a cloud native hybrid environment, you
 >  can follow a [modified hybrid reference architecture](#cloud-native-hybrid-reference-architecture-with-helm-charts).
 > - **Performance tested daily with the [GitLab Performance Tool (GPT)](https://gitlab.com/gitlab-org/quality/performance)**:

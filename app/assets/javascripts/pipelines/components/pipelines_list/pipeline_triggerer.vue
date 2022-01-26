@@ -26,7 +26,7 @@ export default {
       v-if="user"
       :link-href="user.path"
       :img-src="user.avatar_url"
-      :img-size="26"
+      :img-size="32"
       :tooltip-text="user.name"
       class="gl-ml-3 js-pipeline-url-user"
     />

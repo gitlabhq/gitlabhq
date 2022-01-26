@@ -828,6 +828,7 @@ For installations from source:
 
 The `CRON=1` environment setting directs the backup script to hide all progress
 output if there aren't any errors. This is recommended to reduce cron spam.
+When troubleshooting backup problems, however, replace `CRON=1` with `--trace` to log verbosely.
 
 ### Limit backup lifetime for local files (prune old backups)
 

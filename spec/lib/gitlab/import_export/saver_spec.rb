@@ -30,7 +30,7 @@ RSpec.describe Gitlab::ImportExport::Saver do
   it 'saves the repo using object storage' do
     stub_uploads_object_storage(ImportExportUploader)
 
-    subject.save
+    subject.save # rubocop:disable Rails/SaveBang
 
     expect(ImportExportUpload.find_by(project: project).export_file.url)
       .to match(%r[\/uploads\/-\/system\/import_export_upload\/export_file.*])
@@ -59,13 +59,13 @@ RSpec.describe Gitlab::ImportExport::Saver do
         upload_bytes: anything
       )).and_call_original
 
-    subject.save
+    subject.save # rubocop:disable Rails/SaveBang
   end
 
   it 'removes archive path and keeps base path untouched' do
     allow(shared).to receive(:archive_path).and_return(archive_path)
 
-    subject.save
+    subject.save # rubocop:disable Rails/SaveBang
 
     expect(FileUtils).not_to have_received(:rm_rf).with(base_path)
     expect(FileUtils).to have_received(:rm_rf).with(archive_path)
@@ -86,7 +86,7 @@ RSpec.describe Gitlab::ImportExport::Saver do
           'correlation_id' => anything
         )).and_call_original
 
-      subject.save
+      subject.save # rubocop:disable Rails/SaveBang
     end
   end
 end

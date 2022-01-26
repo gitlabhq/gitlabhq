@@ -94,9 +94,6 @@ ci_pipelines:
   - table: users
     column: user_id
     on_delete: async_nullify
-  - table: merge_requests
-    column: merge_request_id
-    on_delete: async_delete
 ci_project_mirrors:
   - table: projects
     column: project_id

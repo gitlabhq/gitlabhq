@@ -13,6 +13,9 @@ class Projects::PipelinesController < Projects::ApplicationController
   before_action :authorize_create_pipeline!, only: [:new, :create, :config_variables]
   before_action :authorize_update_pipeline!, only: [:retry, :cancel]
   before_action :ensure_pipeline, only: [:show, :downloadable_artifacts]
+  before_action do
+    push_frontend_feature_flag(:rearrange_pipelines_table, project, default_enabled: :yaml)
+  end
 
   before_action do
     push_frontend_feature_flag(:jobs_tab_vue, @project, default_enabled: :yaml)

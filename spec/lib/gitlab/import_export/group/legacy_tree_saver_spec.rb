@@ -31,7 +31,7 @@ RSpec.describe Gitlab::ImportExport::Group::LegacyTreeSaver do
     # ^ These are specific for the Group::LegacyTreeSaver
     context 'JSON' do
       let(:saved_group_json) do
-        group_tree_saver.save
+        group_tree_saver.save # rubocop:disable Rails/SaveBang
         group_json(group_tree_saver.full_path)
       end
 
@@ -88,7 +88,7 @@ RSpec.describe Gitlab::ImportExport::Group::LegacyTreeSaver do
         end
 
         before do
-          user2.update(public_email: user2.email)
+          user2.update!(public_email: user2.email)
           group.add_developer(user2)
         end
 

@@ -29,7 +29,7 @@ jobs provide a `KUBECONFIG` variable compatible with `kubectl`.
 
 Also, each Agent has a separate context (`kubecontext`). By default,
 there isn't any context selected.
-Contexts are named in the following format: `<agent-configuration-project-path>:<agent-name>`.
+Contexts are named in the following format: `<namespace>/<project-name>:<agent-name>`.
 To get the list of available contexts, run `kubectl config get-contexts`.
 
 ## Share the CI/CD Tunnel provided by an Agent with other projects and groups

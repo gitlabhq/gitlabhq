@@ -83,6 +83,203 @@ to get assistance from Support with troubleshooting the [2,000 users](2k_users.m
 and higher reference architectures.
 [Read more about our definition of scaled architectures](https://about.gitlab.com/support/#definition-of-scaled-architecture).
 
+### Validation and test results
+
+The [Quality Engineering - Enablement team](https://about.gitlab.com/handbook/engineering/quality/quality-engineering/) does regular smoke and performance tests for the reference architectures to ensure they remain compliant.
+
+- Testing occurs against all reference architectures and cloud providers in an automated and ad-hoc fashion. This is done by two tools:
+  - The [GitLab Environment Toolkit](https://gitlab.com/gitlab-org/quality/gitlab-environment-toolkit) for building the environments.
+  - The [GitLab Performance Tool](https://gitlab.com/gitlab-org/quality/performance) for performance testing.
+- Network latency on the test environments between components on all Cloud Providers were measured at <5ms. Note that this is shared as an observation and not as an implicit recommendation.
+- We aim to have a "test smart" approach where architectures tested have a good range that can also apply to others. Testing focuses on 10k Omnibus on GCP as the testing has shown this is a good bellwether for the other architectures and cloud providers as well as Cloud Native Hybrids.
+- Testing is done publicly and all results are shared.
+
+The following table details the testing done against the reference architectures along with the frequency and results. Additional testing is continuously evaluated, and the table is updated accordingly.
+
+<style>
+table.test-coverage td {
+    border-left: 1px solid #dbdbdb;
+    border-right: 1px solid #dbdbdb;
+    border-bottom: 1px solid #dbdbdb;
+}
+
+table.test-coverage th {
+    border-left: 1px solid #dbdbdb;
+    border-right: 1px solid #dbdbdb;
+    border-bottom: 1px solid #dbdbdb;
+}
+</style>
+
+<table class="test-coverage">
+  <col>
+  <colgroup span="2"></colgroup>
+  <colgroup span="2"></colgroup>
+  <tr>
+    <th rowspan="2">Reference<br/>Architecture</th>
+    <th style="text-align: center" colspan="2" scope="colgroup">GCP (* also proxy for Bare-Metal)</th>
+    <th style="text-align: center" colspan="2" scope="colgroup">AWS</th>
+    <th style="text-align: center" colspan="2" scope="colgroup">Azure</th>
+  </tr>
+  <tr>
+    <th scope="col">Omnibus</th>
+    <th scope="col">Cloud Native Hybrid</th>
+    <th scope="col">Omnibus</th>
+    <th scope="col">Cloud Native Hybrid</th>
+    <th scope="col">Omnibus</th>
+    <th scope="col">Cloud Native Hybrid</th>
+  </tr>
+    <tr>
+    <th scope="row">1k</th>
+    <td><a href="https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest/1k">Daily</a> (to be moved to Weekly)</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr>
+    <th scope="row">2k</th>
+    <td><a href="https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest/2k">Daily</a> (to be moved to Weekly)</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr>
+    <th scope="row">3k</th>
+    <td><a href="https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest/3k">Weekly</a></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr>
+    <th scope="row">5k</th>
+    <td><a href="https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest/5k">Weekly</a></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr>
+    <th scope="row">10k</th>
+    <td><a href="https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest/10k">Daily</a></td>
+    <td><a href="https://gitlab.com/gitlab-org/quality/performance/-/wikis/Past-Results/10k-Cloud-Native-Hybrid">Ad-Hoc</a></td>
+    <td><a href="https://gitlab.com/gitlab-org/quality/performance/-/wikis/Past-Results/10k">Ad-Hoc (inc Cloud Services)</a></td>
+    <td><a href="https://gitlab.com/gitlab-org/quality/performance/-/wikis/Past-Results/10k-Cloud-Native-Hybrid">Ad-Hoc</a></td>
+    <td><a href="https://gitlab.com/gitlab-org/quality/performance/-/wikis/Past-Results/10k">Ad-Hoc</a></td>
+    <td></td>
+  </tr>
+  <tr>
+    <th scope="row">25k</th>
+    <td><a href="https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest/25k">Weekly</a></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td><a href="https://gitlab.com/gitlab-org/quality/performance/-/wikis/Past-Results/25k">Ad-Hoc</a></td>
+    <td></td>
+  </tr>
+  <tr>
+    <th scope="row">50k</th>
+    <td><a href="https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest/50k">Weekly</a></td>
+    <td></td>
+    <td><a href="https://gitlab.com/gitlab-org/quality/performance/-/wikis/Past-Results/50k">Ad-Hoc (inc Cloud Services)</a></td>
+    <td></td>
+    <td></td>
+    <td></td>
+  </tr>
+</table>
+
+The Standard Reference Architectures are designed to be platform agnostic, with everything being run on VMs via [Omnibus GitLab](https://docs.gitlab.com/omnibus/). While testing occurs primarily on GCP, ad-hoc testing has shown that they perform similarly on equivalently specced hardware on other Cloud Providers or if run on premises (bare-metal).
+
+### Cost to run
+
+<table class="test-coverage">
+  <col>
+  <colgroup span="2"></colgroup>
+  <colgroup span="2"></colgroup>
+  <tr>
+    <th rowspan="2">Reference<br/>Architecture</th>
+    <th style="text-align: center" colspan="2" scope="colgroup">GCP</th>
+    <th style="text-align: center" colspan="2" scope="colgroup">AWS</th>
+    <th style="text-align: center" colspan="2" scope="colgroup">Azure</th>
+  </tr>
+  <tr>
+    <th scope="col">Omnibus</th>
+    <th scope="col">Cloud Native Hybrid</th>
+    <th scope="col">Omnibus</th>
+    <th scope="col">Cloud Native Hybrid</th>
+    <th scope="col">Omnibus</th>
+    <th scope="col">Cloud Native Hybrid</th>
+  </tr>
+    <tr>
+    <th scope="row">1k</th>
+    <td><a href="https://cloud.google.com/products/calculator#id=a6d6a94a-c7dc-4c22-85c4-7c5747f272ed">Calculated cost</a></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr>
+    <th scope="row">2k</th>
+    <td><a href="https://cloud.google.com/products/calculator#id=84d11491-d72a-493c-a16e-650931faa658">Calculated cost</a></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr>
+    <th scope="row">3k</th>
+    <td><a href="https://cloud.google.com/products/calculator/#id=ac4838e6-9c40-4a36-ac43-6d1bc1843e08">Calculated cost</a></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr>
+    <th scope="row">5k</th>
+    <td><a href="https://cloud.google.com/products/calculator/#id=8742e8ea-c08f-4e0a-b058-02f3a1c38a2f">Calculated cost</a></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr>
+    <th scope="row">10k</th>
+    <td><a href="https://cloud.google.com/products/calculator#id=e77713f6-dc0b-4bb3-bcef-cea904ac8efd">Calculated cost</a></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr>
+    <th scope="row">25k</th>
+    <td><a href="https://cloud.google.com/products/calculator#id=925386e1-c01c-4c0a-8d7d-ebde1824b7b0">Calculated cost</a></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr>
+    <th scope="row">50k</th>
+    <td><a href="https://cloud.google.com/products/calculator/#id=8006396b-88ee-40cd-a1c8-77cdefa4d3c8">Calculated cost</a></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+  </tr>
+</table>
+
 ## Availability Components
 
 GitLab comes with the following components for your use, listed from least to
@@ -191,33 +388,3 @@ The reference architectures for user counts [3,000](3k_users.md) and up support 
 In the specific case you have the requirement to achieve HA but have a lower user count, select modifications to the [3,000 user](3k_users.md) architecture are supported.
 
 For more details, [refer to this section in the architecture's documentation](3k_users.md#supported-modifications-for-lower-user-counts-ha).
-
-## Testing process and results
-
-The [Quality Engineering - Enablement team](https://about.gitlab.com/handbook/engineering/quality/quality-engineering/) does regular smoke and performance tests for the reference architectures to ensure they remain compliant.
-
-In this section, we detail some of the process as well as the results.
-
-Note the following about the testing process:
-
-- Testing occurs against all main reference architectures and cloud providers in an automated and ad-hoc fashion.
-  This is achieved through two tools built by the team:
-  - The [GitLab Environment Toolkit](https://gitlab.com/gitlab-org/quality/gitlab-environment-toolkit) for building the environments.
-  - The [GitLab Performance Tool](https://gitlab.com/gitlab-org/quality/performance) for performance testing.
-- Network latency on the test environments between components on all Cloud Providers were measured at <5ms. Note that this is shared as an observation and not as an implicit recommendation.
-- We aim to have a "test smart" approach where architectures tested have a good range that can also apply to others. Testing focuses on 10k Omnibus on GCP as the testing has shown this is a good bellwether for the other architectures and cloud providers as well as Cloud Native Hybrids.
-- Testing is done publicly and all results are shared.
-
-Τhe following table details the testing done against the reference architectures along with the frequency and results. Note that this list above is non exhaustive. Additional testing is continuously evaluated and iterated on, and the table is updated accordingly.
-
-| Reference<br/>Architecture<br/>Size | Bare-Metal | GCP | AWS | Azure |
-|-----------------------------|------------|-----|-----|-------|
-| 1k  | <i>Refer to GCP<sup>1</sup></i> | [Standard - Weekly](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest/1k)<sup>1</sup> | - | - |
-| 2k  | <i>Refer to GCP<sup>1</sup></i> | [Standard - Weekly](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest/2k)<sup>1</sup> | - | - |
-| 3k  | <i>Refer to GCP<sup>1</sup></i> | [Standard - Weekly](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest/3k)<sup>1</sup> | - | - |
-| 5k  | <i>Refer to GCP<sup>1</sup></i> | [Standard - Weekly](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest/5k)<sup>1</sup> | - | - |
-| 10k | <i>Refer to GCP<sup>1</sup></i> | [Standard - Daily](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest/10k)<sup>1</sup> <br/> [Standard (inc Cloud Services) - Ad-Hoc](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Past-Results/10k) <br/> [Cloud Native Hybrid - Ad-Hoc](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Past-Results/10k-Cloud-Native-Hybrid) | [Standard (inc Cloud Services) - Ad-Hoc](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Past-Results/10k) <br/> [Cloud Native Hybrid - Ad-Hoc](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Past-Results/10k-Cloud-Native-Hybrid) | [Standard - Ad-Hoc](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Past-Results/10k) |
-| 25k | <i>Refer to GCP<sup>1</sup></i> | [Standard - Weekly](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest/25k)<sup>1</sup> | - | [Standard - Ad-Hoc](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Past-Results/25k) |
-| 50k | <i>Refer to GCP<sup>1</sup></i> | [Standard - Weekly](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest/50k)<sup>1</sup> | [Standard (inc Cloud Services) - Ad-Hoc](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Past-Results/50k) | - |
-
-1. The Standard Reference Architectures are designed to be platform agnostic, with everything being run on VMs via [Omnibus GitLab](https://docs.gitlab.com/omnibus/). While testing occurs primarily on GCP, ad-hoc testing has shown that they perform similarly on equivalently specced hardware on other Cloud Providers or if run on premises (bare-metal).

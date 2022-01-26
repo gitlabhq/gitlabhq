@@ -11,7 +11,7 @@ RSpec.describe 'Value Stream Analytics', :js do
   let_it_be(:stage_table_event_title_selector) { '[data-testid="vsa-stage-event-title"]' }
   let_it_be(:stage_table_pagination_selector) { '[data-testid="vsa-stage-pagination"]' }
   let_it_be(:stage_table_duration_column_header_selector) { '[data-testid="vsa-stage-header-duration"]' }
-  let_it_be(:metrics_selector) { "[data-testid='vsa-time-metrics']" }
+  let_it_be(:metrics_selector) { "[data-testid='vsa-metrics']" }
   let_it_be(:metric_value_selector) { "[data-testid='displayValue']" }
 
   let(:stage_table) { find(stage_table_selector) }

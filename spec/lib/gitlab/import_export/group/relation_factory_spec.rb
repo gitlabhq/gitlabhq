@@ -9,7 +9,7 @@ RSpec.describe Gitlab::ImportExport::Group::RelationFactory do
   let(:importer_user) { admin }
   let(:excluded_keys) { [] }
   let(:created_object) do
-    described_class.create(
+    described_class.create( # rubocop:disable Rails/SaveBang
       relation_sym: relation_sym,
       relation_hash: relation_hash,
       relation_index: 1,

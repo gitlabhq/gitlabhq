@@ -108,6 +108,10 @@ To customize the path:
    - Is on an external site, enter the full URL.
 1. Select **Save changes**.
 
+NOTE:
+You cannot use your project's [pipeline editor](../pipeline_editor/index.md) to
+edit CI/CD configuration files in other projects or on an external site.
+
 ### Custom CI/CD configuration file examples
 
 If the CI/CD configuration file is not in the root directory, the path must be relative to it.

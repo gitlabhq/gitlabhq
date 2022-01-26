@@ -30,3 +30,5 @@ type: index
 ## Securing your GitLab installation
 
 Consider access control features like [Sign up restrictions](../user/admin_area/settings/sign_up_restrictions.md) and [Authentication options](../topics/authentication/) to harden your GitLab instance and minimize the risk of unwanted user account creation.
+
+Self-hosting GitLab customers and administrators are responsible for the security of their underlying hosts, and for keeping GitLab itself up to date. It is important to [regularly patch GitLab](../policy/maintenance.md), patch your operating system and its software, and harden your hosts in accordance with vendor guidance.

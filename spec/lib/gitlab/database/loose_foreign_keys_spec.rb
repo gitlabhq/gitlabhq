@@ -18,6 +18,36 @@ RSpec.describe Gitlab::Database::LooseForeignKeys do
                          ))
     end
 
+    context 'ensure no duplicates are found' do
+      it 'does not have duplicate tables defined' do
+        # since we use hash to detect duplicate hash keys we need to parse YAML document
+        parsed = YAML.parse_file(described_class.loose_foreign_keys_yaml_path)
+        expect(parsed).to be_document
+        expect(parsed.children).to be_one, "YAML has a single document"
+
+        # require hash
+        mapping = parsed.children.first
+        expect(mapping).to be_mapping, "YAML has a top-level hash"
+
+        # find all scalars with names
+        table_names = mapping.children.select(&:scalar?).map(&:value)
+        expect(table_names).not_to be_empty, "YAML has a non-zero tables defined"
+
+        # expect to not have duplicates
+        expect(table_names).to contain_exactly(*table_names.uniq)
+      end
+
+      it 'does not have duplicate column definitions' do
+        # ignore other modifiers
+        all_definitions = definitions.map do |definition|
+          { from_table: definition.from_table, to_table: definition.to_table, column: definition.column }
+        end
+
+        # expect to not have duplicates
+        expect(all_definitions).to contain_exactly(*all_definitions.uniq)
+      end
+    end
+
     describe 'ensuring database integrity' do
       def base_models_for(table)
         parent_table_schema = Gitlab::Database::GitlabSchema.table_schema(table)

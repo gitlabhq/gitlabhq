@@ -1,17 +1,15 @@
 import { GlDeprecatedSkeletonLoading as GlSkeletonLoading } from '@gitlab/ui';
-import { GlSingleStat } from '@gitlab/ui/dist/charts';
 import { shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import metricsData from 'test_fixtures/projects/analytics/value_stream_analytics/summary.json';
 import waitForPromises from 'helpers/wait_for_promises';
 import { METRIC_TYPE_SUMMARY } from '~/api/analytics_api';
 import ValueStreamMetrics from '~/cycle_analytics/components/value_stream_metrics.vue';
+import MetricTile from '~/cycle_analytics/components/metric_tile.vue';
 import createFlash from '~/flash';
-import { redirectTo } from '~/lib/utils/url_utility';
 import { group } from './mock_data';
 
 jest.mock('~/flash');
-jest.mock('~/lib/utils/url_utility');
 
 describe('ValueStreamMetrics', () => {
   let wrapper;
@@ -35,7 +33,7 @@ describe('ValueStreamMetrics', () => {
     });
   };
 
-  const findMetrics = () => wrapper.findAllComponents(GlSingleStat);
+  const findMetrics = () => wrapper.findAllComponents(MetricTile);
 
   const expectToHaveRequest = (fields) => {
     expect(mockGetValueStreamSummaryMetrics).toHaveBeenCalledWith({
@@ -61,7 +59,7 @@ describe('ValueStreamMetrics', () => {
       expect(wrapper.findComponent(GlSkeletonLoading).exists()).toBe(true);
     });
 
-    it('renders hidden GlSingleStat components for each metric', async () => {
+    it('renders hidden MetricTile components for each metric', async () => {
       await waitForPromises();
 
       // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
@@ -89,33 +87,16 @@ describe('ValueStreamMetrics', () => {
       });
 
       describe.each`
-        index | value                   | title                   | unit                   | animationDecimalPlaces | clickable
-        ${0}  | ${metricsData[0].value} | ${metricsData[0].title} | ${metricsData[0].unit} | ${0}                   | ${false}
-        ${1}  | ${metricsData[1].value} | ${metricsData[1].title} | ${metricsData[1].unit} | ${0}                   | ${false}
-        ${2}  | ${metricsData[2].value} | ${metricsData[2].title} | ${metricsData[2].unit} | ${0}                   | ${false}
-        ${3}  | ${metricsData[3].value} | ${metricsData[3].title} | ${metricsData[3].unit} | ${1}                   | ${true}
-      `('metric tiles', ({ index, value, title, unit, animationDecimalPlaces, clickable }) => {
-        it(`renders a single stat component for "${title}" with value and unit`, () => {
+        index | identifier                   | value                   | label
+        ${0}  | ${metricsData[0].identifier} | ${metricsData[0].value} | ${metricsData[0].title}
+        ${1}  | ${metricsData[1].identifier} | ${metricsData[1].value} | ${metricsData[1].title}
+        ${2}  | ${metricsData[2].identifier} | ${metricsData[2].value} | ${metricsData[2].title}
+        ${3}  | ${metricsData[3].identifier} | ${metricsData[3].value} | ${metricsData[3].title}
+      `('metric tiles', ({ identifier, index, value, label }) => {
+        it(`renders a metric tile component for "${label}"`, () => {
           const metric = findMetrics().at(index);
-          expect(metric.props()).toMatchObject({ value, title, unit: unit ?? '' });
+          expect(metric.props('metric')).toMatchObject({ identifier, value, label });
           expect(metric.isVisible()).toBe(true);
-        });
-
-        it(`${
-          clickable ? 'redirects' : "doesn't redirect"
-        } when the user clicks the "${title}" metric`, () => {
-          const metric = findMetrics().at(index);
-          metric.vm.$emit('click');
-          if (clickable) {
-            expect(redirectTo).toHaveBeenCalledWith(metricsData[index].links[0].url);
-          } else {
-            expect(redirectTo).not.toHaveBeenCalled();
-          }
-        });
-
-        it(`will render ${animationDecimalPlaces} decimal places for the ${title} metric with the value "${value}"`, () => {
-          const metric = findMetrics().at(index);
-          expect(metric.props('animationDecimalPlaces')).toBe(animationDecimalPlaces);
         });
       });
 

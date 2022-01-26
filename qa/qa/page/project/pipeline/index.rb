@@ -26,11 +26,11 @@ module QA
           end
 
           def wait_for_latest_pipeline_succeeded
-            wait_for_latest_pipeline_status { has_text?('passed') }
+            wait_for_latest_pipeline_status { has_selector?(".ci-status-icon-success") }
           end
 
           def wait_for_latest_pipeline_completed
-            wait_for_latest_pipeline_status { has_text?('passed') || has_text?('failed') }
+            wait_for_latest_pipeline_status { has_selector?(".ci-status-icon-success") || has_selector?(".ci-status-icon-failed") }
           end
 
           def wait_for_latest_pipeline_status

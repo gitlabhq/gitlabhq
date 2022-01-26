@@ -1377,3 +1377,18 @@ Gitlab::CurrentSettings.elasticsearch_url
 
 Gitlab::CurrentSettings.elasticsearch_indexing
 ```
+
+#### Changing the Elasticsearch password
+
+```ruby
+es_url = Gitlab::CurrentSettings.current_application_settings
+
+# Confirm the current ElasticSearch URL
+es_url.elasticsearch_url
+
+# Set the ElasticSearch URL
+es_url.elasticsearch_url = "http://<username>:<password>@your.es.host:<port>"
+
+# Save the change
+es_url.save!
+```

@@ -32,7 +32,6 @@ Style/OpenStructUse:
   - spec/lib/gitlab/quick_actions/command_definition_spec.rb
   - spec/models/design_management/design_action_spec.rb
   - spec/models/design_management/design_at_version_spec.rb
-  - spec/services/packages/nuget/metadata_extraction_service_spec.rb
   - spec/services/projects/import_service_spec.rb
   - spec/services/system_note_service_spec.rb
   - spec/support/helpers/import_spec_helper.rb

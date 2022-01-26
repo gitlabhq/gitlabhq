@@ -1,6 +1,7 @@
 <script>
 import { GlTableLite, GlTooltipDirective } from '@gitlab/ui';
-import { s__ } from '~/locale';
+import { s__, __ } from '~/locale';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import eventHub from '../../event_hub';
 import PipelineMiniGraph from './pipeline_mini_graph.vue';
 import PipelineOperations from './pipeline_operations.vue';
@@ -33,6 +34,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  mixins: [glFeatureFlagMixin()],
   props: {
     pipelines: {
       type: Array,
@@ -72,16 +74,18 @@ export default {
           key: 'status',
           label: s__('Pipeline|Status'),
           thClass: DEFAULT_TH_CLASSES,
-          columnClass: 'gl-w-10p',
+          columnClass: this.rearrangePipelinesTable ? 'gl-w-15p' : 'gl-w-10p',
           tdClass: DEFAULT_TD_CLASS,
           thAttr: { 'data-testid': 'status-th' },
         },
         {
           key: 'pipeline',
-          label: this.pipelineKeyOption.label,
+          label: this.rearrangePipelinesTable ? __('Pipeline') : this.pipelineKeyOption.label,
           thClass: DEFAULT_TH_CLASSES,
-          tdClass: `${DEFAULT_TD_CLASS} ${HIDE_TD_ON_MOBILE}`,
-          columnClass: 'gl-w-10p',
+          tdClass: this.rearrangePipelinesTable
+            ? `${DEFAULT_TD_CLASS}`
+            : `${DEFAULT_TD_CLASS} ${HIDE_TD_ON_MOBILE}`,
+          columnClass: this.rearrangePipelinesTable ? 'gl-w-30p' : 'gl-w-10p',
           thAttr: { 'data-testid': 'pipeline-th' },
         },
         {
@@ -113,7 +117,7 @@ export default {
           label: s__('Pipeline|Duration'),
           thClass: DEFAULT_TH_CLASSES,
           tdClass: DEFAULT_TD_CLASS,
-          columnClass: 'gl-w-15p',
+          columnClass: this.rearrangePipelinesTable ? 'gl-w-5p' : 'gl-w-15p',
           thAttr: { 'data-testid': 'timeago-th' },
         },
         {
@@ -124,7 +128,13 @@ export default {
           thAttr: { 'data-testid': 'actions-th' },
         },
       ];
-      return fields;
+
+      return !this.rearrangePipelinesTable
+        ? fields
+        : fields.filter((field) => !['commit', 'timeago'].includes(field.key));
+    },
+    rearrangePipelinesTable() {
+      return this.glFeatures?.rearrangePipelinesTable;
     },
   },
   watch: {
@@ -182,6 +192,7 @@ export default {
           :pipeline="item"
           :pipeline-schedule-url="pipelineScheduleUrl"
           :pipeline-key="pipelineKeyOption.key"
+          :view-type="viewType"
         />
       </template>
 

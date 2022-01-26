@@ -18,7 +18,7 @@ RSpec.describe Gitlab::ImportExport::SnippetsRepoSaver do
       snippets_dir = ::Gitlab::ImportExport.snippets_repo_bundle_path(shared.export_path)
       expect(Dir.exist?(snippets_dir)).to be_falsey
 
-      bundler.save
+      bundler.save # rubocop:disable Rails/SaveBang
 
       expect(Dir.exist?(snippets_dir)).to be_truthy
     end
@@ -27,7 +27,7 @@ RSpec.describe Gitlab::ImportExport::SnippetsRepoSaver do
       it 'does not perform any action' do
         expect(Gitlab::ImportExport::SnippetRepoSaver).not_to receive(:new)
 
-        bundler.save
+        bundler.save # rubocop:disable Rails/SaveBang
       end
     end
 
@@ -40,7 +40,7 @@ RSpec.describe Gitlab::ImportExport::SnippetsRepoSaver do
         allow(Gitlab::ImportExport::SnippetRepoSaver).to receive(:new).and_return(service)
         expect(service).to receive(:save).and_return(true).twice
 
-        bundler.save
+        bundler.save # rubocop:disable Rails/SaveBang
       end
 
       context 'when one snippet cannot be saved' do

@@ -13,7 +13,7 @@ For a full list of reference architectures, see
 > - **Supported users (approximate):** 2,000
 > - **High Availability:** No. For a highly-available environment, you can
 >   follow a modified [3K reference architecture](3k_users.md#supported-modifications-for-lower-user-counts-ha).
-> - **Estimated Costs:** [GCP](https://cloud.google.com/products/calculator#id=84d11491-d72a-493c-a16e-650931faa658)
+> - **Estimated Costs:** [See cost table](index.md#cost-to-run)  
 > - **Cloud Native Hybrid:** [Yes](#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative)
 > - **Performance tested daily with the [GitLab Performance Tool (GPT)](https://gitlab.com/gitlab-org/quality/performance)**:
 >   - **Test requests per second (RPS) rates:** API: 40 RPS, Web: 4 RPS, Git (Pull): 4 RPS, Git (Push): 1 RPS
@@ -1022,7 +1022,7 @@ future with further specific cloud provider details.
 | Sidekiq                                               | 2     | 2 vCPU, 7.5 GB memory  | `n1-standard-2` | 3.9 vCPU, 11.8 GB memory    |
 | Supporting services such as NGINX, Prometheus         | 2     | 1 vCPU, 3.75 GB memory | `n1-standard-1` | 1.9 vCPU, 5.5 GB memory     |
 
-- For this setup, we **recommend** and regularly [test](index.md#testing-process-and-results)
+- For this setup, we **recommend** and regularly [test](index.md#validation-and-test-results)
 [Google Kubernetes Engine (GKE)](https://cloud.google.com/kubernetes-engine) and [Amazon Elastic Kubernetes Service (EKS)](https://aws.amazon.com/eks/). Other Kubernetes services may also work, but your mileage may vary.
 - Nodes configuration is shown as it is forced to ensure pod vcpu / memory ratios and avoid scaling during **performance testing**.
   - In production deployments, there is no need to assign pods to nodes. A minimum of three nodes in three different availability zones is strongly recommended to align with resilient cloud architecture practices.

@@ -1,13 +1,12 @@
 <script>
 import { GlDeprecatedSkeletonLoading as GlSkeletonLoading } from '@gitlab/ui';
-import { GlSingleStat } from '@gitlab/ui/dist/charts';
 import { flatten } from 'lodash';
 import createFlash from '~/flash';
 import { sprintf, s__ } from '~/locale';
 import { redirectTo } from '~/lib/utils/url_utility';
 import { METRICS_POPOVER_CONTENT } from '../constants';
 import { removeFlash, prepareTimeMetricsData } from '../utils';
-import MetricPopover from './metric_popover.vue';
+import MetricTile from './metric_tile.vue';
 
 const requestData = ({ request, endpoint, path, params, name }) => {
   return request({ endpoint, params, requestPath: path })
@@ -33,9 +32,8 @@ const fetchMetricsData = (reqs = [], path, params) => {
 export default {
   name: 'ValueStreamMetrics',
   components: {
-    GlSingleStat,
     GlSkeletonLoading,
-    MetricPopover,
+    MetricTile,
   },
   props: {
     requestPath: {
@@ -94,26 +92,14 @@ export default {
 };
 </script>
 <template>
-  <div class="gl-display-flex gl-flex-wrap" data-testid="vsa-time-metrics">
+  <div class="gl-display-flex gl-flex-wrap" data-testid="vsa-metrics">
     <gl-skeleton-loading v-if="isLoading" class="gl-h-auto gl-py-3 gl-pr-9 gl-my-6" />
-    <div
+    <metric-tile
       v-for="metric in metrics"
       v-show="!isLoading"
       :key="metric.identifier"
+      :metric="metric"
       class="gl-my-6 gl-pr-9"
-    >
-      <gl-single-stat
-        :id="metric.identifier"
-        :value="`${metric.value}`"
-        :title="metric.label"
-        :unit="metric.unit || ''"
-        :should-animate="true"
-        :animation-decimal-places="getDecimalPlaces(metric.value)"
-        :class="{ 'gl-hover-cursor-pointer': hasLinks(metric.links) }"
-        tabindex="0"
-        @click="clickHandler(metric)"
-      />
-      <metric-popover :metric="metric" :target="metric.identifier" />
-    </div>
+    />
   </div>
 </template>

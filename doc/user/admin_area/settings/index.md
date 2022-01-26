@@ -160,7 +160,7 @@ The **Preferences** settings contain:
 The **Reporting** settings contain:
 
 - [Spam and Anti-bot Protection](../../../integration/recaptcha.md) -
-  Enable anti-spam services, like reCAPTCHA or Akismet, and set IP limits.
+  Enable anti-spam services, like reCAPTCHA, Akismet or [Spamcheck](../reporting/spamcheck.md), and set IP limits.
 - [Abuse reports](../review_abuse_reports.md) - Set notification email for abuse reports.
 
 ### Repository
