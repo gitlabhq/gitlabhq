@@ -51,7 +51,7 @@ module Timebox
     validate :dates_within_4_digits
 
     cache_markdown_field :title, pipeline: :single_line
-    cache_markdown_field :description
+    cache_markdown_field :description, issuable_reference_expansion_enabled: true
 
     belongs_to :project
     belongs_to :group

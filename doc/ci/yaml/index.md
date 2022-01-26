@@ -3648,7 +3648,7 @@ trigger_job:
 
 - Jobs with `trigger` can only use a [limited set of keywords](../pipelines/multi_project_pipelines.md#define-multi-project-pipelines-in-your-gitlab-ciyml-file).
   For example, you can't run commands with [`script`](#script), [`before_script`](#before_script),
-  or [`after_script`](#after_script).
+  or [`after_script`](#after_script). Also, [`environment`](#environment) is not supported with `trigger`.
 - You [cannot use the API to start `when:manual` trigger jobs](https://gitlab.com/gitlab-org/gitlab/-/issues/284086).
 - In [GitLab 13.5 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/201938), you
   can use [`when:manual`](#when) in the same job as `trigger`. In GitLab 13.4 and
