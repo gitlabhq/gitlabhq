@@ -159,7 +159,7 @@ at the bottom of the editor.
 
 You can use policy alerts to track your policy's impact. Alerts are only available if you've
 [installed](../../clusters/agent/repository.md)
-and [configured](../../clusters/agent/install/index.md#register-an-agent-with-gitlab)
+and [configured](../../clusters/agent/install/index.md#register-the-agent-with-gitlab)
 an agent for this project.
 
 There are two ways to create policy alerts:

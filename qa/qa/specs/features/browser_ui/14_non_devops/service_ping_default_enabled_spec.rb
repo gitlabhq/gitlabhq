@@ -10,7 +10,7 @@ module QA
         Page::Admin::Menu.perform(&:go_to_metrics_and_profiling_settings)
       end
 
-      it 'has service ping toggle enabled' do
+      it 'has service ping toggle enabled', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348335' do
         Page::Admin::Settings::MetricsAndProfiling.perform do |setting|
           setting.expand_usage_statistics do |page|
             expect(page).not_to have_disabled_usage_data_checkbox

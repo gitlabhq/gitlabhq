@@ -8,110 +8,134 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > [Moved](https://gitlab.com/groups/gitlab-org/-/epics/6290) from GitLab Premium to GitLab Free in 14.5.
 
-To get started with the Agent, install it in your cluster.
+To connect a cluster to GitLab, you need to install the GitLab Agent
+onto your cluster.
 
-## Prerequisites **(SELF)**
+## Prerequisites
 
 - An existing Kubernetes cluster.
 - On self-managed GitLab instances, a GitLab administrator needs to set up the [GitLab Agent Server (KAS)](../../../../administration/clusters/kas.md).
 
 ## Installation steps
 
-To install the [Agent](../index.md) in your cluster:
+To install the GitLab Agent on your cluster:
 
 1. [Define a configuration repository](#define-a-configuration-repository).
-1. [Register an agent with GitLab](#register-an-agent-with-gitlab).
-1. [Install the agent into the cluster](#install-the-agent-into-the-cluster).
+1. [Register the Agent with GitLab](#register-the-agent-with-gitlab).
+1. [Install the Agent onto the cluster](#install-the-agent-onto-the-cluster).
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> Watch a GitLab 14.2 [walking-through video](https://www.youtube.com/watch?v=XuBpKtsgGkE) with this process.
+
+When you complete the installation process, you can
+[view your Agent's status and activity information](#view-your-agents).
+You can also [configure](#configure-the-agent) it to your needs.
 
 ### Define a configuration repository
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/259669) in GitLab 13.7, the Agent manifest configuration can be added to multiple directories (or subdirectories) of its repository.
 > - Group authorization was [introduced](https://gitlab.com/groups/gitlab-org/-/epics/5784) in GitLab 14.3.
 
-To create an agent, you need a GitLab repository to hold the configuration file.
+To create an Agent, you need a GitLab repository to hold its
+configuration file. If you already have a repository holding your
+cluster's manifest files, you can use it to store your
+Agent's configuration file and sync them with no further steps.
 
-After installed, when you update the configuration file, GitLab transmits the
-information to the cluster automatically without downtime.
+#### Create the Agent's configuration file
 
-In your repository, add the Agent configuration file under:
+To create an Agent, go to the repository where you want to store
+it and add the Agent's configuration file under:
 
 ```plaintext
 .gitlab/agents/<agent-name>/config.yaml
 ```
 
-Make sure that `<agent-name>` conforms to the [Agent's naming format](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/blob/master/doc/identity_and_auth.md#agent-identity-and-name).
+You **don't have to add any content** to this file at the moment you
+create it. The fact that the file exists tells GitLab that this is
+an Agent. You can edit it later to [configure the Agent](#configure-the-agent).
 
-WARNING:
-The agent is only recognized if you use `.yaml` extension for the `config.yaml` file. The extension `.yml` is **not** recognized.
+When creating this file, pay special attention to:
 
-You **don't have to add any content** to this file when you create it. The fact that the file exists
-tells GitLab that this is an agent configuration file and enables the [CI/CD tunnel](../ci_cd_tunnel.md#example-for-a-kubectl-command-using-the-cicd-tunnel). Later on, you can use this
-file to [configure the agent](../repository.md) by setting up parameters such as:
+- The [Agent's naming format](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/blob/master/doc/identity_and_auth.md#agent-identity-and-name).
+- The file extension: use the `.yaml` extension (`config.yaml`). The `.yml` extension is **not** recognized.
 
-- Groups and projects that can access the agent via the [CI/CD Tunnel](../ci_cd_tunnel.md).
-- [Manifest projects to synchronize](../repository.md#synchronize-manifest-projects).
-- The address of the `hubble-relay` for the [Network Security policy integrations](../../../project/clusters/protect/index.md).
-
-To see all the settings available, read the [Agent configuration repository documentation](../repository.md).
-
-### Register an agent with GitLab
+### Register the Agent with GitLab
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5786) in GitLab 14.1, you can create a new Agent record directly from the GitLab UI.
 
-Next, create a GitLab Rails Agent record to associate it with
-the configuration repository project. Creating this record also creates a Secret needed to configure
-the Agent in subsequent steps.
+Now that you've created your Agent's configuration file, register it
+with GitLab.
+When you register the Agent, GitLab generates a token that you need for
+installing the Agent onto your cluster.
 
-In GitLab:
+In GitLab, go to the project where you added your Agent's configuration
+file and:
 
 1. Ensure that [GitLab CI/CD is enabled in your project](../../../../ci/enable_or_disable_ci.md#enable-cicd-in-a-project).
 1. From your project's sidebar, select **Infrastructure > Kubernetes clusters**.
 1. Select **Actions**.
-1. From the **Select an agent** dropdown, select the agent you want to connect and select **Register an agent** to access the installation form.
-1. The form reveals your registration token. Securely store this secret token as you cannot view it again.
-1. Copy the command under **Recommended installation method**.
+1. From the **Select an Agent** dropdown list, select the Agent you want to register and select **Register an Agent**.
+1. GitLab generates a registration token for this Agent. Securely store this secret token as you cannot view it again.
+1. Copy the command under **Recommended installation method**. You need it to install the Agent onto your cluster through the one-liner installation method.
 
-### Install the agent into the cluster
+### Install the Agent onto the cluster
 
-In your computer:
+To connect your cluster to GitLab, install the registered Agent
+onto your cluster. To install it, you can use either:
 
-1. Open your local terminal and connect to your cluster.
+- [The one-liner installation method](#one-liner-installation).
+- [The advanced installation method](#advanced-installation).
+
+You can use the one-liner installation for trying to use the Agent for the first time, to do internal setups with
+high trust, and to quickly get started. For long-term production usage, you may want to use the advanced installation
+method to benefit from more configuration options.
+
+#### One-liner installation
+
+The one-liner installation is the simplest process, but you need
+Docker installed locally. If you don't have it, you can either install
+it or opt to the [advanced installation method](#advanced-installation).
+
+To install the Agent on your cluster using the one-liner installation:
+
+1. In your computer, open the terminal and connect to your cluster.
 1. Run the command you copied when registering your cluster in the previous step.
 
-See the following sections to learn about customizing the installation.
+Optionally, you can [customize the one-liner installation command](#customize-the-one-liner-installation).
 
-## Simple installation method
+##### Customize the one-liner installation
 
-The command provided by GitLab does the following things:
+The one-liner command generated by GitLab:
 
 - Creates a namespace for the deployment (`gitlab-kubernetes-agent`).
-- Sets up a service account with `cluster-admin` rights. Read more on [how you can restrict this service account](#customize-the-permissions-for-the-agentk-service-account).
-- Creates a `Secret` resource for the agent registration token.
+- Sets up a service account with `cluster-admin` rights (see [how to restrict this service account](#customize-the-permissions-for-the-agentk-service-account)).
+- Creates a `Secret` resource for the Agent's registration token.
 - Creates a `Deployment` resource for the `agentk` pod.
 
-The one-liner installer can be customized at the command line. To find out the various options the above Docker container supports, run:
+You can edit these parameters according to your needs to customize the
+one-liner installation command at the command line. To find all available
+options, run in your terminal:
 
 ```shell
 docker run --pull=always --rm registry.gitlab.com/gitlab-org/cluster-integration/gitlab-agent/cli:stable generate --help
 ```
 
 WARNING:
-`--agent-version stable` can be used to refer to the latest stable release at the time when the command runs. It's fine for
-testing purposes but for production please make sure to specify a matching version explicitly.
+`--agent-version stable` can be used to refer to the latest stable
+release at the time when the command runs. It's fine for testing
+purposes but for production please make sure to specify a matching
+version explicitly.
 
-## Advanced installation method
+#### Advanced installation
 
-For more advanced configurations, we recommend to use [the `kpt` based installation method](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/tree/master/build/deployment/gitlab-agent).
+For advanced installation options, use [the `kpt` installation method](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/tree/master/build/deployment/gitlab-agent).
 
-Otherwise, follow the manual installation steps described below.
+##### Customize the permissions for the `agentk` service account
 
-### Customize the permissions for the `agentk` service account
+The GitLab Agent allows you to fully own your cluster and grant GitLab
+the permissions you want. Still, to facilitate the process, by default the
+generated manifests provide `cluster-admin` rights to the Agent.
 
-The GitLab Agent for Kubernetes allows you to fully own your cluster and requires only the permissions you give. Still, for easy getting started, by default the generated manifests provide `cluster-admin` rights to the agent.
-
-As part of the advanced installation method, you can restrict the agent access rights using Kustomize overlays. [An example is commented out](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/blob/master/build/deployment/gitlab-agent/cluster/kustomization.yaml) in the `kpt` package you retrieved as part of the installation.
+You can restrict the Agent's access rights using Kustomize overlays. [An example is commented out](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/blob/master/build/deployment/gitlab-agent/cluster/kustomization.yaml) in the `kpt` package you retrieved as part of the installation.
 
 To create restricted permissions:
 
@@ -121,50 +145,67 @@ To create restricted permissions:
 
 The above setup allows you to regularly update from the upstream package using `kpt pkg update gitlab-agent --strategy resource-merge` and maintain your customizations at the same time.
 
+## Configure the Agent
+
+When successfully installed, you can [configure the Agent](../repository.md)
+by editing its configuration file.
+When you update the configuration file, GitLab transmits the
+information to the cluster automatically without downtime.
+
+## View your Agents
+
+If you have the [Developer role](../../../permissions.md) or above, you can access the Agent's
+configuration repository and view the Agent's list:
+
+1. On the left sidebar, select **Infrastructure > Kubernetes clusters**.
+1. Select **Agent** tab to view clusters connected to GitLab through the Agent.
+
+On this page, you can view:
+
+- All the registered Agents for the current project.
+- The connection status.
+- The path to each Agent's configuration file.
+
+Furthermore, if you select one of the Agents on your list, you can view its
+[activity information](#view-the-agents-activity-information).
+
+### View the Agent's activity information
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/277323) in GitLab 14.6.
+
+The activity logs help you to identify problems and get the information
+you need for troubleshooting. You can see events from a week before the
+current date. To access an Agent's activity:
+
+1. In your Agent's repository, go to the Agents list as described [above](#view-your-agents).
+1. Select the Agent you want to see the activity.
+
+The activity list includes:
+
+- Agent registration events: when a new token is **created**.
+- Connection events: when an Agent is successfully **connected** to a cluster.
+
+Note that the connection status is logged when you connect an Agent for
+the first time or after more than an hour of inactivity.
+
+To check what else is planned for the Agent's UI and provide feedback,
+see the [related epic](https://gitlab.com/groups/gitlab-org/-/epics/4739).
+
+## Create multiple Agents
+
+You can create and install multiple Agents using the same process
+documented above. Give each Agent's configuration file a unique name
+and you're good to go. You can create multiple Agents, for example:
+
+- To reach your cluster from different projects.
+- To connect multiple clusters to GitLab.
+
 ## Example projects
 
 The following example projects can help you get started with the Agent.
 
 - [Configuration repository](https://gitlab.com/gitlab-org/configure/examples/kubernetes-agent)
 - This basic GitOps example deploys NGINX: [Manifest repository](https://gitlab.com/gitlab-org/configure/examples/gitops-project)
-
-## View installed Agents
-
-Users with at least the [Developer](../../../permissions.md) can access the user interface
-for the Agent at **Infrastructure > Kubernetes clusters**, under the
-**Agent** tab. This page lists all registered agents for the current project,
-and the configuration directory for each agent:
-
-![GitLab Agent list UI](../../img/kubernetes-agent-ui-list_v14_5.png)
-
-Additional management interfaces are planned for the GitLab Agent.
-[Provide more feedback in the related epic](https://gitlab.com/groups/gitlab-org/-/epics/4739).
-
-## View Agent activity information
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/277323) in GitLab 14.6.
-
-Users with at least the [Developer](../../../permissions.md) can view the Agent's activity events.
-The activity logs help you to identify problems and get the information you need for troubleshooting.
-You can see events from a week before the current date.
-To access an agent's activity:
-
-1. Go to your agent's configuration repository.
-1. From the sidebar, select **Infrastructure > Kubernetes clusters**.
-1. Select the **Agent** tab.
-1. Select the agent you want to see the activity.
-
-You can see the following events on the activity list:
-
-- Agent registration:
-  - When a new token is **created**.
-- Connection events:
-  - When an agent is successfully **connected** to a cluster.
-
-Note that the connection status is logged when you connect an agent for the first time
-or after more than an hour of inactivity.
-
-![GitLab Agent activity events UI](../../img/gitlab_agent_activity_events_v14_6.png)
 
 ## Upgrades and version compatibility
 

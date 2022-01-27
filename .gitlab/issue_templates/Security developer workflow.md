@@ -9,9 +9,7 @@ Set the title to: `Description of the original issue`
 ## Prior to starting the security release work
 
 - [ ] Read the [security process for developers] if you are not familiar with it.
-- [ ] Make sure the issue really needs to follow the security release workflow.
-  - Verify if the issue you're working on `gitlab-org/gitlab` is confidential, if it's public fix should be placed on GitLab canonical and no backports are required.
-  - If the issue you're fixing doesn't appear to be something that can be exploited by a malicious person and is instead simply a security enhancement do not hesitate to ping `@gitlab-com/gl-security/appsec` to discuss if the issue can be fixed in the canonical repository.
+- [ ] Make sure the [issue really needs to follow the security release workflow].
 - [ ] **IMPORTANT**: Mark this [issue as linked] to the Security Release Tracking Issue. You can find it [here](https://gitlab.com/gitlab-org/gitlab/-/issues?sort=created_date&state=opened&label_name[]=upcoming+security+release). This issue
 MUST be linked for the release bot to know that the associated merge requests should be merged for this security release.
 - Fill out the [Links section](#links):
@@ -71,5 +69,6 @@ After your merge request has been approved according to our [approval guidelines
 [security Release merge request template]: https://gitlab.com/gitlab-org/security/gitlab/blob/master/.gitlab/merge_request_templates/Security%20Release.md
 [approval guidelines]: https://docs.gitlab.com/ee/development/code_review.html#approval-guidelines
 [issue as linked]: https://docs.gitlab.com/ee/user/project/issues/related_issues.html#add-a-linked-issue
+[issue really needs to follow the security release workflow]: https://gitlab.com/gitlab-org/release/docs/-/blob/master/general/security/developer.md#making-sure-the-issue-needs-to-follow-the-security-release-workflow
 
 /label ~security

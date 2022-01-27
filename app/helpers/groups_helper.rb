@@ -139,7 +139,7 @@ module GroupsHelper
     {}
   end
 
-  def require_verification_for_namespace_creation_enabled?
+  def require_verification_for_group_creation_enabled?
     # overridden in EE
     false
   end

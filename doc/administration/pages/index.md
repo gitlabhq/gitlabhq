@@ -1021,7 +1021,7 @@ Migrate your existing Pages deployments from local storage to object storage:
 sudo gitlab-rake gitlab:pages:deployments:migrate_to_object_storage
 ```
 
-You can track progress and verify that all Pages deployments migrated successfully using the 
+You can track progress and verify that all Pages deployments migrated successfully using the
 [PostgreSQL console](https://docs.gitlab.com/omnibus/settings/database.html#connecting-to-the-bundled-postgresql-database):
 
 - `sudo gitlab-rails dbconsole` for Omnibus GitLab instances.
@@ -1037,6 +1037,9 @@ total | filesystem | objectstg
    10 |          0 |        10
 ```
 
+After verifying everything is working correctly,
+[disable Pages local storage](#disable-pages-local-storage).
+
 ### Rolling Pages deployments back to local storage
 
 After the migration to object storage is performed, you can choose to move your Pages deployments back to local storage:
@@ -1049,7 +1052,7 @@ sudo gitlab-rake gitlab:pages:deployments:migrate_to_local
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/301159) in GitLab 13.11.
 
-If you use [object storage](#using-object-storage), you can disable local storage:
+If you use [object storage](#using-object-storage), you can disable local storage to avoid unnecessary disk usage/writes:
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 
@@ -1080,6 +1083,8 @@ is the default starting from GitLab 14.0. Skip this step if you're already runni
 1. If you want to store your pages content in [object storage](#using-object-storage), make sure to configure it.
 If you want to store the pages content locally or continue using an NFS server, skip this step.
 1. [Migrate legacy storage to ZIP storage.](#migrate-legacy-storage-to-zip-storage)
+1. If you have configured GitLab to store your pages content in [object storage](#using-object-storage),
+   [migrate Pages deployments to object storage](#migrate-pages-deployments-to-object-storage)
 1. Upgrade GitLab to 14.0.
 
 ## Backup

@@ -20,7 +20,7 @@ Only CI/CD jobs set in the configuration project can access one of the configure
 ## Prerequisites
 
 - An existing Kubernetes cluster.
-- An agent [installed on your cluster](install/index.md#install-the-agent-into-the-cluster).
+- An Agent [installed on your cluster](install/index.md).
 
 ## Use the CI/CD Tunnel to run Kubernetes commands from GitLab CI/CD
 
