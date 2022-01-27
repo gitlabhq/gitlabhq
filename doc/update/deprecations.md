@@ -705,6 +705,25 @@ The `merged_by` field in the [merge request API](https://docs.gitlab.com/ee/api/
 
 ## 14.8
 
+### Vulnerability Check
+
+WARNING:
+This feature will be changed or removed in 15.0
+as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Before updating GitLab, review the details carefully to determine if you need to make any
+changes to your code, settings, or workflow.
+
+The vulnerability check feature is deprecated in GitLab 14.8 and scheduled for removal in GitLab 15.0. We encourage you to migrate to the new security approvals feature instead. You can do so by navigating to **Security & Compliance > Policies** and creating a new Scan Result Policy.
+
+The new security approvals feature is similar to vulnerability check. For example, both can require approvals for MRs that contain security vulnerabilities. However, security approvals improve the previous experience in several ways:
+
+- Users can choose who is allowed to edit security approval rules. An independent security or compliance team can therefore manage rules in a way that prevents development project maintainers from modifying the rules.
+- Multiple rules can be created and chained together to allow for filtering on different severity thresholds for each scanner type.
+- A two-step approval process can be enforced for any desired changes to security approval rules.
+- A single set of security policies can be applied to multiple development projects to allow for ease in maintaining a single, centralized ruleset.
+
+**Planned removal milestone: 15.0 (2022-05-22)**
+
 ### `fixup!` commit messages setting draft status of associated Merge Request
 
 The use of `fixup!` as a commit message to trigger draft status

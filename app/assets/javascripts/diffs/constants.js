@@ -42,7 +42,6 @@ export const TREE_LIST_WIDTH_STORAGE_KEY = 'mr_tree_list_width';
 
 export const INITIAL_TREE_WIDTH = 320;
 export const MIN_TREE_WIDTH = 240;
-export const MAX_TREE_WIDTH = 400;
 export const TREE_HIDE_STATS_WIDTH = 260;
 
 export const OLD_LINE_KEY = 'old_line';

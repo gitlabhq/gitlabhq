@@ -26080,8 +26080,6 @@ CREATE INDEX index_emails_on_user_id ON emails USING btree (user_id);
 
 CREATE INDEX index_enabled_clusters_on_id ON clusters USING btree (id) WHERE (enabled = true);
 
-CREATE INDEX index_environments_on_auto_stop_at ON environments USING btree (auto_stop_at) WHERE (auto_stop_at IS NOT NULL);
-
 CREATE INDEX index_environments_on_name_varchar_pattern_ops ON environments USING btree (name varchar_pattern_ops);
 
 CREATE UNIQUE INDEX index_environments_on_project_id_and_name ON environments USING btree (project_id, name);
