@@ -8,6 +8,7 @@ import {
   trackSaasTrialProject,
   trackSaasTrialProjectImport,
   trackSaasTrialGetStarted,
+  trackCheckout,
 } from '~/google_tag_manager';
 import { setHTMLFixture } from 'helpers/fixtures';
 import { logError } from '~/lib/logger';
@@ -208,6 +209,103 @@ describe('~/google_tag_manager/index', () => {
       expect(spy).toHaveBeenCalledTimes(1);
       expect(spy).toHaveBeenCalledWith({ event: 'saasTrialSubmit' });
       expect(logError).not.toHaveBeenCalled();
+    });
+
+    describe('when trackCheckout is invoked', () => {
+      it('with selectedPlan: 2c92a00d76f0d5060176f2fb0a5029ff', () => {
+        expect(spy).not.toHaveBeenCalled();
+
+        trackCheckout('2c92a00d76f0d5060176f2fb0a5029ff', 1);
+
+        expect(spy).toHaveBeenCalledTimes(2);
+        expect(spy).toHaveBeenCalledWith({ ecommerce: null });
+        expect(spy).toHaveBeenCalledWith({
+          event: 'EECCheckout',
+          currencyCode: 'USD',
+          ecommerce: {
+            checkout: {
+              actionField: { step: 1 },
+              products: [
+                {
+                  brand: 'GitLab',
+                  category: 'DevOps',
+                  id: '0002',
+                  name: 'Premium',
+                  price: 228,
+                  quantity: 1,
+                  variant: 'SaaS',
+                },
+              ],
+            },
+          },
+        });
+      });
+
+      it('with selectedPlan: 2c92a0ff76f0d5250176f2f8c86f305a', () => {
+        expect(spy).not.toHaveBeenCalled();
+
+        trackCheckout('2c92a0ff76f0d5250176f2f8c86f305a', 1);
+
+        expect(spy).toHaveBeenCalledTimes(2);
+        expect(spy).toHaveBeenCalledWith({ ecommerce: null });
+        expect(spy).toHaveBeenCalledWith({
+          event: 'EECCheckout',
+          currencyCode: 'USD',
+          ecommerce: {
+            checkout: {
+              actionField: { step: 1 },
+              products: [
+                {
+                  brand: 'GitLab',
+                  category: 'DevOps',
+                  id: '0001',
+                  name: 'Ultimate',
+                  price: 1188,
+                  quantity: 1,
+                  variant: 'SaaS',
+                },
+              ],
+            },
+          },
+        });
+      });
+
+      it('with selectedPlan: Something else', () => {
+        expect(spy).not.toHaveBeenCalled();
+
+        trackCheckout('Something else', 1);
+
+        expect(spy).not.toHaveBeenCalled();
+      });
+
+      it('with a different number of users', () => {
+        expect(spy).not.toHaveBeenCalled();
+
+        trackCheckout('2c92a0ff76f0d5250176f2f8c86f305a', 5);
+
+        expect(spy).toHaveBeenCalledTimes(2);
+        expect(spy).toHaveBeenCalledWith({ ecommerce: null });
+        expect(spy).toHaveBeenCalledWith({
+          event: 'EECCheckout',
+          currencyCode: 'USD',
+          ecommerce: {
+            checkout: {
+              actionField: { step: 1 },
+              products: [
+                {
+                  brand: 'GitLab',
+                  category: 'DevOps',
+                  id: '0001',
+                  name: 'Ultimate',
+                  price: 1188,
+                  quantity: 5,
+                  variant: 'SaaS',
+                },
+              ],
+            },
+          },
+        });
+      });
     });
   });
 

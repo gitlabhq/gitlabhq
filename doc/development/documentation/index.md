@@ -68,7 +68,7 @@ Adhere to the [Documentation Style Guide](styleguide/index.md). If a style stand
 
 ## Folder structure and files
 
-See the [Structure](styleguide/index.md#structure) section of the [Documentation Style Guide](styleguide/index.md).
+See the [Folder structure](site_architecture/folder_structure.md) page.
 
 ## Metadata
 

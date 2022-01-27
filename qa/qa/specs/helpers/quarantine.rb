@@ -10,8 +10,10 @@ module QA
 
         extend self
 
-        # Skip tests in quarantine unless we explicitly focus on them.
+        # Skip tests in quarantine unless we explicitly focus on them or quarantine disabled
         def skip_or_run_quarantined_tests_or_contexts(example)
+          return if Runtime::Env.quarantine_disabled?
+
           if filters.key?(:quarantine)
             included_filters = filters_other_than_quarantine
 

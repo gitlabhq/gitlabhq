@@ -438,6 +438,10 @@ module QA
         ENV['QA_EE_ACTIVATION_CODE']
       end
 
+      def quarantine_disabled?
+        enabled?(ENV['DISABLE_QUARANTINE'], default: false)
+      end
+
       private
 
       def remote_grid_credentials

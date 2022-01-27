@@ -1,5 +1,24 @@
 import { logError } from '~/lib/logger';
 
+const SKU_PREMIUM = '2c92a00d76f0d5060176f2fb0a5029ff';
+const SKU_ULTIMATE = '2c92a0ff76f0d5250176f2f8c86f305a';
+const PRODUCT_INFO = {
+  [SKU_PREMIUM]: {
+    // eslint-disable-next-line @gitlab/require-i18n-strings
+    name: 'Premium',
+    id: '0002',
+    price: 228,
+    variant: 'SaaS',
+  },
+  [SKU_ULTIMATE]: {
+    // eslint-disable-next-line @gitlab/require-i18n-strings
+    name: 'Ultimate',
+    id: '0001',
+    price: 1188,
+    variant: 'SaaS',
+  },
+};
+
 const isSupported = () => Boolean(window.dataLayer) && gon.features?.gitlabGtmDatalayer;
 
 const pushEvent = (event, args = {}) => {
@@ -10,6 +29,23 @@ const pushEvent = (event, args = {}) => {
   try {
     window.dataLayer.push({
       event,
+      ...args,
+    });
+  } catch (e) {
+    logError('Unexpected error while pushing to dataLayer', e);
+  }
+};
+
+const pushEnhancedEcommerceEvent = (event, currencyCode, args = {}) => {
+  if (!window.dataLayer) {
+    return;
+  }
+
+  try {
+    window.dataLayer.push({ ecommerce: null });
+    window.dataLayer.push({
+      event,
+      currencyCode,
       ...args,
     });
   } catch (e) {
@@ -119,4 +155,36 @@ export const trackSaasTrialGetStarted = () => {
   getStartedButton.addEventListener('click', () => {
     pushEvent('saasTrialGetStarted');
   });
+};
+
+export const trackCheckout = (selectedPlan, quantity) => {
+  if (!isSupported()) {
+    return;
+  }
+
+  const product = PRODUCT_INFO[selectedPlan];
+
+  if (!product) {
+    logError('Unexpected product sku provided to trackCheckout');
+    return;
+  }
+
+  const selectedProductData = {
+    ...product,
+    brand: 'GitLab',
+    category: 'DevOps',
+    quantity,
+  };
+
+  const eventData = {
+    ecommerce: {
+      checkout: {
+        actionField: { step: 1 },
+        products: [selectedProductData],
+      },
+    },
+  };
+
+  // eslint-disable-next-line @gitlab/require-i18n-strings
+  pushEnhancedEcommerceEvent('EECCheckout', 'USD', eventData);
 };

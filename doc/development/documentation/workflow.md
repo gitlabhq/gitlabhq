@@ -157,7 +157,7 @@ Ensure the following if skipping an initial Technical Writer review:
 - Specific [user permissions](../../user/permissions.md) are documented.
 - New documents are linked from higher-level indexes, for discoverability.
 - The style guide is followed:
-  - For [directories and files](styleguide/index.md#work-with-directories-and-files).
+  - For [directories and files](site_architecture/folder_structure.md).
   - For [images](styleguide/index.md#images).
 
 Merge requests that change the location of documentation must always be reviewed by a Technical

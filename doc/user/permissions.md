@@ -1,6 +1,6 @@
 ---
 stage: Manage
-group: Authentication & Authorization
+group: Authentication and Authorization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
@@ -298,7 +298,6 @@ The following table lists group permissions available for each role:
 | Action                                                                   | Guest | Reporter | Developer | Maintainer | Owner |
 |--------------------------------------------------------------------------|-------|----------|-----------|------------|-------|
 | Browse group                                                             | ✓     | ✓        | ✓         | ✓          | ✓     |
-| Edit SAML SSO Billing **(PREMIUM SAAS)**                                 | ✓     | ✓        | ✓         | ✓          | ✓ (4) |
 | Pull a container image using the dependency proxy                        | ✓     | ✓        | ✓         | ✓          | ✓     |
 | View Contribution analytics                                              | ✓     | ✓        | ✓         | ✓          | ✓     |
 | View group epic **(PREMIUM)**                                            | ✓     | ✓        | ✓         | ✓          | ✓     |
@@ -338,6 +337,7 @@ The following table lists group permissions available for each role:
 | Delete group epic **(PREMIUM)**                                          |       |          |           |            | ✓     |
 | Disable notification emails                                              |       |          |           |            | ✓     |
 | Edit group settings                                                      |       |          |           |            | ✓     |
+| Edit SAML SSO **(PREMIUM SAAS)**                                         |       |          |           |            | ✓ (4) |
 | Filter members by 2FA status                                             |       |          |           |            | ✓     |
 | Manage group level CI/CD variables                                       |       |          |           |            | ✓     |
 | Manage group members                                                     |       |          |           |            | ✓     |

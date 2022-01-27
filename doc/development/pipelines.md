@@ -226,7 +226,7 @@ of [GitLab JH](jh_features_review.md). These jobs are only created in the follow
 
 The `* as-if-jh` jobs are run in addition to the regular EE-context jobs. The `jh/` folder is added before the tests start running.
 
-The intent is to ensure that a change doesn't introduce a failure after the `gitlab-org/gitlab` is synced to [GitLab JH](https://jihulab.com/gitlab-cn/gitlab).
+The intent is to ensure that a change doesn't introduce a failure after `gitlab-org/gitlab` is synced to [GitLab JH](https://jihulab.com/gitlab-cn/gitlab).
 
 ### Corresponding JH branch
 

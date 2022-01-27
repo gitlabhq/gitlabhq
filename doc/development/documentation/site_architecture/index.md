@@ -52,6 +52,8 @@ product, and all together are pulled to generate the docs website:
 - [GitLab Runner](https://gitlab.com/gitlab-org/gitlab-runner/-/tree/main/docs)
 - [GitLab Chart](https://gitlab.com/charts/gitlab/tree/master/doc)
 
+Learn more about [the docs folder structure](folder_structure.md).
+
 ## Assets
 
 To provide an optimized site structure, design, and a search-engine friendly

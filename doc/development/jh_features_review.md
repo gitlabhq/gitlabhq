@@ -21,7 +21,7 @@ We have two kinds of changes related to JH:
   - We will generalize this so both EE and JH can share the same mechanism,
     then we wouldn't have to treat them differently.
 
-If needed, review the corresponding JH merge request located at [JH repository](https://jihulab.com/gitlab-cn/gitlab)
+If needed, review the corresponding JH merge request located at [JH repository](https://jihulab.com/gitlab-cn/gitlab).
 
 ## When to merge files to the GitLab Inc. repository
 

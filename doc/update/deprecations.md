@@ -58,6 +58,18 @@ We encourage customers currently using NFS for Git repositories to plan their mi
 
 **Planned removal milestone: 15.0 (2022-05-22)**
 
+### OAuth implicit grant
+
+WARNING:
+This feature will be changed or removed in 15.0
+as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Before updating GitLab, review the details carefully to determine if you need to make any
+changes to your code, settings, or workflow.
+
+The OAuth implicit grant authorization flow will be removed in our next major release, GitLab 15.0. Any applications that use OAuth implicit grant should switch to alternative [supported OAuth flows](https://docs.gitlab.com/ee/api/oauth2.html).
+
+**Planned removal milestone: 15.0 (2022-05-22)**
+
 ## 14.2
 
 ### Release CLI distributed as a generic package
