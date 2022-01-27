@@ -25,7 +25,7 @@ RSpec.describe GitlabSchema.types['Project'] do
       only_allow_merge_if_pipeline_succeeds request_access_enabled
       only_allow_merge_if_all_discussions_are_resolved printing_merge_request_link_enabled
       namespace group statistics repository merge_requests merge_request issues
-      issue milestones pipelines removeSourceBranchAfterMerge sentryDetailedError snippets
+      issue milestones pipelines removeSourceBranchAfterMerge pipeline_counts sentryDetailedError snippets
       grafanaIntegration autocloseReferencedIssues suggestion_commit_message environments
       environment boards jira_import_status jira_imports services releases release
       alert_management_alerts alert_management_alert alert_management_alert_status_counts
@@ -308,6 +308,13 @@ RSpec.describe GitlabSchema.types['Project'] do
                                             :sort
                                            )
     end
+  end
+
+  describe 'pipelineCounts field' do
+    subject { described_class.fields['pipelineCounts'] }
+
+    it { is_expected.to have_graphql_type(Types::Ci::PipelineCountsType) }
+    it { is_expected.to have_graphql_resolver(Resolvers::Ci::ProjectPipelineCountsResolver) }
   end
 
   describe 'snippets field' do

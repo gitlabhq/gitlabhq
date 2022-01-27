@@ -1,33 +1,52 @@
 # frozen_string_literal: true
 
 RSpec.describe QA::Tools::TestResourceDataProcessor do
+  include QA::Support::Helpers::StubEnv
+
+  subject(:processor) { Class.new(described_class).instance }
+
   let(:info) { 'information' }
-  let(:api_path) { '/foo' }
-  let(:result) { [{ info: info, api_path: api_path }] }
+  let(:api_response) { {} }
+  let(:method) { :api }
+  let(:time) { 2 }
+  let(:api_path) { resource.api_delete_path }
+  let(:resource) { QA::Resource::Project.init { |project| project.id = 1 } }
+
+  let(:result) do
+    {
+      'QA::Resource::Project' => [{
+        info: info,
+        api_path: api_path,
+        fabrication_method: method,
+        fabrication_time: time,
+        http_method: :post
+      }]
+    }
+  end
+
+  before do
+    processor.collect(resource: resource, info: info, fabrication_method: method, fabrication_time: time)
+  end
 
   describe '.collect' do
-    context 'when resource is not restricted' do
-      let(:resource) { instance_double(QA::Resource::Project, api_delete_path: '/foo', api_response: 'foo') }
+    it 'collects and stores resource' do
+      expect(processor.resources).to eq(result)
+    end
+  end
 
-      it 'collects resource' do
-        expect(described_class.collect(resource, info)).to eq(result)
-      end
+  describe '.write_to_file' do
+    let(:resources_file) { Pathname.new(Faker::File.file_name(dir: 'tmp', ext: 'json')) }
+
+    before do
+      stub_env('QA_TEST_RESOURCES_CREATED_FILEPATH', resources_file)
+
+      allow(File).to receive(:write)
     end
 
-    context 'when resource api response is nil' do
-      let(:resource) { double(QA::Resource::Project, api_delete_path: '/foo', api_response: nil) }
+    it 'writes applicable resources to file' do
+      processor.write_to_file
 
-      it 'does not collect resource' do
-        expect(described_class.collect(resource, info)).to eq(nil)
-      end
-    end
-
-    context 'when resource is restricted' do
-      let(:resource) { double(QA::Resource::Sandbox, api_delete_path: '/foo', api_response: 'foo') }
-
-      it 'does not collect resource' do
-        expect(described_class.collect(resource, info)).to eq(nil)
-      end
+      expect(File).to have_received(:write).with(resources_file, JSON.pretty_generate(result))
     end
   end
 end

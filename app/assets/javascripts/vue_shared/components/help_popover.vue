@@ -33,6 +33,9 @@ export default {
       <template #default>
         <div v-safe-html="options.content"></div>
       </template>
+      <template v-for="slot in Object.keys($slots)" #[slot]>
+        <slot :name="slot"></slot>
+      </template>
     </gl-popover>
   </span>
 </template>

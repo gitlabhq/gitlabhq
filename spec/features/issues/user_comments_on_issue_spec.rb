@@ -10,7 +10,6 @@ RSpec.describe "User comments on issue", :js do
   let(:user) { create(:user) }
 
   before do
-    stub_feature_flags(tribute_autocomplete: false)
     stub_feature_flags(sandboxed_mermaid: false)
     project.add_guest(user)
     sign_in(user)

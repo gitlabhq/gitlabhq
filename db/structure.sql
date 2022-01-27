@@ -30908,9 +30908,6 @@ ALTER TABLE ONLY group_repository_storage_moves
 ALTER TABLE ONLY resource_label_events
     ADD CONSTRAINT fk_rails_9851a00031 FOREIGN KEY (merge_request_id) REFERENCES merge_requests(id) ON DELETE CASCADE;
 
-ALTER TABLE ONLY ci_job_artifacts
-    ADD CONSTRAINT fk_rails_9862d392f9 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
-
 ALTER TABLE ONLY board_project_recent_visits
     ADD CONSTRAINT fk_rails_98f8843922 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 

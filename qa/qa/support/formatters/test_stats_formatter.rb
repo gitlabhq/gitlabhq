@@ -14,40 +14,38 @@ module QA
           return log(:warn, 'Missing QA_INFLUXDB_URL, skipping metrics export!') unless influxdb_url
           return log(:warn, 'Missing QA_INFLUXDB_TOKEN, skipping metrics export!') unless influxdb_token
 
-          data = notification.examples.map { |example| test_stats(example) }.compact
-          influx_client.create_write_api.write(data: data)
-          log(:info, "Pushed #{data.length} entries to influxdb")
-        rescue StandardError => e
-          log(:error, "Failed to push data to influxdb, error: #{e}")
+          push_test_stats(notification.examples)
+          push_fabrication_stats
         end
 
         private
 
-        # InfluxDb client
+        # Push test execution stats to influxdb
         #
-        # @return [InfluxDB2::Client]
-        def influx_client
-          @influx_client ||= InfluxDB2::Client.new(
-            influxdb_url,
-            influxdb_token,
-            bucket: 'e2e-test-stats',
-            org: 'gitlab-qa',
-            precision: InfluxDB2::WritePrecision::NANOSECOND
-          )
+        # @param [Array<RSpec::Core::Example>] examples
+        # @return [void]
+        def push_test_stats(examples)
+          data = examples.map { |example| test_stats(example) }.compact
+
+          influx_client.write(data: data)
+          log(:debug, "Pushed #{data.length} test execution entries to influxdb")
+        rescue StandardError => e
+          log(:error, "Failed to push test execution stats to influxdb, error: #{e}")
         end
 
-        # InfluxDb instance url
+        # Push resource fabrication stats to influxdb
         #
-        # @return [String]
-        def influxdb_url
-          @influxdb_url ||= env('QA_INFLUXDB_URL')
-        end
+        # @return [void]
+        def push_fabrication_stats
+          data = Tools::TestResourceDataProcessor.resources.flat_map do |resource, values|
+            values.map { |v| fabrication_stats(resource: resource, **v) }
+          end
+          return if data.empty?
 
-        # Influxdb token
-        #
-        # @return [String]
-        def influxdb_token
-          @influxdb_token ||= env('QA_INFLUXDB_TOKEN')
+          influx_client.write(data: data)
+          log(:debug, "Pushed #{data.length} resource fabrication entries to influxdb")
+        rescue StandardError => e
+          log(:error, "Failed to push fabrication stats to influxdb, error: #{e}")
         end
 
         # Transform example to influxdb compatible metrics data
@@ -91,6 +89,33 @@ module QA
         rescue StandardError => e
           log(:error, "Failed to transform example '#{example.id}', error: #{e}")
           nil
+        end
+
+        # Resource fabrication data point
+        #
+        # @param [String] resource
+        # @param [String] info
+        # @param [Symbol] fabrication_method
+        # @param [Symbol] http_method
+        # @param [Integer] fabrication_time
+        # @return [Hash]
+        def fabrication_stats(resource:, info:, fabrication_method:, http_method:, fabrication_time:, **)
+          {
+            name: 'fabrication-stats',
+            time: time,
+            tags: {
+              resource: resource,
+              fabrication_method: fabrication_method,
+              http_method: http_method,
+              run_type: env('QA_RUN_TYPE') || run_type,
+              merge_request: merge_request
+            },
+            fields: {
+              fabrication_time: fabrication_time,
+              info: info,
+              job_url: QA::Runtime::Env.ci_job_url
+            }
+          }
         end
 
         # Project name
@@ -150,7 +175,7 @@ module QA
         # @param [String] message
         # @return [void]
         def log(level, message)
-          QA::Runtime::Logger.public_send(level, "influxdb exporter: #{message}")
+          QA::Runtime::Logger.public_send(level, "[influxdb exporter]: #{message}")
         end
 
         # Return non empty environment variable value
@@ -169,6 +194,33 @@ module QA
         # @return [String, nil]
         def devops_stage(file_path)
           file_path.match(%r{\d{1,2}_(\w+)/})&.captures&.first
+        end
+
+        # InfluxDb client
+        #
+        # @return [InfluxDB2::WriteApi]
+        def influx_client
+          @influx_client ||= InfluxDB2::Client.new(
+            influxdb_url,
+            influxdb_token,
+            bucket: 'e2e-test-stats',
+            org: 'gitlab-qa',
+            precision: InfluxDB2::WritePrecision::NANOSECOND
+          ).create_write_api
+        end
+
+        # InfluxDb instance url
+        #
+        # @return [String]
+        def influxdb_url
+          @influxdb_url ||= env('QA_INFLUXDB_URL')
+        end
+
+        # Influxdb token
+        #
+        # @return [String]
+        def influxdb_token
+          @influxdb_token ||= env('QA_INFLUXDB_TOKEN')
         end
       end
     end

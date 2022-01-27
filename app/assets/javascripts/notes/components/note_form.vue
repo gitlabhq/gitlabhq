@@ -5,7 +5,6 @@ import { getDraft, updateDraft } from '~/lib/utils/autosave';
 import { mergeUrlParams } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
 import markdownField from '~/vue_shared/components/markdown/field.vue';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import eventHub from '../event_hub';
 import issuableStateMixin from '../mixins/issuable_state';
 import resolvable from '../mixins/resolvable';
@@ -20,7 +19,7 @@ export default {
     GlSprintf,
     GlLink,
   },
-  mixins: [glFeatureFlagsMixin(), issuableStateMixin, resolvable],
+  mixins: [issuableStateMixin, resolvable],
   props: {
     noteBody: {
       type: String,
@@ -349,7 +348,7 @@ export default {
               ref="textarea"
               v-model="updatedNoteBody"
               :disabled="isSubmitting"
-              :data-supports-quick-actions="!isEditing && !glFeatures.tributeAutocomplete"
+              :data-supports-quick-actions="!isEditing"
               name="note[note]"
               class="note-textarea js-gfm-input js-note-text js-autosize markdown-area js-vue-issue-note-form"
               data-qa-selector="reply_field"

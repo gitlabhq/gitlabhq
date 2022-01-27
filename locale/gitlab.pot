@@ -3818,9 +3818,6 @@ msgstr ""
 msgid "An error occurred while fetching this tab."
 msgstr ""
 
-msgid "An error occurred while getting autocomplete data. Please refresh the page and try again."
-msgstr ""
-
 msgid "An error occurred while getting files for - %{branchId}"
 msgstr ""
 

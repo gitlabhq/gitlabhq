@@ -40,12 +40,13 @@ are paginated.
 Read more on [pagination](index.md#pagination).
 
 WARNING:
-> `reference` attribute in response is deprecated in favour of `references`.
-> Introduced in [GitLab 12.6](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20354)
+In [GitLab 12.6](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20354) and later,
+the `reference` attribute in responses is deprecated in favor of `references`.
 
 NOTE:
-> `references.relative` is relative to the group that the epic is being requested. When epic is fetched from its origin group
-> `relative` format would be the same as `short` format and when requested cross groups it is expected to be the same as `full` format.
+`references.relative` is relative to the group that the epic is being requested from. When an epic
+is fetched from its origin group, the `relative` format is the same as the `short` format.
+When an epic is requested across groups, the `relative` format is expected to be the same as the `full` format.
 
 ## List epics for a group
 

@@ -32,55 +32,22 @@ module QA
         "#{uri.scheme}://#{uri.host}:#{uri.port}"
       end
 
-      let(:composer_json_file) do
-        <<~EOF
-          {
-            "name": "#{project.path_with_namespace}/#{package.name}",
-            "description": "Library XY",
-            "type": "library",
-            "license": "GPL-3.0-only",
-            "authors": [
-               {
-                   "name": "John Doe",
-                   "email": "john@example.com"
-               }
-            ],
-            "require": {}
-          }
-        EOF
-      end
-
-      let(:gitlab_ci_yaml) do
-        <<~YAML
-          publish:
-            image: curlimages/curl:latest
-            stage: build
-            variables:
-              URL: "$CI_SERVER_PROTOCOL://$CI_SERVER_HOST:$CI_SERVER_PORT/api/v4/projects/$CI_PROJECT_ID/packages/composer?job_token=$CI_JOB_TOKEN"
-            script:
-              - version=$([[ -z "$CI_COMMIT_TAG" ]] && echo "branch=$CI_COMMIT_REF_NAME" || echo "tag=$CI_COMMIT_TAG")
-              - insecure=$([ "$CI_SERVER_PROTOCOL" = "http" ] && echo "--insecure" || echo "")
-              - response=$(curl -s -w "%{http_code}" $insecure --data $version $URL)
-              - code=$(echo "$response" | tail -n 1)
-              - body=$(echo "$response" | head -n 1)
-            tags:
-              - "runner-for-#{project.name}"
-        YAML
-      end
-
       before do
         Flow::Login.sign_in
         Support::Retrier.retry_on_exception(max_attempts: 3, sleep_interval: 2) do
           Resource::Repository::Commit.fabricate_via_api! do |commit|
+            composer_yaml = ERB.new(read_fixture('package_managers/composer', 'composer_upload_package.yaml.erb')).result(binding)
+            composer_json = ERB.new(read_fixture('package_managers/composer', 'composer.json.erb')).result(binding)
+
             commit.project = project
-            commit.commit_message = 'Add .gitlab-ci.yml'
+            commit.commit_message = 'Add files'
             commit.add_files([{
                                 file_path: '.gitlab-ci.yml',
-                                content: gitlab_ci_yaml
+                                content: composer_yaml
                               },
                               {
                                 file_path: 'composer.json',
-                                content: composer_json_file
+                                content: composer_json
                               }]
                             )
           end

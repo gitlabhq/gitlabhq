@@ -53,4 +53,14 @@ RSpec.describe 'admin visits dashboard' do
       expect(page).to have_content('Active users 71')
     end
   end
+
+  describe 'Version check', :js do
+    it 'shows badge on CE' do
+      visit admin_root_path
+
+      page.within('.admin-dashboard') do
+        expect(find('.badge')).to have_content('Up to date')
+      end
+    end
+  end
 end

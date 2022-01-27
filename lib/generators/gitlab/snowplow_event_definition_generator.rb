@@ -65,7 +65,12 @@ module Gitlab
     end
 
     def file_name
-      "#{event_category}_#{event_action}.yml".underscore.gsub("/", "__")
+      name = remove_special_chars("#{Time.current.to_i}_#{event_category}_#{event_action}")
+      "#{name[0..95]}.yml" # max 100 chars, see https://gitlab.com/gitlab-com/gl-infra/delivery/-/issues/2030#note_679501200
+    end
+
+    def remove_special_chars(input)
+      input.gsub("::", "__").gsub(/[^A-Za-z0-9_]/, '')
     end
   end
 end

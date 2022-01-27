@@ -1638,11 +1638,12 @@ If the content in a topic is not ready, use the disclaimer in the topic.
 
 ### Removing versions after each major release
 
-Whenever a major GitLab release occurs, we remove all version references
-to now-unsupported versions of GitLab. Note that this includes the removal of
-specific instructions for users of non-supported GitLab versions. For example,
-if GitLab versions 11.x and later are supported, special
-instructions for users of GitLab 10 should be removed.
+When a major GitLab release occurs, we remove all references
+to now-unsupported versions. This removal includes version-specific instructions. For example,
+if GitLab version 12.1 and later are supported,
+instructions for users of GitLab 11 should be removed.
+
+[View the list of supported versions](https://about.gitlab.com/support/statement-of-support.html#version-support).
 
 To view historical information about a feature, review GitLab
 [release posts](https://about.gitlab.com/releases/), or search for the issue or

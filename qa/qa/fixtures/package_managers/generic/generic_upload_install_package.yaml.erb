@@ -1,0 +1,18 @@
+image: curlimages/curl:latest
+
+stages:
+  - upload
+  - download
+
+upload:
+  stage: upload
+  script:
+    - 'curl --header "JOB-TOKEN: $CI_JOB_TOKEN" --upload-file file.txt ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/<%= package.name %>/0.0.1/file.txt'
+  tags:
+    - runner-for-<%= project.name %>
+download:
+  stage: download
+  script:
+    - 'wget --header="JOB-TOKEN: $CI_JOB_TOKEN" ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/<%= package.name %>/0.0.1/file.txt -O file_downloaded.txt'
+  tags:
+     - runner-for-<%= project.name %>

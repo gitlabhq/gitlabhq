@@ -961,11 +961,6 @@
   resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-2.2.0.tgz#95cf58d6ae634d535145159f08f5cff6241d4013"
   integrity sha512-mCwR3KfNPsxRoojtTjMIZwdd4FFlBh5DlR9AeodP+7+k8rILdWGYxTZbJMPNXoPbZx16R94nG8c5bR7toD4QBw==
 
-"@gitlab/tributejs@1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/tributejs/-/tributejs-1.0.0.tgz#672befa222aeffc83e7d799b0500a7a4418e59b8"
-  integrity sha512-nmKw1+hB6MHvlmPz63yPwVs1qQkycHwsKgxpEbzmky16Y6mL4EJMk3w1b8QlOAF/AIAzjCERPhe/R4MJiohbZw==
-
 "@gitlab/ui@33.1.0":
   version "33.1.0"
   resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-33.1.0.tgz#45ac2e6362546530b5756b1973f97f74a9c920da"

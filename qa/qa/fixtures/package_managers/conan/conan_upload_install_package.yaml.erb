@@ -1,0 +1,12 @@
+image: conanio/gcc7
+
+test_package:
+  stage: deploy
+  script:
+    - conan remote add gitlab <%= gitlab_address_with_port %>/api/v4/projects/<%= project.id %>/packages/conan
+    - conan new <%= package.name %>/0.1 -t
+    - conan create . mycompany/stable
+    - "CONAN_LOGIN_USERNAME=ci_user CONAN_PASSWORD=${CI_JOB_TOKEN} conan upload <%= package.name %>/0.1@mycompany/stable --all --remote=gitlab"
+    - conan install <%= package.name %>/0.1@mycompany/stable --remote=gitlab
+  tags:
+    - runner-for-<%= project.name %>

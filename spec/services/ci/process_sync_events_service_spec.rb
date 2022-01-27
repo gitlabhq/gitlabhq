@@ -62,16 +62,6 @@ RSpec.describe Ci::ProcessSyncEventsService do
         end
       end
 
-      context 'when the FF ci_namespace_project_mirrors is disabled' do
-        before do
-          stub_feature_flags(ci_namespace_project_mirrors: false)
-        end
-
-        it 'does nothing' do
-          expect { execute }.not_to change(Projects::SyncEvent, :count)
-        end
-      end
-
       it 'does not delete non-executed events' do
         new_project = create(:project)
         sync_event_class.delete_all

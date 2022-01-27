@@ -391,4 +391,5 @@ Alternatively, you can mount the certificate file at a different location and in
 ```
 
 This error is shown if the manifest project is not public. To fix it,
-[make sure your manifest project is public](repository.md#synchronize-manifest-projects).
+[make sure your manifest project is public](repository.md#synchronize-manifest-projects) or your manifest files
+are stored in the Agent's configuration repository.

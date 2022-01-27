@@ -50,77 +50,8 @@ module QA
           runner.name = "qa-runner-#{Time.now.to_i}"
           runner.tags = ["runner-for-#{project.group.name}"]
           runner.executor = :docker
-          runner.token = project.group.runners_token
+          runner.token = project.group.reload!.runners_token
         end
-      end
-
-      let(:gitlab_ci_deploy_yaml) do
-        {
-          file_path: '.gitlab-ci.yml',
-          content:
-              <<~YAML
-              image: node:latest
-
-              stages:
-                - deploy
-
-              deploy:
-                stage: deploy
-                script:
-                  - echo "//${CI_SERVER_HOST}/api/v4/projects/${CI_PROJECT_ID}/packages/npm/:_authToken=#{auth_token}">.npmrc
-                  - npm publish
-                only:
-                  - "#{project.default_branch}"
-                tags:
-                  - "runner-for-#{project.group.name}"
-              YAML
-        }
-      end
-
-      let(:gitlab_ci_install_yaml) do
-        {
-          file_path: '.gitlab-ci.yml',
-          content:
-              <<~YAML
-              image: node:latest
-
-              stages:
-                - install
-
-              install:
-                stage: install
-                script:
-                  - "npm config set @#{registry_scope}:registry #{gitlab_address_with_port}/api/v4/packages/npm/"
-                  - "npm install #{package.name}"
-                cache:
-                  key: ${CI_BUILD_REF_NAME}
-                  paths:
-                    - node_modules/
-                artifacts:
-                  paths:
-                    - node_modules/
-                only:
-                  - "#{another_project.default_branch}"
-                tags:
-                  - "runner-for-#{another_project.group.name}"
-              YAML
-        }
-      end
-
-      let(:package_json) do
-        {
-          file_path: 'package.json',
-          content: <<~JSON
-            {
-              "name": "#{package.name}",
-              "version": "1.0.0",
-              "description": "Example package for GitLab npm registry",
-              "publishConfig": {
-                "@#{registry_scope}:registry": "#{gitlab_address_with_port}/api/v4/projects/#{project.id}/packages/npm/"
-              }
-            }
-          JSON
-      }
       end
 
       let(:package) do
@@ -157,12 +88,21 @@ module QA
 
         it "push and pull a npm package via CI using a #{params[:token_name]}" do
           Support::Retrier.retry_on_exception(max_attempts: 3, sleep_interval: 2) do
+            npm_upload_yaml = ERB.new(read_fixture('package_managers/npm', 'npm_upload_package_instance.yaml.erb')).result(binding)
+            package_json = ERB.new(read_fixture('package_managers/npm', 'package_instance.json.erb')).result(binding)
+
             Resource::Repository::Commit.fabricate_via_api! do |commit|
               commit.project = project
-              commit.commit_message = 'Add .gitlab-ci.yml'
+              commit.commit_message = 'Add files'
               commit.add_files([
-                                gitlab_ci_deploy_yaml,
-                                package_json
+                                {
+                                  file_path: '.gitlab-ci.yml',
+                                  content: npm_upload_yaml
+                                },
+                                {
+                                  file_path: 'package.json',
+                                  content: package_json
+                                }
                               ])
             end
           end
@@ -180,10 +120,15 @@ module QA
 
           Support::Retrier.retry_on_exception(max_attempts: 3, sleep_interval: 2) do
             Resource::Repository::Commit.fabricate_via_api! do |commit|
+              npm_install_yaml = ERB.new(read_fixture('package_managers/npm', 'npm_install_package_instance.yaml.erb')).result(binding)
+
               commit.project = another_project
               commit.commit_message = 'Add .gitlab-ci.yml'
               commit.add_files([
-                                gitlab_ci_install_yaml
+                {
+                  file_path: '.gitlab-ci.yml',
+                  content: npm_install_yaml
+                }
               ])
             end
           end

@@ -46,25 +46,13 @@ module QA
 
         Support::Retrier.retry_on_exception(max_attempts: 3, sleep_interval: 2) do
           Resource::Repository::Commit.fabricate_via_api! do |commit|
+            conan_yaml = ERB.new(read_fixture('package_managers/conan', 'conan_upload_install_package.yaml.erb')).result(binding)
+
             commit.project = project
             commit.commit_message = 'Add .gitlab-ci.yml'
             commit.add_files([{
                                   file_path: '.gitlab-ci.yml',
-                                  content:
-                                      <<~YAML
-                                        image: conanio/gcc7
-
-                                        test_package:
-                                          stage: deploy
-                                          script:
-                                            - "conan remote add gitlab #{gitlab_address_with_port}/api/v4/projects/#{project.id}/packages/conan"
-                                            - "conan new #{package.name}/0.1 -t"
-                                            - "conan create . mycompany/stable"
-                                            - "CONAN_LOGIN_USERNAME=ci_user CONAN_PASSWORD=${CI_JOB_TOKEN} conan upload #{package.name}/0.1@mycompany/stable --all --remote=gitlab"
-                                            - "conan install #{package.name}/0.1@mycompany/stable --remote=gitlab"
-                                          tags:
-                                            - "runner-for-#{project.name}"
-                                      YAML
+                                  content: conan_yaml
                               }])
           end
         end

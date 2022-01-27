@@ -13,8 +13,6 @@ module Ci
     end
 
     def execute
-      return unless ::Feature.enabled?(:ci_namespace_project_mirrors, default_enabled: :yaml)
-
       # preventing parallel processing over the same event table
       try_obtain_lease { process_events }
 

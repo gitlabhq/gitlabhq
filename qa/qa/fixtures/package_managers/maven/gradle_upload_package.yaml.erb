@@ -1,0 +1,8 @@
+deploy:
+  image: gradle:6.5-jdk11
+  script:
+  - 'gradle publish'
+  only:
+  - "<%= package_project.default_branch %>"
+  tags:
+  - "runner-for-<%= package_project.group.name %>"

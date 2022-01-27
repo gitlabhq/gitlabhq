@@ -7,6 +7,11 @@ RSpec.describe QA::Resource::Base do
   let(:location) { 'http://location' }
   let(:log_regex) { %r{==> Built a MyResource with username 'qa' via #{method} in [\d.\-e]+ seconds+} }
 
+  before do
+    allow(QA::Tools::TestResourceDataProcessor).to receive(:collect)
+    allow(QA::Tools::TestResourceDataProcessor).to receive(:write_to_file)
+  end
+
   shared_context 'with fabrication context' do
     subject do
       Class.new(described_class) do

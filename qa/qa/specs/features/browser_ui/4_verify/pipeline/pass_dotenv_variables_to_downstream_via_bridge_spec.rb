@@ -25,7 +25,7 @@ module QA
         Resource::Runner.fabricate! do |runner|
           runner.name = executor
           runner.tags = [executor]
-          runner.token = group.sandbox.runners_token
+          runner.token = group.reload!.runners_token
         end
       end
 

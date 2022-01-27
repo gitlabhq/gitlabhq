@@ -1,0 +1,15 @@
+image: ruby
+
+test_package:
+  stage: deploy
+  before_script:
+    - mkdir ~/.gem
+    - echo "---" > ~/.gem/credentials
+    - |
+      echo "<%= gitlab_address_with_port %>/api/v4/projects/${CI_PROJECT_ID}/packages/rubygems: '${CI_JOB_TOKEN}'" >> ~/.gem/credentials
+    - chmod 0600 ~/.gem/credentials
+  script:
+    - gem build <%= package.name %>
+    - gem push <%= package.name %>-0.0.1.gem --host <%= gitlab_address_with_port %>/api/v4/projects/${CI_PROJECT_ID}/packages/rubygems
+  tags:
+    - runner-for-<%= project.name %> 

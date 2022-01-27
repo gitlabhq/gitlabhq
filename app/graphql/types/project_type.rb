@@ -195,6 +195,12 @@ module Types
           extras: [:lookahead],
           resolver: Resolvers::ProjectPipelineResolver
 
+    field :pipeline_counts,
+          Types::Ci::PipelineCountsType,
+          null: true,
+          description: 'Build pipeline counts of the project.',
+          resolver: Resolvers::Ci::ProjectPipelineCountsResolver
+
     field :ci_cd_settings,
           Types::Ci::CiCdSettingType,
           null: true,

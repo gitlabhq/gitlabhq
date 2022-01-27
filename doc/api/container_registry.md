@@ -396,10 +396,6 @@ If your Container Registry has a large number of tags to delete,
 only some of them will be deleted, and you might need to call this API multiple times.
 To schedule tags for automatic deletion, use a [cleanup policy](../user/packages/container_registry/reduce_container_registry_storage.md#cleanup-policy) instead.
 
-NOTE:
-In GitLab 12.4 and later, individual tags are deleted.
-For more details, see the [discussion](https://gitlab.com/gitlab-org/gitlab/-/issues/15737).
-
 Examples:
 
 1. Remove tag names that are matching the regex (Git SHA), keep always at least 5,

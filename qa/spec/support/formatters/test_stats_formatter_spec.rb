@@ -22,6 +22,7 @@ describe QA::Support::Formatters::TestStatsFormatter do
   let(:file_path) { "./qa/specs/features/#{stage}/subfolder/some_spec.rb" }
   let(:ui_fabrication) { 0 }
   let(:api_fabrication) { 0 }
+  let(:fabrication_resources) { {} }
 
   let(:influx_client_args) do
     {
@@ -88,6 +89,7 @@ describe QA::Support::Formatters::TestStatsFormatter do
 
   before do
     allow(InfluxDB2::Client).to receive(:new).with(url, token, **influx_client_args) { influx_client }
+    allow(QA::Tools::TestResourceDataProcessor).to receive(:resources) { fabrication_resources }
   end
 
   context "without influxdb variables configured" do
@@ -135,6 +137,7 @@ describe QA::Support::Formatters::TestStatsFormatter do
           it('spec', :reliable, testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/1234') {}
         end
 
+        expect(influx_write_api).to have_received(:write).once
         expect(influx_write_api).to have_received(:write).with(data: [data])
       end
     end
@@ -147,6 +150,7 @@ describe QA::Support::Formatters::TestStatsFormatter do
           it('spec', :quarantine, testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/1234') {}
         end
 
+        expect(influx_write_api).to have_received(:write).once
         expect(influx_write_api).to have_received(:write).with(data: [data])
       end
     end
@@ -162,6 +166,7 @@ describe QA::Support::Formatters::TestStatsFormatter do
       it 'exports data to influxdb with correct run type' do
         run_spec
 
+        expect(influx_write_api).to have_received(:write).once
         expect(influx_write_api).to have_received(:write).with(data: [data])
       end
     end
@@ -179,6 +184,7 @@ describe QA::Support::Formatters::TestStatsFormatter do
       it 'exports data to influxdb with correct run type' do
         run_spec
 
+        expect(influx_write_api).to have_received(:write).once
         expect(influx_write_api).to have_received(:write).with(data: [data])
       end
     end
@@ -195,7 +201,47 @@ describe QA::Support::Formatters::TestStatsFormatter do
       it 'exports data to influxdb with fabrication times' do
         run_spec
 
+        expect(influx_write_api).to have_received(:write).once
         expect(influx_write_api).to have_received(:write).with(data: [data])
+      end
+    end
+
+    context 'with fabrication resources' do
+      let(:fabrication_resources) do
+        {
+          'QA::Resource::Project' => [{
+            info: "with id '1'",
+            api_path: '/project',
+            fabrication_method: :api,
+            fabrication_time: 1,
+            http_method: :post
+          }]
+        }
+      end
+
+      let(:fabrication_data) do
+        {
+          name: 'fabrication-stats',
+          time: DateTime.strptime(ci_timestamp).to_time,
+          tags: {
+            resource: 'QA::Resource::Project',
+            fabrication_method: :api,
+            http_method: :post,
+            run_type: run_type,
+            merge_request: "false"
+          },
+          fields: {
+            fabrication_time: 1,
+            info: "with id '1'",
+            job_url: ci_job_url
+          }
+        }
+      end
+
+      it 'exports fabrication stats data to influxdb' do
+        run_spec
+
+        expect(influx_write_api).to have_received(:write).with(data: [fabrication_data])
       end
     end
   end

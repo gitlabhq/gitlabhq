@@ -4,6 +4,7 @@ module QA
   RSpec.describe 'Package', :orchestrated, :packages, :object_storage do
     describe 'PyPI Repository' do
       include Runtime::Fixtures
+
       let(:project) do
         Resource::Project.fabricate_via_api! do |project|
           project.name = 'pypi-package-project'
@@ -36,56 +37,18 @@ module QA
 
         Support::Retrier.retry_on_exception(max_attempts: 3, sleep_interval: 2) do
           Resource::Repository::Commit.fabricate_via_api! do |commit|
+            pypi_yaml = ERB.new(read_fixture('package_managers/pypi', 'pypi_upload_install_package.yaml.erb')).result(binding)
+            pypi_setup_file = ERB.new(read_fixture('package_managers/pypi', 'setup.py.erb')).result(binding)
+
             commit.project = project
-            commit.commit_message = 'Add .gitlab-ci.yml'
+            commit.commit_message = 'Add files'
             commit.add_files([{
                                   file_path: '.gitlab-ci.yml',
-                                  content:
-                                      <<~YAML
-                                        image: python:latest
-                                        stages:
-                                          - run
-                                          - install
-
-                                        run:
-                                          stage: run
-                                          script:
-                                            - pip install twine
-                                            - python setup.py sdist bdist_wheel
-                                            - "TWINE_PASSWORD=${CI_JOB_TOKEN} TWINE_USERNAME=gitlab-ci-token python -m twine upload --repository-url #{gitlab_address_with_port}/api/v4/projects/${CI_PROJECT_ID}/packages/pypi dist/*"
-                                          tags:
-                                            - "runner-for-#{project.name}"
-                                        install:
-                                          stage: install
-                                          script:
-                                          - "pip install #{package.name} --no-deps --index-url #{uri.scheme}://#{personal_access_token}:#{personal_access_token}@#{gitlab_host_with_port}/api/v4/projects/${CI_PROJECT_ID}/packages/pypi/simple --trusted-host #{gitlab_host_with_port}"
-                                          tags:
-                                          - "runner-for-#{project.name}"
-                                    
-                                      YAML
+                                  content: pypi_yaml
                               },
                               {
                                   file_path: 'setup.py',
-                                  content:
-                                      <<~EOF
-                                        import setuptools
-
-                                        setuptools.setup(
-                                            name="#{package.name}",
-                                            version="0.0.1",
-                                            author="Example Author",
-                                            author_email="author@example.com",
-                                            description="A small example package",
-                                            packages=setuptools.find_packages(),
-                                            classifiers=[
-                                                "Programming Language :: Python :: 3",
-                                                "License :: OSI Approved :: MIT License",
-                                                "Operating System :: OS Independent",
-                                            ],
-                                            python_requires='>=3.6',
-                                        )
-                                      EOF
-
+                                  content: pypi_setup_file
                               }])
           end
         end

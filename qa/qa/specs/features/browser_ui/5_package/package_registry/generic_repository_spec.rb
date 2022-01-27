@@ -3,6 +3,8 @@
 module QA
   RSpec.describe 'Package', :orchestrated, :packages, :object_storage do
     describe 'Generic Repository' do
+      include Runtime::Fixtures
+
       let(:project) do
         Resource::Project.fabricate_via_api! do |project|
           project.name = 'generic-package-project'
@@ -25,29 +27,6 @@ module QA
         end
       end
 
-      let(:gitlab_ci_yaml) do
-        <<~YAML
-          image: curlimages/curl:latest
-
-          stages:
-            - upload
-            - download
-
-          upload:
-            stage: upload
-            script:
-              - 'curl --header "JOB-TOKEN: $CI_JOB_TOKEN" --upload-file file.txt ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/#{package.name}/0.0.1/file.txt'
-            tags:
-              - "runner-for-#{project.name}"
-          download:
-            stage: download
-            script:
-              - 'wget --header="JOB-TOKEN: $CI_JOB_TOKEN" ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/#{package.name}/0.0.1/file.txt -O file_downloaded.txt'
-            tags:
-              - "runner-for-#{project.name}"
-        YAML
-      end
-
       let(:file_txt) do
         <<~EOF
           Hello, world!
@@ -59,11 +38,13 @@ module QA
 
         Support::Retrier.retry_on_exception(max_attempts: 3, sleep_interval: 2) do
           Resource::Repository::Commit.fabricate_via_api! do |commit|
+            generic_packages_yaml = ERB.new(read_fixture('package_managers/generic', 'generic_upload_install_package.yaml.erb')).result(binding)
+
             commit.project = project
-            commit.commit_message = 'Add .gitlab-ci.yml'
+            commit.commit_message = 'Add files'
             commit.add_files([{
                                   file_path: '.gitlab-ci.yml',
-                                  content: gitlab_ci_yaml
+                                  content: generic_packages_yaml
                               },
                               {
                                   file_path: 'file.txt',

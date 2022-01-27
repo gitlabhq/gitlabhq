@@ -1,0 +1,27 @@
+plugins {
+    id 'java'
+    id 'maven-publish'
+}
+
+publishing {
+    publications {
+        library(MavenPublication) {
+            groupId '<%= group_id %>'
+            artifactId '<%= artifact_id %>'
+            version '<%= package_version %>'
+            from components.java
+        }
+    }
+    repositories {
+        maven {
+            url "<%= gitlab_address_with_port %>/api/v4/projects/<%= package_project.id %>/packages/maven"
+            credentials(HttpHeaderCredentials) {
+                name = "Private-Token"
+                value = "<%= personal_access_token %>"
+            }
+            authentication {
+                header(HttpHeaderAuthentication)
+            }
+        }
+    }
+}

@@ -5,6 +5,7 @@ module QA
     describe 'NuGet Repository' do
       using RSpec::Parameterized::TableSyntax
       include Runtime::Fixtures
+
       let(:project) do
         Resource::Project.fabricate_via_api! do |project|
           project.name = 'nuget-package-project'
@@ -53,7 +54,7 @@ module QA
           runner.name = "qa-runner-#{Time.now.to_i}"
           runner.tags = ["runner-for-#{project.group.name}"]
           runner.executor = :docker
-          runner.token = project.group.runners_token
+          runner.token = project.group.reload!.runners_token
         end
       end
 
@@ -96,31 +97,14 @@ module QA
 
           Support::Retrier.retry_on_exception(max_attempts: 3, sleep_interval: 2) do
             Resource::Repository::Commit.fabricate_via_api! do |commit|
+              nuget_upload_yaml = ERB.new(read_fixture('package_managers/nuget', 'nuget_upload_package.yaml.erb')).result(binding)
               commit.project = project
               commit.commit_message = 'Add .gitlab-ci.yml'
               commit.update_files(
                 [
                     {
                         file_path: '.gitlab-ci.yml',
-                        content: <<~YAML
-                          image: mcr.microsoft.com/dotnet/sdk:5.0
-
-                          stages:
-                            - deploy
-
-                          deploy:
-                            stage: deploy
-                            script:
-                              - dotnet restore -p:Configuration=Release
-                              - dotnet build -c Release
-                              - dotnet pack -c Release -p:PackageID=#{package.name}
-                              - dotnet nuget add source "$CI_SERVER_URL/api/v4/projects/$CI_PROJECT_ID/packages/nuget/index.json" --name gitlab --username #{auth_token_username} --password #{auth_token_password} --store-password-in-clear-text
-                              - dotnet nuget push "bin/Release/*.nupkg" --source gitlab
-                            rules:
-                              - if: '$CI_COMMIT_BRANCH == "#{project.default_branch}"'
-                            tags:
-                              - "runner-for-#{project.group.name}"
-                        YAML
+                        content: nuget_upload_yaml
                     }
                 ]
               )
@@ -142,6 +126,8 @@ module QA
 
           Support::Retrier.retry_on_exception(max_attempts: 3, sleep_interval: 2) do
             Resource::Repository::Commit.fabricate_via_api! do |commit|
+              nuget_install_yaml = ERB.new(read_fixture('package_managers/nuget', 'nuget_install_package.yaml.erb')).result(binding)
+
               commit.project = another_project
               commit.commit_message = 'Add new csproj file'
               commit.add_files(
@@ -165,23 +151,7 @@ module QA
                 [
                     {
                         file_path: '.gitlab-ci.yml',
-                        content: <<~YAML
-                            image: mcr.microsoft.com/dotnet/sdk:5.0
-
-                            stages:
-                              - install
-
-                            install:
-                              stage: install
-                              script:
-                              - dotnet nuget locals all --clear
-                              - dotnet nuget add source "$CI_SERVER_URL/api/v4/groups/#{another_project.group.id}/-/packages/nuget/index.json" --name gitlab --username #{auth_token_username} --password #{auth_token_password} --store-password-in-clear-text
-                              - "dotnet add otherdotnet.csproj package #{package.name} --version 1.0.0"
-                              only:
-                                - "#{another_project.default_branch}"
-                              tags:
-                                - "runner-for-#{project.group.name}"
-                        YAML
+                        content: nuget_install_yaml
                     }
                 ]
               )

@@ -9,8 +9,6 @@ module Gitlab
       class BaseExporter < Daemon
         attr_reader :server
 
-        attr_accessor :readiness_checks
-
         def initialize(settings, log_enabled:, log_file:, gc_requests: false, **options)
           super(**options)
 
@@ -85,7 +83,7 @@ module Gitlab
         end
 
         def readiness_probe
-          ::Gitlab::HealthChecks::Probes::Collection.new(*readiness_checks)
+          ::Gitlab::HealthChecks::Probes::Collection.new
         end
 
         def liveness_probe

@@ -8,9 +8,7 @@ import GLForm from '~/gl_form';
 import axios from '~/lib/utils/axios_utils';
 import { stripHtml } from '~/lib/utils/text_utility';
 import { __, sprintf } from '~/locale';
-import GfmAutocomplete from '~/vue_shared/components/gfm_autocomplete/gfm_autocomplete.vue';
 import Suggestions from '~/vue_shared/components/markdown/suggestions.vue';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import MarkdownHeader from './header.vue';
 import MarkdownToolbar from './toolbar.vue';
 
@@ -20,13 +18,11 @@ function cleanUpLine(content) {
 
 export default {
   components: {
-    GfmAutocomplete,
     MarkdownHeader,
     MarkdownToolbar,
     GlIcon,
     Suggestions,
   },
-  mixins: [glFeatureFlagsMixin()],
   props: {
     /**
      * This prop should be bound to the value of the `<textarea>` element
@@ -212,14 +208,14 @@ export default {
     return new GLForm(
       $(this.$refs['gl-form']),
       {
-        emojis: this.enableAutocomplete && !this.glFeatures.tributeAutocomplete,
-        members: this.enableAutocomplete && !this.glFeatures.tributeAutocomplete,
-        issues: this.enableAutocomplete && !this.glFeatures.tributeAutocomplete,
-        mergeRequests: this.enableAutocomplete && !this.glFeatures.tributeAutocomplete,
-        epics: this.enableAutocomplete && !this.glFeatures.tributeAutocomplete,
-        milestones: this.enableAutocomplete && !this.glFeatures.tributeAutocomplete,
-        labels: this.enableAutocomplete && !this.glFeatures.tributeAutocomplete,
-        snippets: this.enableAutocomplete && !this.glFeatures.tributeAutocomplete,
+        emojis: this.enableAutocomplete,
+        members: this.enableAutocomplete,
+        issues: this.enableAutocomplete,
+        mergeRequests: this.enableAutocomplete,
+        epics: this.enableAutocomplete,
+        milestones: this.enableAutocomplete,
+        labels: this.enableAutocomplete,
+        snippets: this.enableAutocomplete,
         vulnerabilities: this.enableAutocomplete,
       },
       true,
@@ -311,10 +307,7 @@ export default {
     />
     <div v-show="!previewMarkdown" class="md-write-holder">
       <div class="zen-backdrop">
-        <gfm-autocomplete v-if="glFeatures.tributeAutocomplete">
-          <slot name="textarea"></slot>
-        </gfm-autocomplete>
-        <slot v-else name="textarea"></slot>
+        <slot name="textarea"></slot>
         <a
           class="zen-control zen-control-leave js-zen-leave gl-text-gray-500"
           href="#"

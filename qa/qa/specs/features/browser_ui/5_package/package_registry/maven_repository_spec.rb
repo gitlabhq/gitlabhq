@@ -13,121 +13,6 @@ module QA
       let(:package_version) { '1.3.7' }
       let(:package_type) { 'maven' }
 
-      let(:package_gitlab_ci_file) do
-        {
-          file_path: '.gitlab-ci.yml',
-          content:
-              <<~YAML
-                deploy:
-                  image: maven:3.6-jdk-11
-                  script:
-                    - 'mvn deploy -s settings.xml'
-                  only:
-                    - "#{package_project.default_branch}"
-                  tags:
-                    - "runner-for-#{package_project.group.name}"
-              YAML
-        }
-      end
-
-      let(:package_pom_file) do
-        {
-          file_path: 'pom.xml',
-          content: <<~XML
-            <project>
-              <groupId>#{group_id}</groupId>
-              <artifactId>#{artifact_id}</artifactId>
-              <version>#{package_version}</version>
-              <modelVersion>4.0.0</modelVersion>
-              <repositories>
-                <repository>
-                  <id>#{package_project.name}</id>
-                  <url>#{gitlab_address_with_port}/api/v4/groups/#{package_project.group.id}/-/packages/maven</url>
-                </repository>
-              </repositories>
-              <distributionManagement>
-                <repository>
-                  <id>#{package_project.name}</id>
-                  <url>#{gitlab_address_with_port}/api/v4/projects/#{package_project.id}/packages/maven</url>
-                </repository>
-                <snapshotRepository>
-                  <id>#{package_project.name}</id>
-                  <url>#{gitlab_address_with_port}/api/v4/projects/#{package_project.id}/packages/maven</url>
-                </snapshotRepository>
-              </distributionManagement>
-            </project>
-          XML
-        }
-      end
-
-      let(:client_gitlab_ci_file) do
-        {
-          file_path: '.gitlab-ci.yml',
-          content:
-              <<~YAML
-                install:
-                  image: maven:3.6-jdk-11
-                  script:
-                    - "mvn install -s settings.xml"
-                  only:
-                    - "#{client_project.default_branch}"
-                  tags:
-                    - "runner-for-#{client_project.group.name}"
-              YAML
-        }
-      end
-
-      let(:client_pom_file) do
-        {
-          file_path: 'pom.xml',
-          content: <<~XML
-            <project>
-              <groupId>#{group_id}</groupId>
-              <artifactId>maven_client</artifactId>
-              <version>1.0</version>
-              <modelVersion>4.0.0</modelVersion>
-              <repositories>
-                <repository>
-                  <id>#{package_project.name}</id>
-                  <url>#{gitlab_address_with_port}/api/v4/groups/#{package_project.group.id}/-/packages/maven</url>
-                </repository>
-              </repositories>
-              <dependencies>
-                <dependency>
-                  <groupId>#{group_id}</groupId>
-                  <artifactId>#{artifact_id}</artifactId>
-                  <version>#{package_version}</version>
-                </dependency>
-              </dependencies>
-            </project>
-          XML
-        }
-      end
-
-      let(:settings_xml_with_pat) do
-        {
-          file_path: 'settings.xml',
-          content: <<~XML
-            <settings xmlns="http://maven.apache.org/SETTINGS/1.1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-            xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.1.0 http://maven.apache.org/xsd/settings-1.1.0.xsd">
-              <servers>
-                <server>
-                  <id>#{package_project.name}</id>
-                  <configuration>
-                    <httpHeaders>
-                      <property>
-                        <name>Private-Token</name>
-                        <value>#{personal_access_token}</value>
-                      </property>
-                    </httpHeaders>
-                  </configuration>
-                </server>
-              </servers>
-            </settings>
-          XML
-        }
-      end
-
       where(:authentication_token_type, :maven_header_name) do
         :personal_access_token | 'Private-Token'
         :ci_job_token          | 'Job-Token'
@@ -146,39 +31,28 @@ module QA
           end
         end
 
-        let(:settings_xml) do
-          {
-            file_path: 'settings.xml',
-            content: <<~XML
-              <settings xmlns="http://maven.apache.org/SETTINGS/1.1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-              xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.1.0 http://maven.apache.org/xsd/settings-1.1.0.xsd">
-                <servers>
-                  <server>
-                    <id>#{package_project.name}</id>
-                    <configuration>
-                      <httpHeaders>
-                        <property>
-                          <name>#{maven_header_name}</name>
-                          <value>#{token}</value>
-                        </property>
-                      </httpHeaders>
-                    </configuration>
-                  </server>
-                </servers>
-              </settings>
-            XML
-          }
-        end
-
         it "pushes and pulls a maven package via maven using #{params[:authentication_token_type]}" do
           Support::Retrier.retry_on_exception(max_attempts: 3, sleep_interval: 2) do
             Resource::Repository::Commit.fabricate_via_api! do |commit|
+              maven_upload_package_yaml = ERB.new(read_fixture('package_managers/maven', 'maven_upload_package.yaml.erb')).result(binding)
+              package_pom_xml = ERB.new(read_fixture('package_managers/maven', 'package_pom.xml.erb')).result(binding)
+              settings_xml = ERB.new(read_fixture('package_managers/maven', 'settings.xml.erb')).result(binding)
+
               commit.project = package_project
-              commit.commit_message = 'Add .gitlab-ci.yml'
+              commit.commit_message = 'Add files'
               commit.add_files([
-                package_gitlab_ci_file,
-                package_pom_file,
-                settings_xml
+                {
+                  file_path: '.gitlab-ci.yml',
+                  content: maven_upload_package_yaml
+                },
+                {
+                  file_path: 'pom.xml',
+                  content: package_pom_xml
+                },
+                {
+                  file_path: 'settings.xml',
+                  content: settings_xml
+                }
               ])
             end
           end
@@ -209,12 +83,25 @@ module QA
 
           Support::Retrier.retry_on_exception(max_attempts: 3, sleep_interval: 2) do
             Resource::Repository::Commit.fabricate_via_api! do |commit|
+              maven_install_package_yaml = ERB.new(read_fixture('package_managers/maven', 'maven_install_package.yaml.erb')).result(binding)
+              client_pom_xml = ERB.new(read_fixture('package_managers/maven', 'client_pom.xml.erb')).result(binding)
+              settings_xml = ERB.new(read_fixture('package_managers/maven', 'settings.xml.erb')).result(binding)
+
               commit.project = client_project
-              commit.commit_message = 'Add .gitlab-ci.yml'
+              commit.commit_message = 'Add files'
               commit.add_files([
-                client_gitlab_ci_file,
-                client_pom_file,
-                settings_xml
+                {
+                  file_path: '.gitlab-ci.yml',
+                  content: maven_install_package_yaml
+                },
+                {
+                  file_path: 'pom.xml',
+                  content: client_pom_xml
+                },
+                {
+                  file_path: 'settings.xml',
+                  content: settings_xml
+                }
               ])
             end
           end
@@ -278,7 +165,19 @@ module QA
           end
 
           def create_duplicated_package
-            with_fixtures([package_pom_file, settings_xml_with_pat]) do |dir|
+            settings_xml_with_pat = ERB.new(read_fixture('package_managers/maven', 'settings_with_pat.xml.erb')).result(binding)
+            package_pom_xml = ERB.new(read_fixture('package_managers/maven', 'package_pom.xml.erb')).result(binding)
+
+            with_fixtures([
+                {
+                  file_path: 'pom.xml',
+                  content: package_pom_xml
+                },
+                {
+                  file_path: 'settings.xml',
+                  content: settings_xml_with_pat
+                }
+              ]) do |dir|
               Service::DockerRun::Maven.new(dir).publish!
             end
 
@@ -294,12 +193,25 @@ module QA
           def push_duplicated_package
             Support::Retrier.retry_on_exception(max_attempts: 3, sleep_interval: 2) do
               Resource::Repository::Commit.fabricate_via_api! do |commit|
+                maven_upload_package_yaml = ERB.new(read_fixture('package_managers/maven', 'maven_upload_package.yaml.erb')).result(binding)
+                package_pom_xml = ERB.new(read_fixture('package_managers/maven', 'package_pom.xml.erb')).result(binding)
+                settings_xml = ERB.new(read_fixture('package_managers/maven', 'settings.xml.erb')).result(binding)
+
                 commit.project = client_project
                 commit.commit_message = 'Add .gitlab-ci.yml'
                 commit.add_files([
-                  package_gitlab_ci_file,
-                  package_pom_file,
-                  settings_xml
+                                  {
+                                    file_path: '.gitlab-ci.yml',
+                                    content: maven_upload_package_yaml
+                                  },
+                                  {
+                                    file_path: 'pom.xml',
+                                    content: package_pom_xml
+                                  },
+                                  {
+                                    file_path: 'settings.xml',
+                                    content: settings_xml
+                                  }
                 ])
               end
             end

@@ -13207,6 +13207,19 @@ Represents the Geo sync and verification state of a pipeline artifact.
 | <a id="pipelineartifactregistryretrycount"></a>`retryCount` | [`Int`](#int) | Number of consecutive failed sync attempts of the PipelineArtifactRegistry. |
 | <a id="pipelineartifactregistrystate"></a>`state` | [`RegistryState`](#registrystate) | Sync state of the PipelineArtifactRegistry. |
 
+### `PipelineCounts`
+
+Represents pipeline counts for the project.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="pipelinecountsall"></a>`all` | [`Int`](#int) | Total number of pipelines for the project. |
+| <a id="pipelinecountsfinished"></a>`finished` | [`Int`](#int) | Number of pipelines with scope FINISHED for the project. |
+| <a id="pipelinecountspending"></a>`pending` | [`Int`](#int) | Number of pipelines with scope PENDING for the project. |
+| <a id="pipelinecountsrunning"></a>`running` | [`Int`](#int) | Number of pipelines with scope RUNNING for the project. |
+
 ### `PipelineMessage`
 
 #### Fields
@@ -13976,6 +13989,20 @@ Returns [`Pipeline`](#pipeline).
 | ---- | ---- | ----------- |
 | <a id="projectpipelineiid"></a>`iid` | [`ID`](#id) | IID of the Pipeline. For example, "1". |
 | <a id="projectpipelinesha"></a>`sha` | [`String`](#string) | SHA of the Pipeline. For example, "dyd0f15ay83993f5ab66k927w28673882x99100b". |
+
+##### `Project.pipelineCounts`
+
+Build pipeline counts of the project.
+
+Returns [`PipelineCounts`](#pipelinecounts).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectpipelinecountsref"></a>`ref` | [`String`](#string) | Filter pipelines by the ref they are run for. |
+| <a id="projectpipelinecountssha"></a>`sha` | [`String`](#string) | Filter pipelines by the SHA of the commit they are run for. |
+| <a id="projectpipelinecountssource"></a>`source` | [`String`](#string) | Filter pipelines by their source. |
 
 ##### `Project.pipelines`
 

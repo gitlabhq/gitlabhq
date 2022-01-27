@@ -369,7 +369,7 @@ export default {
                     class="note-textarea js-vue-comment-form js-note-text js-gfm-input js-autosize markdown-area"
                     data-qa-selector="comment_field"
                     data-testid="comment-field"
-                    :data-supports-quick-actions="!glFeatures.tributeAutocomplete"
+                    data-supports-quick-actions="true"
                     :aria-label="$options.i18n.comment"
                     :placeholder="$options.i18n.bodyPlaceholder"
                     @keydown.up="editCurrentUserLastNote()"

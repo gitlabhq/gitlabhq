@@ -31,7 +31,7 @@ module QA
           parents = options.fetch(:parents) { [] }
 
           do_fabricate!(resource: resource, prepare_block: prepare_block, parents: parents) do
-            log_fabrication(:browser_ui, resource, parents, args) { resource.fabricate!(*args) }
+            log_and_record_fabrication(:browser_ui, resource, parents, args) { resource.fabricate!(*args) }
 
             current_url
           end
@@ -47,7 +47,7 @@ module QA
           resource.eager_load_api_client!
 
           do_fabricate!(resource: resource, prepare_block: prepare_block, parents: parents) do
-            log_fabrication(:api, resource, parents, args) { resource.fabricate_via_api! }
+            log_and_record_fabrication(:api, resource, parents, args) { resource.fabricate_via_api! }
           end
         end
 
@@ -59,7 +59,7 @@ module QA
           resource.eager_load_api_client!
 
           do_fabricate!(resource: resource, prepare_block: prepare_block, parents: parents) do
-            log_fabrication(:api, resource, parents, args) { resource.remove_via_api! }
+            log_and_record_fabrication(:api, resource, parents, args) { resource.remove_via_api! }
           end
         end
 
@@ -71,11 +71,55 @@ module QA
           resource_web_url = yield
           resource.web_url = resource_web_url
 
-          QA::Tools::TestResourceDataProcessor.collect(resource, resource_identifier(resource))
-
           resource
         end
 
+        def log_and_record_fabrication(fabrication_method, resource, parents, args)
+          start = Time.now
+
+          Support::FabricationTracker.start_fabrication
+          result = yield.tap do
+            fabrication_time = Time.now - start
+            identifier = resource_identifier(resource)
+
+            fabrication_http_method = if resource.api_fabrication_http_method == :get
+                                        if include?(Reusable)
+                                          "Retrieved for reuse"
+                                        else
+                                          "Retrieved"
+                                        end
+                                      else
+                                        "Built"
+                                      end
+
+            Support::FabricationTracker.save_fabrication(:"#{fabrication_method}_fabrication", fabrication_time)
+            Tools::TestResourceDataProcessor.collect(
+              resource: resource,
+              info: identifier,
+              fabrication_method: fabrication_method,
+              fabrication_time: fabrication_time
+            )
+
+            Runtime::Logger.debug do
+              msg = ["==#{'=' * parents.size}>"]
+              msg << "#{fabrication_http_method} a #{name}"
+              msg << identifier
+              msg << "as a dependency of #{parents.last}" if parents.any?
+              msg << "via #{fabrication_method}"
+              msg << "in #{fabrication_time} seconds"
+
+              msg.compact.join(' ')
+            end
+          end
+          Support::FabricationTracker.finish_fabrication
+
+          result
+        end
+
+        # Unique resource identifier
+        #
+        # @param [QA::Resource::Base] resource
+        # @return [String]
         def resource_identifier(resource)
           if resource.respond_to?(:username) && resource.username
             "with username '#{resource.username}'"
@@ -90,40 +134,6 @@ module QA
           end
         rescue QA::Resource::Base::NoValueError
           nil
-        end
-
-        def log_fabrication(method, resource, parents, args)
-          start = Time.now
-
-          Support::FabricationTracker.start_fabrication
-          result = yield.tap do
-            fabrication_time = Time.now - start
-
-            fabrication_http_method = if resource.api_fabrication_http_method == :get
-                                        if self.include?(Reusable)
-                                          "Retrieved for reuse"
-                                        else
-                                          "Retrieved"
-                                        end
-                                      else
-                                        "Built"
-                                      end
-
-            Support::FabricationTracker.save_fabrication(:"#{method}_fabrication", fabrication_time)
-            Runtime::Logger.debug do
-              msg = ["==#{'=' * parents.size}>"]
-              msg << "#{fabrication_http_method} a #{name}"
-              msg << resource_identifier(resource) if resource_identifier(resource)
-              msg << "as a dependency of #{parents.last}" if parents.any?
-              msg << "via #{method}"
-              msg << "in #{fabrication_time} seconds"
-
-              msg.join(' ')
-            end
-          end
-          Support::FabricationTracker.finish_fabrication
-
-          result
         end
 
         # Define custom attribute

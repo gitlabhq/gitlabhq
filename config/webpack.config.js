@@ -260,8 +260,7 @@ module.exports = {
       {
         test: /\.js$/,
         exclude: (modulePath) =>
-          /node_modules\/(?!tributejs)|node_modules|vendor[\\/]assets/.test(modulePath) &&
-          !/\.vue\.js/.test(modulePath),
+          /node_modules|vendor[\\/]assets/.test(modulePath) && !/\.vue\.js/.test(modulePath),
         loader: 'babel-loader',
         options: {
           cacheDirectory: path.join(CACHE_PATH, 'babel-loader'),
