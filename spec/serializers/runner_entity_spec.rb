@@ -7,7 +7,7 @@ RSpec.describe RunnerEntity do
   let(:runner) { create(:ci_runner, :project, projects: [project]) }
   let(:entity) { described_class.new(runner, request: request, current_user: user) }
   let(:request) { double('request') }
-  let(:user) { project.owner }
+  let(:user) { project.first_owner }
 
   before do
     allow(request).to receive(:current_user).and_return(user)

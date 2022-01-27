@@ -74,7 +74,14 @@ export default {
 
 <template>
   <div>
-    <a v-show="!isLoading && !hasError" :href="linkUrl" target="_blank" rel="noopener noreferrer">
+    <a
+      v-show="!isLoading && !hasError"
+      :href="linkUrl"
+      target="_blank"
+      rel="noopener noreferrer"
+      data-qa-selector="badge_image_link"
+      :data-qa-link-url="linkUrl"
+    >
       <img
         :src="imageUrlWithRetries"
         class="project-badge"

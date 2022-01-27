@@ -15711,6 +15711,9 @@ msgstr ""
 msgid "Geo sites"
 msgstr ""
 
+msgid "Geo|%{boldStart}N/A%{boldEnd}: Geo does not verify this component yet. See the %{linkStart}data types we plan to support%{linkEnd}."
+msgstr ""
+
 msgid "Geo|%{component} synced"
 msgstr ""
 

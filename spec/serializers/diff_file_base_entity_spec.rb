@@ -142,7 +142,7 @@ RSpec.describe DiffFileBaseEntity do
     end
 
     context 'when source_project and target_project are different' do
-      let(:target_project) { fork_project(source_project, source_project.owner, repository: true) }
+      let(:target_project) { fork_project(source_project, source_project.first_owner, repository: true) }
 
       it 'returns the merge_request ide route with the target_project as param' do
         expect(entity[:ide_edit_path]).to eq("#{expected_merge_request_path}?target_project=#{ERB::Util.url_encode(target_project.full_path)}")

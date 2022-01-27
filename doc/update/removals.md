@@ -658,16 +658,6 @@ changes to your code, settings, or workflow.
 
 The Web Application Firewall (WAF) was deprecated in GitLab 13.6 and is removed from GitLab 14.0. The WAF had limitations inherent in the architectural design that made it difficult to meet the requirements traditionally expected of a WAF. By removing the WAF, GitLab is able to focus on improving other areas in the product where more value can be provided to users. Users who currently rely on the WAF can continue to use the free and open source [ModSecurity](https://github.com/SpiderLabs/ModSecurity) project, which is independent from GitLab. Additional details are available in the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/271276).
 
-### `CI_PROJECT_CONFIG_PATH` removed in GitLab 14.0
-
-WARNING:
-This feature was changed or removed in 14.0
-as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
-Before updating GitLab, review the details carefully to determine if you need to make any
-changes to your code, settings, or workflow.
-
-GitLab 14.0 removes the `CI_PROJECT_CONFIG_PATH` pre-defined project variable in favor of `CI_CONFIG_PATH`, which is functionally the same. If you are using `CI_PROJECT_CONFIG_PATH` in your pipeline configurations, update them to use `CI_CONFIG_PATH` instead.
-
 ### `CI_PROJECT_CONFIG_PATH` variable has been removed
 
 WARNING:

@@ -1511,3 +1511,20 @@ behavior:
 NOTE:
 `inplace_chroot` option might not work with the other features, such as [Pages Access Control](#access-control).
 The [GitLab Pages README](https://gitlab.com/gitlab-org/gitlab-pages#caveats) has more information about caveats and workarounds.
+
+### GitLab Pages deploy job fails with error "is not a recognized provider"
+
+If the **pages** job succeeds but the **deploy** job gives the error "is not a recognized provider":
+
+![Pages Deploy Failure](img/pages_deploy_failure_v14_8.png)
+
+The error message `is not a recognized provider` could be coming from the `fog` gem that GitLab uses to connect to cloud providers for object storage.
+
+To fix that:
+
+1. Check your `gitlab.rb` file. If you have `gitlab_rails['pages_object_store_enabled']` enabled, but no bucket details have been configured, either:
+
+   - Configure object storage for your Pages deployments, following the [S3-compatible connection settings](#s3-compatible-connection-settings) guide.
+   - Store your deployments locally, by commenting out that line.
+
+1. Save the changes you made to your `gitlab.rb` file, then [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).

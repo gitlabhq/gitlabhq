@@ -260,7 +260,7 @@ The maximum webhook payload size is 25 MB.
 
 ### Recursive webhooks
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/329743) in GitLab 14.8.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/329743) in GitLab 14.8.
 
 GitLab detects and blocks webhooks that are recursive or that exceed the limit
 of webhooks that can be triggered from other webhooks. This enables GitLab to

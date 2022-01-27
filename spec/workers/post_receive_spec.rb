@@ -15,7 +15,7 @@ RSpec.describe PostReceive do
   let(:wrongly_encoded_changes) { changes.encode("ISO-8859-1").force_encoding("UTF-8") }
   let(:base64_changes) { Base64.encode64(wrongly_encoded_changes) }
   let(:gl_repository) { "project-#{project.id}" }
-  let(:key) { create(:key, user: project.owner) }
+  let(:key) { create(:key, user: project.first_owner) }
   let!(:key_id) { key.shell_id }
 
   let(:project) do
@@ -47,7 +47,7 @@ RSpec.describe PostReceive do
 
     context 'with PersonalSnippet' do
       let(:gl_repository) { "snippet-#{snippet.id}" }
-      let(:snippet) { create(:personal_snippet, author: project.owner) }
+      let(:snippet) { create(:personal_snippet, author: project.first_owner) }
 
       it 'does not log an error' do
         expect(Gitlab::GitLogger).not_to receive(:error)
@@ -60,7 +60,7 @@ RSpec.describe PostReceive do
 
     context 'with ProjectSnippet' do
       let(:gl_repository) { "snippet-#{snippet.id}" }
-      let(:snippet) { create(:snippet, type: 'ProjectSnippet', project: nil, author: project.owner) }
+      let(:snippet) { create(:snippet, type: 'ProjectSnippet', project: nil, author: project.first_owner) }
 
       it 'returns false and logs an error' do
         expect(Gitlab::GitLogger).to receive(:error).with("POST-RECEIVE: #{error_message}")
@@ -74,7 +74,7 @@ RSpec.describe PostReceive do
       let(:empty_project) { create(:project, :empty_repo) }
 
       before do
-        allow_next(Gitlab::GitPostReceive).to receive(:identify).and_return(empty_project.owner)
+        allow_next(Gitlab::GitPostReceive).to receive(:identify).and_return(empty_project.first_owner)
         # Need to mock here so we can expect calls on project
         allow(Gitlab::GlRepository).to receive(:parse).and_return([empty_project, empty_project, Gitlab::GlRepository::PROJECT])
       end
@@ -128,7 +128,7 @@ RSpec.describe PostReceive do
       let(:push_service) { double(execute: true) }
 
       before do
-        allow_next(Gitlab::GitPostReceive).to receive(:identify).and_return(project.owner)
+        allow_next(Gitlab::GitPostReceive).to receive(:identify).and_return(project.first_owner)
         allow(Gitlab::GlRepository).to receive(:parse).and_return([project, project, Gitlab::GlRepository::PROJECT])
       end
 
@@ -381,7 +381,7 @@ RSpec.describe PostReceive do
       allow(Project).to receive(:find_by).and_return(project)
       expect_next(MergeRequests::PushedBranchesService).to receive(:execute).and_return(%w(tést))
 
-      expect(UpdateMergeRequestsWorker).to receive(:perform_async).with(project.id, project.owner.id, any_args)
+      expect(UpdateMergeRequestsWorker).to receive(:perform_async).with(project.id, project.first_owner.id, any_args)
 
       perform
     end
@@ -461,13 +461,13 @@ RSpec.describe PostReceive do
     end
 
     context 'with PersonalSnippet' do
-      let!(:snippet) { create(:personal_snippet, :repository, author: project.owner) }
+      let!(:snippet) { create(:personal_snippet, :repository, author: project.first_owner) }
 
       it_behaves_like 'snippet changes actions'
     end
 
     context 'with ProjectSnippet' do
-      let!(:snippet) { create(:project_snippet, :repository, project: project, author: project.owner) }
+      let!(:snippet) { create(:project_snippet, :repository, project: project, author: project.first_owner) }
 
       it_behaves_like 'snippet changes actions'
     end

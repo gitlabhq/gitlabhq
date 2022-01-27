@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Ci::ExternalPullRequests::CreatePipelineWorker do
   let_it_be(:project) { create(:project, :auto_devops, :repository) }
-  let_it_be(:user) { project.owner }
+  let_it_be(:user) { project.first_owner }
   let_it_be(:external_pull_request) do
     branch = project.repository.branches.last
     create(:external_pull_request, project: project, source_branch: branch.name, source_sha: branch.target)

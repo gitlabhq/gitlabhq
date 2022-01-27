@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe CleanupContainerRepositoryWorker, :clean_gitlab_redis_shared_state do
   let(:repository) { create(:container_repository) }
   let(:project) { repository.project }
-  let(:user) { project.owner }
+  let(:user) { project.first_owner }
 
   subject { described_class.new }
 

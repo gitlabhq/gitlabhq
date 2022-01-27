@@ -31,7 +31,7 @@ RSpec.describe TriggerVariableEntity do
     end
 
     context 'when user is owner' do
-      let(:user) { project.owner }
+      let(:user) { project.first_owner }
 
       it 'exposes the variable value' do
         expect(subject).to include(:value)

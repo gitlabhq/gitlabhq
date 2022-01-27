@@ -7,7 +7,7 @@ RSpec.describe Ci::Lint::ResultSerializer, :aggregate_failures do
 
   let(:result) do
     Gitlab::Ci::Lint
-      .new(project: project, current_user: project.owner)
+      .new(project: project, current_user: project.first_owner)
       .validate(yaml_content, dry_run: false)
   end
 
@@ -64,7 +64,7 @@ RSpec.describe Ci::Lint::ResultSerializer, :aggregate_failures do
     context 'when dry run is enabled' do
       let(:result) do
         Gitlab::Ci::Lint
-          .new(project: project, current_user: project.owner)
+          .new(project: project, current_user: project.first_owner)
           .validate(yaml_content, dry_run: true)
       end
 

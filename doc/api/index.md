@@ -31,7 +31,9 @@ GitLab provides an [SCIM API](scim.md) that both implements
 
 ## GraphQL API
 
-A [GraphQL API](graphql/index.md) is available in GitLab.
+A GraphQL API is available in GitLab.
+For a list of the available resources and their endpoints, see
+[GraphQL API resources](graphql/reference/index.md).
 
 With GraphQL, you can make an API request for only what you need,
 and it's versioned by default.

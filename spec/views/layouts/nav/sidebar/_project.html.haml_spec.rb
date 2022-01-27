@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe 'layouts/nav/sidebar/_project' do
   let_it_be_with_reload(:project) { create(:project, :repository) }
 
-  let(:user) { project.owner }
+  let(:user) { project.first_owner }
   let(:current_ref) { 'master' }
 
   before do

@@ -11,7 +11,7 @@ RSpec.describe BuildDetailsEntity do
 
   describe '#as_json' do
     let(:project) { create(:project, :repository) }
-    let(:user) { project.owner }
+    let(:user) { project.first_owner }
     let(:pipeline) { create(:ci_pipeline, project: project) }
     let(:build) { create(:ci_build, :failed, pipeline: pipeline) }
     let(:request) { double('request', project: project) }

@@ -40,7 +40,7 @@
 = render_if_exists 'projects/merge_request_approvals_settings', expanded: expanded
 
 
-%section.settings.no-animate{ class: ('expanded' if expanded) }
+%section.settings.no-animate{ class: ('expanded' if expanded), data: { qa_selector: 'badges_settings_content' } }
   .settings-header
     %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
       = s_('ProjectSettings|Badges')

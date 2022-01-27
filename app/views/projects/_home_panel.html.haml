@@ -71,11 +71,13 @@
     = render_if_exists "projects/home_mirror"
 
   - if @project.badges.present?
-    .project-badges.mb-2
+    .project-badges.mb-2{ data: { qa_selector: 'project_badges_content' } }
       - @project.badges.each do |badge|
-        %a.gl-mr-3{ href: badge.rendered_link_url(@project),
+        - badge_link_url = badge.rendered_link_url(@project)
+        %a.gl-mr-3{ href: badge_link_url,
           target: '_blank',
-          rel: 'noopener noreferrer' }>
+          rel: 'noopener noreferrer',
+          data: { qa_selector: 'badge_image_link', qa_link_url: badge_link_url } }>
           %img.project-badge{ src: badge.rendered_image_url(@project),
             'aria-hidden': true,
             alt: 'Project badge' }>

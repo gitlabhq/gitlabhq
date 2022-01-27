@@ -39,6 +39,8 @@ module QA
           element :forked_from_link
           element :project_name_content
           element :project_id_content
+          element :project_badges_content
+          element :badge_image_link
         end
 
         view 'app/views/projects/_files.html.haml' do
@@ -177,6 +179,12 @@ module QA
         def wait_for_import
           wait_until(reload: true) do
             has_css?('.tree-holder')
+          end
+        end
+
+        def has_visible_badge_image_link?(link_url)
+          within_element(:project_badges_content) do
+            has_element?(:badge_image_link, link_url: link_url)
           end
         end
       end

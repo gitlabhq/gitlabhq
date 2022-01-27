@@ -34,8 +34,14 @@ export default {
       <span v-if="isGroupBadge">{{ s__('Badges|This group has no badges') }}</span>
       <span v-else>{{ s__('Badges|This project has no badges') }}</span>
     </div>
-    <div v-else class="card-body">
-      <badge-list-row v-for="badge in badges" :key="badge.id" :badge="badge" />
+    <div v-else class="card-body" data-qa-selector="badge_list_content">
+      <badge-list-row
+        v-for="badge in badges"
+        :key="badge.id"
+        :badge="badge"
+        data-qa-selector="badge_list_row"
+        :data-qa-badge-name="badge.name"
+      />
     </div>
   </div>
 </template>
