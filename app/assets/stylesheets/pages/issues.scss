@@ -249,7 +249,9 @@ ul.related-merge-requests > li gl-emoji {
   @include media-breakpoint-up(sm) {
     width: calc(100% - #{$gutter-collapsed-width});
   }
+}
 
+.limit-container-width {
   .issue-sticky-header-text {
     max-width: $limited-layout-width;
   }

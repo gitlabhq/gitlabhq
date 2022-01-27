@@ -312,6 +312,14 @@ Note the following:
   for these jobs. This ensures that runners can fetch the repository even after a feature branch is
   deleted. For more information, see [Ref Specs for Runners](../pipelines/index.md#ref-specs-for-runners).
 
+NOTE:
+For Windows runners, using `echo` to write to `.env` files may fail. Using the PowerShell `Add-Content`command 
+will help in such cases. For example:
+
+```powershell
+Add-Content -Path deploy.env -Value "DYNAMIC_ENVIRONMENT_URL=$DYNAMIC_ENVIRONMENT_URL"
+```
+
 ## Track newly included merge requests per deployment
 
 GitLab can track newly included merge requests per deployment.

@@ -59,7 +59,7 @@ RSpec.describe DesignManagement::DesignAtVersion do
     it 'rejects objects with the same id and the wrong class' do
       dav = build_stubbed(:design_at_version)
 
-      expect(dav).not_to eq(OpenStruct.new(id: dav.id))
+      expect(dav).not_to eq(double('id', id: dav.id))
     end
 
     it 'expects objects to be of the same type, not subtypes' do

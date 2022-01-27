@@ -704,9 +704,12 @@ deploystacks: [gcp, data]
 deploystacks: [vultr, data]
 ```
 
-In [GitLab 14.1 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/239737), you can
-use the variables defined in `parallel: matrix` with the [`tags`](../yaml/index.md#tags) keyword for
-dynamic runner selection.
+### Select different runner tags for each parallel matrix job
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/239737) in GitLab 14.1.
+
+You can use variables defined in `parallel: matrix` with the [`tags`](../yaml/index.md#tags)
+keyword for dynamic runner selection:
 
 ```yaml
 deploystacks:

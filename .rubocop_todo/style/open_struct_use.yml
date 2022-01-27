@@ -30,8 +30,6 @@ Style/OpenStructUse:
   - spec/lib/gitlab/gitaly_client/diff_stitcher_spec.rb
   - spec/lib/gitlab/legacy_github_import/project_creator_spec.rb
   - spec/lib/gitlab/quick_actions/command_definition_spec.rb
-  - spec/models/design_management/design_action_spec.rb
-  - spec/models/design_management/design_at_version_spec.rb
   - spec/services/projects/import_service_spec.rb
   - spec/services/system_note_service_spec.rb
   - spec/support/helpers/import_spec_helper.rb

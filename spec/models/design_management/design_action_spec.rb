@@ -46,7 +46,7 @@ RSpec.describe DesignManagement::DesignAction do
 
   describe '#gitaly_action' do
     let(:path) { 'some/path/somewhere' }
-    let(:design) { OpenStruct.new(full_path: path) }
+    let(:design) { double('path', full_path: path) }
 
     subject { described_class.new(design, action, content) }
 
@@ -75,7 +75,7 @@ RSpec.describe DesignManagement::DesignAction do
 
   describe '#issue_id' do
     let(:issue_id) { :foo }
-    let(:design) { OpenStruct.new(issue_id: issue_id) }
+    let(:design) { double('id', issue_id: issue_id) }
 
     subject { described_class.new(design, :delete) }
 

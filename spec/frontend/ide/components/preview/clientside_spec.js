@@ -121,7 +121,7 @@ describe('IDE clientside preview', () => {
 
     it('pings usage success', async () => {
       dispatchCodesandboxReady();
-      await wrapper.vm.$nextTick();
+      await nextTick();
       expect(storeClientsideActions.pingUsage).toHaveBeenCalledTimes(2);
       expect(storeClientsideActions.pingUsage).toHaveBeenCalledWith(
         expect.anything(),

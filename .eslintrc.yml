@@ -95,7 +95,8 @@ rules:
         order: ignore
 overrides:
   - files:
-      - '**/spec/**/*'
+    - 'ee/spec/frontend*/**/*'
+    - 'spec/frontend*/**/*'
     rules:
       '@gitlab/require-i18n-strings': off
       '@gitlab/no-runtime-template-compiler': off
@@ -103,6 +104,8 @@ overrides:
         - error
         - selector: CallExpression[callee.object.name=/(wrapper|vm)/][callee.property.name="setData"]
           message: 'Avoid using "setData" on VTU wrapper'
+        - selector: MemberExpression[object.type!='ThisExpression'][property.type='Identifier'][property.name='$nextTick']
+          message: 'Using $nextTick from a component instance is discouraged. Import nextTick directly from the Vue package.'
   - files:
       - 'config/**/*'
       - 'scripts/**/*'

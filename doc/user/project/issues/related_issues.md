@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > The simple "relates to" relationship [moved](https://gitlab.com/gitlab-org/gitlab/-/issues/212329) to [GitLab Free](https://about.gitlab.com/pricing/) in 13.4.
 
 Linked issues are a bi-directional relationship between any two issues and appear in a block below
-the issue description. Issues can be across groups and projects.
+the issue description. You can link issues in different projects.
 
 The relationship only shows up in the UI if the user can see both issues. When you try to close an
 issue that has open blockers, a warning is displayed.
@@ -23,9 +23,14 @@ To manage linked issues through our API, visit the [issue links API documentatio
 > - [Improved](https://gitlab.com/gitlab-org/gitlab/-/issues/34239) to warn when attempting to close an issue that is blocked by others in GitLab 13.0.
 >   When you try to close an issue with open blockers, you see a warning that you can dismiss.
 
-1. Link one issue to another by selecting the add linked issue button (**{plus}**) in the
-   **Linked issues** section of an issue.
+Prerequisites:
 
+- You must have at least the Reporter [role](../../permissions.md) for both projects.
+
+To link one issue to another:
+
+1. In the **Linked issues** section of an issue,
+   select the add linked issue button (**{plus}**).
 1. Select the relationship between the two issues. Either:
    - **relates to**
    - **blocks** **(PREMIUM)**

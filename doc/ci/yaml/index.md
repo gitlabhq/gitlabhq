@@ -2660,6 +2660,7 @@ deploystacks: [vultr, processing]
 
 - [Run a one-dimensional matrix of parallel jobs](../jobs/job_control.md#run-a-one-dimensional-matrix-of-parallel-jobs).
 - [Run a matrix of triggered parallel jobs](../jobs/job_control.md#run-a-matrix-of-parallel-trigger-jobs).
+- [Select different runner tags for each parallel matrix job](../jobs/job_control.md#select-different-runner-tags-for-each-parallel-matrix-job).
 
 ### `release`
 
@@ -3575,6 +3576,7 @@ In this example, only runners with *both* the `ruby` and `postgres` tags can run
 **Related topics**:
 
 - [Use tags to control which jobs a runner can run](../runners/configure_runners.md#use-tags-to-control-which-jobs-a-runner-can-run).
+- [Select different runner tags for each parallel matrix job](../jobs/job_control.md#select-different-runner-tags-for-each-parallel-matrix-job).
 
 ### `timeout`
 

@@ -15353,6 +15353,8 @@ CREATE TABLE issuable_metric_images (
     file_store smallint,
     file text NOT NULL,
     url text,
+    url_text text,
+    CONSTRAINT check_3bc6d47661 CHECK ((char_length(url_text) <= 128)),
     CONSTRAINT check_5b3011e234 CHECK ((char_length(url) <= 255)),
     CONSTRAINT check_7ed527062f CHECK ((char_length(file) <= 255))
 );
