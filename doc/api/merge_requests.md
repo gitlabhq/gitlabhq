@@ -1040,8 +1040,8 @@ It requires `.gitlab-ci.yml` to be configured with `only: [merge_requests]` to c
 The new pipeline can be:
 
 - A detached merge request pipeline.
-- A [pipeline for merged results](../ci/pipelines/pipelines_for_merged_results.md)
-  if the [project setting is enabled](../ci/pipelines/pipelines_for_merged_results.md#enable-pipelines-for-merged-results). **(PREMIUM)**
+- A [merged results pipeline](../ci/pipelines/merged_results_pipelines.md)
+  if the [project setting is enabled](../ci/pipelines/merged_results_pipelines.md#enable-merged-results-pipelines).
 
 ```plaintext
 POST /projects/:id/merge_requests/:merge_request_iid/pipelines

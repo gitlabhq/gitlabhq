@@ -81,12 +81,16 @@ module Gitlab
 
         return true if status == 0
 
+        output = output&.strip
+        message = "command exited with error code #{status}"
+        message += ": #{output}" if output.present?
+
         if @shared.respond_to?(:error)
-          @shared.error(Gitlab::ImportExport::Error.new(output.to_s))
+          @shared.error(Gitlab::ImportExport::Error.new(message))
 
           false
         else
-          raise Gitlab::ImportExport::Error, 'System call failed'
+          raise Gitlab::ImportExport::Error, message
         end
       end
       # rubocop:enable Gitlab/ModuleWithInstanceVariables

@@ -174,13 +174,23 @@ module QA
       end
 
       def start_all_nodes
-        start_node(@postgres)
+        start_postgres
         start_node(@primary_node)
         start_node(@secondary_node)
         start_node(@tertiary_node)
         start_node(@praefect)
 
         wait_for_health_check_all_nodes
+      end
+
+      def start_postgres
+        start_node(@postgres)
+
+        Support::Waiter.repeat_until(max_attempts: 60, sleep_interval: 1) do
+          shell(sql_to_docker_exec_cmd("SELECT 1 as healthy_database"), fail_on_exception: false) do |line|
+            break true if line.include?("healthy_database")
+          end
+        end
       end
 
       def verify_storage_move(source_storage, destination_storage, repo_type: :project)

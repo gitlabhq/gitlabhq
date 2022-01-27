@@ -79,11 +79,11 @@ draft merge requests:
 
 ## Pipelines for drafts
 
-When the [pipelines for merged results](../../../ci/pipelines/pipelines_for_merged_results.md)
+When the [merged results pipelines](../../../ci/pipelines/merged_results_pipelines.md)
 feature is enabled, draft merge requests run
 [merge request pipelines](../../../ci/pipelines/merge_request_pipelines.md) only.
 
-To run pipelines for merged results, you must
+To run merged results pipelines, you must
 [mark the merge request as ready](#mark-merge-requests-as-ready).
 
 <!-- ## Troubleshooting

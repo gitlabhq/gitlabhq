@@ -415,7 +415,7 @@ and the pipeline is for either:
 - You can use the [`workflow:rules` templates](workflow.md#workflowrules-templates) to import
   a preconfigured `workflow: rules` entry.
 - [Common `if` clauses for `workflow:rules`](workflow.md#common-if-clauses-for-workflowrules).
-- [Use `rules` to run pipelines for merge requests](../pipelines/merge_request_pipelines.md#use-rules-to-add-jobs).
+- [Use `rules` to run merge request pipelines](../pipelines/merge_request_pipelines.md#use-rules-to-add-jobs).
 
 #### `workflow:rules:variables`
 
@@ -2372,7 +2372,7 @@ pipeline based on branch names or pipeline types.
   | `chat`                   | For pipelines created by using a [GitLab ChatOps](../chatops/index.md) command. |
   | `external`               | When you use CI services other than GitLab. |
   | `external_pull_requests` | When an external pull request on GitHub is created or updated (See [Pipelines for external pull requests](../ci_cd_for_external_repos/index.md#pipelines-for-external-pull-requests)). |
-  | `merge_requests`         | For pipelines created when a merge request is created or updated. Enables [merge request pipelines](../pipelines/merge_request_pipelines.md), [merged results pipelines](../pipelines/pipelines_for_merged_results.md), and [merge trains](../pipelines/merge_trains.md). |
+  | `merge_requests`         | For pipelines created when a merge request is created or updated. Enables [merge request pipelines](../pipelines/merge_request_pipelines.md), [merged results pipelines](../pipelines/merged_results_pipelines.md), and [merge trains](../pipelines/merge_trains.md). |
   | `pipelines`              | For [multi-project pipelines](../pipelines/multi_project_pipelines.md) created by [using the API with `CI_JOB_TOKEN`](../pipelines/multi_project_pipelines.md#create-multi-project-pipelines-by-using-the-api), or the [`trigger`](#trigger) keyword. |
   | `pushes`                 | For pipelines triggered by a `git push` event, including for branches and tags. |
   | `schedules`              | For [scheduled pipelines](../pipelines/schedules.md). |
@@ -2471,7 +2471,7 @@ Use `changes` in pipelines with the following refs:
 
 - `branches`
 - `external_pull_requests`
-- `merge_requests` (see additional details about [using `only:changes` with pipelines for merge requests](../jobs/job_control.md#use-onlychanges-with-pipelines-for-merge-requests))
+- `merge_requests` (see additional details about [using `only:changes` with merge request pipelines](../jobs/job_control.md#use-onlychanges-with-merge-request-pipelines))
 
 **Keyword type**: Job keyword. You can use it only as part of a job.
 
@@ -2513,7 +2513,7 @@ docker build:
 
 - [`only: changes` and `except: changes` examples](../jobs/job_control.md#onlychanges--exceptchanges-examples).
 - If you use `changes` with [only allow merge requests to be merged if the pipeline succeeds](../../user/project/merge_requests/merge_when_pipeline_succeeds.md#only-allow-merge-requests-to-be-merged-if-the-pipeline-succeeds),
-  you should [also use `only:merge_requests`](../jobs/job_control.md#use-onlychanges-with-pipelines-for-merge-requests).
+  you should [also use `only:merge_requests`](../jobs/job_control.md#use-onlychanges-with-merge-request-pipelines).
 - [Jobs or pipelines can run unexpectedly when using `only: changes`](../jobs/job_control.md#jobs-or-pipelines-run-unexpectedly-when-using-changes).
 
 #### `only:kubernetes` / `except:kubernetes`
@@ -3085,7 +3085,7 @@ job:
 
 - [Common `if` expressions for `rules`](../jobs/job_control.md#common-if-clauses-for-rules).
 - [Avoid duplicate pipelines](../jobs/job_control.md#avoid-duplicate-pipelines).
-- [Use `rules` to run pipelines for merge requests](../pipelines/merge_request_pipelines.md#use-rules-to-add-jobs).
+- [Use `rules` to run merge request pipelines](../pipelines/merge_request_pipelines.md#use-rules-to-add-jobs).
 
 #### `rules:changes`
 

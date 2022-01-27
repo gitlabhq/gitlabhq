@@ -42,8 +42,8 @@ This template requires:
 - A project built in Rails that uses RSpec for testing.
 - CI/CD configured to:
   - Use a Docker image with Ruby available.
-  - Use [Pipelines for merge requests](../../../ci/pipelines/merge_request_pipelines.md#prerequisites)
-- [Pipelines for Merged Results](../../../ci/pipelines/pipelines_for_merged_results.md#enable-pipelines-for-merged-results)
+  - Use [Merge request pipelines](../../../ci/pipelines/merge_request_pipelines.md#prerequisites)
+- [Merged results pipelines](../../../ci/pipelines/merged_results_pipelines.md#enable-merged-results-pipelines)
   enabled in the project settings.
 - A Docker image with Ruby available. The template uses `image: ruby:2.6` by default, but you [can override](../../../ci/yaml/includes.md#override-included-configuration-values) this.
 

@@ -13,23 +13,25 @@ module QA
       # TODO, make it possible to use generic QA framework classes
       # as a library - gitlab-org/gitlab-qa#94
       #
-      def shell(command, stdin_data: nil)
+      def shell(command, stdin_data: nil, fail_on_exception: true)
         puts "Executing `#{command}`"
 
         Open3.popen2e(*command) do |stdin, out, wait|
           stdin.puts(stdin_data) if stdin_data
           stdin.close if stdin_data
+          cmd_output = ''
 
           if block_given?
             out.each do |line|
+              cmd_output += line
               yield line
             end
           end
 
           out.each_char { |char| print char }
 
-          if wait.value.exited? && wait.value.exitstatus.nonzero?
-            raise CommandError, "Command `#{command}` failed!"
+          if wait.value.exited? && wait.value.exitstatus.nonzero? && fail_on_exception
+            raise CommandError, "Command failed: #{command} \nCommand Output: #{cmd_output}"
           end
         end
       end

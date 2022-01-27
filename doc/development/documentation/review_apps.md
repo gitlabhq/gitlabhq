@@ -61,7 +61,7 @@ The following GitLab features are used among others:
 - [Review Apps](../../ci/review_apps/index.md)
 - [Artifacts](../../ci/yaml/index.md#artifacts)
 - [Specific runner](../../ci/runners/runners_scope.md#prevent-a-specific-runner-from-being-enabled-for-other-projects)
-- [Pipelines for merge requests](../../ci/pipelines/merge_request_pipelines.md)
+- [Merge request pipelines](../../ci/pipelines/merge_request_pipelines.md)
 
 ## Troubleshooting review apps
 

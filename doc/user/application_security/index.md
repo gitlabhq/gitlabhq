@@ -98,10 +98,10 @@ base address for Docker images. You can override this globally by setting the CI
 the container-scanning analyzer which uses
 `registry.gitlab.com/security-products/container-scanning` as its registry.
 
-### Use security scanning tools with Pipelines for Merge Requests
+### Use security scanning tools with merge request pipelines
 
 By default, the application security jobs are configured to run for branch pipelines only.
-To use them with [pipelines for merge requests](../../ci/pipelines/merge_request_pipelines.md),
+To use them with [merge request pipelines](../../ci/pipelines/merge_request_pipelines.md),
 you may need to override the default `rules:` configuration to add:
 
 ```yaml

@@ -248,9 +248,9 @@ This can be done:
 ### Using with merge request pipelines
 
 The configuration provided by the Code Quality template does not let the `code_quality` job
-run on [pipelines for merge requests](../../../ci/pipelines/merge_request_pipelines.md).
+run on [merge request pipelines](../../../ci/pipelines/merge_request_pipelines.md).
 
-If pipelines for merge requests is enabled, the `code_quality:rules` must be redefined.
+If merge request pipelines is enabled, the `code_quality:rules` must be redefined.
 
 The template has these [`rules`](../../../ci/yaml/index.md#rules) for the `code quality` job:
 

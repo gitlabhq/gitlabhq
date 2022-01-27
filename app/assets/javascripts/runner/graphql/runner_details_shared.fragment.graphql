@@ -18,4 +18,13 @@ fragment RunnerDetailsShared on CiRunner {
     updateRunner
     deleteRunner
   }
+  groups {
+    nodes {
+      id
+      avatarUrl
+      name
+      fullName
+      webUrl
+    }
+  }
 }

@@ -208,7 +208,7 @@
   "devDependencies": {
     "@babel/plugin-transform-modules-commonjs": "^7.10.1",
     "@gitlab/eslint-plugin": "10.0.0",
-    "@gitlab/stylelint-config": "2.6.0",
+    "@gitlab/stylelint-config": "3.0.0",
     "@graphql-eslint/eslint-plugin": "3.0.0",
     "@testing-library/dom": "^7.16.2",
     "@vue/test-utils": "1.3.0",
@@ -255,6 +255,7 @@
     "purgecss": "^4.0.3",
     "purgecss-from-html": "^4.0.3",
     "sass": "^1.32.12",
+    "stylelint": "13.9.0",
     "timezone-mock": "^1.0.8",
     "vue-jest": "4.0.1",
     "webpack-dev-server": "^3.11.3",

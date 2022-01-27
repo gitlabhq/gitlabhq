@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe RequireVerificationForNamespaceCreationExperiment, :experiment do
   subject(:experiment) { described_class.new(user: user) }
 
-  let_it_be(:user) { create(:user) }
+  let(:user) { create(:user, created_at: RequireVerificationForNamespaceCreationExperiment::EXPERIMENT_START_DATE + 1.hour) }
 
   describe '#candidate?' do
     context 'when experiment subject is candidate' do
@@ -53,6 +53,22 @@ RSpec.describe RequireVerificationForNamespaceCreationExperiment, :experiment do
 
         expect { experiment.record_conversion(namespace) }.to change { experiment_subject.reload.converted_at }.from(nil)
           .and change { experiment_subject.context }.to include('namespace_id' => namespace.id)
+      end
+    end
+  end
+
+  describe 'exclusions' do
+    context 'when user is new' do
+      it 'is not excluded' do
+        expect(subject).not_to exclude(user: user)
+      end
+    end
+
+    context 'when user is NOT new' do
+      let(:user) { create(:user, created_at: RequireVerificationForNamespaceCreationExperiment::EXPERIMENT_START_DATE - 1.day) }
+
+      it 'is excluded' do
+        expect(subject).to exclude(user: user)
       end
     end
   end

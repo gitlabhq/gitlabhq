@@ -214,7 +214,7 @@ or `git push --mirror` is used.
 
 This limit does not affect any of the updated merge request pipelines.
 All updated merge requests have a pipeline created when using
-[pipelines for merge requests](../ci/pipelines/merge_request_pipelines.md).
+[merge request pipelines](../ci/pipelines/merge_request_pipelines.md).
 
 ## Retention of activity history
 

@@ -7,10 +7,12 @@ import { ACCESS_LEVEL_REF_PROTECTED, ACCESS_LEVEL_NOT_PROTECTED } from '~/runner
 
 import RunnerDetails from '~/runner/components/runner_details.vue';
 import RunnerDetail from '~/runner/components/runner_detail.vue';
+import RunnerDetailGroups from '~/runner/components/runner_detail_groups.vue';
 
-import { runnerData } from '../mock_data';
+import { runnerData, runnerWithGroupData } from '../mock_data';
 
 const mockRunner = runnerData.data.runner;
+const mockGroupRunner = runnerWithGroupData.data.runner;
 
 describe('RunnerDetails', () => {
   let wrapper;
@@ -33,13 +35,12 @@ describe('RunnerDetails', () => {
     return ErrorWrapper(dtLabel);
   };
 
-  const createComponent = ({ runner = {}, mountFn = shallowMountExtended } = {}) => {
+  const findDetailGroups = () => wrapper.findComponent(RunnerDetailGroups);
+
+  const createComponent = ({ props = {}, mountFn = shallowMountExtended } = {}) => {
     wrapper = mountFn(RunnerDetails, {
       propsData: {
-        runner: {
-          ...mockRunner,
-          ...runner,
-        },
+        ...props,
       },
       stubs: {
         GlIntersperse,
@@ -52,6 +53,16 @@ describe('RunnerDetails', () => {
 
   afterEach(() => {
     wrapper.destroy();
+  });
+
+  it('when no runner is present, no contents are shown', () => {
+    createComponent({
+      props: {
+        runner: null,
+      },
+    });
+
+    expect(wrapper.text()).toBe('');
   });
 
   describe.each`
@@ -75,7 +86,12 @@ describe('RunnerDetails', () => {
   `('"$field" field', ({ field, runner, expectedValue }) => {
     beforeEach(() => {
       createComponent({
-        runner,
+        props: {
+          runner: {
+            ...mockRunner,
+            ...runner,
+          },
+        },
       });
     });
 
@@ -87,7 +103,9 @@ describe('RunnerDetails', () => {
   describe('"Tags" field', () => {
     it('displays expected value "tag-1 tag-2"', () => {
       createComponent({
-        runner: { tagList: ['tag-1', 'tag-2'] },
+        props: {
+          runner: { ...mockRunner, tagList: ['tag-1', 'tag-2'] },
+        },
         mountFn: mountExtended,
       });
 
@@ -96,11 +114,27 @@ describe('RunnerDetails', () => {
 
     it('displays "None" when runner has no tags', () => {
       createComponent({
-        runner: { tagList: [] },
+        props: {
+          runner: { ...mockRunner, tagList: [] },
+        },
         mountFn: mountExtended,
       });
 
       expect(findDd('Tags').text().replace(/\s+/g, ' ')).toBe('None');
+    });
+  });
+
+  describe('Group runners', () => {
+    beforeEach(() => {
+      createComponent({
+        props: {
+          runner: mockGroupRunner,
+        },
+      });
+    });
+
+    it('Shows a group runner details', () => {
+      expect(findDetailGroups().props('runner')).toEqual(mockGroupRunner);
     });
   });
 });

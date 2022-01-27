@@ -4374,9 +4374,6 @@ msgstr ""
 msgid "ApprovalRule|Add approvers"
 msgstr ""
 
-msgid "ApprovalRule|Add required approvers to improve your code review process"
-msgstr ""
-
 msgid "ApprovalRule|All scanners"
 msgstr ""
 
@@ -4407,9 +4404,6 @@ msgstr ""
 msgid "ApprovalRule|Approvers"
 msgstr ""
 
-msgid "ApprovalRule|Assign approvers by area of expertise."
-msgstr ""
-
 msgid "ApprovalRule|Confirmed"
 msgstr ""
 
@@ -4419,13 +4413,13 @@ msgstr ""
 msgid "ApprovalRule|Examples: QA, Security."
 msgstr ""
 
-msgid "ApprovalRule|Increase your organization’s code quality."
+msgid "ApprovalRule|Improve your organization's code review with required approvals."
 msgstr ""
 
-msgid "ApprovalRule|Learn more about merge request approval."
+msgid "ApprovalRule|Increase quality and maintain standards."
 msgstr ""
 
-msgid "ApprovalRule|Let GitLab designate eligible approvers based on the files changed."
+msgid "ApprovalRule|Learn more about merge request approval rules."
 msgstr ""
 
 msgid "ApprovalRule|Name"
@@ -4452,7 +4446,7 @@ msgstr ""
 msgid "ApprovalRule|Previously detected"
 msgstr ""
 
-msgid "ApprovalRule|Reduce the overall time to merge."
+msgid "ApprovalRule|Reduce your time to merge."
 msgstr ""
 
 msgid "ApprovalRule|Resolved"
@@ -4465,6 +4459,9 @@ msgid "ApprovalRule|Security scanners"
 msgstr ""
 
 msgid "ApprovalRule|Select All"
+msgstr ""
+
+msgid "ApprovalRule|Select eligible approvers by expertise or files changed."
 msgstr ""
 
 msgid "ApprovalRule|Select scanners"
@@ -4482,7 +4479,7 @@ msgstr ""
 msgid "ApprovalRule|Target branch"
 msgstr ""
 
-msgid "ApprovalRule|Try it for free"
+msgid "ApprovalRule|Try for free"
 msgstr ""
 
 msgid "ApprovalRule|Vulnerabilities allowed"
@@ -30753,6 +30750,9 @@ msgstr ""
 msgid "Runners|Architecture"
 msgstr ""
 
+msgid "Runners|Assigned Group"
+msgstr ""
+
 msgid "Runners|Associated with one or more projects"
 msgstr ""
 
@@ -33022,9 +33022,6 @@ msgid "Show comments on this file"
 msgstr ""
 
 msgid "Show comments only"
-msgstr ""
-
-msgid "Show commit description"
 msgstr ""
 
 msgid "Show complete raw log"

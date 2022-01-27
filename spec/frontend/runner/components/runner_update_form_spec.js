@@ -130,6 +130,7 @@ describe('RunnerUpdateForm', () => {
       editAdminUrl,
       contactedAt,
       userPermissions,
+      groups,
       version,
       ...submitted
     } = mockRunner;

@@ -137,6 +137,7 @@ describe('~/nav/components/top_nav_menu_item.vue', () => {
       expect(wrapper.classes()).toStrictEqual([
         'top-nav-menu-item',
         'gl-display-block',
+        'gl-pr-3!',
         ...expectedClasses,
       ]);
     });
