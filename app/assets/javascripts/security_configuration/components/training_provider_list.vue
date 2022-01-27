@@ -21,10 +21,18 @@ export default {
     GlLink,
     GlSkeletonLoader,
   },
-  inject: ['projectPath'],
+  inject: ['projectFullPath'],
   apollo: {
     securityTrainingProviders: {
       query: securityTrainingProvidersQuery,
+      variables() {
+        return {
+          fullPath: this.projectFullPath,
+        };
+      },
+      update({ project }) {
+        return project?.securityTrainingProviders;
+      },
       error() {
         this.errorMessage = this.$options.i18n.providerQueryErrorMessage;
       },
@@ -68,7 +76,7 @@ export default {
           variables: {
             input: {
               enabledProviders: enabledProviderIds,
-              fullPath: this.projectPath,
+              fullPath: this.projectFullPath,
             },
           },
         });

@@ -1,9 +1,12 @@
-query Query {
-  securityTrainingProviders @client {
-    name
+query getSecurityTrainingProviders($fullPath: ID!) {
+  project(fullPath: $fullPath) {
     id
-    description
-    isEnabled
-    url
+    securityTrainingProviders {
+      name
+      id
+      description
+      isEnabled
+      url
+    }
   }
 }

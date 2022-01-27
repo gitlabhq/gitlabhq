@@ -4,6 +4,7 @@ import { createAlert } from '~/flash';
 import { TYPE_CI_RUNNER } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import RunnerEditButton from '../components/runner_edit_button.vue';
+import RunnerPauseButton from '../components/runner_pause_button.vue';
 import RunnerHeader from '../components/runner_header.vue';
 import RunnerDetails from '../components/runner_details.vue';
 import { I18N_FETCH_ERROR } from '../constants';
@@ -14,6 +15,7 @@ export default {
   name: 'AdminRunnerShowApp',
   components: {
     RunnerEditButton,
+    RunnerPauseButton,
     RunnerHeader,
     RunnerDetails,
   },
@@ -66,6 +68,7 @@ export default {
     <runner-header v-if="runner" :runner="runner">
       <template #actions>
         <runner-edit-button v-if="canUpdate && runner.editAdminUrl" :href="runner.editAdminUrl" />
+        <runner-pause-button v-if="canUpdate" :runner="runner" />
       </template>
     </runner-header>
 

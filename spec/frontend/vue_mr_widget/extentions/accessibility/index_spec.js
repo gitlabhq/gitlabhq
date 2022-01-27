@@ -95,10 +95,11 @@ describe('Accessibility extension', () => {
 
       await waitForPromises();
 
-      findToggleCollapsedButton().vm.$emit('click');
+      findToggleCollapsedButton().trigger('click');
 
       await waitForPromises();
     });
+
     it('displays all report list items', async () => {
       expect(findAllExtensionListItems()).toHaveLength(10);
     });

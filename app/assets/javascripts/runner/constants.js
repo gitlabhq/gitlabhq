@@ -1,4 +1,4 @@
-import { s__ } from '~/locale';
+import { __, s__ } from '~/locale';
 
 export const RUNNER_PAGE_SIZE = 20;
 export const RUNNER_JOB_COUNT_LIMIT = 1000;
@@ -27,6 +27,10 @@ export const I18N_OFFLINE_RUNNER_TIMEAGO_DESCRIPTION = s__(
 export const I18N_STALE_RUNNER_DESCRIPTION = s__(
   'Runners|No contact from this runner in over 3 months',
 );
+
+// Active flag
+export const I18N_PAUSE = __('Pause');
+export const I18N_RESUME = __('Resume');
 
 export const I18N_LOCKED_RUNNER_DESCRIPTION = s__('Runners|You cannot assign to other projects');
 export const I18N_PAUSED_RUNNER_DESCRIPTION = s__('Runners|Not available to run jobs');

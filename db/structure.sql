@@ -29753,9 +29753,6 @@ ALTER TABLE ONLY ci_sources_pipelines
 ALTER TABLE ONLY packages_maven_metadata
     ADD CONSTRAINT fk_be88aed360 FOREIGN KEY (package_id) REFERENCES packages_packages(id) ON DELETE CASCADE;
 
-ALTER TABLE ONLY ci_builds
-    ADD CONSTRAINT fk_befce0568a FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
-
 ALTER TABLE ONLY design_management_versions
     ADD CONSTRAINT fk_c1440b4896 FOREIGN KEY (author_id) REFERENCES users(id) ON DELETE SET NULL;
 
@@ -30649,9 +30646,6 @@ ALTER TABLE ONLY resource_iteration_events
 
 ALTER TABLE ONLY geo_hashed_storage_migrated_events
     ADD CONSTRAINT fk_rails_687ed7d7c5 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY ci_job_token_project_scope_links
-    ADD CONSTRAINT fk_rails_6904b38465 FOREIGN KEY (target_project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY plan_limits
     ADD CONSTRAINT fk_rails_69f8b6184f FOREIGN KEY (plan_id) REFERENCES plans(id) ON DELETE CASCADE;

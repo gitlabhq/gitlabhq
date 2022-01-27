@@ -32,7 +32,7 @@ const upgradePath = '/upgrade';
 const autoDevopsHelpPagePath = '/autoDevopsHelpPagePath';
 const autoDevopsPath = '/autoDevopsPath';
 const gitlabCiHistoryPath = 'test/historyPath';
-const projectPath = 'namespace/project';
+const projectFullPath = 'namespace/project';
 
 useLocalStorageSpy();
 
@@ -54,7 +54,7 @@ describe('App component', () => {
           upgradePath,
           autoDevopsHelpPagePath,
           autoDevopsPath,
-          projectPath,
+          projectFullPath,
           glFeatures: {
             secureVulnerabilityTraining,
           },
@@ -274,11 +274,11 @@ describe('App component', () => {
 
   describe('Auto DevOps enabled alert', () => {
     describe.each`
-      context                                        | autoDevopsEnabled | localStorageValue | shouldRender
-      ${'enabled'}                                   | ${true}           | ${null}           | ${true}
-      ${'enabled, alert dismissed on other project'} | ${true}           | ${['foo/bar']}    | ${true}
-      ${'enabled, alert dismissed on this project'}  | ${true}           | ${[projectPath]}  | ${false}
-      ${'not enabled'}                               | ${false}          | ${null}           | ${false}
+      context                                        | autoDevopsEnabled | localStorageValue    | shouldRender
+      ${'enabled'}                                   | ${true}           | ${null}              | ${true}
+      ${'enabled, alert dismissed on other project'} | ${true}           | ${['foo/bar']}       | ${true}
+      ${'enabled, alert dismissed on this project'}  | ${true}           | ${[projectFullPath]} | ${false}
+      ${'not enabled'}                               | ${false}          | ${null}              | ${false}
     `('given Auto DevOps is $context', ({ autoDevopsEnabled, localStorageValue, shouldRender }) => {
       beforeEach(() => {
         if (localStorageValue !== null) {
@@ -302,11 +302,11 @@ describe('App component', () => {
 
     describe('dismissing', () => {
       describe.each`
-        dismissedProjects | expectedWrittenValue
-        ${null}           | ${[projectPath]}
-        ${[]}             | ${[projectPath]}
-        ${['foo/bar']}    | ${['foo/bar', projectPath]}
-        ${[projectPath]}  | ${[projectPath]}
+        dismissedProjects    | expectedWrittenValue
+        ${null}              | ${[projectFullPath]}
+        ${[]}                | ${[projectFullPath]}
+        ${['foo/bar']}       | ${['foo/bar', projectFullPath]}
+        ${[projectFullPath]} | ${[projectFullPath]}
       `(
         'given dismissed projects $dismissedProjects',
         ({ dismissedProjects, expectedWrittenValue }) => {

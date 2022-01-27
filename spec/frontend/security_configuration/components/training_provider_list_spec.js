@@ -4,11 +4,12 @@ import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import TrainingProviderList from '~/security_configuration/components/training_provider_list.vue';
+import securityTrainingProvidersQuery from '~/security_configuration/graphql/security_training_providers.query.graphql';
 import configureSecurityTrainingProvidersMutation from '~/security_configuration/graphql/configure_security_training_providers.mutation.graphql';
 import waitForPromises from 'helpers/wait_for_promises';
 import {
   securityTrainingProviders,
-  createMockResolvers,
+  securityTrainingProvidersResponse,
   testProjectPath,
   textProviderIds,
 } from '../mock_data';
@@ -19,14 +20,19 @@ describe('TrainingProviderList component', () => {
   let wrapper;
   let apolloProvider;
 
-  const createApolloProvider = ({ resolvers } = {}) => {
-    apolloProvider = createMockApollo([], createMockResolvers({ resolvers }));
+  const createApolloProvider = ({ resolvers, queryHandler } = {}) => {
+    const defaultQueryHandler = jest.fn().mockResolvedValue(securityTrainingProvidersResponse);
+
+    apolloProvider = createMockApollo(
+      [[securityTrainingProvidersQuery, queryHandler || defaultQueryHandler]],
+      resolvers,
+    );
   };
 
   const createComponent = () => {
     wrapper = shallowMount(TrainingProviderList, {
       provide: {
-        projectPath: testProjectPath,
+        projectFullPath: testProjectPath,
       },
       apolloProvider,
     });
@@ -49,20 +55,29 @@ describe('TrainingProviderList component', () => {
     apolloProvider = null;
   });
 
+  describe('when loading', () => {
+    beforeEach(() => {
+      const pendingHandler = () => new Promise(() => {});
+
+      createApolloProvider({
+        queryHandler: pendingHandler,
+      });
+      createComponent();
+    });
+
+    it('shows the loader', () => {
+      expect(findLoader().exists()).toBe(true);
+    });
+
+    it('does not show the cards', () => {
+      expect(findCards().exists()).toBe(false);
+    });
+  });
+
   describe('with a successful response', () => {
     beforeEach(() => {
       createApolloProvider();
       createComponent();
-    });
-
-    describe('when loading', () => {
-      it('shows the loader', () => {
-        expect(findLoader().exists()).toBe(true);
-      });
-
-      it('does not show the cards', () => {
-        expect(findCards().exists()).toBe(false);
-      });
     });
 
     describe('basic structure', () => {
@@ -142,11 +157,7 @@ describe('TrainingProviderList component', () => {
     describe('when fetching training providers', () => {
       beforeEach(async () => {
         createApolloProvider({
-          resolvers: {
-            Query: {
-              securityTrainingProviders: jest.fn().mockReturnValue(new Error()),
-            },
-          },
+          queryHandler: jest.fn().mockReturnValue(new Error()),
         });
         createComponent();
 

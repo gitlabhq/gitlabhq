@@ -32,8 +32,12 @@ module AutoDevops
 
     def email_receivers_for(pipeline, project)
       recipients = [pipeline.user&.email]
-      recipients << project.owner.email unless project.group
-      recipients.uniq.compact
+
+      if project.personal?
+        recipients << project.owners.map(&:email)
+      end
+
+      recipients.flatten.uniq.compact
     end
   end
 end

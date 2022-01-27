@@ -3,7 +3,7 @@
 class CreatePostgresAsyncIndexesTable < ActiveRecord::Migration[6.1]
   include Gitlab::Database::MigrationHelpers
 
-  def change
+  def up
     create_table_with_constraints :postgres_async_indexes do |t|
       t.timestamps_with_timezone null: false
 
@@ -16,6 +16,12 @@ class CreatePostgresAsyncIndexesTable < ActiveRecord::Migration[6.1]
       t.text_limit :table_name, 63
 
       t.index :name, unique: true
+    end
+  end
+
+  def down
+    with_lock_retries do
+      drop_table :postgres_async_indexes
     end
   end
 end

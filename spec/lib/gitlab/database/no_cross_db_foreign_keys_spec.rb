@@ -12,13 +12,11 @@ RSpec.describe 'cross-database foreign keys' do
   let(:allowed_cross_database_foreign_keys) do
     %w(
       ci_build_report_results.project_id
-      ci_builds.project_id
       ci_daily_build_group_report_results.group_id
       ci_daily_build_group_report_results.project_id
       ci_freeze_periods.project_id
       ci_job_artifacts.project_id
       ci_job_token_project_scope_links.added_by_id
-      ci_job_token_project_scope_links.target_project_id
       ci_pending_builds.namespace_id
       ci_pending_builds.project_id
       ci_pipeline_schedules.owner_id

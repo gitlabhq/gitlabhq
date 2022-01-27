@@ -19,7 +19,7 @@ export const initSecurityConfiguration = (el) => {
   });
 
   const {
-    projectPath,
+    projectFullPath,
     upgradePath,
     features,
     latestPipelinePath,
@@ -38,7 +38,7 @@ export const initSecurityConfiguration = (el) => {
     el,
     apolloProvider,
     provide: {
-      projectPath,
+      projectFullPath,
       upgradePath,
       autoDevopsHelpPagePath,
       autoDevopsPath,

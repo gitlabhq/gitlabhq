@@ -26,7 +26,7 @@ RSpec.describe AutoDevops::DisableWorker, '#perform' do
     let(:namespace) { create(:namespace, owner: owner) }
     let(:project) { create(:project, :repository, :auto_devops, namespace: namespace) }
 
-    it 'sends an email to pipeline user and project owner' do
+    it 'sends an email to pipeline user and project owner(s)' do
       expect(NotificationService).to receive_message_chain(:new, :autodevops_disabled).with(pipeline, [user.email, owner.email])
 
       subject.perform(pipeline.id)

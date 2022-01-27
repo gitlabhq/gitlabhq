@@ -19,7 +19,6 @@ Database/MultipleDatabases:
   - lib/gitlab/database/migrations/observers/query_log.rb
   - lib/gitlab/database/partitioning_migration_helpers/backfill_partitioned_table.rb
   - lib/gitlab/database.rb
-  - lib/gitlab/database/with_lock_retries.rb
   - lib/gitlab/gitlab_import/importer.rb
   - lib/gitlab/health_checks/db_check.rb
   - lib/gitlab/import_export/base/relation_factory.rb

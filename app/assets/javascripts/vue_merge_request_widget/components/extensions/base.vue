@@ -128,10 +128,12 @@ export default {
         api.trackRedisHllUserEvent(this.$options.expandEvent);
       }
     }),
-    toggleCollapsed() {
-      this.isCollapsed = !this.isCollapsed;
+    toggleCollapsed(e) {
+      if (!e?.target?.closest('.btn:not(.btn-icon),a')) {
+        this.isCollapsed = !this.isCollapsed;
 
-      this.triggerRedisTracking();
+        this.triggerRedisTracking();
+      }
     },
     initExtensionPolling() {
       const poll = new Poll({
@@ -207,6 +209,19 @@ export default {
         this.showFade = true;
       }
     },
+    onRowMouseDown() {
+      this.down = Number(new Date());
+    },
+    onRowMouseUp(e) {
+      const up = Number(new Date());
+
+      // To allow for text to be selected we check if the the user is clicking
+      // or selecting, if they are selecting the time difference should be
+      // more than 200ms
+      if (up - this.down < 200) {
+        this.toggleCollapsed(e);
+      }
+    },
     generateText,
   },
   EXTENSION_ICON_CLASS,
@@ -215,7 +230,7 @@ export default {
 
 <template>
   <section class="media-section" data-testid="widget-extension">
-    <div class="media gl-p-5">
+    <div class="media gl-p-5 gl-cursor-pointer" @mousedown="onRowMouseDown" @mouseup="onRowMouseUp">
       <status-icon
         :name="$options.label || $options.name"
         :is-loading="isLoadingSummary"
@@ -253,7 +268,7 @@ export default {
             category="tertiary"
             data-testid="toggle-button"
             size="small"
-            @click="toggleCollapsed"
+            @click.self="toggleCollapsed"
           />
         </div>
       </div>

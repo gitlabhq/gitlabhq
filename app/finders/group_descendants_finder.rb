@@ -110,8 +110,13 @@ class GroupDescendantsFinder
   # rubocop: disable CodeReuse/ActiveRecord
   def ancestors_of_groups(base_for_ancestors)
     group_ids = base_for_ancestors.except(:select, :sort).select(:id)
-    Gitlab::ObjectHierarchy.new(Group.where(id: group_ids))
-      .base_and_ancestors(upto: parent_group.id)
+    groups = Group.where(id: group_ids)
+
+    if Feature.enabled?(:linear_group_descendants_finder_upto, current_user, default_enabled: :yaml)
+      groups.self_and_ancestors(upto: parent_group.id)
+    else
+      Gitlab::ObjectHierarchy.new(groups).base_and_ancestors(upto: parent_group.id)
+    end
   end
   # rubocop: enable CodeReuse/ActiveRecord
 

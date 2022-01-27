@@ -165,8 +165,8 @@ RSpec.describe GroupDescendantsFinder do
   end
 
   context 'with nested groups' do
-    let!(:project) { create(:project, namespace: group) }
-    let!(:subgroup) { create(:group, :private, parent: group) }
+    let_it_be(:project) { create(:project, namespace: group) }
+    let_it_be_with_reload(:subgroup) { create(:group, :private, parent: group) }
 
     describe '#execute' do
       it 'contains projects and subgroups' do
@@ -208,57 +208,69 @@ RSpec.describe GroupDescendantsFinder do
       context 'with a filter' do
         let(:params) { { filter: 'test' } }
 
-        it 'contains only matching projects and subgroups' do
-          matching_project = create(:project, namespace: group, name: 'Testproject')
-          matching_subgroup = create(:group, name: 'testgroup', parent: group)
+        shared_examples 'filter examples' do
+          it 'contains only matching projects and subgroups' do
+            matching_project = create(:project, namespace: group, name: 'Testproject')
+            matching_subgroup = create(:group, name: 'testgroup', parent: group)
 
-          expect(finder.execute).to contain_exactly(matching_subgroup, matching_project)
-        end
-
-        it 'does not include subgroups the user does not have access to' do
-          _invisible_subgroup = create(:group, :private, parent: group, name: 'test1')
-          other_subgroup = create(:group, :private, parent: group, name: 'test2')
-          public_subgroup = create(:group, :public, parent: group, name: 'test3')
-          other_subsubgroup = create(:group, :private, parent: other_subgroup, name: 'test4')
-          other_user = create(:user)
-          other_subgroup.add_developer(other_user)
-
-          finder = described_class.new(current_user: other_user,
-                                      parent_group: group,
-                                      params: params)
-
-          expect(finder.execute).to contain_exactly(other_subgroup, public_subgroup, other_subsubgroup)
-        end
-
-        context 'with matching children' do
-          it 'includes a group that has a subgroup matching the query and its parent' do
-            matching_subgroup = create(:group, :private, name: 'testgroup', parent: subgroup)
-
-            expect(finder.execute).to contain_exactly(subgroup, matching_subgroup)
+            expect(finder.execute).to contain_exactly(matching_subgroup, matching_project)
           end
 
-          it 'includes the parent of a matching project' do
-            matching_project = create(:project, namespace: subgroup, name: 'Testproject')
+          it 'does not include subgroups the user does not have access to' do
+            _invisible_subgroup = create(:group, :private, parent: group, name: 'test1')
+            other_subgroup = create(:group, :private, parent: group, name: 'test2')
+            public_subgroup = create(:group, :public, parent: group, name: 'test3')
+            other_subsubgroup = create(:group, :private, parent: other_subgroup, name: 'test4')
+            other_user = create(:user)
+            other_subgroup.add_developer(other_user)
 
-            expect(finder.execute).to contain_exactly(subgroup, matching_project)
+            finder = described_class.new(current_user: other_user,
+                                        parent_group: group,
+                                        params: params)
+
+            expect(finder.execute).to contain_exactly(other_subgroup, public_subgroup, other_subsubgroup)
           end
 
-          context 'with a small page size' do
-            let(:params) { { filter: 'test', per_page: 1 } }
+          context 'with matching children' do
+            it 'includes a group that has a subgroup matching the query and its parent' do
+              matching_subgroup = create(:group, :private, name: 'testgroup', parent: subgroup)
 
-            it 'contains all the ancestors of a matching subgroup regardless the page size' do
-              subgroup = create(:group, :private, parent: group)
-              matching = create(:group, :private, name: 'testgroup', parent: subgroup)
+              expect(finder.execute).to contain_exactly(subgroup, matching_subgroup)
+            end
 
-              expect(finder.execute).to contain_exactly(subgroup, matching)
+            it 'includes the parent of a matching project' do
+              matching_project = create(:project, namespace: subgroup, name: 'Testproject')
+
+              expect(finder.execute).to contain_exactly(subgroup, matching_project)
+            end
+
+            context 'with a small page size' do
+              let(:params) { { filter: 'test', per_page: 1 } }
+
+              it 'contains all the ancestors of a matching subgroup regardless the page size' do
+                subgroup = create(:group, :private, parent: group)
+                matching = create(:group, :private, name: 'testgroup', parent: subgroup)
+
+                expect(finder.execute).to contain_exactly(subgroup, matching)
+              end
+            end
+
+            it 'does not include the parent itself' do
+              group.update!(name: 'test')
+
+              expect(finder.execute).not_to include(group)
             end
           end
+        end
 
-          it 'does not include the parent itself' do
-            group.update!(name: 'test')
+        it_behaves_like 'filter examples'
 
-            expect(finder.execute).not_to include(group)
+        context 'when feature flag :linear_group_descendants_finder_upto is disabled' do
+          before do
+            stub_feature_flags(linear_group_descendants_finder_upto: false)
           end
+
+          it_behaves_like 'filter examples'
         end
       end
     end

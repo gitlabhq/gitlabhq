@@ -53,6 +53,10 @@ RSpec.shared_examples 'export worker' do
       it 'does not raise an exception when strategy is invalid' do
         expect(::Projects::ImportExport::ExportService).not_to receive(:new)
 
+        expect_next_instance_of(ProjectExportJob) do |job|
+          expect(job).to receive(:finish)
+        end
+
         expect { subject.perform(user.id, project.id, { 'klass' => 'Whatever' }) }.not_to raise_error
       end
 
@@ -62,6 +66,18 @@ RSpec.shared_examples 'export worker' do
 
       it 'does not raise error when user cannot be found' do
         expect { subject.perform(non_existing_record_id, project.id, {}) }.not_to raise_error
+      end
+
+      it 'fails the export job status' do
+        expect_next_instance_of(::Projects::ImportExport::ExportService) do |service|
+          expect(service).to receive(:execute).and_raise(Gitlab::ImportExport::Error)
+        end
+
+        expect_next_instance_of(ProjectExportJob) do |job|
+          expect(job).to receive(:fail_op)
+        end
+
+        expect { subject.perform(user.id, project.id, {}) }.to raise_error(Gitlab::ImportExport::Error)
       end
     end
   end

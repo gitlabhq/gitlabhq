@@ -25,9 +25,9 @@ export default {
         n__(
           'ciReport|Load performance test metrics detected %{strong_start}%{changesFound}%{strong_end} change',
           'ciReport|Load performance test metrics detected %{strong_start}%{changesFound}%{strong_end} changes',
-          changesFound,
+          count,
         ),
-        { changesFound },
+        { changesFound: count },
       );
     },
     // Status icon to be used next to the summary text

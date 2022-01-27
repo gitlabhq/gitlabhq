@@ -1,16 +1,14 @@
 <script>
 import { GlButton, GlButtonGroup, GlModalDirective, GlTooltipDirective } from '@gitlab/ui';
 import { createAlert } from '~/flash';
-import { __, s__, sprintf } from '~/locale';
+import { s__, sprintf } from '~/locale';
 import runnerDeleteMutation from '~/runner/graphql/runner_delete.mutation.graphql';
-import runnerActionsUpdateMutation from '~/runner/graphql/runner_actions_update.mutation.graphql';
 import { captureException } from '~/runner/sentry_utils';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import RunnerEditButton from '../runner_edit_button.vue';
+import RunnerPauseButton from '../runner_pause_button.vue';
 import RunnerDeleteModal from '../runner_delete_modal.vue';
 
-const I18N_PAUSE = __('Pause');
-const I18N_RESUME = __('Resume');
 const I18N_DELETE = s__('Runners|Delete runner');
 const I18N_DELETED_TOAST = s__('Runners|Runner %{name} was deleted');
 
@@ -20,6 +18,7 @@ export default {
     GlButton,
     GlButtonGroup,
     RunnerEditButton,
+    RunnerPauseButton,
     RunnerDeleteModal,
   },
   directives: {
@@ -39,20 +38,6 @@ export default {
     };
   },
   computed: {
-    isActive() {
-      return this.runner.active;
-    },
-    toggleActiveIcon() {
-      return this.isActive ? 'pause' : 'play';
-    },
-    toggleActiveTitle() {
-      if (this.updating) {
-        // Prevent a "sticky" tooltip: If this button is disabled,
-        // mouseout listeners don't run leaving the tooltip stuck
-        return '';
-      }
-      return this.isActive ? I18N_PAUSE : I18N_RESUME;
-    },
     deleteTitle() {
       if (this.deleting) {
         // Prevent a "sticky" tooltip: If this button is disabled,
@@ -78,35 +63,6 @@ export default {
     },
   },
   methods: {
-    async onToggleActive() {
-      this.updating = true;
-      try {
-        const toggledActive = !this.runner.active;
-
-        const {
-          data: {
-            runnerUpdate: { errors },
-          },
-        } = await this.$apollo.mutate({
-          mutation: runnerActionsUpdateMutation,
-          variables: {
-            input: {
-              id: this.runner.id,
-              active: toggledActive,
-            },
-          },
-        });
-
-        if (errors && errors.length) {
-          throw new Error(errors.join(' '));
-        }
-      } catch (e) {
-        this.onError(e);
-      } finally {
-        this.updating = false;
-      }
-    },
-
     async onDelete() {
       // Deleting stays "true" until this row is removed,
       // should only change back if the operation fails.
@@ -162,15 +118,7 @@ export default {
       See https://gitlab.com/gitlab-org/gitlab/-/issues/334802
     -->
     <runner-edit-button v-if="canUpdate && runner.editAdminUrl" :href="runner.editAdminUrl" />
-    <gl-button
-      v-if="canUpdate"
-      v-gl-tooltip.hover.viewport="toggleActiveTitle"
-      :aria-label="toggleActiveTitle"
-      :icon="toggleActiveIcon"
-      :loading="updating"
-      data-testid="toggle-active-runner"
-      @click="onToggleActive"
-    />
+    <runner-pause-button v-if="canUpdate" :runner="runner" :compact="true" />
     <gl-button
       v-if="canDelete"
       v-gl-tooltip.hover.viewport="deleteTitle"

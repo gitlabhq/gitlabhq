@@ -1,0 +1,239 @@
+import Vue from 'vue';
+import { GlButton } from '@gitlab/ui';
+import VueApollo from 'vue-apollo';
+import createMockApollo from 'helpers/mock_apollo_helper';
+import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
+import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_helper';
+import runnerToggleActiveMutation from '~/runner/graphql/runner_toggle_active.mutation.graphql';
+import waitForPromises from 'helpers/wait_for_promises';
+import { captureException } from '~/runner/sentry_utils';
+import { createAlert } from '~/flash';
+
+import RunnerPauseButton from '~/runner/components/runner_pause_button.vue';
+import { runnersData } from '../mock_data';
+
+const mockRunner = runnersData.data.runners.nodes[0];
+
+Vue.use(VueApollo);
+
+jest.mock('~/flash');
+jest.mock('~/runner/sentry_utils');
+
+describe('RunnerPauseButton', () => {
+  let wrapper;
+  let runnerToggleActiveHandler;
+
+  const getTooltip = () => getBinding(wrapper.element, 'gl-tooltip').value;
+  const findBtn = () => wrapper.findComponent(GlButton);
+
+  const createComponent = ({ props = {}, mountFn = shallowMountExtended } = {}) => {
+    const { runner, ...propsData } = props;
+
+    wrapper = mountFn(RunnerPauseButton, {
+      propsData: {
+        runner: {
+          id: mockRunner.id,
+          active: mockRunner.active,
+          ...runner,
+        },
+        ...propsData,
+      },
+      apolloProvider: createMockApollo([[runnerToggleActiveMutation, runnerToggleActiveHandler]]),
+      directives: {
+        GlTooltip: createMockDirective(),
+      },
+    });
+  };
+
+  const clickAndWait = async () => {
+    findBtn().vm.$emit('click');
+    await waitForPromises();
+  };
+
+  beforeEach(() => {
+    runnerToggleActiveHandler = jest.fn().mockImplementation(({ input }) => {
+      return Promise.resolve({
+        data: {
+          runnerUpdate: {
+            runner: {
+              id: input.id,
+              active: input.active,
+            },
+            errors: [],
+          },
+        },
+      });
+    });
+
+    createComponent();
+  });
+
+  afterEach(() => {
+    wrapper.destroy();
+  });
+
+  describe('Pause/Resume action', () => {
+    describe.each`
+      runnerState | icon       | content     | isActive | newActiveValue
+      ${'paused'} | ${'play'}  | ${'Resume'} | ${false} | ${true}
+      ${'active'} | ${'pause'} | ${'Pause'}  | ${true}  | ${false}
+    `('When the runner is $runnerState', ({ icon, content, isActive, newActiveValue }) => {
+      beforeEach(() => {
+        createComponent({
+          props: {
+            runner: {
+              active: isActive,
+            },
+          },
+        });
+      });
+
+      it(`Displays a ${icon} button`, () => {
+        expect(findBtn().props('loading')).toBe(false);
+        expect(findBtn().props('icon')).toBe(icon);
+        expect(findBtn().text()).toBe(content);
+      });
+
+      it('Does not display redundant text for screen readers', () => {
+        expect(findBtn().attributes('aria-label')).toBe(undefined);
+      });
+
+      describe(`Before the ${icon} button is clicked`, () => {
+        it('The mutation has not been called', () => {
+          expect(runnerToggleActiveHandler).toHaveBeenCalledTimes(0);
+        });
+      });
+
+      describe(`Immediately after the ${icon} button is clicked`, () => {
+        beforeEach(async () => {
+          findBtn().vm.$emit('click');
+        });
+
+        it('The button has a loading state', async () => {
+          expect(findBtn().props('loading')).toBe(true);
+        });
+
+        it('The stale tooltip is removed', async () => {
+          expect(getTooltip()).toBe('');
+        });
+      });
+
+      describe(`After clicking on the ${icon} button`, () => {
+        beforeEach(async () => {
+          await clickAndWait();
+        });
+
+        it(`The mutation to that sets active to ${newActiveValue} is called`, async () => {
+          expect(runnerToggleActiveHandler).toHaveBeenCalledTimes(1);
+          expect(runnerToggleActiveHandler).toHaveBeenCalledWith({
+            input: {
+              id: mockRunner.id,
+              active: newActiveValue,
+            },
+          });
+        });
+
+        it('The button does not have a loading state', () => {
+          expect(findBtn().props('loading')).toBe(false);
+        });
+      });
+
+      describe('When update fails', () => {
+        describe('On a network error', () => {
+          const mockErrorMsg = 'Update error!';
+
+          beforeEach(async () => {
+            runnerToggleActiveHandler.mockRejectedValueOnce(new Error(mockErrorMsg));
+
+            await clickAndWait();
+          });
+
+          it('error is reported to sentry', () => {
+            expect(captureException).toHaveBeenCalledWith({
+              error: new Error(`Network error: ${mockErrorMsg}`),
+              component: 'RunnerPauseButton',
+            });
+          });
+
+          it('error is shown to the user', () => {
+            expect(createAlert).toHaveBeenCalledTimes(1);
+          });
+        });
+
+        describe('On a validation error', () => {
+          const mockErrorMsg = 'Runner not found!';
+          const mockErrorMsg2 = 'User not allowed!';
+
+          beforeEach(async () => {
+            runnerToggleActiveHandler.mockResolvedValueOnce({
+              data: {
+                runnerUpdate: {
+                  runner: {
+                    id: mockRunner.id,
+                    active: isActive,
+                  },
+                  errors: [mockErrorMsg, mockErrorMsg2],
+                },
+              },
+            });
+
+            await clickAndWait();
+          });
+
+          it('error is reported to sentry', () => {
+            expect(captureException).toHaveBeenCalledWith({
+              error: new Error(`${mockErrorMsg} ${mockErrorMsg2}`),
+              component: 'RunnerPauseButton',
+            });
+          });
+
+          it('error is shown to the user', () => {
+            expect(createAlert).toHaveBeenCalledTimes(1);
+          });
+        });
+      });
+    });
+  });
+
+  describe('When displaying a compact button for an active runner', () => {
+    beforeEach(() => {
+      createComponent({
+        props: {
+          runner: {
+            active: true,
+          },
+          compact: true,
+        },
+        mountFn: mountExtended,
+      });
+    });
+
+    it('Displays no text', () => {
+      expect(findBtn().text()).toBe('');
+
+      // Note: Use <template v-if> to ensure rendering a
+      // text-less button. Ensure we don't send even empty an
+      // content slot to prevent a distorted/rectangular button.
+      expect(wrapper.find('.gl-button-text').exists()).toBe(false);
+    });
+
+    it('Display correctly for screen readers', () => {
+      expect(findBtn().attributes('aria-label')).toBe('Pause');
+      expect(getTooltip()).toBe('Pause');
+    });
+
+    describe('Immediately after the button is clicked', () => {
+      beforeEach(async () => {
+        findBtn().vm.$emit('click');
+      });
+
+      it('The button has a loading state', async () => {
+        expect(findBtn().props('loading')).toBe(true);
+      });
+
+      it('The stale tooltip is removed', async () => {
+        expect(getTooltip()).toBe('');
+      });
+    });
+  });
+});

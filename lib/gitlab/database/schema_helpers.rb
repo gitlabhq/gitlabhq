@@ -73,6 +73,7 @@ module Gitlab
 
       def with_lock_retries(&block)
         Gitlab::Database::WithLockRetries.new(
+          connection: connection,
           klass: self.class,
           logger: Gitlab::BackgroundMigration::Logger
         ).run(&block)

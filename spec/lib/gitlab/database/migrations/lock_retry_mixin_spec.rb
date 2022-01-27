@@ -3,7 +3,8 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::Database::Migrations::LockRetryMixin do
   describe Gitlab::Database::Migrations::LockRetryMixin::ActiveRecordMigrationProxyLockRetries do
-    let(:migration) { double }
+    let(:connection) { ActiveRecord::Base.connection }
+    let(:migration) { double(connection: connection) }
     let(:return_value) { double }
     let(:class_def) do
       Class.new do
@@ -34,6 +35,18 @@ RSpec.describe Gitlab::Database::Migrations::LockRetryMixin do
 
       it 'retrieves actual migration class from #migration' do
         expect(migration).to receive(:class).and_return(return_value)
+
+        result = subject
+
+        expect(result).to eq(return_value)
+      end
+    end
+
+    describe '#migration_connection' do
+      subject { class_def.new(migration).migration_connection }
+
+      it 'retrieves actual migration connection from #migration' do
+        expect(migration).to receive(:connection).and_return(return_value)
 
         result = subject
 
@@ -96,7 +109,8 @@ RSpec.describe Gitlab::Database::Migrations::LockRetryMixin do
 
     context 'with transactions enabled and lock retries enabled' do
       let(:receiver) { double('receiver', use_transaction?: true)}
-      let(:migration) { double('migration', enable_lock_retries?: true) }
+      let(:migration) { double('migration', migration_connection: connection, enable_lock_retries?: true) }
+      let(:connection) { ActiveRecord::Base.connection }
 
       it 'calls super method' do
         p = proc { }

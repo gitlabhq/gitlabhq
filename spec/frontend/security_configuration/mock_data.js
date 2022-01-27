@@ -21,19 +21,9 @@ export const securityTrainingProviders = [
 
 export const securityTrainingProvidersResponse = {
   data: {
-    securityTrainingProviders,
-  },
-};
-
-const defaultMockResolvers = {
-  Query: {
-    securityTrainingProviders() {
-      return securityTrainingProviders;
+    project: {
+      id: 1,
+      securityTrainingProviders,
     },
   },
 };
-
-export const createMockResolvers = ({ resolvers: customMockResolvers = {} } = {}) => ({
-  ...defaultMockResolvers,
-  ...customMockResolvers,
-});

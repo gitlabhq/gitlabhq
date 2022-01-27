@@ -429,6 +429,7 @@ module Gitlab
       def with_lock_retries(*args, **kwargs, &block)
         raise_on_exhaustion = !!kwargs.delete(:raise_on_exhaustion)
         merged_args = {
+          connection: connection,
           klass: self.class,
           logger: Gitlab::BackgroundMigration::Logger,
           allow_savepoints: true

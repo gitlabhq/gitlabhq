@@ -1,7 +1,9 @@
+import { GlCollapse } from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
-import { __, s__ } from '~/locale';
-import { formatDate } from '~/lib/utils/datetime_utility';
 import { useFakeDate } from 'helpers/fake_date';
+import { stubTransition } from 'helpers/stub_transition';
+import { formatDate } from '~/lib/utils/datetime_utility';
+import { __, s__ } from '~/locale';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import Deployment from '~/environments/components/deployment.vue';
 import DeploymentStatusBadge from '~/environments/components/deployment_status_badge.vue';
@@ -19,6 +21,7 @@ describe('~/environments/components/deployment.vue', () => {
         deployment,
         ...propsData,
       },
+      stubs: { transition: stubTransition() },
     });
 
   afterEach(() => {
@@ -146,6 +149,31 @@ describe('~/environments/components/deployment.vue', () => {
 
         expect(date.exists()).toBe(false);
       });
+    });
+  });
+
+  describe('collapse', () => {
+    let collapse;
+    let button;
+
+    beforeEach(() => {
+      wrapper = createWrapper();
+      collapse = wrapper.findComponent(GlCollapse);
+      button = wrapper.findComponent({ ref: 'details-toggle' });
+    });
+
+    it('is collapsed by default', () => {
+      expect(collapse.attributes('visible')).toBeUndefined();
+      expect(button.props('icon')).toBe('expand-down');
+      expect(button.text()).toBe(__('Show details'));
+    });
+
+    it('opens on click', async () => {
+      await button.trigger('click');
+
+      expect(button.text()).toBe(__('Hide details'));
+      expect(button.props('icon')).toBe('expand-up');
+      expect(collapse.attributes('visible')).toBe('visible');
     });
   });
 });

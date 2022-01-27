@@ -63,6 +63,6 @@ export default {
         <strong>{{ heading }}</strong>
       </template>
     </div>
-    <div class="gl-ml-auto"><slot name="actions"></slot></div>
+    <div class="gl-ml-auto gl-flex-shrink-0"><slot name="actions"></slot></div>
   </div>
 </template>

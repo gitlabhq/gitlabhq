@@ -24,8 +24,15 @@ class ProjectExportWorker # rubocop:disable Scalability/IdempotentWorker
     ::Projects::ImportExport::ExportService.new(project, current_user, params).execute(after_export)
 
     export_job&.finish
-  rescue ActiveRecord::RecordNotFound, Gitlab::ImportExport::AfterExportStrategyBuilder::StrategyNotFoundError => e
-    logger.error("Failed to export project #{project_id}: #{e.message}")
+  rescue ActiveRecord::RecordNotFound => e
+    log_failure(project_id, e)
+  rescue Gitlab::ImportExport::AfterExportStrategyBuilder::StrategyNotFoundError => e
+    log_failure(project_id, e)
+    export_job&.finish
+  rescue StandardError => e
+    log_failure(project_id, e)
+    export_job&.fail_op
+    raise
   end
 
   private
@@ -34,5 +41,9 @@ class ProjectExportWorker # rubocop:disable Scalability/IdempotentWorker
     strategy_klass = after_export_strategy&.delete('klass')
 
     Gitlab::ImportExport::AfterExportStrategyBuilder.build!(strategy_klass, after_export_strategy)
+  end
+
+  def log_failure(project_id, ex)
+    logger.error("Failed to export project #{project_id}: #{ex.message}")
   end
 end

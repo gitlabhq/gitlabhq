@@ -14,7 +14,7 @@ export default {
   components: {
     GlButton,
   },
-  inject: ['projectPath'],
+  inject: ['projectFullPath'],
   props: {
     feature: {
       type: Object,
@@ -47,7 +47,7 @@ export default {
       try {
         const { mutationSettings } = this;
         const { data } = await this.$apollo.mutate(
-          mutationSettings.getMutationPayload(this.projectPath),
+          mutationSettings.getMutationPayload(this.projectFullPath),
         );
         const { errors, successPath } = data[mutationSettings.mutationId];
 

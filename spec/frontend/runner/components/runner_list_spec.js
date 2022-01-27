@@ -7,6 +7,7 @@ import {
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import RunnerList from '~/runner/components/runner_list.vue';
 import RunnerEditButton from '~/runner/components/runner_edit_button.vue';
+import RunnerPauseButton from '~/runner/components/runner_pause_button.vue';
 import { runnersData } from '../mock_data';
 
 const mockRunners = runnersData.data.runners.nodes;
@@ -92,7 +93,8 @@ describe('RunnerList', () => {
     const actions = findCell({ fieldKey: 'actions' });
 
     expect(actions.findComponent(RunnerEditButton).exists()).toBe(true);
-    expect(actions.findByTestId('toggle-active-runner').exists()).toBe(true);
+    expect(actions.findComponent(RunnerPauseButton).exists()).toBe(true);
+    expect(actions.findByTestId('delete-runner').exists()).toBe(true);
   });
 
   describe('Table data formatting', () => {

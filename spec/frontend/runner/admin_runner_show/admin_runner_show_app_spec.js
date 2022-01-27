@@ -8,6 +8,8 @@ import { createAlert } from '~/flash';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import RunnerHeader from '~/runner/components/runner_header.vue';
 import RunnerDetails from '~/runner/components/runner_details.vue';
+import RunnerPauseButton from '~/runner/components/runner_pause_button.vue';
+import RunnerEditButton from '~/runner/components/runner_edit_button.vue';
 import getRunnerQuery from '~/runner/graphql/get_runner.query.graphql';
 import AdminRunnerShowApp from '~/runner/admin_runner_show/admin_runner_show_app.vue';
 import { captureException } from '~/runner/sentry_utils';
@@ -17,7 +19,8 @@ import { runnerData } from '../mock_data';
 jest.mock('~/flash');
 jest.mock('~/runner/sentry_utils');
 
-const mockRunnerGraphqlId = runnerData.data.runner.id;
+const mockRunner = runnerData.data.runner;
+const mockRunnerGraphqlId = mockRunner.id;
 const mockRunnerId = `${getIdFromGraphQLId(mockRunnerGraphqlId)}`;
 
 Vue.use(VueApollo);
@@ -28,6 +31,16 @@ describe('AdminRunnerShowApp', () => {
 
   const findRunnerHeader = () => wrapper.findComponent(RunnerHeader);
   const findRunnerDetails = () => wrapper.findComponent(RunnerDetails);
+  const findRunnerEditButton = () => wrapper.findComponent(RunnerEditButton);
+  const findRunnerPauseButton = () => wrapper.findComponent(RunnerPauseButton);
+
+  const mockRunnerQueryResult = (runner = {}) => {
+    mockRunnerQuery = jest.fn().mockResolvedValue({
+      data: {
+        runner: { ...mockRunner, ...runner },
+      },
+    });
+  };
 
   const createComponent = ({ props = {}, mountFn = shallowMount } = {}) => {
     wrapper = mountFn(AdminRunnerShowApp, {
@@ -41,10 +54,6 @@ describe('AdminRunnerShowApp', () => {
     return waitForPromises();
   };
 
-  beforeEach(() => {
-    mockRunnerQuery = jest.fn().mockResolvedValue(runnerData);
-  });
-
   afterEach(() => {
     mockRunnerQuery.mockReset();
     wrapper.destroy();
@@ -52,6 +61,8 @@ describe('AdminRunnerShowApp', () => {
 
   describe('When showing runner details', () => {
     beforeEach(async () => {
+      mockRunnerQueryResult();
+
       await createComponent({ mountFn: mount });
     });
 
@@ -61,6 +72,11 @@ describe('AdminRunnerShowApp', () => {
 
     it('displays the runner header', async () => {
       expect(findRunnerHeader().text()).toContain(`Runner #${mockRunnerId}`);
+    });
+
+    it('displays the runner edit and pause buttons', async () => {
+      expect(findRunnerEditButton().exists()).toBe(true);
+      expect(findRunnerPauseButton().exists()).toBe(true);
     });
 
     it('shows basic runner details', async () => {
@@ -74,6 +90,42 @@ describe('AdminRunnerShowApp', () => {
                         Tags None`.replace(/\s+/g, ' ');
 
       expect(findRunnerDetails().text()).toMatchInterpolatedText(expected);
+    });
+
+    describe('when runner cannot be updated', () => {
+      beforeEach(async () => {
+        mockRunnerQueryResult({
+          userPermissions: {
+            updateRunner: false,
+          },
+        });
+
+        await createComponent({
+          mountFn: mount,
+        });
+      });
+
+      it('does not display the runner edit and pause buttons', () => {
+        expect(findRunnerEditButton().exists()).toBe(false);
+        expect(findRunnerPauseButton().exists()).toBe(false);
+      });
+    });
+
+    describe('when runner does not have an edit url ', () => {
+      beforeEach(async () => {
+        mockRunnerQueryResult({
+          editAdminUrl: null,
+        });
+
+        await createComponent({
+          mountFn: mount,
+        });
+      });
+
+      it('does not display the runner edit button', () => {
+        expect(findRunnerEditButton().exists()).toBe(false);
+        expect(findRunnerPauseButton().exists()).toBe(true);
+      });
     });
   });
 

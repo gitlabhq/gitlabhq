@@ -987,4 +987,11 @@ RSpec.describe CommitStatus do
       commit_status.expire_etag_cache!
     end
   end
+
+  context 'loose foreign key on ci_builds.project_id' do
+    it_behaves_like 'cleanup by a loose foreign key' do
+      let!(:parent) { create(:project) }
+      let!(:model) { create(:ci_build, project: parent) }
+    end
+  end
 end

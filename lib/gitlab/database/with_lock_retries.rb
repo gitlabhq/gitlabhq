@@ -61,7 +61,7 @@ module Gitlab
         [10.seconds, 10.minutes]
       ].freeze
 
-      def initialize(logger: NULL_LOGGER, allow_savepoints: true, timing_configuration: DEFAULT_TIMING_CONFIGURATION, klass: nil, env: ENV, connection: ActiveRecord::Base.connection)
+      def initialize(logger: NULL_LOGGER, allow_savepoints: true, timing_configuration: DEFAULT_TIMING_CONFIGURATION, klass: nil, env: ENV, connection:)
         @logger = logger
         @klass = klass
         @allow_savepoints = allow_savepoints

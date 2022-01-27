@@ -9,12 +9,12 @@ import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 
 import { captureException } from '~/runner/sentry_utils';
 import RunnerActionCell from '~/runner/components/cells/runner_actions_cell.vue';
+import RunnerPauseButton from '~/runner/components/runner_pause_button.vue';
 import RunnerEditButton from '~/runner/components/runner_edit_button.vue';
 import RunnerDeleteModal from '~/runner/components/runner_delete_modal.vue';
 import getGroupRunnersQuery from '~/runner/graphql/get_group_runners.query.graphql';
 import getRunnersQuery from '~/runner/graphql/get_runners.query.graphql';
 import runnerDeleteMutation from '~/runner/graphql/runner_delete.mutation.graphql';
-import runnerActionsUpdateMutation from '~/runner/graphql/runner_actions_update.mutation.graphql';
 import { runnersData } from '../../mock_data';
 
 const mockRunner = runnersData.data.runners.nodes[0];
@@ -32,10 +32,9 @@ describe('RunnerTypeCell', () => {
 
   const mockToastShow = jest.fn();
   const runnerDeleteMutationHandler = jest.fn();
-  const runnerActionsUpdateMutationHandler = jest.fn();
 
   const findEditBtn = () => wrapper.findComponent(RunnerEditButton);
-  const findToggleActiveBtn = () => wrapper.findByTestId('toggle-active-runner');
+  const findRunnerPauseBtn = () => wrapper.findComponent(RunnerPauseButton);
   const findRunnerDeleteModal = () => wrapper.findComponent(RunnerDeleteModal);
   const findDeleteBtn = () => wrapper.findByTestId('delete-runner');
   const getTooltip = (w) => getBinding(w.element, 'gl-tooltip')?.value;
@@ -52,10 +51,7 @@ describe('RunnerTypeCell', () => {
           ...runner,
         },
       },
-      apolloProvider: createMockApollo([
-        [runnerDeleteMutation, runnerDeleteMutationHandler],
-        [runnerActionsUpdateMutation, runnerActionsUpdateMutationHandler],
-      ]),
+      apolloProvider: createMockApollo([[runnerDeleteMutation, runnerDeleteMutationHandler]]),
       directives: {
         GlTooltip: createMockDirective(),
         GlModal: createMockDirective(),
@@ -77,21 +73,11 @@ describe('RunnerTypeCell', () => {
         },
       },
     });
-
-    runnerActionsUpdateMutationHandler.mockResolvedValue({
-      data: {
-        runnerUpdate: {
-          runner: mockRunner,
-          errors: [],
-        },
-      },
-    });
   });
 
   afterEach(() => {
     mockToastShow.mockReset();
     runnerDeleteMutationHandler.mockReset();
-    runnerActionsUpdateMutationHandler.mockReset();
 
     wrapper.destroy();
   });
@@ -123,118 +109,14 @@ describe('RunnerTypeCell', () => {
     });
   });
 
-  describe('Toggle active action', () => {
-    describe.each`
-      state       | label       | icon       | isActive | newActiveValue
-      ${'active'} | ${'Pause'}  | ${'pause'} | ${true}  | ${false}
-      ${'paused'} | ${'Resume'} | ${'play'}  | ${false} | ${true}
-    `('When the runner is $state', ({ label, icon, isActive, newActiveValue }) => {
-      beforeEach(() => {
-        createComponent({ active: isActive });
-      });
+  describe('Pause action', () => {
+    it('Renders a compact pause button', () => {
+      createComponent();
 
-      it(`Displays a ${icon} button`, () => {
-        expect(findToggleActiveBtn().props('loading')).toBe(false);
-        expect(findToggleActiveBtn().props('icon')).toBe(icon);
-        expect(getTooltip(findToggleActiveBtn())).toBe(label);
-        expect(findToggleActiveBtn().attributes('aria-label')).toBe(label);
-      });
-
-      it(`After clicking the ${icon} button, the button has a loading state`, async () => {
-        await findToggleActiveBtn().vm.$emit('click');
-
-        expect(findToggleActiveBtn().props('loading')).toBe(true);
-      });
-
-      it(`After the ${icon} button is clicked, stale tooltip is removed`, async () => {
-        await findToggleActiveBtn().vm.$emit('click');
-
-        expect(getTooltip(findToggleActiveBtn())).toBe('');
-        expect(findToggleActiveBtn().attributes('aria-label')).toBe('');
-      });
-
-      describe(`When clicking on the ${icon} button`, () => {
-        it(`The apollo mutation to set active to ${newActiveValue} is called`, async () => {
-          expect(runnerActionsUpdateMutationHandler).toHaveBeenCalledTimes(0);
-
-          await findToggleActiveBtn().vm.$emit('click');
-
-          expect(runnerActionsUpdateMutationHandler).toHaveBeenCalledTimes(1);
-          expect(runnerActionsUpdateMutationHandler).toHaveBeenCalledWith({
-            input: {
-              id: mockRunner.id,
-              active: newActiveValue,
-            },
-          });
-        });
-
-        it('The button does not have a loading state after the mutation occurs', async () => {
-          await findToggleActiveBtn().vm.$emit('click');
-
-          expect(findToggleActiveBtn().props('loading')).toBe(true);
-
-          await waitForPromises();
-
-          expect(findToggleActiveBtn().props('loading')).toBe(false);
-        });
-      });
-
-      describe('When update fails', () => {
-        describe('On a network error', () => {
-          const mockErrorMsg = 'Update error!';
-
-          beforeEach(async () => {
-            runnerActionsUpdateMutationHandler.mockRejectedValueOnce(new Error(mockErrorMsg));
-
-            findToggleActiveBtn().vm.$emit('click');
-            await waitForPromises();
-          });
-
-          it('error is reported to sentry', () => {
-            expect(captureException).toHaveBeenCalledWith({
-              error: new Error(`Network error: ${mockErrorMsg}`),
-              component: 'RunnerActionsCell',
-            });
-          });
-
-          it('error is shown to the user', () => {
-            expect(createAlert).toHaveBeenCalledTimes(1);
-          });
-        });
-
-        describe('On a validation error', () => {
-          const mockErrorMsg = 'Runner not found!';
-          const mockErrorMsg2 = 'User not allowed!';
-
-          beforeEach(async () => {
-            runnerActionsUpdateMutationHandler.mockResolvedValue({
-              data: {
-                runnerUpdate: {
-                  runner: mockRunner,
-                  errors: [mockErrorMsg, mockErrorMsg2],
-                },
-              },
-            });
-
-            findToggleActiveBtn().vm.$emit('click');
-            await waitForPromises();
-          });
-
-          it('error is reported to sentry', () => {
-            expect(captureException).toHaveBeenCalledWith({
-              error: new Error(`${mockErrorMsg} ${mockErrorMsg2}`),
-              component: 'RunnerActionsCell',
-            });
-          });
-
-          it('error is shown to the user', () => {
-            expect(createAlert).toHaveBeenCalledTimes(1);
-          });
-        });
-      });
+      expect(findRunnerPauseBtn().props('compact')).toBe(true);
     });
 
-    it('Does not render the runner toggle active button when user cannot update', () => {
+    it('Does not render the runner pause button when user cannot update', () => {
       createComponent({
         userPermissions: {
           ...mockRunner.userPermissions,
@@ -242,7 +124,7 @@ describe('RunnerTypeCell', () => {
         },
       });
 
-      expect(findToggleActiveBtn().exists()).toBe(false);
+      expect(findRunnerPauseBtn().exists()).toBe(false);
     });
   });
 
