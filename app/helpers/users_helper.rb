@@ -101,6 +101,7 @@ module UsersHelper
       badges << { text: s_('AdminUsers|Admin'), variant: 'success' } if user.admin?
       badges << { text: s_('AdminUsers|External'), variant: 'secondary' } if user.external?
       badges << { text: s_("AdminUsers|It's you!"), variant: 'muted' } if current_user == user
+      badges << { text: s_("AdminUsers|Locked"), variant: 'warning' } if user.access_locked?
     end
   end
 

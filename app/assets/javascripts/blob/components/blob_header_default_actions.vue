@@ -1,5 +1,6 @@
 <script>
 import { GlButton, GlButtonGroup, GlTooltipDirective } from '@gitlab/ui';
+import { sprintf, s__ } from '~/locale';
 import {
   BTN_COPY_CONTENTS_TITLE,
   BTN_DOWNLOAD_TITLE,
@@ -37,6 +38,16 @@ export default {
       required: false,
       default: false,
     },
+    environmentName: {
+      type: String,
+      required: false,
+      default: null,
+    },
+    environmentPath: {
+      type: String,
+      required: false,
+      default: null,
+    },
   },
   computed: {
     downloadUrl() {
@@ -50,6 +61,11 @@ export default {
     },
     showCopyButton() {
       return !this.hasRenderError && !this.isBinary;
+    },
+    environmentTitle() {
+      return sprintf(s__('BlobViewer|View on %{environmentName}'), {
+        environmentName: this.environmentName,
+      });
     },
   },
   BTN_COPY_CONTENTS_TITLE,
@@ -90,6 +106,18 @@ export default {
       :href="downloadUrl"
       target="_blank"
       icon="download"
+      category="primary"
+      variant="default"
+    />
+    <gl-button
+      v-if="environmentName && environmentPath"
+      v-gl-tooltip.hover
+      :aria-label="environmentTitle"
+      :title="environmentTitle"
+      :href="environmentPath"
+      data-testid="environment"
+      target="_blank"
+      icon="external-link"
       category="primary"
       variant="default"
     />

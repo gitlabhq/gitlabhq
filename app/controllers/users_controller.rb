@@ -186,7 +186,7 @@ class UsersController < ApplicationController
   end
 
   def starred_projects
-    StarredProjectsFinder.new(user, current_user: current_user).execute
+    StarredProjectsFinder.new(user, params: finder_params, current_user: current_user).execute
   end
 
   def contributions_calendar
@@ -251,6 +251,15 @@ class UsersController < ApplicationController
         }
       end
     end
+  end
+
+  def finder_params
+    {
+      # don't display projects pending deletion
+      without_deleted: true,
+      # don't display projects marked for deletion
+      not_aimed_for_deletion: true
+    }
   end
 end
 

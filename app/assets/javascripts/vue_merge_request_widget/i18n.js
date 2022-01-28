@@ -20,3 +20,8 @@ export const I18N_SHA_MISMATCH = {
   warningMessage: __('Merge blocked: new changes were just added.'),
   actionButtonLabel: __('Review changes'),
 };
+
+export const MERGE_TRAIN_BUTTON_TEXT = {
+  failed: __('Start merge train...'),
+  passed: __('Start merge train'),
+};

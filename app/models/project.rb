@@ -511,6 +511,7 @@ class Project < ApplicationRecord
   # Scopes
   scope :pending_delete, -> { where(pending_delete: true) }
   scope :without_deleted, -> { where(pending_delete: false) }
+  scope :not_aimed_for_deletion, -> { where(marked_for_deletion_at: nil).without_deleted }
 
   scope :with_storage_feature, ->(feature) do
     where(arel_table[:storage_version].gteq(HASHED_STORAGE_FEATURES[feature]))

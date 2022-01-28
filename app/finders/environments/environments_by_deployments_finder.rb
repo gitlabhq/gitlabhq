@@ -15,8 +15,8 @@ module Environments
       deployments =
         if ref
           Deployment.where(ref: ref.to_s)
-        elsif commit
-          Deployment.where(sha: commit.sha)
+        elsif sha
+          Deployment.where(sha: sha)
         else
           Deployment.none
         end
@@ -47,7 +47,7 @@ module Environments
       return false unless Ability.allowed?(current_user, :read_environment, environment)
 
       return false if ref && params[:recently_updated] && !environment.recently_updated_on_branch?(ref)
-      return false if ref && commit && !environment.includes_commit?(commit)
+      return false if ref && sha && !environment.includes_commit?(sha)
 
       true
     end
@@ -56,8 +56,8 @@ module Environments
       params[:ref].try(:to_s)
     end
 
-    def commit
-      params[:commit]
+    def sha
+      params[:sha] || params[:commit]&.id
     end
   end
 end

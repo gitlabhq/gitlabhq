@@ -114,5 +114,6 @@ Bot users for projects:
 When the project access token is [revoked](#revoke-a-project-access-token):
 
 - The bot user is deleted.
-- All records are moved to a system-wide user with the username `Ghost User`. For more information, see
-  [associated records](../../profile/account/delete_account.md#associated-records).
+- All records are moved to a system-wide user with the username [Ghost User](../../profile/account/delete_account.md#associated-records).
+
+See also [Bot users for groups](../../group/settings/group_access_tokens.md#bot-users-for-groups).

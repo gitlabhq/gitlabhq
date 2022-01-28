@@ -506,6 +506,7 @@ RSpec.describe UsersController do
 
   describe 'GET #contributed' do
     let(:project) { create(:project, :public) }
+    let(:aimed_for_deletion_project) { create(:project, :public, :archived, marked_for_deletion_at: 3.days.ago) }
 
     subject do
       get user_contributed_projects_url author.username, format: format
@@ -516,7 +517,10 @@ RSpec.describe UsersController do
 
       project.add_developer(public_user)
       project.add_developer(private_user)
+      aimed_for_deletion_project.add_developer(public_user)
+      aimed_for_deletion_project.add_developer(private_user)
       create(:push_event, project: project, author: author)
+      create(:push_event, project: aimed_for_deletion_project, author: author)
 
       subject
     end
@@ -525,6 +529,11 @@ RSpec.describe UsersController do
       it 'renders contributed projects' do
         expect(response).to have_gitlab_http_status(:ok)
         expect(response.body).not_to be_empty
+      end
+
+      it 'does not list projects aimed for deletion' do
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(assigns(:contributed_projects)).to eq([project])
       end
     end
 
@@ -557,6 +566,7 @@ RSpec.describe UsersController do
 
   describe 'GET #starred' do
     let(:project) { create(:project, :public) }
+    let(:aimed_for_deletion_project) { create(:project, :public, :archived, marked_for_deletion_at: 3.days.ago) }
 
     subject do
       get user_starred_projects_url author.username, format: format
@@ -573,6 +583,11 @@ RSpec.describe UsersController do
       it 'renders starred projects' do
         expect(response).to have_gitlab_http_status(:ok)
         expect(response.body).not_to be_empty
+      end
+
+      it 'does not list projects aimed for deletion' do
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(assigns(:starred_projects)).to eq([project])
       end
     end
 

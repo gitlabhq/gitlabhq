@@ -16516,7 +16516,8 @@ CREATE TABLE namespace_root_storage_statistics (
     packages_size bigint DEFAULT 0 NOT NULL,
     snippets_size bigint DEFAULT 0 NOT NULL,
     pipeline_artifacts_size bigint DEFAULT 0 NOT NULL,
-    uploads_size bigint DEFAULT 0 NOT NULL
+    uploads_size bigint DEFAULT 0 NOT NULL,
+    dependency_proxy_size bigint DEFAULT 0 NOT NULL
 );
 
 CREATE TABLE namespace_settings (

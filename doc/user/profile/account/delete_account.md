@@ -65,7 +65,7 @@ Here's a list of things created by the user that are **not** deleted:
 - Notes
 
 Instead of being deleted, these records are moved to a system-wide
-user with the username "Ghost User", whose sole purpose is to act as a container
+user with the username Ghost User, whose sole purpose is to act as a container
 for such records. Any commits made by a deleted user still display the
 username of the original user.
 

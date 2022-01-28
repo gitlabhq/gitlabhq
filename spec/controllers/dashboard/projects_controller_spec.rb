@@ -97,11 +97,15 @@ RSpec.describe Dashboard::ProjectsController, :aggregate_failures do
       subject { get :starred, format: :json }
 
       let(:projects) { create_list(:project, 2, creator: user) }
+      let(:aimed_for_deletion_project) { create_list(:project, 2, :archived, creator: user, marked_for_deletion_at: 3.days.ago) }
 
       before do
-        allow(Kaminari.config).to receive(:default_per_page).and_return(1)
-
         projects.each do |project|
+          project.add_developer(user)
+          create(:users_star_project, project_id: project.id, user_id: user.id)
+        end
+
+        aimed_for_deletion_project.each do |project|
           project.add_developer(user)
           create(:users_star_project, project_id: project.id, user_id: user.id)
         end
@@ -113,10 +117,22 @@ RSpec.describe Dashboard::ProjectsController, :aggregate_failures do
         expect(response).to have_gitlab_http_status(:ok)
       end
 
-      it 'paginates the records' do
+      context "pagination" do
+        before do
+          allow(Kaminari.config).to receive(:default_per_page).and_return(1)
+        end
+
+        it 'paginates the records' do
+          subject
+
+          expect(assigns(:projects).count).to eq(1)
+        end
+      end
+
+      it 'does not include projects aimed for deletion' do
         subject
 
-        expect(assigns(:projects).count).to eq(1)
+        expect(assigns(:projects).count).to eq(2)
       end
     end
   end

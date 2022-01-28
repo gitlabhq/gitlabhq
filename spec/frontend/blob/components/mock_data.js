@@ -55,3 +55,6 @@ export const SimpleBlobContentMock = {
   path: 'foo.js',
   plainData: 'Plain',
 };
+
+export const mockEnvironmentName = 'my.testing.environment';
+export const mockEnvironmentPath = 'https://my.testing.environment';

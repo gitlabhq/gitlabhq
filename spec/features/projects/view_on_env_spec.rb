@@ -9,7 +9,6 @@ RSpec.describe 'View on environment', :js do
   let(:user) { project.creator }
 
   before do
-    stub_feature_flags(refactor_blob_viewer: false) # This stub will be removed in https://gitlab.com/gitlab-org/gitlab/-/issues/350457
     project.add_maintainer(user)
   end
 

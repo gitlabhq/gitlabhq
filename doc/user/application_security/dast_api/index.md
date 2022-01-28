@@ -478,6 +478,9 @@ Follow these steps to provide the bearer token with `DAST_API_OVERRIDES_ENV`:
    `{"headers":{"Authorization":"Bearer dXNlcm5hbWU6cGFzc3dvcmQ="}}` (substitute your token). You
    can create CI/CD variables from the GitLab projects page at **Settings > CI/CD**, in the
    **Variables** section.
+   Due to the format of `TEST_API_BEARERAUTH` it's not possible to mask the variable. 
+   To mask the token's value, you can create a second variable with the token value's, and define 
+   `TEST_API_BEARERAUTH` with the value `{"headers":{"Authorization":"Bearer $MASKED_VARIABLE"}}`.
 
 1. In your `.gitlab-ci.yml` file, set `DAST_API_OVERRIDES_ENV` to the variable you just created:
 

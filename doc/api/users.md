@@ -533,7 +533,7 @@ Parameters:
 | Attribute     | Type    | Required | Description                                  |
 |---------------|---------|----------|----------------------------------------------|
 | `id`          | integer | yes      | The ID of a user                             |
-| `hard_delete` | boolean | no       | If true, contributions that would usually be [moved to the ghost user](../user/profile/account/delete_account.md#associated-records) are deleted instead, as well as groups owned solely by this user. |
+| `hard_delete` | boolean | no       | If true, contributions that would usually be [moved to Ghost User](../user/profile/account/delete_account.md#associated-records) are deleted instead, as well as groups owned solely by this user. |
 
 ## List current user (for normal users)
 

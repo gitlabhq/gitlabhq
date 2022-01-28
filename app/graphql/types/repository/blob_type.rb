@@ -87,6 +87,14 @@ module Types
             description: 'Web path to blob permalink.',
             calls_gitaly: true
 
+      field :environment_formatted_external_url, GraphQL::Types::String, null: true,
+            description: 'Environment on which the blob is available.',
+            calls_gitaly: true
+
+      field :environment_external_url_for_route_map, GraphQL::Types::String, null: true,
+            description: 'Web path to blob on an environment.',
+            calls_gitaly: true
+
       field :code_owners, [Types::UserType], null: true,
             description: 'List of code owners for the blob.',
             calls_gitaly: true

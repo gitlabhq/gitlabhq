@@ -65,10 +65,12 @@ billable user, with the following exceptions:
 - Users who are [pending approval](../../user/admin_area/moderate_users.md#users-pending-approval).
 - Members with the Guest role on an Ultimate subscription.
 - Users without project or group memberships on an Ultimate subscription.
-- GitLab-created service accounts: `Ghost User` and bots
-  ([`Support Bot`](../../user/project/service_desk.md#support-bot-user),
-  [Bot users for projects](../../user/project/settings/project_access_tokens.md#bot-users-for-projects), and
-  so on.)
+- GitLab-created service accounts:
+  - [Ghost User](../../user/profile/account/delete_account.md#associated-records).
+  - Bots such as:
+    - [Support Bot](../../user/project/service_desk.md#support-bot-user).
+    - [Bot users for projects](../../user/project/settings/project_access_tokens.md#bot-users-for-projects).
+    - [Bot users for groups](../../user/group/settings/group_access_tokens.md#bot-users-for-groups).
 
 **Billable users** as reported in the `/admin` section is updated once per day.
 

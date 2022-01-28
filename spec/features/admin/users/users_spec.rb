@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'Admin::Users' do
   include Spec::Support::Helpers::Features::AdminUsersHelpers
+  include Spec::Support::Helpers::ModalHelpers
 
   let_it_be(:user, reload: true) { create(:omniauth_user, provider: 'twitter', extern_uid: '123456') }
   let_it_be(:current_user) { create(:admin) }
@@ -291,6 +292,22 @@ RSpec.describe 'Admin::Users' do
 
         expect(page).to have_content('Successfully activated')
         expect(page).not_to have_content(user.email)
+      end
+    end
+
+    context 'when a user is locked', time_travel_to: '2020-02-25 10:30:45 -0700' do
+      let_it_be(:locked_user) { create(:user, locked_at: DateTime.parse('2020-02-25 10:30:00 -0700')) }
+
+      it "displays `Locked` badge next to user" do
+        expect(page).to have_content("#{locked_user.name} Locked")
+      end
+
+      it 'allows a user to be unlocked from the `User administration dropdown', :js do
+        accept_gl_confirm("Unlock user #{locked_user.name}?", button_text: 'Unlock') do
+          click_action_in_user_dropdown(locked_user.id, 'Unlock')
+        end
+
+        expect(page).not_to have_content("#{locked_user.name} (Locked)")
       end
     end
 

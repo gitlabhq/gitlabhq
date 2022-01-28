@@ -68,6 +68,12 @@ RSpec.describe GroupDescendantsFinder do
       expect(finder.execute).to be_empty
     end
 
+    it 'does not include projects aimed for deletion' do
+      _project_aimed_for_deletion = create(:project, :archived, marked_for_deletion_at: 2.days.ago, pending_delete: false)
+
+      expect(finder.execute).to be_empty
+    end
+
     context 'with a filter' do
       let(:params) { { filter: 'test' } }
 

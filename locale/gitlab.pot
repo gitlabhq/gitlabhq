@@ -2819,6 +2819,9 @@ msgstr ""
 msgid "AdminUsers|Learn more about %{link_start}banned users.%{link_end}"
 msgstr ""
 
+msgid "AdminUsers|Locked"
+msgstr ""
+
 msgid "AdminUsers|Log in"
 msgstr ""
 
@@ -5626,6 +5629,9 @@ msgid "Bitbucket import"
 msgstr ""
 
 msgid "Blame"
+msgstr ""
+
+msgid "BlobViewer|View on %{environmentName}"
 msgstr ""
 
 msgid "Block user"
@@ -22411,7 +22417,16 @@ msgstr ""
 msgid "Merge unavailable: merge requests are read-only in a secondary Geo node."
 msgstr ""
 
+msgid "Merge unverified changes"
+msgstr ""
+
+msgid "Merge unverified changes?"
+msgstr ""
+
 msgid "Merge when pipeline succeeds"
+msgstr ""
+
+msgid "Merge..."
 msgstr ""
 
 msgid "MergeConflict|Commit to source branch"
@@ -34027,6 +34042,9 @@ msgstr ""
 msgid "Start merge train when pipeline succeeds"
 msgstr ""
 
+msgid "Start merge train..."
+msgstr ""
+
 msgid "Start search"
 msgstr ""
 
@@ -35766,6 +35784,9 @@ msgid "The latest artifacts created by jobs in the most recent successful pipeli
 msgstr ""
 
 msgid "The latest pipeline for this merge request did not complete successfully."
+msgstr ""
+
+msgid "The latest pipeline for this merge request did not succeed. The latest changes are unverified."
 msgstr ""
 
 msgid "The latest pipeline for this merge request has failed."

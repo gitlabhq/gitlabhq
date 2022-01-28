@@ -92,6 +92,8 @@ export default {
         :active-viewer="viewer"
         :has-render-error="hasRenderError"
         :is-binary="isBinary"
+        :environment-name="blob.environmentFormattedExternalUrl"
+        :environment-path="blob.environmentExternalUrlForRouteMap"
         @copy="proxyCopyRequest"
       />
     </div>

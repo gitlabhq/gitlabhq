@@ -87,6 +87,33 @@ RSpec.describe BlobPresenter do
     it { expect(presenter.permalink_path).to eq("/#{project.full_path}/-/blob/#{project.repository.commit.sha}/files/ruby/regex.rb") }
   end
 
+  context 'environment has been deployed' do
+    let(:external_url) { "https://some.environment" }
+    let(:environment) { create(:environment, project: project, external_url: external_url) }
+    let!(:deployment) { create(:deployment, :success, environment: environment, project: project, sha: blob.commit_id) }
+
+    before do
+      allow(project).to receive(:public_path_for_source_path).with(blob.path, blob.commit_id).and_return(blob.path)
+    end
+
+    describe '#environment_formatted_external_url' do
+      it { expect(presenter.environment_formatted_external_url).to eq("some.environment") }
+    end
+
+    describe '#environment_external_url_for_route_map' do
+      it { expect(presenter.environment_external_url_for_route_map).to eq("#{external_url}/#{blob.path}") }
+    end
+
+    describe 'chooses the latest deployed environment for #environment_formatted_external_url and #environment_external_url_for_route_map' do
+      let(:another_external_url) { "https://another.environment" }
+      let(:another_environment) { create(:environment, project: project, external_url: another_external_url) }
+      let!(:another_deployment) { create(:deployment, :success, environment: another_environment, project: project, sha: blob.commit_id) }
+
+      it { expect(presenter.environment_formatted_external_url).to eq("another.environment") }
+      it { expect(presenter.environment_external_url_for_route_map).to eq("#{another_external_url}/#{blob.path}") }
+    end
+  end
+
   describe '#code_owners' do
     it { expect(presenter.code_owners).to match_array([]) }
   end

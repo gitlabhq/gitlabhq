@@ -25,7 +25,7 @@ class GroupDescendantsFinder
   def initialize(current_user: nil, parent_group:, params: {})
     @current_user = current_user
     @parent_group = parent_group
-    @params = params.reverse_merge(non_archived: params[:archived].blank?)
+    @params = params.reverse_merge(non_archived: params[:archived].blank?, not_aimed_for_deletion: true)
   end
 
   def execute

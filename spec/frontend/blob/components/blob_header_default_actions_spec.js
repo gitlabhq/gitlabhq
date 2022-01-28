@@ -1,13 +1,13 @@
 import { GlButtonGroup, GlButton } from '@gitlab/ui';
-import { mount } from '@vue/test-utils';
 import BlobHeaderActions from '~/blob/components/blob_header_default_actions.vue';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import {
   BTN_COPY_CONTENTS_TITLE,
   BTN_DOWNLOAD_TITLE,
   BTN_RAW_TITLE,
   RICH_BLOB_VIEWER,
 } from '~/blob/components/constants';
-import { Blob } from './mock_data';
+import { Blob, mockEnvironmentName, mockEnvironmentPath } from './mock_data';
 
 describe('Blob Header Default Actions', () => {
   let wrapper;
@@ -17,7 +17,7 @@ describe('Blob Header Default Actions', () => {
   const blobHash = 'foo-bar';
 
   function createComponent(propsData = {}) {
-    wrapper = mount(BlobHeaderActions, {
+    wrapper = shallowMountExtended(BlobHeaderActions, {
       provide: {
         blobHash,
       },
@@ -39,8 +39,8 @@ describe('Blob Header Default Actions', () => {
   });
 
   describe('renders', () => {
-    const findCopyButton = () => wrapper.find('[data-testid="copyContentsButton"]');
-    const findViewRawButton = () => wrapper.find('[data-testid="viewRawButton"]');
+    const findCopyButton = () => wrapper.findByTestId('copyContentsButton');
+    const findViewRawButton = () => wrapper.findByTestId('viewRawButton');
 
     it('gl-button-group component', () => {
       expect(btnGroup.exists()).toBe(true);
@@ -87,6 +87,39 @@ describe('Blob Header Default Actions', () => {
 
       expect(findCopyButton().exists()).toBe(false);
       expect(findViewRawButton().exists()).toBe(false);
+    });
+  });
+
+  describe('view on environment button', () => {
+    const findEnvironmentButton = () => wrapper.findByTestId('environment');
+
+    it.each`
+      environmentName        | environmentPath        | isVisible
+      ${null}                | ${null}                | ${false}
+      ${null}                | ${mockEnvironmentPath} | ${false}
+      ${mockEnvironmentName} | ${null}                | ${false}
+      ${mockEnvironmentName} | ${mockEnvironmentPath} | ${true}
+    `(
+      'when environmentName is $environmentName and environmentPath is $environmentPath',
+      ({ environmentName, environmentPath, isVisible }) => {
+        createComponent({ environmentName, environmentPath });
+
+        expect(findEnvironmentButton().exists()).toBe(isVisible);
+      },
+    );
+
+    it('renders the correct attributes', () => {
+      createComponent({
+        environmentName: mockEnvironmentName,
+        environmentPath: mockEnvironmentPath,
+      });
+
+      expect(findEnvironmentButton().attributes()).toMatchObject({
+        title: `View on ${mockEnvironmentName}`,
+        href: mockEnvironmentPath,
+      });
+
+      expect(findEnvironmentButton().props('icon')).toBe('external-link');
     });
   });
 });

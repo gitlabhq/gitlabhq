@@ -48,7 +48,7 @@ export default {
     pipelineId() {
       return this.pipeline.id;
     },
-    showFailedPipelineModal() {
+    showFailedPipelineModalMergeTrain() {
       return false;
     },
   },

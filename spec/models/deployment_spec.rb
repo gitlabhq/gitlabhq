@@ -615,7 +615,7 @@ RSpec.describe Deployment do
       it 'returns false' do
         commit = project.commit('feature')
 
-        expect(deployment.includes_commit?(commit)).to be false
+        expect(deployment.includes_commit?(commit.id)).to be false
       end
     end
 
@@ -623,7 +623,7 @@ RSpec.describe Deployment do
       it 'returns true' do
         commit = project.commit
 
-        expect(deployment.includes_commit?(commit)).to be true
+        expect(deployment.includes_commit?(commit.id)).to be true
       end
     end
 
@@ -632,7 +632,7 @@ RSpec.describe Deployment do
         deployment.update!(sha: Gitlab::Git::BLANK_SHA)
         commit = project.commit
 
-        expect(deployment.includes_commit?(commit)).to be false
+        expect(deployment.includes_commit?(commit.id)).to be false
       end
     end
   end

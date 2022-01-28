@@ -345,7 +345,7 @@ import (
     "log"
     "net/http"
 
-    "github.com/Unleash/unleash-client-go"
+    "github.com/Unleash/unleash-client-go/v3"
 )
 
 type metricsInterface struct {

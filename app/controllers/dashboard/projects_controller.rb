@@ -35,7 +35,7 @@ class Dashboard::ProjectsController < Dashboard::ApplicationController
 
   # rubocop: disable CodeReuse/ActiveRecord
   def starred
-    @projects = load_projects(params.merge(starred: true))
+    @projects = load_projects(params.merge(starred: true, not_aimed_for_deletion: true))
       .includes(:forked_from_project, :topics)
 
     @groups = []
@@ -54,7 +54,7 @@ class Dashboard::ProjectsController < Dashboard::ApplicationController
   private
 
   def projects
-    @projects ||= load_projects(params.merge(non_public: true))
+    @projects ||= load_projects(params.merge(non_public: true, not_aimed_for_deletion: true))
   end
 
   def render_projects
@@ -65,8 +65,8 @@ class Dashboard::ProjectsController < Dashboard::ApplicationController
   end
 
   def load_projects(finder_params)
-    @total_user_projects_count = ProjectsFinder.new(params: { non_public: true, without_deleted: true }, current_user: current_user).execute
-    @total_starred_projects_count = ProjectsFinder.new(params: { starred: true, without_deleted: true }, current_user: current_user).execute
+    @total_user_projects_count = ProjectsFinder.new(params: { non_public: true, without_deleted: true, not_aimed_for_deletion: true }, current_user: current_user).execute
+    @total_starred_projects_count = ProjectsFinder.new(params: { starred: true, without_deleted: true, not_aimed_for_deletion: true }, current_user: current_user).execute
 
     finder_params[:use_cte] = true if use_cte_for_finder?
     finder_params[:without_deleted] = true

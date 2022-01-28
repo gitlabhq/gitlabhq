@@ -79,6 +79,18 @@ class BlobPresenter < Gitlab::View::Presenter::Delegated
     url_helpers.project_blob_path(project, File.join(project.repository.commit.sha, blob.path))
   end
 
+  def environment_formatted_external_url
+    return unless environment
+
+    environment.formatted_external_url
+  end
+
+  def environment_external_url_for_route_map
+    return unless environment
+
+    environment.external_url_for(blob.path, blob.commit_id)
+  end
+
   # Will be overridden in EE
   def code_owners
     []
@@ -120,6 +132,12 @@ class BlobPresenter < Gitlab::View::Presenter::Delegated
 
   def url_helpers
     Gitlab::Routing.url_helpers
+  end
+
+  def environment
+    environment_params = project.repository.branch_exists?(blob.commit_id) ? { ref: blob.commit_id } : { sha: blob.commit_id }
+    environment_params[:find_latest] = true
+    ::Environments::EnvironmentsByDeploymentsFinder.new(project, current_user, environment_params).execute.last
   end
 
   def project

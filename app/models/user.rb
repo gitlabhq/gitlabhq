@@ -1593,7 +1593,7 @@ class User < ApplicationRecord
       .distinct
       .reorder(nil)
 
-    Project.where(id: events)
+    Project.where(id: events).not_aimed_for_deletion
   end
 
   def can_be_removed?

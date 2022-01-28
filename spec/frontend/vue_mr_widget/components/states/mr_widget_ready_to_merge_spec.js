@@ -7,6 +7,7 @@ import CommitMessageDropdown from '~/vue_merge_request_widget/components/states/
 import CommitsHeader from '~/vue_merge_request_widget/components/states/commits_header.vue';
 import ReadyToMerge from '~/vue_merge_request_widget/components/states/ready_to_merge.vue';
 import SquashBeforeMerge from '~/vue_merge_request_widget/components/states/squash_before_merge.vue';
+import MergeFailedPipelineConfirmationDialog from '~/vue_merge_request_widget/components/states/merge_failed_pipeline_confirmation_dialog.vue';
 import { MWPS_MERGE_STRATEGY } from '~/vue_merge_request_widget/constants';
 import eventHub from '~/vue_merge_request_widget/event_hub';
 
@@ -61,6 +62,11 @@ const createTestService = () => ({
 });
 
 let wrapper;
+
+const findMergeButton = () => wrapper.find('[data-testid="merge-button"]');
+const findPipelineFailedConfirmModal = () =>
+  wrapper.findComponent(MergeFailedPipelineConfirmationDialog);
+
 const createComponent = (customConfig = {}, mergeRequestWidgetGraphql = false) => {
   wrapper = shallowMount(ReadyToMerge, {
     propsData: {
@@ -132,33 +138,13 @@ describe('ReadyToMerge', () => {
       });
     });
 
-    describe('mergeButtonVariant', () => {
+    describe('Merge Button Variant', () => {
       it('defaults to confirm class', () => {
         createComponent({
           mr: { availableAutoMergeStrategies: [] },
         });
 
-        expect(wrapper.vm.mergeButtonVariant).toEqual('confirm');
-      });
-
-      it('returns confirm class for success status', () => {
-        createComponent({
-          mr: { availableAutoMergeStrategies: [], pipeline: true },
-        });
-
-        expect(wrapper.vm.mergeButtonVariant).toEqual('confirm');
-      });
-
-      it('returns confirm class for pending status', () => {
-        createComponent();
-
-        expect(wrapper.vm.mergeButtonVariant).toEqual('confirm');
-      });
-
-      it('returns danger class for failed status', () => {
-        createComponent({ mr: { hasCI: true } });
-
-        expect(wrapper.vm.mergeButtonVariant).toEqual('danger');
+        expect(findMergeButton().attributes('variant')).toBe('confirm');
       });
     });
 
@@ -792,6 +778,26 @@ describe('ReadyToMerge', () => {
       it('should show fast forward message', () => {
         expect(wrapper.find('.mr-fast-forward-message').exists()).toBe(true);
       });
+    });
+  });
+
+  describe('Merge button when pipeline has failed', () => {
+    beforeEach(() => {
+      createComponent({
+        mr: { pipeline: {}, isPipelineFailed: true, availableAutoMergeStrategies: [] },
+      });
+    });
+
+    it('should display the correct merge text', () => {
+      expect(findMergeButton().text()).toBe('Merge...');
+    });
+
+    it('should display confirmation modal when merge button is clicked', async () => {
+      expect(findPipelineFailedConfirmModal().props()).toEqual({ visible: false });
+
+      await findMergeButton().vm.$emit('click');
+
+      expect(findPipelineFailedConfirmModal().props()).toEqual({ visible: true });
     });
   });
 });

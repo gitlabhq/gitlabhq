@@ -3602,13 +3602,16 @@ RSpec.describe User do
     let!(:project1) { create(:project) }
     let!(:project2) { fork_project(project3) }
     let!(:project3) { create(:project) }
+    let!(:project_aimed_for_deletion) { create(:project, marked_for_deletion_at: 2.days.ago, pending_delete: false) }
     let!(:merge_request) { create(:merge_request, source_project: project2, target_project: project3, author: subject) }
     let!(:push_event) { create(:push_event, project: project1, author: subject) }
     let!(:merge_event) { create(:event, :created, project: project3, target: merge_request, author: subject) }
+    let!(:merge_event_2) { create(:event, :created, project: project_aimed_for_deletion, target: merge_request, author: subject) }
 
     before do
       project1.add_maintainer(subject)
       project2.add_maintainer(subject)
+      project_aimed_for_deletion.add_maintainer(subject)
     end
 
     it 'includes IDs for projects the user has pushed to' do
@@ -3621,6 +3624,10 @@ RSpec.describe User do
 
     it "doesn't include IDs for unrelated projects" do
       expect(subject.contributed_projects).not_to include(project2)
+    end
+
+    it "doesn't include projects aimed for deletion" do
+      expect(subject.contributed_projects).not_to include(project_aimed_for_deletion)
     end
   end
 

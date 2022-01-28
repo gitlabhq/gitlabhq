@@ -11,6 +11,8 @@ export const simpleViewerMock = {
   ideEditPath: 'some_file.js/ide/edit',
   forkAndEditPath: 'some_file.js/fork/edit',
   ideForkAndEditPath: 'some_file.js/fork/ide',
+  environmentFormattedExternalUrl: '',
+  environmentExternalUrlForRouteMap: '',
   canModifyBlob: true,
   canCurrentUserPushToBranch: true,
   archived: false,

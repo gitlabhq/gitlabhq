@@ -25,6 +25,8 @@ query getBlobInfo($projectPath: ID!, $filePath: String!, $ref: String!) {
           ideEditPath
           forkAndEditPath
           ideForkAndEditPath
+          environmentFormattedExternalUrl
+          environmentExternalUrlForRouteMap
           canModifyBlob
           canCurrentUserPushToBranch
           archived

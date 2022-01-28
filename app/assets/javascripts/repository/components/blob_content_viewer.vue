@@ -106,6 +106,8 @@ export default {
                 ideForkAndEditPath: '',
                 storedExternally: false,
                 externalStorage: '',
+                environmentFormattedExternalUrl: '',
+                environmentExternalUrlForRouteMap: '',
                 canModifyBlob: false,
                 canCurrentUserPushToBranch: false,
                 archived: false,

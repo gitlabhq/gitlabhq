@@ -29,6 +29,8 @@ RSpec.describe Types::Repository::BlobType do
       :blame_path,
       :history_path,
       :permalink_path,
+      :environment_formatted_external_url,
+      :environment_external_url_for_route_map,
       :code_owners,
       :simple_viewer,
       :rich_viewer,
