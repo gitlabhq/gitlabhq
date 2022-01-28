@@ -32,7 +32,7 @@ module Gitlab
 
           def records_fetcher
             strong_memoize(:records_fetcher) do
-              RecordsFetcher.new(stage: stage, query: query, params: params)
+              RecordsFetcher.new(stage: stage, query: query_builder.build_sorted_query, params: params)
             end
           end
 
@@ -41,7 +41,11 @@ module Gitlab
           attr_reader :stage, :params
 
           def query
-            BaseQueryBuilder.new(stage: stage, params: params).build
+            query_builder.build
+          end
+
+          def query_builder
+            @query_builder = BaseQueryBuilder.new(stage: stage, params: params)
           end
 
           def limit_count

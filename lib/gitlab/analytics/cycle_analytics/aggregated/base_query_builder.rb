@@ -37,6 +37,16 @@ module Gitlab
             filter_assignees(query)
           end
 
+          def build_sorted_query
+            direction = params[:direction] || :desc
+
+            if params[:sort] == :duration
+              build.order_by_duration(direction)
+            else
+              build.order_by_end_event(direction)
+            end
+          end
+
           def filter_author(query)
             return query if params[:author_username].blank?
 

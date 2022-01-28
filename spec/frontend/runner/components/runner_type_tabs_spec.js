@@ -1,7 +1,7 @@
 import { GlTab } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import RunnerTypeTabs from '~/runner/components/runner_type_tabs.vue';
-import { INSTANCE_TYPE, GROUP_TYPE } from '~/runner/constants';
+import { INSTANCE_TYPE, GROUP_TYPE, PROJECT_TYPE } from '~/runner/constants';
 
 const mockSearch = { runnerType: null, filters: [], pagination: { page: 1 }, sort: 'CREATED_DESC' };
 
@@ -13,6 +13,7 @@ describe('RunnerTypeTabs', () => {
     findTabs()
       .filter((tab) => tab.attributes('active') === 'true')
       .at(0);
+  const getTabsTitles = () => findTabs().wrappers.map((tab) => tab.text());
 
   const createComponent = ({ props, ...options } = {}) => {
     wrapper = shallowMount(RunnerTypeTabs, {
@@ -35,13 +36,18 @@ describe('RunnerTypeTabs', () => {
     wrapper.destroy();
   });
 
-  it('Renders options to filter runners', () => {
-    expect(findTabs().wrappers.map((tab) => tab.text())).toEqual([
-      'All',
-      'Instance',
-      'Group',
-      'Project',
-    ]);
+  it('Renders all options to filter runners by default', () => {
+    expect(getTabsTitles()).toEqual(['All', 'Instance', 'Group', 'Project']);
+  });
+
+  it('Renders fewer options to filter runners', () => {
+    createComponent({
+      props: {
+        runnerTypes: [GROUP_TYPE, PROJECT_TYPE],
+      },
+    });
+
+    expect(getTabsTitles()).toEqual(['All', 'Group', 'Project']);
   });
 
   it('"All" is selected by default', () => {

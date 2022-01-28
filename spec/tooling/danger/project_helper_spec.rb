@@ -209,6 +209,7 @@ RSpec.describe Tooling::Danger::ProjectHelper do
       'lib/api/entities/project_integration.rb' | [:integrations_be, :backend]
       'lib/gitlab/hook_data/note_builder.rb' | [:integrations_be, :backend]
       'lib/gitlab/data_builder/note.rb' | [:integrations_be, :backend]
+      'lib/gitlab/web_hooks/recursion_detection.rb' | [:integrations_be, :backend]
       'ee/lib/ee/gitlab/integrations/sti_type.rb' | [:integrations_be, :backend]
       'ee/lib/ee/api/helpers/integrations_helpers.rb' | [:integrations_be, :backend]
       'ee/app/serializers/integrations/jira_serializers/issue_entity.rb' | [:integrations_be, :backend]

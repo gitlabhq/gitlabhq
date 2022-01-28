@@ -2,12 +2,16 @@ import { __, s__ } from '~/locale';
 
 export const RUNNER_PAGE_SIZE = 20;
 export const RUNNER_JOB_COUNT_LIMIT = 1000;
-export const GROUP_RUNNER_COUNT_LIMIT = 1000;
 
 export const I18N_FETCH_ERROR = s__('Runners|Something went wrong while fetching runner data.');
 export const I18N_DETAILS_TITLE = s__('Runners|Runner #%{runner_id}');
 
 // Type
+
+export const I18N_ALL_TYPES = s__('Runners|All');
+export const I18N_INSTANCE_TYPE = s__('Runners|Instance');
+export const I18N_GROUP_TYPE = s__('Runners|Group');
+export const I18N_PROJECT_TYPE = s__('Runners|Project');
 export const I18N_INSTANCE_RUNNER_DESCRIPTION = s__('Runners|Available to all projects');
 export const I18N_GROUP_RUNNER_DESCRIPTION = s__(
   'Runners|Available to all projects and subgroups in the group',
