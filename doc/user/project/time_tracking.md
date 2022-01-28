@@ -8,76 +8,81 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Time tracking **(FREE)**
 
-With time tracking you can track estimates and time spent on issues and merge
-requests in GitLab.
+You can estimate and track the time you spend on [issues](issues/index.md)
+and [merge requests](merge_requests/index.md).
+
+Then you can [view a report](#view-a-time-tracking-report) that shows totals over time.
 
 Use time tracking for these tasks:
 
 - Record the time spent working on an issue or a merge request.
 - Add or update an estimate of the total time to complete an issue or a merge
-request.
+  request.
 - View a breakdown of time spent working on an issue or a merge request.
 
 You don't have to indicate an estimate to enter the time spent, and vice versa.
 
-Data about time tracking shows up on the issue and merge request sidebar:
+To enter and remove time tracking data, you must use [quick actions](quick_actions.md).
+Type all quick actions on their own lines.
+If you use any quick action more than once in a single comment, only its last occurrence is applied.
+
+You can see the data about time tracking on the right sidebar in issues and merge requests:
 
 ![Time tracking in the sidebar](img/time_tracking_sidebar_v13_12.png)
 
-## How to enter data
+## Estimates
 
-Time tracking uses two [quick actions](quick_actions.md): `/spend` and `/estimate`.
+The estimate is designed to show the total time needed to complete an issue or merge request.
 
-If you use either quick action more than once in a single comment, only the last occurrence is applied.
-
-Below is an example of how you can use those new quick actions inside a comment.
-
-![Time tracking example in a comment](img/time_tracking_example_v12_2.png)
-
-Adding time entries (time spent or estimates) is limited to project members
-with [Reporter and higher permission levels](../permissions.md).
-
-### Estimates
-
-To enter an estimate, type `/estimate`, followed by the time.
-
-For example, if you need to enter an estimate of 1 month, 2 weeks, 3 days, 4 hours, and 5 minutes,
-type `/estimate 1mo 2w 3d 4h 5m`.
-Check the [time units you can use](#configuration).
-
-The estimate is designed to show the total estimated time. The estimated
-time remaining is automatically calculated and displayed when hovering over
-the time tracking information in the right sidebar.
+You can see the estimated time remaining when you hover over the time tracking information in the right sidebar.
 
 ![Estimated time remaining](img/remaining_time_v14_2.png)
 
-An issue or a merge request can have only one estimate. Every time you enter a
-new time estimate, it overwrites the previous value.
+### Add an estimate
 
-To remove an estimation entirely, use `/remove_estimate`.
+Prerequisites:
 
-### Time spent
+- You must have at least the Reporter role for the project.
 
-To enter time spent, type `/spend`, followed by the time.
+To enter an estimate, use the `/estimate` [quick action](quick_actions.md), followed by the time.
 
-For example, if you need
-to log 1 month, 2 weeks, 3 days, 4 hours, and 5 minutes, type `/spend 1mo 2w 3d 4h 5m`.
-Check the [time units you can use](#configuration).
+For example, if you need to enter an estimate of 1 month, 2 weeks, 3 days, 4 hours, and 5 minutes,
+type `/estimate 1mo 2w 3d 4h 5m`.
+Check the [time units you can use](#available-time-units).
+
+An issue or a merge request can have only one estimate.
+Every time you enter a new time estimate, it overwrites the previous value.
+
+### Remove an estimate
+
+Prerequisites:
+
+- You must have at least the Reporter role for the project.
+
+To remove an estimate entirely, use the `/remove_estimate` [quick action](quick_actions.md).
+
+## Time spent
+
+As you work, you can log the time you've spent.
 
 Every new time spent entry is added to the current total time spent for the
 issue or the merge request.
 
-To subtract time, enter a negative value. For example, `/spend -3d` removes three
-days from the total time spent. You can't go below 0 minutes of time spent,
-so if you remove more time than already entered, GitLab ignores the subtraction.
+### Add time spent
 
-You can log time in the past by providing a date after the time.
-For example, if you want to log 1 hour of time spent on the 31 January 2021,
-you would type `/spend 1h 2021-01-31`. If you supply a date in the future, the
-command fails and no time is logged.
+Prerequisites:
 
-To add a timelog entry with a note, create a comment with a description and the quick action.
-It then shows in the timelog "Summary/Notes" column. For example:
+- You must have at least the Reporter role for the project.
+
+To enter time spent, use the `/spend` [quick action](quick_actions.md), followed by the time.
+
+For example, if you need
+to log 1 month, 2 weeks, 3 days, 4 hours, and 5 minutes, type `/spend 1mo 2w 3d 4h 5m`.
+Check the [time units you can use](#available-time-units).
+
+To add a [time tracking report](#view-a-time-tracking-report) entry with a note, create a comment
+with a description and the quick action.
+It then shows in the time tracking report **Summary/Notes** column. For example:
 
 ```plaintext
 Draft MR and respond to initial comments
@@ -85,7 +90,29 @@ Draft MR and respond to initial comments
 /spend 30m
 ```
 
-To remove all the time spent at once, use `/remove_time_spent`.
+### Add time spent on a specific date
+
+Prerequisites:
+
+- You must have at least the Reporter role for the project.
+
+You can log time in the past by providing a date after the time.
+For example, to log 1 hour of time spent on 31 January 2021,
+type `/spend 1h 2021-01-31`.
+
+If you type a future date, no time is logged.
+
+### Remove time spent
+
+Prerequisites:
+
+- You must have at least the Reporter role for the project.
+
+To subtract time, enter a negative value. For example, `/spend -3d` removes three
+days from the total time spent. You can't go below 0 minutes of time spent,
+so if you remove more time than already entered, GitLab ignores the subtraction.
+
+To remove all the time spent at once, use the `/remove_time_spent` [quick action](quick_actions.md).
 
 ## View a time tracking report
 
@@ -97,31 +124,32 @@ Prerequisites:
 
 - You must have at least the [Reporter role](../permissions.md#project-members-permissions) for a project.
 
-To view a time tracking report, go to an issue or a merge request and select **Time tracking report**
-in the right sidebar.
+To view a time tracking report:
+
+1. Go to an issue or a merge request.
+1. In the right sidebar, select **Time tracking report**.
 
 ![Time tracking report](img/time_tracking_report_v13_12.png)
 
 The breakdown of spent time is limited to a maximum of 100 entries.
 
-## Configuration
+## Available time units
 
 The following time units are available:
 
-| Time unit | What to type | Default conversion rate |
-| --------- | ------------ | ----------------------- |
-| Month     | `mo`         | 4w                      |
-| Week      | `w`          | 5d                      |
-| Day       | `d`          | 8h                      |
-| Hour      | `h`          | 60m                     |
-| Minute    | `m`          |                         |
+| Time unit | What to type                | Conversion rate |
+| --------- | --------------------------- | --------------- |
+| Month     | `mo`, `month`, or `months`  | 4w (160h)       |
+| Week      | `w`, `week`, or `weeks`     | 5d (40h)        |
+| Day       | `d`, `day`, or `days`       | 8h              |
+| Hour      | `h`, `hour`, or `hours`     | 60m             |
+| Minute    | `m`, `minute`, or `minutes` |                 |
 
 ### Limit displayed units to hours **(FREE SELF)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/29469/) in GitLab 12.1.
 
-In GitLab self-managed instances, you can limit the display of time units to
-hours.
+In GitLab self-managed instances, you can limit the display of time units to hours.
 To do so:
 
 1. On the top bar, select **Menu > Admin**.

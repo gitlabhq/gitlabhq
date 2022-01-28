@@ -67,7 +67,7 @@ module Ci
 
     has_many :builds
     has_many :runner_projects, inverse_of: :runner, autosave: true, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
-    has_many :projects, through: :runner_projects, disable_joins: -> { ::Feature.enabled?(:ci_runner_projects_disable_joins, default_enabled: :yaml) }
+    has_many :projects, through: :runner_projects, disable_joins: true
     has_many :runner_namespaces, inverse_of: :runner, autosave: true
     has_many :groups, through: :runner_namespaces, disable_joins: true
 

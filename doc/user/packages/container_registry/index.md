@@ -583,11 +583,22 @@ For information on how to update your images, see the [Docker help](https://docs
 
 ### `Blob unknown to registry` error when pushing a manifest list
 
-When [pushing a Docker manifest list](https://docs.docker.com/engine/reference/commandline/manifest/#create-and-push-a-manifest-list) to the GitLab Container Registry, you may receive the error `manifest blob unknown: blob unknown to registry`. [This issue](https://gitlab.com/gitlab-org/gitlab/-/issues/209008) occurs when the individual child manifests referenced in the manifest list were not pushed to the same repository.
+When [pushing a Docker manifest list](https://docs.docker.com/engine/reference/commandline/manifest/#create-and-push-a-manifest-list)
+to the GitLab Container Registry, you may receive the error
+`manifest blob unknown: blob unknown to registry`. This is likely caused by having multiple images
+with different architectures, spread out over several repositories instead of the same repository.
 
-For example, you may have two individual images, one for `amd64` and another for `arm64v8`, and you want to build a multi-arch image with them. The `amd64` and `arm64v8` images must be pushed to the same repository where you want to push the multi-arch image.
+For example, you may have two images, each representing an architecture:
 
-As a workaround, you should include the architecture in the tag name of individual images. For example, use `mygroup/myapp:1.0.0-amd64` instead of using sub repositories, like `mygroup/myapp/amd64:1.0.0`. You can then tag the manifest list with `mygroup/myapp:1.0.0`.
+- The `amd64` platform
+- The `arm64v8` platform
+
+To build a multi-arch image with these images, you must push them to the same repository as the
+multi-arch image.
+
+To address the `Blob unknown to registry` error, include the architecture in the tag name of
+individual images. For example, use `mygroup/myapp:1.0.0-amd64` and `mygroup/myapp:1.0.0-arm64v8`.
+You can then tag the manifest list with `mygroup/myapp:1.0.0`.
 
 ### The cleanup policy doesn't delete any tags
 

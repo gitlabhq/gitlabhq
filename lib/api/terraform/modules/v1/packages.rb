@@ -21,7 +21,7 @@ module API
             module_version: SEMVER_REGEX
           }.freeze
 
-          feature_category :package_registry
+          feature_category :infrastructure_as_code
 
           after_validation do
             require_packages_enabled!

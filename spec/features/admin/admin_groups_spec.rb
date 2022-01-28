@@ -6,6 +6,7 @@ RSpec.describe 'Admin Groups' do
   include Select2Helper
   include Spec::Support::Helpers::Features::MembersHelpers
   include Spec::Support::Helpers::Features::InviteMembersModalHelper
+  include Spec::Support::Helpers::ModalHelpers
 
   let(:internal) { Gitlab::VisibilityLevel::INTERNAL }
 
@@ -250,26 +251,26 @@ RSpec.describe 'Admin Groups' do
     end
   end
 
-  describe 'admin remove themself from a group', :js, quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/222342' do
+  describe 'admin removes themself from a group', :js do
     it 'removes admin from the group' do
-      stub_feature_flags(bootstrap_confirmation_modals: false)
       group.add_user(current_user, Gitlab::Access::DEVELOPER)
 
       visit group_group_members_path(group)
 
-      page.within '[data-qa-selector="members_list"]' do # rubocop:disable QA/SelectorUsage
+      page.within members_table do
         expect(page).to have_content(current_user.name)
         expect(page).to have_content('Developer')
       end
 
-      accept_confirm { find(:css, 'li', text: current_user.name).find(:css, 'a.btn-danger').click }
+      find_member_row(current_user).click_button(title: 'Leave')
+
+      accept_gl_confirm(button_text: 'Leave')
+
+      wait_for_all_requests
 
       visit group_group_members_path(group)
 
-      page.within '[data-qa-selector="members_list"]' do # rubocop:disable QA/SelectorUsage
-        expect(page).not_to have_content(current_user.name)
-        expect(page).not_to have_content('Developer')
-      end
+      expect(members_table).not_to have_content(current_user.name)
     end
   end
 

@@ -31,16 +31,6 @@ RSpec.describe Ci::Runner do
         expect(runner.projects.count).to eq(1)
       end
     end
-
-    context 'when ci_runner_projects_disable_joins is disabled' do
-      before do
-        stub_feature_flags(ci_runner_projects_disable_joins: false)
-      end
-
-      it 'creates a cross-database query' do
-        expect { runner.projects.count }.to raise_error(Database::PreventCrossJoins::CrossJoinAcrossUnsupportedTablesError)
-      end
-    end
   end
 
   describe 'validation' do

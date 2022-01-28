@@ -7,9 +7,8 @@
 **Be sure to link this MR to the relevant deprecation issue(s).**
 
 - Deprecation Issue:
-- MR that deprecates the feature (optional):
 
-If there is no relevant removal or deprecation issue, hit pause and:
+If there is no relevant deprecation issue, hit pause and:
 
 - Review the [process for deprecating and removing features](https://about.gitlab.com/handbook/product/gitlab-the-product/#process-for-deprecating-and-removing-a-feature).
 - Connect with the Product Manager DRI.

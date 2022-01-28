@@ -25,6 +25,12 @@ module Types
     field :user, Types::UserType, null: true,
           description: 'User that is associated with the member object.'
 
+    field :merge_request_interaction, Types::UserMergeRequestInteractionType,
+          null: true,
+          description: 'Find a merge request.' do
+            argument :id, ::Types::GlobalIDType[::MergeRequest], required: true, description: 'Global ID of the merge request.'
+          end
+
     definition_methods do
       def resolve_type(object, context)
         case object
@@ -35,6 +41,12 @@ module Types
         else
           raise ::Gitlab::Graphql::Errors::BaseError, "Unknown member type #{object.class.name}"
         end
+      end
+    end
+
+    def merge_request_interaction(id: nil)
+      Gitlab::Graphql::Lazy.with_value(GitlabSchema.object_from_id(id, expected_class: ::MergeRequest)) do |merge_request|
+        Users::MergeRequestInteraction.new(user: object.user, merge_request: merge_request) if merge_request
       end
     end
   end

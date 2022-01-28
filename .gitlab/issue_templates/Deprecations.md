@@ -46,14 +46,18 @@ Which tier is this feature available in?
 
 <!-- In which milestone will this deprecation be announced ? -->
 
-### Planned Removal  Milestone
+### Planned Removal Milestone
 
 <!-- In which milestone will the feature or functionality be removed and announced? -->
 
 ### Links
 
 <!--
-Add links to any relevant documentation or code that will provide additional details or clarity regarding the planned change. Also, include a link to the removal issue if relevant.
+Add links to any relevant documentation or code that will provide additional details or clarity regarding the planned change.
+
+This issue is the main SSOT for the deprecations and removals process. Be sure to link all
+issues and MRs related to this deprecation/removal to this issue. This can include removal
+issues that were created ahead of time, and the MRs doing the actual deprecation/removal work.
 -->
 
 <!-- Label reminders - you should have one of each of the following labels.
