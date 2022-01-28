@@ -47,7 +47,7 @@ RSpec.describe 'bin/metrics-server', :aggregate_failures do
       if @pid
         pgrp = Process.getpgid(@pid)
 
-        Timeout.timeout(5) do
+        Timeout.timeout(10) do
           Process.kill('TERM', -pgrp)
           Process.waitpid(@pid)
         end
@@ -63,7 +63,7 @@ RSpec.describe 'bin/metrics-server', :aggregate_failures do
 
     it 'serves /metrics endpoint' do
       expect do
-        Timeout.timeout(5) do
+        Timeout.timeout(10) do
           http_ok = false
           until http_ok
             sleep 1

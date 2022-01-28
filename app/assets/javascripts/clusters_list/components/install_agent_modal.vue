@@ -111,6 +111,9 @@ export default {
     canCancel() {
       return !this.registered && !this.registering && this.isAgentRegistrationModal;
     },
+    canRegister() {
+      return !this.registered && this.isAgentRegistrationModal;
+    },
     agentRegistrationCommand() {
       return generateAgentRegistrationCommand(this.agentToken, this.kasAddress);
     },
@@ -383,7 +386,16 @@ export default {
       </gl-button>
 
       <gl-button
-        v-else-if="isAgentRegistrationModal"
+        v-if="canCancel"
+        :data-track-action="$options.EVENT_ACTIONS_CLICK"
+        :data-track-label="$options.EVENT_LABEL_MODAL"
+        data-track-property="cancel"
+        @click="closeModal"
+        >{{ i18n.cancel }}
+      </gl-button>
+
+      <gl-button
+        v-if="canRegister"
         :disabled="!nextButtonDisabled"
         variant="confirm"
         category="primary"
@@ -392,15 +404,6 @@ export default {
         data-track-property="register"
         @click="registerAgent"
         >{{ i18n.registerAgentButton }}
-      </gl-button>
-
-      <gl-button
-        v-if="canCancel"
-        :data-track-action="$options.EVENT_ACTIONS_CLICK"
-        :data-track-label="$options.EVENT_LABEL_MODAL"
-        data-track-property="cancel"
-        @click="closeModal"
-        >{{ i18n.cancel }}
       </gl-button>
 
       <gl-button
