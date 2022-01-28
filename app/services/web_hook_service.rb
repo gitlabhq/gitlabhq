@@ -102,9 +102,11 @@ class WebHookService
       break log_rate_limited if rate_limited?
       break log_recursion_blocked if recursion_blocked?
 
-      data[:_gitlab_recursion_detection_request_uuid] = Gitlab::WebHooks::RecursionDetection::UUID.instance.request_uuid
+      params = {
+        recursion_detection_request_uuid: Gitlab::WebHooks::RecursionDetection::UUID.instance.request_uuid
+      }.compact
 
-      WebHookWorker.perform_async(hook.id, data, hook_name)
+      WebHookWorker.perform_async(hook.id, data, hook_name, params)
     end
   end
 

@@ -159,7 +159,7 @@ module Ci
         return
       end
 
-      if runner.can_pick?(build)
+      if runner.matches_build?(build)
         @metrics.increment_queue_operation(:build_can_pick)
       else
         @metrics.increment_queue_operation(:build_not_pick)

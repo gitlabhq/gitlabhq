@@ -24,11 +24,11 @@ GitLab maintains and tests two main types of Reference Architectures. The **Omni
 
 ### Getting started for production-grade Omnibus GitLab
 
-The Infrastructure as Code tooling [GitLab Environment Tool (GET)](https://gitlab.com/gitlab-org/quality/gitlab-environment-toolkit/-/tree/master) is the best place to start for building Omnibus GitLab on AWS and most especially if you are targeting an HA setup. While it does not automate everything, it does complete complex setups like Gitaly Cluster for you. GET is open source so anyone can build on top of it and contribute improvements to it.
+The Infrastructure as Code tooling [GitLab Environment Tool (GET)](https://gitlab.com/gitlab-org/gitlab-environment-toolkit/-/tree/main) is the best place to start for building Omnibus GitLab on AWS and most especially if you are targeting an HA setup. While it does not automate everything, it does complete complex setups like Gitaly Cluster for you. GET is open source so anyone can build on top of it and contribute improvements to it.
 
 ### Getting started for production-grade Cloud Native Hybrid GitLab
 
-For the Cloud Native Hybrid architectures there are two Infrastructure as Code options which are compared in GitLab Cloud Native Hybrid on AWS EKS implementation pattern in the section [Available Infrastructure as Code for GitLab Cloud Native Hybrid](gitlab_hybrid_on_aws.md#available-infrastructure-as-code-for-gitlab-cloud-native-hybrid). It compares the [GitLab Environment Toolkit](https://gitlab.com/gitlab-org/quality/gitlab-environment-toolkit/-/tree/master) to the AWS Quick Start for GitLab Cloud Native Hybrid on EKS which was co-developed by GitLab and AWS. GET and the AWS Quick Start are both open source so anyone can build on top of them and contribute improvements to them.
+For the Cloud Native Hybrid architectures there are two Infrastructure as Code options which are compared in GitLab Cloud Native Hybrid on AWS EKS implementation pattern in the section [Available Infrastructure as Code for GitLab Cloud Native Hybrid](gitlab_hybrid_on_aws.md#available-infrastructure-as-code-for-gitlab-cloud-native-hybrid). It compares the [GitLab Environment Toolkit](https://gitlab.com/gitlab-org/gitlab-environment-toolkit/-/tree/main) to the AWS Quick Start for GitLab Cloud Native Hybrid on EKS which was co-developed by GitLab and AWS. GET and the AWS Quick Start are both open source so anyone can build on top of them and contribute improvements to them.
 
 ## Introduction
 

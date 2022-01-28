@@ -404,7 +404,7 @@ RSpec.describe WebHookService, :request_store, :clean_gitlab_redis_shared_state 
 
   describe '#async_execute' do
     def expect_to_perform_worker(hook)
-      expect(WebHookWorker).to receive(:perform_async).with(hook.id, data, 'push_hooks')
+      expect(WebHookWorker).to receive(:perform_async).with(hook.id, data, 'push_hooks', an_instance_of(Hash))
     end
 
     def expect_to_rate_limit(hook, threshold:, throttled: false)

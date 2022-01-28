@@ -588,7 +588,7 @@ RSpec.describe Ci::Runner do
     end
   end
 
-  describe '#can_pick?' do
+  describe '#matches_build?' do
     using RSpec::Parameterized::TableSyntax
 
     let_it_be(:pipeline) { create(:ci_pipeline) }
@@ -599,31 +599,15 @@ RSpec.describe Ci::Runner do
     let(:tag_list) { [] }
     let(:run_untagged) { true }
 
-    subject { runner.can_pick?(build) }
-
-    context 'a different runner' do
-      let(:other_project) { create(:project) }
-      let(:other_runner) { create(:ci_runner, :project, projects: [other_project], tag_list: tag_list, run_untagged: run_untagged) }
-
-      before do
-        # `can_pick?` is not used outside the runners available for the project
-        stub_feature_flags(ci_runners_short_circuit_assignable_for: false)
-      end
-
-      it 'cannot handle builds' do
-        expect(other_runner.can_pick?(build)).to be_falsey
-      end
-    end
+    subject { runner.matches_build?(build) }
 
     context 'when runner does not have tags' do
-      it 'can handle builds without tags' do
-        expect(runner.can_pick?(build)).to be_truthy
-      end
+      it { is_expected.to be_truthy }
 
       it 'cannot handle build with tags' do
         build.tag_list = ['aa']
 
-        expect(runner.can_pick?(build)).to be_falsey
+        is_expected.to be_falsey
       end
     end
 
@@ -634,20 +618,18 @@ RSpec.describe Ci::Runner do
         it 'can handle build with matching tags' do
           build.tag_list = ['bb']
 
-          expect(runner.can_pick?(build)).to be_truthy
+          is_expected.to be_truthy
         end
 
         it 'cannot handle build without matching tags' do
           build.tag_list = ['aa']
 
-          expect(runner.can_pick?(build)).to be_falsey
+          is_expected.to be_falsey
         end
       end
 
       context 'when runner can pick untagged jobs' do
-        it 'can handle builds without tags' do
-          expect(runner.can_pick?(build)).to be_truthy
-        end
+        it { is_expected.to be_truthy }
 
         it_behaves_like 'tagged build picker'
       end
@@ -655,9 +637,7 @@ RSpec.describe Ci::Runner do
       context 'when runner cannot pick untagged jobs' do
         let(:run_untagged) { false }
 
-        it 'cannot handle builds without tags' do
-          expect(runner.can_pick?(build)).to be_falsey
-        end
+        it { is_expected.to be_falsey }
 
         it_behaves_like 'tagged build picker'
       end
@@ -666,64 +646,31 @@ RSpec.describe Ci::Runner do
     context 'when runner is shared' do
       let(:runner) { create(:ci_runner, :instance) }
 
-      it 'can handle builds' do
-        expect(runner.can_pick?(build)).to be_truthy
-      end
+      it { is_expected.to be_truthy }
 
       context 'when runner is locked' do
         let(:runner) { create(:ci_runner, :instance, locked: true) }
 
-        it 'can handle builds' do
-          expect(runner.can_pick?(build)).to be_truthy
-        end
+        it { is_expected.to be_truthy }
       end
 
       it 'does not query for owned or instance runners' do
         expect(described_class).not_to receive(:owned_or_instance_wide)
 
-        runner.can_pick?(build)
-      end
-
-      context 'when feature flag ci_runners_short_circuit_assignable_for is disabled' do
-        before do
-          stub_feature_flags(ci_runners_short_circuit_assignable_for: false)
-        end
-
-        it 'does not query for owned or instance runners' do
-          expect(described_class).to receive(:owned_or_instance_wide).and_call_original
-
-          runner.can_pick?(build)
-        end
+        subject
       end
     end
 
     context 'when runner is not shared' do
-      before do
-        # `can_pick?` is not used outside the runners available for the project
-        stub_feature_flags(ci_runners_short_circuit_assignable_for: false)
-      end
-
       context 'when runner is assigned to a project' do
-        it 'can handle builds' do
-          expect(runner.can_pick?(build)).to be_truthy
-        end
-      end
-
-      context 'when runner is assigned to another project' do
-        let(:runner_project) { create(:project) }
-
-        it 'cannot handle builds' do
-          expect(runner.can_pick?(build)).to be_falsey
-        end
+        it { is_expected.to be_truthy }
       end
 
       context 'when runner is assigned to a group' do
         let(:group) { create(:group, projects: [build.project]) }
         let(:runner) { create(:ci_runner, :group, tag_list: tag_list, run_untagged: run_untagged, groups: [group]) }
 
-        it 'can handle builds' do
-          expect(runner.can_pick?(build)).to be_truthy
-        end
+        it { is_expected.to be_truthy }
 
         it 'knows namespace id it is assigned to' do
           expect(runner.namespace_ids).to eq [group.id]
@@ -1260,14 +1207,6 @@ RSpec.describe Ci::Runner do
 
       it 'does not call #tick_runner_queue' do
         expect(runner).not_to receive(:tick_runner_queue)
-
-        runner.pick_build!(build)
-      end
-    end
-
-    context 'build picking improvement' do
-      it 'does not check if the build is assignable to a runner' do
-        expect(runner).not_to receive(:can_pick?)
 
         runner.pick_build!(build)
       end

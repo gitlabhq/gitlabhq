@@ -4731,4 +4731,11 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
       let!(:model) { create(:ci_pipeline, merge_request: parent) }
     end
   end
+
+  context 'loose foreign key on ci_pipelines.project_id' do
+    it_behaves_like 'cleanup by a loose foreign key' do
+      let!(:parent) { create(:project) }
+      let!(:model) { create(:ci_pipeline, project: parent) }
+    end
+  end
 end

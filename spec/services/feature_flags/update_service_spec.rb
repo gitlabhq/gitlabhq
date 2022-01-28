@@ -130,7 +130,7 @@ RSpec.describe FeatureFlags::UpdateService do
 
       it 'executes hooks' do
         hook = create(:project_hook, :all_events_enabled, project: project)
-        expect(WebHookWorker).to receive(:perform_async).with(hook.id, an_instance_of(Hash), 'feature_flag_hooks')
+        expect(WebHookWorker).to receive(:perform_async).with(hook.id, an_instance_of(Hash), 'feature_flag_hooks', an_instance_of(Hash))
 
         subject
       end
