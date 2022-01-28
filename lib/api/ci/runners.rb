@@ -77,18 +77,21 @@ module API
         params do
           requires :id, type: Integer, desc: 'The ID of the runner'
           optional :description, type: String, desc: 'The description of the runner'
-          optional :active, type: Boolean, desc: 'The state of a runner'
+          optional :active, type: Boolean, desc: 'Deprecated: Use `:paused` instead. Flag indicating whether the runner is allowed to receive jobs'
+          optional :paused, type: Boolean, desc: 'Flag indicating whether the runner should ignore new jobs'
           optional :tag_list, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce, desc: 'The list of tags for a runner'
-          optional :run_untagged, type: Boolean, desc: 'Flag indicating the runner can execute untagged jobs'
+          optional :run_untagged, type: Boolean, desc: 'Flag indicating whether the runner can execute untagged jobs'
           optional :locked, type: Boolean, desc: 'Flag indicating the runner is locked'
           optional :access_level, type: String, values: ::Ci::Runner.access_levels.keys,
                                   desc: 'The access_level of the runner'
           optional :maximum_timeout, type: Integer, desc: 'Maximum timeout set when this Runner will handle the job'
-          at_least_one_of :description, :active, :tag_list, :run_untagged, :locked, :access_level, :maximum_timeout
+          at_least_one_of :description, :active, :paused, :tag_list, :run_untagged, :locked, :access_level, :maximum_timeout
+          mutually_exclusive :active, :paused
         end
         put ':id' do
           runner = get_runner(params.delete(:id))
           authenticate_update_runner!(runner)
+          params[:active] = !params.delete(:paused) if params.include?(:paused)
           update_service = ::Ci::UpdateRunnerService.new(runner)
 
           if update_service.update(declared_params(include_missing: false))

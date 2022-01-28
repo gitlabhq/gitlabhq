@@ -60,7 +60,7 @@ RSpec.describe GoogleApi::CloudPlatform::Client do
     before do
       allow_any_instance_of(Google::Apis::ContainerV1::ContainerService)
         .to receive(:get_zone_cluster).with(any_args, options: user_agent_options)
-        .and_return(gke_cluster)
+                                      .and_return(gke_cluster)
     end
 
     it { is_expected.to eq(gke_cluster) }
@@ -122,7 +122,7 @@ RSpec.describe GoogleApi::CloudPlatform::Client do
     before do
       allow_any_instance_of(Google::Apis::ContainerV1beta1::ContainerService)
         .to receive(:create_cluster).with(any_args)
-        .and_return(operation)
+                                    .and_return(operation)
     end
 
     it 'sets corresponded parameters' do
@@ -172,7 +172,7 @@ RSpec.describe GoogleApi::CloudPlatform::Client do
     before do
       allow_any_instance_of(Google::Apis::ContainerV1::ContainerService)
         .to receive(:get_zone_operation).with(any_args, options: user_agent_options)
-        .and_return(operation)
+                                        .and_return(operation)
     end
 
     it { is_expected.to eq(operation) }
@@ -244,12 +244,56 @@ RSpec.describe GoogleApi::CloudPlatform::Client do
 
     let(:operation) { double('Service Account Key') }
 
-    it 'class Google Api IamService#create_service_account_key' do
+    it 'calls Google Api IamService#create_service_account_key' do
       expect_any_instance_of(Google::Apis::IamV1::IamService)
         .to receive(:create_service_account_key)
               .with(any_args)
               .and_return(operation)
       is_expected.to eq(operation)
+    end
+  end
+
+  describe 'grant_service_account_roles' do
+    subject { client.grant_service_account_roles(spy, spy) }
+
+    it 'calls Google Api CloudResourceManager#set_iam_policy' do
+      mock_gcp_id = 'mock-gcp-id'
+      mock_email = 'mock@email.com'
+      mock_policy = Struct.new(:bindings).new([])
+      mock_body = []
+
+      expect(Google::Apis::CloudresourcemanagerV1::Binding).to receive(:new)
+                                                                 .with({ 'role': 'roles/iam.serviceAccountUser', 'members': ["serviceAccount:#{mock_email}"] })
+
+      expect(Google::Apis::CloudresourcemanagerV1::Binding).to receive(:new)
+                                                                 .with({ 'role': 'roles/artifactregistry.admin', 'members': ["serviceAccount:#{mock_email}"] })
+
+      expect(Google::Apis::CloudresourcemanagerV1::Binding).to receive(:new)
+                                                                 .with({ 'role': 'roles/cloudbuild.builds.builder', 'members': ["serviceAccount:#{mock_email}"] })
+
+      expect(Google::Apis::CloudresourcemanagerV1::Binding).to receive(:new)
+                                                                 .with({ 'role': 'roles/run.admin', 'members': ["serviceAccount:#{mock_email}"] })
+
+      expect(Google::Apis::CloudresourcemanagerV1::Binding).to receive(:new)
+                                                                 .with({ 'role': 'roles/storage.admin', 'members': ["serviceAccount:#{mock_email}"] })
+
+      expect(Google::Apis::CloudresourcemanagerV1::Binding).to receive(:new)
+                                                                 .with({ 'role': 'roles/cloudsql.admin', 'members': ["serviceAccount:#{mock_email}"] })
+
+      expect(Google::Apis::CloudresourcemanagerV1::Binding).to receive(:new)
+                                                                 .with({ 'role': 'roles/browser', 'members': ["serviceAccount:#{mock_email}"] })
+
+      expect(Google::Apis::CloudresourcemanagerV1::SetIamPolicyRequest).to receive(:new).and_return([])
+
+      expect_next_instance_of(Google::Apis::CloudresourcemanagerV1::CloudResourceManagerService) do |instance|
+        expect(instance).to receive(:get_project_iam_policy)
+                              .with(mock_gcp_id)
+                              .and_return(mock_policy)
+        expect(instance).to receive(:set_project_iam_policy)
+                              .with(mock_gcp_id, mock_body)
+      end
+
+      client.grant_service_account_roles(mock_gcp_id, mock_email)
     end
   end
 end

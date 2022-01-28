@@ -1,4 +1,4 @@
-- name: "REST API Runner will not contain `paused`"
+- name: "REST and GraphQL API Runner status will not return `paused`"
   announcement_milestone: "14.5" # The milestone when this feature was first announced as deprecated.
   announcement_date: "2021-11-22"
   removal_milestone: "15.0" # the milestone when this feature is planned to be removed
@@ -11,7 +11,7 @@
     `online`, `offline`, or `not_connected`. Status `paused` or `active` will no longer appear.
 
     When checking if a runner is `paused`, API users are advised to check the boolean attribute
-    `active` to be `false` instead. When checking if a runner is `active`, check if `active` is `true`.
+    `paused` to be `true` instead. When checking if a runner is `active`, check if `paused` is `false`.
   stage: Verify
   tiers: [Core, Premium, Ultimate]
   issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/344648

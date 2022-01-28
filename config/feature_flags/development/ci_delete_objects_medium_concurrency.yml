@@ -1,8 +1,0 @@
----
-name: ci_delete_objects_medium_concurrency
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/39464
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/247103
-milestone: '13.5'
-type: development
-group: group::pipeline execution
-default_enabled: false

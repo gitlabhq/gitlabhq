@@ -18,21 +18,25 @@ module API
           optional :maintainer_note, type: String, desc: %q(Deprecated: Use :maintenance_note instead. Runner's maintenance notes)
           optional :maintenance_note, type: String, desc: %q(Runner's maintenance notes)
           optional :info, type: Hash, desc: %q(Runner's metadata)
-          optional :active, type: Boolean, desc: 'Should Runner be active'
-          optional :locked, type: Boolean, desc: 'Should Runner be locked for current project'
+          optional :active, type: Boolean, desc: 'Deprecated: Use `:paused` instead. Should runner be active'
+          optional :paused, type: Boolean, desc: 'Whether the runner should ignore new jobs'
+          optional :locked, type: Boolean, desc: 'Whether the runner should be locked for current project'
           optional :access_level, type: String, values: ::Ci::Runner.access_levels.keys,
-                                  desc: 'The access_level of the runner'
-          optional :run_untagged, type: Boolean, desc: 'Should Runner handle untagged jobs'
+                                  desc: 'The access_level of the runner; `not_protected` or `ref_protected`'
+          optional :run_untagged, type: Boolean, desc: 'Whether the runner should handle untagged jobs'
           optional :tag_list, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce, desc: %q(List of Runner's tags)
-          optional :maximum_timeout, type: Integer, desc: 'Maximum timeout set when this Runner will handle the job'
+          optional :maximum_timeout, type: Integer, desc: 'Maximum timeout set when this runner handles the job'
+          mutually_exclusive :maintainer_note, :maintainer_note
+          mutually_exclusive :active, :paused
         end
         post '/', feature_category: :runner do
-          attributes = attributes_for_keys(%i[description maintainer_note maintenance_note active locked run_untagged tag_list access_level maximum_timeout])
+          attributes = attributes_for_keys(%i[description maintainer_note maintenance_note active paused locked run_untagged tag_list access_level maximum_timeout])
             .merge(get_runner_details_from_request)
 
           # Pull in deprecated maintainer_note if that's the only note value available
           deprecated_note = attributes.delete(:maintainer_note)
           attributes[:maintenance_note] ||= deprecated_note if deprecated_note
+          attributes[:active] = !attributes.delete(:paused) if attributes.include?(:paused)
 
           @runner = ::Ci::RegisterRunnerService.new.execute(params[:token], attributes)
           forbidden! unless @runner

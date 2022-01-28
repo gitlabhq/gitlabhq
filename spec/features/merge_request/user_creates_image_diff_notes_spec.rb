@@ -127,7 +127,7 @@ RSpec.describe 'Merge request > User creates image diff notes', :js do
           visit diffs_project_merge_request_path(project, merge_request, view: view)
           wait_for_requests
 
-          expect(page.all('.diff-file span.label-lfs', visible: :all)).not_to be_empty
+          expect(page.all('[data-testid="label-lfs"]', visible: :all)).not_to be_empty
         end
 
         it_behaves_like 'creates image diff note'

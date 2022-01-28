@@ -9,6 +9,8 @@ module Ci
     end
 
     def update(params)
+      params[:active] = !params.delete(:paused) if params.include?(:paused)
+
       runner.update(params).tap do |updated|
         runner.tick_runner_queue if updated
       end

@@ -4158,12 +4158,13 @@ Input type: `RunnerUpdateInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationrunnerupdateaccesslevel"></a>`accessLevel` | [`CiRunnerAccessLevel`](#cirunneraccesslevel) | Access level of the runner. |
-| <a id="mutationrunnerupdateactive"></a>`active` | [`Boolean`](#boolean) | Indicates the runner is allowed to receive jobs. |
+| <a id="mutationrunnerupdateactive"></a>`active` **{warning-solid}** | [`Boolean`](#boolean) | **Deprecated:** This was renamed. Please use `paused`. Deprecated in 14.8. |
 | <a id="mutationrunnerupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationrunnerupdatedescription"></a>`description` | [`String`](#string) | Description of the runner. |
 | <a id="mutationrunnerupdateid"></a>`id` | [`CiRunnerID!`](#cirunnerid) | ID of the runner to update. |
 | <a id="mutationrunnerupdatelocked"></a>`locked` | [`Boolean`](#boolean) | Indicates the runner is locked. |
 | <a id="mutationrunnerupdatemaximumtimeout"></a>`maximumTimeout` | [`Int`](#int) | Maximum timeout (in seconds) for jobs processed by the runner. |
+| <a id="mutationrunnerupdatepaused"></a>`paused` | [`Boolean`](#boolean) | Indicates the runner is not allowed to receive jobs. |
 | <a id="mutationrunnerupdateprivateprojectsminutescostfactor"></a>`privateProjectsMinutesCostFactor` | [`Float`](#float) | Private projects' "minutes cost factor" associated with the runner (GitLab.com only). |
 | <a id="mutationrunnerupdatepublicprojectsminutescostfactor"></a>`publicProjectsMinutesCostFactor` | [`Float`](#float) | Public projects' "minutes cost factor" associated with the runner (GitLab.com only). |
 | <a id="mutationrunnerupdaterununtagged"></a>`runUntagged` | [`Boolean`](#boolean) | Indicates the runner is able to run untagged jobs. |

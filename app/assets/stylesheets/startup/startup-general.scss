@@ -1076,6 +1076,8 @@ input {
 }
 .nav-sidebar li .nav-item-name {
   flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .nav-sidebar li > a,
 .nav-sidebar li > .fly-out-top-item-container {

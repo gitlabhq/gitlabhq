@@ -32,5 +32,22 @@ RSpec.describe Ci::PipelineScheduleService do
         expect { subject }.not_to raise_error
       end
     end
+
+    context 'when the project is missing' do
+      before do
+        project.delete
+      end
+
+      it 'does not raise an exception' do
+        expect { subject }.not_to raise_error
+      end
+
+      it 'does not run RunPipelineScheduleWorker' do
+        expect(RunPipelineScheduleWorker)
+          .not_to receive(:perform_async).with(schedule.id, schedule.owner.id)
+
+        subject
+      end
+    end
   end
 end

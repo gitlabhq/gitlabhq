@@ -15,7 +15,7 @@ class RunPipelineScheduleWorker # rubocop:disable Scalability/IdempotentWorker
     schedule = Ci::PipelineSchedule.find_by_id(schedule_id)
     user = User.find_by_id(user_id)
 
-    return unless schedule && user
+    return unless schedule && schedule.project && user
 
     run_pipeline_schedule(schedule, user)
   end

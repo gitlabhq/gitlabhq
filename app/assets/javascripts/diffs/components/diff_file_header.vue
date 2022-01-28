@@ -3,6 +3,7 @@ import {
   GlTooltipDirective,
   GlSafeHtmlDirective,
   GlIcon,
+  GlBadge,
   GlButton,
   GlButtonGroup,
   GlDropdown,
@@ -34,6 +35,7 @@ export default {
     GlIcon,
     FileIcon,
     DiffStats,
+    GlBadge,
     GlButton,
     GlButtonGroup,
     GlDropdown,
@@ -349,7 +351,9 @@ export default {
         {{ diffFile.a_mode }} → {{ diffFile.b_mode }}
       </small>
 
-      <span v-if="isUsingLfs" class="badge label label-lfs gl-mr-2"> {{ __('LFS') }} </span>
+      <gl-badge v-if="isUsingLfs" variant="neutral" class="gl-mr-2" data-testid="label-lfs">{{
+        __('LFS')
+      }}</gl-badge>
     </div>
 
     <div

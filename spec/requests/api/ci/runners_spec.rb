@@ -109,7 +109,7 @@ RSpec.describe API::Ci::Runners do
         get api('/runners?tag_list=tag1,tag2', user)
 
         expect(json_response).to match_array [
-          a_hash_including('description' => 'Runner tagged with tag1 and tag2')
+          a_hash_including('description' => 'Runner tagged with tag1 and tag2', 'active' => true, 'paused' => false)
         ]
       end
     end
@@ -137,7 +137,7 @@ RSpec.describe API::Ci::Runners do
           get api('/runners/all', admin)
 
           expect(json_response).to match_array [
-            a_hash_including('description' => 'Project runner', 'is_shared' => false, 'runner_type' => 'project_type'),
+            a_hash_including('description' => 'Project runner', 'is_shared' => false, 'active' => true, 'paused' => false, 'runner_type' => 'project_type'),
             a_hash_including('description' => 'Two projects runner', 'is_shared' => false, 'runner_type' => 'project_type'),
             a_hash_including('description' => 'Group runner A', 'is_shared' => false, 'runner_type' => 'group_type'),
             a_hash_including('description' => 'Group runner B', 'is_shared' => false, 'runner_type' => 'group_type'),
@@ -255,6 +255,8 @@ RSpec.describe API::Ci::Runners do
           expect(json_response['description']).to eq(shared_runner.description)
           expect(json_response['maximum_timeout']).to be_nil
           expect(json_response['status']).to eq("not_connected")
+          expect(json_response['active']).to eq(true)
+          expect(json_response['paused']).to eq(false)
         end
       end
 
@@ -354,6 +356,14 @@ RSpec.describe API::Ci::Runners do
         it 'runner active state' do
           active = shared_runner.active
           update_runner(shared_runner.id, admin, active: !active)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(shared_runner.reload.active).to eq(!active)
+        end
+
+        it 'runner paused state' do
+          active = shared_runner.active
+          update_runner(shared_runner.id, admin, paused: active)
 
           expect(response).to have_gitlab_http_status(:ok)
           expect(shared_runner.reload.active).to eq(!active)
@@ -908,9 +918,9 @@ RSpec.describe API::Ci::Runners do
         get api("/projects/#{project.id}/runners", user)
 
         expect(json_response).to match_array [
-          a_hash_including('description' => 'Project runner'),
-          a_hash_including('description' => 'Two projects runner'),
-          a_hash_including('description' => 'Shared runner')
+          a_hash_including('description' => 'Project runner', 'active' => true, 'paused' => false),
+          a_hash_including('description' => 'Two projects runner', 'active' => true, 'paused' => false),
+          a_hash_including('description' => 'Shared runner', 'active' => true, 'paused' => false)
         ]
       end
 
@@ -986,7 +996,7 @@ RSpec.describe API::Ci::Runners do
         get api("/groups/#{group.id}/runners", user)
 
         expect(json_response).to match_array([
-          a_hash_including('description' => 'Group runner A')
+          a_hash_including('description' => 'Group runner A', 'active' => true, 'paused' => false)
         ])
       end
 

@@ -82,7 +82,7 @@ describe('DiffFileHeader component', () => {
   const findExpandButton = () => wrapper.find({ ref: 'expandDiffToFullFileButton' });
   const findFileActions = () => wrapper.find('.file-actions');
   const findModeChangedLine = () => wrapper.find({ ref: 'fileMode' });
-  const findLfsLabel = () => wrapper.find('.label-lfs');
+  const findLfsLabel = () => wrapper.find('[data-testid="label-lfs"]');
   const findToggleDiscussionsButton = () => wrapper.find({ ref: 'toggleDiscussionsButton' });
   const findExternalLink = () => wrapper.find({ ref: 'externalLink' });
   const findReplacedFileButton = () => wrapper.find({ ref: 'replacedFileButton' });

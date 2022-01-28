@@ -20,6 +20,7 @@ module GoogleApi
         "https://www.googleapis.com/auth/logging.write",
         "https://www.googleapis.com/auth/monitoring"
       ].freeze
+      ROLES_LIST = %w[roles/iam.serviceAccountUser roles/artifactregistry.admin roles/cloudbuild.builds.builder roles/run.admin roles/storage.admin roles/cloudsql.admin roles/browser].freeze
 
       class << self
         def session_key_for_token
@@ -88,11 +89,8 @@ module GoogleApi
       def list_projects
         result = []
 
-        service = Google::Apis::CloudresourcemanagerV1::CloudResourceManagerService.new
-        service.authorization = access_token
-
-        response = service.fetch_all(items: :projects) do |token|
-          service.list_projects
+        response = cloud_resource_manager_service.fetch_all(items: :projects) do |token|
+          cloud_resource_manager_service.list_projects
         end
 
         # Google API results are paged by default, so we need to iterate through
@@ -128,6 +126,11 @@ module GoogleApi
         name = "projects/#{gcp_project_id}/serviceAccounts/#{service_account_id}"
         request_body = Google::Apis::IamV1::CreateServiceAccountKeyRequest.new
         service.create_service_account_key(name, request_body)
+      end
+
+      def grant_service_account_roles(gcp_project_id, email)
+        body = policy_request_body(gcp_project_id, email)
+        cloud_resource_manager_service.set_project_iam_policy(gcp_project_id, body)
       end
 
       private
@@ -172,6 +175,23 @@ module GoogleApi
         Google::Apis::RequestOptions.new.tap do |options|
           options.header = { 'User-Agent': "GitLab/#{Gitlab::VERSION.match('(\d+\.\d+)').captures.first} (GPN:GitLab;)" }
         end
+      end
+
+      def policy_request_body(gcp_project_id, email)
+        policy = cloud_resource_manager_service.get_project_iam_policy(gcp_project_id)
+        policy.bindings = policy.bindings + additional_policy_bindings("serviceAccount:#{email}")
+
+        Google::Apis::CloudresourcemanagerV1::SetIamPolicyRequest.new(policy: policy)
+      end
+
+      def additional_policy_bindings(member)
+        ROLES_LIST.map do |role|
+          Google::Apis::CloudresourcemanagerV1::Binding.new(role: role, members: [member])
+        end
+      end
+
+      def cloud_resource_manager_service
+        @gpc_service ||= Google::Apis::CloudresourcemanagerV1::CloudResourceManagerService.new.tap { |s| s. authorization = access_token }
       end
     end
   end

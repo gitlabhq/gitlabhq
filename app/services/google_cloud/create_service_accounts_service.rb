@@ -5,6 +5,7 @@ module GoogleCloud
     def execute
       service_account = google_api_client.create_service_account(gcp_project_id, service_account_name, service_account_desc)
       service_account_key = google_api_client.create_service_account_key(gcp_project_id, service_account.unique_id)
+      google_api_client.grant_service_account_roles(gcp_project_id, service_account.email)
 
       service_accounts_service.add_for_project(
         environment_name,
@@ -35,7 +36,7 @@ module GoogleCloud
     end
 
     def google_api_client
-      GoogleApi::CloudPlatform::Client.new(google_oauth2_token, nil)
+      @google_api_client_instance ||= GoogleApi::CloudPlatform::Client.new(google_oauth2_token, nil)
     end
 
     def service_accounts_service
@@ -50,7 +51,7 @@ module GoogleCloud
       "GitLab generated service account for project '#{project.name}' and environment '#{environment_name}'"
     end
 
-    # Overriden in EE
+    # Overridden in EE
     def environment_protected?
       false
     end

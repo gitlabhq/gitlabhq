@@ -2,22 +2,26 @@
 
 require 'spec_helper'
 
-# Mock Types
-MockGoogleOAuth2Credentials = Struct.new(:app_id, :app_secret)
-MockServiceAccount = Struct.new(:project_id, :unique_id)
-
 RSpec.describe GoogleCloud::CreateServiceAccountsService do
   describe '#execute' do
     before do
+      mock_google_oauth2_creds = Struct.new(:app_id, :app_secret)
+                                      .new('mock-app-id', 'mock-app-secret')
       allow(Gitlab::Auth::OAuth::Provider).to receive(:config_for)
                                                 .with('google_oauth2')
-                                                .and_return(MockGoogleOAuth2Credentials.new('mock-app-id', 'mock-app-secret'))
+                                                .and_return(mock_google_oauth2_creds)
 
       allow_next_instance_of(GoogleApi::CloudPlatform::Client) do |client|
+        mock_service_account = Struct.new(:project_id, :unique_id, :email)
+                                     .new('mock-project-id', 'mock-unique-id', 'mock-email')
         allow(client).to receive(:create_service_account)
-                           .and_return(MockServiceAccount.new('mock-project-id', 'mock-unique-id'))
+                           .and_return(mock_service_account)
+
         allow(client).to receive(:create_service_account_key)
                            .and_return('mock-key')
+
+        allow(client)
+          .to receive(:grant_service_account_roles)
       end
     end
 

@@ -34,7 +34,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
             run_untagged: false,
             tag_list: 'tag1, tag2',
             locked: true,
-            active: true,
+            paused: false,
             access_level: 'ref_protected',
             maximum_timeout: 9000
           }
@@ -55,7 +55,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
               maximum_timeout: 9000
             }.stringify_keys
 
-            allow(service).to receive(:execute)
+            expect(service).to receive(:execute)
               .once
               .with('valid token', a_hash_including(expected_params))
               .and_return(new_runner)
@@ -99,6 +99,32 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
               .once
               .with('valid token', a_hash_including('maintenance_note' => 'Some maintainer notes')
                 .and(excluding('maintainter_note' => anything)))
+              .and_return(new_runner)
+          end
+
+          request
+
+          expect(response).to have_gitlab_http_status(:created)
+        end
+      end
+
+      context 'when deprecated active parameter is provided' do
+        def request
+          post api('/runners'), params: {
+            token: 'valid token',
+            active: false
+          }
+        end
+
+        let_it_be(:new_runner) { create(:ci_runner) }
+
+        it 'uses active value in registration' do
+          expect_next_instance_of(::Ci::RegisterRunnerService) do |service|
+            expected_params = { active: false }.stringify_keys
+
+            expect(service).to receive(:execute)
+              .once
+              .with('valid token', a_hash_including(expected_params))
               .and_return(new_runner)
           end
 

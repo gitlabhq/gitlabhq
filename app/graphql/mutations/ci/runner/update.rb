@@ -28,7 +28,12 @@ module Mutations
 
         argument :active, GraphQL::Types::Boolean,
                  required: false,
-                 description: 'Indicates the runner is allowed to receive jobs.'
+                 description: 'Indicates the runner is allowed to receive jobs.',
+                 deprecated: { reason: :renamed, replacement: 'paused', milestone: '14.8' }
+
+        argument :paused, GraphQL::Types::Boolean,
+                 required: false,
+                 description: 'Indicates the runner is not allowed to receive jobs.'
 
         argument :locked, GraphQL::Types::Boolean, required: false,
                  description: 'Indicates the runner is locked.'

@@ -25713,8 +25713,6 @@ CREATE UNIQUE INDEX index_ci_runner_namespaces_on_runner_id_and_namespace_id ON 
 
 CREATE INDEX index_ci_runner_projects_on_project_id ON ci_runner_projects USING btree (project_id);
 
-CREATE INDEX index_ci_runner_projects_on_runner_id_and_project_id ON ci_runner_projects USING btree (runner_id, project_id);
-
 CREATE INDEX index_ci_runners_on_active ON ci_runners USING btree (active, id);
 
 CREATE INDEX index_ci_runners_on_contacted_at_and_id_desc ON ci_runners USING btree (contacted_at, id DESC);
@@ -27797,6 +27795,8 @@ CREATE INDEX index_u2f_registrations_on_user_id ON u2f_registrations USING btree
 
 CREATE UNIQUE INDEX index_uniq_im_issuable_escalation_statuses_on_issue_id ON incident_management_issuable_escalation_statuses USING btree (issue_id);
 
+CREATE UNIQUE INDEX index_unique_ci_runner_projects_on_runner_id_and_project_id ON ci_runner_projects USING btree (runner_id, project_id);
+
 CREATE UNIQUE INDEX index_unique_issue_metrics_issue_id ON issue_metrics USING btree (issue_id);
 
 CREATE INDEX index_unit_test_failures_failed_at ON ci_unit_test_failures USING btree (failed_at DESC);
@@ -29580,9 +29580,6 @@ ALTER TABLE ONLY releases
 ALTER TABLE ONLY protected_tags
     ADD CONSTRAINT fk_8e4af87648 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
-ALTER TABLE ONLY ci_pipeline_schedules
-    ADD CONSTRAINT fk_8ead60fcc4 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
-
 ALTER TABLE ONLY todos
     ADD CONSTRAINT fk_91d1f47b13 FOREIGN KEY (note_id) REFERENCES notes(id) ON DELETE CASCADE;
 
@@ -30605,9 +30602,6 @@ ALTER TABLE ONLY reviews
 
 ALTER TABLE ONLY operations_feature_flags
     ADD CONSTRAINT fk_rails_648e241be7 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY ci_sources_projects
-    ADD CONSTRAINT fk_rails_64b6855cbc FOREIGN KEY (source_project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY board_group_recent_visits
     ADD CONSTRAINT fk_rails_64bfc19bc5 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;

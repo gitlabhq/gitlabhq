@@ -23,6 +23,20 @@ RSpec.describe Ci::UpdateRunnerService do
       end
     end
 
+    context 'with paused param' do
+      let(:params) { { paused: true } }
+
+      it 'updates the runner and ticking the queue' do
+        expect(runner.active).to be_truthy
+        expect(update).to be_truthy
+
+        runner.reload
+
+        expect(runner).to have_received(:tick_runner_queue)
+        expect(runner.active).to be_falsey
+      end
+    end
+
     context 'with cost factor params' do
       let(:params) { { public_projects_minutes_cost_factor: 1.1, private_projects_minutes_cost_factor: 2.2 }}
 

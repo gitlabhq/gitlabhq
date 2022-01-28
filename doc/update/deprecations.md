@@ -226,7 +226,7 @@ In milestone 15.0, we will remove the `pipelines` attribute from the API respons
 
 **Planned removal milestone: 15.0 (2022-05-22)**
 
-### REST API Runner will not contain `paused`
+### REST and GraphQL API Runner status will not return `paused`
 
 WARNING:
 This feature will be changed or removed in 15.0
@@ -240,7 +240,7 @@ A runner's status will only relate to runner contact status, such as:
 `online`, `offline`, or `not_connected`. Status `paused` or `active` will no longer appear.
 
 When checking if a runner is `paused`, API users are advised to check the boolean attribute
-`active` to be `false` instead. When checking if a runner is `active`, check if `active` is `true`.
+`paused` to be `true` instead. When checking if a runner is `active`, check if `paused` is `false`.
 
 **Planned removal milestone: 15.0 (2022-05-22)**
 
@@ -716,6 +716,36 @@ The `merged_by` field in the [merge request API](https://docs.gitlab.com/ee/api/
 **Planned removal milestone: 15.0 (2022-05-22)**
 
 ## 14.8
+
+### REST and GraphQL API Runner usage of `active` replaced by `paused`
+
+WARNING:
+This feature will be changed or removed in 15.0
+as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Before updating GitLab, review the details carefully to determine if you need to make any
+changes to your code, settings, or workflow.
+
+Occurrences of the `active` identifier in the GitLab Runner REST and GraphQL API endpoints will be
+renamed to `paused` in GitLab 15.0, namely:
+
+- GraphQL API:
+  - the `CiRunner` property;
+  - the `RunnerUpdateInput` input type for the `runnerUpdate` mutation;
+  - the `runners` and `Group.runners` queries.
+- REST API:
+  - endpoints taking or returning `active` properties, such as:
+    - `GET /runners`
+    - `GET /runners/all`
+    - `GET /runners/:id` / `PUT /runners/:id`
+    - `PUT --form "active=false" /runners/:runner_id`
+    - `GET /projects/:id/runners` / `POST /projects/:id/runners`
+    - `GET /groups/:id/runners`
+
+The 15.0 release of the GitLab Runner will start using the `paused` property when registering runners, and therefore
+will only be compatible with GitLab 15.0 and later. Until 15.0, GitLab will accept the deprecated `active` flag from
+existing runners.
+
+**Planned removal milestone: 15.0 (2022-05-22)**
 
 ### Vulnerability Check
 

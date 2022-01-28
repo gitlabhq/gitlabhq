@@ -54,12 +54,17 @@ GET /runners?tag_list=tag1,tag2
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/runners"
 ```
 
+NOTE:
+The `active` attribute in the response was deprecated [in GitLab 14.8](https://gitlab.com/gitlab-org/gitlab/-/issues/347211).
+and will be removed in [GitLab 15.0](https://gitlab.com/gitlab-org/gitlab/-/issues/351109). It is replaced by the `paused` attribute.
+
 Example response:
 
 ```json
 [
     {
         "active": true,
+        "paused": false,
         "description": "test-1-20150125",
         "id": 6,
         "ip_address": "127.0.0.1",
@@ -71,6 +76,7 @@ Example response:
     },
     {
         "active": true,
+        "paused": false,
         "description": "test-2-20150125",
         "id": 8,
         "ip_address": "127.0.0.1",
@@ -107,12 +113,17 @@ GET /runners/all?tag_list=tag1,tag2
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/runners/all"
 ```
 
+NOTE:
+The `active` attribute in the response was deprecated [in GitLab 14.8](https://gitlab.com/gitlab-org/gitlab/-/issues/347211).
+and will be removed in [GitLab 15.0](https://gitlab.com/gitlab-org/gitlab/-/issues/351109). It is replaced by the `paused` attribute.
+
 Example response:
 
 ```json
 [
     {
         "active": true,
+        "paused": false,
         "description": "shared-runner-1",
         "id": 1,
         "ip_address": "127.0.0.1",
@@ -124,6 +135,7 @@ Example response:
     },
     {
         "active": true,
+        "paused": false,
         "description": "shared-runner-2",
         "id": 3,
         "ip_address": "127.0.0.1",
@@ -135,6 +147,7 @@ Example response:
     },
     {
         "active": true,
+        "paused": false,
         "description": "test-1-20150125",
         "id": 6,
         "ip_address": "127.0.0.1",
@@ -146,6 +159,7 @@ Example response:
     },
     {
         "active": true,
+        "paused": false,
         "description": "test-2-20150125",
         "id": 8,
         "ip_address": "127.0.0.1",
@@ -185,11 +199,16 @@ NOTE:
 The `token` attribute in the response was deprecated [in GitLab 12.10](https://gitlab.com/gitlab-org/gitlab/-/issues/214320).
 and removed in [GitLab 13.0](https://gitlab.com/gitlab-org/gitlab/-/issues/214322).
 
+NOTE:
+The `active` attribute in the response was deprecated [in GitLab 14.8](https://gitlab.com/gitlab-org/gitlab/-/issues/347211).
+and will be removed in [GitLab 15.0](https://gitlab.com/gitlab-org/gitlab/-/issues/351109). It is replaced by the `paused` attribute.
+
 Example response:
 
 ```json
 {
     "active": true,
+    "paused": false,
     "architecture": null,
     "description": "test-1-20150125",
     "id": 6,
@@ -229,16 +248,17 @@ Update details of a runner.
 PUT /runners/:id
 ```
 
-| Attribute     | Type    | Required | Description         |
-|---------------|---------|----------|---------------------|
-| `id`          | integer | yes      | The ID of a runner  |
-| `description` | string  | no       | The description of a runner |
-| `active`      | boolean | no       | The state of a runner; can be set to `true` or `false` |
-| `tag_list`    | array   | no       | The list of tags for a runner; put array of tags, that should be finally assigned to a runner |
-| `run_untagged`| boolean | no       | Flag indicating the runner can execute untagged jobs |
-| `locked`      | boolean | no       | Flag indicating the runner is locked |
-| `access_level` | string | no       | The access_level of the runner; `not_protected` or `ref_protected` |
-| `maximum_timeout` | integer | no   | Maximum timeout set when this runner handles the job |
+| Attribute         | Type    | Required | Description                                                                                      |
+|-------------------|---------|----------|--------------------------------------------------------------------------------------------------|
+| `id`              | integer | yes      | The ID of a runner                                                                               |
+| `description`     | string  | no       | The description of a runner                                                                      |
+| `active`          | boolean | no       | Deprecated: Use `:paused` instead. Flag indicating whether the runner is allowed to receive jobs |
+| `paused`          | boolean | no       | Flag indicating whether the runner should ignore new jobs                                        |
+| `tag_list`        | array   | no       | The list of tags for a runner; put array of tags, that should be finally assigned to a runner    |
+| `run_untagged`    | boolean | no       | Flag indicating the runner can execute untagged jobs                                             |
+| `locked`          | boolean | no       | Flag indicating the runner is locked                                                             |
+| `access_level`    | string  | no       | The access_level of the runner; `not_protected` or `ref_protected`                               |
+| `maximum_timeout` | integer | no       | Maximum timeout set when this runner handles the job                                             |
 
 ```shell
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/runners/6" \
@@ -248,6 +268,10 @@ curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab
 NOTE:
 The `token` attribute in the response was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/214320) in GitLab 12.10.
 and [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/214322) in GitLab 13.0.
+
+NOTE:
+The `active` query parameter was deprecated [in GitLab 14.8](https://gitlab.com/gitlab-org/gitlab/-/issues/347211).
+and will be removed in [GitLab 15.0](https://gitlab.com/gitlab-org/gitlab/-/issues/351109). It is replaced by the `paused` attribute.
 
 Example response:
 
@@ -292,7 +316,12 @@ Example response:
 Pause a specific runner.
 
 ```plaintext
-PUT --form "active=false"  /runners/:runner_id
+PUT --form "paused=true" /runners/:runner_id
+
+# --or-- 
+
+# Deprecated: removal planned in 15.0
+PUT --form "active=false" /runners/:runner_id
 ```
 
 | Attribute   | Type    | Required | Description         |
@@ -301,8 +330,18 @@ PUT --form "active=false"  /runners/:runner_id
 
 ```shell
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
+     --form "paused=true"  "https://gitlab.example.com/api/v4/runners/6"
+
+# --or--
+
+# Deprecated: removal planned in 15.0
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
      --form "active=false"  "https://gitlab.example.com/api/v4/runners/6"
 ```
+
+NOTE:
+The `active` form attribute was deprecated [in GitLab 14.8](https://gitlab.com/gitlab-org/gitlab/-/issues/347211).
+and will be removed in [GitLab 15.0](https://gitlab.com/gitlab-org/gitlab/-/issues/351109). It is replaced by the `paused` attribute.
 
 ## List runner's jobs
 
@@ -420,12 +459,17 @@ GET /projects/:id/runners?tag_list=tag1,tag2
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/9/runners"
 ```
 
+NOTE:
+The `active` attribute in the response was deprecated [in GitLab 14.8](https://gitlab.com/gitlab-org/gitlab/-/issues/347211).
+and will be removed in [GitLab 15.0](https://gitlab.com/gitlab-org/gitlab/-/issues/351109). It is replaced by the `paused` attribute.
+
 Example response:
 
 ```json
 [
     {
         "active": true,
+        "paused": false,
         "description": "test-2-20150125",
         "id": 8,
         "ip_address": "127.0.0.1",
@@ -437,6 +481,7 @@ Example response:
     },
     {
         "active": true,
+        "paused": false,
         "description": "development_runner",
         "id": 5,
         "ip_address": "127.0.0.1",
@@ -444,7 +489,7 @@ Example response:
         "runner_type": "instance_type",
         "name": null,
         "online": true,
-        "status": "paused"
+        "status": "online"
     }
 ]
 ```
@@ -525,6 +570,10 @@ GET /groups/:id/runners?tag_list=tag1,tag2
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/9/runners"
 ```
 
+NOTE:
+The `active` attribute in the response was deprecated [in GitLab 14.8](https://gitlab.com/gitlab-org/gitlab/-/issues/347211).
+and will be removed in [GitLab 15.0](https://gitlab.com/gitlab-org/gitlab/-/issues/351109). It is replaced by the `paused` attribute.
+
 Example response:
 
 ```json
@@ -534,6 +583,7 @@ Example response:
     "description": "Shared",
     "ip_address": "127.0.0.1",
     "active": true,
+    "paused": false,
     "is_shared": true,
     "runner_type": "instance_type",
     "name": "gitlab-runner",
@@ -545,6 +595,7 @@ Example response:
     "description": "Test",
     "ip_address": "127.0.0.1",
     "active": true,
+    "paused": false,
     "is_shared": true,
     "runner_type": "instance_type",
     "name": "gitlab-runner",
@@ -556,6 +607,7 @@ Example response:
     "description": "Test 2",
     "ip_address": "127.0.0.1",
     "active": true,
+    "paused": false,
     "is_shared": false,
     "runner_type": "group_type",
     "name": "gitlab-runner",
@@ -573,19 +625,20 @@ Register a new runner for the instance.
 POST /runners
 ```
 
-| Attribute          | Type         | Required | Description                                                                                                                                                    |
-|--------------------|--------------|----------|----------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `token`            | string       | yes      | [Registration token](#registration-and-authentication-tokens).                                                                                                 |
-| `description`      | string       | no       | Runner's description                                                                                                                                           |
-| `info`             | hash         | no       | Runner's metadata. You can include `name`, `version`, `revision`, `platform`, and `architecture`, but only `version` is displayed in the Admin area of the UI. |
-| `active`           | boolean      | no       | Whether the runner is active                                                                                                                                   |
-| `locked`           | boolean      | no       | Whether the runner should be locked for current project                                                                                                        |
-| `run_untagged`     | boolean      | no       | Whether the runner should handle untagged jobs                                                                                                                 |
-| `tag_list`         | string array | no       | List of runner's tags                                                                                                                                          |
-| `access_level`     | string       | no       | The access_level of the runner; `not_protected` or `ref_protected`                                                                                             |
-| `maximum_timeout`  | integer      | no       | Maximum timeout set when this runner handles the job                                                                                                           |
-| `maintainer_note`  | string       | no       | [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/350730), see `maintenance_note`.                                                                    |
-| `maintenance_note` | string       | no       | Free-form maintenance notes for the runner (255 characters)                                                                                               |
+| Attribute          | Type         | Required | Description                                                                                                                                                   |
+|--------------------|--------------|----------|---------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `token`            | string       | yes      | [Registration token](#registration-and-authentication-tokens)                                                                                                 |
+| `description`      | string       | no       | Runner's description                                                                                                                                          |
+| `info`             | hash         | no       | Runner's metadata. You can include `name`, `version`, `revision`, `platform`, and `architecture`, but only `version` is displayed in the Admin area of the UI |
+| `active`           | boolean      | no       | Deprecated: Use `:paused` instead. Whether the runner is allowed to receive jobs                                                                              |
+| `paused`           | boolean      | no       | Whether the runner should ignore new jobs                                                                                                                     |
+| `locked`           | boolean      | no       | Whether the runner should be locked for current project                                                                                                       |
+| `run_untagged`     | boolean      | no       | Whether the runner should handle untagged jobs                                                                                                                |
+| `tag_list`         | string array | no       | List of runner's tags                                                                                                                                         |
+| `access_level`     | string       | no       | The access_level of the runner; `not_protected` or `ref_protected`                                                                                            |
+| `maximum_timeout`  | integer      | no       | Maximum timeout set when this runner handles the job                                                                                                          |
+| `maintainer_note`  | string       | no       | [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/350730), see `maintenance_note`                                                                    |
+| `maintenance_note` | string       | no       | Free-form maintenance notes for the runner (255 characters)                                                                                                   |
 
 ```shell
 curl --request POST "https://gitlab.example.com/api/v4/runners" \

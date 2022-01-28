@@ -14,4 +14,4 @@
     = number_to_human_size(blob.raw_size)
 
   - if blob.stored_externally? && blob.external_storage == :lfs
-    %span.badge.label-lfs.gl-mr-2 LFS
+    = gl_badge_tag(_('LFS'), variant: :neutral)
