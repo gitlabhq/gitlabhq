@@ -5,7 +5,7 @@ module Types
     class AgentTokenType < BaseObject
       graphql_name 'ClusterAgentToken'
 
-      authorize :admin_cluster
+      authorize :read_cluster
 
       connection_type_class(Types::CountableConnectionType)
 

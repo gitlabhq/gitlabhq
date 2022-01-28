@@ -1,12 +1,12 @@
 <script>
 import { GlLink, GlTable, GlIcon, GlSprintf, GlTooltip, GlPopover } from '@gitlab/ui';
-import { s__, __ } from '~/locale';
+import { s__ } from '~/locale';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { AGENT_STATUSES } from '../constants';
 import { getAgentConfigPath } from '../clusters_util';
-import AgentOptions from './agent_options.vue';
+import DeleteAgentButton from './delete_agent_button.vue';
 
 export default {
   i18n: {
@@ -14,7 +14,6 @@ export default {
     statusLabel: s__('ClusterAgents|Connection status'),
     lastContactLabel: s__('ClusterAgents|Last contact'),
     configurationLabel: s__('ClusterAgents|Configuration'),
-    optionsLabel: __('Options'),
     troubleshootingText: s__('ClusterAgents|Learn how to troubleshoot'),
     neverConnectedText: s__('ClusterAgents|Never'),
   },
@@ -26,7 +25,7 @@ export default {
     GlTooltip,
     GlPopover,
     TimeAgoTooltip,
-    AgentOptions,
+    DeleteAgentButton,
   },
   mixins: [timeagoMixin],
   AGENT_STATUSES,
@@ -75,7 +74,7 @@ export default {
         },
         {
           key: 'options',
-          label: this.$options.i18n.optionsLabel,
+          label: '',
           tdClass,
         },
       ];
@@ -155,7 +154,7 @@ export default {
     </template>
 
     <template #cell(options)="{ item }">
-      <agent-options
+      <delete-agent-button
         :agent="item"
         :default-branch-name="defaultBranchName"
         :max-agents="maxAgents"

@@ -4,7 +4,7 @@ class Clusters::BaseController < ApplicationController
   include RoutableActions
 
   skip_before_action :authenticate_user!
-  before_action :authorize_read_cluster!
+  before_action :authorize_admin_cluster!, except: [:show, :index, :new, :authorize_aws_role, :update]
 
   helper_method :clusterable
 
@@ -18,11 +18,11 @@ class Clusters::BaseController < ApplicationController
   end
 
   def authorize_update_cluster!
-    access_denied! unless can?(current_user, :update_cluster, cluster)
+    access_denied! unless can?(current_user, :update_cluster, clusterable)
   end
 
   def authorize_admin_cluster!
-    access_denied! unless can?(current_user, :admin_cluster, cluster)
+    access_denied! unless can?(current_user, :admin_cluster, clusterable)
   end
 
   def authorize_read_cluster!

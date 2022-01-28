@@ -18,6 +18,7 @@ $white-cm: #998;
 $white-cp: #999;
 $white-c1: #998;
 $white-cs: #999;
+$white-cd: #998;
 $white-gd: $black;
 $white-gd-bg: #fdd;
 $white-gd-x: $black;
@@ -288,6 +289,9 @@ span.highlight_word {
 
 .cs { color: $white-cs;
   font-weight: $gl-font-weight-bold;
+  font-style: italic; }
+
+.cd { color: $white-cd;
   font-style: italic; }
 
 .gd {

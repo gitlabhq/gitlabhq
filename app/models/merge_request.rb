@@ -1754,6 +1754,8 @@ class MergeRequest < ApplicationRecord
 
     paths = active_diff_discussions.flat_map { |n| n.diff_file.paths }.uniq
 
+    active_discussions_resolved = active_diff_discussions.all?(&:resolved?)
+
     service = Discussions::UpdateDiffPositionService.new(
       self.project,
       current_user,
@@ -1764,9 +1766,15 @@ class MergeRequest < ApplicationRecord
 
     active_diff_discussions.each do |discussion|
       service.execute(discussion)
+      discussion.clear_memoized_values
     end
 
-    if project.resolve_outdated_diff_discussions?
+    # If they were all already resolved, this method will have already been called.
+    # If they all don't get resolved, we don't need to call the method
+    # If they go from unresolved -> resolved, then we call the method
+    if !active_discussions_resolved &&
+        active_diff_discussions.all?(&:resolved?) &&
+        project.resolve_outdated_diff_discussions?
       MergeRequests::ResolvedDiscussionNotificationService
         .new(project: project, current_user: current_user)
         .execute(self)

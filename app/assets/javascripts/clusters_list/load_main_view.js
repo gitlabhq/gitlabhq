@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import { parseBoolean } from '~/lib/utils/common_utils';
 import createDefaultClient from '~/lib/graphql';
 import ClustersMainView from './components/clusters_main_view.vue';
 import { createStore } from './store';
@@ -24,6 +25,8 @@ export default () => {
     addClusterPath,
     emptyStateHelpText,
     clustersEmptyStateImage,
+    canAddCluster,
+    canAdminCluster,
   } = el.dataset;
 
   return new Vue({
@@ -37,6 +40,8 @@ export default () => {
       addClusterPath,
       emptyStateHelpText,
       clustersEmptyStateImage,
+      canAddCluster: parseBoolean(canAddCluster),
+      canAdminCluster: parseBoolean(canAdminCluster),
     },
     store: createStore(el.dataset),
     render(createElement) {

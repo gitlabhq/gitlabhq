@@ -1,6 +1,6 @@
 import { GlLink, GlIcon } from '@gitlab/ui';
 import AgentTable from '~/clusters_list/components/agent_table.vue';
-import AgentOptions from '~/clusters_list/components/agent_options.vue';
+import DeleteAgentButton from '~/clusters_list/components/delete_agent_button.vue';
 import { ACTIVE_CONNECTION_TIME } from '~/clusters_list/constants';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { stubComponent } from 'helpers/stub_component';
@@ -56,7 +56,7 @@ const propsData = {
   ],
 };
 
-const AgentOptionsStub = stubComponent(AgentOptions, {
+const DeleteAgentButtonStub = stubComponent(DeleteAgentButton, {
   template: `<div></div>`,
 });
 
@@ -69,14 +69,14 @@ describe('AgentTable', () => {
   const findLastContactText = (at) => wrapper.findAllByTestId('cluster-agent-last-contact').at(at);
   const findConfiguration = (at) =>
     wrapper.findAllByTestId('cluster-agent-configuration-link').at(at);
-  const findAgentOptions = () => wrapper.findAllComponents(AgentOptions);
+  const findDeleteAgentButton = () => wrapper.findAllComponents(DeleteAgentButton);
 
   beforeEach(() => {
     wrapper = mountExtended(AgentTable, {
       propsData,
       provide: provideData,
       stubs: {
-        AgentOptions: AgentOptionsStub,
+        DeleteAgentButton: DeleteAgentButtonStub,
       },
     });
   });
@@ -128,7 +128,7 @@ describe('AgentTable', () => {
     });
 
     it('displays actions menu for each agent', () => {
-      expect(findAgentOptions()).toHaveLength(3);
+      expect(findDeleteAgentButton()).toHaveLength(3);
     });
   });
 });

@@ -1,36 +1,23 @@
 <script>
 import {
-  GlDropdown,
-  GlDropdownItem,
+  GlButton,
   GlModal,
   GlModalDirective,
   GlSprintf,
   GlFormGroup,
   GlFormInput,
+  GlTooltipDirective,
 } from '@gitlab/ui';
-import { s__, __, sprintf } from '~/locale';
-import { DELETE_AGENT_MODAL_ID } from '../constants';
+import { sprintf } from '~/locale';
+import { DELETE_AGENT_BUTTON, DELETE_AGENT_MODAL_ID } from '../constants';
 import deleteAgent from '../graphql/mutations/delete_agent.mutation.graphql';
 import getAgentsQuery from '../graphql/queries/get_agents.query.graphql';
 import { removeAgentFromStore } from '../graphql/cache_update';
 
 export default {
-  i18n: {
-    dropdownText: __('More options'),
-    deleteButton: s__('ClusterAgents|Delete agent'),
-    modalTitle: __('Are you sure?'),
-    modalBody: s__(
-      'ClusterAgents|Are you sure you want to delete this agent? You cannot undo this.',
-    ),
-    modalInputLabel: s__('ClusterAgents|To delete the agent, type %{name} to confirm:'),
-    modalAction: s__('ClusterAgents|Delete'),
-    modalCancel: __('Cancel'),
-    successMessage: s__('ClusterAgents|%{name} successfully deleted'),
-    defaultError: __('An error occurred. Please try again.'),
-  },
+  i18n: DELETE_AGENT_BUTTON,
   components: {
-    GlDropdown,
-    GlDropdownItem,
+    GlButton,
     GlModal,
     GlSprintf,
     GlFormGroup,
@@ -38,8 +25,9 @@ export default {
   },
   directives: {
     GlModalDirective,
+    GlTooltip: GlTooltipDirective,
   },
-  inject: ['projectPath'],
+  inject: ['projectPath', 'canAdminCluster'],
   props: {
     agent: {
       required: true,
@@ -66,6 +54,13 @@ export default {
     };
   },
   computed: {
+    deleteButtonDisabled() {
+      return this.loading || !this.canAdminCluster;
+    },
+    deleteButtonTooltip() {
+      const { deleteButton, disabledHint } = this.$options.i18n;
+      return this.deleteButtonDisabled ? disabledHint : deleteButton;
+    },
     getAgentsQueryVariables() {
       return {
         defaultBranchName: this.defaultBranchName,
@@ -159,19 +154,22 @@ export default {
 
 <template>
   <div>
-    <gl-dropdown
-      icon="ellipsis_v"
-      right
-      :disabled="loading"
-      :text="$options.i18n.dropdownText"
-      text-sr-only
-      category="tertiary"
-      no-caret
+    <div
+      v-gl-tooltip="deleteButtonTooltip"
+      class="gl-display-inline-block"
+      tabindex="-1"
+      data-testid="delete-agent-button-tooltip"
     >
-      <gl-dropdown-item v-gl-modal-directive="modalId">
-        {{ $options.i18n.deleteButton }}
-      </gl-dropdown-item>
-    </gl-dropdown>
+      <gl-button
+        ref="deleteAgentButton"
+        v-gl-modal-directive="modalId"
+        icon="remove"
+        category="secondary"
+        variant="danger"
+        :disabled="deleteButtonDisabled"
+        :aria-label="$options.i18n.deleteButton"
+      />
+    </div>
 
     <gl-modal
       ref="modal"

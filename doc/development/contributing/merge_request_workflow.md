@@ -71,6 +71,9 @@ request is as follows:
    1. The MR must include *Before* and *After* screenshots if UI changes are made.
    1. Include any steps or setup required to ensure reviewers can view the changes you've made (for example, include any information about feature flags).
 1. If you're allowed to, set a relevant milestone and [labels](issue_workflow.md).
+   MR labels should generally match the corresponding issue (if there is one).
+   The group label should reflect the group that executed or coached the work,
+   not necessarily the group that owns the feature.
 1. UI changes should use available components from the GitLab Design System,
    [Pajamas](https://design.gitlab.com/).
 1. If the MR changes CSS classes, please include the list of affected pages, which

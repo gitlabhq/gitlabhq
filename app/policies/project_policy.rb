@@ -385,6 +385,7 @@ class ProjectPolicy < BasePolicy
     enable :destroy_environment
     enable :create_deployment
     enable :update_deployment
+    enable :read_cluster
     enable :create_release
     enable :update_release
     enable :destroy_release
@@ -433,7 +434,6 @@ class ProjectPolicy < BasePolicy
     enable :read_pages
     enable :update_pages
     enable :remove_pages
-    enable :read_cluster
     enable :add_cluster
     enable :create_cluster
     enable :update_cluster

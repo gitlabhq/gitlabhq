@@ -11,7 +11,7 @@ RSpec.describe Resolvers::Clusters::AgentTokensResolver do
 
   describe '#resolve' do
     let(:agent) { create(:cluster_agent) }
-    let(:user) { create(:user, maintainer_projects: [agent.project]) }
+    let(:user) { create(:user, developer_projects: [agent.project]) }
     let(:ctx) { Hash(current_user: user) }
 
     let!(:matching_token1) { create(:cluster_agent_token, agent: agent, last_used_at: 5.days.ago) }
@@ -33,7 +33,11 @@ RSpec.describe Resolvers::Clusters::AgentTokensResolver do
     end
 
     context 'user does not have permission' do
-      let(:user) { create(:user, developer_projects: [agent.project]) }
+      let(:user) { create(:user) }
+
+      before do
+        agent.project.add_reporter(user)
+      end
 
       it { is_expected.to be_empty }
     end

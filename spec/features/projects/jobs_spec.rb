@@ -615,7 +615,7 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state do
           end
 
           context 'when the user is not able to view the cluster' do
-            let(:user_access_level) { :developer }
+            let(:user_access_level) { :reporter }
 
             it 'includes only the name of the cluster without a link' do
               expect(page).to have_content 'using cluster the-cluster'

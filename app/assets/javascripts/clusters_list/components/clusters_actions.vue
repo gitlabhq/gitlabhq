@@ -1,5 +1,5 @@
 <script>
-import { GlDropdown, GlDropdownItem, GlModalDirective } from '@gitlab/ui';
+import { GlDropdown, GlDropdownItem, GlModalDirective, GlTooltipDirective } from '@gitlab/ui';
 import { INSTALL_AGENT_MODAL_ID, CLUSTERS_ACTIONS } from '../constants';
 
 export default {
@@ -11,8 +11,15 @@ export default {
   },
   directives: {
     GlModalDirective,
+    GlTooltip: GlTooltipDirective,
   },
-  inject: ['newClusterPath', 'addClusterPath'],
+  inject: ['newClusterPath', 'addClusterPath', 'canAddCluster'],
+  computed: {
+    tooltip() {
+      const { connectWithAgent, dropdownDisabledHint } = this.$options.i18n;
+      return this.canAddCluster ? connectWithAgent : dropdownDisabledHint;
+    },
+  },
 };
 </script>
 
@@ -20,10 +27,12 @@ export default {
   <div class="nav-controls gl-ml-auto">
     <gl-dropdown
       ref="dropdown"
-      v-gl-modal-directive="$options.INSTALL_AGENT_MODAL_ID"
+      v-gl-modal-directive="canAddCluster && $options.INSTALL_AGENT_MODAL_ID"
+      v-gl-tooltip="tooltip"
       category="primary"
       variant="confirm"
       :text="$options.i18n.actionsButton"
+      :disabled="!canAddCluster"
       split
       right
     >

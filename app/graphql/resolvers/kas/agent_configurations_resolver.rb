@@ -21,7 +21,7 @@ module Resolvers
       private
 
       def can_read_agent_configuration?
-        current_user.can?(:admin_cluster, project)
+        current_user.can?(:read_cluster, project)
       end
 
       def kas_client

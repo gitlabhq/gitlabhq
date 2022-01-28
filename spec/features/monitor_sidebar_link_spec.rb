@@ -117,9 +117,8 @@ RSpec.describe 'Monitor dropdown sidebar', :aggregate_failures do
       expect(page).to have_link('Error Tracking', href: project_error_tracking_index_path(project))
       expect(page).to have_link('Product Analytics', href: project_product_analytics_path(project))
       expect(page).to have_link('Logs', href: project_logs_path(project))
-
-      expect(page).not_to have_link('Serverless', href: project_serverless_functions_path(project))
-      expect(page).not_to have_link('Kubernetes', href: project_clusters_path(project))
+      expect(page).to have_link('Serverless', href: project_serverless_functions_path(project))
+      expect(page).to have_link('Kubernetes', href: project_clusters_path(project))
     end
 
     it_behaves_like 'shows Monitor menu based on the access level'

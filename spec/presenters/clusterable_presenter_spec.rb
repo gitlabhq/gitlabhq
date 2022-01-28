@@ -79,6 +79,30 @@ RSpec.describe ClusterablePresenter do
     end
   end
 
+  describe '#can_admin_cluster?' do
+    let(:user) { create(:user) }
+
+    subject { described_class.new(clusterable).can_admin_cluster? }
+
+    before do
+      clusterable.add_maintainer(user)
+
+      allow(clusterable).to receive(:current_user).and_return(user)
+    end
+
+    context 'when clusterable is a group' do
+      let(:clusterable) { create(:group) }
+
+      it_behaves_like 'appropriate member permissions'
+    end
+
+    context 'when clusterable is a project' do
+      let(:clusterable) { create(:project, :repository) }
+
+      it_behaves_like 'appropriate member permissions'
+    end
+  end
+
   describe '#environments_cluster_path' do
     subject { described_class.new(clusterable).environments_cluster_path(cluster) }
 

@@ -28,7 +28,8 @@ module ClustersHelper
       clusters_empty_state_image: image_path('illustrations/empty-state/empty-state-clusters.svg'),
       empty_state_help_text: clusterable.empty_state_help_text,
       new_cluster_path: clusterable.new_path(tab: 'create'),
-      can_add_cluster: clusterable.can_add_cluster?.to_s
+      can_add_cluster: clusterable.can_add_cluster?.to_s,
+      can_admin_cluster: clusterable.can_admin_cluster?.to_s
     }
   end
 

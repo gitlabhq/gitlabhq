@@ -10,9 +10,10 @@ describe('ClustersActionsComponent', () => {
   const newClusterPath = 'path/to/create/cluster';
   const addClusterPath = 'path/to/connect/existing/cluster';
 
-  const provideData = {
+  const defaultProvide = {
     newClusterPath,
     addClusterPath,
+    canAddCluster: true,
   };
 
   const findDropdown = () => wrapper.findComponent(GlDropdown);
@@ -21,13 +22,21 @@ describe('ClustersActionsComponent', () => {
   const findConnectClusterLink = () => wrapper.findByTestId('connect-cluster-link');
   const findConnectNewAgentLink = () => wrapper.findByTestId('connect-new-agent-link');
 
-  beforeEach(() => {
+  const createWrapper = (provideData = {}) => {
     wrapper = shallowMountExtended(ClustersActions, {
-      provide: provideData,
+      provide: {
+        ...defaultProvide,
+        ...provideData,
+      },
       directives: {
         GlModalDirective: createMockDirective(),
+        GlTooltip: createMockDirective(),
       },
     });
+  };
+
+  beforeEach(() => {
+    createWrapper();
   });
 
   afterEach(() => {
@@ -51,5 +60,25 @@ describe('ClustersActionsComponent', () => {
     const binding = getBinding(findConnectNewAgentLink().element, 'gl-modal-directive');
 
     expect(binding.value).toBe(INSTALL_AGENT_MODAL_ID);
+  });
+
+  it('shows tooltip', () => {
+    const tooltip = getBinding(findDropdown().element, 'gl-tooltip');
+    expect(tooltip.value).toBe(CLUSTERS_ACTIONS.connectWithAgent);
+  });
+
+  describe('when user cannot add clusters', () => {
+    beforeEach(() => {
+      createWrapper({ canAddCluster: false });
+    });
+
+    it('disables dropdown', () => {
+      expect(findDropdown().props('disabled')).toBe(true);
+    });
+
+    it('shows tooltip explaining why dropdown is disabled', () => {
+      const tooltip = getBinding(findDropdown().element, 'gl-tooltip');
+      expect(tooltip.value).toBe(CLUSTERS_ACTIONS.dropdownDisabledHint);
+    });
   });
 });

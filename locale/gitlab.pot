@@ -7605,10 +7605,10 @@ msgstr ""
 msgid "ClusterAgents|Connect existing cluster"
 msgstr ""
 
-msgid "ClusterAgents|Connect with Agent"
+msgid "ClusterAgents|Connect with a certificate"
 msgstr ""
 
-msgid "ClusterAgents|Connect with a certificate"
+msgid "ClusterAgents|Connect with agent"
 msgstr ""
 
 msgid "ClusterAgents|Connect with the GitLab Agent"
@@ -7723,6 +7723,18 @@ msgid "ClusterAgents|Registering Agent"
 msgstr ""
 
 msgid "ClusterAgents|Registration token"
+msgstr ""
+
+msgid "ClusterAgents|Requires a Maintainer or greater role to delete agents"
+msgstr ""
+
+msgid "ClusterAgents|Requires a Maintainer or greater role to install new agents"
+msgstr ""
+
+msgid "ClusterAgents|Requires a Maintainer or greater role to perform these actions"
+msgstr ""
+
+msgid "ClusterAgents|Requires a maintainer or greater role to connect existing clusters"
 msgstr ""
 
 msgid "ClusterAgents|Security"
@@ -23241,9 +23253,6 @@ msgid "More information is available|here"
 msgstr ""
 
 msgid "More information."
-msgstr ""
-
-msgid "More options"
 msgstr ""
 
 msgid "More than %{number_commits_distance} commits different with %{default_branch}"

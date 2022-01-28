@@ -101,7 +101,7 @@ RSpec.describe Projects::ClustersController do
 
       it { expect { go }.to be_allowed_for(:owner).of(project) }
       it { expect { go }.to be_allowed_for(:maintainer).of(project) }
-      it { expect { go }.to be_denied_for(:developer).of(project) }
+      it { expect { go }.to be_allowed_for(:developer).of(project) }
       it { expect { go }.to be_denied_for(:reporter).of(project) }
       it { expect { go }.to be_denied_for(:guest).of(project) }
       it { expect { go }.to be_denied_for(:user) }
@@ -711,7 +711,7 @@ RSpec.describe Projects::ClustersController do
       end
       it { expect { go }.to be_allowed_for(:owner).of(project) }
       it { expect { go }.to be_allowed_for(:maintainer).of(project) }
-      it { expect { go }.to be_denied_for(:developer).of(project) }
+      it { expect { go }.to be_allowed_for(:developer).of(project) }
       it { expect { go }.to be_denied_for(:reporter).of(project) }
       it { expect { go }.to be_denied_for(:guest).of(project) }
       it { expect { go }.to be_denied_for(:user) }

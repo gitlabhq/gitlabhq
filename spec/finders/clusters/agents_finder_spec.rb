@@ -15,7 +15,11 @@ RSpec.describe Clusters::AgentsFinder do
     it { is_expected.to contain_exactly(matching_agent) }
 
     context 'user does not have permission' do
-      let(:user) { create(:user, developer_projects: [project]) }
+      let(:user) { create(:user) }
+
+      before do
+        project.add_reporter(user)
+      end
 
       it { is_expected.to be_empty }
     end

@@ -144,6 +144,7 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     enable :developer_access
     enable :admin_crm_organization
     enable :admin_crm_contact
+    enable :read_cluster
   end
 
   rule { reporter }.policy do
@@ -166,7 +167,6 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     enable :create_projects
     enable :admin_pipeline
     enable :admin_build
-    enable :read_cluster
     enable :add_cluster
     enable :create_cluster
     enable :update_cluster

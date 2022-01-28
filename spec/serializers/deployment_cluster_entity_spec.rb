@@ -7,7 +7,7 @@ RSpec.describe DeploymentClusterEntity do
     subject { described_class.new(deployment, request: request).as_json }
 
     let(:maintainer) { create(:user) }
-    let(:developer) { create(:user) }
+    let(:reporter) { create(:user) }
     let(:current_user) { maintainer }
     let(:request) { double(:request, current_user: current_user) }
     let(:project) { create(:project) }
@@ -17,7 +17,7 @@ RSpec.describe DeploymentClusterEntity do
 
     before do
       project.add_maintainer(maintainer)
-      project.add_developer(developer)
+      project.add_reporter(reporter)
     end
 
     it 'matches deployment_cluster entity schema' do
@@ -31,7 +31,7 @@ RSpec.describe DeploymentClusterEntity do
     end
 
     context 'when the user does not have permission to view the cluster' do
-      let(:current_user) { developer }
+      let(:current_user) { reporter }
 
       it 'does not include the path nor the namespace' do
         expect(subject[:path]).to be_nil

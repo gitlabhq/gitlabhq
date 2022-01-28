@@ -103,7 +103,7 @@ RSpec.describe Groups::ClustersController do
       it('is denied for admin when admin mode is disabled') { expect { go }.to be_denied_for(:admin) }
       it { expect { go }.to be_allowed_for(:owner).of(group) }
       it { expect { go }.to be_allowed_for(:maintainer).of(group) }
-      it { expect { go }.to be_denied_for(:developer).of(group) }
+      it { expect { go }.to be_allowed_for(:developer).of(group) }
       it { expect { go }.to be_denied_for(:reporter).of(group) }
       it { expect { go }.to be_denied_for(:guest).of(group) }
       it { expect { go }.to be_denied_for(:user) }
@@ -673,7 +673,7 @@ RSpec.describe Groups::ClustersController do
       it('is denied for admin when admin mode is disabled') { expect { go }.to be_denied_for(:admin) }
       it { expect { go }.to be_allowed_for(:owner).of(group) }
       it { expect { go }.to be_allowed_for(:maintainer).of(group) }
-      it { expect { go }.to be_denied_for(:developer).of(group) }
+      it { expect { go }.to be_allowed_for(:developer).of(group) }
       it { expect { go }.to be_denied_for(:reporter).of(group) }
       it { expect { go }.to be_denied_for(:guest).of(group) }
       it { expect { go }.to be_denied_for(:user) }

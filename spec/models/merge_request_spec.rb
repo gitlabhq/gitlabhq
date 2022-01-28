@@ -3577,21 +3577,38 @@ RSpec.describe MergeRequest, factory_default: :keep do
   end
 
   describe '#update_diff_discussion_positions' do
-    let(:discussion) { create(:diff_note_on_merge_request, project: subject.project, noteable: subject).to_discussion }
-    let(:commit) { subject.project.commit(sample_commit.id) }
-    let(:old_diff_refs) { subject.diff_refs }
+    subject { create(:merge_request, source_project: project) }
 
-    before do
-      # Update merge_request_diff so that #diff_refs will return commit.diff_refs
-      allow(subject).to receive(:create_merge_request_diff) do
-        subject.merge_request_diffs.create!(
-          base_commit_sha: commit.parent_id,
-          start_commit_sha: commit.parent_id,
-          head_commit_sha: commit.sha
-        )
+    let(:project) { create(:project, :repository) }
+    let(:create_commit) { project.commit("913c66a37b4a45b9769037c55c2d238bd0942d2e") }
+    let(:modify_commit) { project.commit("874797c3a73b60d2187ed6e2fcabd289ff75171e") }
+    let(:edit_commit) { project.commit("570e7b2abdd848b95f2f578043fc23bd6f6fd24d") }
+    let(:discussion) { create(:diff_note_on_merge_request, noteable: subject, project: project, position: old_position).to_discussion }
+    let(:path) { "files/ruby/popen.rb" }
+    let(:new_line) { 9 }
 
-        subject.reload_merge_request_diff
-      end
+    let(:old_diff_refs) do
+      Gitlab::Diff::DiffRefs.new(
+        base_sha: create_commit.parent_id,
+        head_sha: modify_commit.sha
+      )
+    end
+
+    let(:new_diff_refs) do
+      Gitlab::Diff::DiffRefs.new(
+        base_sha: create_commit.parent_id,
+        head_sha: edit_commit.sha
+      )
+    end
+
+    let(:old_position) do
+      Gitlab::Diff::Position.new(
+        old_path: path,
+        new_path: path,
+        old_line: nil,
+        new_line: new_line,
+        diff_refs: old_diff_refs
+      )
     end
 
     it "updates diff discussion positions" do
@@ -3599,36 +3616,67 @@ RSpec.describe MergeRequest, factory_default: :keep do
         subject.project,
         subject.author,
         old_diff_refs: old_diff_refs,
-        new_diff_refs: commit.diff_refs,
+        new_diff_refs: new_diff_refs,
         paths: discussion.position.paths
       ).and_call_original
 
       expect_any_instance_of(Discussions::UpdateDiffPositionService).to receive(:execute).with(discussion).and_call_original
-      expect_any_instance_of(DiffNote).to receive(:save).once
 
       subject.update_diff_discussion_positions(old_diff_refs: old_diff_refs,
-                                               new_diff_refs: commit.diff_refs,
+                                               new_diff_refs: new_diff_refs,
+                                               current_user: subject.author)
+    end
+
+    it 'does not call the resolve method' do
+      expect(MergeRequests::ResolvedDiscussionNotificationService).not_to receive(:new)
+
+      subject.update_diff_discussion_positions(old_diff_refs: old_diff_refs,
+                                               new_diff_refs: new_diff_refs,
                                                current_user: subject.author)
     end
 
     context 'when resolve_outdated_diff_discussions is set' do
-      let(:project) { create(:project, :repository) }
-
-      subject { create(:merge_request, source_project: project) }
-
       before do
         discussion
 
         subject.project.update!(resolve_outdated_diff_discussions: true)
       end
 
-      it 'calls MergeRequests::ResolvedDiscussionNotificationService' do
-        expect_any_instance_of(MergeRequests::ResolvedDiscussionNotificationService)
-          .to receive(:execute).with(subject)
+      context 'when the active discussion is resolved in the update' do
+        it 'calls MergeRequests::ResolvedDiscussionNotificationService' do
+          expect_any_instance_of(MergeRequests::ResolvedDiscussionNotificationService)
+            .to receive(:execute).with(subject)
 
-        subject.update_diff_discussion_positions(old_diff_refs: old_diff_refs,
-                                                 new_diff_refs: commit.diff_refs,
-                                                 current_user: subject.author)
+          subject.update_diff_discussion_positions(old_diff_refs: old_diff_refs,
+                                                   new_diff_refs: new_diff_refs,
+                                                   current_user: subject.author)
+        end
+      end
+
+      context 'when the active discussion does not have resolved in the update' do
+        let(:new_line) { 16 }
+
+        it 'does not call the resolve method' do
+          expect(MergeRequests::ResolvedDiscussionNotificationService).not_to receive(:new)
+
+          subject.update_diff_discussion_positions(old_diff_refs: old_diff_refs,
+                                                   new_diff_refs: new_diff_refs,
+                                                   current_user: subject.author)
+        end
+      end
+
+      context 'when the active discussion was already resolved' do
+        before do
+          discussion.resolve!(subject.author)
+        end
+
+        it 'does not call the resolve method' do
+          expect(MergeRequests::ResolvedDiscussionNotificationService).not_to receive(:new)
+
+          subject.update_diff_discussion_positions(old_diff_refs: old_diff_refs,
+                                                   new_diff_refs: new_diff_refs,
+                                                   current_user: subject.author)
+        end
       end
     end
   end

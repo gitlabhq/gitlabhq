@@ -5,13 +5,15 @@ require 'spec_helper'
 RSpec.describe API::ProjectClusters do
   include KubernetesHelpers
 
-  let_it_be(:current_user) { create(:user) }
+  let_it_be(:maintainer_user) { create(:user) }
   let_it_be(:developer_user) { create(:user) }
+  let_it_be(:reporter_user) { create(:user) }
   let_it_be(:project) { create(:project) }
 
   before do
-    project.add_maintainer(current_user)
+    project.add_maintainer(maintainer_user)
     project.add_developer(developer_user)
+    project.add_reporter(reporter_user)
   end
 
   describe 'GET /projects/:id/clusters' do
@@ -24,7 +26,7 @@ RSpec.describe API::ProjectClusters do
 
     context 'non-authorized user' do
       it 'responds with 403' do
-        get api("/projects/#{project.id}/clusters", developer_user)
+        get api("/projects/#{project.id}/clusters", reporter_user)
 
         expect(response).to have_gitlab_http_status(:forbidden)
       end
@@ -32,7 +34,7 @@ RSpec.describe API::ProjectClusters do
 
     context 'authorized user' do
       before do
-        get api("/projects/#{project.id}/clusters", current_user)
+        get api("/projects/#{project.id}/clusters", developer_user)
       end
 
       it 'includes pagination headers' do
@@ -61,13 +63,13 @@ RSpec.describe API::ProjectClusters do
     let(:cluster) do
       create(:cluster, :project, :provided_by_gcp, :with_domain,
              platform_kubernetes: platform_kubernetes,
-             user: current_user,
+             user: maintainer_user,
              projects: [project])
     end
 
     context 'non-authorized user' do
       it 'responds with 403' do
-        get api("/projects/#{project.id}/clusters/#{cluster_id}", developer_user)
+        get api("/projects/#{project.id}/clusters/#{cluster_id}", reporter_user)
 
         expect(response).to have_gitlab_http_status(:forbidden)
       end
@@ -75,7 +77,7 @@ RSpec.describe API::ProjectClusters do
 
     context 'authorized user' do
       before do
-        get api("/projects/#{project.id}/clusters/#{cluster_id}", current_user)
+        get api("/projects/#{project.id}/clusters/#{cluster_id}", developer_user)
       end
 
       it 'returns specific cluster' do
@@ -111,8 +113,8 @@ RSpec.describe API::ProjectClusters do
       it 'returns user information' do
         user = json_response['user']
 
-        expect(user['id']).to eq(current_user.id)
-        expect(user['username']).to eq(current_user.username)
+        expect(user['id']).to eq(maintainer_user.id)
+        expect(user['username']).to eq(maintainer_user.username)
       end
 
       it 'returns GCP provider information' do
@@ -156,7 +158,7 @@ RSpec.describe API::ProjectClusters do
     let(:management_project_id) { management_project.id }
 
     before do
-      management_project.add_maintainer(current_user)
+      management_project.add_maintainer(maintainer_user)
     end
 
     let(:platform_kubernetes_attributes) do
@@ -190,7 +192,7 @@ RSpec.describe API::ProjectClusters do
 
     context 'authorized user' do
       before do
-        post api("/projects/#{project.id}/clusters/user", current_user), params: cluster_params
+        post api("/projects/#{project.id}/clusters/user", maintainer_user), params: cluster_params
       end
 
       context 'with valid params' do
@@ -317,7 +319,7 @@ RSpec.describe API::ProjectClusters do
         create(:cluster, :provided_by_gcp, :project,
                projects: [project])
 
-        post api("/projects/#{project.id}/clusters/user", current_user), params: cluster_params
+        post api("/projects/#{project.id}/clusters/user", maintainer_user), params: cluster_params
       end
 
       it 'responds with 201' do
@@ -369,9 +371,9 @@ RSpec.describe API::ProjectClusters do
 
     context 'authorized user' do
       before do
-        management_project.add_maintainer(current_user)
+        management_project.add_maintainer(maintainer_user)
 
-        put api("/projects/#{project.id}/clusters/#{cluster.id}", current_user), params: update_params
+        put api("/projects/#{project.id}/clusters/#{cluster.id}", maintainer_user), params: update_params
 
         cluster.reload
       end
@@ -501,7 +503,7 @@ RSpec.describe API::ProjectClusters do
 
     context 'authorized user' do
       before do
-        delete api("/projects/#{project.id}/clusters/#{cluster.id}", current_user), params: cluster_params
+        delete api("/projects/#{project.id}/clusters/#{cluster.id}", maintainer_user), params: cluster_params
       end
 
       it 'deletes the cluster' do

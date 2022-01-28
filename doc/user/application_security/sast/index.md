@@ -639,15 +639,33 @@ variables:
 
 ### Pre-compilation
 
-If your project requires custom build configurations, it can be preferable to avoid
-compilation during your SAST execution and instead pass all job artifacts from an
-earlier stage in the pipeline. This is the current strategy when requiring
-a `before_script` execution to prepare your scan job.
+Most GitLab SAST analyzers directly scan your source code without compiling it first.
+However, for technical reasons, some analyzers can only scan compiled code.
 
-To pass your project's dependencies as artifacts, the dependencies must be included
-in the project's working directory and specified using the `artifacts:path` configuration.
-If all dependencies are present, the `COMPILE=false` CI/CD variable can be provided to the
-analyzer and compilation is skipped:
+By default, these analyzers automatically attempt to fetch dependencies and compile your code so it can be scanned.
+Automatic compilation can fail if:
+
+- your project requires custom build configurations.
+- you use language versions that aren't built into the analyzer.
+
+To resolve these issues, you can skip the analyzer's compilation step and directly provide artifacts from an earlier stage in your pipeline instead.
+This strategy is called _pre-compilation_.
+
+Pre-compilation is available for the analyzers that support the `COMPILE` CI/CD variable.
+See [Analyzer settings](#analyzer-settings) for the current list.
+
+To use pre-compilation:
+
+1. Output your project's dependencies to a directory in the project's working directory, then save that directory as an artifact by [setting the `artifacts: paths` configuration](../../../ci/yaml/index.md#artifactspaths).
+1. Provide the `COMPILE: "false"` CI/CD variable to the analyzer to disable automatic compilation.
+1. Add your compilation stage as a dependency for the analyzer job.
+
+To allow the analyzer to recognize the compiled artifacts, you must explicitly specify the path to
+the vendored directory.
+This configuration can vary per analyzer. For Maven projects, you can use `MAVEN_REPO_PATH`.
+See [Analyzer settings](#analyzer-settings) for the complete list of available options.
+
+The following example pre-compiles a Maven project and provides it to the SpotBugs SAST analyzer:
 
 ```yaml
 stages:
@@ -677,11 +695,6 @@ spotbugs-sast:
     reports:
       sast: gl-sast-report.json
 ```
-
-To allow the analyzer to recognize the compiled artifacts, you must explicitly specify the path to
-the vendored directory. This configuration can vary per analyzer but in the case of Java above, you
-can use `MAVEN_REPO_PATH`. See
-[Analyzer settings](#analyzer-settings) for the complete list of available options.
 
 ### Available CI/CD variables
 

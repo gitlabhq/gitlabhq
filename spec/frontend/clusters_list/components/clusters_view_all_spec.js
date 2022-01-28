@@ -32,8 +32,9 @@ describe('ClustersViewAllComponent', () => {
     defaultBranchName,
   };
 
-  const provideData = {
+  const defaultProvide = {
     addClusterPath,
+    canAddCluster: true,
   };
 
   const entryData = {
@@ -45,31 +46,43 @@ describe('ClustersViewAllComponent', () => {
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findAgentsComponent = () => wrapper.findComponent(Agents);
   const findClustersComponent = () => wrapper.findComponent(Clusters);
+  const findInstallAgentButtonTooltip = () => wrapper.findByTestId('install-agent-button-tooltip');
+  const findConnectExistingClusterButtonTooltip = () =>
+    wrapper.findByTestId('connect-existing-cluster-button-tooltip');
   const findCardsContainer = () => wrapper.findByTestId('clusters-cards-container');
   const findAgentCardTitle = () => wrapper.findByTestId('agent-card-title');
   const findRecommendedBadge = () => wrapper.findComponent(GlBadge);
   const findClustersCardTitle = () => wrapper.findByTestId('clusters-card-title');
   const findFooterButton = (line) => findCards().at(line).findComponent(GlButton);
+  const getTooltipText = (el) => {
+    const binding = getBinding(el, 'gl-tooltip');
+
+    return binding.value;
+  };
 
   const createStore = (initialState) =>
     new Vuex.Store({
       state: initialState,
     });
 
-  const createWrapper = ({ initialState }) => {
+  const createWrapper = ({ initialState = entryData, provideData } = {}) => {
     wrapper = shallowMountExtended(ClustersViewAll, {
       store: createStore(initialState),
       propsData,
-      provide: provideData,
+      provide: {
+        ...defaultProvide,
+        ...provideData,
+      },
       directives: {
         GlModalDirective: createMockDirective(),
+        GlTooltip: createMockDirective(),
       },
       stubs: { GlCard, GlSprintf },
     });
   };
 
   beforeEach(() => {
-    createWrapper({ initialState: entryData });
+    createWrapper();
   });
 
   afterEach(() => {
@@ -125,13 +138,18 @@ describe('ClustersViewAllComponent', () => {
       expect(findAgentsComponent().props('defaultBranchName')).toBe(defaultBranchName);
     });
 
+    it('should show install new Agent button in the footer', () => {
+      expect(findFooterButton(0).exists()).toBe(true);
+      expect(findFooterButton(0).props('disabled')).toBe(false);
+    });
+
+    it('does not show tooltip for install new Agent button', () => {
+      expect(getTooltipText(findInstallAgentButtonTooltip().element)).toBe('');
+    });
+
     describe('when there are no agents', () => {
       it('should show the empty title', () => {
         expect(findAgentCardTitle().text()).toBe(AGENT_CARD_INFO.emptyTitle);
-      });
-
-      it('should show install new Agent button in the footer', () => {
-        expect(findFooterButton(0).exists()).toBe(true);
       });
 
       it('should render correct modal id for the agent link', () => {
@@ -173,6 +191,22 @@ describe('ClustersViewAllComponent', () => {
         });
       });
     });
+
+    describe('when the user cannot add clusters', () => {
+      beforeEach(() => {
+        createWrapper({ provideData: { canAddCluster: false } });
+      });
+
+      it('should disable the button', () => {
+        expect(findFooterButton(0).props('disabled')).toBe(true);
+      });
+
+      it('should show a tooltip explaining why the button is disabled', () => {
+        expect(getTooltipText(findInstallAgentButtonTooltip().element)).toBe(
+          AGENT_CARD_INFO.installAgentDisabledHint,
+        );
+      });
+    });
   });
 
   describe('clusters tab', () => {
@@ -189,12 +223,33 @@ describe('ClustersViewAllComponent', () => {
         expect(findClustersCardTitle().text()).toBe(CERTIFICATE_BASED_CARD_INFO.emptyTitle);
       });
 
-      it('should show install new Agent button in the footer', () => {
+      it('should show install new cluster button in the footer', () => {
         expect(findFooterButton(1).exists()).toBe(true);
+        expect(findFooterButton(1).props('disabled')).toBe(false);
       });
 
       it('should render correct href for the button in the footer', () => {
         expect(findFooterButton(1).attributes('href')).toBe(addClusterPath);
+      });
+
+      it('does not show tooltip for install new cluster button', () => {
+        expect(getTooltipText(findConnectExistingClusterButtonTooltip().element)).toBe('');
+      });
+    });
+
+    describe('when the user cannot add clusters', () => {
+      beforeEach(() => {
+        createWrapper({ provideData: { canAddCluster: false } });
+      });
+
+      it('should disable the button', () => {
+        expect(findFooterButton(1).props('disabled')).toBe(true);
+      });
+
+      it('should show a tooltip explaining why the button is disabled', () => {
+        expect(getTooltipText(findConnectExistingClusterButtonTooltip().element)).toBe(
+          CERTIFICATE_BASED_CARD_INFO.connectExistingClusterDisabledHint,
+        );
       });
     });
 

@@ -1,4 +1,4 @@
-import { GlDropdown, GlDropdownItem, GlModal, GlFormInput } from '@gitlab/ui';
+import { GlButton, GlModal, GlFormInput } from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
@@ -7,8 +7,9 @@ import getAgentsQuery from '~/clusters_list/graphql/queries/get_agents.query.gra
 import deleteAgentMutation from '~/clusters_list/graphql/mutations/delete_agent.mutation.graphql';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import AgentOptions from '~/clusters_list/components/agent_options.vue';
-import { MAX_LIST_COUNT } from '~/clusters_list/constants';
+import DeleteAgentButton from '~/clusters_list/components/delete_agent_button.vue';
+import { MAX_LIST_COUNT, DELETE_AGENT_BUTTON } from '~/clusters_list/constants';
+import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import { getAgentResponse, mockDeleteResponse, mockErrorDeleteResponse } from '../mocks/apollo';
 
 Vue.use(VueApollo);
@@ -22,18 +23,23 @@ const agent = {
   webPath: 'agent-webPath',
 };
 
-describe('AgentOptions', () => {
+describe('DeleteAgentButton', () => {
   let wrapper;
   let toast;
   let apolloProvider;
   let deleteResponse;
 
   const findModal = () => wrapper.findComponent(GlModal);
-  const findDropdown = () => wrapper.findComponent(GlDropdown);
-  const findDeleteBtn = () => wrapper.findComponent(GlDropdownItem);
+  const findDeleteBtn = () => wrapper.findComponent(GlButton);
   const findInput = () => wrapper.findComponent(GlFormInput);
   const findPrimaryAction = () => findModal().props('actionPrimary');
   const findPrimaryActionAttributes = (attr) => findPrimaryAction().attributes[0][attr];
+  const findDeleteAgentButtonTooltip = () => wrapper.findByTestId('delete-agent-button-tooltip');
+  const getTooltipText = (el) => {
+    const binding = getBinding(el, 'gl-tooltip');
+
+    return binding.value;
+  };
 
   const createMockApolloProvider = ({ mutationResponse }) => {
     deleteResponse = jest.fn().mockResolvedValue(mutationResponse);
@@ -54,10 +60,14 @@ describe('AgentOptions', () => {
     });
   };
 
-  const createWrapper = async ({ mutationResponse = mockDeleteResponse } = {}) => {
+  const createWrapper = async ({
+    mutationResponse = mockDeleteResponse,
+    provideData = {},
+  } = {}) => {
     apolloProvider = createMockApolloProvider({ mutationResponse });
-    const provide = {
+    const defaultProvide = {
       projectPath,
+      canAdminCluster: true,
     };
     const propsData = {
       defaultBranchName,
@@ -67,9 +77,15 @@ describe('AgentOptions', () => {
 
     toast = jest.fn();
 
-    wrapper = shallowMountExtended(AgentOptions, {
+    wrapper = shallowMountExtended(DeleteAgentButton, {
       apolloProvider,
-      provide,
+      provide: {
+        ...defaultProvide,
+        ...provideData,
+      },
+      directives: {
+        GlTooltip: createMockDirective(),
+      },
       propsData,
       mocks: { $toast: { show: toast } },
       stubs: { GlModal },
@@ -100,7 +116,13 @@ describe('AgentOptions', () => {
 
   describe('delete agent action', () => {
     it('displays a delete button', () => {
-      expect(findDeleteBtn().text()).toBe('Delete agent');
+      expect(findDeleteBtn().attributes('aria-label')).toBe(DELETE_AGENT_BUTTON.deleteButton);
+    });
+
+    it('shows a tooltip for the button', () => {
+      expect(getTooltipText(findDeleteAgentButtonTooltip().element)).toBe(
+        DELETE_AGENT_BUTTON.deleteButton,
+      );
     });
 
     describe('when clicking the delete button', () => {
@@ -110,6 +132,22 @@ describe('AgentOptions', () => {
 
       it('displays a delete confirmation modal', () => {
         expect(findModal().isVisible()).toBe(true);
+      });
+    });
+
+    describe('when user cannot delete clusters', () => {
+      beforeEach(() => {
+        createWrapper({ provideData: { canAdminCluster: false } });
+      });
+
+      it('disables the button', () => {
+        expect(findDeleteBtn().attributes('disabled')).toBe('true');
+      });
+
+      it('shows a disabled tooltip', () => {
+        expect(getTooltipText(findDeleteAgentButtonTooltip().element)).toBe(
+          DELETE_AGENT_BUTTON.disabledHint,
+        );
       });
     });
 
@@ -191,14 +229,14 @@ describe('AgentOptions', () => {
       await submitAgentToDelete();
     });
 
-    it('reenables the options dropdown', async () => {
+    it('reenables the button', async () => {
       expect(findPrimaryActionAttributes('loading')).toBe(true);
-      expect(findDropdown().attributes('disabled')).toBe('true');
+      expect(findDeleteBtn().attributes('disabled')).toBe('true');
 
       await findModal().vm.$emit('hide');
 
       expect(findPrimaryActionAttributes('loading')).toBe(false);
-      expect(findDropdown().attributes('disabled')).toBeUndefined();
+      expect(findDeleteBtn().attributes('disabled')).toBeUndefined();
     });
 
     it('clears the agent name input', async () => {

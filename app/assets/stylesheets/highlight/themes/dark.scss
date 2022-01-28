@@ -36,6 +36,7 @@ $dark-cm: #969896;
 $dark-cp: #969896;
 $dark-c1: #969896;
 $dark-cs: #969896;
+$dark-cd: #969896;
 $dark-gd: #c66;
 $dark-gh: #8abeb7;
 $dark-gi: #b5bd68;
@@ -236,6 +237,7 @@ $dark-il: #de935f;
   .cp { color: $dark-cp; } /* Comment.Preproc */
   .c1 { color: $dark-c1; } /* Comment.Single */
   .cs { color: $dark-cs; } /* Comment.Special */
+  .cd { color: $dark-cd; } /* Comment.Doc */
   .gd { color: $dark-gd; } /* Generic.Deleted */
   .ge { font-style: italic; } /* Generic.Emph */
   .gh { /* Generic.Heading */

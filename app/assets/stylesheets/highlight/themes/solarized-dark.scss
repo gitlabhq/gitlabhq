@@ -35,6 +35,7 @@ $solarized-dark-cm: #586e75;
 $solarized-dark-cp: #859900;
 $solarized-dark-c1: #586e75;
 $solarized-dark-cs: #859900;
+$solarized-dark-cd: #586e75;
 $solarized-dark-gd: #2aa198;
 $solarized-dark-ge: #93a1a1;
 $solarized-dark-gr: #dc322f;
@@ -258,6 +259,7 @@ $solarized-dark-il: #2aa198;
   .cp { color: $solarized-dark-cp; } /* Comment.Preproc */
   .c1 { color: $solarized-dark-c1; } /* Comment.Single */
   .cs { color: $solarized-dark-cs; } /* Comment.Special */
+  .cd { color: $solarized-dark-cd; } /* Comment.Doc */
   .gd { color: $solarized-dark-gd; } /* Generic.Deleted */
   .ge { /* Generic.Emph */
     color: $solarized-dark-ge;
