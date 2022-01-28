@@ -4,7 +4,7 @@ group: Configure
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Connect existing clusters through cluster certificates **(DEPRECATED)**
+# Connect existing clusters through cluster certificates (DEPRECATED) **(FREE)**
 
 > [Deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
 
@@ -27,7 +27,7 @@ To add any cluster to GitLab, you need:
 - Either a GitLab.com account or an account for a self-managed installation
 running GitLab 12.5 or later.
 - The Maintainer role for group-level and project-level clusters.
-- Access to the Admin area for instance-level clusters. **(FREE SELF)**
+- Access to the Admin area for instance-level clusters.
 - A Kubernetes cluster.
 - Cluster administration access to the cluster with `kubectl`.
 

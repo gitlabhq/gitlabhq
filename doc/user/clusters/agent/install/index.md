@@ -13,7 +13,10 @@ onto your cluster.
 
 ## Prerequisites
 
-- An existing Kubernetes cluster.
+- An existing Kubernetes cluster. If you don't have a cluster yet, you can create a new cluster on cloud providers, such as:
+  - [Google Kubernetes Engine (GKE)](https://cloud.google.com/kubernetes-engine/docs/quickstart)
+  - [Amazon Elastic Kubernetes Service (EKS)](https://docs.aws.amazon.com/eks/latest/userguide/getting-started.html)
+  - [Digital Ocean](https://docs.digitalocean.com/products/kubernetes/quickstart/)
 - On self-managed GitLab instances, a GitLab administrator needs to set up the [GitLab Agent Server (KAS)](../../../../administration/clusters/kas.md).
 
 ## Installation steps

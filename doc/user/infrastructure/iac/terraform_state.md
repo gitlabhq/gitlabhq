@@ -384,6 +384,24 @@ Additional improvements to the
 [graphical interface for managing state files](https://gitlab.com/groups/gitlab-org/-/epics/4563)
 are planned.
 
+## Manage individual Terraform state versions
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/207347) in GitLab 13.4.
+
+Individual state versions can be managed using the GitLab REST API.
+
+Users with the [Developer role](../../permissions.md) can retrieve state versions using their serial number. To retrieve a version:
+
+```shell
+curl --header "Private-Token: <your_access_token>" "https://gitlab.example.com/api/v4/projects/<your_project_id>/terraform/state/<your_state_name>/versions/<version-serial>"
+```
+
+Users with the [Maintainer role](../../permissions.md) can remove state versions using their serial number. To remove a version:
+
+```shell
+curl --header "Private-Token: <your_access_token>" --request DELETE "https://gitlab.example.com/api/v4/projects/<your_project_id>/terraform/state/<your_state_name>/versions/<version-serial>"
+```
+
 ## Remove a state file
 
 Users with Maintainer and greater [permissions](../../permissions.md) can use the

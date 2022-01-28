@@ -34,7 +34,7 @@ Prerequisites:
 - An [Amazon Web Services](https://aws.amazon.com/) account.
 - Permissions to manage IAM resources.
 
-For instance-level clusters, see [additional requirements for self-managed instances](#additional-requirements-for-self-managed-instances). **(FREE SELF)**
+For instance-level clusters, see [additional requirements for self-managed instances](#additional-requirements-for-self-managed-instances).
 
 To create new Kubernetes clusters for your project, group, or instance through the certificate-based method:
 
@@ -256,7 +256,7 @@ IAM user in the Amazon AWS console, and follow these steps:
 
 #### EKS access key and ID
 
-> Instance profiles were [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/291015) in GitLab 13.7.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/291015) instance profiles in GitLab 13.7.
 
 If you're using GitLab 13.7 or later, you can use instance profiles to
 dynamically retrieve temporary credentials from AWS when needed.

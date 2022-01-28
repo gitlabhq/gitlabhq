@@ -89,7 +89,7 @@ You can view which pipeline published the package, and the commit and user who t
 ## Reduce storage usage
 
 For information on reducing your storage use for the Package Registry, see
-[Reduce Dependency Proxy storage use](reduce_package_registry_storage.md).
+[Reduce Package Registry storage use](reduce_package_registry_storage.md).
 
 ## Disable the Package Registry
 

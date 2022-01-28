@@ -13794,6 +13794,9 @@ msgstr ""
 msgid "Environments|protected"
 msgstr ""
 
+msgid "Environment|Auto stop %{time}"
+msgstr ""
+
 msgid "Epic"
 msgstr ""
 
@@ -29102,7 +29105,7 @@ msgstr ""
 msgid "Purchase more storage"
 msgstr ""
 
-msgid "PurchaseStep|An error occurred in the purchase step. If the problem persists please contact support@gitlab.com."
+msgid "PurchaseStep|An error occurred in the purchase step. If the problem persists please contact support at https://support.gitlab.com."
 msgstr ""
 
 msgid "Push"
@@ -31861,7 +31864,7 @@ msgstr ""
 msgid "SecurityOrchestration|Status"
 msgstr ""
 
-msgid "SecurityOrchestration|The %{scanners} %{severities} in an open merge request targeting the %{branches}."
+msgid "SecurityOrchestration|The %{scanners} %{severities} in an open merge request targeting %{branches}."
 msgstr ""
 
 msgid "SecurityOrchestration|There was a problem creating the new security policy"
@@ -31883,6 +31886,9 @@ msgid "SecurityOrchestration|Update scan policies"
 msgstr ""
 
 msgid "SecurityOrchestration|a"
+msgstr ""
+
+msgid "SecurityOrchestration|all branches"
 msgstr ""
 
 msgid "SecurityOrchestration|an"
@@ -31910,6 +31916,9 @@ msgid "SecurityOrchestration|scanner finds"
 msgstr ""
 
 msgid "SecurityOrchestration|scanners find"
+msgstr ""
+
+msgid "SecurityOrchestration|the %{branches}"
 msgstr ""
 
 msgid "SecurityOrchestration|user with id"
@@ -33106,7 +33115,7 @@ msgstr ""
 msgid "Showing data for group '%{group_name}' from Nov 1, 2019 to Dec 31, 2019"
 msgstr ""
 
-msgid "Showing data for workflow items created in this date range. Date range cannot exceed %{maxDateRange} days."
+msgid "Showing data for workflow items created in this date range. Date range limited to %{maxDateRange} days."
 msgstr ""
 
 msgid "Showing graphs based on events of the last %{timerange} days."
@@ -41054,6 +41063,9 @@ msgid "You do not have permission to approve a member"
 msgstr ""
 
 msgid "You do not have permission to leave this %{namespaceType}."
+msgstr ""
+
+msgid "You do not have permission to run a pipeline on this branch."
 msgstr ""
 
 msgid "You do not have permission to run the Web Terminal. Please contact a project administrator."

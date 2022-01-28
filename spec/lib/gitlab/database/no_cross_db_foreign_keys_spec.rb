@@ -3,28 +3,12 @@
 require 'spec_helper'
 
 RSpec.describe 'cross-database foreign keys' do
-  # TODO: We are trying to empty out this list in
-  # https://gitlab.com/groups/gitlab-org/-/epics/7249 . Once we are done we can
-  # keep this test and assert that there are no cross-db foreign keys. We
-  # should not be adding anything to this list but should instead only add new
-  # loose foreign keys
-  # https://docs.gitlab.com/ee/development/database/loose_foreign_keys.html .
+  # Since we don't expect to have any cross-database foreign keys
+  # this is empty. If we will have an entry like
+  # `ci_daily_build_group_report_results.project_id`
+  # should be added.
   let(:allowed_cross_database_foreign_keys) do
-    %w(
-      ci_build_report_results.project_id
-      ci_daily_build_group_report_results.group_id
-      ci_daily_build_group_report_results.project_id
-      ci_freeze_periods.project_id
-      ci_job_token_project_scope_links.added_by_id
-      ci_pending_builds.namespace_id
-      ci_pending_builds.project_id
-      ci_pipeline_schedules.owner_id
-      ci_resource_groups.project_id
-      ci_runner_namespaces.namespace_id
-      ci_running_builds.project_id
-      ci_stages.project_id
-      ci_unit_tests.project_id
-    ).freeze
+    %w[].freeze
   end
 
   def foreign_keys_for(table_name)

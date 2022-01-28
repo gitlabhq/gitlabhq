@@ -31,7 +31,7 @@
             = check_box_tag checkbox_id, nil, false, class: "check-all-issues left"
         - if is_epic_board
           #js-board-filtered-search{ data: { full_path: @group&.full_path } }
-        - elsif Feature.enabled?(:issue_boards_filtered_search, ff_resource) && board
+        - elsif Feature.enabled?(:issue_boards_filtered_search, ff_resource, default_enabled: :yaml) && board
           #js-issue-board-filtered-search
         - else
           .issues-other-filters.filtered-search-wrapper.d-flex.flex-column.flex-md-row

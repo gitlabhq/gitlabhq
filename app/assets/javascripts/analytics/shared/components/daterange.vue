@@ -1,5 +1,5 @@
 <script>
-import { GlDaterangePicker, GlSprintf, GlIcon, GlTooltipDirective } from '@gitlab/ui';
+import { GlDaterangePicker, GlSprintf } from '@gitlab/ui';
 import { getDayDifference } from '~/lib/utils/datetime_utility';
 import { __, sprintf } from '~/locale';
 import { OFFSET_DATE_BY_ONE } from '../constants';
@@ -8,10 +8,6 @@ export default {
   components: {
     GlDaterangePicker,
     GlSprintf,
-    GlIcon,
-  },
-  directives: {
-    GlTooltip: GlTooltipDirective,
   },
   props: {
     show: {
@@ -56,7 +52,7 @@ export default {
     return {
       maxDateRangeTooltip: sprintf(
         __(
-          'Showing data for workflow items created in this date range. Date range cannot exceed %{maxDateRange} days.',
+          'Showing data for workflow items created in this date range. Date range limited to %{maxDateRange} days.',
         ),
         {
           maxDateRange: this.maxDateRange,
@@ -94,28 +90,15 @@ export default {
       :max-date-range="maxDateRange"
       :default-max-date="maxDate"
       :same-day-selection="includeSelectedDate"
+      :tooltip="maxDateRangeTooltip"
       theme="animate-picker"
       start-picker-class="js-daterange-picker-from gl-display-flex gl-flex-direction-column gl-lg-flex-direction-row gl-lg-align-items-center gl-lg-mr-3 gl-mb-2 gl-lg-mb-0"
-      end-picker-class="js-daterange-picker-to d-flex flex-column flex-lg-row align-items-lg-center"
+      end-picker-class="js-daterange-picker-to d-flex flex-column flex-lg-row align-items-lg-center gl-mb-2 gl-lg-mb-0"
       label-class="gl-mb-2 gl-lg-mb-0"
-    />
-    <div
-      v-if="maxDateRange"
-      class="daterange-indicator d-flex flex-row flex-lg-row align-items-flex-start align-items-lg-center"
     >
-      <span class="number-of-days pl-2 pr-1">
-        <gl-sprintf :message="n__('1 day selected', '%d days selected', numberOfDays)">
-          <template #numberOfDays>{{ numberOfDays }}</template>
-        </gl-sprintf>
-      </span>
-      <gl-icon
-        v-gl-tooltip
-        data-testid="helper-icon"
-        :title="maxDateRangeTooltip"
-        name="question"
-        :size="14"
-        class="text-secondary"
-      />
-    </div>
+      <gl-sprintf :message="n__('1 day selected', '%d days selected', numberOfDays)">
+        <template #numberOfDays>{{ numberOfDays }}</template>
+      </gl-sprintf>
+    </gl-daterange-picker>
   </div>
 </template>

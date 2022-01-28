@@ -4,7 +4,8 @@ import { GlCollapse, GlIcon } from '@gitlab/ui';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { mountExtended, extendedWrapper } from 'helpers/vue_test_utils_helper';
 import { stubTransition } from 'helpers/stub_transition';
-import { __, s__ } from '~/locale';
+import { formatDate, getTimeago } from '~/lib/utils/datetime_utility';
+import { __, s__, sprintf } from '~/locale';
 import EnvironmentItem from '~/environments/components/new_environment_item.vue';
 import Deployment from '~/environments/components/deployment.vue';
 import { resolvedEnvironment } from './graphql/mock_data';
@@ -173,25 +174,92 @@ describe('~/environments/components/new_environment_item.vue', () => {
   });
 
   describe('pin', () => {
-    it('shows the option to pin the environment if there is an autostop date', () => {
-      wrapper = createWrapper({
-        propsData: {
-          environment: { ...resolvedEnvironment, autoStopAt: new Date(Date.now() + 100000) },
-        },
-        apolloProvider: createApolloProvider(),
+    describe('with autostop', () => {
+      let environment;
+
+      beforeEach(() => {
+        environment = {
+          ...resolvedEnvironment,
+          autoStopAt: new Date(Date.now() + 100000).toString(),
+        };
+        wrapper = createWrapper({
+          propsData: {
+            environment,
+          },
+          apolloProvider: createApolloProvider(),
+        });
       });
 
-      const rollback = wrapper.findByRole('menuitem', { name: __('Prevent auto-stopping') });
+      it('shows the option to pin the environment if there is an autostop date', () => {
+        const rollback = wrapper.findByRole('menuitem', { name: __('Prevent auto-stopping') });
 
-      expect(rollback.exists()).toBe(true);
+        expect(rollback.exists()).toBe(true);
+      });
+
+      it('shows when the environment auto stops', () => {
+        const autoStop = wrapper.findByTitle(formatDate(environment.autoStopAt));
+
+        expect(autoStop.text()).toBe('in 1 minute');
+      });
     });
 
-    it('does not show the option to pin the environment if there is no autostop date', () => {
-      wrapper = createWrapper({ apolloProvider: createApolloProvider() });
+    describe('without autostop', () => {
+      beforeEach(() => {
+        wrapper = createWrapper({ apolloProvider: createApolloProvider() });
+      });
 
-      const rollback = wrapper.findByRole('menuitem', { name: __('Prevent auto-stopping') });
+      it('does not show the option to pin the environment if there is no autostop date', () => {
+        wrapper = createWrapper({ apolloProvider: createApolloProvider() });
 
-      expect(rollback.exists()).toBe(false);
+        const rollback = wrapper.findByRole('menuitem', { name: __('Prevent auto-stopping') });
+
+        expect(rollback.exists()).toBe(false);
+      });
+
+      it('does not show when the environment auto stops', () => {
+        const autoStop = wrapper.findByText(
+          sprintf(s__('Environment|Auto stop %{time}'), {
+            time: getTimeago().format(resolvedEnvironment.autoStopAt),
+          }),
+        );
+
+        expect(autoStop.exists()).toBe(false);
+      });
+    });
+
+    describe('with past autostop', () => {
+      let environment;
+
+      beforeEach(() => {
+        environment = {
+          ...resolvedEnvironment,
+          autoStopAt: new Date(Date.now() - 100000).toString(),
+        };
+        wrapper = createWrapper({
+          propsData: {
+            environment,
+          },
+          apolloProvider: createApolloProvider(),
+        });
+      });
+
+      it('does not show the option to pin the environment if there is no autostop date', () => {
+        wrapper = createWrapper({ apolloProvider: createApolloProvider() });
+
+        const rollback = wrapper.findByRole('menuitem', { name: __('Prevent auto-stopping') });
+
+        expect(rollback.exists()).toBe(false);
+      });
+
+      it('does not show when the environment auto stops', () => {
+        const autoStop = wrapper.findByText(
+          sprintf(s__('Environment|Auto stop %{time}'), {
+            time: getTimeago().format(environment.autoStopAt),
+          }),
+        );
+
+        expect(autoStop.exists()).toBe(false);
+      });
     });
   });
 

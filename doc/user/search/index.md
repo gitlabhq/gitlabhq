@@ -270,8 +270,13 @@ search, or choose a specific group or project.
 
 To search through code or other documents in a single project, you can use
 the search field on the top-right of your screen while the project page is open.
-Code search shows only the first result in the file. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/327052)
-in GitLab 14.7, you can access Git blame from any line that returned a result from the code search:
+Code search shows only the first result in the file.
+
+#### Git blame from code search **(PREMIUM)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/327052) in GitLab 14.7.
+
+You can access Git blame from any line that returned a result from the code search:
 
 ![code search results](img/code_search.png)
 

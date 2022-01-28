@@ -81,8 +81,9 @@ The following table lists project permissions available for each role:
 | [Clusters](infrastructure/clusters/index.md):<br>View clusters                                                                                                                            |          |          | ✓         | ✓          | ✓     |
 | [Clusters](infrastructure/clusters/index.md):<br>Manage clusters                                                                                                                          |          |          |           | ✓          | ✓     |
 | [Container Registry](packages/container_registry/index.md):<br>Create, edit, delete cleanup policies                                                                                      |          |          | ✓         | ✓          | ✓     |
-| [Container Registry](packages/container_registry/index.md):<br>Remove a container registry image                                                                                          |          |          | ✓         | ✓          | ✓     |
-| [Container Registry](packages/container_registry/index.md):<br>Update container registry                                                                                                  |          |          | ✓         | ✓          | ✓     |
+| [Container Registry](packages/container_registry/index.md):<br>Push an image to the Container Registry                                                                                    |          |          | ✓         | ✓          | ✓     |
+| [Container Registry](packages/container_registry/index.md):<br>Pull an image from the Container Registry                                                                                   | ✓ (*21*) | ✓ (*21*) | ✓         | ✓          | ✓     |
+| [Container Registry](packages/container_registry/index.md):<br>Remove a Container Registry image                                                                                          |          |          | ✓         | ✓          | ✓     |
 | [GitLab Pages](project/pages/index.md):<br>View Pages protected by [access control](project/pages/introduction.md#gitlab-pages-access-control)                                            | ✓    | ✓    | ✓    | ✓          | ✓    |
 | [GitLab Pages](project/pages/index.md):<br>Manage                                                                                                                                         |          |          |           | ✓          | ✓     |
 | [GitLab Pages](project/pages/index.md):<br>Manage GitLab Pages domains and certificates                                                                                                   |          |          |           | ✓          | ✓     |
@@ -130,9 +131,10 @@ The following table lists project permissions available for each role:
 | [Metrics dashboards](../operations/metrics/dashboards/index.md):<br>Manage user-starred metrics dashboards (*7*)                                                                          | ✓        | ✓        | ✓         | ✓          | ✓     |
 | [Metrics dashboards](../operations/metrics/dashboards/index.md):<br>View metrics dashboard annotations                                                                                    |          | ✓        | ✓         | ✓          | ✓     |
 | [Metrics dashboards](../operations/metrics/dashboards/index.md):<br>Create/edit/delete metrics dashboard annotations                                                                      |          |          | ✓         | ✓          | ✓     |
-| [Package registry](packages/index.md):<br>Pull package                                                                                                                                    | ✓ (*1*)  | ✓        | ✓         | ✓          | ✓     |
-| [Package registry](packages/index.md):<br>Publish package                                                                                                                                 |          |          | ✓         | ✓          | ✓     |
-| [Package registry](packages/index.md):<br>Delete package                                                                                                                                  |          |          |           | ✓          | ✓     |
+| [Package registry](packages/index.md):<br>Pull a package                                                                                                                                  | ✓ (*1*)  | ✓        | ✓         | ✓          | ✓     |
+| [Package registry](packages/index.md):<br>Publish a package                                                                                                                               |          |          | ✓         | ✓          | ✓     |
+| [Package registry](packages/index.md):<br>Delete a package                                                                                                                                |          |          |           | ✓          | ✓     |
+| [Package registry](packages/index.md):<br>Delete a file associated with a package                                                                                                         |          |          |           | ✓          | ✓     |
 | [Project operations](../operations/index.md):<br>View [Error Tracking](../operations/error_tracking.md) list                                                                              |          | ✓        | ✓         | ✓          | ✓     |
 | [Project operations](../operations/index.md):<br>Manage [Feature Flags](../operations/feature_flags.md) **(PREMIUM)**                                                                     |          |          | ✓         | ✓          | ✓     |
 | [Project operations](../operations/index.md):<br>Manage [Error Tracking](../operations/error_tracking.md)                                                                                 |          |          |           | ✓          | ✓     |
@@ -239,6 +241,7 @@ The following table lists project permissions available for each role:
 1. In projects that accept contributions from external members, users can create, edit, and close their own merge requests.
 1. Authors and assignees of issues can modify the title and description even if they don't have the Reporter role.
 1. Authors and assignees can close and reopen issues even if they don't have the Reporter role.
+1. The ability to view the Container Registry and pull images is controlled by the [Container Registry's visibility permissions](packages/container_registry/index.md#container-registry-visibility-permissions).
 
 ## Project features permissions
 
@@ -284,7 +287,8 @@ read through the documentation on [permissions and access to confidential issues
 
 ### Container Registry visibility permissions
 
-Find the visibility permissions for the Container Registry, as described in the
+The ability to view the Container Registry and pull images is controlled by the Container Registry's
+visibility permissions. Find these permissions for the Container Registry as described in the
 [related documentation](packages/container_registry/index.md#container-registry-visibility-permissions).
 
 ## Group members permissions
@@ -310,8 +314,11 @@ The following table lists group permissions available for each role:
 | Create/edit group epic **(PREMIUM)**                                     |       | ✓        | ✓         | ✓          | ✓     |
 | Create/edit/delete epic boards **(PREMIUM)**                             |       | ✓        | ✓         | ✓          | ✓     |
 | Manage group labels                                                      |       | ✓        | ✓         | ✓          | ✓     |
+| Publish [packages](packages/index.md)                                    |       |          | ✓         | ✓          | ✓     |
 | Pull [packages](packages/index.md)                                       |       | ✓        | ✓         | ✓          | ✓     |
-| View a container registry                                                |       | ✓        | ✓         | ✓          | ✓     |
+| Delete [packages](packages/index.md                                      |       |          |           | ✓          | ✓     |
+| Pull a Container Registry image                                          | ✓ (7) | ✓        | ✓         | ✓          | ✓     |
+| Remove a Container Registry image                                        |       |          | ✓         | ✓          | ✓     |
 | View Group DevOps Adoption **(ULTIMATE)**                                |       | ✓        | ✓         | ✓          | ✓     |
 | View metrics dashboard annotations                                       |       | ✓        | ✓         | ✓          | ✓     |
 | View Productivity analytics **(PREMIUM)**                                |       | ✓        | ✓         | ✓          | ✓     |
@@ -322,7 +329,6 @@ The following table lists group permissions available for each role:
 | Create/edit/delete metrics dashboard annotations                         |       |          | ✓         | ✓          | ✓     |
 | Enable/disable a dependency proxy                                        |       |          | ✓         | ✓          | ✓     |
 | Purge the dependency proxy for a group                                   |       |          |           |            | ✓     |
-| Publish [packages](packages/index.md)                                    |       |          | ✓         | ✓          | ✓     |
 | Use security dashboard **(ULTIMATE)**                                    |       |          | ✓         | ✓          | ✓     |
 | View group Audit Events                                                  |       |          | ✓ (7)     | ✓ (7)      | ✓     |
 | Create subgroup                                                          |       |          |           | ✓ (1)      | ✓     |

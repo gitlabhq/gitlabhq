@@ -9,6 +9,7 @@ import {
 } from '@gitlab/ui';
 import { __, s__ } from '~/locale';
 import { truncate } from '~/lib/utils/text_utility';
+import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import isLastDeployment from '../graphql/queries/is_last_deployment.query.graphql';
 import ExternalUrl from './environment_external_url.vue';
 import Actions from './environment_actions.vue';
@@ -35,6 +36,7 @@ export default {
     Monitoring,
     Pin,
     Terminal,
+    TimeAgoTooltip,
     Delete,
   },
   directives: {
@@ -66,6 +68,7 @@ export default {
     emptyState: s__(
       'Environments|There are no deployments for this environment yet. %{linkStart}Learn more about setting up deployments.%{linkEnd}',
     ),
+    autoStopIn: s__('Environment|Auto stop %{time}'),
   },
   data() {
     return { visible: false };
@@ -185,7 +188,14 @@ export default {
           {{ displayName }}
         </gl-link>
       </div>
-      <div>
+      <div class="gl-display-flex gl-align-items-center">
+        <p v-if="canShowAutoStopDate" class="gl-font-sm gl-text-gray-700 gl-mr-5 gl-mb-0">
+          <gl-sprintf :message="$options.i18n.autoStopIn">
+            <template #time>
+              <time-ago-tooltip :time="environment.autoStopAt" css-class="gl-font-weight-bold" />
+            </template>
+          </gl-sprintf>
+        </p>
         <div class="btn-group table-action-buttons" role="group">
           <external-url
             v-if="externalUrl"

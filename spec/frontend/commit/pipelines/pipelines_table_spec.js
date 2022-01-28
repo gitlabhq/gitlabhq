@@ -7,12 +7,16 @@ import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import Api from '~/api';
 import PipelinesTable from '~/commit/pipelines/pipelines_table.vue';
+import httpStatusCodes from '~/lib/utils/http_status';
+import createFlash from '~/flash';
 import { TOAST_MESSAGE } from '~/pipelines/constants';
 import axios from '~/lib/utils/axios_utils';
 
 const $toast = {
   show: jest.fn(),
 };
+
+jest.mock('~/flash');
 
 describe('Pipelines table in Commits and Merge requests', () => {
   let wrapper;
@@ -184,36 +188,61 @@ describe('Pipelines table in Commits and Merge requests', () => {
           mergeRequestId: 3,
         });
 
-        jest.spyOn(Api, 'postMergeRequestPipeline').mockReturnValue(Promise.resolve());
-
         await waitForPromises();
       });
+      describe('success', () => {
+        beforeEach(() => {
+          jest.spyOn(Api, 'postMergeRequestPipeline').mockReturnValue(Promise.resolve());
+        });
+        it('displays a toast message during pipeline creation', async () => {
+          await findRunPipelineBtn().trigger('click');
 
-      it('displays a toast message during pipeline creation', async () => {
-        await findRunPipelineBtn().trigger('click');
+          expect($toast.show).toHaveBeenCalledWith(TOAST_MESSAGE);
+        });
 
-        expect($toast.show).toHaveBeenCalledWith(TOAST_MESSAGE);
+        it('on desktop, shows a loading button', async () => {
+          await findRunPipelineBtn().trigger('click');
+
+          expect(findRunPipelineBtn().props('loading')).toBe(true);
+
+          await waitForPromises();
+
+          expect(findRunPipelineBtn().props('loading')).toBe(false);
+        });
+
+        it('on mobile, shows a loading button', async () => {
+          await findRunPipelineBtnMobile().trigger('click');
+
+          expect(findRunPipelineBtn().props('loading')).toBe(true);
+
+          await waitForPromises();
+
+          expect(findRunPipelineBtn().props('disabled')).toBe(false);
+          expect(findRunPipelineBtn().props('loading')).toBe(false);
+        });
       });
 
-      it('on desktop, shows a loading button', async () => {
-        await findRunPipelineBtn().trigger('click');
+      describe('failure', () => {
+        const permissionsMsg = 'You do not have permission to run a pipeline on this branch.';
 
-        expect(findRunPipelineBtn().props('loading')).toBe(true);
+        it.each`
+          status                                   | message
+          ${httpStatusCodes.BAD_REQUEST}           | ${permissionsMsg}
+          ${httpStatusCodes.UNAUTHORIZED}          | ${permissionsMsg}
+          ${httpStatusCodes.INTERNAL_SERVER_ERROR} | ${'An error occurred while trying to run a new pipeline for this merge request.'}
+        `('displays permissions error message', async ({ status, message }) => {
+          const response = { response: { status } };
 
-        await waitForPromises();
+          jest
+            .spyOn(Api, 'postMergeRequestPipeline')
+            .mockImplementation(() => Promise.reject(response));
 
-        expect(findRunPipelineBtn().props('loading')).toBe(false);
-      });
+          await findRunPipelineBtn().trigger('click');
 
-      it('on mobile, shows a loading button', async () => {
-        await findRunPipelineBtnMobile().trigger('click');
+          await waitForPromises();
 
-        expect(findRunPipelineBtn().props('loading')).toBe(true);
-
-        await waitForPromises();
-
-        expect(findRunPipelineBtn().props('disabled')).toBe(false);
-        expect(findRunPipelineBtn().props('loading')).toBe(false);
+          expect(createFlash).toHaveBeenCalledWith({ message });
+        });
       });
     });
 

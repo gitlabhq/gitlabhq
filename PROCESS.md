@@ -22,7 +22,7 @@
   - [Code format](#code-format)
   - [Issue fixed in newer version](#issue-fixed-in-newer-version)
   - [Improperly formatted merge request](#improperly-formatted-merge-request)
-  - [Accepting merge requests](#accepting-merge-requests)
+  - [Seeking community contributions](#seeking-community-contributions)
   - [Only accepting merge requests with green tests](#only-accepting-merge-requests-with-green-tests)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
@@ -195,14 +195,14 @@ Thanks for your interest in improving the GitLab codebase!
 Please update your merge request according to the [contributing guidelines](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/development/contributing/merge_request_workflow.md#merge-request-guidelines).
 ```
 
-### Accepting merge requests
+### Seeking community contributions
 
 ```
 Is there an issue on the
 [issue tracker](https://gitlab.com/gitlab-org/gitlab/issues) that is
 similar to this? Could you please link it here?
 Please be aware that new functionality that is not marked
-[`Accepting merge requests`](https://docs.gitlab.com/ee/development/contributing/issue_workflow.html#label-for-community-contributors)
+[`Seeking community contributions`](https://docs.gitlab.com/ee/development/contributing/issue_workflow.html#label-for-community-contributors)
 might not make it into GitLab.
 ```
 

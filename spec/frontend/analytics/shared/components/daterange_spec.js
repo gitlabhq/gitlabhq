@@ -1,8 +1,6 @@
-import { GlDaterangePicker } from '@gitlab/ui';
-import { mount } from '@vue/test-utils';
-import { nextTick } from 'vue';
+import { GlDaterangePicker, GlSprintf } from '@gitlab/ui';
+import { shallowMount, mount } from '@vue/test-utils';
 import { useFakeDate } from 'helpers/fake_date';
-import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import Daterange from '~/analytics/shared/components/daterange.vue';
 
 const defaultProps = {
@@ -15,13 +13,13 @@ describe('Daterange component', () => {
 
   let wrapper;
 
-  const factory = (props = defaultProps) => {
-    wrapper = mount(Daterange, {
+  const factory = (props = defaultProps, mountFn = shallowMount) => {
+    wrapper = mountFn(Daterange, {
       propsData: {
         ...defaultProps,
         ...props,
       },
-      directives: { GlTooltip: createMockDirective() },
+      stubs: { GlSprintf },
     });
   };
 
@@ -29,9 +27,8 @@ describe('Daterange component', () => {
     wrapper.destroy();
   });
 
-  const findDaterangePicker = () => wrapper.find(GlDaterangePicker);
-
-  const findDateRangeIndicator = () => wrapper.find('.daterange-indicator');
+  const findDaterangePicker = () => wrapper.findComponent(GlDaterangePicker);
+  const findDateRangeIndicator = () => wrapper.findComponent(GlSprintf);
 
   describe('template', () => {
     describe('when show is false', () => {
@@ -44,6 +41,7 @@ describe('Daterange component', () => {
     describe('when show is true', () => {
       it('renders the daterange picker', () => {
         factory({ show: true });
+
         expect(findDaterangePicker().exists()).toBe(true);
       });
     });
@@ -54,14 +52,12 @@ describe('Daterange component', () => {
         const endDate = new Date('2019-09-30');
         const minDate = new Date('2019-06-01');
 
-        factory({ show: true, startDate, endDate, minDate });
-
+        factory({ show: true, startDate, endDate, minDate }, mount);
         const input = findDaterangePicker().find('input');
 
         input.setValue('2019-01-01');
-        input.trigger('change');
+        await input.trigger('change');
 
-        await nextTick();
         expect(wrapper.emitted().change).toEqual([[{ startDate: minDate, endDate }]]);
       });
     });
@@ -76,16 +72,13 @@ describe('Daterange component', () => {
       });
 
       it('displays the correct number of selected days in the indicator', () => {
-        expect(findDateRangeIndicator().find('span').text()).toBe('10 days selected');
+        expect(findDateRangeIndicator().text()).toMatchInterpolatedText('10 days selected');
       });
 
-      it('displays a tooltip', () => {
-        const icon = wrapper.find('[data-testid="helper-icon"]');
-        const tooltip = getBinding(icon.element, 'gl-tooltip');
-
-        expect(tooltip).toBeDefined();
-        expect(icon.attributes('title')).toBe(
-          'Showing data for workflow items created in this date range. Date range cannot exceed 30 days.',
+      it('sets the tooltip', () => {
+        const tooltip = findDaterangePicker().props('tooltip');
+        expect(tooltip).toBe(
+          'Showing data for workflow items created in this date range. Date range limited to 30 days.',
         );
       });
     });

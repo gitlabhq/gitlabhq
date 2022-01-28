@@ -29,4 +29,5 @@ This issue template is for an actionable insight that requires a change in the p
 
 /confidential
 /label ~"Actionable Insight::Product change"
+/label ~"SUS"
 

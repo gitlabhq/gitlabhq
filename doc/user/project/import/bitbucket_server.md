@@ -126,6 +126,14 @@ For information on automating user, group, and project import API calls, see
 
 ## Troubleshooting
 
+### LFS objects not imported
+
+If the project import completes but LFS objects can't be downloaded or cloned, you may be using a
+password or personal access token containing special characters. For more information, see
+[this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/337769).
+
+### General
+
 If the GUI-based import tool does not work, you can try to:
 
 - Use the [GitLab Import API](../../../api/import.md#import-repository-from-bitbucket-server) Bitbucket server endpoint.

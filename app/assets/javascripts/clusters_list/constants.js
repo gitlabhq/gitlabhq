@@ -234,6 +234,8 @@ export const CLUSTERS_ACTIONS = {
   createNewCluster: s__('ClusterAgents|Create a new cluster'),
   connectWithAgent: s__('ClusterAgents|Connect with agent'),
   connectExistingCluster: s__('ClusterAgents|Connect with a certificate'),
+  agent: s__('ClusterAgents|Agent'),
+  certificate: s__('ClusterAgents|Certificate'),
   dropdownDisabledHint: s__(
     'ClusterAgents|Requires a Maintainer or greater role to perform these actions',
   ),
