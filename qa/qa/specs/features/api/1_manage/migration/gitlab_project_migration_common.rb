@@ -2,7 +2,7 @@
 
 module QA
   RSpec.shared_context 'with gitlab project migration', quarantine: {
-    only: [{ job: 'praefect' }, { subdomain: :staging }],
+    only: { job: 'praefect', subdomain: :staging },
     type: :investigating,
     issue: [
       'https://gitlab.com/gitlab-org/gitlab/-/issues/348999',

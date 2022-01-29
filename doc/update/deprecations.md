@@ -155,22 +155,26 @@ Note that we are not deprecating the Kerberos SPNEGO integration, only the old p
 ### Certificate-based integration with Kubernetes
 
 WARNING:
-This feature will be changed or removed in 15.0
+This feature will be changed or removed in 15.6
 as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
 Before updating GitLab, review the details carefully to determine if you need to make any
 changes to your code, settings, or workflow.
 
 [We are deprecating the certificate-based integration with Kubernetes](https://about.gitlab.com/blog/2021/11/15/deprecating-the-cert-based-kubernetes-integration/).
-The timeline of removal of the integration from the product is not yet planned and we will communicate
-more details as they emerge. The certificate-based integration will continue to receive security and
+The timeline of removal of the integration from the product is planned to happen in two steps, starting with milestone 15.0 and finishing in GitLab version 15.6.
+
+In 15.0, we plan to introduce a feature flag that will allow GitLab Self-Managed customers to keep the certificate-based integration enabled, it will be disabled by default. We plan to remove this feature flag together with the underlying code in GitLab version 15.6.
+The certificate-based integration will continue to receive security and
 critical fixes, and features built on the integration will continue to work with supported Kubernetes
-versions. We will provide migration plans in a future iteration. See [the list of features affected by this deprecation](https://docs.gitlab.com/ee/user/infrastructure/clusters/#deprecated-features).
-For updates and details, follow this [epic](https://gitlab.com/groups/gitlab-org/configure/-/epics/8).
+versions until the final removal in 15.6.
 
 For a more robust, secure, forthcoming, and reliable integration with Kubernetes, we recommend the use of the
-[Kubernetes Agent](https://docs.gitlab.com/ee/user/clusters/agent/) to connect Kubernetes clusters with GitLab.
+[Kubernetes Agent](https://docs.gitlab.com/ee/user/clusters/agent/) to connect Kubernetes clusters with GitLab. 
+We provide [migration plans](https://docs.gitlab.com/ee/user/infrastructure/clusters/migrate_to_gitlab_agent.html) in the documentation. 
 
-**Planned removal milestone: 15.0 (2022-05-22)**
+For updates and details around this deprecation, follow this [epic](https://gitlab.com/groups/gitlab-org/configure/-/epics/8).
+
+**Planned removal milestone: 15.6 (2022-11-22)**
 
 ### Converting an instance (shared) runner to a project (specific) runner
 

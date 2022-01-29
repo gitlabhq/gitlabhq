@@ -8,7 +8,6 @@ class MergeRequestPollCachedWidgetEntity < IssuableEntity
   expose :merged_commit_sha
   expose :short_merged_commit_sha
   expose :merge_error
-  expose :public_merge_status, as: :merge_status
   expose :merge_user_id
   expose :source_branch
   expose :source_project_id
@@ -25,6 +24,11 @@ class MergeRequestPollCachedWidgetEntity < IssuableEntity
   expose :remove_source_branch?, as: :remove_source_branch
   expose :source_branch_exists?, as: :source_branch_exists
   expose :branch_missing?, as: :branch_missing
+
+  expose :merge_status do |merge_request|
+    merge_request.check_mergeability(async: true)
+    merge_request.public_merge_status
+  end
 
   expose :default_squash_commit_message do |merge_request|
     merge_request.default_squash_commit_message(user: request.current_user)

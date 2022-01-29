@@ -24,8 +24,6 @@ class MergeRequestPollWidgetEntity < Grape::Entity
   end
 
   expose :mergeable do |merge_request, options|
-    next merge_request.mergeable? if Feature.disabled?(:check_mergeability_async_in_widget, merge_request.project, default_enabled: :yaml)
-
     merge_request.mergeable?
   end
 

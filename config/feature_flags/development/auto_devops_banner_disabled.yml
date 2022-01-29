@@ -1,7 +1,7 @@
 ---
 name: auto_devops_banner_disabled
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/14218
-rollout_issue_url: 
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/350882
 milestone: '10.0'
 type: development
 group: group::pipeline execution

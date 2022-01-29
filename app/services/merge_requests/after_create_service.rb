@@ -7,7 +7,7 @@ module MergeRequests
     def execute(merge_request)
       prepare_for_mergeability(merge_request) if early_prepare_for_mergeability?(merge_request)
       prepare_merge_request(merge_request)
-      mark_as_unchecked(merge_request) unless early_prepare_for_mergeability?(merge_request)
+      check_mergeability(merge_request) unless early_prepare_for_mergeability?(merge_request)
     end
 
     private
@@ -15,7 +15,7 @@ module MergeRequests
     def prepare_for_mergeability(merge_request)
       create_pipeline_for(merge_request, current_user)
       merge_request.update_head_pipeline
-      mark_as_unchecked(merge_request)
+      check_mergeability(merge_request)
     end
 
     def prepare_merge_request(merge_request)
@@ -55,8 +55,13 @@ module MergeRequests
       end
     end
 
-    def mark_as_unchecked(merge_request)
-      merge_request.mark_as_unchecked if merge_request.preparing?
+    def check_mergeability(merge_request)
+      return unless merge_request.preparing?
+
+      # Need to set to unchecked to be able to check for mergeability or else
+      # it'll be a no-op.
+      merge_request.mark_as_unchecked
+      merge_request.check_mergeability(async: true)
     end
   end
 end

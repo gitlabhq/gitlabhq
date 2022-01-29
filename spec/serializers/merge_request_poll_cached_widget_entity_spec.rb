@@ -21,12 +21,6 @@ RSpec.describe MergeRequestPollCachedWidgetEntity do
     is_expected.to include(:target_branch_sha)
   end
 
-  it 'has public_merge_status as merge_status' do
-    expect(resource).to receive(:public_merge_status).and_return('checking')
-
-    expect(subject[:merge_status]).to eq 'checking'
-  end
-
   it 'has blob path data' do
     allow(resource).to receive_messages(
       base_pipeline: pipeline,
@@ -36,6 +30,20 @@ RSpec.describe MergeRequestPollCachedWidgetEntity do
     expect(subject).to include(:blob_path)
     expect(subject[:blob_path]).to include(:base_path)
     expect(subject[:blob_path]).to include(:head_path)
+  end
+
+  describe 'merge_status' do
+    it 'calls for MergeRequest#check_mergeability' do
+      expect(resource).to receive(:check_mergeability).with(async: true)
+
+      subject[:merge_status]
+    end
+
+    it 'has public_merge_status as merge_status' do
+      expect(resource).to receive(:public_merge_status).and_return('checking')
+
+      expect(subject[:merge_status]).to eq 'checking'
+    end
   end
 
   describe 'diverged_commits_count' do
