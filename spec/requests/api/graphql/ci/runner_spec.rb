@@ -77,6 +77,7 @@ RSpec.describe 'Query.runner(id)' do
         'runnerType' => runner.instance_type? ? 'INSTANCE_TYPE' : 'PROJECT_TYPE',
         'executorName' => runner.executor_type&.dasherize,
         'jobCount' => 0,
+        'jobs' => a_hash_including("count" => 0, "nodes" => [], "pageInfo" => anything),
         'projectCount' => nil,
         'adminUrl' => "http://localhost/admin/runners/#{runner.id}",
         'userPermissions' => {
@@ -308,12 +309,25 @@ RSpec.describe 'Query.runner(id)' do
     let!(:job) { create(:ci_build, runner: project_runner1) }
 
     context 'requesting projects and counts for projects and jobs' do
+      let(:jobs_fragment) do
+        %(
+          jobs {
+            count
+            nodes {
+              id
+              status
+            }
+          }
+        )
+      end
+
       let(:query) do
         %(
           query {
             projectRunner1: runner(id: "#{project_runner1.to_global_id}") {
               projectCount
               jobCount
+              #{jobs_fragment}
               projects {
                 nodes {
                   id
@@ -323,6 +337,7 @@ RSpec.describe 'Query.runner(id)' do
             projectRunner2: runner(id: "#{project_runner2.to_global_id}") {
               projectCount
               jobCount
+              #{jobs_fragment}
               projects {
                 nodes {
                   id
@@ -332,6 +347,7 @@ RSpec.describe 'Query.runner(id)' do
             activeInstanceRunner: runner(id: "#{active_instance_runner.to_global_id}") {
               projectCount
               jobCount
+              #{jobs_fragment}
               projects {
                 nodes {
                   id
@@ -355,6 +371,10 @@ RSpec.describe 'Query.runner(id)' do
 
         expect(runner1_data).to match a_hash_including(
           'jobCount' => 1,
+          'jobs' => a_hash_including(
+            "count" => 1,
+            "nodes" => [{ "id" => job.to_global_id.to_s, "status" => job.status.upcase }]
+          ),
           'projectCount' => 2,
           'projects' => {
             'nodes' => [
@@ -364,12 +384,14 @@ RSpec.describe 'Query.runner(id)' do
           })
         expect(runner2_data).to match a_hash_including(
           'jobCount' => 0,
+          'jobs' => nil, # returning jobs not allowed for more than 1 runner (see RunnerJobsResolver)
           'projectCount' => 0,
           'projects' => {
             'nodes' => []
           })
         expect(runner3_data).to match a_hash_including(
           'jobCount' => 0,
+          'jobs' => nil, # returning jobs not allowed for more than 1 runner (see RunnerJobsResolver)
           'projectCount' => nil,
           'projects' => nil)
       end

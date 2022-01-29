@@ -11,6 +11,10 @@ module Ci
 
     rule { anonymous }.prevent_all
 
+    rule { admin }.policy do
+      enable :read_builds
+    end
+
     rule { admin | owned_runner }.policy do
       enable :assign_runner
       enable :read_runner

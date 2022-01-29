@@ -70,6 +70,10 @@ module Types
             description: 'Groups the runner is associated with. For group runners only.'
       field :projects, ::Types::ProjectType.connection_type, null: true,
             description: 'Projects the runner is associated with. For project runners only.'
+      field :jobs, ::Types::Ci::JobType.connection_type, null: true,
+            description: 'Jobs assigned to the runner.',
+            authorize: :read_builds,
+            resolver: ::Resolvers::Ci::RunnerJobsResolver
 
       def job_count
         # We limit to 1 above the JOB_COUNT_LIMIT to indicate that more items exist after JOB_COUNT_LIMIT

@@ -13,14 +13,6 @@ module Gitlab
       #
       # It also adds some logic around Group Labels/Milestones for edge cases.
       class ObjectBuilder < Base::ObjectBuilder
-        def self.build(*args)
-          ::Gitlab::Database::QueryAnalyzers::PreventCrossDatabaseModification.allow_cross_database_modification_within_transaction(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/350091') do
-            ::Project.transaction do
-              super
-            end
-          end
-        end
-
         def initialize(klass, attributes)
           super
 

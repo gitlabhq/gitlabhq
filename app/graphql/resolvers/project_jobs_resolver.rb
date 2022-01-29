@@ -18,7 +18,8 @@ module Resolvers
     def ready?(**args)
       context[self.class] ||= { executions: 0 }
       context[self.class][:executions] += 1
-      raise GraphQL::ExecutionError, "Jobs can only be requested for one project at a time" if context[self.class][:executions] > 1
+
+      raise GraphQL::ExecutionError, "Jobs can be requested for only one project at a time" if context[self.class][:executions] > 1
 
       super
     end

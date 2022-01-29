@@ -126,4 +126,41 @@ RSpec.describe Ci::JobsFinder, '#execute' do
       end
     end
   end
+
+  context 'a runner is present' do
+    let_it_be(:runner) { create(:ci_runner, :project, projects: [project]) }
+    let_it_be(:job_4) { create(:ci_build, :success, runner: runner) }
+
+    subject { described_class.new(current_user: user, runner: runner, params: params).execute }
+
+    context 'user has access to the runner', :enable_admin_mode do
+      let(:user) { admin }
+
+      it 'returns jobs for the specified project' do
+        expect(subject).to match_array([job_4])
+      end
+    end
+
+    context 'user has no access to project builds' do
+      let_it_be(:guest) { create(:user) }
+
+      let(:user) { guest }
+
+      before do
+        project.add_guest(guest)
+      end
+
+      it 'returns no jobs' do
+        expect(subject).to be_empty
+      end
+    end
+
+    context 'without user' do
+      let(:user) { nil }
+
+      it 'returns no jobs' do
+        expect(subject).to be_empty
+      end
+    end
+  end
 end

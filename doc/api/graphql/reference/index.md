@@ -9085,6 +9085,22 @@ Represents the total number of issues and their weights for a particular day.
 
 #### Fields with arguments
 
+##### `CiRunner.jobs`
+
+Jobs assigned to the runner.
+
+Returns [`CiJobConnection`](#cijobconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="cirunnerjobsstatuses"></a>`statuses` | [`[CiJobStatus!]`](#cijobstatus) | Filter jobs by status. |
+
 ##### `CiRunner.status`
 
 Status of the runner.
