@@ -552,3 +552,4 @@ x509_commit_signatures: :gitlab_main
 x509_issuers: :gitlab_main
 zentao_tracker_data: :gitlab_main
 zoom_meetings: :gitlab_main
+batched_background_migration_job_transition_logs: :gitlab_main

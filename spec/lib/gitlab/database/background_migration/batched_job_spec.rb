@@ -7,6 +7,7 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedJob, type: :model d
 
   describe 'associations' do
     it { is_expected.to belong_to(:batched_migration).with_foreign_key(:batched_background_migration_id) }
+    it { is_expected.to have_many(:batched_job_transition_logs).with_foreign_key(:batched_background_migration_job_id) }
   end
 
   describe 'scopes' do

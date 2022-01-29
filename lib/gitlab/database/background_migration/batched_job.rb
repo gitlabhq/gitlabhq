@@ -20,6 +20,7 @@ module Gitlab
         }
 
         belongs_to :batched_migration, foreign_key: :batched_background_migration_id
+        has_many :batched_job_transition_logs, foreign_key: :batched_background_migration_job_id
 
         scope :active, -> { where(status: [:pending, :running]) }
         scope :stuck, -> { active.where('updated_at <= ?', STUCK_JOBS_TIMEOUT.ago) }

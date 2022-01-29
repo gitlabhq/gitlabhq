@@ -127,6 +127,20 @@ CREATE TABLE audit_events (
 )
 PARTITION BY RANGE (created_at);
 
+CREATE TABLE batched_background_migration_job_transition_logs (
+    id bigint NOT NULL,
+    batched_background_migration_job_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    previous_status smallint NOT NULL,
+    next_status smallint NOT NULL,
+    exception_class text,
+    exception_message text,
+    CONSTRAINT check_50e580811a CHECK ((char_length(exception_message) <= 1000)),
+    CONSTRAINT check_76e202c37a CHECK ((char_length(exception_class) <= 100))
+)
+PARTITION BY RANGE (created_at);
+
 CREATE TABLE incident_management_pending_alert_escalations (
     id bigint NOT NULL,
     rule_id bigint NOT NULL,
@@ -10894,6 +10908,15 @@ CREATE TABLE banned_users (
     user_id bigint NOT NULL
 );
 
+CREATE SEQUENCE batched_background_migration_job_transition_logs_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE batched_background_migration_job_transition_logs_id_seq OWNED BY batched_background_migration_job_transition_logs.id;
+
 CREATE TABLE batched_background_migration_jobs (
     id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
@@ -21417,6 +21440,8 @@ ALTER TABLE ONLY background_migration_jobs ALTER COLUMN id SET DEFAULT nextval('
 
 ALTER TABLE ONLY badges ALTER COLUMN id SET DEFAULT nextval('badges_id_seq'::regclass);
 
+ALTER TABLE ONLY batched_background_migration_job_transition_logs ALTER COLUMN id SET DEFAULT nextval('batched_background_migration_job_transition_logs_id_seq'::regclass);
+
 ALTER TABLE ONLY batched_background_migration_jobs ALTER COLUMN id SET DEFAULT nextval('batched_background_migration_jobs_id_seq'::regclass);
 
 ALTER TABLE ONLY batched_background_migrations ALTER COLUMN id SET DEFAULT nextval('batched_background_migrations_id_seq'::regclass);
@@ -22832,6 +22857,9 @@ ALTER TABLE ONLY badges
 
 ALTER TABLE ONLY banned_users
     ADD CONSTRAINT banned_users_pkey PRIMARY KEY (user_id);
+
+ALTER TABLE ONLY batched_background_migration_job_transition_logs
+    ADD CONSTRAINT batched_background_migration_job_transition_logs_pkey PRIMARY KEY (id, created_at);
 
 ALTER TABLE ONLY batched_background_migration_jobs
     ADD CONSTRAINT batched_background_migration_jobs_pkey PRIMARY KEY (id);
@@ -25074,6 +25102,8 @@ CREATE UNIQUE INDEX finding_link_name_url_idx ON vulnerability_finding_links USI
 CREATE UNIQUE INDEX finding_link_url_idx ON vulnerability_finding_links USING btree (vulnerability_occurrence_id, url) WHERE (name IS NULL);
 
 CREATE INDEX finding_links_on_vulnerability_occurrence_id ON vulnerability_finding_links USING btree (vulnerability_occurrence_id);
+
+CREATE INDEX i_batched_background_migration_job_transition_logs_on_job_id ON ONLY batched_background_migration_job_transition_logs USING btree (batched_background_migration_job_id);
 
 CREATE UNIQUE INDEX i_ci_job_token_project_scope_links_on_source_and_target_project ON ci_job_token_project_scope_links USING btree (source_project_id, target_project_id);
 
@@ -31082,6 +31112,9 @@ ALTER TABLE ONLY packages_debian_project_component_files
 
 ALTER TABLE ONLY namespace_aggregation_schedules
     ADD CONSTRAINT fk_rails_b565c8d16c FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE batched_background_migration_job_transition_logs
+    ADD CONSTRAINT fk_rails_b7523a175b FOREIGN KEY (batched_background_migration_job_id) REFERENCES batched_background_migration_jobs(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY approval_project_rules_protected_branches
     ADD CONSTRAINT fk_rails_b7567b031b FOREIGN KEY (protected_branch_id) REFERENCES protected_branches(id) ON DELETE CASCADE;
