@@ -36,7 +36,10 @@ GitLab IaC scanning supports a variety of IaC configuration files. Our IaC secur
 |------------------------------------------|----------------------------------|-------------------------------|
 | Ansible                                  | [KICS](https://kics.io/)         | 14.5                          |
 | AWS CloudFormation                       | [KICS](https://kics.io/)         | 14.5                          |
+| Dockerfile                               | [KICS](https://kics.io/)         | 14.5                          |
+| Google Deployment Manager                | [KICS](https://kics.io/)         | 14.5                          |
 | Kubernetes                               | [KICS](https://kics.io/)         | 14.5                          |
+| OpenAPI                                  | [KICS](https://kics.io/)         | 14.5                          |
 | Terraform                                | [KICS](https://kics.io/)         | 14.5                          |
 
 ### Making IaC analyzers available to all GitLab tiers
