@@ -26486,6 +26486,9 @@ msgstr ""
 msgid "Pipelines|Visualize"
 msgstr ""
 
+msgid "Pipelines|Your changes have been successfully committed. Now redirecting to the new merge request page."
+msgstr ""
+
 msgid "Pipelines|detached"
 msgstr ""
 
@@ -40916,6 +40919,9 @@ msgid "You are not authorized to delete this site profile"
 msgstr ""
 
 msgid "You are not authorized to perform this action"
+msgstr ""
+
+msgid "You are not authorized to run this manual job"
 msgstr ""
 
 msgid "You are not authorized to update this profile"

@@ -28,6 +28,12 @@ The following configuration options are also available:
 - Configuring the [number of `gitaly-ruby` workers](#configure-number-of-gitaly-ruby-workers).
 - Limiting [RPC concurrency](#limit-rpc-concurrency).
 
+## About the Gitaly token
+
+The token referred to throughout the Gitaly documentation is just an arbitrary password selected by
+the administrator. It is unrelated to tokens created for the GitLab API or other similar web API
+tokens.
+
 ## Run Gitaly on its own server
 
 By default, Gitaly is run on the same server as Gitaly clients and is
@@ -115,11 +121,6 @@ We assume your GitLab installation has three repository storages:
 - `storage2`.
 
 You can use as few as one server with one repository storage if desired.
-
-NOTE:
-The token referred to throughout the Gitaly documentation is just an arbitrary password selected by
-the administrator. It is unrelated to tokens created for the GitLab API or other similar web API
-tokens.
 
 ### Install Gitaly
 

@@ -4,13 +4,13 @@ import { mount } from '@vue/test-utils';
 import Vue from 'vue';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import { objectToQuery, redirectTo } from '~/lib/utils/url_utility';
 import CommitForm from '~/pipeline_editor/components/commit/commit_form.vue';
 import CommitSection from '~/pipeline_editor/components/commit/commit_section.vue';
 import {
   COMMIT_ACTION_CREATE,
   COMMIT_ACTION_UPDATE,
   COMMIT_SUCCESS,
+  COMMIT_SUCCESS_WITH_REDIRECT,
 } from '~/pipeline_editor/constants';
 import commitCreate from '~/pipeline_editor/graphql/mutations/commit_ci_file.mutation.graphql';
 import updatePipelineEtag from '~/pipeline_editor/graphql/mutations/client/update_pipeline_etag.mutation.graphql';
@@ -24,15 +24,7 @@ import {
   mockCommitMessage,
   mockDefaultBranch,
   mockProjectFullPath,
-  mockNewMergeRequestPath,
 } from '../../mock_data';
-
-jest.mock('~/lib/utils/url_utility', () => ({
-  redirectTo: jest.fn(),
-  refreshCurrentPage: jest.fn(),
-  objectToQuery: jest.requireActual('~/lib/utils/url_utility').objectToQuery,
-  mergeUrlParams: jest.requireActual('~/lib/utils/url_utility').mergeUrlParams,
-}));
 
 const mockVariables = {
   action: COMMIT_ACTION_UPDATE,
@@ -47,7 +39,6 @@ const mockVariables = {
 const mockProvide = {
   ciConfigPath: mockCiConfigPath,
   projectFullPath: mockProjectFullPath,
-  newMergeRequestPath: mockNewMergeRequestPath,
 };
 
 describe('Pipeline Editor | Commit section', () => {
@@ -208,19 +199,21 @@ describe('Pipeline Editor | Commit section', () => {
 
     beforeEach(async () => {
       createComponentWithApollo();
+      mockMutateCommitData.mockResolvedValue(mockCommitCreateResponse);
       await submitCommit({
         branch: newBranch,
         openMergeRequest: true,
       });
     });
 
-    it('redirects to the merge request page with source and target branches', () => {
-      const branchesQuery = objectToQuery({
-        'merge_request[source_branch]': newBranch,
-        'merge_request[target_branch]': mockDefaultBranch,
-      });
-
-      expect(redirectTo).toHaveBeenCalledWith(`${mockNewMergeRequestPath}?${branchesQuery}`);
+    it('emits a commit event with the right type, sourceBranch and targetBranch', () => {
+      expect(wrapper.emitted('commit')).toBeTruthy();
+      expect(wrapper.emitted('commit')[0]).toMatchObject([
+        {
+          type: COMMIT_SUCCESS_WITH_REDIRECT,
+          params: { sourceBranch: newBranch, targetBranch: mockDefaultBranch },
+        },
+      ]);
     });
   });
 

@@ -153,26 +153,19 @@ gitops:
 
 ## Authorize projects and groups to use an Agent
 
-> - Group authorization [introduced](https://gitlab.com/groups/gitlab-org/-/epics/5784) in GitLab 14.3.
-> - Project authorization [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/327850) in GitLab 14.4.
+With the [CI/CD Tunnel](ci_cd_tunnel.md), you can authorize [projects](#authorize-projects-to-use-an-agent)
+and [groups](#authorize-groups-to-use-an-agent) to use an Agent.
 
-If you use the same cluster across multiple projects, you can set up the [CI/CD Tunnel](ci_cd_tunnel.md)
-to grant access to an Agent from one or more projects or groups. This way, all the authorized
-projects can access the same Agent, which facilitates you to save resources and have a scalable setup.
-
-When you authorize a project to use an agent through the [CI/CD Tunnel](ci_cd_tunnel.md),
-the selected Kubernetes context is automatically injected into CI/CD jobs, allowing you to
-run Kubernetes commands from your authorized projects' scripts. When you authorize a group,
-all the projects that belong to that group can access the selected agent.
-
-An Agent can only authorize projects or groups in the same group hierarchy as the Agent's configuration
-project. You can authorize up to 100 projects and 100 groups per Agent.
+Then, you can reach your cluster from authorized projects and [run Kubernetes commands from GitLab CI/CD scripts](#run-kubectl-commands-using-the-cicd-tunnel)
+in these projects.
 
 ### Authorize projects to use an Agent
 
-To grant projects access to the Agent through the [CI/CD Tunnel](ci_cd_tunnel.md):
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/327850) in GitLab 14.4.
 
-1. Go to your Agent's configuration project.
+To grant projects access to the Agent through the CI/CD Tunnel:
+
+1. Go to your Agent's configuration repository.
 1. Edit the Agent's configuration file (`config.yaml`).
 1. Add the `projects` attribute into `ci_access`.
 1. Identify the project through its path:
@@ -185,9 +178,11 @@ To grant projects access to the Agent through the [CI/CD Tunnel](ci_cd_tunnel.md
 
 ### Authorize groups to use an Agent
 
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5784) in GitLab 14.3.
+
 To grant access to all projects within a group:
 
-1. Go to your Agent's configuration project.
+1. Go to your Agent's configuration repository.
 1. Edit the Agent's configuration file (`config.yaml`).
 1. Add the `groups` attribute into `ci_access`.
 1. Identify the group or subgroup through its path:
@@ -198,7 +193,45 @@ To grant access to all projects within a group:
      - id: path/to/group/subgroup
    ```
 
-### Use impersonation to restrict project and group access **(PREMIUM)**
+## Run `kubectl` commands using the CI/CD Tunnel
+
+After you authorize your project or group to use the Agent, you need to
+configure the project's `.gitlab-ci.yaml` file to access the Agent.
+This makes it possible to deploy applications to your cluster and run
+any Kubernetes-specific commands from the authorized project.
+
+First, configure your Agent:
+
+1. Go to you your Agent's configuration repository.
+1. Edit your Agent's `config.yaml` file authorizing the [project](#authorize-projects-to-use-an-agent) or [group](#authorize-groups-to-use-an-agent) you want to run Kubernetes commands from.
+
+Then, configure the other project:
+
+1. Go to the project where you want to run Kubernetes commands from.
+1. Edit your project's `.gitlab-ci.yml` file.
+1. Set your Agent's context in the first command of the script with the format `path/to/agent/repository:agent-name`.
+1. Run Kubernetes commands.
+
+For example:
+
+```yaml
+ deploy:
+   image:
+     name: bitnami/kubectl:latest
+     entrypoint: [""]
+   script:
+   - kubectl config use-context path/to/agent/repository:agent-name
+   - kubectl get pods
+```
+
+When you use the Agent, KubeContexts are named as `path/to/agent/repository:agent-name`.
+
+To get the list of available contexts:
+
+1. Open your terminal and connect to your cluster.
+1. Run `kubectl config get-contexts`.
+
+## Use impersonation to restrict project and group access **(PREMIUM)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/345014) in GitLab 14.5.
 
@@ -214,11 +247,11 @@ You can impersonate:
 - The CI job that accesses the cluster.
 - A specific user or system account defined within the cluster.
 
-#### Impersonate the Agent
+### Impersonate the Agent
 
 The Agent is impersonated by default. You don't need to do anything to impersonate it.
 
-#### Impersonate the CI job that accesses the cluster
+### Impersonate the CI job that accesses the cluster
 
 To impersonate the CI job that accesses the cluster, add the `ci_job: {}` key-value
 under the `access_as` key.
@@ -264,7 +297,7 @@ ci_access:
       ci_job: {}
 ```
 
-#### Impersonate a static identity
+### Impersonate a static identity
 
 For the given CI/CD Tunnel connection, you can use a static identity for the impersonation.
 

@@ -5,6 +5,7 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 
+import { objectToQuery, redirectTo } from '~/lib/utils/url_utility';
 import { resolvers } from '~/pipeline_editor/graphql/resolvers';
 import PipelineEditorTabs from '~/pipeline_editor/components/pipeline_editor_tabs.vue';
 import PipelineEditorEmptyState from '~/pipeline_editor/components/ui/pipeline_editor_empty_state.vue';
@@ -13,7 +14,11 @@ import PipelineEditorHeader from '~/pipeline_editor/components/header/pipeline_e
 import ValidationSegment, {
   i18n as validationSegmenti18n,
 } from '~/pipeline_editor/components/header/validation_segment.vue';
-import { COMMIT_SUCCESS, COMMIT_FAILURE } from '~/pipeline_editor/constants';
+import {
+  COMMIT_SUCCESS,
+  COMMIT_SUCCESS_WITH_REDIRECT,
+  COMMIT_FAILURE,
+} from '~/pipeline_editor/constants';
 import getBlobContent from '~/pipeline_editor/graphql/queries/blob_content.query.graphql';
 import getCiConfigData from '~/pipeline_editor/graphql/queries/ci_config.query.graphql';
 import getTemplate from '~/pipeline_editor/graphql/queries/get_starter_template.query.graphql';
@@ -35,8 +40,14 @@ import {
   mockDefaultBranch,
   mockEmptyCommitShaResults,
   mockNewCommitShaResults,
+  mockNewMergeRequestPath,
   mockProjectFullPath,
 } from './mock_data';
+
+jest.mock('~/lib/utils/url_utility', () => ({
+  ...jest.requireActual('~/lib/utils/url_utility'),
+  redirectTo: jest.fn(),
+}));
 
 const localVue = createLocalVue();
 localVue.use(VueApollo);
@@ -44,6 +55,7 @@ localVue.use(VueApollo);
 const mockProvide = {
   ciConfigPath: mockCiConfigPath,
   defaultBranch: mockDefaultBranch,
+  newMergeRequestPath: mockNewMergeRequestPath,
   projectFullPath: mockProjectFullPath,
 };
 
@@ -308,6 +320,28 @@ describe('Pipeline editor app component', () => {
           await waitForPromises();
 
           expect(wrapper.vm.$apollo.queries.commitSha.stopPolling).toHaveBeenCalledTimes(1);
+        });
+      });
+
+      describe('when the commit succeeds with a redirect', () => {
+        const newBranch = 'new-branch';
+
+        beforeEach(async () => {
+          await createComponentWithApollo({ stubs: { PipelineEditorMessages } });
+
+          findEditorHome().vm.$emit('commit', {
+            type: COMMIT_SUCCESS_WITH_REDIRECT,
+            params: { sourceBranch: newBranch, targetBranch: mockDefaultBranch },
+          });
+        });
+
+        it('redirects to the merge request page with source and target branches', () => {
+          const branchesQuery = objectToQuery({
+            'merge_request[source_branch]': newBranch,
+            'merge_request[target_branch]': mockDefaultBranch,
+          });
+
+          expect(redirectTo).toHaveBeenCalledWith(`${mockNewMergeRequestPath}?${branchesQuery}`);
         });
       });
 

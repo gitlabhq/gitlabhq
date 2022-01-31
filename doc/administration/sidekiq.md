@@ -4,77 +4,131 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Configuring Sidekiq **(FREE SELF)**
+# Configure an external Sidekiq instance **(FREE SELF)**
 
-This section discusses how to configure an external Sidekiq instance using the
-bundled Sidekiq in the GitLab package.
+You can configure an external Sidekiq instance by using the Sidekiq that's
+bundled in the GitLab package. Sidekiq requires connection to the Redis,
+PostgreSQL, and Gitaly instances.
 
-Sidekiq requires connection to the Redis, PostgreSQL and Gitaly instance.
-To configure the Sidekiq node:
+## Required configuration
+
+To configure Sidekiq:
 
 1. SSH into the Sidekiq server.
-1. [Download/install](https://about.gitlab.com/install/) the Omnibus GitLab package
-you want using steps 1 and 2 from the GitLab downloads page.
-**Do not complete any other steps on the download page.**
-1. Open `/etc/gitlab/gitlab.rb` with your editor.
-1. Generate the Sidekiq configuration:
+1. [Download and install](https://about.gitlab.com/install/) the Omnibus GitLab package
+   using steps 1 and 2. **Do not complete any other steps.**
+1. Edit `/etc/gitlab/gitlab.rb` with the following information and make sure
+   to replace with your values:
 
    ```ruby
-   ## Optional: Enable extra Sidekiq processes
-   sidekiq_cluster['enable'] = true
-   sidekiq['queue_groups'] = [
-     "elastic_commit_indexer",
-     "*"
-   ]
-   ```
+   ##
+   ## To maintain uniformity of links across nodes, the
+   ##`external_url` on the Sidekiq server should point to the external URL that users
+   ## use to access GitLab. This can be either:
+   ##
+   ## - The `external_url` set on your application server.
+   ## - The URL of a external load balancer, which routes traffic to the GitLab application server.
+   ##
 
-1. Setup Sidekiq's connection to Redis:
+   external_url 'https://gitlab.example.com'
 
-   ```ruby
+   ## Prevent database migrations from running on upgrade automatically
+   gitlab_rails['auto_migrate'] = false
+
+   ########################################
+   #####        Services Disabled       ###
+   ########################################
+   #
+   # When running GitLab on just one server, you have a single `gitlab.rb`
+   # to enable all services you want to run.
+   # When running GitLab on N servers, you have N `gitlab.rb` files.
+   # Enable only the services you want to run on each
+   # specific server, while disabling all others.
+   #
+   nginx['enable'] = false
+   grafana['enable'] = false
+   prometheus['enable'] = false
+   gitlab_rails['auto_migrate'] = false
+   alertmanager['enable'] = false
+   gitaly['enable'] = false
+   gitlab_workhorse['enable'] = false
+   nginx['enable'] = false
+   postgres_exporter['enable'] = false
+   postgresql['enable'] = false
+   redis['enable'] = false
+   redis_exporter['enable'] = false
+   puma['enable'] = false
+   gitlab_exporter['enable'] = false
+
+   #######################################
+   ###      Sidekiq configuration      ###
+   #######################################
+   sidekiq['enable'] = true
+   sidekiq['listen_address'] = "0.0.0.0"
+
+   ## Set number of Sidekiq queue processes to the same number as available CPUs
+   sidekiq['queue_groups'] = ['*'] * 4
+
+   ## Set number of Sidekiq threads per queue process to the recommend number of 10
+   sidekiq['max_concurrency'] = 10
+
+   ########################################
+   ####              Redis              ###
+   ########################################
+
    ## Must be the same in every sentinel node
    redis['master_name'] = 'gitlab-redis'
 
    ## The same password for Redis authentication you set up for the master node.
-   redis['master_password'] = 'YOUR_PASSOWORD'
+   redis['master_password'] = '<redis_master_password>'
 
-   ## A list of sentinels with `host` and `port`
-   gitlab_rails['redis_sentinels'] = [
-       {'host' => '10.10.1.34', 'port' => 26379},
-       {'host' => '10.10.1.35', 'port' => 26379},
-       {'host' => '10.10.1.36', 'port' => 26379},
-     ]
-   ```
+   #######################################
+   ###              Gitaly             ###
+   #######################################
 
-1. Set up Sidekiq's connection to Gitaly:
-
-   ```ruby
+   ## Replace <gitaly_token> with the one you set up, see
+   ## https://docs.gitlab.com/ee/administration/gitaly/configure_gitaly.html#about-the-gitaly-token
    git_data_dirs({
      'default' => { 'gitaly_address' => 'tcp://gitaly:8075' },
    })
-   gitlab_rails['gitaly_token'] = 'YOUR_TOKEN'
-   ```
+   gitlab_rails['gitaly_token'] = '<gitaly_token>'
 
-1. Set up Sidekiq's connection to PostgreSQL:
+   #######################################
+   ###            Postgres             ###
+   #######################################
 
-   ```ruby
-   gitlab_rails['db_host'] = '10.10.1.30'
-   gitlab_rails['db_password'] = 'YOUR_PASSOWORD'
+   # Replace <database_host> and <database_password>
+   gitlab_rails['db_host'] = '<database_host>'
+   gitlab_rails['db_password'] = '<database_password>'
    gitlab_rails['db_port'] = '5432'
    gitlab_rails['db_adapter'] = 'postgresql'
    gitlab_rails['db_encoding'] = 'unicode'
    gitlab_rails['auto_migrate'] = false
+
+   # Add the Sidekiq node(s) to PostgreSQL's trusted addresses.
+   # In the following example, 10.10.1.30/32 is the private IP
+   # of the Sidekiq server.
+   postgresql['trust_auth_cidr_addresses'] = %w(127.0.0.1/32 10.10.1.30/32)
    ```
 
-   Remember to add the Sidekiq nodes to PostgreSQL's trusted addresses:
+1. Reconfigure GitLab:
 
-   ```ruby
-   postgresql['trust_auth_cidr_addresses'] = %w(127.0.0.1/32 10.10.1.30/32 10.10.1.31/32 10.10.1.32/32 10.10.1.33/32 10.10.1.38/32)
+   ```shell
+   sudo gitlab-ctl reconfigure
    ```
 
-1. If you run multiple Sidekiq nodes with a shared file storage, such as NFS, you must
-   specify the UIDs and GIDs to ensure they match between servers. Specifying the UIDs
-   and GIDs prevents permissions issues in the file system. This advice is similar to the
-   [advice for Geo setups](geo/replication/multiple_servers.md#step-4-configure-the-frontend-application-nodes-on-the-geo-secondary-site):
+1. Restart the Sidekiq nodes after completing the process and finishing the database migrations.
+
+## Configure multiple Sidekiq nodes with shared storage
+
+If you run multiple Sidekiq nodes with a shared file storage, such as NFS, you must
+specify the UIDs and GIDs to ensure they match between servers. Specifying the UIDs
+and GIDs prevents permissions issues in the file system. This advice is similar to the
+[advice for Geo setups](geo/replication/multiple_servers.md#step-4-configure-the-frontend-application-nodes-on-the-geo-secondary-site).
+
+To set up multiple Sidekiq nodes:
+
+1. Edit `/etc/gitlab/gitlab.rb`:
 
    ```ruby
    user['uid'] = 9000
@@ -85,180 +139,87 @@ you want using steps 1 and 2 from the GitLab downloads page.
    registry['gid'] = 9002
    ```
 
-1. Disable other services:
+1. Reconfigure GitLab:
 
-   ```ruby
-   nginx['enable'] = false
-   grafana['enable'] = false
-   prometheus['enable'] = false
-   gitlab_rails['auto_migrate'] = false
-   alertmanager['enable'] = false
-   gitaly['enable'] = false
-   gitlab_monitor['enable'] = false
-   gitlab_workhorse['enable'] = false
-   nginx['enable'] = false
-   postgres_exporter['enable'] = false
-   postgresql['enable'] = false
-   redis['enable'] = false
-   redis_exporter['enable'] = false
-   puma['enable'] = false
-   gitlab_exporter['enable'] = false
+   ```shell
+   sudo gitlab-ctl reconfigure
    ```
 
-1. If you're using the Container Registry and it's running on a different node than Sidekiq, then
-   configure the registry URL:
+## Configure the Container Registry when using an external Sidekiq
+
+If you're using the Container Registry and it's running on a different
+node than Sidekiq, follow the steps below.
+
+1. Edit `/etc/gitlab/gitlab.rb`, and configure the registry URL:
 
    ```ruby
    registry_external_url 'https://registry.example.com'
    gitlab_rails['registry_api_url'] = "https://registry.example.com"
    ```
-  
-   You must also copy the `registry.key` file to each Sidekiq node.
 
-1. Define the `external_url`. To maintain uniformity of links across nodes, the
-   `external_url` on the Sidekiq server should point to the external URL that users
-   will use to access GitLab. This will either be the `external_url` set on your
-   application server or the URL of a external load balancer which will route traffic
-   to the GitLab application server:
+1. Reconfigure GitLab:
 
-   ```ruby
-   external_url 'https://gitlab.example.com'
+   ```shell
+   sudo gitlab-ctl reconfigure
    ```
 
-1. (Optional) If you want to collect Sidekiq metrics, enable the Sidekiq metrics server.
-   To make metrics available from `localhost:8082/metrics`, set the following values:
+1. In the instance where Container Registry is hosted, copy the `registry.key`
+   file to the Sidekiq node.
+
+## Configure the Sidekiq metrics server
+
+If you want to collect Sidekiq metrics, enable the Sidekiq metrics server.
+To make metrics available from `localhost:8082/metrics`:
+
+To configure the metrics server:
+
+1. Edit `/etc/gitlab/gitlab.rb`:
 
    ```ruby
    sidekiq['metrics_enabled'] = true
    sidekiq['listen_address'] = "localhost"
    sidekiq['listen_port'] = "8082"
-   
+
    # Optionally log all the metrics server logs to log/sidekiq_exporter.log
    sidekiq['exporter_log_enabled'] = true
    ```
 
-1. (Optional) If you use health check probes to observe Sidekiq,
-   set a separate port for health checks.
-   Configuring health checks is only necessary if there is something that actually probes them.
-   For more information about health checks, see the [Sidekiq health check page](sidekiq_health_check.md).
-   Enable health checks for Sidekiq:
+1. Reconfigure GitLab:
+
+   ```shell
+   sudo gitlab-ctl reconfigure
+   ```
+
+## Configure health checks
+
+If you use health check probes to observe Sidekiq,
+you can set a separate port for health checks.
+Configuring health checks is only necessary if there is something that actually probes them.
+For more information about health checks, see the [Sidekiq health check page](sidekiq_health_check.md).
+
+To enable health checks for Sidekiq:
+
+1. Edit `/etc/gitlab/gitlab.rb`:
 
     ```ruby
-    sidekiq['health_checks_enabled'] = true
-    sidekiq['health_checks_listen_address'] = "localhost"
-    sidekiq['health_checks_listen_port'] = "8092"
+   sidekiq['health_checks_enabled'] = true
+   sidekiq['health_checks_listen_address'] = "localhost"
+   sidekiq['health_checks_listen_port'] = "8092"
    ```
 
    NOTE:
-   If health check settings are not set, they will default to the metrics exporter settings.
+   If health check settings are not set, they default to the metrics exporter settings.
    This default is deprecated and is set to be removed in [GitLab 15.0](https://gitlab.com/gitlab-org/gitlab/-/issues/347509).
 
-1. Run `gitlab-ctl reconfigure`.
+1. Reconfigure GitLab:
 
-You will need to restart the Sidekiq nodes after an update has occurred and database
-migrations performed.
+   ```shell
+   sudo gitlab-ctl reconfigure
+   ```
 
-## Example configuration
+## Related topics
 
-Here's what the ending `/etc/gitlab/gitlab.rb` would look like:
-
-```ruby
-########################################
-#####        Services Disabled       ###
-########################################
-
-nginx['enable'] = false
-grafana['enable'] = false
-prometheus['enable'] = false
-gitlab_rails['auto_migrate'] = false
-alertmanager['enable'] = false
-gitaly['enable'] = false
-gitlab_workhorse['enable'] = false
-nginx['enable'] = false
-postgres_exporter['enable'] = false
-postgresql['enable'] = false
-redis['enable'] = false
-redis_exporter['enable'] = false
-puma['enable'] = false
-gitlab_exporter['enable'] = false
-
-########################################
-####              Redis              ###
-########################################
-
-## Must be the same in every sentinel node
-redis['master_name'] = 'gitlab-redis'
-
-## The same password for Redis authentication you set up for the master node.
-redis['master_password'] = 'YOUR_PASSOWORD'
-
-## A list of sentinels with `host` and `port`
-gitlab_rails['redis_sentinels'] = [
-    {'host' => '10.10.1.34', 'port' => 26379},
-    {'host' => '10.10.1.35', 'port' => 26379},
-    {'host' => '10.10.1.36', 'port' => 26379},
-  ]
-
-#######################################
-###              Gitaly             ###
-#######################################
-
-git_data_dirs({
-  'default' => { 'gitaly_address' => 'tcp://gitaly:8075' },
-})
-gitlab_rails['gitaly_token'] = 'YOUR_TOKEN'
-
-#######################################
-###            Postgres             ###
-#######################################
-gitlab_rails['db_host'] = '10.10.1.30'
-gitlab_rails['db_password'] = 'YOUR_PASSOWORD'
-gitlab_rails['db_port'] = '5432'
-gitlab_rails['db_adapter'] = 'postgresql'
-gitlab_rails['db_encoding'] = 'unicode'
-gitlab_rails['auto_migrate'] = false
-
-#######################################
-###      Sidekiq configuration      ###
-#######################################
-sidekiq['metrics_enabled'] = true
-sidekiq['exporter_log_enabled'] = false
-sidekiq['listen_port'] = "8082"
-
-sidekiq['health_checks_enabled'] = true
-sidekiq['health_checks_listen_address'] = "localhost"
-sidekiq['health_checks_listen_port'] = "8092"
-
-#######################################
-###     Monitoring configuration    ###
-#######################################
-consul['enable'] = true
-consul['monitoring_service_discovery'] =  true
-
-consul['configuration'] = {
-  bind_addr: '10.10.1.48',
-  retry_join: %w(10.10.1.34 10.10.1.35 10.10.1.36)
-}
-
-# Set the network addresses that the exporters will listen on
-node_exporter['listen_address'] = '10.10.1.48:9100'
-
-# Rails Status for prometheus
-gitlab_rails['monitoring_whitelist'] = ['10.10.1.42', '127.0.0.1']
-
-# Container Registry URL for cleanup jobs
-registry_external_url 'https://registry.example.com'
-gitlab_rails['registry_api_url'] = "https://registry.example.com"
-
-# External URL (this should match the URL used to access your GitLab instance)
-external_url 'https://gitlab.example.com'
-```
-
-## Further reading
-
-Related Sidekiq configuration:
-
-1. [Extra Sidekiq processes](operations/extra_sidekiq_processes.md)
-1. [Extra Sidekiq routing](operations/extra_sidekiq_routing.md)
-1. [Using the GitLab-Sidekiq chart](https://docs.gitlab.com/charts/charts/gitlab/sidekiq/)
-1. [Sidekiq health checks](sidekiq_health_check.md)
+- [Extra Sidekiq processes](operations/extra_sidekiq_processes.md)
+- [Extra Sidekiq routing](operations/extra_sidekiq_routing.md)
+- [Using the GitLab-Sidekiq chart](https://docs.gitlab.com/charts/charts/gitlab/sidekiq/)
+- [Sidekiq health checks](sidekiq_health_check.md)

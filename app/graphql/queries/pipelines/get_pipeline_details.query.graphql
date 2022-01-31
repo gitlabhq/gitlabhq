@@ -120,6 +120,7 @@ query getPipelineDetails($projectPath: ID!, $iid: ID!) {
                     hasDetails
                     detailsPath
                     group
+                    label
                     action {
                       __typename
                       id

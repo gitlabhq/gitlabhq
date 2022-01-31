@@ -92,14 +92,20 @@ export default {
 <template>
   <gl-button
     :id="`js-ci-action-${link}`"
-    v-gl-tooltip="{ boundary: 'viewport' }"
-    :title="tooltipText"
     :class="cssClass"
     :disabled="isDisabled"
     class="js-ci-action gl-ci-action-icon-container ci-action-icon-container ci-action-icon-wrapper gl-display-flex gl-align-items-center gl-justify-content-center"
+    data-testid="ci-action-component"
     @click.stop="onClickAction"
   >
-    <gl-loading-icon v-if="isLoading" size="sm" class="js-action-icon-loading" />
-    <gl-icon v-else :name="actionIcon" class="gl-mr-0!" :aria-label="actionIcon" />
+    <div
+      v-gl-tooltip.viewport
+      :title="tooltipText"
+      class="gl-display-flex gl-align-items-center gl-justify-content-center gl-h-full"
+      data-testid="ci-action-icon-tooltip-wrapper"
+    >
+      <gl-loading-icon v-if="isLoading" size="sm" class="js-action-icon-loading" />
+      <gl-icon v-else :name="actionIcon" class="gl-mr-0!" :aria-label="actionIcon" />
+    </div>
   </gl-button>
 </template>

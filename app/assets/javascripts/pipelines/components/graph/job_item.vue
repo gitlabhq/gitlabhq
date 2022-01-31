@@ -2,7 +2,7 @@
 import { GlTooltipDirective, GlLink } from '@gitlab/ui';
 import delayedJobMixin from '~/jobs/mixins/delayed_job_mixin';
 import { BV_HIDE_TOOLTIP } from '~/lib/utils/constants';
-import { sprintf } from '~/locale';
+import { sprintf, __ } from '~/locale';
 import CiIcon from '~/vue_shared/components/ci_icon.vue';
 import { reportToSentry } from '../../utils';
 import ActionComponent from '../jobs_shared/action_component.vue';
@@ -160,6 +160,21 @@ export default {
     hasAction() {
       return this.job.status && this.job.status.action && this.job.status.action.path;
     },
+    hasUnauthorizedManualAction() {
+      return (
+        !this.hasAction &&
+        this.job.status?.group === 'manual' &&
+        this.job.status?.label?.includes('(not allowed)')
+      );
+    },
+    unauthorizedManualActionIcon() {
+      /*
+        The action object is not available when the user cannot run the action.
+        So we can show the correct icon, extract the action name from the label instead:
+        "manual play action (not allowed)" or "manual stop action (not allowed)"
+      */
+      return this.job.status?.label?.split(' ')[1];
+    },
     relatedDownstreamHovered() {
       return this.job.name === this.sourceJobHovered;
     },
@@ -197,6 +212,9 @@ export default {
     pipelineActionRequestComplete() {
       this.$emit('pipelineActionRequestComplete');
     },
+  },
+  i18n: {
+    unauthorizedTooltip: __('You are not authorized to run this manual job'),
   },
 };
 </script>
@@ -244,6 +262,14 @@ export default {
       class="gl-mr-1"
       data-qa-selector="action_button"
       @pipelineActionRequestComplete="pipelineActionRequestComplete"
+    />
+    <action-component
+      v-if="hasUnauthorizedManualAction"
+      disabled
+      :tooltip-text="$options.i18n.unauthorizedTooltip"
+      :action-icon="unauthorizedManualActionIcon"
+      :link="`unauthorized-${computedJobId}`"
+      class="gl-mr-1"
     />
   </div>
 </template>

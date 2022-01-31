@@ -1,7 +1,7 @@
 <script>
 import { GlLoadingIcon, GlModal } from '@gitlab/ui';
 import { fetchPolicies } from '~/lib/graphql';
-import { queryToObject } from '~/lib/utils/url_utility';
+import { mergeUrlParams, queryToObject, redirectTo } from '~/lib/utils/url_utility';
 import { __, s__ } from '~/locale';
 
 import { unwrapStagesWithNeeds } from '~/pipelines/components/unwrapping_utils';
@@ -11,6 +11,7 @@ import PipelineEditorEmptyState from './components/ui/pipeline_editor_empty_stat
 import PipelineEditorMessages from './components/ui/pipeline_editor_messages.vue';
 import {
   COMMIT_SHA_POLL_INTERVAL,
+  COMMIT_SUCCESS_WITH_REDIRECT,
   EDITOR_APP_STATUS_EMPTY,
   EDITOR_APP_STATUS_LOADING,
   EDITOR_APP_STATUS_LINT_UNAVAILABLE,
@@ -27,6 +28,9 @@ import getTemplate from './graphql/queries/get_starter_template.query.graphql';
 import getLatestCommitShaQuery from './graphql/queries/latest_commit_sha.query.graphql';
 import PipelineEditorHome from './pipeline_editor_home.vue';
 
+const MR_SOURCE_BRANCH = 'merge_request[source_branch]';
+const MR_TARGET_BRANCH = 'merge_request[target_branch]';
+
 export default {
   components: {
     ConfirmUnsavedChangesDialog,
@@ -36,14 +40,7 @@ export default {
     PipelineEditorHome,
     PipelineEditorMessages,
   },
-  inject: {
-    ciConfigPath: {
-      default: '',
-    },
-    projectFullPath: {
-      default: '',
-    },
-  },
+  inject: ['ciConfigPath', 'newMergeRequestPath', 'projectFullPath'],
   data() {
     return {
       ciConfigData: {},
@@ -57,7 +54,7 @@ export default {
       lastCommittedContent: '',
       shouldSkipStartScreen: false,
       showFailure: false,
-      showResetComfirmationModal: false,
+      showResetConfirmationModal: false,
       showStartScreen: false,
       showSuccess: false,
       starterTemplate: '',
@@ -271,16 +268,38 @@ export default {
     this.checkShouldSkipStartScreen();
   },
   methods: {
+    checkShouldSkipStartScreen() {
+      const params = queryToObject(window.location.search);
+      this.shouldSkipStartScreen = Boolean(params?.add_new_config_file);
+    },
+    confirmReset() {
+      if (this.hasUnsavedChanges) {
+        this.showResetConfirmationModal = true;
+      }
+    },
     hideFailure() {
       this.showFailure = false;
     },
     hideSuccess() {
       this.showSuccess = false;
     },
-    confirmReset() {
-      if (this.hasUnsavedChanges) {
-        this.showResetComfirmationModal = true;
+    loadTemplateFromURL() {
+      const templateName = queryToObject(window.location.search)?.template;
+
+      if (templateName) {
+        this.starterTemplateName = templateName;
+        this.setNewEmptyCiConfigFile();
       }
+    },
+    redirectToNewMergeRequest(sourceBranch, targetBranch) {
+      const url = mergeUrlParams(
+        {
+          [MR_SOURCE_BRANCH]: sourceBranch,
+          [MR_TARGET_BRANCH]: targetBranch,
+        },
+        this.newMergeRequestPath,
+      );
+      redirectTo(url);
     },
     async refetchContent() {
       this.$apollo.queries.initialCiFileContent.skip = false;
@@ -298,7 +317,7 @@ export default {
       this.successType = type;
     },
     resetContent() {
-      this.showResetComfirmationModal = false;
+      this.showResetConfirmationModal = false;
       this.currentCiFileContent = this.lastCommittedContent;
     },
     setAppStatus(appStatus) {
@@ -323,7 +342,7 @@ export default {
       this.isFetchingCommitSha = true;
       this.$apollo.queries.commitSha.refetch();
     },
-    updateOnCommit({ type }) {
+    async updateOnCommit({ type, params = {} }) {
       this.reportSuccess(type);
 
       if (this.isNewCiConfigFile) {
@@ -333,18 +352,16 @@ export default {
       // Keep track of the latest committed content to know
       // if the user has made changes to the file that are unsaved.
       this.lastCommittedContent = this.currentCiFileContent;
-    },
-    loadTemplateFromURL() {
-      const templateName = queryToObject(window.location.search)?.template;
 
-      if (templateName) {
-        this.starterTemplateName = templateName;
-        this.setNewEmptyCiConfigFile();
+      if (type === COMMIT_SUCCESS_WITH_REDIRECT) {
+        const { sourceBranch, targetBranch } = params;
+        // This force update does 2 things for us:
+        // 1. It make sure `hasUnsavedChanges` is updated so
+        // we don't show a modal when the user creates an MR
+        // 2. Ensure the commit success banner is visible.
+        await this.$forceUpdate();
+        this.redirectToNewMergeRequest(sourceBranch, targetBranch);
       }
-    },
-    checkShouldSkipStartScreen() {
-      const params = queryToObject(window.location.search);
-      this.shouldSkipStartScreen = Boolean(params?.add_new_config_file);
     },
   },
 };
@@ -382,7 +399,7 @@ export default {
         @updateCommitSha="updateCommitSha"
       />
       <gl-modal
-        v-model="showResetComfirmationModal"
+        v-model="showResetConfirmationModal"
         modal-id="reset-content"
         :title="$options.i18n.resetModal.title"
         :action-cancel="$options.i18n.resetModal.actionCancel"

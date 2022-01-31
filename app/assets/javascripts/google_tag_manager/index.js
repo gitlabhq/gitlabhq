@@ -1,3 +1,4 @@
+import { v4 as uuidv4 } from 'uuid';
 import { logError } from '~/lib/logger';
 
 const SKU_PREMIUM = '2c92a00d76f0d5060176f2fb0a5029ff';
@@ -17,6 +18,24 @@ const PRODUCT_INFO = {
     price: 1188,
     variant: 'SaaS',
   },
+};
+
+const generateProductInfo = (sku, quantity) => {
+  const product = PRODUCT_INFO[sku];
+
+  if (!product) {
+    logError('Unexpected product sku provided to generateProductInfo');
+    return {};
+  }
+
+  const productInfo = {
+    ...product,
+    brand: 'GitLab',
+    category: 'DevOps',
+    quantity,
+  };
+
+  return productInfo;
 };
 
 const isSupported = () => Boolean(window.dataLayer) && gon.features?.gitlabGtmDatalayer;
@@ -162,29 +181,52 @@ export const trackCheckout = (selectedPlan, quantity) => {
     return;
   }
 
-  const product = PRODUCT_INFO[selectedPlan];
+  const product = generateProductInfo(selectedPlan, quantity);
 
-  if (!product) {
-    logError('Unexpected product sku provided to trackCheckout');
+  if (Object.keys(product).length === 0) {
     return;
   }
-
-  const selectedProductData = {
-    ...product,
-    brand: 'GitLab',
-    category: 'DevOps',
-    quantity,
-  };
 
   const eventData = {
     ecommerce: {
       checkout: {
         actionField: { step: 1 },
-        products: [selectedProductData],
+        products: [product],
       },
     },
   };
 
   // eslint-disable-next-line @gitlab/require-i18n-strings
   pushEnhancedEcommerceEvent('EECCheckout', 'USD', eventData);
+};
+
+export const trackTransaction = (transactionDetails) => {
+  if (!isSupported()) {
+    return;
+  }
+
+  const transactionId = uuidv4();
+  const { paymentOption, revenue, tax, selectedPlan, quantity } = transactionDetails;
+  const product = generateProductInfo(selectedPlan, quantity);
+
+  if (Object.keys(product).length === 0) {
+    return;
+  }
+
+  const eventData = {
+    ecommerce: {
+      purchase: {
+        actionField: {
+          id: transactionId,
+          affiliation: 'GitLab',
+          option: paymentOption,
+          revenue,
+          tax,
+        },
+        products: [product],
+      },
+    },
+  };
+
+  pushEnhancedEcommerceEvent('EECtransactionSuccess', 'USD', eventData);
 };

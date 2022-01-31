@@ -5,6 +5,7 @@ import { __, s__ } from '~/locale';
 import {
   COMMIT_FAILURE,
   COMMIT_SUCCESS,
+  COMMIT_SUCCESS_WITH_REDIRECT,
   DEFAULT_FAILURE,
   DEFAULT_SUCCESS,
   LOAD_FAILURE_UNKNOWN,
@@ -21,14 +22,18 @@ export default {
     GlAlert,
     CodeSnippetAlert,
   },
-  errorTexts: {
+
+  errors: {
     [COMMIT_FAILURE]: s__('Pipelines|The GitLab CI configuration could not be updated.'),
     [DEFAULT_FAILURE]: __('Something went wrong on our end.'),
     [LOAD_FAILURE_UNKNOWN]: s__('Pipelines|The CI configuration was not loaded, please try again.'),
     [PIPELINE_FAILURE]: s__('Pipelines|There was a problem with loading the pipeline data.'),
   },
-  successTexts: {
+  success: {
     [COMMIT_SUCCESS]: __('Your changes have been successfully committed.'),
+    [COMMIT_SUCCESS_WITH_REDIRECT]: s__(
+      'Pipelines|Your changes have been successfully committed. Now redirecting to the new merge request page.',
+    ),
     [DEFAULT_SUCCESS]: __('Your action succeeded.'),
   },
   props: {
@@ -65,42 +70,20 @@ export default {
   },
   computed: {
     failure() {
-      switch (this.failureType) {
-        case LOAD_FAILURE_UNKNOWN:
-          return {
-            text: this.$options.errorTexts[LOAD_FAILURE_UNKNOWN],
-            variant: 'danger',
-          };
-        case COMMIT_FAILURE:
-          return {
-            text: this.$options.errorTexts[COMMIT_FAILURE],
-            variant: 'danger',
-          };
-        case PIPELINE_FAILURE:
-          return {
-            text: this.$options.errorTexts[PIPELINE_FAILURE],
-            variant: 'danger',
-          };
-        default:
-          return {
-            text: this.$options.errorTexts[DEFAULT_FAILURE],
-            variant: 'danger',
-          };
-      }
+      const { errors } = this.$options;
+
+      return {
+        text: errors[this.failureType] ?? errors[DEFAULT_FAILURE],
+        variant: 'danger',
+      };
     },
     success() {
-      switch (this.successType) {
-        case COMMIT_SUCCESS:
-          return {
-            text: this.$options.successTexts[COMMIT_SUCCESS],
-            variant: 'info',
-          };
-        default:
-          return {
-            text: this.$options.successTexts[DEFAULT_SUCCESS],
-            variant: 'info',
-          };
-      }
+      const { success } = this.$options;
+
+      return {
+        text: success[this.successType] ?? success[DEFAULT_SUCCESS],
+        variant: 'info',
+      };
     },
   },
   created() {
