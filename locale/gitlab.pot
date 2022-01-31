@@ -37976,6 +37976,12 @@ msgstr ""
 msgid "Triggerer"
 msgstr ""
 
+msgid "Trigger|Trigger user has insufficient permissions to project"
+msgstr ""
+
+msgid "Trigger|invalid"
+msgstr ""
+
 msgid "Troubleshoot and monitor your application with tracing"
 msgstr ""
 

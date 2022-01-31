@@ -293,7 +293,9 @@ FLAG:
 On self-managed GitLab, by default this feature is available. To hide the feature, ask an administrator to
 [disable the `bulk_expire_project_artifacts` flag](../administration/feature_flags.md). On GitLab.com, this feature is available.
 
-[Expire artifacts of a project that can be deleted](https://gitlab.com/gitlab-org/gitlab/-/issues/223793) but that don't have an expiry time.
+Delete artifacts of a project that can be deleted.
+
+By default, [artifacts from the most recent successful pipeline of each ref are kept](../ci/pipelines/job_artifacts.md#keep-artifacts-from-most-recent-successful-jobs).
 
 ```plaintext
 DELETE /projects/:id/artifacts
