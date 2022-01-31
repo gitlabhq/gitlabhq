@@ -46,6 +46,7 @@ jest.mock('~/lib/utils/url_utility', () => ({
 const id = '1';
 const name = 'test name';
 const isProject = false;
+const invalidGroups = [];
 const inviteeType = 'members';
 const accessLevels = { Guest: 10, Reporter: 20, Developer: 30, Maintainer: 40, Owner: 50 };
 const defaultAccessLevel = 10;
@@ -93,6 +94,7 @@ const createComponent = (data = {}, props = {}) => {
       tasksToBeDoneOptions,
       projects,
       helpLink,
+      invalidGroups,
       ...props,
     },
     data() {

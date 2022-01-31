@@ -7,7 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # Metrics Dictionary Guide
 
 [Service Ping](index.md) metrics are defined in the
-[Metrics Dictionary](https://metrics.gitlab.com/index.html).
+[Metrics Dictionary](https://metrics.gitlab.com/).
 This guide describes the dictionary and how it's implemented.
 
 ## Metrics Definition and validation

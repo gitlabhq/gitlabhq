@@ -40,6 +40,7 @@ export default function initInviteMembersModal() {
           defaultAccessLevel: parseInt(el.dataset.defaultAccessLevel, 10),
           groupSelectFilter: el.dataset.groupsFilter,
           groupSelectParentId: parseInt(el.dataset.parentId, 10),
+          invalidGroups: JSON.parse(el.dataset.invalidGroups || '[]'),
           tasksToBeDoneOptions: JSON.parse(el.dataset.tasksToBeDoneOptions || '[]'),
           projects: JSON.parse(el.dataset.projects || '[]'),
           usersFilter: el.dataset.usersFilter,

@@ -107,6 +107,10 @@ export default {
       type: Array,
       required: true,
     },
+    invalidGroups: {
+      type: Array,
+      required: true,
+    },
   },
   data() {
     return {
@@ -431,6 +435,7 @@ export default {
           :access-levels="accessLevels"
           :groups-filter="groupSelectFilter"
           :parent-group-id="groupSelectParentId"
+          :invalid-groups="invalidGroups"
           @input="handleMembersTokenSelectClear"
         />
       </gl-form-group>

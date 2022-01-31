@@ -21,6 +21,11 @@ module InviteMembersHelper
   end
 
   def group_select_data(group)
+    # This should only be used for groups to load the invite group modal.
+    # For instance the invite groups modal should not call this from a project scope
+    # this is only to be called in scope of a group context as noted in this thread
+    # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/79036#note_821465513
+    # the group sharing in projects disabling is explained there as well
     if group.root_ancestor.namespace_settings.prevent_sharing_groups_outside_hierarchy
       { groups_filter: 'descendant_groups', parent_id: group.root_ancestor.id }
     else
@@ -32,7 +37,8 @@ module InviteMembersHelper
     dataset = {
       id: source.id,
       name: source.name,
-      default_access_level: Gitlab::Access::GUEST
+      default_access_level: Gitlab::Access::GUEST,
+      invalid_groups: source.related_group_ids
     }
 
     if show_invite_members_for_task?(source)

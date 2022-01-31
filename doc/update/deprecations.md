@@ -733,6 +733,24 @@ The `instanceStatisticsMeasurements` GraphQL node has been renamed to `usageTren
 
 **Planned removal milestone: 15.0 (2022-05-22)**
 
+### REST API Runner will not accept `status` filter values of `active` or `paused`
+
+WARNING:
+This feature will be changed or removed in 15.0
+as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Before updating GitLab, review the details carefully to determine if you need to make any
+changes to your code, settings, or workflow.
+
+The GitLab Runner REST endpoints will stop accepting `paused` or `active` as a status value in GitLab 15.0.
+
+A runner's status will only relate to runner contact status, such as: `online`, `offline`.
+Status values `paused` or `active` will no longer be accepted and will be replaced by the `paused` query parameter.
+
+When checking for paused runners, API users are advised to specify `paused=true` as the query parameter.
+When checking for active runners, specify `paused=false`.
+
+**Planned removal milestone: 15.0 (2022-05-22)**
+
 ### REST and GraphQL API Runner usage of `active` replaced by `paused`
 
 WARNING:

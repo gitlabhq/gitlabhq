@@ -20,7 +20,8 @@ RSpec.describe InviteMembersHelper do
       attributes = {
         id: project.id,
         name: project.name,
-        default_access_level: Gitlab::Access::GUEST
+        default_access_level: Gitlab::Access::GUEST,
+        invalid_groups: project.related_group_ids
       }
 
       expect(helper.common_invite_modal_dataset(project)).to include(attributes)
@@ -152,6 +153,30 @@ RSpec.describe InviteMembersHelper do
         it 'returns false' do
           expect(helper.can_invite_members_for_project?(project)).to eq false
         end
+      end
+    end
+  end
+
+  describe '#group_select_data' do
+    let_it_be(:group) { create(:group) }
+
+    context 'when sharing with groups outside the hierarchy is disabled' do
+      before do
+        group.namespace_settings.update!(prevent_sharing_groups_outside_hierarchy: true)
+      end
+
+      it 'provides the correct attributes' do
+        expect(helper.group_select_data(group)).to eq({ groups_filter: 'descendant_groups', parent_id: group.id })
+      end
+    end
+
+    context 'when sharing with groups outside the hierarchy is enabled' do
+      before do
+        group.namespace_settings.update!(prevent_sharing_groups_outside_hierarchy: false)
+      end
+
+      it 'returns an empty hash' do
+        expect(helper.group_select_data(project.group)).to eq({})
       end
     end
   end

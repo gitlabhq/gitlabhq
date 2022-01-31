@@ -9,7 +9,9 @@ module Gitlab
       BATCH_SIZE = 100
 
       def perform(start_id, stop_id)
-        define_batchable_model('timelogs').where(spent_at: nil, id: start_id..stop_id).each_batch(of: 100) do |subbatch|
+        define_batchable_model('timelogs', connection: connection)
+            .where(spent_at: nil, id: start_id..stop_id)
+            .each_batch(of: 100) do |subbatch|
           batch_start, batch_end = subbatch.pluck('min(id), max(id)').first
 
           update_timelogs(batch_start, batch_end)
@@ -25,9 +27,12 @@ module Gitlab
         SQL
       end
 
-      def execute(sql)
+      def connection
         @connection ||= ::ActiveRecord::Base.connection
-        @connection.execute(sql)
+      end
+
+      def execute(sql)
+        connection.execute(sql)
       end
     end
   end

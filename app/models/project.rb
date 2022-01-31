@@ -2618,6 +2618,14 @@ class Project < ApplicationRecord
     [project&.id, root_group&.id]
   end
 
+  def related_group_ids
+    ids = invited_group_ids
+
+    ids += group.self_and_ancestors_ids if group
+
+    ids
+  end
+
   def package_already_taken?(package_name, package_version, package_type:)
     Packages::Package.with_name(package_name)
       .with_version(package_version)

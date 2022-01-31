@@ -2,7 +2,6 @@
 stage: Secure
 group: Dynamic Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
-type: reference, howto
 ---
 
 # Coverage-guided fuzz testing **(ULTIMATE)**
@@ -161,9 +160,9 @@ Example coverage-guided fuzzing report:
 
 ## Duration of coverage-guided fuzz testing
 
-The available durations for coverage-guided fuzz testing are: 10 minutes (default) and 60 minutes.
+The available durations for coverage-guided fuzz testing are:
 
-- 10-minute duration: Recommended for the default branch.
+- 10-minute duration (default): Recommended for the default branch.
 - 60-minute duration: Recommended for the development branch and merge requests. The longer duration provides greater coverage.
   In the `COVFUZZ_ADDITIONAL_ARGS` variable set the value `--regression=true`.
 

@@ -16,6 +16,7 @@ module Gitlab
       lib/gitlab/middleware/
       ee/lib/gitlab/middleware/
       lib/gitlab/performance_bar/
+      lib/gitlab/request_profiler/
       lib/gitlab/query_limiting/
       lib/gitlab/tracing/
       lib/gitlab/profiler.rb

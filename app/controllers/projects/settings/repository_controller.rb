@@ -25,7 +25,7 @@ module Projects
         if result[:status] == :success
           flash[:notice] = _('Repository cleanup has started. You will receive an email once the cleanup operation is complete.')
         else
-          flash[:alert] = status.fetch(:message, _('Failed to upload object map file'))
+          flash[:alert] = result.fetch(:message, _('Failed to upload object map file'))
         end
 
         redirect_to project_settings_repository_path(project)

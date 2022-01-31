@@ -156,6 +156,26 @@ RSpec.describe 'Groups > Members > Manage groups', :js do
       group_outside_hierarchy.add_owner(user)
     end
 
+    context 'when the invite members group modal is enabled' do
+      it 'does not show self or ancestors', :aggregate_failures do
+        group_sibbling = create(:group, parent: group)
+        group_sibbling.add_owner(user)
+
+        visit group_group_members_path(group_within_hierarchy)
+
+        click_on 'Invite a group'
+        click_on 'Select a group'
+        wait_for_requests
+
+        page.within('[data-testid="group-select-dropdown"]') do
+          expect(page).to have_selector("[entity-id='#{group_outside_hierarchy.id}']")
+          expect(page).to have_selector("[entity-id='#{group_sibbling.id}']")
+          expect(page).not_to have_selector("[entity-id='#{group.id}']")
+          expect(page).not_to have_selector("[entity-id='#{group_within_hierarchy.id}']")
+        end
+      end
+    end
+
     context 'when sharing with groups outside the hierarchy is enabled' do
       context 'when the invite members group modal is disabled' do
         before do

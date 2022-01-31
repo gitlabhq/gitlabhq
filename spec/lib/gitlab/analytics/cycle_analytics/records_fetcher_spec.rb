@@ -43,8 +43,8 @@ RSpec.describe Gitlab::Analytics::CycleAnalytics::RecordsFetcher do
       end
 
       before do
-        issue1.metrics.update(first_added_to_board_at: 3.days.ago, first_mentioned_in_commit_at: 2.days.ago)
-        issue2.metrics.update(first_added_to_board_at: 3.days.ago, first_mentioned_in_commit_at: 2.days.ago)
+        issue1.metrics.update!(first_added_to_board_at: 3.days.ago, first_mentioned_in_commit_at: 2.days.ago)
+        issue2.metrics.update!(first_added_to_board_at: 3.days.ago, first_mentioned_in_commit_at: 2.days.ago)
       end
 
       context 'when records are loaded by guest' do
@@ -73,8 +73,8 @@ RSpec.describe Gitlab::Analytics::CycleAnalytics::RecordsFetcher do
       end
 
       before do
-        mr1.metrics.update(merged_at: 3.days.ago)
-        mr2.metrics.update(merged_at: 3.days.ago)
+        mr1.metrics.update!(merged_at: 3.days.ago)
+        mr2.metrics.update!(merged_at: 3.days.ago)
       end
 
       include_context 'when records are loaded by maintainer'
@@ -95,9 +95,9 @@ RSpec.describe Gitlab::Analytics::CycleAnalytics::RecordsFetcher do
     end
 
     before(:all) do
-      issue1.metrics.update(first_added_to_board_at: 3.days.ago, first_mentioned_in_commit_at: 2.days.ago)
-      issue2.metrics.update(first_added_to_board_at: 3.days.ago, first_mentioned_in_commit_at: 2.days.ago)
-      issue3.metrics.update(first_added_to_board_at: 3.days.ago, first_mentioned_in_commit_at: 2.days.ago)
+      issue1.metrics.update!(first_added_to_board_at: 3.days.ago, first_mentioned_in_commit_at: 2.days.ago)
+      issue2.metrics.update!(first_added_to_board_at: 3.days.ago, first_mentioned_in_commit_at: 2.days.ago)
+      issue3.metrics.update!(first_added_to_board_at: 3.days.ago, first_mentioned_in_commit_at: 2.days.ago)
     end
 
     before do

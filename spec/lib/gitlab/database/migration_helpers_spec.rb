@@ -14,6 +14,54 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
     allow(model).to receive(:puts)
   end
 
+  describe 'overridden dynamic model helpers' do
+    let(:test_table) { '__test_batching_table' }
+
+    before do
+      model.connection.execute(<<~SQL)
+        CREATE TABLE #{test_table} (
+          id integer NOT NULL PRIMARY KEY,
+          name text NOT NULL
+        );
+
+        INSERT INTO #{test_table} (id, name)
+        VALUES (1, 'bob'), (2, 'mary'), (3, 'amy');
+      SQL
+    end
+
+    describe '#define_batchable_model' do
+      it 'defines a batchable model with the migration connection' do
+        expect(model.define_batchable_model(test_table).count).to eq(3)
+      end
+    end
+
+    describe '#each_batch' do
+      before do
+        allow(model).to receive(:transaction_open?).and_return(false)
+      end
+
+      it 'calls each_batch with the migration connection' do
+        each_batch_name = ->(&block) do
+          model.each_batch(test_table, of: 2) do |batch|
+            block.call(batch.pluck(:name))
+          end
+        end
+
+        expect { |b| each_batch_name.call(&b) }.to yield_successive_args(%w[bob mary], %w[amy])
+      end
+    end
+
+    describe '#each_batch_range' do
+      before do
+        allow(model).to receive(:transaction_open?).and_return(false)
+      end
+
+      it 'calls each_batch with the migration connection' do
+        expect { |b| model.each_batch_range(test_table, of: 2, &b) }.to yield_successive_args([1, 2], [3, 3])
+      end
+    end
+  end
+
   describe '#remove_timestamps' do
     it 'can remove the default timestamps' do
       Gitlab::Database::MigrationHelpers::DEFAULT_TIMESTAMP_COLUMNS.each do |column_name|

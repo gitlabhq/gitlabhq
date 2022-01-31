@@ -14,7 +14,7 @@ general best practices for code reviews, refer to our [code review guide](../cod
 ## Resources for reviewers
 
 - [Service Ping Guide](index.md)
-- [Metrics Dictionary](https://metrics.gitlab.com/index.html)
+- [Metrics Dictionary](https://metrics.gitlab.com/)
 
 ## Review process
 

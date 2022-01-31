@@ -5,18 +5,19 @@ import * as groupsApi from '~/api/groups_api';
 import GroupSelect from '~/invite_members/components/group_select.vue';
 
 const accessLevels = { Guest: 10, Reporter: 20, Developer: 30, Maintainer: 40, Owner: 50 };
-
-const createComponent = () => {
-  return mount(GroupSelect, {
-    propsData: {
-      accessLevels,
-    },
-  });
-};
-
 const group1 = { id: 1, full_name: 'Group One', avatar_url: 'test' };
 const group2 = { id: 2, full_name: 'Group Two', avatar_url: 'test' };
 const allGroups = [group1, group2];
+
+const createComponent = (props = {}) => {
+  return mount(GroupSelect, {
+    propsData: {
+      invalidGroups: [],
+      accessLevels,
+      ...props,
+    },
+  });
+};
 
 describe('GroupSelect', () => {
   let wrapper;
@@ -88,6 +89,20 @@ describe('GroupSelect', () => {
         'entity-id': `${group1.id}`,
         'entity-name': group1.full_name,
         size: '32',
+      });
+    });
+
+    describe('when filtering out the group from results', () => {
+      beforeEach(() => {
+        wrapper = createComponent({ invalidGroups: [group1.id] });
+      });
+
+      it('does not find an invalid group', () => {
+        expect(findAvatarByLabel(group1.full_name)).toBe(undefined);
+      });
+
+      it('finds a group that is valid', () => {
+        expect(findAvatarByLabel(group2.full_name).exists()).toBe(true);
       });
     });
   });

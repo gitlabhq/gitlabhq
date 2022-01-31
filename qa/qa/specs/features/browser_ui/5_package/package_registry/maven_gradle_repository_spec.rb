@@ -13,10 +13,10 @@ module QA
       let(:package_version) { '1.3.7' }
       let(:package_type) { 'maven_gradle' }
 
-      where(:authentication_token_type, :maven_header_name) do
-        :personal_access_token | 'Private-Token'
-        :ci_job_token          | 'Job-Token'
-        :project_deploy_token  | 'Deploy-Token'
+      where(:authentication_token_type, :maven_header_name, :testcase) do
+        :personal_access_token | 'Private-Token' | 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347601'
+        :ci_job_token          | 'Job-Token' | 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347603'
+        :project_deploy_token  | 'Deploy-Token' | 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347602'
       end
 
       with_them do
@@ -31,7 +31,7 @@ module QA
           end
         end
 
-        it "pushes and pulls a maven package via gradle using #{params[:authentication_token_type]}" do
+        it "pushes and pulls a maven package via gradle using #{params[:authentication_token_type]}", testcase: params[:testcase] do
           Support::Retrier.retry_on_exception(max_attempts: 3, sleep_interval: 2) do
             Resource::Repository::Commit.fabricate_via_api! do |commit|
               gradle_upload_yaml = ERB.new(read_fixture('package_managers/maven', 'gradle_upload_package.yaml.erb')).result(binding)

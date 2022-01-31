@@ -38,6 +38,10 @@ export default {
       required: false,
       default: null,
     },
+    invalidGroups: {
+      type: Array,
+      required: true,
+    },
   },
   data() {
     return {
@@ -75,18 +79,26 @@ export default {
       this.isFetching = true;
       return this.fetchGroups()
         .then((response) => {
-          this.groups = response.map((group) => ({
-            id: group.id,
-            name: group.full_name,
-            path: group.path,
-            avatarUrl: group.avatar_url,
-          }));
+          this.groups = this.processGroups(response);
           this.isFetching = false;
         })
         .catch(() => {
           this.isFetching = false;
         });
     }, SEARCH_DELAY),
+    processGroups(response) {
+      const rawGroups = response.map((group) => ({
+        id: group.id,
+        name: group.full_name,
+        path: group.path,
+        avatarUrl: group.avatar_url,
+      }));
+
+      return this.filterOutInvalidGroups(rawGroups);
+    },
+    filterOutInvalidGroups(groups) {
+      return groups.filter((group) => this.invalidGroups.indexOf(group.id) === -1);
+    },
     selectGroup(group) {
       this.selectedGroup = group;
 

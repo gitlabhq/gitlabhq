@@ -244,7 +244,7 @@ describe('Settings Panel', () => {
       wrapper = mountComponent({ currentSettings: { visibilityLevel: visibilityOptions.PUBLIC } });
 
       expect(findRepositoryFeatureProjectRow().props('helpText')).toBe(
-        'View and edit files in this project. Non-project members will only have read access.',
+        'View and edit files in this project. Non-project members have only read access.',
       );
     });
   });

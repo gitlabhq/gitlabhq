@@ -2,7 +2,6 @@
 
 class MoveContainerRegistryEnabledToProjectFeatures3 < ActiveRecord::Migration[6.0]
   include Gitlab::Database::MigrationHelpers
-  include Gitlab::Database::DynamicModelHelpers
 
   BATCH_SIZE = 21_000
   MIGRATION = 'MoveContainerRegistryEnabledToProjectFeature'

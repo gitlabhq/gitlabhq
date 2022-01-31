@@ -165,27 +165,27 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching do
         end
 
         it 'recognises user token' do
-          build.update(user: create(:user))
+          build.update!(user: create(:user))
 
           expect(subject).to have_attributes(actor: build.user, project: build.project, type: :build, authentication_abilities: described_class.build_authentication_abilities)
         end
 
         it 'recognises project level bot access token' do
-          build.update(user: create(:user, :project_bot))
+          build.update!(user: create(:user, :project_bot))
           project.add_maintainer(build.user)
 
           expect(subject).to have_attributes(actor: build.user, project: build.project, type: :build, authentication_abilities: described_class.build_authentication_abilities)
         end
 
         it 'recognises group level bot access token' do
-          build.update(user: create(:user, :project_bot))
+          build.update!(user: create(:user, :project_bot))
           group.add_maintainer(build.user)
 
           expect(subject).to have_attributes(actor: build.user, project: build.project, type: :build, authentication_abilities: described_class.build_authentication_abilities)
         end
 
         it 'fails with blocked user token' do
-          build.update(user: create(:user, :blocked))
+          build.update!(user: create(:user, :blocked))
 
           expect(subject).to have_attributes(auth_failure)
         end
@@ -213,7 +213,7 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching do
 
     it 'recognizes other ci services' do
       project.create_drone_ci_integration(active: true)
-      project.drone_ci_integration.update(token: 'token')
+      project.drone_ci_integration.update!(token: 'token', drone_url: generate(:url))
 
       expect(gl_auth.find_for_git_client('drone-ci-token', 'token', project: project, ip: 'ip')).to have_attributes(actor: nil, project: project, type: :ci, authentication_abilities: described_class.build_authentication_abilities)
     end
@@ -326,7 +326,7 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching do
 
       context 'orphaned token' do
         before do
-          user.destroy
+          user.destroy!
         end
 
         it_behaves_like 'an oauth failure'
@@ -903,7 +903,7 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching do
 
       it 'resets failed_attempts when true and password is correct' do
         user.failed_attempts = 2
-        user.save
+        user.save!
 
         expect do
           gl_auth.find_with_user_password(username, password, increment_failed_attempts: true)
@@ -932,7 +932,7 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching do
 
         it 'does not reset failed_attempts when true and password is correct' do
           user.failed_attempts = 2
-          user.save
+          user.save!
 
           expect do
             gl_auth.find_with_user_password(username, password, increment_failed_attempts: true)

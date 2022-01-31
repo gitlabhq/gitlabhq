@@ -57,7 +57,7 @@ module Gitlab
       end
 
       def relation_scoped_to_range(source_table, source_key_column, start_id, stop_id)
-        define_batchable_model(source_table).where(source_key_column => start_id..stop_id)
+        define_batchable_model(source_table, connection: connection).where(source_key_column => start_id..stop_id)
       end
 
       def column_assignment_clauses(copy_from, copy_to)

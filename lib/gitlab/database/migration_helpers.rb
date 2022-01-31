@@ -9,6 +9,18 @@ module Gitlab
       include RenameTableHelpers
       include AsyncIndexes::MigrationHelpers
 
+      def define_batchable_model(table_name, connection: self.connection)
+        super(table_name, connection: connection)
+      end
+
+      def each_batch(table_name, connection: self.connection, **kwargs)
+        super(table_name, connection: connection, **kwargs)
+      end
+
+      def each_batch_range(table_name, connection: self.connection, **kwargs)
+        super(table_name, connection: connection, **kwargs)
+      end
+
       # https://www.postgresql.org/docs/current/sql-syntax-lexical.html#SQL-SYNTAX-IDENTIFIERS
       MAX_IDENTIFIER_NAME_LENGTH = 63
       DEFAULT_TIMESTAMP_COLUMNS = %i[created_at updated_at].freeze

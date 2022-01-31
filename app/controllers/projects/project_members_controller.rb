@@ -13,8 +13,7 @@ class Projects::ProjectMembersController < Projects::ApplicationController
   def index
     @sort = params[:sort].presence || sort_value_name
 
-    @skip_groups = @project.invited_group_ids
-    @skip_groups += @project.group.self_and_ancestors_ids if @project.group
+    @skip_groups = @project.related_group_ids
 
     @group_links = @project.project_group_links
     @group_links = @group_links.search(params[:search_groups]) if params[:search_groups].present?

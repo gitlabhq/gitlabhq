@@ -10,7 +10,7 @@ class CleanUpPendingBuildsTable < ActiveRecord::Migration[6.0]
   def up
     return unless Gitlab.dev_or_test_env? || Gitlab.com?
 
-    each_batch_range('ci_pending_builds', of: BATCH_SIZE) do |min, max|
+    each_batch_range('ci_pending_builds', connection: connection, of: BATCH_SIZE) do |min, max|
       execute <<~SQL
         DELETE FROM ci_pending_builds
           USING ci_builds

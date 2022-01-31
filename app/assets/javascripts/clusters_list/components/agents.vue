@@ -1,11 +1,29 @@
 <script>
-import { GlAlert, GlKeysetPagination, GlLoadingIcon } from '@gitlab/ui';
-import { MAX_LIST_COUNT, ACTIVE_CONNECTION_TIME } from '../constants';
+import { GlAlert, GlKeysetPagination, GlLoadingIcon, GlBanner } from '@gitlab/ui';
+import { s__ } from '~/locale';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
+import {
+  MAX_LIST_COUNT,
+  ACTIVE_CONNECTION_TIME,
+  AGENT_FEEDBACK_ISSUE,
+  AGENT_FEEDBACK_KEY,
+} from '../constants';
 import getAgentsQuery from '../graphql/queries/get_agents.query.graphql';
 import AgentEmptyState from './agent_empty_state.vue';
 import AgentTable from './agent_table.vue';
 
 export default {
+  i18n: {
+    feedbackBannerTitle: s__('ClusterAgents|Tell us what you think'),
+    feedbackBannerText: s__(
+      'ClusterAgents|We would love to learn more about your experience with the GitLab Agent.',
+    ),
+    feedbackBannerButton: s__('ClusterAgents|Give feedback'),
+    error: s__('ClusterAgents|An error occurred while loading your Agents'),
+  },
+  AGENT_FEEDBACK_ISSUE,
+  AGENT_FEEDBACK_KEY,
   apollo: {
     agents: {
       query: getAgentsQuery,
@@ -31,7 +49,10 @@ export default {
     GlAlert,
     GlKeysetPagination,
     GlLoadingIcon,
+    GlBanner,
+    LocalStorageSync,
   },
+  mixins: [glFeatureFlagMixin()],
   inject: ['projectPath'],
   props: {
     defaultBranchName: {
@@ -57,6 +78,7 @@ export default {
         last: null,
       },
       folderList: {},
+      feedbackBannerDismissed: false,
     };
   },
   computed: {
@@ -85,6 +107,12 @@ export default {
     },
     treePageInfo() {
       return this.agents?.project?.repository?.tree?.trees?.pageInfo || {};
+    },
+    feedbackBannerEnabled() {
+      return this.glFeatures.showGitlabAgentFeedback;
+    },
+    feedbackBannerClasses() {
+      return this.isChildComponent ? 'gl-my-2' : 'gl-mb-4';
     },
   },
   methods: {
@@ -142,6 +170,9 @@ export default {
       const count = this.agents?.project?.clusterAgents?.count;
       this.$emit('onAgentsLoad', count);
     },
+    handleBannerClose() {
+      this.feedbackBannerDismissed = true;
+    },
   },
 };
 </script>
@@ -151,6 +182,24 @@ export default {
 
   <section v-else-if="agentList">
     <div v-if="agentList.length">
+      <local-storage-sync
+        v-if="feedbackBannerEnabled"
+        v-model="feedbackBannerDismissed"
+        :storage-key="$options.AGENT_FEEDBACK_KEY"
+      >
+        <gl-banner
+          v-if="!feedbackBannerDismissed"
+          variant="introduction"
+          :class="feedbackBannerClasses"
+          :title="$options.i18n.feedbackBannerTitle"
+          :button-text="$options.i18n.feedbackBannerButton"
+          :button-link="$options.AGENT_FEEDBACK_ISSUE"
+          @close="handleBannerClose"
+        >
+          <p>{{ $options.i18n.feedbackBannerText }}</p>
+        </gl-banner>
+      </local-storage-sync>
+
       <agent-table
         :agents="agentList"
         :default-branch-name="defaultBranchName"
@@ -166,6 +215,6 @@ export default {
   </section>
 
   <gl-alert v-else variant="danger" :dismissible="false">
-    {{ s__('ClusterAgents|An error occurred while loading your GitLab Agents') }}
+    {{ $options.i18n.error }}
   </gl-alert>
 </template>

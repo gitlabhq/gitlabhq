@@ -5,7 +5,6 @@ module Gitlab
     module PartitioningMigrationHelpers
       module TableManagementHelpers
         include ::Gitlab::Database::SchemaHelpers
-        include ::Gitlab::Database::DynamicModelHelpers
         include ::Gitlab::Database::MigrationHelpers
         include ::Gitlab::Database::Migrations::BackgroundMigrationHelpers
 

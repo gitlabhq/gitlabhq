@@ -160,6 +160,7 @@ Lint/MixedRegexpCaptureTypes:
     - 'lib/gitlab/diff/suggestions_parser.rb'
     - 'lib/gitlab/github_import/representation/note.rb'
     - 'lib/gitlab/metrics/system.rb'
+    - 'lib/gitlab/request_profiler/profile.rb'
     - 'lib/gitlab/slash_commands/issue_move.rb'
     - 'lib/gitlab/slash_commands/issue_new.rb'
     - 'lib/gitlab/slash_commands/run.rb'

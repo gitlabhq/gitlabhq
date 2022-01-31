@@ -38,7 +38,7 @@ RSpec.describe Gitlab::AuthorizedKeys do
   end
 
   describe '#create' do
-    subject { authorized_keys.create }
+    subject { authorized_keys.create } # rubocop:disable Rails/SaveBang
 
     context 'authorized_keys file exists' do
       before do

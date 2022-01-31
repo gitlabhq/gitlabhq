@@ -7118,6 +7118,29 @@ RSpec.describe Project, factory_default: :keep do
     it { is_expected.to be true }
   end
 
+  describe '#related_group_ids' do
+    let_it_be(:group) { create(:group) }
+    let_it_be(:sub_group) { create(:group, parent: group) }
+
+    context 'when associated with a namespace' do
+      let(:project) { create(:project, namespace: create(:namespace)) }
+      let!(:linked_group) { create(:project_group_link, project: project).group }
+
+      it 'only includes linked groups' do
+        expect(project.related_group_ids).to contain_exactly(linked_group.id)
+      end
+    end
+
+    context 'when associated with a group' do
+      let(:project) { create(:project, group: sub_group) }
+      let!(:linked_group) { create(:project_group_link, project: project).group }
+
+      it 'includes self, ancestors and linked groups' do
+        expect(project.related_group_ids).to contain_exactly(group.id, sub_group.id, linked_group.id)
+      end
+    end
+  end
+
   describe '#package_already_taken?' do
     let_it_be(:namespace) { create(:namespace, path: 'test') }
     let_it_be(:project) { create(:project, :public, namespace: namespace) }

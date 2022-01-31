@@ -194,7 +194,8 @@ artifacts:
 ### Add untracked files to artifacts
 
 Use [`artifacts:untracked`](../yaml/index.md#artifactsuntracked) to add all Git untracked
-files as artifacts (along with the paths defined in [`artifacts:paths`](../yaml/index.md#artifactspaths)).
+files as artifacts (along with the paths defined in [`artifacts:paths`](../yaml/index.md#artifactspaths)). Untracked
+files are those that haven't been added to the repository but exist in the repository checkout.
 
 Save all Git untracked files and files in `binaries`:
 

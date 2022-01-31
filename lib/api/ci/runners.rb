@@ -18,6 +18,7 @@ module API
                           desc: 'The scope of specific runners to show'
           optional :type, type: String, values: ::Ci::Runner::AVAILABLE_TYPES,
                           desc: 'The type of the runners to show'
+          optional :paused, type: Boolean, desc: 'Whether to include only runners that are accepting or ignoring new jobs'
           optional :status, type: String, values: ::Ci::Runner::AVAILABLE_STATUSES,
                             desc: 'The status of the runners to show'
           optional :tag_list, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce, desc: 'The tags of the runners to show'
@@ -26,9 +27,7 @@ module API
         get do
           runners = current_user.ci_owned_runners
           runners = filter_runners(runners, params[:scope], allowed_scopes: ::Ci::Runner::AVAILABLE_STATUSES)
-          runners = filter_runners(runners, params[:type], allowed_scopes: ::Ci::Runner::AVAILABLE_TYPES)
-          runners = filter_runners(runners, params[:status], allowed_scopes: ::Ci::Runner::AVAILABLE_STATUSES)
-          runners = runners.tagged_with(params[:tag_list]) if params[:tag_list]
+          runners = apply_filter(runners, params)
 
           present paginate(runners), with: Entities::Ci::Runner
         end
@@ -41,6 +40,7 @@ module API
                           desc: 'The scope of specific runners to show'
           optional :type, type: String, values: ::Ci::Runner::AVAILABLE_TYPES,
                           desc: 'The type of the runners to show'
+          optional :paused, type: Boolean, desc: 'Whether to include only runners that are accepting or ignoring new jobs'
           optional :status, type: String, values: ::Ci::Runner::AVAILABLE_STATUSES,
                             desc: 'The status of the runners to show'
           optional :tag_list, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce, desc: 'The tags of the runners to show'
@@ -51,9 +51,7 @@ module API
 
           runners = ::Ci::Runner.all
           runners = filter_runners(runners, params[:scope])
-          runners = filter_runners(runners, params[:type], allowed_scopes: ::Ci::Runner::AVAILABLE_TYPES)
-          runners = filter_runners(runners, params[:status], allowed_scopes: ::Ci::Runner::AVAILABLE_STATUSES)
-          runners = runners.tagged_with(params[:tag_list]) if params[:tag_list]
+          runners = apply_filter(runners, params)
 
           present paginate(runners), with: Entities::Ci::Runner
         end
@@ -163,6 +161,7 @@ module API
                           desc: 'The scope of specific runners to show'
           optional :type, type: String, values: ::Ci::Runner::AVAILABLE_TYPES,
                           desc: 'The type of the runners to show'
+          optional :paused, type: Boolean, desc: 'Whether to include only runners that are accepting or ignoring new jobs'
           optional :status, type: String, values: ::Ci::Runner::AVAILABLE_STATUSES,
                             desc: 'The status of the runners to show'
           optional :tag_list, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce, desc: 'The tags of the runners to show'
@@ -226,6 +225,7 @@ module API
         params do
           optional :type, type: String, values: ::Ci::Runner::AVAILABLE_TYPES,
                   desc: 'The type of the runners to show'
+          optional :paused, type: Boolean, desc: 'Whether to include only runners that are accepting or ignoring new jobs'
           optional :status, type: String, values: ::Ci::Runner::AVAILABLE_STATUSES,
                   desc: 'The status of the runners to show'
           optional :tag_list, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce, desc: 'The tags of the runners to show'
@@ -313,6 +313,7 @@ module API
         def apply_filter(runners, params)
           runners = filter_runners(runners, params[:type], allowed_scopes: ::Ci::Runner::AVAILABLE_TYPES)
           runners = filter_runners(runners, params[:status], allowed_scopes: ::Ci::Runner::AVAILABLE_STATUSES)
+          runners = filter_runners(runners, params[:paused] ? 'paused' : 'active', allowed_scopes: %w[paused active]) if params.include?(:paused)
           runners = runners.tagged_with(params[:tag_list]) if params[:tag_list]
 
           runners

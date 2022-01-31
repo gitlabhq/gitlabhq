@@ -875,6 +875,7 @@ Gitlab/NamespacedClass:
   - app/workers/repository_import_worker.rb
   - app/workers/repository_remove_remote_worker.rb
   - app/workers/repository_update_remote_mirror_worker.rb
+  - app/workers/requests_profiles_worker.rb
   - app/workers/run_pipeline_schedule_worker.rb
   - app/workers/schedule_merge_request_cleanup_refs_worker.rb
   - app/workers/schedule_migrate_external_diffs_worker.rb

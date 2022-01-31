@@ -88,6 +88,26 @@ RSpec.describe Projects::CommitsController do
 
           expect(response).to be_successful
         end
+
+        context 'when limit is a hash' do
+          it 'uses the default limit' do
+            expect_any_instance_of(Repository).to receive(:commits).with(
+              "master",
+              path: "README.md",
+              limit: described_class::COMMITS_DEFAULT_LIMIT,
+              offset: 0
+            ).and_call_original
+
+            get(:show, params: {
+              namespace_id: project.namespace,
+              project_id: project,
+              id: id,
+              limit: { 'broken' => 'value' }
+            })
+
+            expect(response).to be_successful
+          end
+        end
       end
 
       context "when the ref name ends in .atom" do

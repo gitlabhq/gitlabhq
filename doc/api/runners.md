@@ -39,20 +39,26 @@ Get a list of specific runners available to the user.
 GET /runners
 GET /runners?scope=active
 GET /runners?type=project_type
-GET /runners?status=active
+GET /runners?status=online
+GET /runners?paused=true
 GET /runners?tag_list=tag1,tag2
 ```
 
-| Attribute   | Type           | Required | Description         |
-|-------------|----------------|----------|---------------------|
-| `scope`     | string         | no       | Deprecated: Use `type` or `status` instead. The scope of specific runners to show, one of: `active`, `paused`, `online`, `offline`; showing all runners if none provided |
-| `type`      | string         | no       | The type of runners to show, one of: `instance_type`, `group_type`, `project_type` |
-| `status`    | string         | no       | The status of runners to show, one of: `active`, `paused`, `online`, `offline` |
-| `tag_list`  | string array   | no       | List of the runner's tags |
+| Attribute  | Type         | Required | Description                                                                                                                                                                           |
+|------------|--------------|----------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `scope`    | string       | no       | Deprecated: Use `type` or `status` instead. The scope of specific runners to show, one of: `active`, `paused`, `online` and `offline`; showing all runners if none provided           |
+| `type`     | string       | no       | The type of runners to show, one of: `instance_type`, `group_type`, `project_type`                                                                                                    |
+| `status`   | string       | no       | The status of runners to show, one of: `online` and `offline`. `active` and `paused` are also possible values which were deprecated in GitLab 14.8 and will be removed in GitLab 15.0 |
+| `paused`   | boolean      | no       | Whether to include only runners that are accepting or ignoring new jobs                                                                                                               |
+| `tag_list` | string array | no       | List of the runner's tags                                                                                                                                                             |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/runners"
 ```
+
+NOTE:
+The `active` and `paused` values in the `status` query parameter were deprecated [in GitLab 14.8](https://gitlab.com/gitlab-org/gitlab/-/issues/347211).
+and will be removed in [GitLab 15.0](https://gitlab.com/gitlab-org/gitlab/-/issues/351109). They are replaced by the `paused` query parameter.
 
 NOTE:
 The `active` attribute in the response was deprecated [in GitLab 14.8](https://gitlab.com/gitlab-org/gitlab/-/issues/347211).
@@ -98,20 +104,26 @@ is restricted to users with the administrator role.
 GET /runners/all
 GET /runners/all?scope=online
 GET /runners/all?type=project_type
-GET /runners/all?status=active
+GET /runners/all?status=online
+GET /runners/all?paused=true
 GET /runners/all?tag_list=tag1,tag2
 ```
 
-| Attribute   | Type           | Required | Description         |
-|-------------|----------------|----------|---------------------|
-| `scope`     | string         | no       | Deprecated: Use `type` or `status` instead. The scope of runners to show, one of: `specific`, `shared`, `active`, `paused`, `online`, `offline`; showing all runners if none provided |
-| `type`      | string         | no       | The type of runners to show, one of: `instance_type`, `group_type`, `project_type` |
-| `status`    | string         | no       | The status of runners to show, one of: `active`, `paused`, `online`, `offline` |
-| `tag_list`  | string array   | no       | List of the runner's tags |
+| Attribute  | Type         | Required | Description                                                                                                                                                                              |
+|------------|--------------|----------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `scope`    | string       | no       | Deprecated: Use `type` or `status` instead. The scope of runners to show, one of: `specific`, `shared`, `active`, `paused`, `online` and `offline`; showing all runners if none provided |
+| `type`     | string       | no       | The type of runners to show, one of: `instance_type`, `group_type`, `project_type`                                                                                                       |
+| `status`   | string       | no       | The status of runners to show, one of: `online` and `offline`. `active` and `paused` are also possible values which were deprecated in GitLab 14.8 and will be removed in GitLab 15.0    |
+| `paused`   | boolean      | no       | Whether to include only runners that are accepting or ignoring new jobs                                                                                                                  |
+| `tag_list` | string array | no       | List of the runner's tags                                                                                                                                                                |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/runners/all"
 ```
+
+NOTE:
+The `active` and `paused` values in the `status` query parameter were deprecated [in GitLab 14.8](https://gitlab.com/gitlab-org/gitlab/-/issues/347211).
+and will be removed in [GitLab 15.0](https://gitlab.com/gitlab-org/gitlab/-/issues/351109). They are replaced by the `paused` query parameter.
 
 NOTE:
 The `active` attribute in the response was deprecated [in GitLab 14.8](https://gitlab.com/gitlab-org/gitlab/-/issues/347211).
@@ -443,21 +455,27 @@ are listed if at least one shared runner is defined.
 GET /projects/:id/runners
 GET /projects/:id/runners?scope=active
 GET /projects/:id/runners?type=project_type
-GET /projects/:id/runners?status=active
+GET /projects/:id/runners/all?status=online
+GET /projects/:id/runners/all?paused=true
 GET /projects/:id/runners?tag_list=tag1,tag2
 ```
 
-| Attribute  | Type           | Required | Description         |
-|------------|----------------|----------|---------------------|
-| `id`       | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user |
-| `scope`    | string         | no       | Deprecated: Use `type` or `status` instead. The scope of specific runners to show, one of: `active`, `paused`, `online`, `offline`; showing all runners if none provided |
-| `type`     | string         | no       | The type of runners to show, one of: `instance_type`, `group_type`, `project_type` |
-| `status`   | string         | no       | The status of runners to show, one of: `active`, `paused`, `online`, `offline` |
-| `tag_list` | string array   | no       | List of the runner's tags |
+| Attribute  | Type           | Required | Description                                                                                                                                                                           |
+|------------|----------------|----------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `id`       | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user                                                                        |
+| `scope`    | string         | no       | Deprecated: Use `type` or `status` instead. The scope of specific runners to show, one of: `active`, `paused`, `online` and `offline`; showing all runners if none provided           |
+| `type`     | string         | no       | The type of runners to show, one of: `instance_type`, `group_type`, `project_type`                                                                                                    |
+| `status`   | string         | no       | The status of runners to show, one of: `online` and `offline`. `active` and `paused` are also possible values which were deprecated in GitLab 14.8 and will be removed in GitLab 15.0 |
+| `paused`   | boolean        | no       | Whether to include only runners that are accepting or ignoring new jobs                                                                                                               |
+| `tag_list` | string array   | no       | List of the runner's tags                                                                                                                                                             |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/9/runners"
 ```
+
+NOTE:
+The `active` and `paused` values in the `status` query parameter were deprecated [in GitLab 14.8](https://gitlab.com/gitlab-org/gitlab/-/issues/347211).
+and will be removed in [GitLab 15.0](https://gitlab.com/gitlab-org/gitlab/-/issues/351109). They are replaced by the `paused` query parameter.
 
 NOTE:
 The `active` attribute in the response was deprecated [in GitLab 14.8](https://gitlab.com/gitlab-org/gitlab/-/issues/347211).
@@ -555,20 +573,26 @@ Shared runners are listed if at least one shared runner is defined.
 ```plaintext
 GET /groups/:id/runners
 GET /groups/:id/runners?type=group_type
-GET /groups/:id/runners?status=active
+GET /groups/:id/runners/all?status=online
+GET /groups/:id/runners/all?paused=true
 GET /groups/:id/runners?tag_list=tag1,tag2
 ```
 
-| Attribute  | Type           | Required | Description         |
-|------------|----------------|----------|---------------------|
-| `id`       | integer        | yes      | The ID of the group owned by the authenticated user |
-| `type`     | string         | no       | The type of runners to show, one of: `instance_type`, `group_type`, `project_type` |
-| `status`   | string         | no       | The status of runners to show, one of: `active`, `paused`, `online`, `offline` |
-| `tag_list` | string array   | no       | List of the runner's tags |
+| Attribute  | Type           | Required | Description                                                                                                                                                                           |
+|------------|----------------|----------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `id`       | integer        | yes      | The ID of the group owned by the authenticated user                                                                                                                                   |
+| `type`     | string         | no       | The type of runners to show, one of: `instance_type`, `group_type`, `project_type`                                                                                                    |
+| `status`   | string         | no       | The status of runners to show, one of: `online` and `offline`. `active` and `paused` are also possible values which were deprecated in GitLab 14.8 and will be removed in GitLab 15.0 |
+| `paused`   | boolean        | no       | Whether to include only runners that are accepting or ignoring new jobs                                                                                                               |
+| `tag_list` | string array   | no       | List of the runner's tags                                                                                                                                                             |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/9/runners"
 ```
+
+NOTE:
+The `active` and `paused` values in the `status` query parameter were deprecated [in GitLab 14.8](https://gitlab.com/gitlab-org/gitlab/-/issues/347211).
+and will be removed in [GitLab 15.0](https://gitlab.com/gitlab-org/gitlab/-/issues/351109). They are replaced by the `paused` query parameter.
 
 NOTE:
 The `active` attribute in the response was deprecated [in GitLab 14.8](https://gitlab.com/gitlab-org/gitlab/-/issues/347211).

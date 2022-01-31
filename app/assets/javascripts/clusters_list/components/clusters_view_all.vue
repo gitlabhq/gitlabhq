@@ -123,7 +123,7 @@ export default {
     <div v-show="!isLoading" data-testid="clusters-cards-container">
       <gl-card
         header-class="gl-bg-white gl-display-flex gl-align-items-center gl-justify-content-space-between gl-py-4"
-        body-class="gl-pb-0"
+        body-class="gl-pb-0 cluster-card-item"
         footer-class="gl-text-right"
       >
         <template #header>
@@ -198,7 +198,7 @@ export default {
       <gl-card
         class="gl-mt-6"
         header-class="gl-bg-white gl-display-flex gl-align-items-center gl-justify-content-space-between"
-        body-class="gl-pb-0"
+        body-class="gl-pb-0 cluster-card-item"
         footer-class="gl-text-right"
       >
         <template #header>

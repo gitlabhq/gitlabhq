@@ -44,7 +44,7 @@ placed on database-backed diffs. [Limits inherent to Gitaly](../development/diff
 still apply.
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/349031) in GitLab 14.7,
-field `merge_user` can be either user who merged this merge request, 
+field `merge_user` can be either user who merged this merge request,
 user who set it to merge when pipeline succeeds or `null`.
 Field `merged_by` (user who merged this merge request or `null`) has been deprecated.
 
@@ -1116,7 +1116,7 @@ POST /projects/:id/merge_requests
 | `milestone_id`             | integer | no       | The global ID of a milestone.                                                           |
 | `remove_source_branch`     | boolean | no       | Flag indicating if a merge request should remove the source branch when merging. |
 | `allow_collaboration`      | boolean | no       | Allow commits from members who can merge to the target branch.                   |
-| `allow_maintainer_to_push` | boolean | no       | [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/22665), see `allow_collaboration`. |
+| `allow_maintainer_to_push` | boolean | no       | Alias of `allow_collaboration`.                                                  |
 | `squash`                   | boolean | no       | Squash commits into a single commit when merging.                                |
 
 ```json
@@ -1278,7 +1278,7 @@ PUT /projects/:id/merge_requests/:merge_request_iid
 | `squash`                   | boolean | no       | Squash commits into a single commit when merging. |
 | `discussion_locked`        | boolean | no       | Flag indicating if the merge request's discussion is locked. If the discussion is locked only project members can add, edit or resolve comments. |
 | `allow_collaboration`      | boolean | no       | Allow commits from members who can merge to the target branch.                   |
-| `allow_maintainer_to_push` | boolean | no       | [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/22665), see `allow_collaboration`. |
+| `allow_maintainer_to_push` | boolean | no       | Alias of `allow_collaboration`.                                                  |
 
 Must include at least one non-required attribute from above.
 

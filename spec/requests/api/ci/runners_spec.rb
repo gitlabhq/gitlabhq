@@ -86,14 +86,24 @@ RSpec.describe API::Ci::Runners do
         expect(response).to have_gitlab_http_status(:bad_request)
       end
 
-      it 'filters runners by status' do
-        create(:ci_runner, :project, :inactive, description: 'Inactive project runner', projects: [project])
+      context 'with an inactive runner' do
+        let_it_be(:runner) { create(:ci_runner, :project, :inactive, description: 'Inactive project runner', projects: [project]) }
 
-        get api('/runners?status=paused', user)
+        it 'filters runners by paused state' do
+          get api('/runners?paused=true', user)
 
-        expect(json_response).to match_array [
-          a_hash_including('description' => 'Inactive project runner')
-        ]
+          expect(json_response).to match_array [
+            a_hash_including('description' => 'Inactive project runner')
+          ]
+        end
+
+        it 'filters runners by status' do
+          get api('/runners?status=paused', user)
+
+          expect(json_response).to match_array [
+            a_hash_including('description' => 'Inactive project runner')
+          ]
+        end
       end
 
       it 'does not filter by invalid status' do
@@ -199,14 +209,24 @@ RSpec.describe API::Ci::Runners do
           expect(response).to have_gitlab_http_status(:bad_request)
         end
 
-        it 'filters runners by status' do
-          create(:ci_runner, :project, :inactive, description: 'Inactive project runner', projects: [project])
+        context 'with an inactive runner' do
+          let_it_be(:runner) { create(:ci_runner, :project, :inactive, description: 'Inactive project runner', projects: [project]) }
 
-          get api('/runners/all?status=paused', admin)
+          it 'filters runners by status' do
+            get api('/runners/all?paused=true', admin)
 
-          expect(json_response).to match_array [
-            a_hash_including('description' => 'Inactive project runner')
-          ]
+            expect(json_response).to match_array [
+              a_hash_including('description' => 'Inactive project runner')
+            ]
+          end
+
+          it 'filters runners by status' do
+            get api('/runners/all?status=paused', admin)
+
+            expect(json_response).to match_array [
+              a_hash_including('description' => 'Inactive project runner')
+            ]
+          end
         end
 
         it 'does not filter by invalid status' do
@@ -956,14 +976,24 @@ RSpec.describe API::Ci::Runners do
         expect(response).to have_gitlab_http_status(:bad_request)
       end
 
-      it 'filters runners by status' do
-        create(:ci_runner, :project, :inactive, description: 'Inactive project runner', projects: [project])
+      context 'with an inactive runner' do
+        let_it_be(:runner) { create(:ci_runner, :project, :inactive, description: 'Inactive project runner', projects: [project]) }
 
-        get api("/projects/#{project.id}/runners?status=paused", user)
+        it 'filters runners by status' do
+          get api("/projects/#{project.id}/runners?paused=true", user)
 
-        expect(json_response).to match_array [
-          a_hash_including('description' => 'Inactive project runner')
-        ]
+          expect(json_response).to match_array [
+            a_hash_including('description' => 'Inactive project runner')
+          ]
+        end
+
+        it 'filters runners by status' do
+          get api("/projects/#{project.id}/runners?status=paused", user)
+
+          expect(json_response).to match_array [
+            a_hash_including('description' => 'Inactive project runner')
+          ]
+        end
       end
 
       it 'does not filter by invalid status' do
@@ -1022,21 +1052,31 @@ RSpec.describe API::Ci::Runners do
         end
       end
 
-      context 'filter runners by status' do
-        it 'returns runners by valid status' do
-          create(:ci_runner, :group, :inactive, description: 'Inactive group runner', groups: [group])
+      context 'with an inactive runner' do
+        let_it_be(:runner) { create(:ci_runner, :group, :inactive, description: 'Inactive group runner', groups: [group]) }
 
-          get api("/groups/#{group.id}/runners?status=paused", user)
+        it 'returns runners by paused state' do
+          get api("/groups/#{group.id}/runners?paused=true", user)
 
           expect(json_response).to match_array([
             a_hash_including('description' => 'Inactive group runner')
           ])
         end
 
-        it 'does not filter by invalid status' do
-          get api("/groups/#{group.id}/runners?status=bogus", user)
+        context 'filter runners by status' do
+          it 'returns runners by valid status' do
+            get api("/groups/#{group.id}/runners?status=paused", user)
 
-          expect(response).to have_gitlab_http_status(:bad_request)
+            expect(json_response).to match_array([
+              a_hash_including('description' => 'Inactive group runner')
+            ])
+          end
+
+          it 'does not filter by invalid status' do
+            get api("/groups/#{group.id}/runners?status=bogus", user)
+
+            expect(response).to have_gitlab_http_status(:bad_request)
+          end
         end
       end
 

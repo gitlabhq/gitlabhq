@@ -939,7 +939,7 @@ rspec:
 
 Use `artifacts:untracked` to add all Git untracked files as artifacts (along
 with the paths defined in `artifacts:paths`). `artifacts:untracked` ignores configuration
-in the repository's `.gitignore` file.
+in the repository's `.gitignore`, so matching artifacts in `.gitignore` are included.
 
 **Keyword type**: Job keyword. You can use it only as part of a job or in the
 [`default` section](#default).

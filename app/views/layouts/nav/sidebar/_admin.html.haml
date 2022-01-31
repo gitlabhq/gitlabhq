@@ -103,6 +103,10 @@
             = link_to admin_health_check_path, title: _('Health Check') do
               %span
                 = _('Health Check')
+          = nav_link(controller: :requests_profiles) do
+            = link_to admin_requests_profiles_path, title: _('Requests Profiles') do
+              %span
+                = _('Requests Profiles')
           - if Gitlab::CurrentSettings.current_application_settings.grafana_enabled?
             = nav_link do
               = link_to Gitlab::CurrentSettings.current_application_settings.grafana_url, target: '_blank', title: _('Metrics Dashboard'), rel: 'noopener noreferrer' do
