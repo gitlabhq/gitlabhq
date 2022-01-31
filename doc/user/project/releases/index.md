@@ -393,7 +393,7 @@ deploy_to_production:
 
 To set a deploy freeze window in the UI, complete these steps:
 
-1. Sign in to GitLab as a user with the [Maintainer role](../../permissions.md).
+1. Sign in to GitLab as a user with the Maintainer role.
 1. On the left sidebar, select **Project information**.
 1. In the left navigation menu, navigate to **Settings > CI/CD**.
 1. Scroll to **Deploy freezes**.
@@ -767,22 +767,22 @@ In the API:
 
 > [Changes were made to the Guest role access](https://gitlab.com/gitlab-org/gitlab/-/issues/335209) in GitLab 14.5.
 
-- Users with the [Reporter role or above](../../../user/permissions.md#project-members-permissions)
+- Users with at least the Reporter role
   have read and download access to the project releases.
-- Users with the [Guest role](../../../user/permissions.md#project-members-permissions)
+- Users with the Guest role
   have read and download access to the project releases.
   This includes associated Git-tag-names, release description, author information of the releases.
   However, other repository-related information, such as [source code](#source-code), [release evidence](#release-evidence) are redacted.
 
 ### Create, update, and delete a release and its assets
 
-- Users with [Developer role or above](../../../user/permissions.md#project-members-permissions)
+- Users with at least the Developer role
   have write access to the project releases and assets.
 - If a release is associated with a [protected tag](../protected_tags.md),
   the user must be [allowed to create the protected tag](../protected_tags.md#configuring-protected-tags) too.
 
 As an example of release permission control, you can allow only
-[Maintainer role or above](../../../user/permissions.md#project-members-permissions)
+users with at least the Maintainer role
 to create, update, and delete releases by protecting the tag with a wildcard (`*`),
 and set **Maintainer** in the **Allowed to create** column.
 

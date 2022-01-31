@@ -150,7 +150,7 @@ To change the namespace linked to a subscription:
 1. Navigate to the **Manage Purchases** page.
 1. Select **Change linked namespace**.
 1. Select the desired group from the **This subscription is for** dropdown. For a group to appear
-   here, you must have the Owner [role](../user/permissions.md)
+   here, you must have the Owner role
    for that group.
 1. Select **Proceed to checkout**.
 

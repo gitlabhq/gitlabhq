@@ -111,7 +111,7 @@ Each line represents a rule that was evaluated. There are a few things to note:
 
 Here you can see that the first four rules were evaluated `false` for
 which user and subject. For example, you can see in the last line that
-the rule was activated because the user `john` had the Reporter [role](../user/permissions.md) on
+the rule was activated because the user `john` had the Reporter role on
 `Project/4`.
 
 When a policy is asked whether a particular ability is allowed

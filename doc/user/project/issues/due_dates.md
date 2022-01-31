@@ -7,7 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # Due dates **(FREE)**
 
 Due dates can be used in [issues](index.md) to keep track of deadlines and make sure features are
-shipped on time. Users need at least the Reporter [role](../../permissions.md)
+shipped on time. Users need at least the Reporter role
 to be able to edit the due date. All users with permission to view
 the issue can view the due date.
 

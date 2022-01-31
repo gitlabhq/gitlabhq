@@ -157,7 +157,7 @@ information to the cluster automatically without downtime.
 
 ## View your Agents
 
-If you have the [Developer role](../../../permissions.md) or above, you can access the Agent's
+If you have at least the Developer role, you can access the Agent's
 configuration repository and view the Agent's list:
 
 1. On the left sidebar, select **Infrastructure > Kubernetes clusters**.

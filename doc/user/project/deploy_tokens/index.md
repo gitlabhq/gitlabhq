@@ -14,7 +14,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 Deploy tokens allow you to download (`git clone`) or push and pull packages and
 container registry images of a project without having a user and a password.
 
-Deploy tokens can be managed by [maintainers only](../../permissions.md).
+Deploy tokens can be managed only by users with the Maintainer role.
 
 Deploy tokens cannot be used with the GitLab API.
 

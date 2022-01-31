@@ -27,7 +27,7 @@ You can even access a [web terminal](#web-terminals-deprecated) for your environ
 
 Prerequisites:
 
-- You must have at least the Reporter [role](../../user/permissions.md#project-members-permissions).
+- You must have at least the Reporter role.
 
 To view a list of environments and deployments:
 
@@ -313,7 +313,7 @@ Note the following:
   deleted. For more information, see [Ref Specs for Runners](../pipelines/index.md#ref-specs-for-runners).
 
 NOTE:
-For Windows runners, using `echo` to write to `.env` files may fail. Using the PowerShell `Add-Content`command 
+For Windows runners, using `echo` to write to `.env` files may fail. Using the PowerShell `Add-Content`command
 will help in such cases. For example:
 
 ```powershell

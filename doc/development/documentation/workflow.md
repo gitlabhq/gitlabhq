@@ -79,7 +79,7 @@ A member of the Technical Writing team adds these labels:
 
 ### Reviewing and merging
 
-Anyone with the [Maintainer role](../../user/permissions.md) to the relevant GitLab project can
+Anyone with the Maintainer role to the relevant GitLab project can
 merge documentation changes. Maintainers must make a good-faith effort to ensure that the content:
 
 - Is clear and sufficiently easy for the intended audience to navigate and understand.

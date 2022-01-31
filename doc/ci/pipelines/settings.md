@@ -201,15 +201,6 @@ If you use test coverage in your code, you can use a regular expression to
 find coverage results in the job log. You can then include these results
 in the merge request in GitLab.
 
-1. On the top bar, select **Menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > CI/CD**.
-1. Expand **General pipelines**.
-1. In the **Test coverage parsing** field, enter a regular expression.
-   Leave blank to disable this feature.
-
-You can use <https://rubular.com> to test your regex. The regex returns the **last**
-match found in the output.
-
 If the pipeline succeeds, the coverage is shown in the merge request widget and
 in the jobs table. If multiple jobs in the pipeline have coverage reports, they are
 averaged.
@@ -217,6 +208,20 @@ averaged.
 ![MR widget coverage](img/pipelines_test_coverage_mr_widget.png)
 
 ![Build status coverage](img/pipelines_test_coverage_build.png)
+
+To define a coverage-parsing regular expression:
+
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > CI/CD**.
+1. Expand **General pipelines**.
+1. In the **Test coverage parsing** field, enter a regular expression.
+   Leave blank to disable this feature.
+
+Alternatively, provide a regular expression using the [`coverage`](../yaml/index.md#coverage)
+keyword in your project's `.gitlab-ci.yml`.
+
+You can use <https://rubular.com> to test your regex. The regex returns the **last**
+match found in the output.
 
 ### Test coverage examples
 

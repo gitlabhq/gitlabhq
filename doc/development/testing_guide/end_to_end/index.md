@@ -101,7 +101,7 @@ This is due to technical limitations in the GitLab permission model: the ability
 against a protected branch is controlled by the ability to push/merge to this branch.
 This means that for developers to be able to trigger a pipeline for the default branch in
 `gitlab-org/omnibus-gitlab`/`gitlab-org/gitlab-qa`, they would need to have the
-[Maintainer role](../../../user/permissions.md) for those projects.
+Maintainer role for those projects.
 For security reasons and implications, we couldn't open up the default branch to all the Developers.
 Hence we created these mirrors where Developers and Maintainers are allowed to push/merge to the default branch.
 This problem was discovered in <https://gitlab.com/gitlab-org/gitlab-qa/-/issues/63#note_107175160> and the "mirror"

@@ -588,6 +588,28 @@ Using the [`DAST_MASK_HTTP_HEADERS` CI/CD variable](#available-cicd-variables), 
 headers whose values you want masked. For details on how to mask headers, see
 [Customizing the DAST settings](#customize-dast-settings).
 
+#### Use Mutual TLS
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/299596) in GitLab 14.8.
+
+Mutual TLS allows a target application server to verify that requests are from a known source. Browser-based scans do not support Mutual TLS.
+
+**Requirements**
+
+- Base64-encoded PKCS12 certificate
+- Password of the base64-encoded PKCS12 certificate
+
+To enable Mutual TLS:
+
+1. If the PKCS12 certificate is not already base64-encoded, convert it to base64 encoding. For security reasons, we recommend encoding the certificate locally, **not** using a web-hosted conversion service. For example, to encode the certificate on either macOS or Linux:
+
+   ```shell
+   base64 <path-to-pkcs12-certificate-file>
+   ```
+
+1. Create a [masked variable](../../../ci/variables/index.md) named `DAST_PKCS12_CERTIFICATE_BASE64` and store the base64-encoded PKCS12 certificate's value in that variable.
+1. Create a masked variable `DAST_PKCS12_PASSWORD` and store the PKCS12 certificate's password in that variable.
+
 #### Available CI/CD variables
 
 These CI/CD variables are specific to DAST. They can be used to customize the behavior of DAST to your requirements.
@@ -623,6 +645,8 @@ These CI/CD variables are specific to DAST. They can be used to customize the be
 | `DAST_PASSWORD_FIELD` <sup>1,2</sup>             | string        | The selector of password field at the sign-in HTML form. Example: `id:password` |
 | `DAST_PATHS`                                     | string        | Set to a comma-separated list of URLs for DAST to scan. For example, `/page1.html,/category1/page3.html,/page2.html`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214120) in GitLab 13.4. |
 | `DAST_PATHS_FILE`                                | string        | The file path containing the paths within `DAST_WEBSITE` to scan. The file must be plain text with one path per line. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/258825) in GitLab 13.6. |
+| `DAST_PKCS12_CERTIFICATE_BASE64`                 | string        | The PKCS12 certificate used for sites that require Mutual TLS. Must be encoded as base64 text. |
+| `DAST_PKCS12_PASSWORD`                           | string        | The password of the certificate used in `DAST_PKCS12_CERTIFICATE_BASE64`. |
 | `DAST_REQUEST_HEADERS` <sup>1</sup>              | string        | Set to a comma-separated list of request header names and values. Headers are added to every request made by DAST. For example, `Cache-control: no-cache,User-Agent: DAST/1.0` |
 | `DAST_SKIP_TARGET_CHECK`                         | boolean       | Set to `true` to prevent DAST from checking that the target is available before scanning. Default: `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/229067) in GitLab 13.8. |
 | `DAST_SPIDER_MINS` <sup>1</sup>                  | number        | The maximum duration of the spider scan in minutes. Set to `0` for unlimited. Default: One minute, or unlimited when the scan is a full scan. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12652) in GitLab 13.1. |

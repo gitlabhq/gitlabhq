@@ -33,7 +33,7 @@ GitLab supports two different modes of file locking:
 ## Permissions
 
 Locks can be created by any person who has at least
-[Developer role](../permissions.md) in the repository.
+Developer role in the repository.
 
 Only the user who locked the file or directory can edit locked files. Other
 users are prevented from modifying locked files by pushing, merging,
@@ -77,7 +77,7 @@ Check this document to learn more about [using Git LFS](../../topics/git/lfs/ind
 
 ### Configure Exclusive File Locks
 
-You need the [Maintainer role](../permissions.md) to configure
+You need the Maintainer role
 Exclusive File Locks for your project through the command line.
 
 The first thing to do before using File Locking is to tell Git LFS which
@@ -226,4 +226,4 @@ To view and remove file locks:
 This list shows all the files locked either through LFS or GitLab UI.
 
 Locks can be removed by their author, or any user
-with at least the [Maintainer role](../permissions.md).
+with at least the Maintainer role.

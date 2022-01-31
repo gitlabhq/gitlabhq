@@ -44,7 +44,7 @@ as a draft. This feature is scheduled for removal in GitLab 14.0. Use `Draft:` i
 When a merge request is ready to be merged, you can remove the `Draft` flag in several ways:
 
 - **Viewing a merge request**: In the top right corner of the merge request, click **Mark as ready**.
-  Users with [Developer or greater permissions](../../permissions.md)
+  Users with at least the Developer role
   can also scroll to the bottom of the merge request description and click **Mark as ready**:
 
   ![Mark as ready](img/draft_blocked_merge_button_v13_10.png)

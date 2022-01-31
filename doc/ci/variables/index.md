@@ -154,7 +154,7 @@ job:
 ### Add a CI/CD variable to a project
 
 You can add CI/CD variables to a project's settings. Only project members with the
-[Maintainer role](../../user/permissions.md#project-members-permissions)
+Maintainer role
 can add or update project CI/CD variables. To keep a CI/CD variable secret, put it
 in the project settings, not in the `.gitlab-ci.yml` file.
 
@@ -233,7 +233,7 @@ inherited.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/299879) in GitLab 13.11.
 
 To make a CI/CD variable available to all projects and groups in a GitLab instance,
-add an instance CI/CD variable. You must have the [Administrator role](../../user/permissions.md).
+add an instance CI/CD variable. You must have the Administrator access level.
 
 You can define instance variables via the UI or [API](../../api/instance_level_ci_variables.md).
 
@@ -900,7 +900,7 @@ if [[ -d "/builds/gitlab-examples/ci-debug-trace/.git" ]]; then
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/292661) in GitLab 13.8.
 
 You can restrict access to debug logging. When restricted, only users with
-[developer or higher permissions](../../user/permissions.md#project-members-permissions)
+at least the Developer role
 can view job logs when debug logging is enabled with a variable in:
 
 - The [`.gitlab-ci.yml` file](#create-a-custom-cicd-variable-in-the-gitlab-ciyml-file).

@@ -10,7 +10,7 @@ Alerts are a critical entity in your incident management workflow. They represen
 
 ## Alert List
 
-Users with at least the Developer [role](../../user/permissions.md) can
+Users with at least the Developer role can
 access the Alert list at **Monitor > Alerts** in your project's
 sidebar. The Alert list displays alerts sorted by start time, but
 you can change the sort order by clicking the headers in the Alert list.
@@ -68,7 +68,7 @@ Alerts contain one of the following icons:
 ## Alert details page
 
 Navigate to the Alert details view by visiting the [Alert list](alerts.md)
-and selecting an alert from the list. You need at least the Developer [role](../../user/permissions.md)
+and selecting an alert from the list. You need at least the Developer role
 to access alerts.
 
 NOTE:
@@ -96,7 +96,7 @@ instance.
 
 Prerequisite:
 
-- You must have at least the Developer [role](../../user/permissions.md).
+- You must have at least the Developer role.
 
 To view the metrics for an alert:
 
@@ -120,7 +120,7 @@ your application's performance and how to resolve any problems.
 
 Prerequisite:
 
-- You must have at least the Developer [role](../../user/permissions.md).
+- You must have at least the Developer role.
 
 To view the logs for an alert:
 

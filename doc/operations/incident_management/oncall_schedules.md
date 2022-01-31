@@ -24,7 +24,7 @@ Set up an on-call schedule for your team to add rotations to.
 
 Prerequisite:
 
-- You must have at least the Maintainer [role](../../user/permissions.md).
+- You must have at least the Maintainer role.
 
 To create an on-call schedule:
 

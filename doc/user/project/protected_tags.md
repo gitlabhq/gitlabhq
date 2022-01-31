@@ -22,12 +22,12 @@ This feature evolved out of [protected branches](protected_branches.md)
 
 By default:
 
-- To create tags, you must have the [Maintainer role](../permissions.md).
+- To create tags, you must have the Maintainer role.
 - No one can update or delete tags.
 
 ## Configuring protected tags
 
-To protect a tag, you need to have at least the [Maintainer role](../permissions.md).
+To protect a tag, you need to have at least the Maintainer role.
 
 1. Go to the project's **Settings > Repository**.
 

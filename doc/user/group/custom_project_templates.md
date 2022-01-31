@@ -24,7 +24,7 @@ You can also configure [custom templates for the instance](../admin_area/custom_
 
 Prerequisite:
 
-- You must have the [Owner role for the group](../permissions.md#group-members-permissions).
+- You must have the Owner role for the group.
 
 To set up custom project templates in a group, add the subgroup that contains the
 project templates to the group settings:

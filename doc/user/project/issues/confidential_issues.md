@@ -42,7 +42,7 @@ system note in the issue's comments.
 
 ![Confidential issues system notes](img/confidential_issues_system_notes.png)
 
-When an issue is made confidential, only users with at least the [Reporter role](../../permissions.md)
+When an issue is made confidential, only users with at least the Reporter role
 for the project have access to the issue.
 Users with Guest or [Minimal](../../permissions.md#users-with-minimal-access) roles can't access
 the issue even if they were actively participating before the change.
@@ -82,11 +82,11 @@ that prevent leaks of private data.
 
 There are two kinds of level access for confidential issues. The general rule
 is that confidential issues are visible only to members of a project with at
-least the Reporter [role](../../permissions.md#project-members-permissions). However, a guest user can also create
+least the Reporter role. However, a guest user can also create
 confidential issues, but can only view the ones that they created themselves.
 
 Confidential issues are also hidden in search results for unprivileged users.
-For example, here's what a user with the [Maintainer role](../../permissions.md) and the Guest role
+For example, here's what a user with the Maintainer role and the Guest role
 sees in the project's search results respectively.
 
 | Maintainer role                                                                        | Guest role                                                                     |

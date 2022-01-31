@@ -73,7 +73,7 @@ you can copy and paste into `.gitlab-ci.yml` as a starting point.
 
 Prerequisite:
 
-- You need at least the Developer [role](../../user/permissions.md) for the project.
+- You need at least the Developer role for the project.
 
 To use the Review Apps template:
 

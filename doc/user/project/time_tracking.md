@@ -122,7 +122,7 @@ You can view a breakdown of time spent on an issue or merge request.
 
 Prerequisites:
 
-- You must have at least the [Reporter role](../permissions.md#project-members-permissions) for a project.
+- You must have at least the Reporter role for a project.
 
 To view a time tracking report:
 

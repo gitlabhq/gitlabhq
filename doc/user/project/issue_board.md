@@ -194,7 +194,7 @@ card includes:
 
 ## Permissions
 
-Users with the [Reporter and higher roles](../permissions.md) can use all the functionality of the
+Users with at least the Reporter role can use all the functionality of the
 issue board feature to create or delete lists. They can also drag issues from one list to another.
 
 ## Ordering issues in a list
@@ -569,7 +569,7 @@ You can move issues and lists by dragging them.
 
 Prerequisites:
 
-- You must have at least the Reporter [role](../permissions.md#project-members-permissions) for a project in GitLab.
+- You must have at least the Reporter role for a project in GitLab.
 
 To move an issue, select the issue card and drag it to another position in its current list or
 into a different list. Learn about possible effects in [Dragging issues between lists](#dragging-issues-between-lists).

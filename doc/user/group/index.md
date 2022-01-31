@@ -138,7 +138,7 @@ your group.
 ## Change the owner of a group
 
 You can change the owner of a group. Each group must always have at least one
-member with the [Owner role](../permissions.md#group-members-permissions).
+member with the Owner role.
 
 - As an administrator:
   1. Go to the group and from the left menu, select **Group information > Members**.
@@ -153,7 +153,7 @@ member with the [Owner role](../permissions.md#group-members-permissions).
 
 Prerequisites:
 
-- You must have the [Owner role](../permissions.md#group-members-permissions).
+- You must have the Owner role.
 - The member must have direct membership in the group. If
   membership is inherited from a parent group, then the member can be removed
   from the parent group only.
@@ -250,7 +250,7 @@ There are two different ways to add a new project to a group:
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/2534) in GitLab 10.5.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/25975) from GitLab Premium to GitLab Free in 11.10.
 
-By default, [Developers and Maintainers](../permissions.md#group-members-permissions) can create projects under a group.
+By default, users with at least the Developer role can create projects under a group.
 
 To change this setting for a specific group:
 
@@ -534,7 +534,7 @@ disabled for the group and its subgroups.
 
 Prerequisite:
 
-- You must be assigned the [Owner role](../permissions.md#group-members-permissions) for the group.
+- You must be assigned the Owner role) for the group.
 
 To specify a user cap:
 
@@ -556,7 +556,7 @@ You can remove the user cap, so there is no limit on the number of members you c
 
 Prerequisite:
 
-- You must be assigned the [Owner role](../permissions.md#group-members-permissions) for the group.
+- You must be assigned the Owner role) for the group.
 
 To remove the user cap:
 
@@ -575,7 +575,7 @@ and must be approved.
 
 Prerequisite:
 
-- You must be assigned the [Owner role](../permissions.md#group-members-permissions) for the group.
+- You must be assigned the Owner role) for the group.
 
 To approve members that are pending because they've exceeded the user cap:
 

@@ -16,7 +16,7 @@ enabling you to see statistics about the resources that Terraform creates,
 modifies, or destroys.
 
 WARNING:
-Like any other job artifact, Terraform Plan data is viewable by anyone with the Guest [role](../../permissions.md) on the repository.
+Like any other job artifact, Terraform Plan data is viewable by anyone with the Guest role for the repository.
 Neither Terraform nor GitLab encrypts the plan file by default. If your Terraform Plan
 includes sensitive data such as passwords, access tokens, or certificates, we strongly
 recommend encrypting plan output or modifying the project visibility settings.

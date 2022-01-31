@@ -67,7 +67,7 @@ After you enable custom slash commands in Mattermost, you need configuration
 information from GitLab. To get this information:
 
 1. In a different browser tab than your current Mattermost session, sign in to
-   GitLab as a user with [Administrator role](../../permissions.md).
+   GitLab as a user with the administrator access level.
 1. On the top bar, select **Menu > Admin**.
 1. In the left menu, select **Settings > Integrations**, then select
    **Mattermost slash commands**.

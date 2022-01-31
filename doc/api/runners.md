@@ -178,7 +178,7 @@ To view more than the first 20 runners, use [pagination](index.md#pagination).
 
 Get details of a runner.
 
-At least the [Maintainer role](../user/permissions.md) is required to get runner details at the
+At least the Maintainer role is required to get runner details at the
 project and group level.
 
 Instance-level runner details via this endpoint are available to all signed in users.
@@ -318,7 +318,7 @@ Pause a specific runner.
 ```plaintext
 PUT --form "paused=true" /runners/:runner_id
 
-# --or-- 
+# --or--
 
 # Deprecated: removal planned in 15.0
 PUT --form "active=false" /runners/:runner_id

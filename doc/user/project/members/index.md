@@ -17,7 +17,7 @@ to perform actions.
 
 Prerequisite:
 
-- You must have the [Maintainer or Owner role](../../permissions.md).
+- You must have the Maintainer or Owner role.
 
 To add a user to a project:
 
@@ -48,7 +48,7 @@ Each user's access is based on:
 
 Prerequisite:
 
-- You must have the [Maintainer or Owner role](../../permissions.md).
+- You must have the Maintainer or Owner role.
 
 To add groups to a project:
 
@@ -72,7 +72,7 @@ retain the same permissions as the project you import them from.
 
 Prerequisite:
 
-- You must have the [Maintainer or Owner role](../../permissions.md).
+- You must have the Maintainer or Owner role.
 
 To import users:
 
@@ -111,7 +111,7 @@ group itself.
 
 Prerequisites:
 
-- You must have the [Owner role](../../permissions.md).
+- You must have the Owner role.
 - Optional. Unassign the member from all issues and merge requests that
   are assigned to them.
 

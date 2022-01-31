@@ -16,7 +16,7 @@ In GitLab versions [13.10 and later](https://gitlab.com/groups/gitlab-org/-/epic
 GitLab displays a search box to help you find the settings you want to view.
 
 NOTE:
-Only users who have the [Maintainer role](../../permissions.md) for the project and administrators can
+Only users who have the Maintainer role for the project and administrators can
 access project settings.
 
 ## General settings
@@ -408,8 +408,8 @@ You can transfer an existing project into a [group](../../group/index.md).
 
 Prerequisites:
 
-- You must have at least **Maintainer** [role](../../permissions.md#project-members-permissions) in that group.
-- You must be **Owner** of that project.
+- You must have at least the Maintainer role in that group.
+- You must be the Owner of that project.
 - The group to which the project is being transferred to must allow creation of new projects.
 - The project must not contain any [container images](../../packages/container_registry/index.md#limitations).
   - If you transfer a project to a different root namespace,

@@ -283,7 +283,7 @@ tag in a different project.
 Prerequisites:
 
 - The upstream project must be [public](../../public_access/public_access.md).
-- The user must have the [Developer role](../../user/permissions.md#project-members-permissions)
+- The user must have the Developer role
   in the upstream project.
 
 To trigger the pipeline when the upstream project is rebuilt:

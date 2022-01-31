@@ -58,7 +58,7 @@ can still run `build` jobs concurrently for maximizing the pipeline efficiency.
 
 - The basic knowledge of the [GitLab CI/CD pipelines](../pipelines/index.md)
 - The basic knowledge of the [GitLab Environments and Deployments](../environments/index.md)
-- [Developer role](../../user/permissions.md) (or above) in the project to configure CI/CD pipelines.
+- At least the Developer role for the project to configure CI/CD pipelines.
 
 ### Limitations
 

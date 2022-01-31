@@ -40,7 +40,7 @@ To use merged results pipelines:
 ## Enable merged results pipelines
 
 To enable merged results pipelines in a project, you must have at least the
-[Maintainer role](../../user/permissions.md):
+Maintainer role:
 
 1. On the top bar, select **Menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > General**.

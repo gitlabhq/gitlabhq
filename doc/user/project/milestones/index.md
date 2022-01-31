@@ -53,8 +53,7 @@ If you're in a project and select **Issues > Milestones**, GitLab displays only 
 
 ## Creating milestones
 
-NOTE:
-A permission level of [Developer or higher](../../permissions.md) is required to create milestones.
+Users with at least the Developer role can create milestones.
 
 Milestones can be created either at project or group level.
 
@@ -70,8 +69,7 @@ To create a milestone:
 
 ## Editing milestones
 
-NOTE:
-A permission level of [Developer or higher](../../permissions.md) is required to edit milestones.
+Users with at least the Developer role can edit milestones.
 
 To edit a milestone:
 

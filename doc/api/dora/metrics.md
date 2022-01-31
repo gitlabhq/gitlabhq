@@ -10,7 +10,7 @@ type: reference, api
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/279039) in GitLab 13.10.
 > - The legacy key/value pair `{ "<date>" => "<value>" }` was removed from the payload in GitLab 14.0.
 
-All methods require at least the Reporter [role](../../user/permissions.md).
+All methods require at least the Reporter role.
 
 ## Get project-level DORA metrics
 

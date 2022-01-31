@@ -94,7 +94,7 @@ The job token scope is only for controlling access to private projects.
 1. Expand **Token Access**.
 1. Toggle **Limit CI_JOB_TOKEN access** to enabled.
 1. Optional. Add existing projects to the token's access scope. The user adding a
-   project must have the [maintainer role](../../user/permissions.md) in both projects.
+   project must have the Maintainer role in both projects.
 
 There is [a proposal](https://gitlab.com/groups/gitlab-org/-/epics/3559) to improve
 the feature with more strategic control of the access permissions.

@@ -25,7 +25,7 @@ To manage linked issues through our API, visit the [issue links API documentatio
 
 Prerequisites:
 
-- You must have at least the Reporter [role](../../permissions.md) for both projects.
+- You must have at least the Reporter role for both projects.
 
 To link one issue to another:
 

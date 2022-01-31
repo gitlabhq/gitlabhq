@@ -160,7 +160,7 @@ Multiline comments display the comment's line numbers above the body of the comm
 
 ## Bulk edit merge requests at the project level
 
-Users with permission level of [Developer or higher](../../../permissions.md) can manage merge requests.
+Users with at least the Developer role can manage merge requests.
 
 When bulk-editing merge requests in a project, you can edit the following attributes:
 
@@ -183,7 +183,7 @@ To update multiple project merge requests at the same time:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12719) in GitLab 12.2.
 
-Users with permission level of [Developer or higher](../../../permissions.md) can manage merge requests.
+Users with at least the Developer role can manage merge requests.
 
 When bulk editing merge requests in a group, you can edit the following attributes:
 

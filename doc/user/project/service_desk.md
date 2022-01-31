@@ -87,7 +87,7 @@ To improve your project's security, we recommend the following:
   Unblocked email spam can result in many spam issues being created.
 
 The unique internal email address is visible to project members at least
-the Reporter [role](../permissions.md) in your GitLab instance.
+the Reporter role in your GitLab instance.
 An external user (issue creator) cannot see the internal email address
 displayed in the information note.
 

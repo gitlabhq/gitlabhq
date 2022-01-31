@@ -11,7 +11,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 ## Error Tracking project settings
 
 The project settings API allows you to retrieve the [Error Tracking](../operations/error_tracking.md)
-settings for a project. Only for users with [Maintainer role](../user/permissions.md) for the project.
+settings for a project. Only for users with Maintainer role for the project.
 
 ### Get Error Tracking settings
 
@@ -42,7 +42,7 @@ Example response:
 ### Enable or disable the Error Tracking project settings
 
 The API allows you to enable or disable the Error Tracking settings for a project. Only for users with the
-[Maintainer role](../user/permissions.md) for the project.
+Maintainer role for the project.
 
 ```plaintext
 PATCH /projects/:id/error_tracking/settings
@@ -75,7 +75,7 @@ Example response:
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68384) in GitLab 14.3.
 
 For [integrated error tracking](https://gitlab.com/gitlab-org/gitlab/-/issues/329596) feature. Only for users with the
-[Maintainer role](../user/permissions.md) for the project.
+Maintainer role for the project.
 
 ### List project client keys
 

@@ -33,11 +33,13 @@ before using this feature.
 
 ## Permissions for using Terraform
 
-In GitLab version 13.1, the [Maintainer role](../../permissions.md) was required to use a
-GitLab managed Terraform state backend. In GitLab versions 13.2 and greater, the
-[Maintainer role](../../permissions.md) is required to lock, unlock, and write to the state
-(using `terraform apply`), while the [Developer role](../../permissions.md) is required to read
-the state (using `terraform plan -lock=false`).
+In GitLab version 13.1, the Maintainer role was required to use a
+GitLab managed Terraform state backend.
+
+In GitLab versions 13.2 and later:
+
+- The Maintainer role is required to lock, unlock, and write to the state (using `terraform apply`).
+- The Developer role is required to read the state (using `terraform plan -lock=false`).
 
 ## Set up GitLab-managed Terraform state
 
@@ -205,7 +207,7 @@ and the CI YAML file:
 The output from the above `terraform` commands should be viewable in the job logs.
 
 WARNING:
-Like any other job artifact, Terraform plan data is viewable by anyone with the Guest [role](../../permissions.md) on the repository.
+Like any other job artifact, Terraform plan data is viewable by anyone with the Guest role on the repository.
 Neither Terraform nor GitLab encrypts the plan file by default. If your Terraform plan
 includes sensitive data such as passwords, access tokens, or certificates, GitLab strongly
 recommends encrypting plan output or modifying the project visibility settings.
@@ -255,7 +257,7 @@ An example setup is shown below:
 Outputs from the data source can now be referenced in your Terraform resources
 using `data.terraform_remote_state.example.outputs.<OUTPUT-NAME>`.
 
-You need at least the [Developer role](../../permissions.md) in the target project
+You need at least the Developer role in the target project
 to read the Terraform state.
 
 ## Migrating to GitLab Managed Terraform state
@@ -365,7 +367,7 @@ location. You can then go back to running it in GitLab CI/CD.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/273592) in GitLab 13.8.
 
-Users with Developer and greater [permissions](../../permissions.md) can view the
+Users with at least the Developer role can view the
 state files attached to a project at **Infrastructure > Terraform**. Users with the
 Maintainer role can perform commands on the state files. The user interface
 contains these fields:
@@ -404,7 +406,7 @@ curl --header "Private-Token: <your_access_token>" --request DELETE "https://git
 
 ## Remove a state file
 
-Users with Maintainer and greater [permissions](../../permissions.md) can use the
+Users with at least the Maintainer role can use the
 following options to remove a state file:
 
 - **GitLab UI**: Go to **Infrastructure > Terraform**. In the **Actions** column,

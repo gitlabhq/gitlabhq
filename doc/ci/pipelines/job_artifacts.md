@@ -259,7 +259,7 @@ You can delete a single job, which also removes the job's
 artifacts and log. You must be:
 
 - The owner of the job.
-- A [maintainer](../../user/permissions.md#gitlab-cicd-permissions) of the project.
+- A Maintainer of the project.
 
 To delete a job:
 
@@ -381,7 +381,7 @@ to the `expire_in` specification.
 
 If a new pipeline for the same ref completes successfully, the previous pipeline's
 artifacts are deleted according to the `expire_in` configuration. The artifacts
-of the new pipeline are kept automatically.  
+of the new pipeline are kept automatically.
 
 Keeping the latest artifacts can use a large amount of storage space in projects
 with a lot of jobs or large artifacts. If the latest artifacts are not needed in

@@ -14,7 +14,7 @@ You don't need to install anything to use GitLab SaaS, you only need to
 - [A subscription](https://about.gitlab.com/pricing/).
 - [The number of seats you want](#how-seat-usage-is-determined).
 
-The subscription determines which features are available for your private projects. Organizations with public open source projects can actively apply to our [GitLab for Open Source Program](https://about.gitlab.com/solutions/open-source/join/). 
+The subscription determines which features are available for your private projects. Organizations with public open source projects can actively apply to our [GitLab for Open Source Program](https://about.gitlab.com/solutions/open-source/join/).
 
 Qualifying open source projects also get 50,000 CI/CD minutes and free access to the **Ultimate** tier
 through the [GitLab for Open Source program](https://about.gitlab.com/solutions/open-source/).
@@ -44,7 +44,7 @@ To subscribe to GitLab SaaS:
 
 Prerequisite:
 
-- You must have the Owner [role](../../user/permissions.md) for the group.
+- You must have the Owner role for the group.
 
 To see the status of your GitLab SaaS subscription:
 

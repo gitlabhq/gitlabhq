@@ -122,8 +122,7 @@ As described in the API documentation, the query may return an import error or e
 
 The following items are imported but changed slightly:
 
-- Project members with the [Owner role](../../permissions.md)
-  are imported as Maintainers.
+- Project members with the Owner role are imported as Maintainers.
 - If an imported project contains merge requests originating from forks, then new branches
   associated with such merge requests are created in a project during the import/export. Thus, the
   number of branches in the exported project might be bigger than in the original project.

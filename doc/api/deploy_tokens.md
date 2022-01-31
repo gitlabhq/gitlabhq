@@ -49,7 +49,7 @@ Example response:
 
 ## Project deploy tokens
 
-Project deploy token API endpoints require the [Maintainer role](../user/permissions.md) or higher
+Project deploy token API endpoints require the Maintainer role or higher
 for the project.
 
 ### List project deploy tokens
@@ -165,7 +165,7 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" \
 
 ## Group deploy tokens
 
-Users with at least the [Maintainer role](../user/permissions.md) for the group can list group deploy
+Users with at least the Maintainer role for the group can list group deploy
 tokens. Only group Owners can create and delete group deploy tokens.
 
 ### List group deploy tokens

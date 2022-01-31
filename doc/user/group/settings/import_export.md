@@ -16,7 +16,7 @@ You can also [export projects](../../project/settings/import_export.md).
 
 Prerequisite:
 
-- You must have the [Owner role](../../permissions.md) for the group.
+- You must have the Owner role for the group.
 
 To enable import and export for a group:
 
@@ -69,7 +69,7 @@ in GitLab 14.6 and replaced by [GitLab Migration](../import/).
 
 Prerequisites:
 
-- You must have the [Owner role](../../permissions.md) for the group.
+- You must have the Owner role for the group.
 
 To export the contents of a group:
 

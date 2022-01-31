@@ -40,9 +40,8 @@ iterations of the GitLab Jira importer.
 
 ### Permissions
 
-In order to be able to import issues from a Jira project you need to have read access on Jira
-issues and a [Maintainer or higher](../../permissions.md#project-members-permissions) role in the
-GitLab project that you wish to import into.
+To be able to import issues from a Jira project you must have read access on Jira
+issues and at least the Maintainer role in the GitLab project that you wish to import into.
 
 ### Jira integration
 

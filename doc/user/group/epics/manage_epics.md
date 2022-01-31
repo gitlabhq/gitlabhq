@@ -83,7 +83,7 @@ To edit an epic's start date, due date, or labels:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/7250) in GitLab 12.2.
 
-Users with at least the [Reporter role](../../permissions.md) can manage epics.
+Users with at least the Reporter role can manage epics.
 
 When bulk editing epics in a group, you can edit their labels.
 
@@ -98,8 +98,7 @@ To update multiple epics at the same time:
 ## Delete an epic
 
 NOTE:
-To delete an epic, you must be an [Owner](../../permissions.md#group-members-permissions) of a group
-or subgroup.
+To delete an epic, you must be an Owner of a group or subgroup.
 
 To delete the epic:
 

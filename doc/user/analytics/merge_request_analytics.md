@@ -116,4 +116,4 @@ bookmark for those preferred settings in your browser.
 The **Merge Request Analytics** feature can be accessed only:
 
 - On [GitLab Premium](https://about.gitlab.com/pricing/) and above.
-- By users with at least the Reporter [role](../permissions.md).
+- By users with at least the Reporter role.

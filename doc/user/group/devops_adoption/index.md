@@ -32,7 +32,7 @@ how to use those features.
 
 Prerequisite:
 
-- You must have at least the [Reporter role](../../permissions.md) for the group.
+- You must have at least the Reporter role for the group.
 
 To view DevOps Adoption:
 

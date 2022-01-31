@@ -14,9 +14,7 @@ retain columns such as labels and milestones, consider the [Move Issue feature](
 
 The user uploading the CSV file is set as the author of the imported issues.
 
-NOTE:
-A permission level of [Developer](../../permissions.md), or higher, is required
-to import issues.
+You must have at least the Developer role for a project to import issues.
 
 ## Prepare for the import
 

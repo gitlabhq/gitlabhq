@@ -160,7 +160,7 @@ the GitLab instance. To determine this:
 ### Determine the IP address of a specific runner
 
 To can find the IP address of a runner for a specific project,
-you must have the [Owner role](../../user/permissions.md#project-members-permissions) for the
+you must have the Owner role for the
 project.
 
 1. Go to the project's **Settings > CI/CD** and expand the **Runners** section.
@@ -187,7 +187,7 @@ the appropriate dependencies to run Rails test suites.
 
 When you [register a runner](https://docs.gitlab.com/runner/register/), its default behavior is to **only pick**
 [tagged jobs](../yaml/index.md#tags).
-To change this, you must have the [Owner role](../../user/permissions.md#project-members-permissions) for the project.
+To change this, you must have the Owner role for the project.
 
 To make a runner pick untagged jobs:
 

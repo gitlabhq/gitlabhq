@@ -115,8 +115,7 @@ You can use [Markdown](../markdown.md) and [quick actions](../project/quick_acti
 
 You can edit your own comment at any time.
 
-Anyone with the [Maintainer role](../permissions.md) or
-higher can also edit a comment made by someone else.
+Anyone with at least the Maintainer role can also edit a comment made by someone else.
 
 ## Prevent comments by locking an issue
 
@@ -209,7 +208,7 @@ When you reply to a standard comment, you create a thread.
 
 Prerequisites:
 
-- You must have at least the [Guest role](../permissions.md#project-members-permissions).
+- You must have at least the Guest role.
 - You must be in an issue, merge request, or epic. Threads in commits and snippets are not supported.
 
 To create a thread by replying to a comment:
@@ -231,7 +230,7 @@ You can create a thread without replying to a standard comment.
 
 Prerequisites:
 
-- You must have at least the [Guest role](../permissions.md#project-members-permissions).
+- You must have at least the Guest role.
 - You must be in an issue, merge request, commit, or snippet.
 
 To create a thread:
@@ -253,7 +252,7 @@ In a merge request, you can resolve a thread when you want to finish a conversat
 
 Prerequisites:
 
-- You must have at least the [Developer role](../permissions.md#project-members-permissions)
+- You must have at least the Developer role
   or be the author of the change being reviewed.
 - Resolvable threads can be added only to merge requests. It doesn't work
   for comments in issues, commits, or snippets.

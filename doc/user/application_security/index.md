@@ -218,7 +218,7 @@ An approval is optional when the security report:
   the rule's severity levels.
 - Contains a vulnerability count equal to or less than what the rule allows.
 
-Project members assigned [at least the Maintainer role](../permissions.md#project-members-permissions) can enable or edit
+Project members with at least the Maintainer role can enable or edit
 the Vulnerability-Check rule.
 
 #### Enable the Vulnerability-Check rule

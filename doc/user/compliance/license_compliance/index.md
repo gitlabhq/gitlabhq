@@ -772,7 +772,7 @@ Developers of the project can view the policies configured in a project.
 
 Prerequisites:
 
-- Maintainer or Owner [role](../../permissions.md#project-members-permissions).
+- Maintainer or Owner role.
 
 `License-Check` is a [merge request approval](../../project/merge_requests/approvals/index.md) rule
 you can enable to allow an individual or group to approve a merge request that contains a `denied`

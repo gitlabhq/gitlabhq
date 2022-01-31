@@ -1434,7 +1434,7 @@ Supported attributes:
 | `request_access_enabled`                                    | boolean        | **{dotted-circle}** No | Allow users to request member access. |
 | `requirements_access_level`                                 | string         | **{dotted-circle}** No | One of `disabled`, `private`, `enabled` or `public` |
 | `resolve_outdated_diff_discussions`                         | boolean        | **{dotted-circle}** No | Automatically resolve merge request diffs discussions on lines changed with a push. |
-| `restrict_user_defined_variables`                           | boolean        | **{dotted-circle}** No | Allow only users with the [Maintainer role](../user/permissions.md) to pass user-defined variables when triggering a pipeline. For example when the pipeline is triggered in the UI, with the API, or by a trigger token. |
+| `restrict_user_defined_variables`                           | boolean        | **{dotted-circle}** No | Allow only users with the Maintainer role to pass user-defined variables when triggering a pipeline. For example when the pipeline is triggered in the UI, with the API, or by a trigger token. |
 | `service_desk_enabled`                                      | boolean        | **{dotted-circle}** No | Enable or disable Service Desk feature. |
 | `shared_runners_enabled`                                    | boolean        | **{dotted-circle}** No | Enable shared runners for this project. |
 | `show_default_award_emojis`                                 | boolean        | **{dotted-circle}** No | Show default award emojis. |

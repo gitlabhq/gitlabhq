@@ -94,7 +94,7 @@ You cannot undo the deletion of a merge request.
 
 To delete a merge request:
 
-1. Sign in to GitLab as a user with the project Owner [role](../../permissions.md).
+1. Sign in to GitLab as a user with the project Owner role.
    Only users with this role can delete merge requests in a project.
 1. Go to the merge request you want to delete, and select **Edit**.
 1. Scroll to the bottom of the page, and select **Delete merge request**.

@@ -65,7 +65,7 @@ request is merged. Select the dropdown to view:
 
 The right-side histogram shows the size or complexity of a merge request.
 Select the dropdown to view:
-  
+
 - Number of commits per merge request.
 - Number of lines of code (LOC) per commit.
 - Number of files touched.
@@ -103,4 +103,4 @@ You can filter analytics based on a date range. To filter results:
 The **Productivity Analytics** dashboard can be accessed only:
 
 - On [GitLab Premium](https://about.gitlab.com/pricing/) and above.
-- By users with at least the Reporter [role](../permissions.md).
+- By users with at least the Reporter role.

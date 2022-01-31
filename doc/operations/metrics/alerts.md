@@ -99,8 +99,7 @@ GitLab tags each incident issue with the `incident` label automatically. If the 
 does not yet exist, it is also created automatically.
 
 If the metric exceeds the threshold of the alert for over 5 minutes, GitLab sends
-an email to all [Maintainers and Owners](../../user/permissions.md#project-members-permissions)
-of the project.
+an email to all Maintainers and Owners of the project.
 
 ### Recovery alerts
 

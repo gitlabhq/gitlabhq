@@ -58,7 +58,7 @@ To use merge request pipelines:
   jobs that run in merge request pipelines. To do this, you can use:
   - [`rules`](#use-rules-to-add-jobs).
   - [`only/except`](#use-only-to-add-jobs).
-- You must have at least the Developer [role](../../user/permissions.md) in the
+- You must have at least the Developer role in the
   source project to run a merge request pipeline.
 - Your repository must be a GitLab repository, not an [external repository](../ci_cd_for_external_repos/index.md).
 
@@ -142,7 +142,7 @@ parent project when the pipeline runs, even before merge. As a reviewer, careful
 check the changes in the merge request before triggering the pipeline. GitLab shows
 a warning that you must accept before you can trigger the pipeline.
 
-Parent project members with at least the [Developer role](../../user/permissions.md)
+Parent project members with at least the Developer role
 can create pipelines in the parent project for merge requests from a forked project:
 
 1. In the merge request, go to the **Pipelines** tab.

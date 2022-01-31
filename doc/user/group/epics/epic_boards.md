@@ -24,7 +24,7 @@ To view an epic board:
 
 Prerequisites:
 
-- You must have at least the [Reporter role](../../permissions.md#group-members-permissions) for a group.
+- You must have at least the Reporter role for a group.
 
 To create a new epic board:
 
@@ -49,7 +49,7 @@ To change these options later, [edit the board](#edit-the-scope-of-an-epic-board
 
 Prerequisites:
 
-- You must have at least the [Reporter role](../../permissions.md#group-members-permissions) for a group.
+- You must have at least the Reporter role for a group.
 - A minimum of two boards present in a group.
 
 To delete the active epic board:
@@ -73,7 +73,7 @@ To delete the active epic board:
 
 Prerequisites:
 
-- You must have at least the [Reporter role](../../permissions.md#group-members-permissions) for a group.
+- You must have at least the Reporter role for a group.
 
 To create a new list:
 
@@ -91,7 +91,7 @@ list view that's removed. You can always create it again later if you need.
 
 Prerequisites:
 
-- You must have at least the [Reporter role](../../permissions.md#group-members-permissions) for a group.
+- You must have at least the Reporter role for a group.
 
 To remove a list from an epic board:
 
@@ -106,7 +106,7 @@ To remove a list from an epic board:
 
 Prerequisites:
 
-- You must have at least the [Reporter role](../../permissions.md#group-members-permissions) for a group.
+- You must have at least the Reporter role for a group.
 - You must have [created a list](#create-a-new-list) first.
 
 To create an epic from a list in epic board:
@@ -147,7 +147,7 @@ You can move epics and lists by dragging them.
 
 Prerequisites:
 
-- You must have at least the [Reporter role](../../permissions.md#group-members-permissions) for a group.
+- You must have at least the Reporter role for a group.
 
 To move an epic, select the epic card and drag it to another position in its current list or
 into another list. Learn about possible effects in [Dragging epics between lists](#dragging-epics-between-lists).
@@ -170,7 +170,7 @@ and the target list.
 
 Prerequisites:
 
-- You must have at least the [Reporter role](../../permissions.md#group-members-permissions) for a group.
+- You must have at least the Reporter role for a group.
 
 To edit the scope of an epic board:
 

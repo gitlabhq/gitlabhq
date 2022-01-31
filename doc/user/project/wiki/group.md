@@ -22,7 +22,7 @@ Group wikis are similar to [project wikis](index.md), with a few limitations:
 
 For updates, follow [the epic that tracks feature parity with project wikis](https://gitlab.com/groups/gitlab-org/-/epics/2782).
 
-Similar to project wikis, group members with the [Developer role](../../permissions.md#group-members-permissions)
+Similar to project wikis, group members with at least the Developer role
 and higher can edit group wikis. Group wiki repositories can be moved using the
 [Group repository storage moves API](../../../api/group_repository_storage_moves.md).
 
@@ -40,7 +40,7 @@ To access a group wiki:
 
 > Introduced in [GitLab 13.9](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/53247).
 
-Users with the [Owner role](../../permissions.md) in a group can
+Users with the Owner role in a group can
 [import and export group wikis](../../group/settings/import_export.md) when importing
 or exporting a group.
 

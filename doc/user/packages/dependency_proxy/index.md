@@ -93,9 +93,8 @@ You can authenticate using:
 - A [personal access token](../../../user/profile/personal_access_tokens.md) with the scope set to `read_registry` and `write_registry`.
 - A [group deploy token](../../../user/project/deploy_tokens/index.md#group-deploy-token) with the scope set to `read_registry` and `write_registry`.
 
-Users accessing the Dependency Proxy with a personal access token or username and password require
-at least [Guest membership](../../permissions.md#group-members-permissions)
-to the group they pull images from.
+Users accessing the Dependency Proxy with a personal access token or username and password must
+have at least the Guest role for the group they pull images from.
 
 #### SAML SSO
 

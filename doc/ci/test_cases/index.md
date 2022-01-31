@@ -20,7 +20,7 @@ use external test planning tools, which require additional overhead, context swi
 
 Prerequisite:
 
-- You must have at least the Reporter [role](../../user/permissions.md).
+- You must have at least the Reporter role.
 
 To create a test case in a GitLab project:
 
@@ -36,7 +36,7 @@ issue list with a search query, including labels or the test case's title.
 
 Prerequisite:
 
-- You must have at least the Guest [role](../../user/permissions.md).
+- You must have at least the Guest role.
 
 To view a test case:
 
@@ -51,7 +51,7 @@ You can edit a test case's title and description.
 
 Prerequisite:
 
-- You must have at least the Reporter [role](../../user/permissions.md).
+- You must have at least the Reporter role.
 - Users demoted to the Guest role can continue to edit the test cases they created
 when they were in the higher role.
 
@@ -68,7 +68,7 @@ When you want to stop using a test case, you can archive it. You can [reopen an 
 
 Prerequisite:
 
-- You must have at least the Reporter [role](../../user/permissions.md).
+- You must have at least the Reporter role.
 
 To archive a test case, on the test case's page, select the **Archive test case** button.
 
@@ -81,6 +81,6 @@ To view archived test cases:
 
 If you decide to start using an archived test case again, you can reopen it.
 
-You must have at least the Reporter [role](../../user/permissions.md).
+You must have at least the Reporter role.
 
 To reopen an archived test case, on the test case's page, select **Reopen test case**.

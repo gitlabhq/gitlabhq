@@ -37,7 +37,7 @@ Mirror a repository when:
 
 Prerequisite:
 
-- You must have at least the [Maintainer role](../../../permissions.md) for the project.
+- You must have at least the Maintainer role for the project.
 - If your mirror connects with `ssh://`, the host key must be detectable on the server,
   or you must have a local copy of the key.
 
@@ -45,8 +45,8 @@ Prerequisite:
 1. On the left sidebar, select **Settings > Repository**.
 1. Expand **Mirroring repositories**.
 1. Enter a **Git repository URL**. For security reasons, the URL to the original
-   repository is only displayed to users with the [Maintainer role](../../../permissions.md)
-   or the [Owner role](../../../permissions.md) for the mirrored project.
+   repository is only displayed to users with the Maintainer role
+   or the Owner role for the mirrored project.
 1. Select a **Mirror direction**.
 1. If you entered a `ssh://` URL, select either:
    - **Detect host keys**: GitLab fetches the host keys from the server and displays the fingerprints.
@@ -87,7 +87,7 @@ While mirrors are scheduled to update automatically, you can force an immediate 
 
 Prerequisite:
 
-- You must have at least the [Maintainer role](../../../permissions.md) for the project.
+- You must have at least the Maintainer role for the project.
 
 1. On the top bar, select **Menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > Repository**.

@@ -18,7 +18,7 @@ to use this endpoint.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/245331) in GitLab 13.5.
 
-With at least the Maintainer [role](../../user/permissions.md), you can view the list of configured
+With at least the Maintainer role, you can view the list of configured
 alerts integrations by navigating to **Settings > Monitor**
 in your project's sidebar menu, and expanding the **Alerts** section. The list displays
 the integration name, type, and status (enabled or disabled):
@@ -36,7 +36,7 @@ Enabling the HTTP Endpoint in a GitLab projects activates it to
 receive alert payloads in JSON format. You can always
 [customize the payload](#customize-the-alert-payload-outside-of-gitlab) to your liking.
 
-1. Sign in to GitLab as a user with the Maintainer [role](../../user/permissions.md)
+1. Sign in to GitLab as a user with the Maintainer role
    for a project.
 1. Navigate to **Settings > Monitor** in your project.
 1. Expand the **Alerts** section, and in the **Select integration type** dropdown menu,
@@ -53,7 +53,7 @@ In [GitLab Premium](https://about.gitlab.com/pricing/), you can create multiple
 unique HTTP endpoints to receive alerts from any external source in JSON format,
 and you can [customize the payload](#customize-the-alert-payload-outside-of-gitlab).
 
-1. Sign in to GitLab as a user with the Maintainer [role](../../user/permissions.md)
+1. Sign in to GitLab as a user with the Maintainer role
    for a project.
 1. Navigate to **Settings > Monitor** in your project.
 1. Expand the **Alerts** section.
@@ -225,7 +225,7 @@ After a [project maintainer or owner](../../user/permissions.md)
 configures an integration, you can trigger a test
 alert to confirm your integration works properly.
 
-1. Sign in as a user with at least the Developer [role](../../user/permissions.md).
+1. Sign in as a user with at least the Developer role.
 1. Navigate to **Settings > Monitor** in your project.
 1. Click **Alerts** to expand the section.
 1. Click the **{settings}** settings icon on the right side of the integration in [the list](#integrations-list).
@@ -279,7 +279,7 @@ active at the same time.
 
 To enable Opsgenie integration:
 
-1. Sign in as a user with the Maintainer or Owner [role](../../user/permissions.md).
+1. Sign in as a user with the Maintainer or Owner role.
 1. Navigate to **Monitor > Alerts**.
 1. In the **Integrations** select box, select **Opsgenie**.
 1. Select the **Active** toggle.

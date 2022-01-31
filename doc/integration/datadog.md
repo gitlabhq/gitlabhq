@@ -26,7 +26,7 @@ project, group, or instance level:
       Copy this value, as you need it in a later step.
 1. *For project-level or group-level integrations:* In GitLab, go to your project or group.
 1. *For instance-level integrations:*
-   1. Sign in to GitLab as a user with the [Administrator role](../user/permissions.md).
+   1. Sign in to GitLab as a user with the Administrator access level.
    1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Settings > Integrations**.
 1. Scroll to **Add an integration**, and select **Datadog**.

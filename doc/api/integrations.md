@@ -13,7 +13,7 @@ In GitLab 14.4, the `services` endpoint was [renamed](https://gitlab.com/gitlab-
 Calls to the Integrations API can be made to both `/projects/:id/services` and `/projects/:id/integrations`.
 The examples in this document refer to the endpoint at `/projects/:id/integrations`.
 
-This API requires an access token with the [Maintainer or Owner role](../user/permissions.md).
+This API requires an access token with the Maintainer or Owner role.
 
 ## List all active integrations
 

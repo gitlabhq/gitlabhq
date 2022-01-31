@@ -35,7 +35,7 @@ Administrators can set a default branch protection level in the
 
 Prerequisite:
 
-- You must have at least the [Maintainer role](../permissions.md).
+- You must have at least the Maintainer role.
 
 To protect a branch:
 
@@ -52,7 +52,7 @@ The protected branch displays in the list of protected branches.
 
 Prerequisite:
 
-- You must have at least the [Maintainer role](../permissions.md).
+- You must have at least the Maintainer role.
 
 To protect multiple branches at the same time:
 
@@ -75,7 +75,7 @@ The protected branch displays in the list of protected branches.
 
 ## Create a protected branch
 
-Users with the Developer or higher [role](../permissions.md) can create a protected branch.
+Users with at least the Developer role can create a protected branch.
 
 Prerequisites:
 
@@ -217,7 +217,7 @@ for details about the pipelines security model.
 
 ## Delete a protected branch
 
-Users with the [Maintainer role](../permissions.md) and greater can manually delete protected
+Users with at least the Maintainer can manually delete protected
 branches by using the GitLab web interface:
 
 1. Go to **Repository > Branches**.

@@ -42,7 +42,7 @@ After the author applies a suggestion:
 1. The suggestion is marked as **Applied**.
 1. The thread is resolved.
 1. GitLab creates a new commit with the changes.
-1. If the user has the [Developer role](../../../permissions.md), GitLab pushes
+1. If the user has the Developer role, GitLab pushes
    the suggested change directly into the codebase in the merge request's branch.
 
 ## Multi-line suggestions
