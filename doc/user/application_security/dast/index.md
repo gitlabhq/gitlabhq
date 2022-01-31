@@ -53,7 +53,7 @@ results. On failure, the analyzer outputs an
 - [GitLab Runner](../../../ci/runners/index.md) available, with the
 [`docker` executor](https://docs.gitlab.com/runner/executors/docker.html).
 - Target application deployed. For more details, read [Deployment options](#deployment-options).
-- DAST runs in the `test` stage, which is available by default. If you redefine the stages in the `.gitlab-ci.yml` file, the `test` stage is required.
+- DAST runs in the `dast` stage, which must be added manually to your `.gitlab-ci.yml`.
 
 ### Deployment options
 

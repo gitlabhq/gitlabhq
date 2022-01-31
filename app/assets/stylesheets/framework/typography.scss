@@ -525,32 +525,26 @@
     -moz-osx-font-smoothing: grayscale;
   }
 
-  .fa-2x,
   .admonitionblock td.icon [class^='fa icon-'] {
     font-size: 2em;
   }
 
-  .fa-exclamation-triangle::before,
   .admonitionblock td.icon .icon-warning::before {
     content: '⚠';
   }
 
-  .fa-exclamation-circle::before,
   .admonitionblock td.icon .icon-important::before {
     content: '❗';
   }
 
-  .fa-lightbulb-o::before,
   .admonitionblock td.icon .icon-tip::before {
     content: '💡';
   }
 
-  .fa-thumb-tack::before,
   .admonitionblock td.icon .icon-note::before {
     content: '📌';
   }
 
-  .fa-fire::before,
   .admonitionblock td.icon .icon-caution::before {
     content: '🔥';
   }

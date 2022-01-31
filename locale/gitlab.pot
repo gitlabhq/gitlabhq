@@ -7113,6 +7113,9 @@ msgstr ""
 msgid "Child"
 msgstr ""
 
+msgid "Child epic"
+msgstr ""
+
 msgid "Child epic does not exist."
 msgstr ""
 
@@ -17725,6 +17728,33 @@ msgstr[1] ""
 msgid "Hide values"
 msgstr ""
 
+msgid "Hierarchy|Current structure"
+msgstr ""
+
+msgid "Hierarchy|Deliver value more efficiently by breaking down necessary work into a hierarchical structure. This structure helps teams understand scope, priorities, and how work cascades up toward larger goals."
+msgstr ""
+
+msgid "Hierarchy|Help us improve work items in GitLab!"
+msgstr ""
+
+msgid "Hierarchy|Is there a framework or type of work item you wish you had access to in GitLab? Give us your feedback and help us build the experiences valuable to you."
+msgstr ""
+
+msgid "Hierarchy|Planning hierarchy"
+msgstr ""
+
+msgid "Hierarchy|Take the work items survey"
+msgstr ""
+
+msgid "Hierarchy|These items are unavailable in the current structure."
+msgstr ""
+
+msgid "Hierarchy|Unavailable structure"
+msgstr ""
+
+msgid "Hierarchy|You can start using these items now."
+msgstr ""
+
 msgid "High or unknown vulnerabilities present"
 msgstr ""
 
@@ -26636,6 +26666,9 @@ msgstr ""
 msgid "Plan:"
 msgstr ""
 
+msgid "Planning hierarchy"
+msgstr ""
+
 msgid "PlantUML"
 msgstr ""
 
@@ -30373,6 +30406,9 @@ msgstr ""
 msgid "Required only if you are not using role instance credentials."
 msgstr ""
 
+msgid "Requirement"
+msgstr ""
+
 msgid "Requirement %{reference} has been added"
 msgstr ""
 
@@ -33033,6 +33069,9 @@ msgstr ""
 msgid "Show all breadcrumbs"
 msgstr ""
 
+msgid "Show all epics"
+msgstr ""
+
 msgid "Show all issues."
 msgstr ""
 
@@ -33043,6 +33082,9 @@ msgid "Show archived projects"
 msgstr ""
 
 msgid "Show archived projects only"
+msgstr ""
+
+msgid "Show closed epics"
 msgstr ""
 
 msgid "Show command"
@@ -33079,6 +33121,9 @@ msgid "Show list"
 msgstr ""
 
 msgid "Show one file at a time"
+msgstr ""
+
+msgid "Show open epics"
 msgstr ""
 
 msgid "Show the Closed list"
@@ -35374,6 +35419,9 @@ msgid "Test"
 msgstr ""
 
 msgid "Test Cases"
+msgstr ""
+
+msgid "Test case"
 msgstr ""
 
 msgid "Test coverage parsing"

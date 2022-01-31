@@ -175,7 +175,7 @@ As [announced in GitLab 13.3](https://about.gitlab.com/releases/2020/08/22/gitla
 - `geo_postgresql['fdw_external_password']`
 - `gitlab-_rails['geo_migrated_local_files_clean_up_worker_cron']`
 
-### GitLab OAuth implicit grant deprecation
+### GitLab OAuth implicit grant
 
 WARNING:
 This feature was changed or removed in 14.0
@@ -185,7 +185,7 @@ changes to your code, settings, or workflow.
 
 GitLab is deprecating the [OAuth 2 implicit grant flow](https://docs.gitlab.com/ee/api/oauth2.html#implicit-grant-flow) as it has been removed for [OAuth 2.1](https://oauth.net/2.1/).
 
-Beginning in 14.0, new applications can't be created with the OAuth 2 implicit grant flow. Existing OAuth implicit grant flows are no longer supported in 14.4. Migrate your existing applications to other supported [OAuth2 flows](https://docs.gitlab.com/ee/api/oauth2.html#supported-oauth2-flows) before release 14.4.
+Migrate your existing applications to other supported [OAuth2 flows](https://docs.gitlab.com/ee/api/oauth2.html#supported-oauth2-flows).
 
 ### GitLab Runner helper image in GitLab.com Container Registry
 

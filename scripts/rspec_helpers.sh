@@ -275,7 +275,7 @@ function rspec_paralellized_job() {
   export MEMORY_TEST_PATH="tmp/memory_test/${report_name}_memory.csv"
 
   if [[ -n $RSPEC_TESTS_MAPPING_ENABLED ]]; then
-    tooling/bin/parallel_rspec --rspec_args "$(rspec_args)" --filter "tmp/matching_tests.txt" || rspec_run_status=$?
+    tooling/bin/parallel_rspec --rspec_args "$(rspec_args "${rspec_opts}")" --filter "tmp/matching_tests.txt" || rspec_run_status=$?
   else
     tooling/bin/parallel_rspec --rspec_args "$(rspec_args "${rspec_opts}")" || rspec_run_status=$?
   fi

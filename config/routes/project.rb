@@ -465,6 +465,8 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         namespace :integrations do
           resource :shimo, only: [:show]
         end
+
+        get :planning_hierarchy
       end
       # End of the /-/ scope.
 

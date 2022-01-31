@@ -20,6 +20,20 @@ To learn about hierarchies in general, common frameworks, and using GitLab for
 portfolio management, see
 [How to use GitLab for Agile portfolio planning and project management](https://about.gitlab.com/blog/2020/11/11/gitlab-for-agile-portfolio-planning-project-management/).
 
+## View planning hierarchies
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/340844/) in GitLab 14.8 and is behind the feature flag `work_items_hierarchy`.
+
+To view the planning hierarchy in a project:
+
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Project information > Planning hierarchy**.
+
+Under **Current structure**, you can see a hierarchy diagram that matches your current planning hierarchy.
+The work items outside your subscription plan show up below **Unavailable structure**.
+
+![Screenshot showing hierarchy page](img/view-project-work-item-hierarchy_v14_8.png)
+
 ## Hierarchies with epics
 
 With epics, you can achieve the following hierarchy:

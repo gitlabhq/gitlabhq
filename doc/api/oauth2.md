@@ -32,7 +32,7 @@ GitLab supports the following authorization flows:
   hosted, first-party services. GitLab recommends against use of this flow.
 
 The draft specification for [OAuth 2.1](https://oauth.net/2.1/) specifically omits both the
-Implicit grant and Resource Owner Password Credentials flows. It will be deprecated in the next OAuth specification version.
+Implicit grant and Resource Owner Password Credentials flows.
 
 Refer to the [OAuth RFC](https://tools.ietf.org/html/rfc6749) to find out
 how all those flows work and pick the right one for your use case.
@@ -239,19 +239,13 @@ You can now make requests to the API with the access token returned.
 
 ### Implicit grant flow
 
-NOTE:
-For a detailed flow diagram, see the [RFC specification](https://tools.ietf.org/html/rfc6749#section-4.2).
-
 WARNING:
 Implicit grant flow is inherently insecure and the IETF has removed it in [OAuth 2.1](https://oauth.net/2.1/).
-For this reason, [support for it is deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/288516).
-In GitLab 14.0, new applications can't be created using it. In GitLab 14.4, support for it is
-scheduled to be removed for existing applications.
+It is [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/288516) for use in GitLab 14.0, and is planned for
+[removal](https://gitlab.com/gitlab-org/gitlab/-/issues/344609) in GitLab 15.0.
 
-We recommend that you use [Authorization code with PKCE](#authorization-code-with-proof-key-for-code-exchange-pkce) instead. If you choose to use Implicit flow, be sure to verify the
-`application id` (or `client_id`) associated with the access token before granting
-access to the data. To learn more, read
-[Retrieving the token information](#retrieve-the-token-information)).
+We recommend that you use [Authorization code with PKCE](#authorization-code-with-proof-key-for-code-exchange-pkce)
+instead.
 
 Unlike the authorization code flow, the client receives an `access token`
 immediately as a result of the authorization request. The flow does not use the
@@ -415,7 +409,7 @@ The following is an example response:
 
 The fields `scopes` and `expires_in_seconds` are included in the response.
 
-These are aliases for `scope` and `expires_in` respectively, and have been included to
+These fields are aliases for `scope` and `expires_in` respectively, and have been included to
 prevent breaking changes introduced in [doorkeeper 5.0.2](https://github.com/doorkeeper-gem/doorkeeper/wiki/Migration-from-old-versions#from-4x-to-5x).
 
 Don't rely on these fields as they are slated for removal in a later release.

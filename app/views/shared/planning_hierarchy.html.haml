@@ -1,0 +1,5 @@
+- page_title _("Planning hierarchy")
+- has_sub_epics = @project&.licensed_feature_available?(:subepics)
+- has_epics = @project&.licensed_feature_available?(:epics)
+
+#js-work-items-hierarchy{ data: { has_sub_epics: has_sub_epics.to_s, has_epics: has_epics.to_s, illustration_path: image_path('illustrations/rocket-launch-md.svg') } }

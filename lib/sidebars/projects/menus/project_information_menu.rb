@@ -4,10 +4,13 @@ module Sidebars
   module Projects
     module Menus
       class ProjectInformationMenu < ::Sidebars::Menu
+        include ::Sidebars::Concerns::WorkItemHierarchy
+
         override :configure_menu_items
         def configure_menu_items
           add_item(activity_menu_item)
           add_item(labels_menu_item)
+          add_item(hierarchy_menu_item(context.project, project_planning_hierarchy_path(context.project), 'projects#planning_hierarchy'))
           add_item(members_menu_item)
 
           true

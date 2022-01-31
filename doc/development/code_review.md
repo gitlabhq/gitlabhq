@@ -510,6 +510,9 @@ When reviewing merge requests added by wider community contributors:
   fetching of malicious packages.
 - Review links and images, especially in documentation MRs.
 - When in doubt, ask someone from `@gitlab-com/gl-security/appsec` to review the merge request **before manually starting any merge request pipeline**.
+- Only set the milestone when the merge request is likely to be included in
+  the current milestone. This is to avoid confusion around when it'll be
+  merged and avoid moving milestone too often when it's not yet ready.
 
 If the MR source branch is more than 1,000 commits behind the target branch:
 
