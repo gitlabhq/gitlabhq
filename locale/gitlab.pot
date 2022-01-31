@@ -10369,6 +10369,9 @@ msgstr ""
 msgid "Created by:"
 msgstr ""
 
+msgid "Created compliance violations if any were found"
+msgstr ""
+
 msgid "Created date"
 msgstr ""
 
@@ -22397,6 +22400,9 @@ msgid "Merge request dependencies"
 msgstr ""
 
 msgid "Merge request events"
+msgstr ""
+
+msgid "Merge request not merged"
 msgstr ""
 
 msgid "Merge request pipelines are configured. A detached pipeline runs in the context of the merge request, and not against the merged result. Learn more in the documentation for merge request pipelines."
@@ -36591,6 +36597,9 @@ msgid "This group has no active access tokens."
 msgstr ""
 
 msgid "This group is linked to a subscription"
+msgstr ""
+
+msgid "This group is not permitted to create compliance violations"
 msgstr ""
 
 msgid "This group, its subgroups and projects has been scheduled for removal on %{date}."

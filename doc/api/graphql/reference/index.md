@@ -13328,7 +13328,6 @@ Represents vulnerability finding of a security report on the pipeline.
 | <a id="projecthttpurltorepo"></a>`httpUrlToRepo` | [`String`](#string) | URL to connect to the project via HTTPS. |
 | <a id="projectid"></a>`id` | [`ID!`](#id) | ID of the project. |
 | <a id="projectimportstatus"></a>`importStatus` | [`String`](#string) | Status of import background job of the project. |
-| <a id="projectincidentmanagementescalationpolicies"></a>`incidentManagementEscalationPolicies` | [`EscalationPolicyTypeConnection`](#escalationpolicytypeconnection) | Incident Management escalation policies of the project. (see [Connections](#connections)) |
 | <a id="projectissuesenabled"></a>`issuesEnabled` | [`Boolean`](#boolean) | Indicates if Issues are enabled for the current user. |
 | <a id="projectjiraimportstatus"></a>`jiraImportStatus` | [`String`](#string) | Status of Jira import background job of the project. |
 | <a id="projectjiraimports"></a>`jiraImports` | [`JiraImportConnection`](#jiraimportconnection) | Jira imports into the project. (see [Connections](#connections)) |
@@ -13637,6 +13636,22 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="projectenvironmentssearch"></a>`search` | [`String`](#string) | Search query for environment name. |
 | <a id="projectenvironmentsstates"></a>`states` | [`[String!]`](#string) | States of environments that should be included in result. |
 
+##### `Project.incidentManagementEscalationPolicies`
+
+Incident Management escalation policies of the project.
+
+Returns [`EscalationPolicyTypeConnection`](#escalationpolicytypeconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectincidentmanagementescalationpoliciesname"></a>`name` | [`String`](#string) | Fuzzy search by escalation policy name. |
+
 ##### `Project.incidentManagementEscalationPolicy`
 
 Incident Management escalation policy of the project.
@@ -13648,6 +13663,7 @@ Returns [`EscalationPolicyType`](#escalationpolicytype).
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="projectincidentmanagementescalationpolicyid"></a>`id` | [`IncidentManagementEscalationPolicyID!`](#incidentmanagementescalationpolicyid) | ID of the escalation policy. |
+| <a id="projectincidentmanagementescalationpolicyname"></a>`name` | [`String`](#string) | Fuzzy search by escalation policy name. |
 
 ##### `Project.incidentManagementOncallSchedules`
 

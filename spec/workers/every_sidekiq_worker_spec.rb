@@ -457,7 +457,8 @@ RSpec.describe 'Every Sidekiq worker' do
         'WebHooks::DestroyWorker' => 3,
         'WebHooks::LogExecutionWorker' => 3,
         'Wikis::GitGarbageCollectWorker' => false,
-        'X509CertificateRevokeWorker' => 3
+        'X509CertificateRevokeWorker' => 3,
+        'ComplianceManagement::MergeRequests::ComplianceViolationsWorker' => 3
       }
     end
 

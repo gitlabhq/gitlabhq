@@ -79,6 +79,8 @@
   - 1
 - - cluster_agent
   - 1
+- - compliance_management_merge_requests_compliance_violations
+  - 1
 - - container_repository
   - 1
 - - create_commit_signature
