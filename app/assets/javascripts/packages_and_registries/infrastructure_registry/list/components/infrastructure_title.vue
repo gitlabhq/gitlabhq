@@ -21,13 +21,17 @@ export default {
     },
   },
   computed: {
-    showModuleCount() {
-      return Number.isInteger(this.count);
+    hasModules() {
+      return Number.isInteger(this.count) && this.count > 0;
     },
     moduleAmountText() {
       return n__(`%d Module`, `%d Modules`, this.count);
     },
     infoMessages() {
+      if (!this.hasModules) {
+        return [];
+      }
+
       return [{ text: this.$options.i18n.LIST_INTRO_TEXT, link: this.helpUrl }];
     },
   },
@@ -43,11 +47,7 @@ export default {
 <template>
   <title-area :title="$options.i18n.LIST_TITLE_TEXT" :info-messages="infoMessages">
     <template #metadata-amount>
-      <metadata-item
-        v-if="showModuleCount"
-        icon="infrastructure-registry"
-        :text="moduleAmountText"
-      />
+      <metadata-item v-if="hasModules" icon="infrastructure-registry" :text="moduleAmountText" />
     </template>
   </title-area>
 </template>

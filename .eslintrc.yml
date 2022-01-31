@@ -95,8 +95,7 @@ rules:
         order: ignore
 overrides:
   - files:
-    - 'ee/spec/frontend*/**/*'
-    - 'spec/frontend*/**/*'
+    - '{,ee/,jh/}spec/frontend*/**/*'
     rules:
       '@gitlab/require-i18n-strings': off
       '@gitlab/no-runtime-template-compiler': off

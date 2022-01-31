@@ -10,7 +10,9 @@ describe('Infrastructure Title', () => {
   const findTitleArea = () => wrapper.find(TitleArea);
   const findMetadataItem = () => wrapper.find(MetadataItem);
 
-  const mountComponent = (propsData = { helpUrl: 'foo' }) => {
+  const exampleProps = { helpUrl: 'http://example.gitlab.com/help' };
+
+  const mountComponent = (propsData = exampleProps) => {
     wrapper = shallowMount(component, {
       store,
       propsData,
@@ -26,23 +28,36 @@ describe('Infrastructure Title', () => {
   });
 
   describe('title area', () => {
-    it('exists', () => {
+    beforeEach(() => {
       mountComponent();
+    });
 
+    it('exists', () => {
       expect(findTitleArea().exists()).toBe(true);
     });
 
-    it('has the correct props', () => {
-      mountComponent();
+    it('has the correct title', () => {
+      expect(findTitleArea().props('title')).toBe('Infrastructure Registry');
+    });
 
-      expect(findTitleArea().props()).toMatchObject({
-        title: 'Infrastructure Registry',
-        infoMessages: [
+    describe('with no modules', () => {
+      it('has no info message', () => {
+        expect(findTitleArea().props('infoMessages')).toStrictEqual([]);
+      });
+    });
+
+    describe('with at least one module', () => {
+      beforeEach(() => {
+        mountComponent({ ...exampleProps, count: 1 });
+      });
+
+      it('has an info message', () => {
+        expect(findTitleArea().props('infoMessages')).toStrictEqual([
           {
             text: 'Publish and share your modules. %{docLinkStart}More information%{docLinkEnd}',
-            link: 'foo',
+            link: exampleProps.helpUrl,
           },
-        ],
+        ]);
       });
     });
   });
@@ -51,15 +66,15 @@ describe('Infrastructure Title', () => {
     count        | exist    | text
     ${null}      | ${false} | ${''}
     ${undefined} | ${false} | ${''}
-    ${0}         | ${true}  | ${'0 Modules'}
+    ${0}         | ${false} | ${''}
     ${1}         | ${true}  | ${'1 Module'}
     ${2}         | ${true}  | ${'2 Modules'}
   `('when count is $count metadata item', ({ count, exist, text }) => {
     beforeEach(() => {
-      mountComponent({ count, helpUrl: 'foo' });
+      mountComponent({ ...exampleProps, count });
     });
 
-    it(`is ${exist} that it exists`, () => {
+    it(exist ? 'exists' : 'does not exist', () => {
       expect(findMetadataItem().exists()).toBe(exist);
     });
 

@@ -3,6 +3,7 @@
 exports[`packages_list_app renders 1`] = `
 <div>
   <infrastructure-title-stub
+    count="1"
     helpurl="foo"
   />
    

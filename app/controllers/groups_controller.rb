@@ -38,6 +38,8 @@ class GroupsController < Groups::ApplicationController
 
   before_action :check_export_rate_limit!, only: [:export, :download_export]
 
+  before_action :track_experiment_event, only: [:new]
+
   helper_method :captcha_required?
 
   skip_cross_project_access_check :index, :new, :create, :edit, :update,
@@ -377,6 +379,12 @@ class GroupsController < Groups::ApplicationController
 
   def captcha_required?
     captcha_enabled? && !params[:parent_id]
+  end
+
+  def track_experiment_event
+    return if params[:parent_id]
+
+    experiment(:require_verification_for_namespace_creation, user: current_user).track(:start_create_group)
   end
 end
 

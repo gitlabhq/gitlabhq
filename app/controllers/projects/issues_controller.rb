@@ -71,6 +71,7 @@ class Projects::IssuesController < Projects::ApplicationController
                    ]
 
   feature_category :service_desk, [:service_desk]
+  urgency :low, [:service_desk]
   feature_category :importers, [:import_csv, :export_csv]
 
   attr_accessor :vulnerability_id

@@ -721,6 +721,18 @@ The `merged_by` field in the [merge request API](https://docs.gitlab.com/ee/api/
 
 ## 14.8
 
+### Querying Usage Trends via the `instanceStatisticsMeasurements` GraphQL node
+
+WARNING:
+This feature will be changed or removed in 15.0
+as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Before updating GitLab, review the details carefully to determine if you need to make any
+changes to your code, settings, or workflow.
+
+The `instanceStatisticsMeasurements` GraphQL node has been renamed to `usageTrendsMeasurements` in 13.10 and the old field name has been marked as deprecated. To fix the existing GraphQL queries, replace `instanceStatisticsMeasurements` with `usageTrendsMeasurements`.
+
+**Planned removal milestone: 15.0 (2022-05-22)**
+
 ### REST and GraphQL API Runner usage of `active` replaced by `paused`
 
 WARNING:

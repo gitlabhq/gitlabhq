@@ -35,7 +35,7 @@ describe('packages_list_app', () => {
   const findListComponent = () => wrapper.find(PackageList);
   const findInfrastructureSearch = () => wrapper.find(InfrastructureSearch);
 
-  const createStore = (filter = []) => {
+  const createStore = ({ filter = [], packageCount = 0 } = {}) => {
     store = new Vuex.Store({
       state: {
         isLoading: false,
@@ -46,6 +46,9 @@ describe('packages_list_app', () => {
           packageHelpUrl: 'foo',
         },
         filter,
+        pagination: {
+          total: packageCount,
+        },
       },
     });
     store.dispatch = jest.fn();
@@ -68,6 +71,7 @@ describe('packages_list_app', () => {
   beforeEach(() => {
     createStore();
     jest.spyOn(packageUtils, 'getQueryParams').mockReturnValue({});
+    mountComponent();
   });
 
   afterEach(() => {
@@ -75,30 +79,26 @@ describe('packages_list_app', () => {
   });
 
   it('renders', () => {
+    createStore({ packageCount: 1 });
     mountComponent();
+
     expect(wrapper.element).toMatchSnapshot();
   });
 
-  it('call requestPackagesList on page:changed', () => {
-    mountComponent();
-    store.dispatch.mockClear();
-
+  it('calls requestPackagesList on page:changed', () => {
     const list = findListComponent();
     list.vm.$emit('page:changed', 1);
     expect(store.dispatch).toHaveBeenCalledWith('requestPackagesList', { page: 1 });
   });
 
-  it('call requestDeletePackage on package:delete', () => {
-    mountComponent();
-
+  it('calls requestDeletePackage on package:delete', () => {
     const list = findListComponent();
     list.vm.$emit('package:delete', 'foo');
+
     expect(store.dispatch).toHaveBeenCalledWith('requestDeletePackage', 'foo');
   });
 
-  it('does call requestPackagesList only one time on render', () => {
-    mountComponent();
-
+  it('calls requestPackagesList only once on render', () => {
     expect(store.dispatch).toHaveBeenCalledTimes(3);
     expect(store.dispatch).toHaveBeenNthCalledWith(1, 'setSorting', expect.any(Object));
     expect(store.dispatch).toHaveBeenNthCalledWith(2, 'setFilter', expect.any(Array));
@@ -113,9 +113,12 @@ describe('packages_list_app', () => {
       orderBy: 'created',
     };
 
-    it('calls setSorting with the query string based sorting', () => {
+    beforeEach(() => {
+      createStore();
       jest.spyOn(packageUtils, 'getQueryParams').mockReturnValue(defaultQueryParamsMock);
+    });
 
+    it('calls setSorting with the query string based sorting', () => {
       mountComponent();
 
       expect(store.dispatch).toHaveBeenNthCalledWith(1, 'setSorting', {
@@ -125,8 +128,6 @@ describe('packages_list_app', () => {
     });
 
     it('calls setFilter with the query string based filters', () => {
-      jest.spyOn(packageUtils, 'getQueryParams').mockReturnValue(defaultQueryParamsMock);
-
       mountComponent();
 
       expect(store.dispatch).toHaveBeenNthCalledWith(2, 'setFilter', [
@@ -150,8 +151,6 @@ describe('packages_list_app', () => {
 
   describe('empty state', () => {
     it('generate the correct empty list link', () => {
-      mountComponent();
-
       const link = findListComponent().find(GlLink);
 
       expect(link.attributes('href')).toBe(emptyListHelpUrl);
@@ -159,8 +158,6 @@ describe('packages_list_app', () => {
     });
 
     it('includes the right content on the default tab', () => {
-      mountComponent();
-
       const heading = findEmptyState().find('h1');
 
       expect(heading.text()).toBe('There are no packages yet');
@@ -169,7 +166,7 @@ describe('packages_list_app', () => {
 
   describe('filter without results', () => {
     beforeEach(() => {
-      createStore([{ type: 'something' }]);
+      createStore({ filter: [{ type: 'something' }] });
       mountComponent();
     });
 
@@ -181,20 +178,30 @@ describe('packages_list_app', () => {
     });
   });
 
-  describe('Search', () => {
-    it('exists', () => {
-      mountComponent();
-
-      expect(findInfrastructureSearch().exists()).toBe(true);
+  describe('search', () => {
+    describe('with no packages', () => {
+      it('does not exist', () => {
+        expect(findInfrastructureSearch().exists()).toBe(false);
+      });
     });
 
-    it('on update fetches data from the store', () => {
-      mountComponent();
-      store.dispatch.mockClear();
+    describe('with packages', () => {
+      beforeEach(() => {
+        createStore({ packageCount: 1 });
+        mountComponent();
+      });
 
-      findInfrastructureSearch().vm.$emit('update');
+      it('exists', () => {
+        expect(findInfrastructureSearch().exists()).toBe(true);
+      });
 
-      expect(store.dispatch).toHaveBeenCalledWith('requestPackagesList');
+      it('on update fetches data from the store', () => {
+        store.dispatch.mockClear();
+
+        findInfrastructureSearch().vm.$emit('update');
+
+        expect(store.dispatch).toHaveBeenCalledWith('requestPackagesList');
+      });
     });
   });
 

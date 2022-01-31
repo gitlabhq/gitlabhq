@@ -45,6 +45,39 @@ RETURN NULL;
 END
 $$;
 
+CREATE FUNCTION insert_or_update_vulnerability_reads() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+DECLARE
+  severity smallint;
+  state smallint;
+  report_type smallint;
+  resolved_on_default_branch boolean;
+BEGIN
+  IF (NEW.vulnerability_id IS NULL AND (TG_OP = 'INSERT' OR TG_OP = 'UPDATE')) THEN
+    RETURN NULL;
+  END IF;
+
+  IF (TG_OP = 'UPDATE' AND OLD.vulnerability_id IS NOT NULL AND NEW.vulnerability_id IS NOT NULL) THEN
+    RETURN NULL;
+  END IF;
+
+  SELECT
+    vulnerabilities.severity, vulnerabilities.state, vulnerabilities.report_type, vulnerabilities.resolved_on_default_branch
+  INTO
+    severity, state, report_type, resolved_on_default_branch
+  FROM
+     vulnerabilities
+  WHERE
+    vulnerabilities.id = NEW.vulnerability_id;
+
+  INSERT INTO vulnerability_reads (vulnerability_id, project_id, scanner_id, report_type, severity, state, resolved_on_default_branch, uuid, location_image, cluster_agent_id)
+    VALUES (NEW.vulnerability_id, NEW.project_id, NEW.scanner_id, report_type, severity, state, resolved_on_default_branch, NEW.uuid::uuid, NEW.location->>'image', NEW.location->'kubernetes_resource'->>'agent_id')
+    ON CONFLICT(vulnerability_id) DO NOTHING;
+  RETURN NULL;
+END
+$$;
+
 CREATE FUNCTION insert_projects_sync_event() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -102,6 +135,83 @@ CREATE FUNCTION set_has_external_wiki() RETURNS trigger
 BEGIN
 UPDATE projects SET has_external_wiki = COALESCE(NEW.active, FALSE)
 WHERE projects.id = COALESCE(NEW.project_id, OLD.project_id);
+RETURN NULL;
+
+END
+$$;
+
+CREATE FUNCTION set_has_issues_on_vulnerability_reads() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+UPDATE
+  vulnerability_reads
+SET
+  has_issues = true
+WHERE
+  vulnerability_id = NEW.vulnerability_id AND has_issues IS FALSE;
+RETURN NULL;
+
+END
+$$;
+
+CREATE FUNCTION unset_has_issues_on_vulnerability_reads() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+DECLARE
+  has_issue_links integer;
+BEGIN
+  PERFORM 1
+  FROM
+    vulnerability_reads
+  WHERE
+    vulnerability_id = OLD.vulnerability_id
+  FOR UPDATE;
+
+  SELECT 1 INTO has_issue_links FROM vulnerability_issue_links WHERE vulnerability_id = OLD.vulnerability_id LIMIT 1;
+
+  IF (has_issue_links = 1) THEN
+    RETURN NULL;
+  END IF;
+
+  UPDATE
+    vulnerability_reads
+  SET
+    has_issues = false
+  WHERE
+    vulnerability_id = OLD.vulnerability_id;
+
+  RETURN NULL;
+END
+$$;
+
+CREATE FUNCTION update_location_from_vulnerability_occurrences() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+UPDATE
+  vulnerability_reads
+SET
+  location_image = NEW.location->>'image',
+  cluster_agent_id = NEW.location->'kubernetes_resource'->>'agent_id'
+WHERE
+  vulnerability_id = NEW.vulnerability_id;
+RETURN NULL;
+
+END
+$$;
+
+CREATE FUNCTION update_vulnerability_reads_from_vulnerability() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+UPDATE
+  vulnerability_reads
+SET
+  severity = NEW.severity,
+  state = NEW.state,
+  resolved_on_default_branch = NEW.resolved_on_default_branch
+WHERE vulnerability_id = NEW.id;
 RETURN NULL;
 
 END
@@ -29163,6 +29273,8 @@ CREATE TRIGGER trigger_has_external_wiki_on_type_new_updated AFTER UPDATE OF typ
 
 CREATE TRIGGER trigger_has_external_wiki_on_update AFTER UPDATE ON integrations FOR EACH ROW WHEN (((new.type_new = 'Integrations::ExternalWiki'::text) AND (old.active <> new.active) AND (new.project_id IS NOT NULL))) EXECUTE FUNCTION set_has_external_wiki();
 
+CREATE TRIGGER trigger_insert_or_update_vulnerability_reads_from_occurrences AFTER INSERT OR UPDATE ON vulnerability_occurrences FOR EACH ROW EXECUTE FUNCTION insert_or_update_vulnerability_reads();
+
 CREATE TRIGGER trigger_namespaces_parent_id_on_insert AFTER INSERT ON namespaces FOR EACH ROW EXECUTE FUNCTION insert_namespaces_sync_event();
 
 CREATE TRIGGER trigger_namespaces_parent_id_on_update AFTER UPDATE ON namespaces FOR EACH ROW WHEN ((old.parent_id IS DISTINCT FROM new.parent_id)) EXECUTE FUNCTION insert_namespaces_sync_event();
@@ -29172,6 +29284,14 @@ CREATE TRIGGER trigger_projects_parent_id_on_insert AFTER INSERT ON projects FOR
 CREATE TRIGGER trigger_projects_parent_id_on_update AFTER UPDATE ON projects FOR EACH ROW WHEN ((old.namespace_id IS DISTINCT FROM new.namespace_id)) EXECUTE FUNCTION insert_projects_sync_event();
 
 CREATE TRIGGER trigger_type_new_on_insert AFTER INSERT ON integrations FOR EACH ROW EXECUTE FUNCTION integrations_set_type_new();
+
+CREATE TRIGGER trigger_update_has_issues_on_vulnerability_issue_links_delete AFTER DELETE ON vulnerability_issue_links FOR EACH ROW EXECUTE FUNCTION unset_has_issues_on_vulnerability_reads();
+
+CREATE TRIGGER trigger_update_has_issues_on_vulnerability_issue_links_update AFTER INSERT ON vulnerability_issue_links FOR EACH ROW EXECUTE FUNCTION set_has_issues_on_vulnerability_reads();
+
+CREATE TRIGGER trigger_update_location_on_vulnerability_occurrences_update AFTER UPDATE ON vulnerability_occurrences FOR EACH ROW WHEN (((new.report_type = ANY (ARRAY[2, 7])) AND (((old.location ->> 'image'::text) IS DISTINCT FROM (new.location ->> 'image'::text)) OR (((old.location -> 'kubernetes_resource'::text) ->> 'agent_id'::text) IS DISTINCT FROM ((new.location -> 'kubernetes_resource'::text) ->> 'agent_id'::text))))) EXECUTE FUNCTION update_location_from_vulnerability_occurrences();
+
+CREATE TRIGGER trigger_update_vulnerability_reads_on_vulnerability_update AFTER UPDATE ON vulnerabilities FOR EACH ROW WHEN (((old.severity IS DISTINCT FROM new.severity) OR (old.state IS DISTINCT FROM new.state) OR (old.resolved_on_default_branch IS DISTINCT FROM new.resolved_on_default_branch))) EXECUTE FUNCTION update_vulnerability_reads_from_vulnerability();
 
 CREATE TRIGGER users_loose_fk_trigger AFTER DELETE ON users REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
 
