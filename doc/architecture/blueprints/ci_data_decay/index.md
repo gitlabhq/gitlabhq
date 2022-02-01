@@ -74,13 +74,13 @@ we might want to follow these three tracks described below.
 
 <!-- markdownlint-disable MD029 -->
 
-1. Partition builds queuing tables
-2. Archive CI/CD data into partitioned database schema
-3. Migrate archived builds metadata out of primary database
+1. Partition CI/CD builds queuing database tables
+2. Partition CI/CD pipelines database tables
+3. Reduce the rate of builds metadata table growth
 
 <!-- markdownlint-enable MD029 -->
 
-### Migrate archived builds metadata out of primary database
+### Reduce the rate of builds metadata table growth
 
 Once a build (or a pipeline) gets archived, it is no longer possible to resume
 pipeline processing in such pipeline. It means that all the metadata, we store
@@ -98,15 +98,16 @@ be able to use de-duplication of metadata entries and other normalization
 strategies to consume less storage while retaining ability to query this
 dataset. Technical evaluation will be required to find the best solution here.
 
-Epic: [Migrate archived builds metadata out of primary database](https://gitlab.com/groups/gitlab-org/-/epics/7216).
+Epic: [Reduce the rate of builds metadata table growth](https://gitlab.com/groups/gitlab-org/-/epics/7434).
 
-### Archive CI/CD data into partitioned database schema
+### Partition CI/CD pipelines database tables
 
-After we move CI/CD metadata to a different store, the problem of having
-billions of rows describing pipelines, builds and artifacts, remains. We still
-need to keep reference to the metadata we store in object storage and we still
-do need to be able to retrieve this information reliably in bulk (or search
-through it).
+After we move CI/CD metadata to a different store, or reduce the rate of
+metadata growth in a different way, the problem of having billions of rows
+describing pipelines, builds and artifacts, remains. We still need to keep
+reference to the metadata we might store in object storage and we still do need
+to be able to retrieve this information reliably in bulk (or search through
+it).
 
 It means that by moving data to object storage we might not be able to reduce
 the number of rows in CI/CD tables. Moving data to object storage should help
@@ -132,9 +133,9 @@ partitioning on the application level.
 Partitioning rarely accessed data should also follow the policy defined for
 builds archival, to make it consistent and reliable.
 
-Epic: [Archive CI/CD data into partitioned database schema](https://gitlab.com/groups/gitlab-org/-/epics/5417).
+Epic: [Partition CI/CD pipelines database tables](https://gitlab.com/groups/gitlab-org/-/epics/5417).
 
-### Partition builds queuing tables
+### Partition CI/CD builds queuing database tables
 
 While working on the [CI/CD Scale](../ci_scale/index.md) blueprint, we have
 introduced a [new architecture for queuing CI/CD builds](https://gitlab.com/groups/gitlab-org/-/epics/5909#note_680407908)
@@ -156,7 +157,7 @@ for builds archival. Instead we should leverage a long-standing policy saying
 that builds created more 24 hours ago need to be removed from the queue. This
 business rule is present in the product since the inception of GitLab CI.
 
-Epic: [Partition builds queuing tables](https://gitlab.com/gitlab-org/gitlab/-/issues/347027).
+Epic: [Partition CI/CD builds queuing database tables](https://gitlab.com/groups/gitlab-org/-/epics/7438).
 
 ## Principles
 
@@ -215,9 +216,9 @@ pipelines data, although a user provided partition identifier may be required.
 
 All three tracks can be worked on in parallel:
 
-1. [Migrate archived build metadata to object storage](https://gitlab.com/groups/gitlab-org/-/epics/7216).
-1. [Partition CI/CD data that have been archived](https://gitlab.com/groups/gitlab-org/-/epics/5417).
-1. [Partition CI/CD queuing tables using list partitioning](https://gitlab.com/gitlab-org/gitlab/-/issues/347027)
+1. [Reduce the rate of builds metadata table growth](https://gitlab.com/groups/gitlab-org/-/epics/7434).
+1. [Partition CI/CD pipelines database tables](https://gitlab.com/groups/gitlab-org/-/epics/5417).
+1. [Partition CI/CD queuing tables using list partitioning](https://gitlab.com/groups/gitlab-org/-/epics/7438)
 
 ## Status
 

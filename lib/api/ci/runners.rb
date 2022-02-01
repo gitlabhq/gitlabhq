@@ -232,12 +232,7 @@ module API
           use :pagination
         end
         get ':id/runners' do
-          runners = if ::Feature.enabled?(:ci_find_runners_by_ci_mirrors, user_group, default_enabled: :yaml)
-                      ::Ci::Runner.belonging_to_group_and_ancestors(user_group.id)
-                    else
-                      ::Ci::Runner.legacy_belonging_to_group(user_group.id, include_ancestors: true)
-                    end
-
+          runners = ::Ci::Runner.group_or_instance_wide(user_group)
           runners = apply_filter(runners, params)
 
           present paginate(runners), with: Entities::Ci::Runner

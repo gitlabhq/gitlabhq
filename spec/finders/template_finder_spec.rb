@@ -153,7 +153,12 @@ RSpec.describe TemplateFinder do
 
     let(:params) { {} }
 
-    subject(:result) { described_class.new(type, project, params).template_names.values.flatten.map { |el| OpenStruct.new(el) } }
+    let(:template_name_struct) { Struct.new(:name, :id, :key, :project_id, keyword_init: true) }
+
+    subject(:result) do
+      described_class.new(type, project, params).template_names.values.flatten
+        .map { |el| template_name_struct.new(el) }
+    end
 
     where(:type, :vendored_name) do
       :dockerfiles    | 'Binary'

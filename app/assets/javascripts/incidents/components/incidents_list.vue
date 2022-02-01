@@ -12,7 +12,7 @@ import {
 } from '@gitlab/ui';
 import { isValidSlaDueAt } from 'ee_else_ce/vue_shared/components/incidents/utils';
 import { visitUrl, mergeUrlParams, joinPaths } from '~/lib/utils/url_utility';
-import { s__ } from '~/locale';
+import { s__, n__ } from '~/locale';
 import { INCIDENT_SEVERITY } from '~/sidebar/components/severity/constants';
 import SeverityToken from '~/sidebar/components/severity/severity.vue';
 import Tracking from '~/tracking';
@@ -37,6 +37,8 @@ import {
 } from '../constants';
 import getIncidentsCountByStatus from '../graphql/queries/get_count_by_status.query.graphql';
 import getIncidents from '../graphql/queries/get_incidents.query.graphql';
+
+const MAX_VISIBLE_ASSIGNEES = 4;
 
 export default {
   trackIncidentCreateNewOptions,
@@ -94,6 +96,7 @@ export default {
       thAttr: TH_PUBLISHED_TEST_ID,
     },
   ],
+  MAX_VISIBLE_ASSIGNEES,
   components: {
     GlLoadingIcon,
     GlTable,
@@ -295,6 +298,13 @@ export default {
     errorAlertDismissed() {
       this.isErrorAlertDismissed = true;
     },
+    assigneesBadgeSrOnlyText(item) {
+      return n__(
+        '%d additional assignee',
+        '%d additional assignees',
+        item.assignees.nodes.length - MAX_VISIBLE_ASSIGNEES,
+      );
+    },
     isValidSlaDueAt,
   },
 };
@@ -391,10 +401,11 @@ export default {
                 <gl-avatars-inline
                   :avatars="item.assignees.nodes"
                   :collapsed="true"
-                  :max-visible="4"
+                  :max-visible="$options.MAX_VISIBLE_ASSIGNEES"
                   :avatar-size="24"
                   badge-tooltip-prop="name"
                   :badge-tooltip-max-chars="100"
+                  :badge-sr-only-text="assigneesBadgeSrOnlyText(item)"
                 >
                   <template #avatar="{ avatar }">
                     <gl-avatar-link

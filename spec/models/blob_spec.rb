@@ -215,6 +215,20 @@ RSpec.describe Blob do
     end
   end
 
+  describe '#symlink?' do
+    it 'is true for symlinks' do
+      symlink_blob = fake_blob(path: 'file', mode: '120000')
+
+      expect(symlink_blob.symlink?).to eq true
+    end
+
+    it 'is false for non-symlinks' do
+      non_symlink_blob = fake_blob(path: 'file', mode: '100755')
+
+      expect(non_symlink_blob.symlink?).to eq false
+    end
+  end
+
   describe '#extension' do
     it 'returns the extension' do
       blob = fake_blob(path: 'file.md')

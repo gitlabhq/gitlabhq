@@ -162,6 +162,23 @@ module Ci
       )
     end
 
+    scope :group_or_instance_wide, -> (group) do
+      group_and_ancestor_runners =
+        if ::Feature.enabled?(:ci_find_runners_by_ci_mirrors, group, default_enabled: :yaml)
+          belonging_to_group_and_ancestors(group.id)
+        else
+          legacy_belonging_to_group(group.id, include_ancestors: true)
+        end
+
+      from_union(
+        [
+          group_and_ancestor_runners,
+          instance_type
+        ],
+        remove_duplicates: false
+      )
+    end
+
     scope :assignable_for, ->(project) do
       # FIXME: That `to_sql` is needed to workaround a weird Rails bug.
       #        Without that, placeholders would miss one and couldn't match.

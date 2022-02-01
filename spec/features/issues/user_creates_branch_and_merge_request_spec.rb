@@ -71,16 +71,10 @@ RSpec.describe 'User creates branch and merge request on issue page', :js do
           perform_enqueued_jobs do
             select_dropdown_option('create-mr')
 
-            expect(page).to have_content('Draft: Resolve "Cherry-Coloured Funk"')
-            expect(current_path).to eq(project_merge_request_path(project, MergeRequest.first))
-
-            wait_for_requests
+            expect(page).to have_content('New merge request')
+            expect(page).to have_content("From #{issue.to_branch_name} into #{project.default_branch}")
+            expect(page).to have_current_path(project_new_merge_request_path(project, merge_request: { source_branch: issue.to_branch_name, target_branch: project.default_branch }))
           end
-
-          visit project_issue_path(project, issue)
-
-          expect(page).to have_content("created merge request !1 to address this issue")
-          expect(page).to have_content('mentioned in merge request !1')
         end
 
         it 'creates a branch' do
@@ -100,17 +94,10 @@ RSpec.describe 'User creates branch and merge request on issue page', :js do
           perform_enqueued_jobs do
             select_dropdown_option('create-mr', branch_name)
 
-            expect(page).to have_content('Draft: Resolve "Cherry-Coloured Funk"')
-            expect(page).to have_content('Request to merge custom-branch-name into')
-            expect(current_path).to eq(project_merge_request_path(project, MergeRequest.first))
-
-            wait_for_requests
+            expect(page).to have_content('New merge request')
+            expect(page).to have_content("From #{branch_name} into #{project.default_branch}")
+            expect(page).to have_current_path(project_new_merge_request_path(project, merge_request: { source_branch: branch_name, target_branch: project.default_branch }))
           end
-
-          visit project_issue_path(project, issue)
-
-          expect(page).to have_content("created merge request !1 to address this issue")
-          expect(page).to have_content('mentioned in merge request !1')
         end
 
         it 'creates a branch' do

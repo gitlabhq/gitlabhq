@@ -69,11 +69,11 @@ export default class CreateMergeRequestDropdown {
     this.regexps = {
       branch: {
         createBranchPath: new RegExp('(branch_name=)(.+?)(?=&issue)'),
-        createMrPath: new RegExp('(branch_name=)(.+?)(?=&ref)'),
+        createMrPath: new RegExp('(source_branch%5D=)(.+?)(?=&)'),
       },
       ref: {
         createBranchPath: new RegExp('(ref=)(.+?)$'),
-        createMrPath: new RegExp('(ref=)(.+?)$'),
+        createMrPath: new RegExp('(target_branch%5D=)(.+?)$'),
       },
     };
 
@@ -167,23 +167,18 @@ export default class CreateMergeRequestDropdown {
   }
 
   createMergeRequest() {
-    this.isCreatingMergeRequest = true;
+    return new Promise(() => {
+      this.isCreatingMergeRequest = true;
 
-    return axios
-      .post(this.createMrPath, {
-        target_project_id: canCreateConfidentialMergeRequest()
-          ? confidentialMergeRequestState.selectedProject.id
-          : null,
-      })
-      .then(({ data }) => {
-        this.mergeRequestCreated = true;
-        window.location.href = data.url;
-      })
-      .catch(() =>
-        createFlash({
-          message: __('Failed to create merge request. Please try again.'),
-        }),
-      );
+      return this.createBranch().then(() => {
+        window.location.href = canCreateConfidentialMergeRequest()
+          ? this.createMrPath.replace(
+              this.projectPath,
+              confidentialMergeRequestState.selectedProject.pathWithNamespace,
+            )
+          : this.createMrPath;
+      });
+    });
   }
 
   disable() {
@@ -562,5 +557,7 @@ export default class CreateMergeRequestDropdown {
       this.regexps[target].createMrPath,
       pathReplacement,
     );
+
+    this.wrapperEl.dataset.createMrPath = this.createMrPath;
   }
 }

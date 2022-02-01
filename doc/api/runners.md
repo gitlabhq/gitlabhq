@@ -448,8 +448,7 @@ Example response:
 
 ## List project's runners
 
-List all runners (specific and shared) available in the project. Shared runners
-are listed if at least one shared runner is defined.
+List all runners available in the project, including from ancestor groups and any shared runners.
 
 ```plaintext
 GET /projects/:id/runners
@@ -567,8 +566,7 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://git
 
 ## List group's runners
 
-List all runners (specific and shared) available in the group as well it's ancestor groups.
-Shared runners are listed if at least one shared runner is defined.
+List all runners available in the group as well as its ancestor groups, including any shared runners.
 
 ```plaintext
 GET /groups/:id/runners

@@ -65,7 +65,7 @@ RSpec.describe Branches::CreateService do
 
       allow(project.repository).to receive(:add_branch).and_raise(pre_receive_error)
 
-      expect(Gitlab::ErrorTracking).to receive(:track_exception).with(
+      expect(Gitlab::ErrorTracking).to receive(:log_exception).with(
         pre_receive_error,
         pre_receive_message: raw_message,
         branch_name: 'new-feature',

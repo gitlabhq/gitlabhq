@@ -116,6 +116,26 @@ msgid_plural "%d URLs scanned"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%d additional approver"
+msgid_plural "%d additional approvers"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "%d additional assignee"
+msgid_plural "%d additional assignees"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "%d additional commenter"
+msgid_plural "%d additional commenters"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "%d additional committer"
+msgid_plural "%d additional committers"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%d approver"
 msgid_plural "%d approvers"
 msgstr[0] ""
@@ -14758,9 +14778,6 @@ msgstr ""
 msgid "Failed to create import label for jira import."
 msgstr ""
 
-msgid "Failed to create merge request. Please try again."
-msgstr ""
-
 msgid "Failed to create new access token: %{token_response_message}"
 msgstr ""
 
@@ -15780,6 +15797,9 @@ msgstr ""
 msgid "Geo|Adjust your filters/search criteria above. If you believe this may be an error, please refer to the %{linkStart}Geo Troubleshooting%{linkEnd} documentation for more information."
 msgstr ""
 
+msgid "Geo|All"
+msgstr ""
+
 msgid "Geo|All %{replicable_name}"
 msgstr ""
 
@@ -16630,6 +16650,9 @@ msgid "Go to page %{page}"
 msgstr ""
 
 msgid "Go to parent"
+msgstr ""
+
+msgid "Go to parent directory"
 msgstr ""
 
 msgid "Go to previous page"
@@ -19317,9 +19340,6 @@ msgstr ""
 msgid "Integrations|No linked namespaces"
 msgstr ""
 
-msgid "Integrations|Note: this integration only works with accounts on GitLab.com (SaaS)."
-msgstr ""
-
 msgid "Integrations|Projects using custom settings"
 msgstr ""
 
@@ -19354,6 +19374,9 @@ msgid "Integrations|Send notifications about project events to Unify Circuit."
 msgstr ""
 
 msgid "Integrations|Send notifications about project events to a Unify Circuit conversation. %{docs_link}"
+msgstr ""
+
+msgid "Integrations|Sign in to GitLab"
 msgstr ""
 
 msgid "Integrations|Sign in to add namespaces"
@@ -23596,9 +23619,6 @@ msgstr ""
 msgid "NetworkPolicies|%{strongOpen}any%{strongClose} port"
 msgstr ""
 
-msgid "NetworkPolicies|.yaml"
-msgstr ""
-
 msgid "NetworkPolicies|.yaml mode"
 msgstr ""
 
@@ -23675,9 +23695,6 @@ msgid "NetworkPolicies|Policy %{policyName} was successfully changed"
 msgstr ""
 
 msgid "NetworkPolicies|Policy definition"
-msgstr ""
-
-msgid "NetworkPolicies|Rule"
 msgstr ""
 
 msgid "NetworkPolicies|Rule mode"
@@ -31924,6 +31941,9 @@ msgstr ""
 msgid "SecurityOrchestration|Status"
 msgstr ""
 
+msgid "SecurityOrchestration|Summary"
+msgstr ""
+
 msgid "SecurityOrchestration|The %{scanners} %{severities} in an open merge request targeting %{branches}."
 msgstr ""
 
@@ -34942,7 +34962,10 @@ msgstr ""
 msgid "SuperSonics|current subscription"
 msgstr ""
 
-msgid "SuperSonics|history subscriptions"
+msgid "SuperSonics|future subscriptions"
+msgstr ""
+
+msgid "SuperSonics|past subscriptions"
 msgstr ""
 
 msgid "Support"

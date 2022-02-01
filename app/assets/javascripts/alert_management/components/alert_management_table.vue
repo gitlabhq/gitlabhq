@@ -15,7 +15,7 @@ import getAlertsQuery from '~/graphql_shared/queries/get_alerts.query.graphql';
 import { fetchPolicies } from '~/lib/graphql';
 import { convertToSnakeCase } from '~/lib/utils/text_utility';
 import { joinPaths, visitUrl } from '~/lib/utils/url_utility';
-import { s__, __ } from '~/locale';
+import { s__, __, n__ } from '~/locale';
 import AlertStatus from '~/vue_shared/alert_details/components/alert_status.vue';
 import {
   tdClass,
@@ -32,8 +32,11 @@ const TH_TEST_ID = { 'data-testid': 'alert-management-severity-sort' };
 
 const TWELVE_HOURS_IN_MS = 12 * 60 * 60 * 1000;
 
+const MAX_VISIBLE_ASSIGNEES = 4;
+
 export default {
   trackAlertListViewsOptions,
+  MAX_VISIBLE_ASSIGNEES,
   i18n: {
     noAlertsMsg: s__(
       'AlertManagement|No alerts available to display. See %{linkStart}enabling alert management%{linkEnd} for more information on adding alerts to the list.',
@@ -258,6 +261,13 @@ export default {
       this.serverErrorMessage = '';
       this.isErrorAlertDismissed = true;
     },
+    assigneesBadgeSrOnlyText(item) {
+      return n__(
+        '%d additional assignee',
+        '%d additional assignees',
+        item.assignees.nodes.length - MAX_VISIBLE_ASSIGNEES,
+      );
+    },
   },
 };
 </script>
@@ -365,10 +375,11 @@ export default {
                 <gl-avatars-inline
                   :avatars="item.assignees.nodes"
                   :collapsed="true"
-                  :max-visible="4"
+                  :max-visible="$options.MAX_VISIBLE_ASSIGNEES"
                   :avatar-size="24"
                   badge-tooltip-prop="name"
                   :badge-tooltip-max-chars="100"
+                  :badge-sr-only-text="assigneesBadgeSrOnlyText(item)"
                 >
                   <template #avatar="{ avatar }">
                     <gl-avatar-link

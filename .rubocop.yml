@@ -97,14 +97,8 @@ RSpec/FilePath:
 
 # Configuration parameters: AllowSubject.
 RSpec/MultipleMemoizedHelpers:
-  Max: 28
+  Max: 25
   AllowSubject: true
-  Exclude:
-    - 'spec/migrations/**/*.rb'
-    - 'spec/lib/gitlab/background_migration/populate_project_snippet_statistics_spec.rb'
-    - 'spec/lib/gitlab/background_migration/populate_finding_uuid_for_vulnerability_feedback_spec.rb'
-    - 'ee/spec/lib/ee/gitlab/background_migration/populate_uuids_for_security_findings_spec.rb'
-    - 'ee/spec/lib/gitlab/background_migration/user_mentions/create_resource_user_mention_spec.rb'
 
 Naming/FileName:
   ExpectMatchingDefinition: true

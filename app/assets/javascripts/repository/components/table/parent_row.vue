@@ -1,9 +1,12 @@
 <script>
-import { GlLoadingIcon } from '@gitlab/ui';
+import { GlLoadingIcon, GlTooltipDirective } from '@gitlab/ui';
 
 export default {
   components: {
     GlLoadingIcon,
+  },
+  directives: {
+    GlTooltip: GlTooltipDirective,
   },
   props: {
     commitRef: {
@@ -41,7 +44,13 @@ export default {
 
 <template>
   <tr class="tree-item">
-    <td colspan="3" class="tree-item-file-name" @click.self="clickRow">
+    <td
+      v-gl-tooltip.left.viewport
+      :title="__('Go to parent directory')"
+      colspan="3"
+      class="tree-item-file-name"
+      @click.self="clickRow"
+    >
       <gl-loading-icon
         v-if="parentPath === loadingPath"
         size="sm"

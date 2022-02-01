@@ -316,6 +316,11 @@ Instead of:
 
 Use **expand** instead of **open** when you are talking about expanding or collapsing a section in the UI.
 
+## FAQ
+
+We want users to find information quickly, and they rarely search for the term **FAQ**.
+Information in FAQs belongs with other similar information, under an easily searchable topic title.
+
 ## field
 
 Use **box** instead of **field** or **text box**.
@@ -370,6 +375,11 @@ Use title case for **GitLab Runner**. This is the product you install. See also 
 ## GitLab self-managed
 
 Use **GitLab self-managed** to refer to the product license for GitLab instances managed by customers themselves.
+
+## guide
+
+We want to speak directly to users. On `docs.gitlab.com`, do not use **guide** as part of a page title.
+For example, **Snowplow Guide**. Instead, speak about the feature itself, and how to use it. For example, **Use Snowplow to do xyz**.
 
 ## Guest
 

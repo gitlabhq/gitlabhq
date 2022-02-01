@@ -11,36 +11,9 @@
       metrics: "${METRICS_FILE}"
     expire_in: 31d
 
-# Disabled since it causes intermittent SIGSEGV in CI:
-# https://gitlab.com/gitlab-org/gitlab/-/issues/350296
-.memory-static:
-  extends: .only-code-memory-job-base
-  stage: test
-  needs: ["setup-test-env"]
-  variables:
-    SETUP_DB: "false"
-    MEMORY_BUNDLE_MEM_FILE: "tmp/memory_bundle_mem.txt"
-    MEMORY_BUNDLE_OBJECTS_FILE: "tmp/memory_bundle_objects.txt"
-  script:
-    # Uses two different reports from the 'derailed_benchmars' gem.
-
-    # Loads each of gems in the Gemfile and checks how much memory they consume when they are required.
-    # 'derailed_benchmarks' internally uses 'get_process_mem'
-    - bundle exec derailed bundle:mem > "${MEMORY_BUNDLE_MEM_FILE}"
-    - scripts/generate-gems-size-metrics-static "${MEMORY_BUNDLE_MEM_FILE}" >> "${METRICS_FILE}"
-
-    # Outputs detailed information about objects created while gems are loaded.
-    # 'derailed_benchmarks' internally uses 'memory_profiler'
-    - bundle exec derailed bundle:objects > "${MEMORY_BUNDLE_OBJECTS_FILE}"
-    - scripts/generate-gems-memory-metrics-static "${MEMORY_BUNDLE_OBJECTS_FILE}" >> "${METRICS_FILE}"
-  artifacts:
-    paths:
-      - "${METRICS_FILE}"
-      - "${MEMORY_BUNDLE_MEM_FILE}"
-      - "${MEMORY_BUNDLE_OBJECTS_FILE}"
 
 # Show memory usage caused by invoking require per gem.
-# Unlike `memory-static`, it hits the app with one request to ensure that any last minute require-s have been called.
+# Hits the app with one request to ensure that any last minute require-s have been called.
 # The application is booted in `production` environment.
 # All tests are run without a webserver (directly using Rack::Mock by default).
 memory-on-boot:

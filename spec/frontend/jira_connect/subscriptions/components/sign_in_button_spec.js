@@ -11,11 +11,12 @@ jest.mock('~/jira_connect/subscriptions/utils');
 describe('SignInButton', () => {
   let wrapper;
 
-  const createComponent = () => {
+  const createComponent = ({ slots } = {}) => {
     wrapper = shallowMount(SignInButton, {
       propsData: {
         usersPath: MOCK_USERS_PATH,
       },
+      slots,
     });
   };
 
@@ -29,6 +30,7 @@ describe('SignInButton', () => {
     createComponent();
 
     expect(findButton().exists()).toBe(true);
+    expect(findButton().text()).toBe(SignInButton.i18n.defaultButtonText);
   });
 
   describe.each`
@@ -43,6 +45,14 @@ describe('SignInButton', () => {
       await waitForPromises();
 
       expect(findButton().attributes('href')).toBe(expectedHref);
+    });
+  });
+
+  describe('with slot', () => {
+    const mockSlotContent = 'custom button content!';
+    it('renders slot content in button', () => {
+      createComponent({ slots: { default: mockSlotContent } });
+      expect(wrapper.text()).toMatchInterpolatedText(mockSlotContent);
     });
   });
 });

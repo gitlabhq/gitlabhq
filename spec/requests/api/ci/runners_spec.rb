@@ -1026,7 +1026,8 @@ RSpec.describe API::Ci::Runners do
         get api("/groups/#{group.id}/runners", user)
 
         expect(json_response).to match_array([
-          a_hash_including('description' => 'Group runner A', 'active' => true, 'paused' => false)
+          a_hash_including('description' => 'Group runner A', 'active' => true, 'paused' => false),
+          a_hash_including('description' => 'Shared runner', 'active' => true, 'paused' => false)
         ])
       end
 
@@ -1036,6 +1037,14 @@ RSpec.describe API::Ci::Runners do
 
           expect(json_response).to match_array([
             a_hash_including('description' => 'Group runner A')
+          ])
+        end
+
+        it 'returns instance runners when instance_type is specified' do
+          get api("/groups/#{group.id}/runners?type=instance_type", user)
+
+          expect(json_response).to match_array([
+            a_hash_including('description' => 'Shared runner')
           ])
         end
 
