@@ -42,15 +42,15 @@ module Auth
       access_token(%w(*), names)
     end
 
-    def self.import_access_token(*names)
-      access_token(%w(import), names)
+    def self.import_access_token
+      access_token(%w(*), ['import'], 'registry')
     end
 
     def self.pull_access_token(*names)
       access_token(['pull'], names)
     end
 
-    def self.access_token(actions, names)
+    def self.access_token(actions, names, type = 'repository')
       names = names.flatten
       registry = Gitlab.config.registry
       token = JSONWebToken::RSAToken.new(registry.key)
@@ -60,10 +60,10 @@ module Auth
 
       token[:access] = names.map do |name|
         {
-          type: 'repository',
+          type: type,
           name: name,
           actions: actions,
-          migration_eligible: migration_eligible(repository_path: name)
+          migration_eligible: type == 'repository' ? migration_eligible(repository_path: name) : nil
         }.compact
       end
 

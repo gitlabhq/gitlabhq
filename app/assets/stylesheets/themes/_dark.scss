@@ -93,6 +93,7 @@ $gray-darker: #4f4f4f;
 $gray-darkest: #c4c4c4;
 
 $black: #fff;
+$black-normal: $gray-900;
 $white: #333;
 $white-light: #2b2b2b;
 $white-normal: #333;
@@ -192,6 +193,7 @@ body.gl-dark {
 
   --white: #{$white};
   --black: #{$black};
+  --black-normal: #{$black-normal};
 
   --svg-status-bg: #{$white};
 

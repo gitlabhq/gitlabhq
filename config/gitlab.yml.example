@@ -410,7 +410,7 @@ production: &base
     # storage_path: shared/ci_secure_files
     object_store:
       enabled: false
-      remote_directory: ci_secure_files # The bucket name
+      remote_directory: ci-secure-files # The bucket name
       connection:
         provider: AWS
         aws_access_key_id: AWS_ACCESS_KEY_ID
@@ -1449,7 +1449,7 @@ test:
     storage_path: tmp/tests/ci_secure_files
     object_store:
       enabled: false
-      remote_directory: ci_secure_files
+      remote_directory: ci-secure-files
       connection:
         provider: AWS # Only AWS supported at the moment
         aws_access_key_id: AWS_ACCESS_KEY_ID

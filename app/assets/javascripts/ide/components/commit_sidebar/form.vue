@@ -187,7 +187,7 @@ export default {
               class="qa-commit-button"
               category="primary"
               variant="confirm"
-              @click="commit"
+              type="submit"
             >
               {{ __('Commit') }}
             </gl-button>

@@ -15,7 +15,12 @@ module ContainerRegistry
 
     def gitlab_api_client
       strong_memoize(:gitlab_api_client) do
-        ContainerRegistry::GitlabApiClient.new(@uri, @options)
+        token = Auth::ContainerRegistryAuthenticationService.import_access_token
+
+        url = Gitlab.config.registry.api_url
+        host_port = Gitlab.config.registry.host_port
+
+        ContainerRegistry::GitlabApiClient.new(url, token: token, path: host_port)
       end
     end
 

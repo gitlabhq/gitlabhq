@@ -56,7 +56,6 @@ describe('IDE commit form', () => {
     disabled: findCommitButton().props('disabled'),
     tooltip: getBinding(findCommitButtonTooltip().element, 'gl-tooltip').value.title,
   });
-  const clickCommitButton = () => findCommitButton().vm.$emit('click');
   const findForm = () => wrapper.find('form');
   const submitForm = () => findForm().trigger('submit');
   const findCommitMessageInput = () => wrapper.find(CommitMessageField);
@@ -283,8 +282,8 @@ describe('IDE commit form', () => {
         jest.spyOn(store, 'dispatch').mockResolvedValue();
       });
 
-      it.each([clickCommitButton, submitForm])('when %p, commits changes', (fn) => {
-        fn();
+      it('when submitting form, commits changes', () => {
+        submitForm();
 
         expect(store.dispatch).toHaveBeenCalledWith('commit/commitChanges', undefined);
       });

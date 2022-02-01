@@ -31,6 +31,10 @@ RSpec.describe ContainerRegistry::Registry do
   describe '#gitlab_api_client' do
     subject { registry.gitlab_api_client }
 
-    it { is_expected.to be_instance_of(ContainerRegistry::GitlabApiClient) }
+    it 'returns a GitLabApiClient with an import token' do
+      expect(Auth::ContainerRegistryAuthenticationService).to receive(:import_access_token)
+
+      expect(subject).to be_instance_of(ContainerRegistry::GitlabApiClient)
+    end
   end
 end
