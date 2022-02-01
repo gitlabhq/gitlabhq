@@ -207,7 +207,10 @@ describe('merge conflicts actions', () => {
         ],
         [],
         () => {
-          expect(Cookies.set).toHaveBeenCalledWith('diff_view', payload);
+          expect(Cookies.set).toHaveBeenCalledWith('diff_view', payload, {
+            expires: 365,
+            secure: false,
+          });
           done();
         },
       );

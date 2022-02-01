@@ -31,6 +31,7 @@ describe('addToFrequentlyUsed', () => {
 
     expect(Cookies.set).toHaveBeenCalledWith('frequently_used_emojis', 'thumbsup', {
       expires: 365,
+      secure: false,
     });
   });
 
@@ -41,6 +42,7 @@ describe('addToFrequentlyUsed', () => {
 
     expect(Cookies.set).toHaveBeenCalledWith('frequently_used_emojis', 'thumbsdown,thumbsup', {
       expires: 365,
+      secure: false,
     });
   });
 
@@ -51,6 +53,7 @@ describe('addToFrequentlyUsed', () => {
 
     expect(Cookies.set).toHaveBeenCalledWith('frequently_used_emojis', 'thumbsup', {
       expires: 365,
+      secure: false,
     });
   });
 });

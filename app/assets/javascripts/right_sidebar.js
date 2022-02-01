@@ -1,7 +1,7 @@
 /* eslint-disable func-names, consistent-return, no-param-reassign */
 
 import $ from 'jquery';
-import Cookies from 'js-cookie';
+import { setCookie } from '~/lib/utils/common_utils';
 import { hide, fixTitle } from '~/tooltips';
 import createFlash from './flash';
 import axios from './lib/utils/axios_utils';
@@ -80,7 +80,7 @@ Sidebar.prototype.sidebarToggleClicked = function (e, triggered) {
   hide($this);
 
   if (!triggered) {
-    Cookies.set('collapsed_gutter', $('.right-sidebar').hasClass('right-sidebar-collapsed'));
+    setCookie('collapsed_gutter', $('.right-sidebar').hasClass('right-sidebar-collapsed'));
   }
 };
 

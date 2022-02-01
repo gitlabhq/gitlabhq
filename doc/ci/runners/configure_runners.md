@@ -332,10 +332,6 @@ try to preserve worktrees and try to re-use them by default.
 
 This has limitations when using the [Docker Machine executor](https://docs.gitlab.com/runner/executors/docker_machine.html).
 
-It does not work for [the `kubernetes` executor](https://docs.gitlab.com/runner/executors/kubernetes.html),
-but a [feature proposal](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/3847) exists.
-The `kubernetes` executor always clones into an temporary directory.
-
 A Git strategy of `none` also re-uses the local working copy, but skips all Git
 operations normally done by GitLab. GitLab Runner pre-clone scripts are also skipped,
 if present. This strategy could mean you need to add `fetch` and `checkout` commands

@@ -25345,6 +25345,8 @@ CREATE INDEX idx_security_scans_on_scan_type ON security_scans USING btree (scan
 
 CREATE UNIQUE INDEX idx_serverless_domain_cluster_on_clusters_applications_knative ON serverless_domain_cluster USING btree (clusters_applications_knative_id);
 
+CREATE INDEX idx_user_details_on_provisioned_by_group_id_user_id ON user_details USING btree (provisioned_by_group_id, user_id);
+
 CREATE UNIQUE INDEX idx_vuln_signatures_on_occurrences_id_and_signature_sha ON vulnerability_finding_signatures USING btree (finding_id, signature_sha);
 
 CREATE UNIQUE INDEX idx_vuln_signatures_uniqueness_signature_sha ON vulnerability_finding_signatures USING btree (finding_id, algorithm_type, signature_sha);
@@ -27986,8 +27988,6 @@ CREATE UNIQUE INDEX index_user_custom_attributes_on_user_id_and_key ON user_cust
 CREATE UNIQUE INDEX index_user_details_on_phone ON user_details USING btree (phone) WHERE (phone IS NOT NULL);
 
 COMMENT ON INDEX index_user_details_on_phone IS 'JiHu-specific index';
-
-CREATE INDEX index_user_details_on_provisioned_by_group_id ON user_details USING btree (provisioned_by_group_id);
 
 CREATE UNIQUE INDEX index_user_details_on_user_id ON user_details USING btree (user_id);
 

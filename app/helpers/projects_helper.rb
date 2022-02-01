@@ -62,23 +62,29 @@ module ProjectsHelper
       name: author.name
     }
 
-    author_html = []
+    inject_classes = ["author-link"]
 
+    if opts[:name]
+      inject_classes.concat(["js-user-link", opts[:extra_class], opts[:mobile_classes]])
+    else
+      inject_classes.append( "has-tooltip" )
+    end
+
+    inject_classes = inject_classes.compact.join(" ")
+
+    author_html = []
     # Build avatar image tag
     author_html << link_to_member_avatar(author, opts) if opts[:avatar]
-
     # Build name span tag
     author_html << author_content_tag(author, opts) if opts[:name]
-
     author_html << capture(&block) if block
-
     author_html = author_html.join.html_safe
 
     if opts[:name]
-      link_to(author_html, user_path(author), class: "author-link js-user-link #{"#{opts[:extra_class]}" if opts[:extra_class]} #{"#{opts[:mobile_classes]}" if opts[:mobile_classes]}", data: data_attrs).html_safe
+      link_to(author_html, user_path(author), class: inject_classes, data: data_attrs).html_safe
     else
       title = opts[:title].sub(":name", sanitize(author.name))
-      link_to(author_html, user_path(author), class: "author-link has-tooltip", title: title, data: { container: 'body', qa_selector: 'assignee_link' }).html_safe
+      link_to(author_html, user_path(author), class: inject_classes, title: title, data: { container: 'body', qa_selector: 'assignee_link' }).html_safe
     end
   end
 

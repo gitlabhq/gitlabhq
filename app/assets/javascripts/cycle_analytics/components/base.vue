@@ -1,7 +1,7 @@
 <script>
 import { GlLoadingIcon } from '@gitlab/ui';
-import Cookies from 'js-cookie';
 import { mapActions, mapState, mapGetters } from 'vuex';
+import { getCookie, setCookie } from '~/lib/utils/common_utils';
 import { toYmd } from '~/analytics/shared/utils';
 import PathNavigation from '~/cycle_analytics/components/path_navigation.vue';
 import StageTable from '~/cycle_analytics/components/stage_table.vue';
@@ -35,7 +35,7 @@ export default {
   },
   data() {
     return {
-      isOverviewDialogDismissed: Cookies.get(OVERVIEW_DIALOG_COOKIE),
+      isOverviewDialogDismissed: getCookie(OVERVIEW_DIALOG_COOKIE),
     };
   },
   computed: {
@@ -134,7 +134,7 @@ export default {
     },
     dismissOverviewDialog() {
       this.isOverviewDialogDismissed = true;
-      Cookies.set(OVERVIEW_DIALOG_COOKIE, '1', { expires: 365 });
+      setCookie(OVERVIEW_DIALOG_COOKIE, '1');
     },
     isUserAllowed(id) {
       const { permissions } = this;

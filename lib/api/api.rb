@@ -76,6 +76,10 @@ module API
       Gitlab::UsageDataCounters::VSCodeExtensionActivityUniqueCounter.track_api_request_when_trackable(user_agent: request&.user_agent, user: @current_user)
     end
 
+    after do
+      Gitlab::UsageDataCounters::JetBrainsPluginActivityUniqueCounter.track_api_request_when_trackable(user_agent: request&.user_agent, user: @current_user)
+    end
+
     # The locale is set to the current user's locale when `current_user` is loaded
     after { Gitlab::I18n.use_default_locale }
 

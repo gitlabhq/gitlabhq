@@ -37,7 +37,10 @@ describe('Knative survey banner', () => {
     wrapper.find(GlBanner).vm.$emit('close');
 
     await nextTick();
-    expect(Cookies.set).toHaveBeenCalledWith('hide_serverless_survey', 'true', { expires: 3650 });
+    expect(Cookies.set).toHaveBeenCalledWith('hide_serverless_survey', 'true', {
+      expires: 3650,
+      secure: false,
+    });
     expect(wrapper.find(GlBanner).exists()).toBe(false);
   });
 

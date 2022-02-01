@@ -1,6 +1,6 @@
 import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
 import $ from 'jquery';
-import Cookies from 'js-cookie';
+import { setCookie } from '~/lib/utils/common_utils';
 import { loadCSSFile } from '~/lib/utils/css_utils';
 import UsersSelect from '~/users_select';
 
@@ -62,7 +62,7 @@ export default class IssuableContext {
       const supportedSizes = ['xs', 'sm', 'md'];
 
       if (supportedSizes.includes(bpBreakpoint)) {
-        Cookies.set('collapsed_gutter', true);
+        setCookie('collapsed_gutter', true);
       }
     });
   }

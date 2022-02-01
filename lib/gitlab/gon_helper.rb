@@ -27,6 +27,7 @@ module Gitlab
       gon.revision               = Gitlab.revision
       gon.feature_category       = Gitlab::ApplicationContext.current_context_attribute(:feature_category).presence
       gon.gitlab_logo            = ActionController::Base.helpers.asset_path('gitlab_logo.png')
+      gon.secure                 = Gitlab.config.gitlab.https
       gon.sprite_icons           = IconsHelper.sprite_icon_path
       gon.sprite_file_icons      = IconsHelper.sprite_file_icons_path
       gon.emoji_sprites_css_path = ActionController::Base.helpers.stylesheet_path('emoji_sprites')

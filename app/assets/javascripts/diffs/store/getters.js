@@ -1,4 +1,4 @@
-import Cookies from 'js-cookie';
+import { getCookie } from '~/lib/utils/common_utils';
 import { getParameterValues } from '~/lib/utils/url_utility';
 import { __, n__ } from '~/locale';
 import {
@@ -175,7 +175,7 @@ export function suggestionCommitMessage(state, _, rootState) {
 }
 
 export const isVirtualScrollingEnabled = (state) => {
-  const vSrollerCookie = Cookies.get('diffs_virtual_scrolling');
+  const vSrollerCookie = getCookie('diffs_virtual_scrolling');
 
   if (state.disableVirtualScroller) {
     return false;

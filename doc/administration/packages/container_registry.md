@@ -1548,6 +1548,46 @@ To fix this you can do one of two things:
 We use a concrete example to illustrate how to
 diagnose a problem with the S3 setup.
 
+#### Investigate a cleanup policy
+
+If you're unsure why your cleanup policy did or didn't delete a tag, execute the policy line by line
+by running the below script from the [Rails console](../../administration/operations/rails_console.md).
+This can help diagnose problems with the policy.
+
+```ruby
+repo = ContainerRepository.find(<project_id>)
+policy = repo.project.container_expiration_policy
+
+tags = repo.tags
+tags.map(&:name)
+
+tags.reject!(&:latest?)
+tags.map(&:name)
+
+regex_delete = ::Gitlab::UntrustedRegexp.new("\\A#{policy.name_regex}\\z")
+regex_retain = ::Gitlab::UntrustedRegexp.new("\\A#{policy.name_regex_keep}\\z")
+
+tags.select! { |tag| regex_delete.match?(tag.name) && !regex_retain.match?(tag.name) }
+
+tags.map(&:name)
+
+now = DateTime.current
+tags.sort_by! { |tag| tag.created_at || now }.reverse! # Lengthy operation
+
+tags = tags.drop(policy.keep_n)
+tags.map(&:name)
+
+older_than_timestamp = ChronicDuration.parse(policy.older_than).seconds.ago
+
+tags.select! { |tag| tag.created_at && tag.created_at < older_than_timestamp }
+
+tags.map(&:name)
+```
+
+- The script builds the list of tags to delete (`tags`).
+- `tags.map(&:name)` prints a list of tags to remove. This may be a lengthy operation.
+- After each filter, check the list of `tags` to see if it contains the intended tags to destroy.
+
 #### Unexpected 403 error during push
 
 A user attempted to enable an S3-backed Registry. The `docker login` step went

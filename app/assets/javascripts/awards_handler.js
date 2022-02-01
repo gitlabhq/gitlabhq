@@ -2,10 +2,10 @@
 
 import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
 import $ from 'jquery';
-import Cookies from 'js-cookie';
 import { uniq } from 'lodash';
+import { getCookie, setCookie, scrollToElement } from '~/lib/utils/common_utils';
 import * as Emoji from '~/emoji';
-import { scrollToElement } from '~/lib/utils/common_utils';
+
 import { dispose, fixTitle } from '~/tooltips';
 import createFlash from './flash';
 import axios from './lib/utils/axios_utils';
@@ -506,7 +506,7 @@ export class AwardsHandler {
   addEmojiToFrequentlyUsedList(emoji) {
     if (this.emoji.isEmojiNameValid(emoji)) {
       this.frequentlyUsedEmojis = uniq(this.getFrequentlyUsedEmojis().concat(emoji));
-      Cookies.set('frequently_used_emojis', this.frequentlyUsedEmojis.join(','), { expires: 365 });
+      setCookie('frequently_used_emojis', this.frequentlyUsedEmojis.join(','));
     }
   }
 
@@ -514,7 +514,7 @@ export class AwardsHandler {
     return (
       this.frequentlyUsedEmojis ||
       (() => {
-        const frequentlyUsedEmojis = uniq((Cookies.get('frequently_used_emojis') || '').split(','));
+        const frequentlyUsedEmojis = uniq((getCookie('frequently_used_emojis') || '').split(','));
         this.frequentlyUsedEmojis = frequentlyUsedEmojis.filter((inputName) =>
           this.emoji.isEmojiNameValid(inputName),
         );

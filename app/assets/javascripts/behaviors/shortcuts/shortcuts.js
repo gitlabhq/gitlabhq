@@ -1,9 +1,9 @@
 import $ from 'jquery';
-import Cookies from 'js-cookie';
 import { flatten } from 'lodash';
 import Mousetrap from 'mousetrap';
 import Vue from 'vue';
-import { parseBoolean } from '~/lib/utils/common_utils';
+import { getCookie, setCookie, parseBoolean } from '~/lib/utils/common_utils';
+
 import findAndFollowLink from '~/lib/utils/navigation_utility';
 import { refreshCurrentPage, visitUrl } from '~/lib/utils/url_utility';
 import {
@@ -161,10 +161,10 @@ export default class Shortcuts {
   static onTogglePerfBar(e) {
     e.preventDefault();
     const performanceBarCookieName = 'perf_bar_enabled';
-    if (parseBoolean(Cookies.get(performanceBarCookieName))) {
-      Cookies.set(performanceBarCookieName, 'false', { expires: 365, path: '/' });
+    if (parseBoolean(getCookie(performanceBarCookieName))) {
+      setCookie(performanceBarCookieName, 'false', { path: '/' });
     } else {
-      Cookies.set(performanceBarCookieName, 'true', { expires: 365, path: '/' });
+      setCookie(performanceBarCookieName, 'true', { path: '/' });
     }
     refreshCurrentPage();
   }
@@ -172,8 +172,8 @@ export default class Shortcuts {
   static onToggleCanary(e) {
     e.preventDefault();
     const canaryCookieName = 'gitlab_canary';
-    const currentValue = parseBoolean(Cookies.get(canaryCookieName));
-    Cookies.set(canaryCookieName, (!currentValue).toString(), {
+    const currentValue = parseBoolean(getCookie(canaryCookieName));
+    setCookie(canaryCookieName, (!currentValue).toString(), {
       expires: 365,
       path: '/',
       // next.gitlab.com uses a leading period. See https://gitlab.com/gitlab-org/gitlab/-/issues/350186

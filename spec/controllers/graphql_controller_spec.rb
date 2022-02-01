@@ -124,6 +124,16 @@ RSpec.describe GraphqlController do
 
         post :execute
       end
+
+      it 'calls the track jetbrains api when trackable method' do
+        agent = 'gitlab-jetbrains-plugin/0.0.1 intellij-idea/2021.2.4 java/11.0.13 mac-os-x/aarch64/12.1'
+        request.env['HTTP_USER_AGENT'] = agent
+
+        expect(Gitlab::UsageDataCounters::JetBrainsPluginActivityUniqueCounter)
+          .to receive(:track_api_request_when_trackable).with(user_agent: agent, user: user)
+
+        post :execute
+      end
     end
 
     context 'when user uses an API token' do
@@ -147,6 +157,16 @@ RSpec.describe GraphqlController do
         request.env['HTTP_USER_AGENT'] = agent
 
         expect(Gitlab::UsageDataCounters::VSCodeExtensionActivityUniqueCounter)
+          .to receive(:track_api_request_when_trackable).with(user_agent: agent, user: user)
+
+        subject
+      end
+
+      it 'calls the track jetbrains api when trackable method' do
+        agent = 'gitlab-jetbrains-plugin/0.0.1 intellij-idea/2021.2.4 java/11.0.13 mac-os-x/aarch64/12.1'
+        request.env['HTTP_USER_AGENT'] = agent
+
+        expect(Gitlab::UsageDataCounters::JetBrainsPluginActivityUniqueCounter)
           .to receive(:track_api_request_when_trackable).with(user_agent: agent, user: user)
 
         subject

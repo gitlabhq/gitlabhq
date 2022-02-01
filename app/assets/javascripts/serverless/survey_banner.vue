@@ -1,7 +1,6 @@
 <script>
 import { GlBanner } from '@gitlab/ui';
-import Cookies from 'js-cookie';
-import { parseBoolean } from '~/lib/utils/common_utils';
+import { getCookie, setCookie, parseBoolean } from '~/lib/utils/common_utils';
 
 export default {
   components: {
@@ -19,13 +18,13 @@ export default {
     };
   },
   created() {
-    if (parseBoolean(Cookies.get('hide_serverless_survey'))) {
+    if (parseBoolean(getCookie('hide_serverless_survey'))) {
       this.visible = false;
     }
   },
   methods: {
     handleClose() {
-      Cookies.set('hide_serverless_survey', 'true', { expires: 365 * 10 });
+      setCookie('hide_serverless_survey', 'true', { expires: 365 * 10 });
       this.visible = false;
     },
   },

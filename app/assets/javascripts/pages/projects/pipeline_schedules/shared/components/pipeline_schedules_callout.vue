@@ -1,8 +1,8 @@
 <script>
 import { GlButton } from '@gitlab/ui';
-import Cookies from 'js-cookie';
 import Vue from 'vue';
-import { parseBoolean } from '~/lib/utils/common_utils';
+import { getCookie, setCookie, parseBoolean } from '~/lib/utils/common_utils';
+
 import Translate from '../../../../../vue_shared/translate';
 
 Vue.use(Translate);
@@ -17,13 +17,13 @@ export default {
   inject: ['docsUrl', 'illustrationUrl'],
   data() {
     return {
-      calloutDismissed: parseBoolean(Cookies.get(cookieKey)),
+      calloutDismissed: parseBoolean(getCookie(cookieKey)),
     };
   },
   methods: {
     dismissCallout() {
       this.calloutDismissed = true;
-      Cookies.set(cookieKey, this.calloutDismissed, { expires: 365 });
+      setCookie(cookieKey, this.calloutDismissed);
     },
   },
 };

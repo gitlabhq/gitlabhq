@@ -51,7 +51,8 @@ module QA
     "smtp" => "SMTP",
     "otp" => "OTP",
     "jira_api" => "JiraAPI",
-    "registry_tls" => "RegistryTLS"
+    "registry_tls" => "RegistryTLS",
+    "jetbrains" => "JetBrains"
   )
 
   loader.setup

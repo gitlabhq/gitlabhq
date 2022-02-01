@@ -13,7 +13,6 @@ deprecated_notes_spec.js is the spec for the legacy, jQuery notes application. I
 import { GlDeprecatedSkeletonLoading as GlSkeletonLoading } from '@gitlab/ui';
 import Autosize from 'autosize';
 import $ from 'jquery';
-import Cookies from 'js-cookie';
 import { escape, uniqueId } from 'lodash';
 import Vue from 'vue';
 import '~/lib/utils/jquery_at_who';
@@ -28,6 +27,7 @@ import { defaultAutocompleteConfig } from './gfm_auto_complete';
 import GLForm from './gl_form';
 import axios from './lib/utils/axios_utils';
 import {
+  getCookie,
   isInViewport,
   getPagePath,
   scrollToElement,
@@ -121,7 +121,7 @@ export default class Notes {
   }
 
   setViewType(view) {
-    this.view = Cookies.get('diff_view') || view;
+    this.view = getCookie('diff_view') || view;
   }
 
   addBinding() {
@@ -473,7 +473,7 @@ export default class Notes {
   }
 
   isParallelView() {
-    return Cookies.get('diff_view') === 'parallel';
+    return getCookie('diff_view') === 'parallel';
   }
 
   /**

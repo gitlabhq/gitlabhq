@@ -1,5 +1,5 @@
-import Cookies from 'js-cookie';
 import { chunk, memoize, uniq } from 'lodash';
+import { getCookie, setCookie } from '~/lib/utils/common_utils';
 import { initEmojiMap, getEmojiCategoryMap } from '~/emoji';
 import {
   EMOJIS_PER_ROW,
@@ -13,7 +13,7 @@ export const generateCategoryHeight = (emojisLength) =>
   emojisLength * EMOJI_ROW_HEIGHT + CATEGORY_ROW_HEIGHT;
 
 export const getFrequentlyUsedEmojis = () => {
-  const savedEmojis = Cookies.get(FREQUENTLY_USED_COOKIE_KEY);
+  const savedEmojis = getCookie(FREQUENTLY_USED_COOKIE_KEY);
 
   if (!savedEmojis) return null;
 
@@ -30,13 +30,13 @@ export const getFrequentlyUsedEmojis = () => {
 
 export const addToFrequentlyUsed = (emoji) => {
   const frequentlyUsedEmojis = uniq(
-    (Cookies.get(FREQUENTLY_USED_COOKIE_KEY) || '')
+    (getCookie(FREQUENTLY_USED_COOKIE_KEY) || '')
       .split(',')
       .filter((e) => e)
       .concat(emoji),
   );
 
-  Cookies.set(FREQUENTLY_USED_COOKIE_KEY, frequentlyUsedEmojis.join(','), { expires: 365 });
+  setCookie(FREQUENTLY_USED_COOKIE_KEY, frequentlyUsedEmojis.join(','));
 };
 
 export const hasFrequentlyUsedEmojis = () => getFrequentlyUsedEmojis() !== null;

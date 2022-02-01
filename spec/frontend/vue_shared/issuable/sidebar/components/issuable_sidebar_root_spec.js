@@ -70,7 +70,10 @@ describe('IssuableSidebarRoot', () => {
       it('updates "collapsed_gutter" cookie value and layout classes', async () => {
         await findToggleSidebarButton().trigger('click');
 
-        expect(Cookies.set).toHaveBeenCalledWith(USER_COLLAPSED_GUTTER_COOKIE, true);
+        expect(Cookies.set).toHaveBeenCalledWith(USER_COLLAPSED_GUTTER_COOKIE, true, {
+          expires: 365,
+          secure: false,
+        });
         assertPageLayoutClasses({ isExpanded: false });
       });
     });

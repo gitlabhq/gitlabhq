@@ -58,7 +58,7 @@ module QA
           {
             title: "Reliable e2e test report",
             description: report_issue_body,
-            labels: "Quality,test,type::maintenance,reliable test report"
+            labels: "Quality,test,type::maintenance,reliable test report,automation:devops-mapping-disable"
           },
           headers: { "PRIVATE-TOKEN" => gitlab_access_token }
         )

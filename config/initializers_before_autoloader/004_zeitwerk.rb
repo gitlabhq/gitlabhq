@@ -39,6 +39,7 @@ Rails.autoloaders.each do |autoloader|
     'hangouts_chat_http_override' => 'HangoutsChatHTTPOverride',
     'chunked_io' => 'ChunkedIO',
     'http_io' => 'HttpIO',
+    'jetbrains_plugin_activity_unique_counter' => 'JetBrainsPluginActivityUniqueCounter',
     'json_formatter' => 'JSONFormatter',
     'json_web_token' => 'JSONWebToken',
     'as_json' => 'AsJSON',

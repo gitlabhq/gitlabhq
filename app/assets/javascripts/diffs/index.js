@@ -1,7 +1,7 @@
-import Cookies from 'js-cookie';
 import Vue from 'vue';
 import { mapActions, mapState, mapGetters } from 'vuex';
-import { parseBoolean } from '~/lib/utils/common_utils';
+import { getCookie, setCookie, parseBoolean, removeCookie } from '~/lib/utils/common_utils';
+
 import { getParameterValues } from '~/lib/utils/url_utility';
 import eventHub from '../notes/event_hub';
 import diffsApp from './components/app.vue';
@@ -58,14 +58,14 @@ export default function initDiffsApp(store) {
       // Check for cookie and save that setting for future use.
       // Then delete the cookie as we are phasing it out and using the database as SSOT.
       // NOTE: This can/should be removed later
-      if (Cookies.get(DIFF_WHITESPACE_COOKIE_NAME)) {
-        const hideWhitespace = Cookies.get(DIFF_WHITESPACE_COOKIE_NAME);
+      if (getCookie(DIFF_WHITESPACE_COOKIE_NAME)) {
+        const hideWhitespace = getCookie(DIFF_WHITESPACE_COOKIE_NAME);
         this.setShowWhitespace({
           url: this.endpointUpdateUser,
           showWhitespace: hideWhitespace !== '1',
           trackClick: false,
         });
-        Cookies.remove(DIFF_WHITESPACE_COOKIE_NAME);
+        removeCookie(DIFF_WHITESPACE_COOKIE_NAME);
       } else {
         // This is only to set the the user preference in Vuex for use later
         this.setShowWhitespace({
@@ -77,7 +77,7 @@ export default function initDiffsApp(store) {
 
       const vScrollingParam = getParameterValues('virtual_scrolling')[0];
       if (vScrollingParam === 'false' || vScrollingParam === 'true') {
-        Cookies.set('diffs_virtual_scrolling', vScrollingParam);
+        setCookie('diffs_virtual_scrolling', vScrollingParam);
       }
     },
     methods: {

@@ -1,10 +1,10 @@
-import Cookies from 'js-cookie';
+import { getCookie } from '~/lib/utils/common_utils';
 import { getParameterValues } from '~/lib/utils/url_utility';
 import { INLINE_DIFF_VIEW_TYPE, DIFF_VIEW_COOKIE_NAME } from '../../constants';
 
 const getViewTypeFromQueryString = () => getParameterValues('view')[0];
 
-const viewTypeFromCookie = Cookies.get(DIFF_VIEW_COOKIE_NAME);
+const viewTypeFromCookie = getCookie(DIFF_VIEW_COOKIE_NAME);
 const defaultViewType = INLINE_DIFF_VIEW_TYPE;
 
 export default () => ({

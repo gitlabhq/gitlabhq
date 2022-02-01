@@ -84,6 +84,7 @@ describe('Pipeline Schedule Callout', () => {
 
         expect(setCookiesSpy).toHaveBeenCalledWith('pipeline_schedules_callout_dismissed', true, {
           expires: 365,
+          secure: false,
         });
       });
     });

@@ -705,7 +705,10 @@ export const scopedLabelKey = ({ title = '' }) => {
 };
 
 // Methods to set and get Cookie
-export const setCookie = (name, value) => Cookies.set(name, value, { expires: 365 });
+export const setCookie = (name, value, attributes) => {
+  const defaults = { expires: 365, secure: Boolean(window.gon?.secure) };
+  Cookies.set(name, value, { ...defaults, ...attributes });
+};
 
 export const getCookie = (name) => Cookies.get(name);
 

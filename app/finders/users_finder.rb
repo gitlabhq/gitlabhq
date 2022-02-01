@@ -32,7 +32,7 @@ class UsersFinder
   end
 
   def execute
-    users = User.all.order_id_desc
+    users = base_scope
     users = by_username(users)
     users = by_id(users)
     users = by_admins(users)
@@ -52,6 +52,10 @@ class UsersFinder
   end
 
   private
+
+  def base_scope
+    User.all.order_id_desc
+  end
 
   def by_username(users)
     return users unless params[:username]

@@ -254,7 +254,10 @@ describe('Design management design sidebar component', () => {
     it(`sets a ${cookieKey} cookie on clicking outside the popover`, () => {
       jest.spyOn(Cookies, 'set');
       wrapper.trigger('click');
-      expect(Cookies.set).toHaveBeenCalledWith(cookieKey, 'true', { expires: 365 * 10 });
+      expect(Cookies.set).toHaveBeenCalledWith(cookieKey, 'true', {
+        expires: 365 * 10,
+        secure: false,
+      });
     });
   });
 
