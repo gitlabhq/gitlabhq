@@ -229,3 +229,16 @@ approval rule for certain branches:
      ![Scoped to protected branch](img/scoped_to_protected_branch_v13_10.png)
 1. To enable this configuration, read
    [Code Owner's approvals for protected branches](../../protected_branches.md#require-code-owner-approval-on-a-protected-branch).
+
+## Troubleshooting
+
+### Approval rule name can't be blank
+
+As a workaround for this validation error, you can delete the approval rule through
+the API.
+
+1. [GET a project-level rule](../../../../api/merge_request_approvals.md#get-a-single-project-level-rule).
+1. [DELETE the rule](../../../../api/merge_request_approvals.md#delete-project-level-rule).
+
+For more information about this validation error, read
+[issue 285129](https://gitlab.com/gitlab-org/gitlab/-/issues/285129).

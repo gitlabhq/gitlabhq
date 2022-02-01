@@ -97,8 +97,12 @@ RSpec.describe Projects::DestroyService, :aggregate_failures do
     end
   end
 
-  shared_examples_for "deleting a project with merge requests" do
+  context "deleting a project with merge requests" do
     let!(:merge_request) { create(:merge_request, source_project: project) }
+
+    before do
+      allow(project).to receive(:destroy!).and_return(true)
+    end
 
     it "deletes merge request and related records" do
       merge_request_diffs = merge_request.merge_request_diffs
@@ -117,25 +121,6 @@ RSpec.describe Projects::DestroyService, :aggregate_failures do
     expect(user).to receive(:invalidate_personal_projects_count)
 
     destroy_project(project, user, {})
-  end
-
-  context "extract_mr_diff_commit_deletions feature flag" do
-    context "with flag enabled" do
-      before do
-        stub_feature_flags(extract_mr_diff_commit_deletions: true)
-        allow(project).to receive(:destroy!).and_return(true)
-      end
-
-      it_behaves_like "deleting a project with merge requests"
-    end
-
-    context "with flag disabled" do
-      before do
-        stub_feature_flags(extract_mr_diff_commit_deletions: false)
-      end
-
-      it_behaves_like "deleting a project with merge requests"
-    end
   end
 
   context 'with running pipelines' do

@@ -1,5 +1,5 @@
 ---
-name: diff_searching_usage_data
+name: usage_data_diff_searches
 introduced_by_url:
 rollout_issue_url:
 milestone: '14.2'

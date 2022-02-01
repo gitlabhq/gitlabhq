@@ -82,7 +82,7 @@ For more details, refer to our [architecture documentation](https://gitlab.com/g
 
 ## Install the Agent in your cluster
 
-See how to [install the Agent in your cluster](install/index.md).
+To connect your cluster to GitLab, [install the Agent on your cluster](install/index.md).
 
 ## GitOps deployments **(PREMIUM)**
 

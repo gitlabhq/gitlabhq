@@ -29,7 +29,8 @@ module QA
         let!(:source_comment) { source_mr.add_comment('This is a test comment!') }
 
         let(:imported_mrs) { imported_project.merge_requests }
-        let(:imported_mr_comments) { imported_mr.comments }
+        let(:imported_mr_comments) { imported_mr.comments.map { |note| note.except(:id, :noteable_id) } }
+        let(:source_mr_comments) { source_mr.comments.map { |note| note.except(:id, :noteable_id) } }
 
         let(:imported_mr) do
           Resource::MergeRequest.init do |mr|
@@ -53,8 +54,7 @@ module QA
           aggregate_failures do
             expect(imported_mr).to eq(source_mr.reload!)
 
-            expect(imported_mr_comments.count).to eq(1)
-            expect(imported_mr_comments.first.except(:id, :noteable_id)).to eq(source_comment.except(:id, :noteable_id))
+            expect(imported_mr_comments).to eq(source_mr_comments)
           end
         end
       end

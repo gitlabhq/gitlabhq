@@ -15,10 +15,12 @@ if Gitlab.ee?
 else
   Gitlab::Database::Partitioning.register_tables([
     {
+      limit_connection_names: %i[main],
       table_name: 'incident_management_pending_alert_escalations',
       partitioned_column: :process_at, strategy: :monthly
     },
     {
+      limit_connection_names: %i[main],
       table_name: 'incident_management_pending_issue_escalations',
       partitioned_column: :process_at, strategy: :monthly
     }
@@ -31,6 +33,7 @@ unless Gitlab.jh?
     # This should be synchronized with the following model:
     # https://jihulab.com/gitlab-cn/gitlab/-/blob/main-jh/jh/app/models/phone/verification_code.rb
     {
+      limit_connection_names: %i[main],
       table_name: 'verification_codes',
       partitioned_column: :created_at, strategy: :monthly
     }

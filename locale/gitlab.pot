@@ -28213,6 +28213,9 @@ msgstr ""
 msgid "ProjectSettings|Merge requests approved for merge are queued, and pipelines validate the combined results of the source and target branches before merge. %{link_start}What are merge trains?%{link_end}"
 msgstr ""
 
+msgid "ProjectSettings|Merge requests can't be merged if the latest pipeline did not succeed or is still running."
+msgstr ""
+
 msgid "ProjectSettings|Merge suggestions"
 msgstr ""
 
@@ -28337,9 +28340,6 @@ msgid "ProjectSettings|This setting is applied on the server level but has been 
 msgstr ""
 
 msgid "ProjectSettings|This setting will be applied to all projects unless overridden by an admin."
-msgstr ""
-
-msgid "ProjectSettings|To enable this feature, configure pipelines. %{link_start}How to configure merge request pipelines?%{link_end}"
 msgstr ""
 
 msgid "ProjectSettings|Transfer project"

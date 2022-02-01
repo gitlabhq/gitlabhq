@@ -20,25 +20,6 @@ module QA
         end
 
         before do
-          Resource::Repository::Commit.fabricate_via_api! do |commit|
-            commit.project = project
-            commit.commit_message = 'Add .gitlab-ci.yml'
-            commit.add_files(
-              [
-                {
-                  file_path: '.gitlab-ci.yml',
-                  content: <<~EOF
-                    test:
-                      tags: ["runner-for-#{project.name}"]
-                      script: sleep 20
-                      only:
-                        - merge_requests
-                  EOF
-                }
-              ]
-            )
-          end
-
           Flow::Login.sign_in
         end
 
@@ -48,8 +29,10 @@ module QA
         end
 
         it 'merges after pipeline succeeds' do
+          transient_test = repeat > 1
+
           repeat.times do |i|
-            QA::Runtime::Logger.info("Transient bug test - Trial #{i}") if repeat > 1
+            QA::Runtime::Logger.info("Transient bug test - Trial #{i}") if transient_test
 
             branch_name = "mr-test-#{SecureRandom.hex(6)}-#{i}"
 
@@ -68,19 +51,59 @@ module QA
               merge_request.no_preparation = true
             end
 
+            # Load the page so that the browser is as prepared as possible to display the pipeline in progress when we
+            # start it.
             merge_request.visit!
 
-            Page::MergeRequest::Show.perform do |mr|
-              mr.merge_when_pipeline_succeeds!
+            # Push a new pipeline config file
+            Resource::Repository::Commit.fabricate_via_api! do |commit|
+              commit.project = project
+              commit.commit_message = 'Add .gitlab-ci.yml'
+              commit.branch = branch_name
+              commit.add_files(
+                [
+                  {
+                    file_path: '.gitlab-ci.yml',
+                    content: <<~EOF
+                      test:
+                        tags: ["runner-for-#{project.name}"]
+                        script: sleep 20
+                        only:
+                          - merge_requests
+                    EOF
+                  }
+                ]
+              )
+            end
 
-              Support::Waiter.wait_until(sleep_interval: 5) do
+            Page::MergeRequest::Show.perform do |mr|
+              refresh
+
+              # Part of the challenge with this test is that the MR widget has many components that could be displayed
+              # and many errors states that those components could encounter. Most of the time few of those
+              # possible components will be relevant, so it would be inefficient for this test to check for each of
+              # them. Instead, we fail on anything but the expected state.
+              #
+              # The following method allows us to handle and ignore states (as we find them) that users could safely ignore.
+              mr.wait_until_ready_to_merge(transient_test: transient_test)
+
+              mr.retry_until(reload: true, message: 'Wait until ready to click MWPS') do
                 merge_request = merge_request.reload!
-                merge_request.state == 'merged'
+
+                # Don't try to click MWPS if the MR is merged or the pipeline is complete
+                break if merge_request.state == 'merged' || project.pipelines.last[:status] == 'success'
+
+                # Try to click MWPS if this is a transient test, or if the MWPS button is visible,
+                # otherwise reload the page and retry
+                next false unless transient_test || mr.has_element?(:merge_button, text: 'Merge when pipeline succeeds')
+
+                # No need to keep retrying if we can click MWPS
+                break mr.merge_when_pipeline_succeeds!
               end
 
               aggregate_failures do
-                expect(merge_request.merge_when_pipeline_succeeds).to be_truthy
                 expect(mr.merged?).to be_truthy, "Expected content 'The changes were merged' but it did not appear."
+                expect(merge_request.reload!.merge_when_pipeline_succeeds).to be_truthy
               end
             end
           end

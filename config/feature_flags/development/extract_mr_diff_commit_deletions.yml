@@ -1,8 +1,0 @@
----
-name: extract_mr_diff_commit_deletions
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/75963
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/347073
-milestone: '14.6'
-type: development
-group: group::code review
-default_enabled: false

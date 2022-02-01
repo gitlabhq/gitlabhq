@@ -83,8 +83,16 @@ module QA
           element :merge_immediately_menu_item
         end
 
+        view 'app/assets/javascripts/vue_merge_request_widget/components/states/sha_mismatch.vue' do
+          element :head_mismatch_content
+        end
+
         view 'app/assets/javascripts/vue_merge_request_widget/components/states/squash_before_merge.vue' do
           element :squash_checkbox
+        end
+
+        view 'app/assets/javascripts/vue_merge_request_widget/mr_widget_options.vue' do
+          element :mr_widget_content
         end
 
         view 'app/assets/javascripts/vue_shared/components/markdown/apply_suggestion.vue' do
@@ -269,13 +277,29 @@ module QA
           has_element?(:merge_button, disabled: false)
         end
 
-        # Waits up 60 seconds and raises an error if unable to merge
-        def wait_until_ready_to_merge
-          has_element?(:merge_button)
+        # Waits up 60 seconds and raises an error if unable to merge.
+        #
+        # If a state is encountered in which a user would typically refresh the page, this will refresh the page and
+        # then check again if it's ready to merge. For example, it will refresh if a new change was pushed and the page
+        # needs to be refreshed to show the change.
+        #
+        # @param [Boolean] transient_test true if the current test is a transient test (default: false)
+        def wait_until_ready_to_merge(transient_test: false)
+          wait_until do
+            has_element?(:merge_button)
 
-          # The merge button is enabled via JS
-          wait_until(reload: false) do
-            !find_element(:merge_button).disabled?
+            break true unless find_element(:merge_button).disabled?
+
+            # If the widget shows "Merge blocked: new changes were just added" we can refresh the page and check again
+            next false if has_element?(:head_mismatch_content)
+
+            # Stop waiting if we're in a transient test. By this point we're in an unexpected state and should let the
+            # test fail so we can investigate. If we're not in a transient test we keep trying until we reach timeout.
+            next true unless transient_test
+
+            QA::Runtime::Logger.debug("MR widget text: #{mr_widget_text}")
+
+            false
           end
         end
 
@@ -384,6 +408,10 @@ module QA
 
         def cancel_auto_merge!
           click_element(:cancel_auto_merge_button)
+        end
+
+        def mr_widget_text
+          find_element(:mr_widget_content).text
         end
       end
     end

@@ -4,6 +4,10 @@ import { parseBoolean } from '~/lib/utils/common_utils';
 import TransferGroupForm, { i18n } from './components/transfer_group_form.vue';
 
 const prepareGroups = (rawGroups) => {
+  if (!rawGroups) {
+    return { group: [] };
+  }
+
   const group = JSON.parse(rawGroups).map(({ id, text: humanName }) => ({
     id,
     humanName,
@@ -22,7 +26,7 @@ export default () => {
     targetFormId = null,
     buttonText: confirmButtonText = '',
     groupName = '',
-    parentGroups = [],
+    parentGroups,
     isPaidGroup,
   } = el.dataset;
 

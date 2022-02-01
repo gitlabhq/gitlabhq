@@ -256,7 +256,7 @@ expiration date without a gap in available service. An invoice is
 generated for the renewal and available for viewing or download on the
 [View invoices](https://customers.gitlab.com/receipts) page.
 
-#### Enable automatic renewal
+#### Enable or disable automatic renewal
 
 To view or change automatic subscription renewal (at the same tier as the
 previous period), log in to the [Customers Portal](https://customers.gitlab.com/customers/sign_in), and:
@@ -292,7 +292,7 @@ for more information.
 ### Purchase additional CI/CD minutes
 
 You can [purchase additional minutes](../../ci/pipelines/cicd_minutes.md#purchase-additional-cicd-minutes)
-for your personal or group namespace.
+for your personal or group namespace. CI/CD minutes are a **one-time purchase**, so they do not renew.
 
 ## Add-on subscription for additional Storage and Transfer
 
@@ -309,7 +309,11 @@ locked. Projects can only be unlocked by purchasing more storage subscription un
 
 ### Purchase more storage and transfer
 
-You can purchase storage for your personal or group namespace.
+You can purchase a storage subscription for your personal or group namespace.
+
+NOTE:
+Storage subscriptions **[renew automatically](#automatic-renewal) each year**.
+You can [cancel the subscription](#enable-or-disable-automatic-renewal) to disable the automatic renewal.
 
 #### For your personal namespace
 

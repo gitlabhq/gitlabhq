@@ -6,8 +6,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Metrics Dictionary Guide
 
-[Service Ping](index.md) metrics are defined in the
-[Metrics Dictionary](https://metrics.gitlab.com/).
+[Service Ping](index.md) metrics are defined in individual YAML files definitions from which the
+[Metrics Dictionary](https://metrics.gitlab.com/) is built.
 This guide describes the dictionary and how it's implemented.
 
 ## Metrics Definition and validation
@@ -194,7 +194,7 @@ tier:
 - ultimate
 ```
 
-## Create a new metric definition
+### Create a new metric definition
 
 The GitLab codebase provides a dedicated [generator](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/generators/gitlab/usage_metric_definition_generator.rb) to create new metric definitions.
 
@@ -229,7 +229,7 @@ bundle exec rails generate gitlab:usage_metric_definition counts.issues --ee --d
 create  ee/config/metrics/counts_7d/issues.yml
 ```
 
-## Metrics added dynamic to Service Ping payload
+### Metrics added dynamic to Service Ping payload
 
 The [Redis HLL metrics](implement.md#known-events-are-added-automatically-in-service-data-payload) are added automatically to Service Ping payload.
 
@@ -250,3 +250,13 @@ bundle exec rails generate gitlab:usage_metric_definition:redis_hll issues users
 create  config/metrics/counts_7d/i_closed_weekly.yml
 create  config/metrics/counts_28d/i_closed_monthly.yml
 ```
+
+## Metrics Dictionary
+
+[Metrics Dictionary is a separate application](https://gitlab.com/gitlab-org/growth/product-intelligence/metric-dictionary).
+
+All metrics available in Service Ping are in the [Metrics Dictionary](https://metrics.gitlab.com/).
+
+### Copy query to clipboard
+
+To check if a metric has data in Sisense, use the copy query to clipboard feature. This copies a query that's ready to use in Sisense. The query gets the last five service ping data for GitLab.com for a given metric. For information about how to check if a Service Ping metric has data in Sisense, see this [demo](https://www.youtube.com/watch?v=n4o65ivta48).

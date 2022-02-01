@@ -16,8 +16,13 @@ export const i18n = {
   USERS: __('Users'),
 };
 
-const filterByName = (data, searchTerm = '') =>
-  data.filter((d) => d.humanName.toLowerCase().includes(searchTerm));
+const filterByName = (data, searchTerm = '') => {
+  if (!searchTerm) {
+    return data;
+  }
+
+  return data.filter((d) => d.humanName.toLowerCase().includes(searchTerm.toLowerCase()));
+};
 
 export default {
   name: 'NamespaceSelect',
@@ -85,7 +90,15 @@ export default {
     },
     filteredEmptyNamespaceTitle() {
       const { includeEmptyNamespace, emptyNamespaceTitle, searchTerm } = this;
-      return includeEmptyNamespace && emptyNamespaceTitle.toLowerCase().includes(searchTerm);
+
+      if (!includeEmptyNamespace) {
+        return '';
+      }
+      if (!searchTerm) {
+        return emptyNamespaceTitle;
+      }
+
+      return emptyNamespaceTitle.toLowerCase().includes(searchTerm.toLowerCase());
     },
   },
   methods: {

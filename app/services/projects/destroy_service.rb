@@ -139,10 +139,7 @@ module Projects
       destroy_web_hooks!
       destroy_project_bots!
       destroy_ci_records!
-
-      if ::Feature.enabled?(:extract_mr_diff_commit_deletions, default_enabled: :yaml)
-        destroy_mr_diff_commits!
-      end
+      destroy_mr_diff_commits!
 
       # Rails attempts to load all related records into memory before
       # destroying: https://github.com/rails/rails/issues/22510

@@ -40,7 +40,6 @@ exports[`IncidentsSettingTabs should render the component 1`] = `
   >
     <gl-tabs-stub
       queryparamname="tab"
-      theme="indigo"
       value="0"
     >
       <!---->

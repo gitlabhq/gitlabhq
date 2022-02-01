@@ -524,7 +524,7 @@ export default {
 
       if (
         window.gon?.features?.diffsVirtualScrolling ||
-        window.gon?.features?.diffSearchingUsageData
+        window.gon?.features?.usageDataDiffSearches
       ) {
         let keydownTime;
         Mousetrap.bind(['mod+f', 'mod+g'], () => {
@@ -540,7 +540,7 @@ export default {
             if (delta >= 0 && delta < 1000) {
               this.disableVirtualScroller();
 
-              if (window.gon?.features?.diffSearchingUsageData) {
+              if (window.gon?.features?.usageDataDiffSearches) {
                 api.trackRedisHllUserEvent('i_code_review_user_searches_diff');
                 api.trackRedisCounterEvent('diff_searches');
               }

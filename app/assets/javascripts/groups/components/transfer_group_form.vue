@@ -43,9 +43,6 @@ export default {
     };
   },
   computed: {
-    selectedNamespaceId() {
-      return this.selectedId;
-    },
     disableSubmitButton() {
       return this.isPaidGroup || !this.selectedId;
     },

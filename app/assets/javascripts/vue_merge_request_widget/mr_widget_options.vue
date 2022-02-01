@@ -578,7 +578,7 @@ export default {
         :endpoint="mr.accessibilityReportPath"
       />
 
-      <div class="mr-widget-section">
+      <div class="mr-widget-section" data-qa-selector="mr_widget_content">
         <component :is="componentName" :mr="mr" :service="service" />
         <ready-to-merge
           v-if="isRestructuredMrWidgetEnabled && mr.commitsCount"
