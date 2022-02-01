@@ -3524,7 +3524,7 @@ RSpec.describe MergeRequest, factory_default: :keep do
     let!(:job) { create(:ci_build, :with_deployment, :start_review_app, pipeline: pipeline, project: project) }
 
     it 'returns environments' do
-      is_expected.to eq(pipeline.environments)
+      is_expected.to eq(pipeline.environments_in_self_and_descendants.to_a)
       expect(subject.count).to be(1)
     end
 

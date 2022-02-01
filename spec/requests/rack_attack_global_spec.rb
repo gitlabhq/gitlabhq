@@ -184,6 +184,7 @@ RSpec.describe 'Rack Attack global throttles', :use_clean_rails_memory_store_cac
 
     context 'unauthenticated requests' do
       let(:protected_path_that_does_not_require_authentication) do
+        # This is one of the default values for `application_settings.protected_paths`
         '/users/sign_in'
       end
 
@@ -225,6 +226,20 @@ RSpec.describe 'Rack Attack global throttles', :use_clean_rails_memory_store_cac
           end
 
           expect_rejection { post protected_path_that_does_not_require_authentication, params: post_params }
+        end
+
+        it 'allows non-POST requests to protected paths over the rate limit' do
+          (1 + requests_per_period).times do
+            get protected_path_that_does_not_require_authentication
+            expect(response).to have_gitlab_http_status(:ok)
+          end
+        end
+
+        it 'allows POST requests to unprotected paths over the rate limit' do
+          (1 + requests_per_period).times do
+            post '/api/graphql'
+            expect(response).to have_gitlab_http_status(:ok)
+          end
         end
 
         it_behaves_like 'tracking when dry-run mode is set' do

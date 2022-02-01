@@ -125,7 +125,7 @@ class BlobPresenter < Gitlab::View::Presenter::Delegated
   def external_storage_url
     return unless static_objects_external_storage_enabled?
 
-    external_storage_url_or_path(url_helpers.project_raw_url(project, ref_qualified_path))
+    external_storage_url_or_path(url_helpers.project_raw_url(project, ref_qualified_path), project)
   end
 
   private

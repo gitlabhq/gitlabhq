@@ -243,6 +243,7 @@ export default {
             <pin
               v-if="canShowAutoStopDate"
               :auto-stop-url="autoStopPath"
+              graphql
               data-track-action="click_button"
               data-track-label="environment_pin"
             />

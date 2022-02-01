@@ -153,7 +153,7 @@ export default {
     },
     blobViewer() {
       const { fileType } = this.viewer;
-      return loadViewer(fileType);
+      return loadViewer(fileType, this.isUsingLfs);
     },
     viewerProps() {
       const { fileType } = this.viewer;
@@ -184,6 +184,9 @@ export default {
       return this.forkTarget === 'ide'
         ? this.blobInfo.ideForkAndEditPath
         : this.blobInfo.forkAndEditPath;
+    },
+    isUsingLfs() {
+      return this.blobInfo.storedExternally && this.blobInfo.externalStorage === 'lfs';
     },
   },
   methods: {
@@ -245,10 +248,11 @@ export default {
     <div v-if="blobInfo && !isLoading" class="file-holder">
       <blob-header
         :blob="blobInfo"
-        :hide-viewer-switcher="!hasRichViewer || isBinaryFileType"
+        :hide-viewer-switcher="!hasRichViewer || isBinaryFileType || isUsingLfs"
         :is-binary="isBinaryFileType"
         :active-viewer-type="viewer.type"
         :has-render-error="hasRenderError"
+        :show-path="false"
         @viewer-changed="switchViewer"
       >
         <template #actions>

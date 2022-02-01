@@ -3,7 +3,11 @@
 require_relative 'gitlab_project_migration_common'
 
 module QA
-  RSpec.describe 'Manage', :requires_admin do
+  RSpec.describe 'Manage', :requires_admin, quarantine: {
+    only: { subdomain: :staging },
+    type: :investigating,
+    issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/351596'
+  } do
     describe 'Gitlab migration' do
       include_context 'with gitlab project migration'
 

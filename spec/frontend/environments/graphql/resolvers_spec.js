@@ -173,9 +173,7 @@ describe('~/frontend/environments/graphql/resolvers', () => {
     it('should post to the auto stop path', async () => {
       mock.onPost(ENDPOINT).reply(200);
 
-      await mockResolvers.Mutation.cancelAutoStop(null, {
-        environment: { autoStopPath: ENDPOINT },
-      });
+      await mockResolvers.Mutation.cancelAutoStop(null, { autoStopUrl: ENDPOINT });
 
       expect(mock.history.post).toContainEqual(
         expect.objectContaining({ url: ENDPOINT, method: 'post' }),

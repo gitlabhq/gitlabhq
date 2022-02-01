@@ -236,7 +236,7 @@ describe('Blob content viewer component', () => {
 
         await waitForPromises();
 
-        expect(loadViewer).toHaveBeenCalledWith(viewer);
+        expect(loadViewer).toHaveBeenCalledWith(viewer, false);
         expect(wrapper.findComponent(loadViewerReturnValue).exists()).toBe(true);
       },
     );

@@ -30,15 +30,15 @@ module Gitlab
       end
 
       def api_internal_request?
-        path =~ %r{^/api/v\d+/internal/}
+        path.match?(%r{^/api/v\d+/internal/})
       end
 
       def health_check_request?
-        path =~ %r{^/-/(health|liveness|readiness|metrics)}
+        path.match?(%r{^/-/(health|liveness|readiness|metrics)})
       end
 
       def container_registry_event?
-        path =~ %r{^/api/v\d+/container_registry_event/}
+        path.match?(%r{^/api/v\d+/container_registry_event/})
       end
 
       def product_analytics_collector_request?
@@ -54,11 +54,7 @@ module Gitlab
       end
 
       def protected_path?
-        !protected_path_regex.nil?
-      end
-
-      def protected_path_regex
-        path =~ protected_paths_regex
+        path.match?(protected_paths_regex)
       end
 
       def throttle?(throttle, authenticated:)
@@ -178,15 +174,15 @@ module Gitlab
       end
 
       def packages_api_path?
-        path =~ ::Gitlab::Regex::Packages::API_PATH_REGEX
+        path.match?(::Gitlab::Regex::Packages::API_PATH_REGEX)
       end
 
       def git_lfs_path?
-        path =~ Gitlab::PathRegex.repository_git_lfs_route_regex
+        path.match?(::Gitlab::PathRegex.repository_git_lfs_route_regex)
       end
 
       def files_api_path?
-        path =~ FILES_PATH_REGEX
+        path.match?(FILES_PATH_REGEX)
       end
 
       def deprecated_api_request?
@@ -195,7 +191,7 @@ module Gitlab
         with_projects = params['with_projects']
         with_projects = true if with_projects.blank?
 
-        path =~ GROUP_PATH_REGEX && Gitlab::Utils.to_boolean(with_projects)
+        path.match?(GROUP_PATH_REGEX) && Gitlab::Utils.to_boolean(with_projects)
       end
     end
   end

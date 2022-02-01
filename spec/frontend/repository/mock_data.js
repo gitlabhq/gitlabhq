@@ -17,6 +17,7 @@ export const simpleViewerMock = {
   canCurrentUserPushToBranch: true,
   archived: false,
   storedExternally: false,
+  externalStorageUrl: '',
   externalStorage: 'lfs',
   rawPath: 'some_file.js',
   replacePath: 'some_file.js/replace',

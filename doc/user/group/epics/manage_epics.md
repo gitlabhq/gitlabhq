@@ -164,6 +164,7 @@ than 1000. The cached value is rounded to thousands or millions and updated ever
 > - Sorting by epic titles [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/331625) in GitLab 14.1.
 > - Searching by milestone and confidentiality [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/268372) in GitLab 14.2 [with a flag](../../../administration/feature_flags.md) named `vue_epics_list`. Disabled by default.
 > - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/276189) in GitLab 14.7.
+> - [Feature flag `vue_epics_list`](https://gitlab.com/gitlab-org/gitlab/-/issues/327320) removed in GitLab 14.8.
 
 You can search for an epic from the list of epics using filtered search bar based on following
 parameters:

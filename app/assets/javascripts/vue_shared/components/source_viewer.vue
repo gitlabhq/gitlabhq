@@ -115,7 +115,12 @@ export default {
 };
 </script>
 <template>
-  <div class="file-content code js-syntax-highlight" :class="$options.userColorScheme">
+  <div
+    class="file-content code js-syntax-highlight blob-content"
+    :class="$options.userColorScheme"
+    data-type="simple"
+    data-qa-selector="blob_viewer_file_content"
+  >
     <line-numbers :lines="lineNumbers" />
     <pre class="code"><code v-safe-html="highlightedContent"></code>
     </pre>

@@ -48,6 +48,11 @@ export default {
       required: false,
       default: null,
     },
+    isEmpty: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   computed: {
     downloadUrl() {
@@ -87,6 +92,7 @@ export default {
       icon="copy-to-clipboard"
       category="primary"
       variant="default"
+      class="js-copy-blob-source-btn"
     />
     <gl-button
       v-if="!isBinary"
@@ -100,6 +106,7 @@ export default {
       variant="default"
     />
     <gl-button
+      v-if="!isEmpty"
       v-gl-tooltip.hover
       :aria-label="$options.BTN_DOWNLOAD_TITLE"
       :title="$options.BTN_DOWNLOAD_TITLE"

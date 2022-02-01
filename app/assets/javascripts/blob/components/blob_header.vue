@@ -42,6 +42,11 @@ export default {
       required: false,
       default: false,
     },
+    showPath: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
   },
   data() {
     return {
@@ -54,6 +59,9 @@ export default {
     },
     showDefaultActions() {
       return !this.hideDefaultActions;
+    },
+    isEmpty() {
+      return this.blob.rawSize === 0;
     },
   },
   watch: {
@@ -74,7 +82,7 @@ export default {
   <div class="js-file-title file-title-flex-parent">
     <div class="gl-display-flex">
       <table-of-contents class="gl-pr-2" />
-      <blob-filepath :blob="blob">
+      <blob-filepath :blob="blob" :show-path="showPath">
         <template #filepath-prepend>
           <slot name="prepend"></slot>
         </template>
@@ -88,12 +96,13 @@ export default {
 
       <default-actions
         v-if="showDefaultActions"
-        :raw-path="blob.rawPath"
+        :raw-path="blob.externalStorageUrl || blob.rawPath"
         :active-viewer="viewer"
         :has-render-error="hasRenderError"
         :is-binary="isBinary"
         :environment-name="blob.environmentFormattedExternalUrl"
         :environment-path="blob.environmentExternalUrlForRouteMap"
+        :is-empty="isEmpty"
         @copy="proxyCopyRequest"
       />
     </div>

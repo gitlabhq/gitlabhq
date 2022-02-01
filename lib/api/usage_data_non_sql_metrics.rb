@@ -18,7 +18,7 @@ module API
       get 'non_sql_metrics' do
         Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/325534')
 
-        data = Gitlab::UsageDataNonSqlMetrics.uncached_data
+        data = Gitlab::UsageDataNonSqlMetrics.data(force_refresh: true)
 
         present data
       end

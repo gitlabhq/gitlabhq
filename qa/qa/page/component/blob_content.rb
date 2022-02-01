@@ -22,6 +22,10 @@ module QA
             element :copy_contents_button
           end
 
+          base.view 'app/assets/javascripts/vue_shared/components/source_viewer.vue' do
+            element :blob_viewer_file_content
+          end
+
           base.view 'app/views/projects/blob/_header_content.html.haml' do
             element :file_name_content
           end

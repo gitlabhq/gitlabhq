@@ -134,9 +134,9 @@ export const resolvers = (endpoint) => ({
         data: { environmentToRollback: environment },
       });
     },
-    cancelAutoStop(_, { environment: { autoStopPath } }) {
+    cancelAutoStop(_, { autoStopUrl }) {
       return axios
-        .post(autoStopPath)
+        .post(autoStopUrl)
         .then(() => buildErrors())
         .catch((err) =>
           buildErrors([

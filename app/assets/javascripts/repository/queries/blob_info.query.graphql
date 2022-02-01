@@ -32,6 +32,7 @@ query getBlobInfo($projectPath: ID!, $filePath: String!, $ref: String!) {
           archived
           storedExternally
           externalStorage
+          externalStorageUrl
           rawPath
           replacePath
           pipelineEditorPath

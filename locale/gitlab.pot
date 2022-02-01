@@ -15288,12 +15288,6 @@ msgstr ""
 msgid "Filter by"
 msgstr ""
 
-msgid "Filter by %{issuable_type} that are currently closed."
-msgstr ""
-
-msgid "Filter by %{issuable_type} that are currently open."
-msgstr ""
-
 msgid "Filter by %{page_context_word} that are currently open."
 msgstr ""
 
@@ -33721,9 +33715,6 @@ msgstr ""
 msgid "Something went wrong. Try again later."
 msgstr ""
 
-msgid "Sorry, no epics matched your search"
-msgstr ""
-
 msgid "Sorry, no projects matched your search"
 msgstr ""
 
@@ -36587,6 +36578,9 @@ msgstr ""
 msgid "This content could not be displayed because %{reason}. You can %{options} instead."
 msgstr ""
 
+msgid "This content could not be displayed because it is stored in LFS. You can %{linkStart}download it%{linkEnd} instead."
+msgstr ""
+
 msgid "This credential has expired"
 msgstr ""
 
@@ -37591,9 +37585,6 @@ msgid "To widen your search, change or remove filters above"
 msgstr ""
 
 msgid "To widen your search, change or remove filters above."
-msgstr ""
-
-msgid "To widen your search, change or remove filters."
 msgstr ""
 
 msgid "To-Do List"

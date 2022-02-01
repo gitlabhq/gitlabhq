@@ -2,12 +2,9 @@
 
 module QA
   RSpec.shared_context 'with gitlab project migration', quarantine: {
-    only: { job: 'praefect', subdomain: :staging },
+    only: { job: 'praefect' },
     type: :investigating,
-    issue: [
-      'https://gitlab.com/gitlab-org/gitlab/-/issues/348999',
-      'https://gitlab.com/gitlab-org/gitlab/-/issues/350965'
-    ]
+    issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/348999'
   } do
     let(:source_project_with_readme) { false }
     let(:import_wait_duration) { { max_duration: 300, sleep_interval: 2 } }

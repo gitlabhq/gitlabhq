@@ -12,8 +12,8 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
     stub_database_flavor_check('Cloud SQL for PostgreSQL')
   end
 
-  describe '.uncached_data' do
-    subject { described_class.uncached_data }
+  describe '.data' do
+    subject { described_class.data(force_refresh: true) }
 
     it 'includes basic top and second level keys' do
       is_expected.to include(:counts)

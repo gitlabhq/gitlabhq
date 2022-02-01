@@ -217,6 +217,10 @@ export const securityFeatures = [
     helpPath: CONTAINER_SCANNING_HELP_PATH,
     configurationHelpPath: CONTAINER_SCANNING_CONFIG_HELP_PATH,
     type: REPORT_TYPE_CONTAINER_SCANNING,
+
+    // This field will eventually come from the backend, the progress is
+    // tracked in https://gitlab.com/gitlab-org/gitlab/-/issues/331621
+    canEnableByMergeRequest: true,
   },
   {
     name: CLUSTER_IMAGE_SCANNING_NAME,

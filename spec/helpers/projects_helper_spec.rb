@@ -345,6 +345,14 @@ RSpec.describe ProjectsHelper do
         expect(link).not_to include(user.name)
       end
     end
+
+    context 'when user is nil' do
+      it 'returns "(deleted)"' do
+        link = helper.link_to_member(project, nil)
+
+        expect(link).to eq("(deleted)")
+      end
+    end
   end
 
   describe 'default_clone_protocol' do

@@ -77,7 +77,7 @@ extend type Mutation {
   stopEnvironment(environment: LocalEnvironmentInput): LocalErrors
   deleteEnvironment(environment: LocalEnvironmentInput): LocalErrors
   rollbackEnvironment(environment: LocalEnvironmentInput): LocalErrors
-  cancelAutoStop(environment: LocalEnvironmentInput): LocalErrors
+  cancelAutoStop(autoStopUrl: String!): LocalErrors
   setEnvironmentToDelete(environment: LocalEnvironmentInput): LocalErrors
   setEnvironmentToRollback(environment: LocalEnvironmentInput): LocalErrors
   setEnvironmentToStop(environment: LocalEnvironmentInput): LocalErrors

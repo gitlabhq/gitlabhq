@@ -15,6 +15,11 @@ export default {
       type: Object,
       required: true,
     },
+    showPath: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
   },
   computed: {
     blobSize() {
@@ -26,6 +31,13 @@ export default {
     showLfsBadge() {
       return this.blob.storedExternally && this.blob.externalStorage === 'lfs';
     },
+    fileName() {
+      if (this.showPath) {
+        return this.blob.path;
+      }
+
+      return this.blob.name;
+    },
   },
 };
 </script>
@@ -33,12 +45,12 @@ export default {
   <div class="file-header-content d-flex align-items-center lh-100">
     <slot name="filepath-prepend"></slot>
 
-    <template v-if="blob.path">
-      <file-icon :file-name="blob.path" :size="16" aria-hidden="true" css-classes="mr-2" />
+    <template v-if="fileName">
+      <file-icon :file-name="fileName" :size="16" aria-hidden="true" css-classes="mr-2" />
       <strong
         class="file-title-name mr-1 js-blob-header-filepath"
         data-qa-selector="file_title_content"
-        >{{ blob.path }}</strong
+        >{{ fileName }}</strong
       >
     </template>
 

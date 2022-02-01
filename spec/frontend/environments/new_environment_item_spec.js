@@ -191,9 +191,9 @@ describe('~/environments/components/new_environment_item.vue', () => {
       });
 
       it('shows the option to pin the environment if there is an autostop date', () => {
-        const rollback = wrapper.findByRole('menuitem', { name: __('Prevent auto-stopping') });
+        const pin = wrapper.findByRole('menuitem', { name: __('Prevent auto-stopping') });
 
-        expect(rollback.exists()).toBe(true);
+        expect(pin.exists()).toBe(true);
       });
 
       it('shows when the environment auto stops', () => {
@@ -211,9 +211,9 @@ describe('~/environments/components/new_environment_item.vue', () => {
       it('does not show the option to pin the environment if there is no autostop date', () => {
         wrapper = createWrapper({ apolloProvider: createApolloProvider() });
 
-        const rollback = wrapper.findByRole('menuitem', { name: __('Prevent auto-stopping') });
+        const pin = wrapper.findByRole('menuitem', { name: __('Prevent auto-stopping') });
 
-        expect(rollback.exists()).toBe(false);
+        expect(pin.exists()).toBe(false);
       });
 
       it('does not show when the environment auto stops', () => {
@@ -246,9 +246,9 @@ describe('~/environments/components/new_environment_item.vue', () => {
       it('does not show the option to pin the environment if there is no autostop date', () => {
         wrapper = createWrapper({ apolloProvider: createApolloProvider() });
 
-        const rollback = wrapper.findByRole('menuitem', { name: __('Prevent auto-stopping') });
+        const pin = wrapper.findByRole('menuitem', { name: __('Prevent auto-stopping') });
 
-        expect(rollback.exists()).toBe(false);
+        expect(pin.exists()).toBe(false);
       });
 
       it('does not show when the environment auto stops', () => {

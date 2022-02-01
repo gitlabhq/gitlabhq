@@ -54,13 +54,13 @@ module ProjectsHelper
     default_opts = { avatar: true, name: true, title: ":name" }
     opts = default_opts.merge(opts)
 
+    return "(deleted)" unless author
+
     data_attrs = {
       user_id: author.id,
       username: author.username,
       name: author.name
     }
-
-    return "(deleted)" unless author
 
     author_html = []
 
