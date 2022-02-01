@@ -1,8 +1,10 @@
+- form_id = "transfer-group-form"
+- initial_data = { button_text: s_('GroupSettings|Transfer group'), group_name: @group.name, target_form_id: form_id, parent_groups: parent_group_options(group), is_paid_group: group.paid?.to_s }
+
 .sub-section
   %h4.warning-title= s_('GroupSettings|Transfer group')
   %p= _('Transfer group to another parent group.')
-  = form_for group, url: transfer_group_path(group), method: :put, html: { class: 'js-group-transfer-form' } do |f|
-
+  = form_for group, url: transfer_group_path(group), method: :put, html: { id: form_id, class: 'js-group-transfer-form' } do |f|
     %ul
       - learn_more_link_start = '<a href="https://docs.gitlab.com/ee/user/project/index.html#redirects-when-changing-repository-paths" target="_blank" rel="noopener noreferrer">'.html_safe
       - warning_text = s_("GroupSettings|Be careful. Changing a group's parent can have unintended side effects. %{learn_more_link_start}Learn more.%{learn_more_link_end}") % { learn_more_link_start: learn_more_link_start, learn_more_link_end: '</a>'.html_safe }
@@ -10,14 +12,9 @@
       %li= s_('GroupSettings|You can only transfer the group to a group you manage.')
       %li= s_('GroupSettings|You will need to update your local repositories to point to the new location.')
       %li= s_("GroupSettings|If the parent group's visibility is lower than the group current visibility, visibility levels for subgroups and projects will be changed to match the new parent group's visibility.")
-
-    .form-group
-      = dropdown_tag(s_('GroupSettings|Select parent group'), options: { toggle_class: 'js-groups-dropdown', title: s_('GroupSettings|Parent Group'), filter: true, dropdown_class: 'dropdown-open-top dropdown-group-transfer', placeholder: s_('GroupSettings|Search groups'), disabled: group.paid?, data: { data: parent_group_options(group), qa_selector: 'select_group_dropdown' } })
-      = hidden_field_tag 'new_parent_group_id'
     - if group.paid?
       .gl-alert.gl-alert-info.gl-mb-5
         = sprite_icon('information-o', size: 16, css_class: 'gl-icon gl-alert-icon gl-alert-icon-no-title')
         .gl-alert-body
           = html_escape(_("This group can't be transfered because it is linked to a subscription. To transfer this group, %{linkStart}link the subscription%{linkEnd} with a different group.")) % { linkStart: "<a href=\"#{help_page_path('subscriptions/index', anchor: 'change-the-linked-namespace')}\">".html_safe, linkEnd: '</a>'.html_safe }
-
-    = f.submit s_('GroupSettings|Transfer group'), class: 'btn gl-button btn-warning', data: { qa_selector: "transfer_group_button" }
+    .js-transfer-group-form{ data: initial_data }

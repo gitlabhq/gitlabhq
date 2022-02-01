@@ -6,16 +6,11 @@ module QA
       module Settings
         class Advanced < Page::Base
           include Component::ConfirmModal
+          include Component::NamespaceSelect
 
           view 'app/views/projects/edit.html.haml' do
             element :project_path_field
             element :change_path_button
-          end
-
-          view "app/assets/javascripts/vue_shared/components/namespace_select/namespace_select.vue" do
-            element :namespaces_list
-            element :namespaces_list_groups
-            element :namespaces_list_item
           end
 
           view 'app/views/projects/settings/_archive.html.haml' do
@@ -41,14 +36,6 @@ module QA
 
           def click_change_path_button
             click_element :change_path_button
-          end
-
-          def select_namespace(item)
-            click_element :namespaces_list
-
-            within_element(:namespaces_list) do
-              find_element(:namespaces_list_item, text: item).click
-            end
           end
 
           def transfer_project!(project_name, namespace)

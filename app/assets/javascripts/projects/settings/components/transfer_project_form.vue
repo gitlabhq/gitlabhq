@@ -44,7 +44,6 @@ export default {
   <div>
     <gl-form-group>
       <namespace-select
-        class="qa-namespaces-list"
         data-testid="transfer-project-namespace"
         :full-width="true"
         :data="namespaces"

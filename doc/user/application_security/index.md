@@ -200,6 +200,11 @@ security issues:
 
 ### Vulnerability-Check rule
 
+WARNING:
+This feature is in its end-of-life process. It is [deprecated](../../update/deprecations.md#vulnerability-check)
+for use in GitLab 14.8, and is planned for removal in GitLab 15.0. Users should migrate to the new
+[Security Approval Policies](policies/#scan-result-policy-editor).
+
 To prevent a merge request introducing a security vulnerability in a project, enable the
 Vulnerability-Check rule. While this rule is enabled, additional merge request approval by
 [eligible approvers](../project/merge_requests/approvals/rules.md#eligible-approvers)

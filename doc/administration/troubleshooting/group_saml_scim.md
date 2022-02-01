@@ -40,7 +40,8 @@ User claims and attributes:
 
 SCIM mapping:
 
-![Azure AD SCIM](img/AzureAD-scim_attribute_mapping.png)
+![Azure AD SCIM Provisioning](img/AzureAD-scim_provisioning.png)
+![Azure AD SCIM Attribute Mapping](img/AzureAD-scim_attribute_mapping.png)
 
 Group Sync:
 

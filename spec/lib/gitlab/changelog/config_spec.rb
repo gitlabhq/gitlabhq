@@ -31,6 +31,20 @@ RSpec.describe Gitlab::Changelog::Config do
 
       described_class.from_git(project)
     end
+
+    context 'when changelog is empty' do
+      it 'returns the default configuration' do
+        allow(project.repository)
+          .to receive(:changelog_config)
+          .and_return("")
+
+        expect(described_class)
+          .to receive(:new)
+          .with(project)
+
+        described_class.from_git(project)
+      end
+    end
   end
 
   describe '.from_hash' do

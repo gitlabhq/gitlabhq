@@ -49,22 +49,21 @@ Once [Group Single Sign-On](index.md) has been configured, we can:
 
 ### Azure configuration steps
 
-The SAML application that was created during [Single sign-on](index.md) setup for [Azure](https://docs.microsoft.com/en-us/azure/active-directory/manage-apps/view-applications-portal) now needs to be set up for SCIM.
+The SAML application that was created during [Single sign-on](index.md) setup for [Azure](https://docs.microsoft.com/en-us/azure/active-directory/manage-apps/view-applications-portal) now needs to be set up for SCIM. You can refer to [Azure SCIM setup documentation](https://docs.microsoft.com/en-us/azure/active-directory/app-provisioning/use-scim-to-provision-users-and-groups#getting-started).
 
-1. Enable automatic provisioning and administrative credentials by following the
-   [Azure's SCIM setup documentation](https://docs.microsoft.com/en-us/azure/active-directory/app-provisioning/use-scim-to-provision-users-and-groups#provisioning-users-and-groups-to-applications-that-support-scim).
+1. In your app, go to the Provisioning tab, and set the **Provisioning Mode** to **Automatic**. 
+   Then fill in the **Admin Credentials**, and save. The **Tenant URL** and **secret token** are the items
+   retrieved in the [previous step](#gitlab-configuration).
 
-During this configuration, note the following:
+1. After saving, two more tabs appear:
 
-- The `Tenant URL` and `secret token` are the items retrieved in the
-  [previous step](#gitlab-configuration).
-- We recommend setting a notification email and selecting the **Send an email notification when a failure occurs** checkbox.
-- For mappings, we only leave `Synchronize Azure Active Directory Users to AppName` enabled.
-  `Synchronize Azure Active Directory Groups to AppName` is usually disabled. However, this
-  does not mean Azure AD users cannot be provisioned in groups. Leaving it enabled does not break
-  the SCIM user provisioning, but causes errors in Azure AD that may be confusing and misleading.
+    - **Settings**: We recommend setting a notification email and selecting the **Send an email notification when a failure occurs** checkbox.
+      You also control what is actually synced by selecting the **Scope**. For example, **Sync only assigned users and groups** only syncs the users and groups assigned to the application. Otherwise, it syncs the whole Active Directory.
 
-You can then test the connection by clicking on **Test Connection**. If the connection is successful, be sure to save your configuration before moving on. See below for [troubleshooting](#troubleshooting).
+    - **Mappings**: We recommend keeping **Provision Azure Active Directory Users** enabled, and disable **Provision Azure Active Directory Groups**. 
+      Leaving **Provision Azure Active Directory Groups** enabled does not break the SCIM user provisioning, but it causes errors in Azure AD that may be confusing and misleading.
+
+1. You can then test the connection by selecting **Test Connection**. If the connection is successful, save your configuration before moving on. See below for [troubleshooting](#troubleshooting).
 
 #### Configure attribute mapping
 
@@ -92,11 +91,6 @@ For guidance, you can view [an example configuration in the troubleshooting refe
 
 1. Save all changes.
 1. In the **Provisioning** step, set the `Provisioning Status` to `On`.
-
-   NOTE:
-   You can control what is actually synced by selecting the `Scope`. For example,
-   `Sync only assigned users and groups` only syncs the users assigned to
-   the application (`Users and groups`), otherwise, it syncs the whole Active Directory.
 
 Once enabled, the synchronization details and any errors appears on the
 bottom of the **Provisioning** screen, together with a link to the audit events.

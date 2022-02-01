@@ -31,7 +31,7 @@ module QA
          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347692' do
         Page::Group::Menu.perform(&:click_group_general_settings_item)
         Page::Group::Settings::General.perform do |general|
-          general.transfer_group(target_group.path)
+          general.transfer_group(target_group.path, sub_group_for_transfer.path)
 
           sub_group_for_transfer.sandbox = target_group
           sub_group_for_transfer.reload!
