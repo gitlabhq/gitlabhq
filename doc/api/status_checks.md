@@ -46,6 +46,8 @@ GET /projects/:id/merge_requests/:merge_request_iid/status_checks
 
 For a single merge request, use the API to inform GitLab that a merge request has passed a check by an external service.
 
+Execute this API call as any user with rights to approve the merge request itself.
+
 ```plaintext
 POST /projects/:id/merge_requests/:merge_request_iid/status_check_responses
 ```

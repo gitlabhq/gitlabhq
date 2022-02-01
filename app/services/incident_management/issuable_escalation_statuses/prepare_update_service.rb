@@ -2,18 +2,16 @@
 
 module IncidentManagement
   module IssuableEscalationStatuses
-    class PrepareUpdateService
+    class PrepareUpdateService < ::BaseProjectService
       include Gitlab::Utils::StrongMemoize
 
       SUPPORTED_PARAMS = %i[status status_change_reason].freeze
 
-      InvalidParamError = Class.new(StandardError)
-
       def initialize(issuable, current_user, params)
         @issuable = issuable
-        @current_user = current_user
-        @params = params.dup || {}
-        @project = issuable.project
+        @param_errors = []
+
+        super(project: issuable.project, current_user: current_user, params: Hash(params))
       end
 
       def execute
@@ -23,14 +21,14 @@ module IncidentManagement
         filter_attributes
         filter_redundant_params
 
+        return invalid_param_error if param_errors.any?
+
         ServiceResponse.success(payload: { escalation_status: params })
-      rescue InvalidParamError
-        invalid_param_error
       end
 
       private
 
-      attr_reader :issuable, :current_user, :params, :project
+      attr_reader :issuable, :param_errors
 
       def available?
         issuable.supports_escalation? &&
@@ -65,7 +63,7 @@ module IncidentManagement
         return unless status
 
         status_event = escalation_status.status_event_for(status)
-        raise InvalidParamError unless status_event
+        add_param_error(:status) && return unless status_event
 
         params[:status_event] = status_event
       end
@@ -84,12 +82,16 @@ module IncidentManagement
         end
       end
 
+      def add_param_error(param)
+        param_errors << param
+      end
+
       def availability_error
         ServiceResponse.error(message: 'Escalation status updates are not available for this issue, user, or project.')
       end
 
       def invalid_param_error
-        ServiceResponse.error(message: 'Invalid value was provided for a parameter.')
+        ServiceResponse.error(message: "Invalid value was provided for parameters: #{param_errors.join(', ')}")
       end
     end
   end

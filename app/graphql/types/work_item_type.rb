@@ -12,6 +12,8 @@ module Types
           description: 'Global ID of the work item.'
     field :iid, GraphQL::Types::ID, null: false,
           description: 'Internal ID of the work item.'
+    field :state, WorkItemStateEnum, null: false,
+          description: 'State of the work item.'
     field :title, GraphQL::Types::String, null: false,
           description: 'Title of the work item.'
     field :work_item_type, Types::WorkItems::TypeType, null: false,

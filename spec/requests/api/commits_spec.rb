@@ -227,6 +227,12 @@ RSpec.describe API::Commits do
             expect(response.headers['X-Page']).to eq('3')
           end
         end
+
+        context 'when per_page is 0' do
+          let(:per_page) { 0 }
+
+          it_behaves_like '400 response'
+        end
       end
 
       context 'with order parameter' do

@@ -176,7 +176,7 @@ module Noteable
 
     Gitlab::Routing.url_helpers.project_noteable_notes_path(
       project,
-      target_type: self.class.name.underscore,
+      target_type: noteable_target_type_name,
       target_id: id
     )
   end
@@ -199,6 +199,10 @@ module Noteable
     return unless project_email
 
     project_email.sub('@', "-#{iid}@")
+  end
+
+  def noteable_target_type_name
+    model_name.singular
   end
 
   private

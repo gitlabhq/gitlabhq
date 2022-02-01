@@ -721,6 +721,32 @@ The `merged_by` field in the [merge request API](https://docs.gitlab.com/ee/api/
 
 ## 14.8
 
+### External status check API breaking changes
+
+WARNING:
+This feature will be changed or removed in 15.0
+as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Before updating GitLab, review the details carefully to determine if you need to make any
+changes to your code, settings, or workflow.
+
+The [external status check API](https://docs.gitlab.com/ee/api/status_checks.html) was originally implemented to
+support pass-by-default requests to mark a status check as passing. Pass-by-default requests are now deprecated.
+Specifically, the following are deprecated:
+
+- Requests that do not contain the `status` field.
+- Requests that have the `status` field set to `approved`.
+
+Beginning in GitLab 15.0, status checks will only be updated to a passing state if the `status` field is both present
+and set to `pass`. Requests that:
+
+- Do not contain the `status` field will be rejected with a `422` error. For more information, see [the relevant issue](https://gitlab.com/gitlab-org/gitlab/-/issues/338827).
+- Contain any value other than `pass` will cause the status check to fail. For more information, see [the relevant issue](https://gitlab.com/gitlab-org/gitlab/-/issues/339039).
+
+To align with this change, API calls to list external status checks will also return the value of `pass` rather than
+`approved` for status checks that have passed.
+
+**Planned removal milestone: 15.0 (2022-05-22)**
+
 ### Querying Usage Trends via the `instanceStatisticsMeasurements` GraphQL node
 
 WARNING:

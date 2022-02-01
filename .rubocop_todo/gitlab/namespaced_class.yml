@@ -428,6 +428,7 @@ Gitlab/NamespacedClass:
   - app/policies/user_policy.rb
   - app/policies/wiki_page_policy.rb
   - app/policies/wiki_policy.rb
+  - app/policies/work_item_policy.rb
   - app/presenters/award_emoji_presenter.rb
   - app/presenters/blob_presenter.rb
   - app/presenters/board_presenter.rb

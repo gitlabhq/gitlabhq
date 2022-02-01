@@ -22,14 +22,14 @@ class Projects::ForksController < Projects::ApplicationController
   end
 
   def index
-    @sort = params[:sort]
+    @sort = forks_params[:sort]
 
     @total_forks_count    = project.forks.size
     @public_forks_count   = project.forks.public_only.size
     @private_forks_count  = @total_forks_count - project.forks.public_and_internal_only.size
     @internal_forks_count = @total_forks_count - @public_forks_count - @private_forks_count
 
-    @forks = load_forks.page(params[:page])
+    @forks = load_forks.page(forks_params[:page])
 
     prepare_projects_for_rendering(@forks)
 
@@ -98,7 +98,7 @@ class Projects::ForksController < Projects::ApplicationController
   def load_forks
     forks = ForkProjectsFinder.new(
       project,
-      params: params.merge(search: params[:filter_projects]),
+      params: forks_params.merge(search: forks_params[:filter_projects]),
       current_user: current_user
     ).execute
 
@@ -115,6 +115,10 @@ class Projects::ForksController < Projects::ApplicationController
     strong_memoize(:fork_namespace) do
       Namespace.find(params[:namespace_key]) if params[:namespace_key].present?
     end
+  end
+
+  def forks_params
+    params.permit(:filter_projects, :sort, :page)
   end
 
   def fork_params

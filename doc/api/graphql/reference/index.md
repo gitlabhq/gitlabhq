@@ -5145,6 +5145,28 @@ Input type: `WorkItemCreateInput`
 | <a id="mutationworkitemcreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationworkitemcreateworkitem"></a>`workItem` | [`WorkItem`](#workitem) | Created work item. |
 
+### `Mutation.workItemUpdate`
+
+Updates a work item by Global ID. Available only when feature flag `work_items` is enabled. The feature is experimental and is subject to change without notice.
+
+Input type: `WorkItemUpdateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationworkitemupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationworkitemupdateid"></a>`id` | [`WorkItemID!`](#workitemid) | Global ID of the work item. |
+| <a id="mutationworkitemupdatestateevent"></a>`stateEvent` | [`WorkItemStateEvent`](#workitemstateevent) | Close or reopen a work item. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationworkitemupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationworkitemupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationworkitemupdateworkitem"></a>`workItem` | [`WorkItem`](#workitem) | Updated work item. |
+
 ## Connections
 
 Some types in our schema are `Connection` types - they represent a paginated
@@ -16422,6 +16444,7 @@ Represents vulnerability letter grades with associated projects.
 | <a id="workitemdescriptionhtml"></a>`descriptionHtml` | [`String`](#string) | The GitLab Flavored Markdown rendering of `description`. |
 | <a id="workitemid"></a>`id` | [`WorkItemID!`](#workitemid) | Global ID of the work item. |
 | <a id="workitemiid"></a>`iid` | [`ID!`](#id) | Internal ID of the work item. |
+| <a id="workitemstate"></a>`state` | [`WorkItemState!`](#workitemstate) | State of the work item. |
 | <a id="workitemtitle"></a>`title` | [`String!`](#string) | Title of the work item. |
 | <a id="workitemtitlehtml"></a>`titleHtml` | [`String`](#string) | The GitLab Flavored Markdown rendering of `title`. |
 | <a id="workitemworkitemtype"></a>`workItemType` | [`WorkItemType!`](#workitemtype) | Type assigned to the work item. |
@@ -18027,6 +18050,24 @@ Weight ID wildcard values.
 | ----- | ----------- |
 | <a id="weightwildcardidany"></a>`ANY` | Weight is assigned. |
 | <a id="weightwildcardidnone"></a>`NONE` | No weight is assigned. |
+
+### `WorkItemState`
+
+State of a GitLab work item.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="workitemstateclosed"></a>`CLOSED` | In closed state. |
+| <a id="workitemstateopen"></a>`OPEN` | In open state. |
+
+### `WorkItemStateEvent`
+
+Values for work item state events.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="workitemstateeventclose"></a>`CLOSE` | Closes the work item. |
+| <a id="workitemstateeventreopen"></a>`REOPEN` | Reopens the work item. |
 
 ## Scalar types
 

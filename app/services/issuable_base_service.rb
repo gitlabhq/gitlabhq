@@ -523,7 +523,7 @@ class IssuableBaseService < ::BaseProjectService
 
   def invalidate_cache_counts(issuable, users: [])
     users.each do |user|
-      user.public_send("invalidate_#{issuable.model_name.singular}_cache_counts") # rubocop:disable GitlabSecurity/PublicSend
+      user.public_send("invalidate_#{issuable.noteable_target_type_name}_cache_counts") # rubocop:disable GitlabSecurity/PublicSend
     end
   end
 

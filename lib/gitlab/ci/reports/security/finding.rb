@@ -122,8 +122,10 @@ module Gitlab
           end
 
           def keys
-            @keys ||= identifiers.reject(&:type_identifier?).map do |identifier|
-              FindingKey.new(location_fingerprint: location&.fingerprint, identifier_fingerprint: identifier.fingerprint)
+            @keys ||= identifiers.reject(&:type_identifier?).flat_map do |identifier|
+              location_fingerprints.map do |location_fingerprint|
+                FindingKey.new(location_fingerprint: location_fingerprint, identifier_fingerprint: identifier.fingerprint)
+              end
             end
           end
 
@@ -171,8 +173,10 @@ module Gitlab
             original_data['location']
           end
 
+          # Returns either the max priority signature hex
+          # or the location fingerprint
           def location_fingerprint
-            max_priority_signature_hex || location&.fingerprint
+            location_fingerprints.first
           end
 
           private
@@ -181,10 +185,15 @@ module Gitlab
             Digest::SHA1.hexdigest(compare_key)
           end
 
-          def max_priority_signature_hex
-            return unless @vulnerability_finding_signatures_enabled && signatures.present?
+          def location_fingerprints
+            @location_fingerprints ||= signature_hexes << location&.fingerprint
+          end
 
-            signatures.max_by(&:priority).signature_hex
+          # Returns the signature hexes in reverse priority order
+          def signature_hexes
+            return [] unless @vulnerability_finding_signatures_enabled && signatures.present?
+
+            signatures.sort_by(&:priority).map(&:signature_hex).reverse
           end
         end
       end

@@ -37,7 +37,7 @@ RSpec.describe IncidentManagement::IssuableEscalationStatuses::PrepareUpdateServ
   end
 
   shared_examples 'invalid params error response' do
-    include_examples 'error response', 'Invalid value was provided for a parameter.'
+    include_examples 'error response', 'Invalid value was provided for parameters: status'
   end
 
   it_behaves_like 'successful response', { status_event: :acknowledge }

@@ -31,6 +31,7 @@ RSpec.describe Projects::TagsController do
           get :index, params: { namespace_id: project.namespace.to_param, project_id: project }, format: format
 
           expect(assigns(:tags)).to eq([])
+          expect(assigns(:releases)).to eq([])
           expect(response).to have_gitlab_http_status(:service_unavailable)
         end
       end

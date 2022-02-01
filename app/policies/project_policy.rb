@@ -259,10 +259,12 @@ class ProjectPolicy < BasePolicy
 
   rule { can?(:reporter_access) & can?(:create_issue) }.enable :create_incident
 
-  rule { can?(:guest_access) & can?(:create_issue) }.policy do
+  rule { can?(:create_issue) }.policy do
     enable :create_task
     enable :create_work_item
   end
+
+  rule { can?(:update_issue) }.enable :update_work_item
 
   # These abilities are not allowed to admins that are not members of the project,
   # that's why they are defined separately.

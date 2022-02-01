@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Manage', :github, :requires_admin do
+  RSpec.describe 'Manage', :github, :requires_admin, :reliable do
     describe 'Project import' do
       let!(:api_client) { Runtime::API::Client.as_admin }
       let!(:group) { Resource::Group.fabricate_via_api! { |resource| resource.api_client = api_client } }

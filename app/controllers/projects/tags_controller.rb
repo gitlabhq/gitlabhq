@@ -31,6 +31,7 @@ class Projects::TagsController < Projects::ApplicationController
 
     rescue Gitlab::Git::CommandError => e
       @tags = []
+      @releases = []
       @tags_loading_error = e
     end
 
