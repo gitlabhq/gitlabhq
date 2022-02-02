@@ -23,7 +23,7 @@ GET /projects/:id/deployments
 | `updated_after`  | datetime       | no       | Return deployments updated after the specified date. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). |
 | `updated_before` | datetime       | no       | Return deployments updated before the specified date. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). |
 | `environment`    | string         | no       | The [name of the environment](../ci/environments/index.md) to filter deployments by.       |
-| `status`         | string         | no       | The status to filter deployments by. One of `created`, `running`, `success`, `failed`, `canceled`.
+| `status`         | string         | no       | The status to filter deployments by. One of `created`, `running`, `success`, `failed`, `canceled`, `blocked`.
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/deployments"
@@ -201,6 +201,7 @@ Example response:
   "sha": "a91957a858320c0e17f3a0eca7cfacbff50ea29a",
   "created_at": "2016-08-11T11:32:35.444Z",
   "updated_at": "2016-08-11T11:34:01.123Z",
+  "status": "success",
   "user": {
     "name": "Administrator",
     "username": "root",
@@ -264,6 +265,29 @@ Example response:
 }
 ```
 
+Deployments created by users on GitLab Premium or higher include the `approvals` and `pending_approval_count` properties:
+
+```json
+{
+  "status": "created",
+  "pending_approval_count": 0,
+  "approvals": [
+    {
+      "user": {
+        "id": 49,
+        "username": "project_6_bot",
+        "name": "****",
+        "state": "active",
+        "avatar_url": "https://www.gravatar.com/avatar/e83ac685f68ea07553ad3054c738c709?s=80&d=identicon",
+        "web_url": "http://localhost:3000/project_6_bot"
+      },
+      "status": "approved"
+    }
+  ],
+  ...
+}
+```
+
 ## Create a deployment
 
 ```plaintext
@@ -311,6 +335,29 @@ Example response:
 }
 ```
 
+Deployments created by users on GitLab Premium or higher include the `approvals` and `pending_approval_count` properties:
+
+```json
+{
+  "status": "created",
+  "pending_approval_count": 0,
+  "approvals": [
+    {
+      "user": {
+        "id": 49,
+        "username": "project_6_bot",
+        "name": "****",
+        "state": "active",
+        "avatar_url": "https://www.gravatar.com/avatar/e83ac685f68ea07553ad3054c738c709?s=80&d=identicon",
+        "web_url": "http://localhost:3000/project_6_bot"
+      },
+      "status": "approved"
+    }
+  ],
+  ...
+}
+```
+
 ## Update a deployment
 
 ```plaintext
@@ -351,6 +398,29 @@ Example response:
     "external_url": "https://about.gitlab.com"
   },
   "deployable": null
+}
+```
+
+Deployments created by users on GitLab Premium or higher include the `approvals` and `pending_approval_count` properties:
+
+```json
+{
+  "status": "created",
+  "pending_approval_count": 0,
+  "approvals": [
+    {
+      "user": {
+        "id": 49,
+        "username": "project_6_bot",
+        "name": "****",
+        "state": "active",
+        "avatar_url": "https://www.gravatar.com/avatar/e83ac685f68ea07553ad3054c738c709?s=80&d=identicon",
+        "web_url": "http://localhost:3000/project_6_bot"
+      },
+      "status": "approved"
+    }
+  ],
+  ...
 }
 ```
 

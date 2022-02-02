@@ -211,15 +211,25 @@ averaged.
 
 To define a coverage-parsing regular expression:
 
-- In the GitLab UI:
-
-  1. On the top bar, select **Menu > Projects** and find your project.
-  1. On the left sidebar, select **Settings > CI/CD**.
-  1. Expand **General pipelines**.
-  1. In the **Test coverage parsing** field, enter a regular expression. Leave blank to disable this feature.
-
 - Using the project's `.gitlab-ci.yml`, provide a regular expression using the [`coverage`](../yaml/index.md#coverage)
-  keyword.
+  keyword. Setting the regular expression this way takes precedence over the project's CI/CD settings.
+
+- Using the Project's CI/CD settings:
+  - Set using the GitLab UI:
+
+    1. On the top bar, select **Menu > Projects** and find your project.
+    1. On the left sidebar, select **Settings > CI/CD**.
+    1. Expand **General pipelines**.
+    1. In the **Test coverage parsing** field, enter a regular expression. Leave blank to disable this feature.
+
+  - Set when [editing a project](../../api/projects.md#edit-project) or [creating a project](../../api/projects.md#create-project)
+    using the GitLab API with the `build_coverage_regex` attribute:
+
+    ```shell
+    curl --request PUT --header "PRIVATE-TOKEN: <your-token>" \
+       --url 'https://gitlab.com/api/v4/projects/<your-project-ID>' \
+       --data "build_coverage_regex=<your-regular-expression>"
+    ```
 
 You can use <https://rubular.com> to test your regular expression. The regular expression returns the **last**
 match found in the output.

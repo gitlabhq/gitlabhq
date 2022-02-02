@@ -95,7 +95,11 @@ curl --data "status=approved" \
 
 #### Using the API
 
-Use the [Deployments API](../../api/deployments.md) to see deployments. The `status` field indicates if a deployment is blocked.
+Use the [Deployments API](../../api/deployments.md) to see deployments.
+
+- The `status` field indicates if a deployment is blocked.
+- The `pending_approval_count` field indicates how many approvals are remaining to run a deployment.
+- The `approvals` field contains the deployment's approvals.
 
 ## Related features
 

@@ -157,6 +157,7 @@ export default {
           symbol: '%',
           token: MilestoneToken,
           unique: true,
+          shouldSkipSort: true,
           fetchMilestones: this.fetchMilestones,
         },
         {

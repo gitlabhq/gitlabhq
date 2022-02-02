@@ -612,6 +612,7 @@ export const mockTokens = (fetchLabels, fetchAuthors, fetchMilestones, isSignedI
     title: __('Milestone'),
     symbol: '%',
     type: 'milestone',
+    shouldSkipSort: true,
     token: MilestoneToken,
     unique: true,
     fetchMilestones,

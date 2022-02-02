@@ -206,6 +206,14 @@ RSpec.describe Blobs::UnfoldPresenter do
       end
     end
 
+    context 'when since exceeds number of lines' do
+      let(:params) { { since: 2 } }
+
+      it 'returns an empty list' do
+        expect(subject.lines.size).to eq(0)
+      end
+    end
+
     context 'when full is true' do
       let(:params) { { full: true } }
 

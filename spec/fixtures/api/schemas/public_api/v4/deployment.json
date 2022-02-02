@@ -8,7 +8,8 @@
     "created_at",
     "updated_at",
     "user",
-    "deployable"
+    "deployable",
+    "status"
   ],
   "properties": {
     "id": { "type": "integer" },
@@ -30,6 +31,5 @@
       ]
     },
     "status": { "type": "string" }
-  },
-  "additionalProperties": false
+  }
 }
