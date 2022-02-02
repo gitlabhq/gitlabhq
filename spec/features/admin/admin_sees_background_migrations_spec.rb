@@ -68,7 +68,7 @@ RSpec.describe "Admin > Admin sees background migrations" do
         tab.click
 
         expect(page).to have_current_path(admin_background_migrations_path(tab: 'failed'))
-        expect(tab[:class]).to include('gl-tab-nav-item-active', 'gl-tab-nav-item-active-indigo')
+        expect(tab[:class]).to include('gl-tab-nav-item-active')
 
         expect(page).to have_selector('tbody tr', count: 1)
 
@@ -93,7 +93,7 @@ RSpec.describe "Admin > Admin sees background migrations" do
       tab.click
 
       expect(page).to have_current_path(admin_background_migrations_path(tab: 'finished'))
-      expect(tab[:class]).to include('gl-tab-nav-item-active', 'gl-tab-nav-item-active-indigo')
+      expect(tab[:class]).to include('gl-tab-nav-item-active')
 
       expect(page).to have_selector('tbody tr', count: 1)
 

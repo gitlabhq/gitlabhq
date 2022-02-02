@@ -45,7 +45,7 @@ RSpec.describe TabHelper do
     end
 
     it 'creates an active tab with item_active = true' do
-      expect(helper.gl_tab_link_to('Link', '/url', { item_active: true })).to match(/<a class=".*active gl-tab-nav-item-active gl-tab-nav-item-active-indigo.*"/)
+      expect(helper.gl_tab_link_to('Link', '/url', { item_active: true })).to match(/<a class=".*active gl-tab-nav-item-active.*"/)
     end
 
     context 'when on the active page' do
@@ -54,7 +54,7 @@ RSpec.describe TabHelper do
       end
 
       it 'creates an active tab' do
-        expect(helper.gl_tab_link_to('Link', '/url')).to match(/<a class=".*active gl-tab-nav-item-active gl-tab-nav-item-active-indigo.*"/)
+        expect(helper.gl_tab_link_to('Link', '/url')).to match(/<a class=".*active gl-tab-nav-item-active.*"/)
       end
 
       it 'creates an inactive tab with item_active = false' do

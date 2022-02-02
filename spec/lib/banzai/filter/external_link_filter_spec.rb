@@ -71,6 +71,13 @@ RSpec.describe Banzai::Filter::ExternalLinkFilter do
 
       expect(doc.to_html).to eq(expected)
     end
+
+    it 'adds rel and target attributes to improperly formatted protocols' do
+      doc = filter %q(<p><a target="_blank" href="http:evil.com">Reverse Tabnabbing</a></p>)
+      expected = %q(<p><a target="_blank" href="http:evil.com" rel="nofollow noreferrer noopener">Reverse Tabnabbing</a></p>)
+
+      expect(doc.to_html).to eq(expected)
+    end
   end
 
   context 'for links with a username' do

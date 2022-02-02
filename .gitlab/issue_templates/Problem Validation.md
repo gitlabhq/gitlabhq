@@ -1,4 +1,4 @@
-<!-- This template is used as a starting point for understing and articulating a customer problem.
+<!-- This template is used as a starting point for understanding and articulating a customer problem.
 Learn more about it in the handbook: https://about.gitlab.com/handbook/product-development-flow/#validation-phase-2-problem-validation 
 -->
 

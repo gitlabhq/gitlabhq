@@ -10,7 +10,7 @@ class Projects::IssuesController < Projects::ApplicationController
   include RecordUserLastActivity
 
   ISSUES_EXCEPT_ACTIONS = %i[index calendar new create bulk_update import_csv export_csv service_desk].freeze
-  SET_ISSUABLES_INDEX_ONLY_ACTIONS = %i[index calendar service_desk].freeze
+  SET_ISSUABLES_INDEX_ONLY_ACTIONS = %i[calendar service_desk].freeze
 
   prepend_before_action(only: [:index]) { authenticate_sessionless_user!(:rss) }
   prepend_before_action(only: [:calendar]) { authenticate_sessionless_user!(:ics) }
@@ -22,7 +22,10 @@ class Projects::IssuesController < Projects::ApplicationController
   before_action :issue, unless: ->(c) { ISSUES_EXCEPT_ACTIONS.include?(c.action_name.to_sym) }
   after_action :log_issue_show, unless: ->(c) { ISSUES_EXCEPT_ACTIONS.include?(c.action_name.to_sym) }
 
-  before_action :set_issuables_index, if: ->(c) { SET_ISSUABLES_INDEX_ONLY_ACTIONS.include?(c.action_name.to_sym) }
+  before_action :set_issuables_index, if: ->(c) {
+    SET_ISSUABLES_INDEX_ONLY_ACTIONS.include?(c.action_name.to_sym) ||
+    (c.action_name.to_sym == :index && Feature.disabled?(:vue_issues_list, project&.group, default_enabled: :yaml))
+  }
 
   # Allow write(create) issue
   before_action :authorize_create_issue!, only: [:new, :create]

@@ -11,6 +11,20 @@ RSpec.describe UsersHelper do
     badges.reject { |badge| badge[:text] == 'Is using seat' }
   end
 
+  describe 'display_public_email?' do
+    let_it_be(:user) { create(:user, :public_email) }
+
+    subject { helper.display_public_email?(user) }
+
+    it { is_expected.to be true }
+
+    context 'when user public email is blank' do
+      let_it_be(:user) { create(:user, public_email: '') }
+
+      it { is_expected.to be false }
+    end
+  end
+
   describe '#user_link' do
     subject { helper.user_link(user) }
 

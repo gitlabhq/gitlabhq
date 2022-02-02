@@ -209,6 +209,21 @@ class GroupsController < Groups::ApplicationController
     end
   end
 
+  def issues
+    return super if Feature.disabled?(:vue_issues_list, group, default_enabled: :yaml)
+
+    @has_issues = IssuesFinder.new(current_user, group_id: group.id).execute
+      .non_archived
+      .exists?
+
+    @has_projects = group_projects.exists?
+
+    respond_to do |format|
+      format.html
+      format.atom { render layout: 'xml.atom' }
+    end
+  end
+
   protected
 
   def render_show_html

@@ -38452,6 +38452,9 @@ msgstr ""
 msgid "Unsubscribes from this %{quick_action_target}."
 msgstr ""
 
+msgid "Unsupported sort value."
+msgstr ""
+
 msgid "Unsupported todo type passed. Supported todo types are: %{todo_types}"
 msgstr ""
 

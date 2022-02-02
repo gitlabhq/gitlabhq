@@ -64,8 +64,8 @@ module Banzai
 
       def internal_url?(uri)
         return false if uri.nil?
-        # Relative URLs miss a hostname
-        return true unless uri.hostname
+        # Relative URLs miss a hostname AND a scheme
+        return true if !uri.hostname && !uri.scheme
 
         uri.hostname == internal_url.hostname
       end

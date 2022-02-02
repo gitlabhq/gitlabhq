@@ -302,20 +302,38 @@ RSpec.describe Ci::Runner do
   context 'with instance runners sharing disabled' do
     # group specific
     let_it_be(:group) { create(:group, shared_runners_enabled: false) }
-    let_it_be(:project) { create(:project, group: group, shared_runners_enabled: false) }
     let_it_be(:group_runner) { create(:ci_runner, :group, groups: [group]) }
 
+    let(:group_runners_enabled) { true }
+    let(:project) { create(:project, group: group, shared_runners_enabled: false) }
+
     # project specific
-    let_it_be(:project_runner) { create(:ci_runner, :project, projects: [project]) }
+    let(:project_runner) { create(:ci_runner, :project, projects: [project]) }
 
     # globally shared
     let_it_be(:shared_runner) { create(:ci_runner, :instance) }
 
+    before do
+      project.update!(group_runners_enabled: group_runners_enabled)
+    end
+
     describe '.owned_or_instance_wide' do
       subject { described_class.owned_or_instance_wide(project.id) }
 
-      it 'returns a project specific and a group specific runner' do
-        is_expected.to contain_exactly(group_runner, project_runner)
+      context 'with group runners disabled' do
+        let(:group_runners_enabled) { false }
+
+        it 'returns only the project specific runner' do
+          is_expected.to contain_exactly(project_runner)
+        end
+      end
+
+      context 'with group runners enabled' do
+        let(:group_runners_enabled) { true }
+
+        it 'returns a project specific and a group specific runner' do
+          is_expected.to contain_exactly(group_runner, project_runner)
+        end
       end
     end
 

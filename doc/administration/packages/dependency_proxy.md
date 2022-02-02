@@ -199,6 +199,21 @@ This section describes the earlier configuration format.
 
 1. [Restart GitLab](../restart_gitlab.md#installations-from-source "How to restart GitLab") for the changes to take effect.
 
+### Migrate from local storage to object storage
+
+GitLab currently [doesn't support](https://gitlab.com/gitlab-org/gitlab/-/issues/343064)
+migrating the existing cache to object storage.
+
+To switch from local storage to object storage:
+
+1. [Reconfigure GitLab to use object storage](#using-object-storage).
+1. Purge the dependency proxy cache (on both local and object storage)
+   using the [Dependency Proxy API](../../api/dependency_proxy.md#purge-the-dependency-proxy-for-a-group).
+
+Object storage now caches container images when they're requested. This also
+[reduces the size of dependency proxy storage](../../user/packages/dependency_proxy/reduce_dependency_proxy_storage.md)
+by removing unused images.
+
 ## Disabling Authentication
 
 Authentication was introduced in 13.7 as part of [enabling private groups to use the

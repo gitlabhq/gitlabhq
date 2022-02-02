@@ -157,9 +157,9 @@ module Ci
       from_union(
         [
           belonging_to_project(project_id),
-          belonging_to_parent_group_of_project(project_id),
+          project.group_runners_enabled? ? belonging_to_parent_group_of_project(project_id) : nil,
           project.shared_runners
-        ],
+        ].compact,
         remove_duplicates: false
       )
     end

@@ -1,33 +1,26 @@
 - page_title _('Background Migrations')
 
-.tabs.gl-tabs
-  %div
-    %ul.nav.gl-tabs-nav{ role: 'tablist' }
-      - active_tab_classes = ['gl-tab-nav-item-active', 'gl-tab-nav-item-active-indigo']
+= gl_tabs_nav do
+  = gl_tab_link_to admin_background_migrations_path, item_active: @current_tab == 'queued' do
+    = _('Queued')
+    = gl_tab_counter_badge limited_counter_with_delimiter(@relations_by_tab['queued'])
+  = gl_tab_link_to admin_background_migrations_path(tab: 'failed'), item_active: @current_tab == 'failed' do
+    = _('Failed')
+    = gl_tab_counter_badge limited_counter_with_delimiter(@relations_by_tab['failed'])
+  = gl_tab_link_to admin_background_migrations_path(tab: 'finished'), item_active: @current_tab == 'finished' do
+    = _('Finished')
+    = gl_tab_counter_badge limited_counter_with_delimiter(@relations_by_tab['finished'])
 
-      %li.nav-item{ role: 'presentation' }
-        %a.nav-link.gl-tab-nav-item{ href: admin_background_migrations_path, class: (active_tab_classes if @current_tab == 'queued'), role: 'tab' }
-          = _('Queued')
-          = gl_tab_counter_badge limited_counter_with_delimiter(@relations_by_tab['queued'])
-      %li.nav-item{ role: 'presentation' }
-        %a.nav-link.gl-tab-nav-item{ href: admin_background_migrations_path(tab: 'failed'), class: (active_tab_classes if @current_tab == 'failed'), role: 'tab' }
-          = _('Failed')
-          = gl_tab_counter_badge limited_counter_with_delimiter(@relations_by_tab['failed'])
-      %li.nav-item{ role: 'presentation' }
-        %a.nav-link.gl-tab-nav-item{ href: admin_background_migrations_path(tab: 'finished'), class: (active_tab_classes if @current_tab == 'finished'), role: 'tab' }
-          = _('Finished')
-          = gl_tab_counter_badge limited_counter_with_delimiter(@relations_by_tab['finished'])
+.tab-content.gl-tab-content
+  .tab-pane.active{ role: 'tabpanel' }
+    %table.table.b-table.gl-table.b-table-stacked-md{ role: 'table' }
+      %thead{ role: 'rowgroup' }
+        %tr{ role: 'row' }
+          %th.table-th-transparent.border-bottom{ role: 'cell' }= _('Migration')
+          %th.table-th-transparent.border-bottom{ role: 'cell' }= _('Progress')
+          %th.table-th-transparent.border-bottom{ role: 'cell' }= _('Status')
+          %th.table-th-transparent.border-bottom{ role: 'cell' }
+      %tbody{ role: 'rowgroup' }
+        = render partial: 'migration', collection: @migrations
 
-  .tab-content.gl-tab-content
-    .tab-pane.active{ role: 'tabpanel' }
-      %table.table.b-table.gl-table.b-table-stacked-md{ role: 'table' }
-        %thead{ role: 'rowgroup' }
-          %tr{ role: 'row' }
-            %th.table-th-transparent.border-bottom{ role: 'cell' }= _('Migration')
-            %th.table-th-transparent.border-bottom{ role: 'cell' }= _('Progress')
-            %th.table-th-transparent.border-bottom{ role: 'cell' }= _('Status')
-            %th.table-th-transparent.border-bottom{ role: 'cell' }
-        %tbody{ role: 'rowgroup' }
-          = render partial: 'migration', collection: @migrations
-
-      = paginate_collection @migrations
+    = paginate_collection @migrations

@@ -33,7 +33,7 @@ module TabHelper
   #
   def gl_tab_link_to(name = nil, options = {}, html_options = {}, &block)
     link_classes = %w[nav-link gl-tab-nav-item]
-    active_link_classes = %w[active gl-tab-nav-item-active gl-tab-nav-item-active-indigo]
+    active_link_classes = %w[active gl-tab-nav-item-active]
 
     if block_given?
       # Shift params to skip the omitted "name" param

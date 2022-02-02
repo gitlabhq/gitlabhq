@@ -765,6 +765,9 @@
     "filter": {
       "oneOf": [
         {
+          "type": "null"
+        },
+        {
           "$ref": "#/definitions/filter_refs"
         },
         {

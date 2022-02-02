@@ -99,9 +99,9 @@ sequenceDiagram
     Note right of Cloud: Decode & verify JWT with public key (https://gitlab/-/jwks)
     Note right of Cloud: Validate audience defined in OIDC
     Note right of Cloud: Validate conditional (sub, aud) role
-    Note right of Cloud: Generate credential or fetch secret 
+    Note right of Cloud: Generate credential or fetch secret
     Cloud->>GitLab: Return temporary credential
-    Note left of GitLab: Perform operation 
+    Note left of GitLab: Perform operation
 
 ```
 
@@ -131,3 +131,4 @@ To configure the trust between GitLab and OIDC, you must create a conditional ro
 To connect with your cloud provider, see the following tutorials:
 
 - [Configure OpenID Connect in AWS](aws/index.md)
+- [Configure OpenID Connect in Google Cloud](google_cloud/index.md)

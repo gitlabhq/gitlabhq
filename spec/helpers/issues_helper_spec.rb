@@ -342,8 +342,6 @@ RSpec.describe IssuesHelper do
   describe '#group_issues_list_data' do
     let(:group) { create(:group) }
     let(:current_user) { double.as_null_object }
-    let(:issues) { [] }
-    let(:projects) { [] }
 
     it 'returns expected result' do
       allow(helper).to receive(:current_user).and_return(current_user)
@@ -351,20 +349,23 @@ RSpec.describe IssuesHelper do
       allow(helper).to receive(:image_path).and_return('#')
       allow(helper).to receive(:url_for).and_return('#')
 
+      assign(:has_issues, false)
+      assign(:has_projects, true)
+
       expected = {
         autocomplete_award_emojis_path: autocomplete_award_emojis_path,
         calendar_path: '#',
         empty_state_svg_path: '#',
         full_path: group.full_path,
-        has_any_issues: issues.to_a.any?.to_s,
-        has_any_projects: any_projects?(projects).to_s,
+        has_any_issues: false.to_s,
+        has_any_projects: true.to_s,
         is_signed_in: current_user.present?.to_s,
         jira_integration_path: help_page_url('integration/jira/issues', anchor: 'view-jira-issues'),
         rss_path: '#',
         sign_in_path: new_user_session_path
       }
 
-      expect(helper.group_issues_list_data(group, current_user, issues, projects)).to include(expected)
+      expect(helper.group_issues_list_data(group, current_user)).to include(expected)
     end
   end
 

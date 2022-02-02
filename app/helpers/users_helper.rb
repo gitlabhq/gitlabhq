@@ -173,10 +173,7 @@ module UsersHelper
   end
 
   def display_public_email?(user)
-    return false if user.public_email.blank?
-    return true unless user.provisioned_by_group
-
-    !Feature.enabled?(:hide_public_email_on_profile, user.provisioned_by_group)
+    user.public_email.present?
   end
 
   private

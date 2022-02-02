@@ -1,8 +1,4 @@
-export const ACTIVE_TAB_CLASSES = Object.freeze([
-  'active',
-  'gl-tab-nav-item-active',
-  'gl-tab-nav-item-active-indigo',
-]);
+export const ACTIVE_TAB_CLASSES = Object.freeze(['active', 'gl-tab-nav-item-active']);
 
 export const ACTIVE_PANEL_CLASS = 'active';
 
