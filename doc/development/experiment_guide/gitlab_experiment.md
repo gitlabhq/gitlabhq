@@ -4,26 +4,24 @@ group: Adoption
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Implementing an A/B/n experiment using GLEX
+# Implementing an A/B/n experiment
 
 ## Introduction
 
-`Gitlab::Experiment` (GLEX) is tightly coupled with the concepts provided by
-[Feature flags in development of GitLab](../feature_flags/index.md). Here, we refer
-to this layer as feature flags, and may also use the term Flipper, because we
-built our development and experiment feature flags atop it.
+Experiments in GitLab are tightly coupled with the concepts provided by
+[Feature flags in development of GitLab](../feature_flags/index.md). You're strongly encouraged
+to read and understand the [Feature flags in development of GitLab](../feature_flags/index.md)
+portion of the documentation before considering running experiments. Experiments add additional
+concepts which may seem confusing or advanced without understanding the underpinnings of how GitLab
+uses feature flags in development. One concept: experiments can be run with multiple variants,
+which are sometimes referred to as A/B/n tests.
 
-You're strongly encouraged to read and understand the
-[Feature flags in development of GitLab](../feature_flags/index.md) portion of the
-documentation before considering running experiments. Experiments add additional
-concepts which may seem confusing or advanced without understanding the underpinnings
-of how GitLab uses feature flags in development. One concept: GLEX supports
-experiments with multiple variants, which are sometimes referred to as A/B/n tests.
-
-The [`gitlab-experiment` project](https://gitlab.com/gitlab-org/ruby/gems/gitlab-experiment)
-exists in a separate repository, so it can be shared across any GitLab property that uses
-Ruby. You should feel comfortable reading the documentation on that project as well
-if you want to dig into more advanced topics.
+We use the [`gitlab-experiment` gem](https://gitlab.com/gitlab-org/ruby/gems/gitlab-experiment),
+sometimes referred to as GLEX, to run our experiments. The gem exists in a separate repository
+so it can be shared across any GitLab property that uses Ruby. You should feel comfortable reading
+the documentation on that project if you want to dig into more advanced topics or open issues. Be
+aware that the documentation there reflects what's in the main branch and may not be the same as
+the version being used within GitLab.
 
 ## Glossary of terms
 
@@ -35,41 +33,9 @@ when communicating about experiments:
 - `control`: The default, or "original" code path.
 - `candidate`: Defines an experiment with only one code path.
 - `variant(s)`: Defines an experiment with multiple code paths.
+- `behaviors`: Used to reference all possible code paths of an experiment, including the control.
 
-### How it works
-
-Use this decision tree diagram to understand how GLEX works. When an experiment runs,
-the following logic is executed to determine what variant should be provided,
-given how the experiment has been defined and using the provided context:
-
-```mermaid
-graph TD
-    GP[General Pool/Population] --> Running?
-    Running? -->|Yes| Cached?[Cached? / Pre-segmented?]
-    Running? -->|No| Excluded[Control / No Tracking]
-    Cached? -->|No| Excluded?
-    Cached? -->|Yes| Cached[Cached Value]
-    Excluded? -->|Yes| Excluded
-    Excluded? -->|No| Segmented?
-    Segmented? -->|Yes / Cached| VariantA
-    Segmented? -->|No| Included?[Experiment Group?]
-    Included? -->|Yes| Rollout
-    Included? -->|No| Control
-    Rollout -->|Cached| VariantA
-    Rollout -->|Cached| VariantB
-    Rollout -->|Cached| VariantC
-
-classDef included fill:#380d75,color:#ffffff,stroke:none
-classDef excluded fill:#fca121,stroke:none
-classDef cached fill:#2e2e2e,color:#ffffff,stroke:none
-classDef default fill:#fff,stroke:#6e49cb
-
-class VariantA,VariantB,VariantC included
-class Control,Excluded excluded
-class Cached cached
-```
-
-## Implement an experiment
+## Implementing an experiment
 
 [Examples](https://gitlab.com/gitlab-org/growth/growth/-/wikis/GLEX-Framework-code-examples)
 
@@ -87,9 +53,9 @@ experiment in code. An experiment implementation can be as simple as:
 
 ```ruby
 experiment(:pill_color, actor: current_user) do |e|
-  e.use { 'control' }
-  e.try(:red) { 'red' }
-  e.try(:blue) { 'blue' }
+  e.control { 'control' }
+  e.variant(:red) { 'red' }
+  e.variant(:blue) { 'blue' }
 end
 ```
 
@@ -146,11 +112,11 @@ We can also implement this experiment in a HAML file with HTML wrappings:
 ```haml
 #cta-interface
   - experiment(:pill_color, actor: current_user) do |e|
-    - e.use do
+    - e.control do
       .pill-button control
-    - e.try(:red) do
+    - e.variant(:red) do
       .pill-button.red red
-    - e.try(:blue) do
+    - e.variant(:blue) do
       .pill-button.blue blue
 ```
 
@@ -212,38 +178,30 @@ wouldn't be resolvable.
 
 ### Advanced experimentation
 
-GLEX allows for two general implementation styles:
+There are two ways to implement an experiment:
 
 1. The simple experiment style described previously.
-1. A more advanced style where an experiment class can be provided.
+1. A more advanced style where an experiment class is provided.
 
 The advanced style is handled by naming convention, and works similar to what you
 would expect in Rails.
 
 To generate a custom experiment class that can override the defaults in
-`ApplicationExperiment` (our base GLEX implementation), use the rails generator:
+`ApplicationExperiment` use the Rails generator:
 
 ```shell
 rails generate gitlab:experiment pill_color control red blue
 ```
 
 This generates an experiment class in `app/experiments/pill_color_experiment.rb`
-with the variants (or _behaviors_) we've provided to the generator. Here's an example
-of how that class would look after migrating the previous example into it:
+with the _behaviors_ we've provided to the generator. Here's an example
+of how that class would look after migrating our previous example into it:
 
 ```ruby
 class PillColorExperiment < ApplicationExperiment
-  def control_behavior
-    'control'
-  end
-
-  def red_behavior
-    'red'
-  end
-
-  def blue_behavior
-    'blue'
-  end
+  control { 'control' }
+  variant(:red) { 'red' }
+  variant(:blue) { 'blue' }
 end
 ```
 
@@ -254,13 +212,13 @@ providing the block we were initially providing, by explicitly calling `run`:
 experiment(:pill_color, actor: current_user).run
 ```
 
-The _behavior_ methods we defined in our experiment class represent the default
-implementation. You can still use the block syntax to override these _behavior_
-methods however, so the following would also be valid:
+The _behaviors_ we defined in our experiment class represent the default
+implementation. You can still use the block syntax to override these _behaviors_
+however, so the following would also be valid:
 
 ```ruby
 experiment(:pill_color, actor: current_user) do |e|
-  e.use { '<strong>control</strong>' }
+  e.control { '<strong>control</strong>' }
 end
 ```
 
@@ -279,10 +237,10 @@ variant, and any account older than 2 weeks old would be assigned the _blue_ var
 
 ```ruby
 class PillColorExperiment < ApplicationExperiment
+  # ...registered behaviors
+
   segment(variant: :red) { context.actor.first_name == 'Richard' }
   segment :old_account?, variant: :blue
-
-  # ...behaviors
 
   private
 
@@ -315,9 +273,9 @@ be nothing - but no events are tracked in these cases as well.
 
 ```ruby
 class PillColorExperiment < ApplicationExperiment
-  exclude :old_account?, ->{ context.actor.first_name == 'Richard' }
+  # ...registered behaviors
 
-  # ...behaviors
+  exclude :old_account?, ->{ context.actor.first_name == 'Richard' }
 
   private
 
@@ -327,23 +285,11 @@ class PillColorExperiment < ApplicationExperiment
 end
 ```
 
-We can also do exclusion when we run the experiment. For instance,
-if we wanted to prevent the inclusion of non-administrators in an experiment, consider
-the following experiment. This type of logic enables us to do complex experiments
-while preventing us from passing things into our experiments, because
-we want to minimize passing things into our experiments:
-
-```ruby
-experiment(:pill_color, actor: current_user) do |e|
-  e.exclude! unless can?(current_user, :admin_project, project)
-end
-```
-
 You may also need to check exclusion in custom tracking logic by calling `should_track?`:
 
 ```ruby
 class PillColorExperiment < ApplicationExperiment
-  # ...behaviors
+  # ...registered behaviors
 
   def expensive_tracking_logic
     return unless should_track?
@@ -353,16 +299,11 @@ class PillColorExperiment < ApplicationExperiment
 end
 ```
 
-Exclusion rules aren't the best way to determine if an experiment is active. Override
-the `enabled?` method for a high-level way of determining if an experiment should
-run and track. Make the `enabled?` check as efficient as possible because it's the
-first early opt-out path an experiment can implement.
-
 ### Tracking events
 
 One of the most important aspects of experiments is gathering data and reporting on
-it. GLEX provides an interface that allows tracking events across an experiment.
-You can implement it consistently if you provide the same context between
+it. You can use the `track` method to track events across an experimental implementation.
+You can track events consistently to an experiment if you provide the same context between
 calls to your experiment. If you do not yet understand context, you should read
 about contexts now.
 
@@ -373,13 +314,13 @@ the arguments you would normally use when
 of tracking an event in Ruby would be:
 
 ```ruby
-experiment(:pill_color, actor: current_user).track(:created)
+experiment(:pill_color, actor: current_user).track(:clicked)
 ```
 
-When you run an experiment with any of these examples, an `:assigned` event
+When you run an experiment with any of the examples so far, an `:assigned` event
 is tracked automatically by default. All events that are tracked from an
 experiment have a special
-[experiment context](https://gitlab.com/gitlab-org/iglu/-/blob/master/public/schemas/com.gitlab/gitlab_experiment/jsonschema/1-0-0)
+[experiment context](https://gitlab.com/gitlab-org/iglu/-/blob/master/public/schemas/com.gitlab/gitlab_experiment/jsonschema/1-0-3)
 added to the event. This can be used - typically by the data team - to create a connection
 between the events on a given experiment.
 
@@ -390,28 +331,20 @@ event would be tracked at that time for them.
 
 NOTE:
 GitLab tries to be sensitive and respectful of our customers regarding tracking,
-so GLEX allows us to implement an experiment without ever tracking identifying
+so our experimentation library allows us to implement an experiment without ever tracking identifying
 IDs. It's not always possible, though, based on experiment reporting requirements.
 You may be asked from time to time to track a specific record ID in experiments.
 The approach is largely up to the PM and engineer creating the implementation.
 No recommendations are provided here at this time.
 
-## Test with RSpec
+## Testing with RSpec
 
-This gem provides some RSpec helpers and custom matchers. These are in flux as of GitLab 13.10.
-
-First, require the RSpec support file to mix in some of the basics:
-
-```ruby
-require 'gitlab/experiment/rspec'
-```
-
-You still need to include matchers and other aspects, which happens
-automatically for files in `spec/experiments`, but for other files and specs
-you want to include it in, you can specify the `:experiment` type:
+In the course of working with experiments, you'll probably want to utilize the RSpec
+tooling that's built in. This happens automatically for files in `spec/experiments`, but
+for other files and specs you want to include it in, you can specify the `:experiment` type:
 
 ```ruby
-it "tests", :experiment do
+it "tests experiments nicely", :experiment do
 end
 ```
 
@@ -421,34 +354,42 @@ You can stub experiments using `stub_experiments`. Pass it a hash using experime
 names as the keys, and the variants you want each to resolve to, as the values:
 
 ```ruby
-# Ensures the experiments named `:example` & `:example2` are both
-# "enabled" and that each will resolve to the given variant
-# (`:my_variant` & `:control` respectively).
+# Ensures the experiments named `:example` & `:example2` are both "enabled" and
+# that each will resolve to the given variant (`:my_variant` and `:control`
+# respectively).
 stub_experiments(example: :my_variant, example2: :control)
 
 experiment(:example) do |e|
   e.enabled? # => true
-  e.variant.name # => 'my_variant'
+  e.assigned.name # => 'my_variant'
 end
 
 experiment(:example2) do |e|
   e.enabled? # => true
-  e.variant.name # => 'control'
+  e.assigned.name # => 'control'
 end
 ```
 
-### Exclusion and segmentation matchers
+### Exclusion, segmentation, and behavior matchers
 
-You can also test the exclusion and segmentation matchers.
+You can also test things like the registered behaviors, the exclusions, and
+segmentations using the matchers.
 
 ```ruby
 class ExampleExperiment < ApplicationExperiment
+  control { }
+  candidate { '_candidate_' }
+    
   exclude { context.actor.first_name == 'Richard' }
   segment(variant: :candidate) { context.actor.username == 'jejacks0n' }
 end
 
 excluded = double(username: 'rdiggitty', first_name: 'Richard')
 segmented = double(username: 'jejacks0n', first_name: 'Jeremy')
+
+# register_behavior matcher
+expect(experiment(:example)).to register_behavior(:control)
+expect(experiment(:example)).to register_behavior(:candidate).with('_candidate_')
 
 # exclude matcher
 expect(experiment(:example)).to exclude(actor: excluded)
@@ -495,35 +436,36 @@ expect(experiment(:example)).to track(:my_event, value: 1, property: '_property_
 experiment(:example, :variant_name, foo: :bar).track(:my_event, value: 1, property: '_property_')
 ```
 
-### Recording and assignment tracking
-
-To test assignment tracking and the `record!` method, you can use or adopt the following
-shared example: [tracks assignment and records the subject](https://gitlab.com/gitlab-org/gitlab/blob/master/spec/support/shared_examples/lib/gitlab/experimentation_shared_examples.rb).
-
 ## Experiments in the client layer
 
-This is in flux as of GitLab 13.10, and can't be documented just yet.
+Any experiment that's been run in the request lifecycle surfaces in `window.gl.experiments`,
+and matches [this schema](https://gitlab.com/gitlab-org/iglu/-/blob/master/public/schemas/com.gitlab/gitlab_experiment/jsonschema/1-0-3)
+so it can be used when resolving experimentation in the client layer.
 
-Any experiment that's been run in the request lifecycle surfaces in and `window.gl.experiments`,
-and matches [this schema](https://gitlab.com/gitlab-org/iglu/-/blob/master/public/schemas/com.gitlab/gitlab_experiment/jsonschema/1-0-0)
-so you can use it when resolving some concepts around experimentation in the client layer.
+Given that we've defined a class for our experiment, and have defined the variants for it, we can publish that experiment in a couple ways.
 
-### Use experiments in Vue
+The first way is simply by running the experiment. Assuming the experiment has been run, it will surface in the client layer without having to do anything special.
 
-With the `gitlab-experiment` component, you can define slots that match the name of the
-variants pushed to `window.gl.experiments`. For example, if we alter the `pill_color`
-experiment to just use the default variants of `control` and `candidate` like so:
+The second way doesn't run the experiment and is intended to be used if the experiment only needs to surface in the client layer. To accomplish this we can simply `.publish` the experiment. This won't run any logic, but does surface the experiment details in the client layer so they can be utilized there.
+
+An example might be to publish an experiment in a `before_action` in a controller. Assuming we've defined the `PillColorExperiment` class, like we have above, we can surface it to the client by publishing it instead of running it: 
 
 ```ruby
-def show
-  experiment(:pill_color) do |e|
-    e.use { } # control
-    e.try { } # candidate
-  end.run
-end
+before_action -> { experiment(:pill_color).publish }, only: [:show]
 ```
 
-We can make use of the named slots `control` and `candidate` in the Vue component:
+You can then see this surface in the JavaScript console:
+
+```javascript
+window.gl.experiments // => { pill_color: { excluded: false, experiment: "pill_color", key: "ca63ac02", variant: "candidate" } } 
+```
+
+### Using experiments in Vue
+
+With the `gitlab-experiment` component, you can define slots that match the name of the
+variants pushed to `window.gl.experiments`.
+
+We can make use of the named slots in the Vue component, that match the behaviors defined in :
 
 ```vue
 <script>
@@ -534,23 +476,6 @@ export default {
 }
 </script>
 
-<template>
-  <gitlab-experiment name="pill_color">
-    <template #control>
-      <button class="bg-default">Click default button</button>
-    </template>
-
-    <template #candidate>
-      <button class="bg-red">Click red button</button>
-    </template>
-  </gitlab-experiment>
-</template>
-```
-
-When you're coding for an experiment with multiple variants, you can use the variant names.
-For example, the Vue component for the previously-defined `pill_color` experiment with `red` and `blue` variants would look like this:
-
-```vue
 <template>
   <gitlab-experiment name="pill_color">
     <template #control>
@@ -628,7 +553,7 @@ is viewed as being either `on` or `off`, this isn't accurate for experiments.
 
 Generally, `off` means that when we ask if a feature flag is enabled, it will always
 return `false`, and `on` means that it will always return `true`. An interim state,
-considered `conditional`, also exists. GLEX takes advantage of this trinary state of
+considered `conditional`, also exists. We take advantage of this trinary state of
 feature flags. To understand this `conditional` aspect: consider that either of these
 settings puts a feature flag into this state:
 
@@ -638,7 +563,7 @@ settings puts a feature flag into this state:
 Conditional means that it returns `true` in some situations, but not all situations.
 
 When a feature flag is disabled (meaning the state is `off`), the experiment is
-considered _inactive_. You can visualize this in the [decision tree diagram](#how-it-works)
+considered _inactive_. You can visualize this in the [decision tree diagram](https://gitlab.com/gitlab-org/ruby/gems/gitlab-experiment#how-it-works)
 as reaching the first `Running?` node, and traversing the negative path.
 
 When a feature flag is rolled out to a `percentage_of_actors` or similar (meaning the

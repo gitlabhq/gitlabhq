@@ -63,10 +63,10 @@ module QA
         package.remove_via_api!
       end
 
-      where(:authentication_token_type, :token_name) do
-        :personal_access_token | 'Personal Access Token'
-        :ci_job_token          | 'CI Job Token'
-        :group_deploy_token    | 'Deploy Token'
+      where(:case_name, :authentication_token_type, :token_name, :testcase) do
+        'using personal access token' | :personal_access_token | 'Personal Access Token' | 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347597'
+        'using ci job token'          | :ci_job_token          | 'CI Job Token'          | 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347595'
+        'using group deploy token'    | :group_deploy_token    | 'Deploy Token'          | 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347596'
       end
 
       with_them do
@@ -92,7 +92,7 @@ module QA
           end
         end
 
-        it "publishes a nuget package at the project level, installs and deletes it at the group level using a #{params[:token_name]}" do
+        it 'publishes a nuget package at the project level, installs and deletes it at the group level', testcase: params[:testcase] do
           Flow::Login.sign_in
 
           Support::Retrier.retry_on_exception(max_attempts: 3, sleep_interval: 2) do

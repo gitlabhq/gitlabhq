@@ -133,7 +133,7 @@ module API
         success Entities::ProjectImportStatus
       end
       post 'remote-import' do
-        not_found! unless ::Feature.enabled?(:import_project_from_remote_file)
+        not_found! unless ::Feature.enabled?(:import_project_from_remote_file, default_enabled: :yaml)
 
         check_rate_limit! :project_import, scope: [current_user, :project_import]
 

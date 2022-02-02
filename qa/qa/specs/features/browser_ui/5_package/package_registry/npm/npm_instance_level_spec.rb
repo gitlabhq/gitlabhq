@@ -68,10 +68,10 @@ module QA
         another_project.remove_via_api!
       end
 
-      where(:authentication_token_type, :token_name) do
-        :personal_access_token | 'Personal Access Token'
-        :ci_job_token          | 'CI Job Token'
-        :project_deploy_token  | 'Deploy Token'
+      where(:case_name, :authentication_token_type, :token_name, :testcase) do
+        'using personal access token' | :personal_access_token | 'Personal Access Token' | 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347600'
+        'using ci job token'          | :ci_job_token          | 'CI Job Token'          | 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347599'
+        'using project deploy token'  | :project_deploy_token  | 'Deploy Token'          | 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347598'
       end
 
       with_them do
@@ -86,7 +86,7 @@ module QA
           end
         end
 
-        it "push and pull a npm package via CI using a #{params[:token_name]}" do
+        it 'push and pull a npm package via CI', testcase: params[:testcase] do
           Support::Retrier.retry_on_exception(max_attempts: 3, sleep_interval: 2) do
             npm_upload_yaml = ERB.new(read_fixture('package_managers/npm', 'npm_upload_package_instance.yaml.erb')).result(binding)
             package_json = ERB.new(read_fixture('package_managers/npm', 'package_instance.json.erb')).result(binding)

@@ -450,3 +450,26 @@ To configure access for `<aws_account_id>.dkr.ecr.<region>.amazonaws.com`, follo
 
 You can add configuration for as many registries as you want, adding more
 registries to the `"credHelpers"` hash.
+
+### Use checksum to keep your image secure
+
+We recommend using the image checksum in your job definition in your `.gitlab-ci.yml` file to verify the integrity of the image. A failed image integrity verification will prevent you from using a modified container.
+
+To use the image checksum you have to append the checksum at the end:
+
+```yaml
+image: ruby:2.6.8@sha256:d1dbaf9665fe8b2175198e49438092fdbcf4d8934200942b94425301b17853c7
+```
+
+To get the image checksum, on the image `TAG` tab, view the `DIGEST` column.
+For example, view the [Ruby image](https://hub.docker.com/_/ruby?tab=tags).
+The checksum is a random string, like `6155f0235e95`.
+
+You can also get the checksum of any image on your system with the command `docker images --digests`:
+
+```shell
+❯ docker images --digests
+REPOSITORY                                                        TAG       DIGEST                                                                    (...)
+gitlab/gitlab-ee                                                  latest    sha256:723aa6edd8f122d50cae490b1743a616d54d4a910db892314d68470cc39dfb24   (...)
+gitlab/gitlab-runner                                              latest    sha256:4a18a80f5be5df44cb7575f6b89d1fdda343297c6fd666c015c0e778b276e726   (...)
+```

@@ -117,7 +117,7 @@ RSpec.describe ApplicationExperiment, :experiment do
     describe '#publish_to_database' do
       using RSpec::Parameterized::TableSyntax
 
-      let(:publish_to_database) { application_experiment.publish_to_database }
+      let(:publish_to_database) { ActiveSupport::Deprecation.silence { application_experiment.publish_to_database } }
 
       shared_examples 'does not record to the database' do
         it 'does not create an experiment record' do
@@ -358,11 +358,11 @@ RSpec.describe ApplicationExperiment, :experiment do
         stub_feature_flags(namespaced_stub: true)
       end
 
-      it "returns the first variant name" do
+      it "returns an assigned name" do
         application_experiment.try(:variant1) {}
         application_experiment.try(:variant2) {}
 
-        expect(application_experiment.variant.name).to eq('variant1')
+        expect(application_experiment.variant.name).to eq('variant2')
       end
     end
   end

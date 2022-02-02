@@ -10,6 +10,13 @@ Gitlab::Experiment.configure do |config|
   #
   config.base_class = 'ApplicationExperiment'
 
+  # Customize the logic of our default rollout, which shouldn't include
+  # assigning the control yet -- we specifically set it to false for now.
+  #
+  config.default_rollout = Gitlab::Experiment::Rollout::Percent.new(
+    include_control: false
+  )
+
   # Mount the engine and middleware at a gitlab friendly style path.
   #
   # The middleware currently focuses only on handling redirection logic, which

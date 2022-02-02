@@ -3,6 +3,8 @@
 module QA
   RSpec.describe 'Package', :orchestrated, :registry, only: { pipeline: :main } do
     describe 'Dependency Proxy' do
+      using RSpec::Parameterized::TableSyntax
+
       let(:project) do
         Resource::Project.fabricate_via_api! do |project|
           project.name = 'dependency-proxy-project'
@@ -40,12 +42,13 @@ module QA
         runner.remove_via_api!
       end
 
-      where(:docker_client_version) do
-        %w[docker:19.03.12 docker:20.10]
+      where(:case_name, :docker_client_version, :testcase) do
+        'using docker:19.03.12' | 'docker:19.03.12' | 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347605'
+        'using docker:20.10'    | 'docker:20.10'    | 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347604'
       end
 
       with_them do
-        it "pulls an image using the dependency proxy" do
+        it "pulls an image using the dependency proxy", testcase: params[:testcase] do
           Support::Retrier.retry_on_exception(max_attempts: 3, sleep_interval: 2) do
             Resource::Repository::Commit.fabricate_via_api! do |commit|
               commit.project = project
@@ -58,7 +61,7 @@ module QA
                                           image: "#{docker_client_version}"
                                           services:
                                           - name: "#{docker_client_version}-dind"
-                                            command: ["--insecure-registry=gitlab.test:80"]     
+                                            command: ["--insecure-registry=gitlab.test:80"]
                                           before_script:
                                             - apk add curl jq grep
                                             - echo $CI_DEPENDENCY_PROXY_SERVER

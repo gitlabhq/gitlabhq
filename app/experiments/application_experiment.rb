@@ -41,10 +41,6 @@ class ApplicationExperiment < Gitlab::Experiment # rubocop:disable Gitlab/Namesp
     # define a default nil control behavior so we can omit it when not needed
   end
 
-  def track(action, **event_args)
-    super(action, **tracking_context.merge(event_args))
-  end
-
   # TODO: remove
   # This is deprecated logic as of v0.6.0 and should eventually be removed, but
   # needs to stay intact for actively running experiments. The new strategy
@@ -64,12 +60,12 @@ class ApplicationExperiment < Gitlab::Experiment # rubocop:disable Gitlab/Namesp
 
   private
 
-  def tracking_context
+  def tracking_context(event_args)
     {
       namespace: context.try(:namespace) || context.try(:group),
       project: context.try(:project),
       user: user_or_actor
-    }.compact || {}
+    }.merge(event_args)
   end
 
   def user_or_actor
