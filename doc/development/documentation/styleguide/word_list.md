@@ -58,11 +58,7 @@ Capitalize these words when you refer to the UI. Otherwise use lowercase.
 
 ## administrator
 
-Use **administrator** instead of **admin** when talking about a user's access level.
-Use lowercase unless you are referring to the **Admin** access level you select in the UI.
-
-To view the administrator access level, in the GitLab UI, go to the Admin Area and select
-**Users**. Then select **New user**.
+Use **administrator access** instead of **admin** when talking about a user's access level.
 
 ![admin access level](img/admin_access_level.png)
 
@@ -71,7 +67,7 @@ An **administrator** is not a [role](#roles) or [permission](#permissions).
 Use:
 
 - To do this thing, you must be an administrator.
-- To do this thing, you must have the administrator access level.
+- To do this thing, you must have administrator access.
 
 Instead of:
 

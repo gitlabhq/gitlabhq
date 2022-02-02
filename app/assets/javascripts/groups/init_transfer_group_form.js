@@ -33,7 +33,7 @@ export default () => {
   return new Vue({
     el,
     provide: {
-      confirmDangerMessage: sprintf(i18n.confirmationMessage, { groupName }),
+      confirmDangerMessage: sprintf(i18n.confirmationMessage, { group_name: groupName }),
     },
     render(createElement) {
       return createElement(TransferGroupForm, {

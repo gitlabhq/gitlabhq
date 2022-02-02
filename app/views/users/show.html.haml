@@ -112,7 +112,7 @@
                 - if Feature.enabled?(:security_auto_fix) && @user.bot?
                   = sprite_icon('question', css_class: 'gl-text-blue-600')
                 = link_to @user.short_website_url, @user.full_website_url, target: '_blank', rel: 'me noopener noreferrer nofollow', itemprop: 'url'
-            - unless @user.public_email.blank?
+            - if display_public_email?(@user)
               = render 'middle_dot_divider', stacking: true do
                 = link_to @user.public_email, "mailto:#{@user.public_email}", itemprop: 'email'
           .gl-text-gray-900

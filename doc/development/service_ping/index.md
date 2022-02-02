@@ -84,7 +84,7 @@ Registration is not yet required for participation, but will be added in a futur
 
 #### Enable Registration Features
 
-1. Sign in as a user with the [Administrator](../../user/permissions.md) role.
+1. Sign in as a user with administrator access.
 1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Settings > Metrics and profiling**.
 1. Expand the **Usage statistics** section.
@@ -96,7 +96,7 @@ Registration is not yet required for participation, but will be added in a futur
 
 You can view the exact JSON payload sent to GitLab Inc. in the Admin Area. To view the payload:
 
-1. Sign in as a user with the [Administrator](../../user/permissions.md) role.
+1. Sign in as a user with administrator access.
 1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Settings > Metrics and profiling**.
 1. Expand the **Usage statistics** section.
@@ -118,7 +118,7 @@ configuration file.
 
 To disable Service Ping in the GitLab UI:
 
-1. Sign in as a user with the [Administrator](../../user/permissions.md) role.
+1. Sign in as a user with administrator access.
 1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Settings > Metrics and profiling**.
 1. Expand the **Usage statistics** section.

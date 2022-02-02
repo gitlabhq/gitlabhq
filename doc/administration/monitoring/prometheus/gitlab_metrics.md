@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 To enable the GitLab Prometheus metrics:
 
-1. Log in to GitLab as a user with Administrator [role](../../../user/permissions.md).
+1. Log in to GitLab as a user with administrator access.
 1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Settings > Metrics and profiling**.
 1. Find the **Metrics - Prometheus** section, and select **Add link to Prometheus**.

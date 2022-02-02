@@ -13,8 +13,7 @@ The plan limits API allows you to maintain the application limits for the existi
 The existing plans depend on the GitLab edition. In the Community Edition, only the plan `default`
 is available. In the Enterprise Edition, additional plans are available as well.
 
-NOTE:
-The Administrator role is required to use this API.
+Administrator access is required to use this API.
 
 ## Get current plan limits
 

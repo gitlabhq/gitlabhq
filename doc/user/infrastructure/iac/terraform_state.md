@@ -33,10 +33,10 @@ before using this feature.
 
 ## Permissions for using Terraform
 
-In GitLab version 13.1, the Maintainer role was required to use a
+In GitLab version 13.1, at least the Maintainer role was required to use a
 GitLab managed Terraform state backend.
 
-In GitLab versions 13.2 and later:
+In GitLab versions 13.2 and later, at least:
 
 - The Maintainer role is required to lock, unlock, and write to the state (using `terraform apply`).
 - The Developer role is required to read the state (using `terraform plan -lock=false`).

@@ -22,6 +22,3 @@ swap:
   repo: repository
   timezone: time zone
   utilize: use
-  administrator permission: the administrator access level
-  administrator permissions: the administrator access level
-  administrator role: the administrator access level

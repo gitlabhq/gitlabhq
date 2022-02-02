@@ -15,30 +15,26 @@ module Gitlab
         end
 
         def observe(version:, name:, connection:, &block)
-          observation = Observation.new(version, name)
-          observation.success = true
+          observation = Observation.new(version: version, name: name, success: false)
 
           observers = observer_classes.map { |c| c.new(observation, @result_dir, connection) }
 
-          exception = nil
-
           on_each_observer(observers) { |observer| observer.before }
 
-          observation.walltime = Benchmark.realtime do
-            yield
-          rescue StandardError => e
-            exception = e
-            observation.success = false
-          end
+          start = Process.clock_gettime(Process::CLOCK_MONOTONIC)
+
+          yield
+
+          observation.success = true
+
+          observation
+        ensure
+          observation.walltime = Process.clock_gettime(Process::CLOCK_MONOTONIC) - start
 
           on_each_observer(observers) { |observer| observer.after }
           on_each_observer(observers) { |observer| observer.record }
 
           record_observation(observation)
-
-          raise exception if exception
-
-          observation
         end
 
         private

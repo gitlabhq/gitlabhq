@@ -14,6 +14,11 @@ Follow the [Implement Service Ping](implement.md) guide.
 
 ## Change an existing metric
 
+See [this video tutorial](https://youtu.be/bYf3c01KCls) for help with the update of metric attributes.
+
+NOTE:
+The `key_path` attribute represents the location of the metric in Service Ping payload and must not be changed.
+
 Because we do not control when customers update their self-managed instances of GitLab,
 we **STRONGLY DISCOURAGE** changes to the logic used to calculate any metric.
 Any such changes lead to inconsistent reports from multiple GitLab instances.

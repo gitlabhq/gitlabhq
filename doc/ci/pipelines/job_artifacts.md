@@ -260,7 +260,7 @@ You can delete a single job, which also removes the job's
 artifacts and log. You must be:
 
 - The owner of the job.
-- A Maintainer of the project.
+- A user with at least the Maintainer role for the project.
 
 To delete a job:
 

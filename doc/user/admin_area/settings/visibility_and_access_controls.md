@@ -7,7 +7,7 @@ type: reference
 
 # Control access and visibility **(FREE SELF)**
 
-GitLab enables users with the Administrator access level to enforce
+GitLab enables users with administrator access to enforce
 specific controls on branches, projects, snippets, groups, and more.
 
 To access the visibility and access control options:
@@ -84,7 +84,7 @@ on the instance. To alter which roles have permission to create projects:
 ## Restrict project deletion to Administrators **(PREMIUM SELF)**
 
 Anyone with the **Owner** role, either at the project or group level, can
-delete a project. To allow only users with the Administrator role to delete projects:
+delete a project. To allow only users with administrator access to delete projects:
 
 1. Sign in to GitLab as a user with Administrator access level.
 1. On the top bar, select **Menu > Admin**.

@@ -10,7 +10,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/21811) in GitLab 12.9.
 
-Get a list of all deploy tokens across the GitLab instance. This endpoint requires the Administrator role.
+Get a list of all deploy tokens across the GitLab instance. This endpoint requires administrator access.
 
 ```plaintext
 GET /deploy_tokens

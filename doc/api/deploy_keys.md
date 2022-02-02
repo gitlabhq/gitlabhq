@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 ## List all deploy keys **(FREE SELF)**
 
 Get a list of all deploy keys across all projects of the GitLab instance. This
-endpoint requires an administrator role and is not available on GitLab.com.
+endpoint requires administrator access and is not available on GitLab.com.
 
 ```plaintext
 GET /deploy_keys

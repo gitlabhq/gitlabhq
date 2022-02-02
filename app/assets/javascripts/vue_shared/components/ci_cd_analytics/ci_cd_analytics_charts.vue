@@ -45,7 +45,8 @@ export default {
       :chart-data="chart.data"
       :area-chart-options="chartOptions"
     >
-      {{ dateRange }}
+      <p>{{ dateRange }}</p>
+      <slot name="metrics" :selected-chart="selectedChart"></slot>
       <template #tooltip-title>
         <slot name="tooltip-title"></slot>
       </template>

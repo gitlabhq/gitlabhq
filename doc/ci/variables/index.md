@@ -233,7 +233,7 @@ inherited.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/299879) in GitLab 13.11.
 
 To make a CI/CD variable available to all projects and groups in a GitLab instance,
-add an instance CI/CD variable. You must have the Administrator access level.
+add an instance CI/CD variable. You must have administrator access.
 
 You can define instance variables via the UI or [API](../../api/instance_level_ci_variables.md).
 

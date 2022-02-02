@@ -468,7 +468,7 @@ Merge requests in other projects can still close another project's issues.
 
 Prerequisites:
 
-- You must have the [administrator access level](../../../administration/index.md) for your GitLab instance.
+- You must have [administrator access](../../../administration/index.md) to your GitLab instance.
 
 To change the default issue closing pattern, edit the
 [`gitlab.rb` or `gitlab.yml` file](../../../administration/issue_closing_pattern.md)

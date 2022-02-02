@@ -63,5 +63,13 @@ RSpec.describe Gitlab::LegacyGithubImport::ReleaseFormatter do
         expect(release.valid?).to eq false
       end
     end
+
+    context 'when release has NULL tag' do
+      let(:raw_data) { double(base_data.merge(tag_name: '')) }
+
+      it 'returns false' do
+        expect(release.valid?).to eq false
+      end
+    end
   end
 end

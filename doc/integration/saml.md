@@ -367,7 +367,7 @@ The requirements are the same as the previous settings:
 
 - The IdP must pass Group information to GitLab.
 - GitLab must know where to look for the groups in the SAML response, as well as
-  which group(s) grant the user an administrator role.
+  which groups grant the user administrator access.
 
 ```yaml
 { name: 'saml',
@@ -504,7 +504,7 @@ omniauth:
 
 Keep in mind that every sign in attempt redirects to the SAML server;
 you cannot sign in using local credentials. Ensure at least one of the
-SAML users has an administrator role.
+SAML users has administrator access.
 
 You may also bypass the auto sign-in feature by browsing to
 `https://gitlab.example.com/users/sign_in?auto_sign_in=false`.

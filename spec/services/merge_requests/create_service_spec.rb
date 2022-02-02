@@ -61,19 +61,19 @@ RSpec.describe MergeRequests::CreateService, :clean_gitlab_redis_shared_state do
         expect(merge_request.reload).to be_preparing
       end
 
-      describe 'when marked with /wip' do
+      describe 'when marked with /draft' do
         context 'in title and in description' do
           let(:opts) do
             {
-              title: 'WIP: Awesome merge_request',
-              description: "well this is not done yet\n/wip",
+              title: 'Draft: Awesome merge_request',
+              description: "well this is not done yet\n/draft",
               source_branch: 'feature',
               target_branch: 'master',
               assignees: [user2]
             }
           end
 
-          it 'sets MR to WIP' do
+          it 'sets MR to draft' do
             expect(merge_request.work_in_progress?).to be(true)
           end
         end
@@ -89,7 +89,7 @@ RSpec.describe MergeRequests::CreateService, :clean_gitlab_redis_shared_state do
             }
           end
 
-          it 'sets MR to WIP' do
+          it 'sets MR to draft' do
             expect(merge_request.work_in_progress?).to be(true)
           end
         end

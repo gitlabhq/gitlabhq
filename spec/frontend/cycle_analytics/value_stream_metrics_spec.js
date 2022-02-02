@@ -5,6 +5,8 @@ import metricsData from 'test_fixtures/projects/analytics/value_stream_analytics
 import waitForPromises from 'helpers/wait_for_promises';
 import { METRIC_TYPE_SUMMARY } from '~/api/analytics_api';
 import ValueStreamMetrics from '~/cycle_analytics/components/value_stream_metrics.vue';
+import { METRICS_POPOVER_CONTENT } from '~/cycle_analytics/constants';
+import { prepareTimeMetricsData } from '~/cycle_analytics/utils';
 import MetricTile from '~/cycle_analytics/components/metric_tile.vue';
 import createFlash from '~/flash';
 import { group } from './mock_data';
@@ -14,6 +16,7 @@ jest.mock('~/flash');
 describe('ValueStreamMetrics', () => {
   let wrapper;
   let mockGetValueStreamSummaryMetrics;
+  let mockFilterFn;
 
   const { full_path: requestPath } = group;
   const fakeReqName = 'Mock metrics';
@@ -23,12 +26,13 @@ describe('ValueStreamMetrics', () => {
     name: fakeReqName,
   });
 
-  const createComponent = ({ requestParams = {} } = {}) => {
+  const createComponent = (props = {}) => {
     return shallowMount(ValueStreamMetrics, {
       propsData: {
         requestPath,
-        requestParams,
+        requestParams: {},
         requests: [metricsRequestFactory()],
+        ...props,
       },
     });
   };
@@ -102,6 +106,35 @@ describe('ValueStreamMetrics', () => {
 
       it('will not display a loading icon', () => {
         expect(wrapper.find(GlSkeletonLoading).exists()).toBe(false);
+      });
+
+      describe('filterFn', () => {
+        const transferedMetricsData = prepareTimeMetricsData(metricsData, METRICS_POPOVER_CONTENT);
+
+        it('with a filter function, will call the function with the metrics data', async () => {
+          const filteredData = [
+            { identifier: 'issues', value: '3', title: 'New Issues', description: 'foo' },
+          ];
+          mockFilterFn = jest.fn(() => filteredData);
+
+          wrapper = createComponent({
+            filterFn: mockFilterFn,
+          });
+
+          await waitForPromises();
+
+          expect(mockFilterFn).toHaveBeenCalledWith(transferedMetricsData);
+          expect(wrapper.vm.metrics).toEqual(filteredData);
+        });
+
+        it('without a filter function, it will only update the metrics', async () => {
+          wrapper = createComponent();
+
+          await waitForPromises();
+
+          expect(mockFilterFn).not.toHaveBeenCalled();
+          expect(wrapper.vm.metrics).toEqual(transferedMetricsData);
+        });
       });
 
       describe('with additional params', () => {

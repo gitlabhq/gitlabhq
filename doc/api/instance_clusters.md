@@ -16,8 +16,7 @@ With [instance-level Kubernetes clusters](../user/instance/clusters/index.md),
 you can connect a Kubernetes cluster to the GitLab instance and use the same cluster across all of
 the projects within your instance.
 
-NOTE:
-Users need the Administrator role to use these endpoints.
+Users need administrator access to use these endpoints.
 
 ## List instance clusters
 

@@ -209,8 +209,8 @@ RSpec.describe ExtractsPath do
       expect(extract_ref_without_atom('release/app/v1.0.0.atom')).to eq('release/app/v1.0.0')
     end
 
-    it 'returns nil if there are no matching refs' do
-      expect(extract_ref_without_atom('foo.atom')).to eq(nil)
+    it 'raises an error if there are no matching refs' do
+      expect { extract_ref_without_atom('foo.atom') }.to raise_error(ExtractsRef::InvalidPathError)
     end
   end
 end

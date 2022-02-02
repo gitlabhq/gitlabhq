@@ -58,7 +58,7 @@ User.where(confirmed_at: nil).where('LENGTH(confirmation_token) = 32')
 
 ## What does it look like when a user is blocked?
 
-A regular user might receive a message that says "You have to confirm your email address before continuing". This message could includes a 404 or 422 error code, when the user tries to sign in.
+A user might receive a message that says "You have to confirm your email address before continuing". This message could includes a 404 or 422 error code, when the user tries to sign in.
 
 NOTE:
 We hope to improve the [sign-in experience for an unverified user](https://gitlab.com/gitlab-org/gitlab/-/issues/29279) in a future release.

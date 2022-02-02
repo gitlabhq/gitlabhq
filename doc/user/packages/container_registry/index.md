@@ -603,7 +603,7 @@ You can then tag the manifest list with `mygroup/myapp:1.0.0`.
 ### Troubleshoot as a GitLab server administrator
 
 Troubleshooting the GitLab Container Registry, most of the times, requires
-you to log in to GitLab server with the Administrator role.
+you to log in to GitLab server with administrator access.
 
 [Read how to troubleshoot the Container Registry](../../../administration/packages/container_registry.md#troubleshooting).
 

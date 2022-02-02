@@ -217,7 +217,7 @@ for details about the pipelines security model.
 
 ## Delete a protected branch
 
-Users with at least the Maintainer can manually delete protected
+Users with at least the Maintainer role can manually delete protected
 branches by using the GitLab web interface:
 
 1. Go to **Repository > Branches**.

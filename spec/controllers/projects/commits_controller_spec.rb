@@ -151,6 +151,20 @@ RSpec.describe Projects::CommitsController do
             expect(response.media_type).to eq('text/html')
           end
         end
+
+        context 'when the ref does not exist' do
+          before do
+            get(:show, params: {
+              namespace_id: project.namespace,
+              project_id: project,
+              id: 'unknown.atom'
+            })
+          end
+
+          it 'returns 404 page' do
+            expect(response).to be_not_found
+          end
+        end
       end
     end
 

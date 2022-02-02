@@ -38,7 +38,7 @@ they do not have access to all projects, groups, or the **Admin Area** menu.
 To access potentially dangerous resources, an administrator can activate Admin Mode by:
 
 - Selecting the *Enable Admin Mode* button
-- Trying to access any part of the UI that requires an administrator role, specifically those which call `/admin` endpoints.
+- Trying to access any part of the UI that requires administrator access, specifically those which call `/admin` endpoints.
 
 The main use case allows administrators to perform their regular tasks as a regular
 user, based on their memberships, without having to set up a second account for

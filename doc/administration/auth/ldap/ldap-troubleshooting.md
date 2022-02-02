@@ -382,7 +382,7 @@ the following are true:
 - The configured `admin_group` in the `gitlab.rb` is a CN, rather than a DN or an array.
 - This CN falls under the scope of the configured `group_base`.
 - The members of the `admin_group` have already signed into GitLab with their LDAP
-  credentials. GitLab only grants the Administrator role to the users whose
+  credentials. GitLab only grants administrator access to the users whose
   accounts are already connected to LDAP.
 
 If all the above are true and the users are still not getting access,

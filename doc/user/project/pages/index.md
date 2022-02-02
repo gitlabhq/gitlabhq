@@ -81,7 +81,7 @@ GitLab Pages website.
 
 You can either use the GitLab [default domain for GitLab Pages websites](getting_started_part_one.md#gitlab-pages-default-domain-names),
 `*.gitlab.io`, or your own domain (`example.com`). In that case, you
-must have the Administrator role in your domain's registrar (or control panel) to set it up with Pages.
+must be an administrator in your domain's registrar (or control panel) to set it up with Pages.
 
 The following diagrams show the workflows you might follow to get started with Pages.
 

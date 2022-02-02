@@ -5,7 +5,7 @@ RSpec.describe Gitlab::Database::Migrations::Observers::QueryDetails do
   subject { described_class.new(observation, directory_path, connection) }
 
   let(:connection) { ActiveRecord::Migration.connection }
-  let(:observation) { Gitlab::Database::Migrations::Observation.new(migration_version, migration_name) }
+  let(:observation) { Gitlab::Database::Migrations::Observation.new(version: migration_version, name: migration_name) }
   let(:query) { "select date_trunc('day', $1::timestamptz) + $2 * (interval '1 hour')" }
   let(:query_binds) { [Time.current, 3] }
   let(:directory_path) { Dir.mktmpdir }

@@ -387,7 +387,7 @@ time.
 ## Debug a job locally
 
 The following commands are run without root privileges. You should be
-able to run Docker with your regular user account.
+able to run Docker with your user account.
 
 First start with creating a file named `build_script`:
 

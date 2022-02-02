@@ -1332,7 +1332,7 @@ cluster = Clusters::Cluster.find_by(name: 'cluster_name')
 Delete cluster without associated resources:
 
 ```ruby
-# Find users with the Administrator role
+# Find users with the administrator access
 user = User.find_by(username: 'admin_user')
 
 # Find the cluster with the ID

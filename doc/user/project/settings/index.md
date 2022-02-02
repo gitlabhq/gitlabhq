@@ -360,7 +360,7 @@ available in project listings. Only project owners and administrators have the
 
 To find an archived project:
 
-1. Sign in to GitLab as the project owner or a user with the Administrator role.
+1. Sign in to GitLab as the project owner or a user with administrator access.
 1. If you:
    - Have the project's URL, open the project's page in your browser.
    - Don't have the project's URL:

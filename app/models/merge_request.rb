@@ -561,9 +561,7 @@ class MergeRequest < ApplicationRecord
     end
   end
 
-  # WIP is deprecated in favor of Draft. Currently both options are supported
-  # https://gitlab.com/gitlab-org/gitlab/-/issues/227426
-  DRAFT_REGEX = /\A*#{Regexp.union(Gitlab::Regex.merge_request_wip, Gitlab::Regex.merge_request_draft)}+\s*/i.freeze
+  DRAFT_REGEX = /\A*#{Gitlab::Regex.merge_request_draft}+\s*/i.freeze
 
   def self.work_in_progress?(title)
     !!(title =~ DRAFT_REGEX)

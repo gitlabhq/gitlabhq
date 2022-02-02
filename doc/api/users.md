@@ -109,7 +109,7 @@ GET /users
 | `sort`             | string  | no       | Return users sorted in `asc` or `desc` order. Default is `desc`                                                       |
 | `two_factor`       | string  | no       | Filter users by Two-factor authentication. Filter values are `enabled` or `disabled`. By default it returns all users |
 | `without_projects` | boolean | no       | Filter users without projects. Default is `false`, which means that all users are returned, with and without projects. |
-| `admins`           | boolean | no       | Return only admin users. Default is `false`                                 |
+| `admins`           | boolean | no       | Return only administrators. Default is `false`                                 |
 | `saml_provider_id` **(PREMIUM)** | number | no     | Return only users created by the specified SAML provider ID. If not included, it returns all users. |
 
 ```json
@@ -1546,7 +1546,7 @@ Please refer to the [Events API documentation](events.md#get-user-contribution-e
 
 ## Get all impersonation tokens of a user
 
-> Requires administrator permissions.
+Requires administrator access.
 
 It retrieves every impersonation token of the user. Use the pagination
 parameters `page` and `per_page` to restrict the list of impersonation tokens.
@@ -1720,8 +1720,8 @@ Example response:
 
 ## Create an impersonation token
 
-> Requires administrator permissions.
-> Token values are returned once. Make sure you save it - you can't access it again.
+Requires administrator access. Token values are returned once. Make sure you save it because you can't access
+it again.
 
 It creates a new impersonation token. Only administrators can do this.
 You are only able to create impersonation tokens to impersonate the user and perform
@@ -1765,7 +1765,7 @@ Example response:
 
 ## Revoke an impersonation token
 
-> Requires administrator permissions.
+Requires administrator access.
 
 It revokes an impersonation token.
 

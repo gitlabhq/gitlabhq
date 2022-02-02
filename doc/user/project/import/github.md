@@ -181,8 +181,7 @@ Mirroring does not sync any new or updated pull requests from your GitHub projec
 
 ## Improve the speed of imports on self-managed instances
 
-NOTE:
-An administrator role on the GitLab server is required for this process.
+Administrator access on the GitLab server is required for this process.
 
 For large projects it may take a while to import all data. To reduce the time necessary, you can increase the number of
 Sidekiq workers that process the following queues:

@@ -1,9 +1,8 @@
 <script>
 import { GlDeprecatedSkeletonLoading as GlSkeletonLoading } from '@gitlab/ui';
-import { flatten } from 'lodash';
+import { flatten, isEqual } from 'lodash';
 import createFlash from '~/flash';
 import { sprintf, s__ } from '~/locale';
-import { redirectTo } from '~/lib/utils/url_utility';
 import { METRICS_POPOVER_CONTENT } from '../constants';
 import { removeFlash, prepareTimeMetricsData } from '../utils';
 import MetricTile from './metric_tile.vue';
@@ -48,6 +47,11 @@ export default {
       type: Array,
       required: true,
     },
+    filterFn: {
+      type: Function,
+      required: false,
+      default: null,
+    },
   },
   data() {
     return {
@@ -56,8 +60,10 @@ export default {
     };
   },
   watch: {
-    requestParams() {
-      this.fetchData();
+    requestParams(newVal, oldVal) {
+      if (!isEqual(newVal, oldVal)) {
+        this.fetchData();
+      }
     },
   },
   mounted() {
@@ -69,24 +75,12 @@ export default {
       this.isLoading = true;
       return fetchMetricsData(this.requests, this.requestPath, this.requestParams)
         .then((data) => {
-          this.metrics = data;
+          this.metrics = this.filterFn ? this.filterFn(data) : data;
           this.isLoading = false;
         })
         .catch(() => {
           this.isLoading = false;
         });
-    },
-    hasLinks(links) {
-      return links?.length && links[0].url;
-    },
-    clickHandler({ links }) {
-      if (this.hasLinks(links)) {
-        redirectTo(links[0].url);
-      }
-    },
-    getDecimalPlaces(value) {
-      const parsedFloat = parseFloat(value);
-      return Number.isNaN(parsedFloat) || Number.isInteger(parsedFloat) ? 0 : 1;
     },
   },
 };

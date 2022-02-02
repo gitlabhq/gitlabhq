@@ -1,0 +1,47 @@
+# This template is provided and maintained by Qualys Inc., an official Technology Partner with GitLab.
+# See https://about.gitlab.com/partners/technology-partners/#security for more information.
+#
+# This template shows how to use Qualys IaC Scan with a GitLab CI/CD pipeline.
+# Qualys and GitLab users can use this to scan their IaC templates for misconfigurations.
+# Documentation about this integration: https://www.qualys.com/documentation/qualys-iac-gitlab-integration.pdf
+#
+# This template should not need editing to work in your project.
+# It is not designed to be included in an existing CI/CD configuration with the "include:" keyword.
+#
+# The `qualys_iac_sast` job runs for branch (push) pipelines, including scheduled
+# and manually run branch pipelines.
+#
+# The sast-report output complies with GitLab's format. This report displays Qualys IaC Scan's
+# results in the Security tab in the pipeline view, if you have that feature enabled (GitLab Ultimate only).
+# The Qualys IaC Scan output is available in the Jobs tab in the pipeline view.
+#
+# Requirements:
+# Before you can use this template, add the following CI/CD variables to your
+# project CI/CD settings:
+#
+# - QUALYS_URL: The Qualys guard URL.
+# - QUALYS_USERNAME: The Qualys username.
+# - QUALYS_PASSWORD: The Qualys password. Make this variable masked.
+# - BREAK_ON_ERROR: (optional) If you don't want the pipeline to fail on an error,
+#                   then add this variable and set it to "false". Otherwise set it
+#                   to "true", or omit the variable.
+
+stages:
+  - build
+  - test
+  - qualys_iac_scan
+  - deploy
+
+qualys_iac_sast:
+  stage: qualys_iac_scan
+  image:
+    name: qualys/qiac_security_cli:latest
+    entrypoint: [""]
+  script:
+    - sh /home/qiac/gitlab.sh
+  artifacts:
+    name: "qualys-iac-sast-artifacts"
+    paths:
+      - qualys_iac_ci_result.json
+    reports:
+      sast: gl-sast-qualys-iac-ci-report.json

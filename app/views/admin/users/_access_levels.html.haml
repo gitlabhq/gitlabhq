@@ -26,10 +26,10 @@
 
       = render_if_exists 'admin/users/auditor_access_level_radio', f: f, disabled: editing_current_user
 
-      - help_text = s_('AdminUsers|Administrators have access to all groups, projects and users and can manage all features in this installation.')
-      - help_text += ' ' + s_('AdminUsers|You cannot remove your own admin rights.') if editing_current_user
+      - help_text = s_('AdminUsers|The user has unlimited access to all groups, projects, users, and features.')
+      - help_text += ' ' + s_('AdminUsers|You cannot remove your own administrator access.') if editing_current_user
       = f.gitlab_ui_radio_component :access_level, :admin,
-          s_('AdminUsers|Admin'),
+          s_('AdminUsers|Administrator'),
           radio_options: { disabled: editing_current_user },
           help_text: help_text
 

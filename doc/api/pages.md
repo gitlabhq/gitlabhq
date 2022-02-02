@@ -12,7 +12,7 @@ The GitLab Pages feature must be enabled to use these endpoints. Find out more a
 
 ## Unpublish pages
 
-Remove pages. The user must have the Administrator role.
+Remove pages. The user must have administrator access.
 
 ```plaintext
 DELETE /projects/:id/pages

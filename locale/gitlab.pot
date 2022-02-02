@@ -2713,7 +2713,7 @@ msgstr ""
 msgid "AdminUsers|Admin"
 msgstr ""
 
-msgid "AdminUsers|Administrators have access to all groups, projects and users and can manage all features in this installation."
+msgid "AdminUsers|Administrator"
 msgstr ""
 
 msgid "AdminUsers|Admins"
@@ -2905,6 +2905,9 @@ msgstr ""
 msgid "AdminUsers|The user can't log in."
 msgstr ""
 
+msgid "AdminUsers|The user has unlimited access to all groups, projects, users, and features."
+msgstr ""
+
 msgid "AdminUsers|The user will be logged out"
 msgstr ""
 
@@ -3007,7 +3010,7 @@ msgstr ""
 msgid "AdminUsers|You can unban their account in the future. Their data remains intact."
 msgstr ""
 
-msgid "AdminUsers|You cannot remove your own admin rights."
+msgid "AdminUsers|You cannot remove your own administrator access."
 msgstr ""
 
 msgid "AdminUsers|You must transfer ownership or delete the groups owned by this user before you can delete their account"

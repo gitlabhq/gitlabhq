@@ -1369,17 +1369,17 @@ RSpec.describe MergeRequest, factory_default: :keep do
     subject { build_stubbed(:merge_request) }
 
     [
-      'WIP:', 'WIP: ', '[WIP]', '[WIP] ', ' [WIP] WIP: [WIP] WIP:',
       'draft:', 'Draft: ', '[Draft]', '[DRAFT] '
-    ].each do |wip_prefix|
-      it "detects the '#{wip_prefix}' prefix" do
-        subject.title = "#{wip_prefix}#{subject.title}"
+    ].each do |draft_prefix|
+      it "detects the '#{draft_prefix}' prefix" do
+        subject.title = "#{draft_prefix}#{subject.title}"
 
         expect(subject.work_in_progress?).to eq true
       end
     end
 
     [
+      'WIP:', 'WIP: ', '[WIP]', '[WIP] ', ' [WIP] WIP: [WIP] WIP:',
       "WIP ", "(WIP)",
       "draft", "Draft", "Draft -", "draft - ", "Draft ", "draft "
     ].each do |draft_prefix|
@@ -1390,10 +1390,10 @@ RSpec.describe MergeRequest, factory_default: :keep do
       end
     end
 
-    it "detects merge request title just saying 'wip'" do
+    it "doesn't detect merge request title just saying 'wip'" do
       subject.title = "wip"
 
-      expect(subject.work_in_progress?).to eq true
+      expect(subject.work_in_progress?).to eq false
     end
 
     it "does not detect merge request title just saying 'draft'" do
@@ -1459,29 +1459,30 @@ RSpec.describe MergeRequest, factory_default: :keep do
   describe "#wipless_title" do
     subject { build_stubbed(:merge_request) }
 
-    [
-      'WIP:', 'WIP: ', '[WIP]', '[WIP] ', '[WIP] WIP: [WIP] WIP:',
-      'draft:', 'Draft: ', '[Draft]', '[DRAFT] '
-    ].each do |wip_prefix|
-      it "removes the '#{wip_prefix}' prefix" do
+    ['draft:', 'Draft: ', '[Draft]', '[DRAFT] '].each do |draft_prefix|
+      it "removes a '#{draft_prefix}' prefix" do
         wipless_title = subject.title
-        subject.title = "#{wip_prefix}#{subject.title}"
+        subject.title = "#{draft_prefix}#{subject.title}"
 
         expect(subject.wipless_title).to eq wipless_title
       end
 
       it "is satisfies the #work_in_progress? method" do
-        subject.title = "#{wip_prefix}#{subject.title}"
+        subject.title = "#{draft_prefix}#{subject.title}"
         subject.title = subject.wipless_title
 
         expect(subject.work_in_progress?).to eq false
       end
     end
 
-    it 'removes only WIP prefix from the MR title' do
-      subject.title = 'WIP: Implement feature called WIP'
+    [
+      'WIP:', 'WIP: ', '[WIP]', '[WIP] ', '[WIP] WIP: [WIP] WIP:'
+    ].each do |wip_prefix|
+      it "doesn't remove a '#{wip_prefix}' prefix" do
+        subject.title = "#{wip_prefix}#{subject.title}"
 
-      expect(subject.wipless_title).to eq 'Implement feature called WIP'
+        expect(subject.wipless_title).to eq subject.title
+      end
     end
 
     it 'removes only draft prefix from the MR title' do

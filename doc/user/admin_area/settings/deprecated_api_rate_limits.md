@@ -30,7 +30,7 @@ for deprecated API endpoints. No other new features are provided by this overrid
 
 Prerequisites:
 
-- You must have the Administrator role for your instance.
+- You must have administrator access for your instance.
 
 To override the general user and IP rate limits for requests to deprecated API endpoints:
 

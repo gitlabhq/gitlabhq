@@ -10,8 +10,7 @@ You can integrate GitLab and Jira Cloud using the
 [GitLab.com for Jira Cloud](https://marketplace.atlassian.com/apps/1221011/gitlab-com-for-jira-cloud)
 app in the Atlassian Marketplace.
 
-NOTE:
-Only Jira users with the administrator role can install or configure
+Only Jira users with administrator access can install or configure
 the GitLab.com for Jira Cloud app.
 
 ## Install the GitLab.com for Jira Cloud app **(FREE SAAS)**
@@ -91,10 +90,10 @@ self-managed GitLab instances with Jira Cloud, you can either:
 You can configure your Atlassian Cloud instance to allow you to install applications
 from outside the Marketplace, which allows you to install the application:
 
-1. Sign in to your Jira instance as a user with an Administrator role.
+1. Sign in to your Jira instance as an administrator.
 1. Place your Jira instance into
    [development mode](https://developer.atlassian.com/cloud/jira/platform/getting-started-with-connect/#step-2--enable-development-mode).
-1. Sign in to your GitLab application as an [administrator](../../user/permissions.md).
+1. Sign in to your GitLab application as a user with administrator access.
 1. Install the GitLab application from your self-managed GitLab instance, as
    described in the [Atlassian developer guides](https://developer.atlassian.com/cloud/jira/platform/getting-started-with-connect/#step-3--install-and-test-your-app):
    1. In your Jira instance, go to **Apps > Manage Apps** and select **Upload app**:

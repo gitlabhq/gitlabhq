@@ -246,7 +246,7 @@ curl "https://gitlab.com/api/v4/projects/1/snippets/2/files/master/snippet%2Erb/
 
 ## Get user agent details
 
-Available only for users with the Administrator role.
+Available only for users with administrator access.
 
 ```plaintext
 GET /projects/:id/snippets/:snippet_id/user_agent_detail

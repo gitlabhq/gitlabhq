@@ -16,6 +16,8 @@ module ExtractsPath
     id_without_atom = id.sub(/\.atom$/, '')
     valid_refs = ref_names.select { |v| "#{id_without_atom}/".start_with?("#{v}/") }
 
+    raise InvalidPathError if valid_refs.blank?
+
     valid_refs.max_by(&:length)
   end
 
