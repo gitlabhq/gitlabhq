@@ -492,6 +492,10 @@ class Namespace < ApplicationRecord
     end
   end
 
+  def shared_runners
+    @shared_runners ||= shared_runners_enabled ? Ci::Runner.instance_type : Ci::Runner.none
+  end
+
   def root?
     !has_parent?
   end

@@ -152,11 +152,13 @@ module Ci
     }
 
     scope :owned_or_instance_wide, -> (project_id) do
+      project = project_id.respond_to?(:shared_runners) ? project_id : Project.find(project_id)
+
       from_union(
         [
           belonging_to_project(project_id),
           belonging_to_parent_group_of_project(project_id),
-          instance_type
+          project.shared_runners
         ],
         remove_duplicates: false
       )
@@ -173,7 +175,7 @@ module Ci
       from_union(
         [
           group_and_ancestor_runners,
-          instance_type
+          group.shared_runners
         ],
         remove_duplicates: false
       )

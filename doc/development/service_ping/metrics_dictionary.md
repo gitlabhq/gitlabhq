@@ -39,7 +39,7 @@ Each metric is defined in a separate YAML file consisting of a number of fields:
 | `product_group`     | yes      | The [group](https://gitlab.com/gitlab-com/www-gitlab-com/blob/master/data/stages.yml) that owns the metric. |
 | `product_category`  | no       | The [product category](https://gitlab.com/gitlab-com/www-gitlab-com/blob/master/data/categories.yml) for the metric. |
 | `value_type`        | yes      | `string`; one of [`string`, `number`, `boolean`, `object`](https://json-schema.org/understanding-json-schema/reference/type.html).                                                     |
-| `status`            | yes      | `string`; [status](#metric-statuses) of the metric, may be set to `active`, `deprecated`, `removed`, `broken`. |
+| `status`            | yes      | `string`; [status](#metric-statuses) of the metric, may be set to `active`, `removed`, `broken`. |
 | `time_frame`        | yes      | `string`; may be set to a value like `7d`, `28d`, `all`, `none`. |
 | `data_source`       | yes      | `string`; may be set to a value like `database`, `redis`, `redis_hll`, `prometheus`, `system`. |
 | `data_category`     | yes      | `string`; [categories](#data-category) of the metric, may be set to `operational`, `optional`, `subscription`, `standard`. The default value is `optional`.|
@@ -60,7 +60,6 @@ Metric definitions can have one of the following statuses:
 
 - `active`: Metric is used and reports data.
 - `broken`: Metric reports broken data (for example, -1 fallback), or does not report data at all. A metric marked as `broken` must also have the `repair_issue_url` attribute.
-- `deprecated`: Metric is deprecated and possibly planned to be removed.
 - `removed`: Metric was removed, but it may appear in Service Ping payloads sent from instances running on older versions of GitLab.
 
 ### Metric value_type

@@ -11191,7 +11191,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="groupiterationsin"></a>`in` | [`[IterationSearchableField!]`](#iterationsearchablefield) | Fields in which the fuzzy-search should be performed with the query given in the argument `search`. Defaults to `[title]`. |
 | <a id="groupiterationsincludeancestors"></a>`includeAncestors` | [`Boolean`](#boolean) | Whether to include ancestor iterations. Defaults to true. |
 | <a id="groupiterationsiterationcadenceids"></a>`iterationCadenceIds` | [`[IterationsCadenceID!]`](#iterationscadenceid) | Global iteration cadence IDs by which to look up the iterations. |
-| <a id="groupiterationssearch"></a>`search` | [`String`](#string) | Query used for fuzzy-searching in the fields selected in the argument `in`. |
+| <a id="groupiterationssearch"></a>`search` | [`String`](#string) | Query used for fuzzy-searching in the fields selected in the argument `in`. Returns all iterations if empty. |
 | <a id="groupiterationssort"></a>`sort` | [`IterationSort`](#iterationsort) | List iterations by sort order. If unspecified, an arbitrary order (subject to change) is used. |
 | <a id="groupiterationsstartdate"></a>`startDate` **{warning-solid}** | [`Time`](#time) | **Deprecated** in 13.5. Use timeframe.start. |
 | <a id="groupiterationsstate"></a>`state` | [`IterationState`](#iterationstate) | Filter iterations by state. |
@@ -13935,7 +13935,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="projectiterationsin"></a>`in` | [`[IterationSearchableField!]`](#iterationsearchablefield) | Fields in which the fuzzy-search should be performed with the query given in the argument `search`. Defaults to `[title]`. |
 | <a id="projectiterationsincludeancestors"></a>`includeAncestors` | [`Boolean`](#boolean) | Whether to include ancestor iterations. Defaults to true. |
 | <a id="projectiterationsiterationcadenceids"></a>`iterationCadenceIds` | [`[IterationsCadenceID!]`](#iterationscadenceid) | Global iteration cadence IDs by which to look up the iterations. |
-| <a id="projectiterationssearch"></a>`search` | [`String`](#string) | Query used for fuzzy-searching in the fields selected in the argument `in`. |
+| <a id="projectiterationssearch"></a>`search` | [`String`](#string) | Query used for fuzzy-searching in the fields selected in the argument `in`. Returns all iterations if empty. |
 | <a id="projectiterationssort"></a>`sort` | [`IterationSort`](#iterationsort) | List iterations by sort order. If unspecified, an arbitrary order (subject to change) is used. |
 | <a id="projectiterationsstartdate"></a>`startDate` **{warning-solid}** | [`Time`](#time) | **Deprecated** in 13.5. Use timeframe.start. |
 | <a id="projectiterationsstate"></a>`state` | [`IterationState`](#iterationstate) | Filter iterations by state. |

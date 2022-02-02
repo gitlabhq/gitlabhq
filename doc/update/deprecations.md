@@ -777,6 +777,18 @@ When checking for active runners, specify `paused=false`.
 
 **Planned removal milestone: 15.0 (2022-05-22)**
 
+### REST API endpoint to list group runners no longer accepts `project_type` value for `type` argument
+
+WARNING:
+This feature will be changed or removed in 15.0
+as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Before updating GitLab, review the details carefully to determine if you need to make any
+changes to your code, settings, or workflow.
+
+The `GET /groups/:id/runners?type=project_type` endpoint will be removed in GitLab 15.0. The endpoint always returned an empty collection.
+
+**Planned removal milestone: 15.0 (2022-05-22)**
+
 ### REST and GraphQL API Runner usage of `active` replaced by `paused`
 
 WARNING:

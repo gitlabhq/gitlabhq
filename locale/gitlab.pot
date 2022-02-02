@@ -31854,6 +31854,9 @@ msgstr ""
 msgid "SecurityOrchestration|If you are using Auto DevOps, your %{monospacedStart}auto-deploy-values.yaml%{monospacedEnd} file will not be updated if you change a policy in this section. Auto DevOps users should make changes by following the %{linkStart}Container Network Policy documentation%{linkEnd}."
 msgstr ""
 
+msgid "SecurityOrchestration|Invalid policy type"
+msgstr ""
+
 msgid "SecurityOrchestration|Latest scan"
 msgstr ""
 
@@ -31870,6 +31873,12 @@ msgid "SecurityOrchestration|Only owners can update Security Policy Project"
 msgstr ""
 
 msgid "SecurityOrchestration|Policies"
+msgstr ""
+
+msgid "SecurityOrchestration|Policy cannot be enabled for non-existing branches (%{branches})"
+msgstr ""
+
+msgid "SecurityOrchestration|Policy cannot be enabled without branch information"
 msgstr ""
 
 msgid "SecurityOrchestration|Policy description"

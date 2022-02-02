@@ -265,10 +265,10 @@ RSpec.describe Ci::Runner do
     it_behaves_like '.belonging_to_parent_group_of_project'
   end
 
-  context 'with existing system wide, group and project runners' do
+  context 'with instance runners sharing enabled' do
     # group specific
-    let_it_be(:group) { create(:group) }
-    let_it_be(:project) { create(:project, group: group) }
+    let_it_be(:group) { create(:group, shared_runners_enabled: true) }
+    let_it_be(:project) { create(:project, group: group, shared_runners_enabled: true) }
     let_it_be(:group_runner) { create(:ci_runner, :group, groups: [group]) }
 
     # project specific
@@ -295,6 +295,40 @@ RSpec.describe Ci::Runner do
 
       it 'returns a globally shared and a group specific runner' do
         is_expected.to contain_exactly(group_runner, shared_runner)
+      end
+    end
+  end
+
+  context 'with instance runners sharing disabled' do
+    # group specific
+    let_it_be(:group) { create(:group, shared_runners_enabled: false) }
+    let_it_be(:project) { create(:project, group: group, shared_runners_enabled: false) }
+    let_it_be(:group_runner) { create(:ci_runner, :group, groups: [group]) }
+
+    # project specific
+    let_it_be(:project_runner) { create(:ci_runner, :project, projects: [project]) }
+
+    # globally shared
+    let_it_be(:shared_runner) { create(:ci_runner, :instance) }
+
+    describe '.owned_or_instance_wide' do
+      subject { described_class.owned_or_instance_wide(project.id) }
+
+      it 'returns a project specific and a group specific runner' do
+        is_expected.to contain_exactly(group_runner, project_runner)
+      end
+    end
+
+    describe '.group_or_instance_wide' do
+      subject { described_class.group_or_instance_wide(group) }
+
+      before do
+        # Ensure the project runner is instantiated
+        project_runner
+      end
+
+      it 'returns a group specific runner' do
+        is_expected.to contain_exactly(group_runner)
       end
     end
   end
