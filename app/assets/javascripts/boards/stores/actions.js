@@ -15,7 +15,6 @@ import {
   FilterFields,
   ListTypeTitles,
   DraggableItemTypes,
-  active,
 } from 'ee_else_ce/boards/constants';
 import {
   formatIssueInput,
@@ -210,7 +209,6 @@ export default {
     const variables = {
       fullPath,
       searchTerm,
-      state: active,
     };
 
     let query;

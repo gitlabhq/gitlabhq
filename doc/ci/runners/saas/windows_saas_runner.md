@@ -15,7 +15,7 @@ change when the beta period ends, as discussed in this [related issue](https://g
 
 Windows runners on GitLab.com autoscale by launching virtual machines on
 the Google Cloud Platform. This solution uses an
-[autoscaling driver](https://gitlab.com/gitlab-org/ci-cd/custom-executor-drivers/autoscaler/tree/master/docs/readme.md)
+[autoscaling driver](https://gitlab.com/gitlab-org/ci-cd/custom-executor-drivers/autoscaler/-/blob/main/docs/README.md)
 developed by GitLab for the [custom executor](https://docs.gitlab.com/runner/executors/custom.html).
 Windows runners execute your CI/CD jobs on `n1-standard-2` instances with
 2 vCPUs and 7.5 GB RAM. You can find a full list of available Windows packages in

@@ -96,7 +96,7 @@ class ContainerRepository < ApplicationRecord
     end
 
     event :abort_import do
-      transition %i[pre_importing importing] => :import_aborted
+      transition ACTIVE_MIGRATION_STATES.map(&:to_sym) => :import_aborted
     end
 
     event :skip_import do
@@ -205,6 +205,11 @@ class ContainerRepository < ApplicationRecord
     super
   end
 
+  def finish_pre_import_and_start_import
+    # nothing to do between those two transitions for now.
+    finish_pre_import && start_import
+  end
+
   # rubocop: disable CodeReuse/ServiceClass
   def registry
     @registry ||= begin
@@ -287,8 +292,16 @@ class ContainerRepository < ApplicationRecord
     update!(expiration_policy_started_at: Time.zone.now)
   end
 
+  def migration_in_active_state?
+    migration_state.in?(ACTIVE_MIGRATION_STATES)
+  end
+
   def migration_importing?
     migration_state == 'importing'
+  end
+
+  def migration_pre_importing?
+    migration_state == 'pre_importing'
   end
 
   def migration_pre_import

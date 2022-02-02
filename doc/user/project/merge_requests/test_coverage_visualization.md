@@ -343,3 +343,30 @@ run tests:
     reports:
       cobertura: coverage.xml
 ```
+
+### Ruby example
+
+The following [`.gitlab-ci.yml`](../../../ci/yaml/index.md) example for Ruby uses
+
+- [`rspec`](https://rspec.info/) to run tests.
+- [`simplecov`](https://github.com/simplecov-ruby/simplecov) and [`simplecov-cobertura`](https://github.com/dashingrocket/simplecov-cobertura)
+  to record the coverage profile and create a report in the Cobertura XML format.
+
+This example assumes:
+
+- That [`bundler`](https://bundler.io/) is being used for dependency management.
+  The `rspec`, `simplecov` and `simplecov-cobertura` gems have been added to your `Gemfile`.
+- The `CoberturaFormatter` has been added to your `SimpleCov.formatters`
+  configuration within the `spec_helper.rb` file.
+
+```yaml
+run tests:
+  stage: test
+  image: ruby:3.1
+  script:
+    - bundle install
+    - bundle exec rspec
+  artifacts:
+    reports:
+      cobertura: coverage/coverage.xml
+```

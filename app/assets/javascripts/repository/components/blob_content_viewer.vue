@@ -245,7 +245,7 @@ export default {
 <template>
   <div>
     <gl-loading-icon v-if="isLoading" size="sm" />
-    <div v-if="blobInfo && !isLoading" class="file-holder">
+    <div v-if="blobInfo && !isLoading" class="file-holder gl-overflow-hidden">
       <blob-header
         :blob="blobInfo"
         :hide-viewer-switcher="!hasRichViewer || isBinaryFileType || isUsingLfs"

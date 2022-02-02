@@ -63,7 +63,12 @@ Consider adding checkboxes and expectations of users with certain levels of memb
 * [ ] Add expected impact to Reporter (20) members
 * [ ] Add expected impact to Developer (30) members
 * [ ] Add expected impact to Maintainer (40) members
-* [ ] Add expected impact to Owner (50) members -->
+* [ ] Add expected impact to Owner (50) members 
+
+Please consider performing a threat model for the code changes that are introduced as part of this feature. To get started, refer to our Threat Modeling handbook page https://about.gitlab.com/handbook/security/threat_modeling/#threat-modeling. 
+
+Don't hesitate to reach out to the Application Security Team (`@gitlab-com/gl-security/appsec`) to discuss any security concerns.
+-->
 
 ### Documentation
 

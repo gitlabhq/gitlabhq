@@ -51,7 +51,7 @@ export default {
 <template>
   <div>
     <div class="file-content code js-syntax-highlight" :class="$options.userColorScheme">
-      <div v-if="!hideLineNumbers" class="line-numbers">
+      <div v-if="!hideLineNumbers" class="line-numbers gl-pt-0!">
         <a
           v-for="line in lineNumbers"
           :id="`L${line}`"
@@ -67,7 +67,7 @@ export default {
       </div>
       <div class="blob-content">
         <pre
-          class="code highlight"
+          class="code highlight gl-p-0! gl-display-flex"
         ><code v-safe-html="content" :data-blob-hash="blobHash"></code></pre>
       </div>
     </div>

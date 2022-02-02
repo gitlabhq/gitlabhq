@@ -238,6 +238,7 @@ control over how the Pages daemon runs and serves content in your environment.
 | `artifacts_server_url`                  | API URL to proxy artifact requests to. Defaults to GitLab `external URL` + `/api/v4`, for example `https://gitlab.com/api/v4`. When running a [separate Pages server](#running-gitlab-pages-on-a-separate-server), this URL must point to the main GitLab server's API. |
 | `auth_redirect_uri`                     | Callback URL for authenticating with GitLab. Defaults to project's subdomain of `pages_external_url` + `/auth`. |
 | `auth_secret`                           | Secret key for signing authentication requests. Leave blank to pull automatically from GitLab during OAuth registration. |
+| `client_cert_key_pairs`                 | Client certificates and keys used for mutual TLS with the GitLab API. See [Support mutual TLS when calling the GitLab API](#support-mutual-tls-when-calling-the-gitlab-api) for details. |
 | `dir`                                   | Working directory for configuration and secrets files. |
 | `enable`                                | Enable or disable GitLab Pages on the current system. |
 | `external_http`                         | Configure Pages to bind to one or more secondary IP addresses, serving HTTP requests. Multiple addresses can be given as an array, along with exact ports, for example `['1.2.3.4', '1.2.3.5:8063']`. Sets value for `listen_http`. |
@@ -511,6 +512,20 @@ Authority (CA) in the system certificate store.
 
 For Omnibus, this is fixed by [installing a custom CA in Omnibus GitLab](https://docs.gitlab.com/omnibus/settings/ssl.html#install-custom-public-certificates).
 
+### Support mutual TLS when calling the GitLab API
+
+If GitLab has been [configured to require mutual TLS](https://docs.gitlab.com/omnibus/settings/nginx.html#enable-2-way-ssl-client-authentication), you need to add the client certificates to Pages:
+
+1. Configure in `/etc/gitlab/gitlab.rb`:
+
+   ```ruby
+   gitlab_pages['client_cert_key_pairs'] = ['</path/to/cert>:</path/to/key>']
+   ```
+
+   Where `</path/to/cert>` and `</path/to/key>` are the file paths to the client certificate and its respective key file.
+   Both of these files must be encoded in PEM format.
+1. To configure Pages to validate the server certificates, [add the root CA to the system trust store](#using-a-custom-certificate-authority-ca).
+
 ### ZIP serving and cache configuration
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-pages/-/merge_requests/392) in GitLab 13.7.
@@ -688,7 +703,7 @@ To override the global maximum pages size for a specific group:
 ## Running GitLab Pages on a separate server
 
 You can run the GitLab Pages daemon on a separate server to decrease the load on
-your main application server. This configuration does not support mutual TLS (mTLS). See the [corresponding feature proposal](https://gitlab.com/gitlab-org/gitlab-pages/-/issues/548) for more information.
+your main application server.
 
 To configure GitLab Pages on a separate server:
 

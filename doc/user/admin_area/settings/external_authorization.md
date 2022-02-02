@@ -105,7 +105,7 @@ label defined in the [global settings](#configuration) is used.
 
 The label is shown on all project pages in the upper right corner.
 
-![classification label on project page](img/classification_label_on_project_page.png)
+![classification label on project page](img/classification_label_on_project_page_v14_8.png)
 
 <!-- ## Troubleshooting
 

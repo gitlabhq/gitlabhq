@@ -305,6 +305,7 @@ module API
     mount ::API::Internal::Pages
     mount ::API::Internal::Kubernetes
     mount ::API::Internal::MailRoom
+    mount ::API::Internal::ContainerRegistry::Migration
 
     version 'v3', using: :path do
       # Although the following endpoints are kept behind V3 namespace,

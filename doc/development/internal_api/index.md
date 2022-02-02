@@ -507,7 +507,7 @@ curl --request POST --header "Gitlab-Kas-Api-Request: <JWT token>" \
 
 Called from the GitLab Agent Server (`kas`) to create a security vulnerability
 from a Starboard vulnerability report. This request is idempotent. Multiple requests with the same data
-create a single vulnerability.
+create a single vulnerability. The response contains the UUID of the created vulnerability finding.
 
 | Attribute       | Type   | Required | Description |
 |:----------------|:-------|:---------|:------------|
@@ -551,6 +551,14 @@ curl --request PUT --header "Gitlab-Kas-Api-Request: <JWT token>" \
     "vendor": "GitLab"
   }
 }'
+```
+
+Example response:
+
+```json
+{
+  "uuid": "4773b2ee-5ba5-5e9f-b48c-5f7a17f0faac"
+}
 ```
 
 ## Subscriptions

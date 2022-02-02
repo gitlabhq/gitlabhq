@@ -4,6 +4,7 @@ Rails.autoloaders.each do |autoloader|
   # We need to ignore these since these are non-Ruby files
   # that do not define Ruby classes / modules
   autoloader.ignore(Rails.root.join('lib/support'))
+  autoloader.ignore(Rails.root.join('lib/gitlab/ci/parsers/security/validators/schemas'))
   autoloader.ignore(Rails.root.join('ee/lib/ee/gitlab/ci/parsers/security/validators/schemas')) if Gitlab.ee?
 
   # Mailer previews are loaded manually by Rails

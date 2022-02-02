@@ -312,6 +312,21 @@ RSpec.describe ContainerRepository, :aggregate_failures do
         expect { repository.skip_import }.to raise_error(ArgumentError)
       end
     end
+
+    describe '#finish_pre_import_and_start_import' do
+      let_it_be_with_reload(:repository) { create(:container_repository, :pre_importing) }
+
+      subject { repository.finish_pre_import_and_start_import }
+
+      before do |example|
+        unless example.metadata[:skip_import_success]
+          allow(repository).to receive(:migration_import).and_return(:ok)
+        end
+      end
+
+      it_behaves_like 'transitioning from allowed states', %w[pre_importing]
+      it_behaves_like 'transitioning to importing'
+    end
   end
 
   describe '#tag' do
@@ -819,6 +834,18 @@ RSpec.describe ContainerRepository, :aggregate_failures do
     it { is_expected.to eq([repository]) }
   end
 
+  describe '#migration_in_active_state?' do
+    subject { container_repository.migration_in_active_state? }
+
+    ContainerRepository::MIGRATION_STATES.each do |state|
+      context "when in #{state} migration_state" do
+        let(:container_repository) { create(:container_repository, state.to_sym)}
+
+        it { is_expected.to eq(state == 'importing' || state == 'pre_importing') }
+      end
+    end
+  end
+
   describe '#migration_importing?' do
     subject { container_repository.migration_importing? }
 
@@ -827,6 +854,18 @@ RSpec.describe ContainerRepository, :aggregate_failures do
         let(:container_repository) { create(:container_repository, state.to_sym)}
 
         it { is_expected.to eq(state == 'importing') }
+      end
+    end
+  end
+
+  describe '#migration_pre_importing?' do
+    subject { container_repository.migration_pre_importing? }
+
+    ContainerRepository::MIGRATION_STATES.each do |state|
+      context "when in #{state} migration_state" do
+        let(:container_repository) { create(:container_repository, state.to_sym)}
+
+        it { is_expected.to eq(state == 'pre_importing') }
       end
     end
   end
