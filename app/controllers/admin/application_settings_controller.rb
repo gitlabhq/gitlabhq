@@ -27,7 +27,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
 
   feature_category :source_code_management, [:repository, :clear_repository_check_states]
   feature_category :continuous_integration, [:ci_cd, :reset_registration_token]
-  feature_category :service_ping, [:usage_data]
+  feature_category :service_ping, [:usage_data, :service_usage_data]
   feature_category :integrations, [:integrations]
   feature_category :pages, [:lets_encrypt_terms_of_service]
 
@@ -50,6 +50,9 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
     return not_found unless instance_level_integrations?
 
     @integrations = Integration.find_or_initialize_all_non_project_specific(Integration.for_instance).sort_by(&:title)
+  end
+
+  def service_usage_data
   end
 
   def update

@@ -775,6 +775,28 @@ RSpec.describe 'Admin updates settings' do
         end
       end
     end
+
+    context 'Service Usage Data page' do
+      before do
+        stub_usage_data_connections
+        stub_database_flavor_check
+
+        visit service_usage_data_admin_application_settings_path
+      end
+
+      it 'loads usage ping payload on click', :js do
+        expected_payload_content = /(?=.*"uuid")(?=.*"hostname")/m
+
+        expect(page).not_to have_content expected_payload_content
+
+        click_button('Preview payload')
+
+        wait_for_requests
+
+        expect(page).to have_button 'Hide payload'
+        expect(page).to have_content expected_payload_content
+      end
+    end
   end
 
   context 'application setting :admin_mode is disabled' do

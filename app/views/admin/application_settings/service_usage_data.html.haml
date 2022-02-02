@@ -1,0 +1,13 @@
+- name = _("Service usage data")
+
+- breadcrumb_title name
+- page_title name
+- @content_class = "limit-container-width" unless fluid_layout
+- payload_class = 'js-service-ping-payload'
+
+%h3= name
+
+%button.gl-button.btn.btn-default.js-payload-preview-trigger{ type: 'button', data: { payload_selector: ".#{payload_class}" } }
+  .gl-spinner.js-spinner.gl-display-none.gl-mr-2
+  .js-text.gl-display-inline= _('Preview payload')
+%pre.js-syntax-highlight.code.highlight.gl-mt-2.gl-display-none{ class: payload_class, data: { endpoint: usage_data_admin_application_settings_path(format: :html) } }

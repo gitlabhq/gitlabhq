@@ -9,7 +9,6 @@ import {
   GlTooltipDirective,
 } from '@gitlab/ui';
 import { produce } from 'immer';
-import { fetchPolicies } from '~/lib/graphql';
 import { historyPushState } from '~/lib/utils/common_utils';
 import { setUrlParams } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
@@ -63,8 +62,6 @@ export default {
     return {
       availableBranches: [],
       branchSelected: null,
-      filteredBranches: [],
-      isSearchingBranches: false,
       pageLimit: this.paginationLimit,
       pageCounter: 0,
       searchTerm: '',
@@ -76,10 +73,9 @@ export default {
       query: getAvailableBranchesQuery,
       variables() {
         return {
-          limit: this.paginationLimit,
           offset: 0,
           projectFullPath: this.projectFullPath,
-          searchPattern: '*',
+          ...this.availableBranchesVariables,
         };
       },
       update(data) {
@@ -116,14 +112,24 @@ export default {
     },
   },
   computed: {
-    branches() {
-      return this.searchTerm.length > 0 ? this.filteredBranches : this.availableBranches;
+    availableBranchesVariables() {
+      if (this.searchTerm.length > 0) {
+        return {
+          limit: this.totalBranches,
+          searchPattern: `*${this.searchTerm}*`,
+        };
+      }
+
+      return {
+        limit: this.paginationLimit,
+        searchPattern: '*',
+      };
     },
     enableBranchSwitcher() {
-      return this.branches.length > 0 || this.searchTerm.length > 0;
+      return this.availableBranches.length > 0 || this.searchTerm.length > 0;
     },
     isBranchesLoading() {
-      return this.$apollo.queries.availableBranches.loading || this.isSearchingBranches;
+      return this.$apollo.queries.availableBranches.loading;
     },
   },
   watch: {
@@ -134,38 +140,21 @@ export default {
     },
   },
   methods: {
-    availableBranchesQueryVars(varsOverride = {}) {
-      if (this.searchTerm.length > 0) {
-        return {
-          limit: this.totalBranches,
-          offset: 0,
-          projectFullPath: this.projectFullPath,
-          searchPattern: `*${this.searchTerm}*`,
-          ...varsOverride,
-        };
-      }
-
-      return {
-        limit: this.paginationLimit,
-        offset: this.pageCounter * this.paginationLimit,
-        projectFullPath: this.projectFullPath,
-        searchPattern: '*',
-        ...varsOverride,
-      };
-    },
     // if there is no searchPattern, paginate by {paginationLimit} branches
     fetchNextBranches() {
       if (
         this.isBranchesLoading ||
         this.searchTerm.length > 0 ||
-        this.branches.length >= this.totalBranches
+        this.availableBranches.length >= this.totalBranches
       ) {
         return;
       }
 
       this.$apollo.queries.availableBranches
         .fetchMore({
-          variables: this.availableBranchesQueryVars(),
+          variables: {
+            offset: this.pageCounter * this.paginationLimit,
+          },
           updateQuery(previousResult, { fetchMoreResult }) {
             const previousBranches = previousResult.project.repository.branchNames;
             const newBranches = fetchMoreResult.project.repository.branchNames;
@@ -204,23 +193,6 @@ export default {
     async setSearchTerm(newSearchTerm) {
       this.pageCounter = 0;
       this.searchTerm = newSearchTerm.trim();
-
-      if (this.searchTerm === '') {
-        this.pageLimit = this.paginationLimit;
-        return;
-      }
-
-      this.isSearchingBranches = true;
-      const fetchResults = await this.$apollo
-        .query({
-          query: getAvailableBranchesQuery,
-          fetchPolicy: fetchPolicies.NETWORK_ONLY,
-          variables: this.availableBranchesQueryVars(),
-        })
-        .catch(this.showFetchError);
-
-      this.isSearchingBranches = false;
-      this.filteredBranches = fetchResults?.data?.project?.repository?.branchNames || [];
     },
     showFetchError() {
       this.$emit('showError', {
@@ -255,14 +227,14 @@ export default {
     </gl-dropdown-section-header>
 
     <gl-infinite-scroll
-      :fetched-items="branches.length"
+      :fetched-items="availableBranches.length"
       :max-list-height="250"
       data-qa-selector="branch_menu_container"
       @bottomReached="fetchNextBranches"
     >
       <template #items>
         <gl-dropdown-item
-          v-for="branch in branches"
+          v-for="branch in availableBranches"
           :key="branch"
           :is-checked="currentBranch === branch"
           :is-check-item="true"

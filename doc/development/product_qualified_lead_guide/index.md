@@ -46,6 +46,23 @@ The hand-raise lead form accepts the following parameters via provide or inject.
     },
 ```
 
+### Monitor the lead location
+
+When embedding a new hand raise form, use a unique `glmContent` or `glm_content` field that is different to any existing values.
+
+We currently use the following `glm content` values:
+
+| glm_content value | Notes |
+| ------ | ------ |
+| discover-group-security | This value is used in the group security feature discovery page. |
+| discover-group-security-pqltest | This value is used in the group security feature discovery page [experiment with 3 CTAs](https://gitlab.com/gitlab-org/gitlab/-/issues/349799). |
+| discover-project-security | This value is used in the project security feature discovery page. |
+| discover-project-security-pqltest | This value is used in the project security feature discovery page [experiment with 3 CTAs](https://gitlab.com/gitlab-org/gitlab/-/issues/349799). |
+| group-billing | This value is used in the group billing page. |
+| trial-status-show-group | This value is used in the top left nav when a namespace has an active trial. |
+
+### Test the component
+
 In a jest test, you may test the presence of the component.
 
 ```javascript
