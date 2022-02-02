@@ -105,6 +105,8 @@ Existing:
   **Expire access tokens** to enable them.
 - Tokens must be [revoked](../api/oauth2.md#revoke-a-token) or they don't expire.
 
+When applications are deleted, all grants and tokens associated with the application are also deleted.
+
 ## Authorized applications
 
 Every application you authorize with your GitLab credentials is shown

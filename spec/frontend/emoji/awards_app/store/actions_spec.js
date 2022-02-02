@@ -87,6 +87,26 @@ describe('Awards app actions', () => {
   describe('toggleAward', () => {
     let mock;
 
+    const optimisticAwardId = Number.MAX_SAFE_INTEGER - 1;
+    const makeOptimisticAddMutation = (
+      id = optimisticAwardId,
+      name = null,
+      userId = window.gon.current_user_id,
+    ) => ({
+      type: 'ADD_NEW_AWARD',
+      payload: {
+        id,
+        name,
+        user: {
+          id: userId,
+        },
+      },
+    });
+    const makeOptimisticRemoveMutation = (id = optimisticAwardId) => ({
+      type: 'REMOVE_AWARD',
+      payload: id,
+    });
+
     beforeEach(() => {
       mock = new MockAdapter(axios);
     });
@@ -110,8 +130,10 @@ describe('Awards app actions', () => {
             mock.onPost(`${relativeRootUrl || ''}/awards`).reply(200, { id: 1 });
           });
 
-          it('commits ADD_NEW_AWARD', async () => {
+          it('adds an optimistic award, removes it, and then commits ADD_NEW_AWARD', async () => {
             testAction(actions.toggleAward, null, { path: '/awards', awards: [] }, [
+              makeOptimisticAddMutation(),
+              makeOptimisticRemoveMutation(),
               { type: 'ADD_NEW_AWARD', payload: { id: 1 } },
             ]);
           });
@@ -127,7 +149,7 @@ describe('Awards app actions', () => {
               actions.toggleAward,
               null,
               { path: '/awards', awards: [] },
-              [],
+              [makeOptimisticAddMutation(), makeOptimisticRemoveMutation()],
               [],
               () => {
                 expect(Sentry.captureException).toHaveBeenCalled();
@@ -137,7 +159,7 @@ describe('Awards app actions', () => {
         });
       });
 
-      describe('removing a award', () => {
+      describe('removing an award', () => {
         const mockData = { id: 1, name: 'thumbsup', user: { id: 1 } };
 
         describe('success', () => {
@@ -160,6 +182,9 @@ describe('Awards app actions', () => {
         });
 
         describe('error', () => {
+          const currentUserId = 1;
+          const name = 'thumbsup';
+
           beforeEach(() => {
             mock.onDelete(`${relativeRootUrl || ''}/awards/1`).reply(500);
           });
@@ -167,13 +192,13 @@ describe('Awards app actions', () => {
           it('calls Sentry.captureException', async () => {
             await testAction(
               actions.toggleAward,
-              'thumbsup',
+              name,
               {
                 path: '/awards',
-                currentUserId: 1,
+                currentUserId,
                 awards: [mockData],
               },
-              [],
+              [makeOptimisticRemoveMutation(1), makeOptimisticAddMutation(1, name, currentUserId)],
               [],
               () => {
                 expect(Sentry.captureException).toHaveBeenCalled();

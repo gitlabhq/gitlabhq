@@ -33,20 +33,51 @@ export const fetchAwards = async ({ commit, dispatch, state }, page = '1') => {
   }
 };
 
+/**
+ * Creates an intermediary award, used for display
+ * until the real award is loaded from the backend.
+ */
+const newOptimisticAward = (name, state) => {
+  const freeId = Math.min(...state.awards.map((a) => a.id), Number.MAX_SAFE_INTEGER) - 1;
+  return {
+    id: freeId,
+    name,
+    user: {
+      id: window.gon.current_user_id,
+      name: window.gon.current_user_fullname,
+      username: window.gon.current_username,
+    },
+  };
+};
+
 export const toggleAward = async ({ commit, state }, name) => {
   const award = state.awards.find((a) => a.name === name && a.user.id === state.currentUserId);
 
   try {
     if (award) {
-      await axios.delete(joinPaths(gon.relative_url_root || '', `${state.path}/${award.id}`));
-
       commit(REMOVE_AWARD, award.id);
+
+      await axios
+        .delete(joinPaths(gon.relative_url_root || '', `${state.path}/${award.id}`))
+        .catch((err) => {
+          commit(ADD_NEW_AWARD, award);
+
+          throw err;
+        });
 
       showToast(__('Award removed'));
     } else {
-      const { data } = await axios.post(joinPaths(gon.relative_url_root || '', state.path), {
-        name,
-      });
+      const optimisticAward = newOptimisticAward(name, state);
+
+      commit(ADD_NEW_AWARD, optimisticAward);
+
+      const { data } = await axios
+        .post(joinPaths(gon.relative_url_root || '', state.path), {
+          name,
+        })
+        .finally(() => {
+          commit(REMOVE_AWARD, optimisticAward.id);
+        });
 
       commit(ADD_NEW_AWARD, data);
 
