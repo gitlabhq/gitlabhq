@@ -2142,6 +2142,8 @@ Input type: `DestroyNoteInput`
 
 ### `Mutation.destroyPackage`
 
+Destroys a package and its related package files. Restricted to packages with a small number of files.
+
 Input type: `DestroyPackageInput`
 
 #### Arguments

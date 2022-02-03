@@ -21,7 +21,7 @@ module ProtectedBranches
     end
 
     def protected_branch
-      @protected_branch ||= project.protected_branches.new(filtered_params)
+      @protected_branch ||= project.protected_branches.new(params)
     end
   end
 end

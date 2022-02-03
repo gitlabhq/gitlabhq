@@ -4,6 +4,7 @@ module Mutations
   module Packages
     class Destroy < ::Mutations::BaseMutation
       graphql_name 'DestroyPackage'
+      description 'Destroys a package and its related package files. Restricted to packages with a small number of files'
 
       authorize :destroy_package
 

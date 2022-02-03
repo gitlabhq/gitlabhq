@@ -209,7 +209,7 @@ describe('PackagesApp', () => {
 
         await waitForPromises();
 
-        findDeletePackage().vm.$emit('end');
+        findDeletePackage().vm.$emit('success');
 
         expect(window.location.replace).toHaveBeenCalledWith(
           'projectListUrl?showSuccessDeleteAlert=true',
@@ -223,7 +223,7 @@ describe('PackagesApp', () => {
 
         await waitForPromises();
 
-        findDeletePackage().vm.$emit('end');
+        findDeletePackage().vm.$emit('success');
 
         expect(window.location.replace).toHaveBeenCalledWith(
           'groupListUrl?showSuccessDeleteAlert=true',

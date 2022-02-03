@@ -4,6 +4,7 @@ module Integrations
   class Bamboo < BaseCi
     include ActionView::Helpers::UrlHelper
     include ReactivelyCached
+    prepend EnableSslVerification
 
     prop_accessor :bamboo_url, :build_key, :username, :password
 
@@ -162,7 +163,7 @@ module Integrations
     end
 
     def build_get_params(query_params)
-      params = { verify: false, query: query_params }
+      params = { verify: enable_ssl_verification, query: query_params }
       return params if username.blank? && password.blank?
 
       query_params[:os_authType] = 'basic'

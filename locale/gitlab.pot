@@ -18601,6 +18601,9 @@ msgstr ""
 msgid "Integrations|Browser limitations"
 msgstr ""
 
+msgid "Integrations|Clear if using a self-signed certificate."
+msgstr ""
+
 msgid "Integrations|Comment detail:"
 msgstr ""
 
@@ -18629,6 +18632,9 @@ msgid "Integrations|Edit project alias"
 msgstr ""
 
 msgid "Integrations|Enable GitLab.com slash commands in a Slack workspace."
+msgstr ""
+
+msgid "Integrations|Enable SSL verification"
 msgstr ""
 
 msgid "Integrations|Enable comments"
@@ -18707,6 +18713,9 @@ msgid "Integrations|Resetting this integration will clear the settings and deact
 msgstr ""
 
 msgid "Integrations|Return to GitLab for Jira"
+msgstr ""
+
+msgid "Integrations|SSL verification"
 msgstr ""
 
 msgid "Integrations|Save settings?"
