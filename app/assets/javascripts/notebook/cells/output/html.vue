@@ -30,6 +30,9 @@ export default {
   },
   safeHtmlConfig: {
     ADD_TAGS: ['use'], // to support icon SVGs
+    FORBID_TAGS: ['style'],
+    FORBID_ATTR: ['style'],
+    ALLOW_DATA_ATTR: false,
   },
 };
 </script>
