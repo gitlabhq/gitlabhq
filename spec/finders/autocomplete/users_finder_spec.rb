@@ -7,16 +7,15 @@ RSpec.describe Autocomplete::UsersFinder do
   # https://gitlab.com/gitlab-org/gitlab/-/issues/21432
 
   describe '#execute' do
-    let_it_be(:user1) { create(:user, name: 'zzzzzname', username: 'johndoe') }
-    let_it_be(:user2) { create(:user, :blocked, username: 'notsorandom') }
-    let_it_be(:external_user) { create(:user, :external) }
-    let_it_be(:omniauth_user) { create(:omniauth_user, provider: 'twitter', extern_uid: '123456') }
-
+    let!(:user1) { create(:user, username: 'johndoe') }
+    let!(:user2) { create(:user, :blocked, username: 'notsorandom') }
+    let!(:external_user) { create(:user, :external) }
+    let!(:omniauth_user) { create(:omniauth_user, provider: 'twitter', extern_uid: '123456') }
     let(:current_user) { create(:user) }
     let(:params) { {} }
 
-    let_it_be(:project) { nil }
-    let_it_be(:group) { nil }
+    let(:project) { nil }
+    let(:group) { nil }
 
     subject { described_class.new(params: params, current_user: current_user, project: project, group: group).execute.to_a }
 
@@ -27,7 +26,7 @@ RSpec.describe Autocomplete::UsersFinder do
     end
 
     context 'when project passed' do
-      let_it_be(:project) { create(:project) }
+      let(:project) { create(:project) }
 
       it { is_expected.to match_array([project.first_owner]) }
 
@@ -44,36 +43,16 @@ RSpec.describe Autocomplete::UsersFinder do
           it { is_expected.to match_array([project.first_owner]) }
         end
       end
-
-      context 'searching with less than 3 characters' do
-        let(:params) { { search: 'zz' } }
-
-        before do
-          project.add_guest(user1)
-        end
-
-        it 'allows partial matches' do
-          expect(subject).to contain_exactly(user1)
-        end
-      end
     end
 
     context 'when group passed and project not passed' do
-      let_it_be(:group) { create(:group, :public) }
+      let(:group) { create(:group, :public) }
 
-      before_all do
+      before do
         group.add_users([user1], GroupMember::DEVELOPER)
       end
 
       it { is_expected.to match_array([user1]) }
-
-      context 'searching with less than 3 characters' do
-        let(:params) { { search: 'zz' } }
-
-        it 'allows partial matches' do
-          expect(subject).to contain_exactly(user1)
-        end
-      end
     end
 
     context 'when passed a subgroup' do
@@ -97,14 +76,6 @@ RSpec.describe Autocomplete::UsersFinder do
       let(:params) { { search: 'johndoe' } }
 
       it { is_expected.to match_array([user1]) }
-
-      context 'searching with less than 3 characters' do
-        let(:params) { { search: 'zz' } }
-
-        it 'does not allow partial matches' do
-          expect(subject).to be_empty
-        end
-      end
     end
 
     context 'when filtered by skip_users' do

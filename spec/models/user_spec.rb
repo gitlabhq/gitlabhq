@@ -2664,12 +2664,6 @@ RSpec.describe User do
       it 'returns users with a exact matching username shorter than 3 chars regardless of the casing' do
         expect(described_class.search(user3.username.upcase)).to eq([user3])
       end
-
-      context 'when use_minimum_char_limit is false' do
-        it 'returns users with a partially matching username' do
-          expect(described_class.search('u', use_minimum_char_limit: false)).to eq([user3, user, user2])
-        end
-      end
     end
 
     it 'returns no matches for an empty string' do
@@ -2678,6 +2672,64 @@ RSpec.describe User do
 
     it 'returns no matches for nil' do
       expect(described_class.search(nil)).to be_empty
+    end
+  end
+
+  describe '.search_without_secondary_emails' do
+    let_it_be(:user) { create(:user, name: 'John Doe', username: 'john.doe', email: 'someone.1@example.com' ) }
+    let_it_be(:another_user) { create(:user, name: 'Albert Smith', username: 'albert.smith', email: 'another.2@example.com' ) }
+    let_it_be(:email) { create(:email, user: another_user, email: 'alias@example.com') }
+
+    it 'returns users with a matching name' do
+      expect(described_class.search_without_secondary_emails(user.name)).to eq([user])
+    end
+
+    it 'returns users with a partially matching name' do
+      expect(described_class.search_without_secondary_emails(user.name[0..2])).to eq([user])
+    end
+
+    it 'returns users with a matching name regardless of the casing' do
+      expect(described_class.search_without_secondary_emails(user.name.upcase)).to eq([user])
+    end
+
+    it 'returns users with a matching email' do
+      expect(described_class.search_without_secondary_emails(user.email)).to eq([user])
+    end
+
+    it 'does not return users with a partially matching email' do
+      expect(described_class.search_without_secondary_emails(user.email[1...-1])).to be_empty
+    end
+
+    it 'returns users with a matching email regardless of the casing' do
+      expect(described_class.search_without_secondary_emails(user.email.upcase)).to eq([user])
+    end
+
+    it 'returns users with a matching username' do
+      expect(described_class.search_without_secondary_emails(user.username)).to eq([user])
+    end
+
+    it 'returns users with a partially matching username' do
+      expect(described_class.search_without_secondary_emails(user.username[0..2])).to eq([user])
+    end
+
+    it 'returns users with a matching username regardless of the casing' do
+      expect(described_class.search_without_secondary_emails(user.username.upcase)).to eq([user])
+    end
+
+    it 'does not return users with a matching whole secondary email' do
+      expect(described_class.search_without_secondary_emails(email.email)).not_to include(email.user)
+    end
+
+    it 'does not return users with a matching part of secondary email' do
+      expect(described_class.search_without_secondary_emails(email.email[1...-1])).to be_empty
+    end
+
+    it 'returns no matches for an empty string' do
+      expect(described_class.search_without_secondary_emails('')).to be_empty
+    end
+
+    it 'returns no matches for nil' do
+      expect(described_class.search_without_secondary_emails(nil)).to be_empty
     end
   end
 
