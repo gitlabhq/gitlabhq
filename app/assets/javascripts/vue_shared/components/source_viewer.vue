@@ -4,6 +4,7 @@ import LineNumbers from '~/vue_shared/components/line_numbers.vue';
 import { sanitize } from '~/lib/dompurify';
 
 const LINE_SELECT_CLASS_NAME = 'hll';
+const PLAIN_TEXT_LANGUAGE = 'plaintext';
 
 export default {
   components: {
@@ -13,24 +14,21 @@ export default {
     SafeHtml: GlSafeHtmlDirective,
   },
   props: {
-    content: {
-      type: String,
+    blob: {
+      type: Object,
       required: true,
-    },
-    language: {
-      type: String,
-      required: false,
-      default: 'plaintext',
     },
     autoDetect: {
       type: Boolean,
       required: false,
-      default: false,
+      default: true, // We'll eventually disable autoDetect and pass the language explicitly to reduce the footprint (https://gitlab.com/gitlab-org/gitlab/-/issues/348145)
     },
   },
   data() {
     return {
       languageDefinition: null,
+      content: this.blob.rawTextBlob,
+      language: this.blob.language || PLAIN_TEXT_LANGUAGE,
       hljs: null,
     };
   },

@@ -71,7 +71,7 @@ module Issuable
     def create_title_change_note(old_title)
       create_draft_note(old_title)
 
-      if issuable.wipless_title_changed(old_title)
+      if issuable.draftless_title_changed(old_title)
         SystemNoteService.change_title(issuable, issuable.project, current_user, old_title)
       end
     end

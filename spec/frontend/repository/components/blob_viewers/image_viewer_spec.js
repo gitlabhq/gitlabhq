@@ -4,13 +4,13 @@ import ImageViewer from '~/repository/components/blob_viewers/image_viewer.vue';
 describe('Image Viewer', () => {
   let wrapper;
 
-  const propsData = {
-    url: 'some/image.png',
-    alt: 'image.png',
+  const DEFAULT_BLOB_DATA = {
+    rawPath: 'some/image.png',
+    name: 'image.png',
   };
 
   const createComponent = () => {
-    wrapper = shallowMount(ImageViewer, { propsData });
+    wrapper = shallowMount(ImageViewer, { propsData: { blob: DEFAULT_BLOB_DATA } });
   };
 
   const findImage = () => wrapper.find('[data-testid="image"]');
@@ -19,7 +19,7 @@ describe('Image Viewer', () => {
     createComponent();
 
     expect(findImage().exists()).toBe(true);
-    expect(findImage().attributes('src')).toBe(propsData.url);
-    expect(findImage().attributes('alt')).toBe(propsData.alt);
+    expect(findImage().attributes('src')).toBe(DEFAULT_BLOB_DATA.rawPath);
+    expect(findImage().attributes('alt')).toBe(DEFAULT_BLOB_DATA.name);
   });
 });

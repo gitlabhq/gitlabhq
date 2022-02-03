@@ -132,7 +132,7 @@ export const triggerNodeInputRule = ({ tiptapEditor, inputRuleText }) => {
 export const triggerMarkInputRule = ({ tiptapEditor, inputRuleText }) => {
   const { view } = tiptapEditor;
 
-  tiptapEditor.chain().setContent(inputRuleText).setTextSelection(0).run();
+  tiptapEditor.chain().setContent(inputRuleText).setTextSelection(1).run();
 
   const { state } = tiptapEditor;
   const { selection } = state;

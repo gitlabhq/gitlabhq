@@ -209,6 +209,8 @@ function debug_rspec_variables() {
   echoinfo "NEW_FLAKY_RSPEC_REPORT_PATH: ${NEW_FLAKY_RSPEC_REPORT_PATH}"
   echoinfo "SKIPPED_FLAKY_TESTS_REPORT_PATH: ${SKIPPED_FLAKY_TESTS_REPORT_PATH}"
   echoinfo "RETRIED_TESTS_REPORT_PATH: ${RETRIED_TESTS_REPORT_PATH}"
+
+  echoinfo "CRYSTALBALL: ${CRYSTALBALL}"
 }
 
 function rspec_paralellized_job() {
@@ -245,11 +247,7 @@ function rspec_paralellized_job() {
 
   cp "${KNAPSACK_RSPEC_SUITE_REPORT_PATH}" "${KNAPSACK_REPORT_PATH}"
 
-  if [[ -z "${KNAPSACK_TEST_FILE_PATTERN}" ]]; then
-    pattern=$(ruby -r./tooling/quality/test_level.rb -e "puts Quality::TestLevel.new(${spec_folder_prefixes}).pattern(:${test_level})")
-    export KNAPSACK_TEST_FILE_PATTERN="${pattern}"
-  fi
-
+  export KNAPSACK_TEST_FILE_PATTERN=$(ruby -r./tooling/quality/test_level.rb -e "puts Quality::TestLevel.new(${spec_folder_prefixes}).pattern(:${test_level})")
   export FLAKY_RSPEC_REPORT_PATH="${rspec_flaky_folder_path}all_${report_name}_report.json"
   export NEW_FLAKY_RSPEC_REPORT_PATH="${rspec_flaky_folder_path}new_${report_name}_report.json"
   export SKIPPED_FLAKY_TESTS_REPORT_PATH="${rspec_flaky_folder_path}skipped_flaky_tests_${report_name}_report.txt"
@@ -285,27 +283,38 @@ function rspec_paralellized_job() {
   # Experiment to retry failed examples in a new RSpec process: https://gitlab.com/gitlab-org/quality/team-tasks/-/issues/1148
   if [[ $rspec_run_status -ne 0 ]]; then
     if [[ "${RETRY_FAILED_TESTS_IN_NEW_PROCESS}" == "true" ]]; then
-      # Keep track of the tests that are retried, later consolidated in a single file by the `rspec:flaky-tests-report` job
-      local failed_examples=$(grep " failed" ${RSPEC_LAST_RUN_RESULTS_FILE})
-      echo "${CI_JOB_URL}" > "${RETRIED_TESTS_REPORT_PATH}"
-      echo $failed_examples >> "${RETRIED_TESTS_REPORT_PATH}"
-
-      echoinfo "Retrying the failing examples in a new RSpec proces..."
-
-      install_junit_merge_gem
-
-      # Retry only the tests that failed on first try
-      rspec_simple_job "--only-failures" "${JUNIT_RETRY_FILE}"
-      rspec_run_status=$?
-
-      # Merge the JUnit report from retry into the first-try report
-      junit_merge "${JUNIT_RETRY_FILE}" "${JUNIT_RESULT_FILE}"
+      $rspec_run_status=$(retry_failed_rspec_examples)
     fi
   else
     echosuccess "No examples to retry, congrats!"
   fi
 
   exit $rspec_run_status
+}
+
+function retry_failed_rspec_examples() {
+  local rspec_run_status=0
+
+  # Keep track of the tests that are retried, later consolidated in a single file by the `rspec:flaky-tests-report` job
+  local failed_examples=$(grep " failed" ${RSPEC_LAST_RUN_RESULTS_FILE})
+  echo "${CI_JOB_URL}" > "${RETRIED_TESTS_REPORT_PATH}"
+  echo $failed_examples >> "${RETRIED_TESTS_REPORT_PATH}"
+
+  echoinfo "Retrying the failing examples in a new RSpec proces..."
+
+  install_junit_merge_gem
+
+  # Disable Crystalball on retry to not overwrite the existing report
+  export CRYSTALBALL="false"
+
+  # Retry only the tests that failed on first try
+  rspec_simple_job "--only-failures --pattern \"${KNAPSACK_TEST_FILE_PATTERN}\"" "${JUNIT_RETRY_FILE}"
+  rspec_run_status=$?
+
+  # Merge the JUnit report from retry into the first-try report
+  junit_merge "${JUNIT_RETRY_FILE}" "${JUNIT_RESULT_FILE}"
+
+  return $rspec_run_status
 }
 
 function rspec_rerun_previous_failed_tests() {

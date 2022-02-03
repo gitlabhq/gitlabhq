@@ -6,10 +6,12 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 describe('PDF Viewer', () => {
   let wrapper;
 
-  const defaultPropsData = { url: 'some/pdf_blob.pdf' };
+  const DEFAULT_BLOB_DATA = { rawPath: 'some/pdf_blob.pdf' };
 
-  const createComponent = (fileSize = 999) => {
-    wrapper = shallowMountExtended(Component, { propsData: { ...defaultPropsData, fileSize } });
+  const createComponent = (rawSize = 999) => {
+    wrapper = shallowMountExtended(Component, {
+      propsData: { blob: { ...DEFAULT_BLOB_DATA, rawSize } },
+    });
   };
 
   const findPDFViewer = () => wrapper.findComponent(PdfViewer);
@@ -20,7 +22,7 @@ describe('PDF Viewer', () => {
     createComponent();
 
     expect(findPDFViewer().exists()).toBe(true);
-    expect(findPDFViewer().props('pdf')).toBe(defaultPropsData.url);
+    expect(findPDFViewer().props('pdf')).toBe(DEFAULT_BLOB_DATA.rawPath);
   });
 
   describe('Too large', () => {

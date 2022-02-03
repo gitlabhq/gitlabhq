@@ -513,9 +513,7 @@ class Commit
     # We don't want to do anything for `Commit` model, so this is empty.
   end
 
-  # WIP is deprecated in favor of Draft. Currently both options are supported
-  # https://gitlab.com/gitlab-org/gitlab/-/issues/227426
-  DRAFT_REGEX = /\A\s*#{Regexp.union(Gitlab::Regex.merge_request_wip, Gitlab::Regex.merge_request_draft)}|(fixup!|squash!)\s/.freeze
+  DRAFT_REGEX = /\A\s*#{Gitlab::Regex.merge_request_draft}|(fixup!|squash!)\s/.freeze
 
   def work_in_progress?
     !!(title =~ DRAFT_REGEX)

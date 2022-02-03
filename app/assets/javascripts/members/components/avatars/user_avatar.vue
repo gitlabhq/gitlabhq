@@ -8,10 +8,14 @@ import {
 import { generateBadges } from 'ee_else_ce/members/utils';
 import { glEmojiTag } from '~/emoji';
 import { __ } from '~/locale';
+import { isUserBusy } from '~/set_status_modal/utils';
 import { AVATAR_SIZE } from '../../constants';
 
 export default {
   name: 'UserAvatar',
+  i18n: {
+    busy: __('Busy'),
+  },
   avatarSize: AVATAR_SIZE,
   orphanedUserLabel: __('Orphaned member'),
   safeHtmlConfig: { ADD_TAGS: ['gl-emoji'] },
@@ -46,7 +50,10 @@ export default {
       }).filter((badge) => badge.show);
     },
     statusEmoji() {
-      return this.user?.status?.emoji;
+      return this.user?.showStatus && this.user?.status?.emoji;
+    },
+    isUserBusy() {
+      return isUserBusy(this.user?.availability || '');
     },
   },
   methods: {
@@ -73,6 +80,11 @@ export default {
       :entity-id="user.id"
     >
       <template #meta>
+        <div v-if="isUserBusy" class="gl-p-1">
+          <span class="gl-text-gray-500 gl-font-sm gl-font-weight-normal"
+            >({{ $options.i18n.busy }})</span
+          >
+        </div>
         <div v-if="statusEmoji" class="gl-p-1">
           <span
             v-safe-html:[$options.safeHtmlConfig]="glEmojiTag(statusEmoji)"

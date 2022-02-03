@@ -6,42 +6,33 @@ import DownloadViewer from '~/repository/components/blob_viewers/download_viewer
 describe('Text Viewer', () => {
   let wrapper;
 
-  const DEFAULT_PROPS = {
-    fileName: 'file_name.js',
-    filePath: '/some/file/path',
-    fileSize: 2269674,
+  const DEFAULT_BLOB_DATA = {
+    name: 'file_name.js',
+    rawPath: '/some/file/path',
+    rawSize: 2269674,
   };
 
-  const createComponent = (props = {}) => {
+  const createComponent = (blobData = {}) => {
     wrapper = shallowMount(DownloadViewer, {
       propsData: {
-        ...DEFAULT_PROPS,
-        ...props,
+        blob: {
+          ...DEFAULT_BLOB_DATA,
+          ...blobData,
+        },
       },
     });
   };
 
-  it('renders component', () => {
-    createComponent();
-
-    const { fileName, filePath, fileSize } = DEFAULT_PROPS;
-    expect(wrapper.props()).toMatchObject({
-      fileName,
-      filePath,
-      fileSize,
-    });
-  });
-
   it('renders download human readable file size text', () => {
     createComponent();
 
-    const downloadText = `Download (${numberToHumanSize(DEFAULT_PROPS.fileSize)})`;
+    const downloadText = `Download (${numberToHumanSize(DEFAULT_BLOB_DATA.rawSize)})`;
     expect(wrapper.text()).toBe(downloadText);
   });
 
   it('renders download text', () => {
     createComponent({
-      fileSize: 0,
+      rawSize: 0,
     });
 
     expect(wrapper.text()).toBe('Download');
@@ -49,13 +40,13 @@ describe('Text Viewer', () => {
 
   it('renders download link', () => {
     createComponent();
-    const { filePath, fileName } = DEFAULT_PROPS;
+    const { rawPath, name } = DEFAULT_BLOB_DATA;
 
     expect(wrapper.findComponent(GlLink).attributes()).toMatchObject({
       rel: 'nofollow',
       target: '_blank',
-      href: filePath,
-      download: fileName,
+      href: rawPath,
+      download: name,
     });
   });
 

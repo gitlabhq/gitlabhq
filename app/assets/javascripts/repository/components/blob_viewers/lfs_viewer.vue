@@ -13,14 +13,16 @@ export default {
     GlSprintf,
   },
   props: {
-    fileName: {
-      type: String,
+    blob: {
+      type: Object,
       required: true,
     },
-    filePath: {
-      type: String,
-      required: true,
-    },
+  },
+  data() {
+    return {
+      fileName: this.blob.name,
+      filePath: this.blob.rawPath,
+    };
   },
 };
 </script>

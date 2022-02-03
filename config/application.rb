@@ -508,5 +508,15 @@ module Gitlab
         end
       end
     end
+
+    # DO NOT PLACE ANY INITIALIZERS AFTER THIS.
+    config.after_initialize do
+      # on_master_start yields immediately in unclustered environments and runs
+      # when the primary process is done initializing otherwise.
+      Gitlab::Cluster::LifecycleEvents.on_master_start do
+        Gitlab::Metrics::BootTimeTracker.instance.track_boot_time!
+        Gitlab::Console.welcome!
+      end
+    end
   end
 end

@@ -563,16 +563,22 @@ class MergeRequest < ApplicationRecord
 
   DRAFT_REGEX = /\A*#{Gitlab::Regex.merge_request_draft}+\s*/i.freeze
 
-  def self.work_in_progress?(title)
+  def self.draft?(title)
     !!(title =~ DRAFT_REGEX)
   end
 
-  def self.wipless_title(title)
+  def self.draftless_title(title)
     title.sub(DRAFT_REGEX, "")
   end
 
-  def self.wip_title(title)
-    work_in_progress?(title) ? title : "Draft: #{title}"
+  def self.draft_title(title)
+    draft?(title) ? title : "Draft: #{title}"
+  end
+
+  class << self
+    alias_method :work_in_progress?, :draft?
+    alias_method :wipless_title, :draftless_title
+    alias_method :wip_title, :draft_title
   end
 
   def self.participant_includes
@@ -585,9 +591,10 @@ class MergeRequest < ApplicationRecord
 
   # Verifies if title has changed not taking into account Draft prefix
   # for merge requests.
-  def wipless_title_changed(old_title)
-    self.class.wipless_title(old_title) != self.wipless_title
+  def draftless_title_changed(old_title)
+    self.class.draftless_title(old_title) != self.draftless_title
   end
+  alias_method :wipless_title_changed, :draftless_title_changed
 
   def hook_attrs
     Gitlab::HookData::MergeRequestBuilder.new(self).build
@@ -1086,18 +1093,20 @@ class MergeRequest < ApplicationRecord
     @closed_event ||= target_project.events.where(target_id: self.id, target_type: "MergeRequest", action: :closed).last
   end
 
-  def work_in_progress?
-    self.class.work_in_progress?(title)
+  def draft?
+    self.class.draft?(title)
   end
-  alias_method :draft?, :work_in_progress?
+  alias_method :work_in_progress?, :draft?
 
-  def wipless_title
-    self.class.wipless_title(self.title)
+  def draftless_title
+    self.class.draftless_title(self.title)
   end
+  alias_method :wipless_title, :draftless_title
 
-  def wip_title
-    self.class.wip_title(self.title)
+  def draft_title
+    self.class.draft_title(self.title)
   end
+  alias_method :wip_title, :draft_title
 
   def mergeable?(skip_ci_check: false, skip_discussions_check: false)
     return false unless mergeable_state?(skip_ci_check: skip_ci_check,

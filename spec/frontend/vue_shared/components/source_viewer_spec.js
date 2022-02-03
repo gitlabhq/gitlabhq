@@ -12,17 +12,18 @@ const router = new VueRouter();
 
 describe('Source Viewer component', () => {
   let wrapper;
-  const content = `// Some source code`;
-  const highlightedContent = `<span data-testid='test-highlighted' id='LC1'>${content}</span><span id='LC2'></span>`;
   const language = 'javascript';
+  const content = `// Some source code`;
+  const DEFAULT_BLOB_DATA = { language, rawTextBlob: content };
+  const highlightedContent = `<span data-testid='test-highlighted' id='LC1'>${content}</span><span id='LC2'></span>`;
 
   hljs.highlight.mockImplementation(() => ({ value: highlightedContent }));
   hljs.highlightAuto.mockImplementation(() => ({ value: highlightedContent }));
 
-  const createComponent = async (props = {}) => {
+  const createComponent = async (props = { autoDetect: false }) => {
     wrapper = shallowMountExtended(SourceViewer, {
       router,
-      propsData: { content, language, ...props },
+      propsData: { blob: { ...DEFAULT_BLOB_DATA }, ...props },
     });
     await waitForPromises();
   };

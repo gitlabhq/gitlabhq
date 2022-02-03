@@ -9,12 +9,14 @@ import axios from '~/lib/utils/axios_utils';
 import { isLoggedIn } from '~/lib/utils/common_utils';
 import { __ } from '~/locale';
 import { redirectTo } from '~/lib/utils/url_utility';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import getRefMixin from '../mixins/get_ref';
 import blobInfoQuery from '../queries/blob_info.query.graphql';
+import { DEFAULT_BLOB_INFO, TEXT_FILE_TYPE, LFS_STORAGE } from '../constants';
 import BlobButtonGroup from './blob_button_group.vue';
 import BlobEdit from './blob_edit.vue';
 import ForkSuggestion from './fork_suggestion.vue';
-import { loadViewer, viewerProps } from './blob_viewers';
+import { loadViewer } from './blob_viewers';
 
 export default {
   i18n: {
@@ -29,7 +31,7 @@ export default {
     GlButton,
     ForkSuggestion,
   },
-  mixins: [getRefMixin],
+  mixins: [getRefMixin, glFeatureFlagMixin()],
   inject: {
     originalBranch: {
       default: '',
@@ -78,52 +80,7 @@ export default {
       isBinary: false,
       isLoadingLegacyViewer: false,
       activeViewerType: SIMPLE_BLOB_VIEWER,
-      project: {
-        userPermissions: {
-          pushCode: false,
-          downloadCode: false,
-          createMergeRequestIn: false,
-          forkProject: false,
-        },
-        pathLocks: {
-          nodes: [],
-        },
-        repository: {
-          empty: true,
-          blobs: {
-            nodes: [
-              {
-                name: '',
-                size: '',
-                rawTextBlob: '',
-                type: '',
-                fileType: '',
-                tooLarge: false,
-                path: '',
-                editBlobPath: '',
-                ideEditPath: '',
-                forkAndEditPath: '',
-                ideForkAndEditPath: '',
-                storedExternally: false,
-                externalStorage: '',
-                environmentFormattedExternalUrl: '',
-                environmentExternalUrlForRouteMap: '',
-                canModifyBlob: false,
-                canCurrentUserPushToBranch: false,
-                archived: false,
-                rawPath: '',
-                externalStorageUrl: '',
-                replacePath: '',
-                pipelineEditorPath: '',
-                deletePath: '',
-                simpleViewer: {},
-                richViewer: null,
-                webPath: '',
-              },
-            ],
-          },
-        },
-      },
+      project: DEFAULT_BLOB_INFO,
     };
   },
   computed: {
@@ -134,7 +91,7 @@ export default {
       return this.$apollo.queries.project.loading;
     },
     isBinaryFileType() {
-      return this.isBinary || this.blobInfo.simpleViewer?.fileType !== 'text';
+      return this.isBinary || this.blobInfo.simpleViewer?.fileType !== TEXT_FILE_TYPE;
     },
     blobInfo() {
       const nodes = this.project?.repository?.blobs?.nodes || [];
@@ -153,11 +110,16 @@ export default {
     },
     blobViewer() {
       const { fileType } = this.viewer;
-      return loadViewer(fileType, this.isUsingLfs);
+      return this.shouldLoadLegacyViewer ? null : loadViewer(fileType, this.isUsingLfs);
     },
-    viewerProps() {
-      const { fileType } = this.viewer;
-      return viewerProps(fileType, this.blobInfo);
+    shouldLoadLegacyViewer() {
+      return this.viewer.fileType === TEXT_FILE_TYPE && !this.glFeatures.highlightJs;
+    },
+    legacyViewerLoaded() {
+      return (
+        (this.activeViewerType === SIMPLE_BLOB_VIEWER && this.legacySimpleViewer) ||
+        (this.activeViewerType === RICH_BLOB_VIEWER && this.legacyRichViewer)
+      );
     },
     canLock() {
       const { pushCode, downloadCode } = this.project.userPermissions;
@@ -186,20 +148,22 @@ export default {
         : this.blobInfo.forkAndEditPath;
     },
     isUsingLfs() {
-      return this.blobInfo.storedExternally && this.blobInfo.externalStorage === 'lfs';
+      return this.blobInfo.storedExternally && this.blobInfo.externalStorage === LFS_STORAGE;
     },
   },
   methods: {
-    loadLegacyViewer(type) {
-      if (this.legacyViewerLoaded(type)) {
+    loadLegacyViewer() {
+      if (this.legacyViewerLoaded) {
         return;
       }
+
+      const type = this.activeViewerType;
 
       this.isLoadingLegacyViewer = true;
       axios
         .get(`${this.blobInfo.webPath}?format=json&viewer=${type}`)
         .then(({ data: { html, binary } }) => {
-          if (type === 'simple') {
+          if (type === SIMPLE_BLOB_VIEWER) {
             this.legacySimpleViewer = html;
           } else {
             this.legacyRichViewer = html;
@@ -210,12 +174,6 @@ export default {
         })
         .catch(() => this.displayError());
     },
-    legacyViewerLoaded(type) {
-      return (
-        (type === SIMPLE_BLOB_VIEWER && this.legacySimpleViewer) ||
-        (type === RICH_BLOB_VIEWER && this.legacyRichViewer)
-      );
-    },
     displayError() {
       createFlash({ message: __('An error occurred while loading the file. Please try again.') });
     },
@@ -223,7 +181,7 @@ export default {
       this.activeViewerType = newViewer || SIMPLE_BLOB_VIEWER;
 
       if (!this.blobViewer) {
-        this.loadLegacyViewer(this.activeViewerType);
+        this.loadLegacyViewer();
       }
     },
     editBlob(target) {
@@ -309,7 +267,7 @@ export default {
         :hide-line-numbers="true"
         :loading="isLoadingLegacyViewer"
       />
-      <component :is="blobViewer" v-else v-bind="viewerProps" class="blob-viewer" />
+      <component :is="blobViewer" v-else :blob="blobInfo" class="blob-viewer" />
     </div>
   </div>
 </template>

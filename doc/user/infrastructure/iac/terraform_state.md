@@ -4,7 +4,7 @@ group: Configure
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# GitLab managed Terraform State **(FREE)**
+# GitLab-managed Terraform state **(FREE)**
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2673) in GitLab 13.0.
 
@@ -19,7 +19,7 @@ Using local storage (the default) on clustered deployments of GitLab will result
 a split state across nodes, making subsequent executions of Terraform inconsistent.
 You are highly advised to use a remote storage resource in that case.
 
-The GitLab managed Terraform state backend can store your Terraform state easily and
+The GitLab-managed Terraform state backend can store your Terraform state easily and
 securely, and spares you from setting up additional remote resources like
 Amazon S3 or Google Cloud Storage. Its features include:
 
@@ -216,7 +216,7 @@ recommends encrypting plan output or modifying the project visibility settings.
 
 See [this reference project](https://gitlab.com/gitlab-org/configure/examples/gitlab-terraform-aws) using GitLab and Terraform to deploy a basic AWS EC2 in a custom VPC.
 
-## Using a GitLab managed Terraform state backend as a remote data source
+## Using a GitLab-managed Terraform state backend as a remote data source
 
 You can use a GitLab-managed Terraform state as a
 [Terraform data source](https://www.terraform.io/docs/language/state/remote-state-data.html).
@@ -260,13 +260,13 @@ using `data.terraform_remote_state.example.outputs.<OUTPUT-NAME>`.
 You need at least the Developer role in the target project
 to read the Terraform state.
 
-## Migrating to GitLab Managed Terraform state
+## Migrating to GitLab-managed Terraform state
 
 Terraform supports copying the state when the backend is changed or
 reconfigured. This can be useful if you need to migrate from another backend to
-GitLab managed Terraform state. Using a local terminal is recommended to run the commands needed for migrating to GitLab Managed Terraform state.
+GitLab-managed Terraform state. Using a local terminal is recommended to run the commands needed for migrating to GitLab-managed Terraform state.
 
-The following example demonstrates how to change the state name, the same workflow is needed to migrate to GitLab Managed Terraform state from a different state storage backend.
+The following example demonstrates how to change the state name, the same workflow is needed to migrate to GitLab-managed Terraform state from a different state storage backend.
 
 ### Setting up the initial backend
 

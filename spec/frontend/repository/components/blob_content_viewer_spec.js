@@ -3,7 +3,6 @@ import { mount, shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
-
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -13,7 +12,7 @@ import BlobButtonGroup from '~/repository/components/blob_button_group.vue';
 import BlobContentViewer from '~/repository/components/blob_content_viewer.vue';
 import BlobEdit from '~/repository/components/blob_edit.vue';
 import ForkSuggestion from '~/repository/components/fork_suggestion.vue';
-import { loadViewer, viewerProps } from '~/repository/components/blob_viewers';
+import { loadViewer } from '~/repository/components/blob_viewers';
 import DownloadViewer from '~/repository/components/blob_viewers/download_viewer.vue';
 import EmptyViewer from '~/repository/components/blob_viewers/empty_viewer.vue';
 import SourceViewer from '~/vue_shared/components/source_viewer.vue';
@@ -51,6 +50,7 @@ const createComponent = async (mockData = {}, mountFn = shallowMount) => {
     createMergeRequestIn = userPermissionsMock.createMergeRequestIn,
     isBinary,
     inject = {},
+    highlightJs = true,
   } = mockData;
 
   const project = {
@@ -78,7 +78,12 @@ const createComponent = async (mockData = {}, mountFn = shallowMount) => {
       apolloProvider: fakeApollo,
       propsData: propsMock,
       mixins: [{ data: () => ({ ref: refMock }) }],
-      provide: { ...inject },
+      provide: {
+        ...inject,
+        glFeatures: {
+          highlightJs,
+        },
+      },
     }),
   );
 
@@ -99,7 +104,6 @@ describe('Blob content viewer component', () => {
   const findForkSuggestion = () => wrapper.findComponent(ForkSuggestion);
 
   beforeEach(() => {
-    gon.features = { highlightJs: true };
     isLoggedIn.mockReturnValue(true);
   });
 
@@ -137,6 +141,15 @@ describe('Blob content viewer component', () => {
     });
 
     describe('legacy viewers', () => {
+      it('loads a legacy viewer when a the fileType is text and the highlightJs feature is turned off', async () => {
+        await createComponent({
+          blob: { ...simpleViewerMock, fileType: 'text', highlightJs: false },
+        });
+
+        expect(mockAxios.history.get).toHaveLength(1);
+        expect(mockAxios.history.get[0].url).toEqual('some_file.js?format=json&viewer=simple');
+      });
+
       it('loads a legacy viewer when a viewer component is not available', async () => {
         await createComponent({ blob: { ...simpleViewerMock, fileType: 'unknown' } });
 
@@ -202,7 +215,6 @@ describe('Blob content viewer component', () => {
   describe('Blob viewer', () => {
     afterEach(() => {
       loadViewer.mockRestore();
-      viewerProps.mockRestore();
     });
 
     it('does not render a BlobContent component if a Blob viewer is available', async () => {
@@ -213,33 +225,29 @@ describe('Blob content viewer component', () => {
     });
 
     it.each`
-      viewer        | loadViewerReturnValue | viewerPropsReturnValue
-      ${'empty'}    | ${EmptyViewer}        | ${{}}
-      ${'download'} | ${DownloadViewer}     | ${{ filePath: '/some/file/path', fileName: 'test.js', fileSize: 100 }}
-      ${'text'}     | ${SourceViewer}       | ${{ content: 'test', autoDetect: true }}
-    `(
-      'renders viewer component for $viewer files',
-      async ({ viewer, loadViewerReturnValue, viewerPropsReturnValue }) => {
-        loadViewer.mockReturnValue(loadViewerReturnValue);
-        viewerProps.mockReturnValue(viewerPropsReturnValue);
+      viewer        | loadViewerReturnValue
+      ${'empty'}    | ${EmptyViewer}
+      ${'download'} | ${DownloadViewer}
+      ${'text'}     | ${SourceViewer}
+    `('renders viewer component for $viewer files', async ({ viewer, loadViewerReturnValue }) => {
+      loadViewer.mockReturnValue(loadViewerReturnValue);
 
-        createComponent({
-          blob: {
-            ...simpleViewerMock,
-            fileType: 'null',
-            simpleViewer: {
-              ...simpleViewerMock.simpleViewer,
-              fileType: viewer,
-            },
+      createComponent({
+        blob: {
+          ...simpleViewerMock,
+          fileType: 'null',
+          simpleViewer: {
+            ...simpleViewerMock.simpleViewer,
+            fileType: viewer,
           },
-        });
+        },
+      });
 
-        await waitForPromises();
+      await waitForPromises();
 
-        expect(loadViewer).toHaveBeenCalledWith(viewer, false);
-        expect(wrapper.findComponent(loadViewerReturnValue).exists()).toBe(true);
-      },
-    );
+      expect(loadViewer).toHaveBeenCalledWith(viewer, false);
+      expect(wrapper.findComponent(loadViewerReturnValue).exists()).toBe(true);
+    });
   });
 
   describe('BlobHeader action slot', () => {

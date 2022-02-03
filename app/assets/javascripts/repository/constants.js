@@ -25,3 +25,54 @@ export const PDF_MAX_FILE_SIZE = 10000000; // 10 MB
 export const PDF_MAX_PAGE_LIMIT = 50;
 
 export const ROW_APPEAR_DELAY = 150;
+
+export const DEFAULT_BLOB_INFO = {
+  userPermissions: {
+    pushCode: false,
+    downloadCode: false,
+    createMergeRequestIn: false,
+    forkProject: false,
+  },
+  pathLocks: {
+    nodes: [],
+  },
+  repository: {
+    empty: true,
+    blobs: {
+      nodes: [
+        {
+          name: '',
+          size: '',
+          rawTextBlob: '',
+          type: '',
+          fileType: '',
+          tooLarge: false,
+          path: '',
+          editBlobPath: '',
+          ideEditPath: '',
+          forkAndEditPath: '',
+          ideForkAndEditPath: '',
+          storedExternally: false,
+          externalStorage: '',
+          environmentFormattedExternalUrl: '',
+          environmentExternalUrlForRouteMap: '',
+          canModifyBlob: false,
+          canCurrentUserPushToBranch: false,
+          archived: false,
+          rawPath: '',
+          externalStorageUrl: '',
+          replacePath: '',
+          pipelineEditorPath: '',
+          deletePath: '',
+          simpleViewer: {},
+          richViewer: null,
+          webPath: '',
+        },
+      ],
+    },
+  },
+};
+
+export const TEXT_FILE_TYPE = 'text';
+
+export const LFS_STORAGE = 'lfs';

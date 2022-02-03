@@ -1,7 +1,8 @@
 import { GlAvatarLink, GlBadge } from '@gitlab/ui';
-import { within } from '@testing-library/dom';
-import { mount, createWrapper } from '@vue/test-utils';
+import { mountExtended } from 'helpers/vue_test_utils_helper';
 import UserAvatar from '~/members/components/avatars/user_avatar.vue';
+import { AVAILABILITY_STATUS } from '~/set_status_modal/utils';
+
 import { member as memberMock, member2faEnabled, orphanedMember } from '../../mock_data';
 
 describe('UserAvatar', () => {
@@ -10,7 +11,7 @@ describe('UserAvatar', () => {
   const { user } = memberMock;
 
   const createComponent = (propsData = {}, provide = {}) => {
-    wrapper = mount(UserAvatar, {
+    wrapper = mountExtended(UserAvatar, {
       propsData: {
         member: memberMock,
         isCurrentUser: false,
@@ -22,9 +23,6 @@ describe('UserAvatar', () => {
       },
     });
   };
-
-  const getByText = (text, options) =>
-    createWrapper(within(wrapper.element).findByText(text, options));
 
   const findStatusEmoji = (emoji) => wrapper.find(`gl-emoji[data-name="${emoji}"]`);
 
@@ -48,13 +46,13 @@ describe('UserAvatar', () => {
   it("renders user's name", () => {
     createComponent();
 
-    expect(getByText(user.name).exists()).toBe(true);
+    expect(wrapper.findByText(user.name).exists()).toBe(true);
   });
 
   it("renders user's username", () => {
     createComponent();
 
-    expect(getByText(`@${user.username}`).exists()).toBe(true);
+    expect(wrapper.findByText(`@${user.username}`).exists()).toBe(true);
   });
 
   it("renders user's avatar", () => {
@@ -67,7 +65,7 @@ describe('UserAvatar', () => {
     it('displays an orphaned user', () => {
       createComponent({ member: orphanedMember });
 
-      expect(getByText('Orphaned member').exists()).toBe(true);
+      expect(wrapper.findByText('Orphaned member').exists()).toBe(true);
     });
   });
 
@@ -85,13 +83,13 @@ describe('UserAvatar', () => {
     it('renders the "It\'s you" badge when member is current user', () => {
       createComponent({ isCurrentUser: true });
 
-      expect(getByText("It's you").exists()).toBe(true);
+      expect(wrapper.findByText("It's you").exists()).toBe(true);
     });
 
     it('does not render 2FA badge when `canManageMembers` is `false`', () => {
       createComponent({ member: member2faEnabled }, { canManageMembers: false });
 
-      expect(within(wrapper.element).queryByText('2FA')).toBe(null);
+      expect(wrapper.findByText('2FA').exists()).toBe(false);
     });
   });
 
@@ -112,6 +110,23 @@ describe('UserAvatar', () => {
 
         expect(findStatusEmoji(emoji).exists()).toBe(true);
       });
+
+      describe('when `user.showStatus` is `false', () => {
+        it('does not display status emoji', () => {
+          createComponent({
+            member: {
+              ...memberMock,
+              user: {
+                ...memberMock.user,
+                showStatus: false,
+                status: { emoji, messageHtml: 'On vacation' },
+              },
+            },
+          });
+
+          expect(findStatusEmoji(emoji).exists()).toBe(false);
+        });
+      });
     });
 
     describe('when not set', () => {
@@ -119,6 +134,32 @@ describe('UserAvatar', () => {
         createComponent();
 
         expect(findStatusEmoji(emoji).exists()).toBe(false);
+      });
+    });
+  });
+
+  describe('user availability', () => {
+    describe('when `user.availability` is `null`', () => {
+      it("does not show `(Busy)` next to user's name", () => {
+        createComponent();
+
+        expect(wrapper.findByText('(Busy)').exists()).toBe(false);
+      });
+    });
+
+    describe(`when user.availability is ${AVAILABILITY_STATUS.BUSY}`, () => {
+      it("shows `(Busy)` next to user's name", () => {
+        createComponent({
+          member: {
+            ...memberMock,
+            user: {
+              ...memberMock.user,
+              availability: AVAILABILITY_STATUS.BUSY,
+            },
+          },
+        });
+
+        expect(wrapper.findByText('(Busy)').exists()).toBe(true);
       });
     });
   });

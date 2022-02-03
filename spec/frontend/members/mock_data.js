@@ -25,6 +25,8 @@ export const member = {
     twoFactorEnabled: false,
     oncallSchedules: [{ name: 'schedule 1' }],
     escalationPolicies: [{ name: 'policy 1' }],
+    availability: null,
+    showStatus: true,
   },
   id: 238,
   createdAt: '2020-07-17T16:22:46.923Z',

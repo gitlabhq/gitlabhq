@@ -11,17 +11,17 @@ export default {
     tooLargeButtonText: __('Download PDF'),
   },
   props: {
-    url: {
-      type: String,
-      required: true,
-    },
-    fileSize: {
-      type: Number,
+    blob: {
+      type: Object,
       required: true,
     },
   },
   data() {
-    return { totalPages: 0 };
+    return {
+      url: this.blob.rawPath,
+      fileSize: this.blob.rawSize,
+      totalPages: 0,
+    };
   },
   computed: {
     tooLargeToDisplay() {

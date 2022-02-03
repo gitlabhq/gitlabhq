@@ -31,6 +31,12 @@ module Gitlab
         end
       end
 
+      def safe_identify
+        identify
+      rescue UnknownProcessError, AmbiguousProcessError
+        nil
+      end
+
       def puma?
         !!defined?(::Puma)
       end

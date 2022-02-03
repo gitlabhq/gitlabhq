@@ -23,7 +23,7 @@ recommend encrypting plan output or modifying the project visibility settings.
 
 ## Configure Terraform report artifacts
 
-GitLab ships with a [pre-built CI template](index.md#quick-start) that uses GitLab Managed Terraform state and integrates Terraform changes into merge requests. We recommend customizing the pre-built image and relying on the `gitlab-terraform` helper provided within for a quick setup.
+GitLab ships with a [pre-built CI template](index.md#integrate-your-project-with-terraform) that uses GitLab Managed Terraform state and integrates Terraform changes into merge requests. We recommend customizing the pre-built image and relying on the `gitlab-terraform` helper provided within for a quick setup.
 
 To manually configure a GitLab Terraform Report artifact:
 

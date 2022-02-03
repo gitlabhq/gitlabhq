@@ -8,6 +8,7 @@
       - knapsack/
       - rspec/
       - crystalball/
+    when: always
 
 retrieve-tests-metadata:
   extends:

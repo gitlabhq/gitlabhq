@@ -5,14 +5,14 @@ import LfsViewer from '~/repository/components/blob_viewers/lfs_viewer.vue';
 describe('LFS Viewer', () => {
   let wrapper;
 
-  const DEFAULT_PROPS = {
-    fileName: 'file_name.js',
-    filePath: '/some/file/path',
+  const DEFAULT_BLOB_DATA = {
+    name: 'file_name.js',
+    rawPath: '/some/file/path',
   };
 
   const createComponent = () => {
     wrapper = shallowMount(LfsViewer, {
-      propsData: { ...DEFAULT_PROPS },
+      propsData: { blob: { ...DEFAULT_BLOB_DATA } },
       stubs: { GlSprintf },
     });
   };
@@ -30,12 +30,12 @@ describe('LFS Viewer', () => {
   });
 
   it('renders download link', () => {
-    const { filePath, fileName } = DEFAULT_PROPS;
+    const { rawPath, name } = DEFAULT_BLOB_DATA;
 
     expect(findLink().attributes()).toMatchObject({
       target: '_blank',
-      href: filePath,
-      download: fileName,
+      href: rawPath,
+      download: name,
     });
   });
 });
