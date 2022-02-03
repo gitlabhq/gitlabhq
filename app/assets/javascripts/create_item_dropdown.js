@@ -1,4 +1,3 @@
-import { escape } from 'lodash';
 import initDeprecatedJQueryDropdown from '~/deprecated_jquery_dropdown';
 
 export default class CreateItemDropdown {
@@ -37,14 +36,14 @@ export default class CreateItemDropdown {
       },
       selectable: true,
       toggleLabel(selected) {
-        return selected && 'id' in selected ? escape(selected.title) : this.defaultToggleLabel;
+        return selected && 'id' in selected ? selected.title : this.defaultToggleLabel;
       },
       fieldName: this.fieldName,
       text(item) {
-        return escape(item.text);
+        return item.text;
       },
       id(item) {
-        return escape(item.id);
+        return item.id;
       },
       onFilter: this.toggleCreateNewButton.bind(this),
       clicked: (options) => {

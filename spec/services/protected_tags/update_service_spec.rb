@@ -18,35 +18,14 @@ RSpec.describe ProtectedTags::UpdateService do
       expect(result.reload.name).to eq(params[:name])
     end
 
-    context 'when name has escaped HTML' do
-      let(:new_name) { 'tag-&gt;test' }
+    context 'when updating protected tag with a name that contains HTML tags' do
+      let(:new_name) { 'foo<b>bar<\b>' }
+      let(:result) { service.execute(protected_tag) }
 
-      it 'updates protected tag name with unescaped HTML' do
-        expect(result.reload.name).to eq('tag->test')
-      end
+      subject(:service) { described_class.new(project, user, params) }
 
-      context 'and name contains HTML tags' do
-        let(:new_name) { '&lt;b&gt;tag&lt;/b&gt;' }
-
-        it 'updates protected tag name with sanitized name' do
-          expect(result.reload.name).to eq('tag')
-        end
-
-        context 'and contains unsafe HTML' do
-          let(:new_name) { '&lt;script&gt;alert(&#39;foo&#39;);&lt;/script&gt;' }
-
-          it 'does not update the protected tag' do
-            expect(result.reload.name).to eq(protected_tag.name)
-          end
-        end
-      end
-    end
-
-    context 'when name contains unescaped HTML tags' do
-      let(:new_name) { '<b>tag</b>' }
-
-      it 'updates protected tag name with sanitized name' do
-        expect(result.reload.name).to eq('tag')
+      it 'updates a protected tag' do
+        expect(result.reload.name).to eq(new_name)
       end
     end
 
