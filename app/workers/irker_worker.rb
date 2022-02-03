@@ -2,6 +2,7 @@
 
 require 'json'
 require 'socket'
+require 'resolv'
 
 class IrkerWorker # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
@@ -43,14 +44,27 @@ class IrkerWorker # rubocop:disable Scalability/IdempotentWorker
   private
 
   def start_connection(irker_server, irker_port)
+    ip_address = Resolv.getaddress(irker_server)
+    # handle IP6 addresses
+    domain = Resolv::IPv6::Regex.match?(ip_address) ? "[#{ip_address}]" : ip_address
+
     begin
-      @socket = TCPSocket.new irker_server, irker_port
-    rescue Errno::ECONNREFUSED => e
+      Gitlab::UrlBlocker.validate!(
+        "irc://#{domain}",
+        allow_localhost: allow_local_requests?,
+        allow_local_network: allow_local_requests?,
+        schemes: ['irc'])
+      @socket = TCPSocket.new ip_address, irker_port
+    rescue Errno::ECONNREFUSED, Gitlab::UrlBlocker::BlockedUrlError => e
       logger.fatal "Can't connect to Irker daemon: #{e}"
       return false
     end
 
     true
+  end
+
+  def allow_local_requests?
+    Gitlab::CurrentSettings.allow_local_requests_from_web_hooks_and_services?
   end
 
   def send_to_irker(privmsg)
