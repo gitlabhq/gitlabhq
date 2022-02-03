@@ -33432,6 +33432,9 @@ msgstr ""
 msgid "Slack logo"
 msgstr ""
 
+msgid "SlackIntegration|Are you sure you want to remove this project from the Slack application?"
+msgstr ""
+
 msgid "SlackIntegration|GitLab for Slack"
 msgstr ""
 
@@ -33439,6 +33442,9 @@ msgid "SlackIntegration|GitLab for Slack was successfully installed."
 msgstr ""
 
 msgid "SlackIntegration|Project alias"
+msgstr ""
+
+msgid "SlackIntegration|Remove project"
 msgstr ""
 
 msgid "SlackIntegration|Select a GitLab project to link with your Slack workspace."

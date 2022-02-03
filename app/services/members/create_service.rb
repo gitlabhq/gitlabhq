@@ -24,6 +24,9 @@ module Members
 
       add_members
       enqueue_onboarding_progress_action
+
+      publish_event!
+
       result
     rescue BlankInvitesError, TooManyInvitesError, MembershipLockedError => e
       error(e.message)
@@ -143,6 +146,15 @@ module Members
 
     def formatted_errors
       errors.to_sentence
+    end
+
+    def publish_event!
+      Gitlab::EventStore.publish(
+        Members::MembersAddedEvent.new(data: {
+          source_id: source.id,
+          source_type: source.class.name
+        })
+      )
     end
   end
 end

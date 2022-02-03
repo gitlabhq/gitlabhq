@@ -1,12 +1,14 @@
 <script>
 import { GlIcon } from '@gitlab/ui';
 import { mapActions } from 'vuex';
+import DesignNotePin from '~/vue_shared/components/design_management/design_note_pin.vue';
 import noteableDiscussion from '../../notes/components/noteable_discussion.vue';
 
 export default {
   components: {
     noteableDiscussion,
     GlIcon,
+    DesignNotePin,
   },
   props: {
     discussions: {
@@ -62,20 +64,22 @@ export default {
       <ul :data-discussion-id="discussion.id" class="notes">
         <template v-if="shouldCollapseDiscussions">
           <button
-            :class="{
-              'diff-notes-collapse': discussion.expanded,
-              'btn-transparent badge badge-pill': !discussion.expanded,
-            }"
+            v-if="discussion.expanded"
+            class="diff-notes-collapse js-diff-notes-toggle"
             type="button"
-            class="js-diff-notes-toggle"
             :aria-label="__('Show comments')"
             @click="toggleDiscussion({ discussionId: discussion.id })"
           >
-            <gl-icon v-if="discussion.expanded" name="collapse" class="collapse-icon" />
-            <template v-else>
-              {{ index + 1 }}
-            </template>
+            <gl-icon name="collapse" class="collapse-icon" />
           </button>
+          <design-note-pin
+            v-else
+            :label="index + 1"
+            :is-resolved="discussion.resolved"
+            size="sm"
+            class="js-diff-notes-toggle gl-translate-x-n50"
+            @click="toggleDiscussion({ discussionId: discussion.id })"
+          />
         </template>
         <noteable-discussion
           v-show="isExpanded(discussion)"
@@ -87,9 +91,12 @@ export default {
           @noteDeleted="deleteNoteHandler"
         >
           <template v-if="renderAvatarBadge" #avatar-badge>
-            <span class="badge badge-pill">
-              {{ index + 1 }}
-            </span>
+            <design-note-pin
+              :label="index + 1"
+              class="user-avatar"
+              :is-resolved="discussion.resolved"
+              size="sm"
+            />
           </template>
         </noteable-discussion>
       </ul>

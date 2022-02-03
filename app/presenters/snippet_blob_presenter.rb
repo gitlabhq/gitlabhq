@@ -33,7 +33,7 @@ class SnippetBlobPresenter < BlobPresenter
     blob.container
   end
 
-  def language
+  def gitattr_language
     nil
   end
 

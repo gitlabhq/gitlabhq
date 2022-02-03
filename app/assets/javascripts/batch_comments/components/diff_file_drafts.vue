@@ -1,11 +1,13 @@
 <script>
 import { mapGetters } from 'vuex';
 import imageDiff from '~/diffs/mixins/image_diff';
+import DesignNotePin from '~/vue_shared/components/design_management/design_note_pin.vue';
 import DraftNote from './draft_note.vue';
 
 export default {
   components: {
     DraftNote,
+    DesignNotePin,
   },
   mixins: [imageDiff],
   props: {
@@ -31,9 +33,12 @@ export default {
       class="discussion-notes diff-discussions position-relative"
     >
       <div class="notes">
-        <span class="d-block btn-transparent badge badge-pill is-draft js-diff-notes-index">
-          {{ toggleText(draft, index) }}
-        </span>
+        <design-note-pin
+          :label="toggleText(draft, index)"
+          is-draft
+          class="js-diff-notes-index gl-translate-x-n50"
+          size="sm"
+        />
         <draft-note :draft="draft" />
       </div>
     </div>

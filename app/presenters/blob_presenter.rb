@@ -32,7 +32,7 @@ class BlobPresenter < Gitlab::View::Presenter::Delegated
   end
 
   def blob_language
-    @_blob_language ||= Gitlab::Diff::CustomDiff.transformed_blob_language(blob) || language
+    @_blob_language ||= Gitlab::Diff::CustomDiff.transformed_blob_language(blob) || gitattr_language || detect_language
   end
 
   def raw_plain_data
@@ -166,8 +166,14 @@ class BlobPresenter < Gitlab::View::Presenter::Delegated
     @all_lines ||= blob.data.lines
   end
 
-  def language
+  def gitattr_language
     blob.language_from_gitattributes
+  end
+
+  def detect_language
+    return if blob.binary?
+
+    Rouge::Lexer.guess(filename: blob.path, source: blob_data(nil)) { |lex| lex.min_by(&:tag) }.tag
   end
 end
 

@@ -3,6 +3,7 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import DiffFileDrafts from '~/batch_comments/components/diff_file_drafts.vue';
 import DraftNote from '~/batch_comments/components/draft_note.vue';
+import DesignNotePin from '~/vue_shared/components/design_management/design_note_pin.vue';
 
 Vue.use(Vuex);
 
@@ -40,10 +41,12 @@ describe('Batch comments diff file drafts component', () => {
   it('renders index of draft note', () => {
     factory();
 
-    expect(vm.findAll('.js-diff-notes-index').length).toEqual(2);
+    const elements = vm.findAll(DesignNotePin);
 
-    expect(vm.findAll('.js-diff-notes-index').at(0).text()).toEqual('1');
+    expect(elements.length).toEqual(2);
 
-    expect(vm.findAll('.js-diff-notes-index').at(1).text()).toEqual('2');
+    expect(elements.at(0).props('label')).toEqual(1);
+
+    expect(elements.at(1).props('label')).toEqual(2);
   });
 });

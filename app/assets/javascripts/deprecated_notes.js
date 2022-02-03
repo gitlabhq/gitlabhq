@@ -694,7 +694,7 @@ export default class Notes {
     // Convert returned HTML to a jQuery object so we can modify it further
     const $noteEntityEl = $(noteEntity.html);
     const $noteAvatar = $noteEntityEl.find('.image-diff-avatar-link');
-    const $targetNoteBadge = $targetNote.find('.badge');
+    const $targetNoteBadge = $targetNote.find('.design-note-pin');
 
     $noteAvatar.append($targetNoteBadge);
     this.revertNoteEditForm($targetNote);

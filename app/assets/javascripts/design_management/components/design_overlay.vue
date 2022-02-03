@@ -286,6 +286,7 @@ export default {
       "
       :is-inactive="isNoteInactive(note)"
       :is-resolved="note.resolved"
+      is-on-image
       @mousedown.stop="onNoteMousedown($event, note)"
       @mouseup.stop="onNoteMouseup(note)"
     />

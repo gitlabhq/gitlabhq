@@ -18,7 +18,7 @@ module Gitlab
     end
 
     def self.instance
-      @instance ||= configure!
+      @instance ||= Store.new { |store| configure!(store) }
     end
 
     # Define all event subscriptions using:
@@ -29,14 +29,14 @@ module Gitlab
     #
     #   store.subscribe(DomainA::SomeWorker, to: DomainB::SomeEvent), if: ->(event) { event.data == :some_value }
     #
-    def self.configure!
-      Store.new do |store|
-        ###
-        # Add subscriptions here:
+    def self.configure!(store)
+      ###
+      # Add subscriptions here:
 
-        store.subscribe ::MergeRequests::UpdateHeadPipelineWorker, to: ::Ci::PipelineCreatedEvent
-      end
+      store.subscribe ::MergeRequests::UpdateHeadPipelineWorker, to: ::Ci::PipelineCreatedEvent
     end
     private_class_method :configure!
   end
 end
+
+Gitlab::EventStore.prepend_mod_with('Gitlab::EventStore')

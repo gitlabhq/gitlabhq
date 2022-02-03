@@ -64,43 +64,13 @@
 
   - experiment(:new_project_sast_enabled, user: current_user) do |e|
     - e.try(:candidate) do
-      .form-group
-        .form-check.gl-mb-3
-          = check_box_tag 'project[initialize_with_sast]', '1', true, class: 'form-check-input', data: { qa_selector: 'initialize_with_sast_checkbox', track_experiment: e.name, track_label: track_label, track_action: 'activate_form_input', track_property: 'init_with_sast' }
-          = label_tag 'project[initialize_with_sast]', class: 'form-check-label' do
-            = s_('ProjectsNew|Enable Static Application Security Testing (SAST)')
-          .form-text.text-muted
-            = s_('ProjectsNew|Analyze your source code for known security vulnerabilities.')
-            = link_to _('Learn more.'), help_page_path('user/application_security/sast/index'), target: '_blank', rel: 'noopener noreferrer', data: { track_action: 'followed', track_experiment: e.name }
+      = render 'new_project_initialize_with_sast', experiment_name: e.name, track_label: track_label, checked: true, with_free_badge: false
     - e.try(:unchecked_candidate) do
-      .form-group
-        .form-check.gl-mb-3
-          = check_box_tag 'project[initialize_with_sast]', '1', false, class: 'form-check-input', data: { qa_selector: 'initialize_with_sast_checkbox', track_experiment: e.name, track_label: track_label, track_action: 'activate_form_input', track_property: 'init_with_sast' }
-          = label_tag 'project[initialize_with_sast]', class: 'form-check-label' do
-            = s_('ProjectsNew|Enable Static Application Security Testing (SAST)')
-          .form-text.text-muted
-            = s_('ProjectsNew|Analyze your source code for known security vulnerabilities.')
-            = link_to _('Learn more.'), help_page_path('user/application_security/sast/index'), target: '_blank', rel: 'noopener noreferrer', data: { track_action: 'followed', track_experiment: e.name }
+      = render 'new_project_initialize_with_sast', experiment_name: e.name, track_label: track_label, checked: false, with_free_badge: false
     - e.try(:free_indicator) do
-      .form-group
-        .form-check.gl-mb-3
-          = check_box_tag 'project[initialize_with_sast]', '1', true, class: 'form-check-input', data: { qa_selector: 'initialize_with_sast_checkbox', track_experiment: e.name, track_label: track_label, track_action: 'activate_form_input', track_property: 'init_with_sast' }
-          = label_tag 'project[initialize_with_sast]', class: 'form-check-label' do
-            = s_('ProjectsNew|Enable Static Application Security Testing (SAST)')
-            = gl_badge_tag _('Free'), variant: :info, size: :sm
-          .form-text.text-muted
-            = s_('ProjectsNew|Analyze your source code for known security vulnerabilities.')
-            = link_to _('Learn more.'), help_page_path('user/application_security/sast/index'), target: '_blank', rel: 'noopener noreferrer', data: { track_action: 'followed', track_experiment: e.name }
+      = render 'new_project_initialize_with_sast', experiment_name: e.name, track_label: track_label, checked: true, with_free_badge: true
     - e.try(:unchecked_free_indicator) do
-      .form-group
-        .form-check.gl-mb-3
-          = check_box_tag 'project[initialize_with_sast]', '1', false, class: 'form-check-input', data: { qa_selector: 'initialize_with_sast_checkbox', track_experiment: e.name, track_label: track_label, track_action: 'activate_form_input', track_property: 'init_with_sast' }
-          = label_tag 'project[initialize_with_sast]', class: 'form-check-label' do
-            = s_('ProjectsNew|Enable Static Application Security Testing (SAST)')
-            = gl_badge_tag _('Free'), variant: :info, size: :sm
-          .form-text.text-muted
-            = s_('ProjectsNew|Analyze your source code for known security vulnerabilities.')
-            = link_to _('Learn more.'), help_page_path('user/application_security/sast/index'), target: '_blank', rel: 'noopener noreferrer', data: { track_action: 'followed', track_experiment: e.name }
+      = render 'new_project_initialize_with_sast', experiment_name: e.name, track_label: track_label, checked: false, with_free_badge: true
 
 = f.submit _('Create project'), class: "btn gl-button btn-confirm", data: { track_label: "#{track_label}", track_action: "click_button", track_property: "create_project", track_value: "" }
 = link_to _('Cancel'), dashboard_projects_path, class: 'btn gl-button btn-default btn-cancel', data: { track_label: "#{track_label}", track_action: "click_button", track_property: "cancel", track_value: "" }

@@ -37,14 +37,16 @@ describe('domHelper', () => {
       discussionEl = document.createElement('div');
       discussionEl.innerHTML = `
         <a href="#" class="image-diff-avatar-link">
-          <div class="badge"></div>
+          <div class="design-note-pin"></div>
         </a>
       `;
       domHelper.updateDiscussionAvatarBadgeNumber(discussionEl, badgeNumber);
     });
 
     it('should update avatar badge number', () => {
-      expect(discussionEl.querySelector('.badge').textContent).toEqual(badgeNumber.toString());
+      expect(discussionEl.querySelector('.design-note-pin').textContent).toEqual(
+        badgeNumber.toString(),
+      );
     });
   });
 
@@ -54,13 +56,15 @@ describe('domHelper', () => {
     beforeEach(() => {
       discussionEl = document.createElement('div');
       discussionEl.innerHTML = `
-        <div class="badge"></div>
+        <div class="design-note-pin"></div>
       `;
       domHelper.updateDiscussionBadgeNumber(discussionEl, badgeNumber);
     });
 
     it('should update discussion badge number', () => {
-      expect(discussionEl.querySelector('.badge').textContent).toEqual(badgeNumber.toString());
+      expect(discussionEl.querySelector('.design-note-pin').textContent).toEqual(
+        badgeNumber.toString(),
+      );
     });
   });
 

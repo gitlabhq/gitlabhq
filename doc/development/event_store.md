@@ -252,18 +252,19 @@ add a line like this to the `Gitlab::EventStore.configure!` method:
 ```ruby
 module Gitlab
   module EventStore
-    def self.configure!
-      Store.new.tap do |store|
-        # ...
+    def self.configure!(store)
+      # ...
 
-        store.subscribe ::MergeRequests::UpdateHeadPipelineWorker, to: ::Ci::PipelineCreatedEvent
+      store.subscribe ::MergeRequests::UpdateHeadPipelineWorker, to: ::Ci::PipelineCreatedEvent
 
-        # ...
-      end
+      # ...
     end
   end
 end
 ```
+
+A worker that is only defined in the EE codebase can subscribe to an event in the same way by 
+declaring the subscription in `ee/lib/ee/gitlab/event_store.rb`.
 
 Subscriptions are stored in memory when the Rails app is loaded and they are immediately frozen.
 It's not possible to modify subscriptions at runtime.

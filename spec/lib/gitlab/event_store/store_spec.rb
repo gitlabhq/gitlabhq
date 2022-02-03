@@ -224,6 +224,26 @@ RSpec.describe Gitlab::EventStore::Store do
         store.publish(event)
       end
     end
+
+    context 'when the event does not have any subscribers' do
+      let(:store) do
+        described_class.new do |s|
+          s.subscribe unrelated_worker, to: another_event_klass
+        end
+      end
+
+      let(:event) { event_klass.new(data: data) }
+
+      it 'returns successfully' do
+        expect { store.publish(event) }.not_to raise_error
+      end
+
+      it 'does not dispatch the event to another subscription' do
+        expect(unrelated_worker).not_to receive(:perform_async)
+
+        store.publish(event)
+      end
+    end
   end
 
   describe 'subscriber' do

@@ -28,7 +28,7 @@ RSpec.describe 'Merge request > User creates image diff notes', :js do
 
       it 'shows indicator and avatar badges, and allows collapsing/expanding the discussion notes' do
         indicator = find('.js-image-badge')
-        badge = find('.image-diff-avatar-link .badge')
+        badge = find('.image-diff-avatar-link .design-note-pin')
 
         expect(indicator).to have_content('1')
         expect(badge).to have_content('1')

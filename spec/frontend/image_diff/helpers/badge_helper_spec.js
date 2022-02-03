@@ -62,7 +62,10 @@ describe('badge helper', () => {
     });
 
     it('should add badge classes', () => {
-      expect(buttonEl.className).toContain('badge badge-pill');
+      const classes = buttonEl.className.split(' ');
+      expect(classes).toEqual(
+        expect.arrayContaining(['design-note-pin', 'on-image', 'gl-absolute']),
+      );
     });
 
     it('should set the badge text', () => {
@@ -105,7 +108,7 @@ describe('badge helper', () => {
     beforeEach(() => {
       containerEl.innerHTML = `
         <div id="${noteId}">
-          <div class="badge hidden">
+          <div class="design-note-pin hidden">
           </div>
         </div>
       `;
@@ -116,7 +119,7 @@ describe('badge helper', () => {
           badgeNumber,
         },
       });
-      avatarBadgeEl = containerEl.querySelector(`#${noteId} .badge`);
+      avatarBadgeEl = containerEl.querySelector(`#${noteId} .design-note-pin`);
     });
 
     it('should update badge number', () => {

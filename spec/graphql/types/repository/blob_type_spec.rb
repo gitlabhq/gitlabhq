@@ -41,7 +41,8 @@ RSpec.describe Types::Repository::BlobType do
       :ide_edit_path,
       :external_storage_url,
       :fork_and_edit_path,
-      :ide_fork_and_edit_path
+      :ide_fork_and_edit_path,
+      :language
     )
   end
 end

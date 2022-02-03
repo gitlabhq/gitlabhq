@@ -61,7 +61,7 @@ export default class ReplacedImageDiff extends ImageDiff {
     this.currentView = newView;
 
     // Clear existing badges on new view
-    const existingBadges = this.imageFrameEl.querySelectorAll('.badge');
+    const existingBadges = this.imageFrameEl.querySelectorAll('.design-note-pin');
     [...existingBadges].map((badge) => badge.remove());
 
     // Remove existing references to old view image badges

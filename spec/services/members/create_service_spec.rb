@@ -39,6 +39,15 @@ RSpec.describe Members::CreateService, :aggregate_failures, :clean_gitlab_redis_
         expect(source.users).to include member
         expect(OnboardingProgress.completed?(source, :user_added)).to be(true)
       end
+
+      it 'triggers a members added event' do
+        expect(Gitlab::EventStore)
+          .to receive(:publish)
+          .with(an_instance_of(Members::MembersAddedEvent))
+          .and_call_original
+
+        expect(execute_service[:status]).to eq(:success)
+      end
     end
   end
 

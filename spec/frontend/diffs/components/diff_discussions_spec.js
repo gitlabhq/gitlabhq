@@ -71,7 +71,7 @@ describe('DiffDiscussions', () => {
 
       expect(diffNotesToggle.text().trim()).toBe('1');
       expect(diffNotesToggle.classes()).toEqual(
-        expect.arrayContaining(['btn-transparent', 'badge', 'badge-pill']),
+        expect.arrayContaining(['js-diff-notes-toggle', 'gl-translate-x-n50', 'design-note-pin']),
       );
     });
 
@@ -87,8 +87,8 @@ describe('DiffDiscussions', () => {
       createComponent({ renderAvatarBadge: true });
       const noteableDiscussion = wrapper.find(NoteableDiscussion);
 
-      expect(noteableDiscussion.find('.badge-pill').exists()).toBe(true);
-      expect(noteableDiscussion.find('.badge-pill').text().trim()).toBe('1');
+      expect(noteableDiscussion.find('.design-note-pin').exists()).toBe(true);
+      expect(noteableDiscussion.find('.design-note-pin').text().trim()).toBe('1');
     });
   });
 });

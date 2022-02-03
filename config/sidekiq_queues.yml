@@ -177,6 +177,8 @@
   - 1
 - - gitlab_shell
   - 2
+- - gitlab_subscriptions_notify_seats_exceeded
+  - 1
 - - group_destroy
   - 1
 - - group_export

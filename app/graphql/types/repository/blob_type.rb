@@ -125,6 +125,12 @@ module Types
       field :archived, GraphQL::Types::Boolean, null: true, method: :archived?,
             description: 'Whether the current project is archived.'
 
+      field :language, GraphQL::Types::String,
+            description: 'Blob language.',
+            method: :blob_language,
+            null: true,
+            calls_gitaly: true
+
       def raw_text_blob
         object.data unless object.binary?
       end

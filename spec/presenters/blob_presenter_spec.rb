@@ -170,13 +170,13 @@ RSpec.describe BlobPresenter do
     let(:git_blob) { blob.__getobj__ }
 
     it 'returns highlighted content' do
-      expect(Gitlab::Highlight).to receive(:highlight).with('files/ruby/regex.rb', git_blob.data, plain: nil, language: nil)
+      expect(Gitlab::Highlight).to receive(:highlight).with('files/ruby/regex.rb', git_blob.data, plain: nil, language: 'ruby')
 
       presenter.highlight
     end
 
     it 'returns plain content when :plain is true' do
-      expect(Gitlab::Highlight).to receive(:highlight).with('files/ruby/regex.rb', git_blob.data, plain: true, language: nil)
+      expect(Gitlab::Highlight).to receive(:highlight).with('files/ruby/regex.rb', git_blob.data, plain: true, language: 'ruby')
 
       presenter.highlight(plain: true)
     end
@@ -189,7 +189,7 @@ RSpec.describe BlobPresenter do
       end
 
       it 'returns limited highlighted content' do
-        expect(Gitlab::Highlight).to receive(:highlight).with('files/ruby/regex.rb', "line one\n", plain: nil, language: nil)
+        expect(Gitlab::Highlight).to receive(:highlight).with('files/ruby/regex.rb', "line one\n", plain: nil, language: 'ruby')
 
         presenter.highlight(to: 1)
       end
@@ -244,6 +244,36 @@ RSpec.describe BlobPresenter do
 
         presenter.highlight
       end
+    end
+  end
+
+  describe '#blob_language' do
+    subject { presenter.blob_language }
+
+    it { is_expected.to eq('ruby') }
+
+    context 'gitlab-language contains a match' do
+      before do
+        allow(blob).to receive(:language_from_gitattributes).and_return('cpp')
+      end
+
+      it { is_expected.to eq('cpp') }
+    end
+
+    context 'when blob is ipynb' do
+      let(:blob) { repository.blob_at('f6b7a707', 'files/ipython/markdown-table.ipynb') }
+
+      before do
+        allow(Gitlab::Diff::CustomDiff).to receive(:transformed_for_diff?).and_return(true)
+      end
+
+      it { is_expected.to eq('md') }
+    end
+
+    context 'when blob is binary' do
+      let(:blob) { repository.blob_at('HEAD', 'Gemfile.zip') }
+
+      it { is_expected.to be_nil }
     end
   end
 

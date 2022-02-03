@@ -6,11 +6,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Container Host Security **(FREE)**
 
-NOTE:
-In GitLab 14.5, using a certificate to connect GitLab to a Kubernetes cluster is [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8).
-You can continue using Container Host Security, even though it relies on this certificate-based
-method. The work to allow all aspects of Container Host Security to function through the [GitLab Agent](../../../../clusters/agent/index.md)
-instead of the certificate-based method can be tracked [in this GitLab issue](https://gitlab.com/gitlab-org/gitlab/-/issues/299350).
+> [Deprecated](https://gitlab.com/groups/gitlab-org/-/epics/7476) in GitLab 14.8, and planned for [removal](https://gitlab.com/groups/gitlab-org/-/epics/7477) in GitLab 15.0.
+
+WARNING:
+Container Host Security is in its end-of-life process. It's [deprecated](https://gitlab.com/groups/gitlab-org/-/epics/7476)
+for use in GitLab 14.8, and planned for [removal](https://gitlab.com/groups/gitlab-org/-/epics/7477)
+in GitLab 15.0.
 
 Container Host Security in GitLab provides Intrusion Detection and Prevention capabilities that can
 monitor and (optionally) block activity inside the containers themselves. This is done by leveraging

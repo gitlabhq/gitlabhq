@@ -118,7 +118,7 @@ export default class ImageDiff {
   removeBadge(event) {
     const { badgeNumber } = event.detail;
     const indexToRemove = badgeNumber - 1;
-    const imageBadgeEls = this.imageFrameEl.querySelectorAll('.badge');
+    const imageBadgeEls = this.imageFrameEl.querySelectorAll('.design-note-pin');
 
     if (this.imageBadges.length !== badgeNumber) {
       // Cascade badges count numbers for (avatar badges + image badges)

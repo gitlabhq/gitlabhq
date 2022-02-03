@@ -1072,24 +1072,6 @@ table.code {
   }
 }
 
-.frame .badge.badge-pill,
-.image-diff-avatar-link .badge.badge-pill,
-.user-avatar-link .badge.badge-pill,
-.notes > .badge.badge-pill {
-  position: absolute;
-  background-color: $blue-400;
-  color: $white;
-  border: $white 1px solid;
-  min-height: $gl-padding;
-  padding: 5px 8px;
-  border-radius: 12px;
-
-  &:focus {
-    outline: none;
-  }
-}
-
-.frame .badge.badge-pill,
 .frame .image-comment-badge,
 .frame .comment-indicator {
   // Center align badges on the frame
@@ -1121,11 +1103,6 @@ table.code {
   }
 }
 
-.notes > .badge.badge-pill {
-  display: none;
-  left: -13px;
-}
-
 .discussion-notes {
   min-height: 35px;
 
@@ -1134,17 +1111,21 @@ table.code {
     min-height: 25px;
   }
 
+  .diff-notes-expand {
+    display: none;
+  }
+
   &.collapsed {
     background-color: $white;
+
+    .diff-notes-expand {
+      display: initial;
+    }
 
     .diff-notes-collapse,
     .note,
     .discussion-reply-holder {
       display: none;
-    }
-
-    .notes > .badge.badge-pill {
-      display: block;
     }
   }
 }

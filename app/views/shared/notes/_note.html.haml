@@ -25,7 +25,7 @@
             - elsif note_counter == 0
               - counter = badge_counter if local_assigns[:badge_counter]
               - badge_class = "hidden" if @fresh_discussion || counter.nil?
-              %span.badge.badge-pill{ class: badge_class }
+              %span.gl-display-flex.gl-align-items-center.gl-justify-content-center.gl-font-sm.design-note-pin.small.user-avatar{ class: badge_class }
                 = counter
     .timeline-content
       .note-header
