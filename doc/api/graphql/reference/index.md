@@ -2154,6 +2154,8 @@ Input type: `DestroyNoteInput`
 
 ### `Mutation.destroyPackage`
 
+Destroys a package and its related package files. Restricted to packages with a small number of files.
+
 Input type: `DestroyPackageInput`
 
 #### Arguments
@@ -15647,7 +15649,7 @@ Represents an issue link of a vulnerability.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="vulnerabilityissuelinkid"></a>`id` | [`ID!`](#id) | GraphQL ID of the vulnerability. |
-| <a id="vulnerabilityissuelinkissue"></a>`issue` | [`Issue!`](#issue) | Issue attached to issue link. |
+| <a id="vulnerabilityissuelinkissue"></a>`issue` | [`Issue`](#issue) | Issue attached to issue link. |
 | <a id="vulnerabilityissuelinklinktype"></a>`linkType` | [`VulnerabilityIssueLinkType!`](#vulnerabilityissuelinktype) | Type of the issue link. |
 
 ### `VulnerabilityLink`

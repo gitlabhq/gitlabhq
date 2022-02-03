@@ -23,6 +23,12 @@ export default {
     successMessage: DELETE_PACKAGE_SUCCESS_MESSAGE,
   },
   methods: {
+    errorMessageFrom(error) {
+      if (typeof error === 'string') {
+        return error;
+      }
+      return error?.message || this.$options.i18n.errorMessage;
+    },
     async deletePackage(packageEntity) {
       try {
         this.$emit('start');
@@ -44,9 +50,10 @@ export default {
             type: 'success',
           });
         }
+        this.$emit('success');
       } catch (error) {
         createFlash({
-          message: this.$options.i18n.errorMessage,
+          message: this.errorMessageFrom(error),
           type: 'warning',
           captureError: true,
           error,

@@ -99,12 +99,13 @@ describe('DeletePackage', () => {
   });
 
   describe('on mutation success', () => {
-    it('emits end event', async () => {
+    it('emits end and success events', async () => {
       createComponent();
 
       await clickOnButtonAndWait(eventPayload);
 
       expect(wrapper.emitted('end')).toEqual([[]]);
+      expect(wrapper.emitted('success')).toEqual([[]]);
     });
 
     it('does not call createFlash', async () => {
@@ -128,10 +129,10 @@ describe('DeletePackage', () => {
   });
 
   describe.each`
-    errorType            | mutationResolverResponse
-    ${'connectionError'} | ${jest.fn().mockRejectedValue()}
-    ${'localError'}      | ${jest.fn().mockResolvedValue(packageDestroyMutationError())}
-  `('on mutation $errorType', ({ mutationResolverResponse }) => {
+    errorType            | mutationResolverResponse                                      | errorMessage
+    ${'connectionError'} | ${jest.fn().mockRejectedValue()}                              | ${DeletePackage.i18n.errorMessage}
+    ${'localError'}      | ${jest.fn().mockResolvedValue(packageDestroyMutationError())} | ${packageDestroyMutationError().errors[0].message}
+  `('on mutation $errorType', ({ mutationResolverResponse, errorMessage }) => {
     beforeEach(() => {
       mutationResolver = mutationResolverResponse;
     });
@@ -150,7 +151,7 @@ describe('DeletePackage', () => {
       await clickOnButtonAndWait(eventPayload);
 
       expect(createFlash).toHaveBeenCalledWith({
-        message: DeletePackage.i18n.errorMessage,
+        message: expect.stringContaining(errorMessage),
         type: 'warning',
         captureError: true,
         error: expect.any(Error),

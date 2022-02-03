@@ -148,7 +148,15 @@ module Gitlab
         unless allow_local_network
           validate_local_network(address_info)
           validate_link_local(address_info)
+          validate_shared_address(address_info)
         end
+      end
+
+      def validate_shared_address(addrs_info)
+        netmask = IPAddr.new('100.64.0.0/10')
+        return unless addrs_info.any? { |addr| netmask.include?(addr.ip_address) }
+
+        raise BlockedUrlError, "Requests to the shared address space are not allowed"
       end
 
       def get_port(uri)

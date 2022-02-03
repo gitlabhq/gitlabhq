@@ -45,6 +45,7 @@ GET /projects/:id/merge_requests/:merge_request_iid/status_checks
 ## Set status of an external status check
 
 For a single merge request, use the API to inform GitLab that a merge request has passed a check by an external service.
+To set the status of an external check, the personal access token used must belong to a user with at least the developer role on the target project of the merge request.
 
 ```plaintext
 POST /projects/:id/merge_requests/:merge_request_iid/status_check_responses

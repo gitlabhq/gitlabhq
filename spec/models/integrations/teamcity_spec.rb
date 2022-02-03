@@ -6,8 +6,8 @@ RSpec.describe Integrations::Teamcity, :use_clean_rails_memory_store_caching do
   include ReactiveCachingHelpers
   include StubRequests
 
-  let(:teamcity_url) { 'http://gitlab.com/teamcity' }
-  let(:teamcity_full_url) { 'http://gitlab.com/teamcity/httpAuth/app/rest/builds/branch:unspecified:any,revision:123' }
+  let(:teamcity_url) { 'https://gitlab.teamcity.com' }
+  let(:teamcity_full_url) { 'https://gitlab.teamcity.com/httpAuth/app/rest/builds/branch:unspecified:any,revision:123' }
   let(:project) { create(:project) }
 
   subject(:integration) do
@@ -20,6 +20,52 @@ RSpec.describe Integrations::Teamcity, :use_clean_rails_memory_store_caching do
         build_type: 'foo'
       }
     )
+  end
+
+  include_context Integrations::EnableSslVerification do
+    describe '#enable_ssl_verification' do
+      before do
+        allow(integration).to receive(:new_record?).and_return(false)
+      end
+
+      it 'returns true for a known hostname' do
+        integration.teamcity_url = 'https://example.teamcity.com'
+
+        expect(integration.enable_ssl_verification).to be(true)
+      end
+
+      it 'returns true for new records' do
+        allow(integration).to receive(:new_record?).and_return(true)
+        integration.teamcity_url = 'http://example.com'
+
+        expect(integration.enable_ssl_verification).to be(true)
+      end
+
+      it 'returns false for an unknown hostname' do
+        integration.teamcity_url = 'https://sub.example.teamcity.com'
+
+        expect(integration.enable_ssl_verification).to be(false)
+      end
+
+      it 'returns false for a HTTP URL' do
+        integration.teamcity_url = 'http://example.teamcity.com'
+
+        expect(integration.enable_ssl_verification).to be(false)
+      end
+
+      it 'returns false for an invalid URL' do
+        integration.teamcity_url = 'https://example.com:foo'
+
+        expect(integration.enable_ssl_verification).to be(false)
+      end
+
+      it 'returns the persisted value if present' do
+        integration.teamcity_url = 'https://example.teamcity.com'
+        integration.enable_ssl_verification = false
+
+        expect(integration.enable_ssl_verification).to be(false)
+      end
+    end
   end
 
   describe 'Validations' do
@@ -140,22 +186,22 @@ RSpec.describe Integrations::Teamcity, :use_clean_rails_memory_store_caching do
       it 'returns a specific URL when status is 500' do
         stub_request(status: 500)
 
-        is_expected.to eq('http://gitlab.com/teamcity/viewLog.html?buildTypeId=foo')
+        is_expected.to eq("#{teamcity_url}/viewLog.html?buildTypeId=foo")
       end
 
       it 'returns a build URL when teamcity_url has no trailing slash' do
         stub_request(body: %q({"build":{"id":"666"}}))
 
-        is_expected.to eq('http://gitlab.com/teamcity/viewLog.html?buildId=666&buildTypeId=foo')
+        is_expected.to eq("#{teamcity_url}/viewLog.html?buildId=666&buildTypeId=foo")
       end
 
       context 'teamcity_url has trailing slash' do
-        let(:teamcity_url) { 'http://gitlab.com/teamcity/' }
+        let(:teamcity_url) { 'https://gitlab.teamcity.com/' }
 
         it 'returns a build URL' do
           stub_request(body: %q({"build":{"id":"666"}}))
 
-          is_expected.to eq('http://gitlab.com/teamcity/viewLog.html?buildId=666&buildTypeId=foo')
+          is_expected.to eq('https://gitlab.teamcity.com/viewLog.html?buildId=666&buildTypeId=foo')
         end
       end
 
@@ -299,7 +345,7 @@ RSpec.describe Integrations::Teamcity, :use_clean_rails_memory_store_caching do
   end
 
   def stub_post_to_build_queue(branch:)
-    teamcity_full_url = 'http://gitlab.com/teamcity/httpAuth/app/rest/buildQueue'
+    teamcity_full_url = "#{teamcity_url}/httpAuth/app/rest/buildQueue"
     body ||= %Q(<build branchName=\"#{branch}\"><buildType id=\"foo\"/></build>)
     auth = %w(mic password)
 
