@@ -18,35 +18,14 @@ RSpec.describe ProtectedBranches::UpdateService do
       expect(result.reload.name).to eq(params[:name])
     end
 
-    context 'when name has escaped HTML' do
-      let(:new_name) { 'feature-&gt;test' }
+    context 'when updating name of a protected branch to one that contains HTML tags' do
+      let(:new_name) { 'foo<b>bar<\b>' }
+      let(:result) { service.execute(protected_branch) }
 
-      it 'updates protected branch name with unescaped HTML' do
-        expect(result.reload.name).to eq('feature->test')
-      end
+      subject(:service) { described_class.new(project, user, params) }
 
-      context 'and name contains HTML tags' do
-        let(:new_name) { '&lt;b&gt;master&lt;/b&gt;' }
-
-        it 'updates protected branch name with sanitized name' do
-          expect(result.reload.name).to eq('master')
-        end
-
-        context 'and contains unsafe HTML' do
-          let(:new_name) { '&lt;script&gt;alert(&#39;foo&#39;);&lt;/script&gt;' }
-
-          it 'does not update the protected branch' do
-            expect(result.reload.name).to eq(protected_branch.name)
-          end
-        end
-      end
-    end
-
-    context 'when name contains unescaped HTML tags' do
-      let(:new_name) { '<b>master</b>' }
-
-      it 'updates protected branch name with sanitized name' do
-        expect(result.reload.name).to eq('master')
+      it 'updates a protected branch' do
+        expect(result.reload.name).to eq(new_name)
       end
     end
 

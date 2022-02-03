@@ -39,6 +39,12 @@ RSpec.describe UsersFinder do
         expect(users).to contain_exactly(blocked_user)
       end
 
+      it 'does not filter by private emails search' do
+        users = described_class.new(user, search: normal_user.email).execute
+
+        expect(users).to be_empty
+      end
+
       it 'filters by blocked users' do
         users = described_class.new(user, blocked: true).execute
 
@@ -132,6 +138,12 @@ RSpec.describe UsersFinder do
           admin,
           custom_attributes: { foo: 'foo', bar: 'bar' }
         ).execute
+
+        expect(users).to contain_exactly(normal_user)
+      end
+
+      it 'filters by private emails search' do
+        users = described_class.new(admin, search: normal_user.email).execute
 
         expect(users).to contain_exactly(normal_user)
       end

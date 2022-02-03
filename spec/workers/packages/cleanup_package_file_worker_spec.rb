@@ -23,6 +23,7 @@ RSpec.describe Packages::CleanupPackageFileWorker do
         expect(worker).to receive(:log_extra_metadata_on_done).twice
 
         expect { subject }.to change { Packages::PackageFile.count }.by(-1)
+          .and not_change { Packages::Package.count }
       end
     end
 
@@ -36,6 +37,17 @@ RSpec.describe Packages::CleanupPackageFileWorker do
       it 'handles the error' do
         expect { subject }.to change { Packages::PackageFile.error.count }.from(0).to(1)
         expect(package_file.reload).to be_error
+      end
+    end
+
+    context 'removing the last package file' do
+      let_it_be(:package_file) { create(:package_file, :pending_destruction, package: package) }
+
+      it 'deletes the package file and the package' do
+        expect(worker).to receive(:log_extra_metadata_on_done).twice
+
+        expect { subject }.to change { Packages::PackageFile.count }.by(-1)
+          .and change { Packages::Package.count }.by(-1)
       end
     end
   end

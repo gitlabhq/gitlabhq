@@ -2,10 +2,9 @@
 
 require 'spec_helper'
 
-RSpec.describe Packages::DestroyPackageService do
+RSpec.describe Packages::MarkPackageForDestructionService do
   let_it_be(:user) { create(:user) }
-
-  let!(:package) { create(:npm_package) }
+  let_it_be_with_reload(:package) { create(:npm_package) }
 
   describe '#execute' do
     subject(:service) { described_class.new(container: package, current_user: user) }
@@ -15,10 +14,11 @@ RSpec.describe Packages::DestroyPackageService do
         package.project.add_maintainer(user)
       end
 
-      context 'when the destroy is successfull' do
-        it 'destroy the package' do
+      context 'when it is successful' do
+        it 'marks the package and package files as pending destruction' do
           expect(package).to receive(:sync_maven_metadata).and_call_original
-          expect { service.execute }.to change { Packages::Package.count }.by(-1)
+          expect(package).to receive(:mark_package_files_for_destruction).and_call_original
+          expect { service.execute }.to change { package.status }.from('default').to('pending_destruction')
         end
 
         it 'returns a success ServiceResponse' do
@@ -26,13 +26,13 @@ RSpec.describe Packages::DestroyPackageService do
 
           expect(response).to be_a(ServiceResponse)
           expect(response).to be_success
-          expect(response.message).to eq("Package was successfully deleted")
+          expect(response.message).to eq("Package was successfully marked as pending destruction")
         end
       end
 
-      context 'when the destroy is not successful' do
+      context 'when it is not successful' do
         before do
-          allow(package).to receive(:destroy!).and_raise(StandardError, "test")
+          allow(package).to receive(:pending_destruction!).and_raise(StandardError, "test")
         end
 
         it 'returns an error ServiceResponse' do
@@ -41,7 +41,7 @@ RSpec.describe Packages::DestroyPackageService do
           expect(package).not_to receive(:sync_maven_metadata)
           expect(response).to be_a(ServiceResponse)
           expect(response).to be_error
-          expect(response.message).to eq("Failed to remove the package")
+          expect(response.message).to eq("Failed to mark the package as pending destruction")
           expect(response.status).to eq(:error)
         end
       end

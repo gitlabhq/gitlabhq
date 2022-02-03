@@ -10,6 +10,7 @@ class ApplicationSetting < ApplicationRecord
 
   ignore_columns %i[elasticsearch_shards elasticsearch_replicas], remove_with: '14.4', remove_after: '2021-09-22'
   ignore_columns %i[static_objects_external_storage_auth_token], remove_with: '14.9', remove_after: '2022-03-22'
+  ignore_column %i[max_package_files_for_package_destruction], remove_with: '14.9', remove_after: '2022-03-22'
 
   INSTANCE_REVIEW_MIN_USERS = 50
   GRAFANA_URL_ERROR_MESSAGE = 'Please check your Grafana URL setting in ' \

@@ -137,7 +137,7 @@ module Integrations
     end
 
     def request_options
-      { verify: false, extra_log_info: { project_id: project_id } }
+      { extra_log_info: { project_id: project_id } }
     end
   end
 end

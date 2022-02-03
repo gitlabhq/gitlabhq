@@ -293,13 +293,13 @@ RSpec.describe API::ProjectPackages do
     context 'without the need for a license' do
       context 'project is public' do
         it 'returns 403 for non authenticated user' do
-          delete api(package_url)
+          expect { delete api(package_url) }.not_to change { ::Packages::Package.pending_destruction.count }
 
           expect(response).to have_gitlab_http_status(:forbidden)
         end
 
         it 'returns 403 for a user without access to the project' do
-          delete api(package_url, user)
+          expect { delete api(package_url, user) }.not_to change { ::Packages::Package.pending_destruction.count }
 
           expect(response).to have_gitlab_http_status(:forbidden)
         end
@@ -313,13 +313,13 @@ RSpec.describe API::ProjectPackages do
         end
 
         it 'returns 404 for non authenticated user' do
-          delete api(package_url)
+          expect { delete api(package_url) }.not_to change { ::Packages::Package.pending_destruction.count }
 
           expect(response).to have_gitlab_http_status(:not_found)
         end
 
         it 'returns 404 for a user without access to the project' do
-          delete api(package_url, user)
+          expect { delete api(package_url, user) }.not_to change { ::Packages::Package.pending_destruction.count }
 
           expect(response).to have_gitlab_http_status(:not_found)
         end
@@ -327,7 +327,7 @@ RSpec.describe API::ProjectPackages do
         it 'returns 404 when the package does not exist' do
           project.add_maintainer(user)
 
-          delete api(no_package_url, user)
+          expect { delete api(no_package_url, user) }.not_to change { ::Packages::Package.pending_destruction.count }
 
           expect(response).to have_gitlab_http_status(:not_found)
         end
@@ -335,7 +335,7 @@ RSpec.describe API::ProjectPackages do
         it 'returns 404 for the package from a different project' do
           project.add_maintainer(user)
 
-          delete api(wrong_package_url, user)
+          expect { delete api(wrong_package_url, user) }.not_to change { ::Packages::Package.pending_destruction.count }
 
           expect(response).to have_gitlab_http_status(:not_found)
         end
@@ -343,7 +343,7 @@ RSpec.describe API::ProjectPackages do
         it 'returns 403 for a user without enough permissions' do
           project.add_developer(user)
 
-          delete api(package_url, user)
+          expect { delete api(package_url, user) }.not_to change { ::Packages::Package.pending_destruction.count }
 
           expect(response).to have_gitlab_http_status(:forbidden)
         end
@@ -351,7 +351,7 @@ RSpec.describe API::ProjectPackages do
         it 'returns 204' do
           project.add_maintainer(user)
 
-          delete api(package_url, user)
+          expect { delete api(package_url, user) }.to change { ::Packages::Package.pending_destruction.count }.by(1)
 
           expect(response).to have_gitlab_http_status(:no_content)
         end

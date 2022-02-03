@@ -648,6 +648,7 @@ class User < ApplicationRecord
     # This method uses ILIKE on PostgreSQL.
     #
     # query - The search query as a String
+    # with_private_emails - include private emails in search
     #
     # Returns an ActiveRecord::Relation.
     def search(query, **options)
@@ -660,14 +661,16 @@ class User < ApplicationRecord
         CASE
           WHEN users.name = :query THEN 0
           WHEN users.username = :query THEN 1
-          WHEN users.email = :query THEN 2
+          WHEN users.public_email = :query THEN 2
           ELSE 3
         END
       SQL
 
       sanitized_order_sql = Arel.sql(sanitize_sql_array([order, query: query]))
 
-      search_with_secondary_emails(query).reorder(sanitized_order_sql, :name)
+      scope = options[:with_private_emails] ? search_with_secondary_emails(query) : search_with_public_emails(query)
+
+      scope.reorder(sanitized_order_sql, :name)
     end
 
     # Limits the result set to users _not_ in the given query/list of IDs.
@@ -680,6 +683,18 @@ class User < ApplicationRecord
 
     def reorder_by_name
       reorder(:name)
+    end
+
+    def search_with_public_emails(query)
+      return none if query.blank?
+
+      query = query.downcase
+
+      where(
+        fuzzy_arel_match(:name, query, use_minimum_char_limit: user_search_minimum_char_limit)
+          .or(fuzzy_arel_match(:username, query, use_minimum_char_limit: user_search_minimum_char_limit))
+          .or(arel_table[:public_email].eq(query))
+      )
     end
 
     def search_without_secondary_emails(query)

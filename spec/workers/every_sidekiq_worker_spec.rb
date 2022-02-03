@@ -364,6 +364,7 @@ RSpec.describe 'Every Sidekiq worker' do
         'Packages::CleanupPackageFileWorker' => 0,
         'Packages::Composer::CacheUpdateWorker' => false,
         'Packages::Go::SyncPackagesWorker' => 3,
+        'Packages::MarkPackageFilesForDestructionWorker' => 3,
         'Packages::Maven::Metadata::SyncWorker' => 3,
         'Packages::Nuget::ExtractionWorker' => 3,
         'Packages::Rubygems::ExtractionWorker' => 3,

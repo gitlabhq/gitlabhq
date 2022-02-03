@@ -26,6 +26,7 @@
         = s_('GroupsNew|Navigate to user settings to find your %{link_start}personal access token%{link_end}.').html_safe % { link_start: pat_link_start, link_end: '</a>'.html_safe }
       = f.text_field :bulk_import_gitlab_access_token, placeholder: s_('GroupsNew|e.g. h8d3f016698e...'), class: 'gl-form-input gl-mt-3 col-xs-12 col-sm-8',
         required: true,
+        autocomplete: 'off',
         title: s_('GroupsNew|Please fill in your personal access token.'),
         id: 'import_gitlab_token',
         data: { qa_selector: 'import_gitlab_token' }

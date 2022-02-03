@@ -24,19 +24,16 @@ RSpec.describe 'Destroying a package file' do
   let(:mutation_response) { graphql_mutation_response(:destroyPackageFile) }
 
   shared_examples 'destroying the package file' do
-    it 'destroy the package file' do
-      expect { mutation_request }.to change { ::Packages::PackageFile.count }.by(-1)
+    it 'marks the package file as pending destruction' do
+      expect { mutation_request }.to change { ::Packages::PackageFile.pending_destruction.count }.by(1)
     end
 
     it_behaves_like 'returning response status', :success
   end
 
   shared_examples 'denying the mutation request' do
-    it 'does not destroy the package file' do
-      expect(::Packages::PackageFile)
-          .not_to receive(:destroy)
-
-      expect { mutation_request }.not_to change { ::Packages::PackageFile.count }
+    it 'does not mark the package file as pending destruction' do
+      expect { mutation_request }.not_to change { ::Packages::PackageFile.pending_destruction.count }
 
       expect(mutation_response).to be_nil
     end
@@ -71,7 +68,7 @@ RSpec.describe 'Destroying a package file' do
       it_behaves_like 'denying the mutation request'
     end
 
-    context 'when an error occures' do
+    context 'when an error occurs' do
       let(:error_messages) { ['some error'] }
 
       before do
@@ -80,7 +77,7 @@ RSpec.describe 'Destroying a package file' do
 
       it 'returns the errors in the response' do
         allow_next_found_instance_of(::Packages::PackageFile) do |package_file|
-          allow(package_file).to receive(:destroy).and_return(false)
+          allow(package_file).to receive(:update).with(status: :pending_destruction).and_return(false)
           allow(package_file).to receive_message_chain(:errors, :full_messages).and_return(error_messages)
         end
 

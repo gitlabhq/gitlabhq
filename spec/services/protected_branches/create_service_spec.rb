@@ -24,38 +24,14 @@ RSpec.describe ProtectedBranches::CreateService do
       expect(project.protected_branches.last.merge_access_levels.map(&:access_level)).to eq([Gitlab::Access::MAINTAINER])
     end
 
-    context 'when name has escaped HTML' do
-      let(:name) { 'feature-&gt;test' }
+    context 'when protecting a branch with a name that contains HTML tags' do
+      let(:name) { 'foo<b>bar<\b>' }
 
-      it 'creates the new protected branch matching the unescaped version' do
+      subject(:service) { described_class.new(project, user, params) }
+
+      it 'creates a new protected branch' do
         expect { service.execute }.to change(ProtectedBranch, :count).by(1)
-        expect(project.protected_branches.last.name).to eq('feature->test')
-      end
-
-      context 'and name contains HTML tags' do
-        let(:name) { '&lt;b&gt;master&lt;/b&gt;' }
-
-        it 'creates the new protected branch with sanitized name' do
-          expect { service.execute }.to change(ProtectedBranch, :count).by(1)
-          expect(project.protected_branches.last.name).to eq('master')
-        end
-
-        context 'and contains unsafe HTML' do
-          let(:name) { '&lt;script&gt;alert(&#39;foo&#39;);&lt;/script&gt;' }
-
-          it 'does not create the new protected branch' do
-            expect { service.execute }.not_to change(ProtectedBranch, :count)
-          end
-        end
-      end
-
-      context 'when name contains unescaped HTML tags' do
-        let(:name) { '<b>master</b>' }
-
-        it 'creates the new protected branch with sanitized name' do
-          expect { service.execute }.to change(ProtectedBranch, :count).by(1)
-          expect(project.protected_branches.last.name).to eq('master')
-        end
+        expect(project.protected_branches.last.name).to eq(name)
       end
     end
 
