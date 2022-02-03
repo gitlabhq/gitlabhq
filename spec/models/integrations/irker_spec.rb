@@ -2,6 +2,7 @@
 
 require 'spec_helper'
 require 'socket'
+require 'timeout'
 require 'json'
 
 RSpec.describe Integrations::Irker do
@@ -37,6 +38,7 @@ RSpec.describe Integrations::Irker do
     before do
       @irker_server = TCPServer.new 'localhost', 0
 
+      allow(Gitlab::CurrentSettings).to receive(:allow_local_requests_from_web_hooks_and_services?).and_return(true)
       allow(irker).to receive_messages(
         active: true,
         project: project,
@@ -58,13 +60,17 @@ RSpec.describe Integrations::Irker do
       irker.execute(sample_data)
 
       conn = @irker_server.accept
-      conn.each_line do |line|
-        msg = Gitlab::Json.parse(line.chomp("\n"))
-        expect(msg.keys).to match_array(%w(to privmsg))
-        expect(msg['to']).to match_array(["irc://chat.freenode.net/#commits",
-                                          "irc://test.net/#test"])
+
+      Timeout.timeout(5) do
+        conn.each_line do |line|
+          msg = Gitlab::Json.parse(line.chomp("\n"))
+          expect(msg.keys).to match_array(%w(to privmsg))
+          expect(msg['to']).to match_array(["irc://chat.freenode.net/#commits",
+                                            "irc://test.net/#test"])
+        end
       end
-      conn.close
+    ensure
+      conn.close if conn
     end
   end
 end

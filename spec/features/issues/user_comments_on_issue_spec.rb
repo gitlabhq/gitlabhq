@@ -49,7 +49,7 @@ RSpec.describe "User comments on issue", :js do
 
       add_note(comment)
 
-      expect(page.find('svg.mermaid')).to have_content html_content
+      expect(page.find('svg.mermaid')).not_to have_content html_content
       within('svg.mermaid') { expect(page).not_to have_selector('img') }
     end
 

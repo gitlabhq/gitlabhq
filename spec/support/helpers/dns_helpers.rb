@@ -23,7 +23,15 @@ module DnsHelpers
   end
 
   def permit_local_dns!
-    local_addresses = /\A(127|10)\.0\.0\.\d{1,3}|(192\.168|172\.16)\.\d{1,3}\.\d{1,3}|0\.0\.0\.0|localhost\z/i
+    local_addresses = %r{
+      \A
+      ::1? |                                    # IPV6
+      (127|10)\.0\.0\.\d{1,3} |                 # 127.0.0.x or 10.0.0.x local network
+      (192\.168|172\.16)\.\d{1,3}\.\d{1,3} |    # 192.168.x.x or 172.16.x.x local network
+      0\.0\.0\.0 |                              # loopback
+      localhost
+      \z
+    }xi
     allow(Addrinfo).to receive(:getaddrinfo).with(local_addresses, anything, nil, :STREAM).and_call_original
     allow(Addrinfo).to receive(:getaddrinfo).with(local_addresses, anything, nil, :STREAM, anything, anything, any_args).and_call_original
   end
