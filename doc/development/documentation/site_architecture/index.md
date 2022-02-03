@@ -60,13 +60,12 @@ To provide an optimized site structure, design, and a search-engine friendly
 website, along with a discoverable documentation, we use a few assets for
 the GitLab Documentation website.
 
-### Libraries
+### External libraries
 
-- [Bootstrap 4.3.1 components](https://getbootstrap.com/docs/4.3/components/)
-- [Bootstrap 4.3.1 JS](https://getbootstrap.com/docs/4.3/getting-started/javascript/)
-- [jQuery](https://jquery.com/) 3.3.1
-- [Clipboard JS](https://clipboardjs.com/)
-- [Font Awesome 4.7.0](https://fontawesome.com/v4.7.0/icons/)
+GitLab Docs is built with a combination of external:
+
+- [JavaScript libraries](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/main/package.json).
+- [Ruby libraries](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/main/Gemfile).
 
 ### SEO
 

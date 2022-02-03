@@ -27,9 +27,8 @@ If you have questions or need assistance upgrading from GitLab CE to EE,
 ## Activate GitLab EE with an activation code
 
 In GitLab Enterprise Edition 14.1 and later, you need an activation code to activate
-your instance. To get an activation code, [purchase a license](https://about.gitlab.com/pricing/)
-or sign up for a [free trial](https://about.gitlab.com/free-trial/). The activation
-code is a 24-character alphanumeric string you receive in a confirmation email.
+your instance. To get an activation code you have to [purchase a license](https://about.gitlab.com/pricing/).
+The activation code is a 24-character alphanumeric string you receive in a confirmation email.
 You can also sign in to the [Customers Portal](https://customers.gitlab.com/customers/sign_in)
 to copy the activation code to your clipboard.
 

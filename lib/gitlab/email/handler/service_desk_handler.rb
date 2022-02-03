@@ -177,7 +177,7 @@ module Gitlab
         end
 
         def from_address
-          (mail.reply_to || []).first || mail.from.first || mail.sender
+          mail.from.first || mail.sender
         end
 
         def can_handle_legacy_format?

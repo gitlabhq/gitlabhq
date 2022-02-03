@@ -667,7 +667,8 @@ class User < ApplicationRecord
 
       sanitized_order_sql = Arel.sql(sanitize_sql_array([order, query: query]))
 
-      search_with_secondary_emails(query).reorder(sanitized_order_sql, :name)
+      search_with_secondary_emails(query, use_minimum_char_limit: options[:use_minimum_char_limit])
+        .reorder(sanitized_order_sql, :name)
     end
 
     # Limits the result set to users _not_ in the given query/list of IDs.
@@ -682,23 +683,10 @@ class User < ApplicationRecord
       reorder(:name)
     end
 
-    def search_without_secondary_emails(query)
-      return none if query.blank?
-
-      query = query.downcase
-
-      where(
-        fuzzy_arel_match(:name, query, lower_exact_match: true)
-          .or(fuzzy_arel_match(:username, query, lower_exact_match: true))
-          .or(arel_table[:email].eq(query))
-      )
-    end
-
     # searches user by given pattern
     # it compares name, email, username fields and user's secondary emails with given pattern
     # This method uses ILIKE on PostgreSQL.
-
-    def search_with_secondary_emails(query)
+    def search_with_secondary_emails(query, use_minimum_char_limit: nil)
       return none if query.blank?
 
       query = query.downcase
@@ -709,9 +697,11 @@ class User < ApplicationRecord
         .where(email_table[:email].eq(query))
         .take(1) # at most 1 record as there is a unique constraint
 
+      use_minimum_char_limit = user_search_minimum_char_limit if use_minimum_char_limit.nil?
+
       where(
-        fuzzy_arel_match(:name, query, use_minimum_char_limit: user_search_minimum_char_limit)
-          .or(fuzzy_arel_match(:username, query, use_minimum_char_limit: user_search_minimum_char_limit))
+        fuzzy_arel_match(:name, query, use_minimum_char_limit: use_minimum_char_limit)
+          .or(fuzzy_arel_match(:username, query, use_minimum_char_limit: use_minimum_char_limit))
           .or(arel_table[:email].eq(query))
           .or(arel_table[:id].eq(matched_by_email_user_id))
       )

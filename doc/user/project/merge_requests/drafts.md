@@ -17,7 +17,8 @@ the **Merge** button until you remove the **Draft** flag:
 
 ## Mark merge requests as drafts
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/32692) in GitLab 13.2, Work-In-Progress (WIP) merge requests were renamed to **Draft**. Support for using **WIP** is scheduled for removal in GitLab 14.0.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/32692) in GitLab 13.2, Work-In-Progress (WIP) merge requests were renamed to **Draft**.
+> - [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/228685) all support for using **WIP** in GitLab 14.8.
 > - **Mark as draft** and **Mark as ready** buttons [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/227421) in GitLab 13.5.
 
 There are several ways to flag a merge request as a draft:
@@ -34,10 +35,6 @@ There are several ways to flag a merge request as a draft:
   beginning of a commit message targeting the merge request's source branch. This
   is not a toggle, and adding this text again in a later commit doesn't mark the
   merge request as ready.
-
-WARNING:
-Adding `WIP:` to the start of the merge request's title still marks a merge request
-as a draft. This feature is scheduled for removal in GitLab 14.0. Use `Draft:` instead.
 
 ## Mark merge requests as ready
 

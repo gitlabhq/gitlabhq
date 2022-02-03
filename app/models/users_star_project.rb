@@ -32,7 +32,7 @@ class UsersStarProject < ApplicationRecord
     end
 
     def search(query)
-      joins(:user).merge(User.search(query))
+      joins(:user).merge(User.search(query, use_minimum_char_limit: false))
     end
   end
 end

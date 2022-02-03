@@ -62,7 +62,7 @@ module Autocomplete
       find_users
         .active
         .reorder_by_name
-        .optionally_search(search)
+        .optionally_search(search, use_minimum_char_limit: use_minimum_char_limit)
         .where_not_in(skip_users)
         .limit_to_todo_authors(
           user: current_user,
@@ -99,6 +99,12 @@ module Autocomplete
       ActiveRecord::Associations::Preloader.new.preload(items, :status)
     end
     # rubocop: enable CodeReuse/ActiveRecord
+
+    def use_minimum_char_limit
+      return if project.blank? && group.blank?  # We return nil so that we use the default defined in the User model
+
+      false
+    end
   end
 end
 

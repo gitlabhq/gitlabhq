@@ -204,7 +204,7 @@ class Member < ApplicationRecord
 
   class << self
     def search(query)
-      joins(:user).merge(User.search(query))
+      joins(:user).merge(User.search(query, use_minimum_char_limit: false))
     end
 
     def search_invite_email(query)

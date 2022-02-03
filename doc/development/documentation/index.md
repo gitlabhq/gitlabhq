@@ -290,9 +290,7 @@ For example, [GitLab.com's `/help`](https://gitlab.com/help).
 
 ## Docs site architecture
 
-See the [Docs site architecture](site_architecture/index.md) page to learn
-how we build and deploy the site at <https://docs.gitlab.com> and
-to review all the assets and libraries in use.
+For information on how we build and deploy <https://docs.gitlab.com>, see [Docs site architecture](site_architecture/index.md).
 
 ### Global navigation
 

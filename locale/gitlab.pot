@@ -16274,6 +16274,9 @@ msgstr ""
 msgid "GitLab Issue"
 msgstr ""
 
+msgid "GitLab KAS"
+msgstr ""
+
 msgid "GitLab Pages"
 msgstr ""
 

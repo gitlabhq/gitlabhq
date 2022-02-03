@@ -63,4 +63,33 @@ RSpec.describe 'admin/dashboard/index.html.haml' do
       expect(rendered).to have_selector('.js-gitlab-version-check')
     end
   end
+
+  describe 'GitLab KAS' do
+    before do
+      allow(Gitlab::Kas).to receive(:enabled?).and_return(enabled)
+      allow(Gitlab::Kas).to receive(:version).and_return('kas-1.2.3')
+    end
+
+    context 'KAS enabled' do
+      let(:enabled) { true }
+
+      it 'includes KAS version' do
+        render
+
+        expect(rendered).to have_content('GitLab KAS')
+        expect(rendered).to have_content('kas-1.2.3')
+      end
+    end
+
+    context 'KAS disabled' do
+      let(:enabled) { false }
+
+      it 'does not include KAS version' do
+        render
+
+        expect(rendered).not_to have_content('GitLab KAS')
+        expect(rendered).not_to have_content('kas-1.2.3')
+      end
+    end
+  end
 end
