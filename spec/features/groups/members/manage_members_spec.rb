@@ -103,7 +103,7 @@ RSpec.describe 'Groups > Members > Manage members' do
     find('[data-testid="members-token-select-input"]').set('undisclosed_email@gitlab.com')
     wait_for_requests
 
-    expect(page).to have_content("Jane 'invisible' Doe")
+    expect(page).to have_content('Invite "undisclosed_email@gitlab.com" by email')
   end
 
   context 'when Invite Members modal is disabled' do
@@ -129,7 +129,7 @@ RSpec.describe 'Groups > Members > Manage members' do
       select_input.send_keys('undisclosed_email@gitlab.com')
       wait_for_requests
 
-      expect(page).to have_content("Jane 'invisible' Doe")
+      expect(page).to have_content('Invite "undisclosed_email@gitlab.com" by email')
     end
   end
 
