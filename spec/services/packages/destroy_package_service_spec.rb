@@ -30,6 +30,24 @@ RSpec.describe Packages::DestroyPackageService do
         end
       end
 
+      context 'with too many package files' do
+        let!(:package_files) { create_list(:package_file, 2, package: package) }
+
+        before do
+          stub_application_setting(max_package_files_for_package_destruction: 1)
+        end
+
+        it 'returns an error ServiceResponse' do
+          response = service.execute
+
+          expect(package).not_to receive(:sync_maven_metadata)
+          expect(response).to be_a(ServiceResponse)
+          expect(response).to be_error
+          expect(response.message).to eq("It's not possible to delete a package with more than 1 file.")
+          expect(response.status).to eq(:error)
+        end
+      end
+
       context 'when the destroy is not successful' do
         before do
           allow(package).to receive(:destroy!).and_raise(StandardError, "test")

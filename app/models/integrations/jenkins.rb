@@ -4,6 +4,7 @@ module Integrations
   class Jenkins < BaseCi
     include HasWebHook
     include ActionView::Helpers::UrlHelper
+    prepend EnableSslVerification
     extend Gitlab::Utils::Override
 
     prop_accessor :jenkins_url, :project_name, :username, :password

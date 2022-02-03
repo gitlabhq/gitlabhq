@@ -333,6 +333,9 @@ By default, the `GET` request returns 20 results, because the API is [paginated]
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/9623) in GitLab 11.9.
 
+WARNING:
+This endpoint is restricted to the limit set in [Updating the package files limit](#updating-the-package-files-limit).
+
 Deletes a project package.
 
 ```plaintext
@@ -352,6 +355,17 @@ Can return the following status codes:
 
 - `204 No Content`, if the package was deleted successfully.
 - `404 Not Found`, if the package was not found.
+- `400 Bad Request`, if the package has too many package files.
+
+### Updating the package files limit
+
+For scalability reasons, deleting a package is limited to packages with less than 100 files. An
+administrator can update this limit through the [Rails console](../administration/operations/rails_console.md#starting-a-rails-console-session).
+For example, this command updates this limit to 50 files:
+
+```ruby
+ApplicationSetting.last.update(max_package_files_for_package_destruction: 50)
+```
 
 ## Delete a package file
 

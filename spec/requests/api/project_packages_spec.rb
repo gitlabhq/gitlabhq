@@ -355,6 +355,23 @@ RSpec.describe API::ProjectPackages do
 
           expect(response).to have_gitlab_http_status(:no_content)
         end
+
+        context 'with too many files' do
+          let!(:package_files) { create_list(:package_file, 3, package: package1) }
+
+          before do
+            stub_application_setting(max_package_files_for_package_destruction: 1)
+          end
+
+          it 'returns 400' do
+            project.add_maintainer(user)
+
+            delete api(package_url, user)
+
+            expect(response).to have_gitlab_http_status(:bad_request)
+            expect(response.body).to include("It's not possible to delete a package with more than 1 file.")
+          end
+        end
       end
 
       context 'with a maven package' do

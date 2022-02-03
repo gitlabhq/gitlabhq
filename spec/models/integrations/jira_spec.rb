@@ -130,6 +130,23 @@ RSpec.describe Integrations::Jira do
     end
   end
 
+  describe '.valid_jira_cloud_url?' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:url, :result) do
+      'https://abc.atlassian.net' | true
+      'abc.atlassian.net'         | false # This is how it behaves currently, but we may need to consider adding scheme if missing
+      'https://somethingelse.com' | false
+      nil                         | false
+    end
+
+    with_them do
+      specify do
+        expect(described_class.valid_jira_cloud_url?(url)).to eq(result)
+      end
+    end
+  end
+
   describe '#create' do
     let(:params) do
       {

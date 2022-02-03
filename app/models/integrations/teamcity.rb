@@ -4,6 +4,9 @@ module Integrations
   class Teamcity < BaseCi
     include PushDataValidations
     include ReactivelyCached
+    prepend EnableSslVerification
+
+    TEAMCITY_SAAS_HOSTNAME = /\A[^\.]+\.teamcity\.com\z/i.freeze
 
     prop_accessor :teamcity_url, :build_type, :username, :password
 
@@ -104,7 +107,19 @@ module Integrations
       end
     end
 
+    def enable_ssl_verification
+      original_value = Gitlab::Utils.to_boolean(properties['enable_ssl_verification'])
+      original_value.nil? ? (new_record? || url_is_saas?) : original_value
+    end
+
     private
+
+    def url_is_saas?
+      parsed_url = Addressable::URI.parse(teamcity_url)
+      parsed_url&.scheme == 'https' && parsed_url.hostname.match?(TEAMCITY_SAAS_HOSTNAME)
+    rescue Addressable::URI::InvalidURIError
+      false
+    end
 
     def execute_push(data)
       branch = Gitlab::Git.ref_name(data[:ref])
@@ -155,7 +170,7 @@ module Integrations
     end
 
     def get_path(path)
-      Gitlab::HTTP.try_get(build_url(path), verify: false, basic_auth: basic_auth, extra_log_info: { project_id: project_id }, use_read_total_timeout: true)
+      Gitlab::HTTP.try_get(build_url(path), verify: enable_ssl_verification, basic_auth: basic_auth, extra_log_info: { project_id: project_id }, use_read_total_timeout: true)
     end
 
     def post_to_build_queue(data, branch)
@@ -165,6 +180,7 @@ module Integrations
               "<buildType id=#{build_type.encode(xml: :attr)}/>"\
               '</build>',
         headers: { 'Content-type' => 'application/xml' },
+        verify: enable_ssl_verification,
         basic_auth: basic_auth,
         use_read_total_timeout: true
       )
