@@ -6,14 +6,19 @@ import { formatDate } from '~/lib/utils/datetime_utility';
 import { __, s__ } from '~/locale';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import Deployment from '~/environments/components/deployment.vue';
+import Commit from '~/environments/components/commit.vue';
 import DeploymentStatusBadge from '~/environments/components/deployment_status_badge.vue';
 import { resolvedEnvironment } from './graphql/mock_data';
 
 describe('~/environments/components/deployment.vue', () => {
   useFakeDate(2022, 0, 8, 16);
 
-  const deployment = resolvedEnvironment.lastDeployment;
+  let deployment;
   let wrapper;
+
+  beforeEach(() => {
+    deployment = resolvedEnvironment.lastDeployment;
+  });
 
   const createWrapper = ({ propsData = {} } = {}) =>
     mountExtended(Deployment, {
@@ -148,6 +153,32 @@ describe('~/environments/components/deployment.vue', () => {
         const date = wrapper.findByTitle(formatDate(deployment.createdAt));
 
         expect(date.exists()).toBe(false);
+      });
+    });
+  });
+
+  describe('commit message', () => {
+    describe('with commit', () => {
+      beforeEach(() => {
+        wrapper = createWrapper();
+      });
+
+      it('shows the commit component', () => {
+        const commit = wrapper.findComponent(Commit);
+        expect(commit.props('commit')).toBe(deployment.commit);
+      });
+    });
+
+    describe('without a commit', () => {
+      it('displays nothing', () => {
+        const noCommit = {
+          ...deployment,
+          commit: null,
+        };
+        wrapper = createWrapper({ propsData: { deployment: noCommit } });
+
+        const commit = wrapper.findComponent(Commit);
+        expect(commit.exists()).toBe(false);
       });
     });
   });

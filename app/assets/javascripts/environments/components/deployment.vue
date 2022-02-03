@@ -5,10 +5,12 @@ import { __, s__ } from '~/locale';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import DeploymentStatusBadge from './deployment_status_badge.vue';
+import Commit from './commit.vue';
 
 export default {
   components: {
     ClipboardButton,
+    Commit,
     DeploymentStatusBadge,
     GlBadge,
     GlButton,
@@ -41,7 +43,7 @@ export default {
       return this.deployment?.iid;
     },
     shortSha() {
-      return this.deployment?.commit?.shortId;
+      return this.commit?.shortId;
     },
     createdAt() {
       return this.deployment?.createdAt;
@@ -56,6 +58,9 @@ export default {
     },
     detailsButtonClasses() {
       return this.isMobile ? 'gl-sr-only' : '';
+    },
+    commit() {
+      return this.deployment?.commit;
     },
   },
   methods: {
@@ -143,6 +148,7 @@ export default {
         {{ detailsButton.text }}
       </gl-button>
     </div>
+    <commit v-if="commit" :commit="commit" class="gl-mt-3" />
     <gl-collapse :visible="visible" />
   </div>
 </template>
