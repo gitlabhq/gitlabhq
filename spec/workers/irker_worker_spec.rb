@@ -21,7 +21,7 @@ RSpec.describe IrkerWorker, '#perform' do
       channels,
       false,
       push_data,
-      server_settings
+      HashWithIndifferentAccess.new(server_settings)
     ]
   end
 
@@ -35,6 +35,14 @@ RSpec.describe IrkerWorker, '#perform' do
     allow(tcp_socket).to receive(:close).and_return(true)
   end
 
+  context 'local requests are not allowed' do
+    before do
+      allow(Gitlab::CurrentSettings).to receive(:allow_local_requests_from_web_hooks_and_services?).and_return(false)
+    end
+
+    it { expect(worker.perform(*arguments)).to be_falsey }
+  end
+
   context 'connection fails' do
     before do
       allow(TCPSocket).to receive(:new).and_raise(Errno::ECONNREFUSED.new('test'))
@@ -44,6 +52,11 @@ RSpec.describe IrkerWorker, '#perform' do
   end
 
   context 'connection successful' do
+    before do
+      allow(Gitlab::CurrentSettings)
+        .to receive(:allow_local_requests_from_web_hooks_and_services?).and_return(true)
+    end
+
     it { expect(subject.perform(*arguments)).to be_truthy }
 
     context 'new branch' do
