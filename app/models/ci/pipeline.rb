@@ -1286,12 +1286,6 @@ module Ci
       end
     end
 
-    def use_variables_builder_definitions?
-      strong_memoize(:use_variables_builder_definitions) do
-        ::Feature.enabled?(:ci_use_variables_builder_definitions, project, default_enabled: :yaml)
-      end
-    end
-
     private
 
     def add_message(severity, content)

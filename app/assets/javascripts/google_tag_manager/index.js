@@ -8,14 +8,14 @@ const PRODUCT_INFO = {
     // eslint-disable-next-line @gitlab/require-i18n-strings
     name: 'Premium',
     id: '0002',
-    price: 228,
+    price: '228',
     variant: 'SaaS',
   },
   [SKU_ULTIMATE]: {
     // eslint-disable-next-line @gitlab/require-i18n-strings
     name: 'Ultimate',
     id: '0001',
-    price: 1188,
+    price: '1188',
     variant: 'SaaS',
   },
 };
@@ -220,8 +220,8 @@ export const trackTransaction = (transactionDetails) => {
           id: transactionId,
           affiliation: 'GitLab',
           option: paymentOption,
-          revenue,
-          tax,
+          revenue: revenue.toString(),
+          tax: tax.toString(),
         },
         products: [product],
       },

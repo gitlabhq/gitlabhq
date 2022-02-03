@@ -3,9 +3,10 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::Variables::Builder do
-  let_it_be(:project) { create(:project, :repository) }
-  let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
-  let_it_be(:user) { project.first_owner }
+  let_it_be(:group) { create(:group) }
+  let_it_be(:project) { create(:project, :repository, namespace: group) }
+  let_it_be_with_reload(:pipeline) { create(:ci_pipeline, project: project) }
+  let_it_be(:user) { create(:user) }
   let_it_be(:job) do
     create(:ci_build,
       pipeline: pipeline,
@@ -153,7 +154,7 @@ RSpec.describe Gitlab::Ci::Variables::Builder do
 
       before do
         allow(builder).to receive(:predefined_variables) { [var('A', 1), var('B', 1)] }
-        allow(project).to receive(:predefined_variables) { [var('B', 2), var('C', 2)] }
+        allow(pipeline.project).to receive(:predefined_variables) { [var('B', 2), var('C', 2)] }
         allow(pipeline).to receive(:predefined_variables) { [var('C', 3), var('D', 3)] }
         allow(job).to receive(:runner) { double(predefined_variables: [var('D', 4), var('E', 4)]) }
         allow(builder).to receive(:kubernetes_variables) { [var('E', 5), var('F', 5)] }
@@ -200,5 +201,147 @@ RSpec.describe Gitlab::Ci::Variables::Builder do
           'O' => '15', 'P' => '15')
       end
     end
+  end
+
+  describe '#user_variables' do
+    context 'with user' do
+      subject { builder.user_variables(user).to_hash }
+
+      let(:expected_variables) do
+        {
+          'GITLAB_USER_EMAIL' => user.email,
+          'GITLAB_USER_ID' => user.id.to_s,
+          'GITLAB_USER_LOGIN' => user.username,
+          'GITLAB_USER_NAME' => user.name
+        }
+      end
+
+      it { is_expected.to eq(expected_variables) }
+    end
+
+    context 'without user' do
+      subject { builder.user_variables(nil).to_hash }
+
+      it { is_expected.to be_empty }
+    end
+  end
+
+  describe '#kubernetes_variables' do
+    let(:service) { double(execute: template) }
+    let(:template) { double(to_yaml: 'example-kubeconfig', valid?: template_valid) }
+    let(:template_valid) { true }
+
+    subject { builder.kubernetes_variables(job) }
+
+    before do
+      allow(Ci::GenerateKubeconfigService).to receive(:new).with(job).and_return(service)
+    end
+
+    it { is_expected.to include(key: 'KUBECONFIG', value: 'example-kubeconfig', public: false, file: true) }
+
+    context 'generated config is invalid' do
+      let(:template_valid) { false }
+
+      it { is_expected.not_to include(key: 'KUBECONFIG', value: 'example-kubeconfig', public: false, file: true) }
+    end
+  end
+
+  describe '#deployment_variables' do
+    let(:environment) { 'production' }
+    let(:kubernetes_namespace) { 'namespace' }
+    let(:project_variables) { double }
+
+    subject { builder.deployment_variables(environment: environment, job: job) }
+
+    before do
+      allow(job).to receive(:expanded_kubernetes_namespace)
+        .and_return(kubernetes_namespace)
+
+      allow(project).to receive(:deployment_variables)
+        .with(environment: environment, kubernetes_namespace: kubernetes_namespace)
+        .and_return(project_variables)
+    end
+
+    context 'environment is nil' do
+      let(:environment) { nil }
+
+      it { is_expected.to be_empty }
+    end
+  end
+
+  shared_examples "secret CI variables" do
+    context 'when ref is branch' do
+      context 'when ref is protected' do
+        before do
+          create(:protected_branch, :developers_can_merge, name: job.ref, project: project)
+        end
+
+        it { is_expected.to include(variable) }
+      end
+
+      context 'when ref is not protected' do
+        it { is_expected.not_to include(variable) }
+      end
+    end
+
+    context 'when ref is tag' do
+      let_it_be(:job) { create(:ci_build, ref: 'v1.1.0', tag: true, pipeline: pipeline) }
+
+      context 'when ref is protected' do
+        before do
+          create(:protected_tag, project: project, name: 'v*')
+        end
+
+        it { is_expected.to include(variable) }
+      end
+
+      context 'when ref is not protected' do
+        it { is_expected.not_to include(variable) }
+      end
+    end
+
+    context 'when ref is merge request' do
+      let_it_be(:merge_request) { create(:merge_request, :with_detached_merge_request_pipeline, source_project: project) }
+      let_it_be(:pipeline) { merge_request.pipelines_for_merge_request.first }
+      let_it_be(:job) { create(:ci_build, ref: merge_request.source_branch, tag: false, pipeline: pipeline) }
+
+      context 'when ref is protected' do
+        before do
+          create(:protected_branch, :developers_can_merge, name: merge_request.source_branch, project: project)
+        end
+
+        it 'does not return protected variables as it is not supported for merge request pipelines' do
+          is_expected.not_to include(variable)
+        end
+      end
+
+      context 'when ref is not protected' do
+        it { is_expected.not_to include(variable) }
+      end
+    end
+  end
+
+  describe '#secret_instance_variables' do
+    subject { builder.secret_instance_variables(ref: job.git_ref) }
+
+    let_it_be(:variable) { create(:ci_instance_variable, protected: true) }
+
+    include_examples "secret CI variables"
+  end
+
+  describe '#secret_group_variables' do
+    subject { builder.secret_group_variables(ref: job.git_ref, environment: job.expanded_environment_name) }
+
+    let_it_be(:variable) { create(:ci_group_variable, protected: true, group: group) }
+
+    include_examples "secret CI variables"
+  end
+
+  describe '#secret_project_variables' do
+    subject { builder.secret_project_variables(ref: job.git_ref, environment: job.expanded_environment_name) }
+
+    let_it_be(:variable) { create(:ci_variable, protected: true, project: project) }
+
+    include_examples "secret CI variables"
   end
 end

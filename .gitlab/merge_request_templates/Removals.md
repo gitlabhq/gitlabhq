@@ -6,10 +6,11 @@
 
 **Be sure to link this MR to the relevant issue(s).**
 
-- Removal Issue (or earlier deprecation issue):
+- Deprecation issue:
+- Removal issue:
 - MR that removes the feature (optional):
 
-If there is no relevant removal or deprecation issue, hit pause and:
+If there is no relevant deprecation issue, hit pause and:
 
 - Review the [process for deprecating and removing features](https://about.gitlab.com/handbook/product/gitlab-the-product/#process-for-deprecating-and-removing-a-feature).
 - Connect with the Product Manager DRI.

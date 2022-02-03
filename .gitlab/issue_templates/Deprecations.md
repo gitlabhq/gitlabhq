@@ -1,3 +1,5 @@
+For guidance on the overall deprecations, removals and breaking changes workflow, please visit https://about.gitlab.com/handbook/product/gitlab-the-product/#breaking-changes-deprecations-and-removing-features
+
 <!-- Use this template as a starting point for deprecations. -->
 
 ### Deprecation Summary
