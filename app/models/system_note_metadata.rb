@@ -10,7 +10,7 @@ class SystemNoteMetadata < ApplicationRecord
   # in the same project (i.e. with the same permissions)
   TYPES_WITH_CROSS_REFERENCES = %w[
     commit cross_reference
-    close duplicate
+    closed duplicate
     moved merge
     label milestone
     relate unrelate

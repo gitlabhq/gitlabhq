@@ -7,6 +7,10 @@ module Packages
     def execute
       return service_response_error("You don't have access to this package", 403) unless user_can_delete_package?
 
+      if too_many_package_files?
+        return service_response_error("It's not possible to delete a package with more than #{max_package_files} #{'file'.pluralize(max_package_files)}.", 400)
+      end
+
       package.destroy!
 
       package.sync_maven_metadata(current_user)
@@ -24,6 +28,14 @@ module Packages
 
     def service_response_success(message)
       ServiceResponse.success(message: message)
+    end
+
+    def too_many_package_files?
+      max_package_files < package.package_files.limit(max_package_files + 1).count
+    end
+
+    def max_package_files
+      ::Gitlab::CurrentSettings.current_application_settings.max_package_files_for_package_destruction
     end
 
     def user_can_delete_package?

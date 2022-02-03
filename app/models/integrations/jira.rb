@@ -56,6 +56,12 @@ module Integrations
       @reference_pattern ||= /(?<issue>\b#{Gitlab::Regex.jira_issue_key_regex})/
     end
 
+    def self.valid_jira_cloud_url?(url)
+      return false unless url.present?
+
+      !!URI(url).hostname&.end_with?(JIRA_CLOUD_HOST)
+    end
+
     def initialize_properties
       {}
     end
@@ -569,7 +575,7 @@ module Integrations
     end
 
     def jira_cloud?
-      server_info['deploymentType'] == 'Cloud' || URI(client_url).hostname.end_with?(JIRA_CLOUD_HOST)
+      server_info['deploymentType'] == 'Cloud' || self.class.valid_jira_cloud_url?(client_url)
     end
 
     def set_deployment_type_from_url
@@ -582,7 +588,7 @@ module Integrations
       # we can only assume it's either Cloud or Server
       # based on the URL being *.atlassian.net
 
-      if URI(client_url).hostname.end_with?(JIRA_CLOUD_HOST)
+      if self.class.valid_jira_cloud_url?(client_url)
         data_fields.deployment_cloud!
       else
         data_fields.deployment_server!

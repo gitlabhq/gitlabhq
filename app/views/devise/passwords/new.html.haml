@@ -5,7 +5,7 @@
         = render "devise/shared/error_messages", resource: resource
       .form-group
         = f.label :email
-        = f.email_field :email, class: "form-control gl-form-input", required: true, value: params[:user_email], autofocus: true, title: _('Please provide a valid email address.')
+        = f.email_field :email, class: "form-control gl-form-input", required: true, autocomplete: 'off', value: params[:user_email], autofocus: true, title: _('Please provide a valid email address.')
         .form-text.text-muted
           = _('Requires your primary GitLab email address.')
 

@@ -371,6 +371,10 @@ class ApplicationSetting < ApplicationRecord
   validates :invisible_captcha_enabled,
             inclusion: { in: [true, false], message: _('must be a boolean value') }
 
+  validates :max_package_files_for_package_destruction,
+            allow_nil: false,
+            numericality: { only_integer: true, greater_than: 0 }
+
   SUPPORTED_KEY_TYPES.each do |type|
     validates :"#{type}_key_restriction", presence: true, key_restriction: { type: type }
   end

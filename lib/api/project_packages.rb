@@ -71,7 +71,11 @@ module API
           .new(user_project, params[:package_id]).execute
 
         destroy_conditionally!(package) do |package|
-          ::Packages::DestroyPackageService.new(container: package, current_user: current_user).execute
+          result = ::Packages::DestroyPackageService.new(container: package, current_user: current_user).execute
+
+          unless result.success?
+            render_api_error!(result.message, result.http_status)
+          end
         end
       end
     end

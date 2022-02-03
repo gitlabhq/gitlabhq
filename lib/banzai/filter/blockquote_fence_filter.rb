@@ -6,7 +6,7 @@ module Banzai
       REGEX = %r{
           #{::Gitlab::Regex.markdown_code_or_html_blocks}
         |
-          (?:
+          (?=^>>>\ *\n.*\n>>>\ *$)(?:
             # Blockquote:
             # >>>
             # Anything, including code and HTML blocks

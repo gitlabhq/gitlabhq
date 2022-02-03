@@ -88,6 +88,20 @@ RSpec.describe 'Destroying a package' do
 
         expect(mutation_response['errors']).to eq(['Failed to remove the package'])
       end
+
+      context 'with too many files' do
+        let_it_be(:package_files) { create_list(:package_file, 3, package: package) }
+
+        before do
+          stub_application_setting(max_package_files_for_package_destruction: 1)
+        end
+
+        it 'returns the errors in the response' do
+          mutation_request
+
+          expect(mutation_response['errors']).to match_array(["It's not possible to delete a package with more than 1 file."])
+        end
+      end
     end
   end
 end
