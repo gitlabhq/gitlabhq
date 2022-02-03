@@ -9,6 +9,7 @@ module Gitlab
     BlockedUrlError = Class.new(StandardError)
     RedirectionTooDeep = Class.new(StandardError)
     ReadTotalTimeout = Class.new(Net::ReadTimeout)
+    HeaderReadTimeout = Class.new(Net::ReadTimeout)
 
     HTTP_TIMEOUT_ERRORS = [
       Net::OpenTimeout, Net::ReadTimeout, Net::WriteTimeout, Gitlab::HTTP::ReadTotalTimeout

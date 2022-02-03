@@ -136,6 +136,9 @@ The `source` is ignored if the path does not follow this pattern. The parser ass
 
 ## Example test coverage configurations
 
+This section provides test coverage configuration examples for different programming languages. You can also see a working example in
+the [`coverage-report`](https://gitlab.com/gitlab-org/ci-sample-projects/coverage-report/) demonstration project.
+
 ### JavaScript example
 
 The following [`.gitlab-ci.yml`](../../../ci/yaml/index.md) example uses [Mocha](https://mochajs.org/)
