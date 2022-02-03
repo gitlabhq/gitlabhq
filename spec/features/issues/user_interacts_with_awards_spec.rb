@@ -49,7 +49,7 @@ RSpec.describe 'User interacts with awards' do
       end
     end
 
-    it 'toggles a custom award emoji' do
+    it 'toggles a custom award emoji', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/351878' do
       page.within('.awards') do
         page.find('.add-reaction-button').click
       end

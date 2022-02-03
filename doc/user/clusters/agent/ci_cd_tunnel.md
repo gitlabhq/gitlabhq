@@ -46,6 +46,13 @@ Also, each Agent has a separate context (`kubecontext`).
 The Tunnel uses this information to safely allow access to the cluster from
 jobs running in the projects you authorized.
 
+### `~/.kube/cache` permissions
+ 
+`kubectl` and other tools based on the same libraries (such as Helm, `kpt`, and `kustomize`) cache information about
+the cluster in `~/.kube/cache`. If this directory is not writable, the tool fetches information on each invocation,
+making interactions slower and creating unnecessary load on the cluster. Make sure that this directory in the container image
+you use is writable for the best experience.
+
 ## Configure the CI/CD Tunnel
 
 The CI/CD Tunnel is configured directly through the

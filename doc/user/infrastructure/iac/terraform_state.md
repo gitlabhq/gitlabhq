@@ -74,9 +74,8 @@ local machine, this is a simple way to get started:
 1. On your local machine, run `terraform init`, passing in the following options,
    replacing `<YOUR-STATE-NAME>`, `<YOUR-PROJECT-ID>`,  `<YOUR-USERNAME>` and
    `<YOUR-ACCESS-TOKEN>` with the relevant values. This command initializes your
-   Terraform state, and stores that state in your GitLab project. The name of
-   your state can contain only uppercase and lowercase letters, decimal digits,
-   hyphens, and underscores. This example uses `gitlab.com`:
+   Terraform state, and stores that state in your GitLab project. This example
+   uses `gitlab.com`:
 
    ```shell
    terraform init \
@@ -89,6 +88,10 @@ local machine, this is a simple way to get started:
        -backend-config="unlock_method=DELETE" \
        -backend-config="retry_wait_min=5"
    ```
+
+   WARNING:
+   The name of your state can contain only uppercase and lowercase letters, decimal digits,
+   hyphens, and underscores.
 
 If you already have a GitLab-managed Terraform state, you can use the `terraform init` command
 with the pre-populated parameters values:

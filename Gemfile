@@ -72,7 +72,7 @@ gem 'u2f', '~> 0.2.1'
 
 # GitLab Pages
 gem 'validates_hostname', '~> 1.0.11'
-gem 'rubyzip', '~> 2.0.0', require: 'zip'
+gem 'rubyzip', '~> 2.3.2', require: 'zip'
 # GitLab Pages letsencrypt support
 gem 'acme-client', '~> 2.0', '>= 2.0.9'
 
