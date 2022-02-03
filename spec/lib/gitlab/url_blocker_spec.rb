@@ -279,6 +279,8 @@ RSpec.describe Gitlab::UrlBlocker, :stub_invalid_dns_only do
     end
 
     context 'when allow_local_network is' do
+      let(:shared_address_space_ips) { ['100.64.0.0', '100.64.127.127', '100.64.255.255'] }
+
       let(:local_ips) do
         [
           '192.168.1.2',
@@ -292,7 +294,8 @@ RSpec.describe Gitlab::UrlBlocker, :stub_invalid_dns_only do
           '[::ffff:ac10:20]',
           '[feef::1]',
           '[fee2::]',
-          '[fc00:bf8b:e62c:abcd:abcd:aaaa:aaaa:aaaa]'
+          '[fc00:bf8b:e62c:abcd:abcd:aaaa:aaaa:aaaa]',
+          *shared_address_space_ips
         ]
       end
 
@@ -385,18 +388,7 @@ RSpec.describe Gitlab::UrlBlocker, :stub_invalid_dns_only do
                 '127.0.0.1',
                 '127.0.0.2',
                 '192.168.1.1',
-                '192.168.1.2',
-                '0:0:0:0:0:ffff:192.168.1.2',
-                '::ffff:c0a8:102',
-                '10.0.0.2',
-                '0:0:0:0:0:ffff:10.0.0.2',
-                '::ffff:a00:2',
-                '172.16.0.2',
-                '0:0:0:0:0:ffff:172.16.0.2',
-                '::ffff:ac10:20',
-                'feef::1',
-                'fee2::',
-                'fc00:bf8b:e62c:abcd:abcd:aaaa:aaaa:aaaa',
+                *local_ips,
                 '0:0:0:0:0:ffff:169.254.169.254',
                 '::ffff:a9fe:a9fe',
                 '::ffff:169.254.168.100',
