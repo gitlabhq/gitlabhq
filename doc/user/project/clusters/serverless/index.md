@@ -10,7 +10,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - [Deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/6) in GitLab 14.3.
 
 WARNING:
-Serverless is currently in [alpha](https://about.gitlab.com/handbook/product/gitlab-the-product/#alpha).
+Serverless is currently in [alpha](../../../../policy/alpha-beta-support.md#alpha-features).
 
 ## Overview
 

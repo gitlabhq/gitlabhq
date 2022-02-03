@@ -28,7 +28,7 @@ To minimize data loss in GitLab 13.0 to 14.0, Gitaly Cluster:
 
 ### Read-only mode
 
-> - Introduced in GitLab 13.0 as [generally available](https://about.gitlab.com/handbook/product/gitlab-the-product/#generally-available-ga).
+> - Introduced in GitLab 13.0 as [generally available](../../policy/alpha-beta-support.md#generally-available-ga).
 > - Between GitLab 13.0 and GitLab 13.2, read-only mode applied to the whole virtual storage and occurred whenever failover occurred.
 > - [In GitLab 13.3 and later](https://gitlab.com/gitlab-org/gitaly/-/issues/2862), read-only mode applies on a per-repository basis and only occurs if a new primary is out of date.
 new primary. If the failed primary contained unreplicated writes, [data loss can occur](#check-for-data-loss).

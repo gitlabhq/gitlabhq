@@ -12,22 +12,57 @@ module Gitlab
         MAX_ATTEMPTS = 3
         STUCK_JOBS_TIMEOUT = 1.hour.freeze
 
-        enum status: {
-          pending: 0,
-          running: 1,
-          failed: 2,
-          succeeded: 3
-        }
-
         belongs_to :batched_migration, foreign_key: :batched_background_migration_id
         has_many :batched_job_transition_logs, foreign_key: :batched_background_migration_job_id
 
-        scope :active, -> { where(status: [:pending, :running]) }
+        scope :active, -> { with_statuses(:pending, :running) }
         scope :stuck, -> { active.where('updated_at <= ?', STUCK_JOBS_TIMEOUT.ago) }
-        scope :retriable, -> { from_union([failed.where('attempts < ?', MAX_ATTEMPTS), self.stuck]) }
-        scope :except_succeeded, -> { where(status: self.statuses.except(:succeeded).values) }
-        scope :successful_in_execution_order, -> { where.not(finished_at: nil).succeeded.order(:finished_at) }
+        scope :retriable, -> { from_union([with_status(:failed).where('attempts < ?', MAX_ATTEMPTS), self.stuck]) }
+        scope :except_succeeded, -> { without_status(:succeeded) }
+        scope :successful_in_execution_order, -> { where.not(finished_at: nil).with_status(:succeeded).order(:finished_at) }
         scope :with_preloads, -> { preload(:batched_migration) }
+
+        state_machine :status, initial: :pending do
+          state :pending, value: 0
+          state :running, value: 1
+          state :failed, value: 2
+          state :succeeded, value: 3
+
+          event :succeed do
+            transition any => :succeeded
+          end
+
+          event :failure do
+            transition any => :failed
+          end
+
+          event :run do
+            transition any => :running
+          end
+
+          before_transition any => [:failed, :succeeded] do |job|
+            job.finished_at = Time.current
+          end
+
+          before_transition any => :running do |job|
+            job.attempts += 1
+            job.started_at = Time.current
+            job.finished_at = nil
+            job.metrics = {}
+          end
+
+          after_transition do |job, transition|
+            error_hash = transition.args.find { |arg| arg[:error].present? }
+
+            exception = error_hash&.fetch(:error)
+
+            job.batched_job_transition_logs.create(previous_status: transition.from, next_status: transition.to, exception_class: exception&.class, exception_message: exception&.message)
+
+            Gitlab::ErrorTracking.track_exception(exception, batched_job_id: job.id) if exception
+
+            Gitlab::AppLogger.info(message: 'BatchedJob transition', batched_job_id: job.id, previous_state: transition.from_name, new_state: transition.to_name)
+          end
+        end
 
         delegate :job_class, :table_name, :column_name, :job_arguments,
           to: :batched_migration, prefix: :migration

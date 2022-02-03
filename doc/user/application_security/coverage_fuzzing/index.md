@@ -124,7 +124,7 @@ You can download the JSON report file from the CI/CD pipelines page. For more in
 
 ### Coverage-guided fuzz testing report
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/220062) in GitLab 13.3 as an [Alpha feature](https://about.gitlab.com/handbook/product/gitlab-the-product/#alpha).
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/220062) in GitLab 13.3 as an [Alpha feature](../../../policy/alpha-beta-support.md#alpha-features).
 
 For detailed information about the `gl-coverage-fuzzing-report.json` file's format, read the
 [schema](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/master/dist/coverage-fuzzing-report-format.json).

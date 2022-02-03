@@ -36,7 +36,7 @@ To seamlessly navigate among commits in a merge request:
 > - To use in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-viewing-merge-request-commits-in-context).
 
 WARNING:
-This feature is in [beta](https://about.gitlab.com/handbook/product/gitlab-the-product/#beta)
+This feature is in [beta](../../../policy/alpha-beta-support.md#beta-features)
 and is [incomplete](https://gitlab.com/groups/gitlab-org/-/epics/1192).
 Previously merged commits can be added, but they can't be removed due to
 [this bug](https://gitlab.com/gitlab-org/gitlab/-/issues/325538).

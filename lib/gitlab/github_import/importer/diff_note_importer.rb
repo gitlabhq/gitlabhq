@@ -26,7 +26,7 @@ module Gitlab
           # because it cannot use the BulkImporting strategy, which skips
           # callbacks and validations. For this reason, notes that don't have
           # suggestions are still imported with LegacyDiffNote
-          if import_with_diff_note?
+          if note.contains_suggestion?
             import_with_diff_note
           else
             import_with_legacy_diff_note
@@ -47,17 +47,6 @@ module Gitlab
         private
 
         attr_reader :note, :project, :client, :author_id, :author_found
-
-        def import_with_diff_note?
-          note.contains_suggestion? && use_diff_note_with_suggestions_enabled?
-        end
-
-        def use_diff_note_with_suggestions_enabled?
-          Feature.enabled?(
-            :github_importer_use_diff_note_with_suggestions,
-            default_enabled: :yaml
-          )
-        end
 
         def build_author_attributes
           @author_id, @author_found = user_finder.author_id_for(note)

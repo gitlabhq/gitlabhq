@@ -130,7 +130,7 @@ The Package Registry supports the following formats:
 | [Go](../go_proxy/index.md) | 13.1+ | [Alpha](https://gitlab.com/groups/gitlab-org/-/epics/3043) |
 | [Ruby gems](../rubygems_registry/index.md) | 13.10+ | [Alpha](https://gitlab.com/groups/gitlab-org/-/epics/3200) |
 
-[Status](https://about.gitlab.com/handbook/product/gitlab-the-product/#alpha-beta-ga):
+[Status](../../../policy/alpha-beta-support.md):
 
 - Alpha: behind a feature flag and not officially supported.
 - Beta: several known issues that may prevent expected use.

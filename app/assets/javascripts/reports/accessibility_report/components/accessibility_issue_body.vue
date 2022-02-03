@@ -1,9 +1,10 @@
 <script>
-import { GlLink } from '@gitlab/ui';
+import { GlBadge, GlLink } from '@gitlab/ui';
 
 export default {
   name: 'AccessibilityIssueBody',
   components: {
+    GlBadge,
     GlLink,
   },
   props: {
@@ -38,9 +39,9 @@ export default {
 <template>
   <div class="report-block-list-issue-description gl-mt-2 gl-mb-2">
     <div ref="accessibility-issue-description" class="report-block-list-issue-description-text">
-      <div v-if="isNew" ref="accessibility-issue-is-new-badge" class="badge badge-danger gl-mr-2">
-        {{ s__('AccessibilityReport|New') }}
-      </div>
+      <gl-badge v-if="isNew" class="gl-mr-2" variant="danger">{{
+        s__('AccessibilityReport|New')
+      }}</gl-badge>
       <div>
         {{
           sprintf(

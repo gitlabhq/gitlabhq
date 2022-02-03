@@ -290,7 +290,7 @@ including [horizontally distributing reads](https://gitlab.com/groups/gitlab-org
 
 #### Distributed reads
 
-> - Introduced in GitLab 13.1 in [beta](https://about.gitlab.com/handbook/product/gitlab-the-product/#alpha-beta-ga) with feature flag `gitaly_distributed_reads` set to disabled.
+> - Introduced in GitLab 13.1 in [beta](../../policy/alpha-beta-support.md#beta-features) with feature flag `gitaly_distributed_reads` set to disabled.
 > - [Made generally available and enabled by default](https://gitlab.com/gitlab-org/gitaly/-/issues/2951) in GitLab 13.3.
 > - [Disabled by default](https://gitlab.com/gitlab-org/gitaly/-/issues/3178) in GitLab 13.5.
 > - [Enabled by default](https://gitlab.com/gitlab-org/gitaly/-/issues/3334) in GitLab 13.8.
@@ -316,8 +316,8 @@ You can [monitor distribution of reads](#monitor-gitaly-cluster) using Prometheu
 
 #### Strong consistency
 
-> - Introduced in GitLab 13.1 in [alpha](https://about.gitlab.com/handbook/product/gitlab-the-product/#alpha-beta-ga), disabled by default.
-> - Entered [beta](https://about.gitlab.com/handbook/product/gitlab-the-product/#alpha-beta-ga) in GitLab 13.2, disabled by default.
+> - Introduced in GitLab 13.1 in [alpha](../../policy/alpha-beta-support.md#alpha-features), disabled by default.
+> - Entered [beta](../../policy/alpha-beta-support.md#beta-features) in GitLab 13.2, disabled by default.
 > - In GitLab 13.3, disabled unless primary-wins voting strategy is disabled.
 > - From GitLab 13.4, enabled by default.
 > - From GitLab 13.5, you must use Git v2.28.0 or higher on Gitaly nodes to enable strong consistency.

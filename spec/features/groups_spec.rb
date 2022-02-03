@@ -52,7 +52,7 @@ RSpec.describe 'Group' do
         click_button 'Create group'
 
         expect(current_path).to eq(new_group_path)
-        expect(page).to have_text('Please choose a group URL with no special characters or spaces.')
+        expect(page).to have_text('Choose a group path that does not start with a dash or end with a period. It can also contain alphanumeric characters and underscores.')
       end
     end
 
@@ -90,7 +90,7 @@ RSpec.describe 'Group' do
         fill_in 'group_path', with: user.username
         wait_for_requests
 
-        expect(page).to have_content("Group path is already taken. We've suggested one that is available.")
+        expect(page).to have_content("Group path is unavailable. Path has been replaced with a suggested available path.")
       end
 
       it 'does not break after an invalid form submit' do
@@ -279,7 +279,7 @@ RSpec.describe 'Group' do
         fill_in 'Group URL', with: subgroup.path
         wait_for_requests
 
-        expect(page).to have_content("Group path is already taken. We've suggested one that is available.")
+        expect(page).to have_content("Group path is unavailable. Path has been replaced with a suggested available path.")
       end
     end
   end

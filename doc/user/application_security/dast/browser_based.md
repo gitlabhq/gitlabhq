@@ -10,7 +10,7 @@ type: reference, howto
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/323423) in GitLab 13.12.
 
 WARNING:
-This product is in an early-access stage and is considered a [beta](https://about.gitlab.com/handbook/product/gitlab-the-product/#beta) feature.
+This product is in an early-access stage and is considered a [beta](../../../policy/alpha-beta-support.md#beta-features) feature.
 
 GitLab DAST's new browser-based crawler is a crawl engine built by GitLab to test Single Page Applications (SPAs) and traditional web applications.
 Due to the reliance of modern web applications on JavaScript, handling SPAs or applications that are dependent on JavaScript is paramount to ensuring proper coverage of an application for Dynamic Application Security Testing (DAST).

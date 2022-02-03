@@ -98,7 +98,7 @@ This phrasing is more active and is from the user perspective, rather than the p
 
 Use uppercase for **Alpha**. For example: **The XYZ feature is in Alpha.** or **This Alpha release is ready to test.**
 
-You might also want to link to [this section](https://about.gitlab.com/handbook/product/gitlab-the-product/#alpha-beta-ga)
+You might also want to link to [this section](../../../policy/alpha-beta-support.md#alpha-features)
 in the handbook when writing about Alpha features.
 
 ## and/or
@@ -124,7 +124,7 @@ Try to avoid **below** when referring to an example or table in a documentation 
 
 Use uppercase for **Beta**. For example: **The XYZ feature is in Beta.** or **This Beta release is ready to test.**
 
-You might also want to link to [this section](https://about.gitlab.com/handbook/product/gitlab-the-product/#alpha-beta-ga)
+You might also want to link to [this section](../../../policy/alpha-beta-support.md#beta-features)
 in the handbook when writing about Beta features.
 
 ## blacklist

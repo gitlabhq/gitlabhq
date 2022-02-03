@@ -1,3 +1,4 @@
+import { GlBadge } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import AccessibilityIssueBody from '~/reports/accessibility_report/components/accessibility_issue_body.vue';
 
@@ -29,7 +30,7 @@ describe('CustomMetricsForm', () => {
     });
   };
 
-  const findIsNewBadge = () => wrapper.find({ ref: 'accessibility-issue-is-new-badge' });
+  const findIsNewBadge = () => wrapper.findComponent(GlBadge);
 
   beforeEach(() => {
     mountComponent(issue);
@@ -37,7 +38,6 @@ describe('CustomMetricsForm', () => {
 
   afterEach(() => {
     wrapper.destroy();
-    wrapper = null;
   });
 
   it('Displays the issue message', () => {
@@ -52,7 +52,7 @@ describe('CustomMetricsForm', () => {
         .find({ ref: 'accessibility-issue-learn-more' })
         .attributes('href');
 
-      expect(learnMoreUrl).toEqual(issue.learnMoreUrl);
+      expect(learnMoreUrl).toBe(issue.learnMoreUrl);
     });
   });
 
@@ -69,7 +69,7 @@ describe('CustomMetricsForm', () => {
         .find({ ref: 'accessibility-issue-learn-more' })
         .attributes('href');
 
-      expect(learnMoreUrl).toEqual('https://www.w3.org/TR/WCAG20-TECHS/Overview.html');
+      expect(learnMoreUrl).toBe('https://www.w3.org/TR/WCAG20-TECHS/Overview.html');
     });
   });
 
@@ -86,7 +86,7 @@ describe('CustomMetricsForm', () => {
         .find({ ref: 'accessibility-issue-learn-more' })
         .attributes('href');
 
-      expect(learnMoreUrl).toEqual('https://www.w3.org/TR/WCAG20-TECHS/Overview.html');
+      expect(learnMoreUrl).toBe('https://www.w3.org/TR/WCAG20-TECHS/Overview.html');
     });
   });
 
@@ -96,7 +96,7 @@ describe('CustomMetricsForm', () => {
     });
 
     it('Renders the new badge', () => {
-      expect(findIsNewBadge().exists()).toEqual(true);
+      expect(findIsNewBadge().exists()).toBe(true);
     });
   });
 
@@ -106,7 +106,7 @@ describe('CustomMetricsForm', () => {
     });
 
     it('Does not render the new badge', () => {
-      expect(findIsNewBadge().exists()).toEqual(false);
+      expect(findIsNewBadge().exists()).toBe(false);
     });
   });
 });

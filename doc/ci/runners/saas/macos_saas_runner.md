@@ -12,7 +12,7 @@ Use these runners to build, test, and deploy apps for the Apple ecosystem (macOS
 of all the capabilities of the GitLab single DevOps platform and not have to manage or operate a
 build environment.
 
-SaaS runners on macOS are in [Beta](https://about.gitlab.com/handbook/product/gitlab-the-product/#beta)
+SaaS runners on macOS are in [Beta](../../../policy/alpha-beta-support.md#beta-features)
 and shouldn't be relied upon for mission-critical production jobs.
 
 ## Quickstart

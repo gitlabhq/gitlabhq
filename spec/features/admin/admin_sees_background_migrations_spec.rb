@@ -10,7 +10,7 @@ RSpec.describe "Admin > Admin sees background migrations" do
   let_it_be(:finished_migration) { create(:batched_background_migration, table_name: 'finished', status: :finished) }
 
   before_all do
-    create(:batched_background_migration_job, batched_migration: failed_migration, batch_size: 10, min_value: 6, max_value: 15, status: :failed, attempts: 3)
+    create(:batched_background_migration_job, :failed, batched_migration: failed_migration, batch_size: 10, min_value: 6, max_value: 15, attempts: 3)
   end
 
   before do

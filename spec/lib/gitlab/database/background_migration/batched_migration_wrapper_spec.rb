@@ -35,8 +35,6 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigrationWrapper, '
     expect(job_instance).to receive(:perform)
     expect(job_instance).to receive(:batch_metrics).and_return(test_metrics)
 
-    expect(job_record).to receive(:update!).with(hash_including(attempts: 1, status: :running)).and_call_original
-
     freeze_time do
       subject
 
@@ -51,11 +49,10 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigrationWrapper, '
 
   context 'when running a job that failed previously' do
     let!(:job_record) do
-      create(:batched_background_migration_job,
+      create(:batched_background_migration_job, :failed,
         batched_migration: active_migration,
         pause_ms: pause_ms,
         attempts: 1,
-        status: :failed,
         finished_at: 1.hour.ago,
         metrics: { 'my_metrics' => 'some_value' }
       )
@@ -66,10 +63,6 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigrationWrapper, '
 
       expect(job_instance).to receive(:perform)
       expect(job_instance).to receive(:batch_metrics).and_return(updated_metrics)
-
-      expect(job_record).to receive(:update!).with(
-        hash_including(attempts: 2, status: :running, finished_at: nil, metrics: {})
-      ).and_call_original
 
       freeze_time do
         subject

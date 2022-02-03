@@ -18,20 +18,19 @@ module Gitlab
 
           execute_batch(batch_tracking_record)
 
-          batch_tracking_record.status = :succeeded
-        rescue Exception # rubocop:disable Lint/RescueException
-          batch_tracking_record.status = :failed
+          batch_tracking_record.succeed!
+        rescue Exception => error # rubocop:disable Lint/RescueException
+          batch_tracking_record.failure!(error: error)
 
           raise
         ensure
-          finish_tracking_execution(batch_tracking_record)
           track_prometheus_metrics(batch_tracking_record)
         end
 
         private
 
         def start_tracking_execution(tracking_record)
-          tracking_record.update!(attempts: tracking_record.attempts + 1, status: :running, started_at: Time.current, finished_at: nil, metrics: {})
+          tracking_record.run!
         end
 
         def execute_batch(tracking_record)
@@ -49,11 +48,6 @@ module Gitlab
           if job_instance.respond_to?(:batch_metrics)
             tracking_record.metrics = job_instance.batch_metrics
           end
-        end
-
-        def finish_tracking_execution(tracking_record)
-          tracking_record.finished_at = Time.current
-          tracking_record.save!
         end
 
         def track_prometheus_metrics(tracking_record)

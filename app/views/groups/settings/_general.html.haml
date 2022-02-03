@@ -5,18 +5,20 @@
   %fieldset
     .row
       .form-group.col-md-5
-        = f.label :name, _('Group name'), class: 'label-bold'
+        = f.label :name, s_('Groups|Group name'), class: 'label-bold'
         = f.text_field :name, class: 'form-control', data: { qa_selector: 'group_name_field' }
+        .text-muted
+          = s_('Groups|Must start with letter, digit, emoji, or underscore. Can also contain periods, dashes, spaces, and parentheses.')
 
       .form-group.col-md-7
-        = f.label :id, _('Group ID'), class: 'label-bold'
+        = f.label :id, s_('Groups|Group ID'), class: 'label-bold'
         = f.text_field :id, class: 'form-control w-auto', readonly: true
 
     .row.gl-mt-3
       .form-group.col-md-9
-        = f.label :description, _('Group description'), class: 'label-bold'
+        = f.label :description, s_('Groups|Group description'), class: 'label-bold'
         = f.text_area :description, class: 'form-control', rows: 3, maxlength: 250
-        .form-text.text-muted= _('Optional.')
+        .form-text.text-muted= s_('Groups|Optional group description.')
 
   = render 'shared/repository_size_limit_setting_registration_features_cta', form: f
   = render_if_exists 'shared/repository_size_limit_setting', form: f, type: :group
@@ -24,11 +26,11 @@
   .form-group.gl-mt-3.gl-mb-6
     .avatar-container.rect-avatar.s90
       = group_icon(@group, alt: '', class: 'avatar group-avatar s90')
-    = f.label :avatar, _('Group avatar'), class: 'label-bold d-block'
+    = f.label :avatar, s_('Groups|Group avatar'), class: 'label-bold d-block'
     = render 'shared/choose_avatar_button', f: f
     - if @group.avatar?
       %hr
-      = link_to _('Remove avatar'), group_avatar_path(@group.to_param), data: { confirm: _('Avatar will be removed. Are you sure?')}, method: :delete, class: 'gl-button btn btn-danger-secondary'
+      = link_to _('Groups|Remove avatar'), group_avatar_path(@group.to_param), data: { confirm: s_('Groups|Avatar will be removed. Are you sure?')}, method: :delete, class: 'gl-button btn btn-danger-secondary'
 
   = render 'shared/visibility_level', f: f, visibility_level: @group.visibility_level, can_change_visibility_level: can_change_group_visibility_level?(@group), form_model: @group
-  = f.submit _('Save changes'), class: 'btn gl-button btn-confirm mt-4 js-dirty-submit', data: { qa_selector: 'save_name_visibility_settings_button' }
+  = f.submit s_('Groups|Save changes'), class: 'btn gl-button btn-confirm mt-4 js-dirty-submit', data: { qa_selector: 'save_name_visibility_settings_button' }

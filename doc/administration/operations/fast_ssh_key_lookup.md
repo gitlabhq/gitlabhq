@@ -138,7 +138,7 @@ This is a brief overview. Please refer to the above instructions for more contex
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/299109) in GitLab 14.5.
 
 WARNING:
-`gitlab-sshd` is in [**Alpha**](https://about.gitlab.com/handbook/product/gitlab-the-product/#alpha-beta-ga).
+`gitlab-sshd` is in [**Alpha**](../../policy/alpha-beta-support.md#alpha-features).
 It is not ready for production use.
 
 `gitlab-sshd` is [a standalone SSH server](https://gitlab.com/gitlab-org/gitlab-shell/-/tree/main/internal/sshd)

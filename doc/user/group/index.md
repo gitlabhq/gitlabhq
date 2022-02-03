@@ -68,19 +68,9 @@ To create a group:
    - Select **Menu > Groups**, and on the right, select **Create group**.
    - To the left of the search box, select the plus sign and then **New group**.
 1. Select **Create group**.
-1. For the **Group name**, use only:
-   - Alphanumeric characters
-   - Emojis
-   - Underscores
-   - Dashes, dots, spaces, and parentheses (however, it cannot start with any of these characters)
-
-   For a list of words that cannot be used as group names, see [reserved names](../reserved_names.md).
-
-1. For the **Group URL**, which is used for the [namespace](#namespaces),
-   use only:
-   - Alphanumeric characters
-   - Underscores
-   - Dashes and dots (it cannot start with dashes or end in a dot)
+1. Enter a name for the group in **Group name**. For a list of words that cannot be used as group names, see
+   [reserved names](../reserved_names.md).
+1. Enter a path for the group in **Group URL**, which is used for the [namespace](#namespaces).
 1. Choose the [visibility level](../../public_access/public_access.md).
 1. Personalize your GitLab experience by answering the following questions:
    - What is your role?

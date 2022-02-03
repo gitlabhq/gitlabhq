@@ -3,6 +3,8 @@
 module Gitlab
   module RackAttack
     module Request
+      include ::Gitlab::Utils::StrongMemoize
+
       FILES_PATH_REGEX = %r{^/api/v\d+/projects/[^/]+/repository/files/.+}.freeze
       GROUP_PATH_REGEX = %r{^/api/v\d+/groups/[^/]+/?$}.freeze
 
@@ -66,6 +68,7 @@ module Gitlab
       def throttle_unauthenticated_api?
         api_request? &&
         !should_be_skipped? &&
+        !frontend_request? &&
         !throttle_unauthenticated_packages_api? &&
         !throttle_unauthenticated_files_api? &&
         !throttle_unauthenticated_deprecated_api? &&
@@ -74,7 +77,7 @@ module Gitlab
       end
 
       def throttle_unauthenticated_web?
-        web_request? &&
+        (web_request? || frontend_request?) &&
         !should_be_skipped? &&
         # TODO: Column will be renamed in https://gitlab.com/gitlab-org/gitlab/-/issues/340031
         Gitlab::Throttle.settings.throttle_unauthenticated_enabled &&
@@ -83,6 +86,7 @@ module Gitlab
 
       def throttle_authenticated_api?
         api_request? &&
+        !frontend_request? &&
         !throttle_authenticated_packages_api? &&
         !throttle_authenticated_files_api? &&
         !throttle_authenticated_deprecated_api? &&
@@ -90,7 +94,7 @@ module Gitlab
       end
 
       def throttle_authenticated_web?
-        web_request? &&
+        (web_request? || frontend_request?) &&
         !throttle_authenticated_git_lfs? &&
         Gitlab::Throttle.settings.throttle_authenticated_web_enabled
       end
@@ -183,6 +187,17 @@ module Gitlab
 
       def files_api_path?
         path.match?(FILES_PATH_REGEX)
+      end
+
+      def frontend_request?
+        return false unless Feature.enabled?(:rate_limit_frontend_requests, default_enabled: :yaml)
+
+        strong_memoize(:frontend_request) do
+          next false unless env.include?('HTTP_X_CSRF_TOKEN') && session.include?(:_csrf_token)
+
+          # CSRF tokens are not verified for GET/HEAD requests, so we pretend that we always have a POST request.
+          Gitlab::RequestForgeryProtection.verified?(env.merge('REQUEST_METHOD' => 'POST'))
+        end
       end
 
       def deprecated_api_request?

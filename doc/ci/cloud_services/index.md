@@ -19,7 +19,7 @@ GitLab CI/CD supports [OpenID Connect (OIDC)](https://openid.net/connect/faq/) t
 The original implementation of `CI_JOB_JWT` supports [HashiCorp Vault integration](../examples/authenticating-with-hashicorp-vault/). The updated implementation of `CI_JOB_JWT_V2` supports additional cloud providers with OIDC including AWS, GCP, and Vault.
 
 WARNING:
-The `CI_JOB_JWT_V2` variable is under development [(alpha)](https://about.gitlab.com/handbook/product/gitlab-the-product/#alpha) and is not yet suitable for production use.
+The `CI_JOB_JWT_V2` variable is under development [(alpha)](../../policy/alpha-beta-support.md#alpha-features) and is not yet suitable for production use.
 
 ## Use cases
 

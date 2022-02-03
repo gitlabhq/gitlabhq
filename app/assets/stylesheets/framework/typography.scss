@@ -68,14 +68,6 @@
     background-color: inherit;
   }
 
-  &:not(.md) img:not(.emoji) {
-    border: 1px solid $white-normal;
-    padding: 5px;
-    margin: 5px 0;
-    // Ensure that image does not exceed viewport
-    max-height: calc(100vh - 100px);
-  }
-
   details {
     margin-bottom: $gl-padding;
 

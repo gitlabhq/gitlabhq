@@ -6802,9 +6802,6 @@ msgstr ""
 msgid "Changing any setting here requires an application restart"
 msgstr ""
 
-msgid "Changing group URL can have unintended side effects."
-msgstr ""
-
 msgid "Charts can't be displayed as the request for data has timed out. %{documentationLink}"
 msgstr ""
 
@@ -6890,9 +6887,6 @@ msgid "Checking approval status"
 msgstr ""
 
 msgid "Checking branch availability..."
-msgstr ""
-
-msgid "Checking group URL availability..."
 msgstr ""
 
 msgid "Checking group path availability..."
@@ -16841,9 +16835,6 @@ msgstr ""
 msgid "Group Hooks"
 msgstr ""
 
-msgid "Group ID"
-msgstr ""
-
 msgid "Group Owner must have signed in with SAML before enabling Group Managed Accounts"
 msgstr ""
 
@@ -16869,9 +16860,6 @@ msgid "Group avatar"
 msgstr ""
 
 msgid "Group by"
-msgstr ""
-
-msgid "Group description"
 msgstr ""
 
 msgid "Group description (optional)"
@@ -17288,6 +17276,9 @@ msgstr ""
 msgid "GroupSettings|Changing a group's URL can have unintended side effects."
 msgstr ""
 
+msgid "GroupSettings|Choose a group path that does not start with a dash or end with a period. It can also contain alphanumeric characters and underscores."
+msgstr ""
+
 msgid "GroupSettings|Compliance frameworks"
 msgstr ""
 
@@ -17568,6 +17559,54 @@ msgid "GroupsTree|No groups or projects matched your search"
 msgstr ""
 
 msgid "GroupsTree|Search by name"
+msgstr ""
+
+msgid "Groups|Avatar will be removed. Are you sure?"
+msgstr ""
+
+msgid "Groups|Changing group URL can have unintended side effects."
+msgstr ""
+
+msgid "Groups|Checking group URL availability..."
+msgstr ""
+
+msgid "Groups|Enter a descriptive name for your group."
+msgstr ""
+
+msgid "Groups|Group ID"
+msgstr ""
+
+msgid "Groups|Group URL"
+msgstr ""
+
+msgid "Groups|Group avatar"
+msgstr ""
+
+msgid "Groups|Group description"
+msgstr ""
+
+msgid "Groups|Group name"
+msgstr ""
+
+msgid "Groups|Group path is available."
+msgstr ""
+
+msgid "Groups|Group path is unavailable. Path has been replaced with a suggested available path."
+msgstr ""
+
+msgid "Groups|Learn more"
+msgstr ""
+
+msgid "Groups|Must start with letter, digit, emoji, or underscore. Can also contain periods, dashes, spaces, and parentheses."
+msgstr ""
+
+msgid "Groups|Optional group description."
+msgstr ""
+
+msgid "Groups|Remove avatar"
+msgstr ""
+
+msgid "Groups|Save changes"
 msgstr ""
 
 msgid "Guideline"
@@ -23449,7 +23488,7 @@ msgstr ""
 msgid "Must match with the %{codeStart}geo_node_name%{codeEnd} in %{codeStart}/etc/gitlab/gitlab.rb%{codeEnd}. %{linkStart}Learn more%{linkEnd}"
 msgstr ""
 
-msgid "My Awesome Group"
+msgid "My awesome group"
 msgstr ""
 
 msgid "My company or team"
@@ -25197,9 +25236,6 @@ msgid "Optional"
 msgstr ""
 
 msgid "Optional parameter \"variables\" must be a Hash. Ex: variables[key1]=value1"
-msgstr ""
-
-msgid "Optional."
 msgstr ""
 
 msgid "Optionally, you can %{link_to_customize} how FogBugz email addresses and usernames are imported into GitLab."

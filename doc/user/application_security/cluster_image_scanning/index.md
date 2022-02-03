@@ -10,7 +10,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/) in GitLab 14.1.
 
 WARNING:
-This analyzer is in [Alpha](https://about.gitlab.com/handbook/product/gitlab-the-product/#alpha)
+This analyzer is in [Alpha](../../../policy/alpha-beta-support.md#alpha-features)
 and is unstable. The JSON report and CI/CD configuration may be subject to change or breakage
 across GitLab releases.
 

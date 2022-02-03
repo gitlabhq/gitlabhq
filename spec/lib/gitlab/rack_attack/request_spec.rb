@@ -192,6 +192,44 @@ RSpec.describe Gitlab::RackAttack::Request do
     end
   end
 
+  describe '#frontend_request?', :allow_forgery_protection do
+    subject { request.send(:frontend_request?) }
+
+    let(:path) { '/' }
+
+    # Define these as local variables so we can use them in the `where` block.
+    valid_token = SecureRandom.base64(ActionController::RequestForgeryProtection::AUTHENTICITY_TOKEN_LENGTH)
+    other_token = SecureRandom.base64(ActionController::RequestForgeryProtection::AUTHENTICITY_TOKEN_LENGTH)
+
+    where(:session, :env, :expected) do
+      {}                           | {}                                     | false # rubocop:disable Lint/BinaryOperatorWithIdenticalOperands
+      {}                           | { 'HTTP_X_CSRF_TOKEN' => valid_token } | false
+      { _csrf_token: valid_token } | { 'HTTP_X_CSRF_TOKEN' => other_token } | false
+      { _csrf_token: valid_token } | { 'HTTP_X_CSRF_TOKEN' => valid_token } | true
+    end
+
+    with_them do
+      it { is_expected.to eq(expected) }
+    end
+
+    context 'when the feature flag is disabled' do
+      before do
+        stub_feature_flags(rate_limit_frontend_requests: false)
+      end
+
+      where(:session, :env) do
+        {}                           | {} # rubocop:disable Lint/BinaryOperatorWithIdenticalOperands
+        {}                           | { 'HTTP_X_CSRF_TOKEN' => valid_token }
+        { _csrf_token: valid_token } | { 'HTTP_X_CSRF_TOKEN' => other_token }
+        { _csrf_token: valid_token } | { 'HTTP_X_CSRF_TOKEN' => valid_token }
+      end
+
+      with_them do
+        it { is_expected.to be(false) }
+      end
+    end
+  end
+
   describe '#deprecated_api_request?' do
     subject { request.send(:deprecated_api_request?) }
 

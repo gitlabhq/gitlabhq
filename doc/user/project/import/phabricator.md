@@ -11,7 +11,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 WARNING:
 The Phabricator task importer is in
-[beta](https://about.gitlab.com/handbook/product/gitlab-the-product/#beta) and is
+[beta](../../../policy/alpha-beta-support.md#beta-features) and is
 [**not** complete](https://gitlab.com/gitlab-org/gitlab/-/issues/284406). It imports
 only an issue's title and description. The GitLab project created during the import
 process contains only issues, and the associated repository is disabled.
