@@ -37,6 +37,16 @@ RSpec.shared_examples Integrations::HasWebHook do
     it 'returns a boolean' do
       expect(integration.hook_ssl_verification).to be_in([true, false])
     end
+
+    it 'delegates to #enable_ssl_verification if the concern is included' do
+      next unless integration.is_a?(Integrations::EnableSslVerification)
+
+      [true, false].each do |value|
+        integration.enable_ssl_verification = value
+
+        expect(integration.hook_ssl_verification).to be(value)
+      end
+    end
   end
 
   describe '#update_web_hook!' do

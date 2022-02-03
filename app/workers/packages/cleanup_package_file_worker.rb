@@ -19,6 +19,14 @@ module Packages
 
     private
 
+    def after_destroy
+      pkg = artifact.package
+
+      pkg.transaction do
+        pkg.destroy if model.for_package_ids(pkg.id).empty?
+      end
+    end
+
     def model
       Packages::PackageFile
     end

@@ -165,6 +165,7 @@ Parameters:
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `bamboo_url` | string | true | Bamboo root URL. For example, `https://bamboo.example.com`. |
+| `enable_ssl_verification` | boolean | false | Enable SSL verification. Defaults to true (enabled). |
 | `build_key` | string | true | Bamboo build plan key like KEY |
 | `username` | string | true | A user with API access, if applicable |
 | `password` | string | true | Password of the user |
@@ -521,7 +522,7 @@ Parameters:
 | --------- | ---- | -------- | ----------- |
 | `token` | string | true | Drone CI project specific token |
 | `drone_url` | string | true | `http://drone.example.com` |
-| `enable_ssl_verification` | boolean | false | Enable SSL verification |
+| `enable_ssl_verification` | boolean | false | Enable SSL verification. Defaults to true (enabled). |
 | `push_events` | boolean | false | Enable notifications for push events |
 | `merge_requests_events` | boolean | false | Enable notifications for merge request events |
 | `tag_push_events` | boolean | false | Enable notifications for tag push events |
@@ -1396,6 +1397,7 @@ Parameters:
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `teamcity_url` | string | true | TeamCity root URL. For example, `https://teamcity.example.com` |
+| `enable_ssl_verification` | boolean | false | Enable SSL verification. Defaults to true (enabled). |
 | `build_type` | string | true | Build configuration ID |
 | `username` | string | true | A user with permissions to trigger a manual build |
 | `password` | string | true | The password of the user |
@@ -1434,6 +1436,7 @@ Parameters:
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `jenkins_url` | string | true | Jenkins URL like `http://jenkins.example.com`. |
+| `enable_ssl_verification` | boolean | false | Enable SSL verification. Defaults to true (enabled). |
 | `project_name` | string | true | The URL-friendly project name. Example: `my_project_name`. |
 | `username` | string | false | Username for authentication with the Jenkins server, if authentication is required by the server. |
 | `password` | string | false | Password for authentication with the Jenkins server, if authentication is required by the server. |
@@ -1513,6 +1516,7 @@ Parameters:
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `mock_service_url` | string | true | `http://localhost:4004` |
+| `enable_ssl_verification` | boolean | false | Enable SSL verification. Defaults to true (enabled). |
 
 ### Disable MockCI integration
 

@@ -5,6 +5,8 @@ require 'spec_helper'
 RSpec.describe Integrations::DroneCi, :use_clean_rails_memory_store_caching do
   include ReactiveCachingHelpers
 
+  subject(:integration) { described_class.new }
+
   describe 'validations' do
     context 'active' do
       before do
@@ -56,6 +58,52 @@ RSpec.describe Integrations::DroneCi, :use_clean_rails_memory_store_caching do
         headers: { 'Content-Type' => 'application/json' },
         body: body
       )
+    end
+  end
+
+  include_context Integrations::EnableSslVerification do
+    describe '#enable_ssl_verification' do
+      before do
+        allow(integration).to receive(:new_record?).and_return(false)
+      end
+
+      it 'returns true for a known hostname' do
+        integration.drone_url = 'https://cloud.drone.io'
+
+        expect(integration.enable_ssl_verification).to be(true)
+      end
+
+      it 'returns true for new records' do
+        allow(integration).to receive(:new_record?).and_return(true)
+        integration.drone_url = 'http://example.com'
+
+        expect(integration.enable_ssl_verification).to be(true)
+      end
+
+      it 'returns false for an unknown hostname' do
+        integration.drone_url = 'https://example.com'
+
+        expect(integration.enable_ssl_verification).to be(false)
+      end
+
+      it 'returns false for a HTTP URL' do
+        integration.drone_url = 'http://cloud.drone.io'
+
+        expect(integration.enable_ssl_verification).to be(false)
+      end
+
+      it 'returns false for an invalid URL' do
+        integration.drone_url = 'https://example.com:foo'
+
+        expect(integration.enable_ssl_verification).to be(false)
+      end
+
+      it 'returns the persisted value if present' do
+        integration.drone_url = 'https://cloud.drone.io'
+        integration.enable_ssl_verification = false
+
+        expect(integration.enable_ssl_verification).to be(false)
+      end
     end
   end
 

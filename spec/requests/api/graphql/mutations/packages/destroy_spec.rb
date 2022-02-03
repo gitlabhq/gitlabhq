@@ -24,22 +24,27 @@ RSpec.describe 'Destroying a package' do
   let(:mutation_response) { graphql_mutation_response(:destroyPackage) }
 
   shared_examples 'destroying the package' do
-    it 'destroy the package' do
-      expect(::Packages::DestroyPackageService)
+    it 'marks the package as pending destruction' do
+      expect(::Packages::MarkPackageForDestructionService)
           .to receive(:new).with(container: package, current_user: user).and_call_original
+      expect_next_found_instance_of(::Packages::Package) do |package|
+        expect(package).to receive(:mark_package_files_for_destruction)
+      end
 
-      expect { mutation_request }.to change { ::Packages::Package.count }.by(-1)
+      expect { mutation_request }
+        .to change { ::Packages::Package.pending_destruction.count }.by(1)
     end
 
     it_behaves_like 'returning response status', :success
   end
 
   shared_examples 'denying the mutation request' do
-    it 'does not destroy the package' do
-      expect(::Packages::DestroyPackageService)
+    it 'does not mark the package as pending destruction' do
+      expect(::Packages::MarkPackageForDestructionService)
           .not_to receive(:new).with(container: package, current_user: user)
 
-      expect { mutation_request }.not_to change { ::Packages::Package.count }
+      expect { mutation_request }
+        .to not_change { ::Packages::Package.pending_destruction.count }
 
       expect(mutation_response).to be_nil
     end
@@ -81,12 +86,12 @@ RSpec.describe 'Destroying a package' do
 
       it 'returns the errors in the response' do
         allow_next_found_instance_of(::Packages::Package) do |package|
-          allow(package).to receive(:destroy!).and_raise(StandardError)
+          allow(package).to receive(:pending_destruction!).and_raise(StandardError)
         end
 
         mutation_request
 
-        expect(mutation_response['errors']).to eq(['Failed to remove the package'])
+        expect(mutation_response['errors']).to match_array(['Failed to mark the package as pending destruction'])
       end
     end
   end

@@ -17,6 +17,11 @@ const DROPDOWN_ITEM_DATA = [
     id: 'three',
     text: 'three',
   },
+  {
+    title: '<b>four</b>title',
+    id: '<b>four</b>id',
+    text: '<b>four</b>text',
+  },
 ];
 
 describe('CreateItemDropdown', () => {
@@ -63,6 +68,10 @@ describe('CreateItemDropdown', () => {
       const $itemEls = $wrapperEl.find('.js-dropdown-content a');
 
       expect($itemEls.length).toEqual(DROPDOWN_ITEM_DATA.length);
+
+      DROPDOWN_ITEM_DATA.forEach((dataItem, i) => {
+        expect($($itemEls[i]).text()).toEqual(dataItem.text);
+      });
     });
   });
 
@@ -177,7 +186,7 @@ describe('CreateItemDropdown', () => {
       const $itemEls = $wrapperEl.find('.js-dropdown-content a');
 
       expect($itemEls.length).toEqual(1 + DROPDOWN_ITEM_DATA.length);
-      expect($($itemEls[3]).text()).toEqual('new-item-text');
+      expect($($itemEls[DROPDOWN_ITEM_DATA.length]).text()).toEqual('new-item-text');
       expect($wrapperEl.find('.dropdown-toggle-text').text()).toEqual('new-item-title');
     });
   });

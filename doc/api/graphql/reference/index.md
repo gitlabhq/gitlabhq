@@ -17301,6 +17301,7 @@ Values for sorting package.
 | <a id="packagestatusdefault"></a>`DEFAULT` | Packages with a default status. |
 | <a id="packagestatuserror"></a>`ERROR` | Packages with a error status. |
 | <a id="packagestatushidden"></a>`HIDDEN` | Packages with a hidden status. |
+| <a id="packagestatuspending_destruction"></a>`PENDING_DESTRUCTION` | Packages with a pending_destruction status. |
 | <a id="packagestatusprocessing"></a>`PROCESSING` | Packages with a processing status. |
 
 ### `PackageTypeEnum`

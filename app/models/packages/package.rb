@@ -25,7 +25,7 @@ class Packages::Package < ApplicationRecord
     terraform_module: 12
   }
 
-  enum status: { default: 0, hidden: 1, processing: 2, error: 3 }
+  enum status: { default: 0, hidden: 1, processing: 2, error: 3, pending_destruction: 4 }
 
   belongs_to :project
   belongs_to :creator, class_name: 'User'
@@ -302,6 +302,12 @@ class Packages::Package < ApplicationRecord
 
     # TODO: use an upsert call when https://gitlab.com/gitlab-org/gitlab/-/issues/339093 is implemented
     build_infos.find_or_create_by!(pipeline: build.pipeline)
+  end
+
+  def mark_package_files_for_destruction
+    return unless pending_destruction?
+
+    ::Packages::MarkPackageFilesForDestructionWorker.perform_async(id)
   end
 
   private

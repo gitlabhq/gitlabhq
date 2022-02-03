@@ -197,6 +197,12 @@ module API
               desc: 'Bamboo root URL like https://bamboo.example.com'
             },
             {
+              required: false,
+              name: :enable_ssl_verification,
+              type: Boolean,
+              desc: 'Enable SSL verification'
+            },
+            {
               required: true,
               name: :build_key,
               type: String,
@@ -368,7 +374,7 @@ module API
               required: false,
               name: :enable_ssl_verification,
               type: Boolean,
-              desc: 'Enable SSL verification for communication'
+              desc: 'Enable SSL verification'
             }
           ],
           'emails-on-push' => [
@@ -466,6 +472,12 @@ module API
               name: :jenkins_url,
               type: String,
               desc: 'Jenkins root URL like https://jenkins.example.com'
+            },
+            {
+              required: false,
+              name: :enable_ssl_verification,
+              type: Boolean,
+              desc: 'Enable SSL verification'
             },
             {
               required: true,
@@ -747,6 +759,12 @@ module API
               name: :teamcity_url,
               type: String,
               desc: 'TeamCity root URL like https://teamcity.example.com'
+            },
+            {
+              required: false,
+              name: :enable_ssl_verification,
+              type: Boolean,
+              desc: 'Enable SSL verification'
             },
             {
               required: true,

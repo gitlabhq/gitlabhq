@@ -15,7 +15,11 @@ module Integrations
 
     # Return whether the webhook should use SSL verification.
     def hook_ssl_verification
-      true
+      if respond_to?(:enable_ssl_verification)
+        enable_ssl_verification
+      else
+        true
+      end
     end
 
     # Create or update the webhook, raising an exception if it cannot be saved.

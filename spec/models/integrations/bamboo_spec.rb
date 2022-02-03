@@ -23,6 +23,8 @@ RSpec.describe Integrations::Bamboo, :use_clean_rails_memory_store_caching do
     )
   end
 
+  include_context Integrations::EnableSslVerification
+
   describe 'Validations' do
     context 'when active' do
       before do

@@ -1201,6 +1201,30 @@ RSpec.describe Packages::Package, type: :model do
     end
   end
 
+  describe '#mark_package_files_for_destruction' do
+    let_it_be(:package) { create(:npm_package, :pending_destruction) }
+
+    subject { package.mark_package_files_for_destruction }
+
+    it 'enqueues a sync worker job' do
+      expect(::Packages::MarkPackageFilesForDestructionWorker)
+        .to receive(:perform_async).with(package.id)
+
+      subject
+    end
+
+    context 'for a package non pending destruction' do
+      let_it_be(:package) { create(:npm_package) }
+
+      it 'does not enqueues a sync worker job' do
+        expect(::Packages::MarkPackageFilesForDestructionWorker)
+        .not_to receive(:perform_async).with(package.id)
+
+        subject
+      end
+    end
+  end
+
   describe '#create_build_infos!' do
     let_it_be(:package) { create(:package) }
     let_it_be(:pipeline) { create(:ci_pipeline) }
