@@ -32,6 +32,8 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting do
       expect(json_response['dsa_key_restriction']).to eq(0)
       expect(json_response['ecdsa_key_restriction']).to eq(0)
       expect(json_response['ed25519_key_restriction']).to eq(0)
+      expect(json_response['ecdsa_sk_key_restriction']).to eq(0)
+      expect(json_response['ed25519_sk_key_restriction']).to eq(0)
       expect(json_response['performance_bar_allowed_group_id']).to be_nil
       expect(json_response['allow_local_requests_from_hooks_and_services']).to be(false)
       expect(json_response['allow_local_requests_from_web_hooks_and_services']).to be(false)
@@ -111,6 +113,8 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting do
             dsa_key_restriction: 2048,
             ecdsa_key_restriction: 384,
             ed25519_key_restriction: 256,
+            ecdsa_sk_key_restriction: 256,
+            ed25519_sk_key_restriction: 256,
             enforce_terms: true,
             terms: 'Hello world!',
             performance_bar_allowed_group_path: group.full_path,
@@ -163,6 +167,8 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting do
         expect(json_response['dsa_key_restriction']).to eq(2048)
         expect(json_response['ecdsa_key_restriction']).to eq(384)
         expect(json_response['ed25519_key_restriction']).to eq(256)
+        expect(json_response['ecdsa_sk_key_restriction']).to eq(256)
+        expect(json_response['ed25519_sk_key_restriction']).to eq(256)
         expect(json_response['enforce_terms']).to be(true)
         expect(json_response['terms']).to eq('Hello world!')
         expect(json_response['performance_bar_allowed_group_id']).to eq(group.id)

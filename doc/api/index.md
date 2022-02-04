@@ -12,6 +12,9 @@ Use the GitLab APIs to automate GitLab.
 
 A REST API is available in GitLab.
 Usage instructions are below.
+
+For examples, see [How to use the API](#how-to-use-the-api).
+
 For a list of the available resources and their endpoints, see
 [REST API resources](api_resources.md).
 
@@ -76,7 +79,7 @@ For example, the root of the v4 API is at `/api/v4`.
 
 ### Valid API request
 
-If you have a GitLab instance at `gitlab.example.com`:
+The following is a basic example of a request to the fictional `gitlab.example.com` endpoint:
 
 ```shell
 curl "https://gitlab.example.com/api/v4/projects"
@@ -84,6 +87,10 @@ curl "https://gitlab.example.com/api/v4/projects"
 
 The API uses JSON to serialize data. You don't need to specify `.json` at the
 end of the API URL.
+
+NOTE:
+In the example above, replace `gitlab.example.com` with `gitlab.com` to query GitLab.com (GitLab SaaS).
+Access can be denied due to authentication. For more information, see [Authentication](#authentication).  
 
 ### API request to expose HTTP response headers
 

@@ -510,6 +510,12 @@ msgstr[1] ""
 msgid "%{completedWeight} of %{totalWeight} weight completed"
 msgstr ""
 
+msgid "%{completed} of %{total} issues closed"
+msgstr ""
+
+msgid "%{completed} of %{total} weight completed"
+msgstr ""
+
 msgid "%{cores} cores"
 msgstr ""
 
@@ -856,6 +862,9 @@ msgid "%{openedEpics} open, %{closedEpics} closed"
 msgstr ""
 
 msgid "%{openedIssues} open, %{closedIssues} closed"
+msgstr ""
+
+msgid "%{percentage}%% issues closed"
 msgstr ""
 
 msgid "%{percentage}%% weight completed"
@@ -1286,6 +1295,9 @@ msgid "- User"
 msgid_plural "- Users"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "- of - issues closed"
+msgstr ""
 
 msgid "- of - weight completed"
 msgstr ""
@@ -27709,6 +27721,9 @@ msgstr ""
 msgid "Progress"
 msgstr ""
 
+msgid "Progress tracking"
+msgstr ""
+
 msgid "Project"
 msgstr ""
 
@@ -38996,6 +39011,12 @@ msgid "Use hashed storage"
 msgstr ""
 
 msgid "Use hashed storage paths for newly created and renamed repositories. Always enabled since 13.0."
+msgstr ""
+
+msgid "Use issue count"
+msgstr ""
+
+msgid "Use issue weight"
 msgstr ""
 
 msgid "Use one line per URI"

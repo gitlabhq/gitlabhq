@@ -13,9 +13,9 @@ NIST). Some organizations deploying GitLab need to enforce minimum key
 strength, either to satisfy internal security policy or for regulatory
 compliance.
 
-Similarly, certain standards groups recommend using RSA, ECDSA, or ED25519 over
-the older DSA, and administrators may need to limit the allowed SSH key
-algorithms.
+Similarly, certain standards groups recommend using RSA, ECDSA, ED25519,
+ECDSA_SK, or ED25519_SK over the older DSA, and administrators may need to
+limit the allowed SSH key algorithms.
 
 GitLab allows you to restrict the allowed SSH key technology as well as specify
 the minimum key length for each technology:
@@ -45,6 +45,8 @@ By default, the GitLab.com and self-managed settings for the
 - DSA SSH keys are forbidden ([since GitLab 11.0](https://about.gitlab.com/releases/2018/06/22/gitlab-11-0-released/#support-for-dsa-ssh-keys)).
 - ECDSA SSH keys are allowed.
 - ED25519 SSH keys are allowed.
+- ECDSA_SK SSH keys are allowed (GitLab 14.8 and later).
+- ED25519_SK SSH keys are allowed (GitLab 14.8 and later).
 
 <!-- ## Troubleshooting
 

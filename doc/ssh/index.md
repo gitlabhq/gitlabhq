@@ -28,6 +28,8 @@ To view the version of SSH installed on your system, run `ssh -V`.
 To communicate with GitLab, you can use the following SSH key types:
 
 - [ED25519](#ed25519-ssh-keys)
+- [ED25519_SK](#ed25519_sk-ssh-keys) (Available in GitLab 14.8 and later.)
+- [ECDSA_SK](#ecdsa_sk-ssh-keys) (Available in GitLab 14.8 and later.)
 - [RSA](#rsa-ssh-keys)
 - DSA ([Deprecated](https://about.gitlab.com/releases/2018/06/22/gitlab-11-0-released/#support-for-dsa-ssh-keys) in GitLab 11.0.)
 - ECDSA (As noted in [Practical Cryptography With Go](https://leanpub.com/gocrypto/read#leanpub-auto-ecdsa), the security issues related to DSA also apply to ECDSA.)
@@ -41,6 +43,20 @@ suggests that [ED25519](https://ed25519.cr.yp.to/) keys are more secure and perf
 
 OpenSSH 6.5 introduced ED25519 SSH keys in 2014 and they should be available on most
 operating systems.
+
+### ED25519_SK SSH keys
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/78934) in GitLab 14.8.
+
+To use ED25519_SK SSH keys on GitLab, your local client and GitLab server
+must have [OpenSSH 8.2](https://www.openssh.com/releasenotes.html#8.2) or later installed.
+
+### ECDSA_SK SSH keys
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/78934) in GitLab 14.8.
+
+To use ECDSA_SK SSH keys on GitLab, your local client and GitLab server
+must have [OpenSSH 8.2](https://www.openssh.com/releasenotes.html#8.2) or later installed.
 
 ### RSA SSH keys
 
@@ -64,6 +80,8 @@ Before you create a key pair, see if a key pair already exists.
    | Algorithm | Public key | Private key |
    | --------- | ---------- | ----------- |
    |  ED25519 (preferred)  | `id_ed25519.pub` | `id_ed25519` |
+   |  ED25519_SK | `id_ed25519_sk.pub` | `id_ed25519_sk` |
+   |  ECDSA_SK | `id_ecdsa_sk.pub` | `id_ecdsa_sk` |
    |  RSA (at least 2048-bit key size)     | `id_rsa.pub` | `id_rsa` |
    |  DSA (deprecated)      | `id_dsa.pub` | `id_dsa` |
    |  ECDSA    | `id_ecdsa.pub` | `id_ecdsa` |
@@ -177,6 +195,67 @@ OpenSSH format.
    ssh-keygen -o -t rsa -b 4096 -C "<comment>"
    ```
 
+## Generate an SSH key pair for a FIDO/U2F hardware security key
+
+To generate ED25519_SK or ECDSA_SK SSH keys, you must use OpenSSH 8.2 or later.
+
+1. Insert a hardware security key into your computer.
+1. Open a terminal.
+1. Type `ssh-keygen -t` followed by the key type and an optional comment.
+   This comment is included in the `.pub` file that's created.
+   You may want to use an email address for the comment.
+
+   For example, for ED25519_SK:
+
+   ```shell
+   ssh-keygen -t ed25519-sk -C "<comment>"
+   ```
+
+   For ECDSA_SK:
+
+   ```shell
+   ssh-keygen -t ecdsa-sk -C "<comment>"
+   ```
+
+   If your security key supports FIDO2 resident keys, you can enable this when
+   creating your SSH key:
+
+   ```shell
+   ssh-keygen -t ed25519-sk -O resident -C "<comment>"
+   ```
+
+   `-O resident` indicates that the key should be stored on the FIDO authenticator itself.
+   Resident key is easier to import to a new computer because it can be loaded directly
+   from the security key by [`ssh-add -K`](https://man.openbsd.org/cgi-bin/man.cgi/OpenBSD-current/man1/ssh-add.1#K)
+   or  [`ssh-keygen -K`](https://man.openbsd.org/cgi-bin/man.cgi/OpenBSD-current/man1/ssh-keygen#K).
+
+1. Select Enter. Output similar to the following is displayed:
+
+   ```plaintext
+   Generating public/private ed25519-sk key pair.
+   You may need to touch your authenticator to authorize key generation.
+   ```
+
+1. Touch the button on the hardware security key.
+
+1. Accept the suggested filename and directory:
+
+   ```plaintext
+   Enter file in which to save the key (/home/user/.ssh/id_ed25519_sk):
+   ```
+
+1. Specify a [passphrase](https://www.ssh.com/academy/ssh/passphrase):
+
+   ```plaintext
+   Enter passphrase (empty for no passphrase):
+   Enter same passphrase again:
+   ```
+
+1. A confirmation is displayed, including information about where your files are stored.
+
+A public and private key are generated.
+[Add the public SSH key to your GitLab account](#add-an-ssh-key-to-your-gitlab-account).
+
 ## Add an SSH key to your GitLab account
 
 To use SSH with GitLab, copy your public key to your GitLab account.
@@ -210,7 +289,8 @@ To use SSH with GitLab, copy your public key to your GitLab account.
 1. On the left sidebar, select **SSH Keys**.
 1. In the **Key** box, paste the contents of your public key.
    If you manually copied the key, make sure you copy the entire key,
-   which starts with `ssh-ed25519` or `ssh-rsa`, and may end with a comment.
+   which starts with `ssh-rsa`, `ssh-dss`, `ecdsa-sha2-nistp256`, `ecdsa-sha2-nistp384`, `ecdsa-sha2-nistp521`,
+   `ssh-ed25519`, `sk-ecdsa-sha2-nistp256@openssh.com`, or `sk-ssh-ed25519@openssh.com`, and may end with a comment.
 1. In the **Title** box, type a description, like `Work Laptop` or
    `Home Workstation`.
 1. Optional. In the **Expires at** box, select an expiration date. ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/36243) in GitLab 12.9.)
@@ -318,7 +398,8 @@ on the files make them readable to you but not accessible to others.
 ## Configure two-factor authentication (2FA)
 
 You can set up two-factor authentication (2FA) for
-[Git over SSH](../security/two_factor_authentication.md#2fa-for-git-over-ssh-operations).
+[Git over SSH](../security/two_factor_authentication.md#2fa-for-git-over-ssh-operations). We recommend using
+[ED25519_SK](#ed25519_sk-ssh-keys) or [ECDSA_SK](#ecdsa_sk-ssh-keys) SSH keys.
 
 ## Use EGit on Eclipse
 

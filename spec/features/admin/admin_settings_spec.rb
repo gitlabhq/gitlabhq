@@ -85,6 +85,8 @@ RSpec.describe 'Admin updates settings' do
           select 'Are allowed', from: 'DSA SSH keys'
           select 'Must be at least 384 bits', from: 'ECDSA SSH keys'
           select 'Are forbidden', from: 'ED25519 SSH keys'
+          select 'Are forbidden', from: 'ECDSA_SK SSH keys'
+          select 'Are forbidden', from: 'ED25519_SK SSH keys'
           click_on 'Save changes'
         end
 
@@ -95,6 +97,8 @@ RSpec.describe 'Admin updates settings' do
         expect(find_field('DSA SSH keys').value).to eq('0')
         expect(find_field('ECDSA SSH keys').value).to eq('384')
         expect(find_field('ED25519 SSH keys').value).to eq(forbidden)
+        expect(find_field('ECDSA_SK SSH keys').value).to eq(forbidden)
+        expect(find_field('ED25519_SK SSH keys').value).to eq(forbidden)
       end
 
       it 'change Account and Limit Settings' do

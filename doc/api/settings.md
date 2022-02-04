@@ -65,6 +65,8 @@ Example response:
   "dsa_key_restriction": 0,
   "ecdsa_key_restriction": 0,
   "ed25519_key_restriction": 0,
+  "ecdsa_sk_key_restriction": 0,
+  "ed25519_sk_key_restriction": 0,
   "first_day_of_week": 0,
   "enforce_terms": true,
   "terms": "Hello world!",
@@ -166,6 +168,8 @@ Example response:
   "dsa_key_restriction": 0,
   "ecdsa_key_restriction": 0,
   "ed25519_key_restriction": 0,
+  "ecdsa_sk_key_restriction": 0,
+  "ed25519_sk_key_restriction": 0,
   "first_day_of_week": 0,
   "enforce_terms": true,
   "terms": "Hello world!",
@@ -268,7 +272,9 @@ listed in the descriptions of the relevant settings.
 | `domain_allowlist`                       | array of strings | no                                   | Force people to use only corporate emails for sign-up. Default is `null`, meaning there is no restriction. |
 | `dsa_key_restriction`                    | integer          | no                                   | The minimum allowed bit length of an uploaded DSA key. Default is `0` (no restriction). `-1` disables DSA keys. |
 | `ecdsa_key_restriction`                  | integer          | no                                   | The minimum allowed curve size (in bits) of an uploaded ECDSA key. Default is `0` (no restriction). `-1` disables ECDSA keys. |
+| `ecdsa_sk_key_restriction`               | integer          | no                                   | The minimum allowed curve size (in bits) of an uploaded ECDSA_SK key. Default is `0` (no restriction). `-1` disables ECDSA_SK keys. |
 | `ed25519_key_restriction`                | integer          | no                                   | The minimum allowed curve size (in bits) of an uploaded ED25519 key. Default is `0` (no restriction). `-1` disables ED25519 keys. |
+| `ed25519_sk_key_restriction`             | integer          | no                                   | The minimum allowed curve size (in bits) of an uploaded ED25519_SK key. Default is `0` (no restriction). `-1` disables ED25519_SK keys. |
 | `eks_access_key_id`                      | string           | no                                   | AWS IAM access key ID. |
 | `eks_account_id`                         | string           | no                                   | Amazon account ID. |
 | `eks_integration_enabled`                | boolean          | no                                   | Enable integration with Amazon EKS. |

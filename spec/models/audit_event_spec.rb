@@ -112,13 +112,13 @@ RSpec.describe AuditEvent do
     context "when a runner_registration_token's present" do
       let(:audit_event) { build(:project_audit_event, details: { target_id: 678, runner_registration_token: 'abc123' }) }
 
-      it 'returns a RunnerRegistrationTokenAuthor' do
-        expect(::Gitlab::Audit::RunnerRegistrationTokenAuthor).to receive(:new)
+      it 'returns a CiRunnerTokenAuthor' do
+        expect(::Gitlab::Audit::CiRunnerTokenAuthor).to receive(:new)
           .with({ token: 'abc123', entity_type: 'Project', entity_path: audit_event.entity_path })
           .and_call_original
           .once
 
-        is_expected.to be_an_instance_of(::Gitlab::Audit::RunnerRegistrationTokenAuthor)
+        is_expected.to be_an_instance_of(::Gitlab::Audit::CiRunnerTokenAuthor)
       end
 
       it 'name consists of prefix and token' do

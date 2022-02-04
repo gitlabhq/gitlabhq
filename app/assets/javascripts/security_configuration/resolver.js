@@ -32,24 +32,28 @@ export default {
   Mutation: {
     configureSecurityTrainingProviders: (
       _,
-      { input: { enabledProviders, primaryProvider } },
+      { input: { enabledProviders, primaryProvider, fullPath } },
       { cache },
     ) => {
       const sourceData = cache.readQuery({
         query: securityTrainingProvidersQuery,
+        variables: {
+          fullPath,
+        },
       });
 
-      const data = produce(sourceData.securityTrainingProviders, (draftData) => {
+      const data = produce(sourceData.project, (draftData) => {
         /* eslint-disable no-param-reassign */
-        draftData.forEach((provider) => {
+        draftData.securityTrainingProviders.forEach((provider) => {
           provider.isPrimary = provider.id === primaryProvider;
           provider.isEnabled =
             provider.id === primaryProvider || enabledProviders.includes(provider.id);
         });
       });
+
       return {
         __typename: 'configureSecurityTrainingProvidersPayload',
-        securityTrainingProviders: data,
+        securityTrainingProviders: data.securityTrainingProviders,
       };
     },
   },

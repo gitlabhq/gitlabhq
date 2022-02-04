@@ -570,7 +570,7 @@ On the **Praefect** node:
    edit `/etc/gitlab/gitlab.rb`, remember to run `sudo gitlab-ctl reconfigure`
    again before trying the `sql-ping` command.
 
-#### Enabling TLS support
+#### Enable TLS support
 
 > [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/1698) in GitLab 13.2.
 
@@ -594,6 +594,13 @@ Note the following:
   - Hostname, you can either use the Common Name field for this, or add it as a Subject
     Alternative Name.
   - IP address, you must add it as a Subject Alternative Name to the certificate.
+- When running Praefect sub-commands such as `dial-nodes` and `list-untracked-repositories` from the command line with
+  [Gitaly TLS enabled](configure_gitaly.md#enable-tls-support), you must set the `SSL_CERT_DIR` or `SSL_CERT_FILE`
+  environment variable so that the Gitaly certificate is trusted. For example: 
+
+   ```shell
+   sudo SSL_CERT_DIR=/etc/gitlab/trusted_certs /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml dial-nodes
+   ```
 
 - You can configure Praefect servers with both an unencrypted listening address
   `listen_addr` and an encrypted listening address `tls_listen_addr` at the same time.

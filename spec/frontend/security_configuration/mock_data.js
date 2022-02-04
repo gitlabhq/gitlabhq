@@ -27,3 +27,27 @@ export const securityTrainingProvidersResponse = {
     },
   },
 };
+
+export const dismissUserCalloutResponse = {
+  data: {
+    userCalloutCreate: {
+      errors: [],
+      userCallout: {
+        dismissedAt: '2022-02-02T04:36:57Z',
+        featureName: 'SECURITY_TRAINING_FEATURE_PROMOTION',
+      },
+    },
+  },
+};
+
+export const dismissUserCalloutErrorResponse = {
+  data: {
+    userCalloutCreate: {
+      errors: ['Something went wrong'],
+      userCallout: {
+        dismissedAt: '',
+        featureName: 'SECURITY_TRAINING_FEATURE_PROMOTION',
+      },
+    },
+  },
+};

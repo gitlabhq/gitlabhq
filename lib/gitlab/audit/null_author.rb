@@ -14,12 +14,12 @@ module Gitlab
       # @param [Integer] id
       # @param [String] name
       #
-      # @return [Gitlab::Audit::UnauthenticatedAuthor, Gitlab::Audit::DeletedAuthor, Gitlab::Audit::RunnerRegistrationTokenAuthor]
+      # @return [Gitlab::Audit::UnauthenticatedAuthor, Gitlab::Audit::DeletedAuthor, Gitlab::Audit::CiRunnerTokenAuthor]
       def self.for(id, audit_event)
         name = audit_event[:author_name] || audit_event.details[:author_name]
 
         if audit_event.details.include?(:runner_registration_token)
-          ::Gitlab::Audit::RunnerRegistrationTokenAuthor.new(
+          ::Gitlab::Audit::CiRunnerTokenAuthor.new(
             token: audit_event.details[:runner_registration_token],
             entity_type: audit_event.entity_type || audit_event.details[:entity_type],
             entity_path: audit_event.entity_path || audit_event.details[:entity_path]

@@ -2,7 +2,7 @@
 
 module Gitlab
   module Audit
-    class RunnerRegistrationTokenAuthor < Gitlab::Audit::NullAuthor
+    class CiRunnerTokenAuthor < Gitlab::Audit::NullAuthor
       def initialize(token:, entity_type:, entity_path:)
         super(id: -1, name: "Registration token: #{token}")
 

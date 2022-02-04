@@ -1,6 +1,8 @@
 <script>
 import { GlAlert, GlCard, GlToggle, GlLink, GlSkeletonLoader } from '@gitlab/ui';
+import * as Sentry from '@sentry/browser';
 import { __ } from '~/locale';
+import dismissUserCalloutMutation from '~/graphql_shared/mutations/dismiss_user_callout.mutation.graphql';
 import securityTrainingProvidersQuery from '../graphql/security_training_providers.query.graphql';
 import configureSecurityTrainingProvidersMutation from '../graphql/configure_security_training_providers.mutation.graphql';
 
@@ -43,6 +45,7 @@ export default {
       errorMessage: '',
       toggleLoading: false,
       securityTrainingProviders: [],
+      hasTouchedConfiguration: false,
     };
   },
   computed: {
@@ -50,7 +53,36 @@ export default {
       return this.$apollo.queries.securityTrainingProviders.loading;
     },
   },
+  created() {
+    const unwatchConfigChance = this.$watch('hasTouchedConfiguration', () => {
+      this.dismissFeaturePromotionCallout();
+      unwatchConfigChance();
+    });
+  },
   methods: {
+    async dismissFeaturePromotionCallout() {
+      try {
+        const {
+          data: {
+            userCalloutCreate: { errors },
+          },
+        } = await this.$apollo.mutate({
+          mutation: dismissUserCalloutMutation,
+          variables: {
+            input: {
+              featureName: 'security_training_feature_promotion',
+            },
+          },
+        });
+
+        // handle errors reported from the backend
+        if (errors?.length > 0) {
+          throw new Error(errors[0]);
+        }
+      } catch (e) {
+        Sentry.captureException(e);
+      }
+    },
     toggleProvider(selectedProviderId) {
       const toggledProviders = this.securityTrainingProviders.map((provider) => ({
         ...provider,
@@ -85,6 +117,8 @@ export default {
           // throwing an error here means we can handle scenarios within the `catch` block below
           throw new Error();
         }
+
+        this.hasTouchedConfiguration = true;
       } catch {
         this.errorMessage = this.$options.i18n.configMutationErrorMessage;
       } finally {

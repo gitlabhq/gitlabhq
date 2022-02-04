@@ -1,3 +1,4 @@
+import * as Sentry from '@sentry/browser';
 import { GlAlert, GlLink, GlToggle, GlCard, GlSkeletonLoader } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
@@ -6,8 +7,11 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import TrainingProviderList from '~/security_configuration/components/training_provider_list.vue';
 import securityTrainingProvidersQuery from '~/security_configuration/graphql/security_training_providers.query.graphql';
 import configureSecurityTrainingProvidersMutation from '~/security_configuration/graphql/configure_security_training_providers.mutation.graphql';
+import dismissUserCalloutMutation from '~/graphql_shared/mutations/dismiss_user_callout.mutation.graphql';
 import waitForPromises from 'helpers/wait_for_promises';
 import {
+  dismissUserCalloutResponse,
+  dismissUserCalloutErrorResponse,
   securityTrainingProviders,
   securityTrainingProvidersResponse,
   testProjectPath,
@@ -20,13 +24,18 @@ describe('TrainingProviderList component', () => {
   let wrapper;
   let apolloProvider;
 
-  const createApolloProvider = ({ resolvers, queryHandler } = {}) => {
-    const defaultQueryHandler = jest.fn().mockResolvedValue(securityTrainingProvidersResponse);
+  const createApolloProvider = ({ resolvers, handlers = [] } = {}) => {
+    const defaultHandlers = [
+      [
+        securityTrainingProvidersQuery,
+        jest.fn().mockResolvedValue(securityTrainingProvidersResponse),
+      ],
+    ];
 
-    apolloProvider = createMockApollo(
-      [[securityTrainingProvidersQuery, queryHandler || defaultQueryHandler]],
-      resolvers,
-    );
+    // make sure we don't have any duplicate handlers to avoid 'Request handler already defined for query` errors
+    const mergedHandlers = [...new Map([...defaultHandlers, ...handlers])];
+
+    apolloProvider = createMockApollo(mergedHandlers, resolvers);
   };
 
   const createComponent = () => {
@@ -60,7 +69,7 @@ describe('TrainingProviderList component', () => {
       const pendingHandler = () => new Promise(() => {});
 
       createApolloProvider({
-        queryHandler: pendingHandler,
+        handlers: [[securityTrainingProvidersQuery, pendingHandler]],
       });
       createComponent();
     });
@@ -76,7 +85,20 @@ describe('TrainingProviderList component', () => {
 
   describe('with a successful response', () => {
     beforeEach(() => {
-      createApolloProvider();
+      createApolloProvider({
+        handlers: [
+          [dismissUserCalloutMutation, jest.fn().mockResolvedValue(dismissUserCalloutResponse)],
+        ],
+        resolvers: {
+          Mutation: {
+            configureSecurityTrainingProviders: () => ({
+              errors: [],
+              securityTrainingProviders: [],
+            }),
+          },
+        },
+      });
+
       createComponent();
     });
 
@@ -143,6 +165,37 @@ describe('TrainingProviderList component', () => {
           }),
         );
       });
+
+      it('dismisses the callout when the feature gets first enabled', async () => {
+        // wait for configuration update mutation to complete
+        await waitForMutationToBeLoaded();
+
+        // both the config and dismiss mutations have been called
+        expect(apolloProvider.defaultClient.mutate).toHaveBeenCalledTimes(2);
+        expect(apolloProvider.defaultClient.mutate).toHaveBeenNthCalledWith(
+          2,
+          expect.objectContaining({
+            mutation: dismissUserCalloutMutation,
+            variables: {
+              input: {
+                featureName: 'security_training_feature_promotion',
+              },
+            },
+          }),
+        );
+
+        toggleFirstProvider();
+        await waitForMutationToBeLoaded();
+
+        // the config mutation has been called again but not the dismiss mutation
+        expect(apolloProvider.defaultClient.mutate).toHaveBeenCalledTimes(3);
+        expect(apolloProvider.defaultClient.mutate).toHaveBeenNthCalledWith(
+          3,
+          expect.objectContaining({
+            mutation: configureSecurityTrainingProvidersMutation,
+          }),
+        );
+      });
     });
   });
 
@@ -157,7 +210,7 @@ describe('TrainingProviderList component', () => {
     describe('when fetching training providers', () => {
       beforeEach(async () => {
         createApolloProvider({
-          queryHandler: jest.fn().mockReturnValue(new Error()),
+          handlers: [[securityTrainingProvidersQuery, jest.fn().mockRejectedValue()]],
         });
         createComponent();
 
@@ -198,6 +251,40 @@ describe('TrainingProviderList component', () => {
 
       it('shows an error description', () => {
         expect(findErrorAlert().text()).toBe(TrainingProviderList.i18n.configMutationErrorMessage);
+      });
+    });
+
+    describe.each`
+      errorType          | mutationHandler
+      ${'backend error'} | ${jest.fn().mockReturnValue(dismissUserCalloutErrorResponse)}
+      ${'network error'} | ${jest.fn().mockRejectedValue()}
+    `('when dismissing the callout and a "$errorType" happens', ({ mutationHandler }) => {
+      beforeEach(async () => {
+        jest.spyOn(Sentry, 'captureException').mockImplementation();
+
+        createApolloProvider({
+          handlers: [[dismissUserCalloutMutation, mutationHandler]],
+          resolvers: {
+            Mutation: {
+              configureSecurityTrainingProviders: () => ({
+                errors: [],
+                securityTrainingProviders: [],
+              }),
+            },
+          },
+        });
+        createComponent();
+
+        await waitForQueryToBeLoaded();
+        toggleFirstProvider();
+      });
+
+      it('logs the error to sentry', async () => {
+        expect(Sentry.captureException).not.toHaveBeenCalled();
+
+        await waitForMutationToBeLoaded();
+
+        expect(Sentry.captureException).toHaveBeenCalled();
       });
     });
   });

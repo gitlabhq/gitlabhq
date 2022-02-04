@@ -280,7 +280,7 @@ NOTE:
 SSH clone URLs can be customized in `gitlab.rb` by setting `gitlab_rails['gitlab_ssh_host']` and
 other related settings.
 
-## Configure defaults for RSA, DSA, ECDSA, ED25519 SSH keys
+## Configure defaults for RSA, DSA, ECDSA, ED25519, ECDSA_SK, ED25519_SK SSH keys
 
 These options specify the permitted types and lengths for SSH keys.
 

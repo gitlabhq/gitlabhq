@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Audit::RunnerRegistrationTokenAuthor do
+RSpec.describe Gitlab::Audit::CiRunnerTokenAuthor do
   describe '#initialize' do
     it 'sets correct attributes' do
       expect(described_class.new(token: 'abc1234567', entity_type: 'Project', entity_path: 'd/e'))

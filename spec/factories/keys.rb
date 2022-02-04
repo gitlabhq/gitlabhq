@@ -148,5 +148,24 @@ FactoryBot.define do
         KEY
       end
     end
+
+    factory :ecdsa_sk_key_256 do
+      key do
+        <<~KEY.delete("\n")
+          sk-ecdsa-sha2-nistp256@openssh.com AAAAInNrLWVjZHNhLXNoYTItbmlzdHAyN
+          TZAb3BlbnNzaC5jb20AAAAIbmlzdHAyNTYAAABBBDZ+f5tSRhlB7EN39f93SscTN5PUv
+          bD3UQsNrlE1ZdbwPMMRul2zlPiUvwAvnJitW0jlD/vwZOW2YN+q+iZ5c0MAAAAEc3NoOg== dummy@gitlab.com
+        KEY
+      end
+    end
+
+    factory :ed25519_sk_key_256 do
+      key do
+        <<~KEY.delete("\n")
+          sk-ssh-ed25519@openssh.com AAAAGnNrLXNzaC1lZDI1NTE5QG9wZW5zc2guY29tA
+          AAAIEX/dQ0v4127bEo8eeG1EV0ApO2lWbSnN6RWusn/NjqIAAAABHNzaDo= dummy@gitlab.com
+        KEY
+      end
+    end
   end
 end

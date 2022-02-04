@@ -141,16 +141,6 @@ RSpec.describe LooseForeignKeys::CleanupWorker do
     end
   end
 
-  context 'when the loose_foreign_key_cleanup feature flag is off' do
-    before do
-      stub_feature_flags(loose_foreign_key_cleanup: false)
-    end
-
-    it 'does nothing' do
-      expect { described_class.new.perform }.not_to change { LooseForeignKeys::DeletedRecord.status_processed.count }
-    end
-  end
-
   describe 'multi-database support' do
     where(:current_minute, :configured_base_models, :expected_connection) do
       2 | { main: ApplicationRecord, ci: Ci::ApplicationRecord } | ApplicationRecord.connection

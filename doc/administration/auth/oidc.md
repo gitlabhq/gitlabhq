@@ -461,6 +461,65 @@ To use symmetric key encryption:
 If after reconfiguring, you see the error `JSON::JWS::VerificationFailed` error message, this means
 the incorrect secret was specified.
 
+#### Casdoor
+
+GitLab works with OpenID providers that use HTTPS. To connect to GitLab using OpenID with Casdoor, use HTTPS instead of HTTP.
+
+For your app, complete the following steps on Casdoor:
+
+1. Get a client ID and a client secret.
+1. Add your GitLab redirect URL. For example, if your GitLab domain is `gitlab.example.com`, ensure the Casdoor app has the following
+   `Redirect URI`: `https://gitlab.example.com/users/auth/openid_connect/callback`.
+
+See the [Casdoor documentation](https://casdoor.org/docs/integration/gitlab) for more details.
+
+Example Omnibus GitLab configuration (file path: `/etc/gitlab/gitlab.rb`):
+
+```ruby
+gitlab_rails['omniauth_providers'] = [
+    {
+        name: "openid_connect",
+        label: "Casdoor", # optional label for login button, defaults to "Openid Connect"
+        args: {
+            name: "openid_connect",
+            scope: ["openid", "profile", "email"],
+            response_type: "code",
+            issuer:  "https://<CASDOOR_HOSTNAME>",
+            client_auth_method: "query",
+            discovery: true,
+            uid_field: "sub",
+            client_options: {
+                identifier: "<YOUR CLIENT ID>",
+                secret: "<YOUR CLIENT SECRET>",
+                redirect_uri: "https://gitlab.example.com/users/auth/openid_connect/callback"
+            }
+        }
+    }
+]
+```
+
+Example installations from source configuration (file path: `config/gitlab.yml`):
+
+```yaml
+  - { name: 'openid_connect',
+      label: 'Casdoor', # optional label for login button, defaults to "Openid Connect"
+      args: {
+        name: 'openid_connect',
+        scope: ['openid','profile','email'],
+        response_type: 'code',
+        issuer: 'https://<CASDOOR_HOSTNAME>',
+        discovery: true,
+        client_auth_method: 'query',
+        uid_field: 'sub',
+        client_options: {
+          identifier: '<YOUR CLIENT ID>',
+          secret: '<YOUR CLIENT SECRET>',
+          redirect_uri: 'https://gitlab.example.com/users/auth/openid_connect/callback'
+        }
+      }
+    }
+```
+
 ## General troubleshooting
 
 If you're having trouble, here are some tips:

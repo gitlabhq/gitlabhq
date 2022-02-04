@@ -172,7 +172,7 @@ Files blocked by this rule are listed below. For a complete list of criteria, se
   - `id_dsa`
   - `.id_dsa`
 
-- Private ed25519 SSH keys:
+- Private ED25519 SSH keys:
 
   - `/ssh/id_ed25519`
   - `/.ssh/personal_ed25519`
@@ -187,6 +187,22 @@ Files blocked by this rule are listed below. For a complete list of criteria, se
   - `/config/server_ecdsa`
   - `id_ecdsa`
   - `.id_ecdsa`
+
+- Private ECDSA_SK SSH keys (GitLab 14.8 and later):
+
+  - `/ssh/id_ecdsa_sk`
+  - `/.ssh/personal_ecdsa_sk`
+  - `/config/server_ecdsa_sk`
+  - `id_ecdsa_sk`
+  - `.id_ecdsa_sk`
+
+- Private ED25519_SK SSH keys (GitLab 14.8 and later):
+
+  - `/ssh/id_ed25519_sk`
+  - `/.ssh/personal_ed25519_sk`
+  - `/config/server_ed25519_sk`
+  - `id_ed25519_sk`
+  - `.id_ed25519_sk`
 
 - Any files ending with these suffixes:
 
