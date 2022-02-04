@@ -10,6 +10,9 @@ const token = {
 const tokens = {
   nodes: [token],
 };
+const connections = {
+  nodes: [],
+};
 const pageInfo = {
   endCursor: '',
   hasNextPage: false,
@@ -23,6 +26,7 @@ export const createAgentResponse = {
     createClusterAgent: {
       clusterAgent: {
         ...agent,
+        connections,
         tokens,
       },
       errors: [],
@@ -35,6 +39,7 @@ export const createAgentErrorResponse = {
     createClusterAgent: {
       clusterAgent: {
         ...agent,
+        connections,
         tokens,
       },
       errors: ['could not create agent'],
@@ -66,7 +71,7 @@ export const getAgentResponse = {
   data: {
     project: {
       id: 'project-1',
-      clusterAgents: { nodes: [{ ...agent, tokens }], pageInfo, count },
+      clusterAgents: { nodes: [{ ...agent, connections, tokens }], pageInfo, count },
       repository: {
         tree: {
           trees: { nodes: [{ ...agent, path: null }], pageInfo },

@@ -78,6 +78,43 @@ Notify.test_email(e, "Test email for #{n}", 'Test email').deliver_now
 Notify.test_email(u.email, "Test email for #{u.name}", 'Test email').deliver_now
 ```
 
+## Limiting output
+
+Adding a semicolon(`;`) and a follow-up statement at the end of a statement prevents the default implicit return output. This is useful if you are already explicitly printing details and potentially have a lot of return output:
+
+```ruby
+puts ActiveRecord::Base.descendants; :ok 
+Project.select(&:pages_deployed?).each {|p| puts p.pages_url }; true
+```
+
+## Get or store the result of last operation
+
+Underscore(`_`) represents the implicit return of the previous statement. You can use this to quickly assign a variable from the output of the previous command:
+
+```ruby
+Project.last
+# => #<Project id:2537 root/discard>>
+project = _
+# => #<Project id:2537 root/discard>>
+project.id
+# => 2537
+```
+
+## Open object in irb
+
+Sometimes it is easier to navigate through a method if you are within the context of the object. You can shim into the namespace of `Object` to let you open `irb` within the context of any object:
+
+```ruby
+Object.define_method(:irb) { binding.irb }
+
+project = Project.last
+# => #<Project id:2537 root/discard>>
+project.irb
+# Notice new context
+irb(#<Project>)> web_url
+# => "https://gitlab-example/root/discard"
+```
+
 ## Query the database using an ActiveRecord Model
 
 ```ruby

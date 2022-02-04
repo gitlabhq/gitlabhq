@@ -152,6 +152,10 @@ RSpec.describe ClustersHelper do
     it 'displays kas address' do
       expect(subject[:kas_address]).to eq(Gitlab::Kas.external_url)
     end
+
+    it 'displays GitLab version' do
+      expect(subject[:gitlab_version]).to eq(Gitlab.version_info)
+    end
   end
 
   describe '#js_cluster_new' do

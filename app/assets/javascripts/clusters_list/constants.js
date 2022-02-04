@@ -64,6 +64,27 @@ export const STATUSES = {
   creating: { title: __('Creating') },
 };
 
+export const I18N_AGENT_TABLE = {
+  nameLabel: s__('ClusterAgents|Name'),
+  statusLabel: s__('ClusterAgents|Connection status'),
+  lastContactLabel: s__('ClusterAgents|Last contact'),
+  versionLabel: __('Version'),
+  configurationLabel: s__('ClusterAgents|Configuration'),
+  optionsLabel: __('Options'),
+  troubleshootingText: s__('ClusterAgents|Learn how to troubleshoot'),
+  neverConnectedText: s__('ClusterAgents|Never'),
+  versionMismatchTitle: s__('ClusterAgents|Agent version mismatch'),
+  versionMismatchText: s__(
+    "ClusterAgents|The Agent version do not match each other across your cluster's pods. This can happen when a new Agent version was just deployed and Kubernetes is shutting down the old pods.",
+  ),
+  versionOutdatedTitle: s__('ClusterAgents|Agent version update required'),
+  versionOutdatedText: s__(
+    'ClusterAgents|Your Agent version is out of sync with your GitLab version (v%{version}), which might cause compatibility problems. Update the Agent installed on your cluster to the most recent version.',
+  ),
+  versionMismatchOutdatedTitle: s__('ClusterAgents|Agent version mismatch and update'),
+  viewDocsText: s__('ClusterAgents|How to update the Agent?'),
+};
+
 export const I18N_AGENT_MODAL = {
   agent_registration: {
     registerAgentButton: s__('ClusterAgents|Register'),

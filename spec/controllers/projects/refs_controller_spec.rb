@@ -47,6 +47,14 @@ RSpec.describe Projects::RefsController do
       expect(response).to be_not_found
     end
 
+    context 'when ref is incorrect' do
+      it 'returns 404 page' do
+        xhr_get(:json, id: '.')
+
+        expect(response).to be_not_found
+      end
+    end
+
     context 'when json is requested' do
       it 'renders JSON' do
         expect(::Gitlab::GitalyClient).to receive(:allow_ref_name_caching).and_call_original

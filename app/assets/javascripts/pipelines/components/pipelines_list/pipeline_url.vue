@@ -4,7 +4,7 @@ import { __, sprintf } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate/tooltip_on_truncate.vue';
-import { SCHEDULE_ORIGIN } from '../../constants';
+import { SCHEDULE_ORIGIN, ICONS } from '../../constants';
 
 export default {
   components: {
@@ -117,14 +117,24 @@ export default {
       let name = '';
 
       if (this.commitTag) {
-        name = 'tag';
+        name = ICONS.TAG;
       } else if (this.mergeRequestRef) {
-        name = 'git-merge';
+        name = ICONS.MR;
       } else {
-        name = 'branch';
+        name = ICONS.BRANCH;
       }
 
       return name;
+    },
+    commitIconTooltipTitle() {
+      switch (this.commitIcon) {
+        case ICONS.TAG:
+          return __('Tag');
+        case ICONS.MR:
+          return __('Merge Request');
+        default:
+          return __('Branch');
+      }
     },
     commitTitle() {
       return this.pipeline?.commit?.title;
@@ -172,7 +182,12 @@ export default {
         </gl-link>
         <!--Commit row-->
         <div class="icon-container gl-display-inline-block">
-          <gl-icon :name="commitIcon" />
+          <gl-icon
+            v-gl-tooltip
+            :name="commitIcon"
+            :title="commitIconTooltipTitle"
+            data-testid="commit-icon-type"
+          />
         </div>
         <tooltip-on-truncate :title="tooltipTitle" truncate-target="child" placement="top">
           <gl-link
@@ -186,7 +201,13 @@ export default {
             commitRef.name
           }}</gl-link>
         </tooltip-on-truncate>
-        <gl-icon name="commit" class="commit-icon" />
+        <gl-icon
+          v-gl-tooltip
+          name="commit"
+          class="commit-icon"
+          :title="__('Commit')"
+          data-testid="commit-icon"
+        />
 
         <gl-link :href="commitUrl" class="commit-sha mr-0" data-testid="commit-short-sha">{{
           commitShortSha

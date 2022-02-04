@@ -27,6 +27,7 @@ export default () => {
     clustersEmptyStateImage,
     canAddCluster,
     canAdminCluster,
+    gitlabVersion,
   } = el.dataset;
 
   return new Vue({
@@ -42,6 +43,7 @@ export default () => {
       clustersEmptyStateImage,
       canAddCluster: parseBoolean(canAddCluster),
       canAdminCluster: parseBoolean(canAdminCluster),
+      gitlabVersion,
     },
     store: createStore(el.dataset),
     render(createElement) {

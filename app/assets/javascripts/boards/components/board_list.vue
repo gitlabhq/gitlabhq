@@ -60,6 +60,9 @@ export default {
           filters: this.filterParams,
         };
       },
+      skip() {
+        return this.isEpicBoard;
+      },
     },
   },
   computed: {

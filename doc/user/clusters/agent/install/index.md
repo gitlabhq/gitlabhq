@@ -77,7 +77,7 @@ file and:
 1. From your project's sidebar, select **Infrastructure > Kubernetes clusters**.
 1. Select **Actions**.
 1. From the **Select an Agent** dropdown list, select the Agent you want to register and select **Register an Agent**.
-1. GitLab generates a registration token for this Agent. Securely store this secret token as you cannot view it again.
+1. GitLab generates a registration token for this Agent. Securely store this secret token, as you need it to install the Agent onto your cluster and to [update the Agent](#update-the-agent-version) to another version.
 1. Copy the command under **Recommended installation method**. You need it to install the Agent onto your cluster through the one-liner installation method.
 
 ### Install the Agent onto the cluster
@@ -203,6 +203,35 @@ and you're good to go. You can create multiple Agents, for example:
 - To reach your cluster from different projects.
 - To connect multiple clusters to GitLab.
 
+## Update the Agent version
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/340882) in GitLab 14.8, GitLab warns you on the Agent's list page to update the Agent version installed on your cluster.
+
+To update the Agent's version on your cluster, you need to re-run the [installation command](#install-the-agent-onto-the-cluster)
+with a newer `--agent-version`. Make sure to specify the other required parameters: `--kas-address`, `--namespace`, and `--agent-token`.
+You can find the available `agentk` versions in [the container registry](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/container_registry/1223205?sort=desc).
+
+If you don't have access to your Agent's token, you can retrieve it from your cluster:
+
+1. On your computer, open the terminal and connect to your cluster.
+1. To retrieve the namespace, run:
+
+    ```shell
+    kubectl get namespaces
+    ```
+
+1. To retrieve the secret, run:
+
+    ```shell
+    kubectl -n <namespace> get secrets
+    ```
+
+1. To retrieve the token, run:
+
+    ```shell
+    kubectl -n <namespace> get secret <secret-name> --template={{.data.token}} | base64 --decode
+    ```
+
 ## Example projects
 
 The following example projects can help you get started with the Agent.
@@ -222,7 +251,8 @@ A feature introduced in a given GitLab minor version might work with other `agen
 To make sure that it works, use at least the same `agentk` and `kas` minor version. For example,
 if your GitLab version is 14.2, use at least `agentk` 14.2 and `kas` 14.2.
 
-We recommend upgrading your `kas` installations together with GitLab instances' upgrades, and to upgrade the `agentk` installations after upgrading GitLab.
+We recommend upgrading your `kas` installations together with GitLab instances' upgrades, and to
+[upgrade the `agentk` installations](#update-the-agent-version) after upgrading GitLab.
 
 The available `agentk` and `kas` versions can be found in
 [the container registry](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/container_registry/).

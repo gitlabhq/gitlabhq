@@ -15,6 +15,7 @@ RSpec.describe 'Cluster agent registration', :js do
         double(agent_name: 'example-agent-1', path: '.gitlab/agents/example-agent-1/config.yaml'),
         double(agent_name: 'example-agent-2', path: '.gitlab/agents/example-agent-2/config.yaml')
       ])
+      allow(client).to receive(:get_connected_agents).and_return([])
     end
 
     allow(Devise).to receive(:friendly_token).and_return('example-agent-token')

@@ -59,8 +59,8 @@ module QA
         project_snippet&.remove_via_api!
       end
 
-      shared_examples 'copying snippet file contents' do |snippet_type|
-        it "copies file contents of a multi-file #{snippet_type} to a comment and verifies them" do
+      shared_examples 'copying snippet file contents' do |snippet_type, testcase|
+        it "copies file contents of a multi-file #{snippet_type} to a comment and verifies them", testcase: testcase do
           send(snippet_type).visit!
 
           files.each do |files|
@@ -73,8 +73,8 @@ module QA
         end
       end
 
-      it_behaves_like 'copying snippet file contents', :personal_snippet
-      it_behaves_like 'copying snippet file contents', :project_snippet
+      it_behaves_like 'copying snippet file contents', :personal_snippet, 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347849'
+      it_behaves_like 'copying snippet file contents', :project_snippet, 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347848'
     end
   end
 end

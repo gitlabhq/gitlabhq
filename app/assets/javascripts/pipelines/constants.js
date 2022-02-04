@@ -10,6 +10,12 @@ export const SCHEDULE_ORIGIN = 'schedule';
 export const NEEDS_PROPERTY = 'needs';
 export const EXPLICIT_NEEDS_PROPERTY = 'previousStageJobsOrNeeds';
 
+export const ICONS = {
+  TAG: 'tag',
+  MR: 'git-merge',
+  BRANCH: 'branch',
+};
+
 export const TestStatus = {
   FAILED: 'failed',
   SKIPPED: 'skipped',

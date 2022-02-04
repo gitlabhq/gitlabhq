@@ -36,8 +36,8 @@ module QA
         project_snippet&.remove_via_api!
       end
 
-      shared_examples 'deleting file from snippet' do |snippet_type|
-        it "deletes second file from an existing #{snippet_type} to make it single-file" do
+      shared_examples 'deleting file from snippet' do |snippet_type, testcase|
+        it "deletes second file from an existing #{snippet_type} to make it single-file", testcase: testcase do
           send(snippet_type).visit!
 
           Page::Dashboard::Snippet::Show.perform(&:click_edit_button)
@@ -58,8 +58,8 @@ module QA
         end
       end
 
-      it_behaves_like 'deleting file from snippet', :personal_snippet
-      it_behaves_like 'deleting file from snippet', :project_snippet
+      it_behaves_like 'deleting file from snippet', :personal_snippet, 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347728'
+      it_behaves_like 'deleting file from snippet', :project_snippet, 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347727'
     end
   end
 end

@@ -1535,7 +1535,7 @@ Get a list of users provisioned by a given group. Does not include users provisi
 Requires at least the Maintainer role on the group.
 
 ```plaintext
-GET /group/:provisioned_group_id/provisioned_users
+GET /groups/:provisioned_group_id/provisioned_users
 ```
 
 Parameters:

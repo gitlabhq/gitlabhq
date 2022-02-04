@@ -40,7 +40,13 @@ describe('Agents', () => {
       data: {
         project: {
           id: '1',
-          clusterAgents: { nodes: agents, pageInfo, tokens: { nodes: [] }, count },
+          clusterAgents: {
+            nodes: agents,
+            pageInfo,
+            connections: { nodes: [] },
+            tokens: { nodes: [] },
+            count,
+          },
           repository: { tree: { trees: { nodes: trees, pageInfo } } },
         },
       },
@@ -89,12 +95,14 @@ describe('Agents', () => {
         id: '1',
         name: 'agent-1',
         webPath: '/agent-1',
+        connections: null,
         tokens: null,
       },
       {
         id: '2',
         name: 'agent-2',
         webPath: '/agent-2',
+        connections: null,
         tokens: {
           nodes: [
             {
@@ -125,6 +133,7 @@ describe('Agents', () => {
         configFolder: undefined,
         status: 'unused',
         lastContact: null,
+        connections: null,
         tokens: null,
       },
       {
@@ -138,6 +147,7 @@ describe('Agents', () => {
         webPath: '/agent-2',
         status: 'active',
         lastContact: new Date(testDate).getTime(),
+        connections: null,
         tokens: {
           nodes: [
             {

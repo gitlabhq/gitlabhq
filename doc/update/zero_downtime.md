@@ -87,6 +87,9 @@ meet the other online upgrade requirements mentioned above.
 
 ## Single-node deployment
 
+WARNING:
+You can only upgrade one minor release at a time.
+
 Before following these instructions, note the following **important** information:
 
 - You can only upgrade one minor release at a time. So from 13.6 to 13.7, not to 13.8.
@@ -158,6 +161,7 @@ you've completed these steps.
 
 ## Multi-node / HA deployment
 
+WARNING:
 You can only upgrade one minor release at a time. So from 13.6 to 13.7, not to 13.8.
 If you attempt more than one minor release, the upgrade may fail.
 
@@ -531,6 +535,9 @@ procedure.
 
 ## Geo deployment **(PREMIUM SELF)**
 
+WARNING:
+You can only upgrade one minor release at a time.
+
 The order of steps is important. While following these steps, make
 sure you follow them in the right order, on the correct node.
 
@@ -650,6 +657,9 @@ setting `gitlab_rails['auto_migrate'] = false` in
 `/etc/gitlab/gitlab.rb` after you've completed these steps.
 
 ## Multi-node / HA deployment with Geo **(PREMIUM SELF)**
+
+WARNING:
+You can only upgrade one minor release at a time.
 
 This section describes the steps required to upgrade a multi-node / HA
 deployment with Geo. Some steps must be performed on a particular node. This

@@ -7613,6 +7613,15 @@ msgstr ""
 msgid "ClusterAgents|Agent never connected to GitLab"
 msgstr ""
 
+msgid "ClusterAgents|Agent version mismatch"
+msgstr ""
+
+msgid "ClusterAgents|Agent version mismatch and update"
+msgstr ""
+
+msgid "ClusterAgents|Agent version update required"
+msgstr ""
+
 msgid "ClusterAgents|All"
 msgstr ""
 
@@ -7712,6 +7721,9 @@ msgstr ""
 msgid "ClusterAgents|How to register an agent?"
 msgstr ""
 
+msgid "ClusterAgents|How to update the Agent?"
+msgstr ""
+
 msgid "ClusterAgents|Install new Agent"
 msgstr ""
 
@@ -7793,6 +7805,9 @@ msgstr ""
 msgid "ClusterAgents|Tell us what you think"
 msgstr ""
 
+msgid "ClusterAgents|The Agent version do not match each other across your cluster's pods. This can happen when a new Agent version was just deployed and Kubernetes is shutting down the old pods."
+msgstr ""
+
 msgid "ClusterAgents|The GitLab Agent provides an increased level of security when connecting Kubernetes clusters to GitLab. %{linkStart}Learn more about the GitLab Agent.%{linkEnd}"
 msgstr ""
 
@@ -7844,6 +7859,9 @@ msgid "ClusterAgents|You cannot see this token again after you close this window
 msgstr ""
 
 msgid "ClusterAgents|You will need to create a token to connect to your agent"
+msgstr ""
+
+msgid "ClusterAgents|Your Agent version is out of sync with your GitLab version (v%{version}), which might cause compatibility problems. Update the Agent installed on your cluster to the most recent version."
 msgstr ""
 
 msgid "ClusterAgents|Your instance doesn't have the %{linkStart}GitLab Agent Server (KAS)%{linkEnd} set up. Ask a GitLab Administrator to install it."
