@@ -2582,6 +2582,12 @@ RSpec.describe User do
 
   describe '.search' do
     let_it_be(:user) { create(:user, name: 'user', username: 'usern', email: 'email@example.com') }
+    let_it_be(:public_email) do
+      create(:email, :confirmed, user: user, email: 'publicemail@example.com').tap do |email|
+        user.update!(public_email: email.email)
+      end
+    end
+
     let_it_be(:user2) { create(:user, name: 'user name', username: 'username', email: 'someemail@example.com') }
     let_it_be(:user3) { create(:user, name: 'us', username: 'se', email: 'foo@example.com') }
     let_it_be(:email) { create(:email, user: user, email: 'alias@example.com') }
@@ -2609,30 +2615,31 @@ RSpec.describe User do
     end
 
     describe 'email matching' do
-      it 'returns users with a matching Email' do
-        expect(described_class.search(user.email)).to eq([user])
+      it 'returns users with a matching public email' do
+        expect(described_class.search(user.public_email)).to match_array([user])
       end
 
-      it 'does not return users with a partially matching Email' do
-        expect(described_class.search(user.email[1...-1])).to be_empty
+      it 'does not return users with a partially matching public email' do
+        expect(described_class.search(user.public_email[1...-1])).to be_empty
       end
 
-      it 'returns users with a matching Email regardless of the casing' do
-        expect(described_class.search(user2.email.upcase)).to eq([user2])
-      end
-    end
-
-    describe 'secondary email matching' do
-      it 'returns users with a matching secondary email' do
-        expect(described_class.search(email.email)).to include(email.user)
+      it 'returns users with a matching public email regardless of the casing' do
+        expect(described_class.search(user.public_email.upcase)).to match_array([user])
       end
 
-      it 'does not return users with a matching part of secondary email' do
-        expect(described_class.search(email.email[1...-1])).to be_empty
+      it 'does not return users with a matching private email' do
+        expect(described_class.search(user.email)).to be_empty
+        expect(described_class.search(email.email)).to be_empty
       end
 
-      it 'returns users with a matching secondary email regardless of the casing' do
-        expect(described_class.search(email.email.upcase)).to include(email.user)
+      context 'with private emails search' do
+        it 'returns users with matching private email' do
+          expect(described_class.search(user.email, with_private_emails: true)).to match_array([user])
+        end
+
+        it 'returns users with matching private secondary email' do
+          expect(described_class.search(email.email, with_private_emails: true)).to match_array([user])
+        end
       end
     end
 
@@ -2730,6 +2737,80 @@ RSpec.describe User do
 
     it 'returns no matches for nil' do
       expect(described_class.search_without_secondary_emails(nil)).to be_empty
+    end
+  end
+
+  describe '.search_with_public_emails' do
+    let_it_be(:user) { create(:user, name: 'John Doe', username: 'john.doe', email: 'someone.1@example.com' ) }
+    let_it_be(:another_user) { create(:user, name: 'Albert Smith', username: 'albert.smith', email: 'another.2@example.com' ) }
+    let_it_be(:public_email) do
+      create(:email, :confirmed, user: another_user, email: 'alias@example.com').tap do |email|
+        another_user.update!(public_email: email.email)
+      end
+    end
+
+    let_it_be(:secondary_email) do
+      create(:email, :confirmed, user: another_user, email: 'secondary@example.com')
+    end
+
+    it 'returns users with a matching name' do
+      expect(described_class.search_with_public_emails(user.name)).to match_array([user])
+    end
+
+    it 'returns users with a partially matching name' do
+      expect(described_class.search_with_public_emails(user.name[0..2])).to match_array([user])
+    end
+
+    it 'returns users with a matching name regardless of the casing' do
+      expect(described_class.search_with_public_emails(user.name.upcase)).to match_array([user])
+    end
+
+    it 'returns users with a matching public email' do
+      expect(described_class.search_with_public_emails(another_user.public_email)).to match_array([another_user])
+    end
+
+    it 'does not return users with a partially matching email' do
+      expect(described_class.search_with_public_emails(another_user.public_email[1...-1])).to be_empty
+    end
+
+    it 'returns users with a matching email regardless of the casing' do
+      expect(described_class.search_with_public_emails(another_user.public_email.upcase)).to match_array([another_user])
+    end
+
+    it 'returns users with a matching username' do
+      expect(described_class.search_with_public_emails(user.username)).to match_array([user])
+    end
+
+    it 'returns users with a partially matching username' do
+      expect(described_class.search_with_public_emails(user.username[0..2])).to match_array([user])
+    end
+
+    it 'returns users with a matching username regardless of the casing' do
+      expect(described_class.search_with_public_emails(user.username.upcase)).to match_array([user])
+    end
+
+    it 'does not return users with a matching whole private email' do
+      expect(described_class.search_with_public_emails(user.email)).not_to include(user)
+    end
+
+    it 'does not return users with a matching whole private email' do
+      expect(described_class.search_with_public_emails(secondary_email.email)).to be_empty
+    end
+
+    it 'does not return users with a matching part of secondary email' do
+      expect(described_class.search_with_public_emails(secondary_email.email[1...-1])).to be_empty
+    end
+
+    it 'does not return users with a matching part of private email' do
+      expect(described_class.search_with_public_emails(user.email[1...-1])).to be_empty
+    end
+
+    it 'returns no matches for an empty string' do
+      expect(described_class.search_with_public_emails('')).to be_empty
+    end
+
+    it 'returns no matches for nil' do
+      expect(described_class.search_with_public_emails(nil)).to be_empty
     end
   end
 

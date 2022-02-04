@@ -16,13 +16,14 @@ class Projects::TagsController < Projects::ApplicationController
   # rubocop: disable CodeReuse/ActiveRecord
   def index
     begin
-      params[:sort] = params[:sort].presence || sort_value_recently_updated
+      tags_params[:sort] = tags_params[:sort].presence || sort_value_recently_updated
 
-      @sort = params[:sort]
+      @sort = tags_params[:sort]
+      @search = tags_params[:search]
 
-      @tags = TagsFinder.new(@repository, params).execute
+      @tags = TagsFinder.new(@repository, tags_params).execute
 
-      @tags = Kaminari.paginate_array(@tags).page(params[:page])
+      @tags = Kaminari.paginate_array(@tags).page(tags_params[:page])
       tag_names = @tags.map(&:name)
       @tags_pipelines = @project.ci_pipelines.latest_successful_for_refs(tag_names)
 
@@ -99,6 +100,10 @@ class Projects::TagsController < Projects::ApplicationController
   end
 
   private
+
+  def tags_params
+    params.permit(:search, :sort, :per_page, :page_token, :page)
+  end
 
   # TODO: remove this with the release creation moved to it's own form https://gitlab.com/gitlab-org/gitlab/-/issues/214245
   def find_evidence_pipeline

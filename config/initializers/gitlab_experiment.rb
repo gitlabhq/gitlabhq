@@ -1,5 +1,15 @@
 # frozen_string_literal: true
 
+module Gitlab
+  class Experiment
+    class Configuration
+      def self.deprecated(*args, version:, stack: 0)
+        # do nothing here
+      end
+    end
+  end
+end
+
 Gitlab::Experiment.configure do |config|
   # The base experiment class that will be instantiated when using the
   # `experiment` DSL, is our ApplicationExperiment. If a custom experiment

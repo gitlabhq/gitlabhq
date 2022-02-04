@@ -1380,6 +1380,15 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: package_cleanup:packages_mark_package_files_for_destruction
+  :worker_name: Packages::MarkPackageFilesForDestructionWorker
+  :feature_category: :package_registry
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: package_repositories:packages_debian_generate_distribution
   :worker_name: Packages::Debian::GenerateDistributionWorker
   :feature_category: :package_registry
@@ -1940,6 +1949,15 @@
   :tags: []
 - :name: background_migration
   :worker_name: BackgroundMigrationWorker
+  :feature_category: :database
+  :has_external_dependencies:
+  :urgency: :throttled
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent:
+  :tags: []
+- :name: background_migration_ci_database
+  :worker_name: BackgroundMigration::CiDatabaseWorker
   :feature_category: :database
   :has_external_dependencies:
   :urgency: :throttled

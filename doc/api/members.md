@@ -267,11 +267,11 @@ respectively.
 GET /groups/:id/billable_members
 ```
 
-| Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
+| Attribute | Type | Required | Description                                                                                                  |
+| --------- | ---- | -------- |--------------------------------------------------------------------------------------------------------------|
 | `id`      | integer/string | yes | The ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) owned by the authenticated user |
-| `search`  | string         | no  | A query string to search for group members by name, username, or email. |
-| `sort`    | string         | no  | A query string containing parameters that specify the sort attribute and order. See supported values below.|
+| `search`  | string         | no  | A query string to search for group members by name, username, or public email.                               |
+| `sort`    | string         | no  | A query string containing parameters that specify the sort attribute and order. See supported values below.  |
 
 The supported values for the `sort` attribute are:
 

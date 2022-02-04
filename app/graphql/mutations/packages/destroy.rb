@@ -15,7 +15,7 @@ module Mutations
       def resolve(id:)
         package = authorized_find!(id: id)
 
-        result = ::Packages::DestroyPackageService.new(container: package, current_user: current_user).execute
+        result = ::Packages::MarkPackageForDestructionService.new(container: package, current_user: current_user).execute
 
         errors = result.error? ? Array.wrap(result[:message]) : []
 

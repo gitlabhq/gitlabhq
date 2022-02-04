@@ -603,4 +603,45 @@ RSpec.describe GitlabSchema.types['Project'] do
       expect(cluster_agent.agent_tokens.size).to be(count)
     end
   end
+
+  describe 'service_desk_address' do
+    let(:user) { create(:user) }
+    let(:query) do
+      %(
+        query {
+          project(fullPath: "#{project.full_path}") {
+            id
+            serviceDeskAddress
+          }
+        }
+      )
+    end
+
+    subject { GitlabSchema.execute(query, context: { current_user: user }).as_json }
+
+    before do
+      allow(::Gitlab::ServiceDeskEmail).to receive(:enabled?) { true }
+      allow(::Gitlab::ServiceDeskEmail).to receive(:address_for_key) { 'address-suffix@example.com' }
+    end
+
+    context 'when a user can admin issues' do
+      let(:project) { create(:project, :public, :service_desk_enabled) }
+
+      before do
+        project.add_reporter(user)
+      end
+
+      it 'is present' do
+        expect(subject.dig('data', 'project', 'serviceDeskAddress')).to be_present
+      end
+    end
+
+    context 'when a user can not admin issues' do
+      let(:project) { create(:project, :public, :service_desk_disabled) }
+
+      it 'is empty' do
+        expect(subject.dig('data', 'project', 'serviceDeskAddress')).to be_blank
+      end
+    end
+  end
 end

@@ -2,6 +2,10 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 14.7.1 (2022-02-03)
+
+No changes.
+
 ## 14.7.0 (2022-01-21)
 
 ### Added (84 changes)
@@ -439,6 +443,10 @@ entry.
 - [Fix Gitlab/DelegatePredicateMethods offenses](gitlab-org/gitlab@518700a11025b0000ff3ce011638417a882612b0) by @edith007 ([merge request](gitlab-org/gitlab!76001))
 - [Fix Rails/SaveBang offenses](gitlab-org/gitlab@513b0e1dbdf95ea595e7548ff26929e0be30ce29) by @edith007 ([merge request](gitlab-org/gitlab!75894)) **GitLab Enterprise Edition**
 
+## 14.6.4 (2022-02-03)
+
+No changes.
+
 ## 14.6.3 (2022-01-18)
 
 ### Fixed (4 changes)
@@ -836,6 +844,10 @@ No changes.
 - [Fix OpenStruct use](gitlab-org/gitlab@60451303098187cb922d29c9088a3e74892aa0d7) by @mehulsharma ([merge request](gitlab-org/gitlab!74618))
 - [Fix OpenStruct use](gitlab-org/gitlab@f8466f5943a1afeabaf9cf781f7804a8df515a0e) by @mehulsharma ([merge request](gitlab-org/gitlab!74702))
 - [Update Sidekiq to 6.3.1](gitlab-org/gitlab@22e8bc0af656717e56428a7227c467fe08021c66) ([merge request](gitlab-org/gitlab!73973))
+
+## 14.5.4 (2022-02-03)
+
+No changes.
 
 ## 14.5.3 (2022-01-11)
 

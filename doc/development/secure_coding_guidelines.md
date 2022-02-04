@@ -192,7 +192,7 @@ and [possessive quantifiers](https://www.regular-expressions.info/possessive.htm
 
 Go's [`regexp`](https://pkg.go.dev/regexp) package uses `re2` and isn't vulnerable to backtracking issues.
 
-## Further Links
+### Further Links
 
 - [Rubular](https://rubular.com/) is a nice online tool to fiddle with Ruby Regexps.
 - [Runaway Regular Expressions](https://www.regular-expressions.info/catastrophic.html)

@@ -71,7 +71,7 @@ module API
           .new(user_project, params[:package_id]).execute
 
         destroy_conditionally!(package) do |package|
-          ::Packages::DestroyPackageService.new(container: package, current_user: current_user).execute
+          ::Packages::MarkPackageForDestructionService.new(container: package, current_user: current_user).execute
         end
       end
     end

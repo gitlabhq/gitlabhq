@@ -38,6 +38,17 @@ RSpec.describe 'Protected Branches', :js do
       sign_in(user)
     end
 
+    it 'allows to create a protected branch with name containing HTML tags' do
+      visit project_protected_branches_path(project)
+      set_defaults
+      set_protected_branch_name('foo<b>bar<\b>')
+      click_on "Protect"
+
+      within(".protected-branches-list") { expect(page).to have_content('foo<b>bar<\b>') }
+      expect(ProtectedBranch.count).to eq(1)
+      expect(ProtectedBranch.last.name).to eq('foo<b>bar<\b>')
+    end
+
     describe 'Delete protected branch' do
       before do
         create(:protected_branch, project: project, name: 'fix')

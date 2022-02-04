@@ -450,6 +450,12 @@ module Types
       ::Security::CiConfiguration::SastParserService.new(object).configuration
     end
 
+    def service_desk_address
+      return unless Ability.allowed?(current_user, :admin_issue, project)
+
+      object.service_desk_address
+    end
+
     def tag_list
       object.topic_list
     end

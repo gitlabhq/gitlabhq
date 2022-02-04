@@ -299,7 +299,7 @@ RSpec.describe Gitlab::Database::Migrations::BackgroundMigrationHelpers do
 
       before do
         allow(Gitlab::BackgroundMigration).to receive(:coordinator_for_database)
-          .with('main').and_return(coordinator)
+          .with(tracking_database).and_return(coordinator)
 
         expect(coordinator).to receive(:migration_class_for)
           .with(job_class_name).at_least(:once) { job_class }
@@ -403,7 +403,7 @@ RSpec.describe Gitlab::Database::Migrations::BackgroundMigrationHelpers do
       end
 
       context 'when a specific coordinator is given' do
-        let(:coordinator) { Gitlab::BackgroundMigration::JobCoordinator.for_tracking_database('main') }
+        let(:coordinator) { Gitlab::BackgroundMigration::JobCoordinator.for_tracking_database(tracking_database) }
 
         it 'uses that coordinator' do
           expect(coordinator).to receive(:perform_in).with(10.minutes, 'Class', 'Hello', 'World').and_call_original
@@ -436,6 +436,10 @@ RSpec.describe Gitlab::Database::Migrations::BackgroundMigrationHelpers do
 
   context 'when the migration is running against the main database' do
     it_behaves_like 'helpers that enqueue background migrations', BackgroundMigrationWorker, 'main'
+  end
+
+  context 'when the migration is running against the ci database', if: Gitlab::Database.has_config?(:ci) do
+    it_behaves_like 'helpers that enqueue background migrations', BackgroundMigration::CiDatabaseWorker, 'ci'
   end
 
   describe '#delete_job_tracking' do

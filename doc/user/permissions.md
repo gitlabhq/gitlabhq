@@ -62,21 +62,6 @@ The following table lists project permissions available for each role:
 | [Application security](application_security/index.md):<br>View [threats list](application_security/threat_monitoring/index.md#threat-monitoring) **(ULTIMATE)**                           |    |    | ✓   | ✓          | ✓   |
 | [Application security](application_security/index.md):<br>Create a [CVE ID Request](application_security/cve_id_request.md) **(FREE SAAS)**                                               |    |    |     | ✓          | ✓   |
 | [Application security](application_security/index.md):<br>Create or assign [security policy project](application_security/policies/index.md) **(ULTIMATE)**                               |    |    |     |            | ✓   |
-| [CI/CD](../ci/index.md):<br>Download and browse job artifacts                                                                                                                             | ✓ (*3*)  | ✓        | ✓         | ✓          | ✓     |
-| [CI/CD](../ci/index.md):<br>View a job log                                                                                                                                                | ✓ (*3*)  | ✓        | ✓         | ✓          | ✓     |
-| [CI/CD](../ci/index.md):<br>View list of jobs                                                                                                                                             | ✓ (*3*)  | ✓        | ✓         | ✓          | ✓     |
-| [CI/CD](../ci/index.md):<br>View [environments](../ci/environments/index.md)                                                                                                              |          | ✓        | ✓         | ✓          | ✓     |
-| [CI/CD](../ci/index.md):<br>Cancel and retry jobs                                                                                                                                         |          |          | ✓         | ✓          | ✓     |
-| [CI/CD](../ci/index.md):<br>Create new [environments](../ci/environments/index.md)                                                                                                        |          |          | ✓         | ✓          | ✓     |
-| [CI/CD](../ci/index.md):<br>Run CI/CD pipeline against a protected branch                                                                                                                 |          |          | ✓ (*5*)   | ✓          | ✓     |
-| [CI/CD](../ci/index.md):<br>Stop [environments](../ci/environments/index.md)                                                                                                              |          |          | ✓         | ✓          | ✓     |
-| [CI/CD](../ci/index.md):<br>View a job with [debug logging](../ci/variables/index.md#debug-logging)                                                                                       |          |          | ✓         | ✓          | ✓     |
-| [CI/CD](../ci/index.md):<br>Manage CI/CD variables                                                                                                                                        |          |          |           | ✓          | ✓     |
-| [CI/CD](../ci/index.md):<br>Manage job triggers                                                                                                                                           |          |          |           | ✓          | ✓     |
-| [CI/CD](../ci/index.md):<br>Manage runners                                                                                                                                                |          |          |           | ✓          | ✓     |
-| [CI/CD](../ci/index.md):<br>Run Web IDE's Interactive Web Terminals **(ULTIMATE ONLY)**                                                                                                   |          |          |           | ✓          | ✓     |
-| [CI/CD](../ci/index.md):<br>Use [environment terminals](../ci/environments/index.md#web-terminals-deprecated)                                                                             |          |          |           | ✓          | ✓     |
-| [CI/CD](../ci/index.md):<br>Delete pipelines                                                                                                                                              |          |          |           |            | ✓     |
 | [Clusters](infrastructure/clusters/index.md):<br>View [pod logs](project/clusters/kubernetes_pod_logs.md)                                                                                 |          |          | ✓         | ✓          | ✓     |
 | [Clusters](infrastructure/clusters/index.md):<br>View clusters                                                                                                                            |          |          | ✓         | ✓          | ✓     |
 | [Clusters](infrastructure/clusters/index.md):<br>Manage clusters                                                                                                                          |          |          |           | ✓          | ✓     |
@@ -195,7 +180,6 @@ The following table lists project permissions available for each role:
 | [Requirements Management](project/requirements/index.md):<br>Archive / reopen **(ULTIMATE)**                                                                                              |          | ✓        | ✓         | ✓          | ✓     |
 | [Requirements Management](project/requirements/index.md):<br>Create / edit **(ULTIMATE)**                                                                                                 |          | ✓        | ✓         | ✓          | ✓     |
 | [Requirements Management](project/requirements/index.md):<br>Import / export **(ULTIMATE)**                                                                                               |          | ✓        | ✓         | ✓          | ✓     |
-| [Security dashboard](application_security/security_dashboard/index.md):<br>View Security reports **(ULTIMATE)**                                                                           | ✓ (*3*) | ✓ | ✓     | ✓          | ✓     |
 | [Security dashboard](application_security/security_dashboard/index.md):<br>Create issue from vulnerability finding **(ULTIMATE)**                                                         |      |      | ✓     | ✓          | ✓     |
 | [Security dashboard](application_security/security_dashboard/index.md):<br>Create vulnerability from vulnerability finding **(ULTIMATE)**                                                 |      |      | ✓     | ✓          | ✓     |
 | [Security dashboard](application_security/security_dashboard/index.md):<br>Dismiss vulnerability **(ULTIMATE)**                                                                           |      |      | ✓     | ✓          | ✓     |
@@ -244,6 +228,76 @@ The following table lists project permissions available for each role:
 1. The ability to view the Container Registry and pull images is controlled by the [Container Registry's visibility permissions](packages/container_registry/index.md#container-registry-visibility-permissions).
 
 ## Project features permissions
+
+More details about the permissions for some project-level features follow.
+
+### GitLab CI/CD permissions
+
+[GitLab CI/CD](../ci/index.md) permissions for some roles can be modified by these settings:
+
+- [Public pipelines](../ci/pipelines/settings.md#change-which-users-can-view-your-pipelines):
+  When set to public, gives access to certain CI/CD features to *Guest* project members.
+- [Pipeline visibility](../ci/enable_or_disable_ci.md#enable-cicd-in-a-project): When set to **Everyone with Access**,
+  gives access to certain CI/CD "view" features to *non-project* members.
+
+| Action                                                                            | Non-member | Guest   | Reporter | Developer | Maintainer | Owner |
+|-----------------------------------------------------------------------------------|------------|---------|----------|-----------|------------|-------|
+| See that artifacts exist                                                          | ✓ (*3*)    | ✓ (*3*) | ✓        | ✓         | ✓          | ✓     |
+| View a list of jobs                                                               | ✓ (*1*)    | ✓ (*2*) | ✓        | ✓         | ✓          | ✓     |
+| View and download artifacts                                                       | ✓ (*1*)    | ✓ (*2*) | ✓        | ✓         | ✓          | ✓     |
+| View [environments](../ci/environments/index.md)                                  | ✓ (*3*)    | ✓ (*3*) | ✓        | ✓         | ✓          | ✓     |
+| View job logs and job details page                                                | ✓ (*1*)    | ✓ (*2*) | ✓        | ✓         | ✓          | ✓     |
+| View pipeline details page                                                        | ✓ (*1*)    | ✓ (*2*) | ✓        | ✓         | ✓          | ✓     |
+| View pipelines page                                                               | ✓ (*1*)    | ✓ (*2*) | ✓        | ✓         | ✓          | ✓     |
+| View pipelines tab in MR                                                          | ✓ (*3*)    | ✓ (*3*) | ✓        | ✓         | ✓          | ✓     |
+| [View vulnerabilities in a pipeline](application_security/security_dashboard/index.md#view-vulnerabilities-in-a-pipeline) |   | ✓ (*2*) | ✓ | ✓ | ✓ | ✓ |
+| Cancel and retry jobs                                                             |            |         |          | ✓         | ✓          | ✓     |
+| Create new [environments](../ci/environments/index.md)                            |            |         |          | ✓         | ✓          | ✓     |
+| Delete job logs or job artifacts                                                  |            |         |          | ✓ (*4*)   | ✓          | ✓     |
+| Run CI/CD pipeline for a protected branch                                         |            |         |          | ✓ (*5*)   | ✓ (*5*)    | ✓     |
+| Stop [environments](../ci/environments/index.md)                                  |            |         |          | ✓         | ✓          | ✓     |
+| View a job with [debug logging](../ci/variables/index.md#debug-logging)           |            |         |          | ✓         | ✓          | ✓     |
+| Use pipeline editor                                                               |            |         |          | ✓         | ✓          | ✓     |
+| Add specific runners to project                                                   |            |         |          |           | ✓          | ✓     |
+| Clear runner caches manually                                                      |            |         |          |           | ✓          | ✓     |
+| Enable shared runners in project                                                  |            |         |          |           | ✓          | ✓     |
+| Manage CI/CD settings                                                             |            |         |          |           | ✓          | ✓     |
+| Manage job triggers                                                               |            |         |          |           | ✓          | ✓     |
+| Manage project-level CI/CD variables                                              |            |         |          |           | ✓          | ✓     |
+| Run [interactive web terminals](../ci/interactive_web_terminal/index.md)          |            |         |          |           | ✓          | ✓     |
+| Use [environment terminals](../ci/environments/index.md#web-terminals-deprecated) |            |         |          |           | ✓          | ✓     |
+| Delete pipelines                                                                  |            |         |          |           |            | ✓     |
+
+1. If the project is public and **Public pipelines** is enabled in **Project Settings > CI/CD**.
+1. If **Public pipelines** is enabled in **Project Settings > CI/CD**.
+1. If the project is public.
+1. Only if the job was both:
+   - Triggered by the user.
+   - [In GitLab 13.0](https://gitlab.com/gitlab-org/gitlab/-/issues/35069) and later,
+     run for a non-protected branch.
+1. If the user is [allowed to merge or push to the protected branch](../ci/pipelines/index.md#pipeline-security-on-protected-branches).
+
+#### Job permissions
+
+This table shows granted privileges for jobs triggered by specific types of users:
+
+| Action                                      | Guest, Reporter | Developer | Maintainer| Administrator |
+|---------------------------------------------|-----------------|-----------|-----------|---------------|
+| Run CI job                                  |                 | ✓         | ✓         | ✓             |
+| Clone source and LFS from current project   |                 | ✓         | ✓         | ✓             |
+| Clone source and LFS from public projects   |                 | ✓         | ✓         | ✓             |
+| Clone source and LFS from internal projects |                 | ✓ (*1*)   | ✓  (*1*)  | ✓             |
+| Clone source and LFS from private projects  |                 | ✓ (*2*)   | ✓  (*2*)  | ✓ (*2*)       |
+| Pull container images from current project  |                 | ✓         | ✓         | ✓             |
+| Pull container images from public projects  |                 | ✓         | ✓         | ✓             |
+| Pull container images from internal projects|                 | ✓ (*1*)   | ✓  (*1*)  | ✓             |
+| Pull container images from private projects |                 | ✓ (*2*)   | ✓  (*2*)  | ✓ (*2*)       |
+| Push container images to current project    |                 | ✓         | ✓         | ✓             |
+| Push container images to other projects     |                 |           |           |               |
+| Push source and LFS                         |                 |           |           |               |
+
+1. Only if the triggering user is not an external one.
+1. Only if the triggering user is a member of the project.
 
 ### Wiki and issues
 
@@ -506,66 +560,6 @@ which visibility level you select on project settings.
 - Only team members: only team members can see, even if your project is public or internal.
 - Everyone with access: everyone can see depending on your project visibility level.
 - Everyone: enabled for everyone (only available for GitLab Pages).
-
-## GitLab CI/CD permissions
-
-GitLab CI/CD permissions rely on the role the user has in GitLab:
-
-- Maintainer
-- Developer
-- Guest/Reporter
-
-GitLab administrators can perform any action on GitLab CI/CD in scope of the GitLab
-instance and project.
-
-| Action                                | Guest, Reporter | Developer   |Maintainer| Administrator |
-|---------------------------------------|-----------------|-------------|----------|---------------|
-| See commits and jobs                  | ✓               | ✓           | ✓        | ✓             |
-| Retry or cancel job                   |                 | ✓           | ✓        | ✓             |
-| Erase job artifacts and job logs      |                 | ✓ (*1*)     | ✓        | ✓             |
-| Delete project                        |                 |             | ✓        | ✓             |
-| Create project                        |                 |             | ✓        | ✓             |
-| Change project configuration           |                 |             | ✓        | ✓             |
-| Add specific runners                   |                 |             | ✓        | ✓             |
-| Add shared runners                    |                 |             |          | ✓             |
-| Clear runner caches manually          |                 |             | ✓        | ✓             |
-| See events in the system              |                 |             |          | ✓             |
-| Admin Area                            |                 |             |          | ✓             |
-
-1. Only if the job was:
-   - Triggered by the user
-   - [In GitLab 13.0](https://gitlab.com/gitlab-org/gitlab/-/issues/35069) and later, run for a non-protected branch.
-
-### Job permissions
-
-This table shows granted privileges for jobs triggered by specific types of
-users:
-
-| Action                                      | Guest, Reporter | Developer   |Maintainer| Administrator   |
-|---------------------------------------------|-----------------|-------------|----------|---------|
-| Run CI job                                  |                 | ✓           | ✓        | ✓       |
-| Clone source and LFS from current project   |                 | ✓           | ✓        | ✓       |
-| Clone source and LFS from public projects   |                 | ✓           | ✓        | ✓       |
-| Clone source and LFS from internal projects |                 | ✓ (*1*)     | ✓  (*1*) | ✓       |
-| Clone source and LFS from private projects  |                 | ✓ (*2*)     | ✓  (*2*) | ✓ (*2*) |
-| Pull container images from current project  |                 | ✓           | ✓        | ✓       |
-| Pull container images from public projects  |                 | ✓           | ✓        | ✓       |
-| Pull container images from internal projects|                 | ✓ (*1*)     | ✓  (*1*) | ✓       |
-| Pull container images from private projects |                 | ✓ (*2*)     | ✓  (*2*) | ✓ (*2*) |
-| Push container images to current project    |                 | ✓           | ✓        | ✓       |
-| Push container images to other projects     |                 |             |          |         |
-| Push source and LFS                         |                 |             |          |         |
-
-1. Only if the triggering user is not an external one
-1. Only if the triggering user is a member of the project
-
-## Running pipelines on protected branches
-
-The permission to merge or push to protected branches is used to define if a user can
-run CI/CD pipelines and execute actions on jobs that are related to those branches.
-
-See [Security on protected branches](../ci/pipelines/index.md#pipeline-security-on-protected-branches)
-for details about the pipelines security model.
 
 ## Release permissions with protected tags
 

@@ -9,11 +9,15 @@ module Packages
     def perform_work
       return unless artifact
 
-      log_metadata(artifact)
+      artifact.transaction do
+        log_metadata(artifact)
 
-      artifact.destroy!
-    rescue StandardError
-      artifact&.error!
+        artifact.destroy!
+      rescue StandardError
+        artifact&.error!
+      end
+
+      after_destroy
     end
 
     def remaining_work_count
@@ -32,6 +36,10 @@ module Packages
 
     def log_cleanup_item
       raise NotImplementedError
+    end
+
+    def after_destroy
+      # no op
     end
 
     def artifact

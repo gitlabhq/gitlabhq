@@ -5,10 +5,12 @@ module Integrations
     include HasWebHook
     include PushDataValidations
     include ReactivelyCached
+    prepend EnableSslVerification
     extend Gitlab::Utils::Override
 
+    DRONE_SAAS_HOSTNAME = 'cloud.drone.io'
+
     prop_accessor :drone_url, :token
-    boolean_accessor :enable_ssl_verification
 
     validates :drone_url, presence: true, public_url: true, if: :activated?
     validates :token, presence: true, if: :activated?
@@ -95,8 +97,7 @@ module Integrations
     def fields
       [
         { type: 'text', name: 'token', help: s_('ProjectService|Token for the Drone project.'), required: true },
-        { type: 'text', name: 'drone_url', title: s_('ProjectService|Drone server URL'), placeholder: 'http://drone.example.com', required: true },
-        { type: 'checkbox', name: 'enable_ssl_verification', title: "Enable SSL verification" }
+        { type: 'text', name: 'drone_url', title: s_('ProjectService|Drone server URL'), placeholder: 'http://drone.example.com', required: true }
       ]
     end
 
@@ -105,15 +106,24 @@ module Integrations
       [drone_url, "/hook", "?owner=#{project.namespace.full_path}", "&name=#{project.path}", "&access_token=#{token}"].join
     end
 
-    override :hook_ssl_verification
-    def hook_ssl_verification
-      !!enable_ssl_verification
-    end
-
     override :update_web_hook!
     def update_web_hook!
       # If using a service template, project may not be available
       super if project
+    end
+
+    def enable_ssl_verification
+      original_value = Gitlab::Utils.to_boolean(properties['enable_ssl_verification'])
+      original_value.nil? ? (new_record? || url_is_saas?) : original_value
+    end
+
+    private
+
+    def url_is_saas?
+      parsed_url = Addressable::URI.parse(drone_url)
+      parsed_url&.scheme == 'https' && parsed_url.hostname == DRONE_SAAS_HOSTNAME
+    rescue Addressable::URI::InvalidURIError
+      false
     end
   end
 end

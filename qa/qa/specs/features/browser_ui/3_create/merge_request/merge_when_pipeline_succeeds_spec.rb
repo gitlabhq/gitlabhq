@@ -91,7 +91,7 @@ module QA
                 merge_request = merge_request.reload!
 
                 # Don't try to click MWPS if the MR is merged or the pipeline is complete
-                break if merge_request.state == 'merged' || project.pipelines.last[:status] == 'success'
+                break if merge_request.state == 'merged' || mr.wait_until { project.pipelines.last }[:status] == 'success'
 
                 # Try to click MWPS if this is a transient test, or if the MWPS button is visible,
                 # otherwise reload the page and retry

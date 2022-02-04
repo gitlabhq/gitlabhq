@@ -20,6 +20,10 @@ FactoryBot.define do
       status { :error }
     end
 
+    trait :pending_destruction do
+      status { :pending_destruction }
+    end
+
     factory :maven_package do
       maven_metadatum
 

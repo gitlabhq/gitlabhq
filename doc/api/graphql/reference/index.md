@@ -16263,7 +16263,7 @@ Represents an issue link of a vulnerability.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="vulnerabilityissuelinkid"></a>`id` | [`ID!`](#id) | GraphQL ID of the vulnerability. |
-| <a id="vulnerabilityissuelinkissue"></a>`issue` | [`Issue!`](#issue) | Issue attached to issue link. |
+| <a id="vulnerabilityissuelinkissue"></a>`issue` | [`Issue`](#issue) | Issue attached to issue link. |
 | <a id="vulnerabilityissuelinklinktype"></a>`linkType` | [`VulnerabilityIssueLinkType!`](#vulnerabilityissuelinktype) | Type of the issue link. |
 
 ### `VulnerabilityLink`
@@ -17563,6 +17563,7 @@ Values for sorting package.
 | <a id="packagestatusdefault"></a>`DEFAULT` | Packages with a default status. |
 | <a id="packagestatuserror"></a>`ERROR` | Packages with a error status. |
 | <a id="packagestatushidden"></a>`HIDDEN` | Packages with a hidden status. |
+| <a id="packagestatuspending_destruction"></a>`PENDING_DESTRUCTION` | Packages with a pending_destruction status. |
 | <a id="packagestatusprocessing"></a>`PROCESSING` | Packages with a processing status. |
 
 ### `PackageTypeEnum`

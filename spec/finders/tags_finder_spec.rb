@@ -32,6 +32,14 @@ RSpec.describe TagsFinder do
 
         expect(load_tags(params).first.name).to eq('v1.0.0')
       end
+
+      context 'when sort is not a string' do
+        it 'ignores sort parameter' do
+          params = { sort: { 'invalid' => 'string' } }
+
+          expect(load_tags(params).first.name).to eq('v1.0.0')
+        end
+      end
     end
 
     context 'filter only' do
@@ -69,6 +77,13 @@ RSpec.describe TagsFinder do
       it 'filters tags by nonexistent name that ends with' do
         result = load_tags({ search: 'nope$' })
         expect(result.count).to eq(0)
+      end
+
+      context 'when search is not a string' do
+        it 'returns no matches' do
+          result = load_tags({ search: { 'a' => 'b' } })
+          expect(result.count).to eq(0)
+        end
       end
     end
 

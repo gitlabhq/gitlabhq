@@ -11,11 +11,11 @@ class GitRefsFinder
   attr_reader :repository, :params
 
   def search
-    @params[:search].presence
+    @params[:search].to_s.presence
   end
 
   def sort
-    @params[:sort].presence || 'name'
+    @params[:sort].to_s.presence || 'name'
   end
 
   def by_search(refs)

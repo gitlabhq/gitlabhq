@@ -78,7 +78,7 @@ class UsersFinder
   def by_search(users)
     return users unless params[:search].present?
 
-    users.search(params[:search])
+    users.search(params[:search], with_private_emails: current_user&.admin?)
   end
 
   def by_blocked(users)

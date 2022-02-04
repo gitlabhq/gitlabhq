@@ -6,12 +6,6 @@ module TagsHelper
   end
 
   def filter_tags_path(options = {})
-    exist_opts = {
-      search: params[:search],
-      sort: params[:sort]
-    }
-
-    options = exist_opts.merge(options)
     project_tags_path(@project, @id, options)
   end
 

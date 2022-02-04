@@ -65,7 +65,9 @@ module API
 
         not_found! unless package_file
 
-        destroy_conditionally!(package_file)
+        destroy_conditionally!(package_file) do |package_file|
+          package_file.pending_destruction!
+        end
       end
     end
   end
