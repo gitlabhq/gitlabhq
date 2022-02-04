@@ -16489,7 +16489,8 @@ CREATE TABLE merge_requests_compliance_violations (
     id bigint NOT NULL,
     violating_user_id bigint NOT NULL,
     merge_request_id bigint NOT NULL,
-    reason smallint NOT NULL
+    reason smallint NOT NULL,
+    severity_level smallint DEFAULT 0 NOT NULL
 );
 
 CREATE SEQUENCE merge_requests_compliance_violations_id_seq

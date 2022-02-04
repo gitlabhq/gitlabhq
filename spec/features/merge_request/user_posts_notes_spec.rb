@@ -165,11 +165,13 @@ RSpec.describe 'Merge request > User posts notes', :js do
       it 'resets the edit note form textarea with the original content of the note if cancelled' do
         within('.current-note-edit-form') do
           fill_in 'note[note]', with: 'Some new content'
-
-          accept_confirm do
-            find('[data-testid="cancel"]').click
-          end
+          find('[data-testid="cancel"]').click
         end
+
+        page.within('.modal') do
+          click_button('OK', match: :first)
+        end
+
         expect(find('.js-note-text').text).to eq ''
       end
 

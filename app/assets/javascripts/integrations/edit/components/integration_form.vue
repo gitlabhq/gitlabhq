@@ -8,7 +8,6 @@ import {
   I18N_FETCH_TEST_SETTINGS_DEFAULT_ERROR_MESSAGE,
   I18N_DEFAULT_ERROR_MESSAGE,
   I18N_SUCCESSFUL_CONNECTION_MESSAGE,
-  INTEGRATION_FORM_SELECTOR,
   integrationLevels,
 } from '~/integrations/constants';
 import { refreshCurrentPage } from '~/lib/utils/url_utility';
@@ -82,28 +81,9 @@ export default {
     disableButtons() {
       return Boolean(this.isSaving || this.isResetting || this.isTesting);
     },
-    useVueForm() {
-      return this.glFeatures?.vueIntegrationForm;
+    form() {
+      return this.$refs.integrationForm.$el;
     },
-    formContainerProps() {
-      return this.useVueForm
-        ? {
-            ref: 'integrationForm',
-            method: 'post',
-            class: 'gl-mb-3 gl-show-field-errors integration-settings-form',
-            action: this.propsSource.formPath,
-            novalidate: !this.integrationActive,
-          }
-        : {};
-    },
-    formContainer() {
-      return this.useVueForm ? GlForm : 'div';
-    },
-  },
-  mounted() {
-    this.form = this.useVueForm
-      ? this.$refs.integrationForm.$el
-      : document.querySelector(INTEGRATION_FORM_SELECTOR);
   },
   methods: {
     ...mapActions(['setOverride', 'requestJiraIssueTypes']),
@@ -122,12 +102,12 @@ export default {
       this.form.submit();
     },
     onTestClick() {
-      this.isTesting = true;
-
       if (!this.form.checkValidity()) {
         this.setIsValidated();
         return;
       }
+
+      this.isTesting = true;
 
       testIntegrationSettings(this.propsSource.testPath, this.getFormData())
         .then(({ data: { error, message = I18N_FETCH_TEST_SETTINGS_DEFAULT_ERROR_MESSAGE } }) => {
@@ -171,16 +151,6 @@ export default {
     },
     onToggleIntegrationState(integrationActive) {
       this.integrationActive = integrationActive;
-      if (!this.form || this.useVueForm) {
-        return;
-      }
-
-      // If integration will be active, enable form validation.
-      if (integrationActive) {
-        this.form.removeAttribute('novalidate');
-      } else {
-        this.form.setAttribute('novalidate', true);
-      }
     },
   },
   helpHtmlConfig: {
@@ -193,17 +163,21 @@ export default {
 </script>
 
 <template>
-  <component :is="formContainer" v-bind="formContainerProps">
-    <template v-if="useVueForm">
-      <input type="hidden" name="_method" value="put" />
-      <input type="hidden" name="authenticity_token" :value="$options.csrf.token" />
-      <input
-        type="hidden"
-        name="redirect_to"
-        :value="propsSource.redirectTo"
-        data-testid="redirect-to-field"
-      />
-    </template>
+  <gl-form
+    ref="integrationForm"
+    method="post"
+    class="gl-mb-3 gl-show-field-errors integration-settings-form"
+    :action="propsSource.formPath"
+    :novalidate="!integrationActive"
+  >
+    <input type="hidden" name="_method" value="put" />
+    <input type="hidden" name="authenticity_token" :value="$options.csrf.token" />
+    <input
+      type="hidden"
+      name="redirect_to"
+      :value="propsSource.redirectTo"
+      data-testid="redirect-to-field"
+    />
 
     <override-dropdown
       v-if="defaultState !== null"
@@ -316,5 +290,5 @@ export default {
         </div>
       </div>
     </div>
-  </component>
+  </gl-form>
 </template>

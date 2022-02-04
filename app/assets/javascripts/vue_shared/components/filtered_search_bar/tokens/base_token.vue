@@ -163,19 +163,22 @@ export default {
     },
   },
   methods: {
-    handleInput: debounce(function debouncedSearch({ data }) {
-      this.searchKey = data;
+    handleInput: debounce(function debouncedSearch({ data, operator }) {
+      // Prevent fetching suggestions when data or operator is not present
+      if (data || operator) {
+        this.searchKey = data;
 
-      if (!this.suggestionsLoading && !this.activeTokenValue) {
-        let search = this.searchTerm ? this.searchTerm : data;
+        if (!this.suggestionsLoading && !this.activeTokenValue) {
+          let search = this.searchTerm ? this.searchTerm : data;
 
-        if (search.startsWith('"') && search.endsWith('"')) {
-          search = stripQuotes(search);
-        } else if (search.startsWith('"')) {
-          search = search.slice(1, search.length);
+          if (search.startsWith('"') && search.endsWith('"')) {
+            search = stripQuotes(search);
+          } else if (search.startsWith('"')) {
+            search = search.slice(1, search.length);
+          }
+
+          this.$emit('fetch-suggestions', search);
         }
-
-        this.$emit('fetch-suggestions', search);
       }
     }, DEBOUNCE_DELAY),
     handleTokenValueSelected(selectedValue) {

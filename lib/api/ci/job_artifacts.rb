@@ -47,7 +47,7 @@ module API
           requires :artifact_path, type: String, desc: 'Artifact path'
         end
         route_setting :authentication, job_token_allowed: true
-        get ':id/jobs/artifacts/:ref_name/raw/*artifact_path',
+        get ':id/jobs/artifacts/:ref_name/raw/*artifact_path', urgency: :low,
           format: false,
           requirements: { ref_name: /.+/ } do
             authorize_download_artifacts!
@@ -70,7 +70,7 @@ module API
           requires :job_id, type: Integer, desc: 'The ID of a job'
         end
         route_setting :authentication, job_token_allowed: true
-        get ':id/jobs/:job_id/artifacts' do
+        get ':id/jobs/:job_id/artifacts', urgency: :low do
           authorize_download_artifacts!
 
           build = find_build!(params[:job_id])

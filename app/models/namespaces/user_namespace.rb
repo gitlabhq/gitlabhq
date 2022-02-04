@@ -25,5 +25,9 @@ module Namespaces
     def self.sti_name
       'User'
     end
+
+    def owners
+      Array.wrap(owner)
+    end
   end
 end

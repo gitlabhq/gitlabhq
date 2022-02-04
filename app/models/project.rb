@@ -1520,8 +1520,17 @@ class Project < ApplicationRecord
     group || namespace.try(:owner)
   end
 
+  def deprecated_owner
+    # Kept in order to maintain webhook structures until we remove owner_name and owner_email
+    # See https://gitlab.com/gitlab-org/gitlab/-/issues/350603
+    group || namespace.try(:owner)
+  end
+
   def owners
-    Array.wrap(owner)
+    # This will be phased out and replaced with `owners` relationship
+    # backed by memberships with direct/inherited Owner access roles
+    # See https://gitlab.com/groups/gitlab-org/-/epics/7405
+    team.owners
   end
 
   def first_owner

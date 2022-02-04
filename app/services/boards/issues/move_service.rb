@@ -54,10 +54,6 @@ module Boards
       def update(issue, issue_modification_params)
         ::Issues::UpdateService.new(project: issue.project, current_user: current_user, params: issue_modification_params).execute(issue)
       end
-
-      def reposition_parent
-        { board_group_id: board.group&.id }
-      end
     end
   end
 end

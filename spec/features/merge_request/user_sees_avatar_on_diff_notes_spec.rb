@@ -1,9 +1,11 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
+include Spec::Support::Helpers::ModalHelpers # rubocop:disable  Style/MixinUsage
 
 RSpec.describe 'Merge request > User sees avatars on diff notes', :js do
   include NoteInteractionHelpers
+  include Spec::Support::Helpers::ModalHelpers
 
   let(:project)       { create(:project, :public, :repository) }
   let(:user)          { project.creator }
@@ -121,8 +123,8 @@ RSpec.describe 'Merge request > User sees avatars on diff notes', :js do
       it 'removes avatar when note is deleted' do
         open_more_actions_dropdown(note)
 
-        page.within find(".note-row-#{note.id}") do
-          accept_confirm { find('.js-note-delete').click }
+        accept_gl_confirm(button_text: 'Delete Comment') do
+          find(".note-row-#{note.id} .js-note-delete").click
         end
 
         wait_for_requests

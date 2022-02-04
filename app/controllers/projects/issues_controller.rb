@@ -321,7 +321,7 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   def reorder_params
-    params.permit(:move_before_id, :move_after_id, :group_full_path)
+    params.permit(:move_before_id, :move_after_id)
   end
 
   def store_uri

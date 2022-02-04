@@ -6,13 +6,7 @@
   - if integration.operating?
     = sprite_icon('check', css_class: 'gl-text-green-500')
 
-- if vue_integration_form_enabled?
-  = render 'shared/integration_settings', integration: integration
-- else
-  = form_for(integration, as: :service, url: scoped_integration_path(integration, project: @project, group: @group), method: :put, html: { class: 'gl-show-field-errors integration-settings-form js-integration-settings-form', data: { 'test-url' => test_project_integration_path(@project, integration), testid: 'integration-form' } }) do |form|
-    = render 'shared/integration_settings', form: form, integration: integration
-    %input{ id: 'services_redirect_to', type: 'hidden', name: 'redirect_to', value: request.referer }
-
+= render 'shared/integration_settings', integration: integration
 - if lookup_context.template_exists?('show', "projects/services/#{integration.to_param}", true)
   %hr
   = render "projects/services/#{integration.to_param}/show", integration: integration

@@ -100,10 +100,6 @@ module Issues
       rebalance_if_needed(issue)
     end
 
-    def positioning_scope_key
-      :board_group_id
-    end
-
     # rubocop: disable CodeReuse/ActiveRecord
     def change_issue_duplicate(issue)
       canonical_issue_id = params.delete(:canonical_issue_id)
@@ -221,20 +217,13 @@ module Issues
       ).execute
     end
 
-    # rubocop: disable CodeReuse/ActiveRecord
-    def issuable_for_positioning(id, board_group_id = nil)
+    def issuable_for_positioning(id, positioning_scope)
       return unless id
 
-      issue =
-        if board_group_id
-          IssuesFinder.new(current_user, group_id: board_group_id, include_subgroups: true).find_by(id: id)
-        else
-          project.issues.find(id)
-        end
+      issue = positioning_scope.find(id)
 
       issue if can?(current_user, :update_issue, issue)
     end
-    # rubocop: enable CodeReuse/ActiveRecord
 
     def create_confidentiality_note(issue)
       SystemNoteService.change_issue_confidentiality(issue, issue.project, current_user)

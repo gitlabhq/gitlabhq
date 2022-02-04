@@ -238,8 +238,11 @@ RSpec.describe 'User comments on a diff', :js do
       page.within('.diff-file:nth-of-type(1) .discussion .note') do
         find('.more-actions').click
         find('.more-actions .dropdown-menu li', match: :first)
+        find('.js-note-delete').click
+      end
 
-        accept_confirm { find('.js-note-delete').click }
+      page.within('.modal') do
+        click_button('Delete Comment', match: :first)
       end
 
       page.within('.merge-request-tabs') do

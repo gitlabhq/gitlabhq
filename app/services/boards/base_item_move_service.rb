@@ -39,7 +39,7 @@ module Boards
     end
 
     def reposition_params(reposition_ids)
-      reposition_parent.merge(move_between_ids: reposition_ids)
+      { move_between_ids: reposition_ids }
     end
 
     def move_single_issuable(issuable, issuable_modification_params)

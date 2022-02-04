@@ -16,6 +16,7 @@ module Gitlab
       #   project_id: 1,
       #   owner_name: "John",
       #   owner_email: "user1@example.org",
+      #   owners: [name: "John", email: "user1@example.org"],
       #   project_visibility: "internal",
       #   old_path_with_namespace: "old-path-with-namespace"
       # }
@@ -32,17 +33,31 @@ module Gitlab
       private
 
       def project_data
-        owner = project.owner
+        owners = project.owners.compact
+        # When this is removed, also remove the `deprecated_owner` method
+        # See https://gitlab.com/gitlab-org/gitlab/-/issues/350603
+        owner = project.deprecated_owner
 
         {
           name: project.name,
           path: project.path,
           path_with_namespace: project.full_path,
           project_id: project.id,
-          owner_name: owner.name,
-          owner_email: owner.respond_to?(:email) ? owner.email : "",
+          owner_name: owner.try(:name),
+          owner_email: user_email(owner),
+          owners: owners.map do |owner|
+            owner_data(owner)
+          end,
           project_visibility: project.visibility.downcase
         }
+      end
+
+      def owner_data(user)
+        { name: user.name, email: user_email(user) }
+      end
+
+      def user_email(user)
+        user.respond_to?(:email) ? user.email : ""
       end
 
       def event_specific_project_data(event)

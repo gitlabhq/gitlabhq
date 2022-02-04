@@ -33,13 +33,6 @@ describe('IntegrationForm', () => {
   let wrapper;
   let dispatch;
   let mockAxios;
-  let mockForm;
-  let vueIntegrationFormFeatureFlag;
-
-  const createForm = () => {
-    mockForm = document.createElement('form');
-    jest.spyOn(document, 'querySelector').mockReturnValue(mockForm);
-  };
 
   const createComponent = ({
     customStateProps = {},
@@ -52,10 +45,6 @@ describe('IntegrationForm', () => {
       ...initialState,
     });
     dispatch = jest.spyOn(store, 'dispatch').mockImplementation();
-
-    if (!vueIntegrationFormFeatureFlag) {
-      createForm();
-    }
 
     wrapper = mountFn(IntegrationForm, {
       propsData: { ...props },
@@ -70,11 +59,6 @@ describe('IntegrationForm', () => {
       mocks: {
         $toast: {
           show: mockToastShow,
-        },
-      },
-      provide: {
-        glFeatures: {
-          vueIntegrationForm: vueIntegrationFormFeatureFlag,
         },
       },
     });
@@ -93,13 +77,7 @@ describe('IntegrationForm', () => {
   const findTriggerFields = () => wrapper.findComponent(TriggerFields);
   const findGlForm = () => wrapper.findComponent(GlForm);
   const findRedirectToField = () => wrapper.findByTestId('redirect-to-field');
-  const findFormElement = () => (vueIntegrationFormFeatureFlag ? findGlForm().element : mockForm);
   const findDynamicField = () => wrapper.findComponent(DynamicField);
-
-  const mockFormFunctions = ({ checkValidityReturn }) => {
-    jest.spyOn(findFormElement(), 'checkValidity').mockReturnValue(checkValidityReturn);
-    jest.spyOn(findFormElement(), 'submit');
-  };
 
   beforeEach(() => {
     mockAxios = new MockAdapter(axios);
@@ -355,17 +333,14 @@ describe('IntegrationForm', () => {
       });
     });
 
-    describe('when `vueIntegrationForm` feature flag is $vueIntegrationFormEnabled', () => {
-      it('renders hidden fields', () => {
-        vueIntegrationFormFeatureFlag = true;
-        createComponent({
-          customStateProps: {
-            redirectTo: '/services',
-          },
-        });
-
-        expect(findRedirectToField().attributes('value')).toBe('/services');
+    it('renders hidden fields', () => {
+      createComponent({
+        customStateProps: {
+          redirectTo: '/services',
+        },
       });
+
+      expect(findRedirectToField().attributes('value')).toBe('/services');
     });
   });
 
@@ -387,218 +362,200 @@ describe('IntegrationForm', () => {
     });
 
     describe.each`
-      formActive | vueIntegrationFormEnabled | novalidate
-      ${true}    | ${true}                   | ${null}
-      ${false}   | ${true}                   | ${'novalidate'}
-      ${true}    | ${false}                  | ${null}
-      ${false}   | ${false}                  | ${'true'}
+      formActive | novalidate
+      ${true}    | ${undefined}
+      ${false}   | ${'true'}
     `(
-      'when `vueIntegrationForm` feature flag is $vueIntegrationFormEnabled and `toggle-integration-active` is emitted with $formActive',
-      ({ formActive, vueIntegrationFormEnabled, novalidate }) => {
+      'when `toggle-integration-active` is emitted with $formActive',
+      ({ formActive, novalidate }) => {
         beforeEach(async () => {
-          vueIntegrationFormFeatureFlag = vueIntegrationFormEnabled;
-
           createComponent({
             customStateProps: {
               showActive: true,
               initialActivated: false,
             },
-            mountFn: mountExtended,
           });
-          mockFormFunctions({ checkValidityReturn: false });
 
           await findActiveCheckbox().vm.$emit('toggle-integration-active', formActive);
         });
 
         it(`sets noValidate to ${novalidate}`, () => {
-          expect(findFormElement().getAttribute('novalidate')).toBe(novalidate);
+          expect(findGlForm().attributes('novalidate')).toBe(novalidate);
         });
       },
     );
   });
 
-  describe.each`
-    vueIntegrationFormEnabled
-    ${true}
-    ${false}
-  `(
-    'when `vueIntegrationForm` feature flag is $vueIntegrationFormEnabled',
-    ({ vueIntegrationFormEnabled }) => {
-      beforeEach(() => {
-        vueIntegrationFormFeatureFlag = vueIntegrationFormEnabled;
-      });
-
-      describe('when `save` button is clicked', () => {
-        describe('buttons', () => {
-          beforeEach(async () => {
-            createComponent({
-              customStateProps: {
-                showActive: true,
-                canTest: true,
-                initialActivated: true,
-              },
-              mountFn: mountExtended,
-            });
-
-            await findProjectSaveButton().vm.$emit('click', new Event('click'));
-          });
-
-          it('sets save button `loading` prop to `true`', () => {
-            expect(findProjectSaveButton().props('loading')).toBe(true);
-          });
-
-          it('sets test button `disabled` prop to `true`', () => {
-            expect(findTestButton().props('disabled')).toBe(true);
-          });
-        });
-
-        describe.each`
-          checkValidityReturn | integrationActive
-          ${true}             | ${false}
-          ${true}             | ${true}
-          ${false}            | ${false}
-        `(
-          'when form is valid (checkValidity returns $checkValidityReturn and integrationActive is $integrationActive)',
-          ({ integrationActive, checkValidityReturn }) => {
-            beforeEach(async () => {
-              createComponent({
-                customStateProps: {
-                  showActive: true,
-                  canTest: true,
-                  initialActivated: integrationActive,
-                },
-                mountFn: mountExtended,
-              });
-
-              mockFormFunctions({ checkValidityReturn });
-
-              await findProjectSaveButton().vm.$emit('click', new Event('click'));
-            });
-
-            it('submits form', () => {
-              expect(findFormElement().submit).toHaveBeenCalledTimes(1);
-            });
+  describe('when `save` button is clicked', () => {
+    describe('buttons', () => {
+      beforeEach(async () => {
+        createComponent({
+          customStateProps: {
+            showActive: true,
+            canTest: true,
+            initialActivated: true,
           },
-        );
+          mountFn: mountExtended,
+        });
 
-        describe('when form is invalid (checkValidity returns false and integrationActive is true)', () => {
-          beforeEach(async () => {
-            createComponent({
-              customStateProps: {
-                showActive: true,
-                canTest: true,
-                initialActivated: true,
-                fields: [mockField],
-              },
-              mountFn: mountExtended,
-            });
-            mockFormFunctions({ checkValidityReturn: false });
+        await findProjectSaveButton().vm.$emit('click', new Event('click'));
+      });
 
-            await findProjectSaveButton().vm.$emit('click', new Event('click'));
+      it('sets save button `loading` prop to `true`', () => {
+        expect(findProjectSaveButton().props('loading')).toBe(true);
+      });
+
+      it('sets test button `disabled` prop to `true`', () => {
+        expect(findTestButton().props('disabled')).toBe(true);
+      });
+    });
+
+    describe.each`
+      checkValidityReturn | integrationActive
+      ${true}             | ${false}
+      ${true}             | ${true}
+      ${false}            | ${false}
+    `(
+      'when form is valid (checkValidity returns $checkValidityReturn and integrationActive is $integrationActive)',
+      ({ integrationActive, checkValidityReturn }) => {
+        beforeEach(async () => {
+          createComponent({
+            customStateProps: {
+              showActive: true,
+              canTest: true,
+              initialActivated: integrationActive,
+            },
+            mountFn: mountExtended,
           });
+          jest.spyOn(findGlForm().element, 'submit');
+          jest.spyOn(findGlForm().element, 'checkValidity').mockReturnValue(checkValidityReturn);
 
-          it('does not submit form', () => {
-            expect(findFormElement().submit).not.toHaveBeenCalled();
-          });
+          await findProjectSaveButton().vm.$emit('click', new Event('click'));
+        });
 
-          it('sets save button `loading` prop to `false`', () => {
-            expect(findProjectSaveButton().props('loading')).toBe(false);
-          });
+        it('submit form', () => {
+          expect(findGlForm().element.submit).toHaveBeenCalledTimes(1);
+        });
+      },
+    );
 
-          it('sets test button `disabled` prop to `false`', () => {
-            expect(findTestButton().props('disabled')).toBe(false);
-          });
+    describe('when form is invalid (checkValidity returns false and integrationActive is true)', () => {
+      beforeEach(async () => {
+        createComponent({
+          customStateProps: {
+            showActive: true,
+            canTest: true,
+            initialActivated: true,
+            fields: [mockField],
+          },
+          mountFn: mountExtended,
+        });
+        jest.spyOn(findGlForm().element, 'submit');
+        jest.spyOn(findGlForm().element, 'checkValidity').mockReturnValue(false);
 
-          it('sets `isValidated` props on form fields', () => {
-            expect(findDynamicField().props('isValidated')).toBe(true);
-          });
+        await findProjectSaveButton().vm.$emit('click', new Event('click'));
+      });
+
+      it('does not submit form', () => {
+        expect(findGlForm().element.submit).not.toHaveBeenCalled();
+      });
+
+      it('sets save button `loading` prop to `false`', () => {
+        expect(findProjectSaveButton().props('loading')).toBe(false);
+      });
+
+      it('sets test button `disabled` prop to `false`', () => {
+        expect(findTestButton().props('disabled')).toBe(false);
+      });
+
+      it('sets `isValidated` props on form fields', () => {
+        expect(findDynamicField().props('isValidated')).toBe(true);
+      });
+    });
+  });
+
+  describe('when `test` button is clicked', () => {
+    describe('when form is invalid', () => {
+      it('sets `isValidated` props on form fields', async () => {
+        createComponent({
+          customStateProps: {
+            showActive: true,
+            canTest: true,
+            fields: [mockField],
+          },
+          mountFn: mountExtended,
+        });
+        jest.spyOn(findGlForm().element, 'checkValidity').mockReturnValue(false);
+
+        await findTestButton().vm.$emit('click', new Event('click'));
+
+        expect(findDynamicField().props('isValidated')).toBe(true);
+      });
+    });
+
+    describe('when form is valid', () => {
+      const mockTestPath = '/test';
+
+      beforeEach(() => {
+        createComponent({
+          customStateProps: {
+            showActive: true,
+            canTest: true,
+            testPath: mockTestPath,
+          },
+          mountFn: mountExtended,
+        });
+        jest.spyOn(findGlForm().element, 'checkValidity').mockReturnValue(true);
+      });
+
+      describe('buttons', () => {
+        beforeEach(async () => {
+          await findTestButton().vm.$emit('click', new Event('click'));
+        });
+
+        it('sets test button `loading` prop to `true`', () => {
+          expect(findTestButton().props('loading')).toBe(true);
+        });
+
+        it('sets save button `disabled` prop to `true`', () => {
+          expect(findProjectSaveButton().props('disabled')).toBe(true);
         });
       });
 
-      describe('when `test` button is clicked', () => {
-        describe('when form is invalid', () => {
-          it('sets `isValidated` props on form fields', async () => {
-            createComponent({
-              customStateProps: {
-                showActive: true,
-                canTest: true,
-                fields: [mockField],
-              },
-              mountFn: mountExtended,
-            });
-            mockFormFunctions({ checkValidityReturn: false });
-
-            await findTestButton().vm.$emit('click', new Event('click'));
-
-            expect(findDynamicField().props('isValidated')).toBe(true);
+      describe.each`
+        scenario                                   | replyStatus                         | errorMessage  | expectToast                           | expectSentry
+        ${'when "test settings" request fails'}    | ${httpStatus.INTERNAL_SERVER_ERROR} | ${undefined}  | ${I18N_DEFAULT_ERROR_MESSAGE}         | ${true}
+        ${'when "test settings" returns an error'} | ${httpStatus.OK}                    | ${'an error'} | ${'an error'}                         | ${false}
+        ${'when "test settings" succeeds'}         | ${httpStatus.OK}                    | ${undefined}  | ${I18N_SUCCESSFUL_CONNECTION_MESSAGE} | ${false}
+      `('$scenario', ({ replyStatus, errorMessage, expectToast, expectSentry }) => {
+        beforeEach(async () => {
+          mockAxios.onPut(mockTestPath).replyOnce(replyStatus, {
+            error: Boolean(errorMessage),
+            message: errorMessage,
           });
+
+          await findTestButton().vm.$emit('click', new Event('click'));
+          await waitForPromises();
         });
 
-        describe('when form is valid', () => {
-          const mockTestPath = '/test';
+        it(`calls toast with '${expectToast}'`, () => {
+          expect(mockToastShow).toHaveBeenCalledWith(expectToast);
+        });
 
-          beforeEach(() => {
-            createComponent({
-              customStateProps: {
-                showActive: true,
-                canTest: true,
-                testPath: mockTestPath,
-              },
-              mountFn: mountExtended,
-            });
-            mockFormFunctions({ checkValidityReturn: true });
-          });
+        it('sets `loading` prop of test button to `false`', () => {
+          expect(findTestButton().props('loading')).toBe(false);
+        });
 
-          describe('buttons', () => {
-            beforeEach(async () => {
-              await findTestButton().vm.$emit('click', new Event('click'));
-            });
+        it('sets save button `disabled` prop to `false`', () => {
+          expect(findProjectSaveButton().props('disabled')).toBe(false);
+        });
 
-            it('sets test button `loading` prop to `true`', () => {
-              expect(findTestButton().props('loading')).toBe(true);
-            });
-
-            it('sets save button `disabled` prop to `true`', () => {
-              expect(findProjectSaveButton().props('disabled')).toBe(true);
-            });
-          });
-
-          describe.each`
-            scenario                                   | replyStatus                         | errorMessage  | expectToast                           | expectSentry
-            ${'when "test settings" request fails'}    | ${httpStatus.INTERNAL_SERVER_ERROR} | ${undefined}  | ${I18N_DEFAULT_ERROR_MESSAGE}         | ${true}
-            ${'when "test settings" returns an error'} | ${httpStatus.OK}                    | ${'an error'} | ${'an error'}                         | ${false}
-            ${'when "test settings" succeeds'}         | ${httpStatus.OK}                    | ${undefined}  | ${I18N_SUCCESSFUL_CONNECTION_MESSAGE} | ${false}
-          `('$scenario', ({ replyStatus, errorMessage, expectToast, expectSentry }) => {
-            beforeEach(async () => {
-              mockAxios.onPut(mockTestPath).replyOnce(replyStatus, {
-                error: Boolean(errorMessage),
-                message: errorMessage,
-              });
-
-              await findTestButton().vm.$emit('click', new Event('click'));
-              await waitForPromises();
-            });
-
-            it(`calls toast with '${expectToast}'`, () => {
-              expect(mockToastShow).toHaveBeenCalledWith(expectToast);
-            });
-
-            it('sets `loading` prop of test button to `false`', () => {
-              expect(findTestButton().props('loading')).toBe(false);
-            });
-
-            it('sets save button `disabled` prop to `false`', () => {
-              expect(findProjectSaveButton().props('disabled')).toBe(false);
-            });
-
-            it(`${expectSentry ? 'does' : 'does not'} capture exception in Sentry`, () => {
-              expect(Sentry.captureException).toHaveBeenCalledTimes(expectSentry ? 1 : 0);
-            });
-          });
+        it(`${expectSentry ? 'does' : 'does not'} capture exception in Sentry`, () => {
+          expect(Sentry.captureException).toHaveBeenCalledTimes(expectSentry ? 1 : 0);
         });
       });
-    },
-  );
+    });
+  });
 
   describe('when `reset-confirmation-modal` emits `reset` event', () => {
     const mockResetPath = '/reset';

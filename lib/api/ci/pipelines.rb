@@ -179,7 +179,7 @@ module API
         params do
           requires :pipeline_id, type: Integer, desc: 'The pipeline ID'
         end
-        get ':id/pipelines/:pipeline_id/test_report', feature_category: :code_testing do
+        get ':id/pipelines/:pipeline_id/test_report', feature_category: :code_testing, urgency: :low do
           authorize! :read_build, pipeline
 
           present pipeline.test_reports, with: TestReportEntity, details: true

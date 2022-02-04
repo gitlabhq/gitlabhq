@@ -1184,14 +1184,15 @@ RSpec.describe API::Issues do
   end
 
   describe 'PUT /projects/:id/issues/:issue_iid/reorder' do
-    let_it_be(:project) { create(:project) }
+    let_it_be(:group) { create(:group) }
+    let_it_be(:project) { create(:project, group: group) }
     let_it_be(:issue1) { create(:issue, project: project, relative_position: 10) }
     let_it_be(:issue2) { create(:issue, project: project, relative_position: 20) }
     let_it_be(:issue3) { create(:issue, project: project, relative_position: 30) }
 
     context 'when user has access' do
-      before do
-        project.add_developer(user)
+      before_all do
+        group.add_developer(user)
       end
 
       context 'with valid params' do
@@ -1215,6 +1216,19 @@ RSpec.describe API::Issues do
           put api("/projects/#{project.id}/issues/#{non_existing_record_iid}/reorder", user), params: { move_after_id: issue2.id, move_before_id: issue3.id }
 
           expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+
+      context 'with issue in different project' do
+        let(:other_project) { create(:project, group: group) }
+        let(:other_issue) { create(:issue, project: other_project, relative_position: 80) }
+
+        it 'reorders issues and returns a successful 200 response' do
+          put api("/projects/#{other_project.id}/issues/#{other_issue.iid}/reorder", user), params: { move_after_id: issue2.id, move_before_id: issue3.id }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(other_issue.reload.relative_position)
+                .to be_between(issue2.reload.relative_position, issue3.reload.relative_position)
         end
       end
     end

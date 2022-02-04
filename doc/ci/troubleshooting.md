@@ -192,6 +192,21 @@ To illustrate its life cycle:
 The merge request pipeline widget shows information about the pipeline status in
 a merge request. It's displayed above the [ability to merge status widget](#merge-request-status-messages).
 
+#### "Checking ability to merge automatically" message
+
+There is a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/229352)
+where a merge request can be stuck with the `Checking ability to merge automatically`
+message.
+
+If your merge request has this message and it does not disappear after a few minutes,
+you can try one of these workarounds:
+
+- Refresh the merge request page.
+- Close & Re-open the merge request.
+- Rebase the merge request with the `/rebase` [quick action](../user/project/quick_actions.md).
+- If you have already confirmed the merge request is ready to be merged, you can merge
+  it with the `/merge` quick action.
+
 #### "Checking pipeline status" message
 
 This message is shown when the merge request has no pipeline associated with the

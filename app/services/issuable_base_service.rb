@@ -495,10 +495,11 @@ class IssuableBaseService < ::BaseProjectService
     return unless params[:move_between_ids]
 
     after_id, before_id = params.delete(:move_between_ids)
-    positioning_scope_id = params.delete(positioning_scope_key)
 
-    issuable_before = issuable_for_positioning(before_id, positioning_scope_id)
-    issuable_after = issuable_for_positioning(after_id, positioning_scope_id)
+    positioning_scope = issuable_position.class.relative_positioning_query_base(issuable_position)
+
+    issuable_before = issuable_for_positioning(before_id, positioning_scope)
+    issuable_after = issuable_for_positioning(after_id, positioning_scope)
 
     raise ActiveRecord::RecordNotFound unless issuable_before || issuable_after
 

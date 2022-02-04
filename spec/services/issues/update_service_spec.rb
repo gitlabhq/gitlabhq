@@ -385,7 +385,6 @@ RSpec.describe Issues::UpdateService, :mailer do
           [issue_1, issue_2, issue_3].map(&:save)
 
           opts[:move_between_ids] = [issue_1.id, issue_2.id]
-          opts[:board_group_id] = group.id
 
           described_class.new(project: issue_3.project, current_user: user, params: opts).execute(issue_3)
           expect(issue_2.relative_position).to be_between(issue_1.relative_position, issue_2.relative_position)
@@ -1309,15 +1308,8 @@ RSpec.describe Issues::UpdateService, :mailer do
     end
 
     context 'when moving an issue ' do
-      it 'raises an error for invalid move ids within a project' do
+      it 'raises an error for invalid move ids' do
         opts = { move_between_ids: [9000, non_existing_record_id] }
-
-        expect { described_class.new(project: issue.project, current_user: user, params: opts).execute(issue) }
-            .to raise_error(ActiveRecord::RecordNotFound)
-      end
-
-      it 'raises an error for invalid move ids within a group' do
-        opts = { move_between_ids: [9000, non_existing_record_id], board_group_id: create(:group).id }
 
         expect { described_class.new(project: issue.project, current_user: user, params: opts).execute(issue) }
             .to raise_error(ActiveRecord::RecordNotFound)
