@@ -1,9 +1,12 @@
+import metricsData from 'test_fixtures/projects/analytics/value_stream_analytics/summary.json';
 import {
   filterBySearchTerm,
   extractFilterQueryParameters,
   extractPaginationQueryParameters,
   getDataZoomOption,
+  prepareTimeMetricsData,
 } from '~/analytics/shared/utils';
+import { slugify } from '~/lib/utils/text_utility';
 import { objectToQuery } from '~/lib/utils/url_utility';
 
 describe('filterBySearchTerm', () => {
@@ -174,5 +177,38 @@ describe('getDataZoomOption', () => {
 
       expect(getDataZoomOption({ totalItems, maxItemsPerPage, dataZoom })).toEqual(expected);
     });
+  });
+});
+
+describe('prepareTimeMetricsData', () => {
+  let prepared;
+  const [first, second] = metricsData;
+  delete second.identifier; // testing the case when identifier is missing
+
+  const firstIdentifier = first.identifier;
+  const secondIdentifier = slugify(second.title);
+
+  beforeEach(() => {
+    prepared = prepareTimeMetricsData([first, second], {
+      [firstIdentifier]: { description: 'Is a value that is good' },
+    });
+  });
+
+  it('will add a `identifier` based on the title', () => {
+    expect(prepared).toMatchObject([
+      { identifier: firstIdentifier },
+      { identifier: secondIdentifier },
+    ]);
+  });
+
+  it('will add a `label` key', () => {
+    expect(prepared).toMatchObject([{ label: 'New Issues' }, { label: 'Commits' }]);
+  });
+
+  it('will add a popover description using the key if it is provided', () => {
+    expect(prepared).toMatchObject([
+      { description: 'Is a value that is good' },
+      { description: '' },
+    ]);
   });
 });

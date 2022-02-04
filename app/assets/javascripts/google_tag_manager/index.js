@@ -55,16 +55,15 @@ const pushEvent = (event, args = {}) => {
   }
 };
 
-const pushEnhancedEcommerceEvent = (event, currencyCode, args = {}) => {
+const pushEnhancedEcommerceEvent = (event, args = {}) => {
   if (!window.dataLayer) {
     return;
   }
 
   try {
-    window.dataLayer.push({ ecommerce: null });
+    window.dataLayer.push({ ecommerce: null }); // Clear the previous ecommerce object
     window.dataLayer.push({
       event,
-      currencyCode,
       ...args,
     });
   } catch (e) {
@@ -189,6 +188,7 @@ export const trackCheckout = (selectedPlan, quantity) => {
 
   const eventData = {
     ecommerce: {
+      currencyCode: 'USD',
       checkout: {
         actionField: { step: 1 },
         products: [product],
@@ -197,7 +197,7 @@ export const trackCheckout = (selectedPlan, quantity) => {
   };
 
   // eslint-disable-next-line @gitlab/require-i18n-strings
-  pushEnhancedEcommerceEvent('EECCheckout', 'USD', eventData);
+  pushEnhancedEcommerceEvent('EECCheckout', eventData);
 };
 
 export const trackTransaction = (transactionDetails) => {
@@ -215,6 +215,7 @@ export const trackTransaction = (transactionDetails) => {
 
   const eventData = {
     ecommerce: {
+      currencyCode: 'USD',
       purchase: {
         actionField: {
           id: transactionId,
@@ -228,5 +229,5 @@ export const trackTransaction = (transactionDetails) => {
     },
   };
 
-  pushEnhancedEcommerceEvent('EECtransactionSuccess', 'USD', eventData);
+  pushEnhancedEcommerceEvent('EECtransactionSuccess', eventData);
 };

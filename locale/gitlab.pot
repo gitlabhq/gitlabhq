@@ -4918,9 +4918,6 @@ msgstr ""
 msgid "Assigned to %{assignee_name}"
 msgstr ""
 
-msgid "Assigned to %{name}"
-msgstr ""
-
 msgid "Assigned to me"
 msgstr ""
 
@@ -23494,6 +23491,18 @@ msgstr ""
 msgid "MrDeploymentActions|Stop environment"
 msgstr ""
 
+msgid "MrList|Assigned to %{name}, go to their profile."
+msgstr ""
+
+msgid "MrList|Attention requested from assignee %{name}, go to their profile."
+msgstr ""
+
+msgid "MrList|Attention requested from reviewer %{name}, go to their profile."
+msgstr ""
+
+msgid "MrList|Review requested from %{name}, go to their profile."
+msgstr ""
+
 msgid "Multi-project"
 msgstr ""
 
@@ -30775,9 +30784,6 @@ msgid "Review App|View latest app"
 msgstr ""
 
 msgid "Review changes"
-msgstr ""
-
-msgid "Review requested from %{name}"
 msgstr ""
 
 msgid "Review requests for you"

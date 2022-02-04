@@ -16,7 +16,13 @@ module Namespaces
     deduplicate :until_executing
 
     def perform
-      ::Ci::ProcessSyncEventsService.new(::Namespaces::SyncEvent, ::Ci::NamespaceMirror).execute
+      results = ::Ci::ProcessSyncEventsService.new(
+        ::Namespaces::SyncEvent, ::Ci::NamespaceMirror
+      ).execute
+
+      results.each do |key, value|
+        log_extra_metadata_on_done(key, value)
+      end
     end
   end
 end

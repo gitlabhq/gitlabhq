@@ -62,10 +62,10 @@ module ProjectsHelper
       name: author.name
     }
 
-    inject_classes = ["author-link"]
+    inject_classes = ["author-link", opts[:extra_class]]
 
     if opts[:name]
-      inject_classes.concat(["js-user-link", opts[:extra_class], opts[:mobile_classes]])
+      inject_classes.concat(["js-user-link", opts[:mobile_classes]])
     else
       inject_classes.append( "has-tooltip" )
     end

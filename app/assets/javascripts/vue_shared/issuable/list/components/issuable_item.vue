@@ -121,7 +121,10 @@ export default {
     },
     showIssuableMeta() {
       return Boolean(
-        this.hasSlotContents('status') || this.showDiscussions || this.issuable.assignees,
+        this.hasSlotContents('status') ||
+          this.hasSlotContents('statistics') ||
+          this.showDiscussions ||
+          this.issuable.assignees,
       );
     },
     issuableNotesLink() {

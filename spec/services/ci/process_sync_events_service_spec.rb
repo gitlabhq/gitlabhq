@@ -25,6 +25,8 @@ RSpec.describe Ci::ProcessSyncEventsService do
         project2.update!(group: parent_group_2)
       end
 
+      it { is_expected.to eq(service_results(2, 2, 2)) }
+
       it 'consumes events' do
         expect { execute }.to change(Projects::SyncEvent, :count).from(2).to(0)
 
@@ -36,20 +38,32 @@ RSpec.describe Ci::ProcessSyncEventsService do
         )
       end
 
-      it 'enqueues Projects::ProcessSyncEventsWorker if any left' do
-        stub_const("#{described_class}::BATCH_SIZE", 1)
+      context 'when any event left after processing' do
+        before do
+          stub_const("#{described_class}::BATCH_SIZE", 1)
+        end
 
-        expect(Projects::ProcessSyncEventsWorker).to receive(:perform_async)
+        it { is_expected.to eq(service_results(2, 1, 1)) }
 
-        execute
+        it 'enqueues Projects::ProcessSyncEventsWorker' do
+          expect(Projects::ProcessSyncEventsWorker).to receive(:perform_async)
+
+          execute
+        end
       end
 
-      it 'does not enqueue Projects::ProcessSyncEventsWorker if no left' do
-        stub_const("#{described_class}::BATCH_SIZE", 2)
+      context 'when no event left after processing' do
+        before do
+          stub_const("#{described_class}::BATCH_SIZE", 2)
+        end
 
-        expect(Projects::ProcessSyncEventsWorker).not_to receive(:perform_async)
+        it { is_expected.to eq(service_results(2, 2, 2)) }
 
-        execute
+        it 'does not enqueue Projects::ProcessSyncEventsWorker' do
+          expect(Projects::ProcessSyncEventsWorker).not_to receive(:perform_async)
+
+          execute
+        end
       end
 
       context 'when there is no event' do
@@ -57,27 +71,45 @@ RSpec.describe Ci::ProcessSyncEventsService do
           Projects::SyncEvent.delete_all
         end
 
+        it { is_expected.to eq(service_results(0, 0, nil)) }
+
         it 'does nothing' do
           expect { execute }.not_to change(Projects::SyncEvent, :count)
         end
       end
 
-      it 'does not delete non-executed events' do
-        new_project = create(:project)
-        sync_event_class.delete_all
+      context 'when there is non-executed events' do
+        before do
+          new_project = create(:project)
+          sync_event_class.delete_all
 
-        project1.update!(group: parent_group_2)
-        new_project.update!(group: parent_group_1)
-        project2.update!(group: parent_group_1)
+          project1.update!(group: parent_group_2)
+          new_project.update!(group: parent_group_1)
+          project2.update!(group: parent_group_1)
 
-        new_project_sync_event = new_project.sync_events.last
+          @new_project_sync_event = new_project.sync_events.last
 
-        allow(sync_event_class).to receive(:preload_synced_relation).and_return(
-          sync_event_class.where.not(id: new_project_sync_event)
-        )
+          allow(sync_event_class).to receive(:preload_synced_relation).and_return(
+            sync_event_class.where.not(id: @new_project_sync_event)
+          )
+        end
 
-        expect { execute }.to change(Projects::SyncEvent, :count).from(3).to(1)
-        expect(new_project_sync_event.reload).to be_persisted
+        it { is_expected.to eq(service_results(3, 2, 2)) }
+
+        it 'does not delete non-executed events' do
+          expect { execute }.to change(Projects::SyncEvent, :count).from(3).to(1)
+          expect(@new_project_sync_event.reload).to be_persisted
+        end
+      end
+
+      private
+
+      def service_results(total, consumable, processed)
+        {
+          estimated_total_events: total,
+          consumable_events: consumable,
+          processed_events: processed
+        }.compact
       end
     end
 

@@ -101,5 +101,19 @@ RSpec.describe Gitlab::OmniauthInitializer do
 
       subject.execute([google_config])
     end
+
+    it 'configures defaults for gitlab' do
+      conf = {
+        'name' => 'gitlab',
+        "args" => {}
+      }
+
+      expect(devise_config).to receive(:omniauth).with(
+        :gitlab,
+        authorize_params: { gl_auth_type: 'login' }
+      )
+
+      subject.execute([conf])
+    end
   end
 end

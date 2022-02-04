@@ -582,6 +582,25 @@ table.code {
   }
 }
 
+.diff-expansion-cell {
+  flex: 1 1;
+  min-width: max-content;
+}
+
+.diff-expansion-cell-middle {
+  flex: 0 1 max-content;
+}
+
+@media only screen and (min-width: $breakpoint-xl) {
+  .diff-expansion-cell-start {
+    text-align: right;
+  }
+
+  .diff-expansion-cell-end {
+    text-align: left;
+  }
+}
+
 // Merge request diff grid layout
 .diff-grid {
   .diff-td {

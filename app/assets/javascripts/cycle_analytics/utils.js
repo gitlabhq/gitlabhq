@@ -1,14 +1,5 @@
-import { hideFlash } from '~/flash';
 import { parseSeconds } from '~/lib/utils/datetime_utility';
 import { formatTimeAsSummary } from '~/lib/utils/datetime/date_format_utility';
-import { slugify } from '~/lib/utils/text_utility';
-
-export const removeFlash = (type = 'alert') => {
-  const flashEl = document.querySelector(`.flash-${type}`);
-  if (flashEl) {
-    hideFlash(flashEl);
-  }
-};
 
 /**
  * Takes the stages and median data, combined with the selected stage, to build an
@@ -84,25 +75,6 @@ export const filterStagesByHiddenStatus = (stages = [], isHidden = true) =>
  * @property {String} description - String to display for a description
  * @property {String} unit - String representing the decimal point value, e.g '1.5'
  */
-
-/**
- * Prepares metric data to be rendered in the metric_card component
- *
- * @param {MetricData[]} data - The metric data to be rendered
- * @param {Object} popoverContent - Key value pair of data to display in the popover
- * @returns {TransformedMetricData[]} An array of metrics ready to render in the metric_card
- */
-
-export const prepareTimeMetricsData = (data = [], popoverContent = {}) =>
-  data.map(({ title: label, identifier, ...rest }) => {
-    const metricIdentifier = identifier || slugify(label);
-    return {
-      ...rest,
-      label,
-      identifier: metricIdentifier,
-      description: popoverContent[metricIdentifier]?.description || '',
-    };
-  });
 
 const extractFeatures = (gon) => ({
   cycleAnalyticsForGroups: Boolean(gon?.licensed_features?.cycleAnalyticsForGroups),

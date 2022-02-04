@@ -30,8 +30,10 @@ describe('table_utility', () => {
       ${'mergedAt'} | ${false} | ${'MERGED_AT_ASC'}
       ${'severity'} | ${true}  | ${'SEVERITY_DESC'}
       ${'severity'} | ${false} | ${'SEVERITY_ASC'}
+      ${null}       | ${null}  | ${'SEVERITY'}
+      ${null}       | ${null}  | ${''}
     `(
-      'returns $sortString when sortBy = "$sortBy" and sortDesc = "sortDesc"',
+      'returns the expected sort object when the sort string is "$sortString"',
       ({ sortBy, sortDesc, sortString }) => {
         expect(tableUtils.sortStringToObject(sortString)).toStrictEqual({ sortBy, sortDesc });
       },

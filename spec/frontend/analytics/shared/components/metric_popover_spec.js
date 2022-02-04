@@ -1,6 +1,6 @@
 import { GlLink, GlIcon } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import MetricPopover from '~/cycle_analytics/components/metric_popover.vue';
+import MetricPopover from '~/analytics/shared/components/metric_popover.vue';
 
 const MOCK_METRIC = {
   key: 'deployment-frequency',

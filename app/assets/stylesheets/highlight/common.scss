@@ -28,8 +28,24 @@
     border-bottom: 1px solid $border;
   }
 
-  a {
+  button {
     color: $link;
+    border: 0;
+    background: transparent;
+
+    &[disabled] {
+      color: desaturate($link, 100%);
+      opacity: 0.5;
+      cursor: default;
+    }
+
+    &:hover:not([disabled]) {
+      text-decoration: underline;
+    }
+
+    &:not(:focus-visible) {
+      outline: 0;
+    }
   }
 }
 

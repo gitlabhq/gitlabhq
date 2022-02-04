@@ -1,7 +1,7 @@
 <script>
 import { GlSingleStat } from '@gitlab/ui/dist/charts';
 import { redirectTo } from '~/lib/utils/url_utility';
-import MetricPopover from '~/analytics/shared/components/metric_popover.vue';
+import MetricPopover from './metric_popover.vue';
 
 export default {
   name: 'MetricTile',

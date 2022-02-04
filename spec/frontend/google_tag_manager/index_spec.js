@@ -224,8 +224,8 @@ describe('~/google_tag_manager/index', () => {
           { ecommerce: null },
           {
             event: 'EECCheckout',
-            currencyCode: 'USD',
             ecommerce: {
+              currencyCode: 'USD',
               checkout: {
                 actionField: { step: 1 },
                 products: [
@@ -254,8 +254,8 @@ describe('~/google_tag_manager/index', () => {
         expect(spy).toHaveBeenCalledWith({ ecommerce: null });
         expect(spy).toHaveBeenCalledWith({
           event: 'EECCheckout',
-          currencyCode: 'USD',
           ecommerce: {
+            currencyCode: 'USD',
             checkout: {
               actionField: { step: 1 },
               products: [
@@ -291,8 +291,8 @@ describe('~/google_tag_manager/index', () => {
         expect(spy).toHaveBeenCalledWith({ ecommerce: null });
         expect(spy).toHaveBeenCalledWith({
           event: 'EECCheckout',
-          currencyCode: 'USD',
           ecommerce: {
+            currencyCode: 'USD',
             checkout: {
               actionField: { step: 1 },
               products: [
@@ -347,8 +347,8 @@ describe('~/google_tag_manager/index', () => {
             { ecommerce: null },
             {
               event: 'EECtransactionSuccess',
-              currencyCode: 'USD',
               ecommerce: {
+                currencyCode: 'USD',
                 purchase: {
                   actionField: {
                     id: '123',

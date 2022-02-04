@@ -158,7 +158,7 @@ RSpec.describe 'User comments on a diff', :js do
       it 'allows comments on previously hidden lines at the bottom of a file' do
         # Click +28, expand down, select 37 add and verify comment
         page.within('[data-path="files/ruby/popen.rb"]') do
-          all('.js-unfold-down')[1].click
+          all('.js-unfold-down:not([disabled])')[1].click
         end
         click_diff_line(find('div[data-path="files/ruby/popen.rb"] .left-side a[data-linenumber="30"]').find(:xpath, '../..'), 'left')
         add_comment('+28', '37')

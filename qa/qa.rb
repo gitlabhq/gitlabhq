@@ -52,7 +52,8 @@ module QA
     "otp" => "OTP",
     "jira_api" => "JiraAPI",
     "registry_tls" => "RegistryTLS",
-    "jetbrains" => "JetBrains"
+    "jetbrains" => "JetBrains",
+    "vscode" => "VSCode"
   )
 
   loader.setup

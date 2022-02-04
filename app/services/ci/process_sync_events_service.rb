@@ -2,7 +2,6 @@
 
 module Ci
   class ProcessSyncEventsService
-    include Gitlab::Utils::StrongMemoize
     include ExclusiveLeaseGuard
 
     BATCH_SIZE = 1000
@@ -10,6 +9,7 @@ module Ci
     def initialize(sync_event_class, sync_class)
       @sync_event_class = sync_event_class
       @sync_class = sync_class
+      @results = {}
     end
 
     def execute
@@ -17,12 +17,18 @@ module Ci
       try_obtain_lease { process_events }
 
       enqueue_worker_if_there_still_event
+
+      @results
     end
 
     private
 
     def process_events
+      add_result(estimated_total_events: @sync_event_class.upper_bound_count)
+
       events = @sync_event_class.preload_synced_relation.first(BATCH_SIZE)
+
+      add_result(consumable_events: events.size)
 
       return if events.empty?
 
@@ -35,6 +41,7 @@ module Ci
           processed_events << event
         end
       ensure
+        add_result(processed_events: processed_events.size)
         @sync_event_class.id_in(processed_events).delete_all
       end
     end
@@ -49,6 +56,10 @@ module Ci
 
     def lease_timeout
       1.minute
+    end
+
+    def add_result(result)
+      @results.merge!(result)
     end
   end
 end

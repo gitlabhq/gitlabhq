@@ -1,13 +1,10 @@
-import metricsData from 'test_fixtures/projects/analytics/value_stream_analytics/summary.json';
 import {
   transformStagesForPathNavigation,
   medianTimeToParsedSeconds,
   formatMedianValues,
   filterStagesByHiddenStatus,
-  prepareTimeMetricsData,
   buildCycleAnalyticsInitialData,
 } from '~/cycle_analytics/utils';
-import { slugify } from '~/lib/utils/text_utility';
 import {
   selectedStage,
   allowedStages,
@@ -86,39 +83,6 @@ describe('Value stream analytics utils', () => {
       ${true}      | ${hiddenStages}
     `('with isHidden=$isHidden returns matching stages', ({ isHidden, result }) => {
       expect(filterStagesByHiddenStatus(mockStages, isHidden)).toEqual(result);
-    });
-  });
-
-  describe('prepareTimeMetricsData', () => {
-    let prepared;
-    const [first, second] = metricsData;
-    delete second.identifier; // testing the case when identifier is missing
-
-    const firstIdentifier = first.identifier;
-    const secondIdentifier = slugify(second.title);
-
-    beforeEach(() => {
-      prepared = prepareTimeMetricsData([first, second], {
-        [firstIdentifier]: { description: 'Is a value that is good' },
-      });
-    });
-
-    it('will add a `identifier` based on the title', () => {
-      expect(prepared).toMatchObject([
-        { identifier: firstIdentifier },
-        { identifier: secondIdentifier },
-      ]);
-    });
-
-    it('will add a `label` key', () => {
-      expect(prepared).toMatchObject([{ label: 'New Issues' }, { label: 'Commits' }]);
-    });
-
-    it('will add a popover description using the key if it is provided', () => {
-      expect(prepared).toMatchObject([
-        { description: 'Is a value that is good' },
-        { description: '' },
-      ]);
     });
   });
 

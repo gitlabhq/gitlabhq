@@ -890,3 +890,13 @@
     }
   }
 }
+
+.icon-overlap-and-shadow {
+  filter:
+    drop-shadow(0 1px 0.5px #fff)
+    drop-shadow(1px 0 0.5px #fff)
+    drop-shadow(0 -1px 0.5px #fff)
+    drop-shadow(-1px 0 0.5px #fff);
+  margin-right: -7px;
+  z-index: 1;
+}

@@ -1,4 +1,4 @@
-import { GlIcon, GlLoadingIcon, GlTooltip } from '@gitlab/ui';
+import { GlBadge, GlLoadingIcon, GlTooltip } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import { useFakeDate } from 'helpers/fake_date';
@@ -139,7 +139,7 @@ describe('StatesTable', () => {
       const toolTip = state.find(GlTooltip);
 
       expect(state.text()).toContain(name);
-      expect(state.find(GlIcon).exists()).toBe(locked);
+      expect(state.find(GlBadge).exists()).toBe(locked);
       expect(state.find(GlLoadingIcon).exists()).toBe(loading);
       expect(toolTip.exists()).toBe(locked);
 

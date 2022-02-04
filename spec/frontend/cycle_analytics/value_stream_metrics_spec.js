@@ -3,11 +3,11 @@ import { shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import metricsData from 'test_fixtures/projects/analytics/value_stream_analytics/summary.json';
 import waitForPromises from 'helpers/wait_for_promises';
+import ValueStreamMetrics from '~/analytics/shared/components/value_stream_metrics.vue';
 import { METRIC_TYPE_SUMMARY } from '~/api/analytics_api';
-import ValueStreamMetrics from '~/cycle_analytics/components/value_stream_metrics.vue';
-import { METRICS_POPOVER_CONTENT } from '~/cycle_analytics/constants';
-import { prepareTimeMetricsData } from '~/cycle_analytics/utils';
-import MetricTile from '~/cycle_analytics/components/metric_tile.vue';
+import { METRICS_POPOVER_CONTENT } from '~/analytics/shared/constants';
+import { prepareTimeMetricsData } from '~/analytics/shared/utils';
+import MetricTile from '~/analytics/shared/components/metric_tile.vue';
 import createFlash from '~/flash';
 import { group } from './mock_data';
 

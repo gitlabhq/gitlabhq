@@ -91,7 +91,9 @@ describe('DiffExpansionCell', () => {
       });
 
       expect(findExpandUp(wrapper).exists()).toBe(true);
-      expect(findExpandDown(wrapper).exists()).toBe(false);
+      expect(findExpandDown(wrapper).exists()).toBe(true);
+      expect(findExpandUp(wrapper).attributes('disabled')).not.toBeDefined();
+      expect(findExpandDown(wrapper).attributes('disabled')).toBeDefined();
       expect(findExpandAll(wrapper)).not.toBe(null);
     });
   });
@@ -112,8 +114,10 @@ describe('DiffExpansionCell', () => {
         isBottom: true,
       });
 
-      expect(findExpandUp(wrapper).exists()).toBe(false);
       expect(findExpandDown(wrapper).exists()).toBe(true);
+      expect(findExpandUp(wrapper).exists()).toBe(true);
+      expect(findExpandDown(wrapper).attributes('disabled')).not.toBeDefined();
+      expect(findExpandUp(wrapper).attributes('disabled')).toBeDefined();
       expect(findExpandAll(wrapper)).not.toBe(null);
     });
   });

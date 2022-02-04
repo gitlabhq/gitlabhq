@@ -1,14 +1,5 @@
 <script>
-import {
-  GlAlert,
-  GlBadge,
-  GlIcon,
-  GlLink,
-  GlLoadingIcon,
-  GlSprintf,
-  GlTable,
-  GlTooltip,
-} from '@gitlab/ui';
+import { GlAlert, GlBadge, GlLink, GlLoadingIcon, GlSprintf, GlTable, GlTooltip } from '@gitlab/ui';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { s__ } from '~/locale';
 import CiBadge from '~/vue_shared/components/ci_badge_link.vue';
@@ -21,7 +12,6 @@ export default {
     CiBadge,
     GlAlert,
     GlBadge,
-    GlIcon,
     GlLink,
     GlLoadingIcon,
     GlSprintf,
@@ -156,8 +146,7 @@ export default {
           :id="`terraformLockedBadgeContainer${item.name}`"
           class="gl-mx-3"
         >
-          <gl-badge :id="`terraformLockedBadge${item.name}`">
-            <gl-icon name="lock" />
+          <gl-badge :id="`terraformLockedBadge${item.name}`" icon="lock">
             {{ $options.i18n.locked }}
           </gl-badge>
 

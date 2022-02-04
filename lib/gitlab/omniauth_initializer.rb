@@ -28,6 +28,10 @@ module Gitlab
           { fail_with_empty_uid: true }
         when 'google_oauth2'
           { client_options: { connection_opts: { request: { timeout: OAUTH2_TIMEOUT_SECONDS } } } }
+        when 'gitlab'
+          {
+            authorize_params: { gl_auth_type: 'login' }
+          }
         else
           {}
         end

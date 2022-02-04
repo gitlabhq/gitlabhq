@@ -6,25 +6,35 @@ module Gitlab
     IpBlacklisted = Class.new(StandardError)
 
     # Scopes used for GitLab API access
-    API_SCOPES = [:api, :read_user, :read_api].freeze
+    API_SCOPE = :api
+    READ_API_SCOPE = :read_api
+    READ_USER_SCOPE = :read_user
+    API_SCOPES = [API_SCOPE, READ_API_SCOPE, READ_USER_SCOPE].freeze
+
+    PROFILE_SCOPE = :profile
+    EMAIL_SCOPE = :email
+    OPENID_SCOPE = :openid
+    # Scopes used for OpenID Connect
+    OPENID_SCOPES = [OPENID_SCOPE].freeze
+    # OpenID Connect profile scopes
+    PROFILE_SCOPES = [PROFILE_SCOPE, EMAIL_SCOPE].freeze
 
     # Scopes used for GitLab Repository access
-    REPOSITORY_SCOPES = [:read_repository, :write_repository].freeze
+    READ_REPOSITORY_SCOPE = :read_repository
+    WRITE_REPOSITORY_SCOPE = :write_repository
+    REPOSITORY_SCOPES = [READ_REPOSITORY_SCOPE, WRITE_REPOSITORY_SCOPE].freeze
 
     # Scopes used for GitLab Docker Registry access
-    REGISTRY_SCOPES = [:read_registry, :write_registry].freeze
+    READ_REGISTRY_SCOPE = :read_registry
+    WRITE_REGISTRY_SCOPE = :write_registry
+    REGISTRY_SCOPES = [READ_REGISTRY_SCOPE, WRITE_REGISTRY_SCOPE].freeze
 
     # Scopes used for GitLab as admin
-    ADMIN_SCOPES = [:sudo].freeze
-
-    # Scopes used for OpenID Connect
-    OPENID_SCOPES = [:openid].freeze
-
-    # OpenID Connect profile scopes
-    PROFILE_SCOPES = [:profile, :email].freeze
+    SUDO_SCOPE = :sudo
+    ADMIN_SCOPES = [SUDO_SCOPE].freeze
 
     # Default scopes for OAuth applications that don't define their own
-    DEFAULT_SCOPES = [:api].freeze
+    DEFAULT_SCOPES = [API_SCOPE].freeze
 
     CI_JOB_USER = 'gitlab-ci-token'
 

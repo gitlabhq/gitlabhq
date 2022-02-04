@@ -1,7 +1,7 @@
 import { GlSingleStat } from '@gitlab/ui/dist/charts';
 import { shallowMount } from '@vue/test-utils';
-import MetricTile from '~/cycle_analytics/components/metric_tile.vue';
-import MetricPopover from '~/cycle_analytics/components/metric_popover.vue';
+import MetricTile from '~/analytics/shared/components/metric_tile.vue';
+import MetricPopover from '~/analytics/shared/components/metric_popover.vue';
 import { redirectTo } from '~/lib/utils/url_utility';
 
 jest.mock('~/lib/utils/url_utility');

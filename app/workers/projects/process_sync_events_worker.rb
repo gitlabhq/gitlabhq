@@ -16,7 +16,13 @@ module Projects
     deduplicate :until_executing
 
     def perform
-      ::Ci::ProcessSyncEventsService.new(::Projects::SyncEvent, ::Ci::ProjectMirror).execute
+      results = ::Ci::ProcessSyncEventsService.new(
+        ::Projects::SyncEvent, ::Ci::ProjectMirror
+      ).execute
+
+      results.each do |key, value|
+        log_extra_metadata_on_done(key, value)
+      end
     end
   end
 end
