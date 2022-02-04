@@ -359,8 +359,8 @@ RSpec.describe ApplicationExperiment, :experiment do
       end
 
       it "returns an assigned name" do
-        application_experiment.try(:variant1) {}
-        application_experiment.try(:variant2) {}
+        application_experiment.variant(:variant1) {}
+        application_experiment.variant(:variant2) {}
 
         expect(application_experiment.variant.name).to eq('variant2')
       end
@@ -395,8 +395,8 @@ RSpec.describe ApplicationExperiment, :experiment do
 
       cache.clear(key: application_experiment.name)
 
-      application_experiment.use { } # setup the control
-      application_experiment.try { } # setup the candidate
+      application_experiment.control { }
+      application_experiment.candidate { }
     end
 
     it "caches the variant determined by the variant resolver" do

@@ -33,8 +33,8 @@ module LearnGitlabHelper
       actor: current_user,
       sticky_to: project.namespace
     ) do |e|
-      e.use { urls_to_use = action_urls }
-      e.try { urls_to_use = new_action_urls(project) }
+      e.control { urls_to_use = action_urls }
+      e.candidate { urls_to_use = new_action_urls(project) }
     end
 
     urls_to_use.to_h do |action, url|

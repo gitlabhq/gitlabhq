@@ -26245,8 +26245,6 @@ CREATE UNIQUE INDEX index_epic_board_list_preferences_on_user_and_list ON boards
 
 CREATE UNIQUE INDEX index_epic_board_recent_visits_on_user_group_and_board ON boards_epic_board_recent_visits USING btree (user_id, group_id, epic_board_id);
 
-CREATE INDEX index_epic_issues_on_epic_id ON epic_issues USING btree (epic_id);
-
 CREATE INDEX index_epic_issues_on_epic_id_and_issue_id ON epic_issues USING btree (epic_id, issue_id);
 
 CREATE UNIQUE INDEX index_epic_issues_on_issue_id ON epic_issues USING btree (issue_id);

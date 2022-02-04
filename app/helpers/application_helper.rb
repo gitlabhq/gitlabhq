@@ -428,7 +428,7 @@ module ApplicationHelper
     experiment(:logged_out_marketing_header, actor: nil) do |e|
       html_class = 'logged-out-marketing-header-candidate'
       e.candidate { html_class }
-      e.try(:trial_focused) { html_class }
+      e.variant(:trial_focused) { html_class }
       e.control {}
       e.run
     end

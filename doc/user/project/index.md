@@ -105,7 +105,6 @@ Projects include the following [features](https://about.gitlab.com/features/):
 - [License Compliance](../compliance/license_compliance/index.md): Approve and deny licenses for projects. **(ULTIMATE)**
 - [Dependency List](../application_security/dependency_list/index.md): View project dependencies. **(ULTIMATE)**
 - [Requirements](requirements/index.md): Create criteria to check your products against. **(ULTIMATE)**
-- [Static Site Editor](static_site_editor/index.md): Edit content on static websites without prior knowledge of the codebase or Git commands.
 - [Code Intelligence](code_intelligence.md): Navigate code.
 
 ## Project integrations
