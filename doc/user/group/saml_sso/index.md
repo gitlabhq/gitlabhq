@@ -339,6 +339,13 @@ For example, to unlink the `MyOrg` account:
 
 ## Group Sync
 
+WARNING:
+Changing Group Sync configuration can remove users from the relevant GitLab group.
+Removal happens if there is any mismatch between the group names and the list of `groups` in the SAML response.
+If changes must be made, ensure either the SAML response includes the `groups` attribute
+and the `AttributeValue` value matches the **SAML Group Name** in GitLab,
+or that all groups are removed from GitLab to disable Group Sync.
+
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For a demo of Group Sync using Azure, see [Demo: SAML Group Sync](https://youtu.be/Iqvo2tJfXjg).
 
@@ -355,10 +362,6 @@ Ensure your SAML identity provider sends an attribute statement named `Groups` o
   </saml:Attribute>
 </saml:AttributeStatement>
 ```
-
-WARNING:
-Setting up Group Sync can disconnect users from SAML IDP if there is any mismatch in the configuration. Ensure the
-`Groups` attribute is included in the SAML response, and the **SAML Group Name** matches the `AttributeValue` attribute.
 
 Other attribute names such as `http://schemas.microsoft.com/ws/2008/06/identity/claims/groups`
 are not accepted as a source of groups.

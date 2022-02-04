@@ -260,7 +260,7 @@ export default {
       :link="status.action.path"
       :action-icon="status.action.icon"
       class="gl-mr-1"
-      data-qa-selector="action_button"
+      data-qa-selector="job_action_button"
       @pipelineActionRequestComplete="pipelineActionRequestComplete"
     />
     <action-component

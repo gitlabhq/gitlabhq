@@ -1,0 +1,13 @@
+- name: "Optional enforcement of SSH expiration" # The name of the feature to be deprecated
+  announcement_milestone: "14.8" # The milestone when this feature was first announced as deprecated.
+  announcement_date: "2022-02-22" # The date of the milestone release when this feature was first announced as deprecated. This should almost always be the 22nd of a month (YYYY-MM-22), unless you did an out of band blog post.
+  removal_milestone: "15.0" # The milestone when this feature is planned to be removed
+  removal_date: "2022-05-22" # The date of the milestone release when this feature is planned to be removed. This should almost always be the 22nd of a month (YYYY-MM-22), unless you did an out of band blog post.
+  breaking_change: true # If this deprecation is a breaking change, set this value to true
+  reporter: djensen # GitLab username of the person reporting the deprecation
+  body: | # Do not modify this line, instead modify the lines below.
+    The feature to disable enforcement of SSH expiration is unusual from a security perspective.
+    We have become concerned that this unusual feature could create unexpected behavior for users.
+    Unexpected behavior in a security feature is inherently dangerous, so we have decided to remove this feature.
+  issue_url: "https://gitlab.com/gitlab-org/gitlab/-/issues/351963" # (optional) This is a link to the deprecation issue in GitLab
+  documentation_url: "https://docs.gitlab.com/ee/user/admin_area/settings/account_and_limit_settings.html#allow-expired-ssh-keys-to-be-used-deprecated" # (optional) This is a link to the current documentation page

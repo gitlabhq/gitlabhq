@@ -33,6 +33,10 @@ module QA
             wait_for_latest_pipeline_status { has_selector?(".ci-status-icon-success") || has_selector?(".ci-status-icon-failed") }
           end
 
+          def wait_for_latest_pipeline_skipped
+            wait_for_latest_pipeline_status { has_text?('skipped') }
+          end
+
           def wait_for_latest_pipeline_status
             wait_until(max_duration: 90, reload: true, sleep_interval: 5) { has_pipeline? }
 

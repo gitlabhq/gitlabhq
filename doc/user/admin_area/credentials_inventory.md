@@ -38,7 +38,7 @@ The following is an example of the Credentials inventory page:
 
 If you see a **Revoke** button, you can revoke that user's PAT. Whether you see a **Revoke** button depends on the token state, and if an expiration date has been set. For more information, see the following table:
 
-| Token state | [Token expiration enforced?](settings/account_and_limit_settings.md#allow-expired-personal-access-tokens-to-be-used) | Show Revoke button? | Comments |
+| Token state | [Token expiration enforced?](settings/account_and_limit_settings.md#allow-expired-personal-access-tokens-to-be-used-deprecated) | Show Revoke button? | Comments |
 |-------------|------------------------|--------------------|----------------------------------------------------------------------------|
 | Active      | Yes                    | Yes                | Allows administrators to revoke the PAT, such as for a compromised account |
 | Active      | No                     | Yes                | Allows administrators to revoke the PAT, such as for a compromised account |

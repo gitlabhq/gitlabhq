@@ -28,7 +28,6 @@ import {
   MAX_LIST_SIZE,
   PAGE_SIZE,
   PARAM_DUE_DATE,
-  PARAM_SORT,
   PARAM_STATE,
   RELATIVE_POSITION_ASC,
   TOKEN_TYPE_ASSIGNEE,
@@ -69,6 +68,7 @@ import {
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import eventHub from '../eventhub';
 import reorderIssuesMutation from '../queries/reorder_issues.mutation.graphql';
+import setSortPreferenceMutation from '../queries/set_sort_preference.mutation.graphql';
 import searchLabelsQuery from '../queries/search_labels.query.graphql';
 import searchMilestonesQuery from '../queries/search_milestones.query.graphql';
 import searchUsersQuery from '../queries/search_users.query.graphql';
@@ -140,6 +140,9 @@ export default {
     initialEmail: {
       default: '',
     },
+    initialSort: {
+      default: '',
+    },
     isAnonymousSearchDisabled: {
       default: false,
     },
@@ -181,7 +184,12 @@ export default {
   data() {
     const state = getParameterByName(PARAM_STATE);
     const defaultSortKey = state === IssuableStates.Closed ? UPDATED_DESC : CREATED_DESC;
-    let sortKey = getSortKey(getParameterByName(PARAM_SORT)) || defaultSortKey;
+    const dashboardSortKey = getSortKey(this.initialSort);
+    const graphQLSortKey = this.initialSort?.toUpperCase();
+
+    // The initial sort is an old enum value when it is saved on the dashboard issues page.
+    // The initial sort is a GraphQL enum value when it is saved on the Vue issues list page.
+    let sortKey = dashboardSortKey || graphQLSortKey || defaultSortKey;
 
     if (this.isIssueRepositioningDisabled && sortKey === RELATIVE_POSITION_ASC) {
       this.showIssueRepositioningMessage();
@@ -608,6 +616,25 @@ export default {
         this.pageParams = getInitialPageParams(sortKey);
       }
       this.sortKey = sortKey;
+
+      if (this.isSignedIn) {
+        this.saveSortPreference(sortKey);
+      }
+    },
+    saveSortPreference(sortKey) {
+      this.$apollo
+        .mutate({
+          mutation: setSortPreferenceMutation,
+          variables: { input: { issuesSort: sortKey } },
+        })
+        .then(({ data }) => {
+          if (data.userPreferencesUpdate.errors.length) {
+            throw new Error(data.userPreferencesUpdate.errors);
+          }
+        })
+        .catch((error) => {
+          Sentry.captureException(error);
+        });
     },
     showAnonymousSearchingMessage() {
       createFlash({

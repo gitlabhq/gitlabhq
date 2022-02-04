@@ -1,13 +1,12 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Create', :requires_admin, quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/350220', type: :investigating } do # remove :requires_admin once the ff is enabled by default in https://gitlab.com/gitlab-org/gitlab/-/issues/345398
+  RSpec.describe 'Create' do
     context 'Content Editor' do
       let(:initial_wiki) { Resource::Wiki::ProjectPage.fabricate_via_api! }
       let(:page_title) { 'Content Editor Page' }
       let(:heading_text) { 'My New Heading' }
       let(:image_file_name) { 'testfile.png' }
-      let!(:toggle) { Runtime::Feature.enabled?(:wiki_switch_between_content_editor_raw_markdown) }
 
       before do
         Flow::Login.sign_in
@@ -24,7 +23,7 @@ module QA
 
         Page::Project::Wiki::Edit.perform do |edit|
           edit.set_title(page_title)
-          edit.use_new_editor(toggle)
+          edit.use_new_editor
           edit.add_heading('Heading 1', heading_text)
           edit.upload_image(File.absolute_path(File.join('qa', 'fixtures', 'designs', image_file_name)))
         end

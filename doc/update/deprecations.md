@@ -753,6 +753,34 @@ To align with this change, API calls to list external status checks will also re
 
 **Planned removal milestone: 15.0 (2022-05-22)**
 
+### Optional enforcement of PAT expiration
+
+WARNING:
+This feature will be changed or removed in 15.0
+as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Before updating GitLab, review the details carefully to determine if you need to make any
+changes to your code, settings, or workflow.
+
+The feature to disable enforcement of PAT expiration is unusual from a security perspective.
+We have become concerned that this unusual feature could create unexpected behavior for users.
+Unexpected behavior in a security feature is inherently dangerous, so we have decided to remove this feature.
+
+**Planned removal milestone: 15.0 (2022-05-22)**
+
+### Optional enforcement of SSH expiration
+
+WARNING:
+This feature will be changed or removed in 15.0
+as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Before updating GitLab, review the details carefully to determine if you need to make any
+changes to your code, settings, or workflow.
+
+The feature to disable enforcement of SSH expiration is unusual from a security perspective.
+We have become concerned that this unusual feature could create unexpected behavior for users.
+Unexpected behavior in a security feature is inherently dangerous, so we have decided to remove this feature.
+
+**Planned removal milestone: 15.0 (2022-05-22)**
+
 ### Querying Usage Trends via the `instanceStatisticsMeasurements` GraphQL node
 
 WARNING:

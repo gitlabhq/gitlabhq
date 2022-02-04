@@ -12,6 +12,7 @@ module QA
         select :number_of_employees
         text_field :telephone_number
         select :country
+        select :state, id: 'state'
         button :continue
       end
     end

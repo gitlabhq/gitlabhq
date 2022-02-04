@@ -16,6 +16,8 @@ import {
   getIssuesQueryResponse,
   filteredTokens,
   locationSearch,
+  setSortPreferenceMutationResponse,
+  setSortPreferenceMutationResponseWithErrors,
   urlParams,
 } from 'jest/issues/list/mock_data';
 import createFlash, { FLASH_TYPES } from '~/flash';
@@ -43,16 +45,15 @@ import {
   urlSortParams,
 } from '~/issues/list/constants';
 import eventHub from '~/issues/list/eventhub';
-import { getSortOptions } from '~/issues/list/utils';
+import setSortPreferenceMutation from '~/issues/list/queries/set_sort_preference.mutation.graphql';
+import { getSortKey, getSortOptions } from '~/issues/list/utils';
 import axios from '~/lib/utils/axios_utils';
 import { scrollUp } from '~/lib/utils/scroll_utils';
 import { joinPaths } from '~/lib/utils/url_utility';
 
 jest.mock('@sentry/browser');
 jest.mock('~/flash');
-jest.mock('~/lib/utils/scroll_utils', () => ({
-  scrollUp: jest.fn().mockName('scrollUpMock'),
-}));
+jest.mock('~/lib/utils/scroll_utils', () => ({ scrollUp: jest.fn() }));
 
 describe('CE IssuesListApp component', () => {
   let axiosMock;
@@ -103,11 +104,13 @@ describe('CE IssuesListApp component', () => {
     provide = {},
     issuesQueryResponse = jest.fn().mockResolvedValue(defaultQueryResponse),
     issuesCountsQueryResponse = jest.fn().mockResolvedValue(getIssuesCountsQueryResponse),
+    sortPreferenceMutationResponse = jest.fn().mockResolvedValue(setSortPreferenceMutationResponse),
     mountFn = shallowMount,
   } = {}) => {
     const requestHandlers = [
       [getIssuesQuery, issuesQueryResponse],
       [getIssuesCountsQuery, issuesCountsQueryResponse],
+      [setSortPreferenceMutation, sortPreferenceMutationResponse],
     ];
     const apolloProvider = createMockApollo(requestHandlers);
 
@@ -192,12 +195,13 @@ describe('CE IssuesListApp component', () => {
 
     describe('csv import/export component', () => {
       describe('when user is signed in', () => {
-        const search = '?search=refactor&sort=created_date&state=opened';
-
         beforeEach(async () => {
-          setWindowLocation(search);
+          setWindowLocation('?search=refactor&state=opened');
 
-          wrapper = mountComponent({ provide: { isSignedIn: true }, mountFn: mount });
+          wrapper = mountComponent({
+            provide: { initialSortBy: CREATED_DESC, isSignedIn: true },
+            mountFn: mount,
+          });
 
           jest.runOnlyPendingTimers();
           await waitForPromises();
@@ -205,7 +209,7 @@ describe('CE IssuesListApp component', () => {
 
         it('renders', () => {
           expect(findCsvImportExportButtons().props()).toMatchObject({
-            exportCsvPath: `${defaultProvide.exportCsvPath}${search}`,
+            exportCsvPath: `${defaultProvide.exportCsvPath}?search=refactor&sort=created_date&state=opened`,
             issuableCount: 1,
           });
         });
@@ -306,31 +310,43 @@ describe('CE IssuesListApp component', () => {
     });
 
     describe('sort', () => {
-      it.each(Object.keys(urlSortParams))('is set as %s from the url params', (sortKey) => {
-        setWindowLocation(`?sort=${urlSortParams[sortKey]}`);
+      describe('when initial sort value uses old enum values', () => {
+        const oldEnumSortValues = Object.values(urlSortParams);
 
-        wrapper = mountComponent();
+        it.each(oldEnumSortValues)('initial sort is set with value %s', (sort) => {
+          wrapper = mountComponent({ provide: { initialSort: sort } });
 
-        expect(findIssuableList().props()).toMatchObject({
-          initialSortBy: sortKey,
-          urlParams: {
-            sort: urlSortParams[sortKey],
-          },
+          expect(findIssuableList().props()).toMatchObject({
+            initialSortBy: getSortKey(sort),
+            urlParams: { sort },
+          });
         });
       });
 
-      describe('when issue repositioning is disabled and the sort is manual', () => {
+      describe('when initial sort value uses new GraphQL enum values', () => {
+        const graphQLEnumSortValues = Object.keys(urlSortParams);
+
+        it.each(graphQLEnumSortValues)('initial sort is set with value %s', (sort) => {
+          wrapper = mountComponent({ provide: { initialSort: sort.toLowerCase() } });
+
+          expect(findIssuableList().props()).toMatchObject({
+            initialSortBy: sort,
+            urlParams: { sort: urlSortParams[sort] },
+          });
+        });
+      });
+
+      describe('when sort is manual and issue repositioning is disabled', () => {
         beforeEach(() => {
-          setWindowLocation(`?sort=${RELATIVE_POSITION}`);
-          wrapper = mountComponent({ provide: { isIssueRepositioningDisabled: true } });
+          wrapper = mountComponent({
+            provide: { initialSort: RELATIVE_POSITION, isIssueRepositioningDisabled: true },
+          });
         });
 
         it('changes the sort to the default of created descending', () => {
           expect(findIssuableList().props()).toMatchObject({
             initialSortBy: CREATED_DESC,
-            urlParams: {
-              sort: urlSortParams[CREATED_DESC],
-            },
+            urlParams: { sort: urlSortParams[CREATED_DESC] },
           });
         });
 
@@ -763,8 +779,9 @@ describe('CE IssuesListApp component', () => {
         const initialSort = CREATED_DESC;
 
         beforeEach(() => {
-          setWindowLocation(`?sort=${initialSort}`);
-          wrapper = mountComponent({ provide: { isIssueRepositioningDisabled: true } });
+          wrapper = mountComponent({
+            provide: { initialSort, isIssueRepositioningDisabled: true },
+          });
 
           findIssuableList().vm.$emit('sort', RELATIVE_POSITION_ASC);
         });
@@ -780,6 +797,43 @@ describe('CE IssuesListApp component', () => {
             message: IssuesListApp.i18n.issueRepositioningMessage,
             type: FLASH_TYPES.NOTICE,
           });
+        });
+      });
+
+      describe('when user is signed in', () => {
+        it('calls mutation to save sort preference', () => {
+          const mutationMock = jest.fn().mockResolvedValue(setSortPreferenceMutationResponse);
+          wrapper = mountComponent({ sortPreferenceMutationResponse: mutationMock });
+
+          findIssuableList().vm.$emit('sort', CREATED_DESC);
+
+          expect(mutationMock).toHaveBeenCalledWith({ input: { issuesSort: CREATED_DESC } });
+        });
+
+        it('captures error when mutation response has errors', async () => {
+          const mutationMock = jest
+            .fn()
+            .mockResolvedValue(setSortPreferenceMutationResponseWithErrors);
+          wrapper = mountComponent({ sortPreferenceMutationResponse: mutationMock });
+
+          findIssuableList().vm.$emit('sort', CREATED_DESC);
+          await waitForPromises();
+
+          expect(Sentry.captureException).toHaveBeenCalledWith(new Error('oh no!'));
+        });
+      });
+
+      describe('when user is signed out', () => {
+        it('does not call mutation to save sort preference', () => {
+          const mutationMock = jest.fn().mockResolvedValue(setSortPreferenceMutationResponse);
+          wrapper = mountComponent({
+            provide: { isSignedIn: false },
+            sortPreferenceMutationResponse: mutationMock,
+          });
+
+          findIssuableList().vm.$emit('sort', CREATED_DESC);
+
+          expect(mutationMock).not.toHaveBeenCalled();
         });
       });
     });

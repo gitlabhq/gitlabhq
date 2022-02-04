@@ -41,6 +41,7 @@ You can set these rate limits in the Admin Area of your instance:
 - [Git LFS rate limits](../user/admin_area/settings/git_lfs_rate_limits.md)
 - [Files API rate limits](../user/admin_area/settings/files_api_rate_limits.md)
 - [Deprecated API rate limits](../user/admin_area/settings/deprecated_api_rate_limits.md)
+- [GitLab Pages rate limits](../administration/pages/index.md#rate-limits)
 
 You can set these rate limits using the Rails console:
 

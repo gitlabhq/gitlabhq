@@ -90,6 +90,22 @@ export const getIssuesCountsQueryResponse = {
   },
 };
 
+export const setSortPreferenceMutationResponse = {
+  data: {
+    userPreferencesUpdate: {
+      errors: [],
+    },
+  },
+};
+
+export const setSortPreferenceMutationResponseWithErrors = {
+  data: {
+    userPreferencesUpdate: {
+      errors: ['oh no!'],
+    },
+  },
+};
+
 export const locationSearch = [
   '?search=find+issues',
   'author_username=homer',

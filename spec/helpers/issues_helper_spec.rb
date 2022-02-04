@@ -300,6 +300,7 @@ RSpec.describe IssuesHelper do
         has_any_issues: project_issues(project).exists?.to_s,
         import_csv_issues_path: '#',
         initial_email: project.new_issuable_address(current_user, 'issue'),
+        initial_sort: current_user&.user_preference&.issues_sort,
         is_anonymous_search_disabled: 'true',
         is_issue_repositioning_disabled: 'true',
         is_project: 'true',
