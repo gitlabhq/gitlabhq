@@ -419,6 +419,7 @@ class ProjectsController < Projects::ApplicationController
     %i[
       show_default_award_emojis
       squash_option
+      show_diff_preview_in_email
       mr_default_target_self
       warn_about_potentially_unwanted_characters
     ]

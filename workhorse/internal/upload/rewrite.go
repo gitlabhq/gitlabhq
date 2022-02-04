@@ -6,8 +6,10 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
+	"mime"
 	"mime/multipart"
 	"net/http"
+	"net/textproto"
 	"os"
 	"path/filepath"
 	"strings"
@@ -95,7 +97,8 @@ func rewriteFormFilesFromMultipart(r *http.Request, writer *multipart.Writer, pr
 			return err
 		}
 
-		name := p.FormName()
+		name, filename := parseAndNormalizeContentDisposition(p.Header)
+
 		if name == "" {
 			continue
 		}
@@ -104,7 +107,7 @@ func rewriteFormFilesFromMultipart(r *http.Request, writer *multipart.Writer, pr
 			return ErrInjectedClientParam
 		}
 
-		if p.FileName() != "" {
+		if filename != "" {
 			err = rew.handleFilePart(r.Context(), name, p, opts)
 		} else {
 			err = rew.copyPart(r.Context(), name, p)
@@ -116,6 +119,13 @@ func rewriteFormFilesFromMultipart(r *http.Request, writer *multipart.Writer, pr
 	}
 
 	return nil
+}
+
+func parseAndNormalizeContentDisposition(header textproto.MIMEHeader) (string, string) {
+	const key = "Content-Disposition"
+	mediaType, params, _ := mime.ParseMediaType(header.Get(key))
+	header.Set(key, mime.FormatMediaType(mediaType, params))
+	return params["name"], params["filename"]
 }
 
 func (rew *rewriter) handleFilePart(ctx context.Context, name string, p *multipart.Part, opts *filestore.SaveFileOpts) error {

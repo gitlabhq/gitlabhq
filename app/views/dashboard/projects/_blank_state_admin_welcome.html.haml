@@ -1,40 +1,42 @@
-.blank-state-row
+- link_classes = "blank-state blank-state-link gl-text-body gl-display-flex gl-align-items-center gl-border-1 gl-border-solid gl-border-gray-100 gl-rounded-base gl-mb-5"
+
+.gl-display-flex.gl-flex-wrap.gl-justify-content-space-between
   - if has_start_trial?
     = render_if_exists "dashboard/projects/blank_state_ee_trial"
 
-  = link_to new_project_path, class: "blank-state blank-state-link" do
+  = link_to new_project_path, class: link_classes do
     .blank-state-icon
       = custom_icon("add_new_project", size: 50)
-    .blank-state-body
-      %h3.blank-state-title
-        Create a project
-      %p.blank-state-text
-        Projects are where you store your code, access issues, wiki and other features of GitLab.
+    .blank-state-body.gl-sm-pl-0.gl-pl-6
+      %h3.gl-font-size-h2.gl-mt-0
+        = _('Create a project')
+      %p
+        = _('Projects are where you store your code, access issues, wiki and other features of GitLab.')
 
   - if current_user.can_create_group?
-    = link_to new_group_path, class: "blank-state blank-state-link" do
+    = link_to new_group_path, class: link_classes do
       .blank-state-icon
         = custom_icon("add_new_group", size: 50)
-      .blank-state-body
-        %h3.blank-state-title
-          Create a group
-        %p.blank-state-text
-          Groups are a great way to organize projects and people.
+      .blank-state-body.gl-sm-pl-0.gl-pl-6
+        %h3.gl-font-size-h2.gl-mt-0
+          = _('Create a group')
+        %p
+          = _('Groups are a great way to organize projects and people.')
 
-    = link_to new_admin_user_path, class: "blank-state blank-state-link" do
+    = link_to new_admin_user_path, class: link_classes do
       .blank-state-icon
         = custom_icon("add_new_user", size: 50)
-      .blank-state-body
-        %h3.blank-state-title
-          Add people
-        %p.blank-state-text
-          Add your team members and others to GitLab.
+      .blank-state-body.gl-sm-pl-0.gl-pl-6
+        %h3.gl-font-size-h2.gl-mt-0
+          = _('Add people')
+        %p
+          = _('Add your team members and others to GitLab.')
 
-  = link_to admin_root_path, class: "blank-state blank-state-link" do
+  = link_to admin_root_path, class: link_classes do
     .blank-state-icon
       = custom_icon("configure_server", size: 50)
-    .blank-state-body
-      %h3.blank-state-title
-        Configure GitLab
-      %p.blank-state-text
-        Make adjustments to how your GitLab instance is set up.
+    .blank-state-body.gl-sm-pl-0.gl-pl-6
+      %h3.gl-font-size-h2.gl-mt-0
+        = _('Configure GitLab')
+      %p
+        = _('Make adjustments to how your GitLab instance is set up.')

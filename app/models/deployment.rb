@@ -294,10 +294,6 @@ class Deployment < ApplicationRecord
     @stop_action ||= manual_actions.find { |action| action.name == self.on_stop }
   end
 
-  def finished_at
-    read_attribute(:finished_at) || legacy_finished_at
-  end
-
   def deployed_at
     return unless success?
 
@@ -404,10 +400,6 @@ class Deployment < ApplicationRecord
     else
       raise ArgumentError, "The status #{status.inspect} is invalid"
     end
-  end
-
-  def legacy_finished_at
-    self.created_at if success? && !read_attribute(:finished_at)
   end
 end
 

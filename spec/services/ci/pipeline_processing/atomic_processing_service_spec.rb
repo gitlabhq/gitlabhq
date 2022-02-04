@@ -1043,22 +1043,6 @@ RSpec.describe Ci::PipelineProcessing::AtomicProcessingService do
         expect(all_builds_names).to eq(%w[A1 A2 B])
         expect(all_builds_statuses).to eq(%w[pending created created])
       end
-
-      context 'when the FF ci_order_subsequent_jobs_by_stage is disabled' do
-        before do
-          stub_feature_flags(ci_order_subsequent_jobs_by_stage: false)
-        end
-
-        it 'processes subsequent jobs in an incorrect order when playing first job' do
-          expect(all_builds_names).to eq(%w[A1 A2 B])
-          expect(all_builds_statuses).to eq(%w[manual skipped skipped])
-
-          play_manual_action('A1')
-
-          expect(all_builds_names).to eq(%w[A1 A2 B])
-          expect(all_builds_statuses).to eq(%w[pending created skipped])
-        end
-      end
     end
 
     private

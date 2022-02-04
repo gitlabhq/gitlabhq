@@ -2200,6 +2200,9 @@ msgstr ""
 msgid "Add or subtract spent time"
 msgstr ""
 
+msgid "Add people"
+msgstr ""
+
 msgid "Add previously merged commits"
 msgstr ""
 
@@ -2264,6 +2267,9 @@ msgid "Add vulnerability finding"
 msgstr ""
 
 msgid "Add webhook"
+msgstr ""
+
+msgid "Add your team members and others to GitLab."
 msgstr ""
 
 msgid "Add/remove"
@@ -9099,6 +9105,9 @@ msgstr ""
 msgid "Configure Dependency Scanning in `.gitlab-ci.yml`, creating this file if it does not already exist"
 msgstr ""
 
+msgid "Configure GitLab"
+msgstr ""
+
 msgid "Configure GitLab runners to start using the Web Terminal. %{helpStart}Learn more.%{helpEnd}"
 msgstr ""
 
@@ -10089,6 +10098,9 @@ msgstr ""
 msgid "Create a Mattermost team for this group"
 msgstr ""
 
+msgid "Create a group"
+msgstr ""
+
 msgid "Create a merge request"
 msgstr ""
 
@@ -10111,6 +10123,9 @@ msgid "Create a new repository"
 msgstr ""
 
 msgid "Create a personal access token on your account to pull or push via %{protocol}."
+msgstr ""
+
+msgid "Create a project"
 msgstr ""
 
 msgid "Create an account using:"
@@ -14605,6 +14620,9 @@ msgstr ""
 msgid "Explore public groups"
 msgstr ""
 
+msgid "Explore public projects"
+msgstr ""
+
 msgid "Explore snippets"
 msgstr ""
 
@@ -16349,6 +16367,9 @@ msgstr ""
 msgid "GitLab is a single application for the entire software development lifecycle. From project planning and source code management to CI/CD, monitoring, and security."
 msgstr ""
 
+msgid "GitLab is free to use. Many features for larger teams are part of our %{link_start}paid products%{link_end}. You can try Ultimate for free without any obligation or payment details."
+msgstr ""
+
 msgid "GitLab is obtaining a Let's Encrypt SSL certificate for this domain. This process can take some time. Please try again later."
 msgstr ""
 
@@ -17459,6 +17480,12 @@ msgstr ""
 msgid "Groups and subgroups"
 msgstr ""
 
+msgid "Groups are a great way to organize projects and people."
+msgstr ""
+
+msgid "Groups are the best way to manage projects and members."
+msgstr ""
+
 msgid "Groups to synchronize"
 msgstr ""
 
@@ -18136,6 +18163,9 @@ msgid "If using GitHub, you’ll see pipeline statuses on GitHub for your commit
 msgstr ""
 
 msgid "If you add %{codeStart}needs%{codeEnd} to jobs in your pipeline you'll be able to view the %{codeStart}needs%{codeEnd} relationships between jobs in this tab as a %{linkStart}Directed Acyclic Graph (DAG)%{linkEnd}."
+msgstr ""
+
+msgid "If you are added to a project, it will be displayed here."
 msgstr ""
 
 msgid "If you did not initiate these sign-in attempts, please reach out to your administrator or enable two-factor authentication (2FA) on your account."
@@ -21169,6 +21199,9 @@ msgstr ""
 msgid "Learn more about Auto DevOps"
 msgstr ""
 
+msgid "Learn more about GitLab"
+msgstr ""
+
 msgid "Learn more about Needs relationships"
 msgstr ""
 
@@ -21844,6 +21877,9 @@ msgid "Mailgun events"
 msgstr ""
 
 msgid "Maintenance mode"
+msgstr ""
+
+msgid "Make adjustments to how your GitLab instance is set up."
 msgstr ""
 
 msgid "Make and review changes in the browser with the Web IDE"
@@ -28264,6 +28300,12 @@ msgstr ""
 msgid "ProjectSettings|If merge trains are enabled, merging is only possible if the branch can be rebased without conflicts."
 msgstr ""
 
+msgid "ProjectSettings|Include diff preview in merge request notification emails"
+msgstr ""
+
+msgid "ProjectSettings|Include the code diff preview on comment threads in merge request notification emails."
+msgstr ""
+
 msgid "ProjectSettings|Internal"
 msgstr ""
 
@@ -28592,6 +28634,9 @@ msgid "Projects are graded based on the highest severity vulnerability present"
 msgstr ""
 
 msgid "Projects are organized into groups"
+msgstr ""
+
+msgid "Projects are where you store your code, access issues, wiki and other features of GitLab."
 msgstr ""
 
 msgid "Projects contributed to"
@@ -29243,6 +29288,9 @@ msgid "Public pipelines"
 msgstr ""
 
 msgid "Public projects Minutes cost factor"
+msgstr ""
+
+msgid "Public projects are an easy way to allow everyone to have read-only access."
 msgstr ""
 
 msgid "Publish to status page"
@@ -34242,6 +34290,9 @@ msgstr ""
 msgid "Start date"
 msgstr ""
 
+msgid "Start free trial"
+msgstr ""
+
 msgid "Start merge train"
 msgstr ""
 
@@ -35314,6 +35365,9 @@ msgid "TagsPage|Write your release notes or drag files here…"
 msgstr ""
 
 msgid "TagsPage|protected"
+msgstr ""
+
+msgid "Take a look at the documentation to discover all of GitLab’s capabilities."
 msgstr ""
 
 msgid "Target Branch"
@@ -38486,6 +38540,9 @@ msgid "Unlock"
 msgstr ""
 
 msgid "Unlock account"
+msgstr ""
+
+msgid "Unlock more features with GitLab Ultimate"
 msgstr ""
 
 msgid "Unlock the discussion"

@@ -145,6 +145,7 @@ project_setting:
     - project_id
     - push_rule_id
     - show_default_award_emojis
+    - show_diff_preview_in_email
     - updated_at
     - cve_id_request_enabled
     - mr_default_target_self

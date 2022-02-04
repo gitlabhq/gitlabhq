@@ -7,10 +7,11 @@ const DEFERRED_LINK_CLASS = 'deferred-link';
 
 export default class PersistentUserCallout {
   constructor(container, options = container.dataset) {
-    const { dismissEndpoint, featureId, deferLinks } = options;
+    const { dismissEndpoint, featureId, groupId, deferLinks } = options;
     this.container = container;
     this.dismissEndpoint = dismissEndpoint;
     this.featureId = featureId;
+    this.groupId = groupId;
     this.deferLinks = parseBoolean(deferLinks);
 
     this.init();
@@ -52,6 +53,7 @@ export default class PersistentUserCallout {
     axios
       .post(this.dismissEndpoint, {
         feature_name: this.featureId,
+        group_id: this.groupId,
       })
       .then(() => {
         this.container.remove();

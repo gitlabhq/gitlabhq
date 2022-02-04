@@ -10,6 +10,7 @@ const PERSISTENT_USER_CALLOUTS = [
   '.js-new-user-signups-cap-reached',
   '.js-eoa-bronze-plan-banner',
   '.js-security-newsletter-callout',
+  '.js-approaching-seats-count-threshold',
 ];
 
 const initCallouts = () => {

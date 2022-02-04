@@ -433,6 +433,7 @@ class Project < ApplicationRecord
   alias_method :container_registry_enabled, :container_registry_enabled?
   delegate :show_default_award_emojis, :show_default_award_emojis=, :show_default_award_emojis?,
     :warn_about_potentially_unwanted_characters, :warn_about_potentially_unwanted_characters=, :warn_about_potentially_unwanted_characters?,
+    :show_diff_preview_in_email, :show_diff_preview_in_email=, :show_diff_preview_in_email?,
     to: :project_setting, allow_nil: true
   delegate :scheduled?, :started?, :in_progress?, :failed?, :finished?,
     prefix: :import, to: :import_state, allow_nil: true

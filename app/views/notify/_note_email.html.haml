@@ -20,8 +20,7 @@
         discussion on #{link_to(discussion.file_path, target_url)}
       - else
         = link_to 'discussion', target_url
-
-- if discussion&.diff_discussion? && discussion.on_text?
+- if discussion&.diff_discussion? && discussion.on_text? && @project.show_diff_preview_in_email?
   = content_for :head do
     = stylesheet_link_tag 'mailers/highlighted_diff_email'
 

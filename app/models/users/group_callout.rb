@@ -9,7 +9,8 @@ module Users
     belongs_to :group
 
     enum feature_name: {
-      invite_members_banner: 1
+      invite_members_banner: 1,
+      approaching_seat_count_threshold: 2 # EE-only
     }
 
     validates :group, presence: true

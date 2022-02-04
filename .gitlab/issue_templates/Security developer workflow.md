@@ -15,6 +15,7 @@ MUST be linked for the release bot to know that the associated merge requests sh
 - Fill out the [Links section](#links):
   - [ ] Next to **Issue on GitLab**, add a link to the `gitlab-org/gitlab` issue that describes the security vulnerability.
 - [ ] Add one of the `~severity::x` labels to the issue and all associated merge requests.
+- [ ] If this change affects the public interface (public API or UI) of the product, post in the `#support_gitlab-com` Slack channel  to explain the impact and discuss a mitigation plan for users that might be affected. If you need Support feedback or approval, reach out in `#spt_managers` Slack channel or mention `@gitlab-com/support/managers`.
 
 ## Development
 

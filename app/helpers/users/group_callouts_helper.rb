@@ -3,6 +3,7 @@
 module Users
   module GroupCalloutsHelper
     INVITE_MEMBERS_BANNER = 'invite_members_banner'
+    APPROACHING_SEAT_COUNT_THRESHOLD = 'approaching_seat_count_threshold'
 
     def show_invite_banner?(group)
       Ability.allowed?(current_user, :admin_group, group) &&

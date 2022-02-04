@@ -199,6 +199,7 @@ export default {
       requestAccessEnabled: true,
       highlightChangesClass: false,
       emailsDisabled: false,
+      showDiffPreviewInEmail: true,
       cveIdRequestEnabled: true,
       featureAccessLevelEveryone,
       featureAccessLevelMembers,
@@ -759,6 +760,24 @@ export default {
       <span class="form-text text-muted">{{
         s__('ProjectSettings|Override user notification preferences for all project members.')
       }}</span>
+    </project-setting-row>
+    <project-setting-row class="mb-3">
+      <input
+        :value="showDiffPreviewInEmail"
+        type="hidden"
+        name="project[project_setting_attributes][show_diff_preview_in_email]"
+      />
+      <gl-form-checkbox
+        v-model="showDiffPreviewInEmail"
+        name="project[project_setting_attributes][show_diff_preview_in_email]"
+      >
+        {{ s__('ProjectSettings|Include diff preview in merge request notification emails') }}
+        <template #help>{{
+          s__(
+            'ProjectSettings|Include the code diff preview on comment threads in merge request notification emails.',
+          )
+        }}</template>
+      </gl-form-checkbox>
     </project-setting-row>
     <project-setting-row class="mb-3">
       <input

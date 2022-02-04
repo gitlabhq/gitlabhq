@@ -1,13 +1,16 @@
 package upload
 
 import (
+	"bufio"
 	"bytes"
 	"context"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"mime/multipart"
 	"net/http"
 	"net/http/httptest"
+	"net/textproto"
 	"os"
 	"regexp"
 	"strconv"
@@ -381,6 +384,89 @@ func TestInvalidFileNames(t *testing.T) {
 		HandleFileUploads(response, httpRequest, nilHandler, apiResponse, &SavedFileTracker{Request: httpRequest}, opts)
 		require.Equal(t, testCase.code, response.Code)
 		require.Equal(t, testCase.expectedPrefix, opts.TempFilePrefix)
+	}
+}
+
+func TestContentDispositionRewrite(t *testing.T) {
+	testhelper.ConfigureSecret()
+
+	tempPath, err := ioutil.TempDir("", "uploads")
+	require.NoError(t, err)
+	defer os.RemoveAll(tempPath)
+
+	tests := []struct {
+		desc            string
+		header          string
+		code            int
+		sanitizedHeader string
+	}{
+		{
+			desc:            "with name",
+			header:          `form-data; name="foo"`,
+			code:            200,
+			sanitizedHeader: `form-data; name=foo`,
+		},
+		{
+			desc:            "with name and name*",
+			header:          `form-data; name="foo"; name*=UTF-8''bar`,
+			code:            200,
+			sanitizedHeader: `form-data; name=bar`,
+		},
+		{
+			desc:            "with name and invalid name*",
+			header:          `form-data; name="foo"; name*=UTF-16''bar`,
+			code:            200,
+			sanitizedHeader: `form-data; name=foo`,
+		},
+	}
+
+	for _, testCase := range tests {
+		t.Run(testCase.desc, func(t *testing.T) {
+			h := make(textproto.MIMEHeader)
+			h.Set("Content-Disposition", testCase.header)
+			h.Set("Content-Type", "application/octet-stream")
+
+			buffer := &bytes.Buffer{}
+			writer := multipart.NewWriter(buffer)
+			file, err := writer.CreatePart(h)
+			require.NoError(t, err)
+			fmt.Fprint(file, "test")
+			writer.Close()
+
+			httpRequest := httptest.NewRequest("POST", "/example", buffer)
+			httpRequest.Header.Set("Content-Type", writer.FormDataContentType())
+
+			var upstreamRequestBuffer bytes.Buffer
+			customHandler := http.HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
+				r.Write(&upstreamRequestBuffer)
+			})
+
+			response := httptest.NewRecorder()
+			apiResponse := &api.Response{TempPath: tempPath}
+			preparer := &DefaultPreparer{}
+			opts, _, err := preparer.Prepare(apiResponse)
+			require.NoError(t, err)
+
+			HandleFileUploads(response, httpRequest, customHandler, apiResponse, &SavedFileTracker{Request: httpRequest}, opts)
+
+			upstreamRequest, err := http.ReadRequest(bufio.NewReader(&upstreamRequestBuffer))
+			require.NoError(t, err)
+
+			reader, err := upstreamRequest.MultipartReader()
+			require.NoError(t, err)
+
+			for i := 0; ; i++ {
+				p, err := reader.NextPart()
+				if err == io.EOF {
+					require.Equal(t, i, 1)
+					break
+				}
+				require.NoError(t, err)
+				require.Equal(t, testCase.sanitizedHeader, p.Header.Get("Content-Disposition"))
+			}
+
+			require.Equal(t, testCase.code, response.Code)
+		})
 	}
 }
 

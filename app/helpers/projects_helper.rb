@@ -586,6 +586,7 @@ module ProjectsHelper
       metricsDashboardAccessLevel: feature.metrics_dashboard_access_level,
       operationsAccessLevel: feature.operations_access_level,
       showDefaultAwardEmojis: project.show_default_award_emojis?,
+      showDiffPreviewInEmail: project.show_diff_preview_in_email?,
       warnAboutPotentiallyUnwantedCharacters: project.warn_about_potentially_unwanted_characters?,
       securityAndComplianceAccessLevel: project.security_and_compliance_access_level,
       containerRegistryAccessLevel: feature.container_registry_access_level
