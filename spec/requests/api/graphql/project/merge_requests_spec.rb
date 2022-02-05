@@ -29,6 +29,10 @@ RSpec.describe 'getting merge request listings nested in a project' do
     create(:merge_request, :unique_branches, source_project: project)
   end
 
+  let(:all_merge_requests) do
+    [merge_request_a, merge_request_b, merge_request_c, merge_request_d, merge_request_e]
+  end
+
   let(:results) { graphql_data.dig('project', 'mergeRequests', 'nodes') }
 
   let(:search_params) { nil }
@@ -178,6 +182,39 @@ RSpec.describe 'getting merge request listings nested in a project' do
     let(:mrs) { [merge_request_a, merge_request_c] }
 
     it_behaves_like 'when searching with parameters'
+  end
+
+  context 'when searching by update time' do
+    let(:start_time) { 10.days.ago }
+    let(:cutoff) { start_time + 36.hours }
+
+    before do
+      all_merge_requests.each_with_index do |mr, i|
+        mr.updated_at = start_time + i.days
+        mr.save!(touch: false)
+      end
+    end
+
+    context 'when searching by updated_after' do
+      let(:search_params) { { updated_after: cutoff } }
+      let(:mrs) { all_merge_requests[2..] }
+
+      it_behaves_like 'when searching with parameters'
+    end
+
+    context 'when searching by updated_before' do
+      let(:search_params) { { updated_before: cutoff } }
+      let(:mrs) { all_merge_requests[0..1] }
+
+      it_behaves_like 'when searching with parameters'
+    end
+
+    context 'when searching by updated_before and updated_after' do
+      let(:search_params) { { updated_after: cutoff, updated_before: cutoff + 2.days } }
+      let(:mrs) { all_merge_requests[2..3] }
+
+      it_behaves_like 'when searching with parameters'
+    end
   end
 
   context 'when searching by combination' do

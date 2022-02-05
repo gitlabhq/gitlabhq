@@ -300,6 +300,8 @@ RSpec.describe GitlabSchema.types['Project'] do
                                             :merged_before,
                                             :created_after,
                                             :created_before,
+                                            :updated_after,
+                                            :updated_before,
                                             :author_username,
                                             :assignee_username,
                                             :reviewer_username,

@@ -253,7 +253,7 @@ export const CLUSTERS_TABS = [
 export const CLUSTERS_ACTIONS = {
   actionsButton: s__('ClusterAgents|Actions'),
   createNewCluster: s__('ClusterAgents|Create a new cluster'),
-  connectWithAgent: s__('ClusterAgents|Connect with agent'),
+  connectWithAgent: s__('ClusterAgents|Connect with Agent'),
   connectExistingCluster: s__('ClusterAgents|Connect with a certificate'),
   agent: s__('ClusterAgents|Agent'),
   certificate: s__('ClusterAgents|Certificate'),

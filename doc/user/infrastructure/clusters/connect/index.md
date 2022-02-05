@@ -15,28 +15,6 @@ If you don't have a cluster yet, create one and connect it to GitLab through the
 You can also create a new cluster from GitLab using [Infrastructure as Code](../../iac/index.md#create-a-new-cluster-through-iac).
 -->
 
-## Supported cluster versions
-
-GitLab is committed to support at least two production-ready Kubernetes minor
-versions at any given time. We regularly review the versions we support, and
-provide a three-month deprecation period before we remove support of a specific
-version. The range of supported versions is based on the evaluation of:
-
-- The versions supported by major managed Kubernetes providers.
-- The versions [supported by the Kubernetes community](https://kubernetes.io/releases/version-skew-policy/#supported-versions).
-
-GitLab supports the following Kubernetes versions, and you can upgrade your
-Kubernetes version to any supported version at any time:
-
-- 1.20 (support ends on July 22, 2022)
-- 1.19 (support ends on February 22, 2022)
-- 1.18 (support ends on November 22, 2021)
-- 1.17 (support ends on September 22, 2021)
-
-[Adding support to other versions of Kubernetes is managed under this epic](https://gitlab.com/groups/gitlab-org/-/epics/4827).
-
-Some GitLab features may support versions outside the range provided here.
-
 ## Cluster levels (DEPRECATED)
 
 > [Deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.

@@ -7655,10 +7655,10 @@ msgstr ""
 msgid "ClusterAgents|Connect existing cluster"
 msgstr ""
 
-msgid "ClusterAgents|Connect with a certificate"
+msgid "ClusterAgents|Connect with Agent"
 msgstr ""
 
-msgid "ClusterAgents|Connect with agent"
+msgid "ClusterAgents|Connect with a certificate"
 msgstr ""
 
 msgid "ClusterAgents|Connect with the GitLab Agent"

@@ -867,7 +867,6 @@ table.code {
   @include media-breakpoint-up(sm) {
     @include gl-sticky;
     top: calc(#{$header-height} + #{$mr-tabs-height});
-    @include gl-bg-white;
     z-index: 200;
 
     .with-performance-bar & {

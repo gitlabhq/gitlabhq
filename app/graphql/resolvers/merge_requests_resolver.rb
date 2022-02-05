@@ -61,6 +61,12 @@ module Resolvers
     argument :created_before, Types::TimeType,
              required: false,
              description: 'Merge requests created before this timestamp.'
+    argument :updated_after, Types::TimeType,
+             required: false,
+             description: 'Merge requests updated after this timestamp.'
+    argument :updated_before, Types::TimeType,
+             required: false,
+             description: 'Merge requests updated before this timestamp.'
 
     argument :labels, [GraphQL::Types::String],
              required: false,
