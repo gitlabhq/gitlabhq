@@ -66,14 +66,15 @@ module QA
       end
 
       after do
-        [runner, project].each(&:remove_via_api!)
+        runner&.remove_via_api!
+        project&.remove_via_api!
       end
 
       it 'does not leave any job in skipped state', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/349158' do
         Page::Project::Pipeline::Show.perform do |show|
           show.click_job_action('Prep') # Trigger pipeline manually
 
-          show.wait_until(max_duration: 120, sleep_interval: 2, reload: false) do
+          show.wait_until(max_duration: 300, sleep_interval: 2, reload: false) do
             project.pipelines.last[:status] == 'success'
           end
 
