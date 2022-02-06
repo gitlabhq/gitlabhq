@@ -28,13 +28,8 @@ module API
         package = ::Packages::PackageFinder
           .new(user_project, params[:package_id]).execute
 
-        package_files = if Feature.enabled?(:packages_installable_package_files, default_enabled: :yaml)
-                          package.installable_package_files
-                        else
-                          package.package_files
-                        end
-
-        package_files = package_files.preload_pipelines
+        package_files = package.installable_package_files
+                               .preload_pipelines
 
         present paginate(package_files), with: ::API::Entities::PackageFile
       end
@@ -55,13 +50,8 @@ module API
 
         not_found! unless package
 
-        package_files = if Feature.enabled?(:packages_installable_package_files, default_enabled: :yaml)
-                          package.installable_package_files
-                        else
-                          package.package_files
-                        end
-
-        package_file = package_files.find_by_id(params[:package_file_id])
+        package_file = package.installable_package_files
+                              .find_by_id(params[:package_file_id])
 
         not_found! unless package_file
 

@@ -235,18 +235,6 @@ RSpec.shared_examples 'Debian Distribution' do |factory, container, can_freeze|
           it 'does not return them' do
             expect(subject.to_a).not_to include(package_file_pending_destruction)
           end
-
-          context 'with packages_installable_package_files disabled' do
-            before do
-              stub_feature_flags(packages_installable_package_files: false)
-            end
-
-            it 'returns them' do
-              subject
-
-              expect(subject.to_a).to include(package_file_pending_destruction)
-            end
-          end
         end
       end
     end

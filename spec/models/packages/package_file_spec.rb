@@ -148,16 +148,6 @@ RSpec.describe Packages::PackageFile, type: :model do
       it 'does not return them' do
         expect(described_class.for_helm_with_channel(project, channel)).to contain_exactly(helm_file2)
       end
-
-      context 'with packages_installable_package_files disabled' do
-        before do
-          stub_feature_flags(packages_installable_package_files: false)
-        end
-
-        it 'returns them' do
-          expect(described_class.for_helm_with_channel(project, channel)).to contain_exactly(helm_file2, package_file_pending_destruction)
-        end
-      end
     end
   end
 
@@ -231,16 +221,6 @@ RSpec.describe Packages::PackageFile, type: :model do
 
         it 'does not return them' do
           expect(subject).to contain_exactly(helm_package_file2)
-        end
-
-        context 'with packages_installable_package_files disabled' do
-          before do
-            stub_feature_flags(packages_installable_package_files: false)
-          end
-
-          it 'returns them' do
-            expect(subject).to contain_exactly(package_file_pending_destruction)
-          end
         end
       end
     end

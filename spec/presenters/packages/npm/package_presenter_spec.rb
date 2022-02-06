@@ -104,17 +104,6 @@ RSpec.describe ::Packages::Npm::PackagePresenter do
       it 'does not return them' do
         expect(shasums).not_to include(package_file_pending_destruction.file_sha1)
       end
-
-      context 'with packages_installable_package_files disabled' do
-        before do
-          stub_feature_flags(packages_installable_package_files: false)
-          package2.package_files.id_not_in(package_file_pending_destruction.id).delete_all
-        end
-
-        it 'returns them' do
-          expect(shasums).to include(package_file_pending_destruction.file_sha1)
-        end
-      end
     end
   end
 

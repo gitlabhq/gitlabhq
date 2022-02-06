@@ -102,18 +102,6 @@ RSpec.describe 'package details' do
 
         expect(package_file_ids).to contain_exactly(package_file.to_global_id.to_s)
       end
-
-      context 'with packages_installable_package_files disabled' do
-        before do
-          stub_feature_flags(packages_installable_package_files: false)
-        end
-
-        it 'returns them' do
-          subject
-
-          expect(package_file_ids).to contain_exactly(package_file_pending_destruction.to_global_id.to_s, package_file.to_global_id.to_s)
-        end
-      end
     end
 
     context 'with a batched query' do

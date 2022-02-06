@@ -12,7 +12,7 @@ module Types
       field :versions, ::Types::Packages::PackageType.connection_type, null: true,
         description: 'Other versions of the package.'
 
-      field :package_files, Types::Packages::PackageFileType.connection_type, null: true, description: 'Package files.'
+      field :package_files, Types::Packages::PackageFileType.connection_type, null: true, method: :installable_package_files, description: 'Package files.'
 
       field :dependency_links, Types::Packages::PackageDependencyLinkType.connection_type, null: true, description: 'Dependency link.'
 
@@ -34,14 +34,6 @@ module Types
 
       def versions
         object.versions
-      end
-
-      def package_files
-        if Feature.enabled?(:packages_installable_package_files, default_enabled: :yaml)
-          object.installable_package_files
-        else
-          object.package_files
-        end
       end
 
       def composer_config_repository_url
