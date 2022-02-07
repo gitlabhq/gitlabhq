@@ -62,11 +62,11 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
   def usage_data
     respond_to do |format|
       format.html do
-        usage_data_json = Gitlab::Json.pretty_generate(Gitlab::UsageData.data)
+        usage_data_json = Gitlab::Json.pretty_generate(Gitlab::Usage::ServicePingReport.for(mode: :values, cached: true))
 
         render html: Gitlab::Highlight.highlight('payload.json', usage_data_json, language: 'json')
       end
-      format.json { render json: Gitlab::UsageData.to_json }
+      format.json { render json: Gitlab::Usage::ServicePingReport.for(mode: :values, cached: true).to_json }
     end
   end
 

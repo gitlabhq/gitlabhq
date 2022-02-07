@@ -1020,7 +1020,7 @@ RSpec.describe API::Ci::Runners do
     end
   end
 
-  shared_context 'GET /groups/:id/runners' do
+  describe 'GET /groups/:id/runners' do
     context 'authorized user with maintainer privileges' do
       it 'returns all runners' do
         get api("/groups/#{group.id}/runners", user)
@@ -1106,16 +1106,6 @@ RSpec.describe API::Ci::Runners do
       let(:entity_type) { 'groups' }
       let(:entity) { group }
     end
-  end
-
-  it_behaves_like 'GET /groups/:id/runners'
-
-  context 'when the FF ci_find_runners_by_ci_mirrors is disabled' do
-    before do
-      stub_feature_flags(ci_find_runners_by_ci_mirrors: false)
-    end
-
-    it_behaves_like 'GET /groups/:id/runners'
   end
 
   describe 'POST /projects/:id/runners' do

@@ -38,7 +38,7 @@
       %fieldset.form-group.form-check
         = f.check_box :write_registry, class: 'form-check-input', data: { qa_selector: 'deploy_token_write_registry_checkbox' }
         = f.label :write_registry, 'write_registry', class: 'label-bold form-check-label'
-        .text-secondary= s_('DeployTokens|Allows read and write access to registry images.')
+        .text-secondary= s_('DeployTokens|Allows write access to registry images.')
 
     - if packages_registry_enabled?(group_or_project)
       %fieldset.form-group.form-check

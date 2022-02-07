@@ -53,12 +53,35 @@ RSpec.describe RuboCop::Cop::Migration::ScheduleAsync do
         end
       end
 
+      context 'CiDatabaseWorker.perform_async' do
+        it 'adds an offense when calling `CiDatabaseWorker.peform_async`' do
+          expect_offense(<<~RUBY)
+            def up
+              CiDatabaseWorker.perform_async(ClazzName, "Bar", "Baz")
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Don't call [...]
+            end
+          RUBY
+        end
+      end
+
       context 'BackgroundMigrationWorker.perform_in' do
         it 'adds an offense' do
           expect_offense(<<~RUBY)
             def up
               BackgroundMigrationWorker
               ^^^^^^^^^^^^^^^^^^^^^^^^^ Don't call [...]
+                .perform_in(delay, ClazzName, "Bar", "Baz")
+            end
+          RUBY
+        end
+      end
+
+      context 'CiDatabaseWorker.perform_in' do
+        it 'adds an offense' do
+          expect_offense(<<~RUBY)
+            def up
+              CiDatabaseWorker
+              ^^^^^^^^^^^^^^^^ Don't call [...]
                 .perform_in(delay, ClazzName, "Bar", "Baz")
             end
           RUBY
@@ -77,12 +100,36 @@ RSpec.describe RuboCop::Cop::Migration::ScheduleAsync do
         end
       end
 
+      context 'CiDatabaseWorker.bulk_perform_async' do
+        it 'adds an offense' do
+          expect_offense(<<~RUBY)
+            def up
+              BackgroundMigration::CiDatabaseWorker
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Don't call [...]
+                .bulk_perform_async(jobs)
+            end
+          RUBY
+        end
+      end
+
       context 'BackgroundMigrationWorker.bulk_perform_in' do
         it 'adds an offense' do
           expect_offense(<<~RUBY)
             def up
-              BackgroundMigrationWorker
-              ^^^^^^^^^^^^^^^^^^^^^^^^^ Don't call [...]
+              ::BackgroundMigrationWorker
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^ Don't call [...]
+                .bulk_perform_in(5.minutes, jobs)
+            end
+          RUBY
+        end
+      end
+
+      context 'CiDatabaseWorker.bulk_perform_in' do
+        it 'adds an offense' do
+          expect_offense(<<~RUBY)
+            def up
+              ::BackgroundMigration::CiDatabaseWorker
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Don't call [...]
                 .bulk_perform_in(5.minutes, jobs)
             end
           RUBY

@@ -1,8 +1,0 @@
----
-name: ci_find_runners_by_ci_mirrors
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/74900
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/347226
-milestone: '14.7'
-type: development
-group: group::runner
-default_enabled: false

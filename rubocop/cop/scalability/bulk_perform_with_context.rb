@@ -23,6 +23,8 @@ module RuboCop
           Read more about it https://docs.gitlab.com/ee/development/sidekiq_style_guide.html#worker-context
         MSG
 
+        BACKGROUND_MIGRATION_WORKER_NAMES = %w[BackgroundMigrationWorker CiDatabaseWorker].freeze
+
         def_node_matcher :schedules_in_batch_without_context?, <<~PATTERN
           (send (...) {:bulk_perform_async :bulk_perform_in} _*)
         PATTERN
@@ -30,7 +32,7 @@ module RuboCop
         def on_send(node)
           return if in_migration?(node) || in_spec?(node)
           return unless schedules_in_batch_without_context?(node)
-          return if name_of_receiver(node) == "BackgroundMigrationWorker"
+          return if scheduled_for_background_migration?(node)
 
           add_offense(node, location: :expression)
         end
@@ -39,6 +41,10 @@ module RuboCop
 
         def in_spec?(node)
           file_path_for_node(node).end_with?("_spec.rb")
+        end
+
+        def scheduled_for_background_migration?(node)
+          BACKGROUND_MIGRATION_WORKER_NAMES.include?(name_of_receiver(node))
         end
       end
     end

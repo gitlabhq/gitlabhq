@@ -39,9 +39,15 @@ RSpec.describe RuboCop::Cop::Scalability::BulkPerformWithContext do
     CODE
   end
 
-  it "does not add an offense for scheduling BackgroundMigrations" do
+  it "does not add an offense for scheduling on the BackgroundMigrationWorker" do
     expect_no_offenses(<<~CODE)
       BackgroundMigrationWorker.bulk_perform_in(args)
+    CODE
+  end
+
+  it "does not add an offense for scheduling on the CiDatabaseWorker" do
+    expect_no_offenses(<<~CODE)
+      BackgroundMigration::CiDatabaseWorker.bulk_perform_in(args)
     CODE
   end
 end

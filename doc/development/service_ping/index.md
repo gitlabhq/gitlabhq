@@ -198,9 +198,9 @@ sequenceDiagram
 ## How Service Ping works
 
 1. The Service Ping [cron job](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/workers/gitlab_service_ping_worker.rb#L24) is set in Sidekiq to run weekly.
-1. When the cron job runs, it calls [`Gitlab::UsageData.to_json`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/services/service_ping/submit_service.rb#L49).
-1. `Gitlab::UsageData.to_json` [cascades down](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage_data.rb) to ~400+ other counter method calls.
-1. The response of all methods calls are [merged together](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage_data.rb#L68) into a single JSON payload in `Gitlab::UsageData.to_json`.
+1. When the cron job runs, it calls [`Gitlab::Usage::ServicePingReport.for(mode: :values)`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/services/service_ping/submit_service.rb).
+1. `Gitlab::Usage::ServicePingReport.for(mode: :values)` [cascades down](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage_data.rb) to ~400+ other counter method calls.
+1. The response of all methods calls are [merged together](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage_data.rb#L68) into a single JSON payload.
 1. The JSON payload is then [posted to the Versions application](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/services/service_ping/submit_service.rb#L20)
    If a firewall exception is needed, the required URL depends on several things. If
    the hostname is `version.gitlab.com`, the protocol is `TCP`, and the port number is `443`,

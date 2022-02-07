@@ -206,7 +206,7 @@ RSpec.describe Ci::RunnersFinder do
       sub_group_4.runners << runner_sub_group_4
     end
 
-    shared_examples '#execute' do
+    describe '#execute' do
       subject { described_class.new(current_user: user, params: params).execute }
 
       shared_examples 'membership equal to :descendants' do
@@ -347,16 +347,6 @@ RSpec.describe Ci::RunnersFinder do
           expect(subject).to be_empty
         end
       end
-    end
-
-    it_behaves_like '#execute'
-
-    context 'when the FF ci_find_runners_by_ci_mirrors is disabled' do
-      before do
-        stub_feature_flags(ci_find_runners_by_ci_mirrors: false)
-      end
-
-      it_behaves_like '#execute'
     end
 
     describe '#sort_key' do

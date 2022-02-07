@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Ci::Runner do
+  include StubGitlabCalls
+
   it_behaves_like 'having unique enum values'
 
   it_behaves_like 'it has loose foreign keys' do
@@ -1301,9 +1303,11 @@ RSpec.describe Ci::Runner do
     end
 
     it 'supports ordering by the token expiration' do
-      runner1 = create(:ci_runner, token_expires_at: 1.year.from_now)
+      runner1 = create(:ci_runner)
+      runner1.update!(token_expires_at: 1.year.from_now)
       runner2 = create(:ci_runner)
-      runner3 = create(:ci_runner, token_expires_at: 1.month.from_now)
+      runner3 = create(:ci_runner)
+      runner3.update!(token_expires_at: 1.month.from_now)
 
       runners = described_class.order_by('token_expires_at_asc')
       expect(runners).to eq([runner3, runner1, runner2])
@@ -1438,47 +1442,6 @@ RSpec.describe Ci::Runner do
     it { is_expected.to eq(contacted_at_stored) }
   end
 
-  describe '.legacy_belonging_to_group' do
-    shared_examples 'returns group runners' do
-      it 'returns the specific group runner' do
-        group = create(:group)
-        runner = create(:ci_runner, :group, groups: [group])
-        unrelated_group = create(:group)
-        create(:ci_runner, :group, groups: [unrelated_group])
-
-        expect(described_class.legacy_belonging_to_group(group.id)).to contain_exactly(runner)
-      end
-
-      context 'runner belonging to parent group' do
-        let_it_be(:parent_group) { create(:group) }
-        let_it_be(:parent_runner) { create(:ci_runner, :group, groups: [parent_group]) }
-        let_it_be(:group) { create(:group, parent: parent_group) }
-
-        context 'when include_parent option is passed' do
-          it 'returns the group runner from the parent group' do
-            expect(described_class.legacy_belonging_to_group(group.id, include_ancestors: true)).to contain_exactly(parent_runner)
-          end
-        end
-
-        context 'when include_parent option is not passed' do
-          it 'does not return the group runner from the parent group' do
-            expect(described_class.legacy_belonging_to_group(group.id)).to be_empty
-          end
-        end
-      end
-    end
-
-    it_behaves_like 'returns group runners'
-
-    context 'when feature flag :linear_runner_ancestor_scopes is disabled' do
-      before do
-        stub_feature_flags(linear_runner_ancestor_scopes: false)
-      end
-
-      it_behaves_like 'returns group runners'
-    end
-  end
-
   describe '.belonging_to_group' do
     it 'returns the specific group runner' do
       group = create(:group)
@@ -1520,6 +1483,184 @@ RSpec.describe Ci::Runner do
       expect(described_class.belonging_to_group_or_project_descendants(group1.id)).to contain_exactly(
         runner1, runner2, runner4, runner5
       )
+    end
+  end
+
+  describe '#token_expires_at', :freeze_time do
+    shared_examples 'expiring token' do |interval:|
+      it 'expires' do
+        expect(runner.token_expires_at).to eq(interval.from_now)
+      end
+    end
+
+    shared_examples 'non-expiring token' do
+      it 'does not expire' do
+        expect(runner.token_expires_at).to be_nil
+      end
+    end
+
+    context 'no expiration' do
+      let(:runner) { create(:ci_runner) }
+
+      it_behaves_like 'non-expiring token'
+    end
+
+    context 'system-wide shared expiration' do
+      before do
+        stub_application_setting(runner_token_expiration_interval: 5.days.to_i)
+      end
+
+      let(:runner) { create(:ci_runner) }
+
+      it_behaves_like 'expiring token', interval: 5.days
+    end
+
+    context 'system-wide group expiration' do
+      before do
+        stub_application_setting(group_runner_token_expiration_interval: 5.days.to_i)
+      end
+
+      let(:runner) { create(:ci_runner) }
+
+      it_behaves_like 'non-expiring token'
+    end
+
+    context 'system-wide project expiration' do
+      before do
+        stub_application_setting(project_runner_token_expiration_interval: 5.days.to_i)
+      end
+
+      let(:runner) { create(:ci_runner) }
+
+      it_behaves_like 'non-expiring token'
+    end
+
+    context 'group expiration' do
+      let(:group_settings) { create(:namespace_settings, runner_token_expiration_interval: 6.days.to_i) }
+      let(:group) { create(:group, namespace_settings: group_settings) }
+      let(:runner) { create(:ci_runner, :group, groups: [group]) }
+
+      it_behaves_like 'expiring token', interval: 6.days
+    end
+
+    context 'human-readable group expiration' do
+      let(:group_settings) { create(:namespace_settings, runner_token_expiration_interval_human_readable: '7 days') }
+      let(:group) { create(:group, namespace_settings: group_settings) }
+      let(:runner) { create(:ci_runner, :group, groups: [group]) }
+
+      it_behaves_like 'expiring token', interval: 7.days
+    end
+
+    context 'project expiration' do
+      let(:project) { create(:project, runner_token_expiration_interval: 4.days.to_i).tap(&:save!) }
+      let(:runner) { create(:ci_runner, :project, projects: [project]) }
+
+      it_behaves_like 'expiring token', interval: 4.days
+    end
+
+    context 'human-readable project expiration' do
+      let(:project) { create(:project, runner_token_expiration_interval_human_readable: '5 days').tap(&:save!) }
+      let(:runner) { create(:ci_runner, :project, projects: [project]) }
+
+      it_behaves_like 'expiring token', interval: 5.days
+    end
+
+    context 'multiple projects' do
+      let(:project1) { create(:project, runner_token_expiration_interval: 8.days.to_i).tap(&:save!) }
+      let(:project2) { create(:project, runner_token_expiration_interval: 7.days.to_i).tap(&:save!) }
+      let(:project3) { create(:project, runner_token_expiration_interval: 9.days.to_i).tap(&:save!) }
+      let(:runner) { create(:ci_runner, :project, projects: [project1, project2, project3]) }
+
+      it_behaves_like 'expiring token', interval: 7.days
+    end
+
+    context 'with project runner token expiring' do
+      let_it_be(:project) { create(:project, runner_token_expiration_interval: 4.days.to_i).tap(&:save!) }
+
+      context 'project overrides system' do
+        before do
+          stub_application_setting(project_runner_token_expiration_interval: 5.days.to_i)
+        end
+
+        let(:runner) { create(:ci_runner, :project, projects: [project]) }
+
+        it_behaves_like 'expiring token', interval: 4.days
+      end
+
+      context 'system overrides project' do
+        before do
+          stub_application_setting(project_runner_token_expiration_interval: 3.days.to_i)
+        end
+
+        let(:runner) { create(:ci_runner, :project, projects: [project]) }
+
+        it_behaves_like 'expiring token', interval: 3.days
+      end
+    end
+
+    context 'with group runner token expiring' do
+      let_it_be(:group_settings) { create(:namespace_settings, runner_token_expiration_interval: 4.days.to_i) }
+      let_it_be(:group) { create(:group, namespace_settings: group_settings) }
+
+      context 'group overrides system' do
+        before do
+          stub_application_setting(group_runner_token_expiration_interval: 5.days.to_i)
+        end
+
+        let(:runner) { create(:ci_runner, :group, groups: [group]) }
+
+        it_behaves_like 'expiring token', interval: 4.days
+      end
+
+      context 'system overrides group' do
+        before do
+          stub_application_setting(group_runner_token_expiration_interval: 3.days.to_i)
+        end
+
+        let(:runner) { create(:ci_runner, :group, groups: [group]) }
+
+        it_behaves_like 'expiring token', interval: 3.days
+      end
+    end
+
+    context "with group's project runner token expiring" do
+      let_it_be(:parent_group_settings) { create(:namespace_settings, subgroup_runner_token_expiration_interval: 2.days.to_i) }
+      let_it_be(:parent_group) { create(:group, namespace_settings: parent_group_settings) }
+
+      context 'parent group overrides subgroup' do
+        let(:group_settings) { create(:namespace_settings, runner_token_expiration_interval: 3.days.to_i) }
+        let(:group) { create(:group, parent: parent_group, namespace_settings: group_settings) }
+        let(:runner) { create(:ci_runner, :group, groups: [group]) }
+
+        it_behaves_like 'expiring token', interval: 2.days
+      end
+
+      context 'subgroup overrides parent group' do
+        let(:group_settings) { create(:namespace_settings, runner_token_expiration_interval: 1.day.to_i) }
+        let(:group) { create(:group, parent: parent_group, namespace_settings: group_settings) }
+        let(:runner) { create(:ci_runner, :group, groups: [group]) }
+
+        it_behaves_like 'expiring token', interval: 1.day
+      end
+    end
+
+    context "with group's project runner token expiring" do
+      let_it_be(:group_settings) { create(:namespace_settings, project_runner_token_expiration_interval: 2.days.to_i) }
+      let_it_be(:group) { create(:group, namespace_settings: group_settings) }
+
+      context 'group overrides project' do
+        let(:project) { create(:project, group: group, runner_token_expiration_interval: 3.days.to_i).tap(&:save!) }
+        let(:runner) { create(:ci_runner, :project, projects: [project]) }
+
+        it_behaves_like 'expiring token', interval: 2.days
+      end
+
+      context 'project overrides group' do
+        let(:project) { create(:project, group: group, runner_token_expiration_interval: 1.day.to_i).tap(&:save!) }
+        let(:runner) { create(:ci_runner, :project, projects: [project]) }
+
+        it_behaves_like 'expiring token', interval: 1.day
+      end
     end
   end
 end

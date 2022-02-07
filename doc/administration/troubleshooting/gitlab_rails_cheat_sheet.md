@@ -1324,7 +1324,7 @@ has more information about Service Ping.
 ### Generate or get the cached Service Ping
 
 ```ruby
-Gitlab::UsageData.to_json
+Gitlab::Usage::ServicePingReport.for(mode: :values, cached: true)
 ```
 
 ### Generate a fresh new Service Ping
@@ -1332,7 +1332,7 @@ Gitlab::UsageData.to_json
 This also refreshes the cached Service Ping displayed in the Admin Area
 
 ```ruby
-Gitlab::UsageData.to_json(force_refresh: true)
+Gitlab::Usage::ServicePingReport.for(mode: :values)
 ```
 
 ### Generate and print

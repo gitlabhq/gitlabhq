@@ -13,7 +13,7 @@ module Ci
     include TaggableQueries
     include Presentable
 
-    add_authentication_token_field :token, encrypted: :optional
+    add_authentication_token_field :token, encrypted: :optional, expires_at: :compute_token_expiration, expiration_enforced?: :token_expiration_enforced?
 
     enum access_level: {
       not_protected: 0,
@@ -119,30 +119,6 @@ module Ci
         .where(ci_runner_namespaces: { namespace_id: group_self_and_ancestors_ids })
     }
 
-    # deprecated
-    # split this into: belonging_to_group & belonging_to_group_and_ancestors
-    scope :legacy_belonging_to_group, -> (group_id, include_ancestors: false) {
-      groups = ::Group.where(id: group_id)
-      groups = groups.self_and_ancestors if include_ancestors
-
-      joins(:runner_namespaces)
-        .where(ci_runner_namespaces: { namespace_id: groups })
-        .allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/336433')
-    }
-
-    # deprecated
-    scope :legacy_belonging_to_group_or_project, -> (group_id, project_id) {
-      groups = ::Group.where(id: group_id)
-
-      group_runners = joins(:runner_namespaces).where(ci_runner_namespaces: { namespace_id: groups })
-      project_runners = joins(:runner_projects).where(ci_runner_projects: { project_id: project_id })
-
-      union_sql = ::Gitlab::SQL::Union.new([group_runners, project_runners]).to_sql
-
-      from("(#{union_sql}) #{table_name}")
-        .allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/336433')
-    }
-
     scope :belonging_to_parent_group_of_project, -> (project_id) {
       raise ArgumentError, "only 1 project_id allowed for performance reasons" unless project_id.is_a?(Integer)
 
@@ -165,16 +141,9 @@ module Ci
     end
 
     scope :group_or_instance_wide, -> (group) do
-      group_and_ancestor_runners =
-        if ::Feature.enabled?(:ci_find_runners_by_ci_mirrors, group, default_enabled: :yaml)
-          belonging_to_group_and_ancestors(group.id)
-        else
-          legacy_belonging_to_group(group.id, include_ancestors: true)
-        end
-
       from_union(
         [
-          group_and_ancestor_runners,
+          belonging_to_group_and_ancestors(group.id),
           group.shared_runners
         ],
         remove_duplicates: false
@@ -479,6 +448,21 @@ module Ci
       end
     end
 
+    def compute_token_expiration
+      case runner_type
+      when 'instance_type'
+        compute_token_expiration_instance
+      when 'group_type'
+        compute_token_expiration_group
+      when 'project_type'
+        compute_token_expiration_project
+      end
+    end
+
+    def self.token_expiration_enforced?
+      Feature.enabled?(:enforce_runner_token_expires_at, default_enabled: :yaml)
+    end
+
     private
 
     EXECUTOR_NAME_TO_TYPES = {
@@ -497,6 +481,20 @@ module Ci
     }.freeze
 
     EXECUTOR_TYPE_TO_NAMES = EXECUTOR_NAME_TO_TYPES.invert.freeze
+
+    def compute_token_expiration_instance
+      return unless expiration_interval = Gitlab::CurrentSettings.runner_token_expiration_interval
+
+      expiration_interval.seconds.from_now
+    end
+
+    def compute_token_expiration_group
+      ::Group.where(id: runner_namespaces.map(&:namespace_id)).map(&:effective_runner_token_expiration_interval).compact.min&.from_now
+    end
+
+    def compute_token_expiration_project
+      Project.where(id: runner_projects.map(&:project_id)).map(&:effective_runner_token_expiration_interval).compact.min&.from_now
+    end
 
     def cleanup_runner_queue
       Gitlab::Redis::SharedState.with do |redis|

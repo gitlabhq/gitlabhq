@@ -380,7 +380,7 @@ places in GitLab:
 - In a merge request as a link:
   ![Environment URL in merge request](../img/environments_mr_review_app.png)
 - In the Environments view as a button:
-  ![Environment URL in environments](../img/environments_available_13_10.png)
+  ![Open live environment from environments view](img/environments_open_live_environment_v14_8.png)
 - In the Deployments view as a button:
   ![Environment URL in deployments](../img/deployments_view.png)
 

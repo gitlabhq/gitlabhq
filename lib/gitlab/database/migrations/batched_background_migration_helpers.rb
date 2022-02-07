@@ -66,6 +66,7 @@ module Gitlab
           batch_max_value: nil,
           batch_class_name: BATCH_CLASS_NAME,
           batch_size: BATCH_SIZE,
+          max_batch_size: nil,
           sub_batch_size: SUB_BATCH_SIZE
         )
 
@@ -86,7 +87,7 @@ module Gitlab
           migration_status = batch_max_value.nil? ? :finished : :active
           batch_max_value ||= batch_min_value
 
-          migration = Gitlab::Database::BackgroundMigration::BatchedMigration.create!(
+          migration = Gitlab::Database::BackgroundMigration::BatchedMigration.new(
             job_class_name: job_class_name,
             table_name: batch_table_name,
             column_name: batch_column_name,
@@ -97,19 +98,28 @@ module Gitlab
             batch_class_name: batch_class_name,
             batch_size: batch_size,
             sub_batch_size: sub_batch_size,
-            status: migration_status)
+            status: migration_status
+          )
 
-          # This guard is necessary since #total_tuple_count was only introduced schema-wise,
-          # after this migration helper had been used for the first time.
-          return migration unless migration.respond_to?(:total_tuple_count)
-
-          # We keep track of the estimated number of tuples to reason later
-          # about the overall progress of a migration.
-          migration.total_tuple_count = Gitlab::Database::SharedModel.using_connection(connection) do
-            Gitlab::Database::PgClass.for_table(batch_table_name)&.cardinality_estimate
+          # Below `BatchedMigration` attributes were introduced after the
+          # initial `batched_background_migrations` table was created, so any
+          # migrations that ran relying on initial table schema would not know
+          # about columns introduced later on because this model is not
+          # isolated in migrations, which is why we need to check for existence
+          # of these columns first.
+          if migration.respond_to?(:max_batch_size)
+            migration.max_batch_size = max_batch_size
           end
-          migration.save!
 
+          if migration.respond_to?(:total_tuple_count)
+            # We keep track of the estimated number of tuples to reason later
+            # about the overall progress of a migration.
+            migration.total_tuple_count = Gitlab::Database::SharedModel.using_connection(connection) do
+              Gitlab::Database::PgClass.for_table(batch_table_name)&.cardinality_estimate
+            end
+          end
+
+          migration.save!
           migration
         end
       end

@@ -19,7 +19,7 @@ module ServicePing
     end
 
     def raw_payload
-      @raw_payload ||= ::Gitlab::UsageData.data(force_refresh: true)
+      @raw_payload ||= ::Gitlab::Usage::ServicePingReport.for(mode: :values)
     end
   end
 end

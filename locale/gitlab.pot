@@ -11994,9 +11994,6 @@ msgstr ""
 msgid "DeployTokens|Active Deploy Tokens (%{active_tokens})"
 msgstr ""
 
-msgid "DeployTokens|Allows read and write access to registry images."
-msgstr ""
-
 msgid "DeployTokens|Allows read and write access to the package registry."
 msgstr ""
 
@@ -12007,6 +12004,9 @@ msgid "DeployTokens|Allows read-only access to the package registry."
 msgstr ""
 
 msgid "DeployTokens|Allows read-only access to the repository."
+msgstr ""
+
+msgid "DeployTokens|Allows write access to registry images."
 msgstr ""
 
 msgid "DeployTokens|Copy deploy token"
@@ -28318,6 +28318,9 @@ msgstr ""
 msgid "ProjectSettings|LFS objects from this repository are available to forks. %{linkStart}How do I remove them?%{linkEnd}"
 msgstr ""
 
+msgid "ProjectSettings|Learn about commit history."
+msgstr ""
+
 msgid "ProjectSettings|Manage who can see the project in the public access directory."
 msgstr ""
 
@@ -28517,6 +28520,9 @@ msgid "ProjectSettings|Warn about Potentially Unwanted Characters"
 msgstr ""
 
 msgid "ProjectSettings|What are badges?"
+msgstr ""
+
+msgid "ProjectSettings|What are merge trains?"
 msgstr ""
 
 msgid "ProjectSettings|When merge request pipelines are enabled in the CI/CD configuration file, pipelines validate the combined results of the source and target branches. %{link_start}How to configure merge request pipelines?%{link_end}"

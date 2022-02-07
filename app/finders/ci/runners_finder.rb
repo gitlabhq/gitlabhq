@@ -53,13 +53,7 @@ module Ci
                  when :direct
                    Ci::Runner.belonging_to_group(@group.id)
                  when :descendants, nil
-                   if ::Feature.enabled?(:ci_find_runners_by_ci_mirrors, @group, default_enabled: :yaml)
-                     Ci::Runner.belonging_to_group_or_project_descendants(@group.id)
-                   else
-                     # Getting all runners from the group itself and all its descendant groups/projects
-                     descendant_projects = Project.for_group_and_its_subgroups(@group)
-                     Ci::Runner.legacy_belonging_to_group_or_project(@group.self_and_descendants, descendant_projects)
-                   end
+                   Ci::Runner.belonging_to_group_or_project_descendants(@group.id)
                  else
                    raise ArgumentError, 'Invalid membership filter'
                  end

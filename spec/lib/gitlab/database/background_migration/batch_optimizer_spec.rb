@@ -6,7 +6,11 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchOptimizer do
   describe '#optimize' do
     subject { described_class.new(migration, number_of_jobs: number_of_jobs, ema_alpha: ema_alpha).optimize! }
 
-    let(:migration) { create(:batched_background_migration, batch_size: batch_size, sub_batch_size: 100, interval: 120) }
+    let(:migration_params) { {} }
+    let(:migration) do
+      params = { batch_size: batch_size, sub_batch_size: 100, interval: 120 }.merge(migration_params)
+      create(:batched_background_migration, params)
+    end
 
     let(:batch_size) { 10_000 }
 
@@ -86,6 +90,17 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchOptimizer do
         mock_efficiency(0.7)
 
         expect { subject }.to change { migration.reload.batch_size }.to(2_000_000)
+      end
+
+      context 'when max_batch_size is set' do
+        let(:max_batch_size) { 10000 }
+        let(:migration_params) { { max_batch_size: max_batch_size } }
+
+        it 'caps the batch size at max_batch_size' do
+          mock_efficiency(0.7)
+
+          expect { subject }.to change { migration.reload.batch_size }.to(max_batch_size)
+        end
       end
     end
 

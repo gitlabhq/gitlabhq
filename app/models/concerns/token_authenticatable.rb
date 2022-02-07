@@ -64,6 +64,18 @@ module TokenAuthenticatable
       mod.define_method("format_#{token_field}") do |token|
         token
       end
+
+      mod.define_method("#{token_field}_expires_at") do
+        strategy.expires_at(self)
+      end
+
+      mod.define_method("#{token_field}_expired?") do
+        strategy.expired?(self)
+      end
+
+      mod.define_method("#{token_field}_with_expiration") do
+        strategy.token_with_expiration(self)
+      end
     end
 
     def token_authenticatable_module

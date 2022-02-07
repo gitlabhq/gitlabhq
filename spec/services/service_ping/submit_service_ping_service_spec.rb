@@ -55,7 +55,7 @@ RSpec.describe ServicePing::SubmitService do
   shared_examples 'does not run' do
     it do
       expect(Gitlab::HTTP).not_to receive(:post)
-      expect(Gitlab::UsageData).not_to receive(:data)
+      expect(Gitlab::Usage::ServicePingReport).not_to receive(:for)
 
       subject.execute
     end
@@ -118,7 +118,7 @@ RSpec.describe ServicePing::SubmitService do
     it 'generates service ping' do
       stub_response(body: with_dev_ops_score_params)
 
-      expect(Gitlab::UsageData).to receive(:data).with(force_refresh: true).and_call_original
+      expect(Gitlab::Usage::ServicePingReport).to receive(:for).with(mode: :values).and_call_original
 
       subject.execute
     end
@@ -151,7 +151,7 @@ RSpec.describe ServicePing::SubmitService do
     it 'forces a refresh of usage data statistics before submitting' do
       stub_response(body: with_dev_ops_score_params)
 
-      expect(Gitlab::UsageData).to receive(:data).with(force_refresh: true).and_call_original
+      expect(Gitlab::Usage::ServicePingReport).to receive(:for).with(mode: :values).and_call_original
 
       subject.execute
     end
@@ -167,7 +167,7 @@ RSpec.describe ServicePing::SubmitService do
         recorded_at = Time.current
         usage_data = { uuid: 'uuid', recorded_at: recorded_at }
 
-        expect(Gitlab::UsageData).to receive(:data).with(force_refresh: true).and_return(usage_data)
+        expect(Gitlab::Usage::ServicePingReport).to receive(:for).with(mode: :values).and_return(usage_data)
 
         subject.execute
 
@@ -190,7 +190,7 @@ RSpec.describe ServicePing::SubmitService do
         recorded_at = Time.current
         usage_data = { uuid: 'uuid', recorded_at: recorded_at }
 
-        expect(Gitlab::UsageData).to receive(:data).with(force_refresh: true).and_return(usage_data)
+        expect(Gitlab::Usage::ServicePingReport).to receive(:for).with(mode: :values).and_return(usage_data)
 
         subject.execute
 
@@ -235,7 +235,7 @@ RSpec.describe ServicePing::SubmitService do
         recorded_at = Time.current
         usage_data = { uuid: 'uuid', recorded_at: recorded_at }
 
-        expect(Gitlab::UsageData).to receive(:data).with(force_refresh: true).and_return(usage_data)
+        expect(Gitlab::Usage::ServicePingReport).to receive(:for).with(mode: :values).and_return(usage_data)
 
         subject.execute
 
@@ -260,7 +260,7 @@ RSpec.describe ServicePing::SubmitService do
 
     context 'and usage data is empty string' do
       before do
-        allow(Gitlab::UsageData).to receive(:data).and_return({})
+        allow(Gitlab::Usage::ServicePingReport).to receive(:for).with(mode: :values).and_return({})
       end
 
       it_behaves_like 'does not send a blank usage ping payload'
@@ -269,7 +269,7 @@ RSpec.describe ServicePing::SubmitService do
     context 'and usage data is nil' do
       before do
         allow(ServicePing::BuildPayloadService).to receive(:execute).and_return(nil)
-        allow(Gitlab::UsageData).to receive(:data).and_return(nil)
+        allow(Gitlab::Usage::ServicePingReport).to receive(:for).with(mode: :values).and_return(nil)
       end
 
       it_behaves_like 'does not send a blank usage ping payload'
@@ -282,10 +282,10 @@ RSpec.describe ServicePing::SubmitService do
                                                      .and_raise(described_class::SubmissionError, 'SubmissionError')
       end
 
-      it 'calls UsageData .data method' do
+      it 'calls Gitlab::Usage::ServicePingReport .for method' do
         usage_data = build_usage_data
 
-        expect(Gitlab::UsageData).to receive(:data).and_return(usage_data)
+        expect(Gitlab::Usage::ServicePingReport).to receive(:for).with(mode: :values).and_return(usage_data)
 
         subject.execute
       end
@@ -326,10 +326,10 @@ RSpec.describe ServicePing::SubmitService do
         end
       end
 
-      it 'calls UsageData .data method' do
+      it 'calls Gitlab::Usage::ServicePingReport .for method' do
         usage_data = build_usage_data
 
-        expect(Gitlab::UsageData).to receive(:data).and_return(usage_data)
+        expect(Gitlab::Usage::ServicePingReport).to receive(:for).with(mode: :values).and_return(usage_data)
 
         # SubmissionError is raised as a result of 404 in response from HTTP Request
         expect { subject.execute }.to raise_error(described_class::SubmissionError)

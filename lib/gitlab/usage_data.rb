@@ -41,14 +41,8 @@ module Gitlab
       include Gitlab::Utils::StrongMemoize
       include Gitlab::Usage::TimeFrame
 
-      def data(force_refresh: false)
-        Rails.cache.fetch('usage_data', force: force_refresh, expires_in: 2.weeks) do
-          uncached_data
-        end
-      end
-
-      def to_json(force_refresh: false)
-        data(force_refresh: force_refresh).to_json
+      def data
+        uncached_data
       end
 
       def license_usage_data

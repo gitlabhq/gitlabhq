@@ -13,7 +13,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
   end
 
   describe '.data' do
-    subject { described_class.data(force_refresh: true) }
+    subject { described_class.data }
 
     it 'includes basic top and second level keys' do
       is_expected.to include(:counts)

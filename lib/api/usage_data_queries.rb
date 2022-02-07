@@ -18,7 +18,7 @@ module API
       get 'queries' do
         Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/325534')
 
-        queries = Gitlab::UsageDataQueries.data(force_refresh: true)
+        queries = Gitlab::UsageDataQueries.data
 
         present queries
       end

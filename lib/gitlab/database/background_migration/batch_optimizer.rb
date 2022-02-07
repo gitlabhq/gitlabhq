@@ -20,7 +20,8 @@ module Gitlab
         TARGET_EFFICIENCY = (0.9..0.95).freeze
 
         # Lower and upper bound for the batch size
-        ALLOWED_BATCH_SIZE = (1_000..2_000_000).freeze
+        MIN_BATCH_SIZE = 1_000
+        MAX_BATCH_SIZE = 2_000_000
 
         # Limit for the multiplier of the batch size
         MAX_MULTIPLIER = 1.2
@@ -43,7 +44,8 @@ module Gitlab
           return unless Feature.enabled?(:optimize_batched_migrations, type: :ops, default_enabled: :yaml)
 
           if multiplier = batch_size_multiplier
-            migration.batch_size = (migration.batch_size * multiplier).to_i.clamp(ALLOWED_BATCH_SIZE)
+            max_batch = migration.max_batch_size || MAX_BATCH_SIZE
+            migration.batch_size = (migration.batch_size * multiplier).to_i.clamp(MIN_BATCH_SIZE, max_batch)
             migration.save!
           end
         end
