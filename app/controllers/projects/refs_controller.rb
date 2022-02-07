@@ -18,7 +18,7 @@ class Projects::RefsController < Projects::ApplicationController
     respond_to do |format|
       format.html do
         new_path =
-          case params[:destination]
+          case permitted_params[:destination]
           when "tree"
             project_tree_path(@project, @id)
           when "blob"
@@ -45,7 +45,7 @@ class Projects::RefsController < Projects::ApplicationController
   def logs_tree
     tree_summary = ::Gitlab::TreeSummary.new(
       @commit, @project, current_user,
-      path: @path, offset: params[:offset], limit: 25)
+      path: @path, offset: permitted_params[:offset], limit: 25)
 
     respond_to do |format|
       format.html { render_404 }
@@ -62,6 +62,10 @@ class Projects::RefsController < Projects::ApplicationController
   private
 
   def validate_ref_id
-    return not_found if params[:id].present? && params[:id] !~ Gitlab::PathRegex.git_reference_regex
+    return not_found if permitted_params[:id].present? && permitted_params[:id] !~ Gitlab::PathRegex.git_reference_regex
+  end
+
+  def permitted_params
+    params.permit(:id, :offset, :destination)
   end
 end

@@ -408,8 +408,6 @@ export default {
 
       <gl-button
         v-if="isEmptyStateModal"
-        variant="confirm"
-        category="secondary"
         :data-track-action="$options.EVENT_ACTIONS_CLICK"
         :data-track-label="$options.EVENT_LABEL_MODAL"
         data-track-property="done"

@@ -309,12 +309,13 @@ describe('InstallAgentModal', () => {
 
   describe('when KAS is disabled', () => {
     const i18n = I18N_AGENT_MODAL.empty_state;
-    beforeEach(() => {
+    beforeEach(async () => {
       apolloProvider = createMockApollo([
         [getAgentConfigurations, jest.fn().mockResolvedValue(kasDisabledErrorResponse)],
       ]);
 
-      return mockSelectedAgentResponse();
+      createWrapper();
+      await waitForPromises();
     });
 
     it('renders empty state image', () => {
@@ -328,8 +329,8 @@ describe('InstallAgentModal', () => {
     });
 
     it('renders a cancel button', () => {
-      expect(findActionButton().isVisible()).toBe(true);
-      expect(findActionButton().text()).toBe(i18n.done);
+      expect(findCancelButton().isVisible()).toBe(true);
+      expect(findCancelButton().text()).toBe(i18n.done);
     });
 
     it("doesn't render a secondary button", () => {

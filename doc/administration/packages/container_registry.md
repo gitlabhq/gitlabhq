@@ -662,14 +662,14 @@ configurable in future releases.
 
 The Registry server listens on localhost at port `5000` by default,
 which is the address for which the Registry server should accept connections.
-In the examples below we set the Registry's port to `5001`.
+In the examples below we set the Registry's port to `5010`.
 
 **Omnibus GitLab**
 
 1. Open `/etc/gitlab/gitlab.rb` and set `registry['registry_http_addr']`:
 
    ```ruby
-   registry['registry_http_addr'] = "localhost:5001"
+   registry['registry_http_addr'] = "localhost:5010"
    ```
 
 1. Save the file and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
@@ -681,7 +681,7 @@ In the examples below we set the Registry's port to `5001`.
 
    ```yaml
    http:
-     addr: localhost:5001
+     addr: localhost:5010
    ```
 
 1. Save the file and restart the Registry server.

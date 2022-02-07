@@ -13,41 +13,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 Every API call to merge requests must be authenticated.
 
-**Important notes:**
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/29984) in GitLab 12.8, the mergeability (`merge_status`)
-of each merge request is checked asynchronously when a request is made to this endpoint. Poll this API endpoint
-to get updated status. This affects the `has_conflicts` property as it is dependent on the `merge_status`. It returns
-`false` unless `merge_status` is `cannot_be_merged`.
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/31890) in GitLab 13.0, listing merge requests may
-not proactively update `merge_status` (which also affects the `has_conflicts`), as this can be an expensive operation.
-If you need the value of these fields from this endpoint, set the `with_merge_status_recheck` parameter to
-`true` in the query.
-- `references.relative` is relative to the group or project that the merge request is being requested. When the merge request
-is fetched from its project, `relative` format would be the same as `short` format, and when requested across groups or projects, it is expected to be the same as `full` format.
-- If `approvals_before_merge` is not provided, it inherits the value from the target project. If provided, the following conditions must hold for it to take effect:
-
-  - The target project's `approvals_before_merge` must be greater than zero. A
-    value of zero disables approvals for that project.
-  - The provided value of `approvals_before_merge` must be greater than the
-    target project's `approvals_before_merge`.
-
-  This API returns `HTTP 201 Created` for a successful response.
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/46190) in GitLab 13.6,
-diffs associated with the set of changes have the same size limitations applied as other diffs
-returned by the API or viewed via the UI. When these limits impact the results, the `overflow`
-field contains a value of `true`. Diff data without these limits applied can be retrieved by
-adding the `access_raw_diffs` parameter, accessing diffs not from the database but from Gitaly directly.
-This approach is generally slower and more resource-intensive, but isn't subject to size limits
-placed on database-backed diffs. [Limits inherent to Gitaly](../development/diffs.md#diff-limits)
-still apply.
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/349031) in GitLab 14.7,
-field `merge_user` can be either user who merged this merge request,
-user who set it to merge when pipeline succeeds or `null`.
-Field `merged_by` (user who merged this merge request or `null`) has been deprecated.
-
 ## List merge requests
 
 Get all merge requests the authenticated user has access to. By
@@ -241,6 +206,14 @@ the `approvals_before_merge` parameter:
 ]
 ```
 
+### Merge requests list response notes
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/31890) in GitLab 13.0, listing merge requests may
+  not proactively update `merge_status` (which also affects the `has_conflicts`), as this can be an expensive operation.
+  If you need the value of these fields from this endpoint, set the `with_merge_status_recheck` parameter to
+  `true` in the query.
+- For notes on merge request object fields, read [Single merge request response notes](#single-merge-request-response-notes).
+
 ## List project merge requests
 
 Get all merge requests for this project.
@@ -421,16 +394,6 @@ Parameters:
 ]
 ```
 
-The `merge_status` field may hold one of the following values:
-
-| Value                      | Interpretation                                                        |
-|----------------------------|-----------------------------------------------------------------------|
-| `unchecked`                | We have not checked this yet                                          |
-| `checking`                 | We are currently checking if the merge request can be merged          |
-| `can_be_merged`            | This merge request can be merged without conflict                     |
-| `cannot_be_merged`         | There are merge conflicts between the source and target branches      |
-| `cannot_be_merged_recheck` | Currently unchecked. Before the current changes, there were conflicts |
-
 Users on [GitLab Premium or higher](https://about.gitlab.com/pricing/) also see
 the `approvals_before_merge` parameter:
 
@@ -444,6 +407,8 @@ the `approvals_before_merge` parameter:
   }
 ]
 ```
+
+For important notes on response data, read [Merge requests list response notes](#merge-requests-list-response-notes).
 
 ## List group merge requests
 
@@ -627,6 +592,8 @@ the `approvals_before_merge` parameter:
 ]
 ```
 
+For important notes on response data, read [Merge requests list response notes](#merge-requests-list-response-notes).
+
 ## Get single MR
 
 Shows information about a single merge request.
@@ -805,7 +772,26 @@ the `approvals_before_merge` parameter:
 }
 ```
 
-The `diff_refs` in the response correspond to the latest diff version of the merge request.
+### Single merge request response notes
+
+- The `merge_status` field may hold one of the following values:
+  - `unchecked`: We have not checked this yet.
+  - `checking`: We are currently checking if the merge request can be merged.
+  - `can_be_merged`: This merge request can be merged without conflict.
+  - `cannot_be_merged`: There are merge conflicts between the source and target branches.
+  - `cannot_be_merged_recheck`: Currently unchecked. Before the current changes, there were conflicts.
+- The `diff_refs` in the response correspond to the latest diff version of the merge request.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/29984) in GitLab 12.8, the mergeability (`merge_status`)
+  of each merge request is checked asynchronously when a request is made to this endpoint. Poll this API endpoint
+  to get updated status. This affects the `has_conflicts` property as it is dependent on the `merge_status`. It returns
+  `false` unless `merge_status` is `cannot_be_merged`.
+- `references.relative` is relative to the group or project that the merge request is being requested. When the merge
+  request is fetched from its project, `relative` format would be the same as `short` format, and when requested across
+  groups or projects, it is expected to be the same as `full` format.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/349031) in GitLab 14.7,
+  field `merge_user` can be either user who merged this merge request,
+  user who set it to merge when pipeline succeeds or `null`.
+  Field `merged_by` (user who merged this merge request or `null`) has been deprecated.
 
 ## Get single MR participants
 
@@ -884,6 +870,15 @@ Parameters:
 ## Get single MR changes
 
 Shows information about the merge request including its files and changes.
+
+[Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/46190) in GitLab 13.6,
+diffs associated with the set of changes have the same size limitations applied as other diffs
+returned by the API or viewed via the UI. When these limits impact the results, the `overflow`
+field contains a value of `true`. Diff data without these limits applied can be retrieved by
+adding the `access_raw_diffs` parameter, accessing diffs not from the database but from Gitaly directly.
+This approach is generally slower and more resource-intensive, but isn't subject to size limits
+placed on database-backed diffs. [Limits inherent to Gitaly](../development/diffs.md#diff-limits)
+still apply.
 
 ```plaintext
 GET /projects/:id/merge_requests/:merge_request_iid/changes
@@ -1117,7 +1112,15 @@ POST /projects/:id/merge_requests
 | `remove_source_branch`     | boolean | no       | Flag indicating if a merge request should remove the source branch when merging. |
 | `allow_collaboration`      | boolean | no       | Allow commits from members who can merge to the target branch.                   |
 | `allow_maintainer_to_push` | boolean | no       | Alias of `allow_collaboration`.                                                  |
+| `approvals_before_merge` **(PREMIUM)** | integer | no | Number of approvals required before this can be merged (see below). |
 | `squash`                   | boolean | no       | Squash commits into a single commit when merging.                                |
+
+If `approvals_before_merge` is not provided, it inherits the value from the target project. If provided, the following conditions must hold for it to take effect:
+
+- The target project's `approvals_before_merge` must be greater than zero. A
+  value of zero disables approvals for that project.
+- The provided value of `approvals_before_merge` must be greater than the
+  target project's `approvals_before_merge`.
 
 ```json
 {
@@ -1250,6 +1253,8 @@ the `approvals_before_merge` parameter:
   ...
 }
 ```
+
+For important notes on response data, read [Single merge request response notes](#single-merge-request-response-notes).
 
 ## Update MR
 
@@ -1429,6 +1434,8 @@ the `approvals_before_merge` parameter:
   ...
 }
 ```
+
+For important notes on response data, read [Single merge request response notes](#single-merge-request-response-notes).
 
 ## Delete a merge request
 
@@ -1623,6 +1630,8 @@ the `approvals_before_merge` parameter:
   ...
 }
 ```
+
+For important notes on response data, read [Single merge request response notes](#single-merge-request-response-notes).
 
 ## Merge to default merge ref path
 
@@ -1820,6 +1829,8 @@ the `approvals_before_merge` parameter:
   ...
 }
 ```
+
+For important notes on response data, read [Single merge request response notes](#single-merge-request-response-notes).
 
 ## Rebase a merge request
 
@@ -2130,6 +2141,8 @@ the `approvals_before_merge` parameter:
 }
 ```
 
+For important notes on response data, read [Single merge request response notes](#single-merge-request-response-notes).
+
 ## Unsubscribe from a merge request
 
 Unsubscribes the authenticated user from a merge request to not receive
@@ -2297,6 +2310,8 @@ the `approvals_before_merge` parameter:
   ...
 }
 ```
+
+For important notes on response data, read [Single merge request response notes](#single-merge-request-response-notes).
 
 ## Create a to-do item
 

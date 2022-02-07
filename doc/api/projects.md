@@ -1258,7 +1258,6 @@ POST /projects
 | `requirements_access_level`                                 | string  | **{dotted-circle}** No | One of `disabled`, `private`, `enabled` or `public` |
 | `resolve_outdated_diff_discussions`                         | boolean | **{dotted-circle}** No | Automatically resolve merge request diffs discussions on lines changed with a push. |
 | `shared_runners_enabled`                                    | boolean | **{dotted-circle}** No | Enable shared runners for this project. |
-| `show_default_award_emojis`                                 | boolean | **{dotted-circle}** No | Show default award emojis. |
 | `snippets_access_level`                                     | string  | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. |
 | `snippets_enabled`                                          | boolean | **{dotted-circle}** No | _(Deprecated)_ Enable snippets for this project. Use `snippets_access_level` instead. |
 | `squash_option`                                             | string  | **{dotted-circle}** No | One of `never`, `always`, `default_on`, or `default_off`. |
@@ -1336,7 +1335,6 @@ POST /projects/user/:user_id
 | `requirements_access_level`                                 | string  | **{dotted-circle}** No | One of `disabled`, `private`, `enabled` or `public` |
 | `resolve_outdated_diff_discussions`                         | boolean | **{dotted-circle}** No | Automatically resolve merge request diffs discussions on lines changed with a push. |
 | `shared_runners_enabled`                                    | boolean | **{dotted-circle}** No | Enable shared runners for this project. |
-| `show_default_award_emojis`                                 | boolean | **{dotted-circle}** No | Show default award emojis. |
 | `snippets_access_level`                                     | string  | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. |
 | `snippets_enabled`                                          | boolean | **{dotted-circle}** No | _(Deprecated)_ Enable snippets for this project. Use `snippets_access_level` instead. |
 | `squash_commit_template`                                    | string  | **{dotted-circle}** No | [Template](../user/project/merge_requests/commit_templates.md) used to create squash commit message in merge requests. _([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/345275) in GitLab 14.6.)_ |
@@ -1437,7 +1435,6 @@ Supported attributes:
 | `restrict_user_defined_variables`                           | boolean        | **{dotted-circle}** No | Allow only users with the Maintainer role to pass user-defined variables when triggering a pipeline. For example when the pipeline is triggered in the UI, with the API, or by a trigger token. |
 | `service_desk_enabled`                                      | boolean        | **{dotted-circle}** No | Enable or disable Service Desk feature. |
 | `shared_runners_enabled`                                    | boolean        | **{dotted-circle}** No | Enable shared runners for this project. |
-| `show_default_award_emojis`                                 | boolean        | **{dotted-circle}** No | Show default award emojis. |
 | `snippets_access_level`                                     | string         | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. |
 | `snippets_enabled`                                          | boolean        | **{dotted-circle}** No | _(Deprecated)_ Enable snippets for this project. Use `snippets_access_level` instead. |
 | `squash_commit_template`                                    | string         | **{dotted-circle}** No | [Template](../user/project/merge_requests/commit_templates.md) used to create squash commit message in merge requests. _([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/345275) in GitLab 14.6.)_ |

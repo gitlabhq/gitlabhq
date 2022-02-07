@@ -727,6 +727,27 @@ The `merged_by` field in the [merge request API](https://docs.gitlab.com/ee/api/
 
 ## 14.8
 
+### Container Network and Host Security
+
+WARNING:
+This feature will be changed or removed in 15.0
+as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Before updating GitLab, review the details carefully to determine if you need to make any
+changes to your code, settings, or workflow.
+
+All functionality related to GitLab's Container Network Security and Container Host Security categories is deprecated in GitLab 14.8 and scheduled for removal in GitLab 15.0. Users who need a replacement for this functionality are encouraged to evaluate the following open source projects as potential solutions that can be installed and managed outside of GitLab: [AppArmor](https://gitlab.com/apparmor/apparmor), [Cilium](https://github.com/cilium/cilium), [Falco](https://github.com/falcosecurity/falco), [FluentD](https://github.com/fluent/fluentd), [Pod Security Admission](https://kubernetes.io/docs/concepts/security/pod-security-admission/). To integrate these technologies into GitLab, add the desired Helm charts into your copy of the [Cluster Management Project Template](https://docs.gitlab.com/ee/user/clusters/management_project_template.html). Deploy these Helm charts in production by calling commands through the GitLab [Secure CI/CD Tunnel](https://docs.gitlab.com/ee/user/clusters/agent/repository.html#run-kubectl-commands-using-the-cicd-tunnel).
+
+As part of this change, the following specific capabilities within GitLab are now deprecated, and are scheduled for removal in GitLab 15.0:
+
+- The **Security & Compliance > Threat Monitoring** page.
+- The `Network Policy` security policy type, as found on the **Security & Compliance > Policies** page.
+- The ability to manage integrations with the following technologies through GitLab: AppArmor, Cilium, Falco, FluentD, and Pod Security Policies.
+- All APIs related to the above functionality.
+
+For additional context, or to provide feedback regarding this change, please reference our open [deprecation issue](https://gitlab.com/groups/gitlab-org/-/epics/7476).
+
+**Planned removal milestone: 15.0 (2022-05-22)**
+
 ### Deprecate Geo Admin UI Routes
 
 In GitLab 13.0, we introduced new project and design replication details routes in the Geo Admin UI. These routes are `/admin/geo/replication/projects` and `/admin/geo/replication/designs`. We kept the legacy routes and redirected them to the new routes. In GitLab 15.0, we will remove support for the legacy routes `/admin/geo/projects` and `/admin/geo/designs`. Please update any bookmarks or scripts that may use the legacy routes.
