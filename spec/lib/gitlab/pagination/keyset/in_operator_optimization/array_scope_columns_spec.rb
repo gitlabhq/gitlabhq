@@ -16,4 +16,13 @@ RSpec.describe Gitlab::Pagination::Keyset::InOperatorOptimization::ArrayScopeCol
 
     it { expect { array_scope_columns }.to raise_error /No array columns were given/ }
   end
+
+  context 'when Arel AS node is given as input' do
+    let(:scope) { Issue.select(Issue.arel_table[:id].as('id'), :title) }
+    let(:columns) { scope.select_values }
+
+    it 'works with Arel AS nodes' do
+      expect(array_scope_columns.array_aggregated_column_names).to eq(%w[array_cte_id_array array_cte_title_array])
+    end
+  end
 end

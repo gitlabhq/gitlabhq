@@ -49,7 +49,7 @@ module QA
             if account.empty?
               raise "Failed to login to gcloud. No credentials provided in environment and no credentials found locally."
             else
-              puts "gcloud account found. Using: #{account} for creating K8s cluster."
+              QA::Runtime::Logger.debug("gcloud account found. Using: #{account} for creating K8s cluster.")
             end
           end
         end

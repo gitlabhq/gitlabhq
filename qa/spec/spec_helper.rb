@@ -6,6 +6,7 @@ require 'securerandom'
 require 'pathname'
 require 'active_support/core_ext/hash'
 require 'active_support/core_ext/object/blank'
+require 'rainbow/refinement'
 
 require_relative 'qa_deprecation_toolkit_env'
 QaDeprecationToolkitEnv.configure!

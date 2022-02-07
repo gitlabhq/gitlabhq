@@ -31974,9 +31974,6 @@ msgstr ""
 msgid "SecurityOrchestration|Description"
 msgstr ""
 
-msgid "SecurityOrchestration|Disabled"
-msgstr ""
-
 msgid "SecurityOrchestration|Edit policy"
 msgstr ""
 
@@ -32008,6 +32005,9 @@ msgid "SecurityOrchestration|New policy"
 msgstr ""
 
 msgid "SecurityOrchestration|No rules defined - policy will not run."
+msgstr ""
+
+msgid "SecurityOrchestration|Not enabled"
 msgstr ""
 
 msgid "SecurityOrchestration|Only owners can update Security Policy Project"

@@ -65,6 +65,10 @@ module QA
         ENV['QA_LOG_PATH'] || $stdout
       end
 
+      def colorized_logs?
+        enabled?(ENV['COLORIZED_LOGS'], default: false)
+      end
+
       # set to 'false' to have the browser run visibly instead of headless
       def webdriver_headless?
         if ENV.key?('CHROME_HEADLESS')

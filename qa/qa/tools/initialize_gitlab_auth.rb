@@ -16,7 +16,7 @@ module QA
       def run
         Runtime::Scenario.define(:gitlab_address, address)
 
-        puts "Signing in and creating the default password for the root user if it's not set already..."
+        QA::Runtime::Logger.info("Signing in and creating the default password for the root user if it's not set already...")
         QA::Runtime::Browser.visit(:gitlab, QA::Page::Main::Login)
         Flow::Login.sign_in
 

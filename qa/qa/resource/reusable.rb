@@ -46,7 +46,9 @@ module QA
         # @return [Hash<Symbol, QA::Resource>] the resources that were to be removed.
         def remove_all_via_api!
           resources.each do |reuse_as, resource|
-            QA::Runtime::Logger.debug("#{self.name} - removing #{reuse_as}")
+            QA::Runtime::Logger.debug("#{self.name} - removing resource reused as :#{reuse_as}")
+            next QA::Runtime::Logger.debug("#{self.name} reused as :#{reuse_as} has already been removed.") unless resource.exists?
+
             resource.method(:remove_via_api!).super_method.call
           end
         end

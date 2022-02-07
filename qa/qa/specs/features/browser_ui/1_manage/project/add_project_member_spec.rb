@@ -1,11 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Manage', :requires_admin, quarantine: {
-    issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/350598',
-    type: :needs_update,
-    only: { subdomain: :staging }
-  } do
+  RSpec.describe 'Manage', :requires_admin do
     describe 'Add project member' do
       before do
         Runtime::Feature.enable(:invite_members_group_modal)
@@ -25,7 +21,7 @@ module QA
         Page::Project::Menu.perform(&:click_members)
         Page::Project::Members.perform do |members|
           members.add_member(user.username)
-
+          members.search_member(user.username)
           expect(members).to have_content("@#{user.username}")
         end
       end

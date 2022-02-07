@@ -6,15 +6,15 @@ RSpec.describe LooseForeignKeys::DeletedRecord, type: :model do
   let_it_be(:table) { 'public.projects' }
 
   describe 'class methods' do
-    let_it_be(:deleted_record_1) { described_class.create!(fully_qualified_table_name: table, primary_key_value: 5) }
-    let_it_be(:deleted_record_2) { described_class.create!(fully_qualified_table_name: table, primary_key_value: 1) }
+    let_it_be(:deleted_record_1) { described_class.create!(fully_qualified_table_name: table, primary_key_value: 5, cleanup_attempts: 2) }
+    let_it_be(:deleted_record_2) { described_class.create!(fully_qualified_table_name: table, primary_key_value: 1, cleanup_attempts: 0) }
     let_it_be(:deleted_record_3) { described_class.create!(fully_qualified_table_name: 'public.other_table', primary_key_value: 3) }
-    let_it_be(:deleted_record_4) { described_class.create!(fully_qualified_table_name: table, primary_key_value: 1) } # duplicate
+    let_it_be(:deleted_record_4) { described_class.create!(fully_qualified_table_name: table, primary_key_value: 1, cleanup_attempts: 1) } # duplicate
+
+    let(:records) { described_class.load_batch_for_table(table, 10) }
 
     describe '.load_batch_for_table' do
       it 'loads records and orders them by creation date' do
-        records = described_class.load_batch_for_table(table, 10)
-
         expect(records).to eq([deleted_record_1, deleted_record_2, deleted_record_4])
       end
 
@@ -27,11 +27,36 @@ RSpec.describe LooseForeignKeys::DeletedRecord, type: :model do
 
     describe '.mark_records_processed' do
       it 'updates all records' do
-        records = described_class.load_batch_for_table(table, 10)
         described_class.mark_records_processed(records)
 
         expect(described_class.status_pending.count).to eq(1)
         expect(described_class.status_processed.count).to eq(3)
+      end
+    end
+
+    describe '.reschedule' do
+      it 'reschedules all records' do
+        time = Time.zone.parse('2022-01-01').utc
+        update_count = described_class.reschedule(records, time)
+
+        expect(update_count).to eq(records.size)
+
+        records.each(&:reload)
+
+        expect(records).to all(have_attributes(
+                                 cleanup_attempts: 0,
+                                 consume_after: time
+                               ))
+      end
+    end
+
+    describe '.increment_attempts' do
+      it 'increaments the cleanup_attempts column' do
+        described_class.increment_attempts(records)
+
+        expect(deleted_record_1.reload.cleanup_attempts).to eq(3)
+        expect(deleted_record_2.reload.cleanup_attempts).to eq(1)
+        expect(deleted_record_4.reload.cleanup_attempts).to eq(2)
       end
     end
   end

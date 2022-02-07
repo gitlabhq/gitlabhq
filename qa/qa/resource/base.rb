@@ -8,6 +8,7 @@ module QA
     class Base
       include ApiFabricator
       extend Capybara::DSL
+      using Rainbow
 
       NoValueError = Class.new(RuntimeError)
 
@@ -102,7 +103,7 @@ module QA
 
             Runtime::Logger.debug do
               msg = ["==#{'=' * parents.size}>"]
-              msg << "#{fabrication_http_method} a #{name}"
+              msg << "#{fabrication_http_method} a #{Rainbow(name).black.bg(:white)}"
               msg << identifier
               msg << "as a dependency of #{parents.last}" if parents.any?
               msg << "via #{fabrication_method}"
@@ -182,7 +183,7 @@ module QA
       end
 
       def visit!(skip_resp_code_check: false)
-        Runtime::Logger.debug(%(Visiting #{self.class.name} at "#{web_url}"))
+        Runtime::Logger.debug("Visiting #{Rainbow(self.class.name).black.bg(:white)} at #{web_url}")
 
         # Just in case an async action is not yet complete
         Support::WaitForRequests.wait_for_requests(skip_resp_code_check: skip_resp_code_check)

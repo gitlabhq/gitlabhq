@@ -11,7 +11,6 @@ module QA
         end
 
         def fabricate!
-          puts 'TODO: FABRICATE VIA UI'
         end
 
         def resource_web_url(resource)

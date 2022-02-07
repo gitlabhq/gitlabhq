@@ -279,6 +279,7 @@ CREATE TABLE loose_foreign_keys_deleted_records (
     created_at timestamp with time zone DEFAULT now() NOT NULL,
     fully_qualified_table_name text NOT NULL,
     consume_after timestamp with time zone DEFAULT now(),
+    cleanup_attempts smallint DEFAULT 0,
     CONSTRAINT check_1a541f3235 CHECK ((char_length(fully_qualified_table_name) <= 150))
 )
 PARTITION BY LIST (partition);

@@ -28,23 +28,31 @@ module Gitlab
       end
 
       def api_request?
-        path.start_with?('/api')
+        logical_path.start_with?('/api')
+      end
+
+      def logical_path
+        @logical_path ||= path.delete_prefix(Gitlab.config.gitlab.relative_url_root)
+      end
+
+      def matches?(regex)
+        logical_path.match?(regex)
       end
 
       def api_internal_request?
-        path.match?(%r{^/api/v\d+/internal/})
+        matches?(%r{^/api/v\d+/internal/})
       end
 
       def health_check_request?
-        path.match?(%r{^/-/(health|liveness|readiness|metrics)})
+        matches?(%r{^/-/(health|liveness|readiness|metrics)})
       end
 
       def container_registry_event?
-        path.match?(%r{^/api/v\d+/container_registry_event/})
+        matches?(%r{^/api/v\d+/container_registry_event/})
       end
 
       def product_analytics_collector_request?
-        path.start_with?('/-/collector/i')
+        logical_path.start_with?('/-/collector/i')
       end
 
       def should_be_skipped?
@@ -56,7 +64,7 @@ module Gitlab
       end
 
       def protected_path?
-        path.match?(protected_paths_regex)
+        matches?(protected_paths_regex)
       end
 
       def throttle?(throttle, authenticated:)
@@ -178,15 +186,15 @@ module Gitlab
       end
 
       def packages_api_path?
-        path.match?(::Gitlab::Regex::Packages::API_PATH_REGEX)
+        matches?(::Gitlab::Regex::Packages::API_PATH_REGEX)
       end
 
       def git_lfs_path?
-        path.match?(::Gitlab::PathRegex.repository_git_lfs_route_regex)
+        matches?(::Gitlab::PathRegex.repository_git_lfs_route_regex)
       end
 
       def files_api_path?
-        path.match?(FILES_PATH_REGEX)
+        matches?(FILES_PATH_REGEX)
       end
 
       def frontend_request?
@@ -206,7 +214,7 @@ module Gitlab
         with_projects = params['with_projects']
         with_projects = true if with_projects.blank?
 
-        path.match?(GROUP_PATH_REGEX) && Gitlab::Utils.to_boolean(with_projects)
+        matches?(GROUP_PATH_REGEX) && Gitlab::Utils.to_boolean(with_projects)
       end
     end
   end

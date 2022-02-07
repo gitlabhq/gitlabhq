@@ -5,6 +5,7 @@ module QA
     module Project
       class Members < Page::Base
         include QA::Page::Component::InviteMembersModal
+        include QA::Page::Component::MembersFilter
 
         view 'app/assets/javascripts/members/components/members_tabs.vue' do
           element :groups_list_tab

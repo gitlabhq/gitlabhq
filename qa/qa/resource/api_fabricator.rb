@@ -7,11 +7,11 @@ module QA
   module Resource
     module ApiFabricator
       include Capybara::DSL
+      include Support::API
       include Errors
 
-      attr_reader :api_resource, :api_response
       attr_writer :api_client
-      attr_accessor :api_user
+      attr_accessor :api_user, :api_resource, :api_response
 
       def api_support?
         respond_to?(:api_get_path) &&
@@ -48,9 +48,6 @@ module QA
         end
       end
 
-      include Support::API
-      attr_writer :api_resource, :api_response
-
       def api_put(body = api_put_body)
         response = put(
           Runtime::API::Request.new(api_client, api_put_path).url,
@@ -65,6 +62,16 @@ module QA
 
       def api_fabrication_http_method
         @api_fabrication_http_method ||= :post
+      end
+
+      # Checks if a resource already exists
+      #
+      # @return [Boolean] true if the resource returns HTTP status code 200
+      def exists?
+        request = Runtime::API::Request.new(api_client, api_get_path)
+        response = get(request.url)
+
+        response.code == HTTP_STATUS_OK
       end
 
       private

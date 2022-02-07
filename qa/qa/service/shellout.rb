@@ -5,6 +5,7 @@ require 'open3'
 module QA
   module Service
     module Shellout
+      using Rainbow
       CommandError = Class.new(StandardError)
 
       module_function
@@ -14,7 +15,7 @@ module QA
       # as a library - gitlab-org/gitlab-qa#94
       #
       def shell(command, stdin_data: nil, fail_on_exception: true)
-        puts "Executing `#{command}`"
+        QA::Runtime::Logger.info("Executing `#{command}`".cyan)
 
         Open3.popen2e(*command) do |stdin, out, wait|
           stdin.puts(stdin_data) if stdin_data

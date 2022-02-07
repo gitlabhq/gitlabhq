@@ -12,7 +12,7 @@ RSpec.describe Gitlab::RackAttack::Request do
     ::Rack::Attack::Request.new(
       env.reverse_merge(
         'REQUEST_METHOD' => 'GET',
-        'PATH_INFO' => path,
+        'PATH_INFO' => Gitlab.config.gitlab.relative_url_root + path,
         'rack.input' => StringIO.new,
         'rack.session' => session
       )
@@ -44,6 +44,14 @@ RSpec.describe Gitlab::RackAttack::Request do
 
     with_them do
       it { is_expected.to eq(expected) }
+
+      context 'when the application is mounted at a relative URL' do
+        before do
+          stub_config_setting(relative_url_root: '/gitlab/root')
+        end
+
+        it { is_expected.to eq(expected) }
+      end
     end
   end
 
@@ -65,6 +73,14 @@ RSpec.describe Gitlab::RackAttack::Request do
 
     with_them do
       it { is_expected.to eq(expected) }
+
+      context 'when the application is mounted at a relative URL' do
+        before do
+          stub_config_setting(relative_url_root: '/gitlab/root')
+        end
+
+        it { is_expected.to eq(expected) }
+      end
     end
   end
 
@@ -88,6 +104,14 @@ RSpec.describe Gitlab::RackAttack::Request do
 
     with_them do
       it { is_expected.to eq(expected) }
+
+      context 'when the application is mounted at a relative URL' do
+        before do
+          stub_config_setting(relative_url_root: '/gitlab/root')
+        end
+
+        it { is_expected.to eq(expected) }
+      end
     end
   end
 
@@ -107,6 +131,14 @@ RSpec.describe Gitlab::RackAttack::Request do
 
     with_them do
       it { is_expected.to eq(expected) }
+
+      context 'when the application is mounted at a relative URL' do
+        before do
+          stub_config_setting(relative_url_root: '/gitlab/root')
+        end
+
+        it { is_expected.to eq(expected) }
+      end
     end
   end
 
@@ -127,6 +159,14 @@ RSpec.describe Gitlab::RackAttack::Request do
 
     with_them do
       it { is_expected.to eq(expected) }
+
+      context 'when the application is mounted at a relative URL' do
+        before do
+          stub_config_setting(relative_url_root: '/gitlab/root')
+        end
+
+        it { is_expected.to eq(expected) }
+      end
     end
   end
 
@@ -162,6 +202,14 @@ RSpec.describe Gitlab::RackAttack::Request do
 
     with_them do
       it { is_expected.to eq(expected) }
+
+      context 'when the application is mounted at a relative URL' do
+        before do
+          stub_config_setting(relative_url_root: '/gitlab/root')
+        end
+
+        it { is_expected.to eq(expected) }
+      end
     end
   end
 
@@ -189,6 +237,14 @@ RSpec.describe Gitlab::RackAttack::Request do
 
     with_them do
       it { is_expected.to eq(expected) }
+
+      context 'when the application is mounted at a relative URL' do
+        before do
+          stub_config_setting(relative_url_root: '/gitlab/root')
+        end
+
+        it { is_expected.to eq(expected) }
+      end
     end
   end
 
@@ -255,6 +311,14 @@ RSpec.describe Gitlab::RackAttack::Request do
 
     with_them do
       it { is_expected.to eq(expected) }
+
+      context 'when the application is mounted at a relative URL' do
+        before do
+          stub_config_setting(relative_url_root: '/gitlab/root')
+        end
+
+        it { is_expected.to eq(expected) }
+      end
     end
   end
 end

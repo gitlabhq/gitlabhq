@@ -195,7 +195,13 @@ Jobs that exceed the timeout are marked as failed.
 
 You can override this value [for individual runners](../runners/configure_runners.md#set-maximum-job-timeout-for-a-runner).
 
-## Add test coverage results to a merge request
+## Add test coverage results to a merge request (DEPRECATED)
+
+> [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/17633) in GitLab 14.9. Replaced by [`coverage` keyword](../yaml/index.md#coverage).
+
+WARNING:
+This feature is in its end-of-life process. It is [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/17633)
+for use in GitLab 14.9, and is planned for [removal](https://gitlab.com/gitlab-org/gitlab/-/issues/17633) in GitLab 15.0.
 
 If you use test coverage in your code, you can use a regular expression to
 find coverage results in the job log. You can then include these results
@@ -358,7 +364,7 @@ https://gitlab.example.com/<namespace>/<project>/badges/<branch>/pipeline.svg?ig
 
 ### Test coverage report badge
 
-You can define the regular expression for the [coverage report](#add-test-coverage-results-to-a-merge-request)
+You can define the regular expression for the [coverage report](#add-test-coverage-results-to-a-merge-request-deprecated)
 that each job log is matched against. This means that each job in the
 pipeline can have the test coverage percentage value defined.
 

@@ -132,7 +132,7 @@ $tabs-holder-z-index: 250;
 
   .coverage {
     font-size: 12px;
-    color: $gray-500;
+    color: var(--gray-500, $gray-500);
     line-height: initial;
   }
 }
@@ -194,12 +194,12 @@ $tabs-holder-z-index: 250;
   }
 
   &:not(:last-child) {
-    border-bottom: 1px solid $border-color;
+    border-bottom: 1px solid var(--border-color, $border-color);
   }
 }
 
 .diff-file-row.is-active {
-  background-color: $gray-50;
+  background-color: var(--gray-50, $gray-50);
 }
 
 .mr-conflict-loader {
@@ -255,7 +255,7 @@ $tabs-holder-z-index: 250;
 }
 
 .mr-section-container {
-  border: 1px solid $border-color;
+  border: 1px solid var(--border-color, $border-color);
   border-radius: $border-radius-default;
   background: var(--white, $white);
 
@@ -299,19 +299,19 @@ $tabs-holder-z-index: 250;
   }
 
   .diverged-commits-count {
-    color: $gl-text-color-secondary;
+    color: var(--gray-500, $gl-text-color-secondary);
   }
 }
 
 .mr-state-widget {
-  color: $gl-text-color;
+  color: var(--gl-text-color, $gl-text-color);
 
   .commit-message-edit {
     border-radius: $border-radius-default;
   }
 
   .mr-widget-section:not(:first-child) {
-    border-top: solid 1px $border-color;
+    border-top: solid 1px var(--border-color, $border-color);
   }
 
   .mr-widget-alert-container + .mr-widget-section {
@@ -373,7 +373,7 @@ $tabs-holder-z-index: 250;
   }
 
   .ci-widget {
-    color: $gl-text-color;
+    color: var(--gl-text-color, $gl-text-color);
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -422,7 +422,7 @@ $tabs-holder-z-index: 250;
   .label-branch {
     @include gl-font-monospace;
     font-size: 95%;
-    color: $gl-text-color;
+    color: var(--gl-text-color, $gl-text-color);
     font-weight: normal;
     overflow: hidden;
     word-break: break-all;
@@ -486,7 +486,7 @@ $tabs-holder-z-index: 250;
     .bold,
     .gl-font-weight-bold {
       font-weight: $gl-font-weight-bold;
-      color: $gray-600;
+      color: var(--gray-600, $gray-600);
       margin-left: 10px;
     }
 
@@ -496,7 +496,7 @@ $tabs-holder-z-index: 250;
     }
 
     .danger {
-      color: $red-500;
+      color: var(--red-500, $red-500);
     }
 
     .spacing,
@@ -571,10 +571,10 @@ $tabs-holder-z-index: 250;
     &.mr-pipeline-suggest {
       border-radius: $border-radius-default;
       line-height: 20px;
-      border: 1px solid $border-color;
+      border: 1px solid var(--border-color, $border-color);
 
       .circle-icon-container {
-        color: $gl-text-color-quaternary;
+        color: var(--gray-100, $gl-text-color-quaternary);
       }
     }
   }
@@ -584,11 +584,11 @@ $tabs-holder-z-index: 250;
   }
 
   .stop-env-container {
-    color: $gl-text-color;
+    color: var(--gl-text-color, $gl-text-color);
     float: right;
 
     a {
-      color: $gl-text-color;
+      color: var(--gl-text-color, $gl-text-color);
     }
   }
 }
@@ -609,15 +609,15 @@ $tabs-holder-z-index: 250;
 }
 
 .mr-widget-border-top {
-  border-top: 1px solid $border-color;
+  border-top: 1px solid var(--border-color, $border-color);
 }
 
 .mr-widget-extension {
-  border-top: 1px solid $border-color;
-  background-color: $gray-50;
+  border-top: 1px solid var(--border-color, $border-color);
+  background-color: var(--gray-50, $gray-50);
 
   &.clickable:hover {
-    background-color: $gray-100;
+    background-color: var(--gray-100, $gray-100);
     cursor: pointer;
   }
 }
@@ -638,7 +638,7 @@ $tabs-holder-z-index: 250;
 
 .mr-widget-heading {
   position: relative;
-  border: 1px solid $border-color;
+  border: 1px solid var(--border-color, $border-color);
   border-radius: $border-radius-default;
   background: var(--white, $white);
 
@@ -668,7 +668,7 @@ $tabs-holder-z-index: 250;
 
   &::before {
     content: '';
-    border-left: 1px solid $gray-100;
+    border-left: 1px solid var(--gray-100, $gray-100);
     position: absolute;
     left: 28px;
     top: -17px;
@@ -679,8 +679,8 @@ $tabs-holder-z-index: 250;
 .mr-version-controls {
   position: relative;
   z-index: $tabs-holder-z-index + 10;
-  background: $white;
-  color: $gl-text-color;
+  background: var(--white, $white);
+  color: var(--gl-text-color, $gl-text-color);
   margin-top: -1px;
 
   .mr-version-menus-container {
@@ -713,7 +713,7 @@ $tabs-holder-z-index: 250;
   }
 
   .dropdown-title {
-    color: $gl-text-color;
+    color: var(--gl-text-color, $gl-text-color);
   }
 
   // Shortening button height by 1px to make compare-versions

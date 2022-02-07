@@ -1,8 +1,0 @@
----
-name: deployment_approvals
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/74932
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/347342
-milestone: '14.6'
-type: development
-group: group::release
-default_enabled: false

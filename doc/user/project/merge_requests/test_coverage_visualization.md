@@ -53,7 +53,7 @@ from any job in any stage in the pipeline. The coverage displays for each line:
 Hovering over the coverage bar provides further information, such as the number
 of times the line was checked by tests.
 
-Uploading a test coverage report does not enable [test coverage results in Merge Requests](../../../ci/pipelines/settings.md#add-test-coverage-results-to-a-merge-request) or [code coverage history](../../../ci/pipelines/settings.md#view-code-coverage-history). You must configure these separately.
+Uploading a test coverage report does not enable [test coverage results in Merge Requests](../../../ci/pipelines/settings.md#add-test-coverage-results-to-a-merge-request-deprecated) or [code coverage history](../../../ci/pipelines/settings.md#view-code-coverage-history). You must configure these separately.
 
 ### Limits
 

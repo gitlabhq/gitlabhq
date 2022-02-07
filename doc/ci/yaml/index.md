@@ -1349,7 +1349,7 @@ In this example:
 **Additional details**:
 
 - Coverage regular expressions set in `gitlab-ci.yml` take precedence over coverage regular expression set in the
-  [GitLab UI](../pipelines/settings.md#add-test-coverage-results-to-a-merge-request).
+  [GitLab UI](../pipelines/settings.md#add-test-coverage-results-to-a-merge-request-deprecated).
 - If there is more than one matched line in the job output, the last line is used
   (the first result of reverse search).
 - If there are multiple matches in a single line, the last match is searched

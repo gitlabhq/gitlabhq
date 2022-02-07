@@ -4,6 +4,8 @@ module QA
   module Support
     module Page
       module Logging
+        using Rainbow
+
         def assert_no_element(name)
           log("asserting no element :#{name}")
 
@@ -17,7 +19,7 @@ module QA
         end
 
         def scroll_to(selector, text: nil)
-          msg = "scrolling to :#{selector}"
+          msg = "scrolling to :#{Rainbow(selector).underline.bright}"
           msg += " with text: #{text}" if text
           log(msg)
 
@@ -37,7 +39,7 @@ module QA
 
           element = super
 
-          log("found :#{name}") if element
+          log("found :#{Rainbow(name).underline.bright}")
 
           element
         end
@@ -47,7 +49,7 @@ module QA
 
           elements = super
 
-          log("found #{elements.size} :#{name}") if elements
+          log("found #{elements.size} :#{Rainbow(name).underline.bright}") if elements
 
           elements
         end
@@ -71,7 +73,7 @@ module QA
         end
 
         def click_element(name, page = nil, **kwargs)
-          msg = ["clicking :#{name}"]
+          msg = ["clicking :#{Rainbow(name).underline.bright}"]
           msg << ", expecting to be at #{page.class}" if page
           msg << "with args #{kwargs}"
 
@@ -170,7 +172,7 @@ module QA
         end
 
         def log_has_element_or_not(method, name, found, **kwargs)
-          msg = ["#{method} :#{name}"]
+          msg = ["#{method} :#{Rainbow(name).underline.bright}"]
           msg << %Q(with text "#{kwargs[:text]}") if kwargs[:text]
           msg << "class: #{kwargs[:class]}" if kwargs[:class]
           msg << "(wait: #{kwargs[:wait] || Capybara.default_max_wait_time})"

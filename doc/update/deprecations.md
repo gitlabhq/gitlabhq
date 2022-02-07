@@ -853,6 +853,23 @@ existing runners.
 
 **Planned removal milestone: 15.0 (2022-05-22)**
 
+### Test coverage project CI/CD setting
+
+WARNING:
+This feature will be changed or removed in 15.0
+as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Before updating GitLab, review the details carefully to determine if you need to make any
+changes to your code, settings, or workflow.
+
+To simplify setting a test coverage pattern, in GitLab 15.0 the
+[project setting for test coverage parsing](https://docs.gitlab.com/ee/ci/pipelines/settings.html#add-test-coverage-results-to-a-merge-request-deprecated)
+is being removed.
+
+Instead, using the project’s `.gitlab-ci.yml`, provide a regular expression with the `coverage` keyword to set
+testing coverage results in merge requests.
+
+**Planned removal milestone: 15.0 (2022-05-22)**
+
 ### Vulnerability Check
 
 WARNING:

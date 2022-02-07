@@ -12,6 +12,7 @@ module Gitlab
 
             array_scope_table = Arel::Table.new(ARRAY_SCOPE_CTE_NAME)
             @columns = columns.map do |column|
+              column = column.right if column.is_a?(Arel::Nodes::As)
               ColumnData.new(column, "array_scope_#{column}", array_scope_table)
             end
           end

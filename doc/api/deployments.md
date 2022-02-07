@@ -448,7 +448,10 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 
 ## Approve or reject a blocked deployment **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/343864) in GitLab 14.7 [with a flag](../administration/feature_flags.md) named `deployment_approvals`. Disabled by default. This feature is not ready for production use.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/343864) in GitLab 14.7 [with a flag](../administration/feature_flags.md) named `deployment_approvals`. Disabled by default.
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/347342) in GitLab 14.8.
+
+See [Deployment Approvals](../ci/environments/deployment_approvals.md) for more information about this feature.
 
 ```plaintext
 POST /projects/:id/deployments/:deployment_id/approval

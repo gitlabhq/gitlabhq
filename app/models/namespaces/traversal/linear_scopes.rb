@@ -12,7 +12,7 @@ module Namespaces
         def as_ids
           return super unless use_traversal_ids?
 
-          select('namespaces.traversal_ids[array_length(namespaces.traversal_ids, 1)] AS id')
+          select(Arel.sql('namespaces.traversal_ids[array_length(namespaces.traversal_ids, 1)]').as('id'))
         end
 
         def roots
