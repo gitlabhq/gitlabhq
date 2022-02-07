@@ -10,16 +10,30 @@ import {
 } from '@gitlab/ui';
 import * as Sentry from '@sentry/browser';
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
-import { orderBy } from 'lodash';
+import IssueCardTimeInfo from 'ee_else_ce/issues/list/components/issue_card_time_info.vue';
 import getIssuesQuery from 'ee_else_ce/issues/list/queries/get_issues.query.graphql';
 import getIssuesCountsQuery from 'ee_else_ce/issues/list/queries/get_issues_counts.query.graphql';
-import IssueCardTimeInfo from 'ee_else_ce/issues/list/components/issue_card_time_info.vue';
 import createFlash, { FLASH_TYPES } from '~/flash';
 import { TYPE_USER } from '~/graphql_shared/constants';
 import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { ITEM_TYPE } from '~/groups/constants';
 import CsvImportExportButtons from '~/issuable/components/csv_import_export_buttons.vue';
 import IssuableByEmail from '~/issuable/components/issuable_by_email.vue';
+import axios from '~/lib/utils/axios_utils';
+import { scrollUp } from '~/lib/utils/scroll_utils';
+import { getParameterByName, joinPaths } from '~/lib/utils/url_utility';
+import {
+  DEFAULT_NONE_ANY,
+  OPERATOR_IS_ONLY,
+  TOKEN_TITLE_ASSIGNEE,
+  TOKEN_TITLE_AUTHOR,
+  TOKEN_TITLE_CONFIDENTIAL,
+  TOKEN_TITLE_LABEL,
+  TOKEN_TITLE_MILESTONE,
+  TOKEN_TITLE_MY_REACTION,
+  TOKEN_TITLE_RELEASE,
+  TOKEN_TITLE_TYPE,
+} from '~/vue_shared/components/filtered_search_bar/constants';
 import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_root.vue';
 import { IssuableListTabs, IssuableStates } from '~/vue_shared/issuable/list/constants';
 import {
@@ -40,7 +54,13 @@ import {
   TOKEN_TYPE_TYPE,
   UPDATED_DESC,
   urlSortParams,
-} from '~/issues/list/constants';
+} from '../constants';
+import eventHub from '../eventhub';
+import reorderIssuesMutation from '../queries/reorder_issues.mutation.graphql';
+import searchLabelsQuery from '../queries/search_labels.query.graphql';
+import searchMilestonesQuery from '../queries/search_milestones.query.graphql';
+import searchUsersQuery from '../queries/search_users.query.graphql';
+import setSortPreferenceMutation from '../queries/set_sort_preference.mutation.graphql';
 import {
   convertToApiParams,
   convertToSearchQuery,
@@ -50,28 +70,7 @@ import {
   getInitialPageParams,
   getSortKey,
   getSortOptions,
-} from '~/issues/list/utils';
-import axios from '~/lib/utils/axios_utils';
-import { scrollUp } from '~/lib/utils/scroll_utils';
-import { getParameterByName, joinPaths } from '~/lib/utils/url_utility';
-import {
-  DEFAULT_NONE_ANY,
-  OPERATOR_IS_ONLY,
-  TOKEN_TITLE_ASSIGNEE,
-  TOKEN_TITLE_AUTHOR,
-  TOKEN_TITLE_CONFIDENTIAL,
-  TOKEN_TITLE_LABEL,
-  TOKEN_TITLE_MILESTONE,
-  TOKEN_TITLE_MY_REACTION,
-  TOKEN_TITLE_RELEASE,
-  TOKEN_TITLE_TYPE,
-} from '~/vue_shared/components/filtered_search_bar/constants';
-import eventHub from '../eventhub';
-import reorderIssuesMutation from '../queries/reorder_issues.mutation.graphql';
-import setSortPreferenceMutation from '../queries/set_sort_preference.mutation.graphql';
-import searchLabelsQuery from '../queries/search_labels.query.graphql';
-import searchMilestonesQuery from '../queries/search_milestones.query.graphql';
-import searchUsersQuery from '../queries/search_users.query.graphql';
+} from '../utils';
 import NewIssueDropdown from './new_issue_dropdown.vue';
 
 const AuthorToken = () =>
@@ -103,77 +102,31 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  inject: {
-    autocompleteAwardEmojisPath: {
-      default: '',
-    },
-    calendarPath: {
-      default: '',
-    },
-    canBulkUpdate: {
-      default: false,
-    },
-    emptyStateSvgPath: {
-      default: '',
-    },
-    exportCsvPath: {
-      default: '',
-    },
-    fullPath: {
-      default: '',
-    },
-    hasAnyIssues: {
-      default: false,
-    },
-    hasAnyProjects: {
-      default: false,
-    },
-    hasBlockedIssuesFeature: {
-      default: false,
-    },
-    hasIssueWeightsFeature: {
-      default: false,
-    },
-    hasMultipleIssueAssigneesFeature: {
-      default: false,
-    },
-    initialEmail: {
-      default: '',
-    },
-    initialSort: {
-      default: '',
-    },
-    isAnonymousSearchDisabled: {
-      default: false,
-    },
-    isIssueRepositioningDisabled: {
-      default: false,
-    },
-    isProject: {
-      default: false,
-    },
-    isSignedIn: {
-      default: false,
-    },
-    jiraIntegrationPath: {
-      default: '',
-    },
-    newIssuePath: {
-      default: '',
-    },
-    releasesPath: {
-      default: '',
-    },
-    rssPath: {
-      default: '',
-    },
-    showNewIssueLink: {
-      default: false,
-    },
-    signInPath: {
-      default: '',
-    },
-  },
+  inject: [
+    'autocompleteAwardEmojisPath',
+    'calendarPath',
+    'canBulkUpdate',
+    'emptyStateSvgPath',
+    'exportCsvPath',
+    'fullPath',
+    'hasAnyIssues',
+    'hasAnyProjects',
+    'hasBlockedIssuesFeature',
+    'hasIssueWeightsFeature',
+    'hasMultipleIssueAssigneesFeature',
+    'initialEmail',
+    'initialSort',
+    'isAnonymousSearchDisabled',
+    'isIssueRepositioningDisabled',
+    'isProject',
+    'isSignedIn',
+    'jiraIntegrationPath',
+    'newIssuePath',
+    'releasesPath',
+    'rssPath',
+    'showNewIssueLink',
+    'signInPath',
+  ],
   props: {
     eeSearchTokens: {
       type: Array,
@@ -349,6 +302,7 @@ export default {
           token: MilestoneToken,
           fetchMilestones: this.fetchMilestones,
           recentSuggestionsStorageKey: `${this.fullPath}-issues-recent-tokens-milestone`,
+          shouldSkipSort: true,
         },
         {
           type: TOKEN_TYPE_LABEL,
@@ -414,7 +368,7 @@ export default {
 
       tokens.sort((a, b) => a.title.localeCompare(b.title));
 
-      return orderBy(tokens, ['title']);
+      return tokens;
     },
     showPaginationControls() {
       return this.issues.length > 0 && (this.pageInfo.hasNextPage || this.pageInfo.hasPreviousPage);

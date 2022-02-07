@@ -62,6 +62,7 @@ describe('CE IssuesListApp component', () => {
   Vue.use(VueApollo);
 
   const defaultProvide = {
+    autocompleteAwardEmojisPath: 'autocomplete/award/emojis/path',
     calendarPath: 'calendar/path',
     canBulkUpdate: false,
     emptyStateSvgPath: 'empty-state.svg',
@@ -73,10 +74,16 @@ describe('CE IssuesListApp component', () => {
     hasIssuableHealthStatusFeature: true,
     hasIssueWeightsFeature: true,
     hasIterationsFeature: true,
+    hasMultipleIssueAssigneesFeature: true,
+    initialEmail: 'email@example.com',
+    initialSort: CREATED_DESC,
+    isAnonymousSearchDisabled: false,
+    isIssueRepositioningDisabled: false,
     isProject: true,
     isSignedIn: true,
     jiraIntegrationPath: 'jira/integration/path',
     newIssuePath: 'new/issue/path',
+    releasesPath: 'releases/path',
     rssPath: 'rss/path',
     showNewIssueLink: true,
     signInPath: 'sign/in/path',

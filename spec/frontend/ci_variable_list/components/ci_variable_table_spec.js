@@ -1,6 +1,6 @@
-import { mount } from '@vue/test-utils';
-import Vue, { nextTick } from 'vue';
+import Vue from 'vue';
 import Vuex from 'vuex';
+import { mountExtended } from 'helpers/vue_test_utils_helper';
 import CiVariableTable from '~/ci_variable_list/components/ci_variable_table.vue';
 import createStore from '~/ci_variable_list/store';
 import mockData from '../services/mock_data';
@@ -14,15 +14,15 @@ describe('Ci variable table', () => {
   const createComponent = () => {
     store = createStore();
     jest.spyOn(store, 'dispatch').mockImplementation();
-    wrapper = mount(CiVariableTable, {
+    wrapper = mountExtended(CiVariableTable, {
       attachTo: document.body,
       store,
     });
   };
 
-  const findRevealButton = () => wrapper.find({ ref: 'secret-value-reveal-button' });
-  const findEditButton = () => wrapper.find({ ref: 'edit-ci-variable' });
-  const findEmptyVariablesPlaceholder = () => wrapper.find({ ref: 'empty-variables' });
+  const findRevealButton = () => wrapper.findByText('Reveal values');
+  const findEditButton = () => wrapper.findByLabelText('Edit');
+  const findEmptyVariablesPlaceholder = () => wrapper.findByText('There are no variables yet.');
 
   beforeEach(() => {
     createComponent();
@@ -36,17 +36,35 @@ describe('Ci variable table', () => {
     expect(store.dispatch).toHaveBeenCalledWith('fetchVariables');
   });
 
-  describe('Renders correct data', () => {
-    it('displays empty message when variables are not present', () => {
+  describe('When table is empty', () => {
+    beforeEach(() => {
+      store.state.variables = [];
+    });
+
+    it('displays empty message', () => {
       expect(findEmptyVariablesPlaceholder().exists()).toBe(true);
     });
 
-    it('displays correct amount of variables present and no empty message', async () => {
-      store.state.variables = mockData.mockVariables;
+    it('hides the reveal button', () => {
+      expect(findRevealButton().exists()).toBe(false);
+    });
+  });
 
-      await nextTick();
-      expect(wrapper.findAll('.js-ci-variable-row').length).toBe(1);
+  describe('When table has variables', () => {
+    beforeEach(() => {
+      store.state.variables = mockData.mockVariables;
+    });
+
+    it('does not display the empty message', () => {
       expect(findEmptyVariablesPlaceholder().exists()).toBe(false);
+    });
+
+    it('displays the reveal button', () => {
+      expect(findRevealButton().exists()).toBe(true);
+    });
+
+    it('displays the correct amount of variables', async () => {
+      expect(wrapper.findAll('.js-ci-variable-row')).toHaveLength(1);
     });
   });
 

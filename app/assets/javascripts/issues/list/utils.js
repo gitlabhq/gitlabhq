@@ -1,3 +1,9 @@
+import { isPositiveInteger } from '~/lib/utils/number_utils';
+import { __ } from '~/locale';
+import {
+  FILTERED_SEARCH_TERM,
+  OPERATOR_IS_NOT,
+} from '~/vue_shared/components/filtered_search_bar/constants';
 import {
   API_PARAM,
   BLOCKING_ISSUES_ASC,
@@ -36,13 +42,7 @@ import {
   urlSortParams,
   WEIGHT_ASC,
   WEIGHT_DESC,
-} from '~/issues/list/constants';
-import { isPositiveInteger } from '~/lib/utils/number_utils';
-import { __ } from '~/locale';
-import {
-  FILTERED_SEARCH_TERM,
-  OPERATOR_IS_NOT,
-} from '~/vue_shared/components/filtered_search_bar/constants';
+} from './constants';
 
 export const getInitialPageParams = (sortKey) =>
   sortKey === RELATIVE_POSITION_ASC ? largePageSizeParams : defaultPageSizeParams;
