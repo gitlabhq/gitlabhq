@@ -70,9 +70,9 @@ export default {
   },
   fields: [
     tableField({ key: 'status', label: s__('Runners|Status') }),
-    tableField({ key: 'summary', label: s__('Runners|Runner ID'), thClasses: ['gl-lg-w-25p'] }),
+    tableField({ key: 'summary', label: s__('Runners|Runner'), thClasses: ['gl-lg-w-25p'] }),
     tableField({ key: 'version', label: __('Version') }),
-    tableField({ key: 'ipAddress', label: __('IP Address') }),
+    tableField({ key: 'ipAddress', label: __('IP') }),
     tableField({ key: 'jobCount', label: __('Jobs') }),
     tableField({ key: 'tagList', label: __('Tags'), thClasses: ['gl-lg-w-25p'] }),
     tableField({ key: 'contactedAt', label: __('Last contact') }),

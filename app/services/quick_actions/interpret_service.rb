@@ -61,6 +61,10 @@ module QuickActions
 
     private
 
+    def failed_parse(message)
+      raise Gitlab::QuickActions::CommandDefinition::ParseError, message
+    end
+
     def extractor
       Gitlab::QuickActions::Extractor.new(self.class.command_definitions)
     end
@@ -69,6 +73,7 @@ module QuickActions
     def extract_users(params)
       return [] if params.nil?
 
+      args = params.split(' ').uniq
       users = extract_references(params, :user)
 
       if users.empty?
@@ -76,9 +81,11 @@ module QuickActions
           if params.strip == 'me'
             [current_user]
           else
-            User.where(username: params.split(' ').map(&:strip))
+            User.where(username: args)
           end
       end
+
+      failed_parse(format(_("Failed to find users for '%{params}'"), params: params)) unless users.size == args.size
 
       users
     end

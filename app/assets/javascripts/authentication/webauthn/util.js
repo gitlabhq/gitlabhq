@@ -14,31 +14,36 @@ export function isHTTPS() {
 export const FLOW_AUTHENTICATE = 'authenticate';
 export const FLOW_REGISTER = 'register';
 
-// adapted from https://stackoverflow.com/a/21797381/8204697
-function base64ToBuffer(base64) {
-  const binaryString = window.atob(base64);
-  const len = binaryString.length;
-  const bytes = new Uint8Array(len);
-  for (let i = 0; i < len; i += 1) {
-    bytes[i] = binaryString.charCodeAt(i);
+/**
+ * Converts a base64 string to an ArrayBuffer
+ *
+ * @param {String} str - A base64 encoded string
+ * @returns {ArrayBuffer}
+ */
+export const base64ToBuffer = (str) => {
+  const rawStr = atob(str);
+  const buffer = new ArrayBuffer(rawStr.length);
+  const arr = new Uint8Array(buffer);
+  for (let i = 0; i < rawStr.length; i += 1) {
+    arr[i] = rawStr.charCodeAt(i);
   }
-  return bytes.buffer;
-}
+  return arr.buffer;
+};
 
-// adapted from https://stackoverflow.com/a/9458996/8204697
-function bufferToBase64(buffer) {
-  if (typeof buffer === 'string') {
-    return buffer;
+/**
+ * Converts ArrayBuffer to a base64-encoded string
+ *
+ * @param {ArrayBuffer, String} str -
+ * @returns {String} - ArrayBuffer to a base64-encoded string.
+ * When input is a string, returns the input as-is.
+ */
+export const bufferToBase64 = (input) => {
+  if (typeof input === 'string') {
+    return input;
   }
-
-  let binary = '';
-  const bytes = new Uint8Array(buffer);
-  const len = bytes.byteLength;
-  for (let i = 0; i < len; i += 1) {
-    binary += String.fromCharCode(bytes[i]);
-  }
-  return window.btoa(binary);
-}
+  const arr = new Uint8Array(input);
+  return btoa(String.fromCharCode(...arr));
+};
 
 /**
  * Returns a copy of the given object with the id property converted to buffer

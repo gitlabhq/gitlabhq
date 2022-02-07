@@ -4,7 +4,9 @@ entry.
 
 ## 14.7.1 (2022-02-03)
 
-No changes.
+### Security
+
+See https://about.gitlab.com/releases/2022/02/03/security-release-gitlab-14-7-1-released/
 
 ## 14.7.0 (2022-01-21)
 
@@ -445,7 +447,9 @@ No changes.
 
 ## 14.6.4 (2022-02-03)
 
-No changes.
+### Security
+
+See https://about.gitlab.com/releases/2022/02/03/security-release-gitlab-14-7-1-released/
 
 ## 14.6.3 (2022-01-18)
 
@@ -847,7 +851,9 @@ No changes.
 
 ## 14.5.4 (2022-02-03)
 
-No changes.
+### Security
+
+See https://about.gitlab.com/releases/2022/02/03/security-release-gitlab-14-7-1-released/
 
 ## 14.5.3 (2022-01-11)
 

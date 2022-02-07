@@ -108,17 +108,6 @@ RSpec.describe MergeRequests::AfterCreateService do
           expect { execute_service }.to raise_error(StandardError)
           expect(merge_request.reload).to be_preparing
         end
-
-        context 'when early_prepare_for_mergeability feature flag is disabled' do
-          before do
-            stub_feature_flags(early_prepare_for_mergeability: false)
-          end
-
-          it 'does not mark the merge request as unchecked' do
-            expect { execute_service }.to raise_error(StandardError)
-            expect(merge_request.reload).to be_preparing
-          end
-        end
       end
 
       context 'when preparing merge request fails' do
@@ -133,17 +122,6 @@ RSpec.describe MergeRequests::AfterCreateService do
         it 'still checks for mergeability' do
           expect(merge_request).to receive(:check_mergeability).with(async: true)
           expect { execute_service }.to raise_error(StandardError)
-        end
-
-        context 'when early_prepare_for_mergeability feature flag is disabled' do
-          before do
-            stub_feature_flags(early_prepare_for_mergeability: false)
-          end
-
-          it 'does not mark the merge request as unchecked' do
-            expect { execute_service }.to raise_error(StandardError)
-            expect(merge_request.reload).to be_preparing
-          end
         end
       end
     end

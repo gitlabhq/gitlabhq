@@ -46,9 +46,9 @@ describe('RunnerList', () => {
 
     expect(headerLabels).toEqual([
       'Status',
-      'Runner ID',
+      'Runner',
       'Version',
-      'IP Address',
+      'IP',
       'Jobs',
       'Tags',
       'Last contact',

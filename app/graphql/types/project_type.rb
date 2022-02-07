@@ -15,6 +15,8 @@ module Types
           description: 'Full path of the project.'
     field :path, GraphQL::Types::String, null: false,
           description: 'Path of the project.'
+    field :ci_config_path_or_default, GraphQL::Types::String, null: false,
+          description: 'Path of the CI configuration file.'
 
     field :sast_ci_configuration, Types::CiConfiguration::Sast::Type, null: true,
       calls_gitaly: true,

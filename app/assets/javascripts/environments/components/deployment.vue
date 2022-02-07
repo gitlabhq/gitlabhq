@@ -1,7 +1,15 @@
 <script>
-import { GlBadge, GlButton, GlCollapse, GlIcon, GlTooltipDirective as GlTooltip } from '@gitlab/ui';
+import {
+  GlBadge,
+  GlButton,
+  GlCollapse,
+  GlIcon,
+  GlLink,
+  GlTooltipDirective as GlTooltip,
+} from '@gitlab/ui';
 import { GlBreakpointInstance } from '@gitlab/ui/dist/utils';
 import { __, s__ } from '~/locale';
+import { truncate } from '~/lib/utils/text_utility';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import DeploymentStatusBadge from './deployment_status_badge.vue';
@@ -16,6 +24,7 @@ export default {
     GlButton,
     GlCollapse,
     GlIcon,
+    GlLink,
     TimeAgoTooltip,
   },
   directives: {
@@ -62,6 +71,15 @@ export default {
     commit() {
       return this.deployment?.commit;
     },
+    user() {
+      return this.deployment?.user;
+    },
+    username() {
+      return truncate(this.user?.username, 25);
+    },
+    userPath() {
+      return this.user?.path;
+    },
   },
   methods: {
     toggleCollapse() {
@@ -75,6 +93,7 @@ export default {
     commitSha: __('Commit SHA'),
     showDetails: __('Show details'),
     hideDetails: __('Hide details'),
+    triggerer: s__('Deployment|Triggerer'),
   },
   headerClasses: [
     'gl-display-flex',
@@ -149,6 +168,13 @@ export default {
       </gl-button>
     </div>
     <commit v-if="commit" :commit="commit" class="gl-mt-3" />
-    <gl-collapse :visible="visible" />
+    <gl-collapse :visible="visible">
+      <div class="gl-display-flex gl-align-items-center gl-mt-5">
+        <div v-if="user" class="gl-display-flex gl-flex-direction-column">
+          <span class="gl-text-gray-500 gl-font-weight-bold">{{ $options.i18n.triggerer }}</span>
+          <gl-link :href="userPath" class="gl-font-monospace gl-mt-3"> @{{ username }} </gl-link>
+        </div>
+      </div>
+    </gl-collapse>
   </div>
 </template>

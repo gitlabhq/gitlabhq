@@ -149,7 +149,7 @@ describe('~/environments/components/deployment.vue', () => {
     });
     describe('is not present', () => {
       it('does not show the timestamp', () => {
-        wrapper = createWrapper({ propsData: { deployment: { createdAt: null } } });
+        wrapper = createWrapper({ propsData: { deployment: { ...deployment, createdAt: null } } });
         const date = wrapper.findByTitle(formatDate(deployment.createdAt));
 
         expect(date.exists()).toBe(false);
@@ -205,6 +205,10 @@ describe('~/environments/components/deployment.vue', () => {
       expect(button.text()).toBe(__('Hide details'));
       expect(button.props('icon')).toBe('expand-up');
       expect(collapse.attributes('visible')).toBe('visible');
+
+      const username = wrapper.findByRole('link', { name: `@${deployment.user.username}` });
+
+      expect(username.attributes('href')).toBe(deployment.user.path);
     });
   });
 });

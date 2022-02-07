@@ -206,15 +206,14 @@ Instead of adding users one by one, you can [share a project with an entire grou
 
 ### Add a member modal window
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/247208) in GitLab 13.11.
-> - [Deployed behind a feature flag](../../feature_flags.md), disabled by default.
-> - Enabled on GitLab.com.
-> - Recommended for production use.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/247208) in GitLab 13.11 [with a flag](../../feature_flags.md). Disabled by default.
 > - Replaces the existing form with buttons to open a modal window.
-> - To use in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-modal-window).
+> - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/247208) in GitLab 14.8.
 
-WARNING:
-This feature might not be available to you. Check the **version history** note above for details.
+FLAG:
+On self-managed GitLab, by default this feature is available.
+To hide the feature, ask an administrator to [disable the feature flag](#enable-or-disable-modal-window).
+On GitLab.com, this feature is available.
 
 In GitLab 13.11, you can optionally replace the form to add a member with a modal window.
 To add a member after enabling this feature:
@@ -229,7 +228,7 @@ To add a member after enabling this feature:
 ### Enable or disable modal window **(FREE SELF)**
 
 The modal window for adding a member is under development and is ready for production use. It is
-deployed behind a feature flag that is **disabled by default**.
+deployed behind a feature flag that is **enabled by default**.
 [GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md)
 can enable it.
 

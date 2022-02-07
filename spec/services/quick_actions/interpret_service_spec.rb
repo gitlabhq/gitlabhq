@@ -485,6 +485,8 @@ RSpec.describe QuickActions::InterpretService do
     end
 
     shared_examples 'failed command' do |error_msg|
+      let(:match_msg) { error_msg ? eq(error_msg) : be_empty }
+
       it 'populates {} if content contains an unsupported command' do
         _, updates, _ = service.execute(content, issuable)
 
@@ -494,11 +496,7 @@ RSpec.describe QuickActions::InterpretService do
       it "returns #{error_msg || 'an empty'} message" do
         _, _, message = service.execute(content, issuable)
 
-        if error_msg
-          expect(message).to eq(error_msg)
-        else
-          expect(message).to be_empty
-        end
+        expect(message).to match_msg
       end
     end
 
@@ -887,9 +885,10 @@ RSpec.describe QuickActions::InterpretService do
       end
     end
 
-    it_behaves_like 'failed command', "Failed to assign a user because no user was found." do
+    it_behaves_like 'failed command', 'a parse error' do
       let(:content) { '/assign @abcd1234' }
       let(:issuable) { issue }
+      let(:match_msg) { eq "Could not apply assign command. Failed to find users for '@abcd1234'." }
     end
 
     it_behaves_like 'failed command', "Failed to assign a user because no user was found." do
@@ -953,7 +952,9 @@ RSpec.describe QuickActions::InterpretService do
       context 'with an incorrect user' do
         let(:content) { '/assign_reviewer @abcd1234' }
 
-        it_behaves_like 'failed command', "Failed to assign a reviewer because no user was found."
+        it_behaves_like 'failed command', 'a parse error' do
+          let(:match_msg) { eq "Could not apply assign_reviewer command. Failed to find users for '@abcd1234'." }
+        end
       end
 
       context 'with the "reviewer" alias' do
@@ -971,13 +972,16 @@ RSpec.describe QuickActions::InterpretService do
       context 'with no user' do
         let(:content) { '/assign_reviewer' }
 
-        it_behaves_like 'failed command', "Failed to assign a reviewer because no user was found."
+        it_behaves_like 'failed command', "Failed to assign a reviewer because no user was specified."
       end
 
-      context 'includes only the user reference with extra text' do
-        let(:content) { "/assign_reviewer @#{developer.username} do it!" }
+      context 'with extra text' do
+        let(:arg) { "@#{developer.username} do it!" }
+        let(:content) { "/assign_reviewer #{arg}" }
 
-        it_behaves_like 'assign_reviewer command'
+        it_behaves_like 'failed command', 'a parse error' do
+          let(:match_msg) { eq "Could not apply assign_reviewer command. Failed to find users for '#{arg}'." }
+        end
       end
     end
 
@@ -2317,12 +2321,41 @@ RSpec.describe QuickActions::InterpretService do
     end
 
     describe 'assign command' do
-      let(:content) { "/assign @#{developer.username} do it!" }
+      shared_examples 'assigns developer' do
+        it 'tells us we will assign the developer' do
+          _, explanations = service.explain(content, merge_request)
 
-      it 'includes only the user reference' do
-        _, explanations = service.explain(content, merge_request)
+          expect(explanations).to eq(["Assigns @#{developer.username}."])
+        end
+      end
 
-        expect(explanations).to eq(["Assigns @#{developer.username}."])
+      context 'when using a reference' do
+        let(:content) { "/assign @#{developer.username}" }
+
+        include_examples 'assigns developer'
+      end
+
+      context 'when using a bare username' do
+        let(:content) { "/assign #{developer.username}" }
+
+        include_examples 'assigns developer'
+      end
+
+      context 'when using me' do
+        let(:content) { "/assign me" }
+
+        include_examples 'assigns developer'
+      end
+
+      context 'when there are unparseable arguments' do
+        let(:arg) { "#{developer.username} to this issue" }
+        let(:content) { "/assign #{arg}" }
+
+        it 'tells us why we cannot do that' do
+          _, explanations = service.explain(content, merge_request)
+
+          expect(explanations).to eq ["Problem with assign command: Failed to find users for '#{arg}'."]
+        end
       end
     end
 

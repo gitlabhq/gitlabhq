@@ -3,6 +3,8 @@
 module Gitlab
   module QuickActions
     class CommandDefinition
+      ParseError = Class.new(StandardError)
+
       attr_accessor :name, :aliases, :description, :explanation, :execution_message,
         :params, :condition_block, :parse_params_block, :action_block, :warning, :icon, :types
 
@@ -41,7 +43,11 @@ module Gitlab
         return unless available?(context)
 
         message = if explanation.respond_to?(:call)
-                    execute_block(explanation, context, arg)
+                    begin
+                      execute_block(explanation, context, arg)
+                    rescue ParseError => e
+                      format(_('Problem with %{name} command: %{message}.'), name: name, message: e.message)
+                    end
                   else
                     explanation
                   end
@@ -63,6 +69,8 @@ module Gitlab
         return unless available?(context)
 
         execute_block(action_block, context, arg)
+      rescue ParseError
+        # message propagation is handled in `execution_message`.
       end
 
       def execute_message(context, arg)
@@ -74,6 +82,8 @@ module Gitlab
         else
           execution_message
         end
+      rescue ParseError => e
+        format _('Could not apply %{name} command. %{message}.'), name: name, message: e.message
       end
 
       def to_h(context)

@@ -99,8 +99,8 @@ export default {
       if (!this.lastDeployment) {
         return [];
       }
-      const { manualActions = [], scheduledActions = [] } = this.lastDeployment;
-      const combinedActions = [...manualActions, ...scheduledActions];
+      const { manualActions, scheduledActions } = this.lastDeployment;
+      const combinedActions = [...(manualActions ?? []), ...(scheduledActions ?? [])];
       return combinedActions.map((action) => ({
         ...action,
       }));

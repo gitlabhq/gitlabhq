@@ -727,6 +727,12 @@ The `merged_by` field in the [merge request API](https://docs.gitlab.com/ee/api/
 
 ## 14.8
 
+### Deprecate Geo Admin UI Routes
+
+In GitLab 13.0, we introduced new project and design replication details routes in the Geo Admin UI. These routes are `/admin/geo/replication/projects` and `/admin/geo/replication/designs`. We kept the legacy routes and redirected them to the new routes. In GitLab 15.0, we will remove support for the legacy routes `/admin/geo/projects` and `/admin/geo/designs`. Please update any bookmarks or scripts that may use the legacy routes.
+
+**Planned removal milestone: 15.0 (2022-05-22)**
+
 ### External status check API breaking changes
 
 WARNING:

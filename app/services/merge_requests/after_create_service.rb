@@ -5,9 +5,8 @@ module MergeRequests
     include Gitlab::Utils::StrongMemoize
 
     def execute(merge_request)
-      prepare_for_mergeability(merge_request) if early_prepare_for_mergeability?(merge_request)
+      prepare_for_mergeability(merge_request)
       prepare_merge_request(merge_request)
-      check_mergeability(merge_request) unless early_prepare_for_mergeability?(merge_request)
     end
 
     private
@@ -26,11 +25,6 @@ module MergeRequests
 
       notification_service.new_merge_request(merge_request, current_user)
 
-      unless early_prepare_for_mergeability?(merge_request)
-        create_pipeline_for(merge_request, current_user)
-        merge_request.update_head_pipeline
-      end
-
       merge_request.diffs(include_stats: false).write_cache
       merge_request.create_cross_references!(current_user)
 
@@ -47,12 +41,6 @@ module MergeRequests
 
     def link_lfs_objects(merge_request)
       LinkLfsObjectsService.new(project: merge_request.target_project).execute(merge_request)
-    end
-
-    def early_prepare_for_mergeability?(merge_request)
-      strong_memoize("early_prepare_for_mergeability_#{merge_request.target_project_id}".to_sym) do
-        Feature.enabled?(:early_prepare_for_mergeability, merge_request.target_project)
-      end
     end
 
     def check_mergeability(merge_request)

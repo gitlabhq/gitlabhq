@@ -38,7 +38,7 @@
           %p
             = html_escape(_("Members can be added by project %{i_open}Maintainers%{i_close} or %{i_open}Owners%{i_close}")) % { i_open: '<i>'.html_safe, i_close: '</i>'.html_safe }
 
-    - if Feature.disabled?(:invite_members_group_modal, @project.group) && can?(current_user, :admin_project_member, @project) && project_can_be_shared?
+    - if Feature.disabled?(:invite_members_group_modal, @project.group, default_enabled: :yaml) && can?(current_user, :admin_project_member, @project) && project_can_be_shared?
       - if !membership_locked? && @project.allowed_to_share_with_group?
         %ul.nav-links.nav.nav-tabs.gitlab-tabs{ role: 'tablist' }
           %li.nav-tab{ role: 'presentation' }

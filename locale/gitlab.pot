@@ -9953,6 +9953,9 @@ msgstr ""
 msgid "Could not apply %{name} command."
 msgstr ""
 
+msgid "Could not apply %{name} command. %{message}."
+msgstr ""
+
 msgid "Could not authorize chat nickname. Try again!"
 msgstr ""
 
@@ -12148,6 +12151,9 @@ msgstr ""
 msgid "Deployment|This deployment was created using the API"
 msgstr ""
 
+msgid "Deployment|Triggerer"
+msgstr ""
+
 msgid "Deployment|Waiting"
 msgstr ""
 
@@ -12739,6 +12745,9 @@ msgid "Dismiss %d selected vulnerability as"
 msgid_plural "Dismiss %d selected vulnerabilities as"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "Dismiss Alert"
+msgstr ""
 
 msgid "Dismiss merge request promotion"
 msgstr ""
@@ -14783,7 +14792,7 @@ msgid_plural "Failed to archive designs. Please try again."
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "Failed to assign a reviewer because no user was found."
+msgid "Failed to assign a reviewer because no user was specified."
 msgstr ""
 
 msgid "Failed to assign a user because no user was found."
@@ -14847,6 +14856,9 @@ msgid "Failed to fetch the iterations for the group. Please try again."
 msgstr ""
 
 msgid "Failed to find import label for Jira import."
+msgstr ""
+
+msgid "Failed to find users for '%{params}'"
 msgstr ""
 
 msgid "Failed to generate export, please try again later."
@@ -18069,6 +18081,9 @@ msgid "INFO: Your SSH key has expired. Please generate a new key."
 msgstr ""
 
 msgid "INFO: Your SSH key is expiring soon. Please generate a new key."
+msgstr ""
+
+msgid "IP"
 msgstr ""
 
 msgid "IP Address"
@@ -27321,6 +27336,9 @@ msgstr ""
 msgid "Private projects can be created in your personal namespace with:"
 msgstr ""
 
+msgid "Problem with %{name} command: %{message}."
+msgstr ""
+
 msgid "Proceed"
 msgstr ""
 
@@ -31177,9 +31195,6 @@ msgstr ""
 msgid "Runners|Runner %{name} was deleted"
 msgstr ""
 
-msgid "Runners|Runner ID"
-msgstr ""
-
 msgid "Runners|Runner assigned to project."
 msgstr ""
 
@@ -31976,6 +31991,9 @@ msgstr ""
 msgid "SecurityOrchestration|Add rule"
 msgstr ""
 
+msgid "SecurityOrchestration|After dismissing the alert, the information will never be shown again."
+msgstr ""
+
 msgid "SecurityOrchestration|All policies"
 msgstr ""
 
@@ -31989,6 +32007,9 @@ msgid "SecurityOrchestration|Choose a project"
 msgstr ""
 
 msgid "SecurityOrchestration|Description"
+msgstr ""
+
+msgid "SecurityOrchestration|Don't show the alert anymore"
 msgstr ""
 
 msgid "SecurityOrchestration|Edit policy"
@@ -32013,6 +32034,9 @@ msgid "SecurityOrchestration|Invalid policy type"
 msgstr ""
 
 msgid "SecurityOrchestration|Latest scan"
+msgstr ""
+
+msgid "SecurityOrchestration|Latest scan run against %{agent}"
 msgstr ""
 
 msgid "SecurityOrchestration|Network"
@@ -32118,6 +32142,9 @@ msgid "SecurityOrchestration|There was a problem creating the new security polic
 msgstr ""
 
 msgid "SecurityOrchestration|This project does not contain any security policies."
+msgstr ""
+
+msgid "SecurityOrchestration|This view only shows scan results for the agent %{agent}. You can view scan results for all agents in the %{linkStart}Operational Vulnerabilities tab of the vulnerability report%{linkEnd}."
 msgstr ""
 
 msgid "SecurityOrchestration|To widen your search, change filters above or select a different security policy project."

@@ -184,7 +184,7 @@ module Gitlab
         execution_message do |users = nil|
           reviewers = reviewers_to_add(users)
           if reviewers.blank?
-            _("Failed to assign a reviewer because no user was found.")
+            _("Failed to assign a reviewer because no user was specified.")
           else
             _('Assigned %{reviewer_users_sentence} as %{reviewer_text}.') % { reviewer_users_sentence: reviewer_users_sentence(users),
                                                                               reviewer_text: 'reviewer'.pluralize(reviewers.size) }
